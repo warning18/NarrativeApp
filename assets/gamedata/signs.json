@@ -1,0 +1,1304 @@
+{
+  "standard_strike_rank_and_file": {
+    "id": "standard_strike_rank_and_file",
+    "patron": "standard",
+    "slot": "strike",
+    "name": "Rank and File",
+    "name_fr": "Rang serré",
+    "flavour": "A knot at the pole’s foot, tied with thread dyed in something older than madder.",
+    "flavour_fr": "Un nœud au pied de la hampe, d’un fil teint dans quelque chose de plus ancien que la garance.",
+    "effects": [
+      {
+        "kind": "strikeKeyword",
+        "keyword": "steady"
+      },
+      {
+        "kind": "strikeFlat",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "standard_guard_held_line": {
+    "id": "standard_guard_held_line",
+    "patron": "standard",
+    "slot": "guard",
+    "name": "Held Line",
+    "name_fr": "Ligne tenue",
+    "flavour": "The hem is stitched twice over, like a promise not to break.",
+    "flavour_fr": "L’ourlet est cousu deux fois, comme une promesse de ne pas rompre.",
+    "effects": [
+      {
+        "kind": "guardBlockPercent",
+        "value": 12
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "standard_mend_field_colours": {
+    "id": "standard_mend_field_colours",
+    "patron": "standard",
+    "slot": "mend",
+    "name": "Field Colours",
+    "name_fr": "Couleurs de campagne",
+    "flavour": "Everyone who has bled under this cloth is woven into its weft.",
+    "flavour_fr": "Quiconque a saigné sous cette toile est tissé dans sa trame.",
+    "effects": [
+      {
+        "kind": "mendParty",
+        "value": 18
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "standard_spell_herald_cord": {
+    "id": "standard_spell_herald_cord",
+    "patron": "standard",
+    "slot": "spell",
+    "name": "Herald’s Cord",
+    "name_fr": "Cordon du héraut",
+    "flavour": "A red cord braided through the fringe; every hand on the pole pulls on it a little.",
+    "flavour_fr": "Un cordon rouge tressé dans la frange ; chaque main sur la hampe le tire un peu.",
+    "effects": [
+      {
+        "kind": "spellCostLess",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "standard_passive_muster_knot": {
+    "id": "standard_passive_muster_knot",
+    "patron": "standard",
+    "slot": "passive",
+    "name": "Muster Knot",
+    "name_fr": "Nœud de rassemblement",
+    "flavour": "Tied before dawn, while the whole camp still sleeps beneath it.",
+    "flavour_fr": "Noué avant l’aube, quand tout le camp dort encore dessous.",
+    "effects": [
+      {
+        "kind": "partyStartBlock",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "standard_passive_company_colours": {
+    "id": "standard_passive_company_colours",
+    "patron": "standard",
+    "slot": "passive",
+    "name": "Company Colours",
+    "name_fr": "Couleurs de la compagnie",
+    "flavour": "Every name in the company sewn in, in a thread that was never quite red enough.",
+    "flavour_fr": "Chaque nom de la compagnie y est cousu, d’un fil qui ne fut jamais tout à fait assez rouge.",
+    "effects": [
+      {
+        "kind": "allyDamagePercent",
+        "value": 4
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "standard_passive_rallying_pennant": {
+    "id": "standard_passive_rallying_pennant",
+    "patron": "standard",
+    "slot": "passive",
+    "name": "Rallying Pennant",
+    "name_fr": "Fanion de ralliement",
+    "flavour": "A strip torn from an older standard, stiff with what dried on it.",
+    "flavour_fr": "Une bande arrachée à un étendard plus ancien, raide de ce qui a séché dessus.",
+    "effects": [
+      {
+        "kind": "partyMaxHealthPercent",
+        "value": 2
+      },
+      {
+        "kind": "startMomentum",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "painted_strike_gale": {
+    "id": "painted_strike_gale",
+    "patron": "painted",
+    "slot": "strike",
+    "name": "Gale Sigil",
+    "name_fr": "Sigil de bourrasque",
+    "flavour": "Three strokes up the forearm, painted fast, before the first coat dries.",
+    "flavour_fr": "Trois traits le long de l’avant-bras, peints vite, avant que la première couche sèche.",
+    "effects": [
+      {
+        "kind": "strikeElement",
+        "element": "Wind",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "painted_guard_glare": {
+    "id": "painted_guard_glare",
+    "patron": "painted",
+    "slot": "guard",
+    "name": "Glare Sigil",
+    "name_fr": "Sigil d’éblouissement",
+    "flavour": "A pale eye on the palm: chalk, and a drop of something that still glows.",
+    "flavour_fr": "Un œil pâle dans la paume : de la craie, et une goutte de quelque chose qui luit encore.",
+    "effects": [
+      {
+        "kind": "guardStatus",
+        "status": "weaken",
+        "chance": 12,
+        "duration": 2,
+        "magnitude": 15
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "painted_mend_fresh_coat": {
+    "id": "painted_mend_fresh_coat",
+    "patron": "painted",
+    "slot": "mend",
+    "name": "Fresh Coat",
+    "name_fr": "Couche fraîche",
+    "flavour": "Painted again, it is new again: a sigil is only as strong as its last coat.",
+    "flavour_fr": "Repeint, il redevient neuf : un sigil ne vaut que ce que vaut sa dernière couche.",
+    "effects": [
+      {
+        "kind": "mendPercent",
+        "value": 12
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "painted_spell_noon_mark": {
+    "id": "painted_spell_noon_mark",
+    "patron": "painted",
+    "slot": "spell",
+    "name": "Noon Mark",
+    "name_fr": "Marque de midi",
+    "flavour": "A white sun on the brow, in a pigment that was red before it was ground.",
+    "flavour_fr": "Un soleil blanc sur le front, d’un pigment qui était rouge avant d’être broyé.",
+    "effects": [
+      {
+        "kind": "spellStatus",
+        "status": "stun",
+        "chance": 9,
+        "duration": 1,
+        "magnitude": 0
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "painted_passive_hawk_eye": {
+    "id": "painted_passive_hawk_eye",
+    "patron": "painted",
+    "slot": "passive",
+    "name": "Hawk’s Eye",
+    "name_fr": "Œil d’épervier",
+    "flavour": "Two dots under each eye, the way the old forests marked their archers.",
+    "flavour_fr": "Deux points sous chaque œil, comme les vieilles forêts marquaient leurs archers.",
+    "effects": [
+      {
+        "kind": "critChance",
+        "value": 3
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "painted_passive_barkfoot": {
+    "id": "painted_passive_barkfoot",
+    "patron": "painted",
+    "slot": "passive",
+    "name": "Barkfoot",
+    "name_fr": "Pied d’écorce",
+    "flavour": "Leaf-veins painted up the calf, in a green that never quite dries.",
+    "flavour_fr": "Des nervures de feuille peintes le long du mollet, d’un vert qui ne sèche jamais tout à fait.",
+    "effects": [
+      {
+        "kind": "dodgeChance",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "painted_passive_first_light": {
+    "id": "painted_passive_first_light",
+    "patron": "painted",
+    "slot": "passive",
+    "name": "First Light",
+    "name_fr": "Première lueur",
+    "flavour": "A sigil painted on bark at dusk, so that it wakes before you do.",
+    "flavour_fr": "Un sigil peint sur l’écorce au crépuscule, pour qu’il s’éveille avant vous.",
+    "effects": [
+      {
+        "kind": "firstRoundDamagePercent",
+        "value": 12
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "stonemarked_strike_chisel": {
+    "id": "stonemarked_strike_chisel",
+    "patron": "stonemarked",
+    "slot": "strike",
+    "name": "Chisel Mark",
+    "name_fr": "Marque du ciseau",
+    "flavour": "Cut into the flat of the blade, and the groove filled with something dark.",
+    "flavour_fr": "Taillée sur le plat de la lame, la rainure comblée de quelque chose de sombre.",
+    "effects": [
+      {
+        "kind": "strikeKeyword",
+        "keyword": "pierce"
+      },
+      {
+        "kind": "strikeElement",
+        "element": "Earth",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "stonemarked_guard_spiked_boss": {
+    "id": "stonemarked_guard_spiked_boss",
+    "patron": "stonemarked",
+    "slot": "guard",
+    "name": "Spiked Boss",
+    "name_fr": "Umbo à pointes",
+    "flavour": "A mark cut round the shield-boss, deep enough to catch a finger.",
+    "flavour_fr": "Une marque taillée autour de l’umbo, assez profonde pour y accrocher un doigt.",
+    "effects": [
+      {
+        "kind": "guardFlat",
+        "value": 1
+      },
+      {
+        "kind": "guardRetaliate",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "stonemarked_mend_mortar": {
+    "id": "stonemarked_mend_mortar",
+    "patron": "stonemarked",
+    "slot": "mend",
+    "name": "Mortar Mark",
+    "name_fr": "Marque de mortier",
+    "flavour": "A mason’s line cut into the buckle: what closes, sets like lime.",
+    "flavour_fr": "Un trait de maçon gravé dans la boucle : ce qui se referme prend comme la chaux.",
+    "effects": [
+      {
+        "kind": "mendShield",
+        "value": 4
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "stonemarked_spell_weight": {
+    "id": "stonemarked_spell_weight",
+    "patron": "stonemarked",
+    "slot": "spell",
+    "name": "Rune of Weight",
+    "name_fr": "Rune de poids",
+    "flavour": "A word cut in slate and carried in a pocket, heavier every year.",
+    "flavour_fr": "Un mot taillé dans l’ardoise et porté en poche, plus lourd chaque année.",
+    "effects": [
+      {
+        "kind": "spellDamagePercent",
+        "value": 9
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "stonemarked_passive_iron_mark": {
+    "id": "stonemarked_passive_iron_mark",
+    "patron": "stonemarked",
+    "slot": "passive",
+    "name": "Iron Mark",
+    "name_fr": "Marque de fer",
+    "flavour": "Struck cold into the breastplate, and it does not wash off.",
+    "flavour_fr": "Frappée à froid dans le plastron, et elle ne s’efface pas.",
+    "effects": [
+      {
+        "kind": "armor",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "stonemarked_passive_thorn_mark": {
+    "id": "stonemarked_passive_thorn_mark",
+    "patron": "stonemarked",
+    "slot": "passive",
+    "name": "Thorn Mark",
+    "name_fr": "Marque d’épine",
+    "flavour": "A ring of small teeth cut round the gorget, rust-brown deep in the grooves.",
+    "flavour_fr": "Un cercle de petites dents gravé autour du gorgerin, brun de rouille au fond des rainures.",
+    "effects": [
+      {
+        "kind": "thorns",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "stonemarked_passive_keystone": {
+    "id": "stonemarked_passive_keystone",
+    "patron": "stonemarked",
+    "slot": "passive",
+    "name": "Keystone",
+    "name_fr": "Clef de voûte",
+    "flavour": "Your mark, cut into the lintel of a house that is still standing.",
+    "flavour_fr": "Votre marque, taillée dans le linteau d’une maison encore debout.",
+    "effects": [
+      {
+        "kind": "stat",
+        "stat": "constitution",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "inked_strike_ember": {
+    "id": "inked_strike_ember",
+    "patron": "inked",
+    "slot": "strike",
+    "name": "Ember Knuckles",
+    "name_fr": "Poings de braise",
+    "flavour": "Ash-ink between the knuckles, still warm.",
+    "flavour_fr": "De l’encre de cendre entre les phalanges, encore tiède.",
+    "effects": [
+      {
+        "kind": "strikeElement",
+        "element": "Fire",
+        "value": 1
+      },
+      {
+        "kind": "strikeStatus",
+        "status": "poison",
+        "chance": 15,
+        "duration": 2,
+        "magnitude": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "inked_guard_knitted_scar": {
+    "id": "inked_guard_knitted_scar",
+    "patron": "inked",
+    "slot": "guard",
+    "name": "Knitted Scar",
+    "name_fr": "Cicatrice ravaudée",
+    "flavour": "Inked along an old wound, so the wound remembers how it closed.",
+    "flavour_fr": "Encrée le long d’une vieille plaie, pour que la plaie se rappelle comment elle s’est refermée.",
+    "effects": [
+      {
+        "kind": "guardHeal",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "inked_mend_red_ink": {
+    "id": "inked_mend_red_ink",
+    "patron": "inked",
+    "slot": "mend",
+    "name": "Red Ink",
+    "name_fr": "Encre rouge",
+    "flavour": "The needle was dipped twice: once in ash, once in something older.",
+    "flavour_fr": "L’aiguille a trempé deux fois : dans la cendre, puis dans quelque chose de plus ancien.",
+    "effects": [
+      {
+        "kind": "mendPercent",
+        "value": 12
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "inked_spell_adder_line": {
+    "id": "inked_spell_adder_line",
+    "patron": "inked",
+    "slot": "spell",
+    "name": "Adder Line",
+    "name_fr": "Ligne de vipère",
+    "flavour": "A green line from wrist to elbow, in an ink that bit the hand that drew it.",
+    "flavour_fr": "Une ligne verte du poignet au coude, d’une encre qui a mordu la main qui la traçait.",
+    "effects": [
+      {
+        "kind": "spellStatus",
+        "status": "poison",
+        "chance": 12,
+        "duration": 3,
+        "magnitude": 3
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "inked_passive_thirsting_mouth": {
+    "id": "inked_passive_thirsting_mouth",
+    "patron": "inked",
+    "slot": "passive",
+    "name": "Thirsting Mouth",
+    "name_fr": "Bouche assoiffée",
+    "flavour": "A mouth inked over the heart. It has never once closed.",
+    "flavour_fr": "Une bouche encrée au-dessus du cœur. Elle ne s’est jamais refermée.",
+    "effects": [
+      {
+        "kind": "lifestealPercent",
+        "value": 3
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "inked_passive_bulls_neck": {
+    "id": "inked_passive_bulls_neck",
+    "patron": "inked",
+    "slot": "passive",
+    "name": "Bull’s Neck",
+    "name_fr": "Nuque de taureau",
+    "flavour": "A tally of lifted stones inked down the spine, one line to a stone.",
+    "flavour_fr": "Le compte des pierres soulevées, encré le long de l’échine, un trait par pierre.",
+    "effects": [
+      {
+        "kind": "stat",
+        "stat": "strength",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "inked_passive_under_the_scar": {
+    "id": "inked_passive_under_the_scar",
+    "patron": "inked",
+    "slot": "passive",
+    "name": "Under the Scar",
+    "name_fr": "Sous la cicatrice",
+    "flavour": "Ink under the scar tissue, where no one can confiscate it.",
+    "flavour_fr": "De l’encre sous la cicatrice, là où personne ne peut la confisquer.",
+    "effects": [
+      {
+        "kind": "maxHealth",
+        "value": 9
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "lettered_strike_spark_letter": {
+    "id": "lettered_strike_spark_letter",
+    "patron": "lettered",
+    "slot": "strike",
+    "name": "Spark Letter",
+    "name_fr": "Lettre d’étincelle",
+    "flavour": "One word written down the blade, in an ink that crackles as it dries.",
+    "flavour_fr": "Un seul mot écrit le long de la lame, d’une encre qui crépite en séchant.",
+    "effects": [
+      {
+        "kind": "strikeElement",
+        "element": "Electricity",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "lettered_guard_warding_line": {
+    "id": "lettered_guard_warding_line",
+    "patron": "lettered",
+    "slot": "guard",
+    "name": "Warding Line",
+    "name_fr": "Ligne de garde",
+    "flavour": "A sentence written round the shield’s rim, never finished, so never broken.",
+    "flavour_fr": "Une phrase écrite sur le pourtour du bouclier, jamais achevée, donc jamais rompue.",
+    "effects": [
+      {
+        "kind": "guardFlat",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "lettered_mend_counter_charm": {
+    "id": "lettered_mend_counter_charm",
+    "patron": "lettered",
+    "slot": "mend",
+    "name": "Counter-Charm",
+    "name_fr": "Contre-charme",
+    "flavour": "Folded small and sewn into the collar: the curse’s own words, written backwards.",
+    "flavour_fr": "Plié tout petit et cousu dans le col : les mots mêmes de la malédiction, écrits à rebours.",
+    "effects": [
+      {
+        "kind": "mendCleanse",
+        "value": 1
+      },
+      {
+        "kind": "mendPercent",
+        "value": 6
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "lettered_spell_opening_line": {
+    "id": "lettered_spell_opening_line",
+    "patron": "lettered",
+    "slot": "spell",
+    "name": "Opening Line",
+    "name_fr": "Première ligne",
+    "flavour": "The first line of the incantation, in a brown that was never ink.",
+    "flavour_fr": "La première ligne de l’incantation, d’un brun qui n’a jamais été de l’encre.",
+    "effects": [
+      {
+        "kind": "manaFlat",
+        "value": 1
+      },
+      {
+        "kind": "spellDamagePercent",
+        "value": 6
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "lettered_passive_crowded_margins": {
+    "id": "lettered_passive_crowded_margins",
+    "patron": "lettered",
+    "slot": "passive",
+    "name": "Crowded Margins",
+    "name_fr": "Marges pleines",
+    "flavour": "Notes in every margin of the book, in three hands, one of them yours.",
+    "flavour_fr": "Des notes dans chaque marge du livre, de trois mains, dont la vôtre.",
+    "effects": [
+      {
+        "kind": "maxMana",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "lettered_passive_waiting_quill": {
+    "id": "lettered_passive_waiting_quill",
+    "patron": "lettered",
+    "slot": "passive",
+    "name": "Waiting Quill",
+    "name_fr": "Plume en attente",
+    "flavour": "A quill drawn in ink on the wrist, forever about to write.",
+    "flavour_fr": "Une plume dessinée à l’encre sur le poignet, toujours sur le point d’écrire.",
+    "effects": [
+      {
+        "kind": "manaOnHit",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "lettered_passive_night_reading": {
+    "id": "lettered_passive_night_reading",
+    "patron": "lettered",
+    "slot": "passive",
+    "name": "Night Reading",
+    "name_fr": "Lecture de nuit",
+    "flavour": "A page copied out by candlelight until the letters copied themselves.",
+    "flavour_fr": "Une page recopiée à la chandelle, jusqu’à ce que les lettres se recopient seules.",
+    "effects": [
+      {
+        "kind": "xpPercent",
+        "value": 10
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "giants_strike_quarry_hammer": {
+    "id": "giants_strike_quarry_hammer",
+    "patron": "giants",
+    "slot": "strike",
+    "name": "Quarry Hammer",
+    "name_fr": "Masse de carrier",
+    "flavour": "The mark a cutter puts on a hammer meant for a grandchild.",
+    "flavour_fr": "La marque qu’on grave sur une masse promise à un petit-enfant.",
+    "effects": [
+      {
+        "kind": "strikeDamagePercent",
+        "value": 12
+      },
+      {
+        "kind": "strikeStatus",
+        "status": "stun",
+        "chance": 9,
+        "duration": 1,
+        "magnitude": 0
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "giants_guard_moot_door": {
+    "id": "giants_guard_moot_door",
+    "patron": "giants",
+    "slot": "guard",
+    "name": "Moot-Hall Door",
+    "name_fr": "Porte du conseil",
+    "flavour": "The sign over the moot-hall door, cut small enough for a human hand.",
+    "flavour_fr": "Le signe qui surmonte la porte de la salle du conseil, taillé assez petit pour une main humaine.",
+    "effects": [
+      {
+        "kind": "guardFlat",
+        "value": 2
+      },
+      {
+        "kind": "guardStatus",
+        "status": "stun",
+        "chance": 9,
+        "duration": 1,
+        "magnitude": 0
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "giants_passive_tally_stone": {
+    "id": "giants_passive_tally_stone",
+    "patron": "giants",
+    "slot": "passive",
+    "name": "Tally-Stone",
+    "name_fr": "Pierre de compte",
+    "flavour": "Your name, cut on the tally-stone beside theirs, where no one can revise it.",
+    "flavour_fr": "Votre nom, taillé sur la pierre de compte à côté des leurs, là où nul ne peut le réviser.",
+    "effects": [
+      {
+        "kind": "maxHealth",
+        "value": 12
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "oni_passive_red_haze": {
+    "id": "oni_passive_red_haze",
+    "patron": "oni",
+    "slot": "passive",
+    "name": "Red Haze",
+    "name_fr": "Brume rouge",
+    "flavour": "Brick-red ink behind the ear, which darkens when your blood is up.",
+    "flavour_fr": "Une encre rouge brique derrière l’oreille, qui fonce quand le sang vous monte.",
+    "effects": [
+      {
+        "kind": "lowHealthDamagePercent",
+        "value": 15
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "oni_passive_exorcists_bell": {
+    "id": "oni_passive_exorcists_bell",
+    "patron": "oni",
+    "slot": "passive",
+    "name": "Exorcist’s Bell",
+    "name_fr": "Cloche d’exorciste",
+    "flavour": "A bell the exorcists left behind, its tongue painted with a red sign.",
+    "flavour_fr": "Une cloche laissée par les exorcistes, le battant peint d’un signe rouge.",
+    "effects": [
+      {
+        "kind": "killHeal",
+        "value": 3
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "oni_strike_sawn_horn": {
+    "id": "oni_strike_sawn_horn",
+    "patron": "oni",
+    "slot": "strike",
+    "name": "Sawn Horn",
+    "name_fr": "Corne sciée",
+    "flavour": "The sign the oni cut on a sawn-off horn, drawn on your brow in its place.",
+    "flavour_fr": "Le signe que les oni gravent sur une corne sciée, tracé sur votre front à sa place.",
+    "effects": [
+      {
+        "kind": "strikeKeyword",
+        "keyword": "pain"
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "tidekin_strike_undertow": {
+    "id": "tidekin_strike_undertow",
+    "patron": "tidekin",
+    "slot": "strike",
+    "name": "Undertow",
+    "name_fr": "Ressac",
+    "flavour": "Blue lines up both arms, like the tide-marks on a harbour wall.",
+    "flavour_fr": "Des lignes bleues le long des bras, comme les laisses de marée sur un mur de port.",
+    "effects": [
+      {
+        "kind": "strikeElement",
+        "element": "Water",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "tidekin_passive_paper_boat": {
+    "id": "tidekin_passive_paper_boat",
+    "patron": "tidekin",
+    "slot": "passive",
+    "name": "Paper Boat",
+    "name_fr": "Bateau de papier",
+    "flavour": "A paper boat drawn on the palm, lit for someone the sea gave back.",
+    "flavour_fr": "Un bateau de papier dessiné au creux de la main, allumé pour quelqu’un que la mer a rendu.",
+    "effects": [
+      {
+        "kind": "voyageCalm",
+        "value": 15
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "tidekin_passive_keel_song": {
+    "id": "tidekin_passive_keel_song",
+    "patron": "tidekin",
+    "slot": "passive",
+    "name": "Keel Song",
+    "name_fr": "Chant de quille",
+    "flavour": "Drawn along the keel in call and response, one line for each voice.",
+    "flavour_fr": "Tracé le long de la quille en chant alterné, une ligne par voix.",
+    "effects": [
+      {
+        "kind": "shipHullPercent",
+        "value": 10
+      },
+      {
+        "kind": "shipGunPercent",
+        "value": 10
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "kindly_passive_invitation": {
+    "id": "kindly_passive_invitation",
+    "patron": "kindly",
+    "slot": "passive",
+    "name": "Invitation",
+    "name_fr": "Invitation",
+    "flavour": "A door drawn on the inside of the wrist, which is there only by invitation.",
+    "flavour_fr": "Une porte dessinée à l’intérieur du poignet, qui n’est là que sur invitation.",
+    "effects": [
+      {
+        "kind": "stat",
+        "stat": "luck",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "kindly_passive_summer_evening": {
+    "id": "kindly_passive_summer_evening",
+    "patron": "kindly",
+    "slot": "passive",
+    "name": "Summer Evening",
+    "name_fr": "Soir d’été",
+    "flavour": "A green thumbprint on the brow; under it, it is always a summer evening.",
+    "flavour_fr": "Une empreinte de pouce verte sur le front ; dessous, c’est toujours un soir d’été.",
+    "effects": [
+      {
+        "kind": "afterFightHealPercent",
+        "value": 5
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "kindly_passive_honest_receipt": {
+    "id": "kindly_passive_honest_receipt",
+    "patron": "kindly",
+    "slot": "passive",
+    "name": "Honest Receipt",
+    "name_fr": "Reçu en règle",
+    "flavour": "Written out in a fine hand, signed, and dated to the minute.",
+    "flavour_fr": "Rédigé d’une belle écriture, signé et daté à la minute près.",
+    "effects": [
+      {
+        "kind": "goldPercent",
+        "value": 10
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "choir_strike_noon_blade": {
+    "id": "choir_strike_noon_blade",
+    "patron": "choir",
+    "slot": "strike",
+    "name": "Noon Blade",
+    "name_fr": "Lame de midi",
+    "flavour": "A vow sworn on a blade held up to the noon, and the blade remembers it.",
+    "flavour_fr": "Un vœu prêté sur une lame levée vers midi, et la lame s’en souvient.",
+    "effects": [
+      {
+        "kind": "strikeElement",
+        "element": "Light",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "choir_guard_folded_wing": {
+    "id": "choir_guard_folded_wing",
+    "patron": "choir",
+    "slot": "guard",
+    "name": "Folded Wing",
+    "name_fr": "Aile repliée",
+    "flavour": "A white feather pressed into the shield’s paint while the vow was spoken.",
+    "flavour_fr": "Une plume blanche pressée dans la peinture du bouclier pendant qu’on prononçait le vœu.",
+    "effects": [
+      {
+        "kind": "guardBlockPercent",
+        "value": 12
+      },
+      {
+        "kind": "guardHeal",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "choir_mend_salt_psalm": {
+    "id": "choir_mend_salt_psalm",
+    "patron": "choir",
+    "slot": "mend",
+    "name": "Salt Psalm",
+    "name_fr": "Psaume de sel",
+    "flavour": "A vow of mercy, written in salt on the tongue and swallowed.",
+    "flavour_fr": "Un vœu de miséricorde, écrit au sel sur la langue, puis avalé.",
+    "effects": [
+      {
+        "kind": "mendShield",
+        "value": 4
+      },
+      {
+        "kind": "mendPercent",
+        "value": 6
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "choir_spell_unrevised_verse": {
+    "id": "choir_spell_unrevised_verse",
+    "patron": "choir",
+    "slot": "spell",
+    "name": "Unrevised Verse",
+    "name_fr": "Verset intact",
+    "flavour": "A vow to judge fairly, and a line of scripture that nobody has revised.",
+    "flavour_fr": "Le vœu de juger avec justice, et une ligne d’Écriture que personne n’a révisée.",
+    "effects": [
+      {
+        "kind": "spellDamagePercent",
+        "value": 9
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "choir_passive_last_light": {
+    "id": "choir_passive_last_light",
+    "patron": "choir",
+    "slot": "passive",
+    "name": "Last Light",
+    "name_fr": "Dernière lueur",
+    "flavour": "A vow not to fall before the work is done, sworn with a hand on the heart.",
+    "flavour_fr": "Le vœu de ne pas tomber avant que l’œuvre soit accomplie, prêté la main sur le cœur.",
+    "effects": [
+      {
+        "kind": "secondWind",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "pit_strike_void_tooth": {
+    "id": "pit_strike_void_tooth",
+    "patron": "pit",
+    "slot": "strike",
+    "name": "Void Tooth",
+    "name_fr": "Dent du Néant",
+    "flavour": "A tooth drawn on the blade in soot, and signed at the bottom by something else.",
+    "flavour_fr": "Une dent tracée à la suie sur la lame, et signée en bas par autre chose.",
+    "effects": [
+      {
+        "kind": "strikeElement",
+        "element": "Void",
+        "value": 3
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": {
+      "curse": "enemyDamagePercent",
+      "value": 25,
+      "fights": 3
+    }
+  },
+  "pit_passive_red_thirst": {
+    "id": "pit_passive_red_thirst",
+    "patron": "pit",
+    "slot": "passive",
+    "name": "Red Thirst",
+    "name_fr": "Soif rouge",
+    "flavour": "A pact signed in your own blood, because the ink would not take the clause.",
+    "flavour_fr": "Un pacte signé de votre propre sang, parce que l’encre refusait la clause.",
+    "effects": [
+      {
+        "kind": "lifestealPercent",
+        "value": 6
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": {
+      "curse": "startHealthPercentLoss",
+      "value": 20,
+      "fights": 3
+    }
+  },
+  "pit_spell_black_letter": {
+    "id": "pit_spell_black_letter",
+    "patron": "pit",
+    "slot": "spell",
+    "name": "Black Letter",
+    "name_fr": "Lettre noire",
+    "flavour": "The small print runs on past the edge of the page, and on.",
+    "flavour_fr": "Les petits caractères courent au-delà du bord de la page, et plus loin encore.",
+    "effects": [
+      {
+        "kind": "spellDamagePercent",
+        "value": 18
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": {
+      "curse": "goldPercentLoss",
+      "value": 50,
+      "fights": 3
+    }
+  },
+  "pit_guard_grinning_shield": {
+    "id": "pit_guard_grinning_shield",
+    "patron": "pit",
+    "slot": "guard",
+    "name": "Grinning Shield",
+    "name_fr": "Bouclier ricanant",
+    "flavour": "A mouth painted on the shield, which you did not paint and cannot wash off.",
+    "flavour_fr": "Une bouche peinte sur le bouclier, que vous n’avez pas peinte et ne pouvez effacer.",
+    "effects": [
+      {
+        "kind": "guardRetaliate",
+        "value": 4
+      },
+      {
+        "kind": "guardBlockPercent",
+        "value": 6
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": {
+      "curse": "enemyDamagePercent",
+      "value": 20,
+      "fights": 3
+    }
+  },
+  "pit_passive_marrow_clause": {
+    "id": "pit_passive_marrow_clause",
+    "patron": "pit",
+    "slot": "passive",
+    "name": "Marrow Clause",
+    "name_fr": "Clause de moelle",
+    "flavour": "A clause signed with a splinter of bone, in a hand not quite your own.",
+    "flavour_fr": "Une clause signée d’une esquille d’os, d’une écriture qui n’était pas tout à fait la vôtre.",
+    "effects": [
+      {
+        "kind": "killHeal",
+        "value": 5
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": {
+      "curse": "startHealthPercentLoss",
+      "value": 15,
+      "fights": 3
+    }
+  },
+  "inked_spell_burning_script": {
+    "id": "inked_spell_burning_script",
+    "patron": "inked",
+    "slot": "spell",
+    "name": "Burning Script",
+    "name_fr": "Écriture ardente",
+    "flavour": "Letters tattooed in ash-ink, which smoulder whenever they are read aloud.",
+    "flavour_fr": "Des lettres tatouées à l’encre de cendre, qui couvent dès qu’on les lit à voix haute.",
+    "effects": [
+      {
+        "kind": "spellStatus",
+        "status": "poison",
+        "chance": 15,
+        "duration": 3,
+        "magnitude": 4
+      },
+      {
+        "kind": "spellDamagePercent",
+        "value": 6
+      }
+    ],
+    "requiresPatrons": [
+      "inked",
+      "lettered"
+    ],
+    "pact": null
+  },
+  "stonemarked_strike_masons_swing": {
+    "id": "stonemarked_strike_masons_swing",
+    "patron": "stonemarked",
+    "slot": "strike",
+    "name": "Mason’s Swing",
+    "name_fr": "Volée du maçon",
+    "flavour": "Dwarf-cut and giant-swung: the hammer bears both their marks.",
+    "flavour_fr": "Taillée par un nain, maniée par un géant : la masse porte la marque des deux.",
+    "effects": [
+      {
+        "kind": "strikeKeyword",
+        "keyword": "cleave"
+      },
+      {
+        "kind": "strikeElement",
+        "element": "Earth",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [
+      "stonemarked",
+      "giants"
+    ],
+    "pact": null
+  },
+  "standard_passive_shield_wall": {
+    "id": "standard_passive_shield_wall",
+    "patron": "standard",
+    "slot": "passive",
+    "name": "Shield Wall",
+    "name_fr": "Mur de boucliers",
+    "flavour": "A banner cut into every shield in the line, and a line cut under each banner.",
+    "flavour_fr": "Une bannière gravée sur chaque bouclier du rang, et un trait gravé sous chaque bannière.",
+    "effects": [
+      {
+        "kind": "partyStartBlock",
+        "value": 2
+      },
+      {
+        "kind": "thorns",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [
+      "standard",
+      "stonemarked"
+    ],
+    "pact": null
+  },
+  "inked_passive_blood_bell": {
+    "id": "inked_passive_blood_bell",
+    "patron": "inked",
+    "slot": "passive",
+    "name": "Blood Bell",
+    "name_fr": "Cloche de sang",
+    "flavour": "A bell tattooed over the heart, which rings when the heart pounds.",
+    "flavour_fr": "Une cloche tatouée sur le cœur, qui sonne quand le cœur cogne.",
+    "effects": [
+      {
+        "kind": "lowHealthDamagePercent",
+        "value": 9
+      },
+      {
+        "kind": "killHeal",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [
+      "inked",
+      "oni"
+    ],
+    "pact": null
+  },
+  "lettered_spell_call_and_response": {
+    "id": "lettered_spell_call_and_response",
+    "patron": "lettered",
+    "slot": "spell",
+    "name": "Call and Response",
+    "name_fr": "Chant alterné",
+    "flavour": "An incantation written in two hands: one line yours, the next the sea’s.",
+    "flavour_fr": "Une incantation écrite à deux mains : une ligne pour vous, la suivante pour la mer.",
+    "effects": [
+      {
+        "kind": "manaFlat",
+        "value": 1
+      },
+      {
+        "kind": "spellCostLess",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [
+      "lettered",
+      "tidekin"
+    ],
+    "pact": null
+  },
+  "painted_passive_foxglove": {
+    "id": "painted_passive_foxglove",
+    "patron": "painted",
+    "slot": "passive",
+    "name": "Foxglove Sigil",
+    "name_fr": "Sigil de digitale",
+    "flavour": "Painted in foxglove under the hill, and the colour has not aged a day.",
+    "flavour_fr": "Peint au suc de digitale sous la colline, et la couleur n’a pas pris un jour.",
+    "effects": [
+      {
+        "kind": "critChance",
+        "value": 3
+      },
+      {
+        "kind": "stat",
+        "stat": "luck",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [
+      "painted",
+      "kindly"
+    ],
+    "pact": null
+  },
+  "lettered_strike_frost_word": {
+    "id": "lettered_strike_frost_word",
+    "patron": "lettered",
+    "slot": "strike",
+    "name": "Frost Word",
+    "name_fr": "Mot de givre",
+    "flavour": "The giants’ word for “hold”, written small enough to fit a human blade.",
+    "flavour_fr": "Le mot des géants pour « tiens bon », écrit assez petit pour une lame humaine.",
+    "effects": [
+      {
+        "kind": "strikeElement",
+        "element": "Ice",
+        "value": 2
+      },
+      {
+        "kind": "strikeStatus",
+        "status": "stun",
+        "chance": 9,
+        "duration": 1,
+        "magnitude": 0
+      }
+    ],
+    "requiresPatrons": [
+      "lettered",
+      "giants"
+    ],
+    "pact": null
+  },
+  "choir_strike_dawn_sigil": {
+    "id": "choir_strike_dawn_sigil",
+    "patron": "choir",
+    "slot": "strike",
+    "name": "Dawn Sigil",
+    "name_fr": "Sigil d’aurore",
+    "flavour": "A sigil painted at first light, and a vow sworn before the paint was dry.",
+    "flavour_fr": "Un sigil peint aux premières lueurs, et un vœu prêté avant que la peinture sèche.",
+    "effects": [
+      {
+        "kind": "strikeElement",
+        "element": "Light",
+        "value": 2
+      },
+      {
+        "kind": "strikeStatus",
+        "status": "stun",
+        "chance": 9,
+        "duration": 1,
+        "magnitude": 0
+      }
+    ],
+    "requiresPatrons": [
+      "choir",
+      "painted"
+    ],
+    "pact": null
+  },
+  "pit_passive_blood_debt": {
+    "id": "pit_passive_blood_debt",
+    "patron": "pit",
+    "slot": "passive",
+    "name": "Blood Debt",
+    "name_fr": "Dette de sang",
+    "flavour": "A pact tattooed rather than signed, so that it can never be torn up.",
+    "flavour_fr": "Un pacte tatoué plutôt que signé, pour qu’on ne puisse jamais le déchirer.",
+    "effects": [
+      {
+        "kind": "lifestealPercent",
+        "value": 5
+      },
+      {
+        "kind": "killHeal",
+        "value": 3
+      }
+    ],
+    "requiresPatrons": [
+      "pit",
+      "inked"
+    ],
+    "pact": {
+      "curse": "goldPercentLoss",
+      "value": 40,
+      "fights": 3
+    }
+  }
+}

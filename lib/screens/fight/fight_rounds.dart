@@ -153,6 +153,8 @@ extension _FightRounds on _FightScreenState {
     for (final enemy in _enemies) {
       enemy.elementsHitThisRound = {};
     }
+    // Only a Defend face played this round arms the guard signs.
+    _signGuardArmed = false;
 
     final newEntries = <_LogEntry>[];
     var fxIndex = 0;
@@ -216,6 +218,14 @@ extension _FightRounds on _FightScreenState {
       if (result.isCritical) lastCritActorId = actor.id;
       // Any member's Mana face feeds the one shared pool.
       if (result.manaGained > 0) manaGained += result.manaGained;
+      // A mend sign turns the player's healing past full into block (worked
+      // out before the heal lands).
+      final signShield = actor.isPlayer && face.type == 'Heal'
+          ? _signs.shieldFromOverheal(
+              healing: healing,
+              currentHealth: actor.currentHealth,
+              maxHealth: actor.maxHealth)
+          : 0;
       actor.currentHealth = min(actor.maxHealth, actor.currentHealth + healing);
       // A Shelter passes part of every Heal to the rest of the party.
       if (combos.contains(PartyCombo.shelter) &&
@@ -232,13 +242,17 @@ extension _FightRounds on _FightScreenState {
       }
       // A spell's block this round (Mana Ward, War Shout) stacks under the
       // face's own -- see [_spellBlock].
-      actor.block = block + (_spellBlock[actor.id] ?? 0);
+      actor.block = block + (_spellBlock[actor.id] ?? 0) + signShield;
       if (result.blockAmount > 0 && actor.block > guardianBlock) {
         guardianId = actor.id;
         guardianBlock = actor.block;
       }
       newEntries
           .add(_LogEntry('${_actorPrefix(actor)}${result.message}', kind));
+      if (actor.isPlayer) {
+        _applySignFaceExtras(
+            actor, face, result, healing, signShield, newEntries, lang);
+      }
       if (surge) {
         newEntries.add(_LogEntry(
             trFor(lang, 'momentum_surge_message'), _LogKind.playerDamage));
@@ -345,6 +359,10 @@ extension _FightRounds on _FightScreenState {
             _LogKind.info,
           ));
         }
+        // A strike sign's status, on the player's Attack face that landed.
+        if (actor.isPlayer && face.type == 'Attack' && landed > 0) {
+          _rollSignStatuses(_signs.strikeStatuses, target, newEntries, lang);
+        }
       }
       // Pain: the strike hurt its roller too.
       if (face.hasKeyword(FaceKeyword.pain) && result.damageDealt > 0) {
@@ -390,6 +408,7 @@ extension _FightRounds on _FightScreenState {
     }
     manaGained += _applyAfterFaceCombos(combos, newEntries, lang);
     _applyDuos(newEntries, lang);
+    _feedSignKills(newEntries, lang);
 
     _guardianId =
         _party.where((m) => !m.isKnockedOut).length > 1 ? guardianId : null;
@@ -493,6 +512,10 @@ extension _FightRounds on _FightScreenState {
     _silenced = _silencePending;
     _silencePending = false;
     _bestHitThisRound = 0;
+    _signGuardArmed = false;
+    // An enemy that fell in their turn (poison, thorns, a guard sign)
+    // feeds a kill-heal sign now.
+    _feedSignKills(newEntries, lang);
     if (_silenced) {
       newEntries.add(
           _LogEntry(trFor(lang, 'silence_round_note'), _LogKind.enemyDamage));
@@ -1064,6 +1087,13 @@ extension _FightRounds on _FightScreenState {
       // Thorns (a Thornmail Hauberk, the Hollow Court set) cut whatever
       // actually connected.
       final thorns = damageTaken > 0 ? target.gear.thorns : 0;
+      // A guard sign bites the enemy that hits the player's raised guard
+      // (the block of a Defend face played this round, before this blow
+      // takes it down).
+      final retaliation =
+          target.isPlayer && _signGuardArmed && !wasDodged && target.block > 0
+              ? _signs.guardRetaliate
+              : 0;
       final wasKnockedOutAlready = target.isKnockedOut;
       final inflicted = move.inflictedStatus ??
           (enemy.hasAffix(EnemyAffix.venomous) ? _venomousPoison : null);
@@ -1170,6 +1200,10 @@ extension _FightRounds on _FightScreenState {
           ));
         });
       }
+      if (target.isPlayer && _signGuardArmed && enemy.isAlive) {
+        _signGuardAnswers(enemy, retaliation, lang, fxDelay);
+        _advancePhasesNow(lang, skills);
+      }
       if (thorns > 0 && enemy.isAlive) {
         _fx(VfxStyle.impact, _enemyCardKey(enemy.key),
             source: _memberCardKey(target.id),
@@ -1206,5 +1240,137 @@ extension _FightRounds on _FightScreenState {
     }
 
     _startPartyRound(skills, items);
+  }
+
+  // --- Signs (see signs.dart) ----------------------------------------------
+
+  /// What the player's own guard and mend signs do once their face is
+  /// played: a Defend face heals and arms the guard signs for the enemies'
+  /// turn; a Heal face reaches the rest of the party, spills into block
+  /// ([signShield], already added to the block) and lifts afflictions.
+  void _applySignFaceExtras(
+    _PartyMember actor,
+    DiceFaceResult face,
+    PlayerActionResult result,
+    int healing,
+    int signShield,
+    List<_LogEntry> entries,
+    AppLanguage lang,
+  ) {
+    if (_signs.isEmpty) return;
+    if (face.type == 'Defend' && result.blockAmount > 0) {
+      _signGuardArmed = true;
+      final heal = min(_signs.guardHeal, actor.maxHealth - actor.currentHealth);
+      if (heal > 0) {
+        actor.currentHealth += heal;
+        _fx(VfxStyle.heal, _memberCardKey(actor.id),
+            delayMs: 300, text: '+$heal', textKind: VfxTextKind.heal);
+        entries.add(_LogEntry(
+            trFor(lang, 'sign_log_guard_heal').replaceAll('{n}', '$heal'),
+            _LogKind.playerHeal));
+      }
+    }
+    if (face.type != 'Heal' || healing <= 0) return;
+    if (signShield > 0) {
+      entries.add(_LogEntry(
+          trFor(lang, 'sign_log_mend_shield').replaceAll('{n}', '$signShield'),
+          _LogKind.playerBlock));
+    }
+    final share = _signs.mendShare(healing);
+    final others = _party.where((m) => !m.isPlayer && !m.isKnockedOut).toList();
+    if (share > 0 && others.isNotEmpty) {
+      for (final member in others) {
+        member.currentHealth =
+            min(member.maxHealth, member.currentHealth + share);
+        _fx(VfxStyle.heal, _memberCardKey(member.id),
+            delayMs: 300, text: '+$share', textKind: VfxTextKind.heal);
+      }
+      entries.add(_LogEntry(
+          trFor(lang, 'sign_log_mend_party').replaceAll('{n}', '$share'),
+          _LogKind.playerHeal));
+    }
+    final lifted = min(_signs.mendCleanse, actor.statusEffects.length);
+    if (lifted > 0) {
+      actor.statusEffects = actor.statusEffects.skip(lifted).toList();
+      entries
+          .add(_LogEntry(trFor(lang, 'sign_log_cleanse'), _LogKind.playerHeal));
+    }
+  }
+
+  /// Rolls each of [chances] (a sign's status at its odds) against
+  /// [enemy], logging those that land under the sign's name.
+  void _rollSignStatuses(List<SignStatusChance> chances, _EnemyMember enemy,
+      List<_LogEntry> entries, AppLanguage lang) {
+    for (final chance in chances) {
+      if (!enemy.isAlive || !chance.rolls(_random)) continue;
+      enemy.statusEffects =
+          applyStatusEffect(enemy.statusEffects, chance.status);
+      _fx(styleForStatus(chance.status.type), _enemyCardKey(enemy.key),
+          delayMs: 350);
+      entries.add(_LogEntry(
+        trFor(lang, 'sign_log_status')
+            .replaceAll('{sign}', _signName(chance.signId, lang))
+            .replaceAll(
+                '{line}',
+                _statusInflictedMessage(
+                    chance.status, enemy.displayName, lang)),
+        _LogKind.info,
+      ));
+    }
+  }
+
+  /// A held sign's name for the log; the word "Signs" when it's unknown.
+  String _signName(String signId, AppLanguage lang) =>
+      _signDefs[signId]?.nameFor(lang) ?? trFor(lang, 'signs_section');
+
+  /// The player's guard signs answering [enemy]'s blow: its [retaliation]
+  /// back, and the guard's statuses at their odds.
+  void _signGuardAnswers(
+      _EnemyMember enemy, int retaliation, AppLanguage lang, int delay) {
+    final entries = <_LogEntry>[];
+    if (retaliation > 0) {
+      final dealt = min(retaliation, enemy.currentHealth);
+      enemy.currentHealth -= dealt;
+      _fx(VfxStyle.impact, _enemyCardKey(enemy.key),
+          source: _memberCardKey('player'),
+          delayMs: delay + 350,
+          text: '-$dealt',
+          textKind: VfxTextKind.damage);
+      final guardSign = heldInSlot(
+          SignSlot.guard, ref.read(playerSessionProvider).heldSigns, _signDefs);
+      entries.add(_LogEntry(
+        trFor(lang, 'sign_log_retaliate')
+            .replaceAll('{sign}', _signName(guardSign?.signId ?? '', lang))
+            .replaceAll('{name}', enemy.displayName)
+            .replaceAll('{n}', '$dealt'),
+        _LogKind.playerDamage,
+      ));
+      _lastDamagedEnemyKey = enemy.key;
+      _lastEnemyDamageTaken = dealt;
+    }
+    _rollSignStatuses(_signs.guardStatuses, enemy, entries, lang);
+    if (entries.isNotEmpty) _update(() => _log.addAll(entries));
+  }
+
+  /// A kill-heal sign feeding on each enemy fallen since the last look
+  /// (one that fled doesn't count): the player recovers its health.
+  void _feedSignKills(List<_LogEntry> entries, AppLanguage lang) {
+    if (_signs.killHeal <= 0) return;
+    final player = _party.firstWhere((m) => m.isPlayer);
+    for (final enemy in _enemies) {
+      if (enemy.isAlive || enemy.fled || !_signKillsFed.add(enemy.key)) {
+        continue;
+      }
+      final heal = player.isKnockedOut
+          ? 0
+          : min(_signs.killHeal, player.maxHealth - player.currentHealth);
+      if (heal <= 0) continue;
+      player.currentHealth += heal;
+      _fx(VfxStyle.heal, _memberCardKey(player.id),
+          delayMs: 300, text: '+$heal', textKind: VfxTextKind.heal);
+      entries.add(_LogEntry(
+          trFor(lang, 'sign_log_kill_heal').replaceAll('{n}', '$heal'),
+          _LogKind.playerHeal));
+    }
   }
 }

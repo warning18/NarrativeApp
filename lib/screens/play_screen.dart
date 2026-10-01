@@ -27,6 +27,7 @@ import '../utils/game_icons.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/quest_turn_in.dart';
 import '../widgets/save_slots_sheet.dart';
+import '../widgets/sign_widgets.dart';
 import 'achievements_screen.dart';
 import 'ship_screen.dart';
 import 'camp_screen.dart';
@@ -174,10 +175,9 @@ class PlayScreen extends ConsumerWidget {
               // Spending stat/skill points is entirely manual and nothing else
               // nudges toward it, so an unspent balance is easy to forget —
               // same badge treatment as the unseen-content sections below.
-              trailing: session.statPoints +
-                          session.skillPoints +
-                          session.pendingPerkPicks >
-                      0
+              // A perk or a sign to choose, or Titan's Blood to spend, too
+              // (the Character tab's own badge, see tabBadgesProvider).
+              trailing: ref.watch(tabBadgesProvider).character
                   ? Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -344,6 +344,12 @@ class PlayScreen extends ConsumerWidget {
                   error: (error, stack) =>
                       Text('${tr(ref, 'failed_to_load_npcs')}: $error'),
                 ),
+              ),
+              // The patrons met so far (see signs.dart), with their favour.
+              const Divider(height: 24),
+              _CollapsibleSection(
+                title: tr(ref, 'patrons_section'),
+                child: const PatronsCodex(),
               ),
             ],
           ),

@@ -160,6 +160,10 @@ IconData gameDbIcon(String schemaId) {
       return Icons.work;
     case 'companion_remarks':
       return Icons.record_voice_over;
+    case 'patrons':
+      return Icons.groups_2_outlined;
+    case 'signs':
+      return Icons.draw_outlined;
     default:
       return Icons.table_chart;
   }

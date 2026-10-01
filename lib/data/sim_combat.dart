@@ -7,6 +7,7 @@ import '../combat/gear_effects.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../models/ally_state.dart';
+import 'signs.dart';
 
 /// A fight model for the in-app playthrough simulator: one simulated
 /// character (a random race and profession, created the way `startNewGame`
@@ -20,9 +21,12 @@ import '../models/ally_state.dart';
 /// - no companions, so no party combos or duo techniques;
 /// - no affixes, Elites or battlefield conditions;
 /// - no chapter threat on the enemies, and no sellsword;
-/// - none of the face keywords (Pain, Steady, Growth...), no Hex, Silence
-///   or Curse (the enemy spends its turn and nothing else changes), no
-///   Luck nudges and no Hammersmith work on the die;
+/// - of the face keywords only the strike ones a sign may lend (Cleave,
+///   Pierce, Pain, Steady), no Hex, Silence or Curse (the enemy spends its
+///   turn and nothing else changes), no Luck nudges and no Hammersmith
+///   work on the die;
+/// - of the signs (see signs.dart), everything but momentum and the
+///   party's share (there is no party); no Titan's Blood;
 /// - no crit/momentum beyond what the engine rolls, and a die rerolled
 ///   only on an empty face;
 /// - a shop visited once when the story unlocks it (best affordable gear
@@ -164,6 +168,13 @@ class SimCharacter {
   /// fight ends either way.
   List<StatusEffect> statusEffects = [];
 
+  /// The signs drawn on the character (see signs.dart): the walk takes
+  /// them, a fight reads what they add up to.
+  List<HeldSign> heldSigns = [];
+
+  /// A sign's extra mana, while a fight lasts.
+  int signMaxMana = 0;
+
   // Run-wide tallies.
   int fightsWon = 0;
   int fightsLost = 0;
@@ -172,7 +183,8 @@ class SimCharacter {
   final Map<String, int> spellsCast = {};
   final List<String> spellbooksBought = [];
 
-  int get maxMana => maxManaFor(intelligence: intelligence, wisdom: wisdom);
+  int get maxMana =>
+      maxManaFor(intelligence: intelligence, wisdom: wisdom) + signMaxMana;
 
   List<String> get equippedItemIds => equippedBySlot.values.toList();
 
@@ -456,11 +468,14 @@ class _SimEnemy {
   /// A party hit of [damage] and [element]: weakness or resistance, then
   /// the guard. Returns what gets through and tallies it towards breaking
   /// a wind-up.
-  int takeHit(int damage, String element) {
+  int takeHit(int damage, String element, {bool pierce = false}) {
     if (damage <= 0) return damage;
     if (elementMultiplierFor(data, element) > 1.0) hitWeakness = true;
-    final through =
-        damageThroughGuard(damageAfterElement(damage, data, element), guard);
+    final elemental = damageAfterElement(damage, data, element);
+    // A Pierce strike goes through the raised guard.
+    final through = pierce
+        ? (damage: elemental, guard: guard)
+        : damageThroughGuard(elemental, guard);
     guard = through.guard;
     damageThisRound += through.damage;
     return through.damage;
@@ -488,7 +503,9 @@ class _SimEnemy {
 /// when more than one) in [chapter], mutating the character (health, mana,
 /// potions, tallies) the way the app's own fight leaves the session. On a
 /// loss the character is healed and refilled like `applyCombatResult` on
-/// a loss; XP and gold are the caller's to grant on a win.
+/// a loss; XP and gold are the caller's to grant on a win. [signs] is what
+/// the character's held signs add up to (see signEffectsFor): lent for
+/// the fight and taken back when it ends.
 SimFightOutcome simulateSimFight({
   required SimCharacter character,
   required List<MapEntry<String, Map<String, dynamic>>> enemies,
@@ -499,11 +516,38 @@ SimFightOutcome simulateSimFight({
   Map<String, ItemSet> itemSets = const {},
   int newGamePlusCycle = 0,
   int maxRounds = 80,
+  SignEffects signs = SignEffects.none,
 }) {
   final c = character;
-  final gear = c.gearEffects(items, itemSets);
+  final s = signs;
+  final gear = s.over(c.gearEffects(items, itemSets));
   var secondWindAvailable = gear.secondWind;
   var phasesEntered = 0;
+  // The signs' lend for the fight: its stats, a higher max health (full
+  // stays full, a running pact may take a share off the top) and mana.
+  final baseMaxHealth = c.maxHealth;
+  void lendStats(int sign) {
+    c.strength += sign * s.stat('strength');
+    c.dexterity += sign * s.stat('dexterity');
+    c.constitution += sign * s.stat('constitution');
+    c.intelligence += sign * s.stat('intelligence');
+    c.wisdom += sign * s.stat('wisdom');
+    c.luck += sign * s.stat('luck');
+  }
+
+  if (!s.isEmpty) {
+    lendStats(1);
+    c.maxHealth = s.maxHealthFor(baseMaxHealth);
+    c.currentHealth = s.afterStartCurse(
+        SignEffects.healthEntering(
+            current: c.currentHealth,
+            base: baseMaxHealth,
+            fightMax: c.maxHealth),
+        c.maxHealth);
+    final full = c.mana >= c.maxMana;
+    c.signMaxMana = s.maxMana;
+    if (full) c.mana = c.maxMana;
+  }
   final packMultiplier = _packStatMultipliers[enemies.length] ?? 1.0;
   DifficultyCurve curveFor(MapEntry<String, Map<String, dynamic>> entry) =>
       difficultyCurveFor(
@@ -548,6 +592,24 @@ SimFightOutcome simulateSimFight({
     }
   }
 
+  // A kill-heal sign feeds once on each enemy's fall.
+  final fed = <_SimEnemy>{};
+  void feedKills() {
+    if (s.killHeal <= 0 || c.isKnockedOut) return;
+    for (final e in ens) {
+      if (e.isAlive || !fed.add(e)) continue;
+      c.currentHealth = min(c.maxHealth, c.currentHealth + s.killHeal);
+    }
+  }
+
+  // A sign's status, rolled on [e] at its odds.
+  void rollStatuses(List<SignStatusChance> chances, _SimEnemy e) {
+    for (final chance in chances) {
+      if (!e.isAlive || !chance.rolls(random)) continue;
+      e.statusEffects = applyStatusEffect(e.statusEffects, chance.status);
+    }
+  }
+
   _SimEnemy? firstLiving() {
     for (final e in ens) {
       if (e.isAlive) return e;
@@ -556,6 +618,16 @@ SimFightOutcome simulateSimFight({
   }
 
   SimFightOutcome finish(bool won) {
+    if (!s.isEmpty) {
+      lendStats(-1);
+      final fightMax = c.maxHealth;
+      c.maxHealth = baseMaxHealth;
+      c.signMaxMana = 0;
+      // A sign that mends the party after a won fight.
+      final healed = won ? c.currentHealth + s.afterFightHeal(fightMax) : 0;
+      c.currentHealth = min(baseMaxHealth, won ? healed : c.currentHealth);
+      c.mana = min(c.mana, c.maxMana);
+    }
     if (won) {
       c.fightsWon++;
     } else {
@@ -585,6 +657,8 @@ SimFightOutcome simulateSimFight({
       e.damageThisRound = 0;
       e.hitWeakness = false;
     }
+    // Only a Defend face played this round arms the guard signs.
+    var guardArmed = false;
     // --- party round start: poison, stun ---
     final poison = poisonDamageFor(c.statusEffects);
     if (poison > 0) c.currentHealth = max(0, c.currentHealth - poison);
@@ -595,15 +669,19 @@ SimFightOutcome simulateSimFight({
     if (c.currentHealth < 0.4 * c.maxHealth && c.potions > 0) {
       c.potions--;
       potionsUsed++;
-      c.currentHealth = min(c.maxHealth, c.currentHealth + _potionHeal);
+      c.currentHealth =
+          min(c.maxHealth, c.currentHealth + _potionHeal + s.potionBonus);
     }
 
-    var block =
-        _castSpellIfWorth(c, ens, items, random, casts, itemSets: itemSets);
+    var block = _castSpellIfWorth(c, ens, items, random, casts,
+        itemSets: itemSets, signs: s);
+    // A sign's block for the whole party as the fight opens.
+    if (rounds == 1) block += s.partyStartBlock;
     // The round's best hit, what a Mirror sends back: the spell's so far
     // (it hits each enemy once), then the die's.
     var bestHit = ens.fold<int>(0, (best, e) => max(best, e.damageThisRound));
     advancePhases();
+    feedKills();
     if (allDead()) return finish(true);
 
     if (!stunned && c.diceFaces.isNotEmpty) {
@@ -615,6 +693,28 @@ SimFightOutcome simulateSimFight({
       } while (face.type == 'Empty' && rolls < _maxRolls);
       face = applyFaceAssignment(face, c.diceFaces[face.faceIndex],
           c.diceSkillAssignments[face.faceIndex.toString()]);
+      // The strike signs: an Attack face takes their keywords, and their
+      // element when it has none of its own.
+      if (face.type == 'Attack') {
+        if (s.strikeKeywords.isNotEmpty) {
+          face = face.withKeywords({...face.keywords, ...s.strikeKeywords});
+        }
+        if (s.strikeElement.isNotEmpty && face.element == 'None') {
+          face = face.withElement(s.strikeElement);
+        }
+      }
+      final attack = face.type == 'Attack';
+      if (face.hasKeyword(FaceKeyword.steady) &&
+          (attack || face.type == 'Defend' || face.type == 'Heal')) {
+        face = face.withValue(face.value + steadyBonus);
+      }
+      // The guard, mend and spell signs on the face's number.
+      face = switch (face.type) {
+        'Defend' => face.withValue(s.guardValue(face.value)),
+        'Heal' => face.withValue(s.mendValue(face.value, c.wisdom ~/ 2)),
+        'Mana' => face.withValue(s.manaValue(face.value)),
+        _ => face,
+      };
       final skillId =
           face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
       var element = face.element;
@@ -622,10 +722,21 @@ SimFightOutcome simulateSimFight({
         final skill = availableSkills[skillId] as Map<String, dynamic>?;
         element = skill?['element']?.toString() ?? 'None';
       }
+      var damageBase = c.casterDamage(items, element, itemSets: itemSets);
+      if (attack || face.type == 'Skill') {
+        damageBase = s.strikeBase(damageBase, face.value,
+            attackFace: attack,
+            percent: s.strikePercentFor(
+              attackFace: attack,
+              currentHealth: c.currentHealth,
+              maxHealth: c.maxHealth,
+              firstRound: rounds == 1,
+            ));
+      }
       final result = resolvePlayerFace(
         face,
         availableSkills,
-        c.casterDamage(items, element, itemSets: itemSets),
+        damageBase,
         activeEffects: c.statusEffects,
         wisdomHealBonus: c.wisdom ~/ 2,
         wisdomManaBonus: wisdomManaBonusFor(c.wisdom),
@@ -633,9 +744,18 @@ SimFightOutcome simulateSimFight({
         random: random,
         critChanceBonus: gear.critChance,
       );
+      // Pain: the strike hits for double and costs its roller.
+      final pain = face.hasKeyword(FaceKeyword.pain) && result.damageDealt > 0;
+      final dealt =
+          pain ? result.damageDealt * painDamageMultiplier : result.damageDealt;
+      if (pain) {
+        c.currentHealth -=
+            painCost(maxHealth: c.maxHealth, currentHealth: c.currentHealth);
+      }
       final target = firstLiving();
-      if (target != null && result.damageDealt > 0) {
-        final landed = target.takeHit(result.damageDealt, element);
+      if (target != null && dealt > 0) {
+        final landed = target.takeHit(dealt, element,
+            pierce: face.hasKeyword(FaceKeyword.pierce));
         target.health = max(0, target.health - landed);
         bestHit = max(bestHit, landed);
         if (element != 'None') target.elementsHit.add(element);
@@ -648,14 +768,40 @@ SimFightOutcome simulateSimFight({
           c.mana = min(c.maxMana, c.mana + gear.manaOnHit);
           manaGained += c.mana - before;
         }
+        // Cleave: every other enemy standing takes a share of the blow.
+        if (face.hasKeyword(FaceKeyword.cleave)) {
+          for (final other in ens) {
+            if (identical(other, target) || !other.isAlive) continue;
+            final splash = (dealt * cleaveSplashShare).round();
+            other.health =
+                max(0, other.health - other.takeHit(splash, element));
+          }
+        }
+        if (attack && landed > 0) rollStatuses(s.strikeStatuses, target);
       }
       final inflicted = result.inflictedStatus;
       if (target != null && inflicted != null && target.isAlive) {
         target.statusEffects =
             applyStatusEffect(target.statusEffects, inflicted);
       }
+      // A mend sign turns healing past full into block, and lifts
+      // afflictions.
+      if (face.type == 'Heal' && result.healingDone > 0) {
+        block += s.shieldFromOverheal(
+            healing: result.healingDone,
+            currentHealth: c.currentHealth,
+            maxHealth: c.maxHealth);
+        if (s.mendCleanse > 0) {
+          c.statusEffects = c.statusEffects.skip(s.mendCleanse).toList();
+        }
+      }
       c.currentHealth = min(c.maxHealth, c.currentHealth + result.healingDone);
       block += result.blockAmount;
+      // A Defend face arms the guard signs, and may heal.
+      if (face.type == 'Defend' && result.blockAmount > 0) {
+        guardArmed = !s.isEmpty;
+        c.currentHealth = min(c.maxHealth, c.currentHealth + s.guardHeal);
+      }
       if (result.manaGained > 0) {
         final before = c.mana;
         c.mana = min(c.maxMana, c.mana + result.manaGained);
@@ -664,6 +810,7 @@ SimFightOutcome simulateSimFight({
       c.statusEffects = tickStatusEffects(c.statusEffects);
     }
     advancePhases();
+    feedKills();
     if (allDead()) return finish(true);
 
     // A wind-up answered hard enough breaks (see chargeBroken).
@@ -749,12 +896,13 @@ SimFightOutcome simulateSimFight({
                 scaledEnemyHeal(move.healAmount,
                     maxHealth: e.maxHealth, baseMaxHealth: baseMax));
       }
-      // A Mirror sends back the round's best hit, as on the fight screen.
-      final moveDamage = applyWeaken(
+      // A Mirror sends back the round's best hit, as on the fight screen;
+      // a pact's curse makes every blow harder while it runs.
+      final moveDamage = s.enemyDamage(applyWeaken(
           move.tamper == DiceTamper.mirror
               ? mirrorDamage(bestPartyHit: bestHit, enemyDamage: e.damage)
               : move.damage,
-          e.statusEffects);
+          e.statusEffects));
       final dodged = random.nextDouble() * 100 <
           dodgeChanceFor(c.dexterity) + gear.dodgeChance;
       var taken = dodged
@@ -764,6 +912,7 @@ SimFightOutcome simulateSimFight({
               moveDamage -
                   block -
                   c.armor(items, itemSets: itemSets) -
+                  s.armor -
                   c.elementalResist(items, move.element));
       if (taken >= c.currentHealth &&
           c.currentHealth > 0 &&
@@ -771,6 +920,9 @@ SimFightOutcome simulateSimFight({
         secondWindAvailable = false;
         taken = c.currentHealth - 1;
       }
+      // A guard sign bites back while the Defend face's block holds.
+      final retaliation =
+          guardArmed && !dodged && block > 0 ? s.guardRetaliate : 0;
       c.currentHealth = max(0, c.currentHealth - taken);
       if (taken > 0 && gear.thorns > 0) {
         e.health = max(0, e.health - gear.thorns);
@@ -783,8 +935,16 @@ SimFightOutcome simulateSimFight({
             c.statusEffects, applyWisdomResistance(inflicted, c.wisdom));
       }
       e.statusEffects = tickStatusEffects(e.statusEffects);
+      if (guardArmed && e.isAlive) {
+        if (retaliation > 0) {
+          e.health = max(0, e.health - retaliation);
+          phasesEntered += e.advancePhases();
+        }
+        rollStatuses(s.guardStatuses, e);
+      }
       if (c.isKnockedOut) return finish(false);
     }
+    feedKills();
     for (final e in ens) {
       e.elementsHit = {};
     }
@@ -797,7 +957,8 @@ SimFightOutcome simulateSimFight({
 /// an affliction, the strongest affordable damage spell (keeping the
 /// cheapest heal's cost in reserve unless the spell finishes an enemy),
 /// block against a heavy combined swing, a hex on an enemy that will live
-/// long enough to feel it. Returns the block granted this round.
+/// long enough to feel it. Returns the block granted this round. [signs]
+/// lower the costs, lift what spells deal and heal, and add their status.
 int _castSpellIfWorth(
   SimCharacter c,
   List<_SimEnemy> ens,
@@ -805,24 +966,33 @@ int _castSpellIfWorth(
   Random random,
   Map<String, int> casts, {
   Map<String, ItemSet> itemSets = const {},
+  SignEffects signs = SignEffects.none,
 }) {
   final living = ens.where((e) => e.isAlive).toList();
   if (c.knownSpells.isEmpty || living.isEmpty || c.mana <= 0) return 0;
 
-  int amountOf(SpellSpec spell) => spellAmountFor(
-        spell,
-        intelligence: c.intelligence,
-        wisdom: c.wisdom,
-        strength: c.strength,
-        level: c.level,
-        casterDamage: c.casterDamage(items, spell.element, itemSets: itemSets),
-      );
+  int costOf(SpellSpec spell) => signs.spellCost(spell.manaCost);
+  int amountOf(SpellSpec spell) {
+    final amount = spellAmountFor(
+      spell,
+      intelligence: c.intelligence,
+      wisdom: c.wisdom,
+      strength: c.strength,
+      level: c.level,
+      casterDamage: c.casterDamage(items, spell.element, itemSets: itemSets),
+    );
+    return spell.effect == SpellEffectKind.damage ||
+            spell.effect == SpellEffectKind.heal
+        ? signs.spellAmount(amount)
+        : amount;
+  }
+
   void cast(SpellSpec spell) {
-    c.mana -= spell.manaCost;
+    c.mana -= costOf(spell);
     casts[spell.id] = (casts[spell.id] ?? 0) + 1;
   }
 
-  final affordable = c.knownSpells.where((s) => s.manaCost <= c.mana).toList();
+  final affordable = c.knownSpells.where((s) => costOf(s) <= c.mana).toList();
   if (affordable.isEmpty) return 0;
 
   if (c.currentHealth < 0.5 * c.maxHealth) {
@@ -851,7 +1021,7 @@ int _castSpellIfWorth(
 
   final reserve = c.knownSpells
       .where((s) => s.effect == SpellEffectKind.heal)
-      .map((s) => s.manaCost)
+      .map(costOf)
       .fold<int?>(null, (m, v) => m == null ? v : min(m, v));
   final boss = living.any((e) => soloOnlyEnemyIds.contains(e.id));
   final damageSpells = affordable
@@ -874,7 +1044,7 @@ int _castSpellIfWorth(
     }
     if (killable.isEmpty &&
         reserve != null &&
-        c.mana - spell.manaCost < reserve) {
+        c.mana - costOf(spell) < reserve) {
       continue;
     }
     final status = spellStatusFor(spell, level: c.level);
@@ -883,6 +1053,12 @@ int _castSpellIfWorth(
       if (spell.element != 'None') e.elementsHit.add(spell.element);
       if (status != null && e.isAlive) {
         e.statusEffects = applyStatusEffect(e.statusEffects, status);
+      }
+      // A spell sign's status, on every enemy the spell reaches.
+      for (final chance in signs.spellStatuses) {
+        if (e.isAlive && chance.rolls(random)) {
+          e.statusEffects = applyStatusEffect(e.statusEffects, chance.status);
+        }
       }
     }
     cast(spell);
@@ -914,6 +1090,12 @@ int _castSpellIfWorth(
     if (candidates.isEmpty) continue;
     final target = candidates.reduce((a, b) => a.health >= b.health ? a : b);
     target.statusEffects = applyStatusEffect(target.statusEffects, status);
+    for (final chance in signs.spellStatuses) {
+      if (chance.rolls(random)) {
+        target.statusEffects =
+            applyStatusEffect(target.statusEffects, chance.status);
+      }
+    }
     cast(spell);
     return 0;
   }

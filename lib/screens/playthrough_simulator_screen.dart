@@ -11,15 +11,17 @@ import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../combat/combat_engine.dart'
-    show chapterRewardMultiplier, scaledReward;
+    show chapterRewardMultiplier, isBossEnemy, scaledReward, zoneBossEnemyIds;
 import '../combat/gear_effects.dart';
 import '../combat/spells.dart';
 import '../data/autoplay_engine.dart';
 import '../data/chapter_loop.dart';
 import '../data/chapter_spine.dart';
+import '../data/signs.dart';
 import '../data/sim_combat.dart';
 import '../data/story_graph_integrity.dart';
 import '../data/story_repository.dart';
+import '../data/sub_node_engine.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -133,6 +135,7 @@ class _SimResult {
     this.manaGained = 0,
     this.potionsUsed = 0,
     this.spellbooksBought = const [],
+    this.signsTaken = const [],
   });
 
   final List<_SimStep> steps;
@@ -159,6 +162,9 @@ class _SimResult {
   final int manaGained;
   final int potionsUsed;
   final List<String> spellbooksBought;
+
+  /// The signs the character took (see signs.dart), in order.
+  final List<String> signsTaken;
 
   bool get hasCharacter => professionId.isNotEmpty;
   int get totalCasts => spellsCast.values.fold(0, (a, b) => a + b);
@@ -190,6 +196,9 @@ class _SimContext {
     required this.spells,
     required this.gameConfig,
     this.itemSets = const {},
+    this.zones = const {},
+    this.patrons = const {},
+    this.signs = const {},
   });
 
   final Map<String, dynamic> dice;
@@ -201,6 +210,14 @@ class _SimContext {
   final Map<String, SpellSpec> spells;
   final Map<String, dynamic> gameConfig;
   final Map<String, ItemSet> itemSets;
+
+  /// zones.json, for the expeditions a choice launches.
+  final Map<String, dynamic> zones;
+
+  /// The patrons and their signs (see signs.dart): without them the
+  /// character never takes one.
+  final Map<String, Patron> patrons;
+  final Map<String, SignDef> signs;
 }
 
 /// A lost fight is retried this many times, as a player would, before the
@@ -210,6 +227,11 @@ const int _maxFightAttempts = 3;
 /// Things the simulated party does in a place on its one tour of it (see
 /// the camp loop in [_simulate]).
 const int _placeActivitiesPerVisit = 3;
+
+/// The share of an expedition's events the walk plays as a fight: an
+/// event draw is a fight a quarter of the time where the zone has shops,
+/// half where it has none (see SubNodeEngine.buildNode).
+const double _expeditionFightShare = 0.35;
 
 /// Auto-plays the story graph making choices (picked per [strategy]) until
 /// an ending is reached, for QA / previewing a full run without clicking
@@ -265,6 +287,12 @@ _SimResult _simulate(
   int? lastKnownChapter = furthestChapter;
   int? restedChapter = lastKnownChapter;
   final steps = <_SimStep>[];
+  // Signs (see signs.dart): the picks waiting (one every odd level, one
+  // a boss), and the patrons of this one life.
+  var signPicks = 0;
+  final patronsThisLife = <String>[];
+  final patronsMet = <String>[];
+  final signsTaken = <String>[];
   // The open chapters' loop: the camp the story stands at, the places
   // already toured from it, and the place being toured now (with how many
   // things are left to do there).
@@ -297,6 +325,7 @@ _SimResult _simulate(
       potionsUsed: character?.potionsUsed ?? 0,
       spellbooksBought:
           List.unmodifiable(character?.spellbooksBought ?? const []),
+      signsTaken: List.unmodifiable(signsTaken),
     );
   }
 
@@ -322,27 +351,76 @@ _SimResult _simulate(
     return tied[random.nextInt(tied.length)];
   }
 
-  /// Plays out [choice]'s fight (a pack when it names several enemies) for
-  /// the simulated character, retrying a loss up to [_maxFightAttempts]
-  /// times; a win grants the enemies' XP through the app's own level
-  /// thresholds. Returns the outcome, the attempts it took and every spell
-  /// cast across them -- or a null outcome when there is nothing to play.
-  ({bool? won, int attempts, Map<String, int> casts}) fight(
-      StoryChoice choice, int chapter) {
+  SignEffects signsNow() {
     final c = character;
-    if (c == null || sim == null || !choice.triggersCombat) {
-      return (won: null, attempts: 0, casts: const {});
+    if (c == null || sim == null || sim.signs.isEmpty) return SignEffects.none;
+    return signEffectsFor(c.heldSigns, sim.signs, alignment: alignment);
+  }
+
+  /// Takes every sign waiting, the simulator's way (see
+  /// preferredSignCard): one for an empty slot first, then the rarest. A
+  /// pick no patron can answer yet waits for the next chance.
+  void takeSigns() {
+    final c = character;
+    if (c == null || sim == null || sim.signs.isEmpty) return;
+    while (signPicks > 0) {
+      final offer = rollSignOffer(
+        patrons: sim.patrons,
+        signs: sim.signs,
+        held: c.heldSigns,
+        flags: flags,
+        alignment: alignment,
+        random: random,
+        patronsThisLife: patronsThisLife,
+        patronsMet: patronsMet,
+        luck: c.luck + signsNow().stat('luck'),
+      );
+      final card = offer == null
+          ? null
+          : preferredSignCard(offer, c.heldSigns, sim.signs);
+      final sign = card == null ? null : sim.signs[card.signId];
+      if (offer == null || card == null || sign == null) return;
+      c.heldSigns = takeSign(c.heldSigns, sign, card.rarity, sim.signs).held;
+      alignment += alignmentShiftFor(sign);
+      for (final id in {offer.patronId, sign.patronId}) {
+        if (!patronsThisLife.contains(id)) patronsThisLife.add(id);
+      }
+      if (!patronsMet.contains(offer.patronId)) {
+        patronsMet.add(offer.patronId);
+      }
+      signsTaken.add(sign.id);
+      signPicks--;
     }
+  }
+
+  /// Plays out a fight against [enemyIds] (a pack when several) for the
+  /// simulated character, retrying a loss up to [_maxFightAttempts] times
+  /// ([once]: a fight with a defeat branch is played once, its loss is a
+  /// scene); a win grants the enemies' XP through the app's own level
+  /// thresholds, and the signs its levels and a boss bring. Returns the
+  /// outcome, the attempts it took, every spell cast across them and the
+  /// signs the winning attempt fought with -- or a null outcome when there
+  /// is nothing to play.
+  ({bool? won, int attempts, Map<String, int> casts, SignEffects signs})
+      fightEnemies(List<String> enemyIds, int chapter, {bool once = false}) {
+    const none = (
+      won: null,
+      attempts: 0,
+      casts: <String, int>{},
+      signs: SignEffects.none
+    );
+    final c = character;
+    if (c == null || sim == null) return none;
     final entries = <MapEntry<String, Map<String, dynamic>>>[
-      for (final id in choice.allTriggerEnemyIds)
+      for (final id in enemyIds)
         if (enemies[id] is Map<String, dynamic>)
           MapEntry(id, enemies[id] as Map<String, dynamic>),
     ];
-    if (entries.isEmpty) return (won: null, attempts: 0, casts: const {});
+    if (entries.isEmpty) return none;
     final casts = <String, int>{};
-    // A fight with a defeat branch is played once: its loss is a scene.
-    final maxAttempts = choice.hasLossBranch ? 1 : _maxFightAttempts;
+    final maxAttempts = once ? 1 : _maxFightAttempts;
     for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+      final signs = signsNow();
       final outcome = simulateSimFight(
         character: c,
         enemies: entries,
@@ -351,7 +429,10 @@ _SimResult _simulate(
         items: sim.items,
         itemSets: sim.itemSets,
         random: random,
+        signs: signs,
       );
+      // Every pact runs one fight on, won or lost.
+      c.heldSigns = countDownPacts(c.heldSigns);
       for (final entry in outcome.spellsCast.entries) {
         casts[entry.key] = (casts[entry.key] ?? 0) + entry.value;
       }
@@ -361,11 +442,101 @@ _SimResult _simulate(
           xp += scaledReward(
               (entry.value['xpReward'] as num?)?.toInt() ?? 0, c.level);
         }
-        c.gainXp((xp * chapterRewardMultiplier(chapter)).round());
-        return (won: true, attempts: attempt, casts: casts);
+        final levelBefore = c.level;
+        c.gainXp(
+            signs.scaleXp((xp * chapterRewardMultiplier(chapter)).round()));
+        signPicks += signPicksFor(levelBefore, c.level);
+        if (entries.any((e) =>
+            isBossEnemy(e.key, e.value) || zoneBossEnemyIds.contains(e.key))) {
+          signPicks++;
+        }
+        takeSigns();
+        return (won: true, attempts: attempt, casts: casts, signs: signs);
       }
     }
-    return (won: false, attempts: _maxFightAttempts, casts: casts);
+    return (
+      won: false,
+      attempts: maxAttempts,
+      casts: casts,
+      signs: SignEffects.none
+    );
+  }
+
+  /// [choice]'s own fight (see [fightEnemies]).
+  ({bool? won, int attempts, Map<String, int> casts, SignEffects signs}) fight(
+          StoryChoice choice, int chapter) =>
+      choice.triggersCombat
+          ? fightEnemies(choice.allTriggerEnemyIds, chapter,
+              once: choice.hasLossBranch)
+          : fightEnemies(const [], chapter);
+
+  /// The expedition [zoneId] launches, played out: each of its events a
+  /// fight at [_expeditionFightShare] odds (a pair from the pack pool some
+  /// of the time, as SubNodeEngine draws them), then the zone's boss. A
+  /// fight lost every attempt ends it there; cleared, it pays its reward
+  /// and sets its flag. Returns the steps it took.
+  void expedition(String zoneId, StoryNode node) {
+    final zone = sim?.zones[zoneId];
+    final c = character;
+    if (zone is! Map<String, dynamic>) return;
+    final zoneChapter =
+        (zone['chapter'] as num?)?.toInt() ?? lastKnownChapter ?? 1;
+    final chapter = lastKnownChapter ?? zoneChapter;
+    final name = french
+        ? (zone['zoneName_fr'] ?? zone['zoneName'] ?? zoneId).toString()
+        : (zone['zoneName'] ?? zoneId).toString();
+    bool fightAt(List<String> ids) {
+      final result = fightEnemies(ids, chapter);
+      var reward = 0;
+      for (final id in ids) {
+        reward += ((enemies[id] as Map?)?['goldReward'] as num?)?.toInt() ?? 0;
+      }
+      final won = result.won ?? true;
+      final goldMod = won ? result.signs.scaleGold(reward) : 0;
+      steps.add(_SimStep(
+        nodeId: 'zone:$zoneId',
+        chapter: lastKnownChapter,
+        mood: node.mood,
+        uiTheme: node.uiTheme,
+        description: french ? 'Expédition : $name' : 'Expedition: $name',
+        choiceText: french ? 'Combattre' : 'Fight',
+        enemyId: ids.first,
+        goldMod: goldMod,
+        fightWon: result.won,
+        fightAttempts: result.attempts,
+        spellsCast: result.casts,
+      ));
+      combatCount++;
+      gold += goldMod;
+      return won;
+    }
+
+    if (c != null) {
+      final pool = SubNodeEngine.filterEnemyPool(
+          enemies: enemies, unlockedEnemyIds: const [], chapter: zoneChapter);
+      final packPool =
+          SubNodeEngine.filterPackPool(enemies: enemies, enemyPool: pool);
+      final events = (zone['expeditionCount'] as num?)?.toInt() ?? 3;
+      for (var i = 0; i < events; i++) {
+        if (pool.isEmpty || random.nextDouble() >= _expeditionFightShare) {
+          continue;
+        }
+        final pack = packPool.isNotEmpty && random.nextDouble() < 0.3;
+        final size =
+            pack ? SubNodeEngine.maxPackSizeFor(zoneChapter, partySize: 1) : 1;
+        final from = pack ? packPool : pool;
+        if (!fightAt([
+          for (var n = 0; n < size; n++) from[random.nextInt(from.length)],
+        ])) {
+          return;
+        }
+      }
+      final bossId = zone['bossEnemyId']?.toString() ?? '';
+      if (enemies[bossId] is Map && !fightAt([bossId])) return;
+    }
+    final rewardFlag = zone['rewardFlag']?.toString() ?? '';
+    if (rewardFlag.isNotEmpty) flags.add(rewardFlag);
+    gold += (zone['rewardGold'] as num?)?.toInt() ?? 0;
   }
 
   for (var step = 0; step < maxSteps; step++) {
@@ -488,8 +659,10 @@ _SimResult _simulate(
     // A won fight pays out the enemy's goldReward just like a real playthrough
     // (see FightScreen._finishFight) — folded into this step's goldMod so the
     // chapter breakdown and CSV/JSON exports stay consistent with finalGold.
-    final effectiveGoldMod = choice.goldMod + combatGoldReward(choice);
+    // The signs take their share of it (a pact's curse some back).
     final fightResult = fight(choice, lastKnownChapter ?? 1);
+    final effectiveGoldMod =
+        choice.goldMod + fightResult.signs.scaleGold(combatGoldReward(choice));
     if (fightResult.won == false && choice.hasLossBranch) {
       // Lost, and the story goes on: the defeat branch, with none of the
       // choice's own effects (they are the winner's).
@@ -549,6 +722,9 @@ _SimResult _simulate(
       quests.add(choice.unlockQuestId!);
     }
     if (choice.triggersCombat) combatCount++;
+    // An expedition the choice launches (a zone to clear before the story
+    // goes on) is played out before it does.
+    if (choice.launchesZone) expedition(choice.launchZoneId!, node);
 
     if (choice.isEnding) {
       return finish(endingText: choice.text, reachedStepCap: false);
@@ -558,6 +734,59 @@ _SimResult _simulate(
   }
 
   return finish(endingText: '', reachedStepCap: true);
+}
+
+/// The fights of [runs] random walks, chapter by chapter ('Prologue',
+/// 'Chapter 1'...): the runs that reached it, the attempts played there
+/// and how many were won (the rest are deaths), and the signs the runs
+/// took in all. The balance check behind the simulator's numbers, without
+/// the screen (the sign values were tuned with it, see signs.json);
+/// [tables] holds the gamedata files by name ('enemies', 'dice'...), and
+/// without 'signs' the character never takes a sign.
+@visibleForTesting
+({Map<String, ({int runs, int attempts, int won})> chapters, int signsTaken})
+    simulateFightsByChapter(
+  StoryData story, {
+  required Map<String, Map<String, dynamic>> tables,
+  required Map<String, dynamic> gameConfig,
+  required int runs,
+  required int seed,
+}) {
+  Map<String, dynamic> table(String name) => tables[name] ?? const {};
+  final sim = _SimContext(
+    dice: table('dice'),
+    skills: table('skills'),
+    items: table('items'),
+    shops: table('shops'),
+    races: table('races'),
+    professions: table('professions'),
+    spells: parseSpells(table('spells')),
+    gameConfig: gameConfig,
+    itemSets: parseItemSets(table('item_sets')),
+    zones: table('zones'),
+    patrons: parsePatrons(table('patrons')),
+    signs: parseSigns(table('signs')),
+  );
+  final random = Random(seed);
+  final tally = <String, ({int runs, int attempts, int won})>{};
+  var signsTaken = 0;
+  for (var i = 0; i < runs; i++) {
+    final result =
+        _simulate(story, random, enemies: table('enemies'), sim: sim);
+    signsTaken += result.signsTaken.length;
+    final reached = <String>{};
+    for (final step in result.steps) {
+      final key = _chapterLabel(step.chapter);
+      final before = tally[key] ?? (runs: 0, attempts: 0, won: 0);
+      final fought = step.fightWon != null;
+      tally[key] = (
+        runs: before.runs + (reached.add(key) ? 1 : 0),
+        attempts: before.attempts + (fought ? step.fightAttempts : 0),
+        won: before.won + (step.fightWon == true ? 1 : 0),
+      );
+    }
+  }
+  return (chapters: tally, signsTaken: signsTaken);
 }
 
 /// Total casts per spell id across [results], most cast first.
@@ -971,6 +1200,9 @@ class _PlaythroughSimulatorScreenState
       spells: parseSpells(await load(spellsSchema)),
       gameConfig: await ref.read(gameConfigProvider.future),
       itemSets: parseItemSets(await load(itemSetsSchema)),
+      zones: await load(zonesSchema),
+      patrons: parsePatrons(await load(patronsSchema)),
+      signs: parseSigns(await load(signsSchema)),
     );
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
     final random = Random();
@@ -1334,6 +1566,8 @@ String _runTranscript(_SimResult result, String strategyLabel,
     b.writeln(
         'Spells cast: ${casts(result.spellsCast)} | Mana from dice: ${result.manaGained}'
         '${result.spellbooksBought.isEmpty ? '' : ' | Spellbooks bought: ${result.spellbooksBought.map(spellName).join(', ')}'}');
+    b.writeln(
+        'Signs taken: ${result.signsTaken.isEmpty ? 'none' : result.signsTaken.join(', ')}');
   }
   b.writeln();
   b.writeln('--- Steps ---');
@@ -1379,6 +1613,8 @@ String _batchSummaryText(String strategyLabel, List<_SimResult> results,
     b.writeln(
         'Average fights won / lost: ${_avg(results.map((r) => r.fightsWon)).toStringAsFixed(1)} / '
         '${_avg(results.map((r) => r.fightsLost)).toStringAsFixed(1)}');
+    b.writeln(
+        'Average signs taken: ${_avg(results.map((r) => r.signsTaken.length)).toStringAsFixed(1)}');
     b.writeln(
         'Average spells cast: ${_avg(results.map((r) => r.totalCasts)).toStringAsFixed(1)} '
         '(mana from dice ${_avg(results.map((r) => r.manaGained)).toStringAsFixed(1)})');
@@ -1528,6 +1764,7 @@ String _batchResultsJson(String strategyLabel, List<_SimResult> results) {
           'manaGained': results[i].manaGained,
           'potionsUsed': results[i].potionsUsed,
           'spellbooksBought': results[i].spellbooksBought,
+          'signsTaken': results[i].signsTaken,
           'path': results[i].path,
         },
     ],

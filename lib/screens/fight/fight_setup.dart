@@ -170,6 +170,7 @@ extension _FightSetup on _FightScreenState {
     Map<String, dynamic> dice,
     Map<String, dynamic> skillTrees,
     Map<String, dynamic> skills,
+    Map<String, dynamic> signsDb,
   ) {
     if (_partyBuilt) return;
     _partyBuilt = true;
@@ -177,6 +178,16 @@ extension _FightSetup on _FightScreenState {
     // Level-up perks (see perks.dart): the rolls a round allows here, the
     // rest as the fight goes.
     _perks = session.perkEffects;
+    // Signs (see signs.dart): what the held ones add up to at the
+    // alignment the party walks in with.
+    _signDefs = parseSigns(signsDb);
+    _signs = signEffectsFor(session.heldSigns, _signDefs,
+        alignment: session.alignmentScore);
+    if (_signs.maxMana > 0) {
+      final full = _mana >= _maxMana;
+      _maxMana += _signs.maxMana;
+      if (full) _mana = _maxMana;
+    }
     _maxRollsThisFight = _maxRolls + _perks.extraRolls;
     _alignmentLabel = session.alignmentLabel;
     _partyBonus = partyBonusFor(
@@ -206,16 +217,28 @@ extension _FightSetup on _FightScreenState {
     final playerLabel = session.characterName.isNotEmpty
         ? session.characterName
         : trFor(ref.read(appLanguageProvider), 'you_label');
+    // A health sign raises the fight's max: full health stays full, a
+    // wound stays as it is; a running pact may take a share off the top.
+    final baseMaxHealth = _partyBonus.scaleMaxHealth(session.maxHealth);
+    final playerMaxHealth = _signs.maxHealthFor(baseMaxHealth);
+    final enteringHealth = SignEffects.healthEntering(
+      current: _partyBonus.scaleCurrentHealth(session.currentHealth > 0
+          ? session.currentHealth
+          : session.maxHealth),
+      base: baseMaxHealth,
+      fightMax: playerMaxHealth,
+    );
+    final playerHealth =
+        _signs.afterStartCurse(enteringHealth, playerMaxHealth);
+    _signStartCurseTaken = enteringHealth - playerHealth;
     final player = _PartyMember(
       id: 'player',
       displayName: playerLabel,
       isPlayer: true,
-      maxHealth: _partyBonus.scaleMaxHealth(session.maxHealth),
+      maxHealth: playerMaxHealth,
       baseDamage: _partyBonus.scaleDamage(session.baseDamage),
       armor: session.baseArmor,
-      currentHealth: _partyBonus.scaleCurrentHealth(session.currentHealth > 0
-          ? session.currentHealth
-          : session.maxHealth),
+      currentHealth: playerHealth,
       equippedItemIds: session.equippedItemIds,
       unlockedSkillIds: [
         ...session.unlockedSkillIds,
@@ -227,15 +250,15 @@ extension _FightSetup on _FightScreenState {
       // A mastered branch's skills fight a tier above their own.
       skillTiers: effectiveSkillTiers(
           session.skillTiers, skillTrees, session.masteredBranchId),
-      strength: session.strength,
-      dexterity: session.dexterity,
-      constitution: session.constitution,
-      intelligence: session.intelligence,
-      wisdom: session.wisdom,
-      luck: session.luck,
-      perception: session.perception,
-      gear:
-          _perks.over(gearEffectsFor(session.equippedItemIds, items, itemSets)),
+      strength: session.strength + _signs.stat('strength'),
+      dexterity: session.dexterity + _signs.stat('dexterity'),
+      constitution: session.constitution + _signs.stat('constitution'),
+      intelligence: session.intelligence + _signs.stat('intelligence'),
+      wisdom: session.wisdom + _signs.stat('wisdom'),
+      luck: session.luck + _signs.stat('luck'),
+      perception: session.perception + _signs.stat('perception'),
+      gear: _signs.over(_perks
+          .over(gearEffectsFor(session.equippedItemIds, items, itemSets))),
       dieFaces: smithed(_selectedDiceId),
     );
 
@@ -260,24 +283,31 @@ extension _FightSetup on _FightScreenState {
           gameConfig: gameConfig, race: race, profession: profession);
       // A devoted companion fights harder, a wary one holds back.
       final tier = approvalTierFor(allyState.approval);
-      final liveMaxHealth = _partyBonus
+      final baseAllyHealth = _partyBonus
               .scaleMaxHealth(scaledMaxHealth(base.maxHealth, _playerLevel)) *
           approvalHealthPercent(tier) ~/
           100;
+      // A banner sign raises the whole party's health in the fight.
+      final liveMaxHealth =
+          _signs.maxHealthFor(baseAllyHealth, partyWide: true);
       activeAllies.add(_PartyMember(
         id: companionId,
         displayName: companion['companionName']?.toString() ?? companionId,
         isPlayer: false,
         maxHealth: liveMaxHealth,
-        // A leader's allies (a perk) hit a little harder too.
-        baseDamage: _perks.scaleAllyDamage(_partyBonus
+        // A leader's allies (a perk, a sign) hit a little harder too.
+        baseDamage: _signs.scaleAllyDamage(_perks.scaleAllyDamage(_partyBonus
                 .scaleDamage(scaledDamage(base.baseDamage, _playerLevel)) *
             approvalDamagePercent(tier) ~/
-            100),
+            100)),
         armor: base.baseArmor,
-        currentHealth: _partyBonus
-            .scaleCurrentHealth(allyState.currentHealth)
-            .clamp(0, liveMaxHealth),
+        currentHealth: SignEffects.healthEntering(
+          current: _partyBonus
+              .scaleCurrentHealth(allyState.currentHealth)
+              .clamp(0, baseAllyHealth),
+          base: baseAllyHealth,
+          fightMax: liveMaxHealth,
+        ),
         equippedItemIds: allyState.equippedItemIds,
         unlockedSkillIds: [
           ...allyState.unlockedSkillIds,
@@ -321,6 +351,7 @@ extension _FightSetup on _FightScreenState {
       _preRollMoveFor(enemy, skills);
     }
     _applyArmedCharms(items);
+    final signLines = _openSignsForFight(lang);
     // Luck nudges (v1.182): the party's luckiest member sets how many.
     _nudgesLeft = nudgesForLuck(
         _party.fold<int>(0, (best, m) => m.luck > best ? m.luck : best));
@@ -359,6 +390,7 @@ extension _FightSetup on _FightScreenState {
           _LogKind.info,
         ));
       }
+      _log.addAll(signLines);
       if (banter != null) _log.add(banter);
     });
     _noteTelegraphReads();
@@ -374,6 +406,52 @@ extension _FightSetup on _FightScreenState {
     final sellswordWon = _sellswordStrikes(opening, lang);
     if (opening.isNotEmpty) _update(() => _log.addAll(opening));
     if (sellswordWon) _finishFight(won: true);
+  }
+
+  /// What the signs do as the fight opens: the party's starting block (on
+  /// top of the first round's faces, like a spell's), a head start on
+  /// momentum; and what the log says of them -- a silent vow, a pact
+  /// still running, what its curse took.
+  List<_LogEntry> _openSignsForFight(AppLanguage lang) {
+    final lines = <_LogEntry>[];
+    if (_signs.isEmpty) return lines;
+    if (_signs.silentVows > 0) {
+      lines.add(_LogEntry(trFor(lang, 'sign_log_vow_silent'), _LogKind.info));
+    }
+    final pactFights = ref
+        .read(playerSessionProvider)
+        .heldSigns
+        .fold<int>(0, (most, h) => max(most, h.pactFightsLeft));
+    if (pactFights > 0) {
+      lines.add(_LogEntry(
+          trFor(lang, 'sign_log_pact').replaceAll('{n}', '$pactFights'),
+          _LogKind.enemyDamage));
+    }
+    if (_signStartCurseTaken > 0) {
+      lines.add(_LogEntry(
+          trFor(lang, 'sign_log_start_curse')
+              .replaceAll('{n}', '$_signStartCurseTaken'),
+          _LogKind.enemyDamage));
+    }
+    final startBlock = _signs.partyStartBlock;
+    if (startBlock > 0) {
+      for (final member in _party) {
+        if (member.isKnockedOut) continue;
+        member.block += startBlock;
+        _spellBlock[member.id] = (_spellBlock[member.id] ?? 0) + startBlock;
+      }
+      lines.add(_LogEntry(
+          trFor(lang, 'sign_log_start_block').replaceAll('{n}', '$startBlock'),
+          _LogKind.playerBlock));
+    }
+    if (_signs.startMomentum > 0) {
+      _momentum = min(_momentumNeeded, _signs.startMomentum);
+      if (_momentum >= _momentumNeeded) {
+        lines.add(
+            _LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info));
+      }
+    }
+    return lines;
   }
 
   /// Burns every charm picked on the setup screen and arms its one-fight

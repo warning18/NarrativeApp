@@ -11,6 +11,7 @@ import '../providers/combat_active_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/signs_provider.dart';
 import '../screens/voyage_screen.dart';
 import '../theme/stitched_ink.dart';
 import 'immersive_notice.dart';
@@ -65,11 +66,15 @@ class ShipStatusCard extends ConsumerWidget {
       return const SizedBox.shrink();
     }
     final installed = session.shipPartIds;
+    // A hull sign (see signs.dart) shows here as at sea.
+    final signs = ref.watch(signEffectsProvider);
     final playerShip = buildPlayerShip(
       ship: ship,
       parts: parts,
       installedPartIds: installed,
       currentHull: session.shipHull,
+      hullPercent: signs.shipHullPercent,
+      gunPercent: signs.shipGunPercent,
     );
     final repairCost =
         repairCostFor(hull: playerShip.hull, maxHull: playerShip.maxHull);

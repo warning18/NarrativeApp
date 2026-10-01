@@ -17,6 +17,7 @@ import '../data/contracts.dart';
 import '../data/journey_rules.dart';
 import '../data/perks.dart';
 import '../data/quest_objectives.dart' show killTargetsOf;
+import '../data/signs.dart';
 import '../models/ally_state.dart';
 
 const String _playerSessionPrefsKey = 'player_session';
@@ -197,6 +198,13 @@ class PlayerSession {
     this.perkRanks = const {},
     this.pendingPerkPicks = 0,
     this.perkOffer = const [],
+    this.heldSigns = const [],
+    this.pendingSignPicks = 0,
+    this.signOffer,
+    this.titanBlood = 0,
+    this.patronFavour = const {},
+    this.signPatronsThisLife = const [],
+    this.patronsMet = const [],
     this.builtHouseIds = const [],
     this.townOrder = const [],
     this.unlockedAchievementIds = const [],
@@ -436,6 +444,30 @@ class PlayerSession {
   final List<String> perkOffer;
 
   PerkEffects get perkEffects => perkEffectsFor(perkRanks);
+
+  /// Signs (see signs.dart): the ones drawn on the character this life,
+  /// with their rarity, level and any pact still running.
+  final List<HeldSign> heldSigns;
+
+  /// Sign offers still to choose from (one every odd level, one a boss),
+  /// and the one on the table, drawn once and kept until a sign is taken
+  /// so reopening it never redraws it. Null when none is drawn.
+  final int pendingSignPicks;
+  final SignOffer? signOffer;
+
+  /// Drops of Titan's Blood waiting to raise a held sign one level.
+  final int titanBlood;
+
+  /// Signs taken from each patron, ever: favour, kept through permadeath
+  /// and New Game+ like a legacy (see favourLevelFor).
+  final Map<String, int> patronFavour;
+
+  /// The patrons that gave a sign this life, in order: at most three clans
+  /// among them, and the Choir or the Pit, not both (see patronOpen).
+  final List<String> signPatronsThisLife;
+
+  /// Every patron that has offered a sign, ever: the codex lists them.
+  final List<String> patronsMet;
 
   /// Houses built at camp — mirrors [unlockedShopIds]. Gates which specific
   /// companions can join the active party (a companion's own
@@ -718,6 +750,14 @@ class PlayerSession {
     Map<String, int>? perkRanks,
     int? pendingPerkPicks,
     List<String>? perkOffer,
+    List<HeldSign>? heldSigns,
+    int? pendingSignPicks,
+    SignOffer? signOffer,
+    bool clearSignOffer = false,
+    int? titanBlood,
+    Map<String, int>? patronFavour,
+    List<String>? signPatronsThisLife,
+    List<String>? patronsMet,
     List<String>? builtHouseIds,
     List<String>? townOrder,
     List<String>? unlockedAchievementIds,
@@ -812,6 +852,13 @@ class PlayerSession {
       perkRanks: perkRanks ?? this.perkRanks,
       pendingPerkPicks: pendingPerkPicks ?? this.pendingPerkPicks,
       perkOffer: perkOffer ?? this.perkOffer,
+      heldSigns: heldSigns ?? this.heldSigns,
+      pendingSignPicks: pendingSignPicks ?? this.pendingSignPicks,
+      signOffer: clearSignOffer ? null : signOffer ?? this.signOffer,
+      titanBlood: titanBlood ?? this.titanBlood,
+      patronFavour: patronFavour ?? this.patronFavour,
+      signPatronsThisLife: signPatronsThisLife ?? this.signPatronsThisLife,
+      patronsMet: patronsMet ?? this.patronsMet,
       builtHouseIds: builtHouseIds ?? this.builtHouseIds,
       townOrder: townOrder ?? this.townOrder,
       unlockedAchievementIds:
@@ -911,6 +958,13 @@ class PlayerSession {
         'perkRanks': perkRanks,
         'pendingPerkPicks': pendingPerkPicks,
         'perkOffer': perkOffer,
+        'heldSigns': [for (final h in heldSigns) h.toJson()],
+        'pendingSignPicks': pendingSignPicks,
+        'signOffer': signOffer?.toJson(),
+        'titanBlood': titanBlood,
+        'patronFavour': patronFavour,
+        'signPatronsThisLife': signPatronsThisLife,
+        'patronsMet': patronsMet,
         'builtHouseIds': builtHouseIds,
         'townOrder': townOrder,
         'unlockedAchievementIds': unlockedAchievementIds,
@@ -1090,6 +1144,26 @@ class PlayerSession {
       pendingPerkPicks: (json['pendingPerkPicks'] as num?)?.toInt() ?? 0,
       perkOffer:
           (json['perkOffer'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      // Saves from before signs hold none.
+      heldSigns: [
+        for (final raw in (json['heldSigns'] as List?) ?? const [])
+          if (raw is Map) HeldSign.fromJson(Map<String, dynamic>.from(raw)),
+      ],
+      pendingSignPicks: (json['pendingSignPicks'] as num?)?.toInt() ?? 0,
+      signOffer: SignOffer.tryParse(json['signOffer']),
+      titanBlood: (json['titanBlood'] as num?)?.toInt() ?? 0,
+      patronFavour: (json['patronFavour'] as Map?)?.map(
+            (id, favour) =>
+                MapEntry(id.toString(), (favour as num?)?.toInt() ?? 0),
+          ) ??
+          const {},
+      signPatronsThisLife: (json['signPatronsThisLife'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      patronsMet:
+          (json['patronsMet'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
       builtHouseIds:
           (json['builtHouseIds'] as List?)?.map((e) => e.toString()).toList() ??
@@ -1327,6 +1401,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       legacyGold: keepLegacy ? previous.legacyGold : 0,
       legacyDiceIds: keepLegacy ? previous.legacyDiceIds : const [],
       legacySpellIds: keepLegacy ? previous.legacySpellIds : const [],
+      // Favour with the patrons outlasts the character, like a legacy.
+      patronFavour: keepLegacy ? previous.patronFavour : const {},
+      patronsMet: keepLegacy ? previous.patronsMet : const [],
       diceUpgrades: keepLegacy
           ? {
               for (final id in previous.legacyDiceIds)
@@ -1462,6 +1539,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       mana: maxManaFor(intelligence: intelligence, wisdom: wisdom),
       knownSpellIds: [...startingSpellIds, ...legacySpells],
       newGamePlusCycle: legacy.newGamePlusCycle,
+      // A new character starts with no signs, but the patrons remember.
+      patronFavour: legacy.patronFavour,
+      patronsMet: legacy.patronsMet,
       runSeed: 1 + Random().nextInt(0x7ffffffe),
       // A New Game+ legacy die keeps the Hammersmith's work on it: the
       // player's own, not a companion's on their copy of the same die.
@@ -1859,6 +1939,106 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     return true;
   }
 
+  /// The sign offer for the next pick (see signs.dart), drawn once from
+  /// [patrons] and [signs] and kept until a sign is taken. Null when no
+  /// pick waits, or no patron has anything left to offer (the pick waits
+  /// for one). A patron's first offer marks them met, for the codex.
+  Future<SignOffer?> ensureSignOffer({
+    required Map<String, Patron> patrons,
+    required Map<String, SignDef> signs,
+    Random? random,
+  }) async {
+    if (state.pendingSignPicks <= 0) return null;
+    final waiting = state.signOffer;
+    if (waiting != null) return waiting;
+    final offer = rollSignOffer(
+      patrons: patrons,
+      signs: signs,
+      held: state.heldSigns,
+      flags: state.flags,
+      alignment: state.alignmentScore,
+      random: random ?? Random(),
+      patronsThisLife: state.signPatronsThisLife,
+      favour: state.patronFavour,
+      patronsMet: state.patronsMet,
+      // A lucky sign helps draw the next one.
+      luck: state.luck +
+          signEffectsFor(state.heldSigns, signs,
+                  alignment: state.alignmentScore)
+              .stat('luck'),
+    );
+    if (offer == null) return null;
+    state = state.copyWith(
+      signOffer: offer,
+      patronsMet: state.patronsMet.contains(offer.patronId)
+          ? null
+          : [...state.patronsMet, offer.patronId],
+    );
+    await _persist();
+    return offer;
+  }
+
+  /// Takes [signId] from the offer (see takeSign): it replaces the sign in
+  /// its slot, if any, keeping that one's level and the better rarity; a
+  /// pact starts counting. The patron gains favour and has now given a
+  /// sign this life; a Choir vow lifts the alignment, a Pit pact lowers it.
+  Future<bool> chooseSign(String signId,
+      {required Map<String, SignDef> signs}) async {
+    final offer = state.signOffer;
+    final card = offer?.cardFor(signId);
+    final sign = signs[signId];
+    if (offer == null ||
+        card == null ||
+        sign == null ||
+        state.pendingSignPicks <= 0) {
+      return false;
+    }
+    final taken = takeSign(state.heldSigns, sign, card.rarity, signs);
+    state = state.copyWith(
+      heldSigns: taken.held,
+      pendingSignPicks: state.pendingSignPicks - 1,
+      clearSignOffer: true,
+      patronFavour: {
+        ...state.patronFavour,
+        offer.patronId: (state.patronFavour[offer.patronId] ?? 0) + 1,
+      },
+      signPatronsThisLife: {
+        ...state.signPatronsThisLife,
+        offer.patronId,
+        sign.patronId,
+      }.toList(),
+      alignmentScore: state.alignmentScore + alignmentShiftFor(sign),
+    );
+    await _persist();
+    return true;
+  }
+
+  /// Spends a drop of Titan's Blood raising held sign [signId] one level.
+  /// False when there is no blood, no such sign, or it is at its highest.
+  Future<bool> spendTitanBlood(String signId) async {
+    if (state.titanBlood <= 0) return false;
+    final raised = raiseSign(state.heldSigns, signId);
+    if (raised == null) return false;
+    state = state.copyWith(heldSigns: raised, titanBlood: state.titanBlood - 1);
+    await _persist();
+    return true;
+  }
+
+  /// [count] more sign offers to choose (a boss beaten, Edit Mode's
+  /// "Offer a sign now").
+  Future<void> grantSignPicks(int count) async {
+    if (count <= 0) return;
+    state = state.copyWith(pendingSignPicks: state.pendingSignPicks + count);
+    await _persist();
+  }
+
+  /// [count] more drops of Titan's Blood (a hunt, an Elite, Edit Mode).
+  Future<void> grantTitanBlood(int count) async {
+    if (count <= 0) return;
+    state = state.copyWith(titanBlood: state.titanBlood + count);
+    await _persist();
+  }
+
   /// The story takes [companionId] for good: out of the roster and the
   /// party, and never recruited again this run; a benched companion takes
   /// their seat (see [_removeAlly], which reads the house gates off
@@ -2013,6 +2193,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       skillPoints: leveled.skillPoints,
       pendingPerkPicks:
           state.pendingPerkPicks + perkPicksFor(state.level, leveled.level),
+      pendingSignPicks:
+          state.pendingSignPicks + signPicksFor(state.level, leveled.level),
       gold: state.gold + rewardGold,
       alignmentScore: state.alignmentScore + alignmentMod,
       activeQuestIds: newActive,
@@ -3458,6 +3640,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     List<String>? recentLootIds,
     int? manaAfter,
     ContractTally? contractTally,
+    int signPicks = 0,
+    int titanBlood = 0,
+    bool pactFight = false,
   }) async {
     final leveled = _applyXp(xpGain);
 
@@ -3531,6 +3716,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       skillPoints: leveled.skillPoints + skillPointsGained,
       pendingPerkPicks:
           state.pendingPerkPicks + perkPicksFor(state.level, leveled.level),
+      // An odd level and a boss beaten each bring a sign to choose, a hunt
+      // (or, sometimes, an Elite) a drop of Titan's Blood; a dice fight
+      // won or lost runs every pact one fight on.
+      pendingSignPicks: state.pendingSignPicks +
+          signPicksFor(state.level, leveled.level) +
+          signPicks,
+      titanBlood: state.titanBlood + titanBlood,
+      heldSigns: pactFight ? countDownPacts(state.heldSigns) : null,
       gold: state.gold + goldGain,
       inventoryItemIds: [...state.inventoryItemIds, ...carried],
       potionCount: state.potionCount + potionsGained,
@@ -3582,7 +3775,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// Permadeath: clears the player's inventory and equipped items, and
   /// resets the skill build back to class basics — a roguelike run starts
-  /// over each life. Keeps level, XP, gold, stats, dice (as items) and
+  /// over each life. The signs go with it (held signs, the picks and offer
+  /// waiting, Titan's Blood, the clans and the Choir or Pit of this life);
+  /// favour with the patrons stays. Keeps level, XP, gold, stats, dice (as items) and
   /// story flags/quests intact; only the *skill build itself* (unlocked
   /// skills, tier upgrades, skill essence, and unspent skill points) is
   /// wiped, back to exactly what [startNewGame] would grant: the race and
@@ -3598,6 +3793,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       lostItemIds: [...state.inventoryItemIds],
       xpEarnedThisRun: state.xpEarnedThisRun,
       skillsLost: state.unlockedSkillIds.length,
+      signsLost: state.heldSigns.length,
     );
 
     final starterUnlockedSkills = _starterSkillsFor(race, profession);
@@ -3624,6 +3820,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           starterAssignments, _startingDiceIdFor(profession)),
       knownSpellIds: _startingSpellIdsFor(profession),
       mana: state.maxMana,
+      heldSigns: const [],
+      pendingSignPicks: 0,
+      clearSignOffer: true,
+      titanBlood: 0,
+      signPatronsThisLife: const [],
     );
     await _persist();
     return result;
@@ -3636,6 +3837,7 @@ class PermadeathResult {
     required this.lostItemIds,
     required this.xpEarnedThisRun,
     required this.skillsLost,
+    this.signsLost = 0,
   });
 
   final List<String> lostItemIds;
@@ -3644,6 +3846,9 @@ class PermadeathResult {
   /// to class basics — for the death-screen recap.
   final int skillsLost;
   final int xpEarnedThisRun;
+
+  /// How many signs the life carried, all lost with it.
+  final int signsLost;
 }
 
 final playerSessionProvider =

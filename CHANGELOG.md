@@ -8,6 +8,68 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.192.0+223]
+
+A new way to grow, Hades-style: **Signs**. Factions draw power on you, three
+offers at a time, and every life builds a different kit. Levels, stat points,
+skill points, the skill tree and the level-up perks stay as they were.
+
+### Added
+- **Signs** (« Signes »). A patron's drawer offers three signs; you take one.
+  - **When:** every odd level (3, 5, 7…), next to the perk pick on even
+    levels, and after every boss you beat. Picks wait if you close the
+    offer: the Character tab shows a badge and a button to reopen it.
+  - **Slots:** one sign each for your Attack, Defend, Heal and Mana faces
+    (Strike, Guard, Mend, Spell), plus any number of passives. A new sign for
+    a filled slot replaces the old one ("Replaces: …"), keeping its level and
+    the better rarity.
+  - **Rarity:** Common, Rare, Epic, Heroic (×1 to ×2.5). Luck and favour
+    with the patron raise the odds.
+  - **Titan's Blood** (« Sang de Titan »): won from hunts and a quarter of
+    Elite fights, it raises one held sign a level (up to 5).
+  - **Duo signs** appear once you hold signs from both of their patrons.
+- **Eleven patrons** (names are placeholders, easy to rename in
+  `patrons.json`):
+  - five clans, at most three per life: the Standard (banners, the whole
+    party), the Painted (crits, dodge), the Stone-marked (block, armor,
+    thorns), the Inked (fire, poison, lifesteal), the Lettered (mana,
+    spells);
+  - four tribes, offering only once you have found them: the giants of
+    Highhearth, the oni, the Tide-Kin (the sea: hull, guns, calmer voyages)
+    and the Kindly Ones;
+  - **the Choir** (angels, alignment 10 and up): vows that fall silent while
+    your alignment is below 0. Taking one: alignment +3;
+  - **the Pit** (« la Fosse », demons, alignment −10 and below): pacts with
+    a curse for their first 3 fights (enemies hit harder, you start hurt, or
+    fights pay less), then a strong gift for good. Taking one: alignment −3.
+  - The Choir and the Pit shut each other out for the rest of a life.
+- 66 signs in English and French, each with its effect text written from its
+  numbers.
+- **Lives:** a permadeath death or New Game+ takes your signs, waiting picks
+  and Titan's Blood; favour with each patron stays and improves later
+  rarities. The death screen says so.
+- **Screens:** the offer dialog, a Signs section on the Character tab (spend
+  Titan's Blood there), a Patrons codex of the patrons met, a tutorial the
+  first time, fight-log lines when a sign triggers, and in Edit Mode "Offer a
+  sign now" and "+1 Titan's Blood".
+- The in-app playthrough simulator now plays expeditions and takes signs, so
+  its runs reach chapter 6 instead of stopping at the chapter 2 harbor.
+
+### Balance
+Sign values were cut by 40% after simulating. Win rate per attempt, before
+signs → with signs (6000 simulated runs, solo, no companions):
+
+| Chapter | Before | After |
+|---|---|---|
+| 1 | 57.5% | 57.9% |
+| 2 | 34.1% | 36.5% |
+| 3 | 26.3% | 32.3% |
+| 4 | 15.8% | 20.1% |
+| 5 | 11.1% | 14.6% |
+| 6 | 18.0% | 22.5% |
+
+Chapter 3 is the most changed (+6): it's where most players fill every slot.
+
 ## [1.191.0+222]
 
 Narration can be recorded a part at a time and kept in the game. This brings

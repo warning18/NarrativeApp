@@ -22,7 +22,8 @@ class _RoundPlan {
 /// the enemies' tampering and Luck nudges.
 extension _FightDiceRules on _FightScreenState {
   /// A rolled face of [actor]'s die as it lands this round: the player's
-  /// skill pick, then the fight's tampering (see [_tampered]).
+  /// skill pick, the player's strike signs, then the fight's tampering
+  /// (see [_tampered]).
   DiceFaceResult _landedFace(_PartyMember actor, DiceFaceResult rawRoll) {
     final lang = ref.read(appLanguageProvider);
     final faces = actor.dieFaces;
@@ -32,7 +33,36 @@ extension _FightDiceRules on _FightScreenState {
       actor.diceSkillAssignments[rawRoll.faceIndex.toString()],
       language: lang,
     );
-    return _tampered(actor, face, lang);
+    return _tampered(actor, _signedFace(actor, face), lang);
+  }
+
+  /// [face] with the player's strike signs on it: an Attack face takes
+  /// their keywords, and their element when it has none of its own. What
+  /// the element and keywords do from there is the face's own business
+  /// (the gear's elemental bonus, weaknesses, a Cleave's splash...).
+  DiceFaceResult _signedFace(_PartyMember actor, DiceFaceResult face) {
+    if (!actor.isPlayer || face.type != 'Attack') return face;
+    var signed = face;
+    if (_signs.strikeKeywords.isNotEmpty) {
+      signed =
+          signed.withKeywords({...face.keywords, ..._signs.strikeKeywords});
+    }
+    if (_signs.strikeElement.isNotEmpty && face.element == 'None') {
+      signed = signed.withElement(_signs.strikeElement);
+    }
+    return signed;
+  }
+
+  /// [face]'s number with the player's guard, mend and spell signs on it
+  /// (see SignEffects.guardValue and friends).
+  DiceFaceResult _signedValue(_PartyMember actor, DiceFaceResult face) {
+    if (!actor.isPlayer || _signs.isEmpty) return face;
+    return switch (face.type) {
+      'Defend' => face.withValue(_signs.guardValue(face.value)),
+      'Heal' => face.withValue(_signs.mendValue(face.value, actor.wisdom ~/ 2)),
+      'Mana' => face.withValue(_signs.manaValue(face.value)),
+      _ => face,
+    };
   }
 
   /// [face] of [actor]'s die under the enemies' tampering this round: a
@@ -145,13 +175,27 @@ extension _FightDiceRules on _FightScreenState {
     final bonus = _flatBonusFor(actor, face);
     final basic =
         face.type == 'Attack' || face.type == 'Defend' || face.type == 'Heal';
-    final played =
-        bonus > 0 && basic ? face.withValue(face.value + bonus) : face;
+    final played = _signedValue(
+        actor, bonus > 0 && basic ? face.withValue(face.value + bonus) : face);
+    var damage = _totalDamageFor(actor, played, skills, items) +
+        (played.type == 'Skill' ? bonus : 0);
+    // The player's strike signs: an Attack face's flat damage and its
+    // share, and the low-health and first-round shares on any strike.
+    if (actor.isPlayer && (played.type == 'Attack' || played.type == 'Skill')) {
+      final attack = played.type == 'Attack';
+      damage = _signs.strikeBase(damage, played.value,
+          attackFace: attack,
+          percent: _signs.strikePercentFor(
+            attackFace: attack,
+            currentHealth: actor.currentHealth,
+            maxHealth: actor.maxHealth,
+            firstRound: _roundsStarted <= 1,
+          ));
+    }
     final result = resolvePlayerFace(
       played,
       _skillsForFace(actor, played, skills),
-      _totalDamageFor(actor, played, skills, items) +
-          (played.type == 'Skill' ? bonus : 0),
+      damage,
       language: lang,
       activeEffects: actor.statusEffects,
       wisdomHealBonus: actor.wisdom ~/ 2,

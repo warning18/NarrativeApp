@@ -372,6 +372,29 @@ List<SeaEvent> buildVoyage({
   return events;
 }
 
+/// A calm sign (voyageCalm, see signs.dart): each storm or raider day of
+/// [events] passes the Eel by at [percent]% odds, left out as Flight
+/// leaves them (a beast's or a hunt's day is never). A voyage never
+/// empties: if every day passed, the last stays -- unless [keepOne] is
+/// false (the extra day a shelter costs, which may pass as well). [calmed]
+/// counts the days that passed.
+({List<SeaEvent> events, int calmed}) applyVoyageCalm(
+    List<SeaEvent> events, int percent, Random random,
+    {bool keepOne = true}) {
+  if (percent <= 0) return (events: events, calmed: 0);
+  final kept = [
+    for (final event in events)
+      if ((event.kind != SeaEventKind.storm &&
+              event.kind != SeaEventKind.raider) ||
+          random.nextInt(100) >= percent)
+        event,
+  ];
+  if (keepOne && kept.isEmpty && events.isNotEmpty) {
+    return (events: [events.last], calmed: events.length - 1);
+  }
+  return (events: kept, calmed: events.length - kept.length);
+}
+
 /// The day a beast's [record] is met: on a crossing ([hunt] false), its
 /// sighting; on a hunt, the signs that led the Eel to it.
 SeaEvent beastDayFor(String beastId, Map<String, dynamic> record,

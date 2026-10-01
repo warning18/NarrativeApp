@@ -8446,6 +8446,419 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The {ship}\'s consort comes up and runs out her guns',
     AppLanguage.fr: 'Le renfort de {ship} arrive et met ses canons en batterie',
   },
+  // v1.192: Signs, the patrons' boons (see signs.dart). French: « un
+  // Signe » (masculine), the player is « vous », a non-breaking space
+  // before : ; ! ? % and inside « ».
+  'signs_section': {AppLanguage.en: 'Signs', AppLanguage.fr: 'Signes'},
+  'signs_none': {
+    AppLanguage.en:
+        'No signs yet. Every odd level and every boss beaten brings one to choose.',
+    AppLanguage.fr:
+        'Aucun Signe pour l’instant. Chaque niveau impair et chaque boss vaincu en apportent un à choisir.',
+  },
+  'sign_pending': {
+    AppLanguage.en: '{n} sign(s) to choose',
+    AppLanguage.fr: '{n}\u00a0Signe(s) à choisir',
+  },
+  'sign_open_offer_button': {
+    AppLanguage.en: 'Choose a sign',
+    AppLanguage.fr: 'Choisir un Signe',
+  },
+  'sign_none_to_offer': {
+    AppLanguage.en: 'No patron has a sign to offer you yet.',
+    AppLanguage.fr: 'Aucun protecteur n’a encore de Signe à vous offrir.',
+  },
+  'sign_choose_hint': {
+    AppLanguage.en: 'Choose one sign.',
+    AppLanguage.fr: 'Choisissez un Signe.',
+  },
+  'sign_take_button': {
+    AppLanguage.en: 'Take this sign',
+    AppLanguage.fr: 'Prendre ce Signe',
+  },
+  'sign_later_button': {AppLanguage.en: 'Later', AppLanguage.fr: 'Plus tard'},
+  'sign_replaces': {
+    AppLanguage.en: 'Replaces: {name}',
+    AppLanguage.fr: 'Remplace\u00a0: {name}',
+  },
+  'sign_duo_badge': {AppLanguage.en: 'Duo', AppLanguage.fr: 'Duo'},
+  'sign_level': {AppLanguage.en: 'Lv {n}', AppLanguage.fr: 'Niv.\u00a0{n}'},
+  'sign_vow_silent': {
+    AppLanguage.en: 'Silent: your alignment is below 0.',
+    AppLanguage.fr: 'Silencieux\u00a0: votre alignement est sous 0.',
+  },
+  'sign_passives_label': {
+    AppLanguage.en: 'Passives',
+    AppLanguage.fr: 'Passifs',
+  },
+  'titan_blood_label': {
+    AppLanguage.en: 'Titan’s Blood: {n}',
+    AppLanguage.fr: 'Sang de Titan\u00a0: {n}',
+  },
+  'titan_blood_hint': {
+    AppLanguage.en: 'Tap a sign to raise it one level.',
+    AppLanguage.fr: 'Touchez un Signe pour l’élever d’un niveau.',
+  },
+  'titan_blood_no_sign': {
+    AppLanguage.en: 'It waits for a sign to raise.',
+    AppLanguage.fr: 'Il attend un Signe à élever.',
+  },
+  'titan_blood_confirm_title': {
+    AppLanguage.en: 'Raise {name}?',
+    AppLanguage.fr: 'Élever {name}\u00a0?',
+  },
+  'titan_blood_confirm_body': {
+    AppLanguage.en: 'A drop of Titan’s Blood raises it to level {n}.',
+    AppLanguage.fr: 'Une goutte de Sang de Titan l’élève au niveau {n}.',
+  },
+  'titan_blood_raise_button': {
+    AppLanguage.en: 'Raise',
+    AppLanguage.fr: 'Élever',
+  },
+  'titan_blood_max': {
+    AppLanguage.en: '{name} is at its highest level.',
+    AppLanguage.fr: '{name} est à son plus haut niveau.',
+  },
+  'sign_rarity_common': {AppLanguage.en: 'Common', AppLanguage.fr: 'Commun'},
+  'sign_rarity_rare': {AppLanguage.en: 'Rare', AppLanguage.fr: 'Rare'},
+  'sign_rarity_epic': {AppLanguage.en: 'Epic', AppLanguage.fr: 'Épique'},
+  'sign_rarity_heroic': {AppLanguage.en: 'Heroic', AppLanguage.fr: 'Héroïque'},
+  'sign_slot_strike': {AppLanguage.en: 'Strike', AppLanguage.fr: 'Frappe'},
+  'sign_slot_guard': {AppLanguage.en: 'Guard', AppLanguage.fr: 'Garde'},
+  'sign_slot_mend': {AppLanguage.en: 'Mend', AppLanguage.fr: 'Soin'},
+  'sign_slot_spell': {AppLanguage.en: 'Spell', AppLanguage.fr: 'Sort'},
+  'sign_slot_passive': {AppLanguage.en: 'Passive', AppLanguage.fr: 'Passif'},
+  'sign_status_poison': {
+    AppLanguage.en: 'poison ({m} a turn for {d} turns)',
+    AppLanguage.fr: 'du poison ({m} par tour pendant {d}\u00a0tours)',
+  },
+  'sign_status_weaken': {
+    AppLanguage.en: 'weakness ({m}% for {d} turns)',
+    AppLanguage.fr: 'un affaiblissement ({m}\u00a0% pendant {d}\u00a0tours)',
+  },
+  'sign_status_stun': {
+    AppLanguage.en: 'a stun ({d} turn)',
+    AppLanguage.fr: 'un étourdissement ({d}\u00a0tour)',
+  },
+  // One line per effect kind, written with the sign's numbers.
+  'sign_fx_strikeDamagePercent': {
+    AppLanguage.en: 'Attack faces deal +{v}% damage.',
+    AppLanguage.fr: 'Les faces Attaque infligent +{v}\u00a0% de dégâts.',
+  },
+  'sign_fx_strikeFlat': {
+    AppLanguage.en: 'Attack faces deal +{v} damage.',
+    AppLanguage.fr: 'Les faces Attaque infligent +{v}\u00a0dégâts.',
+  },
+  'sign_fx_strikeElement': {
+    AppLanguage.en: 'Attack faces strike with {e}, +{v} damage.',
+    AppLanguage.fr:
+        'Les faces Attaque prennent l’élément {e}, +{v}\u00a0dégâts.',
+  },
+  'sign_fx_strikeStatus': {
+    AppLanguage.en: 'Attack faces: {c}% chance to inflict {s}.',
+    AppLanguage.fr:
+        'Faces Attaque\u00a0: {c}\u00a0% de chances d’infliger {s}.',
+  },
+  'sign_fx_strikeKeyword': {
+    AppLanguage.en: 'Attack faces gain {k}.',
+    AppLanguage.fr: 'Les faces Attaque gagnent {k}.',
+  },
+  'sign_fx_guardBlockPercent': {
+    AppLanguage.en: 'Guard faces block +{v}%.',
+    AppLanguage.fr: 'Les faces Garde bloquent +{v}\u00a0%.',
+  },
+  'sign_fx_guardFlat': {
+    AppLanguage.en: 'Guard faces block +{v}.',
+    AppLanguage.fr: 'Les faces Garde bloquent +{v}.',
+  },
+  'sign_fx_guardHeal': {
+    AppLanguage.en: 'Guard faces also heal you {v}.',
+    AppLanguage.fr: 'Les faces Garde vous soignent aussi de {v}.',
+  },
+  'sign_fx_guardRetaliate': {
+    AppLanguage.en:
+        'While your guard holds, the enemy that hits you takes {v} damage.',
+    AppLanguage.fr:
+        'Tant que votre garde tient, l’ennemi qui vous frappe subit {v}\u00a0dégâts.',
+  },
+  'sign_fx_guardStatus': {
+    AppLanguage.en:
+        'Behind your guard: {c}% chance to inflict {s} on the enemy that hits you.',
+    AppLanguage.fr:
+        'Derrière votre garde\u00a0: {c}\u00a0% de chances d’infliger {s} à l’ennemi qui vous frappe.',
+  },
+  'sign_fx_mendPercent': {
+    AppLanguage.en: 'Heal faces heal +{v}%.',
+    AppLanguage.fr: 'Les faces Soin soignent +{v}\u00a0%.',
+  },
+  'sign_fx_mendParty': {
+    AppLanguage.en: 'Your Heal faces also heal each companion {v}% of it.',
+    AppLanguage.fr:
+        'Vos faces Soin soignent aussi chaque compagnon de {v}\u00a0% du soin.',
+  },
+  'sign_fx_mendShield': {
+    AppLanguage.en: 'Healing past full health becomes block, up to {v}.',
+    AppLanguage.fr:
+        'Le soin au-delà de la santé pleine devient du blocage, jusqu’à {v}.',
+  },
+  'sign_fx_mendCleanse': {
+    AppLanguage.en: 'Heal faces lift {v} of your afflictions.',
+    AppLanguage.fr: 'Les faces Soin vous libèrent de {v}\u00a0affliction(s).',
+  },
+  'sign_fx_manaFlat': {
+    AppLanguage.en: 'Mana faces give +{v} mana.',
+    AppLanguage.fr: 'Les faces Mana donnent +{v}\u00a0mana.',
+  },
+  'sign_fx_spellDamagePercent': {
+    AppLanguage.en: 'Spells deal and heal +{v}%.',
+    AppLanguage.fr: 'Les sorts infligent et soignent +{v}\u00a0%.',
+  },
+  'sign_fx_spellCostLess': {
+    AppLanguage.en: 'Spells cost {v} less mana (never under 1).',
+    AppLanguage.fr:
+        'Les sorts coûtent {v}\u00a0mana de moins (jamais moins de 1).',
+  },
+  'sign_fx_spellStatus': {
+    AppLanguage.en: 'Spells: {c}% chance to inflict {s}.',
+    AppLanguage.fr: 'Sorts\u00a0: {c}\u00a0% de chances d’infliger {s}.',
+  },
+  'sign_fx_maxHealth': {
+    AppLanguage.en: '+{v} max health in fights.',
+    AppLanguage.fr: '+{v} de santé maximale en combat.',
+  },
+  'sign_fx_armor': {
+    AppLanguage.en: '+{v} armor.',
+    AppLanguage.fr: '+{v} d’armure.',
+  },
+  'sign_fx_critChance': {
+    AppLanguage.en: '+{v}% chance of a critical hit.',
+    AppLanguage.fr: '+{v}\u00a0% de chances de coup critique.',
+  },
+  'sign_fx_dodgeChance': {
+    AppLanguage.en: '+{v}% chance to dodge.',
+    AppLanguage.fr: '+{v}\u00a0% de chances d’esquive.',
+  },
+  'sign_fx_lifestealPercent': {
+    AppLanguage.en: 'Your hits heal you {v}% of their damage.',
+    AppLanguage.fr: 'Vos coups vous soignent de {v}\u00a0% de leurs dégâts.',
+  },
+  'sign_fx_thorns': {
+    AppLanguage.en: 'An enemy whose hit lands takes {v} damage back.',
+    AppLanguage.fr:
+        'Un ennemi dont le coup porte subit {v}\u00a0dégâts en retour.',
+  },
+  'sign_fx_manaOnHit': {
+    AppLanguage.en: 'Each hit you land gives {v} mana.',
+    AppLanguage.fr: 'Chaque coup que vous portez donne {v}\u00a0mana.',
+  },
+  'sign_fx_maxMana': {
+    AppLanguage.en: '+{v} max mana in fights.',
+    AppLanguage.fr: '+{v} de mana maximal en combat.',
+  },
+  'sign_fx_secondWind': {
+    AppLanguage.en: 'Once a fight, a killing blow leaves you at 1 health.',
+    AppLanguage.fr:
+        'Une fois par combat, un coup fatal vous laisse à 1\u00a0point de vie.',
+  },
+  'sign_fx_potionBonus': {
+    AppLanguage.en: 'Potions heal {v} more.',
+    AppLanguage.fr: 'Les potions soignent {v} de plus.',
+  },
+  'sign_fx_goldPercent': {
+    AppLanguage.en: '+{v}% gold from fights.',
+    AppLanguage.fr: '+{v}\u00a0% d’or gagné en combat.',
+  },
+  'sign_fx_xpPercent': {
+    AppLanguage.en: '+{v}% XP from fights.',
+    AppLanguage.fr: '+{v}\u00a0% d’XP gagnée en combat.',
+  },
+  'sign_fx_allyDamagePercent': {
+    AppLanguage.en: 'Companions deal +{v}% damage.',
+    AppLanguage.fr: 'Les compagnons infligent +{v}\u00a0% de dégâts.',
+  },
+  'sign_fx_stat': {
+    AppLanguage.en: '+{v} {stat} in fights.',
+    AppLanguage.fr: '+{v} en {stat} en combat.',
+  },
+  'sign_fx_partyStartBlock': {
+    AppLanguage.en: 'The whole party starts each fight with {v} block.',
+    AppLanguage.fr:
+        'Tout le groupe commence chaque combat avec {v} de blocage.',
+  },
+  'sign_fx_startMomentum': {
+    AppLanguage.en: 'Start each fight with {v} momentum.',
+    AppLanguage.fr: 'Commencez chaque combat avec {v} d’élan.',
+  },
+  'sign_fx_lowHealthDamagePercent': {
+    AppLanguage.en: '+{v}% damage while under 35% health.',
+    AppLanguage.fr: '+{v}\u00a0% de dégâts sous 35\u00a0% de santé.',
+  },
+  'sign_fx_killHeal': {
+    AppLanguage.en: 'Recover {v} health when an enemy falls.',
+    AppLanguage.fr: 'Récupérez {v}\u00a0PV quand un ennemi tombe.',
+  },
+  'sign_fx_afterFightHealPercent': {
+    AppLanguage.en: 'After a won fight, the party heals {v}% of max health.',
+    AppLanguage.fr:
+        'Après un combat gagné, le groupe récupère {v}\u00a0% de sa santé maximale.',
+  },
+  'sign_fx_firstRoundDamagePercent': {
+    AppLanguage.en: '+{v}% damage in the first round.',
+    AppLanguage.fr: '+{v}\u00a0% de dégâts au premier tour.',
+  },
+  'sign_fx_partyMaxHealthPercent': {
+    AppLanguage.en: 'The whole party has +{v}% max health in fights.',
+    AppLanguage.fr: 'Tout le groupe a +{v}\u00a0% de santé maximale en combat.',
+  },
+  'sign_fx_shipHullPercent': {
+    AppLanguage.en: 'The Rusty Eel has +{v}% hull in sea battles.',
+    AppLanguage.fr: 'Le Rusty Eel a +{v}\u00a0% de coque en bataille navale.',
+  },
+  'sign_fx_shipGunPercent': {
+    AppLanguage.en: 'The Eel’s guns deal +{v}% damage.',
+    AppLanguage.fr: 'Les canons de l’Eel infligent +{v}\u00a0% de dégâts.',
+  },
+  'sign_fx_voyageCalm': {
+    AppLanguage.en: 'Each bad day at sea: {v}% chance it passes you by.',
+    AppLanguage.fr:
+        'Chaque mauvais jour en mer\u00a0: {v}\u00a0% de chances qu’il vous épargne.',
+  },
+  'sign_curse_enemyDamagePercent': {
+    AppLanguage.en:
+        'Pact: enemies deal +{v}% damage for the next {n} fights, then the gift.',
+    AppLanguage.fr:
+        'Pacte\u00a0: les ennemis infligent +{v}\u00a0% de dégâts pendant les {n}\u00a0prochains combats, puis vient le don.',
+  },
+  'sign_curse_startHealthPercentLoss': {
+    AppLanguage.en:
+        'Pact: start each of the next {n} fights {v}% down, then the gift.',
+    AppLanguage.fr:
+        'Pacte\u00a0: commencez les {n}\u00a0prochains combats avec {v}\u00a0% de santé en moins, puis vient le don.',
+  },
+  'sign_curse_goldPercentLoss': {
+    AppLanguage.en: 'Pact: the next {n} fights pay {v}% less, then the gift.',
+    AppLanguage.fr:
+        'Pacte\u00a0: les {n}\u00a0prochains combats rapportent {v}\u00a0% d’or en moins, puis vient le don.',
+  },
+  // The fight log, when a sign acts.
+  'sign_log_status': {
+    AppLanguage.en: '{sign}: {line}',
+    AppLanguage.fr: '{sign}\u00a0: {line}',
+  },
+  'sign_log_retaliate': {
+    AppLanguage.en: '{sign}: {name} takes {n} damage from your guard.',
+    AppLanguage.fr:
+        '{sign}\u00a0: {name} subit {n}\u00a0dégâts de votre garde.',
+  },
+  'sign_log_kill_heal': {
+    AppLanguage.en: 'Your signs feed on the fall: you recover {n} HP.',
+    AppLanguage.fr:
+        'Vos Signes se nourrissent de la chute\u00a0: vous récupérez {n}\u00a0PV.',
+  },
+  'sign_log_guard_heal': {
+    AppLanguage.en: 'The sign on your guard heals you {n} HP.',
+    AppLanguage.fr: 'Le Signe de votre garde vous soigne de {n}\u00a0PV.',
+  },
+  'sign_log_mend_party': {
+    AppLanguage.en: 'Your mending reaches the party: +{n} HP each.',
+    AppLanguage.fr: 'Votre soin gagne le groupe\u00a0: +{n}\u00a0PV chacun.',
+  },
+  'sign_log_mend_shield': {
+    AppLanguage.en: 'The healing spills over into {n} block.',
+    AppLanguage.fr: 'Le soin déborde en {n} de blocage.',
+  },
+  'sign_log_cleanse': {
+    AppLanguage.en: 'Your sign lifts an affliction from you.',
+    AppLanguage.fr: 'Votre Signe vous libère d’une affliction.',
+  },
+  'sign_log_vow_silent': {
+    AppLanguage.en: 'A vow is silent: your alignment is below 0.',
+    AppLanguage.fr: 'Un vœu se tait\u00a0: votre alignement est sous 0.',
+  },
+  'sign_log_pact': {
+    AppLanguage.en: 'A pact still binds you: {n} fight(s) before its gift.',
+    AppLanguage.fr:
+        'Un pacte vous lie encore\u00a0: {n}\u00a0combat(s) avant son don.',
+  },
+  'sign_log_start_block': {
+    AppLanguage.en: 'Your signs: the party starts behind {n} block.',
+    AppLanguage.fr:
+        'Vos Signes\u00a0: le groupe commence derrière {n} de blocage.',
+  },
+  'sign_log_start_curse': {
+    AppLanguage.en: 'A pact takes {n} HP before the fight begins.',
+    AppLanguage.fr: 'Un pacte vous prend {n}\u00a0PV avant le combat.',
+  },
+  'sign_log_after_fight': {
+    AppLanguage.en: 'Your signs: the party recovers {n}% of its health.',
+    AppLanguage.fr:
+        'Vos Signes\u00a0: le groupe récupère {n}\u00a0% de sa santé.',
+  },
+  'sign_log_offer': {
+    AppLanguage.en: 'A patron takes notice: a sign waits for you.',
+    AppLanguage.fr: 'Un protecteur vous remarque\u00a0: un Signe vous attend.',
+  },
+  'sign_log_titan_blood': {
+    AppLanguage.en: 'A drop of Titan’s Blood!',
+    AppLanguage.fr: 'Une goutte de Sang de Titan\u00a0!',
+  },
+  'ship_log_calm_sign': {
+    AppLanguage.en: 'A sign keeps {n} bad day(s) at sea off the Eel',
+    AppLanguage.fr: 'Un Signe épargne à l’Eel {n}\u00a0mauvais jour(s) en mer',
+  },
+  'signs_lost_label': {
+    AppLanguage.en: 'Signs Lost',
+    AppLanguage.fr: 'Signes perdus',
+  },
+  'patrons_section': {
+    AppLanguage.en: 'Patrons',
+    AppLanguage.fr: 'Protecteurs',
+  },
+  'patrons_none_met': {
+    AppLanguage.en: 'No patron has offered you a sign yet.',
+    AppLanguage.fr: 'Aucun protecteur ne vous a encore offert de Signe.',
+  },
+  'patron_favour': {
+    AppLanguage.en: 'Favour {n} · level {l}',
+    AppLanguage.fr: 'Faveur {n} · niveau {l}',
+  },
+  'patron_kind_clan': {AppLanguage.en: 'Clan', AppLanguage.fr: 'Clan'},
+  'patron_kind_tribe': {AppLanguage.en: 'Tribe', AppLanguage.fr: 'Tribu'},
+  'patron_kind_otherworld': {
+    AppLanguage.en: 'Otherworld',
+    AppLanguage.fr: 'Outre-monde',
+  },
+  'patron_closed_life': {
+    AppLanguage.en: 'Closed to you this life',
+    AppLanguage.fr: 'Fermé pour vous dans cette vie',
+  },
+  'tut_signs_title': {AppLanguage.en: 'Signs', AppLanguage.fr: 'Signes'},
+  'tut_signs_1': {
+    AppLanguage.en:
+        'A patron offers you a sign: a power drawn on you for this life. Each offer shows three; take one.',
+    AppLanguage.fr:
+        'Un protecteur vous offre un Signe\u00a0: un pouvoir dessiné sur vous pour cette vie. Chaque offre en montre trois\u00a0; prenez-en un.',
+  },
+  'tut_signs_2': {
+    AppLanguage.en:
+        'Strike, guard, mend and spell signs hold one each: a new one replaces the old and keeps its level. Passives have no limit.',
+    AppLanguage.fr:
+        'Les Signes de frappe, de garde, de soin et de sort en tiennent un chacun\u00a0: un nouveau remplace l’ancien et garde son niveau. Les passifs n’ont pas de limite.',
+  },
+  'tut_signs_3': {
+    AppLanguage.en:
+        'Rarer signs are stronger, and Titan’s Blood raises one a level. Death takes them all; the patrons remember your favour.',
+    AppLanguage.fr:
+        'Les Signes plus rares sont plus forts, et le Sang de Titan en élève un d’un niveau. La mort les emporte tous\u00a0; les protecteurs se souviennent de votre faveur.',
+  },
+  'debug_offer_sign': {
+    AppLanguage.en: 'Offer a sign now',
+    AppLanguage.fr: 'Offrir un Signe maintenant',
+  },
+  'debug_titan_blood': {
+    AppLanguage.en: '+1 Titan’s Blood',
+    AppLanguage.fr: '+1 Sang de Titan',
+  },
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value
