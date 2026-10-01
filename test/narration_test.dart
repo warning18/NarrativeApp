@@ -404,7 +404,15 @@ void main() {
     final houses = _loadJson('assets/gamedata/houses.json');
     final races = _loadJson('assets/gamedata/races.json');
     final professions = _loadJson('assets/gamedata/professions.json');
+    final politicsEvents = _loadJson('assets/gamedata/politics_events.json');
     final settable = <String>{
+      // Set by the coast's own events (politics_events.json, v1.195): who
+      // came to stand under the banner, who took the Throne.
+      for (final event in politicsEvents.values)
+        for (final variant in (event as Map)['variants'] as List)
+          ...(((variant as Map)['effects'] as Map?)?['flags'] as List? ??
+                  const [])
+              .map((f) => f.toString()),
       for (final node in dag.values)
         for (final choice in (node as Map)['choices'] as List)
           ...((choice as Map)['flagsToAdd'] as List? ?? const [])

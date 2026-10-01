@@ -1,0 +1,855 @@
+{
+  "lantern_bearer_failing": {
+    "id": "lantern_bearer_failing",
+    "name": "The Feast of the Flame",
+    "name_fr": "La fête de la Flamme",
+    "trigger": {
+      "chapter": 1,
+      "day": 3
+    },
+    "once": true,
+    "variants": [
+      {
+        "effects": {
+          "flags": [
+            "lantern_bearer_failing"
+          ]
+        },
+        "news": "The Lantern-Bearer did not come down for the Feast of the Flame. In Candlehold the lamps were lit without him, and the priests will not say why.",
+        "news_fr": "Le Porte-Lanterne n’est pas descendu pour la fête de la Flamme. À Candlehold, on a allumé les lampes sans lui, et les prêtres refusent de dire pourquoi."
+      }
+    ]
+  },
+  "coal_stops": {
+    "id": "coal_stops",
+    "name": "The Ember Run goes cold",
+    "name_fr": "La Course des Braises refroidit",
+    "trigger": {
+      "chapter": 2
+    },
+    "once": true,
+    "variants": [
+      {
+        "effects": {
+          "relations": [
+            {
+              "a": "compact",
+              "b": "dominion",
+              "steps": -1
+            }
+          ],
+          "intrigue": {
+            "id": "broken_charter",
+            "stage": 3
+          }
+        },
+        "news": "The Emberwives have let the Ember Run go cold. Not one forge in Cinder Row lit this morning, and the Tribunal’s buyers went home with empty carts.",
+        "news_fr": "Les Charbonnières ont laissé refroidir la Course des Braises. Pas une forge de la Rue des Braises ne s’est allumée ce matin, et les acheteurs du Tribunal sont repartis les charrettes vides."
+      }
+    ]
+  },
+  "wharf_raid": {
+    "id": "wharf_raid",
+    "name": "The Wharf raided again",
+    "name_fr": "Le Quai de nouveau fouillé",
+    "trigger": {
+      "chapter": 3
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "crows_warned"
+          ]
+        },
+        "effects": {
+          "standing": {
+            "crows": 5
+          }
+        },
+        "news": "Word followed the Eel across the sea: the Inquisition raided the Smugglers’ Wharf at dawn and found the berths empty. The Crows had moved every crate the night before, and they know whom to thank.",
+        "news_fr": "La nouvelle a suivi l’Eel de l’autre côté de la mer : l’Inquisition a fouillé le Quai des Contrebandiers à l’aube et n’a trouvé que des postes vides. Les Corneilles avaient déplacé chaque caisse la veille, et elles savent qui remercier."
+      },
+      {
+        "effects": {
+          "relations": [
+            {
+              "a": "crows",
+              "b": "dominion",
+              "steps": -1
+            }
+          ]
+        },
+        "news": "Word followed the Eel across the sea: the Inquisition raided the Smugglers’ Wharf again and carried off the Crows’ crates, the very ones the Salt Ledger had paid for. The Crows have stopped answering the Ledger’s letters.",
+        "news_fr": "La nouvelle a suivi l’Eel de l’autre côté de la mer : l’Inquisition a de nouveau fouillé le Quai des Contrebandiers et emporté les caisses des Corneilles, celles-là mêmes que le Registre du Sel avait payées. Les Corneilles ne répondent plus aux lettres du Registre."
+      }
+    ]
+  },
+  "charter_reopened": {
+    "id": "charter_reopened",
+    "name": "The Tribunal reopens the Charter",
+    "name_fr": "Le Tribunal rouvre la Charte",
+    "trigger": {
+      "chapter": 3
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "hub_2015_kelda"
+          ]
+        },
+        "effects": {
+          "relations": [
+            {
+              "a": "compact",
+              "b": "dominion",
+              "steps": -1
+            }
+          ]
+        },
+        "news": "The Tribunal offered to restore the Charter of Anvils. The Anvil-Deaf answered with a single sign, and those who saw it say it was not a polite one; a dwarf who once held a gate on the Wharf had been telling them what the Inquisition does to gates.",
+        "news_fr": "Le Tribunal a proposé de rétablir la Charte des Enclumes. Les Sourds de l’Enclume ont répondu d’un seul signe, et ceux qui l’ont vu disent qu’il n’était pas poli ; une naine qui avait tenu une porte sur le Quai leur avait raconté ce que l’Inquisition fait des portes."
+      },
+      {
+        "conditions": {
+          "standingAtLeast": {
+            "compact": 26
+          }
+        },
+        "effects": {
+          "relations": [
+            {
+              "a": "compact",
+              "b": "dominion",
+              "steps": -1
+            }
+          ]
+        },
+        "news": "The Tribunal offered to restore the Charter of Anvils, and the Compact refused it in a word. They have friends with ships now, the Row says, and need no Charter to eat.",
+        "news_fr": "Le Tribunal a proposé de rétablir la Charte des Enclumes, et le Pacte l’a refusée d’un mot. Ils ont des amis qui ont des navires, maintenant, dit la Rue, et n’ont besoin d’aucune Charte pour manger."
+      },
+      {
+        "effects": {
+          "relations": [
+            {
+              "a": "compact",
+              "b": "dominion",
+              "steps": 1
+            }
+          ]
+        },
+        "news": "The Tribunal offered to restore the Charter of Anvils, and three forges in Cinder Row lit for its coin. The Anvil-Deaf have not voted yet; they are watching who comes to ask them.",
+        "news_fr": "Le Tribunal a proposé de rétablir la Charte des Enclumes, et trois forges de la Rue des Braises se sont allumées pour son or. Les Sourds de l’Enclume n’ont pas encore voté ; ils regardent qui vient leur demander."
+      }
+    ]
+  },
+  "returned_taken": {
+    "id": "returned_taken",
+    "name": "The Returned taken to the Spire",
+    "name_fr": "Les Rendus emmenés à la Flèche",
+    "trigger": {
+      "chapter": 3
+    },
+    "once": true,
+    "variants": [
+      {
+        "effects": {
+          "relations": [
+            {
+              "a": "dominion",
+              "b": "mire",
+              "steps": -1
+            }
+          ]
+        },
+        "news": "Inquisitors took six Returned children from the edge of the fen and marched them to the Spire to be questioned. The fen has closed its paths, and the Heron’s Wake are guiding no one.",
+        "news_fr": "Des inquisiteurs ont enlevé six enfants rendus à la lisière du marais et les ont conduits à la Flèche pour les interroger. Le marais a fermé ses sentiers, et le Sillage du Héron ne guide plus personne."
+      }
+    ]
+  },
+  "order_inquisition_quarrel_early": {
+    "id": "order_inquisition_quarrel_early",
+    "name": "Silver for tear-salvage",
+    "name_fr": "De l’argent pour les épaves de la déchirure",
+    "trigger": {
+      "chapter": 3
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "intrigue_hooded_lantern_stage_1"
+          ]
+        },
+        "effects": {
+          "flags": [
+            "order_inquisition_quarrel"
+          ]
+        },
+        "news": "At Ashen Landing a knight of the Order struck an Inquisitor across the face over a purse of silver paid for tear-salvage. The Grand Master has not apologised.",
+        "news_fr": "Au Débarcadère des Cendres, un chevalier de l’Ordre a giflé un inquisiteur pour une bourse d’argent payée en échange d’épaves de la déchirure. Le Grand Maître ne s’est pas excusé."
+      },
+      {
+        "effects": {},
+        "news": "At Ashen Landing the Order and the Inquisition still share a table, and pass the salt without speaking.",
+        "news_fr": "Au Débarcadère des Cendres, l’Ordre et l’Inquisition partagent encore une table, et se passent le sel sans se parler."
+      }
+    ]
+  },
+  "hand_seen_at_spire": {
+    "id": "hand_seen_at_spire",
+    "name": "A hand on the doors",
+    "name_fr": "Une main sur les portes",
+    "trigger": {
+      "flag": "open_hand_shown"
+    },
+    "once": true,
+    "variants": [
+      {
+        "effects": {},
+        "news": "In the Ashen Quarter someone is chalking a hand on the doors, open and raised. The Inquisition scrubs them off by day; by night they come back.",
+        "news_fr": "Dans le Quartier des Cendres, quelqu’un dessine à la craie une main sur les portes, ouverte et levée. L’Inquisition les efface le jour ; la nuit, elles reviennent."
+      }
+    ]
+  },
+  "lantern_bearer_dies": {
+    "id": "lantern_bearer_dies",
+    "name": "The Lantern-Bearer dies",
+    "name_fr": "La mort du Porte-Lanterne",
+    "trigger": {
+      "chapter": 4
+    },
+    "once": true,
+    "variants": [
+      {
+        "effects": {
+          "flags": [
+            "lantern_bearer_dead"
+          ]
+        },
+        "news": "The Lantern-Bearer is dead. The bells of Candlehold rang for a day and a night, and the Lantern Throne stands empty while the Houses count their votes.",
+        "news_fr": "Le Porte-Lanterne est mort. Les cloches de Candlehold ont sonné un jour et une nuit, et le Trône de la Lanterne reste vide pendant que les Maisons comptent leurs voix."
+      }
+    ]
+  },
+  "order_inquisition_quarrel": {
+    "id": "order_inquisition_quarrel",
+    "name": "The Order and the Inquisition quarrel",
+    "name_fr": "L’Ordre et l’Inquisition se querellent",
+    "trigger": {
+      "chapter": 4
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "order_inquisition_quarrel"
+          ]
+        },
+        "effects": {},
+        "news": "The quarrel at Ashen Landing has become a feud: the Order no longer lets Inquisitors aboard its ships, and the Inquisition has started keeping a list of the Order’s chaplains.",
+        "news_fr": "La querelle du Débarcadère des Cendres est devenue une vendetta : l’Ordre ne laisse plus monter d’inquisiteurs à bord de ses navires, et l’Inquisition a commencé à tenir la liste des aumôniers de l’Ordre."
+      },
+      {
+        "effects": {
+          "flags": [
+            "order_inquisition_quarrel"
+          ]
+        },
+        "news": "With the Throne empty, the Order and the Inquisition quarrelled in the open at Ashen Landing over who had let the Spire fall. Nobody on the quay took either side out loud.",
+        "news_fr": "Le Trône vide, l’Ordre et l’Inquisition se sont querellés ouvertement au Débarcadère des Cendres pour savoir qui avait laissé tomber la Flèche. Personne sur le quai n’a pris parti à voix haute."
+      }
+    ]
+  },
+  "reedholm_anniversary": {
+    "id": "reedholm_anniversary",
+    "name": "Reedholm’s night",
+    "name_fr": "La nuit de Reedholm",
+    "trigger": {
+      "chapter": 5
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "maren_absolved",
+            "liora_met"
+          ]
+        },
+        "effects": {
+          "relations": [
+            {
+              "a": "mire",
+              "b": "penitents",
+              "steps": 1
+            }
+          ]
+        },
+        "news": "On Reedholm’s night the Mire came to the Ashen Quarter with torches, and went home without lighting them: an Ember Sister and a Moss Choir singer off the same ship had walked out to meet them together.",
+        "news_fr": "La nuit de Reedholm, le Marais est venu au Quartier des Cendres avec des torches, et il est reparti sans les allumer : une Sœur de Braise et une chanteuse du Chœur de Mousse, venues du même navire, étaient sorties ensemble à sa rencontre."
+      },
+      {
+        "effects": {
+          "relations": [
+            {
+              "a": "mire",
+              "b": "vigil",
+              "steps": -1
+            }
+          ]
+        },
+        "news": "On Reedholm’s night the Mire burned the Penitents’ infirmary in the Ashen Quarter, as it has sworn to every year since the village burned. The Vigil took the Penitents’ wounded in, and the Mire has not forgiven that either.",
+        "news_fr": "La nuit de Reedholm, le Marais a brûlé le dispensaire des Pénitents dans le Quartier des Cendres, comme il en a fait le serment chaque année depuis que le village a brûlé. La Veille a recueilli les blessés des Pénitents, et le Marais ne lui a pas pardonné cela non plus."
+      }
+    ]
+  },
+  "the_truth_told": {
+    "id": "the_truth_told",
+    "name": "The Dominion splits",
+    "name_fr": "Le Dominion se divise",
+    "trigger": {
+      "flag": "truth_told"
+    },
+    "once": true,
+    "variants": [
+      {
+        "effects": {
+          "relations": [
+            {
+              "a": "dominion",
+              "b": "vigil",
+              "steps": -1
+            },
+            {
+              "a": "compact",
+              "b": "dominion",
+              "steps": -1
+            },
+            {
+              "a": "dominion",
+              "b": "mire",
+              "steps": -1
+            },
+            {
+              "a": "crows",
+              "b": "dominion",
+              "steps": -1
+            },
+            {
+              "a": "dominion",
+              "b": "penitents",
+              "steps": -1
+            }
+          ],
+          "standing": {
+            "penitents": 10,
+            "vigil": 10
+          },
+          "flags": [
+            "dominion_split"
+          ]
+        },
+        "news": "The Reliquary’s own roll is being read aloud in every port from the Ashen Coast to the Hollow Shore: the tear was the Dominion’s doing, on the first night. The Houses are blaming one another in the open, and the Dominion is splitting.",
+        "news_fr": "Le rouleau du Reliquaire lui-même est lu à voix haute dans chaque port, de la Côte de Cendre à la Rive Creuse : la déchirure fut l’œuvre du Dominion, la première nuit. Les Maisons s’accusent les unes les autres au grand jour, et le Dominion se divise."
+      }
+    ]
+  },
+  "the_throne_filled": {
+    "id": "the_throne_filled",
+    "name": "The Lantern Throne is filled",
+    "name_fr": "Le Trône de la Lanterne est pourvu",
+    "trigger": {
+      "chapter": 7
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "throne_backed_vane"
+          ]
+        },
+        "effects": {
+          "relations": [
+            {
+              "a": "dominion",
+              "b": "vigil",
+              "steps": -1
+            },
+            {
+              "a": "dominion",
+              "b": "penitents",
+              "steps": -1
+            },
+            {
+              "a": "dominion",
+              "b": "mire",
+              "steps": -1
+            }
+          ],
+          "flags": [
+            "throne_vane",
+            "throne_filled"
+          ]
+        },
+        "news": "Aurel Vane sits the Lantern Throne, and the Dominion is an inquisition now. His first decree names anyone who draws a heretic, wherever they are found.",
+        "news_fr": "Aurel Vane siège sur le Trône de la Lanterne, et le Dominion est désormais une inquisition. Son premier décret déclare hérétique quiconque trace, où qu’on le trouve."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "throne_backed_morrow"
+          ]
+        },
+        "effects": {
+          "relations": [
+            {
+              "a": "dominion",
+              "b": "vigil",
+              "steps": 1
+            }
+          ],
+          "flags": [
+            "throne_morrow",
+            "throne_filled"
+          ]
+        },
+        "news": "Grand Master Morrow takes the Lantern Throne, and the Dominion is a crusade again: every Order ship on the coast flies the sword-and-lantern, and the Vigil has been asked, for once, to the war council.",
+        "news_fr": "Le Grand Maître Morrow prend le Trône de la Lanterne, et le Dominion redevient une croisade : chaque navire de l’Ordre sur la côte arbore l’épée-lanterne, et la Veille, pour une fois, a été conviée au conseil de guerre."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "throne_backed_tallis"
+          ]
+        },
+        "effects": {
+          "relations": [
+            {
+              "a": "dominion",
+              "b": "penitents",
+              "steps": 1
+            },
+            {
+              "a": "dominion",
+              "b": "mire",
+              "steps": 1
+            }
+          ],
+          "flags": [
+            "throne_tallis",
+            "throne_filled"
+          ]
+        },
+        "news": "Maud Tallis, Eldest of the Wickwardens, takes the Lantern Throne, and the Dominion is a church again. Her first act was to open the cliff-light chapels to anyone the Inquisition hunts, drawers among them.",
+        "news_fr": "Maud Tallis, Aînée des Garde-Mèches, prend le Trône de la Lanterne, et le Dominion redevient une Église. Son premier geste a été d’ouvrir les chapelles des feux de falaise à quiconque l’Inquisition traque, y compris ceux qui tracent."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "intrigue_hooded_lantern_outcome_1"
+          ]
+        },
+        "effects": {
+          "relations": [
+            {
+              "a": "dominion",
+              "b": "vigil",
+              "steps": -1
+            },
+            {
+              "a": "dominion",
+              "b": "penitents",
+              "steps": -1
+            },
+            {
+              "a": "dominion",
+              "b": "mire",
+              "steps": -1
+            }
+          ],
+          "flags": [
+            "throne_vane",
+            "throne_filled"
+          ]
+        },
+        "news": "With the Inquisition’s writ carried up and down the coast, the Houses gave the Lantern Throne to Aurel Vane. The Dominion is an inquisition now, and its first decree names anyone who draws a heretic.",
+        "news_fr": "Avec le mandat de l’Inquisition porté d’un bout à l’autre de la côte, les Maisons ont donné le Trône de la Lanterne à Aurel Vane. Le Dominion est désormais une inquisition, et son premier décret déclare hérétique quiconque trace."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "envoy_gift_vane"
+          ]
+        },
+        "effects": {
+          "relations": [
+            {
+              "a": "dominion",
+              "b": "vigil",
+              "steps": -1
+            },
+            {
+              "a": "dominion",
+              "b": "penitents",
+              "steps": -1
+            },
+            {
+              "a": "dominion",
+              "b": "mire",
+              "steps": -1
+            }
+          ],
+          "flags": [
+            "throne_vane",
+            "throne_filled"
+          ]
+        },
+        "news": "The Houses gave the Lantern Throne to Aurel Vane, who had spent the most and remembered every coin. The Dominion is an inquisition now.",
+        "news_fr": "Les Maisons ont donné le Trône de la Lanterne à Aurel Vane, qui avait le plus dépensé et se souvenait de chaque pièce. Le Dominion est désormais une inquisition."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "intrigue_hooded_lantern_outcome_0"
+          ]
+        },
+        "effects": {
+          "relations": [
+            {
+              "a": "dominion",
+              "b": "vigil",
+              "steps": 1
+            }
+          ],
+          "flags": [
+            "throne_morrow",
+            "throne_filled"
+          ]
+        },
+        "news": "With the Order turned against the Inquisition, the Houses gave the Lantern Throne to Grand Master Morrow. The Dominion is a crusade again.",
+        "news_fr": "L’Ordre retourné contre l’Inquisition, les Maisons ont donné le Trône de la Lanterne au Grand Maître Morrow. Le Dominion redevient une croisade."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "envoy_gift_morrow"
+          ]
+        },
+        "effects": {
+          "relations": [
+            {
+              "a": "dominion",
+              "b": "vigil",
+              "steps": 1
+            }
+          ],
+          "flags": [
+            "throne_morrow",
+            "throne_filled"
+          ]
+        },
+        "news": "The Houses gave the Lantern Throne to Grand Master Morrow, whose knights had held the coast when nobody else would. The Dominion is a crusade again.",
+        "news_fr": "Les Maisons ont donné le Trône de la Lanterne au Grand Maître Morrow, dont les chevaliers avaient tenu la côte quand personne d’autre ne le voulait. Le Dominion redevient une croisade."
+      },
+      {
+        "effects": {
+          "relations": [
+            {
+              "a": "dominion",
+              "b": "penitents",
+              "steps": 1
+            },
+            {
+              "a": "dominion",
+              "b": "mire",
+              "steps": 1
+            }
+          ],
+          "flags": [
+            "throne_tallis",
+            "throne_filled"
+          ]
+        },
+        "news": "The Houses could not agree, and gave the Lantern Throne to the one claimant none of them feared: Maud Tallis, Eldest of the Wickwardens. The Dominion is a church again, for now.",
+        "news_fr": "Les Maisons n’ont pas su s’entendre, et ont donné le Trône de la Lanterne à la seule prétendante qu’aucune ne craignait : Maud Tallis, Aînée des Garde-Mèches. Le Dominion redevient une Église, pour l’instant."
+      }
+    ]
+  },
+  "the_last_battle": {
+    "id": "the_last_battle",
+    "name": "The clans gather",
+    "name_fr": "Les clans se rassemblent",
+    "trigger": {
+      "chapter": 7
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "intrigue_hooded_lantern_outcome_0"
+          ]
+        },
+        "effects": {},
+        "news": "The Order’s ships have come round the point to stand off the Hollow Shore, and their guns are run out toward the Inquisition’s cutters, not toward the Eel.",
+        "news_fr": "Les navires de l’Ordre ont doublé la pointe pour croiser au large de la Rive Creuse, et leurs canons sont pointés vers les cotres de l’Inquisition, pas vers l’Eel."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "intrigue_hooded_lantern_outcome_1"
+          ]
+        },
+        "effects": {},
+        "news": "Inquisition cutters ride off the Hollow Shore under a writ with the Eel’s name on it. They are there as her escort, they say. Nobody believes it, the Inquisition least of all.",
+        "news_fr": "Des cotres de l’Inquisition croisent au large de la Rive Creuse sous un mandat qui porte le nom de l’Eel. Ils sont là pour l’escorter, disent-ils. Personne n’y croit, l’Inquisition moins que quiconque."
+      },
+      {
+        "conditions": {
+          "standingAtMost": {
+            "dominion": -61
+          }
+        },
+        "effects": {},
+        "news": "Every Dominion ship on the coast is making for the Hollow Shore, and they are not coming to help.",
+        "news_fr": "Tous les navires du Dominion sur la côte font route vers la Rive Creuse, et ce n’est pas pour aider."
+      },
+      {
+        "conditions": {
+          "standingAtLeast": {
+            "vigil": 26
+          }
+        },
+        "effects": {},
+        "news": "The Vigil has sent spears down to the Hollow Shore. Whatever comes back out of the tear will find them waiting.",
+        "news_fr": "La Veille a envoyé des lances jusqu’à la Rive Creuse. Quoi qui ressorte de la déchirure, il les trouvera qui l’attendent."
+      },
+      {
+        "effects": {},
+        "news": "The clans are watching the Hollow Shore from a distance, as they have watched everything for forty years, and waiting to see who comes out of the tear.",
+        "news_fr": "Les clans observent la Rive Creuse de loin, comme ils observent tout depuis quarante ans, et attendent de voir qui sortira de la déchirure."
+      }
+    ]
+  },
+  "the_hand_hunted": {
+    "id": "the_hand_hunted",
+    "name": "The Open Hand hunted",
+    "name_fr": "La Main Ouverte traquée",
+    "trigger": {
+      "flag": "banner_raised"
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "throne_vane"
+          ]
+        },
+        "effects": {
+          "marks": {
+            "inquisition": "foe"
+          }
+        },
+        "news": "The Lantern Throne has declared the Open Hand hunted, with a price on everyone who draws for it and a higher one on the grey cloth. Aurel Vane signed the writ himself.",
+        "news_fr": "Le Trône de la Lanterne a déclaré la Main Ouverte traquée, avec une prime sur quiconque trace pour elle, et une plus forte encore sur l’étoffe grise. Aurel Vane a signé le mandat de sa main."
+      },
+      {
+        "effects": {
+          "marks": {
+            "inquisition": "foe"
+          }
+        },
+        "news": "The Inquisition has declared the Open Hand hunted: a price on everyone who draws for it, and a higher one on the grey cloth itself. In the ports they are already selling copies of the drawing, and burning them.",
+        "news_fr": "L’Inquisition a déclaré la Main Ouverte traquée : une prime sur quiconque trace pour elle, et une plus forte encore sur l’étoffe grise elle-même. Dans les ports, on vend déjà des copies du dessin, et on les brûle."
+      }
+    ]
+  },
+  "banner_stands_vigil": {
+    "id": "banner_stands_vigil",
+    "name": "The Vigil and the grey hand",
+    "name_fr": "La Veille et la main grise",
+    "trigger": {
+      "flag": "banner_raised"
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "standingAtLeast": {
+            "vigil": 26
+          }
+        },
+        "effects": {
+          "flags": [
+            "banner_stood_vigil"
+          ]
+        },
+        "news": "A spear of the Last Watch walked down off the Vigil’s wall without leave, to stand under the grey hand on the Hollow Shore.",
+        "news_fr": "Une lance de la Dernière Veille est descendue du mur de la Veille sans permission, pour se tenir sous la main grise, sur la Rive Creuse."
+      },
+      {
+        "effects": {},
+        "news": "The Vigil kept to its wall. It has watched the tear for thirty-eight years; it will watch the hand a while longer before it trusts it.",
+        "news_fr": "La Veille est restée sur son mur. Elle surveille la déchirure depuis trente-huit ans ; elle surveillera la main encore un peu avant de s’y fier."
+      }
+    ]
+  },
+  "banner_stands_penitents": {
+    "id": "banner_stands_penitents",
+    "name": "The Penitents and the grey hand",
+    "name_fr": "Les Pénitents et la main grise",
+    "trigger": {
+      "flag": "banner_raised"
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "standingAtLeast": {
+            "penitents": 26
+          }
+        },
+        "effects": {
+          "flags": [
+            "banner_stood_penitents"
+          ]
+        },
+        "news": "A Penitent came down the Exorcists’ Road to the Hollow Shore with a burnt-out lantern and a cloth of names, and stood under the grey hand.",
+        "news_fr": "Un Pénitent est descendu par la Route des Exorcistes jusqu’à la Rive Creuse, avec une lanterne éteinte et une étoffe couverte de noms, et s’est tenu sous la main grise."
+      },
+      {
+        "effects": {},
+        "news": "The Penitents prayed for the hand on the Hollow Shore, and did not come. They have stood under one banner too many already.",
+        "news_fr": "Les Pénitents ont prié pour la main de la Rive Creuse, et ne sont pas venus. Ils se sont déjà tenus sous une bannière de trop."
+      }
+    ]
+  },
+  "banner_stands_compact": {
+    "id": "banner_stands_compact",
+    "name": "The Compact and the grey hand",
+    "name_fr": "Le Pacte et la main grise",
+    "trigger": {
+      "flag": "banner_raised"
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "standingAtLeast": {
+            "compact": 26
+          }
+        },
+        "effects": {
+          "flags": [
+            "banner_stood_compact"
+          ]
+        },
+        "news": "Two smiths of the Compact pushed a forge on a handcart all the way to the Hollow Shore and asked, as their law requires, why. They were told. They lit it under the grey hand.",
+        "news_fr": "Deux forgerons du Pacte ont poussé une forge sur une charrette à bras jusqu’à la Rive Creuse, et ont demandé, comme leur loi l’exige, pourquoi. On le leur a dit. Ils l’ont allumée sous la main grise."
+      },
+      {
+        "effects": {},
+        "news": "Cinder Row heard about the grey hand on the Hollow Shore and asked why. Nobody had told them, so they stayed home.",
+        "news_fr": "La Rue des Braises a entendu parler de la main grise de la Rive Creuse et a demandé pourquoi. Personne ne le lui avait dit, alors elle est restée chez elle."
+      }
+    ]
+  },
+  "banner_stands_mire": {
+    "id": "banner_stands_mire",
+    "name": "The Mire and the grey hand",
+    "name_fr": "Le Marais et la main grise",
+    "trigger": {
+      "flag": "banner_raised"
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "standingAtLeast": {
+            "mire": 26
+          }
+        },
+        "effects": {
+          "flags": [
+            "banner_stood_mire"
+          ]
+        },
+        "news": "A Heron’s Wake guide came out of the fen to sit under the grey hand on the Hollow Shore. The fen sent her, she says, and the fen will hold her to it.",
+        "news_fr": "Une guide du Sillage du Héron est sortie du marais pour s’asseoir sous la main grise, sur la Rive Creuse. Le marais l’a envoyée, dit-elle, et le marais l’y tiendra."
+      },
+      {
+        "effects": {},
+        "news": "The fen closed its paths when it heard of the grey hand. The Mire Courts have outlived every banner ever raised on this coast by waiting.",
+        "news_fr": "Le marais a fermé ses sentiers en apprenant l’histoire de la main grise. Les Cours du Marais ont survécu à toutes les bannières levées sur cette côte, en attendant."
+      }
+    ]
+  },
+  "banner_stands_crows": {
+    "id": "banner_stands_crows",
+    "name": "The Crows and the grey hand",
+    "name_fr": "Les Corneilles et la main grise",
+    "trigger": {
+      "flag": "banner_raised"
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "standingAtLeast": {
+            "crows": 26
+          }
+        },
+        "effects": {
+          "flags": [
+            "banner_stood_crows"
+          ]
+        },
+        "news": "A Crow brig with three rings on her halyard dropped anchor off the Hollow Shore, under the grey hand. Her captain swears she is only waiting for the tide.",
+        "news_fr": "Un brick des Corneilles, trois anneaux à sa drisse, a jeté l’ancre au large de la Rive Creuse, sous la main grise. Son capitaine jure que le brick attend seulement la marée."
+      },
+      {
+        "effects": {},
+        "news": "The Crows looked at the grey hand on the Hollow Shore, priced it, and decided nobody was paying.",
+        "news_fr": "Les Corneilles ont regardé la main grise de la Rive Creuse, en ont estimé le prix, et ont conclu que personne ne payait."
+      }
+    ]
+  },
+  "banner_stands_dominion": {
+    "id": "banner_stands_dominion",
+    "name": "The Wickwardens and the grey hand",
+    "name_fr": "Les Garde-Mèches et la main grise",
+    "trigger": {
+      "flag": "banner_raised"
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "standingAtLeast": {
+            "dominion": 26
+          }
+        },
+        "effects": {
+          "flags": [
+            "banner_stood_dominion"
+          ]
+        },
+        "news": "A Wickwarden walked to the Hollow Shore with one lamp and set it at the foot of the grey hand’s spar, which in her House is how you swear.",
+        "news_fr": "Une Garde-Mèche a marché jusqu’à la Rive Creuse avec une seule lampe et l’a posée au pied de l’espar de la main grise, ce qui, dans sa Maison, revient à prêter serment."
+      },
+      {
+        "effects": {},
+        "news": "Not one House of the Dominion sent anyone to the grey hand. Some of them sent spies.",
+        "news_fr": "Aucune Maison du Dominion n’a envoyé personne à la main grise. Certaines ont envoyé des espions."
+      }
+    ]
+  }
+}

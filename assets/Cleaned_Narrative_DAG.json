@@ -6286,6 +6286,67 @@
         "flag": "banner_furled",
         "en": "The grey hand was rolled on my back, where it had always been. The reflections watched it anyway.",
         "fr": "La main grise restait roulée sur mon dos, où elle avait toujours été. Les reflets la regardaient quand même."
+      },
+      {
+        "flag": "banner_stood_vigil",
+        "en": "Under the spar, by the second morning, stood a spear of the Last Watch: an orc who had walked down off the Vigil’s wall without leave, and meant to walk back up it the same way.",
+        "fr": "Sous l'espar, au deuxième matin, se tenait une lance de la Dernière Veille : une orque descendue du mur de la Veille sans permission, et bien décidée à y remonter de la même façon.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_penitents",
+        "en": "A Penitent had come with a burnt-out lantern and a cloth of names, and had stitched mine to the end of it.",
+        "fr": "Un Pénitent était venu avec une lanterne éteinte et une étoffe couverte de noms, et y avait cousu le mien, tout au bout.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_compact",
+        "en": "Two Compact smiths had pushed a forge on a handcart all the way to the shore and asked me, as their law requires, why. I told them. They lit it.",
+        "fr": "Deux forgerons du Pacte avaient poussé une forge sur une charrette à bras jusqu'au rivage et m'avaient demandé, comme leur loi l'exige, pourquoi. Je le leur dis. Ils l'allumèrent.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_mire",
+        "en": "A Heron’s Wake guide sat under the spar with a feast mask in her lap, and told anyone who asked that the fen had sent her and would hold her to it.",
+        "fr": "Une guide du Sillage du Héron était assise sous l'espar, un masque de fête sur les genoux, et répondait à qui le demandait que le marais l'avait envoyée et l'y tiendrait.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_crows",
+        "en": "A Crow brig lay off the point with three rings on her halyard, and her captain swore she was only waiting for the tide.",
+        "fr": "Un brick des Corneilles mouillait au large de la pointe, trois anneaux à sa drisse, et son capitaine jurait que le brick n'attendait que la marée.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_dominion",
+        "en": "And a Wickwarden had come with one lamp and set it at the foot of the spar, which in her House is how you swear.",
+        "fr": "Et une Garde-Mèche était venue avec une seule lampe, qu'elle avait posée au pied de l'espar, ce qui, dans sa Maison, revient à prêter serment.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_raised",
+        "en": "Nobody had come to stand under it yet. I stood under it myself, which was, I suppose, what the hand had been for all along.",
+        "fr": "Personne n'était encore venu se tenir dessous. Je m'y tins moi-même, ce qui était, je suppose, ce à quoi la main avait toujours servi.",
+        "unlessFlags": [
+          "banner_stood_vigil",
+          "banner_stood_penitents",
+          "banner_stood_compact",
+          "banner_stood_mire",
+          "banner_stood_crows",
+          "banner_stood_dominion"
+        ]
       }
     ],
     "settlement": {
@@ -6680,6 +6741,54 @@
         "flag": "truth_kept",
         "en": "I had kept the Reliquary’s roll to myself, and it went back through the needle read by nobody but me. I had it by heart. I had not yet decided whom it was for.",
         "fr": "J’avais gardé pour moi le rouleau du Reliquaire, et il repassa par le chas sans avoir été lu par personne d’autre. Je le savais par cœur. Je n’avais pas encore décidé pour qui."
+      },
+      {
+        "flag": "banner_stood_vigil",
+        "en": "On the night before the invasion, an orc in grey was keeping a watch at the Blind Beggar’s door that nobody had asked her to keep. I did not know her. She nodded to me as if she knew me.",
+        "fr": "La nuit d’avant l’invasion, une orque vêtue de gris montait à la porte du Mendiant Aveugle une garde que personne ne lui avait demandée. Je ne la connaissais pas. Elle me salua d’un signe de tête, comme si elle me connaissait.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_penitents",
+        "en": "A Penitent sat in the Beggar’s corner with a burnt-out lantern on the table, mending a cloth of names, and was gone before I could ask whose they were.",
+        "fr": "Un Pénitent était assis dans un coin du Mendiant, une lanterne éteinte sur la table, à raccommoder une étoffe couverte de noms, et il était parti avant que je puisse demander à qui ils étaient.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_compact",
+        "en": "A dwarf smith with a broken hammer through her belt drank alone at the Beggar’s bar, and paid for my cup without a word.",
+        "fr": "Une naine forgeronne, un marteau brisé passé à la ceinture, buvait seule au comptoir du Mendiant, et paya mon verre sans un mot.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_mire",
+        "en": "A woman in a heron mask came in out of the rain, looked at me for a long moment, laughed, and went out again.",
+        "fr": "Une femme au masque de héron entra en sortant de la pluie, me regarda longuement, rit, et ressortit.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_crows",
+        "en": "A Crow brig lay at Alster’s quay that night with three rings on her halyard and nothing in her hold, and her captain was in no hurry at all to sail.",
+        "fr": "Un brick des Corneilles était à quai à Alster, cette nuit-là, trois anneaux à sa drisse et rien dans sa cale, et son capitaine n’était pas du tout pressé de partir.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_dominion",
+        "en": "A Wickwarden was lighting the lamps along Tallow Street one by one, as if she expected someone home.",
+        "fr": "Une Garde-Mèche allumait une à une les lampes de la rue du Suif, comme si elle attendait le retour de quelqu’un.",
+        "andFlags": [
+          "banner_raised"
+        ]
       }
     ]
   },
@@ -6752,6 +6861,54 @@
         "flag": "truth_kept",
         "en": "I had kept the Reliquary’s roll to myself, and it went back through the needle read by nobody but me. I had it by heart. I had not yet decided whom it was for.",
         "fr": "J’avais gardé pour moi le rouleau du Reliquaire, et il repassa par le chas sans avoir été lu par personne d’autre. Je le savais par cœur. Je n’avais pas encore décidé pour qui."
+      },
+      {
+        "flag": "banner_stood_vigil",
+        "en": "On the night before the invasion, an orc in grey was keeping a watch at the Blind Beggar’s door that nobody had asked her to keep. I did not know her. She nodded to me as if she knew me.",
+        "fr": "La nuit d’avant l’invasion, une orque vêtue de gris montait à la porte du Mendiant Aveugle une garde que personne ne lui avait demandée. Je ne la connaissais pas. Elle me salua d’un signe de tête, comme si elle me connaissait.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_penitents",
+        "en": "A Penitent sat in the Beggar’s corner with a burnt-out lantern on the table, mending a cloth of names, and was gone before I could ask whose they were.",
+        "fr": "Un Pénitent était assis dans un coin du Mendiant, une lanterne éteinte sur la table, à raccommoder une étoffe couverte de noms, et il était parti avant que je puisse demander à qui ils étaient.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_compact",
+        "en": "A dwarf smith with a broken hammer through her belt drank alone at the Beggar’s bar, and paid for my cup without a word.",
+        "fr": "Une naine forgeronne, un marteau brisé passé à la ceinture, buvait seule au comptoir du Mendiant, et paya mon verre sans un mot.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_mire",
+        "en": "A woman in a heron mask came in out of the rain, looked at me for a long moment, laughed, and went out again.",
+        "fr": "Une femme au masque de héron entra en sortant de la pluie, me regarda longuement, rit, et ressortit.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_crows",
+        "en": "A Crow brig lay at Alster’s quay that night with three rings on her halyard and nothing in her hold, and her captain was in no hurry at all to sail.",
+        "fr": "Un brick des Corneilles était à quai à Alster, cette nuit-là, trois anneaux à sa drisse et rien dans sa cale, et son capitaine n’était pas du tout pressé de partir.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_dominion",
+        "en": "A Wickwarden was lighting the lamps along Tallow Street one by one, as if she expected someone home.",
+        "fr": "Une Garde-Mèche allumait une à une les lampes de la rue du Suif, comme si elle attendait le retour de quelqu’un.",
+        "andFlags": [
+          "banner_raised"
+        ]
       }
     ]
   },
@@ -6841,6 +6998,54 @@
         "flag": "truth_kept",
         "en": "I had kept the Reliquary’s roll to myself, and it went back through the needle read by nobody but me. I had it by heart. I had not yet decided whom it was for.",
         "fr": "J’avais gardé pour moi le rouleau du Reliquaire, et il repassa par le chas sans avoir été lu par personne d’autre. Je le savais par cœur. Je n’avais pas encore décidé pour qui."
+      },
+      {
+        "flag": "banner_stood_vigil",
+        "en": "On the night before the invasion, an orc in grey was keeping a watch at the Blind Beggar’s door that nobody had asked her to keep. I did not know her. She nodded to me as if she knew me.",
+        "fr": "La nuit d’avant l’invasion, une orque vêtue de gris montait à la porte du Mendiant Aveugle une garde que personne ne lui avait demandée. Je ne la connaissais pas. Elle me salua d’un signe de tête, comme si elle me connaissait.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_penitents",
+        "en": "A Penitent sat in the Beggar’s corner with a burnt-out lantern on the table, mending a cloth of names, and was gone before I could ask whose they were.",
+        "fr": "Un Pénitent était assis dans un coin du Mendiant, une lanterne éteinte sur la table, à raccommoder une étoffe couverte de noms, et il était parti avant que je puisse demander à qui ils étaient.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_compact",
+        "en": "A dwarf smith with a broken hammer through her belt drank alone at the Beggar’s bar, and paid for my cup without a word.",
+        "fr": "Une naine forgeronne, un marteau brisé passé à la ceinture, buvait seule au comptoir du Mendiant, et paya mon verre sans un mot.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_mire",
+        "en": "A woman in a heron mask came in out of the rain, looked at me for a long moment, laughed, and went out again.",
+        "fr": "Une femme au masque de héron entra en sortant de la pluie, me regarda longuement, rit, et ressortit.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_crows",
+        "en": "A Crow brig lay at Alster’s quay that night with three rings on her halyard and nothing in her hold, and her captain was in no hurry at all to sail.",
+        "fr": "Un brick des Corneilles était à quai à Alster, cette nuit-là, trois anneaux à sa drisse et rien dans sa cale, et son capitaine n’était pas du tout pressé de partir.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_dominion",
+        "en": "A Wickwarden was lighting the lamps along Tallow Street one by one, as if she expected someone home.",
+        "fr": "Une Garde-Mèche allumait une à une les lampes de la rue du Suif, comme si elle attendait le retour de quelqu’un.",
+        "andFlags": [
+          "banner_raised"
+        ]
       }
     ]
   },
@@ -6917,6 +7122,54 @@
         "flag": "truth_kept",
         "en": "I had kept the Reliquary’s roll to myself, and it went back through the needle read by nobody but me. I had it by heart. I had not yet decided whom it was for.",
         "fr": "J’avais gardé pour moi le rouleau du Reliquaire, et il repassa par le chas sans avoir été lu par personne d’autre. Je le savais par cœur. Je n’avais pas encore décidé pour qui."
+      },
+      {
+        "flag": "banner_stood_vigil",
+        "en": "On the night before the invasion, an orc in grey was keeping a watch at the Blind Beggar’s door that nobody had asked her to keep. I did not know her. She nodded to me as if she knew me.",
+        "fr": "La nuit d’avant l’invasion, une orque vêtue de gris montait à la porte du Mendiant Aveugle une garde que personne ne lui avait demandée. Je ne la connaissais pas. Elle me salua d’un signe de tête, comme si elle me connaissait.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_penitents",
+        "en": "A Penitent sat in the Beggar’s corner with a burnt-out lantern on the table, mending a cloth of names, and was gone before I could ask whose they were.",
+        "fr": "Un Pénitent était assis dans un coin du Mendiant, une lanterne éteinte sur la table, à raccommoder une étoffe couverte de noms, et il était parti avant que je puisse demander à qui ils étaient.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_compact",
+        "en": "A dwarf smith with a broken hammer through her belt drank alone at the Beggar’s bar, and paid for my cup without a word.",
+        "fr": "Une naine forgeronne, un marteau brisé passé à la ceinture, buvait seule au comptoir du Mendiant, et paya mon verre sans un mot.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_mire",
+        "en": "A woman in a heron mask came in out of the rain, looked at me for a long moment, laughed, and went out again.",
+        "fr": "Une femme au masque de héron entra en sortant de la pluie, me regarda longuement, rit, et ressortit.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_crows",
+        "en": "A Crow brig lay at Alster’s quay that night with three rings on her halyard and nothing in her hold, and her captain was in no hurry at all to sail.",
+        "fr": "Un brick des Corneilles était à quai à Alster, cette nuit-là, trois anneaux à sa drisse et rien dans sa cale, et son capitaine n’était pas du tout pressé de partir.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_dominion",
+        "en": "A Wickwarden was lighting the lamps along Tallow Street one by one, as if she expected someone home.",
+        "fr": "Une Garde-Mèche allumait une à une les lampes de la rue du Suif, comme si elle attendait le retour de quelqu’un.",
+        "andFlags": [
+          "banner_raised"
+        ]
       }
     ]
   },
