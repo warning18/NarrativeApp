@@ -22,9 +22,10 @@ import '../l10n/app_strings.dart';
 /// [SignEffects].
 
 /// A patron's place in the world: one of the clans (the Lantern Dominion
-/// and the five clans of the coast), a tribe met on the way, or the Choir
-/// or the Pit, who shut each other out.
-enum PatronKind { clan, tribe, otherworld }
+/// and the five clans of the coast), a tribe met on the way, the Choir or
+/// the Pit, who shut each other out, or a lost clan (v1.195: the Open
+/// Hand), dead and remembered, who never comes the ordinary ways.
+enum PatronKind { clan, tribe, otherworld, lost }
 
 /// Where a sign sits: one sign at most on each of the four face slots, as
 /// many passives as come.
@@ -875,7 +876,9 @@ bool patronOpen(
 
 /// Whether this life has shut [patron] out: the other of the Choir and
 /// the Pit has given a sign. A clan or a tribe never is (v1.193: the clans
-/// are no longer three a life; standing decides who comes).
+/// are no longer three a life; standing decides who comes). A lost clan
+/// always is: it comes only by its own rule ("Your own hand", see
+/// offers.dart).
 bool closedThisLife(
   Patron patron, {
   required List<String> patronsThisLife,
@@ -888,6 +891,8 @@ bool closedThisLife(
     case PatronKind.clan:
     case PatronKind.tribe:
       return false;
+    case PatronKind.lost:
+      return true;
   }
 }
 

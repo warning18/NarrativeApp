@@ -14,6 +14,7 @@ import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/politics_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/tab_badges_provider.dart';
 import '../tutorial/guide_tour.dart';
@@ -138,6 +139,26 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       if (home != null) {
         ref.read(playerSessionProvider.notifier).arriveAtPort(home);
       }
+    });
+    // The coast moves with the days (v1.195): each new day of the story
+    // fires the politics events it brings (see politics_events.dart); their
+    // news waits at the camp and in the journal.
+    ref.listen<int>(playerSessionProvider.select((s) => s.day),
+        (previous, next) {
+      if (previous == null || next <= previous) return;
+      if (!ref.read(playerSessionProvider.notifier).isLoaded ||
+          !ref.read(storyDataProvider).hasValue) {
+        return;
+      }
+      runCoastEvents(ref);
+    });
+    // A scene entered however the story got there (a walk from the camp, a
+    // jump) moves the coast once, by its politics on entry.
+    ref.listen<String>(storyPlayProvider.select((s) => s.currentNodeId),
+        (previous, next) {
+      if (previous == null || previous == next) return;
+      if (!ref.read(playerSessionProvider.notifier).isLoaded) return;
+      applyEnterPolitics(ref, next);
     });
     ref.listen<bool>(partyAtCampProvider, (previous, next) {
       if (previous == null ||

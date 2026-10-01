@@ -1,3 +1,7 @@
+import 'story_politics.dart';
+
+export 'story_politics.dart';
+
 class StoryChoice {
   const StoryChoice({
     required this.text,
@@ -39,6 +43,7 @@ class StoryChoice {
     this.approvalMods = const {},
     this.roadEvent,
     this.shipBattleId,
+    this.politics,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -100,8 +105,17 @@ class StoryChoice {
               const [],
       roadEvent: json['roadEvent'] as String?,
       shipBattleId: json['shipBattleId'] as String?,
+      politics: StoryPolitics.tryParse(json['politics']),
     );
   }
+
+  /// What taking this choice does to the coast (v1.195, see
+  /// story_politics.dart): standing, marks, relations, an offer, an
+  /// intrigue's stage or outcome, the Open Hand's remembrance, an event.
+  /// Applied once, however often the choice is taken again.
+  final StoryPolitics? politics;
+
+  bool get hasPolitics => politics != null && !politics!.isEmpty;
 
   /// Set on a generated road event's choice (see road_events.dart): what
   /// the event is ('elite', 'shrine', 'merchant'), for the fight's rules
@@ -337,6 +351,7 @@ class StoryChoice {
         if (approvalMods.isNotEmpty) 'approvalMods': approvalMods,
         if (roadEvent != null && roadEvent!.isNotEmpty) 'roadEvent': roadEvent,
         if (triggersShipBattle) 'shipBattleId': shipBattleId,
+        if (politics != null) 'politics': politics!.toJson(),
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]
@@ -409,6 +424,7 @@ class StoryNode {
     this.timeLimit,
     this.timeoutChoice = 0,
     this.noDetour = false,
+    this.politicsOnEnter,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -444,8 +460,13 @@ class StoryNode {
       timeLimit: (json['time_limit'] as num?)?.toInt(),
       timeoutChoice: (json['timeout_choice'] as num?)?.toInt() ?? 0,
       noDetour: json['noDetour'] as bool? ?? false,
+      politicsOnEnter: StoryPolitics.tryParse(json['politicsOnEnter']),
     );
   }
+
+  /// What entering this scene does to the coast (v1.195, see
+  /// story_politics.dart), once however often it is entered.
+  final StoryPolitics? politicsOnEnter;
 
   /// A set piece the road never interrupts (see
   /// SubNodeEngine.detourAllowedBetween): no detour, road event or hunter
@@ -687,6 +708,8 @@ class StoryNode {
         if (isTimed) 'time_limit': timeLimit,
         if (isTimed && timeoutChoice != 0) 'timeout_choice': timeoutChoice,
         if (noDetour) 'noDetour': noDetour,
+        if (politicsOnEnter != null)
+          'politicsOnEnter': politicsOnEnter!.toJson(),
         if (alignmentEpilogues.isNotEmpty)
           'alignment_epilogues': {
             for (final entry in alignmentEpilogues.entries)

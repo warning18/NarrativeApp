@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -26,6 +28,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
   late final TextEditingController _reqFlagsController;
   late final TextEditingController _reqCharismaController;
   late final TextEditingController _authoringCommentController;
+  late final TextEditingController _politicsOnEnterController;
   late List<_ChoiceEditState> _choices;
   bool _saving = false;
 
@@ -48,6 +51,8 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
         TextEditingController(text: widget.node.reqCharisma.toString());
     _authoringCommentController =
         TextEditingController(text: widget.node.authoringComment ?? '');
+    _politicsOnEnterController = TextEditingController(
+        text: politicsEditorText(widget.node.politicsOnEnter));
     _choices = widget.node.choices.map((c) => _ChoiceEditState(c)).toList();
   }
 
@@ -61,6 +66,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
     _reqFlagsController.dispose();
     _reqCharismaController.dispose();
     _authoringCommentController.dispose();
+    _politicsOnEnterController.dispose();
     for (final choice in _choices) {
       choice.dispose();
     }
@@ -103,6 +109,9 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       settlement: widget.node.settlement,
       timeLimit: widget.node.timeLimit,
       timeoutChoice: widget.node.timeoutChoice,
+      noDetour: widget.node.noDetour,
+      politicsOnEnter: politicsFromEditorText(
+          _politicsOnEnterController.text, widget.node.politicsOnEnter),
     );
     await saveStoryNode(ref, updated);
     if (!mounted) return;
@@ -244,6 +253,12 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
             ],
           ),
           const SizedBox(height: 12),
+          _PoliticsField(
+            controller: _politicsOnEnterController,
+            label: t('politics_on_enter_label'),
+            help: t('politics_editor_help'),
+          ),
+          const SizedBox(height: 12),
           Text(t('choices_label'),
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
@@ -265,6 +280,52 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       ),
     );
   }
+}
+
+/// [politics] as the editor's JSON field shows it: '' for none.
+String politicsEditorText(StoryPolitics? politics) =>
+    politics == null ? '' : jsonEncode(politics.toJson());
+
+/// The politics the editor's JSON field [text] says: none when it is
+/// empty; [original] kept, as it was, when it is no JSON object.
+StoryPolitics? politicsFromEditorText(String text, StoryPolitics? original) {
+  if (text.trim().isEmpty) return null;
+  try {
+    final raw = jsonDecode(text);
+    if (raw is! Map) return original;
+    return StoryPolitics.tryParse(raw);
+  } on FormatException {
+    return original;
+  }
+}
+
+/// Edit Mode's politics, as JSON (see story_politics.dart for the shape).
+class _PoliticsField extends StatelessWidget {
+  const _PoliticsField({
+    required this.controller,
+    required this.label,
+    required this.help,
+  });
+
+  final TextEditingController controller;
+  final String label;
+  final String help;
+
+  @override
+  Widget build(BuildContext context) => TextField(
+        controller: controller,
+        minLines: 1,
+        maxLines: 6,
+        style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+        decoration: InputDecoration(
+          labelText: label,
+          helperText: help,
+          helperMaxLines: 4,
+          prefixIcon: const Icon(Icons.flag_outlined),
+          border: const OutlineInputBorder(),
+          alignLabelWithHint: true,
+        ),
+      );
 }
 
 /// A choice as the editor would save it, untouched: what a node round-
@@ -325,7 +386,9 @@ class _ChoiceEditState {
         challengeSuccessesNeededController = TextEditingController(
             text: choice.challengeSuccessesNeeded?.toString() ?? ''),
         challengeMaxFailuresController = TextEditingController(
-            text: choice.challengeMaxFailures?.toString() ?? '');
+            text: choice.challengeMaxFailures?.toString() ?? ''),
+        politicsController =
+            TextEditingController(text: politicsEditorText(choice.politics));
 
   _ChoiceEditState.blank() : this(const StoryChoice(text: '', nextId: 'EXIT'));
 
@@ -375,6 +438,9 @@ class _ChoiceEditState {
   final TextEditingController challengeSuccessesNeededController;
   final TextEditingController challengeMaxFailuresController;
 
+  /// The choice's politics as JSON (see [StoryChoice.politics]).
+  final TextEditingController politicsController;
+
   void dispose() {
     textController.dispose();
     textFrController.dispose();
@@ -397,6 +463,7 @@ class _ChoiceEditState {
     checkDCController.dispose();
     challengeSuccessesNeededController.dispose();
     challengeMaxFailuresController.dispose();
+    politicsController.dispose();
   }
 
   StoryChoice toChoice() => StoryChoice(
@@ -475,6 +542,8 @@ class _ChoiceEditState {
         approvalMods: _original.approvalMods,
         roadEvent: _original.roadEvent,
         shipBattleId: _original.shipBattleId,
+        politics:
+            politicsFromEditorText(politicsController.text, _original.politics),
       );
 }
 
@@ -793,6 +862,12 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                 ),
                 Text(t('challenge_hint'),
                     style: Theme.of(context).textTheme.bodySmall),
+                const Divider(),
+                _PoliticsField(
+                  controller: state.politicsController,
+                  label: t('politics_editor_label'),
+                  help: t('politics_editor_help'),
+                ),
               ],
             ),
           ],

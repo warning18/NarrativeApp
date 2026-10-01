@@ -110,3 +110,8 @@ class AimedShotsNotifier extends StateNotifier<AimedShots> {
 final aimedShotsProvider =
     StateNotifierProvider<AimedShotsNotifier, AimedShots>(
         (ref) => AimedShotsNotifier());
+
+/// Whether a story choice that moves the clans says so, in a muted line
+/// under it: "Vigil +5 · Dominion −5" (v1.195, see politicsHint). A
+/// choice whose consequences are hidden never does. Defaults to on.
+final politicsHintsEnabledProvider = _flag('politics_hints_enabled', true);

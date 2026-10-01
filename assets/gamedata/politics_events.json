@@ -1,0 +1,81 @@
+{
+  "lantern_bearer_failing": {
+    "id": "lantern_bearer_failing",
+    "name": "The Lantern-Bearer misses the Feast",
+    "name_fr": "Le Porte-Lanterne manque la fête",
+    "trigger": {
+      "chapter": 1,
+      "day": 3
+    },
+    "once": true,
+    "variants": [
+      {
+        "effects": {
+          "flags": [
+            "lantern_bearer_failing"
+          ]
+        },
+        "news": "The Feast of the Flame came and went, and the Lantern-Bearer never stood on the balcony. In the harbour they whisper that the Throne’s light is failing.",
+        "news_fr": "La fête de la Flamme passa, et le Porte-Lanterne ne parut pas au balcon. Au port, on murmure que la lumière du Trône faiblit."
+      }
+    ]
+  },
+  "wharf_raid": {
+    "id": "wharf_raid",
+    "name": "The Inquisition raids the Wharf",
+    "name_fr": "L’Inquisition fouille le Quai",
+    "trigger": {
+      "chapter": 2
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "crows_warned"
+          ]
+        },
+        "effects": {},
+        "news": "The Inquisition raided the Wharf again, but the Crows had cleared their holds the night before. Someone had warned them.",
+        "news_fr": "L’Inquisition fouilla de nouveau le Quai, mais les Corneilles avaient vidé leurs cales la veille. Quelqu’un les avait prévenues."
+      },
+      {
+        "effects": {
+          "relations": [
+            {
+              "a": "crows",
+              "b": "dominion",
+              "steps": -1
+            }
+          ]
+        },
+        "news": "The Inquisition raided the Wharf again. Three Crow brigs burned at their moorings, and the Crows have not forgotten whose torches lit them.",
+        "news_fr": "L’Inquisition fouilla de nouveau le Quai. Trois bricks des Corneilles brûlèrent à leur mouillage, et les Corneilles n’oublient pas quelles torches les allumèrent."
+      }
+    ]
+  },
+  "lantern_bearer_dies": {
+    "id": "lantern_bearer_dies",
+    "name": "The Lantern-Bearer dies",
+    "name_fr": "Le Porte-Lanterne meurt",
+    "trigger": {
+      "chapter": 4
+    },
+    "once": true,
+    "variants": [
+      {
+        "effects": {
+          "flags": [
+            "throne_vacant"
+          ],
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "stage": 3
+          }
+        },
+        "news": "The bells of the Spire rang through the night: the Lantern-Bearer is dead, and the Throne stands empty.",
+        "news_fr": "Les cloches de la Flèche sonnèrent toute la nuit : le Porte-Lanterne est mort, et le Trône est vacant."
+      }
+    ]
+  }
+}

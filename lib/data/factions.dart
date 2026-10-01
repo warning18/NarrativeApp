@@ -308,6 +308,10 @@ class Faction {
   FactionKind get kind => patron.kind;
   bool get isClan => kind == PatronKind.clan;
 
+  /// A dead clan, remembered (v1.195: the Open Hand): no standing meter,
+  /// a remembrance stage instead (see [openHandStageFrom]).
+  bool get isLost => kind == PatronKind.lost;
+
   /// ARGB.
   int get color => patron.color;
   String get icon => patron.icon;
@@ -808,6 +812,84 @@ int? intrigueOutcomeFrom(Iterable<String> flags, String intrigueId) {
   return null;
 }
 
+// --- The Open Hand (v1.195) -------------------------------------------------
+
+/// The dead clan's id in factions.json (kind `lost`): the drawers whose
+/// banner the character carries.
+const String openHandId = 'open_hand';
+
+/// The remembrance stages, one a chapter: the cloth, the name, the blood
+/// answers, the ledger, the truth, the banner.
+const int openHandStages = 6;
+
+/// The flag the story sets at remembrance stage [n] (`open_hand_<n>`).
+String openHandFlag(int n) => 'open_hand_$n';
+
+/// The flag set when the banner is raised on the Hollow Shore.
+const String bannerRaisedFlag = 'banner_raised';
+
+/// The stage from which "Your own hand" may take a fourth place in an
+/// offer, at [ownHandChance]; from [openHandStages] with the banner
+/// raised it always does (see offers.dart).
+const int ownHandFromStage = 3;
+const double ownHandChance = 0.25;
+
+/// What taking the Open Hand's gift costs with the Dominion once the
+/// banner is raised: they hunt the drawers.
+const int ownHandBannerCost = -2;
+
+/// The stage the Open Hand's remembrance has reached: the highest
+/// `open_hand_<n>` held (1..[openHandStages]), 0 for none.
+int openHandStageFrom(Iterable<String> flags) {
+  var stage = 0;
+  for (final flag in flags) {
+    if (!flag.startsWith('open_hand_')) continue;
+    final n = int.tryParse(flag.substring('open_hand_'.length));
+    if (n != null && n >= 1 && n <= openHandStages && n > stage) stage = n;
+  }
+  return stage;
+}
+
+/// The flags of remembrance [stage]: every stage up to it, so a scene
+/// asking for an earlier one still finds it.
+List<String> openHandFlagsUpTo(int stage) => [
+      for (var n = 1; n <= stage.clamp(0, openHandStages); n++) openHandFlag(n),
+    ];
+
+/// Whether the banner has been raised (see [bannerRaisedFlag]).
+bool bannerRaisedIn(Iterable<String> flags) => flags.contains(bannerRaisedFlag);
+
+/// The remembrance stage [title] comes with: its source `remembrance:<n>`,
+/// else 3 for "Drawer" and 6 for "Last of the Open Hand" (by id or
+/// English name); null for any other title.
+int? remembranceStageOfTitle(TitleDef title) {
+  final source = title.source.trim().toLowerCase();
+  if (source.startsWith('remembrance:')) {
+    return int.tryParse(source.substring('remembrance:'.length));
+  }
+  final id = title.id.trim().toLowerCase();
+  final name = title.name.trim().toLowerCase();
+  if (id == 'drawer' || name == 'drawer') return 3;
+  if (id == 'last_of_the_open_hand' || name == 'last of the open hand') {
+    return openHandStages;
+  }
+  return null;
+}
+
+/// The remembrance titles [flags] have earned: each whose stage the
+/// remembrance has reached, the last stage's only once the banner is
+/// raised ("Last of the Open Hand").
+List<String> remembranceTitlesFor(Iterable<String> flags, ClanData data) {
+  final stage = openHandStageFrom(flags);
+  if (stage == 0) return const [];
+  final raised = bannerRaisedIn(flags);
+  return [
+    for (final title in data.titles.values)
+      if (remembranceStageOfTitle(title) case final at?)
+        if (at >= 1 && stage >= at && (at < openHandStages || raised)) title.id,
+  ];
+}
+
 /// Records of a gamedata table: every entry that is a record, leaving out
 /// notes (a key starting with `_`, like factions.json's `_newKinds`).
 Iterable<MapEntry<String, Map<String, dynamic>>> _records(
@@ -896,6 +978,14 @@ class ClanData {
   List<Faction> get tribes => ofKind(PatronKind.tribe);
   List<Faction> get otherworld => ofKind(PatronKind.otherworld);
 
+  /// The lost clans (the Open Hand), in the file's order.
+  List<Faction> get lost => ofKind(PatronKind.lost);
+
+  /// The Open Hand's record: [openHandId], else the first lost clan; null
+  /// before the data has one.
+  Faction? get openHand =>
+      factions[openHandId] ?? (lost.isEmpty ? null : lost.first);
+
   /// [factionId]'s sub-clans, in its record's order (any sub-clan naming
   /// it as its clan but missing from the list comes after).
   List<SubClan> subclansOf(String factionId) {
@@ -974,6 +1064,8 @@ class StandingLogEntry {
     this.mark,
     this.swore = '',
     this.released = '',
+    this.note = '',
+    this.noteFr = '',
   });
 
   final int chapter;
@@ -986,6 +1078,13 @@ class StandingLogEntry {
   final SubclanMark? mark;
   final String swore;
   final String released;
+
+  /// What happened, in words (v1.195): a politics event's news, logged
+  /// under `event:<id>` before what it moved.
+  final String note;
+  final String noteFr;
+
+  String noteFor(AppLanguage language) => _pick(language, note, noteFr);
 
   /// [factionId]'s own change (0 for a mark alone).
   double get mainDelta => deltas[factionId] ?? 0;
@@ -1007,6 +1106,8 @@ class StandingLogEntry {
         if (mark != null) 'mark': mark!.name,
         if (swore.isNotEmpty) 'swore': swore,
         if (released.isNotEmpty) 'released': released,
+        if (note.isNotEmpty) 'note': note,
+        if (noteFr.isNotEmpty) 'note_fr': noteFr,
       };
 
   factory StandingLogEntry.fromJson(Map<String, dynamic> json) =>
@@ -1021,8 +1122,99 @@ class StandingLogEntry {
         mark: subclanMarkNamed(json['mark']?.toString()),
         swore: _text(json['swore']),
         released: _text(json['released']),
+        note: _text(json['note']),
+        noteFr: _text(json['note_fr']),
       );
 }
+
+/// One piece of "News from the coast" (v1.195): what a politics event
+/// ([eventId], its [variant]) told when it fired, on [chapter]'s [day],
+/// in both languages; [read] once the camp has shown it.
+class CoastNews {
+  const CoastNews({
+    required this.eventId,
+    this.variant = 0,
+    this.chapter = 0,
+    this.day = 0,
+    this.text = '',
+    this.textFr = '',
+    this.read = false,
+  });
+
+  final String eventId;
+  final int variant;
+  final int chapter;
+  final int day;
+  final String text;
+  final String textFr;
+  final bool read;
+
+  String textFor(AppLanguage language) => _pick(language, text, textFr);
+
+  CoastNews markedRead() => CoastNews(
+        eventId: eventId,
+        variant: variant,
+        chapter: chapter,
+        day: day,
+        text: text,
+        textFr: textFr,
+        read: true,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'event': eventId,
+        'variant': variant,
+        'chapter': chapter,
+        'day': day,
+        if (text.isNotEmpty) 'text': text,
+        if (textFr.isNotEmpty) 'text_fr': textFr,
+        if (read) 'read': true,
+      };
+
+  factory CoastNews.fromJson(Map<String, dynamic> json) => CoastNews(
+        eventId: _text(json['event']),
+        variant: _int(json['variant']),
+        chapter: _int(json['chapter']),
+        day: _int(json['day']),
+        text: _text(json['text']),
+        textFr: _text(json['text_fr']),
+        read: json['read'] == true,
+      );
+}
+
+/// A politics event that has fired: the [variant] it took, when, and how
+/// many times ([count]: more than one only for an event not `once`, or
+/// fired again from Edit Mode).
+class FiredEvent {
+  const FiredEvent({
+    this.variant = 0,
+    this.chapter = 0,
+    this.day = 0,
+    this.count = 1,
+  });
+
+  final int variant;
+  final int chapter;
+  final int day;
+  final int count;
+
+  Map<String, dynamic> toJson() => {
+        'variant': variant,
+        'chapter': chapter,
+        'day': day,
+        if (count != 1) 'count': count,
+      };
+
+  factory FiredEvent.fromJson(Map<String, dynamic> json) => FiredEvent(
+        variant: _int(json['variant']),
+        chapter: _int(json['chapter']),
+        day: _int(json['day']),
+        count: _int(json['count'], 1),
+      );
+}
+
+/// News kept (the oldest go first).
+const int maxCoastNews = 200;
 
 /// One line of the relations log: [a] and [b] moved from step [from] to
 /// [to], when and why.
@@ -1078,7 +1270,11 @@ class RelationLogEntry {
 /// - [relationSteps]: each pair of clans that has moved off its opening
 ///   step (see [relationStep]), and [relationSnapshots], how those stood
 ///   after each chapter in which one moved (see [relationsAtChapter]);
-/// - [standingLog] and [relationsLog], oldest first.
+/// - [standingLog] and [relationsLog], oldest first;
+/// - (v1.195) [appliedKeys], the story politics already applied (a choice
+///   taken or a scene entered again applies nothing), [firedEvents], the
+///   politics events that have fired, and [news], what they told, oldest
+///   first.
 ///
 /// A new game, a permadeath and a New Game+ start from [empty]: the world
 /// starts over.
@@ -1091,6 +1287,9 @@ class PoliticsState {
     this.relationSnapshots = const {},
     this.standingLog = const [],
     this.relationsLog = const [],
+    this.appliedKeys = const [],
+    this.firedEvents = const {},
+    this.news = const [],
   });
 
   static const PoliticsState empty = PoliticsState();
@@ -1103,6 +1302,16 @@ class PoliticsState {
   final List<StandingLogEntry> standingLog;
   final List<RelationLogEntry> relationsLog;
 
+  /// The keys of the story politics applied (`story:<node>:choice<i>`,
+  /// `story:<node>:enter`), in order.
+  final List<String> appliedKeys;
+
+  /// Each politics event that has fired, by id.
+  final Map<String, FiredEvent> firedEvents;
+
+  /// "News from the coast": what the events told, oldest first.
+  final List<CoastNews> news;
+
   bool get isEmpty =>
       standings.isEmpty &&
       marks.isEmpty &&
@@ -1110,7 +1319,22 @@ class PoliticsState {
       relationSteps.isEmpty &&
       relationSnapshots.isEmpty &&
       standingLog.isEmpty &&
-      relationsLog.isEmpty;
+      relationsLog.isEmpty &&
+      appliedKeys.isEmpty &&
+      firedEvents.isEmpty &&
+      news.isEmpty;
+
+  /// Whether the story politics under [key] were applied.
+  bool applied(String key) => appliedKeys.contains(key);
+
+  /// Whether politics event [eventId] has fired.
+  bool hasFired(String eventId) => firedEvents.containsKey(eventId);
+
+  /// The news the camp has not shown yet, oldest first.
+  List<CoastNews> get unreadNews => [
+        for (final n in news)
+          if (!n.read) n,
+      ];
 
   /// Standing with [factionId]: its own, or where [data] says it starts.
   double standingOf(String factionId, ClanData data) =>
@@ -1141,6 +1365,9 @@ class PoliticsState {
     Map<int, Map<String, int>>? relationSnapshots,
     List<StandingLogEntry>? standingLog,
     List<RelationLogEntry>? relationsLog,
+    List<String>? appliedKeys,
+    Map<String, FiredEvent>? firedEvents,
+    List<CoastNews>? news,
   }) =>
       PoliticsState(
         standings: standings ?? this.standings,
@@ -1150,6 +1377,9 @@ class PoliticsState {
         relationSnapshots: relationSnapshots ?? this.relationSnapshots,
         standingLog: standingLog ?? this.standingLog,
         relationsLog: relationsLog ?? this.relationsLog,
+        appliedKeys: appliedKeys ?? this.appliedKeys,
+        firedEvents: firedEvents ?? this.firedEvents,
+        news: news ?? this.news,
       );
 
   Map<String, dynamic> toJson() => {
@@ -1162,6 +1392,12 @@ class PoliticsState {
         },
         'log': [for (final e in standingLog) e.toJson()],
         'relationsLog': [for (final e in relationsLog) e.toJson()],
+        if (appliedKeys.isNotEmpty) 'applied': appliedKeys,
+        if (firedEvents.isNotEmpty)
+          'fired': {
+            for (final e in firedEvents.entries) e.key: e.value.toJson(),
+          },
+        if (news.isNotEmpty) 'news': [for (final n in news) n.toJson()],
       };
 
   /// [raw] read; [empty] for a save from before clans (or anything
@@ -1200,6 +1436,18 @@ class PoliticsState {
       relationsLog: [
         for (final e in (json['relationsLog'] as List?) ?? const [])
           if (e is Map) RelationLogEntry.fromJson(e.cast<String, dynamic>()),
+      ],
+      appliedKeys: _strings(json['applied']),
+      firedEvents: {
+        if (json['fired'] is Map)
+          for (final e in (json['fired'] as Map).entries)
+            if (e.value is Map)
+              e.key.toString():
+                  FiredEvent.fromJson((e.value as Map).cast<String, dynamic>()),
+      },
+      news: [
+        for (final n in (json['news'] as List?) ?? const [])
+          if (n is Map) CoastNews.fromJson(n.cast<String, dynamic>()),
       ],
     );
   }
@@ -1427,7 +1675,9 @@ StandingResult applyStandingChange(
   int chapter = 0,
   int day = 0,
 }) {
-  if (delta == 0 || !data.factions.containsKey(factionId)) {
+  if (delta == 0 ||
+      !data.factions.containsKey(factionId) ||
+      data.factions[factionId]!.isLost) {
     return StandingResult(state: state);
   }
   final before = _allStandings(state, data);
@@ -1486,7 +1736,8 @@ StandingResult setStandingValue(
   int chapter = 0,
   int day = 0,
 }) {
-  if (!data.factions.containsKey(factionId)) {
+  if (!data.factions.containsKey(factionId) ||
+      data.factions[factionId]!.isLost) {
     return StandingResult(state: state);
   }
   final before = _allStandings(state, data);

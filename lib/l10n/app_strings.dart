@@ -9401,6 +9401,165 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         '{name}\u00a0: {tier}. Cette boutique refuse de commercer avec vous.',
   },
+  // The clan story (v1.195): politics on choices, the coast's events, the
+  // Open Hand.
+  'politics_hint_mark_friend': {
+    AppLanguage.en: '{name}: friend',
+    AppLanguage.fr: '{name}\u00a0: amiti\u00e9',
+  },
+  'politics_hint_mark_foe': {
+    AppLanguage.en: '{name}: foe',
+    AppLanguage.fr: '{name}\u00a0: inimiti\u00e9',
+  },
+  'politics_hint_mark_none': {
+    AppLanguage.en: '{name}: no mark',
+    AppLanguage.fr: '{name}\u00a0: aucune marque',
+  },
+  'politics_hints_setting_title': {
+    AppLanguage.en: 'Show what choices do to the clans',
+    AppLanguage.fr: 'Montrer l\u2019effet des choix sur les clans',
+  },
+  'politics_hints_setting_desc': {
+    AppLanguage.en:
+        'A muted line under a choice that moves the clans, such as \u201cVigil +5 \u00b7 Dominion \u22125\u201d. Hidden consequences stay hidden.',
+    AppLanguage.fr:
+        'Une ligne discr\u00e8te sous un choix qui fait bouger les clans, comme \u00ab\u00a0Veille +5 \u00b7 Dominion \u22125\u00a0\u00bb. Les cons\u00e9quences cach\u00e9es restent cach\u00e9es.',
+  },
+  'standing_cause_event': {
+    AppLanguage.en: 'News from the coast',
+    AppLanguage.fr: 'Nouvelles de la c\u00f4te',
+  },
+  'offer_source_story': {
+    AppLanguage.en: 'From the story',
+    AppLanguage.fr: 'De l\u2019histoire',
+  },
+  'patron_kind_lost': {
+    AppLanguage.en: 'Lost clan',
+    AppLanguage.fr: 'Clan perdu',
+  },
+  'coast_news_title': {
+    AppLanguage.en: 'News from the coast',
+    AppLanguage.fr: 'Nouvelles de la c\u00f4te',
+  },
+  'coast_news_noted': {
+    AppLanguage.en: 'Noted',
+    AppLanguage.fr: 'Not\u00e9',
+  },
+  'coast_news_more': {
+    AppLanguage.en: '{n} more in the journal',
+    AppLanguage.fr: '{n}\u00a0de plus dans le journal',
+  },
+  'coast_news_when': {
+    AppLanguage.en: 'Chapter {c}, day {d}',
+    AppLanguage.fr: 'Chapitre {c}, jour {d}',
+  },
+  'journal_news_tab': {
+    AppLanguage.en: 'News',
+    AppLanguage.fr: 'Nouvelles',
+  },
+  'journal_news_empty': {
+    AppLanguage.en:
+        'No news from the coast yet. The clans move whether you are there or not; what they do is written here.',
+    AppLanguage.fr:
+        'Aucune nouvelle de la c\u00f4te pour l\u2019instant. Les clans bougent que vous soyez l\u00e0 ou non\u00a0; ce qu\u2019ils font s\u2019\u00e9crit ici.',
+  },
+  'clans_events_title': {
+    AppLanguage.en: 'The coast moves',
+    AppLanguage.fr: 'La c\u00f4te bouge',
+  },
+  'clans_events_none': {
+    AppLanguage.en: 'No politics events in the data.',
+    AppLanguage.fr:
+        'Aucun \u00e9v\u00e9nement politique dans les donn\u00e9es.',
+  },
+  'clans_event_fired': {
+    AppLanguage.en: 'Fired: chapter {c}, day {d} \u00b7 variant {v}',
+    AppLanguage.fr: 'Survenu\u00a0: chapitre {c}, jour {d} \u00b7 variante {v}',
+  },
+  'clans_event_waiting': {
+    AppLanguage.en: 'Not yet',
+    AppLanguage.fr: 'Pas encore',
+  },
+  'clans_event_fire_now': {
+    AppLanguage.en: 'Fire now',
+    AppLanguage.fr: 'D\u00e9clencher',
+  },
+  'clans_event_fired_notice': {
+    AppLanguage.en: '\u201c{name}\u201d fired.',
+    AppLanguage.fr: '\u00ab\u00a0{name}\u00a0\u00bb est survenu.',
+  },
+  'clans_event_by_story': {
+    AppLanguage.en: 'Fired by the story',
+    AppLanguage.fr: 'D\u00e9clench\u00e9 par l\u2019histoire',
+  },
+  'clans_event_trigger_chapter': {
+    AppLanguage.en: 'chapter {n}',
+    AppLanguage.fr: 'chapitre {n}',
+  },
+  'clans_event_trigger_day': {
+    AppLanguage.en: 'day {n}',
+    AppLanguage.fr: 'jour {n}',
+  },
+  'clans_event_trigger_flag': {
+    AppLanguage.en: 'flag {f}',
+    AppLanguage.fr: 'drapeau {f}',
+  },
+  'clans_event_or': {
+    AppLanguage.en: 'or',
+    AppLanguage.fr: 'ou',
+  },
+  'open_hand_unknown_name': {
+    AppLanguage.en: 'A clan with no name',
+    AppLanguage.fr: 'Un clan sans nom',
+  },
+  'open_hand_unknown_line': {
+    AppLanguage.en:
+        'A grey cloth, a giant figure with its hands open. Nobody will say whose.',
+    AppLanguage.fr:
+        'Un tissu gris, une silhouette g\u00e9ante aux mains ouvertes. Personne ne veut dire \u00e0 qui il \u00e9tait.',
+  },
+  'open_hand_stage': {
+    AppLanguage.en: 'Remembrance {n}/{max}',
+    AppLanguage.fr: 'Souvenir {n}/{max}',
+  },
+  'open_hand_stage_none': {
+    AppLanguage.en: 'Not remembered yet',
+    AppLanguage.fr: 'Pas encore de souvenir',
+  },
+  'open_hand_banner_raised': {
+    AppLanguage.en: 'Banner raised',
+    AppLanguage.fr: 'Banni\u00e8re lev\u00e9e',
+  },
+  'open_hand_edit_hint': {
+    AppLanguage.en:
+        'No standing: the remembrance stage, from the flags open_hand_1 to open_hand_6.',
+    AppLanguage.fr:
+        'Pas de r\u00e9putation\u00a0: le stade du souvenir, d\u2019apr\u00e8s les drapeaux open_hand_1 \u00e0 open_hand_6.',
+  },
+  'offer_own_hand_name': {
+    AppLanguage.en: 'Your own hand',
+    AppLanguage.fr: 'Votre propre main',
+  },
+  'offer_own_hand_greeting': {
+    AppLanguage.en:
+        'No clan comes. Your hand moves of itself, and the old blood draws.',
+    AppLanguage.fr:
+        'Aucun clan ne vient. Votre main bouge d\u2019elle-m\u00eame, et le vieux sang trace.',
+  },
+  'politics_editor_label': {
+    AppLanguage.en: 'Politics (JSON)',
+    AppLanguage.fr: 'Politique (JSON)',
+  },
+  'politics_on_enter_label': {
+    AppLanguage.en: 'Politics on entering (JSON)',
+    AppLanguage.fr: 'Politique \u00e0 l\u2019entr\u00e9e (JSON)',
+  },
+  'politics_editor_help': {
+    AppLanguage.en:
+        '{"standing": {"vigil": 5}, "marks": {"inquisition": "foe"}, "relations": [{"a": "mire", "b": "penitents", "steps": 1}], "offerFrom": "penitents", "intrigue": {"id": "hooded_lantern", "stage": 2}, "remembrance": 3, "event": "id", "hidden": true}',
+    AppLanguage.fr:
+        '{"standing": {"vigil": 5}, "marks": {"inquisition": "foe"}, "relations": [{"a": "mire", "b": "penitents", "steps": 1}], "offerFrom": "penitents", "intrigue": {"id": "hooded_lantern", "stage": 2}, "remembrance": 3, "event": "id", "hidden": true}',
+  },
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value

@@ -2400,7 +2400,9 @@ final DbSchema factionsSchema = DbSchema(
       help: 'clan: the Dominion and the five clans, with sub-clans and a '
           'place in the relations table. tribe: met on the way, offers half '
           'as often. otherworld: the Choir and the Pit, who shut each other '
-          'out for the life.',
+          'out for the life. lost: a dead clan (the Open Hand), with no '
+          'standing: a remembrance stage (flags open_hand_1..6), and its '
+          'signs come as "Your own hand", a fourth card.',
     ),
     FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
     FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
@@ -2662,6 +2664,48 @@ final DbSchema intriguesSchema = DbSchema(
   ],
 );
 
+/// The politics events (v1.195, see lib/data/politics_events.dart): what
+/// happens on the coast whether or not the character is there, told as
+/// "News from the coast".
+final DbSchema politicsEventsSchema = DbSchema(
+  id: 'politicsEvents',
+  label: 'Politics events',
+  assetPath: 'assets/gamedata/politics_events.json',
+  primaryKeyField: 'id',
+  titleField: 'name',
+  fields: [
+    FieldSchema(key: 'id', label: 'Event ID', type: FieldType.text),
+    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(
+      key: 'trigger',
+      label: 'Trigger {chapter, day, flag}',
+      type: FieldType.json,
+      help: 'Every key given must hold: chapter (the chapter reached is at '
+          'least it), day (the story\'s day is at least it), flag or flags '
+          '(held), notFlags. A list of triggers fires on any. None: only '
+          'a story choice\'s "event" or Edit Mode fires it.',
+    ),
+    FieldSchema(
+      key: 'once',
+      label: 'Once',
+      type: FieldType.boolean,
+      defaultValue: true,
+    ),
+    FieldSchema(
+      key: 'variants',
+      label: 'Variants [{conditions, effects, news, news_fr}]',
+      type: FieldType.json,
+      help: 'The first whose conditions hold fires; the last is the '
+          'default. conditions: flags, notFlags, chapterAtLeast, '
+          'standingAtLeast {faction: n}, standingAtMost, relationAtLeast '
+          '{"a|b": step}, relationAtMost, marks {sub-clan: friend}. effects: '
+          'a story choice\'s politics (standing, marks, relations, '
+          'offerFrom, intrigue, remembrance, event) and flags.',
+    ),
+  ],
+);
+
 /// The signs the factions offer, three at a time (see lib/data/signs.dart).
 final DbSchema signsSchema = DbSchema(
   id: 'signs',
@@ -2755,4 +2799,5 @@ final List<DbSchema> gameDbSchemas = [
   titlesSchema,
   intriguesSchema,
   signsSchema,
+  politicsEventsSchema,
 ];
