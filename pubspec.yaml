@@ -80,6 +80,8 @@ flutter:
     - assets/gamedata/chapters.json
     - assets/gamedata/npcs.json
     - assets/gamedata/spells.json
+    - assets/gamedata/patrons.json
+    - assets/gamedata/signs.json
     - assets/visuals/items/
     - assets/visuals/skills/
     - assets/visuals/dice/
