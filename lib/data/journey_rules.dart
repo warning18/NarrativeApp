@@ -48,9 +48,15 @@ const Map<int, int> _threatGraceByChapter = {
   7: 12,
 };
 
-/// Days [chapter] can take before its enemies start to gather strength.
-int threatGraceDaysFor(int chapter) =>
-    _threatGraceByChapter[chapter] ?? threatGraceDays;
+/// Days [chapter] can take before its enemies start to gather strength. A
+/// chapter past the table (v1.196: the Lantern Throne and Beyond the Tear
+/// after the ending's 7) is as short as the last one in it.
+int threatGraceDaysFor(int chapter) {
+  final own = _threatGraceByChapter[chapter];
+  if (own != null) return own;
+  final last = _threatGraceByChapter.keys.reduce(math.max);
+  return chapter > last ? _threatGraceByChapter[last]! : threatGraceDays;
+}
 
 /// How much stronger (health and damage) enemies get per day past the
 /// grace, and at most.

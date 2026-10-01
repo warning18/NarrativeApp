@@ -10,6 +10,7 @@ import '../l10n/app_strings.dart';
 import '../gamedata/db_schema.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/camp_presence_provider.dart';
+import '../providers/chapter_loop_provider.dart' show chapterLoopsProvider;
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
@@ -428,12 +429,29 @@ class _ChapterTitle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final number = chapterOfNode(ref.watch(storyPlayProvider).currentNodeId);
-    final chapter = mapChapters.where((c) => c.number == number).firstOrNull;
+    var chapter = mapChapters.where((c) => c.number == number).firstOrNull;
+    String? label;
+    String? name;
+    if (chapter == null && number > 0) {
+      // A chapter the map's list has no heading for yet (one added to
+      // chapters.json, v1.196): its own label and title there, in the
+      // colours of the latest chapter before it.
+      final loop = ref
+          .watch(chapterLoopsProvider)
+          .where((l) => l.chapter == number)
+          .firstOrNull;
+      final before = mapChapters.where((c) => c.number < number);
+      if (loop != null && loop.title.isNotEmpty && before.isNotEmpty) {
+        chapter = before.last;
+        label = loop.label.isEmpty ? '$number' : loop.label;
+        name = loop.title;
+      }
+    }
     if (chapter == null) return Text(fallback);
     final title = chapter.title(ref.watch(appLanguageProvider));
     final split = title.indexOf(':');
-    final label = split < 0 ? title : title.substring(0, split).trim();
-    final name = split < 0 ? fallback : title.substring(split + 1).trim();
+    label ??= split < 0 ? title : title.substring(0, split).trim();
+    name ??= split < 0 ? fallback : title.substring(split + 1).trim();
     final theme = Theme.of(context);
     return FittedBox(
       fit: BoxFit.scaleDown,

@@ -339,7 +339,12 @@ class _PoliticsTabState extends ConsumerState<_PoliticsTab> {
       max(1, reached),
       ...politics.relationSnapshots.keys,
     ].reduce(max);
-    final last = max(7, latest);
+    // Up to the story's last chapter (chapters.json), or the latest the
+    // relations moved in.
+    final storyEnd = ref
+        .watch(chapterLoopsProvider)
+        .fold<int>(1, (most, loop) => max(most, loop.chapter));
+    final last = max(storyEnd, latest);
     final chapter = (_chapter ?? last).clamp(1, last);
     final now = chapter >= latest;
     final steps = now
