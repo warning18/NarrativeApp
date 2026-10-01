@@ -24,7 +24,8 @@ import '../data/politics_events.dart' as coast show applyStoryPolitics;
 import '../data/quest_objectives.dart' show killTargetsOf;
 import '../data/signs.dart';
 import '../data/skill_tree.dart' show branchMasteryEssenceCost;
-import '../data/throne.dart' show isHostFlag, onThroneFlag;
+import '../data/throne.dart'
+    show clanQuestSteps, clanStepFlag, isHostFlag, onThroneFlag;
 import '../models/ally_state.dart';
 import '../models/story_politics.dart';
 
@@ -2496,6 +2497,25 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     _takeCoastChange(change, data);
     await _persist();
     return change;
+  }
+
+  /// Edit Mode: [factionId]'s clan quest at [steps] (0..3): the flags
+  /// `clan_<id>_step_1` up to it held, those past it dropped.
+  Future<void> setClanStepsForEdit(String factionId, int steps,
+      {required ClanData data}) async {
+    final keep = [
+      for (var n = 1; n <= steps.clamp(0, clanQuestSteps); n++)
+        clanStepFlag(factionId, n),
+    ];
+    final prefix = 'clan_${factionId}_step_';
+    final flags = [
+      for (final f in state.flags)
+        if (!f.startsWith(prefix) || keep.contains(f)) f,
+      for (final f in keep)
+        if (!state.flags.contains(f)) f,
+    ];
+    state = _withTitles(state.copyWith(flags: flags), data);
+    await _persist();
   }
 
   /// Edit Mode: the climb undone -- no claim, nobody on the Throne, no

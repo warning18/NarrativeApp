@@ -10,6 +10,7 @@ import '../providers/clans_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/signs_provider.dart';
 import 'sign_widgets.dart';
+import 'throne_widgets.dart';
 
 /// The colour of a foe's square, and of the Hunted end of a meter.
 const Color clanFoeColor = Color(0xFFD9544D);
@@ -502,6 +503,8 @@ class ClansSection extends ConsumerWidget {
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         const SizedBox(height: 4),
+        // The climb to the Lantern Throne (v1.196), once begun.
+        const ClimbCard(),
         if (shown.isEmpty)
           Text(tr(ref, 'clans_none'), style: theme.textTheme.bodySmall),
         for (final faction in shown) FactionStandingCard(faction: faction),

@@ -21,6 +21,7 @@ import '../tutorial/guide_tour.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/moments.dart';
 import '../widgets/immersive_notice.dart';
+import '../widgets/throne_widgets.dart' show showHostSheet;
 import 'ai_generator_screen.dart';
 import 'camp_screen.dart';
 import 'character_screen.dart';
@@ -72,6 +73,15 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   /// Goals reached during a fight, announced once it is over.
   final List<String> _pendingReadyQuestIds = [];
 
+  /// "Your Host" after the story mustered it (see
+  /// hostMusteredNoticeProvider), once.
+  void _showMusteredHost() {
+    ref.read(hostMusteredNoticeProvider.notifier).state = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) showHostSheet(context);
+    });
+  }
+
   void _announceReady(List<String> questIds) {
     final quests =
         ref.read(localizedDbProvider(questsSchema)).value ?? const {};
@@ -116,6 +126,14 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         _pendingReadyQuestIds.clear();
         _announceReady(ids);
       }
+      if (previous == true && !next && ref.read(hostMusteredNoticeProvider)) {
+        _showMusteredHost();
+      }
+    });
+    // The story mustered the Host (v1.196): "Your Host", once, out of any
+    // fight.
+    ref.listen<bool>(hostMusteredNoticeProvider, (previous, next) {
+      if (next && !ref.read(combatActiveProvider)) _showMusteredHost();
     });
     // The story coming to the camp brings the party home, the Rusty Eel
     // with it; the camp then opens in the Story tab's place, and the story

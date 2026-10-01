@@ -9631,6 +9631,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Clan {n}/3',
     AppLanguage.fr: 'Clan {n}/3',
   },
+  'throne_rung_clan_plain': {AppLanguage.en: 'Clan', AppLanguage.fr: 'Clan'},
   'throne_rung_throne': {AppLanguage.en: 'Throne', AppLanguage.fr: 'Trône'},
   'throne_rung_reached': {
     AppLanguage.en: '{rung}, reached',
