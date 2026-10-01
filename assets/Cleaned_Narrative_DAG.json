@@ -6724,8 +6724,8 @@
       },
       {
         "flag": "banner_raised",
-        "en": "It was the hand’s last drawing, I understand now: the one thing the Seal could do, drawn by the clan that made it, whole for the first time in fifty years. The figure on the heirloom held its arms up the whole way back through the needle, not in surrender but the way a drawer lifts the brush off the last line. What is drawn, holds. The city I raised the second time flew a grey flag with an open hand on it from its first roof, and no clerk anywhere struck it from a record.",
-        "fr": "C’était le dernier dessin de la main, je le comprends à présent : la seule chose que le Sceau savait faire, tracée par le clan qui l’avait fait, entier pour la première fois depuis cinquante ans. La silhouette de l’héritage garda les bras levés tout le long du retour par le chas de l’aiguille, non pour se rendre, mais comme on lève le pinceau au dernier trait. Ce qui est tracé tient. La ville que je bâtis la seconde fois fit flotter dès son premier toit un drapeau gris marqué d’une main ouverte, et aucun greffier nulle part ne le raya d’aucun registre."
+        "en": "It was the hand’s last drawing, I understand now: the one thing the Seal could do once it was whole, drawn long ago by the clan that made it. The figure on the heirloom held its arms up the whole way back through the needle, not in surrender but the way a drawer lifts the brush off the last line. What is drawn, holds. The city I raised the second time flew a grey flag with an open hand on it from its first roof, and no clerk anywhere struck it from a record.",
+        "fr": "C’était le dernier dessin de la main, je le comprends à présent : la seule chose que le Sceau savait faire une fois entier, tracée il y a longtemps par le clan qui l’avait fait. La silhouette de l’héritage garda les bras levés tout le long du retour par le chas de l’aiguille, non pour se rendre, mais comme on lève le pinceau au dernier trait. Ce qui est tracé tient. La ville que je bâtis la seconde fois fit flotter dès son premier toit un drapeau gris marqué d’une main ouverte, et aucun greffier nulle part ne le raya d’aucun registre."
       },
       {
         "flag": "banner_furled",
@@ -6769,7 +6769,7 @@
       {
         "flag": "banner_stood_mire",
         "en": "A woman in a heron mask came in out of the rain, looked at me for a long moment, laughed, and went out again.",
-        "fr": "Une femme au masque de héron entra en sortant de la pluie, me regarda longuement, rit, et ressortit.",
+        "fr": "Une femme au masque de héron entra, ruisselante de pluie, me regarda longuement, rit, et ressortit.",
         "andFlags": [
           "banner_raised"
         ]
@@ -6889,7 +6889,7 @@
       {
         "flag": "banner_stood_mire",
         "en": "A woman in a heron mask came in out of the rain, looked at me for a long moment, laughed, and went out again.",
-        "fr": "Une femme au masque de héron entra en sortant de la pluie, me regarda longuement, rit, et ressortit.",
+        "fr": "Une femme au masque de héron entra, ruisselante de pluie, me regarda longuement, rit, et ressortit.",
         "andFlags": [
           "banner_raised"
         ]
@@ -7026,7 +7026,7 @@
       {
         "flag": "banner_stood_mire",
         "en": "A woman in a heron mask came in out of the rain, looked at me for a long moment, laughed, and went out again.",
-        "fr": "Une femme au masque de héron entra en sortant de la pluie, me regarda longuement, rit, et ressortit.",
+        "fr": "Une femme au masque de héron entra, ruisselante de pluie, me regarda longuement, rit, et ressortit.",
         "andFlags": [
           "banner_raised"
         ]
@@ -7150,7 +7150,7 @@
       {
         "flag": "banner_stood_mire",
         "en": "A woman in a heron mask came in out of the rain, looked at me for a long moment, laughed, and went out again.",
-        "fr": "Une femme au masque de héron entra en sortant de la pluie, me regarda longuement, rit, et ressortit.",
+        "fr": "Une femme au masque de héron entra, ruisselante de pluie, me regarda longuement, rit, et ressortit.",
         "andFlags": [
           "banner_raised"
         ]
@@ -7787,8 +7787,8 @@
   },
   "6010_thread": {
     "id": "6010_thread",
-    "description": "The ledger's endpaper named the fourth piece as plainly as the others: sewn into a reliquary in the chart-keeper's chapel, around the bones of a girl taken the first night, by an order that had believed grey cloth on holy bones would keep the tear from growing. It had not. Someone had been here before me, and lately: there was a fresh seal on the lid, a hooded lantern pressed into the wax, and under it an Inquisition requisition in a clerk’s tidy hand. The fourth piece was to be held for the Inquisitor-General’s rite, the one that would widen the tear into a door for the Lantern alone, and carried to Candlehold with the other pieces, and with the blood, when the blood was found. Under that was a short list of whose blood. My name was on it. The chart-keeper stood by the reliquary with her hand on it and did not ask me not to. The penitent stood at the door with his blade hilt-first and asked to be the one. Whatever I did next, someone in that chapel was going to lose the last of what they had kept.",
-    "description_fr": "La page de garde du registre nommait la quatrième pièce aussi clairement que les autres : cousue dans un reliquaire de la chapelle de la gardienne des cartes, autour des os d'une fillette prise la première nuit, par un ordre qui avait cru que du gris sur des os saints empêcherait la déchirure de grandir. Cela n'avait rien empêché. Quelqu'un était passé avant moi, et récemment : il y avait un sceau frais sur le couvercle, une lanterne encapuchonnée pressée dans la cire, et dessous une réquisition de l'Inquisition, d'une main de greffier bien appliquée. La quatrième pièce devait être gardée pour le rite de l'Inquisiteur général, celui qui élargirait la déchirure en une porte pour la seule Lanterne, puis portée à Candlehold avec les autres pièces, et avec le sang, quand on aurait trouvé le sang. Dessous venait une courte liste : le sang de qui. Mon nom y figurait. La gardienne des cartes se tenait près du reliquaire, la main dessus, et ne me demanda pas de m'abstenir. Le pénitent se tenait à la porte, la lame poignée en avant, et demanda à être celui qui le ferait. Quoi que je fasse ensuite, quelqu'un dans cette chapelle allait perdre le dernier de ce qu'il avait gardé.",
+    "description": "The ledger's endpaper named the fourth piece as plainly as the others: sewn into a reliquary in the chart-keeper's chapel, around the bones of a girl taken the first night, by an order that had believed grey cloth on holy bones would keep the tear from growing. It had not. Someone had been here before me, and lately: there was a fresh seal on the lid, a hooded lantern pressed into the wax, and under it an Inquisition requisition in a clerk’s tidy hand. The fourth piece was to be held for the Inquisitor-General’s rite, the one that would widen the tear into a door for the Lantern alone, and carried to Candlehold with the other pieces, and with the blood, when the blood was found. Under that was a short list: the blood it needed. My name was on it. The chart-keeper stood by the reliquary with her hand on it and did not ask me not to. The penitent stood at the door with his blade hilt-first and asked to be the one. Whatever I did next, someone in that chapel was going to lose the last of what they had kept.",
+    "description_fr": "La page de garde du registre nommait la quatrième pièce aussi clairement que les autres : cousue dans un reliquaire de la chapelle de la gardienne des cartes, autour des os d'une fillette prise la première nuit, par un ordre qui avait cru que du gris sur des os saints empêcherait la déchirure de grandir. Cela n'avait rien empêché. Quelqu'un était passé avant moi, et récemment : il y avait un sceau frais sur le couvercle, une lanterne encapuchonnée pressée dans la cire, et dessous une réquisition de l'Inquisition, d'une main de greffier bien appliquée. La quatrième pièce devait être gardée pour le rite de l'Inquisiteur général, celui qui élargirait la déchirure en une porte pour la seule Lanterne, puis portée à Candlehold avec les autres pièces, et avec le sang, quand on aurait trouvé le sang. Dessous venait une courte liste : le sang qu'il fallait. Mon nom y figurait. La gardienne des cartes se tenait près du reliquaire, la main dessus, et ne me demanda pas de m'abstenir. Le pénitent se tenait à la porte, la lame poignée en avant, et demanda à être celui qui le ferait. Quoi que je fasse ensuite, quelqu'un dans cette chapelle allait perdre le dernier de ce qu'il avait gardé.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
       "mood": "grim",
@@ -11094,8 +11094,8 @@
   },
   "7002_banner": {
     "id": "7002_banner",
-    "description": "The heirloom had never been a flag; I knew that now. It was the one piece the Reliquary had never cut down to a saint’s size, and the figure on it was still whole, arms raised, hands open, the way the Open Hand had drawn it to hold a coast together. A clan that never was, the records said. I was what was left of it. I could raise it here, on a spar driven into the grey sand with the tear across the water, and let the coast see who came to stand under it. The Inquisition would see it too. By the next tide every Inquisitor from here to Candlehold would know that the hand was up again, and whose blood was under it. Or I could leave it furled on my back, where it had been since my parents’ floor, and go into the tear as nobody in particular.",
-    "description_fr": "L’héritage n’avait jamais été un drapeau ; je le savais à présent. C’était la seule pièce que le Reliquaire n’avait jamais ramenée à la taille d’un saint, et la silhouette y était encore entière, bras levés, mains ouvertes, telle que la Main Ouverte l’avait tracée pour tenir une côte d’un seul tenant. Un clan qui n’a jamais été, disaient les registres. J’étais ce qu’il en restait. Je pouvais lever la main grise ici, sur un espar planté dans le sable gris, la déchirure de l’autre côté de l’eau, et laisser la côte voir qui viendrait se tenir dessous. L’Inquisition le verrait aussi. À la marée suivante, chaque inquisiteur d’ici à Candlehold saurait que la main était de nouveau levée, et quel sang se tenait dessous. Ou je pouvais la garder roulée sur mon dos, où elle était depuis le plancher de mes parents, et entrer dans la déchirure sans être personne en particulier.",
+    "description": "The heirloom had never been a flag; I knew that now. It was the one piece the Reliquary had never cut down to a saint’s size, and the figure on it was still whole, arms raised, hands open, the way the Open Hand had drawn it to hold a coast together. A clan that never was, the records said. I was what was left of it. I could raise it here, on a spar driven into the grey sand with the tear across the water, and let the coast see who came to stand under it. The Inquisition would see it too. By the next tide every Inquisitor from here to Candlehold would know that the hand was up again, and whose blood had raised it. Or I could leave it furled on my back, where it had been since my parents’ floor, and go into the tear as nobody in particular.",
+    "description_fr": "L’héritage n’avait jamais été un drapeau ; je le savais à présent. C’était la seule pièce que le Reliquaire n’avait jamais ramenée à la taille d’un saint, et la silhouette y était encore entière, bras levés, mains ouvertes, telle que la Main Ouverte l’avait tracée pour tenir une côte d’un seul tenant. Un clan qui n’a jamais été, disaient les registres. J’étais ce qu’il en restait. Je pouvais lever la main grise ici, sur un espar planté dans le sable gris, la déchirure de l’autre côté de l’eau, et laisser la côte voir qui viendrait se tenir dessous. L’Inquisition le verrait aussi. À la marée suivante, chaque inquisiteur d’ici à Candlehold saurait que la main était de nouveau levée, et quel sang l’avait levée. Ou je pouvais la garder roulée sur mon dos, où elle était depuis le plancher de mes parents, et entrer dans la déchirure sans être personne en particulier.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
       "mood": "reflective",
@@ -11278,7 +11278,6 @@
         "next_id": "7002",
         "goldMod": 150,
         "alignmentMod": -2,
-        "loseAllyId": "vess",
         "flagsToAdd": [
           "hub_7002_orders",
           "lantern_kept"
@@ -11634,7 +11633,7 @@
       {
         "flag": "vote_carried",
         "en": "I had rowed the Tribunal’s vote out to Candlehold’s envoy with its seal unbroken. Whatever it said, it was said, and I had not looked.",
-        "fr": "J’avais porté à la rame le vote du Tribunal à l’émissaire de Candlehold, son sceau intact. Quoi qu’il dise, c’était dit, et je n’avais pas regardé.",
+        "fr": "J’avais porté à la rame le vote du Tribunal à l’émissaire de Candlehold, son sceau intact. Quoi qu’il dît, c’était dit, et je n’avais pas regardé.",
         "unlessFlags": [
           "vote_read"
         ]

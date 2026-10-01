@@ -240,7 +240,8 @@ final List<Landmark> worldMapLandmarks = [
       '2015_informant_caught', '2015_kelda', '2015_rats', '2015_sable',
       '2015_sable_lifted', '2015_sable_caught', '2015_sable_bought',
       '2015_sable_talk_failed', '2015_liora', '2015_liora_won',
-      '2015_liora_refused', '2015_vess', '2015_smuggler', '2020', '2021',
+      '2015_liora_refused', '2015_vess', '2015_drawer', '2015_smuggler', '2020',
+      '2021',
       '2011_roof_fall', '2030', '2040', '2040_paid', '2050', '2070',
       '2070_cut_failed',
     ],
@@ -312,7 +313,7 @@ final List<Landmark> worldMapLandmarks = [
       '3005_wisp', '3005_stalker', '3005_golem', '3005_auxiliaries',
       '3005_maren', '3005_archive', '3005_archive_failed', '3005_ledger',
       '3005_ledger_failed', '3005_grosh', '3005_wall', '3005_wall_argued',
-      '3005_wall_fight', '3005_lysa',
+      '3005_wall_fight', '3005_lysa', '3005_envoys',
     ],
     fights: [
       'cultist_acolyte', 'void_wisp', 'void_stalker', 'iron_golem', //
@@ -360,7 +361,7 @@ final List<Landmark> worldMapLandmarks = [
         'La maison mère de l’Inquisition. Passez par les toits du cloître et à travers les vitraux, ou par la Salle des Archives, en soudoyant ou par la force. L’étendard blanc du Haut Gardien est gris en dessous : un morceau du Linceul.',
     scenes: [
       '3002', '3010', '3010_rope_fail', '3020', '3030', '3040', '3050',
-      '4999', //
+      '4999_drawn', '4999', //
       '4999_standard',
     ],
     fights: ['inquisition_high_warden'],
@@ -376,7 +377,7 @@ final List<Landmark> worldMapLandmarks = [
         'Des pilleurs d’épaves et des coupeurs de varech sur la falaise au-dessus de l’Escalier Noyé, dans des maisons bâties avec des coques, de fausses lampes sur la pointe et les noyés qui grimpent vers elles.',
     scenes: [
       '5100', '5100_drowned', '5100_salvage', '5100_salvage_failed', //
-      '5100_headman', '5100_headman_later', '5100_nets',
+      '5100_headman', '5100_headman_later', '5100_nets', '5100_vote',
     ],
     fights: ['drowned_pilgrim'],
   ),
@@ -410,7 +411,7 @@ final List<Landmark> worldMapLandmarks = [
       '5010_sapper_thanks', '5010_warden', '5010_trade', '5010_span',
       '5010_span_failed', '5010_wisps', '5010_deserter',
       '5010_deserter_later', '5010_deserter_failed', '5010_tobin',
-      '5010_tobin_hymn',
+      '5010_tobin_hymn', '5010_letter',
     ],
     fights: ['catacomb_ghoul', 'bone_warden', 'void_wisp'],
   ),
@@ -445,7 +446,8 @@ final List<Landmark> worldMapLandmarks = [
       '6010_lysa_dead', '6010_masked', '6010_masked_after', '6010_hounds',
       '6010_confession', '6010_confession_later', '6010_penitent',
       '6010_lantern', '6010_lantern_keeper', '6010_spawn', '6010_frost',
-      '6010_frost_failed', '6010_malrik', '6010_thread',
+      '6010_frost_failed', '6010_malrik', '6010_thread', '6010_record',
+      '6010_wickwarden',
     ],
     fights: [
       'void_hound', 'inquisition_penitent', 'tear_spawn', 'masked_penitent', //
@@ -462,7 +464,7 @@ final List<Landmark> worldMapLandmarks = [
         'Une halte de pèlerins sur la route du Reliquaire Noir, où le givre de la déchirure est arrivé en premier : une cloche qui compte les disparus, la lanterne d’une gardienne de la route, et un pain rassis partagé avec ceux qui marchent encore.',
     scenes: [
       '6100', '6100_bell', '6100_bell_failed', '6100_road', //
-      '6100_keeper', '6100_keeper_later', '6100_bread',
+      '6100_keeper', '6100_keeper_later', '6100_bread', '6100_knife',
     ],
     fights: ['void_hound', 'drowned_pilgrim'],
   ),
@@ -506,7 +508,7 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '7100', '7100_chaplain', '7100_chandlery', '7100_company', //
       '7100_sick', '7100_sick_failed', '7100_helmsman', '7100_helmsman_refused',
-      '7100_helmsman_later', '7100_cutter', '7100_cutter_lost',
+      '7100_helmsman_later', '7100_cutter', '7100_cutter_lost', '7100_log',
     ],
     fights: ['inquisition_soldier', 'white_soldier'],
   ),
@@ -550,6 +552,7 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '7002', '7002_reflections', '7002_rest', '7002_pact', //
       '7002_betrayal', '7002_crew', '7002_approach', '7002_alarm', //
+      '7002_orders', '7002_throne', '7002_banner', //
       '7002_confront', '7002_price', '7003',
       '7004', '7005', '7005_seeker', '7005_dawn', '7005_crown',
     ],
