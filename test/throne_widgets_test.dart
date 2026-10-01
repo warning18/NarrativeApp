@@ -113,7 +113,12 @@ void main() {
         chapter: 6));
     await _settle(tester);
     expect(find.text('Your claim: The Cinder Compact'), findsOneWidget);
-    expect(find.text('Clan 3/3'), findsOneWidget);
+    expect(find.text('Clan'), findsOneWidget);
+    expect(
+        find.descendant(
+            of: find.byKey(const Key('climb_rung_clan_compact')),
+            matching: find.byIcon(Icons.check_circle)),
+        findsOneWidget);
     expect(find.byKey(const Key('climb_open_host')), findsNothing);
     await tester.runAsync(() => notifier.applyThroneEdit(
         const StoryPolitics(throneWinner: 'compact', muster: true),
@@ -207,5 +212,25 @@ void main() {
     expect(politics().host.mustered, isFalse);
     expect(flags().where((f) => f.startsWith('host_')), isEmpty);
     expect(flags(), contains('clan_vigil_step_1'), reason: 'steps stay');
+
+    // The Character tab's climb, in French: the Compact is furthest up.
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            padding: EdgeInsets.all(16),
+            child: Card(child: ClansSection()),
+          ),
+        ),
+      ),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.text('L’Ascension'), findsOneWidget);
+    expect(find.text('Aucune prétention pour l’instant'), findsOneWidget);
+    expect(find.text('Ascension la plus avancée : Le Pacte des Cendres'),
+        findsOneWidget);
+    expect(find.text('Clan 2/3'), findsOneWidget);
+    expect(tester.takeException(), isNull, reason: 'fits 360 px');
   });
 }

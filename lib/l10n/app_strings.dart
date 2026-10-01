@@ -9559,11 +9559,25 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'politics_editor_help': {
     AppLanguage.en:
-        '{"standing": {"vigil": 5}, "marks": {"inquisition": "foe"}, "relations": [{"a": "mire", "b": "penitents", "steps": 1}], "offerFrom": "penitents", "intrigue": {"id": "hooded_lantern", "stage": 2}, "remembrance": 3, "event": "id", "hidden": true}',
+        '{"standing": {"vigil": 5}, "marks": {"inquisition": "foe"}, "relations": [{"a": "mire", "b": "penitents", "steps": 1}], "offerFrom": "penitents", "intrigue": {"id": "hooded_lantern", "stage": 2}, "remembrance": 3, "event": "id", "hidden": true, "claim": "vigil", "pledge": "mire", "throneWinner": "vigil", "muster": true}',
     AppLanguage.fr:
-        '{"standing": {"vigil": 5}, "marks": {"inquisition": "foe"}, "relations": [{"a": "mire", "b": "penitents", "steps": 1}], "offerFrom": "penitents", "intrigue": {"id": "hooded_lantern", "stage": 2}, "remembrance": 3, "event": "id", "hidden": true}',
+        '{"standing": {"vigil": 5}, "marks": {"inquisition": "foe"}, "relations": [{"a": "mire", "b": "penitents", "steps": 1}], "offerFrom": "penitents", "intrigue": {"id": "hooded_lantern", "stage": 2}, "remembrance": 3, "event": "id", "hidden": true, "claim": "vigil", "pledge": "mire", "throneWinner": "vigil", "muster": true}',
   },
   // The climb to the Lantern Throne and the Host (v1.196, see throne.dart).
+  'politics_if_editor_label': {
+    AppLanguage.en: 'Shown only if (JSON)',
+    AppLanguage.fr: 'Affiché seulement si (JSON)',
+  },
+  'politics_if_editor_help': {
+    AppLanguage.en:
+        '{"claim": "any", "rungAtLeast": {"vigil": 1}, "standingAtLeast": {"vigil": 26}, "throneWinner": "none", "flags": ["x"]} -- hidden when it fails, or shut with the locked text',
+    AppLanguage.fr:
+        '{"claim": "any", "rungAtLeast": {"vigil": 1}, "standingAtLeast": {"vigil": 26}, "throneWinner": "none", "flags": ["x"]} -- caché quand la condition échoue, ou fermé avec le texte verrouillé',
+  },
+  'host_fight_editor_label': {
+    AppLanguage.en: 'A last battle: the Host fights beside the party',
+    AppLanguage.fr: 'Une dernière bataille : l’Ost combat aux côtés du groupe',
+  },
   'throne_hint_claim': {
     AppLanguage.en: 'Claim: {name}',
     AppLanguage.fr: 'Prétention : {name}',

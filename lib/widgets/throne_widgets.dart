@@ -119,10 +119,12 @@ class ClimbRungs extends StatelessWidget {
         ),
         _RungChip(
           key: Key('climb_rung_clan_${climb.factionId}'),
-          label: lost
+          // Taken (a claim may come without the steps: a crown offered, a
+          // banner raised), or the steps done; the lost clan has none.
+          label: lost || climb.claimed || climb.crowned
               ? trFor(language, 'throne_rung_clan_plain')
               : trFor(language, 'throne_rung_clan')
-                  .replaceAll('{n}', '${climb.claimed ? 3 : climb.steps}'),
+                  .replaceAll('{n}', '${climb.steps}'),
           reached: climb.claimed || climb.crowned,
           language: language,
         ),
