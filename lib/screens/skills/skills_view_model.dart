@@ -152,6 +152,7 @@ class SkillsModel {
             : sponsorsOfSkill(id,
                 data: clans,
                 skillTrees: trees,
+                skills: skills,
                 raceId: session.raceId,
                 professionId: session.professionId),
       );

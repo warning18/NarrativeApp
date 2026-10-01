@@ -127,7 +127,8 @@ String? offerGiftLabel(
 }
 
 /// The standing [suitor] would move, as one line: "+6 Compact · +1.5 Mire
-/// · −3 Penitents", the faction taken first, then the biggest moves.
+/// · −3 Penitents" -- the faction taken first, then the allies' gains and
+/// the rivals' losses, the biggest first, in the data's order.
 List<({String text, double delta})> standingPreviewParts(
   Suitor suitor,
   OfferTicket ticket, {
@@ -135,13 +136,21 @@ List<({String text, double delta})> standingPreviewParts(
   required ClanData data,
   required AppLanguage lang,
 }) {
+  final order = data.factions.keys.toList();
+  int rank(String id) {
+    final i = order.indexOf(id);
+    return i < 0 ? order.length : i;
+  }
+
   final deltas = suitorPreview(suitor, ticket, politics: politics, data: data)
       .entries
       .toList()
     ..sort((a, b) {
       if (a.key == suitor.factionId) return -1;
       if (b.key == suitor.factionId) return 1;
-      return b.value.abs().compareTo(a.value.abs());
+      if ((a.value > 0) != (b.value > 0)) return a.value > 0 ? -1 : 1;
+      final bySize = b.value.abs().compareTo(a.value.abs());
+      return bySize != 0 ? bySize : rank(a.key).compareTo(rank(b.key));
     });
   return [
     for (final e in deltas)

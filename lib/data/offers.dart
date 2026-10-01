@@ -6,6 +6,7 @@ import '../combat/spells.dart'
 import 'factions.dart';
 import 'perks.dart';
 import 'signs.dart';
+import 'skill_access.dart' show skillFitsCharacter;
 import 'skill_tree.dart';
 
 /// Offers (v1.194): the clans come to the character. Skill points, the
@@ -443,16 +444,28 @@ List<SkillBranch> sponsoredBranchesFor(String factionId, OfferContext c) {
   ];
 }
 
+/// Whether a faction leaning [lean] offers reputation skill [skill]: one
+/// leaning good (the Vigil, the Penitents) the skills a good name earns
+/// (`requiredAlignmentMin`), one leaning evil (the Crows) those of a bad
+/// name (`requiredAlignmentMax`). Skill points used to buy them; no
+/// branch holds them.
+bool _leanOffersReputation(int lean, Map<String, dynamic> skill) =>
+    isReputationSkill(skill) &&
+    (lean > 0 && skill['requiredAlignmentMin'] != null ||
+        lean < 0 && skill['requiredAlignmentMax'] != null);
+
 /// The skills [factionId] can offer now: on each branch it sponsors for
 /// the character, every skill not known whose turn has come (the one
 /// before it on the branch known, its `requiredSkillID` known) and that
 /// lies no deeper than standing allows ([skillIndexCapFor], plus
-/// [tierBonus] for a quest's suitor). In the branches' order, no
-/// repeats.
+/// [tierBonus] for a quest's suitor); then, from a clan that leans one
+/// way, the reputation skills of that side the character's alignment
+/// allows. In the branches' order, no repeats.
 List<String> offerableSkillsFor(String factionId, OfferContext c,
     {int tierBonus = 0}) {
   final cap = min(3, skillIndexCapFor(c.tierOf(factionId)) + tierBonus);
   final out = <String>[];
+  final faction = c.data.faction(factionId);
   for (final branch in sponsoredBranchesFor(factionId, c)) {
     for (var i = 0; i < branch.skillIds.length && i <= cap; i++) {
       final id = branch.skillIds[i];
@@ -467,17 +480,36 @@ List<String> offerableSkillsFor(String factionId, OfferContext c,
       out.add(id);
     }
   }
+  if (faction != null && faction.isClan && faction.lean != 0) {
+    final ids = c.skills.keys.toList()..sort();
+    for (final id in ids) {
+      final skill = c.skills[id];
+      if (skill is! Map<String, dynamic> ||
+          c.knownSkillIds.contains(id) ||
+          out.contains(id) ||
+          skill['enemyOnly'] == true ||
+          !_leanOffersReputation(faction.lean, skill) ||
+          !reputationAllows(skill, c.alignment) ||
+          !skillFitsCharacter(skill,
+              raceId: c.raceId, professionId: c.professionId)) {
+        continue;
+      }
+      out.add(id);
+    }
+  }
   return out;
 }
 
 /// The factions sponsoring [skillId] for this character: what the skill
-/// screen names under a skill not yet learned ("Offered by...").
+/// screen names under a skill not yet learned ("Offered by..."). A
+/// reputation skill ([skills]' record says so) is the leaning clans'.
 List<String> sponsorsOfSkill(
   String skillId, {
   required ClanData data,
   required Map<String, dynamic> skillTrees,
   required String raceId,
   required String professionId,
+  Map<String, dynamic> skills = const {},
 }) {
   final branches =
       skillBranchesFor(skillTrees, raceId: raceId, professionId: professionId);
@@ -485,9 +517,14 @@ List<String> sponsorsOfSkill(
     for (final b in branches)
       if (b.skillIds.contains(skillId)) b.id,
   };
+  final skill = skills[skillId];
   return [
     for (final f in data.factions.values)
-      if (f.sponsors.any(onBranches.contains)) f.id,
+      if (f.sponsors.any(onBranches.contains) ||
+          (f.isClan &&
+              skill is Map<String, dynamic> &&
+              _leanOffersReputation(f.lean, skill)))
+        f.id,
   ];
 }
 

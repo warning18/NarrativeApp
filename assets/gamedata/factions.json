@@ -47,27 +47,27 @@
     "objects": [
       {
         "itemId": "harborwatch_lantern",
-        "minTier": "unknown"
+        "minTier": "known"
       },
       {
         "itemId": "harborwatch_coat",
-        "minTier": "unknown"
+        "minTier": "known"
       },
       {
         "itemId": "sword_t5",
-        "minTier": "known"
+        "minTier": "trusted"
       },
       {
         "itemId": "shield_t5",
-        "minTier": "known"
+        "minTier": "trusted"
       },
       {
         "itemId": "circlet_radiance",
-        "minTier": "trusted"
+        "minTier": "sworn"
       },
       {
         "itemId": "halo_lance",
-        "minTier": "trusted"
+        "minTier": "sworn"
       }
     ],
     "sworn": {
@@ -133,23 +133,23 @@
     "objects": [
       {
         "itemId": "spear_t3",
-        "minTier": "unknown"
-      },
-      {
-        "itemId": "hood_gravecloth",
-        "minTier": "unknown"
-      },
-      {
-        "itemId": "helm_last_watch",
         "minTier": "known"
       },
       {
-        "itemId": "coat_last_watch",
+        "itemId": "hood_gravecloth",
+        "minTier": "known"
+      },
+      {
+        "itemId": "helm_last_watch",
         "minTier": "trusted"
       },
       {
+        "itemId": "coat_last_watch",
+        "minTier": "sworn"
+      },
+      {
         "itemId": "shield_t8",
-        "minTier": "trusted"
+        "minTier": "sworn"
       }
     ],
     "sworn": {
@@ -211,27 +211,27 @@
     "objects": [
       {
         "itemId": "helm_iron_cap",
-        "minTier": "unknown"
+        "minTier": "known"
       },
       {
         "itemId": "boots_iron_shod",
-        "minTier": "unknown"
+        "minTier": "known"
       },
       {
         "itemId": "coat_iron_scale",
-        "minTier": "known"
+        "minTier": "trusted"
       },
       {
         "itemId": "plate_emberproof",
-        "minTier": "known"
+        "minTier": "trusted"
       },
       {
         "itemId": "sword_t6",
-        "minTier": "trusted"
+        "minTier": "sworn"
       },
       {
         "itemId": "thornmail_hauberk",
-        "minTier": "trusted"
+        "minTier": "sworn"
       }
     ],
     "sworn": {
@@ -305,15 +305,15 @@
       },
       {
         "itemId": "boots_tidewalker",
-        "minTier": "known"
+        "minTier": "trusted"
       },
       {
         "itemId": "artifact_moon_shard",
-        "minTier": "trusted"
+        "minTier": "sworn"
       },
       {
         "itemId": "bloodthorn_blade",
-        "minTier": "trusted"
+        "minTier": "sworn"
       }
     ],
     "sworn": {
@@ -388,7 +388,7 @@
       },
       {
         "itemId": "coat_brigandine",
-        "minTier": "known"
+        "minTier": "trusted"
       },
       {
         "itemId": "spellbook_smoke_veil",
@@ -396,11 +396,11 @@
       },
       {
         "itemId": "helm_drowned_sallet",
-        "minTier": "trusted"
+        "minTier": "sworn"
       },
       {
         "itemId": "dagger_t10",
-        "minTier": "trusted"
+        "minTier": "sworn"
       }
     ],
     "sworn": {
@@ -479,15 +479,15 @@
       },
       {
         "itemId": "saint_reliquary",
-        "minTier": "known"
+        "minTier": "trusted"
       },
       {
         "itemId": "phoenix_sigil",
-        "minTier": "trusted"
+        "minTier": "sworn"
       },
       {
         "itemId": "dawnward_shield",
-        "minTier": "trusted"
+        "minTier": "sworn"
       }
     ],
     "sworn": {

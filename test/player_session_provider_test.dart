@@ -12,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/combat/combat_engine.dart';
+import 'package:narrative_data_app/data/offers.dart';
 import 'package:narrative_data_app/models/ally_state.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 
@@ -25,7 +26,7 @@ PlayerSession baseSession({
   int maxHealth = 100,
   int? currentHealth,
   int statPoints = 0,
-  int skillPoints = 0,
+  List<OfferTicket> pendingOffers = const [],
   List<String> completedQuestIds = const [],
   List<String> activeQuestIds = const [],
   List<String> inventoryItemIds = const [],
@@ -69,7 +70,7 @@ PlayerSession baseSession({
     perception: perception,
     potionCount: 0,
     statPoints: statPoints,
-    skillPoints: skillPoints,
+    pendingOffers: pendingOffers,
     maxSkillSlots: 3,
     flags: const [],
     activeQuestIds: activeQuestIds,
@@ -151,7 +152,9 @@ void main() {
       expect(notifier.state.level, 2);
       expect(notifier.state.currentXP, 10); // 90 + 20 - 100
       expect(notifier.state.statPoints, 5);
-      expect(notifier.state.skillPoints, 1);
+      // A level brings an offer from the clans (it was a skill point).
+      expect(notifier.state.pendingOffers.map((t) => t.source),
+          [OfferSource.level]);
       expect(notifier.state.maxHealth, 120); // +20 per level
       expect(notifier.state.currentHealth, 120); // full-healed on level-up
     });
@@ -706,7 +709,11 @@ void main() {
         unlockedSkillIds: ['warrior_shield_bash', 'fireball', 'power_strike'],
         skillTiers: {'fireball': 2},
         skillEssence: 40,
-        skillPoints: 3,
+        pendingOffers: const [
+          OfferTicket(source: OfferSource.level),
+          OfferTicket(source: OfferSource.boss),
+          OfferTicket(source: OfferSource.level),
+        ],
         ownedDiceIds: ['starter_die', 'kelda_die'],
         inventoryItemIds: ['sword_iron'],
       ));
@@ -723,7 +730,9 @@ void main() {
           unorderedEquals(['human_resolve', 'warrior_shield_bash']));
       expect(notifier.state.skillTiers, isEmpty);
       expect(notifier.state.skillEssence, 0);
-      expect(notifier.state.skillPoints, 1);
+      // The offers waiting go with the life, back to the starting ones.
+      expect(notifier.state.pendingOffers.map((t) => t.source),
+          [OfferSource.start]);
       // Untouched by a skill-build reset.
       expect(notifier.state.level, 5);
       expect(notifier.state.gold, 200);
@@ -916,7 +925,8 @@ void main() {
         },
       );
       expect(notifier.state.statPoints, 1);
-      expect(notifier.state.skillPoints, 1);
+      expect(notifier.state.pendingOffers.map((t) => t.source),
+          [OfferSource.tome]);
       expect(notifier.state.inventoryItemIds, ['sword_t1']);
     });
 

@@ -1,7 +1,7 @@
 // The Skills screen's rules (v1.179), worked out away from the widgets:
-// where each skill stands, what it costs in points and essence, what a
-// tier buys; then the screen itself -- raising a tier from My skills (a companion's
-// list is in skills_companion_test.dart).
+// where each skill stands, which clans offer it (v1.194), what it costs in
+// essence, what a tier buys; then the screen itself -- raising a tier
+// from My skills (a companion's list is in skills_companion_test.dart).
 import 'dart:convert';
 import 'dart:io';
 
@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/data/factions.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/skills/skills_screen.dart';
 import 'package:narrative_data_app/screens/skills/skills_view_model.dart';
@@ -31,6 +32,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final skills = _data('skills');
   final trees = _data('skill_trees');
+  final clans = ClanData.fromTables(factions: _data('factions'));
 
   PlayerSession warrior(Map<String, dynamic> extra) => PlayerSession.fromJson({
         'raceId': 'human',
@@ -39,28 +41,32 @@ void main() {
       });
 
   group('the model', () {
-    test('known, ready and locked follow the branch; costs deepen', () {
+    test('known, next and locked follow the branch; the clans offer them', () {
       final model = SkillsModel.forPlayer(
         session: warrior({
-          'skillPoints': 1,
           'unlockedSkillIds': ['warrior_shield_bash', 'bulwark_stance'],
         }),
         skills: skills,
         trees: trees,
+        clans: clans,
       );
       expect(model['warrior_shield_bash']!.status, SkillStatus.known);
+      expect(model['warrior_shield_bash']!.sponsors, isEmpty);
       final iron = model['warrior_iron_stance']!;
       expect(iron.status, SkillStatus.ready);
-      expect(iron.cost, 2);
-      // One point is not enough for a two-point skill.
+      // No points to learn with: the Compact (Bulwark's sponsor) offers it.
       expect(iron.affordable, isFalse);
       expect(iron.readyNow, isFalse);
+      expect(iron.sponsors, ['compact']);
       final stone = model['stone_resolve']!;
       expect(stone.status, SkillStatus.locked);
       expect(stone.after, 'warrior_iron_stance');
-      expect(stone.cost, 3);
-      // Every branch's first skill is ready at one point.
-      expect(model['power_strike']!.readyNow, isTrue);
+      // Vanguard is the Dominion's, Warlord the Vigil's, the human
+      // heritage the Dominion's.
+      expect(model['power_strike']!.sponsors, ['dominion']);
+      expect(model['rallying_shout']!.sponsors, ['vigil']);
+      expect(model['human_diplomacy']!.sponsors, ['dominion']);
+      expect(model.readyCount, 0);
     });
 
     test('everyone\'s basic strike is known and has no tiers', () {
