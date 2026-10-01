@@ -8723,6 +8723,36 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Chaque mauvais jour en mer\u00a0: {v}\u00a0% de chances qu’il vous épargne.',
   },
+  'sign_fx_writFace': {
+    AppLanguage.en: 'Writ face: cancels {v} enemy attack on you each fight.',
+    AppLanguage.fr:
+        'Face Mandat : annule {v} attaque ennemie contre vous par combat.',
+  },
+  'sign_fx_intentLookahead': {
+    AppLanguage.en:
+        'Open Eyes: you see each enemy’s intent {v} round further, and the tear’s things cannot ambush the party.',
+    AppLanguage.fr:
+        'Yeux ouverts : vous voyez l’intention de chaque ennemi {v} tour plus tôt, et les choses de la déchirure ne peuvent pas surprendre le groupe.',
+  },
+  'sign_fx_compactEdge': {
+    AppLanguage.en: 'Compact edge: breaks {v} enemy guard outright each fight.',
+    AppLanguage.fr: 'Fil du Pacte : brise net {v} garde ennemie par combat.',
+  },
+  'sign_fx_crowsPrice': {
+    AppLanguage.en:
+        'Crow’s Price: each hit you land steals {v} gold (10 hits a fight at most).',
+    AppLanguage.fr:
+        'Prix de la Corneille : chaque coup que vous portez vole {v} pièces d’or (10 coups par combat au plus).',
+  },
+  'sign_fx_emberFace': {
+    AppLanguage.en: 'Ember face: lifts {v} Curse from your die each fight.',
+    AppLanguage.fr:
+        'Face Braise : lève {v} malédiction de votre dé par combat.',
+  },
+  'sign_fx_poisonExtraTurns': {
+    AppLanguage.en: 'Poison you inflict lasts {v} more turn.',
+    AppLanguage.fr: 'Le poison que vous infligez dure {v} tour de plus.',
+  },
   'sign_curse_enemyDamagePercent': {
     AppLanguage.en:
         'Pact: enemies deal +{v}% damage for the next {n} fights, then the gift.',
