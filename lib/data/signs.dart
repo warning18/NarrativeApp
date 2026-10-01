@@ -174,6 +174,10 @@ const List<String> patronIconNames = [
   'nights_stay',
   'cloud',
   'ac_unit',
+  // v1.195: the Open Hand's raised, open hands.
+  'back_hand',
+  'front_hand',
+  'pan_tool',
 ];
 
 /// Keywords a strike sign may lend the Attack faces: those that make sense
