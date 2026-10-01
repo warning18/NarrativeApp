@@ -2941,7 +2941,8 @@ String choicePoliticsHint(WidgetRef ref, StoryChoice choice) {
   if (politics == null || !politics.hasHint) return '';
   if (!ref.watch(politicsHintsEnabledProvider)) return '';
   return politicsHint(
-      politics, ref.watch(clanDataProvider), ref.watch(appLanguageProvider));
+      politics, ref.watch(clanDataProvider), ref.watch(appLanguageProvider),
+      politics: ref.watch(politicsProvider));
 }
 
 /// The muted line under a choice: "Vigil +5 · Dominion −5".
