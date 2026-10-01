@@ -8,6 +8,89 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.194.0+225]
+
+Skill points are gone: the clans now come to you. At each level-up, after a
+boss and at a new chapter, three suitors from three different factions each
+put one gift on the table, Hades-style. Taking one is choosing a side.
+
+### Added
+- **Offers** (« Propositions »). Three suitors, each voiced by one of their
+  sub-clans ("The Emberwives of the Cinder Compact…"), each offer one gift:
+  - a **skill** from a branch the clan sponsors for your class or people;
+    the deeper skills need more standing (Unknown: the first, Known: the
+    second, Trusted: the third, Sworn: the fourth);
+  - a **sign**, with Signs' slots, rarities and duos;
+  - an **object** from the clan's stock, gated by standing;
+  - a **title** to wear.
+
+  **Who comes:**
+  - Clans that aren't Hostile or Hunted.
+  - Tribes, once you've found them.
+  - The Choir or the Pit, by your alignment. Their gifts are always Rare or
+    better and move your alignment by 3.
+  - Sometimes the Wayfarer, who belongs to no faction and brings a perk or
+    a potion.
+
+  **Each card shows what the pick does to your standing,** for example
+  "+6 Compact · +1.5 Vigil · +1.5 Mire · −3 Penitents · alignment +1".
+- **Where offers come from:** one per level-up; one per boss beaten; one per
+  new chapter, announced on the chapter card; one per Tome of Mastery. A
+  character's starting skill points become starting offers. Offers wait if
+  you close them, with a badge on the Character tab.
+- **Taking a gift:** +6 with that clan, or +10 for a chapter offer. The
+  ripple applies, the voicing sub-clan counts you a friend, and the clan's
+  lean nudges your alignment by 1.
+- **Titles:** 37 to earn and wear. Wear one at a time on the Character tab;
+  it shows under your name and works in fights and at sea.
+  - **Tier titles** come the first time you reach a tier with a clan.
+  - **"The Marked"** sticks to you while the Inquisition counts you a foe,
+    and **"the Challenged"** while the Order does.
+- **Sworn boons:** only one clan can be Sworn, and only a clan. It offers its
+  boon once, and the boon works while you stay sworn:
+
+  | Clan | Boon |
+  |---|---|
+  | Dominion | the Writ cancels the first enemy blow each fight |
+  | Compact | its edge breaks the first raised guard |
+  | Crows | their Price takes 3 gold a hit |
+  | Penitents | the Ember lifts the first Curse |
+  | Mire | your poisons last a turn longer |
+  | Vigil | Open Eyes shows the enemy's next move one turn further |
+
+- **Edit Mode:** "Offer now" and "+1 offer", on the Character tab and the
+  Clans & Politics screen.
+- A short tour the first time an offer opens.
+
+### Changed
+- **The player has no skill points any more.** The skill screen lists your
+  skills, shows which clan offers each skill you lack, and keeps tier
+  upgrades with essence. Mastering a branch now costs 2,000 essence.
+  Companions keep their own skill points.
+- **One pick per level.** The level-up perk pick and the separate sign pick
+  are now offers. Perks come from the Wayfarer, and perk ranks you already
+  have still count.
+- **Old saves:** each unspent skill point, waiting perk pick and waiting sign
+  pick becomes a waiting offer. Learned skills, perk ranks and signs are
+  kept. Loading doesn't grant the current chapter's offer again.
+- The playthrough simulator takes offers, and can still run the old rules
+  for comparison.
+
+### Balance
+Fights won per attempt (1,000 simulated runs each), old rules → offers:
+
+| Chapter | Old rules | Offers |
+|---|---|---|
+| 1 | 59.1% | 57.1% |
+| 2 | 38.4% | 36.1% |
+| 3 | 32.3% | 34.9% |
+| 4 | 21.2% | 23.1% |
+| 5 | 16.3% | 17.1% |
+| 6 | 25.0% | 25.9% |
+
+Clan weapons and armour now need one more tier of standing (Known instead of
+Unknown, and so on): offering them early made chapters 3 and 4 too easy.
+
 ## [1.193.0+224]
 
 The coast's clans arrive, from "The Grey Shroud" design: the Lantern Dominion
