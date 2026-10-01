@@ -20,6 +20,8 @@ import '../combat/loot_box.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../data/encounter_text.dart';
+import '../data/factions.dart' show ClanData, parseFactions, parseTitles;
+import '../data/offers.dart' show clanEffectsFor;
 import '../data/skill_tree.dart';
 import '../combat/skill_vfx.dart';
 import '../tutorial/guide_tour.dart';
@@ -53,7 +55,7 @@ import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/level_up_dialog.dart';
-import '../widgets/sign_offer_dialog.dart';
+import '../widgets/offer_dialog.dart';
 import '../widgets/spoils_chest_dialog.dart';
 import 'death_screen.dart';
 
@@ -363,6 +365,15 @@ class _FightScreenState extends ConsumerState<FightScreen>
   bool _ironSkinArmed = false;
   int _wardingCharges = 0;
 
+  /// The clans' Sworn boons this fight (see signs.dart's v1.194 kinds):
+  /// enemy blows on the player the Lantern's Writ still cancels, enemy
+  /// guards the Compact edge still breaks, Curses the Ember face still
+  /// lifts, and the hits the Crow's Price has stolen on.
+  int _writCharges = 0;
+  int _edgeCharges = 0;
+  int _emberCharges = 0;
+  int _crowsHits = 0;
+
   /// This round's rolled face per conscious party member id — every
   /// conscious member (the player, plus each active ally) rolls their own
   /// die together as one combined action instead of taking separate
@@ -478,6 +489,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final housesAsync = ref.watch(localizedDbProvider(housesSchema));
     final skillTreesAsync = ref.watch(gameDbProvider(skillTreesSchema));
     final signsAsync = ref.watch(gameDbProvider(signsSchema));
+    // The titles worn and the Sworn boons lend their effects too.
+    final titlesAsync = ref.watch(gameDbProvider(titlesSchema));
+    final factionsAsync = ref.watch(gameDbProvider(factionsSchema));
     final session = ref.watch(playerSessionProvider);
     _companionsAutoAim = ref.watch(companionAutoTargetProvider);
 
@@ -493,6 +507,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final houses = housesAsync.value;
     final skillTrees = skillTreesAsync.value;
     final signsDb = signsAsync.value;
+    final titlesDb = titlesAsync.value;
+    final factionsDb = factionsAsync.value;
 
     if (dice == null ||
         skills == null ||
@@ -505,7 +521,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
         itemSetsDb == null ||
         houses == null ||
         skillTrees == null ||
-        signsDb == null) {
+        signsDb == null ||
+        titlesDb == null ||
+        factionsDb == null) {
       final error = diceAsync.error ??
           skillsAsync.error ??
           itemsAsync.error ??
@@ -517,7 +535,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
           itemSetsAsync.error ??
           housesAsync.error ??
           skillTreesAsync.error ??
-          signsAsync.error;
+          signsAsync.error ??
+          titlesAsync.error ??
+          factionsAsync.error;
       return Scaffold(
         appBar: AppBar(
           title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
@@ -531,8 +551,28 @@ class _FightScreenState extends ConsumerState<FightScreen>
     }
 
     _itemSets = parseItemSets(itemSetsDb);
-    _ensurePartyBuilt(session, companions, races, professions, gameConfig,
-        items, _itemSets, houses, dice, skillTrees, skills, signsDb);
+    _ensurePartyBuilt(
+        session,
+        companions,
+        races,
+        professions,
+        gameConfig,
+        items,
+        _itemSets,
+        houses,
+        dice,
+        skillTrees,
+        skills,
+        signsDb,
+        clanEffectsFor(
+          activeTitleId: session.activeTitleId,
+          heldTitleIds: session.heldTitleIds,
+          swornBoonIds: session.swornBoonIds,
+          swornFactionId: session.politics.swornFactionId,
+          data: ClanData(
+              factions: parseFactions(factionsDb),
+              titles: parseTitles(titlesDb)),
+        ));
     _spells = parseSpells(spellsDb);
 
     // Once the fight has begun, back is no way out of it: a fight in

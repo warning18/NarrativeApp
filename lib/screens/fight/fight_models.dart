@@ -344,6 +344,11 @@ class _EnemyMember {
   /// pre-roll has run.
   _PendingEnemyMove? pendingMove;
 
+  /// The move after [pendingMove], pre-rolled too while the party sees an
+  /// intent one round further (Open Eyes, see signs.dart's
+  /// intentLookahead); it becomes [pendingMove] next round.
+  _PendingEnemyMove? nextMove;
+
   /// This enemy's boss phases (see [parseBossPhases]), highest threshold
   /// first; empty for an ordinary enemy.
   List<BossPhase> phases = const [];

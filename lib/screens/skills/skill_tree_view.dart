@@ -12,6 +12,7 @@ import '../../combat/dice_faces.dart';
 import '../../data/skill_tree.dart';
 import '../../l10n/app_locale.dart';
 import '../../l10n/app_strings.dart';
+import '../../providers/clans_provider.dart';
 import '../../theme/stitched_ink.dart';
 import '../../utils/face_style.dart';
 import '../../utils/pixel_icons/game_pixel_icons.dart';
@@ -28,7 +29,6 @@ class SkillTreeView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final ready = model.readyCount;
     final mastered = model.classBranches
         .where((b) => b.id == model.masteredBranchId)
         .map((b) => b.name)
@@ -39,13 +39,7 @@ class SkillTreeView extends ConsumerWidget {
         // The rules, in a line; the full text a tap away.
         Text.rich(
           TextSpan(children: [
-            TextSpan(
-              text: ready > 0
-                  ? tr(ref, 'skills_ready').replaceAll('{n}', '$ready')
-                  : tr(ref, 'skills_none_ready'),
-              style: TextStyle(color: ready > 0 ? ink.gold : ink.ash),
-            ),
-            TextSpan(text: ' · ${tr(ref, 'skills_rules_short')} · '),
+            TextSpan(text: '${tr(ref, 'skills_rules_short')} · '),
             WidgetSpan(
               alignment: PlaceholderAlignment.baseline,
               baseline: TextBaseline.alphabetic,
@@ -301,17 +295,43 @@ class SkillNode extends ConsumerWidget {
                     ? (entry.tierable
                         ? TierPips(tier: entry.tier)
                         : const SizedBox.shrink())
-                    : Text(
-                        costLabel(ref, entry.cost),
-                        key: Key('tree_cost_$id'),
-                        style: theme.textTheme.labelSmall?.copyWith(
-                            color: entry.readyNow ? ink.gold : ink.ash,
-                            fontWeight: FontWeight.w600),
-                      ),
+                    : _SponsorLabel(entry: entry),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Who offers a skill not yet known, under its name: the first sponsoring
+/// clan's short name in its colour (see offers.dart), "—" for none.
+class _SponsorLabel extends ConsumerWidget {
+  const _SponsorLabel({required this.entry});
+
+  final SkillEntry entry;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final data = ref.watch(clanDataProvider);
+    final lang = ref.watch(appLanguageProvider);
+    final faction = [
+      for (final id in entry.sponsors)
+        if (data.faction(id) case final faction?) faction,
+    ].firstOrNull;
+    final locked = entry.status == SkillStatus.locked;
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Text(
+        faction == null ? '\u2014' : faction.shortFor(lang),
+        key: Key('tree_sponsor_${entry.id}'),
+        maxLines: 1,
+        style: theme.textTheme.labelSmall?.copyWith(
+            color: faction == null || locked ? ink.ash : Color(faction.color),
+            fontWeight: FontWeight.w600),
       ),
     );
   }
@@ -389,7 +409,7 @@ class _MasteryNode extends ConsumerWidget {
                 isMastered
                     ? tr(ref, 'mastery_label')
                     : tr(ref, 'mastery_cost_label')
-                        .replaceAll('{n}', '$branchMasteryCost'),
+                        .replaceAll('{n}', '$branchMasteryEssenceCost'),
                 textAlign: TextAlign.center,
                 style: theme.textTheme.labelSmall
                     ?.copyWith(color: isMastered || ready ? ink.gold : ink.ash),

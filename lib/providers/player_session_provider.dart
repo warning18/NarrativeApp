@@ -17,9 +17,11 @@ import '../data/contracts.dart';
 import '../data/factions.dart';
 import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
 import '../data/journey_rules.dart';
+import '../data/offers.dart';
 import '../data/perks.dart';
 import '../data/quest_objectives.dart' show killTargetsOf;
 import '../data/signs.dart';
+import '../data/skill_tree.dart' show branchMasteryEssenceCost;
 import '../models/ally_state.dart';
 
 const String _playerSessionPrefsKey = 'player_session';
@@ -31,7 +33,7 @@ const String unreadableSessionBackupPrefsKey = 'player_session_unreadable';
 /// The save format's version, written into every save. Bump it with a
 /// migration in [PlayerSession.fromJson] whenever a change to the format
 /// needs one; a save without it is version 1.
-const int playerSessionSaveVersion = 2;
+const int playerSessionSaveVersion = 3;
 const String _newGameDefaultsAssetPath = 'assets/gamedata/game_config.json';
 const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
 
@@ -157,7 +159,6 @@ class PlayerSession {
     required this.perception,
     required this.potionCount,
     required this.statPoints,
-    required this.skillPoints,
     required this.maxSkillSlots,
     required this.flags,
     required this.activeQuestIds,
@@ -198,11 +199,13 @@ class PlayerSession {
     this.lostAllyIds = const [],
     this.departedAllyIds = const [],
     this.perkRanks = const {},
-    this.pendingPerkPicks = 0,
-    this.perkOffer = const [],
     this.heldSigns = const [],
-    this.pendingSignPicks = 0,
-    this.signOffer,
+    this.pendingOffers = const [],
+    this.clanOffer,
+    this.heldTitleIds = const [],
+    this.activeTitleId = '',
+    this.swornBoonIds = const [],
+    this.chapterOffersThrough = 0,
     this.titanBlood = 0,
     this.patronFavour = const {},
     this.signPatronsThisLife = const [],
@@ -286,7 +289,6 @@ class PlayerSession {
   final int perception;
   final int potionCount;
   final int statPoints;
-  final int skillPoints;
   final int maxSkillSlots;
   final List<String> flags;
   final List<String> activeQuestIds;
@@ -438,13 +440,10 @@ class PlayerSession {
   /// [lostAllyIds], which the story's `{lost}` lines name.
   final List<String> departedAllyIds;
 
-  /// Level-up perks taken (see perks.dart): perk name -> rank.
+  /// Perk ranks taken (see perks.dart): perk name -> rank. Since v1.194
+  /// a rank is the Wayfarer's gift in an offer (see offers.dart); ranks
+  /// taken before keep working.
   final Map<String, int> perkRanks;
-
-  /// Perks still to choose, one every second level; and the three on offer
-  /// for the next pick, kept so reopening the choice doesn't redraw it.
-  final int pendingPerkPicks;
-  final List<String> perkOffer;
 
   PerkEffects get perkEffects => perkEffectsFor(perkRanks);
 
@@ -452,11 +451,26 @@ class PlayerSession {
   /// with their rarity, level and any pact still running.
   final List<HeldSign> heldSigns;
 
-  /// Sign offers still to choose from (one every odd level, one a boss),
-  /// and the one on the table, drawn once and kept until a sign is taken
-  /// so reopening it never redraws it. Null when none is drawn.
-  final int pendingSignPicks;
-  final SignOffer? signOffer;
+  /// Offers (v1.194, see offers.dart): the ones due, oldest first (a level
+  /// reached, a boss beaten, a chapter's end, a Tome of Mastery...), and
+  /// the one on the table, drawn for the first of them and kept until a
+  /// suitor is taken, so reopening it never redraws it.
+  final List<OfferTicket> pendingOffers;
+  final ClanOffer? clanOffer;
+
+  /// Titles held (titles.json): from offers, from the tiers reached with a
+  /// faction, and "the Marked" while the Inquisition is a foe; the one
+  /// worn ('' for none) lends its effects (see clanEffectsFor).
+  final List<String> heldTitleIds;
+  final String activeTitleId;
+
+  /// The factions whose Sworn boon was taken: it works while that faction
+  /// is the one sworn to.
+  final List<String> swornBoonIds;
+
+  /// The last chapter whose arrival brought its offer (see
+  /// PlayerSessionNotifier.grantChapterOffer).
+  final int chapterOffersThrough;
 
   /// Drops of Titan's Blood waiting to raise a held sign one level.
   final int titanBlood;
@@ -717,7 +731,6 @@ class PlayerSession {
     int? perception,
     int? potionCount,
     int? statPoints,
-    int? skillPoints,
     int? maxSkillSlots,
     List<String>? flags,
     List<String>? activeQuestIds,
@@ -758,12 +771,14 @@ class PlayerSession {
     List<String>? lostAllyIds,
     List<String>? departedAllyIds,
     Map<String, int>? perkRanks,
-    int? pendingPerkPicks,
-    List<String>? perkOffer,
     List<HeldSign>? heldSigns,
-    int? pendingSignPicks,
-    SignOffer? signOffer,
-    bool clearSignOffer = false,
+    List<OfferTicket>? pendingOffers,
+    ClanOffer? clanOffer,
+    bool clearClanOffer = false,
+    List<String>? heldTitleIds,
+    String? activeTitleId,
+    List<String>? swornBoonIds,
+    int? chapterOffersThrough,
     int? titanBlood,
     Map<String, int>? patronFavour,
     List<String>? signPatronsThisLife,
@@ -819,7 +834,6 @@ class PlayerSession {
       perception: perception ?? this.perception,
       potionCount: potionCount ?? this.potionCount,
       statPoints: statPoints ?? this.statPoints,
-      skillPoints: skillPoints ?? this.skillPoints,
       maxSkillSlots: maxSkillSlots ?? this.maxSkillSlots,
       flags: flags ?? this.flags,
       activeQuestIds: activeQuestIds ?? this.activeQuestIds,
@@ -861,11 +875,13 @@ class PlayerSession {
       lostAllyIds: lostAllyIds ?? this.lostAllyIds,
       departedAllyIds: departedAllyIds ?? this.departedAllyIds,
       perkRanks: perkRanks ?? this.perkRanks,
-      pendingPerkPicks: pendingPerkPicks ?? this.pendingPerkPicks,
-      perkOffer: perkOffer ?? this.perkOffer,
       heldSigns: heldSigns ?? this.heldSigns,
-      pendingSignPicks: pendingSignPicks ?? this.pendingSignPicks,
-      signOffer: clearSignOffer ? null : signOffer ?? this.signOffer,
+      pendingOffers: pendingOffers ?? this.pendingOffers,
+      clanOffer: clearClanOffer ? null : clanOffer ?? this.clanOffer,
+      heldTitleIds: heldTitleIds ?? this.heldTitleIds,
+      activeTitleId: activeTitleId ?? this.activeTitleId,
+      swornBoonIds: swornBoonIds ?? this.swornBoonIds,
+      chapterOffersThrough: chapterOffersThrough ?? this.chapterOffersThrough,
       titanBlood: titanBlood ?? this.titanBlood,
       patronFavour: patronFavour ?? this.patronFavour,
       signPatronsThisLife: signPatronsThisLife ?? this.signPatronsThisLife,
@@ -927,7 +943,6 @@ class PlayerSession {
         'perception': perception,
         'potionCount': potionCount,
         'statPoints': statPoints,
-        'skillPoints': skillPoints,
         'maxSkillSlots': maxSkillSlots,
         'flags': flags,
         'activeQuestIds': activeQuestIds,
@@ -968,11 +983,13 @@ class PlayerSession {
         'lostAllyIds': lostAllyIds,
         'departedAllyIds': departedAllyIds,
         'perkRanks': perkRanks,
-        'pendingPerkPicks': pendingPerkPicks,
-        'perkOffer': perkOffer,
         'heldSigns': [for (final h in heldSigns) h.toJson()],
-        'pendingSignPicks': pendingSignPicks,
-        'signOffer': signOffer?.toJson(),
+        'pendingOffers': [for (final t in pendingOffers) t.toJson()],
+        'clanOffer': clanOffer?.toJson(),
+        'heldTitleIds': heldTitleIds,
+        'activeTitleId': activeTitleId,
+        'swornBoonIds': swornBoonIds,
+        'chapterOffersThrough': chapterOffersThrough,
         'titanBlood': titanBlood,
         'patronFavour': patronFavour,
         'signPatronsThisLife': signPatronsThisLife,
@@ -1042,7 +1059,6 @@ class PlayerSession {
       perception: (json['perception'] as num?)?.toInt() ?? 0,
       potionCount: (json['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: (json['statPoints'] as num?)?.toInt() ?? 0,
-      skillPoints: (json['skillPoints'] as num?)?.toInt() ?? 0,
       maxSkillSlots: (json['maxSkillSlots'] as num?)?.toInt() ?? 3,
       // Houses built before the story read them back get their flag here.
       flags: {
@@ -1154,17 +1170,38 @@ class PlayerSession {
             (id, rank) => MapEntry(id.toString(), (rank as num?)?.toInt() ?? 0),
           ) ??
           const {},
-      pendingPerkPicks: (json['pendingPerkPicks'] as num?)?.toInt() ?? 0,
-      perkOffer:
-          (json['perkOffer'] as List?)?.map((e) => e.toString()).toList() ??
-              const [],
       // Saves from before signs hold none.
       heldSigns: [
         for (final raw in (json['heldSigns'] as List?) ?? const [])
           if (raw is Map) HeldSign.fromJson(Map<String, dynamic>.from(raw)),
       ],
-      pendingSignPicks: (json['pendingSignPicks'] as num?)?.toInt() ?? 0,
-      signOffer: SignOffer.tryParse(json['signOffer']),
+      // A save from before the offers (v1.194) is owed one for each skill
+      // point it had not spent, each perk and each sign it had not picked;
+      // its learned skills, perk ranks and held signs stay as they are.
+      pendingOffers: json['pendingOffers'] is List
+          ? [
+              for (final raw in json['pendingOffers'] as List)
+                if (raw is Map)
+                  OfferTicket.fromJson(Map<String, dynamic>.from(raw)),
+            ]
+          : migratedOffers(
+              skillPoints: (json['skillPoints'] as num?)?.toInt() ?? 0,
+              perkPicks: (json['pendingPerkPicks'] as num?)?.toInt() ?? 0,
+              signPicks: (json['pendingSignPicks'] as num?)?.toInt() ?? 0,
+            ),
+      clanOffer: ClanOffer.tryParse(json['clanOffer']),
+      heldTitleIds:
+          (json['heldTitleIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      activeTitleId: json['activeTitleId']?.toString() ?? '',
+      swornBoonIds:
+          (json['swornBoonIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      // An old save's chapter so far brought no offer: from the chapter
+      // its clock counts, the next ones will.
+      chapterOffersThrough: (json['chapterOffersThrough'] as num?)?.toInt() ??
+          (json['clockChapter'] as num?)?.toInt() ??
+          0,
       titanBlood: (json['titanBlood'] as num?)?.toInt() ?? 0,
       patronFavour: (json['patronFavour'] as Map?)?.map(
             (id, favour) =>
@@ -1307,7 +1344,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           perception: 0,
           potionCount: 0,
           statPoints: 0,
-          skillPoints: 0,
           maxSkillSlots: 3,
           flags: [],
           activeQuestIds: [],
@@ -1391,7 +1427,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       perception: (defaults['perception'] as num?)?.toInt() ?? 0,
       potionCount: (defaults['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: 0,
-      skillPoints: 0,
       maxSkillSlots: (defaults['maxSkillSlots'] as num?)?.toInt() ?? 3,
       flags: const [],
       activeQuestIds: const [],
@@ -1488,7 +1523,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final gold = ((defaults['gold'] as num?)?.toInt() ?? 0) +
         bonus(race, 'startingGoldBonus') +
         bonus(profession, 'startingGoldBonus');
-    final skillPoints = bonus(profession, 'startingSkillPoints');
+    // A profession's starting skill points are offers since v1.194.
+    final startingOffers = startingOffersFor(profession);
 
     // Race/profession signature skills (and a caster's mana skill) default
     // to isUnlocked: false in the skills db (most skills are locked until
@@ -1533,7 +1569,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       perception: perception,
       potionCount: (defaults['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: 0,
-      skillPoints: skillPoints,
+      pendingOffers: startingOffers,
       maxSkillSlots: (defaults['maxSkillSlots'] as num?)?.toInt() ?? 3,
       flags: const [],
       activeQuestIds: const [],
@@ -1915,118 +1951,271 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     return true;
   }
 
-  /// The perks on offer for the next pick (see perks.dart), drawn once and
-  /// kept until one is chosen. Empty when there's no pick to make.
-  Future<List<String>> ensurePerkOffer({Random? random}) async {
-    if (state.pendingPerkPicks <= 0) return const [];
-    if (state.perkOffer.isNotEmpty) return state.perkOffer;
-    final offer = [
-      for (final perk in rollPerkOffer(state.perkRanks, random ?? Random()))
-        perk.name,
-    ];
-    state = state.copyWith(perkOffer: offer);
-    await _persist();
-    return offer;
+  // --- Offers (v1.194, see offers.dart) -----------------------------------
+
+  /// What a draw reads of the character now, with [tables].
+  OfferContext offerContextFor(OfferTables tables) {
+    final s = state;
+    return OfferContext(
+      data: tables.data,
+      politics: s.politics,
+      signs: tables.signs,
+      heldSigns: s.heldSigns,
+      skills: tables.skills,
+      skillTrees: tables.skillTrees,
+      items: tables.items,
+      spells: tables.spells,
+      raceId: s.raceId,
+      professionId: s.professionId,
+      knownSkillIds: {
+        ...s.unlockedSkillIds,
+        for (final e in tables.skills.entries)
+          if (e.value is Map && (e.value as Map)['isUnlocked'] == true) e.key,
+      },
+      ownedItemIds: s.inventoryItemIds,
+      knownSpellIds: s.knownSpellIds,
+      flags: s.flags,
+      alignment: s.alignmentScore,
+      patronsThisLife: s.signPatronsThisLife,
+      favour: s.patronFavour,
+      patronsMet: s.patronsMet,
+      heldTitleIds: s.heldTitleIds,
+      swornBoonIds: s.swornBoonIds,
+      perkRanks: s.perkRanks,
+      // A lucky sign (or title) helps draw the next gift.
+      luck: s.luck +
+          signEffectsFor(s.heldSigns, tables.signs,
+              alignment: s.alignmentScore,
+              extra: clanEffectsFor(
+                activeTitleId: s.activeTitleId,
+                heldTitleIds: s.heldTitleIds,
+                swornBoonIds: s.swornBoonIds,
+                swornFactionId: s.politics.swornFactionId,
+                data: tables.data,
+              )).stat('luck'),
+    );
   }
 
-  /// Takes [perkName] from the offer: one more rank of it, one pick fewer.
-  /// Vigor's health is added right away.
-  Future<bool> choosePerk(String perkName) async {
-    final perk = perkFromName(perkName);
-    if (perk == null ||
-        state.pendingPerkPicks <= 0 ||
-        !state.perkOffer.contains(perkName) ||
-        (state.perkRanks[perkName] ?? 0) >= perkInfo[perk]!.maxRank) {
-      return false;
-    }
-    final health = perk == Perk.vigor ? vigorHealthPerRank : 0;
+  /// [count] more offers due from [source] (a boss beaten, a quest step,
+  /// an intrigue, Edit Mode's "+1 offer"...): the hook for later scenes.
+  /// [factionId] always takes a place in each, one rarity better for a
+  /// quest or an intrigue; [detail] (the quest's id...) goes in the log's
+  /// cause.
+  Future<void> grantOffer(
+    OfferSource source, {
+    String factionId = '',
+    String detail = '',
+    int count = 1,
+  }) async {
+    if (count <= 0) return;
+    state = state.copyWith(pendingOffers: [
+      ...state.pendingOffers,
+      for (var i = 0; i < count; i++)
+        OfferTicket(source: source, detail: detail, factionId: factionId),
+    ]);
+    await _persist();
+  }
+
+  /// The offer a new [chapter] brings, once: from chapter 2 (the first
+  /// chapter's end), and never twice for the same chapter (see
+  /// [PlayerSession.chapterOffersThrough]). The Choir or the Pit come with
+  /// it when the alignment leans. Returns whether one was granted.
+  Future<bool> grantChapterOffer(int chapter) async {
+    if (chapter < 2 || chapter <= state.chapterOffersThrough) return false;
     state = state.copyWith(
-      perkRanks: {
-        ...state.perkRanks,
-        perkName: (state.perkRanks[perkName] ?? 0) + 1,
-      },
-      pendingPerkPicks: state.pendingPerkPicks - 1,
-      perkOffer: const [],
-      maxHealth: state.maxHealth + health,
-      currentHealth: state.currentHealth + health,
+      chapterOffersThrough: chapter,
+      pendingOffers: [
+        ...state.pendingOffers,
+        OfferTicket(source: OfferSource.chapter, detail: '$chapter'),
+      ],
     );
     await _persist();
     return true;
   }
 
-  /// The sign offer for the next pick (see signs.dart), drawn once from
-  /// [patrons] and [signs] and kept until a sign is taken. Null when no
-  /// pick waits, or no patron has anything left to offer (the pick waits
-  /// for one). A patron's first offer marks them met, for the codex.
-  Future<SignOffer?> ensureSignOffer({
-    required Map<String, Patron> patrons,
-    required Map<String, SignDef> signs,
-    Random? random,
-  }) async {
-    if (state.pendingSignPicks <= 0) return null;
-    final waiting = state.signOffer;
+  /// The offer on the table for the first offer due (see drawOffer),
+  /// drawn once from [tables] and kept until a suitor is taken. Null when
+  /// none is due, or nobody can come (the offer waits). The suitors'
+  /// factions count as met, for their intro and the codex.
+  Future<ClanOffer?> ensureOffer(OfferTables tables, {Random? random}) async {
+    if (state.pendingOffers.isEmpty) return null;
+    final waiting = state.clanOffer;
     if (waiting != null) return waiting;
-    final offer = rollSignOffer(
-      patrons: patrons,
-      signs: signs,
-      held: state.heldSigns,
-      flags: state.flags,
-      alignment: state.alignmentScore,
-      random: random ?? Random(),
-      patronsThisLife: state.signPatronsThisLife,
-      favour: state.patronFavour,
-      patronsMet: state.patronsMet,
-      // A lucky sign helps draw the next one.
-      luck: state.luck +
-          signEffectsFor(state.heldSigns, signs,
-                  alignment: state.alignmentScore)
-              .stat('luck'),
-    );
+    final offer = drawOffer(
+        state.pendingOffers.first, offerContextFor(tables), random ?? Random());
     if (offer == null) return null;
     state = state.copyWith(
-      signOffer: offer,
-      patronsMet: state.patronsMet.contains(offer.patronId)
-          ? null
-          : [...state.patronsMet, offer.patronId],
+      clanOffer: offer,
+      patronsMet: {
+        ...state.patronsMet,
+        for (final s in offer.suitors) s.factionId,
+      }.toList(),
     );
     await _persist();
     return offer;
   }
 
-  /// Takes [signId] from the offer (see takeSign): it replaces the sign in
-  /// its slot, if any, keeping that one's level and the better rarity; a
-  /// pact starts counting. The patron gains favour and has now given a
-  /// sign this life; a Choir vow lifts the alignment, a Pit pact lowers it.
-  Future<bool> chooseSign(String signId,
-      {required Map<String, SignDef> signs}) async {
-    final offer = state.signOffer;
-    final card = offer?.cardFor(signId);
-    final sign = signs[signId];
-    if (offer == null ||
-        card == null ||
-        sign == null ||
-        state.pendingSignPicks <= 0) {
+  /// Takes [factionId]'s gift from the offer on the table:
+  /// - **the gift:** a skill learned; a sign drawn on (see takeSign: it
+  ///   replaces the one in its slot; the patron's favour, a vow's or a
+  ///   pact's ±3); an object to the pack (a potion as charges, a
+  ///   spellbook read, a tome read); a title held (and worn, when none
+  ///   is); the Sworn boon; a perk rank (Vigor's health at once);
+  /// - **the politics:** +6 standing with them (+10 for a quest, an
+  ///   intrigue or a chapter's end) with the ripple, the voicing sub-clan
+  ///   a friend, all logged; the alignment nudged by their lean;
+  /// - the titles standing earns (see titlesEarned).
+  /// The offer is spent; false when there is none or no such suitor.
+  Future<bool> acceptSuitor(String factionId,
+      {required OfferTables tables}) async {
+    final offer = state.clanOffer;
+    final suitor = offer?.suitorOf(factionId);
+    if (offer == null || suitor == null || state.pendingOffers.isEmpty) {
       return false;
     }
-    final taken = takeSign(state.heldSigns, sign, card.rarity, signs);
-    state = state.copyWith(
-      heldSigns: taken.held,
-      pendingSignPicks: state.pendingSignPicks - 1,
-      clearSignOffer: true,
-      patronFavour: {
-        ...state.patronFavour,
-        offer.patronId: (state.patronFavour[offer.patronId] ?? 0) + 1,
-      },
-      signPatronsThisLife: {
-        ...state.signPatronsThisLife,
-        offer.patronId,
-        sign.patronId,
-      }.toList(),
-      alignmentScore: state.alignmentScore + alignmentShiftFor(sign),
+    var next = _withGift(state, suitor, tables);
+    final politics = acceptPolitics(suitor, offer.ticket,
+        politics: next.politics,
+        data: tables.data,
+        chapter: _politicsChapter(null),
+        day: next.day);
+    next = next.copyWith(
+      politics: politics.politics,
+      alignmentScore: next.alignmentScore + politics.alignment,
+      pendingOffers: next.pendingOffers.sublist(1),
+      clearClanOffer: true,
     );
+    state = _withTitles(next, tables.data);
     await _persist();
     return true;
   }
+
+  /// [session] with [suitor]'s gift applied (see [acceptSuitor]).
+  PlayerSession _withGift(
+      PlayerSession session, Suitor suitor, OfferTables tables) {
+    final gift = suitor.gift;
+    switch (gift.kind) {
+      case GiftKind.skill:
+        if (session.unlockedSkillIds.contains(gift.id)) return session;
+        return session
+            .copyWith(unlockedSkillIds: [...session.unlockedSkillIds, gift.id]);
+      case GiftKind.sign:
+        final sign = tables.signs[gift.id];
+        if (sign == null) return session;
+        final taken =
+            takeSign(session.heldSigns, sign, gift.rarity, tables.signs);
+        return session.copyWith(
+          heldSigns: taken.held,
+          patronFavour: {
+            ...session.patronFavour,
+            suitor.factionId: (session.patronFavour[suitor.factionId] ?? 0) + 1,
+          },
+          signPatronsThisLife: {
+            ...session.signPatronsThisLife,
+            suitor.factionId,
+            sign.patronId,
+          }.toList(),
+          alignmentScore: session.alignmentScore + alignmentShiftFor(sign),
+        );
+      case GiftKind.object:
+        return _withItem(
+            session, gift.id, tables.items[gift.id] as Map<String, dynamic>?);
+      case GiftKind.title:
+        if (session.heldTitleIds.contains(gift.id)) return session;
+        return session.copyWith(
+          heldTitleIds: [...session.heldTitleIds, gift.id],
+          activeTitleId:
+              session.activeTitleId.isEmpty ? gift.id : session.activeTitleId,
+        );
+      case GiftKind.sworn:
+        if (session.swornBoonIds.contains(gift.id)) return session;
+        return session
+            .copyWith(swornBoonIds: [...session.swornBoonIds, gift.id]);
+      case GiftKind.perk:
+        final perk = perkFromName(gift.id);
+        if (perk == null ||
+            (session.perkRanks[gift.id] ?? 0) >= perkInfo[perk]!.maxRank) {
+          return session;
+        }
+        final health = perk == Perk.vigor ? vigorHealthPerRank : 0;
+        return session.copyWith(
+          perkRanks: {
+            ...session.perkRanks,
+            gift.id: (session.perkRanks[gift.id] ?? 0) + 1,
+          },
+          maxHealth: session.maxHealth + health,
+          currentHealth: session.currentHealth + health,
+        );
+    }
+  }
+
+  /// [session] given [itemId] the way a reward is: a potion as charges, a
+  /// spellbook read, a tome read on the spot (a Tome of Mastery is one more
+  /// offer), anything else to the pack.
+  PlayerSession _withItem(
+      PlayerSession session, String itemId, Map<String, dynamic>? item) {
+    final charges = consumableChargesFor(itemId, item);
+    if (charges != null) {
+      return session.copyWith(
+        potionCount: session.potionCount + charges.potions,
+        antidoteCount: session.antidoteCount + charges.antidotes,
+      );
+    }
+    final spellId = spellbookSpellIdFor(item);
+    if (spellId != null) {
+      return session.knownSpellIds.contains(spellId)
+          ? session
+          : session
+              .copyWith(knownSpellIds: [...session.knownSpellIds, spellId]);
+    }
+    final tome = tomeGrantFor(itemId, item);
+    if (tome != null) {
+      return session.copyWith(
+        statPoints: session.statPoints + tome.statPoints,
+        pendingOffers: [...session.pendingOffers, ...tome.offers],
+      );
+    }
+    return session
+        .copyWith(inventoryItemIds: [...session.inventoryItemIds, itemId]);
+  }
+
+  /// [session] with the titles its politics earn or take away (see
+  /// titlesEarned), and the one worn kept, or the first good one gained.
+  PlayerSession _withTitles(PlayerSession session, ClanData data) {
+    final titles = titlesEarned(session.heldTitleIds, session.politics, data);
+    final active = activeTitleAfter(
+        session.activeTitleId, titles.held, titles.gained, data);
+    if (titles.gained.isEmpty &&
+        titles.lost.isEmpty &&
+        active == session.activeTitleId) {
+      return session;
+    }
+    return session.copyWith(heldTitleIds: titles.held, activeTitleId: active);
+  }
+
+  /// Wears [titleId] (one held), or none with ''.
+  Future<void> setActiveTitle(String titleId) async {
+    if (titleId.isNotEmpty && !state.heldTitleIds.contains(titleId)) return;
+    if (titleId == state.activeTitleId) return;
+    state = state.copyWith(activeTitleId: titleId);
+    await _persist();
+  }
+
+  /// Offers due for a new character of [profession]: its starting skill
+  /// points (professions.json `startingSkillPoints`), one offer each.
+  static List<OfferTicket> startingOffersFor(Map<String, dynamic> profession) =>
+      [
+        for (var i = 0;
+            i < ((profession['startingSkillPoints'] as num?)?.toInt() ?? 0);
+            i++)
+          const OfferTicket(source: OfferSource.start),
+      ];
+
+  /// [levels] offers for the levels just reached.
+  static List<OfferTicket> _levelOffers(int levels) => [
+        for (var i = 0; i < levels; i++)
+          const OfferTicket(source: OfferSource.level),
+      ];
 
   /// Spends a drop of Titan's Blood raising held sign [signId] one level.
   /// False when there is no blood, no such sign, or it is at its highest.
@@ -2037,14 +2226,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(heldSigns: raised, titanBlood: state.titanBlood - 1);
     await _persist();
     return true;
-  }
-
-  /// [count] more sign offers to choose (a boss beaten, Edit Mode's
-  /// "Offer a sign now").
-  Future<void> grantSignPicks(int count) async {
-    if (count <= 0) return;
-    state = state.copyWith(pendingSignPicks: state.pendingSignPicks + count);
-    await _persist();
   }
 
   /// [count] more drops of Titan's Blood (a hunt, an Elite, Edit Mode).
@@ -2075,7 +2256,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final result = applyStandingChange(state.politics, factionId, delta, cause,
         data: data, chapter: _politicsChapter(chapter), day: state.day);
     if (!result.changed) return result;
-    state = state.copyWith(politics: result.state);
+    state = _withTitles(state.copyWith(politics: result.state), data);
     await _persist();
     return result;
   }
@@ -2093,7 +2274,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         state.politics, subclanId, mark, cause,
         data: data, chapter: _politicsChapter(chapter), day: state.day);
     if (!result.changed) return false;
-    state = state.copyWith(politics: result.state);
+    state = _withTitles(state.copyWith(politics: result.state), data);
     await _persist();
     return true;
   }
@@ -2112,7 +2293,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final result = clan_rules.shiftRelation(state.politics, a, b, steps, cause,
         data: data, chapter: _politicsChapter(chapter), day: state.day);
     if (!result.changed) return false;
-    state = state.copyWith(politics: result.state);
+    state = _withTitles(state.copyWith(politics: result.state), data);
     await _persist();
     return true;
   }
@@ -2128,14 +2309,16 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final result = setStandingValue(state.politics, factionId, value, 'edit',
         data: data, chapter: _politicsChapter(chapter), day: state.day);
     if (!result.changed) return;
-    state = state.copyWith(politics: result.state);
+    state = _withTitles(state.copyWith(politics: result.state), data);
     await _persist();
   }
 
   /// Edit Mode: the coast as the story opens -- every standing back to its
-  /// start, no marks, no faction sworn, the relations and logs cleared.
-  Future<void> resetPolitics() async {
-    state = state.copyWith(politics: PoliticsState.empty);
+  /// start, no marks, no faction sworn, the relations and logs cleared;
+  /// the titles a mark held go with it ([data]: the clan data, for them).
+  Future<void> resetPolitics({ClanData? data}) async {
+    final reset = state.copyWith(politics: PoliticsState.empty);
+    state = data == null ? reset : _withTitles(reset, data);
     await _persist();
   }
 
@@ -2290,11 +2473,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       currentHealth:
           leveled.leveledUp ? leveled.maxHealth : state.currentHealth,
       statPoints: leveled.statPoints,
-      skillPoints: leveled.skillPoints,
-      pendingPerkPicks:
-          state.pendingPerkPicks + perkPicksFor(state.level, leveled.level),
-      pendingSignPicks:
-          state.pendingSignPicks + signPicksFor(state.level, leveled.level),
+      // Each level reached brings an offer (see offers.dart).
+      pendingOffers: [
+        ...state.pendingOffers,
+        ..._levelOffers(leveled.levelsGained),
+      ],
       gold: state.gold + rewardGold,
       alignmentScore: state.alignmentScore + alignmentMod,
       activeQuestIds: newActive,
@@ -2377,7 +2560,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       state = state.copyWith(
         gold: state.gold - cost,
         statPoints: state.statPoints + tome.statPoints,
-        skillPoints: state.skillPoints + tome.skillPoints,
+        pendingOffers: [...state.pendingOffers, ...tome.offers],
         shopPurchaseCounts: {...state.shopPurchaseCounts, key: purchased + 1},
       );
       await _persist();
@@ -2588,7 +2771,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       inventoryItemIds: remaining,
       statPoints: state.statPoints + tome.statPoints,
-      skillPoints: state.skillPoints + tome.skillPoints,
+      pendingOffers: [...state.pendingOffers, ...tome.offers],
     );
     await _persist();
   }
@@ -3395,30 +3578,17 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  /// Masters [branchId] for [cost] skill points: the one skill-tree branch
-  /// whose skills fight a tier higher (see skill_tree.dart). No-op when a
-  /// branch is already mastered or the points are short; the caller checks
-  /// the branch is complete.
-  Future<void> masterBranch(String branchId, {required int cost}) async {
-    if (state.masteredBranchId.isNotEmpty || state.skillPoints < cost) return;
+  /// Masters [branchId] for [cost] skill essence (v1.194: skill points
+  /// are gone, see offers.dart): the one skill-tree branch whose skills
+  /// fight a tier higher (see skill_tree.dart). No-op when a branch is
+  /// already mastered or the essence is short; the caller checks the
+  /// branch is complete.
+  Future<void> masterBranch(String branchId,
+      {int cost = branchMasteryEssenceCost}) async {
+    if (state.masteredBranchId.isNotEmpty || state.skillEssence < cost) return;
     state = state.copyWith(
       masteredBranchId: branchId,
-      skillPoints: state.skillPoints - cost,
-    );
-    await _persist();
-  }
-
-  /// Learns [skillId] for [cost] skill points (its place on its branch,
-  /// see skill_tree.dart's skillPointCostOf); no-op when short or known.
-  Future<void> unlockSkill(String skillId, {int cost = 1}) async {
-    if (cost < 1 ||
-        state.skillPoints < cost ||
-        state.unlockedSkillIds.contains(skillId)) {
-      return;
-    }
-    state = state.copyWith(
-      skillPoints: state.skillPoints - cost,
-      unlockedSkillIds: [...state.unlockedSkillIds, skillId],
+      skillEssence: state.skillEssence - cost,
     );
     await _persist();
   }
@@ -3586,7 +3756,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int? perception,
     int? potionCount,
     int? statPoints,
-    int? skillPoints,
     int? antidoteCount,
     int? mana,
   }) async {
@@ -3609,7 +3778,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       perception: perception,
       potionCount: potionCount,
       statPoints: statPoints,
-      skillPoints: skillPoints,
       antidoteCount: antidoteCount,
       mana: mana,
     );
@@ -3655,15 +3823,15 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   /// Runs [xpGain] through the level-up threshold (`level * 100` XP each),
-  /// applying every level gained: +5 statPoints, +1 skillPoint, +20
-  /// maxHealth. Shared by [applyCombatResult] and [completeQuest] so a
-  /// quest's XP reward levels the player up exactly like combat XP does.
+  /// applying every level gained: +5 statPoints and +20 maxHealth (and an
+  /// offer, which the callers add: see [_levelOffers]). Shared by
+  /// [applyCombatResult] and [completeQuest] so a quest's XP reward levels
+  /// the player up exactly like combat XP does.
   ({
     int level,
     int xp,
     int maxHealth,
     int statPoints,
-    int skillPoints,
     bool leveledUp,
     int levelsGained,
   }) _applyXp(int xpGain) {
@@ -3671,7 +3839,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     var newXp = state.currentXP + xpGain;
     var newMaxHealth = state.maxHealth;
     var newStatPoints = state.statPoints;
-    var newSkillPoints = state.skillPoints;
     var leveledUp = false;
     var levelsGained = 0;
 
@@ -3679,7 +3846,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       newXp -= newLevel * 100;
       newLevel += 1;
       newStatPoints += 5;
-      newSkillPoints += 1;
       newMaxHealth += 20;
       leveledUp = true;
       levelsGained += 1;
@@ -3690,15 +3856,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       xp: newXp,
       maxHealth: newMaxHealth,
       statPoints: newStatPoints,
-      skillPoints: newSkillPoints,
       leveledUp: leveledUp,
       levelsGained: levelsGained,
     );
   }
 
   /// A level-up full-heals the player and, mirroring that, every recruited
-  /// ally too — "grows with you" plus the ally-equivalent of the player's
-  /// own +1 skillPoint/level (see AllyState.skillPoints doc).
+  /// ally too — "grows with you": a companion still gains their own skill
+  /// point a level (see AllyState.skillPoints doc), the player an offer.
   List<AllyState> _healAndGrowAlliesOnLevelUp(int levelsGained) {
     return [
       for (final ally in state.recruitedAllies)
@@ -3740,7 +3905,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     List<String>? recentLootIds,
     int? manaAfter,
     ContractTally? contractTally,
-    int signPicks = 0,
+    int bossOffers = 0,
     int titanBlood = 0,
     bool pactFight = false,
   }) async {
@@ -3752,7 +3917,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     var potionsGained = 0;
     var antidotesGained = 0;
     var statPointsGained = 0;
-    var skillPointsGained = 0;
+    final tomeOffers = <OfferTicket>[];
     final carried = <String>[];
     final spellsLearned = <String>[];
     for (final itemId in itemsGained) {
@@ -3760,7 +3925,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       final tome = tomeGrantFor(itemId, item);
       if (tome != null) {
         statPointsGained += tome.statPoints;
-        skillPointsGained += tome.skillPoints;
+        tomeOffers.addAll(tome.offers);
         continue;
       }
       // A spellbook handed out as a reward is read like a bought one.
@@ -3813,15 +3978,17 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       maxHealth: leveled.maxHealth,
       currentHealth: newHealth,
       statPoints: leveled.statPoints + statPointsGained,
-      skillPoints: leveled.skillPoints + skillPointsGained,
-      pendingPerkPicks:
-          state.pendingPerkPicks + perkPicksFor(state.level, leveled.level),
-      // An odd level and a boss beaten each bring a sign to choose, a hunt
-      // (or, sometimes, an Elite) a drop of Titan's Blood; a dice fight
-      // won or lost runs every pact one fight on.
-      pendingSignPicks: state.pendingSignPicks +
-          signPicksFor(state.level, leveled.level) +
-          signPicks,
+      // Each level reached and a boss beaten bring an offer (see
+      // offers.dart), a Tome of Mastery one too; a hunt (or, sometimes, an
+      // Elite) a drop of Titan's Blood; a dice fight won or lost runs every
+      // pact one fight on.
+      pendingOffers: [
+        ...state.pendingOffers,
+        ..._levelOffers(leveled.levelsGained),
+        for (var i = 0; i < bossOffers; i++)
+          const OfferTicket(source: OfferSource.boss),
+        ...tomeOffers,
+      ],
       titanBlood: state.titanBlood + titanBlood,
       heldSigns: pactFight ? countDownPacts(state.heldSigns) : null,
       gold: state.gold + goldGain,
@@ -3851,13 +4018,19 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// What reading a looted tome grants on the spot -- a Tome-type item
   /// never enters the inventory, exactly like a potion becomes a charge.
-  /// `tome_of_mastery` grants a skill point; every other Tome grants a
-  /// stat point. Null for anything that isn't a Tome.
-  static ({int statPoints, int skillPoints})? tomeGrantFor(
+  /// `tome_of_mastery` grants an offer (it granted a skill point before
+  /// v1.194); every other Tome grants a stat point. Null for anything that
+  /// isn't a Tome.
+  static ({int statPoints, List<OfferTicket> offers})? tomeGrantFor(
       String itemId, Map<String, dynamic>? item) {
     if (item?['itemType']?.toString() != 'Tome') return null;
-    if (itemId == 'tome_of_mastery') return (statPoints: 0, skillPoints: 1);
-    return (statPoints: 1, skillPoints: 0);
+    if (itemId == 'tome_of_mastery') {
+      return (
+        statPoints: 0,
+        offers: const [OfferTicket(source: OfferSource.tome)],
+      );
+    }
+    return (statPoints: 1, offers: const <OfferTicket>[]);
   }
 
   /// Removes one carried copy of each id in [itemIds] -- a charm burned
@@ -3875,10 +4048,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// Permadeath: clears the player's inventory and equipped items, and
   /// resets the skill build back to class basics — a roguelike run starts
-  /// over each life. The signs go with it (held signs, the picks and offer
-  /// waiting, Titan's Blood, the Choir or Pit of this life); favour with
-  /// the patrons stays. The world starts over too: standing, marks,
-  /// relations and their logs (see [PlayerSession.politics]). Keeps level, XP, gold, stats, dice (as items) and
+  /// over each life. The signs go with it (held signs, Titan's Blood, the
+  /// Choir or Pit of this life), and the offers waiting (back to the
+  /// profession's starting ones); favour with the patrons stays, and so do
+  /// perk ranks. The world starts over too: standing, marks, relations and
+  /// their logs (see [PlayerSession.politics]), the titles and the Sworn
+  /// boons. Keeps level, XP, gold, stats, dice (as items) and
   /// story flags/quests intact; only the *skill build itself* (unlocked
   /// skills, tier upgrades, skill essence, and unspent skill points) is
   /// wiped, back to exactly what [startNewGame] would grant: the race and
@@ -3899,8 +4074,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
     final starterUnlockedSkills = _starterSkillsFor(race, profession);
     final starterAssignments = _starterFaceAssignments(race, profession);
-    final starterSkillPoints =
-        (profession['startingSkillPoints'] as num?)?.toInt() ?? 0;
 
     state = state.copyWith(
       currentHealth: state.maxHealth,
@@ -3916,14 +4089,18 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       skillTiers: const {},
       masteredBranchId: '',
       skillEssence: 0,
-      skillPoints: starterSkillPoints,
+      // The offers waiting go with the life, back to the profession's
+      // starting ones; the titles and the Sworn boons with the world.
+      pendingOffers: startingOffersFor(profession),
+      clearClanOffer: true,
+      heldTitleIds: const [],
+      activeTitleId: '',
+      swornBoonIds: const [],
       diceSkillAssignments: _starterAssignmentsByDie(
           starterAssignments, _startingDiceIdFor(profession)),
       knownSpellIds: _startingSpellIdsFor(profession),
       mana: state.maxMana,
       heldSigns: const [],
-      pendingSignPicks: 0,
-      clearSignOffer: true,
       titanBlood: 0,
       signPatronsThisLife: const [],
       politics: PoliticsState.empty,

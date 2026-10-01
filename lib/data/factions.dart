@@ -263,6 +263,8 @@ class Faction {
     required this.patron,
     this.nameOf = '',
     this.nameOfFr = '',
+    this.short = '',
+    this.shortFr = '',
     this.motto = '',
     this.mottoFr = '',
     this.lean = 0,
@@ -279,6 +281,11 @@ class Faction {
   /// Grise » (see [nameOfFor]).
   final String nameOf;
   final String nameOfFr;
+
+  /// The name in a word, for the offers' standing preview ("+6 Compact ·
+  /// −3 Penitents"); see [shortFor].
+  final String short;
+  final String shortFr;
   final String motto;
   final String mottoFr;
 
@@ -315,6 +322,13 @@ class Faction {
     return own.isNotEmpty ? own : nameFor(language);
   }
 
+  /// The name in a word in [language]; the full name when the data has
+  /// none.
+  String shortFor(AppLanguage language) {
+    final own = _pick(language, short, shortFr);
+    return own.isNotEmpty ? own : nameFor(language);
+  }
+
   String mottoFor(AppLanguage language) => _pick(language, motto, mottoFr);
   String introFor(AppLanguage language) => patron.introFor(language);
   List<String> greetingsFor(AppLanguage language) =>
@@ -324,6 +338,8 @@ class Faction {
         patron: Patron.fromJson(id, json),
         nameOf: _text(json['nameOf']),
         nameOfFr: _text(json['nameOf_fr']),
+        short: _text(json['short']),
+        shortFr: _text(json['short_fr']),
         motto: _text(json['motto']),
         mottoFr: _text(json['motto_fr']),
         lean: _int(json['lean']).clamp(-1, 1),
@@ -1252,9 +1268,17 @@ double _clampStanding(double value) =>
 
 bool _swornLevel(double value) => standingTierFor(value) == StandingTier.sworn;
 
+/// Whether [factionId] may ever be the sworn faction: only a clan (the
+/// Dominion and the five clans) can. The Choir, the Pit and the tribes
+/// never are, and never stand past [swornOthersCap] (see [_applyBanner]).
+bool canBeSworn(String factionId, ClanData data) =>
+    data.faction(factionId)?.isClan ?? false;
+
 /// The banner's rules over [values] (standing by faction, every faction of
 /// [data] in it), with [sworn] the faction sworn before the change (''
 /// for none) and [preferred] the one the change was made with:
+/// - only a clan can be sworn (see [canBeSworn]): any other faction stops
+///   at [swornOthersCap], so it never reaches the Sworn tier;
 /// - the sworn faction falling under [swornThreshold] is released;
 /// - with none sworn, one reaching it is sworn (the [preferred] one
 ///   first, then the highest), and costs each of its rivals
@@ -1273,15 +1297,22 @@ bool _swornLevel(double value) => standingTierFor(value) == StandingTier.sworn;
   var current = sworn;
   var swore = '';
   var released = '';
+  for (final id in values.keys.toList()) {
+    if (!canBeSworn(id, data) && values[id]! > swornOthersCap) {
+      values[id] = swornOthersCap.toDouble();
+    }
+  }
   if (current.isNotEmpty &&
-      (!values.containsKey(current) || !_swornLevel(values[current]!))) {
+      (!values.containsKey(current) ||
+          !canBeSworn(current, data) ||
+          !_swornLevel(values[current]!))) {
     released = current;
     current = '';
   }
   if (current.isEmpty) {
     final candidates = [
       for (final e in values.entries)
-        if (_swornLevel(e.value)) e.key,
+        if (canBeSworn(e.key, data) && _swornLevel(e.value)) e.key,
     ];
     if (candidates.isNotEmpty) {
       current = candidates.contains(preferred)
@@ -1674,9 +1705,11 @@ String formatStandingDelta(num delta, {AppLanguage? language}) {
 /// A cause as the log shows it. A cause is `kind` or `kind:detail`; a
 /// kind with words (`standing_cause_<kind>`: offer, quest, favour,
 /// intrigue, sea, edit, chapter, story, sworn_cap...) is said in
-/// [language], the detail after it as written; an unknown kind is shown
-/// as it is.
-String standingCauseLabel(String cause, AppLanguage language) {
+/// [language], the detail after it as written -- or as [describe] names
+/// it (an offer's gift id read as the gift's name, see offers.dart), when
+/// it gives a name; an unknown kind is shown as it is.
+String standingCauseLabel(String cause, AppLanguage language,
+    {String? Function(String kind, String detail)? describe}) {
   final split = cause.indexOf(':');
   final kind = split < 0 ? cause : cause.substring(0, split);
   final detail = split < 0 ? '' : cause.substring(split + 1).trim();
@@ -1684,5 +1717,6 @@ String standingCauseLabel(String cause, AppLanguage language) {
   final label = trFor(language, key);
   final head = label == key ? kind : label;
   if (detail.isEmpty) return head;
-  return label == key ? cause : '$head · $detail';
+  if (label == key) return cause;
+  return '$head · ${describe?.call(kind, detail) ?? detail}';
 }

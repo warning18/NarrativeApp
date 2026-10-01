@@ -216,8 +216,9 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
         '${wisdom >= 0 ? '+' : ''}$wisdom ${tr(ref, 'wis_abbrev')}',
       if (perception != 0)
         '${perception >= 0 ? '+' : ''}$perception ${tr(ref, 'per_abbrev')}',
+      // A profession's starting skill points are offers since v1.194.
       if (showSkillPoints && skillPoints > 0)
-        '+$skillPoints ${tr(ref, 'skill_pt_bonus_label')}',
+        '+$skillPoints ${tr(ref, 'offer_bonus_label')}',
     ];
     return parts.join(' · ');
   }
@@ -586,7 +587,8 @@ class _CharacterSheet extends StatelessWidget {
                   '${t(_alignmentKey(session.alignmentLabel))} (${session.alignmentScore})',
                 ),
                 statRow(t('stat_points_label'), '${session.statPoints}'),
-                statRow(t('skill_points_label'), '${session.skillPoints}'),
+                statRow(t('offers_waiting_label'),
+                    '${session.pendingOffers.length}'),
                 statRow(t('potions_label'), '${session.potionCount}'),
                 statRow(t('antidotes_label'), '${session.antidoteCount}'),
                 statRow(t('inventory_items_label'),

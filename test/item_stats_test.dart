@@ -65,7 +65,7 @@ void main() {
         contains('poison'));
     expect(
         consumableNote('tome_of_mastery', {'itemType': 'Tome'}, AppLanguage.en),
-        contains('skill point'));
+        contains('an offer'));
     expect(consumableNote('new_sword', items['new_sword'], AppLanguage.en),
         isNull);
   });

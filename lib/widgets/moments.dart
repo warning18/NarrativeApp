@@ -332,10 +332,14 @@ class _AchievementToastState extends State<_AchievementToast>
 }
 
 /// A new chapter opens like a page: its number and name over the
-/// chapter's colour, inked in across the screen, for a moment. It lets
-/// taps through: the story goes on under it.
+/// chapter's colour, inked in across the screen, for a moment, with a
+/// [note] under them when there is one (the clans' offer it brings). It
+/// lets taps through: the story goes on under it.
 Future<void> showChapterCard(BuildContext context,
-    {required String number, required String title, required Color colour}) {
+    {required String number,
+    required String title,
+    required Color colour,
+    String? note}) {
   if (_still(context)) return Future.value();
   final overlay = Overlay.maybeOf(context, rootOverlay: true);
   if (overlay == null) return Future.value();
@@ -346,6 +350,7 @@ Future<void> showChapterCard(BuildContext context,
       number: number,
       title: title,
       colour: colour,
+      note: note,
       onDone: () {
         entry.remove();
         done.complete();
@@ -362,12 +367,14 @@ class _ChapterCard extends StatefulWidget {
     required this.title,
     required this.colour,
     required this.onDone,
+    this.note,
   });
 
   final String number;
   final String title;
   final Color colour;
   final VoidCallback onDone;
+  final String? note;
 
   @override
   State<_ChapterCard> createState() => _ChapterCardState();
@@ -431,6 +438,19 @@ class _ChapterCardState extends State<_ChapterCard>
                                 ?.copyWith(fontFamily: InkFonts.display),
                           ),
                         ),
+                        if (widget.note != null) ...[
+                          const SizedBox(height: 10),
+                          Opacity(
+                            opacity: ink,
+                            child: Text(
+                              widget.note!,
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: widget.colour,
+                                  fontStyle: FontStyle.italic),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),

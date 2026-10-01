@@ -1,5 +1,5 @@
-// Level-up perks (v1.163): what each rank adds, the offer, picking one,
-// the picks a level brings, and the save file.
+// Perks (v1.163; since v1.194 the Wayfarer's gift in the clans' offers):
+// what each rank adds, taking one from the Wayfarer, and the save file.
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -10,11 +10,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/combat/gear_effects.dart';
 import 'package:narrative_data_app/combat/spells.dart';
+import 'package:narrative_data_app/data/factions.dart';
+import 'package:narrative_data_app/data/offers.dart';
 import 'package:narrative_data_app/data/perks.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/l10n/app_strings.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
-import 'package:narrative_data_app/widgets/perk_picker.dart';
+import 'package:narrative_data_app/widgets/perk_list.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
 
@@ -25,6 +27,22 @@ Future<PlayerSessionNotifier> _notifierWith(PlayerSession session) async {
   await notifier.loadSession(session);
   return notifier;
 }
+
+/// [session] with the Wayfarer on the table offering a rank of [perk].
+PlayerSession _wayfarerOffers(PlayerSession session, String perk) =>
+    session.copyWith(
+      pendingOffers: const [OfferTicket(source: OfferSource.level)],
+      clanOffer: ClanOffer(
+        ticket: const OfferTicket(source: OfferSource.level),
+        suitors: [
+          Suitor(
+              factionId: wayfarerId,
+              gift: OfferGift(kind: GiftKind.perk, id: perk)),
+        ],
+      ),
+    );
+
+const OfferTables _tables = OfferTables(data: ClanData.empty);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -95,72 +113,44 @@ void main() {
   });
 
   group('the session', () {
-    test('a level-up brings a pick; choosing takes a rank', () async {
-      final notifier = await _notifierWith(baseSession(level: 1));
-      await notifier.applyCombatResult(hpAfter: 100, xpGain: 100);
-      expect(notifier.state.level, 2);
-      expect(notifier.state.pendingPerkPicks, 1);
-
-      final offer = await notifier.ensurePerkOffer(random: Random(3));
-      expect(offer, hasLength(perkOfferSize));
-      // The same offer until something is chosen.
-      expect(await notifier.ensurePerkOffer(random: Random(99)), offer);
-      expect(await notifier.choosePerk('notAPerk'), isFalse);
-
-      expect(await notifier.choosePerk(offer.first), isTrue);
-      expect(notifier.state.perkRanks[offer.first], 1);
-      expect(notifier.state.pendingPerkPicks, 0);
-      expect(notifier.state.perkOffer, isEmpty);
-      expect(await notifier.ensurePerkOffer(), isEmpty);
+    test('the Wayfarer\'s perk takes a rank, and moves no standing', () async {
+      final notifier =
+          await _notifierWith(_wayfarerOffers(baseSession(), 'keenEye'));
+      expect(await notifier.acceptSuitor('nobody', tables: _tables), isFalse);
+      expect(await notifier.acceptSuitor(wayfarerId, tables: _tables), isTrue);
+      expect(notifier.state.perkRanks, {'keenEye': 1});
+      expect(notifier.state.pendingOffers, isEmpty);
+      expect(notifier.state.clanOffer, isNull);
+      expect(notifier.state.politics.isEmpty, isTrue);
+      expect(notifier.state.alignmentScore, 0);
     });
 
     test('Vigor adds its health at once; Deep Well raises max mana', () async {
-      final notifier = await _notifierWith(
-          baseSession(maxHealth: 100, currentHealth: 60).copyWith(
-              pendingPerkPicks: 2, perkOffer: ['vigor', 'deepWell', 'leader']));
-      expect(await notifier.choosePerk('vigor'), isTrue);
+      final notifier = await _notifierWith(_wayfarerOffers(
+          baseSession(maxHealth: 100, currentHealth: 60), 'vigor'));
+      expect(await notifier.acceptSuitor(wayfarerId, tables: _tables), isTrue);
       expect(notifier.state.maxHealth, 100 + vigorHealthPerRank);
       expect(notifier.state.currentHealth, 60 + vigorHealthPerRank);
 
       final base = maxManaFor(
           intelligence: notifier.state.intelligence,
           wisdom: notifier.state.wisdom);
-      await notifier.loadSession(notifier.state
-          .copyWith(perkOffer: ['deepWell', 'leader', 'keenEye']));
-      expect(await notifier.choosePerk('deepWell'), isTrue);
+      await notifier.loadSession(_wayfarerOffers(notifier.state, 'deepWell'));
+      expect(await notifier.acceptSuitor(wayfarerId, tables: _tables), isTrue);
       expect(notifier.state.maxMana, base + manaPerRank);
     });
 
-    test('a quest that levels brings its picks too', () async {
-      final notifier = await _notifierWith(
-          baseSession(level: 1, activeQuestIds: const ['q']));
-      await notifier.completeQuest('q', rewardXP: 100 + 200 + 300);
-      expect(notifier.state.level, 4);
-      expect(notifier.state.pendingPerkPicks, 2, reason: 'levels 2 and 4');
-    });
-
     test('perks survive the save file; an old save has none', () {
-      final session = baseSession().copyWith(
-        perkRanks: {'keenEye': 2},
-        pendingPerkPicks: 1,
-        perkOffer: ['vigor', 'leader', 'apothecary'],
-      );
+      final session = baseSession().copyWith(perkRanks: {'keenEye': 2});
       final back = PlayerSession.fromJson(session.toJson());
       expect(back.perkRanks, {'keenEye': 2});
-      expect(back.pendingPerkPicks, 1);
-      expect(back.perkOffer, ['vigor', 'leader', 'apothecary']);
-      final old = session.toJson()
-        ..remove('perkRanks')
-        ..remove('pendingPerkPicks')
-        ..remove('perkOffer');
+      final old = session.toJson()..remove('perkRanks');
       final fromOld = PlayerSession.fromJson(old);
       expect(fromOld.perkRanks, isEmpty);
-      expect(fromOld.pendingPerkPicks, 0);
     });
   });
 
-  testWidgets('the picker offers three and takes the one tapped',
-      (tester) async {
+  testWidgets('the perks taken are listed with their ranks', (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
@@ -172,50 +162,17 @@ void main() {
         () => Future<void>.delayed(const Duration(milliseconds: 200)));
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
-        .loadSession(baseSession().copyWith(
-            pendingPerkPicks: 1,
-            perkOffer: ['keenEye', 'vigor', 'plunderer'])));
+        .loadSession(baseSession().copyWith(perkRanks: {'keenEye': 2})));
 
     await tester.pumpWidget(UncontrolledProviderScope(
       container: container,
       child: const MaterialApp(
-        home: Scaffold(
-          body: SingleChildScrollView(
-            child: Column(children: [PerkPicker(), PerkList()]),
-          ),
-        ),
+        home: Scaffold(body: SingleChildScrollView(child: PerkList())),
       ),
     ));
     await tester.pump();
-    expect(find.text('Keen Eye'), findsOneWidget);
-    expect(find.text('Vigor'), findsOneWidget);
-    expect(find.text('Plunderer'), findsOneWidget);
-
-    await tester.tap(find.byKey(const Key('perk_offer_keenEye')));
-    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
-    await tester.pump();
-    final session = container.read(playerSessionProvider);
-    expect(session.perkRanks, {'keenEye': 1});
-    expect(session.pendingPerkPicks, 0);
-    // The picker is gone; the list shows the perk taken.
-    expect(find.byKey(const Key('perk_offer_vigor')), findsNothing);
     expect(find.byKey(const Key('perk_owned_keenEye')), findsOneWidget);
-
-    // A level-up with no dialog (a ship battle's) brings a pick while the
-    // picker stays built: it draws the offer itself.
-    await tester.runAsync(() => container
-        .read(playerSessionProvider.notifier)
-        .loadSession(container
-            .read(playerSessionProvider)
-            .copyWith(pendingPerkPicks: 1, perkOffer: const [])));
-    await tester.pump();
-    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
-    await tester.pump();
-    expect(container.read(playerSessionProvider).perkOffer,
-        hasLength(perkOfferSize));
-    expect(find.byWidgetPredicate((w) {
-      final key = w.key;
-      return key is ValueKey<String> && key.value.startsWith('perk_offer_');
-    }), findsNWidgets(perkOfferSize));
+    expect(find.text('Keen Eye'), findsOneWidget);
+    expect(find.byKey(const Key('perk_owned_vigor')), findsNothing);
   });
 }

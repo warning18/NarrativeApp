@@ -1,12 +1,13 @@
-// Signs (v1.192) in the session: the picks levels, bosses and hunts bring,
-// the offer drawn once and kept, taking a sign (favour, the life's
-// patrons, a vow's or a pact's alignment), Titan's Blood, what a death and
-// a new life take and keep, the save file and the Character tab's badge.
-import 'dart:math';
-
+// Signs (v1.192) in the session, given in the clans' offers since v1.194:
+// a boss's offer and a hunt's Titan's Blood, taking a sign (favour, the
+// life's patrons, a vow's or a pact's alignment), Titan's Blood, what a
+// death and a new life take and keep, the save file and the Character
+// tab's badge.
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/data/factions.dart';
+import 'package:narrative_data_app/data/offers.dart';
 import 'package:narrative_data_app/data/signs.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/tab_badges_provider.dart';
@@ -52,121 +53,93 @@ final Map<String, SignDef> _signs = {
       ),
 };
 
+OfferTables get _tables => OfferTables(
+      data: ClanData(factions: {
+        for (final p in _patrons.values) p.id: Faction(patron: p),
+      }),
+      signs: _signs,
+    );
+
+/// [session] with [patronId] on the table offering [signId] at [rarity].
+PlayerSession _signOffered(
+        PlayerSession session, String patronId, String signId,
+        [SignRarity rarity = SignRarity.common]) =>
+    session.copyWith(
+      pendingOffers: const [OfferTicket(source: OfferSource.level)],
+      clanOffer: ClanOffer(
+        ticket: const OfferTicket(source: OfferSource.level),
+        suitors: [
+          Suitor(
+              factionId: patronId,
+              gift: OfferGift(kind: GiftKind.sign, id: signId, rarity: rarity)),
+        ],
+      ),
+    );
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('the picks', () {
-    test('odd levels bring a sign, even levels a perk', () async {
-      final notifier = await _notifierWith(baseSession(level: 1));
-      await notifier.applyCombatResult(hpAfter: 100, xpGain: 100 + 200);
-      expect(notifier.state.level, 3);
-      expect(notifier.state.pendingSignPicks, 1);
-      expect(notifier.state.pendingPerkPicks, 1);
-    });
-
-    test('a quest that levels brings its signs too', () async {
-      final notifier = await _notifierWith(
-          baseSession(level: 1, activeQuestIds: const ['q']));
-      await notifier.completeQuest('q', rewardXP: 100 + 200 + 300 + 400);
-      expect(notifier.state.level, 5);
-      expect(notifier.state.pendingSignPicks, 2, reason: 'levels 3 and 5');
-    });
-
-    test('a boss brings a sign, a hunt Titan\'s Blood, a fight runs a pact',
-        () async {
-      final notifier = await _notifierWith(baseSession().copyWith(heldSigns: [
-        const HeldSign(signId: 'pit_strike', pactFightsLeft: 3),
-        const HeldSign(signId: 'red_guard'),
-      ]));
-      await notifier.applyCombatResult(
-          hpAfter: 100, signPicks: 1, titanBlood: 1, pactFight: true);
-      expect(notifier.state.pendingSignPicks, 1);
-      expect(notifier.state.titanBlood, 1);
-      expect(notifier.state.heldSigns.first.pactFightsLeft, 2);
-      // A fight that isn't one (a test fight) leaves the pact as it is.
-      await notifier.applyCombatResult(hpAfter: 100);
-      expect(notifier.state.heldSigns.first.pactFightsLeft, 2);
-      await notifier.grantSignPicks(2);
-      await notifier.grantTitanBlood(1);
-      expect(notifier.state.pendingSignPicks, 3);
-      expect(notifier.state.titanBlood, 2);
-    });
+  test('a boss brings an offer, a hunt Titan\'s Blood, a fight runs a pact',
+      () async {
+    final notifier = await _notifierWith(baseSession().copyWith(heldSigns: [
+      const HeldSign(signId: 'pit_strike', pactFightsLeft: 3),
+      const HeldSign(signId: 'red_guard'),
+    ]));
+    await notifier.applyCombatResult(
+        hpAfter: 100, bossOffers: 1, titanBlood: 1, pactFight: true);
+    expect(notifier.state.pendingOffers.single.source, OfferSource.boss);
+    expect(notifier.state.titanBlood, 1);
+    expect(notifier.state.heldSigns.first.pactFightsLeft, 2);
+    // A fight that isn't one (a test fight) leaves the pact as it is.
+    await notifier.applyCombatResult(hpAfter: 100);
+    expect(notifier.state.heldSigns.first.pactFightsLeft, 2);
+    await notifier.grantTitanBlood(1);
+    expect(notifier.state.titanBlood, 2);
   });
 
-  group('the offer', () {
-    test('drawn once and kept until a sign is taken', () async {
-      final notifier = await _notifierWith(baseSession());
-      expect(await notifier.ensureSignOffer(patrons: _patrons, signs: _signs),
-          isNull,
-          reason: 'no pick waits');
-      await notifier.grantSignPicks(2);
-      final offer = await notifier.ensureSignOffer(
-          patrons: _patrons, signs: _signs, random: Random(4));
-      expect(offer!.patronId, 'red', reason: 'the only one open at 0');
-      expect(offer.cards, hasLength(3));
-      expect(offer.firstMeeting, isTrue);
-      expect(notifier.state.patronsMet, ['red']);
-      expect(
-          await notifier.ensureSignOffer(
-              patrons: _patrons, signs: _signs, random: Random(99)),
-          offer);
-
-      expect(await notifier.chooseSign('choir_guard', signs: _signs), isFalse,
-          reason: 'not on the table');
-      final taken = offer.cards.first;
-      expect(await notifier.chooseSign(taken.signId, signs: _signs), isTrue);
+  group('a sign taken from an offer', () {
+    test('drawn on, with the patron\'s favour and this life', () async {
+      final notifier = await _notifierWith(
+          _signOffered(baseSession(), 'red', 'red_strike', SignRarity.epic));
+      expect(await notifier.acceptSuitor('red', tables: _tables), isTrue);
       final s = notifier.state;
-      expect(s.heldSigns.single.signId, taken.signId);
-      expect(s.heldSigns.single.rarity, taken.rarity);
-      expect(s.pendingSignPicks, 1);
-      expect(s.signOffer, isNull);
+      expect(s.heldSigns.single.signId, 'red_strike');
+      expect(s.heldSigns.single.rarity, SignRarity.epic);
+      expect(s.pendingOffers, isEmpty);
+      expect(s.clanOffer, isNull);
       expect(s.patronFavour, {'red': 1});
       expect(s.signPatronsThisLife, ['red']);
-      expect(s.alignmentScore, 0);
+      // A sign for a filled slot replaces the one there.
+      await notifier.loadSession(_signOffered(s, 'red', 'red_strike'));
+      expect(await notifier.acceptSuitor('red', tables: _tables), isTrue);
+      expect(notifier.state.heldSigns.single.rarity, SignRarity.epic,
+          reason: 'the better rarity stays');
     });
 
     test('a vow lifts the alignment, a pact lowers it and starts counting',
         () async {
-      final notifier = await _notifierWith(baseSession().copyWith(
-        alignmentScore: 12,
-        pendingSignPicks: 1,
-        signOffer: const SignOffer(patronId: choirPatronId, cards: [
-          SignCard(signId: 'choir_passive', rarity: SignRarity.rare),
-        ]),
-      ));
-      await notifier.chooseSign('choir_passive', signs: _signs);
+      final notifier = await _notifierWith(_signOffered(
+          baseSession().copyWith(alignmentScore: 12),
+          choirPatronId,
+          'choir_passive',
+          SignRarity.rare));
+      await notifier.acceptSuitor(choirPatronId, tables: _tables);
       expect(notifier.state.alignmentScore, 12 + otherworldAlignmentShift);
       expect(notifier.state.signPatronsThisLife, [choirPatronId]);
 
       // Another life, on the other side.
-      await notifier.loadSession(notifier.state.copyWith(
-        alignmentScore: -12,
-        signPatronsThisLife: const [],
-        pendingSignPicks: 1,
-        signOffer: const SignOffer(patronId: pitPatronId, cards: [
-          SignCard(signId: 'pit_passive', rarity: SignRarity.common),
-        ]),
-      ));
-      await notifier.chooseSign('pit_passive', signs: _signs);
+      await notifier.loadSession(_signOffered(
+          notifier.state
+              .copyWith(alignmentScore: -12, signPatronsThisLife: const []),
+          pitPatronId,
+          'pit_passive'));
+      await notifier.acceptSuitor(pitPatronId, tables: _tables);
       expect(notifier.state.alignmentScore, -12 - otherworldAlignmentShift);
       expect(
           notifier.state.heldSigns
               .firstWhere((h) => h.signId == 'pit_passive')
               .pactFightsLeft,
           defaultPactFights);
-    });
-
-    test('no patron with anything left: the pick waits', () async {
-      final notifier = await _notifierWith(baseSession().copyWith(
-        pendingSignPicks: 1,
-        heldSigns: [
-          for (final id in ['red_strike', 'red_guard', 'red_passive'])
-            HeldSign(signId: id),
-        ],
-      ));
-      expect(await notifier.ensureSignOffer(patrons: _patrons, signs: _signs),
-          isNull);
-      expect(notifier.state.pendingSignPicks, 1);
     });
   });
 
@@ -186,12 +159,10 @@ void main() {
   });
 
   group('lives', () {
-    PlayerSession signed() => baseSession(level: 6).copyWith(
+    PlayerSession signed() => _signOffered(
+                baseSession(level: 6), 'red', 'red_strike', SignRarity.rare)
+            .copyWith(
           heldSigns: const [HeldSign(signId: 'red_guard', level: 2)],
-          pendingSignPicks: 1,
-          signOffer: const SignOffer(
-              patronId: 'red',
-              cards: [SignCard(signId: 'red_strike', rarity: SignRarity.rare)]),
           titanBlood: 2,
           patronFavour: const {'red': 4},
           signPatronsThisLife: const ['red', choirPatronId],
@@ -205,8 +176,8 @@ void main() {
       expect(result.signsLost, 1);
       final s = notifier.state;
       expect(s.heldSigns, isEmpty);
-      expect(s.pendingSignPicks, 0);
-      expect(s.signOffer, isNull);
+      expect(s.pendingOffers, isEmpty, reason: 'a warrior starts with none');
+      expect(s.clanOffer, isNull);
       expect(s.titanBlood, 0);
       expect(s.signPatronsThisLife, isEmpty);
       expect(s.patronFavour, {'red': 4});
@@ -226,7 +197,7 @@ void main() {
       await notifier.beginNewGamePlus();
       await notifier.resetSession();
       expect(notifier.state.heldSigns, isEmpty);
-      expect(notifier.state.pendingSignPicks, 0);
+      expect(notifier.state.pendingOffers, isEmpty);
       expect(notifier.state.patronFavour, {'red': 4});
       await notifier.startNewGame(
         raceId: 'human',
@@ -253,13 +224,6 @@ void main() {
             level: 2,
             pactFightsLeft: 1),
       ],
-      pendingSignPicks: 2,
-      signOffer: const SignOffer(
-        patronId: 'red',
-        cards: [SignCard(signId: 'red_strike', rarity: SignRarity.heroic)],
-        firstMeeting: true,
-        greetingIndex: 2,
-      ),
       titanBlood: 3,
       patronFavour: const {'red': 5},
       signPatronsThisLife: const ['red'],
@@ -267,8 +231,6 @@ void main() {
     );
     final back = PlayerSession.fromJson(session.toJson());
     expect(back.heldSigns, session.heldSigns);
-    expect(back.pendingSignPicks, 2);
-    expect(back.signOffer, session.signOffer);
     expect(back.titanBlood, 3);
     expect(back.patronFavour, {'red': 5});
     expect(back.signPatronsThisLife, ['red']);
@@ -277,8 +239,6 @@ void main() {
     final old = session.toJson();
     for (final key in [
       'heldSigns',
-      'pendingSignPicks',
-      'signOffer',
       'titanBlood',
       'patronFavour',
       'signPatronsThisLife',
@@ -288,24 +248,13 @@ void main() {
     }
     final fromOld = PlayerSession.fromJson(old);
     expect(fromOld.heldSigns, isEmpty);
-    expect(fromOld.pendingSignPicks, 0);
-    expect(fromOld.signOffer, isNull);
     expect(fromOld.titanBlood, 0);
     expect(fromOld.patronFavour, isEmpty);
   });
 
-  test('the Character tab\'s badge: an offer to make, or blood to spend', () {
-    bool waiting(PlayerSession s) =>
-        hasSignWaiting(s, patrons: _patrons, signs: _signs);
+  test('the Character tab\'s badge: blood to spend on a sign', () {
+    bool waiting(PlayerSession s) => hasSignWaiting(s);
     expect(waiting(baseSession()), isFalse);
-    expect(waiting(baseSession().copyWith(pendingSignPicks: 1)), isTrue);
-    // A pick nobody can answer yet stays quiet.
-    expect(
-        waiting(baseSession().copyWith(pendingSignPicks: 1, heldSigns: [
-          for (final id in ['red_strike', 'red_guard', 'red_passive'])
-            HeldSign(signId: id),
-        ])),
-        isFalse);
     expect(waiting(baseSession().copyWith(titanBlood: 1)), isFalse,
         reason: 'no sign to raise');
     expect(

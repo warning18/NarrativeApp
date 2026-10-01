@@ -11,9 +11,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../gamedata/db_schema.dart';
 import '../../l10n/app_strings.dart';
 import '../../providers/game_db_providers.dart';
+import '../../providers/player_session_provider.dart';
 import '../../theme/stitched_ink.dart';
 import '../../tutorial/guide_tour.dart';
 import '../../tutorial/tutorial_topics.dart';
+import '../../widgets/offer_dialog.dart';
 import 'my_skills_view.dart';
 import 'skill_sheet.dart';
 import 'skill_tree_view.dart';
@@ -114,8 +116,10 @@ class SkillsScreen extends ConsumerWidget {
   }
 }
 
-/// Points to learn with and essence to raise tiers, each saying where it
-/// comes from; essence with a bar to the cheapest next tier.
+/// What grows the skills, each saying where it comes from: a companion's
+/// points to learn with; the player's offers waiting (the clans bring
+/// skills now, see offers.dart) and essence to raise tiers, with a bar to
+/// the cheapest next tier.
 class _Purse extends ConsumerWidget {
   const _Purse({required this.model});
 
@@ -126,6 +130,9 @@ class _Purse extends ConsumerWidget {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final points = model.skillPoints;
+    final offers = model.isPlayer
+        ? ref.watch(playerSessionProvider.select((s) => s.pendingOffers.length))
+        : 0;
     final next = model.nextUpgradeCost;
 
     Widget box({
@@ -155,24 +162,59 @@ class _Purse extends ConsumerWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            box(
-              key: const Key('purse_points'),
-              colour: ink.gold,
-              lit: points > 0,
-              children: [
-                Text(
-                  points == 1
-                      ? tr(ref, 'purse_points_one')
-                      : tr(ref, 'purse_points_many')
-                          .replaceAll('{n}', '$points'),
-                  style: theme.textTheme.titleMedium
-                      ?.copyWith(color: points > 0 ? ink.gold : null),
+            if (!model.isPlayer)
+              box(
+                key: const Key('purse_points'),
+                colour: ink.gold,
+                lit: points > 0,
+                children: [
+                  Text(
+                    points == 1
+                        ? tr(ref, 'purse_points_one')
+                        : tr(ref, 'purse_points_many')
+                            .replaceAll('{n}', '$points'),
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(color: points > 0 ? ink.gold : null),
+                  ),
+                  Text(tr(ref, 'purse_points_note'),
+                      style:
+                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                ],
+              )
+            else
+              Expanded(
+                child: InkWell(
+                  key: const Key('purse_offers'),
+                  borderRadius: BorderRadius.circular(8),
+                  onTap: offers > 0
+                      ? () =>
+                          showOfferIfWaiting(context, ref, sayWhenNone: true)
+                      : null,
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border:
+                          Border.all(color: offers > 0 ? ink.gold : ink.seam),
+                      color:
+                          offers > 0 ? ink.gold.withValues(alpha: 0.08) : null,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          tr(ref, 'offer_pending').replaceAll('{n}', '$offers'),
+                          style: theme.textTheme.titleMedium
+                              ?.copyWith(color: offers > 0 ? ink.gold : null),
+                        ),
+                        Text(tr(ref, 'purse_offers_note'),
+                            style: theme.textTheme.labelSmall
+                                ?.copyWith(color: ink.ash)),
+                      ],
+                    ),
+                  ),
                 ),
-                Text(tr(ref, 'purse_points_note'),
-                    style:
-                        theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
-              ],
-            ),
+              ),
             if (model.isPlayer) ...[
               const SizedBox(width: 8),
               box(

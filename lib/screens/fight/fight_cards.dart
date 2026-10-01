@@ -723,6 +723,45 @@ extension _FightCards on _FightScreenState {
         ],
       );
     }
+    // Open Eyes: the move after, at the category the party reads.
+    final then = enemy.nextMove;
+    if (then != null &&
+        !enemy.staggered &&
+        (tier == TelegraphTier.category || tier == TelegraphTier.full)) {
+      final label = switch (categoryFor(then.move)) {
+        MoveCategory.attack => 'telegraph_category_attack',
+        MoveCategory.healSelf => 'telegraph_category_heal',
+        MoveCategory.statusDebuff => 'telegraph_category_debuff',
+        MoveCategory.guard => 'telegraph_category_guard',
+        MoveCategory.charge => 'telegraph_category_charge',
+        MoveCategory.rally => 'telegraph_category_rally',
+        MoveCategory.tamper => 'telegraph_category_tamper',
+        MoveCategory.mirror => 'tamper_mirror',
+      };
+      content = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          content,
+          Row(
+            key: Key('intent_then_${enemy.key}'),
+            children: [
+              Icon(Icons.double_arrow,
+                  size: 11, color: colorScheme.onErrorContainer),
+              const SizedBox(width: 3),
+              Expanded(
+                child: Text(
+                  '${tr(ref, 'intent_then_label')} ${tr(ref, label)}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: textStyle.copyWith(fontWeight: FontWeight.w400),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
