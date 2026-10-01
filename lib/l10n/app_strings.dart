@@ -8982,6 +8982,24 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Clans & Politics',
     AppLanguage.fr: 'Clans et politique',
   },
+  'clans_title_play': {
+    AppLanguage.en: 'Clans',
+    AppLanguage.fr: 'Clans',
+  },
+  'clans_intrigues_none_play': {
+    AppLanguage.en:
+        'No intrigue has reached you yet. Keep your ears open on the road.',
+    AppLanguage.fr:
+        'Aucune intrigue ne vous est encore parvenue. Gardez l’oreille ouverte sur la route.',
+  },
+  'clans_intrigue_next': {
+    AppLanguage.en: 'What comes next · chapter {c}',
+    AppLanguage.fr: 'La suite · chapitre {c}',
+  },
+  'clans_intrigue_next_unknown': {
+    AppLanguage.en: 'What comes next is still hidden',
+    AppLanguage.fr: 'La suite est encore cachée',
+  },
   'clans_tab_standing': {
     AppLanguage.en: 'Standing',
     AppLanguage.fr: 'Réputation',

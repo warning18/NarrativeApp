@@ -8,6 +8,28 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.196.0+227]
+
+### Added
+- **Clans in the story.** The scales in the top bar, until now only in Edit
+  Mode, now open the clans in the story too, titled "Clans", with a dot
+  while news from the coast waits unread. It keeps the four tabs, read only:
+  - **Standing:** a card per clan, then the tribes the story has opened, the
+    dead clan once remembered, and the Choir and the Pit. No sliders, no
+    offers, no reset, and a sub-clan's square is not a switch.
+  - **Politics:** the relations table back to chapter 1, but no further than
+    the chapter reached. A cell gives the reason, with nothing to shift. The
+    news from the coast takes the place of Edit Mode's events.
+  - **Evolution:** each clan's standing over the story, and the log.
+  - **Intrigues:** only the plots the story has opened, and only as far as
+    each has gone. The next stage shows locked with its chapter, the
+    premise stays hidden until the reveal, and only the chosen outcome shows.
+
+### Fixed
+- The relations table fits a 360-px phone. Its cells take the width the
+  screen allows, from 50 to 60 px; before, the sixth clan's column was cut
+  off.
+
 ## [1.195.0+226]
 
 The clans now move with the story. You come from a dead clan, the Open Hand,

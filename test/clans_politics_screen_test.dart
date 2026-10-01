@@ -305,4 +305,76 @@ void main() {
     expect(find.byTooltip('Sell'), findsNothing);
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
   });
+
+  testWidgets('the story\'s view: nothing to set, no spoilers', (tester) async {
+    tester.view.physicalSize = const Size(360, 2400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final container = await _container(tester, language: 'en');
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: ClansPoliticsScreen(play: true)),
+    ));
+    await tester.pumpAndSettle();
+
+    // Standing: the cards, read only.
+    expect(find.text('Clans'), findsOneWidget);
+    expect(find.byKey(const Key('faction_card_vigil')), findsOneWidget);
+    expect(find.byKey(const Key('faction_slider_vigil')), findsNothing);
+    expect(find.byKey(const Key('clans_reset')), findsNothing);
+    expect(find.byKey(const Key('clans_offer_now')), findsNothing);
+    final before = container.read(playerSessionProvider).politics;
+    await tester.tap(find.byKey(const Key('subclan_square_candlebearers')),
+        warnIfMissed: false);
+    await _settle(tester);
+    expect(
+        container.read(playerSessionProvider).politics.markOf('candlebearers'),
+        before.markOf('candlebearers'),
+        reason: 'a square is not a switch in the story');
+
+    // Politics: the table fits, a cell gives the reason with no shift; the
+    // news in place of the events.
+    await _openTab(tester, 'clans_tab_politics');
+    expect(tester.takeException(), isNull, reason: 'fits 360 px');
+    await tester.tap(find.byKey(const Key('relation_cell_compact_mire')));
+    await tester.pumpAndSettle();
+    expect(find.text(_data.relations.pair('compact', 'mire')!.reason),
+        findsOneWidget);
+    expect(find.byKey(const Key('relation_shift_down')), findsNothing);
+    await tester.tap(find.text('Close'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('clans_events_list')), findsNothing);
+    expect(find.text('News from the coast'.toUpperCase()), findsOneWidget);
+
+    // Intrigues: only the one begun, up to its stage, the next one locked;
+    // no premise before the reveal, no outcome before the choice.
+    await _openTab(tester, 'clans_tab_intrigues');
+    expect(find.byKey(const Key('intrigue_hooded_lantern')), findsOneWidget);
+    expect(find.text('Not started'), findsNothing);
+    expect(
+        find.byKey(const Key('intrigue_next_hooded_lantern')), findsOneWidget);
+    final lantern = _data.intrigues['hooded_lantern']!;
+    expect(find.text(lantern.premiseFor(AppLanguage.en)), findsNothing);
+    expect(find.text(lantern.stages[3].textFor(AppLanguage.en)), findsNothing);
+    expect(find.textContaining('The Grey Vigil +25'), findsNothing);
+    expect(tester.takeException(), isNull, reason: 'fits 360 px');
+  });
+
+  testWidgets('the story\'s view with no intrigue begun says so',
+      (tester) async {
+    tester.view.physicalSize = const Size(360, 1200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final container = await _container(tester, language: 'en');
+    await tester.runAsync(() => container
+        .read(playerSessionProvider.notifier)
+        .loadSession(baseSession()));
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: ClansPoliticsScreen(play: true)),
+    ));
+    await tester.pumpAndSettle();
+    await _openTab(tester, 'clans_tab_intrigues');
+    expect(find.byKey(const Key('clans_intrigues_empty')), findsOneWidget);
+  });
 }
