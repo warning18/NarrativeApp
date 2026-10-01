@@ -9,69 +9,79 @@ import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 
 /// "News from the coast" (v1.195, see politics_events.dart): what the
-/// clans did while the party was elsewhere. The camp shows what it has not
-/// shown yet ([CoastNewsCard]); the journal keeps all of it
-/// ([CoastNewsList]).
+/// clans did while the party was elsewhere. The camp says what it has not
+/// shown yet ([CoastNewsChip], beside Rest, opening [CoastNewsSheet]); the
+/// journal keeps all of it ([CoastNewsList]).
 
-/// News the camp's card has room for; the rest waits in the journal.
-const int campNewsShown = 3;
+/// The camp's notice: "News (2)" beside Rest while news waits unread; a
+/// tap opens it. Nothing when there is none, so it never pushes the
+/// camp's places down.
+class CoastNewsChip extends ConsumerWidget {
+  const CoastNewsChip({super.key});
 
-/// The camp's notice: the news not shown yet, the latest first, and
-/// "Noted" to put it away. Nothing when there is none.
-class CoastNewsCard extends ConsumerWidget {
-  const CoastNewsCard({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final unread = ref.watch(politicsProvider).unreadNews;
+    if (unread.isEmpty) return const SizedBox.shrink();
+    final lang = ref.watch(appLanguageProvider);
+    final ink = InkColors.of(context);
+    return OutlinedButton.icon(
+      key: const Key('camp_coast_news'),
+      style: ButtonStyle(
+        visualDensity: VisualDensity.compact,
+        padding: WidgetStateProperty.all(
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 4)),
+        side: WidgetStateProperty.all(BorderSide(color: ink.ember)),
+      ),
+      onPressed: () => showModalBottomSheet<void>(
+        context: context,
+        showDragHandle: true,
+        isScrollControlled: true,
+        builder: (_) => const SafeArea(child: CoastNewsSheet()),
+      ),
+      icon: Icon(Icons.campaign_outlined, size: 18, color: ink.ember),
+      label: Text(
+          trFor(lang, 'coast_news_chip').replaceAll('{n}', '${unread.length}')),
+    );
+  }
+}
+
+/// The news the camp has not shown yet, the latest first, under "News
+/// from the coast", and "Noted" to put it away (it stays in the journal).
+class CoastNewsSheet extends ConsumerWidget {
+  const CoastNewsSheet({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final unread = ref.watch(politicsProvider).unreadNews.reversed.toList();
-    if (unread.isEmpty) return const SizedBox.shrink();
     final lang = ref.watch(appLanguageProvider);
     final theme = Theme.of(context);
-    final ink = InkColors.of(context);
-    final shown = unread.take(campNewsShown).toList();
-    return Card(
-      key: const Key('camp_coast_news'),
-      margin: const EdgeInsets.only(top: 12),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.campaign_outlined, size: 18, color: ink.ember),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    trFor(lang, 'coast_news_title'),
-                    style: theme.textTheme.titleSmall,
-                  ),
-                ),
-              ],
-            ),
-            for (final news in shown) _NewsLine(news: news, language: lang),
-            if (unread.length > shown.length)
-              Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Text(
-                  trFor(lang, 'coast_news_more')
-                      .replaceAll('{n}', '${unread.length - shown.length}'),
-                  style: theme.textTheme.labelSmall
-                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                ),
-              ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                key: const Key('camp_coast_news_noted'),
-                onPressed: () => ref
+    return SingleChildScrollView(
+      key: const Key('camp_coast_news_sheet'),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(trFor(lang, 'coast_news_title'),
+              style: theme.textTheme.titleMedium),
+          for (final news in unread)
+            _NewsLine(news: news, language: lang, dated: true),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerRight,
+            child: FilledButton(
+              key: const Key('camp_coast_news_noted'),
+              onPressed: () async {
+                await ref
                     .read(playerSessionProvider.notifier)
-                    .markCoastNewsRead(),
-                child: Text(trFor(lang, 'coast_news_noted')),
-              ),
+                    .markCoastNewsRead();
+                if (context.mounted) Navigator.of(context).maybePop();
+              },
+              child: Text(trFor(lang, 'coast_news_noted')),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

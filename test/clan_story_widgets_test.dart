@@ -200,24 +200,37 @@ void main() {
     expect(find.byKey(const ValueKey('chapter_card')), findsNothing);
   });
 
-  testWidgets('the camp shows the news not shown yet; "Noted" puts it away',
-      (tester) async {
+  testWidgets(
+      'the camp\'s notice: the news not read yet a tap away; "Noted" puts '
+      'it away', (tester) async {
     _phone(tester);
     final container = await _container(tester, session: _withNews());
     await tester.pumpWidget(UncontrolledProviderScope(
       container: container,
       child: const MaterialApp(
-          home: Scaffold(body: SingleChildScrollView(child: CoastNewsCard()))),
+          home: Scaffold(body: Center(child: CoastNewsChip()))),
     ));
     await tester.pumpAndSettle();
+    expect(find.text('News (2)'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('camp_coast_news')));
+    await tester.pumpAndSettle();
     expect(find.text('News from the coast'), findsOneWidget);
-    expect(find.text('The Feast of the Flame came and went.'), findsOneWidget);
+    // The latest first, dated.
+    final bells = tester.getTopLeft(
+        find.text('The bells of the Spire rang through the night.'));
+    final feast =
+        tester.getTopLeft(find.text('The Feast of the Flame came and went.'));
+    expect(bells.dy, lessThan(feast.dy));
+    expect(find.text('CHAPTER 4, DAY 30'), findsOneWidget);
+    expect(tester.takeException(), isNull, reason: 'fits 360 px');
     await tester.tap(find.byKey(const Key('camp_coast_news_noted')));
     await tester.runAsync(() => Future<void>.delayed(Duration.zero));
     await tester.pumpAndSettle();
+    expect(find.byKey(const Key('camp_coast_news_sheet')), findsNothing);
     expect(find.byKey(const Key('camp_coast_news')), findsNothing);
     expect(container.read(playerSessionProvider).politics.unreadNews, isEmpty);
-    expect(container.read(playerSessionProvider).politics.news, hasLength(2));
+    expect(container.read(playerSessionProvider).politics.news, hasLength(2),
+        reason: 'the journal keeps them');
   });
 
   testWidgets('the hint under a choice follows its setting', (tester) async {

@@ -346,10 +346,11 @@ class CampScreen extends ConsumerWidget {
             _RestButton(blocked: busy),
             if (campNode != null && sceneRead)
               _SceneChip(title: tr(ref, 'camp_scene_title'), text: sceneText),
+            // What the clans did meanwhile (v1.195): the news from the
+            // coast not read yet, a tap away.
+            if (campNode != null) const CoastNewsChip(),
           ],
         ),
-        // What the clans did meanwhile (v1.195): the news from the coast.
-        if (campNode != null) const CoastNewsCard(),
         // The followed quest stays in view.
         if (campNode != null)
           const Padding(
