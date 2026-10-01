@@ -1292,8 +1292,10 @@ Future<void> _selectChoice({
       if (!context.mounted) return;
       final cleared = await Navigator.of(context).push<bool>(
         MaterialPageRoute(
-          builder: (_) =>
-              ExpeditionScreen(zoneId: choice.launchZoneId!, zone: zone),
+          builder: (_) => ExpeditionScreen(
+              zoneId: choice.launchZoneId!,
+              zone: zone,
+              hostFight: choice.hostFight),
         ),
       );
       ref.read(expeditionActiveProvider.notifier).state = false;

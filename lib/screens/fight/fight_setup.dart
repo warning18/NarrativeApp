@@ -426,6 +426,20 @@ extension _FightSetup on _FightScreenState {
   /// still running, what its curse took.
   List<_LogEntry> _openSignsForFight(AppLanguage lang) {
     final lines = <_LogEntry>[];
+    // The last battles (v1.196): who of the Host fights beside the party.
+    if (widget.modifiers.hostFight && !_host.isEmpty) {
+      final houses = _host.houses.length;
+      final names = [
+        for (final id in _host.contingents)
+          _hostData.faction(id)?.shortFor(lang) ?? id,
+        if (houses == 1) trFor(lang, 'host_fight_house_one'),
+        if (houses > 1)
+          trFor(lang, 'host_fight_houses').replaceAll('{n}', '$houses'),
+      ];
+      lines.add(_LogEntry(
+          trFor(lang, 'host_fight_log').replaceAll('{names}', names.join(', ')),
+          _LogKind.info));
+    }
     if (_signs.isEmpty) return lines;
     if (_signs.silentVows > 0) {
       lines.add(_LogEntry(trFor(lang, 'sign_log_vow_silent'), _LogKind.info));

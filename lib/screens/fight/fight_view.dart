@@ -89,6 +89,27 @@ extension _FightView on _FightScreenState {
             ),
             const SizedBox(height: 8),
           ],
+          // One of the last battles (v1.196): the Host stands with the
+          // party.
+          if (widget.modifiers.hostFight && !_host.isEmpty) ...[
+            Row(
+              key: const Key('fight_host_note'),
+              children: [
+                const Icon(Icons.groups_2_outlined, size: 16),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    tr(ref, 'host_fight_note'),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(fontStyle: FontStyle.italic),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+          ],
           if (widget.modifiers.isHunt ||
               widget.modifiers.isHunterAmbush ||
               widget.modifiers.isZoneBoss) ...[

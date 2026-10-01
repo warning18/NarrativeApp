@@ -9696,6 +9696,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} Houses',
     AppLanguage.fr: '{n} Maisons',
   },
+  'host_fight_house_one': {
+    AppLanguage.en: 'one House',
+    AppLanguage.fr: 'une Maison',
+  },
   'host_fight_note': {
     AppLanguage.en: 'Your Host fights beside you.',
     AppLanguage.fr: 'Votre Ost combat à vos côtés.',

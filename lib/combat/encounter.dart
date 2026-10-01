@@ -30,6 +30,7 @@ class EncounterModifiers {
     this.isTest = false,
     this.forcedCondition,
     this.forceElite = false,
+    this.hostFight = false,
   });
 
   static const EncounterModifiers none = EncounterModifiers();
@@ -87,6 +88,11 @@ class EncounterModifiers {
   /// road_events.dart), instead of rolling for it.
   final bool forceElite;
 
+  /// One of the last battles (v1.196, a `hostFight` choice's fight or its
+  /// zone's): the Host the character raised fights beside the party (see
+  /// throne.dart's hostEffects).
+  final bool hostFight;
+
   bool get isDefault =>
       forcedAffixes.isEmpty &&
       namedEnemyName == null &&
@@ -101,11 +107,14 @@ class EncounterModifiers {
       !lossContinues &&
       !isTest &&
       forcedCondition == null &&
-      !forceElite;
+      !forceElite &&
+      !hostFight;
 
   /// The same modifiers stamped with a fight's chapter and/or zone-tier
-  /// multiplier (an expedition applies its zone's to every draw).
-  EncounterModifiers copyWith({int? chapter, double? difficultyMultiplier}) =>
+  /// multiplier (an expedition applies its zone's to every draw), or made
+  /// one of the last battles ([hostFight]).
+  EncounterModifiers copyWith(
+          {int? chapter, double? difficultyMultiplier, bool? hostFight}) =>
       EncounterModifiers(
         forcedAffixes: forcedAffixes,
         namedEnemyName: namedEnemyName,
@@ -121,6 +130,7 @@ class EncounterModifiers {
         isTest: isTest,
         forcedCondition: forcedCondition,
         forceElite: forceElite,
+        hostFight: hostFight ?? this.hostFight,
       );
 
   /// A zone boss: never below a Gold chest, half again the reward, at the
@@ -139,7 +149,14 @@ class EncounterModifiers {
 
   /// The modifiers a generated story choice carries (see
   /// [StoryChoice.huntName] and friends); [none] for an ordinary choice.
+  /// A choice marked [StoryChoice.hostFight] makes its fight one of the
+  /// last battles.
   factory EncounterModifiers.fromChoice(StoryChoice choice) {
+    final modifiers = EncounterModifiers._ofChoice(choice);
+    return choice.hostFight ? modifiers.copyWith(hostFight: true) : modifiers;
+  }
+
+  factory EncounterModifiers._ofChoice(StoryChoice choice) {
     if (choice.roadEvent == 'elite') {
       // A road's champion (road_events.dart): an Elite a quarter tougher
       // still, and an ambush when the party failed to slip past it.
