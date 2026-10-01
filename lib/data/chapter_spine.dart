@@ -11,12 +11,19 @@ class ChapterSpine {
 }
 
 const List<ChapterSpine> chapterSpines = [
+  // The casino and its first fight, the streets, the cannonball and the
+  // Inquisitor-General, the cloth under the trapdoor, the quay and the
+  // flying vessel, the crash in the Waste and the White Wells (v1.196).
   ChapterSpine(1, [
     {'100'},
+    {'105'},
     {'250'},
     {'400'},
+    {'470'},
     {'891'},
     {'960'},
+    {'1100'},
+    {'1200'},
   ]),
   ChapterSpine(2, [
     {'2001'},

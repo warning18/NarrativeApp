@@ -13,15 +13,16 @@ const Map<String, Map<String, String>> _acksEn = {
     '*': ' Someone kept pace with me the whole way down to the water, which '
         'I had not asked for and did not, when it came to it, mind.',
     'vess': ' Vess ran beside me without seeming to hurry, as though the '
-        'docks were somewhere she had already been and merely intended to '
+        'quay were somewhere she had already been and merely intended to '
         'arrive at again.',
   },
   '2001': {
-    '*': ' I was not, for once, the only one watching the shore burn from '
-        'the rail, and the company made the fire smaller.',
-    'vess': " Vess watched the fire with the flat attention of someone "
-        "comparing it to another. \"It goes out,\" she said. \"Eventually. "
-        "Everything I have watched burn has.\"",
+    '*': ' I was not, for once, the only one watching the walls come up out '
+        'of the haze, and the company made the city smaller.',
+    'vess': " Vess watched the white masks at the gate with the flat "
+        "attention of someone comparing them to others. \"They are "
+        "everywhere,\" she said. \"That is not the same as being "
+        "everything.\"",
   },
   '2015': {
     '*': ' Whoever was walking with me kept a hand near a weapon and an '
@@ -36,7 +37,7 @@ const Map<String, Map<String, String>> _acksEn = {
         'would have chosen, and one she would have avoided.',
   },
   '2900': {
-    '*': ' Whoever had come down to the berths with me looked at the Eel '
+    '*': ' Whoever had come down to the yards with me looked at the Eel '
         'the way I looked at her, and did not say what we were both '
         'thinking, which was that she was a great deal of boat to trust '
         'with a great deal of sea.',
@@ -65,8 +66,8 @@ const Map<String, Map<String, String>> _acksEn = {
         'anything, "or people stay. I have done the sum. I did not like it '
         'either."',
     'liora': ' Liora had gone up the mast and was looking past the wharf to '
-        'the Upper Tier, where the drums were, and counting something I did '
-        'not want to know the total of.',
+        'the landward gate, where the drums were, and counting something I '
+        'did not want to know the total of.',
     'vess': ' Vess stood at the gangway with her hood back so the wharf '
         'could see what she was, and the ones who stepped back from her '
         'were, she told me later, the ones she would have left.',
@@ -346,15 +347,15 @@ const Map<String, Map<String, String>> _acksFr = {
     '*': " Quelqu'un tint mon allure jusqu'à l'eau, ce que je n'avais pas "
         "demandé et qui, au bout du compte, ne me déplut pas.",
     'vess': " Vess courait à mes côtés sans paraître se presser, comme si "
-        "les quais étaient un endroit où elle était déjà allée et où elle "
+        "le quai était un endroit où elle était déjà allée et où elle "
         "comptait simplement arriver de nouveau.",
   },
   '2001': {
-    '*': " Je n'étais pas, pour une fois, seul à regarder brûler le rivage "
-        "depuis le bastingage, et la compagnie rendait le feu plus petit.",
-    'vess': " Vess regardait le feu avec l'attention plate de qui le compare "
-        "à un autre. « Il s'éteint, dit-elle. À la longue. Tout ce que j'ai "
-        "vu brûler s'est éteint. »",
+    '*': " Pour une fois, d'autres que moi regardaient les murs sortir de "
+        "la brume, et la compagnie rendait la ville plus petite.",
+    'vess': " Vess regardait les masques blancs à la porte avec l'attention "
+        "plate de qui les compare à d'autres. « Ils sont partout, dit-elle. "
+        "Ce n'est pas la même chose qu'être tout. »",
   },
   '2015': {
     '*': " Qui marchait avec moi gardait une main près d'une arme et un œil "
@@ -369,7 +370,7 @@ const Map<String, Map<String, String>> _acksFr = {
         "aurait choisis, et un qu'elle aurait évité.",
   },
   '2900': {
-    '*': " Qui était descendu aux mouillages avec moi regardait l'Eel comme "
+    '*': " Qui était descendu aux chantiers avec moi regardait l'Eel comme "
         "je le regardais, et ne disait pas ce que nous pensions tous deux, à "
         "savoir que c'était beaucoup de bateau à confier à beaucoup de mer.",
     'kelda': " « Il flotte, dit Kelda en frappant la coque du pied. Presque. "
@@ -397,7 +398,7 @@ const Map<String, Map<String, String>> _acksFr = {
         "demandé à personne, ou les gens restent. J'ai fait le compte. Il ne "
         "m'a pas plu non plus. »",
     'liora': " Liora était montée au mât et regardait par-delà le quai vers "
-        "l'Étage Supérieur, où étaient les tambours, et comptait quelque "
+        "la porte de la terre, où étaient les tambours, et comptait quelque "
         "chose dont je ne voulais pas connaître le total.",
     'vess': " Vess se tenait à la passerelle, capuche rabattue pour que le "
         "quai voie ce qu'elle était, et ceux qui reculèrent devant elle "

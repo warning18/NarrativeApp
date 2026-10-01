@@ -4439,5 +4439,239 @@
     "encounterText_fr": [
       "Un bras épais comme le grand mât glisse par-dessus le bastingage et tâte le pont en quête de quelque chose à saisir."
     ]
+  },
+  "den_bouncer": {
+    "enemyName": "The House's Bouncer",
+    "maxHealth": 44,
+    "damage": 8,
+    "guile": 0,
+    "weakTo": [],
+    "resists": [],
+    "xpReward": 30,
+    "goldReward": 8,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 15,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 1,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "description": "The Blind Beggar's back-room bouncer, paid to keep the tables honest and the till shut. Tonight he is only keeping the till.",
+    "description_fr": "Le videur de l’arrière-salle du Mendiant Aveugle, payé pour que les tables restent honnêtes et la caisse fermée. Cette nuit, il ne garde plus que la caisse.",
+    "enemyName_fr": "Le videur de la maison"
+  },
+  "den_looter": {
+    "enemyName": "Back-Room Looter",
+    "maxHealth": 44,
+    "damage": 8,
+    "guile": 0,
+    "weakTo": [],
+    "resists": [],
+    "xpReward": 30,
+    "goldReward": 8,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 15,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 1,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "description": "A looter who got to the gaming room before the fire did, working the rings off the fallen. He does not like to be interrupted.",
+    "description_fr": "Un pillard arrivé dans la salle de jeu avant le feu, qui arrache leurs bagues aux gens tombés. Il n’aime pas qu’on le dérange.",
+    "enemyName_fr": "Pillard de l’arrière-salle"
+  },
+  "sore_loser": {
+    "enemyName": "Sore Loser",
+    "maxHealth": 44,
+    "damage": 8,
+    "guile": 0,
+    "weakTo": [],
+    "resists": [],
+    "xpReward": 30,
+    "goldReward": 8,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 15,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 1,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "description": "A man who lost eleven silver to you an hour ago and has decided the blast was a sign. He wants his silver back, and the rest.",
+    "description_fr": "Un homme qui vous a perdu onze pièces d’argent il y a une heure et a décidé que l’explosion était un signe. Il veut récupérer son argent, et le reste.",
+    "enemyName_fr": "Mauvais perdant"
+  },
+  "wreck_scavenger": {
+    "enemyName": "Wreck Scavenger",
+    "maxHealth": 72,
+    "damage": 11,
+    "guile": 1,
+    "weakTo": [],
+    "resists": [],
+    "xpReward": 42,
+    "goldReward": 20,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 25
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 15,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 1,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "description": "One of the veiled scavengers who follow the storms across the Waste for whatever falls out of the sky, and strip it before it cools.",
+    "description_fr": "Un de ces charognards voilés qui suivent les tempêtes à travers la Désolation pour ce qui tombe du ciel, et le dépouillent avant qu’il refroidisse.",
+    "enemyName_fr": "Charognard d’épaves"
+  },
+  "aurel_vane": {
+    "enemyName": "Inquisitor-General Aurel Vane",
+    "maxHealth": 140,
+    "damage": 15,
+    "guile": 5,
+    "weakTo": [],
+    "resists": [
+      "Light"
+    ],
+    "xpReward": 90,
+    "goldReward": 40,
+    "lootTable": [
+      {
+        "itemID": "warden_signet",
+        "dropRate": 20
+      },
+      {
+        "itemID": "potion_major",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 18,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 1,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "The Lantern Unhooded",
+        "nameFr": "La Lanterne dévoilée",
+        "message": "Vane does not let go of her. He lifts the hooded lantern at his collar with the hand that holds the blade and pulls the hood away, and the light that comes out of it is not lamplight.",
+        "messageFr": "Vane ne la lâche pas. Il soulève la lanterne voilée à son col de la main qui tient la lame et en arrache le voile, et la lumière qui en sort n’est pas celle d’une lampe.",
+        "damageMultiplier": 1.2,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "radiant_judgment",
+            "condition": "Chance",
+            "requiredElement": "Light",
+            "chance": 40,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Inquisitor-General of the Lantern Dominion: white-robed, soft-spoken, a lantern hooded in black at his collar. He fights one-handed, because the other hand is holding your sister.",
+    "description_fr": "L’Inquisiteur général du Dominion de la Lanterne : vêtu de blanc, la voix douce, une lanterne voilée de noir au col. Il se bat d’une seule main, parce que l’autre tient votre sœur.",
+    "enemyName_fr": "Aurel Vane, Inquisiteur général"
   }
 }
