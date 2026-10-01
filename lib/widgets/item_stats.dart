@@ -92,6 +92,8 @@ List<String> itemTraitNotes(Map<String, dynamic>? item, AppLanguage lang,
   };
   final unique = uniqueEffectOf(item);
   final alignment = item?['alignment']?.toString() ?? '';
+  // French typography: a no-break space before the colon.
+  final colon = lang == AppLanguage.fr ? '\u00a0: ' : ': ';
   final alignedAttack = (item?['alignedAttackBonus'] as num?)?.toInt() ?? 0;
   final alignedArmor = (item?['alignedArmorBonus'] as num?)?.toInt() ?? 0;
   final alignedParts = [
@@ -99,15 +101,15 @@ List<String> itemTraitNotes(Map<String, dynamic>? item, AppLanguage lang,
     if (alignedArmor > 0) '${t('arm_abbrev')} +$alignedArmor',
   ];
   return [
-    if (scaling != null) '${t('scales_with_label')}: $scaling',
+    if (scaling != null) '${t('scales_with_label')}$colon$scaling',
     if (unique != null)
-      '${t('unique_label')}: ${t(uniqueEffectDescriptionKey(unique)).replaceAll('{v}', '${uniqueValueOf(item)}')}',
+      '${t('unique_label')}$colon${t(uniqueEffectDescriptionKey(unique)).replaceAll('{v}', '${uniqueValueOf(item)}')}',
     if (alignment.isNotEmpty)
       '${t('aligned_gear_label')} '
           '(${alignment == 'Good' ? t('alignment_good') : t('alignment_evil')})'
-          '${alignedParts.isEmpty ? '' : ': ${alignedParts.join(', ')}'}',
+          '${alignedParts.isEmpty ? '' : '$colon${alignedParts.join(', ')}'}',
     if (unmetRequirement != null && unmetRequirement.isNotEmpty)
-      '${t('stat_requirement_label')}: $unmetRequirement',
+      '${t('stat_requirement_label')}$colon$unmetRequirement',
   ];
 }
 

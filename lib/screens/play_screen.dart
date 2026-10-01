@@ -169,14 +169,14 @@ class PlayScreen extends ConsumerWidget {
               title: Text(tr(ref, 'character')),
               subtitle: Text(
                 '${tr(ref, 'level_abbrev')} ${session.level} · ${session.inventoryItemIds.length} '
-                '${tr(ref, 'item_count_label')} · ${session.skillPoints} ${tr(ref, 'skill_pt_label')} · '
+                '${tr(ref, 'item_count_label')} · ${session.pendingOffers.length} ${tr(ref, 'offer_count_label')} · '
                 '${session.statPoints} ${tr(ref, 'stat_pt_label')}',
               ),
-              // Spending stat/skill points is entirely manual and nothing else
+              // Spending stat points is entirely manual and nothing else
               // nudges toward it, so an unspent balance is easy to forget —
               // same badge treatment as the unseen-content sections below.
-              // A perk or a sign to choose, or Titan's Blood to spend, too
-              // (the Character tab's own badge, see tabBadgesProvider).
+              // An offer to choose, or Titan's Blood to spend, too (the
+              // Character tab's own badge, see tabBadgesProvider).
               trailing: ref.watch(tabBadgesProvider).character
                   ? Row(
                       mainAxisSize: MainAxisSize.min,
@@ -189,7 +189,7 @@ class PlayScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            '${session.statPoints + session.skillPoints}',
+                            '${session.statPoints + session.pendingOffers.length}',
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onError,
                               fontSize: 12,

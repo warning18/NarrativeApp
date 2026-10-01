@@ -56,8 +56,9 @@ extension _FightRewards on _FightScreenState {
       // The last fall feeds a kill-heal sign before the health is saved.
       final signLog = <_LogEntry>[];
       _feedSignKills(signLog, ref.read(appLanguageProvider));
-      // Signs (see signs.dart): a boss beaten brings one to choose; a
-      // hunt's quarry leaves a drop of Titan's Blood, an Elite sometimes.
+      // A boss beaten brings an offer from the clans (see offers.dart); a
+      // hunt's quarry leaves a drop of Titan's Blood (see signs.dart), an
+      // Elite sometimes.
       final bossBeaten = !widget.modifiers.isTest &&
           (widget.modifiers.isZoneBoss ||
               defeated.any((e) =>
@@ -189,6 +190,9 @@ extension _FightRewards on _FightScreenState {
       // Plunderer and Quick Study (level-up perks) add their share, and so
       // do the signs (a pact's curse takes some gold back while it runs).
       goldGain = _signs.scaleGold(_perks.scaleGold(goldGain));
+      // The Crow's Price: the gold stolen on the player's hits.
+      final stolen = _signs.crowsGold(_crowsHits);
+      goldGain += stolen;
       xpGain = _signs.scaleXp(_perks.scaleXp(xpGain));
 
       final lang = ref.read(appLanguageProvider);
@@ -227,7 +231,7 @@ extension _FightRewards on _FightScreenState {
       final signHeal = _signs.afterFightHeal(player.maxHealth);
       final leveledUp = await notifier.applyCombatResult(
         hpAfter: min(player.maxHealth, hpAfterSpoils + signHeal),
-        signPicks: bossBeaten ? 1 : 0,
+        bossOffers: bossBeaten ? 1 : 0,
         titanBlood: titanBlood,
         pactFight: !widget.modifiers.isTest,
         enemyIds: defeated.map((e) => e.enemyId).toList(),
@@ -328,6 +332,11 @@ extension _FightRewards on _FightScreenState {
                   .replaceAll('{n}', '${_signs.afterFightHealPercent}'),
               _LogKind.playerHeal));
         }
+        if (stolen > 0) {
+          _log.add(_LogEntry(
+              trFor(lang, 'sign_log_crows').replaceAll('{n}', '$stolen'),
+              _LogKind.victory));
+        }
         if (bossBeaten) {
           _log.add(_LogEntry(trFor(lang, 'sign_log_offer'), _LogKind.victory));
         }
@@ -337,11 +346,11 @@ extension _FightRewards on _FightScreenState {
         }
       });
       if (leveledUp) {
-        // The level-up dialog opens the sign offer once it closes.
+        // The level-up dialog opens the offer once it closes.
         final newLevel = ref.read(playerSessionProvider).level;
         showLevelUpDialog(context, ref, newLevel: newLevel);
       } else if (bossBeaten) {
-        showSignOfferIfWaiting(context, ref);
+        showOfferIfWaiting(context, ref);
       }
       _update(() => _settled = true);
     } else {

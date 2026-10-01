@@ -234,7 +234,34 @@ enum SignEffectKind {
   shipHullPercent,
   shipGunPercent,
   voyageCalm,
+
+  // v1.194: the clans' Sworn boons (factions.json `_newKinds`).
+  /// The first [SignEffect.value] enemy blows aimed at the player in a
+  /// fight are cancelled before they resolve (the Lantern's Writ).
+  writFace,
+
+  /// Each enemy's intent shows this many rounds further (Open Eyes).
+  intentLookahead,
+
+  /// The first [SignEffect.value] times a player strike meets an enemy's
+  /// raised guard in a fight, the whole guard breaks (the Compact edge).
+  compactEdge,
+
+  /// Gold stolen per hit the player lands, at most [crowsPriceMaxHits]
+  /// hits a fight (the Crow's Price).
+  crowsPrice,
+
+  /// The first [SignEffect.value] Curses laid on the player's die in a
+  /// fight are lifted at once (the Ember face).
+  emberFace,
+
+  /// Every Poison the player inflicts lasts this many more turns.
+  poisonExtraTurns,
 }
+
+/// The most hits a fight's Crow's Price steals on (see
+/// [SignEffectKind.crowsPrice]).
+const int crowsPriceMaxHits = 10;
 
 SignEffectKind? signEffectKindNamed(String? name) {
   for (final kind in SignEffectKind.values) {
@@ -249,6 +276,11 @@ const Set<SignEffectKind> _unscaledKinds = {
   SignEffectKind.mendCleanse,
   SignEffectKind.secondWind,
   SignEffectKind.strikeKeyword,
+  SignEffectKind.writFace,
+  SignEffectKind.intentLookahead,
+  SignEffectKind.compactEdge,
+  SignEffectKind.emberFace,
+  SignEffectKind.poisonExtraTurns,
 };
 
 /// Kinds whose value is itself a chance, capped at [signChanceCap] like a
@@ -1156,6 +1188,12 @@ class SignEffects {
     this.shipHullPercent = 0,
     this.shipGunPercent = 0,
     this.voyageCalm = 0,
+    this.writFace = 0,
+    this.intentLookahead = 0,
+    this.compactEdge = 0,
+    this.crowsPrice = 0,
+    this.emberFace = 0,
+    this.poisonExtraTurns = 0,
     this.enemyDamagePercent = 0,
     this.startHealthPercentLoss = 0,
     this.goldPercentLoss = 0,
@@ -1226,6 +1264,25 @@ class SignEffects {
   final int shipGunPercent;
   final int voyageCalm;
 
+  // The clans' Sworn boons (v1.194).
+  /// Enemy blows on the player cancelled per fight.
+  final int writFace;
+
+  /// Rounds of enemy intent shown past the next.
+  final int intentLookahead;
+
+  /// Enemy guards broken outright per fight.
+  final int compactEdge;
+
+  /// Gold stolen per hit the player lands (at most [crowsPriceMaxHits]).
+  final int crowsPrice;
+
+  /// Curses on the player's die lifted per fight.
+  final int emberFace;
+
+  /// Turns added to every Poison the player inflicts.
+  final int poisonExtraTurns;
+
   // Pacts still running.
   final int enemyDamagePercent;
   final int startHealthPercentLoss;
@@ -1279,6 +1336,12 @@ class SignEffects {
       shipHullPercent == 0 &&
       shipGunPercent == 0 &&
       voyageCalm == 0 &&
+      writFace == 0 &&
+      intentLookahead == 0 &&
+      compactEdge == 0 &&
+      crowsPrice == 0 &&
+      emberFace == 0 &&
+      poisonExtraTurns == 0 &&
       enemyDamagePercent == 0 &&
       startHealthPercentLoss == 0 &&
       goldPercentLoss == 0;
@@ -1395,17 +1458,33 @@ class SignEffects {
   /// A ship battle's max hull and a gun's damage.
   int shipHull(int maxHull) => _percent(maxHull, shipHullPercent);
   int shipGun(int damage) => _percent(damage, shipGunPercent);
+
+  /// [status] as the player inflicts it: a Poison runs
+  /// [poisonExtraTurns] longer.
+  StatusEffect playerInflicted(StatusEffect status) =>
+      poisonExtraTurns <= 0 || status.type != StatusEffectType.poison
+          ? status
+          : StatusEffect(
+              type: status.type,
+              remainingTurns: status.remainingTurns + poisonExtraTurns,
+              magnitude: status.magnitude);
+
+  /// The gold a fight's Crow's Price stole on [hits] hits landed.
+  int crowsGold(int hits) => crowsPrice * min(hits, crowsPriceMaxHits);
 }
 
 /// What [held] adds up to at [alignment] (see [SignEffects]): every gift
 /// that works now, scaled by its rarity and level, and every pact's curse
-/// still running.
+/// still running. [extra] are effects from elsewhere that use the same
+/// machinery, taken as written (v1.194: the titles worn and the clans'
+/// Sworn boons, see offers.dart's clanEffectsFor).
 SignEffects signEffectsFor(
   List<HeldSign> held,
   Map<String, SignDef> signs, {
   required int alignment,
+  List<SignEffect> extra = const [],
 }) {
-  if (held.isEmpty) return SignEffects.none;
+  if (held.isEmpty && extra.isEmpty) return SignEffects.none;
   var strikeDamagePercent = 0;
   var strikeFlat = 0;
   var strikeElement = '';
@@ -1448,6 +1527,12 @@ SignEffects signEffectsFor(
   var shipHull = 0;
   var shipGun = 0;
   var voyageCalm = 0;
+  var writFace = 0;
+  var intentLookahead = 0;
+  var compactEdge = 0;
+  var crowsPrice = 0;
+  var emberFace = 0;
+  var poisonExtraTurns = 0;
   var enemyDamage = 0;
   var startHealthLoss = 0;
   var goldLoss = 0;
@@ -1460,6 +1545,116 @@ SignEffects signEffectsFor(
     if (status == null || effect.chance <= 0) return;
     into.add(SignStatusChance(
         status: status, chance: effect.chance, signId: signId));
+  }
+
+  void add(SignEffect e, String sourceId) {
+    final v = e.value;
+    switch (e.kind) {
+      case SignEffectKind.strikeDamagePercent:
+        strikeDamagePercent += v;
+      case SignEffectKind.strikeFlat:
+        strikeFlat += v;
+      case SignEffectKind.strikeElement:
+        if (e.element.isNotEmpty && e.element != 'None') {
+          strikeElement = e.element;
+        }
+        strikeFlat += v;
+      case SignEffectKind.strikeStatus:
+        addStatus(strikeStatuses, e, sourceId);
+      case SignEffectKind.strikeKeyword:
+        final keyword = e.keyword;
+        if (keyword != null && signStrikeKeywords.contains(keyword)) {
+          strikeKeywords.add(keyword);
+        }
+      case SignEffectKind.guardBlockPercent:
+        guardBlockPercent += v;
+      case SignEffectKind.guardFlat:
+        guardFlat += v;
+      case SignEffectKind.guardHeal:
+        guardHeal += v;
+      case SignEffectKind.guardRetaliate:
+        guardRetaliate += v;
+      case SignEffectKind.guardStatus:
+        addStatus(guardStatuses, e, sourceId);
+      case SignEffectKind.mendPercent:
+        mendPercent += v;
+      case SignEffectKind.mendParty:
+        mendParty += v;
+      case SignEffectKind.mendShield:
+        mendShield += v;
+      case SignEffectKind.mendCleanse:
+        mendCleanse += v;
+      case SignEffectKind.manaFlat:
+        manaFlat += v;
+      case SignEffectKind.spellDamagePercent:
+        spellDamagePercent += v;
+      case SignEffectKind.spellCostLess:
+        spellCostLess += v;
+      case SignEffectKind.spellStatus:
+        addStatus(spellStatuses, e, sourceId);
+      case SignEffectKind.maxHealth:
+        maxHealth += v;
+      case SignEffectKind.armor:
+        armor += v;
+      case SignEffectKind.critChance:
+        critChance += v;
+      case SignEffectKind.dodgeChance:
+        dodgeChance += v;
+      case SignEffectKind.lifestealPercent:
+        lifesteal += v;
+      case SignEffectKind.thorns:
+        thorns += v;
+      case SignEffectKind.manaOnHit:
+        manaOnHit += v;
+      case SignEffectKind.maxMana:
+        maxMana += v;
+      case SignEffectKind.secondWind:
+        secondWind = true;
+      case SignEffectKind.potionBonus:
+        potionBonus += v;
+      case SignEffectKind.goldPercent:
+        goldPercent += v;
+      case SignEffectKind.xpPercent:
+        xpPercent += v;
+      case SignEffectKind.allyDamagePercent:
+        allyDamagePercent += v;
+      case SignEffectKind.stat:
+        if (signStatNames.contains(e.stat)) {
+          stats[e.stat] = (stats[e.stat] ?? 0) + v;
+        }
+      case SignEffectKind.partyStartBlock:
+        partyStartBlock += v;
+      case SignEffectKind.startMomentum:
+        startMomentum += v;
+      case SignEffectKind.lowHealthDamagePercent:
+        lowHealth += v;
+      case SignEffectKind.killHeal:
+        killHeal += v;
+      case SignEffectKind.afterFightHealPercent:
+        afterFightHeal += v;
+      case SignEffectKind.firstRoundDamagePercent:
+        firstRound += v;
+      case SignEffectKind.partyMaxHealthPercent:
+        partyMaxHealth += v;
+      case SignEffectKind.shipHullPercent:
+        shipHull += v;
+      case SignEffectKind.shipGunPercent:
+        shipGun += v;
+      case SignEffectKind.voyageCalm:
+        voyageCalm += v;
+      case SignEffectKind.writFace:
+        writFace += v;
+      case SignEffectKind.intentLookahead:
+        intentLookahead += v;
+      case SignEffectKind.compactEdge:
+        compactEdge += v;
+      case SignEffectKind.crowsPrice:
+        crowsPrice += v;
+      case SignEffectKind.emberFace:
+        emberFace += v;
+      case SignEffectKind.poisonExtraTurns:
+        poisonExtraTurns += v;
+    }
   }
 
   for (final h in held) {
@@ -1480,103 +1675,11 @@ SignEffects signEffectsFor(
     if (vowSilent(sign, alignment)) silentVows++;
     if (!signGiftActive(h, sign, alignment)) continue;
     for (final raw in sign.effects) {
-      final e = raw.scaled(h.rarity, h.level);
-      final v = e.value;
-      switch (e.kind) {
-        case SignEffectKind.strikeDamagePercent:
-          strikeDamagePercent += v;
-        case SignEffectKind.strikeFlat:
-          strikeFlat += v;
-        case SignEffectKind.strikeElement:
-          if (e.element.isNotEmpty && e.element != 'None') {
-            strikeElement = e.element;
-          }
-          strikeFlat += v;
-        case SignEffectKind.strikeStatus:
-          addStatus(strikeStatuses, e, sign.id);
-        case SignEffectKind.strikeKeyword:
-          final keyword = e.keyword;
-          if (keyword != null && signStrikeKeywords.contains(keyword)) {
-            strikeKeywords.add(keyword);
-          }
-        case SignEffectKind.guardBlockPercent:
-          guardBlockPercent += v;
-        case SignEffectKind.guardFlat:
-          guardFlat += v;
-        case SignEffectKind.guardHeal:
-          guardHeal += v;
-        case SignEffectKind.guardRetaliate:
-          guardRetaliate += v;
-        case SignEffectKind.guardStatus:
-          addStatus(guardStatuses, e, sign.id);
-        case SignEffectKind.mendPercent:
-          mendPercent += v;
-        case SignEffectKind.mendParty:
-          mendParty += v;
-        case SignEffectKind.mendShield:
-          mendShield += v;
-        case SignEffectKind.mendCleanse:
-          mendCleanse += v;
-        case SignEffectKind.manaFlat:
-          manaFlat += v;
-        case SignEffectKind.spellDamagePercent:
-          spellDamagePercent += v;
-        case SignEffectKind.spellCostLess:
-          spellCostLess += v;
-        case SignEffectKind.spellStatus:
-          addStatus(spellStatuses, e, sign.id);
-        case SignEffectKind.maxHealth:
-          maxHealth += v;
-        case SignEffectKind.armor:
-          armor += v;
-        case SignEffectKind.critChance:
-          critChance += v;
-        case SignEffectKind.dodgeChance:
-          dodgeChance += v;
-        case SignEffectKind.lifestealPercent:
-          lifesteal += v;
-        case SignEffectKind.thorns:
-          thorns += v;
-        case SignEffectKind.manaOnHit:
-          manaOnHit += v;
-        case SignEffectKind.maxMana:
-          maxMana += v;
-        case SignEffectKind.secondWind:
-          secondWind = true;
-        case SignEffectKind.potionBonus:
-          potionBonus += v;
-        case SignEffectKind.goldPercent:
-          goldPercent += v;
-        case SignEffectKind.xpPercent:
-          xpPercent += v;
-        case SignEffectKind.allyDamagePercent:
-          allyDamagePercent += v;
-        case SignEffectKind.stat:
-          if (signStatNames.contains(e.stat)) {
-            stats[e.stat] = (stats[e.stat] ?? 0) + v;
-          }
-        case SignEffectKind.partyStartBlock:
-          partyStartBlock += v;
-        case SignEffectKind.startMomentum:
-          startMomentum += v;
-        case SignEffectKind.lowHealthDamagePercent:
-          lowHealth += v;
-        case SignEffectKind.killHeal:
-          killHeal += v;
-        case SignEffectKind.afterFightHealPercent:
-          afterFightHeal += v;
-        case SignEffectKind.firstRoundDamagePercent:
-          firstRound += v;
-        case SignEffectKind.partyMaxHealthPercent:
-          partyMaxHealth += v;
-        case SignEffectKind.shipHullPercent:
-          shipHull += v;
-        case SignEffectKind.shipGunPercent:
-          shipGun += v;
-        case SignEffectKind.voyageCalm:
-          voyageCalm += v;
-      }
+      add(raw.scaled(h.rarity, h.level), sign.id);
     }
+  }
+  for (final effect in extra) {
+    add(effect, '');
   }
   return SignEffects(
     strikeDamagePercent: strikeDamagePercent,
@@ -1621,6 +1724,12 @@ SignEffects signEffectsFor(
     shipHullPercent: shipHull,
     shipGunPercent: shipGun,
     voyageCalm: min(signChanceCap, voyageCalm),
+    writFace: writFace,
+    intentLookahead: intentLookahead,
+    compactEdge: compactEdge,
+    crowsPrice: crowsPrice,
+    emberFace: emberFace,
+    poisonExtraTurns: poisonExtraTurns,
     enemyDamagePercent: enemyDamage,
     startHealthPercentLoss: startHealthLoss,
     goldPercentLoss: goldLoss,

@@ -31,9 +31,17 @@ PlayerSession _session([Map<String, dynamic> fields = const {}]) =>
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
-  test('points to spend: stat or skill points', () {
+  test('points to spend: stat points, or an offer waiting', () {
     expect(hasPointsToSpend(_session()), isFalse);
     expect(hasPointsToSpend(_session({'statPoints': 1})), isTrue);
+    expect(
+        hasPointsToSpend(_session({
+          'pendingOffers': [
+            {'source': 'level'},
+          ],
+        })),
+        isTrue);
+    // An old save's unspent skill points are offers now.
     expect(hasPointsToSpend(_session({'skillPoints': 2})), isTrue);
   });
 

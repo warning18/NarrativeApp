@@ -7,6 +7,7 @@ import '../combat/gear_effects.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../models/ally_state.dart';
+import 'perks.dart';
 import 'signs.dart';
 
 /// A fight model for the in-app playthrough simulator: one simulated
@@ -26,7 +27,11 @@ import 'signs.dart';
 ///   turn and nothing else changes), no Luck nudges and no Hammersmith
 ///   work on the die;
 /// - of the signs (see signs.dart), everything but momentum and the
-///   party's share (there is no party); no Titan's Blood;
+///   party's share (there is no party); no Titan's Blood; of the clans'
+///   Sworn boons (v1.194) the Writ, the Compact edge, the Crow's Price and
+///   the longer poisons (no Curse and no telegraph to read here);
+/// - of the perks (see perks.dart), what lays over the gear, Vigor's
+///   health, the potions' and the mana's (no rerolls, momentum or party);
 /// - no crit/momentum beyond what the engine rolls, and a die rerolled
 ///   only on an empty face;
 /// - a shop visited once when the story unlocks it (best affordable gear
@@ -172,7 +177,7 @@ class SimCharacter {
   /// them, a fight reads what they add up to.
   List<HeldSign> heldSigns = [];
 
-  /// A sign's extra mana, while a fight lasts.
+  /// A sign's (or a perk's) extra mana, while a fight lasts.
   int signMaxMana = 0;
 
   // Run-wide tallies.
@@ -410,10 +415,14 @@ class SimFightOutcome {
     required this.manaGained,
     required this.potionsUsed,
     this.phasesEntered = 0,
+    this.goldStolen = 0,
   });
 
   final bool won;
   final int rounds;
+
+  /// The Crow's Price's take (see SignEffects.crowsGold), won or lost.
+  final int goldStolen;
 
   /// Boss phases the enemies crossed this fight.
   final int phasesEntered;
@@ -505,7 +514,7 @@ class _SimEnemy {
 /// loss the character is healed and refilled like `applyCombatResult` on
 /// a loss; XP and gold are the caller's to grant on a win. [signs] is what
 /// the character's held signs add up to (see signEffectsFor): lent for
-/// the fight and taken back when it ends.
+/// the fight and taken back when it ends; [perks] what the perk ranks do.
 SimFightOutcome simulateSimFight({
   required SimCharacter character,
   required List<MapEntry<String, Map<String, dynamic>>> enemies,
@@ -517,10 +526,17 @@ SimFightOutcome simulateSimFight({
   int newGamePlusCycle = 0,
   int maxRounds = 80,
   SignEffects signs = SignEffects.none,
+  PerkEffects perks = PerkEffects.none,
 }) {
   final c = character;
   final s = signs;
-  final gear = s.over(c.gearEffects(items, itemSets));
+  final gear = s.over(perks.over(c.gearEffects(items, itemSets)));
+  // The Sworn boons: blows the Writ still cancels, guards the Compact
+  // edge still breaks, hits the Crow's Price has stolen on.
+  var writ = s.writFace;
+  var edge = s.compactEdge;
+  var crowsHits = 0;
+  final lending = !s.isEmpty || perks.maxMana > 0;
   var secondWindAvailable = gear.secondWind;
   var phasesEntered = 0;
   // The signs' lend for the fight: its stats, a higher max health (full
@@ -535,7 +551,7 @@ SimFightOutcome simulateSimFight({
     c.luck += sign * s.stat('luck');
   }
 
-  if (!s.isEmpty) {
+  if (lending) {
     lendStats(1);
     c.maxHealth = s.maxHealthFor(baseMaxHealth);
     c.currentHealth = s.afterStartCurse(
@@ -545,7 +561,7 @@ SimFightOutcome simulateSimFight({
             fightMax: c.maxHealth),
         c.maxHealth);
     final full = c.mana >= c.maxMana;
-    c.signMaxMana = s.maxMana;
+    c.signMaxMana = s.maxMana + perks.maxMana;
     if (full) c.mana = c.maxMana;
   }
   final packMultiplier = _packStatMultipliers[enemies.length] ?? 1.0;
@@ -606,7 +622,8 @@ SimFightOutcome simulateSimFight({
   void rollStatuses(List<SignStatusChance> chances, _SimEnemy e) {
     for (final chance in chances) {
       if (!e.isAlive || !chance.rolls(random)) continue;
-      e.statusEffects = applyStatusEffect(e.statusEffects, chance.status);
+      e.statusEffects =
+          applyStatusEffect(e.statusEffects, s.playerInflicted(chance.status));
     }
   }
 
@@ -618,7 +635,7 @@ SimFightOutcome simulateSimFight({
   }
 
   SimFightOutcome finish(bool won) {
-    if (!s.isEmpty) {
+    if (lending) {
       lendStats(-1);
       final fightMax = c.maxHealth;
       c.maxHealth = baseMaxHealth;
@@ -648,6 +665,7 @@ SimFightOutcome simulateSimFight({
       manaGained: manaGained,
       potionsUsed: potionsUsed,
       phasesEntered: phasesEntered,
+      goldStolen: s.crowsGold(crowsHits),
     );
   }
 
@@ -669,8 +687,8 @@ SimFightOutcome simulateSimFight({
     if (c.currentHealth < 0.4 * c.maxHealth && c.potions > 0) {
       c.potions--;
       potionsUsed++;
-      c.currentHealth =
-          min(c.maxHealth, c.currentHealth + _potionHeal + s.potionBonus);
+      c.currentHealth = min(c.maxHealth,
+          c.currentHealth + _potionHeal + s.potionBonus + perks.potionBonus);
     }
 
     var block = _castSpellIfWorth(c, ens, items, random, casts,
@@ -753,9 +771,19 @@ SimFightOutcome simulateSimFight({
             painCost(maxHealth: c.maxHealth, currentHealth: c.currentHealth);
       }
       final target = firstLiving();
+      // The Compact edge breaks a raised guard outright, while it lasts.
+      if (target != null &&
+          dealt > 0 &&
+          edge > 0 &&
+          target.guard > 0 &&
+          !face.hasKeyword(FaceKeyword.pierce)) {
+        edge--;
+        target.guard = 0;
+      }
       if (target != null && dealt > 0) {
         final landed = target.takeHit(dealt, element,
             pierce: face.hasKeyword(FaceKeyword.pierce));
+        if (landed > 0) crowsHits++;
         target.health = max(0, target.health - landed);
         bestHit = max(bestHit, landed);
         if (element != 'None') target.elementsHit.add(element);
@@ -781,8 +809,8 @@ SimFightOutcome simulateSimFight({
       }
       final inflicted = result.inflictedStatus;
       if (target != null && inflicted != null && target.isAlive) {
-        target.statusEffects =
-            applyStatusEffect(target.statusEffects, inflicted);
+        target.statusEffects = applyStatusEffect(
+            target.statusEffects, s.playerInflicted(inflicted));
       }
       // A mend sign turns healing past full into block, and lifts
       // afflictions.
@@ -886,6 +914,12 @@ SimFightOutcome simulateSimFight({
           case EnemyIntent.attack:
             break;
         }
+        e.statusEffects = tickStatusEffects(e.statusEffects);
+        continue;
+      }
+      // The Lantern's Writ cancels the first blows outright.
+      if (writ > 0) {
+        writ--;
         e.statusEffects = tickStatusEffects(e.statusEffects);
         continue;
       }
@@ -1052,7 +1086,8 @@ int _castSpellIfWorth(
       e.health = max(0, e.health - e.takeHit(amount, spell.element));
       if (spell.element != 'None') e.elementsHit.add(spell.element);
       if (status != null && e.isAlive) {
-        e.statusEffects = applyStatusEffect(e.statusEffects, status);
+        e.statusEffects =
+            applyStatusEffect(e.statusEffects, signs.playerInflicted(status));
       }
       // A spell sign's status, on every enemy the spell reaches.
       for (final chance in signs.spellStatuses) {

@@ -1,18 +1,26 @@
 // The skill tree: each class has three branches to grow along, and each
-// race a heritage branch. A branch's skills are learned in order, the
-// deeper the dearer (see [branchSkillPointCosts]); completing a class
-// branch lets the character master it, and only one branch is ever
-// mastered -- the specialisation. A mastered branch's skills fight one tier
-// above their own. A run earns about as many points as two branches, the
-// heritage and a mastery take, so the third branch is a choice.
+// race a heritage branch. A branch's skills are learned in order;
+// completing a class branch lets the character master it, and only one
+// branch is ever mastered -- the specialisation. A mastered branch's
+// skills fight one tier above their own.
 //
-// Companions stay simpler: they learn their own class's skills, in any
-// order, and nothing else (see [allySkillIds]).
+// Since v1.194 the player learns no skill with points: the clans offer
+// them, each branch sponsored by a faction (see offers.dart), deeper as
+// standing grows; mastery costs skill essence. The point costs below stay
+// for the playthrough simulator's comparison with the old rules.
+//
+// Companions stay simpler: they learn their own class's skills with their
+// own points, in any order, and nothing else (see [allySkillIds]).
 
 import 'dart:math';
 
-/// Skill points it costs to master a completed branch.
+/// Skill points it cost to master a completed branch, before v1.194 (the
+/// simulator's old rules).
 const int branchMasteryCost = 2;
+
+/// Skill essence it costs to master a completed branch (v1.194): about
+/// the essence of the two levels its two points took before.
+const int branchMasteryEssenceCost = 2000;
 
 /// Tiers a mastered branch adds to each of its skills in a fight.
 const int branchMasteryTierBonus = 1;
@@ -170,17 +178,18 @@ bool branchComplete(SkillBranch branch, Set<String> known) =>
     branch.skillIds.every(known.contains);
 
 /// Whether [branch] can be mastered now: a class branch, every skill on it
-/// known, no branch mastered yet, and the points to spend.
+/// known, no branch mastered yet, and the essence to spend
+/// ([branchMasteryEssenceCost]).
 bool canMasterBranch(
   SkillBranch branch, {
   required Set<String> known,
   required String masteredBranchId,
-  required int skillPoints,
+  required int essence,
 }) =>
     !branch.heritage &&
     masteredBranchId.isEmpty &&
     branchComplete(branch, known) &&
-    skillPoints >= branchMasteryCost;
+    essence >= branchMasteryEssenceCost;
 
 /// The tiers skills fight at: their own ([tiers]), one higher on the
 /// mastered branch.

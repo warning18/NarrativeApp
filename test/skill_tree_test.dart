@@ -1,6 +1,8 @@
 // The skill tree: three branches per class learned in order, a heritage
-// branch per race, one mastery per character that lifts its branch a
-// tier; companions keep to their own class's skills.
+// branch per race, one mastery per character (bought with essence since
+// v1.194) that lifts its branch a tier; the clans offer the player's
+// skills, each branch sponsored by one; companions keep to their own
+// class's skills.
 import 'dart:convert';
 import 'dart:io';
 
@@ -132,18 +134,6 @@ void main() {
       expect(skillPointCostOf('zealous_conviction', branches), 1);
     });
 
-    test('learning spends the cost, and waits when the points are short',
-        () async {
-      final notifier = await notifierWith(baseSession(skillPoints: 2));
-      await notifier.unlockSkill('warrior_execute', cost: 3);
-      expect(
-          notifier.state.unlockedSkillIds, isNot(contains('warrior_execute')));
-      expect(notifier.state.skillPoints, 2);
-      await notifier.unlockSkill('warrior_whirlwind', cost: 2);
-      expect(notifier.state.unlockedSkillIds, contains('warrior_whirlwind'));
-      expect(notifier.state.skillPoints, 0);
-    });
-
     test('a whole tree costs more than a run earns', () {
       // Two full class branches, the heritage and a mastery fit in about
       // twenty points; the third branch is a choice.
@@ -160,20 +150,21 @@ void main() {
     final vanguard = branches.firstWhere((b) => b.id == 'warrior_vanguard');
     final heritage = branches.firstWhere((b) => b.heritage);
 
-    test('a whole class branch, the points, and no other mastery', () {
+    test('a whole class branch, the essence, and no other mastery', () {
       final all = vanguard.skillIds.toSet();
-      bool can(Set<String> known, String mastered, int points) =>
+      bool can(Set<String> known, String mastered, int essence) =>
           canMasterBranch(vanguard,
-              known: known, masteredBranchId: mastered, skillPoints: points);
-      expect(can(all, '', 2), isTrue);
-      expect(can(all.skip(1).toSet(), '', 2), isFalse);
-      expect(can(all, '', 1), isFalse);
-      expect(can(all, 'warrior_bulwark', 5), isFalse);
+              known: known, masteredBranchId: mastered, essence: essence);
+      const cost = branchMasteryEssenceCost;
+      expect(can(all, '', cost), isTrue);
+      expect(can(all.skip(1).toSet(), '', cost), isFalse);
+      expect(can(all, '', cost - 1), isFalse);
+      expect(can(all, 'warrior_bulwark', cost * 3), isFalse);
       expect(
           canMasterBranch(heritage,
               known: heritage.skillIds.toSet(),
               masteredBranchId: '',
-              skillPoints: 9),
+              essence: cost * 3),
           isFalse);
     });
 
@@ -188,16 +179,20 @@ void main() {
       expect(effectiveSkillTiers(const {'a': 1}, trees, ''), {'a': 1});
     });
 
-    test('masterBranch spends the points once, and a save keeps it', () async {
-      final notifier = await notifierWith(baseSession(skillPoints: 5));
-      await notifier.masterBranch('warrior_vanguard', cost: branchMasteryCost);
+    test('masterBranch spends the essence once, and a save keeps it', () async {
+      final notifier = await notifierWith(baseSession(skillEssence: 5000));
+      await notifier.masterBranch('warrior_vanguard');
       expect(notifier.state.masteredBranchId, 'warrior_vanguard');
-      expect(notifier.state.skillPoints, 3);
-      await notifier.masterBranch('warrior_bulwark', cost: branchMasteryCost);
+      expect(notifier.state.skillEssence, 5000 - branchMasteryEssenceCost);
+      await notifier.masterBranch('warrior_bulwark');
       expect(notifier.state.masteredBranchId, 'warrior_vanguard');
-      expect(notifier.state.skillPoints, 3);
+      expect(notifier.state.skillEssence, 5000 - branchMasteryEssenceCost);
       expect(PlayerSession.fromJson(notifier.state.toJson()).masteredBranchId,
           'warrior_vanguard');
+      // Short of essence: no mastery.
+      final poor = await notifierWith(baseSession(skillEssence: 10));
+      await poor.masterBranch('warrior_vanguard');
+      expect(poor.state.masteredBranchId, isEmpty);
     });
   });
 
@@ -211,7 +206,7 @@ void main() {
     expect(rogue, isNot(contains('human_resolve')));
   });
 
-  testWidgets('the tree learns a skill, then the next; My skills filters',
+  testWidgets('the tree names who offers each skill; My skills filters',
       (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
@@ -235,19 +230,30 @@ void main() {
         .loadSession(PlayerSession.fromJson({
           'raceId': 'human',
           'professionId': 'warrior',
-          'skillPoints': 2,
+          'pendingOffers': [
+            {'source': 'level'},
+          ],
           'unlockedSkillIds': ['warrior_shield_bash', 'human_resolve'],
         })));
     await _settle(tester);
 
+    // No points to spend: the purse says what waits from the clans.
+    expect(find.byKey(const Key('purse_points')), findsNothing);
+    expect(find.byKey(const Key('purse_offers')), findsOneWidget);
     expect(find.byKey(const Key('branch_warrior_vanguard')), findsOneWidget);
+    // Vanguard is the Dominion's: its skills say so on the tree.
+    expect(
+        tester
+            .widget<Text>(find.byKey(const Key('tree_sponsor_power_strike')))
+            .data,
+        'Dominion');
     await tester.tap(find.byKey(const Key('tree_node_power_strike')));
     await _settle(tester);
-    await tester.tap(find.byKey(const Key('tree_learn')));
+    expect(find.byKey(const Key('tree_learn')), findsNothing);
+    expect(find.text('Offered by the Lantern Dominion'), findsOneWidget);
+    Navigator.of(tester.element(find.byKey(const Key('skill_offered_by'))))
+        .pop();
     await _settle(tester);
-    var s = container.read(playerSessionProvider);
-    expect(s.unlockedSkillIds, contains('power_strike'));
-    expect(s.skillPoints, 1);
 
     // Execute waits for the two before it.
     await tester.pump(const Duration(seconds: 3));

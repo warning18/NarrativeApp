@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/data/offers.dart';
 import 'package:narrative_data_app/data/settlements.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/gamedata/db_schema.dart';
@@ -114,7 +115,8 @@ void main() {
       await notifier.buyItem('last_lantern', 'tome_of_mastery', 200, 1,
           item: _items['tome_of_mastery'] as Map<String, dynamic>);
       expect(notifier.state.gold, 300);
-      expect(notifier.state.skillPoints, 1);
+      // A Tome of Mastery brings an offer from the clans (v1.194).
+      expect(notifier.state.pendingOffers.single.source, OfferSource.tome);
       expect(notifier.state.inventoryItemIds, isEmpty);
     });
 

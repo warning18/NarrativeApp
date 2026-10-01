@@ -8,33 +8,18 @@ import '../gamedata/db_schema.dart';
 import 'camp_presence_provider.dart';
 import 'game_db_providers.dart';
 import 'player_session_provider.dart';
-import 'signs_provider.dart';
 
-/// Stat or skill points waiting to be spent on the character sheet, or a
-/// level-up perk waiting to be chosen.
+/// Stat points waiting to be spent on the character sheet, or an offer
+/// from the clans waiting to be chosen (see offers.dart: the Wayfarer can
+/// always come, so an offer due is one to choose).
 bool hasPointsToSpend(PlayerSession session) =>
-    session.statPoints + session.skillPoints + session.pendingPerkPicks > 0;
+    session.statPoints > 0 || session.pendingOffers.isNotEmpty;
 
-/// A sign waiting on the character sheet (see signs.dart): an offer to
-/// choose from, when some patron has one to make, or Titan's Blood with a
-/// held sign it can still raise.
-bool hasSignWaiting(
-  PlayerSession session, {
-  required Map<String, Patron> patrons,
-  required Map<String, SignDef> signs,
-}) =>
-    (session.titanBlood > 0 &&
-        session.heldSigns.any((h) => h.level < maxSignLevel)) ||
-    (session.pendingSignPicks > 0 &&
-        (session.signOffer != null ||
-            anyPatronCanOffer(
-              patrons: patrons,
-              signs: signs,
-              held: session.heldSigns,
-              flags: session.flags,
-              alignment: session.alignmentScore,
-              patronsThisLife: session.signPatronsThisLife,
-            )));
+/// Titan's Blood waiting on the character sheet, with a held sign it can
+/// still raise (see signs.dart).
+bool hasSignWaiting(PlayerSession session) =>
+    session.titanBlood > 0 &&
+    session.heldSigns.any((h) => h.level < maxSignLevel);
 
 /// The houses whose Build button is live: on offer (an ally's own hall
 /// once they have joined), not built yet, their required flags met, and
@@ -94,10 +79,7 @@ final tabBadgesProvider = Provider<TabBadges>((ref) {
   final houses = ref.watch(gameDbProvider(housesSchema)).value ?? const {};
   final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
   return TabBadges(
-    character: hasPointsToSpend(session) ||
-        hasSignWaiting(session,
-            patrons: ref.watch(patronsProvider),
-            signs: ref.watch(signDefsProvider)),
+    character: hasPointsToSpend(session) || hasSignWaiting(session),
     camp: atCamp && affordableHouseIds(session, houses).isNotEmpty,
     readyQuestCount: questsReadyToTurnIn(session, quests).length,
   );

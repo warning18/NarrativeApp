@@ -232,6 +232,29 @@ void main() {
       expect(state.standingOf('blue', _data), 60);
     });
 
+    test('only a clan is ever sworn: the Choir and a tribe stop at 60', () {
+      expect(canBeSworn('red', _data), isTrue);
+      expect(canBeSworn('choir', _data), isFalse);
+      expect(canBeSworn('tribe', _data), isFalse);
+      var state = _change(PoliticsState.empty, 'choir', 90).state;
+      expect(state.swornFactionId, '');
+      expect(state.standingOf('choir', _data), swornOthersCap);
+      expect(state.tierOf('choir', _data), StandingTier.trusted);
+      state = setStandingValue(state, 'tribe', 100, 'edit', data: _data).state;
+      expect(state.swornFactionId, '');
+      expect(state.standingOf('tribe', _data), swornOthersCap);
+      // A clan still swears beside them.
+      state = _change(state, 'red', 70).state;
+      expect(state.swornFactionId, 'red');
+      // A save from before the rule, with the Choir sworn, is released.
+      final old = const PoliticsState(
+          standings: {'choir': 80}, swornFactionId: 'choir');
+      final fixed = _change(old, 'gold', 1);
+      expect(fixed.state.swornFactionId, '');
+      expect(fixed.released, 'choir');
+      expect(fixed.state.standingOf('choir', _data), swornOthersCap);
+    });
+
     test('Edit Mode sets a value with no ripple, the banner still holds', () {
       var state =
           setStandingValue(PoliticsState.empty, 'red', 40, 'edit', data: _data)

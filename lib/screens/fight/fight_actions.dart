@@ -202,7 +202,8 @@ extension _FightActions on _FightScreenState {
       if (status != null && enemy.isAlive) {
         _fx(styleForStatus(status.type), _enemyCardKey(enemy.key),
             delayMs: fxDelay + 350);
-        enemy.statusEffects = applyStatusEffect(enemy.statusEffects, status);
+        enemy.statusEffects = applyStatusEffect(
+            enemy.statusEffects, _signs.playerInflicted(status));
         entries.add(_LogEntry(
           _statusInflictedMessage(status, enemy.displayName, lang),
           _LogKind.info,

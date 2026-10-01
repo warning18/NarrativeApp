@@ -2404,6 +2404,14 @@ final DbSchema factionsSchema = DbSchema(
     ),
     FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
     FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(
+      key: 'short',
+      label: 'Short name',
+      type: FieldType.text,
+      help: 'One word, for an offer\'s standing preview: Compact, Mire.',
+    ),
+    FieldSchema(
+        key: 'short_fr', label: 'Short name (FR)', type: FieldType.text),
     FieldSchema(key: 'motto', label: 'Motto', type: FieldType.text),
     FieldSchema(key: 'motto_fr', label: 'Motto (FR)', type: FieldType.text),
     FieldSchema(

@@ -50,7 +50,6 @@ PlayerSession _session({
     perception: 0,
     potionCount: 0,
     statPoints: 0,
-    skillPoints: 0,
     maxSkillSlots: 3,
     flags: const [],
     activeQuestIds: const [],

@@ -241,9 +241,15 @@ class _StoryView extends ConsumerWidget {
       }
     });
 
-    // A new chapter reached: its title card, a moment over the story.
-    ref.listen<int>(reachedChapterProvider, (previous, next) {
+    // A new chapter reached: the clans' offer it brings (see offers.dart,
+    // once a chapter), and its title card, a moment over the story, saying
+    // so; the Character tab's badge keeps the offer.
+    ref.listen<int>(reachedChapterProvider, (previous, next) async {
       if (previous == null || next <= previous) return;
+      final offered = await ref
+          .read(playerSessionProvider.notifier)
+          .grantChapterOffer(next);
+      if (!context.mounted) return;
       final loop = ref
           .read(chapterLoopsProvider)
           .where((l) => l.chapter == next)
@@ -252,7 +258,8 @@ class _StoryView extends ConsumerWidget {
       showChapterCard(context,
           number: loop.label.isEmpty ? '$next' : loop.label,
           title: loop.title,
-          colour: InkColors.of(context).ember);
+          colour: InkColors.of(context).ember,
+          note: offered ? tr(ref, 'offer_chapter_note') : null);
     });
 
     // Kept loaded for the party's reactions to a choice (see approval.dart),

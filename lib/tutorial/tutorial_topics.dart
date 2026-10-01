@@ -80,8 +80,9 @@ enum TutorialTopic {
     TutorialStep('tut_levelUp_1', target: 'levelUp.points'),
     TutorialStep('tut_levelUp_2', target: 'levelUp.stats'),
   ]),
-  // The first sign offer (see sign_offer_dialog.dart): the patron, the
-  // three cards, and what becomes of signs.
+  // The first offer from the clans (see offer_dialog.dart; the topic was
+  // the first sign offer's until v1.194): who comes, the cards and the
+  // standing they move, and what becomes of signs.
   signs(Icons.draw_outlined, steps: [
     TutorialStep('tut_signs_1', target: 'signs.patron'),
     TutorialStep('tut_signs_2', target: 'signs.cards'),

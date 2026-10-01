@@ -13,6 +13,7 @@ import '../../gamedata/db_schema.dart';
 import '../../l10n/app_locale.dart';
 import '../../l10n/app_strings.dart';
 import '../../models/ally_state.dart';
+import '../../providers/clans_provider.dart';
 import '../../providers/game_db_providers.dart';
 import '../../providers/player_session_provider.dart';
 import '../../theme/stitched_ink.dart';
@@ -36,6 +37,7 @@ SkillsModel? watchSkillsModel(WidgetRef ref, String? allyId) {
       session: session,
       skills: skills,
       trees: ref.watch(localizedDbProvider(skillTreesSchema)).value ?? const {},
+      clans: ref.watch(clanDataProvider),
     );
   }
   final companions =
@@ -58,16 +60,32 @@ String costLabel(WidgetRef ref, int points) => points == 1
     ? tr(ref, 'cost_pt_one')
     : tr(ref, 'cost_pt_many').replaceAll('{n}', '$points');
 
-/// Learns [id] with points (the player's own tree cost, or one of a
-/// companion's), with sparks and a notice.
+/// "Offered by the Cinder Compact": who offers [entry], the player's skill
+/// not yet known (see offers.dart); a line saying none does when no clan
+/// sponsors it.
+String offeredByLine(WidgetRef ref, SkillEntry entry) {
+  final data = ref.watch(clanDataProvider);
+  final lang = ref.watch(appLanguageProvider);
+  final names = [
+    for (final id in entry.sponsors)
+      if (data.faction(id) case final faction?)
+        _lowerFirst(faction.nameFor(lang)),
+  ];
+  return names.isEmpty
+      ? tr(ref, 'skill_no_sponsor')
+      : tr(ref, 'skill_offered_by').replaceAll('{clan}', names.join(' · '));
+}
+
+String _lowerFirst(String text) =>
+    text.isEmpty ? text : text[0].toLowerCase() + text.substring(1);
+
+/// Learns [id] for companion [allyId] with one of their own points, with
+/// sparks and a notice (the player's skills come from the clans' offers).
 Future<void> learnSkill(BuildContext context, WidgetRef ref, String id,
     {String? allyId, required int cost}) async {
   final notifier = ref.read(playerSessionProvider.notifier);
-  if (allyId != null) {
-    await notifier.unlockAllySkill(allyId, id);
-  } else {
-    await notifier.unlockSkill(id, cost: cost);
-  }
+  if (allyId == null) return;
+  await notifier.unlockAllySkill(allyId, id);
   if (!context.mounted) return;
   final lang = ref.read(appLanguageProvider);
   showBurst(context,
@@ -471,13 +489,32 @@ class _Action extends ConsumerWidget {
       case SkillStatus.locked:
         final after = entry.after;
         if (after != null) {
-          return note(tr(ref, 'skill_after_label')
-              .replaceAll('{skill}', skillDisplayName(after, language: lang)));
+          final afterLine = tr(ref, 'skill_after_label')
+              .replaceAll('{skill}', skillDisplayName(after, language: lang));
+          return note(model.isPlayer
+              ? '$afterLine\n${offeredByLine(ref, entry)}'
+              : afterLine);
         }
         final min = entry.record['requiredAlignmentMin'];
         return note('${tr(ref, 'reserved_prefix')}: '
             '${min != null ? tr(ref, 'good_aligned_label') : tr(ref, 'evil_aligned_label')}');
       case SkillStatus.ready:
+        // The player's skills come from the clans' offers.
+        if (model.isPlayer) {
+          return Column(
+            key: const Key('skill_offered_by'),
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              note(offeredByLine(ref, entry)),
+              const SizedBox(height: 2),
+              Text(
+                tr(ref, 'skill_offers_note'),
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
+              ),
+            ],
+          );
+        }
         final points = entry.cost;
         final have = model.skillPoints;
         return FilledButton.icon(
@@ -549,7 +586,7 @@ Future<void> showMasterySheet(
               const SizedBox(height: 8),
               Text(
                 tr(ref, 'mastery_body')
-                    .replaceAll('{cost}', '$branchMasteryCost'),
+                    .replaceAll('{cost}', '$branchMasteryEssenceCost'),
                 style: theme.textTheme.bodySmall,
               ),
               const SizedBox(height: 16),
@@ -565,7 +602,7 @@ Future<void> showMasterySheet(
                           Navigator.of(sheetContext).pop();
                           ref
                               .read(playerSessionProvider.notifier)
-                              .masterBranch(branch.id, cost: branchMasteryCost);
+                              .masterBranch(branch.id);
                           showImmersiveNotice(
                             context,
                             icon: Icons.star,
@@ -576,7 +613,7 @@ Future<void> showMasterySheet(
                       : null,
                   icon: const Icon(Icons.star),
                   label: Text(tr(ref, 'mastery_button')
-                      .replaceAll('{cost}', '$branchMasteryCost')),
+                      .replaceAll('{cost}', '$branchMasteryEssenceCost')),
                 ),
             ],
           ),

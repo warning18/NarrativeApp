@@ -5,6 +5,7 @@ import '../data/signs.dart';
 import '../gamedata/db_schema.dart';
 import 'clans_provider.dart';
 import 'game_db_providers.dart';
+import 'offers_provider.dart';
 import 'player_session_provider.dart';
 
 /// The patrons are the factions (factions.json, see clans_provider.dart),
@@ -20,12 +21,13 @@ final signDefsProvider = Provider<Map<String, SignDef>>((ref) =>
     parseSigns(ref.watch(gameDbProvider(signsSchema)).value ?? const {}));
 
 /// What the character's held signs add up to right now (see
-/// signEffectsFor): a fight, a voyage and a ship battle read it once as
-/// they start.
+/// signEffectsFor), with the title worn and the Sworn boon (see
+/// clanEffectsProvider): a fight, a voyage and a ship battle read it once
+/// as they start.
 final signEffectsProvider = Provider<SignEffects>((ref) {
   final held = ref.watch(playerSessionProvider.select((s) => s.heldSigns));
   final alignment =
       ref.watch(playerSessionProvider.select((s) => s.alignmentScore));
   return signEffectsFor(held, ref.watch(signDefsProvider),
-      alignment: alignment);
+      alignment: alignment, extra: ref.watch(clanEffectsProvider));
 });

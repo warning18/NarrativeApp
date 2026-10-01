@@ -532,6 +532,17 @@ extension _FightDiceRules on _FightScreenState {
         final cursed = _cursedFaces.putIfAbsent(member.id, () => <int>{});
         final index = curseTargetFace(member.dieFaces.length, cursed, _random);
         final victim = member;
+        // The Ember face lifts the Curse at once, while it lasts.
+        if (index != null && victim.isPlayer && _emberCharges > 0) {
+          _emberCharges--;
+          _update(() => _log.add(_LogEntry(
+                '${move.message} ${trFor(lang, 'sign_log_ember')}',
+                _LogKind.playerHeal,
+              )));
+          _fx(VfxStyle.holyFire, _memberCardKey(victim.id),
+              delayMs: delay + 200);
+          return;
+        }
         _update(() {
           if (index == null) {
             _log.add(_LogEntry(move.message, _LogKind.info));
