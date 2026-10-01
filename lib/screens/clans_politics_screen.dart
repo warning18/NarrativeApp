@@ -37,8 +37,7 @@ class ClansPoliticsScreen extends ConsumerWidget {
         appBar: AppBar(
           title: Text(tr(ref, 'clans_title')),
           bottom: TabBar(
-            isScrollable: true,
-            tabAlignment: TabAlignment.start,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 2),
             tabs: [
               Tab(
                   key: const Key('clans_tab_standing'),
@@ -449,10 +448,15 @@ class _RelationsMatrix extends ConsumerWidget {
             data.relations.stepInfo(s)?.nameFor(lang) ?? '$s';
         final theme = Theme.of(context);
         final notifier = ref.read(playerSessionProvider.notifier);
+        // Logged at the chapter reached, or the latest one a pair moved
+        // in: the snapshots replay in order.
         Future<void> shift(int by) => notifier.shiftRelation(a.id, b.id, by,
             data: data,
             cause: 'edit',
-            chapter: ref.read(reachedChapterProvider));
+            chapter: [
+              max(1, ref.read(reachedChapterProvider)),
+              ...politics.relationSnapshots.keys,
+            ].reduce(max));
         return AlertDialog(
           title: Text(trFor(lang, 'clans_pair_title')
               .replaceAll('{a}', a.nameFor(lang))
@@ -685,8 +689,8 @@ class _LogTile extends StatelessWidget {
           '${factionName(id)} ${formatStandingDelta(d, language: lang)}',
           style: theme.textTheme.labelSmall?.copyWith(
             fontWeight: main ? FontWeight.w700 : null,
-            color:
-                d > 0 ? standingTierColor(StandingTier.trusted) : clanFoeColor,
+            color: readableOn(context,
+                d > 0 ? standingTierColor(StandingTier.trusted) : clanFoeColor),
           ),
         );
     final colon = lang == AppLanguage.fr ? '\u00a0:' : ':';
@@ -722,15 +726,16 @@ class _LogTile extends StatelessWidget {
                   '${subclanName(entry.subclanId)}$colon '
                   '${trFor(lang, subclanMarkKey(entry.mark!))}',
                   style: theme.textTheme.labelSmall?.copyWith(
-                      color:
-                          entry.mark == SubclanMark.foe ? clanFoeColor : null),
+                      color: entry.mark == SubclanMark.foe
+                          ? readableOn(context, clanFoeColor)
+                          : null),
                 ),
               if (entry.swore.isNotEmpty)
                 Text(
                   trFor(lang, 'clans_log_swore')
                       .replaceAll('{name}', factionName(entry.swore)),
                   style: theme.textTheme.labelSmall?.copyWith(
-                      color: standingTierColor(StandingTier.sworn),
+                      color: standingTierTextColor(context, StandingTier.sworn),
                       fontWeight: FontWeight.w700),
                 ),
               if (entry.released.isNotEmpty)
@@ -945,7 +950,8 @@ class _IntrigueCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final lang = language;
-    final gold = standingTierColor(StandingTier.sworn);
+    final goldFill = standingTierColor(StandingTier.sworn);
+    final gold = standingTierTextColor(context, StandingTier.sworn);
     final stageName = stage >= 1 && stage <= intrigue.stages.length
         ? trFor(lang, intrigue.stages[stage - 1].key)
         : stage >= 1
@@ -985,13 +991,44 @@ class _IntrigueCard extends StatelessWidget {
                         PatronEmblem(
                             patron: data.faction(id)?.patron, size: 14),
                         const SizedBox(width: 4),
-                        Text(data.faction(id)?.nameFor(lang) ?? id,
-                            style: theme.textTheme.labelSmall),
+                        Flexible(
+                          child: Text(data.faction(id)?.nameFor(lang) ?? id,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.labelSmall),
+                        ),
                       ],
                     ),
                   ),
               ],
             ),
+            if (intrigue.subclanIds.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Wrap(
+                spacing: 8,
+                runSpacing: 2,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  for (final id in intrigue.subclanIds)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 8,
+                          height: 8,
+                          color: Color(data.subclan(id)?.color ?? 0xFF888888),
+                        ),
+                        const SizedBox(width: 3),
+                        Flexible(
+                          child: Text(data.subclan(id)?.nameFor(lang) ?? id,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant)),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+            ],
             const SizedBox(height: 6),
             Text(
               stage == 0
@@ -1012,11 +1049,12 @@ class _IntrigueCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
                     color: i + 1 == stage
-                        ? gold
+                        ? goldFill
                         : theme.colorScheme.outlineVariant,
                     width: i + 1 == stage ? 2 : 1,
                   ),
-                  color: i + 1 == stage ? gold.withValues(alpha: 0.12) : null,
+                  color:
+                      i + 1 == stage ? goldFill.withValues(alpha: 0.14) : null,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

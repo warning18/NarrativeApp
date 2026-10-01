@@ -17,6 +17,17 @@ const Color clanFoeColor = Color(0xFFD9544D);
 /// [tier]'s colour (see tierColor), the same on every screen.
 Color standingTierColor(StandingTier tier) => Color(tierColor(tier));
 
+/// [color] for words on [context]'s background: as it is on a dark one,
+/// deepened on a light one, where gold and teal would wash out.
+Color readableOn(BuildContext context, Color color) =>
+    Theme.of(context).brightness == Brightness.dark
+        ? color
+        : Color.lerp(color, Colors.black, 0.38)!;
+
+/// [tier]'s colour for words (see [readableOn]).
+Color standingTierTextColor(BuildContext context, StandingTier tier) =>
+    readableOn(context, standingTierColor(tier));
+
 /// A standing from -100 to +100 as a thin bar: dark red at the bottom,
 /// a dark neutral middle, green then gold at the top, and a tick where
 /// [value] stands.
@@ -178,7 +189,8 @@ class StandingTierLabel extends StatelessWidget {
       '${trFor(language, standingTierKey(tier)).toUpperCase()} '
       '${formatStanding(value)}',
       style: Theme.of(context).textTheme.labelLarge?.copyWith(
-          color: standingTierColor(tier), fontWeight: FontWeight.w700),
+          color: standingTierTextColor(context, tier),
+          fontWeight: FontWeight.w700),
     );
   }
 }
@@ -269,7 +281,8 @@ class FactionStandingCard extends ConsumerWidget {
                             faction.sworn?.nameFor(lang) ??
                                 trFor(lang, 'standing_tier_sworn'),
                             style: theme.textTheme.labelSmall?.copyWith(
-                                color: standingTierColor(StandingTier.sworn)),
+                                color: standingTierTextColor(
+                                    context, StandingTier.sworn)),
                           ),
                         ],
                       ),

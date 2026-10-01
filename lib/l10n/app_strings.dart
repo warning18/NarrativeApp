@@ -8993,8 +8993,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Pactes tenus\u00a0: {n} · encore actifs\u00a0: {r}',
   },
   'clans_otherworld_claim': {
-    AppLanguage.en: 'This life is {name}’s: the other will not come.',
-    AppLanguage.fr: 'Cette vie revient à {name}\u00a0: l’autre ne viendra pas.',
+    AppLanguage.en: 'Claimed this life: {name}. The other will not come.',
+    AppLanguage.fr:
+        'A réclamé cette vie\u00a0: {name}. L’autre ne viendra pas.',
   },
   'clans_otherworld_open': {
     AppLanguage.en: 'Neither has claimed this life.',
@@ -9045,12 +9046,21 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Ch. {c} · jour {d}',
   },
   'clans_log_swore': {
-    AppLanguage.en: 'Sworn to {name}',
-    AppLanguage.fr: 'Serment prêté à {name}',
+    AppLanguage.en: 'Sworn: {name}',
+    AppLanguage.fr: 'Serment\u00a0: {name}',
   },
   'clans_log_released': {
-    AppLanguage.en: 'No longer sworn to {name}',
-    AppLanguage.fr: 'Serment rompu avec {name}',
+    AppLanguage.en: 'Oath released: {name}',
+    AppLanguage.fr: 'Serment rompu\u00a0: {name}',
+  },
+  'clans_chart_start': {AppLanguage.en: 'Start', AppLanguage.fr: 'Début'},
+  'clans_chart_tick': {
+    AppLanguage.en: 'Ch{c}·D{d}',
+    AppLanguage.fr: 'Ch{c}·J{d}',
+  },
+  'clans_subclans_label': {
+    AppLanguage.en: 'Sub-clans',
+    AppLanguage.fr: 'Sous-clans',
   },
   'clans_relations_log_title': {
     AppLanguage.en: 'Relations that moved',
