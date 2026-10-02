@@ -112,6 +112,32 @@ void main() {
     final prefs = await tester.runAsync(SharedPreferences.getInstance);
     expect(prefs!.getString(chartCalquePrefsKey), 'clans');
 
+    // The world as a sphere: turned with a drag, closer with +, a tap
+    // picks a place on it; the choice is kept.
+    await tester.tap(find.byKey(const Key('journey_layers')));
+    await _settle(tester);
+    await tester.tap(find.byKey(const Key('journey_globe')));
+    await _settle(tester);
+    await tester.tapAt(const Offset(200, 40));
+    await _settle(tester);
+    expect(container.read(chartGlobeProvider), isTrue);
+    expect(prefs.getBool(chartGlobePrefsKey), isTrue);
+    final globe = find.byKey(const ValueKey('journey_globe_canvas'));
+    expect(globe, findsOneWidget);
+    await tester.tap(find.byKey(const Key('journey_zoom_in')));
+    await tester.pump();
+    await tester.drag(globe, const Offset(-60, 20));
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('journey_recentre')));
+    await tester.pump();
+    await tester.tap(globe);
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const ValueKey('journey_looked_upper')), findsOneWidget);
+    await tester.runAsync(
+        () => container.read(chartGlobeProvider.notifier).choose(false));
+    await _settle(tester);
+    expect(globe, findsNothing);
+
     await tester.tap(find.byKey(const Key('journey_level_land')));
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byType(JourneyWorldMap), findsOneWidget);

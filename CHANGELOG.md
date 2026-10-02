@@ -8,6 +8,29 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.200.0+231]
+
+### The world as a sphere
+
+#### Added
+- **The world as a sphere.** The calques sheet on the Journey's map opens
+  with a switch, *The world as a sphere*: the Land and World levels then
+  lay the chart on a globe looked at straight on. A drag turns it, a
+  pinch (or + and −) brings it close, *back to the party* turns it to
+  where the story stands, and a tap picks a reached place on it. Every
+  layer goes through the same projection: coasts, lands and terrain,
+  rivers, the ranges, the roads and the wake at sea, villages, bridges,
+  giants and the clans' seats, the fog with its clearings, the calques
+  and every name; what lies on the far side is hidden, and a land
+  crossing the limb is pressed against it. The choice is kept.
+
+#### Technical
+- `GlobeView` (chart_globe.dart) is the orthographic look: the chart
+  spans 225 degrees of longitude and 140 of latitude, the rest open sea
+  under parallels and meridians. `ChartMapPainter` takes a `globe` and
+  draws through it; the ground is painted afresh while the sphere turns
+  rather than kept as a picture. `chartGlobeProvider` keeps the pick.
+
 ## [1.199.0+230]
 
 ### The Journey on one interface, the world under the fog

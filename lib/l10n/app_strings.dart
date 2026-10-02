@@ -44,6 +44,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Revenir à la compagnie',
   },
   'journey_calques': {AppLanguage.en: 'Calques', AppLanguage.fr: 'Calques'},
+  'journey_globe': {
+    AppLanguage.en: 'The world as a sphere',
+    AppLanguage.fr: 'Le monde en sphère',
+  },
+  'journey_globe_sub': {
+    AppLanguage.en: 'turn it with a drag, pinch to come close',
+    AppLanguage.fr: 'tournez-la en glissant, pincez pour approcher',
+  },
   'journey_calques_hint': {
     AppLanguage.en:
         'One calque at a time keeps the map readable; the choice is kept.',

@@ -265,6 +265,19 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                       style: theme.textTheme.labelMedium
                           ?.copyWith(letterSpacing: 1.4, color: ink.gold)),
                 ),
+                SwitchListTile(
+                  key: const Key('journey_globe'),
+                  dense: true,
+                  value: ref.watch(chartGlobeProvider),
+                  secondary: const Icon(Icons.public),
+                  title: Text(trFor(lang, 'journey_globe')),
+                  subtitle: Text(trFor(lang, 'journey_globe_sub'),
+                      style:
+                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                  onChanged: (on) =>
+                      ref.read(chartGlobeProvider.notifier).choose(on),
+                ),
+                const Divider(height: 8),
                 for (final calque in ChartCalque.values)
                   SwitchListTile(
                     key: Key('calque_${calque.name}'),

@@ -6,6 +6,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/chart_globe.dart';
 import '../data/map_charts.dart';
 import '../data/world_map.dart';
 import '../l10n/app_locale.dart';
@@ -59,6 +60,12 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
   String? _framedOn;
   String? _selectedId;
 
+  /// The sphere (v1.200): where it is turned to and how close, kept
+  /// across builds; framed afresh when the level or the place changes.
+  GlobeView? _globe;
+  double _pinchStartZoom = 1;
+  Offset? _dragLast;
+
   /// How far in the land level looks.
   static const double _landZoom = 2.8;
   static const double _maxZoom = 8;
@@ -105,11 +112,79 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
     if (_framed == widget.level && _framedOn == on) return;
     _framed = widget.level;
     _framedOn = on;
+    final centre = _globeCentre(box);
     if (widget.level == JourneyMapLevel.land && here != null) {
       _look(geo.of(here), _landZoom, box);
+      _globe = GlobeView.at(geo.of(here), _landZoom, centre);
     } else {
       _view.value = Matrix4.identity();
+      _globe = GlobeView.at(
+          here == null
+              ? const Offset(worldMapWidth / 2, worldMapHeight / 2)
+              : geo.of(here),
+          1,
+          centre);
     }
+  }
+
+  /// The globe's centre in the chart's units: the middle of the box.
+  Offset _globeCentre(Size box) {
+    final k = box.width / worldMapWidth;
+    return Offset(worldMapWidth / 2, box.height / k / 2);
+  }
+
+  /// A pinch or drag on the sphere: it turns, or comes closer.
+  void _onGlobeScaleStart(ScaleStartDetails d) {
+    _pinchStartZoom = _globe?.zoom ?? 1;
+    _dragLast = d.focalPoint;
+  }
+
+  void _onGlobeScaleUpdate(ScaleUpdateDetails d, Size box) {
+    final g = _globe;
+    if (g == null) return;
+    final k = box.width / worldMapWidth;
+    var next = g;
+    if (d.pointerCount > 1) {
+      next = next.copyWith(
+          radius: GlobeView.baseRadius *
+              (_pinchStartZoom * d.scale).clamp(1.0, _maxZoom));
+    }
+    final last = _dragLast;
+    if (last != null) {
+      final delta = (d.focalPoint - last) / k;
+      next = next.turned(-delta.dx / next.radius, delta.dy / next.radius);
+    }
+    _dragLast = d.focalPoint;
+    setState(() => _globe = next);
+  }
+
+  void _globeZoom(double factor) {
+    final g = _globe;
+    if (g == null) return;
+    setState(() => _globe = g.copyWith(
+        radius: GlobeView.baseRadius * (g.zoom * factor).clamp(1.0, _maxZoom)));
+  }
+
+  void _globeTap(Offset position, Size box) {
+    final g = _globe;
+    if (g == null) return;
+    final k = box.width / worldMapWidth;
+    final chart = g.chartAt(position / k);
+    if (chart == null) return;
+    final geo = chartOf(ref.read(mapShapeProvider));
+    Landmark? nearest;
+    var best = 12.0 * 12.0 / (g.zoom * g.zoom);
+    for (final landmark in worldMapLandmarks) {
+      if (!widget.discovered.contains(landmark.id)) continue;
+      final d = (geo.of(landmark) - chart).distanceSquared;
+      if (d <= best) {
+        best = d;
+        nearest = landmark;
+      }
+    }
+    if (nearest == null) return;
+    setState(() => _selectedId = nearest!.id);
+    widget.onSelect?.call(nearest);
   }
 
   void _zoom(double factor, Size box) {
@@ -157,6 +232,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
     };
     final reduceMotion = MediaQuery.of(context).disableAnimations;
     final theme = Theme.of(context);
+    final sphere = ref.watch(chartGlobeProvider);
     return LayoutBuilder(builder: (context, box) {
       final boxSize = Size(box.maxWidth, box.maxHeight);
       // The chart fills the box's width; a tall box shows sea above and
@@ -164,6 +240,45 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
       _size = Size(box.maxWidth, box.maxWidth * worldMapHeight / worldMapWidth);
       _childHeight = math.max(box.maxHeight, _size.height);
       _frameFor(boxSize);
+      ChartMapPainter painter(GlobeView? globe) => ChartMapPainter(
+            frame: _frame,
+            walk: _still,
+            geography: geo,
+            palette: widget.palette,
+            language: language,
+            discovered: widget.discovered,
+            legs: widget.legs,
+            ahead: widget.ahead,
+            selectedId: _selectedId ?? '',
+            here: widget.here,
+            walking: false,
+            walkPath: const [],
+            chapterFilter: 0,
+            reduceMotion: true,
+            chapterColor:
+                calque == ChartCalque.chapters || calque == ChartCalque.none
+                    ? widget.chapterColor
+                    : (_) => widget.palette.road,
+            fog: ChartFog.uncharted,
+            calque: calque,
+            clanColours: clanColours,
+            standingOf: standings,
+            shopPlaces: widget.shopPlaces,
+            campPlaces: widget.campPlaces,
+            globe: globe,
+          );
+      // The sphere: the whole box is its sky; a drag turns it, a pinch
+      // brings it close, a tap picks a place on it.
+      final globeView = _globe?.copyWith(centre: _globeCentre(boxSize));
+      final sphereChart = GestureDetector(
+        key: const ValueKey('journey_globe_canvas'),
+        behavior: HitTestBehavior.opaque,
+        onScaleStart: _onGlobeScaleStart,
+        onScaleUpdate: (d) => _onGlobeScaleUpdate(d, boxSize),
+        onScaleEnd: (_) => _dragLast = null,
+        onTapUp: (d) => _globeTap(d.localPosition, boxSize),
+        child: CustomPaint(size: boxSize, painter: painter(globeView)),
+      );
       final chart = InteractiveViewer(
         key: const ValueKey('journey_world_viewer'),
         transformationController: _view,
@@ -179,35 +294,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
               key: const ValueKey('journey_world_canvas'),
               behavior: HitTestBehavior.opaque,
               onTapUp: (details) => _tapAt(details.localPosition),
-              child: CustomPaint(
-                size: _size,
-                painter: ChartMapPainter(
-                  frame: _frame,
-                  walk: _still,
-                  geography: geo,
-                  palette: widget.palette,
-                  language: language,
-                  discovered: widget.discovered,
-                  legs: widget.legs,
-                  ahead: widget.ahead,
-                  selectedId: _selectedId ?? '',
-                  here: widget.here,
-                  walking: false,
-                  walkPath: const [],
-                  chapterFilter: 0,
-                  reduceMotion: true,
-                  chapterColor: calque == ChartCalque.chapters ||
-                          calque == ChartCalque.none
-                      ? widget.chapterColor
-                      : (_) => widget.palette.road,
-                  fog: ChartFog.uncharted,
-                  calque: calque,
-                  clanColours: clanColours,
-                  standingOf: standings,
-                  shopPlaces: widget.shopPlaces,
-                  campPlaces: widget.campPlaces,
-                ),
-              ),
+              child: CustomPaint(size: _size, painter: painter(null)),
             ),
           ),
         ),
@@ -241,7 +328,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
       return Stack(
         children: [
           Positioned.fill(
-            child: ColoredBox(color: widget.palette.sea, child: chart),
+            child: ColoredBox(
+                color: sphere ? widget.palette.fog : widget.palette.sea,
+                child: sphere ? sphereChart : chart),
           ),
           Positioned(
             right: 8,
@@ -256,18 +345,27 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
                     tr(ref, 'journey_recentre'), () {
                   final here = widget.here;
                   if (here == null) return;
-                  setState(() => _look(
-                      geo.of(here), math.max(_scale, _landZoom), boxSize));
+                  setState(() {
+                    _look(geo.of(here), math.max(_scale, _landZoom), boxSize);
+                    _globe = GlobeView.at(
+                        geo.of(here),
+                        math.max(_globe?.zoom ?? 1, _landZoom),
+                        _globeCentre(boxSize));
+                  });
                 }),
                 const SizedBox(height: 6),
-                button('journey_zoom_in', Icons.add,
-                    tr(ref, 'world_map_zoom_in'), () => _zoom(1.5, boxSize)),
+                button(
+                    'journey_zoom_in',
+                    Icons.add,
+                    tr(ref, 'world_map_zoom_in'),
+                    () => sphere ? _globeZoom(1.5) : _zoom(1.5, boxSize)),
                 const SizedBox(height: 6),
                 button(
                     'journey_zoom_out',
                     Icons.remove,
                     tr(ref, 'world_map_zoom_out'),
-                    () => _zoom(1 / 1.5, boxSize)),
+                    () =>
+                        sphere ? _globeZoom(1 / 1.5) : _zoom(1 / 1.5, boxSize)),
               ],
             ),
           ),

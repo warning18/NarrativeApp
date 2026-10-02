@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import '../data/chart_globe.dart';
 import '../data/chart_relief.dart';
 import '../data/map_charts.dart';
 import '../data/world_map.dart';
@@ -54,6 +55,7 @@ class ChartMapPainter extends CustomPainter {
     this.shopPlaces = const {},
     this.campPlaces = const {},
     this.detail = true,
+    this.globe,
   }) : super(repaint: Listenable.merge([frame, walk]));
 
   final ValueNotifier<int> frame;
@@ -91,6 +93,36 @@ class ChartMapPainter extends CustomPainter {
 
   /// Terrain, features and the trade roads drawn (off for a small chart).
   final bool detail;
+
+  /// The chart as a sphere (v1.200, see chart_globe.dart), or flat.
+  final GlobeView? globe;
+
+  /// The canvas in the chart's units: the chart itself when flat, the
+  /// whole box round the sphere.
+  Rect _whole =
+      const Rect.fromLTWH(0, 0, worldMapWidth * 1.0, worldMapHeight * 1.0);
+
+  // Everything drawn goes through these: flat, a point is itself; on the
+  // globe it is where the sphere shows it, or hidden.
+  Offset _at(Offset p) => globe?.clamp(p) ?? p;
+  bool _vis(Offset p) => globe?.visible(p) ?? true;
+  Path _poly(List<Offset> pts) {
+    final g = globe;
+    if (g == null) return Path()..addPolygon(pts, true);
+    final shown = g.polygon(pts);
+    return shown == null ? Path() : (Path()..addPolygon(shown, true));
+  }
+
+  /// The line through [pts], smooth, in its visible stretches.
+  Path _line(List<Offset> pts) {
+    final g = globe;
+    if (g == null) return _smooth(pts, closed: false);
+    final path = Path();
+    for (final run in g.runs(pts)) {
+      path.addPath(_smooth(run, closed: false), Offset.zero);
+    }
+    return path;
+  }
 
   /// The static layers of each geography and look, recorded once: sea,
   /// coasts, zones, terrain, rivers and ranges.
@@ -181,8 +213,7 @@ class ChartMapPainter extends CustomPainter {
     }
   }
 
-  void _feature(Canvas canvas, ChartFeature f) {
-    final p = f.at;
+  void _feature(Canvas canvas, ChartFeature f, Offset p) {
     final ink = palette.place;
     switch (f.kind) {
       case ChartFeatureKind.village:
@@ -253,7 +284,7 @@ class ChartMapPainter extends CustomPainter {
   /// The static layers of [relief] in this look, recorded once.
   ui.Picture _groundFor(ChartRelief relief) {
     final key =
-        '${identityHashCode(relief)}:${palette.hashCode}:$detail:${calque == ChartCalque.lands}';
+        '${identityHashCode(relief)}:${palette.hashCode}:$detail:${calque == ChartCalque.lands}:${globe?.key}';
     return _ground[key] ??= () {
       final recorder = ui.PictureRecorder();
       final canvas = Canvas(recorder);
@@ -263,16 +294,36 @@ class ChartMapPainter extends CustomPainter {
   }
 
   void _paintGround(Canvas canvas, ChartRelief relief) {
-    const whole =
-        Rect.fromLTWH(0, 0, worldMapWidth * 1.0, worldMapHeight * 1.0);
-    // Sea, with its long swell lines.
-    canvas.drawRect(whole, Paint()..color = palette.sea);
+    final whole = _whole;
+    // Sea, with its long swell lines; on the globe, the sky round it and
+    // the parallels and meridians over it.
+    final g = globe;
     final swell = Paint()
       ..color = palette.seaLine
       ..strokeWidth = 0.7;
-    for (var y = 10.0; y < worldMapHeight; y += 16) {
-      for (var x = (y ~/ 16).isOdd ? 0.0 : 6.0; x < worldMapWidth; x += 14) {
-        canvas.drawLine(Offset(x, y), Offset(x + 6, y + 0.8), swell);
+    if (g == null) {
+      canvas.drawRect(whole, Paint()..color = palette.sea);
+      for (var y = 10.0; y < worldMapHeight; y += 16) {
+        for (var x = (y ~/ 16).isOdd ? 0.0 : 6.0; x < worldMapWidth; x += 14) {
+          canvas.drawLine(Offset(x, y), Offset(x + 6, y + 0.8), swell);
+        }
+      }
+    } else {
+      canvas.drawRect(whole, Paint()..color = palette.fog);
+      canvas.drawCircle(g.centre, g.radius, Paint()..color = palette.sea);
+      canvas.drawCircle(
+          g.centre,
+          g.radius,
+          Paint()
+            ..color = palette.coast.withValues(alpha: 0.6)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 0.8);
+      final grid = Paint()
+        ..color = palette.seaLine.withValues(alpha: 0.7)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.4;
+      for (final line in GlobeView.graticule()) {
+        canvas.drawPath(_line(line), grid);
       }
     }
     // Land and coast, with headlands, bays and islets.
@@ -283,7 +334,7 @@ class ChartMapPainter extends CustomPainter {
       ..strokeWidth = 0.9;
     final landClip = Path();
     for (final coast in [...relief.coasts, ...relief.islets]) {
-      final path = Path()..addPolygon(coast, true);
+      final path = _poly(coast);
       landClip.addPath(path, Offset.zero);
       canvas.drawPath(path, Paint()..color = palette.land);
       canvas.drawPath(path, coastPaint);
@@ -295,7 +346,7 @@ class ChartMapPainter extends CustomPainter {
     final wash = calque == ChartCalque.lands ? 0.26 : 0.11;
     for (var i = 0; i < geography.zones.length; i++) {
       final colours = chartBiome(geography.zones[i].biome);
-      canvas.drawPath(Path()..addPolygon(relief.zones[i], true),
+      canvas.drawPath(_poly(relief.zones[i]),
           Paint()..color = colours.ground.withValues(alpha: wash));
     }
     if (detail) _terrain(canvas, relief);
@@ -307,7 +358,7 @@ class ChartMapPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
     for (final r in relief.rivers) {
-      canvas.drawPath(_smooth(r, closed: false), river);
+      canvas.drawPath(_line(r), river);
     }
     canvas.restore();
     // The ranges: peaks along each, larger than the loose ridges.
@@ -324,9 +375,10 @@ class ChartMapPainter extends CustomPainter {
             final at = p +
                 Offset(
                     rng.nextDouble() * 3 - 1.5, rng.nextDouble() * 2.5 - 1.25);
-            _peak(
-                canvas, at, range.size * 0.26 * (0.7 + rng.nextDouble() * 0.45),
-                snow: range.snow, ember: range.ember && rng.nextDouble() < 0.5);
+            final size = range.size * 0.26 * (0.7 + rng.nextDouble() * 0.45);
+            final ember = range.ember && rng.nextDouble() < 0.5;
+            if (!_vis(at)) continue;
+            _peak(canvas, _at(at), size, snow: range.snow, ember: ember);
           }
         }
       }
@@ -335,8 +387,9 @@ class ChartMapPainter extends CustomPainter {
 
   void _terrain(Canvas canvas, ChartRelief relief) {
     for (final m in relief.terrain) {
+      if (!_vis(m.at)) continue;
       final colours = chartBiome(geography.zones[m.zone].biome);
-      final p = m.at;
+      final p = _at(m.at);
       final s = m.size;
       switch (m.kind) {
         case TerrainKind.peak:
@@ -531,20 +584,22 @@ class ChartMapPainter extends CustomPainter {
   /// inside the chart and clear of the other names and marks), then the
   /// regions' names where there is room for them.
   void _names(Canvas canvas, Landmark? standing) {
-    const bounds =
-        Rect.fromLTWH(1, 1, worldMapWidth - 2.0, worldMapHeight - 2.0);
+    final bounds = _whole.deflate(1);
     final reached = [
       for (final l in worldMapLandmarks)
         if (discovered.contains(l.id)) l,
     ];
     final taken = <Rect>[
       for (final l in reached)
-        Rect.fromCircle(center: geography.of(l), radius: l.big ? 4.5 : 3.5),
+        if (_vis(geography.of(l)))
+          Rect.fromCircle(
+              center: _at(geography.of(l)), radius: l.big ? 4.5 : 3.5),
       // The traveller and the pin over them, where the story stands.
-      if (standing != null && !walking)
+      if (standing != null && !walking && _vis(geography.of(standing)))
         () {
           final (x, y) = spotOn(geography, standing);
-          return Rect.fromLTRB(x - 2.5, y - 12.5, x + 2.5, y + 0.5);
+          final p = _at(Offset(x, y));
+          return Rect.fromLTRB(p.dx - 2.5, p.dy - 12.5, p.dx + 2.5, p.dy + 0.5);
         }(),
     ];
     bool fits(Rect r) =>
@@ -560,7 +615,8 @@ class ChartMapPainter extends CustomPainter {
       ...reached.where((l) => l.id != standing?.id && l.id != selectedId),
     ];
     for (final l in order) {
-      final p = geography.of(l);
+      if (!_vis(geography.of(l))) continue;
+      final p = _at(geography.of(l));
       final isHere = l.id == standing?.id;
       final opacity = _active(l) ? 1.0 : 0.35;
       final painter = _layout(
@@ -647,10 +703,12 @@ class ChartMapPainter extends CustomPainter {
                   ),
       );
       final size = Size(painter.width, painter.height);
+      if (!_vis(Offset(label.x, label.y))) continue;
+      final labelAt = _at(Offset(label.x, label.y));
       // Kept inside the chart, then nudged about until clear.
       final base = Offset(
-        label.x.clamp(bounds.left, bounds.right - size.width),
-        label.y.clamp(bounds.top, bounds.bottom - size.height),
+        labelAt.dx.clamp(bounds.left, bounds.right - size.width),
+        labelAt.dy.clamp(bounds.top, bounds.bottom - size.height),
       );
       for (final nudge in const [
         Offset.zero, Offset(0, -8), Offset(0, 8), Offset(-16, 0), //
@@ -681,10 +739,12 @@ class ChartMapPainter extends CustomPainter {
         ),
       );
       final size = Size(painter.width, painter.height);
+      if (!_vis(zone.labelAt)) continue;
+      final zoneAt = _at(zone.labelAt);
       final base = Offset(
-        (zone.labelAt.dx - size.width / 2)
+        (zoneAt.dx - size.width / 2)
             .clamp(bounds.left, bounds.right - size.width),
-        (zone.labelAt.dy - size.height / 2)
+        (zoneAt.dy - size.height / 2)
             .clamp(bounds.top, bounds.bottom - size.height),
       );
       for (final nudge in const [
@@ -702,7 +762,8 @@ class ChartMapPainter extends CustomPainter {
     if (!detail) return;
     // The ranges' names, in italics along each.
     for (final range in geography.ranges) {
-      final mid = range.line[range.line.length ~/ 2];
+      if (!_vis(range.line[range.line.length ~/ 2])) continue;
+      final mid = _at(range.line[range.line.length ~/ 2]);
       final painter = _layout(
         range.name(language),
         TextStyle(
@@ -730,6 +791,8 @@ class ChartMapPainter extends CustomPainter {
       } else if (f.atSea && reachedZones.isEmpty) {
         continue;
       }
+      if (!_vis(f.at)) continue;
+      final featureAt = _at(f.at);
       final seat = f.kind == ChartFeatureKind.seat;
       final colour =
           seat ? (clanColours[f.clan] ?? palette.label) : palette.place;
@@ -754,11 +817,11 @@ class ChartMapPainter extends CustomPainter {
             )
           ),
       ];
-      var y = f.at.dy + (f.landmark.isEmpty ? 3.6 : 8);
+      var y = featureAt.dy + (f.landmark.isEmpty ? 3.6 : 8);
       for (final (text, style) in lines) {
         final painter = _layout(text, style);
         final at = Offset(
-            (f.at.dx - painter.width / 2)
+            (featureAt.dx - painter.width / 2)
                 .clamp(bounds.left, bounds.right - painter.width),
             y);
         final rect = at & Size(painter.width, painter.height);
@@ -775,19 +838,28 @@ class ChartMapPainter extends CustomPainter {
     final f = reduceMotion ? 0 : frame.value;
     canvas.save();
     canvas.clipRect(Offset.zero & size);
-    canvas.scale(size.width / worldMapWidth);
-    const whole =
-        Rect.fromLTWH(0, 0, worldMapWidth * 1.0, worldMapHeight * 1.0);
+    final k = size.width / worldMapWidth;
+    canvas.scale(k);
+    final whole = globe == null
+        ? const Rect.fromLTWH(0, 0, worldMapWidth * 1.0, worldMapHeight * 1.0)
+        : Rect.fromLTWH(0, 0, size.width / k, size.height / k);
+    _whole = whole;
 
     final relief = ChartRelief.of(geography);
     final reachedZones = _reachedZones();
-    canvas.drawPicture(_groundFor(relief));
+    // The sphere turns under the finger: its ground is painted afresh
+    // rather than kept.
+    if (globe == null) {
+      canvas.drawPicture(_groundFor(relief));
+    } else {
+      _paintGround(canvas, relief);
+    }
     // Calques over the lands.
     if (calque == ChartCalque.clans || calque == ChartCalque.standing) {
       for (var i = 0; i < geography.zones.length; i++) {
         if (!reachedZones.contains(i)) continue;
         final zone = geography.zones[i];
-        final path = Path()..addPolygon(relief.zones[i], true);
+        final path = _poly(relief.zones[i]);
         if (calque == ChartCalque.clans) {
           if (zone.influence.isEmpty) continue;
           final (first, strength) = zone.influence.first;
@@ -833,7 +905,8 @@ class ChartMapPainter extends CustomPainter {
     final roofs = Paint()..color = palette.roofs;
     for (final l in worldMapLandmarks) {
       if (l.atSea || !discovered.contains(l.id)) continue;
-      final p = geography.of(l);
+      if (!_vis(geography.of(l))) continue;
+      final p = _at(geography.of(l));
       final seed = l.id.codeUnits.fold(0, (a, b) => a * 31 + b);
       for (var i = 0; i < 3; i++) {
         final dx = ((seed >> (i * 3)) % 7) - 3.0 + (i - 1) * 6;
@@ -847,7 +920,8 @@ class ChartMapPainter extends CustomPainter {
     if (calque == ChartCalque.shops) {
       for (final l in worldMapLandmarks) {
         if (!discovered.contains(l.id)) continue;
-        final p = geography.of(l);
+        if (!_vis(geography.of(l))) continue;
+        final p = _at(geography.of(l));
         if (shopPlaces.contains(l.id)) {
           canvas.drawCircle(Offset(p.dx + 5, p.dy - 5), 2.4,
               Paint()..color = const Color(0xFFF2C14E));
@@ -878,8 +952,7 @@ class ChartMapPainter extends CustomPainter {
           continue;
         }
         final seed = chartSeed('${a.dx},${a.dy}-${b.dx},${b.dy}');
-        final path =
-            _smooth(windingRoad(a, b, seed: seed, amp: 0.12), closed: false);
+        final path = _line(windingRoad(a, b, seed: seed, amp: 0.12));
         _road(canvas, path, palette.label.withValues(alpha: 0.9),
             width: 0.7, cased: true);
       }
@@ -891,17 +964,21 @@ class ChartMapPainter extends CustomPainter {
       for (final f in geography.features) {
         if (!f.atSea && !_zoneReached(f.at, reachedZones)) continue;
         if (f.atSea && reachedZones.isEmpty) continue;
-        _feature(canvas, f);
+        if (!_vis(f.at)) continue;
+        _feature(canvas, f, _at(f.at));
       }
     }
 
     // Fog over what the story has not reached.
     canvas.saveLayer(whole, Paint());
-    canvas.drawRect(
-        whole,
-        Paint()
-          ..color = palette.fog
-              .withValues(alpha: fog == ChartFog.uncharted ? 0.94 : 0.9));
+    final fogPaint = Paint()
+      ..color =
+          palette.fog.withValues(alpha: fog == ChartFog.uncharted ? 0.94 : 0.9);
+    if (globe case final g?) {
+      canvas.drawCircle(g.centre, g.radius, fogPaint);
+    } else {
+      canvas.drawRect(whole, fogPaint);
+    }
     if (fog == ChartFog.uncharted) {
       // The coasts, dotted, and the lands' names: the world has a shape
       // before the story.
@@ -910,13 +987,13 @@ class ChartMapPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 0.5;
       for (final coast in relief.coasts) {
-        _dashedPath(canvas, Path()..addPolygon(coast, true), dotted,
-            dash: 1.2, gap: 1.2);
+        _dashedPath(canvas, _poly(coast), dotted, dash: 1.2, gap: 1.2);
       }
     }
     for (final l in worldMapLandmarks) {
       if (!discovered.contains(l.id)) continue;
-      final p = geography.of(l);
+      if (!_vis(geography.of(l))) continue;
+      final p = _at(geography.of(l));
       canvas.drawCircle(
         p,
         30,
@@ -938,8 +1015,11 @@ class ChartMapPainter extends CustomPainter {
         ..color = palette.ahead
         ..strokeWidth = 0.9
         ..strokeCap = StrokeCap.round;
-      _dashed(canvas, geography.of(standing), geography.of(next), dots,
-          dash: 0.6, gap: 3);
+      if (_vis(geography.of(standing)) && _vis(geography.of(next))) {
+        _dashed(
+            canvas, _at(geography.of(standing)), _at(geography.of(next)), dots,
+            dash: 0.6, gap: 3);
+      }
     }
 
     // The road walked, a cased road in each chapter's colour, its dashes
@@ -952,10 +1032,8 @@ class ChartMapPainter extends CustomPainter {
       final seaLeg =
           a.atSea || b.atSea || (a.id == 'shore' && b.id == 'candlehold');
       final seed = chartSeed('${a.id}-${b.id}');
-      final path = _smooth(
-          windingRoad(from, to,
-              seed: seed, bends: seaLeg ? 2 : 3, amp: seaLeg ? 0.08 : 0.16),
-          closed: false);
+      final path = _line(windingRoad(from, to,
+          seed: seed, bends: seaLeg ? 2 : 3, amp: seaLeg ? 0.08 : 0.16));
       final colour = (chapterFilter == 0 || a.chapter == chapterFilter
               ? chapterColor(a.chapter)
               : chapterColor(b.chapter))
@@ -971,7 +1049,8 @@ class ChartMapPainter extends CustomPainter {
     // The places and their names.
     for (final l in worldMapLandmarks) {
       if (!discovered.contains(l.id)) continue;
-      final p = geography.of(l);
+      if (!_vis(geography.of(l))) continue;
+      final p = _at(geography.of(l));
       final isHere = l.id == standing?.id;
       final opacity = _active(l) ? 1.0 : 0.35;
       final color = (_voidPlaces.contains(l.id)
@@ -1019,8 +1098,9 @@ class ChartMapPainter extends CustomPainter {
     } else if (standing != null) {
       at = spotOn(geography, standing);
     }
-    if (at != null) {
-      final (x, y) = at;
+    if (at != null && _vis(Offset(at.$1, at.$2))) {
+      final shown = _at(Offset(at.$1, at.$2));
+      final x = shown.dx, y = shown.dy;
       final cloak = Paint()..color = const Color(0xFFA8A194);
       canvas.drawPath(
           Path()
