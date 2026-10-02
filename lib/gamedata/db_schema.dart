@@ -1527,6 +1527,53 @@ final DbSchema shopsSchema = DbSchema(
           'the character\'s standing with them (+40% Hostile ... -25% '
           'Sworn), and it won\'t trade with someone it hunts.',
     ),
+    FieldSchema(
+      key: 'stockPool',
+      label: 'Stock Pool (a wandering shop draws its shelf from these)',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'items',
+    ),
+    FieldSchema(
+        key: 'stockDraw',
+        label: 'Stock Draw — how many of the pool are on the shelf each '
+            'chapter (0: the whole pool)',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(key: 'keeperName', label: 'Keeper', type: FieldType.text),
+    FieldSchema(
+        key: 'keeperName_fr', label: 'Keeper (FR)', type: FieldType.text),
+    FieldSchema(
+        key: 'keeperLine',
+        label: 'Keeper\'s line (Unknown or Known standing, or no faction)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'keeperLine_fr',
+        label: 'Keeper\'s line (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'keeperLineWary',
+        label: 'Keeper\'s line when Wary or Hostile',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'keeperLineWary_fr',
+        label: 'Keeper\'s line when Wary or Hostile (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'keeperLineTrusted',
+        label: 'Keeper\'s line when Trusted',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'keeperLineTrusted_fr',
+        label: 'Keeper\'s line when Trusted (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'keeperLineSworn',
+        label: 'Keeper\'s line when Sworn',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'keeperLineSworn_fr',
+        label: 'Keeper\'s line when Sworn (FR)',
+        type: FieldType.multilineText),
     visualAssetFieldSchema('shops'),
   ],
 );

@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/factions.dart';
+import '../data/shop_pricing.dart' show shopFactionId;
 import '../data/signs.dart';
+import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/chapter_loop_provider.dart';
 import '../providers/clans_provider.dart';
+import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/signs_provider.dart';
+import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'sign_widgets.dart';
 
 /// The colour of a foe's square, and of the Hunted end of a meter.
@@ -290,6 +294,7 @@ class FactionStandingCard extends ConsumerWidget {
                 ],
               ),
             ],
+            _FactionShops(factionId: faction.id),
             if (editable)
               _StandingSlider(
                 key: Key('faction_slider_${faction.id}'),
@@ -299,6 +304,58 @@ class FactionStandingCard extends ConsumerWidget {
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// The shops a faction runs (shops.json `faction`, v1.197): their signs and
+/// names in a line, so the standing's price reads as somewhere to go.
+class _FactionShops extends ConsumerWidget {
+  const _FactionShops({required this.factionId});
+
+  final String factionId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final shops = ref.watch(localizedDbProvider(shopsSchema)).value ?? const {};
+    final theme = Theme.of(context);
+    final own = [
+      for (final e in shops.entries)
+        if (e.value is Map<String, dynamic> &&
+            shopFactionId(e.value as Map<String, dynamic>) == factionId)
+          e,
+    ];
+    if (own.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      key: Key('faction_shops_$factionId'),
+      padding: const EdgeInsets.only(top: 6),
+      child: Wrap(
+        spacing: 10,
+        runSpacing: 4,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text(tr(ref, 'clans_shops_label'),
+              style: theme.textTheme.labelSmall
+                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          for (final e in own)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ShopPixelIcon(e.key, size: 18),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    (e.value as Map<String, dynamic>)['shopName']?.toString() ??
+                        e.key,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelSmall,
+                  ),
+                ),
+              ],
+            ),
+        ],
       ),
     );
   }

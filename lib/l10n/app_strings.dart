@@ -8982,6 +8982,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Clans & Politics',
     AppLanguage.fr: 'Clans et politique',
   },
+  'clans_shops_label': {
+    AppLanguage.en: 'Their shops:',
+    AppLanguage.fr: 'Leurs boutiques :',
+  },
   'clans_title_play': {
     AppLanguage.en: 'Clans',
     AppLanguage.fr: 'Clans',

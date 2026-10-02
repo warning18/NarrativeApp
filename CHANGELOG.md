@@ -8,6 +8,40 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.197.0+228]
+
+Every shop has a trade, a keeper and a clan.
+
+### Changed
+- **One trade per shop.** The shelves are re-sliced so no two shops sell
+  the same gear: the Weaponsmith carries blades and spears t1–t5 (tiers 4
+  and 5 were sold nowhere), the Shieldwright is the armour house, the
+  Apothecary sells cures and nothing else, the Tide Cellar what the law
+  forbids, the Hammersmith heavy steel and heavy armour, the Academy every
+  spellbook and the tomes, the Needle House daggers and the quiet books,
+  the Vault one each of the named blades and relics, the Ossuary bone and
+  salt armour, the Last Lantern charms and holy steel, the Chandlery sea
+  gear (the whole Harborwatch set). Potions, charms and tomes may sit on
+  several shelves; gear sits on one. Every die is sold at one shop.
+- **The caravan wanders.** The Wayfarer's Caravan draws six of a
+  twelve-item pool each chapter, always one thing from the chapter ahead,
+  the same draw on every device (`stockPool`, `stockDraw`).
+- **A sign per trade.** Fourteen new shop icons in the item icons' style
+  (an anvil, a shield, a mortar, a cellar door, a needle, a wagon…) in
+  place of the seven chests; the caravan has its own.
+
+### Added
+- **Keepers.** Each shop names its keeper and what they say, by the
+  standing with the shop's clan: a plain line, a Wary one, a Trusted one
+  and a Sworn one, in both languages. The shop opens on the sign, the
+  keeper and their line.
+- **Every shop has a clan** (but the Bazaar and the caravan, who trade
+  with all): the Compact's forges and shield hall, the Crows' cellars,
+  barrow and Needle House, the Courts' Apothecary, the Dominion's Academy
+  and Chandlery, the Vigil's lantern, the Penitents' Ossuary. The clan
+  pricing of v1.193 now has shops to act on.
+- The Clans screen lists each clan's shops under its standing.
+
 ## [1.196.0+227]
 
 ### Added

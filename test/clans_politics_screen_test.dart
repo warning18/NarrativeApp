@@ -225,6 +225,13 @@ void main() {
     expect(find.text('Clans et politique'), findsOneWidget);
     expect(find.text('La Veille Grise'), findsWidgets);
     expect(find.textContaining('CONFIANCE'), findsWidgets);
+    // The clans' shops (v1.197) lengthen the cards: bring the panel in.
+    await tester.scrollUntilVisible(
+        find.byKey(const Key('clans_otherworld')), 300,
+        scrollable: find.descendant(
+            of: find.byKey(const Key('clans_standing_list')),
+            matching: find.byType(Scrollable)));
+    await tester.pumpAndSettle();
     expect(find.textContaining('Vœux tenus\u00a0: 0'), findsOneWidget);
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
 
@@ -287,9 +294,12 @@ void main() {
     ));
     await tester.pumpAndSettle();
 
-    // Trusted: 15% off. The Bloodthorn Blade's 260 is 221.
+    // Trusted: 15% off. The Bloodthorn Blade's 260 is 221 (and so is the
+    // dawnward shield's, since v1.197); the Keyholder speaks.
     expect(find.textContaining('Trusted, prices'), findsOneWidget);
-    expect(find.textContaining('221 gold'), findsOneWidget);
+    expect(find.textContaining('221 gold'), findsWidgets);
+    expect(find.byKey(const ValueKey('shop_keeper_name')), findsOneWidget);
+    expect(find.textContaining('second shelf'), findsOneWidget);
     expect(find.byTooltip('Sell'), findsOneWidget);
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
 
