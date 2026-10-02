@@ -8,6 +8,83 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.198.0+229]
+
+Three pieces, merged over main's v1.196 (the Throne) and v1.197 (geography).
+
+### Clans in the story
+
+#### Added
+- **Clans in the story.** The scales in the top bar, until now only in Edit
+  Mode, now open the clans in the story too, titled "Clans", with a dot
+  while news from the coast waits unread. It keeps the four tabs, read only:
+  - **Standing:** a card per clan, then the tribes the story has opened, the
+    dead clan once remembered, and the Choir and the Pit. No sliders, no
+    offers, no reset, and a sub-clan's square is not a switch.
+  - **Politics:** the relations table back to chapter 1, but no further than
+    the chapter reached. A cell gives the reason, with nothing to shift. The
+    news from the coast takes the place of Edit Mode's events.
+  - **Evolution:** each clan's standing over the story, and the log.
+  - **Intrigues:** only the plots the story has opened, and only as far as
+    each has gone. The next stage shows locked with its chapter, the
+    premise stays hidden until the reveal, and only the chosen outcome shows.
+
+#### Fixed
+- The relations table fits a 360-px phone. Its cells take the width the
+  screen allows, from 50 to 60 px; before, the sixth clan's column was cut
+  off.
+
+### Shops with a trade, a keeper and a clan
+
+Every shop has a trade, a keeper and a clan.
+
+#### Changed
+- **One trade per shop.** The shelves are re-sliced so no two shops sell
+  the same gear: the Weaponsmith carries blades and spears t1–t5 (tiers 4
+  and 5 were sold nowhere), the Shieldwright is the armour house, the
+  Apothecary sells cures and nothing else, the Tide Cellar what the law
+  forbids, the Hammersmith heavy steel and heavy armour, the Academy every
+  spellbook and the tomes, the Needle House daggers and the quiet books,
+  the Vault one each of the named blades and relics, the Ossuary bone and
+  salt armour, the Last Lantern charms and holy steel, the Chandlery sea
+  gear (the whole Harborwatch set). Potions, charms and tomes may sit on
+  several shelves; gear sits on one. Every die is sold at one shop.
+- **The caravan wanders.** The Wayfarer's Caravan draws six of a
+  twelve-item pool each chapter, always one thing from the chapter ahead,
+  the same draw on every device (`stockPool`, `stockDraw`).
+- **A sign per trade.** Fourteen new shop icons in the item icons' style
+  (an anvil, a shield, a mortar, a cellar door, a needle, a wagon…) in
+  place of the seven chests; the caravan has its own.
+
+#### Added
+- **Keepers.** Each shop names its keeper and what they say, by the
+  standing with the shop's clan: a plain line, a Wary one, a Trusted one
+  and a Sworn one, in both languages. The shop opens on the sign, the
+  keeper and their line.
+- **Every shop has a clan** (but the Bazaar and the caravan, who trade
+  with all): the Compact's forges and shield hall, the Crows' cellars,
+  barrow and Needle House, the Courts' Apothecary, the Dominion's Academy
+  and Chandlery, the Vigil's lantern, the Penitents' Ossuary. The clan
+  pricing of v1.193 now has shops to act on.
+- The Clans screen lists each clan's shops under its standing.
+
+### Race & Profession on one screen
+
+#### Changed
+- **Race & Profession, on one screen.** The ten tall cards give way to two
+  rows of five tiles — a mark, a name and a word (Sturdy, Quick, Bulwark,
+  Caster…) — with the picked one told in full below: its lore, what it
+  changes as green and red chips (zeros left out), and the skill it grants
+  with its icon and its own name (Stoneskin, not Dwarf Stoneskin).
+- **Your character, before you commit.** A preview card adds the two up
+  the way a new game does — HP, damage, armour, gold, the abilities, the
+  two skills — so the numbers are known before the choice is set in stone.
+- **A mark for every people and calling.** Ten pixel icons in the item
+  icons' style: the sewn banner, the painted sigil, the stone-mark, the
+  ash-ink and the tear for the races; sword and shield, staff, daggers,
+  sun-cross and bow for the professions. They show on the picker and on
+  the character sheet (`visualAsset`, `tag`, `tag_fr` on both records).
+
 ## [1.197.0+228]
 
 Every scene now happens somewhere. The world has five levels of place

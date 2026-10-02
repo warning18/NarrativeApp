@@ -2867,6 +2867,31 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Aléatoire',
   },
   'race_label': {AppLanguage.en: 'Race', AppLanguage.fr: 'Race'},
+  'pick_race_hint': {
+    AppLanguage.en: 'Tap a people to read about them.',
+    AppLanguage.fr: 'Touchez un peuple pour en savoir plus.',
+  },
+  'pick_profession_hint': {
+    AppLanguage.en: 'Tap a calling to read about it.',
+    AppLanguage.fr: 'Touchez une vocation pour en savoir plus.',
+  },
+  'your_character_label': {
+    AppLanguage.en: 'Your character',
+    AppLanguage.fr: 'Votre personnage',
+  },
+  'your_character_waiting': {
+    AppLanguage.en: 'Pick a race and a profession to see what they add up to.',
+    AppLanguage.fr:
+        'Choisissez une race et une vocation pour voir ce que cela donne.',
+  },
+  'starting_body_label': {
+    AppLanguage.en: 'At the start',
+    AppLanguage.fr: 'Au départ',
+  },
+  'abilities_label': {
+    AppLanguage.en: 'Abilities',
+    AppLanguage.fr: 'Aptitudes',
+  },
   'profession_label': {
     AppLanguage.en: 'Profession',
     AppLanguage.fr: 'Profession'
@@ -9094,6 +9119,28 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'clans_title': {
     AppLanguage.en: 'Clans & Politics',
     AppLanguage.fr: 'Clans et politique',
+  },
+  'clans_shops_label': {
+    AppLanguage.en: 'Their shops:',
+    AppLanguage.fr: 'Leurs boutiques :',
+  },
+  'clans_title_play': {
+    AppLanguage.en: 'Clans',
+    AppLanguage.fr: 'Clans',
+  },
+  'clans_intrigues_none_play': {
+    AppLanguage.en:
+        'No intrigue has reached you yet. Keep your ears open on the road.',
+    AppLanguage.fr:
+        'Aucune intrigue ne vous est encore parvenue. Gardez l’oreille ouverte sur la route.',
+  },
+  'clans_intrigue_next': {
+    AppLanguage.en: 'What comes next · chapter {c}',
+    AppLanguage.fr: 'La suite · chapitre {c}',
+  },
+  'clans_intrigue_next_unknown': {
+    AppLanguage.en: 'What comes next is still hidden',
+    AppLanguage.fr: 'La suite est encore cachée',
   },
   'clans_tab_standing': {
     AppLanguage.en: 'Standing',

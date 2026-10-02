@@ -11,6 +11,7 @@ import '../gamedata/db_schema.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/camp_presence_provider.dart';
 import '../providers/chapter_loop_provider.dart' show chapterLoopsProvider;
+import '../providers/clans_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
@@ -273,17 +274,23 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               ),
             ),
           ),
-          // Edit Mode's Clans & Politics (v1.193): standing, relations,
-          // their history and the intrigues.
-          if (isEditMode)
-            IconButton(
-              key: const Key('home_clans_politics'),
-              icon: const Icon(Icons.balance),
-              tooltip: tr(ref, 'clans_title'),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const ClansPoliticsScreen()),
-              ),
+          // Clans & Politics (v1.193): standing, relations, their history
+          // and the intrigues. In the story (v1.196) the same place opens
+          // its read-only view, a dot while the coast's news waits unread.
+          IconButton(
+            key: const Key('home_clans_politics'),
+            icon: Badge(
+              isLabelVisible: !isEditMode &&
+                  ref.watch(
+                      politicsProvider.select((p) => p.unreadNews.isNotEmpty)),
+              child: const Icon(Icons.balance),
             ),
+            tooltip: tr(ref, isEditMode ? 'clans_title' : 'clans_title_play'),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (_) => ClansPoliticsScreen(play: !isEditMode)),
+            ),
+          ),
           IconButton(
             icon: Text(language == AppLanguage.fr ? '🇫🇷' : '🇬🇧'),
             tooltip: tr(ref, 'language'),

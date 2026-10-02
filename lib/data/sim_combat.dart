@@ -8,6 +8,7 @@ import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../models/ally_state.dart';
 import 'perks.dart';
+import 'shop_stock.dart';
 import 'signs.dart';
 
 /// A fight model for the in-app playthrough simulator: one simulated
@@ -314,10 +315,9 @@ class SimCharacter {
         ) ??
         const <String, int>{};
     final stock = <MapEntry<String, Map<String, dynamic>>>[
-      for (final raw in (shop['initialStock'] as List?) ?? const [])
-        if (items[raw.toString()] is Map<String, dynamic>)
-          MapEntry(
-              raw.toString(), items[raw.toString()] as Map<String, dynamic>),
+      for (final raw in allShopStock(shop))
+        if (items[raw] is Map<String, dynamic>)
+          MapEntry(raw, items[raw] as Map<String, dynamic>),
     ];
 
     // 1. Spellbooks: the profession's own, still unknown.
