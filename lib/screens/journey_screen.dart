@@ -616,6 +616,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           final target = play.isInExcursion || choice.isEnding
               ? null
               : landmarkOfScene(choice.nextId);
+          // A way to another landmark points out of the square; only one
+          // that leaves the location (the city, not one of its districts)
+          // is a journey over the world chart (v1.197).
+          final elsewhere = target != null && target.id != standing?.id;
+          final travels = elsewhere &&
+              world.travelsBetween(story, play.currentNodeId, choice.nextId);
           return _Step(
             choice: choice,
             kind: journeyStepKindOf(choice),
@@ -648,16 +654,14 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     shrineShare: condition?.shrineShare ?? 0.3,
                     hazardShare: hazardShareFor(world.roadBiome(
                         story, play.currentNodeId, choice.nextId)),
+                    world: world,
                   ),
             hazard: hazardOn(choice),
-            bearing:
-                chartHere != null && target != null && target.id != standing?.id
-                    ? (geography.of(target) - chartHere).direction
-                    : null,
+            bearing: chartHere != null && elsewhere
+                ? (geography.of(target) - chartHere).direction
+                : null,
             chartTarget:
-                chartHere != null && target != null && target.id != standing?.id
-                    ? geography.of(target)
-                    : null,
+                chartHere != null && travels ? geography.of(target) : null,
           );
         }(),
     ];
@@ -671,12 +675,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         : null;
     final discovered =
         discoveredLandmarkIds([...play.history, play.currentNodeId]);
+    // The place drawn up close is the location (v1.197): a city keeps
+    // the one plan and look from district to district, so only a journey
+    // changes the map.
+    final hereLocation = world.locationOf(herePlace?.id);
     final placeView = placeLandmark == null || chartHere == null
         ? null
         : _PlaceView(
-            kind: placeKindOf(_kindsFor(story)[placeLandmark.id],
+            kind: placeKindOf(
+                hereLocation?.kind ?? _kindsFor(story)[placeLandmark.id],
                 atSea: placeLandmark.atSea),
-            seed: _stableSeed(placeLandmark.id),
+            seed: _stableSeed(hereLocation?.id ?? placeLandmark.id),
             geography: geography,
             chartHere: chartHere,
             biome: world.biomeOf(herePlace?.id),

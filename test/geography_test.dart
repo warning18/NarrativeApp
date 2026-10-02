@@ -379,6 +379,27 @@ void main() {
       expect(found, containsAll(['seas', 'narrow', 'water', 'storm']));
     });
 
+    test('a journey leaves the location; a walk between districts does not',
+        () {
+      final geo = fixture();
+      final story = storyFixture();
+      // The alley and the bridge are two districts of Alster: no journey.
+      expect(geo.travelsBetween(story, 'n_alley', '260'), isFalse);
+      expect(geo.travelsBetween(story, '260', 'n_alley'), isFalse);
+      // Alster to the Wells, the Wells to the sea: a journey.
+      expect(geo.travelsBetween(story, 'n_alley', 'w1'), isTrue);
+      expect(geo.travelsBetween(story, 'w1', 'at_sea'), isTrue);
+      expect(geo.travelsBetween(story, 'w1', 'w1'), isFalse);
+      // A scene the world can't place goes by its landmark: 'lost' is
+      // on none, 260 and 270 are on different ones, 100 and 105 the same.
+      expect(geo.travelsBetween(story, 'w1', 'lost'), isFalse);
+      expect(Geography.empty.travelsBetween(story, '260', '270'), isTrue);
+      expect(Geography.empty.travelsBetween(story, '100', '105'), isFalse);
+      // Scene 0 happens nowhere, so the bridge from it goes by landmark:
+      // the Blind Beggar to the Stone Bridge.
+      expect(geo.travelsBetween(story, '0', '260'), isTrue);
+    });
+
     test('a road runs through the land it leads to, else the one it leaves',
         () {
       final geo = fixture();

@@ -555,6 +555,7 @@ _SimResult _simulate(
       historyLength: at,
       chapter: chapter,
       hazardShare: share,
+      world: geography,
     );
     if (kind != RoadEventKind.hazard) return;
     final hazard = roadHazardFor(biome,
