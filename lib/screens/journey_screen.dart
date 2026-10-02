@@ -26,6 +26,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/map_look_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/politics_provider.dart';
 import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
@@ -550,8 +551,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final placeLandmark = play.isInExcursion ? null : standing;
     final chartHere =
         placeLandmark == null ? null : geography.of(placeLandmark);
-    final choices =
-        node.choices.where((c) => !c.isHiddenFor(session.flags)).toList();
+    // A choice behind a politics gate that fails (v1.196) is hidden, or
+    // shut with its locked text.
+    final gateWorld = ref.watch(coastGateWorldProvider);
+    final choices = node.choices
+        .where((c) => !choiceHiddenFor(c, session, gateWorld))
+        .toList();
     final ended = choices.isEmpty || isStoryEnding(node);
     final mainQuestOpen =
         ref.watch(chapterProgressProvider)?.mainQuestOpen ?? true;
@@ -572,7 +577,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           // the story (see isStoryChoiceLocked), and says why.
           final locked = shut ||
               isStoryChoiceLocked(choice, story, session,
-                  isExcursion: play.isInExcursion);
+                  isExcursion: play.isInExcursion, world: gateWorld);
           final lockedText = locked
               ? storyChoiceLockedText(ref, choice, session,
                   isExcursion: play.isInExcursion,
@@ -598,7 +603,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                 : <JourneyStepKind>{
                     for (final next in story.nodeFor(choice.nextId)?.choices ??
                         const <StoryChoice>[])
-                      if (!next.isHiddenFor(session.flags))
+                      if (!choiceHiddenFor(next, session, gateWorld))
                         journeyStepKindOf(next),
                   }.take(3).toList(),
             event: !eventsOn || locked || choice.isEnding

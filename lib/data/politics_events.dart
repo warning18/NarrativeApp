@@ -1,7 +1,8 @@
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
-import '../models/story_politics.dart';
+import '../models/story_node.dart';
 import 'factions.dart';
+import 'throne.dart';
 
 /// Politics in motion (v1.195): the story's choices carry politics (see
 /// story_politics.dart), and the coast moves on its own -- the politics
@@ -43,8 +44,14 @@ import 'factions.dart';
 ///   default. Conditions: `flags`, `notFlags`, `anyFlags`,
 ///   `chapterAtLeast`, `chapterAtMost`, `standingAtLeast`/`standingAtMost`
 ///   ({faction: n}), `relationAtLeast`/`relationAtMost` ({"a|b": step}),
-///   `marks` ({sub-clan: friend|foe|none}).
+///   `marks` ({sub-clan: friend|foe|none}); and (v1.196, see throne.dart)
+///   `claim` (a faction id, `any` or `none`, or a list: any of them),
+///   `rungAtLeast` ({faction: 1 House, 2 claim, 3 Throne}) and
+///   `throneWinner` (an id, `any` or `none`, or a list). A story choice's
+///   `politicsIf` is written the same way (see [choicePoliticsGate]).
 /// - **effects:** the shape of a choice's `politics`, plus `flags` to set.
+///   `claim` and `throneWinner` are effects too: write a variant's
+///   `conditions` and `effects` apart when it uses them.
 /// - **once:** true unless written false; an event that is not once may
 ///   fire again in a later chapter.
 
@@ -155,6 +162,9 @@ class EventConditions {
     this.relationAtLeast = const {},
     this.relationAtMost = const {},
     this.marks = const {},
+    this.claim = const [],
+    this.rungAtLeast = const {},
+    this.throneWinner = const [],
   });
 
   static const EventConditions none = EventConditions();
@@ -172,6 +182,17 @@ class EventConditions {
   final Map<String, num> relationAtMost;
   final Map<String, String> marks;
 
+  /// The claims any of which will do: faction ids, `any` (some claim) or
+  /// `none` (no claim yet). Empty: any.
+  final List<String> claim;
+
+  /// The rung each faction must have reached (see rungFor).
+  final Map<String, num> rungAtLeast;
+
+  /// The factions on the Throne any of which will do (ids, `any` or
+  /// `none`). Empty: any.
+  final List<String> throneWinner;
+
   /// The keys conditions are written with.
   static const Set<String> keys = {
     'flags',
@@ -184,7 +205,15 @@ class EventConditions {
     'relationAtLeast',
     'relationAtMost',
     'marks',
+    'claim',
+    'rungAtLeast',
+    'throneWinner',
   };
+
+  /// Whether [held] (a claim or the Throne's faction, '' for none) is one
+  /// of [wanted] (ids, `any`, `none`).
+  static bool _oneOf(List<String> wanted, String held) => wanted.any((w) =>
+      w == 'any' ? held.isNotEmpty : (w == 'none' ? held.isEmpty : w == held));
 
   factory EventConditions.fromJson(Map<String, dynamic> json) =>
       EventConditions(
@@ -202,10 +231,21 @@ class EventConditions {
             for (final e in (json['marks'] as Map).entries)
               e.key.toString(): _text(e.value),
         },
+        claim: _strings(json['claim']),
+        rungAtLeast: _numbers(json['rungAtLeast']),
+        throneWinner: _strings(json['throneWinner']),
       );
 
   /// Whether they hold with [held] flags and [politics], in [world].
   bool holds(CoastWorld world, Iterable<String> held, PoliticsState politics) {
+    if (claim.isNotEmpty && !_oneOf(claim, politics.claim)) return false;
+    if (throneWinner.isNotEmpty &&
+        !_oneOf(throneWinner, politics.throneWinner)) {
+      return false;
+    }
+    for (final e in rungAtLeast.entries) {
+      if (rungFor(e.key, politics, world.data) < e.value) return false;
+    }
     final set = held.toSet();
     if (!flags.every(set.contains)) return false;
     if (notFlags.any(set.contains)) return false;
@@ -394,7 +434,8 @@ Map<String, PoliticsEvent> parsePoliticsEvents(Map<String, dynamic> db) {
 
 /// What the politics rules read besides the session's politics and flags:
 /// the clan [data], the [events], the chapter reached, the story's [day]
-/// and the days into the chapter.
+/// and the days into the chapter; and (v1.196) the patrons that gave a
+/// sign this life ([signPatrons]), for the Choir or the Pit in the Host.
 class CoastWorld {
   const CoastWorld({
     required this.data,
@@ -402,6 +443,7 @@ class CoastWorld {
     this.chapter = 1,
     this.day = 1,
     this.chapterDay = 1,
+    this.signPatrons = const [],
   });
 
   final ClanData data;
@@ -409,6 +451,7 @@ class CoastWorld {
   final int chapter;
   final int day;
   final int chapterDay;
+  final List<String> signPatrons;
 }
 
 /// An offer the politics brought: [factionId] guaranteed a place, logged
@@ -431,9 +474,9 @@ class CompanionTurn {
 
 /// What the politics did: the [politics] and [flags] after, and what only
 /// the session can do -- the [offers] due, the [companions] moved, the
-/// [titles] given; the [news] told and the events [fired]. [applied]
-/// false: nothing happened at all (politics applied before, or no event
-/// due).
+/// [titles] given; the [news] told and the events [fired]; whether the
+/// Host [mustered] (v1.196: the session shows it). [applied] false:
+/// nothing happened at all (politics applied before, or no event due).
 class CoastChange {
   const CoastChange({
     required this.politics,
@@ -443,6 +486,7 @@ class CoastChange {
     this.titles = const [],
     this.news = const [],
     this.fired = const [],
+    this.mustered = false,
     this.applied = true,
   });
 
@@ -453,6 +497,7 @@ class CoastChange {
   final List<String> titles;
   final List<CoastNews> news;
   final List<String> fired;
+  final bool mustered;
   final bool applied;
 }
 
@@ -489,6 +534,7 @@ class _Coast {
   final titles = <String>[];
   final news = <CoastNews>[];
   final fired = <String>[];
+  var mustered = false;
 
   ClanData get data => world.data;
 
@@ -526,12 +572,110 @@ class _Coast {
     for (final step in p.intrigues) {
       intrigue(step, cause);
     }
+    // The climb (v1.196, see throne.dart): the claim before the crown, the
+    // crown before the muster, so the Host flies the Throne's banner.
+    if (p.claim.isNotEmpty) claim(p.claim);
+    p.pledges.forEach(pledge);
+    if (p.throneWinner.isNotEmpty) crown(p.throneWinner);
+    if (p.muster) muster();
     if (p.offerFrom.isNotEmpty) {
       offers.add(CoastOffer(factionId: p.offerFrom, cause: cause));
     }
     for (final id in p.events) {
       fireById(id, depth + 1);
     }
+  }
+
+  /// A line in the standing log that moved nothing: a pledge, the crown,
+  /// the muster (or a claim with nothing left to raise).
+  void log(String cause, String factionId) {
+    politics = politics.copyWith(
+      standingLog: _capped(
+        politics.standingLog,
+        StandingLogEntry(
+          chapter: world.chapter,
+          day: world.day,
+          cause: cause,
+          factionId: factionId,
+        ),
+        maxStandingLogEntries,
+      ),
+    );
+  }
+
+  /// [id] taken as the claim: the last one renounced (its standing
+  /// [renounceCost] down, logged `renounce:<id>`), the flag `claim_<id>`
+  /// the only faction's claim flag held (the story's own `claim_` flags
+  /// stay), and its standing raised to the Sworn tier with the banner (see
+  /// raiseToClaim, logged `claim`).
+  void claim(String id) {
+    final previous = politics.claim;
+    if (previous != id) {
+      if (previous.isNotEmpty) {
+        final renounce = 'renounce:$previous';
+        final renounced = setStandingValue(politics, previous,
+            politics.standingOf(previous, data) - renounceCost, renounce,
+            data: data, chapter: world.chapter, day: world.day);
+        politics = renounced.state;
+        if (!renounced.changed) log(renounce, previous);
+      }
+      politics = politics.copyWith(claim: id);
+    }
+    // The other factions' claim flags go; the story's own claim_ flags
+    // (7500's claim_kept) stay.
+    final others = {
+      for (final other in [...data.factions.keys, previous])
+        if (other.isNotEmpty && other != id) claimFlag(other),
+    };
+    flags.removeWhere(others.contains);
+    addFlag(claimFlag(id));
+    final raised = raiseToClaim(politics, id, 'claim',
+        data: data, chapter: world.chapter, day: world.day);
+    politics = raised.state;
+    if (!raised.changed && previous != id) log('claim', id);
+  }
+
+  /// [id] pledged to the cause: it joins the Host whatever its standing.
+  void pledge(String id) {
+    if (id.isEmpty) return;
+    if (!politics.hasPledged(id)) {
+      politics = politics.copyWith(pledged: [...politics.pledged, id]);
+      log('pledge', id);
+    }
+    addFlag(pledgedFlag(id));
+  }
+
+  /// [id] crowned: on the Throne, its flags set (any other winner's
+  /// dropped) and its throne titles given.
+  void crown(String id) {
+    final previous = politics.throneWinner;
+    if (previous != id) {
+      politics = politics.copyWith(throneWinner: id);
+      log('throne', id);
+    }
+    final others = {
+      for (final other in [...data.factions.keys, previous])
+        if (other.isNotEmpty && other != id) throneWinnerFlag(other),
+    };
+    flags.removeWhere(others.contains);
+    addFlag(throneWinnerFlag(id));
+    addFlag(onThroneFlag);
+    for (final title in throneTitlesOf(id, data)) {
+      if (!titles.contains(title.id)) titles.add(title.id);
+    }
+  }
+
+  /// The Host mustered now (see hostFor): kept, and its flags set in
+  /// place of an earlier muster's.
+  void muster() {
+    final host =
+        hostFor(politics: politics, data: data, signPatrons: world.signPatrons)
+            .musteredOn(world.chapter, world.day);
+    politics = politics.copyWith(host: host);
+    flags.removeWhere((f) => isMusterFlag(f, data.factions.keys));
+    hostFlagsFor(host).forEach(addFlag);
+    log('muster', host.banner);
+    mustered = true;
   }
 
   void intrigue(IntrigueStep step, String cause) {
@@ -662,6 +806,7 @@ class _Coast {
         titles: titles,
         news: news,
         fired: fired,
+        mustered: mustered,
         applied: applied,
       );
 }
@@ -769,10 +914,16 @@ bool eventDue(
 
 /// The muted line under a choice: what it moves, "Vigil +5 · Dominion −5",
 /// then its marks ("Inquisition: foe"), each faction by its short name
-/// in [language] (the French `short_fr`). Empty when [p] is hidden or
-/// moves neither.
-String politicsHint(StoryPolitics? p, ClanData data, AppLanguage language) {
+/// in [language] (the French `short_fr`); then (v1.196) the climb's
+/// moves by full name: "Claim: The Cinder Compact (gives up the Grey
+/// Vigil)" -- the claim given up read off [politics] -- "Joins your
+/// cause: …", "The Throne: …". Empty when [p] is hidden or moves none of
+/// it.
+String politicsHint(StoryPolitics? p, ClanData data, AppLanguage language,
+    {PoliticsState politics = PoliticsState.empty}) {
   if (p == null || !p.hasHint) return '';
+  String name(String id) => throneFactionName(id, data, language);
+  final previous = politics.claim;
   final parts = <String>[
     for (final e in p.standing.entries)
       // A no-break space: "Vigil +5" never splits across lines.
@@ -782,8 +933,57 @@ String politicsHint(StoryPolitics? p, ClanData data, AppLanguage language) {
       if (subclanMarkNamed(e.value) case final mark?)
         trFor(language, 'politics_hint_mark_${mark.name}').replaceAll(
             '{name}', data.subclan(e.key)?.nameFor(language) ?? e.key),
+    if (p.claim.isNotEmpty)
+      previous.isNotEmpty && previous != p.claim
+          ? trFor(language, 'throne_hint_claim_renounce')
+              .replaceAll('{name}', name(p.claim))
+              .replaceAll('{old}', midSentenceName(name(previous)))
+          : trFor(language, 'throne_hint_claim')
+              .replaceAll('{name}', name(p.claim)),
+    for (final id in p.pledges)
+      trFor(language, 'throne_hint_pledge').replaceAll('{name}', name(id)),
+    if (p.throneWinner.isNotEmpty)
+      trFor(language, 'throne_hint_throne')
+          .replaceAll('{name}', name(p.throneWinner)),
   ];
   return parts.join(' · ');
+}
+
+// --- A choice's politics gate (v1.196) ---------------------------------------
+
+/// How a story choice stands behind its politics gate
+/// ([StoryChoice.politicsIf]): [open] (no gate, or it holds), [locked]
+/// (it fails and the choice has a `lockedText`: shown shut with it) or
+/// [hidden] (it fails: not shown at all).
+enum ChoiceGate { open, locked, hidden }
+
+/// Whether the conditions written in [politicsIf] (the shape of an event
+/// variant's `conditions`, see [EventConditions]) hold with [politics]
+/// and [flags] in [world]. An empty gate always holds.
+bool politicsIfHolds(
+  Map<String, dynamic> politicsIf, {
+  required PoliticsState politics,
+  required Iterable<String> flags,
+  required CoastWorld world,
+}) =>
+    politicsIf.isEmpty ||
+    EventConditions.fromJson(politicsIf).holds(world, flags, politics);
+
+/// How [choice] stands behind its politics gate (see [ChoiceGate]).
+ChoiceGate choicePoliticsGate(
+  StoryChoice choice, {
+  required PoliticsState politics,
+  required Iterable<String> flags,
+  required CoastWorld world,
+}) {
+  if (politicsIfHolds(choice.politicsIf,
+      politics: politics, flags: flags, world: world)) {
+    return ChoiceGate.open;
+  }
+  return (choice.lockedText ?? '').trim().isNotEmpty ||
+          (choice.lockedTextFr ?? '').trim().isNotEmpty
+      ? ChoiceGate.locked
+      : ChoiceGate.hidden;
 }
 
 /// An event cause's name for the log (`event:<id>`, see

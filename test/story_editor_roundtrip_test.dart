@@ -82,4 +82,30 @@ void main() {
     expect(politicsFromEditorText('  ', node.politicsOnEnter), isNull);
     expect(politicsEditorText(null), isEmpty);
   });
+
+  test('a choice\'s politics gate and last-battle mark come back (v1.196)', () {
+    const gate = {
+      'claim': 'any',
+      'rungAtLeast': {'vigil': 2},
+      'flags': ['clan_vigil_step_2'],
+    };
+    final choice = StoryChoice.fromJson(const {
+      'text': 'Lead the Host',
+      'next_id': 'x',
+      'triggerEnemyId': 'tear_herald',
+      'politicsIf': gate,
+      'hostFight': true,
+    });
+    final saved = debugEditorRoundTrip(choice);
+    expect(saved.toJson(), choice.toJson());
+    expect(saved.politicsIf, gate);
+    expect(saved.hostFight, isTrue);
+    // The gate's JSON field: kept when it is no object, none when empty.
+    final text = politicsIfEditorText(choice.politicsIf);
+    expect(politicsIfFromEditorText(text, const {}), gate);
+    expect(politicsIfFromEditorText('{oops', choice.politicsIf),
+        same(choice.politicsIf));
+    expect(politicsIfFromEditorText(' ', choice.politicsIf), isEmpty);
+    expect(politicsIfEditorText(const {}), isEmpty);
+  });
 }

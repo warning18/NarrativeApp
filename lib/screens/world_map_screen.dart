@@ -61,6 +61,15 @@ class _Tokens {
   );
 }
 
+/// Chapter [number]'s colours and title (see mapChapters); for a chapter
+/// the list has not been given yet (one added to chapters.json first), the
+/// latest one before it, so a landmark of a new chapter never breaks the
+/// map.
+MapChapter _mapChapterOf(int number) =>
+    mapChapters.where((c) => c.number == number).firstOrNull ??
+    mapChapters.lastWhere((c) => c.number <= number,
+        orElse: () => mapChapters.first);
+
 String _lookName(WidgetRef ref, MapLook look) =>
     tr(ref, 'world_map_look_${look.name}');
 
@@ -336,12 +345,12 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
     final dark = Theme.of(context).brightness == Brightness.dark;
     final tokens = dark ? _Tokens.dark : _Tokens.light;
     Color chapterColor(int n) =>
-        dark ? mapChapter(n).dark : mapChapter(n).light;
+        dark ? _mapChapterOf(n).dark : _mapChapterOf(n).light;
     // On the chart the colour follows the chart's own ground: the night
     // look is dark, the parchment light, and the Shroud has no colour.
     Color chartChapterColor(int n) => switch (look) {
-          MapLook.night => mapChapter(n).dark,
-          MapLook.parchment => mapChapter(n).light,
+          MapLook.night => _mapChapterOf(n).dark,
+          MapLook.parchment => _mapChapterOf(n).light,
           MapLook.shroud => const Color(0xFFA3A3AA),
         };
 
@@ -896,7 +905,7 @@ class _LandmarkPanel extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(mapChapter(landmark.chapter).title(language),
+          Text(_mapChapterOf(landmark.chapter).title(language),
               style: pixel(15, color: chapterColor)),
           const SizedBox(height: 4),
           Text(landmark.name(language),

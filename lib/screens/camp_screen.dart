@@ -9,6 +9,7 @@ import '../data/approval.dart';
 import '../data/camp_state.dart';
 import '../data/companion_remarks.dart';
 import '../data/narration_clips.dart' show storyBodyFor;
+import '../data/politics_events.dart' show ChoiceGate;
 import '../data/port_helpers.dart';
 import '../data/zone_gating.dart';
 import '../gamedata/db_schema.dart';
@@ -22,6 +23,7 @@ import '../providers/expedition_active_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/politics_provider.dart';
 import '../providers/remark_provider.dart';
 import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
@@ -400,8 +402,19 @@ class _ChapterCard extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final visible =
-        campNode.choices.where((c) => !c.isHiddenFor(session.flags)).toList();
+    // A choice behind a politics gate that fails (v1.196) is hidden, or
+    // shut with its locked text.
+    final gateWorld = ref.watch(coastGateWorldProvider);
+    final visible = campNode.choices
+        .where((c) => !choiceHiddenFor(c, session, gateWorld))
+        .toList();
+    bool shut(StoryChoice c) =>
+        story == null ||
+        isStoryChoiceLocked(c, story, session, world: gateWorld);
+    String label(StoryChoice c) =>
+        choiceGateFor(c, session, gateWorld) == ChoiceGate.locked
+            ? c.lockedTextFor(fr) ?? c.textFor(fr)
+            : c.textFor(fr);
     final mainChoices = visible.where((c) => c.mainQuest).toList();
     final otherChoices = visible.where((c) => !c.mainQuest).toList();
     final open = progress?.mainQuestOpen ?? true;
@@ -567,14 +580,10 @@ class _ChapterCard extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 12),
                     ),
-                    onPressed: busy ||
-                            !open ||
-                            story == null ||
-                            isStoryChoiceLocked(choice, story, session)
+                    onPressed: busy || !open || shut(choice)
                         ? null
                         : () => setOutOnMainQuest(context, ref, choice),
-                    child:
-                        Text(choice.textFor(fr), textAlign: TextAlign.center),
+                    child: Text(label(choice), textAlign: TextAlign.center),
                   ),
                   if (!open && stepsLeft > 0)
                     Padding(
@@ -603,12 +612,10 @@ class _ChapterCard extends ConsumerWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
-                onPressed: busy ||
-                        story == null ||
-                        isStoryChoiceLocked(choice, story, session)
+                onPressed: busy || shut(choice)
                     ? null
                     : () => takeStoryChoice(context, ref, choice),
-                child: Text(choice.textFor(fr)),
+                child: Text(label(choice)),
               ),
             ),
         ],

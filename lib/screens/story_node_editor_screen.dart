@@ -299,6 +299,24 @@ StoryPolitics? politicsFromEditorText(String text, StoryPolitics? original) {
   }
 }
 
+/// A choice's politics gate as the editor's JSON field shows it (v1.196,
+/// see [StoryChoice.politicsIf]): '' for none.
+String politicsIfEditorText(Map<String, dynamic> gate) =>
+    gate.isEmpty ? '' : jsonEncode(gate);
+
+/// The gate the editor's JSON field [text] says: none when it is empty;
+/// [original] kept, as it was, when it is no JSON object.
+Map<String, dynamic> politicsIfFromEditorText(
+    String text, Map<String, dynamic> original) {
+  if (text.trim().isEmpty) return const {};
+  try {
+    final raw = jsonDecode(text);
+    return raw is Map ? Map<String, dynamic>.from(raw) : original;
+  } on FormatException {
+    return original;
+  }
+}
+
 /// Edit Mode's politics, as JSON (see story_politics.dart for the shape).
 class _PoliticsField extends StatelessWidget {
   const _PoliticsField({
@@ -388,7 +406,10 @@ class _ChoiceEditState {
         challengeMaxFailuresController = TextEditingController(
             text: choice.challengeMaxFailures?.toString() ?? ''),
         politicsController =
-            TextEditingController(text: politicsEditorText(choice.politics));
+            TextEditingController(text: politicsEditorText(choice.politics)),
+        politicsIfController = TextEditingController(
+            text: politicsIfEditorText(choice.politicsIf)),
+        hostFight = choice.hostFight;
 
   _ChoiceEditState.blank() : this(const StoryChoice(text: '', nextId: 'EXIT'));
 
@@ -441,6 +462,13 @@ class _ChoiceEditState {
   /// The choice's politics as JSON (see [StoryChoice.politics]).
   final TextEditingController politicsController;
 
+  /// The choice's politics gate as JSON (v1.196, see
+  /// [StoryChoice.politicsIf]).
+  final TextEditingController politicsIfController;
+
+  /// One of the last battles: the Host fights beside the party (v1.196).
+  bool hostFight;
+
   void dispose() {
     textController.dispose();
     textFrController.dispose();
@@ -464,6 +492,7 @@ class _ChoiceEditState {
     challengeSuccessesNeededController.dispose();
     challengeMaxFailuresController.dispose();
     politicsController.dispose();
+    politicsIfController.dispose();
   }
 
   StoryChoice toChoice() => StoryChoice(
@@ -534,8 +563,9 @@ class _ChoiceEditState {
         chestFloor: _original.chestFloor,
         isHunterAmbush: _original.isHunterAmbush,
         showIfFlags: _original.showIfFlags,
-        politicsIf: _original.politicsIf,
-        hostFight: _original.hostFight,
+        politicsIf: politicsIfFromEditorText(
+            politicsIfController.text, _original.politicsIf),
+        hostFight: hostFight,
         mainQuest: _original.mainQuest,
         pays: _original.pays,
         travelPlaceId: _original.travelPlaceId,
@@ -872,6 +902,20 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   controller: state.politicsController,
                   label: t('politics_editor_label'),
                   help: t('politics_editor_help'),
+                ),
+                const SizedBox(height: 8),
+                // The climb (v1.196): the choice's gate, and the last
+                // battles' mark.
+                _PoliticsField(
+                  controller: state.politicsIfController,
+                  label: t('politics_if_editor_label'),
+                  help: t('politics_if_editor_help'),
+                ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(t('host_fight_editor_label')),
+                  value: state.hostFight,
+                  onChanged: (value) => setState(() => state.hostFight = value),
                 ),
               ],
             ),

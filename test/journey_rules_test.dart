@@ -51,10 +51,13 @@ void main() {
         expect(threatFor(threatGraceDaysFor(chapter) + 2, chapter: chapter),
             closeTo(2 * threatPerDay, 1e-9));
       }
-      // The ending is one crossing and the tear: longer than a chapter
-      // on foot, shorter than an open one.
-      expect(threatGraceDaysFor(7), greaterThan(threatGraceDays));
-      expect(threatGraceDaysFor(7), lessThan(threatGraceDaysFor(4)));
+      // The Lantern Throne and Beyond the Tear are a crossing and a war,
+      // the muster and the tear: longer than a chapter on foot, shorter
+      // than an open one.
+      for (final chapter in [7, 8]) {
+        expect(threatGraceDaysFor(chapter), greaterThan(threatGraceDays));
+        expect(threatGraceDaysFor(chapter), lessThan(threatGraceDaysFor(4)));
+      }
     });
 
     test('hunger bites a share of health, never the last point', () {

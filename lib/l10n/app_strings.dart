@@ -9577,9 +9577,210 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'politics_editor_help': {
     AppLanguage.en:
-        '{"standing": {"vigil": 5}, "marks": {"inquisition": "foe"}, "relations": [{"a": "mire", "b": "penitents", "steps": 1}], "offerFrom": "penitents", "intrigue": {"id": "hooded_lantern", "stage": 2}, "remembrance": 3, "event": "id", "hidden": true}',
+        '{"standing": {"vigil": 5}, "marks": {"inquisition": "foe"}, "relations": [{"a": "mire", "b": "penitents", "steps": 1}], "offerFrom": "penitents", "intrigue": {"id": "hooded_lantern", "stage": 2}, "remembrance": 3, "event": "id", "hidden": true, "claim": "vigil", "pledge": "mire", "throneWinner": "vigil", "muster": true}',
     AppLanguage.fr:
-        '{"standing": {"vigil": 5}, "marks": {"inquisition": "foe"}, "relations": [{"a": "mire", "b": "penitents", "steps": 1}], "offerFrom": "penitents", "intrigue": {"id": "hooded_lantern", "stage": 2}, "remembrance": 3, "event": "id", "hidden": true}',
+        '{"standing": {"vigil": 5}, "marks": {"inquisition": "foe"}, "relations": [{"a": "mire", "b": "penitents", "steps": 1}], "offerFrom": "penitents", "intrigue": {"id": "hooded_lantern", "stage": 2}, "remembrance": 3, "event": "id", "hidden": true, "claim": "vigil", "pledge": "mire", "throneWinner": "vigil", "muster": true}',
+  },
+  // The climb to the Lantern Throne and the Host (v1.196, see throne.dart).
+  'politics_if_editor_label': {
+    AppLanguage.en: 'Shown only if (JSON)',
+    AppLanguage.fr: 'Affiché seulement si (JSON)',
+  },
+  'politics_if_editor_help': {
+    AppLanguage.en:
+        '{"claim": "any", "rungAtLeast": {"vigil": 1}, "standingAtLeast": {"vigil": 26}, "throneWinner": "none", "flags": ["x"]} -- hidden when it fails, or shut with the locked text',
+    AppLanguage.fr:
+        '{"claim": "any", "rungAtLeast": {"vigil": 1}, "standingAtLeast": {"vigil": 26}, "throneWinner": "none", "flags": ["x"]} -- caché quand la condition échoue, ou fermé avec le texte verrouillé',
+  },
+  'host_fight_editor_label': {
+    AppLanguage.en: 'A last battle: the Host fights beside the party',
+    AppLanguage.fr: 'Une dernière bataille : l’Ost combat aux côtés du groupe',
+  },
+  'throne_hint_claim': {
+    AppLanguage.en: 'Claim: {name}',
+    AppLanguage.fr: 'Prétention : {name}',
+  },
+  'throne_hint_claim_renounce': {
+    AppLanguage.en: 'Claim: {name} (gives up {old})',
+    AppLanguage.fr: 'Prétention : {name} (vous quittez {old})',
+  },
+  'throne_hint_pledge': {
+    AppLanguage.en: 'Joins your cause: {name}',
+    AppLanguage.fr: 'Rejoint votre cause : {name}',
+  },
+  'throne_hint_throne': {
+    AppLanguage.en: 'The Throne: {name}',
+    AppLanguage.fr: 'Le Trône : {name}',
+  },
+  'standing_cause_claim': {
+    AppLanguage.en: 'Claim taken',
+    AppLanguage.fr: 'Prétention',
+  },
+  'standing_cause_renounce': {
+    AppLanguage.en: 'Claim given up',
+    AppLanguage.fr: 'Prétention abandonnée',
+  },
+  'standing_cause_pledge': {
+    AppLanguage.en: 'Joins your cause',
+    AppLanguage.fr: 'Rejoint votre cause',
+  },
+  'standing_cause_throne': {
+    AppLanguage.en: 'The Lantern Throne',
+    AppLanguage.fr: 'Le Trône de la Lanterne',
+  },
+  'standing_cause_muster': {
+    AppLanguage.en: 'The Host musters',
+    AppLanguage.fr: 'L’Ost se rassemble',
+  },
+  'throne_climb_title': {
+    AppLanguage.en: 'The climb',
+    AppLanguage.fr: 'L’Ascension',
+  },
+  'throne_climb_hint': {
+    AppLanguage.en:
+        'A House of a clan, then the clan itself, then the Lantern Throne.',
+    AppLanguage.fr:
+        'Une Maison d’un clan, puis le clan lui-même, puis le Trône de la Lanterne.',
+  },
+  'throne_your_claim': {
+    AppLanguage.en: 'Your claim: {name}',
+    AppLanguage.fr: 'Votre prétention : {name}',
+  },
+  'throne_no_claim': {
+    AppLanguage.en: 'No claim yet',
+    AppLanguage.fr: 'Aucune prétention pour l’instant',
+  },
+  'throne_climbing': {
+    AppLanguage.en: 'Furthest climb: {name}',
+    AppLanguage.fr: 'Ascension la plus avancée : {name}',
+  },
+  'throne_on_throne': {
+    AppLanguage.en: 'On the Lantern Throne for {name}',
+    AppLanguage.fr: 'Sur le Trône de la Lanterne pour {name}',
+  },
+  'throne_rung_house': {AppLanguage.en: 'House', AppLanguage.fr: 'Maison'},
+  'throne_rung_clan': {
+    AppLanguage.en: 'Clan {n}/3',
+    AppLanguage.fr: 'Clan {n}/3',
+  },
+  'throne_rung_clan_plain': {AppLanguage.en: 'Clan', AppLanguage.fr: 'Clan'},
+  'throne_rung_throne': {AppLanguage.en: 'Throne', AppLanguage.fr: 'Trône'},
+  'throne_rung_reached': {
+    AppLanguage.en: '{rung}, reached',
+    AppLanguage.fr: '{rung}, atteint',
+  },
+  'throne_rung_open': {
+    AppLanguage.en: '{rung}, not yet',
+    AppLanguage.fr: '{rung}, pas encore',
+  },
+  'host_title': {AppLanguage.en: 'Your Host', AppLanguage.fr: 'Votre Ost'},
+  'host_intro': {
+    AppLanguage.en:
+        'The force you raised on the way. It fights beside the party in the last battles.',
+    AppLanguage.fr:
+        'La force que vous avez levée en chemin. Elle combat aux côtés du groupe lors des dernières batailles.',
+  },
+  'host_preview_intro': {
+    AppLanguage.en:
+        'Who would come if you mustered now: the Host fights beside the party in the last battles.',
+    AppLanguage.fr:
+        'Qui viendrait si vous rassembliez l’Ost maintenant : il combat aux côtés du groupe lors des dernières batailles.',
+  },
+  'host_mustered_on': {
+    AppLanguage.en: 'Mustered in chapter {c}, day {d}',
+    AppLanguage.fr: 'Rassemblé au chapitre {c}, jour {d}',
+  },
+  'host_banner': {AppLanguage.en: 'The Banner', AppLanguage.fr: 'La Bannière'},
+  'host_no_banner': {
+    AppLanguage.en: 'No banner: you hold no claim.',
+    AppLanguage.fr: 'Aucune bannière : vous n’avez pas de prétention.',
+  },
+  'host_allies': {AppLanguage.en: 'Allies', AppLanguage.fr: 'Alliés'},
+  'host_no_allies': {
+    AppLanguage.en: 'No faction stands with you yet.',
+    AppLanguage.fr: 'Aucune faction ne se tient encore avec vous.',
+  },
+  'host_houses': {AppLanguage.en: 'Houses', AppLanguage.fr: 'Maisons'},
+  'host_no_houses': {
+    AppLanguage.en: 'No House has sent a champion.',
+    AppLanguage.fr: 'Aucune Maison n’a envoyé de champion.',
+  },
+  'host_houses_line': {
+    AppLanguage.en: 'A champion from each House:',
+    AppLanguage.fr: 'Un champion de chaque Maison :',
+  },
+  'host_why_pledged': {
+    AppLanguage.en: 'pledged',
+    AppLanguage.fr: 'ralliement',
+  },
+  'host_why_sign': {
+    AppLanguage.en: 'a sign this life',
+    AppLanguage.fr: 'un signe dans cette vie',
+  },
+  'host_size': {
+    AppLanguage.en: '{n} in the Host',
+    AppLanguage.fr: '{n} dans l’Ost',
+  },
+  'host_fight_log': {
+    AppLanguage.en: 'Your Host fights beside you: {names}.',
+    AppLanguage.fr: 'Votre Ost combat à vos côtés : {names}.',
+  },
+  'host_fight_houses': {
+    AppLanguage.en: '{n} Houses',
+    AppLanguage.fr: '{n} Maisons',
+  },
+  'host_fight_house_one': {
+    AppLanguage.en: 'one House',
+    AppLanguage.fr: 'une Maison',
+  },
+  'host_fight_note': {
+    AppLanguage.en: 'Your Host fights beside you.',
+    AppLanguage.fr: 'Votre Ost combat à vos côtés.',
+  },
+  'clans_tab_throne': {AppLanguage.en: 'Throne', AppLanguage.fr: 'Trône'},
+  'throne_edit_hint': {
+    AppLanguage.en:
+        'Each faction’s climb: its House, its clan steps (the flags clan_<id>_step_1 to 3), the claim and the Throne. Set them here, and muster the Host.',
+    AppLanguage.fr:
+        'L’ascension de chaque faction : sa Maison, les étapes du clan (les drapeaux clan_<id>_step_1 à 3), la prétention et le Trône. Réglez-les ici, et rassemblez l’Ost.',
+  },
+  'throne_edit_steps': {
+    AppLanguage.en: 'Steps {n}/3',
+    AppLanguage.fr: 'Étapes {n}/3',
+  },
+  'throne_edit_claim': {AppLanguage.en: 'Claim', AppLanguage.fr: 'Prétention'},
+  'throne_edit_pledge': {
+    AppLanguage.en: 'Pledge',
+    AppLanguage.fr: 'Ralliement',
+  },
+  'throne_edit_crown': {AppLanguage.en: 'Crown', AppLanguage.fr: 'Couronner'},
+  'throne_edit_muster': {
+    AppLanguage.en: 'Muster now',
+    AppLanguage.fr: 'Rassembler maintenant',
+  },
+  'throne_edit_clear': {
+    AppLanguage.en: 'Undo the climb',
+    AppLanguage.fr: 'Annuler l’ascension',
+  },
+  'throne_edit_preview': {
+    AppLanguage.en: 'Host preview',
+    AppLanguage.fr: 'Aperçu de l’Ost',
+  },
+  'throne_edit_claimed': {
+    AppLanguage.en: 'Claim',
+    AppLanguage.fr: 'Prétention',
+  },
+  'throne_edit_pledged': {
+    AppLanguage.en: 'Pledged',
+    AppLanguage.fr: 'Ralliement',
+  },
+  'throne_edit_crowned': {
+    AppLanguage.en: 'On the Throne',
+    AppLanguage.fr: 'Sur le Trône',
+  },
+  'throne_edit_done': {
+    AppLanguage.en: 'Done.',
+    AppLanguage.fr: 'C’est fait.',
   },
 };
 

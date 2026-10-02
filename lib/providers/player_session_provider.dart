@@ -24,6 +24,15 @@ import '../data/politics_events.dart' as coast show applyStoryPolitics;
 import '../data/quest_objectives.dart' show killTargetsOf;
 import '../data/signs.dart';
 import '../data/skill_tree.dart' show branchMasteryEssenceCost;
+import '../data/throne.dart'
+    show
+        claimFlag,
+        clanQuestSteps,
+        clanStepFlag,
+        isMusterFlag,
+        onThroneFlag,
+        pledgedFlag,
+        throneWinnerFlag;
 import '../models/ally_state.dart';
 import '../models/story_politics.dart';
 
@@ -2347,6 +2356,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         chapter: _politicsChapter(chapter),
         day: state.day,
         chapterDay: max(1, state.day - state.chapterStartDay + 1),
+        signPatrons: state.signPatronsThisLife,
       );
 
   /// Takes [change] into the session: the politics and flags after it,
@@ -2369,13 +2379,19 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       ],
     );
     for (final id in change.titles) {
-      if (next.heldTitleIds.contains(id)) continue;
+      // The coronation's title (v1.196) is worn at once.
+      final crowned = data.titles[id]?.source.startsWith('throne:') ?? false;
+      if (next.heldTitleIds.contains(id)) {
+        if (crowned) next = next.copyWith(activeTitleId: id);
+        continue;
+      }
       next = next.copyWith(
         heldTitleIds: [...next.heldTitleIds, id],
-        activeTitleId:
-            next.activeTitleId.isEmpty && !(data.titles[id]?.negative ?? false)
-                ? id
-                : next.activeTitleId,
+        activeTitleId: crowned ||
+                (next.activeTitleId.isEmpty &&
+                    !(data.titles[id]?.negative ?? false))
+            ? id
+            : next.activeTitleId,
       );
     }
     state = next;
@@ -2469,6 +2485,73 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     _takeCoastChange(change, data, companions: companions);
     await _persist();
     return change;
+  }
+
+  /// Edit Mode's Throne tab (v1.196, see throne.dart): [politics] (a
+  /// claim, a pledge, the Throne, the muster) applied now, logged as an
+  /// edit, every time it is pressed.
+  Future<CoastChange> applyThroneEdit(
+    StoryPolitics politics, {
+    required ClanData data,
+    Map<String, PoliticsEvent> events = const {},
+    int? chapter,
+  }) async {
+    final change = coast.applyStoryPolitics(politics,
+        cause: 'edit',
+        politics: state.politics,
+        flags: state.flags,
+        world: _coastWorld(data, events, chapter));
+    _takeCoastChange(change, data);
+    await _persist();
+    return change;
+  }
+
+  /// Edit Mode: [factionId]'s clan quest at [steps] (0..3): the flags
+  /// `clan_<id>_step_1` up to it held, those past it dropped.
+  Future<void> setClanStepsForEdit(String factionId, int steps,
+      {required ClanData data}) async {
+    final keep = [
+      for (var n = 1; n <= steps.clamp(0, clanQuestSteps); n++)
+        clanStepFlag(factionId, n),
+    ];
+    final prefix = 'clan_${factionId}_step_';
+    final flags = [
+      for (final f in state.flags)
+        if (!f.startsWith(prefix) || keep.contains(f)) f,
+      for (final f in keep)
+        if (!state.flags.contains(f)) f,
+    ];
+    state = _withTitles(state.copyWith(flags: flags), data);
+    await _persist();
+  }
+
+  /// Edit Mode: the climb undone -- no claim, nobody on the Throne, no
+  /// pledge, no Host -- with the flags they set for each faction
+  /// (`claim_<id>`, `pledged_<id>`, `throne_winner_<id>`, `host_<id>`),
+  /// `on_throne` and the Host's counts. Standing, marks, the clan quest
+  /// steps and the story's own flags stay.
+  Future<void> clearThroneForEdit({required ClanData data}) async {
+    final ids = data.factions.keys;
+    final climb = {
+      for (final id in ids) ...[
+        claimFlag(id),
+        pledgedFlag(id),
+        throneWinnerFlag(id),
+      ],
+      onThroneFlag,
+    };
+    bool climbFlag(String f) => climb.contains(f) || isMusterFlag(f, ids);
+    state = _withTitles(
+        state.copyWith(
+          politics: state.politics.copyWith(
+              claim: '', throneWinner: '', pledged: const [], host: Host.none),
+          flags: [
+            for (final f in state.flags)
+              if (!climbFlag(f)) f,
+          ],
+        ),
+        data);
+    await _persist();
   }
 
   /// The camp has shown the news from the coast: none is waiting.

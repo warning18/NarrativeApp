@@ -2,12 +2,16 @@ import 'dart:math';
 
 import '../combat/dice_faces.dart' show isAssignableFace;
 import '../combat/spells.dart';
+import '../models/story_node.dart';
 import 'factions.dart';
 import 'offers.dart';
 import 'perks.dart';
+import 'politics_events.dart';
+import 'politics_events.dart' as coast show applyStoryPolitics;
 import 'signs.dart';
 import 'sim_combat.dart';
 import 'skill_tree.dart';
+import 'throne.dart';
 
 /// How the simulated character grows (see the playthrough simulator):
 /// - [legacy]: the rules before v1.194 -- a skill point a level (and the
@@ -144,12 +148,74 @@ class SimGrowth {
         data: tables.clans,
       );
 
-  /// What the signs, the title and the boon add up to at [alignment].
-  SignEffects effects(int alignment) =>
-      tables.signs.isEmpty && clanEffects.isEmpty
-          ? SignEffects.none
-          : signEffectsFor(character.heldSigns, tables.signs,
-              alignment: alignment, extra: clanEffects);
+  /// What the signs, the title and the boon add up to at [alignment]; in
+  /// one of the last battles ([host], v1.196) the Host's effects too.
+  SignEffects effects(int alignment, {bool host = false}) {
+    final extra = [...clanEffects, if (host) ...hostEffectsNow];
+    return tables.signs.isEmpty && extra.isEmpty
+        ? SignEffects.none
+        : signEffectsFor(character.heldSigns, tables.signs,
+            alignment: alignment, extra: extra);
+  }
+
+  // --- The climb and the Host (v1.196, see throne.dart) ---------------------
+
+  /// The Host the last battles field now (the one mustered, else the one
+  /// the character would muster).
+  Host get host => fieldedHost(
+      politics: politics, data: tables.clans, signPatrons: patronsThisLife);
+
+  /// What [host] adds to a fight.
+  List<SignEffect> get hostEffectsNow => hostEffects(host, tables.clans);
+
+  /// A story choice's or a scene's [story] politics, applied the story's
+  /// way (once under [key], see choicePoliticsKey) with [flags] held in
+  /// [chapter]: the standing, marks and relations they move, the claim,
+  /// the pledges, the Throne and the muster; the titles they bring (the
+  /// Throne's worn). Returns the flags after.
+  List<String> applyStoryPolitics(
+    StoryPolitics story, {
+    required Iterable<String> flags,
+    required int chapter,
+    String key = '',
+  }) {
+    final change = coast.applyStoryPolitics(story,
+        cause: 'sim',
+        key: key,
+        politics: politics,
+        flags: flags.toList(),
+        world: CoastWorld(
+            data: tables.clans,
+            chapter: max(1, chapter),
+            signPatrons: patronsThisLife));
+    politics = change.politics;
+    final gained = [
+      for (final id in change.titles)
+        if (!titles.contains(id)) id,
+    ];
+    final earned = titlesEarned([...titles, ...gained], politics, tables.clans,
+        flags: change.flags);
+    titles = earned.held;
+    final crowned = [
+      for (final id in change.titles)
+        if (tables.clans.titles[id]?.source.startsWith('throne:') ?? false) id,
+    ];
+    activeTitle = crowned.isNotEmpty
+        ? crowned.first
+        : activeTitleAfter(
+            activeTitle, titles, [...gained, ...earned.gained], tables.clans);
+    return change.flags;
+  }
+
+  /// Whether [choice]'s politics gate lets it be taken with [flags] held
+  /// in [chapter] (see choicePoliticsGate: one locked is not taken
+  /// either).
+  bool gateOpen(StoryChoice choice,
+          {required Iterable<String> flags, required int chapter}) =>
+      politicsIfHolds(choice.politicsIf,
+          politics: politics,
+          flags: flags,
+          world: CoastWorld(data: tables.clans, chapter: max(1, chapter)));
 
   /// Levels from [before] to [after] reached.
   void levelsReached(int before, int after) {
