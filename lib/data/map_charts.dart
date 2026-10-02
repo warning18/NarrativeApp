@@ -143,7 +143,7 @@ const _continental = ChartGeography(
     ChartLabel('THE WASTE', 'LA DÉSOLATION', 28, 14, 1),
     ChartLabel('SALTMOUTH', 'BOUCHE-DE-SEL', 120, 44, 2),
     ChartLabel('the Narrow Sea', 'la Mer Étroite', 118, 160, 2, sea: true),
-    ChartLabel('THE ASHEN COAST', 'LA CÔTE CENDRÉE', 172, 44, 3),
+    ChartLabel('THE ASHEN COAST', 'LA CÔTE DE CENDRE', 172, 44, 3),
     ChartLabel('THE HOLLOW CAPE', 'LE CAP CREUX', 120, 6, 6),
   ],
 );
@@ -263,9 +263,9 @@ const _archipelago = ChartGeography(
     ChartLabel('THE WASTE', 'LA DÉSOLATION', 96, 6, 1),
     ChartLabel('SALTMOUTH', 'BOUCHE-DE-SEL', 132, 90, 2),
     ChartLabel('the Grey Water', 'l’Eau Grise', 118, 124, 2, sea: true),
-    ChartLabel('THE ASHEN ISLE', 'L’ÎLE CENDRÉE', 136, 84, 3),
-    ChartLabel('THE HOLLOW ISLES', 'LES ÎLES CREUSES', 88, 166, 4),
-    ChartLabel('THE HOLLOW SHORE', 'LE RIVAGE CREUX', 128, 12, 6),
+    ChartLabel('THE ASHEN ISLE', 'L’ÎLE DE CENDRE', 136, 84, 3),
+    ChartLabel('THE GREY FEN', 'LE MARAIS GRIS', 88, 166, 4),
+    ChartLabel('THE HOLLOW SHORE', 'LA RIVE CREUSE', 128, 12, 6),
   ],
 );
 
@@ -341,7 +341,7 @@ const _delta = ChartGeography(
     ChartLabel('SALTMOUTH', 'BOUCHE-DE-SEL', 98, 112, 2),
     ChartLabel('the Mouths', 'les Bouches', 112, 158, 2, sea: true),
     ChartLabel('the Grey Bay', 'la Baie Grise', 178, 170, 2, sea: true),
-    ChartLabel('THE ASHEN BANK', 'LA RIVE CENDRÉE', 150, 30, 3),
+    ChartLabel('THE ASHEN BANK', 'LA RIVE DE CENDRE', 150, 30, 3),
   ],
   leftLabels: {'wharf'},
 );
