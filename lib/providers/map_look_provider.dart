@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/map_charts.dart';
 import '../data/world_map.dart';
+import '../widgets/chart_map_painter.dart' show ChartCalque;
 
 const String mapLookPrefsKey = 'world_map_look';
 
@@ -37,10 +38,10 @@ final mapLookProvider =
 
 const String mapShapePrefsKey = 'world_map_shape';
 
-/// Which of the chart's three geographies the player chose; the
-/// continent until they choose.
+/// Which of the chart's three geographies the player chose; the Ring
+/// (world B) until they choose.
 class MapShapeNotifier extends StateNotifier<MapShape> {
-  MapShapeNotifier() : super(MapShape.continental) {
+  MapShapeNotifier() : super(MapShape.archipelago) {
     _load();
   }
 
@@ -65,3 +66,64 @@ class MapShapeNotifier extends StateNotifier<MapShape> {
 
 final mapShapeProvider = StateNotifierProvider<MapShapeNotifier, MapShape>(
     (ref) => MapShapeNotifier());
+
+const String chartCalquePrefsKey = 'world_map_calque';
+
+/// Which calque lies over the chart (v1.199): none until the player picks
+/// one; the pick is kept.
+class ChartCalqueNotifier extends StateNotifier<ChartCalque> {
+  ChartCalqueNotifier() : super(ChartCalque.none) {
+    _load();
+  }
+
+  bool _chosen = false;
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    final name = prefs.getString(chartCalquePrefsKey);
+    if (_chosen || name == null) return;
+    for (final calque in ChartCalque.values) {
+      if (calque.name == name) state = calque;
+    }
+  }
+
+  Future<void> choose(ChartCalque calque) async {
+    _chosen = true;
+    state = calque;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(chartCalquePrefsKey, calque.name);
+  }
+}
+
+final chartCalqueProvider =
+    StateNotifierProvider<ChartCalqueNotifier, ChartCalque>(
+        (ref) => ChartCalqueNotifier());
+
+const String chartGlobePrefsKey = 'world_map_globe';
+
+/// Whether the Journey's world map is looked at as a sphere (v1.200);
+/// flat until the player asks, and the pick is kept.
+class ChartGlobeNotifier extends StateNotifier<bool> {
+  ChartGlobeNotifier() : super(false) {
+    _load();
+  }
+
+  bool _chosen = false;
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    final on = prefs.getBool(chartGlobePrefsKey);
+    if (_chosen || on == null) return;
+    state = on;
+  }
+
+  Future<void> choose(bool on) async {
+    _chosen = true;
+    state = on;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(chartGlobePrefsKey, on);
+  }
+}
+
+final chartGlobeProvider = StateNotifierProvider<ChartGlobeNotifier, bool>(
+    (ref) => ChartGlobeNotifier());

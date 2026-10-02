@@ -33,7 +33,10 @@ import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../data/story_state.dart';
 import '../widgets/biome_backdrop.dart';
+import '../widgets/chart_map_painter.dart' show ChartCalque;
+import '../widgets/journey_world_map.dart';
 import '../widgets/geography_widgets.dart';
 import '../widgets/journey_fx.dart';
 import '../widgets/journey_place.dart';
@@ -132,12 +135,20 @@ class _PlaceView {
     required this.chartHere,
     required this.marks,
     this.biome,
+    this.glyphs = const {},
+    this.water = '',
   });
 
   final PlaceKind kind;
   final int seed;
   final ChartGeography geography;
   final Offset chartHere;
+
+  /// The districts' glyphs over the ways into them, by step (v1.199).
+  final Map<int, String> glyphs;
+
+  /// The place's water: 'river', 'shore' or ''.
+  final String water;
 
   /// The places around on the chart, for the road between two of them.
   final List<ChartMark> marks;
@@ -194,14 +205,6 @@ class _JourneyView extends ConsumerStatefulWidget {
 
 class _JourneyViewState extends ConsumerState<_JourneyView>
     with SingleTickerProviderStateMixin {
-  /// The least the map is given on a short phone, a step picked and its
-  /// details under it: the party and the ways round it stay in view.
-  static const double _mapMin = 160;
-
-  /// The least room the scene opens in (its two buttons, one over the
-  /// other); with less, it keeps to its first lines.
-  static const double _sceneOpenMin = 84;
-
   /// The scene the selection and the chart belong to; a new scene clears
   /// the one and draws a new other.
   String? _sceneKey;
@@ -218,8 +221,97 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   bool _autoPickPending = false;
   GlobalKey<_JourneyChartState> _chartKey = GlobalKey();
 
-  /// The scene folded to its first lines (kept from scene to scene).
-  bool _sceneFolded = false;
+  /// How far out the map is looked at (v1.199): the place, its land, or
+  /// the world; and the place last tapped on the chart.
+  JourneyMapLevel _level = JourneyMapLevel.place;
+  Landmark? _lookedAt;
+
+  /// Each landmark where a shop opens; read once per story.
+  Set<String>? _shopPlaces;
+  StoryData? _shopPlacesOf;
+
+  Set<String> _shopsFor(StoryData story) {
+    if (_shopPlaces != null && identical(_shopPlacesOf, story)) {
+      return _shopPlaces!;
+    }
+    _shopPlacesOf = story;
+    return _shopPlaces = {
+      for (final node in story.nodes.values)
+        if (node.choices.any((c) => (c.unlockShopId ?? '').isNotEmpty))
+          if (landmarkOfScene(node.id) case final landmark?) landmark.id,
+    };
+  }
+
+  /// The calques sheet: one calque over the chart at a time, or none.
+  Future<void> _showCalques() {
+    final lang = ref.read(appLanguageProvider);
+    return showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheetContext) => Consumer(builder: (context, ref, _) {
+        final current = ref.watch(chartCalqueProvider);
+        final theme = Theme.of(context);
+        final ink = InkColors.of(context);
+        return SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 4),
+                  child: Text(trFor(lang, 'journey_calques').toUpperCase(),
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(letterSpacing: 1.4, color: ink.gold)),
+                ),
+                SwitchListTile(
+                  key: const Key('journey_globe'),
+                  dense: true,
+                  value: ref.watch(chartGlobeProvider),
+                  secondary: const Icon(Icons.public),
+                  title: Text(trFor(lang, 'journey_globe')),
+                  subtitle: Text(trFor(lang, 'journey_globe_sub'),
+                      style:
+                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                  onChanged: (on) =>
+                      ref.read(chartGlobeProvider.notifier).choose(on),
+                ),
+                const Divider(height: 8),
+                for (final calque in ChartCalque.values)
+                  SwitchListTile(
+                    key: Key('calque_${calque.name}'),
+                    dense: true,
+                    value: current == calque,
+                    secondary: Icon(switch (calque) {
+                      ChartCalque.none => Icons.layers_clear_outlined,
+                      ChartCalque.clans => Icons.balance,
+                      ChartCalque.standing => Icons.person_outline,
+                      ChartCalque.lands => Icons.map_outlined,
+                      ChartCalque.chapters => Icons.route_outlined,
+                      ChartCalque.shops => Icons.storefront_outlined,
+                    }),
+                    title: Text(trFor(lang, 'calque_${calque.name}')),
+                    subtitle: Text(trFor(lang, 'calque_${calque.name}_sub'),
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: ink.ash)),
+                    onChanged: (on) => ref
+                        .read(chartCalqueProvider.notifier)
+                        .choose(on ? calque : ChartCalque.none),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
+                  child: Text(trFor(lang, 'journey_calques_hint'),
+                      style:
+                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
+    );
+  }
 
   /// The scene read full screen (double-tap on it, again to come back).
   bool _reading = false;
@@ -689,6 +781,13 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             geography: geography,
             chartHere: chartHere,
             biome: world.biomeOf(herePlace?.id),
+            water: herePlace?.water ?? '',
+            glyphs: {
+              for (var i = 0; i < choices.length; i++)
+                if (world.placeOfNode(story.nodeFor(choices[i].nextId))?.glyph
+                    case final glyph? when glyph.isNotEmpty)
+                  i: glyph,
+            },
             marks: [
               for (final landmark in worldMapLandmarks)
                 if ((landmark.chapter - placeLandmark.chapter).abs() <= 1)
@@ -699,6 +798,45 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   ),
             ],
           );
+
+    // The world under the fog (v1.199), framed on the party's land or
+    // the whole of it.
+    final journeyWalked = journeyOf(play.history, play.currentNodeId);
+    final worldDiscovered = {...discovered, if (standing != null) standing.id};
+    Landmark? nextPlace;
+    if (standing != null) {
+      final index = worldMapLandmarks.indexOf(standing);
+      for (var i = index + 1; i < worldMapLandmarks.length; i++) {
+        if (!worldDiscovered.contains(worldMapLandmarks[i].id)) {
+          nextPlace = worldMapLandmarks[i];
+          break;
+        }
+      }
+    }
+    final worldMap = ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: JourneyWorldMap(
+        key: const ValueKey('journey_world_map'),
+        level: _level,
+        palette: palette,
+        here: standing,
+        discovered: worldDiscovered,
+        legs: roadLegs(journeyWalked, worldDiscovered),
+        ahead: nextPlace,
+        shopPlaces: _shopsFor(story),
+        campPlaces: {
+          for (final entry in _kindsFor(story).entries)
+            if (entry.value == 'camp') entry.key,
+        },
+        chapterColor: (n) => switch (look) {
+          MapLook.night => mapChapter(n).dark,
+          MapLook.parchment => mapChapter(n).light,
+          MapLook.shroud => const Color(0xFFA3A3AA),
+        },
+        onLayers: _showCalques,
+        onSelect: (landmark) => setState(() => _lookedAt = landmark),
+      ),
+    );
 
     final map = ended
         ? _EndedPanel(
@@ -789,70 +927,74 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                         // its ways on a short phone: the scene gives way
                         // to it (see _mapMin), and a step's long details
                         // scroll under it.
-                        child: LayoutBuilder(builder: (context, above) {
-                          // Where the party stands, over the place's map
-                          // (v1.197): each land a tap from This land. A
-                          // phone too short to open the scene over it
-                          // gives the map the room instead.
-                          const crumbRoom = GeoBreadcrumb.height + 2;
-                          final crumbs = placeView != null &&
-                                  !ended &&
-                                  herePath.isNotEmpty &&
-                                  above.maxHeight - 10 - _mapMin - crumbRoom >=
-                                      _sceneOpenMin
-                              ? GeoBreadcrumb(
-                                  key: const ValueKey('journey_crumbs'),
-                                  path: herePath,
-                                  french: french,
-                                  tooltip: tr(ref, 'geo_where_you_are'),
-                                  onTap: (place) =>
-                                      showThisLand(context, place.id),
-                                )
-                              : null;
-                          final room = above.maxHeight -
-                              10 -
-                              _mapMin -
-                              (crumbs == null ? 0 : crumbRoom);
-                          // Too little room to open the scene: it keeps to
-                          // its first lines, and opens full screen.
-                          final squeezed = room < _sceneOpenMin;
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              TutorialTarget(
-                                id: 'journey.scene',
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                      maxHeight: squeezed
-                                          ? above.maxHeight / 2
-                                          : math.min(
-                                              math.max(
-                                                  96, area.maxHeight * 0.32),
-                                              room)),
-                                  child: _ScenePanel(
-                                    key: ValueKey('journey_scene_$sceneKey'),
-                                    story: story,
-                                    node: node,
-                                    french: french,
-                                    folded: _sceneFolded || squeezed,
-                                    reading: false,
-                                    onFold: (folded) => squeezed && !folded
-                                        ? _read(true)
-                                        : setState(() => _sceneFolded = folded),
-                                    onReading: _read,
-                                    detour: detour,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // Where the party stands, over the place's map
+                            // (v1.197): each land a tap from This land; and
+                            // Read, the scene full screen (v1.199: the
+                            // scene no longer sits over the map).
+                            if (!ended)
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: placeView != null &&
+                                            herePath.isNotEmpty
+                                        ? GeoBreadcrumb(
+                                            key: const ValueKey(
+                                                'journey_crumbs'),
+                                            path: herePath,
+                                            french: french,
+                                            tooltip:
+                                                tr(ref, 'geo_where_you_are'),
+                                            onTap: (place) =>
+                                                showThisLand(context, place.id),
+                                          )
+                                        : const SizedBox(
+                                            height: GeoBreadcrumb.height),
                                   ),
-                                ),
+                                  TutorialTarget(
+                                    id: 'journey.scene',
+                                    child: TextButton.icon(
+                                      key: const ValueKey('journey_read'),
+                                      onPressed:
+                                          _busy ? null : () => _read(true),
+                                      icon: const Icon(
+                                          Icons.chrome_reader_mode_outlined,
+                                          size: 18),
+                                      label: Text(tr(ref, 'journey_read')),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 10),
-                              if (crumbs != null) ...[
-                                crumbs,
-                                const SizedBox(height: 2),
-                              ],
-                              Expanded(child: map),
+                            const SizedBox(height: 2),
+                            Expanded(
+                              child: _level == JourneyMapLevel.place || ended
+                                  ? map
+                                  : worldMap,
+                            ),
+                            // Under the map (v1.199): how far out it is
+                            // looked at, and the story so far in a line.
+                            if (!ended) ...[
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  _LevelChips(
+                                    level: _level,
+                                    palette: palette,
+                                    onPick: (level) => setState(() {
+                                      _level = level;
+                                      _lookedAt = null;
+                                    }),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Expanded(
+                                      child: _SoFarStrip(palette: palette)),
+                                ],
+                              ),
                             ],
-                          );
-                        }),
+                          ],
+                        ),
                       ),
                       if (!ended) ...[
                         // A timed scene's clock (see TimedChoiceBar), the
@@ -883,15 +1025,20 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                             constraints: BoxConstraints(
                                 maxHeight:
                                     math.max(104, area.maxHeight * 0.26)),
-                            child: _StepDetail(
-                              step: selected,
-                              busy: _busy,
-                              french: french,
-                              isExcursion: play.isInExcursion,
-                              onGo: selected == null
-                                  ? null
-                                  : () => _take(_selected!, selected),
-                            ),
+                            child: _level == JourneyMapLevel.place
+                                ? _StepDetail(
+                                    step: selected,
+                                    busy: _busy,
+                                    french: french,
+                                    isExcursion: play.isInExcursion,
+                                    onGo: selected == null
+                                        ? null
+                                        : () => _take(_selected!, selected),
+                                  )
+                                : _LookedAtPanel(
+                                    landmark: _lookedAt,
+                                    language: language,
+                                  ),
                           ),
                         ),
                       ],
@@ -1160,6 +1307,179 @@ class _ScenePanel extends ConsumerWidget {
 
 /// No way on from here on the map: the Story tab has the ending, New
 /// Game+ and the way back to the beginning.
+/// Here · Land · World: how far out the map is looked at.
+class _LevelChips extends ConsumerWidget {
+  const _LevelChips(
+      {required this.level, required this.palette, required this.onPick});
+
+  final JourneyMapLevel level;
+  final ChartPalette palette;
+  final ValueChanged<JourneyMapLevel> onPick;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (final option in JourneyMapLevel.values) ...[
+          Semantics(
+            button: true,
+            selected: option == level,
+            child: InkWell(
+              key: Key('journey_level_${option.name}'),
+              onTap: () => onPick(option),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+                decoration: BoxDecoration(
+                  color: option == level
+                      ? palette.mark
+                      : palette.land.withValues(alpha: 0.85),
+                  borderRadius: BorderRadius.circular(3),
+                  border: Border.all(
+                      color: option == level ? palette.mark : palette.coast),
+                ),
+                child: Text(
+                  tr(ref, 'journey_level_${option.name}'),
+                  style: TextStyle(
+                    fontFamily: InkFonts.system,
+                    fontSize: 12.5,
+                    color: option == level
+                        ? const Color(0xFF1A1408)
+                        : palette.place,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          if (option != JourneyMapLevel.values.last) const SizedBox(width: 4),
+        ],
+      ],
+    );
+  }
+}
+
+/// The story so far, in a line at the map's foot: a tap opens the page.
+class _SoFarStrip extends ConsumerWidget {
+  const _SoFarStrip({required this.palette});
+
+  final ChartPalette palette;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = readStorySoFar(ref);
+    final ink = InkColors.of(context);
+    return Material(
+      color: palette.land.withValues(alpha: 0.88),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(6),
+        side: BorderSide(color: palette.coast),
+      ),
+      child: InkWell(
+        key: const ValueKey('journey_sofar'),
+        borderRadius: BorderRadius.circular(6),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const JournalScreen()),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 4, 4, 4),
+          child: Row(
+            children: [
+              Icon(Icons.auto_stories_outlined, size: 16, color: ink.gold),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      tr(ref, 'sofar_strip_title')
+                          .replaceAll('{day}', '${state.day}')
+                          .toUpperCase(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: InkFonts.system,
+                        fontSize: 9,
+                        letterSpacing: 1.1,
+                        color: ink.gold,
+                      ),
+                    ),
+                    if (state.nowLine.isNotEmpty)
+                      Text(
+                        state.nowLine,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: InkFonts.prose,
+                          fontSize: 12,
+                          color: palette.place,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right, size: 16, color: ink.ash),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Under the land and world maps: the place tapped on the chart, or how
+/// to look about and come back to pick a step.
+class _LookedAtPanel extends ConsumerWidget {
+  const _LookedAtPanel({required this.landmark, required this.language});
+
+  final Landmark? landmark;
+  final AppLanguage language;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final landmark = this.landmark;
+    if (landmark == null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Text(
+          tr(ref, 'journey_level_hint'),
+          key: const ValueKey('journey_level_hint'),
+          textAlign: TextAlign.center,
+          style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
+        ),
+      );
+    }
+    return Container(
+      key: ValueKey('journey_looked_${landmark.id}'),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(landmark.name(language),
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontFamily: InkFonts.display)),
+            const SizedBox(height: 4),
+            Text(
+              landmark.blurb(language),
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(fontFamily: InkFonts.prose, height: 1.4),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _EndedPanel extends ConsumerWidget {
   const _EndedPanel({required this.title, required this.message});
 
@@ -1778,6 +2098,8 @@ class _JourneyChartState extends State<_JourneyChart>
                                       spots: centres,
                                       palette: palette,
                                       ember: widget.ink.ember,
+                                      glyphs: widget.place!.glyphs,
+                                      water: widget.place!.water,
                                     ),
                             ),
                           ),

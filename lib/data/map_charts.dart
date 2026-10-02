@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/app_locale.dart';
+import 'chart_worlds.dart';
 import 'world_map.dart';
 
 /// The world map drawn as a chart: the same places and road as
@@ -8,16 +9,21 @@ import 'world_map.dart';
 /// three looks. Everything is in the map's own units
 /// ([worldMapWidth] x [worldMapHeight]).
 ///
-/// - [MapShape.continental]: one land wrapped round an inland sea; Alster
-///   on the west arm, the Waste across the north and Saltmouth on the
-///   inland sea's north shore, the Ashen Coast on the east, the Hollow
-///   Shore on the northern cape.
-/// - [MapShape.archipelago]: Alster is an island, the Waste and Saltmouth
-///   another; the crossing is open sea between the isles of the later
-///   chapters.
-/// - [MapShape.delta]: Alster sits upstream on a great river; the Waste
-///   runs south of it down to Saltmouth at the river's mouths; the later
-///   chapters lie on the far shore.
+/// - [MapShape.continental] (A, the Two Shores): the Old Continent west,
+///   the Ashen Continent east across the Narrow Sea, the Lantern Isles far
+///   to the south, the tear off the north-eastern cape.
+/// - [MapShape.archipelago] (B, the Ring, the default since v1.199): the
+///   lands make a broken ring round an inner sea with the Lantern Isles at
+///   its heart; the ring is broken in the north-east where the tear opened.
+/// - [MapShape.delta] (C, the River and the Frost): one continent read
+///   south to north, Alster upstream, the Frost Reach at the top, the
+///   Lantern Isles west out at sea.
+///
+/// Each world (chart_worlds.dart, generated from the design) also carries
+/// its lands' biome zones, its rivers, and, on the Ring, its mountain
+/// ranges, villages, bridges, the clans' seats and the trade and quest
+/// roads: the chart painter draws them, with coasts broken into bays and
+/// headlands and terrain over each land (see chart_relief.dart).
 enum MapShape { continental, archipelago, delta }
 
 /// One region's name on the chart, shown once the story reaches
@@ -45,6 +51,10 @@ class ChartGeography {
     required this.rivers,
     required this.labels,
     this.leftLabels = const {},
+    this.zones = const [],
+    this.ranges = const [],
+    this.features = const [],
+    this.tradeRoads = const [],
   });
 
   /// Each landmark's position, by id.
@@ -57,6 +67,27 @@ class ChartGeography {
   final List<List<Offset>> rivers;
 
   final List<ChartLabel> labels;
+
+  /// The lands' biomes, each a polygon with a name (v1.199).
+  final List<ChartZone> zones;
+
+  /// The mountain ranges, each a line of peaks with a name.
+  final List<ChartRange> ranges;
+
+  /// Villages, works, bridges, stone giants, the clans' seats and the
+  /// later quests' places: drawn once their land is reached.
+  final List<ChartFeature> features;
+
+  /// Trade and quest roads between places, in grey beside the story road.
+  final List<(Offset, Offset)> tradeRoads;
+
+  /// The zone [point] lies in, if any.
+  ChartZone? zoneAt(Offset point) {
+    for (final zone in zones) {
+      if (pointInPolygon(point, zone.polygon)) return zone;
+    }
+    return null;
+  }
 
   /// Places whose names go to the left of their mark, clear of a
   /// neighbour's (names near the right edge always do).
@@ -73,278 +104,91 @@ class ChartGeography {
       const Offset(worldMapWidth / 2, worldMapHeight / 2);
 }
 
+/// One biome land on the chart: its polygon, its name and where the name
+/// sits. [biome] is a biomes.json id (temperate, desert, frost…).
+class ChartZone {
+  const ChartZone(
+      this.biome, this.nameEn, this.nameFr, this.labelAt, this.polygon,
+      {this.influence = const []});
+  final String biome;
+
+  /// The clans whose writ runs here, strongest first, each with how far
+  /// it runs (0 to 1): the clans calque.
+  final List<(String, double)> influence;
+  final String nameEn;
+  final String nameFr;
+  final Offset labelAt;
+  final List<Offset> polygon;
+  String name(AppLanguage language) =>
+      language == AppLanguage.fr ? nameFr : nameEn;
+}
+
+/// A mountain range: peaks drawn along [line], [size] units tall.
+class ChartRange {
+  const ChartRange(this.nameEn, this.nameFr, this.line, this.size,
+      {this.snow = false, this.ember = false});
+  final String nameEn;
+  final String nameFr;
+  final List<Offset> line;
+  final double size;
+  final bool snow;
+  final bool ember;
+  String name(AppLanguage language) =>
+      language == AppLanguage.fr ? nameFr : nameEn;
+}
+
+enum ChartFeatureKind { village, seat, bridge, giant, site }
+
+/// Something on the chart beside the story's places: a village or works,
+/// a clan's seat (ringed in [clan]'s colour, with a pennant), a bridge
+/// turned by [angle], a stone giant, or a later quest's place ([site]).
+class ChartFeature {
+  const ChartFeature(this.kind, this.at, this.nameEn, this.nameFr,
+      {this.noteEn = '',
+      this.noteFr = '',
+      this.clan = '',
+      this.angle = 0,
+      this.landmark = '',
+      this.atSea = false});
+  final ChartFeatureKind kind;
+  final Offset at;
+  final String nameEn;
+  final String nameFr;
+  final String noteEn;
+  final String noteFr;
+
+  /// For a seat: the clan's id (factions.json).
+  final String clan;
+  final double angle;
+
+  /// For a seat that is also one of the story's landmarks: its id, so the
+  /// name is not written twice.
+  final String landmark;
+  final bool atSea;
+  String name(AppLanguage language) =>
+      language == AppLanguage.fr ? nameFr : nameEn;
+  String note(AppLanguage language) =>
+      language == AppLanguage.fr ? noteFr : noteEn;
+}
+
+/// Whether [p] lies inside [polygon] (even-odd).
+bool pointInPolygon(Offset p, List<Offset> polygon) {
+  var inside = false;
+  for (var i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    final a = polygon[i], b = polygon[j];
+    if ((a.dy > p.dy) != (b.dy > p.dy) &&
+        p.dx < (b.dx - a.dx) * (p.dy - a.dy) / (b.dy - a.dy) + a.dx) {
+      inside = !inside;
+    }
+  }
+  return inside;
+}
+
 ChartGeography chartOf(MapShape shape) => switch (shape) {
-      MapShape.continental => _continental,
-      MapShape.archipelago => _archipelago,
-      MapShape.delta => _delta,
+      MapShape.continental => chartWorldA,
+      MapShape.archipelago => chartWorldB,
+      MapShape.delta => chartWorldC,
     };
-
-const _continental = ChartGeography(
-  places: {
-    'beggar': Offset(26, 140),
-    'bridge': Offset(48, 124),
-    'alley': Offset(30, 114),
-    'hovel': Offset(14, 86),
-    'hold': Offset(30, 60),
-    'sewers': Offset(60, 70),
-    'docks': Offset(96, 96),
-    'crash': Offset(48, 30),
-    'sleeper': Offset(78, 18),
-    'wells': Offset(102, 12),
-    'upper': Offset(124, 14),
-    'tern': Offset(160, 14),
-    'wharf': Offset(144, 18),
-    'berths': Offset(116, 28),
-    'storm': Offset(136, 104),
-    'camp': Offset(168, 140),
-    'quarter': Offset(200, 94),
-    'spire': Offset(224, 66),
-    'wrack': Offset(184, 116),
-    'cloister': Offset(174, 160),
-    'court': Offset(212, 146),
-    'reliquary': Offset(238, 120),
-    'heart': Offset(230, 164),
-    'shore': Offset(210, 22),
-    'emberwick': Offset(198, 117),
-    'akagiri': Offset(232, 88),
-    'kindly': Offset(192, 152),
-    'highhearth': Offset(242, 46),
-    'rimewell': Offset(247, 131),
-    'anchorage': Offset(224, 22),
-    'greyhithe': Offset(212, 36),
-    'wreck': Offset(242, 10),
-    'candlehold': Offset(40, 20),
-    'battle': Offset(196, 12),
-  },
-  lands: [
-    [
-      Offset(4, 8), Offset(60, 4), Offset(120, 6), Offset(180, 4), //
-      Offset(236, 8), Offset(252, 30), Offset(250, 90), Offset(252, 150),
-      Offset(240, 172), Offset(190, 172), Offset(162, 170),
-      Offset(160, 150), Offset(154, 130), Offset(158, 104),
-      Offset(162, 76), Offset(166, 48), Offset(150, 28), Offset(128, 24),
-      Offset(114, 36), Offset(112, 60), Offset(106, 84), Offset(106, 110),
-      Offset(112, 150), Offset(108, 172), Offset(60, 172), Offset(10, 168),
-      Offset(4, 120), Offset(6, 60),
-    ],
-  ],
-  rivers: [
-    [
-      Offset(40, 4),
-      Offset(48, 34),
-      Offset(56, 60),
-      Offset(80, 84),
-      Offset(104, 96)
-    ],
-    [Offset(230, 30), Offset(214, 60), Offset(212, 96), Offset(222, 130)],
-  ],
-  labels: [
-    ChartLabel('ALSTER', 'ALSTER', 18, 150, 1),
-    ChartLabel('THE WASTE', 'LA DÉSOLATION', 28, 14, 1),
-    ChartLabel('SALTMOUTH', 'BOUCHE-DE-SEL', 120, 44, 2),
-    ChartLabel('the Narrow Sea', 'la Mer Étroite', 118, 160, 2, sea: true),
-    ChartLabel('THE ASHEN COAST', 'LA CÔTE DE CENDRE', 172, 44, 3),
-    ChartLabel('THE HOLLOW CAPE', 'LE CAP CREUX', 120, 6, 6),
-  ],
-);
-
-const _archipelago = ChartGeography(
-  places: {
-    'beggar': Offset(32, 130),
-    'bridge': Offset(58, 124),
-    'alley': Offset(40, 110),
-    'hovel': Offset(22, 84),
-    'hold': Offset(42, 64),
-    'sewers': Offset(64, 78),
-    'docks': Offset(92, 100),
-    'crash': Offset(114, 24),
-    'sleeper': Offset(136, 14),
-    'wells': Offset(158, 22),
-    'upper': Offset(150, 42),
-    'tern': Offset(112, 72),
-    'wharf': Offset(118, 50),
-    'berths': Offset(130, 38),
-    'storm': Offset(150, 100),
-    'camp': Offset(184, 106),
-    'quarter': Offset(206, 86),
-    'spire': Offset(226, 62),
-    'wrack': Offset(160, 140),
-    'cloister': Offset(172, 160),
-    'court': Offset(192, 146),
-    'reliquary': Offset(226, 130),
-    'heart': Offset(234, 156),
-    'shore': Offset(220, 20),
-    'emberwick': Offset(198, 98),
-    'akagiri': Offset(222, 80),
-    'kindly': Offset(176, 140),
-    'highhearth': Offset(222, 148),
-    'rimewell': Offset(240, 130),
-    'anchorage': Offset(234, 20),
-    'greyhithe': Offset(209, 29),
-    'wreck': Offset(223, 38),
-    'candlehold': Offset(46, 15),
-    'battle': Offset(244, 24),
-  },
-  lands: [
-    // Alster.
-    [
-      Offset(14, 60), Offset(40, 32), Offset(76, 34), Offset(92, 60), //
-      Offset(100, 96), Offset(94, 126), Offset(70, 146), Offset(36, 150),
-      Offset(12, 128), Offset(8, 94),
-    ],
-    // The Waste, and Saltmouth where it meets the sea.
-    [
-      Offset(102, 62),
-      Offset(104, 36),
-      Offset(110, 16),
-      Offset(130, 6),
-      Offset(160, 8),
-      Offset(170, 24),
-      Offset(164, 46),
-      Offset(140, 56),
-      Offset(128, 64),
-      Offset(118, 82),
-      Offset(104, 80),
-    ],
-    // The Ashen isle.
-    [
-      Offset(172, 100),
-      Offset(190, 70),
-      Offset(214, 48),
-      Offset(238, 50),
-      Offset(244, 72),
-      Offset(226, 100),
-      Offset(198, 116),
-      Offset(176, 116),
-    ],
-    // The Hollow isle.
-    [
-      Offset(148, 140),
-      Offset(160, 128),
-      Offset(186, 132),
-      Offset(204, 146),
-      Offset(196, 166),
-      Offset(170, 170),
-      Offset(152, 160),
-    ],
-    // The reliquary isle.
-    [
-      Offset(214, 124),
-      Offset(236, 116),
-      Offset(250, 136),
-      Offset(246, 166),
-      Offset(226, 168),
-      Offset(214, 146),
-    ],
-    // Candlehold's cliff, across the water from Alster.
-    [
-      Offset(20, 6),
-      Offset(60, 4),
-      Offset(78, 12),
-      Offset(70, 24),
-      Offset(36, 26),
-      Offset(18, 18),
-    ],
-    // The Hollow Shore.
-    [
-      Offset(196, 22),
-      Offset(212, 8),
-      Offset(240, 10),
-      Offset(248, 26),
-      Offset(230, 34),
-      Offset(206, 34),
-    ],
-  ],
-  rivers: [
-    [Offset(46, 38), Offset(52, 70), Offset(76, 92), Offset(98, 100)],
-  ],
-  labels: [
-    ChartLabel('ALSTER', 'ALSTER', 20, 164, 1),
-    ChartLabel('THE WASTE', 'LA DÉSOLATION', 96, 6, 1),
-    ChartLabel('SALTMOUTH', 'BOUCHE-DE-SEL', 132, 90, 2),
-    ChartLabel('the Grey Water', 'l’Eau Grise', 118, 124, 2, sea: true),
-    ChartLabel('THE ASHEN ISLE', 'L’ÎLE DE CENDRE', 136, 84, 3),
-    ChartLabel('THE GREY FEN', 'LE MARAIS GRIS', 88, 166, 4),
-    ChartLabel('THE HOLLOW SHORE', 'LA RIVE CREUSE', 128, 12, 6),
-  ],
-);
-
-const _delta = ChartGeography(
-  places: {
-    'beggar': Offset(24, 84),
-    'bridge': Offset(54, 52),
-    'alley': Offset(44, 70),
-    'hovel': Offset(14, 56),
-    'hold': Offset(34, 18),
-    'sewers': Offset(84, 52),
-    'docks': Offset(96, 96),
-    'crash': Offset(30, 118),
-    'sleeper': Offset(54, 134),
-    'wells': Offset(80, 150),
-    'upper': Offset(104, 140),
-    'tern': Offset(122, 84),
-    'wharf': Offset(124, 122),
-    'berths': Offset(146, 146),
-    'storm': Offset(204, 152),
-    'camp': Offset(196, 114),
-    'quarter': Offset(214, 88),
-    'spire': Offset(240, 34),
-    'wrack': Offset(176, 78),
-    'cloister': Offset(148, 72),
-    'court': Offset(164, 44),
-    'reliquary': Offset(236, 102),
-    'heart': Offset(208, 56),
-    'shore': Offset(232, 162),
-    'emberwick': Offset(209, 102),
-    'akagiri': Offset(232, 72),
-    'kindly': Offset(150, 98),
-    'highhearth': Offset(248, 52),
-    'rimewell': Offset(227, 113),
-    'anchorage': Offset(200, 135),
-    'greyhithe': Offset(210, 124),
-    'wreck': Offset(217, 167),
-    'candlehold': Offset(190, 14),
-    'battle': Offset(244, 160),
-  },
-  lands: [
-    [
-      Offset(0, 0), Offset(256, 0), Offset(256, 94), Offset(236, 112), //
-      Offset(212, 128), Offset(196, 144), Offset(176, 158),
-      Offset(160, 176), Offset(0, 176),
-    ],
-    // The bar beyond the tear.
-    [
-      Offset(216, 158),
-      Offset(232, 150),
-      Offset(250, 156),
-      Offset(246, 170),
-      Offset(226, 172),
-    ],
-  ],
-  rivers: [
-    // The river through Alster, then its three mouths.
-    [
-      Offset(0, 22),
-      Offset(36, 40),
-      Offset(70, 64),
-      Offset(100, 84),
-      Offset(128, 106),
-      Offset(146, 128)
-    ],
-    [Offset(146, 128), Offset(156, 152), Offset(166, 170)],
-    [Offset(146, 128), Offset(172, 140), Offset(194, 148)],
-    [Offset(146, 128), Offset(176, 120), Offset(216, 122)],
-  ],
-  labels: [
-    ChartLabel('ALSTER', 'ALSTER', 8, 104, 1),
-    ChartLabel('THE WASTE', 'LA DÉSOLATION', 20, 166, 1),
-    ChartLabel('SALTMOUTH', 'BOUCHE-DE-SEL', 98, 112, 2),
-    ChartLabel('the Mouths', 'les Bouches', 112, 158, 2, sea: true),
-    ChartLabel('the Grey Bay', 'la Baie Grise', 178, 170, 2, sea: true),
-    ChartLabel('THE ASHEN BANK', 'LA RIVE DE CENDRE', 150, 30, 3),
-  ],
-  leftLabels: {'wharf'},
-);
 
 /// A look's colours for the chart.
 class ChartPalette {

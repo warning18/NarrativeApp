@@ -85,12 +85,9 @@ void main() {
     expect(find.text('Way taken: Join the queue at the landward gate'),
         findsNothing);
 
-    // A double-tap reads the scene full screen; the map button (or
-    // another double-tap) brings the map back.
-    final sceneText = find.byKey(const ValueKey('journey_scene_text'));
-    await tester.tap(sceneText);
-    await tester.pump(const Duration(milliseconds: 60));
-    await tester.tap(sceneText);
+    // Read opens the scene full screen (v1.199: the scene no longer sits
+    // over the map); the map button brings the map back.
+    await tester.tap(find.byKey(const ValueKey('journey_read')));
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.byKey(const ValueKey('journey_reading_exit')), findsOneWidget);
     expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);

@@ -29,6 +29,138 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'To {place}',
     AppLanguage.fr: 'Vers {place}',
   },
+  'journey_read': {AppLanguage.en: 'Read', AppLanguage.fr: 'Lire'},
+  'journey_level_place': {AppLanguage.en: 'Here', AppLanguage.fr: 'Ici'},
+  'journey_level_land': {AppLanguage.en: 'Land', AppLanguage.fr: 'Pays'},
+  'journey_level_world': {AppLanguage.en: 'World', AppLanguage.fr: 'Monde'},
+  'journey_level_hint': {
+    AppLanguage.en:
+        'Pinch to zoom, drag to look about. Tap Here to pick a step.',
+    AppLanguage.fr:
+        'Pincez pour zoomer, glissez pour regarder. Touchez Ici pour choisir une étape.',
+  },
+  'journey_recentre': {
+    AppLanguage.en: 'Back to the party',
+    AppLanguage.fr: 'Revenir à la compagnie',
+  },
+  'journey_calques': {AppLanguage.en: 'Calques', AppLanguage.fr: 'Calques'},
+  'journey_globe': {
+    AppLanguage.en: 'The world as a sphere',
+    AppLanguage.fr: 'Le monde en sphère',
+  },
+  'journey_globe_sub': {
+    AppLanguage.en: 'turn it with a drag, pinch to come close',
+    AppLanguage.fr: 'tournez-la en glissant, pincez pour approcher',
+  },
+  'journey_calques_hint': {
+    AppLanguage.en:
+        'One calque at a time keeps the map readable; the choice is kept.',
+    AppLanguage.fr:
+        'Un seul calque à la fois garde la carte lisible ; le choix est conservé.',
+  },
+  'calque_none': {AppLanguage.en: 'No calque', AppLanguage.fr: 'Aucun calque'},
+  'calque_none_sub': {
+    AppLanguage.en: 'the chart as it is',
+    AppLanguage.fr: 'la carte telle quelle',
+  },
+  'calque_clans': {
+    AppLanguage.en: 'Clans — zones of influence',
+    AppLanguage.fr: 'Clans — zones d’influence',
+  },
+  'calque_clans_sub': {
+    AppLanguage.en: 'who rules each land; stripes where two contest it',
+    AppLanguage.fr:
+        'qui tient chaque pays ; des rayures où deux se le disputent',
+  },
+  'calque_standing': {
+    AppLanguage.en: 'Your standing',
+    AppLanguage.fr: 'Votre réputation'
+  },
+  'calque_standing_sub': {
+    AppLanguage.en: 'each land tinted hunted → sworn',
+    AppLanguage.fr: 'chaque pays teinté de traqué → juré',
+  },
+  'calque_lands': {AppLanguage.en: 'Lands', AppLanguage.fr: 'Pays'},
+  'calque_lands_sub': {
+    AppLanguage.en: 'the biomes in their colours',
+    AppLanguage.fr: 'les biomes dans leurs couleurs',
+  },
+  'calque_chapters': {
+    AppLanguage.en: 'The road by chapter',
+    AppLanguage.fr: 'La route par chapitre',
+  },
+  'calque_chapters_sub': {
+    AppLanguage.en: 'each chapter’s colour on the way walked',
+    AppLanguage.fr: 'la couleur de chaque chapitre sur le chemin parcouru',
+  },
+  'calque_shops': {
+    AppLanguage.en: 'Shops & camps',
+    AppLanguage.fr: 'Échoppes et camps'
+  },
+  'calque_shops_sub': {
+    AppLanguage.en: 'where to trade, where to rest',
+    AppLanguage.fr: 'où commercer, où se reposer',
+  },
+  'calque_contested': {AppLanguage.en: 'contested', AppLanguage.fr: 'disputé'},
+  'sofar_strip_title': {
+    AppLanguage.en: 'The story so far · Day {day}',
+    AppLanguage.fr: 'L’histoire jusqu’ici · Jour {day}',
+  },
+  'sofar_where': {
+    AppLanguage.en: 'Where you stand',
+    AppLanguage.fr: 'Où vous êtes'
+  },
+  'sofar_now': {AppLanguage.en: 'Now', AppLanguage.fr: 'Maintenant'},
+  'sofar_threads': {
+    AppLanguage.en: 'Open threads',
+    AppLanguage.fr: 'Fils ouverts'
+  },
+  'sofar_threads_none': {
+    AppLanguage.en: 'Nothing asked of you yet.',
+    AppLanguage.fr: 'Rien ne vous est encore demandé.',
+  },
+  'sofar_company': {
+    AppLanguage.en: 'With you · standing',
+    AppLanguage.fr: 'Avec vous · réputation',
+  },
+  'sofar_alone': {
+    AppLanguage.en: 'You travel alone.',
+    AppLanguage.fr: 'Vous voyagez seul.'
+  },
+  'sofar_matters': {
+    AppLanguage.en: 'What still matters',
+    AppLanguage.fr: 'Ce qui compte encore',
+  },
+  'sofar_main': {AppLanguage.en: 'Main', AppLanguage.fr: 'Principale'},
+  'sofar_followed': {AppLanguage.en: 'Followed', AppLanguage.fr: 'Suivie'},
+  'sofar_all_scenes': {
+    AppLanguage.en: 'All scenes',
+    AppLanguage.fr: 'Toutes les scènes'
+  },
+  'sofar_day_chapter': {
+    AppLanguage.en: 'Day {day} · Chapter {chapter}',
+    AppLanguage.fr: 'Jour {day} · Chapitre {chapter}',
+  },
+  'sofar_now_came': {
+    AppLanguage.en: 'You came by {from} to {place}',
+    AppLanguage.fr: 'Vous êtes venu par {from} jusqu’à {place}',
+  },
+  'sofar_now_at': {
+    AppLanguage.en: 'You are at {place}',
+    AppLanguage.fr: 'Vous êtes à {place}'
+  },
+  'sofar_now_with': {
+    AppLanguage.en: ' with {party}',
+    AppLanguage.fr: ' avec {party}'
+  },
+  'sofar_now_last': {
+    AppLanguage.en: 'Last you chose: {choice}.',
+    AppLanguage.fr: 'Votre dernier choix : {choice}.',
+  },
+  'sofar_now_land': {
+    AppLanguage.en: '{land} land',
+    AppLanguage.fr: 'terre {land}'
+  },
   'journey_ended': {
     AppLanguage.en: 'The road ends here. The Story tab has what comes next.',
     AppLanguage.fr:
@@ -738,14 +870,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'world_map_look_night': {AppLanguage.en: 'Night', AppLanguage.fr: 'Nuit'},
   'world_map_shape_continental': {
-    AppLanguage.en: 'Continent',
-    AppLanguage.fr: 'Continent'
+    AppLanguage.en: 'The Two Shores',
+    AppLanguage.fr: 'Les Deux Rives'
   },
   'world_map_shape_archipelago': {
-    AppLanguage.en: 'Archipelago',
-    AppLanguage.fr: 'Archipel'
+    AppLanguage.en: 'The Ring',
+    AppLanguage.fr: 'L’Anneau'
   },
-  'world_map_shape_delta': {AppLanguage.en: 'Delta', AppLanguage.fr: 'Delta'},
+  'world_map_shape_delta': {
+    AppLanguage.en: 'The River & the Frost',
+    AppLanguage.fr: 'Le Fleuve et le Givre'
+  },
   'world_map_look_parchment': {
     AppLanguage.en: 'Parchment',
     AppLanguage.fr: 'Parchemin',
@@ -5766,9 +5901,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_journey_2': {
     AppLanguage.en:
-        'The scene you are in. Fold it to give the map more room, or double-tap it to read it full screen.',
+        'Read opens the scene you are in full screen; the map button brings the map back.',
     AppLanguage.fr:
-        'La scène où vous êtes. Repliez-la pour laisser plus de place à la carte, ou touchez-la deux fois pour la lire en plein écran.',
+        'Lire ouvre la scène où vous êtes en plein écran ; le bouton carte ramène la carte.',
   },
   'tut_journey_3': {
     AppLanguage.en:

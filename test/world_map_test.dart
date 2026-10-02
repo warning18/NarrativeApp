@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/data/map_charts.dart';
 import 'package:narrative_data_app/data/world_map.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
@@ -240,12 +241,14 @@ void main() {
     final box = tester.getRect(canvas);
     final scale = box.width / worldMapWidth;
     // A single tap waits to be sure it isn't the first of a double tap.
-    await tester.tapAt(box.topLeft + Offset(26 * scale, 126 * scale));
+    final beggar = chartOf(MapShape.archipelago).places['beggar']!;
+    await tester.tapAt(box.topLeft + beggar * scale);
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.descendant(of: panel, matching: find.text('The Blind Beggar')),
         findsOneWidget);
     // An unreached place can't be picked.
-    await tester.tapAt(box.topLeft + Offset(222 * scale, 24 * scale));
+    final reliquary = chartOf(MapShape.archipelago).places['reliquary']!;
+    await tester.tapAt(box.topLeft + reliquary * scale);
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.descendant(of: panel, matching: find.text('The Blind Beggar')),
         findsOneWidget);
