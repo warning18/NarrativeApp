@@ -19,7 +19,8 @@
     "bossFlavorTextFr": "Le contremaître des docks m'observait fouiller les hangars depuis le deuxième, et avait manifestement décidé que de la poix et du bois quittant son quai sans dîme constituaient une insulte personnelle. Il descendit la passerelle avec deux gamins portant son registre et un gourdin qui avait de toute évidence déjà tranché des querelles.",
     "recommendedLevel": 3,
     "zoneName_fr": "L’Allée des Pêcheurs",
-    "flavorText_fr": "Un alignement tortueux de hangars à filets et de tables à vider le poisson, entre le mur du port et la ligne de marée. Aucun de ceux qui y travaillent ne regarde à deux fois un étranger qui pose des questions — non qu’ils vous fassent confiance, mais parce qu’ils ont appris à ne pas demander pourquoi, ce qui convenait parfaitement à quelqu’un venu glaner en silence de la poix et du bois de rechange pour une coque qui prenait l’eau."
+    "flavorText_fr": "Un alignement tortueux de hangars à filets et de tables à vider le poisson, entre le mur du port et la ligne de marée. Aucun de ceux qui y travaillent ne regarde à deux fois un étranger qui pose des questions — non qu’ils vous fassent confiance, mais parce qu’ils ont appris à ne pas demander pourquoi, ce qui convenait parfaitement à quelqu’un venu glaner en silence de la poix et du bois de rechange pour une coque qui prenait l’eau.",
+    "location": "saltmouth_wharf"
   },
   "z_tanners_court": {
     "zoneID": "z_tanners_court",
@@ -41,7 +42,8 @@
     "bossFlavorTextFr": "Quelque chose vivait sous les fosses à chaux, et les tanneurs le nourrissaient de ce qu'ils ne pouvaient vendre. Il sortit du caniveau, les yeux jaunes et patient, avec le calme particulier d'une bête qui n'a jamais eu faim.",
     "recommendedLevel": 4,
     "zoneName_fr": "La Cour des Tanneurs",
-    "flavorText_fr": "L’odeur vous atteint avant la cour — chaux, sel, et quelque chose en dessous qu’il vaut mieux ne pas examiner de trop près. Tout ce qui mérite d’être trouvé ici, quelqu’un a d’abord tanné une peau par-dessus — y compris, si l’on s’adresse au bon tanneur, un cuir assez solide pour rapiécer une voile déchirée."
+    "flavorText_fr": "L’odeur vous atteint avant la cour — chaux, sel, et quelque chose en dessous qu’il vaut mieux ne pas examiner de trop près. Tout ce qui mérite d’être trouvé ici, quelqu’un a d’abord tanné une peau par-dessus — y compris, si l’on s’adresse au bon tanneur, un cuir assez solide pour rapiécer une voile déchirée.",
+    "location": "saltmouth_wharf"
   },
   "z_lantern_docks": {
     "zoneID": "z_lantern_docks",
@@ -65,7 +67,8 @@
     "bossFlavorTextFr": "La lanterne de la vendeuse de cartes s'éteignit au milieu d'une phrase, et l'homme qui l'avait payée pour la garder allumée sortit du hangar à bateaux avec un sabre et quatre décennies d'impunité derrière lui. Il savait exactement de quel fragment du Linceul je parlais.",
     "recommendedLevel": 5,
     "zoneName_fr": "Les Quais aux Lanternes",
-    "flavorText_fr": "Là où les affaires officielles du port cèdent la place à ses affaires officieuses. Une femme qui fait commerce de vieilles cartes garde une lanterne allumée après le couvre-feu pour quiconque est prêt à payer ce qu’elle sait — et ce qu’elle sait, cette semaine, c’est où est passé le deuxième fragment du Linceul."
+    "flavorText_fr": "Là où les affaires officielles du port cèdent la place à ses affaires officieuses. Une femme qui fait commerce de vieilles cartes garde une lanterne allumée après le couvre-feu pour quiconque est prêt à payer ce qu’elle sait — et ce qu’elle sait, cette semaine, c’est où est passé le deuxième fragment du Linceul.",
+    "location": "saltmouth_wharf"
   },
   "z_cinder_row": {
     "zoneID": "z_cinder_row",
@@ -92,7 +95,8 @@
       "3005"
     ],
     "midpointFlavorText": "Past the last of the burned stalls the ash gave way to streets that still had doors in them: the Ashen Quarter, burned by its own Inquisition and not quite dead of it. Someone was watching me from behind every one of those doors. I marked the way in.",
-    "midpointFlavorTextFr": "Au-delà des derniers étals brûlés, la cendre laissait place à des rues qui avaient encore des portes : le Quartier des Cendres, brûlé par sa propre Inquisition et pas tout à fait mort de l’avoir été. Derrière chacune de ces portes, quelqu’un m’observait. Je notai le chemin."
+    "midpointFlavorTextFr": "Au-delà des derniers étals brûlés, la cendre laissait place à des rues qui avaient encore des portes : le Quartier des Cendres, brûlé par sa propre Inquisition et pas tout à fait mort de l’avoir été. Derrière chacune de ces portes, quelqu’un m’observait. Je notai le chemin.",
+    "location": "ashen_quarter"
   },
   "z_scaffold_yards": {
     "zoneID": "z_scaffold_yards",
@@ -121,7 +125,8 @@
     "flavorText_fr": "Les ferronniers qui forgeaient les armures de l’Inquisition ont abandonné leur chantier quand les golems ont commencé à survivre à leurs maîtres. Les forges se sont refroidies, mais le fer froid garde mieux sa forme que la plupart des promesses faites dans ce quartier.",
     "discoversPlaceIds": [
       "3100"
-    ]
+    ],
+    "location": "emberwick"
   },
   "z_ossuary_galleries": {
     "zoneID": "z_ossuary_galleries",
@@ -149,7 +154,8 @@
       "5010"
     ],
     "midpointFlavorText": "Halfway along the galleries a side-passage breathed salt instead of dust. I followed it to a sea-cave’s mouth, and daylight, and a cliff path climbing to houses built from hulls: a village, where the Court’s dead had no business and its wreckers had plenty. Below me the galleries went on, and somewhere above them, candles.",
-    "midpointFlavorTextFr": "À mi-chemin des galeries, un passage latéral soufflait le sel au lieu de la poussière. Je le suivis jusqu’à la bouche d’une grotte marine, à la lumière du jour, et à un sentier de falaise grimpant vers des maisons bâties avec des coques : un village, où les morts de la Cour n’avaient rien à faire et ses pilleurs d’épaves beaucoup. Sous mes pieds les galeries continuaient, et quelque part au-dessus d’elles, des chandelles."
+    "midpointFlavorTextFr": "À mi-chemin des galeries, un passage latéral soufflait le sel au lieu de la poussière. Je le suivis jusqu’à la bouche d’une grotte marine, à la lumière du jour, et à un sentier de falaise grimpant vers des maisons bâties avec des coques : un village, où les morts de la Cour n’avaient rien à faire et ses pilleurs d’épaves beaucoup. Sous mes pieds les galeries continuaient, et quelque part au-dessus d’elles, des chandelles.",
+    "location": "drowned_cloister"
   },
   "z_drowned_stair": {
     "zoneID": "z_drowned_stair",
@@ -175,7 +181,8 @@
     "midpointFlavorText": "The Stair turned back on itself under the waterline and the names began: cut into the risers, one to a step, the first night's taken in the order they were taken. I stopped counting when I recognized one. The water below was very still, and something in it was reading along with me.",
     "midpointFlavorTextFr": "L'Escalier tournait sur lui-même sous la ligne d'eau et les noms commençaient : gravés dans les contremarches, un par marche, les disparus de la première nuit dans l'ordre où on les avait pris. Je cessai de compter quand j'en reconnus un. L'eau en contrebas était très calme, et quelque chose dedans lisait avec moi.",
     "zoneName_fr": "L’Escalier Noyé",
-    "flavorText_fr": "La route de la Cour vers les profondeurs : un escalier en colimaçon que l’eau noire a pris une spire après l’autre, ses paliers encore éclairés par les chandelles de ceux qui ne sont jamais remontés. Le second registre attend en bas, et l’homme qui le tient aussi."
+    "flavorText_fr": "La route de la Cour vers les profondeurs : un escalier en colimaçon que l’eau noire a pris une spire après l’autre, ses paliers encore éclairés par les chandelles de ceux qui ne sont jamais remontés. Le second registre attend en bas, et l’homme qui le tient aussi.",
+    "location": "hollow_court"
   },
   "z_dead_heart_approach": {
     "zoneID": "z_dead_heart_approach",
@@ -203,7 +210,8 @@
     "discoversPlaceIds": [
       "6100",
       "6010"
-    ]
+    ],
+    "location": "dead_heart"
   },
   "z_shroud_vigil": {
     "zoneID": "z_shroud_vigil",
@@ -229,7 +237,8 @@
     "midpointFlavorText": "At the vigil's center the candles were still lit, hundreds of them, in a ring around nothing at all, an absence the eye slid off, and the wax had not run in a year. The order had kept this. Whatever it was, they had thought it worth kneeling to.",
     "midpointFlavorTextFr": "Au centre de la veillée, les chandelles brûlaient encore, des centaines, en cercle autour de rien du tout, une absence sur laquelle le regard glissait, et la cire n'avait pas coulé depuis un an. L'ordre avait entretenu cela. Quoi que ce fût, ils avaient jugé que cela valait qu'on s'agenouille.",
     "zoneName_fr": "La Veillée du Linceul",
-    "flavorText_fr": "La place au cœur mort de la ville, où la déchirure flotte à l’air libre et où une chose qui fut jadis un Inquisiteur monte la garde depuis la nuit où elle s’est ouverte. Le dernier tronçon de la route du registre, et le pire."
+    "flavorText_fr": "La place au cœur mort de la ville, où la déchirure flotte à l’air libre et où une chose qui fut jadis un Inquisiteur monte la garde depuis la nuit où elle s’est ouverte. Le dernier tronçon de la route du registre, et le pire.",
+    "location": "dead_heart"
   },
   "z_beyond_the_tear": {
     "zoneID": "z_beyond_the_tear",
@@ -252,8 +261,9 @@
     "recommendedLevel": 14,
     "midpointFlavorText": "Past the tear the sea stopped pretending. The Eel ran on something that was not water, under a sky that was not one, toward a shore made of every place I had ever fought, the docks, the Spire, the drowned cloister, stitched edge to edge like a map made by someone who had only heard about maps. The reflections stood on it, waiting.",
     "midpointFlavorTextFr": "Passé la déchirure, la mer cessa de faire semblant. L'Eel filait sur quelque chose qui n'était pas de l'eau, sous un ciel qui n'en était pas un, vers un rivage fait de tous les lieux où j'avais combattu, les quais, la Flèche, le cloître noyé, cousus bord à bord comme une carte dessinée par quelqu'un qui n'aurait fait qu'entendre parler des cartes. Les reflets s'y tenaient, et attendaient.",
-    "zoneName_fr": "Au-delà de la Déchirure",
-    "flavorText_fr": "L’autre côté de la déchirure : pas de ciel, pas de sol qui reste là où on le laisse, et les visages de tous ceux que l’invasion a pris, qui marchent. Le Rusty Eel est la seule chose ici qui se souvienne de ce à quoi un monde est censé ressembler."
+    "zoneName_fr": "Au-delà de la déchirure",
+    "flavorText_fr": "L’autre côté de la déchirure : pas de ciel, pas de sol qui reste là où on le laisse, et les visages de tous ceux que l’invasion a pris, qui marchent. Le Rusty Eel est la seule chose ici qui se souvienne de ce à quoi un monde est censé ressembler.",
+    "location": "beyond_the_tear"
   },
   "z_glass_strand": {
     "zoneID": "z_glass_strand",
@@ -281,7 +291,8 @@
     "discoversPlaceIds": [
       "7200",
       "7100"
-    ]
+    ],
+    "location": "hollow_shore"
   },
   "z_white_fleet_grave": {
     "zoneID": "z_white_fleet_grave",
@@ -305,7 +316,8 @@
     "midpointFlavorTextFr": "Entre les coques, l’eau était claire jusqu’au verre, et sur le verre gisaient les morts de la flotte dans leur blanc, en rangées, comme si quelqu’un les avait rangés. L’ombre de l’Eel passa sur eux. Aucun ne leva les yeux. Devant, sur le vaisseau amiral, la voile grise se gonflait d’un vent que je ne sentais pas.",
     "requiredFlags": [],
     "isMainZone": true,
-    "recommendedLevel": 13
+    "recommendedLevel": 13,
+    "location": "white_fleet_grave"
   },
   "z_exorcists_road": {
     "zoneID": "z_exorcists_road",
@@ -334,7 +346,8 @@
     "recommendedLevel": 7,
     "discoversPlaceIds": [
       "3200"
-    ]
+    ],
+    "location": "akagiri"
   },
   "z_changeling_fen": {
     "zoneID": "z_changeling_fen",
@@ -363,7 +376,8 @@
     "recommendedLevel": 9,
     "discoversPlaceIds": [
       "5200"
-    ]
+    ],
+    "location": "kindly_hill"
   },
   "z_frost_quarry": {
     "zoneID": "z_frost_quarry",
@@ -392,7 +406,8 @@
     "recommendedLevel": 10,
     "discoversPlaceIds": [
       "6200"
-    ]
+    ],
+    "location": "highhearth"
   },
   "z_salt_road": {
     "zoneID": "z_salt_road",
@@ -417,7 +432,8 @@
     "recommendedLevel": 5,
     "midpointFlavorText": "Halfway along the coast road the wagons passed a wreck lying on its side in the shallows, lamps still hanging from its rigging. The drivers did not look at it. One of them told me afterwards that the Wreckers light those lamps on stormy nights, on the rocks, where a harbor ought to be.",
     "midpointFlavorTextFr": "À mi-chemin de la route côtière, les chariots passèrent devant une épave couchée sur le flanc dans les hauts-fonds, des lanternes encore pendues à son gréement. Les conducteurs ne la regardèrent pas. L’un d’eux me dit plus tard que les Naufrageurs allument ces lanternes les soirs de tempête, sur les rochers, là où devrait se trouver un port.",
-    "kind": "escort"
+    "kind": "escort",
+    "location": "saltmouth"
   },
   "z_fever_bark": {
     "zoneID": "z_fever_bark",
@@ -445,7 +461,8 @@
     "kind": "delivery",
     "deadlineDays": 6,
     "destinationName": "the Reckoning Wall",
-    "destinationName_fr": "le Mur du Jugement"
+    "destinationName_fr": "le Mur du Jugement",
+    "location": "ashen_quarter"
   },
   "z_bell_road": {
     "zoneID": "z_bell_road",
@@ -470,7 +487,8 @@
     "recommendedLevel": 9,
     "midpointFlavorText": "One of the bells rang by itself as the wagon crossed the old causeway, a single low note that went out over the reeds and did not come back. The drivers crossed themselves. Far out in the fen, one of the lights went out.",
     "midpointFlavorTextFr": "Une des cloches sonna d’elle-même quand le chariot franchit la vieille chaussée, une seule note grave qui s’en alla sur les roseaux et ne revint pas. Les conducteurs se signèrent. Au loin dans le marais, l’une des lumières s’éteignit.",
-    "kind": "escort"
+    "kind": "escort",
+    "location": "kindly_hill"
   },
   "z_ember_run": {
     "zoneID": "z_ember_run",
@@ -498,7 +516,8 @@
     "kind": "delivery",
     "deadlineDays": 6,
     "destinationName": "Rimewell",
-    "destinationName_fr": "Puits-de-Givre"
+    "destinationName_fr": "Puits-de-Givre",
+    "location": "rimewell"
   },
   "z_lantern_train": {
     "zoneID": "z_lantern_train",
@@ -523,6 +542,7 @@
     "recommendedLevel": 12,
     "midpointFlavorText": "Past the last barn the road ran along the edge of the Glass Strand, and in the fused sand I saw the wagons reflected, and the lanterns, and myself, and behind my reflection something that had no wagon to walk beside.",
     "midpointFlavorTextFr": "Après la dernière grange, la route longeait la Grève de Verre, et dans le sable fondu je vis les chariots se refléter, et les lanternes, et moi-même, et derrière mon reflet quelque chose qui n’avait aucun chariot à côté duquel marcher.",
-    "kind": "escort"
+    "kind": "escort",
+    "location": "greyhithe"
   }
 }

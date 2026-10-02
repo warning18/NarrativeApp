@@ -32,34 +32,34 @@ class MapChapter {
 const List<MapChapter> mapChapters = [
   MapChapter(
       1, 'Chapter 1', 'Chapitre 1', Color(0xFFE0762B), Color(0xFFB5531A)),
-  MapChapter(2, 'Chapter 2: Saltmouth', 'Chapitre 2 : Bouche-de-Sel',
+  MapChapter(2, 'Chapter 2: Saltmouth', 'Chapitre 2\u00a0: Bouche-de-Sel',
       Color(0xFF3F9C9C), Color(0xFF1F6F6F)),
   MapChapter(
       3,
       'Chapter 3: The Spire of Judgment',
-      'Chapitre 3 : La Flèche du Jugement',
+      'Chapitre 3\u00a0: La Flèche du Jugement',
       Color(0xFF9A968C),
       Color(0xFF5F5B55)),
-  MapChapter(4, 'Chapter 4: The Hollow Court', 'Chapitre 4 : La Cour Creuse',
-      Color(0xFFD9CFB8), Color(0xFF7A6A48)),
+  MapChapter(4, 'Chapter 4: The Hollow Court',
+      'Chapitre 4\u00a0: La Cour Creuse', Color(0xFFD9CFB8), Color(0xFF7A6A48)),
   MapChapter(
       5,
       'Chapter 5: The Shroud’s Truth',
-      'Chapitre 5 : La Vérité du Linceul',
+      'Chapitre 5\u00a0: La Vérité du Linceul',
       Color(0xFF9B6FE0),
       Color(0xFF6D3FA0)),
-  MapChapter(6, 'Chapter 6: The Hollow Shore', 'Chapitre 6 : La Rive Creuse',
-      Color(0xFFE9E6DF), Color(0xFF3B3743)),
+  MapChapter(6, 'Chapter 6: The Hollow Shore',
+      'Chapitre 6\u00a0: La Rive Creuse', Color(0xFFE9E6DF), Color(0xFF3B3743)),
   MapChapter(
       7,
       'Chapter 7: The Lantern Throne',
-      'Chapitre 7 : Le Trône de la Lanterne',
+      'Chapitre 7\u00a0: Le Trône de la Lanterne',
       Color(0xFFF2C14E),
       Color(0xFF8F6B10)),
   MapChapter(
       8,
       'Chapter 8: Beyond the Tear',
-      'Chapitre 8 : Au-delà de la déchirure',
+      'Chapitre 8\u00a0: Au-delà de la déchirure',
       Color(0xFFD9544D),
       Color(0xFF8A1A1A)),
 ];
@@ -118,7 +118,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'Where it starts. The prologue asks who you were; then a card game in the Blind Beggar’s back room ends when the wall comes in. Take back what the tables took, dig out the people under the fallen gallery, or take your stake and run: every way out begins with a fight, and with the old bone die you carry for luck.',
     blurbFr:
-        'Là où tout commence. Le prologue demande qui vous étiez ; puis une partie de cartes dans l’arrière-salle du Mendiant Aveugle s’achève quand le mur entre. Reprendre aux tables ce qu’elles ont pris, dégager les gens pris sous la galerie, ou reprendre votre mise et fuir : chaque sortie commence par un combat, et par le vieux dé d’os que vous portez pour la chance.',
+        'Là où tout commence. Le prologue demande qui vous étiez\u00a0; puis une partie de cartes dans l’arrière-salle du Mendiant Aveugle s’achève quand le mur cède. Reprendre aux tables ce qu’elles ont pris, dégager les gens pris sous la galerie, ou reprendre votre mise et fuir\u00a0: chaque sortie commence par un combat, et par le vieux dé d’os que vous portez pour la chance.',
     scenes: ['0', '100', '105', '106', '110', '115', '120', '125', '250'],
     fights: [
       'den_bouncer', 'den_looter', 'sore_loser', 'street_bandit', //
@@ -156,7 +156,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'Inquisitors are tearing the house apart, looking for something. A ball from the white ships folds the wall, and the Inquisitor-General Aurel Vane walks out of the dust holding Lysa by one wrist: charge him, run, or kneel. When the searchers have gone, the ball has found what they could not: a trapdoor, and a cloth as big as a cape.',
     blurbFr:
-        'Des inquisiteurs mettent la maison sens dessus dessous : ils cherchent quelque chose. Un boulet des navires blancs plie le mur, et l’Inquisiteur général Aurel Vane sort de la poussière en tenant Lysa par un poignet : le charger, fuir, ou s’agenouiller. Quand les fouilleurs sont partis, le boulet a trouvé ce qu’ils cherchaient en vain : une trappe, et une étoffe grande comme une cape.',
+        'Des inquisiteurs mettent la maison sens dessus dessous\u00a0: ils cherchent quelque chose. Un boulet des navires blancs plie le mur, et l’Inquisiteur général Aurel Vane sort de la poussière en tenant Lysa par un poignet\u00a0: le charger, fuir, ou s’agenouiller. Quand les fouilleurs sont partis, le boulet a trouvé ce qu’ils cherchaient en vain\u00a0: une trappe, et une étoffe grande comme une cape.',
     scenes: ['300', '400', '400_lost', '450', '470'],
     fights: ['aurel_vane'],
   ),
@@ -192,7 +192,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'Vessels that should not float, their painted sails shining as the crews wet them. Talk your way aboard the Lark, pass as crew, or climb her line as she lifts; then the sign on her sail carries you up through the guns.',
     blurbFr:
-        'Des vaisseaux qui ne devraient pas flotter, leurs voiles peintes brillant à mesure que les équipages les mouillent. Négociez votre place à bord de l’Alouette, faites-vous passer pour l’équipage, ou grimpez à son amarre au décollage ; puis le signe de sa voile vous emporte à travers les canons.',
+        'Des vaisseaux qui ne devraient pas flotter, leurs voiles peintes brillant à mesure que les équipages les mouillent. Négociez votre place à bord de l’Alouette, faites-vous passer pour un membre d’équipage, ou grimpez à son amarre au décollage\u00a0; puis le signe de sa voile vous emporte à travers les canons.',
     scenes: [
       '891', '895', '896_failed', '897_failed', '898_failed', '960', //
     ],
@@ -228,7 +228,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'An oasis of white clay huts round a green pool, a salt caravan and a few merchants. Rest, and hear of a city to the south where the Waste meets the sea. Who walks south with you sets your origin: Guardian, Rat or Broken.',
     blurbFr:
-        'Une oasis de cases d’argile blanche autour d’une mare verte, une caravane de sel et quelques marchands. Reposez-vous, et entendez parler d’une ville au sud, là où la Désolation rejoint la mer. Qui marche vers le sud avec vous fixe votre origine : Gardien, Rat ou Brisé.',
+        'Une oasis de cases d’argile blanche autour d’une mare verte, une caravane de sel et quelques marchands. Reposez-vous, et entendez parler d’une ville au sud, là où la Désolation rejoint la mer. Qui marche vers le sud avec vous fixe votre origine\u00a0: Gardien, Rat ou Brisé.',
     scenes: ['1200', '1210', '1000', '1001', '1002'],
   ),
   const Landmark(
@@ -239,7 +239,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'Where the Waste comes down to the sea: white walls on a headland, a stone giant to its knees in the harbor mouth, and the Inquisition searching every caravan at the gate. Go in with the caravan, or hidden in a salt wagon.',
     blurbFr:
-        'Là où la Désolation descend jusqu’à la mer : des murs blancs sur un promontoire, un géant de pierre dans l’eau jusqu’aux genoux à l’entrée du port, et l’Inquisition qui fouille chaque caravane à la porte. Entrer avec la caravane, ou caché dans un chariot de sel.',
+        'Là où la Désolation descend jusqu’à la mer\u00a0: des murs blancs sur un promontoire, un géant de pierre dans l’eau jusqu’aux genoux à l’entrée du port, et l’Inquisition qui fouille chaque caravane à la porte. Entrer avec la caravane, ou sous les sacs d’un chariot de sel.',
     scenes: ['2001', '2000', '2005', '2020'],
     fights: ['harbor_rat'],
   ),
@@ -251,7 +251,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'The Tide-Kin quarter of paper boats. Nadira asks for help against Renn, a customs officer charging a toll that exists in no ledger. Talk him down or fight.',
     blurbFr:
-        'Le quartier des Gens de la Marée et de leurs bateaux de papier. Nadira demande de l’aide contre Renn, un douanier qui perçoit un péage inscrit dans aucun registre. Le raisonner ou se battre.',
+        'Le quartier des Gens de la Marée et de leurs bateaux de papier. Nadira demande de l’aide contre Renn, un douanier qui perçoit un péage qui ne figure dans aucun registre. Le raisonner ou se battre.',
     scenes: ['2015_ternrow', '2015_ternrow_talked', '2015_ternrow_fight'],
     fights: ['dock_overseer'],
   ),
@@ -263,7 +263,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'Chapter 2’s hub, Saltmouth’s harbor quarter. A quartermaster called Vane, no kin to the Inquisitor-General, holds the gate to the shipyards; the market around him is full of work: the Bazaar, Apothecary Row, bounties, card games, a false informant, Kelda at the gate, Sable’s marker, Liora on the rooftop, and Vess, who follows the Bundle.',
     blurbFr:
-        'Le carrefour du chapitre 2, le quartier du port de Bouche-de-Sel. Un intendant nommé Vane, sans lien avec l’Inquisiteur général, garde la porte des chantiers navals ; autour de lui, le marché regorge de travail : le Bazar, la rue des Apothicaires, des primes, des parties de cartes, un faux informateur, Kelda à la porte, la reconnaissance de dette de Sable, Liora sur le toit, et Vess, qui suit le Balluchon.',
+        'Le carrefour du chapitre 2, le quartier du port de Bouche-de-Sel. Un intendant nommé Vane, sans lien avec l’Inquisiteur général, garde la porte des chantiers navals\u00a0; autour de lui, le marché regorge de travail\u00a0: le Bazar, la rue des Apothicaires, des primes, des parties de cartes, un faux informateur, Kelda à la porte, la reconnaissance de dette de Sable, Liora sur le toit, et Vess, qui suit le Balluchon.',
     scenes: [
       '2010', '2010_crane', '2010_liora', '2011', //
       '2015', '2015_apothecary', '2015_bandits', '2015_bazaar', '2015_cards',
@@ -292,7 +292,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'The one hull the yard will sell a stranger: the Rusty Eel, holed and torn. Buy her or work off her price, patch the hull and mend the sail, then decide who sails: everyone, the twenty who can fight, or no one.',
     blurbFr:
-        'La seule coque que le chantier accepte de vendre à un inconnu : le Rusty Eel, troué et déchiré. Achetez-le ou payez-le de votre travail, colmatez la coque et réparez la voile, puis décidez qui embarque : tout le monde, les vingt qui savent se battre, ou personne.',
+        'La seule coque que le chantier accepte de vendre à un inconnu\u00a0: le Rusty Eel, troué et déchiré. Achetez-le ou payez-le de votre travail, colmatez la coque et réparez la voile, puis décidez qui embarque\u00a0: tout le monde, les vingt qui savent se battre, ou personne.',
     scenes: ['2900', '2900_boat_fixed'],
   ),
   const Landmark(
@@ -304,7 +304,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'Three weeks of open sea toward the Ashen Coast. On the twelfth night the storm hits: cut the stores, cut the refugees’ tow-line, or lash yourself to the tiller.',
     blurbFr:
-        'Trois semaines de haute mer vers la Côte de Cendre. La douzième nuit, la tempête frappe : sacrifier les vivres, couper l’amarre des réfugiés, ou vous attacher à la barre.',
+        'Trois semaines de haute mer vers la Côte de Cendre. La douzième nuit, la tempête frappe\u00a0: sacrifier les vivres, couper l’amarre des réfugiés, ou vous attacher à la barre.',
     scenes: ['2999'],
   ),
   const Landmark(
@@ -315,7 +315,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'Landfall after twenty days. In a cove hidden from the Spire the survivors start building without anyone deciding to: your base, where every chapter opens, between every trip, until the night the Host of the Lantern Throne musters on its shingle for the tear.',
     blurbFr:
-        'La terre, après vingt jours. Dans une crique cachée de la Flèche, les survivants se mettent à bâtir sans que personne l’ait décidé : votre base, où chaque chapitre commence, entre chaque voyage, jusqu’à la nuit où l’Ost du Trône de la Lanterne se rassemble sur ses galets avant la déchirure.',
+        'La terre, après vingt jours. Dans une crique cachée de la Flèche, les survivants se mettent à bâtir sans que personne l’ait décidé\u00a0: votre base, où chaque chapitre commence, entre chaque voyage, jusqu’à la nuit où l’Ost du Trône de la Lanterne se rassemble sur ses galets avant la déchirure.',
     scenes: [
       '3001', '3001_camp', '4999_camp', '6002_siege', '6002_siege_2', //
       '6002_siege_breach', '6002_siege_end', '6002_camp', '7001', '7400',
@@ -330,7 +330,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'Chapter 3’s hub, a day’s walk from the camp: a town the Inquisition burned itself. The Ashen Oath, the Void Relic contract, Maren’s confession, Grosh the mercenary, Reya’s wall of names, and a message to Lysa.',
     blurbFr:
-        'Le carrefour du chapitre 3, à une journée de marche du camp : une ville que l’Inquisition a brûlée elle-même. Le Serment de Cendres, le contrat de la Relique du Néant, la confession de Maren, Grosh le mercenaire, le mur des noms de Reya, et un message pour Lysa.',
+        'Le carrefour du chapitre 3, à une journée de marche du camp\u00a0: une ville que l’Inquisition a brûlée elle-même. Le Serment de Cendres, le contrat de la Relique du Néant, la confession de Maren, Grosh le mercenaire, le mur des noms de Reya, et un message pour Lysa.',
     scenes: [
       '3005', '3005_oath', '3005_acolyte', '3005_relic', //
       '3005_wisp', '3005_stalker', '3005_golem', '3005_auxiliaries',
@@ -358,7 +358,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'A hollow of the old slag heaps where the ironworkers’ families went when the golems outlasted their masters: kilns, a well, tithe-takers from the Spire, and a smith’s widow who still hears his hymn.',
     blurbFr:
-        'Un creux des vieux terrils où les familles des forgerons se sont repliées quand les golems ont survécu à leurs maîtres : des fours, un puits, des collecteurs de dîme de la Flèche, et une veuve de forgeron qui entend encore son cantique.',
+        'Un creux des vieux terrils où les familles des forgerons se sont repliées quand les golems ont survécu à leurs maîtres\u00a0: des fours, un puits, des collecteurs de dîme de la Flèche, et une veuve de forgeron qui entend encore son cantique.',
     scenes: [
       '3100', '3100_tithe', '3100_kiln', '3100_kiln_failed', //
       '3100_widow', '3100_widow_later', '3100_bread',
@@ -379,7 +379,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'The oni village on the terraces above the hot springs, at the top of the Exorcists’ Road: bells on every eave, a smith with a sawn-off horn, brewers who bet on their guests, and the Horn-Taker’s chest of proofs.',
     blurbFr:
-        'Le village des oni sur les terrasses au-dessus des sources chaudes, en haut de la Route des Exorcistes : des cloches à chaque avant-toit, un forgeron à la corne sciée, des brasseurs qui parient sur leurs invités, et le coffre de preuves du Preneur de Cornes.',
+        'Le village des oni sur les terrasses au-dessus des sources chaudes, en haut de la Route des Exorcistes\u00a0: des cloches à chaque avant-toit, un forgeron à la corne sciée, des brasseurs qui parient sur leurs invités, et le coffre de preuves du Preneur de Cornes.',
     scenes: [
       '3200', '3200_circle', '3200_brew', '3200_brew_failed', //
       '3200_smith', '3200_smith_later', '3200_blade', '3200_springs',
@@ -399,7 +399,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'The Inquisition’s mother-house. Go over the cloister roofs and through the stained glass, or through the Hall of Records by bribe or violence. The High Warden’s white standard is grey underneath: a piece of the Shroud.',
     blurbFr:
-        'La maison mère de l’Inquisition. Passez par les toits du cloître et à travers les vitraux, ou par la Salle des Archives, en soudoyant ou par la force. L’étendard blanc du Haut Gardien est gris en dessous : un morceau du Linceul.',
+        'La maison mère de l’Inquisition. Passez par les toits du cloître et à travers les vitraux, ou par la Salle des Archives, en soudoyant ou par la force. L’étendard blanc du Haut Gardien est gris en dessous\u00a0: un morceau du Linceul.',
     scenes: [
       '3002', '3010', '3010_rope_fail', '3020', '3030', '3040', '3050',
       '4999_drawn', '4999', //
@@ -439,7 +439,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'A green hill in the grey fen where it is always a summer evening: the Good Folk’s riddle-table, a clock that shows what a visit costs, and Nell, this year’s teind to the Hollow Court, knitting a grey shawl.',
     blurbFr:
-        'Une colline verte dans le marais gris, où c’est toujours un soir d’été : la table aux énigmes des Bienveillants, une horloge qui montre ce que coûte une visite, et Nell, la dîme de cette année pour la Cour Creuse, qui tricote un châle gris.',
+        'Une colline verte dans le marais gris, où c’est toujours un soir d’été\u00a0: la table aux énigmes des Bienveillants, une horloge qui montre ce que coûte une visite, et Nell, la dîme de cette année pour la Cour Creuse, qui tricote un châle gris.',
     scenes: [
       '5200', '5200_barrows', '5200_riddles', '5200_riddles_failed', //
       '5200_nell', '5200_nell_later', '5200_sleep',
@@ -531,7 +531,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'A pilgrims’ halt on the road into the Black Reliquary, where the tear’s frost came first: a bell that counts the taken, a road-keeper’s lantern, and stale bread shared with whoever is still walking.',
     blurbFr:
-        'Une halte de pèlerins sur la route du Reliquaire Noir, où le givre de la déchirure est arrivé en premier : une cloche qui compte les disparus, la lanterne d’une gardienne de la route, et un pain rassis partagé avec ceux qui marchent encore.',
+        'Une halte de pèlerins sur la route du Reliquaire Noir, où le givre de la déchirure est arrivé en premier\u00a0: une cloche qui compte les disparus, la lanterne d’une gardienne de la route, et un pain rassis partagé avec ceux qui marchent encore.',
     scenes: [
       '6100', '6100_bell', '6100_bell_failed', '6100_road', //
       '6100_keeper', '6100_keeper_later', '6100_bread', '6100_knife',
@@ -562,7 +562,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'The last forty giants, below the Frost Quarry: they cut the stone for the Reliquary and were paid by being written out of scripture. A fire six hundred years old, a first child in eleven years, and a tally-stone of names.',
     blurbFr:
-        'Les quarante derniers géants, sous la Carrière de Givre : ils ont taillé la pierre du Reliquaire et ont été payés en étant rayés des Écritures. Un feu vieux de six cents ans, un premier enfant en onze ans, et une pierre de compte couverte de noms.',
+        'Les quarante derniers géants, sous la Carrière de Givre\u00a0: ils ont taillé la pierre du Reliquaire et ont été payés en étant rayés des Écritures. Un feu vieux de six cents ans, un premier enfant en onze ans, et une pierre de compte couverte de noms.',
     scenes: [
       '6200', '6200_gate', '6200_birth', '6200_birth_failed', //
       '6200_eldest', '6200_eldest_later', '6200_hearth',
@@ -592,7 +592,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'A town built from the White Fleet’s wrecks by the crusaders who washed up in them: a chaplain who knows where the flagship lies, a chandlery, the grey sickness, and a last company still at war.',
     blurbFr:
-        'Une ville bâtie avec les épaves de la Flotte Blanche par les croisés qui s’y sont échoués : un aumônier qui sait où gît le vaisseau amiral, une chandlerie, le mal gris, et une dernière compagnie encore en guerre.',
+        'Une ville bâtie avec les épaves de la Flotte Blanche par les croisés qui s’y sont échoués\u00a0: un aumônier qui sait où gît le vaisseau amiral, une chandlerie, le mal gris, et une dernière compagnie encore en guerre.',
     scenes: [
       '7100', '7100_chaplain', '7100_chandlery', '7100_company', //
       '7100_sick', '7100_sick_failed', '7100_helmsman', '7100_helmsman_refused',
@@ -651,7 +651,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'Grey sand drawn out of the dead heart, and the tear now a door. Reflections on the sand, the legate’s pact, the Admiralty’s vote and the grey hand; then, past the Host’s battle, the Sovereign’s price and its sixth piece, four endings (the city, the seeker, the dawn, or the crown), and the night the whole Banner turns back.',
     blurbFr:
-        'Un sable gris tiré du cœur mort, et la déchirure devenue porte. Des reflets sur le sable, le pacte du légat, la voix de l’Amirauté et la main grise ; puis, après la bataille de l’Ost, le prix du Souverain et sa sixième pièce, quatre fins (la ville, le chercheur, l’aube ou la couronne), et la nuit où la Bannière entière revient en arrière.',
+        'Un sable gris tiré du cœur mort, et la déchirure devenue porte. Des reflets sur le sable, le pacte du légat, la voix de l’Amirauté et la main grise\u00a0; puis, après la bataille de l’Ost, le prix du Souverain et sa sixième pièce, quatre fins (la ville, le chercheur, l’aube ou la couronne), et la nuit où la Bannière entière revient en arrière.',
     scenes: [
       '7002', '7002_reflections', '7002_rest', '7002_pact', //
       '7002_betrayal', '7002_crew', //
@@ -691,7 +691,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'Where the Host of the Lantern Throne came ashore to meet the tear’s answer to the crowning: the Tear-Herald, wearing every face the tear has taken, and a mile of reflections drawn up behind it, with only the last mile left to cross alone.',
     blurbFr:
-        'Là où l’Ost du Trône de la Lanterne débarqua pour affronter la réponse de la déchirure au couronnement : le Héraut de la Déchirure, qui porte tous les visages qu’elle a pris, et une lieue de reflets rangés derrière lui, avec la dernière lieue à traverser sans personne.',
+        'Là où l’Ost du Trône de la Lanterne débarqua pour affronter la réponse de la déchirure au couronnement\u00a0: le Héraut de la Déchirure, qui porte tous les visages qu’elle a pris, et une lieue de reflets rangés derrière lui, avec la dernière lieue à traverser sans personne.',
     scenes: ['7810', '7002_approach', '7002_alarm'],
     fights: ['tear_herald', 'hollow_reflection', 'unmade_knight'],
   ),
