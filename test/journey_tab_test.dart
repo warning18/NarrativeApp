@@ -112,6 +112,11 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
     }
     await _settle(tester);
+    // The scene reached is read full screen first; Continue brings the
+    // map back (v1.200.1).
+    expect(find.byKey(const ValueKey('journey_continue')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('journey_continue')));
+    await tester.pump(const Duration(milliseconds: 400));
     // The road there may hold a detour first, which the map then shows.
     final after = container.read(storyPlayProvider);
     if (after.isInExcursion) {
