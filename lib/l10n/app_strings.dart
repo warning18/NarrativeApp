@@ -8119,9 +8119,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'beasts_none_hint': {
     AppLanguage.en:
-        'No beast has crossed the Eel\'s path yet. They roam the open water from the Ashen coast outward.',
+        'No beast has crossed the Eel\'s path yet. They roam the open water from the Ashen Coast outward.',
     AppLanguage.fr:
-        'Aucune bête n\'a encore croisé la route de l\'Eel. Elles rôdent en haute mer, de la côte des Cendres vers le large.',
+        'Aucune bête n\'a encore croisé la route de l\'Eel. Elles rôdent en haute mer, de la Côte de Cendre vers le large.',
   },
   'beasts_hint': {
     AppLanguage.en:
