@@ -102,8 +102,8 @@ void main() {
         containsAll(['5004_altar|court_fled', '5004|origin_board_good']));
     expect(tester.takeException(), isNull);
 
-    // 2. The road from Saltmouth's landward gate to the wharf eats the
-    // last ration, and is a watch of the day.
+    // 2. From Saltmouth's landward gate to its wharf is a walk inside the
+    // city (v1.197.1): no ration eaten, no watch of the day gone.
     play.jumpTo('2005');
     await _settle(tester);
     await tester.runAsync(() => container
@@ -111,6 +111,15 @@ void main() {
         .loadSession(session().copyWith(provisions: 1, watch: 0)));
     await _settle(tester);
     await tester.tap(find.text('Go in with the caravan'));
+    await _settle(tester);
+    expect(session().provisions, 1);
+    expect(session().watch, 0);
+    expect(container.read(pendingRoadNoteProvider), isNull);
+    // Sailing from the Black Reliquary home to the camp is a road: it
+    // eats the last ration, and is a watch of the day.
+    play.jumpTo('6002');
+    await _settle(tester);
+    await tester.tap(find.text('Sail home to the camp at once'));
     await _settle(tester);
     expect(session().provisions, 0);
     expect(session().watch, 1);

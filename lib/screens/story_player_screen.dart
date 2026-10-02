@@ -1527,9 +1527,13 @@ Future<void> _selectChoice({
   // ration eaten and part of the day gone (see journey_rules.dart). A
   // choice that travels (the camp's main quest, on foot) is a walk
   // between places, as the camp's own trips are.
+  // A move between two districts of one city is no road (v1.197, see
+  // Geography.travelsBetween).
   final historyBefore = ref.read(storyPlayProvider).history.length;
+  final world = await loadGeography(ref);
   if (!choice.opensCharacterCreation &&
-      (choice.travels || isRoadStep(currentNodeId, choice.nextId))) {
+      (choice.travels ||
+          world.travelsBetween(story, currentNodeId, choice.nextId))) {
     await walkRoadStep(ref, watches: choice.travels ? walkWatches : 1);
     // What waits on this road (see road_events.dart), known before the
     // party set out, takes the place of a detour.
@@ -1616,8 +1620,8 @@ Future<List<StoryNode>?> roadEventOn(
   final condition = ref.read(chapterConditionProvider);
   // The land the road runs through (v1.197): its hazards, and the foes
   // that live there.
-  final biome =
-      (await loadGeography(ref)).roadBiome(story, fromNodeId, toNodeId);
+  final world = await loadGeography(ref);
+  final biome = world.roadBiome(story, fromNodeId, toNodeId);
   final event = roadEventFor(
     story: story,
     fromNodeId: fromNodeId,
@@ -1628,6 +1632,7 @@ Future<List<StoryNode>?> roadEventOn(
     championShare: condition?.championShare ?? 0.4,
     shrineShare: condition?.shrineShare ?? 0.3,
     hazardShare: hazardShareFor(biome),
+    world: world,
   );
   if (event == null) return null;
   final enemies = await loadedGameDb(ref, enemiesSchema);

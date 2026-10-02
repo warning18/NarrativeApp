@@ -96,7 +96,8 @@ int stableHash(String text) {
 
 /// What waits on the road from scene [fromNodeId] to [toNodeId] of [story]
 /// in [chapter], [historyLength] scenes into the journey; null for a quiet
-/// road. Only a road between two places (see [isRoadStep]) holds one, from
+/// road. Only a road between two places (see [isRoadStep], or with a
+/// [world] its Geography.travelsBetween) holds one, from
 /// chapter 2, and never in the middle of a crisis (see
 /// SubNodeEngine.detourAllowedBetween). The chapter's condition (see
 /// chapter_conditions.dart) may make events likelier ([oddsFactor]) and
@@ -114,10 +115,15 @@ RoadEventKind? roadEventFor({
   double championShare = 0.4,
   double shrineShare = 0.3,
   double hazardShare = 0,
+  Geography? world,
 }) {
-  if (!roadRulesApply(chapter) || !isRoadStep(fromNodeId, toNodeId)) {
-    return null;
-  }
+  // A road between two locations; with the world's places known, a
+  // move between two districts of one city is no road (see
+  // Geography.travelsBetween).
+  final travels = world == null
+      ? isRoadStep(fromNodeId, toNodeId)
+      : world.travelsBetween(story, fromNodeId, toNodeId);
+  if (!roadRulesApply(chapter) || !travels) return null;
   final from = story.nodeFor(fromNodeId);
   final to = story.nodeFor(toNodeId);
   if (from == null || to == null || isStoryEnding(to)) return null;
