@@ -22,7 +22,10 @@
     "startingDiceId": "",
     "startingSpellIds": [],
     "professionName_fr": "Guerrier",
-    "description_fr": "Des combattants de première ligne qui troquent la finesse contre une robustesse brute."
+    "description_fr": "Des combattants de première ligne qui troquent la finesse contre une robustesse brute.",
+    "visualAsset": "warrior.png",
+    "tag": "Bulwark",
+    "tag_fr": "Rempart"
   },
   "mage": {
     "professionID": "mage",
@@ -50,7 +53,10 @@
       "spell_mana_ward"
     ],
     "professionName_fr": "Mage",
-    "description_fr": "Ils canalisent les forces élémentaires, au prix d’un corps fragile."
+    "description_fr": "Ils canalisent les forces élémentaires, au prix d’un corps fragile.",
+    "visualAsset": "mage.png",
+    "tag": "Caster",
+    "tag_fr": "Lanceur de sorts"
   },
   "rogue": {
     "professionID": "rogue",
@@ -75,7 +81,10 @@
     "startingDiceId": "",
     "startingSpellIds": [],
     "professionName_fr": "Voleur",
-    "description_fr": "Rapides, opportunistes, et toujours les premiers à flairer une bonne affaire."
+    "description_fr": "Rapides, opportunistes, et toujours les premiers à flairer une bonne affaire.",
+    "visualAsset": "rogue.png",
+    "tag": "Striker",
+    "tag_fr": "Frappeur"
   },
   "cleric": {
     "professionID": "cleric",
@@ -103,7 +112,10 @@
       "spell_purge"
     ],
     "professionName_fr": "Clerc",
-    "description_fr": "Des guérisseurs du champ de bataille qui tempèrent leurs coups par la retenue."
+    "description_fr": "Des guérisseurs du champ de bataille qui tempèrent leurs coups par la retenue.",
+    "visualAsset": "cleric.png",
+    "tag": "Support",
+    "tag_fr": "Soutien"
   },
   "ranger": {
     "professionID": "ranger",
@@ -128,6 +140,9 @@
     "startingDiceId": "",
     "startingSpellIds": [],
     "professionName_fr": "Rôdeur",
-    "description_fr": "Des éclaireurs qui ont beaucoup voyagé, aussi à l’aise avec la lame qu’avec l’arc."
+    "description_fr": "Des éclaireurs qui ont beaucoup voyagé, aussi à l’aise avec la lame qu’avec l’arc.",
+    "visualAsset": "ranger.png",
+    "tag": "Skirmisher",
+    "tag_fr": "Tirailleur"
   }
 }

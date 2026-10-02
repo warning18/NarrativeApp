@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.198.0+229]
+
+### Changed
+- **Race & Profession, on one screen.** The ten tall cards give way to two
+  rows of five tiles — a mark, a name and a word (Sturdy, Quick, Bulwark,
+  Caster…) — with the picked one told in full below: its lore, what it
+  changes as green and red chips (zeros left out), and the skill it grants
+  with its icon and its own name (Stoneskin, not Dwarf Stoneskin).
+- **Your character, before you commit.** A preview card adds the two up
+  the way a new game does — HP, damage, armour, gold, the abilities, the
+  two skills — so the numbers are known before the choice is set in stone.
+- **A mark for every people and calling.** Ten pixel icons in the item
+  icons' style: the sewn banner, the painted sigil, the stone-mark, the
+  ash-ink and the tear for the races; sword and shield, staff, daggers,
+  sun-cross and bow for the professions. They show on the picker and on
+  the character sheet (`visualAsset`, `tag`, `tag_fr` on both records).
+
 ## [1.197.0+228]
 
 Every shop has a trade, a keeper and a clan.

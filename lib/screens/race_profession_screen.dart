@@ -3,27 +3,21 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/character_start.dart';
 import '../data/origin_stories.dart';
 import '../data/random_names.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import '../utils/pixel_icons/pixel_icon.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
 import 'origin_stories_screen.dart';
-
-/// Formats a skill id like "human_resolve" into "Human Resolve" — skills
-/// have no separate display-name field, only an id (matches how
-/// skills/skills_screen.dart shows them).
-String _formatSkillName(String id) => id
-    .split('_')
-    .where((w) => w.isNotEmpty)
-    .map((w) => '${w[0].toUpperCase()}${w.substring(1)}')
-    .join(' ');
 
 class RaceProfessionScreen extends ConsumerStatefulWidget {
   const RaceProfessionScreen({super.key});
@@ -88,19 +82,6 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     );
   }
 
-  /// The race/profession's granted skill, formatted as
-  /// "Starting Skill: Human Resolve — Draw on human tenacity...", or null
-  /// if the preset grants none.
-  String? _skillLine(Map<String, dynamic> preset, Map<String, dynamic> skills) {
-    final skillId = preset['standardSkillID']?.toString() ?? '';
-    if (skillId.isEmpty) return null;
-    final skill = skills[skillId] as Map<String, dynamic>?;
-    final name = _formatSkillName(skillId);
-    final desc = skill?['description']?.toString() ?? '';
-    final prefix = '${tr(ref, 'granted_skill_label')}: $name';
-    return desc.isNotEmpty ? '$prefix — $desc' : prefix;
-  }
-
   Widget _buildPicker(
     BuildContext context,
     Map<String, dynamic> races,
@@ -109,6 +90,15 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
   ) {
     final raceIds = races.keys.toList()..sort();
     final professionIds = professions.keys.toList()..sort();
+    final lang = ref.watch(appLanguageProvider);
+    final defaults = ref.watch(gameConfigProvider).value ?? const {};
+    final theme = Theme.of(context);
+    final race = _selectedRaceId == null
+        ? null
+        : races[_selectedRaceId!] as Map<String, dynamic>?;
+    final profession = _selectedProfessionId == null
+        ? null
+        : professions[_selectedProfessionId!] as Map<String, dynamic>?;
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -116,10 +106,8 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
         Row(
           children: [
             Expanded(
-              child: Text(
-                tr(ref, 'choose_who_desc'),
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
+              child: Text(tr(ref, 'choose_who_desc'),
+                  style: theme.textTheme.bodySmall),
             ),
             const SizedBox(width: 8),
             OutlinedButton.icon(
@@ -134,39 +122,67 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
           ],
         ),
         const SizedBox(height: 16),
-        Text(tr(ref, 'race_label'),
-            style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
-        ...raceIds.map((id) {
-          final race = races[id] as Map<String, dynamic>;
-          return _PresetCard(
-            icon: raceIcon,
-            title: race['raceName']?.toString() ?? id,
-            description: race['description']?.toString() ?? '',
-            bonusLine: _bonusLine(race, showSkillPoints: false),
-            skillLine: _skillLine(race, skills),
-            selected: _selectedRaceId == id,
-            onTap: () => setState(() => _selectedRaceId = id),
-          );
-        }),
-        const SizedBox(height: 24),
-        Text(tr(ref, 'profession_label'),
-            style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
-        ...professionIds.map((id) {
-          final profession = professions[id] as Map<String, dynamic>;
-          return _PresetCard(
-            icon: professionIcon,
-            title: profession['professionName']?.toString() ?? id,
-            description: profession['description']?.toString() ?? '',
-            bonusLine: _bonusLine(profession, showSkillPoints: true),
-            skillLine: _skillLine(profession, skills),
-            selected: _selectedProfessionId == id,
-            onTap: () => setState(() => _selectedProfessionId = id),
-          );
-        }),
-        const SizedBox(height: 24),
-        ElevatedButton.icon(
+        // The five peoples in one row, the picked one told below (v1.198).
+        _sectionHeader(context, tr(ref, 'race_label'),
+            race == null ? tr(ref, 'pick_race_hint') : null),
+        _PresetRail(
+          ids: raceIds,
+          folder: 'races',
+          nameOf: (id) =>
+              (races[id] as Map<String, dynamic>)['raceName']?.toString() ?? id,
+          tagOf: (id) =>
+              (races[id] as Map<String, dynamic>)['tag']?.toString() ?? '',
+          selectedId: _selectedRaceId,
+          onPick: (id) => setState(() => _selectedRaceId = id),
+        ),
+        if (race != null)
+          _PresetDetail(
+            presetId: _selectedRaceId!,
+            preset: race,
+            folder: 'races',
+            name: race['raceName']?.toString() ?? _selectedRaceId!,
+            skills: skills,
+            language: lang,
+            withOffers: false,
+          ),
+        const SizedBox(height: 20),
+        _sectionHeader(context, tr(ref, 'profession_label'),
+            profession == null ? tr(ref, 'pick_profession_hint') : null),
+        _PresetRail(
+          ids: professionIds,
+          folder: 'professions',
+          nameOf: (id) =>
+              (professions[id] as Map<String, dynamic>)['professionName']
+                  ?.toString() ??
+              id,
+          tagOf: (id) =>
+              (professions[id] as Map<String, dynamic>)['tag']?.toString() ??
+              '',
+          selectedId: _selectedProfessionId,
+          onPick: (id) => setState(() => _selectedProfessionId = id),
+        ),
+        if (profession != null)
+          _PresetDetail(
+            presetId: _selectedProfessionId!,
+            preset: profession,
+            folder: 'professions',
+            name: profession['professionName']?.toString() ??
+                _selectedProfessionId!,
+            skills: skills,
+            language: lang,
+            withOffers: true,
+          ),
+        const SizedBox(height: 20),
+        // What the two add up to, before anything is set in stone.
+        _StartPreview(
+          race: race,
+          profession: profession,
+          defaults: defaults,
+          skills: skills,
+          language: lang,
+        ),
+        const SizedBox(height: 12),
+        FilledButton.icon(
           onPressed: (_selectedRaceId == null || _selectedProfessionId == null)
               ? null
               : () => _confirmStart(
@@ -181,46 +197,28 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     );
   }
 
-  String _bonusLine(Map<String, dynamic> preset,
-      {required bool showSkillPoints}) {
-    final health = (preset['bonusMaxHealth'] as num?)?.toInt() ?? 0;
-    final damage = (preset['bonusBaseDamage'] as num?)?.toInt() ?? 0;
-    final armor = (preset['bonusBaseArmor'] as num?)?.toInt() ?? 0;
-    final luck = (preset['bonusLuck'] as num?)?.toInt() ?? 0;
-    final charisma = (preset['bonusCharisma'] as num?)?.toInt() ?? 0;
-    final strength = (preset['bonusStrength'] as num?)?.toInt() ?? 0;
-    final dexterity = (preset['bonusDexterity'] as num?)?.toInt() ?? 0;
-    final constitution = (preset['bonusConstitution'] as num?)?.toInt() ?? 0;
-    final intelligence = (preset['bonusIntelligence'] as num?)?.toInt() ?? 0;
-    final wisdom = (preset['bonusWisdom'] as num?)?.toInt() ?? 0;
-    final perception = (preset['bonusPerception'] as num?)?.toInt() ?? 0;
-    final gold = (preset['startingGoldBonus'] as num?)?.toInt() ?? 0;
-    final skillPoints = (preset['startingSkillPoints'] as num?)?.toInt() ?? 0;
-    final parts = <String>[
-      '${health >= 0 ? '+' : ''}$health ${tr(ref, 'hp_label')}',
-      '${damage >= 0 ? '+' : ''}$damage ${tr(ref, 'damage_label')}',
-      '${armor >= 0 ? '+' : ''}$armor ${tr(ref, 'arm_abbrev')}',
-      '${gold >= 0 ? '+' : ''}$gold ${tr(ref, 'gold_field_label')}',
-      if (luck != 0) '${luck >= 0 ? '+' : ''}$luck ${tr(ref, 'luck_label')}',
-      if (charisma != 0)
-        '${charisma >= 0 ? '+' : ''}$charisma ${tr(ref, 'charisma_label')}',
-      if (strength != 0)
-        '${strength >= 0 ? '+' : ''}$strength ${tr(ref, 'str_abbrev')}',
-      if (dexterity != 0)
-        '${dexterity >= 0 ? '+' : ''}$dexterity ${tr(ref, 'dex_abbrev')}',
-      if (constitution != 0)
-        '${constitution >= 0 ? '+' : ''}$constitution ${tr(ref, 'con_abbrev')}',
-      if (intelligence != 0)
-        '${intelligence >= 0 ? '+' : ''}$intelligence ${tr(ref, 'int_abbrev')}',
-      if (wisdom != 0)
-        '${wisdom >= 0 ? '+' : ''}$wisdom ${tr(ref, 'wis_abbrev')}',
-      if (perception != 0)
-        '${perception >= 0 ? '+' : ''}$perception ${tr(ref, 'per_abbrev')}',
-      // A profession's starting skill points are offers since v1.194.
-      if (showSkillPoints && skillPoints > 0)
-        '+$skillPoints ${tr(ref, 'offer_bonus_label')}',
-    ];
-    return parts.join(' · ');
+  Widget _sectionHeader(BuildContext context, String title, String? hint) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
+        children: [
+          Text(title, style: theme.textTheme.titleMedium),
+          if (hint != null) ...[
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(hint,
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 
   Future<void> _confirmStart(
@@ -308,105 +306,390 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
   }
 }
 
-class _PresetCard extends StatelessWidget {
-  const _PresetCard({
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.bonusLine,
-    this.skillLine,
-    required this.selected,
-    required this.onTap,
+/// A race's or profession's mark (`assets/visuals/{folder}/{id}.png`, see
+/// `visualAsset`), or the old generic icon for a record without one.
+class PresetMark extends StatelessWidget {
+  const PresetMark({
+    super.key,
+    required this.folder,
+    required this.preset,
+    this.size = 36,
   });
 
-  final IconData icon;
-  final String title;
-  final String description;
-  final String bonusLine;
-
-  /// The race/profession's granted starting skill, already formatted with
-  /// name and description — null if it grants none.
-  final String? skillLine;
-  final bool selected;
-  final VoidCallback onTap;
+  final String folder;
+  final Map<String, dynamic>? preset;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final onContainer = selected ? colorScheme.onPrimaryContainer : null;
-    return Card(
-      color: selected ? colorScheme.primaryContainer : null,
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(icon, color: onContainer),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(color: onContainer),
-                    ),
-                    if (description.isNotEmpty) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        description,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: onContainer),
-                      ),
-                    ],
-                    const SizedBox(height: 4),
-                    Text(
-                      bonusLine,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(color: onContainer),
-                    ),
-                    if (skillLine != null) ...[
+    final file = preset?['visualAsset']?.toString() ?? '';
+    if (file.isEmpty) {
+      return Icon(folder == 'races' ? raceIcon : professionIcon, size: size);
+    }
+    return PixelIcon('assets/visuals/$folder/$file', size: size);
+  }
+}
+
+/// The presets side by side, one tile each: the mark, the name, the tag.
+class _PresetRail extends StatelessWidget {
+  const _PresetRail({
+    required this.ids,
+    required this.folder,
+    required this.nameOf,
+    required this.tagOf,
+    required this.selectedId,
+    required this.onPick,
+  });
+
+  final List<String> ids;
+  final String folder;
+  final String Function(String id) nameOf;
+  final String Function(String id) tagOf;
+  final String? selectedId;
+  final ValueChanged<String> onPick;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final (i, id) in ids.indexed) ...[
+          if (i > 0) const SizedBox(width: 6),
+          Expanded(
+            child: Material(
+              key: Key('preset_tile_$id'),
+              color: id == selectedId
+                  ? scheme.primaryContainer
+                  : scheme.surfaceContainer,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(
+                    color: id == selectedId
+                        ? scheme.primary
+                        : scheme.outlineVariant,
+                    width: id == selectedId ? 2 : 1),
+              ),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(10),
+                onTap: () => onPick(id),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(2, 8, 2, 6),
+                  child: Column(
+                    children: [
+                      PresetMark(
+                          folder: folder,
+                          preset: {'visualAsset': '$id.png'},
+                          size: 36),
                       const SizedBox(height: 4),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(Icons.auto_awesome,
-                              size: 14, color: colorScheme.primary),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              skillLine!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(
-                                    fontStyle: FontStyle.italic,
-                                    color: colorScheme.primary,
-                                  ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      Text(nameOf(id),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.labelMedium?.copyWith(
+                              fontWeight:
+                                  id == selectedId ? FontWeight.w700 : null)),
+                      Text(tagOf(id),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                              fontSize: 9.5,
+                              color: id == selectedId
+                                  ? scheme.primary
+                                  : scheme.onSurfaceVariant)),
                     ],
-                  ],
+                  ),
                 ),
               ),
-              if (selected) ...[
-                const SizedBox(width: 8),
-                Icon(Icons.check_circle, color: onContainer),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// A bonus as a chip: green when it gives, red when it takes.
+class _BonusChip extends StatelessWidget {
+  const _BonusChip({required this.label, required this.value});
+
+  final String label;
+  final int value;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final color = value > 0 ? Colors.green.shade400 : scheme.error;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.7)),
+        color: color.withValues(alpha: 0.1),
+      ),
+      child: Text('${value > 0 ? '+' : ''}$value $label',
+          style: Theme.of(context)
+              .textTheme
+              .labelSmall
+              ?.copyWith(color: color, fontWeight: FontWeight.w600)),
+    );
+  }
+}
+
+/// The picked preset told in full: its lore, what it changes, and the
+/// skill it grants.
+class _PresetDetail extends ConsumerWidget {
+  const _PresetDetail({
+    required this.presetId,
+    required this.preset,
+    required this.folder,
+    required this.name,
+    required this.skills,
+    required this.language,
+    required this.withOffers,
+  });
+
+  final String presetId;
+  final Map<String, dynamic> preset;
+  final String folder;
+  final String name;
+  final Map<String, dynamic> skills;
+  final AppLanguage language;
+  final bool withOffers;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final skillId = preset['standardSkillID']?.toString() ?? '';
+    final skill = skills[skillId] as Map<String, dynamic>?;
+    final tag = preset['tag']?.toString() ?? '';
+    return Card(
+      key: Key('preset_detail_$presetId'),
+      margin: const EdgeInsets.only(top: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                PresetMark(folder: folder, preset: preset, size: 40),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(name, style: theme.textTheme.titleMedium),
+                ),
+                if (tag.isNotEmpty)
+                  Text(tag.toUpperCase(),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                          color: scheme.primary, letterSpacing: 0.8)),
               ],
+            ),
+            const SizedBox(height: 6),
+            Text(preset['description']?.toString() ?? '',
+                style: theme.textTheme.bodySmall),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 6,
+              runSpacing: 4,
+              children: [
+                for (final e in presetBonuses(preset, withOffers: withOffers))
+                  _BonusChip(label: tr(ref, e.key), value: e.value),
+              ],
+            ),
+            if (skillId.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SkillPixelIcon(skillId, size: 28),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text.rich(
+                      TextSpan(children: [
+                        TextSpan(
+                            text: '${tr(ref, 'granted_skill_label')}: '
+                                '${grantedSkillName(skillId, presetId: presetId)}',
+                            style: TextStyle(
+                                color: scheme.primary,
+                                fontWeight: FontWeight.w600)),
+                        if ((skill?['description']?.toString() ?? '')
+                            .isNotEmpty)
+                          TextSpan(
+                              text: ' — ${skill!['description']}',
+                              style: TextStyle(
+                                  color: scheme.onSurfaceVariant,
+                                  fontStyle: FontStyle.italic)),
+                      ]),
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// What the picked race and profession add up to at the start: the name
+/// of the pair, its roles, the four numbers that matter, the abilities and
+/// the two skills — before the choice is confirmed.
+class _StartPreview extends ConsumerWidget {
+  const _StartPreview({
+    required this.race,
+    required this.profession,
+    required this.defaults,
+    required this.skills,
+    required this.language,
+  });
+
+  final Map<String, dynamic>? race;
+  final Map<String, dynamic>? profession;
+  final Map<String, dynamic> defaults;
+  final Map<String, dynamic> skills;
+  final AppLanguage language;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final both = race != null && profession != null;
+    final totals =
+        startingTotals(defaults: defaults, race: race, profession: profession);
+    Widget stat(IconData icon, String label, String value) => Expanded(
+          child: Column(
+            children: [
+              Icon(icon, size: 18, color: scheme.onSurfaceVariant),
+              const SizedBox(height: 2),
+              Text(value,
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.w700)),
+              Text(label,
+                  style: theme.textTheme.labelSmall
+                      ?.copyWith(color: scheme.onSurfaceVariant)),
             ],
           ),
+        );
+    return Card(
+      key: const Key('start_preview'),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: both ? scheme.primary : scheme.outlineVariant),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(tr(ref, 'your_character_label').toUpperCase(),
+                style: theme.textTheme.labelSmall?.copyWith(
+                    color: scheme.onSurfaceVariant, letterSpacing: 1)),
+            const SizedBox(height: 4),
+            if (!both)
+              Text(tr(ref, 'your_character_waiting'),
+                  style: theme.textTheme.bodySmall)
+            else ...[
+              Row(
+                children: [
+                  PresetMark(folder: 'races', preset: race, size: 32),
+                  const SizedBox(width: 4),
+                  PresetMark(
+                      folder: 'professions', preset: profession, size: 32),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            '${race!['raceName']} ${profession!['professionName']}',
+                            key: const Key('start_preview_name'),
+                            style: theme.textTheme.titleMedium),
+                        Text(
+                          [race!['tag'], profession!['tag']]
+                              .where((t) => (t?.toString() ?? '').isNotEmpty)
+                              .join(' · '),
+                          style: theme.textTheme.labelSmall
+                              ?.copyWith(color: scheme.primary),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  stat(Icons.favorite, tr(ref, 'hp_label'),
+                      '${totals.maxHealth}'),
+                  stat(Icons.gavel, tr(ref, 'damage_label'),
+                      '${totals.baseDamage}'),
+                  stat(Icons.shield, tr(ref, 'arm_abbrev'),
+                      '${totals.baseArmor}'),
+                  stat(Icons.toll, tr(ref, 'gold_field_label'),
+                      '${totals.gold}'),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 6,
+                runSpacing: 4,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Text('${tr(ref, 'abilities_label')}:',
+                      style: theme.textTheme.labelSmall
+                          ?.copyWith(color: scheme.onSurfaceVariant)),
+                  for (final e in totals.abilities.entries)
+                    Text('${tr(ref, e.key)} ${e.value}',
+                        style: theme.textTheme.labelMedium),
+                  if (totals.luck != 0)
+                    Text('${tr(ref, 'luck_label')} ${totals.luck}',
+                        style: theme.textTheme.labelMedium),
+                  if (totals.charisma != 0)
+                    Text('${tr(ref, 'charisma_label')} ${totals.charisma}',
+                        style: theme.textTheme.labelMedium),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  for (final (preset, id) in [
+                    (race!, race!['raceID']?.toString() ?? ''),
+                    (
+                      profession!,
+                      profession!['professionID']?.toString() ?? ''
+                    ),
+                  ])
+                    if ((preset['standardSkillID']?.toString() ?? '')
+                        .isNotEmpty)
+                      Expanded(
+                        child: Row(
+                          children: [
+                            SkillPixelIcon(preset['standardSkillID'].toString(),
+                                size: 22),
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: Text(
+                                grantedSkillName(
+                                    preset['standardSkillID'].toString(),
+                                    presetId: id),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.labelMedium
+                                    ?.copyWith(color: scheme.primary),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                ],
+              ),
+            ],
+          ],
         ),
       ),
     );
@@ -443,7 +726,8 @@ class _CharacterSheet extends StatelessWidget {
     final skillId = preset?['standardSkillID']?.toString() ?? '';
     if (skillId.isEmpty) return const SizedBox.shrink();
     final skill = skills[skillId] as Map<String, dynamic>?;
-    final name = _formatSkillName(skillId);
+    final name = grantedSkillName(skillId,
+        presetId: (preset?['raceID'] ?? preset?['professionID'])?.toString());
     final desc = skill?['description']?.toString() ?? '';
     return Padding(
       padding: const EdgeInsets.only(top: 4, bottom: 8),
@@ -518,17 +802,22 @@ class _CharacterSheet extends StatelessWidget {
         ],
         Card(
           child: ListTile(
-            leading: const Icon(raceIcon),
+            leading: PresetMark(folder: 'races', preset: race, size: 40),
             title: Text(raceName),
-            subtitle: Text(race?['description']?.toString() ?? ''),
+            subtitle: Text(
+                '${(race?['tag']?.toString() ?? '').isEmpty ? '' : '${race!['tag']} · '}'
+                '${race?['description'] ?? ''}'),
           ),
         ),
         _skillCard(context, t('granted_skill_label'), race),
         Card(
           child: ListTile(
-            leading: const Icon(professionIcon),
+            leading:
+                PresetMark(folder: 'professions', preset: profession, size: 40),
             title: Text(professionName),
-            subtitle: Text(profession?['description']?.toString() ?? ''),
+            subtitle: Text(
+                '${(profession?['tag']?.toString() ?? '').isEmpty ? '' : '${profession!['tag']} · '}'
+                '${profession?['description'] ?? ''}'),
           ),
         ),
         _skillCard(context, t('granted_skill_label'), profession),

@@ -745,6 +745,11 @@ final DbSchema racesSchema = DbSchema(
     FieldSchema(
         key: 'raceName_fr', label: 'Race Name (FR)', type: FieldType.text),
     FieldSchema(
+        key: 'tag',
+        label: 'Tag (one word on the picker: Sturdy, Quick…)',
+        type: FieldType.text),
+    FieldSchema(key: 'tag_fr', label: 'Tag (FR)', type: FieldType.text),
+    FieldSchema(
         key: 'description',
         label: 'Description',
         type: FieldType.multilineText),
@@ -809,6 +814,11 @@ final DbSchema professionsSchema = DbSchema(
         key: 'professionName_fr',
         label: 'Profession Name (FR)',
         type: FieldType.text),
+    FieldSchema(
+        key: 'tag',
+        label: 'Tag (the role on the picker: Bulwark, Caster…)',
+        type: FieldType.text),
+    FieldSchema(key: 'tag_fr', label: 'Tag (FR)', type: FieldType.text),
     FieldSchema(
         key: 'description',
         label: 'Description',

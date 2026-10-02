@@ -2772,6 +2772,31 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Aléatoire',
   },
   'race_label': {AppLanguage.en: 'Race', AppLanguage.fr: 'Race'},
+  'pick_race_hint': {
+    AppLanguage.en: 'Tap a people to read about them.',
+    AppLanguage.fr: 'Touchez un peuple pour en savoir plus.',
+  },
+  'pick_profession_hint': {
+    AppLanguage.en: 'Tap a calling to read about it.',
+    AppLanguage.fr: 'Touchez une vocation pour en savoir plus.',
+  },
+  'your_character_label': {
+    AppLanguage.en: 'Your character',
+    AppLanguage.fr: 'Votre personnage',
+  },
+  'your_character_waiting': {
+    AppLanguage.en: 'Pick a race and a profession to see what they add up to.',
+    AppLanguage.fr:
+        'Choisissez une race et une vocation pour voir ce que cela donne.',
+  },
+  'starting_body_label': {
+    AppLanguage.en: 'At the start',
+    AppLanguage.fr: 'Au départ',
+  },
+  'abilities_label': {
+    AppLanguage.en: 'Abilities',
+    AppLanguage.fr: 'Aptitudes',
+  },
   'profession_label': {
     AppLanguage.en: 'Profession',
     AppLanguage.fr: 'Profession'
