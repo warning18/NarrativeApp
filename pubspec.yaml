@@ -90,6 +90,8 @@ flutter:
     - assets/gamedata/intrigues.json
     - assets/gamedata/signs.json
     - assets/gamedata/politics_events.json
+    - assets/gamedata/geography.json
+    - assets/gamedata/biomes.json
     - assets/visuals/items/
     - assets/visuals/skills/
     - assets/visuals/dice/

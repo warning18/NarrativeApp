@@ -8,6 +8,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/story_providers.dart';
+import '../widgets/geography_widgets.dart' show GeoLocationField;
 
 class StoryNodeEditorScreen extends ConsumerStatefulWidget {
   const StoryNodeEditorScreen({super.key, required this.node});
@@ -29,6 +30,9 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
   late final TextEditingController _reqCharismaController;
   late final TextEditingController _authoringCommentController;
   late final TextEditingController _politicsOnEnterController;
+
+  /// Where the scene happens (v1.197, see StoryNode.location).
+  late final TextEditingController _locationController;
   late List<_ChoiceEditState> _choices;
   bool _saving = false;
 
@@ -53,6 +57,8 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
         TextEditingController(text: widget.node.authoringComment ?? '');
     _politicsOnEnterController = TextEditingController(
         text: politicsEditorText(widget.node.politicsOnEnter));
+    _locationController =
+        TextEditingController(text: widget.node.location ?? '');
     _choices = widget.node.choices.map((c) => _ChoiceEditState(c)).toList();
   }
 
@@ -67,6 +73,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
     _reqCharismaController.dispose();
     _authoringCommentController.dispose();
     _politicsOnEnterController.dispose();
+    _locationController.dispose();
     for (final choice in _choices) {
       choice.dispose();
     }
@@ -112,6 +119,8 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       noDetour: widget.node.noDetour,
       politicsOnEnter: politicsFromEditorText(
           _politicsOnEnterController.text, widget.node.politicsOnEnter),
+      location: locationFromEditorText(
+          _locationController.text, widget.node.location),
     );
     await saveStoryNode(ref, updated);
     if (!mounted) return;
@@ -200,6 +209,15 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
             ),
           ),
           const SizedBox(height: 12),
+          // Where it happens (v1.197): a place of geography.json.
+          GeoLocationField(
+            controller: _locationController,
+            label: t('node_location_label'),
+            hint: t('node_location_hint'),
+            unknown: t('node_location_unknown'),
+            pick: t('node_location_pick'),
+          ),
+          const SizedBox(height: 12),
           ExpansionTile(
             tilePadding: EdgeInsets.zero,
             title: Text(t('requirements')),
@@ -280,6 +298,15 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       ),
     );
   }
+}
+
+/// The place the editor's field [text] says (v1.197, see
+/// StoryNode.location): emptied, the scene keeps saying nowhere when it
+/// said so ('') and says nothing when it said nothing (null).
+String? locationFromEditorText(String text, String? original) {
+  final id = text.trim();
+  if (id.isNotEmpty) return id;
+  return original == null ? null : '';
 }
 
 /// [politics] as the editor's JSON field shows it: '' for none.

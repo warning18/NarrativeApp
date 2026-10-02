@@ -26,12 +26,15 @@ import '../data/sim_growth.dart';
 import '../data/story_graph_integrity.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
+import '../data/geography.dart';
+import '../data/road_events.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/settings_providers.dart';
 import '../providers/story_providers.dart';
@@ -213,6 +216,7 @@ class _SimContext {
     this.clans = ClanData.empty,
     this.skillTrees = const {},
     this.progression = SimProgression.offers,
+    this.geography,
   });
 
   final Map<String, dynamic> dice;
@@ -241,6 +245,10 @@ class _SimContext {
   /// How the character grows: the clans' offers (the game's rules since
   /// v1.194), or the old skill points, perks and sign picks, to compare.
   final SimProgression progression;
+
+  /// The world's places and biomes (v1.197): the hazards on the roads.
+  /// None, no hazards.
+  final Geography? geography;
 
   SimGrowthTables get growthTables => SimGrowthTables(
         skills: skills,
@@ -528,6 +536,50 @@ _SimResult _simulate(
           once: choice.hasLossBranch, host: choice.hostFight)
       : fightEnemies(const [], chapter);
 
+  /// The hazard on the road from [fromNodeId] to [toNodeId] (v1.197),
+  /// [at] steps into the walk, met where the game would meet it (see
+  /// roadEventFor): pushed through above half health (the character
+  /// wounded, never to death), waited out below. The road's other events
+  /// the walk passes by, as it does detours.
+  void roadHazard(String fromNodeId, String toNodeId, int at) {
+    final geography = sim?.geography;
+    final chapter = lastKnownChapter;
+    if (geography == null || chapter == null) return;
+    final biome = geography.roadBiome(story, fromNodeId, toNodeId);
+    final share = hazardShareFor(biome);
+    if (share == 0) return;
+    final kind = roadEventFor(
+      story: story,
+      fromNodeId: fromNodeId,
+      toNodeId: toNodeId,
+      historyLength: at,
+      chapter: chapter,
+      hazardShare: share,
+    );
+    if (kind != RoadEventKind.hazard) return;
+    final hazard = roadHazardFor(biome,
+        fromNodeId: fromNodeId, toNodeId: toNodeId, historyLength: at)!;
+    final c = character;
+    final pushOn = c == null ||
+        hazardPushesOn(health: c.currentHealth, maxHealth: c.maxHealth);
+    if (pushOn && c != null) {
+      c.currentHealth =
+          healthAfterHazard(c.currentHealth, hazardWoundFor(chapter));
+    }
+    steps.add(_SimStep(
+      nodeId: 'road:${hazard.id}',
+      chapter: lastKnownChapter,
+      mood: null,
+      uiTheme: null,
+      description: french
+          ? 'Danger\u00a0: ${hazard.nameFor(true)}'
+          : 'Hazard: ${hazard.name}',
+      choiceText: pushOn
+          ? (french ? 'Forcer le passage' : 'Push on')
+          : (french ? 'Attendre' : 'Wait it out'),
+    ));
+  }
+
   /// The expedition [zoneId] launches, played out: each of its events a
   /// fight at [_expeditionFightShare] odds (a pair from the pack pool some
   /// of the time, as SubNodeEngine draws them), then the zone's boss. A
@@ -807,6 +859,8 @@ _SimResult _simulate(
     if ((choice.unlockQuestId ?? '').isNotEmpty) {
       quests.add(choice.unlockQuestId!);
     }
+    // What waits on the road there (v1.197).
+    if (!choice.isEnding) roadHazard(currentId, choice.nextId, step);
     if (choice.triggersCombat) combatCount++;
     // An expedition the choice launches (a zone to clear before the story
     // goes on) is played out before it does.
@@ -869,6 +923,8 @@ _SimResult _simulate(
     ),
     skillTrees: table('skill_trees'),
     progression: progression,
+    geography:
+        Geography.parse(geography: table('geography'), biomes: table('biomes')),
   );
   final random = Random(seed);
   final tally = <String, ({int runs, int attempts, int won})>{};
@@ -1322,6 +1378,7 @@ class _PlaythroughSimulatorScreenState
         titles: await load(titlesSchema),
       ),
       skillTrees: await load(skillTreesSchema),
+      geography: await loadGeography(ref),
     );
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
     final random = Random();

@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/chapter_grid_layout.dart';
 import '../data/echoes.dart';
 import '../data/encounter_text.dart';
+import '../data/geography.dart';
 import '../data/journey_map.dart';
 import '../data/journey_relief.dart';
 import '../data/map_charts.dart' show ChartGeography, ChartPalette, chartOf;
@@ -23,6 +24,7 @@ import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/chapter_loop_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/map_look_provider.dart';
 import '../providers/player_session_provider.dart';
@@ -31,6 +33,8 @@ import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../widgets/biome_backdrop.dart';
+import '../widgets/geography_widgets.dart';
 import '../widgets/journey_fx.dart';
 import '../widgets/journey_place.dart';
 import '../widgets/player_stats_bar.dart';
@@ -85,6 +89,7 @@ class _Step {
     required this.leadsTo,
     required this.onwardKinds,
     this.event,
+    this.hazard,
     this.bearing,
     this.chartTarget,
   });
@@ -107,6 +112,10 @@ class _Step {
   /// What waits on the road to the step (see road_events.dart).
   final RoadEventKind? event;
 
+  /// Which of the land's hazards a hazard on this road would be (v1.197),
+  /// shown when [event] is one.
+  final BiomeHazard? hazard;
+
   /// For a way to another place: its true direction from here on the
   /// world chart (radians, 0 east, clockwise), and where it is there.
   final double? bearing;
@@ -122,6 +131,7 @@ class _PlaceView {
     required this.geography,
     required this.chartHere,
     required this.marks,
+    this.biome,
   });
 
   final PlaceKind kind;
@@ -131,6 +141,10 @@ class _PlaceView {
 
   /// The places around on the chart, for the road between two of them.
   final List<ChartMark> marks;
+
+  /// The land the place lies in (v1.197, see geography.dart): its ground
+  /// is painted under the place.
+  final Biome? biome;
 }
 
 /// A seed from [text] that is the same on every run.
@@ -545,6 +559,21 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       ));
     }
 
+    // Where the party stands in the world's places (v1.197): the place,
+    // the lands above it, and its land's biome.
+    final world = ref.watch(geographyProvider);
+    final herePlace = play.isInExcursion
+        ? null
+        : world.placeOfNode(story.nodeFor(play.currentNodeId)) ??
+            world.placeOfLandmark(standing?.id);
+    final herePath = world.pathOf(herePlace?.id);
+    BiomeHazard? hazardOn(StoryChoice choice) => roadHazardFor(
+          world.roadBiome(story, play.currentNodeId, choice.nextId),
+          fromNodeId: play.currentNodeId,
+          toNodeId: choice.nextId,
+          historyLength: play.history.length,
+        );
+
     // The place up close, when the party stands at one the world chart
     // knows (not on a detour): where it is and what the ways out point at.
     final geography = chartOf(ref.watch(mapShapeProvider));
@@ -617,7 +646,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     oddsFactor: condition?.roadEventOdds ?? 1,
                     championShare: condition?.championShare ?? 0.4,
                     shrineShare: condition?.shrineShare ?? 0.3,
+                    hazardShare: hazardShareFor(world.roadBiome(
+                        story, play.currentNodeId, choice.nextId)),
                   ),
+            hazard: hazardOn(choice),
             bearing:
                 chartHere != null && target != null && target.id != standing?.id
                     ? (geography.of(target) - chartHere).direction
@@ -647,6 +679,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             seed: _stableSeed(placeLandmark.id),
             geography: geography,
             chartHere: chartHere,
+            biome: world.biomeOf(herePlace?.id),
             marks: [
               for (final landmark in worldMapLandmarks)
                 if ((landmark.chapter - placeLandmark.chapter).abs() <= 1)
@@ -748,7 +781,29 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                         // to it (see _mapMin), and a step's long details
                         // scroll under it.
                         child: LayoutBuilder(builder: (context, above) {
-                          final room = above.maxHeight - 10 - _mapMin;
+                          // Where the party stands, over the place's map
+                          // (v1.197): each land a tap from This land. A
+                          // phone too short to open the scene over it
+                          // gives the map the room instead.
+                          const crumbRoom = GeoBreadcrumb.height + 2;
+                          final crumbs = placeView != null &&
+                                  !ended &&
+                                  herePath.isNotEmpty &&
+                                  above.maxHeight - 10 - _mapMin - crumbRoom >=
+                                      _sceneOpenMin
+                              ? GeoBreadcrumb(
+                                  key: const ValueKey('journey_crumbs'),
+                                  path: herePath,
+                                  french: french,
+                                  tooltip: tr(ref, 'geo_where_you_are'),
+                                  onTap: (place) =>
+                                      showThisLand(context, place.id),
+                                )
+                              : null;
+                          final room = above.maxHeight -
+                              10 -
+                              _mapMin -
+                              (crumbs == null ? 0 : crumbRoom);
                           // Too little room to open the scene: it keeps to
                           // its first lines, and opens full screen.
                           final squeezed = room < _sceneOpenMin;
@@ -781,6 +836,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                 ),
                               ),
                               const SizedBox(height: 10),
+                              if (crumbs != null) ...[
+                                crumbs,
+                                const SizedBox(height: 2),
+                              ],
                               Expanded(child: map),
                             ],
                           );
@@ -1128,17 +1187,22 @@ class _EndedPanel extends ConsumerWidget {
   }
 }
 
-/// A road event's badge on its step (see road_events.dart).
-IconData _eventIcon(RoadEventKind kind) => switch (kind) {
+/// A road event's badge on its step (see road_events.dart): a hazard's
+/// is its own (see hazardIcon).
+IconData _eventIcon(RoadEventKind kind, {BiomeHazard? hazard}) =>
+    switch (kind) {
       RoadEventKind.champion => Icons.military_tech,
       RoadEventKind.shrine => Icons.spa_outlined,
       RoadEventKind.caravan => Icons.storefront,
+      RoadEventKind.hazard =>
+        hazard == null ? Icons.warning_amber_rounded : hazardIcon(hazard),
     };
 
 Color _eventColour(RoadEventKind kind, InkColors ink) => switch (kind) {
       RoadEventKind.champion => ink.blood,
       RoadEventKind.shrine => ink.heal,
       RoadEventKind.caravan => ink.gold,
+      RoadEventKind.hazard => ink.ember,
     };
 
 IconData _iconFor(JourneyStepKind kind) => switch (kind) {
@@ -1672,6 +1736,22 @@ class _JourneyChartState extends State<_JourneyChart>
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
+                        // The land the place lies in (v1.197), faint,
+                        // under its plan.
+                        if (widget.place?.biome case final biome?)
+                          Positioned.fill(
+                            child: RepaintBoundary(
+                              child: CustomPaint(
+                                key: const ValueKey('journey_biome'),
+                                painter: BiomeBackdropPainter(
+                                  biome: biome,
+                                  land: palette.land,
+                                  seed: widget.place!.seed,
+                                  greyed: widget.greyed,
+                                ),
+                              ),
+                            ),
+                          ),
                         Positioned.fill(
                           child: RepaintBoundary(
                             child: CustomPaint(
@@ -2367,8 +2447,10 @@ class _JourneyChartState extends State<_JourneyChart>
                           color: _eventColour(step.event!, widget.ink),
                           border: Border.all(color: palette.land, width: 1.5),
                         ),
-                        child: Icon(_eventIcon(step.event!),
-                            size: 11, color: palette.land),
+                        child: Icon(
+                            _eventIcon(step.event!, hazard: step.hazard),
+                            size: 11,
+                            color: palette.land),
                       ),
                     ),
                 ],
@@ -2859,13 +2941,15 @@ class _StepDetail extends ConsumerWidget {
                         padding: const EdgeInsets.only(top: 2),
                         child: Row(
                           children: [
-                            Icon(_eventIcon(step.event!),
+                            Icon(_eventIcon(step.event!, hazard: step.hazard),
                                 size: 14,
                                 color: _eventColour(step.event!, ink)),
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                tr(ref, 'journey_event_${step.event!.name}'),
+                                tr(ref, 'journey_event_${step.event!.name}')
+                                    .replaceAll('{hazard}',
+                                        step.hazard?.nameFor(french) ?? ''),
                                 style: theme.textTheme.labelSmall?.copyWith(
                                     color: _eventColour(step.event!, ink)),
                               ),

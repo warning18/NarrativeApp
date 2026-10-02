@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import '../models/story_node.dart';
+import 'geography.dart';
 import 'journey_rules.dart';
 import 'story_repository.dart';
 import 'sub_node_engine.dart';
@@ -14,13 +15,65 @@ import 'sub_node_engine.dart';
 ///   [championPoolFor]) a quarter tougher still, with a better chest, or
 ///   a hard sneak past it;
 /// * a wayside shrine: health back, more for an offering;
-/// * the Wayfarer's Caravan: rare stock for sale on the roadside.
+/// * the Wayfarer's Caravan: rare stock for sale on the roadside;
+/// * a hazard of the land the road runs through (v1.197): one of its
+///   biome's two (see geography.dart), pushed through at a cost in health
+///   or waited out at a cost in time (see [roadHazardFor]).
 ///
 /// A road event takes the place of a detour on its road.
-enum RoadEventKind { champion, shrine, caravan }
+enum RoadEventKind { champion, shrine, caravan, hazard }
 
 /// The odds a road holds an event.
 const double roadEventChance = 0.3;
+
+/// The share of a road's events that are hazards when the land it runs
+/// through has a biome with hazards (see [hazardShareFor]); taken from
+/// the shrines' and the caravan's shares in proportion.
+const double roadHazardShare = 0.2;
+
+/// The hazard share for a road through [biome]: [roadHazardShare] when it
+/// has hazards, none otherwise (and the road's mix is as before).
+double hazardShareFor(Biome? biome) =>
+    (biome?.hazards.isNotEmpty ?? false) ? roadHazardShare : 0;
+
+/// The road event marks of a hazard's two choices (see
+/// StoryChoice.roadEvent): push on, or wait it out.
+const String hazardPushEvent = 'hazard_push';
+const String hazardWaitEvent = 'hazard_wait';
+
+bool isHazardPush(StoryChoice choice) => choice.roadEvent == hazardPushEvent;
+bool isHazardWait(StoryChoice choice) => choice.roadEvent == hazardWaitEvent;
+
+/// What pushing on through a hazard costs each of the party in [chapter]:
+/// a shrine's prayer in reverse, smaller.
+int hazardWoundFor(int chapter) => 10 + 5 * max(1, chapter);
+
+/// [health] after pushing on through a hazard that deals [wound]: never
+/// the last point, and nothing for one already down.
+int healthAfterHazard(int health, int wound) =>
+    health <= 1 ? health : max(1, health - wound);
+
+/// What a party nobody steers does about a hazard (the simulator,
+/// autoplay): pushes on while above half health, else waits it out.
+bool hazardPushesOn({required int health, required int maxHealth}) =>
+    health * 2 > maxHealth;
+
+/// Which of [biome]'s hazards waits on the road from [fromNodeId] to
+/// [toNodeId], [historyLength] scenes into the journey: fixed for that
+/// road at that point, as the event itself is (see [roadEventFor]). Null
+/// for a biome with none.
+BiomeHazard? roadHazardFor(
+  Biome? biome, {
+  required String fromNodeId,
+  required String toNodeId,
+  required int historyLength,
+}) {
+  final hazards = biome?.hazards ?? const <BiomeHazard>[];
+  if (hazards.isEmpty) return null;
+  final pick = stableHash('$fromNodeId>$toNodeId#$historyLength~hazard') %
+      hazards.length;
+  return hazards[pick];
+}
 
 /// The Wayfarer's Caravan's shop (see shops.json).
 const String caravanShopId = 'wayfarer_caravan';
@@ -48,7 +101,9 @@ int stableHash(String text) {
 /// SubNodeEngine.detourAllowedBetween). The chapter's condition (see
 /// chapter_conditions.dart) may make events likelier ([oddsFactor]) and
 /// change their mix ([championShare], [shrineShare]; the rest are the
-/// caravan).
+/// caravan). A road through a land with hazards ([hazardShare], see
+/// [hazardShareFor]) holds hazards too, at the shrines' and the caravan's
+/// expense in proportion; with none, the mix is as it always was.
 RoadEventKind? roadEventFor({
   required StoryData story,
   required String fromNodeId,
@@ -58,6 +113,7 @@ RoadEventKind? roadEventFor({
   double oddsFactor = 1,
   double championShare = 0.4,
   double shrineShare = 0.3,
+  double hazardShare = 0,
 }) {
   if (!roadRulesApply(chapter) || !isRoadStep(fromNodeId, toNodeId)) {
     return null;
@@ -74,23 +130,46 @@ RoadEventKind? roadEventFor({
   if (draw('?') >= roadEventChance * oddsFactor) return null;
   final roll = draw('!');
   if (roll < championShare) return RoadEventKind.champion;
-  if (roll < championShare + shrineShare) return RoadEventKind.shrine;
+  // The hazards' share comes out of the shrines' and the caravan's, each
+  // giving up the part of it its own share is of theirs together.
+  final rest = max(0.0, 1 - championShare);
+  final hazard = rest <= 0 ? 0.0 : min(max(0.0, hazardShare), rest);
+  final shrine = rest <= 0 ? shrineShare : shrineShare * (1 - hazard / rest);
+  if (roll < championShare + shrine) return RoadEventKind.shrine;
+  if (roll < championShare + shrine + hazard) return RoadEventKind.hazard;
   return RoadEventKind.caravan;
 }
 
 /// The foes a champion is drawn from in [chapter]: the random draws of
 /// [enemies] (see SubNodeEngine.filterEnemyPool) first met in this
 /// chapter or the one before, so that a champion is one of the chapter's
-/// own and not an old foe the party has long outgrown.
-List<String> championPoolFor(Map<String, dynamic> enemies, int chapter) => [
-      for (final id in SubNodeEngine.filterEnemyPool(
-          enemies: enemies, unlockedEnemyIds: const [], chapter: chapter))
-        if ((((enemies[id] as Map<String, dynamic>?)?['minChapter'] as num?)
-                    ?.toInt() ??
-                1) >=
-            chapter - 1)
-          id,
-    ];
+/// own and not an old foe the party has long outgrown. On a road through
+/// [biome] (v1.197), the ones that live there (enemies.json's `biomes`)
+/// when there are two or more of them.
+List<String> championPoolFor(Map<String, dynamic> enemies, int chapter,
+    {String? biome}) {
+  final pool = [
+    for (final id in SubNodeEngine.filterEnemyPool(
+        enemies: enemies, unlockedEnemyIds: const [], chapter: chapter))
+      if ((((enemies[id] as Map<String, dynamic>?)?['minChapter'] as num?)
+                  ?.toInt() ??
+              1) >=
+          chapter - 1)
+        id,
+  ];
+  if (biome == null || biome.isEmpty) return pool;
+  final local = [
+    for (final id in pool)
+      if (enemyLivesIn(enemies[id], biome)) id,
+  ];
+  return local.length >= 2 ? local : pool;
+}
+
+/// Whether the enemy record [enemy] lives in [biome] (its `biomes`).
+bool enemyLivesIn(Object? enemy, String biome) {
+  final biomes = enemy is Map ? enemy['biomes'] : null;
+  return biomes is List && biomes.any((b) => b.toString() == biome);
+}
 
 /// What praying at a shrine heals in [chapter], and what an offering
 /// costs and heals.
@@ -100,15 +179,21 @@ int shrineOfferingHealFor(int chapter) => 2 * shrineHealFor(chapter);
 
 /// The scene [kind] plays as a detour on its road in [chapter]: one node
 /// with its choices. A champion is drawn from [enemyPool] (see
-/// [championPoolFor]); with none to draw, a shrine stands there instead. [seed] picks the lines and the foe.
+/// [championPoolFor]); with none to draw, a shrine stands there instead.
+/// A hazard is [hazard] (see [roadHazardFor]); with none, a shrine too.
+/// [seed] picks the lines and the foe.
 List<StoryNode> roadEventChain(
   RoadEventKind kind, {
   required int chapter,
   required List<String> enemyPool,
   required int seed,
+  BiomeHazard? hazard,
 }) {
   final random = Random(seed);
   final id = 'road_${kind.name}_$seed';
+  if (kind == RoadEventKind.hazard && hazard != null) {
+    return [_hazardNode(id, hazard, chapter: chapter)];
+  }
   if (kind == RoadEventKind.champion && enemyPool.isNotEmpty) {
     final enemyId = enemyPool[random.nextInt(enemyPool.length)];
     final line = random.nextInt(_championEn.length);
@@ -205,6 +290,49 @@ List<StoryNode> roadEventChain(
     ),
   ];
 }
+
+/// [hazard] on the road in [chapter]: its scene, then push on (each of the
+/// party wounded, never to death; see [hazardWoundFor]) or wait it out (a
+/// day on the road, with its ration).
+StoryNode _hazardNode(String id, BiomeHazard hazard, {required int chapter}) {
+  final wound = hazardWoundFor(chapter);
+  String note(String template, String name) =>
+      template.replaceAll('{hazard}', name).replaceAll('{n}', '$wound');
+  String or(String text, String fallback) => text.isEmpty ? fallback : text;
+  return StoryNode(
+    id: id,
+    description: or(hazard.text, hazard.name),
+    descriptionFr: or(hazard.textFr, hazard.nameFor(true)),
+    contextNote: note(_hazardNoteEn, hazard.name),
+    contextNoteFr: note(_hazardNoteFr, hazard.nameFor(true)),
+    choices: [
+      StoryChoice(
+        text: or(hazard.push, _hazardPushEn),
+        textFr: or(hazard.pushFr, _hazardPushFr),
+        nextId: '',
+        healAmount: -wound,
+        roadEvent: hazardPushEvent,
+      ),
+      StoryChoice(
+        text: or(hazard.wait, _hazardWaitEn),
+        textFr: or(hazard.waitFr, _hazardWaitFr),
+        nextId: '',
+        roadEvent: hazardWaitEvent,
+      ),
+    ],
+  );
+}
+
+const String _hazardNoteEn = '{hazard} on the road. Pushing on costs each of '
+    'you {n} health, never the last; waiting it out costs a day and its '
+    'ration.';
+const String _hazardNoteFr = '{hazard} sur la route. Forcer le passage coûte '
+    '{n}\u00a0points de vie à chaque membre du groupe, jamais le '
+    'dernier\u00a0; attendre coûte une journée et sa ration.';
+const String _hazardPushEn = 'Push on through it';
+const String _hazardPushFr = 'Forcer le passage';
+const String _hazardWaitEn = 'Wait it out';
+const String _hazardWaitFr = 'Attendre que cela passe';
 
 const String _championNoteEn =
     'A champion holds this road: the fight is harder, and so is what it guards.';
