@@ -2353,7 +2353,7 @@
   "void_sovereign": {
     "enemyName": "The Sovereign",
     "maxHealth": 390,
-    "damage": 31,
+    "damage": 30,
     "guile": 12,
     "weakTo": [
       "Light"
@@ -4576,8 +4576,8 @@
   "claimant_morrow": {
     "enemyName": "Hesk Morrow, Grand Master",
     "enemyName_fr": "Hesk Morrow, Grand Maître",
-    "maxHealth": 420,
-    "damage": 31,
+    "maxHealth": 390,
+    "damage": 22,
     "guile": 9,
     "weakTo": [
       "Electricity"
@@ -4709,8 +4709,8 @@
   "claimant_tallis": {
     "enemyName": "Maud Tallis, Eldest Wickwarden",
     "enemyName_fr": "Maud Tallis, Aînée des Garde-Mèches",
-    "maxHealth": 385,
-    "damage": 29,
+    "maxHealth": 300,
+    "damage": 23,
     "guile": 11,
     "weakTo": [
       "Void"
@@ -4831,8 +4831,8 @@
   "tear_herald": {
     "enemyName": "The Tear-Herald",
     "enemyName_fr": "Le Héraut de la Déchirure",
-    "maxHealth": 392,
-    "damage": 31,
+    "maxHealth": 345,
+    "damage": 27,
     "guile": 12,
     "weakTo": [
       "Light"
