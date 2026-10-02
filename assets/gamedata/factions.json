@@ -88,7 +88,21 @@
     },
     "unlockFlag": null,
     "minAlignment": null,
-    "maxAlignment": null
+    "maxAlignment": null,
+    "host": {
+      "effects": [
+        {
+          "kind": "writFace",
+          "value": 1
+        },
+        {
+          "kind": "partyMaxHealthPercent",
+          "value": 1
+        }
+      ],
+      "line": "The Order of the Vigilant Flame locks shields around you, and the Lantern’s Writ turns the first blow aside.",
+      "line_fr": "L’Ordre de la Flamme vigilante serre les boucliers autour de vous, et le Mandat de la Lanterne détourne le premier coup."
+    }
   },
   "vigil": {
     "id": "vigil",
@@ -166,7 +180,21 @@
     },
     "unlockFlag": null,
     "minAlignment": null,
-    "maxAlignment": null
+    "maxAlignment": null,
+    "host": {
+      "effects": [
+        {
+          "kind": "dodgeChance",
+          "value": 3
+        },
+        {
+          "kind": "intentLookahead",
+          "value": 1
+        }
+      ],
+      "line": "The Last Watch holds the line beside you with open eyes, and calls each blow before it falls.",
+      "line_fr": "La Dernière Veille tient la ligne à vos côtés, les yeux ouverts, et annonce chaque coup avant qu’il ne tombe."
+    }
   },
   "compact": {
     "id": "compact",
@@ -248,7 +276,25 @@
     },
     "unlockFlag": null,
     "minAlignment": null,
-    "maxAlignment": null
+    "maxAlignment": null,
+    "host": {
+      "effects": [
+        {
+          "kind": "armor",
+          "value": 1
+        },
+        {
+          "kind": "strikeDamagePercent",
+          "value": 6
+        },
+        {
+          "kind": "compactEdge",
+          "value": 1
+        }
+      ],
+      "line": "Plating the Compact chose to forge for you, and an edge from the Anvil-Deaf that breaks a guard.",
+      "line_fr": "Des plaques que le Pacte a choisi de forger pour vous, et un fil des Sourds de l’Enclume qui brise une garde."
+    }
   },
   "mire": {
     "id": "mire",
@@ -334,7 +380,21 @@
     },
     "unlockFlag": null,
     "minAlignment": null,
-    "maxAlignment": null
+    "maxAlignment": null,
+    "host": {
+      "effects": [
+        {
+          "kind": "potionBonus",
+          "value": 12
+        },
+        {
+          "kind": "guardHeal",
+          "value": 2
+        }
+      ],
+      "line": "Fever-bark in every flask, and the Moss Choir singing over each wound you guard.",
+      "line_fr": "De l’écorce à fièvre dans chaque fiole, et le Chœur de Mousse qui chante sur chaque blessure que vous gardez."
+    }
   },
   "crows": {
     "id": "crows",
@@ -421,7 +481,21 @@
     },
     "unlockFlag": null,
     "minAlignment": null,
-    "maxAlignment": null
+    "maxAlignment": null,
+    "host": {
+      "effects": [
+        {
+          "kind": "dodgeChance",
+          "value": 2
+        },
+        {
+          "kind": "strikeDamagePercent",
+          "value": 5
+        }
+      ],
+      "line": "Crow cutthroats slip through the enemy’s line, strike where it is thin, and are gone before it turns.",
+      "line_fr": "Des coupe-jarrets des Corneilles se glissent dans la ligne ennemie, frappent là où elle est mince et disparaissent avant qu’elle ne se retourne."
+    }
   },
   "penitents": {
     "id": "penitents",
@@ -508,7 +582,25 @@
     },
     "unlockFlag": null,
     "minAlignment": null,
-    "maxAlignment": null
+    "maxAlignment": null,
+    "host": {
+      "effects": [
+        {
+          "kind": "partyMaxHealthPercent",
+          "value": 3
+        },
+        {
+          "kind": "spellDamagePercent",
+          "value": 6
+        },
+        {
+          "kind": "emberFace",
+          "value": 1
+        }
+      ],
+      "line": "The Spire-Fallen walk in front with broken swords, and the Road Exorcists lift what the tear lays on you.",
+      "line_fr": "Les Déchus de la Flèche marchent devant avec leurs épées brisées, et les Exorcistes de la Route lèvent ce que la déchirure pose sur vous."
+    }
   },
   "choir": {
     "id": "choir",
@@ -545,7 +637,21 @@
     "sworn": null,
     "unlockFlag": null,
     "minAlignment": 10,
-    "maxAlignment": null
+    "maxAlignment": null,
+    "host": {
+      "effects": [
+        {
+          "kind": "guardHeal",
+          "value": 2
+        },
+        {
+          "kind": "partyMaxHealthPercent",
+          "value": 4
+        }
+      ],
+      "line": "A hymn over the field holds the party up, and every guard you raise is a vow kept.",
+      "line_fr": "Un hymne au-dessus du champ de bataille soutient le groupe, et chaque garde que vous levez est un vœu tenu."
+    }
   },
   "pit": {
     "id": "pit",
@@ -582,7 +688,21 @@
     "sworn": null,
     "unlockFlag": null,
     "minAlignment": null,
-    "maxAlignment": -10
+    "maxAlignment": -10,
+    "host": {
+      "effects": [
+        {
+          "kind": "lifestealPercent",
+          "value": 3
+        },
+        {
+          "kind": "strikeDamagePercent",
+          "value": 6
+        }
+      ],
+      "line": "The Pit sends what it is owed: your blows bite deeper, and every wound you open feeds you.",
+      "line_fr": "La Fosse envoie son dû. Vos coups mordent plus profond, et chaque blessure que vous ouvrez vous nourrit."
+    }
   },
   "giants": {
     "id": "giants",
@@ -619,7 +739,21 @@
     "sworn": null,
     "unlockFlag": "found_6200",
     "minAlignment": null,
-    "maxAlignment": null
+    "maxAlignment": null,
+    "host": {
+      "effects": [
+        {
+          "kind": "partyMaxHealthPercent",
+          "value": 5
+        },
+        {
+          "kind": "partyStartBlock",
+          "value": 1
+        }
+      ],
+      "line": "The giants of Highhearth stand in the line like walls cut once, and for good.",
+      "line_fr": "Les géants de Haut-Âtre se tiennent dans la ligne comme des murs taillés une fois pour toutes."
+    }
   },
   "oni": {
     "id": "oni",
@@ -656,7 +790,21 @@
     "sworn": null,
     "unlockFlag": "found_3200",
     "minAlignment": null,
-    "maxAlignment": null
+    "maxAlignment": null,
+    "host": {
+      "effects": [
+        {
+          "kind": "strikeDamagePercent",
+          "value": 8
+        },
+        {
+          "kind": "thorns",
+          "value": 1
+        }
+      ],
+      "line": "The oni come with their bells and their red: your blows land heavier, and the enemy pays for each one it trades.",
+      "line_fr": "Les oni viennent avec leurs cloches et leur rouge. Vos coups tombent plus lourds, et l’ennemi paie chaque échange."
+    }
   },
   "tidekin": {
     "id": "tidekin",
@@ -693,7 +841,21 @@
     "sworn": null,
     "unlockFlag": "hub_2015_ternrow",
     "minAlignment": null,
-    "maxAlignment": null
+    "maxAlignment": null,
+    "host": {
+      "effects": [
+        {
+          "kind": "dodgeChance",
+          "value": 2
+        },
+        {
+          "kind": "potionBonus",
+          "value": 8
+        }
+      ],
+      "line": "The Tide-Kin rise from the shallows and draw the sea between you and every blow.",
+      "line_fr": "Les Gens de la Marée montent des hauts-fonds et tracent la mer entre vous et chaque coup."
+    }
   },
   "kindly": {
     "id": "kindly",
@@ -730,7 +892,21 @@
     "sworn": null,
     "unlockFlag": "found_5200",
     "minAlignment": null,
-    "maxAlignment": null
+    "maxAlignment": null,
+    "host": {
+      "effects": [
+        {
+          "kind": "armor",
+          "value": 1
+        },
+        {
+          "kind": "partyMaxHealthPercent",
+          "value": 2
+        }
+      ],
+      "line": "The Kindly Ones keep their treaty to the minute: not one blow lands on you that was not owed.",
+      "line_fr": "Les Bienveillants tiennent leur traité à la minute près : aucun coup ne vous atteint qui ne soit dû."
+    }
   },
   "open_hand": {
     "id": "open_hand",
@@ -762,7 +938,25 @@
     "lean": 1,
     "unlockFlag": "open_hand_3",
     "minAlignment": null,
-    "maxAlignment": null
+    "maxAlignment": null,
+    "host": {
+      "effects": [
+        {
+          "kind": "armor",
+          "value": 1
+        },
+        {
+          "kind": "partyMaxHealthPercent",
+          "value": 3
+        },
+        {
+          "kind": "allyDamagePercent",
+          "value": 5
+        }
+      ],
+      "line": "The Fishbasket Line draws the old seals across your line. What is drawn, holds.",
+      "line_fr": "La Lignée des Paniers trace les vieux sceaux sur votre ligne. Ce qui est tracé tient."
+    }
   },
   "_newKinds": [
     {

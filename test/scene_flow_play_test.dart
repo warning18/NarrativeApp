@@ -102,15 +102,15 @@ void main() {
         containsAll(['5004_altar|court_fled', '5004|origin_board_good']));
     expect(tester.takeException(), isNull);
 
-    // 2. The road from 2001 to the wharf eats the last ration, and is a
-    // watch of the day.
-    play.jumpTo('2001');
+    // 2. The road from Saltmouth's landward gate to the wharf eats the
+    // last ration, and is a watch of the day.
+    play.jumpTo('2005');
     await _settle(tester);
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(session().copyWith(provisions: 1, watch: 0)));
     await _settle(tester);
-    await tester.tap(find.text('Head toward the wharf'));
+    await tester.tap(find.text('Go in with the caravan'));
     await _settle(tester);
     expect(session().provisions, 0);
     expect(session().watch, 1);

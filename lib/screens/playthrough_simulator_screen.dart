@@ -19,6 +19,7 @@ import '../data/chapter_loop.dart';
 import '../data/chapter_spine.dart';
 import '../data/factions.dart';
 import '../data/perks.dart';
+import '../data/politics_events.dart' show choicePoliticsKey, enterPoliticsKey;
 import '../data/signs.dart';
 import '../data/sim_combat.dart';
 import '../data/sim_growth.dart';
@@ -391,7 +392,29 @@ _SimResult _simulate(
     return tied[random.nextInt(tied.length)];
   }
 
-  SignEffects signsNow() => growth?.effects(alignment) ?? SignEffects.none;
+  /// What the character fights with now; in one of the last battles
+  /// ([host], v1.196) the Host fights beside them.
+  SignEffects signsNow({bool host = false}) =>
+      growth?.effects(alignment, host: host) ?? SignEffects.none;
+
+  /// A story choice's or a scene's politics (v1.196: the claim, the
+  /// pledges, the Throne and the muster with the rest), once under [key],
+  /// in the chapter the walk is in.
+  void applyPolitics(StoryPolitics? politics, String key) {
+    final g = growth;
+    if (g == null || politics == null || politics.isEmpty) return;
+    final after = g.applyStoryPolitics(politics,
+        flags: flags, chapter: lastKnownChapter ?? 1, key: key);
+    flags
+      ..clear()
+      ..addAll(after);
+  }
+
+  /// How [choice] stands behind its politics gate (see choicePoliticsGate):
+  /// without the clans' tables every gate is open.
+  bool gateOpen(StoryChoice choice) =>
+      growth?.gateOpen(choice, flags: flags, chapter: lastKnownChapter ?? 1) ??
+      true;
 
   /// Spends whatever growth waits (see SimGrowth.settle): the offers, or
   /// the points and picks; the alignment moves with what is taken.
@@ -417,7 +440,8 @@ _SimResult _simulate(
     SignEffects signs,
     PerkEffects perks,
     int stolen,
-  }) fightEnemies(List<String> enemyIds, int chapter, {bool once = false}) {
+  }) fightEnemies(List<String> enemyIds, int chapter,
+      {bool once = false, bool host = false}) {
     const none = (
       won: null,
       attempts: 0,
@@ -437,7 +461,7 @@ _SimResult _simulate(
     final casts = <String, int>{};
     final maxAttempts = once ? 1 : _maxFightAttempts;
     for (var attempt = 1; attempt <= maxAttempts; attempt++) {
-      final signs = signsNow();
+      final signs = signsNow(host: host);
       final perks = growth?.perks ?? PerkEffects.none;
       final outcome = simulateSimFight(
         character: c,
@@ -490,7 +514,8 @@ _SimResult _simulate(
     );
   }
 
-  /// [choice]'s own fight (see [fightEnemies]).
+  /// [choice]'s own fight (see [fightEnemies]); one of the last battles
+  /// when it is marked so (v1.196).
   ({
     bool? won,
     int attempts,
@@ -500,15 +525,16 @@ _SimResult _simulate(
     int stolen,
   }) fight(StoryChoice choice, int chapter) => choice.triggersCombat
       ? fightEnemies(choice.allTriggerEnemyIds, chapter,
-          once: choice.hasLossBranch)
+          once: choice.hasLossBranch, host: choice.hostFight)
       : fightEnemies(const [], chapter);
 
   /// The expedition [zoneId] launches, played out: each of its events a
   /// fight at [_expeditionFightShare] odds (a pair from the pack pool some
   /// of the time, as SubNodeEngine draws them), then the zone's boss. A
   /// fight lost every attempt ends it there; cleared, it pays its reward
-  /// and sets its flag. Returns the steps it took.
-  void expedition(String zoneId, StoryNode node) {
+  /// and sets its flag. Returns the steps it took. Launched by a
+  /// `hostFight` choice ([host], v1.196), every fight of it has the Host.
+  void expedition(String zoneId, StoryNode node, {bool host = false}) {
     final zone = sim?.zones[zoneId];
     final c = character;
     if (zone is! Map<String, dynamic>) return;
@@ -519,7 +545,7 @@ _SimResult _simulate(
         ? (zone['zoneName_fr'] ?? zone['zoneName'] ?? zoneId).toString()
         : (zone['zoneName'] ?? zoneId).toString();
     bool fightAt(List<String> ids) {
-      final result = fightEnemies(ids, chapter);
+      final result = fightEnemies(ids, chapter, host: host);
       var reward = 0;
       for (final id in ids) {
         reward += ((enemies[id] as Map?)?['goldReward'] as num?)?.toInt() ?? 0;
@@ -597,6 +623,9 @@ _SimResult _simulate(
     if (mainChapter != null) lastKnownChapter = mainChapter;
     furthestChapter = max(furthestChapter ?? 0, mainChapter ?? 0);
     if (furthestChapter == 0) furthestChapter = null;
+    // The scene moves the coast as it is entered, once (v1.196: the
+    // muster among it).
+    applyPolitics(node.politicsOnEnter, enterPoliticsKey(currentId));
     // A new chapter's hub is where a player rests: full health and mana;
     // reaching it brings the clans' offer (see SimGrowth.chapterReached).
     if (character != null && lastKnownChapter != restedChapter) {
@@ -673,7 +702,8 @@ _SimResult _simulate(
       }
     }
     if (tourPlaceId != null && currentId == tourPlaceId) {
-      final open = node.choices.where((c) => !c.isHiddenFor(flags));
+      final open =
+          node.choices.where((c) => !c.isHiddenFor(flags) && gateOpen(c));
       if (tourBudget <= 0 || open.isEmpty) {
         steps.add(_SimStep(
           nodeId: currentId,
@@ -693,10 +723,16 @@ _SimResult _simulate(
     }
 
     // A place's activity done once leaves its list (hideIfFlags), and a
-    // second beat waits for the first (showIfFlags).
-    final shown = node.choices.where((c) => !c.isHiddenFor(flags)).toList();
+    // second beat waits for the first (showIfFlags); a choice behind a
+    // politics gate that fails (v1.196) is hidden, or shut with its text.
+    final shown = node.choices
+        .where((c) =>
+            !c.isHiddenFor(flags) &&
+            (gateOpen(c) || (c.lockedText ?? '').isNotEmpty))
+        .toList();
     final visible = shown.isNotEmpty ? shown : node.choices;
-    final available = visible.where(meetsTarget).toList();
+    final available =
+        visible.where((c) => meetsTarget(c) && gateOpen(c)).toList();
     final pool = available.isNotEmpty ? available : visible;
     final choice = pickChoice(pool);
 
@@ -750,6 +786,10 @@ _SimResult _simulate(
     gold = (gold + effectiveGoldMod).clamp(0, 1 << 30).toInt();
     alignment += choice.alignmentMod;
     flags.addAll(choice.flagsToAdd);
+    // What the choice does to the coast, once (v1.196: the claim and the
+    // Host among it).
+    applyPolitics(choice.politics,
+        choicePoliticsKey(currentId, node.choices.indexOf(choice)));
     if ((choice.unlockShopId ?? '').isNotEmpty) {
       final shopId = choice.unlockShopId!;
       final firstVisit = shops.add(shopId);
@@ -770,7 +810,9 @@ _SimResult _simulate(
     if (choice.triggersCombat) combatCount++;
     // An expedition the choice launches (a zone to clear before the story
     // goes on) is played out before it does.
-    if (choice.launchesZone) expedition(choice.launchZoneId!, node);
+    if (choice.launchesZone) {
+      expedition(choice.launchZoneId!, node, host: choice.hostFight);
+    }
 
     if (choice.isEnding) {
       return finish(endingText: choice.text, reachedStepCap: false);

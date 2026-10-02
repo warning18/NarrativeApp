@@ -16,13 +16,23 @@
 ///   "remembrance": 3,
 ///   "event":       "lantern_bearer_dies",
 ///   "flags":       ["dominion_split"],
-///   "hidden":      true
+///   "hidden":      true,
+///   "claim":        "compact",
+///   "pledge":       "vigil",
+///   "throneWinner": "compact",
+///   "muster":       true
 /// }
 /// ```
 /// `intrigue` takes `"outcome": <index>` instead of `stage` to settle the
 /// intrigue; it may also be a list of such steps, and `event` a list of
 /// ids. Keys this version does not know are kept as they were, so a later
 /// version's politics survive the editor.
+///
+/// The climb to the Lantern Throne (v1.196, see lib/data/throne.dart):
+/// `claim` takes a faction as the character's claim (one at a time, the
+/// last renounced), `pledge` (a faction id or a list) brings a faction
+/// into the Host whatever its standing, `throneWinner` crowns the claim,
+/// and `muster: true` musters the Host now.
 class StoryPolitics {
   const StoryPolitics({
     this.standing = const {},
@@ -34,6 +44,10 @@ class StoryPolitics {
     this.events = const [],
     this.flags = const [],
     this.hidden = false,
+    this.claim = '',
+    this.pledges = const [],
+    this.throneWinner = '',
+    this.muster = false,
     this.extra = const {},
   });
 
@@ -68,6 +82,19 @@ class StoryPolitics {
   /// The consequences are not hinted on the choice.
   final bool hidden;
 
+  /// The faction taken as the character's claim (v1.196): the clan they
+  /// head, raised to the Sworn tier; '' for none.
+  final String claim;
+
+  /// Factions that pledge to the character's cause and join the Host.
+  final List<String> pledges;
+
+  /// The faction crowned on the Lantern Throne; '' for none.
+  final String throneWinner;
+
+  /// The Host musters now.
+  final bool muster;
+
   /// Keys this version does not read, kept as written.
   final Map<String, dynamic> extra;
 
@@ -83,6 +110,10 @@ class StoryPolitics {
     'flagsToAdd',
     'setFlags',
     'hidden',
+    'claim',
+    'pledge',
+    'throneWinner',
+    'muster',
   };
 
   /// The first intrigue step, if any (most politics carry one).
@@ -100,10 +131,21 @@ class StoryPolitics {
       intrigues.isEmpty &&
       remembrance <= 0 &&
       events.isEmpty &&
-      flags.isEmpty;
+      flags.isEmpty &&
+      claim.isEmpty &&
+      pledges.isEmpty &&
+      throneWinner.isEmpty &&
+      !muster;
 
-  /// Whether a choice's hint has anything to say (standing or marks).
-  bool get hasHint => !hidden && (standing.isNotEmpty || marks.isNotEmpty);
+  /// Whether a choice's hint has anything to say (standing, marks, a
+  /// claim, a pledge or the Throne).
+  bool get hasHint =>
+      !hidden &&
+      (standing.isNotEmpty ||
+          marks.isNotEmpty ||
+          claim.isNotEmpty ||
+          pledges.isNotEmpty ||
+          throneWinner.isNotEmpty);
 
   static String _text(Object? raw) => raw?.toString().trim() ?? '';
 
@@ -169,6 +211,10 @@ class StoryPolitics {
         ..._strings(json['setFlags']),
       ],
       hidden: json['hidden'] == true,
+      claim: _text(json['claim']),
+      pledges: _strings(json['pledge']),
+      throneWinner: _text(json['throneWinner']),
+      muster: json['muster'] == true,
       extra: {
         for (final e in json.entries)
           if (!_known.contains(e.key)) e.key: e.value,
@@ -193,6 +239,11 @@ class StoryPolitics {
         if (events.length > 1) 'event': List<String>.of(events),
         if (flags.isNotEmpty) 'flags': List<String>.of(flags),
         if (hidden) 'hidden': true,
+        if (claim.isNotEmpty) 'claim': claim,
+        if (pledges.length == 1) 'pledge': pledges.single,
+        if (pledges.length > 1) 'pledge': List<String>.of(pledges),
+        if (throneWinner.isNotEmpty) 'throneWinner': throneWinner,
+        if (muster) 'muster': true,
         ...extra,
       };
 }

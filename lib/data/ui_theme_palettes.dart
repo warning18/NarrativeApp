@@ -57,6 +57,8 @@ const Map<String, UiThemePalette> uiThemePalettes = {
   ),
   // Soot and rust.
   'slums': UiThemePalette(accent: Color(0xFF8C6A4A)),
+  // Sun-bleached sand and white clay: the Waste, the wreck and the Wells.
+  'desert': UiThemePalette(accent: Color(0xFFC09A5B), lineHeight: 1.6),
   // Cold bone-grey stone, slow and oppressive.
   'catacombs': UiThemePalette(
     accent: Color(0xFF6E7C76),

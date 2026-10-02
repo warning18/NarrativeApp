@@ -202,17 +202,29 @@ void main() {
       expect(nodes['7002']!.choices.where((c) => c.nextId == '7002_confront'),
           isEmpty,
           reason: 'the crossing sets out from the camp');
-      final sail = nodes['7400']!.choices.single;
+      // Five pieces first take the party to Candlehold and the Lantern
+      // Throne (v1.196, chapter 7)...
+      final war = nodes['7400']!.choices.single;
+      expect(war.nextId, '7500');
+      expect(war.mainQuest, isTrue);
+      expect(war.travelPlaceId, '7500');
+      expect(war.showIfFlags, ['banner_five']);
+      // ...and, crowned, the Host is led from the muster to the Hollow
+      // Shore (chapter 8): the Battle of the Hollow Shore, then the
+      // crossing.
+      final sail = nodes['7800']!.choices.singleWhere((c) => c.mainQuest);
+      expect(sail.nextId, '7810');
+      for (final choice in nodes['7810']!.choices) {
+        expect(choice.nextId, '7002_approach', reason: choice.text);
+      }
       // The shore is crossed first (v1.176): unseen, under the Shroud or
       // cutting a road, and every way across reaches the Sovereign.
-      expect(sail.nextId, '7002_approach');
       for (final id in ['7002_approach', '7002_alarm']) {
         for (final choice in nodes[id]!.choices) {
           expect(choice.nextId, '7002_confront', reason: choice.text);
           expect(choice.showIfFlags, ['banner_five'], reason: choice.text);
         }
       }
-      expect(sail.mainQuest, isTrue);
       expect(sail.travelPlaceId, '7002');
       expect(sail.showIfFlags, ['banner_five']);
       expect(sail.lockedText ?? '', isEmpty);
@@ -368,7 +380,9 @@ void main() {
           (c) => c.nextId == '7002_pact',
           orElse: () => fail('7002 no longer offers the pact'));
       expect(offer.lockedText, isNotEmpty);
-      expect(offer.hideIfFlags.toSet(), {'inquisition_pact', 'pact_refused'});
+      // Once crowned (v1.196), no legate comes ashore to offer a crown.
+      expect(offer.hideIfFlags.toSet(),
+          {'inquisition_pact', 'pact_refused', 'on_throne'});
       final take = pact.choices.singleWhere((c) => c.nextId == '7002_betrayal');
       expect(take.triggerEnemyId, '@first_ally');
       expect(take.flagsToAdd, contains('inquisition_pact'));
@@ -478,9 +492,9 @@ void main() {
 
   group('the 1.118 regressions stay fixed', () {
     test(
-        'Vane\'s tunnel leads to the berths and the harbor\'s end knows '
+        'Vane\'s tunnel leads to the yards and the harbor\'s end knows '
         'its own state', () {
-      expect(nodes['2030']!.description, contains('old berths'));
+      expect(nodes['2030']!.description, contains("ship-breakers' yards"));
       expect(nodes['2030']!.description, isNot(contains('checkpoint')));
       final hub = nodes['2900']!;
       expect(hub.description, isNot(contains('would need a hull')));
@@ -571,7 +585,7 @@ void main() {
     test('the prologue and the first scenes say so', () {
       expect(
           nodes['0']!.description, contains('power is not held; it is worn'));
-      for (final id in ['250', '450', '3001', '7003']) {
+      for (final id in ['250', '470', '3001', '7003']) {
         final variants = nodes[id]!.personaVariants;
         expect(variants.keys.where((k) => k.startsWith('race:')).length,
             greaterThanOrEqualTo(2),

@@ -664,5 +664,145 @@
         "value": 1
       }
     ]
+  },
+  "throne_dominion": {
+    "id": "throne_dominion",
+    "name": "Lantern-Bearer",
+    "name_fr": "Porte-Lanterne",
+    "line": "You sit the Lantern Throne at Candlehold, and the flame has not touched the ground.",
+    "line_fr": "Vous siégez sur le Trône de la Lanterne à Candlehold, et la flamme n’a pas touché le sol.",
+    "faction": "dominion",
+    "source": "throne:dominion",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "partyMaxHealthPercent",
+        "value": 3
+      },
+      {
+        "kind": "partyStartBlock",
+        "value": 2
+      }
+    ]
+  },
+  "throne_vigil": {
+    "id": "throne_vigil",
+    "name": "The Throne of Open Eyes",
+    "name_fr": "Le Trône aux yeux ouverts",
+    "line": "You rule from the Lantern Throne under the Vigil’s eye, and you do not look away.",
+    "line_fr": "Vous régnez depuis le Trône de la Lanterne sous l’œil de la Veille, et vous ne détournez pas les yeux.",
+    "faction": "vigil",
+    "source": "throne:vigil",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "dodgeChance",
+        "value": 2
+      },
+      {
+        "kind": "firstRoundDamagePercent",
+        "value": 12
+      }
+    ]
+  },
+  "throne_compact": {
+    "id": "throne_compact",
+    "name": "The Asked-For Crown",
+    "name_fr": "La Couronne demandée",
+    "line": "The Compact forged your crown because you gave it a reason.",
+    "line_fr": "Le Pacte a forgé votre couronne parce que vous lui avez donné une raison.",
+    "faction": "compact",
+    "source": "throne:compact",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "armor",
+        "value": 1
+      },
+      {
+        "kind": "guardBlockPercent",
+        "value": 12
+      }
+    ]
+  },
+  "throne_mire": {
+    "id": "throne_mire",
+    "name": "The Heron Throne",
+    "name_fr": "Le Trône du Héron",
+    "line": "The Mire Courts sat in a circle on the Lantern Hall’s floor and crowned you on terms nobody has read to you yet.",
+    "line_fr": "Les Cours du Marais se sont assises en cercle sur le sol de la Salle de la Lanterne et vous ont donné la couronne à des conditions que personne ne vous a encore lues.",
+    "faction": "mire",
+    "source": "throne:mire",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "lifestealPercent",
+        "value": 3
+      },
+      {
+        "kind": "mendPercent",
+        "value": 10
+      }
+    ]
+  },
+  "throne_crows": {
+    "id": "throne_crows",
+    "name": "The Key to Candlehold",
+    "name_fr": "La Clef de Candlehold",
+    "line": "Forty keys on the Throne’s step, and the last one is yours.",
+    "line_fr": "Quarante clefs sur la marche du Trône, et la dernière est à vous.",
+    "faction": "crows",
+    "source": "throne:crows",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "critChance",
+        "value": 3
+      },
+      {
+        "kind": "goldPercent",
+        "value": 10
+      }
+    ]
+  },
+  "throne_penitents": {
+    "id": "throne_penitents",
+    "name": "The Burnt Crown",
+    "name_fr": "La Couronne brûlée",
+    "line": "A broken sword across the Throne’s arms and one live coal in a burnt lantern: the Penitents’ crown, and yours.",
+    "line_fr": "Une épée brisée en travers des bras du Trône et une seule braise vive dans une lanterne brûlée : la couronne des Pénitents, et la vôtre.",
+    "faction": "penitents",
+    "source": "throne:penitents",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "partyStartBlock",
+        "value": 1
+      },
+      {
+        "kind": "afterFightHealPercent",
+        "value": 6
+      }
+    ]
+  },
+  "throne_open_hand": {
+    "id": "throne_open_hand",
+    "name": "Keeper of the Seal",
+    "name_fr": "Garde du Sceau",
+    "line": "The Seal is the drawers’ again, and you are what is left of them.",
+    "line_fr": "Le Sceau est de nouveau aux traceurs, et vous êtes ce qu’il en reste.",
+    "faction": "open_hand",
+    "source": "throne:open_hand",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "maxMana",
+        "value": 1
+      },
+      {
+        "kind": "allyDamagePercent",
+        "value": 4
+      }
+    ]
   }
 }

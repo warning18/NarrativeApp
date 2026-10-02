@@ -2489,6 +2489,14 @@ final DbSchema factionsSchema = DbSchema(
           'Effects are written as signs\' effects.',
     ),
     FieldSchema(
+      key: 'host',
+      label: 'Host contingent {effects, line, line_fr}',
+      type: FieldType.json,
+      help: 'What they bring to the last battles when they come with the '
+          'Host (as its banner or an ally, see throne.dart). Effects are '
+          'written as signs\' effects.',
+    ),
+    FieldSchema(
       key: 'unlockFlag',
       label: 'Unlock flag',
       type: FieldType.text,

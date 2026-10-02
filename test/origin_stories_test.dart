@@ -274,8 +274,8 @@ void main() {
           expect(echoCause(story, flag)?.textFr, answer.fr, reason: flag);
         }
       }
-      // Old Hesk's lamp comes back when he dies, and again in chapter 5.
-      expect(story.nodeFor('450')!.flagCallbacks.map((c) => c.flag),
+      // Old Hesk's lamp comes back over his body, and again in chapter 5.
+      expect(story.nodeFor('470')!.flagCallbacks.map((c) => c.flag),
           contains('origin_lamp_good'));
       expect(story.nodeFor('5004_altar')!.flagCallbacks.map((c) => c.flag),
           contains('origin_lamp_evil'));

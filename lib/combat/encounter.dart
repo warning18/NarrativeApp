@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import '../models/story_node.dart';
 import 'battlefield_condition.dart';
 import 'combat_engine.dart' show zoneTierMultiplier;
@@ -13,6 +15,31 @@ import 'loot_box.dart';
 /// with it, a champion lasts about half again as long as a story fight
 /// (the playthrough simulator, v1.177).
 const double championHealthMultiplier = 1.25;
+
+/// The share of the first enemy's health the lucky die's sign takes when
+/// it rolls loose in the story's first fight (see
+/// [EncounterModifiers.luckyDieReveal]).
+const double luckyDieStrikeShare = 0.4;
+
+/// The most of the player's health the opening blow of the lucky die's
+/// fight can take: a first wound, never a crippling one.
+const double luckyDieBlowShare = 0.2;
+
+/// The enemy's opening blow in the lucky die's fight: its own damage, at
+/// most [luckyDieBlowShare] of the player's health, and never enough to
+/// knock them down.
+int luckyDieOpeningBlow({
+  required int enemyDamage,
+  required int playerHealth,
+  required int playerMaxHealth,
+}) {
+  final cap = max(1, (playerMaxHealth * luckyDieBlowShare).round());
+  return max(0, min(min(enemyDamage, cap), playerHealth - 1));
+}
+
+/// What the lucky die's sign takes off an enemy of [enemyMaxHealth].
+int luckyDieStrike(int enemyMaxHealth) =>
+    max(1, (enemyMaxHealth * luckyDieStrikeShare).round());
 
 class EncounterModifiers {
   const EncounterModifiers({
@@ -30,6 +57,10 @@ class EncounterModifiers {
     this.isTest = false,
     this.forcedCondition,
     this.forceElite = false,
+    this.keepWounds = false,
+    this.tutorial = false,
+    this.luckyDieReveal = false,
+    this.hostFight = false,
   });
 
   static const EncounterModifiers none = EncounterModifiers();
@@ -87,6 +118,23 @@ class EncounterModifiers {
   /// road_events.dart), instead of rolling for it.
   final bool forceElite;
 
+  /// A link in a no-healing chain (see [StoryChoice.noHeal]): a level-up,
+  /// a potion from the spoils chest or a sign does not mend the party
+  /// after it, and a loss leaves the player's wounds as they are.
+  final bool keepWounds;
+
+  /// A lesson (see [StoryChoice.tutorialFight]): never Elite, no affixes,
+  /// no battlefield condition and no threat.
+  final bool tutorial;
+
+  /// The first fight's lucky die (see [StoryChoice.luckyDieReveal]).
+  final bool luckyDieReveal;
+
+  /// One of the last battles (v1.196, a `hostFight` choice's fight or its
+  /// zone's): the Host the character raised fights beside the party (see
+  /// throne.dart's hostEffects).
+  final bool hostFight;
+
   bool get isDefault =>
       forcedAffixes.isEmpty &&
       namedEnemyName == null &&
@@ -101,11 +149,17 @@ class EncounterModifiers {
       !lossContinues &&
       !isTest &&
       forcedCondition == null &&
-      !forceElite;
+      !forceElite &&
+      !keepWounds &&
+      !tutorial &&
+      !luckyDieReveal &&
+      !hostFight;
 
   /// The same modifiers stamped with a fight's chapter and/or zone-tier
-  /// multiplier (an expedition applies its zone's to every draw).
-  EncounterModifiers copyWith({int? chapter, double? difficultyMultiplier}) =>
+  /// multiplier (an expedition applies its zone's to every draw), or made
+  /// one of the last battles ([hostFight]).
+  EncounterModifiers copyWith(
+          {int? chapter, double? difficultyMultiplier, bool? hostFight}) =>
       EncounterModifiers(
         forcedAffixes: forcedAffixes,
         namedEnemyName: namedEnemyName,
@@ -121,6 +175,10 @@ class EncounterModifiers {
         isTest: isTest,
         forcedCondition: forcedCondition,
         forceElite: forceElite,
+        keepWounds: keepWounds,
+        tutorial: tutorial,
+        luckyDieReveal: luckyDieReveal,
+        hostFight: hostFight ?? this.hostFight,
       );
 
   /// A zone boss: never below a Gold chest, half again the reward, at the
@@ -139,7 +197,14 @@ class EncounterModifiers {
 
   /// The modifiers a generated story choice carries (see
   /// [StoryChoice.huntName] and friends); [none] for an ordinary choice.
+  /// A choice marked [StoryChoice.hostFight] makes its fight one of the
+  /// last battles.
   factory EncounterModifiers.fromChoice(StoryChoice choice) {
+    final modifiers = EncounterModifiers._ofChoice(choice);
+    return choice.hostFight ? modifiers.copyWith(hostFight: true) : modifiers;
+  }
+
+  factory EncounterModifiers._ofChoice(StoryChoice choice) {
     if (choice.roadEvent == 'elite') {
       // A road's champion (road_events.dart): an Elite a quarter tougher
       // still, and an ambush when the party failed to slip past it.
@@ -172,11 +237,20 @@ class EncounterModifiers {
         isHunt: true,
       );
     }
-    if (choice.hasLossBranch) {
-      return const EncounterModifiers(lossContinues: true);
-    }
     final forced = battlefieldConditionFromName(choice.forcedCondition);
-    if (forced != null) return EncounterModifiers(forcedCondition: forced);
+    if (choice.hasLossBranch ||
+        forced != null ||
+        choice.noHeal ||
+        choice.tutorialFight ||
+        choice.luckyDieReveal) {
+      return EncounterModifiers(
+        lossContinues: choice.hasLossBranch,
+        forcedCondition: forced,
+        keepWounds: choice.noHeal,
+        tutorial: choice.tutorialFight,
+        luckyDieReveal: choice.luckyDieReveal,
+      );
+    }
     return none;
   }
 }

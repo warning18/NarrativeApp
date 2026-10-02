@@ -253,11 +253,50 @@ class SwornBoon {
   }
 }
 
+/// A faction's contingent in the Host (v1.196, factions.json `host`): what
+/// it brings to the last battles, the Signs way ([effects], kinds this
+/// version does not know kept in [rawEffects] and named in
+/// [unknownEffectKinds]), and its line on the Host's sheet.
+class HostContingent {
+  const HostContingent({
+    this.line = '',
+    this.lineFr = '',
+    this.effects = const [],
+    this.rawEffects = const [],
+    this.unknownEffectKinds = const [],
+  });
+
+  final String line;
+  final String lineFr;
+  final List<SignEffect> effects;
+  final List<Map<String, dynamic>> rawEffects;
+  final List<String> unknownEffectKinds;
+
+  String lineFor(AppLanguage language) => _pick(language, line, lineFr);
+
+  /// [raw] read, or null when there is no contingent.
+  static HostContingent? tryParse(Object? raw) {
+    if (raw is! Map) return null;
+    final json = raw.cast<String, dynamic>();
+    final effects = _signEffects(json['effects']);
+    if (effects.raw.isEmpty && _text(json['line']).trim().isEmpty) {
+      return null;
+    }
+    return HostContingent(
+      line: _text(json['line'] ?? json['text']),
+      lineFr: _text(json['line_fr'] ?? json['text_fr']),
+      effects: effects.effects,
+      rawEffects: effects.raw,
+      unknownEffectKinds: effects.unknownKinds,
+    );
+  }
+}
+
 /// One faction of factions.json. What Signs needs of it -- its name,
 /// colour, icon, words and when it may offer -- is its [patron]; the rest
 /// is the clan's: motto, alignment lean, where standing starts, its
-/// sub-clans, the skill-tree branches it sponsors, its objects and its
-/// Sworn boon.
+/// sub-clans, the skill-tree branches it sponsors, its objects, its
+/// Sworn boon and its contingent in the Host (v1.196).
 class Faction {
   const Faction({
     required this.patron,
@@ -273,6 +312,7 @@ class Faction {
     this.sponsors = const [],
     this.objects = const [],
     this.sworn,
+    this.host,
   });
 
   final Patron patron;
@@ -303,6 +343,9 @@ class Faction {
   final List<String> sponsors;
   final List<FactionObject> objects;
   final SwornBoon? sworn;
+
+  /// What it brings to the Host (v1.196, see throne.dart).
+  final HostContingent? host;
 
   String get id => patron.id;
   FactionKind get kind => patron.kind;
@@ -357,6 +400,7 @@ class Faction {
               FactionObject.fromJson(o.cast<String, dynamic>()),
         ],
         sworn: SwornBoon.tryParse(json['sworn']),
+        host: HostContingent.tryParse(json['host']),
       );
 }
 
@@ -1261,6 +1305,74 @@ class RelationLogEntry {
       );
 }
 
+/// The Host (v1.196, see throne.dart): the force the character raised
+/// over the game, which fights beside the party in the last battles --
+/// the [banner] (the faction on the Throne, or the claim; '' for none),
+/// the [allies] (faction ids, in the data's order) and the [houses]
+/// (friend sub-clans, one champion each). Kept in [PoliticsState.host]
+/// once mustered, on [chapter]'s [day]; a [chapter] of 0 is a Host worked
+/// out but not mustered.
+class Host {
+  const Host({
+    this.banner = '',
+    this.allies = const [],
+    this.houses = const [],
+    this.chapter = 0,
+    this.day = 0,
+  });
+
+  static const Host none = Host();
+
+  final String banner;
+  final List<String> allies;
+  final List<String> houses;
+  final int chapter;
+  final int day;
+
+  /// Whether it was mustered (see [PoliticsState.host]).
+  bool get mustered => chapter > 0;
+
+  /// The factions that came: the banner first, then the allies.
+  List<String> get contingents => [
+        if (banner.isNotEmpty) banner,
+        ...allies,
+      ];
+
+  /// Everyone who came: the contingents and the Houses.
+  int get size => contingents.length + houses.length;
+
+  bool get isEmpty => banner.isEmpty && allies.isEmpty && houses.isEmpty;
+
+  /// The same Host, mustered on [chapter]'s [day].
+  Host musteredOn(int chapter, int day) => Host(
+        banner: banner,
+        allies: allies,
+        houses: houses,
+        chapter: max(1, chapter),
+        day: day,
+      );
+
+  Map<String, dynamic> toJson() => {
+        if (banner.isNotEmpty) 'banner': banner,
+        if (allies.isNotEmpty) 'allies': allies,
+        if (houses.isNotEmpty) 'houses': houses,
+        'chapter': chapter,
+        'day': day,
+      };
+
+  /// [raw] read; [none] for anything unreadable.
+  factory Host.fromJson(Object? raw) {
+    if (raw is! Map) return none;
+    return Host(
+      banner: _text(raw['banner']).trim(),
+      allies: _strings(raw['allies']),
+      houses: _strings(raw['houses']),
+      chapter: _int(raw['chapter']),
+      day: _int(raw['day']),
+    );
+  }
+}
+
 /// Where the character stands with the coast, as the session keeps it:
 /// - [standings]: standing with each faction it has moved with (any
 ///   other is still at its `startStanding`, see [standingOf]);
@@ -1274,7 +1386,10 @@ class RelationLogEntry {
 /// - (v1.195) [appliedKeys], the story politics already applied (a choice
 ///   taken or a scene entered again applies nothing), [firedEvents], the
 ///   politics events that have fired, and [news], what they told, oldest
-///   first.
+///   first;
+/// - (v1.196, see throne.dart) the [claim], the faction the character
+///   heads ('' for none); the [throneWinner] crowned; the factions
+///   [pledged] to the cause; and the [host] once mustered.
 ///
 /// A new game, a permadeath and a New Game+ start from [empty]: the world
 /// starts over.
@@ -1290,6 +1405,10 @@ class PoliticsState {
     this.appliedKeys = const [],
     this.firedEvents = const {},
     this.news = const [],
+    this.claim = '',
+    this.throneWinner = '',
+    this.pledged = const [],
+    this.host = Host.none,
   });
 
   static const PoliticsState empty = PoliticsState();
@@ -1312,6 +1431,20 @@ class PoliticsState {
   /// "News from the coast": what the events told, oldest first.
   final List<CoastNews> news;
 
+  /// The faction the character heads (rung 2 of the climb, see
+  /// throne.dart), '' for none: one at a time.
+  final String claim;
+
+  /// The faction on the Lantern Throne, '' while it is empty.
+  final String throneWinner;
+
+  /// The factions pledged to the character's cause, in the order they
+  /// pledged: they join the Host whatever their standing.
+  final List<String> pledged;
+
+  /// The Host as it mustered ([Host.none] before).
+  final Host host;
+
   bool get isEmpty =>
       standings.isEmpty &&
       marks.isEmpty &&
@@ -1322,7 +1455,14 @@ class PoliticsState {
       relationsLog.isEmpty &&
       appliedKeys.isEmpty &&
       firedEvents.isEmpty &&
-      news.isEmpty;
+      news.isEmpty &&
+      claim.isEmpty &&
+      throneWinner.isEmpty &&
+      pledged.isEmpty &&
+      !host.mustered;
+
+  /// Whether [factionId] has pledged to the cause.
+  bool hasPledged(String factionId) => pledged.contains(factionId);
 
   /// Whether the story politics under [key] were applied.
   bool applied(String key) => appliedKeys.contains(key);
@@ -1368,6 +1508,10 @@ class PoliticsState {
     List<String>? appliedKeys,
     Map<String, FiredEvent>? firedEvents,
     List<CoastNews>? news,
+    String? claim,
+    String? throneWinner,
+    List<String>? pledged,
+    Host? host,
   }) =>
       PoliticsState(
         standings: standings ?? this.standings,
@@ -1380,6 +1524,10 @@ class PoliticsState {
         appliedKeys: appliedKeys ?? this.appliedKeys,
         firedEvents: firedEvents ?? this.firedEvents,
         news: news ?? this.news,
+        claim: claim ?? this.claim,
+        throneWinner: throneWinner ?? this.throneWinner,
+        pledged: pledged ?? this.pledged,
+        host: host ?? this.host,
       );
 
   Map<String, dynamic> toJson() => {
@@ -1398,6 +1546,10 @@ class PoliticsState {
             for (final e in firedEvents.entries) e.key: e.value.toJson(),
           },
         if (news.isNotEmpty) 'news': [for (final n in news) n.toJson()],
+        if (claim.isNotEmpty) 'claim': claim,
+        if (throneWinner.isNotEmpty) 'throne': throneWinner,
+        if (pledged.isNotEmpty) 'pledged': pledged,
+        if (host.mustered) 'host': host.toJson(),
       };
 
   /// [raw] read; [empty] for a save from before clans (or anything
@@ -1449,6 +1601,10 @@ class PoliticsState {
         for (final n in (json['news'] as List?) ?? const [])
           if (n is Map) CoastNews.fromJson(n.cast<String, dynamic>()),
       ],
+      claim: _text(json['claim']).trim(),
+      throneWinner: _text(json['throne']).trim(),
+      pledged: _strings(json['pledged']).toSet().toList(),
+      host: Host.fromJson(json['host']),
     );
   }
 }
@@ -1753,6 +1909,42 @@ StandingResult setStandingValue(
       sworn: banner.sworn,
       swore: banner.swore,
       released: banner.released,
+      factionId: factionId,
+      cause: cause,
+      chapter: chapter,
+      day: day);
+}
+
+/// A claim taken (v1.196, see throne.dart): standing with [factionId]
+/// raised to at least [swornThreshold], with no ripple, and the banner
+/// theirs -- the clan the character heads is the one they are sworn to,
+/// so any other faction sworn is released and the caps hold for the
+/// rest (no rival pays the swearing's cost: the caps already take it).
+/// A faction that can never be sworn (a tribe, the Choir, the Pit, the
+/// Open Hand) moves nothing here.
+StandingResult raiseToClaim(
+  PoliticsState state,
+  String factionId,
+  String cause, {
+  required ClanData data,
+  int chapter = 0,
+  int day = 0,
+}) {
+  if (!canBeSworn(factionId, data)) return StandingResult(state: state);
+  final before = _allStandings(state, data);
+  final values = {...before};
+  values[factionId] = max(values[factionId]!, swornThreshold.toDouble());
+  final banner = _applyBanner(values,
+      sworn: '',
+      preferred: factionId,
+      state: state,
+      data: data,
+      chargeRivals: false);
+  final previous = state.swornFactionId;
+  return _commit(state, before, values,
+      sworn: banner.sworn,
+      swore: banner.sworn != previous ? banner.sworn : '',
+      released: previous.isNotEmpty && previous != banner.sworn ? previous : '',
       factionId: factionId,
       cause: cause,
       chapter: chapter,

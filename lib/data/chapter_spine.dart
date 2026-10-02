@@ -11,12 +11,19 @@ class ChapterSpine {
 }
 
 const List<ChapterSpine> chapterSpines = [
+  // The casino and its first fight, the streets, the cannonball and the
+  // Inquisitor-General, the cloth under the trapdoor, the quay and the
+  // flying vessel, the crash in the Waste and the White Wells (v1.196).
   ChapterSpine(1, [
     {'100'},
+    {'105'},
     {'250'},
     {'400'},
+    {'470'},
     {'891'},
     {'960'},
+    {'1100'},
+    {'1200'},
   ]),
   ChapterSpine(2, [
     {'2001'},
@@ -51,7 +58,28 @@ const List<ChapterSpine> chapterSpines = [
   ChapterSpine(6, [
     {'7001'},
     {'7300'},
+  ]),
+  // The war for the Lantern Throne (v1.196): the claim at Candlehold's
+  // gate, the way in under that claim's banner, the last stand of whoever
+  // holds the Lantern Hall, and the coronation.
+  ChapterSpine(7, [
     {'7400'},
+    {'7500'},
+    {
+      '7510_dominion', '7510_vigil', '7510_compact', '7510_mire', //
+      '7510_crows', '7510_penitents', '7510_open_hand',
+    },
+    {'7520_vane', '7520_morrow', '7520_tallis'},
+    {
+      '7590_dominion', '7590_vigil', '7590_compact', '7590_mire', //
+      '7590_crows', '7590_penitents', '7590_open_hand',
+    },
+  ]),
+  // Crowned: the Host mustered at the cove, the Battle of the Hollow
+  // Shore, then the tear, the Sovereign and the endings.
+  ChapterSpine(8, [
+    {'7800'},
+    {'7810'},
     {'7002_confront'},
     {'7003'},
     {'7004'},

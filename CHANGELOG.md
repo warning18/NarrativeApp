@@ -8,6 +8,139 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.196.0+227]
+
+The game now ends with you on the Lantern Throne. You climb from a House
+to a clan to the Empire, and one faction always wins: the Dominion keeps
+the Throne, one of the five clans takes it, or your own dead clan, the
+Open Hand, comes back. Chapter 8 follows the crowning: you gather the
+force you built and face the last bosses. Chapter 1 is rewritten to the
+new outline, from the casino to the oasis, and chapter 2 moves to
+Saltmouth.
+
+### Added
+- **The climb** (« l'Ascension »), three rungs per faction:
+  1. **House** (« Maison »): befriend one of its sub-clans. You can be
+     friends with Houses of many clans.
+  2. **Clan**: finish its three clan quests. The third makes you its head,
+     and the clan becomes **your claim** (« votre prétention »). You hold
+     one claim at a time: taking a second gives up the first (−15).
+  3. **Throne** (« Trône »): win the war for the Lantern Throne in
+     chapter 7.
+
+  Clans you worked for but did not take can **pledge** to your claim
+  instead and fight for you in chapter 8.
+- **20 House favours**, one for every sub-clan that had no way to befriend
+  it, spread over chapters 2–6. This includes the Open Hand's own House,
+  **the Fishbasket Line** (« la Lignée des Paniers »): the children the
+  Wickwardens smuggled out in fish baskets. You find a cousin who can also
+  draw.
+- **18 clan quests**, three for each of the Dominion, the Grey Vigil, the
+  Cinder Compact, the Mire Courts, the Salt Crows and the Ashen Penitents.
+  The third offers two choices: take the clan, or stand beside it (a
+  pledge). The Open Hand has no quests; its claim is the banner raised on
+  the Hollow Shore.
+- **Chapter 7, "The Lantern Throne"** (« Le Trône de la Lanterne »):
+  - The eve of the war.
+  - **Candlehold**: confirm your claim. Without one, choose a late claim:
+    the Open Hand is always offered; the Dominion needs Known standing; a
+    clan needs a House and Trusted standing.
+  - A way in for each of the seven claims.
+  - **Your rival's last stand**: one of the three claimants of the
+    Dominion's succession, each a new boss: **Aurel Vane** (fire and
+    hexes), **Hesk Morrow** (heavy blows and guard) or **Maud Tallis**
+    (light and lamps).
+  - **The coronation**: seven endings, each with its own consequences for
+    the clans.
+- **Chapter 8, "Beyond the Tear"** (« Au-delà de la déchirure »):
+  - You **muster your Host** (« l'Ost »): the banner (the faction on the
+    Throne), every faction at Trusted or better or that pledged, the Choir
+    or the Pit if you took their sign this life, and your friend Houses.
+  - Each contingent adds its own effects to the last fights, and each
+    House adds a little health and starting block. A typical Host is worth
+    about +10–15 % to the party, a full Host about +30 %.
+  - A council of war and a walk along the lines.
+  - **The Battle of the Hollow Shore** against a new boss, **the
+    Tear-Herald**.
+  - Then the Sovereign beyond the tear. The four endings are now told from
+    the Throne, with an epilogue for each winner.
+- **The Host on screen:**
+  - The Character tab's Clans section shows your climb (House · Clan n/3 ·
+    Throne), or "On the Lantern Throne for …".
+  - A **Your Host** sheet lists who came and why, with each one's effects.
+  - Choice hints name claims, pledges and the Throne.
+- **Seven throne titles**, such as **Lantern-Bearer** (« Porte-Lanterne »).
+- **Edit Mode:** Clans & Politics has a **Throne** tab (rungs, steps,
+  claim, crown, pledge, Host preview, "Muster now"). The node editor has a
+  `politicsIf` field and a `hostFight` switch.
+- **Story data:**
+  - New politics keys: `claim`, `pledge`, `throneWinner` and `muster`.
+  - New conditions: `claim`, `rungAtLeast` and `throneWinner`.
+  - A choice whose `politicsIf` fails is hidden, or shown locked when it
+    has a `lockedText`.
+
+### Changed
+- **Chapter 1, rewritten to the new outline:**
+  - **The casino:** you are at your usual clandestine den when a blast
+    tears the wall away. The Inquisition is in the streets. There are
+    three ways out:
+    - Strip the tables in the rout (alignment −). Each table is one more
+      fight, for gold, with no healing in between.
+    - Fight your way to people in trouble (alignment +). Each person
+      saved is one more fight, with no healing.
+    - Take your stake and leave.
+  - **The first fight:** after your first wound, **your lucky die** rolls
+    loose and strikes your opponent with a spell, and the fight tutorial
+    explains the dice.
+  - **Across the city** to the house, which is being searched.
+  - **The cannonball:** a ball from the flying fleet folds the wall, and
+    Inquisitor-General Aurel Vane drags your sister Lysa out. You can:
+    - **charge** him (very hard; win and she is saved);
+    - **run**, to come back for her later (alignment −);
+    - **kneel and beg** (alignment +).
+
+    The last two, and a lost charge, end in the torture and the escape.
+  - **The trapdoor** in the ruins: the old cloth with the open hands.
+  - **The quay**: one way aboard the flying vessel, by Charisma,
+    Intelligence or Dexterity. A failure costs gold, a bribe or health,
+    and you board anyway.
+  - **The lift-off, the first storm and the crash** in the desert.
+  - **The road to the White Wells oasis**: heat, a stone face in the
+    dunes, and looters.
+- **Chapter 2 moves to Saltmouth** (« Bouche-de-Sel »), the port where the
+  desert meets the sea. You reach it overland from the oasis. The Eel is
+  bought (120 gold) or worked off at the ship-breaker's yard before its
+  repairs.
+- **Chapters:**
+  - Scenes 7400–7799 are chapter 7 and 7800 and later are chapter 8.
+  - The last fights before the Sovereign now use chapter 8's difficulty.
+  - The `the_throne_filled` event is now "The Dominion's succession". It
+    names the Dominion's leader.
+  - `the_last_battle` is now "The Host gathers", in chapter 8.
+- **Boss tuning**, checked with the in-app simulator against the old final
+  boss:
+
+  | Boss | Health | Damage |
+  |---|---|---|
+  | Hesk Morrow | 420 → 390 | 31 → 22 |
+  | Maud Tallis | 385 → 300 | 29 → 23 |
+  | Tear-Herald | 392 → 345 | 31 → 27 |
+  | The Sovereign (now in chapter 8) | — | 31 → 30 |
+
+  - Morrow's damage climbs with rallies and charges, so he lost damage
+    rather than health.
+  - The three claimants now win alike.
+  - The Herald is a little easier than the Sovereign.
+  - With a typical Host, the Sovereign is as hard as before.
+
+### Fixed
+- **No death in story branches:** a story fight with a branch for losing,
+  such as the charge at Vane, never kills under permadeath.
+- **Saves in moved scenes:** a save standing on a removed chapter 1 scene
+  loads at the scene that replaced it.
+- **Journey map:** a place with many scenes gets a taller map, so the
+  marks no longer overlap.
+
 ## [1.195.0+226]
 
 The clans now move with the story. You come from a dead clan, the Open Hand,

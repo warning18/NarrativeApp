@@ -56,11 +56,20 @@ enum _ExpeditionPhase { event, completed, retreated }
 /// days on the road are shown under the progress bar, each choice says
 /// what it cost, and the pay at the end follows what arrived and when.
 class ExpeditionScreen extends ConsumerStatefulWidget {
-  const ExpeditionScreen(
-      {super.key, required this.zoneId, required this.zone, this.random});
+  const ExpeditionScreen({
+    super.key,
+    required this.zoneId,
+    required this.zone,
+    this.random,
+    this.hostFight = false,
+  });
 
   final String zoneId;
   final Map<String, dynamic> zone;
+
+  /// Launched by a `hostFight` choice (v1.196): every fight of the zone
+  /// is one of the last battles, the Host beside the party.
+  final bool hostFight;
 
   /// The expedition's draws (a test's seeded one); a fresh one by default.
   final Random? random;
@@ -133,6 +142,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   EncounterModifiers _zoneModifiers(EncounterModifiers base) => base.copyWith(
         chapter: _zoneChapter,
         difficultyMultiplier: zoneTierMultiplier(zoneTier(widget.zone)),
+        hostFight: base.hostFight || widget.hostFight,
       );
 
   bool _isBossNode(StoryNode? node) =>
@@ -410,7 +420,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                     chapter: _zoneChapter,
                     difficultyMultiplier:
                         zoneTierMultiplier(zoneTier(widget.zone)),
-                  )
+                  ).copyWith(hostFight: widget.hostFight)
                 : _zoneModifiers(EncounterModifiers.fromChoice(choice)),
           ),
         ),

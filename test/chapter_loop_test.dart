@@ -1,4 +1,5 @@
-// The open chapters (3 to 6, then the Ending): each stands at the camp,
+// The open chapters (3 to 6, the war for the Lantern Throne, then the
+// last battle beyond the tear): each stands at the camp,
 // finds its places through expeditions, counts what the party has done in
 // them, and opens its main quest once enough of it is done.
 import 'dart:convert';
@@ -31,12 +32,12 @@ void main() {
   ChapterLoop loop(int chapter) =>
       loops.firstWhere((l) => l.chapter == chapter);
 
-  test('five loops, in order, each at a camp with a main quest', () {
-    // Eight things done in a chapter before its main quest; the Ending has
-    // no goal.
+  test('six loops, in order, each at a camp with a main quest', () {
+    // Eight things done in a chapter before its main quest; the war for
+    // the Throne (7) and the last battle (8) have no goal.
     expect(loops.where((l) => l.chapter < 7).map((l) => l.activityGoal),
         everyElement(8));
-    expect(loops.map((l) => l.chapter), [3, 4, 5, 6, 7]);
+    expect(loops.map((l) => l.chapter), [3, 4, 5, 6, 7, 8]);
     for (final l in loops) {
       final camp = story.nodeFor(l.campNodeId);
       expect(camp, isNotNull, reason: l.id);
@@ -51,6 +52,11 @@ void main() {
       }
     }
     expect(loop(7).activityGoal, 0);
+    expect(loop(7).campNodeId, '7400');
+    expect(loop(8).activityGoal, 0);
+    expect(loop(8).campNodeId, '7800');
+    // The last chapter keeps the 'ending' id it has always had.
+    expect(loops.last.id, 'ending');
   });
 
   test('the camp the story comes back to is the last one it stood at', () {
@@ -83,6 +89,9 @@ void main() {
     expect(storyChapterOf('3100', story), 3);
     expect(storyChapterOf('7100', story), 6);
     expect(storyChapterOf('7400', story), 7);
+    expect(storyChapterOf('7520_vane', story), 7);
+    expect(storyChapterOf('7800', story), 8);
+    expect(storyChapterOf('7810', story), 8);
     expect(storyChapterOf('5003', story), 4);
     expect(
         reachedChapter(
@@ -125,13 +134,17 @@ void main() {
 
   test('the side-story villages each have their own expedition to find them',
       () {
+    // Five activities each, and (v1.196) a favour for each House met there:
+    // the Road Exorcists; the Barkbleeders and the Returned; the Quarrymen.
+    // The clan quests' steps retire on their own flags and are no
+    // activities of the place.
     const villages = {
-      '3200': ('z_exorcists_road', 3, 'hub_3200_smith_later'),
-      '5200': ('z_changeling_fen', 4, 'hub_5200_nell_later'),
-      '6200': ('z_frost_quarry', 5, 'hub_6200_eldest_later'),
+      '3200': ('z_exorcists_road', 3, 'hub_3200_smith_later', 6),
+      '5200': ('z_changeling_fen', 4, 'hub_5200_nell_later', 7),
+      '6200': ('z_frost_quarry', 5, 'hub_6200_eldest_later', 6),
     };
     for (final entry in villages.entries) {
-      final (zoneId, chapter, lateMarker) = entry.value;
+      final (zoneId, chapter, lateMarker, activities) = entry.value;
       final place = story.nodeFor(entry.key)!;
       expect(place.settlement!.kind, 'village', reason: entry.key);
       expect(place.settlement!.chapter, chapter, reason: entry.key);
@@ -144,7 +157,7 @@ void main() {
           (c) => c.hideIfFlags.contains(lateMarker),
           orElse: () => fail('${entry.key} has no follow-up'));
       expect(later.showIfFlags, contains(zone['rewardFlag']));
-      expect(placeActivityMarkers(place).length, 5, reason: entry.key);
+      expect(placeActivityMarkers(place).length, activities, reason: entry.key);
     }
   });
 
@@ -242,7 +255,7 @@ void main() {
         5: ['q_ch5_penitents_confession'],
         6: ['q_ch6_faces_of_the_fallen'],
       };
-      expect(loops.map((l) => l.questGoal), [2, 1, 1, 1, 0]);
+      expect(loops.map((l) => l.questGoal), [2, 1, 1, 1, 0, 0]);
       for (final l in loops.where((l) => l.questGoal > 0)) {
         final ids = before[l.chapter]!;
         expect(ids.length, greaterThanOrEqualTo(l.questGoal), reason: l.id);
