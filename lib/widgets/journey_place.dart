@@ -14,14 +14,16 @@ import '../data/map_charts.dart';
 enum PlaceKind { town, camp, site, sea, wild }
 
 /// The kind for a settlement's `kind` ('camp', 'town', 'village',
-/// 'site'), or a landmark at sea. A landmark with no settlement of its
-/// own is mostly a street or quarter of a town (the square, the alley,
-/// the docks), so it is drawn as one.
+/// 'site') or a location's (geography.json: 'city' too, and 'sea'), or a
+/// landmark at sea. A landmark with no settlement of its own is mostly a
+/// street or quarter of a town (the square, the alley, the docks), so it
+/// is drawn as one.
 PlaceKind placeKindOf(String? settlementKind, {bool atSea = false}) {
   if (atSea) return PlaceKind.sea;
   return switch (settlementKind) {
     'camp' => PlaceKind.camp,
     'site' => PlaceKind.site,
+    'sea' => PlaceKind.sea,
     _ => PlaceKind.town,
   };
 }

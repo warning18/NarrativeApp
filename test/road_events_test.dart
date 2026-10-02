@@ -13,6 +13,7 @@ import 'package:narrative_data_app/combat/encounter.dart';
 import 'package:narrative_data_app/combat/loot_box.dart';
 import 'package:narrative_data_app/data/journey_rules.dart';
 import 'package:narrative_data_app/data/recurring_encounters.dart';
+import 'package:narrative_data_app/data/geography.dart';
 import 'package:narrative_data_app/data/road_events.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/data/sub_node_engine.dart';
@@ -103,6 +104,64 @@ void main() {
               historyLength: 7,
               chapter: 4),
           isNull);
+    });
+
+    test('with the world known, a walk between districts of a city is no road',
+        () {
+      // Saltmouth's landward gate (2005) to its wharf (2015): two
+      // landmarks, one city.
+      final world = Geography.parse(geography: {
+        'old': {'level': 'continent', 'parent': '', 'name': 'Old'},
+        'coast': {'level': 'country', 'parent': 'old', 'name': 'Coast'},
+        'head': {
+          'level': 'zone',
+          'parent': 'coast',
+          'biome': 'arid_coast',
+          'name': 'Headland'
+        },
+        'saltmouth': {
+          'level': 'location',
+          'parent': 'head',
+          'kind': 'city',
+          'name': 'Saltmouth',
+          'landmark': ''
+        },
+        'gate': {
+          'level': 'district',
+          'parent': 'saltmouth',
+          'name': 'Gate',
+          'landmark': 'upper'
+        },
+        'wharf': {
+          'level': 'district',
+          'parent': 'saltmouth',
+          'name': 'Wharf',
+          'landmark': 'wharf'
+        },
+      });
+      expect(isRoadStep('2005', '2015'), isTrue);
+      var events = 0;
+      for (var at = 0; at < 40; at++) {
+        if (roadEventFor(
+                story: story,
+                fromNodeId: '2005',
+                toNodeId: '2015',
+                historyLength: at,
+                chapter: 2) !=
+            null) {
+          events++;
+        }
+        expect(
+            roadEventFor(
+                story: story,
+                fromNodeId: '2005',
+                toNodeId: '2015',
+                historyLength: at,
+                chapter: 2,
+                world: world),
+            isNull);
+      }
+      expect(events, greaterThan(0));
     });
 
     test('a champion is an Elite fight with a better chest, or a hard sneak',

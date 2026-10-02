@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.200.0+231]
+## [1.200.0+232]
 
 ### The world as a sphere
 
@@ -31,7 +31,7 @@ isn't reconstructable from git history alone.
   draws through it; the ground is painted afresh while the sphere turns
   rather than kept as a picture. `chartGlobeProvider` keeps the pick.
 
-## [1.199.0+230]
+## [1.199.0]
 
 ### The Journey on one interface, the world under the fog
 
@@ -105,6 +105,19 @@ isn't reconstructable from git history alone.
   (story_state.dart) composes the state. `chartCalqueProvider` keeps the
   calque. The `world_map_shape_*` names are now The Two Shores, The Ring,
   The River & the Frost.
+## [1.198.1+230]
+
+### Fixed
+- **Journey map: the city stays on screen.** The map only zooms out to the
+  world chart when the party leaves one location for another (Alster for
+  the Waste, the camp for a village). A step between two districts of the
+  same city (the Blind Beggar to the Stone Bridge, the Landward Gate to
+  the Wharf) is a walk through its streets: the party walks the street on
+  the city's plan, and the plan and its look stay the same from district
+  to district.
+- **The road's rules follow suit.** A walk between districts of one city
+  costs no day or ration and holds no road event. Only a journey between
+  locations does.
 
 ## [1.198.0+229]
 

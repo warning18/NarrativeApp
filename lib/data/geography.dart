@@ -456,6 +456,28 @@ class Geography {
     return found;
   }
 
+  /// The location (a city, a village, a site: never a district) where
+  /// [node] happens, if the world knows it.
+  GeoPlace? locationOfNode(StoryNode? node) =>
+      locationOf(placeOfNode(node)?.id);
+
+  /// Whether going from scene [fromNodeId] to [toNodeId] travels: leaves
+  /// one location for another (Alster for the Waste, the camp for a
+  /// village). A move between two districts of the same city (the Blind
+  /// Beggar to the Stone Bridge, both in Alster) is a walk through its
+  /// streets, not a journey: the map stays on the city and the road's
+  /// rules don't apply. Where the world doesn't know either scene's
+  /// location, a change of landmark decides (see isRoadStep).
+  bool travelsBetween(StoryData story, String fromNodeId, String toNodeId) {
+    if (fromNodeId == toNodeId) return false;
+    final from = locationOfNode(story.nodeFor(fromNodeId));
+    final to = locationOfNode(story.nodeFor(toNodeId));
+    if (from != null && to != null) return from.id != to.id;
+    final a = landmarkOfScene(fromNodeId);
+    final b = landmarkOfScene(toNodeId);
+    return a != null && b != null && a.id != b.id;
+  }
+
   /// The biome of the land a road from scene [fromNodeId] to [toNodeId]
   /// runs through: the zone it leads to, or the one it leaves from.
   Biome? roadBiome(StoryData story, String fromNodeId, String toNodeId) {
