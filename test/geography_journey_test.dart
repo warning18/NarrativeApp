@@ -3,7 +3,7 @@
 // painted under it in each of the three looks, and a hazard on the road
 // costs health pushed through (the companions' too, never the last) or a
 // day and its ration waited out. On a fixture world laid over the real
-// story's wharf.
+// story's landmark of scene 2005 (the ship's arrival in Saltmouth).
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,7 +41,9 @@ Future<void> _sheet(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 500));
 }
 
-/// Saltmouth's headland round the real wharf's landmark.
+/// Saltmouth's headland round the real landmark of scene 2005. The
+/// story's own `location`s name places this world does not have, so the
+/// scene's place is its landmark's (see Geography.placeOfNode).
 Geography _world() => Geography.parse(geography: {
       'old': {
         'level': 'continent',
@@ -74,7 +76,7 @@ Geography _world() => Geography.parse(geography: {
         'parent': 'saltmouth',
         'name': 'Smugglers’ Wharf',
         'name_fr': 'le Quai des Contrebandiers',
-        'landmark': 'wharf',
+        'landmark': landmarkOfScene('2005')!.id,
       },
     }, biomes: {
       'arid_coast': biomeJson('Arid coast', 'salt_flats',
@@ -92,7 +94,6 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    expect(landmarkOfScene('2005')!.id, 'wharf');
 
     await tester.pumpWidget(ProviderScope(
       overrides: [geographyProvider.overrideWithValue(_world())],

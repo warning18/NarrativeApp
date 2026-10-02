@@ -365,14 +365,21 @@ void main() {
     expect(panel, findsOneWidget);
     final crumbs = find.byKey(const Key('world_map_crumbs'));
     expect(crumbs, findsOneWidget);
-    expect(find.descendant(of: crumbs, matching: find.text('The Stone Bridge')),
+    // The lands it lies in; the place itself only when the title does not
+    // already name it.
+    expect(find.descendant(of: crumbs, matching: find.text('Alster')),
         findsOneWidget);
+    final title = landmarkById('bridge')!.nameEn;
+    expect(
+        find.descendant(of: panel, matching: find.text(title)), findsOneWidget);
+    expect(find.descendant(of: crumbs, matching: find.text('The Stone Bridge')),
+        title == 'The Stone Bridge' ? findsNothing : findsOneWidget);
     expect(
         find.descendant(
             of: find.byKey(const Key('world_map_biome')),
             matching: find.text('Temperate')),
         findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('geo_crumb_stone_bridge')));
+    await tester.tap(find.byKey(const ValueKey('geo_crumb_alster')));
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('this_land_sheet')), findsOneWidget);
     expect(tester.takeException(), isNull);

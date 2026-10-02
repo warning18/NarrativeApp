@@ -866,7 +866,15 @@ class _LandmarkPanel extends ConsumerWidget {
     // The landmark among the world's places (v1.197, see geography.dart).
     final world = ref.watch(geographyProvider);
     final place = world.placeOfLandmark(landmark.id);
-    final lands = world.pathOf(place?.id);
+    // The place itself goes when it is named as the landmark is: the
+    // panel's title says it already.
+    final lands = [
+      for (final land in world.pathOf(place?.id))
+        if (land != place ||
+            land.nameFor(language == AppLanguage.fr).toLowerCase() !=
+                landmark.name(language).toLowerCase())
+          land,
+    ];
     final biome = world.biomeOf(place?.id);
 
     Widget tag(String text, {Color? border}) => Container(

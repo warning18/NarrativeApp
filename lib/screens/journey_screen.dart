@@ -777,22 +777,28 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                         // scroll under it.
                         child: LayoutBuilder(builder: (context, above) {
                           // Where the party stands, over the place's map
-                          // (v1.197): each land a tap from This land.
-                          final crumbs =
-                              placeView != null && !ended && herePath.isNotEmpty
-                                  ? GeoBreadcrumb(
-                                      key: const ValueKey('journey_crumbs'),
-                                      path: herePath,
-                                      french: french,
-                                      tooltip: tr(ref, 'geo_where_you_are'),
-                                      onTap: (place) =>
-                                          showThisLand(context, place.id),
-                                    )
-                                  : null;
+                          // (v1.197): each land a tap from This land. A
+                          // phone too short to open the scene over it
+                          // gives the map the room instead.
+                          const crumbRoom = GeoBreadcrumb.height + 2;
+                          final crumbs = placeView != null &&
+                                  !ended &&
+                                  herePath.isNotEmpty &&
+                                  above.maxHeight - 10 - _mapMin - crumbRoom >=
+                                      _sceneOpenMin
+                              ? GeoBreadcrumb(
+                                  key: const ValueKey('journey_crumbs'),
+                                  path: herePath,
+                                  french: french,
+                                  tooltip: tr(ref, 'geo_where_you_are'),
+                                  onTap: (place) =>
+                                      showThisLand(context, place.id),
+                                )
+                              : null;
                           final room = above.maxHeight -
                               10 -
                               _mapMin -
-                              (crumbs == null ? 0 : GeoBreadcrumb.height + 2);
+                              (crumbs == null ? 0 : crumbRoom);
                           // Too little room to open the scene: it keeps to
                           // its first lines, and opens full screen.
                           final squeezed = room < _sceneOpenMin;

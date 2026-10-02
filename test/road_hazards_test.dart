@@ -60,7 +60,7 @@ void main() {
     Map<RoadEventKind?, int> tally({double hazardShare = 0}) {
       final seen = <RoadEventKind?, int>{};
       for (final road in roads) {
-        for (var at = 0; at < 30; at++) {
+        for (var at = 0; at < 200; at++) {
           final event = roadEventFor(
             story: story,
             fromNodeId: road.from,
