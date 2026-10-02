@@ -10,6 +10,7 @@ import '../l10n/app_strings.dart';
 import '../gamedata/db_schema.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/camp_presence_provider.dart';
+import '../providers/chapter_loop_provider.dart' show chapterLoopsProvider;
 import '../providers/clans_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
@@ -22,6 +23,7 @@ import '../tutorial/guide_tour.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/moments.dart';
 import '../widgets/immersive_notice.dart';
+import '../widgets/throne_widgets.dart' show showHostSheet;
 import 'ai_generator_screen.dart';
 import 'camp_screen.dart';
 import 'character_screen.dart';
@@ -73,6 +75,15 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   /// Goals reached during a fight, announced once it is over.
   final List<String> _pendingReadyQuestIds = [];
 
+  /// "Your Host" after the story mustered it (see
+  /// hostMusteredNoticeProvider), once.
+  void _showMusteredHost() {
+    ref.read(hostMusteredNoticeProvider.notifier).state = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) showHostSheet(context);
+    });
+  }
+
   void _announceReady(List<String> questIds) {
     final quests =
         ref.read(localizedDbProvider(questsSchema)).value ?? const {};
@@ -117,6 +128,14 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         _pendingReadyQuestIds.clear();
         _announceReady(ids);
       }
+      if (previous == true && !next && ref.read(hostMusteredNoticeProvider)) {
+        _showMusteredHost();
+      }
+    });
+    // The story mustered the Host (v1.196): "Your Host", once, out of any
+    // fight.
+    ref.listen<bool>(hostMusteredNoticeProvider, (previous, next) {
+      if (next && !ref.read(combatActiveProvider)) _showMusteredHost();
     });
     // The story coming to the camp brings the party home, the Rusty Eel
     // with it; the camp then opens in the Story tab's place, and the story
@@ -417,12 +436,29 @@ class _ChapterTitle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final number = chapterOfNode(ref.watch(storyPlayProvider).currentNodeId);
-    final chapter = mapChapters.where((c) => c.number == number).firstOrNull;
+    var chapter = mapChapters.where((c) => c.number == number).firstOrNull;
+    String? label;
+    String? name;
+    if (chapter == null && number > 0) {
+      // A chapter the map's list has no heading for yet (one added to
+      // chapters.json, v1.196): its own label and title there, in the
+      // colours of the latest chapter before it.
+      final loop = ref
+          .watch(chapterLoopsProvider)
+          .where((l) => l.chapter == number)
+          .firstOrNull;
+      final before = mapChapters.where((c) => c.number < number);
+      if (loop != null && loop.title.isNotEmpty && before.isNotEmpty) {
+        chapter = before.last;
+        label = loop.label.isEmpty ? '$number' : loop.label;
+        name = loop.title;
+      }
+    }
     if (chapter == null) return Text(fallback);
     final title = chapter.title(ref.watch(appLanguageProvider));
     final split = title.indexOf(':');
-    final label = split < 0 ? title : title.substring(0, split).trim();
-    final name = split < 0 ? fallback : title.substring(split + 1).trim();
+    label ??= split < 0 ? title : title.substring(0, split).trim();
+    name ??= split < 0 ? fallback : title.substring(split + 1).trim();
     final theme = Theme.of(context);
     return FittedBox(
       fit: BoxFit.scaleDown,

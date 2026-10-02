@@ -146,7 +146,9 @@ void main() {
       int events({ChapterCondition? condition, RoadEventKind? kind}) {
         var n = 0;
         for (final road in roads) {
-          for (var at = 0; at < 30; at++) {
+          // Sixty draws per road: with thirty, the champions' ratio sat
+          // on the threshold once the story's roads changed (v1.196).
+          for (var at = 0; at < 60; at++) {
             final event = roadEventFor(
               story: story,
               fromNodeId: road.from,

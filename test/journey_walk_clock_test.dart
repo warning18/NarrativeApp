@@ -157,7 +157,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
     }
     await _settle(tester);
-    expect(container.read(storyPlayProvider).currentNodeId, '280');
+    expect(container.read(storyPlayProvider).currentNodeId, '300');
     expect(container.read(playerSessionProvider).flags,
         contains('companion_hound'));
 

@@ -11,23 +11,42 @@ class EnemyIcons {
   /// v1.176-v1.182 foes as the nearest of their kind.
   static const Map<String, String> _borrowed = {
     'kraken_arm': 'tear_spawn',
+    // v1.196's chapter 1: the casino's first fight, the wreck's
+    // scavengers and the Inquisitor-General.
+    'den_bouncer': 'slum_thug',
+    'den_looter': 'street_bandit',
+    'sore_loser': 'slum_thug',
+    'wreck_scavenger': 'street_bandit',
+    'aurel_vane': 'inquisition_high_warden',
     'brine_jack': 'smuggler_captain',
     'glass_shepherd': 'hollow_reflection',
     'knell_keeper': 'hollow_court_zealot',
     'purifier_vell': 'inquisition_warden',
     'rime_bailiff': 'bone_sexton',
+    // v1.196's chapter 7-8 bosses: the three claimants to the Lantern
+    // Throne and the Tear-Herald.
+    'claimant_vane': 'hollow_court_inquisitor',
+    'claimant_morrow': 'inquisition_high_warden',
+    'claimant_tallis': 'angel_sentinel',
+    'tear_herald': 'void_archon',
   };
 
   static const List<String> allIds = [
     'angel_judicator',
     'angel_sentinel',
+    'aurel_vane',
     'bone_sexton',
     'bone_warden',
     'brine_jack',
     'catacomb_ghoul',
+    'claimant_morrow',
+    'claimant_tallis',
+    'claimant_vane',
     'cultist_acolyte',
     'demon_imp',
     'demon_tormentor',
+    'den_bouncer',
+    'den_looter',
     'dock_overseer',
     'drowned_pilgrim',
     'frost_kept_giant',
@@ -60,9 +79,11 @@ class EnemyIcons {
     'sable_turned',
     'slum_thug',
     'smuggler_captain',
+    'sore_loser',
     'strand_colossus',
     'street_bandit',
     'tear_spawn',
+    'tear_herald',
     'teind_rider',
     'tobin_turned',
     'unmade_knight',
@@ -75,5 +96,6 @@ class EnemyIcons {
     'void_wisp',
     'white_admiral',
     'white_soldier',
+    'wreck_scavenger',
   ];
 }

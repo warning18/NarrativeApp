@@ -1,11 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../data/factions.dart';
 import '../data/politics_events.dart';
 import '../gamedata/db_schema.dart';
-import '../models/story_politics.dart';
+import '../models/story_node.dart';
 import 'chapter_loop_provider.dart';
 import 'clans_provider.dart';
 import 'game_db_providers.dart';
@@ -29,9 +30,35 @@ Future<Map<String, PoliticsEvent>> loadPoliticsEvents(WidgetRef ref) async =>
 Future<Map<String, dynamic>> _companions(WidgetRef ref) =>
     ref.read(gameDbProvider(companionsSchema).notifier).whenLoaded();
 
+/// The coast a choice's politics gate is read in now (v1.196, see
+/// choicePoliticsGate): the clan data and the chapter reached.
+final coastGateWorldProvider = Provider<CoastWorld>((ref) => CoastWorld(
+      data: ref.watch(clanDataProvider),
+      chapter: ref.watch(reachedChapterProvider),
+    ));
+
+/// How [choice] stands behind its politics gate for [session] in [world]
+/// (see choicePoliticsGate).
+ChoiceGate choiceGateFor(
+        StoryChoice choice, PlayerSession session, CoastWorld world) =>
+    choicePoliticsGate(choice,
+        politics: session.politics, flags: session.flags, world: world);
+
+/// Whether [choice] is out of sight for [session]: its flags hide it, or
+/// its politics gate fails and it has no locked text to show instead.
+bool choiceHiddenFor(
+        StoryChoice choice, PlayerSession session, CoastWorld world) =>
+    choice.isHiddenFor(session.flags) ||
+    choiceGateFor(choice, session, world) == ChoiceGate.hidden;
+
+/// Set when the story has just mustered the Host (v1.196): the home shell
+/// shows it ("Your Host"), then clears it.
+final hostMusteredNoticeProvider = StateProvider<bool>((ref) => false);
+
 /// Applies a story choice's or a scene's [politics] now, once under [key]
 /// (see choicePoliticsKey, enterPoliticsKey), logged under
-/// `story:<nodeId>` in the chapter reached. Returns what changed.
+/// `story:<nodeId>` in the chapter reached. Returns what changed; a Host
+/// mustered is shown (see [hostMusteredNoticeProvider]).
 Future<CoastChange> applyStoryPoliticsNow(
   WidgetRef ref,
   StoryPolitics politics, {
@@ -41,15 +68,30 @@ Future<CoastChange> applyStoryPoliticsNow(
   final data = await loadClanData(ref);
   final events = await loadPoliticsEvents(ref);
   final companions = await _companions(ref);
-  return ref.read(playerSessionProvider.notifier).applyStoryPolitics(
-        politics,
-        nodeId: nodeId,
-        key: key,
-        data: data,
-        events: events,
-        companions: companions,
-        chapter: ref.read(reachedChapterProvider),
-      );
+  final change =
+      await ref.read(playerSessionProvider.notifier).applyStoryPolitics(
+            politics,
+            nodeId: nodeId,
+            key: key,
+            data: data,
+            events: events,
+            companions: companions,
+            chapter: ref.read(reachedChapterProvider),
+          );
+  if (change.applied && change.mustered) {
+    ref.read(hostMusteredNoticeProvider.notifier).state = true;
+  }
+  return change;
+}
+
+/// Edit Mode's Throne tab (v1.196): [politics] (a claim, a pledge, the
+/// Throne, the muster) applied now, every time.
+Future<CoastChange> applyThroneEditNow(
+    WidgetRef ref, StoryPolitics politics) async {
+  final data = await loadClanData(ref);
+  final events = await loadPoliticsEvents(ref);
+  return ref.read(playerSessionProvider.notifier).applyThroneEdit(politics,
+      data: data, events: events, chapter: ref.read(reachedChapterProvider));
 }
 
 /// The politics scene [nodeId] carries on entry (StoryNode.politicsOnEnter),

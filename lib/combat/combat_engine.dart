@@ -627,14 +627,31 @@ const Set<String> soloOnlyEnemyIds = {
   'malrik_turned',
   'inquisition_legate',
   'masked_penitent',
+  // The war for the Lantern Throne and the last battle (v1.196): the three
+  // claimants' last stands at Candlehold, and the Tear-Herald on the
+  // Hollow Shore.
+  'claimant_vane',
+  'claimant_morrow',
+  'claimant_tallis',
+  'tear_herald',
+  // Chapter 1's Inquisitor-General, who drags Lysa out of the house.
+  'aurel_vane',
 };
 
 /// Enemies met only where the story puts them -- never a random draw and
-/// never in a random pack -- without being bosses: the hovel's three White
-/// Soldiers (400), tuned as a pack a first character can lose to, and the
-/// Tide-Mother's arms, which come over the rail only in her battle (see
-/// sea_beasts.dart).
-const Set<String> storyOnlyEnemyIds = {'white_soldier', 'kraken_arm'};
+/// never in a random pack -- without being bosses: the White Soldiers of
+/// chapter 1's casino, the Tide-Mother's arms, which come over the rail
+/// only in her battle (see sea_beasts.dart), the casino's first fight
+/// (v1.196: the bouncer, the looter and the sore loser, each a lesson) and
+/// the wreck's scavengers in the Waste.
+const Set<String> storyOnlyEnemyIds = {
+  'white_soldier',
+  'kraken_arm',
+  'den_bouncer',
+  'den_looter',
+  'sore_loser',
+  'wreck_scavenger',
+};
 
 /// Each zone's own boss (zones.json `bossEnemyId`), met at the end of its
 /// expedition: never a random draw, never in a random pack and never

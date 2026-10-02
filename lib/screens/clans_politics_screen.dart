@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/chapter_spine.dart' show chapterSpines;
 import '../data/factions.dart';
 import '../data/offers.dart' show OfferSource;
 import '../data/politics_events.dart';
@@ -21,6 +22,7 @@ import '../widgets/clan_widgets.dart';
 import '../widgets/coast_news.dart';
 import '../widgets/offer_dialog.dart';
 import '../widgets/sign_widgets.dart';
+import '../widgets/throne_edit_tab.dart';
 
 /// Edit Mode's "Clans & Politics" (v1.193, see factions.dart), from the
 /// top bar's scales: four tabs.
@@ -36,6 +38,9 @@ import '../widgets/sign_widgets.dart';
 ///   events' news among it, under `event:<id>`).
 /// - **Intrigues:** the eight plots, the stage each has reached, and their
 ///   outcomes.
+/// - **Throne** (v1.196, see throne.dart): each faction's climb (its
+///   House, its clan steps, the claim, the Throne) with buttons to set
+///   it, pledges, and "Muster now" with a preview of the Host.
 ///
 /// [play] (v1.196) is the story's own view, from the same place in the top
 /// bar: nothing to set, the relations only up to the chapter reached, the
@@ -50,12 +55,15 @@ class ClansPoliticsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultTabController(
-      length: 4,
+      length: play ? 4 : 5,
       child: Scaffold(
         appBar: AppBar(
           title: Text(tr(ref, play ? 'clans_title_play' : 'clans_title')),
           bottom: TabBar(
-            labelPadding: const EdgeInsets.symmetric(horizontal: 2),
+            // Five tabs scroll on a narrow phone rather than squeeze.
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 10),
             tabs: [
               Tab(
                   key: const Key('clans_tab_standing'),
@@ -69,6 +77,10 @@ class ClansPoliticsScreen extends ConsumerWidget {
               Tab(
                   key: const Key('clans_tab_intrigues'),
                   text: tr(ref, 'clans_tab_intrigues')),
+              if (!play)
+                Tab(
+                    key: const Key('clans_tab_throne'),
+                    text: tr(ref, 'clans_tab_throne')),
             ],
           ),
         ),
@@ -78,6 +90,7 @@ class ClansPoliticsScreen extends ConsumerWidget {
             _PoliticsTab(play: play),
             const _EvolutionTab(),
             _IntriguesTab(play: play),
+            if (!play) const ThroneEditTab(),
           ],
         ),
       ),
@@ -381,8 +394,15 @@ class _PoliticsTabState extends ConsumerState<_PoliticsTab> {
       max(1, reached),
       ...politics.relationSnapshots.keys,
     ].reduce(max);
+    // Up to the story's last chapter (chapters.json; the spine's while it
+    // has not loaded), or the latest the relations moved in; the slider
+    // needs two chapters at least.
+    final loops = ref.watch(chapterLoopsProvider);
+    final storyEnd = loops.isNotEmpty
+        ? loops.fold<int>(1, (most, loop) => max(most, loop.chapter))
+        : chapterSpines.fold<int>(1, (most, spine) => max(most, spine.chapter));
     // In play the table looks back no further than the story has come.
-    final last = widget.play ? latest : max(7, latest);
+    final last = widget.play ? latest : max(2, max(storyEnd, latest));
     final chapter = (_chapter ?? last).clamp(1, last);
     final now = chapter >= latest;
     final steps = now
@@ -724,6 +744,8 @@ class _EvolutionTab extends ConsumerWidget {
               tables: tables, localizedItems: items, lang: lang),
           // An event's line names it (v1.195).
           'event' => eventCauseName(detail, events, lang),
+          // The claim given up names its faction (v1.196).
+          'renounce' => name(detail),
           _ => null,
         };
 
@@ -856,6 +878,14 @@ class _LogTile extends StatelessWidget {
             children: [
               if (entry.deltas.containsKey(entry.factionId))
                 delta(entry.factionId, entry.mainDelta, main: true),
+              // The climb's lines that move no standing (v1.196): a
+              // pledge, the crown, the muster name their faction.
+              if (entry.deltas.isEmpty &&
+                  entry.subclanId.isEmpty &&
+                  entry.factionId.isNotEmpty)
+                Text(factionName(entry.factionId),
+                    style: theme.textTheme.labelSmall
+                        ?.copyWith(fontWeight: FontWeight.w700)),
               for (final e in entry.rippleDeltas.entries) delta(e.key, e.value),
               if (entry.subclanId.isNotEmpty && entry.mark != null)
                 Text(

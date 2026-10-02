@@ -10,26 +10,35 @@ isn't reconstructable from git history alone.
 
 ## [1.198.0+229]
 
-### Changed
-- **Race & Profession, on one screen.** The ten tall cards give way to two
-  rows of five tiles — a mark, a name and a word (Sturdy, Quick, Bulwark,
-  Caster…) — with the picked one told in full below: its lore, what it
-  changes as green and red chips (zeros left out), and the skill it grants
-  with its icon and its own name (Stoneskin, not Dwarf Stoneskin).
-- **Your character, before you commit.** A preview card adds the two up
-  the way a new game does — HP, damage, armour, gold, the abilities, the
-  two skills — so the numbers are known before the choice is set in stone.
-- **A mark for every people and calling.** Ten pixel icons in the item
-  icons' style: the sewn banner, the painted sigil, the stone-mark, the
-  ash-ink and the tear for the races; sword and shield, staff, daggers,
-  sun-cross and bow for the professions. They show on the picker and on
-  the character sheet (`visualAsset`, `tag`, `tag_fr` on both records).
+Three pieces, merged over main's v1.196 (the Throne) and v1.197 (geography).
 
-## [1.197.0+228]
+### Clans in the story
+
+#### Added
+- **Clans in the story.** The scales in the top bar, until now only in Edit
+  Mode, now open the clans in the story too, titled "Clans", with a dot
+  while news from the coast waits unread. It keeps the four tabs, read only:
+  - **Standing:** a card per clan, then the tribes the story has opened, the
+    dead clan once remembered, and the Choir and the Pit. No sliders, no
+    offers, no reset, and a sub-clan's square is not a switch.
+  - **Politics:** the relations table back to chapter 1, but no further than
+    the chapter reached. A cell gives the reason, with nothing to shift. The
+    news from the coast takes the place of Edit Mode's events.
+  - **Evolution:** each clan's standing over the story, and the log.
+  - **Intrigues:** only the plots the story has opened, and only as far as
+    each has gone. The next stage shows locked with its chapter, the
+    premise stays hidden until the reveal, and only the chosen outcome shows.
+
+#### Fixed
+- The relations table fits a 360-px phone. Its cells take the width the
+  screen allows, from 50 to 60 px; before, the sixth clan's column was cut
+  off.
+
+### Shops with a trade, a keeper and a clan
 
 Every shop has a trade, a keeper and a clan.
 
-### Changed
+#### Changed
 - **One trade per shop.** The shelves are re-sliced so no two shops sell
   the same gear: the Weaponsmith carries blades and spears t1–t5 (tiers 4
   and 5 were sold nowhere), the Shieldwright is the armour house, the
@@ -47,7 +56,7 @@ Every shop has a trade, a keeper and a clan.
   (an anvil, a shield, a mortar, a cellar door, a needle, a wagon…) in
   place of the seven chests; the caravan has its own.
 
-### Added
+#### Added
 - **Keepers.** Each shop names its keeper and what they say, by the
   standing with the shop's clan: a plain line, a Wary one, a Trusted one
   and a Sworn one, in both languages. The shop opens on the sign, the
@@ -59,27 +68,219 @@ Every shop has a trade, a keeper and a clan.
   pricing of v1.193 now has shops to act on.
 - The Clans screen lists each clan's shops under its standing.
 
-## [1.196.0+227]
+### Race & Profession on one screen
+
+#### Changed
+- **Race & Profession, on one screen.** The ten tall cards give way to two
+  rows of five tiles — a mark, a name and a word (Sturdy, Quick, Bulwark,
+  Caster…) — with the picked one told in full below: its lore, what it
+  changes as green and red chips (zeros left out), and the skill it grants
+  with its icon and its own name (Stoneskin, not Dwarf Stoneskin).
+- **Your character, before you commit.** A preview card adds the two up
+  the way a new game does — HP, damage, armour, gold, the abilities, the
+  two skills — so the numbers are known before the choice is set in stone.
+- **A mark for every people and calling.** Ten pixel icons in the item
+  icons' style: the sewn banner, the painted sigil, the stone-mark, the
+  ash-ink and the tear for the races; sword and shield, staff, daggers,
+  sun-cross and bow for the professions. They show on the picker and on
+  the character sheet (`visualAsset`, `tag`, `tag_fr` on both records).
+
+## [1.197.0+228]
+
+Every scene now happens somewhere. The world has five levels of place
+(continent, country, zone, location and, in the big cities, district),
+and every zone has a land of its own: its biome, fauna, flora, weather
+and hazards. The Journey map shows where you stand, and the road can turn
+against you.
 
 ### Added
-- **Clans in the story.** The scales in the top bar, until now only in Edit
-  Mode, now open the clans in the story too, titled "Clans", with a dot
-  while news from the coast waits unread. It keeps the four tabs, read only:
-  - **Standing:** a card per clan, then the tribes the story has opened, the
-    dead clan once remembered, and the Choir and the Pit. No sliders, no
-    offers, no reset, and a sub-clan's square is not a switch.
-  - **Politics:** the relations table back to chapter 1, but no further than
-    the chapter reached. A cell gives the reason, with nothing to shift. The
-    news from the coast takes the place of Edit Mode's events.
-  - **Evolution:** each clan's standing over the story, and the log.
-  - **Intrigues:** only the plots the story has opened, and only as far as
-    each has gone. The next stage shows locked with its chapter, the
-    premise stays hidden until the reveal, and only the chosen outcome shows.
+- **The world's places** (`geography.json`, 63 places):
+  - **4 continents:** the Old Continent, the Ashen Continent, the Lantern
+    Isles and the Seas.
+  - **9 countries**, each with its ruler where it has one: the Alster
+    Marches, the Waste, the Salt Coast, the Narrow Sea, the Ashen Coast,
+    the Grey Fen, the Frost Reach, the Hollow Cape and the Throne's
+    Demesne.
+  - **12 zones** and **23 locations**.
+  - **15 districts**, in Alster, Saltmouth, the Black Reliquary,
+    Candlehold and the Hollow Shore.
+  - Every scene of the story, every expedition and every enemy has its
+    place. A scene has a `location`, and an enemy lists the `biomes` it
+    lives in.
+- **Ten lands** (`biomes.json`): temperate, desert, arid coast, sea,
+  ashlands, volcanic, sea cliffs, fen, frost and the tear's glass. Each
+  has six animals, six plants, three kinds of weather, two hazards, its
+  colours and a pattern of its own.
+- **Journey map:**
+  - A breadcrumb above the place map shows Continent › Country › Zone ›
+    Place › District.
+  - Under the plan, the land's pattern is painted faintly: dunes, salt
+    flats, waves, ash, terraces, cliffs, reeds, snow, glass or fields.
+  - Tapping a crumb opens **This land** (« Cette contrée »): the place,
+    its zone and land with their fauna, flora, weather and hazards, the
+    country with its ruler, and the continent.
+- **World map:** a landmark's panel shows its breadcrumb and its land.
+- **Codex, Lands** (« Contrées »), after Clans in the Other tab: the
+  continents, countries and zones you have found, with their fauna and
+  flora and the places you reached. Places not yet found show as "…".
+- **Road hazards:** a road through a land with hazards can hold one
+  (a fifth of road events), such as a sandstorm, a whiteout, an ash storm
+  or a racing tide.
+  - **Push on:** everyone loses 10 + 5 × chapter health, never below 1.
+  - **Wait it out:** a day passes and a ration is eaten.
+
+  The Journey map shows the hazard before you set out. The simulator and
+  autoplay push on above half health and wait below.
+- **Local champions:** a champion on the road is one of the land's own
+  creatures when the land has at least two.
+- **Edit Mode:**
+  - The node editor has a Location field.
+  - The Data tab edits `geography.json` and `biomes.json`, a zone's
+    `location` and an enemy's `biomes`.
+
+### Changed
+- **Place names, one per place:**
+  - The Hollow Shore is « la Rive Creuse » on the charts too.
+  - The Ashen Coast is « la Côte de Cendre » everywhere.
+  - On the archipelago chart, the chapter 4 isles are the Grey Fen.
+  - « Au-delà de la déchirure » is written alike in the zone, the quest
+    and chapter 8's title.
+- **French typography:** the chapter titles and landmark blurbs on the
+  world map get their non-breaking spaces, and a few lines no longer
+  assume the player's gender.
+
+## [1.196.0+227]
+
+The game now ends with you on the Lantern Throne. You climb from a House
+to a clan to the Empire, and one faction always wins: the Dominion keeps
+the Throne, one of the five clans takes it, or your own dead clan, the
+Open Hand, comes back. Chapter 8 follows the crowning: you gather the
+force you built and face the last bosses. Chapter 1 is rewritten to the
+new outline, from the casino to the oasis, and chapter 2 moves to
+Saltmouth.
+
+### Added
+- **The climb** (« l'Ascension »), three rungs per faction:
+  1. **House** (« Maison »): befriend one of its sub-clans. You can be
+     friends with Houses of many clans.
+  2. **Clan**: finish its three clan quests. The third makes you its head,
+     and the clan becomes **your claim** (« votre prétention »). You hold
+     one claim at a time: taking a second gives up the first (−15).
+  3. **Throne** (« Trône »): win the war for the Lantern Throne in
+     chapter 7.
+
+  Clans you worked for but did not take can **pledge** to your claim
+  instead and fight for you in chapter 8.
+- **20 House favours**, one for every sub-clan that had no way to befriend
+  it, spread over chapters 2–6. This includes the Open Hand's own House,
+  **the Fishbasket Line** (« la Lignée des Paniers »): the children the
+  Wickwardens smuggled out in fish baskets. You find a cousin who can also
+  draw.
+- **18 clan quests**, three for each of the Dominion, the Grey Vigil, the
+  Cinder Compact, the Mire Courts, the Salt Crows and the Ashen Penitents.
+  The third offers two choices: take the clan, or stand beside it (a
+  pledge). The Open Hand has no quests; its claim is the banner raised on
+  the Hollow Shore.
+- **Chapter 7, "The Lantern Throne"** (« Le Trône de la Lanterne »):
+  - The eve of the war.
+  - **Candlehold**: confirm your claim. Without one, choose a late claim:
+    the Open Hand is always offered; the Dominion needs Known standing; a
+    clan needs a House and Trusted standing.
+  - A way in for each of the seven claims.
+  - **Your rival's last stand**: one of the three claimants of the
+    Dominion's succession, each a new boss: **Aurel Vane** (fire and
+    hexes), **Hesk Morrow** (heavy blows and guard) or **Maud Tallis**
+    (light and lamps).
+  - **The coronation**: seven endings, each with its own consequences for
+    the clans.
+- **Chapter 8, "Beyond the Tear"** (« Au-delà de la déchirure »):
+  - You **muster your Host** (« l'Ost »): the banner (the faction on the
+    Throne), every faction at Trusted or better or that pledged, the Choir
+    or the Pit if you took their sign this life, and your friend Houses.
+  - Each contingent adds its own effects to the last fights, and each
+    House adds a little health and starting block. A typical Host is worth
+    about +10–15 % to the party, a full Host about +30 %.
+  - A council of war and a walk along the lines.
+  - **The Battle of the Hollow Shore** against a new boss, **the
+    Tear-Herald**.
+  - Then the Sovereign beyond the tear. The four endings are now told from
+    the Throne, with an epilogue for each winner.
+- **The Host on screen:**
+  - The Character tab's Clans section shows your climb (House · Clan n/3 ·
+    Throne), or "On the Lantern Throne for …".
+  - A **Your Host** sheet lists who came and why, with each one's effects.
+  - Choice hints name claims, pledges and the Throne.
+- **Seven throne titles**, such as **Lantern-Bearer** (« Porte-Lanterne »).
+- **Edit Mode:** Clans & Politics has a **Throne** tab (rungs, steps,
+  claim, crown, pledge, Host preview, "Muster now"). The node editor has a
+  `politicsIf` field and a `hostFight` switch.
+- **Story data:**
+  - New politics keys: `claim`, `pledge`, `throneWinner` and `muster`.
+  - New conditions: `claim`, `rungAtLeast` and `throneWinner`.
+  - A choice whose `politicsIf` fails is hidden, or shown locked when it
+    has a `lockedText`.
+
+### Changed
+- **Chapter 1, rewritten to the new outline:**
+  - **The casino:** you are at your usual clandestine den when a blast
+    tears the wall away. The Inquisition is in the streets. There are
+    three ways out:
+    - Strip the tables in the rout (alignment −). Each table is one more
+      fight, for gold, with no healing in between.
+    - Fight your way to people in trouble (alignment +). Each person
+      saved is one more fight, with no healing.
+    - Take your stake and leave.
+  - **The first fight:** after your first wound, **your lucky die** rolls
+    loose and strikes your opponent with a spell, and the fight tutorial
+    explains the dice.
+  - **Across the city** to the house, which is being searched.
+  - **The cannonball:** a ball from the flying fleet folds the wall, and
+    Inquisitor-General Aurel Vane drags your sister Lysa out. You can:
+    - **charge** him (very hard; win and she is saved);
+    - **run**, to come back for her later (alignment −);
+    - **kneel and beg** (alignment +).
+
+    The last two, and a lost charge, end in the torture and the escape.
+  - **The trapdoor** in the ruins: the old cloth with the open hands.
+  - **The quay**: one way aboard the flying vessel, by Charisma,
+    Intelligence or Dexterity. A failure costs gold, a bribe or health,
+    and you board anyway.
+  - **The lift-off, the first storm and the crash** in the desert.
+  - **The road to the White Wells oasis**: heat, a stone face in the
+    dunes, and looters.
+- **Chapter 2 moves to Saltmouth** (« Bouche-de-Sel »), the port where the
+  desert meets the sea. You reach it overland from the oasis. The Eel is
+  bought (120 gold) or worked off at the ship-breaker's yard before its
+  repairs.
+- **Chapters:**
+  - Scenes 7400–7799 are chapter 7 and 7800 and later are chapter 8.
+  - The last fights before the Sovereign now use chapter 8's difficulty.
+  - The `the_throne_filled` event is now "The Dominion's succession". It
+    names the Dominion's leader.
+  - `the_last_battle` is now "The Host gathers", in chapter 8.
+- **Boss tuning**, checked with the in-app simulator against the old final
+  boss:
+
+  | Boss | Health | Damage |
+  |---|---|---|
+  | Hesk Morrow | 420 → 390 | 31 → 22 |
+  | Maud Tallis | 385 → 300 | 29 → 23 |
+  | Tear-Herald | 392 → 345 | 31 → 27 |
+  | The Sovereign (now in chapter 8) | — | 31 → 30 |
+
+  - Morrow's damage climbs with rallies and charges, so he lost damage
+    rather than health.
+  - The three claimants now win alike.
+  - The Herald is a little easier than the Sovereign.
+  - With a typical Host, the Sovereign is as hard as before.
 
 ### Fixed
-- The relations table fits a 360-px phone. Its cells take the width the
-  screen allows, from 50 to 60 px; before, the sixth clan's column was cut
-  off.
+- **No death in story branches:** a story fight with a branch for losing,
+  such as the charge at Vane, never kills under permadeath.
+- **Saves in moved scenes:** a save standing on a removed chapter 1 scene
+  loads at the scene that replaced it.
+- **Journey map:** a place with many scenes gets a taller map, so the
+  marks no longer overlap.
 
 ## [1.195.0+226]
 

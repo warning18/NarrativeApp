@@ -30,11 +30,10 @@ void main() {
 
     // A story fight carries its enemies and where a loss goes.
     final hovel = nodes.firstWhere((n) => n['id'] == '400');
-    final unfurl = (hovel['choices'] as List).first as Map<String, dynamic>;
-    expect(unfurl['next'], '450');
-    expect(
-        unfurl['fight'], ['white_soldier', 'white_soldier', 'white_soldier']);
-    expect(unfurl['ifLost'], '400_lost');
+    final charge = (hovel['choices'] as List).first as Map<String, dynamic>;
+    expect(charge['next'], '450');
+    expect(charge['fight'], ['aurel_vane']);
+    expect(charge['ifLost'], '400_lost');
     expect(hovel['text'], story.nodeFor('400')!.description);
   });
 
@@ -45,8 +44,7 @@ void main() {
         .cast<Map<String, dynamic>>()
         .firstWhere((n) => n['id'] == '400');
     expect(hovel['text'], story.nodeFor('400')!.descriptionFr);
-    expect(((hovel['choices'] as List).first as Map)['text'],
-        'Déployer le Balluchon');
+    expect(((hovel['choices'] as List).first as Map)['text'], 'Le charger');
   });
 
   test('the full export is the story file itself', () {

@@ -1,5 +1,6 @@
 import '../combat/skill_vfx.dart';
 import '../data/companion_remarks.dart' show remarkTriggerOptions;
+import '../data/geography.dart' show BiomePattern, GeoLevel, geoKinds;
 import '../data/signs.dart'
     show PatronKind, SignEffectKind, SignSlot, patronIconNames;
 import 'field_schema.dart';
@@ -1047,6 +1048,16 @@ final DbSchema enemiesSchema = DbSchema(
           'Boss Phases [{healthThreshold (%), name, nameFr, message, messageFr, damageMultiplier, healPercent, cleanse, addMoves: [skill moves], replaceMoves}]',
       type: FieldType.json,
     ),
+    FieldSchema(
+      key: 'biomes',
+      label: 'Lives in (biomes)',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'biomes',
+      help: 'The biomes it lives in (biomes.json, v1.197): a champion on a '
+          'road through one of them is drawn from those that live there. '
+          'None for a foe with no home (a boss of one place, a summoned '
+          'thing).',
+    ),
     visualAssetFieldSchema('enemies'),
   ],
 );
@@ -2058,6 +2069,14 @@ final DbSchema zonesSchema = DbSchema(
       label: 'Delivery Destination (FR)',
       type: FieldType.text,
     ),
+    FieldSchema(
+      key: 'location',
+      label: 'Location (geography)',
+      type: FieldType.reference,
+      referenceSchemaId: 'geography',
+      help: 'Where the expedition takes place: a place of geography.json '
+          '(v1.197).',
+    ),
     visualAssetFieldSchema('zones'),
   ],
 );
@@ -2546,6 +2565,14 @@ final DbSchema factionsSchema = DbSchema(
           'Effects are written as signs\' effects.',
     ),
     FieldSchema(
+      key: 'host',
+      label: 'Host contingent {effects, line, line_fr}',
+      type: FieldType.json,
+      help: 'What they bring to the last battles when they come with the '
+          'Host (as its banner or an ally, see throne.dart). Effects are '
+          'written as signs\' effects.',
+    ),
+    FieldSchema(
       key: 'unlockFlag',
       label: 'Unlock flag',
       type: FieldType.text,
@@ -2824,6 +2851,134 @@ final DbSchema signsSchema = DbSchema(
   ],
 );
 
+/// The world's places (v1.197, see lib/data/geography.dart): continents,
+/// countries, zones, locations and districts, each under its parent.
+final DbSchema geographySchema = DbSchema(
+  id: 'geography',
+  label: 'Geography',
+  assetPath: 'assets/gamedata/geography.json',
+  primaryKeyField: 'id',
+  titleField: 'name',
+  fields: [
+    FieldSchema(
+      key: 'id',
+      label: 'Place ID',
+      type: FieldType.text,
+      help: 'The record\'s key; a story node\'s `location` names it.',
+    ),
+    FieldSchema(
+      key: 'level',
+      label: 'Level',
+      type: FieldType.enumeration,
+      enumOptions: [for (final level in GeoLevel.values) level.name],
+      help: 'continent, country, zone, location or district: the parent is '
+          'always one level up.',
+    ),
+    FieldSchema(
+      key: 'parent',
+      label: 'Parent',
+      type: FieldType.reference,
+      referenceSchemaId: 'geography',
+      help: 'The place one level up; none for a continent.',
+    ),
+    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(key: 'blurb', label: 'Blurb', type: FieldType.multilineText),
+    FieldSchema(
+        key: 'blurb_fr', label: 'Blurb (FR)', type: FieldType.multilineText),
+    FieldSchema(
+      key: 'biome',
+      label: 'Biome (zones only)',
+      type: FieldType.reference,
+      referenceSchemaId: 'biomes',
+    ),
+    FieldSchema(
+      key: 'ruler',
+      label: 'Ruler (countries only)',
+      type: FieldType.reference,
+      referenceSchemaId: 'factions',
+      help: 'The faction that rules it; none for a free land.',
+    ),
+    FieldSchema(
+      key: 'kind',
+      label: 'Kind (locations only)',
+      type: FieldType.enumeration,
+      enumOptions: ['', ...geoKinds],
+    ),
+    FieldSchema(
+      key: 'landmark',
+      label: 'Landmark',
+      type: FieldType.text,
+      help: 'The world map\'s landmark id that lies here (world_map.dart), '
+          'or empty. A district with several uses Landmarks instead.',
+    ),
+    FieldSchema(
+      key: 'landmarks',
+      label: 'Landmarks',
+      type: FieldType.stringList,
+      help: 'Several landmark ids, one per line.',
+    ),
+  ],
+);
+
+/// The kinds of land a zone can be (v1.197, see lib/data/geography.dart):
+/// what lives and grows there, its weather and hazards, and how the
+/// Journey map paints it.
+final DbSchema biomesSchema = DbSchema(
+  id: 'biomes',
+  label: 'Biomes',
+  assetPath: 'assets/gamedata/biomes.json',
+  primaryKeyField: 'id',
+  titleField: 'name',
+  fields: [
+    FieldSchema(key: 'id', label: 'Biome ID', type: FieldType.text),
+    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(key: 'blurb', label: 'Blurb', type: FieldType.multilineText),
+    FieldSchema(
+        key: 'blurb_fr', label: 'Blurb (FR)', type: FieldType.multilineText),
+    FieldSchema(
+      key: 'fauna',
+      label: 'Fauna [{name, name_fr, note, note_fr}]',
+      type: FieldType.json,
+      help: 'Six, each with a short line.',
+    ),
+    FieldSchema(
+      key: 'flora',
+      label: 'Flora [{name, name_fr, note, note_fr}]',
+      type: FieldType.json,
+      help: 'Six, each with a short line.',
+    ),
+    FieldSchema(
+      key: 'weather',
+      label: 'Weather [{name, name_fr}]',
+      type: FieldType.json,
+      help: 'Three.',
+    ),
+    FieldSchema(
+      key: 'hazards',
+      label: 'Hazards [{id, name, name_fr, text, text_fr, push, push_fr, '
+          'wait, wait_fr}]',
+      type: FieldType.json,
+      help: 'Two. A road through the land may hold one: text is its scene '
+          '(first person), push and wait the two choices.',
+    ),
+    FieldSchema(
+      key: 'palette',
+      label: 'Palette {ground, detail, accent, water}',
+      type: FieldType.json,
+      help: 'Colours as "#RRGGBB", for the Journey map\'s backdrop.',
+    ),
+    FieldSchema(
+      key: 'pattern',
+      label: 'Pattern',
+      type: FieldType.enumeration,
+      enumOptions: [for (final pattern in BiomePattern.values) pattern.id],
+      help: 'What the Journey map paints under a place of this land.',
+    ),
+  ],
+);
+
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
   itemSetsSchema,
@@ -2857,4 +3012,6 @@ final List<DbSchema> gameDbSchemas = [
   intriguesSchema,
   signsSchema,
   politicsEventsSchema,
+  geographySchema,
+  biomesSchema,
 ];

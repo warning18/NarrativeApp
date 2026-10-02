@@ -22,23 +22,32 @@ extension _FightSetup on _FightScreenState {
     final entries = widget._allEnemyEntries;
     final lang = ref.read(appLanguageProvider);
     final modifiers = widget.modifiers;
-    _isElite = entries.length == 1 &&
+    // A lesson (the story's first fight) is never Elite, rolls no affixes
+    // and no battlefield condition, and ignores the threat.
+    final lesson = modifiers.tutorial;
+    _isElite = !lesson &&
+        entries.length == 1 &&
         (modifiers.forceElite ||
             (isRandomDrawEnemy(entries.first.key) &&
                 modifiers.forcedAffixes.isEmpty &&
                 _random.nextDouble() < _eliteChance));
     final session = ref.read(playerSessionProvider);
-    _threat = modifiers.isTest || modifiers.isZoneBoss
+    _threat = modifiers.isTest || modifiers.isZoneBoss || lesson
         ? 0
         : session.threatIn(ref.read(reachedChapterProvider));
     _condition = modifiers.forcedCondition ??
-        rollBattlefieldCondition(enemyCount: entries.length, random: _random);
+        (lesson
+            ? null
+            : rollBattlefieldCondition(
+                enemyCount: entries.length, random: _random));
 
-    final affixes = rollEncounterAffixes(
-      enemyIds: [for (final e in entries) e.key],
-      isElite: _isElite,
-      random: _random,
-    );
+    final affixes = lesson
+        ? [for (final _ in entries) <EnemyAffix>[]]
+        : rollEncounterAffixes(
+            enemyIds: [for (final e in entries) e.key],
+            isElite: _isElite,
+            random: _random,
+          );
     if (modifiers.forcedAffixes.isNotEmpty) {
       affixes[0] = modifiers.forcedAffixes;
     }
@@ -406,6 +415,9 @@ extension _FightSetup on _FightScreenState {
       if (banter != null) _log.add(banter);
     });
     _noteTelegraphReads();
+    // The first fight's lucky die: the enemy's opening blow, the die
+    // rolling loose and striking back, then the party's first round.
+    if (widget.modifiers.luckyDieReveal && _openWithLuckyDie(lang)) return;
     if (condition == BattlefieldCondition.ambush) {
       // The enemies strike before the party's first roll; the party round
       // that follows is the opening one, so nothing reads off them yet.
@@ -426,6 +438,20 @@ extension _FightSetup on _FightScreenState {
   /// still running, what its curse took.
   List<_LogEntry> _openSignsForFight(AppLanguage lang) {
     final lines = <_LogEntry>[];
+    // The last battles (v1.196): who of the Host fights beside the party.
+    if (widget.modifiers.hostFight && !_host.isEmpty) {
+      final houses = _host.houses.length;
+      final names = [
+        for (final id in _host.contingents)
+          _hostData.faction(id)?.shortFor(lang) ?? id,
+        if (houses == 1) trFor(lang, 'host_fight_house_one'),
+        if (houses > 1)
+          trFor(lang, 'host_fight_houses').replaceAll('{n}', '$houses'),
+      ];
+      lines.add(_LogEntry(
+          trFor(lang, 'host_fight_log').replaceAll('{names}', names.join(', ')),
+          _LogKind.info));
+    }
     if (_signs.isEmpty) return lines;
     if (_signs.silentVows > 0) {
       lines.add(_LogEntry(trFor(lang, 'sign_log_vow_silent'), _LogKind.info));

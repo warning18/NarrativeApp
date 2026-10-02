@@ -111,10 +111,12 @@ void main() {
       for (final k in factionsDb['_newKinds'] as List)
         (k as Map)['kind'].toString(),
     };
-    // The Open Hand has none of these: it is remembered, not joined.
+    // The Open Hand has none of these: it is remembered, not joined. Its
+    // one House (v1.196), the Fishbasket Line, names it as its clan.
     final lost = data.faction('open_hand')!;
-    expect([lost.subclans, lost.sponsors, lost.objects], everyElement(isEmpty));
+    expect([lost.sponsors, lost.objects], everyElement(isEmpty));
     expect(lost.sworn, isNull);
+    expect(data.subclansOf('open_hand').map((s) => s.id), ['fishbasket_line']);
     for (final clan in data.clans.where((c) => c.id != 'open_hand')) {
       final id = clan.id;
       expect(clan.subclans, isNotEmpty, reason: id);
@@ -147,10 +149,11 @@ void main() {
     }
   });
 
-  test('the 29 sub-clans', () {
-    expect(data.subclans, hasLength(29));
+  test('the 30 sub-clans: the six clans\' 29 and the Open Hand\'s one', () {
+    expect(data.subclans, hasLength(30));
     final counts = {
-      for (final id in clanIds) id: data.subclansOf(id).length,
+      for (final id in [...clanIds, 'open_hand'])
+        id: data.subclansOf(id).length,
     };
     expect(counts, {
       'dominion': 8,
@@ -159,10 +162,11 @@ void main() {
       'mire': 4,
       'crows': 5,
       'penitents': 5,
+      'open_hand': 1,
     });
     for (final s in data.subclans.values) {
       final raw = subclansDb[s.id] as Map<String, dynamic>;
-      expect(clanIds, contains(s.clanId), reason: s.id);
+      expect([...clanIds, 'open_hand'], contains(s.clanId), reason: s.id);
       for (final field in [
         'name_fr',
         'line',
@@ -212,13 +216,19 @@ void main() {
 
   test('titles: real factions and sources, known effects', () {
     expect(data.titles.length, greaterThanOrEqualTo(30));
-    final source = RegExp(
-        r'^(offer|quest|intrigue|story|tier:(known|trusted|sworn)|mark:foe:[a-z_]+)$');
+    final source =
+        RegExp(r'^(offer|quest|intrigue|story|tier:(known|trusted|sworn)|'
+            r'mark:foe:[a-z_]+|throne:[a-z_]+)$');
     for (final t in data.titles.values) {
       final id = t.id;
       expect(titlesDb[id]['id'], id);
       expect(data.factions, contains(t.factionId), reason: id);
       expect(source.hasMatch(t.source), isTrue, reason: '$id: ${t.source}');
+      // A throne title (v1.196) is its own faction's crown.
+      if (t.source.startsWith('throne:')) {
+        expect(t.source, 'throne:${t.factionId}', reason: id);
+        expect(id, 'throne_${t.factionId}', reason: id);
+      }
       if (t.source.startsWith('mark:foe:')) {
         expect(data.subclans, contains(t.source.substring('mark:foe:'.length)),
             reason: id);
@@ -233,6 +243,12 @@ void main() {
     for (final clan in clanIds) {
       expect(data.titlesFor(factionId: clan, source: 'tier:sworn'), isNotEmpty,
           reason: clan);
+    }
+    // Every faction that can win the Lantern Throne has its crown.
+    for (final winner in [...clanIds, 'open_hand']) {
+      expect(data.titlesFor(factionId: winner, source: 'throne:$winner'),
+          hasLength(1),
+          reason: winner);
     }
   });
 

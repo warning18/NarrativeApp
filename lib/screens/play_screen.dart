@@ -28,6 +28,7 @@ import '../widgets/player_stats_bar.dart';
 import '../widgets/quest_turn_in.dart';
 import '../widgets/save_slots_sheet.dart';
 import '../widgets/clan_widgets.dart';
+import '../widgets/geography_widgets.dart' show LandsCodex;
 import 'achievements_screen.dart';
 import 'ship_screen.dart';
 import 'camp_screen.dart';
@@ -351,6 +352,13 @@ class PlayScreen extends ConsumerWidget {
               _CollapsibleSection(
                 title: tr(ref, 'patrons_section'),
                 child: const ClansCodex(),
+              ),
+              // The lands reached (v1.197, see geography.dart): their
+              // biomes and the places found in them.
+              const Divider(height: 24),
+              _CollapsibleSection(
+                title: tr(ref, 'geo_lands_section'),
+                child: const LandsCodex(),
               ),
             ],
           ),

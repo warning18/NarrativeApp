@@ -58,7 +58,11 @@
     ],
     "packText": "Slum thugs work in gangs, and this one has followed you for two streets, waiting for a quiet corner. This is the quiet corner.",
     "packText_fr": "Les voyous des bas-quartiers chassent en bande, et celle-ci vous suit depuis deux rues, attendant un coin tranquille. Voici le coin tranquille.",
-    "enemyName_fr": "Voyou des bas-quartiers"
+    "enemyName_fr": "Voyou des bas-quartiers",
+    "biomes": [
+      "temperate",
+      "arid_coast"
+    ]
   },
   "inquisition_warden": {
     "enemyName": "Inquisition Warden",
@@ -125,7 +129,11 @@
       "Un gardien de l'Inquisition compare des visages à une liasse de mandats. Il arrive au vôtre, puis au paquet que vous portez, et sa main trouve son épée avant que sa bouche ne crie.",
       "Un gardien en gris sort de l'ombre d'un poste de contrôle. « Ce que vous portez appartient à l'Église », dit-il, comme si on lui avait annoncé votre venue. « Posez-le, et couchez-vous avec. »"
     ],
-    "enemyName_fr": "Gardien de l’Inquisition"
+    "enemyName_fr": "Gardien de l’Inquisition",
+    "biomes": [
+      "temperate",
+      "ashlands"
+    ]
   },
   "rat_matriarch": {
     "enemyName": "Rat Matriarch",
@@ -189,7 +197,11 @@
       "Les couinements dans les murs cessent d'un coup. Une chose de la taille d'un chien se fraie un passage hors d'un grenier éventré, et vous comprenez que le tas sur lequel vous vous tenez est son nid.",
       "Une charrette de grain gâté gît renversée devant vous, et une rate de la taille d'un veau s'en nourrit. Elle lève la tête à votre pas. Vous êtes entre elle et ses petits, et elle ne partage pas."
     ],
-    "enemyName_fr": "Matriarche des rats"
+    "enemyName_fr": "Matriarche des rats",
+    "biomes": [
+      "temperate",
+      "arid_coast"
+    ]
   },
   "harbor_rat": {
     "enemyName": "Harbor Rat",
@@ -241,7 +253,11 @@
     ],
     "packText": "The rats have claimed a stretch of wall between you and where you are going, and they are hungry enough to hold it.",
     "packText_fr": "Les rats ont pris un pan de muraille entre vous et votre destination, et ils ont assez faim pour le tenir.",
-    "enemyName_fr": "Rat des quais"
+    "enemyName_fr": "Rat des quais",
+    "biomes": [
+      "temperate",
+      "arid_coast"
+    ]
   },
   "street_bandit": {
     "enemyName": "Street Bandit",
@@ -306,7 +322,11 @@
     ],
     "packText": "Bandits step out ahead and behind: the lane was a snare, and your purse is what it was set for.",
     "packText_fr": "Des bandits surgissent devant et derrière : la ruelle était un piège, et c'est pour votre bourse qu'il a été tendu.",
-    "enemyName_fr": "Bandit des rues"
+    "enemyName_fr": "Bandit des rues",
+    "biomes": [
+      "temperate",
+      "arid_coast"
+    ]
   },
   "cultist_acolyte": {
     "enemyName": "Cultist Acolyte",
@@ -382,7 +402,10 @@
     ],
     "packText": "The void cults gather where the Shroud passes. A knot of acolytes has been waiting at the crossroads, and every one of them turns toward you at once.",
     "packText_fr": "Les cultes du vide se rassemblent là où passe le Linceul. Un groupe d'acolytes attendait au carrefour, et tous se tournent vers vous d'un seul mouvement.",
-    "enemyName_fr": "Acolyte cultiste"
+    "enemyName_fr": "Acolyte cultiste",
+    "biomes": [
+      "ashlands"
+    ]
   },
   "inquisition_soldier": {
     "enemyName": "Inquisition Soldier",
@@ -449,7 +472,15 @@
       "Une patrouille de l'Inquisition a arrêté une charrette devant vous. Un soldat vous regarde à deux fois, puis ce que vous portez, et ne prend pas la peine d'appeler les autres.",
       "Votre signalement est lu à chaque rassemblement depuis que vous avez fui avec le Linceul. Le soldat au coin de la rue a manifestement écouté."
     ],
-    "enemyName_fr": "Soldat de l’Inquisition"
+    "enemyName_fr": "Soldat de l’Inquisition",
+    "biomes": [
+      "temperate",
+      "arid_coast",
+      "ashlands",
+      "volcanic",
+      "sea_cliffs",
+      "tear"
+    ]
   },
   "void_wisp": {
     "enemyName": "Grey Candle",
@@ -525,7 +556,11 @@
     ],
     "packText": "Grey candles gather where the tear is thin, and they have felt the Shroud's pull. They circle you in slow, tightening rings.",
     "packText_fr": "Les chandelles grises se rassemblent là où la déchirure est mince, et elles ont senti l'attrait du Linceul. Elles vous encerclent en anneaux lents qui se resserrent.",
-    "enemyName_fr": "Chandelle grise"
+    "enemyName_fr": "Chandelle grise",
+    "biomes": [
+      "ashlands",
+      "fen"
+    ]
   },
   "smuggler_captain": {
     "enemyName": "Smuggler Captain",
@@ -601,7 +636,11 @@
       "Un équipage de contrebandiers décharge là où il ne devrait pas, et son capitaine vous a vu voir la cargaison. Dans ce métier, un témoin est une dette, et ce capitaine règle ses dettes sur-le-champ.",
       "Le bruit court que quelqu'un porte une chose pour laquelle l'Inquisition paierait une fortune. Un capitaine contrebandier a décidé d'encaisser cette fortune en personne."
     ],
-    "enemyName_fr": "Capitaine contrebandier"
+    "enemyName_fr": "Capitaine contrebandier",
+    "biomes": [
+      "arid_coast",
+      "sea"
+    ]
   },
   "plague_hound": {
     "enemyName": "Plague Hound",
@@ -679,7 +718,11 @@
       "Un chien de peste ronge quelque chose dans le caniveau. Il lève la tête, voit que vous êtes plus gros et plus frais que ce qu'il tient, et change de proie.",
       "Vous entendez le halètement avant de le voir : un chien de peste, affamé jusqu'à l'os, qui suit votre odeur. Il a décidé que vous seriez le dernier repas dont il aura besoin."
     ],
-    "enemyName_fr": "Chien pestiféré"
+    "enemyName_fr": "Chien pestiféré",
+    "biomes": [
+      "temperate",
+      "arid_coast"
+    ]
   },
   "iron_golem": {
     "enemyName": "Iron Golem",
@@ -761,7 +804,10 @@
       "Votre chemin longe une porte de caveau scellée, et la statue de fer à côté tourne la tête. On l'a placée là pour garder cette porte contre quiconque s'approche, et vous vous êtes approché.",
       "Quelque chose s'éveille dans les décombres avec un bruit de fer : un vieux golem de l'Église, aux ordres vieux d'un siècle. Il ne sait pas que l'Église n'est plus. Il sait que vous n'êtes pas prêtre."
     ],
-    "enemyName_fr": "Golem de fer"
+    "enemyName_fr": "Golem de fer",
+    "biomes": [
+      "ashlands"
+    ]
   },
   "void_stalker": {
     "enemyName": "Void Stalker",
@@ -869,7 +915,10 @@
     ],
     "description": "A hunter out of the tear that follows the Shroud's trail for days and strikes only when it is sure.",
     "description_fr": "Un chasseur sorti de la déchirure, qui suit la piste du Linceul des jours durant et ne frappe que lorsqu'il est sûr de lui.",
-    "enemyName_fr": "Rôdeur du Néant"
+    "enemyName_fr": "Rôdeur du Néant",
+    "biomes": [
+      "ashlands"
+    ]
   },
   "inquisition_high_warden": {
     "enemyName": "Inquisition High Warden",
@@ -950,7 +999,8 @@
     ],
     "description": "The Inquisition's High Warden, commander of the Crusade's vanguard, who wears a piece of the Shroud stitched to his own back.",
     "description_fr": "Le Haut Gardien de l'Inquisition, commandant de l'avant-garde de la Croisade, qui porte un fragment du Linceul cousu à même le dos.",
-    "enemyName_fr": "Haut Gardien de l’Inquisition"
+    "enemyName_fr": "Haut Gardien de l’Inquisition",
+    "biomes": []
   },
   "kroll_the_branded": {
     "enemyName": "Inquisitor Clement",
@@ -1022,7 +1072,8 @@
     ],
     "description": "Brother Clement of the Inquisition, named for a mercy nobody has ever caught him at. Branded by his own order; enjoys his work; his work is you.",
     "description_fr": "Frère Clément, de l’Inquisition, nommé d’après une clémence dont personne ne l’a jamais surpris à faire preuve. Marqué au fer par son propre ordre ; il aime son travail ; son travail, c’est vous.",
-    "enemyName_fr": "Inquisiteur Clément"
+    "enemyName_fr": "Inquisiteur Clément",
+    "biomes": []
   },
   "hollow_court_zealot": {
     "enemyName": "Hollow Court Zealot",
@@ -1092,7 +1143,10 @@
     ],
     "description": "A zealot of the Hollow Court, the inquisitors who kneel to no living master and pray to the tear in the Church's own words.",
     "description_fr": "Un fanatique de la Cour creuse, ces inquisiteurs qui ne s'agenouillent devant aucun maître vivant et prient la déchirure avec les mots mêmes de l'Église.",
-    "enemyName_fr": "Zélote de la Cour Creuse"
+    "enemyName_fr": "Zélote de la Cour Creuse",
+    "biomes": [
+      "fen"
+    ]
   },
   "void_manifestation": {
     "enemyName": "Void Manifestation",
@@ -1184,7 +1238,8 @@
     ],
     "description": "The tear given a borrowed shape: every face it has taken from you along the way, folded into one.",
     "description_fr": "La déchirure revêtue d'une forme d'emprunt : chaque visage qu'elle vous a pris en chemin, replié en un seul.",
-    "enemyName_fr": "Manifestation du Néant"
+    "enemyName_fr": "Manifestation du Néant",
+    "biomes": []
   },
   "dock_overseer": {
     "enemyName": "Overseer Renn",
@@ -1281,7 +1336,8 @@
       "Le contremaître Renn a inventé un péage pour ce bout de chemin et le perçoit lui-même. Il annonce un prix, puis voit ce que vous portez et en annonce un autre : vous, livré à l'Inquisition.",
       "Renn, l'homme des douanes, surgit avec une gaffe et un registre. Votre nom figure au registre, à la rubrique des primes, et il n'a jamais laissé une prime lui filer sous le nez."
     ],
-    "enemyName_fr": "Contremaître Renn"
+    "enemyName_fr": "Contremaître Renn",
+    "biomes": []
   },
   "inquisition_auxiliary": {
     "enemyName": "Inquisition Auxiliary",
@@ -1350,7 +1406,11 @@
     ],
     "packText": "An Inquisition levy is sweeping the ruins in a line, and the line has reached you. They call to one another, and close.",
     "packText_fr": "Une levée de l'Inquisition ratisse les ruines en ligne, et la ligne vous a atteint. Ils s'appellent les uns les autres, et se referment.",
-    "enemyName_fr": "Auxiliaire de l’Inquisition"
+    "enemyName_fr": "Auxiliaire de l’Inquisition",
+    "biomes": [
+      "ashlands",
+      "volcanic"
+    ]
   },
   "angel_sentinel": {
     "enemyName": "Sentinel of the Choir",
@@ -1405,7 +1465,8 @@
     "hunterTier": 1,
     "description": "A sentinel of the Choir, sent to weigh the wicked and carry out the sentence itself.",
     "description_fr": "Une sentinelle du Chœur, envoyée peser les méchants et exécuter elle-même la sentence.",
-    "enemyName_fr": "Sentinelle du Chœur"
+    "enemyName_fr": "Sentinelle du Chœur",
+    "biomes": []
   },
   "angel_judicator": {
     "enemyName": "Judicator of the Choir",
@@ -1500,7 +1561,8 @@
     ],
     "description": "A judicator of the Choir, sent when a sentinel does not come back, with the verdict already written.",
     "description_fr": "Un juge du Chœur, envoyé quand une sentinelle ne revient pas, le verdict déjà écrit.",
-    "enemyName_fr": "Justicier du Chœur"
+    "enemyName_fr": "Justicier du Chœur",
+    "biomes": []
   },
   "demon_imp": {
     "enemyName": "Pit Wretch",
@@ -1556,7 +1618,8 @@
     "hunterTier": 1,
     "description": "A small, grinning thing of the Pit, sent to spoil the righteous and bring back something they loved.",
     "description_fr": "Une petite chose ricanante de la Fosse, envoyée corrompre les justes et rapporter quelque chose qu'ils aimaient.",
-    "enemyName_fr": "Gueux de la Fosse"
+    "enemyName_fr": "Gueux de la Fosse",
+    "biomes": []
   },
   "demon_tormentor": {
     "enemyName": "Tormentor of the Pit",
@@ -1651,7 +1714,8 @@
     ],
     "description": "A tormentor of the Pit, sent after the righteous who have killed its imps, and patient as rot.",
     "description_fr": "Un tourmenteur de la Fosse, envoyé contre les justes qui ont tué ses diablotins, et patient comme la pourriture.",
-    "enemyName_fr": "Tourmenteur de la Fosse"
+    "enemyName_fr": "Tourmenteur de la Fosse",
+    "biomes": []
   },
   "catacomb_ghoul": {
     "enemyName": "Catacomb Ghoul",
@@ -1728,7 +1792,10 @@
     ],
     "packText": "The ghouls of the deep crypts hunt in packs, and they have your scent. Their scraping comes from ahead and behind at once.",
     "packText_fr": "Les goules des cryptes profondes chassent en meute, et elles ont votre odeur. Leur grattement vient à la fois de devant et de derrière.",
-    "enemyName_fr": "Goule des catacombes"
+    "enemyName_fr": "Goule des catacombes",
+    "biomes": [
+      "fen"
+    ]
   },
   "bone_warden": {
     "enemyName": "Bone Warden",
@@ -1829,7 +1896,10 @@
       "Une forme d'os liés se dresse en travers du seul passage vers le bas, une épée dans chacune de ses nombreuses mains. On l'a levée pour garder ce passage, et elle ne vous demande rien avant de les lever.",
       "Le mur de l'ossuaire n'est pas un mur. Il se déplie, côte après côte, en un gardien des morts, et le serment qui le lie est plus ancien que toute langue que vous connaissiez."
     ],
-    "enemyName_fr": "Gardien d’Os"
+    "enemyName_fr": "Gardien d’Os",
+    "biomes": [
+      "fen"
+    ]
   },
   "hollow_court_inquisitor": {
     "enemyName": "Hollow Court Inquisitor",
@@ -1944,7 +2014,10 @@
     ],
     "description": "An inquisitor of the Hollow Court, one of those who knelt to the tear for a generation and gathered its taken.",
     "description_fr": "Un inquisiteur de la Cour creuse, de ceux qui se sont agenouillés devant la déchirure pendant une génération et ont rassemblé ses captifs.",
-    "enemyName_fr": "Inquisiteur de la Cour Creuse"
+    "enemyName_fr": "Inquisiteur de la Cour Creuse",
+    "biomes": [
+      "fen"
+    ]
   },
   "void_hound": {
     "enemyName": "Void Hound",
@@ -2005,7 +2078,11 @@
     ],
     "packText": "The void hounds hunt the Shroud in packs, and the pack has caught up. They spread out around you without a sound.",
     "packText_fr": "Les chiens du vide chassent le Linceul en meute, et la meute vous a rattrapé. Ils se déploient autour de vous sans un bruit.",
-    "enemyName_fr": "Molosse du Néant"
+    "enemyName_fr": "Molosse du Néant",
+    "biomes": [
+      "frost",
+      "tear"
+    ]
   },
   "tear_spawn": {
     "enemyName": "The Unstitched",
@@ -2089,7 +2166,10 @@
       "L'air se fend le long d'une couture pas plus large qu'un cheveu, et quelque chose en sort dans le mauvais ordre. Il est attiré par le Linceul comme l'eau par la pente.",
       "Un rejeton de la déchirure se nourrit de ce qui reste d'un sanctuaire. Il a presque appris à quoi sert une bouche, et il se tourne vers vous pour s'exercer."
     ],
-    "enemyName_fr": "Le Décousu"
+    "enemyName_fr": "Le Décousu",
+    "biomes": [
+      "frost"
+    ]
   },
   "inquisition_penitent": {
     "enemyName": "Inquisition Penitent",
@@ -2174,7 +2254,10 @@
       "Un pénitent en robe lacérée est agenouillé sur votre chemin, se flagellant en cadence. Quand vous approchez, la cadence change, et le fouet est pour vous.",
       "« Le porteur du Linceul », dit le pénitent en se relevant de sa prière, une masse à la main. « On m'a promis le pardon de mes péchés pour votre tête. J'en ai tant. »"
     ],
-    "enemyName_fr": "Pénitent de l’Inquisition"
+    "enemyName_fr": "Pénitent de l’Inquisition",
+    "biomes": [
+      "frost"
+    ]
   },
   "void_archon": {
     "enemyName": "Void Archon",
@@ -2278,7 +2361,8 @@
     ],
     "description": "A lord of the tear's host, the first to meet whoever carries the whole Shroud toward the door.",
     "description_fr": "Un seigneur de l'armée de la déchirure, le premier à affronter quiconque porte le Linceul entier vers la porte.",
-    "enemyName_fr": "Archonte du Néant"
+    "enemyName_fr": "Archonte du Néant",
+    "biomes": []
   },
   "hollow_reflection": {
     "enemyName": "Hollow Reflection",
@@ -2337,23 +2421,26 @@
     "hunterAlignment": "",
     "hunterTier": 0,
     "description": "Your own shape, borrowed by the Hollow Shore and worn back at you, with your skills and none of your mercy.",
-    "description_fr": "Votre propre silhouette, empruntée par le Rivage creux et portée contre vous, avec vos talents et sans votre pitié.",
+    "description_fr": "Votre propre silhouette, empruntée par la Rive Creuse et portée contre vous, avec vos talents et sans votre pitié.",
     "encounterText": [
       "Someone is walking toward you along the shore with your walk. When it is close enough you see your own face on it, and your own hand reaching for your own blade.",
       "The Hollow Shore keeps what it sees. It has seen you, and now it sends you back, hollow, to take the Shroud from you the way you would."
     ],
     "encounterText_fr": [
       "Quelqu'un marche vers vous le long du rivage, avec votre démarche. Quand il est assez proche, vous voyez votre propre visage sur lui, et votre propre main qui cherche votre propre lame.",
-      "Le Rivage creux garde ce qu'il voit. Il vous a vu, et il vous renvoie à vous-même, creux, pour vous prendre le Linceul comme vous le feriez."
+      "La Rive Creuse garde ce qu’elle voit. Elle a vu votre visage, et vous en renvoie un double creux, pour vous prendre le Linceul comme vous le feriez."
     ],
     "packText": "Reflections rise out of the wet sand, each wearing your face at a different age. The shore wants the Shroud, and it has sent you to take it.",
-    "packText_fr": "Des reflets se lèvent du sable mouillé, chacun portant votre visage à un âge différent. Le rivage veut le Linceul, et il vous a envoyé le prendre.",
-    "enemyName_fr": "Reflet creux"
+    "packText_fr": "Des reflets se lèvent du sable mouillé, chacun portant votre visage à un âge différent. Le rivage veut le Linceul, et c’est vous qu’il envoie le prendre.",
+    "enemyName_fr": "Reflet creux",
+    "biomes": [
+      "tear"
+    ]
   },
   "void_sovereign": {
     "enemyName": "The Sovereign",
     "maxHealth": 390,
-    "damage": 31,
+    "damage": 30,
     "guile": 12,
     "weakTo": [
       "Light"
@@ -2486,7 +2573,8 @@
     ],
     "description": "The thing behind the tear, which has wanted the Shroud whole for longer than there has been a Church to hide it.",
     "description_fr": "La chose derrière la déchirure, qui veut le Linceul entier depuis plus longtemps qu'il n'existe d'Église pour le cacher.",
-    "enemyName_fr": "Le Souverain"
+    "enemyName_fr": "Le Souverain",
+    "biomes": []
   },
   "kelda_turned": {
     "enemyName": "Kelda, Turned",
@@ -2558,7 +2646,8 @@
     ],
     "description": "Kelda once held the wharf gate beside you. The legate's pact has set her against you.",
     "description_fr": "Kelda a jadis tenu la porte du quai à vos côtés. Le pacte du légat la dresse désormais contre vous.",
-    "enemyName_fr": "Kelda, retournée"
+    "enemyName_fr": "Kelda, retournée",
+    "biomes": []
   },
   "sable_turned": {
     "enemyName": "Sable, Turned",
@@ -2630,7 +2719,8 @@
     ],
     "description": "Sable won a place in your crew on a wager. The legate's pact has placed the last bet.",
     "description_fr": "Sable a gagné sa place dans votre équipage sur un pari. Le pacte du légat a placé la dernière mise.",
-    "enemyName_fr": "Sable, retournée"
+    "enemyName_fr": "Sable, retournée",
+    "biomes": []
   },
   "maren_turned": {
     "enemyName": "Maren, Turned",
@@ -2702,7 +2792,8 @@
     ],
     "description": "Sister Maren prayed over your wounded. The legate's pact has given her a new litany, and you are in it.",
     "description_fr": "Sœur Maren priait sur vos blessés. Le pacte du légat lui a donné une nouvelle litanie, et vous y figurez.",
-    "enemyName_fr": "Maren, retournée"
+    "enemyName_fr": "Maren, retournée",
+    "biomes": []
   },
   "liora_turned": {
     "enemyName": "Liora, Turned",
@@ -2774,7 +2865,8 @@
     ],
     "description": "Liora kept watch over your camp from forty feet up. The legate's pact has turned her bow around.",
     "description_fr": "Liora veillait sur votre camp du haut des arbres. Le pacte du légat a retourné son arc.",
-    "enemyName_fr": "Liora, retournée"
+    "enemyName_fr": "Liora, retournée",
+    "biomes": []
   },
   "vess_turned": {
     "enemyName": "Vess, Turned",
@@ -2846,7 +2938,8 @@
     ],
     "description": "Vess came out of the dark with you. The legate's pact sends Vess back into it, and wants you to follow.",
     "description_fr": "Vess a quitté les ténèbres avec vous. Le pacte du légat l'y renvoie, et veut vous y entraîner.",
-    "enemyName_fr": "Vess, retournée"
+    "enemyName_fr": "Vess, retournée",
+    "biomes": []
   },
   "grosh_turned": {
     "enemyName": "Grosh, Turned",
@@ -2918,7 +3011,8 @@
     ],
     "description": "Grosh smashed first for you and asked questions after. The legate's pact has answered them.",
     "description_fr": "Grosh frappait d'abord pour vous et posait les questions après. Le pacte du légat y a répondu.",
-    "enemyName_fr": "Grosh, retourné"
+    "enemyName_fr": "Grosh, retourné",
+    "biomes": []
   },
   "tobin_turned": {
     "enemyName": "Tobin, Turned",
@@ -2990,7 +3084,8 @@
     ],
     "description": "Brother Tobin kept vigil for the cloister's dead. The legate's pact has given him one more to keep.",
     "description_fr": "Frère Tobin veillait les morts du cloître. Le pacte du légat lui en donne un de plus à veiller.",
-    "enemyName_fr": "Tobin, retourné"
+    "enemyName_fr": "Tobin, retourné",
+    "biomes": []
   },
   "malrik_turned": {
     "enemyName": "Malrik, Turned",
@@ -3062,7 +3157,8 @@
     ],
     "description": "Malrik Sarn always took half of what was dropped. The legate's pact paid the other half.",
     "description_fr": "Malrik Sarn prenait toujours la moitié de ce qui tombait. Le pacte du légat a payé l'autre moitié.",
-    "enemyName_fr": "Malrik, retourné"
+    "enemyName_fr": "Malrik, retourné",
+    "biomes": []
   },
   "inquisition_legate": {
     "enemyName": "The Legate's Champion",
@@ -3134,7 +3230,8 @@
     ],
     "description": "The champion the Inquisition's last legate brought ashore, to fight the fights his pact starts.",
     "description_fr": "Le champion que le dernier légat de l'Inquisition a amené à terre, pour livrer les combats que son pacte déclenche.",
-    "enemyName_fr": "Le Champion du légat"
+    "enemyName_fr": "Le Champion du légat",
+    "biomes": []
   },
   "masked_penitent": {
     "enemyName": "Masked Penitent",
@@ -3194,7 +3291,8 @@
     ],
     "description": "A penitent in a porcelain mask who will not stop staring at you.",
     "description_fr": "Un pénitent au masque de porcelaine qui ne cesse de vous fixer.",
-    "enemyName_fr": "Pénitente masquée"
+    "enemyName_fr": "Pénitente masquée",
+    "biomes": []
   },
   "white_soldier": {
     "enemyName": "White Soldier",
@@ -3245,7 +3343,11 @@
     "hunterTier": 0,
     "description": "One of the Inquisition's White Soldiers: porcelain-masked, faceless, sent when the Church wants something taken back.",
     "description_fr": "Un des Soldats blancs de l'Inquisition : masqué de porcelaine, sans visage, envoyé quand l'Église veut reprendre quelque chose.",
-    "enemyName_fr": "Soldat Blanc"
+    "enemyName_fr": "Soldat Blanc",
+    "biomes": [
+      "temperate",
+      "tear"
+    ]
   },
   "bone_sexton": {
     "enemyName": "Bone Sexton",
@@ -3326,7 +3428,10 @@
       "Quelque part devant, l’os claque contre l’os. Le sacristain a entendu des pas vivants dans ses galeries, et l’Ossuaire garde une place pour tous ceux qui y marchent."
     ],
     "packText": "The sextons of the Ossuary work in gangs, and a gang of them has found an empty shelf. They come on together, spades raised, to fill it with you.",
-    "packText_fr": "Les sacristains de l’Ossuaire travaillent en équipe, et l’une d’elles a trouvé une étagère vide. Ils avancent ensemble, bêches levées, pour la remplir avec vous."
+    "packText_fr": "Les sacristains de l’Ossuaire travaillent en équipe, et l’une d’elles a trouvé une étagère vide. Ils avancent ensemble, bêches levées, pour la remplir avec vous.",
+    "biomes": [
+      "fen"
+    ]
   },
   "drowned_pilgrim": {
     "enemyName": "Drowned Pilgrim",
@@ -3395,7 +3500,11 @@
       "Les noyés se souviennent du souffle. Celui-ci a senti le vôtre dans l’escalier, et il gravit les marches, la bouche ouverte pour le prendre."
     ],
     "packText": "A procession climbs out of the flooded dark, drowned pilgrims in soaked robes, singing without air. They have come up for the living, to walk them down.",
-    "packText_fr": "Une procession sort des ténèbres inondées, des pèlerins noyés dans leurs robes trempées, qui chantent sans air. Ils sont remontés chercher les vivants pour les mener au fond."
+    "packText_fr": "Une procession sort des ténèbres inondées, des pèlerins noyés dans leurs robes trempées, qui chantent sans air. Ils sont remontés chercher les vivants pour les mener au fond.",
+    "biomes": [
+      "sea_cliffs",
+      "frost"
+    ]
   },
   "unmade_knight": {
     "enemyName": "Unmade Knight",
@@ -3471,7 +3580,10 @@
       "Le chevalier défait a senti le Linceul sur vous. Il se souvient d’avoir été entier, et il croit qu’enveloppé de ce que vous portez, il le redeviendrait."
     ],
     "packText": "Empty armor rises from the ash in a broken line, the last guard of a court that no longer exists. They close ranks between you and the Sovereign, as they swore to.",
-    "packText_fr": "Des armures vides se relèvent de la cendre en une ligne brisée, dernière garde d’une cour qui n’existe plus. Elles serrent les rangs entre vous et le Souverain, comme elles l’ont juré."
+    "packText_fr": "Des armures vides se relèvent de la cendre en une ligne brisée, dernière garde d’une cour qui n’existe plus. Elles serrent les rangs entre vous et le Souverain, comme elles l’ont juré.",
+    "biomes": [
+      "tear"
+    ]
   },
   "strand_colossus": {
     "enemyName": "The Strand Colossus",
@@ -3557,7 +3669,8 @@
     ],
     "encounterText_fr": [
       "Les débris sur la grève se lèvent, raclant le verre contre le bois, et se tournent vers la seule chose de la plage qui ne soit pas grise."
-    ]
+    ],
+    "biomes": []
   },
   "white_admiral": {
     "enemyName": "The White Admiral",
@@ -3667,7 +3780,8 @@
     ],
     "encounterText_fr": [
       "Sur la dunette du vaisseau amiral, l’Amiral se retourne, et la flotte noyée se retourne avec lui."
-    ]
+    ],
+    "biomes": []
   },
   "horn_taker": {
     "enemyName": "The Horn-Taker",
@@ -3757,7 +3871,8 @@
     ],
     "encounterText_fr": [
       "Le Preneur de Cornes agite sa cloche une fois, pour la forme, et tend la main vers sa scie."
-    ]
+    ],
+    "biomes": []
   },
   "teind_rider": {
     "enemyName": "The Teind-Rider",
@@ -3847,7 +3962,8 @@
     ],
     "encounterText_fr": [
       "Le Cavalier de la Dîme abaisse sa lanterne pour lire votre visage, puis le compare au registre."
-    ]
+    ],
+    "biomes": []
   },
   "frost_kept_giant": {
     "enemyName": "Gorm, Kept by the Frost",
@@ -3937,7 +4053,8 @@
     ],
     "encounterText_fr": [
       "Le givre du géant se fend quand il se retourne, et il lève une masse qu’il tient depuis trois hivers."
-    ]
+    ],
+    "biomes": []
   },
   "brine_jack": {
     "enemyName": "Brine Jack",
@@ -4024,7 +4141,8 @@
     ],
     "encounterText_fr": [
       "Jack la Saumure plante la perche de sa lanterne sur la route et regarde les chariots comme une mouette regarde un étal de vidage."
-    ]
+    ],
+    "biomes": []
   },
   "purifier_vell": {
     "enemyName": "Purifier Vell",
@@ -4111,7 +4229,8 @@
     ],
     "encounterText_fr": [
       "Le Purificateur Vell lève une torche dans chaque main et demande, fort poliment, ce que contient le coffre."
-    ]
+    ],
+    "biomes": []
   },
   "knell_keeper": {
     "enemyName": "The Knell-Keeper",
@@ -4202,7 +4321,8 @@
     ],
     "encounterText_fr": [
       "Le Gardien du Glas tend la main vers les cloches, comme si elles avaient été coulées pour lui."
-    ]
+    ],
+    "biomes": []
   },
   "rime_bailiff": {
     "enemyName": "The Rime Bailiff",
@@ -4300,7 +4420,8 @@
     ],
     "encounterText_fr": [
       "L’Huissier du Givre trempe sa plume, et l’encre gèle sur le bec."
-    ]
+    ],
+    "biomes": []
   },
   "glass_shepherd": {
     "enemyName": "The Glass Shepherd",
@@ -4397,7 +4518,8 @@
     ],
     "encounterText_fr": [
       "Le Berger de Verre tourne son visage vers les lanternes et, doucement, se met à compter."
-    ]
+    ],
+    "biomes": []
   },
   "kraken_arm": {
     "enemyName": "Kraken Arm",
@@ -4438,6 +4560,775 @@
     ],
     "encounterText_fr": [
       "Un bras épais comme le grand mât glisse par-dessus le bastingage et tâte le pont en quête de quelque chose à saisir."
+    ],
+    "biomes": [
+      "sea"
     ]
+  },
+  "claimant_vane": {
+    "enemyName": "Aurel Vane, Inquisitor-General",
+    "enemyName_fr": "Aurel Vane, Inquisiteur général",
+    "maxHealth": 365,
+    "damage": 33,
+    "guile": 12,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Fire"
+    ],
+    "xpReward": 220,
+    "goldReward": 160,
+    "lootTable": [
+      {
+        "itemID": "staff_t10",
+        "dropRate": 20
+      },
+      {
+        "itemID": "potion_major",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "cleric_smite",
+        "condition": "Chance",
+        "requiredElement": "Fire",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "hex_of_ill_luck",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "edict_of_silence",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "second_wind",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 50,
+        "healthThreshold": 35,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 7,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 60,
+        "name": "The Hooded Lantern",
+        "nameFr": "La Lanterne encapuchonnée",
+        "message": "Vane unhoods the Lantern. Where the flame should be an eye opens, and it is looking at your blood.",
+        "messageFr": "Vane découvre la Lanterne. Là où devrait être la flamme, un œil s’ouvre, et il regarde votre sang.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "radiant_judgment",
+            "condition": "Chance",
+            "requiredElement": "Light",
+            "chance": 30,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "The Pyre",
+        "nameFr": "Le Bûcher",
+        "message": "Vane sets the Hall’s hangings alight and walks into the fire as if he owned it.",
+        "messageFr": "Vane met le feu aux tentures de la Salle et entre dans les flammes comme si elles lui appartenaient.",
+        "damageMultiplier": 1.15,
+        "healPercent": 8,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "zealot_martyrdom",
+            "condition": "Chance",
+            "requiredElement": "Fire",
+            "chance": 35,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Inquisitor-General, who wanted the tear for a door and your blood for its key, holding the Lantern Hall with the Hooded Lantern in his hand.",
+    "description_fr": "L’Inquisiteur général, qui voulait la déchirure pour en faire une porte et votre sang pour en faire la clef, et qui tient la Salle de la Lanterne, la Lanterne encapuchonnée à la main.",
+    "encounterText": [
+      "Under the First Lantern, Aurel Vane lets the Hooded Lantern swing on its chain, and the Hall’s hangings begin to burn."
+    ],
+    "encounterText_fr": [
+      "Sous la Première Lanterne, Aurel Vane laisse la Lanterne encapuchonnée se balancer au bout de sa chaîne, et les tentures de la Salle se mettent à brûler."
+    ],
+    "biomes": []
+  },
+  "claimant_morrow": {
+    "enemyName": "Hesk Morrow, Grand Master",
+    "enemyName_fr": "Hesk Morrow, Grand Maître",
+    "maxHealth": 390,
+    "damage": 22,
+    "guile": 9,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Earth"
+    ],
+    "xpReward": 220,
+    "goldReward": 160,
+    "lootTable": [
+      {
+        "itemID": "sword_t10",
+        "dropRate": 20
+      },
+      {
+        "itemID": "shield_t10",
+        "dropRate": 15
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "guard_break",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      },
+      {
+        "skillID": "second_wind",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 50,
+        "healthThreshold": 35,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 7,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 60,
+        "name": "Sword and Lantern",
+        "nameFr": "Épée et Lanterne",
+        "message": "Morrow lifts the Order’s lantern on his sword, and every knight along the walls answers it.",
+        "messageFr": "Morrow lève la lanterne de l’Ordre au bout de son épée, et chaque chevalier le long des murs lui répond.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "rallying_cry",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 25,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "The Third That Fell",
+        "nameFr": "Le tiers tombé",
+        "message": "He fights now for the third of his Order buried on this coast, and he fights like all of them.",
+        "messageFr": "Il se bat désormais pour le tiers de son Ordre enterré sur cette côte, et il se bat comme eux tous.",
+        "damageMultiplier": 1.15,
+        "healPercent": 10,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "heavy_windup",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 40,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Grand Master of the Order of the Vigilant Flame, grey in a war he has been losing for thirty-nine years, who wants the tear shut by the sword.",
+    "description_fr": "Le Grand Maître de l’Ordre de la Flamme vigilante, devenu gris dans une guerre qu’il perd depuis trente-neuf ans, qui veut la déchirure fermée par l’épée.",
+    "encounterText": [
+      "At the top of the stair Hesk Morrow sets his feet, his lantern hung from his sword, and does not step aside."
+    ],
+    "encounterText_fr": [
+      "En haut de l’escalier, Hesk Morrow ancre ses appuis, la lanterne pendue à l’épée, et ne s’écarte pas."
+    ],
+    "biomes": []
+  },
+  "claimant_tallis": {
+    "enemyName": "Maud Tallis, Eldest Wickwarden",
+    "enemyName_fr": "Maud Tallis, Aînée des Garde-Mèches",
+    "maxHealth": 300,
+    "damage": 23,
+    "guile": 11,
+    "weakTo": [
+      "Void"
+    ],
+    "resists": [
+      "Light"
+    ],
+    "xpReward": 220,
+    "goldReward": 160,
+    "lootTable": [
+      {
+        "itemID": "staff_t10",
+        "dropRate": 15
+      },
+      {
+        "itemID": "potion_major",
+        "dropRate": 40
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "cleric_holy_light",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "Light",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "bind_wounds",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 50,
+        "healthThreshold": 40,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 7,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 60,
+        "name": "The First Lantern",
+        "nameFr": "La Première Lanterne",
+        "message": "Tallis lifts the First Lantern from its iron. Six hundred years of light come into the Hall at once.",
+        "messageFr": "Tallis soulève la Première Lanterne de son fer. Six cents ans de lumière entrent dans la Salle d’un coup.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "cleric_sanctuary",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 25,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "Every Lamp on the Cliff",
+        "nameFr": "Toutes les lampes de la falaise",
+        "message": "Down the cliff, lamp after lamp is lit, and every one is a prayer for her.",
+        "messageFr": "Le long de la falaise, on allume lampe après lampe, et chacune est une prière pour elle.",
+        "damageMultiplier": 1.1,
+        "healPercent": 12,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "radiant_judgment",
+            "condition": "Chance",
+            "requiredElement": "Light",
+            "chance": 40,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Eldest of the Wickwardens, keeper of the First Lantern, who wanted the dying stopped and was given a Throne instead.",
+    "description_fr": "L’Aînée des Garde-Mèches, gardienne de la Première Lanterne, qui voulait qu’on cesse de mourir et à qui l’on a donné un Trône à la place.",
+    "encounterText": [
+      "Maud Tallis holds the First Lantern in both hands, and the lamps down the cliff brighten all at once."
+    ],
+    "encounterText_fr": [
+      "Maud Tallis tient la Première Lanterne à deux mains, et les lampes de la falaise s’avivent toutes à la fois."
+    ],
+    "biomes": []
+  },
+  "tear_herald": {
+    "enemyName": "The Tear-Herald",
+    "enemyName_fr": "Le Héraut de la Déchirure",
+    "maxHealth": 345,
+    "damage": 27,
+    "guile": 12,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
+    "xpReward": 260,
+    "goldReward": 190,
+    "lootTable": [
+      {
+        "itemID": "staff_t10",
+        "dropRate": 15
+      },
+      {
+        "itemID": "potion_major",
+        "dropRate": 40
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "void_blast",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 3
+      },
+      {
+        "skillID": "glass_reflection",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "disorienting_pulse",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "void_drain",
+        "condition": "OnLowHealth",
+        "requiredElement": "Void",
+        "chance": 50,
+        "healthThreshold": 50,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 8,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 65,
+        "name": "A Face for Every Banner",
+        "nameFr": "Un visage par bannière",
+        "message": "The Herald puts on the faces of your Host’s dead, one for every banner on the sand.",
+        "messageFr": "Le Héraut revêt les visages des morts de votre Ost, un pour chaque bannière sur le sable.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "manifestation_many_faces",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 35,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "The Tear Answers",
+        "nameFr": "La déchirure répond",
+        "message": "Behind the Herald the tear widens to answer the crowning, and the Herald drinks from it.",
+        "messageFr": "Derrière le Héraut, la déchirure s’élargit pour répondre au couronnement, et le Héraut y boit.",
+        "damageMultiplier": 1.15,
+        "healPercent": 8,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "void_gathering",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 35,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Sovereign’s answer to the crowning: a herald of the tear, taller than the reflections and wearing all their faces at once, with a crude copy of your banner sewn on its chest.",
+    "description_fr": "La réponse du Souverain au couronnement : un héraut de la déchirure, plus grand que les reflets et portant tous leurs visages à la fois, une copie grossière de votre bannière cousue sur la poitrine.",
+    "encounterText": [
+      "The Herald turns every face it wears toward the Throne, and cries your name."
+    ],
+    "encounterText_fr": [
+      "Le Héraut tourne vers le Trône tous les visages qu’il porte, et crie votre nom."
+    ],
+    "biomes": []
+  },
+  "den_bouncer": {
+    "enemyName": "The House's Bouncer",
+    "maxHealth": 44,
+    "damage": 8,
+    "guile": 0,
+    "weakTo": [],
+    "resists": [],
+    "xpReward": 30,
+    "goldReward": 8,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 15,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 1,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "description": "The Blind Beggar's back-room bouncer, paid to keep the tables honest and the till shut. Tonight he is only keeping the till.",
+    "description_fr": "Le videur de l’arrière-salle du Mendiant Aveugle, payé pour que les tables restent honnêtes et la caisse fermée. Cette nuit, il ne garde plus que la caisse.",
+    "enemyName_fr": "Le videur de la maison",
+    "biomes": []
+  },
+  "den_looter": {
+    "enemyName": "Back-Room Looter",
+    "maxHealth": 44,
+    "damage": 8,
+    "guile": 0,
+    "weakTo": [],
+    "resists": [],
+    "xpReward": 30,
+    "goldReward": 8,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 15,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 1,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "description": "A looter who got to the gaming room before the fire did, working the rings off the fallen. He does not like to be interrupted.",
+    "description_fr": "Un pillard arrivé dans la salle de jeu avant le feu, qui arrache leurs bagues aux gens tombés. Il n’aime pas qu’on le dérange.",
+    "enemyName_fr": "Pillard de l’arrière-salle",
+    "biomes": []
+  },
+  "sore_loser": {
+    "enemyName": "Sore Loser",
+    "maxHealth": 44,
+    "damage": 8,
+    "guile": 0,
+    "weakTo": [],
+    "resists": [],
+    "xpReward": 30,
+    "goldReward": 8,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 15,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 1,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "description": "A man who lost eleven silver to you an hour ago and has decided the blast was a sign. He wants his silver back, and the rest.",
+    "description_fr": "Un homme qui vous a perdu onze pièces d’argent il y a une heure et a décidé que l’explosion était un signe. Il veut récupérer son argent, et le reste.",
+    "enemyName_fr": "Mauvais perdant",
+    "biomes": []
+  },
+  "wreck_scavenger": {
+    "enemyName": "Wreck Scavenger",
+    "maxHealth": 85,
+    "damage": 12,
+    "guile": 1,
+    "weakTo": [],
+    "resists": [],
+    "xpReward": 42,
+    "goldReward": 20,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 25
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 15,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 1,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "description": "One of the veiled scavengers who follow the storms across the Waste for whatever falls out of the sky, and strip it before it cools.",
+    "description_fr": "Un de ces charognards voilés qui suivent les tempêtes à travers la Désolation pour ce qui tombe du ciel, et le dépouillent avant qu’il refroidisse.",
+    "enemyName_fr": "Charognard d’épaves",
+    "biomes": [
+      "desert"
+    ]
+  },
+  "aurel_vane": {
+    "enemyName": "Inquisitor-General Aurel Vane",
+    "maxHealth": 165,
+    "damage": 18,
+    "guile": 5,
+    "weakTo": [],
+    "resists": [
+      "Light"
+    ],
+    "xpReward": 90,
+    "goldReward": 40,
+    "lootTable": [
+      {
+        "itemID": "warden_signet",
+        "dropRate": 20
+      },
+      {
+        "itemID": "potion_major",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 18,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 1,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "The Lantern Unhooded",
+        "nameFr": "La Lanterne dévoilée",
+        "message": "Vane does not let go of her. He lifts the hooded lantern at his collar with the hand that holds the blade and pulls the hood away, and the light that comes out of it is not lamplight.",
+        "messageFr": "Vane ne la lâche pas. Il soulève la lanterne voilée à son col de la main qui tient la lame et en arrache le voile, et la lumière qui en sort n’est pas celle d’une lampe.",
+        "damageMultiplier": 1.2,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "radiant_judgment",
+            "condition": "Chance",
+            "requiredElement": "Light",
+            "chance": 40,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Inquisitor-General of the Lantern Dominion: white-robed, soft-spoken, a lantern hooded in black at his collar. He fights one-handed, because the other hand is holding your sister.",
+    "description_fr": "L’Inquisiteur général du Dominion de la Lanterne : vêtu de blanc, la voix douce, une lanterne voilée de noir au col. Il se bat d’une seule main, parce que l’autre tient votre sœur.",
+    "enemyName_fr": "Aurel Vane, Inquisiteur général",
+    "biomes": []
   }
 }

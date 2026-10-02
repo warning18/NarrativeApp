@@ -1,0 +1,1272 @@
+{
+  "temperate": {
+    "name": "Temperate",
+    "name_fr": "Tempéré",
+    "blurb": "Green hills, hedged fields and quick rivers under a soft sky: the country the Crusade burned first, and the easiest to cross.",
+    "blurb_fr": "Des collines vertes, des champs bordés de haies et des rivières vives sous un ciel doux : le pays que la Croisade a brûlé en premier, et le plus facile à traverser.",
+    "fauna": [
+      {
+        "name": "Warhound",
+        "name_fr": "Chien de guerre",
+        "note": "Bred by Inquisition dog-handlers; since the burning, a few run loose in the alleys.",
+        "note_fr": "Race des maîtres-chiens de l’Inquisition ; depuis l’incendie, quelques-uns errent dans les ruelles."
+      },
+      {
+        "name": "Sewer rat",
+        "name_fr": "Rat d’égout",
+        "note": "Fat on Alster’s rot; their matriarchs grow fatter, and hold the drains.",
+        "note_fr": "Gras de la pourriture d’Alster ; leurs matriarches, plus grasses encore, tiennent les égouts."
+      },
+      {
+        "name": "Rook",
+        "name_fr": "Freux",
+        "note": "Roosts in the gutted houses: the first thing to come back after the fires.",
+        "note_fr": "Niche dans les maisons éventrées : le premier à revenir après les incendies."
+      },
+      {
+        "name": "Alley cat",
+        "name_fr": "Chat de gouttière",
+        "note": "Sits on the step of every chalked door, waiting for someone to come home.",
+        "note_fr": "Assis sur le seuil de chaque porte marquée à la craie, il attend que quelqu’un rentre."
+      },
+      {
+        "name": "River trout",
+        "name_fr": "Truite de rivière",
+        "note": "The river is too quick for nets; children tickle them under the Stone Bridge.",
+        "note_fr": "Le fleuve est trop vif pour les filets ; les enfants les prennent à la main sous le Pont de Pierre."
+      },
+      {
+        "name": "Red deer",
+        "name_fr": "Cerf élaphe",
+        "note": "Keeps to the hill woods, and to the hunting rights of whoever rules.",
+        "note_fr": "Se tient dans les bois des collines, et dans les droits de chasse de qui gouverne."
+      }
+    ],
+    "flora": [
+      {
+        "name": "Oak",
+        "name_fr": "Chêne",
+        "note": "The hill woods are oak; the Black Hold’s doors were cut from them.",
+        "note_fr": "Les bois des collines sont de chêne ; on y a taillé les portes de la Geôle Noire."
+      },
+      {
+        "name": "Hawthorn",
+        "name_fr": "Aubépine",
+        "note": "Ribbons tied to a hawthorn mark a wayside shrine.",
+        "note_fr": "Des rubans noués à une aubépine signalent un autel au bord du chemin."
+      },
+      {
+        "name": "Barley",
+        "name_fr": "Orge",
+        "note": "Grown on the hill farms; the Blind Beggar’s ale came from it.",
+        "note_fr": "Cultivée dans les fermes des collines ; la bière du Mendiant Aveugle en venait."
+      },
+      {
+        "name": "Ivy",
+        "name_fr": "Lierre",
+        "note": "Climbs every wall of the old town, the Black Hold’s included.",
+        "note_fr": "Grimpe sur tous les murs de la vieille ville, ceux de la Geôle Noire compris."
+      },
+      {
+        "name": "Cedar",
+        "name_fr": "Cèdre",
+        "note": "Old houses hide old cedar under their floors, and sometimes more.",
+        "note_fr": "Les vieilles maisons cachent du vieux cèdre sous leurs planchers, et parfois davantage."
+      },
+      {
+        "name": "Fireweed",
+        "name_fr": "Épilobe",
+        "note": "The first green to come back where the city burned.",
+        "note_fr": "La première verdure à repousser là où la ville a brûlé."
+      }
+    ],
+    "weather": [
+      {
+        "name": "Soft rain",
+        "name_fr": "Pluie fine"
+      },
+      {
+        "name": "River mist",
+        "name_fr": "Brume de rivière"
+      },
+      {
+        "name": "Thunder over the hills",
+        "name_fr": "Orage sur les collines"
+      }
+    ],
+    "hazards": [
+      {
+        "id": "flash_flood",
+        "name": "Flash flood",
+        "name_fr": "Crue subite",
+        "text": "The river came over the road without warning, brown and quick and full of other people’s fences. I stood in it to the knees and felt the road move under my feet.",
+        "text_fr": "Le fleuve passa par-dessus la route sans prévenir, brun, rapide et plein des clôtures des autres. L’eau me monta aux genoux, et je sentis la route bouger sous mes pieds.",
+        "push": "Wade across",
+        "push_fr": "Traverser à gué",
+        "wait": "Wait for the water to fall",
+        "wait_fr": "Attendre la décrue"
+      },
+      {
+        "id": "hailstorm",
+        "name": "Hailstorm",
+        "name_fr": "Orage de grêle",
+        "text": "The sky went green over the hills and the hail came down like thrown gravel. There was no roof for a mile in any direction, and I counted every stone.",
+        "text_fr": "Le ciel vira au vert au-dessus des collines et la grêle tomba comme du gravier jeté à poignées. Il n’y avait pas un toit à une lieue à la ronde, et je comptai chaque grêlon.",
+        "push": "Push on under your cloak",
+        "push_fr": "Avancer sous la cape",
+        "wait": "Shelter in a ditch until it passes",
+        "wait_fr": "S’abriter dans un fossé"
+      }
+    ],
+    "palette": {
+      "ground": "#7E9A5A",
+      "detail": "#56703C",
+      "accent": "#C9D7A0",
+      "water": "#4F7FA0"
+    },
+    "pattern": "fields"
+  },
+  "desert": {
+    "name": "Desert",
+    "name_fr": "Désert",
+    "blurb": "Sand to every horizon, heat that becomes a place, and water only where someone has carved a way to it. Travel by night, and follow the caravans.",
+    "blurb_fr": "Du sable jusqu’à chaque horizon, une chaleur qui devient un lieu, et de l’eau seulement là où quelqu’un lui a creusé un chemin. Voyagez de nuit, et suivez les caravanes.",
+    "fauna": [
+      {
+        "name": "Camel",
+        "name_fr": "Chameau",
+        "note": "The salt caravans kneel them by the White Wells’ water every night.",
+        "note_fr": "Les caravanes de sel les font s’agenouiller chaque soir au bord des Puits blancs."
+      },
+      {
+        "name": "Wreck scavenger",
+        "name_fr": "Charognard d’épaves",
+        "note": "Veiled, with sledges, following the storms for whatever falls out of the sky.",
+        "note_fr": "Voilé, avec ses traîneaux, il suit les tempêtes pour ce qui tombe du ciel."
+      },
+      {
+        "name": "Vulture",
+        "name_fr": "Vautour",
+        "note": "Followed the Lark down, and reached her crew first.",
+        "note_fr": "A suivi l’Alouette dans sa chute, et a atteint son équipage le premier."
+      },
+      {
+        "name": "Dune adder",
+        "name_fr": "Vipère des dunes",
+        "note": "Sleeps under the sand by day; caravans beat the ground before they lie down.",
+        "note_fr": "Dort sous le sable le jour ; les caravanes battent le sol avant de se coucher."
+      },
+      {
+        "name": "Sand fox",
+        "name_fr": "Renard des sables",
+        "note": "Big ears, small paws: the one thing in the Waste glad to see you.",
+        "note_fr": "De grandes oreilles, de petites pattes : la seule chose de la Désolation heureuse de vous voir."
+      },
+      {
+        "name": "Glass scorpion",
+        "name_fr": "Scorpion de verre",
+        "note": "Pale enough to see through; it shelters in the cracks of the Sleeper’s Face.",
+        "note_fr": "Si pâle qu’on voit au travers ; il s’abrite dans les fissures du Visage du dormeur."
+      }
+    ],
+    "flora": [
+      {
+        "name": "Date palm",
+        "name_fr": "Palmier dattier",
+        "note": "Leans over the White Wells’ pool as if to drink.",
+        "note_fr": "Penché au-dessus de la mare des Puits blancs, comme pour boire."
+      },
+      {
+        "name": "Tamarisk",
+        "name_fr": "Tamaris",
+        "note": "Feathery and salt-proof: the only shade between the wreck and the Face.",
+        "note_fr": "Plumeux et à l’épreuve du sel : la seule ombre entre l’épave et le Visage."
+      },
+      {
+        "name": "Esparto grass",
+        "name_fr": "Alfa",
+        "note": "Wiry grass the salt-cutters twist into rope and sandals.",
+        "note_fr": "Une herbe dure que les tailleurs de sel tordent en cordes et en sandales."
+      },
+      {
+        "name": "Bitter gourd",
+        "name_fr": "Coloquinte",
+        "note": "Yellow fruit on the dunes; one mouthful is a bad mistake.",
+        "note_fr": "Des fruits jaunes sur les dunes ; une bouchée est une grave erreur."
+      },
+      {
+        "name": "Saltbush",
+        "name_fr": "Arroche",
+        "note": "Grey and bitter; the camels eat it, and nobody else will.",
+        "note_fr": "Grise et amère ; les chameaux la mangent, et personne d’autre."
+      },
+      {
+        "name": "Night-bloom",
+        "name_fr": "Fleur de nuit",
+        "note": "Opens only after dark; the caravans follow its scent to water.",
+        "note_fr": "Ne s’ouvre qu’à la nuit ; les caravanes suivent son parfum jusqu’à l’eau."
+      }
+    ],
+    "weather": [
+      {
+        "name": "Blazing sun",
+        "name_fr": "Soleil de plomb"
+      },
+      {
+        "name": "Sandstorm",
+        "name_fr": "Tempête de sable"
+      },
+      {
+        "name": "Cold desert night",
+        "name_fr": "Nuit glacée"
+      }
+    ],
+    "hazards": [
+      {
+        "id": "sandstorm",
+        "name": "Sandstorm",
+        "name_fr": "Tempête de sable",
+        "text": "The horizon stood up and came at me, brown, and the sun went out like a lamp. The sand found my teeth, my eyes and every seam of my pack.",
+        "text_fr": "L’horizon se leva et marcha sur moi, brun, et le soleil s’éteignit comme une lampe. Le sable trouva mes dents, mes yeux et chaque couture de mon sac.",
+        "push": "Push on, head down",
+        "push_fr": "Avancer tête baissée",
+        "wait": "Wait it out in the lee of a dune",
+        "wait_fr": "Attendre à l’abri d’une dune"
+      },
+      {
+        "id": "heatstroke",
+        "name": "Killing heat",
+        "name_fr": "Fournaise",
+        "text": "By noon the heat stopped being weather and became a place. Every step was a sum I had to do again, and once or twice I caught myself forgetting my own name.",
+        "text_fr": "À midi, la chaleur cessa d’être un climat pour devenir un lieu. Chaque pas était une addition à refaire, et une ou deux fois je me surpris à oublier mon propre nom.",
+        "push": "Walk on through the heat",
+        "push_fr": "Marcher malgré la chaleur",
+        "wait": "Lie up and walk by night",
+        "wait_fr": "S’abriter et marcher de nuit"
+      }
+    ],
+    "palette": {
+      "ground": "#C9A86A",
+      "detail": "#9C7B45",
+      "accent": "#E8D7A8",
+      "water": "#4F8FA8"
+    },
+    "pattern": "dunes"
+  },
+  "arid_coast": {
+    "name": "Arid Coast",
+    "name_fr": "Côte aride",
+    "blurb": "Where the desert meets the sea: brown headlands, salt pans white as bone, and a dry wind off the water. Everything here is salted: the fish, the ropes and the prices.",
+    "blurb_fr": "Là où le désert rejoint la mer : des promontoires bruns, des salines blanches comme l’os, et un vent sec venu du large. Tout ici est salé : le poisson, les cordages et les prix.",
+    "fauna": [
+      {
+        "name": "Herring gull",
+        "name_fr": "Goéland",
+        "note": "Salt has whitened every rope on the pier to the colour of the gulls.",
+        "note_fr": "Le sel a blanchi chaque cordage du quai à la couleur des goélands."
+      },
+      {
+        "name": "Tern",
+        "name_fr": "Sterne",
+        "note": "Tern Row is named for them; they nest among its paper boats.",
+        "note_fr": "Tern Row leur doit son nom ; elles nichent parmi ses bateaux de papier."
+      },
+      {
+        "name": "Plague rat",
+        "name_fr": "Rat pestiféré",
+        "note": "Comes up out of the salt flats at night, eyes a sick green.",
+        "note_fr": "Monte des salines la nuit, les yeux d’un vert malade."
+      },
+      {
+        "name": "Plague hound",
+        "name_fr": "Chien pestiféré",
+        "note": "Feral since the plague years; the wharf pays to see them gone.",
+        "note_fr": "Retourné à l’état sauvage pendant les années de peste ; le quai paie pour s’en débarrasser."
+      },
+      {
+        "name": "Brine shrimp",
+        "name_fr": "Artémie",
+        "note": "Turns the pans pink at summer’s end; the salt-workers call them ripe.",
+        "note_fr": "Teinte les salines de rose à la fin de l’été ; les sauniers disent alors qu’elles sont mûres."
+      },
+      {
+        "name": "Pack mule",
+        "name_fr": "Mule de bât",
+        "note": "Hauls the salt carts up from the pans to the head of the wharf.",
+        "note_fr": "Tire les charrettes de sel depuis les salines jusqu’en haut du quai."
+      }
+    ],
+    "flora": [
+      {
+        "name": "Samphire",
+        "name_fr": "Salicorne",
+        "note": "Grows on the salt flats; the Tide-Kin pickle it for long voyages.",
+        "note_fr": "Pousse sur les salines ; les Gens de la Marée la confisent pour les longs voyages."
+      },
+      {
+        "name": "Sea lavender",
+        "name_fr": "Lavande de mer",
+        "note": "Purple on the headland in late summer, dried for the market stalls.",
+        "note_fr": "Mauve sur le promontoire à la fin de l’été, séchée pour les étals du marché."
+      },
+      {
+        "name": "Prickly pear",
+        "name_fr": "Figuier de Barbarie",
+        "note": "Hedges the white walls; the fruit is sweet, the spines are not.",
+        "note_fr": "Fait des haies le long des murs blancs ; le fruit est doux, les épines non."
+      },
+      {
+        "name": "Wild fennel",
+        "name_fr": "Fenouil sauvage",
+        "note": "In every crack of the landward road; the caravans chew it for thirst.",
+        "note_fr": "Dans chaque fissure de la route de la terre ; les caravaniers le mâchent contre la soif."
+      },
+      {
+        "name": "Stone pine",
+        "name_fr": "Pin parasol",
+        "note": "Leans out over the headland: the only shade above the harbor.",
+        "note_fr": "Penché au-dessus du promontoire : la seule ombre qui domine le port."
+      },
+      {
+        "name": "Caper bush",
+        "name_fr": "Câprier",
+        "note": "Roots in the harbor wall itself; the stone giant’s knees are green with it.",
+        "note_fr": "S’enracine dans le mur du port ; les genoux du géant de pierre en sont verts."
+      }
+    ],
+    "weather": [
+      {
+        "name": "Dry sea wind",
+        "name_fr": "Vent sec du large"
+      },
+      {
+        "name": "Salt haze",
+        "name_fr": "Brume de sel"
+      },
+      {
+        "name": "Hot calm",
+        "name_fr": "Calme brûlant"
+      }
+    ],
+    "hazards": [
+      {
+        "id": "salt_glare",
+        "name": "Salt glare",
+        "name_fr": "Réverbération du sel",
+        "text": "The sun came off the salt flats as off a mirror, and I walked the coast road with my eyes slitted. Every white rock looked like a man waiting for me.",
+        "text_fr": "Le soleil rebondissait sur les salines comme sur un miroir, et je suivis la route côtière les yeux plissés. Chaque rocher blanc avait l’air d’un homme qui m’attendait.",
+        "push": "Walk on half-blind",
+        "push_fr": "Avancer à demi aveugle",
+        "wait": "Wait for the evening light",
+        "wait_fr": "Attendre la lumière du soir"
+      },
+      {
+        "id": "brine_crust",
+        "name": "Brine crust",
+        "name_fr": "Croûte de saumure",
+        "text": "The crust of the flats broke under my boot and I went into the brine to the knee. It found every cut I had, and stayed in them.",
+        "text_fr": "La croûte des salines céda sous ma botte et la saumure me monta jusqu’au genou. Elle trouva chacune de mes coupures, et s’y installa.",
+        "push": "Wade on across the flats",
+        "push_fr": "Traverser les salines",
+        "wait": "Wait for the crust to dry",
+        "wait_fr": "Attendre que la croûte sèche"
+      }
+    ],
+    "palette": {
+      "ground": "#D2BE94",
+      "detail": "#A3865A",
+      "accent": "#F1EBDD",
+      "water": "#3E8FA3"
+    },
+    "pattern": "salt_flats"
+  },
+  "sea": {
+    "name": "Open Sea",
+    "name_fr": "Haute mer",
+    "blurb": "Open water, weeks of it, and whatever lives under it. The sea gives back less than it takes, the Tide-Kin say.",
+    "blurb_fr": "De l’eau libre, des semaines durant, et ce qui vit dessous. La mer rend moins qu’elle ne prend, disent les Gens de la Marée.",
+    "fauna": [
+      {
+        "name": "Kraken arm",
+        "name_fr": "Bras de kraken",
+        "note": "One arm of the Tide-Mother, come over the rail on its own.",
+        "note_fr": "Un bras de la Mère-des-Marées, passé seul par-dessus le bastingage."
+      },
+      {
+        "name": "Serpent-whale",
+        "name_fr": "Serpent-baleine",
+        "note": "As long as a wharf, white as a drowned thing and older than the charts.",
+        "note_fr": "Long comme un quai, blanc comme un noyé et plus vieux que les cartes."
+      },
+      {
+        "name": "Wake gull",
+        "name_fr": "Goéland de sillage",
+        "note": "Follows every hull out of harbor and turns back at the first squall.",
+        "note_fr": "Suit chaque coque hors du port et rebrousse chemin au premier grain."
+      },
+      {
+        "name": "Dolphin",
+        "name_fr": "Dauphin",
+        "note": "Runs under the bow for a mile, then leaves as if called.",
+        "note_fr": "Court sous l’étrave une lieue durant, puis s’en va comme si on l’appelait."
+      },
+      {
+        "name": "Storm petrel",
+        "name_fr": "Pétrel tempête",
+        "note": "Sailors say it walks on the water before a storm; it is never wrong.",
+        "note_fr": "Les marins disent qu’il marche sur l’eau avant la tempête ; il ne se trompe jamais."
+      },
+      {
+        "name": "Flying fish",
+        "name_fr": "Poisson volant",
+        "note": "Lands on the deck at night, and the galley says thank you.",
+        "note_fr": "Atterrit sur le pont la nuit, et la cambuse dit merci."
+      }
+    ],
+    "flora": [
+      {
+        "name": "Sargasso weed",
+        "name_fr": "Sargasse",
+        "note": "Floats in rafts far out; the Eel’s keel takes a day to cut through one.",
+        "note_fr": "Flotte en radeaux au large ; la quille de l’Eel met un jour à en traverser un."
+      },
+      {
+        "name": "Kelp",
+        "name_fr": "Laminaire",
+        "note": "Forests of it off every headland, rising and bowing with the swell.",
+        "note_fr": "Des forêts au large de chaque cap, qui se dressent et s’inclinent avec la houle."
+      },
+      {
+        "name": "Sea-fire",
+        "name_fr": "Feu de mer",
+        "note": "Lights the wake green at night; the crew call it the drowned’s lamps.",
+        "note_fr": "Allume le sillage de vert la nuit ; l’équipage l’appelle les lampes des noyés."
+      },
+      {
+        "name": "Eelgrass",
+        "name_fr": "Zostère",
+        "note": "Meadows of it in the shallows, and an eel hiding in every one.",
+        "note_fr": "Des prairies dans les hauts-fonds, et une anguille cachée dans chacune."
+      },
+      {
+        "name": "Sea lettuce",
+        "name_fr": "Laitue de mer",
+        "note": "Bright green on the rocks of every landfall; edible, if you are desperate.",
+        "note_fr": "Vert vif sur les rochers de chaque atterrage ; comestible, faute de mieux."
+      },
+      {
+        "name": "Bladderwrack",
+        "name_fr": "Fucus",
+        "note": "Pops underfoot on every stair down to the water.",
+        "note_fr": "Éclate sous le pied sur chaque marche qui descend vers l’eau."
+      }
+    ],
+    "weather": [
+      {
+        "name": "Squall",
+        "name_fr": "Grain"
+      },
+      {
+        "name": "Doldrums",
+        "name_fr": "Pétole"
+      },
+      {
+        "name": "Storm",
+        "name_fr": "Tempête"
+      }
+    ],
+    "hazards": [
+      {
+        "id": "sea_storm",
+        "name": "Storm at sea",
+        "name_fr": "Tempête en mer",
+        "text": "The storm came the wrong way, against the wind, and the sea came over the rail in sheets. I lashed myself to the nearest thing that would hold and counted the waves.",
+        "text_fr": "La tempête arriva à rebours, contre le vent, et la mer passa par-dessus le bastingage en nappes. Je m’attachai à la première chose qui tiendrait, et comptai les vagues.",
+        "push": "Run before the storm",
+        "push_fr": "Fuir devant la tempête",
+        "wait": "Heave to and ride it out",
+        "wait_fr": "Se mettre à la cape et attendre"
+      },
+      {
+        "id": "fog_bank",
+        "name": "Fog bank",
+        "name_fr": "Banc de brume",
+        "text": "A wall of fog came down on the water and took the horizon, then the bow, then my own hands. Somewhere close by, something large breathed out.",
+        "text_fr": "Un mur de brume s’abattit sur l’eau et prit l’horizon, puis la proue, puis mes propres mains. Tout près, quelque chose de très grand expira.",
+        "push": "Sail on blind",
+        "push_fr": "Naviguer à l’aveugle",
+        "wait": "Drop anchor until it lifts",
+        "wait_fr": "Mouiller jusqu’à ce qu’elle se lève"
+      }
+    ],
+    "palette": {
+      "ground": "#2F5D7C",
+      "detail": "#1E3F57",
+      "accent": "#CFE3EE",
+      "water": "#3A7CA5"
+    },
+    "pattern": "waves"
+  },
+  "ashlands": {
+    "name": "Ashlands",
+    "name_fr": "Terres de cendre",
+    "blurb": "Grey flats where the Inquisition burned what it feared, slag heaps where the forges died, and ash that still falls on windless days.",
+    "blurb_fr": "Des plaines grises où l’Inquisition a brûlé ce qu’elle craignait, des terrils où les forges sont mortes, et une cendre qui tombe encore les jours sans vent.",
+    "fauna": [
+      {
+        "name": "Ash crow",
+        "name_fr": "Corneille des cendres",
+        "note": "Grey with ash, it picks the purge’s ruins for anything that glints.",
+        "note_fr": "Grise de cendre, elle fouille les ruines de la purge pour tout ce qui brille."
+      },
+      {
+        "name": "Coal mule",
+        "name_fr": "Mule à charbon",
+        "note": "The Emberwives’ mules bring the coal down off the slag heaps by night.",
+        "note_fr": "Les mules des Charbonnières descendent le charbon des terrils la nuit."
+      },
+      {
+        "name": "Cinder beetle",
+        "name_fr": "Scarabée des braises",
+        "note": "Lives in the warm slag; kiln children keep them in jars for lamps.",
+        "note_fr": "Vit dans les scories tièdes ; les enfants des fours en gardent en bocal, comme lampes."
+      },
+      {
+        "name": "Iron golem",
+        "name_fr": "Golem de fer",
+        "note": "Built to keep the Church’s vaults; it outlasted its masters and keeps them still.",
+        "note_fr": "Bâti pour garder les caveaux de l’Église ; il a survécu à ses maîtres et les garde encore."
+      },
+      {
+        "name": "Grey candle",
+        "name_fr": "Chandelle grise",
+        "note": "A mote of the tear’s cold light that drifts toward any warmth.",
+        "note_fr": "Une étincelle de la lumière froide de la déchirure, qui dérive vers toute chaleur."
+      },
+      {
+        "name": "Void stalker",
+        "name_fr": "Rôdeur du Néant",
+        "note": "Hunts the ruins for days, and strikes only when it is sure.",
+        "note_fr": "Chasse dans les ruines des jours durant, et ne frappe qu’à coup sûr."
+      }
+    ],
+    "flora": [
+      {
+        "name": "Ash-moss",
+        "name_fr": "Mousse de cendre",
+        "note": "The first green on the flats, grey-green; the kilns use it for tinder.",
+        "note_fr": "La première verdure des plaines, gris-vert ; les fours s’en servent comme amadou."
+      },
+      {
+        "name": "Slag nettle",
+        "name_fr": "Ortie des terrils",
+        "note": "Grows waist-high on the slag heaps and stings through a glove.",
+        "note_fr": "Pousse jusqu’à la taille sur les terrils et pique à travers un gant."
+      },
+      {
+        "name": "Grey thistle",
+        "name_fr": "Chardon gris",
+        "note": "Its down drifts over the Quarter like a second ash.",
+        "note_fr": "Son duvet dérive sur le Quartier comme une seconde cendre."
+      },
+      {
+        "name": "Heather",
+        "name_fr": "Bruyère",
+        "note": "Comes back black after a burning, then purple.",
+        "note_fr": "Repousse noire après un incendie, puis mauve."
+      },
+      {
+        "name": "Coppiced alder",
+        "name_fr": "Aulne recépé",
+        "note": "Cut low every seventh year for Emberwick’s charcoal.",
+        "note_fr": "Coupé ras tous les sept ans pour le charbon de Braiseval."
+      },
+      {
+        "name": "Frankincense tree",
+        "name_fr": "Arbre à encens",
+        "note": "Grown in the Spire’s cloister gardens; its smoke covers other smells.",
+        "note_fr": "Cultivé dans les jardins du cloître de la Flèche ; sa fumée couvre d’autres odeurs."
+      }
+    ],
+    "weather": [
+      {
+        "name": "Ashfall",
+        "name_fr": "Pluie de cendre"
+      },
+      {
+        "name": "Low grey sky",
+        "name_fr": "Ciel bas et gris"
+      },
+      {
+        "name": "Ozone wind",
+        "name_fr": "Vent d’ozone"
+      }
+    ],
+    "hazards": [
+      {
+        "id": "ash_storm",
+        "name": "Ash storm",
+        "name_fr": "Tempête de cendre",
+        "text": "The wind lifted the flats and threw them at me: a grey that tasted of everything the Inquisition had burned. I tied a cloth over my mouth and lost sight of my own boots.",
+        "text_fr": "Le vent souleva les plaines et me les jeta au visage : un gris qui avait le goût de tout ce que l’Inquisition avait brûlé. Je nouai un linge sur ma bouche et perdis de vue mes propres bottes.",
+        "push": "Walk on into the grey",
+        "push_fr": "Marcher dans le gris",
+        "wait": "Shelter behind a wall until it settles",
+        "wait_fr": "S’abriter derrière un mur"
+      },
+      {
+        "id": "ember_pits",
+        "name": "Ember pits",
+        "name_fr": "Fosses de braises",
+        "text": "Under the ash the old fires were still alive, and my boot went through the crust into the coals. The smell of my own leather burning followed me for a mile.",
+        "text_fr": "Sous la cendre, les vieux feux vivaient encore, et ma botte creva la croûte jusqu’aux braises. L’odeur de mon propre cuir brûlé me suivit sur une lieue.",
+        "push": "Pick a way across",
+        "push_fr": "Choisir un passage",
+        "wait": "Wait for the wind to bare the embers",
+        "wait_fr": "Attendre que le vent découvre les braises"
+      }
+    ],
+    "palette": {
+      "ground": "#8C877E",
+      "detail": "#5F5B55",
+      "accent": "#D8D3C8",
+      "water": "#6B7A80"
+    },
+    "pattern": "ash"
+  },
+  "volcanic": {
+    "name": "Volcanic",
+    "name_fr": "Volcanique",
+    "blurb": "Red hills over hot springs, terraces stepped down to steaming valleys, and rock that is warm to the touch in winter.",
+    "blurb_fr": "Des collines rouges au-dessus des sources chaudes, des terrasses en gradins jusqu’aux vallées fumantes, et une roche tiède au toucher en plein hiver.",
+    "fauna": [
+      {
+        "name": "Red-faced monkey",
+        "name_fr": "Macaque à face rouge",
+        "note": "Bathes in the springs beside the grandmothers, and is not asked to leave.",
+        "note_fr": "Se baigne dans les sources à côté des grands-mères, et personne ne le chasse."
+      },
+      {
+        "name": "Spring frog",
+        "name_fr": "Grenouille des sources",
+        "note": "Sings in the warm pools all winter long.",
+        "note_fr": "Chante dans les bassins tièdes tout l’hiver."
+      },
+      {
+        "name": "Red kite",
+        "name_fr": "Milan royal",
+        "note": "Rides the steam over the terraces without a wingbeat.",
+        "note_fr": "Plane sur la vapeur au-dessus des terrasses sans un battement d’ailes."
+      },
+      {
+        "name": "Mountain goat",
+        "name_fr": "Chèvre de montagne",
+        "note": "Knows every terrace path; the oni children race them, and lose.",
+        "note_fr": "Connaît chaque sentier des terrasses ; les enfants oni la défient à la course, et perdent."
+      },
+      {
+        "name": "Ember salamander",
+        "name_fr": "Salamandre de braise",
+        "note": "Black and orange; it lives in the warm rock beside the vents.",
+        "note_fr": "Noire et orange, elle vit dans la roche tiède près des évents."
+      },
+      {
+        "name": "Bell sparrow",
+        "name_fr": "Moineau des cloches",
+        "note": "Nests in the eaves among the bells, and is never woken by them.",
+        "note_fr": "Niche sous les avant-toits parmi les cloches, qui ne le réveillent jamais."
+      }
+    ],
+    "flora": [
+      {
+        "name": "Red rice",
+        "name_fr": "Riz rouge",
+        "note": "Grown on the lower terraces; the oni brew their spirit from it.",
+        "note_fr": "Cultivé sur les terrasses basses ; les oni en tirent leur alcool."
+      },
+      {
+        "name": "Red pine",
+        "name_fr": "Pin rouge",
+        "note": "Twisted pines on the hills; Akagiri’s smith burns them for his best steel.",
+        "note_fr": "Des pins tordus sur les collines ; le forgeron d’Akagiri les brûle pour son meilleur acier."
+      },
+      {
+        "name": "Bamboo",
+        "name_fr": "Bambou",
+        "note": "Pipes the hot water down from terrace to terrace.",
+        "note_fr": "Conduit l’eau chaude de terrasse en terrasse."
+      },
+      {
+        "name": "Maple",
+        "name_fr": "Érable",
+        "note": "Turns the red hills redder every autumn.",
+        "note_fr": "Rend les collines rouges plus rouges encore à chaque automne."
+      },
+      {
+        "name": "Camellia",
+        "name_fr": "Camélia",
+        "note": "Flowers in midwinter, where the springs keep the frost off.",
+        "note_fr": "Fleurit en plein hiver, là où les sources tiennent le gel à distance."
+      },
+      {
+        "name": "Sulphur moss",
+        "name_fr": "Mousse de soufre",
+        "note": "A yellow crust round the vents; it smells worse than it looks.",
+        "note_fr": "Une croûte jaune autour des évents ; elle sent pire qu’elle n’en a l’air."
+      }
+    ],
+    "weather": [
+      {
+        "name": "Steam haze",
+        "name_fr": "Brume de vapeur"
+      },
+      {
+        "name": "Warm rain",
+        "name_fr": "Pluie tiède"
+      },
+      {
+        "name": "Sulphur wind",
+        "name_fr": "Vent de soufre"
+      }
+    ],
+    "hazards": [
+      {
+        "id": "scalding_vent",
+        "name": "Scalding vents",
+        "name_fr": "Évents brûlants",
+        "text": "The ground hissed, and a jet of steam went up beside the path, close enough to take the skin off my wrist. The rock under my feet was warm, and getting warmer.",
+        "text_fr": "Le sol siffla, et un jet de vapeur jaillit au bord du sentier, assez près pour m’ôter la peau du poignet. La roche sous mes pieds était chaude, et chauffait encore.",
+        "push": "Run between the vents",
+        "push_fr": "Courir entre les évents",
+        "wait": "Wait for the vents to quiet",
+        "wait_fr": "Attendre que les évents s’apaisent"
+      },
+      {
+        "id": "rockslide",
+        "name": "Rockslide",
+        "name_fr": "Éboulement",
+        "text": "A terrace wall gave way above me and came down the hill in a slide of red stones. One of them found my shoulder on its way past.",
+        "text_fr": "Un mur de terrasse céda au-dessus de moi et dévala la colline en un torrent de pierres rouges. L’une d’elles trouva mon épaule au passage.",
+        "push": "Scramble across the slide",
+        "push_fr": "Franchir l’éboulis",
+        "wait": "Wait for the slope to settle",
+        "wait_fr": "Attendre que la pente se calme"
+      }
+    ],
+    "palette": {
+      "ground": "#A0523D",
+      "detail": "#6E3527",
+      "accent": "#E9B48A",
+      "water": "#6FA8A0"
+    },
+    "pattern": "terraces"
+  },
+  "sea_cliffs": {
+    "name": "Sea Cliffs",
+    "name_fr": "Falaises marines",
+    "blurb": "Cliffs hung with weed above a hungry sea, shingle coves below, and fog that comes in off the water in one long breath.",
+    "blurb_fr": "Des falaises tapissées de varech au-dessus d’une mer affamée, des criques de galets en contrebas, et un brouillard qui monte de l’eau en un long souffle.",
+    "fauna": [
+      {
+        "name": "Fulmar",
+        "name_fr": "Fulmar",
+        "note": "Nests on every ledge, and spits oil at anyone who climbs too close.",
+        "note_fr": "Niche sur chaque corniche, et crache de l’huile sur qui grimpe trop près."
+      },
+      {
+        "name": "Cormorant",
+        "name_fr": "Cormoran",
+        "note": "Dries its wings on the false lamps’ posts, as if it knew.",
+        "note_fr": "Fait sécher ses ailes sur les poteaux des fausses lampes, comme s’il savait."
+      },
+      {
+        "name": "Grey seal",
+        "name_fr": "Phoque gris",
+        "note": "Hauls out on the shingle below the cove, and sings at dusk.",
+        "note_fr": "Se hisse sur les galets sous la crique, et chante au crépuscule."
+      },
+      {
+        "name": "Shore crab",
+        "name_fr": "Crabe vert",
+        "note": "Under every stone of the shingle; the camp’s children race them.",
+        "note_fr": "Sous chaque galet ; les enfants du camp les font courir."
+      },
+      {
+        "name": "Conger eel",
+        "name_fr": "Congre",
+        "note": "Lives in the wrecks under the point; even the wreckers leave it alone.",
+        "note_fr": "Vit dans les épaves sous la pointe ; même les pilleurs le laissent tranquille."
+      },
+      {
+        "name": "Drowned pilgrim",
+        "name_fr": "Pèlerin noyé",
+        "note": "Climbs the cliff path in the fog, toward any light that looks like a door.",
+        "note_fr": "Gravit le sentier de la falaise dans le brouillard, vers toute lumière qui ressemble à une porte."
+      }
+    ],
+    "flora": [
+      {
+        "name": "Wrack",
+        "name_fr": "Varech",
+        "note": "Cut from the rocks at low tide and dried on the cliff, for fires and fields.",
+        "note_fr": "Coupé sur les rochers à marée basse et séché sur la falaise, pour le feu et les champs."
+      },
+      {
+        "name": "Thrift",
+        "name_fr": "Armérie",
+        "note": "Pink cushions on the cliff edge, where nothing else can hold.",
+        "note_fr": "Des coussins roses au bord de la falaise, là où rien d’autre ne tient."
+      },
+      {
+        "name": "Sea kale",
+        "name_fr": "Chou marin",
+        "note": "Grows on the shingle above the tide line; the cove eats it in spring.",
+        "note_fr": "Pousse sur les galets au-dessus de la laisse de mer ; la crique en mange au printemps."
+      },
+      {
+        "name": "Gorse",
+        "name_fr": "Ajonc",
+        "note": "Yellow all year on the clifftops, and it burns like pitch.",
+        "note_fr": "Jaune toute l’année au sommet des falaises, et il brûle comme de la poix."
+      },
+      {
+        "name": "Orange lichen",
+        "name_fr": "Lichen orangé",
+        "note": "Paints the cliffs orange above the spray line.",
+        "note_fr": "Peint les falaises en orange au-dessus des embruns."
+      },
+      {
+        "name": "Sea campion",
+        "name_fr": "Silène maritime",
+        "note": "White flowers in the cracks of every harbour wall from here to Candlehold.",
+        "note_fr": "Des fleurs blanches dans les fissures de chaque mur de port, d’ici à Candlehold."
+      }
+    ],
+    "weather": [
+      {
+        "name": "Sea fog",
+        "name_fr": "Brouillard de mer"
+      },
+      {
+        "name": "Gale",
+        "name_fr": "Coup de vent"
+      },
+      {
+        "name": "Driving spray",
+        "name_fr": "Embruns"
+      }
+    ],
+    "hazards": [
+      {
+        "id": "cliff_fall",
+        "name": "Crumbling path",
+        "name_fr": "Sentier effondré",
+        "text": "The cliff path gave way under me, and I went down the slope on my back in a rush of stones and wet turf until a gorse bush stopped me. The sea was a long way below, and very patient.",
+        "text_fr": "Le sentier de la falaise céda sous moi, et je dévalai la pente sur le dos dans un flot de pierres et de mottes mouillées, jusqu’à ce qu’un ajonc m’arrête. La mer était loin en dessous, et très patiente.",
+        "push": "Climb on along the edge",
+        "push_fr": "Continuer le long du bord",
+        "wait": "Wait for low tide and take the shore",
+        "wait_fr": "Attendre la marée basse et longer la grève"
+      },
+      {
+        "id": "sea_fog",
+        "name": "Sea fog",
+        "name_fr": "Brouillard de mer",
+        "text": "The fog came in off the sea in one long breath and took the path, the cliff and the water below. Somewhere in it a lamp was burning where no lamp should be.",
+        "text_fr": "Le brouillard monta de la mer en un long souffle et prit le sentier, la falaise et l’eau en contrebas. Quelque part dedans, une lampe brûlait là où aucune lampe n’aurait dû être.",
+        "push": "Feel your way on",
+        "push_fr": "Avancer à tâtons",
+        "wait": "Sit tight until it lifts",
+        "wait_fr": "Attendre qu’il se lève"
+      }
+    ],
+    "palette": {
+      "ground": "#7D8C7A",
+      "detail": "#4E5B52",
+      "accent": "#D9DDD2",
+      "water": "#3D6E8A"
+    },
+    "pattern": "cliffs"
+  },
+  "fen": {
+    "name": "Fen",
+    "name_fr": "Marais",
+    "blurb": "Reed and black water to the horizon, grey by day and lit at night by lights that belong to no one. The fen listens for names; do not give it yours.",
+    "blurb_fr": "Des roseaux et de l’eau noire jusqu’à l’horizon, gris le jour et éclairés la nuit par des lumières qui n’appartiennent à personne. Le marais écoute les noms ; ne lui donnez pas le vôtre.",
+    "fauna": [
+      {
+        "name": "Grey heron",
+        "name_fr": "Héron cendré",
+        "note": "The Heron’s Wake paints it on eyelids; it stands in the reeds like a guide.",
+        "note_fr": "Le Sillage du Héron le peint sur les paupières ; il guette dans les roseaux comme un guide."
+      },
+      {
+        "name": "Fen eel",
+        "name_fr": "Anguille des marais",
+        "note": "Thick in the black pools; the Cloister’s refugees live on them.",
+        "note_fr": "Abondante dans les mares noires ; les réfugiés du Cloître en vivent."
+      },
+      {
+        "name": "Bittern",
+        "name_fr": "Butor",
+        "note": "Booms in the reeds at dusk, like a bell nobody rang.",
+        "note_fr": "Mugit dans les roseaux au crépuscule, comme une cloche que personne n’a sonnée."
+      },
+      {
+        "name": "Leech",
+        "name_fr": "Sangsue",
+        "note": "Waits in every black pool for a bare leg.",
+        "note_fr": "Attend dans chaque mare noire une jambe nue."
+      },
+      {
+        "name": "Catacomb ghoul",
+        "name_fr": "Goule des catacombes",
+        "note": "Once a pilgrim, now only hunger, working the ossuaries under the fen.",
+        "note_fr": "Jadis pèlerin, désormais pure faim, qui hante les ossuaires sous le marais."
+      },
+      {
+        "name": "Fen toad",
+        "name_fr": "Crapaud des marais",
+        "note": "Sings under the Kindly Hill all night; the Kindly Ones say it keeps time.",
+        "note_fr": "Chante sous la Colline toute la nuit ; les Bienveillants disent qu’il bat la mesure."
+      }
+    ],
+    "flora": [
+      {
+        "name": "Fever tree",
+        "name_fr": "Arbre à fièvre",
+        "note": "Its bark makes the Mire’s cures, and half its poisons.",
+        "note_fr": "Son écorce fait les remèdes du Marais, et la moitié de ses poisons."
+      },
+      {
+        "name": "Reed",
+        "name_fr": "Roseau",
+        "note": "Higher than a rider; the fen’s paths are cut through it and close behind you.",
+        "note_fr": "Plus haut qu’un cavalier ; les sentiers du marais y sont taillés et se referment derrière vous."
+      },
+      {
+        "name": "Willow",
+        "name_fr": "Saule",
+        "note": "The Mire carries its heron on a willow branch.",
+        "note_fr": "Le Marais porte son héron sur une branche de saule."
+      },
+      {
+        "name": "Sphagnum moss",
+        "name_fr": "Sphaigne",
+        "note": "Binds a wound and drinks the blood out of it; the Moss Choir sings over it.",
+        "note_fr": "Panse une blessure et en boit le sang ; le Chœur de Mousse chante dessus."
+      },
+      {
+        "name": "Bog myrtle",
+        "name_fr": "Myrte des marais",
+        "note": "Keeps the midges off, mostly.",
+        "note_fr": "Éloigne les moucherons, la plupart du temps."
+      },
+      {
+        "name": "Black alder",
+        "name_fr": "Aulne noir",
+        "note": "Stands with its feet in the pools; its wood bleeds red when cut.",
+        "note_fr": "Se tient les pieds dans les mares ; son bois saigne rouge quand on le coupe."
+      }
+    ],
+    "weather": [
+      {
+        "name": "Marsh mist",
+        "name_fr": "Brume des marais"
+      },
+      {
+        "name": "Drizzle",
+        "name_fr": "Bruine"
+      },
+      {
+        "name": "Still grey",
+        "name_fr": "Grisaille immobile"
+      }
+    ],
+    "hazards": [
+      {
+        "id": "sinking_ground",
+        "name": "Sinking ground",
+        "name_fr": "Fondrière",
+        "text": "The path went soft, then went away, and I was in the black water to the waist with the reeds closing over my head. Something in the pool moved against my leg, and decided against me.",
+        "text_fr": "Le sentier s’amollit, puis disparut, et l’eau noire me monta jusqu’à la taille, les roseaux refermés au-dessus de ma tête. Quelque chose bougea contre ma jambe au fond de la mare, et décida de me laisser.",
+        "push": "Wade on toward the far reeds",
+        "push_fr": "Patauger jusqu’aux roseaux d’en face",
+        "wait": "Wait for the water to drop",
+        "wait_fr": "Attendre que l’eau baisse"
+      },
+      {
+        "id": "marsh_lights",
+        "name": "Lights in the reeds",
+        "name_fr": "Lumières dans les roseaux",
+        "text": "Lights came up out of the reeds at dusk and went ahead of me along the path, very kindly, toward places where there was no path. I knew better than to follow them; my feet did not.",
+        "text_fr": "Des lumières montèrent des roseaux au crépuscule et me précédèrent sur le sentier, très aimablement, vers des endroits où il n’y avait pas de sentier. Je savais qu’il ne fallait pas les suivre ; mes pieds l’ignoraient.",
+        "push": "Keep your eyes on the ground and go on",
+        "push_fr": "Avancer les yeux au sol",
+        "wait": "Douse your lantern and wait for day",
+        "wait_fr": "Éteindre la lanterne et attendre le jour"
+      }
+    ],
+    "palette": {
+      "ground": "#5E6B57",
+      "detail": "#3B4538",
+      "accent": "#A9B59A",
+      "water": "#2E3A36"
+    },
+    "pattern": "reeds"
+  },
+  "frost": {
+    "name": "Frost",
+    "name_fr": "Givre",
+    "blurb": "The tear’s frost: winter in summer, bread that stales overnight and fire that will not catch. White rock, white roads, and the cold coming down from the quarries.",
+    "blurb_fr": "Le givre de la déchirure : l’hiver en plein été, un pain qui rassit en une nuit et un feu qui refuse de prendre. Roche blanche, routes blanches, et le froid qui descend des carrières.",
+    "fauna": [
+      {
+        "name": "Void hound",
+        "name_fr": "Molosse du Néant",
+        "note": "All smoke and teeth; it hunts the pilgrims’ road by the scent of the Shroud.",
+        "note_fr": "Tout de fumée et de crocs ; il chasse sur la route des pèlerins à l’odeur du Linceul."
+      },
+      {
+        "name": "Rime cat",
+        "name_fr": "Chat de givre",
+        "note": "Frost on four legs, the Quarrymen say; it nests in the cold galleries.",
+        "note_fr": "Du givre sur quatre pattes, disent les Carriers ; il niche dans les galeries froides."
+      },
+      {
+        "name": "Snow hare",
+        "name_fr": "Lièvre variable",
+        "note": "Turned white the first summer the frost came, and never turned back.",
+        "note_fr": "A blanchi le premier été où le givre est venu, et n’a jamais repris sa couleur."
+      },
+      {
+        "name": "Raven",
+        "name_fr": "Grand corbeau",
+        "note": "Walks the road beside the pilgrims, three days at a time.",
+        "note_fr": "Suit la route aux côtés des pèlerins, trois jours d’affilée."
+      },
+      {
+        "name": "Giant’s ox",
+        "name_fr": "Bœuf des géants",
+        "note": "Shaggy, slow and huge; Highhearth ploughs with them.",
+        "note_fr": "Hirsute, lent et énorme ; Haut-Âtre laboure avec lui."
+      },
+      {
+        "name": "Frost moth",
+        "name_fr": "Phalène de givre",
+        "note": "Flies only in the cold; it comes to lanterns, and puts them out.",
+        "note_fr": "Ne vole que dans le froid ; elle vient aux lanternes, et les éteint."
+      }
+    ],
+    "flora": [
+      {
+        "name": "Snowbell",
+        "name_fr": "Soldanelle",
+        "note": "Flowers through the frost; the pilgrims pin it to their grey.",
+        "note_fr": "Fleurit à travers le givre ; les pèlerins l’épinglent sur leur gris."
+      },
+      {
+        "name": "Juniper",
+        "name_fr": "Genévrier",
+        "note": "Its smoke is the only incense Rimewell’s chapel can still afford.",
+        "note_fr": "Sa fumée est le seul encens que la chapelle de Puits-de-Givre puisse encore s’offrir."
+      },
+      {
+        "name": "Reindeer moss",
+        "name_fr": "Lichen des rennes",
+        "note": "Grey under the frost; the giants’ oxen live on it all winter.",
+        "note_fr": "Gris sous le givre ; les bœufs des géants en vivent tout l’hiver."
+      },
+      {
+        "name": "Dwarf birch",
+        "name_fr": "Bouleau nain",
+        "note": "Knee-high and crooked along the road, bent by the cold that comes down.",
+        "note_fr": "À hauteur de genou et tordu le long de la route, courbé par le froid qui descend."
+      },
+      {
+        "name": "Black spruce",
+        "name_fr": "Épicéa noir",
+        "note": "Stands black below the quarry; the giants’ roof-beams are cut from it.",
+        "note_fr": "Se dresse, noir, sous la carrière ; les poutres des géants y sont taillées."
+      },
+      {
+        "name": "Rime-rose",
+        "name_fr": "Rose de givre",
+        "note": "Not a rose: frost that grows in petals on the chapel walls.",
+        "note_fr": "Pas une rose : du givre qui pousse en pétales sur les murs des chapelles."
+      }
+    ],
+    "weather": [
+      {
+        "name": "Summer frost",
+        "name_fr": "Gel d’été"
+      },
+      {
+        "name": "Snow flurries",
+        "name_fr": "Averses de neige"
+      },
+      {
+        "name": "Still cold",
+        "name_fr": "Froid immobile"
+      }
+    ],
+    "hazards": [
+      {
+        "id": "whiteout",
+        "name": "Whiteout",
+        "name_fr": "Jour blanc",
+        "text": "The snow came down so thick that the road went, then the milestones, then the difference between up and down. I walked with one hand out in front of me and counted my steps.",
+        "text_fr": "La neige tomba si drue que la route disparut, puis les bornes, puis la différence entre le haut et le bas. Je marchai une main tendue devant moi, en comptant mes pas.",
+        "push": "Follow the milestones on",
+        "push_fr": "Suivre les bornes",
+        "wait": "Dig in and wait for it to clear",
+        "wait_fr": "Se terrer et attendre l’éclaircie"
+      },
+      {
+        "id": "black_ice",
+        "name": "Black ice",
+        "name_fr": "Verglas",
+        "text": "The road had turned to glass overnight, and the first slope took my feet out from under me. I fell hard enough to hear something in my pack break.",
+        "text_fr": "La route s’était changée en verre pendant la nuit, et la première pente me fit perdre pied. Je tombai si rudement que j’entendis quelque chose se briser dans mon sac.",
+        "push": "Go on, step by step",
+        "push_fr": "Continuer pas à pas",
+        "wait": "Wait for the sun to soften it",
+        "wait_fr": "Attendre que le soleil l’amollisse"
+      }
+    ],
+    "palette": {
+      "ground": "#D7DEE6",
+      "detail": "#9AA7B4",
+      "accent": "#F4F7FA",
+      "water": "#6F8FA8"
+    },
+    "pattern": "snow"
+  },
+  "tear": {
+    "name": "Tear-Touched",
+    "name_fr": "Touché par la déchirure",
+    "blurb": "Land the tear has touched: grey sand drawn out of nowhere, glass where it first breathed, tides that turn too fast, and nothing quite the colour it should be.",
+    "blurb_fr": "Une terre que la déchirure a touchée : du sable gris tiré de nulle part, du verre là où elle a soufflé pour la première fois, des marées qui tournent trop vite, et rien tout à fait de la couleur qu’il faudrait.",
+    "fauna": [
+      {
+        "name": "Hollow reflection",
+        "name_fr": "Reflet creux",
+        "note": "Your own shape, borrowed by the shore and worn back at you.",
+        "note_fr": "Votre propre silhouette, empruntée par la rive et portée contre vous."
+      },
+      {
+        "name": "Pale fish",
+        "name_fr": "Poisson pâle",
+        "note": "Never swam in any sea anyone knew; quick, pale and perfectly edible.",
+        "note_fr": "N’a jamais nagé dans aucune mer connue ; vif, pâle, et parfaitement comestible."
+      },
+      {
+        "name": "Glass crab",
+        "name_fr": "Crabe de verre",
+        "note": "You can see its heart through its shell; it burrows in the fused sand.",
+        "note_fr": "On voit son cœur à travers sa carapace ; il s’enfouit dans le sable fondu."
+      },
+      {
+        "name": "Grey gull",
+        "name_fr": "Goéland gris",
+        "note": "Followed the White Fleet here and stayed; its cry has gone wrong.",
+        "note_fr": "A suivi la Flotte Blanche jusqu’ici et y est resté ; son cri s’est déréglé."
+      },
+      {
+        "name": "Wreck rat",
+        "name_fr": "Rat d’épave",
+        "note": "Came ashore with the White Fleet, and has eaten better ever since.",
+        "note_fr": "Débarqué avec la Flotte Blanche, il mange mieux depuis."
+      },
+      {
+        "name": "Unmade knight",
+        "name_fr": "Chevalier défait",
+        "note": "Armour that keeps the shape of a man, held together by nothing at all.",
+        "note_fr": "Une armure qui garde la forme d’un homme, tenue par rien du tout."
+      }
+    ],
+    "flora": [
+      {
+        "name": "Glass reed",
+        "name_fr": "Roseau de verre",
+        "note": "The sand ran to glass round it in one breath; it still sways, and rings.",
+        "note_fr": "Le sable s’est changé en verre autour de lui d’un souffle ; il ondule encore, et tinte."
+      },
+      {
+        "name": "Grey marram",
+        "name_fr": "Oyat gris",
+        "note": "Holds the grey dunes together, with no green in it at all.",
+        "note_fr": "Tient les dunes grises ensemble, sans la moindre trace de vert."
+      },
+      {
+        "name": "Sea holly",
+        "name_fr": "Panicaut maritime",
+        "note": "Blue-grey and spined: the one plant on the shore that looks as it should.",
+        "note_fr": "Bleu-gris et épineux : la seule plante de la rive qui ait l’air de ce qu’elle est."
+      },
+      {
+        "name": "Mirror-weed",
+        "name_fr": "Algue-miroir",
+        "note": "Washes up silvered on the ebb, and shows faces that are not yours.",
+        "note_fr": "Rejetée argentée par le reflux, elle montre des visages qui ne sont pas le vôtre."
+      },
+      {
+        "name": "Wreck-moss",
+        "name_fr": "Mousse d’épave",
+        "note": "Grows on the White Fleet’s hulls, white as their sails used to be.",
+        "note_fr": "Pousse sur les coques de la Flotte Blanche, blanche comme leurs voiles autrefois."
+      },
+      {
+        "name": "Saltwort",
+        "name_fr": "Soude",
+        "note": "The one green the grey fishers brought from their drowned coast.",
+        "note_fr": "La seule verdure que les pêcheurs gris aient rapportée de leur côte engloutie."
+      }
+    ],
+    "weather": [
+      {
+        "name": "Grey calm",
+        "name_fr": "Calme gris"
+      },
+      {
+        "name": "Tear-light",
+        "name_fr": "Lueur de la déchirure"
+      },
+      {
+        "name": "Wind from the wrong way",
+        "name_fr": "Vent à rebours"
+      }
+    ],
+    "hazards": [
+      {
+        "id": "racing_tide",
+        "name": "Racing tide",
+        "name_fr": "Marée folle",
+        "text": "The tide turned faster than any tide should and came up the grey sand at a run, and I ran with it at my heels. The water was warm, which was worse.",
+        "text_fr": "La marée tourna plus vite qu’aucune marée ne le devrait et remonta le sable gris au pas de course, et je courus, l’eau sur les talons. Elle était tiède, ce qui était pire.",
+        "push": "Run for the dunes",
+        "push_fr": "Courir vers les dunes",
+        "wait": "Climb a wreck and wait it out",
+        "wait_fr": "Grimper sur une épave et attendre"
+      },
+      {
+        "id": "glass_field",
+        "name": "Field of glass",
+        "name_fr": "Champ de verre",
+        "text": "The sand gave way to glass, dark and humming, and the glass gave way under me in long splinters. I crossed the rest of it on the soles of my boots and a good deal of luck.",
+        "text_fr": "Le sable fit place au verre, sombre et bourdonnant, et le verre céda sous moi en longues esquilles. Je traversai le reste sur mes semelles et avec beaucoup de chance.",
+        "push": "Cross the glass",
+        "push_fr": "Traverser le verre",
+        "wait": "Wait for the sand to drift over it",
+        "wait_fr": "Attendre que le sable le recouvre"
+      }
+    ],
+    "palette": {
+      "ground": "#A7A39C",
+      "detail": "#6E6A73",
+      "accent": "#E9E6DF",
+      "water": "#5A5470"
+    },
+    "pattern": "glass"
+  }
+}

@@ -223,13 +223,17 @@ extension _FightRewards on _FightScreenState {
       if (!mounted) return;
 
       // A potion drunk from the chest heals before the health is saved;
-      // its charge is spent below, once the loot has been granted.
-      final drinks = spoils.drinkItemIds.length;
+      // its charge is spent below, once the loot has been granted. In a
+      // chain with no healing (see EncounterModifiers.keepWounds) nothing
+      // mends between its fights: the potion is kept, no sign heals.
+      final keepWounds = widget.modifiers.keepWounds;
+      final drinks = keepWounds ? 0 : spoils.drinkItemIds.length;
       final hpAfterSpoils = min(player.maxHealth,
           player.currentHealth + drinks * (potionHealAmount + _potionBonus));
       // A sign that mends the party after a won fight.
-      final signHeal = _signs.afterFightHeal(player.maxHealth);
+      final signHeal = keepWounds ? 0 : _signs.afterFightHeal(player.maxHealth);
       final leveledUp = await notifier.applyCombatResult(
+        keepWounds: keepWounds,
         hpAfter: min(player.maxHealth, hpAfterSpoils + signHeal),
         bossOffers: bossBeaten ? 1 : 0,
         titanBlood: titanBlood,
@@ -282,6 +286,9 @@ extension _FightRewards on _FightScreenState {
             slot: item?['equipSlot']?.toString(), items: items);
         spoilsLog.add('${trFor(lang, 'loot_equipped_message')} '
             '${item?['itemName']?.toString() ?? itemId}.');
+      }
+      if (keepWounds && spoils.drinkItemIds.isNotEmpty) {
+        spoilsLog.add(trFor(lang, 'loot_potion_kept_message'));
       }
       if (drinks > 0) {
         if (leveledUp) {
@@ -365,10 +372,13 @@ extension _FightRewards on _FightScreenState {
           if (isBossEnemy(e.enemyId, e.data)) e.enemyId,
       ];
       if (bossIds.isNotEmpty) await notifier.recordBossDefeat(bossIds);
-      // A pact runs its fight down, won or lost.
+      // A pact runs its fight down, won or lost. A link in a chain with no
+      // healing keeps its wounds: the player is left standing, barely.
+      final keepWounds = widget.modifiers.keepWounds;
       await notifier.applyCombatResult(
-          hpAfter: player.maxHealth,
-          manaAfter: _maxMana,
+          keepWounds: keepWounds,
+          hpAfter: keepWounds ? max(1, player.currentHealth) : player.maxHealth,
+          manaAfter: keepWounds ? _mana : _maxMana,
           pactFight: !widget.modifiers.isTest);
       if (!mounted) return;
       _update(() {
@@ -465,9 +475,12 @@ extension _FightRewards on _FightScreenState {
   Future<void> _leaveFight() async {
     if (!_over || !_settled || _leaving) return;
     _leaving = true;
+    // A fight with a story branch for its loss (see
+    // StoryChoice.loseNextId) is a scene, not a death, even in permadeath.
     if (!_won &&
         ref.read(permadeathEnabledProvider) &&
-        !widget.modifiers.isTest) {
+        !widget.modifiers.isTest &&
+        !widget.modifiers.lossContinues) {
       final nodesVisited = ref.read(storyPlayProvider).history.length + 1;
       final playerSession = ref.read(playerSessionProvider);
       final races =

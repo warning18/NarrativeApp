@@ -10,14 +10,23 @@ import '../combat/face_smithing.dart';
 import '../models/ally_state.dart'
     show equipmentBonusFor, equipmentScalingBonusFor;
 import '../models/story_node.dart';
+import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
+import '../providers/clans_provider.dart' show loadClanData;
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
 import '../providers/story_providers.dart';
 import 'chapter_loop.dart';
 import 'chapter_spine.dart';
-import 'politics_events.dart' show choicePoliticsKey, enterPoliticsKey;
+import 'politics_events.dart'
+    show
+        ChoiceGate,
+        CoastWorld,
+        choicePoliticsGate,
+        choicePoliticsKey,
+        enterPoliticsKey;
 import 'story_repository.dart';
 import 'zone_gating.dart';
+import 'road_hazards.dart' show meetRoadHazard;
 
 /// How an [autoplayToNode] or [autoplayToChapter] run ended.
 enum AutoplayStatus {
@@ -519,6 +528,9 @@ Future<AutoplayResult> autoplayToNode(
       }
     }
 
+    // A hazard on the road there (v1.197), taken as a player would.
+    await meetRoadHazard(ref, story,
+        fromNodeId: fromNodeId, toNodeId: choice.nextId);
     playNotifier.choose(choice.nextId);
     await _applyEnterPolitics(ref, story, choice.nextId);
     stepsApplied += 1;
@@ -633,6 +645,8 @@ Future<AutoplayResult> _playTowardChapter(
   final playNotifier = ref.read(storyPlayProvider.notifier);
   final random = Random();
   var stepsApplied = 0;
+  // The clans, for the choices' politics gates (v1.196).
+  final clans = await loadClanData(ref);
 
   StoryChoice pickChoice(List<StoryChoice> pool) {
     if (strategy == AutoplayStrategy.random || pool.length == 1) {
@@ -680,11 +694,25 @@ Future<AutoplayResult> _playTowardChapter(
     // target -- that would strand the player with nothing left to play,
     // exactly what this feature exists to avoid. Only fall back to one if
     // every choice here ends the story.
-    final nonEndingChoices = node.choices.where((c) => !c.isEnding).toList();
-    final candidatePool =
-        nonEndingChoices.isNotEmpty ? nonEndingChoices : node.choices;
-
     final session = ref.read(playerSessionProvider);
+    // A choice behind a politics gate that fails (v1.196) is not taken,
+    // unless nothing else is left.
+    final gateWorld =
+        CoastWorld(data: clans, chapter: ref.read(reachedChapterProvider));
+    final ungated = [
+      for (final c in node.choices)
+        if (choicePoliticsGate(c,
+                politics: session.politics,
+                flags: session.flags,
+                world: gateWorld) ==
+            ChoiceGate.open)
+          c,
+    ];
+    final choices = ungated.isNotEmpty ? ungated : node.choices;
+    final nonEndingChoices = choices.where((c) => !c.isEnding).toList();
+    final candidatePool =
+        nonEndingChoices.isNotEmpty ? nonEndingChoices : choices;
+
     bool meetsRequirements(StoryChoice c) {
       final target = story.nodeFor(c.nextId);
       if (target == null || !target.hasRequirements) return true;
@@ -791,6 +819,9 @@ Future<AutoplayResult> _playTowardChapter(
       }
     }
 
+    // A hazard on the road there (v1.197), taken as a player would.
+    await meetRoadHazard(ref, story,
+        fromNodeId: currentNodeId, toNodeId: choice.nextId);
     playNotifier.choose(choice.nextId);
     await _applyEnterPolitics(ref, story, choice.nextId);
     stepsApplied += 1;

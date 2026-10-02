@@ -405,6 +405,7 @@ void main() {
     final races = _loadJson('assets/gamedata/races.json');
     final professions = _loadJson('assets/gamedata/professions.json');
     final politicsEvents = _loadJson('assets/gamedata/politics_events.json');
+    final factions = _loadJson('assets/gamedata/factions.json');
     final settable = <String>{
       // Set by the coast's own events (politics_events.json, v1.195): who
       // came to stand under the banner, who took the Throne.
@@ -431,6 +432,20 @@ void main() {
         memory.flag,
         for (final answer in memory.answers) memory.flagFor(answer),
       ],
+      // Set by the climb to the Lantern Throne (v1.196, see
+      // story_politics.dart's `claim`, `pledge`, `throneWinner` and
+      // `muster`): a claim, a pledge, the throne's winner, and the Host
+      // mustered for the last battle (each contingent, and how many Houses
+      // sent a champion).
+      for (final factionId in factions.keys)
+        if (!factionId.startsWith('_')) ...[
+          'claim_$factionId',
+          'pledged_$factionId',
+          'throne_winner_$factionId',
+          'host_$factionId',
+        ],
+      'on_throne',
+      for (var n = 1; n <= 20; n++) 'host_houses_$n',
     };
     final nodes = {
       for (final entry in dag.entries)
@@ -570,11 +585,15 @@ void main() {
       }
       expect(confront.choices.map((c) => c.alignmentMod).toSet(),
           containsAll([2, 0, -2]));
-      // The crossing sets out from the camp's last night, by the Hollow
-      // Shore.
-      final sail = nodes['7400']!.choices.firstWhere(
-          (c) => c.nextId == '7002_approach',
-          orElse: () => fail('the last camp no longer leads to the crossing'));
+      // The crossing sets out from the muster (v1.196): the Host is led to
+      // the Hollow Shore, beats the Tear-Herald, and clears the way.
+      final sail = nodes['7800']!.choices.firstWhere((c) => c.nextId == '7810',
+          orElse: () => fail('the muster no longer leads to the battle'));
+      for (final choice in nodes['7810']!.choices) {
+        expect(choice.nextId, '7002_approach', reason: choice.text);
+        expect(choice.hostFight, isTrue, reason: choice.text);
+        expect(choice.allTriggerEnemyIds.first, 'tear_herald');
+      }
       expect(
           nodes['7002_approach']!
               .choices
@@ -582,6 +601,10 @@ void main() {
           isNotEmpty);
       expect(sail.launchesZone, isFalse);
       expect(sail.travelPlaceId, '7002');
+      expect(sail.mainQuest, isTrue);
+      for (final choice in nodes['7002_price']!.choices) {
+        expect(choice.hostFight, isTrue, reason: choice.text);
+      }
       expect(nodes['7002_crew']!.choices.single.nextId, '7002');
     });
 

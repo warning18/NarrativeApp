@@ -23,8 +23,8 @@
     "portName": "Smugglers' Wharf",
     "portName_fr": "Le Quai des Contrebandiers",
     "chapter": 2,
-    "description": "The Lower City's harbor market, still trading under the Inquisition's nose: three honest stalls, a great many dishonest ones, and the net-sheds, tanneries and lantern-lit docks that stretch along the tide line.",
-    "description_fr": "Le marché du port de la Ville Basse, qui commerce toujours sous le nez de l'Inquisition : trois étals honnêtes, un grand nombre qui ne le sont pas, et les hangars à filets, les tanneries et les docks éclairés à la lanterne qui s'étirent le long de la marée.",
+    "description": "Saltmouth's harbor market, still trading under the Inquisition's nose: three honest stalls, a great many dishonest ones, and the net-sheds, tanneries and lantern-lit docks that stretch along the tide line.",
+    "description_fr": "Le marché du port de Bouche-de-Sel, qui commerce toujours sous le nez de l'Inquisition : trois étals honnêtes, un grand nombre qui ne le sont pas, et les hangars à filets, les tanneries et les docks éclairés à la lanterne qui s'étirent le long de la marée.",
     "zoneIds": [
       "z_fishermans_row",
       "z_tanners_court",
@@ -106,6 +106,22 @@
     "isHome": false,
     "requiredFlags": [
       "shroud_vigil_cleared"
+    ]
+  },
+  "port_candlehold": {
+    "portID": "port_candlehold",
+    "portName": "Candlehold Harbour",
+    "portName_fr": "Le port de Candlehold",
+    "chapter": 7,
+    "description": "The harbour under the First Lantern’s cliff, where white walls climb from the quays in steps and the eight Houses’ tongues fly from every tower. The chain across its mouth is down for you now.",
+    "description_fr": "Le port au pied de la falaise de la Première Lanterne, où des murs blancs montent des quais par degrés et où les flammes des huit Maisons flottent à chaque tour. La chaîne qui en barre l’entrée s’abaisse désormais pour vous.",
+    "zoneIds": [],
+    "shopIds": [],
+    "voyageLength": 5,
+    "waters": "open",
+    "isHome": false,
+    "requiredFlags": [
+      "on_throne"
     ]
   }
 }

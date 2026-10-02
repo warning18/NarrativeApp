@@ -346,5 +346,17 @@
     "lean": 1,
     "favour": "One More Bed",
     "favour_fr": "Un lit de plus"
+  },
+  "fishbasket_line": {
+    "id": "fishbasket_line",
+    "clan": "open_hand",
+    "name": "The Fishbasket Line",
+    "name_fr": "La Lignée des Paniers",
+    "line": "The children of the Open Hand that the Wickwardens smuggled down the cliff lights in fish baskets, and their children after them: fishers and weed-cutters who paint a raised hand over the door for luck, and have forgotten whose hand it is.",
+    "line_fr": "Les enfants de la Main Ouverte que les Garde-Mèches firent descendre par les feux de falaise dans des paniers à poissons, et leurs enfants après eux : pêcheurs et coupeurs de varech qui peignent une main levée au-dessus de leur porte pour la chance, et ont oublié à qui elle appartient.",
+    "color": "#C2A878",
+    "lean": 1,
+    "favour": "Find the Line",
+    "favour_fr": "Retrouver la Lignée"
   }
 }

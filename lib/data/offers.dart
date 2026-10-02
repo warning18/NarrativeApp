@@ -1013,8 +1013,10 @@ Map<String, double> suitorPreview(
 /// character has reached with its faction (kept once earned), and the
 /// mark titles (`mark:<mark>:<sub-clan>`, "the Marked") held only while
 /// the mark stands; with [flags], the Open Hand's remembrance titles
-/// (v1.195, see remembranceTitlesFor), kept once earned. Returns the
-/// titles held after, and those [gained] and [lost].
+/// (v1.195, see remembranceTitlesFor), kept once earned; and the
+/// coronation's (`throne:<faction>`, v1.196) once that faction is on the
+/// Throne, kept. Returns the titles held after, and those [gained] and
+/// [lost].
 ({List<String> held, List<String> gained, List<String> lost}) titlesEarned(
   List<String> held,
   PoliticsState politics,
@@ -1052,6 +1054,15 @@ Map<String, double> suitorPreview(
         gained.add(title.id);
       } else if (!has && next.remove(title.id)) {
         lost.add(title.id);
+      }
+    } else if (source.startsWith('throne:')) {
+      // The coronation's (v1.196, see throne.dart), kept once earned.
+      final winner = source.substring('throne:'.length).trim();
+      if (winner.isNotEmpty &&
+          politics.throneWinner == winner &&
+          !next.contains(title.id)) {
+        next.add(title.id);
+        gained.add(title.id);
       }
     }
   }
