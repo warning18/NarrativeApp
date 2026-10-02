@@ -7,23 +7,29 @@
     "buildCost": 0,
     "initialStock": [
       "potion_minor",
-      "sword_001"
+      "antidote",
+      "boots_worn_leather"
     ],
     "merchantSpecialties": [
       "Potion",
-      "Weapon"
+      "Armor"
     ],
     "diceStock": [
       "gambler_die"
     ],
     "stockQuantities": {
-      "potion_minor": 4,
-      "sword_001": 1
+      "potion_minor": 2,
+      "antidote": 2,
+      "boots_worn_leather": 1
     },
     "minChapter": 2,
     "detourEligible": false,
     "shopName_fr": "L’Étal du Mendiant Aveugle",
-    "shopDescription_fr": "Le garçon de cave du Mendiant Aveugle s'est enfui avec une brouette des réserves de la taverne, et les vend sur le quai, bouteille par bouteille."
+    "shopDescription_fr": "Le garçon de cave du Mendiant Aveugle s'est enfui avec une brouette des réserves de la taverne, et les vend sur le quai, bouteille par bouteille.",
+    "keeperName": "The cellar-boy",
+    "keeperName_fr": "Le garçon de cave",
+    "keeperLine": "A bottle, a bandage, a pair of boots that fit somebody once. Nobody’s boy, nobody’s prices: coin first.",
+    "keeperLine_fr": "Une fiole, un pansement, des bottes qui ont chaussé quelqu’un un jour. Le garçon de personne, les prix de personne : l’argent d’abord."
   },
   "black_market_docks": {
     "shopID": "black_market_docks",
@@ -32,16 +38,15 @@
     "unlockLevel": 2,
     "buildCost": 150,
     "initialStock": [
-      "armor_leather",
-      "sword_001",
+      "blackened_fang",
+      "cultist_hood",
       "spellbook_venom_hex",
-      "harborwatch_lantern",
-      "boots_tidewalker"
+      "rat_king_tooth",
+      "thug_knuckle_wrap"
     ],
     "merchantSpecialties": [
-      "Artifact",
-      "Armor",
       "Weapon",
+      "Armor",
       "Spellbook"
     ],
     "diceStock": [
@@ -49,17 +54,27 @@
       "frost_die"
     ],
     "stockQuantities": {
-      "armor_leather": 1,
-      "sword_001": 1,
+      "blackened_fang": 1,
+      "cultist_hood": 1,
       "spellbook_venom_hex": 1,
-      "harborwatch_lantern": 1,
-      "boots_tidewalker": 1
+      "rat_king_tooth": 1,
+      "thug_knuckle_wrap": 1
     },
     "minChapter": 2,
     "detourEligible": false,
     "faction": "crows",
     "shopName_fr": "La Cave aux Marées",
-    "shopDescription_fr": "Sous la jetée rouillée, à l’abri des regards, du matériel de contrebande change de mains."
+    "shopDescription_fr": "Sous la jetée rouillée, à l’abri des regards, du matériel de contrebande change de mains.",
+    "keeperName": "A Crow with no name",
+    "keeperName_fr": "Une Corneille sans nom",
+    "keeperLine": "Nothing here came off a boat the Dominion knows about. Don’t ask, don’t haggle.",
+    "keeperLine_fr": "Rien ici n’est sorti d’un bateau que le Dominion connaît. Pas de questions, pas de marchandage.",
+    "keeperLineWary": "The Wharf doesn’t like your face. The hatch stays open; the prices don’t.",
+    "keeperLineWary_fr": "Le Quai n’aime pas ta tête. La trappe reste ouverte ; les prix, non.",
+    "keeperLineTrusted": "You keep your mouth shut. The Cellar remembers that in coin.",
+    "keeperLineTrusted_fr": "Tu sais te taire. La Cave s’en souvient, en pièces.",
+    "keeperLineSworn": "The Keyholders’ own. Pick what you like; we’ll square it with the Vault.",
+    "keeperLineSworn_fr": "Un des Porte-Clés. Prends ce qui te plaît ; on réglera ça avec le Coffre."
   },
   "weaponsmith_forge": {
     "shopID": "weaponsmith_forge",
@@ -71,45 +86,66 @@
       "sword_t1",
       "sword_t2",
       "sword_t3",
+      "sword_t4",
+      "sword_t5",
       "spear_t1",
       "spear_t2",
       "spear_t3",
+      "spear_t4",
+      "spear_t5",
       "dagger_t1",
       "dagger_t2",
       "dagger_t3",
+      "dagger_t4",
+      "dagger_t5",
       "spellbook_war_shout",
       "spellbook_hunters_mark",
-      "harborwatch_cutlass",
-      "boots_worn_leather"
+      "material_iron_ore"
     ],
     "merchantSpecialties": [
       "Weapon",
-      "Spellbook"
+      "Spellbook",
+      "Material"
     ],
     "diceStock": [
       "iron_die",
-      "berserker_die",
-      "headsman_die"
+      "berserker_die"
     ],
     "stockQuantities": {
       "sword_t1": 1,
       "sword_t2": 1,
       "sword_t3": 1,
+      "sword_t4": 1,
+      "sword_t5": 1,
       "spear_t1": 1,
       "spear_t2": 1,
       "spear_t3": 1,
+      "spear_t4": 1,
+      "spear_t5": 1,
       "dagger_t1": 1,
       "dagger_t2": 1,
       "dagger_t3": 1,
+      "dagger_t4": 1,
+      "dagger_t5": 1,
       "spellbook_war_shout": 1,
       "spellbook_hunters_mark": 1,
-      "harborwatch_cutlass": 1,
-      "boots_worn_leather": 1
+      "material_iron_ore": 1
     },
     "minChapter": 2,
     "detourEligible": true,
     "shopName_fr": "La Forge de l’Armurier",
-    "shopDescription_fr": "Des lames et des lances fraîchement forgées s’alignent sur les râteliers, encore tièdes de l’enclume."
+    "shopDescription_fr": "Des lames et des lances fraîchement forgées s’alignent sur les râteliers, encore tièdes de l’enclume.",
+    "faction": "compact",
+    "keeperName": "Orrin Vell",
+    "keeperName_fr": "Orrin Vell",
+    "keeperLine": "Steel for honest coin. Every blade here was asked for before it was forged.",
+    "keeperLine_fr": "De l’acier contre de l’argent honnête. Chaque lame ici a été demandée avant d’être forgée.",
+    "keeperLineWary": "The Compact forges for those it chooses. It hasn’t chosen you. Pay the rate.",
+    "keeperLineWary_fr": "Le Pacte forge pour ceux qu’il choisit. Il ne t’a pas choisi. Paie le tarif.",
+    "keeperLineTrusted": "Trusted, are you? Then it’s fifteen off the board, and keep your hands off the lance.",
+    "keeperLineTrusted_fr": "Digne de confiance, hein ? Alors quinze de moins sur l’ardoise, et bas les pattes de la lance.",
+    "keeperLineSworn": "The Compact’s own. Name the blade and it’s forged — we’ll argue the price after.",
+    "keeperLineSworn_fr": "Un des nôtres. Nomme la lame et elle est forgée — on discutera du prix après."
   },
   "shieldwrights_hall": {
     "shopID": "shieldwrights_hall",
@@ -123,12 +159,14 @@
       "shield_t3",
       "shield_t4",
       "shield_t5",
-      "harborwatch_coat",
+      "armor_leather",
       "greaves_hide",
-      "greaves_studded"
+      "greaves_studded",
+      "circlet_radiance"
     ],
     "merchantSpecialties": [
-      "Weapon"
+      "Weapon",
+      "Armor"
     ],
     "diceStock": [
       "stone_die"
@@ -139,14 +177,26 @@
       "shield_t3": 1,
       "shield_t4": 1,
       "shield_t5": 1,
-      "harborwatch_coat": 1,
       "greaves_hide": 1,
-      "greaves_studded": 1
+      "greaves_studded": 1,
+      "circlet_radiance": 1,
+      "armor_leather": 1
     },
     "minChapter": 2,
     "detourEligible": true,
     "shopName_fr": "La Halle des Boucliers",
-    "shopDescription_fr": "Des rangées de boucliers, des rondaches fêlées aux égides étincelantes."
+    "shopDescription_fr": "Des rangées de boucliers, des rondaches fêlées aux égides étincelantes.",
+    "faction": "compact",
+    "keeperName": "Hesta Brann",
+    "keeperName_fr": "Hesta Brann",
+    "keeperLine": "A shield is a promise you keep for someone else. Pick one you can lift.",
+    "keeperLine_fr": "Un bouclier, c’est une promesse qu’on tient pour quelqu’un d’autre. Prends-en un que tu peux lever.",
+    "keeperLineWary": "Quarry folk don’t sell to those the Compact frowns on. Not cheap, anyway.",
+    "keeperLineWary_fr": "Les gens de la carrière ne vendent pas à ceux que le Pacte regarde de travers. Pas bon marché, en tout cas.",
+    "keeperLineTrusted": "You held a line for us once. The hall holds the price down for you.",
+    "keeperLineTrusted_fr": "Tu as tenu une ligne pour nous, un jour. La halle tient le prix bas pour toi.",
+    "keeperLineSworn": "Sworn to the Compact. Take the aegis; it was cut for a hand like yours.",
+    "keeperLineSworn_fr": "Juré au Pacte. Prends l’égide ; elle a été taillée pour une main comme la tienne."
   },
   "arcane_bazaar": {
     "shopID": "arcane_bazaar",
@@ -182,7 +232,7 @@
       "staff_t3": 1,
       "staff_t4": 1,
       "staff_t5": 1,
-      "scroll_fireball": 4,
+      "scroll_fireball": 1,
       "artifact_moon_shard": 1,
       "spellbook_frost_bind": 1,
       "siphon_wand": 1
@@ -190,7 +240,11 @@
     "minChapter": 2,
     "detourEligible": true,
     "shopName_fr": "Le Bazar Arcanique",
-    "shopDescription_fr": "La fumée d’encens s’enroule autour d’étagères de bâtons, de parchemins et de choses plus étranges."
+    "shopDescription_fr": "La fumée d’encens s’enroule autour d’étagères de bâtons, de parchemins et de choses plus étranges.",
+    "keeperName": "Imra of the Smoke",
+    "keeperName_fr": "Imra de la Fumée",
+    "keeperLine": "Staves, scrolls and stranger things. I sell to every clan and pay every toll, so the price is the price.",
+    "keeperLine_fr": "Bâtons, parchemins et choses plus étranges. Je vends à tous les clans et paie tous les péages ; le prix est le prix."
   },
   "apothecary_row": {
     "shopID": "apothecary_row",
@@ -201,28 +255,34 @@
     "initialStock": [
       "potion_minor",
       "potion_major",
-      "material_iron_ore",
-      "spellbook_sanctified_ground"
+      "antidote"
     ],
     "merchantSpecialties": [
-      "Potion",
-      "Material",
-      "Spellbook"
+      "Potion"
     ],
     "diceStock": [
-      "tide_die",
-      "holy_die"
+      "greenwood_die"
     ],
     "stockQuantities": {
-      "potion_minor": 4,
-      "potion_major": 4,
-      "material_iron_ore": 4,
-      "spellbook_sanctified_ground": 1
+      "potion_minor": 2,
+      "potion_major": 2,
+      "antidote": 2
     },
     "minChapter": 2,
     "detourEligible": true,
     "shopName_fr": "La Rue des Apothicaires",
-    "shopDescription_fr": "Des bocaux de teintures et d’onguents promettent de soigner tous vos maux."
+    "shopDescription_fr": "Des bocaux de teintures et d’onguents promettent de soigner tous vos maux.",
+    "faction": "mire",
+    "keeperName": "Sister Ysolde",
+    "keeperName_fr": "Sœur Ysolde",
+    "keeperLine": "Fever-bark from the Courts, boiled honest. Tell me what hurts, not what you want.",
+    "keeperLine_fr": "De l’écorce-fièvre des Cours, bouillie honnêtement. Dis-moi ce qui fait mal, pas ce que tu veux.",
+    "keeperLineWary": "The fen hears what’s said of you. The jars are still open; the discount is not.",
+    "keeperLineWary_fr": "Le marais entend ce qu’on dit de toi. Les bocaux restent ouverts ; la remise, non.",
+    "keeperLineTrusted": "The Courts call you a guest. A guest pays what the reeds pay.",
+    "keeperLineTrusted_fr": "Les Cours t’appellent un hôte. Un hôte paie ce que paient les roseaux.",
+    "keeperLineSworn": "What the fen takes, the fen returns. Take what you need; the Courts have it covered.",
+    "keeperLineSworn_fr": "Ce que le marais prend, le marais rend. Prends ce qu’il te faut ; les Cours couvrent."
   },
   "smugglers_vault": {
     "shopID": "smugglers_vault",
@@ -231,52 +291,44 @@
     "unlockLevel": 5,
     "buildCost": 400,
     "initialStock": [
-      "sword_t6",
-      "sword_t7",
-      "spear_t6",
-      "spear_t7",
-      "dagger_t6",
-      "dagger_t7",
-      "shield_t6",
-      "shield_t7",
-      "staff_t6",
-      "staff_t7",
       "bloodthorn_blade",
+      "hollow_court_blade",
+      "dawnward_shield",
+      "halo_lance",
       "coat_brigandine",
-      "hood_gravecloth",
-      "spellbook_smoke_veil",
-      "spellbook_snare_shot"
+      "hollow_court_seal"
     ],
     "merchantSpecialties": [
       "Weapon",
-      "Artifact"
+      "Artifact",
+      "Armor"
     ],
     "diceStock": [
-      "shadow_die",
       "void_die"
     ],
     "stockQuantities": {
-      "sword_t6": 1,
-      "sword_t7": 1,
-      "spear_t6": 1,
-      "spear_t7": 1,
-      "dagger_t6": 1,
-      "dagger_t7": 1,
-      "shield_t6": 1,
-      "shield_t7": 1,
-      "staff_t6": 1,
-      "staff_t7": 1,
       "bloodthorn_blade": 1,
+      "hollow_court_blade": 1,
+      "dawnward_shield": 1,
+      "halo_lance": 1,
       "coat_brigandine": 1,
-      "hood_gravecloth": 1,
-      "spellbook_smoke_veil": 1,
-      "spellbook_snare_shot": 1
+      "hollow_court_seal": 1
     },
     "minChapter": 3,
     "detourEligible": false,
     "faction": "crows",
     "shopName_fr": "Le Coffre des Contrebandiers",
-    "shopDescription_fr": "Une réserve cachée d’acier de contrebande, un cran au-dessus de tout ce que les forges du port oseraient avouer vendre, et une relique que personne n’ose avouer posséder."
+    "shopDescription_fr": "Une réserve cachée d’acier de contrebande, un cran au-dessus de tout ce que les forges du port oseraient avouer vendre, et une relique que personne n’ose avouer posséder.",
+    "keeperName": "The Keyholder",
+    "keeperName_fr": "Le Porte-Clés",
+    "keeperLine": "One of each. Nothing here is on sale upstairs, and nothing here has a receipt.",
+    "keeperLine_fr": "Un seul de chaque. Rien ici n’est en vente là-haut, et rien ici n’a de reçu.",
+    "keeperLineWary": "The Vault opens for you because the Ledger says you pay. It shuts the moment it says otherwise.",
+    "keeperLineWary_fr": "Le Coffre s’ouvre pour toi parce que le Registre dit que tu paies. Il se ferme dès qu’il dit autre chose.",
+    "keeperLineTrusted": "Trusted. There’s a second shelf; I’ll show it when the price is right.",
+    "keeperLineTrusted_fr": "De confiance. Il y a un second rayon ; je le montrerai quand le prix sera bon.",
+    "keeperLineSworn": "Keyholder to Keyholder: name the door and it’s yours.",
+    "keeperLineSworn_fr": "De Porte-Clés à Porte-Clés : nomme la porte, elle est à toi."
   },
   "hammersmith_forge": {
     "shopID": "hammersmith_forge",
@@ -301,10 +353,14 @@
       "shield_t9",
       "shield_t10",
       "thornmail_hauberk",
-      "spellbook_rally_the_line"
+      "plate_emberproof",
+      "spellbook_rally_the_line",
+      "material_iron_ore"
     ],
     "merchantSpecialties": [
-      "Weapon"
+      "Weapon",
+      "Armor",
+      "Material"
     ],
     "diceStock": [
       "bulwark_die",
@@ -327,13 +383,25 @@
       "shield_t9": 1,
       "shield_t10": 1,
       "thornmail_hauberk": 1,
-      "spellbook_rally_the_line": 1
+      "plate_emberproof": 1,
+      "spellbook_rally_the_line": 1,
+      "material_iron_ore": 1
     },
     "minChapter": 3,
     "detourEligible": false,
     "faction": "compact",
     "shopName_fr": "La Forge du Maître-forgeron",
-    "shopDescription_fr": "Là où l’Armurier envoie les lames et les boucliers trop lourds pour être achevés par un autre qu’un vrai maître-forgeron."
+    "shopDescription_fr": "Là où l’Armurier envoie les lames et les boucliers trop lourds pour être achevés par un autre qu’un vrai maître-forgeron.",
+    "keeperName": "Dagny Ironhand",
+    "keeperName_fr": "Dagny Main-de-Fer",
+    "keeperLine": "Too heavy for the Weaponsmith, so it came to me. Lift it before you pay for it.",
+    "keeperLine_fr": "Trop lourd pour l’Armurier, alors c’est venu chez moi. Soulève-le avant de le payer.",
+    "keeperLineWary": "The Anvil-Deaf signed about you. Not kindly. The forge works; the price bites.",
+    "keeperLineWary_fr": "Les Sourds-d’Enclume ont signé à ton sujet. Pas gentiment. La forge tourne ; le prix mord.",
+    "keeperLineTrusted": "The council signed your name with the open hand. Fifteen off, and the hauberk’s yours to try.",
+    "keeperLineTrusted_fr": "Le conseil a signé ton nom de la main ouverte. Quinze de moins, et le haubert est à toi pour l’essayer.",
+    "keeperLineSworn": "Sworn. Then it isn’t a sale — it’s the Compact arming one of its own.",
+    "keeperLineSworn_fr": "Juré. Alors ce n’est pas une vente — c’est le Pacte qui arme un des siens."
   },
   "arcane_academy": {
     "shopID": "arcane_academy",
@@ -347,16 +415,21 @@
       "staff_t8",
       "staff_t9",
       "staff_t10",
-      "spellbook_ember_wave"
+      "spellbook_ember_wave",
+      "spellbook_sanctified_ground",
+      "spellbook_sundering_roar",
+      "spellbook_arrow_volley",
+      "tome_of_insight",
+      "tome_of_mastery"
     ],
     "merchantSpecialties": [
       "Weapon",
-      "Spellbook"
+      "Spellbook",
+      "Tome"
     ],
     "diceStock": [
       "sage_die",
-      "tempest_die",
-      "chorus_die"
+      "tempest_die"
     ],
     "stockQuantities": {
       "staff_t6": 1,
@@ -364,12 +437,28 @@
       "staff_t8": 1,
       "staff_t9": 1,
       "staff_t10": 1,
-      "spellbook_ember_wave": 1
+      "spellbook_ember_wave": 1,
+      "spellbook_sanctified_ground": 1,
+      "spellbook_sundering_roar": 1,
+      "spellbook_arrow_volley": 1,
+      "tome_of_insight": 1,
+      "tome_of_mastery": 1
     },
     "minChapter": 3,
     "detourEligible": false,
     "shopName_fr": "L’Académie arcanique",
-    "shopDescription_fr": "Passé les étals d’encens du Bazar, une véritable académie : des bâtons cerclés de vieilles protections, pour des mains assez exercées pour les tenir."
+    "shopDescription_fr": "Passé les étals d’encens du Bazar, une véritable académie : des bâtons cerclés de vieilles protections, pour des mains assez exercées pour les tenir.",
+    "faction": "dominion",
+    "keeperName": "Magister Corvane",
+    "keeperName_fr": "Le magister Corvane",
+    "keeperLine": "The Choir keeps this school. Wardings on every staff, and a tithe on every sale.",
+    "keeperLine_fr": "Le Chœur tient cette école. Des protections sur chaque bâton, et une dîme sur chaque vente.",
+    "keeperLineWary": "The Lantern has a file on you. The Academy sells to you anyway — at the Lantern’s rate.",
+    "keeperLineWary_fr": "La Lanterne a un dossier sur toi. L’Académie te vend quand même — au tarif de la Lanterne.",
+    "keeperLineTrusted": "A friend of the Flame. The tithe is waived; the wardings are not.",
+    "keeperLineTrusted_fr": "Un ami de la Flamme. La dîme est levée ; les protections, non.",
+    "keeperLineSworn": "Sworn to the Lantern. The Choir’s own shelves are open to you.",
+    "keeperLineSworn_fr": "Juré à la Lanterne. Les rayons du Chœur te sont ouverts."
   },
   "sharpweave_den": {
     "shopID": "sharpweave_den",
@@ -383,13 +472,19 @@
       "dagger_t8",
       "dagger_t9",
       "dagger_t10",
-      "spellbook_bleeding_cut"
+      "spellbook_bleeding_cut",
+      "spellbook_smoke_veil",
+      "spellbook_snare_shot",
+      "hood_gravecloth"
     ],
     "merchantSpecialties": [
-      "Weapon"
+      "Weapon",
+      "Spellbook",
+      "Armor"
     ],
     "diceStock": [
-      "twinfang_die"
+      "twinfang_die",
+      "shadow_die"
     ],
     "stockQuantities": {
       "dagger_t6": 1,
@@ -397,13 +492,26 @@
       "dagger_t8": 1,
       "dagger_t9": 1,
       "dagger_t10": 1,
-      "spellbook_bleeding_cut": 1
+      "spellbook_bleeding_cut": 1,
+      "spellbook_smoke_veil": 1,
+      "spellbook_snare_shot": 1,
+      "hood_gravecloth": 1
     },
     "minChapter": 3,
     "detourEligible": false,
     "faction": "crows",
     "shopName_fr": "La Maison des Aiguilles",
-    "shopDescription_fr": "Ni enseigne, ni étal — juste une porte qui s’ouvre si vous savez déjà qu’elle est là, et derrière elle les plus fines lames de la ville."
+    "shopDescription_fr": "Ni enseigne, ni étal — juste une porte qui s’ouvre si vous savez déjà qu’elle est là, et derrière elle les plus fines lames de la ville.",
+    "keeperName": "Needle",
+    "keeperName_fr": "L’Aiguille",
+    "keeperLine": "You found the door. That’s the whole test. The edges are behind me.",
+    "keeperLine_fr": "Tu as trouvé la porte. C’était tout le test. Les lames sont derrière moi.",
+    "keeperLineWary": "The Ledger says you talk. Buy quick and don’t.",
+    "keeperLineWary_fr": "Le Registre dit que tu parles. Achète vite, et pas un mot.",
+    "keeperLineTrusted": "The Ledger likes what it hears of you. Quiet hands pay less.",
+    "keeperLineTrusted_fr": "Le Registre aime ce qu’il entend de toi. Les mains discrètes paient moins.",
+    "keeperLineSworn": "One of ours. The smoke veil is yours; the Inquisition can read it in the dark.",
+    "keeperLineSworn_fr": "Une des nôtres. Le voile de fumée est à toi ; l’Inquisition le lira dans le noir."
   },
   "ossuary_relics": {
     "shopID": "ossuary_relics",
@@ -412,52 +520,50 @@
     "unlockLevel": 8,
     "buildCost": 0,
     "initialStock": [
-      "potion_major",
-      "antidote",
-      "charm_warding",
-      "tome_of_insight",
-      "sword_t8",
-      "shield_t8",
-      "hollow_court_blade",
       "boots_bone_laced",
       "greaves_bone_plated",
       "helm_drowned_sallet",
       "hauberk_saltcrust",
       "boots_tearwalker",
       "greaves_voidsteel",
-      "spellbook_sundering_roar",
-      "spellbook_arrow_volley"
+      "hollow_court_mantle",
+      "potion_major",
+      "charm_warding"
     ],
     "merchantSpecialties": [
+      "Armor",
       "Potion",
-      "Artifact"
+      "Charm"
     ],
     "diceStock": [
-      "sage_die",
       "ossuary_die"
     ],
     "stockQuantities": {
-      "potion_major": 4,
-      "antidote": 3,
-      "charm_warding": 2,
-      "tome_of_insight": 1,
-      "sword_t8": 1,
-      "shield_t8": 1,
-      "hollow_court_blade": 1,
       "boots_bone_laced": 1,
       "greaves_bone_plated": 1,
       "helm_drowned_sallet": 1,
       "hauberk_saltcrust": 1,
       "boots_tearwalker": 1,
       "greaves_voidsteel": 1,
-      "spellbook_sundering_roar": 1,
-      "spellbook_arrow_volley": 1
+      "hollow_court_mantle": 1,
+      "potion_major": 2,
+      "charm_warding": 1
     },
     "minChapter": 5,
     "detourEligible": false,
     "faction": "penitents",
     "shopName_fr": "Le Comptoir de l’Ossuaire",
-    "shopDescription_fr": "Reliques, onguents et acier de seconde main, étalés sur une étagère de crânes par un déserteur qui ne demande plus d’où vient quoi que ce soit."
+    "shopDescription_fr": "Reliques, onguents et acier de seconde main, étalés sur une étagère de crânes par un déserteur qui ne demande plus d’où vient quoi que ce soit.",
+    "keeperName": "A deserter called Hask",
+    "keeperName_fr": "Un déserteur nommé Hask",
+    "keeperLine": "Second-hand steel off a shelf of skulls. I stopped asking where it came from. So should you.",
+    "keeperLine_fr": "De l’acier d’occasion sur un rayon de crânes. J’ai cessé de demander d’où ça vient. Toi aussi, tu devrais.",
+    "keeperLineWary": "The Penitents don’t forgive the way the Lantern does — slower. The price remembers.",
+    "keeperLineWary_fr": "Les Pénitents ne pardonnent pas comme la Lanterne — plus lentement. Le prix s’en souvient.",
+    "keeperLineTrusted": "You carried a name back to us. The skulls take less from you.",
+    "keeperLineTrusted_fr": "Tu nous as rapporté un nom. Les crânes te prennent moins.",
+    "keeperLineSworn": "Sworn. I never take coin from the sworn. Take what keeps you alive.",
+    "keeperLineSworn_fr": "Juré. Je ne prends jamais de pièces aux jurés. Prends ce qui te garde en vie."
   },
   "last_lantern": {
     "shopID": "last_lantern",
@@ -466,47 +572,53 @@
     "unlockLevel": 10,
     "buildCost": 0,
     "initialStock": [
-      "potion_major",
       "charm_lucky_coin",
       "charm_fourth_roll",
       "tome_of_mastery",
-      "staff_t9",
-      "dagger_t9",
       "spellbook_smite_the_wicked",
-      "hollow_court_mantle",
       "phoenix_sigil",
       "helm_last_watch",
-      "coat_last_watch"
+      "coat_last_watch",
+      "potion_major"
     ],
     "merchantSpecialties": [
-      "Potion",
+      "Charm",
+      "Tome",
+      "Spellbook",
       "Artifact",
-      "Spellbook"
+      "Armor"
     ],
     "diceStock": [
       "pilgrim_die",
       "vigil_die",
-      "tearglass_die",
-      "chorus_die"
+      "chorus_die",
+      "tearglass_die"
     ],
     "stockQuantities": {
-      "potion_major": 6,
-      "charm_lucky_coin": 2,
-      "charm_fourth_roll": 2,
+      "charm_lucky_coin": 1,
+      "charm_fourth_roll": 1,
       "tome_of_mastery": 1,
-      "staff_t9": 1,
-      "dagger_t9": 1,
       "spellbook_smite_the_wicked": 1,
-      "hollow_court_mantle": 1,
       "phoenix_sigil": 1,
       "helm_last_watch": 1,
-      "coat_last_watch": 1
+      "coat_last_watch": 1,
+      "potion_major": 2
     },
     "minChapter": 6,
     "detourEligible": false,
     "faction": "vigil",
     "shopName_fr": "La Dernière Lanterne",
-    "shopDescription_fr": "Le dernier étal encore éclairé du Quartier des Reliquaires, qui vend tout ce qui pourrait garder un corps en vie une rue plus près de la déchirure."
+    "shopDescription_fr": "Le dernier étal encore éclairé du Quartier des Reliquaires, qui vend tout ce qui pourrait garder un corps en vie une rue plus près de la déchirure.",
+    "keeperName": "Wickwarden Tallis",
+    "keeperName_fr": "La Veilleuse Tallis",
+    "keeperLine": "The last stall lit this close to the tear. The Vigil keeps it. Buy what keeps you breathing.",
+    "keeperLine_fr": "Le dernier étal allumé si près de la déchirure. La Veille le tient. Achète ce qui te garde en vie.",
+    "keeperLineWary": "The wall knows who looked away. It still sells to you. It charges for it.",
+    "keeperLineWary_fr": "Le mur sait qui a détourné les yeux. Il te vend encore. Il le fait payer.",
+    "keeperLineTrusted": "You stood a watch for us. The lamp burns cheaper for those who did.",
+    "keeperLineTrusted_fr": "Tu as monté une garde pour nous. La lampe brûle moins cher pour ceux qui l’ont fait.",
+    "keeperLineSworn": "Open eyes. What the Vigil has is yours to carry to the tear.",
+    "keeperLineSworn_fr": "Les yeux ouverts. Ce que la Veille possède est à toi, pour le porter jusqu’à la déchirure."
   },
   "anchorage_chandlery": {
     "shopID": "anchorage_chandlery",
@@ -515,36 +627,47 @@
     "unlockLevel": 11,
     "buildCost": 0,
     "initialStock": [
-      "potion_major",
+      "harborwatch_cutlass",
+      "harborwatch_coat",
+      "harborwatch_lantern",
+      "boots_tidewalker",
+      "tear_glass_blade",
       "antidote",
-      "charm_warding",
-      "tome_of_insight",
-      "spear_t9",
-      "shield_t9",
-      "tear_glass_blade"
+      "tome_of_insight"
     ],
     "merchantSpecialties": [
-      "Potion",
       "Weapon",
-      "Artifact"
+      "Armor",
+      "Artifact",
+      "Potion"
     ],
     "diceStock": [
-      "tearglass_die",
-      "greenwood_die"
+      "tide_die"
     ],
     "stockQuantities": {
-      "potion_major": 6,
-      "antidote": 3,
-      "charm_warding": 2,
-      "tome_of_insight": 1,
-      "spear_t9": 1,
-      "shield_t9": 1,
-      "tear_glass_blade": 1
+      "harborwatch_cutlass": 1,
+      "harborwatch_coat": 1,
+      "harborwatch_lantern": 1,
+      "boots_tidewalker": 1,
+      "tear_glass_blade": 1,
+      "antidote": 2,
+      "tome_of_insight": 1
     },
     "minChapter": 6,
     "detourEligible": false,
     "shopName_fr": "La Chandlerie des charpentiers d’épaves",
-    "shopDescription_fr": "Ce que la mer a rendu au Mouillage Blanc et ce que ses charpentiers d’épaves en ont fait : des baumes dans des gourdes de pèlerins, des lames reforgées avec celles de la flotte."
+    "shopDescription_fr": "Ce que la mer a rendu au Mouillage Blanc et ce que ses charpentiers d’épaves en ont fait : des baumes dans des gourdes de pèlerins, des lames reforgées avec celles de la flotte.",
+    "faction": "dominion",
+    "keeperName": "The Wreck-Wright",
+    "keeperName_fr": "La Charpentière d’épaves",
+    "keeperLine": "What the sea gave back, made fit to use again. The Admiralty counts every sale.",
+    "keeperLine_fr": "Ce que la mer a rendu, remis en état. L’Amirauté compte chaque vente.",
+    "keeperLineWary": "The Admiralty flagged your name. I sell to flagged names. Dearer.",
+    "keeperLineWary_fr": "L’Amirauté a marqué ton nom. Je vends aux noms marqués. Plus cher.",
+    "keeperLineTrusted": "The Fleet’s friend. The Harborwatch set goes to you at the old rate.",
+    "keeperLineTrusted_fr": "Un ami de la Flotte. L’ensemble de la Garde-du-port est pour toi, à l’ancien tarif.",
+    "keeperLineSworn": "Sworn to the Lantern. The tear-glass was kept back for a hand like yours.",
+    "keeperLineSworn_fr": "Juré à la Lanterne. Le verre-de-déchirure a été mis de côté pour une main comme la tienne."
   },
   "wayfarer_caravan": {
     "shopID": "wayfarer_caravan",
@@ -552,37 +675,49 @@
     "shopDescription": "A mule train that never stops in one town for long: potions, charms and the odd rare piece bought off the last road.",
     "unlockLevel": 1,
     "buildCost": 0,
-    "initialStock": [
-      "potion_major",
-      "antidote",
-      "charm_iron_skin",
-      "charm_warding",
-      "tome_of_insight",
-      "cloak_frostward",
-      "plate_emberproof",
-      "warden_signet"
-    ],
+    "initialStock": [],
     "merchantSpecialties": [
       "Potion",
-      "Charm"
+      "Charm",
+      "Artifact"
     ],
     "diceStock": [
-      "gambler_die",
-      "greenwood_die"
+      "holy_die"
     ],
     "stockQuantities": {
       "potion_major": 2,
-      "antidote": 1,
+      "antidote": 2,
       "charm_iron_skin": 1,
       "charm_warding": 1,
+      "charm_lucky_coin": 1,
       "tome_of_insight": 1,
-      "cloak_frostward": 1,
-      "plate_emberproof": 1,
-      "warden_signet": 1
+      "warden_signet": 1,
+      "wisp_ember": 1,
+      "saint_reliquary": 1,
+      "archon_mantle": 1,
+      "cloak_frostward": 1
     },
     "minChapter": 2,
     "detourEligible": false,
     "shopName_fr": "La Caravane du Voyageur",
-    "shopDescription_fr": "Un convoi de mules qui ne reste jamais longtemps dans une ville : potions, charmes et quelques pièces rares achetées sur la dernière route."
+    "shopDescription_fr": "Un convoi de mules qui ne reste jamais longtemps dans une ville : potions, charmes et quelques pièces rares achetées sur la dernière route.",
+    "keeperName": "Old Pell",
+    "keeperName_fr": "Le vieux Pell",
+    "keeperLine": "Bought off the last road, sold on this one. Six things today; tomorrow the mules decide.",
+    "keeperLine_fr": "Acheté sur la route d’avant, vendu sur celle-ci. Six choses aujourd’hui ; demain, ce sont les mules qui décident.",
+    "stockPool": [
+      "potion_major",
+      "antidote",
+      "charm_iron_skin",
+      "charm_warding",
+      "charm_lucky_coin",
+      "tome_of_insight",
+      "warden_signet",
+      "wisp_ember",
+      "saint_reliquary",
+      "archon_mantle",
+      "cloak_frostward"
+    ],
+    "stockDraw": 6
   }
 }
