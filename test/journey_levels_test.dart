@@ -73,6 +73,27 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
 
+    // A choice made opens the scene reached full screen, with Continue
+    // under it to come back to the map.
+    expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('journey_step_0')));
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(const ValueKey('journey_go')));
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+    }
+    await _settle(tester);
+    final after = container.read(storyPlayProvider);
+    expect(after.isInExcursion || after.currentNodeId != '2005', isTrue);
+    expect(find.byKey(const ValueKey('journey_continue')), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('journey_continue')));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
+    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    play.jumpTo('2005');
+    await _settle(tester);
+
     // The story so far, in a line under the map, opens its page: where
     // the party stands, now, the threads.
     expect(find.byKey(const ValueKey('journey_sofar')), findsOneWidget);

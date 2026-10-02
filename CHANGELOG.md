@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.200.1+233]
+
+### Changed
+- Journey: a choice made opens the scene reached full screen, with a Continue button under it that brings the map back (the Read button still opens the current scene at any time).
+
+### Fixed
+- The death screen scrolls when the last words run long on a short phone (its column overflowed by 75 px in a CI run).
+- The wind-up fight test read the landing line off the two-line log ticker, which later lines could push out before the test looked; it now waits for the next round and reads the full battle log (the one failure of the CI run after v1.200.0).
+
 ## [1.200.0+232]
 
 ### The world as a sphere

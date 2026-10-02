@@ -178,6 +178,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Where the chapter began',
     AppLanguage.fr: 'Là où le chapitre a commencé',
   },
+  'journey_continue': {AppLanguage.en: 'Continue', AppLanguage.fr: 'Continuer'},
   'journey_reading_exit': {
     AppLanguage.en: 'Back to the map',
     AppLanguage.fr: 'Revenir à la carte',

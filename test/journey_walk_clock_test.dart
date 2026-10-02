@@ -158,6 +158,11 @@ void main() {
     expect(container.read(storyPlayProvider).currentNodeId, '300');
     expect(container.read(playerSessionProvider).flags,
         contains('companion_hound'));
+    // The scene reached is read full screen; Continue brings the map back.
+    expect(find.byKey(const ValueKey('journey_continue')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('journey_continue')));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
 
     // The story moved on from under a walk (its map gone with it): the
     // step is not taken, and the next scene's steps are free to take.
