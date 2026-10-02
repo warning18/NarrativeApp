@@ -58,6 +58,15 @@ Future<void> _tapWhenEnabled(WidgetTester tester, String label) async {
   await tester.tap(find.text(label));
 }
 
+/// Whether the party's turn is open: Roll Dice there and enabled.
+bool _rollEnabled() {
+  final button = find.ancestor(
+      of: find.text('Roll Dice'),
+      matching: find.byWidgetPredicate((w) => w is ButtonStyleButton));
+  return button.evaluate().isNotEmpty &&
+      (button.evaluate().first.widget as ButtonStyleButton).enabled;
+}
+
 Map<String, dynamic> _enemy(String id) {
   for (final path in [
     'assets/gamedata/enemies.json',
@@ -133,13 +142,17 @@ void main() {
 
     await _tapWhenEnabled(tester, 'Roll Dice');
     await _tapWhenEnabled(tester, 'Confirm');
-    await _pumpUntil(
-        tester,
-        () =>
-            _logShows('comes crashing down') ||
-            _logShows('knocked off balance'));
+    // The ticker under the cards shows only the last two log lines, and
+    // the enemy's turn can write more than that in one frame (the blow,
+    // a status, the next round's lines), so the landing line is read from
+    // the full log once the next round waits on the party.
+    await _pumpUntil(tester, () => _rollEnabled());
+    await tester.tap(find.byIcon(Icons.unfold_more));
+    await tester.pump(const Duration(milliseconds: 600));
     expect(_logShows('comes crashing down') || _logShows('knocked off balance'),
-        isTrue);
+        isTrue,
+        reason: 'the wind-up neither landed nor broke');
+    await tester.tapAt(const Offset(195, 40));
     await tester.pump(const Duration(seconds: 3));
   });
 }

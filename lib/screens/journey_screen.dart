@@ -373,6 +373,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // step is no longer one to take.
     bool moved() => _sceneKeyOf(ref.read(storyPlayProvider)) != before;
     Offset? walked;
+    var taken = false;
     try {
       final chart = _chartKey.currentState;
       if (chart != null && !MediaQuery.of(context).disableAnimations) {
@@ -387,15 +388,22 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         if (!mounted || moved()) return;
       }
       await takeStoryChoice(context, ref, step.choice);
+      taken = true;
     } finally {
       if (mounted) {
         // A choice that keeps the story where it was (a shop, a fight
         // fled) brings the party back to its mark.
-        if (_sceneKeyOf(ref.read(storyPlayProvider)) == before) {
+        final stayed = _sceneKeyOf(ref.read(storyPlayProvider)) == before;
+        if (stayed) {
           if (walked != null) _terrainShift -= walked;
           _chartKey.currentState?.resetWalk();
         }
-        if (_takingFrom == before) setState(() => _takingFrom = null);
+        setState(() {
+          if (_takingFrom == before) _takingFrom = null;
+          // The choice moved the story on: the new scene is read full
+          // screen, and Continue brings the map back.
+          if (taken && !stayed) _reading = true;
+        });
       }
     }
   }
@@ -573,16 +581,32 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       return SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-          child: _ScenePanel(
-            key: ValueKey('journey_reading_$sceneKey'),
-            story: story,
-            node: node,
-            french: french,
-            folded: false,
-            reading: true,
-            onFold: (_) {},
-            onReading: _read,
-            detour: detour,
+          child: Column(
+            children: [
+              Expanded(
+                child: _ScenePanel(
+                  key: ValueKey('journey_reading_$sceneKey'),
+                  story: story,
+                  node: node,
+                  french: french,
+                  folded: false,
+                  reading: true,
+                  onFold: (_) {},
+                  onReading: _read,
+                  detour: detour,
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  key: const ValueKey('journey_continue'),
+                  onPressed: () => _read(false),
+                  icon: const Icon(Icons.arrow_forward, size: 18),
+                  label: Text(tr(ref, 'journey_continue')),
+                ),
+              ),
+            ],
           ),
         ),
       );
