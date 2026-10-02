@@ -8,6 +8,70 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.197.0+228]
+
+Every scene now happens somewhere. The world has five levels of place
+(continent, country, zone, location and, in the big cities, district),
+and every zone has a land of its own: its biome, fauna, flora, weather
+and hazards. The Journey map shows where you stand, and the road can turn
+against you.
+
+### Added
+- **The world's places** (`geography.json`, 63 places):
+  - **4 continents:** the Old Continent, the Ashen Continent, the Lantern
+    Isles and the Seas.
+  - **9 countries**, each with its ruler where it has one: the Alster
+    Marches, the Waste, the Salt Coast, the Narrow Sea, the Ashen Coast,
+    the Grey Fen, the Frost Reach, the Hollow Cape and the Throne's
+    Demesne.
+  - **12 zones** and **23 locations**.
+  - **15 districts**, in Alster, Saltmouth, the Black Reliquary,
+    Candlehold and the Hollow Shore.
+  - Every scene of the story, every expedition and every enemy has its
+    place. A scene has a `location`, and an enemy lists the `biomes` it
+    lives in.
+- **Ten lands** (`biomes.json`): temperate, desert, arid coast, sea,
+  ashlands, volcanic, sea cliffs, fen, frost and the tear's glass. Each
+  has six animals, six plants, three kinds of weather, two hazards, its
+  colours and a pattern of its own.
+- **Journey map:**
+  - A breadcrumb above the place map shows Continent › Country › Zone ›
+    Place › District.
+  - Under the plan, the land's pattern is painted faintly: dunes, salt
+    flats, waves, ash, terraces, cliffs, reeds, snow, glass or fields.
+  - Tapping a crumb opens **This land** (« Cette contrée »): the place,
+    its zone and land with their fauna, flora, weather and hazards, the
+    country with its ruler, and the continent.
+- **World map:** a landmark's panel shows its breadcrumb and its land.
+- **Codex, Lands** (« Contrées »), after Clans in the Other tab: the
+  continents, countries and zones you have found, with their fauna and
+  flora and the places you reached. Places not yet found show as "…".
+- **Road hazards:** a road through a land with hazards can hold one
+  (a fifth of road events), such as a sandstorm, a whiteout, an ash storm
+  or a racing tide.
+  - **Push on:** everyone loses 10 + 5 × chapter health, never below 1.
+  - **Wait it out:** a day passes and a ration is eaten.
+
+  The Journey map shows the hazard before you set out. The simulator and
+  autoplay push on above half health and wait below.
+- **Local champions:** a champion on the road is one of the land's own
+  creatures when the land has at least two.
+- **Edit Mode:**
+  - The node editor has a Location field.
+  - The Data tab edits `geography.json` and `biomes.json`, a zone's
+    `location` and an enemy's `biomes`.
+
+### Changed
+- **Place names, one per place:**
+  - The Hollow Shore is « la Rive Creuse » on the charts too.
+  - The Ashen Coast is « la Côte de Cendre » everywhere.
+  - On the archipelago chart, the chapter 4 isles are the Grey Fen.
+  - « Au-delà de la déchirure » is written alike in the zone, the quest
+    and chapter 8's title.
+- **French typography:** the chapter titles and landmark blurbs on the
+  world map get their non-breaking spaces, and a few lines no longer
+  assume the player's gender.
+
 ## [1.196.0+227]
 
 The game now ends with you on the Lantern Throne. You climb from a House

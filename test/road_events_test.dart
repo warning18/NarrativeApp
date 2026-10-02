@@ -77,7 +77,10 @@ void main() {
       }
       final share = seen.values.fold(0, (a, b) => a + b) / tries;
       expect(share, inInclusiveRange(0.1, roadEventChance + 0.05));
-      expect(seen.keys.toSet(), RoadEventKind.values.toSet());
+      // A hazard needs a land with hazards (v1.197, see
+      // road_hazards_test.dart); with none given, every other kind.
+      expect(seen.keys.toSet(),
+          RoadEventKind.values.toSet()..remove(RoadEventKind.hazard));
     });
 
     test('none in chapter 1, within a place, or into an ending', () {

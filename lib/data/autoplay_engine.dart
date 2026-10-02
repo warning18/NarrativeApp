@@ -26,6 +26,7 @@ import 'politics_events.dart'
         enterPoliticsKey;
 import 'story_repository.dart';
 import 'zone_gating.dart';
+import 'road_hazards.dart' show meetRoadHazard;
 
 /// How an [autoplayToNode] or [autoplayToChapter] run ended.
 enum AutoplayStatus {
@@ -527,6 +528,9 @@ Future<AutoplayResult> autoplayToNode(
       }
     }
 
+    // A hazard on the road there (v1.197), taken as a player would.
+    await meetRoadHazard(ref, story,
+        fromNodeId: fromNodeId, toNodeId: choice.nextId);
     playNotifier.choose(choice.nextId);
     await _applyEnterPolitics(ref, story, choice.nextId);
     stepsApplied += 1;
@@ -815,6 +819,9 @@ Future<AutoplayResult> _playTowardChapter(
       }
     }
 
+    // A hazard on the road there (v1.197), taken as a player would.
+    await meetRoadHazard(ref, story,
+        fromNodeId: currentNodeId, toNodeId: choice.nextId);
     playNotifier.choose(choice.nextId);
     await _applyEnterPolitics(ref, story, choice.nextId);
     stepsApplied += 1;

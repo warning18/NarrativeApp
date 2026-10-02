@@ -104,6 +104,101 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'La Caravane du Voyageur est sur cette route : des marchandises rares.',
   },
+  // The world's places (v1.197): the Journey map's breadcrumb, This land,
+  // the codex's Lands and the road's hazards.
+  'journey_event_hazard': {
+    AppLanguage.en: 'On this road: {hazard}. Push on, or wait it out.',
+    AppLanguage.fr:
+        'Sur cette route\u00a0: {hazard}. Forcer le passage, ou attendre.',
+  },
+  'geo_this_land': {
+    AppLanguage.en: 'This land',
+    AppLanguage.fr: 'Cette contrée',
+  },
+  'geo_where_you_are': {
+    AppLanguage.en: 'Where you are: tap a name for this land',
+    AppLanguage.fr: 'Où vous êtes\u00a0: touchez un nom pour cette contrée',
+  },
+  'geo_lands_section': {
+    AppLanguage.en: 'Lands',
+    AppLanguage.fr: 'Contrées',
+  },
+  'geo_level_continent': {
+    AppLanguage.en: 'Continent',
+    AppLanguage.fr: 'Continent',
+  },
+  'geo_level_country': {
+    AppLanguage.en: 'Country',
+    AppLanguage.fr: 'Pays',
+  },
+  'geo_level_zone': {
+    AppLanguage.en: 'Region',
+    AppLanguage.fr: 'Région',
+  },
+  'geo_level_location': {
+    AppLanguage.en: 'Place',
+    AppLanguage.fr: 'Lieu',
+  },
+  'geo_level_district': {
+    AppLanguage.en: 'District',
+    AppLanguage.fr: 'Quartier',
+  },
+  'geo_ruler': {
+    AppLanguage.en: 'Ruled by {ruler}',
+    AppLanguage.fr: 'Autorité\u00a0: {ruler}',
+  },
+  'geo_no_ruler': {
+    AppLanguage.en: 'Ruled by no one: a free land',
+    AppLanguage.fr: 'Aucune autorité\u00a0: une terre libre',
+  },
+  'geo_fauna': {
+    AppLanguage.en: 'Fauna',
+    AppLanguage.fr: 'Faune',
+  },
+  'geo_flora': {
+    AppLanguage.en: 'Flora',
+    AppLanguage.fr: 'Flore',
+  },
+  'geo_weather': {
+    AppLanguage.en: 'Weather',
+    AppLanguage.fr: 'Météo',
+  },
+  'geo_hazards': {
+    AppLanguage.en: 'Hazards on the road',
+    AppLanguage.fr: 'Dangers de la route',
+  },
+  'geo_places_found': {
+    AppLanguage.en: 'Places found here',
+    AppLanguage.fr: 'Lieux découverts ici',
+  },
+  'geo_unknown_place': {
+    AppLanguage.en: 'A place not found yet',
+    AppLanguage.fr: 'Un lieu pas encore découvert',
+  },
+  'geo_codex_empty': {
+    AppLanguage.en:
+        'No land known yet. Each one is noted here once you reach it.',
+    AppLanguage.fr:
+        'Aucune contrée connue pour l’instant. Chacune est notée ici dès que vous l’atteignez.',
+  },
+  'node_location_label': {
+    AppLanguage.en: 'Place (geography id)',
+    AppLanguage.fr: 'Lieu (identifiant de géographie)',
+  },
+  'node_location_hint': {
+    AppLanguage.en:
+        'A location or district of geography.json; empty for nowhere.',
+    AppLanguage.fr:
+        'Un lieu ou un quartier de geography.json\u00a0; vide pour nulle part.',
+  },
+  'node_location_unknown': {
+    AppLanguage.en: 'Not a location or district of geography.json',
+    AppLanguage.fr: 'Ni un lieu ni un quartier de geography.json',
+  },
+  'node_location_pick': {
+    AppLanguage.en: 'Pick a place',
+    AppLanguage.fr: 'Choisir un lieu',
+  },
   'timed_choice_hint': {
     AppLanguage.en: 'Choose before time runs out',
     AppLanguage.fr: 'Choisissez avant la fin du temps',
@@ -8119,9 +8214,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'beasts_none_hint': {
     AppLanguage.en:
-        'No beast has crossed the Eel\'s path yet. They roam the open water from the Ashen coast outward.',
+        'No beast has crossed the Eel\'s path yet. They roam the open water from the Ashen Coast outward.',
     AppLanguage.fr:
-        'Aucune bête n\'a encore croisé la route de l\'Eel. Elles rôdent en haute mer, de la côte des Cendres vers le large.',
+        'Aucune bête n\'a encore croisé la route de l\'Eel. Elles rôdent en haute mer, de la Côte de Cendre vers le large.',
   },
   'beasts_hint': {
     AppLanguage.en:

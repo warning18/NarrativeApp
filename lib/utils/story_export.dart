@@ -21,8 +21,8 @@ List<StoryNode> nodesInChapterOrder(StoryData story) =>
       });
 
 /// The light export of every story node, for reading or review: each
-/// node's id, chapter and text (in French when [french] and the node has
-/// it), and its choices with where they lead, the enemies they fight and
+/// node's id, chapter, place (its `location`, when it has one) and text
+/// (in French when [french] and the node has it), and its choices with where they lead, the enemies they fight and
 /// where a lost fight goes.
 String storyLightExport(StoryData story, {bool french = false}) {
   final nodes = nodesInChapterOrder(story);
@@ -34,6 +34,8 @@ String storyLightExport(StoryData story, {bool french = false}) {
         {
           'id': node.id,
           'chapter': chapterOfNode(node.id),
+          // Where it happens (v1.197, a place of geography.json).
+          if (node.location?.isNotEmpty ?? false) 'location': node.location,
           'text': node.descriptionFor(french),
           'choices': [
             for (final choice in node.choices)
