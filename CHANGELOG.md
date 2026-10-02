@@ -8,6 +8,81 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.199.0+230]
+
+### The Journey on one interface, the world under the fog
+
+#### Changed
+- **The Journey without the scene block.** The scene no longer sits over
+  the map: a **Read** button on the breadcrumb row opens it full screen,
+  and the map has the room. Under the map, three chips look at the
+  **place** (the steps, as before), its **land** or the **world**, and a
+  strip reads the story so far in a line and opens its page.
+- **The world chart, zoomable and scrollable any way.** The Land and World
+  levels put the whole chart under a pinch and a drag, with +, −, back to
+  the party, and a layers button. A reached place tapped on the chart
+  tells its blurb under the map. The world map screen shares the chart.
+- **The chart's three geographies, redrawn from the design.** The Ring
+  (world B) is the default: the lands make a broken ring round an inner
+  sea with the Lantern Isles at its heart. The Two Shores (A) and the
+  River & the Frost (C) remain the player's choice. Every landmark has a
+  spot on each, ashore or at sea as the story has it.
+- **Coasts, terrain, roads.** Coasts break into bays, headlands and islets
+  from fixed seeds; each land carries its biome's terrain (snow-capped
+  ridges, woods and lakes, dunes, marsh, cinder cones, glass); rivers
+  bend; the road walked is a cased road in each chapter's colour that
+  bends with the ground, a sea leg a dashed wake.
+- **The fog, uncharted.** Where the story has not gone the chart shows
+  only a dotted coastline and the lands' names, dim; a land clears when a
+  place in it is read, and brings its terrain, villages and roads with it.
+- **The story so far, as a state.** Its first page, Now, reads the state
+  in one go: where the party stands (the lands above it, the ruler, the
+  biome), what is happening now (where it came from and with whom, the
+  chapter's hint, the last choice), the threads open (the main quest, the
+  followed one, every quest in progress with its goal), who is along and
+  how the clans stand, and the echoes that still matter. Scenes, What
+  changed and News follow as before. The Previously… dialog reads the same
+  page.
+
+#### Added
+- **The Ring's world.** Six named ranges (the Rime Teeth, the Scaffold
+  Crags, the Firebacks, the Vigil Ridge, the Alster Downs, the Lantern
+  Cliffs); twenty-four villages and works from the story (Hedgefold and
+  Millbrook in the Vale, Tallow Street, the Veiled Camp, the salt pans,
+  the Wreckers' Road, the slag kilns, the Reckoning Wall, the Dawn Wall,
+  the hot springs, the Reed Gate and the Bell Road, the Rope Stair and the
+  false lamps, the Ossuary Galleries, the milestones, the Ember Run, the
+  Frost Quarry, the Glass Strand, the Lantern Train, the salt marsh, the
+  cliff lamps, the Admiralty yards, Lowtide); five bridges, two stone
+  giants; every clan's seat ringed in its colour with a pennant (the
+  Lantern Throne, the Spire, Anvil Gate, the Heron's Wake, the Brig, the
+  Vigil's Wall, the Exorcists' Gate, Highhearth, Akagiri, the Kindly Hill,
+  Lowtide, the Open Hand's ruined hall); twelve later-quest places and the
+  grey trade and quest roads to them. Each shows once its land is reached.
+- **Calques.** The layers button opens a sheet of calques, one at a time
+  and kept: the clans' zones of influence (each land washed in its clan's
+  colour, stripes where two contest it, a legend), the player's standing
+  (hunted red to sworn gold), the lands in their colours, the road by
+  chapter, and shops and camps. Influence shows only on lands reached, so
+  the calque cannot spoil the road ahead.
+- **Drawn towns.** Each district of geography.json names a glyph (bridge,
+  keep, quay, cellar, gate, market, wharf, yard, temple, void, hall,
+  field, slum), drawn above the way into it on the Journey map; a place
+  names its water, a river through it or a shore beside it, and the map
+  draws it.
+
+#### Technical
+- `lib/data/chart_worlds.dart` is generated from the design canvas's
+  world data (page W, Journey & the map) and checked in as the source of
+  truth: places, lands, rivers, zones with their biome and influence,
+  ranges, features and trade roads per world.
+  `ChartRelief` (chart_relief.dart) works out each geography's coasts,
+  zones, rivers, islets and terrain once; `ChartMapPainter` records the
+  static layers in a picture per look. `storySoFarProvider`
+  (story_state.dart) composes the state. `chartCalqueProvider` keeps the
+  calque. The `world_map_shape_*` names are now The Two Shores, The Ring,
+  The River & the Frost.
+
 ## [1.198.0+229]
 
 Three pieces, merged over main's v1.196 (the Throne) and v1.197 (geography).

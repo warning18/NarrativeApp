@@ -48,6 +48,8 @@ class PlacePlanPainter extends CustomPainter {
     required this.spots,
     required this.palette,
     required this.ember,
+    this.glyphs = const {},
+    this.water = '',
   });
 
   final PlaceKind kind;
@@ -56,6 +58,14 @@ class PlacePlanPainter extends CustomPainter {
   final List<Offset> spots;
   final ChartPalette palette;
   final Color ember;
+
+  /// For each of [spots] (by index) leading into a district with a glyph
+  /// (v1.199, see geoGlyphs): the glyph drawn above its mark.
+  final Map<int, String> glyphs;
+
+  /// The place's water (v1.199): a 'river' through it, a 'shore' beside
+  /// it, or ''.
+  final String water;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -77,6 +87,45 @@ class PlacePlanPainter extends CustomPainter {
             wave);
       }
       return;
+    }
+
+    // The place's water: a river in from the top and out at the foot,
+    // bending past the square; or the sea along the left side.
+    if (water == 'river') {
+      final x = here.dx - 70 + (rng.nextDouble() - 0.5) * 20;
+      final river = Path()
+        ..moveTo(x, -10)
+        ..cubicTo(x + 30, size.height * 0.3, x - 30, size.height * 0.6, x + 10,
+            size.height + 10);
+      canvas.drawPath(
+          river,
+          Paint()
+            ..color = palette.fog.withValues(alpha: 0.5)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 26
+            ..strokeCap = StrokeCap.round);
+      canvas.drawPath(
+          river,
+          Paint()
+            ..color = palette.river
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 18
+            ..strokeCap = StrokeCap.round);
+    } else if (water == 'shore') {
+      final edge = Path()
+        ..moveTo(0, -10)
+        ..lineTo(size.width * 0.18, -10)
+        ..cubicTo(size.width * 0.24, size.height * 0.3, size.width * 0.12,
+            size.height * 0.6, size.width * 0.2, size.height + 10)
+        ..lineTo(0, size.height + 10)
+        ..close();
+      canvas.drawPath(edge, Paint()..color = palette.sea);
+      canvas.drawPath(
+          edge,
+          Paint()
+            ..color = palette.coast
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.5);
     }
 
     // The streets (or paths) out of the square.
@@ -224,11 +273,159 @@ class PlacePlanPainter extends CustomPainter {
       case PlaceKind.sea:
         break;
     }
+
+    // The districts' glyphs, above the marks of the ways into them.
+    for (final entry in glyphs.entries) {
+      if (entry.key < 0 || entry.key >= spots.length) continue;
+      _glyph(canvas, entry.value, spots[entry.key].translate(0, -34));
+    }
+  }
+
+  /// A district's glyph (v1.199): what it is, before its name is read.
+  void _glyph(Canvas canvas, String glyph, Offset p) {
+    final line = Paint()
+      ..color = palette.place
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5
+      ..strokeJoin = StrokeJoin.round;
+    final fill = Paint()..color = palette.land;
+    final x = p.dx, y = p.dy;
+    switch (glyph) {
+      case 'bridge':
+        canvas.drawLine(
+            Offset(x - 14, y), Offset(x + 14, y), line..strokeWidth = 3);
+        canvas.drawPath(
+            Path()
+              ..moveTo(x - 12, y + 3)
+              ..quadraticBezierTo(x - 6, y - 3, x, y + 3)
+              ..quadraticBezierTo(x + 6, y - 3, x + 12, y + 3),
+            line..strokeWidth = 1.2);
+      case 'keep':
+        canvas.drawRect(
+            Rect.fromCenter(center: p, width: 18, height: 18), fill);
+        canvas.drawRect(
+            Rect.fromCenter(center: p, width: 18, height: 18), line);
+        final top = y - 9;
+        canvas.drawPath(
+            Path()
+              ..moveTo(x - 9, top)
+              ..lineTo(x - 9, top - 4)
+              ..lineTo(x - 5, top - 4)
+              ..lineTo(x - 5, top)
+              ..lineTo(x - 1, top)
+              ..lineTo(x - 1, top - 4)
+              ..lineTo(x + 3, top - 4)
+              ..lineTo(x + 3, top)
+              ..lineTo(x + 7, top)
+              ..lineTo(x + 7, top - 4)
+              ..lineTo(x + 9, top - 4),
+            line..strokeWidth = 1.2);
+      case 'quay':
+        canvas.drawLine(
+            Offset(x - 14, y), Offset(x + 14, y), line..strokeWidth = 1.8);
+        canvas.drawLine(Offset(x - 8, y), Offset(x - 8, y + 8), line);
+        canvas.drawLine(Offset(x + 8, y), Offset(x + 8, y + 8), line);
+        canvas.drawPath(
+            Path()
+              ..moveTo(x + 2, y - 14)
+              ..lineTo(x + 10, y - 4)
+              ..lineTo(x - 6, y - 4)
+              ..close(),
+            Paint()..color = palette.place.withValues(alpha: 0.8));
+      case 'wharf':
+        canvas.drawLine(Offset(x - 12, y - 6), Offset(x + 12, y - 6),
+            line..strokeWidth = 1.8);
+        canvas.drawLine(Offset(x - 12, y + 6), Offset(x + 12, y + 6), line);
+        canvas.drawLine(Offset(x - 6, y - 12), Offset(x - 6, y + 12),
+            line..strokeWidth = 1);
+        canvas.drawLine(Offset(x + 6, y - 12), Offset(x + 6, y + 12), line);
+      case 'gate':
+        canvas.drawPath(
+            Path()
+              ..moveTo(x - 10, y + 8)
+              ..lineTo(x - 10, y - 4)
+              ..arcToPoint(Offset(x + 10, y - 4),
+                  radius: const Radius.circular(10))
+              ..lineTo(x + 10, y + 8),
+            line..strokeWidth = 2);
+        canvas.drawLine(Offset(x - 14, y + 8), Offset(x + 14, y + 8), line);
+      case 'temple':
+        final path = Path()
+          ..moveTo(x - 12, y + 8)
+          ..lineTo(x - 12, y - 2)
+          ..lineTo(x, y - 10)
+          ..lineTo(x + 12, y - 2)
+          ..lineTo(x + 12, y + 8)
+          ..close();
+        canvas.drawPath(path, fill);
+        canvas.drawPath(path, line);
+        canvas.drawLine(Offset(x, y - 14), Offset(x, y - 8), line);
+        canvas.drawLine(Offset(x - 3, y - 11), Offset(x + 3, y - 11), line);
+      case 'void':
+        canvas.drawPath(
+            Path()
+              ..moveTo(x, y - 14)
+              ..lineTo(x + 5, y - 5)
+              ..lineTo(x + 3, y + 4)
+              ..lineTo(x, y + 12)
+              ..lineTo(x - 3, y + 4)
+              ..lineTo(x - 5, y - 5)
+              ..close(),
+            Paint()..color = palette.voidColor.withValues(alpha: 0.9));
+      case 'hall':
+        canvas.drawRect(Rect.fromLTWH(x - 14, y - 2, 28, 10), fill);
+        canvas.drawRect(Rect.fromLTWH(x - 14, y - 2, 28, 10), line);
+        canvas.drawPath(
+            Path()
+              ..moveTo(x, y - 16)
+              ..lineTo(x + 4, y - 10)
+              ..lineTo(x - 4, y - 10)
+              ..close(),
+            Paint()..color = palette.mark);
+        canvas.drawCircle(Offset(x, y - 12), 2, Paint()..color = ember);
+      case 'market':
+        canvas.drawPath(
+            Path()
+              ..moveTo(x - 12, y - 4)
+              ..lineTo(x + 12, y - 4)
+              ..lineTo(x + 9, y + 2)
+              ..lineTo(x - 9, y + 2)
+              ..close(),
+            Paint()..color = palette.place.withValues(alpha: 0.8));
+        canvas.drawLine(Offset(x - 9, y + 2), Offset(x - 9, y + 10), line);
+        canvas.drawLine(Offset(x + 9, y + 2), Offset(x + 9, y + 10), line);
+      case 'yard':
+        canvas.drawPath(
+            Path()
+              ..moveTo(x - 14, y + 6)
+              ..quadraticBezierTo(x, y - 12, x + 14, y + 6),
+            line..strokeWidth = 2);
+        canvas.drawLine(
+            Offset(x - 8, y), Offset(x - 8, y - 10), line..strokeWidth = 1.5);
+        canvas.drawLine(Offset(x + 8, y), Offset(x + 8, y - 10), line);
+      case 'cellar':
+        canvas.drawRect(Rect.fromLTWH(x - 10, y - 4, 20, 12), fill);
+        canvas.drawRect(Rect.fromLTWH(x - 10, y - 4, 20, 12), line);
+        canvas.drawLine(Offset(x - 4, y), Offset(x + 4, y), line);
+      case 'field':
+        for (var i = -1; i <= 1; i++) {
+          canvas.drawLine(Offset(x - 12, y + i * 5.0),
+              Offset(x + 12, y + i * 5.0), line..strokeWidth = 1);
+        }
+      case 'slum':
+        final roofs = Paint()..color = palette.place.withValues(alpha: 0.8);
+        canvas.drawRect(Rect.fromLTWH(x - 9, y - 6, 6, 5), roofs);
+        canvas.drawRect(Rect.fromLTWH(x - 1, y - 9, 6, 5), roofs);
+        canvas.drawRect(Rect.fromLTWH(x + 5, y - 3, 6, 5), roofs);
+        canvas.drawRect(Rect.fromLTWH(x - 6, y + 2, 6, 5), roofs);
+    }
   }
 
   @override
   bool shouldRepaint(PlacePlanPainter old) =>
       old.kind != kind ||
+      old.water != water ||
+      old.glyphs.length != glyphs.length ||
       old.seed != seed ||
       old.here != here ||
       old.palette != palette ||

@@ -36,7 +36,8 @@
     "name_fr": "Alster",
     "blurb": "A river city whose harbor is watched by a stone giant older than its walls. It knelt to the Crusade in one evening; every chalked door on Tallow Street is a house emptied of its people.",
     "blurb_fr": "Une ville fluviale dont le port est veillé par un géant de pierre plus vieux que ses murs. Elle a plié le genou devant la Croisade en une soirée ; chaque porte marquée à la craie, rue du Suif, est une maison vidée de ses gens.",
-    "landmark": ""
+    "landmark": "",
+    "water": "river"
   },
   "alster_lower_town": {
     "level": "district",
@@ -49,7 +50,8 @@
       "beggar",
       "alley",
       "hovel"
-    ]
+    ],
+    "glyph": "slum"
   },
   "alster_stone_bridge": {
     "level": "district",
@@ -58,7 +60,8 @@
     "name_fr": "Le Pont de Pierre",
     "blurb": "The quick road across the river, where slum toughs in Inquisition armbands keep a toll booth made from a market stall.",
     "blurb_fr": "La route rapide par-dessus le fleuve, où des durs des bas-quartiers à brassard de l’Inquisition tiennent un péage fait d’un étal de marché.",
-    "landmark": "bridge"
+    "landmark": "bridge",
+    "glyph": "bridge"
   },
   "alster_black_hold": {
     "level": "district",
@@ -67,7 +70,8 @@
     "name_fr": "La Geôle Noire",
     "blurb": "The Inquisition’s prison in Alster: a torture chamber, Wardens built like doors, and the Corpse Chute down to the sewers.",
     "blurb_fr": "La prison de l’Inquisition à Alster : une chambre de torture, des Gardiens bâtis comme des portes, et la Goulotte aux Cadavres qui plonge vers les égouts.",
-    "landmark": "hold"
+    "landmark": "hold",
+    "glyph": "keep"
   },
   "alster_undercroft": {
     "level": "district",
@@ -76,7 +80,8 @@
     "name_fr": "Les Souterrains",
     "blurb": "Alster’s sewers, waist-deep in rot, where a Rat Matriarch holds the main drainage pipe like a landlord.",
     "blurb_fr": "Les égouts d’Alster, de la pourriture jusqu’à la taille, où une Matriarche des rats tient le collecteur principal comme une propriétaire.",
-    "landmark": "sewers"
+    "landmark": "sewers",
+    "glyph": "cellar"
   },
   "alster_high_quay": {
     "level": "district",
@@ -85,7 +90,8 @@
     "name_fr": "Le Haut Quai",
     "blurb": "A quay on stone legs above the harbor, where vessels that should not float ride at their ropes, and where the Lark lifted on the third bell.",
     "blurb_fr": "Un quai sur des jambes de pierre au-dessus du port, où des vaisseaux qui ne devraient pas flotter se balancent au bout de leurs amarres, et d’où l’Alouette s’est élevée au troisième coup de cloche.",
-    "landmark": "docks"
+    "landmark": "docks",
+    "glyph": "quay"
   },
   "the_waste": {
     "level": "country",
@@ -165,7 +171,8 @@
     "name_fr": "Bouche-de-Sel",
     "blurb": "Where the desert comes down to the sea and stops: white walls, a harbor bristling with masts, and a stone giant standing to its knees in the harbor mouth.",
     "blurb_fr": "Là où le désert descend jusqu’à la mer et s’arrête net : des murs blancs, un port hérissé de mâts, et un géant de pierre dans l’eau jusqu’aux genoux à l’entrée du port.",
-    "landmark": ""
+    "landmark": "",
+    "water": "shore"
   },
   "saltmouth_landward_gate": {
     "level": "district",
@@ -174,7 +181,8 @@
     "name_fr": "La Porte de la terre",
     "blurb": "Where the caravans queue in the heat to be searched by the Inquisition, wagon by wagon.",
     "blurb_fr": "Là où les caravanes font la queue sous la chaleur pour être fouillées par l’Inquisition, chariot après chariot.",
-    "landmark": "upper"
+    "landmark": "upper",
+    "glyph": "gate"
   },
   "saltmouth_tern_row": {
     "level": "district",
@@ -183,7 +191,8 @@
     "name_fr": "Tern Row",
     "blurb": "The Tide-Kin quarter over a footbridge, salt-scoured and hung with paper boats, each lit for someone the sea never gave back.",
     "blurb_fr": "Le quartier des Gens de la Marée, de l’autre côté d’une passerelle, rongé par le sel et pavoisé de bateaux de papier, chacun allumé pour quelqu’un que la mer n’a jamais rendu.",
-    "landmark": "tern"
+    "landmark": "tern",
+    "glyph": "market"
   },
   "saltmouth_wharf": {
     "level": "district",
@@ -192,7 +201,8 @@
     "name_fr": "Le Quai des Contrebandiers",
     "blurb": "Saltmouth’s harbor quarter, slick with fish scales and black oil, its net-sheds, tanneries and lantern-lit docks still trading under the Inquisition’s nose.",
     "blurb_fr": "Le quartier du port de Bouche-de-Sel, glissant d’écailles et d’huile noire, dont les remises à filets, les tanneries et les quais aux lanternes commercent encore sous le nez de l’Inquisition.",
-    "landmark": "wharf"
+    "landmark": "wharf",
+    "glyph": "wharf"
   },
   "saltmouth_yard": {
     "level": "district",
@@ -201,7 +211,8 @@
     "name_fr": "Le Chantier des démolisseurs",
     "blurb": "A long shingle beach in the stone giant’s shadow, where Saltmouth takes ships apart and now and then puts one back together.",
     "blurb_fr": "Une longue grève de galets à l’ombre du géant de pierre, où Bouche-de-Sel démonte les navires, et de temps à autre en remonte un.",
-    "landmark": "berths"
+    "landmark": "berths",
+    "glyph": "yard"
   },
   "the_seas": {
     "level": "continent",
@@ -279,7 +290,8 @@
     "name_fr": "Le camp de la crique",
     "blurb": "A fire on the shingle that became a palisade, a sail-loft and a home: your base between every road, and where the Host mustered before the tear.",
     "blurb_fr": "Un feu sur les galets devenu palissade, voilerie et foyer : votre base entre chaque route, et le lieu où l’Ost s’est rassemblé avant la déchirure.",
-    "landmark": "camp"
+    "landmark": "camp",
+    "water": "shore"
   },
   "ashlands": {
     "level": "zone",
@@ -369,7 +381,8 @@
     "name_fr": "Bout-du-Varech",
     "blurb": "Wreckers and weed-cutters in houses built from hulls, whose fish-oil lamps never quite go out, and some of which burn where no pilot wants a light.",
     "blurb_fr": "Des pilleurs d’épaves et des coupeurs de varech dans des maisons bâties avec des coques, dont les lampes à huile de poisson ne s’éteignent jamais tout à fait, et dont certaines brûlent là où aucun pilote ne voudrait de lumière.",
-    "landmark": "wrack"
+    "landmark": "wrack",
+    "water": "shore"
   },
   "the_fen": {
     "level": "zone",
@@ -399,7 +412,8 @@
     "name_fr": "Le Cloître noyé",
     "blurb": "Vaulted arches knee-deep in black water halfway down the Court’s stair, where deserters and refugees keep candles lit above the tide line.",
     "blurb_fr": "Des arches voûtées dans l’eau noire jusqu’aux genoux, à mi-hauteur de l’escalier de la Cour, où déserteurs et réfugiés gardent des chandelles allumées au-dessus de la ligne de marée.",
-    "landmark": "cloister"
+    "landmark": "cloister",
+    "water": "river"
   },
   "hollow_court": {
     "level": "location",
@@ -439,7 +453,8 @@
     "name_fr": "Le Reliquaire Noir",
     "blurb": "The city that keeps every holy thing the Dominion has ever touched, and keeps count. The tear opened in its heart, and its frost went out along every road.",
     "blurb_fr": "La ville qui garde toutes les choses saintes que le Dominion a jamais touchées, et qui tient les comptes. La déchirure s’est ouverte en son cœur, et son givre est parti par toutes les routes.",
-    "landmark": ""
+    "landmark": "",
+    "water": "river"
   },
   "reliquary_quarter": {
     "level": "district",
@@ -448,7 +463,8 @@
     "name_fr": "Le Quartier des Reliquaires",
     "blurb": "Chapels and reliquaries given up street by street to the tear’s slow weather: frost on the cobbles in summer, and shadows that lie the wrong way.",
     "blurb_fr": "Des chapelles et des reliquaires abandonnés rue après rue au lent climat de la déchirure : du givre sur les pavés en été, et des ombres couchées du mauvais côté.",
-    "landmark": "reliquary"
+    "landmark": "reliquary",
+    "glyph": "temple"
   },
   "dead_heart": {
     "level": "district",
@@ -457,7 +473,8 @@
     "name_fr": "Le Cœur mort",
     "blurb": "The square at the city’s heart, its stone gone to glass, where the tear the ledger named hangs in the open air.",
     "blurb_fr": "La place au cœur de la ville, sa pierre changée en verre, où la déchirure que nomme le registre pend en plein air.",
-    "landmark": "heart"
+    "landmark": "heart",
+    "glyph": "void"
   },
   "rimewell": {
     "level": "location",
@@ -507,7 +524,8 @@
     "name_fr": "Le Mouillage Blanc",
     "blurb": "A town built out of the White Fleet by the crusaders who washed up in it: hulls roofed with their own sails, a chapel made from a flagship’s stern, a harbor wall of anchors.",
     "blurb_fr": "Une ville bâtie avec la Flotte Blanche par les croisés qui s’y sont échoués : des coques coiffées de leurs propres voiles, une chapelle faite de la poupe d’un vaisseau amiral, un mur de port fait d’ancres.",
-    "landmark": "anchorage"
+    "landmark": "anchorage",
+    "water": "shore"
   },
   "greyhithe": {
     "level": "location",
@@ -517,7 +535,8 @@
     "name_fr": "Grisegrève",
     "blurb": "A fishing village the tear ate on some other coast and coughed up here, nets in hand and grey in the face.",
     "blurb_fr": "Un village de pêcheurs que la déchirure a dévoré sur une autre côte et recraché ici, filets en main et visages gris.",
-    "landmark": "greyhithe"
+    "landmark": "greyhithe",
+    "water": "shore"
   },
   "white_fleet_grave": {
     "level": "location",
@@ -537,7 +556,8 @@
     "name_fr": "La Rive Creuse",
     "blurb": "Grey sand drawn out of the dead heart, the White Fleet’s wrecks behind the dunes, and across the water the tear, standing open like a door.",
     "blurb_fr": "Un sable gris tiré du cœur mort, les épaves de la Flotte Blanche derrière les dunes, et de l’autre côté de l’eau la déchirure, ouverte comme une porte.",
-    "landmark": "shore"
+    "landmark": "shore",
+    "water": "shore"
   },
   "hollow_shore_battlefield": {
     "level": "district",
@@ -546,7 +566,8 @@
     "name_fr": "Le Champ de bataille",
     "blurb": "The strand between the landing and the waterline, where the Host met the Tear-Herald, and a mile of reflections stood between you and the water.",
     "blurb_fr": "La grève entre le débarquement et le bord de l’eau, où l’Ost a affronté le Héraut de la Déchirure, et où une lieue de reflets se dressait entre vous et l’eau.",
-    "landmark": "battle"
+    "landmark": "battle",
+    "glyph": "field"
   },
   "beyond_the_tear": {
     "level": "district",
@@ -555,7 +576,8 @@
     "name_fr": "Au-delà de la déchirure",
     "blurb": "The far side of the door: no sky, no ground that stays where it is left, and a throne room already forgetting that it was one.",
     "blurb_fr": "L’autre côté de la porte : pas de ciel, pas de sol qui reste là où on le laisse, et une salle du trône qui oublie déjà qu’elle en était une.",
-    "landmark": ""
+    "landmark": "",
+    "glyph": "void"
   },
   "lantern_isles": {
     "level": "continent",
@@ -594,7 +616,8 @@
     "name_fr": "Candlehold",
     "blurb": "The Dominion’s capital, a city grown up around one lamp: white walls climbing from the harbour in steps, and at the top the First Lantern over the Throne.",
     "blurb_fr": "La capitale du Dominion, une ville poussée autour d’une seule lampe : des murs blancs qui montent du port par degrés, et tout en haut la Première Lanterne au-dessus du Trône.",
-    "landmark": "candlehold"
+    "landmark": "candlehold",
+    "water": "shore"
   },
   "candlehold_gates": {
     "level": "district",
@@ -603,7 +626,8 @@
     "name_fr": "Les Portes",
     "blurb": "The harbour chain, the steps and the city’s gates (the Sun, the Anvil, the Reed and the Exorcists’), shut to anyone who comes without a banner.",
     "blurb_fr": "La chaîne du port, les marches et les portes de la ville (du Soleil, de l’Enclume, des Roseaux et des Exorcistes), closes à qui vient sans bannière.",
-    "landmark": ""
+    "landmark": "",
+    "glyph": "gate"
   },
   "candlehold_lantern_hall": {
     "level": "district",
@@ -612,6 +636,7 @@
     "name_fr": "La Salle de la Lanterne",
     "blurb": "The hall at the top of the stair, under the First Lantern, where the Throne waits and whoever holds the doors must be faced.",
     "blurb_fr": "La salle en haut de l’escalier, sous la Première Lanterne, où attend le Trône et où il faut affronter qui en tient les portes.",
-    "landmark": ""
+    "landmark": "",
+    "glyph": "hall"
   }
 }

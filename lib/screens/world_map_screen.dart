@@ -95,7 +95,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
   int _chapterFilter = 0;
 
   /// The geography the chart is drawn on (see map_charts.dart).
-  ChartGeography _geo = chartOf(MapShape.continental);
+  ChartGeography _geo = chartOf(MapShape.archipelago);
 
   final TransformationController _view = TransformationController();
   late final AnimationController _zoom = AnimationController(

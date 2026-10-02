@@ -1,6 +1,7 @@
 import '../combat/skill_vfx.dart';
 import '../data/companion_remarks.dart' show remarkTriggerOptions;
-import '../data/geography.dart' show BiomePattern, GeoLevel, geoKinds;
+import '../data/geography.dart'
+    show BiomePattern, GeoLevel, geoGlyphs, geoKinds;
 import '../data/signs.dart'
     show PatronKind, SignEffectKind, SignSlot, patronIconNames;
 import 'field_schema.dart';
@@ -2904,6 +2905,18 @@ final DbSchema geographySchema = DbSchema(
       label: 'Kind (locations only)',
       type: FieldType.enumeration,
       enumOptions: ['', ...geoKinds],
+    ),
+    FieldSchema(
+      key: 'water',
+      label: 'Water (locations only): a river through it, or a shore',
+      type: FieldType.enumeration,
+      enumOptions: ['', 'river', 'shore'],
+    ),
+    FieldSchema(
+      key: 'glyph',
+      label: 'Glyph (districts only): drawn on the Journey map',
+      type: FieldType.enumeration,
+      enumOptions: ['', ...geoGlyphs],
     ),
     FieldSchema(
       key: 'landmark',

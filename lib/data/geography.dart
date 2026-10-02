@@ -35,6 +35,14 @@ const List<String> geoKinds = [
   'sea',
 ];
 
+/// What a district is drawn as on the Journey map (v1.199): a bridge, a
+/// keep, a quay, a cellar, a gate, a market, a wharf, a ship-yard, a
+/// temple, the tear's void, a hall, a field or packed slum roofs.
+const List<String> geoGlyphs = [
+  'bridge', 'keep', 'quay', 'cellar', 'gate', 'market', 'wharf', 'yard', //
+  'temple', 'void', 'hall', 'field', 'slum',
+];
+
 /// How the Journey map paints a biome's ground under a place (see
 /// BiomeBackdropPainter): [id] as biomes.json writes it.
 enum BiomePattern {
@@ -255,6 +263,8 @@ class GeoPlace {
     this.biome = '',
     this.ruler = '',
     this.kind = '',
+    this.water = '',
+    this.glyph = '',
     this.landmarks = const [],
   });
 
@@ -280,6 +290,8 @@ class GeoPlace {
       biome: level == GeoLevel.zone ? _text(raw, 'biome') : '',
       ruler: level == GeoLevel.country ? _text(raw, 'ruler') : '',
       kind: level == GeoLevel.location ? _text(raw, 'kind') : '',
+      water: level == GeoLevel.location ? _text(raw, 'water') : '',
+      glyph: level == GeoLevel.district ? _text(raw, 'glyph') : '',
       landmarks: landmarks.toList(),
     );
   }
@@ -302,6 +314,14 @@ class GeoPlace {
 
   /// A location's kind (see [geoKinds]).
   final String kind;
+
+  /// A location's water (v1.199): 'river' through it, 'shore' beside it,
+  /// or ''. The Journey draws it.
+  final String water;
+
+  /// A district's glyph (see [geoGlyphs]), drawn over its way on the
+  /// Journey map (v1.199).
+  final String glyph;
 
   /// The world_map.dart landmarks that lie here.
   final List<String> landmarks;
