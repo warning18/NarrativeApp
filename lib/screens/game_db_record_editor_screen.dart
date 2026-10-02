@@ -38,7 +38,15 @@ class _GameDbRecordEditorScreenState
   @override
   void initState() {
     super.initState();
-    final record = widget.initialRecord ?? <String, dynamic>{};
+    final record = {...?widget.initialRecord};
+    // A file keyed by id whose records don't repeat it (geography.json,
+    // biomes.json): the key fills in the id field.
+    final key = widget.recordKey;
+    if (key != null &&
+        key.isNotEmpty &&
+        (record[widget.schema.primaryKeyField]?.toString() ?? '').isEmpty) {
+      record[widget.schema.primaryKeyField] = key;
+    }
     for (final field in widget.schema.fields) {
       final value = record[field.key];
       switch (field.type) {

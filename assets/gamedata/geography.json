@@ -1,0 +1,31 @@
+{
+  "old_continent": {
+    "level": "continent",
+    "parent": "",
+    "name": "The Old Continent",
+    "name_fr": "l’Ancien Continent",
+    "blurb": "The land the story starts in: Alster’s vale, the Waste beyond it and the salt coast.",
+    "blurb_fr": "La terre où tout commence : le val d’Alster, la Désolation au-delà et la côte de sel.",
+    "landmark": ""
+  },
+  "alster_marches": {
+    "level": "country",
+    "parent": "old_continent",
+    "ruler": "dominion",
+    "name": "The Alster Marches",
+    "name_fr": "les Marches d’Alster",
+    "blurb": "Alster and the farms around it, under the Lantern Dominion’s banner since the invasion.",
+    "blurb_fr": "Alster et les fermes alentour, sous la bannière du Dominion de la Lanterne depuis l’invasion.",
+    "landmark": ""
+  },
+  "alster_vale": {
+    "level": "zone",
+    "parent": "alster_marches",
+    "biome": "temperate",
+    "name": "The Alster Vale",
+    "name_fr": "le Val d’Alster",
+    "blurb": "A green river valley, and the city at its heart.",
+    "blurb_fr": "Une vallée verte arrosée par la rivière, et la ville en son cœur.",
+    "landmark": ""
+  }
+}

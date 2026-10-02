@@ -1,0 +1,256 @@
+{
+  "temperate": {
+    "name": "Temperate",
+    "name_fr": "Tempéré",
+    "blurb": "Green hills, slow rivers and old fields, where the seasons still keep their order.",
+    "blurb_fr": "Des collines vertes, des rivières lentes et de vieux champs, où les saisons gardent encore leur ordre.",
+    "fauna": [
+      {
+        "name": "Warhound",
+        "name_fr": "Chien de guerre",
+        "note": "Bred for the Dominion’s wars; the strays hunt the hedgerows now.",
+        "note_fr": "Élevé pour les guerres du Dominion ; les errants chassent dans les haies."
+      },
+      {
+        "name": "Harbour rat",
+        "name_fr": "Rat des quais",
+        "note": "Fat on the city’s grain stores, bold enough to bite a boot.",
+        "note_fr": "Gras des greniers de la ville, assez hardi pour mordre une botte."
+      },
+      {
+        "name": "Grey heron",
+        "name_fr": "Héron gris",
+        "note": "Stands in the shallows like a sentry nobody relieved.",
+        "note_fr": "Se tient dans les hauts-fonds comme une sentinelle jamais relevée."
+      },
+      {
+        "name": "Red fox",
+        "name_fr": "Renard roux",
+        "note": "Raids the farms the soldiers emptied.",
+        "note_fr": "Pille les fermes que les soldats ont vidées."
+      },
+      {
+        "name": "Rook",
+        "name_fr": "Freux",
+        "note": "Gathers in hundreds over the fields after a battle.",
+        "note_fr": "Se rassemble par centaines au-dessus des champs après une bataille."
+      },
+      {
+        "name": "Wild boar",
+        "name_fr": "Sanglier",
+        "note": "Turns the abandoned orchards over for windfalls.",
+        "note_fr": "Retourne les vergers abandonnés en quête de fruits tombés."
+      }
+    ],
+    "flora": [
+      {
+        "name": "Oak",
+        "name_fr": "Chêne",
+        "note": "Old oaks mark the boundaries; some are older than the Dominion.",
+        "note_fr": "De vieux chênes marquent les limites ; certains ont vu naître le Dominion."
+      },
+      {
+        "name": "Barley",
+        "name_fr": "Orge",
+        "note": "The vale’s crop, half of it burned this year.",
+        "note_fr": "La récolte du val, à moitié brûlée cette année."
+      },
+      {
+        "name": "Hawthorn",
+        "name_fr": "Aubépine",
+        "note": "Whole hedges of it; travellers tie ribbons to the oldest.",
+        "note_fr": "Des haies entières ; on noue des rubans aux plus vieilles."
+      },
+      {
+        "name": "Nettle",
+        "name_fr": "Ortie",
+        "note": "Grows thick where houses fell.",
+        "note_fr": "Pousse dru là où les maisons sont tombées."
+      },
+      {
+        "name": "Willow",
+        "name_fr": "Saule",
+        "note": "Leans over every ford.",
+        "note_fr": "Se penche sur chaque gué."
+      },
+      {
+        "name": "Heather",
+        "name_fr": "Bruyère",
+        "note": "Purple on the high ground in late summer.",
+        "note_fr": "Violette sur les hauteurs à la fin de l’été."
+      }
+    ],
+    "weather": [
+      {
+        "name": "Drizzle",
+        "name_fr": "Bruine"
+      },
+      {
+        "name": "Morning fog",
+        "name_fr": "Brouillard matinal"
+      },
+      {
+        "name": "Summer storm",
+        "name_fr": "Orage d’été"
+      }
+    ],
+    "hazards": [
+      {
+        "id": "flooded_ford",
+        "name": "Flooded ford",
+        "name_fr": "Gué en crue",
+        "text": "The river had risen in the night and swallowed the ford. I watched a drowned cart turn slowly in the current.",
+        "text_fr": "La rivière avait monté pendant la nuit et englouti le gué. Je regardai une charrette noyée tourner lentement dans le courant.",
+        "push": "Wade across",
+        "push_fr": "Traverser à gué",
+        "wait": "Wait for the water to drop",
+        "wait_fr": "Attendre la décrue"
+      },
+      {
+        "id": "thick_fog",
+        "name": "Thick fog",
+        "name_fr": "Brouillard épais",
+        "text": "Fog came down off the hills and swallowed the road. I could not see my own hands, and something moved in it.",
+        "text_fr": "Le brouillard descendit des collines et avala la route. Je ne voyais plus mes propres mains, et quelque chose y bougeait.",
+        "push": "Walk on blind",
+        "push_fr": "Avancer à l’aveugle",
+        "wait": "Wait for it to lift",
+        "wait_fr": "Attendre qu’il se lève"
+      }
+    ],
+    "palette": {
+      "ground": "#8FA36B",
+      "detail": "#5E7444",
+      "accent": "#C9D6A3",
+      "water": "#4F8FA8"
+    },
+    "pattern": "fields"
+  },
+  "desert": {
+    "name": "Desert",
+    "name_fr": "Désert",
+    "blurb": "Sand to the edge of the sky, and wells worth more than gold.",
+    "blurb_fr": "Du sable jusqu’au bord du ciel, et des puits qui valent plus que l’or.",
+    "fauna": [
+      {
+        "name": "Sand viper",
+        "name_fr": "Vipère des sables",
+        "note": "Sleeps in the lee of the dunes and strikes at shadows.",
+        "note_fr": "Dort à l’abri des dunes et frappe les ombres."
+      },
+      {
+        "name": "Dune beetle",
+        "name_fr": "Scarabée des dunes",
+        "note": "Drinks the dawn mist off its own back.",
+        "note_fr": "Boit la brume de l’aube sur son propre dos."
+      },
+      {
+        "name": "Carrion vulture",
+        "name_fr": "Vautour charognard",
+        "note": "Follows caravans that look tired.",
+        "note_fr": "Suit les caravanes qui semblent fatiguées."
+      },
+      {
+        "name": "Sand fox",
+        "name_fr": "Fennec",
+        "note": "All ears, and out only at night.",
+        "note_fr": "Tout en oreilles, et ne sort que la nuit."
+      },
+      {
+        "name": "Salt camel",
+        "name_fr": "Chameau de sel",
+        "note": "Carries the wells’ water and complains about it.",
+        "note_fr": "Porte l’eau des puits et s’en plaint."
+      },
+      {
+        "name": "Glass scorpion",
+        "name_fr": "Scorpion de verre",
+        "note": "Clear as a bead: you see its sting before the rest of it.",
+        "note_fr": "Transparent comme une perle : on voit son dard avant le reste."
+      }
+    ],
+    "flora": [
+      {
+        "name": "Thornbush",
+        "name_fr": "Buisson d’épines",
+        "note": "Holds the dunes in place, and anyone who brushes it.",
+        "note_fr": "Retient les dunes, et quiconque l’effleure."
+      },
+      {
+        "name": "Date palm",
+        "name_fr": "Palmier dattier",
+        "note": "Grows only where a well does.",
+        "note_fr": "Ne pousse que là où il y a un puits."
+      },
+      {
+        "name": "Ghost grass",
+        "name_fr": "Herbe fantôme",
+        "note": "Pale tufts that hum when the wind is right.",
+        "note_fr": "Des touffes pâles qui bourdonnent quand le vent s’y prête."
+      },
+      {
+        "name": "Stoneflower",
+        "name_fr": "Fleur de pierre",
+        "note": "A cactus that passes for a rock until it blooms.",
+        "note_fr": "Un cactus qui passe pour un caillou jusqu’à sa floraison."
+      },
+      {
+        "name": "Saltbush",
+        "name_fr": "Arroche",
+        "note": "Grey leaves that taste of the sea.",
+        "note_fr": "Des feuilles grises au goût de mer."
+      },
+      {
+        "name": "Desert rose",
+        "name_fr": "Rose des sables",
+        "note": "Not a flower: crystals the sand grows in the dark.",
+        "note_fr": "Pas une fleur : des cristaux que le sable fait pousser dans le noir."
+      }
+    ],
+    "weather": [
+      {
+        "name": "Scorching noon",
+        "name_fr": "Midi brûlant"
+      },
+      {
+        "name": "Freezing night",
+        "name_fr": "Nuit glaciale"
+      },
+      {
+        "name": "Dust haze",
+        "name_fr": "Brume de poussière"
+      }
+    ],
+    "hazards": [
+      {
+        "id": "sandstorm",
+        "name": "Sandstorm",
+        "name_fr": "Tempête de sable",
+        "text": "The horizon turned brown and came at us. Sand filled my mouth, and the road was gone before I could shout.",
+        "text_fr": "L’horizon vira au brun et fondit sur nous. Le sable m’emplit la bouche, et la route disparut avant que je puisse crier.",
+        "push": "Push on through the sand",
+        "push_fr": "Avancer dans le sable",
+        "wait": "Shelter until it passes",
+        "wait_fr": "Vous abriter jusqu’à ce qu’elle passe"
+      },
+      {
+        "id": "killing_heat",
+        "name": "Killing heat",
+        "name_fr": "Chaleur mortelle",
+        "text": "By noon the air shook over the sand, and the water in our skins was warm as blood. Every step rang in my head.",
+        "text_fr": "À midi, l’air tremblait au-dessus du sable, et l’eau de nos outres était tiède comme du sang. Chaque pas me résonnait dans la tête.",
+        "push": "March through the heat",
+        "push_fr": "Marcher sous la chaleur",
+        "wait": "Rest in the shade until dusk",
+        "wait_fr": "Vous reposer à l’ombre jusqu’au soir"
+      }
+    ],
+    "palette": {
+      "ground": "#C9A86A",
+      "detail": "#9C7B45",
+      "accent": "#E8D7A8",
+      "water": "#4F8FA8"
+    },
+    "pattern": "dunes"
+  }
+}

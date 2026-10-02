@@ -425,6 +425,7 @@ class StoryNode {
     this.timeoutChoice = 0,
     this.noDetour = false,
     this.politicsOnEnter,
+    this.location,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -461,8 +462,16 @@ class StoryNode {
       timeoutChoice: (json['timeout_choice'] as num?)?.toInt() ?? 0,
       noDetour: json['noDetour'] as bool? ?? false,
       politicsOnEnter: StoryPolitics.tryParse(json['politicsOnEnter']),
+      location: json['location']?.toString(),
     );
   }
+
+  /// Where this scene happens (v1.197): a location or district id of
+  /// geography.json (see geography.dart), the most specific place there
+  /// is. '' says it happens nowhere (the prologue, the making of the
+  /// character); null (no `location` in the file) leaves it to the scene's
+  /// landmark (see Geography.placeOfNode).
+  final String? location;
 
   /// What entering this scene does to the coast (v1.195, see
   /// story_politics.dart), once however often it is entered.
@@ -696,6 +705,8 @@ class StoryNode {
             if (mood != null) 'mood': mood,
             if (speaker != null) 'speaker': speaker,
           },
+        // Where the story file keeps it: after the taxonomy (v1.197).
+        if (location != null) 'location': location,
         if (scriptTrigger != null && scriptTrigger!.isNotEmpty)
           'automations': {'script_trigger': scriptTrigger},
         if (authoringComment != null && authoringComment!.isNotEmpty)

@@ -19,6 +19,7 @@ import '../data/echoes.dart';
 import '../data/journey_rules.dart';
 import '../data/recurring_encounters.dart';
 import '../data/road_events.dart';
+import '../data/road_hazards.dart';
 import '../data/encounter_text.dart';
 import '../data/factions.dart' show CoastNews;
 import '../data/map_themes.dart';
@@ -49,6 +50,7 @@ import '../providers/discovery_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/finished_story_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart';
 import '../providers/elevenlabs_tts_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/map_theme_provider.dart';
@@ -1398,6 +1400,13 @@ Future<void> _selectChoice({
       await showApprovalReactions(context, ref, reactions);
     }
   }
+  // A hazard on the road (v1.197): pushed through, the companions take
+  // the wound the character took; waited out, a day goes by on the road.
+  if (isExcursion && isHazardPush(choice) && choice.healAmount < 0) {
+    await woundCompanionsOnRoad(ref, -choice.healAmount);
+  } else if (isExcursion && isHazardWait(choice)) {
+    await walkRoadStep(ref, watches: watchesPerDay);
+  }
   // What the choice does to the coast (v1.195), once: taken again, or
   // after going back, it moves nothing.
   if (choice.hasPolitics && !skipRewardEffects && !isExcursion) {
@@ -1589,6 +1598,10 @@ Future<List<StoryNode>?> roadEventOn(
   if (ref.read(appModeProvider) == AppMode.edit) return null;
   final chapter = ref.read(reachedChapterProvider);
   final condition = ref.read(chapterConditionProvider);
+  // The land the road runs through (v1.197): its hazards, and the foes
+  // that live there.
+  final biome =
+      (await loadGeography(ref)).roadBiome(story, fromNodeId, toNodeId);
   final event = roadEventFor(
     story: story,
     fromNodeId: fromNodeId,
@@ -1598,14 +1611,19 @@ Future<List<StoryNode>?> roadEventOn(
     oddsFactor: condition?.roadEventOdds ?? 1,
     championShare: condition?.championShare ?? 0.4,
     shrineShare: condition?.shrineShare ?? 0.3,
+    hazardShare: hazardShareFor(biome),
   );
   if (event == null) return null;
   final enemies = await loadedGameDb(ref, enemiesSchema);
   return roadEventChain(
     event,
     chapter: chapter,
-    enemyPool: championPoolFor(enemies, chapter),
+    enemyPool: championPoolFor(enemies, chapter, biome: biome?.id),
     seed: stableHash('$fromNodeId>$toNodeId#$historyLength'),
+    hazard: roadHazardFor(biome,
+        fromNodeId: fromNodeId,
+        toNodeId: toNodeId,
+        historyLength: historyLength),
   );
 }
 

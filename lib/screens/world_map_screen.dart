@@ -9,6 +9,7 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/chart_map_painter.dart';
+import '../widgets/geography_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/map_charts.dart';
@@ -17,6 +18,7 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart';
 import '../providers/map_look_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
@@ -861,6 +863,12 @@ class _LandmarkPanel extends ConsumerWidget {
           child: Text(text, style: pixel(15, color: tokens.muted)),
         );
 
+    // The landmark among the world's places (v1.197, see geography.dart).
+    final world = ref.watch(geographyProvider);
+    final place = world.placeOfLandmark(landmark.id);
+    final lands = world.pathOf(place?.id);
+    final biome = world.biomeOf(place?.id);
+
     Widget tag(String text, {Color? border}) => Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
           decoration: BoxDecoration(
@@ -917,6 +925,28 @@ class _LandmarkPanel extends ConsumerWidget {
                       style: pixel(15, color: tokens.accent)),
                 ],
               ),
+            ),
+          // Where it lies (v1.197): its lands, each a tap from This land,
+          // and its land's biome.
+          if (lands.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            GeoBreadcrumb(
+              key: const Key('world_map_crumbs'),
+              path: lands,
+              french: language == AppLanguage.fr,
+              colour: tokens.muted,
+              strong: tokens.ink,
+              fontFamily: _textFont,
+              fontSize: 14,
+              onTap: (place) => showThisLand(context, place.id),
+            ),
+          ],
+          if (biome != null)
+            Padding(
+              key: const Key('world_map_biome'),
+              padding: const EdgeInsets.only(top: 4),
+              child: tag(biome.nameFor(language == AppLanguage.fr),
+                  border: const Color(0xFF4F7A4A)),
             ),
           const SizedBox(height: 10),
           Text(
