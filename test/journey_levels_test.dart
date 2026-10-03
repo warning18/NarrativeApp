@@ -94,10 +94,11 @@ void main() {
     play.jumpTo('2005');
     await _settle(tester);
 
-    // The story so far, in a line under the map, opens its page: where
-    // the party stands, now, the threads.
-    expect(find.byKey(const ValueKey('journey_sofar')), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('journey_sofar')));
+    // The story so far opens from the journal button by the stats: where
+    // the party stands, now, the threads (v1.201: no strip under the map).
+    expect(find.byKey(const ValueKey('journey_sofar')), findsNothing);
+    expect(find.byKey(const Key('journey_level_place')), findsNothing);
+    await tester.tap(find.byTooltip('The story so far'));
     await _settle(tester);
     expect(find.byType(JournalScreen), findsOneWidget);
     expect(find.byKey(const ValueKey('sofar_page')), findsOneWidget);
@@ -107,17 +108,30 @@ void main() {
     await tester.pageBack();
     await _settle(tester);
 
-    // Land and World look out at the chart under the fog; the place's
-    // steps wait behind Here.
-    await tester.tap(find.byKey(const Key('journey_level_world')));
+    // The − button on the streets looks out at the land under the fog
+    // (v1.201: the levels are zoomed between); the steps wait behind.
+    await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byType(JourneyWorldMap), findsOneWidget);
     expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
     expect(find.byKey(const ValueKey('journey_level_hint')), findsOneWidget);
-    await tester.tap(find.byKey(const Key('journey_zoom_in')));
+    await tester.tap(find.byKey(const Key('journey_zoom_out')));
     await tester.pump();
     await tester.tap(find.byKey(const Key('journey_recentre')));
     await tester.pump();
+    // Zoomed in as far as the chart goes, on the party's place, the
+    // streets come back; − looks out again.
+    for (var i = 0;
+        i < 8 && find.byKey(const Key('journey_zoom_in')).evaluate().isNotEmpty;
+        i++) {
+      await tester.tap(find.byKey(const Key('journey_zoom_in')));
+      await tester.pump();
+    }
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byType(JourneyWorldMap), findsOneWidget);
 
     // The calques: the clans' influence over the lands, with its legend;
     // the choice is kept.
@@ -151,19 +165,25 @@ void main() {
     await tester.pump();
     await tester.tap(find.byKey(const Key('journey_recentre')));
     await tester.pump();
+    // A tap on the party's own place, on the sphere as on the chart, is
+    // the streets again (v1.201).
     await tester.tap(globe);
     await tester.pump(const Duration(milliseconds: 400));
-    expect(find.byKey(const ValueKey('journey_looked_upper')), findsOneWidget);
+    expect(globe, findsNothing);
+    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(globe, findsOneWidget);
     await tester.runAsync(
         () => container.read(chartGlobeProvider.notifier).choose(false));
     await _settle(tester);
     expect(globe, findsNothing);
-
-    await tester.tap(find.byKey(const Key('journey_level_land')));
-    await tester.pump(const Duration(milliseconds: 300));
     expect(find.byType(JourneyWorldMap), findsOneWidget);
-    await tester.tap(find.byKey(const Key('journey_level_place')));
+    await tester.tap(find.byKey(const Key('journey_recentre')));
+    await tester.pump();
+    await tester.tapAt(tester.getRect(find.byType(JourneyWorldMap)).center);
     await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byKey(const ValueKey('journey_world_canvas')), findsNothing);
     expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
     final error = tester.takeException();
     expect(error, isNull,

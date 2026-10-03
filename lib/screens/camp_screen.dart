@@ -37,6 +37,7 @@ import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/camp_town_section.dart';
 import '../widgets/bounty_board.dart';
+import '../widgets/ink_fold.dart';
 import '../widgets/coast_news.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/quest_tracker.dart';
@@ -172,36 +173,51 @@ class CampScreen extends ConsumerWidget {
     ].join(' · ');
 
     final List<Widget> tabContent = switch (tab) {
+      // Each section folds (v1.201), the fold kept for the session.
       CampTab.road => [
-          if (campNode != null) ...[
-            section(tr(ref, 'places_section')),
-            if (places.isEmpty)
-              Text(tr(ref, 'places_empty'),
-                  style: theme.textTheme.bodyMedium
-                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant))
-            else
-              for (final place in places) PlaceCard(place: place),
-          ],
-          section(tr(ref, 'camp_expeditions_section')),
-          if (shoreZoneIds.isEmpty)
-            Text(tr(ref, 'no_zones_available'))
-          else
-            for (final zoneId in shoreZoneIds)
-              ZoneCard(
-                zoneId: zoneId,
-                zone: zones[zoneId] as Map<String, dynamic>,
-                zones: zones,
-                enemies: ref.watch(localizedDbProvider(enemiesSchema)).value ??
-                    const <String, dynamic>{},
-                enabled: !busy,
-                onBegin: () => launchExpedition(context, ref, zoneId,
-                    zones[zoneId] as Map<String, dynamic>),
-              ),
-          if (campNode != null) ...[
+          if (campNode != null)
+            InkFold(
+              id: 'camp_places',
+              title: tr(ref, 'places_section'),
+              count: places.length,
+              children: [
+                if (places.isEmpty)
+                  Text(tr(ref, 'places_empty'),
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(color: theme.colorScheme.onSurfaceVariant))
+                else
+                  for (final place in places) PlaceCard(place: place),
+              ],
+            ),
+          InkFold(
+            id: 'camp_expeditions',
+            title: tr(ref, 'camp_expeditions_section'),
+            count: shoreZoneIds.length,
+            children: [
+              if (shoreZoneIds.isEmpty)
+                Text(tr(ref, 'no_zones_available'))
+              else
+                for (final zoneId in shoreZoneIds)
+                  ZoneCard(
+                    zoneId: zoneId,
+                    zone: zones[zoneId] as Map<String, dynamic>,
+                    zones: zones,
+                    enemies:
+                        ref.watch(localizedDbProvider(enemiesSchema)).value ??
+                            const <String, dynamic>{},
+                    enabled: !busy,
+                    onBegin: () => launchExpedition(context, ref, zoneId,
+                        zones[zoneId] as Map<String, dynamic>),
+                  ),
+            ],
+          ),
+          if (campNode != null)
             // Short goals for ordinary fights, paid at the camp (v1.162).
-            section(tr(ref, 'bounty_board_section')),
-            const BountyBoard(),
-          ],
+            InkFold(
+              id: 'camp_bounties',
+              title: tr(ref, 'bounty_board_section'),
+              children: const [BountyBoard()],
+            ),
         ],
       // The camp's town on the cliff: what has been built, and the tray
       // to build more. A house tied to a companion waits for them.
@@ -239,32 +255,38 @@ class CampScreen extends ConsumerWidget {
                   )
                 : null,
           ),
-          section(tr(ref, 'boutiques_section')),
-          if (boutiqueShopIds.isEmpty)
-            Text(tr(ref, 'no_boutiques_yet'))
-          else
-            for (final shopId in boutiqueShopIds)
-              Card(
-                child: ListTile(
-                  leading: ShopPixelIcon(shopId),
-                  title: Text(
-                      (shops[shopId] as Map<String, dynamic>)['shopName']
-                              ?.toString() ??
-                          shopId),
-                  subtitle: Text(
-                      (shops[shopId] as Map<String, dynamic>)['shopDescription']
+          InkFold(
+            id: 'camp_boutiques',
+            title: tr(ref, 'boutiques_section'),
+            count: boutiqueShopIds.length,
+            children: [
+              if (boutiqueShopIds.isEmpty)
+                Text(tr(ref, 'no_boutiques_yet'))
+              else
+                for (final shopId in boutiqueShopIds)
+                  Card(
+                    child: ListTile(
+                      leading: ShopPixelIcon(shopId),
+                      title: Text(
+                          (shops[shopId] as Map<String, dynamic>)['shopName']
+                                  ?.toString() ??
+                              shopId),
+                      subtitle: Text((shops[shopId]
+                                  as Map<String, dynamic>)['shopDescription']
                               ?.toString() ??
                           ''),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => ShopDetailScreen(
-                          shopId: shopId,
-                          shop: shops[shopId] as Map<String, dynamic>),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => ShopDetailScreen(
+                              shopId: shopId,
+                              shop: shops[shopId] as Map<String, dynamic>),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
+            ],
+          ),
         ],
       CampTab.party => [
           section(tr(ref, 'camp_party_section'),

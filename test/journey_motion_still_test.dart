@@ -12,7 +12,6 @@ import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/home_tab_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
-import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/widgets/journey_fx.dart';
 
 Future<void> _settle(WidgetTester tester) async {

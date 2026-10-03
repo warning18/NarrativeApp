@@ -621,7 +621,8 @@ class StoryMapPage extends ConsumerWidget {
 /// Back to the story after a jump or an autoplay from the map: the Story
 /// tab, and the map page closed when the map is one.
 void _leaveMap(BuildContext context, WidgetRef ref) {
-  ref.read(homeTabIndexProvider.notifier).state = 0;
+  ref.read(homeTabIndexProvider.notifier).state =
+      storyTabIndex(ref.read(appModeProvider));
   if (context.findAncestorWidgetOfExactType<StoryMapPage>() != null) {
     Navigator.of(context).pop();
   }

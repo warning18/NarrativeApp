@@ -15,7 +15,7 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/game_icons.dart';
 import '../data/offers.dart' show OfferSource;
-import '../widgets/clan_widgets.dart';
+import '../widgets/ink_fold.dart';
 import '../widgets/offer_dialog.dart';
 import '../widgets/perk_list.dart';
 import '../widgets/sign_widgets.dart';
@@ -342,13 +342,29 @@ class _CharacterHeader extends ConsumerWidget {
             child: OffersPanel(),
           ),
         ),
-        // Titles (see offers.dart): the ones held, and the one worn.
+        // Titles (see offers.dart): the ones held, and the one worn;
+        // folded to the one worn (v1.201).
         const SizedBox(height: 14),
-        const Card(
-          key: Key('character_titles'),
+        Card(
+          key: const Key('character_titles'),
           child: Padding(
-            padding: EdgeInsets.all(12),
-            child: TitlesSection(),
+            padding: const EdgeInsets.all(12),
+            child: InkFold(
+              id: 'character_titles',
+              dense: true,
+              initiallyFolded: true,
+              title: tr(ref, 'titles_section'),
+              count: session.heldTitleIds.length,
+              trailing: activeTitleName(ref).isEmpty
+                  ? null
+                  : Padding(
+                      padding: const EdgeInsets.only(right: 6),
+                      child: Text(activeTitleName(ref),
+                          style: theme.textTheme.labelMedium?.copyWith(
+                              color: ink.gold, fontStyle: FontStyle.italic)),
+                    ),
+              children: const [TitlesSection(header: false)],
+            ),
           ),
         ),
         // Perk ranks (see perks.dart): the Wayfarer's gifts.
@@ -377,16 +393,7 @@ class _CharacterHeader extends ConsumerWidget {
             child: SignsSection(),
           ),
         ),
-        // Clans (see factions.dart): where the character stands with the
-        // coast.
-        const SizedBox(height: 14),
-        const Card(
-          key: Key('character_clans'),
-          child: Padding(
-            padding: EdgeInsets.all(12),
-            child: ClansSection(),
-          ),
-        ),
+        // The clans (v1.201): on the Clans screen, top right, not here.
         const SizedBox(height: 14),
         TutorialTarget(
           id: 'character.abilities',

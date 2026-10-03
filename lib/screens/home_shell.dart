@@ -106,7 +106,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     // Reset to the Story tab whenever the mode changes, so a stale index
     // from the other mode's tab list never points at the wrong page.
     ref.listen<AppMode>(appModeProvider, (previous, next) {
-      ref.read(homeTabIndexProvider.notifier).state = 0;
+      ref.read(homeTabIndexProvider.notifier).state = storyTabIndex(next);
     });
     // A quest in progress whose goal is reached says so once, in play;
     // during a fight it waits for the fight to end.
@@ -214,16 +214,30 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     // While the story stands at the camp its tabs are closed: the tabs are
     // Camp, Character and Other, and the Story tab's index means the camp.
     final storyHidden = !isEditMode && ref.watch(partyAtCampProvider);
+    // In play the story is followed on the Journey (v1.201: no Story
+    // tab); the reader stays index 0 for Edit Mode and the ending.
     final visibleTabs = isEditMode
         ? const [0, 1, 2, 3]
         : storyHidden
             ? const [_campTab, 1, 3]
-            : const [0, journeyTabIndex, 1, 2, 3];
+            : const [journeyTabIndex, 1, 2, 3];
     var index = ref.watch(homeTabIndexProvider).clamp(0, screens.length - 1);
-    if (!visibleTabs.contains(index)) index = isEditMode ? 0 : _campTab;
-    if (!isEditMode && (index == 0 || index == journeyTabIndex)) {
-      _storyTab = index;
+    if (!visibleTabs.contains(index)) {
+      index = isEditMode
+          ? 0
+          : storyHidden
+              ? _campTab
+              : journeyTabIndex;
+      // Written back, so what reads the index (a scene's clock, the
+      // tours) sees the tab that is shown.
+      final shown = index;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final notifier = ref.read(homeTabIndexProvider.notifier);
+        if (!visibleTabs.contains(notifier.state)) notifier.state = shown;
+      });
     }
+    if (!isEditMode && index == journeyTabIndex) _storyTab = index;
     final canLeave = Navigator.of(context).canPop();
     final badges = ref.watch(tabBadgesProvider);
 

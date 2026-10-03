@@ -76,7 +76,11 @@ void main() {
     expect(tester.takeException(), isNull);
     final bar = find.byType(NavigationBar, skipOffstage: false);
     expect(find.byType(NavigationDestination, skipOffstage: false),
-        findsNWidgets(5));
+        findsNWidgets(4));
+    expect(
+        find.descendant(
+            of: bar, matching: find.text('Story', skipOffstage: false)),
+        findsNothing);
     for (final label in ['Journey', 'Character', 'Camp', 'Other']) {
       expect(
           find.descendant(

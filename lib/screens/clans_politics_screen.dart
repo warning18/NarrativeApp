@@ -19,6 +19,7 @@ import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
 import '../providers/signs_provider.dart';
 import '../widgets/clan_widgets.dart';
+import '../widgets/throne_widgets.dart';
 import '../widgets/coast_news.dart';
 import '../widgets/offer_dialog.dart';
 import '../widgets/sign_widgets.dart';
@@ -215,6 +216,9 @@ class _PlayStanding extends ConsumerWidget {
         Text(tr(ref, 'clans_section_hint'),
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        // The climb (v1.201: here, now the Character tab's Clans card is
+        // gone).
+        const ClimbCard(),
         for (final faction in data.clans) FactionStandingCard(faction: faction),
         if (tribes.isNotEmpty) ...[
           _sectionLabel(context, tr(ref, 'clans_tribes_label')),

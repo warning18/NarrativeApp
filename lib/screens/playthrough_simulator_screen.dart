@@ -35,6 +35,7 @@ import '../models/story_node.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/geography_provider.dart';
+import '../providers/app_mode_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/settings_providers.dart';
 import '../providers/story_providers.dart';
@@ -1347,7 +1348,8 @@ class _PlaythroughSimulatorScreenState
     // switching the tab alone leaves it invisible underneath both until
     // they're popped back to the root.
     if (result.stepsApplied > 0) {
-      ref.read(homeTabIndexProvider.notifier).state = 0;
+      ref.read(homeTabIndexProvider.notifier).state =
+          storyTabIndex(ref.read(appModeProvider));
       Navigator.of(context).popUntil(isGameRoute);
     }
   }

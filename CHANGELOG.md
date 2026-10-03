@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.201.0+234]
+
+### Changed
+- The game has no Story tab any more: the story is followed on the Journey. The reader stays Edit Mode's, and opens over the game from the Journey's end panel for the ending and New Game+. Jumps that went to the Story tab (entering the game, a restart after death, the map's "back to the story") go to the Journey in play.
+- Journey: the "Here / Land / World" chips and the story-so-far strip under the map are gone. A pinch in on the streets, or the − button over them, looks out at the land; zooming in as far as the chart goes on the party's own place, or tapping it, comes back to the streets. The story so far stays a tap away on the journal button by the stats.
+- Journey: once the camp stands, "Back to the camp" and "Travel on" sit under the map in a place (they lived on the Story tab).
+- Camp: "Places you know", "Expeditions from the camp", the bounty board and the boutiques fold shut from their title row, with a count by it; the fold is kept for the session.
+- Camp, the town: each house card says at a glance whether it is Built, Ready, Locked or short of gold, names its price on the Build button, and the line under the town says where the outlined house would go. Ready houses come first in the tray; the purse and how many houses it can raise sit by the Houses/Additions chips. The size code (3×1) is gone.
+- Character: the Titles card folds, shut by default, its header naming the title worn and the count held. The Clans card is gone (the Clans screen, top right, has it all, and now the climb card too).
+- Inventory in Stitched Ink: the equipment slots are a two-column grid of seam-bordered boxes (gold when filled), a tap on a box chooses, its cross takes the piece off; items carry an Equipped tag and a gold border when worn, a seam otherwise.
+- Level up in Stitched Ink: the level, XP road and points to spend in one panel; the stats grouped as Fighting, Body, Mind, and Fortune & presence, each a seam-bordered row with its value in gold and a +1 Point button.
+
 ## [1.200.1+233]
 
 ### Changed
