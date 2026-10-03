@@ -397,31 +397,35 @@ class _TutorialList extends ConsumerWidget {
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         const SizedBox(height: 4),
         for (final topic in TutorialTopic.values)
-          ListTile(
-            key: Key('tutorial_replay_${topic.name}'),
-            contentPadding: EdgeInsets.zero,
-            leading: Icon(topic.icon),
-            title: Text(tr(ref, topic.titleKey)),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  tr(
-                      ref,
-                      settings.hasSeen(topic)
-                          ? 'tut_seen_label'
-                          : 'tut_new_label'),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                      color: settings.hasSeen(topic)
-                          ? theme.colorScheme.onSurfaceVariant
-                          : theme.colorScheme.primary),
-                ),
-                const SizedBox(width: 4),
-                const Icon(Icons.play_arrow_rounded),
-              ],
+          // The reader's tour belongs to Edit Mode (v1.201: the game has
+          // no Story tab).
+          if (topic != TutorialTopic.story ||
+              ref.watch(appModeProvider) == AppMode.edit)
+            ListTile(
+              key: Key('tutorial_replay_${topic.name}'),
+              contentPadding: EdgeInsets.zero,
+              leading: Icon(topic.icon),
+              title: Text(tr(ref, topic.titleKey)),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    tr(
+                        ref,
+                        settings.hasSeen(topic)
+                            ? 'tut_seen_label'
+                            : 'tut_new_label'),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                        color: settings.hasSeen(topic)
+                            ? theme.colorScheme.onSurfaceVariant
+                            : theme.colorScheme.primary),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.play_arrow_rounded),
+                ],
+              ),
+              onTap: () => playTutorial(context, ref, topic),
             ),
-            onTap: () => playTutorial(context, ref, topic),
-          ),
       ],
     );
   }

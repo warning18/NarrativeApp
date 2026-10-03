@@ -2,11 +2,20 @@ import 'package:flutter_riverpod/legacy.dart';
 
 import 'app_mode_provider.dart';
 
-/// Index into [HomeShell]'s bottom navigation tabs: Story, Character,
-/// Camp, Other in play; Story, Play, Generate, Data in Edit Mode. Lets
-/// other screens -- like a quest/shop call-to-action in the story reader --
+/// Index into [HomeShell]'s bottom navigation tabs: Journey, Character,
+/// Camp, Other in play (the Story reader, index 0, is Edit Mode's and the
+/// ending's); Story, Play, Generate, Data in Edit Mode. Lets other screens
+/// -- like a quest/shop call-to-action in the story reader --
 /// programmatically switch tabs.
 final homeTabIndexProvider = StateProvider<int>((ref) => 0);
+
+/// The Journey tab's index among the play-mode tabs (after Story,
+/// Character, Camp and Other, so theirs stay as they were).
+const int journeyTabIndex = 4;
+
+/// The tab the story is followed on: the Journey in play (v1.201: the
+/// Story tab is gone from the game), the Story reader in Edit Mode.
+int storyTabIndex(AppMode mode) => mode == AppMode.edit ? 0 : journeyTabIndex;
 
 /// The tab holding the quests, shops, bestiary and saves: Other in play,
 /// Play in Edit Mode.

@@ -35,9 +35,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'journey_level_world': {AppLanguage.en: 'World', AppLanguage.fr: 'Monde'},
   'journey_level_hint': {
     AppLanguage.en:
-        'Pinch to zoom, drag to look about. Tap Here to pick a step.',
+        'Pinch to zoom, drag to look about; tap a place you have reached to read of it. Zoom in on your own place, or tap it, to come back to its streets.',
     AppLanguage.fr:
-        'Pincez pour zoomer, glissez pour regarder. Touchez Ici pour choisir une étape.',
+        'Pincez pour zoomer, glissez pour regarder ; touchez un lieu atteint pour le lire. Zoomez sur votre lieu, ou touchez-le, pour revenir à ses rues.',
+  },
+  'journey_look_out': {
+    AppLanguage.en: 'Look out at the land',
+    AppLanguage.fr: 'Regarder le pays',
   },
   'journey_recentre': {
     AppLanguage.en: 'Back to the party',
@@ -162,9 +166,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'terre {land}'
   },
   'journey_ended': {
-    AppLanguage.en: 'The road ends here. The Story tab has what comes next.',
+    AppLanguage.en: 'The road ends here. Open the story for what comes next.',
     AppLanguage.fr:
-        'La route s’arrête ici. L’onglet Histoire vous montre la suite.',
+        'La route s’arrête ici. Ouvrez l’histoire pour voir la suite.',
   },
   'journey_open_story': {
     AppLanguage.en: 'Open the story',
@@ -3210,6 +3214,20 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Santé max.'
   },
   'plus_one_point': {AppLanguage.en: '+1 Point', AppLanguage.fr: '+1 Point'},
+  'level_group_fighting': {
+    AppLanguage.en: 'Fighting',
+    AppLanguage.fr: 'Combat'
+  },
+  'level_group_body': {AppLanguage.en: 'Body', AppLanguage.fr: 'Corps'},
+  'level_group_mind': {AppLanguage.en: 'Mind', AppLanguage.fr: 'Esprit'},
+  'level_group_fortune': {
+    AppLanguage.en: 'Fortune & presence',
+    AppLanguage.fr: 'Fortune et présence',
+  },
+  'inventory_slots_hint': {
+    AppLanguage.en: 'Tap a slot to choose what goes there.',
+    AppLanguage.fr: 'Touchez un emplacement pour choisir ce qui y va.',
+  },
   'distribute_later_button': {
     AppLanguage.en: 'Decide later',
     AppLanguage.fr: 'Décider plus tard',
@@ -3459,6 +3477,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Touchez pour voir où il ira'
   },
   'town_need': {AppLanguage.en: 'need', AppLanguage.fr: 'manque'},
+  'town_ready': {AppLanguage.en: 'Ready', AppLanguage.fr: 'Prêt'},
+  'town_locked': {AppLanguage.en: 'Locked', AppLanguage.fr: 'Verrouillé'},
+  'town_built_note': {
+    AppLanguage.en: 'Standing on the cliff.',
+    AppLanguage.fr: 'Debout sur la falaise.',
+  },
+  'town_ready_count': {
+    AppLanguage.en: '{n} ready to build',
+    AppLanguage.fr: '{n} à construire',
+  },
+  'town_goes_quay': {
+    AppLanguage.en: '{name} would go up on the quay. Build to raise it.',
+    AppLanguage.fr:
+        '{name} s’élèverait sur le quai. Construisez pour le bâtir.',
+  },
+  'town_goes_level': {
+    AppLanguage.en:
+        '{name} would be raised on level {level}. Build to raise it.',
+    AppLanguage.fr:
+        '{name} s’élèverait au niveau {level}. Construisez pour le bâtir.',
+  },
   'town_start': {
     AppLanguage.en: 'Build to climb the cliff.',
     AppLanguage.fr: 'Construisez pour gravir la falaise.'
@@ -5896,9 +5935,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_journey_1': {
     AppLanguage.en:
-        'This is the Journey: the same story as the Story tab, told on a map, so you can see where each way leads before you take it.',
+        'This is the Journey: the story told on a map, so you can see where each way leads before you take it.',
     AppLanguage.fr:
-        "Voici le Parcours : la même histoire que dans l'onglet Histoire, racontée sur une carte, pour voir où mène chaque chemin avant de le prendre.",
+        'Voici le Parcours : l’histoire racontée sur une carte, pour voir où mène chaque chemin avant de le prendre.',
   },
   'tut_journey_2': {
     AppLanguage.en:
@@ -5920,9 +5959,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_journey_5': {
     AppLanguage.en:
-        'Story and Journey are two views of the same tale: switch between them whenever you like.',
+        'Each choice opens its scene full screen; Continue brings you back to the map. The story so far is a tap away, top right.',
     AppLanguage.fr:
-        'Histoire et Parcours sont deux vues du même récit : passez de l’une à l’autre quand vous voulez.',
+        'Chaque choix ouvre sa scène en plein écran ; Continuer ramène à la carte. L’histoire jusqu’ici est à portée de main, en haut à droite.',
   },
   'tut_story_8': {
     AppLanguage.en:

@@ -183,7 +183,7 @@ void main() {
     await _settle(tester);
     await tester.tap(find.byKey(const Key('menu_continue')));
     await _settle(tester);
-    expect(_tab('Story'), findsOneWidget);
+    expect(_tab('Journey'), findsOneWidget);
 
     // Landed on the shore, the camp is not set up yet: its tab says what
     // it will be, and there is no way "back" to it.
@@ -192,19 +192,26 @@ void main() {
     expect(find.textContaining('Your camp is set up'), findsOneWidget);
     expect(find.byKey(const Key('camp_return')), findsNothing);
     expect(find.byKey(const Key('chapter_card')), findsNothing);
-    await tester.tap(_tab('Story'));
+    await tester.tap(_tab('Journey'));
     await _settle(tester);
     await _waitOutNotices(tester);
 
     // Setting up camp opens it: the Story tab closes, the camp opens with
     // its scene and its chapter, and the Eel is back in the cove.
     // (Under the Story tab: the Journey tab shows the same way on.)
-    final setUp = find.descendant(
-        of: find.byType(StoryPlayerScreen, skipOffstage: false),
-        matching: find.text('Take stock of the shore', skipOffstage: false),
-        skipOffstage: false);
-    await tester.ensureVisible(setUp);
-    await tester.tap(setUp);
+    // (The reader is no tab of the game, v1.201: the choice is taken the
+    // way the Journey's step takes it.)
+    final reader =
+        tester.element(find.byType(StoryPlayerScreen, skipOffstage: false));
+    final setUp = container
+        .read(storyDataProvider)
+        .value!
+        .nodeFor(container.read(storyPlayProvider).currentNodeId)!
+        .choices
+        .firstWhere((c) => c.text == 'Take stock of the shore');
+    final settingUp = takeStoryChoice(reader, reader as WidgetRef, setUp);
+    await _settle(tester);
+    await tester.runAsync(() => settingUp);
     await _settle(tester);
     if (container.read(storyPlayProvider).isInExcursion) {
       play.jumpTo('3001_camp');
@@ -213,7 +220,7 @@ void main() {
     expect(container.read(storyPlayProvider).currentNodeId, '3001_camp');
     expect(
         container.read(playerSessionProvider).flags, contains(campFoundedFlag));
-    expect(_tab('Story'), findsNothing);
+    expect(_tab('Journey'), findsNothing);
     // Founding the camp gives the chapter's quest.
     expect(find.text("The High Warden's Fall"), findsOneWidget);
     await tester.tap(find.text('Accept'));
@@ -272,7 +279,7 @@ void main() {
     expect(find.textContaining("Ashore at Smugglers' Wharf"), findsOneWidget);
     expect(find.byKey(const Key('ship_sail_home')), findsOneWidget);
     expect(_tab('Ship'), findsOneWidget);
-    expect(_tab('Story'), findsNothing);
+    expect(_tab('Journey'), findsNothing);
     await tester.runAsync(() => notifier.arriveAtPort('port_ashen_landing'));
     await _settle(tester);
     expect(find.byKey(const Key('chapter_card')), findsOneWidget);
@@ -314,7 +321,7 @@ void main() {
       await _settle(tester);
     }
     expect(container.read(storyPlayProvider).currentNodeId, '3005');
-    expect(_tab('Story'), findsOneWidget);
+    expect(_tab('Journey'), findsOneWidget);
     await _waitOutNotices(tester);
     if (find.text('Go in', skipOffstage: false).evaluate().isNotEmpty) {
       await tester.tap(find.text('Go in', skipOffstage: false));
@@ -343,7 +350,7 @@ void main() {
     }
     expect(container.read(storyPlayProvider).currentNodeId, '3001_camp');
     await _waitOutNotices(tester);
-    expect(_tab('Story'), findsNothing);
+    expect(_tab('Journey'), findsNothing);
     expect(find.text('Visit The Ashen Quarter first.'), findsNothing);
 
     // A village is a place like the town: a walk back to the camp, and on
@@ -367,8 +374,10 @@ void main() {
     expect(find.text('Go in', skipOffstage: false), findsOneWidget);
     await tester.tap(find.text('Go in', skipOffstage: false));
     await _settle(tester);
-    await tester.tap(find.byKey(const Key('hub_enter')));
-    await _settle(tester);
+    if (find.byKey(const Key('hub_enter')).evaluate().isNotEmpty) {
+      await tester.tap(find.byKey(const Key('hub_enter')));
+      await _settle(tester);
+    }
     expect(find.byKey(const Key('town_back_to_camp')), findsOneWidget);
     expect(find.byKey(const Key('place_travel_on')), findsOneWidget);
     await tester.tap(find.byKey(const Key('town_back_to_camp')));
@@ -424,7 +433,7 @@ void main() {
       await _settle(tester);
     }
     expect(container.read(storyPlayProvider).currentNodeId, '3002');
-    expect(_tab('Story'), findsOneWidget);
+    expect(_tab('Journey'), findsOneWidget);
     await _waitOutNotices(tester);
 
     // A chapter later, the Drowned Cloister is across the water: going

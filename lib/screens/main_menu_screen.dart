@@ -25,7 +25,7 @@ import 'settings_screen.dart';
 Future<void> enterGame(
     BuildContext context, WidgetRef ref, AppMode mode) async {
   await ref.read(appModeProvider.notifier).setMode(mode);
-  ref.read(homeTabIndexProvider.notifier).state = 0;
+  ref.read(homeTabIndexProvider.notifier).state = storyTabIndex(mode);
   if (!context.mounted) return;
   await Navigator.of(context).push(
     MaterialPageRoute(

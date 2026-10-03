@@ -32,6 +32,7 @@ class JourneyWorldMap extends ConsumerStatefulWidget {
     required this.chapterColor,
     required this.onLayers,
     this.onSelect,
+    this.onZoomIn,
   });
 
   final JourneyMapLevel level;
@@ -47,6 +48,10 @@ class JourneyWorldMap extends ConsumerStatefulWidget {
 
   /// A reached place tapped on the chart.
   final ValueChanged<Landmark>? onSelect;
+
+  /// Zoomed in past the chart's closest on the party's own place, or that
+  /// place tapped: the streets are looked at again (v1.201).
+  final VoidCallback? onZoomIn;
 
   @override
   ConsumerState<JourneyWorldMap> createState() => _JourneyWorldMapState();
@@ -161,6 +166,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
   void _globeZoom(double factor) {
     final g = _globe;
     if (g == null) return;
+    if (factor > 1 && _intoPlace(Size.zero, sphere: true)) return;
     setState(() => _globe = g.copyWith(
         radius: GlobeView.baseRadius * (g.zoom * factor).clamp(1.0, _maxZoom)));
   }
@@ -183,11 +189,40 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
       }
     }
     if (nearest == null) return;
+    if (nearest.id == widget.here?.id && widget.onZoomIn != null) {
+      widget.onZoomIn!();
+      return;
+    }
     setState(() => _selectedId = nearest!.id);
     widget.onSelect?.call(nearest);
   }
 
+  /// Whether the party's place is within the box at the current view.
+  bool _hereShown(Size box) {
+    final here = widget.here;
+    if (here == null) return false;
+    final geo = chartOf(ref.read(mapShapeProvider));
+    final at = MatrixUtils.transformPoint(_view.value, _onMap(geo.of(here)));
+    return at.dx >= 0 &&
+        at.dy >= 0 &&
+        at.dx <= box.width &&
+        at.dy <= box.height;
+  }
+
+  /// Past the closest zoom with the party's place in view, the streets.
+  bool _intoPlace(Size box, {required bool sphere}) {
+    if (widget.onZoomIn == null) return false;
+    final atMax = sphere
+        ? (_globe?.zoom ?? 1) >= _maxZoom - 0.01
+        : _scale >= _maxZoom - 0.01;
+    if (!atMax) return false;
+    if (!sphere && !_hereShown(box)) return false;
+    widget.onZoomIn!();
+    return true;
+  }
+
   void _zoom(double factor, Size box) {
+    if (factor > 1 && _intoPlace(box, sphere: false)) return;
     final centre = Offset(box.width / 2, box.height / 2);
     final target = (_scale * factor).clamp(1.0, _maxZoom);
     final inverse = Matrix4.inverted(_view.value);
@@ -212,9 +247,16 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
       }
     }
     if (nearest == null) return;
+    if (nearest.id == widget.here?.id && widget.onZoomIn != null) {
+      widget.onZoomIn!();
+      return;
+    }
     setState(() => _selectedId = nearest!.id);
     widget.onSelect?.call(nearest);
   }
+
+  /// A pinch that ends at the closest zoom on the party's place.
+  double _pinchFrom = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -275,7 +317,12 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
         behavior: HitTestBehavior.opaque,
         onScaleStart: _onGlobeScaleStart,
         onScaleUpdate: (d) => _onGlobeScaleUpdate(d, boxSize),
-        onScaleEnd: (_) => _dragLast = null,
+        onScaleEnd: (_) {
+          _dragLast = null;
+          if ((_globe?.zoom ?? 1) > _pinchStartZoom) {
+            _intoPlace(boxSize, sphere: true);
+          }
+        },
         onTapUp: (d) => _globeTap(d.localPosition, boxSize),
         child: CustomPaint(size: boxSize, painter: painter(globeView)),
       );
@@ -284,6 +331,10 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
         transformationController: _view,
         minScale: 1,
         maxScale: _maxZoom,
+        onInteractionStart: (_) => _pinchFrom = _scale,
+        onInteractionEnd: (_) {
+          if (_scale > _pinchFrom) _intoPlace(boxSize, sphere: false);
+        },
         boundaryMargin: EdgeInsets.symmetric(
             horizontal: box.maxWidth, vertical: box.maxHeight),
         child: SizedBox(

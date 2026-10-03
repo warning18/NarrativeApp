@@ -84,7 +84,6 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'expedition_screen.dart';
 import 'fight_screen.dart';
 import 'journal_screen.dart';
-import 'journey_screen.dart' show journeyTabIndex;
 import 'race_profession_screen.dart';
 import 'shop_detail_screen.dart';
 import 'skill_challenge_screen.dart';
@@ -513,9 +512,11 @@ class _StoryView extends ConsumerWidget {
           language: language),
     ];
 
+    // The reader's own tour plays only while it is on screen (v1.201: in
+    // play it is pushed over the game for the ending, never a tab).
     return TutorialTrigger(
       topic: TutorialTopic.story,
-      ready: !isEditMode && session.raceId.isNotEmpty,
+      ready: !isEditMode && session.raceId.isNotEmpty && storyTab == 0,
       child: CompanionRemarksTrigger(
         remarks: pendingRemarks,
         ready: storyOnScreen,

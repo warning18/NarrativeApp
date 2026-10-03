@@ -201,30 +201,41 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
       final isSelected = id == selected;
       final affordable = session.gold >= cost;
       final canBuild = !isBuilt && lockReason == null && affordable;
+      // The card says at a glance where the house stands (v1.201): built,
+      // ready to go up, short of gold, or locked; then what it gives,
+      // its price, and the one thing to do about it.
+      final (String status, Color statusColour) = isBuilt
+          ? (tr(ref, 'house_built_prefix'), ink.heal)
+          : lockReason != null
+              ? (tr(ref, 'town_locked'), ink.ash)
+              : affordable
+                  ? (tr(ref, 'town_ready'), ink.gold)
+                  : (
+                      '${tr(ref, 'town_need')} ${cost - session.gold} G',
+                      ink.ember
+                    );
       Widget action;
       if (isBuilt) {
-        action = InkTag(label: tr(ref, 'house_built_prefix'), color: ink.heal);
+        action = Text(tr(ref, 'town_built_note'),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.labelSmall?.copyWith(color: ink.ash));
       } else if (lockReason != null) {
         action = Text(lockReason,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.labelSmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant));
-      } else if (!affordable) {
-        action = Text(
-          '$cost G · ${tr(ref, 'town_need')} ${cost - session.gold}',
-          style: theme.textTheme.labelMedium
-              ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-        );
       } else {
         action = FilledButton(
           key: Key('town_build_$id'),
           onPressed: canBuild ? onBuild : null,
           style: FilledButton.styleFrom(
-            minimumSize: const Size.fromHeight(44),
+            minimumSize: const Size.fromHeight(40),
             padding: const EdgeInsets.symmetric(horizontal: 8),
           ),
-          child: Text('${tr(ref, 'build_button')} · $cost'),
+          child: Text(
+              affordable ? '${tr(ref, 'build_button')} · $cost G' : '$cost G'),
         );
       }
       return GestureDetector(
@@ -257,9 +268,11 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                         style: theme.textTheme.bodyMedium
                             ?.copyWith(fontWeight: FontWeight.w500)),
                   ),
-                  Text('${footprint.width}×${footprint.height}',
-                      style:
-                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                  const SizedBox(width: 4),
+                  Flexible(
+                      child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: InkTag(label: status, color: statusColour))),
                 ],
               ),
               const SizedBox(height: 4),
@@ -340,7 +353,38 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
               }(),
           ];
 
+    // Ready to go up first, then short of gold, locked, and the built.
+    int rank(String id) {
+      if (isTownAddition(id)) return 0;
+      if (built.contains(id)) return 3;
+      final house = widget.houses[id] as Map<String, dynamic>;
+      if (!meetsRequiredFlags(house, session.flags)) return 2;
+      final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
+      return session.gold >= cost ? 0 : 1;
+    }
+
+    final cardIds = _showAdditions
+        ? [for (final a in townAdditions) a.id]
+        : (_houseIds..sort((a, b) => rank(a).compareTo(rank(b))));
+    final orderedCards = [
+      for (final id in cardIds)
+        cards.firstWhere((c) => (c.key as Key) == Key('town_card_$id')),
+    ];
+    final readyCount = _houseIds.where(buildable).length;
+
     final selectedAvailable = isTownAddition(selected) || buildable(selected);
+    // Where the outlined piece would go, said in words under the town.
+    String? whereLine;
+    if (selectedAvailable) {
+      final spot = town.spotFor(previewFootprint);
+      if (spot != null) {
+        whereLine = spot.$1 == 0
+            ? tr(ref, 'town_goes_quay').replaceAll('{name}', _nameOf(selected))
+            : tr(ref, 'town_goes_level')
+                .replaceAll('{name}', _nameOf(selected))
+                .replaceAll('{level}', '${spot.$1 + 1}');
+      }
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -393,6 +437,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
           padding: const EdgeInsets.symmetric(vertical: 6),
           child: Text(
             _log ??
+                whereLine ??
                 (town.pieces.isEmpty
                     ? tr(ref, 'town_start')
                     : tr(ref, 'town_tap_to_preview')),
@@ -428,6 +473,20 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                       _selected = null;
                     }),
                   ),
+                  const SizedBox(width: 8),
+                  // The purse and what it can raise now.
+                  Expanded(
+                    child: Text(
+                      '${session.gold} G · '
+                      '${tr(ref, 'town_ready_count').replaceAll('{n}', '$readyCount')}',
+                      key: const Key('town_purse'),
+                      textAlign: TextAlign.end,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                          color: readyCount > 0 ? ink.gold : ink.ash),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -435,9 +494,9 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                 height: 172,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
-                  itemCount: cards.length,
+                  itemCount: orderedCards.length,
                   separatorBuilder: (_, __) => const SizedBox(width: 10),
-                  itemBuilder: (_, i) => cards[i],
+                  itemBuilder: (_, i) => orderedCards[i],
                 ),
               ),
             ],

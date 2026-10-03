@@ -13,7 +13,6 @@ import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/home_tab_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
-import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/widgets/journey_fx.dart';
 
 Future<void> _settle(WidgetTester tester) async {
@@ -73,7 +72,9 @@ void main() {
     final container = await _openJourney(tester);
     void show(int tab) =>
         container.read(homeTabIndexProvider.notifier).state = tab;
-    // On the Story tab, the Journey map (kept behind it) draws nothing.
+    // On another tab, the Journey map (kept behind it) draws nothing.
+    show(1);
+    await _settle(tester);
     expect(_fx, findsNothing);
     show(journeyTabIndex);
     // Past the unroll and the new chapter burning open.
@@ -85,7 +86,7 @@ void main() {
         warnIfMissed: false);
     await tester.pump(const Duration(milliseconds: 500));
     expect(tester.takeException(), isNull);
-    show(0);
+    show(1);
     await _settle(tester);
     expect(_fx, findsNothing);
   });

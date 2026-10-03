@@ -22,6 +22,7 @@ import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
+import '../data/camp_state.dart' show canReturnToCampFrom;
 import '../providers/chapter_loop_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/geography_provider.dart';
@@ -33,7 +34,6 @@ import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
-import '../data/story_state.dart';
 import '../widgets/biome_backdrop.dart';
 import '../widgets/chart_map_painter.dart' show ChartCalque;
 import '../widgets/journey_world_map.dart';
@@ -41,10 +41,13 @@ import '../widgets/geography_widgets.dart';
 import '../widgets/journey_fx.dart';
 import '../widgets/journey_place.dart';
 import '../widgets/player_stats_bar.dart';
+import '../widgets/camp_travel.dart' show CampReturnButton, TravelOnList;
+import '../widgets/quest_tracker.dart';
 import '../widgets/timed_choice_bar.dart';
 import 'journal_screen.dart';
 import 'story_player_screen.dart'
     show
+        StoryPlayerScreen,
         EchoLine,
         composeNarrationParts,
         isStoryChoiceLocked,
@@ -52,9 +55,7 @@ import 'story_player_screen.dart'
         storyChoiceLockedText,
         takeStoryChoice;
 
-/// The Journey tab's index among the play-mode tabs (after Story,
-/// Character, Camp and Other, so theirs stay as they were).
-const int journeyTabIndex = 4;
+export '../providers/home_tab_provider.dart' show journeyTabIndex;
 
 /// The Journey tab: the story and the map in one. The scene the story is
 /// on reads at the top (double-tap it to read it full screen); under it a
@@ -225,6 +226,42 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// the world; and the place last tapped on the chart.
   JourneyMapLevel _level = JourneyMapLevel.place;
   Landmark? _lookedAt;
+
+  /// The scale of a pinch on the place's map (see _lookOut).
+  double _pinch = 1;
+
+  /// Looks out from the streets at the land (v1.201): a pinch in on the
+  /// place's map or its − button; zooming back in on the place returns.
+  void _lookOut() {
+    if (_level != JourneyMapLevel.place) return;
+    setState(() {
+      _level = JourneyMapLevel.land;
+      _lookedAt = null;
+    });
+  }
+
+  /// The other places known, each with its "Go".
+  void _showTravelOn(String fromNodeId) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (_) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(tr(ref, 'travel_on_title'),
+                  style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 8),
+              TravelOnList(fromNodeId: fromNodeId),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   /// Each landmark where a shop opens; read once per story.
   Set<String>? _shopPlaces;
@@ -859,8 +896,18 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         },
         onLayers: _showCalques,
         onSelect: (landmark) => setState(() => _lookedAt = landmark),
+        onZoomIn: () => setState(() {
+          _level = JourneyMapLevel.place;
+          _lookedAt = null;
+        }),
       ),
     );
+
+    final travelsFromHere = !play.isInExcursion &&
+        canReturnToCampFrom(node,
+            inExcursion: play.isInExcursion, flags: session.flags);
+    final travelsOn = travelsFromHere &&
+        ref.watch(knownPlacesProvider).any((p) => p.id != node.id);
 
     final map = ended
         ? _EndedPanel(
@@ -897,33 +944,61 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   ],
                 );
               },
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 280),
-                child: _JourneyChart(
-                  key: _chartKey,
-                  steps: steps,
-                  selected: _selected,
-                  hereName: hereName,
-                  youAreHere: tr(ref, 'journey_you_are_here'),
-                  leadsTo: tr(ref, 'journey_leads_to'),
-                  past: pastMarks,
-                  pastReachesStart: past.reachesStart,
-                  chapterStart: tr(ref, 'journey_chapter_start'),
-                  palette: palette,
-                  ink: look == MapLook.parchment
-                      ? InkColors.light
-                      : InkColors.dark,
-                  greyed: look == MapLook.shroud,
-                  terrainShift: _terrainShift,
-                  terrainSeed: 7 + chapterOfNode(play.currentNodeId) * 13,
-                  onTap: _tap,
-                  onPastTap: _showPast,
-                  stamp: _stamp,
-                  burn: _burn,
-                  unroll: _unroll,
-                  weather: journeyWeatherFor(chapter),
-                  place: placeView,
-                ),
+              child: Stack(
+                fit: StackFit.passthrough,
+                children: [
+                  // A pinch in on the streets looks out at the land
+                  // (v1.201: the levels are zoomed between).
+                  GestureDetector(
+                    onScaleStart: (_) => _pinch = 1,
+                    onScaleUpdate: (d) {
+                      if (d.pointerCount > 1) _pinch = d.scale;
+                    },
+                    onScaleEnd: (_) {
+                      if (_pinch < 0.8) _lookOut();
+                      _pinch = 1;
+                    },
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 280),
+                      child: _JourneyChart(
+                        key: _chartKey,
+                        steps: steps,
+                        selected: _selected,
+                        hereName: hereName,
+                        youAreHere: tr(ref, 'journey_you_are_here'),
+                        leadsTo: tr(ref, 'journey_leads_to'),
+                        past: pastMarks,
+                        pastReachesStart: past.reachesStart,
+                        chapterStart: tr(ref, 'journey_chapter_start'),
+                        palette: palette,
+                        ink: look == MapLook.parchment
+                            ? InkColors.light
+                            : InkColors.dark,
+                        greyed: look == MapLook.shroud,
+                        terrainShift: _terrainShift,
+                        terrainSeed: 7 + chapterOfNode(play.currentNodeId) * 13,
+                        onTap: _tap,
+                        onPastTap: _showPast,
+                        stamp: _stamp,
+                        burn: _burn,
+                        unroll: _unroll,
+                        weather: journeyWeatherFor(chapter),
+                        place: placeView,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    right: 8,
+                    bottom: 8,
+                    child: _MapButton(
+                      key: const Key('journey_place_zoom_out'),
+                      icon: Icons.remove,
+                      tip: tr(ref, 'journey_look_out'),
+                      palette: palette,
+                      onTap: _busy ? null : _lookOut,
+                    ),
+                  ),
+                ],
               ),
             ),
           );
@@ -940,6 +1015,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               PlayerStatsBar(trailing: tools),
+              // The followed quest and the goal it waits on (v1.201: here,
+              // now the Story tab is gone from the game).
+              if (!_reading) const QuestTrackerBar(),
               const SizedBox(height: 8),
               Expanded(
                 child: LayoutBuilder(builder: (context, area) {
@@ -997,23 +1075,26 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   ? map
                                   : worldMap,
                             ),
-                            // Under the map (v1.199): how far out it is
-                            // looked at, and the story so far in a line.
-                            if (!ended) ...[
+                            // Under the map (v1.201): once the camp
+                            // stands, the way back to it from a place, and
+                            // on to the other places known.
+                            if (!ended && travelsFromHere) ...[
                               const SizedBox(height: 6),
                               Row(
                                 children: [
-                                  _LevelChips(
-                                    level: _level,
-                                    palette: palette,
-                                    onPick: (level) => setState(() {
-                                      _level = level;
-                                      _lookedAt = null;
-                                    }),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Expanded(
-                                      child: _SoFarStrip(palette: palette)),
+                                  const Expanded(child: CampReturnButton()),
+                                  if (travelsOn) ...[
+                                    const SizedBox(width: 8),
+                                    OutlinedButton.icon(
+                                      key: const Key('place_travel_on'),
+                                      style: OutlinedButton.styleFrom(
+                                          visualDensity: VisualDensity.compact),
+                                      onPressed: () => _showTravelOn(node.id),
+                                      icon: const Icon(Icons.signpost_outlined,
+                                          size: 18),
+                                      label: Text(tr(ref, 'travel_on_button')),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ],
@@ -1297,16 +1378,6 @@ class _ScenePanel extends ConsumerWidget {
                       visualDensity: VisualDensity.compact,
                       onPressed: () => onFold(false),
                     ),
-                  // The whole scene, with its read-aloud and the
-                  // companion, is a tap away in the Story tab.
-                  IconButton(
-                    icon:
-                        const Icon(Icons.chrome_reader_mode_outlined, size: 18),
-                    tooltip: tr(ref, 'journey_read_in_story'),
-                    visualDensity: VisualDensity.compact,
-                    onPressed: () =>
-                        ref.read(homeTabIndexProvider.notifier).state = 0,
-                  ),
                 ],
               ],
             ),
@@ -1331,119 +1402,36 @@ class _ScenePanel extends ConsumerWidget {
 
 /// No way on from here on the map: the Story tab has the ending, New
 /// Game+ and the way back to the beginning.
-/// Here · Land · World: how far out the map is looked at.
-class _LevelChips extends ConsumerWidget {
-  const _LevelChips(
-      {required this.level, required this.palette, required this.onPick});
+/// A small button over a map, in the chart's colours.
+class _MapButton extends StatelessWidget {
+  const _MapButton({
+    super.key,
+    required this.icon,
+    required this.tip,
+    required this.palette,
+    required this.onTap,
+  });
 
-  final JourneyMapLevel level;
+  final IconData icon;
+  final String tip;
   final ChartPalette palette;
-  final ValueChanged<JourneyMapLevel> onPick;
+  final VoidCallback? onTap;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (final option in JourneyMapLevel.values) ...[
-          Semantics(
-            button: true,
-            selected: option == level,
-            child: InkWell(
-              key: Key('journey_level_${option.name}'),
-              onTap: () => onPick(option),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
-                decoration: BoxDecoration(
-                  color: option == level
-                      ? palette.mark
-                      : palette.land.withValues(alpha: 0.85),
-                  borderRadius: BorderRadius.circular(3),
-                  border: Border.all(
-                      color: option == level ? palette.mark : palette.coast),
-                ),
-                child: Text(
-                  tr(ref, 'journey_level_${option.name}'),
-                  style: TextStyle(
-                    fontFamily: InkFonts.system,
-                    fontSize: 12.5,
-                    color: option == level
-                        ? const Color(0xFF1A1408)
-                        : palette.place,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          if (option != JourneyMapLevel.values.last) const SizedBox(width: 4),
-        ],
-      ],
-    );
-  }
-}
-
-/// The story so far, in a line at the map's foot: a tap opens the page.
-class _SoFarStrip extends ConsumerWidget {
-  const _SoFarStrip({required this.palette});
-
-  final ChartPalette palette;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = readStorySoFar(ref);
-    final ink = InkColors.of(context);
-    return Material(
-      color: palette.land.withValues(alpha: 0.88),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(6),
-        side: BorderSide(color: palette.coast),
-      ),
-      child: InkWell(
-        key: const ValueKey('journey_sofar'),
-        borderRadius: BorderRadius.circular(6),
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const JournalScreen()),
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tip,
+      child: Material(
+        color: palette.land.withValues(alpha: 0.9),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: palette.coast, width: 2),
         ),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 4, 4, 4),
-          child: Row(
-            children: [
-              Icon(Icons.auto_stories_outlined, size: 16, color: ink.gold),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      tr(ref, 'sofar_strip_title')
-                          .replaceAll('{day}', '${state.day}')
-                          .toUpperCase(),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontFamily: InkFonts.system,
-                        fontSize: 9,
-                        letterSpacing: 1.1,
-                        color: ink.gold,
-                      ),
-                    ),
-                    if (state.nowLine.isNotEmpty)
-                      Text(
-                        state.nowLine,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontFamily: InkFonts.prose,
-                          fontSize: 12,
-                          color: palette.place,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              Icon(Icons.chevron_right, size: 16, color: ink.ash),
-            ],
+        child: InkWell(
+          onTap: onTap,
+          child: SizedBox(
+            width: 34,
+            height: 34,
+            child: Icon(icon, size: 20, color: palette.place),
           ),
         ),
       ),
@@ -1451,8 +1439,6 @@ class _SoFarStrip extends ConsumerWidget {
   }
 }
 
-/// Under the land and world maps: the place tapped on the chart, or how
-/// to look about and come back to pick a step.
 class _LookedAtPanel extends ConsumerWidget {
   const _LookedAtPanel({required this.landmark, required this.language});
 
@@ -1528,8 +1514,8 @@ class _EndedPanel extends ConsumerWidget {
                 textAlign: TextAlign.center, style: theme.textTheme.bodyMedium),
             const SizedBox(height: 16),
             FilledButton.tonalIcon(
-              onPressed: () =>
-                  ref.read(homeTabIndexProvider.notifier).state = 0,
+              key: const ValueKey('journey_open_story'),
+              onPressed: () => openStoryReader(context, ref),
               icon: const Icon(Icons.menu_book),
               label: Text(tr(ref, 'journey_open_story')),
             ),
@@ -3340,4 +3326,20 @@ class _StepDetail extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// The story reader, for what the map has no way on to (the ending, New
+/// Game+, the way back to the beginning): the Story tab in Edit Mode,
+/// pushed over the game in play (v1.201: the game has no Story tab).
+void openStoryReader(BuildContext context, WidgetRef ref) {
+  if (ref.read(appModeProvider) == AppMode.edit) {
+    ref.read(homeTabIndexProvider.notifier).state = 0;
+    return;
+  }
+  Navigator.of(context).push(MaterialPageRoute<void>(
+    builder: (context) => Scaffold(
+      appBar: AppBar(title: Text(tr(ref, 'title_story'))),
+      body: const StoryPlayerScreen(),
+    ),
+  ));
 }

@@ -20,7 +20,11 @@ String activeTitleName(WidgetRef ref) {
 /// worn -- a tap wears one (or takes it off). A bad title ("the Marked")
 /// can't be chosen or taken off: it counts while it is held.
 class TitlesSection extends ConsumerWidget {
-  const TitlesSection({super.key});
+  const TitlesSection({super.key, this.header = true});
+
+  /// Whether the section writes its own "Titles" line (a fold's header
+  /// takes its place on the Character tab, v1.201).
+  final bool header;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,8 +39,10 @@ class TitlesSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(tr(ref, 'titles_section'), style: theme.textTheme.titleSmall),
-        const SizedBox(height: 4),
+        if (header) ...[
+          Text(tr(ref, 'titles_section'), style: theme.textTheme.titleSmall),
+          const SizedBox(height: 4),
+        ],
         if (held.isEmpty)
           Text(tr(ref, 'titles_none'),
               style: theme.textTheme.bodySmall

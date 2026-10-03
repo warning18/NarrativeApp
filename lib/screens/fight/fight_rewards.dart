@@ -502,7 +502,8 @@ extension _FightRewards on _FightScreenState {
       ref.read(storyPlayProvider.notifier).restart(story == null
           ? StoryRepository.startNodeId
           : firstSceneAfterCreation(story));
-      ref.read(homeTabIndexProvider.notifier).state = 0;
+      ref.read(homeTabIndexProvider.notifier).state =
+          storyTabIndex(ref.read(appModeProvider));
       // The dead character's last fight is the death screen's to tell,
       // not the next scene's.
       ref.read(lastFightOutcomeProvider.notifier).state = null;
