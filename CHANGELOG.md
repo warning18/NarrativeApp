@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.201.1+235]
+
+### Changed
+- Journey: the zoom between the streets and the land no longer jumps. A pinch shrinks the streets under the fingers; when let go the chart opens at that very zoom on the party's place and glides out to the land's zoom. The − button does the same from the closest zoom. Coming back, the streets grow in from small instead of snapping. The + and − buttons on the chart and the sphere glide too.
+
 ## [1.201.0+234]
 
 ### Changed

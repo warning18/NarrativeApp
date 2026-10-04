@@ -205,7 +205,7 @@ class _JourneyView extends ConsumerStatefulWidget {
 }
 
 class _JourneyViewState extends ConsumerState<_JourneyView>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   /// The scene the selection and the chart belong to; a new scene clears
   /// the one and draws a new other.
   String? _sceneKey;
@@ -227,17 +227,42 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   JourneyMapLevel _level = JourneyMapLevel.place;
   Landmark? _lookedAt;
 
-  /// The scale of a pinch on the place's map (see _lookOut).
+  /// The scale of a pinch on the place's map (see _lookOut): the streets
+  /// shrink under the fingers, and the chart opens where they were left.
   double _pinch = 1;
+  bool _pinching = false;
+
+  /// The zoom the chart opens at when the streets are left (v1.201.1):
+  /// the pinch's own scale carried over, so nothing jumps.
+  double? _enterZoom;
+
+  /// The streets growing back under the chart when they are looked at
+  /// again (v1.201.1).
+  late final AnimationController _arrive = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 360), value: 1);
 
   /// Looks out from the streets at the land (v1.201): a pinch in on the
   /// place's map or its − button; zooming back in on the place returns.
-  void _lookOut() {
+  /// [from] is the streets' scale when left, the chart's zoom to open at.
+  void _lookOut({double from = 1}) {
     if (_level != JourneyMapLevel.place) return;
     setState(() {
+      _enterZoom = (JourneyWorldMapZoom.max * from)
+          .clamp(JourneyWorldMapZoom.land, JourneyWorldMapZoom.max);
       _level = JourneyMapLevel.land;
       _lookedAt = null;
+      _pinch = 1;
+      _pinching = false;
     });
+  }
+
+  /// Back to the streets from the chart: they grow in from small.
+  void _arriveAtStreets() {
+    setState(() {
+      _level = JourneyMapLevel.place;
+      _lookedAt = null;
+    });
+    _arrive.forward(from: 0);
   }
 
   /// The other places known, each with its "Go".
@@ -394,6 +419,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   @override
   void dispose() {
     _jolt.dispose();
+    _arrive.dispose();
     super.dispose();
   }
 
@@ -896,10 +922,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         },
         onLayers: _showCalques,
         onSelect: (landmark) => setState(() => _lookedAt = landmark),
-        onZoomIn: () => setState(() {
-          _level = JourneyMapLevel.place;
-          _lookedAt = null;
-        }),
+        onZoomIn: _arriveAtStreets,
+        enterZoom: _enterZoom,
       ),
     );
 
@@ -952,38 +976,64 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   GestureDetector(
                     onScaleStart: (_) => _pinch = 1,
                     onScaleUpdate: (d) {
-                      if (d.pointerCount > 1) _pinch = d.scale;
+                      if (d.pointerCount > 1 && !_busy) {
+                        setState(() {
+                          _pinching = true;
+                          _pinch = d.scale.clamp(0.35, 1.0);
+                        });
+                      }
                     },
                     onScaleEnd: (_) {
-                      if (_pinch < 0.8) _lookOut();
-                      _pinch = 1;
+                      if (_pinching && _pinch < 0.8) {
+                        _lookOut(from: _pinch);
+                      } else if (_pinching) {
+                        setState(() {
+                          _pinch = 1;
+                          _pinching = false;
+                        });
+                      }
                     },
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 280),
-                      child: _JourneyChart(
-                        key: _chartKey,
-                        steps: steps,
-                        selected: _selected,
-                        hereName: hereName,
-                        youAreHere: tr(ref, 'journey_you_are_here'),
-                        leadsTo: tr(ref, 'journey_leads_to'),
-                        past: pastMarks,
-                        pastReachesStart: past.reachesStart,
-                        chapterStart: tr(ref, 'journey_chapter_start'),
-                        palette: palette,
-                        ink: look == MapLook.parchment
-                            ? InkColors.light
-                            : InkColors.dark,
-                        greyed: look == MapLook.shroud,
-                        terrainShift: _terrainShift,
-                        terrainSeed: 7 + chapterOfNode(play.currentNodeId) * 13,
-                        onTap: _tap,
-                        onPastTap: _showPast,
-                        stamp: _stamp,
-                        burn: _burn,
-                        unroll: _unroll,
-                        weather: journeyWeatherFor(chapter),
-                        place: placeView,
+                    child: AnimatedBuilder(
+                      animation: _arrive,
+                      builder: (context, child) {
+                        final scale = _pinching
+                            ? _pinch
+                            : Tween<double>(begin: 0.55, end: 1.0).transform(
+                                Curves.easeOutCubic.transform(_arrive.value));
+                        return Transform.scale(
+                          scale: scale,
+                          alignment: Alignment.center,
+                          child: child,
+                        );
+                      },
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 280),
+                        child: _JourneyChart(
+                          key: _chartKey,
+                          steps: steps,
+                          selected: _selected,
+                          hereName: hereName,
+                          youAreHere: tr(ref, 'journey_you_are_here'),
+                          leadsTo: tr(ref, 'journey_leads_to'),
+                          past: pastMarks,
+                          pastReachesStart: past.reachesStart,
+                          chapterStart: tr(ref, 'journey_chapter_start'),
+                          palette: palette,
+                          ink: look == MapLook.parchment
+                              ? InkColors.light
+                              : InkColors.dark,
+                          greyed: look == MapLook.shroud,
+                          terrainShift: _terrainShift,
+                          terrainSeed:
+                              7 + chapterOfNode(play.currentNodeId) * 13,
+                          onTap: _tap,
+                          onPastTap: _showPast,
+                          stamp: _stamp,
+                          burn: _burn,
+                          unroll: _unroll,
+                          weather: journeyWeatherFor(chapter),
+                          place: placeView,
+                        ),
                       ),
                     ),
                   ),
@@ -995,7 +1045,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                       icon: Icons.remove,
                       tip: tr(ref, 'journey_look_out'),
                       palette: palette,
-                      onTap: _busy ? null : _lookOut,
+                      onTap: _busy ? null : () => _lookOut(),
                     ),
                   ),
                 ],

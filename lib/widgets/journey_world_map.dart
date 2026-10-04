@@ -18,6 +18,13 @@ import 'chart_map_painter.dart';
 /// How far out the Journey's map is looked at.
 enum JourneyMapLevel { place, land, world }
 
+/// The chart's zooms the Journey hands over at: the land level's, and the
+/// closest, past which the streets are looked at.
+abstract final class JourneyWorldMapZoom {
+  static const double land = 2.8;
+  static const double max = 8;
+}
+
 class JourneyWorldMap extends ConsumerStatefulWidget {
   const JourneyWorldMap({
     super.key,
@@ -33,6 +40,7 @@ class JourneyWorldMap extends ConsumerStatefulWidget {
     required this.onLayers,
     this.onSelect,
     this.onZoomIn,
+    this.enterZoom,
   });
 
   final JourneyMapLevel level;
@@ -53,12 +61,66 @@ class JourneyWorldMap extends ConsumerStatefulWidget {
   /// place tapped: the streets are looked at again (v1.201).
   final VoidCallback? onZoomIn;
 
+  /// The zoom the land level opens at (v1.201.1): where the streets were
+  /// left by the pinch, from which the chart glides out to the land's
+  /// own zoom; null opens at the land's zoom at once.
+  final double? enterZoom;
+
   @override
   ConsumerState<JourneyWorldMap> createState() => _JourneyWorldMapState();
 }
 
-class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
+class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
+    with SingleTickerProviderStateMixin {
   final TransformationController _view = TransformationController();
+
+  /// Glides the chart (or the sphere) from one zoom to another, so a
+  /// button or a change of level never jumps (v1.201.1).
+  late final AnimationController _glide = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 320));
+  Animation<Matrix4>? _glideView;
+  Animation<double>? _glideRadius;
+
+  /// Where a running glide is headed, else the view as it stands: what
+  /// the next zoom or recentre builds on, so quick taps compose.
+  Matrix4? _goalView;
+  Matrix4 get _settled =>
+      _glide.isAnimating && _goalView != null ? _goalView! : _view.value;
+  double get _settledScale => _settled.getMaxScaleOnAxis();
+
+  void _animateTo(Matrix4 target) {
+    _glide.stop();
+    _glideRadius = null;
+    _goalView = target;
+    _glideView = Matrix4Tween(begin: _view.value.clone(), end: target)
+        .animate(CurvedAnimation(parent: _glide, curve: Curves.easeOutCubic));
+    _glide.forward(from: 0);
+  }
+
+  void _animateRadius(double target) {
+    final g = _globe;
+    if (g == null) return;
+    _glide.stop();
+    _glideView = null;
+    _glideRadius = Tween<double>(begin: g.radius, end: target)
+        .animate(CurvedAnimation(parent: _glide, curve: Curves.easeOutCubic));
+    _glide.forward(from: 0);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _glide.addListener(() {
+      final view = _glideView;
+      if (view != null) _view.value = view.value;
+      final radius = _glideRadius;
+      final g = _globe;
+      if (radius != null && g != null) {
+        setState(() => _globe = g.copyWith(radius: radius.value));
+      }
+    });
+  }
+
   final ValueNotifier<int> _frame = ValueNotifier(0);
   static const _still = AlwaysStoppedAnimation<double>(0);
   JourneyMapLevel? _framed;
@@ -72,11 +134,12 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
   Offset? _dragLast;
 
   /// How far in the land level looks.
-  static const double _landZoom = 2.8;
-  static const double _maxZoom = 8;
+  static const double _landZoom = JourneyWorldMapZoom.land;
+  static const double _maxZoom = JourneyWorldMapZoom.max;
 
   @override
   void dispose() {
+    _glide.dispose();
     _view.dispose();
     _frame.dispose();
     super.dispose();
@@ -105,8 +168,14 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
 
   /// Frames [chart] (in the chart's units) at [scale] in the box.
   void _look(Offset chart, double scale, Size box) {
+    _glide.stop();
+    _view.value = _framing(chart, scale, box);
+  }
+
+  /// The matrix that frames [chart] at [scale] in the box.
+  Matrix4 _framing(Offset chart, double scale, Size box) {
     final at = _onMap(chart);
-    _view.value = _matrix(
+    return _matrix(
         scale, box.width / 2 - at.dx * scale, box.height / 2 - at.dy * scale);
   }
 
@@ -119,8 +188,26 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
     _framedOn = on;
     final centre = _globeCentre(box);
     if (widget.level == JourneyMapLevel.land && here != null) {
-      _look(geo.of(here), _landZoom, box);
-      _globe = GlobeView.at(geo.of(here), _landZoom, centre);
+      // Opened where the streets were left, the chart glides out to the
+      // land's own zoom.
+      final from = (widget.enterZoom ?? _landZoom).clamp(_landZoom, _maxZoom);
+      // Only the view shown glides; the other waits at the land's zoom.
+      final sphere = ref.read(chartGlobeProvider);
+      _look(geo.of(here), sphere ? _landZoom : from, box);
+      _globe = GlobeView.at(geo.of(here), sphere ? from : _landZoom, centre);
+      if (from != _landZoom) {
+        final at = _onMap(geo.of(here));
+        final target = _matrix(_landZoom, box.width / 2 - at.dx * _landZoom,
+            box.height / 2 - at.dy * _landZoom);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          if (sphere) {
+            _animateRadius(GlobeView.baseRadius * _landZoom);
+          } else {
+            _animateTo(target);
+          }
+        });
+      }
     } else {
       _view.value = Matrix4.identity();
       _globe = GlobeView.at(
@@ -167,8 +254,8 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
     final g = _globe;
     if (g == null) return;
     if (factor > 1 && _intoPlace(Size.zero, sphere: true)) return;
-    setState(() => _globe = g.copyWith(
-        radius: GlobeView.baseRadius * (g.zoom * factor).clamp(1.0, _maxZoom)));
+    _animateRadius(
+        GlobeView.baseRadius * (g.zoom * factor).clamp(1.0, _maxZoom));
   }
 
   void _globeTap(Offset position, Size box) {
@@ -202,7 +289,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
     final here = widget.here;
     if (here == null) return false;
     final geo = chartOf(ref.read(mapShapeProvider));
-    final at = MatrixUtils.transformPoint(_view.value, _onMap(geo.of(here)));
+    final at = MatrixUtils.transformPoint(_settled, _onMap(geo.of(here)));
     return at.dx >= 0 &&
         at.dy >= 0 &&
         at.dx <= box.width &&
@@ -214,7 +301,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
     if (widget.onZoomIn == null) return false;
     final atMax = sphere
         ? (_globe?.zoom ?? 1) >= _maxZoom - 0.01
-        : _scale >= _maxZoom - 0.01;
+        : _settledScale >= _maxZoom - 0.01;
     if (!atMax) return false;
     if (!sphere && !_hereShown(box)) return false;
     widget.onZoomIn!();
@@ -224,10 +311,10 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
   void _zoom(double factor, Size box) {
     if (factor > 1 && _intoPlace(box, sphere: false)) return;
     final centre = Offset(box.width / 2, box.height / 2);
-    final target = (_scale * factor).clamp(1.0, _maxZoom);
-    final inverse = Matrix4.inverted(_view.value);
+    final target = (_settledScale * factor).clamp(1.0, _maxZoom);
+    final inverse = Matrix4.inverted(_settled);
     final at = MatrixUtils.transformPoint(inverse, centre);
-    setState(() => _view.value = _matrix(
+    _animateTo(_matrix(
         target, centre.dx - at.dx * target, centre.dy - at.dy * target));
   }
 
@@ -331,7 +418,10 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
         transformationController: _view,
         minScale: 1,
         maxScale: _maxZoom,
-        onInteractionStart: (_) => _pinchFrom = _scale,
+        onInteractionStart: (_) {
+          _glide.stop();
+          _pinchFrom = _scale;
+        },
         onInteractionEnd: (_) {
           if (_scale > _pinchFrom) _intoPlace(boxSize, sphere: false);
         },
@@ -396,13 +486,16 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap> {
                     tr(ref, 'journey_recentre'), () {
                   final here = widget.here;
                   if (here == null) return;
-                  setState(() {
-                    _look(geo.of(here), math.max(_scale, _landZoom), boxSize);
-                    _globe = GlobeView.at(
+                  // Glides back to the party (v1.201.1).
+                  if (sphere) {
+                    setState(() => _globe = GlobeView.at(
                         geo.of(here),
                         math.max(_globe?.zoom ?? 1, _landZoom),
-                        _globeCentre(boxSize));
-                  });
+                        _globeCentre(boxSize)));
+                  } else {
+                    _animateTo(_framing(geo.of(here),
+                        math.max(_settledScale, _landZoom), boxSize));
+                  }
                 }),
                 const SizedBox(height: 6),
                 button(
