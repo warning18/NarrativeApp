@@ -111,10 +111,26 @@ void main() {
     // The − button on the streets looks out at the land under the fog
     // (v1.201: the levels are zoomed between); the steps wait behind.
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
-    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 40));
     expect(find.byType(JourneyWorldMap), findsOneWidget);
     expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
     expect(find.byKey(const ValueKey('journey_level_hint')), findsOneWidget);
+    // No jump (v1.201.1): the chart opens close, where the streets were,
+    // and glides out to the land's zoom.
+    double chartScale() => tester
+        .widget<InteractiveViewer>(
+            find.byKey(const ValueKey('journey_world_viewer')))
+        .transformationController!
+        .value
+        .getMaxScaleOnAxis();
+    final early = chartScale();
+    expect(early, greaterThan(JourneyWorldMapZoom.land + 1));
+    await tester.pump(const Duration(milliseconds: 150));
+    final later = chartScale();
+    expect(later, lessThan(early));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(chartScale(), closeTo(JourneyWorldMapZoom.land, 0.01));
     await tester.tap(find.byKey(const Key('journey_zoom_out')));
     await tester.pump();
     await tester.tap(find.byKey(const Key('journey_recentre')));
@@ -125,7 +141,7 @@ void main() {
         i < 8 && find.byKey(const Key('journey_zoom_in')).evaluate().isNotEmpty;
         i++) {
       await tester.tap(find.byKey(const Key('journey_zoom_in')));
-      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
     }
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
