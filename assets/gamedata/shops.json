@@ -29,7 +29,7 @@
     "keeperName": "The cellar-boy",
     "keeperName_fr": "Le garçon de cave",
     "keeperLine": "A bottle, a bandage, a pair of boots that fit somebody once. Nobody’s boy, nobody’s prices: coin first.",
-    "keeperLine_fr": "Une fiole, un pansement, des bottes qui ont chaussé quelqu’un un jour. Le garçon de personne, les prix de personne : l’argent d’abord."
+    "keeperLine_fr": "Une fiole, un pansement, des bottes qui ont chaussé quelqu’un un jour. Le garçon de personne, les prix de personne : l’argent d’abord."
   },
   "black_market_docks": {
     "shopID": "black_market_docks",
@@ -70,11 +70,11 @@
     "keeperLine": "Nothing here came off a boat the Dominion knows about. Don’t ask, don’t haggle.",
     "keeperLine_fr": "Rien ici n’est sorti d’un bateau que le Dominion connaît. Pas de questions, pas de marchandage.",
     "keeperLineWary": "The Wharf doesn’t like your face. The hatch stays open; the prices don’t.",
-    "keeperLineWary_fr": "Le Quai n’aime pas ta tête. La trappe reste ouverte ; les prix, non.",
+    "keeperLineWary_fr": "Le Quai n’aime pas votre tête. La trappe reste ouverte ; les prix, non.",
     "keeperLineTrusted": "You keep your mouth shut. The Cellar remembers that in coin.",
-    "keeperLineTrusted_fr": "Tu sais te taire. La Cave s’en souvient, en pièces.",
+    "keeperLineTrusted_fr": "Vous savez vous taire. La Cave s’en souvient, en pièces.",
     "keeperLineSworn": "The Keyholders’ own. Pick what you like; we’ll square it with the Vault.",
-    "keeperLineSworn_fr": "Un des Porte-Clés. Prends ce qui te plaît ; on réglera ça avec le Coffre."
+    "keeperLineSworn_fr": "Porte-Clés, comme nous. Prenez ce qui vous plaît ; on réglera ça avec le Coffre."
   },
   "weaponsmith_forge": {
     "shopID": "weaponsmith_forge",
@@ -141,11 +141,11 @@
     "keeperLine": "Steel for honest coin. Every blade here was asked for before it was forged.",
     "keeperLine_fr": "De l’acier contre de l’argent honnête. Chaque lame ici a été demandée avant d’être forgée.",
     "keeperLineWary": "The Compact forges for those it chooses. It hasn’t chosen you. Pay the rate.",
-    "keeperLineWary_fr": "Le Pacte forge pour ceux qu’il choisit. Il ne t’a pas choisi. Paie le tarif.",
+    "keeperLineWary_fr": "Le Pacte forge pour qui il choisit. Son choix ne s’est pas porté sur vous. Payez le tarif.",
     "keeperLineTrusted": "Trusted, are you? Then it’s fifteen off the board, and keep your hands off the lance.",
-    "keeperLineTrusted_fr": "Digne de confiance, hein ? Alors quinze de moins sur l’ardoise, et bas les pattes de la lance.",
+    "keeperLineTrusted_fr": "Digne de confiance, hein ? Alors quinze de moins sur l’ardoise, et bas les pattes de la lance.",
     "keeperLineSworn": "The Compact’s own. Name the blade and it’s forged — we’ll argue the price after.",
-    "keeperLineSworn_fr": "Un des nôtres. Nomme la lame et elle est forgée — on discutera du prix après."
+    "keeperLineSworn_fr": "Des nôtres. Nommez la lame et elle est forgée — on discutera du prix après."
   },
   "shieldwrights_hall": {
     "shopID": "shieldwrights_hall",
@@ -190,13 +190,13 @@
     "keeperName": "Hesta Brann",
     "keeperName_fr": "Hesta Brann",
     "keeperLine": "A shield is a promise you keep for someone else. Pick one you can lift.",
-    "keeperLine_fr": "Un bouclier, c’est une promesse qu’on tient pour quelqu’un d’autre. Prends-en un que tu peux lever.",
+    "keeperLine_fr": "Un bouclier, c’est une promesse qu’on tient pour quelqu’un d’autre. Prenez-en un que vous pouvez lever.",
     "keeperLineWary": "Quarry folk don’t sell to those the Compact frowns on. Not cheap, anyway.",
     "keeperLineWary_fr": "Les gens de la carrière ne vendent pas à ceux que le Pacte regarde de travers. Pas bon marché, en tout cas.",
     "keeperLineTrusted": "You held a line for us once. The hall holds the price down for you.",
-    "keeperLineTrusted_fr": "Tu as tenu une ligne pour nous, un jour. La halle tient le prix bas pour toi.",
+    "keeperLineTrusted_fr": "Vous avez tenu une ligne pour nous, un jour. La halle tient le prix bas pour vous.",
     "keeperLineSworn": "Sworn to the Compact. Take the aegis; it was cut for a hand like yours.",
-    "keeperLineSworn_fr": "Juré au Pacte. Prends l’égide ; elle a été taillée pour une main comme la tienne."
+    "keeperLineSworn_fr": "Sous serment au Pacte. Prenez l’égide ; elle a été taillée pour une main comme la vôtre."
   },
   "arcane_bazaar": {
     "shopID": "arcane_bazaar",
@@ -244,7 +244,7 @@
     "keeperName": "Imra of the Smoke",
     "keeperName_fr": "Imra de la Fumée",
     "keeperLine": "Staves, scrolls and stranger things. I sell to every clan and pay every toll, so the price is the price.",
-    "keeperLine_fr": "Bâtons, parchemins et choses plus étranges. Je vends à tous les clans et paie tous les péages ; le prix est le prix."
+    "keeperLine_fr": "Bâtons, parchemins et choses plus étranges. Je vends à tous les clans et paie tous les péages ; le prix est le prix."
   },
   "apothecary_row": {
     "shopID": "apothecary_row",
@@ -276,13 +276,13 @@
     "keeperName": "Sister Ysolde",
     "keeperName_fr": "Sœur Ysolde",
     "keeperLine": "Fever-bark from the Courts, boiled honest. Tell me what hurts, not what you want.",
-    "keeperLine_fr": "De l’écorce-fièvre des Cours, bouillie honnêtement. Dis-moi ce qui fait mal, pas ce que tu veux.",
+    "keeperLine_fr": "De l’écorce-fièvre des Cours, bouillie honnêtement. Dites-moi ce qui fait mal, pas ce que vous voulez.",
     "keeperLineWary": "The fen hears what’s said of you. The jars are still open; the discount is not.",
-    "keeperLineWary_fr": "Le marais entend ce qu’on dit de toi. Les bocaux restent ouverts ; la remise, non.",
+    "keeperLineWary_fr": "Le marais entend ce qu’on dit de vous. Les bocaux restent ouverts ; la remise, non.",
     "keeperLineTrusted": "The Courts call you a guest. A guest pays what the reeds pay.",
-    "keeperLineTrusted_fr": "Les Cours t’appellent un hôte. Un hôte paie ce que paient les roseaux.",
+    "keeperLineTrusted_fr": "Les Cours vous comptent parmi leurs hôtes. Leurs hôtes paient ce que paient les roseaux.",
     "keeperLineSworn": "What the fen takes, the fen returns. Take what you need; the Courts have it covered.",
-    "keeperLineSworn_fr": "Ce que le marais prend, le marais rend. Prends ce qu’il te faut ; les Cours couvrent."
+    "keeperLineSworn_fr": "Ce que le marais prend, le marais rend. Prenez ce qu’il vous faut ; les Cours couvrent."
   },
   "smugglers_vault": {
     "shopID": "smugglers_vault",
@@ -324,11 +324,11 @@
     "keeperLine": "One of each. Nothing here is on sale upstairs, and nothing here has a receipt.",
     "keeperLine_fr": "Un seul de chaque. Rien ici n’est en vente là-haut, et rien ici n’a de reçu.",
     "keeperLineWary": "The Vault opens for you because the Ledger says you pay. It shuts the moment it says otherwise.",
-    "keeperLineWary_fr": "Le Coffre s’ouvre pour toi parce que le Registre dit que tu paies. Il se ferme dès qu’il dit autre chose.",
+    "keeperLineWary_fr": "Le Coffre s’ouvre pour vous parce que le Registre dit que vous payez. Il se ferme dès qu’il dit autre chose.",
     "keeperLineTrusted": "Trusted. There’s a second shelf; I’ll show it when the price is right.",
-    "keeperLineTrusted_fr": "De confiance. Il y a un second rayon ; je le montrerai quand le prix sera bon.",
+    "keeperLineTrusted_fr": "De confiance. Il y a un second rayon ; je le montrerai quand le prix sera bon.",
     "keeperLineSworn": "Keyholder to Keyholder: name the door and it’s yours.",
-    "keeperLineSworn_fr": "De Porte-Clés à Porte-Clés : nomme la porte, elle est à toi."
+    "keeperLineSworn_fr": "De Porte-Clés à Porte-Clés : nommez la porte, elle est à vous."
   },
   "hammersmith_forge": {
     "shopID": "hammersmith_forge",
@@ -395,13 +395,13 @@
     "keeperName": "Dagny Ironhand",
     "keeperName_fr": "Dagny Main-de-Fer",
     "keeperLine": "Too heavy for the Weaponsmith, so it came to me. Lift it before you pay for it.",
-    "keeperLine_fr": "Trop lourd pour l’Armurier, alors c’est venu chez moi. Soulève-le avant de le payer.",
+    "keeperLine_fr": "Trop lourd pour l’Armurier, alors c’est venu chez moi. Soulevez-le avant de le payer.",
     "keeperLineWary": "The Anvil-Deaf signed about you. Not kindly. The forge works; the price bites.",
-    "keeperLineWary_fr": "Les Sourds-d’Enclume ont signé à ton sujet. Pas gentiment. La forge tourne ; le prix mord.",
+    "keeperLineWary_fr": "Les Sourds-d’Enclume ont signé à votre sujet. Pas gentiment. La forge tourne ; le prix mord.",
     "keeperLineTrusted": "The council signed your name with the open hand. Fifteen off, and the hauberk’s yours to try.",
-    "keeperLineTrusted_fr": "Le conseil a signé ton nom de la main ouverte. Quinze de moins, et le haubert est à toi pour l’essayer.",
+    "keeperLineTrusted_fr": "Le conseil a signé votre nom de la main ouverte. Quinze de moins, et le haubert est à vous pour l’essayer.",
     "keeperLineSworn": "Sworn. Then it isn’t a sale — it’s the Compact arming one of its own.",
-    "keeperLineSworn_fr": "Juré. Alors ce n’est pas une vente — c’est le Pacte qui arme un des siens."
+    "keeperLineSworn_fr": "Sous serment. Alors ce n’est pas une vente — c’est le Pacte qui arme les siens."
   },
   "arcane_academy": {
     "shopID": "arcane_academy",
@@ -447,18 +447,18 @@
     "minChapter": 3,
     "detourEligible": false,
     "shopName_fr": "L’Académie arcanique",
-    "shopDescription_fr": "Passé les étals d’encens du Bazar, une véritable académie : des bâtons cerclés de vieilles protections, pour des mains assez exercées pour les tenir.",
+    "shopDescription_fr": "Passé les étals d’encens du Bazar, une véritable académie : des bâtons cerclés de vieilles protections, pour des mains assez exercées pour les tenir.",
     "faction": "dominion",
     "keeperName": "Magister Corvane",
     "keeperName_fr": "Le magister Corvane",
     "keeperLine": "The Choir keeps this school. Wardings on every staff, and a tithe on every sale.",
     "keeperLine_fr": "Le Chœur tient cette école. Des protections sur chaque bâton, et une dîme sur chaque vente.",
     "keeperLineWary": "The Lantern has a file on you. The Academy sells to you anyway — at the Lantern’s rate.",
-    "keeperLineWary_fr": "La Lanterne a un dossier sur toi. L’Académie te vend quand même — au tarif de la Lanterne.",
+    "keeperLineWary_fr": "La Lanterne a un dossier sur vous. L’Académie vous vend quand même — au tarif de la Lanterne.",
     "keeperLineTrusted": "A friend of the Flame. The tithe is waived; the wardings are not.",
-    "keeperLineTrusted_fr": "Un ami de la Flamme. La dîme est levée ; les protections, non.",
+    "keeperLineTrusted_fr": "L’amitié de la Flamme. La dîme est levée ; les protections, non.",
     "keeperLineSworn": "Sworn to the Lantern. The Choir’s own shelves are open to you.",
-    "keeperLineSworn_fr": "Juré à la Lanterne. Les rayons du Chœur te sont ouverts."
+    "keeperLineSworn_fr": "Sous serment à la Lanterne. Les rayons du Chœur vous sont ouverts."
   },
   "sharpweave_den": {
     "shopID": "sharpweave_den",
@@ -505,13 +505,13 @@
     "keeperName": "Needle",
     "keeperName_fr": "L’Aiguille",
     "keeperLine": "You found the door. That’s the whole test. The edges are behind me.",
-    "keeperLine_fr": "Tu as trouvé la porte. C’était tout le test. Les lames sont derrière moi.",
+    "keeperLine_fr": "Vous avez trouvé la porte. C’était tout le test. Les lames sont derrière moi.",
     "keeperLineWary": "The Ledger says you talk. Buy quick and don’t.",
-    "keeperLineWary_fr": "Le Registre dit que tu parles. Achète vite, et pas un mot.",
+    "keeperLineWary_fr": "Le Registre dit que vous parlez. Achetez vite, et pas un mot.",
     "keeperLineTrusted": "The Ledger likes what it hears of you. Quiet hands pay less.",
-    "keeperLineTrusted_fr": "Le Registre aime ce qu’il entend de toi. Les mains discrètes paient moins.",
+    "keeperLineTrusted_fr": "Le Registre aime ce qu’il entend de vous. Les mains discrètes paient moins.",
     "keeperLineSworn": "One of ours. The smoke veil is yours; the Inquisition can read it in the dark.",
-    "keeperLineSworn_fr": "Une des nôtres. Le voile de fumée est à toi ; l’Inquisition le lira dans le noir."
+    "keeperLineSworn_fr": "Des nôtres. Le voile de fumée est à vous ; l’Inquisition le lira dans le noir."
   },
   "ossuary_relics": {
     "shopID": "ossuary_relics",
@@ -557,13 +557,13 @@
     "keeperName": "A deserter called Hask",
     "keeperName_fr": "Un déserteur nommé Hask",
     "keeperLine": "Second-hand steel off a shelf of skulls. I stopped asking where it came from. So should you.",
-    "keeperLine_fr": "De l’acier d’occasion sur un rayon de crânes. J’ai cessé de demander d’où ça vient. Toi aussi, tu devrais.",
+    "keeperLine_fr": "De l’acier d’occasion sur un rayon de crânes. J’ai cessé de demander d’où ça vient. Vous devriez aussi.",
     "keeperLineWary": "The Penitents don’t forgive the way the Lantern does — slower. The price remembers.",
     "keeperLineWary_fr": "Les Pénitents ne pardonnent pas comme la Lanterne — plus lentement. Le prix s’en souvient.",
     "keeperLineTrusted": "You carried a name back to us. The skulls take less from you.",
-    "keeperLineTrusted_fr": "Tu nous as rapporté un nom. Les crânes te prennent moins.",
+    "keeperLineTrusted_fr": "Vous nous avez rapporté un nom. Les crânes vous prennent moins.",
     "keeperLineSworn": "Sworn. I never take coin from the sworn. Take what keeps you alive.",
-    "keeperLineSworn_fr": "Juré. Je ne prends jamais de pièces aux jurés. Prends ce qui te garde en vie."
+    "keeperLineSworn_fr": "Sous serment. Je ne prends jamais de pièces à qui a juré. Prenez ce qui vous garde en vie."
   },
   "last_lantern": {
     "shopID": "last_lantern",
@@ -612,13 +612,13 @@
     "keeperName": "Wickwarden Tallis",
     "keeperName_fr": "La Veilleuse Tallis",
     "keeperLine": "The last stall lit this close to the tear. The Vigil keeps it. Buy what keeps you breathing.",
-    "keeperLine_fr": "Le dernier étal allumé si près de la déchirure. La Veille le tient. Achète ce qui te garde en vie.",
+    "keeperLine_fr": "Le dernier étal allumé si près de la déchirure. La Veille le tient. Achetez ce qui vous garde en vie.",
     "keeperLineWary": "The wall knows who looked away. It still sells to you. It charges for it.",
-    "keeperLineWary_fr": "Le mur sait qui a détourné les yeux. Il te vend encore. Il le fait payer.",
+    "keeperLineWary_fr": "Le mur sait qui a détourné les yeux. Il vous vend encore. Il le fait payer.",
     "keeperLineTrusted": "You stood a watch for us. The lamp burns cheaper for those who did.",
-    "keeperLineTrusted_fr": "Tu as monté une garde pour nous. La lampe brûle moins cher pour ceux qui l’ont fait.",
+    "keeperLineTrusted_fr": "Vous avez monté une garde pour nous. La lampe brûle moins cher pour qui l’a fait.",
     "keeperLineSworn": "Open eyes. What the Vigil has is yours to carry to the tear.",
-    "keeperLineSworn_fr": "Les yeux ouverts. Ce que la Veille possède est à toi, pour le porter jusqu’à la déchirure."
+    "keeperLineSworn_fr": "Les yeux ouverts. Ce que la Veille possède est à vous, pour le porter jusqu’à la déchirure."
   },
   "anchorage_chandlery": {
     "shopID": "anchorage_chandlery",
@@ -656,18 +656,18 @@
     "minChapter": 6,
     "detourEligible": false,
     "shopName_fr": "La Chandlerie des charpentiers d’épaves",
-    "shopDescription_fr": "Ce que la mer a rendu au Mouillage Blanc et ce que ses charpentiers d’épaves en ont fait : des baumes dans des gourdes de pèlerins, des lames reforgées avec celles de la flotte.",
+    "shopDescription_fr": "Ce que la mer a rendu au Mouillage Blanc et ce que ses charpentiers d’épaves en ont fait : des baumes dans des gourdes de pèlerins, des lames reforgées avec celles de la flotte.",
     "faction": "dominion",
     "keeperName": "The Wreck-Wright",
     "keeperName_fr": "La Charpentière d’épaves",
     "keeperLine": "What the sea gave back, made fit to use again. The Admiralty counts every sale.",
     "keeperLine_fr": "Ce que la mer a rendu, remis en état. L’Amirauté compte chaque vente.",
     "keeperLineWary": "The Admiralty flagged your name. I sell to flagged names. Dearer.",
-    "keeperLineWary_fr": "L’Amirauté a marqué ton nom. Je vends aux noms marqués. Plus cher.",
+    "keeperLineWary_fr": "L’Amirauté a marqué votre nom. Je vends aux noms marqués. Plus cher.",
     "keeperLineTrusted": "The Fleet’s friend. The Harborwatch set goes to you at the old rate.",
-    "keeperLineTrusted_fr": "Un ami de la Flotte. L’ensemble de la Garde-du-port est pour toi, à l’ancien tarif.",
+    "keeperLineTrusted_fr": "L’amitié de la Flotte. L’ensemble de la Garde-du-port est pour vous, à l’ancien tarif.",
     "keeperLineSworn": "Sworn to the Lantern. The tear-glass was kept back for a hand like yours.",
-    "keeperLineSworn_fr": "Juré à la Lanterne. Le verre-de-déchirure a été mis de côté pour une main comme la tienne."
+    "keeperLineSworn_fr": "Sous serment à la Lanterne. Le verre-de-déchirure a été mis de côté pour une main comme la vôtre."
   },
   "wayfarer_caravan": {
     "shopID": "wayfarer_caravan",
@@ -700,11 +700,11 @@
     "minChapter": 2,
     "detourEligible": false,
     "shopName_fr": "La Caravane du Voyageur",
-    "shopDescription_fr": "Un convoi de mules qui ne reste jamais longtemps dans une ville : potions, charmes et quelques pièces rares achetées sur la dernière route.",
+    "shopDescription_fr": "Un convoi de mules qui ne reste jamais longtemps dans une ville : potions, charmes et quelques pièces rares achetées sur la dernière route.",
     "keeperName": "Old Pell",
     "keeperName_fr": "Le vieux Pell",
     "keeperLine": "Bought off the last road, sold on this one. Six things today; tomorrow the mules decide.",
-    "keeperLine_fr": "Acheté sur la route d’avant, vendu sur celle-ci. Six choses aujourd’hui ; demain, ce sont les mules qui décident.",
+    "keeperLine_fr": "Acheté sur la route d’avant, vendu sur celle-ci. Six choses aujourd’hui ; demain, ce sont les mules qui décident.",
     "stockPool": [
       "potion_major",
       "antidote",

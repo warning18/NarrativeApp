@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.201.2+236]
+
+### Fixed
+- Autoplay (Edit Mode's jump to a scene or a chapter) meets road hazards where the game does: with the world's places known, a walk between two districts of one city is no road for it either. It still charged the party a hazard on Saltmouth's gate-to-wharf walk.
+- The ledger scenes at the end of chapter 4 (6001, 6002) stand at the Hollow Court's steps, where the text has them, not in the Black Reliquary: the flight out of the Court was scored as a journey into the frost (a ration, a whiteout, the chart zooming out) in the middle of a chase. The gate guard's ambush in Saltmouth stands at the gate.
+- The French shop keepers address the player as « vous » like every other line in the game, with no word gendering the player and a no-break space before ; : ! ? as in the rest of the data. A test over shops.json keeps it so.
+- The geography is never served half loaded: after a cold start the places could be known before the biomes, and the first road taken in that window rolled with no hazard on it.
+- A hunt, an alignment hunter's ambush and a road's champion keep what their choice carries: the loss branch, a forced condition, no healing, the lesson, the lucky die's reveal. A hunt with a loss branch is no permadeath.
+- A race or profession whose picture the build does not carry (one added in the Data tab) shows the generic mark on the first screen of a new game instead of breaking it; the tiles read the picture from the record rather than guessing its file name.
+
 ## [1.201.1+235]
 
 ### Changed

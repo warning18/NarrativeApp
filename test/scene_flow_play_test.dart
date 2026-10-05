@@ -119,7 +119,7 @@ void main() {
     expect(session().provisions, 1);
     expect(session().watch, 0);
     expect(container.read(pendingRoadNoteProvider), isNull);
-    // Sailing from the Black Reliquary home to the camp is a road: it
+    // Sailing from the Hollow Court's steps home to the camp is a road: it
     // eats the last ration, and is a watch of the day.
     play.jumpTo('6002');
     await _settle(tester);

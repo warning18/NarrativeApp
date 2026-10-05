@@ -179,6 +179,20 @@ void main() {
       }
     });
 
+    test('the ledger is read where the Court let the party out', () {
+      // 6001 and 6002 follow the flight out of the Hollow Court without
+      // a break, and name the Black Reliquary as three days off (v1.201.2):
+      // placed there, the chase was scored as a journey into the frost.
+      for (final scene in ['6001', '6002']) {
+        expect(
+            (story[scene] as Map<String, dynamic>)['location'], 'hollow_court',
+            reason: scene);
+      }
+      // The gate guard is fought below the gate, before the market.
+      expect((story['2021'] as Map<String, dynamic>)['location'],
+          'saltmouth_landward_gate');
+    });
+
     test('every expedition zone happens at a location or a district', () {
       for (final MapEntry(:key, :value) in zones.entries) {
         final location = (value as Map<String, dynamic>)['location'];

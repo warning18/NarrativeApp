@@ -90,8 +90,10 @@ Future<HazardTaken?> meetRoadHazard(
   required String fromNodeId,
   required String toNodeId,
 }) async {
-  final biome =
-      (await loadGeography(ref)).roadBiome(story, fromNodeId, toNodeId);
+  // The same world the game rolls with (v1.201.2): a walk between two
+  // districts of one city is no road for autoplay either.
+  final world = await loadGeography(ref);
+  final biome = world.roadBiome(story, fromNodeId, toNodeId);
   final share = hazardShareFor(biome);
   if (share == 0) return null;
   final chapter = ref.read(reachedChapterProvider);
@@ -106,6 +108,7 @@ Future<HazardTaken?> meetRoadHazard(
     championShare: condition?.championShare ?? 0.4,
     shrineShare: condition?.shrineShare ?? 0.3,
     hazardShare: share,
+    world: world,
   );
   if (kind != RoadEventKind.hazard) return null;
   final session = ref.read(playerSessionProvider);

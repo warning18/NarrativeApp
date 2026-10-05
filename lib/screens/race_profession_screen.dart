@@ -128,6 +128,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
         _PresetRail(
           ids: raceIds,
           folder: 'races',
+          presetOf: (id) => races[id] as Map<String, dynamic>?,
           nameOf: (id) =>
               (races[id] as Map<String, dynamic>)['raceName']?.toString() ?? id,
           tagOf: (id) =>
@@ -151,6 +152,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
         _PresetRail(
           ids: professionIds,
           folder: 'professions',
+          presetOf: (id) => professions[id] as Map<String, dynamic>?,
           nameOf: (id) =>
               (professions[id] as Map<String, dynamic>)['professionName']
                   ?.toString() ??
@@ -323,10 +325,13 @@ class PresetMark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final file = preset?['visualAsset']?.toString() ?? '';
-    if (file.isEmpty) {
-      return Icon(folder == 'races' ? raceIcon : professionIcon, size: size);
-    }
-    return PixelIcon('assets/visuals/$folder/$file', size: size);
+    final generic =
+        Icon(folder == 'races' ? raceIcon : professionIcon, size: size);
+    if (file.isEmpty) return generic;
+    // A preset whose picture the build does not carry (one added in the
+    // Data tab) shows the generic mark rather than breaking the screen.
+    return PixelIcon('assets/visuals/$folder/$file',
+        size: size, fallback: generic);
   }
 }
 
@@ -335,6 +340,7 @@ class _PresetRail extends StatelessWidget {
   const _PresetRail({
     required this.ids,
     required this.folder,
+    required this.presetOf,
     required this.nameOf,
     required this.tagOf,
     required this.selectedId,
@@ -343,6 +349,7 @@ class _PresetRail extends StatelessWidget {
 
   final List<String> ids;
   final String folder;
+  final Map<String, dynamic>? Function(String id) presetOf;
   final String Function(String id) nameOf;
   final String Function(String id) tagOf;
   final String? selectedId;
@@ -379,9 +386,7 @@ class _PresetRail extends StatelessWidget {
                   child: Column(
                     children: [
                       PresetMark(
-                          folder: folder,
-                          preset: {'visualAsset': '$id.png'},
-                          size: 36),
+                          folder: folder, preset: presetOf(id), size: 36),
                       const SizedBox(height: 4),
                       Text(nameOf(id),
                           maxLines: 1,

@@ -8,16 +8,15 @@ import 'game_db_providers.dart';
 /// geography.json and biomes.json, loaded the way every gamedata table is:
 /// the asset, or the Data tab's edited copy. Read raw, not French-overlaid:
 /// a place picks its language itself (nameFor). Empty until both have
-/// loaded, and empty for a file that is missing.
+/// loaded (or failed to): never the places without their biomes, which
+/// would roll a road with no hazard on it (v1.201.2); and empty for a
+/// file that is missing.
 final geographyProvider = Provider<Geography>((ref) {
-  final places = ref.watch(gameDbProvider(geographySchema)).value;
-  final biomes = ref.watch(gameDbProvider(biomesSchema)).value;
-  if ((places == null || places.isEmpty) &&
-      (biomes == null || biomes.isEmpty)) {
-    return Geography.empty;
-  }
+  final places = ref.watch(gameDbProvider(geographySchema));
+  final biomes = ref.watch(gameDbProvider(biomesSchema));
+  if (places.isLoading || biomes.isLoading) return Geography.empty;
   return Geography.parse(
-      geography: places ?? const {}, biomes: biomes ?? const {});
+      geography: places.value ?? const {}, biomes: biomes.value ?? const {});
 });
 
 /// The geography once both files have loaded (or failed to): for code that

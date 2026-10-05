@@ -3661,7 +3661,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_landward_gate",
     "automations": {
       "script_trigger": "on_load_node_2021"
     },
@@ -5331,7 +5331,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "hollow_court",
     "automations": {
       "script_trigger": "on_load_node_6001"
     },
@@ -5416,7 +5416,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "hollow_court",
     "automations": {
       "script_trigger": "on_load_node_6002"
     },
