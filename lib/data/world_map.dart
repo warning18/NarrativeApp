@@ -240,8 +240,8 @@ final List<Landmark> worldMapLandmarks = [
         'Where the Waste comes down to the sea: white walls on a headland, a stone giant to its knees in the harbor mouth, and the Inquisition searching every caravan at the gate. Go in with the caravan, or hidden in a salt wagon.',
     blurbFr:
         'Là où la Désolation descend jusqu’à la mer\u00a0: des murs blancs sur un promontoire, un géant de pierre dans l’eau jusqu’aux genoux à l’entrée du port, et l’Inquisition qui fouille chaque caravane à la porte. Entrer avec la caravane, ou sous les sacs d’un chariot de sel.',
-    scenes: ['2001', '2000', '2005', '2020'],
-    fights: ['harbor_rat'],
+    scenes: ['2001', '2000', '2005', '2020', '2021'],
+    fights: ['harbor_rat', 'inquisition_soldier'],
   ),
   const Landmark(
     id: 'tern',
@@ -273,7 +273,6 @@ final List<Landmark> worldMapLandmarks = [
       '2015_sable_lifted', '2015_sable_caught', '2015_sable_bought',
       '2015_sable_talk_failed', '2015_liora', '2015_liora_won',
       '2015_liora_refused', '2015_vess', '2015_drawer', '2015_smuggler',
-      '2021',
       '2011_roof_fall', '2030', '2040', '2040_paid', '2050', '2070',
       '2070_cut_failed',
       '2015_house_drowned_debt', '2015_house_keyholders',
@@ -483,12 +482,12 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'The Hollow Court',
     nameFr: 'La Cour Creuse',
     blurbEn:
-        'Inked inquisitors around a black altar and the Shroud’s twin. Their ledger of the taken has your parents on page two, and a dozen sleepers lie wrapped in the grey you need.',
+        'Inked inquisitors around a black altar and the Shroud’s twin. Their ledger of the taken has your parents on page two, and a dozen sleepers lie wrapped in the grey you need. Its truth is read on the steps outside, in daylight.',
     blurbFr:
-        'Des inquisiteurs tatoués autour d’un autel noir et du jumeau du Linceul. Leur registre des disparus porte vos parents en page deux, et une douzaine de dormeurs gisent enveloppés du gris qu’il vous faut.',
+        'Des inquisiteurs tatoués autour d’un autel noir et du jumeau du Linceul. Leur registre des disparus porte vos parents en page deux, et une douzaine de dormeurs gisent enveloppés du gris qu’il vous faut. Sa vérité se lit sur les marches, dehors, au grand jour.',
     scenes: [
       '5003', '5004', '5004b', '5004_altar', '5005', '5006_chase', //
-      '5006_cornered',
+      '5006_cornered', '6001', '6002',
     ],
     fights: ['hollow_court_zealot'],
   ),
@@ -498,12 +497,11 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'The Reliquary Quarter',
     nameFr: 'Le Quartier des Reliquaires',
     blurbEn:
-        'Frost in summer and penitents at the gate. The ledger’s truth, the chart-keeper, the Last Lantern, Malrik’s stall, a confession to answer, Lysa’s fate, and the fourth piece of the Shroud in a girl’s reliquary.',
+        'Frost in summer and penitents at the gate. The chart-keeper, the Last Lantern, Malrik’s stall, a confession to answer, Lysa’s fate, and the fourth piece of the Shroud in a girl’s reliquary.',
     blurbFr:
-        'Du givre en plein été et des pénitents à la porte. La vérité du registre, la gardienne des cartes, la Dernière Lanterne, l’étal de Malrik, une confession à laquelle répondre, le sort de Lysa, et le quatrième morceau du Linceul dans le reliquaire d’une fillette.',
+        'Du givre en plein été et des pénitents à la porte. La gardienne des cartes, la Dernière Lanterne, l’étal de Malrik, une confession à laquelle répondre, le sort de Lysa, et le quatrième morceau du Linceul dans le reliquaire d’une fillette.',
     scenes: [
-      '6001', '6002', '6010_gate', '6010', '6010_chartkeeper', //
-      '6010_chart_bought',
+      '6010_gate', '6010', '6010_chartkeeper', '6010_chart_bought', //
       '6010_chartkeeper_words', '6010_lysa', '6010_lysa_later',
       '6010_lysa_dead', '6010_masked', '6010_masked_after', '6010_hounds',
       '6010_confession', '6010_confession_later', '6010_penitent',

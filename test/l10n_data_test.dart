@@ -56,6 +56,35 @@ void main() {
     }
   });
 
+  test('the French shop lines speak in « vous », with French spacing', () {
+    // The keepers address the player as every French line in the game
+    // does (v1.201.2): « vous », no gendered word for the player, and a
+    // no-break space before ; : ! ? as in the rest of the data.
+    // Not \b, which stops at every accented letter (« hôtes » holds a
+    // « tes » to it).
+    final tutoiement = RegExp(
+        r"(?<![\p{L}’'])(tu|toi|ton|ta|tes|tien|tienne)(?!\p{L})|(?<!\p{L})t’",
+        caseSensitive: false,
+        unicode: true);
+    final spaceBefore = RegExp(r'(^|[^\u00a0])[;:!?]');
+    final gendered = RegExp(
+        r'(?<!\p{L})(Un|Une) (ami|amie|des nôtres|des siens)(?!\p{L})',
+        unicode: true);
+    for (final shop in _load('shops.json').entries) {
+      final record = shop.value as Map<String, dynamic>;
+      for (final field in record.entries) {
+        if (!field.key.endsWith('_fr') || field.value is! String) continue;
+        final line = field.value as String;
+        final where = '${shop.key}.${field.key}: $line';
+        expect(tutoiement.hasMatch(line), isFalse, reason: where);
+        expect(spaceBefore.hasMatch(line), isFalse, reason: where);
+        if (field.key.startsWith('keeperLine')) {
+          expect(gendered.hasMatch(line), isFalse, reason: where);
+        }
+      }
+    }
+  });
+
   test('titled companions and people have a French name', () {
     // A bare given name ("Kelda", "Malrik Sarn") reads the same in French;
     // a title ("Sister Maren", "Old Harker") has to be translated.

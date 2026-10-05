@@ -205,19 +205,29 @@ class EncounterModifiers {
   }
 
   factory EncounterModifiers._ofChoice(StoryChoice choice) {
+    // What any choice may carry whatever its fight's kind (v1.201.2): the
+    // loss branch, a forced condition, kept wounds, the lesson and the
+    // lucky die's reveal hold for a road's champion, an ambush and a hunt
+    // too (a hunt with a loss branch is no permadeath).
+    final own = EncounterModifiers(
+      lossContinues: choice.hasLossBranch,
+      forcedCondition: battlefieldConditionFromName(choice.forcedCondition),
+      keepWounds: choice.noHeal,
+      tutorial: choice.tutorialFight,
+      luckyDieReveal: choice.luckyDieReveal,
+    );
     if (choice.roadEvent == 'elite') {
       // A road's champion (road_events.dart): an Elite a quarter tougher
       // still, and an ambush when the party failed to slip past it.
-      return EncounterModifiers(
+      return own._asKind(
         forceElite: true,
         chestTierFloor: ChestTier.silver,
         rewardMultiplier: 1.25,
         healthMultiplier: championHealthMultiplier,
-        forcedCondition: battlefieldConditionFromName(choice.forcedCondition),
       );
     }
     if (choice.isHunterAmbush) {
-      return const EncounterModifiers(
+      return own._asKind(
         chestTierFloor: ChestTier.silver,
         rewardMultiplier: 1.25,
         isHunterAmbush: true,
@@ -225,7 +235,7 @@ class EncounterModifiers {
     }
     final huntName = choice.huntName;
     if (huntName != null && huntName.isNotEmpty) {
-      return EncounterModifiers(
+      return own._asKind(
         forcedAffixes: [
           for (final name in choice.huntAffixes)
             if (affixFromName(name) != null) affixFromName(name)!,
@@ -237,20 +247,39 @@ class EncounterModifiers {
         isHunt: true,
       );
     }
-    final forced = battlefieldConditionFromName(choice.forcedCondition);
-    if (choice.hasLossBranch ||
-        forced != null ||
-        choice.noHeal ||
-        choice.tutorialFight ||
-        choice.luckyDieReveal) {
-      return EncounterModifiers(
-        lossContinues: choice.hasLossBranch,
-        forcedCondition: forced,
-        keepWounds: choice.noHeal,
-        tutorial: choice.tutorialFight,
-        luckyDieReveal: choice.luckyDieReveal,
-      );
-    }
-    return none;
+    return own.isDefault ? none : own;
   }
+
+  /// These modifiers made a fight of one kind (a champion, an ambush, a
+  /// hunt), keeping what the choice itself carries.
+  EncounterModifiers _asKind({
+    List<EnemyAffix>? forcedAffixes,
+    String? namedEnemyName,
+    ChestTier? chestTierFloor,
+    double? rewardMultiplier,
+    double? healthMultiplier,
+    bool? isHunt,
+    bool? isHunterAmbush,
+    bool? forceElite,
+  }) =>
+      EncounterModifiers(
+        forcedAffixes: forcedAffixes ?? this.forcedAffixes,
+        namedEnemyName: namedEnemyName ?? this.namedEnemyName,
+        chestTierFloor: chestTierFloor ?? this.chestTierFloor,
+        rewardMultiplier: rewardMultiplier ?? this.rewardMultiplier,
+        healthMultiplier: healthMultiplier ?? this.healthMultiplier,
+        difficultyMultiplier: difficultyMultiplier,
+        chapter: chapter,
+        isHunt: isHunt ?? this.isHunt,
+        isHunterAmbush: isHunterAmbush ?? this.isHunterAmbush,
+        isZoneBoss: isZoneBoss,
+        lossContinues: lossContinues,
+        isTest: isTest,
+        forcedCondition: forcedCondition,
+        forceElite: forceElite ?? this.forceElite,
+        keepWounds: keepWounds,
+        tutorial: tutorial,
+        luckyDieReveal: luckyDieReveal,
+        hostFight: hostFight,
+      );
 }

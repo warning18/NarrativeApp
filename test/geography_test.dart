@@ -2,6 +2,7 @@
 // biome for each zone, a place for each scene, and what the story has
 // found of them. Built on fixtures: the real geography.json and
 // biomes.json are checked by geography_content_test.dart.
+import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' show Color;
 
@@ -185,6 +186,18 @@ class _Missing extends GameDbRepository {
       throw StateError('${schema.assetPath} is missing');
 }
 
+/// A table still loading until [complete] is called.
+class _Pending extends GameDbRepository {
+  _Pending(super.schema);
+
+  final Completer<Map<String, dynamic>> _records = Completer();
+
+  void complete(Map<String, dynamic> records) => _records.complete(records);
+
+  @override
+  Future<Map<String, dynamic>> loadRecords() => _records.future;
+}
+
 /// A table that holds [records].
 class _Fixed extends GameDbRepository {
   _Fixed(super.schema, this.records);
@@ -293,6 +306,29 @@ void main() {
       expect(half.biomes.length, 3);
       // Both files are Data tab collections.
       expect(gameDbSchemas, containsAll([geographySchema, biomesSchema]));
+    });
+
+    test('the places alone are not the world: empty until the biomes are in',
+        () async {
+      // A cold start loads the two files one after the other (v1.201.2):
+      // between them the places are known and the biomes are not, and a
+      // geography made of that would roll a road with no hazard on it.
+      final biomes = _Pending(biomesSchema);
+      final container = ProviderContainer(overrides: [
+        gameDbRepositoryProvider(geographySchema)
+            .overrideWithValue(_Fixed(geographySchema, geoFixture())),
+        gameDbRepositoryProvider(biomesSchema).overrideWithValue(biomes),
+      ]);
+      addTearDown(container.dispose);
+      await container
+          .read(gameDbProvider(geographySchema).notifier)
+          .whenLoaded();
+      expect(container.read(geographyProvider).isEmpty, isTrue);
+      biomes.complete(biomesFixture());
+      await container.read(gameDbProvider(biomesSchema).notifier).whenLoaded();
+      final loaded = container.read(geographyProvider);
+      expect(loaded.places.length, 14);
+      expect(loaded.biomes.length, 3);
     });
 
     test('no files make an empty geography that finds nothing', () {

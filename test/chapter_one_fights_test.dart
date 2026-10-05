@@ -91,6 +91,57 @@ void main() {
       expect(stamped.lossContinues, isTrue);
     });
 
+    test('a hunt, an ambush and a champion keep the choice\'s own flags', () {
+      // What the choice carries holds whatever kind of fight it opens
+      // (v1.201.2): a hunt with a loss branch is no permadeath.
+      final hunt = EncounterModifiers.fromChoice(const StoryChoice(
+        text: 'Follow the trail',
+        nextId: 'won',
+        triggerEnemyId: 'harbor_rat',
+        huntName: 'Old Scar',
+        loseNextId: 'lost',
+        noHeal: true,
+        forcedCondition: 'dark',
+      ));
+      expect(hunt.isHunt, isTrue);
+      expect(hunt.namedEnemyName, 'Old Scar');
+      expect(hunt.lossContinues, isTrue);
+      expect(hunt.keepWounds, isTrue);
+      expect(hunt.forcedCondition, BattlefieldCondition.dark);
+      final ambush = EncounterModifiers.fromChoice(const StoryChoice(
+        text: 'x',
+        nextId: 'y',
+        triggerEnemyId: 'slum_thug',
+        isHunterAmbush: true,
+        loseNextId: 'z',
+        tutorialFight: true,
+      ));
+      expect(ambush.isHunterAmbush, isTrue);
+      expect(ambush.lossContinues, isTrue);
+      expect(ambush.tutorial, isTrue);
+      final champion = EncounterModifiers.fromChoice(const StoryChoice(
+        text: 'x',
+        nextId: 'y',
+        triggerEnemyId: 'slum_thug',
+        roadEvent: 'elite',
+        forcedCondition: 'ambush',
+        loseNextId: 'z',
+        luckyDieReveal: true,
+      ));
+      expect(champion.forceElite, isTrue);
+      expect(champion.forcedCondition, BattlefieldCondition.ambush);
+      expect(champion.lossContinues, isTrue);
+      expect(champion.luckyDieReveal, isTrue);
+      // A plain fight's modifiers are still the shared default.
+      expect(
+          EncounterModifiers.fromChoice(const StoryChoice(
+            text: 'x',
+            nextId: 'y',
+            triggerEnemyId: 'slum_thug',
+          )).isDefault,
+          isTrue);
+    });
+
     test('the lucky die: a first wound that never fells, then its sign', () {
       // The blow is the enemy's own, capped at a fifth of the player's
       // health, and always leaves them standing.
