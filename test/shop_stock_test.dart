@@ -83,8 +83,9 @@ void main() {
         contains('hasn’t chosen you'));
     expect(shopKeeperLine(forge, AppLanguage.en, tier: StandingTier.trusted),
         contains('fifteen off'));
+    // In « vous », like every French line in the game (v1.201.2).
     expect(shopKeeperLine(forge, AppLanguage.fr, tier: StandingTier.sworn),
-        contains('Nomme la lame'));
+        contains('Nommez la lame'));
     // A free trader has one line for everyone.
     final bazaar = shops['arcane_bazaar'] as Map<String, dynamic>;
     expect(shopKeeperLine(bazaar, AppLanguage.en, tier: null),
