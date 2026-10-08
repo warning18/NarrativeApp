@@ -292,7 +292,13 @@ final List<Landmark> worldMapLandmarks = [
         'The one hull the yard will sell a stranger: the Rusty Eel, holed and torn. Buy her or work off her price, patch the hull and mend the sail, then decide who sails: everyone, the twenty who can fight, or no one.',
     blurbFr:
         'La seule coque que le chantier accepte de vendre à un inconnu\u00a0: le Rusty Eel, troué et déchiré. Achetez-le ou payez-le de votre travail, colmatez la coque et réparez la voile, puis décidez qui embarque\u00a0: tout le monde, les vingt qui savent se battre, ou personne.',
-    scenes: ['2900', '2900_boat_fixed'],
+    scenes: [
+      '2900',
+      '2900_boat_fixed',
+      '2015_dorran',
+      '2015_scaffold_clerk',
+      '2015_scaffold_clerk_fight',
+    ],
   ),
   const Landmark(
     id: 'storm',
@@ -341,7 +347,8 @@ final List<Landmark> worldMapLandmarks = [
       '3005_clan_vigil_1_breach',
       '3005_clan_vigil_1_dawn',
       '3005_clan_compact_1',
-      '3005_clan_compact_1_lit',
+      '3005_clan_compact_1_lit', '3005_imeh', '3005_glass_fire',
+      '3005_glass_fire_fight',
     ],
     fights: [
       'cultist_acolyte', 'void_wisp', 'void_stalker', 'iron_golem', //
@@ -472,7 +479,8 @@ final List<Landmark> worldMapLandmarks = [
       '5010_house_herons_wake_broken',
       '5010_clan_crows_2',
       '5010_clan_crows_2_found',
-      '5010_clan_crows_2_failed',
+      '5010_clan_crows_2_failed', '5010_brannoc', '5010_bark_cache',
+      '5010_bark_cache_fight',
     ],
     fights: ['catacomb_ghoul', 'bone_warden', 'void_wisp'],
   ),
@@ -514,7 +522,8 @@ final List<Landmark> worldMapLandmarks = [
       '6010_clan_dominion_2',
       '6010_clan_compact_3',
       '6010_clan_compact_3_seen',
-      '6010_clan_compact_3_hammer',
+      '6010_clan_compact_3_hammer', '6010_orsabet', '6010_candle_walk',
+      '6010_candle_walk_fight',
     ],
     fights: [
       'void_hound', 'inquisition_penitent', 'tear_spawn', 'masked_penitent', //
@@ -565,7 +574,8 @@ final List<Landmark> worldMapLandmarks = [
       '6200', '6200_gate', '6200_birth', '6200_birth_failed', //
       '6200_eldest', '6200_eldest_later', '6200_hearth',
       '6200_house_quarrymen', '6200_clan_compact_2',
-      '6200_clan_compact_2_refused',
+      '6200_clan_compact_2_refused', '6200_ghrem', '6200_quarry_face',
+      '6200_quarry_face_fight',
     ],
     fights: ['void_hound', 'void_hound'],
   ),
@@ -600,7 +610,8 @@ final List<Landmark> worldMapLandmarks = [
       '7100_clan_crows_3',
       '7100_clan_penitents_3',
       '7100_clan_penitents_3_bolt',
-      '7100_clan_penitents_3_through',
+      '7100_clan_penitents_3_through', '7100_nkem', '7100_impound',
+      '7100_impound_fight',
     ],
     fights: [
       'inquisition_soldier',
