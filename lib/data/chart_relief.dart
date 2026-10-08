@@ -114,6 +114,15 @@ enum TerrainKind {
   salt,
   terrace,
   hatch,
+
+  /// A rounded hill, shaded on one side (v1.202).
+  hill,
+
+  /// A fir, on the cold and the high lands (v1.202).
+  conifer,
+
+  /// A boulder or an outcrop (v1.202).
+  rock,
 }
 
 class TerrainMark {
@@ -133,18 +142,40 @@ class TerrainMark {
 /// The relief of one geography, worked out once: the coasts and zones
 /// broken into bays and headlands, the rivers bent, the terrain laid.
 class ChartRelief {
-  ChartRelief._(this.geography, this.coasts, this.zones, this.rivers,
-      this.terrain, this.islets);
+  ChartRelief._(
+      this.geography,
+      this.coasts,
+      this.zones,
+      this.rivers,
+      this.terrain,
+      this.islets,
+      this.tributaries,
+      this.waves,
+      this.fineTerrain);
 
   final ChartGeography geography;
   final List<List<Offset>> coasts;
   final List<List<Offset>> zones;
+
+  /// Each river bent, its points ordered source to mouth (the end nearer
+  /// a coast is the mouth, v1.202).
   final List<List<Offset>> rivers;
   final List<TerrainMark> terrain;
 
   /// Skerries and islets off the coasts, drawn as land but holding
   /// nothing.
   final List<List<Offset>> islets;
+
+  /// Streams that join the rivers (v1.202): each from its source to the
+  /// river it meets, the last point on the river.
+  final List<List<Offset>> tributaries;
+
+  /// Where a wave is drawn on the open sea (v1.202), clear of the lands.
+  final List<Offset> waves;
+
+  /// The small terrain (trees, rocks, tufts, drifts) that shows only when
+  /// the chart is looked at closer (v1.202).
+  final List<TerrainMark> fineTerrain;
 
   static final Map<ChartGeography, ChartRelief> _cache = {};
 
@@ -163,10 +194,28 @@ class ChartRelief {
         fractalLine(g.zones[i].polygon,
             depth: 3, rough: 0.10, seed: seed0 + 300 + i),
     ];
+    // The rivers, each turned to run source to mouth: the end nearer a
+    // coast is the mouth.
+    double toCoast(Offset p) {
+      var best = double.infinity;
+      for (final land in g.lands) {
+        for (final q in land) {
+          final d = (q - p).distance;
+          if (d < best) best = d;
+        }
+      }
+      return best;
+    }
+
     final rivers = [
       for (var i = 0; i < g.rivers.length; i++)
-        fractalLine(g.rivers[i],
-            depth: 3, rough: 0.14, seed: seed0 + 500 + i, closed: false),
+        () {
+          final bent = fractalLine(g.rivers[i],
+              depth: 3, rough: 0.14, seed: seed0 + 500 + i, closed: false);
+          return toCoast(bent.first) < toCoast(bent.last)
+              ? bent.reversed.toList()
+              : bent;
+        }(),
     ];
     // Islets: small lands a little off a coast, never over a place.
     final rng = math.Random(seed0 + 99);
@@ -217,11 +266,73 @@ class ChartRelief {
       terrain.addAll(_terrainFor(
           g.zones[zi].biome, zones[zi], zi, trng, avoid, g.ranges.isNotEmpty));
     }
-    return ChartRelief._(g, coasts, zones, rivers, terrain, islets);
+    final fineTerrain = <TerrainMark>[];
+    final frng = math.Random(seed0 + 17);
+    for (var zi = 0; zi < g.zones.length; zi++) {
+      fineTerrain.addAll(_terrainFor(
+          g.zones[zi].biome, zones[zi], zi, frng, avoid, g.ranges.isNotEmpty,
+          fine: true));
+    }
+    // Streams into the rivers: one from each side where the land allows,
+    // joining a third to two thirds of the way down, clear of the places.
+    final tributaries = <List<Offset>>[];
+    final srng = math.Random(seed0 + 11);
+    for (var i = 0; i < rivers.length; i++) {
+      final r = rivers[i];
+      if (r.length < 6) continue;
+      for (final side in const [1.0, -1.0]) {
+        for (var attempt = 0; attempt < 6; attempt++) {
+          final at = (r.length * (0.3 + srng.nextDouble() * 0.4)).floor();
+          final junction = r[at];
+          final d = r[math.min(at + 1, r.length - 1)] - r[math.max(at - 1, 0)];
+          if (d.distance == 0) continue;
+          final back = -d / d.distance;
+          final angle = side * (0.6 + srng.nextDouble() * 0.5);
+          final dir = Offset(
+              back.dx * math.cos(angle) - back.dy * math.sin(angle),
+              back.dx * math.sin(angle) + back.dy * math.cos(angle));
+          final length = 8 + srng.nextDouble() * 9;
+          final source = junction + dir * length;
+          if (!onLand(source) || nearPlace(source, 5)) continue;
+          final line = fractalLine([source, junction],
+              depth: 2,
+              rough: 0.14,
+              seed: seed0 + 700 + i * 2 + attempt,
+              closed: false);
+          if (line.any((p) => !onLand(p)) ||
+              line.any((p) => nearPlace(p, 3.5))) {
+            continue;
+          }
+          tributaries.add(line);
+          break;
+        }
+      }
+    }
+    // Waves on the open sea, well off the lands and the places at sea.
+    final wrng = math.Random(seed0 + 13);
+    final waves = <Offset>[];
+    bool nearLand(Offset p) {
+      for (final coast in coasts) {
+        for (var k = 0; k < coast.length; k += 4) {
+          if ((coast[k] - p).distance < 5) return true;
+        }
+      }
+      return false;
+    }
+
+    for (var i = 0; i < 90; i++) {
+      final p = Offset(wrng.nextDouble() * 256, wrng.nextDouble() * 176);
+      if (onLand(p) || nearLand(p) || nearPlace(p, 7)) continue;
+      if (waves.any((w) => (w - p).distance < 9)) continue;
+      waves.add(p);
+    }
+    return ChartRelief._(g, coasts, zones, rivers, terrain, islets, tributaries,
+        waves, fineTerrain);
   }
 
   static List<TerrainMark> _terrainFor(String biome, List<Offset> poly, int zi,
-      math.Random rng, List<Offset> avoid, bool hasRanges) {
+      math.Random rng, List<Offset> avoid, bool hasRanges,
+      {bool fine = false}) {
     final xs = poly.map((p) => p.dx), ys = poly.map((p) => p.dy);
     final x0 = xs.reduce(math.min), x1 = xs.reduce(math.max);
     final y0 = ys.reduce(math.min), y1 = ys.reduce(math.max);
@@ -253,10 +364,66 @@ class ChartRelief {
       }
     }
 
+    // Woods: clumps of trees, firs on the cold and the high lands.
+    void woods(double per, int lo, int hi, {bool firs = false}) {
+      for (var i = 0; i < count(per); i++) {
+        final p = spot(4);
+        if (p == null) continue;
+        for (var j = 0; j < lo + rng.nextInt(hi - lo + 1); j++) {
+          final q = p +
+              Offset(rng.nextDouble() * 4 - 2, rng.nextDouble() * 2.6 - 1.3);
+          if (!pointInPolygon(q, poly)) continue;
+          out.add(TerrainMark(
+              firs && rng.nextDouble() < 0.7
+                  ? TerrainKind.conifer
+                  : TerrainKind.tree,
+              q,
+              0.45 + rng.nextDouble() * 0.35,
+              zi));
+        }
+      }
+    }
+
+    // The fine terrain: only the small kinds, twice as many, a little
+    // smaller.
+    if (fine) {
+      void small(TerrainKind kind, double per, double lo, double hi) =>
+          add(kind, per, 2.5, lo, hi);
+      switch (biome) {
+        case 'temperate':
+          woods(240, 2, 4);
+          small(TerrainKind.rock, 900, 0.3, 0.5);
+          small(TerrainKind.tuft, 500, 0.5, 0.8);
+        case 'fen':
+          small(TerrainKind.tuft, 120, 0.6, 1.0);
+          woods(700, 1, 3);
+        case 'desert':
+          small(TerrainKind.rock, 500, 0.3, 0.6);
+          small(TerrainKind.dune, 400, 1.2, 2.2);
+        case 'arid_coast':
+          small(TerrainKind.rock, 500, 0.3, 0.5);
+          small(TerrainKind.tuft, 500, 0.4, 0.7);
+        case 'ashlands':
+          small(TerrainKind.rock, 450, 0.3, 0.6);
+          small(TerrainKind.crack, 500, 0.6, 1.2);
+        case 'volcanic':
+          small(TerrainKind.rock, 500, 0.3, 0.6);
+          small(TerrainKind.crack, 500, 0.6, 1.2);
+        case 'tear':
+          small(TerrainKind.shard, 350, 0.3, 0.6);
+        case 'sea_cliffs':
+          woods(600, 1, 3, firs: true);
+          small(TerrainKind.rock, 600, 0.3, 0.5);
+        case 'frost':
+          small(TerrainKind.hatch, 160, 0.3, 0.5);
+          woods(700, 1, 3, firs: true);
+      }
+      return out;
+    }
     // Ridges on the cold and broken lands (the Ring has its named ranges
     // too, so it takes fewer loose peaks).
     if (const {'frost', 'volcanic', 'sea_cliffs', 'ashlands'}.contains(biome)) {
-      final ridges = count(2200, hasRanges ? 0.8 : 1.6);
+      final ridges = count(1600, hasRanges ? 0.9 : 1.6);
       for (var r = 0; r < ridges; r++) {
         final p = spot(6);
         if (p == null) continue;
@@ -271,7 +438,7 @@ class ChartRelief {
             continue;
           }
           out.add(TerrainMark(
-              TerrainKind.peak, q, 0.6 + rng.nextDouble() * 0.5, zi,
+              TerrainKind.peak, q, 0.7 + rng.nextDouble() * 0.6, zi,
               snow: biome == 'frost',
               ember: biome == 'volcanic' && rng.nextDouble() < 0.35));
         }
@@ -279,37 +446,42 @@ class ChartRelief {
     }
     switch (biome) {
       case 'temperate':
-        for (var i = 0; i < count(420); i++) {
-          final p = spot(4);
-          if (p == null) continue;
-          for (var j = 0; j < 2 + rng.nextInt(4); j++) {
-            final q = p +
-                Offset(rng.nextDouble() * 3 - 1.5, rng.nextDouble() * 2 - 1);
-            if (!pointInPolygon(q, poly)) continue;
-            out.add(TerrainMark(
-                TerrainKind.tree, q, 0.4 + rng.nextDouble() * 0.3, zi));
-          }
-        }
-        add(TerrainKind.lake, 2600, 6, 1.0, 2.0);
+        woods(300, 3, 7);
+        add(TerrainKind.hill, 700, 4, 1.4, 2.4);
+        add(TerrainKind.lake, 2200, 6, 1.0, 2.0);
+        add(TerrainKind.rock, 1800, 3, 0.4, 0.7);
       case 'fen':
-        add(TerrainKind.tuft, 300, 3, 0.8, 1.2);
-        add(TerrainKind.pool, 900, 4, 0.8, 1.6);
-        add(TerrainKind.tree, 900, 4, 0.4, 0.6);
+        add(TerrainKind.tuft, 220, 3, 0.8, 1.2);
+        add(TerrainKind.pool, 700, 4, 0.8, 1.6);
+        woods(900, 2, 4);
+        add(TerrainKind.hill, 1600, 4, 1.0, 1.6);
       case 'desert':
-        add(TerrainKind.dune, 220, 3, 2.0, 4.5);
+        add(TerrainKind.dune, 180, 3, 2.0, 4.5);
+        add(TerrainKind.rock, 1200, 3, 0.4, 0.8);
       case 'arid_coast':
-        add(TerrainKind.salt, 400, 3, 0.8, 1.2);
+        add(TerrainKind.salt, 320, 3, 0.8, 1.2);
+        add(TerrainKind.hill, 1200, 4, 1.0, 1.8);
+        add(TerrainKind.rock, 1000, 3, 0.4, 0.7);
       case 'ashlands':
-        add(TerrainKind.cone, 700, 4, 0.5, 0.9);
-        add(TerrainKind.crack, 600, 2, 1.0, 2.0);
+        add(TerrainKind.cone, 600, 4, 0.5, 0.9);
+        add(TerrainKind.crack, 450, 2, 1.0, 2.0);
+        add(TerrainKind.rock, 900, 3, 0.4, 0.8);
+        woods(2200, 2, 3, firs: true);
       case 'volcanic':
-        add(TerrainKind.terrace, 500, 3, 1.5, 3.0);
+        add(TerrainKind.terrace, 450, 3, 1.5, 3.0);
+        add(TerrainKind.crack, 800, 2, 0.8, 1.6);
+        add(TerrainKind.rock, 1000, 3, 0.4, 0.8);
       case 'tear':
-        add(TerrainKind.shard, 350, 3, 0.5, 1.0);
+        add(TerrainKind.shard, 300, 3, 0.5, 1.0);
+        add(TerrainKind.crack, 900, 2, 0.8, 1.6);
       case 'sea_cliffs':
-        add(TerrainKind.cliff, 500, 3, 0.8, 1.2);
+        add(TerrainKind.cliff, 420, 3, 0.8, 1.2);
+        woods(1200, 2, 4, firs: true);
+        add(TerrainKind.rock, 1200, 3, 0.4, 0.7);
       case 'frost':
-        add(TerrainKind.hatch, 300, 2, 0.3, 0.5);
+        add(TerrainKind.hatch, 260, 2, 0.3, 0.5);
+        woods(1300, 2, 4, firs: true);
+        add(TerrainKind.rock, 1400, 3, 0.4, 0.7);
     }
     return out;
   }

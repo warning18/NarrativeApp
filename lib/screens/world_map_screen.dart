@@ -401,6 +401,8 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
                         chapterFilter: _chapterFilter,
                         reduceMotion: _reduceMotion,
                         chapterColor: chartChapterColor,
+                        zoomOf: () => _scale,
+                        view: _view,
                       ),
                     ),
                   ),

@@ -395,6 +395,8 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
             shopPlaces: widget.shopPlaces,
             campPlaces: widget.campPlaces,
             globe: globe,
+            zoomOf: () => globe?.zoom ?? _scale,
+            view: _view,
           );
       // The sphere: the whole box is its sky; a drag turns it, a pinch
       // brings it close, a tap picks a place on it.
