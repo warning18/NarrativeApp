@@ -406,7 +406,19 @@ void main() {
     final professions = _loadJson('assets/gamedata/professions.json');
     final politicsEvents = _loadJson('assets/gamedata/politics_events.json');
     final factions = _loadJson('assets/gamedata/factions.json');
+    final quests = _loadJson('assets/gamedata/quests.json');
     final settable = <String>{
+      // Set by a quest's turn-in choice (turn_in_choices.dart) or by one of
+      // its own choices (v1.204: the side quests with a giver in a town).
+      for (final quest in quests.values) ...[
+        for (final choice
+            in ((quest as Map)['turnInChoices'] as List?) ?? const [])
+          if ((choice as Map)['flag']?.toString().isNotEmpty ?? false)
+            choice['flag'].toString(),
+        for (final choice in (quest['questChoices'] as List?) ?? const [])
+          if ((choice as Map)['flagToAdd']?.toString().isNotEmpty ?? false)
+            choice['flagToAdd'].toString(),
+      ],
       // Set by the coast's own events (politics_events.json, v1.195): who
       // came to stand under the banner, who took the Throne.
       for (final event in politicsEvents.values)

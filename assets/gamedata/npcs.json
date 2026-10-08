@@ -1,58 +1,1971 @@
 {
+  "aurel_vane": {
+    "npcID": "aurel_vane",
+    "npcName": "Aurel Vane",
+    "npcName_fr": "Aurel Vane",
+    "role": "Inquisitor-General",
+    "role_fr": "Inquisiteur général",
+    "faction": "inquisition",
+    "placeId": "alster_lower_town",
+    "chapter": 1,
+    "kind": "inquisitor",
+    "description": "The Inquisitor-General of the Lantern Dominion: tall, dressed in white, a small lantern hooded in black at his collar. He walked out of the ruin of your house in Alster holding your sister off the ground by one wrist, and he knew exactly who you were.",
+    "description_fr": "L’Inquisiteur général du Dominion de la Lanterne : grand, vêtu de blanc, une petite lanterne voilée de noir au col. Il sortit des ruines de votre maison, à Alster, en tenant votre sœur au-dessus du sol par un poignet, et il savait exactement qui vous étiez.",
+    "want": "Wants the tear for a door and your blood for its key.",
+    "want_fr": "Veut la déchirure pour en faire une porte, et votre sang pour en faire la clef.",
+    "metNodes": [
+      "400",
+      "400_lost"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "lysa_survived",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You drove him off at the hovel; he left wounded, and he left knowing your face.",
+        "line_fr": "Vous l’avez chassé devant la masure ; il repartit blessé, et il repartit en connaissant votre visage."
+      },
+      {
+        "flag": "lysa_lost",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "He carried your sister off into the dust of your own street, and you could not stop him.",
+        "line_fr": "Il emporta votre sœur dans la poussière de votre propre rue, et vous n’avez pas pu l’en empêcher."
+      },
+      {
+        "flag": "envoy_gift_vane",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You took his purse from his envoy at the Ashen Quarter's gate; it paid for half your road, and he kept the receipt.",
+        "line_fr": "Vous avez pris sa bourse des mains de son émissaire à la porte du Quartier des Cendres ; elle paya la moitié de votre route, et il en garda le reçu."
+      },
+      {
+        "flag": "throne_backed_vane",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You cast the Admiralty's vote for him on the Hollow Shore: for an inquisition.",
+        "line_fr": "Vous avez donné la voix de l’Amirauté pour lui sur la Rive Creuse : pour une inquisition."
+      },
+      {
+        "flag": "throne_vane",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "The Houses gave him the Lantern Throne and the Dominion became an inquisition; he shut Candlehold's gates against you.",
+        "line_fr": "Les Maisons lui donnèrent le Trône de la Lanterne et le Dominion devint une inquisition ; il ferma les portes de Candlehold devant vous."
+      },
+      {
+        "flag": "rival_spared",
+        "andFlags": [
+          "throne_vane"
+        ],
+        "unlessFlags": [],
+        "line": "You took him alive in the Lantern Hall and left him in chains at the foot of the Throne, for the Houses to judge.",
+        "line_fr": "Vous l’avez pris vivant dans la Salle de la Lanterne et laissé enchaîné au pied du Trône, pour que les Maisons le jugent."
+      },
+      {
+        "flag": "rival_slain",
+        "andFlags": [
+          "throne_vane"
+        ],
+        "unlessFlags": [],
+        "line": "You burned him with his own Hooded Lantern in the Lantern Hall, and nobody asked for the ashes.",
+        "line_fr": "Vous l’avez brûlé avec sa propre Lanterne encapuchonnée dans la Salle de la Lanterne, et personne ne réclama les cendres."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "vane_quartermaster": {
+    "npcID": "vane_quartermaster",
+    "npcName": "Vane",
+    "npcName_fr": "Vane",
+    "role": "Scarred quartermaster",
+    "role_fr": "Intendant balafré",
+    "faction": "",
+    "placeId": "saltmouth_wharf",
+    "chapter": 2,
+    "kind": "smuggler",
+    "description": "A scarred quartermaster with a ledger, who holds the gate to Saltmouth's ship-breakers' yards and priced your gear at a glance. He shares a name with the Inquisitor-General and nothing else.",
+    "description_fr": "Un intendant balafré, registre en main, qui tient la porte des chantiers des démolisseurs de Bouche-de-Sel et jaugea votre équipement d’un coup d’œil. Il partage un nom avec l’Inquisiteur général, et rien d’autre.",
+    "want": "Wants something worth his while before he lets anyone through to the yards.",
+    "want_fr": "Veut quelque chose qui vaille la peine avant de laisser passer qui que ce soit vers les chantiers.",
+    "metNodes": [
+      "2010",
+      "2011",
+      "2015"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "vane_key",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You paid for his tunnel key with what you learned on the wharf, and he told you not to make him regret it.",
+        "line_fr": "Vous avez payé sa clé du tunnel avec ce que vous aviez appris sur le quai, et il vous dit de ne pas lui faire regretter ce geste."
+      },
+      {
+        "flag": "tunnel_shared",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You showed forty refugees the way into his secret tunnel, one lantern at a time.",
+        "line_fr": "Vous avez montré à quarante réfugiés l’entrée de son tunnel secret, une lanterne à la fois."
+      },
+      {
+        "flag": "vane_sold_out",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You sold his tunnel to his rival before you used it yourself; he will find out who.",
+        "line_fr": "Vous avez vendu son tunnel à son rival avant de l’emprunter ; il finira par savoir qui."
+      },
+      {
+        "flag": "vane_paid_off",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You drew on him, then paid forty gold for the insult and walked to the yards at his men's pace.",
+        "line_fr": "Vous avez dégainé devant lui, puis payé quarante pièces d’or pour l’affront, et marché jusqu’aux chantiers au pas de ses hommes."
+      },
+      {
+        "flag": "vane_crossed",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You broke through his cordon to the yards, and he will remember your face longer than you remember his.",
+        "line_fr": "Vous avez forcé son cordon jusqu’aux chantiers, et il se souviendra de votre visage plus longtemps que vous du sien."
+      },
+      {
+        "flag": "vane_robbed",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You cut his purse loose on the way through; he would have to cross the sea to ask for it back.",
+        "line_fr": "Vous lui avez coupé la bourse au passage ; il lui faudrait traverser la mer pour la réclamer."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
   "lysa": {
     "npcID": "lysa",
     "npcName": "Lysa",
-    "chapter": 3,
-    "description": "Your younger sister, dragged out of your house by the Inquisitor-General the night Alster fell, if you won her back. From Chapter Three she keeps the camp's sick alive, alive herself against odds you didn't much like at the time.",
-    "description_fr": "Votre petite sœur, que l’Inquisiteur général traîna hors de votre maison la nuit où Alster tomba, si vous l’avez reprise. À partir du chapitre trois, elle garde en vie les malades du camp, vivante elle-même contre des probabilités qui ne vous plaisaient guère à l’époque.",
-    "requiredFlag": "lysa_survived",
+    "npcName_fr": "Lysa",
+    "role": "Your younger sister",
+    "role_fr": "Votre petite sœur",
+    "faction": "",
+    "placeId": "alster_lower_town",
+    "chapter": 1,
+    "kind": "kin",
+    "description": "Your younger sister, alone at home on Tallow Street the night the Inquisition came for Alster. Whatever happened at the hovel, she is the one person who knew who you were before all this.",
+    "description_fr": "Votre petite sœur, seule à la maison, rue du Suif, la nuit où l’Inquisition vint prendre Alster. Quoi qu’il soit arrivé devant la masure, elle est la seule personne à savoir qui vous étiez avant tout cela.",
+    "want": "Wants the sick kept alive, and you back in one piece.",
+    "want_fr": "Veut garder les malades en vie, et vous voir revenir en un seul morceau.",
+    "metNodes": [
+      "100",
+      "250"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "lysa_survived",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You took her back from the Inquisitor-General in the dust of your own street, and she has kept at your elbow since.",
+        "line_fr": "Vous l’avez reprise à l’Inquisiteur général dans la poussière de votre propre rue, et elle est restée à votre coude depuis."
+      },
+      {
+        "flag": "lysa_lost",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You lost her at the hovel; the Inquisition carried her off, and in the Black Hold they told you she was dead.",
+        "line_fr": "Vous l’avez perdue devant la masure ; l’Inquisition l’emporta, et à la Geôle Noire on vous dit qu’elle était morte."
+      },
+      {
+        "flag": "lysa_sent_coin",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You sent her your purse with a runner from the Ashen Quarter; she spent it on bandages and bread, and showed you the accounts.",
+        "line_fr": "Vous lui avez envoyé votre bourse par une coursière du Quartier des Cendres ; elle la dépensa en bandages et en pain, et vous montra les comptes."
+      },
+      {
+        "flag": "lysa_to_camp",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You asked her to come back to the camp with you from the Reliquary Quarter, and she turned its sail-loft into an infirmary.",
+        "line_fr": "Vous lui avez demandé de revenir au camp avec vous depuis le Quartier des Reliquaires, et elle fit de la voilerie une infirmerie."
+      },
+      {
+        "flag": "lysa_stays_quarter",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You told her to stay where she was needed, and her ward in the Reliquary Quarter stayed open, and full.",
+        "line_fr": "Vous lui avez dit de rester là où on avait besoin d’elle, et son dispensaire du Quartier des Reliquaires resta ouvert, et plein."
+      },
+      {
+        "flag": "lysa_found_dead",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You found her in a chapel of the Reliquary Quarter, in the penitents' chair, with your name scratched twelve times into the wall beside her.",
+        "line_fr": "Vous l’avez trouvée dans une chapelle du Quartier des Reliquaires, sur la chaise des pénitents, votre nom gravé douze fois dans le mur à côté d’elle."
+      },
+      {
+        "flag": "lysa_fallen",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You cut down the masked penitent in the frost, and only knew her face when the mask came away in your hand.",
+        "line_fr": "Vous avez abattu la pénitente masquée dans le givre, et n’avez reconnu son visage que lorsque le masque vous resta dans la main."
+      },
+      {
+        "flag": "lysa_mask_kept",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You carried her porcelain mask away in your coat, and never decided what to do with it.",
+        "line_fr": "Vous avez emporté son masque de porcelaine dans votre manteau, sans jamais décider quoi en faire."
+      },
+      {
+        "flag": "lysa_left_masked",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You left her among the penitents with the mask on her face, the last thing you could still give her.",
+        "line_fr": "Vous l’avez laissée parmi les pénitents, le masque sur le visage, la dernière chose que vous pouviez encore lui donner."
+      }
+    ],
     "dialogueLines": [
       "\"You're still breathing. Good — I wasn't in the mood to burn a second set of clothes.\"",
       "\"They're saying the Warden fell. Is it true? Tell it to me straight, I've had enough of people softening things for my sake.\"",
       "\"Go on, then. The camp will want to hear this from someone who was actually there, not from a rumor wearing a rumor's coat.\""
     ],
     "dialogueLines_fr": [
-      "« Vous respirez encore. Bien — je n'avais pas envie de brûler une deuxième tenue. »",
-      "« On dit que le Gardien est tombé. C'est vrai ? Dites-le-moi franchement, j'en ai assez qu'on m'épargne les détails. »",
-      "« Allez-y, alors. Le camp voudra l'entendre de quelqu'un qui y était vraiment, pas d'une rumeur déguisée en rumeur. »"
+      "« Vous respirez encore. Bien — je n'avais pas envie de brûler une deuxième tenue. »",
+      "« On dit que le Gardien est tombé. C'est vrai ? Dites-le-moi franchement, j'en ai assez qu'on m'épargne les détails. »",
+      "« Allez-y, alors. Le camp voudra l'entendre de quelqu'un qui y était vraiment, pas d'une rumeur déguisée en rumeur. »"
     ]
+  },
+  "renn": {
+    "npcID": "renn",
+    "npcName": "Overseer Renn",
+    "npcName_fr": "Contremaître Renn",
+    "role": "Inquisition customs officer",
+    "role_fr": "Douanier de l’Inquisition",
+    "faction": "inquisition",
+    "placeId": "saltmouth_tern_row",
+    "chapter": 2,
+    "kind": "soldier",
+    "description": "An Inquisition customs officer who took to charging Tern Row a 'landing toll' that exists in none of the city's ledgers, and lately uses the word 'deportation' the way other men use a fist.",
+    "description_fr": "Un douanier de l’Inquisition qui s’est mis à faire payer à Tern Row un « péage de débarquement » qui n’existe dans aucun registre de la ville, et qui emploie depuis peu le mot « expulsion » comme d’autres emploient un poing.",
+    "want": "Wants Tern Row's toll paid, and to be seen backing down gracefully rather than caught.",
+    "want_fr": "Veut que Tern Row paie son péage, et qu’on le voie reculer avec grâce plutôt que d’être pris en faute.",
+    "metNodes": [
+      "2015_ternrow"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "tern_row_spared",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You talked him down in front of Tern Row; he suspended his tolls 'pending review' and left without another word about them.",
+        "line_fr": "Vous l’avez fait reculer devant Tern Row ; il suspendit ses péages « en attendant réexamen » et partit sans un mot de plus à leur sujet."
+      },
+      {
+        "flag": "hub_2015_ternrow",
+        "andFlags": [],
+        "unlessFlags": [
+          "tern_row_spared"
+        ],
+        "line": "He called for his man before you had finished your sentence, and you settled the toll with steel.",
+        "line_fr": "Il appela son homme avant que vous ayez fini votre phrase, et vous avez réglé le péage à l’acier."
+      },
+      {
+        "flag": "terns_toll_returned",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You gave the toll he had collected back to Tern Row, to the last copper.",
+        "line_fr": "Vous avez rendu à Tern Row le péage qu’il avait extorqué, jusqu’au dernier sou."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "nadira": {
+    "npcID": "nadira",
+    "npcName": "Nadira",
+    "npcName_fr": "Nadira",
+    "role": "Voice of Tern Row",
+    "role_fr": "Voix de Tern Row",
+    "faction": "tidekin",
+    "placeId": "saltmouth_tern_row",
+    "chapter": 2,
+    "kind": "elder",
+    "description": "A Tide-Kin woman of Tern Row, where paper boats are lit and set adrift at dusk for everyone the sea has not given back. She has the particular tiredness of someone explaining, again, to someone who might finally listen.",
+    "description_fr": "Une femme des Gens de la Marée, de Tern Row, où l’on allume des bateaux de papier qu’on lâche à la dérive chaque soir pour tous ceux que la mer n’a pas rendus. Elle a la lassitude particulière de quelqu’un qui explique, encore, à quelqu’un qui pourrait enfin écouter.",
+    "want": "Wants Tern Row left alone, its lanterns lit and nobody collecting for the privilege.",
+    "want_fr": "Veut qu’on laisse Tern Row tranquille, ses lanternes allumées et personne pour faire payer le privilège.",
+    "metNodes": [
+      "2015_ternrow"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "tern_row_spared",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You reasoned Overseer Renn out of Tern Row; she pressed a paper lantern into your hand for your trouble, and did not wait to see if you would give it back.",
+        "line_fr": "Vous avez fait entendre raison au contremaître Renn et chassé ses péages de Tern Row ; elle vous glissa une lanterne de papier dans la main, sans attendre de voir si vous la rendriez."
+      },
+      {
+        "flag": "terns_toll_returned",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You gave Tern Row back the toll Renn had collected; she shared it out to the last copper and set one coin aside for you.",
+        "line_fr": "Vous avez rendu à Tern Row le péage que Renn avait extorqué ; elle le partagea jusqu’au dernier sou, et mit une pièce de côté pour vous."
+      },
+      {
+        "flag": "host_tidekin",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "Her people came to the Hollow Shore with a paper lantern at every bow, to light your crossing.",
+        "line_fr": "Les siens vinrent sur la Rive Creuse, une lanterne de papier à chaque proue, pour éclairer votre traversée."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "maud_tallis": {
+    "npcID": "maud_tallis",
+    "npcName": "Maud Tallis",
+    "npcName_fr": "Maud Tallis",
+    "role": "Eldest Wickwarden",
+    "role_fr": "Aînée des Garde-Mèches",
+    "faction": "wickwardens",
+    "placeId": "ashen_quarter",
+    "chapter": 3,
+    "kind": "elder",
+    "description": "The Eldest of the Wickwardens, who keep the Dominion's lamps lit. Her envoy came to the Ashen Quarter's gate with oil for your wounds and asked for nothing at all, which you distrusted most.",
+    "description_fr": "L’Aînée des Garde-Mèches, qui gardent allumées les lampes du Dominion. Son émissaire vint à la porte du Quartier des Cendres avec de l’huile pour vos plaies et ne demanda rien du tout, ce dont vous vous êtes le plus méfié.",
+    "want": "Wants the dying stopped, and has nothing to stop it with but lamps.",
+    "want_fr": "Veut qu’on cesse de mourir, et n’a pour l’empêcher que des lampes.",
+    "metNodes": [
+      "3005_envoys",
+      "7520_tallis"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "envoy_gift_tallis",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You took her oil from her envoy; it closed a wound of yours on the Spire road, and left a scar.",
+        "line_fr": "Vous avez accepté son huile des mains de son émissaire ; elle referma une de vos plaies sur la route de la Flèche, et laissa une cicatrice."
+      },
+      {
+        "flag": "knife_to_tallis",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You carried the frozen pilgrim's knife to her on the Rimewell road, and she thanked you for her life the way one thanks someone for directions.",
+        "line_fr": "Vous lui avez apporté le couteau du pèlerin gelé sur la route de Puits-de-Givre, et elle vous remercia pour sa vie comme on remercie pour un renseignement."
+      },
+      {
+        "flag": "knife_kept",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You kept the frozen pilgrim's knife that was meant for her, the Order's mark on top and the hooded lantern underneath.",
+        "line_fr": "Vous avez gardé le couteau du pèlerin gelé qui lui était destiné, la marque de l’Ordre dessus et la lanterne encapuchonnée dessous."
+      },
+      {
+        "flag": "throne_backed_tallis",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You cast the Admiralty's vote for her on the Hollow Shore: for a church.",
+        "line_fr": "Vous avez donné la voix de l’Amirauté pour elle sur la Rive Creuse : pour une Église."
+      },
+      {
+        "flag": "throne_tallis",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "The Houses gave her the Lantern Throne and the Dominion became a church again; she kept it against you because she did not know you.",
+        "line_fr": "Les Maisons lui donnèrent le Trône de la Lanterne et le Dominion redevint une Église ; elle le garda contre vous parce qu’elle ne vous connaissait pas."
+      },
+      {
+        "flag": "rival_spared",
+        "andFlags": [
+          "throne_tallis"
+        ],
+        "unlessFlags": [],
+        "line": "You put out her lamps at Candlehold and left her the First Lantern, the only lamp on the cliff still lit.",
+        "line_fr": "Vous avez éteint ses lampes à Candlehold et lui avez laissé la Première Lanterne, seule lampe de la falaise encore allumée."
+      },
+      {
+        "flag": "rival_slain",
+        "andFlags": [
+          "throne_tallis"
+        ],
+        "unlessFlags": [],
+        "line": "You put out the First Lantern in her hands, for the first time in six hundred years, and she lay beside it.",
+        "line_fr": "Vous avez éteint la Première Lanterne entre ses mains, pour la première fois en six cents ans, et elle resta étendue à côté."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "hesk_morrow": {
+    "npcID": "hesk_morrow",
+    "npcName": "Hesk Morrow",
+    "npcName_fr": "Hesk Morrow",
+    "role": "Grand Master of the Order",
+    "role_fr": "Grand Maître de l’Ordre",
+    "faction": "order",
+    "placeId": "ashen_quarter",
+    "chapter": 3,
+    "kind": "soldier",
+    "description": "Grand Master of the Order of the Vigilant Flame, a big man gone grey in a war he has been losing for thirty-nine years. His envoy came to the Ashen Quarter's gate with his regards and a whetstone.",
+    "description_fr": "Grand Maître de l’Ordre de la Flamme vigilante, un grand homme devenu gris dans une guerre qu’il perd depuis trente-neuf ans. Son émissaire vint à la porte du Quartier des Cendres avec ses salutations, et une pierre à aiguiser.",
+    "want": "Wants the tear shut with a sword, and does not believe you will shut it.",
+    "want_fr": "Veut que la déchirure soit refermée à l’épée, et ne croit pas que vous la fermerez.",
+    "metNodes": [
+      "3005_envoys",
+      "7520_morrow"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "envoy_gift_morrow",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You took his whetstone from his envoy, and kept your edge on it all the way from the Spire.",
+        "line_fr": "Vous avez accepté sa pierre à aiguiser des mains de son émissaire, et entretenu votre fil dessus depuis la Flèche."
+      },
+      {
+        "flag": "throne_backed_morrow",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You cast the Admiralty's vote for him on the Hollow Shore: for a crusade.",
+        "line_fr": "Vous avez donné la voix de l’Amirauté pour lui sur la Rive Creuse : pour une croisade."
+      },
+      {
+        "flag": "throne_morrow",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "The Houses gave him the Lantern Throne and the Dominion became a crusade again; he held the Lantern Hall with the Order's knights against you.",
+        "line_fr": "Les Maisons lui donnèrent le Trône de la Lanterne et le Dominion redevint une croisade ; il tint la Salle de la Lanterne avec les chevaliers de l’Ordre contre vous."
+      },
+      {
+        "flag": "rival_spared",
+        "andFlags": [
+          "throne_morrow"
+        ],
+        "unlessFlags": [],
+        "line": "You beat him at the top of Candlehold's stair and left him his sword; his knights watched you do it.",
+        "line_fr": "Vous l’avez vaincu en haut de l’escalier de Candlehold et lui avez laissé son épée ; ses chevaliers vous regardèrent faire."
+      },
+      {
+        "flag": "rival_slain",
+        "andFlags": [
+          "throne_morrow"
+        ],
+        "unlessFlags": [],
+        "line": "You broke him before his knights at the top of the stair, and they left him where he fell, his lantern still lit on his sword.",
+        "line_fr": "Vous l’avez brisé devant ses chevaliers en haut de l’escalier, et ils le laissèrent là où il était tombé, la lanterne encore allumée à son épée."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "old_hesk": {
+    "npcID": "old_hesk",
+    "npcName": "Old Hesk",
+    "npcName_fr": "Le vieux Hesk",
+    "role": "Neighbour on Tallow Street",
+    "role_fr": "Voisin de la rue du Suif",
+    "faction": "",
+    "placeId": "alster_lower_town",
+    "chapter": 1,
+    "kind": "elder",
+    "description": "The old man who shared a wall with your family's hovel for twenty years. The night Alster fell, a ball from the white ships brought his house down on him, and he was not quick enough to get out from under it.",
+    "description_fr": "Le vieil homme qui partagea un mur avec la masure de votre famille pendant vingt ans. La nuit où Alster tomba, un boulet des navires blancs fit s’effondrer sa maison sur lui, et il ne fut pas assez prompt pour sortir de dessous.",
+    "want": "Wants nothing now but a sheet pulled over him.",
+    "want_fr": "Ne veut plus rien, qu’un drap tiré sur lui.",
+    "metNodes": [
+      "450"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "keeper_covered",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You pulled a sheet over him before you went back into the ruins; it cost a minute you did not have.",
+        "line_fr": "Vous avez tiré un drap sur lui avant de retourner dans les ruines ; cela vous coûta une minute que vous n’aviez pas."
+      },
+      {
+        "flag": "keeper_left",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You left him under what was left of his house and went back into the ruins; you told yourself there had been no time.",
+        "line_fr": "Vous l’avez laissé sous ce qui restait de sa maison pour retourner dans les ruines ; vous vous êtes dit que l’heure ne s’y prêtait pas."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "mother_hesk": {
+    "npcID": "mother_hesk",
+    "npcName": "Mother Hesk",
+    "npcName_fr": "La mère Hesk",
+    "role": "Old Hesk's wife",
+    "role_fr": "Femme du vieux Hesk",
+    "faction": "",
+    "placeId": "hollow_court",
+    "chapter": 4,
+    "kind": "elder",
+    "description": "Old Hesk's wife from next door to your parents' hovel, who used to sell you eggs and overcharge you for them. The Court took her, and kept her asleep in the Shroud's cold among the ledger's newest page.",
+    "description_fr": "La femme du vieux Hesk, votre voisine de la masure de vos parents, qui vous vendait des œufs et vous les faisait payer trop cher. La Cour la prit, et la garda endormie dans le froid du Linceul, parmi la dernière page du registre.",
+    "want": "Wants, if she must die, to die as herself.",
+    "want_fr": "Veut, s’il lui faut mourir, mourir en étant elle-même.",
+    "metNodes": [
+      "5004_altar"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "court_woken",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You woke her and the other sleepers before you took the Shroud, so that they died as themselves, and knowing you.",
+        "line_fr": "Vous l’avez réveillée, elle et les autres dormeurs, avant de prendre le Linceul, pour qu’ils meurent en étant eux-mêmes, et en vous reconnaissant."
+      },
+      {
+        "flag": "court_never_woke",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You cut the Shroud free without waking her, and she died asleep under your hands.",
+        "line_fr": "Vous avez dégagé le Linceul sans la réveiller, et elle mourut endormie sous vos mains."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "brother_clement": {
+    "npcID": "brother_clement",
+    "npcName": "Brother Clement",
+    "npcName_fr": "Frère Clément",
+    "role": "Inquisition torturer",
+    "role_fr": "Tortionnaire de l’Inquisition",
+    "faction": "inquisition",
+    "placeId": "alster_black_hold",
+    "chapter": 1,
+    "kind": "inquisitor",
+    "description": "A man in a porcelain mask who took you apart in the Black Hold for three days with the patient, faintly bored thoroughness of someone doing accounts. He wanted to know about a cloth, and most of all about the hands drawn on it.",
+    "description_fr": "Un homme au masque de porcelaine qui vous démonta pièce à pièce pendant trois jours dans la Geôle Noire, avec la minutie patiente et vaguement lassée de qui tient une comptabilité. Il voulait savoir des choses sur une étoffe, et surtout sur les mains dessinées dessus.",
+    "want": "Wants to know how long the cloth is, what is drawn on it, and whether the hands are open or shut.",
+    "want_fr": "Veut savoir la longueur de l’étoffe, ce qui est dessiné dessus, et si les mains sont ouvertes ou fermées.",
+    "metNodes": [
+      "800"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "keyholder_wharf": {
+    "npcID": "keyholder_wharf",
+    "npcName": "The Keyholder",
+    "npcName_fr": "La Porte-Clef",
+    "role": "Keyholder of the Salt Crows",
+    "role_fr": "Porte-Clef des Corneilles de Sel",
+    "faction": "keyholders",
+    "placeId": "saltmouth_wharf",
+    "chapter": 2,
+    "kind": "smuggler",
+    "description": "A woman in a good coat who kept one hand in its pocket the whole time you talked; when she took it out there was an old iron key in it. Every Keyholder carries one key to one door, the wharf says, and nobody else knows which.",
+    "description_fr": "Une femme au manteau de bonne coupe qui garda une main dans sa poche tout le temps de votre conversation ; quand elle la ressortit, elle tenait une vieille clef de fer. Chaque Porte-Clef porte une clef pour une porte, dit-on sur le quai, et personne d’autre ne sait laquelle.",
+    "want": "Wants her key left in the lock of the green door up the Rope Stair, unturned.",
+    "want_fr": "Veut sa clef laissée dans la serrure de la porte verte, en haut de l’Escalier des Cordes, sans qu’on la tourne.",
+    "metNodes": [
+      "2015_house_keyholders"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "keyholder_door_kept",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You left her key in the lock of the green door, unturned, and walked away; she never had to mention it again.",
+        "line_fr": "Vous avez laissé sa clef dans la serrure de la porte verte, sans la tourner, puis avez tourné les talons ; elle n’eut jamais besoin d’en reparler."
+      },
+      {
+        "flag": "hub_2015_house_keyholders",
+        "andFlags": [],
+        "unlessFlags": [
+          "keyholder_door_kept"
+        ],
+        "line": "You did not leave her door alone, or sold her key outright; the Keyholders will not give you another.",
+        "line_fr": "Vous n’avez pas laissé sa porte tranquille, ou bien avez vendu sa clef ; les Porte-Clefs ne vous en confieront pas d’autre."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "chart_keeper": {
+    "npcID": "chart_keeper",
+    "npcName": "The chart-keeper",
+    "npcName_fr": "La gardienne des cartes",
+    "role": "Keeper of the Quarter's charts",
+    "role_fr": "Gardienne des cartes du Quartier",
+    "faction": "",
+    "placeId": "reliquary_quarter",
+    "chapter": 5,
+    "kind": "scholar",
+    "description": "She keeps the Reliquary Quarter's charts in a chapel whose saints have been chipped off the walls by people who no longer wished to be watched. When the ledger's closing lines gave a location, she laid a finger on her map without needing to look.",
+    "description_fr": "Elle garde les cartes du Quartier des Reliquaires dans une chapelle dont on a buriné les saints des murs, œuvre de gens qui ne souhaitaient plus être regardés. Quand les dernières lignes du registre donnèrent un lieu, elle posa un doigt sur sa carte sans avoir besoin de chercher.",
+    "want": "Wants the tear's edge kept on her chart, and her chapel's reliquary left shut.",
+    "want_fr": "Veut le bord de la déchirure tenu à jour sur sa carte, et le reliquaire de sa chapelle laissé fermé.",
+    "metNodes": [
+      "6010_chartkeeper"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "chartkeeper_paid",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You paid her a hundred and fifty gold to cut the fourth piece out of her reliquary herself, and left her the chapel and her sister's bones.",
+        "line_fr": "Vous l’avez payée cent cinquante pièces d’or pour qu’elle découpe elle-même la quatrième pièce de son reliquaire, et lui avez laissé la chapelle et les os de sa sœur."
+      },
+      {
+        "flag": "reliquary_opened",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You opened her reliquary yourself and left the girl's bones in the frost; she did not look at you again.",
+        "line_fr": "Vous avez ouvert son reliquaire vous-même et laissé les os de la fillette dans le givre ; elle ne leva plus les yeux sur vous."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "sign_painter": {
+    "npcID": "sign_painter",
+    "npcName": "The sign-painter",
+    "npcName_fr": "Le peintre d’enseignes",
+    "role": "Wharf sign-painter",
+    "role_fr": "Peintre d’enseignes du quai",
+    "faction": "",
+    "placeId": "saltmouth_wharf",
+    "chapter": 2,
+    "kind": "merchant",
+    "description": "An old man who paints luck onto doors for a living, a fish over a fishmonger's, a key over a locksmith's. He followed your back down the stalls with a brush still wet in his hand, because one corner of the grey had slipped its wrapping.",
+    "description_fr": "Un vieil homme qui peint la chance sur les portes pour gagner sa vie, un poisson au-dessus d’un poissonnier, une clef au-dessus d’un serrurier. Il suivit votre dos le long des étals, un pinceau encore humide à la main, parce qu’un coin du gris avait glissé hors de son enveloppe.",
+    "want": "Wants the hand on your bundle covered up, and never to have said the words 'the Open Hand'.",
+    "want_fr": "Veut que la main sur votre balluchon soit recouverte, et n’avoir jamais prononcé les mots « la Main Ouverte ».",
+    "metNodes": [
+      "2015_drawer"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "drawer_talked",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You let him go without paying for his silence; by the time you reached the yards he had found someone who paid better.",
+        "line_fr": "Vous l’avez laissé partir sans acheter son silence ; le temps que vous atteigniez les chantiers, il avait trouvé quelqu’un qui payait mieux."
+      },
+      {
+        "flag": "open_hand_2",
+        "andFlags": [],
+        "unlessFlags": [
+          "drawer_talked"
+        ],
+        "line": "You bought his silence for twenty gold, and he kept it.",
+        "line_fr": "Vous avez acheté son silence pour vingt pièces d’or, et il le garda."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
   },
   "old_harker": {
     "npcID": "old_harker",
     "npcName": "Old Harker",
+    "npcName_fr": "Le vieux Harker",
+    "role": "Harbour-front fixture",
+    "role_fr": "Figure du front de mer",
+    "faction": "",
+    "placeId": "saltmouth_wharf",
     "chapter": 2,
+    "kind": "elder",
     "description": "A harbor-front fixture who's outlived three regimes by never once having an opinion out loud. Always good for gossip, at the low price of your patience.",
-    "description_fr": "Une figure familière du front de mer qui a survécu à trois régimes en ne donnant jamais son avis à voix haute. Toujours de bon conseil pour les ragots, au faible prix de ta patience.",
+    "description_fr": "Une figure familière du front de mer qui a survécu à trois régimes en ne donnant jamais son avis à voix haute. Toujours de bon conseil pour les ragots, au faible prix de votre patience.",
+    "want": "Wants nothing but gossip to trade and someone patient enough to hear it.",
+    "want_fr": "Ne veut que des ragots à échanger, et quelqu’un d’assez patient pour les écouter.",
+    "metNodes": [
+      "2015"
+    ],
+    "metFlags": [],
+    "shopId": "",
     "requiredFlag": "",
+    "states": [],
     "dialogueLines": [
       "\"Fifty years on these docks and I've learned exactly one thing: the tide doesn't care who's winning.\"",
       "\"You've got the look of someone about to do something foolish. Don't let me stop you.\"",
       "\"Half the city thinks the invasion changed everything. The other half is right — nothing changed, it just got louder.\""
     ],
     "dialogueLines_fr": [
-      "« Cinquante ans sur ces quais et j'ai appris exactement une chose : la marée se moque de savoir qui gagne. »",
-      "« Tu as la tête de quelqu'un qui s'apprête à faire une bêtise. Ne te laisse pas arrêter par moi. »",
-      "« La moitié de la ville pense que l'invasion a tout changé. L'autre moitié a raison — rien n'a changé, c'est juste devenu plus bruyant. »"
-    ],
-    "npcName_fr": "Le vieux Harker"
+      "« Cinquante ans sur ces quais et j'ai appris exactement une chose : la marée se moque de savoir qui gagne. »",
+      "« Vous avez la tête de quelqu'un qui s'apprête à faire une bêtise. Ne vous laissez pas arrêter par moi. »",
+      "« La moitié de la ville pense que l'invasion a tout changé. L'autre moitié a raison — rien n'a changé, c'est juste devenu plus bruyant. »"
+    ]
   },
   "sister_ines": {
     "npcID": "sister_ines",
     "npcName": "Sister Inès",
+    "npcName_fr": "Sœur Inès",
+    "role": "Acolyte of the Quarter's shrine",
+    "role_fr": "Acolyte du sanctuaire du Quartier",
+    "faction": "",
+    "placeId": "ashen_quarter",
     "chapter": 3,
+    "kind": "penitent",
     "description": "A young acolyte tending the Ashen Quarter's makeshift shrine, quietly convinced everyone around her is one bad day from losing their faith. She isn't always wrong.",
-    "description_fr": "Une jeune acolyte veillant sur le sanctuaire improvisé du Quartier des Cendres, discrètement convaincue que tout le monde autour d'elle est à un mauvais jour de perdre la foi. Elle n'a pas toujours tort.",
+    "description_fr": "Une jeune acolyte veillant sur le sanctuaire improvisé du Quartier des Cendres, discrètement convaincue que tout le monde autour d’elle est à un mauvais jour de perdre la foi. Elle n’a pas toujours tort.",
+    "want": "Wants a candle lit for everyone who passes through, whether they ask for it or not.",
+    "want_fr": "Veut une bougie allumée pour tous ceux qui passent, qu’ils le demandent ou non.",
+    "metNodes": [
+      "3005"
+    ],
+    "metFlags": [],
+    "shopId": "",
     "requiredFlag": "",
+    "states": [],
     "dialogueLines": [
       "\"I light a candle for everyone who passes through here, whether they ask for it or not. Cheaper than an argument.\"",
       "\"The Shroud took the sky from us before it took anything else. I still look up sometimes, out of habit.\"",
       "\"Whatever brought you to the Quarter, I hope it's worth what it's cost you so far.\""
     ],
     "dialogueLines_fr": [
-      "« J'allume une bougie pour tous ceux qui passent par ici, qu'ils le demandent ou non. Moins cher qu'une dispute. »",
-      "« Le Linceul nous a pris le ciel avant de nous prendre le reste. Je regarde encore en l'air parfois, par habitude. »",
-      "« Quelle que soit la raison de votre venue au Quartier, j'espère qu'elle vaut ce qu'elle vous a coûté jusqu'ici. »"
+      "« J'allume une bougie pour tous ceux qui passent par ici, qu'ils le demandent ou non. Moins cher qu'une dispute. »",
+      "« Le Linceul nous a pris le ciel avant de nous prendre le reste. Je regarde encore en l'air parfois, par habitude. »",
+      "« Quelle que soit la raison de votre venue au Quartier, j'espère qu'elle vaut ce qu'elle vous a coûté jusqu'ici. »"
+    ]
+  },
+  "high_warden": {
+    "npcID": "high_warden",
+    "npcName": "The High Warden",
+    "npcName_fr": "Le Haut Gardien",
+    "role": "Commander of the Crusade",
+    "role_fr": "Commandant de la Croisade",
+    "faction": "inquisition",
+    "placeId": "spire_of_judgment",
+    "chapter": 3,
+    "kind": "inquisitor",
+    "description": "The Crusade's commander on the Ashen coast, at prayer under the Spire of Judgment's dome. He signed the order to burn the Ashen Quarter, and would, you assumed, sign yours.",
+    "description_fr": "Le commandant de la Croisade sur la côte des Cendres, en prière sous la coupole de la Flèche du Jugement. Il signa l’ordre de brûler le Quartier des Cendres, et signerait, supposiez-vous, le vôtre.",
+    "want": "Wants the coast burned clean and the standard kept on his back.",
+    "want_fr": "Veut la côte purifiée par le feu, et l’étendard gardé sur son dos.",
+    "metNodes": [
+      "3010"
     ],
-    "npcName_fr": "Sœur Inès"
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "warden_fallen",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You brought him down under the Spire's dome, and the deserters on the coast had heard of it before you climbed down to tell them.",
+        "line_fr": "Vous l’avez abattu sous la coupole de la Flèche, et les déserteurs de la côte l’avaient appris avant que vous descendiez le leur dire."
+      },
+      {
+        "flag": "standard_cut_living",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You cut the standard off him while he lived, and his scream came down the Spire's stair with you.",
+        "line_fr": "Vous lui avez arraché l’étendard vivant, et son cri descendit l’escalier de la Flèche avec vous."
+      },
+      {
+        "flag": "standard_waited",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You waited for him to die with the Cathedral coming down around you both, and took the standard after.",
+        "line_fr": "Vous avez attendu qu’il meure pendant que la Cathédrale s’effondrait autour de vous deux, et pris l’étendard ensuite."
+      },
+      {
+        "flag": "standard_mercy",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You gave him the blade before the standard, and the standard came away clean.",
+        "line_fr": "Vous lui avez donné la lame avant l’étendard, et l’étendard se détacha propre."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "rat_matriarch": {
+    "npcID": "rat_matriarch",
+    "npcName": "The Rat Matriarch",
+    "npcName_fr": "La Matriarche des rats",
+    "role": "Queen of the Undercroft",
+    "role_fr": "Reine des Souterrains",
+    "faction": "",
+    "placeId": "alster_undercroft",
+    "chapter": 1,
+    "kind": "beast",
+    "description": "A rat of truly ambitious proportions, bloated on a diet best not speculated about, who blocks the main pipe under Alster with her brood swarming around her. She hissed at you with all the offence of a landlord discovering an uninvited tenant.",
+    "description_fr": "Une rate aux proportions franchement ambitieuses, engraissée d’un régime qu’il vaut mieux ne pas examiner, qui obstrue le conduit principal sous Alster, sa progéniture grouillant autour d’elle. Elle siffla contre vous avec toute l’indignation d’un propriétaire découvrant un locataire non invité.",
+    "want": "Wants her pipe, her brood, and whatever comes down the drain to eat.",
+    "want_fr": "Veut son conduit, sa progéniture, et à manger tout ce qui descend par l’égout.",
+    "metNodes": [
+      "850"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "matriarch_slain",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You killed her in the muck and came up out of a storm drain two streets from home with several new ways your body could hurt.",
+        "line_fr": "Vous l’avez tuée dans la vase et avez émergé d’une bouche d’égout à deux rues de chez vous, avec plusieurs façons nouvelles d’avoir mal."
+      },
+      {
+        "flag": "matriarch_spared",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You threw her brood your rations and slipped past; she finished your supper, and you left her sewer with nothing worse than the smell.",
+        "line_fr": "Vous avez jeté vos rations à sa progéniture pour passer ; elle finit votre souper, et vous avez quitté son égout avec, pour tout dommage, l’odeur."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "tear_herald": {
+    "npcID": "tear_herald",
+    "npcName": "The Tear-Herald",
+    "npcName_fr": "Le Héraut de la Déchirure",
+    "role": "The Sovereign's herald",
+    "role_fr": "Héraut du Souverain",
+    "faction": "",
+    "placeId": "hollow_shore_battlefield",
+    "chapter": 8,
+    "kind": "beast",
+    "description": "Taller than the reflections it leads, wearing all of their faces at once, one over another like the pages of a book, and on its chest a crude copy of your banner in grey thread. It came to the Hollow Shore to answer the crowning.",
+    "description_fr": "Plus grand que les reflets qu’il mène, portant tous leurs visages à la fois, les uns sur les autres comme les pages d’un livre, et sur sa poitrine une copie grossière de votre bannière en fil gris. Il vint sur la Rive Creuse répondre au couronnement.",
+    "want": "Wants the Throne to kneel to the Sovereign, in every voice the tear has taken.",
+    "want_fr": "Veut que le Trône s’agenouille devant le Souverain, de toutes les voix que la déchirure a prises.",
+    "metNodes": [
+      "7810",
+      "7002_approach"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "herald_led",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You led the Host at it yourself, and the Host did not let you reach it alone.",
+        "line_fr": "Vous avez mené l’Ost contre lui vous-même, et l’Ost ne vous laissa pas l’atteindre sans lui."
+      },
+      {
+        "flag": "herald_held",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You held the line and let it break on it, the way the sea breaks on the Vigil's wall.",
+        "line_fr": "Vous avez tenu la ligne et l’avez laissé s’y briser, comme la mer se brise sur le mur de la Veille."
+      },
+      {
+        "flag": "herald_drawn",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You answered its crowned copy with the true hand drawn on the sand, and the copy came apart thread by thread.",
+        "line_fr": "Vous avez répondu à sa copie couronnée par la vraie main tracée sur le sable, et la copie se défit fil à fil."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "hathra": {
+    "npcID": "hathra",
+    "npcName": "Hathra",
+    "npcName_fr": "Hathra",
+    "role": "Eldest of Highhearth",
+    "role_fr": "Aînée de Haut-Âtre",
+    "faction": "giants",
+    "placeId": "highhearth",
+    "chapter": 5,
+    "kind": "elder",
+    "description": "The eldest of the giants of Highhearth, nine hundred years old or so she says, who cut the Black Reliquary's first stone. She remembers the old contract word for word, because giants remember everything and forgive by appointment.",
+    "description_fr": "L’aînée des géants de Haut-Âtre, âgée de neuf cents ans, ou elle le dit, qui tailla la première pierre du Reliquaire Noir. Elle se rappelle le vieux contrat mot pour mot, parce que les géants se souviennent de tout et pardonnent sur rendez-vous.",
+    "want": "Wants to know whether the quarry still has its tally-stone, and what became of Gorm.",
+    "want_fr": "Veut savoir si la carrière a encore sa pierre de compte, et ce qu’il est advenu de Gorm.",
+    "metNodes": [
+      "6200_eldest"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "hub_6200_eldest",
+        "andFlags": [],
+        "unlessFlags": [
+          "gorm_promise"
+        ],
+        "line": "You heard her out on the old contract at the moot-hall fire, and promised her nothing.",
+        "line_fr": "Vous l’avez écoutée parler du vieux contrat près du feu de la salle du conseil, sans rien lui promettre."
+      },
+      {
+        "flag": "gorm_promise",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You promised to look for Gorm at the quarry, and she set a second bowl at the fire for him.",
+        "line_fr": "Vous avez promis de chercher Gorm à la carrière, et elle posa un second bol près du feu, pour lui."
+      },
+      {
+        "flag": "giants_names_read",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You brought her a rubbing of every name on the tally-stone, and word of Gorm; she read them aloud in the moot-hall all night, and nobody left.",
+        "line_fr": "Vous lui avez apporté un frottis de chaque nom de la pierre de compte, et des nouvelles de Gorm ; elle les lut à voix haute dans la salle du conseil toute la nuit, et personne ne partit."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "tetsu": {
+    "npcID": "tetsu",
+    "npcName": "Tetsu",
+    "npcName_fr": "Tetsu",
+    "role": "Smith of Akagiri",
+    "role_fr": "Forgeron d’Akagiri",
+    "faction": "oni",
+    "placeId": "akagiri",
+    "chapter": 3,
+    "kind": "merchant",
+    "description": "An oni smith with one horn and a clean-sawn stump where the other was. The Horn-Taker, the Spire's senior exorcist, took it eleven springs ago as proof of a demon cast out, and the Spire sold it to a pilgrim as a cure for fevers.",
+    "description_fr": "Un forgeron oni avec une corne, et un moignon scié net à la place de l’autre. Le Preneur de Cornes, le plus ancien exorciste de la Flèche, la lui prit onze printemps plus tôt comme preuve d’un démon chassé, et la Flèche la vendit à un pèlerin comme remède contre les fièvres.",
+    "want": "Asks nothing of you; he only shows where the Horn-Taker's road comes up through the pines.",
+    "want_fr": "Ne vous demande rien ; il montre seulement où la route du Preneur de Cornes monte à travers les pins.",
+    "metNodes": [
+      "3200_smith"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "hub_3200_smith",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You heard him out at his anvil; he asked you for nothing, and showed you the Horn-Taker's road.",
+        "line_fr": "Vous l’avez écouté à son enclume ; il ne vous demanda rien, et vous montra la route du Preneur de Cornes."
+      },
+      {
+        "flag": "oni_horns_returned",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You carried the Horn-Taker's chest down to Akagiri and left it there with all three hundred and six horns; he found his on the second try and hung it from his eaves among the bells.",
+        "line_fr": "Vous avez descendu le coffre du Preneur de Cornes jusqu’à Akagiri et l’y avez laissé avec ses trois cent six cornes ; il trouva la sienne au deuxième essai et la pendit à son avant-toit, parmi les cloches."
+      },
+      {
+        "flag": "hub_3200_smith_later",
+        "andFlags": [],
+        "unlessFlags": [
+          "oni_horns_returned"
+        ],
+        "line": "You brought the Horn-Taker's chest down to Akagiri, and kept its silver fittings for yourself.",
+        "line_fr": "Vous avez descendu le coffre du Preneur de Cornes jusqu’à Akagiri, et gardé ses ferrures d’argent pour vous."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "wracks_end_headman": {
+    "npcID": "wracks_end_headman",
+    "npcName": "The headman of Wrack's End",
+    "npcName_fr": "Le chef de Bout-du-Varech",
+    "role": "Headman of the wreckers",
+    "role_fr": "Chef des pilleurs d’épaves",
+    "faction": "",
+    "placeId": "wracks_end",
+    "chapter": 4,
+    "kind": "elder",
+    "description": "He smokes weed that is not tobacco and explains, without being asked, how the false lamps work: one on the point, one on the rocks, and the sea does the rest. The Court paid for the first lamps, and takes its share of what comes ashore in people.",
+    "description_fr": "Il fume une herbe qui n’est pas du tabac et explique, sans qu’on le lui demande, comment marchent les fausses lampes : une sur la pointe, une sur les rochers, et la mer fait le reste. La Cour paya les premières lampes, et prend sa part de ce qui s’échoue en gens.",
+    "want": "Wants the village left its trade, and never to be asked what the people are for.",
+    "want_fr": "Veut qu’on laisse au village son métier, et qu’on ne lui demande jamais à quoi servent les gens.",
+    "metNodes": [
+      "5100_headman"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "lamps_smashed",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You smashed the false lamps on your way out of the village, and it watched you go the way you watch weather.",
+        "line_fr": "Vous avez brisé les fausses lampes en quittant le village, et il vous regarda partir comme on regarde le temps qu’il fait."
+      },
+      {
+        "flag": "wreck_cut",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You asked him for a cut of the next wreck, and he sent it up the cliff path in a fisherman's basket with no name on it.",
+        "line_fr": "Vous lui avez demandé une part du prochain naufrage, et il la fit monter par le sentier de la falaise dans un panier de pêcheur, sans nom dessus."
+      },
+      {
+        "flag": "false_lamps_out",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You paid him sixty gold to put the false lamps out for good, and a ship came in by the honest ones with its whole crew alive.",
+        "line_fr": "Vous l’avez payé soixante pièces d’or pour éteindre les fausses lampes à jamais, et un navire entra en suivant les honnêtes, tout son équipage vivant."
+      },
+      {
+        "flag": "hub_5100_headman_later",
+        "andFlags": [],
+        "unlessFlags": [
+          "false_lamps_out"
+        ],
+        "line": "You knew by then what the people were for, and left the village its trade anyway.",
+        "line_fr": "Vous saviez alors à quoi servaient les gens, et avez tout de même laissé au village son métier."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "fleet_helmsman": {
+    "npcID": "fleet_helmsman",
+    "npcName": "The flagship's helmsman",
+    "npcName_fr": "Le timonier du vaisseau amiral",
+    "role": "Last helmsman of the White Fleet",
+    "role_fr": "Dernier timonier de la Flotte Blanche",
+    "faction": "admiralty",
+    "placeId": "white_anchorage",
+    "chapter": 6,
+    "kind": "sailor",
+    "description": "The last helmsman of the Admiral's flagship, who drinks at the White Anchorage to forget the night she went down and has not yet managed it. He cut himself loose from the lashed helm and swam, and has been swimming ever since.",
+    "description_fr": "Le dernier timonier du vaisseau amiral, qui boit au Mouillage Blanc pour oublier la nuit du naufrage et n’y est pas encore parvenu. Il se détacha de la barre amarrée et nagea, et il nage encore depuis.",
+    "want": "Wants one night when he does not cut the rope again and watch her go down without him.",
+    "want_fr": "Veut une nuit où il ne recoupe pas la corde pour regarder le navire couler sans lui.",
+    "metNodes": [
+      "7100_helmsman"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "helmsman_hired",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You told him the Eel needed a helmsman, and he stood her wheel through the wrecks without a drink the whole way.",
+        "line_fr": "Vous lui avez dit que l’Eel avait besoin d’un timonier, et il tint sa barre à travers les épaves sans boire une goutte de tout le trajet."
+      },
+      {
+        "flag": "hub_7100_helmsman",
+        "andFlags": [],
+        "unlessFlags": [
+          "helmsman_hired"
+        ],
+        "line": "You drank with him over the flagship's last night, and left him to his cup.",
+        "line_fr": "Vous avez bu avec lui à la dernière nuit du vaisseau amiral, et l’avez laissé à sa tasse."
+      },
+      {
+        "flag": "helmsman_farewell",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You took him along the point at dusk to see her once more with the grey still on her mast, and let him say goodbye to his crew.",
+        "line_fr": "Vous l’avez emmené le long de la pointe au crépuscule pour qu’il revoie le navire une fois, le gris encore au mât, et l’avez laissé dire adieu à son équipage."
+      },
+      {
+        "flag": "hub_7100_helmsman_later",
+        "andFlags": [],
+        "unlessFlags": [
+          "helmsman_farewell"
+        ],
+        "line": "You took him out to see his ship, and asked him for her soundings instead of giving him his goodbye.",
+        "line_fr": "Vous l’avez emmené revoir son navire, et lui avez demandé ses sondes plutôt que de lui laisser ses adieux."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "fleet_chaplain": {
+    "npcID": "fleet_chaplain",
+    "npcName": "The fleet's chaplain",
+    "npcName_fr": "L’aumônier de la flotte",
+    "role": "Chaplain of the White Fleet",
+    "role_fr": "Aumônier de la Flotte Blanche",
+    "faction": "admiralty",
+    "placeId": "white_anchorage",
+    "chapter": 6,
+    "kind": "penitent",
+    "description": "The White Fleet's chaplain, a zealot once and something quieter now that he has no word for yet. He knows where the flagship lies off the point, with the Admiral still on her quarterdeck, and on this shore he is all of the Admiralty there is.",
+    "description_fr": "L’aumônier de la Flotte Blanche, un zélote autrefois et à présent quelque chose de plus calme, qu’il n’a pas encore de mot pour nommer. Il sait où gît le vaisseau amiral au large de la pointe, l’Amiral toujours sur sa dunette, et sur ce rivage, toute l’Amirauté, c’est lui.",
+    "want": "Wants the Admiralty's vote for the Lantern Throne cast by someone who has seen more of this coast than he has.",
+    "want_fr": "Veut que la voix de l’Amirauté pour le Trône de la Lanterne soit donnée par quelqu’un qui a vu plus de cette côte que lui.",
+    "metNodes": [
+      "7100_chaplain"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "admiralty_vote",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "He drew you the way to the flagship on a scrap of sailcloth and would take no coin for it, then put the Admiralty's seal in your hand with it.",
+        "line_fr": "Il vous traça le chemin du vaisseau amiral sur un bout de toile à voile sans vouloir être payé, puis vous mit le sceau de l’Amirauté dans la main avec la toile."
+      },
+      {
+        "flag": "throne_backed_morrow",
+        "andFlags": [
+          "admiralty_vote"
+        ],
+        "unlessFlags": [],
+        "line": "You cast his vote on the Hollow Shore for Grand Master Morrow, and a crusade.",
+        "line_fr": "Vous avez donné sa voix sur la Rive Creuse au Grand Maître Morrow, et à une croisade."
+      },
+      {
+        "flag": "throne_backed_vane",
+        "andFlags": [
+          "admiralty_vote"
+        ],
+        "unlessFlags": [],
+        "line": "You cast his vote on the Hollow Shore for Inquisitor-General Vane, and an inquisition.",
+        "line_fr": "Vous avez donné sa voix sur la Rive Creuse à l’Inquisiteur général Vane, et à une inquisition."
+      },
+      {
+        "flag": "throne_backed_tallis",
+        "andFlags": [
+          "admiralty_vote"
+        ],
+        "unlessFlags": [],
+        "line": "You cast his vote on the Hollow Shore for Eldest Wickwarden Tallis, and a church.",
+        "line_fr": "Vous avez donné sa voix sur la Rive Creuse à l’Aînée des Garde-Mèches Tallis, et à une Église."
+      },
+      {
+        "flag": "vote_kept",
+        "andFlags": [
+          "admiralty_vote"
+        ],
+        "unlessFlags": [],
+        "line": "You kept the Admiralty's vote for your own claim.",
+        "line_fr": "Vous avez gardé la voix de l’Amirauté pour votre propre prétention."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "cloister_archivist": {
+    "npcID": "cloister_archivist",
+    "npcName": "The archivist",
+    "npcName_fr": "L’archiviste",
+    "role": "The Court's former archivist",
+    "role_fr": "Ancienne archiviste de la Cour",
+    "faction": "",
+    "placeId": "drowned_cloister",
+    "chapter": 4,
+    "kind": "scholar",
+    "description": "She was the Court's own archivist until the night she found her sister's name in what she was copying. She knows there were two ledgers: the list of the taken, and the list of who did the taking.",
+    "description_fr": "Elle fut l’archiviste de la Cour jusqu’à la nuit où elle trouva le nom de sa sœur dans ce qu’elle copiait. Elle sait qu’il y avait deux registres : la liste des enlevés, et la liste de ceux qui ont enlevé.",
+    "want": "Wants her sister's name brought back up the Drowned Stair.",
+    "want_fr": "Veut que le nom de sa sœur remonte l’Escalier Noyé.",
+    "metNodes": [
+      "5010_archivist"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "hub_5010_archivist",
+        "andFlags": [],
+        "unlessFlags": [
+          "archivist_promise",
+          "archivist_notes"
+        ],
+        "line": "You heard her out about the second ledger, and promised her nothing.",
+        "line_fr": "Vous l’avez écoutée au sujet du second registre, sans rien lui promettre."
+      },
+      {
+        "flag": "archivist_promise",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You promised to bring her sister's name back up, and she started a fresh page for it and left the name blank until you came back.",
+        "line_fr": "Vous avez promis de remonter le nom de sa sœur, et elle commença une page neuve, le nom laissé en blanc jusqu’à votre retour."
+      },
+      {
+        "flag": "archivist_notes",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You copied her notes on the Stair into your pack, in a hand neater than yours.",
+        "line_fr": "Vous avez recopié ses notes sur l’Escalier dans votre sac, d’une écriture plus soignée que la vôtre."
+      },
+      {
+        "flag": "hub_5010_archivist_words",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You brought her what you had pieced together, and she worked out the second ledger's shape: not a book but a wall, one name to a step.",
+        "line_fr": "Vous lui avez apporté ce que vous aviez reconstitué, et elle trouva la forme du second registre : pas un livre, mais un mur, un nom par marche."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "court_deserter": {
+    "npcID": "court_deserter",
+    "npcName": "The deserter",
+    "npcName_fr": "Le déserteur",
+    "role": "Deserter of the Court",
+    "role_fr": "Déserteur de la Cour",
+    "faction": "",
+    "placeId": "drowned_cloister",
+    "chapter": 4,
+    "kind": "soldier",
+    "description": "He held a rank in the Court until the night the ledger's second page was read aloud, and talks, once he is sure you are not there to collect him, the way men do who have waited a long time for someone to ask. Nobody asks a deserter anything but where he ran.",
+    "description_fr": "Il tint un rang dans la Cour jusqu’à la nuit où la seconde page du registre fut lue à voix haute, et parle, une fois certain que vous n’êtes pas là pour l’emmener, comme les hommes qui attendent depuis longtemps qu’on les interroge. On ne demande rien à un déserteur, sinon où il a couru.",
+    "want": "Wants someone to ask him something other than where he ran.",
+    "want_fr": "Veut qu’on lui demande autre chose que l’endroit où il a couru.",
+    "metNodes": [
+      "5010_deserter"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "hub_5010_deserter",
+        "andFlags": [],
+        "unlessFlags": [
+          "pay_chest_raised",
+          "deserter_sold"
+        ],
+        "line": "You questioned him about the Stair, and left him his freedom and the Court's pay chest where it lay.",
+        "line_fr": "Vous l’avez interrogé sur l’Escalier, et lui avez laissé sa liberté, et le coffre de solde de la Cour là où il gisait."
+      },
+      {
+        "flag": "pay_chest_raised",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You dived where he said the Court's pay chest went into the water, and dried it on the cloister steps.",
+        "line_fr": "Vous avez plongé là où il disait que le coffre de solde de la Cour était tombé à l’eau, et l’avez mis à sécher sur les marches du cloître."
+      },
+      {
+        "flag": "deserter_sold",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You turned him in to the cloister for forty gold; his cell was the one with the window, and he did not look out of it.",
+        "line_fr": "Vous l’avez livré au cloître pour quarante pièces d’or ; sa cellule était celle qui avait une fenêtre, et il ne regardait pas dehors."
+      },
+      {
+        "flag": "hub_5010_deserter_later",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "He found you before you found him, to say the Court holds the Stair because something below it told them to, and that if you went down you should go down loud.",
+        "line_fr": "Il vous trouva avant que vous le trouviez, pour dire que la Cour tient l’Escalier parce que quelque chose en dessous le lui a ordonné, et que si vous descendiez, c’était en faisant du bruit."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "tribunal_clerk": {
+    "npcID": "tribunal_clerk",
+    "npcName": "The Tribunal's clerk",
+    "npcName_fr": "Le greffier du Tribunal",
+    "role": "Last clerk of the Tribunal",
+    "role_fr": "Dernier greffier du Tribunal",
+    "faction": "tribunal",
+    "placeId": "wracks_end",
+    "chapter": 4,
+    "kind": "scholar",
+    "description": "The Tribunal of the Spire's last clerk on this coast, who walked to Wrack's End with the Tribunal's seal in his sleeve and its sealed vote for the Lantern Throne in his coat. He has waited a week for anyone who would row him out to Candlehold's envoy, and he cannot swim.",
+    "description_fr": "Le dernier greffier du Tribunal de la Flèche sur cette côte, venu à pied jusqu’à Bout-du-Varech, le sceau du Tribunal dans la manche et son vote scellé pour le Trône de la Lanterne dans son manteau. Il a attendu une semaine quelqu’un qui le mène à la rame jusqu’à l’émissaire de Candlehold, et il ne sait pas nager.",
+    "want": "Wants the Tribunal's vote carried out to the envoy's ship with its seal unbroken.",
+    "want_fr": "Veut que le vote du Tribunal soit porté au navire de l’émissaire, sceau intact.",
+    "metNodes": [
+      "5100_vote"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "vote_carried",
+        "andFlags": [],
+        "unlessFlags": [
+          "vote_read"
+        ],
+        "line": "You rowed his vote out to the envoy with its seal unbroken, and never looked.",
+        "line_fr": "Vous avez porté son vote à l’émissaire à la rame, sceau intact, sans jamais regarder."
+      },
+      {
+        "flag": "vote_read",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You steamed his vote open before you rowed it out; it had been cast for Vane, and he looked at you as if he knew what steam does to sealing wax.",
+        "line_fr": "Vous avez ouvert son vote à la vapeur avant de le porter ; il était pour Vane, et il vous regarda comme s’il savait ce que la vapeur fait à la cire."
+      },
+      {
+        "flag": "vote_refused",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You refused to carry it, because the Tribunal hanged four hundred, and the vote went out to the envoy's ship without you.",
+        "line_fr": "Vous avez refusé de le porter, parce que le Tribunal a pendu quatre cents personnes, et le vote partit vers le navire de l’émissaire sans vous."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "dorran_quill": {
+    "npcID": "dorran_quill",
+    "npcName": "Dorran Quill",
+    "npcName_fr": "Dorran Quill",
+    "role": "Scaffolders' foreman",
+    "role_fr": "Contremaître des Échafaudeurs",
+    "faction": "scaffolders",
+    "placeId": "saltmouth_yard",
+    "chapter": 2,
+    "kind": "soldier",
+    "description": "A dwarf foreman of the Scaffolders whose crew rigged the ship-breaker's yard and has not seen a day's wage for it: the Salt Ledger's clerk holds the pay as a \"tithe\". He wants it back and would rather not pick the fight himself.",
+    "description_fr": "Un contremaître nain des Échafaudeurs dont l’équipe a gréé le chantier des démolisseurs sans en voir une journée de salaire : le clerc du Registre du Sel garde la paie au titre d’une « dîme ». Il la veut en retour et préférerait ne pas mener la bagarre lui-même.",
+    "want": "His crew's wages out of the Salt Ledger's hands and into theirs.",
+    "want_fr": "Les gages de son équipe hors des mains du Registre du Sel, et dans les leurs.",
+    "metNodes": [
+      "2015_dorran"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "scaffold_paid",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You faced the Ledger's clerk and put the crew's wages in their hands; Dorran's people call you a friend of the scaffolds.",
+        "line_fr": "Vous avez affronté le clerc du Registre et remis à l’équipe ses gages ; les gens de Dorran vous comptent parmi les amis des échafauds."
+      },
+      {
+        "flag": "scaffold_skimmed",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You took the Ledger's cut for yourself and left the crew unpaid; Dorran does not say your name without spitting.",
+        "line_fr": "Vous avez pris la part du Registre pour vous et laissé l’équipe sans paie ; Dorran ne prononce plus votre nom sans cracher."
+      },
+      {
+        "flag": "scaffold_split",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You split the wages between the crew and the Ledger and kept the yard quiet; Dorran took it, and did not thank you for it.",
+        "line_fr": "Vous avez partagé les gages entre l’équipe et le Registre, et le chantier est resté calme ; Dorran a accepté, sans vous en remercier."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "imeh": {
+    "npcID": "imeh",
+    "npcName": "Imeh",
+    "npcName_fr": "Imeh",
+    "role": "Oni glass-trader",
+    "role_fr": "Marchande de verre oni",
+    "faction": "oni",
+    "placeId": "ashen_quarter",
+    "chapter": 3,
+    "kind": "merchant",
+    "description": "An oni glass-trader down from the spring terraces with a stall of terrace glass in the Ashen Quarter, where the Scorched Choir has taken to burning whatever it calls unclean. She wants the glass tested before their fire reaches it, and someone standing beside her when it does.",
+    "description_fr": "Une marchande de verre oni descendue des terrasses des sources, avec un étal de verre des terrasses dans le Quartier des Cendres, où le Chœur Calciné s’est mis à brûler tout ce qu’il appelle impur. Elle veut que le verre soit éprouvé avant que leur feu ne l’atteigne, et quelqu’un à ses côtés quand il l’atteindra.",
+    "want": "Her glass proven and her stall standing when the Choir's fire comes.",
+    "want_fr": "Son verre prouvé et son étal debout quand viendra le feu du Chœur.",
+    "metNodes": [
+      "3005_imeh"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "glass_defended",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You stood with Imeh at the fire and the Choir backed away from her stall; the terraces remember who held their glass.",
+        "line_fr": "Vous avez tenu à côté d’Imeh devant le feu et le Chœur a reculé devant son étal ; les terrasses se souviennent de qui a défendu leur verre."
+      },
+      {
+        "flag": "glass_burned",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You let the Choir burn her stall and the glass with it; Imeh went back up to the terraces with nothing but what she wore.",
+        "line_fr": "Vous avez laissé le Chœur brûler son étal et le verre avec ; Imeh est remontée aux terrasses sans rien d’autre que ce qu’elle portait."
+      },
+      {
+        "flag": "glass_carried",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You carried her glass to the camp before the fire reached it; it sells there now, and Imeh with it.",
+        "line_fr": "Vous avez porté son verre jusqu’au camp avant que le feu ne l’atteigne ; il s’y vend désormais, et Imeh avec."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "brannoc_reedtithe": {
+    "npcID": "brannoc_reedtithe",
+    "npcName": "Brannoc Reedtithe",
+    "npcName_fr": "Brannoc Reedtithe",
+    "role": "Barkbleeder healer",
+    "role_fr": "Guérisseur Saigne-Écorce",
+    "faction": "barkbleeders",
+    "placeId": "drowned_cloister",
+    "chapter": 4,
+    "kind": "healer",
+    "description": "An elf healer of the Barkbleeders who treats the Drowned Cloister's sick with fever-bark bled from the fen, until the Keyholders lifted his whole season's tithe and cached it for sale. Without the bark he has candles, prayers and nothing that works.",
+    "description_fr": "Un guérisseur elfe des Saigne-Écorce qui soigne les malades du Cloître noyé avec l’écorce-fièvre saignée dans le marais, jusqu’à ce que les Porte-Clés lui prennent la dîme de toute une saison et la cachent pour la vendre. Sans l’écorce, il lui reste des chandelles, des prières, et rien qui agisse.",
+    "want": "His season's bark back from the Keyholders' cache, before the fever takes the cloister.",
+    "want_fr": "Retrouver l’écorce de sa saison dans la cache des Porte-Clés, avant que la fièvre n’emporte le cloître.",
+    "metNodes": [
+      "5010_brannoc"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "bark_returned",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You lifted the Keyholders' cache and returned the bark to Brannoc; the Barkbleeders count you a friend of the fen.",
+        "line_fr": "Vous avez vidé la cache des Porte-Clés et rendu l’écorce à Brannoc ; les Saigne-Écorce vous comptent parmi les amis du marais."
+      },
+      {
+        "flag": "bark_sold",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You sold the recovered bark back to the Keyholders; Brannoc's sick went without, and he did not forget who put a price on them.",
+        "line_fr": "Vous avez revendu l’écorce récupérée aux Porte-Clés ; les malades de Brannoc s’en sont passés, et il n’a pas oublié qui leur avait mis un prix."
+      },
+      {
+        "flag": "bark_kept",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You gave Brannoc half the bark and kept half for the camp infirmary; he called it fair with his mouth and not with his eyes.",
+        "line_fr": "Vous avez donné à Brannoc la moitié de l’écorce et gardé l’autre pour l’infirmerie du camp ; il a dit que c’était juste, de la bouche mais pas des yeux."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "orsabet_vell": {
+    "npcID": "orsabet_vell",
+    "npcName": "Orsabet Vell",
+    "npcName_fr": "Orsabet Vell",
+    "role": "Candlebearer widow",
+    "role_fr": "Veuve Porte-Chandelle",
+    "faction": "candlebearers",
+    "placeId": "reliquary_quarter",
+    "chapter": 5,
+    "kind": "penitent",
+    "description": "A Candlebearer widow who lights a candle for each person the tear has taken from the Reliquary Quarter and keeps their count cut into a stone out past the frost. The count is the only record of the taken that the Dominion did not write, and she can no longer walk to it herself.",
+    "description_fr": "Une veuve des Porte-Chandelles qui allume une chandelle pour chaque personne que la déchirure a prise au Quartier des Reliquaires et garde leur compte gravé dans une pierre, au-delà du givre. Ce compte est le seul registre des disparus que le Dominion n’a pas écrit, et elle ne peut plus marcher jusqu’à lui elle-même.",
+    "want": "The count carried back from the tally stone and given to someone who will keep it.",
+    "want_fr": "Que le compte soit rapporté de la pierre des noms et confié à qui le gardera.",
+    "metNodes": [
+      "6010_orsabet"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "count_to_vigil",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You carried the count through the frost and gave it to the Vigil; Orsabet's names are kept now by people who watch.",
+        "line_fr": "Vous avez porté le compte à travers le givre et l’avez confié à la Veille ; les noms d’Orsabet sont désormais gardés par des gens qui veillent."
+      },
+      {
+        "flag": "count_sealed",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You sealed the count in the Reliquary with the Dominion's other holy things; Orsabet knows it is safe there, and that no one will read it.",
+        "line_fr": "Vous avez scellé le compte dans le Reliquaire avec les autres objets sacrés du Dominion ; Orsabet sait qu’il y est en sûreté, et que personne ne le lira."
+      },
+      {
+        "flag": "count_read",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You read the names aloud at the quarter's gate, every one of them; Orsabet stood through all of it, and lit no candle that night.",
+        "line_fr": "Vous avez lu les noms à voix haute à la porte du quartier, chacun d’eux ; Orsabet est restée debout jusqu’au bout, et n’a allumé aucune chandelle ce soir-là."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "ghrem_stonebrow": {
+    "npcID": "ghrem_stonebrow",
+    "npcName": "Ghrem Stonebrow",
+    "npcName_fr": "Ghrem Stonebrow",
+    "role": "Giant of Highhearth",
+    "role_fr": "Géant de Haut-Âtre",
+    "faction": "giants",
+    "placeId": "highhearth",
+    "chapter": 5,
+    "kind": "elder",
+    "description": "One of the forty giants left in Highhearth, who tends the moot-hall's six-hundred-year fire and knows the quarry face its hearth-stone was cut from. The Compact's Quarrymen have come for the rest of that face, and the hall has no one left young enough to hold it.",
+    "description_fr": "L’un des quarante géants qui restent à Haut-Âtre, qui entretient le feu six fois centenaire de la salle du conseil et connaît le front de carrière d’où fut taillée sa pierre du foyer. Les Carriers du Pacte sont venus pour le reste de ce front, et la salle n’a plus personne d’assez jeune pour le tenir.",
+    "want": "The hearth-stone's quarry face left to the giants who were cut from it.",
+    "want_fr": "Que le front de carrière de la pierre du foyer reste aux géants qui en sont issus.",
+    "metNodes": [
+      "6200_ghrem"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "hearth_stone_kept",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You held the cut face and gave the giants their stone; Ghrem set a chip of it by the moot-hall fire for you.",
+        "line_fr": "Vous avez tenu le front taillé et laissé leur pierre aux géants ; Ghrem en a posé un éclat près du feu de la salle du conseil, pour vous."
+      },
+      {
+        "flag": "hearth_stone_cut",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You let the Quarrymen cut the face; Ghrem watched the hearth-stone's quarry go down the road in Compact carts and said nothing to you after.",
+        "line_fr": "Vous avez laissé les Carriers tailler le front ; Ghrem a regardé la carrière de la pierre du foyer partir par la route dans les charrettes du Pacte, et ne vous a plus adressé la parole."
+      },
+      {
+        "flag": "hearth_stone_split",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You split the face between the giants and the Quarrymen; Ghrem called it the first bargain Highhearth had made in a century, and not a good one.",
+        "line_fr": "Vous avez partagé le front entre les géants et les Carriers ; Ghrem y a vu le premier marché conclu par Haut-Âtre en un siècle, et pas un bon."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "nkem_tallow": {
+    "npcID": "nkem_tallow",
+    "npcName": "Nkem Tallow",
+    "npcName_fr": "Nkem Tallow",
+    "role": "Brig-Born salvager",
+    "role_fr": "Récupérateur des Enfants du Brick",
+    "faction": "brig_born",
+    "placeId": "white_anchorage",
+    "chapter": 6,
+    "kind": "merchant",
+    "description": "A Brig-Born salvager who works the White Fleet's grave for what the sea gives back, and whose whole last haul sits in the Admiralty's impound under a seal he never agreed to. He holds that what the wrecks give up belongs to whoever went down for it.",
+    "description_fr": "Un récupérateur des Enfants du Brick qui écume la tombe de la Flotte Blanche pour ce que la mer rend, et dont toute la dernière prise dort dans la fourrière de l’Amirauté, sous un sceau qu’il n’a jamais accepté. Il soutient que ce que les épaves rendent appartient à qui est descendu le chercher.",
+    "want": "His salvage out of the Admiralty's impound and back in Brig-Born hands.",
+    "want_fr": "Sa prise hors de la fourrière de l’Amirauté et de retour entre les mains des Enfants du Brick.",
+    "metNodes": [
+      "7100_nkem"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "salvage_to_crows",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You freed the impounded salvage and gave it to Nkem; the Brig-Born call you one of theirs on the sand.",
+        "line_fr": "Vous avez libéré la prise mise en fourrière et l’avez remise à Nkem ; sur le sable, les Enfants du Brick vous comptent parmi les leurs."
+      },
+      {
+        "flag": "salvage_to_admiralty",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You handed the freed salvage to the Admiralty; Nkem lost it twice, the second time to you.",
+        "line_fr": "Vous avez remis la prise libérée à l’Amirauté ; Nkem l’a perdue deux fois, la seconde par votre main."
+      },
+      {
+        "flag": "salvage_sold",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You sold the salvage to the wreck-wrights and kept the coin; Nkem got neither his haul nor a share of it.",
+        "line_fr": "Vous avez vendu la prise aux charpentiers d’épaves et gardé l’argent ; Nkem n’a eu ni sa prise, ni une part."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "keeper_blind_beggar_stall": {
+    "npcID": "keeper_blind_beggar_stall",
+    "npcName": "The cellar-boy",
+    "npcName_fr": "Le garçon de cave",
+    "role": "Runaway cellar-boy",
+    "role_fr": "Garçon de cave en fuite",
+    "faction": "",
+    "placeId": "saltmouth_wharf",
+    "chapter": 2,
+    "kind": "keeper",
+    "description": "A boy who left the Blind Beggar with a barrow of the tavern's cellar and never went back. He sells it on the wharf, one bottle at a time, and belongs to no one.",
+    "description_fr": "Un gamin qui a quitté le Mendiant Aveugle avec une brouette de la cave de la taverne et n’y est jamais retourné. Il l’écoule sur le quai, bouteille par bouteille, et n’appartient à personne.",
+    "want": "To empty the barrow before anyone comes looking for it.",
+    "want_fr": "Vider la brouette avant que quelqu’un ne vienne la réclamer.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "blind_beggar_stall",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "keeper_black_market_docks": {
+    "npcID": "keeper_black_market_docks",
+    "npcName": "A Crow with no name",
+    "npcName_fr": "Une Corneille sans nom",
+    "role": "Tide Cellar fence",
+    "role_fr": "Garde de la Cave aux Marées",
+    "faction": "keyholders",
+    "placeId": "saltmouth_wharf",
+    "chapter": 2,
+    "kind": "keeper",
+    "description": "The Keyholders' hand under the rusty pier, who has never given a name and never asked for one. Everything on the shelves came off a boat the Dominion never logged.",
+    "description_fr": "La main des Porte-Clés sous la jetée rouillée, qui n’a jamais donné de nom et n’en a jamais demandé. Tout ce qui garnit les rayons est sorti d’un bateau que le Dominion n’a jamais enregistré.",
+    "want": "To move the Keyholders' cargo without a single question asked.",
+    "want_fr": "Écouler la cargaison des Porte-Clés sans qu’une seule question soit posée.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "black_market_docks",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "keeper_weaponsmith_forge": {
+    "npcID": "keeper_weaponsmith_forge",
+    "npcName": "Orrin Vell",
+    "npcName_fr": "Orrin Vell",
+    "role": "Compact weaponsmith",
+    "role_fr": "Armurier du Pacte",
+    "faction": "compact",
+    "placeId": "saltmouth_wharf",
+    "chapter": 2,
+    "kind": "keeper",
+    "description": "A Cinder Compact smith who keeps his forge on the wharf and his ledger clean: no blade leaves the rack that was not ordered first. He sells to anyone the Compact has not frowned on, at the Compact's rate.",
+    "description_fr": "Un forgeron du Pacte des Cendres qui tient sa forge sur le quai et son registre propre : aucune lame ne quitte le râtelier sans avoir été commandée d’abord. Il vend à quiconque le Pacte ne regarde pas de travers, au tarif du Pacte.",
+    "want": "Honest coin for honest steel, and the Compact's good word kept.",
+    "want_fr": "De l’argent honnête pour de l’acier honnête, et la bonne parole du Pacte préservée.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "weaponsmith_forge",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "keeper_shieldwrights_hall": {
+    "npcID": "keeper_shieldwrights_hall",
+    "npcName": "Hesta Brann",
+    "npcName_fr": "Hesta Brann",
+    "role": "Quarrymen's shieldwright",
+    "role_fr": "Fabricante de boucliers des Carriers",
+    "faction": "quarrymen",
+    "placeId": "saltmouth_wharf",
+    "chapter": 2,
+    "kind": "keeper",
+    "description": "Quarry-born and Compact-sworn, she cuts shields the way her people cut stone: to be carried by someone else, for a long time. She judges a buyer by what they can lift, not by what they can pay.",
+    "description_fr": "Née à la carrière et liée au Pacte, elle taille les boucliers comme les siens taillent la pierre : pour être portés par quelqu’un d’autre, et longtemps. Elle juge l’acheteur à ce qu’il peut lever, pas à ce qu’il peut payer.",
+    "want": "To see her shields held by hands that keep their promises.",
+    "want_fr": "Voir ses boucliers tenus par des mains qui tiennent leurs promesses.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "shieldwrights_hall",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "keeper_arcane_bazaar": {
+    "npcID": "keeper_arcane_bazaar",
+    "npcName": "Imra of the Smoke",
+    "npcName_fr": "Imra de la Fumée",
+    "role": "Bazaar stall-keeper",
+    "role_fr": "Marchande du Bazar",
+    "faction": "",
+    "placeId": "saltmouth_wharf",
+    "chapter": 2,
+    "kind": "keeper",
+    "description": "A trader who sells staves, scrolls and stranger things through a permanent haze of incense, to every clan in Saltmouth and against none of them. She pays every toll on the wharf, so her prices do not move for anybody.",
+    "description_fr": "Une marchande qui vend bâtons, parchemins et choses plus étranges à travers une brume d’encens permanente, à tous les clans de Bouche-de-Sel et contre aucun. Elle paie chaque péage du quai, alors ses prix ne bougent pour personne.",
+    "want": "To keep trading with every clan by owing none of them.",
+    "want_fr": "Continuer à commercer avec tous les clans en n’en devant rien à aucun.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "arcane_bazaar",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "hub_2015_bazaar",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You wandered her stalls on the wharf and came away poorer and better informed, roughly as she intended.",
+        "line_fr": "Vous avez flâné parmi ses étals sur le quai ; votre bourse en est ressortie plus légère et votre tête mieux renseignée, à peu près comme elle l’entendait."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "keeper_apothecary_row": {
+    "npcID": "keeper_apothecary_row",
+    "npcName": "Sister Ysolde",
+    "npcName_fr": "Sœur Ysolde",
+    "role": "Mire Courts apothecary",
+    "role_fr": "Apothicaire des Cours du Marais",
+    "faction": "mire",
+    "placeId": "saltmouth_wharf",
+    "chapter": 2,
+    "kind": "keeper",
+    "description": "A sister of the Mire Courts who boils fever-bark from the fen on the wharf and sells it to whoever says plainly what hurts. The Courts hear every word spoken about her customers, and her discount follows what they hear.",
+    "description_fr": "Une sœur des Cours du Marais qui fait bouillir sur le quai l’écorce-fièvre du marais et la vend à qui dit franchement ce qui fait mal. Les Cours entendent tout ce qui se dit de ses clients, et sa remise suit ce qu’elles entendent.",
+    "want": "To be told what hurts, and to keep the Courts' bark honest.",
+    "want_fr": "Qu’on lui dise ce qui fait mal, et que l’écorce des Cours reste honnête.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "apothecary_row",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "hub_2015_apothecary",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You bought from her jars on the wharf and learned more about the district's shipping than she meant to sell you.",
+        "line_fr": "Vous avez acheté dans ses bocaux sur le quai et appris sur les routes maritimes du quartier plus qu’elle ne comptait vous en vendre."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "keeper_smugglers_vault": {
+    "npcID": "keeper_smugglers_vault",
+    "npcName": "The Keyholder",
+    "npcName_fr": "Le Porte-Clés",
+    "role": "Keeper of the Vault",
+    "role_fr": "Garde du Coffre",
+    "faction": "keyholders",
+    "placeId": "cove_camp",
+    "chapter": 3,
+    "kind": "keeper",
+    "description": "The Keyholder who follows the Crusade's supply ships and set up the Vault's counter in a dry cellar under the camp's standing wall. One of everything, nothing with a receipt, and the door opens exactly as wide as the Ledger says you pay.",
+    "description_fr": "Le Porte-Clés qui suit les navires de ravitaillement de la Croisade et a installé le comptoir du Coffre dans une cave sèche sous le mur du camp. Un seul de chaque, rien avec un reçu, et la porte s’ouvre exactement aussi grand que le Registre dit que vous payez.",
+    "want": "To keep the Vault's door open and its shelves off every ledger but the Keyholders' own.",
+    "want_fr": "Garder la porte du Coffre ouverte et ses rayons hors de tout registre, sauf celui des Porte-Clés.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "smugglers_vault",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "keeper_hammersmith_forge": {
+    "npcID": "keeper_hammersmith_forge",
+    "npcName": "Dagny Ironhand",
+    "npcName_fr": "Dagny Main-de-Fer",
+    "role": "Camp hammersmith",
+    "role_fr": "Maîtresse de forge du camp",
+    "faction": "anvil_deaf",
+    "placeId": "cove_camp",
+    "chapter": 3,
+    "kind": "keeper",
+    "description": "An Anvil-Deaf smith who finishes the blades and shields the wharf forges send away as too heavy, in a proper forge at the camp. She makes a buyer lift the piece before she names a price, and what the council signs about you decides whether that price bites.",
+    "description_fr": "Une forgeronne des Sourds-d’Enclume qui achève, dans une vraie forge au camp, les lames et les boucliers que les forges du quai renvoient comme trop lourds. Elle fait soulever la pièce avant d’en dire le prix, et ce que le conseil signe à votre sujet décide si ce prix mord.",
+    "want": "To work only metal worth the hammer, for hands that can carry it.",
+    "want_fr": "Ne travailler que le métal qui vaut le marteau, pour des mains capables de le porter.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "hammersmith_forge",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "keeper_arcane_academy": {
+    "npcID": "keeper_arcane_academy",
+    "npcName": "Magister Corvane",
+    "npcName_fr": "Le magister Corvane",
+    "role": "Magister of the Academy",
+    "role_fr": "Magister de l’Académie",
+    "faction": "cantors",
+    "placeId": "cove_camp",
+    "chapter": 3,
+    "kind": "keeper",
+    "description": "A magister of the Cantors of the Flame who runs the camp's academy on the Choir's licence: every staff warded, every sale tithed to the Lantern. The Dominion's file on you sets the rate; the Choir's friendship waives the tithe.",
+    "description_fr": "Un magister des Chantres de la Flamme qui dirige l’académie du camp sous licence du Chœur : chaque bâton protégé, chaque vente soumise à la dîme de la Lanterne. Le dossier du Dominion sur vous fixe le tarif ; l’amitié du Chœur lève la dîme.",
+    "want": "To keep the Choir's wardings on every staff and the Lantern's tithe on every sale.",
+    "want_fr": "Garder les protections du Chœur sur chaque bâton et la dîme de la Lanterne sur chaque vente.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "arcane_academy",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "keeper_sharpweave_den": {
+    "npcID": "keeper_sharpweave_den",
+    "npcName": "Needle",
+    "npcName_fr": "L’Aiguille",
+    "role": "Needle House keeper",
+    "role_fr": "Garde de la Maison des Aiguilles",
+    "faction": "whisper_ledger",
+    "placeId": "cove_camp",
+    "chapter": 3,
+    "kind": "keeper",
+    "description": "The Whisper Ledger's contact behind a door with no sign in the camp's back room, who sells the finest edges in the city to anyone who already knew the door was there. The Ledger tells Needle who talks, and who talks pays more.",
+    "description_fr": "Le contact du Registre des Murmures derrière une porte sans enseigne, dans l’arrière-salle du camp, qui vend les lames les plus fines de la ville à quiconque savait déjà que la porte était là. Le Registre dit à l’Aiguille qui parle, et qui parle paie plus.",
+    "want": "Quiet hands, quick sales, and the door kept unknown.",
+    "want_fr": "Des mains discrètes, des ventes rapides, et une porte qui reste inconnue.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "sharpweave_den",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "keeper_ossuary_relics": {
+    "npcID": "keeper_ossuary_relics",
+    "npcName": "A deserter called Hask",
+    "npcName_fr": "Un déserteur nommé Hask",
+    "role": "Deserter trading relics",
+    "role_fr": "Déserteur brocanteur de reliques",
+    "faction": "penitents",
+    "placeId": "drowned_cloister",
+    "chapter": 5,
+    "kind": "keeper",
+    "description": "A deserter from the Court's ranks who keeps a stall in the Drowned Cloister: salves, second-hand steel and the odd charm laid out between the jaws of a shelf of skulls. He stopped asking where anything came from, and the Penitents, who forgive slowly, let him trade under their name.",
+    "description_fr": "Un déserteur des rangs de la Cour qui tient un étal dans le Cloître noyé : onguents, acier d’occasion et quelques charmes disposés entre les mâchoires d’un rayon de crânes. Il a cessé de demander d’où vient quoi que ce soit, et les Pénitents, qui pardonnent lentement, le laissent commercer sous leur nom.",
+    "want": "To trade what the dead no longer need without ever being asked where he got it.",
+    "want_fr": "Vendre ce dont les morts n’ont plus besoin sans qu’on lui demande jamais d’où ça vient.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "ossuary_relics",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "hub_5010_trade",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You traded at his shelf of skulls below the tide line, and nobody asked where anything came from.",
+        "line_fr": "Vous avez fait affaire à son rayon de crânes sous la ligne de marée, et personne n’a demandé d’où venait quoi que ce soit."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "keeper_last_lantern": {
+    "npcID": "keeper_last_lantern",
+    "npcName": "Wickwarden Tallis",
+    "npcName_fr": "La Veilleuse Tallis",
+    "role": "Keeper of the Last Lantern",
+    "role_fr": "Gardienne de la Dernière Lanterne",
+    "faction": "last_watch",
+    "placeId": "reliquary_quarter",
+    "chapter": 6,
+    "kind": "keeper",
+    "description": "A Wickwarden of the Last Watch who keeps the only stall still lit in the Reliquary Quarter and has decided that if the world is ending she will at least be paid in advance. Charms, tomes and the Watch's own gear, sold one street from the tear to whoever is going closer.",
+    "description_fr": "Une Garde-Mèche de la Dernière Veille qui tient le seul étal encore éclairé du Quartier des Reliquaires et a décidé que, si le monde finit, elle sera au moins payée d’avance. Charmes, tomes et équipement de la Veille, vendus à une rue de la déchirure à qui s’en approche davantage.",
+    "want": "To keep her lamp lit and the people walking toward the tear breathing a little longer.",
+    "want_fr": "Garder sa lampe allumée, et en vie un peu plus longtemps ceux qui marchent vers la déchirure.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "last_lantern",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "hub_6010_lantern",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You bought from the last lit stall in the quarter and she took your coin in advance, as she does with everyone bound for the tear.",
+        "line_fr": "Vous avez acheté au dernier étal éclairé du quartier, et elle a pris votre argent d’avance, comme avec quiconque se dirige vers la déchirure."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "keeper_anchorage_chandlery": {
+    "npcID": "keeper_anchorage_chandlery",
+    "npcName": "The Wreck-Wright",
+    "npcName_fr": "La Charpentière d’épaves",
+    "role": "Admiralty wreck-wright",
+    "role_fr": "Charpentière d’épaves de l’Amirauté",
+    "faction": "admiralty",
+    "placeId": "white_anchorage",
+    "chapter": 6,
+    "kind": "keeper",
+    "description": "The wreck-wright who turns what the sea gives back to the White Anchorage into something fit to use: blades reforged from the fleet's own, salves in pilgrim flasks. Her prices are honest and the Admiralty counts every one of them.",
+    "description_fr": "La charpentière d’épaves qui transforme ce que la mer rend au Mouillage Blanc en choses à nouveau utilisables : des lames reforgées avec celles de la flotte, des baumes dans des gourdes de pèlerins. Ses prix sont honnêtes, et l’Amirauté en compte chacun.",
+    "want": "To make the fleet's wreckage useful again, under the Admiralty's eye.",
+    "want_fr": "Rendre utiles les épaves de la flotte, sous l’œil de l’Amirauté.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "anchorage_chandlery",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "hub_7100_chandlery",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You traded at her chandlery in the Anchorage and found the prices honest, which was harder to credit than anything else in a crusaders' town.",
+        "line_fr": "Vous avez fait affaire à sa chandlerie du Mouillage et trouvé les prix honnêtes, ce qui, dans une ville de croisés, était plus dur à croire que tout le reste."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "keeper_wayfarer_caravan": {
+    "npcID": "keeper_wayfarer_caravan",
+    "npcName": "Old Pell",
+    "npcName_fr": "Le vieux Pell",
+    "role": "Caravan master",
+    "role_fr": "Maître de caravane",
+    "faction": "",
+    "placeId": "",
+    "chapter": 2,
+    "kind": "keeper",
+    "description": "An old muleteer whose train never stops in one town for long, selling on this road what he bought off the last one. Six things today, and tomorrow is for the mules to decide.",
+    "description_fr": "Un vieux muletier dont le convoi ne s’attarde jamais dans une ville, et qui vend sur cette route ce qu’il a acheté sur la précédente. Six choses aujourd’hui, et demain c’est aux mules d’en décider.",
+    "want": "Another road, another town, and the mules fed by nightfall.",
+    "want_fr": "Une autre route, une autre ville, et les mules nourries avant la nuit.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "wayfarer_caravan",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
   }
 }

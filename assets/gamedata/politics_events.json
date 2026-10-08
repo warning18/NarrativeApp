@@ -1045,5 +1045,257 @@
         "news_fr": "Aucune Maison du Dominion n’a envoyé personne à la main grise. Certaines ont envoyé des espions."
       }
     ]
+  },
+  "scaffold_wages_after": {
+    "id": "scaffold_wages_after",
+    "name": "The Scaffolders’ wages",
+    "name_fr": "Les gages des Échafaudeurs",
+    "trigger": {
+      "chapter": 3
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "scaffold_paid"
+          ]
+        },
+        "news": "The Scaffolders of Saltmouth rigged the Cinder Compact’s new coal-stair in a week, on wages paid in advance; the Salt Ledger’s clerk has been reassigned to the pans.",
+        "news_fr": "Les Échafaudeurs de Saltmouth ont gréé le nouvel escalier à charbon du Pacte des Braises en une semaine, sur des gages payés d’avance ; le clerc du Registre du Sel a été muté aux salines."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "scaffold_skimmed"
+          ]
+        },
+        "news": "The breaker’s yard scaffolds came down in a night, unrigged by the crew that built them; the Salt Ledger’s clerk has told the Inquisition who collected his tithe, and for whom.",
+        "news_fr": "Les échafaudages du chantier des démolisseurs sont tombés en une nuit, dégréés par l’équipe qui les avait montés ; le clerc du Registre du Sel a dit à l’Inquisition qui avait prélevé sa dîme, et pour qui."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "scaffold_split"
+          ]
+        },
+        "news": "The breaker’s yard works again at half pay; the Scaffolders call it a truce and the Salt Ledger calls it a precedent, and both are writing it down.",
+        "news_fr": "Le chantier des démolisseurs travaille de nouveau à demi-paie ; les Échafaudeurs parlent d’une trêve et le Registre du Sel d’un précédent, et chacun le consigne."
+      },
+      {
+        "news": "The breaker’s yard scaffolds stand empty; the Scaffolders walked out unpaid, and the Salt Ledger’s clerk has entered their wages as a tithe collected in full.",
+        "news_fr": "Les échafaudages du chantier des démolisseurs sont déserts ; les Échafaudeurs sont partis sans paie, et le clerc du Registre du Sel a inscrit leurs gages comme une dîme perçue en entier."
+      }
+    ]
+  },
+  "terrace_glass_after": {
+    "id": "terrace_glass_after",
+    "name": "Glass in the ash-market",
+    "name_fr": "Du verre au marché des cendres",
+    "trigger": {
+      "chapter": 4
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "glass_defended"
+          ]
+        },
+        "news": "The Scorched Choir has struck terrace glass from its list of unclean things, which it says it never kept; Imeh’s stall sells to the Compact’s lamp-makers now, and the oni of the spring terraces have sent a second cart down.",
+        "news_fr": "Le Chœur Calciné a rayé le verre des terrasses de sa liste des choses impures, liste qu’il affirme n’avoir jamais tenue ; l’étal d’Imeh vend désormais aux lampistes du Pacte, et les oni des terrasses des sources ont envoyé une seconde charrette."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "glass_burned"
+          ]
+        },
+        "news": "The Scorched Choir burned the oni stall in the ash-market with its glass and its plank; the spring terraces have closed their road to the Ashen Quarter, and the Choir calls that a victory too.",
+        "news_fr": "Le Chœur Calciné a brûlé l’étal oni du marché des cendres, avec son verre et sa planche ; les terrasses des sources ont fermé leur route vers le Quartier des Cendres, et le Chœur appelle cela aussi une victoire."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "glass_carried"
+          ]
+        },
+        "news": "Imeh sells terrace glass at the cove camp now, out of the Choir’s reach; the ash-market lost its one stall that caught the light, and the Choir has found something else to burn.",
+        "news_fr": "Imeh vend désormais le verre des terrasses au camp de la crique, hors de portée du Chœur ; le marché des cendres a perdu son seul étal qui accrochait la lumière, et le Chœur a trouvé autre chose à brûler."
+      },
+      {
+        "news": "The Scorched Choir burned the oni stall in the ash-market on a night nobody stood with it; the spring terraces have closed their road to the quarter, and send no more glass down.",
+        "news_fr": "Le Chœur Calciné a brûlé l’étal oni du marché des cendres, une nuit où personne ne se tenait à ses côtés ; les terrasses des sources ont fermé leur route vers le quartier, et n’envoient plus de verre."
+      }
+    ]
+  },
+  "bark_tithe_after": {
+    "id": "bark_tithe_after",
+    "name": "The fen’s fever-bark",
+    "name_fr": "L’écorce-fièvre du marais",
+    "trigger": {
+      "chapter": 5
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "bark_returned"
+          ]
+        },
+        "news": "The fever broke in the Drowned Cloister; Brannoc Reedtithe dosed every ledge, and the Barkbleeders have told the Keyholders that the next tithe will be collected from them, in kind.",
+        "news_fr": "La fièvre est tombée dans le Cloître noyé ; Brannoc Reedtithe a soigné chaque corniche, et les Saigne-Écorce ont fait savoir aux Porte-Clés que la prochaine dîme serait prélevée sur eux, en nature."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "bark_sold"
+          ]
+        },
+        "news": "The Keyholders sold Brannoc’s fever-bark to the Hollow Court, which burned it; the fever took the Drowned Cloister’s lowest ledge, and the Barkbleeders have closed the fen road to Keyholder keys.",
+        "news_fr": "Les Porte-Clés ont vendu l’écorce-fièvre de Brannoc à la Cour Creuse, qui l’a brûlée ; la fièvre a emporté la corniche la plus basse du Cloître noyé, et les Saigne-Écorce ont fermé la route du marais aux clefs des Porte-Clés."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "bark_kept"
+          ]
+        },
+        "news": "Half a season of fever-bark reached the cove camp and half stayed in the Cloister; both ran short, and the Barkbleeders have begun bleeding the fen trees out of season to make up the count.",
+        "news_fr": "Une demi-saison d’écorce-fièvre a atteint le camp de la crique et l’autre moitié est restée au Cloître ; les deux ont manqué, et les Saigne-Écorce ont commencé à saigner les arbres du marais hors saison pour combler le compte."
+      },
+      {
+        "news": "The Keyholders sold Brannoc Reedtithe’s season of fever-bark at the Drowned Stair to the highest key; the fever took the Cloister’s lowest ledge, and the Barkbleeders have stopped sending their healers down.",
+        "news_fr": "Les Porte-Clés ont vendu la saison d’écorce-fièvre de Brannoc Reedtithe à l’Escalier Noyé, à la clef la plus offrante ; la fièvre a emporté la corniche la plus basse du Cloître, et les Saigne-Écorce n’y envoient plus leurs guérisseurs."
+      }
+    ]
+  },
+  "candle_count_after": {
+    "id": "candle_count_after",
+    "name": "The widow’s count",
+    "name_fr": "Le compte de la veuve",
+    "trigger": {
+      "chapter": 6
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "count_to_vigil"
+          ]
+        },
+        "news": "The Grey Vigil has entered Orsabet Vell’s four hundred and eleven in the ossuary books of every House it keeps; the Dominion’s absence notices in the Reliquary Quarter are coming down, and the Candlebearers light a candle on each one.",
+        "news_fr": "La Veille Grise a inscrit les quatre cent onze d’Orsabet Vell dans les livres d’ossuaire de chaque Maison qu’elle tient ; les avis d’absence du Dominion au Quartier des Reliquaires tombent un à un, et les Porte-Chandelles allument une chandelle sur chacun."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "count_sealed"
+          ]
+        },
+        "news": "The Reliquary sealed the widow’s count among its holy things, numbered and shelved; the Candlebearers asked to read it and were shown the seal. Orsabet Vell lights her candles from memory now.",
+        "news_fr": "Le Reliquaire a scellé le compte de la veuve parmi ses objets sacrés, numéroté et rangé ; les Porte-Chandelles ont demandé à le lire et on leur a montré le sceau. Orsabet Vell allume désormais ses chandelles de mémoire."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "count_read"
+          ]
+        },
+        "news": "The names read at the Reliquary Quarter’s gate have been read again at every gate between there and the Anchorage; the Penitents call it a liturgy and the Inquisition calls it sedition, and neither has stopped it.",
+        "news_fr": "Les noms lus à la porte du Quartier des Reliquaires ont été relus à chaque porte entre là-bas et le Mouillage ; les Pénitents parlent d’une liturgie et l’Inquisition de sédition, et ni les uns ni l’autre ne l’ont arrêté."
+      },
+      {
+        "news": "Orsabet Vell’s tally stone was found by the Dominion’s clerks past the frost and broken up for the stone; the count of the Reliquary Quarter’s taken now exists only in her candles, and she has begun to miscount them.",
+        "news_fr": "La pierre des noms d’Orsabet Vell a été trouvée par les clercs du Dominion au-delà du givre et débitée pour la pierre ; le compte des disparus du Quartier des Reliquaires n’existe plus que dans ses chandelles, et elle a commencé à les compter de travers."
+      }
+    ]
+  },
+  "hearth_stone_after": {
+    "id": "hearth_stone_after",
+    "name": "The hearth-stone’s face",
+    "name_fr": "Le front de la pierre du foyer",
+    "trigger": {
+      "chapter": 6
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "hearth_stone_kept"
+          ]
+        },
+        "news": "The Compact’s Quarrymen left the hearth-stone face in the mountain and opened a gallery below it instead; the giants of Highhearth have sent a stone to every House of the Compact, which is how giants say thank you.",
+        "news_fr": "Les Carriers du Pacte ont laissé le front de la pierre du foyer dans la montagne et ouvert une galerie en dessous ; les géants de Haut-Âtre ont envoyé une pierre à chaque Maison du Pacte, ce qui est la façon des géants de dire merci."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "hearth_stone_cut"
+          ]
+        },
+        "news": "The Quarrymen cut the hearth-stone’s face to the bedrock and carted it down the road; Highhearth’s moot-hall fire burns on, but Ghrem Stonebrow no longer tends it, and the giants have stopped answering the Compact’s letters.",
+        "news_fr": "Les Carriers ont taillé le front de la pierre du foyer jusqu’à la roche et l’ont descendu par la route en charrettes ; le feu de la salle du conseil de Haut-Âtre brûle toujours, mais Ghrem Stonebrow ne l’entretient plus, et les géants ne répondent plus aux lettres du Pacte."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "hearth_stone_split"
+          ]
+        },
+        "news": "The hearth-stone face was cut to its midline and no further, by a bargain the Quarrymen keep and the giants count; Highhearth and the Compact have each sent the other a stone, and neither has said what it means.",
+        "news_fr": "Le front de la pierre du foyer a été taillé jusqu’à sa ligne médiane et pas plus loin, par un marché que les Carriers tiennent et que les géants comptent ; Haut-Âtre et le Pacte se sont envoyé chacun une pierre, et aucun n’a dit ce qu’elle signifiait."
+      },
+      {
+        "news": "The Quarrymen cut the hearth-stone face while Highhearth had no one to stand in front of it; the moot-hall fire burns on stone from a lesser face now, and the giants have closed their road to Compact carts.",
+        "news_fr": "Les Carriers ont taillé le front de la pierre du foyer pendant que Haut-Âtre n’avait personne pour se tenir devant ; le feu de la salle du conseil brûle désormais sur la pierre d’un front moindre, et les géants ont fermé leur route aux charrettes du Pacte."
+      }
+    ]
+  },
+  "salvage_rights_after": {
+    "id": "salvage_rights_after",
+    "name": "The Brig-Born’s salvage",
+    "name_fr": "La prise des Enfants du Brick",
+    "trigger": {
+      "chapter": 7
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "salvage_to_crows"
+          ]
+        },
+        "news": "The Brig-Born have hung a flagship’s bell at the Anchorage’s seaward end and ring it for every haul the sea gives back; the Admiralty has stopped sealing salvage it cannot hold, and the Salt Crows count the impound a precedent.",
+        "news_fr": "Les Enfants du Brick ont suspendu la cloche d’un vaisseau amiral au bout du Mouillage, côté large, et la sonnent pour chaque prise que la mer rend ; l’Amirauté a cessé de sceller des prises qu’elle ne peut pas garder, et les Corneilles de Sel tiennent la fourrière pour un précédent."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "salvage_to_admiralty"
+          ]
+        },
+        "news": "The Admiralty has entered Nkem Tallow’s haul in the fleet’s books as recovered Crusade property and sold it to the wreck-wrights at auction; the Brig-Born have stopped bringing their salvage ashore where the Admiralty can see it.",
+        "news_fr": "L’Amirauté a inscrit la prise de Nkem Tallow dans les livres de la flotte comme bien de la Croisade récupéré et l’a vendue aux enchères aux charpentiers d’épaves ; les Enfants du Brick ne ramènent plus leurs prises à terre là où l’Amirauté peut les voir."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "salvage_sold"
+          ]
+        },
+        "news": "The wreck-wrights paid in coin for a flagship’s bronze and asked no questions; the Admiralty has doubled its guard on the impound, and the Brig-Born have doubled their price for anyone who needs a boat at night.",
+        "news_fr": "Les charpentiers d’épaves ont payé comptant le bronze d’un vaisseau amiral sans poser de questions ; l’Amirauté a doublé la garde de la fourrière, et les Enfants du Brick ont doublé leur prix pour quiconque a besoin d’une barque la nuit."
+      },
+      {
+        "news": "The Admiralty sold Nkem Tallow’s impounded haul at auction as Crusade property; the Brig-Born have moved their salvage to a beach the fleet’s clerks cannot find, and the Anchorage has lost its only honest salvager.",
+        "news_fr": "L’Amirauté a vendu aux enchères la prise de Nkem Tallow mise en fourrière, comme bien de la Croisade ; les Enfants du Brick ont déplacé leurs prises sur une plage que les clercs de la flotte ne trouvent pas, et le Mouillage a perdu son seul récupérateur honnête."
+      }
+    ]
   }
 }

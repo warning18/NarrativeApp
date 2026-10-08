@@ -58,7 +58,7 @@ void main() {
         if (turnInChoicesOf(entry.value as Map<String, dynamic>).isNotEmpty)
           entry.key,
     ];
-    expect(asking, hasLength(6));
+    expect(asking, hasLength(12));
     final flags = <String>{};
     for (final id in asking) {
       final raw = (quests[id] as Map)['turnInChoices'] as List;

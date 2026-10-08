@@ -243,6 +243,7 @@ extension _FightRewards on _FightScreenState {
         xpGain: xpGain,
         itemsGained: loot,
         items: items,
+        origin: itemOriginHere(ref),
         lootPityStreak: nextPityStreak(session.lootPityStreak, chest.tier),
         recentLootIds: nextRecentLootIds(session.recentLootIds, chest.itemIds),
         manaAfter: _mana,

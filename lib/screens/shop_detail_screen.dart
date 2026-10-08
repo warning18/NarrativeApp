@@ -6,6 +6,7 @@ import '../combat/dice_faces.dart';
 import '../combat/spells.dart';
 import '../data/chapter_conditions.dart';
 import '../data/factions.dart';
+import '../data/item_origin_here.dart';
 import '../data/shop_pricing.dart';
 import '../data/shop_stock.dart';
 import '../gamedata/db_schema.dart';
@@ -423,7 +424,9 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                 .read(playerSessionProvider.notifier)
                                 .buyItem(
                                     widget.shopId, itemId, cost, stockLimit,
-                                    item: item, stockKey: stockKey(itemId));
+                                    item: item,
+                                    stockKey: stockKey(itemId),
+                                    origin: itemOriginHere(ref));
                             if (!context.mounted) return;
                             _coinsOut(context);
                             showImmersiveNotice(

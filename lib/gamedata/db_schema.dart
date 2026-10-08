@@ -216,8 +216,29 @@ const List<String> skillMoveConditionOptions = [
 // for "this skill doesn't inflict a status" — the common case.
 const List<String> statusEffectOptions = ['None', 'Poison', 'Stun', 'Weaken'];
 
-/// Rarity band the spoils chest draws gear from (see loot_box.dart).
-const List<String> rarityOptions = ['Common', 'Uncommon', 'Rare'];
+/// Rarity band the spoils chest draws gear from (see loot_box.dart). A
+/// Relic (v1.204) is a Rare with a story: the Shroud, a saint's bones, a
+/// crown -- drawn with the Rares and read on the signs' scale as heroic.
+const List<String> rarityOptions = ['Common', 'Uncommon', 'Rare', 'Relic'];
+
+/// The icon keys a person's `kind` may take in npcs.json (v1.204, see
+/// npcKindIcon in game_icons.dart and people_codex.dart).
+const List<String> npcKindOptions = [
+  'inquisitor',
+  'soldier',
+  'merchant',
+  'elder',
+  'smuggler',
+  'healer',
+  'scholar',
+  'kin',
+  'sailor',
+  'penitent',
+  'noble',
+  'beast',
+  'child',
+  'keeper',
+];
 
 /// See `UniqueEffect` in lib/combat/gear_effects.dart.
 const List<String> uniqueEffectOptions = [
@@ -249,6 +270,16 @@ final DbSchema itemsSchema = DbSchema(
     FieldSchema(key: 'itemName', label: 'Item Name', type: FieldType.text),
     FieldSchema(
         key: 'itemName_fr', label: 'Item Name (FR)', type: FieldType.text),
+    // Lore (v1.204): a sentence or two in the game's voice, shown in the
+    // inventory's detail dialog and the item sheet.
+    FieldSchema(
+        key: 'description',
+        label: 'Description (lore)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
+        type: FieldType.multilineText),
     FieldSchema(
       key: 'itemType',
       label: 'Item Type',
@@ -1467,9 +1498,15 @@ final DbSchema questsSchema = DbSchema(
     FieldSchema(
       key: 'turnInChoices',
       label:
-          'Turn-in Choices [{choiceText, choiceText_fr, rewardGold, alignmentChange, flag, approvalMods: {companionId|*: n}, resultText, resultText_fr}]',
+          'Turn-in Choices [{choiceText, choiceText_fr, rewardGold, alignmentChange, flag, approvalMods: {companionId|*: n}, resultText, resultText_fr, politics: {standing: {faction: n}, marks: {subclan: friend|foe}} (applied once at turn-in, v1.204)}]',
       type: FieldType.json,
     ),
+    FieldSchema(
+        key: 'detourEligible',
+        label:
+            'Can be offered by a random detour or expedition (off for a quest with its own giver in a town, v1.204)',
+        type: FieldType.boolean,
+        defaultValue: true),
     visualAssetFieldSchema('quests'),
   ],
 );
@@ -2137,10 +2174,58 @@ final DbSchema npcsSchema = DbSchema(
         key: 'description_fr',
         label: 'Description (French)',
         type: FieldType.multilineText),
+    // The People codex (v1.204, see people_codex.dart): who they are and
+    // where they are met.
+    FieldSchema(key: 'role', label: 'Role', type: FieldType.text),
+    FieldSchema(key: 'role_fr', label: 'Role (FR)', type: FieldType.text),
+    FieldSchema(
+      key: 'faction',
+      label: 'Faction (a factions.json or subclans.json id, or empty)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'placeId',
+      label: 'Place (a geography.json location or district id)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'kind',
+      label: 'Kind (icon)',
+      type: FieldType.enumeration,
+      enumOptions: npcKindOptions,
+    ),
+    FieldSchema(
+        key: 'want', label: 'What they want', type: FieldType.multilineText),
+    FieldSchema(
+        key: 'want_fr',
+        label: 'What they want (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+      key: 'metNodes',
+      label: 'Met in scenes (node ids: visiting one reveals them)',
+      type: FieldType.stringList,
+    ),
+    FieldSchema(
+      key: 'metFlags',
+      label: 'Met by flags (holding one reveals them)',
+      type: FieldType.stringList,
+    ),
+    FieldSchema(
+      key: 'shopId',
+      label: 'Shop kept (finding it reveals them)',
+      type: FieldType.text,
+    ),
     FieldSchema(
       key: 'requiredFlag',
-      label: 'Required Flag (empty = always discoverable)',
+      label:
+          'Required Flag (legacy records only, with no metNodes/metFlags/shopId: empty = always discoverable)',
       type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'states',
+      label:
+          'What passed between you [{flag, andFlags, unlessFlags, line, line_fr}], shown in order when held',
+      type: FieldType.json,
     ),
     FieldSchema(
       key: 'dialogueLines',
