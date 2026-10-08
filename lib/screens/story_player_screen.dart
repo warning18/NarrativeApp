@@ -43,6 +43,7 @@ import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/camp_presence_provider.dart';
 import '../providers/chapter_loop_provider.dart';
+import '../providers/climate_provider.dart';
 import '../providers/clans_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/combat_settings_provider.dart';
@@ -3328,7 +3329,11 @@ class _StoryWeather extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final chapter = ref.watch(reachedChapterProvider);
-    return WeatherLayer(weather: journeyWeatherFor(chapter), strength: 0.3);
+    // What the sky brings where the story stands (v1.204), the burning
+    // chapters' ash under a clear one.
+    final sky = ref.watch(skyHereProvider)?.now();
+    return WeatherLayer(
+        weather: journeyWeatherOf(sky?.kind, chapter), strength: 0.3);
   }
 }
 

@@ -9,6 +9,7 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/chart_map_painter.dart';
+import '../widgets/chart_weather.dart';
 import '../widgets/geography_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -181,6 +182,18 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
   // ---- Zoom ----------------------------------------------------------
 
   double get _scale => _view.value.storage[0];
+
+  /// The part of the chart in the box, in chart units: what the weather
+  /// is painted over.
+  Rect _visibleChart() {
+    const whole =
+        Rect.fromLTWH(0, 0, worldMapWidth * 1.0, worldMapHeight * 1.0);
+    final inverse = Matrix4.tryInvert(_view.value);
+    if (inverse == null) return whole;
+    final r = MatrixUtils.transformRect(inverse, Offset.zero & _mapSize);
+    final k = _mapSize.width / worldMapWidth;
+    return Rect.fromLTRB(r.left / k, r.top / k, r.right / k, r.bottom / k);
+  }
 
   /// The view [scale]× over the map, centred as near [focus] (a point on
   /// the map's drawing area) as its edges allow.
@@ -383,27 +396,43 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
                     onDoubleTapDown: (details) =>
                         _doubleTapAt = details.localPosition,
                     onDoubleTap: _doubleTap,
-                    child: CustomPaint(
-                      size: _mapSize,
-                      painter: ChartMapPainter(
-                        frame: _frame,
-                        walk: _walk,
-                        geography: _geo,
-                        palette: palette,
-                        language: language,
-                        discovered: discovered,
-                        legs: roadLegs(journey, discovered),
-                        ahead: _nextPlace(here, discovered),
-                        selectedId: selected.id,
-                        here: here,
-                        walking: _walking,
-                        walkPath: _walkPath,
-                        chapterFilter: _chapterFilter,
-                        reduceMotion: _reduceMotion,
-                        chapterColor: chartChapterColor,
-                        zoomOf: () => _scale,
-                        view: _view,
-                      ),
+                    child: SizedBox(
+                      width: _mapSize.width,
+                      height: _mapSize.height,
+                      child: Stack(fit: StackFit.expand, children: [
+                        CustomPaint(
+                          painter: ChartMapPainter(
+                            frame: _frame,
+                            walk: _walk,
+                            geography: _geo,
+                            palette: palette,
+                            language: language,
+                            discovered: discovered,
+                            legs: roadLegs(journey, discovered),
+                            ahead: _nextPlace(here, discovered),
+                            selectedId: selected.id,
+                            here: here,
+                            walking: _walking,
+                            walkPath: _walkPath,
+                            chapterFilter: _chapterFilter,
+                            reduceMotion: _reduceMotion,
+                            chapterColor: chartChapterColor,
+                            zoomOf: () => _scale,
+                            view: _view,
+                          ),
+                        ),
+                        // The weather over the chart (v1.204).
+                        if (ref.watch(chartWeatherProvider))
+                          ChartWeather(
+                            size: _mapSize,
+                            geography: _geo,
+                            palette: palette,
+                            day: session.day,
+                            zoomOf: () => _scale,
+                            visibleOf: _visibleChart,
+                            still: _reduceMotion,
+                          ),
+                      ]),
                     ),
                   ),
                 ),

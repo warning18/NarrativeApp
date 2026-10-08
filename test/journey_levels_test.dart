@@ -157,7 +157,9 @@ void main() {
     await tester.tap(find.byKey(const Key('calque_clans')));
     await _settle(tester);
     expect(container.read(chartCalqueProvider), ChartCalque.clans);
-    await tester.tapAt(const Offset(200, 40));
+    // The sheet closed (it can fill the screen, so a tap above it
+    // would land on it).
+    tester.state<NavigatorState>(find.byType(Navigator).first).pop();
     await _settle(tester);
     expect(find.byKey(const ValueKey('journey_clan_legend')), findsOneWidget);
     final prefs = await tester.runAsync(SharedPreferences.getInstance);
@@ -169,7 +171,9 @@ void main() {
     await _settle(tester);
     await tester.tap(find.byKey(const Key('journey_globe')));
     await _settle(tester);
-    await tester.tapAt(const Offset(200, 40));
+    // The sheet closed (it can fill the screen, so a tap above it
+    // would land on it).
+    tester.state<NavigatorState>(find.byType(Navigator).first).pop();
     await _settle(tester);
     expect(container.read(chartGlobeProvider), isTrue);
     expect(prefs.getBool(chartGlobePrefsKey), isTrue);

@@ -127,3 +127,33 @@ class ChartGlobeNotifier extends StateNotifier<bool> {
 
 final chartGlobeProvider = StateNotifierProvider<ChartGlobeNotifier, bool>(
     (ref) => ChartGlobeNotifier());
+
+const String chartWeatherPrefsKey = 'world_map_weather';
+
+/// Whether the weather moves over the world map (v1.204, see
+/// chart_weather.dart): on until the player turns it off, and the pick is
+/// kept.
+class ChartWeatherNotifier extends StateNotifier<bool> {
+  ChartWeatherNotifier() : super(true) {
+    _load();
+  }
+
+  bool _chosen = false;
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    final on = prefs.getBool(chartWeatherPrefsKey);
+    if (_chosen || on == null) return;
+    state = on;
+  }
+
+  Future<void> choose(bool on) async {
+    _chosen = true;
+    state = on;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(chartWeatherPrefsKey, on);
+  }
+}
+
+final chartWeatherProvider = StateNotifierProvider<ChartWeatherNotifier, bool>(
+    (ref) => ChartWeatherNotifier());

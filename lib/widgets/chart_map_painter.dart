@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 
 import '../data/chart_globe.dart';
 import '../data/chart_relief.dart';
+import '../data/climate.dart';
 import '../data/map_charts.dart';
 import '../data/world_map.dart';
 import '../l10n/app_locale.dart';
+import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
 
 /// How the chart hides what the story has not reached.
@@ -22,8 +24,23 @@ enum ChartFog {
 
 /// A calque laid over the chart (v1.199): the clans' zones of influence,
 /// the player's standing in each land, the lands in their colours, the
-/// road by chapter, or where to trade and rest.
-enum ChartCalque { none, clans, standing, lands, chapters, shops }
+/// road by chapter, or where to trade and rest; and the land's climate
+/// (v1.204, see climate.dart): its heights with their contours, how wet
+/// it is, how warm.
+enum ChartCalque {
+  none,
+  clans,
+  standing,
+  lands,
+  chapters,
+  shops,
+  height,
+  humidity,
+  warmth;
+
+  /// A calque of the climate: tints over every land, with a legend.
+  bool get climate => this == height || this == humidity || this == warmth;
+}
 
 /// The world map as a drawn chart (see map_charts.dart): sea and land with
 /// coasts broken into bays and headlands, the lands' biomes and terrain,
@@ -358,6 +375,148 @@ class ChartMapPainter extends CustomPainter {
         }
     }
     canvas.restore();
+  }
+
+  /// The climate calque on the flat chart, recorded once per calque and
+  /// look.
+  static final Map<String, ui.Picture> _climatePictures = {};
+  ui.Picture _climateFor() {
+    final key =
+        '${identityHashCode(geography)}:${calque.name}:${palette.hashCode}';
+    return _climatePictures[key] ??= () {
+      final recorder = ui.PictureRecorder();
+      final canvas = Canvas(recorder);
+      _paintClimate(canvas);
+      return recorder.endRecording();
+    }();
+  }
+
+  /// The colour of the [calque] at [value]: height from the low green
+  /// through ochre and brown to the white of the peaks; moisture from dry
+  /// ochre to a wet blue-green; warmth from the blue of the frost to the
+  /// red of the hottest noon.
+  static Color climateTint(ChartCalque calque, double value) {
+    List<(double, Color)> stops = switch (calque) {
+      ChartCalque.height => const [
+          (0.0, Color(0xFF3F7A4E)),
+          (0.18, Color(0xFF7FA05A)),
+          (0.38, Color(0xFFC9B46A)),
+          (0.6, Color(0xFFB07A48)),
+          (0.8, Color(0xFF8A6652)),
+          (1.0, Color(0xFFF2F2F2)),
+        ],
+      ChartCalque.humidity => const [
+          (0.0, Color(0xFFCB9A55)),
+          (0.3, Color(0xFFB7B46E)),
+          (0.55, Color(0xFF7FA66A)),
+          (0.8, Color(0xFF4E8F8E)),
+          (1.0, Color(0xFF3A6FA8)),
+        ],
+      _ => const [
+          (0.0, Color(0xFF5B7FD9)),
+          (0.3, Color(0xFF9FC4E6)),
+          (0.5, Color(0xFFE6E0B4)),
+          (0.72, Color(0xFFE59A4A)),
+          (1.0, Color(0xFFBF3A2B)),
+        ],
+    };
+    final v = value.clamp(0.0, 1.0);
+    for (var i = 0; i + 1 < stops.length; i++) {
+      final (a, ca) = stops[i];
+      final (b, cb) = stops[i + 1];
+      if (v <= b) return Color.lerp(ca, cb, (v - a) / (b - a))!;
+    }
+    return stops.last.$2;
+  }
+
+  /// Warmth on the legend's scale: -15 degrees is 0, 30 is 1.
+  static double warmthScale(double degrees) =>
+      ((degrees + 15) / 45).clamp(0.0, 1.0);
+
+  void _paintClimate(Canvas canvas) {
+    final climate = ChartClimate.of(geography);
+    final g = globe;
+    // The sphere is painted afresh on every turn: coarser cells.
+    final step = g == null ? ChartClimate.cell : ChartClimate.cell * 2;
+    // Cells butt against each other with no seam: no anti-aliasing.
+    final paint = Paint()..isAntiAlias = false;
+    final alpha = palette == ChartPalette.of(MapLook.parchment) ? 0.5 : 0.55;
+    for (var y = step / 2; y < worldMapHeight; y += step) {
+      for (var x = step / 2; x < worldMapWidth; x += step) {
+        final p = Offset(x, y);
+        if (!climate.isLand(p)) continue;
+        if (g != null && !g.visible(p)) continue;
+        final value = switch (calque) {
+          ChartCalque.height => climate.elevationAt(p),
+          ChartCalque.humidity => climate.humidityAt(p),
+          _ => warmthScale(climate.temperatureAt(p)),
+        };
+        paint.color = climateTint(calque, value).withValues(alpha: alpha);
+        if (g == null) {
+          canvas.drawRect(
+              Rect.fromCenter(center: p, width: step, height: step), paint);
+        } else {
+          final q = g.clamp(p);
+          final r = (q - g.centre).distance / g.radius;
+          final facing = math.sqrt((1 - r * r).clamp(0.0, 1.0));
+          canvas.drawCircle(
+              q, step * 0.7 * g.zoom.clamp(0.5, 2.0) * facing, paint);
+        }
+      }
+    }
+    // Contours: of height on the height calque, of moisture on its own.
+    if (calque == ChartCalque.warmth) return;
+    final humid = calque == ChartCalque.humidity;
+    final levels =
+        humid ? const [0.35, 0.55, 0.75] : const [0.2, 0.35, 0.5, 0.65, 0.8];
+    final line = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.35
+      ..color = (humid ? palette.river : palette.coast).withValues(alpha: 0.9);
+    for (var i = 0; i < levels.length; i++) {
+      line.strokeWidth = i.isOdd ? 0.3 : 0.45;
+      for (final run in climate.contours(levels[i], humidity: humid)) {
+        if (g == null) {
+          canvas.drawPath(_smooth(run, closed: false), line);
+        } else {
+          for (final shown in g.runs(run)) {
+            canvas.drawPath(_smooth(shown, closed: false), line);
+          }
+        }
+      }
+    }
+  }
+
+  /// A strip of the calque's colours with its ends named, bottom right.
+  void _climateLegend(Canvas canvas, Rect whole) {
+    const w = 52.0, h = 3.6;
+    final o = Offset(whole.right - w - 8, whole.bottom - 11);
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromLTWH(o.dx - 3, o.dy - 3, w + 6, h + 11),
+            const Radius.circular(1.5)),
+        Paint()..color = palette.fog.withValues(alpha: 0.75));
+    for (var i = 0; i < 26; i++) {
+      canvas.drawRect(Rect.fromLTWH(o.dx + i * w / 26, o.dy, w / 26 + 0.2, h),
+          Paint()..color = climateTint(calque, i / 25));
+    }
+    final (low, high) = switch (calque) {
+      ChartCalque.humidity => ('chart_legend_dry', 'chart_legend_wet'),
+      ChartCalque.warmth => ('chart_legend_cold', 'chart_legend_warm'),
+      _ => ('chart_legend_low', 'chart_legend_high'),
+    };
+    final style = TextStyle(
+        fontFamily: InkFonts.prose, fontSize: 3.6, color: palette.place);
+    final a = TextPainter(
+        text: TextSpan(text: trFor(language, low), style: style),
+        textDirection: TextDirection.ltr)
+      ..layout();
+    a.paint(canvas, Offset(o.dx, o.dy + h + 0.6));
+    final b = TextPainter(
+        text: TextSpan(text: trFor(language, high), style: style),
+        textDirection: TextDirection.ltr)
+      ..layout();
+    b.paint(canvas, Offset(o.dx + w - b.width, o.dy + h + 0.6));
   }
 
   /// The static layers of [relief] in this look, recorded once.
@@ -1317,6 +1476,14 @@ class ChartMapPainter extends CustomPainter {
     } else {
       _paintGround(canvas, relief);
     }
+    // The climate calques (v1.204), under the fog like the ground.
+    if (calque.climate) {
+      if (globe == null) {
+        canvas.drawPicture(_climateFor());
+      } else {
+        _paintClimate(canvas);
+      }
+    }
     // Calques over the lands.
     if (calque == ChartCalque.clans || calque == ChartCalque.standing) {
       for (var i = 0; i < geography.zones.length; i++) {
@@ -1498,6 +1665,7 @@ class ChartMapPainter extends CustomPainter {
       _compass(canvas, const Offset(17, 18), 7.5);
       _scaleBar(canvas, const Offset(8, 167));
     }
+    if (calque.climate && detail) _climateLegend(canvas, whole);
 
     // The way on, dotted, to the next place the story goes.
     final next = ahead;

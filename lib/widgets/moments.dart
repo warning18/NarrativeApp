@@ -585,6 +585,7 @@ class WeatherLayer extends StatelessWidget {
     final colour = switch (weather) {
       JourneyWeather.rain => const Color(0xFF8FC3CF),
       JourneyWeather.snow => const Color(0xFFEFF3F6),
+      JourneyWeather.dust => const Color(0xFFC9A46A),
       _ => ink.ash,
     }
         .withValues(alpha: strength);
