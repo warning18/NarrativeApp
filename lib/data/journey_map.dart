@@ -180,6 +180,7 @@ List<Offset> journeyPlaceLayout({
   double margin = 34,
   double footMargin = 86,
   int innerCapacity = 6,
+  double? maxReach,
 }) {
   final positions = List<Offset>.filled(bearings.length, here);
   // The ways out: where their bearing meets the map's edge, just inside.
@@ -202,9 +203,15 @@ List<Offset> journeyPlaceLayout({
   final outer = local.length <= innerCapacity + 1
       ? const <int>[]
       : local.sublist(innerCapacity);
-  final reachX = math.min(here.dx, area.width - here.dx) - margin;
+  var reachX = math.min(here.dx, area.width - here.dx) - margin;
   // Below the party the marks need room for their names.
-  final reachY = math.min(here.dy - margin, area.height - here.dy - footMargin);
+  var reachY = math.min(here.dy - margin, area.height - here.dy - footMargin);
+  // On a city's plan (v1.203) the ways in this district keep close to the
+  // party, and a party near the map's edge still has its ring.
+  if (maxReach != null) {
+    reachX = math.min(math.max(reachX, 48), maxReach);
+    reachY = math.min(math.max(reachY, 48), maxReach * 0.85);
+  }
   void ring(List<int> ids, double fraction, double turn) {
     if (ids.isEmpty) return;
     final angles = _spreadAngles(ids.length, exits, turn);
@@ -273,6 +280,7 @@ List<Rect?> journeyLabelSpots({
   int? keep,
   double gap = 4,
   double margin = 4,
+  bool keepAll = false,
 }) {
   final marks = [
     for (final centre in centres)
@@ -286,13 +294,23 @@ List<Rect?> journeyLabelSpots({
   }
 
   // How much of [box] lies on another mark, name or [avoid], or off the
-  // map.
-  double covered(Rect box, int self) {
-    var sum = box.width * box.height - overlap(box, Offset.zero & area);
+  // map; and how much on a mark or the party alone, which a name must
+  // never do (a tap there must find the mark).
+  double onMarks(Rect box, int self) {
+    var sum = 0.0;
     for (var j = 0; j < marks.length; j++) {
       if (j != self) sum += overlap(box, marks[j]);
     }
-    for (final other in [...avoid, ...placed]) {
+    for (final other in avoid) {
+      sum += overlap(box, other);
+    }
+    return sum;
+  }
+
+  double covered(Rect box, int self) {
+    var sum = box.width * box.height - overlap(box, Offset.zero & area);
+    sum += onMarks(box, self);
+    for (final other in placed) {
       sum += overlap(box, other);
     }
     return sum;
@@ -313,11 +331,20 @@ List<Rect?> journeyLabelSpots({
         .toDouble();
     Rect? best;
     var least = double.infinity;
+    // Under, over, left, right; then the corners and a row further out
+    // (v1.203: a city's marks sit where its districts are, so a name
+    // may have to go round a corner).
     for (final spot in [
       Rect.fromLTWH(across, c.dy + radius + gap, w, h),
       Rect.fromLTWH(across, c.dy - radius - gap - h, w, h),
       Rect.fromLTWH(c.dx - radius - gap - w, c.dy - h / 2, w, h),
       Rect.fromLTWH(c.dx + radius + gap, c.dy - h / 2, w, h),
+      Rect.fromLTWH(c.dx + radius * 0.6, c.dy + radius * 0.8, w, h),
+      Rect.fromLTWH(c.dx - radius * 0.6 - w, c.dy + radius * 0.8, w, h),
+      Rect.fromLTWH(c.dx + radius * 0.6, c.dy - radius * 0.8 - h, w, h),
+      Rect.fromLTWH(c.dx - radius * 0.6 - w, c.dy - radius * 0.8 - h, w, h),
+      Rect.fromLTWH(across, c.dy + radius + gap + h + 6, w, h),
+      Rect.fromLTWH(across, c.dy - radius - gap - 2 * h - 6, w, h),
     ]) {
       final cover = covered(spot, i);
       if (cover < least) {
@@ -326,7 +353,33 @@ List<Rect?> journeyLabelSpots({
       }
       if (cover < 1) break;
     }
-    if (best == null || (least >= 1 && i != keep)) continue;
+    if (best == null) continue;
+    if (least >= 1 && i != keep) {
+      // No clear spot: a name over nothing but another name may stay
+      // (keepAll); one over a mark never does.
+      if (!keepAll || onMarks(best, i) >= 1) continue;
+    } else if (i == keep && onMarks(best, i) >= 1) {
+      // The way picked keeps its name, but never over a mark: the spot
+      // off the marks that covers least.
+      Rect? off;
+      var offLeast = double.infinity;
+      for (final spot in [
+        Rect.fromLTWH(across, c.dy + radius + gap, w, h),
+        Rect.fromLTWH(across, c.dy - radius - gap - h, w, h),
+        Rect.fromLTWH(c.dx - radius - gap - w, c.dy - h / 2, w, h),
+        Rect.fromLTWH(c.dx + radius + gap, c.dy - h / 2, w, h),
+        Rect.fromLTWH(across, c.dy + radius + gap + h + 6, w, h),
+        Rect.fromLTWH(across, c.dy - radius - gap - 2 * h - 6, w, h),
+      ]) {
+        if (onMarks(spot, i) >= 1) continue;
+        final cover = covered(spot, i);
+        if (cover < offLeast) {
+          offLeast = cover;
+          off = spot;
+        }
+      }
+      if (off != null) best = off;
+    }
     spots[i] = best;
     placed.add(best);
   }
@@ -335,6 +388,12 @@ List<Rect?> journeyLabelSpots({
 
 /// [a] in [0, 2π).
 double _norm(double a) => a % (2 * math.pi);
+
+/// Where a ray from [from] at [angle] leaves [area] (see
+/// [journeyPlaceLayout]): a way out of a city's plan (v1.203).
+Offset journeyEdgeSpot(Offset from, double angle, Size area,
+        {double margin = 34, double footMargin = 86}) =>
+    _toEdge(from, angle, area, margin, footMargin);
 
 /// Where a ray from [from] at [angle] leaves [area] shrunk by [margin]
 /// ([footMargin] at the foot, where names go under the marks).

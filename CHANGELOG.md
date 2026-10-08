@@ -8,6 +8,12 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.203.0+238]
+
+### Added
+- Cities drawn as cities on the Journey. A city, a town or a village of the geography gets a plan of its own, laid out once from its seed: a wall with gates and towers (none for a village), main streets from each gate to the market square, ring streets and lanes between, houses set along every street with the blocks filled in, a church (a chapel in a village), a keep in a city, a mill by the water or a windmill without, fields and a suburb outside the wall, trees in the yards and woods in the country. The water is drawn through it: a river with bridges where the streets cross it, or the shore with its surf. The story's districts stand on the plan as what they are: a gatehouse, the market, a wharf with its piers and boats, a quay with warehouses, a shipyard with a hull on the slip, a keep in its bailey, a temple, a guild hall, an undercroft, a slum of shacks outside a gate, fields, the tear.
+- The party stands where its district is, the ways into the other districts sit on those districts' buildings, the ways out leave at the map's edge where the roads go, and the ways within the district gather round the party. Walks follow the streets.
+
 ## [1.202.0+237]
 
 ### Changed
