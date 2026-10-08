@@ -10,6 +10,41 @@
 import 'dart:math' as math;
 import 'dart:ui' show Offset, Rect, Size;
 
+import 'climate.dart';
+
+/// The ground's climate a place is laid out for (v1.204, see
+/// climate.dart): a wet land grows more trees and fields, a dry one
+/// scrub, a cold one firs, a frozen one lies under snow.
+class CityClimate {
+  const CityClimate({
+    required this.elevation,
+    required this.humidity,
+    required this.temperature,
+  });
+
+  factory CityClimate.of(ClimateSample sample) => CityClimate(
+      elevation: sample.elevation,
+      humidity: sample.humidity,
+      temperature: sample.temperature);
+
+  /// Mild and green: what a place without a chart gets.
+  static const CityClimate plain =
+      CityClimate(elevation: 0.2, humidity: 0.6, temperature: 14);
+
+  final double elevation;
+  final double humidity;
+  final double temperature;
+
+  bool get snow => temperature < 0;
+  bool get cold => temperature < 6;
+  bool get dry => humidity < 0.3;
+
+  /// The part of the plan's key this makes: coarse, so a day's warmth
+  /// doesn't lay the town out anew.
+  String get key =>
+      '${(humidity * 5).round()}:${snow ? 'snow' : cold ? 'cold' : 'mild'}';
+}
+
 /// How big the place is: how wide its wall, how many streets.
 enum CitySize { village, town, city }
 
@@ -104,6 +139,7 @@ class CityPlan {
     required this.landmarks,
     required this.anchors,
     required this.trees,
+    required this.climate,
     required this.river,
     required this.riverWidth,
     required this.shoreline,
@@ -139,6 +175,9 @@ class CityPlan {
   /// itself (its square) under ''.
   final Map<String, Offset> anchors;
   final List<Offset> trees;
+
+  /// The ground's climate it was laid out for.
+  final CityClimate climate;
 
   /// The river through the city, top to bottom, or empty.
   final List<Offset> river;
@@ -279,15 +318,18 @@ class CityPlan {
     required String water,
     required List<CityDistrict> districts,
     List<double> exitBearings = const [],
+    CityClimate? climate,
   }) {
+    final weather = climate ?? CityClimate.plain;
     final key =
-        '$seed:${size.name}:$water:${districts.map((d) => '${d.id}=${d.glyph}').join(',')}';
+        '$seed:${size.name}:$water:${districts.map((d) => '${d.id}=${d.glyph}').join(',')}:${weather.key}';
     return _cache[key] ??= _lay(
         seed: seed,
         size: size,
         water: water,
         districts: districts,
-        exitBearings: exitBearings);
+        exitBearings: exitBearings,
+        climate: weather);
   }
 
   static CityPlan _lay({
@@ -296,6 +338,7 @@ class CityPlan {
     required String water,
     required List<CityDistrict> districts,
     required List<double> exitBearings,
+    required CityClimate climate,
   }) {
     final rng = math.Random(seed);
     final radius = switch (size) {
@@ -1045,8 +1088,8 @@ class CityPlan {
           break;
       }
     }
-    if (walled) {
-      // Fields round the city, out beyond the wall.
+    if (walled && !climate.dry) {
+      // Fields round the city, out beyond the wall (none on a dry land).
       for (var i = 0; i < (size == CitySize.city ? 10 : 7); i++) {
         final a = rng.nextDouble() * 2 * math.pi;
         final r = radius + 70 + rng.nextDouble() * 160;
@@ -1072,9 +1115,11 @@ class CityPlan {
       buildings.add(CityBuilding(
           c, Size(w, h), rng.nextDouble() * math.pi, CityBuildingKind.house));
     }
-    // Trees: in the yards left inside, and over the country.
+    // Trees: in the yards left inside, and over the country; a wet land
+    // grows more of them, a dry one few.
     final trees = <Offset>[];
-    for (var i = 0; i < 70; i++) {
+    final treeTries = (70 * (0.25 + climate.humidity * 1.2)).round();
+    for (var i = 0; i < treeTries; i++) {
       final c = Offset(rng.nextDouble() * 1000, rng.nextDouble() * 1000);
       final inside = (c - centre).distance < radius;
       if (inside && rng.nextDouble() < 0.85) continue;
@@ -1118,6 +1163,7 @@ class CityPlan {
       bridges: bridges,
       quays: quays,
       boats: boats,
+      climate: climate,
       frame: frame,
     );
   }

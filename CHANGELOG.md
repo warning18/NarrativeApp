@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.205.0+240]
+
+### Added
+- The world has a climate. From the chart itself (its coasts, ranges, rivers and lakes, each land's biome and its latitude) every point of the world gets a height, a humidity and a warmth: the land rises from the coast inland and up to the ranges' crests, the fens lie low and the deserts flat; the sea, the rivers and the lakes wet the land near them, the windward slopes catch the rain and the lee of a range lies in its shadow; the latitude and the height set the warmth, the frost is colder and the desert hotter, and the season turns over ninety days with each day a little different. Three new calques on the Layers sheet show it: Height (tinted low to high, with contour lines), Humidity (dry ochre to sodden blue) and Warmth (frost blue to noon red), each with a legend.
+- Weather moves over the world map. Clouds ride the wind (westerlies in the temperate bands, easterlies about the equator, turning with the day) with their shadows on the land, rain slants under the heavy ones where the air is wet, snow falls where it is cold, dust blows off the dry lands and ash off the burnt ones, fog settles on wet cold ground. It moves while the map is watched, flat and on the sphere, on its own layer so the chart is not drawn again for every cloud; a switch on the Layers sheet turns it off.
+- The Journey map draws what the sky brings where the party stands (rain, snow, dust, fog, the burning chapters' ash still), as does the story's page, and a chip on the place map names it: what falls, the warmth, where the wind comes from, how high the ground is. Each town is laid out for its climate: a wet land grows more trees and fields, a dry one scrub and no fields, a cold one firs, a frozen one lies under snow.
+
 ## [1.204.0+239]
 
 ### Added

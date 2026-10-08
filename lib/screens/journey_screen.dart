@@ -36,6 +36,8 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/biome_backdrop.dart';
+import '../providers/climate_provider.dart';
+import '../widgets/weather_chip.dart';
 import '../widgets/chart_map_painter.dart' show ChartCalque;
 import '../widgets/journey_world_map.dart';
 import '../widgets/geography_widgets.dart';
@@ -352,6 +354,18 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   onChanged: (on) =>
                       ref.read(chartGlobeProvider.notifier).choose(on),
                 ),
+                SwitchListTile(
+                  key: const Key('journey_weather'),
+                  dense: true,
+                  value: ref.watch(chartWeatherProvider),
+                  secondary: const Icon(Icons.cloud_outlined),
+                  title: Text(trFor(lang, 'journey_weather')),
+                  subtitle: Text(trFor(lang, 'journey_weather_sub'),
+                      style:
+                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                  onChanged: (on) =>
+                      ref.read(chartWeatherProvider.notifier).choose(on),
+                ),
                 const Divider(height: 8),
                 for (final calque in ChartCalque.values)
                   SwitchListTile(
@@ -365,6 +379,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                       ChartCalque.lands => Icons.map_outlined,
                       ChartCalque.chapters => Icons.route_outlined,
                       ChartCalque.shops => Icons.storefront_outlined,
+                      ChartCalque.height => Icons.terrain,
+                      ChartCalque.humidity => Icons.water_drop_outlined,
+                      ChartCalque.warmth => Icons.thermostat,
                     }),
                     title: Text(trFor(lang, 'calque_${calque.name}')),
                     subtitle: Text(trFor(lang, 'calque_${calque.name}_sub'),
@@ -772,6 +789,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final placeLandmark = play.isInExcursion ? null : standing;
     final chartHere =
         placeLandmark == null ? null : geography.of(placeLandmark);
+    // The sky over the party (v1.204): what falls on the map, and the
+    // ground's climate the town is laid out for.
+    final skyHere = ref.watch(skyHereProvider);
+    final sky = skyHere?.now();
     // A choice behind a politics gate that fails (v1.196) is hidden, or
     // shut with its locked text.
     final gateWorld = ref.watch(coastGateWorldProvider);
@@ -902,6 +923,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         exitBearings: [
           for (final p in others.take(3)) (p - chartHere).direction,
         ],
+        climate: skyHere == null ? null : CityClimate.of(skyHere.ground),
       );
       for (var i = 0; i < choices.length; i++) {
         final place = world.placeOfNode(story.nodeFor(choices[i].nextId));
@@ -1087,11 +1109,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                           stamp: _stamp,
                           burn: _burn,
                           unroll: _unroll,
-                          weather: journeyWeatherFor(chapter),
+                          weather: journeyWeatherOf(sky?.kind, chapter),
                           place: placeView,
                         ),
                       ),
                     ),
+                  ),
+                  // The sky over the party (v1.204).
+                  Positioned(
+                    left: 8,
+                    bottom: 8,
+                    child: WeatherChip(palette: palette),
                   ),
                   Positioned(
                     right: 8,
@@ -2429,6 +2457,8 @@ class _JourneyChartState extends State<_JourneyChart>
                                       const Color(0xFF8FC3CF),
                                     JourneyWeather.snow =>
                                       const Color(0xFFEFF3F6),
+                                    JourneyWeather.dust =>
+                                      const Color(0xFFC9A46A),
                                     _ => palette.place,
                                   },
                                   selectedRoad: selectedRoad,

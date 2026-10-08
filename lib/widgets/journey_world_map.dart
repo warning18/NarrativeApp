@@ -13,7 +13,9 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
 import '../providers/map_look_provider.dart';
+import '../providers/player_session_provider.dart';
 import 'chart_map_painter.dart';
+import 'chart_weather.dart';
 
 /// How far out the Journey's map is looked at.
 enum JourneyMapLevel { place, land, world }
@@ -345,6 +347,20 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   /// A pinch that ends at the closest zoom on the party's place.
   double _pinchFrom = 1;
 
+  /// The part of the flat chart in the box, in chart units: what the
+  /// weather is painted over.
+  Rect _visibleChart(Size box) {
+    const whole =
+        Rect.fromLTWH(0, 0, worldMapWidth * 1.0, worldMapHeight * 1.0);
+    final inverse = Matrix4.tryInvert(_view.value);
+    if (inverse == null) return whole;
+    final r = MatrixUtils.transformRect(inverse, Offset.zero & box);
+    final dy = (_childHeight - _size.height) / 2;
+    final k = _size.width / worldMapWidth;
+    return Rect.fromLTRB(
+        r.left / k, (r.top - dy) / k, r.right / k, (r.bottom - dy) / k);
+  }
+
   @override
   Widget build(BuildContext context) {
     final language = ref.watch(appLanguageProvider);
@@ -362,6 +378,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     final reduceMotion = MediaQuery.of(context).disableAnimations;
     final theme = Theme.of(context);
     final sphere = ref.watch(chartGlobeProvider);
+    // The weather over the chart (v1.204), on its own layer.
+    final weatherOn = ref.watch(chartWeatherProvider);
+    final day = ref.watch(playerSessionProvider.select((s) => s.day));
     return LayoutBuilder(builder: (context, box) {
       final boxSize = Size(box.maxWidth, box.maxHeight);
       // The chart fills the box's width; a tall box shows sea above and
@@ -413,7 +432,26 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
           }
         },
         onTapUp: (d) => _globeTap(d.localPosition, boxSize),
-        child: CustomPaint(size: boxSize, painter: painter(globeView)),
+        child: SizedBox(
+          width: boxSize.width,
+          height: boxSize.height,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              CustomPaint(painter: painter(globeView)),
+              if (weatherOn)
+                ChartWeather(
+                  size: boxSize,
+                  geography: geo,
+                  palette: widget.palette,
+                  day: day,
+                  globe: globeView,
+                  zoomOf: () => globeView?.zoom ?? 1,
+                  still: reduceMotion,
+                ),
+            ],
+          ),
+        ),
       );
       final chart = InteractiveViewer(
         key: const ValueKey('journey_world_viewer'),
@@ -437,7 +475,26 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
               key: const ValueKey('journey_world_canvas'),
               behavior: HitTestBehavior.opaque,
               onTapUp: (details) => _tapAt(details.localPosition),
-              child: CustomPaint(size: _size, painter: painter(null)),
+              child: SizedBox(
+                width: _size.width,
+                height: _size.height,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CustomPaint(painter: painter(null)),
+                    if (weatherOn)
+                      ChartWeather(
+                        size: _size,
+                        geography: geo,
+                        palette: widget.palette,
+                        day: day,
+                        zoomOf: () => _scale,
+                        visibleOf: () => _visibleChart(boxSize),
+                        still: reduceMotion,
+                      ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),

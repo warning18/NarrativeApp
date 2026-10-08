@@ -36,13 +36,23 @@ class CityPlanPainter extends CustomPainter {
     canvas.scale(scale);
     final rng = math.Random(plan.seed);
     final stone = Color.lerp(palette.coast, palette.place, 0.3)!;
-    final roof = Color.lerp(palette.roofs, palette.place, 0.14)!;
-    final roofDark = Color.lerp(palette.roofs, _dark, 0.35)!;
+    final snow = plan.climate.snow;
+    // Under snow the roofs and the ground go pale.
+    final roof = snow
+        ? Color.lerp(palette.roofs, Colors.white, 0.42)!
+        : Color.lerp(palette.roofs, palette.place, 0.14)!;
+    final roofDark = snow
+        ? Color.lerp(palette.roofs, Colors.white, 0.18)!
+        : Color.lerp(palette.roofs, _dark, 0.35)!;
 
     // The ground: the land's pattern under it quietened, the ground
     // inside the wall trodden paler.
     canvas.drawRect(CityPlan.bounds.inflate(2000),
         Paint()..color = palette.land.withValues(alpha: 0.72));
+    if (snow) {
+      canvas.drawRect(CityPlan.bounds.inflate(2000),
+          Paint()..color = Colors.white.withValues(alpha: 0.2));
+    }
     canvas.drawCircle(plan.centre, plan.radius * 0.95,
         Paint()..color = palette.coast.withValues(alpha: 0.1));
 
@@ -342,6 +352,42 @@ class CityPlanPainter extends CustomPainter {
   }
 
   void _tree(Canvas canvas, Offset c, double r) {
+    if (plan.climate.dry) {
+      // Scrub: a few low tufts.
+      final tuft = Paint()
+        ..color = Color.lerp(palette.coast, palette.place, 0.2)!
+        ..strokeWidth = 0.9
+        ..strokeCap = StrokeCap.round;
+      for (final d in const [
+        Offset(-2, 1),
+        Offset(0, -1.5),
+        Offset(2.2, 0.8)
+      ]) {
+        canvas.drawLine(c + d, c + d + const Offset(0, -2.2), tuft);
+      }
+      return;
+    }
+    if (plan.climate.cold) {
+      // A fir: a dark spire, its tip pale under snow.
+      final fir = Path()
+        ..moveTo(c.dx, c.dy - r * 1.5)
+        ..lineTo(c.dx + r * 0.8, c.dy + r * 0.7)
+        ..lineTo(c.dx - r * 0.8, c.dy + r * 0.7)
+        ..close();
+      canvas.drawPath(fir.shift(const Offset(1, 1)),
+          Paint()..color = _dark.withValues(alpha: 0.35));
+      canvas.drawPath(fir,
+          Paint()..color = Color.lerp(palette.roofs, palette.river, 0.45)!);
+      if (plan.climate.snow) {
+        canvas.drawLine(
+            Offset(c.dx, c.dy - r * 1.5),
+            Offset(c.dx, c.dy - r * 0.3),
+            Paint()
+              ..color = Colors.white.withValues(alpha: 0.7)
+              ..strokeWidth = 1);
+      }
+      return;
+    }
     canvas.drawCircle(c.translate(1.2, 1.2), r,
         Paint()..color = _dark.withValues(alpha: 0.35));
     canvas.drawCircle(

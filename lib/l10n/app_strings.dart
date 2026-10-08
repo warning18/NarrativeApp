@@ -106,6 +106,60 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'où commercer, où se reposer',
   },
   'calque_contested': {AppLanguage.en: 'contested', AppLanguage.fr: 'disputé'},
+  'calque_height': {AppLanguage.en: 'Height', AppLanguage.fr: 'Relief'},
+  'calque_height_sub': {
+    AppLanguage.en: 'the land tinted low to high, with its contour lines',
+    AppLanguage.fr:
+        'le pays teinté du bas vers le haut, avec ses courbes de niveau',
+  },
+  'calque_humidity': {AppLanguage.en: 'Humidity', AppLanguage.fr: 'Humidité'},
+  'calque_humidity_sub': {
+    AppLanguage.en: 'dry ochre to sodden blue: where the rain falls',
+    AppLanguage.fr: 'de l’ocre sec au bleu détrempé : où tombe la pluie',
+  },
+  'calque_warmth': {AppLanguage.en: 'Warmth', AppLanguage.fr: 'Chaleur'},
+  'calque_warmth_sub': {
+    AppLanguage.en: 'frost blue to noon red, as the season stands today',
+    AppLanguage.fr: 'du bleu du gel au rouge de midi, selon la saison du jour',
+  },
+  'chart_legend_low': {AppLanguage.en: 'low', AppLanguage.fr: 'bas'},
+  'chart_legend_high': {AppLanguage.en: 'high', AppLanguage.fr: 'haut'},
+  'chart_legend_dry': {AppLanguage.en: 'dry', AppLanguage.fr: 'sec'},
+  'chart_legend_wet': {AppLanguage.en: 'wet', AppLanguage.fr: 'humide'},
+  'chart_legend_cold': {AppLanguage.en: 'cold', AppLanguage.fr: 'froid'},
+  'chart_legend_warm': {AppLanguage.en: 'warm', AppLanguage.fr: 'chaud'},
+  'journey_weather': {AppLanguage.en: 'Weather', AppLanguage.fr: 'Météo'},
+  'journey_weather_sub': {
+    AppLanguage.en: 'clouds, rain, snow and dust moving on the wind',
+    AppLanguage.fr: 'nuages, pluie, neige et poussière portés par le vent',
+  },
+  'weather_clear': {AppLanguage.en: 'Clear', AppLanguage.fr: 'Ciel dégagé'},
+  'weather_cloud': {AppLanguage.en: 'Overcast', AppLanguage.fr: 'Couvert'},
+  'weather_fog': {AppLanguage.en: 'Fog', AppLanguage.fr: 'Brouillard'},
+  'weather_rain': {AppLanguage.en: 'Rain', AppLanguage.fr: 'Pluie'},
+  'weather_snow': {AppLanguage.en: 'Snow', AppLanguage.fr: 'Neige'},
+  'weather_dust': {
+    AppLanguage.en: 'Dust storm',
+    AppLanguage.fr: 'Tempête de poussière'
+  },
+  'weather_ash': {
+    AppLanguage.en: 'Ash fall',
+    AppLanguage.fr: 'Pluie de cendres'
+  },
+  'weather_wind_from': {
+    AppLanguage.en: 'wind from the {d}',
+    AppLanguage.fr: 'vent de {d}',
+  },
+  'weather_calm': {AppLanguage.en: 'calm', AppLanguage.fr: 'calme'},
+  'weather_height': {AppLanguage.en: '{m} m', AppLanguage.fr: '{m} m'},
+  'compass_N': {AppLanguage.en: 'N', AppLanguage.fr: 'N'},
+  'compass_NE': {AppLanguage.en: 'NE', AppLanguage.fr: 'NE'},
+  'compass_E': {AppLanguage.en: 'E', AppLanguage.fr: 'E'},
+  'compass_SE': {AppLanguage.en: 'SE', AppLanguage.fr: 'SE'},
+  'compass_S': {AppLanguage.en: 'S', AppLanguage.fr: 'S'},
+  'compass_SW': {AppLanguage.en: 'SW', AppLanguage.fr: 'SO'},
+  'compass_W': {AppLanguage.en: 'W', AppLanguage.fr: 'O'},
+  'compass_NW': {AppLanguage.en: 'NW', AppLanguage.fr: 'NO'},
   'sofar_strip_title': {
     AppLanguage.en: 'The story so far · Day {day}',
     AppLanguage.fr: 'L’histoire jusqu’ici · Jour {day}',
