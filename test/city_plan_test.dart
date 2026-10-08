@@ -1,8 +1,6 @@
 // A city laid out as a city (v1.203): the same each time from its seed,
 // its districts each with a spot on the plan, inside the frame, and the
 // streets joined so a walk finds its way between any two of them.
-import 'dart:ui';
-
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/city_plan.dart';
