@@ -3022,6 +3022,28 @@
         ]
       },
       {
+        "text": "Hear out the dwarf foreman at the breaker’s yard",
+        "text_fr": "Écouter le contremaître nain du chantier",
+        "next_id": "2015_dorran",
+        "hideIfFlags": [
+          "hub_2015_dorran"
+        ]
+      },
+      {
+        "text": "Face the Ledger’s clerk over the crew’s wages",
+        "text_fr": "Affronter le clerc du Registre pour les gages",
+        "next_id": "2015_scaffold_clerk",
+        "checkAbility": "charisma",
+        "checkDC": 12,
+        "failNextId": "2015_scaffold_clerk_fight",
+        "showIfFlags": [
+          "hub_2015_dorran"
+        ],
+        "hideIfFlags": [
+          "scaffold_clerk_faced"
+        ]
+      },
+      {
         "text": "Bribe Vane with information",
         "text_fr": "Soudoyer Vane avec des informations",
         "next_id": "2030"
@@ -4412,6 +4434,28 @@
             "compact": 1
           }
         }
+      },
+      {
+        "text": "Hear the oni glass-trader at the ash-market",
+        "text_fr": "Écouter la marchande de verre oni du marché",
+        "next_id": "3005_imeh",
+        "hideIfFlags": [
+          "hub_3005_imeh"
+        ]
+      },
+      {
+        "text": "Test Imeh’s glass before the Choir’s fire",
+        "text_fr": "Éprouver le verre d’Imeh avant le feu du Chœur",
+        "next_id": "3005_glass_fire",
+        "checkAbility": "wisdom",
+        "checkDC": 12,
+        "failNextId": "3005_glass_fire_fight",
+        "showIfFlags": [
+          "hub_3005_imeh"
+        ],
+        "hideIfFlags": [
+          "glass_tested"
+        ]
       }
     ],
     "flag_callbacks": [
@@ -4449,6 +4493,21 @@
         "flag": "maren_refused",
         "en": "Maren did not look my way when I passed the relief tent. She was working harder than anyone in it.",
         "fr": "Maren ne regarda pas de mon côté quand je passai devant la tente de secours. Elle y travaillait plus dur que quiconque."
+      },
+      {
+        "flag": "scaffold_paid",
+        "en": "Word had come up from Saltmouth with the refugees: the breaker’s yard scaffolds were rigged again, by a crew that had been paid, and Dorran Quill had put my name on the Scaffolders’ rolls as a friend of the yard.",
+        "fr": "La nouvelle était montée de Saltmouth avec les réfugiés : les échafaudages du chantier des démolisseurs étaient gréés de nouveau, par une équipe payée, et Dorran Quill avait inscrit mon nom sur les rôles des Échafaudeurs comme ami du chantier."
+      },
+      {
+        "flag": "scaffold_skimmed",
+        "en": "A Scaffolder in the relief line knew my name before I gave it, and would not take the bread from my hand.",
+        "fr": "Un Échafaudeur dans la file des secours connaissait mon nom avant que je le donne, et refusa le pain de ma main."
+      },
+      {
+        "flag": "scaffold_split",
+        "en": "The breaker’s yard had gone back to work on half wages, the refugees said, which the Ledger called peace and the riggers called Tuesday.",
+        "fr": "Le chantier des démolisseurs avait repris à demi-gages, disaient les réfugiés, ce que le Registre appelait la paix et les gréeurs un mardi."
       }
     ],
     "hub_progress": {
@@ -6730,6 +6789,28 @@
             "crows": 6
           }
         }
+      },
+      {
+        "text": "Hear the elf healer out about his bark",
+        "text_fr": "Écouter le guérisseur elfe au sujet de son écorce",
+        "next_id": "5010_brannoc",
+        "hideIfFlags": [
+          "hub_5010_brannoc"
+        ]
+      },
+      {
+        "text": "Lift the Keyholders’ cache of fever-bark",
+        "text_fr": "Vider la cache d’écorce-fièvre des Porte-Clés",
+        "next_id": "5010_bark_cache",
+        "checkAbility": "dexterity",
+        "checkDC": 12,
+        "failNextId": "5010_bark_cache_fight",
+        "showIfFlags": [
+          "hub_5010_brannoc"
+        ],
+        "hideIfFlags": [
+          "bark_recovered"
+        ]
       }
     ],
     "flag_callbacks": [
@@ -6772,6 +6853,21 @@
         "flag": "deserter_sold",
         "en": "The deserter's cell was the one with the window. He did not look out of it.",
         "fr": "La cellule du déserteur était celle qui avait une fenêtre. Il ne regardait pas dehors."
+      },
+      {
+        "flag": "glass_defended",
+        "en": "A piece of terrace glass had come down the Drowned Stair ahead of me, in a deserter’s pack; an oni woman in the Ashen Quarter, he said, sold it cheap to anyone who had stood up to the Choir, and dearer to everyone else.",
+        "fr": "Une pièce de verre des terrasses était descendue l’Escalier Noyé avant moi, dans le sac d’un déserteur ; une femme oni du Quartier des Cendres, disait-il, la vendait à bas prix à quiconque avait tenu tête au Chœur, et plus cher à tous les autres."
+      },
+      {
+        "flag": "glass_burned",
+        "en": "One of the refugees had been at the ash-market the day the Choir burned the oni stall. She did not say so. She moved her candle when I sat down beside it.",
+        "fr": "L’une des réfugiées se trouvait au marché des cendres le jour où le Chœur avait brûlé l’étal oni. Elle ne le dit pas. Elle déplaça sa chandelle quand je m’assis à côté."
+      },
+      {
+        "flag": "glass_carried",
+        "en": "The cloister’s one unbroken lamp was terrace glass, green and gold, bought at the camp from an oni trader who had got there, the archivist said, a day ahead of the fire.",
+        "fr": "La seule lampe intacte du cloître était en verre des terrasses, vert et or, achetée au camp à une marchande oni arrivée là-bas, disait l’archiviste, un jour avant le feu."
       }
     ],
     "hub_progress": {
@@ -7586,6 +7682,28 @@
             "compact": 26
           }
         }
+      },
+      {
+        "text": "Sit with the widow who counts the taken",
+        "text_fr": "S’asseoir avec la veuve qui compte les disparus",
+        "next_id": "6010_orsabet",
+        "hideIfFlags": [
+          "hub_6010_orsabet"
+        ]
+      },
+      {
+        "text": "Walk the frost to the tally stone",
+        "text_fr": "Marcher dans le givre jusqu’à la pierre des noms",
+        "next_id": "6010_candle_walk",
+        "checkAbility": "wisdom",
+        "checkDC": 13,
+        "failNextId": "6010_candle_walk_fight",
+        "showIfFlags": [
+          "hub_6010_orsabet"
+        ],
+        "hideIfFlags": [
+          "count_carried"
+        ]
       }
     ],
     "flag_callbacks": [
@@ -7613,6 +7731,21 @@
         "flag": "letter_copied",
         "en": "The Penitents in the Quarter had my copy of the courier’s letter nailed to a chapel door, and the Inquisition had not yet dared to take it down.",
         "fr": "Les Pénitents du Quartier avaient cloué ma copie de la lettre du messager sur une porte de chapelle, et l'Inquisition n'avait pas encore osé l'arracher."
+      },
+      {
+        "flag": "bark_returned",
+        "en": "A Barkbleeder had come up to the Quarter with the refugees and was dosing the frost-sick with fever-bark out of an oilcloth bundle, and would not take my coin for it; Brannoc’s people, she said, had my name.",
+        "fr": "Une Saigne-Écorce était montée au Quartier avec les réfugiés et soignait les malades du givre avec de l’écorce-fièvre tirée d’un ballot de toile cirée, et refusa ma pièce ; les gens de Brannoc, dit-elle, avaient mon nom."
+      },
+      {
+        "flag": "bark_sold",
+        "en": "The fever-bark the Keyholders had sold on reached the Quarter by way of the Court, in a Keyholder’s pack at a Keyholder’s price, and the penitents could not pay it.",
+        "fr": "L’écorce-fièvre que les Porte-Clés avaient revendue atteignit le Quartier par la Cour, dans le sac d’un Porte-Clé et au prix d’un Porte-Clé, et les pénitents ne pouvaient pas le payer."
+      },
+      {
+        "flag": "bark_kept",
+        "en": "The camp’s infirmary had sent half a bundle of fever-bark north with the refugees, Brannoc’s half short, and it ran out on the second day of frost.",
+        "fr": "L’infirmerie du camp avait envoyé un demi-ballot d’écorce-fièvre vers le nord avec les réfugiés, la moitié de Brannoc en moins, et il s’épuisa le deuxième jour de givre."
       }
     ],
     "hub_progress": {
@@ -13358,6 +13491,28 @@
             "compact": 6
           }
         }
+      },
+      {
+        "text": "Hear a giant on the hearth-stone’s quarry",
+        "text_fr": "Écouter un géant parler de la carrière du foyer",
+        "next_id": "6200_ghrem",
+        "hideIfFlags": [
+          "ghrem_met"
+        ]
+      },
+      {
+        "text": "Hold the cut face against the Quarrymen",
+        "text_fr": "Tenir le front taillé face aux Carriers",
+        "next_id": "6200_quarry_face",
+        "checkAbility": "strength",
+        "checkDC": 13,
+        "failNextId": "6200_quarry_face_fight",
+        "showIfFlags": [
+          "ghrem_met"
+        ],
+        "hideIfFlags": [
+          "quarry_face_held"
+        ]
       }
     ],
     "settlement": {
@@ -13833,6 +13988,28 @@
             "penitents": 26
           }
         }
+      },
+      {
+        "text": "Hear the Brig-Born salvager out",
+        "text_fr": "Écouter le récupérateur des Enfants du Brick",
+        "next_id": "7100_nkem",
+        "hideIfFlags": [
+          "hub_7100_nkem"
+        ]
+      },
+      {
+        "text": "Free Nkem’s salvage from the impound",
+        "text_fr": "Libérer la prise de Nkem de la fourrière",
+        "next_id": "7100_impound",
+        "checkAbility": "dexterity",
+        "checkDC": 13,
+        "failNextId": "7100_impound_fight",
+        "showIfFlags": [
+          "hub_7100_nkem"
+        ],
+        "hideIfFlags": [
+          "salvage_freed"
+        ]
       }
     ],
     "settlement": {
@@ -13854,7 +14031,39 @@
           "fr": "Le Mouillage avait pris l’habitude de m’appeler par mon nom plutôt que par ce que je portais. Je ne savais pas ce que je préférais."
         }
       ]
-    }
+    },
+    "flag_callbacks": [
+      {
+        "flag": "count_to_vigil",
+        "en": "A Candlebearer at the Anchorage was reading names off the back of a Dominion absence notice, in a widow’s order, one candle each; the Vigil had copied Orsabet’s count to every ossuary it kept, and nobody on it was absent any more.",
+        "fr": "Une Porte-Chandelle du Mouillage lisait des noms au dos d’un avis d’absence du Dominion, dans l’ordre d’une veuve, une chandelle chacun ; la Veille avait recopié le compte d’Orsabet dans chaque ossuaire qu’elle gardait, et plus personne n’y était absent."
+      },
+      {
+        "flag": "count_sealed",
+        "en": "The Reliquary had entered Orsabet’s count in its register under a seal and a number, the way it keeps everything, and the penitents who washed up at the Anchorage did not know their dead had been counted at all.",
+        "fr": "Le Reliquaire avait inscrit le compte d’Orsabet dans son registre sous un sceau et un numéro, comme il garde toute chose, et les pénitents échoués au Mouillage ignoraient que leurs morts eussent jamais été comptés."
+      },
+      {
+        "flag": "count_read",
+        "en": "Some of the Anchorage’s pilgrims had been at the Quarter’s gate the night the names were read. They told me the number before they told me their own.",
+        "fr": "Certains des pèlerins du Mouillage se trouvaient à la porte du Quartier la nuit où les noms furent lus. Ils me dirent le nombre avant de me dire le leur."
+      },
+      {
+        "flag": "hearth_stone_kept",
+        "en": "A giant of Highhearth had come down to the Anchorage, the first in a generation, with a cart of grey stone for the chapel’s hearth; Ghrem had sent it, the helmsman said, and a word for me with it.",
+        "fr": "Un géant de Haut-Âtre était descendu au Mouillage, le premier depuis une génération, avec une charrette de pierre grise pour l’âtre de la chapelle ; Ghrem l’avait envoyée, dit le timonier, et un mot pour moi avec."
+      },
+      {
+        "flag": "hearth_stone_cut",
+        "en": "The Anchorage’s new harbour wall was grey Highhearth stone, cut square by Compact hands, and I knew which face it had come from before anyone told me.",
+        "fr": "Le nouveau mur du port du Mouillage était de pierre grise de Haut-Âtre, taillée d’équerre par des mains du Pacte, et je sus de quel front elle venait avant qu’on me le dise."
+      },
+      {
+        "flag": "hearth_stone_split",
+        "en": "Half the Frost Quarry’s face had gone to the Compact and half stayed in the mountain, and the Quarrymen at the Anchorage’s chandlery spoke of the bargain the way people speak of a scar: not proudly, but as theirs.",
+        "fr": "La moitié du front de la Carrière de Givre était allée au Pacte et l’autre restée dans la montagne, et les Carriers de la chandlerie du Mouillage parlaient du marché comme on parle d’une cicatrice : sans fierté, mais comme de la leur."
+      }
+    ]
   },
   "7100_house_order": {
     "id": "7100_house_order",
@@ -15072,6 +15281,21 @@
         "flag": "dominion_split",
         "en": "The Reliquary’s roll had split the Dominion down the middle: half the Houses wanted the Throne filled before anyone could ask them about the tear, and the other half wanted someone to blame.",
         "fr": "Le rouleau du Reliquaire avait fendu le Dominion par le milieu : la moitié des Maisons voulait le Trône occupé avant qu’on puisse l’interroger sur la déchirure, et l’autre moitié voulait quelqu’un à accuser."
+      },
+      {
+        "flag": "salvage_to_crows",
+        "en": "A Brig-Born boat had put in at the cove with a flagship’s bell in its bow, rung once for the camp as it came round the point; Nkem Tallow’s people had taken to calling that my signal.",
+        "fr": "Une barque des Enfants du Brick avait relâché à la crique avec la cloche d’un vaisseau amiral à la proue, sonnée une fois pour le camp en doublant la pointe ; les gens de Nkem Tallow avaient pris l’habitude d’appeler cela mon signal."
+      },
+      {
+        "flag": "salvage_to_admiralty",
+        "en": "The Admiralty’s new cutter carried a flagship’s bell at its mast, Nkem Tallow’s haul, and rang it off the cove as it passed, which the Brig-Born on the beach took as it was meant.",
+        "fr": "Le nouveau cotre de l’Amirauté portait la cloche d’un vaisseau amiral à son mât, la prise de Nkem Tallow, et la sonna au large de la crique en passant, ce que les Enfants du Brick sur la plage prirent comme c’était voulu."
+      },
+      {
+        "flag": "salvage_sold",
+        "en": "The wreck-wrights had recast Nkem Tallow’s bell into fittings for a boat I did not recognise, and the Brig-Born at the cove had recast my name into something I was not meant to hear.",
+        "fr": "Les charpentiers d’épaves avaient refondu la cloche de Nkem Tallow en ferrures pour une barque que je ne reconnus pas, et les Enfants du Brick de la crique avaient refondu mon nom en quelque chose qui n’était pas fait pour mes oreilles."
       }
     ]
   },
@@ -21586,5 +21810,401 @@
       }
     ],
     "noDetour": true
+  },
+  "2015_dorran": {
+    "id": "2015_dorran",
+    "description": "The ship-breaker’s yard ran on scaffolding, and the scaffolding ran on a dwarf named Dorran Quill, who had rigged every spar of it and been paid for none. The Salt Ledger’s clerk held the crew’s wages at his table as a tithe, pending a ledger that never closed, and Dorran had thirty riggers who had stopped believing in pay-day. “I rig scaffolds,” he said. “I do not go to a clerk with my hands. You look as though you might.”",
+    "description_fr": "Le chantier des démolisseurs tenait sur des échafaudages, et les échafaudages tenaient sur un nain nommé Dorran Quill, qui en avait gréé chaque espar sans en toucher un sou. Le clerc du Registre du Sel gardait les gages de l’équipe à sa table, au titre d’une dîme, en attendant un registre qui ne fermait jamais, et Dorran avait trente gréeurs qui ne croyaient plus au jour de paie. « Je grée des échafaudages, dit-il. Je ne vais pas trouver un clerc avec mes mains. Vous, vous en avez l’air. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_yard",
+    "choices": [
+      {
+        "text": "Back to the wharf’s stalls",
+        "text_fr": "Retour aux étals du quai",
+        "next_id": "2015",
+        "unlockQuestId": "q_ch2_unpaid_scaffold",
+        "flagsToAdd": [
+          "hub_2015_dorran"
+        ]
+      }
+    ]
+  },
+  "2015_scaffold_clerk": {
+    "id": "2015_scaffold_clerk",
+    "description": "The clerk kept the crew’s pay in a strongbox under his scales, a soldier of the Inquisition at his elbow and the ledger open to the page that said why, and I put Dorran’s tally on the table beside it. He found, after a page and a half, that the tithe had been assessed on the yard’s owner and not on the men who rigged it, which he had known all along and had hoped nobody else would read. The strongbox came open. The soldier looked at the ceiling, which is where Inquisition soldiers keep their opinions.",
+    "description_fr": "Le clerc gardait la paie de l’équipe dans un coffre sous sa balance, un soldat de l’Inquisition au coude et le registre ouvert à la page qui en donnait la raison, et je posai le compte de Dorran sur la table, à côté. Il découvrit, au bout d’une page et demie, que la dîme avait été fixée sur le propriétaire du chantier et non sur les hommes qui l’avaient gréé, ce qu’il savait depuis le début et avait espéré que personne d’autre ne lirait. Le coffre s’ouvrit. Le soldat regarda le plafond, là où les soldats de l’Inquisition rangent leurs opinions.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_yard",
+    "choices": [
+      {
+        "text": "Carry the strongbox back to the wharf",
+        "text_fr": "Rapporter le coffre jusqu’au quai",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "scaffold_clerk_faced"
+        ]
+      }
+    ]
+  },
+  "2015_scaffold_clerk_fight": {
+    "id": "2015_scaffold_clerk_fight",
+    "description": "The clerk kept the crew’s pay in a strongbox under his scales, a soldier of the Inquisition at his elbow and the ledger open to the page that said why, and I put Dorran’s tally on the table beside it. I lost him somewhere around the second column. He closed the ledger, which was the only answer he was ever going to give, and nodded to the soldier, who had been waiting for exactly that nod since I came in.",
+    "description_fr": "Le clerc gardait la paie de l’équipe dans un coffre sous sa balance, un soldat de l’Inquisition au coude et le registre ouvert à la page qui en donnait la raison, et je posai le compte de Dorran sur la table, à côté. Je le perdis quelque part vers la deuxième colonne. Il ferma le registre, la seule réponse qu’il eût jamais donnée, et fit un signe au soldat, qui n’attendait que ce signe depuis mon arrivée.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_yard",
+    "choices": [
+      {
+        "text": "Take the strongbox the other way",
+        "text_fr": "Prendre le coffre par l’autre voie",
+        "next_id": "2015",
+        "triggerEnemyId": "inquisition_soldier",
+        "flagsToAdd": [
+          "scaffold_clerk_faced"
+        ]
+      }
+    ]
+  },
+  "3005_imeh": {
+    "id": "3005_imeh",
+    "description": "She had set her stall where the ash was thinnest, a plank on two barrels and a hundred pieces of terrace glass on it, green and gold with the spring-water still in them, and it was the only thing in the quarter that caught the light. Imeh had come down from the terraces to sell, and the Scorched Choir had come to burn whatever it called unclean, and glass from an oni kiln was on its list. “Glass tempered in the springs does not break in fire,” she said. “They do not believe it. I need someone they will believe.”",
+    "description_fr": "Elle avait dressé son étal là où la cendre était la plus mince, une planche sur deux tonneaux et dessus une centaine de pièces de verre des terrasses, vert et or, l’eau des sources encore dedans, et c’était la seule chose du quartier qui accrochât la lumière. Imeh était descendue des terrasses pour vendre, et le Chœur Calciné était venu brûler tout ce qu’il appelait impur, et le verre d’un four oni figurait sur sa liste. « Le verre trempé aux sources ne casse pas au feu, dit-elle. Ils ne le croient pas. Il me faut quelqu’un qu’ils croiront. »",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "ashen_quarter",
+    "choices": [
+      {
+        "text": "Leave her to her stall",
+        "text_fr": "La laisser à son étal",
+        "next_id": "3005",
+        "unlockQuestId": "q_ch3_glass_from_the_terraces",
+        "flagsToAdd": [
+          "hub_3005_imeh"
+        ]
+      }
+    ]
+  },
+  "3005_glass_fire": {
+    "id": "3005_glass_fire",
+    "description": "The Choir had built its fire at the end of the ash-market, a pit of split pews with an acolyte feeding it, and they let me bring the glass to it because they expected to watch it burst; terrace glass, Imeh said, holds in a slow fire and shatters in a fast one. I waited until the pews had burned down to a bed and set the first piece in the coals with the tongs, and it sat there glowing green and did not so much as craze. The acolyte said the fire was wrong. The crowd, which had come to see something break, had seen it, and it was not the glass.",
+    "description_fr": "Le Chœur avait dressé son feu au bout du marché des cendres, une fosse de bancs d’église fendus qu’un acolyte nourrissait, et ils me laissèrent y porter le verre parce qu’ils comptaient le voir éclater ; le verre des terrasses, disait Imeh, tient dans un feu lent et vole en éclats dans un feu vif. J’attendis que les bancs se fussent consumés en braise et posai la première pièce dans les charbons avec les pinces, et elle resta là, luisant de vert, sans même se fendiller. L’acolyte dit que le feu n’était pas le bon. La foule, venue voir quelque chose se briser, l’avait vu, et ce n’était pas le verre.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "ashen_quarter",
+    "choices": [
+      {
+        "text": "Carry the proof back to her stall",
+        "text_fr": "Rapporter la preuve à son étal",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "glass_tested"
+        ]
+      }
+    ]
+  },
+  "3005_glass_fire_fight": {
+    "id": "3005_glass_fire_fight",
+    "description": "The Choir had built its fire at the end of the ash-market, a pit of split pews with an acolyte feeding it, and they let me bring the glass to it because they expected to watch it burst; terrace glass, Imeh said, holds in a slow fire and shatters in a fast one. I set the glass in too soon, into a fire still eating its pews, and it went with a crack that the whole market heard. The acolyte did not wait for the pieces to cool. He had a brand out of the pit before the sound had finished, and he was not aiming it at the glass.",
+    "description_fr": "Le Chœur avait dressé son feu au bout du marché des cendres, une fosse de bancs d’église fendus qu’un acolyte nourrissait, et ils me laissèrent y porter le verre parce qu’ils comptaient le voir éclater ; le verre des terrasses, disait Imeh, tient dans un feu lent et vole en éclats dans un feu vif. Je posai le verre trop tôt, dans un feu qui mangeait encore ses bancs, et il éclata d’un craquement que tout le marché entendit. L’acolyte n’attendit pas que les morceaux refroidissent. Il avait un tison hors de la fosse avant la fin du bruit, et ce n’était pas le verre qu’il visait.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "ashen_quarter",
+    "choices": [
+      {
+        "text": "Put the acolyte out before the stall",
+        "text_fr": "Éteindre l’acolyte avant l’étal",
+        "next_id": "3005",
+        "triggerEnemyId": "cultist_acolyte",
+        "flagsToAdd": [
+          "glass_tested"
+        ]
+      }
+    ]
+  },
+  "5010_brannoc": {
+    "id": "5010_brannoc",
+    "description": "The cloister’s healer worked on the driest ledge with no medicine at all, an elf with the Barkbleeders’ cut scars up both forearms and a row of patients he could do nothing for but pray over. His fever-bark, a season of it, bled from the fen trees by hand, had been lifted at the Drowned Stair by the Keyholders as a tithe, and sat in one of their caches below the waterline waiting for a buyer. “They will sell it to the Court,” Brannoc said. “The Court will burn it, because it works. Bring it up before either happens.”",
+    "description_fr": "Le guérisseur du cloître travaillait sur la corniche la plus sèche sans le moindre remède, un elfe avec les cicatrices d’entaille des Saigne-Écorce sur les deux avant-bras et une rangée de malades pour lesquels il ne pouvait rien, sinon prier. Son écorce-fièvre, une saison entière, saignée à la main sur les arbres du marais, avait été saisie à l’Escalier Noyé par les Porte-Clés au titre d’une dîme, et dormait dans l’une de leurs caches sous la ligne d’eau en attendant un acheteur. « Ils la vendront à la Cour, dit Brannoc. La Cour la brûlera, parce qu’elle agit. Remontez-la avant l’un ou l’autre. »",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "location": "drowned_cloister",
+    "choices": [
+      {
+        "text": "Leave him to his ledge",
+        "text_fr": "Le laisser à sa corniche",
+        "next_id": "5010",
+        "unlockQuestId": "q_ch4_bark_tithe",
+        "flagsToAdd": [
+          "hub_5010_brannoc"
+        ]
+      }
+    ]
+  },
+  "5010_bark_cache": {
+    "id": "5010_bark_cache",
+    "description": "The Keyholders’ cache was a dry cell behind a drowned door, locked with one of their keys and watched by two of their hired blades, with the bark inside in oilcloth bundles. The lock gave under the water with a sound the water swallowed, and I had the bundles out and up the ledge while the two blades were still arguing about whose watch it was. Brannoc counted the bark by touch before he said anything. Then he started tearing it into doses with his teeth.",
+    "description_fr": "La cache des Porte-Clés était une cellule sèche derrière une porte noyée, fermée par l’une de leurs clefs et surveillée par deux lames à leur solde, l’écorce à l’intérieur en ballots de toile cirée. La serrure céda sous l’eau avec un bruit que l’eau avala, et j’avais sorti les ballots et gagné la corniche pendant que les deux lames se disputaient encore pour savoir à qui revenait le tour de garde. Brannoc compta l’écorce au toucher avant de dire un mot. Puis il se mit à la déchirer en doses avec les dents.",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "drowned_cloister",
+    "choices": [
+      {
+        "text": "Bring the bark up to the candles",
+        "text_fr": "Remonter l’écorce jusqu’aux chandelles",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "bark_recovered"
+        ]
+      }
+    ]
+  },
+  "5010_bark_cache_fight": {
+    "id": "5010_bark_cache_fight",
+    "description": "The Keyholders’ cache was a dry cell behind a drowned door, locked with one of their keys and watched by two of their hired blades, with the bark inside in oilcloth bundles. The lock held and my hand slipped, and the door, which had been drowned for a century, chose that moment to groan. The two blades stopped arguing. They had been paid to guard a cache and not to think about it, and a stranger with wet hands at its door was the simplest thing they had seen all week.",
+    "description_fr": "La cache des Porte-Clés était une cellule sèche derrière une porte noyée, fermée par l’une de leurs clefs et surveillée par deux lames à leur solde, l’écorce à l’intérieur en ballots de toile cirée. La serrure tint, ma main glissa, et la porte, noyée depuis un siècle, choisit ce moment pour gémir. Les deux lames cessèrent de se disputer. On les payait pour garder une cache et non pour y réfléchir, et quelqu’un aux mains mouillées devant sa porte était la chose la plus simple qu’elles eussent vue de la semaine.",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "drowned_cloister",
+    "choices": [
+      {
+        "text": "Take the cache through them",
+        "text_fr": "Prendre la cache en passant sur eux",
+        "next_id": "5010",
+        "triggerEnemyIds": [
+          "street_bandit",
+          "street_bandit"
+        ],
+        "flagsToAdd": [
+          "bark_recovered"
+        ]
+      }
+    ]
+  },
+  "6010_orsabet": {
+    "id": "6010_orsabet",
+    "description": "Orsabet Vell lit a candle for every person the tear had taken from the Reliquary Quarter, and she had lit, by her own count, four hundred and eleven. The count itself she kept cut into a stone out past the frost line, where the Dominion’s clerks would not go, because the Dominion recorded the taken as absent and absent people do not need candles. Her legs had stopped carrying her that far a month ago. “Someone should have the count who will keep it,” she said. “Bring it back to me, and I will decide who.”",
+    "description_fr": "Orsabet Vell allumait une chandelle pour chaque personne que la déchirure avait prise au Quartier des Reliquaires, et elle en avait allumé, selon son propre compte, quatre cent onze. Le compte lui-même, elle le gardait gravé dans une pierre au-delà de la ligne de givre, là où les clercs du Dominion n’allaient pas, parce que le Dominion inscrivait les disparus comme absents, et que les absents n’ont pas besoin de chandelles. Ses jambes avaient cessé de la porter jusque-là un mois plus tôt. « Quelqu’un devrait avoir le compte, qui le gardera, dit-elle. Rapportez-le-moi, et je déciderai qui. »",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "location": "reliquary_quarter",
+    "choices": [
+      {
+        "text": "Leave her to her candles",
+        "text_fr": "La laisser à ses chandelles",
+        "next_id": "6010",
+        "unlockQuestId": "q_ch5_candle_count",
+        "flagsToAdd": [
+          "hub_6010_orsabet"
+        ]
+      }
+    ]
+  },
+  "6010_candle_walk": {
+    "id": "6010_candle_walk",
+    "description": "Past the frost line the Quarter stopped being a quarter, the cobbles rimed white in summer and the shadows lying toward the light, and the tally stone stood somewhere in it with no path; the frost had a pattern, Orsabet had said, if you did not look at it directly. I kept my eyes on the stone and the frost on the edge of them, and the pattern let me through the way a crowd lets a stranger through, without agreeing to. The marks were cut small and close, in a widow’s hand. I copied every one of them onto the back of a Dominion absence notice, which seemed the right paper for it.",
+    "description_fr": "Passé la ligne de givre, le Quartier cessait d’être un quartier, pavés blancs de givre en plein été et ombres couchées vers la lumière, et la pierre des noms se dressait quelque part là-dedans, sans chemin ; le givre avait un motif, avait dit Orsabet, à condition de ne pas le regarder en face. Je gardai les yeux sur la pierre et le givre au bord du regard, et le motif me laissa passer comme une foule laisse passer qui elle ne connaît pas, sans y consentir. Les entailles étaient petites et serrées, d’une main de veuve. Je les recopiai toutes au dos d’un avis d’absence du Dominion, qui me parut le papier qu’il fallait.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "reliquary_quarter",
+    "choices": [
+      {
+        "text": "Carry the count back through the frost",
+        "text_fr": "Rapporter le compte à travers le givre",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "count_carried"
+        ]
+      }
+    ]
+  },
+  "6010_candle_walk_fight": {
+    "id": "6010_candle_walk_fight",
+    "description": "Past the frost line the Quarter stopped being a quarter, the cobbles rimed white in summer and the shadows lying toward the light, and the tally stone stood somewhere in it with no path; the frost had a pattern, Orsabet had said, if you did not look at it directly. I looked. It is very hard, with four hundred and eleven names in front of you, not to look. The frost came up off the cobbles in a shape that had learned its outline from the people it had taken, and it stood between me and the stone with Orsabet’s count behind it.",
+    "description_fr": "Passé la ligne de givre, le Quartier cessait d’être un quartier, pavés blancs de givre en plein été et ombres couchées vers la lumière, et la pierre des noms se dressait quelque part là-dedans, sans chemin ; le givre avait un motif, avait dit Orsabet, à condition de ne pas le regarder en face. Je regardai. Il est très difficile, avec quatre cent onze noms devant soi, de ne pas regarder. Le givre se souleva des pavés en une forme qui avait appris ses contours des gens qu’elle avait pris, et elle se dressa entre moi et la pierre, le compte d’Orsabet dans son dos.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "reliquary_quarter",
+    "choices": [
+      {
+        "text": "Unmake it and take the count",
+        "text_fr": "La défaire et prendre le compte",
+        "next_id": "6010",
+        "triggerEnemyId": "tear_spawn",
+        "flagsToAdd": [
+          "count_carried"
+        ]
+      }
+    ]
+  },
+  "6200_ghrem": {
+    "id": "6200_ghrem",
+    "description": "Ghrem Stonebrow tended the moot-hall fire, which had not gone out in six hundred years, and he knew the quarry face its hearth-stone had been cut from the way other people know a parent’s grave. The Compact’s Quarrymen had papers from the Inquisition for the rest of that face, and a crew, and no one in Highhearth young enough to stand in front of it. “Stone from that face is in every hearth in this hall,” he said, from a great height. “I would like there to be some of it left in the mountain.”",
+    "description_fr": "Ghrem Stonebrow entretenait le feu de la salle du conseil, qui ne s’était pas éteint depuis six cents ans, et il connaissait le front de carrière d’où sa pierre du foyer avait été taillée comme d’autres connaissent la tombe d’un parent. Les Carriers du Pacte avaient des papiers de l’Inquisition pour le reste de ce front, une équipe, et personne à Haut-Âtre d’assez jeune pour se tenir devant. « La pierre de ce front est dans chaque âtre de cette salle, dit-il, de très haut. J’aimerais qu’il en reste un peu dans la montagne. »",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "highhearth",
+    "choices": [
+      {
+        "text": "Leave him to the fire",
+        "text_fr": "Le laisser à son feu",
+        "next_id": "6200",
+        "unlockQuestId": "q_ch5_hearth_stone",
+        "flagsToAdd": [
+          "ghrem_met"
+        ]
+      }
+    ]
+  },
+  "6200_quarry_face": {
+    "id": "6200_quarry_face",
+    "description": "The cut face stood at the back of the Frost Quarry, six centuries of giants’ tool-marks on it and the Quarrymen’s crew at its foot with wedges already set, and the argument had to be made with my back against the stone. They set the first wedge against my boot and I did not move, and they set the second against my shoulder and I did not move, and by the third the foreman had stopped swinging and started talking. Slowly. He said the paper did not say which face, and that he was not going to be the first dwarf in history to cut a giant’s hearth out from under a stranger who would not get out of the way.",
+    "description_fr": "Le front taillé se dressait au fond de la Carrière de Givre, six siècles de marques d’outils de géants dessus et l’équipe des Carriers au pied, coins déjà posés, et l’argument devait se faire le dos contre la pierre. Ils posèrent le premier coin contre ma botte et je ne bougeai pas, le deuxième contre mon épaule et je ne bougeai pas, et au troisième le contremaître avait cessé de frapper et commencé à parler. Lentement. Il dit que le papier ne précisait pas quel front, et qu’il n’allait pas être le premier nain de l’histoire à tailler l’âtre d’un géant sous les pieds de quelqu’un qui refusait de s’écarter.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "highhearth",
+    "choices": [
+      {
+        "text": "Take the word up to the moot-hall",
+        "text_fr": "Porter sa parole à la salle du conseil",
+        "next_id": "6200",
+        "flagsToAdd": [
+          "quarry_face_held"
+        ]
+      }
+    ]
+  },
+  "6200_quarry_face_fight": {
+    "id": "6200_quarry_face_fight",
+    "description": "The cut face stood at the back of the Frost Quarry, six centuries of giants’ tool-marks on it and the Quarrymen’s crew at its foot with wedges already set, and the argument had to be made with my back against the stone. The second wedge went in under my shoulder and the face moved, a hand’s breadth, with a sound like the mountain clearing its throat. The Quarrymen stepped back. What came out of the crack was not stone: the frost had been in the face all winter, and it had a bailiff’s shape and a bailiff’s patience, and it had been waiting for someone to open the door.",
+    "description_fr": "Le front taillé se dressait au fond de la Carrière de Givre, six siècles de marques d’outils de géants dessus et l’équipe des Carriers au pied, coins déjà posés, et l’argument devait se faire le dos contre la pierre. Le deuxième coin entra sous mon épaule et le front bougea, d’une largeur de main, avec un bruit de montagne qui s’éclaircit la gorge. Les Carriers reculèrent. Ce qui sortit de la fissure n’était pas de la pierre : le givre avait passé l’hiver dans le front, il avait la forme d’un bailli et la patience d’un bailli, et il attendait que quelqu’un ouvre la porte.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "highhearth",
+    "choices": [
+      {
+        "text": "Put the frost back in the stone",
+        "text_fr": "Renvoyer le givre dans la pierre",
+        "next_id": "6200",
+        "triggerEnemyId": "rime_bailiff",
+        "flagsToAdd": [
+          "quarry_face_held"
+        ]
+      }
+    ]
+  },
+  "7100_nkem": {
+    "id": "7100_nkem",
+    "description": "Nkem Tallow worked the White Fleet’s grave for what the sea gave back, out of a boat the Brig-Born had built from three others, and his last haul was the best of a year: a flagship’s bronze, a case of chart-weights, a bell. All of it sat in the Admiralty’s impound under a seal the fleet’s clerk had put on it in the name of a Crusade that had already drowned. “The sea gave that up to me,” he said. “The Admiralty did not go down for it. I did.”",
+    "description_fr": "Nkem Tallow écumait la tombe de la Flotte Blanche pour ce que la mer rendait, depuis une barque que les Enfants du Brick avaient bâtie avec trois autres, et sa dernière prise était la meilleure de l’année : le bronze d’un vaisseau amiral, une caisse de poids de carte, une cloche. Tout cela dormait dans la fourrière de l’Amirauté, sous un sceau que le clerc de la flotte y avait posé au nom d’une Croisade déjà noyée. « La mer m’a rendu cela, dit-il. L’Amirauté n’est pas descendue le chercher. Moi, si. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "white_anchorage",
+    "choices": [
+      {
+        "text": "Leave him to his boat",
+        "text_fr": "Le laisser à sa barque",
+        "next_id": "7100",
+        "unlockQuestId": "q_ch6_salvage_rights",
+        "flagsToAdd": [
+          "hub_7100_nkem"
+        ]
+      }
+    ]
+  },
+  "7100_impound": {
+    "id": "7100_impound",
+    "description": "The impound was a hull hauled up above the tide line and roofed with its own sail, the Admiralty’s seal on its hatch and two soldiers of the Inquisition on its deck, with the salvage below. The hatch came up on the roll of the sail’s shadow and I was below with the bell in my arms before the deck had finished creaking. The soldiers heard the sea, which is all anyone hears at the Anchorage. Nkem’s boat took the salvage off the seaward side, and the seal stayed on the hatch, unbroken, over nothing.",
+    "description_fr": "La fourrière était une coque hissée au-dessus de la ligne de marée et couverte de sa propre voile, le sceau de l’Amirauté sur son panneau et deux soldats de l’Inquisition sur son pont, la prise en dessous. Le panneau se souleva dans l’ombre que roulait la voile et j’étais en bas, la cloche dans les bras, avant que le pont eût fini de craquer. Les soldats entendirent la mer, ce que tout le monde entend au Mouillage. La barque de Nkem prit la prise côté large, et le sceau resta sur le panneau, intact, sur rien.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "white_anchorage",
+    "choices": [
+      {
+        "text": "Row the salvage back to the sand",
+        "text_fr": "Ramener la prise au sable à la rame",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "salvage_freed"
+        ]
+      }
+    ]
+  },
+  "7100_impound_fight": {
+    "id": "7100_impound_fight",
+    "description": "The impound was a hull hauled up above the tide line and roofed with its own sail, the Admiralty’s seal on its hatch and two soldiers of the Inquisition on its deck, with the salvage below. The hatch stuck, and the bell, when I got it free, said so to the whole shore. The two soldiers came down the ladder with the particular relief of men who had been standing guard over a question for a year and had finally been handed something simple to do about it.",
+    "description_fr": "La fourrière était une coque hissée au-dessus de la ligne de marée et couverte de sa propre voile, le sceau de l’Amirauté sur son panneau et deux soldats de l’Inquisition sur son pont, la prise en dessous. Le panneau se coinça, et la cloche, quand je la dégageai, le dit à toute la grève. Les deux soldats descendirent l’échelle avec le soulagement particulier d’hommes qui montaient la garde sur une question depuis un an et à qui l’on tendait enfin quelque chose de simple à faire.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "white_anchorage",
+    "choices": [
+      {
+        "text": "Clear the hull and take the haul",
+        "text_fr": "Vider la coque et emporter la prise",
+        "next_id": "7100",
+        "triggerEnemyIds": [
+          "inquisition_soldier",
+          "inquisition_soldier"
+        ],
+        "flagsToAdd": [
+          "salvage_freed"
+        ]
+      }
+    ]
   }
 }

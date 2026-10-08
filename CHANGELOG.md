@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.204.0+239]
+
+### Added
+- People: a codex of the people met on the road, in the Play tab beside the bestiary. Forty-six records: the Inquisitor-General and the quartermaster who shares his name, Lysa, Renn and Nadira of Tern Row, the Eldest Wickwarden and the Grand Master, the Hesks, Brother Clement, the Keyholder, the chart-keeper, the sign-painter, the High Warden, the Rat Matriarch, the Herald, the elders and clerks of the villages, every shop keeper, and the six new quest-givers. Each entry gives who they are, their faction and place, what they want, and what passed between you, told from the story's own flags; people appear on first meeting, grouped by chapter, with a badge for those newly met.
+- Six side quests with a stake in the clans, each from someone new: Dorran Quill's unpaid scaffold crew at Saltmouth (the Scaffolders against the Salt Ledger), Imeh's spring-glass stall at the Ashen Quarter (the oni against the Scorched Choir), Brannoc Reedtithe's stolen fever-bark at the Drowned Cloister (the Barkbleeders against the Keyholders), Orsabet Vell's count of the taken in the Reliquary Quarter (the Candlebearers against the Reliquary), Ghrem Stonebrow's hearth-stone at Highhearth (the giants against the Quarrymen), and Nkem Tallow's impounded salvage at the White Anchorage (the Brig-Born against the Admiralty). Each ends in a three-way choice that moves two clans' standing, marks a sub-clan, is remembered by the next chapter's hub, and makes the news.
+- Quests can now move standing: a turn-in choice may carry politics, shown under the choice and applied once, as story choices do. A quest may also opt out of the random detour pool.
+- Relics: a fourth rarity above Rare for eight story-bound pieces (the Grey Shroud, the Saint's Reliquary, the Sovereign's Crown, the Harborwatch Lantern, the Hollow Court Seal, the Phoenix Sigil, the Wisp Ember, the Moon Shard). Every Rare item, every artifact, charm, tome, scroll and material now carries a line or two of lore, shown in the inventory and the item sheet with a translated rarity tag; every item remembers where and in which chapter it came to you.
+
+### Fixed
+- The French of the three older people records speaks in « vous » with French spacing, and a test over npcs.json keeps it so.
+
 ## [1.203.0+238]
 
 ### Added

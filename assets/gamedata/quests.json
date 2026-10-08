@@ -1584,5 +1584,593 @@
     ],
     "rewardDiceID": "",
     "rewardAllyId": ""
+  },
+  "q_ch2_unpaid_scaffold": {
+    "questID": "q_ch2_unpaid_scaffold",
+    "questName": "The Unpaid Scaffold",
+    "chapter": 2,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Face the Salt Ledger’s clerk over the Scaffolders’ wages",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Dorran Quill",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "scaffold_clerk_faced",
+        "description_fr": "Affronter le clerc du Registre du Sel pour les gages des Échafaudeurs",
+        "targetNPCName_fr": "Dorran Quill"
+      }
+    ],
+    "rewardGold": 40,
+    "rewardXP": 45,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“Thirty riggers put that yard back together, and the Ledger’s clerk has their pay in a box under his scales and calls it a tithe,” Dorran says, not loudly. “I rig scaffolds. I do not argue with clerks. Go and argue with him, and bring back whatever is left when he stops.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_unpaid_scaffold_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "L’Échafaud impayé",
+    "npcDialogueText_fr": "« Trente gréeurs ont remis ce chantier debout, et le clerc du Registre garde leur paie dans un coffre sous sa balance, et appelle ça une dîme », dit Dorran, sans élever la voix. « Je grée des échafaudages. Je ne discute pas avec les clercs. Allez discuter avec lui, et rapportez ce qui restera quand il s’arrêtera. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Hand the wages to the crew",
+        "choiceText_fr": "Remettre les gages à l’équipe",
+        "rewardGold": 15,
+        "alignmentChange": 0,
+        "flag": "scaffold_paid",
+        "resultText": "Dorran counts it out on the scaffold plank, rigger by rigger, and the last coin is yours.",
+        "resultText_fr": "Dorran compte sur la planche de l’échafaud, gréeur par gréeur, et la dernière pièce est pour vous.",
+        "politics": {
+          "standing": {
+            "compact": 10,
+            "dominion": -5
+          },
+          "marks": {
+            "scaffolders": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Take the Ledger’s cut yourself",
+        "choiceText_fr": "Prendre la part du Registre pour vous",
+        "rewardGold": 70,
+        "alignmentChange": -5,
+        "flag": "scaffold_skimmed",
+        "resultText": "The clerk writes you into the ledger as a collector. Dorran watches you do it.",
+        "resultText_fr": "Le clerc vous inscrit au registre comme collecteur. Dorran vous regarde faire.",
+        "politics": {
+          "standing": {
+            "dominion": 5,
+            "compact": -10
+          }
+        }
+      },
+      {
+        "choiceText": "Split it and keep the peace",
+        "choiceText_fr": "Partager, et garder la paix",
+        "rewardGold": 35,
+        "alignmentChange": 0,
+        "flag": "scaffold_split",
+        "resultText": "Half to the crew, half to the ledger; the yard goes back to work, and nobody thanks you.",
+        "resultText_fr": "Moitié pour l’équipe, moitié pour le registre ; le chantier reprend, et personne ne vous remercie.",
+        "politics": {
+          "standing": {
+            "dominion": 5,
+            "compact": 3
+          }
+        }
+      }
+    ]
+  },
+  "q_ch3_glass_from_the_terraces": {
+    "questID": "q_ch3_glass_from_the_terraces",
+    "questName": "Glass from the Terraces",
+    "chapter": 3,
+    "category": "Side",
+    "difficulty": "4",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Test Imeh’s terrace glass before the Scorched Choir’s fire reaches it",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Imeh",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "glass_tested",
+        "description_fr": "Éprouver le verre des terrasses d’Imeh avant que le feu du Chœur Calciné ne l’atteigne",
+        "targetNPCName_fr": "Imeh"
+      }
+    ],
+    "rewardGold": 45,
+    "rewardXP": 90,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“Glass tempered in the spring terraces does not break in fire; I have said so to the Choir, and they have a fire ready to say otherwise,” Imeh says, turning a green bowl in her hands. “Test it before they do. Stand beside the stall when they come. I will pay what the glass is worth, which is more than they think.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch3_glass_from_the_terraces_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Le Verre des Terrasses",
+    "npcDialogueText_fr": "« Le verre trempé aux terrasses des sources ne casse pas au feu ; je l’ai dit au Chœur, et ils ont un feu prêt à dire le contraire », dit Imeh en tournant un bol vert entre ses mains. « Éprouvez-le avant eux. Tenez-vous près de l’étal quand ils viendront. Je paierai ce que vaut le verre, et c’est plus qu’ils ne croient. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Stand with Imeh at the fire",
+        "choiceText_fr": "Tenir avec Imeh devant le feu",
+        "rewardGold": 25,
+        "alignmentChange": 0,
+        "flag": "glass_defended",
+        "resultText": "The Choir looks at you, then at the glass that did not break, and takes its fire elsewhere.",
+        "resultText_fr": "Le Chœur vous regarde, puis le verre qui n’a pas cassé, et porte son feu ailleurs.",
+        "politics": {
+          "standing": {
+            "oni": 10,
+            "penitents": -5
+          }
+        }
+      },
+      {
+        "choiceText": "Let the Choir burn the stall",
+        "choiceText_fr": "Laisser le Chœur brûler l’étal",
+        "rewardGold": 0,
+        "alignmentChange": 0,
+        "flag": "glass_burned",
+        "resultText": "The plank goes first. Imeh does not watch the rest, and does not look at you.",
+        "resultText_fr": "La planche part la première. Imeh ne regarde pas la suite, et ne vous regarde pas.",
+        "politics": {
+          "standing": {
+            "penitents": 10,
+            "oni": -10
+          },
+          "marks": {
+            "scorched_choir": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Carry the glass to the camp",
+        "choiceText_fr": "Porter le verre jusqu’au camp",
+        "rewardGold": 10,
+        "alignmentChange": 0,
+        "flag": "glass_carried",
+        "resultText": "A hundred pieces in straw, a day across the flats; the camp has light it did not have.",
+        "resultText_fr": "Cent pièces dans la paille, une journée à travers les plaines ; le camp a une lumière qu’il n’avait pas.",
+        "politics": {
+          "standing": {
+            "oni": 5
+          }
+        }
+      }
+    ]
+  },
+  "q_ch4_bark_tithe": {
+    "questID": "q_ch4_bark_tithe",
+    "questName": "The Bark Tithe",
+    "chapter": 4,
+    "category": "Side",
+    "difficulty": "4",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Recover Brannoc’s fever-bark from the Keyholders’ cache",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Brannoc Reedtithe",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "bark_recovered",
+        "description_fr": "Récupérer l’écorce-fièvre de Brannoc dans la cache des Porte-Clés",
+        "targetNPCName_fr": "Brannoc Reedtithe"
+      }
+    ],
+    "rewardGold": 50,
+    "rewardXP": 120,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“A season of fever-bark, bled by hand, and the Keyholders took it at the Stair for a tithe and put it in a cache to sell,” Brannoc says, with his hands on a patient who is not getting better. “I have candles and prayers down here. The bark works. Bring it up.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch4_bark_tithe_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "La Dîme d’écorce",
+    "npcDialogueText_fr": "« Une saison d’écorce-fièvre, saignée à la main, et les Porte-Clés l’ont prise à l’Escalier pour une dîme et mise en cache pour la vendre », dit Brannoc, les mains sur un malade qui ne va pas mieux. « Ici, j’ai des chandelles et des prières. L’écorce agit. Remontez-la. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Return the bark to Brannoc",
+        "choiceText_fr": "Rendre l’écorce à Brannoc",
+        "rewardGold": 10,
+        "alignmentChange": 0,
+        "flag": "bark_returned",
+        "resultText": "He doses the lowest ledge first. By morning two of them are sitting up.",
+        "resultText_fr": "Il soigne d’abord la corniche la plus basse. Au matin, deux d’entre eux sont assis.",
+        "politics": {
+          "standing": {
+            "mire": 10,
+            "crows": -5
+          },
+          "marks": {
+            "barkbleeders": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Sell the bark back to the Keyholders",
+        "choiceText_fr": "Revendre l’écorce aux Porte-Clés",
+        "rewardGold": 80,
+        "alignmentChange": -5,
+        "flag": "bark_sold",
+        "resultText": "The Keyholders pay in good coin and ask no questions. Brannoc asks one, and you do not answer it.",
+        "resultText_fr": "Les Porte-Clés paient en bonne monnaie et ne posent pas de questions. Brannoc en pose une, et vous n’y répondez pas.",
+        "politics": {
+          "standing": {
+            "crows": 10,
+            "mire": -10
+          }
+        }
+      },
+      {
+        "choiceText": "Keep half for the camp infirmary",
+        "choiceText_fr": "Garder la moitié pour l’infirmerie du camp",
+        "rewardGold": 20,
+        "alignmentChange": 0,
+        "flag": "bark_kept",
+        "resultText": "Brannoc weighs his half by hand and says it is fair. His hands say something else.",
+        "resultText_fr": "Brannoc soupèse sa moitié et dit que c’est juste. Ses mains disent autre chose.",
+        "politics": {
+          "standing": {
+            "mire": 3,
+            "crows": -3
+          }
+        }
+      }
+    ]
+  },
+  "q_ch5_candle_count": {
+    "questID": "q_ch5_candle_count",
+    "questName": "The Candle Count",
+    "chapter": 5,
+    "category": "Side",
+    "difficulty": "5",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Carry Orsabet’s count back from the tally stone past the frost",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Orsabet Vell",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "count_carried",
+        "description_fr": "Rapporter le compte d’Orsabet depuis la pierre des noms, au-delà du givre",
+        "targetNPCName_fr": "Orsabet Vell"
+      }
+    ],
+    "rewardGold": 55,
+    "rewardXP": 150,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“Four hundred and eleven, cut into a stone past the frost, because the Dominion writes them down as absent and the absent need no candles,” Orsabet says. “My legs stopped at the frost line a month ago. Bring me the count, and I will choose who keeps it.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch5_candle_count_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Le Compte des chandelles",
+    "npcDialogueText_fr": "« Quatre cent onze, gravés dans une pierre au-delà du givre, parce que le Dominion les inscrit comme absents et que les absents n’ont pas besoin de chandelles », dit Orsabet. « Mes jambes se sont arrêtées à la ligne de givre il y a un mois. Rapportez-moi le compte, et je choisirai qui le gardera. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Give the count to the Vigil",
+        "choiceText_fr": "Confier le compte à la Veille",
+        "rewardGold": 20,
+        "alignmentChange": 0,
+        "flag": "count_to_vigil",
+        "resultText": "A Candlebearer copies it twice before she lets go of the paper. Orsabet lights one candle for all of them.",
+        "resultText_fr": "Une Porte-Chandelle le recopie deux fois avant de lâcher le papier. Orsabet allume une chandelle pour eux tous.",
+        "politics": {
+          "standing": {
+            "vigil": 10,
+            "dominion": -5
+          },
+          "marks": {
+            "candlebearers": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Seal it in the Reliquary",
+        "choiceText_fr": "Le sceller dans le Reliquaire",
+        "rewardGold": 60,
+        "alignmentChange": 0,
+        "flag": "count_sealed",
+        "resultText": "The Reliquary gives it a number and a shelf. Orsabet asks where, and is not told.",
+        "resultText_fr": "Le Reliquaire lui donne un numéro et une étagère. Orsabet demande où, et on ne le lui dit pas.",
+        "politics": {
+          "standing": {
+            "dominion": 10,
+            "vigil": -10
+          },
+          "marks": {
+            "reliquary": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Read the names aloud at the gate",
+        "choiceText_fr": "Lire les noms à voix haute à la porte",
+        "rewardGold": 0,
+        "alignmentChange": 0,
+        "flag": "count_read",
+        "resultText": "It takes until dark. Nobody at the gate leaves before the last one.",
+        "resultText_fr": "Cela prend jusqu’à la nuit. Personne, à la porte, ne part avant le dernier.",
+        "politics": {
+          "standing": {
+            "vigil": 5,
+            "penitents": 5,
+            "dominion": -5
+          }
+        }
+      }
+    ]
+  },
+  "q_ch5_hearth_stone": {
+    "questID": "q_ch5_hearth_stone",
+    "questName": "The Hearth-Stone",
+    "chapter": 5,
+    "category": "Side",
+    "difficulty": "5",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Hold the hearth-stone’s quarry face against the Quarrymen’s cut",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Ghrem Stonebrow",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "quarry_face_held",
+        "description_fr": "Tenir le front de carrière de la pierre du foyer contre la taille des Carriers",
+        "targetNPCName_fr": "Ghrem Stonebrow"
+      }
+    ],
+    "rewardGold": 55,
+    "rewardXP": 150,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“The Quarrymen have a paper for the face my hearth-stone came from, and a crew, and I have forty giants too old to stand in front of it,” Ghrem says, from somewhere above the firelight. “Stand there. Hold it. I will not ask a second time; I am not young enough to.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch5_hearth_stone_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "La Pierre du foyer",
+    "npcDialogueText_fr": "« Les Carriers ont un papier pour le front d’où vient ma pierre du foyer, et une équipe, et j’ai quarante géants trop vieux pour se tenir devant », dit Ghrem, de quelque part au-dessus de la lueur du feu. « Tenez-vous là. Tenez-le. Je ne demanderai pas deux fois ; je ne suis plus assez jeune pour ça. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Give the giants their stone",
+        "choiceText_fr": "Laisser leur pierre aux géants",
+        "rewardGold": 10,
+        "alignmentChange": 0,
+        "flag": "hearth_stone_kept",
+        "resultText": "Ghrem breaks a chip off the face with his thumb and sets it by the fire, where you can see it from the door.",
+        "resultText_fr": "Ghrem détache un éclat du front avec le pouce et le pose près du feu, là où vous pouvez le voir depuis la porte.",
+        "politics": {
+          "standing": {
+            "giants": 10,
+            "compact": -5
+          }
+        }
+      },
+      {
+        "choiceText": "Let the Quarrymen cut",
+        "choiceText_fr": "Laisser tailler les Carriers",
+        "rewardGold": 70,
+        "alignmentChange": 0,
+        "flag": "hearth_stone_cut",
+        "resultText": "The foreman pays by the cart. Ghrem counts the carts from the moot-hall door and says nothing to you.",
+        "resultText_fr": "Le contremaître paie à la charrette. Ghrem compte les charrettes depuis la porte de la salle du conseil et ne vous dit rien.",
+        "politics": {
+          "standing": {
+            "compact": 10,
+            "giants": -10
+          },
+          "marks": {
+            "quarrymen": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Split the face between them",
+        "choiceText_fr": "Partager le front entre eux",
+        "rewardGold": 35,
+        "alignmentChange": 0,
+        "flag": "hearth_stone_split",
+        "resultText": "A line is chalked across the stone at head height, a giant’s head. Both sides call it a bad bargain, which is how you know it is one.",
+        "resultText_fr": "Un trait de craie barre la pierre à hauteur de tête, une tête de géant. Les deux camps parlent d’un mauvais marché, et c’est à cela qu’on reconnaît un marché.",
+        "politics": {
+          "standing": {
+            "giants": 3,
+            "compact": 3
+          }
+        }
+      }
+    ]
+  },
+  "q_ch6_salvage_rights": {
+    "questID": "q_ch6_salvage_rights",
+    "questName": "Salvage Rights",
+    "chapter": 6,
+    "category": "Side",
+    "difficulty": "6",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Free Nkem’s salvage from the Admiralty’s impound",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Nkem Tallow",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "salvage_freed",
+        "description_fr": "Libérer la prise de Nkem de la fourrière de l’Amirauté",
+        "targetNPCName_fr": "Nkem Tallow"
+      }
+    ],
+    "rewardGold": 60,
+    "rewardXP": 180,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“A flagship’s bronze, a case of chart-weights and a bell, and the Admiralty put a seal on the lot in the name of a Crusade that is at the bottom of the bay,” Nkem says, mending a net he does not look at. “I went down for it. They did not. Get it out of their hull and we will talk about whose it is.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch6_salvage_rights_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Droits d’épave",
+    "npcDialogueText_fr": "« Le bronze d’un vaisseau amiral, une caisse de poids de carte et une cloche, et l’Amirauté a mis un sceau sur le tout au nom d’une Croisade qui gît au fond de la baie », dit Nkem en réparant un filet qu’il ne regarde pas. « Je suis descendu le chercher. Pas eux. Sortez-le de leur coque et nous verrons à qui cela revient. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Give Nkem the salvage",
+        "choiceText_fr": "Remettre la prise à Nkem",
+        "rewardGold": 30,
+        "alignmentChange": 0,
+        "flag": "salvage_to_crows",
+        "resultText": "He gives you the chart-weights, one by one, until you tell him to stop.",
+        "resultText_fr": "Il vous donne les poids de carte, un par un, jusqu’à ce que vous lui disiez d’arrêter.",
+        "politics": {
+          "standing": {
+            "crows": 10,
+            "dominion": -5
+          },
+          "marks": {
+            "brig_born": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Hand it to the Admiralty",
+        "choiceText_fr": "La remettre à l’Amirauté",
+        "rewardGold": 45,
+        "alignmentChange": 0,
+        "flag": "salvage_to_admiralty",
+        "resultText": "The fleet’s clerk puts a new seal on it and a reward in your hand. Nkem is not on the beach to see either.",
+        "resultText_fr": "Le clerc de la flotte y pose un nouveau sceau et une récompense dans votre main. Nkem n’est pas sur la grève pour voir ni l’un ni l’autre.",
+        "politics": {
+          "standing": {
+            "dominion": 10,
+            "crows": -10
+          },
+          "marks": {
+            "admiralty": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Sell it to the wreck-wrights",
+        "choiceText_fr": "La vendre aux charpentiers d’épaves",
+        "rewardGold": 90,
+        "alignmentChange": 0,
+        "flag": "salvage_sold",
+        "resultText": "The wreck-wrights weigh the bronze and do not ask where it came from. Everyone else on the sand knows.",
+        "resultText_fr": "Les charpentiers d’épaves pèsent le bronze et ne demandent pas d’où il vient. Tout le monde sur le sable le sait.",
+        "politics": {
+          "standing": {
+            "crows": -5,
+            "dominion": -5
+          }
+        }
+      }
+    ]
   }
 }
