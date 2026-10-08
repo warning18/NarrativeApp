@@ -9,6 +9,7 @@ import '../data/chapter_grid_layout.dart';
 import '../data/echoes.dart';
 import '../data/encounter_text.dart';
 import '../data/geography.dart';
+import '../data/city_plan.dart';
 import '../data/journey_map.dart';
 import '../data/journey_relief.dart';
 import '../data/map_charts.dart' show ChartGeography, ChartPalette, chartOf;
@@ -39,6 +40,7 @@ import '../widgets/chart_map_painter.dart' show ChartCalque;
 import '../widgets/journey_world_map.dart';
 import '../widgets/geography_widgets.dart';
 import '../widgets/journey_fx.dart';
+import '../widgets/city_plan_painter.dart';
 import '../widgets/journey_place.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/camp_travel.dart' show CampReturnButton, TravelOnList;
@@ -138,12 +140,23 @@ class _PlaceView {
     this.biome,
     this.glyphs = const {},
     this.water = '',
+    this.plan,
+    this.hereDistrict = '',
+    this.districtOfStep = const {},
   });
 
   final PlaceKind kind;
   final int seed;
   final ChartGeography geography;
   final Offset chartHere;
+
+  /// The city's plan (v1.203, see city_plan.dart), when the place is a
+  /// city, a town or a village of the geography: the party stands in
+  /// [hereDistrict] ('' for the square), and the steps into its other
+  /// districts ([districtOfStep], by step) sit where those districts are.
+  final CityPlan? plan;
+  final String hereDistrict;
+  final Map<int, String> districtOfStep;
 
   /// The districts' glyphs over the ways into them, by step (v1.199).
   final Map<int, String> glyphs;
@@ -858,6 +871,45 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // the one plan and look from district to district, so only a journey
     // changes the map.
     final hereLocation = world.locationOf(herePlace?.id);
+    // The city's plan (v1.203): a city, a town or a village of the
+    // geography is drawn as one, its districts on it; the roads out to the
+    // nearest other places give it its gates.
+    CityPlan? plan;
+    final districtOfStep = <int, String>{};
+    final citySize = switch (hereLocation?.kind) {
+      'city' => CitySize.city,
+      'town' => CitySize.town,
+      'village' => CitySize.village,
+      _ => null,
+    };
+    if (hereLocation != null && citySize != null && chartHere != null) {
+      final others = [
+        for (final l in worldMapLandmarks)
+          if (world.locationOf(world.placeOfLandmark(l.id)?.id)?.id !=
+              hereLocation.id)
+            geography.of(l),
+      ]..sort((a, b) => (a - chartHere)
+          .distanceSquared
+          .compareTo((b - chartHere).distanceSquared));
+      plan = CityPlan.of(
+        seed: _stableSeed(hereLocation.id),
+        size: citySize,
+        water: hereLocation.water,
+        districts: [
+          for (final d in world.childrenOf(hereLocation.id))
+            if (d.level == GeoLevel.district) CityDistrict(d.id, d.glyph),
+        ],
+        exitBearings: [
+          for (final p in others.take(3)) (p - chartHere).direction,
+        ],
+      );
+      for (var i = 0; i < choices.length; i++) {
+        final place = world.placeOfNode(story.nodeFor(choices[i].nextId));
+        if (place == null || place.id == herePlace?.id) continue;
+        if (world.locationOf(place.id)?.id != hereLocation.id) continue;
+        districtOfStep[i] = place.level == GeoLevel.district ? place.id : '';
+      }
+    }
     final placeView = placeLandmark == null || chartHere == null
         ? null
         : _PlaceView(
@@ -869,6 +921,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             chartHere: chartHere,
             biome: world.biomeOf(herePlace?.id),
             water: herePlace?.water ?? '',
+            plan: plan,
+            hereDistrict:
+                herePlace?.level == GeoLevel.district ? herePlace!.id : '',
+            districtOfStep: districtOfStep,
             glyphs: {
               for (var i = 0; i < choices.length; i++)
                 if (world.placeOfNode(story.nodeFor(choices[i].nextId))?.glyph
@@ -1741,10 +1797,42 @@ class _JourneyChartState extends State<_JourneyChart>
 
   bool get _placeMode => widget.place != null;
 
-  /// A way's road: a street out of the square in a place, the road up
-  /// the map otherwise.
-  Path _road(Offset from, Offset to) =>
-      _placeMode ? placeStreet(from, to) : _roadPath(from, to);
+  /// The city's plan on the map (v1.203): canvas = origin + plan * scale.
+  double? _planScale;
+  Offset? _planOrigin;
+  CityPlan? get _plan => widget.place?.plan;
+
+  /// A way's road: through the city's streets on its plan, a street out
+  /// of the square in a place, the road up the map otherwise.
+  Path _road(Offset from, Offset to) {
+    final plan = _plan;
+    final s = _planScale, o = _planOrigin;
+    if (plan != null && s != null && o != null) {
+      final pts = [
+        for (final p in plan.route((from - o) / s, (to - o) / s)) o + p * s,
+      ];
+      final path = Path()..moveTo(pts.first.dx, pts.first.dy);
+      for (var i = 1; i < pts.length; i++) {
+        if (i + 1 < pts.length) {
+          final mid = (pts[i] + pts[i + 1]) / 2;
+          path.quadraticBezierTo(pts[i].dx, pts[i].dy, mid.dx, mid.dy);
+        } else {
+          path.lineTo(pts[i].dx, pts[i].dy);
+        }
+      }
+      return path;
+    }
+    return _placeMode ? placeStreet(from, to) : _roadPath(from, to);
+  }
+
+  /// [path] less the party's mark at its start and the step's at its end.
+  static Path _trimmed(Path path, double start, double end) {
+    final metrics = path.computeMetrics().toList();
+    if (metrics.isEmpty) return path;
+    final metric = metrics.first;
+    if (metric.length <= start + end + 2) return path;
+    return metric.extractPath(start, metric.length - end);
+  }
 
   /// Where a way's road leaves the party and reaches its mark.
   (Offset, Offset) _roadEnds(Offset here, Offset centre, double width) {
@@ -1960,12 +2048,103 @@ class _JourneyChartState extends State<_JourneyChart>
                         : steps.length > 3
                             ? 300
                             : 220);
-            here = Offset(width / 2, present / 2);
-            centres = journeyPlaceLayout(
-              area: Size(width, present),
-              here: here,
-              bearings: [for (final step in steps) step.bearing],
-            );
+            final plan = _plan;
+            if (plan != null) {
+              // On the city's plan (v1.203): the whole city in view, the
+              // party where its district is, the steps into the other
+              // districts where those are, the ways out at the edge and
+              // the ways within this district close round the party.
+              final frame = plan.frame;
+              const side = 22.0, top = 26.0, foot = 74.0;
+              final s = math.min((width - 2 * side) / frame.width,
+                  (present - top - foot) / frame.height);
+              final origin = Offset(width / 2 - frame.center.dx * s,
+                  top + (present - top - foot) / 2 - frame.center.dy * s);
+              _planScale = s;
+              _planOrigin = origin;
+              Offset tf(Offset p) => origin + p * s;
+              here = tf(plan.anchorOf(widget.place!.hereDistrict));
+              final districtOf = widget.place!.districtOfStep;
+              final positions = List<Offset>.filled(steps.length, here);
+              // Where the party's badge and the map's button sit: no mark
+              // under them.
+              final obstacles = [
+                Rect.fromLTWH(0, 0, math.min(width * 0.5, 190) + 16, 84),
+                Rect.fromLTWH(width - 64, present - 64, 64, 64),
+              ];
+              final area = Rect.fromLTWH(0, 0, width, present).deflate(28);
+              final taken = <Offset>[];
+              const apart = _stepRadius * 2 + 6;
+              bool clear(Offset p) =>
+                  area.contains(p) &&
+                  (p - here).distance >= _hereRadius + _stepRadius + 4 &&
+                  !obstacles.any((o) => o.overlaps(
+                      Rect.fromCircle(center: p, radius: _stepRadius))) &&
+                  taken.every((t) => (t - p).distance >= apart);
+              // Spots round the party, ring on ring, the nearest first:
+              // a way with no ground of its own takes the first spot that
+              // is clear.
+              final candidates = <Offset>[
+                for (var k = 0; k < 7; k++)
+                  for (var n = 0; n < 18; n++)
+                    here +
+                        Offset(math.cos(n * math.pi / 9 + k * math.pi / 18),
+                                math.sin(n * math.pi / 9 + k * math.pi / 18)) *
+                            (74 + k * 46),
+              ];
+              Offset spotNear(Offset wanted) {
+                Offset? best;
+                var bestD = double.infinity;
+                for (final c in candidates) {
+                  if (!clear(c)) continue;
+                  final d = (c - wanted).distance;
+                  if (d < bestD) {
+                    bestD = d;
+                    best = c;
+                  }
+                }
+                return best ?? wanted;
+              }
+
+              // The districts' marks first, on their buildings; then the
+              // ways out at the edge; then the rest round the party.
+              final later = <int>[];
+              for (var i = 0; i < steps.length; i++) {
+                final district = districtOf[i];
+                if (district == null) {
+                  later.add(i);
+                  continue;
+                }
+                var p = tf(plan.anchorOf(district));
+                if (!clear(p)) p = spotNear(p);
+                positions[i] = p;
+                taken.add(p);
+              }
+              for (final i in later) {
+                // Only a journey out of the city goes to the edge; a way
+                // to another spot of this city stays by the party.
+                final bearing =
+                    steps[i].chartTarget != null ? steps[i].bearing : null;
+                final wanted = bearing != null
+                    ? journeyEdgeSpot(here, bearing, Size(width, present))
+                    : here;
+                final p = clear(wanted) && bearing != null
+                    ? wanted
+                    : spotNear(wanted);
+                positions[i] = p;
+                taken.add(p);
+              }
+              centres = positions;
+            } else {
+              _planScale = null;
+              _planOrigin = null;
+              here = Offset(width / 2, present / 2);
+              centres = journeyPlaceLayout(
+                area: Size(width, present),
+                here: here,
+                bearings: [for (final step in steps) step.bearing],
+              );
+            }
             pastPoints = [
               for (var i = 0; i < widget.past.length; i++)
                 Offset(width / 2 + math.sin((i + 1) * 1.25) * width * 0.12,
@@ -1990,9 +2169,14 @@ class _JourneyChartState extends State<_JourneyChart>
                     hereY + _hereRadius + 44 + i * _pastGap),
             ];
             _openAt = math.max(0, present - box.maxHeight);
+            _planScale = null;
+            _planOrigin = null;
           }
           _here = here;
           _centres = centres;
+          // The ways' roads on the city's plan, through its streets.
+          final planRoads =
+              _plan == null ? null : [for (final c in centres) _road(here, c)];
           final bottom = pastPoints.isEmpty
               ? present
               : math.max(present, pastPoints.last.dy + 70);
@@ -2067,6 +2251,7 @@ class _JourneyChartState extends State<_JourneyChart>
                   labels: names,
                   avoid: [Rect.fromCircle(center: here, radius: _hereRadius)],
                   keep: widget.selected,
+                  keepAll: _plan != null,
                 )
               : [
                   for (var i = 0; i < steps.length; i++)
@@ -2114,9 +2299,14 @@ class _JourneyChartState extends State<_JourneyChart>
                       walking == null &&
                       widget.selected! < centres.length &&
                       !steps[widget.selected!].locked) {
-                    final (from, to) =
-                        _roadEnds(here, centres[widget.selected!], width);
-                    selectedRoad = _road(from, to);
+                    if (planRoads != null) {
+                      selectedRoad = _trimmed(planRoads[widget.selected!],
+                          _hereRadius, _stepRadius);
+                    } else {
+                      final (from, to) =
+                          _roadEnds(here, centres[widget.selected!], width);
+                      selectedRoad = _road(from, to);
+                    }
                   }
                   final burning = _animate && widget.burn && now < 1.4;
                   final burnT = (now / 1.3).clamp(0.0, 1.0);
@@ -2151,16 +2341,24 @@ class _JourneyChartState extends State<_JourneyChart>
                                       shift: widget.terrainShift,
                                       seed: widget.terrainSeed,
                                     )
-                                  : PlacePlanPainter(
-                                      kind: widget.place!.kind,
-                                      seed: widget.place!.seed,
-                                      here: here,
-                                      spots: centres,
-                                      palette: palette,
-                                      ember: widget.ink.ember,
-                                      glyphs: widget.place!.glyphs,
-                                      water: widget.place!.water,
-                                    ),
+                                  : _plan != null && _planScale != null
+                                      ? CityPlanPainter(
+                                          plan: _plan!,
+                                          scale: _planScale!,
+                                          origin: _planOrigin!,
+                                          palette: palette,
+                                          ember: widget.ink.ember,
+                                        )
+                                      : PlacePlanPainter(
+                                          kind: widget.place!.kind,
+                                          seed: widget.place!.seed,
+                                          here: here,
+                                          spots: centres,
+                                          palette: palette,
+                                          ember: widget.ink.ember,
+                                          glyphs: widget.place!.glyphs,
+                                          water: widget.place!.water,
+                                        ),
                             ),
                           ),
                         ),
@@ -2189,6 +2387,7 @@ class _JourneyChartState extends State<_JourneyChart>
                               pastGoesOn: !widget.pastReachesStart,
                               walking: walking,
                               progress: t,
+                              roads: planRoads,
                               reveals: [
                                 for (var i = 0; i < steps.length; i++)
                                   _roadReveal(i),
@@ -2995,8 +3194,14 @@ class _JourneyPainter extends CustomPainter {
     required this.progress,
     this.reveals = const [],
     this.radial = false,
+    this.roads,
     Offset? pastFrom,
   }) : pastFrom = pastFrom ?? here;
+
+  /// The ways' roads through a city's streets (v1.203), from the party to
+  /// each step, when the place has a plan; else each is a street or the
+  /// road up the map.
+  final List<Path>? roads;
 
   /// In a place (v1.181): the ways run out of the square every way, as
   /// streets, with no fog over the top; the chapter's road comes in from
@@ -3131,7 +3336,11 @@ class _JourneyPainter extends CustomPainter {
             Offset(math.sin(lean) * hereRadius, -math.cos(lean) * hereRadius);
         end = step.centre.translate(0, stepRadius);
       }
-      var path = radial ? placeStreet(start, end) : _roadPath(start, end);
+      var path = roads != null && s < roads!.length
+          ? _JourneyChartState._trimmed(roads![s], hereRadius, stepRadius)
+          : radial
+              ? placeStreet(start, end)
+              : _roadPath(start, end);
       final reveal = s < reveals.length ? reveals[s] : 1.0;
       if (reveal <= 0) continue;
       if (reveal < 1) {
@@ -3158,9 +3367,11 @@ class _JourneyPainter extends CustomPainter {
     }
     // The road being walked, in the party's colour behind it.
     if (walking != null && walking! < steps.length && progress > 0) {
-      final road = radial
-          ? placeStreet(here, steps[walking!].centre)
-          : _roadPath(here, steps[walking!].centre);
+      final road = roads != null && walking! < roads!.length
+          ? roads![walking!]
+          : radial
+              ? placeStreet(here, steps[walking!].centre)
+              : _roadPath(here, steps[walking!].centre);
       for (final metric in road.computeMetrics()) {
         canvas.drawPath(
           metric.extractPath(0, metric.length * progress),
@@ -3198,6 +3409,7 @@ class _JourneyPainter extends CustomPainter {
       ].any((changed) => changed) ||
       old.pastGoesOn != pastGoesOn ||
       old.radial != radial ||
+      (old.roads == null) != (roads == null) ||
       old.pastFrom != pastFrom ||
       old.past.length != past.length ||
       old.steps.length != steps.length ||
