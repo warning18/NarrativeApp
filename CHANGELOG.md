@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.202.0+237]
+
+### Changed
+- The world chart drawn in more detail. The sea has shallows along every coast, water lines off the shore when looked at close, and waves on the open water. The lands have a pale shore band, a dotted edge round each land, a stipple of the biome's grain, and denser terrain: woods in clumps with firs on the cold lands, rounded hills shaded on one side, rocks, snow in drifts, lakes with an outline. Rivers run as a thread at the source widening to the mouth, with a light down the middle, streams that feed them and a small delta where they meet the sea; the ranges have a ridge line and shaded, hachured peaks. Villages are four houses and a field, a clan's seat a keep between two towers on its ring wall, a ruin two columns and a fallen lintel, a bridge arched. Every reached place has houses round it, and a wall round the big towns. A compass rose and a scale bar sit on the flat chart.
+- The chart keeps its names and marks near one size on screen as it is zoomed, instead of growing with it; the small names (ranges, villages, notes) and the finest detail show from the land level on.
+- The street map of a place drawn fuller: cased streets with lanes off them, houses set along the streets with pitched roofs and chimneys, towers on the wall, trees in the yards, a cobbled square with a well; a river with banks and ripples, a shore with surf, a quay and boats; a camp with a palisade, its fire and crates; a ruin with columns, an arch and grass.
+
 ## [1.201.2+236]
 
 ### Fixed

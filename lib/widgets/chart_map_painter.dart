@@ -56,7 +56,9 @@ class ChartMapPainter extends CustomPainter {
     this.campPlaces = const {},
     this.detail = true,
     this.globe,
-  }) : super(repaint: Listenable.merge([frame, walk]));
+    this.zoomOf,
+    Listenable? view,
+  }) : super(repaint: Listenable.merge([frame, walk, if (view != null) view]));
 
   final ValueNotifier<int> frame;
   final Animation<double> walk;
@@ -96,6 +98,25 @@ class ChartMapPainter extends CustomPainter {
 
   /// The chart as a sphere (v1.200, see chart_globe.dart), or flat.
   final GlobeView? globe;
+
+  /// How close the chart is looked at (1 = the whole of it in the box):
+  /// the names keep a readable size and the small detail shows as the
+  /// chart comes closer (v1.202). Null reads as 1.
+  final double Function()? zoomOf;
+
+  /// How close the chart is looked at, clamped, and the sizes that follow
+  /// it: names and marks shrink in the chart's units as it comes closer,
+  /// so they keep near one size on screen; the fine detail (coast ticks,
+  /// stipple, the features' names) shows from the second level on.
+  double get _zoom => (zoomOf?.call() ?? 1).clamp(1.0, 12.0);
+  int get _lod => _zoom < 1.8
+      ? 0
+      : _zoom < 4.5
+          ? 1
+          : 2;
+  double get _t => math.pow(_zoom, -0.8).toDouble();
+  double get _m => math.pow(_zoom, -0.65).toDouble();
+  double get _w => math.pow(_zoom, -0.45).toDouble();
 
   /// The canvas in the chart's units: the chart itself when flat, the
   /// whole box round the sphere.
@@ -213,78 +234,136 @@ class ChartMapPainter extends CustomPainter {
     }
   }
 
+  /// A house: a body and a pitched roof, [w] wide, at [o] (its foot's
+  /// middle).
+  void _house(
+      Canvas canvas, Offset o, double w, double h, Color body, Color roof) {
+    canvas.drawRect(
+        Rect.fromLTWH(o.dx - w / 2, o.dy - h, w, h), Paint()..color = body);
+    canvas.drawPath(
+        Path()
+          ..moveTo(o.dx - w / 2 - 0.2, o.dy - h)
+          ..lineTo(o.dx, o.dy - h - w * 0.55)
+          ..lineTo(o.dx + w / 2 + 0.2, o.dy - h)
+          ..close(),
+        Paint()..color = roof);
+  }
+
   void _feature(Canvas canvas, ChartFeature f, Offset p) {
     final ink = palette.place;
+    final dark = const Color(0xFF17151B).withValues(alpha: 0.8);
+    canvas.save();
+    canvas.translate(p.dx, p.dy);
+    canvas.scale((_m * 1.3).clamp(0.3, 1.3));
     switch (f.kind) {
       case ChartFeatureKind.village:
+        // Four houses about a lane, and a field or two beside them.
         final seed = chartSeed(f.nameEn);
-        for (var i = 0; i < 3; i++) {
-          final dx = ((seed >> (i * 3)) % 7) - 3.0 + (i - 1) * 3.2;
-          final dy = -3.0 - ((seed >> (i * 2 + 5)) % 3);
-          canvas.drawRect(Rect.fromLTWH(p.dx + dx, p.dy + dy, 2.2, 1.6),
-              Paint()..color = ink.withValues(alpha: 0.8));
+        final field = Paint()
+          ..color = ink.withValues(alpha: 0.45)
+          ..strokeWidth = 0.25;
+        final fx = (seed % 2 == 0 ? 4.0 : -8.5), fy = -1.5;
+        for (var i = 0; i < 4; i++) {
+          canvas.drawLine(
+              Offset(fx, fy + i * 0.9), Offset(fx + 4.5, fy + i * 0.9), field);
+        }
+        for (var i = 0; i < 4; i++) {
+          final dx = -3.6 + i * 2.5 + (((seed >> (i * 3)) % 5) - 2) * 0.25;
+          final dy = ((seed >> (i * 2 + 5)) % 3) * 0.6 - 0.4;
+          _house(canvas, Offset(dx, dy), 1.9, 1.3, ink.withValues(alpha: 0.85),
+              dark);
         }
       case ChartFeatureKind.seat:
+        // The clan's hold: a keep between two towers on a ring wall, its
+        // banner in the clan's colour.
         final colour = clanColours[f.clan] ?? palette.label;
         canvas.drawCircle(
-            p, 3.4, Paint()..color = colour.withValues(alpha: 0.18));
+            Offset.zero, 4.2, Paint()..color = colour.withValues(alpha: 0.16));
         canvas.drawCircle(
-            p,
-            3.4,
+            Offset.zero,
+            4.2,
             Paint()
               ..color = colour
               ..style = PaintingStyle.stroke
-              ..strokeWidth = 0.7);
+              ..strokeWidth = 0.6);
+        final stone = Paint()..color = ink.withValues(alpha: 0.9);
+        canvas.drawRect(const Rect.fromLTWH(-2.4, -1.6, 4.8, 2.6), stone);
+        canvas.drawRect(const Rect.fromLTWH(-3.2, -3.2, 1.4, 4.2), stone);
+        canvas.drawRect(const Rect.fromLTWH(1.8, -3.2, 1.4, 4.2), stone);
+        canvas.drawRect(const Rect.fromLTWH(-0.9, -3.0, 1.8, 1.4), stone);
+        final merlon = Paint()..color = dark;
+        for (final x in const [-3.2, -2.4, 1.8, 2.6]) {
+          canvas.drawRect(Rect.fromLTWH(x, -3.5, 0.5, 0.5), merlon);
+        }
         canvas.drawLine(
-            Offset(p.dx + 3.4, p.dy - 0.5),
-            Offset(p.dx + 3.4, p.dy - 6.5),
+            const Offset(0, -3),
+            const Offset(0, -7.2),
             Paint()
               ..color = ink
-              ..strokeWidth = 0.5);
+              ..strokeWidth = 0.4);
         canvas.drawPath(
             Path()
-              ..moveTo(p.dx + 3.4, p.dy - 6.5)
-              ..lineTo(p.dx + 7.4, p.dy - 5.2)
-              ..lineTo(p.dx + 3.4, p.dy - 3.9)
+              ..moveTo(0, -7.2)
+              ..lineTo(3.4, -6.1)
+              ..lineTo(0, -5)
               ..close(),
             Paint()..color = colour);
       case ChartFeatureKind.bridge:
-        canvas.save();
-        canvas.translate(p.dx, p.dy);
         canvas.rotate(f.angle);
         final bar = Paint()
           ..color = const Color(0xFFA39DAE)
-          ..strokeWidth = 0.7;
-        canvas.drawLine(const Offset(-3.2, -1), const Offset(3.2, -1), bar);
-        canvas.drawLine(const Offset(-3.2, 1), const Offset(3.2, 1), bar);
-        canvas.restore();
+          ..strokeWidth = 0.6;
+        canvas.drawLine(const Offset(-4, -1.1), const Offset(4, -1.1), bar);
+        canvas.drawLine(const Offset(-4, 1.1), const Offset(4, 1.1), bar);
+        final arch = Paint()
+          ..color = const Color(0xFFA39DAE).withValues(alpha: 0.8)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.4;
+        for (final x in const [-2.2, 0.0, 2.2]) {
+          canvas.drawPath(
+              Path()
+                ..moveTo(x - 1, 1.1)
+                ..quadraticBezierTo(x, 2.6, x + 1, 1.1),
+              arch);
+        }
       case ChartFeatureKind.giant:
         final stone = Paint()..color = const Color(0xFF8E8898);
-        canvas.drawRect(Rect.fromLTWH(p.dx - 1, p.dy - 3, 2, 4), stone);
-        canvas.drawCircle(Offset(p.dx, p.dy - 4), 1, stone);
+        canvas.drawOval(const Rect.fromLTWH(-2.6, 1.2, 5.2, 1.2),
+            Paint()..color = dark.withValues(alpha: 0.35));
+        canvas.drawRect(const Rect.fromLTWH(-1.1, -3.4, 2.2, 4.6), stone);
+        canvas.drawRect(const Rect.fromLTWH(-2.2, -2.8, 1, 3), stone);
+        canvas.drawRect(const Rect.fromLTWH(1.2, -2.8, 1, 3), stone);
+        canvas.drawCircle(const Offset(0, -4.4), 1.1, stone);
         canvas.drawLine(
-            Offset(p.dx - 2.4, p.dy + 1),
-            Offset(p.dx + 2.4, p.dy + 1),
+            const Offset(-2.8, 1.2),
+            const Offset(2.8, 1.2),
             Paint()
               ..color = const Color(0xFFA39DAE)
               ..strokeWidth = 0.5);
       case ChartFeatureKind.site:
-        canvas.drawCircle(p, 1.7, Paint()..color = palette.land);
-        canvas.drawCircle(
-            p,
-            1.7,
-            Paint()
-              ..color = palette.label
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 0.5);
-        canvas.drawCircle(p, 0.6, Paint()..color = palette.label);
+        // A ruin: two columns, a fallen lintel, rubble.
+        final stone = Paint()..color = ink.withValues(alpha: 0.8);
+        canvas.drawRect(const Rect.fromLTWH(-2.4, -3, 0.9, 3.4), stone);
+        canvas.drawRect(const Rect.fromLTWH(1.2, -2.2, 0.9, 2.6), stone);
+        canvas.save();
+        canvas.rotate(0.35);
+        canvas.drawRect(const Rect.fromLTWH(-1.2, 0.2, 3.2, 0.7), stone);
+        canvas.restore();
+        for (final r in const [
+          Offset(-1.4, 1.1),
+          Offset(0.6, 1.6),
+          Offset(2.6, 0.9)
+        ]) {
+          canvas.drawCircle(r, 0.35, stone);
+        }
     }
+    canvas.restore();
   }
 
   /// The static layers of [relief] in this look, recorded once.
   ui.Picture _groundFor(ChartRelief relief) {
     final key =
-        '${identityHashCode(relief)}:${palette.hashCode}:$detail:${calque == ChartCalque.lands}:${globe?.key}';
+        '${identityHashCode(relief)}:${palette.hashCode}:$detail:${calque == ChartCalque.lands}:${globe?.key}:$_lod';
     return _ground[key] ??= () {
       final recorder = ui.PictureRecorder();
       final canvas = Canvas(recorder);
@@ -295,6 +374,9 @@ class ChartMapPainter extends CustomPainter {
 
   void _paintGround(Canvas canvas, ChartRelief relief) {
     final whole = _whole;
+    // The sphere is painted afresh on every turn, so it keeps to the
+    // coarse detail.
+    final lod = globe == null ? _lod : 0;
     // Sea, with its long swell lines; on the globe, the sky round it and
     // the parallels and meridians over it.
     final g = globe;
@@ -326,6 +408,37 @@ class ChartMapPainter extends CustomPainter {
         canvas.drawPath(_line(line), grid);
       }
     }
+    // Waves on the open sea (v1.202).
+    if (detail) {
+      var i = 0;
+      for (final w in relief.waves) {
+        i++;
+        if (lod == 0 && i.isOdd) continue;
+        if (!_vis(w)) continue;
+        _wave(canvas, _at(w), 2.4);
+      }
+    }
+    // The shallows along every coast (v1.202): the sea paler there, in
+    // two bands, under the land.
+    final shallow = Color.lerp(palette.sea, palette.seaLine, 0.9)!;
+    final allCoasts = [...relief.coasts, ...relief.islets];
+    for (final coast in allCoasts) {
+      final path = _poly(coast);
+      canvas.drawPath(
+          path,
+          Paint()
+            ..color = shallow.withValues(alpha: 0.5)
+            ..style = PaintingStyle.stroke
+            ..strokeJoin = StrokeJoin.round
+            ..strokeWidth = 7);
+      canvas.drawPath(
+          path,
+          Paint()
+            ..color = shallow.withValues(alpha: 0.75)
+            ..style = PaintingStyle.stroke
+            ..strokeJoin = StrokeJoin.round
+            ..strokeWidth = 3);
+    }
     // Land and coast, with headlands, bays and islets.
     final coastPaint = Paint()
       ..color = palette.coast
@@ -333,35 +446,70 @@ class ChartMapPainter extends CustomPainter {
       ..strokeJoin = StrokeJoin.round
       ..strokeWidth = 0.9;
     final landClip = Path();
-    for (final coast in [...relief.coasts, ...relief.islets]) {
+    for (final coast in allCoasts) {
       final path = _poly(coast);
       landClip.addPath(path, Offset.zero);
       canvas.drawPath(path, Paint()..color = palette.land);
       canvas.drawPath(path, coastPaint);
     }
+    // Water lines off the coasts (v1.202), as a pen chart hatches them.
+    if (detail && lod >= 1) {
+      for (final coast in relief.coasts) {
+        _coastTicks(canvas, coast, lod);
+      }
+    }
     canvas.save();
     canvas.clipPath(landClip);
+    // A pale shore band inside every coast (v1.202).
+    final shore = Color.lerp(palette.land, palette.coast, 0.35)!;
+    for (final coast in allCoasts) {
+      canvas.drawPath(
+          _poly(coast),
+          Paint()
+            ..color = shore.withValues(alpha: 0.6)
+            ..style = PaintingStyle.stroke
+            ..strokeJoin = StrokeJoin.round
+            ..strokeWidth = 2.4);
+    }
     // The lands' biomes, laid thin over the land (deeper on the lands
-    // calque).
+    // calque), each land's edge dotted (v1.202).
     final wash = calque == ChartCalque.lands ? 0.26 : 0.11;
     for (var i = 0; i < geography.zones.length; i++) {
       final colours = chartBiome(geography.zones[i].biome);
       canvas.drawPath(_poly(relief.zones[i]),
           Paint()..color = colours.ground.withValues(alpha: wash));
     }
-    if (detail) _terrain(canvas, relief);
-    // Rivers.
-    final river = Paint()
-      ..color = palette.river
+    final border = Paint()
+      ..color = palette.coast.withValues(alpha: 0.55)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.8
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
+      ..strokeWidth = 0.35;
+    for (var i = 0; i < geography.zones.length; i++) {
+      _dashedPath(canvas, _poly(relief.zones[i]), border, dash: 0.9, gap: 1.3);
+    }
+    // The ground's grain (v1.202): a stipple of each biome's accent.
+    if (detail && lod >= 1) {
+      for (var i = 0; i < geography.zones.length; i++) {
+        _stipple(canvas, relief.zones[i], geography.zones[i], lod);
+      }
+    }
+    if (detail) _terrain(canvas, relief);
+    if (detail && lod >= 1) _terrain(canvas, relief, fine: true);
+    // Rivers (v1.202): a thread at the source widening to the mouth, a
+    // light down the middle, the streams that feed them, and a small
+    // delta where each meets the sea.
+    for (final t in relief.tributaries) {
+      _river(canvas, t, from: 0.45, to: 0.9, colour: palette.river);
+    }
+    final gleam = Color.lerp(palette.river, Colors.white, 0.28)!;
     for (final r in relief.rivers) {
-      canvas.drawPath(_line(r), river);
+      _river(canvas, r, from: 0.8, to: 2.4, colour: palette.river);
+      _river(canvas, r.sublist(r.length ~/ 3),
+          from: 0.25, to: 0.5, colour: gleam.withValues(alpha: 0.45));
+      _delta(canvas, r);
     }
     canvas.restore();
-    // The ranges: peaks along each, larger than the loose ridges.
+    // The ranges: a ridge line, and peaks along it larger than the loose
+    // ridges, shaded on their east side.
     if (detail) {
       final rng = math.Random(5);
       for (final range in geography.ranges) {
@@ -370,12 +518,19 @@ class ChartMapPainter extends CustomPainter {
             rough: 0.12,
             seed: chartSeed(range.nameEn),
             closed: false);
+        canvas.drawPath(
+            _line(line),
+            Paint()
+              ..color = const Color(0xFF17151B).withValues(alpha: 0.3)
+              ..style = PaintingStyle.stroke
+              ..strokeCap = StrokeCap.round
+              ..strokeWidth = range.size * 0.4);
         for (final p in line) {
           for (var j = 0; j < 2; j++) {
             final at = p +
                 Offset(
                     rng.nextDouble() * 3 - 1.5, rng.nextDouble() * 2.5 - 1.25);
-            final size = range.size * 0.26 * (0.7 + rng.nextDouble() * 0.45);
+            final size = range.size * 0.3 * (0.7 + rng.nextDouble() * 0.45);
             final ember = range.ember && rng.nextDouble() < 0.5;
             if (!_vis(at)) continue;
             _peak(canvas, _at(at), size, snow: range.snow, ember: ember);
@@ -385,8 +540,200 @@ class ChartMapPainter extends CustomPainter {
     }
   }
 
-  void _terrain(Canvas canvas, ChartRelief relief) {
-    for (final m in relief.terrain) {
+  /// A wave on the open sea: two crests, one under the other.
+  void _wave(Canvas canvas, Offset p, double s) {
+    final crest = Color.lerp(palette.seaLine, Colors.white, 0.18)!;
+    final paint = Paint()
+      ..color = crest.withValues(alpha: 0.9)
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 0.4;
+    canvas.drawPath(
+        Path()
+          ..moveTo(p.dx - s, p.dy)
+          ..quadraticBezierTo(p.dx - s / 2, p.dy - s * 0.5, p.dx, p.dy)
+          ..quadraticBezierTo(p.dx + s / 2, p.dy + s * 0.5, p.dx + s, p.dy),
+        paint);
+    canvas.drawPath(
+        Path()
+          ..moveTo(p.dx - s * 0.5, p.dy + 1.3)
+          ..quadraticBezierTo(
+              p.dx - s * 0.2, p.dy + 1.3 - s * 0.35, p.dx + s * 0.1, p.dy + 1.3)
+          ..quadraticBezierTo(p.dx + s * 0.4, p.dy + 1.3 + s * 0.35,
+              p.dx + s * 0.7, p.dy + 1.3),
+        paint..color = crest.withValues(alpha: 0.5));
+  }
+
+  /// Short lines off the sea side of [coast], every so often along it: a
+  /// second row further out at the closest level.
+  void _coastTicks(Canvas canvas, List<Offset> coast, int lod) {
+    final n = coast.length;
+    if (n < 3) return;
+    final tick = Paint()
+      ..color =
+          Color.lerp(palette.sea, palette.coast, 0.6)!.withValues(alpha: 0.85)
+      ..strokeWidth = 0.28;
+    final far = Paint()
+      ..color =
+          Color.lerp(palette.sea, palette.coast, 0.5)!.withValues(alpha: 0.5)
+      ..strokeWidth = 0.25;
+    // Which side is the sea: the first edge's left normal, tested once.
+    var sign = 1.0;
+    for (var i = 0; i < n; i++) {
+      final a = coast[i], b = coast[(i + 1) % n];
+      final d = b - a;
+      if (d.distance < 0.5) continue;
+      final left = Offset(d.dy, -d.dx) / d.distance;
+      sign = pointInPolygon(a + d / 2 + left * 0.8, coast) ? -1.0 : 1.0;
+      break;
+    }
+    var carry = 0.0;
+    const step = 2.3;
+    for (var i = 0; i < n; i++) {
+      final a = coast[i], b = coast[(i + 1) % n];
+      final d = b - a;
+      final length = d.distance;
+      if (length == 0) continue;
+      final normal = Offset(d.dy, -d.dx) / length * sign;
+      var at = step - carry;
+      while (at < length) {
+        final p = a + d * (at / length);
+        if (_vis(p)) {
+          canvas.drawLine(_at(p + normal * 0.7), _at(p + normal * 1.7), tick);
+          if (lod >= 2) {
+            canvas.drawLine(_at(p + normal * 2.5), _at(p + normal * 3.1), far);
+          }
+        }
+        at += step;
+      }
+      carry = length - (at - step);
+    }
+  }
+
+  /// Dots of the biome's accent over the land [poly] of [zone].
+  void _stipple(Canvas canvas, List<Offset> poly, ChartZone zone, int lod) {
+    final rng = math.Random(chartSeed(zone.nameEn));
+    final xs = poly.map((p) => p.dx), ys = poly.map((p) => p.dy);
+    final x0 = xs.reduce(math.min), x1 = xs.reduce(math.max);
+    final y0 = ys.reduce(math.min), y1 = ys.reduce(math.max);
+    final area = (x1 - x0) * (y1 - y0);
+    final n = (area / (lod >= 2 ? 40 : 75)).round().clamp(8, 600);
+    final dot = Paint()
+      ..color = chartBiome(zone.biome).accent.withValues(alpha: 0.22);
+    for (var i = 0; i < n; i++) {
+      final p = Offset(
+          x0 + rng.nextDouble() * (x1 - x0), y0 + rng.nextDouble() * (y1 - y0));
+      if (!pointInPolygon(p, poly) || !_vis(p)) continue;
+      canvas.drawCircle(_at(p), 0.22 + rng.nextDouble() * 0.14, dot);
+    }
+  }
+
+  /// A river (or a stream) as a line that widens from [from] at its
+  /// source to [to] at its mouth.
+  void _river(Canvas canvas, List<Offset> pts,
+      {required double from, required double to, required Color colour}) {
+    if (pts.length < 2) return;
+    final paint = Paint()
+      ..color = colour
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    if (globe != null) {
+      canvas.drawPath(_line(pts), paint..strokeWidth = (from + to) / 2);
+      return;
+    }
+    final path = _smooth(pts, closed: false);
+    for (final metric in path.computeMetrics()) {
+      final n = (metric.length / 2.5).ceil().clamp(2, 400);
+      for (var i = 0; i < n; i++) {
+        final a = metric.length * i / n, b = metric.length * (i + 1) / n;
+        final w = from + (to - from) * ((i + 0.5) / n);
+        canvas.drawPath(metric.extractPath(a, math.min(b + 0.3, metric.length)),
+            paint..strokeWidth = w);
+      }
+    }
+  }
+
+  /// The small fan of a river's mouth.
+  void _delta(Canvas canvas, List<Offset> river) {
+    if (river.length < 2 || !_vis(river.last)) return;
+    final mouth = river.last;
+    final d = mouth - river[river.length - 2];
+    if (d.distance == 0) return;
+    final dir = d / d.distance;
+    final paint = Paint()
+      ..color = palette.river.withValues(alpha: 0.7)
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 0.7;
+    for (final a in const [-0.5, 0.5]) {
+      final turned = Offset(dir.dx * math.cos(a) - dir.dy * math.sin(a),
+          dir.dx * math.sin(a) + dir.dy * math.cos(a));
+      canvas.drawLine(_at(mouth), _at(mouth + turned * 2.6), paint);
+    }
+  }
+
+  /// A compass rose: four long points, four short, north named.
+  void _compass(Canvas canvas, Offset c, double r) {
+    final ink = palette.label.withValues(alpha: 0.9);
+    final fill = Paint()..color = ink;
+    final line = Paint()
+      ..color = ink
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.35;
+    canvas.drawCircle(c, r, line);
+    canvas.drawCircle(c, r * 0.55, line..strokeWidth = 0.25);
+    for (var i = 0; i < 8; i++) {
+      final long = i.isEven;
+      final a = i * math.pi / 4 - math.pi / 2;
+      final len = long ? r * (i == 0 ? 1.25 : 0.95) : r * 0.5;
+      final tip = c + Offset(math.cos(a), math.sin(a)) * len;
+      final half = long ? r * 0.16 : r * 0.1;
+      final side = Offset(-math.sin(a), math.cos(a)) * half;
+      final base = c + Offset(math.cos(a), math.sin(a)) * (long ? 0 : r * 0.2);
+      canvas.drawPath(
+          Path()
+            ..moveTo(tip.dx, tip.dy)
+            ..lineTo(base.dx + side.dx, base.dy + side.dy)
+            ..lineTo(base.dx - side.dx, base.dy - side.dy)
+            ..close(),
+          long ? fill : Paint()
+            ..color = ink.withValues(alpha: 0.55));
+    }
+    final n = _layout(
+        'N',
+        TextStyle(
+            fontFamily: InkFonts.display, fontSize: 4.2, color: palette.place));
+    n.paint(canvas, Offset(c.dx - n.width / 2, c.dy - r * 1.25 - n.height));
+  }
+
+  /// A chart's scale bar: thirty leagues in alternating blocks.
+  void _scaleBar(Canvas canvas, Offset o) {
+    final ink = palette.label.withValues(alpha: 0.9);
+    const unit = 10.0;
+    for (var i = 0; i < 3; i++) {
+      final rect = Rect.fromLTWH(o.dx + i * unit, o.dy, unit, 1.1);
+      canvas.drawRect(
+          rect,
+          i.isEven
+              ? (Paint()..color = ink)
+              : (Paint()
+                ..color = ink
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 0.3));
+    }
+    final caption = _layout(
+        language == AppLanguage.fr ? '30 lieues' : '30 leagues',
+        TextStyle(
+            fontFamily: InkFonts.prose,
+            fontStyle: FontStyle.italic,
+            fontSize: 3.2,
+            color: ink));
+    caption.paint(canvas, Offset(o.dx, o.dy - caption.height - 0.3));
+  }
+
+  void _terrain(Canvas canvas, ChartRelief relief, {bool fine = false}) {
+    final shadow = const Color(0xFF17151B);
+    for (final m in fine ? relief.fineTerrain : relief.terrain) {
       if (!_vis(m.at)) continue;
       final colours = chartBiome(geography.zones[m.zone].biome);
       final p = _at(m.at);
@@ -395,18 +742,97 @@ class ChartMapPainter extends CustomPainter {
         case TerrainKind.peak:
           _peak(canvas, p, s * 1.1, snow: m.snow, ember: m.ember);
         case TerrainKind.tree:
-          canvas.drawCircle(p, s * 1.25,
-              Paint()..color = colours.detail.withValues(alpha: 0.85));
+          // A crown lit from the north-west, over a short trunk.
           canvas.drawLine(
               p,
-              p + Offset(0, s * 1.6),
+              p + Offset(0, s * 1.7),
               Paint()
-                ..color = const Color(0xFF17151B)
+                ..color = shadow.withValues(alpha: 0.8)
                 ..strokeWidth = 0.3);
+          canvas.drawCircle(p + Offset(s * 0.28, s * 0.22), s * 1.15,
+              Paint()..color = shadow.withValues(alpha: 0.45));
+          canvas.drawCircle(p, s * 1.15,
+              Paint()..color = colours.detail.withValues(alpha: 0.9));
+          canvas.drawCircle(p + Offset(-s * 0.3, -s * 0.3), s * 0.5,
+              Paint()..color = colours.accent.withValues(alpha: 0.35));
+        case TerrainKind.conifer:
+          canvas.drawLine(
+              p,
+              p + Offset(0, s * 0.9),
+              Paint()
+                ..color = shadow.withValues(alpha: 0.8)
+                ..strokeWidth = 0.3);
+          final fir = Path()
+            ..moveTo(p.dx, p.dy - s * 2.2)
+            ..lineTo(p.dx + s * 0.75, p.dy)
+            ..lineTo(p.dx - s * 0.75, p.dy)
+            ..close();
+          canvas.drawPath(fir, Paint()..color = colours.detail);
+          canvas.drawPath(
+              Path()
+                ..moveTo(p.dx, p.dy - s * 2.2)
+                ..lineTo(p.dx + s * 0.75, p.dy)
+                ..lineTo(p.dx, p.dy)
+                ..close(),
+              Paint()..color = shadow.withValues(alpha: 0.4));
+        case TerrainKind.hill:
+          final hill = Path()
+            ..moveTo(p.dx - s, p.dy)
+            ..quadraticBezierTo(
+                p.dx - s * 0.4, p.dy - s * 0.7, p.dx, p.dy - s * 0.62)
+            ..quadraticBezierTo(
+                p.dx + s * 0.5, p.dy - s * 0.55, p.dx + s, p.dy);
+          canvas.drawPath(
+              hill, Paint()..color = colours.detail.withValues(alpha: 0.28));
+          canvas.drawPath(
+              hill,
+              Paint()
+                ..color = palette.coast.withValues(alpha: 0.8)
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 0.3);
+          final hatch = Paint()
+            ..color = shadow.withValues(alpha: 0.35)
+            ..strokeWidth = 0.22;
+          for (var i = 1; i <= 3; i++) {
+            final x = p.dx + s * 0.2 * i;
+            canvas.drawLine(Offset(x, p.dy - s * (0.62 - 0.14 * i)),
+                Offset(x + s * 0.18, p.dy - 0.1), hatch);
+          }
+        case TerrainKind.rock:
+          final rock = Path()
+            ..moveTo(p.dx - s, p.dy + s * 0.4)
+            ..lineTo(p.dx - s * 0.5, p.dy - s * 0.6)
+            ..lineTo(p.dx + s * 0.3, p.dy - s * 0.8)
+            ..lineTo(p.dx + s, p.dy + s * 0.1)
+            ..lineTo(p.dx + s * 0.6, p.dy + s * 0.5)
+            ..close();
+          canvas.drawPath(
+              rock, Paint()..color = Color.lerp(colours.detail, shadow, 0.35)!);
+          canvas.drawPath(
+              rock,
+              Paint()
+                ..color = palette.coast
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 0.22);
         case TerrainKind.lake:
+          final rect =
+              Rect.fromCenter(center: p, width: s * 2.4, height: s * 1.4);
+          canvas.drawOval(rect, Paint()..color = palette.river);
           canvas.drawOval(
-              Rect.fromCenter(center: p, width: s * 2.2, height: s * 1.3),
-              Paint()..color = palette.river);
+              rect,
+              Paint()
+                ..color = Color.lerp(palette.river, palette.coast, 0.5)!
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 0.3);
+          canvas.drawPath(
+              Path()
+                ..moveTo(p.dx - s * 0.8, p.dy - s * 0.2)
+                ..quadraticBezierTo(p.dx - s * 0.3, p.dy - s * 0.5,
+                    p.dx + s * 0.2, p.dy - s * 0.3),
+              Paint()
+                ..color = Colors.white.withValues(alpha: 0.3)
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 0.25);
         case TerrainKind.pool:
           canvas.drawOval(Rect.fromCenter(center: p, width: s * 2, height: s),
               Paint()..color = palette.river.withValues(alpha: 0.8));
@@ -431,6 +857,12 @@ class ChartMapPainter extends CustomPainter {
                 ..color = const Color(0xFFC9A86A).withValues(alpha: 0.7)
                 ..style = PaintingStyle.stroke
                 ..strokeWidth = 0.35);
+          canvas.drawPath(
+              Path()
+                ..moveTo(p.dx - w / 2, p.dy)
+                ..quadraticBezierTo(p.dx - w / 4, p.dy - w / 4, p.dx, p.dy)
+                ..close(),
+              Paint()..color = shadow.withValues(alpha: 0.18));
         case TerrainKind.cone:
           final path = Path()
             ..moveTo(p.dx - s, p.dy + s * 0.5)
@@ -498,8 +930,14 @@ class ChartMapPainter extends CustomPainter {
                 ..style = PaintingStyle.stroke
                 ..strokeWidth = 0.35);
         case TerrainKind.hatch:
-          canvas.drawCircle(p, s,
-              Paint()..color = const Color(0xFFF4F7FA).withValues(alpha: 0.5));
+          // Snow lying in drifts: three short strokes.
+          final drift = Paint()
+            ..color = const Color(0xFFF4F7FA).withValues(alpha: 0.55)
+            ..strokeWidth = 0.22;
+          for (var i = -1; i <= 1; i++) {
+            canvas.drawLine(p + Offset(-s * 1.4, i * s * 0.9),
+                p + Offset(s * 1.4 - i.abs() * s * 0.5, i * s * 0.9), drift);
+          }
       }
     }
   }
@@ -509,6 +947,14 @@ class ChartMapPainter extends CustomPainter {
     final top = Offset(p.dx, p.dy - s * 1.1);
     final left = Offset(p.dx - s, p.dy + s * 0.5);
     final right = Offset(p.dx + s, p.dy + s * 0.5);
+    // The lit face, the shaded one, and the outline.
+    canvas.drawPath(
+        Path()
+          ..moveTo(top.dx, top.dy)
+          ..lineTo(left.dx, left.dy)
+          ..lineTo(p.dx, right.dy)
+          ..close(),
+        Paint()..color = const Color(0xFFA39DAE).withValues(alpha: 0.22));
     canvas.drawPath(
         Path()
           ..moveTo(top.dx, top.dy)
@@ -526,6 +972,15 @@ class ChartMapPainter extends CustomPainter {
           ..style = PaintingStyle.stroke
           ..strokeJoin = StrokeJoin.round
           ..strokeWidth = 0.35);
+    // Hachures down the lit face.
+    final hatch = Paint()
+      ..color = const Color(0xFFA39DAE).withValues(alpha: 0.5)
+      ..strokeWidth = 0.2;
+    for (var i = 1; i <= 2; i++) {
+      final t = i / 3;
+      canvas.drawLine(Offset.lerp(top, left, t)!,
+          Offset.lerp(top, left, t)! + Offset(s * 0.35, s * 0.25), hatch);
+    }
     if (snow) {
       canvas.drawPath(
           Path()
@@ -589,17 +1044,19 @@ class ChartMapPainter extends CustomPainter {
       for (final l in worldMapLandmarks)
         if (discovered.contains(l.id)) l,
     ];
+    final t = _t, m = _m, lod = _lod;
     final taken = <Rect>[
       for (final l in reached)
         if (_vis(geography.of(l)))
           Rect.fromCircle(
-              center: _at(geography.of(l)), radius: l.big ? 4.5 : 3.5),
+              center: _at(geography.of(l)), radius: (l.big ? 4.5 : 3.5) * m),
       // The traveller and the pin over them, where the story stands.
       if (standing != null && !walking && _vis(geography.of(standing)))
         () {
           final (x, y) = spotOn(geography, standing);
           final p = _at(Offset(x, y));
-          return Rect.fromLTRB(p.dx - 2.5, p.dy - 12.5, p.dx + 2.5, p.dy + 0.5);
+          return Rect.fromLTRB(
+              p.dx - 2.5 * m, p.dy - 12.5 * m, p.dx + 2.5 * m, p.dy + 0.5);
         }(),
     ];
     bool fits(Rect r) =>
@@ -623,18 +1080,22 @@ class ChartMapPainter extends CustomPainter {
         l.name(language),
         TextStyle(
           fontFamily: InkFonts.prose,
-          fontSize: 6,
+          fontSize: 6 * t,
           fontWeight: isHere ? FontWeight.w600 : FontWeight.w400,
           color: (isHere ? palette.mark : palette.place)
               .withValues(alpha: opacity),
-          shadows: [Shadow(color: palette.land, blurRadius: 2)],
+          shadows: [
+            Shadow(color: palette.land, blurRadius: 2 * t),
+            Shadow(color: palette.land, blurRadius: 0.6 * t),
+          ],
         ),
       );
       final w = painter.width, h = painter.height;
-      final right = Offset(p.dx + 5.5, p.dy - h / 2);
-      final left = Offset(p.dx - 5.5 - w, p.dy - h / 2);
-      final above = Offset(p.dx - w / 2, p.dy - 4.5 - h);
-      final below = Offset(p.dx - w / 2, p.dy + 4.5);
+      final off = 5.5 * m, up = 4.5 * m;
+      final right = Offset(p.dx + off, p.dy - h / 2);
+      final left = Offset(p.dx - off - w, p.dy - h / 2);
+      final above = Offset(p.dx - w / 2, p.dy - up - h);
+      final below = Offset(p.dx - w / 2, p.dy + up);
       // Above and below slide along to stay inside the chart.
       Offset inside(Offset at) =>
           Offset(at.dx.clamp(bounds.left, bounds.right - w).toDouble(), at.dy);
@@ -684,21 +1145,21 @@ class ChartMapPainter extends CustomPainter {
         !named
             ? TextStyle(
                 fontFamily: InkFonts.system,
-                fontSize: 5,
-                letterSpacing: 1,
+                fontSize: 5 * t,
+                letterSpacing: 1 * t,
                 color: palette.label.withValues(alpha: 0.7),
               )
             : label.sea
                 ? TextStyle(
                     fontFamily: InkFonts.prose,
                     fontStyle: FontStyle.italic,
-                    fontSize: 7,
+                    fontSize: 7 * t,
                     color: palette.label,
                   )
                 : TextStyle(
                     fontFamily: InkFonts.display,
-                    fontSize: 8,
-                    letterSpacing: 1.5,
+                    fontSize: 8 * t,
+                    letterSpacing: 1.5 * t,
                     color: palette.label,
                   ),
       );
@@ -733,8 +1194,8 @@ class ChartMapPainter extends CustomPainter {
         zone.name(language).toUpperCase(),
         TextStyle(
           fontFamily: InkFonts.system,
-          fontSize: 5,
-          letterSpacing: 1.2,
+          fontSize: 5 * t,
+          letterSpacing: 1.2 * t,
           color: palette.label.withValues(alpha: named ? 0.95 : 0.5),
         ),
       );
@@ -759,7 +1220,8 @@ class ChartMapPainter extends CustomPainter {
         }
       }
     }
-    if (!detail) return;
+    // The small names show once the chart is looked at closer (v1.202).
+    if (!detail || lod == 0) return;
     // The ranges' names, in italics along each.
     for (final range in geography.ranges) {
       if (!_vis(range.line[range.line.length ~/ 2])) continue;
@@ -769,7 +1231,7 @@ class ChartMapPainter extends CustomPainter {
         TextStyle(
           fontFamily: InkFonts.prose,
           fontStyle: FontStyle.italic,
-          fontSize: 4.6,
+          fontSize: 4.6 * t,
           color: const Color(0xFFA39DAE).withValues(alpha: 0.9),
         ),
       );
@@ -802,22 +1264,22 @@ class ChartMapPainter extends CustomPainter {
             f.name(language),
             TextStyle(
               fontFamily: seat ? InkFonts.display : InkFonts.prose,
-              fontSize: seat ? 5.2 : 4.2,
+              fontSize: (seat ? 5.2 : 4.2) * t,
               color: colour.withValues(alpha: 0.9),
-              shadows: [Shadow(color: palette.land, blurRadius: 1.5)],
+              shadows: [Shadow(color: palette.land, blurRadius: 1.5 * t)],
             )
           ),
-        if (f.note(language).isNotEmpty)
+        if (f.note(language).isNotEmpty && lod >= 2)
           (
             f.note(language),
             TextStyle(
               fontFamily: InkFonts.system,
-              fontSize: 3.2,
+              fontSize: 3.2 * t,
               color: palette.label.withValues(alpha: 0.9),
             )
           ),
       ];
-      var y = featureAt.dy + (f.landmark.isEmpty ? 3.6 : 8);
+      var y = featureAt.dy + (f.landmark.isEmpty ? 3.6 : 8) * m;
       for (final (text, style) in lines) {
         final painter = _layout(text, style);
         final at = Offset(
@@ -847,6 +1309,7 @@ class ChartMapPainter extends CustomPainter {
 
     final relief = ChartRelief.of(geography);
     final reachedZones = _reachedZones();
+    final m = _m, w = _w;
     // The sphere turns under the finger: its ground is painted afresh
     // rather than kept.
     if (globe == null) {
@@ -901,18 +1364,37 @@ class ChartMapPainter extends CustomPainter {
       }
     }
 
-    // Roofs about the places reached: the fog must not give the rest away.
-    final roofs = Paint()..color = palette.roofs;
+    // The towns about the places reached (v1.202): houses round each, a
+    // wall round the big ones; the fog must not give the rest away.
+    final roofDark = Color.lerp(palette.roofs, const Color(0xFF17151B), 0.4)!;
     for (final l in worldMapLandmarks) {
       if (l.atSea || !discovered.contains(l.id)) continue;
       if (!_vis(geography.of(l))) continue;
       final p = _at(geography.of(l));
-      final seed = l.id.codeUnits.fold(0, (a, b) => a * 31 + b);
-      for (var i = 0; i < 3; i++) {
-        final dx = ((seed >> (i * 3)) % 7) - 3.0 + (i - 1) * 6;
-        final dy = -6.0 - ((seed >> (i * 2 + 5)) % 4);
-        canvas.drawRect(Rect.fromLTWH(p.dx + dx, p.dy + dy, 4, 3), roofs);
+      final rng = math.Random(chartSeed(l.id));
+      canvas.save();
+      canvas.translate(p.dx, p.dy);
+      canvas.scale((m * 1.3).clamp(0.5, 1.3));
+      final n = l.big ? 8 : 4;
+      if (l.big) {
+        _dashedPath(
+            canvas,
+            Path()..addOval(Rect.fromCircle(center: Offset.zero, radius: 7.6)),
+            Paint()
+              ..color = palette.coast.withValues(alpha: 0.75)
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 0.7,
+            dash: 3,
+            gap: 1.4);
       }
+      for (var i = 0; i < n; i++) {
+        final a = i * 2 * math.pi / n + rng.nextDouble() * 0.5;
+        final r = (l.big ? 4.2 : 3.4) + rng.nextDouble() * 1.4;
+        final o = Offset(math.cos(a) * r, math.sin(a) * r * 0.75 + 1);
+        final size = 1.7 + rng.nextDouble() * 0.9;
+        _house(canvas, o, size, size * 0.7, palette.roofs, roofDark);
+      }
+      canvas.restore();
     }
 
     // The shops and camps calque: a coin where a shop opens, a tent where
@@ -922,11 +1404,14 @@ class ChartMapPainter extends CustomPainter {
         if (!discovered.contains(l.id)) continue;
         if (!_vis(geography.of(l))) continue;
         final p = _at(geography.of(l));
+        canvas.save();
+        canvas.translate(p.dx, p.dy);
+        canvas.scale(m.clamp(0.35, 1.0));
         if (shopPlaces.contains(l.id)) {
-          canvas.drawCircle(Offset(p.dx + 5, p.dy - 5), 2.4,
+          canvas.drawCircle(const Offset(5, -5), 2.4,
               Paint()..color = const Color(0xFFF2C14E));
           canvas.drawCircle(
-              Offset(p.dx + 5, p.dy - 5),
+              const Offset(5, -5),
               2.4,
               Paint()
                 ..color = palette.land
@@ -936,12 +1421,13 @@ class ChartMapPainter extends CustomPainter {
         if (campPlaces.contains(l.id)) {
           canvas.drawPath(
               Path()
-                ..moveTo(p.dx - 8, p.dy - 2)
-                ..lineTo(p.dx - 5, p.dy - 7)
-                ..lineTo(p.dx - 2, p.dy - 2)
+                ..moveTo(-8, -2)
+                ..lineTo(-5, -7)
+                ..lineTo(-2, -2)
                 ..close(),
               Paint()..color = const Color(0xFF7DBE6A));
         }
+        canvas.restore();
       }
     }
 
@@ -954,7 +1440,7 @@ class ChartMapPainter extends CustomPainter {
         final seed = chartSeed('${a.dx},${a.dy}-${b.dx},${b.dy}');
         final path = _line(windingRoad(a, b, seed: seed, amp: 0.12));
         _road(canvas, path, palette.label.withValues(alpha: 0.9),
-            width: 0.7, cased: true);
+            width: 0.7 * w, cased: true, dash: 3 * w, gap: 2.2 * w);
       }
     }
 
@@ -1006,6 +1492,12 @@ class ChartMapPainter extends CustomPainter {
       );
     }
     canvas.restore();
+    // A compass rose and a scale bar on the flat chart (v1.202), over the
+    // fog: a chart has them before the story does.
+    if (globe == null && detail) {
+      _compass(canvas, const Offset(17, 18), 7.5);
+      _scaleBar(canvas, const Offset(8, 167));
+    }
 
     // The way on, dotted, to the next place the story goes.
     final next = ahead;
@@ -1013,12 +1505,12 @@ class ChartMapPainter extends CustomPainter {
     if (next != null && standing != null) {
       final dots = Paint()
         ..color = palette.ahead
-        ..strokeWidth = 0.9
+        ..strokeWidth = 0.9 * w
         ..strokeCap = StrokeCap.round;
       if (_vis(geography.of(standing)) && _vis(geography.of(next))) {
         _dashed(
             canvas, _at(geography.of(standing)), _at(geography.of(next)), dots,
-            dash: 0.6, gap: 3);
+            dash: 0.6 * w, gap: 3 * w);
       }
     }
 
@@ -1039,11 +1531,11 @@ class ChartMapPainter extends CustomPainter {
               : chapterColor(b.chapter))
           .withValues(alpha: on ? 0.95 : 0.3);
       _road(canvas, path, colour,
-          width: 0.9,
+          width: 0.9 * w,
           cased: !seaLeg,
-          phase: -f * 1.3,
-          dash: seaLeg ? 2.4 : 3,
-          gap: seaLeg ? 1.8 : 2.2);
+          phase: -f * 1.3 * w,
+          dash: (seaLeg ? 2.4 : 3) * w,
+          gap: (seaLeg ? 1.8 : 2.2) * w);
     }
 
     // The places and their names.
@@ -1060,31 +1552,38 @@ class ChartMapPainter extends CustomPainter {
       if (l.atSea) {
         canvas.drawCircle(
             p,
-            2.4,
+            2.4 * m,
             Paint()
               ..color = color
               ..style = PaintingStyle.stroke
-              ..strokeWidth = 1);
+              ..strokeWidth = 1 * m);
       } else {
-        canvas.drawCircle(p, l.big ? 3.6 : 2.6, Paint()..color = color);
+        canvas.drawCircle(p, (l.big ? 3.6 : 2.6) * m, Paint()..color = color);
+        canvas.drawCircle(
+            p,
+            (l.big ? 3.6 : 2.6) * m,
+            Paint()
+              ..color = const Color(0xFF17151B).withValues(alpha: 0.6)
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 0.4 * m);
       }
       if (isHere) {
         canvas.drawCircle(
             p,
-            4.6,
+            4.6 * m,
             Paint()
               ..color = palette.mark
               ..style = PaintingStyle.stroke
-              ..strokeWidth = 1.4);
+              ..strokeWidth = 1.4 * m);
       }
       if (l.id == selectedId && (reduceMotion || f % 4 < 3)) {
         canvas.drawCircle(
             p,
-            6.8,
+            6.8 * m,
             Paint()
               ..color = palette.place.withValues(alpha: 0.8)
               ..style = PaintingStyle.stroke
-              ..strokeWidth = 0.6);
+              ..strokeWidth = 0.6 * m);
       }
     }
 
@@ -1100,7 +1599,10 @@ class ChartMapPainter extends CustomPainter {
     }
     if (at != null && _vis(Offset(at.$1, at.$2))) {
       final shown = _at(Offset(at.$1, at.$2));
-      final x = shown.dx, y = shown.dy;
+      canvas.save();
+      canvas.translate(shown.dx, shown.dy);
+      canvas.scale(m.clamp(0.4, 1.0));
+      const x = 0.0, y = 0.0;
       final cloak = Paint()..color = const Color(0xFFA8A194);
       canvas.drawPath(
           Path()
@@ -1121,6 +1623,7 @@ class ChartMapPainter extends CustomPainter {
               ..close(),
             Paint()..color = palette.mark);
       }
+      canvas.restore();
     }
     canvas.restore();
   }

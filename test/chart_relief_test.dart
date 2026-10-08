@@ -1,6 +1,8 @@
 // The chart's relief (v1.199): coasts, roads and terrain drawn from fixed
 // seeds, the same on every opening, and the worlds' zones, features and
 // roads consistent with their lands.
+import 'dart:math' as math;
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/chart_relief.dart';
@@ -71,6 +73,42 @@ void main() {
               reason: zone.biome);
           expect(zone.labelAt.dx, inInclusiveRange(0, worldMapWidth));
           expect(zone.labelAt.dy, inInclusiveRange(0, worldMapHeight));
+        }
+      });
+
+      test('runs its rivers to the sea, feeds them, and keeps its waves off',
+          () {
+        final relief = ChartRelief.of(chart);
+        double toCoast(Offset p) {
+          var best = double.infinity;
+          for (final land in chart.lands) {
+            for (final q in land) {
+              best = math.min(best, (q - p).distance);
+            }
+          }
+          return best;
+        }
+
+        for (final river in relief.rivers) {
+          // The mouth is the end nearer a coast.
+          expect(toCoast(river.last), lessThanOrEqualTo(toCoast(river.first)));
+        }
+        for (final stream in relief.tributaries) {
+          expect(stream.length, greaterThan(2));
+          // It ends on its river.
+          expect(relief.rivers.any((r) => r.contains(stream.last)), isTrue);
+          for (final p in stream) {
+            expect(relief.coasts.any((c) => pointInPolygon(p, c)), isTrue);
+          }
+        }
+        for (final w in relief.waves) {
+          expect(relief.coasts.any((c) => pointInPolygon(w, c)), isFalse);
+        }
+        // The fine terrain keeps clear of the places like the rest.
+        for (final mark in relief.fineTerrain) {
+          for (final place in chart.places.values) {
+            expect((place - mark.at).distance, greaterThan(1.5));
+          }
         }
       });
 
