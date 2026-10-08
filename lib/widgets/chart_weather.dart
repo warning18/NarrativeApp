@@ -194,7 +194,7 @@ class ChartWeatherPainter extends CustomPainter {
       return math.sqrt((1 - r * r).clamp(0.0, 1.0));
     }
 
-    final dark = globe == null ? palette.fog : palette.fog;
+    final dark = palette.fog;
     final pale = Color.lerp(palette.place, Colors.white, 0.35)!;
     final sigma = step * 0.55 * (g == null ? 1 : g.zoom.clamp(0.6, 2.0));
 
