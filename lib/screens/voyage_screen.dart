@@ -8,6 +8,7 @@ import '../combat/sea_beasts.dart';
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/contracts.dart';
+import '../data/item_origin_here.dart';
 import '../data/port_helpers.dart';
 import '../data/ability_check.dart';
 import '../data/companion_remarks.dart';
@@ -767,6 +768,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           hpAfter: member.health,
           goldGain: gold,
           xpGain: xp,
+          origin: itemOriginHere(ref),
           // Standing up to a beast and living counts on the camp's board;
           // running from it does not.
           contractTally: learned
@@ -791,7 +793,9 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     }
     if (slain) {
       await notifier.applyChoiceEffects(
-          itemId: beastTrophyItemId, flagsToAdd: ['beast_slain_$id']);
+          itemId: beastTrophyItemId,
+          flagsToAdd: ['beast_slain_$id'],
+          origin: itemOriginHere(ref));
       _log.add(_t('ship_log_beast_slain', ship: name));
       // Its trophy goes on the Eel if there is room aboard; if not, it
       // waits at the Harbor, fitted for nothing.
@@ -883,6 +887,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           hpAfter: member.health,
           goldGain: gold,
           xpGain: xp,
+          origin: itemOriginHere(ref),
           // A won sea fight counts on the camp's board (see contracts.dart).
           contractTally: outcome.won
               ? ContractTally.sea(

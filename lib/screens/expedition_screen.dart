@@ -11,6 +11,7 @@ import '../combat/encounter.dart';
 import '../data/ability_check.dart';
 import '../data/alignment_events.dart';
 import '../data/chapter_conditions.dart';
+import '../data/item_origin_here.dart';
 import '../data/chapter_loop.dart';
 import '../data/check_outcomes.dart';
 import '../data/companion_remarks.dart';
@@ -700,6 +701,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       rewardItemId: rewardItemId.isNotEmpty ? rewardItemId : null,
       rewardDiceId: rewardDiceId.isNotEmpty ? rewardDiceId : null,
       rewardFlag: rewardFlag.isNotEmpty ? rewardFlag : null,
+      origin: itemOriginHere(ref),
     );
 
     final lines = <String>[

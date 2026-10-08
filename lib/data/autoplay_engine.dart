@@ -10,6 +10,7 @@ import '../combat/face_smithing.dart';
 import '../models/ally_state.dart'
     show equipmentBonusFor, equipmentScalingBonusFor;
 import '../models/story_node.dart';
+import 'item_origin_here.dart';
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/clans_provider.dart' show loadClanData;
 import '../providers/player_session_provider.dart';
@@ -392,6 +393,7 @@ Future<bool> _simulateFight({
         goldGain: goldGain,
         xpGain: xpGain,
         itemsGained: loot,
+        origin: itemOriginHere(ref),
       );
   return true;
 }
@@ -513,6 +515,7 @@ Future<AutoplayResult> autoplayToNode(
         itemId: choice.grantItemId,
         questIDToProgress: choice.questIDToProgress,
         approvalMods: choice.approvalMods,
+        origin: itemOriginHere(ref),
       );
     }
     await _applyPolitics(ref, story, fromNodeId, choice);
@@ -804,6 +807,7 @@ Future<AutoplayResult> _playTowardChapter(
         itemId: choice.grantItemId,
         questIDToProgress: choice.questIDToProgress,
         approvalMods: choice.approvalMods,
+        origin: itemOriginHere(ref),
       );
     }
     await _applyPolitics(ref, story, currentNodeId, choice);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/item_origin_here.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -219,8 +220,9 @@ class _ForgeSheet extends ConsumerWidget {
                                 onPressed: !notifier.canCraft(item)
                                     ? null
                                     : () async {
-                                        final made =
-                                            await notifier.craftItem(id, item);
+                                        final made = await notifier.craftItem(
+                                            id, item,
+                                            origin: itemOriginHere(ref));
                                         if (!made || !context.mounted) return;
                                         showImmersiveNotice(
                                           context,

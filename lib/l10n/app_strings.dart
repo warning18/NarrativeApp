@@ -1860,6 +1860,41 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'No one to speak with yet.',
     AppLanguage.fr: 'Personne à qui parler pour l’instant.',
   },
+  // The People codex (v1.204).
+  'people_section': {AppLanguage.en: 'People', AppLanguage.fr: 'Les gens'},
+  'people_unmet_count': {
+    AppLanguage.en: '{n} more to meet.',
+    AppLanguage.fr: 'Encore {n} à rencontrer.',
+  },
+  'npc_met_in_chapter': {
+    AppLanguage.en: 'Met in chapter {n}',
+    AppLanguage.fr: 'Rencontre au chapitre {n}',
+  },
+  'npc_want_label': {
+    AppLanguage.en: 'What they want',
+    AppLanguage.fr: 'Ce qui l’anime',
+  },
+  'npc_passed_between': {
+    AppLanguage.en: 'What passed between you',
+    AppLanguage.fr: 'Ce qui s’est passé entre vous',
+  },
+  // Items' rarity and provenance (v1.204).
+  'item_rarity_label': {AppLanguage.en: 'Rarity', AppLanguage.fr: 'Rareté'},
+  'item_rarity_common': {AppLanguage.en: 'Common', AppLanguage.fr: 'Commun'},
+  'item_rarity_uncommon': {
+    AppLanguage.en: 'Uncommon',
+    AppLanguage.fr: 'Peu commun',
+  },
+  'item_rarity_rare': {AppLanguage.en: 'Rare', AppLanguage.fr: 'Rare'},
+  'item_rarity_relic': {AppLanguage.en: 'Relic', AppLanguage.fr: 'Relique'},
+  'item_origin_line': {
+    AppLanguage.en: 'Yours since {place}, chapter {n}',
+    AppLanguage.fr: 'À vous depuis {place}, chapitre {n}',
+  },
+  'item_origin_chapter_line': {
+    AppLanguage.en: 'Yours since chapter {n}',
+    AppLanguage.fr: 'À vous depuis le chapitre {n}',
+  },
   'achievement_hidden_name': {
     AppLanguage.en: 'Hidden achievement',
     AppLanguage.fr: 'Succès caché',

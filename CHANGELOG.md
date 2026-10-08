@@ -8,12 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.204.0+239]
+## [1.205.0+240]
 
 ### Added
 - The world has a climate. From the chart itself (its coasts, ranges, rivers and lakes, each land's biome and its latitude) every point of the world gets a height, a humidity and a warmth: the land rises from the coast inland and up to the ranges' crests, the fens lie low and the deserts flat; the sea, the rivers and the lakes wet the land near them, the windward slopes catch the rain and the lee of a range lies in its shadow; the latitude and the height set the warmth, the frost is colder and the desert hotter, and the season turns over ninety days with each day a little different. Three new calques on the Layers sheet show it: Height (tinted low to high, with contour lines), Humidity (dry ochre to sodden blue) and Warmth (frost blue to noon red), each with a legend.
 - Weather moves over the world map. Clouds ride the wind (westerlies in the temperate bands, easterlies about the equator, turning with the day) with their shadows on the land, rain slants under the heavy ones where the air is wet, snow falls where it is cold, dust blows off the dry lands and ash off the burnt ones, fog settles on wet cold ground. It moves while the map is watched, flat and on the sphere, on its own layer so the chart is not drawn again for every cloud; a switch on the Layers sheet turns it off.
 - The Journey map draws what the sky brings where the party stands (rain, snow, dust, fog, the burning chapters' ash still), as does the story's page, and a chip on the place map names it: what falls, the warmth, where the wind comes from, how high the ground is. Each town is laid out for its climate: a wet land grows more trees and fields, a dry one scrub and no fields, a cold one firs, a frozen one lies under snow.
+
+## [1.204.0+239]
+
+### Added
+- People: a codex of the people met on the road, in the Play tab beside the bestiary. Forty-six records: the Inquisitor-General and the quartermaster who shares his name, Lysa, Renn and Nadira of Tern Row, the Eldest Wickwarden and the Grand Master, the Hesks, Brother Clement, the Keyholder, the chart-keeper, the sign-painter, the High Warden, the Rat Matriarch, the Herald, the elders and clerks of the villages, every shop keeper, and the six new quest-givers. Each entry gives who they are, their faction and place, what they want, and what passed between you, told from the story's own flags; people appear on first meeting, grouped by chapter, with a badge for those newly met.
+- Six side quests with a stake in the clans, each from someone new: Dorran Quill's unpaid scaffold crew at Saltmouth (the Scaffolders against the Salt Ledger), Imeh's spring-glass stall at the Ashen Quarter (the oni against the Scorched Choir), Brannoc Reedtithe's stolen fever-bark at the Drowned Cloister (the Barkbleeders against the Keyholders), Orsabet Vell's count of the taken in the Reliquary Quarter (the Candlebearers against the Reliquary), Ghrem Stonebrow's hearth-stone at Highhearth (the giants against the Quarrymen), and Nkem Tallow's impounded salvage at the White Anchorage (the Brig-Born against the Admiralty). Each ends in a three-way choice that moves two clans' standing, marks a sub-clan, is remembered by the next chapter's hub, and makes the news.
+- Quests can now move standing: a turn-in choice may carry politics, shown under the choice and applied once, as story choices do. A quest may also opt out of the random detour pool.
+- Relics: a fourth rarity above Rare for eight story-bound pieces (the Grey Shroud, the Saint's Reliquary, the Sovereign's Crown, the Harborwatch Lantern, the Hollow Court Seal, the Phoenix Sigil, the Wisp Ember, the Moon Shard). Every Rare item, every artifact, charm, tome, scroll and material now carries a line or two of lore, shown in the inventory and the item sheet with a translated rarity tag; every item remembers where and in which chapter it came to you.
+
+### Fixed
+- The French of the three older people records speaks in « vous » with French spacing, and a test over npcs.json keeps it so.
 
 ## [1.203.0+238]
 

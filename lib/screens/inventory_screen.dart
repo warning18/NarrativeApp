@@ -9,6 +9,7 @@ import '../combat/gear_effects.dart';
 import '../models/ally_state.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
@@ -16,6 +17,7 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../theme/stitched_ink.dart';
 import '../widgets/compare_dialog.dart';
 import '../widgets/detail_dialog.dart';
+import '../widgets/item_lore.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
   const InventoryScreen({super.key, this.allyId});
@@ -572,6 +574,8 @@ class _InventoryBody extends ConsumerWidget {
               itemId: id,
               item: item,
               count: counts[id],
+              originLine: itemOriginLineFor(session.itemOrigins[id],
+                  ref.watch(geographyProvider), ref.watch(appLanguageProvider)),
               itemSet: set,
               setPiecesWorn: set?.piecesWornIn(equippedIds) ?? 0,
               isEquipped: isEquipped,
@@ -715,11 +719,16 @@ class _ItemTile extends StatelessWidget {
     this.itemSet,
     this.setPiecesWorn = 0,
     this.wornBy,
+    this.originLine,
   });
 
   final String itemId;
   final Map<String, dynamic>? item;
   final int? count;
+
+  /// Where the item came from (v1.204, see itemOriginLineFor): a row of
+  /// the detail dialog; null when the pack has no record of it.
+  final String? originLine;
 
   /// Who else wears every copy of this item, when no copy is free for the
   /// character this inventory belongs to.
@@ -821,6 +830,9 @@ class _ItemTile extends StatelessWidget {
 
     final ink = InkColors.of(context);
     final theme = Theme.of(context);
+    final rarity = item?['rarity']?.toString() ?? '';
+    final rarityLabel = itemRarityLabelFor(language, rarity);
+    final lore = itemLoreOf(item);
     return Card(
       margin: const EdgeInsets.only(bottom: 6),
       color: selectedForCompare
@@ -845,6 +857,14 @@ class _ItemTile extends StatelessWidget {
                   style: theme.textTheme.bodyLarge
                       ?.copyWith(fontFamily: InkFonts.display)),
             ),
+            // The rarity as a tag (v1.204): a Relic reads gold.
+            if (rarityLabel.isNotEmpty) ...[
+              InkTag(
+                  key: Key('rarity_tag_$itemId'),
+                  label: rarityLabel,
+                  color: itemRarityColor(colorScheme, rarity)),
+              const SizedBox(width: 4),
+            ],
             if (isEquipped)
               InkTag(label: t('equipped_prefix'), color: ink.gold)
             else if (requirementUnmet)
@@ -878,9 +898,14 @@ class _ItemTile extends StatelessWidget {
                   title: itemName,
                   leading: ItemPixelIcon(itemId, itemType, size: 24),
                   closeLabel: t('close_button'),
+                  // Its lore (v1.204), then where it came from.
+                  description: lore.isEmpty ? null : lore,
+                  note: originLine,
                   rows: [
                     MapEntry(
                         t('item_type_label'), itemType ?? t('unknown_label')),
+                    if (rarityLabel.isNotEmpty)
+                      MapEntry(t('item_rarity_label'), rarityLabel),
                     MapEntry(t('cost_label'), '${item?['cost'] ?? 0}'),
                     if (equipSlot != null && equipSlot.isNotEmpty)
                       MapEntry(t('equip_slot_label'), equipSlot),

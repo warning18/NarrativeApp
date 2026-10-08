@@ -330,10 +330,12 @@ class SubNodeEngine {
   }
 
   /// The quests an excursion may offer this chapter: this chapter's, not
-  /// yet unlocked or completed, and not written for another alignment.
-  /// A quest's `requiredAlignment` of 'Good' or 'Evil' must match the
-  /// character's [alignmentLabel] (PlayerSession.alignmentLabel); 'Neutral'
-  /// or unset means anyone may take it.
+  /// yet unlocked or completed, not written for another alignment, and
+  /// not one with a giver of its own in a town (`detourEligible` false,
+  /// v1.204: the story offers those itself). A quest's `requiredAlignment`
+  /// of 'Good' or 'Evil' must match the character's [alignmentLabel]
+  /// (PlayerSession.alignmentLabel); 'Neutral' or unset means anyone may
+  /// take it.
   static List<String> filterQuestPool({
     required Map<String, dynamic> quests,
     required int chapter,
@@ -346,6 +348,7 @@ class SubNodeEngine {
           final q = e.value as Map<String, dynamic>;
           final questChapter = (q['chapter'] as num?)?.toInt() ?? 1;
           return questChapter == chapter &&
+              (q['detourEligible'] as bool? ?? true) &&
               !unlockedQuestIds.contains(e.key) &&
               !completedQuestIds.contains(e.key) &&
               questMeetsAlignment(q, alignmentLabel);

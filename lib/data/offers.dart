@@ -659,12 +659,12 @@ SignRarity rarityOfSkill(Map<String, dynamic>? skill) =>
     };
 
 /// [item]'s rarity on the signs' scale: Common, Uncommon reads Rare, Rare
-/// reads Epic.
+/// reads Epic, a Relic (v1.204) heroic.
 SignRarity rarityOfItem(Map<String, dynamic>? item) =>
     switch (item?['rarity']?.toString()) {
       'Uncommon' => SignRarity.rare,
       'Rare' => SignRarity.epic,
-      'Epic' || 'Legendary' => SignRarity.heroic,
+      'Relic' || 'Epic' || 'Legendary' => SignRarity.heroic,
       _ => SignRarity.common,
     };
 

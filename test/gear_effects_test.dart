@@ -142,7 +142,8 @@ void main() {
         uniques++;
         expect(uniqueEffectFromName(name), isNotNull, reason: entry.key);
         expect(uniqueValueOf(item), greaterThan(0), reason: entry.key);
-        expect(item['rarity'], 'Rare', reason: entry.key);
+        // A unique effect sits on a Rare, or on a Relic (v1.204).
+        expect(item['rarity'], anyOf('Rare', 'Relic'), reason: entry.key);
       }
       expect(uniques, greaterThanOrEqualTo(4));
     });

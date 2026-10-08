@@ -80,12 +80,14 @@
     "elecResist": 3,
     "voidDmgBonus": 5,
     "voidResist": 3,
-    "rarity": "Common",
+    "rarity": "Relic",
     "lootChapter": 0,
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Bannière du Néant (Linceul Gris)"
+    "itemName_fr": "Bannière du Néant (Linceul Gris)",
+    "description": "What the Inquisition calls a Void Banner and the salt-cutters call the Grey Shroud: one of the six pieces the first Inquisitor cut, dug up from under a house in Alster. The only piece the Black Reliquary never cut down to a saint's size, and the one the ledger lists as an heirloom.",
+    "description_fr": "Ce que l’Inquisition nomme Bannière du Néant et que les tailleurs de sel nomment le Linceul Gris : l’une des six pièces coupées par le premier Inquisiteur, déterrée sous une maison d’Alster. La seule pièce que le Reliquaire Noir n’ait jamais ramenée à la taille d’un saint, et celle que le registre inscrit comme un héritage."
   },
   "armor_leather": {
     "id": "armor_leather",
@@ -944,7 +946,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Claymore de guerre"
+    "itemName_fr": "Claymore de guerre",
+    "description": "Too heavy for the Weaponsmith, so it came to Dagny's forge: Compact steel folded for the Crusade's vanguard, and asked for before it was forged. The High Warden's men carried this pattern up the Spire.",
+    "description_fr": "Trop lourde pour l’Armurier, elle est passée par la forge de Dagny : de l’acier du Pacte plié pour l’avant-garde de la Croisade, et demandé avant d’être forgé. Les hommes du Haut Gardien ont porté ce modèle jusqu’en haut de la Flèche."
   },
   "spear_t6": {
     "id": "spear_t6",
@@ -976,7 +980,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Trident de la horde"
+    "itemName_fr": "Trident de la horde",
+    "description": "Three tines, because a warband on the Exorcists' Road fights in the dark and a spear that misses twice is a bad spear. Dagny Ironhand finishes these for the Compact and signs each haft with the open hand.",
+    "description_fr": "Trois pointes, parce qu’une horde sur la Route des Exorcistes se bat dans le noir et qu’une lance qui manque deux fois est une mauvaise lance. Dagny Main-de-Fer les achève pour le Pacte et signe chaque hampe de la main ouverte."
   },
   "dagger_t6": {
     "id": "dagger_t6",
@@ -1008,7 +1014,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Poignard d’ombre"
+    "itemName_fr": "Poignard d’ombre",
+    "description": "Behind a door with no sign, the Needle sells this dirk to quiet hands only. The Whisper Ledger uses it to open letters, and sometimes the people who carry them.",
+    "description_fr": "Derrière une porte sans enseigne, l’Aiguille ne vend ce poignard qu’aux mains discrètes. Le Registre des Murmures s’en sert pour ouvrir les lettres, et parfois ceux qui les portent."
   },
   "shield_t6": {
     "id": "shield_t6",
@@ -1040,7 +1048,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Égide de guerre"
+    "itemName_fr": "Égide de guerre",
+    "description": "Quarry iron over Compact oak, cut for a hand that can lift it. A shield is a promise kept for someone else, the Shieldwright says; this one has kept a few on the Ashen Quarter's barricades.",
+    "description_fr": "Du fer de carrière sur du chêne du Pacte, taillé pour une main capable de le lever. Un bouclier est une promesse qu’on tient pour quelqu’un d’autre, dit la Halle des Boucliers ; celui-ci en a tenu quelques-unes sur les barricades du Quartier des Cendres."
   },
   "staff_t6": {
     "id": "staff_t6",
@@ -1072,7 +1082,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Bâton runique"
+    "itemName_fr": "Bâton runique",
+    "description": "Ash wood bound with old wardings by the Choir's school, the runes cut by a Cantor who could still read them. The Academy takes its tithe on every sale, and the Lantern takes its tithe on the Academy.",
+    "description_fr": "Du bois de frêne cerclé de vieilles protections par l’école du Chœur, les runes gravées par un Chantre qui savait encore les lire. L’Académie prélève sa dîme sur chaque vente, et la Lanterne prélève la sienne sur l’Académie."
   },
   "sword_t7": {
     "id": "sword_t7",
@@ -1264,7 +1276,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Lame touchée par le Néant"
+    "itemName_fr": "Lame touchée par le Néant",
+    "description": "Steel that lay a winter at the bottom of the Drowned Stair, in the Court's chamber, and came up with a grey cast the Hammersmith could not grind out. Dagny sells it anyway, with the warning that it remembers the water.",
+    "description_fr": "Un acier resté un hiver au bas de l’Escalier Noyé, dans la salle de la Cour, et remonté avec un reflet gris que le Maître-forgeron n’a pas réussi à meuler. Dagny le vend quand même, en prévenant qu’il se souvient de l’eau."
   },
   "spear_t8": {
     "id": "spear_t8",
@@ -1296,7 +1310,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Perce-Néant"
+    "itemName_fr": "Perce-Néant",
+    "description": "Forged on the Compact's anvil for the Last Watch, to reach a reflection before it reaches the wall. The Anvil-Deaf sign a word over each one that nobody else on the Row can read.",
+    "description_fr": "Forgée sur l’enclume du Pacte pour la Dernière Veille, pour atteindre un reflet avant qu’il n’atteigne le mur. Les Sourds de l’Enclume signent sur chacune un mot que personne d’autre sur la Rue ne sait lire."
   },
   "dagger_t8": {
     "id": "dagger_t8",
@@ -1328,7 +1344,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Dard du Néant"
+    "itemName_fr": "Dard du Néant",
+    "description": "The Needle keeps this one on the second shelf: a sliver of void-grey steel that leaves a cold the Stitchers have to sew shut. The Ledger says it has never been sold to anyone who talks.",
+    "description_fr": "L’Aiguille garde celui-ci sur le second rayon : un éclat d’acier gris Néant qui laisse un froid que les Porte-Aiguilles doivent recoudre. Le Registre dit qu’il n’a jamais été vendu à quelqu’un qui parle."
   },
   "shield_t8": {
     "id": "shield_t8",
@@ -1360,7 +1378,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Garde du Néant"
+    "itemName_fr": "Garde du Néant",
+    "description": "Rimmed with iron from the Drowned Cloister's sealed stair, where a bone warden kept it until it was taken off him. It turns what the Court sends, and the Hammersmith charges for the turning.",
+    "description_fr": "Cerclée du fer de l’escalier scellé du Cloître noyé, où un gardien d’os la garda jusqu’à ce qu’on la lui prenne. Elle détourne ce que la Cour envoie, et le Maître-forgeron fait payer le détour."
   },
   "staff_t8": {
     "id": "staff_t8",
@@ -1392,7 +1412,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Sceptre du Néant"
+    "itemName_fr": "Sceptre du Néant",
+    "description": "A Hollow Court inquisitor's rod of office, the ash-ink still faintly glowing in its grain. The Academy re-warded it after the Cloister; Magister Corvane will not say who brought it in.",
+    "description_fr": "Le bâton de fonction d’un inquisiteur de la Cour Creuse, l’encre de cendre luisant encore faiblement dans le grain. L’Académie l’a reprotégé après le Cloître ; le magister Corvane ne dira pas qui l’a apporté."
   },
   "sword_t9": {
     "id": "sword_t9",
@@ -1584,7 +1606,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Espadon déicide"
+    "itemName_fr": "Espadon déicide",
+    "description": "The Order of the Vigilant Flame carried this pattern on the Crusade's first day, two-handed, to close the tear by the sword. A third of the Order is buried on this coast with one; the Hammersmith reforges the ones the frost gives back.",
+    "description_fr": "L’Ordre de la Flamme vigilante portait ce modèle le premier jour de la Croisade, à deux mains, pour refermer la déchirure par l’épée. Un tiers de l’Ordre est enterré sur cette côte avec le sien ; le Maître-forgeron reforge ceux que le givre rend."
   },
   "spear_t10": {
     "id": "spear_t10",
@@ -1616,7 +1640,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Lance Brise-Ciel"
+    "itemName_fr": "Lance Brise-Ciel",
+    "description": "Fleet steel: a boarding lance off the White Fleet's flagship, straightened on the Compact's anvil after a year on the Hollow Shore. The Admiralty would like it back and has not said so in writing.",
+    "description_fr": "Acier de la flotte : une lance d’abordage du vaisseau amiral de la Flotte Blanche, redressée sur l’enclume du Pacte après un an sur la Rive Creuse. L’Amirauté aimerait la récupérer et ne l’a pas dit par écrit."
   },
   "dagger_t10": {
     "id": "dagger_t10",
@@ -1648,7 +1674,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Lame-murmure du Néant"
+    "itemName_fr": "Lame-murmure du Néant",
+    "description": "Sharp enough that the Inquisition can read the cut in the dark, the Needle says, and sold with the smoke veil to those the Ledger counts as its own. The Reliquary Thieves use nothing else on a relic's seal.",
+    "description_fr": "Assez affilée pour que l’Inquisition lise l’entaille dans le noir, dit l’Aiguille, et vendue avec le voile de fumée à ceux que le Registre compte parmi les siens. Les Voleurs de Reliques n’emploient rien d’autre sur le sceau d’une relique."
   },
   "shield_t10": {
     "id": "shield_t10",
@@ -1680,7 +1708,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Égide des Dieux"
+    "itemName_fr": "Égide des Dieux",
+    "description": "Grand Master Morrow's own pattern, grey as the man, cut by the Quarrymen from one slab of Frost Quarry stone and rimmed by the Anvil-Deaf. It was meant for the day the Order reached the tear; the Order never did.",
+    "description_fr": "Le modèle du Grand Maître Morrow lui-même, gris comme l’homme, taillé par les Carriers dans une seule dalle de la Carrière de Givre et cerclé par les Sourds de l’Enclume. Il était destiné au jour où l’Ordre atteindrait la déchirure ; l’Ordre n’y est jamais arrivé."
   },
   "staff_t10": {
     "id": "staff_t10",
@@ -1712,7 +1742,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Ascension de l’archimage"
+    "itemName_fr": "Ascension de l’archimage",
+    "description": "The Choir's school keeps one of these for the Magister and sells the rest, warded to the last ring, to hands trained enough to hold the lightning it draws. Aurel Vane carried its twin into the Lantern Hall.",
+    "description_fr": "L’école du Chœur en garde un pour le magister et vend les autres, protégés jusqu’au dernier anneau, à des mains assez exercées pour tenir la foudre qu’il attire. Aurel Vane porta son jumeau dans la Salle de la Lanterne."
   },
   "potion_major": {
     "id": "potion_major",
@@ -1793,7 +1825,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Parchemin de boule de feu"
+    "itemName_fr": "Parchemin de boule de feu",
+    "description": "Imra of the Smoke sells these by the bundle: a fireball written out in a Cantor's hand and good for one casting. The void cults' acolytes carry them too, which says something about what the Cantors charge.",
+    "description_fr": "Imra de la Fumée les vend par liasses : une boule de feu copiée de la main d’un Chantre, bonne pour un seul lancer. Les acolytes des cultes du vide en portent aussi, ce qui en dit long sur les tarifs des Chantres."
   },
   "material_iron_ore": {
     "id": "material_iron_ore",
@@ -1820,7 +1854,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Minerai de fer"
+    "itemName_fr": "Minerai de fer",
+    "description": "Ore from the Frost Quarry, bought by the sack at the Weaponsmith's and the Hammersmith's. One lump is what Dagny asks for a hone or a temper on a die face; the Inquisition's soldiers carry it as ballast and call it a tithe.",
+    "description_fr": "Du minerai de la Carrière de Givre, acheté au sac chez l’Armurier et chez le Maître-forgeron. Un morceau est ce que Dagny demande pour un affûtage ou une trempe sur une face de dé ; les soldats de l’Inquisition en portent comme lest et l’appellent une dîme."
   },
   "quest_sealed_letter": {
     "id": "quest_sealed_letter",
@@ -1847,7 +1883,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Lettre scellée de l’Inquisition"
+    "itemName_fr": "Lettre scellée de l’Inquisition",
+    "description": "Folded under the Hooded Lantern's seal and carried up the Spire of Judgment by the High Warden himself. Whatever the Inquisition wrote in it, it wants it buried, and the Ashen Quarter wants it read.",
+    "description_fr": "Pliée sous le sceau de la Lanterne encapuchonnée et portée en haut de la Flèche du Jugement par le Haut Gardien en personne. Quoi que l’Inquisition y ait écrit, elle veut l’enterrer, et le Quartier des Cendres veut la lire."
   },
   "artifact_moon_shard": {
     "id": "artifact_moon_shard",
@@ -1869,12 +1907,14 @@
     "earthResist": 0,
     "waterResist": 0,
     "elecResist": 0,
-    "rarity": "Rare",
+    "rarity": "Relic",
     "lootChapter": 3,
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Éclat de lune"
+    "itemName_fr": "Éclat de lune",
+    "description": "A sliver of pale glass that hums with the same wrongness as the Shroud, wrested from a grey candle in the Ashen Quarter and entered in the Inquisition's ledger as a void relic. The Bazaar sells copies to every clan; the stalkers that come out of the tear can tell the copies from this one.",
+    "description_fr": "Un éclat de verre pâle qui vibre de la même étrangeté que le Linceul, arraché à une chandelle grise dans le Quartier des Cendres et inscrit au registre de l’Inquisition comme relique du Néant. Le Bazar en vend des copies à tous les clans ; les rôdeurs sortis de la déchirure savent distinguer les copies de celui-ci."
   },
   "plate_emberproof": {
     "id": "plate_emberproof",
@@ -1907,7 +1947,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Harnois ignifuge"
+    "itemName_fr": "Harnois ignifuge",
+    "description": "Inquisition plate from the Scaffold Yards, forged by ironworkers who left when the golems started outlasting their masters. The Emberwives' coal tempered it against fire, and it has held its shape better than most promises made in that district.",
+    "description_fr": "Une armure de l’Inquisition sortie des Chantiers aux Échafaudages, forgée par des ferronniers partis quand les golems se sont mis à survivre à leurs maîtres. Le charbon des Charbonnières l’a trempée contre le feu, et elle a gardé sa forme mieux que la plupart des promesses faites dans ce quartier."
   },
   "cloak_frostward": {
     "id": "cloak_frostward",
@@ -1940,7 +1982,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Cape pare-givre"
+    "itemName_fr": "Cape pare-givre",
+    "description": "Oiled wool lined with Highhearth fleece, cut for the quarry crews who read the tally-stone in the tear's frost. Overseer Renn invented a toll on it at Tern Row and collected it himself.",
+    "description_fr": "Laine huilée doublée de toison de Haut-Âtre, taillée pour les équipes de la carrière qui lisent la pierre de compte dans le givre de la déchirure. Le contremaître Renn a inventé un péage dessus à Tern Row, et l’a perçu lui-même."
   },
   "circlet_radiance": {
     "id": "circlet_radiance",
@@ -1973,7 +2017,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Diadème radieux"
+    "itemName_fr": "Diadème radieux",
+    "description": "Hesta Brann keeps this on the back wall of the Shieldwright's Hall, under the aegises: a band of polished quarry-silver that throws the Lantern's light back at whatever stands in it. The Wickwardens wore the pattern on the cliff lights, before the Dominion made them priests.",
+    "description_fr": "Hesta Brann le garde au fond de la Halle des Boucliers, sous les égides : un bandeau d’argent de carrière poli qui renvoie la lumière de la Lanterne à ce qui s’y tient. Les Garde-Mèches portaient ce modèle sur les feux de falaise, avant que le Dominion n’en fasse des prêtres."
   },
   "elite_trophy": {
     "id": "elite_trophy",
@@ -2007,6 +2053,8 @@
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "itemName_fr": "Marque d’élite",
+    "description": "Cut from a hunter's quarry, or from the hunter the Inquisition sent, and worth sixty at any stall. The Hammersmith takes one to inscribe a keyword on a die face, and does not ask what it was.",
+    "description_fr": "Taillée sur la proie d’une traque, ou sur le chasseur que l’Inquisition a envoyé, et qui vaut soixante à n’importe quel étal. Le Maître-forgeron en prend une pour graver un mot-clé sur une face de dé, et ne demande pas ce que c’était.",
     "sellValue": 60
   },
   "boss_trophy": {
@@ -2080,7 +2128,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Osselet du joueur"
+    "itemName_fr": "Osselet du joueur",
+    "description": "An extra knucklebone from the Blind Beggar's back room, kept where the house could not see it. Burned at the start of a fight it buys one more throw a round; the Vigil sells them because dice are the one thing the watch never runs short of.",
+    "description_fr": "Un osselet de trop, venu de l’arrière-salle du Mendiant Aveugle, gardé là où la maison ne pouvait pas le voir. Consumé au début d’un combat, il achète une relance de plus par tour ; la Veille en vend parce que les dés sont la seule chose dont la garde ne manque jamais."
   },
   "charm_lucky_coin": {
     "id": "charm_lucky_coin",
@@ -2117,7 +2167,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Pièce porte-bonheur"
+    "itemName_fr": "Pièce porte-bonheur",
+    "description": "A Salt Ledger penny with the Lantern filed off one face, which the Salt Crows call a contract paid in advance. Burned before a fight it makes the blade find the gap more often, for that fight and no longer.",
+    "description_fr": "Un sou du Registre du Sel dont on a limé la Lanterne sur une face, ce que les Corneilles de Sel appellent un contrat payé d’avance. Consumé avant un combat, il fait trouver la faille à la lame plus souvent, pour ce combat et pas davantage."
   },
   "charm_iron_skin": {
     "id": "charm_iron_skin",
@@ -2154,7 +2206,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Baume peau-de-fer"
+    "itemName_fr": "Baume peau-de-fer",
+    "description": "Fever-bark boiled down past medicine and thickened with quarry dust, the way the Barkbleeders make it when the Courts are not watching. Rubbed in before a fight it hardens the skin for the length of it; the Apothecary will not stock it.",
+    "description_fr": "De l’écorce à fièvre réduite au-delà du remède et épaissie de poussière de carrière, comme les Saigne-Écorce la préparent quand les Cours ne regardent pas. Appliqué avant un combat, il durcit la peau pour toute sa durée ; la Rue des Apothicaires refuse d’en tenir."
   },
   "charm_warding": {
     "id": "charm_warding",
@@ -2191,7 +2245,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Nœud de garde"
+    "itemName_fr": "Nœud de garde",
+    "description": "Grey thread tied the Stitchers' way, in a knot that comes undone once and takes the first blow with it. Hask lays them out on the shelf of skulls between the salves and the second-hand steel.",
+    "description_fr": "Du fil gris noué à la manière des Porte-Aiguilles, en un nœud qui se défait une seule fois et emporte le premier coup avec lui. Hask les étale sur le rayon de crânes, entre les onguents et l’acier d’occasion."
   },
   "tome_of_insight": {
     "id": "tome_of_insight",
@@ -2228,7 +2284,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Tome de clairvoyance"
+    "itemName_fr": "Tome de clairvoyance",
+    "description": "Lecture notes from the Choir's school, copied by a Cantor who understood them and sold by one who did not. Read once, it leaves a little more of a body than it found; it does not survive the reading.",
+    "description_fr": "Des notes de cours de l’école du Chœur, copiées par un Chantre qui les comprenait et vendues par un autre qui ne les comprenait pas. Lu une fois, il laisse un corps un peu plus grand qu’il ne l’a trouvé ; il ne survit pas à la lecture."
   },
   "tome_of_mastery": {
     "id": "tome_of_mastery",
@@ -2265,7 +2323,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Tome de maîtrise"
+    "itemName_fr": "Tome de maîtrise",
+    "description": "The Academy's own grimoire, warded shut until it is paid for, and the one book the Vigil keeps lit at the Last Lantern. Read once, it offers a choice that was not there before, and then it is ash.",
+    "description_fr": "Le grimoire de l’Académie elle-même, scellé par ses protections tant qu’il n’est pas payé, et le seul livre que la Veille garde éclairé à la Dernière Lanterne. Lu une fois, il offre un choix qui n’existait pas auparavant, et puis il n’est plus que cendre."
   },
   "rat_king_tooth": {
     "id": "rat_king_tooth",
@@ -2303,7 +2363,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Dent du Roi des rats"
+    "itemName_fr": "Dent du Roi des rats",
+    "description": "Pulled from the jaw of the Matriarch that blocked the main pipe under Alster, filed and set in a thug's grip by a Crow with no name. The Tide Cellar sells it under the rusty pier and does not haggle.",
+    "description_fr": "Arrachée à la mâchoire de la Matriarche qui obstruait le conduit principal sous Alster, limée et montée sur une poignée de truand par une Corneille sans nom. La Cave aux Marées la vend sous la jetée rouillée, sans marchander."
   },
   "thug_knuckle_wrap": {
     "id": "thug_knuckle_wrap",
@@ -2378,7 +2440,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Chevalière du Gardien"
+    "itemName_fr": "Chevalière du Gardien",
+    "description": "A gaoler's ring of the Inquisition, gold over iron, stamped with the Hooded Lantern: it opens the Black Hold's doors and the Spire's sanctum, which is why the archivist sells it without a receipt. Brother Clement wore his on the hand he worked with.",
+    "description_fr": "Une bague de geôlier de l’Inquisition, de l’or sur du fer, frappée de la Lanterne encapuchonnée : elle ouvre les portes de la Geôle Noire et le sanctuaire de la Flèche, raison pour laquelle l’archiviste la vend sans reçu. Frère Clément portait la sienne à la main dont il travaillait."
   },
   "wisp_ember": {
     "id": "wisp_ember",
@@ -2410,12 +2474,14 @@
     "reqDexterity": 0,
     "reqConstitution": 0,
     "reqIntelligence": 0,
-    "rarity": "Rare",
+    "rarity": "Relic",
     "lootChapter": 3,
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Braise de feu follet"
+    "itemName_fr": "Braise de feu follet",
+    "description": "All that is left of a grey candle when it stops drifting: a mote of the tear's cold light, caught in wax and still hungry for warmth. The Inquisition burns these; Old Pell's caravan buys them off the last road and sells them on this one.",
+    "description_fr": "Tout ce qui reste d’une chandelle grise quand elle cesse de voleter : une étincelle de la lumière froide de la déchirure, prise dans la cire et toujours avide de chaleur. L’Inquisition les brûle ; la caravane du vieux Pell les achète sur la route d’avant et les vend sur celle-ci."
   },
   "cultist_hood": {
     "id": "cultist_hood",
@@ -2452,7 +2518,9 @@
     "alignment": "Evil",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 3,
-    "itemName_fr": "Capuche de cultiste"
+    "itemName_fr": "Capuche de cultiste",
+    "description": "Grey sackcloth cut with eyeholes, the void cults' only vestment, soaked in enough ash-ink that the Spire's confiscations never found the power under it. The Tide Cellar sells them to people who want to pray at the tear, or to be mistaken for someone who does.",
+    "description_fr": "Toile de sac grise percée pour les yeux, l’unique habit des cultes du vide, imbibée d’assez d’encre de cendre pour que les confiscations de la Flèche ne trouvent jamais le pouvoir dessous. La Cave aux Marées en vend à qui veut prier la déchirure, ou passer pour quelqu’un qui le fait."
   },
   "blackened_fang": {
     "id": "blackened_fang",
@@ -2490,7 +2558,9 @@
     "alignment": "Evil",
     "alignedAttackBonus": 4,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Croc noirci"
+    "itemName_fr": "Croc noirci",
+    "description": "Paid out by the Pit in gold and in secrets, for the killing of a Choir sentinel: a curved blade burnt black so that no Lantern can catch its edge. The Choir's judicators carry them too, taken off the people they sentenced.",
+    "description_fr": "Versée par la Fosse, en or et en secrets, pour l’abattage d’une sentinelle du Chœur : une lame courbe brûlée au noir pour qu’aucune Lanterne n’en accroche le fil. Les justiciers du Chœur en portent aussi, prises à ceux qu’ils ont condamnés."
   },
   "saint_reliquary": {
     "id": "saint_reliquary",
@@ -2522,12 +2592,14 @@
     "reqDexterity": 0,
     "reqConstitution": 0,
     "reqIntelligence": 0,
-    "rarity": "Rare",
+    "rarity": "Relic",
     "lootChapter": 2,
     "alignment": "Good",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 3,
-    "itemName_fr": "Reliquaire du saint"
+    "itemName_fr": "Reliquaire du saint",
+    "description": "A saint's finger-bone in a box of the Black Reliquary's making, grey thread stitched around it in the belief that holy bones keep the tear from growing. The Choir pays to have such boxes back from the Pit's wretches, who steal them to spoil what the righteous loved.",
+    "description_fr": "Une phalange de saint dans un coffret fait par le Reliquaire Noir, du fil gris cousu autour dans l’idée que des os saints empêchent la déchirure de grandir. Le Chœur paie pour racheter ces coffrets aux gueux de la Fosse, qui les volent pour gâter ce que les justes aimaient."
   },
   "dawnward_shield": {
     "id": "dawnward_shield",
@@ -2565,7 +2637,9 @@
     "alignment": "Good",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 4,
-    "itemName_fr": "Bouclier Garde-Aube"
+    "itemName_fr": "Bouclier Garde-Aube",
+    "description": "Lacquered white and marked with the Choir's rising sun, carried by the just against the Pit's tormentors and sold, afterwards, by the Keyholders in the Smugglers' Vault. Nothing in the Vault has a receipt; this one has a vow.",
+    "description_fr": "Laqué de blanc et marqué du soleil levant du Chœur, porté par les justes contre les tourmenteurs de la Fosse et vendu, ensuite, par les Porte-Clefs au Coffre des Contrebandiers. Rien au Coffre n’a de reçu ; celui-ci a un vœu."
   },
   "halo_lance": {
     "id": "halo_lance",
@@ -2603,7 +2677,9 @@
     "alignment": "Good",
     "alignedAttackBonus": 4,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Lance auréolée"
+    "itemName_fr": "Lance auréolée",
+    "description": "Order steel with a ring of Lantern-light hammered around the socket, the kind the Vigilant Flame's knights pointed at the tear on the Crusade's first day. The Keyholder keeps one in the Vault and has told the Weaponsmith to keep his hands off it.",
+    "description_fr": "L’acier de l’Ordre, un anneau de lumière de la Lanterne martelé autour de la douille, de ceux que les chevaliers de la Flamme vigilante pointaient vers la déchirure le premier jour de la Croisade. Le Porte-Clefs en garde une au Coffre et a dit à l’Armurier de ne pas y toucher."
   },
   "tear_glass_blade": {
     "id": "tear_glass_blade",
@@ -2638,7 +2714,9 @@
     "alignedArmorBonus": 0,
     "scalingStat": "dexterity",
     "reqDexterity": 6,
-    "itemName_fr": "Lame de verre de la déchirure"
+    "itemName_fr": "Lame de verre de la déchirure",
+    "description": "Ground from the fused sand of the Glass Strand, where the tear's first breath turned three ships and a chapel to green glass. The wreck-wrights of the White Anchorage keep it back for a hand sworn to the Lantern, and it cuts a reflection as readily as the thing it reflects.",
+    "description_fr": "Taillée dans le sable fondu de la Grève de Verre, là où le premier souffle de la déchirure a changé trois navires et une chapelle en verre vert. Les charpentiers d’épaves du Mouillage Blanc la mettent de côté pour une main sous serment à la Lanterne, et elle tranche un reflet aussi bien que ce qu’il reflète."
   },
   "archon_mantle": {
     "id": "archon_mantle",
@@ -2671,7 +2749,9 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "Manteau de l’Archonte"
+    "itemName_fr": "Manteau de l’Archonte",
+    "description": "Stripped from a lord of the tear's host at the dead heart of the Black Reliquary, where it had stood between the tear and the city since the night it opened. It was one of the Reliquary's own once; the cloth still turns the cold it came out of.",
+    "description_fr": "Enlevé à un seigneur de l’armée de la déchirure au cœur mort du Reliquaire Noir, où il se tenait entre la déchirure et la ville depuis la nuit où elle s’est ouverte. C’était l’un des leurs, autrefois ; l’étoffe détourne encore le froid dont elle est sortie."
   },
   "sovereign_crown": {
     "id": "sovereign_crown",
@@ -2699,12 +2779,14 @@
     "iceResist": 0,
     "lightDmgBonus": 0,
     "lightResist": 0,
-    "rarity": "Rare",
+    "rarity": "Relic",
     "lootChapter": 6,
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "itemName_fr": "La Couronne du Souverain"
+    "itemName_fr": "La Couronne du Souverain",
+    "description": "The sixth piece of the Shroud: a circlet of grey cloth, light as ash and warm as a hand, which the thing behind the tear wore as a crown from the night the first Inquisitor cut it. The ledger has no column for it; whoever wears it holds the tear as a gate rather than a door.",
+    "description_fr": "La sixième pièce du Linceul : un cercle d’étoffe grise, léger comme la cendre et chaud comme une main, que la chose derrière la déchirure portait en couronne depuis la nuit où le premier Inquisiteur le coupa. Le registre n’a pas de colonne pour elle ; qui la porte tient la déchirure comme une grille plutôt que comme une porte."
   },
   "spellbook_frost_bind": {
     "id": "spellbook_frost_bind",
@@ -2997,13 +3079,15 @@
     "iceResist": 0,
     "lightDmgBonus": 3,
     "lightResist": 0,
-    "rarity": "Uncommon",
+    "rarity": "Relic",
     "lootChapter": 2,
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "setId": "harborwatch",
-    "itemName_fr": "Lanterne de la Garde du port"
+    "itemName_fr": "Lanterne de la Garde du port",
+    "description": "Signal lantern of the Saltmouth harbor watch, its glass salvaged by the wreck-wrights of the White Anchorage from a fleet boat the sea gave back. The Admiralty counts every one sold; with the coat and the cutlass it is the full watch, and the watch learned to keep its feet on wet stone.",
+    "description_fr": "Lanterne de signal de la garde du port de Bouche-de-Sel, dont le verre fut récupéré par les charpentiers d’épaves du Mouillage Blanc sur une chaloupe de la flotte que la mer a rendue. L’Amirauté en compte chaque vente ; avec le manteau et le sabre, c’est la garde au complet, et la garde a appris à tenir debout sur la pierre mouillée."
   },
   "hollow_court_blade": {
     "id": "hollow_court_blade",
@@ -3039,7 +3123,9 @@
     "scalingStat": "strength",
     "reqStrength": 4,
     "setId": "hollow_court",
-    "itemName_fr": "Lame de la Cour Creuse"
+    "itemName_fr": "Lame de la Cour Creuse",
+    "description": "The Court's inquisitors wore these under their robes when they knelt at the black altar: light-blessed steel the Spire had issued them before they turned. Sold now in the Vault, one only, with the seal and the mantle for anyone the Keyholder trusts.",
+    "description_fr": "Les inquisiteurs de la Cour portaient celles-ci sous leurs robes quand ils s’agenouillaient devant l’autel noir : de l’acier béni de lumière que la Flèche leur avait remis avant qu’ils ne tournent. Vendue aujourd’hui au Coffre, une seule, avec le sceau et la chape pour qui a la confiance du Porte-Clefs."
   },
   "hollow_court_mantle": {
     "id": "hollow_court_mantle",
@@ -3073,7 +3159,9 @@
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "setId": "hollow_court",
-    "itemName_fr": "Chape de la Cour Creuse"
+    "itemName_fr": "Chape de la Cour Creuse",
+    "description": "Ash-ink robes of the Hollow Court, the spirals still faintly glowing where the Court's power was worn under the skin. Hask sells it off the shelf of skulls at the Drowned Cloister and has stopped asking where it came from.",
+    "description_fr": "Les robes à l’encre de cendre de la Cour Creuse, les spirales luisant encore faiblement là où le pouvoir de la Cour se portait sous la peau. Hask la vend sur son rayon de crânes au Cloître noyé, et a cessé de demander d’où elle vient."
   },
   "hollow_court_seal": {
     "id": "hollow_court_seal",
@@ -3101,13 +3189,15 @@
     "iceResist": 0,
     "lightDmgBonus": 0,
     "lightResist": 4,
-    "rarity": "Rare",
+    "rarity": "Relic",
     "lootChapter": 4,
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "setId": "hollow_court",
-    "itemName_fr": "Sceau de la Cour Creuse"
+    "itemName_fr": "Sceau de la Cour Creuse",
+    "description": "Seal of the Hollow Court, the inquisitors who knelt to the tear for a generation and kept a ledger of its taken bound in skin. It stamped the Court's requisitions and the Teind-Rider's receipts; worn with the blade and the mantle it is the Court's full vestment, and the Court never fought fair.",
+    "description_fr": "Sceau de la Cour Creuse, ces inquisiteurs qui s’agenouillèrent devant la déchirure pendant une génération et tinrent le registre de ses captifs, relié de peau. Il scellait les réquisitions de la Cour et les reçus du Cavalier de la Dîme ; porté avec la lame et la chape, c’est la Cour en grand habit, et la Cour n’a jamais combattu loyalement."
   },
   "bloodthorn_blade": {
     "id": "bloodthorn_blade",
@@ -3143,7 +3233,9 @@
     "scalingStat": "strength",
     "uniqueEffect": "lifesteal",
     "uniqueValue": 20,
-    "itemName_fr": "Lame Épine-de-sang"
+    "itemName_fr": "Lame Épine-de-sang",
+    "description": "Thorn-steel from the Mire Courts, grown as much as forged, which drinks a little of what it cuts and gives it back to the hand. The Courts never sold it; the Keyholders never said how they came by it.",
+    "description_fr": "Acier d’épine des Cours du Marais, autant poussé que forgé, qui boit un peu de ce qu’il tranche et le rend à la main. Les Cours ne l’ont jamais vendu ; les Porte-Clefs n’ont jamais dit comment ils l’avaient obtenu."
   },
   "thornmail_hauberk": {
     "id": "thornmail_hauberk",
@@ -3178,7 +3270,9 @@
     "alignedArmorBonus": 0,
     "uniqueEffect": "thorns",
     "uniqueValue": 6,
-    "itemName_fr": "Haubert d’épines"
+    "itemName_fr": "Haubert d’épines",
+    "description": "Mail set with fever-bark thorns, which the Hammersmith finishes for the Heron's Wake so that whatever grabs a guide in the fen lets go bleeding. The council signed it off with the open hand; the price was signed by someone else.",
+    "description_fr": "Une maille garnie d’épines d’écorce à fièvre, que le Maître-forgeron achève pour le Sillage du Héron afin que ce qui empoigne un guide dans le marais lâche prise en saignant. Le conseil l’a signée de la main ouverte ; le prix, c’est quelqu’un d’autre qui l’a signé."
   },
   "phoenix_sigil": {
     "id": "phoenix_sigil",
@@ -3206,14 +3300,16 @@
     "iceResist": 0,
     "lightDmgBonus": 0,
     "lightResist": 0,
-    "rarity": "Rare",
+    "rarity": "Relic",
     "lootChapter": 4,
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "uniqueEffect": "secondWind",
     "uniqueValue": 1,
-    "itemName_fr": "Sceau du Phénix"
+    "itemName_fr": "Sceau du Phénix",
+    "description": "A coal from the last forge in Rimewell, lit before the Reliquary's frost put out every other hearth, set in iron and worn at the brow. The Rime Bailiff taxed it as chapel property; the Vigil sells it at the Last Lantern to anyone going one street closer to the tear, because it has brought a body back once already.",
+    "description_fr": "Une braise de la dernière forge de Puits-de-Givre, allumée avant que le givre du Reliquaire n’éteigne tous les autres foyers, sertie dans le fer et portée au front. L’Huissier du Givre la taxait comme bien de la chapelle ; la Veille la vend à la Dernière Lanterne à qui s’avance d’une rue vers la déchirure, parce qu’elle a déjà ramené un corps une fois."
   },
   "siphon_wand": {
     "id": "siphon_wand",
@@ -3249,7 +3345,9 @@
     "scalingStat": "intelligence",
     "uniqueEffect": "manaOnHit",
     "uniqueValue": 1,
-    "itemName_fr": "Baguette siphon"
+    "itemName_fr": "Baguette siphon",
+    "description": "Imra's stranger thing: a rod of pale wood that draws a thread of the tear's cold back along each strike and hands it to whoever holds it. She pays every toll on it, and the price is the price.",
+    "description_fr": "La chose plus étrange d’Imra : une baguette de bois pâle qui ramène un fil du froid de la déchirure à chaque coup et le remet à qui la tient. Elle en paie tous les péages, et le prix est le prix."
   },
   "boots_worn_leather": {
     "id": "boots_worn_leather",
@@ -3412,6 +3510,8 @@
     "id": "boots_tearwalker",
     "itemName": "Tearwalker Boots",
     "itemName_fr": "Bottes d’arpenteur de la Déchirure",
+    "description": "Sewn by the Stitchers for the lantern trains, from hide that has crossed the Glass Strand and learned where not to step. The shore elders give a pair to whoever brings the lamp oil up; Hask sells the pairs that came back without their owners.",
+    "description_fr": "Cousues par les Porte-Aiguilles pour les convois de lanternes, dans un cuir qui a traversé la Grève de Verre et appris où ne pas poser le pied. Les anciens de la côte en donnent une paire à qui fait monter l’huile ; Hask vend celles qui sont revenues sans leur propriétaire.",
     "itemType": "Armor",
     "damage": 0,
     "cost": 270,
@@ -3609,6 +3709,8 @@
     "id": "greaves_voidsteel",
     "itemName": "Voidsteel Greaves",
     "itemName_fr": "Jambières d’acier du Néant",
+    "description": "Greaves hammered from steel that lay a season in the Ossuary Galleries, where the frost tempered it the way no forge can. Hask sells them second-hand off the shelf of skulls, and they hold the cold off better than anything the Hammersmith makes new.",
+    "description_fr": "Des jambières martelées dans un acier resté une saison dans les Galeries de l’Ossuaire, où le givre l’a trempé comme aucune forge ne le peut. Hask les vend d’occasion sur le rayon de crânes, et elles tiennent le froid à distance mieux que tout ce que le Maître-forgeron fait de neuf.",
     "itemType": "Armor",
     "damage": 0,
     "cost": 290,

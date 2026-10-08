@@ -34,6 +34,7 @@ import '../data/throne.dart'
         pledgedFlag,
         throneWinnerFlag;
 import '../models/ally_state.dart';
+import '../models/item_origin.dart';
 import '../models/story_politics.dart';
 
 const String _playerSessionPrefsKey = 'player_session';
@@ -195,6 +196,7 @@ class PlayerSession {
     this.seenShopIds = const [],
     this.seenQuestIds = const [],
     this.seenEnemyIds = const [],
+    this.seenNpcIds = const [],
     this.readSceneKeys = const [],
     this.seenEchoKeys = const [],
     this.provisions = provisionsStart,
@@ -253,6 +255,7 @@ class PlayerSession {
     this.legacyGold = 0,
     this.legacyDiceIds = const [],
     this.legacySpellIds = const [],
+    this.itemOrigins = const {},
   });
 
   final int level;
@@ -366,6 +369,11 @@ class PlayerSession {
   final List<String> seenShopIds;
   final List<String> seenQuestIds;
   final List<String> seenEnemyIds;
+
+  /// The people (npcs.json, v1.204) the player has looked at in the
+  /// Other tab's People section: a person known (see npcDiscovered) and
+  /// not here counts on the section's badge.
+  final List<String> seenNpcIds;
 
   /// The town and camp scenes the player has read in full, as
   /// `<nodeId>#<hash of the text>` (see sceneReadKey): coming back to one
@@ -666,6 +674,13 @@ class PlayerSession {
   final List<String> legacyDiceIds;
   final List<String> legacySpellIds;
 
+  /// Where each item first came into the pack (item id -> place and
+  /// chapter, v1.204, see item_origin.dart): recorded by every way an item
+  /// enters the inventory, on the first acquisition only, and read by the
+  /// inventory's detail dialog ("Yours since the Lower Town, chapter 1").
+  /// Cleared with the pack on permadeath.
+  final Map<String, ItemOrigin> itemOrigins;
+
   bool get hasLegacy =>
       legacyGold > 0 || legacyDiceIds.isNotEmpty || legacySpellIds.isNotEmpty;
 
@@ -767,6 +782,7 @@ class PlayerSession {
     List<String>? seenShopIds,
     List<String>? seenQuestIds,
     List<String>? seenEnemyIds,
+    List<String>? seenNpcIds,
     List<String>? readSceneKeys,
     List<String>? seenEchoKeys,
     int? provisions,
@@ -826,6 +842,7 @@ class PlayerSession {
     int? legacyGold,
     List<String>? legacyDiceIds,
     List<String>? legacySpellIds,
+    Map<String, ItemOrigin>? itemOrigins,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -870,6 +887,7 @@ class PlayerSession {
       seenShopIds: seenShopIds ?? this.seenShopIds,
       seenQuestIds: seenQuestIds ?? this.seenQuestIds,
       seenEnemyIds: seenEnemyIds ?? this.seenEnemyIds,
+      seenNpcIds: seenNpcIds ?? this.seenNpcIds,
       readSceneKeys: readSceneKeys ?? this.readSceneKeys,
       seenEchoKeys: seenEchoKeys ?? this.seenEchoKeys,
       provisions: provisions ?? this.provisions,
@@ -932,6 +950,7 @@ class PlayerSession {
       legacyGold: legacyGold ?? this.legacyGold,
       legacyDiceIds: legacyDiceIds ?? this.legacyDiceIds,
       legacySpellIds: legacySpellIds ?? this.legacySpellIds,
+      itemOrigins: itemOrigins ?? this.itemOrigins,
     );
   }
 
@@ -979,6 +998,7 @@ class PlayerSession {
         'seenShopIds': seenShopIds,
         'seenQuestIds': seenQuestIds,
         'seenEnemyIds': seenEnemyIds,
+        'seenNpcIds': seenNpcIds,
         'readSceneKeys': readSceneKeys,
         'seenEchoKeys': seenEchoKeys,
         'provisions': provisions,
@@ -1039,6 +1059,9 @@ class PlayerSession {
         'legacyGold': legacyGold,
         'legacyDiceIds': legacyDiceIds,
         'legacySpellIds': legacySpellIds,
+        'itemOrigins': {
+          for (final e in itemOrigins.entries) e.key: e.value.toJson(),
+        },
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -1146,6 +1169,9 @@ class PlayerSession {
               const [],
       seenEnemyIds:
           (json['seenEnemyIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      seenNpcIds:
+          (json['seenNpcIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
       readSceneKeys:
           (json['readSceneKeys'] as List?)?.map((e) => e.toString()).toList() ??
@@ -1331,6 +1357,13 @@ class PlayerSession {
               ?.map((e) => e.toString())
               .toList() ??
           const [],
+      // A save from before v1.204 knows no origins: its items are simply
+      // owned, with no "since" line.
+      itemOrigins: {
+        for (final e in ((json['itemOrigins'] as Map?) ?? const {}).entries)
+          if (ItemOrigin.tryParse(e.value) case final origin?)
+            e.key.toString(): origin,
+      },
     );
   }
 }
@@ -1744,7 +1777,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// [approvalMods]; the reactions are returned, for the story to show.
   /// [goldIsProfit] false: the gold is loot picked up on the road (a
   /// detour's cache, an expedition's find), not a deed a companion who
-  /// dislikes greed would hold against the player.
+  /// dislikes greed would hold against the player. [origin] (where the
+  /// story stands, see itemOriginHere) is remembered for an [itemId] new
+  /// to the pack (see [PlayerSession.itemOrigins]).
   Future<List<ApprovalChange>> applyChoiceEffects({
     int goldMod = 0,
     int alignmentMod = 0,
@@ -1757,6 +1792,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     Map<String, int> approvalMods = const {},
     Map<String, dynamic> companions = const {},
     bool goldIsProfit = true,
+    ItemOrigin? origin,
   }) async {
     // Who the story takes is settled by the party as it stands in the
     // scene, before anyone reacts: a companion walking out over this very
@@ -1817,6 +1853,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       inventoryItemIds: itemId == null || itemId.isEmpty
           ? state.inventoryItemIds
           : [...state.inventoryItemIds, itemId],
+      itemOrigins: itemId == null || itemId.isEmpty
+          ? state.itemOrigins
+          : withItemOrigins(state.itemOrigins, [itemId], origin),
     );
     if (lostId != null) {
       loseAlly(lostId, persist: false, companions: companions);
@@ -2083,13 +2122,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// - the titles standing earns (see titlesEarned).
   /// The offer is spent; false when there is none or no such suitor.
   Future<bool> acceptSuitor(String factionId,
-      {required OfferTables tables}) async {
+      {required OfferTables tables, ItemOrigin? origin}) async {
     final offer = state.clanOffer;
     final suitor = offer?.suitorOf(factionId);
     if (offer == null || suitor == null || state.pendingOffers.isEmpty) {
       return false;
     }
-    var next = _withGift(state, suitor, tables);
+    var next = _withGift(state, suitor, tables, origin: origin);
     final politics = acceptPolitics(suitor, offer.ticket,
         politics: next.politics,
         data: tables.data,
@@ -2109,7 +2148,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// [session] with [suitor]'s gift applied (see [acceptSuitor]).
   PlayerSession _withGift(
-      PlayerSession session, Suitor suitor, OfferTables tables) {
+      PlayerSession session, Suitor suitor, OfferTables tables,
+      {ItemOrigin? origin}) {
     final gift = suitor.gift;
     switch (gift.kind) {
       case GiftKind.skill:
@@ -2136,7 +2176,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         );
       case GiftKind.object:
         return _withItem(
-            session, gift.id, tables.items[gift.id] as Map<String, dynamic>?);
+            session, gift.id, tables.items[gift.id] as Map<String, dynamic>?,
+            origin: origin);
       case GiftKind.title:
         if (session.heldTitleIds.contains(gift.id)) return session;
         return session.copyWith(
@@ -2168,9 +2209,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// [session] given [itemId] the way a reward is: a potion as charges, a
   /// spellbook read, a tome read on the spot (a Tome of Mastery is one more
-  /// offer), anything else to the pack.
+  /// offer), anything else to the pack, with [origin] remembered for a
+  /// piece new to it (see [PlayerSession.itemOrigins]).
   PlayerSession _withItem(
-      PlayerSession session, String itemId, Map<String, dynamic>? item) {
+      PlayerSession session, String itemId, Map<String, dynamic>? item,
+      {ItemOrigin? origin}) {
     final charges = consumableChargesFor(itemId, item);
     if (charges != null) {
       return session.copyWith(
@@ -2192,8 +2235,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         pendingOffers: [...session.pendingOffers, ...tome.offers],
       );
     }
-    return session
-        .copyWith(inventoryItemIds: [...session.inventoryItemIds, itemId]);
+    return session.copyWith(
+      inventoryItemIds: [...session.inventoryItemIds, itemId],
+      itemOrigins: withItemOrigins(session.itemOrigins, [itemId], origin),
+    );
   }
 
   /// [session] with the titles its politics earn or take away (see
@@ -2434,9 +2479,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     Map<String, PoliticsEvent> events = const {},
     Map<String, dynamic> companions = const {},
     int? chapter,
+    String? cause,
   }) async {
     final change = coast.applyStoryPolitics(politics,
-        cause: 'story:$nodeId',
+        cause: cause ?? 'story:$nodeId',
         key: key,
         politics: state.politics,
         flags: state.flags,
@@ -2699,17 +2745,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? grantsBannerPieceId,
     int alignmentMod = 0,
     Map<String, dynamic>? rewardItem,
+    ItemOrigin? origin,
   }) async {
     final newActive =
         state.activeQuestIds.where((id) => id != questId).toList();
     final newCompleted = <String>{...state.completedQuestIds, questId}.toList();
     final newInventory = [...state.inventoryItemIds];
+    var newOrigins = state.itemOrigins;
     var potionsGained = 0;
     var antidotesGained = 0;
     if (rewardItemId != null && rewardItemId.isNotEmpty) {
       final charges = consumableChargesFor(rewardItemId, rewardItem);
       if (charges == null) {
         newInventory.add(rewardItemId);
+        newOrigins = withItemOrigins(newOrigins, [rewardItemId], origin);
       } else {
         potionsGained = charges.potions;
         antidotesGained = charges.antidotes;
@@ -2764,6 +2813,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           state.trackedQuestId == questId ? '' : state.trackedQuestId,
       completedQuestIds: newCompleted,
       inventoryItemIds: newInventory,
+      itemOrigins: newOrigins,
       potionCount: state.potionCount + potionsGained,
       antidoteCount: state.antidoteCount + antidotesGained,
       unlockedQuestIds: newUnlockedQuests,
@@ -2807,6 +2857,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int stockLimit, {
     Map<String, dynamic>? item,
     String? stockKey,
+    ItemOrigin? origin,
   }) async {
     // A restocking consumable is counted per chapter (see stockKeyFor).
     final key = stockKey ?? '$shopId::$itemId';
@@ -2845,6 +2896,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       inventoryItemIds: charges == null
           ? [...state.inventoryItemIds, itemId]
           : state.inventoryItemIds,
+      itemOrigins: charges == null
+          ? withItemOrigins(state.itemOrigins, [itemId], origin)
+          : state.itemOrigins,
       potionCount: state.potionCount + (charges?.potions ?? 0),
       antidoteCount: state.antidoteCount + (charges?.antidotes ?? 0),
       shopPurchaseCounts: {...state.shopPurchaseCounts, key: purchased + 1},
@@ -2905,7 +2959,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// Forges [itemId] from [item]'s recipe: its gold and materials leave
   /// the pack and the piece enters it. Returns false if something is
   /// missing.
-  Future<bool> craftItem(String itemId, Map<String, dynamic>? item) async {
+  Future<bool> craftItem(String itemId, Map<String, dynamic>? item,
+      {ItemOrigin? origin}) async {
     if (!canCraft(item)) return false;
     final remaining = [...state.inventoryItemIds];
     for (final m in craftMaterialsFor(item).entries) {
@@ -2916,6 +2971,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       gold: state.gold - ((item!['craftGold'] as num?)?.toInt() ?? 0),
       inventoryItemIds: [...remaining, itemId],
+      itemOrigins: withItemOrigins(state.itemOrigins, [itemId], origin),
     );
     await _persist();
     return true;
@@ -3235,11 +3291,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? rewardItemId,
     String? rewardDiceId,
     String? rewardFlag,
+    ItemOrigin? origin,
   }) async {
     if (state.completedZoneIds.contains(zoneId)) return;
     final newInventory = [...state.inventoryItemIds];
+    var newOrigins = state.itemOrigins;
     if (rewardItemId != null && rewardItemId.isNotEmpty) {
       newInventory.add(rewardItemId);
+      newOrigins = withItemOrigins(newOrigins, [rewardItemId], origin);
     }
     var newOwnedDice = state.ownedDiceIds;
     if (rewardDiceId != null &&
@@ -3256,6 +3315,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       gold: state.gold + rewardGold,
       inventoryItemIds: newInventory,
+      itemOrigins: newOrigins,
       ownedDiceIds: newOwnedDice,
       flags: newFlags,
       completedZoneIds: [...state.completedZoneIds, zoneId],
@@ -3816,12 +3876,26 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// Marks every currently-unlocked shop/quest/enemy id as seen at once —
   /// used when a Play-tab section is expanded, clearing its whole badge.
-  Future<void> markAllSeenInCategory(
-      {bool shops = false, bool quests = false, bool enemies = false}) async {
+  /// Marks every entry of a Play tab section as viewed, clearing its
+  /// badge. The people known are not kept on the session (see
+  /// npcDiscovered: they follow the scenes visited), so [npcs] takes the
+  /// ids on show as [npcIds]; those join [PlayerSession.seenNpcIds].
+  Future<void> markAllSeenInCategory({
+    bool shops = false,
+    bool quests = false,
+    bool enemies = false,
+    bool npcs = false,
+    Iterable<String> npcIds = const [],
+  }) async {
+    final seenNpcs =
+        npcs ? {...state.seenNpcIds, ...npcIds}.toList() : state.seenNpcIds;
     state = state.copyWith(
       seenShopIds: shops ? state.unlockedShopIds : state.seenShopIds,
       seenQuestIds: quests ? state.unlockedQuestIds : state.seenQuestIds,
       seenEnemyIds: enemies ? state.unlockedEnemyIds : state.seenEnemyIds,
+      seenNpcIds: seenNpcs.length == state.seenNpcIds.length
+          ? state.seenNpcIds
+          : seenNpcs,
     );
     await _persist();
   }
@@ -4182,6 +4256,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int titanBlood = 0,
     bool pactFight = false,
     bool keepWounds = false,
+    ItemOrigin? origin,
   }) async {
     final leveled = _applyXp(xpGain);
 
@@ -4270,6 +4345,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       heldSigns: pactFight ? countDownPacts(state.heldSigns) : null,
       gold: state.gold + goldGain,
       inventoryItemIds: [...state.inventoryItemIds, ...carried],
+      itemOrigins: withItemOrigins(state.itemOrigins, carried, origin),
       potionCount: state.potionCount + potionsGained,
       antidoteCount: state.antidoteCount + antidotesGained,
       xpEarnedThisRun: state.xpEarnedThisRun + xpGain,
@@ -4355,6 +4431,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       currentHealth: state.maxHealth,
       inventoryItemIds: const [],
+      // The pack's provenance goes with the pack.
+      itemOrigins: const {},
       equippedItemIds: const [],
       // The party shares one pack: what the companions wore goes with it.
       recruitedAllies: [

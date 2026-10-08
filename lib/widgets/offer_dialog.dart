@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/dice_faces.dart' show skillDisplayName;
 import '../data/factions.dart';
+import '../data/item_origin_here.dart';
 import '../data/offers.dart';
 import '../data/perks.dart';
 import '../data/signs.dart';
@@ -242,7 +243,8 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     if (confirmed != true || !mounted) return;
     setState(() => _busy = true);
     final notifier = ref.read(playerSessionProvider.notifier);
-    await notifier.acceptSuitor(suitor.factionId, tables: tables);
+    await notifier.acceptSuitor(suitor.factionId,
+        tables: tables, origin: itemOriginHere(ref));
     final next = await notifier.ensureOffer(tables);
     if (!mounted) return;
     if (next == null) {
