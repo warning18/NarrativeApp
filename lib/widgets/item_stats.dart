@@ -4,6 +4,7 @@ import '../combat/gear_effects.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import 'item_lore.dart' show itemLoreOf, itemRarityLabelFor;
 
 /// Gear stats in display order, each with its label key.
 const List<(String, String)> gearStatKeys = [
@@ -234,6 +235,7 @@ Future<void> showItemDetailsSheet(
   String? unmetRequirement,
   String? setLine,
   String? extraNote,
+  String? originLine,
   String? actionLabel,
   VoidCallback? onAction,
 }) {
@@ -241,7 +243,9 @@ Future<void> showItemDetailsSheet(
   final name = item?['itemName']?.toString() ?? itemId;
   final type = item?['itemType']?.toString() ?? '';
   final slot = item?['equipSlot']?.toString() ?? '';
-  final rarity = item?['rarity']?.toString() ?? '';
+  // The rarity in words (v1.204: Common ... Relic).
+  final rarity = itemRarityLabelFor(language, item?['rarity']?.toString());
+  final lore = itemLoreOf(item);
   final lines = gearStatLines(item, equipped, language);
   final notes =
       itemTraitNotes(item, language, unmetRequirement: unmetRequirement);
@@ -284,6 +288,24 @@ Future<void> showItemDetailsSheet(
                     ),
                   ],
                 ),
+                // Its lore (v1.204), and where it came from when it is
+                // the player's own.
+                if (lore.isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  Text(lore,
+                      key: const Key('item_lore'),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                          fontFamily: 'serif',
+                          fontStyle: FontStyle.italic,
+                          height: 1.45)),
+                ],
+                if (originLine != null && originLine.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Text(originLine,
+                      key: const Key('item_origin'),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant)),
+                ],
                 if (lines.isNotEmpty) ...[
                   const SizedBox(height: 12),
                   _StatTable(

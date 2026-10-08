@@ -21,6 +21,7 @@ import '../combat/loot_box.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../data/encounter_text.dart';
+import '../data/item_origin_here.dart';
 import '../data/factions.dart'
     show ClanData, Host, parseFactions, parseSubclans, parseTitles;
 import '../data/offers.dart' show clanEffectsFor;

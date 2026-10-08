@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/people_codex.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/clans_provider.dart' show clanDataProvider;
+import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../utils/game_icons.dart' show npcKindIcon;
+import '../widgets/people_widgets.dart';
 
-/// A simple conversation view for one NPC: their description plus a short
-/// set of flavor lines, with a Talk button that records the conversation
-/// (backing Talk-type quest objectives — see quest_objectives.dart).
+/// One person's page (v1.204, see people_codex.dart): who they are (icon,
+/// name, role, faction, place, the chapter they are met in), their
+/// description, what they want, what passed between them and the player
+/// (the `states` whose flags are held), then their flavor lines with a
+/// Talk button that records the conversation (backing Talk-type quest
+/// objectives — see quest_objectives.dart).
 class NpcDetailScreen extends ConsumerWidget {
   const NpcDetailScreen({super.key, required this.npcId, required this.npc});
 
@@ -17,13 +25,19 @@ class NpcDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(playerSessionProvider);
-    final french = ref.watch(appLanguageProvider) == AppLanguage.fr;
+    final language = ref.watch(appLanguageProvider);
+    final french = language == AppLanguage.fr;
+    final geography = ref.watch(geographyProvider);
+    final clanData = ref.watch(clanDataProvider);
+    final theme = Theme.of(context);
+    final muted = theme.colorScheme.onSurfaceVariant;
     final npcName = npc['npcName']?.toString() ?? npcId;
-    final description = french
-        ? ((npc['description_fr']?.toString().isNotEmpty ?? false)
-            ? npc['description_fr'].toString()
-            : npc['description']?.toString() ?? '')
-        : npc['description']?.toString() ?? '';
+    final description = npcText(npc, 'description', french);
+    final role = npcText(npc, 'role', french);
+    final want = npcText(npc, 'want', french);
+    final place =
+        npcPlaceName(geography, npc['placeId']?.toString() ?? '', language);
+    final passed = npcStateLines(npc, session.flags, french);
     final linesRaw = french
         ? ((npc['dialogueLines_fr'] as List?)?.isNotEmpty ?? false)
             ? npc['dialogueLines_fr'] as List
@@ -44,39 +58,100 @@ class NpcDetailScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const CircleAvatar(child: Icon(Icons.person)),
+                      CircleAvatar(
+                          child: Icon(npcKindIcon(npc['kind']?.toString()))),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: Text(
-                          npcName,
-                          style: Theme.of(context).textTheme.titleLarge,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(npcName, style: theme.textTheme.titleLarge),
+                            if (role.isNotEmpty)
+                              Text(role,
+                                  key: const Key('npc_role'),
+                                  style: theme.textTheme.bodyMedium),
+                            const SizedBox(height: 4),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 4,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                NpcFactionTag(
+                                    data: clanData,
+                                    factionId: npc['faction']?.toString() ?? '',
+                                    language: language),
+                                if (place.isNotEmpty)
+                                  Text(place,
+                                      key: const Key('npc_place'),
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(color: muted)),
+                                Text(
+                                  tr(ref, 'npc_met_in_chapter')
+                                      .replaceAll('{n}', '${npcChapter(npc)}'),
+                                  key: const Key('npc_met_chapter'),
+                                  style: theme.textTheme.bodySmall
+                                      ?.copyWith(color: muted),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                   if (description.isNotEmpty) ...[
                     const SizedBox(height: 12),
-                    Text(description,
-                        style: Theme.of(context).textTheme.bodyMedium),
+                    Text(description, style: theme.textTheme.bodyMedium),
+                  ],
+                  if (want.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Text(tr(ref, 'npc_want_label'),
+                        style: theme.textTheme.labelLarge),
+                    const SizedBox(height: 2),
+                    Text(want,
+                        key: const Key('npc_want'),
+                        style: theme.textTheme.bodyMedium
+                            ?.copyWith(fontStyle: FontStyle.italic)),
                   ],
                 ],
               ),
             ),
           ),
+          if (passed.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Text(tr(ref, 'npc_passed_between'),
+                style: theme.textTheme.titleSmall),
+            const SizedBox(height: 6),
+            for (final (i, line) in passed.indexed)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.history_edu, size: 18, color: muted),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(line,
+                          key: Key('npc_state_$i'),
+                          style: theme.textTheme.bodyMedium),
+                    ),
+                  ],
+                ),
+              ),
+          ],
           const SizedBox(height: 16),
           for (final line in lines)
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: Card(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                color: theme.colorScheme.surfaceContainerHighest,
                 child: Padding(
                   padding: const EdgeInsets.all(12),
                   child: Text(
                     line,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
+                    style: theme.textTheme.bodyMedium
                         ?.copyWith(fontStyle: FontStyle.italic),
                   ),
                 ),

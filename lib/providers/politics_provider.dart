@@ -57,13 +57,15 @@ final hostMusteredNoticeProvider = StateProvider<bool>((ref) => false);
 
 /// Applies a story choice's or a scene's [politics] now, once under [key]
 /// (see choicePoliticsKey, enterPoliticsKey), logged under
-/// `story:<nodeId>` in the chapter reached. Returns what changed; a Host
-/// mustered is shown (see [hostMusteredNoticeProvider]).
+/// `story:<nodeId>` -- or [cause] when given (a quest's turn-in logs
+/// `quest:<questId>`, v1.204) -- in the chapter reached. Returns what
+/// changed; a Host mustered is shown (see [hostMusteredNoticeProvider]).
 Future<CoastChange> applyStoryPoliticsNow(
   WidgetRef ref,
   StoryPolitics politics, {
   required String nodeId,
   required String key,
+  String? cause,
 }) async {
   final data = await loadClanData(ref);
   final events = await loadPoliticsEvents(ref);
@@ -73,6 +75,7 @@ Future<CoastChange> applyStoryPoliticsNow(
             politics,
             nodeId: nodeId,
             key: key,
+            cause: cause,
             data: data,
             events: events,
             companions: companions,

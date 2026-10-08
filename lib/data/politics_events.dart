@@ -511,6 +511,12 @@ String choicePoliticsKey(String nodeId, int choiceIndex) =>
 /// The key a scene's politics on entry are remembered under.
 String enterPoliticsKey(String nodeId) => 'story:$nodeId:enter';
 
+/// The key a quest turn-in choice's politics are remembered under
+/// (v1.204, see TurnInChoice.politics): the quest's id and the choice's
+/// place.
+String questTurnInPoliticsKey(String questId, int choiceIndex) =>
+    'quest:$questId:turnin$choiceIndex';
+
 /// The flag of intrigue [id] reaching [stage] (see intrigueStageFrom).
 String intrigueStageFlag(String id, int stage) => 'intrigue_${id}_stage_$stage';
 

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/contracts.dart';
+import '../data/item_origin_here.dart';
 import '../data/offers.dart' show clanEffectsFor;
 import '../data/sail_powers.dart';
 import '../data/signs.dart';
@@ -139,6 +140,7 @@ Future<bool?> runStoryShipBattle(
         hpAfter: max(1, member.health),
         goldGain: gold,
         xpGain: xp,
+        origin: itemOriginHere(ref),
         contractTally: outcome.won
             ? ContractTally.sea(
                 boarded: outcome.boarded,

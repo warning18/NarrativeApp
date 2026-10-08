@@ -16,6 +16,7 @@ import '../data/chapter_spine.dart';
 import '../data/check_outcomes.dart';
 import '../data/companion_remarks.dart';
 import '../data/echoes.dart';
+import '../data/item_origin_here.dart';
 import '../data/journey_rules.dart';
 import '../data/recurring_encounters.dart';
 import '../data/road_events.dart';
@@ -1398,6 +1399,7 @@ Future<void> _selectChoice({
                   ref.read(gameDbProvider(companionsSchema)).value ?? const {},
               // A detour's cache is loot, not greed.
               goldIsProfit: !isExcursion,
+              origin: itemOriginHere(ref),
             );
     // What the scene put in the pack (see StoryChoice.grantItemId).
     if (choice.grantsItem && context.mounted) {
