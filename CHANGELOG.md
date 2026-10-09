@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.209.0+244]
+## [1.210.0+245]
 
 ### Changed
 - Journey: the map stops repainting when nothing moves. The living layer used to re-record every frame at 60 fps while idle; it now keeps its last frame once walks, reveals and jolts have settled, and wakes on the next motion.
@@ -22,6 +22,12 @@ isn't reconstructable from git history alone.
 
 ### Internal
 - Scene-to-landmark lookups are a map, not a scan. Save fixtures for 1.198 and 1.204 load, round-trip and migrate in tests.
+
+## [1.209.0+244]
+
+### Added
+- The Journey in Edit Mode: a Journey tab beside the Story tab shows the edited scene's map (the room, the streets, the land, the world) with no fog and every place known.
+- The world chart in Edit Mode. A second map button in the header (beside the story's scene graph) opens the chart whole: no fog, every place with its name, every chapter's road in its colour, the party's mark where the edited scene stands; the looks, the calques, the sphere and the weather as in play. In play the chart is as before, under the fog of the uncharted.
 
 ## [1.208.0+243]
 
