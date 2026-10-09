@@ -14,7 +14,9 @@ import 'world_map.dart' show landmarkOfScene;
 /// one place too. Pure: the files' records in, places out.
 
 /// A place's level, widest first.
-enum GeoLevel { continent, country, zone, location, district }
+/// The six levels of the world, each inside the one before; a building
+/// (v1.207) stands in a district or a location, and its inside is drawn.
+enum GeoLevel { continent, country, zone, location, district, building }
 
 /// The level named [name] in the files, or null.
 GeoLevel? geoLevelNamed(String name) {
@@ -23,6 +25,23 @@ GeoLevel? geoLevelNamed(String name) {
   }
   return null;
 }
+
+/// What a building is (v1.207, see room_plan.dart): how its inside is
+/// laid out and what the story can stand at in it.
+const List<String> geoBuildingKinds = [
+  'den',
+  'tavern',
+  'inn',
+  'house',
+  'hall',
+  'keep',
+  'temple',
+  'shop',
+  'warehouse',
+  'cellar',
+  'cave',
+  'tower',
+];
 
 /// What a location is: its icon and how it is listed.
 const List<String> geoKinds = [
@@ -289,7 +308,9 @@ class GeoPlace {
       // Each only where its level has it.
       biome: level == GeoLevel.zone ? _text(raw, 'biome') : '',
       ruler: level == GeoLevel.country ? _text(raw, 'ruler') : '',
-      kind: level == GeoLevel.location ? _text(raw, 'kind') : '',
+      kind: level == GeoLevel.location || level == GeoLevel.building
+          ? _text(raw, 'kind')
+          : '',
       water: level == GeoLevel.location ? _text(raw, 'water') : '',
       glyph: level == GeoLevel.district ? _text(raw, 'glyph') : '',
       landmarks: landmarks.toList(),
@@ -312,7 +333,8 @@ class GeoPlace {
   /// A country's ruler: a factions.json id, or '' for none.
   final String ruler;
 
-  /// A location's kind (see [geoKinds]).
+  /// A location's kind (see [geoKinds]), or a building's (see
+  /// [geoBuildingKinds]).
   final String kind;
 
   /// A location's water (v1.199): 'river' through it, 'shore' beside it,
@@ -329,8 +351,15 @@ class GeoPlace {
   String nameFor(bool french) => _either(french, nameFr, name);
   String blurbFor(bool french) => _either(french, blurbFr, blurb);
 
-  /// Where a story node can happen: a location or a district.
-  bool get isSpot => level == GeoLevel.location || level == GeoLevel.district;
+  /// Where a story node can happen: a location, a district, or the
+  /// inside of a building.
+  bool get isSpot =>
+      level == GeoLevel.location ||
+      level == GeoLevel.district ||
+      level == GeoLevel.building;
+
+  /// The inside of a building (v1.207): the Journey draws its rooms.
+  bool get isBuilding => level == GeoLevel.building;
 }
 
 /// The world's places and biomes, from geography.json and biomes.json.

@@ -1,7 +1,7 @@
 import '../combat/skill_vfx.dart';
 import '../data/companion_remarks.dart' show remarkTriggerOptions;
 import '../data/geography.dart'
-    show BiomePattern, GeoLevel, geoGlyphs, geoKinds;
+    show BiomePattern, GeoLevel, geoBuildingKinds, geoGlyphs, geoKinds;
 import '../data/signs.dart'
     show PatronKind, SignEffectKind, SignSlot, patronIconNames;
 import 'field_schema.dart';
@@ -2989,7 +2989,7 @@ final DbSchema geographySchema = DbSchema(
       key: 'kind',
       label: 'Kind (locations only)',
       type: FieldType.enumeration,
-      enumOptions: ['', ...geoKinds],
+      enumOptions: ['', ...geoKinds, ...geoBuildingKinds],
     ),
     FieldSchema(
       key: 'water',

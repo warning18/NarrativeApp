@@ -25,6 +25,7 @@ IconData geoPlaceIcon(GeoPlace place) => switch (place.level) {
       GeoLevel.country => Icons.flag_outlined,
       GeoLevel.zone => Icons.landscape_outlined,
       GeoLevel.district => Icons.signpost_outlined,
+      GeoLevel.building => Icons.door_front_door_outlined,
       GeoLevel.location => switch (place.kind) {
           'city' => Icons.location_city,
           'town' => Icons.holiday_village_outlined,
@@ -767,7 +768,7 @@ class _GeoLocationFieldState extends ConsumerState<GeoLocationField> {
                     PopupMenuItem(
                       value: spot.id,
                       child: Text(
-                        '${spot.level == GeoLevel.district ? '   · ' : ''}'
+                        '${spot.level == GeoLevel.district ? '   · ' : spot.level == GeoLevel.building ? '      · ' : ''}'
                         '${capitalised(spot.nameFor(french))}  (${spot.id})',
                       ),
                     ),

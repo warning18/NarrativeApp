@@ -44,6 +44,7 @@ class StoryChoice {
     this.roadEvent,
     this.shipBattleId,
     this.politics,
+    this.spot,
     this.politicsIf = const {},
     this.hostFight = false,
     this.noHeal = false,
@@ -54,6 +55,7 @@ class StoryChoice {
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
     return StoryChoice(
       text: json['text'] as String? ?? '',
+      spot: json['spot']?.toString(),
       nextId: (json['next_id'] ?? json['nextEventId'] ?? json['nextEventID'])
               as String? ??
           '',
@@ -152,6 +154,11 @@ class StoryChoice {
   /// intrigue's stage or outcome, the Open Hand's remembrance, an event.
   /// Applied once, however often the choice is taken again.
   final StoryPolitics? politics;
+
+  /// Where in the building this way is taken (v1.207, see
+  /// room_plan.dart): a spot of its plan; null places it where its scene
+  /// is, or at the door when it leads outside.
+  final String? spot;
 
   bool get hasPolitics => politics != null && !politics!.isEmpty;
 
@@ -337,6 +344,7 @@ class StoryChoice {
         'text': text,
         if (textFr != null && textFr!.isNotEmpty) 'text_fr': textFr,
         'next_id': nextId,
+        if (spot != null) 'spot': spot,
         if (goldMod != 0) 'goldMod': goldMod,
         if (alignmentMod != 0) 'alignmentMod': alignmentMod,
         if (healAmount != 0) 'healAmount': healAmount,
@@ -469,6 +477,7 @@ class StoryNode {
     this.noDetour = false,
     this.politicsOnEnter,
     this.location,
+    this.spot,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -506,6 +515,7 @@ class StoryNode {
       noDetour: json['noDetour'] as bool? ?? false,
       politicsOnEnter: StoryPolitics.tryParse(json['politicsOnEnter']),
       location: json['location']?.toString(),
+      spot: json['spot']?.toString(),
     );
   }
 
@@ -515,6 +525,11 @@ class StoryNode {
   /// character); null (no `location` in the file) leaves it to the scene's
   /// landmark (see Geography.placeOfNode).
   final String? location;
+
+  /// Where in the building this scene happens (v1.207, see
+  /// room_plan.dart): a spot of its plan ('bar', 'tables', 'door'…); null
+  /// is the floor.
+  final String? spot;
 
   /// What entering this scene does to the coast (v1.195, see
   /// story_politics.dart), once however often it is entered.
@@ -750,6 +765,7 @@ class StoryNode {
           },
         // Where the story file keeps it: after the taxonomy (v1.197).
         if (location != null) 'location': location,
+        if (spot != null) 'spot': spot,
         if (scriptTrigger != null && scriptTrigger!.isNotEmpty)
           'automations': {'script_trigger': scriptTrigger},
         if (authoringComment != null && authoringComment!.isNotEmpty)

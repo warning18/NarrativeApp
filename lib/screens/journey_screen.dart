@@ -10,6 +10,8 @@ import '../data/echoes.dart';
 import '../data/encounter_text.dart';
 import '../data/geography.dart';
 import '../data/city_plan.dart';
+import '../data/place_plan.dart';
+import '../data/room_plan.dart';
 import '../data/journey_map.dart';
 import '../data/journey_relief.dart';
 import '../data/map_charts.dart' show ChartGeography, ChartPalette, chartOf;
@@ -38,6 +40,7 @@ import '../tutorial/tutorial_topics.dart';
 import '../widgets/biome_backdrop.dart';
 import '../providers/climate_provider.dart';
 import '../widgets/weather_chip.dart';
+import '../widgets/room_plan_painter.dart';
 import '../widgets/chart_map_painter.dart' show ChartCalque;
 import '../widgets/journey_world_map.dart';
 import '../widgets/geography_widgets.dart';
@@ -143,6 +146,7 @@ class _PlaceView {
     this.glyphs = const {},
     this.water = '',
     this.plan,
+    this.room,
     this.hereDistrict = '',
     this.districtOfStep = const {},
   });
@@ -157,6 +161,11 @@ class _PlaceView {
   /// [hereDistrict] ('' for the square), and the steps into its other
   /// districts ([districtOfStep], by step) sit where those districts are.
   final CityPlan? plan;
+
+  /// The inside of the building the scene is in (v1.207, see
+  /// room_plan.dart), drawn instead of the streets: then [hereDistrict]
+  /// is the party's spot in it and [districtOfStep] each way's spot.
+  final RoomPlan? room;
   final String hereDistrict;
   final Map<int, String> districtOfStep;
 
@@ -247,6 +256,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   double _pinch = 1;
   bool _pinching = false;
 
+  /// Whether the scene is inside a building (v1.207), and whether the
+  /// map looks out at the streets from it: the room is one level in from
+  /// the streets, the streets one in from the land.
+  bool _sceneInside = false;
+  bool _outside = false;
+
   /// The zoom the chart opens at when the streets are left (v1.201.1):
   /// the pinch's own scale carried over, so nothing jumps.
   double? _enterZoom;
@@ -261,6 +276,16 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// [from] is the streets' scale when left, the chart's zoom to open at.
   void _lookOut({double from = 1}) {
     if (_level != JourneyMapLevel.place) return;
+    if (_sceneInside && !_outside) {
+      // Out of the building first: the streets round it.
+      setState(() {
+        _outside = true;
+        _pinch = 1;
+        _pinching = false;
+      });
+      _arrive.forward(from: 0);
+      return;
+    }
     setState(() {
       _enterZoom = (JourneyWorldMapZoom.max * from)
           .clamp(JourneyWorldMapZoom.land, JourneyWorldMapZoom.max);
@@ -271,11 +296,23 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     });
   }
 
-  /// Back to the streets from the chart: they grow in from small.
+  /// Back to the streets from the chart: they grow in from small. A
+  /// scene inside a building shows the streets round it first.
   void _arriveAtStreets() {
     setState(() {
       _level = JourneyMapLevel.place;
       _lookedAt = null;
+      _outside = _sceneInside;
+    });
+    _arrive.forward(from: 0);
+  }
+
+  /// In through the door: the room grows in from the streets (v1.207).
+  void _goInside() {
+    setState(() {
+      _outside = false;
+      _pinch = 1;
+      _pinching = false;
     });
     _arrive.forward(from: 0);
   }
@@ -639,6 +676,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _selected = null;
       _autoPickPending = true;
       _chartKey = GlobalKey();
+      _outside = false;
     }
 
     final tools = [
@@ -932,6 +970,41 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         districtOfStep[i] = place.level == GeoLevel.district ? place.id : '';
       }
     }
+    // Inside a building (v1.207): the room's plan, the party at its spot
+    // and each way at the spot it is taken from, or at the door it leaves
+    // by; the streets are one look out.
+    final hereBuilding = herePlace?.isBuilding == true ? herePlace : null;
+    _sceneInside = hereBuilding != null;
+    RoomPlan? room;
+    var hereSpot = '';
+    if (hereBuilding != null && !_outside) {
+      room = RoomPlan.of(
+          seed: _stableSeed(hereBuilding.id), kind: hereBuilding.kind);
+      hereSpot = room.has(node.spot ?? '') ? node.spot! : 'floor';
+      districtOfStep.clear();
+      for (var i = 0; i < choices.length; i++) {
+        final next = story.nodeFor(choices[i].nextId);
+        final inside = world.placeOfNode(next)?.id == hereBuilding.id;
+        final wanted = choices[i].spot ?? (inside ? next?.spot : null);
+        districtOfStep[i] = wanted != null && room.has(wanted)
+            ? wanted
+            : inside
+                ? 'floor'
+                : room.exitFrom(hereSpot);
+      }
+    }
+    // The party's district on the streets: a building's is the district
+    // it stands in.
+    final hereDistrictId = room != null
+        ? hereSpot
+        : switch (herePlace?.level) {
+            GeoLevel.district => herePlace!.id,
+            GeoLevel.building =>
+              world.place(herePlace!.parent)?.level == GeoLevel.district
+                  ? herePlace.parent
+                  : '',
+            _ => '',
+          };
     final placeView = placeLandmark == null || chartHere == null
         ? null
         : _PlaceView(
@@ -944,8 +1017,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             biome: world.biomeOf(herePlace?.id),
             water: herePlace?.water ?? '',
             plan: plan,
-            hereDistrict:
-                herePlace?.level == GeoLevel.district ? herePlace!.id : '',
+            room: room,
+            hereDistrict: hereDistrictId,
             districtOfStep: districtOfStep,
             glyphs: {
               for (var i = 0; i < choices.length; i++)
@@ -1057,13 +1130,19 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                       if (d.pointerCount > 1 && !_busy) {
                         setState(() {
                           _pinching = true;
-                          _pinch = d.scale.clamp(0.35, 1.0);
+                          _pinch = d.scale.clamp(
+                              0.35, _sceneInside && _outside ? 1.6 : 1.0);
                         });
                       }
                     },
                     onScaleEnd: (_) {
                       if (_pinching && _pinch < 0.8) {
                         _lookOut(from: _pinch);
+                      } else if (_pinching &&
+                          _pinch > 1.2 &&
+                          _sceneInside &&
+                          _outside) {
+                        _goInside();
                       } else if (_pinching) {
                         setState(() {
                           _pinch = 1;
@@ -1088,8 +1167,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                         duration: const Duration(milliseconds: 280),
                         child: _JourneyChart(
                           key: _chartKey,
-                          steps: steps,
-                          selected: _selected,
+                          // Looking out at the streets from inside, the
+                          // ways stay in the room.
+                          steps: _sceneInside && _outside ? const [] : steps,
+                          selected: _sceneInside && _outside ? null : _selected,
                           hereName: hereName,
                           youAreHere: tr(ref, 'journey_you_are_here'),
                           leadsTo: tr(ref, 'journey_leads_to'),
@@ -1121,6 +1202,18 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     bottom: 8,
                     child: WeatherChip(palette: palette),
                   ),
+                  if (_sceneInside && _outside)
+                    Positioned(
+                      right: 8,
+                      bottom: 56,
+                      child: _MapButton(
+                        key: const Key('journey_go_inside'),
+                        icon: Icons.add,
+                        tip: tr(ref, 'journey_go_inside'),
+                        palette: palette,
+                        onTap: _busy ? null : _goInside,
+                      ),
+                    ),
                   Positioned(
                     right: 8,
                     bottom: 8,
@@ -1829,11 +1922,15 @@ class _JourneyChartState extends State<_JourneyChart>
   double? _planScale;
   Offset? _planOrigin;
   CityPlan? get _plan => widget.place?.plan;
+  RoomPlan? get _room => widget.place?.room;
+
+  /// The plan the ways are laid on: the room when inside, else the city.
+  PlacePlan? get _anchors => widget.place?.room ?? widget.place?.plan;
 
   /// A way's road: through the city's streets on its plan, a street out
   /// of the square in a place, the road up the map otherwise.
   Path _road(Offset from, Offset to) {
-    final plan = _plan;
+    final plan = _anchors;
     final s = _planScale, o = _planOrigin;
     if (plan != null && s != null && o != null) {
       final pts = [
@@ -2076,7 +2173,7 @@ class _JourneyChartState extends State<_JourneyChart>
                         : steps.length > 3
                             ? 300
                             : 220);
-            final plan = _plan;
+            final plan = _anchors;
             if (plan != null) {
               // On the city's plan (v1.203): the whole city in view, the
               // party where its district is, the steps into the other
@@ -2203,8 +2300,9 @@ class _JourneyChartState extends State<_JourneyChart>
           _here = here;
           _centres = centres;
           // The ways' roads on the city's plan, through its streets.
-          final planRoads =
-              _plan == null ? null : [for (final c in centres) _road(here, c)];
+          final planRoads = _anchors == null
+              ? null
+              : [for (final c in centres) _road(here, c)];
           final bottom = pastPoints.isEmpty
               ? present
               : math.max(present, pastPoints.last.dy + 70);
@@ -2279,7 +2377,7 @@ class _JourneyChartState extends State<_JourneyChart>
                   labels: names,
                   avoid: [Rect.fromCircle(center: here, radius: _hereRadius)],
                   keep: widget.selected,
-                  keepAll: _plan != null,
+                  keepAll: _anchors != null,
                 )
               : [
                   for (var i = 0; i < steps.length; i++)
@@ -2362,6 +2460,11 @@ class _JourneyChartState extends State<_JourneyChart>
                         Positioned.fill(
                           child: RepaintBoundary(
                             child: CustomPaint(
+                              key: ValueKey(_room != null
+                                  ? 'journey_room'
+                                  : _plan != null
+                                      ? 'journey_streets'
+                                      : 'journey_ground'),
                               painter: widget.place == null
                                   ? _ReliefPainter(
                                       palette: palette,
@@ -2369,24 +2472,32 @@ class _JourneyChartState extends State<_JourneyChart>
                                       shift: widget.terrainShift,
                                       seed: widget.terrainSeed,
                                     )
-                                  : _plan != null && _planScale != null
-                                      ? CityPlanPainter(
-                                          plan: _plan!,
+                                  : _room != null && _planScale != null
+                                      ? RoomPlanPainter(
+                                          plan: _room!,
                                           scale: _planScale!,
                                           origin: _planOrigin!,
                                           palette: palette,
                                           ember: widget.ink.ember,
                                         )
-                                      : PlacePlanPainter(
-                                          kind: widget.place!.kind,
-                                          seed: widget.place!.seed,
-                                          here: here,
-                                          spots: centres,
-                                          palette: palette,
-                                          ember: widget.ink.ember,
-                                          glyphs: widget.place!.glyphs,
-                                          water: widget.place!.water,
-                                        ),
+                                      : _plan != null && _planScale != null
+                                          ? CityPlanPainter(
+                                              plan: _plan!,
+                                              scale: _planScale!,
+                                              origin: _planOrigin!,
+                                              palette: palette,
+                                              ember: widget.ink.ember,
+                                            )
+                                          : PlacePlanPainter(
+                                              kind: widget.place!.kind,
+                                              seed: widget.place!.seed,
+                                              here: here,
+                                              spots: centres,
+                                              palette: palette,
+                                              ember: widget.ink.ember,
+                                              glyphs: widget.place!.glyphs,
+                                              water: widget.place!.water,
+                                            ),
                             ),
                           ),
                         ),

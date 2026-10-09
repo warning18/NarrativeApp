@@ -11,6 +11,7 @@ import 'dart:math' as math;
 import 'dart:ui' show Offset, Rect, Size;
 
 import 'climate.dart';
+import 'place_plan.dart';
 
 /// The ground's climate a place is laid out for (v1.204, see
 /// climate.dart): a wet land grows more trees and fields, a dry one
@@ -123,7 +124,7 @@ class CityLandmark {
 }
 
 /// The city, laid out once.
-class CityPlan {
+class CityPlan implements PlacePlan {
   CityPlan._({
     required this.seed,
     required this.size,
@@ -196,11 +197,13 @@ class CityPlan {
 
   /// What the map should keep in view: the wall and everything the story
   /// stands at, with a little country round it.
+  @override
   final Rect frame;
 
   bool get walled => wallRuns.isNotEmpty;
 
   /// Where the party stands in [districtId] ('' or unknown: the square).
+  @override
   Offset anchorOf(String districtId) =>
       anchors[districtId] ?? anchors[''] ?? centre;
 
@@ -265,6 +268,7 @@ class CityPlan {
 
   /// The way through the streets from [from] to [to], [from] first and
   /// [to] last; a straight line when the city has no streets.
+  @override
   List<Offset> route(Offset from, Offset to) {
     if (_nodes.isEmpty) return [from, to];
     final a = _nearestNode(from), b = _nearestNode(to);

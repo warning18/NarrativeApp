@@ -30,7 +30,8 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "alster_lower_town",
+    "location": "blind_beggar",
+    "spot": "floor",
     "automations": {
       "script_trigger": "on_load_node_100"
     },
@@ -39,6 +40,7 @@
         "text": "Take back what the tables took",
         "text_fr": "Reprendre aux tables ce qu’elles ont pris",
         "next_id": "105",
+        "spot": "tables",
         "alignmentMod": -1,
         "flagsToAdd": [
           "casino_tables"
@@ -48,6 +50,7 @@
         "text": "Cut a way to the woman under the bar",
         "text_fr": "Se frayer un chemin jusqu’à la femme sous le comptoir",
         "next_id": "105",
+        "spot": "bar",
         "alignmentMod": 1,
         "flagsToAdd": [
           "casino_rescue"
@@ -57,6 +60,7 @@
         "text": "Grab your stake and get out",
         "text_fr": "Reprendre sa mise et sortir",
         "next_id": "105",
+        "spot": "door",
         "goldMod": 25,
         "flagsToAdd": [
           "casino_fled"
@@ -90,7 +94,8 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "alster_lower_town",
+    "location": "blind_beggar",
+    "spot": "floor",
     "automations": {
       "script_trigger": "on_load_node_105"
     },
@@ -99,6 +104,7 @@
         "text": "Put the bouncer down",
         "text_fr": "Mettre le videur au tapis",
         "next_id": "106",
+        "spot": "door",
         "showIfFlags": [
           "casino_tables"
         ],
@@ -116,6 +122,7 @@
         "text": "Get the looter off her",
         "text_fr": "Arracher le pillard à la femme",
         "next_id": "106",
+        "spot": "bar",
         "showIfFlags": [
           "casino_rescue"
         ],
@@ -133,6 +140,7 @@
         "text": "Clear the door",
         "text_fr": "Dégager la porte",
         "next_id": "106",
+        "spot": "back",
         "showIfFlags": [
           "casino_fled"
         ],
@@ -171,7 +179,8 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "alster_lower_town",
+    "location": "blind_beggar",
+    "spot": "floor",
     "automations": {
       "script_trigger": "on_load_node_106"
     },
@@ -225,7 +234,8 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "alster_lower_town",
+    "location": "blind_beggar",
+    "spot": "tables",
     "automations": {
       "script_trigger": "on_load_node_110"
     },
@@ -234,6 +244,7 @@
         "text": "Rob the dice table",
         "text_fr": "Rafler la table de dés",
         "next_id": "110",
+        "spot": "tables",
         "goldMod": 45,
         "alignmentMod": -1,
         "flagsToAdd": [
@@ -250,6 +261,7 @@
         "text": "Break open the counting-room cage",
         "text_fr": "Forcer la cage de la salle des comptes",
         "next_id": "110",
+        "spot": "counting",
         "goldMod": 70,
         "alignmentMod": -1,
         "flagsToAdd": [
@@ -272,6 +284,7 @@
         "text": "Take the owner's strongbox",
         "text_fr": "Prendre le coffre du patron",
         "next_id": "110",
+        "spot": "strongbox",
         "goldMod": 110,
         "alignmentMod": -1,
         "flagsToAdd": [
@@ -323,7 +336,8 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "alster_lower_town",
+    "location": "blind_beggar",
+    "spot": "floor",
     "automations": {
       "script_trigger": "on_load_node_115"
     },
@@ -422,7 +436,8 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "alster_lower_town",
+    "location": "blind_beggar",
+    "spot": "gallery",
     "automations": {
       "script_trigger": "on_load_node_120"
     },
@@ -431,6 +446,7 @@
         "text": "Dig out the croupier's boy",
         "text_fr": "Dégager le fils du croupier",
         "next_id": "120",
+        "spot": "tables",
         "goldMod": 20,
         "alignmentMod": 1,
         "flagsToAdd": [
@@ -447,6 +463,7 @@
         "text": "Stop the mask dragging the dealer",
         "text_fr": "Arrêter le masque qui traîne la donneuse",
         "next_id": "120",
+        "spot": "cage",
         "goldMod": 35,
         "alignmentMod": 1,
         "flagsToAdd": [
@@ -466,6 +483,7 @@
         "text": "Pull the card-master out of the cellar",
         "text_fr": "Tirer le maître des cartes de la cave",
         "next_id": "120",
+        "spot": "stairs",
         "goldMod": 60,
         "alignmentMod": 1,
         "flagsToAdd": [
@@ -517,7 +535,8 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "alster_lower_town",
+    "location": "blind_beggar",
+    "spot": "floor",
     "automations": {
       "script_trigger": "on_load_node_125"
     },
