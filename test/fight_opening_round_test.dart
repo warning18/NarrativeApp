@@ -12,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/combat/battlefield_condition.dart';
+import 'package:narrative_data_app/combat/fight_goal.dart';
 import 'package:narrative_data_app/combat/encounter.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
@@ -121,7 +122,8 @@ void main() {
               enemyId: 'slum_thug',
               enemy: thug,
               modifiers: const EncounterModifiers(
-                  forcedCondition: BattlefieldCondition.highGround),
+                  forcedCondition: BattlefieldCondition.highGround,
+                  forcedGoal: FightGoal.slay),
             )));
     await _settle(tester);
     await tester.tap(find.text('Enter Battle'));

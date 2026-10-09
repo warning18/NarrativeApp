@@ -45,16 +45,55 @@ extension _FightSetup on _FightScreenState {
         ? WeatherEffects.of(null)
         : WeatherEffects.of(ref.read(skyHereProvider)?.today().kind);
 
+    // The doctrine the enemies fight under (v1.212), unless one of them is
+    // a boss or a unique; its affix taste shapes the affix roll below.
+    final factions = [
+      for (final e in entries) e.value['faction']?.toString() ?? '',
+    ];
+    _doctrine = lesson || modifiers.isTest
+        ? null
+        : doctrineForFight(factions: factions, isBoss: [
+            for (final e in entries) isBossEnemy(e.key, e.value),
+          ]);
     final affixes = lesson
         ? [for (final _ in entries) <EnemyAffix>[]]
         : rollEncounterAffixes(
             enemyIds: [for (final e in entries) e.key],
             isElite: _isElite,
             random: _random,
+            tastes: [
+              for (final faction in factions)
+                if (_doctrine != null && faction == _doctrine!.factionId)
+                  _doctrine!.affixes
+                else
+                  const <EnemyAffix>[],
+            ],
           );
     if (modifiers.forcedAffixes.isNotEmpty) {
       affixes[0] = modifiers.forcedAffixes;
     }
+
+    // What the fight asks besides the slaughter (v1.212): set by the
+    // encounter, else rolled for an ordinary fight.
+    final goalEligible = !lesson &&
+        !modifiers.isTest &&
+        !modifiers.isZoneBoss &&
+        !modifiers.isHunt &&
+        !modifiers.isHunterAmbush &&
+        !modifiers.lossContinues &&
+        !modifiers.luckyDieReveal &&
+        !modifiers.hostFight &&
+        !modifiers.forceElite &&
+        !_isElite &&
+        !entries.any((e) => isBossEnemy(e.key, e.value));
+    _goal = modifiers.forcedGoal ??
+        rollFightGoal(
+          eligible: goalEligible,
+          enemyCount: entries.length,
+          canYield: entries.length == 1 &&
+              canYieldFaction(entries.first.value['faction']?.toString()),
+          random: _random,
+        );
 
     final baseNames = [
       for (final entry in entries)
@@ -82,6 +121,19 @@ extension _FightSetup on _FightScreenState {
           healthMultiplier: i == 0 ? modifiers.healthMultiplier : 1.0,
         ),
     ];
+    // A Rout's mark is the pack's sturdiest member; a pack of one has no
+    // captain to bring down, so its Rout is the plain slaughter.
+    if (_goal.kind == FightGoalKind.rout) {
+      if (_enemies.length >= 2) {
+        _enemies[captainIndex([for (final e in _enemies) e.maxHealth])]
+            .isCaptain = true;
+      } else {
+        _goal = FightGoal.slay;
+      }
+    }
+    if (_goal.kind == FightGoalKind.subdue && _enemies.length != 1) {
+      _goal = FightGoal.slay;
+    }
   }
 
   _EnemyMember _buildEnemyMember({
@@ -149,6 +201,10 @@ extension _FightSetup on _FightScreenState {
     if (healthMultiplier != 1.0) {
       maxHealth = max(1, (maxHealth * healthMultiplier).round());
     }
+    // A hold presses harder: the party need not kill them.
+    if (_goal.kind == FightGoalKind.hold) {
+      damage = (damage * holdDamageMultiplier).round();
+    }
     final moves =
         (raw['skillMoves'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
     return _EnemyMember(
@@ -163,6 +219,7 @@ extension _FightSetup on _FightScreenState {
           moves.any((m) => m['condition']?.toString() == 'OnHitByElement'),
       currentHealth: maxHealth,
       affixes: affixes,
+      faction: raw['faction']?.toString() ?? '',
     )..phases = parseBossPhases(raw);
   }
 

@@ -4,6 +4,7 @@ import '../models/story_node.dart';
 import 'battlefield_condition.dart';
 import 'combat_engine.dart' show zoneTierMultiplier;
 import 'enemy_affix.dart';
+import 'fight_goal.dart';
 import 'loot_box.dart';
 
 /// Per-encounter overrides a caller hands FightScreen alongside the enemy
@@ -61,6 +62,7 @@ class EncounterModifiers {
     this.tutorial = false,
     this.luckyDieReveal = false,
     this.hostFight = false,
+    this.forcedGoal,
   });
 
   static const EncounterModifiers none = EncounterModifiers();
@@ -135,6 +137,11 @@ class EncounterModifiers {
   /// throne.dart's hostEffects).
   final bool hostFight;
 
+  /// The goal this fight is set to (v1.212, see fight_goal.dart) instead of
+  /// rolling one; null rolls (or, for a lesson, a boss, a hunt or a test,
+  /// asks for nothing but the slaughter).
+  final FightGoal? forcedGoal;
+
   bool get isDefault =>
       forcedAffixes.isEmpty &&
       namedEnemyName == null &&
@@ -153,7 +160,8 @@ class EncounterModifiers {
       !keepWounds &&
       !tutorial &&
       !luckyDieReveal &&
-      !hostFight;
+      !hostFight &&
+      forcedGoal == null;
 
   /// The same modifiers stamped with a fight's chapter and/or zone-tier
   /// multiplier (an expedition applies its zone's to every draw), or made
@@ -179,6 +187,7 @@ class EncounterModifiers {
         tutorial: tutorial,
         luckyDieReveal: luckyDieReveal,
         hostFight: hostFight ?? this.hostFight,
+        forcedGoal: forcedGoal,
       );
 
   /// A zone boss: never below a Gold chest, half again the reward, at the
@@ -281,5 +290,6 @@ class EncounterModifiers {
         tutorial: tutorial,
         luckyDieReveal: luckyDieReveal,
         hostFight: hostFight,
+        forcedGoal: forcedGoal,
       );
 }

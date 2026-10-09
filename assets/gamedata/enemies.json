@@ -4,6 +4,7 @@
     "maxHealth": 56,
     "damage": 9,
     "guile": 0,
+    "faction": "crows",
     "weakTo": [],
     "resists": [],
     "xpReward": 30,
@@ -69,6 +70,7 @@
     "maxHealth": 111,
     "damage": 17,
     "guile": 1,
+    "faction": "dominion",
     "weakTo": [
       "Electricity"
     ],
@@ -140,6 +142,7 @@
     "maxHealth": 150,
     "damage": 18,
     "guile": 2,
+    "faction": "",
     "weakTo": [
       "Fire"
     ],
@@ -208,6 +211,7 @@
     "maxHealth": 62,
     "damage": 9,
     "guile": 0,
+    "faction": "",
     "weakTo": [
       "Fire"
     ],
@@ -264,6 +268,7 @@
     "maxHealth": 78,
     "damage": 10,
     "guile": 0,
+    "faction": "crows",
     "weakTo": [],
     "resists": [],
     "xpReward": 40,
@@ -333,6 +338,7 @@
     "maxHealth": 100,
     "damage": 11,
     "guile": 1,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -412,6 +418,7 @@
     "maxHealth": 150,
     "damage": 18,
     "guile": 2,
+    "faction": "dominion",
     "weakTo": [
       "Electricity"
     ],
@@ -487,6 +494,7 @@
     "maxHealth": 121,
     "damage": 14,
     "guile": 3,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -567,6 +575,7 @@
     "maxHealth": 180,
     "damage": 21,
     "guile": 3,
+    "faction": "crows",
     "weakTo": [
       "Electricity"
     ],
@@ -647,6 +656,7 @@
     "maxHealth": 175,
     "damage": 21,
     "guile": 2,
+    "faction": "",
     "weakTo": [
       "Fire"
     ],
@@ -729,6 +739,7 @@
     "maxHealth": 180,
     "damage": 21,
     "guile": 3,
+    "faction": "",
     "weakTo": [
       "Water"
     ],
@@ -814,6 +825,7 @@
     "maxHealth": 200,
     "damage": 23,
     "guile": 5,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -925,6 +937,7 @@
     "maxHealth": 170,
     "damage": 19,
     "guile": 6,
+    "faction": "dominion",
     "weakTo": [
       "Electricity"
     ],
@@ -1007,6 +1020,7 @@
     "maxHealth": 115,
     "damage": 15,
     "guile": 4,
+    "faction": "dominion",
     "weakTo": [],
     "resists": [
       "Light"
@@ -1080,6 +1094,7 @@
     "maxHealth": 160,
     "damage": 20,
     "guile": 7,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -1153,6 +1168,7 @@
     "maxHealth": 165,
     "damage": 21,
     "guile": 7,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -1246,6 +1262,7 @@
     "maxHealth": 139,
     "damage": 17,
     "guile": 2,
+    "faction": "dominion",
     "weakTo": [
       "Electricity"
     ],
@@ -1344,6 +1361,7 @@
     "maxHealth": 120,
     "damage": 14,
     "guile": 1,
+    "faction": "dominion",
     "weakTo": [
       "Electricity"
     ],
@@ -1417,6 +1435,7 @@
     "maxHealth": 120,
     "damage": 15,
     "guile": 5,
+    "faction": "choir",
     "weakTo": [
       "Void"
     ],
@@ -1473,6 +1492,7 @@
     "maxHealth": 175,
     "damage": 20,
     "guile": 8,
+    "faction": "choir",
     "weakTo": [
       "Void"
     ],
@@ -1569,6 +1589,7 @@
     "maxHealth": 105,
     "damage": 14,
     "guile": 4,
+    "faction": "pit",
     "weakTo": [
       "Light",
       "Ice"
@@ -1626,6 +1647,7 @@
     "maxHealth": 185,
     "damage": 22,
     "guile": 8,
+    "faction": "pit",
     "weakTo": [
       "Light"
     ],
@@ -1722,6 +1744,7 @@
     "maxHealth": 145,
     "damage": 18,
     "guile": 3,
+    "faction": "",
     "weakTo": [
       "Light",
       "Fire"
@@ -1802,6 +1825,7 @@
     "maxHealth": 320,
     "damage": 30,
     "guile": 6,
+    "faction": "",
     "weakTo": [
       "Earth",
       "Light"
@@ -1906,6 +1930,7 @@
     "maxHealth": 340,
     "damage": 33,
     "guile": 9,
+    "faction": "",
     "weakTo": [
       "Electricity"
     ],
@@ -2024,6 +2049,7 @@
     "maxHealth": 155,
     "damage": 20,
     "guile": 4,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -2089,6 +2115,7 @@
     "maxHealth": 300,
     "damage": 28,
     "guile": 6,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -2176,6 +2203,7 @@
     "maxHealth": 260,
     "damage": 26,
     "guile": 8,
+    "faction": "penitents",
     "weakTo": [
       "Electricity"
     ],
@@ -2264,6 +2292,7 @@
     "maxHealth": 380,
     "damage": 32,
     "guile": 10,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -2369,6 +2398,7 @@
     "maxHealth": 180,
     "damage": 22,
     "guile": 7,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -2442,6 +2472,7 @@
     "maxHealth": 390,
     "damage": 30,
     "guile": 12,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -2581,6 +2612,7 @@
     "maxHealth": 320,
     "damage": 32,
     "guile": 9,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -2654,6 +2686,7 @@
     "maxHealth": 260,
     "damage": 36,
     "guile": 9,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -2727,6 +2760,7 @@
     "maxHealth": 280,
     "damage": 30,
     "guile": 9,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -2800,6 +2834,7 @@
     "maxHealth": 250,
     "damage": 38,
     "guile": 9,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -2873,6 +2908,7 @@
     "maxHealth": 240,
     "damage": 40,
     "guile": 9,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -2946,6 +2982,7 @@
     "maxHealth": 360,
     "damage": 34,
     "guile": 9,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -3019,6 +3056,7 @@
     "maxHealth": 300,
     "damage": 28,
     "guile": 9,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -3092,6 +3130,7 @@
     "maxHealth": 290,
     "damage": 36,
     "guile": 9,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -3165,6 +3204,7 @@
     "maxHealth": 340,
     "damage": 31,
     "guile": 10,
+    "faction": "dominion",
     "weakTo": [
       "Electricity"
     ],
@@ -3238,6 +3278,7 @@
     "maxHealth": 250,
     "damage": 25,
     "guile": 8,
+    "faction": "penitents",
     "weakTo": [
       "Electricity"
     ],
@@ -3299,6 +3340,7 @@
     "maxHealth": 80,
     "damage": 19,
     "guile": 1,
+    "faction": "dominion",
     "weakTo": [
       "Fire"
     ],
@@ -3355,6 +3397,7 @@
     "maxHealth": 150,
     "damage": 19,
     "guile": 3,
+    "faction": "",
     "weakTo": [
       "Earth",
       "Light"
@@ -3439,6 +3482,7 @@
     "maxHealth": 165,
     "damage": 21,
     "guile": 5,
+    "faction": "",
     "weakTo": [
       "Electricity"
     ],
@@ -3512,6 +3556,7 @@
     "maxHealth": 175,
     "damage": 23,
     "guile": 7,
+    "faction": "",
     "weakTo": [
       "Electricity"
     ],
@@ -3591,6 +3636,7 @@
     "maxHealth": 330,
     "damage": 29,
     "guile": 5,
+    "faction": "",
     "weakTo": [
       "Water"
     ],
@@ -3678,6 +3724,7 @@
     "maxHealth": 395,
     "damage": 32,
     "guile": 11,
+    "faction": "",
     "weakTo": [
       "Fire"
     ],
@@ -3789,6 +3836,7 @@
     "maxHealth": 190,
     "damage": 22,
     "guile": 5,
+    "faction": "",
     "weakTo": [
       "Void"
     ],
@@ -3880,6 +3928,7 @@
     "maxHealth": 335,
     "damage": 31,
     "guile": 8,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -3971,6 +4020,7 @@
     "maxHealth": 345,
     "damage": 29,
     "guile": 4,
+    "faction": "giants",
     "weakTo": [
       "Fire"
     ],
@@ -4062,6 +4112,7 @@
     "maxHealth": 185,
     "damage": 21,
     "guile": 3,
+    "faction": "crows",
     "weakTo": [
       "Fire"
     ],
@@ -4150,6 +4201,7 @@
     "maxHealth": 190,
     "damage": 22,
     "guile": 5,
+    "faction": "dominion",
     "weakTo": [
       "Water"
     ],
@@ -4238,6 +4290,7 @@
     "maxHealth": 330,
     "damage": 30,
     "guile": 8,
+    "faction": "",
     "weakTo": [
       "Light",
       "Earth"
@@ -4330,6 +4383,7 @@
     "maxHealth": 340,
     "damage": 29,
     "guile": 6,
+    "faction": "",
     "weakTo": [
       "Fire"
     ],
@@ -4429,6 +4483,7 @@
     "maxHealth": 330,
     "damage": 29,
     "guile": 7,
+    "faction": "",
     "weakTo": [
       "Earth"
     ],
@@ -4527,6 +4582,7 @@
     "maxHealth": 120,
     "damage": 18,
     "guile": 2,
+    "faction": "tidekin",
     "weakTo": [
       "Fire"
     ],
@@ -4571,6 +4627,7 @@
     "maxHealth": 365,
     "damage": 33,
     "guile": 12,
+    "faction": "dominion",
     "weakTo": [
       "Electricity"
     ],
@@ -4705,6 +4762,7 @@
     "maxHealth": 390,
     "damage": 22,
     "guile": 9,
+    "faction": "",
     "weakTo": [
       "Electricity"
     ],
@@ -4839,6 +4897,7 @@
     "maxHealth": 300,
     "damage": 23,
     "guile": 11,
+    "faction": "",
     "weakTo": [
       "Void"
     ],
@@ -4962,6 +5021,7 @@
     "maxHealth": 345,
     "damage": 27,
     "guile": 12,
+    "faction": "",
     "weakTo": [
       "Light"
     ],
@@ -5095,6 +5155,7 @@
     "maxHealth": 44,
     "damage": 8,
     "guile": 0,
+    "faction": "crows",
     "weakTo": [],
     "resists": [],
     "xpReward": 30,
@@ -5132,6 +5193,7 @@
     "maxHealth": 44,
     "damage": 8,
     "guile": 0,
+    "faction": "crows",
     "weakTo": [],
     "resists": [],
     "xpReward": 30,
@@ -5169,6 +5231,7 @@
     "maxHealth": 44,
     "damage": 8,
     "guile": 0,
+    "faction": "",
     "weakTo": [],
     "resists": [],
     "xpReward": 30,
@@ -5206,6 +5269,7 @@
     "maxHealth": 85,
     "damage": 12,
     "guile": 1,
+    "faction": "crows",
     "weakTo": [],
     "resists": [],
     "xpReward": 42,
@@ -5256,6 +5320,7 @@
     "maxHealth": 165,
     "damage": 18,
     "guile": 5,
+    "faction": "dominion",
     "weakTo": [],
     "resists": [
       "Light"

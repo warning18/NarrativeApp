@@ -6580,6 +6580,144 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'shrugs off part of the blow (armored).',
     AppLanguage.fr: 'encaisse une partie du coup (cuirassé).',
   },
+  'goal_label': {
+    AppLanguage.en: 'Goal',
+    AppLanguage.fr: 'Objectif',
+  },
+  'goal_hold': {
+    AppLanguage.en: 'Hold the line',
+    AppLanguage.fr: 'Tenir la ligne',
+  },
+  'goal_hold_desc': {
+    AppLanguage.en:
+        'Survive {n} of their turns. You win whoever still stands, and the pay is better.',
+    AppLanguage.fr:
+        'Survivez à {n} de leurs tours. Vous gagnez, quoi qu’il reste debout, et la paie est meilleure.',
+  },
+  'goal_rout': {
+    AppLanguage.en: 'Rout',
+    AppLanguage.fr: 'Déroute',
+  },
+  'goal_rout_desc': {
+    AppLanguage.en: 'Bring down their captain and the rest flee.',
+    AppLanguage.fr: 'Abattez leur capitaine et les autres s’enfuient.',
+  },
+  'goal_subdue': {
+    AppLanguage.en: 'Subdue',
+    AppLanguage.fr: 'Maîtriser',
+  },
+  'goal_subdue_desc': {
+    AppLanguage.en:
+        'Bring them under {pct} % health and they yield and pay a ransom. Kill them outright and you get only the usual spoils.',
+    AppLanguage.fr:
+        'Amenez-les sous {pct} % de vie et ils se rendent et paient une rançon. Tuez-les d’un coup et vous n’avez que le butin habituel.',
+  },
+  'goal_chip_hold': {
+    AppLanguage.en: 'Hold {r}/{n}',
+    AppLanguage.fr: 'Tenir {r}/{n}',
+  },
+  'goal_captain': {
+    AppLanguage.en: 'Captain',
+    AppLanguage.fr: 'Capitaine',
+  },
+  'goal_won_hold_log': {
+    AppLanguage.en: 'You held the line.',
+    AppLanguage.fr: 'Vous avez tenu la ligne.',
+  },
+  'goal_won_rout_log': {
+    AppLanguage.en: 'The captain falls and the rest scatter.',
+    AppLanguage.fr: 'Le capitaine tombe et les autres se dispersent.',
+  },
+  'goal_yield_log': {
+    AppLanguage.en: '{name} yields.',
+    AppLanguage.fr: '{name} se rend.',
+  },
+  'doctrine_label': {
+    AppLanguage.en: 'Doctrine',
+    AppLanguage.fr: 'Doctrine',
+  },
+  'doctrine_dominion': {
+    AppLanguage.en: 'The Writ',
+    AppLanguage.fr: 'L’Édit',
+  },
+  'doctrine_dominion_desc': {
+    AppLanguage.en:
+        'Every third round, your skill faces fall silent. Its soldiers favour heavy armour.',
+    AppLanguage.fr:
+        'Tous les trois tours, vos faces de compétence se taisent. Ses soldats préfèrent les lourdes armures.',
+  },
+  'doctrine_crows': {
+    AppLanguage.en: 'The Short Con',
+    AppLanguage.fr: 'La Combine',
+  },
+  'doctrine_crows_desc': {
+    AppLanguage.en:
+        'Each hit they land lifts gold, and what a Crow still carries at the end is missing from the spoils. They would rather run than die.',
+    AppLanguage.fr:
+        'Chaque coup qu’elles portent prend de l’or, et ce qu’une Corneille porte encore à la fin manque au butin. Elles préfèrent fuir que mourir.',
+  },
+  'doctrine_penitents': {
+    AppLanguage.en: 'Zeal',
+    AppLanguage.fr: 'La Ferveur',
+  },
+  'doctrine_penitents_desc': {
+    AppLanguage.en: 'They fight harder the more they bleed.',
+    AppLanguage.fr: 'Ils frappent plus fort à mesure qu’ils saignent.',
+  },
+  'doctrine_choir': {
+    AppLanguage.en: 'Judgement',
+    AppLanguage.fr: 'Le Jugement',
+  },
+  'doctrine_choir_desc': {
+    AppLanguage.en: 'Sentinels in shining plate shrug off light blows.',
+    AppLanguage.fr:
+        'Des sentinelles en armure étincelante encaissent les coups légers.',
+  },
+  'doctrine_pit': {
+    AppLanguage.en: 'Corruption',
+    AppLanguage.fr: 'La Souillure',
+  },
+  'doctrine_pit_desc': {
+    AppLanguage.en: 'The Pit’s things foul every wound they deal.',
+    AppLanguage.fr:
+        'Les créatures de la Fosse souillent chaque blessure qu’elles infligent.',
+  },
+  'doctrine_giants': {
+    AppLanguage.en: 'Stone-Skin',
+    AppLanguage.fr: 'La Peau de pierre',
+  },
+  'doctrine_giants_desc': {
+    AppLanguage.en:
+        'The giants of Highhearth wear their hills: light blows barely mark them.',
+    AppLanguage.fr:
+        'Les géants de Haut-Âtre portent leurs collines : les coups légers les marquent à peine.',
+  },
+  'doctrine_tidekin': {
+    AppLanguage.en: 'Ebb and Flow',
+    AppLanguage.fr: 'Flux et reflux',
+  },
+  'doctrine_tidekin_desc': {
+    AppLanguage.en: 'They give ground when hurt and return with the tide.',
+    AppLanguage.fr:
+        'Ils cèdent du terrain quand ils sont blessés et reviennent avec la marée.',
+  },
+  'writ_log': {
+    AppLanguage.en: 'The Writ falls: your skill faces fall silent this round.',
+    AppLanguage.fr:
+        'L’Édit tombe : vos faces de compétence se taisent ce tour.',
+  },
+  'plunder_hit_log': {
+    AppLanguage.en: '{name} lifts {n} gold.',
+    AppLanguage.fr: '{name} vous prend {n} or.',
+  },
+  'plunder_loss_log': {
+    AppLanguage.en: 'Thieves slip away with {n} gold.',
+    AppLanguage.fr: 'Des voleurs s’échappent avec {n} or.',
+  },
+  'plunder_stash_chip': {
+    AppLanguage.en: 'Carries {n} gold',
+    AppLanguage.fr: 'Porte {n} or',
+  },
   'flees_suffix': {
     AppLanguage.en: 'breaks and flees the fight!',
     AppLanguage.fr: 'panique et fuit le combat !',

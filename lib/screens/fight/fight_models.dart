@@ -276,7 +276,22 @@ class _EnemyMember {
     required this.hasReactiveMoves,
     required this.currentHealth,
     this.affixes = const [],
+    this.faction = '',
   });
+
+  /// The faction whose doctrine this enemy fights under ('' for none).
+  final String faction;
+
+  /// The pack's captain, the mark of a Rout (v1.212, see fight_goal.dart).
+  bool isCaptain = false;
+
+  /// True once a Subdue's fighter has broken and yielded: out of the
+  /// fight like a defeated one, paying a ransom instead of its spoils.
+  bool yielded = false;
+
+  /// Gold this enemy has lifted off the party (the Short Con, see
+  /// doctrine.dart), carried until it is defeated.
+  int stash = 0;
 
   /// This enemy's affixes (see enemy_affix.dart) -- rolled once at fight
   /// start, or forced by the encounter for a hunt's quarry.
