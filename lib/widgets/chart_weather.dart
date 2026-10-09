@@ -27,6 +27,7 @@ class ChartWeather extends StatefulWidget {
     this.globe,
     this.zoomOf,
     this.visibleOf,
+    this.showOf,
     this.still = false,
   });
 
@@ -49,14 +50,22 @@ class ChartWeather extends StatefulWidget {
   /// No motion: one still sky.
   final bool still;
 
+  /// Whether the sky is drawn at all right now (v1.208): the Layers sheet
+  /// can keep it to the world zoom.
+  final bool Function()? showOf;
+
   @override
   State<ChartWeather> createState() => _ChartWeatherState();
 }
 
 class _ChartWeatherState extends State<ChartWeather>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final Ticker _ticker;
   final ValueNotifier<double> _clock = ValueNotifier(0);
+
+  /// The sky fades in as the chart opens (v1.208), rather than popping.
+  late final AnimationController _fade = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 420));
 
   @override
   void initState() {
@@ -65,6 +74,11 @@ class _ChartWeatherState extends State<ChartWeather>
       _clock.value = elapsed.inMilliseconds / 1000;
     });
     if (!widget.still) _ticker.start();
+    if (widget.still) {
+      _fade.value = 1;
+    } else {
+      _fade.forward();
+    }
   }
 
   @override
@@ -83,23 +97,28 @@ class _ChartWeatherState extends State<ChartWeather>
   void dispose() {
     _ticker.dispose();
     _clock.dispose();
+    _fade.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
-      child: RepaintBoundary(
-        child: CustomPaint(
-          size: widget.size,
-          painter: ChartWeatherPainter(
-            clock: _clock,
-            geography: widget.geography,
-            palette: widget.palette,
-            day: widget.day,
-            globe: widget.globe,
-            zoomOf: widget.zoomOf,
-            visibleOf: widget.visibleOf,
+      child: FadeTransition(
+        opacity: _fade,
+        child: RepaintBoundary(
+          child: CustomPaint(
+            size: widget.size,
+            painter: ChartWeatherPainter(
+              clock: _clock,
+              geography: widget.geography,
+              palette: widget.palette,
+              day: widget.day,
+              globe: widget.globe,
+              zoomOf: widget.zoomOf,
+              visibleOf: widget.visibleOf,
+              showOf: widget.showOf,
+            ),
           ),
         ),
       ),
@@ -117,6 +136,7 @@ class ChartWeatherPainter extends CustomPainter {
     this.globe,
     this.zoomOf,
     this.visibleOf,
+    this.showOf,
   }) : super(repaint: clock);
 
   final ValueNotifier<double> clock;
@@ -126,6 +146,7 @@ class ChartWeatherPainter extends CustomPainter {
   final GlobeView? globe;
   final double Function()? zoomOf;
   final Rect Function()? visibleOf;
+  final bool Function()? showOf;
 
   /// The sky's time: the story's day, and the seconds this layer has
   /// been watched (the app's clock, so every map agrees).
@@ -133,6 +154,7 @@ class ChartWeatherPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (showOf?.call() == false) return;
     final climate = ChartClimate.of(geography);
     final t = time;
     final zoom = (zoomOf?.call() ?? 1).clamp(1.0, 12.0);

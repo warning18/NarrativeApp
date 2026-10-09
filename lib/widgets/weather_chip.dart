@@ -7,7 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/climate.dart';
+import '../combat/enemy_intent.dart' show elementLabel;
 import '../data/map_charts.dart';
+import '../data/weather_effects.dart';
+import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/climate_provider.dart';
 import '../theme/stitched_ink.dart';
@@ -48,6 +51,15 @@ class _WeatherChipState extends ConsumerState<WeatherChip> {
         WeatherKind.ash => Icons.grain,
       };
 
+  /// What the day's sky does to the play, as short tags: 'Fire −30%'.
+  static String effects(WidgetRef ref, WeatherEffects effects) {
+    final language = ref.watch(appLanguageProvider);
+    return [
+      for (final (element, pct) in effects.elementTags)
+        '${elementLabel(element, language)} ${pct > 0 ? '+' : '−'}${pct.abs()}%',
+    ].join(' · ');
+  }
+
   /// One line: what falls, the warmth, the wind and the height.
   static String describe(WidgetRef ref, WeatherSample sky) {
     final wind = sky.windSpeed < 12
@@ -68,6 +80,8 @@ class _WeatherChipState extends ConsumerState<WeatherChip> {
     final here = ref.watch(skyHereProvider);
     if (here == null) return const SizedBox.shrink();
     final sky = here.now();
+    final today = WeatherEffects.of(here.today().kind);
+    final tags = effects(ref, today);
     final ink = InkColors.of(context);
     final palette = widget.palette;
     return Semantics(
@@ -87,7 +101,9 @@ class _WeatherChipState extends ConsumerState<WeatherChip> {
               Icon(iconOf(sky.kind), size: 13, color: palette.place),
               const SizedBox(width: 5),
               Text(
-                describe(ref, sky),
+                tags.isEmpty
+                    ? describe(ref, sky)
+                    : '${describe(ref, sky)} · $tags',
                 key: const ValueKey('journey_weather_chip'),
                 style: TextStyle(
                   fontFamily: InkFonts.system,

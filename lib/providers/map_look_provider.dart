@@ -157,3 +157,33 @@ class ChartWeatherNotifier extends StateNotifier<bool> {
 
 final chartWeatherProvider = StateNotifierProvider<ChartWeatherNotifier, bool>(
     (ref) => ChartWeatherNotifier());
+
+const String chartWeatherWorldOnlyPrefsKey = 'world_map_weather_world_only';
+
+/// Whether the weather shows only at the world zoom (v1.208): off until
+/// the player asks, and the pick is kept.
+class ChartWeatherWorldOnlyNotifier extends StateNotifier<bool> {
+  ChartWeatherWorldOnlyNotifier() : super(false) {
+    _load();
+  }
+
+  bool _chosen = false;
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    final on = prefs.getBool(chartWeatherWorldOnlyPrefsKey);
+    if (_chosen || on == null) return;
+    state = on;
+  }
+
+  Future<void> choose(bool on) async {
+    _chosen = true;
+    state = on;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(chartWeatherWorldOnlyPrefsKey, on);
+  }
+}
+
+final chartWeatherWorldOnlyProvider =
+    StateNotifierProvider<ChartWeatherWorldOnlyNotifier, bool>(
+        (ref) => ChartWeatherWorldOnlyNotifier());

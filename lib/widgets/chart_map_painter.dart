@@ -80,6 +80,7 @@ class ChartMapPainter extends CustomPainter {
     this.detail = true,
     this.globe,
     this.zoomOf,
+    this.fogOf,
     Listenable? view,
   }) : super(
             repaint: Listenable.merge(
@@ -133,6 +134,10 @@ class ChartMapPainter extends CustomPainter {
   /// it: names and marks shrink in the chart's units as it comes closer,
   /// so they keep near one size on screen; the fine detail (coast ticks,
   /// stipple, the features' names) shows from the second level on.
+  /// How much of the fog is laid yet (v1.208): it fades in as the chart
+  /// opens from the streets. Null reads as all of it.
+  final double Function()? fogOf;
+
   double get _zoom => (zoomOf?.call() ?? 1).clamp(1.0, 12.0);
   int get _lod => _zoom < 1.8
       ? 0
@@ -1952,8 +1957,9 @@ class ChartMapPainter extends CustomPainter {
     if (fog != ChartFog.none) {
       canvas.saveLayer(whole, Paint());
       final fogPaint = Paint()
-        ..color = palette.fog
-            .withValues(alpha: fog == ChartFog.uncharted ? 0.94 : 0.9);
+        ..color = palette.fog.withValues(
+            alpha: (fog == ChartFog.uncharted ? 0.94 : 0.9) *
+                (fogOf?.call() ?? 1).clamp(0.0, 1.0));
       if (globe case final g?) {
         canvas.drawCircle(g.centre, g.radius, fogPaint);
       } else {

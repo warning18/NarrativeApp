@@ -39,6 +39,7 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/biome_backdrop.dart';
 import '../providers/climate_provider.dart';
+import '../data/weather_effects.dart';
 import '../widgets/weather_chip.dart';
 import '../widgets/room_plan_painter.dart';
 import '../widgets/chart_map_painter.dart' show ChartCalque;
@@ -403,6 +404,21 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   onChanged: (on) =>
                       ref.read(chartWeatherProvider.notifier).choose(on),
                 ),
+                if (ref.watch(chartWeatherProvider))
+                  SwitchListTile(
+                    key: const Key('journey_weather_world_only'),
+                    dense: true,
+                    value: ref.watch(chartWeatherWorldOnlyProvider),
+                    secondary: const Icon(Icons.public_outlined),
+                    title: Text(trFor(lang, 'journey_weather_world_only')),
+                    subtitle: Text(
+                        trFor(lang, 'journey_weather_world_only_sub'),
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: ink.ash)),
+                    onChanged: (on) => ref
+                        .read(chartWeatherWorldOnlyProvider.notifier)
+                        .choose(on),
+                  ),
                 const Divider(height: 8),
                 for (final calque in ChartCalque.values)
                   SwitchListTile(
@@ -900,7 +916,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     toNodeId: choice.nextId,
                     historyLength: play.history.length,
                     chapter: reached,
-                    oddsFactor: condition?.roadEventOdds ?? 1,
+                    oddsFactor: (condition?.roadEventOdds ?? 1) *
+                        WeatherEffects.of(skyHere?.today().kind).roadOdds,
                     championShare: condition?.championShare ?? 0.4,
                     shrineShare: condition?.shrineShare ?? 0.3,
                     hazardShare: hazardShareFor(world.roadBiome(

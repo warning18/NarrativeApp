@@ -45,6 +45,7 @@ import '../providers/app_mode_provider.dart';
 import '../providers/camp_presence_provider.dart';
 import '../providers/chapter_loop_provider.dart';
 import '../providers/climate_provider.dart';
+import '../data/weather_effects.dart';
 import '../providers/clans_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/combat_settings_provider.dart';
@@ -1632,7 +1633,8 @@ Future<List<StoryNode>?> roadEventOn(
     toNodeId: toNodeId,
     historyLength: historyLength,
     chapter: chapter,
-    oddsFactor: condition?.roadEventOdds ?? 1,
+    oddsFactor: (condition?.roadEventOdds ?? 1) *
+        WeatherEffects.of(ref.read(skyHereProvider)?.today().kind).roadOdds,
     championShare: condition?.championShare ?? 0.4,
     shrineShare: condition?.shrineShare ?? 0.3,
     hazardShare: hazardShareFor(biome),

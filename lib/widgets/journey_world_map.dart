@@ -73,8 +73,14 @@ class JourneyWorldMap extends ConsumerStatefulWidget {
 }
 
 class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   final TransformationController _view = TransformationController();
+
+  /// The fog fading in as the chart opens (v1.208).
+  late final AnimationController _reveal = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 420))
+    ..forward();
+  late final Listenable _repaint = Listenable.merge([_view, _reveal]);
 
   /// Glides the chart (or the sphere) from one zoom to another, so a
   /// button or a change of level never jumps (v1.201.1).
@@ -144,6 +150,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     _glide.dispose();
     _view.dispose();
     _frame.dispose();
+    _reveal.dispose();
     super.dispose();
   }
 
@@ -380,6 +387,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     final sphere = ref.watch(chartGlobeProvider);
     // The weather over the chart (v1.204), on its own layer.
     final weatherOn = ref.watch(chartWeatherProvider);
+    final weatherWorldOnly = ref.watch(chartWeatherWorldOnlyProvider);
     final day = ref.watch(playerSessionProvider.select((s) => s.day));
     return LayoutBuilder(builder: (context, box) {
       final boxSize = Size(box.maxWidth, box.maxHeight);
@@ -415,7 +423,8 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
             campPlaces: widget.campPlaces,
             globe: globe,
             zoomOf: () => globe?.zoom ?? _scale,
-            view: _view,
+            fogOf: () => _reveal.value,
+            view: _repaint,
           );
       // The sphere: the whole box is its sky; a drag turns it, a pinch
       // brings it close, a tap picks a place on it.
@@ -447,6 +456,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                   day: day,
                   globe: globeView,
                   zoomOf: () => globeView?.zoom ?? 1,
+                  showOf: () =>
+                      !weatherWorldOnly ||
+                      (globeView?.zoom ?? 1) < JourneyWorldMapZoom.land,
                   still: reduceMotion,
                 ),
             ],
@@ -490,6 +502,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                         day: day,
                         zoomOf: () => _scale,
                         visibleOf: () => _visibleChart(boxSize),
+                        showOf: () =>
+                            !weatherWorldOnly ||
+                            _scale < JourneyWorldMapZoom.land,
                         still: reduceMotion,
                       ),
                   ],

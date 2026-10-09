@@ -137,6 +137,46 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'clouds, rain, snow and dust moving on the wind',
     AppLanguage.fr: 'nuages, pluie, neige et poussière portés par le vent',
   },
+  'journey_weather_world_only': {
+    AppLanguage.en: 'Weather only at the world zoom',
+    AppLanguage.fr: 'Météo seulement au zoom monde',
+  },
+  'journey_weather_world_only_sub': {
+    AppLanguage.en:
+        'a clear land view; the sky shows when you look at the whole world',
+    AppLanguage.fr:
+        'un pays dégagé ; le ciel se montre quand vous regardez le monde entier',
+  },
+  'weather_effect_rain': {
+    AppLanguage.en:
+        'the rain dampens the flames (Fire −30%), water and lightning bite harder (+20%), and the enemy is a little harder to read',
+    AppLanguage.fr:
+        'la pluie étouffe les flammes (Feu −30\u00a0%), l’eau et la foudre mordent plus fort (+20\u00a0%), et l’ennemi se lit un peu moins bien',
+  },
+  'weather_effect_snow': {
+    AppLanguage.en:
+        'the snow smothers the flames (Fire −25%) and sharpens the cold (Ice +25%); the enemy is harder to read',
+    AppLanguage.fr:
+        'la neige étouffe les flammes (Feu −25\u00a0%) et aiguise le froid (Glace +25\u00a0%) ; l’ennemi se lit moins bien',
+  },
+  'weather_effect_fog': {
+    AppLanguage.en:
+        'the fog hides what the enemy is about to do, and damps the flames a little (Fire −10%)',
+    AppLanguage.fr:
+        'le brouillard cache ce que l’ennemi s’apprête à faire, et ternit un peu les flammes (Feu −10\u00a0%)',
+  },
+  'weather_effect_dust': {
+    AppLanguage.en:
+        'the dry wind feeds the flames (Fire +15%) and the gusts (Wind +15%), water does less (−15%), and the dust hides the enemy’s intent',
+    AppLanguage.fr:
+        'le vent sec nourrit les flammes (Feu +15\u00a0%) et les rafales (Vent +15\u00a0%), l’eau fait moins (−15\u00a0%), et la poussière cache les intentions de l’ennemi',
+  },
+  'weather_effect_ash': {
+    AppLanguage.en:
+        'the ash and embers feed the flames (Fire +20%) and the wind (+10%), and hide the enemy’s intent',
+    AppLanguage.fr:
+        'la cendre et les braises nourrissent les flammes (Feu +20\u00a0%) et le vent (+10\u00a0%), et cachent les intentions de l’ennemi',
+  },
   'weather_clear': {AppLanguage.en: 'Clear', AppLanguage.fr: 'Ciel dégagé'},
   'weather_cloud': {AppLanguage.en: 'Overcast', AppLanguage.fr: 'Couvert'},
   'weather_fog': {AppLanguage.en: 'Fog', AppLanguage.fr: 'Brouillard'},
