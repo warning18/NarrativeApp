@@ -49,8 +49,15 @@ bool isPlainGoOn(StoryChoice choice) =>
 ///
 /// [hidden] says which choices are out of sight (v1.196: a politics gate
 /// that fails, see choiceHiddenFor); by default, those [flags] hide.
+///
+/// [travels] says whether a way on from one scene to another takes the
+/// road (v1.209): with the world's places loaded, callers pass
+/// Geography.travelsBetween, so a way to another district of the same
+/// city is a walk through its streets and reads through. Without one,
+/// a change of landmark decides (see [isRoadStep]).
 StoryChoice? passThroughChoiceOf(StoryNode node, Iterable<String> flags,
-    {bool Function(StoryChoice choice)? hidden}) {
+    {bool Function(StoryChoice choice)? hidden,
+    bool Function(String from, String to)? travels}) {
   if (node.settlement != null || isStoryEnding(node)) return null;
   if (node.hubProgress != null || node.isTimed) return null;
   final held = flags.toSet();
@@ -59,7 +66,9 @@ StoryChoice? passThroughChoiceOf(StoryNode node, Iterable<String> flags,
       .toList();
   if (ways.length != 1) return null;
   final way = ways.single;
-  if (!isPlainGoOn(way) || isRoadStep(node.id, way.nextId)) return null;
+  if (!isPlainGoOn(way) || (travels ?? isRoadStep)(node.id, way.nextId)) {
+    return null;
+  }
   return way;
 }
 

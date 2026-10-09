@@ -355,64 +355,85 @@ class _PresetRail extends StatelessWidget {
   final String? selectedId;
   final ValueChanged<String> onPick;
 
+  /// The gap between two tiles.
+  static const double _gap = 6;
+
+  /// Under this much room per tile, the names are set smaller so a long
+  /// one (« Enfant du Néant » on a 360 px phone) fits on its two lines.
+  static const double _narrowTile = 68;
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final theme = Theme.of(context);
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        for (final (i, id) in ids.indexed) ...[
-          if (i > 0) const SizedBox(width: 6),
-          Expanded(
-            child: Material(
-              key: Key('preset_tile_$id'),
-              color: id == selectedId
-                  ? scheme.primaryContainer
-                  : scheme.surfaceContainer,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-                side: BorderSide(
-                    color: id == selectedId
-                        ? scheme.primary
-                        : scheme.outlineVariant,
-                    width: id == selectedId ? 2 : 1),
-              ),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(10),
-                onTap: () => onPick(id),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(2, 8, 2, 6),
-                  child: Column(
-                    children: [
-                      PresetMark(
-                          folder: folder, preset: presetOf(id), size: 36),
-                      const SizedBox(height: 4),
-                      Text(nameOf(id),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.labelMedium?.copyWith(
-                              fontWeight:
-                                  id == selectedId ? FontWeight.w700 : null)),
-                      Text(tagOf(id),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.labelSmall?.copyWith(
-                              fontSize: 9.5,
-                              color: id == selectedId
-                                  ? scheme.primary
-                                  : scheme.onSurfaceVariant)),
-                    ],
+    return LayoutBuilder(builder: (context, box) {
+      final tileWidth = box.hasBoundedWidth
+          ? (box.maxWidth - _gap * (ids.length - 1)) / ids.length
+          : double.infinity;
+      // A name may take two lines (v1.209): the French ones are long for
+      // five tiles across a phone, and a name cut short is no name.
+      final nameStyle = theme.textTheme.labelMedium?.copyWith(
+          fontSize: tileWidth < _narrowTile ? 10.5 : null,
+          letterSpacing: tileWidth < _narrowTile ? 0 : null,
+          height: 1.15);
+      // Level tiles: the tallest name sets the rail's height.
+      return IntrinsicHeight(
+          child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final (i, id) in ids.indexed) ...[
+            if (i > 0) const SizedBox(width: _gap),
+            Expanded(
+              child: Material(
+                key: Key('preset_tile_$id'),
+                color: id == selectedId
+                    ? scheme.primaryContainer
+                    : scheme.surfaceContainer,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: BorderSide(
+                      color: id == selectedId
+                          ? scheme.primary
+                          : scheme.outlineVariant,
+                      width: id == selectedId ? 2 : 1),
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(10),
+                  onTap: () => onPick(id),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(2, 8, 2, 6),
+                    child: Column(
+                      children: [
+                        PresetMark(
+                            folder: folder, preset: presetOf(id), size: 36),
+                        const SizedBox(height: 4),
+                        Text(nameOf(id),
+                            key: Key('preset_name_$id'),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: nameStyle?.copyWith(
+                                fontWeight:
+                                    id == selectedId ? FontWeight.w700 : null)),
+                        Text(tagOf(id),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                                fontSize: 9.5,
+                                color: id == selectedId
+                                    ? scheme.primary
+                                    : scheme.onSurfaceVariant)),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
         ],
-      ],
-    );
+      ));
+    });
   }
 }
 

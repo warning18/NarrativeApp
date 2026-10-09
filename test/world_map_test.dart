@@ -99,6 +99,25 @@ void main() {
       expect(landmarkOfScene('2015_kelda')!.id, 'wharf');
     });
 
+    test('every scene of every landmark resolves to it (v1.209: one lookup)',
+        () {
+      // A scene two landmarks share belongs to the later one on the road:
+      // the last landmark listing it, as the scan it replaces found.
+      final expected = <String, Landmark>{};
+      for (final landmark in worldMapLandmarks) {
+        for (final scene in landmark.scenes) {
+          expected[scene] = landmark;
+        }
+      }
+      expect(expected, isNotEmpty);
+      for (final entry in expected.entries) {
+        expect(landmarkOfScene(entry.key), same(entry.value),
+            reason: 'scene ${entry.key}');
+      }
+      expect(landmarkOfScene('no_such_scene'), isNull);
+      expect(landmarkOfScene(''), isNull);
+    });
+
     test('off the map (an excursion step), the last place on it counts', () {
       expect(currentLandmark('sub_3005_2', ['2999', '3001', '3005'])!.id,
           'quarter');

@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.209.0+244]
+
+### Changed
+- Journey: the map stops repainting when nothing moves. The living layer used to re-record every frame at 60 fps while idle; it now keeps its last frame once walks, reveals and jolts have settled, and wakes on the next motion.
+- Roads: a journey that leaves a city or town runs through that city's own land first, so the Salt Coast's and the Vale's weather can reach the party; a boat crossing to the sea keeps the sea's. A test lists the lands whose weather no journey can reach yet (the Vale, the dune sea, the Salt Coast, the terraces) so the list can only shrink.
+- One road rule: scenes that read through on their own now use the same "between two places" rule as the Journey, so a one-way scene into another district of the same city no longer stops for a tap.
+- The race and profession tiles wrap long French names on two lines instead of cutting them.
+- The six side quests of 1.204 retuned after an eighty-run standing probe: the Compact no longer reaches Sworn a chapter early, the Penitents lose less and gain more, the Dominion takes a lighter blow from the scaffold and the salvage, and selling the salvage to the wreck-wrights pleases the Tide-Kin.
+
+### Fixed
+- French typography across all game data: 274 strings in 17 files gained the no-break space before ; : ! ? or inside « », and one golem line stopped gendering the player. A lint over every French string in the data and the story now runs in CI, with an empty allowlist that may only shrink.
+
+### Internal
+- Scene-to-landmark lookups are a map, not a scan. Save fixtures for 1.198 and 1.204 load, round-trip and migrate in tests.
+
 ## [1.208.0+243]
 
 ### Added

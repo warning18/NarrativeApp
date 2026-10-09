@@ -509,8 +509,55 @@ class JourneyFxPainter extends CustomPainter {
     canvas.drawPath(path, Paint()..color = colour);
   }
 
+  /// Whether a rebuild must redraw (v1.209): only when what the layer
+  /// draws has changed. The clock's ticks repaint it on their own (see
+  /// the constructor's `repaint`), so a rebuild that hands it the same
+  /// steps, mark, weather and moments redraws nothing: the Journey's
+  /// idle frames cost no re-recording of this layer.
   @override
-  bool shouldRepaint(covariant JourneyFxPainter old) => true;
+  bool shouldRepaint(covariant JourneyFxPainter old) =>
+      !identical(time, old.time) ||
+      here != old.here ||
+      hereRadius != old.hereRadius ||
+      stepRadius != old.stepRadius ||
+      mark != old.mark ||
+      fog != old.fog ||
+      weather != old.weather ||
+      weatherColour != old.weatherColour ||
+      !identical(selectedRoad, old.selectedRoad) ||
+      selected != old.selected ||
+      footprintColour != old.footprintColour ||
+      dust != old.dust ||
+      dice != old.dice ||
+      diceColour != old.diceColour ||
+      rattle != old.rattle ||
+      rattleColour != old.rattleColour ||
+      !_sameSteps(steps, old.steps) ||
+      !_samePrints(footprints, old.footprints);
+
+  static bool _sameSteps(List<JourneyFxStep> a, List<JourneyFxStep> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      final x = a[i], y = b[i];
+      if (x.centre != y.centre ||
+          x.kind != y.kind ||
+          x.colour != y.colour ||
+          x.locked != y.locked ||
+          x.row != y.row) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  static bool _samePrints(List<JourneyFootprint> a, List<JourneyFootprint> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      final x = a[i], y = b[i];
+      if (x.at != y.at || x.born != y.born || x.angle != y.angle) return false;
+    }
+    return true;
+  }
 }
 
 /// A shake and a red vignette going into a fight (see the Journey tab's

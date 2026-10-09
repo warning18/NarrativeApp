@@ -1908,6 +1908,12 @@ class _JourneyChart extends StatefulWidget {
   State<_JourneyChart> createState() => _JourneyChartState();
 }
 
+/// How many Journey maps have their clock running (v1.209): one while
+/// something on the map moves (a map on its way out may still hold one),
+/// none once it has settled. For tests.
+@visibleForTesting
+final ValueNotifier<int> debugJourneyMapsTicking = ValueNotifier(0);
+
 class _JourneyChartState extends State<_JourneyChart>
     with TickerProviderStateMixin {
   static const double _stepRadius = 22;
@@ -2028,6 +2034,7 @@ class _JourneyChartState extends State<_JourneyChart>
       if (status == AnimationStatus.completed && _walking != null) {
         final i = _walking!;
         if (i < _centres.length) _dust = (_centres[i], _clock.value);
+        _wake();
       }
     });
   }
@@ -2046,12 +2053,48 @@ class _JourneyChartState extends State<_JourneyChart>
         final now = _clockBase + elapsed.inMicroseconds / 1e6;
         _clock.value = now;
         if (now - _lastEvent < 3.8) _phase.value = now;
+        // Nothing left to move: the map holds this frame (v1.209).
+        if (!_movingAt(now)) _rest();
       });
-      _ticker!.start();
-    } else if (_ticker?.isActive ?? false) {
-      _clockBase = _clock.value;
-      _ticker!.stop();
+      _wake();
+    } else {
+      _rest();
     }
+  }
+
+  /// Whether the map still has motion to draw at [now] (v1.209): a walk
+  /// or a flight under way, the ways still inking in, a new chapter
+  /// burning open, a place's name stamped, the unroll, a shut way's
+  /// rattle, footprints and dust still fading, or the moments after the
+  /// last event (the picked road flows a while, then holds). Idle, the
+  /// ticker stops: the Journey draws no frame until something moves.
+  bool _movingAt(double now) =>
+      _walk.isAnimating ||
+      _flight.isAnimating ||
+      _reveal < 1 ||
+      (widget.burn && now < 1.4) ||
+      (widget.stamp != null && now < 4.2) ||
+      now - _unrollAt < 0.55 ||
+      now - _lastEvent < 3.8 ||
+      (_rattle != null && now - _rattle!.$2 < 0.5) ||
+      (_dust != null && now - _dust!.$2 < 0.8) ||
+      _footprints.any((f) => now - f.born < 1.4);
+
+  /// Starts the clock for the next motion, when the map animates at all.
+  void _wake() {
+    final ticker = _ticker;
+    if (!_animate || ticker == null || ticker.isActive) return;
+    ticker.start();
+    debugJourneyMapsTicking.value++;
+  }
+
+  /// Stops the clock where it stands; [_wake] takes it up from there.
+  void _rest() {
+    final ticker = _ticker;
+    if (ticker == null || !ticker.isActive) return;
+    _clockBase = _clock.value;
+    ticker.stop();
+    debugJourneyMapsTicking.value--;
   }
 
   @override
@@ -2060,6 +2103,16 @@ class _JourneyChartState extends State<_JourneyChart>
     if (old.unroll != widget.unroll) {
       _unrollAt = _clock.value;
       _lastEvent = _clock.value;
+    }
+    // A new moment to draw: the road picked flows, a chapter burns open,
+    // a name is stamped, the ways of a new scene ink in.
+    if (old.unroll != widget.unroll ||
+        old.burn != widget.burn ||
+        old.stamp != widget.stamp ||
+        old.selected != widget.selected ||
+        old.steps.length != widget.steps.length) {
+      _lastEvent = _clock.value;
+      _wake();
     }
   }
 
@@ -2108,6 +2161,8 @@ class _JourneyChartState extends State<_JourneyChart>
     _nextPrint = 0.07;
     _footprints.clear();
     _dust = null;
+    _lastEvent = _clock.value;
+    _wake();
     setState(() => _walking = index);
     final scroll = _scroll;
     if (scroll != null &&
@@ -2125,6 +2180,7 @@ class _JourneyChartState extends State<_JourneyChart>
           index < widget.steps.length ? widget.steps[index].chartTarget : null;
       if (place != null && target != null && _animate && mounted) {
         setState(() => _flying = index);
+        _wake();
         await _flight.forward(from: 0).orCancel;
       }
     } on TickerCanceled {
@@ -2148,6 +2204,7 @@ class _JourneyChartState extends State<_JourneyChart>
 
   @override
   void dispose() {
+    _rest();
     _ticker?.dispose();
     _clock.dispose();
     _phase.dispose();
@@ -2553,70 +2610,74 @@ class _JourneyChartState extends State<_JourneyChart>
                         ),
                         // What each step holds, the weather, the picked
                         // road flowing, footprints (see journey_fx.dart).
+                        // Its own layer (v1.209): the clock's ticks
+                        // redraw it alone, not the whole map.
                         if (_animate)
                           Positioned.fill(
                             child: IgnorePointer(
-                              child: CustomPaint(
-                                painter: JourneyFxPainter(
-                                  time: _clock,
-                                  steps: [
-                                    for (var i = 0; i < steps.length; i++)
-                                      if (_markReveal(i) >= 1)
-                                        JourneyFxStep(
-                                          centre: centres[i],
-                                          kind: steps[i].kind,
-                                          colour: _colorFor(steps[i].kind,
-                                              widget.ink, palette,
-                                              greyed: widget.greyed),
-                                          locked: steps[i].locked,
-                                          row: steps[i].slot.row,
-                                        ),
-                                  ],
-                                  here: traveller ?? here,
-                                  hereRadius: _hereRadius,
-                                  stepRadius: _stepRadius,
-                                  mark: palette.mark,
-                                  fog: palette.fog,
-                                  weather: widget.greyed
-                                      ? JourneyWeather.none
-                                      : widget.weather,
-                                  weatherColour: switch (widget.weather) {
-                                    JourneyWeather.rain =>
-                                      const Color(0xFF8FC3CF),
-                                    JourneyWeather.snow =>
-                                      const Color(0xFFEFF3F6),
-                                    JourneyWeather.dust =>
-                                      const Color(0xFFC9A46A),
-                                    _ => palette.place,
-                                  },
-                                  selectedRoad: selectedRoad,
-                                  selected: walking == null &&
-                                          selectedIndex != null &&
-                                          selectedIndex < steps.length &&
-                                          !steps[selectedIndex].locked &&
-                                          _markReveal(selectedIndex) >= 1
-                                      ? selectedIndex
-                                      : null,
-                                  footprints: _footprints,
-                                  footprintColour: palette.place,
-                                  dust: _dust,
-                                  dice: traveller != null &&
-                                          (walkingKind ==
-                                                  JourneyStepKind.check ||
-                                              walkingKind ==
-                                                  JourneyStepKind.challenge)
-                                      ? traveller.translate(
-                                          _hereRadius * 0.9,
-                                          -_hereRadius -
-                                              10 +
-                                              math.sin(now * 14).abs() * -8)
-                                      : null,
-                                  diceColour: widget.ink.tide,
-                                  rattle: _rattle == null ||
-                                          _rattle!.$1 >= centres.length
-                                      ? null
-                                      : (centres[_rattle!.$1], _rattle!.$2),
-                                  rattleColour: widget.ink.blood,
+                              child: RepaintBoundary(
+                                child: CustomPaint(
+                                  painter: JourneyFxPainter(
+                                    time: _clock,
+                                    steps: [
+                                      for (var i = 0; i < steps.length; i++)
+                                        if (_markReveal(i) >= 1)
+                                          JourneyFxStep(
+                                            centre: centres[i],
+                                            kind: steps[i].kind,
+                                            colour: _colorFor(steps[i].kind,
+                                                widget.ink, palette,
+                                                greyed: widget.greyed),
+                                            locked: steps[i].locked,
+                                            row: steps[i].slot.row,
+                                          ),
+                                    ],
+                                    here: traveller ?? here,
+                                    hereRadius: _hereRadius,
+                                    stepRadius: _stepRadius,
+                                    mark: palette.mark,
+                                    fog: palette.fog,
+                                    weather: widget.greyed
+                                        ? JourneyWeather.none
+                                        : widget.weather,
+                                    weatherColour: switch (widget.weather) {
+                                      JourneyWeather.rain =>
+                                        const Color(0xFF8FC3CF),
+                                      JourneyWeather.snow =>
+                                        const Color(0xFFEFF3F6),
+                                      JourneyWeather.dust =>
+                                        const Color(0xFFC9A46A),
+                                      _ => palette.place,
+                                    },
+                                    selectedRoad: selectedRoad,
+                                    selected: walking == null &&
+                                            selectedIndex != null &&
+                                            selectedIndex < steps.length &&
+                                            !steps[selectedIndex].locked &&
+                                            _markReveal(selectedIndex) >= 1
+                                        ? selectedIndex
+                                        : null,
+                                    footprints: _footprints,
+                                    footprintColour: palette.place,
+                                    dust: _dust,
+                                    dice: traveller != null &&
+                                            (walkingKind ==
+                                                    JourneyStepKind.check ||
+                                                walkingKind ==
+                                                    JourneyStepKind.challenge)
+                                        ? traveller.translate(
+                                            _hereRadius * 0.9,
+                                            -_hereRadius -
+                                                10 +
+                                                math.sin(now * 14).abs() * -8)
+                                        : null,
+                                    diceColour: widget.ink.tide,
+                                    rattle: _rattle == null ||
+                                            _rattle!.$1 >= centres.length
+                                        ? null
+                                        : (centres[_rattle!.$1], _rattle!.$2),
+                                    rattleColour: widget.ink.blood,
+                                  ),
                                 ),
                               ),
                             ),
@@ -3144,6 +3205,7 @@ class _JourneyChartState extends State<_JourneyChart>
                     if (step.locked && _animate) {
                       _rattle = (i, _clock.value);
                       _lastEvent = _clock.value;
+                      _wake();
                     }
                     widget.onTap(i, step);
                   }

@@ -9,7 +9,11 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:narrative_data_app/data/chapter_loop.dart';
+import 'package:narrative_data_app/data/geography.dart';
+import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/data/world_map.dart';
+import 'package:narrative_data_app/models/story_node.dart';
 
 Map<String, dynamic> _json(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
@@ -287,6 +291,74 @@ void main() {
             in (biome['hazards'] as List).cast<Map<String, dynamic>>()) {
           check('$key.${entry['id']}', entry, ['name', 'text', 'push', 'wait']);
         }
+      }
+    });
+  });
+
+  group('the roads of the story', () {
+    // Through the engine's own world here: the question is what its road
+    // rule (Geography.roadBiome, v1.209) makes of the real places.
+    final world = Geography.parse(geography: geo, biomes: biomes);
+    final storyData = StoryData({
+      for (final MapEntry(:key, :value) in story.entries)
+        key: StoryNode.fromJson(key, value as Map<String, dynamic>),
+    });
+
+    /// Each land a journey of chapter 2 or later (the road's rules apply
+    /// from there, see journey_rules.dart) runs through, with one such
+    /// journey: every way on between two locations of the story.
+    Map<String, String> landsCrossed() {
+      final crossed = <String, String>{};
+      for (final node in storyData.nodes.values) {
+        if (storyChapterOf(node.id, storyData) < 2) continue;
+        for (final choice in node.choices) {
+          if (choice.nextId.isEmpty ||
+              storyData.nodeFor(choice.nextId) == null) {
+            continue;
+          }
+          if (!world.travelsBetween(storyData, node.id, choice.nextId)) {
+            continue;
+          }
+          final biome = world.roadBiome(storyData, node.id, choice.nextId);
+          if (biome == null) continue;
+          crossed.putIfAbsent(biome.id, () {
+            final from = world.locationOfNode(node)?.id;
+            final to =
+                world.locationOfNode(storyData.nodeFor(choice.nextId))?.id;
+            return '${node.id} > ${choice.nextId} ($from > $to)';
+          });
+        }
+      }
+      return crossed;
+    }
+
+    test('every land with hazards lies on a journey of chapter 2 or later', () {
+      final crossed = landsCrossed();
+      expect(crossed, isNotEmpty);
+      final withHazards = [
+        for (final MapEntry(:key, :value) in biomes.entries)
+          if (((value as Map<String, dynamic>)['hazards'] as List).isNotEmpty)
+            key,
+      ];
+      expect(withHazards, isNotEmpty);
+      final roadless = [
+        for (final id in withHazards)
+          if (!crossed.containsKey(id)) id,
+      ];
+      // Known (v1.209): the story's chapter-2+ journeys never cross these
+      // lands, so their hazards cannot fire until a journey does. Alster's
+      // vale and the dune sea lie in chapter 1, whose roads have no rules;
+      // Saltmouth's headland is left by boat (a crossing, the sea's);
+      // Akagiri's terraces no scene travels to. Remove one from here once
+      // the story gains a road through it.
+      const knownRoadless = ['arid_coast', 'desert', 'temperate', 'volcanic'];
+      expect(roadless, unorderedEquals(knownRoadless),
+          reason: 'lands with hazards off every chapter-2+ journey: '
+              '$roadless; crossed: $crossed');
+      // What the roads do cross, they cross from a real journey.
+      for (final id in withHazards) {
+        if (knownRoadless.contains(id)) continue;
+        expect(crossed[id], isNotNull, reason: id);
       }
     });
   });

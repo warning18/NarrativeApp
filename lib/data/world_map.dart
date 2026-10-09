@@ -722,15 +722,17 @@ Set<String> discoveredLandmarkIds(Iterable<String> visited) {
   };
 }
 
+/// Each scene's landmark, built once from [worldMapLandmarks] (v1.209):
+/// a scene shared by two places belongs to the later one on the road, so
+/// the later landmark's entry wins.
+final Map<String, Landmark> _landmarkByScene = {
+  for (final landmark in worldMapLandmarks)
+    for (final scene in landmark.scenes) scene: landmark,
+};
+
 /// The landmark a scene happens at. A scene shared by two places belongs
 /// to the later one on the road.
-Landmark? landmarkOfScene(String nodeId) {
-  Landmark? found;
-  for (final landmark in worldMapLandmarks) {
-    if (landmark.scenes.contains(nodeId)) found = landmark;
-  }
-  return found;
-}
+Landmark? landmarkOfScene(String nodeId) => _landmarkByScene[nodeId];
 
 /// Where the story stands: the landmark of [currentNodeId], or, for a
 /// scene that is on no landmark (an excursion's generated steps), of the
