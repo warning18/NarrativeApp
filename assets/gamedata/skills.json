@@ -19,7 +19,7 @@
     "vfx": "fireball",
     "name_fr": "Boule de feu",
     "description_fr": "Projetez un trait de feu sur l’ennemi.",
-    "battleMessage_fr": "Les flammes jaillissent !"
+    "battleMessage_fr": "Les flammes jaillissent !"
   },
   "second_wind": {
     "id": "second_wind",
@@ -65,7 +65,7 @@
     "vfx": "void_rift",
     "name_fr": "Déflagration du Néant",
     "description_fr": "Déployez le Linceul et libérez une vague de néant absolu.",
-    "battleMessage_fr": "Une déchirure dans la réalité balaie le champ de bataille !"
+    "battleMessage_fr": "Une déchirure dans la réalité balaie le champ de bataille !"
   },
   "shadow_step": {
     "id": "shadow_step",
@@ -89,7 +89,7 @@
     "description_fr": "Filez à travers les ombres pour esquiver les attaques.",
     "battleMessage_fr": "Vous disparaissez dans la fumée trouble.",
     "enemyBattleMessage": "Slips into the smoke and strikes from somewhere else!",
-    "enemyBattleMessage_fr": "Se glisse dans la fumée et frappe d’ailleurs !"
+    "enemyBattleMessage_fr": "Se glisse dans la fumée et frappe d’ailleurs !"
   },
   "human_resolve": {
     "id": "human_resolve",
@@ -132,7 +132,7 @@
     "alignment": "",
     "vfx": "pierce",
     "name_fr": "Apprentissage éclair",
-    "description_fr": "Adaptez-vous en plein combat : frappez plus malin, pas plus fort.",
+    "description_fr": "Adaptez-vous en plein combat : frappez plus malin, pas plus fort.",
     "battleMessage_fr": "Vous repérez aussitôt l’ouverture."
   },
   "human_diplomacy": {
@@ -313,7 +313,7 @@
     "description_fr": "Laissez la rage porter votre arme plus loin que ne le pourrait l’habileté.",
     "battleMessage_fr": "Un voile rouge s’empare de vous.",
     "enemyBattleMessage": "A red rage takes hold, and the blows come wild!",
-    "enemyBattleMessage_fr": "Une rage rouge prend le dessus, et les coups pleuvent !"
+    "enemyBattleMessage_fr": "Une rage rouge prend le dessus, et les coups pleuvent !"
   },
   "orc_savage_cleave": {
     "id": "orc_savage_cleave",
@@ -458,7 +458,7 @@
     "description_fr": "Écrasez votre bouclier contre la garde ennemie.",
     "battleMessage_fr": "Votre bouclier résonne contre l’ennemi.",
     "enemyBattleMessage": "A shield rim slams in hard!",
-    "enemyBattleMessage_fr": "Le rebord d’un bouclier frappe de plein fouet !"
+    "enemyBattleMessage_fr": "Le rebord d’un bouclier frappe de plein fouet !"
   },
   "warrior_whirlwind": {
     "id": "warrior_whirlwind",
@@ -1466,7 +1466,7 @@
     "description_fr": "Un coup lourd et prévisible, porté de toutes vos forces.",
     "battleMessage_fr": "Vous prenez votre élan et frappez de toutes vos forces.",
     "enemyBattleMessage": "A wind-up, then a swing with everything behind it!",
-    "enemyBattleMessage_fr": "Un élan, puis un coup porté de toutes ses forces !"
+    "enemyBattleMessage_fr": "Un élan, puis un coup porté de toutes ses forces !"
   },
   "zealous_conviction": {
     "id": "zealous_conviction",
@@ -1679,7 +1679,7 @@
     "enemyOnly": true,
     "name_fr": "Morsure pestilentielle",
     "description_fr": "Une morsure purulente qui laisse la plaie s’infecter davantage.",
-    "battleMessage_fr": "Les mâchoires du chien se referment, et le mal s’insinue !"
+    "battleMessage_fr": "Les mâchoires du chien se referment, et le mal s’insinue !"
   },
   "void_drain": {
     "id": "void_drain",
@@ -1705,7 +1705,7 @@
     "enemyOnly": true,
     "name_fr": "Ponction du Néant",
     "description_fr": "Un filament de la déchirure aspire la force d’un coup avant qu’il ne porte.",
-    "battleMessage_fr": "Quelque chose d’invisible boit la force de votre bras !"
+    "battleMessage_fr": "Quelque chose d’invisible boit la force de votre bras !"
   },
   "disorienting_pulse": {
     "id": "disorienting_pulse",
@@ -1731,7 +1731,7 @@
     "enemyOnly": true,
     "name_fr": "Pulsation désorientante",
     "description_fr": "Une pulsation d’irréalité brute qui laisse l’esprit incapable de suivre son propre corps.",
-    "battleMessage_fr": "La réalité bégaie, et un instant vous vous y perdez !"
+    "battleMessage_fr": "La réalité bégaie, et un instant vous vous y perdez !"
   },
   "molten_backlash": {
     "id": "molten_backlash",
@@ -1757,7 +1757,7 @@
     "enemyOnly": true,
     "name_fr": "Contrecoup en fusion",
     "description_fr": "Le fer ne brûle pas — il s’enrage, voilà tout. Et il renvoie le feu à qui l’a allumé.",
-    "battleMessage_fr": "Le golem ignore la flamme et vous renvoie des scories en fusion !"
+    "battleMessage_fr": "Le golem ignore la flamme et vous renvoie des scories en fusion !"
   },
   "frigid_grip": {
     "id": "frigid_grip",
@@ -1782,7 +1782,7 @@
     "vfx": "frost",
     "name_fr": "Étreinte glaciale",
     "description_fr": "L’eau du port au cœur de l’hiver, lancée par une main qui ne sent plus le froid.",
-    "battleMessage_fr": "Une eau de port glaciale vous submerge, et vos mains s’engourdissent !"
+    "battleMessage_fr": "Une eau de port glaciale vous submerge, et vos mains s’engourdissent !"
   },
   "radiant_judgment": {
     "id": "radiant_judgment",
@@ -1807,7 +1807,7 @@
     "vfx": "radiance",
     "name_fr": "Jugement radieux",
     "description_fr": "La lumière même de l’Inquisition, tournée contre quiconque elle juge indigne.",
-    "battleMessage_fr": "Une colonne de lumière blanche et brûlante s’abat !"
+    "battleMessage_fr": "Une colonne de lumière blanche et brûlante s’abat !"
   },
   "celestial_ward": {
     "id": "celestial_ward",
@@ -1829,7 +1829,7 @@
     "alignment": "Good",
     "vfx": "shield",
     "name_fr": "Garde céleste",
-    "description_fr": "Un anneau de feu pâle se referme autour de vous : il brûle tout ce qu’il touche et soigne tout ce qu’il entoure. Seuls les vrais justes peuvent le maintenir.",
+    "description_fr": "Un anneau de feu pâle se referme autour de vous : il brûle tout ce qu’il touche et soigne tout ce qu’il entoure. Seuls les vrais justes peuvent le maintenir.",
     "battleMessage_fr": "Un anneau de feu pâle se referme autour de vous."
   },
   "infernal_pact": {
@@ -1879,7 +1879,7 @@
     "enemyOnly": true,
     "name_fr": "Appel de la couvée",
     "description_fr": "La couvée submerge quiconque la Matriarche désigne de ses cris.",
-    "battleMessage_fr": "La Matriarche glapit, et la couvée déferle sur vous !"
+    "battleMessage_fr": "La Matriarche glapit, et la couvée déferle sur vous !"
   },
   "golem_meltdown": {
     "id": "golem_meltdown",
@@ -1905,7 +1905,7 @@
     "enemyOnly": true,
     "name_fr": "Fusion du golem",
     "description_fr": "Une fusion qui crache des scories brûlantes et sape la force de vos bras.",
-    "battleMessage_fr": "Le cœur du golem chauffe à blanc et crache des scories à travers le chantier !"
+    "battleMessage_fr": "Le cœur du golem chauffe à blanc et crache des scories à travers le chantier !"
   },
   "warden_bone_storm": {
     "id": "warden_bone_storm",
@@ -1931,7 +1931,7 @@
     "enemyOnly": true,
     "name_fr": "Tempête d’os",
     "description_fr": "Une tempête d’os qui martèle et engourdit.",
-    "battleMessage_fr": "Les os du Gardien volent en éclats et se ressoudent autour de vous à grands coups !"
+    "battleMessage_fr": "Les os du Gardien volent en éclats et se ressoudent autour de vous à grands coups !"
   },
   "archon_eclipse": {
     "id": "archon_eclipse",
@@ -1957,7 +1957,7 @@
     "enemyOnly": true,
     "name_fr": "Éclipse de l’Archonte",
     "description_fr": "Une éclipse de néant qui vous laisse chancelant.",
-    "battleMessage_fr": "L’Archonte engloutit la lumière, et un instant il n’y a plus rien d’autre !"
+    "battleMessage_fr": "L’Archonte engloutit la lumière, et un instant il n’y a plus rien d’autre !"
   },
   "sovereign_unmaking": {
     "id": "sovereign_unmaking",
@@ -1983,7 +1983,7 @@
     "enemyOnly": true,
     "name_fr": "Anéantissement du Souverain",
     "description_fr": "L’anéantissement du Souverain, qui vous laisse affaibli un moment.",
-    "battleMessage_fr": "Le Souverain défait le sol sous vos pieds !"
+    "battleMessage_fr": "Le Souverain défait le sol sous vos pieds !"
   },
   "zealot_martyrdom": {
     "id": "zealot_martyrdom",
@@ -2006,7 +2006,7 @@
     "enemyOnly": true,
     "name_fr": "Martyre du zélote",
     "description_fr": "La charge d’un martyr, en flammes.",
-    "battleMessage_fr": "Le zélote embrase sa propre chair et avance en brûlant !"
+    "battleMessage_fr": "Le zélote embrase sa propre chair et avance en brûlant !"
   },
   "manifestation_many_faces": {
     "id": "manifestation_many_faces",
@@ -2032,7 +2032,7 @@
     "enemyOnly": true,
     "name_fr": "Mille visages",
     "description_fr": "Chaque visage volé parle à la fois, et vous vous y perdez.",
-    "battleMessage_fr": "Chaque visage qu’elle porte prononce votre nom en même temps !"
+    "battleMessage_fr": "Chaque visage qu’elle porte prononce votre nom en même temps !"
   },
   "stalker_ambush": {
     "id": "stalker_ambush",
@@ -2058,7 +2058,7 @@
     "enemyOnly": true,
     "name_fr": "Embuscade du rôdeur",
     "description_fr": "Un coup surgi de la fumée qui laisse une plaie empoisonnée.",
-    "battleMessage_fr": "Le rôdeur se fond dans la fumée et frappe par-derrière !"
+    "battleMessage_fr": "Le rôdeur se fond dans la fumée et frappe par-derrière !"
   },
   "mage_channel": {
     "id": "mage_channel",
@@ -2079,7 +2079,7 @@
     "alignment": "",
     "vfx": "mana",
     "name_fr": "Canalisation",
-    "description_fr": "Attirez en vous les arcanes ambiants : gagnez 2 points de mana, davantage avec la Sagesse.",
+    "description_fr": "Attirez en vous les arcanes ambiants : gagnez 2 points de mana, davantage avec la Sagesse.",
     "battleMessage_fr": "Vous inspirez les arcanes qui vous entourent.",
     "manaGain": 2
   },
@@ -2102,7 +2102,7 @@
     "alignment": "",
     "vfx": "mana",
     "name_fr": "Prière",
-    "description_fr": "Une prière à mi-voix qui ravive votre foi : gagnez 2 points de mana, davantage avec la Sagesse.",
+    "description_fr": "Une prière à mi-voix qui ravive votre foi : gagnez 2 points de mana, davantage avec la Sagesse.",
     "battleMessage_fr": "Vous murmurez une prière et sentez la lumière revenir.",
     "manaGain": 2
   },
@@ -2156,7 +2156,7 @@
     "battleMessage_fr": "Les muscles se tendent, l’arme se lève haut.",
     "chargeMultiplier": 2.0,
     "releaseMessage": "The wound-up blow comes crashing down!",
-    "releaseMessage_fr": "Le coup longuement préparé s’abat de tout son poids !"
+    "releaseMessage_fr": "Le coup longuement préparé s’abat de tout son poids !"
   },
   "void_gathering": {
     "id": "void_gathering",
@@ -2183,7 +2183,7 @@
     "battleMessage_fr": "L’air s’assombrit tandis que le Vide s’amasse.",
     "chargeMultiplier": 1.8,
     "releaseMessage": "The gathered Void bursts outward!",
-    "releaseMessage_fr": "Le Vide amassé éclate d’un coup !"
+    "releaseMessage_fr": "Le Vide amassé éclate d’un coup !"
   },
   "rallying_cry": {
     "id": "rallying_cry",
@@ -2281,7 +2281,7 @@
     "intent": "tamper",
     "tamper": "hex",
     "name_fr": "Maléfice de malchance",
-    "description_fr": "Un signe tordu tracé au-dessus des dés adverses : le meilleur se retournera au prochain lancer.",
+    "description_fr": "Un signe tordu tracé au-dessus des dés adverses : le meilleur se retournera au prochain lancer.",
     "battleMessage_fr": "Un signe tordu se dessine dans l'air au-dessus de vos dés."
   },
   "edict_of_silence": {
@@ -2307,7 +2307,7 @@
     "tamper": "silence",
     "name_fr": "Édit de silence",
     "description_fr": "Un mot de l'Inquisition qui fait taire tours et prières le temps d'un round.",
-    "battleMessage_fr": "« Silence ! » Le mot tombe comme un bâillon."
+    "battleMessage_fr": "« Silence ! » Le mot tombe comme un bâillon."
   },
   "rotting_mark": {
     "id": "rotting_mark",
@@ -2331,7 +2331,7 @@
     "intent": "tamper",
     "tamper": "curse",
     "name_fr": "Marque pourrissante",
-    "description_fr": "Une marque de pourriture posée sur une face de dé : elle frappe désormais, et blesse qui la lance.",
+    "description_fr": "Une marque de pourriture posée sur une face de dé : elle frappe désormais, et blesse qui la lance.",
     "battleMessage_fr": "Une marque de pourriture rampe sur la table."
   },
   "glass_reflection": {
@@ -2379,7 +2379,7 @@
     "enemyOnly": true,
     "tamper": "mirror",
     "name_fr": "Le Linceul répond",
-    "description_fr": "Le Souverain retourne contre le groupe la lumière même du Linceul : son meilleur coup du round, renvoyé.",
+    "description_fr": "Le Souverain retourne contre le groupe la lumière même du Linceul : son meilleur coup du round, renvoyé.",
     "battleMessage_fr": "Le Souverain lève la lumière du Linceul, et votre meilleur coup vous revient."
   }
 }

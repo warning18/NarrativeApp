@@ -9,7 +9,7 @@
       "My old sergeant would have bought you a drink for that. He'd have hated it, but he'd have bought it."
     ],
     "lines_fr": [
-      "C'est ça, le métier. Pas la paie : le métier.",
+      "C'est ça, le métier. Pas la paie : le métier.",
       "Vous avez fait rempart entre eux et le danger. Je sais ce que ça coûte. Bien joué.",
       "Mon vieux sergent vous aurait payé à boire pour ça. Il aurait détesté ça, mais il aurait payé."
     ]
@@ -66,7 +66,7 @@
     ],
     "lines_fr": [
       "Du travail propre. J'aurais mis un coup d'épaule, mais c'est propre.",
-      "Vous voyez ? Mains sûres, pieds sûrs. Rien de plus.",
+      "Vous voyez ? Mains sûres, pieds sûrs. Rien de plus.",
       "Ha. Vous n'aviez même pas besoin de moi."
     ]
   },
@@ -319,7 +319,7 @@
       "Let me look at that. No, don't argue."
     ],
     "lines_fr": [
-      "Rien de cassé ? Alors ce n'était que l'orgueil, et l'orgueil guérit.",
+      "Rien de cassé ? Alors ce n'était que l'orgueil, et l'orgueil guérit.",
       "Échouer est une sorte de prière. Cela nous rappelle qu'il en faut une.",
       "Laissez-moi regarder ça. Non, ne discutez pas."
     ]
@@ -599,7 +599,7 @@
       "They will remember that. Fear is cheaper than guards."
     ],
     "lines_fr": [
-      "Ha ! Dur. Grosh aime quand c'est dur.",
+      "Ha ! Dur. Grosh aime quand c'est dur.",
       "Pas de sermon. C'est fait. Bien.",
       "Ils s'en souviendront. La peur coûte moins cher que des gardes."
     ]
@@ -614,7 +614,7 @@
       "Good. Heavy purse, light heart."
     ],
     "lines_fr": [
-      "DE L'ARGENT ! Grosh entend de l'argent !",
+      "DE L'ARGENT ! Grosh entend de l'argent !",
       "Ce soir, on mange bien.",
       "Bien. Bourse lourde, cœur léger."
     ]
@@ -655,9 +655,9 @@
       "Good! Now Grosh does not have to carry you."
     ],
     "lines_fr": [
-      "Ha ! De la force ! Presque autant que Grosh !",
+      "Ha ! De la force ! Presque autant que Grosh !",
       "Grosh l'aurait cassé. Comme ça, c'est bien aussi.",
-      "Bien ! Grosh n'aura pas à vous porter."
+      "Bien ! Grosh n'aura pas à vous porter."
     ]
   },
   "grosh_checkFailed": {
@@ -670,7 +670,7 @@
       "Grosh falls too, sometimes. Mostly on enemies."
     ],
     "lines_fr": [
-      "Ha ! Grosh a vu ça. Grosh le racontera à tout le monde.",
+      "Ha ! Grosh a vu ça. Grosh le racontera à tout le monde.",
       "La prochaine fois, frappez plus fort.",
       "Grosh tombe aussi, parfois. Surtout sur les ennemis."
     ]
@@ -697,7 +697,7 @@
       "Grosh will drink yours too, if you are slow."
     ],
     "lines_fr": [
-      "À BOIRE ! Grosh vous aime davantage maintenant. C'est comme ça que ça marche.",
+      "À BOIRE ! Grosh vous aime davantage maintenant. C'est comme ça que ça marche.",
       "Grosh boira aussi le vôtre, si vous traînez."
     ]
   },
@@ -909,9 +909,9 @@
       "See? Risk, managed. There's some Court in you yet."
     ],
     "lines_fr": [
-      "Du travail compétent. Presque décevant : j'avais parié contre vous.",
+      "Du travail compétent. Presque décevant : j'avais parié contre vous.",
       "Bien joué. Je ferai comme si je n'avais jamais douté.",
-      "Vous voyez ? Le risque, maîtrisé. Il y a encore de la Cour en vous."
+      "Vous voyez ? Le risque, maîtrisé. Il y a encore de la Cour en vous."
     ]
   },
   "malrik_checkFailed": {
@@ -1056,7 +1056,7 @@
       "Hard sum. Right sum. Don't look back at the wharf; it doesn't change the numbers."
     ],
     "lines_fr": [
-      "Calcul dur. Calcul juste. Ne regardez pas le quai ; ça ne change pas les chiffres."
+      "Calcul dur. Calcul juste. Ne regardez pas le quai ; ça ne change pas les chiffres."
     ]
   },
   "choice_refugees_left_liora": {
@@ -1446,7 +1446,7 @@
       "A crown and a purse from the people who burned your city. Nothing personal: best deal on the table."
     ],
     "lines_fr": [
-      "Une couronne et une bourse offertes par ceux qui ont brûlé votre ville. Rien de personnel : la meilleure affaire sur la table."
+      "Une couronne et une bourse offertes par ceux qui ont brûlé votre ville. Rien de personnel : la meilleure affaire sur la table."
     ]
   },
   "choice_inquisition_pact_grosh": {

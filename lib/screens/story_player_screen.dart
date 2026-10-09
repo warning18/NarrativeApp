@@ -1693,6 +1693,9 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
   await applyEnterPolitics(ref, ref.read(storyPlayProvider).currentNodeId);
   if (ref.read(appModeProvider) == AppMode.edit) return;
   final french = ref.read(appLanguageProvider) == AppLanguage.fr;
+  // A way on that leaves the location is a stop, one to another district
+  // of the same city reads through (v1.209, see Geography.travelsBetween).
+  final world = await loadGeography(ref);
   final preludes = <ScenePrelude>[];
   for (var i = 0; i < maxPassThrough; i++) {
     // Each scene read through on the way moves it too.
@@ -1702,7 +1705,8 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
     if (node == null) break;
     final gateWorld = ref.read(coastGateWorldProvider);
     final way = passThroughChoiceOf(node, session.flags,
-        hidden: (c) => choiceHiddenFor(c, session, gateWorld));
+        hidden: (c) => choiceHiddenFor(c, session, gateWorld),
+        travels: (from, to) => world.travelsBetween(story, from, to));
     // A way on the party cannot take yet stays a stop, with its reason.
     if (way == null ||
         isStoryChoiceLocked(way, story, session, world: gateWorld)) {

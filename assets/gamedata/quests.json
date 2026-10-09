@@ -576,7 +576,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "kelda",
     "questName_fr": "Kelda tient bon",
-    "npcDialogueText_fr": "« Je m’appelle Kelda. Je tiens cette porte seule depuis que mon unité a cessé d’en être une, et je continuerai à la tenir seule s’il le faut — mais je préférerais ne pas avoir à le faire. » Elle cale son bouclier sans attendre de réponse, ce que je prends, à raison, pour le signe qu’elle a déjà tranché la question de ce partenariat, dans un sens ou dans l’autre."
+    "npcDialogueText_fr": "« Je m’appelle Kelda. Je tiens cette porte seule depuis que mon unité a cessé d’en être une, et je continuerai à la tenir seule s’il le faut — mais je préférerais ne pas avoir à le faire. » Elle cale son bouclier sans attendre de réponse, ce que je prends, à raison, pour le signe qu’elle a déjà tranché la question de ce partenariat, dans un sens ou dans l’autre."
   },
   "q_ch2_sables_wager": {
     "questID": "q_ch2_sables_wager",
@@ -622,7 +622,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "sable",
     "questName_fr": "Le Pari de Sable",
-    "npcDialogueText_fr": "« Je suis douée pour exactement deux choses, dit Sable sans lever les yeux des cartes qui lui restent en travers de la gorge : crocheter les serrures, et choisir la mauvaise table où m’asseoir. Récupérez ma reconnaissance de dette et je suis à vous tant que l’arrangement paiera mieux que l’autre option. » Ce qui est, si je comprends bien, ce qui ressemble le plus à une loyauté qu’elle juge digne d’être promise par écrit."
+    "npcDialogueText_fr": "« Je suis douée pour exactement deux choses, dit Sable sans lever les yeux des cartes qui lui restent en travers de la gorge : crocheter les serrures, et choisir la mauvaise table où m’asseoir. Récupérez ma reconnaissance de dette et je suis à vous tant que l’arrangement paiera mieux que l’autre option. » Ce qui est, si je comprends bien, ce qui ressemble le plus à une loyauté qu’elle juge digne d’être promise par écrit."
   },
   "q_ch3_marens_penance": {
     "questID": "q_ch3_marens_penance",
@@ -667,7 +667,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "maren",
     "questName_fr": "La Pénitence de Sœur Maren",
-    "npcDialogueText_fr": "« J’ai prêté serment de soigner au nom de l’Inquisition, et pendant des années je me suis répété que le nom était la moindre moitié de cette phrase. » Sœur Maren pose un encensoir qui ne sent plus rien de ce en quoi elle croit. « J’ai fini de me chercher des excuses pour ce que j’ai vu cet ordre faire. Laissez-moi soigner selon mes propres termes, ou non, mais je préférerais que ce soit avec vous plutôt que pour eux. »"
+    "npcDialogueText_fr": "« J’ai prêté serment de soigner au nom de l’Inquisition, et pendant des années je me suis répété que le nom était la moindre moitié de cette phrase. » Sœur Maren pose un encensoir qui ne sent plus rien de ce en quoi elle croit. « J’ai fini de me chercher des excuses pour ce que j’ai vu cet ordre faire. Laissez-moi soigner selon mes propres termes, ou non, mais je préférerais que ce soit avec vous plutôt que pour eux. »"
   },
   "q_ch2_informants_tip": {
     "questID": "q_ch2_informants_tip",
@@ -775,7 +775,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Le Péage de Tern Row",
-    "npcDialogueText_fr": "« Il appelle ça un péage de débarquement », dit Nadira, pesant chaque mot avant de le dépenser. « Ce péage n’existe pas. Il n’y a que ce qu’il pense pouvoir nous soutirer par la menace. Faites-lui refaire ses comptes, et Tern Row s’en souviendra. »",
+    "npcDialogueText_fr": "« Il appelle ça un péage de débarquement », dit Nadira, pesant chaque mot avant de le dépenser. « Ce péage n’existe pas. Il n’y a que ce qu’il pense pouvoir nous soutirer par la menace. Faites-lui refaire ses comptes, et Tern Row s’en souviendra. »",
     "turnInChoices": [
       {
         "choiceText": "Pocket the toll he collected",
@@ -839,7 +839,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "liora",
     "questName_fr": "Le Guet de Liora",
-    "npcDialogueText_fr": "« Je surveille ce bout de toits depuis trois jours, dit-elle sans baisser son arc, et vous êtes la première chose à le traverser qui mérite qu’on la vise plutôt qu’on vise à côté. » Le capitaine qui fait partir des bateaux du môle nord vend aux réfugiés des passages qu’il n’a aucune intention d’assurer. « Aidez-moi à solder ce compte, et je trouverai le reste de cette ville un peu moins digne d’être surveillé seule. »",
+    "npcDialogueText_fr": "« Je surveille ce bout de toits depuis trois jours, dit-elle sans baisser son arc, et vous êtes la première chose à le traverser qui mérite qu’on la vise plutôt qu’on vise à côté. » Le capitaine qui fait partir des bateaux du môle nord vend aux réfugiés des passages qu’il n’a aucune intention d’assurer. « Aidez-moi à solder ce compte, et je trouverai le reste de cette ville un peu moins digne d’être surveillé seule. »",
     "turnInChoices": [
       {
         "choiceText": "Keep the captain's purse",
@@ -909,7 +909,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "vess",
     "questName_fr": "Vess dans les ténèbres",
-    "npcDialogueText_fr": "« Elle a posé les yeux sur vous », dit-elle avant que j’aie dit quoi que ce soit, ce qui est soit une excellente intuition, soit le genre de chose qui cesse d’être une intuition quand on a soi-même porté la marque assez longtemps. « Avec moi, elle a pris son temps. Avec vous, elle décide encore de ce qu’elle attend. Je ne sais pas si je peux vous aider pour ça, mais je sais ce qu’il en coûte de l’affronter sans personne, et je préférerais ne pas regarder quelqu’un d’autre le découvrir de la même façon que moi. »"
+    "npcDialogueText_fr": "« Elle a posé les yeux sur vous », dit-elle avant que j’aie dit quoi que ce soit, ce qui est soit une excellente intuition, soit le genre de chose qui cesse d’être une intuition quand on a soi-même porté la marque assez longtemps. « Avec moi, elle a pris son temps. Avec vous, elle décide encore de ce qu’elle attend. Je ne sais pas si je peux vous aider pour ça, mais je sais ce qu’il en coûte de l’affronter sans personne, et je préférerais ne pas regarder quelqu’un d’autre le découvrir de la même façon que moi. »"
   },
   "q_ch3_groshs_price": {
     "questID": "q_ch3_groshs_price",
@@ -954,7 +954,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "grosh",
     "questName_fr": "Le Prix de Grosh",
-    "npcDialogueText_fr": "« Je ne travaille pas gratis, et je ne travaille pas pour des promesses », dit-il en me jaugeant comme un boucher jauge une bête dont il n’a pas encore décidé si elle vaut le couteau. « Vous avez l’air de pouvoir vraiment payer, ce qui vous place déjà devant les quatre derniers qui ont tenté de m’engager cette semaine. Abattez avec moi un des zélotes de la Cour Creuse, et on considérera l’entretien comme terminé. »"
+    "npcDialogueText_fr": "« Je ne travaille pas gratis, et je ne travaille pas pour des promesses », dit-il en me jaugeant comme un boucher jauge une bête dont il n’a pas encore décidé si elle vaut le couteau. « Vous avez l’air de pouvoir vraiment payer, ce qui vous place déjà devant les quatre derniers qui ont tenté de m’engager cette semaine. Abattez avec moi un des zélotes de la Cour Creuse, et on considérera l’entretien comme terminé. »"
   },
   "q_ch3_reckoning_wall": {
     "questID": "q_ch3_reckoning_wall",
@@ -998,7 +998,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Le Mur du Jugement",
-    "npcDialogueText_fr": "« Dans les rapports, ils appellent ça une relocalisation », dit Reya sans lever les yeux du mur. « Moi, j’appelle ça une liste. Il veut que la liste disparaisse avant que quiconque d’officiel ait à expliquer la différence. »",
+    "npcDialogueText_fr": "« Dans les rapports, ils appellent ça une relocalisation », dit Reya sans lever les yeux du mur. « Moi, j’appelle ça une liste. Il veut que la liste disparaisse avant que quiconque d’officiel ait à expliquer la différence. »",
     "turnInChoices": [
       {
         "choiceText": "Guard the wall where it stands",
@@ -1006,7 +1006,7 @@
         "rewardGold": 30,
         "alignmentChange": 8,
         "resultText": "Reya chalks one more line on the wall: the day it was not taken down.",
-        "resultText_fr": "Reya trace une ligne de plus sur le mur : le jour où il n’a pas été abattu."
+        "resultText_fr": "Reya trace une ligne de plus sur le mur : le jour où il n’a pas été abattu."
       },
       {
         "choiceText": "Copy the list for the camp's records",
@@ -1171,7 +1171,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Le Second Registre",
-    "npcDialogueText_fr": "« Il y avait deux registres. Celui que vous portez est la liste des enlevés. L’autre est la liste de ceux qui ont enlevé — et l’Inquisiteur qui le tient attend au bas de l’Escalier Noyé. » L’archiviste essuie l’encre de ses doigts avec l’air d’une femme qui a déjà décidé ce qu’elle est prête à perdre."
+    "npcDialogueText_fr": "« Il y avait deux registres. Celui que vous portez est la liste des enlevés. L’autre est la liste de ceux qui ont enlevé — et l’Inquisiteur qui le tient attend au bas de l’Escalier Noyé. » L’archiviste essuie l’encre de ses doigts avec l’air d’une femme qui a déjà décidé ce qu’elle est prête à perdre."
   },
   "q_ch4_ossuary_bounty": {
     "questID": "q_ch4_ossuary_bounty",
@@ -1216,7 +1216,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "La Prime de l’Ossuaire",
-    "npcDialogueText_fr": "« Elles montent avec l’eau et redescendent avec elle, et entre-temps elles dévorent tout ce que la Cour a laissé derrière elle. » Le sapeur aligne trois pièces sur la corniche. « Trois goules, trois pièces. Je ne suis pas cousu d’or, et elles non plus. »",
+    "npcDialogueText_fr": "« Elles montent avec l’eau et redescendent avec elle, et entre-temps elles dévorent tout ce que la Cour a laissé derrière elle. » Le sapeur aligne trois pièces sur la corniche. « Trois goules, trois pièces. Je ne suis pas cousu d’or, et elles non plus. »",
     "turnInChoices": [
       {
         "choiceText": "Take the sapper's coins",
@@ -1278,7 +1278,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Le Cœur Mort",
-    "npcDialogueText_fr": "« Le registre s’arrête à la déchirure, et quelque chose se tient entre elle et le reste de la ville depuis la nuit où elle s’est ouverte. » La gardienne des cartes tapote la dernière page. « C’était l’un des nôtres, autrefois. Il ne sera pas ravi de voir le livre. »"
+    "npcDialogueText_fr": "« Le registre s’arrête à la déchirure, et quelque chose se tient entre elle et le reste de la ville depuis la nuit où elle s’est ouverte. » La gardienne des cartes tapote la dernière page. « C’était l’un des nôtres, autrefois. Il ne sera pas ravi de voir le livre. »"
   },
   "q_ch5_penitents_confession": {
     "questID": "q_ch5_penitents_confession",
@@ -1322,7 +1322,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "La Confession du pénitent",
-    "npcDialogueText_fr": "« J’ai brûlé le Quartier des Cendres sur un ordre que je n’ai jamais lu. Si vous portez la liste des enlevés, alors vous portez aussi mon nom — et je préfère en répondre devant vous que devant ce qui attend à la déchirure. » Le pénitent pose sa lame entre vous, la garde en avant.",
+    "npcDialogueText_fr": "« J’ai brûlé le Quartier des Cendres sur un ordre que je n’ai jamais lu. Si vous portez la liste des enlevés, alors vous portez aussi mon nom — et je préfère en répondre devant vous que devant ce qui attend à la déchirure. » Le pénitent pose sa lame entre vous, la garde en avant.",
     "turnInChoices": [
       {
         "choiceText": "Grant him absolution",
@@ -1494,7 +1494,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "tobin",
     "questName_fr": "La Veillée de Frère Tobin",
-    "npcDialogueText_fr": "« J’ai chanté onze ans dans le chœur de la Cour, et je suis parti la nuit où l’on a demandé au chœur de chanter sur ce que la Cour avait fait dans le Quartier des Cendres. » Il ne cesse pas de tailler la mèche tandis qu’il parle. « Ces gens n’ont rien d’autre que les chandelles et moi. Les goules remontent de l’inondation pour les chandelles. Abattez-en une à mes côtés et je saurai que vous êtes ce qu’on dit de vous, et je porterai un marteau pour vous tant que vous continuerez à l’être. »"
+    "npcDialogueText_fr": "« J’ai chanté onze ans dans le chœur de la Cour, et je suis parti la nuit où l’on a demandé au chœur de chanter sur ce que la Cour avait fait dans le Quartier des Cendres. » Il ne cesse pas de tailler la mèche tandis qu’il parle. « Ces gens n’ont rien d’autre que les chandelles et moi. Les goules remontent de l’inondation pour les chandelles. Abattez-en une à mes côtés et je saurai que vous êtes ce qu’on dit de vous, et je porterai un marteau pour vous tant que vous continuerez à l’être. »"
   },
   "q_ch5_malriks_cut": {
     "questID": "q_ch5_malriks_cut",
@@ -1539,7 +1539,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "malrik",
     "questName_fr": "La Part de Malrik",
-    "npcDialogueText_fr": "« Je sais ce que vous êtes. Le quartier le sait. C’est pour ça que je vous parle à vous et pas aux saints. » Il fait tourner un reliquaire entre ses mains comme d’autres font tourner une pièce. « Les molosses rôdent autour de la chapelle où se trouve la bonne marchandise. Tuez-en un avec moi et je croirai que vous savez tenir votre part d’un marché, ce qui est plus rare dans cette ville que les reliques. »"
+    "npcDialogueText_fr": "« Je sais ce que vous êtes. Le quartier le sait. C’est pour ça que je vous parle à vous et pas aux saints. » Il fait tourner un reliquaire entre ses mains comme d’autres font tourner une pièce. « Les molosses rôdent autour de la chapelle où se trouve la bonne marchandise. Tuez-en un avec moi et je croirai que vous savez tenir votre part d’un marché, ce qui est plus rare dans cette ville que les reliques. »"
   },
   "q_ch6_the_white_fleet": {
     "questID": "q_ch6_the_white_fleet",
@@ -1642,8 +1642,8 @@
         "resultText_fr": "Dorran compte sur la planche de l’échafaud, gréeur par gréeur, et la dernière pièce est pour vous.",
         "politics": {
           "standing": {
-            "compact": 10,
-            "dominion": -5
+            "compact": 6,
+            "dominion": -3
           },
           "marks": {
             "scaffolders": "friend"
@@ -1740,7 +1740,7 @@
         "politics": {
           "standing": {
             "oni": 10,
-            "penitents": -5
+            "penitents": -3
           }
         }
       },
@@ -1969,7 +1969,7 @@
         "politics": {
           "standing": {
             "vigil": 5,
-            "penitents": 5,
+            "penitents": 8,
             "dominion": -5
           }
         }
@@ -2034,7 +2034,7 @@
         "politics": {
           "standing": {
             "giants": 10,
-            "compact": -5
+            "compact": -3
           }
         }
       },
@@ -2048,7 +2048,7 @@
         "resultText_fr": "Le contremaître paie à la charrette. Ghrem compte les charrettes depuis la porte de la salle du conseil et ne vous dit rien.",
         "politics": {
           "standing": {
-            "compact": 10,
+            "compact": 6,
             "giants": -10
           },
           "marks": {
@@ -2131,7 +2131,7 @@
         "politics": {
           "standing": {
             "crows": 10,
-            "dominion": -5
+            "dominion": -3
           },
           "marks": {
             "brig_born": "friend"
@@ -2167,7 +2167,8 @@
         "politics": {
           "standing": {
             "crows": -5,
-            "dominion": -5
+            "dominion": -5,
+            "tidekin": 3
           }
         }
       }

@@ -508,10 +508,26 @@ class Geography {
   }
 
   /// The biome of the land a road from scene [fromNodeId] to [toNodeId]
-  /// runs through: the zone it leads to, or the one it leaves from.
+  /// runs through. Out of a city or a town (see [GeoPlace.kind]) for
+  /// somewhere else on land, the first leg runs through the city's own
+  /// land, so the road takes the zone it leaves from (v1.209: a road out
+  /// of Alster crosses the Vale, whatever it leads to); a way to a place
+  /// at sea is a crossing, and the water's. Otherwise, the zone it leads
+  /// to, or the one it leaves from.
   Biome? roadBiome(StoryData story, String fromNodeId, String toNodeId) {
-    for (final id in [toNodeId, fromNodeId]) {
-      final biome = biomeOf(placeOfNode(story.nodeFor(id))?.id);
+    final from = placeOfNode(story.nodeFor(fromNodeId));
+    final to = placeOfNode(story.nodeFor(toNodeId));
+    final departure = locationOf(from?.id);
+    final arrival = locationOf(to?.id);
+    if (departure != null &&
+        (departure.kind == 'city' || departure.kind == 'town') &&
+        arrival?.id != departure.id &&
+        arrival?.kind != 'sea') {
+      final biome = biomeOf(from!.id);
+      if (biome != null) return biome;
+    }
+    for (final place in [to, from]) {
+      final biome = biomeOf(place?.id);
       if (biome != null) return biome;
     }
     return null;

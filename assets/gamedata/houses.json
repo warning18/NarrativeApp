@@ -44,7 +44,7 @@
       "cinder_row_cleared"
     ],
     "houseName_fr": "L’Académie",
-    "description_fr": "Un cabinet d’étude bâti dans un seul but : offrir un vrai débouché à ce qu’il reste de votre éducation arcanique. Les bâtons qu’on peut désormais y commander ne sont pas faits pour qu’on flâne devant — ils attendent un esprit qui a déjà fait le travail."
+    "description_fr": "Un cabinet d’étude bâti dans un seul but : offrir un vrai débouché à ce qu’il reste de votre éducation arcanique. Les bâtons qu’on peut désormais y commander ne sont pas faits pour qu’on flâne devant — ils attendent un esprit qui a déjà fait le travail."
   },
   "sharpweave_den": {
     "houseID": "sharpweave_den",
@@ -68,7 +68,7 @@
     "unlocksShopId": "smugglers_vault",
     "requiredFlags": [],
     "houseName_fr": "La Cave des contrebandiers",
-    "description_fr": "Le Coffre des Contrebandiers va partout où vont les navires de ravitaillement de la Croisade, et il a trouvé notre crique avant l'Inquisition. Donnez-lui une cave au sec sous le mur encore debout du camp, et il y ouvre son comptoir : de l'acier de contrebande d'une autre trempe que celui des forges du port, et une relique ou deux que personne n'avoue posséder."
+    "description_fr": "Le Coffre des Contrebandiers va partout où vont les navires de ravitaillement de la Croisade, et il a trouvé notre crique avant l'Inquisition. Donnez-lui une cave au sec sous le mur encore debout du camp, et il y ouvre son comptoir : de l'acier de contrebande d'une autre trempe que celui des forges du port, et une relique ou deux que personne n'avoue posséder."
   },
   "hearth_hall": {
     "houseID": "hearth_hall",
@@ -94,7 +94,7 @@
       "ossuary_galleries_cleared"
     ],
     "houseName_fr": "Le Grenier aux bannières",
-    "description_fr": "Un grenier où l’on coud et peint les bannières du camp, et où le sigil de chaque compagnon est travaillé dans la toile sous laquelle combat le groupe. Ici, le pouvoir se porte, il ne se tient pas : tout le groupe en frappe plus fort."
+    "description_fr": "Un grenier où l’on coud et peint les bannières du camp, et où le sigil de chaque compagnon est travaillé dans la toile sous laquelle combat le groupe. Ici, le pouvoir se porte, il ne se tient pas : tout le groupe en frappe plus fort."
   },
   "shroud_shrine": {
     "houseID": "shroud_shrine",
@@ -118,6 +118,6 @@
     "partyCapacityBonus": 0,
     "requiredFlags": [],
     "houseName_fr": "Le Port",
-    "description_fr": "Un quai de pierre lancé depuis le mur encore debout de la crique, une cale de halage au-dessus de la ligne de marée et un charpentier de marine qui est resté. Une fois bâti, c’est ici que le Rusty Eel est radoubé : des pièces montées dans ses emplacements, sa coque remise en état entre deux traversées."
+    "description_fr": "Un quai de pierre lancé depuis le mur encore debout de la crique, une cale de halage au-dessus de la ligne de marée et un charpentier de marine qui est resté. Une fois bâti, c’est ici que le Rusty Eel est radoubé : des pièces montées dans ses emplacements, sa coque remise en état entre deux traversées."
   }
 }

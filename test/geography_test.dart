@@ -436,14 +436,28 @@ void main() {
       expect(geo.travelsBetween(story, '0', '260'), isTrue);
     });
 
-    test('a road runs through the land it leads to, else the one it leaves',
-        () {
+    test(
+        'a road runs through the land it leads to, else the one it leaves; '
+        'out of a city, through the city\'s own land (v1.209)', () {
       final geo = fixture();
       final story = storyFixture();
-      expect(geo.roadBiome(story, 'n_alley', 'w1')!.id, 'desert');
+      // Out of Alster (a city in the Vale) for the Wells: the Vale's
+      // land, not the Dunes the road leads to.
+      expect(geo.roadBiome(story, 'n_alley', 'w1')!.id, 'temperate');
+      expect(geo.roadBiome(story, '260', 'w1')!.id, 'temperate');
+      // From the Wells (a village): the land the road leads to.
       expect(geo.roadBiome(story, 'w1', 'n_alley')!.id, 'temperate');
+      expect(geo.roadBiome(story, 'w1', 'at_sea')!.id, 'sea');
+      // ...or the one it leaves when the way ahead is on no land.
       expect(geo.roadBiome(story, 'w1', 'lost')!.id, 'desert');
+      expect(geo.roadBiome(story, 'n_alley', 'lost')!.id, 'temperate');
+      // A walk between two districts of the city stays in its land.
+      expect(geo.roadBiome(story, 'n_alley', '260')!.id, 'temperate');
+      // Out of the city onto the water: a crossing, the sea's.
+      expect(geo.roadBiome(story, 'n_alley', 'at_sea')!.id, 'sea');
       expect(geo.roadBiome(story, '0', 'lost'), isNull);
+      // Nowhere to the Wells: the Dunes.
+      expect(geo.roadBiome(story, '0', 'w1')!.id, 'desert');
     });
   });
 

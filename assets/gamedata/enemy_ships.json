@@ -4,7 +4,7 @@
     "displayName": "Raider Skiff",
     "displayName_fr": "Esquif de pillards",
     "description": "An open boat with a bow chaser and a grapnel, a gunwale for a bulwark, and oars enough to slip a shot. It cannot take a beating; it means not to be hit. When she is hurt she runs for open water; close in before she is gone.",
-    "description_fr": "Une barque ouverte avec un canon de chasse et un grappin, un plat-bord pour tout pavois, et assez de rames pour esquiver un tir. Elle n'encaisse pas ; elle compte ne pas être touchée. Blessée, elle file vers le large ; rapprochez-vous avant qu'elle ne disparaisse.",
+    "description_fr": "Une barque ouverte avec un canon de chasse et un grappin, un plat-bord pour tout pavois, et assez de rames pour esquiver un tir. Elle n'encaisse pas ; elle compte ne pas être touchée. Blessée, elle file vers le large ; rapprochez-vous avant qu'elle ne disparaisse.",
     "maxHull": 60,
     "rooms": {
       "helm": 2,
@@ -54,7 +54,7 @@
     "displayName": "Corsair Brig",
     "displayName_fr": "Brick corsaire",
     "description": "Fast, well helmed and thinly built: twin ballistae that fire every turn, a helm that slips a quarter of what comes at it, and a bulwark that will not hold. Silence the helm and she is a target. She keeps her distance and shoots at the crew where they stand.",
-    "description_fr": "Rapide, bien barré et construit léger : deux balistes qui tirent à chaque tour, une barre qui esquive un quart de ce qui lui arrive, et un pavois qui ne tiendra pas. Faites taire la barre et il devient une cible. Il garde ses distances et tire sur l'équipage à son poste.",
+    "description_fr": "Rapide, bien barré et construit léger : deux balistes qui tirent à chaque tour, une barre qui esquive un quart de ce qui lui arrive, et un pavois qui ne tiendra pas. Faites taire la barre et il devient une cible. Il garde ses distances et tire sur l'équipage à son poste.",
     "maxHull": 80,
     "rooms": {
       "helm": 3,
@@ -102,7 +102,7 @@
     "displayName": "Inquisition Cutter",
     "displayName_fr": "Cotre de l'Inquisition",
     "description": "A cutter of the Crusade: a bulwark that holds a layer, a ballista, and fire arrows that go for the hold where the crew shelters. Keep someone near the fire. Her iron prow is made to ram: keep her off your side.",
-    "description_fr": "Un cotre de la Croisade : un pavois qui tient une couche, une baliste, et des flèches enflammées qui visent la cale où l'équipage s'abrite. Gardez quelqu'un près du feu. Sa proue de fer est faite pour éperonner : tenez-la à distance.",
+    "description_fr": "Un cotre de la Croisade : un pavois qui tient une couche, une baliste, et des flèches enflammées qui visent la cale où l'équipage s'abrite. Gardez quelqu'un près du feu. Sa proue de fer est faite pour éperonner : tenez-la à distance.",
     "maxHull": 95,
     "rooms": {
       "helm": 2,
@@ -150,7 +150,7 @@
     "displayName": "Void Barge",
     "displayName_fr": "Barge du Vide",
     "description": "Slow, armored and hungry: two shield layers, three guns, and a void lance that ignores a bulwark altogether. Break its guns before its lance is charged, or lose the race. She comes alongside to board, again and again, shields or not.",
-    "description_fr": "Lente, blindée et vorace : deux couches de bouclier, trois canons, et une lance du Néant qui ignore tout pavois. Brisez ses canons avant que la lance ne soit chargée, ou perdez la course. Elle vient bord à bord pour aborder, encore et encore, boucliers ou non.",
+    "description_fr": "Lente, blindée et vorace : deux couches de bouclier, trois canons, et une lance du Néant qui ignore tout pavois. Brisez ses canons avant que la lance ne soit chargée, ou perdez la course. Elle vient bord à bord pour aborder, encore et encore, boucliers ou non.",
     "maxHull": 150,
     "rooms": {
       "helm": 1,
@@ -211,7 +211,7 @@
     "displayName": "The Brinejaw",
     "displayName_fr": "Vieille Mâchoire",
     "description": "A shark the length of a longship, grey as old rope and scarred white where harpoons have failed. It rams first and bites after, and it heals as it swims. Hurt it badly and it runs for deep water; a harpoon line or torn fins keep it from going.",
-    "description_fr": "Un requin long comme un drakkar, gris comme une vieille corde et zébré de blanc là où des harpons ont échoué. Il charge d'abord et mord ensuite, et il guérit en nageant. Blessé gravement, il file vers les grands fonds ; une ligne de harpon ou des nageoires déchirées l'en empêchent.",
+    "description_fr": "Un requin long comme un drakkar, gris comme une vieille corde et zébré de blanc là où des harpons ont échoué. Il charge d'abord et mord ensuite, et il guérit en nageant. Blessé gravement, il file vers les grands fonds ; une ligne de harpon ou des nageoires déchirées l'en empêchent.",
     "maxHull": 220,
     "rooms": {
       "helm": 2,
@@ -264,11 +264,11 @@
       "fleeShare": 0.5,
       "trophyPartId": "sharkskin_hull",
       "omen": "The fish have gone. Not scattered: gone, as if the sea had been swept clean.",
-      "omen_fr": "Les poissons ont disparu. Pas dispersés : disparus, comme si l'on avait balayé la mer.",
+      "omen_fr": "Les poissons ont disparu. Pas dispersés : disparus, comme si l'on avait balayé la mer.",
       "sighting": "A fin cuts the swell off the bow, taller than a man, and turns toward the Eel without hurry.",
       "sighting_fr": "Un aileron fend la houle devant la proue, plus haut qu'un homme, et vire vers l'Eel sans se presser.",
       "hunt": "Three signs led here: the torn nets, the wreck with a bite taken out of her, the blood off the point. The harpoons are laid out on deck when the fin comes.",
-      "hunt_fr": "Trois signes mènent ici : les filets déchirés, l'épave à laquelle il manque une bouchée, le sang au large de la pointe. Les harpons sont alignés sur le pont quand l'aileron paraît."
+      "hunt_fr": "Trois signes mènent ici : les filets déchirés, l'épave à laquelle il manque une bouchée, le sang au large de la pointe. Les harpons sont alignés sur le pont quand l'aileron paraît."
     }
   },
   "pale_leviathan": {
@@ -276,7 +276,7 @@
     "displayName": "The Pale Leviathan",
     "displayName_fr": "Le Léviathan pâle",
     "description": "A serpent-whale as long as a wharf, white as a drowned thing and older than the charts. Every third round it sounds and comes up under the keel; it closes its wounds while its heart beats. A harpoon line keeps it from the deep.",
-    "description_fr": "Un serpent-baleine long comme un quai, blanc comme un noyé et plus vieux que les cartes. Toutes les trois passes, il sonde et remonte sous la quille ; il referme ses plaies tant que son cœur bat. Une ligne de harpon le tient loin des fonds.",
+    "description_fr": "Un serpent-baleine long comme un quai, blanc comme un noyé et plus vieux que les cartes. Toutes les trois passes, il sonde et remonte sous la quille ; il referme ses plaies tant que son cœur bat. Une ligne de harpon le tient loin des fonds.",
     "maxHull": 240,
     "rooms": {
       "helm": 2,
@@ -332,7 +332,7 @@
       "sighting": "The sea rises in a long white back that does not end, and an eye the size of a cartwheel opens beside the rail.",
       "sighting_fr": "La mer se soulève en un long dos blanc qui n'en finit pas, et un œil grand comme une roue de charrette s'ouvre près du bastingage.",
       "hunt": "The signs agree: the pale water, the stranded whale bitten in two, the old fisher's chart. The Eel waits over the trench with the lines coiled, and it comes up to meet her.",
-      "hunt_fr": "Les signes concordent : l'eau pâle, la baleine échouée coupée en deux, la carte du vieux pêcheur. L'Eel attend au-dessus de la fosse, les lignes lovées, et il monte à sa rencontre."
+      "hunt_fr": "Les signes concordent : l'eau pâle, la baleine échouée coupée en deux, la carte du vieux pêcheur. L'Eel attend au-dessus de la fosse, les lignes lovées, et il monte à sa rencontre."
     }
   },
   "tide_kraken": {
@@ -340,7 +340,7 @@
     "displayName": "The Tide-Mother",
     "displayName_fr": "La Mère-des-Marées",
     "description": "The thing the drowned pray to: a kraken the size of an island, with arms enough to take a ship apart plank by plank and to send over the rail. Every fourth round it dives to drag at the keel, and it grows back what is cut from it. Hold it on the line or tear its fins, or it goes down to heal.",
-    "description_fr": "Ce que prient les noyés : un kraken grand comme une île, avec assez de bras pour démonter un navire planche par planche et pour en envoyer par-dessus le bastingage. Toutes les quatre passes, il plonge tirer sur la quille, et il fait repousser ce qu'on lui tranche. Retenez-le à la ligne ou déchirez ses nageoires, ou il redescend guérir.",
+    "description_fr": "Ce que prient les noyés : un kraken grand comme une île, avec assez de bras pour démonter un navire planche par planche et pour en envoyer par-dessus le bastingage. Toutes les quatre passes, il plonge tirer sur la quille, et il fait repousser ce qu'on lui tranche. Retenez-le à la ligne ou déchirez ses nageoires, ou il redescend guérir.",
     "maxHull": 210,
     "rooms": {
       "helm": 1,
@@ -415,7 +415,7 @@
       "sighting": "The sea around the Eel goes still and dark, and the first arm comes over the rail before anyone sees the rest.",
       "sighting_fr": "La mer autour de l'Eel devient immobile et sombre, et le premier bras passe le bastingage avant que quiconque ait vu le reste.",
       "hunt": "The signs lead to the Weeping Deep: the dragged hulls, the ink on the tide, the song the fishers will not sing. The Eel drops anchor over it and the crew beats on the hull until it rises.",
-      "hunt_fr": "Les signes mènent à la Fosse qui Pleure : les coques traînées, l'encre sur la marée, le chant que les pêcheurs refusent de chanter. L'Eel jette l'ancre au-dessus et l'équipage frappe la coque jusqu'à ce qu'il remonte."
+      "hunt_fr": "Les signes mènent à la Fosse qui Pleure : les coques traînées, l'encre sur la marée, le chant que les pêcheurs refusent de chanter. L'Eel jette l'ancre au-dessus et l'équipage frappe la coque jusqu'à ce qu'il remonte."
     }
   }
 }

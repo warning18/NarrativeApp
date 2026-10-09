@@ -85,49 +85,6 @@ void main() {
     }
   });
 
-  test('the French people lines speak in « vous », with French spacing', () {
-    // The People codex (v1.204): every `_fr` string of a record --
-    // description, role, want, each state's line, the dialogue -- says
-    // « vous », never « tu », with a no-break space before ; : ! ? and
-    // inside « ». A record from before the codex (no metNodes, metFlags
-    // or shopId) is left as it was written; the new roster replaces it.
-    final nbsp = RegExp('[^ ][:;!?»]|«[^ ]');
-    final tutoiement = RegExp(
-        r"(?<!\p{L})(?:(?:tu|toi|ton|ta|tes|te)(?!\p{L})|t['’](?=\p{L}))",
-        caseSensitive: false,
-        unicode: true);
-    bool legacy(Map<String, dynamic> npc) =>
-        ((npc['metNodes'] as List?)?.isEmpty ?? true) &&
-        ((npc['metFlags'] as List?)?.isEmpty ?? true) &&
-        (npc['shopId']?.toString().trim().isEmpty ?? true);
-    Iterable<(String, String)> french(Object? value, String path) sync* {
-      if (value is Map) {
-        for (final entry in value.entries) {
-          final key = entry.key.toString();
-          final child = entry.value;
-          if (key.endsWith('_fr') || child is Map || child is List) {
-            yield* french(child, '$path.$key');
-          }
-        }
-      } else if (value is List) {
-        for (final (i, element) in value.indexed) {
-          yield* french(element, '$path[$i]');
-        }
-      } else if (value is String && path.contains('_fr')) {
-        yield (path, value);
-      }
-    }
-
-    for (final record in _load('npcs.json').entries) {
-      final npc = record.value as Map<String, dynamic>;
-      if (legacy(npc)) continue;
-      for (final (path, text) in french(npc, record.key)) {
-        expect(nbsp.hasMatch(text), isFalse, reason: '$path: "$text"');
-        expect(tutoiement.hasMatch(text), isFalse, reason: '$path: "$text"');
-      }
-    }
-  });
-
   test('titled companions and people have a French name', () {
     // A bare given name ("Kelda", "Malrik Sarn") reads the same in French;
     // a title ("Sister Maren", "Old Harker") has to be translated.

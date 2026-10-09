@@ -14,7 +14,7 @@
     "roomDamage": 1,
     "roomBonus": {},
     "description": "A deck ballista that looses every turn: the reliable shot that breaks a bulwark's layers so the heavier guns can land.",
-    "description_fr": "Une baliste de pont qui décoche à chaque tour : le tir fiable qui brise les couches d'un pavois pour que les armes lourdes portent.",
+    "description_fr": "Une baliste de pont qui décoche à chaque tour : le tir fiable qui brise les couches d'un pavois pour que les armes lourdes portent.",
     "ammo": "round"
   },
   "harpoon_rack": {
@@ -55,7 +55,7 @@
     "roomDamage": 1,
     "roomBonus": {},
     "description": "Clay pots of pitch, four turns to ready (three with a gunner), hurled by hand: the ships must lie close. The room they land in burns until someone fights the fire, and the hull with it. A sea beast doesn't burn: the sea puts the fire out.",
-    "description_fr": "Des pots d'argile pleins de poix, quatre tours à préparer (trois avec un canonnier), lancés à la main : les navires doivent être bord à bord. La salle qu'ils touchent brûle jusqu'à ce qu'on combatte le feu, et la coque avec. Une bête marine ne brûle pas : la mer éteint le feu.",
+    "description_fr": "Des pots d'argile pleins de poix, quatre tours à préparer (trois avec un canonnier), lancés à la main : les navires doivent être bord à bord. La salle qu'ils touchent brûle jusqu'à ce qu'on combatte le feu, et la coque avec. Une bête marine ne brûle pas : la mer éteint le feu.",
     "ranges": [
       "close"
     ],
@@ -77,7 +77,7 @@
     "roomBonus": {},
     "ammo": "chain",
     "description": "A swivel gun loaded with two balls on a chain, two turns to load. The chain does half the hull a ball would, but whatever it hits it also tears a pip off the helm, so a fleeing ship slows. A sea beast has no rigging for it to tear. Close and medium range.",
-    "description_fr": "Un pierrier chargé de deux boulets enchaînés, deux tours à charger. La chaîne fait moitié moins de dégâts à la coque qu'un boulet, mais où qu'elle frappe elle arrache aussi un cran à la barre : un navire qui fuit ralentit. Une bête marine n'a pas de gréement à arracher. Courte et moyenne portée.",
+    "description_fr": "Un pierrier chargé de deux boulets enchaînés, deux tours à charger. La chaîne fait moitié moins de dégâts à la coque qu'un boulet, mais où qu'elle frappe elle arrache aussi un cran à la barre : un navire qui fuit ralentit. Une bête marine n'a pas de gréement à arracher. Courte et moyenne portée.",
     "ranges": [
       "close",
       "medium"
@@ -99,7 +99,7 @@
     "roomBonus": {},
     "ammo": "grape",
     "description": "A swivel gun loaded with a bag of musket balls, two turns to load. Grape does half the hull a ball would, but it sweeps the deck: for two rounds the enemy's crew mend one pip less. A sea beast has no deck to sweep. Close and medium range.",
-    "description_fr": "Un pierrier chargé d'un sac de balles, deux tours à charger. La mitraille fait moitié moins de dégâts à la coque qu'un boulet, mais elle balaie le pont : pendant deux rounds, l'équipage ennemi répare un cran de moins. Une bête marine n'a pas de pont à balayer. Courte et moyenne portée.",
+    "description_fr": "Un pierrier chargé d'un sac de balles, deux tours à charger. La mitraille fait moitié moins de dégâts à la coque qu'un boulet, mais elle balaie le pont : pendant deux rounds, l'équipage ennemi répare un cran de moins. Une bête marine n'a pas de pont à balayer. Courte et moyenne portée.",
     "ranges": [
       "close",
       "medium"
@@ -121,7 +121,7 @@
     "roomBonus": {},
     "ammo": "heated",
     "description": "A short, heavy gun with a brazier beside it for heating its balls red, three turns to load. A red-hot ball does three quarters of the hull a cold one would, but it sets the room it lands in burning. A sea beast doesn't burn: the sea puts the fire out. Close and medium range.",
-    "description_fr": "Un canon court et lourd, avec un brasero à côté pour chauffer ses boulets au rouge, trois tours à charger. Un boulet rouge fait les trois quarts des dégâts à la coque d'un boulet froid, mais il met le feu à la salle qu'il touche. Une bête marine ne brûle pas : la mer éteint le feu. Courte et moyenne portée.",
+    "description_fr": "Un canon court et lourd, avec un brasero à côté pour chauffer ses boulets au rouge, trois tours à charger. Un boulet rouge fait les trois quarts des dégâts à la coque d'un boulet froid, mais il met le feu à la salle qu'il touche. Une bête marine ne brûle pas : la mer éteint le feu. Courte et moyenne portée.",
     "ranges": [
       "close",
       "medium"
@@ -144,7 +144,7 @@
       "bulwark": 1
     },
     "description": "Iron over the bulwark: one more pip on the room, so one more shield layer can be held.",
-    "description_fr": "Du fer sur le pavois : un cran de plus pour la salle, donc une couche de bouclier de plus à tenir."
+    "description_fr": "Du fer sur le pavois : un cran de plus pour la salle, donc une couche de bouclier de plus à tenir."
   },
   "tar_sealed_hull": {
     "partID": "tar_sealed_hull",
@@ -163,7 +163,7 @@
       "hold": 1
     },
     "description": "A hold sealed with tar: one more pip on the room, so a hand there patches the hull faster.",
-    "description_fr": "Une cale calfatée au goudron : un cran de plus pour la salle, donc une main y colmate la coque plus vite."
+    "description_fr": "Une cale calfatée au goudron : un cran de plus pour la salle, donc une main y colmate la coque plus vite."
   },
   "spare_canvas": {
     "partID": "spare_canvas",
@@ -182,7 +182,7 @@
       "helm": 1
     },
     "description": "Spare canvas bent to the yards: one more pip on the helm, so the Eel answers faster and slips more shots.",
-    "description_fr": "De la toile de rechange enverguée : un cran de plus pour la barre, donc l'Eel répond plus vite et esquive davantage."
+    "description_fr": "De la toile de rechange enverguée : un cran de plus pour la barre, donc l'Eel répond plus vite et esquive davantage."
   },
   "speaking_tube": {
     "partID": "speaking_tube",
@@ -200,7 +200,7 @@
     "roomBonus": {},
     "turnSecondsBonus": 8,
     "description": "A brass pipe run from the helm to every deck: orders reach the guns and the hold before the smoke does. In a timed battle a turn lasts 8 seconds longer; with the clock off it does nothing.",
-    "description_fr": "Un tuyau de laiton qui court de la barre à chaque pont : les ordres arrivent aux pièces et à la cale avant la fumée. Dans une bataille chronométrée, un tour dure 8 secondes de plus ; sans chronomètre, il ne sert à rien."
+    "description_fr": "Un tuyau de laiton qui court de la barre à chaque pont : les ordres arrivent aux pièces et à la cale avant la fumée. Dans une bataille chronométrée, un tour dure 8 secondes de plus ; sans chronomètre, il ne sert à rien."
   },
   "sail_gulls_wing": {
     "partID": "sail_gulls_wing",
@@ -214,7 +214,7 @@
     "sailPower": "flight",
     "sailMedium": "elf",
     "description": "An elven sigil painted across the canvas in the old forests' white, renewed by hand before every crossing. Under it the Eel lifts: storms pass beneath her keel and raiders never close.",
-    "description_fr": "Un sigil elfique peint sur la toile dans le blanc des vieilles forêts, refait à la main avant chaque traversée. Sous lui, l'Eel s'élève : les tempêtes passent sous sa quille et les pillards ne l'approchent jamais.",
+    "description_fr": "Un sigil elfique peint sur la toile dans le blanc des vieilles forêts, refait à la main avant chaque traversée. Sous lui, l'Eel s'élève : les tempêtes passent sous sa quille et les pillards ne l'approchent jamais.",
     "chargeTurns": 0,
     "piercesShield": false,
     "setsFire": false,
@@ -290,7 +290,7 @@
     "sailPower": "voidmark",
     "sailMedium": "voidkin",
     "description": "A mark nobody painted, taken from the tear and set in the canvas by a hand that already carried one. The sail answers the Void: a volley of it in battle, and storms that no longer bite.",
-    "description_fr": "Une marque que personne n'a peinte, prise à la déchirure et posée dans la toile par une main qui en portait déjà une. La voile répond au Néant : une bordée de Néant au combat, et des tempêtes qui ne mordent plus.",
+    "description_fr": "Une marque que personne n'a peinte, prise à la déchirure et posée dans la toile par une main qui en portait déjà une. La voile répond au Néant : une bordée de Néant au combat, et des tempêtes qui ne mordent plus.",
     "chargeTurns": 4,
     "piercesShield": true,
     "setsFire": false,
@@ -312,7 +312,7 @@
     "roomDamage": 1,
     "roomBonus": {},
     "description": "A whaler's harpoon gun on a swivel, its line paid out from a drum below. Light work against a ship, but it goes through any bulwark, and a sea beast it bites stays on the line for two rounds: no diving, no fleeing, no healing. Its line reaches no farther than medium range.",
-    "description_fr": "Un canon à harpon de baleinier sur pivot, sa ligne déroulée d'un tambour en dessous. Peu de chose contre un navire, mais il traverse tout pavois, et une bête marine qu'il mord reste à la ligne deux passes : ni plongée, ni fuite, ni guérison. Sa ligne ne porte pas au-delà de la moyenne portée.",
+    "description_fr": "Un canon à harpon de baleinier sur pivot, sa ligne déroulée d'un tambour en dessous. Peu de chose contre un navire, mais il traverse tout pavois, et une bête marine qu'il mord reste à la ligne deux passes : ni plongée, ni fuite, ni guérison. Sa ligne ne porte pas au-delà de la moyenne portée.",
     "tetherRounds": 2,
     "beastGear": true,
     "ranges": [
@@ -358,7 +358,7 @@
       "bulwark": 2
     },
     "description": "Plates cut from the Pale Leviathan's ribs, bolted over the bulwark. Lighter than iron and harder: two more pips on the room, two more shield layers to hold.",
-    "description_fr": "Des plaques taillées dans les côtes du Léviathan pâle, boulonnées sur le pavois. Plus légères que le fer et plus dures : deux crans de plus pour la salle, deux couches de bouclier de plus à tenir.",
+    "description_fr": "Des plaques taillées dans les côtes du Léviathan pâle, boulonnées sur le pavois. Plus légères que le fer et plus dures : deux crans de plus pour la salle, deux couches de bouclier de plus à tenir.",
     "trophyOf": "pale_leviathan"
   },
   "tide_mothers_beak": {
