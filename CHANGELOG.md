@@ -10,23 +10,29 @@ isn't reconstructable from git history alone.
 
 ## [1.213.0+248]
 
+### Fixed
+- The map no longer moves when a way is picked. The panel under the Journey map keeps one height whether or not a way or a place is chosen, so the map keeps its size and every mark stays where it was.
+- The sky holds still. The game plays turn by turn, so the clouds, fogs and rain no longer drift while the map is watched, and zooming or pinching shows the same clouds at every distance. The sky is the day's, and a new day brings a new one. The weather chip no longer changes on its own either.
+
 ### Added
 - The sea beasts are drawn again, from above, in the sea fight. Old Brinejaw is a scarred grey shark, the Pale Leviathan a long pale serpent-whale with a ridged back and great eyes, and the Tide-Mother a kraken with a mantle, tail fins and eight arms that sway on the tide. Their rooms lie along the body, fins at the tail, then the hide, the heart and the jaws at the head. A beast below half its hull shows gashes, and a room knocked out darkens its part of the body. They no longer borrow a ship's look.
 - The Tide-Mother's arm has its own icon again for the fight on the dice.
+- Seven new kinds of building for the inside view, each with its own plan: casino (a wheel ringed with card tables, a cashier, private rooms, a vault), barracks (guardroom, bunks round a mess table, armoury, officers), library (stacks, reading tables, archive, scriptorium), prison (guardroom and two rows of barred cells), forge (forge, anvil, quench trough, store), theatre (foyer, benches, pit rail, stage, dressing and props rooms) and baths (changing hall, great pool, hot and cold rooms).
+- Variants by seed: a temple may be a nave and choir, a cross or a round shrine, and an inn may front the street or stand round a yard.
+- A building's name can say what it is: a name with "casino", "barracks", "caserne", "chapel", "gaol", "smithy" and the like (English or French) is laid as that kind, whatever kind the geography gives.
 
 ### Changed
 - The quest on the Journey is a small round button beside Read, with its icon, a tick when the goal is met and a dot when it moves on, instead of a full bar above the map. Its name and goal are on its tooltip, and a tap opens the quest, where it can be turned in. The map gains the height the bar took.
 
 ## [1.212.0+247]
 
-### Fixed
-- The map no longer moves when a way is picked. The panel under the Journey map keeps one height whether or not a way or a place is chosen, so the map keeps its size and every mark stays where it was.
-- The sky holds still. The game plays turn by turn, so the clouds, fogs and rain no longer drift while the map is watched, and zooming or pinching shows the same clouds at every distance. The sky is the day's, and a new day brings a new one. The weather chip no longer changes on its own either.
-
 ### Added
-- Seven new kinds of building for the inside view, each with its own plan: casino (a wheel ringed with card tables, a cashier, private rooms, a vault), barracks (guardroom, bunks round a mess table, armoury, officers), library (stacks, reading tables, archive, scriptorium), prison (guardroom and two rows of barred cells), forge (forge, anvil, quench trough, store), theatre (foyer, benches, pit rail, stage, dressing and props rooms) and baths (changing hall, great pool, hot and cold rooms).
-- Variants by seed: a temple may be a nave and choir, a cross or a round shrine, and an inn may front the street or stand round a yard.
-- A building's name can say what it is: a name with "casino", "barracks", "caserne", "chapel", "gaol", "smithy" and the like (English or French) is laid as that kind, whatever kind the geography gives.
+- Fights that ask for more than the slaughter. About one fight in four now has a goal, announced on the setup screen before the first die: **Hold the line** (a pack presses you; survive its turns, three against a pair and four against more, and you win whoever still stands, for a third more gold and XP), **Rout** (a pack's sturdiest member is its captain, marked on its card; bring it down and the rest flee, as a Skittish enemy does) and **Subdue** (one fighter who is a person, not a beast: bring them under thirty percent of their health and they yield and pay a ransom of half again their gold, but drop no loot; kill them outright and you get the usual spoils). Bosses, uniques, hunts, ambushes, lessons and story fights with a defeat branch never roll a goal. A battle chip shows the goal, and a hold counts its turns.
+- Faction doctrine. Each faction's fighters now fight by their own habits, announced beside the goal. The Dominion's **Writ**: every third round your skill faces fall silent, and its soldiers favour heavy armour. The Salt Crows' **Short Con**: each hit they land lifts gold, carried by the thief shown on its card; whatever a Crow still carries when the fight ends is missing from the spoils, so kill the thief to get it back, and they would rather run than die. The Ashen Penitents turn frenzied as they bleed, the Choir and the giants wear armour, the Pit's things poison, the Tide-Kin give ground. Twenty-six enemies now carry a faction in enemies.json. A fight against a boss or a unique is never under a doctrine.
+
+### Internal
+- `lib/combat/fight_goal.dart` and `lib/combat/doctrine.dart` hold the pure rules; the fight screen gains a `fight_goals.dart` part. An encounter can carry a `forcedGoal` for a hand-made fight; the story files do not use it yet. The fight tests that rely on the plain slaughter pin it.
+- The in-app playthrough simulator and the Python simulator do not model goals or doctrines yet.
 
 ## [1.211.0+246]
 

@@ -507,6 +507,7 @@ extension _FightCards on _FightScreenState {
                         '${tr(ref, 'rallied_label')} ×${enemy.rallyStacks}',
                         Colors.red.shade700),
                   ..._elementChips(enemy),
+                  ..._goalMarks(enemy),
                 ],
               ),
               if (enemy.affixes.isNotEmpty) ...[

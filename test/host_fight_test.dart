@@ -12,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/combat/battlefield_condition.dart';
+import 'package:narrative_data_app/combat/fight_goal.dart';
 import 'package:narrative_data_app/combat/encounter.dart';
 import 'package:narrative_data_app/data/factions.dart';
 import 'package:narrative_data_app/main.dart';
@@ -91,7 +92,8 @@ void main() {
               enemy: dummy,
               modifiers: const EncounterModifiers(
                   hostFight: true,
-                  forcedCondition: BattlefieldCondition.highGround),
+                  forcedCondition: BattlefieldCondition.highGround,
+                  forcedGoal: FightGoal.slay),
             )));
     await _settle(tester);
     expect(find.byKey(const Key('fight_host_note')), findsOneWidget);
@@ -117,7 +119,8 @@ void main() {
               enemyId: 'slum_thug',
               enemy: dummy,
               modifiers: const EncounterModifiers(
-                  forcedCondition: BattlefieldCondition.highGround),
+                  forcedCondition: BattlefieldCondition.highGround,
+                  forcedGoal: FightGoal.slay),
             )));
     await _settle(tester);
     expect(find.byKey(const Key('fight_host_note')), findsNothing);
