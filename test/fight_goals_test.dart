@@ -113,12 +113,12 @@ void main() {
           FightGoal.slay);
     });
 
-    test('a hold lasts three turns against a pair, four against more', () {
-      expect(holdRoundsFor(2), 3);
-      expect(holdRoundsFor(3), 4);
+    test('a hold lasts four turns against a pair, five against more', () {
+      expect(holdRoundsFor(2), 4);
+      expect(holdRoundsFor(3), 5);
       final goal = FightGoal(FightGoalKind.hold, rounds: holdRoundsFor(2));
-      expect(holdComplete(goal, 2), isFalse);
-      expect(holdComplete(goal, 3), isTrue);
+      expect(holdComplete(goal, 3), isFalse);
+      expect(holdComplete(goal, 4), isTrue);
       expect(holdComplete(FightGoal.slay, 99), isFalse);
     });
 
@@ -140,7 +140,7 @@ void main() {
           fightGoalFromName('subdue'), const FightGoal(FightGoalKind.subdue));
       expect(fightGoalFromName('hold:5'),
           const FightGoal(FightGoalKind.hold, rounds: 5));
-      expect(fightGoalFromName('hold', enemyCount: 3)!.rounds, 4);
+      expect(fightGoalFromName('hold', enemyCount: 3)!.rounds, 5);
       expect(fightGoalFromName('nonsense'), isNull);
       expect(fightGoalFromName(null), isNull);
     });

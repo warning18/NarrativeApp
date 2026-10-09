@@ -282,6 +282,23 @@ class _EnemyMember {
   /// The faction whose doctrine this enemy fights under ('' for none).
   final String faction;
 
+  /// This enemy's place in its pack's squad (v1.215, see squad.dart), if
+  /// it has one.
+  SquadRole? role;
+
+  /// How it answers what the party does (v1.215, see enemy_response.dart).
+  EnemyResponse response = EnemyResponse.none;
+
+  /// Provoked by a heavy blow, or pressing a party that only defended: its
+  /// next blow lands harder, once.
+  bool provoked = false;
+  bool pressing = false;
+
+  /// The hardest blow the party landed on this enemy this round, and who
+  /// landed it (what a counter answers).
+  int topHitDamage = 0;
+  String? topHitterId;
+
   /// Block parries have set on this enemy's coming blow (v1.214, see
   /// parry.dart); spent when it strikes, cleared each round.
   int parryBlock = 0;

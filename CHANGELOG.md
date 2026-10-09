@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.215.0+250]
+
+### Added
+- Enemy squads. From chapter 2 on, about half the packs of two or three field a squad: a **Healer** (mends its most wounded friend by an eighth of its health each turn, hits at seventy percent), a **Guard** (while it stands, blows on the others are cut by a quarter unless they Pierce) or a **Striker** (hits a quarter harder on a fifth less health). A pack never gives roles to all its members, never doubles a Healer or a Guard, and never to a boss. The role shows as a chip on the enemy's card with its rules on a long press.
+- Enemies that answer the party. Fifteen enemies now carry a reaction in `enemies.json` (from chapter 2 on; the opening chapter keeps the plain rules): a **counter** enemy (a blow of a fifth of its health in one round provokes it; its next blow lands half again as hard, at whoever struck), a **press** enemy (a round in which everyone played Defend makes it press: its next blow lands three tenths harder) and a **hunt_healer** enemy (it turns its next blow on whoever healed most). A *Provoked* or *Pressing* chip says so before it strikes.
+- The pack fights back harder when it is held rather than slain: a Hold the line fight now asks four of the enemies' turns against a pair and five against more (it was three and four), and they hit a quarter harder (it was a tenth).
+
+### Balance
+- The fight simulator plays the whole clash set (goals, the Writ, squads, answers, parries, reactions) when `clash` is on, and each rule can be left out to see what it does (`clashOff`). Four seeds of 400 random walks each, win rate per fight attempt, plain rules → clash rules: Chapter 1 85.9% → 87.1%, Chapter 2 37.3% → 38.3%, Chapter 3 36.8% → 38.0%, Chapter 4 25.7% → 29.6%, Chapter 5 14.0% → 17.1%, Chapter 6 22.1% → 25.4%, Chapter 7 10.5% → 11.2%, Chapter 8 15.4% → 17.6% (all fights 28.5% → 30.4%). Left out one at a time (before the Hold was made harder), the goals were worth about five points of that, the Hold alone four; parries and reactions about one each; squads, answers and the Writ under one. The model plays the rules as well as they can be played (the best parry, the Healer struck first), so a real party will see less of the gain.
+- `test/clash_balance_test.dart` keeps every chapter's simulated win rate within ten points of the plain rules'.
+
+### Internal
+- `squad.dart` and `enemy_response.dart` hold the pure rules; the fight screen gains a `fight_squad.dart` part. `EncounterModifiers.forcedSquad` pins a pack's roles for tests. The `reaction` field joins the enemies schema.
+
 ## [1.214.0+249]
 
 ### Added

@@ -6,6 +6,7 @@ import 'combat_engine.dart' show zoneTierMultiplier;
 import 'enemy_affix.dart';
 import 'fight_goal.dart';
 import 'loot_box.dart';
+import 'squad.dart';
 
 /// Per-encounter overrides a caller hands FightScreen alongside the enemy
 /// records themselves -- a hunt's named quarry with its forced affixes and
@@ -63,6 +64,7 @@ class EncounterModifiers {
     this.luckyDieReveal = false,
     this.hostFight = false,
     this.forcedGoal,
+    this.forcedSquad,
   });
 
   static const EncounterModifiers none = EncounterModifiers();
@@ -142,6 +144,10 @@ class EncounterModifiers {
   /// asks for nothing but the slaughter).
   final FightGoal? forcedGoal;
 
+  /// The squad roles of the pack, in enemy order (null for a plain
+  /// enemy), instead of rolling them (v1.215, see squad.dart).
+  final List<SquadRole?>? forcedSquad;
+
   bool get isDefault =>
       forcedAffixes.isEmpty &&
       namedEnemyName == null &&
@@ -161,7 +167,8 @@ class EncounterModifiers {
       !tutorial &&
       !luckyDieReveal &&
       !hostFight &&
-      forcedGoal == null;
+      forcedGoal == null &&
+      forcedSquad == null;
 
   /// The same modifiers stamped with a fight's chapter and/or zone-tier
   /// multiplier (an expedition applies its zone's to every draw), or made
@@ -188,6 +195,7 @@ class EncounterModifiers {
         luckyDieReveal: luckyDieReveal,
         hostFight: hostFight ?? this.hostFight,
         forcedGoal: forcedGoal,
+        forcedSquad: forcedSquad,
       );
 
   /// A zone boss: never below a Gold chest, half again the reward, at the
@@ -291,5 +299,6 @@ class EncounterModifiers {
         luckyDieReveal: luckyDieReveal,
         hostFight: hostFight,
         forcedGoal: forcedGoal,
+        forcedSquad: forcedSquad,
       );
 }

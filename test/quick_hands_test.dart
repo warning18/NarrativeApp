@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/combat/battlefield_condition.dart';
 import 'package:narrative_data_app/combat/encounter.dart';
+import 'package:narrative_data_app/combat/enemy_affix.dart';
 import 'package:narrative_data_app/combat/fight_goal.dart';
 import 'package:narrative_data_app/combat/loadout.dart';
 import 'package:narrative_data_app/combat/quick_resolve.dart';
@@ -171,9 +172,12 @@ void main() {
         builder: (_) => FightScreen(
               enemyId: 'harbor_rat',
               enemy: rat,
+              // A forced affix keeps the rat from being promoted to an
+              // Elite, which a quick resolve is never offered against.
               modifiers: const EncounterModifiers(
                   forcedCondition: BattlefieldCondition.highGround,
-                  forcedGoal: FightGoal.slay),
+                  forcedGoal: FightGoal.slay,
+                  forcedAffixes: [EnemyAffix.packLeader]),
             )));
     await _settle(tester);
 
