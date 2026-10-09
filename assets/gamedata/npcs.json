@@ -1588,7 +1588,8 @@
     "want": "His crew's wages out of the Salt Ledger's hands and into theirs.",
     "want_fr": "Les gages de son équipe hors des mains du Registre du Sel, et dans les leurs.",
     "metNodes": [
-      "2015_dorran"
+      "2015_dorran",
+      "3005_dorran_later"
     ],
     "metFlags": [],
     "shopId": "",
@@ -1616,16 +1617,31 @@
         "line_fr": "Vous avez partagé les gages entre l’équipe et le Registre, et le chantier est resté calme ; Dorran a accepté, sans vous en remercier."
       },
       {
-        "flag": "",
-        "andFlags": [],
+        "flag": "hub_3005_dorran_later",
+        "andFlags": [
+          "scaffold_paid"
+        ],
         "unlessFlags": [],
-        "conditions": {
-          "standingAtLeast": {
-            "compact": 26
-          }
-        },
-        "line": "The Compact counts you a friend; Dorran’s crew rig your gear for nothing and call it their tithe.",
-        "line_fr": "Le Pacte vous tient en amitié ; l’équipe de Dorran grée votre matériel pour rien et appelle cela sa dîme."
+        "line": "Dorran counts you a friend of the scaffolds and sends his riggers up the coast with thanks and hemp.",
+        "line_fr": "Dorran vous compte parmi les amis des échafauds et envoie ses gréeurs sur la côte avec des remerciements et du chanvre."
+      },
+      {
+        "flag": "hub_3005_dorran_later",
+        "andFlags": [
+          "scaffold_skimmed"
+        ],
+        "unlessFlags": [],
+        "line": "Dorran sends no one after you now, and the yard remembers whose coin it was.",
+        "line_fr": "Dorran n’envoie plus personne vous chercher, et le chantier se souvient de qui était cette pièce."
+      },
+      {
+        "flag": "hub_3005_dorran_later",
+        "andFlags": [
+          "scaffold_split"
+        ],
+        "unlessFlags": [],
+        "line": "Dorran keeps you in his accounts as half a debt, paid and unthanked.",
+        "line_fr": "Dorran vous garde dans ses comptes comme une demi-dette, payée et sans remerciement."
       }
     ],
     "dialogueLines": [],
@@ -1646,7 +1662,8 @@
     "want": "Her glass proven and her stall standing when the Choir's fire comes.",
     "want_fr": "Son verre prouvé et son étal debout quand viendra le feu du Chœur.",
     "metNodes": [
-      "3005_imeh"
+      "3005_imeh",
+      "5010_imeh_later"
     ],
     "metFlags": [],
     "shopId": "",
@@ -1674,16 +1691,31 @@
         "line_fr": "Vous avez porté son verre jusqu’au camp avant que le feu ne l’atteigne ; il s’y vend désormais, et Imeh avec."
       },
       {
-        "flag": "",
-        "andFlags": [],
+        "flag": "hub_5010_imeh_later",
+        "andFlags": [
+          "glass_defended"
+        ],
         "unlessFlags": [],
-        "conditions": {
-          "standingAtLeast": {
-            "oni": 26
-          }
-        },
-        "line": "The oni count you a friend of the terraces; her glass goes to you at the terraces’ price, and she stands beside you when the fire comes.",
-        "line_fr": "Les oni vous tiennent en amitié sur les terrasses ; son verre est à vous au prix des terrasses, et elle se tient à vos côtés quand vient le feu."
+        "line": "Imeh sells terrace glass in your name and sends the first share of every crate back to you.",
+        "line_fr": "Imeh vend du verre des terrasses en votre nom et vous renvoie la première part de chaque caisse."
+      },
+      {
+        "flag": "hub_5010_imeh_later",
+        "andFlags": [
+          "glass_burned"
+        ],
+        "unlessFlags": [],
+        "line": "Imeh sends one message by bell-boat, that the glass would have held if anyone had stood beside it, and no second.",
+        "line_fr": "Imeh n’envoie qu’un message par la barque à cloche, que le verre aurait tenu si quelqu’un était resté à côté, et pas un second."
+      },
+      {
+        "flag": "hub_5010_imeh_later",
+        "andFlags": [
+          "glass_carried"
+        ],
+        "unlessFlags": [],
+        "line": "Imeh sells under a roof at the camp and calls the green cup she sent you the glass saying thank you.",
+        "line_fr": "Imeh vend à l’abri d’un toit au camp et appelle la coupe verte qu’elle vous a envoyée le verre qui dit merci."
       }
     ],
     "dialogueLines": [],
@@ -1704,7 +1736,8 @@
     "want": "His season's bark back from the Keyholders' cache, before the fever takes the cloister.",
     "want_fr": "Retrouver l’écorce de sa saison dans la cache des Porte-Clés, avant que la fièvre n’emporte le cloître.",
     "metNodes": [
-      "5010_brannoc"
+      "5010_brannoc",
+      "6010_brannoc_later"
     ],
     "metFlags": [],
     "shopId": "",
@@ -1732,16 +1765,31 @@
         "line_fr": "Vous avez donné à Brannoc la moitié de l’écorce et gardé l’autre pour l’infirmerie du camp ; il a dit que c’était juste, de la bouche mais pas des yeux."
       },
       {
-        "flag": "",
-        "andFlags": [],
+        "flag": "hub_6010_brannoc_later",
+        "andFlags": [
+          "bark_returned"
+        ],
         "unlessFlags": [],
-        "conditions": {
-          "standingAtLeast": {
-            "mire": 26
-          }
-        },
-        "line": "The Courts count you a guest; his fever-bark is yours at the reeds’ price, and the candles are for the others.",
-        "line_fr": "Les Cours vous comptent parmi leurs hôtes ; son écorce-fièvre est à vous au prix des roseaux, et les chandelles sont pour les autres."
+        "line": "Brannoc sends fen-leaf packets up the long road for you, and the Barkbleeders keep a place for you on the ledge.",
+        "line_fr": "Brannoc vous envoie des paquets de feuilles du marais par la longue route, et les Saigne-Écorce vous gardent une place sur la corniche."
+      },
+      {
+        "flag": "hub_6010_brannoc_later",
+        "andFlags": [
+          "bark_sold"
+        ],
+        "unlessFlags": [],
+        "line": "Brannoc has counted the sick who went without and sent you the number, and he has not sent anything since.",
+        "line_fr": "Brannoc a compté les malades qui s’en sont passés et vous a envoyé le nombre, et n’a rien envoyé depuis."
+      },
+      {
+        "flag": "hub_6010_brannoc_later",
+        "andFlags": [
+          "bark_kept"
+        ],
+        "unlessFlags": [],
+        "line": "Brannoc works with half a cure and calls your half fair in words, and sends no packet for the camp.",
+        "line_fr": "Brannoc travaille avec une demi-guérison et appelle juste votre moitié en paroles, et n’envoie aucun paquet au camp."
       }
     ],
     "dialogueLines": [],
@@ -1762,7 +1810,8 @@
     "want": "The count carried back from the tally stone and given to someone who will keep it.",
     "want_fr": "Que le compte soit rapporté de la pierre des noms et confié à qui le gardera.",
     "metNodes": [
-      "6010_orsabet"
+      "6010_orsabet",
+      "7100_orsabet_later"
     ],
     "metFlags": [],
     "shopId": "",
@@ -1790,16 +1839,31 @@
         "line_fr": "Vous avez lu les noms à voix haute à la porte du quartier, chacun d’eux ; Orsabet est restée debout jusqu’au bout, et n’a allumé aucune chandelle ce soir-là."
       },
       {
-        "flag": "",
-        "andFlags": [],
+        "flag": "hub_7100_orsabet_later",
+        "andFlags": [
+          "count_to_vigil"
+        ],
         "unlessFlags": [],
-        "conditions": {
-          "standingAtLeast": {
-            "vigil": 26
-          }
-        },
-        "line": "The Vigil counts you one of theirs; she has a candle set aside with your name on it, unlit, and means to keep it so.",
-        "line_fr": "La Veille vous compte parmi les siens ; elle a mis de côté une chandelle à votre nom, éteinte, et compte bien la garder ainsi."
+        "line": "Orsabet sleeps now, lights one candle a night for the count, and sent you a flame for the road.",
+        "line_fr": "Orsabet dort désormais, allume une chandelle par nuit pour le compte, et vous a envoyé une flamme pour la route."
+      },
+      {
+        "flag": "hub_7100_orsabet_later",
+        "andFlags": [
+          "count_sealed"
+        ],
+        "unlessFlags": [],
+        "line": "Orsabet lights a candle each night for names no one will read, and says she does not blame you.",
+        "line_fr": "Orsabet allume chaque soir une chandelle pour des noms que personne ne lira, et dit qu’elle ne vous en veut pas."
+      },
+      {
+        "flag": "hub_7100_orsabet_later",
+        "andFlags": [
+          "count_read"
+        ],
+        "unlessFlags": [],
+        "line": "Orsabet lights a candle each night for a different reason, and kept the last of the reading night for you.",
+        "line_fr": "Orsabet allume chaque soir une chandelle pour une autre raison, et a gardé pour vous la dernière de la nuit de la lecture."
       }
     ],
     "dialogueLines": [],
@@ -1820,7 +1884,8 @@
     "want": "The hearth-stone's quarry face left to the giants who were cut from it.",
     "want_fr": "Que le front de carrière de la pierre du foyer reste aux géants qui en sont issus.",
     "metNodes": [
-      "6200_ghrem"
+      "6200_ghrem",
+      "7100_ghrem_later"
     ],
     "metFlags": [],
     "shopId": "",
@@ -1848,16 +1913,31 @@
         "line_fr": "Vous avez partagé le front entre les géants et les Carriers ; Ghrem y a vu le premier marché conclu par Haut-Âtre en un siècle, et pas un bon."
       },
       {
-        "flag": "",
-        "andFlags": [],
+        "flag": "hub_7100_ghrem_later",
+        "andFlags": [
+          "hearth_stone_kept"
+        ],
         "unlessFlags": [],
-        "conditions": {
-          "standingAtLeast": {
-            "giants": 26
-          }
-        },
-        "line": "Highhearth counts you a guest; Ghrem keeps the moot-hall fire up an hour longer when you sit at it.",
-        "line_fr": "Haut-Âtre vous compte parmi ses hôtes ; Ghrem entretient le feu de la salle du conseil une heure de plus quand vous y prenez place."
+        "line": "Ghrem carried a chip of the hearth-stone against his chest the whole road to the sea, and gave it to you.",
+        "line_fr": "Ghrem a porté un éclat de la pierre du foyer contre sa poitrine tout le chemin jusqu’à la mer, et vous l’a donné."
+      },
+      {
+        "flag": "hub_7100_ghrem_later",
+        "andFlags": [
+          "hearth_stone_cut"
+        ],
+        "unlessFlags": [],
+        "line": "Ghrem sat beside you at the sea and said nothing, and Highhearth does not speak your name.",
+        "line_fr": "Ghrem s’est assis près de vous au bord de la mer sans rien dire, et Haut-Âtre ne prononce pas votre nom."
+      },
+      {
+        "flag": "hub_7100_ghrem_later",
+        "andFlags": [
+          "hearth_stone_split"
+        ],
+        "unlessFlags": [],
+        "line": "Ghrem has decided to be glad of half a face, and asks you not to make him say so twice.",
+        "line_fr": "Ghrem a décidé de se réjouir d’une moitié de front, et vous demande de ne pas le lui faire dire deux fois."
       }
     ],
     "dialogueLines": [],
@@ -1878,7 +1958,8 @@
     "want": "His salvage out of the Admiralty's impound and back in Brig-Born hands.",
     "want_fr": "Sa prise hors de la fourrière de l’Amirauté et de retour entre les mains des Enfants du Brick.",
     "metNodes": [
-      "7100_nkem"
+      "7100_nkem",
+      "7800_nkem_later"
     ],
     "metFlags": [],
     "shopId": "",
@@ -1906,16 +1987,31 @@
         "line_fr": "Vous avez vendu la prise aux charpentiers d’épaves et gardé l’argent ; Nkem n’a eu ni sa prise, ni une part."
       },
       {
-        "flag": "",
-        "andFlags": [],
+        "flag": "hub_7800_nkem_later",
+        "andFlags": [
+          "salvage_to_crows"
+        ],
         "unlessFlags": [],
-        "conditions": {
-          "standingAtLeast": {
-            "crows": 26
-          }
-        },
-        "line": "The Crows count you one of theirs; Nkem keeps a share of every haul aside for you, under no seal at all.",
-        "line_fr": "Les Corneilles vous comptent parmi les leurs ; Nkem met de côté pour vous une part de chaque prise, sous aucun sceau."
+        "line": "Nkem has paid you your share of the bronze, and a Brig-Born boat now answers when the Host calls.",
+        "line_fr": "Nkem vous a payé votre part du bronze, et une barque des Enfants du Brick répond désormais quand l’Ost appelle."
+      },
+      {
+        "flag": "hub_7800_nkem_later",
+        "andFlags": [
+          "salvage_to_admiralty"
+        ],
+        "unlessFlags": [],
+        "line": "Nkem lost his haul twice, the second time to you, and sails with the Host as a hired boat and nothing more.",
+        "line_fr": "Nkem a perdu sa prise deux fois, la seconde par votre main, et navigue avec l’Ost comme barque louée, et rien de plus."
+      },
+      {
+        "flag": "hub_7800_nkem_later",
+        "andFlags": [
+          "salvage_sold"
+        ],
+        "unlessFlags": [],
+        "line": "Nkem is here for the sea and not for you, and his boat floats without your help.",
+        "line_fr": "Nkem est là pour la mer et pas pour vous, et sa barque flotte sans votre aide."
       }
     ],
     "dialogueLines": [],

@@ -4475,6 +4475,21 @@
         "hideIfFlags": [
           "glass_tested"
         ]
+      },
+      {
+        "text": "Hear the rigger Dorran sent up from the wharf",
+        "text_fr": "Écouter la gréeuse envoyée par Dorran depuis le quai",
+        "next_id": "3005_dorran_later",
+        "hideIfFlags": [
+          "hub_3005_dorran_later"
+        ],
+        "politicsIf": {
+          "anyFlags": [
+            "scaffold_paid",
+            "scaffold_skimmed",
+            "scaffold_split"
+          ]
+        }
       }
     ],
     "flag_callbacks": [
@@ -6830,6 +6845,21 @@
         "hideIfFlags": [
           "bark_recovered"
         ]
+      },
+      {
+        "text": "Meet the boatman who carries Imeh’s word",
+        "text_fr": "Rencontrer le passeur qui porte la parole d’Imeh",
+        "next_id": "5010_imeh_later",
+        "hideIfFlags": [
+          "hub_5010_imeh_later"
+        ],
+        "politicsIf": {
+          "anyFlags": [
+            "glass_defended",
+            "glass_burned",
+            "glass_carried"
+          ]
+        }
       }
     ],
     "flag_callbacks": [
@@ -7723,6 +7753,21 @@
         "hideIfFlags": [
           "count_carried"
         ]
+      },
+      {
+        "text": "Receive the novice Brannoc sent from the cloister",
+        "text_fr": "Recevoir le novice envoyé par Brannoc depuis le cloître",
+        "next_id": "6010_brannoc_later",
+        "hideIfFlags": [
+          "hub_6010_brannoc_later"
+        ],
+        "politicsIf": {
+          "anyFlags": [
+            "bark_returned",
+            "bark_sold",
+            "bark_kept"
+          ]
+        }
       }
     ],
     "flag_callbacks": [
@@ -14029,6 +14074,36 @@
         "hideIfFlags": [
           "salvage_freed"
         ]
+      },
+      {
+        "text": "Meet the Candlebearer sent down by Orsabet",
+        "text_fr": "Rencontrer la Porte-Chandelle envoyée par Orsabet",
+        "next_id": "7100_orsabet_later",
+        "hideIfFlags": [
+          "hub_7100_orsabet_later"
+        ],
+        "politicsIf": {
+          "anyFlags": [
+            "count_to_vigil",
+            "count_sealed",
+            "count_read"
+          ]
+        }
+      },
+      {
+        "text": "Greet Ghrem Stonebrow on the pier",
+        "text_fr": "Saluer Ghrem Stonebrow sur la jetée",
+        "next_id": "7100_ghrem_later",
+        "hideIfFlags": [
+          "hub_7100_ghrem_later"
+        ],
+        "politicsIf": {
+          "anyFlags": [
+            "hearth_stone_kept",
+            "hearth_stone_cut",
+            "hearth_stone_split"
+          ]
+        }
       }
     ],
     "settlement": {
@@ -21157,6 +21232,21 @@
           "banner_five"
         ],
         "unlockQuestId": "q_ch6_beyond_the_tear"
+      },
+      {
+        "text": "Greet Nkem Tallow’s boat as it comes in",
+        "text_fr": "Accueillir la barque de Nkem Tallow à son arrivée",
+        "next_id": "7800_nkem_later",
+        "hideIfFlags": [
+          "hub_7800_nkem_later"
+        ],
+        "politicsIf": {
+          "anyFlags": [
+            "salvage_to_crows",
+            "salvage_to_admiralty",
+            "salvage_sold"
+          ]
+        }
       }
     ],
     "flag_callbacks": [
@@ -22223,6 +22313,320 @@
         "flagsToAdd": [
           "salvage_freed"
         ]
+      }
+    ]
+  },
+  "3005_dorran_later": {
+    "id": "3005_dorran_later",
+    "description": "News from the wharf travelled up the coast the way the Scaffolders’ news always did, hand to hand, and it found me in the Quarter in the shape of a rigger with rope-burn across both palms. She had walked the whole road with a message learnt by heart, and she stood in the ash with her feet planted, as if the ground might shift while she said it. “Dorran Quill sent me,” she said. “About the yard.”",
+    "description_fr": "Les nouvelles du quai remontaient la côte comme toujours celles des Échafaudeurs, de main en main, et celles-ci me trouvèrent au Quartier sous la forme d’une gréeuse aux deux paumes brûlées par la corde. Elle avait fait toute la route avec un message appris par cœur, et se tenait dans la cendre, les pieds bien plantés, comme si le sol pouvait bouger pendant qu’elle parlait. « C’est Dorran Quill qui m’envoie, dit-elle. À propos du chantier. »",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "ashen_quarter",
+    "choices": [
+      {
+        "text": "Accept what they offer",
+        "text_fr": "Accepter ce qu’on vous offre",
+        "next_id": "3005",
+        "goldMod": 20,
+        "flagsToAdd": [
+          "hub_3005_dorran_later"
+        ],
+        "politicsIf": {
+          "anyFlags": [
+            "scaffold_paid"
+          ]
+        }
+      },
+      {
+        "text": "Say your goodbyes",
+        "text_fr": "Faire vos adieux",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_dorran_later"
+        ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "scaffold_paid",
+        "en": "“The crew was paid in full, every day owed,” she said, and her voice shook on it. “Dorran says the scaffolds hold because of you. He sent this, and he says it is not charity, it is a rigger’s thanks.” She held out a small purse and a coil of good hemp, and did not seem to know which of the two she was prouder of.",
+        "fr": "« L’équipe a été payée en entier, chaque jour dû, dit-elle, et sa voix trembla sur ces mots. Dorran dit que les échafaudages tiennent grâce à vous. Il envoie ceci, et il dit que ce n’est pas de la charité, c’est le merci d’un gréeur. » Elle me tendit une petite bourse et un rouleau de bon chanvre, sans paraître savoir lequel des deux la rendait le plus fière."
+      },
+      {
+        "flag": "scaffold_skimmed",
+        "en": "“The crew was never paid,” she said flatly, and looked at my hands rather than my face. “Dorran says to tell you that the yard remembers whose coin it was. That is all of the message.” She waited, in case I had an answer, and went on waiting longer than politeness asked.",
+        "fr": "« L’équipe n’a jamais été payée, dit-elle d’une voix plate, en regardant mes mains plutôt que mon visage. Dorran dit de vous dire que le chantier se souvient de qui était cette pièce. C’est tout le message. » Elle attendit, au cas où j’aurais une réponse, et attendit plus longtemps que la politesse ne le demandait."
+      },
+      {
+        "flag": "scaffold_split",
+        "en": "“Half the wages came, and the crew ate on them,” she said, “and Dorran says that is more than the Ledger ever gave them. He also says that half a debt is still a debt.” She did not smile as she said it, and she offered me nothing; Dorran, I gathered, kept his accounts as carefully as his knots.",
+        "fr": "« La moitié des gages est arrivée, et l’équipe a mangé avec, dit-elle, et Dorran dit que c’est plus que le Registre ne leur a jamais donné. Il dit aussi qu’une demi-dette reste une dette. » Elle ne sourit pas en le disant, et ne m’offrit rien ; Dorran, je le compris, tenait ses comptes aussi soigneusement que ses nœuds."
+      }
+    ]
+  },
+  "5010_imeh_later": {
+    "id": "5010_imeh_later",
+    "description": "A boatman from the oni terraces poled a flat skiff down the flooded nave, a hand-bell at its prow and a crate packed in straw amidships. The cloister’s sick turned their faces toward the bell as though it were medicine. “I carry word from Imeh,” he said, in the lilting Akagiri way of speaking, “and she said you would know what it was about.”",
+    "description_fr": "Un passeur des terrasses oni poussait une barque plate le long de la nef inondée, une clochette à la proue et une caisse calée dans la paille au milieu. Les malades du cloître tournèrent le visage vers la cloche comme vers un remède. « Je porte la parole d’Imeh, dit-il, avec le chantonnement des gens d’Akagiri, et elle a dit que vous sauriez de quoi il s’agit. »",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "location": "drowned_cloister",
+    "choices": [
+      {
+        "text": "Accept what they offer",
+        "text_fr": "Accepter ce qu’on vous offre",
+        "next_id": "5010",
+        "goldMod": 20,
+        "flagsToAdd": [
+          "hub_5010_imeh_later"
+        ],
+        "politicsIf": {
+          "anyFlags": [
+            "glass_defended",
+            "glass_carried"
+          ]
+        }
+      },
+      {
+        "text": "Say your goodbyes",
+        "text_fr": "Faire vos adieux",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_imeh_later"
+        ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "glass_defended",
+        "en": "“She stood at her stall until the Choir’s fire went out,” he said, “and the glass held, and every pane that held sold. She says she has you to thank for it.” He lifted the straw from the crate and showed me a share of the first sale and a green cup, and rang the bell once for luck.",
+        "fr": "« Elle est restée à son étal jusqu’à ce que le feu du Chœur s’éteigne, dit-il, et le verre a tenu, et chaque vitre qui a tenu s’est vendue. Elle dit que c’est à vous qu’elle le doit. » Il souleva la paille de la caisse et me montra une part de la première vente et une coupe verte, puis fit tinter la cloche une fois, pour porter chance."
+      },
+      {
+        "flag": "glass_burned",
+        "en": "“She went back up the terraces with what she wore,” he said. “She says the glass would have held, if anyone had stood beside it.” He looked at the bell rather than at me. “She sends no word besides that, and I was told not to wait for an answer.”",
+        "fr": "« Elle est remontée aux terrasses avec ce qu’elle portait, dit-il. Elle dit que le verre aurait tenu, si quelqu’un était resté à côté. » Il regarda la cloche plutôt que moi. « Elle n’envoie rien d’autre, et on m’a dit de ne pas attendre de réponse. »"
+      },
+      {
+        "flag": "glass_carried",
+        "en": "“Her glass sells at the camp, and she sells with it,” he said, “and she says a stall under a roof does better than a stall in a fire.” He lifted the straw from the crate and showed me a share of the first crate and a green cup. “She says it is not payment. It is only the glass, saying thank you.”",
+        "fr": "« Son verre se vend au camp, et elle avec, dit-il, et elle dit qu’un étal sous un toit vaut mieux qu’un étal dans le feu. » Il souleva la paille de la caisse et me montra une part de la première caisse et une coupe verte. « Elle dit que ce n’est pas un paiement. C’est seulement le verre qui dit merci. »"
+      }
+    ]
+  },
+  "6010_brannoc_later": {
+    "id": "6010_brannoc_later",
+    "description": "A novice from the Drowned Cloister found me in the Reliquary Quarter, mud to the knee, with a packet tied in a wrap of fen-leaves held against their chest as if it might be taken. Brannoc Reedtithe had sent them up the long road with it, they said, and with strict instructions not to hand it to anyone who was not me. They looked at my face for some time before they decided I was.",
+    "description_fr": "Un novice du Cloître noyé me trouva au Quartier des Reliquaires, de la boue jusqu’aux genoux, un paquet noué dans un linge de feuilles du marais serré contre la poitrine comme si on avait pu le lui prendre. Brannoc Reedtithe l’avait envoyé par la longue route avec ce paquet, dit-il, et la consigne stricte de ne le remettre qu’à moi. Il me regarda longtemps avant de décider que c’était bien moi.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "location": "reliquary_quarter",
+    "choices": [
+      {
+        "text": "Accept what they offer",
+        "text_fr": "Accepter ce qu’on vous offre",
+        "next_id": "6010",
+        "goldMod": 20,
+        "flagsToAdd": [
+          "hub_6010_brannoc_later"
+        ],
+        "politicsIf": {
+          "anyFlags": [
+            "bark_returned"
+          ]
+        }
+      },
+      {
+        "text": "Say your goodbyes",
+        "text_fr": "Faire vos adieux",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_brannoc_later"
+        ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "bark_returned",
+        "en": "“The fever broke in the cloister the week the bark came up,” they said. “Brannoc says no one died of it who was still on the ledge when you carried it in.” They unwrapped the leaves: a small vial of tincture, the first of the season’s, and a purse of the fen’s coin. “He says it is not enough. He says to take it anyway.”",
+        "fr": "« La fièvre est tombée au cloître la semaine où l’écorce est remontée, dit-il. Brannoc dit que personne n’en est mort qui était encore sur la corniche quand vous l’avez apportée. » Il défit les feuilles : une petite fiole de teinture, la première de la saison, et une bourse de la monnaie du marais. « Il dit que ce n’est pas assez. Il dit de la prendre quand même. »"
+      },
+      {
+        "flag": "bark_sold",
+        "en": "“Brannoc says he knows what the bark fetched,” they said, and unwrapped nothing. “He says he counted the sick who went without, and that the number is the message.” They told me the number. It was not a large one, which somehow made it worse.",
+        "fr": "« Brannoc dit qu’il sait ce que l’écorce a rapporté, dit-il, et il ne défit rien. Il dit qu’il a compté les malades qui s’en sont passés, et que ce nombre est le message. » Il me dit le nombre. Il n’était pas grand, ce qui, d’une certaine façon, le rendait pire."
+      },
+      {
+        "flag": "bark_kept",
+        "en": "“Brannoc says half a season was half a cure,” they said, “and that he has learned to work with half. He says the camp infirmary is welcome to its share, and that he hopes it uses it better than the fever did.” They said it carefully, as if it had been practised on the road, and held the packet closed.",
+        "fr": "« Brannoc dit qu’une demi-saison faisait une demi-guérison, dit-il, et qu’il a appris à travailler avec la moitié. Il dit que l’infirmerie du camp est la bienvenue pour sa part, et qu’il espère qu’elle l’emploiera mieux que la fièvre. » Il le dit avec soin, comme une phrase répétée sur la route, et garda le paquet fermé."
+      }
+    ]
+  },
+  "7100_orsabet_later": {
+    "id": "7100_orsabet_later",
+    "description": "A Candlebearer came down the Anchorage quay at dusk with a jar of lit tallow held in both hands, walking the way people walk with a flame that must not go out. She asked the dockers for me by name, and waited at the quay’s end while the harbour lamps came on one by one. “Orsabet Vell sent me from the Reliquary Quarter,” she said. “She asked me to light this where you could see it.”",
+    "description_fr": "Une Porte-Chandelle descendit le quai de l’Ancrage à la tombée du jour, un pot de suif allumé dans les deux mains, marchant comme marchent ceux qui portent une flamme qui ne doit pas mourir. Elle me demanda par mon nom aux dockers, et attendit au bout du quai pendant que les lampes du port s’allumaient une à une. « Orsabet Vell m’envoie du Quartier des Reliquaires, dit-elle. Elle m’a demandé de l’allumer là où vous pourriez la voir. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "white_anchorage",
+    "choices": [
+      {
+        "text": "Accept what they offer",
+        "text_fr": "Accepter ce qu’on vous offre",
+        "next_id": "7100",
+        "goldMod": 20,
+        "flagsToAdd": [
+          "hub_7100_orsabet_later"
+        ],
+        "politicsIf": {
+          "anyFlags": [
+            "count_to_vigil",
+            "count_read"
+          ]
+        }
+      },
+      {
+        "text": "Say your goodbyes",
+        "text_fr": "Faire vos adieux",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_orsabet_later"
+        ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "count_to_vigil",
+        "en": "“She says the names are kept by people who watch,” she said, “and that she has slept for the first time since the tear.” She set the jar down on a bollard, and the flame stood perfectly still. “This candle is for the count. This purse is for you, for the road. She says do not confuse the two.”",
+        "fr": "« Elle dit que les noms sont gardés par des gens qui veillent, dit-elle, et qu’elle a dormi pour la première fois depuis la déchirure. » Elle posa le pot sur une bitte d’amarrage, et la flamme se tint parfaitement droite. « Cette chandelle est pour le compte. Cette bourse est pour vous, pour la route. Elle dit de ne pas confondre les deux. »"
+      },
+      {
+        "flag": "count_sealed",
+        "en": "“She says the names are safe,” she said, “and that she has come to hate the word.” She set the jar on a bollard and let the flame stand. “She lights one every night for the names no one will read, which is all of them. She says she does not blame you, in the voice of someone who has practised.”",
+        "fr": "« Elle dit que les noms sont en sûreté, dit-elle, et qu’elle en est venue à détester ce mot. » Elle posa le pot sur une bitte d’amarrage et laissa la flamme se tenir. « Elle en allume une chaque soir pour les noms que personne ne lira, c’est-à-dire tous. Elle dit qu’elle ne vous en veut pas, de la voix de quelqu’un qui s’est exercé. »"
+      },
+      {
+        "flag": "count_read",
+        "en": "“You read every name, and she stood through all of them,” she said. “She lit no candle that night, and has lit one every night since, for a different reason.” She set the jar on a bollard, and the flame stood perfectly still. “This is from the night of the reading. This purse is for the road.”",
+        "fr": "« Vous avez lu chaque nom, et elle est restée debout pour tous, dit-elle. Elle n’a allumé aucune chandelle ce soir-là, et en a allumé une chaque soir depuis, pour une autre raison. » Elle posa le pot sur une bitte d’amarrage, et la flamme se tint parfaitement droite. « Celle-ci vient de la nuit de la lecture. Cette bourse est pour la route. »"
+      }
+    ]
+  },
+  "7100_ghrem_later": {
+    "id": "7100_ghrem_later",
+    "description": "A giant sat at the end of the long pier with his feet in the tide, and the Anchorage was pretending not to stare. Ghrem Stonebrow had come down from Highhearth, which took a giant three days and a cart he had refused to ride in, and the sea in front of him seemed small for the effort. He did not turn his head when I came up, but a hand the size of a door shifted to make room.",
+    "description_fr": "Un géant était assis au bout de la longue jetée, les pieds dans la marée, et l’Ancrage faisait semblant de ne pas regarder. Ghrem Stonebrow était descendu de Haut-Âtre, ce qui prend trois jours à un géant et une charrette dans laquelle il avait refusé de monter, et la mer devant lui semblait bien petite pour l’effort. Il ne tourna pas la tête quand je m’approchai, mais une main grande comme une porte se déplaça pour me faire de la place.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "white_anchorage",
+    "choices": [
+      {
+        "text": "Accept what they offer",
+        "text_fr": "Accepter ce qu’on vous offre",
+        "next_id": "7100",
+        "goldMod": 20,
+        "flagsToAdd": [
+          "hub_7100_ghrem_later"
+        ],
+        "politicsIf": {
+          "anyFlags": [
+            "hearth_stone_kept"
+          ]
+        }
+      },
+      {
+        "text": "Say your goodbyes",
+        "text_fr": "Faire vos adieux",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_ghrem_later"
+        ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "hearth_stone_kept",
+        "en": "“The face is standing,” he said, “and the Quarrymen have gone to cut some other mountain.” He opened his hand, and in the great palm lay a chip of grey stone and a purse the giants had made up between them. “The stone is warm yet, as hearth-stone is. I carried it against my chest the whole road. Take it. It is the first thing Highhearth has given away in six hundred years.”",
+        "fr": "« Le front tient toujours, dit-il, et les Carriers sont partis tailler quelque autre montagne. » Il ouvrit la main, et dans l’immense paume reposaient un éclat de pierre grise et une bourse que les géants avaient réunie à eux tous. « La pierre est tiède encore, comme l’est la pierre du foyer. Je l’ai portée contre ma poitrine tout le chemin. Prenez-la. C’est la première chose que Haut-Âtre donne en six cents ans. »"
+      },
+      {
+        "flag": "hearth_stone_cut",
+        "en": "He did not speak to me. The face had gone down the road in Compact carts, and I think he had come a long way to be near the sea in my company, and then not to say so. We sat while the tide came in round his boots, and the silence was a very large one.",
+        "fr": "Il ne me parla pas. Le front avait pris la route dans les charrettes du Pacte, et je crois qu’il avait fait un long chemin pour être près de la mer en ma compagnie, puis pour ne pas le dire. Nous restâmes assis tandis que la marée montait autour de ses bottes, et le silence était un très grand silence."
+      },
+      {
+        "flag": "hearth_stone_split",
+        "en": "“Half a face,” he said to the water. “Highhearth made its first bargain in a century, and it was not a good one, and it was ours.” He turned one eye on me, which was the size of a ladle. “I have decided to be glad of it. Do not make me say so twice.”",
+        "fr": "« Une moitié de front, dit-il à l’eau. Haut-Âtre a conclu son premier marché en un siècle, et il n’était pas bon, mais c’était le nôtre. » Il tourna vers moi un œil de la taille d’une louche. « J’ai décidé de m’en réjouir. Ne me le faites pas dire deux fois. »"
+      }
+    ]
+  },
+  "7800_nkem_later": {
+    "id": "7800_nkem_later",
+    "description": "Among the boats that came into the cove for the muster was one built from three others, riding low in the water with a crew of Brig-Born nobody had asked for. Nkem Tallow stood in its bow with a boathook, looking at the camp the way a salvager looks at a wreck: for what it might still give up. He saw me on the shingle, lifted the boathook in a salute, and brought the boat in on the tide.",
+    "description_fr": "Parmi les bateaux qui entraient dans la crique pour la revue, il y en avait un bâti de trois autres, enfoncé dans l’eau, avec un équipage d’Enfants du Brick que personne n’avait demandé. Nkem Tallow se tenait à la proue avec une gaffe, regardant le camp comme un récupérateur regarde une épave : pour ce qu’elle pouvait encore rendre. Il me vit sur les galets, leva la gaffe en guise de salut, et amena la barque avec la marée.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Accept what they offer",
+        "text_fr": "Accepter ce qu’on vous offre",
+        "next_id": "7800",
+        "goldMod": 20,
+        "flagsToAdd": [
+          "hub_7800_nkem_later"
+        ],
+        "politicsIf": {
+          "anyFlags": [
+            "salvage_to_crows"
+          ]
+        }
+      },
+      {
+        "text": "Say your goodbyes",
+        "text_fr": "Faire vos adieux",
+        "next_id": "7800",
+        "flagsToAdd": [
+          "hub_7800_nkem_later"
+        ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "salvage_to_crows",
+        "en": "“The haul came back whole,” he said, “and the Brig-Born have not stopped telling it. The bell, the bronze, the chart-weights.” He swung a small sack onto the shingle at my feet. “Your share of the bronze. Not the bell: a Brig-Born does not sell a bell. But the bronze, yes. Do not say I never paid.”",
+        "fr": "« La prise est revenue entière, dit-il, et les Enfants du Brick n’ont pas cessé de la raconter. La cloche, le bronze, les poids de carte. » Il jeta un petit sac sur les galets à mes pieds. « Votre part du bronze. Pas la cloche : un Enfant du Brick ne vend pas une cloche. Mais le bronze, oui. Ne dites pas que je n’ai jamais payé. »"
+      },
+      {
+        "flag": "salvage_to_admiralty",
+        "en": "“I lost it twice,” he said, “the second time to you.” He did not smile, and he did not hold out a hand. “I came anyway. The Host needs a boat that knows the Fleet’s grave, and I know it better than the Admiralty’s charts. That is business. The rest I keep.”",
+        "fr": "« Je l’ai perdue deux fois, dit-il, la seconde par votre main. » Il ne sourit pas, et ne tendit pas la main. « Je suis venu quand même. L’Ost a besoin d’une barque qui connaît la tombe de la Flotte, et je la connais mieux que les cartes de l’Amirauté. Ça, c’est les affaires. Le reste, je le garde. »"
+      },
+      {
+        "flag": "salvage_sold",
+        "en": "“I am here for the sea,” he said, “not for you.” He coiled a line without looking at it. “The wreck-wrights paid you for my haul. I hope it bought something that floats. Mine does, and it is built from three others, and it did not need your help to do it.”",
+        "fr": "« Je suis là pour la mer, dit-il, pas pour vous. » Il lova une aussière sans la regarder. « Les charpentiers d’épaves vous ont payé ma prise. J’espère que ça a acheté quelque chose qui flotte. La mienne flotte, elle est bâtie de trois autres, et elle n’a pas eu besoin de votre aide pour ça. »"
       }
     ]
   }

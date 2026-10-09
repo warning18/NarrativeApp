@@ -324,7 +324,7 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '3001', '3001_camp', '4999_camp', '6002_siege', '6002_siege_2', //
       '6002_siege_breach', '6002_siege_end', '6002_camp', '7001', '7400',
-      '7800', '7800_council', '7800_lines',
+      '7800', '7800_council', '7800_lines', '7800_nkem_later',
     ],
   ),
   const Landmark(
@@ -347,7 +347,8 @@ final List<Landmark> worldMapLandmarks = [
       '3005_clan_vigil_1_breach',
       '3005_clan_vigil_1_dawn',
       '3005_clan_compact_1',
-      '3005_clan_compact_1_lit', '3005_imeh', '3005_glass_fire',
+      '3005_clan_compact_1_lit', '3005_imeh', '3005_dorran_later',
+      '3005_glass_fire',
       '3005_glass_fire_fight',
     ],
     fights: [
@@ -479,7 +480,8 @@ final List<Landmark> worldMapLandmarks = [
       '5010_house_herons_wake_broken',
       '5010_clan_crows_2',
       '5010_clan_crows_2_found',
-      '5010_clan_crows_2_failed', '5010_brannoc', '5010_bark_cache',
+      '5010_clan_crows_2_failed', '5010_brannoc', '5010_imeh_later',
+      '5010_bark_cache',
       '5010_bark_cache_fight',
     ],
     fights: ['catacomb_ghoul', 'bone_warden', 'void_wisp'],
@@ -522,7 +524,8 @@ final List<Landmark> worldMapLandmarks = [
       '6010_clan_dominion_2',
       '6010_clan_compact_3',
       '6010_clan_compact_3_seen',
-      '6010_clan_compact_3_hammer', '6010_orsabet', '6010_candle_walk',
+      '6010_clan_compact_3_hammer', '6010_orsabet', '6010_brannoc_later',
+      '6010_candle_walk',
       '6010_candle_walk_fight',
     ],
     fights: [
@@ -610,7 +613,8 @@ final List<Landmark> worldMapLandmarks = [
       '7100_clan_crows_3',
       '7100_clan_penitents_3',
       '7100_clan_penitents_3_bolt',
-      '7100_clan_penitents_3_through', '7100_nkem', '7100_impound',
+      '7100_clan_penitents_3_through', '7100_nkem', '7100_orsabet_later',
+      '7100_ghrem_later', '7100_impound',
       '7100_impound_fight',
     ],
     fights: [
