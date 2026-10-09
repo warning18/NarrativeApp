@@ -87,7 +87,10 @@ void main() {
     await _settle(tester);
     expect(find.text(shut, skipOffstage: false), findsNothing);
     expect(
-        find.text('Once the coast is known, climb the Spire',
+        find.descendant(
+            of: find.byType(StoryPlayerScreen),
+            matching: find.text('Once the coast is known, climb the Spire',
+                skipOffstage: false),
             skipOffstage: false),
         findsOneWidget);
     await tester.pump(const Duration(seconds: 5));
