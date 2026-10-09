@@ -2814,7 +2814,7 @@
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "teachesSpellId": "spell_frost_bind",
-    "itemName_fr": "Grimoire : Entrave de givre"
+    "itemName_fr": "Grimoire : Entrave de givre"
   },
   "spellbook_ember_wave": {
     "id": "spellbook_ember_wave",
@@ -2842,7 +2842,7 @@
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "teachesSpellId": "spell_ember_wave",
-    "itemName_fr": "Grimoire : Vague de braises"
+    "itemName_fr": "Grimoire : Vague de braises"
   },
   "spellbook_sanctified_ground": {
     "id": "spellbook_sanctified_ground",
@@ -2870,7 +2870,7 @@
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "teachesSpellId": "spell_sanctified_ground",
-    "itemName_fr": "Grimoire : Sol consacré"
+    "itemName_fr": "Grimoire : Sol consacré"
   },
   "spellbook_smite_the_wicked": {
     "id": "spellbook_smite_the_wicked",
@@ -2898,7 +2898,7 @@
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "teachesSpellId": "spell_smite_the_wicked",
-    "itemName_fr": "Grimoire : Châtiment des impies"
+    "itemName_fr": "Grimoire : Châtiment des impies"
   },
   "spellbook_venom_hex": {
     "id": "spellbook_venom_hex",
@@ -2926,7 +2926,7 @@
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "teachesSpellId": "spell_venom_hex",
-    "itemName_fr": "Grimoire : Malédiction venimeuse"
+    "itemName_fr": "Grimoire : Malédiction venimeuse"
   },
   "spellbook_hunters_mark": {
     "id": "spellbook_hunters_mark",
@@ -2954,7 +2954,7 @@
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "teachesSpellId": "spell_hunters_mark",
-    "itemName_fr": "Grimoire : Marque du chasseur"
+    "itemName_fr": "Grimoire : Marque du chasseur"
   },
   "spellbook_war_shout": {
     "id": "spellbook_war_shout",
@@ -2982,7 +2982,7 @@
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "teachesSpellId": "spell_war_shout",
-    "itemName_fr": "Grimoire : Cri de guerre"
+    "itemName_fr": "Grimoire : Cri de guerre"
   },
   "harborwatch_cutlass": {
     "id": "harborwatch_cutlass",
@@ -4062,7 +4062,7 @@
   "spellbook_rally_the_line": {
     "id": "spellbook_rally_the_line",
     "itemName": "Spellbook: Rally the Line",
-    "itemName_fr": "Grimoire : Serrez les rangs",
+    "itemName_fr": "Grimoire : Serrez les rangs",
     "itemType": "Spellbook",
     "damage": 0,
     "cost": 120,
@@ -4090,7 +4090,7 @@
   "spellbook_sundering_roar": {
     "id": "spellbook_sundering_roar",
     "itemName": "Spellbook: Sundering Roar",
-    "itemName_fr": "Grimoire : Rugissement fracassant",
+    "itemName_fr": "Grimoire : Rugissement fracassant",
     "itemType": "Spellbook",
     "damage": 0,
     "cost": 160,
@@ -4118,7 +4118,7 @@
   "spellbook_smoke_veil": {
     "id": "spellbook_smoke_veil",
     "itemName": "Spellbook: Smoke Veil",
-    "itemName_fr": "Grimoire : Voile de fumée",
+    "itemName_fr": "Grimoire : Voile de fumée",
     "itemType": "Spellbook",
     "damage": 0,
     "cost": 110,
@@ -4146,7 +4146,7 @@
   "spellbook_bleeding_cut": {
     "id": "spellbook_bleeding_cut",
     "itemName": "Spellbook: Bleeding Cut",
-    "itemName_fr": "Grimoire : Entaille sanglante",
+    "itemName_fr": "Grimoire : Entaille sanglante",
     "itemType": "Spellbook",
     "damage": 0,
     "cost": 120,
@@ -4174,7 +4174,7 @@
   "spellbook_arrow_volley": {
     "id": "spellbook_arrow_volley",
     "itemName": "Spellbook: Arrow Volley",
-    "itemName_fr": "Grimoire : Volée de flèches",
+    "itemName_fr": "Grimoire : Volée de flèches",
     "itemType": "Spellbook",
     "damage": 0,
     "cost": 170,
@@ -4202,7 +4202,7 @@
   "spellbook_snare_shot": {
     "id": "spellbook_snare_shot",
     "itemName": "Spellbook: Snare Shot",
-    "itemName_fr": "Grimoire : Tir entravant",
+    "itemName_fr": "Grimoire : Tir entravant",
     "itemType": "Spellbook",
     "damage": 0,
     "cost": 120,

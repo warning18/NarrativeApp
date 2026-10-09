@@ -7,7 +7,7 @@
     "branchName": "Bulwark",
     "branchName_fr": "Rempart",
     "description": "Hold the line: blows that stagger, stances that soak up the worst of it.",
-    "description_fr": "Tenir la ligne : des coups qui font vaciller, des postures qui encaissent le pire.",
+    "description_fr": "Tenir la ligne : des coups qui font vaciller, des postures qui encaissent le pire.",
     "skillIds": [
       "warrior_shield_bash",
       "bulwark_stance",
@@ -23,7 +23,7 @@
     "branchName": "Vanguard",
     "branchName_fr": "Avant-garde",
     "description": "First into the breach: heavier blows, wider swings, and an end to it.",
-    "description_fr": "Le premier dans la brèche : des coups plus lourds, plus larges, et une fin à tout cela.",
+    "description_fr": "Le premier dans la brèche : des coups plus lourds, plus larges, et une fin à tout cela.",
     "skillIds": [
       "power_strike",
       "guard_break",
@@ -39,7 +39,7 @@
     "branchName": "Warlord",
     "branchName_fr": "Chef de guerre",
     "description": "Lead from the front: shouts that steady the line, and one last push.",
-    "description_fr": "Mener de l’avant : des cris qui raffermissent la ligne, et un dernier effort.",
+    "description_fr": "Mener de l’avant : des cris qui raffermissent la ligne, et un dernier effort.",
     "skillIds": [
       "rallying_shout",
       "warcry",
@@ -119,7 +119,7 @@
     "branchName": "Venom",
     "branchName_fr": "Venin",
     "description": "Dirty fighting: whatever is at hand, and something on the blade.",
-    "description_fr": "Le combat sans règles : ce qui tombe sous la main, et quelque chose sur la lame.",
+    "description_fr": "Le combat sans règles : ce qui tombe sous la main, et quelque chose sur la lame.",
     "skillIds": [
       "improvised_strike",
       "rogue_poison_blade",
@@ -135,7 +135,7 @@
     "branchName": "Trickster",
     "branchName_fr": "Filou",
     "description": "Pockets, smoke and a second wind: the art of still being there afterwards.",
-    "description_fr": "Des poches, de la fumée et un second souffle : l’art d’être encore là après.",
+    "description_fr": "Des poches, de la fumée et un second souffle : l’art d’être encore là après.",
     "skillIds": [
       "rogue_quick_pockets",
       "rogue_smoke_bomb",
