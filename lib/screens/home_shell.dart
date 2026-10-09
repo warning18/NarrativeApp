@@ -288,6 +288,17 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               ),
             ),
           ),
+          // Edit Mode also has the world chart, whole: no fog, every place
+          // and every chapter's road (v1.209).
+          if (isEditMode)
+            IconButton(
+              key: const Key('home_world_map'),
+              icon: const Icon(Icons.map_outlined),
+              tooltip: tr(ref, 'world_map_title'),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const WorldMapPage()),
+              ),
+            ),
           // Clans & Politics (v1.193): standing, relations, their history
           // and the intrigues. In the story (v1.196) the same place opens
           // its read-only view, a dot while the coast's news waits unread.
