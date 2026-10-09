@@ -3339,7 +3339,7 @@ class _StoryWeather extends ConsumerWidget {
     final chapter = ref.watch(reachedChapterProvider);
     // What the sky brings where the story stands (v1.204), the burning
     // chapters' ash under a clear one.
-    final sky = ref.watch(skyHereProvider)?.now();
+    final sky = ref.watch(skyHereProvider)?.today();
     return WeatherLayer(
         weather: journeyWeatherOf(sky?.kind, chapter), strength: 0.3);
   }

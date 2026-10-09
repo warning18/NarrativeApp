@@ -1,8 +1,6 @@
 // The sky over the party (v1.204): what falls, how warm it is, where the
 // wind comes from and how high the ground stands, in a chip on the
-// Journey map, read again every few seconds as the clouds move.
-import 'dart:async';
-
+// Journey map: the day's sky, which holds still until the next turn.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,31 +13,10 @@ import '../l10n/app_strings.dart';
 import '../providers/climate_provider.dart';
 import '../theme/stitched_ink.dart';
 
-class WeatherChip extends ConsumerStatefulWidget {
+class WeatherChip extends ConsumerWidget {
   const WeatherChip({super.key, required this.palette});
 
   final ChartPalette palette;
-
-  @override
-  ConsumerState<WeatherChip> createState() => _WeatherChipState();
-}
-
-class _WeatherChipState extends ConsumerState<WeatherChip> {
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 4), (_) {
-      if (mounted) setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
 
   static IconData iconOf(WeatherKind kind) => switch (kind) {
         WeatherKind.clear => Icons.wb_sunny_outlined,
@@ -76,14 +53,13 @@ class _WeatherChipState extends ConsumerState<WeatherChip> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final here = ref.watch(skyHereProvider);
     if (here == null) return const SizedBox.shrink();
-    final sky = here.now();
-    final today = WeatherEffects.of(here.today().kind);
+    final sky = here.today();
+    final today = WeatherEffects.of(sky.kind);
     final tags = effects(ref, today);
     final ink = InkColors.of(context);
-    final palette = widget.palette;
     return Semantics(
       container: true,
       label: describe(ref, sky),

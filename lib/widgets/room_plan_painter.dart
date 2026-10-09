@@ -180,7 +180,9 @@ class RoomPlanPainter extends CustomPainter {
             Paint()..color = _dark.withValues(alpha: 0.12));
       case FurnitureKind.longTable ||
             FurnitureKind.counter ||
-            FurnitureKind.pew:
+            FurnitureKind.pew ||
+            FurnitureKind.desk ||
+            FurnitureKind.bench:
         canvas.drawRRect(
             RRect.fromRectAndRadius(
                 r.shift(const Offset(2, 3)), const Radius.circular(4)),
@@ -361,6 +363,77 @@ class RoomPlanPainter extends CustomPainter {
         canvas.drawLine(Offset(r.left, 0), Offset(r.right, 0), rail);
         for (var x = r.left; x <= r.right; x += 18) {
           canvas.drawLine(Offset(x, -8), Offset(x, 8), rail..strokeWidth = 2);
+        }
+      case FurnitureKind.wheel:
+        final rad = f.size.width / 2;
+        canvas.drawCircle(const Offset(2, 3), rad, shadow);
+        canvas.drawCircle(
+            Offset.zero, rad, Paint()..color = Color.lerp(wood, _dark, 0.3)!);
+        canvas.drawCircle(Offset.zero, rad, edge);
+        canvas.drawCircle(Offset.zero, rad * 0.72, edge..strokeWidth = 1.5);
+        for (var i = 0; i < 12; i++) {
+          final a = i * math.pi / 6;
+          canvas.drawLine(Offset(math.cos(a), math.sin(a)) * rad * 0.72,
+              Offset(math.cos(a), math.sin(a)) * rad * 0.97, edge);
+        }
+        canvas.drawCircle(Offset.zero, rad * 0.3, Paint()..color = stone);
+        canvas.drawCircle(Offset.zero, 6, Paint()..color = palette.mark);
+      case FurnitureKind.stage:
+        canvas.drawRect(r, Paint()..color = Color.lerp(wood, stone, 0.35)!);
+        for (var y = r.top + 18; y < r.bottom; y += 18) {
+          canvas.drawLine(Offset(r.left, y), Offset(r.right, y),
+              Paint()..color = _dark.withValues(alpha: 0.18));
+        }
+        canvas.drawRect(r, edge..strokeWidth = 3);
+        canvas.drawRect(Rect.fromLTWH(r.left, r.top, r.width, 16),
+            Paint()..color = _dark.withValues(alpha: 0.5));
+        for (var x = r.left + 20; x < r.right; x += 40) {
+          canvas.drawCircle(Offset(x, r.bottom - 7), 3.5,
+              Paint()..color = ember.withValues(alpha: 0.8));
+        }
+      case FurnitureKind.pool:
+        final rr = RRect.fromRectAndRadius(r, const Radius.circular(18));
+        canvas.drawRRect(rr.inflate(8), Paint()..color = stone);
+        canvas.drawRRect(rr.inflate(8), edge);
+        canvas.drawRRect(
+            rr, Paint()..color = Color.lerp(palette.sea, palette.land, 0.35)!);
+        canvas.drawRRect(rr, edge..strokeWidth = 1.5);
+        final ripple = Paint()
+          ..color = palette.seaLine.withValues(alpha: 0.5)
+          ..strokeWidth = 1.2;
+        for (var i = 1; i < 4; i++) {
+          final y = r.top + r.height * i / 4;
+          canvas.drawLine(
+              Offset(r.left + 20, y), Offset(r.right - 20, y), ripple);
+        }
+      case FurnitureKind.anvil:
+        canvas.drawRect(r.shift(const Offset(2, 3)), shadow);
+        canvas.drawRect(r, Paint()..color = Color.lerp(stone, _dark, 0.55)!);
+        canvas.drawRect(r, edge);
+        final horn = Path()
+          ..moveTo(r.right, r.top)
+          ..lineTo(r.right + 22, r.center.dy)
+          ..lineTo(r.right, r.bottom)
+          ..close();
+        canvas.drawPath(horn, Paint()..color = Color.lerp(stone, _dark, 0.55)!);
+        canvas.drawPath(horn, edge);
+      case FurnitureKind.rack:
+        canvas.drawRect(r, fill);
+        canvas.drawRect(r, edge);
+        final tick = Paint()
+          ..color = stone
+          ..strokeWidth = 2;
+        final along = f.size.height > f.size.width;
+        final n = ((along ? r.height : r.width) / 16).floor();
+        for (var i = 0; i < n; i++) {
+          final t = (i + 0.5) / n;
+          if (along) {
+            canvas.drawLine(Offset(r.left - 6, r.top + t * r.height),
+                Offset(r.right + 6, r.top + t * r.height), tick);
+          } else {
+            canvas.drawLine(Offset(r.left + t * r.width, r.top - 6),
+                Offset(r.left + t * r.width, r.bottom + 6), tick);
+          }
         }
       case FurnitureKind.rock:
         final path = Path();

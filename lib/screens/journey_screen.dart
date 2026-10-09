@@ -846,7 +846,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // The sky over the party (v1.204): what falls on the map, and the
     // ground's climate the town is laid out for.
     final skyHere = ref.watch(skyHereProvider);
-    final sky = skyHere?.now();
+    final sky = skyHere?.today();
     // A choice behind a politics gate that fails (v1.196) is hidden, or
     // shut with its locked text.
     final gateWorld = ref.watch(coastGateWorldProvider);
@@ -996,7 +996,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     var hereSpot = '';
     if (hereBuilding != null && !_outside) {
       room = RoomPlan.of(
-          seed: _stableSeed(hereBuilding.id), kind: hereBuilding.kind);
+          seed: _stableSeed(hereBuilding.id),
+          kind: RoomKind.resolve(hereBuilding.kind, hereBuilding.name));
       hereSpot = room.has(node.spot ?? '') ? node.spot! : 'floor';
       districtOfStep.clear();
       for (var i = 0; i < choices.length; i++) {
@@ -1375,24 +1376,36 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                         const SizedBox(height: 10),
                         TutorialTarget(
                           id: 'journey.pick',
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                                maxHeight:
-                                    math.max(104, area.maxHeight * 0.26)),
-                            child: _level == JourneyMapLevel.place
-                                ? _StepDetail(
-                                    step: selected,
-                                    busy: _busy,
-                                    french: french,
-                                    isExcursion: play.isInExcursion,
-                                    onGo: selected == null
-                                        ? null
-                                        : () => _take(_selected!, selected),
-                                  )
-                                : _LookedAtPanel(
-                                    landmark: _lookedAt,
-                                    language: language,
-                                  ),
+                          // A fixed height (v1.210): a way picked, or a
+                          // place looked at, fills the panel without
+                          // changing the map's height, so no mark moves.
+                          child: SizedBox(
+                            height: math.min(
+                                124.0, math.max(104.0, area.maxHeight * 0.26)),
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                    maxHeight: math.min(
+                                        124.0,
+                                        math.max(
+                                            104.0, area.maxHeight * 0.26))),
+                                child: _level == JourneyMapLevel.place
+                                    ? _StepDetail(
+                                        step: selected,
+                                        busy: _busy,
+                                        french: french,
+                                        isExcursion: play.isInExcursion,
+                                        onGo: selected == null
+                                            ? null
+                                            : () => _take(_selected!, selected),
+                                      )
+                                    : _LookedAtPanel(
+                                        landmark: _lookedAt,
+                                        language: language,
+                                      ),
+                              ),
+                            ),
                           ),
                         ),
                       ],

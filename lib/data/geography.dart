@@ -41,6 +41,13 @@ const List<String> geoBuildingKinds = [
   'cellar',
   'cave',
   'tower',
+  'casino',
+  'barracks',
+  'library',
+  'prison',
+  'forge',
+  'theatre',
+  'baths',
 ];
 
 /// What a location is: its icon and how it is listed.

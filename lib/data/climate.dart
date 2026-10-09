@@ -120,16 +120,15 @@ class ChartClimate {
   final Uint8List _land;
   final Int16List _zone;
 
-  /// How many real seconds the sky takes to live one of the story's days:
-  /// the clouds cross a land in a minute or two.
+  /// How far the sky's phase runs in one of the story's days (the wind
+  /// carries the clouds this far between two dawns).
   static const double secondsADay = 40;
-  static final Stopwatch _clock = Stopwatch()..start();
 
-  /// The sky's time on the story's [day]: that day, plus the time that
-  /// has passed since the app opened, so the clouds move while the map
-  /// is watched.
-  static double timeOf(int day) =>
-      day + _clock.elapsedMilliseconds / 1000 / secondsADay;
+  /// The sky's time on the story's [day] (v1.210): the middle of that day,
+  /// and fixed. The game plays turn by turn, so time stands still until
+  /// the player chooses: a sky never drifts, and it is the same wherever
+  /// and however closely it is looked at. A new day brings a new sky.
+  static double timeOf(int day) => day + 0.5;
 
   // ---------------------------------------------------------------- lay
 

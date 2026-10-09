@@ -1,14 +1,14 @@
 // The weather over the chart (v1.204, see climate.dart): clouds carried
 // on the wind with their shadows on the land, rain slanting under them,
 // snow over the cold lands, dust over the dry ones and ash over the
-// burnt, all moving while the map is watched. Painted on its own layer
-// over the chart, so the chart itself is not drawn again for every
-// cloud.
+// burnt. The sky holds still (v1.210): the game plays turn by turn, so
+// nothing drifts until the story's day turns, and zooming or turning the
+// map shows the same clouds. Painted on its own layer over the chart, so
+// the chart itself is not drawn again for every cloud.
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 import '../data/chart_globe.dart';
 import '../data/climate.dart';
@@ -16,7 +16,7 @@ import '../data/map_charts.dart';
 import '../data/world_map.dart';
 
 /// The weather layer: a canvas the size of the chart (or of the globe's
-/// box), ticking on its own clock.
+/// box), painted once for the day's sky.
 class ChartWeather extends StatefulWidget {
   const ChartWeather({
     super.key,
@@ -25,30 +25,18 @@ class ChartWeather extends StatefulWidget {
     required this.palette,
     required this.day,
     this.globe,
-    this.zoomOf,
-    this.visibleOf,
     this.showOf,
-    this.still = false,
   });
 
   final Size size;
   final ChartGeography geography;
   final ChartPalette palette;
 
-  /// The story's day: the sky's time runs from it.
+  /// The story's day: the sky is the day's.
   final int day;
 
   /// The chart as a sphere, or flat.
   final GlobeView? globe;
-
-  /// How close the chart is looked at (1 = the whole of it in the box).
-  final double Function()? zoomOf;
-
-  /// The part of the chart in view (chart units), to paint only that.
-  final Rect Function()? visibleOf;
-
-  /// No motion: one still sky.
-  final bool still;
 
   /// Whether the sky is drawn at all right now (v1.208): the Layers sheet
   /// can keep it to the world zoom.
@@ -59,10 +47,7 @@ class ChartWeather extends StatefulWidget {
 }
 
 class _ChartWeatherState extends State<ChartWeather>
-    with TickerProviderStateMixin {
-  late final Ticker _ticker;
-  final ValueNotifier<double> _clock = ValueNotifier(0);
-
+    with SingleTickerProviderStateMixin {
   /// The sky fades in as the chart opens (v1.208), rather than popping.
   late final AnimationController _fade = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 420));
@@ -70,33 +55,11 @@ class _ChartWeatherState extends State<ChartWeather>
   @override
   void initState() {
     super.initState();
-    _ticker = createTicker((elapsed) {
-      _clock.value = elapsed.inMilliseconds / 1000;
-    });
-    if (!widget.still) _ticker.start();
-    if (widget.still) {
-      _fade.value = 1;
-    } else {
-      _fade.forward();
-    }
-  }
-
-  @override
-  void didUpdateWidget(ChartWeather old) {
-    super.didUpdateWidget(old);
-    if (old.still != widget.still) {
-      if (widget.still) {
-        _ticker.stop();
-      } else {
-        _ticker.start();
-      }
-    }
+    _fade.forward();
   }
 
   @override
   void dispose() {
-    _ticker.dispose();
-    _clock.dispose();
     _fade.dispose();
     super.dispose();
   }
@@ -110,13 +73,10 @@ class _ChartWeatherState extends State<ChartWeather>
           child: CustomPaint(
             size: widget.size,
             painter: ChartWeatherPainter(
-              clock: _clock,
               geography: widget.geography,
               palette: widget.palette,
               day: widget.day,
               globe: widget.globe,
-              zoomOf: widget.zoomOf,
-              visibleOf: widget.visibleOf,
               showOf: widget.showOf,
             ),
           ),
@@ -129,27 +89,20 @@ class _ChartWeatherState extends State<ChartWeather>
 /// Paints the sky of one moment over the chart.
 class ChartWeatherPainter extends CustomPainter {
   ChartWeatherPainter({
-    required this.clock,
     required this.geography,
     required this.palette,
     required this.day,
     this.globe,
-    this.zoomOf,
-    this.visibleOf,
     this.showOf,
-  }) : super(repaint: clock);
+  });
 
-  final ValueNotifier<double> clock;
   final ChartGeography geography;
   final ChartPalette palette;
   final int day;
   final GlobeView? globe;
-  final double Function()? zoomOf;
-  final Rect Function()? visibleOf;
   final bool Function()? showOf;
 
-  /// The sky's time: the story's day, and the seconds this layer has
-  /// been watched (the app's clock, so every map agrees).
+  /// The sky's time: the day's, fixed (see ChartClimate.timeOf).
   double get time => ChartClimate.timeOf(day);
 
   @override
@@ -157,7 +110,6 @@ class ChartWeatherPainter extends CustomPainter {
     if (showOf?.call() == false) return;
     final climate = ChartClimate.of(geography);
     final t = time;
-    final zoom = (zoomOf?.call() ?? 1).clamp(1.0, 12.0);
     final k = size.width / worldMapWidth;
     canvas.save();
     canvas.clipRect(Offset.zero & size);
@@ -165,23 +117,19 @@ class ChartWeatherPainter extends CustomPainter {
     final whole = globe == null
         ? ChartClimate.bounds
         : Rect.fromLTWH(0, 0, size.width / k, size.height / k);
-    // The cells of sky: closer in, finer, over the part in view only.
-    final step = (5.2 / math.sqrt(zoom)).clamp(2.0, 5.2);
-    final shown = globe == null
-        ? (visibleOf?.call() ?? ChartClimate.bounds)
-            .inflate(step * 2)
-            .intersect(ChartClimate.bounds)
-        : ChartClimate.bounds;
+    // The cells of sky: the same lattice however close the chart is
+    // looked at (v1.210), so zooming never reshapes the clouds.
+    final step = globe == null ? 3.2 : 4.4;
+    final shown = ChartClimate.bounds;
     final g = globe;
     Offset at(Offset p) => g?.clamp(p) ?? p;
     bool vis(Offset p) => g?.visible(p) ?? true;
-    // The sky's cells are worked out a few times a second, not every
-    // frame: the clouds move slowly, only what falls needs each frame.
+    // The sky's cells are worked out once for the day (again only when
+    // the sphere turns).
     final cacheKey =
-        '${identityHashCode(geography)}:$step:$shown:${g?.key}:${size.width}';
+        '${identityHashCode(geography)}:$step:$t:${g?.key}:${size.width}';
     final List<(Offset, Offset, WeatherSample)> cells;
-    if (_cellsKey == cacheKey &&
-        (t - _cellsAt).abs() * ChartClimate.secondsADay < 0.25) {
+    if (_cellsKey == cacheKey) {
       cells = _cells;
     } else {
       cells = [];
@@ -201,7 +149,6 @@ class ChartWeatherPainter extends CustomPainter {
       }
       _cells = cells;
       _cellsKey = cacheKey;
-      _cellsAt = t;
     }
     if (cells.isEmpty) {
       canvas.restore();
@@ -335,7 +282,6 @@ class ChartWeatherPainter extends CustomPainter {
   /// The cells last worked out, for the frames between (see paint).
   static List<(Offset, Offset, WeatherSample)> _cells = const [];
   static String _cellsKey = '';
-  static double _cellsAt = -1;
 
   /// The ink line round each cloud bank: marching squares over the sky's
   /// cells at half cover, each segment drawn with a slight waver.
@@ -446,6 +392,5 @@ class ChartWeatherPainter extends CustomPainter {
       old.geography != geography ||
       old.palette != palette ||
       old.day != day ||
-      old.globe?.key != globe?.key ||
-      old.zoomOf != zoomOf;
+      old.globe?.key != globe?.key;
 }

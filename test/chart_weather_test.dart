@@ -101,7 +101,8 @@ void main() {
   });
 
   group('the weather layer', () {
-    testWidgets('paints the sky and moves with its clock', (tester) async {
+    testWidgets('paints the sky, then holds still: no frame is asked for',
+        (tester) async {
       final geo = chartOf(MapShape.archipelago);
       await tester.pumpWidget(MaterialApp(
         home: Center(
@@ -110,8 +111,6 @@ void main() {
             geography: geo,
             palette: ChartPalette.of(MapLook.night),
             day: 4,
-            zoomOf: () => 2.5,
-            visibleOf: () => const Rect.fromLTWH(40, 30, 120, 90),
           ),
         ),
       ));
@@ -119,7 +118,10 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       await tester.pump(const Duration(milliseconds: 300));
       expect(tester.takeException(), isNull);
-      // On the sphere, too, and still when motion is off.
+      // The fade done, the sky asks for no more frames: time stands still
+      // until the story's day turns (v1.210).
+      expect(tester.binding.hasScheduledFrame, isFalse);
+      // On the sphere, too.
       await tester.pumpWidget(MaterialApp(
         home: Center(
           child: ChartWeather(
@@ -129,8 +131,6 @@ void main() {
             day: 4,
             globe: GlobeView.at(
                 const Offset(100, 60), 1.5, const Offset(150, 150)),
-            zoomOf: () => 1.5,
-            still: true,
           ),
         ),
       ));
@@ -198,7 +198,6 @@ void main() {
             geography: chartOf(MapShape.archipelago),
             palette: ChartPalette.of(MapLook.night),
             day: 4,
-            zoomOf: () => 3,
             showOf: () => false,
           ),
         ),
