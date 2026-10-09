@@ -687,7 +687,7 @@ SimFightOutcome simulateSimFight({
     );
     if (clashOff.contains(goal.kind.name)) goal = FightGoal.slay;
   }
-  if (on('squad')) {
+  if (on('squad') && chapter >= squadFirstChapter) {
     roles = rollSquadRoles(
       packSize: enemies.length,
       eligible: [for (final b in bossFlags) !b],
@@ -739,7 +739,7 @@ SimFightOutcome simulateSimFight({
           damage: damage,
         )
           ..role = roles[i]
-          ..response = on('response')
+          ..response = on('response') && chapter >= squadFirstChapter
               ? enemyResponseFromName(entry.value['reaction']?.toString())
               : EnemyResponse.none;
       }(),

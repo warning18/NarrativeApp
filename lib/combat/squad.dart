@@ -19,6 +19,10 @@ enum SquadRole { healer, guard, striker }
 /// The odds a pack of two or more has roles at all.
 const double squadChance = 0.5;
 
+/// The first chapter squads and answering enemies appear in: the opening
+/// chapter teaches the plain rules.
+const int squadFirstChapter = 2;
+
 /// The share of a wounded friend's maximum health a healer mends each
 /// enemy turn.
 const double healerHealShare = 0.12;

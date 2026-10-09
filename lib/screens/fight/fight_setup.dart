@@ -98,7 +98,7 @@ extension _FightSetup on _FightScreenState {
     // The pack's squad (v1.215, see squad.dart): none for a lesson, a test
     // or a boss.
     final roles = modifiers.forcedSquad ??
-        (lesson || modifiers.isTest
+        (lesson || modifiers.isTest || _chapter < squadFirstChapter
             ? List<SquadRole?>.filled(entries.length, null)
             : rollSquadRoles(
                 packSize: entries.length,
@@ -249,7 +249,9 @@ extension _FightSetup on _FightScreenState {
     )
       ..phases = parseBossPhases(raw)
       ..role = role
-      ..response = enemyResponseFromName(raw['reaction']?.toString());
+      ..response = _chapter < squadFirstChapter
+          ? EnemyResponse.none
+          : enemyResponseFromName(raw['reaction']?.toString());
   }
 
   /// Builds [_party] (the player plus every currently-active ally) once
