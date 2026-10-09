@@ -73,6 +73,30 @@
         "unlessFlags": [],
         "line": "You burned him with his own Hooded Lantern in the Lantern Hall, and nobody asked for the ashes.",
         "line_fr": "Vous l’avez brûlé avec sa propre Lanterne encapuchonnée dans la Salle de la Lanterne, et personne ne réclama les cendres."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtMost": {
+            "dominion": -26
+          }
+        },
+        "line": "The Inquisition has your name on a writ; every hooded lantern on the coast is looking for your face, and he knows it well.",
+        "line_fr": "L’Inquisition a votre nom sur un mandat ; chaque lanterne encapuchonnée de la côte cherche votre visage, et lui le connaît bien."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "marks": {
+            "inquisition": "friend"
+          }
+        },
+        "line": "The Inquisition has marked you a friend; he calls it a down-payment, and has not said on what.",
+        "line_fr": "L’Inquisition a votre nom parmi ses amis ; il appelle cela un acompte, et n’a pas dit sur quoi."
       }
     ],
     "dialogueLines": [],
@@ -287,6 +311,30 @@
         "unlessFlags": [],
         "line": "You gave the toll he had collected back to Tern Row, to the last copper.",
         "line_fr": "Vous avez rendu à Tern Row le péage qu’il avait extorqué, jusqu’au dernier sou."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtMost": {
+            "dominion": -26
+          }
+        },
+        "line": "The Dominion has your name on its lists; he no longer bothers to be polite, and his man stands closer.",
+        "line_fr": "Le Dominion a votre nom sur ses listes ; il ne prend plus la peine d’être poli, et son homme se tient plus près."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "dominion": 26
+          }
+        },
+        "line": "The Dominion counts you a friend; he salutes you on Tern Row and keeps his tolls out of your sight.",
+        "line_fr": "Le Dominion vous tient en amitié ; il vous salue sur Tern Row et garde ses péages hors de votre vue."
       }
     ],
     "dialogueLines": [],
@@ -333,6 +381,30 @@
         "unlessFlags": [],
         "line": "Her people came to the Hollow Shore with a paper lantern at every bow, to light your crossing.",
         "line_fr": "Les siens vinrent sur la Rive Creuse, une lanterne de papier à chaque proue, pour éclairer votre traversée."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "tidekin": 26
+          }
+        },
+        "line": "The Tide-Kin count you one of the Row’s own; a paper boat is lit for you at dusk, in case the sea does not give you back.",
+        "line_fr": "Les Gens de la Marée vous comptent parmi ceux de Tern Row ; on allume pour vous un bateau de papier au crépuscule, au cas où la mer ne vous rendrait pas."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtMost": {
+            "tidekin": -6
+          }
+        },
+        "line": "Tern Row has heard what you do on the water; she speaks to you the way she speaks to the Inquisition, carefully.",
+        "line_fr": "Tern Row a entendu ce que vous faites sur l’eau ; elle vous parle comme elle parle à l’Inquisition, avec précaution."
       }
     ],
     "dialogueLines": [],
@@ -412,6 +484,30 @@
         "unlessFlags": [],
         "line": "You put out the First Lantern in her hands, for the first time in six hundred years, and she lay beside it.",
         "line_fr": "Vous avez éteint la Première Lanterne entre ses mains, pour la première fois en six cents ans, et elle resta étendue à côté."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "dominion": 61
+          }
+        },
+        "line": "The Dominion counts you sworn; she sends oil to your camp without being asked, and still asks for nothing.",
+        "line_fr": "Le Dominion vous compte parmi les siens ; elle envoie de l’huile à votre campement sans qu’on le lui demande, et ne demande toujours rien."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "marks": {
+            "wickwardens": "friend"
+          }
+        },
+        "line": "The Wickwardens have marked you a friend; every lamp of theirs on the coast is lit a little earlier when you pass.",
+        "line_fr": "Les Garde-Mèches ont votre nom parmi leurs amis ; chacune de leurs lampes sur la côte s’allume un peu plus tôt à votre passage."
       }
     ],
     "dialogueLines": [],
@@ -477,6 +573,18 @@
         "unlessFlags": [],
         "line": "You broke him before his knights at the top of the stair, and they left him where he fell, his lantern still lit on his sword.",
         "line_fr": "Vous l’avez brisé devant ses chevaliers en haut de l’escalier, et ils le laissèrent là où il était tombé, la lanterne encore allumée à son épée."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "marks": {
+            "order": "friend"
+          }
+        },
+        "line": "The Order has marked you a friend; its knights stand aside for you on the road, and the Grand Master asks after your edge.",
+        "line_fr": "L’Ordre a votre nom parmi ses amis ; ses chevaliers s’écartent pour vous sur la route, et le Grand Maître demande des nouvelles de votre fil."
       }
     ],
     "dialogueLines": [],
@@ -580,7 +688,32 @@
     "metFlags": [],
     "shopId": "",
     "requiredFlag": "",
-    "states": [],
+    "states": [
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "dominion": 26
+          }
+        },
+        "line": "The Dominion counts you a friend; he speaks of the Black Hold the way a clerk speaks of an error in the carrying, and keeps the mask on.",
+        "line_fr": "Le Dominion vous tient en amitié ; il parle de la Geôle Noire comme un clerc parle d’une erreur de report, et garde le masque."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtMost": {
+            "dominion": -26
+          }
+        },
+        "line": "The Dominion has your name again; the chair in the Black Hold is kept ready, and the questions about the cloth are the same.",
+        "line_fr": "Le Dominion a de nouveau votre nom ; la chaise de la Geôle Noire est tenue prête, et les questions sur l’étoffe sont les mêmes."
+      }
+    ],
     "dialogueLines": [],
     "dialogueLines_fr": []
   },
@@ -620,6 +753,30 @@
         ],
         "line": "You did not leave her door alone, or sold her key outright; the Keyholders will not give you another.",
         "line_fr": "Vous n’avez pas laissé sa porte tranquille, ou bien avez vendu sa clef ; les Porte-Clefs ne vous en confieront pas d’autre."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "crows": 61
+          }
+        },
+        "line": "The Keyholders count you one of their own now; the key she gave you was the first of many.",
+        "line_fr": "Les Porte-Clefs vous comptent désormais parmi les leurs ; la clef qu’elle vous a remise fut la première d’une longue série."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtMost": {
+            "crows": -26
+          }
+        },
+        "line": "The Salt Crows have a price on your name, and she keeps her hand in her pocket when you pass; whatever it holds now, it is not a key.",
+        "line_fr": "Les Corneilles de Sel ont mis un prix sur votre nom, et elle garde la main dans sa poche quand vous passez ; quoi qu’elle y tienne, ce n’est plus une clef."
       }
     ],
     "dialogueLines": [],
@@ -659,6 +816,30 @@
         "unlessFlags": [],
         "line": "You opened her reliquary yourself and left the girl's bones in the frost; she did not look at you again.",
         "line_fr": "Vous avez ouvert son reliquaire vous-même et laissé les os de la fillette dans le givre ; elle ne leva plus les yeux sur vous."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "marks": {
+            "reliquary": "friend"
+          }
+        },
+        "line": "The Black Reliquary counts you a friend, and she keeps her hand on her chapel’s reliquary while you are in it.",
+        "line_fr": "Le Reliquaire Noir vous tient en amitié, et elle garde la main sur le reliquaire de sa chapelle tant que vous y êtes."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "marks": {
+            "reliquary": "foe"
+          }
+        },
+        "line": "The Black Reliquary counts you a foe; she unrolls her charts for you without being asked.",
+        "line_fr": "Le Reliquaire Noir vous tient pour hostile ; elle déroule ses cartes pour vous sans qu’on le lui demande."
       }
     ],
     "dialogueLines": [],
@@ -951,6 +1132,18 @@
         "unlessFlags": [],
         "line": "You brought her a rubbing of every name on the tally-stone, and word of Gorm; she read them aloud in the moot-hall all night, and nobody left.",
         "line_fr": "Vous lui avez apporté un frottis de chaque nom de la pierre de compte, et des nouvelles de Gorm ; elle les lut à voix haute dans la salle du conseil toute la nuit, et personne ne partit."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "giants": 26
+          }
+        },
+        "line": "Highhearth counts you a guest; a bowl is set for you at the moot-hall fire, and she remembers which one is yours.",
+        "line_fr": "Haut-Âtre vous compte parmi ses hôtes ; un bol est posé pour vous près du feu de la salle du conseil, et elle se souvient duquel est le vôtre."
       }
     ],
     "dialogueLines": [],
@@ -999,6 +1192,18 @@
         ],
         "line": "You brought the Horn-Taker's chest down to Akagiri, and kept its silver fittings for yourself.",
         "line_fr": "Vous avez descendu le coffre du Preneur de Cornes jusqu’à Akagiri, et gardé ses ferrures d’argent pour vous."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "oni": 26
+          }
+        },
+        "line": "The oni count you a friend of Akagiri; he lets you stand at his anvil, which he lets no pilgrim do.",
+        "line_fr": "Les oni vous tiennent en amitié à Akagiri ; il vous laisse vous tenir à son enclume, ce qu’il n’accorde à aucun pèlerin."
       }
     ],
     "dialogueLines": [],
@@ -1111,6 +1316,18 @@
         ],
         "line": "You took him out to see his ship, and asked him for her soundings instead of giving him his goodbye.",
         "line_fr": "Vous l’avez emmené revoir son navire, et lui avez demandé ses sondes plutôt que de lui laisser ses adieux."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "marks": {
+            "admiralty": "friend"
+          }
+        },
+        "line": "The Admiralty has marked you a friend; he says the Admiral would have given you the wheel, and means it as a warning.",
+        "line_fr": "L’Amirauté a votre nom parmi ses amis ; il dit que l’Amiral vous aurait confié la barre, et l’entend comme un avertissement."
       }
     ],
     "dialogueLines": [],
@@ -1179,6 +1396,18 @@
         "unlessFlags": [],
         "line": "You kept the Admiralty's vote for your own claim.",
         "line_fr": "Vous avez gardé la voix de l’Amirauté pour votre propre prétention."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "marks": {
+            "admiralty": "friend"
+          }
+        },
+        "line": "The Admiralty has marked you a friend; he prays for you with the fleet’s dead, by name, and has stopped apologising for the company.",
+        "line_fr": "L’Amirauté a votre nom parmi ses amis ; il prie pour vous avec les morts de la flotte, nommément, et a cessé de s’excuser de la compagnie."
       }
     ],
     "dialogueLines": [],
@@ -1359,7 +1588,8 @@
     "want": "His crew's wages out of the Salt Ledger's hands and into theirs.",
     "want_fr": "Les gages de son équipe hors des mains du Registre du Sel, et dans les leurs.",
     "metNodes": [
-      "2015_dorran"
+      "2015_dorran",
+      "3005_dorran_later"
     ],
     "metFlags": [],
     "shopId": "",
@@ -1385,6 +1615,33 @@
         "unlessFlags": [],
         "line": "You split the wages between the crew and the Ledger and kept the yard quiet; Dorran took it, and did not thank you for it.",
         "line_fr": "Vous avez partagé les gages entre l’équipe et le Registre, et le chantier est resté calme ; Dorran a accepté, sans vous en remercier."
+      },
+      {
+        "flag": "hub_3005_dorran_later",
+        "andFlags": [
+          "scaffold_paid"
+        ],
+        "unlessFlags": [],
+        "line": "Dorran counts you a friend of the scaffolds and sends his riggers up the coast with thanks and hemp.",
+        "line_fr": "Dorran vous compte parmi les amis des échafauds et envoie ses gréeurs sur la côte avec des remerciements et du chanvre."
+      },
+      {
+        "flag": "hub_3005_dorran_later",
+        "andFlags": [
+          "scaffold_skimmed"
+        ],
+        "unlessFlags": [],
+        "line": "Dorran sends no one after you now, and the yard remembers whose coin it was.",
+        "line_fr": "Dorran n’envoie plus personne vous chercher, et le chantier se souvient de qui était cette pièce."
+      },
+      {
+        "flag": "hub_3005_dorran_later",
+        "andFlags": [
+          "scaffold_split"
+        ],
+        "unlessFlags": [],
+        "line": "Dorran keeps you in his accounts as half a debt, paid and unthanked.",
+        "line_fr": "Dorran vous garde dans ses comptes comme une demi-dette, payée et sans remerciement."
       }
     ],
     "dialogueLines": [],
@@ -1405,7 +1662,8 @@
     "want": "Her glass proven and her stall standing when the Choir's fire comes.",
     "want_fr": "Son verre prouvé et son étal debout quand viendra le feu du Chœur.",
     "metNodes": [
-      "3005_imeh"
+      "3005_imeh",
+      "5010_imeh_later"
     ],
     "metFlags": [],
     "shopId": "",
@@ -1431,6 +1689,33 @@
         "unlessFlags": [],
         "line": "You carried her glass to the camp before the fire reached it; it sells there now, and Imeh with it.",
         "line_fr": "Vous avez porté son verre jusqu’au camp avant que le feu ne l’atteigne ; il s’y vend désormais, et Imeh avec."
+      },
+      {
+        "flag": "hub_5010_imeh_later",
+        "andFlags": [
+          "glass_defended"
+        ],
+        "unlessFlags": [],
+        "line": "Imeh sells terrace glass in your name and sends the first share of every crate back to you.",
+        "line_fr": "Imeh vend du verre des terrasses en votre nom et vous renvoie la première part de chaque caisse."
+      },
+      {
+        "flag": "hub_5010_imeh_later",
+        "andFlags": [
+          "glass_burned"
+        ],
+        "unlessFlags": [],
+        "line": "Imeh sends one message by bell-boat, that the glass would have held if anyone had stood beside it, and no second.",
+        "line_fr": "Imeh n’envoie qu’un message par la barque à cloche, que le verre aurait tenu si quelqu’un était resté à côté, et pas un second."
+      },
+      {
+        "flag": "hub_5010_imeh_later",
+        "andFlags": [
+          "glass_carried"
+        ],
+        "unlessFlags": [],
+        "line": "Imeh sells under a roof at the camp and calls the green cup she sent you the glass saying thank you.",
+        "line_fr": "Imeh vend à l’abri d’un toit au camp et appelle la coupe verte qu’elle vous a envoyée le verre qui dit merci."
       }
     ],
     "dialogueLines": [],
@@ -1451,7 +1736,8 @@
     "want": "His season's bark back from the Keyholders' cache, before the fever takes the cloister.",
     "want_fr": "Retrouver l’écorce de sa saison dans la cache des Porte-Clés, avant que la fièvre n’emporte le cloître.",
     "metNodes": [
-      "5010_brannoc"
+      "5010_brannoc",
+      "6010_brannoc_later"
     ],
     "metFlags": [],
     "shopId": "",
@@ -1477,6 +1763,33 @@
         "unlessFlags": [],
         "line": "You gave Brannoc half the bark and kept half for the camp infirmary; he called it fair with his mouth and not with his eyes.",
         "line_fr": "Vous avez donné à Brannoc la moitié de l’écorce et gardé l’autre pour l’infirmerie du camp ; il a dit que c’était juste, de la bouche mais pas des yeux."
+      },
+      {
+        "flag": "hub_6010_brannoc_later",
+        "andFlags": [
+          "bark_returned"
+        ],
+        "unlessFlags": [],
+        "line": "Brannoc sends fen-leaf packets up the long road for you, and the Barkbleeders keep a place for you on the ledge.",
+        "line_fr": "Brannoc vous envoie des paquets de feuilles du marais par la longue route, et les Saigne-Écorce vous gardent une place sur la corniche."
+      },
+      {
+        "flag": "hub_6010_brannoc_later",
+        "andFlags": [
+          "bark_sold"
+        ],
+        "unlessFlags": [],
+        "line": "Brannoc has counted the sick who went without and sent you the number, and he has not sent anything since.",
+        "line_fr": "Brannoc a compté les malades qui s’en sont passés et vous a envoyé le nombre, et n’a rien envoyé depuis."
+      },
+      {
+        "flag": "hub_6010_brannoc_later",
+        "andFlags": [
+          "bark_kept"
+        ],
+        "unlessFlags": [],
+        "line": "Brannoc works with half a cure and calls your half fair in words, and sends no packet for the camp.",
+        "line_fr": "Brannoc travaille avec une demi-guérison et appelle juste votre moitié en paroles, et n’envoie aucun paquet au camp."
       }
     ],
     "dialogueLines": [],
@@ -1497,7 +1810,8 @@
     "want": "The count carried back from the tally stone and given to someone who will keep it.",
     "want_fr": "Que le compte soit rapporté de la pierre des noms et confié à qui le gardera.",
     "metNodes": [
-      "6010_orsabet"
+      "6010_orsabet",
+      "7100_orsabet_later"
     ],
     "metFlags": [],
     "shopId": "",
@@ -1523,6 +1837,33 @@
         "unlessFlags": [],
         "line": "You read the names aloud at the quarter's gate, every one of them; Orsabet stood through all of it, and lit no candle that night.",
         "line_fr": "Vous avez lu les noms à voix haute à la porte du quartier, chacun d’eux ; Orsabet est restée debout jusqu’au bout, et n’a allumé aucune chandelle ce soir-là."
+      },
+      {
+        "flag": "hub_7100_orsabet_later",
+        "andFlags": [
+          "count_to_vigil"
+        ],
+        "unlessFlags": [],
+        "line": "Orsabet sleeps now, lights one candle a night for the count, and sent you a flame for the road.",
+        "line_fr": "Orsabet dort désormais, allume une chandelle par nuit pour le compte, et vous a envoyé une flamme pour la route."
+      },
+      {
+        "flag": "hub_7100_orsabet_later",
+        "andFlags": [
+          "count_sealed"
+        ],
+        "unlessFlags": [],
+        "line": "Orsabet lights a candle each night for names no one will read, and says she does not blame you.",
+        "line_fr": "Orsabet allume chaque soir une chandelle pour des noms que personne ne lira, et dit qu’elle ne vous en veut pas."
+      },
+      {
+        "flag": "hub_7100_orsabet_later",
+        "andFlags": [
+          "count_read"
+        ],
+        "unlessFlags": [],
+        "line": "Orsabet lights a candle each night for a different reason, and kept the last of the reading night for you.",
+        "line_fr": "Orsabet allume chaque soir une chandelle pour une autre raison, et a gardé pour vous la dernière de la nuit de la lecture."
       }
     ],
     "dialogueLines": [],
@@ -1543,7 +1884,8 @@
     "want": "The hearth-stone's quarry face left to the giants who were cut from it.",
     "want_fr": "Que le front de carrière de la pierre du foyer reste aux géants qui en sont issus.",
     "metNodes": [
-      "6200_ghrem"
+      "6200_ghrem",
+      "7100_ghrem_later"
     ],
     "metFlags": [],
     "shopId": "",
@@ -1569,6 +1911,33 @@
         "unlessFlags": [],
         "line": "You split the face between the giants and the Quarrymen; Ghrem called it the first bargain Highhearth had made in a century, and not a good one.",
         "line_fr": "Vous avez partagé le front entre les géants et les Carriers ; Ghrem y a vu le premier marché conclu par Haut-Âtre en un siècle, et pas un bon."
+      },
+      {
+        "flag": "hub_7100_ghrem_later",
+        "andFlags": [
+          "hearth_stone_kept"
+        ],
+        "unlessFlags": [],
+        "line": "Ghrem carried a chip of the hearth-stone against his chest the whole road to the sea, and gave it to you.",
+        "line_fr": "Ghrem a porté un éclat de la pierre du foyer contre sa poitrine tout le chemin jusqu’à la mer, et vous l’a donné."
+      },
+      {
+        "flag": "hub_7100_ghrem_later",
+        "andFlags": [
+          "hearth_stone_cut"
+        ],
+        "unlessFlags": [],
+        "line": "Ghrem sat beside you at the sea and said nothing, and Highhearth does not speak your name.",
+        "line_fr": "Ghrem s’est assis près de vous au bord de la mer sans rien dire, et Haut-Âtre ne prononce pas votre nom."
+      },
+      {
+        "flag": "hub_7100_ghrem_later",
+        "andFlags": [
+          "hearth_stone_split"
+        ],
+        "unlessFlags": [],
+        "line": "Ghrem has decided to be glad of half a face, and asks you not to make him say so twice.",
+        "line_fr": "Ghrem a décidé de se réjouir d’une moitié de front, et vous demande de ne pas le lui faire dire deux fois."
       }
     ],
     "dialogueLines": [],
@@ -1589,7 +1958,8 @@
     "want": "His salvage out of the Admiralty's impound and back in Brig-Born hands.",
     "want_fr": "Sa prise hors de la fourrière de l’Amirauté et de retour entre les mains des Enfants du Brick.",
     "metNodes": [
-      "7100_nkem"
+      "7100_nkem",
+      "7800_nkem_later"
     ],
     "metFlags": [],
     "shopId": "",
@@ -1615,6 +1985,33 @@
         "unlessFlags": [],
         "line": "You sold the salvage to the wreck-wrights and kept the coin; Nkem got neither his haul nor a share of it.",
         "line_fr": "Vous avez vendu la prise aux charpentiers d’épaves et gardé l’argent ; Nkem n’a eu ni sa prise, ni une part."
+      },
+      {
+        "flag": "hub_7800_nkem_later",
+        "andFlags": [
+          "salvage_to_crows"
+        ],
+        "unlessFlags": [],
+        "line": "Nkem has paid you your share of the bronze, and a Brig-Born boat now answers when the Host calls.",
+        "line_fr": "Nkem vous a payé votre part du bronze, et une barque des Enfants du Brick répond désormais quand l’Ost appelle."
+      },
+      {
+        "flag": "hub_7800_nkem_later",
+        "andFlags": [
+          "salvage_to_admiralty"
+        ],
+        "unlessFlags": [],
+        "line": "Nkem lost his haul twice, the second time to you, and sails with the Host as a hired boat and nothing more.",
+        "line_fr": "Nkem a perdu sa prise deux fois, la seconde par votre main, et navigue avec l’Ost comme barque louée, et rien de plus."
+      },
+      {
+        "flag": "hub_7800_nkem_later",
+        "andFlags": [
+          "salvage_sold"
+        ],
+        "unlessFlags": [],
+        "line": "Nkem is here for the sea and not for you, and his boat floats without your help.",
+        "line_fr": "Nkem est là pour la mer et pas pour vous, et sa barque flotte sans votre aide."
       }
     ],
     "dialogueLines": [],
@@ -1660,7 +2057,32 @@
     "metFlags": [],
     "shopId": "black_market_docks",
     "requiredFlag": "",
-    "states": [],
+    "states": [
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "crows": 26
+          }
+        },
+        "line": "The Crows trust you; the shelves at the back of the Tide Cellar, where the unlogged boats unload, are open to you.",
+        "line_fr": "Les Corneilles vous font confiance ; les rayons du fond de la Cave aux Marées, où déchargent les bateaux jamais enregistrés, vous sont ouverts."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtMost": {
+            "crows": -6
+          }
+        },
+        "line": "The Crows are wary of you; he sells you what is on the front shelf and watches your hands the whole while.",
+        "line_fr": "Les Corneilles se méfient de vous ; il vous vend ce qui est sur le rayon de devant et surveille vos mains tout du long."
+      }
+    ],
     "dialogueLines": [],
     "dialogueLines_fr": []
   },
@@ -1682,7 +2104,32 @@
     "metFlags": [],
     "shopId": "weaponsmith_forge",
     "requiredFlag": "",
-    "states": [],
+    "states": [
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "compact": 26
+          }
+        },
+        "line": "The Compact’s good word is on you; he sells at the Compact’s rate and throws in the whetting.",
+        "line_fr": "La bonne parole du Pacte est sur vous ; il vend au tarif du Pacte et offre l’affûtage."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtMost": {
+            "compact": -26
+          }
+        },
+        "line": "The Compact has frowned on you; no blade leaves his rack in your hands, ordered or not.",
+        "line_fr": "Le Pacte vous regarde de travers ; aucune lame ne quitte son râtelier entre vos mains, commandée ou non."
+      }
+    ],
     "dialogueLines": [],
     "dialogueLines_fr": []
   },
@@ -1763,6 +2210,30 @@
         "unlessFlags": [],
         "line": "You bought from her jars on the wharf and learned more about the district's shipping than she meant to sell you.",
         "line_fr": "Vous avez acheté dans ses bocaux sur le quai et appris sur les routes maritimes du quartier plus qu’elle ne comptait vous en vendre."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "mire": 26
+          }
+        },
+        "line": "The Courts count you a guest; her jars are open to you at the reeds’ price.",
+        "line_fr": "Les Cours vous comptent parmi leurs hôtes ; ses bocaux vous sont ouverts au prix des roseaux."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtMost": {
+            "mire": -6
+          }
+        },
+        "line": "The Courts have heard about you; she sells you bark by the ounce and asks twice what hurts.",
+        "line_fr": "Les Cours ont entendu parler de vous ; elle vous vend l’écorce à l’once et demande deux fois ce qui fait mal."
       }
     ],
     "dialogueLines": [],
@@ -1786,7 +2257,32 @@
     "metFlags": [],
     "shopId": "smugglers_vault",
     "requiredFlag": "",
-    "states": [],
+    "states": [
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "crows": 26
+          }
+        },
+        "line": "The Ledger says you pay; the Vault’s door opens as wide for you as for a Keyholder.",
+        "line_fr": "Le Registre dit que vous payez ; la porte du Coffre s’ouvre pour vous aussi grand que pour un Porte-Clef."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtMost": {
+            "crows": -26
+          }
+        },
+        "line": "The Ledger has your name in red; the Vault’s door opens a hand’s breadth for you, with his foot behind it.",
+        "line_fr": "Le Registre a votre nom en rouge ; la porte du Coffre s’ouvre d’une largeur de main pour vous, son pied derrière."
+      }
+    ],
     "dialogueLines": [],
     "dialogueLines_fr": []
   },
@@ -1808,7 +2304,32 @@
     "metFlags": [],
     "shopId": "hammersmith_forge",
     "requiredFlag": "",
-    "states": [],
+    "states": [
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "compact": 26
+          }
+        },
+        "line": "The Compact counts you a friend; her price does not bite, and she lets you lift the piece twice before naming it.",
+        "line_fr": "Le Pacte vous tient en amitié ; son prix ne mord pas, et elle vous laisse soulever la pièce deux fois avant de le dire."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtMost": {
+            "compact": -6
+          }
+        },
+        "line": "The Compact is wary of you; she names her price before you lift the piece, and names it high.",
+        "line_fr": "Le Pacte se méfie de vous ; elle dit son prix avant que vous souleviez la pièce, et le dit haut."
+      }
+    ],
     "dialogueLines": [],
     "dialogueLines_fr": []
   },
@@ -1830,7 +2351,32 @@
     "metFlags": [],
     "shopId": "arcane_academy",
     "requiredFlag": "",
-    "states": [],
+    "states": [
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "marks": {
+            "cantors": "friend"
+          }
+        },
+        "line": "The Cantors have marked you a friend; the Lantern’s tithe is waived on your purchases, and the wardings sung twice.",
+        "line_fr": "Les Chantres ont votre nom parmi leurs amis ; la dîme de la Lanterne est levée sur vos achats, et les protections chantées deux fois."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtMost": {
+            "dominion": -26
+          }
+        },
+        "line": "The Dominion’s file on you is thick; the magister sells to you at the Lantern’s rate, and tithes it twice.",
+        "line_fr": "Le dossier du Dominion sur vous est épais ; le magister vous vend au tarif de la Lanterne, et y prélève la dîme deux fois."
+      }
+    ],
     "dialogueLines": [],
     "dialogueLines_fr": []
   },
@@ -1911,6 +2457,18 @@
         "unlessFlags": [],
         "line": "You bought from the last lit stall in the quarter and she took your coin in advance, as she does with everyone bound for the tear.",
         "line_fr": "Vous avez acheté au dernier étal éclairé du quartier, et elle a pris votre argent d’avance, comme avec quiconque se dirige vers la déchirure."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "vigil": 26
+          }
+        },
+        "line": "The Vigil counts you one of theirs; she takes your coin after, not before, which she does for nobody else.",
+        "line_fr": "La Veille vous compte parmi les siens ; elle prend votre argent après, et non avant, ce qu’elle ne fait pour personne d’autre."
       }
     ],
     "dialogueLines": [],
@@ -1941,6 +2499,30 @@
         "unlessFlags": [],
         "line": "You traded at her chandlery in the Anchorage and found the prices honest, which was harder to credit than anything else in a crusaders' town.",
         "line_fr": "Vous avez fait affaire à sa chandlerie du Mouillage et trouvé les prix honnêtes, ce qui, dans une ville de croisés, était plus dur à croire que tout le reste."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "dominion": 26
+          }
+        },
+        "line": "The Dominion counts you a friend; the Admiralty counts your prices lower than anyone’s.",
+        "line_fr": "Le Dominion vous tient en amitié ; l’Amirauté compte vos prix plus bas que ceux de quiconque."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "marks": {
+            "admiralty": "friend"
+          }
+        },
+        "line": "The Admiralty has marked you a friend; she reforges the fleet’s own steel for you first, before the Anchorage’s.",
+        "line_fr": "L’Amirauté a votre nom parmi ses amis ; elle reforge l’acier de la flotte pour vous d’abord, avant celui du Mouillage."
       }
     ],
     "dialogueLines": [],
@@ -1965,6 +2547,281 @@
     "shopId": "wayfarer_caravan",
     "requiredFlag": "",
     "states": [],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "wharf_informant": {
+    "npcID": "wharf_informant",
+    "npcName": "The wharf informant",
+    "npcName_fr": "L’indicateur du quai",
+    "role": "Paid informant on the Smugglers’ Wharf",
+    "role_fr": "Indicateur à gages du Quai des Contrebandiers",
+    "faction": "inquisition",
+    "placeId": "saltmouth_wharf",
+    "chapter": 2,
+    "kind": "smuggler",
+    "description": "A man in the wharf crowd whose stillness gave him away: the stillness of someone working hard not to be noticed noticing things. He named a warden skimming smuggled goods to anyone who would listen, and the listener to three men in a warehouse, and was paid for both in new Inquisition silver.",
+    "description_fr": "Un homme dans la foule du quai que son immobilité trahissait : celle de quelqu’un qui s’efforce de ne pas être vu en train de remarquer des choses. Il nommait à qui voulait l’entendre un gardien qui écrémait la contrebande, et nommait l’auditeur à trois hommes dans un entrepôt, payé pour les deux en argent neuf de l’Inquisition.",
+    "want": "Wants an audience more than coin, and the Inquisition’s silver for whatever the tide brings in from the tear.",
+    "want_fr": "Veut un public plus que de l’argent, et l’argent de l’Inquisition pour tout ce que la marée rapporte de la déchirure.",
+    "metNodes": [
+      "2015_informant",
+      "2015_informant_trap",
+      "2015_informant_exposed"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "intrigue_hooded_lantern_stage_1",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "He pointed you at a warehouse where three men were waiting, and his purse turned out to hold new Inquisition silver, the hooded lantern sharp on every coin: the wharf’s going rate for anything the tide brings in from the tear.",
+        "line_fr": "Il vous a envoyé vers un entrepôt où trois hommes attendaient, et sa bourse s’est révélée pleine d’argent neuf de l’Inquisition, la lanterne encapuchonnée nette sur chaque pièce : le tarif du quai pour tout ce que la marée rapporte de la déchirure."
+      },
+      {
+        "flag": "intrigue_hooded_lantern_stage_1",
+        "andFlags": [
+          "crows_warned"
+        ],
+        "unlessFlags": [],
+        "line": "You gave his name to the Salt Crows instead of taking his coin; the Crows keep a long ledger, and he is in it now.",
+        "line_fr": "Vous avez donné son nom aux Corneilles de Sel plutôt que de prendre son argent ; les Corneilles tiennent un long registre, et il y figure désormais."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "condemned_voidkin": {
+    "npcID": "condemned_voidkin",
+    "npcName": "The condemned voidkin",
+    "npcName_fr": "L’enfant du Néant condamné",
+    "role": "Prisoner of the Tribunal of the Spire",
+    "role_fr": "Prisonnier du Tribunal de la Flèche",
+    "faction": "",
+    "placeId": "spire_of_judgment",
+    "chapter": 3,
+    "kind": "kin",
+    "description": "A voidkin in chains, read his sentence under the Spire’s arches by a clerk who did not look up, and marched past you on the way to the gallery. He saw the grey on your back before he saw your face, and gave you five words as if handing over something he had carried a long way.",
+    "description_fr": "Un enfant du Néant enchaîné, à qui un greffier lut sa sentence sous les arches de la Flèche sans lever les yeux, et qu’on fit passer devant vous en route vers la tribune. Il vit le gris sur votre dos avant de voir votre visage, et vous confia cinq mots comme on remet une chose portée depuis très loin.",
+    "want": "Wants what he knows carried out past the Spire’s doors: they are not closing it.",
+    "want_fr": "Veut que ce qu’il sait franchisse les portes de la Flèche : ils ne la referment pas.",
+    "metNodes": [
+      "3002"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "intrigue_hooded_lantern_stage_2",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "He said it to you very low as they marched him past, under the incense: “They are not closing it.” You did not learn his name.",
+        "line_fr": "Il vous l’a dit très bas tandis qu’on l’emmenait, sous l’encens : « Ils ne la referment pas. » Vous n’avez pas su son nom."
+      },
+      {
+        "flag": "met_vess",
+        "andFlags": [
+          "intrigue_hooded_lantern_stage_2"
+        ],
+        "unlessFlags": [],
+        "line": "Vess would have wanted his name; you did not get it, and have been sorry since.",
+        "line_fr": "Vess aurait voulu son nom ; vous ne l’avez pas eu, et l’avez regretté depuis."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "drowned_courier": {
+    "npcID": "drowned_courier",
+    "npcName": "The drowned courier",
+    "npcName_fr": "Le messager noyé",
+    "role": "Inquisition courier, given up by the water",
+    "role_fr": "Messager de l’Inquisition, rendu par l’eau",
+    "faction": "inquisition",
+    "placeId": "drowned_cloister",
+    "chapter": 4,
+    "kind": "soldier",
+    "description": "A courier the black water gave up on your second day in the Cloister, fished out with a boathook by deserters who went through his pockets with the professional sorrow of people once fished out themselves. His oilskin held an Inquisitor’s letter to the Court’s keeper of the Stair.",
+    "description_fr": "Un messager que l’eau noire rendit au deuxième jour de votre séjour au Cloître, repêché à la gaffe par des déserteurs qui lui firent les poches avec la tristesse professionnelle de gens un jour repêchés eux-mêmes. Sa toile cirée contenait la lettre d’un inquisiteur au gardien de l’Escalier de la Cour.",
+    "want": "Carries one order still: the grey’s pieces go to the Reliquary, sealed, and not to the fire.",
+    "want_fr": "Porte encore un seul ordre : les pièces du gris vont au Reliquaire, scellées, et non au feu.",
+    "metNodes": [
+      "5010_letter"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "intrigue_hooded_lantern_stage_3",
+        "andFlags": [],
+        "unlessFlags": [
+          "letter_copied"
+        ],
+        "line": "You read the letter he drowned carrying, sealed it again and gave it back to the water with him.",
+        "line_fr": "Vous avez lu la lettre qu’il portait en se noyant, l’avez rescellée et rendue à l’eau avec lui."
+      },
+      {
+        "flag": "intrigue_hooded_lantern_stage_3",
+        "andFlags": [
+          "letter_copied"
+        ],
+        "unlessFlags": [],
+        "line": "You read the letter he drowned carrying and copied it out for the Penitents’ runners; the Inquisition collects the Shroud, and now the Penitents know it.",
+        "line_fr": "Vous avez lu la lettre qu’il portait en se noyant et l’avez recopiée pour les coureurs des Pénitents ; l’Inquisition collectionne le Linceul, et les Pénitents le savent désormais."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "crape_courier": {
+    "npcID": "crape_courier",
+    "npcName": "The courier in black crape",
+    "npcName_fr": "Le courrier au crêpe noir",
+    "role": "Dominion courier at the Landward Gate",
+    "role_fr": "Courrier du Dominion à la Porte de la terre",
+    "faction": "dominion",
+    "placeId": "saltmouth_landward_gate",
+    "chapter": 2,
+    "kind": "soldier",
+    "description": "A Dominion courier two places ahead of you in the queue at Saltmouth’s landward gate, his lantern hooded in black crape, with a crier beside him telling the queue what the crape meant. Nobody in the queue looked up; they had prayers of their own.",
+    "description_fr": "Un courrier du Dominion, deux places devant vous dans la file à la porte de la terre de Bouche-de-Sel, sa lanterne voilée de crêpe noir, et un crieur à ses côtés pour expliquer à la file ce que signifiait ce crêpe. Personne ne leva les yeux ; chacun avait ses propres prières.",
+    "want": "Wants the faithful told that the Lantern-Bearer is failing, and asked to pray.",
+    "want_fr": "Veut que l’on dise aux fidèles que le Porte-Lanterne décline, et qu’on les prie de prier.",
+    "metNodes": [
+      "2005"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "intrigue_dying_lantern_bearer_stage_1",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You waited behind him at the landward gate and heard the crier say it: the Lantern-Bearer was failing, and the faithful were asked to pray.",
+        "line_fr": "Vous avez attendu derrière lui à la porte de la terre et entendu le crieur le dire : le Porte-Lanterne déclinait, et l’on priait les fidèles de prier."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "frozen_pilgrim": {
+    "npcID": "frozen_pilgrim",
+    "npcName": "The frozen pilgrim",
+    "npcName_fr": "Le pèlerin gelé",
+    "role": "Dead at Rimewell’s milestone",
+    "role_fr": "Mort à la borne de Puits-de-Givre",
+    "faction": "inquisition",
+    "placeId": "rimewell",
+    "chapter": 5,
+    "kind": "penitent",
+    "description": "A man frozen sitting up in a pilgrim’s grey, his back to Rimewell’s milestone and his eyes on the road from the coast, the way a man sits who is waiting for someone in particular. Rimewell left him there because the ground was too hard to dig and nobody knew his name.",
+    "description_fr": "Un homme gelé assis, en gris de pèlerin, le dos contre la borne de Puits-de-Givre et les yeux sur la route de la côte, comme s’assied un homme qui attend quelqu’un en particulier. Puits-de-Givre l’a laissé là parce que le sol était trop dur pour creuser et que personne ne savait son nom.",
+    "want": "Was waiting for the Eldest Wickwarden with a knife under his coat, the Order’s mark on its hilt and a hooded lantern under the mark.",
+    "want_fr": "Attendait l’Aînée des Garde-Mèches avec un couteau sous son manteau, la marque de l’Ordre sur la garde et une lanterne encapuchonnée sous la marque.",
+    "metNodes": [
+      "6100_knife"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "intrigue_dying_lantern_bearer_stage_4",
+        "andFlags": [
+          "knife_to_tallis"
+        ],
+        "unlessFlags": [],
+        "line": "You took the knife from under his coat and carried it to Maud Tallis on the road; she walked on with her one lamp, and your warning.",
+        "line_fr": "Vous avez pris le couteau sous son manteau et l’avez porté à Maud Tallis sur la route ; elle a poursuivi avec son unique lampe, et votre avertissement."
+      },
+      {
+        "flag": "intrigue_dying_lantern_bearer_stage_4",
+        "andFlags": [
+          "knife_kept"
+        ],
+        "unlessFlags": [],
+        "line": "You took the knife from under his coat and kept it: the Order’s mark on top, the hooded lantern underneath, and worth more later.",
+        "line_fr": "Vous avez pris le couteau sous son manteau et l’avez gardé : la marque de l’Ordre dessus, la lanterne encapuchonnée dessous, et plus de valeur plus tard."
+      },
+      {
+        "flag": "intrigue_dying_lantern_bearer_stage_4",
+        "andFlags": [
+          "vote_read"
+        ],
+        "unlessFlags": [],
+        "line": "You had steamed the Tribunal’s vote open at Wrack’s End, and it was cast for Vane; his knife told you what the vote had not.",
+        "line_fr": "Vous aviez ouvert à la vapeur le vote du Tribunal à Bout-du-Varech, et il était pour Vane ; son couteau vous a dit ce que le vote taisait."
+      }
+    ],
+    "dialogueLines": [],
+    "dialogueLines_fr": []
+  },
+  "the_white_admiral": {
+    "npcID": "the_white_admiral",
+    "npcName": "The White Admiral",
+    "npcName_fr": "L’Amiral Blanc",
+    "role": "Admiral of the White Fleet",
+    "role_fr": "Amiral de la Flotte Blanche",
+    "faction": "admiralty",
+    "placeId": "white_fleet_grave",
+    "chapter": 6,
+    "kind": "noble",
+    "description": "The Admiral who sailed forty ships into the tear under a grey sail he had been told was white, on the Black Reliquary’s orders, and went down still giving orders of his own. He keeps the flagship’s quarterdeck in the Fleet’s grave with her colours still flying, and the last page of his log is in a hand that was not steady at all.",
+    "description_fr": "L’Amiral qui mena quarante navires dans la déchirure sous une voile grise qu’on lui avait dite blanche, sur ordre du Reliquaire Noir, et sombra en donnant encore des ordres. Il tient la dunette du vaisseau amiral dans le tombeau de la Flotte, ses couleurs toujours au mât, et la dernière page de son journal est d’une main qui n’avait plus rien de ferme.",
+    "want": "Wanted the Lantern to keep the fleet, in the last steady line he wrote; it did not.",
+    "want_fr": "Voulait que la Lanterne garde la flotte, dans la dernière ligne ferme qu’il écrivit ; elle ne l’a pas gardée.",
+    "metNodes": [
+      "7300"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "intrigue_hooded_lantern_stage_5",
+        "andFlags": [],
+        "unlessFlags": [
+          "fleet_log_taken"
+        ],
+        "line": "You read his log under the Anchorage’s altar and copied the last page: the Reliquary’s orders, his steady acknowledgment, and three days later, in a hand that shook, It will not answer.",
+        "line_fr": "Vous avez lu son journal sous l’autel du Mouillage et recopié la dernière page : les ordres du Reliquaire, son accusé de réception d’une main ferme, et trois jours plus tard, d’une main qui tremblait, Elle ne répond pas."
+      },
+      {
+        "flag": "intrigue_hooded_lantern_stage_5",
+        "andFlags": [
+          "fleet_log_taken"
+        ],
+        "unlessFlags": [],
+        "line": "You took his log out of the Anchorage’s chapel under your coat; the altar that was his chart table has a gap under it now.",
+        "line_fr": "Vous avez emporté son journal hors de la chapelle du Mouillage, sous votre manteau ; l’autel qui fut sa table à cartes a un vide dessous désormais."
+      },
+      {
+        "flag": "banner_five",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You put him down on the flagship’s quarterdeck, where he had gone on giving orders, and brought the grey sail down from her mast.",
+        "line_fr": "Vous l’avez abattu sur la dunette du vaisseau amiral, où il continuait de donner des ordres, et avez fait descendre la voile grise de son mât."
+      },
+      {
+        "flag": "lantern_exposed",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You sent his last page to the Order’s knights at the Anchorage, and the Order turned on the Inquisition for what it said.",
+        "line_fr": "Vous avez envoyé sa dernière page aux chevaliers de l’Ordre au Mouillage, et l’Ordre s’est retourné contre l’Inquisition pour ce qu’elle disait."
+      },
+      {
+        "flag": "lantern_kept",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You sold his last page back to the Inquisition’s legate, and carry its writ.",
+        "line_fr": "Vous avez revendu sa dernière page au légat de l’Inquisition, et portez son mandat."
+      }
+    ],
     "dialogueLines": [],
     "dialogueLines_fr": []
   }

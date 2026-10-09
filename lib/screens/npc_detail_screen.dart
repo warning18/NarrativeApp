@@ -7,14 +7,17 @@ import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart' show clanDataProvider;
 import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/politics_provider.dart' show coastGateWorldProvider;
 import '../utils/game_icons.dart' show npcKindIcon;
 import '../widgets/people_widgets.dart';
 
 /// One person's page (v1.204, see people_codex.dart): who they are (icon,
 /// name, role, faction, place, the chapter they are met in), their
 /// description, what they want, what passed between them and the player
-/// (the `states` whose flags are held), then their flavor lines with a
-/// Talk button that records the conversation (backing Talk-type quest
+/// (the `states` whose flags are held and, v1.210, whose `conditions` hold
+/// on the coast), where they stand in the intrigues the story has reached
+/// (v1.210, see npcIntrigueLines), then their flavor lines with a Talk
+/// button that records the conversation (backing Talk-type quest
 /// objectives — see quest_objectives.dart).
 class NpcDetailScreen extends ConsumerWidget {
   const NpcDetailScreen({super.key, required this.npcId, required this.npc});
@@ -37,7 +40,11 @@ class NpcDetailScreen extends ConsumerWidget {
     final want = npcText(npc, 'want', french);
     final place =
         npcPlaceName(geography, npc['placeId']?.toString() ?? '', language);
-    final passed = npcStateLines(npc, session.flags, french);
+    final world = ref.watch(coastGateWorldProvider);
+    final passed = npcStateLines(npc, session.flags, french,
+        world: world, politics: session.politics);
+    final intrigueLines =
+        npcIntrigueLines(npc, clanData.intrigues.values, session.flags, french);
     final linesRaw = french
         ? ((npc['dialogueLines_fr'] as List?)?.isNotEmpty ?? false)
             ? npc['dialogueLines_fr'] as List
@@ -135,6 +142,29 @@ class NpcDetailScreen extends ConsumerWidget {
                     Expanded(
                       child: Text(line,
                           key: Key('npc_state_$i'),
+                          style: theme.textTheme.bodyMedium),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+          if (intrigueLines.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Text(tr(ref, 'npc_intrigues_label'),
+                key: const Key('npc_intrigues_label'),
+                style: theme.textTheme.titleSmall),
+            const SizedBox(height: 6),
+            for (final (i, line) in intrigueLines.indexed)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.theater_comedy, size: 18, color: muted),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(npcIntrigueLineText(line, french),
+                          key: Key('npc_intrigue_$i'),
                           style: theme.textTheme.bodyMedium),
                     ),
                   ],

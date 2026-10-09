@@ -663,19 +663,22 @@ const List<String> intrigueStageNames = [
 ];
 
 /// One stage of an intrigue: its name ([intrigueStageNames]), the
-/// chapter it falls in ("1–2", "3"...) and what happens.
+/// chapter it falls in ("1–2", "3"...), what happens and (v1.210) the
+/// person at that stage, [npcId] in npcs.json ('' when unnamed).
 class IntrigueStage {
   const IntrigueStage({
     required this.stage,
     this.chapter = '',
     this.text = '',
     this.textFr = '',
+    this.npcId = '',
   });
 
   final String stage;
   final String chapter;
   final String text;
   final String textFr;
+  final String npcId;
 
   String textFor(AppLanguage language) => _pick(language, text, textFr);
 
@@ -687,6 +690,7 @@ class IntrigueStage {
         chapter: _text(json['chapter']).trim(),
         text: _text(json['text']),
         textFr: _text(json['text_fr']),
+        npcId: _text(json['npcId']).trim(),
       );
 }
 
@@ -744,7 +748,8 @@ class IntrigueEffect {
       );
 }
 
-/// One way an intrigue can end.
+/// One way an intrigue can end; (v1.210) [npcId] names the person it
+/// turns on, in npcs.json ('' when unnamed).
 class IntrigueOutcome {
   const IntrigueOutcome({
     required this.name,
@@ -752,6 +757,7 @@ class IntrigueOutcome {
     this.text = '',
     this.textFr = '',
     this.effects = const [],
+    this.npcId = '',
   });
 
   final String name;
@@ -759,6 +765,7 @@ class IntrigueOutcome {
   final String text;
   final String textFr;
   final List<IntrigueEffect> effects;
+  final String npcId;
 
   String nameFor(AppLanguage language) => _pick(language, name, nameFr);
   String textFor(AppLanguage language) => _pick(language, text, textFr);
@@ -773,6 +780,7 @@ class IntrigueOutcome {
           for (final e in (json['effects'] as List?) ?? const [])
             if (e is Map) IntrigueEffect.fromJson(e.cast<String, dynamic>()),
         ],
+        npcId: _text(json['npcId']).trim(),
       );
 }
 

@@ -1922,6 +1922,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'What passed between you',
     AppLanguage.fr: 'Ce qui s’est passé entre vous',
   },
+  // The person's part in the intrigues (v1.210).
+  'npc_intrigues_label': {
+    AppLanguage.en: 'In the intrigues',
+    AppLanguage.fr: 'Dans les intrigues',
+  },
+  'npc_intrigue_outcome': {AppLanguage.en: 'Outcome', AppLanguage.fr: 'Issue'},
   // Items' rarity and provenance (v1.204).
   'item_rarity_label': {AppLanguage.en: 'Rarity', AppLanguage.fr: 'Rareté'},
   'item_rarity_common': {AppLanguage.en: 'Common', AppLanguage.fr: 'Commun'},

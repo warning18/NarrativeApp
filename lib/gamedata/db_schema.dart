@@ -2224,8 +2224,13 @@ final DbSchema npcsSchema = DbSchema(
     FieldSchema(
       key: 'states',
       label:
-          'What passed between you [{flag, andFlags, unlessFlags, line, line_fr}], shown in order when held',
+          'What passed between you [{flag, andFlags, unlessFlags, conditions, line, line_fr}], shown in order when held',
       type: FieldType.json,
+      help: 'flag held, andFlags all held, unlessFlags none held. '
+          'conditions (optional, v1.210): a politicsIf map (standingAtLeast '
+          '{faction: n}, standingAtMost, marks {sub-clan: friend}, claim, '
+          'rungAtLeast...) that must hold too; flag may then be "" (no flag '
+          'needed).',
     ),
     FieldSchema(
       key: 'dialogueLines',
@@ -2818,18 +2823,21 @@ final DbSchema intriguesSchema = DbSchema(
     ),
     FieldSchema(
       key: 'stages',
-      label: 'Stages [{stage, chapter, text, text_fr}]',
+      label: 'Stages [{stage, chapter, text, text_fr, npcId}]',
       type: FieldType.json,
       help: 'Six: Clue, Hook, Turn, Reveal, Crisis, Choice. The story '
-          'marks the one reached with the flag intrigue_<id>_stage_<n>.',
+          'marks the one reached with the flag intrigue_<id>_stage_<n>. '
+          'npcId (optional, v1.210): the person at that stage, an npcs.json '
+          'id; shown beside the stage once reached and on their page.',
     ),
     FieldSchema(
       key: 'outcomes',
-      label: 'Outcomes [{name, name_fr, effects}]',
+      label: 'Outcomes [{name, name_fr, effects, npcId}]',
       type: FieldType.json,
       help: 'effects: [{"faction": "vigil", "delta": 25}, {"subclan": '
           '"inquisition", "mark": "foe"}, {"note": "...", "note_fr": '
-          '"..."}].',
+          '"..."}]. npcId (optional, v1.210): the person the outcome turns '
+          'on, an npcs.json id.',
     ),
   ],
 );

@@ -60,9 +60,9 @@ PlayerSession _session() {
 }
 
 Future<ProviderContainer> _container(WidgetTester tester,
-    {required String language}) async {
+    {required String language, Map<String, Object> prefs = const {}}) async {
   SharedPreferences.setMockInitialValues(
-      {'app_language': language, 'tutorial_enabled': false});
+      {'app_language': language, 'tutorial_enabled': false, ...prefs});
   final container = ProviderContainer();
   addTearDown(container.dispose);
   container.read(appLanguageProvider);
@@ -367,6 +367,50 @@ void main() {
     expect(find.text(lantern.premiseFor(AppLanguage.en)), findsNothing);
     expect(find.text(lantern.stages[3].textFor(AppLanguage.en)), findsNothing);
     expect(find.textContaining('The Grey Vigil +25'), findsNothing);
+    expect(tester.takeException(), isNull, reason: 'fits 360 px');
+  });
+
+  testWidgets('a stage reached shows the face it names (v1.210)',
+      (tester) async {
+    tester.view.physicalSize = const Size(360, 2400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    // The real intrigues, the Hooded Lantern's first and fourth stages
+    // naming Vane, its second a person the npcs table does not know.
+    final intrigues = _json('intrigues');
+    final lantern = intrigues['hooded_lantern'] as Map<String, dynamic>;
+    final stages = (lantern['stages'] as List).cast<Map<String, dynamic>>();
+    stages[0]['npcId'] = 'aurel_vane';
+    stages[1]['npcId'] = 'nobody_known';
+    stages[3]['npcId'] = 'aurel_vane';
+    final container = await _container(tester, language: 'en', prefs: {
+      'gamedb_intrigues': jsonEncode(intrigues),
+      'gamedb_npcs': jsonEncode({
+        'aurel_vane': {
+          'npcID': 'aurel_vane',
+          'npcName': 'Aurel Vane',
+          'npcName_fr': 'Aurel Vane',
+          'chapter': 1,
+        },
+      }),
+    });
+    await tester.runAsync(
+        () => container.read(gameDbProvider(npcsSchema).notifier).whenLoaded());
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: ClansPoliticsScreen(play: true)),
+    ));
+    await tester.pumpAndSettle();
+    await _openTab(tester, 'clans_tab_intrigues');
+    // Stage 3 reached: the face at stage 1, none at 2 (unknown) or 4
+    // (not reached).
+    expect(find.byKey(const Key('intrigue_face_hooded_lantern_1')),
+        findsOneWidget);
+    expect(find.text('Aurel Vane'), findsOneWidget);
+    expect(
+        find.byKey(const Key('intrigue_face_hooded_lantern_2')), findsNothing);
+    expect(
+        find.byKey(const Key('intrigue_face_hooded_lantern_4')), findsNothing);
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
   });
 

@@ -1146,6 +1146,14 @@ class _IntriguesTab extends ConsumerWidget {
       return id.isEmpty ? id : '${id[0].toUpperCase()}${id.substring(1)}';
     }
 
+    // The faces (v1.210): the person a stage or an outcome names, when
+    // the npcs table knows them.
+    final npcs = ref.watch(localizedDbProvider(npcsSchema)).value ?? const {};
+    String? npcName(String id) {
+      final name = (npcs[id] as Map?)?['npcName']?.toString().trim();
+      return name == null || name.isEmpty ? null : name;
+    }
+
     // In play, only the plots the story has opened.
     final shown = [
       for (final intrigue in data.intrigues.values)
@@ -1175,6 +1183,7 @@ class _IntriguesTab extends ConsumerWidget {
             outcome: intrigueOutcomeFrom(flags, intrigue.id),
             language: lang,
             companionName: companionName,
+            npcName: npcName,
           ),
       ],
     );
@@ -1190,11 +1199,45 @@ class _IntrigueCard extends StatelessWidget {
     required this.outcome,
     required this.language,
     required this.companionName,
+    this.npcName = _noNpc,
   });
+
+  static String? _noNpc(String id) => null;
 
   final Intrigue intrigue;
   final ClanData data;
   final String Function(String id) companionName;
+
+  /// The name of the person an npcs.json id names (v1.210), null when
+  /// the table has none: shown beside a stage reached or the outcome
+  /// chosen.
+  final String? Function(String id) npcName;
+
+  /// The name of the person [npcId] names, null when none or unknown.
+  String? _faceName(String npcId) => npcId.isEmpty ? null : npcName(npcId);
+
+  /// The face [name] beside a stage or an outcome.
+  Widget _face(ThemeData theme, String name, Key key) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 2),
+      child: Row(
+        key: key,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.person_outline,
+              size: 14, color: theme.colorScheme.onSurfaceVariant),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(name,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    fontStyle: FontStyle.italic)),
+          ),
+        ],
+      ),
+    );
+  }
 
   /// The story's view: the premise once revealed (stage 4), the stages
   /// reached and the next one's chapter, only the outcome chosen.
@@ -1399,6 +1442,12 @@ class _IntrigueCard extends StatelessWidget {
                               color: i + 1 > stage
                                   ? theme.colorScheme.onSurfaceVariant
                                   : null)),
+                      if ((i < stage
+                              ? _faceName(intrigue.stages[i].npcId)
+                              : null)
+                          case final name?)
+                        _face(theme, name,
+                            Key('intrigue_face_${intrigue.id}_${i + 1}')),
                     ],
                   ),
                 ),
@@ -1433,6 +1482,13 @@ class _IntrigueCard extends StatelessWidget {
                       style: theme.textTheme.bodySmall,
                     ),
                   ),
+              if ((outcome != null &&
+                          outcome! >= 0 &&
+                          outcome! < intrigue.outcomes.length
+                      ? _faceName(intrigue.outcomes[outcome!].npcId)
+                      : null)
+                  case final name?)
+                _face(theme, name, Key('intrigue_face_${intrigue.id}_outcome')),
             ],
           ],
         ),

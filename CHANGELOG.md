@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.211.0+246]
+
+### Added
+- Faces for the intrigues. Each stage and outcome of an intrigue can now name the person at its centre. A person's page lists, under "In the intrigues", the stages you have reached that they stand in, and the Clans screen shows the person's name beside a reached stage. The Hooded Lantern and the Dying Lantern Bearer are fully faced; the six intrigues not yet placed in the story name a person where their text already does.
+- Six new people: the paid informant of the wharf, the condemned voidkin of the Spire, the drowned courier, the courier at the landward gate, the frozen pilgrim of Rimewell, and the White Admiral.
+- People that know where you stand. Twenty-five people gain lines that appear only at a given standing with a faction or a friend or foe mark with a clan: the Keyholders when the Salt Crows count you sworn or have put a price on you, Aurel Vane when the Inquisition has your name on a writ, and so on.
+- Second beats for the six quest-givers of 1.204. Once you have settled one of their requests, they send word or come to the next chapter's hub, and what they say follows the way you settled it. Where they are grateful they offer twenty gold; a goodbye is always possible.
+
+### Internal
+- People states may carry politics conditions (`conditions`, the shape politics events use), and an intrigue stage or outcome may carry `npcId`. A content test checks that every named person, faction and clan exists.
+
 ## [1.210.0+245]
 
 ### Changed
