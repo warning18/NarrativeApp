@@ -19,6 +19,7 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/app_mode_provider.dart';
 import '../providers/geography_provider.dart';
 import '../providers/map_look_provider.dart';
 import '../providers/player_session_provider.dart';
@@ -324,10 +325,18 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
         const <String, dynamic>{};
     final visited = {...play.visitedNodeIds, play.currentNodeId};
     final here = currentLandmark(play.currentNodeId, play.history);
-    final journey = journeyOf(play.history, play.currentNodeId);
-    final discovered = discoveredLandmarkIds(visited);
+    // Edit Mode sees the world whole (v1.209): every place, every
+    // chapter's road in its colour, and no fog over any of it.
+    final editing = ref.watch(appModeProvider) == AppMode.edit;
+    final journey = editing
+        ? List<Landmark>.of(worldMapLandmarks)
+        : journeyOf(play.history, play.currentNodeId);
+    final discovered = editing
+        ? {for (final l in worldMapLandmarks) l.id}
+        : discoveredLandmarkIds(visited);
     if (here != null) discovered.add(here.id);
     if (discovered.isEmpty) discovered.add(worldMapLandmarks.first.id);
+    if (editing) _walkDecided = true;
 
     // On opening, the traveller walks what the story did since the map
     // last showed.
@@ -409,7 +418,9 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
                             language: language,
                             discovered: discovered,
                             legs: roadLegs(journey, discovered),
-                            ahead: _nextPlace(here, discovered),
+                            ahead:
+                                editing ? null : _nextPlace(here, discovered),
+                            fog: editing ? ChartFog.none : ChartFog.uncharted,
                             selectedId: selected.id,
                             here: here,
                             walking: _walking,

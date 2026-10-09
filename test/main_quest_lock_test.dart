@@ -13,6 +13,7 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
+import 'package:narrative_data_app/screens/story_player_screen.dart';
 
 Future<void> _settle(WidgetTester tester) async {
   for (var i = 0; i < 6; i++) {
@@ -56,7 +57,14 @@ void main() {
     await tester.pump(const Duration(seconds: 3));
     await _settle(tester);
     const shut = 'Not yet: the camp shows what this chapter still asks.';
-    expect(find.text(shut, skipOffstage: false), findsOneWidget);
+    // The story view says so (the Journey tab, offstage beside it since
+    // v1.209, shuts the same way on its own map).
+    expect(
+        find.descendant(
+            of: find.byType(StoryPlayerScreen),
+            matching: find.text(shut, skipOffstage: false),
+            skipOffstage: false),
+        findsOneWidget);
 
     // Explored and with two of the chapter's quests done, the way opens.
     await tester.runAsync(() => notifier.loadSession(container
@@ -79,7 +87,10 @@ void main() {
     await _settle(tester);
     expect(find.text(shut, skipOffstage: false), findsNothing);
     expect(
-        find.text('Once the coast is known, climb the Spire',
+        find.descendant(
+            of: find.byType(StoryPlayerScreen),
+            matching: find.text('Once the coast is known, climb the Spire',
+                skipOffstage: false),
             skipOffstage: false),
         findsOneWidget);
     await tester.pump(const Duration(seconds: 5));
