@@ -193,6 +193,7 @@ extension _FightActions on _FightScreenState {
           _lastEnemyDamageTaken = damage;
           if (spell.element != 'None') {
             enemy.elementsHitThisRound.add(spell.element);
+            _reactOnHit(enemy, spell.element, damage, entries, lang);
           }
         }
         if (wasAlive && !enemy.isAlive) _lastKillWasCritical = false;

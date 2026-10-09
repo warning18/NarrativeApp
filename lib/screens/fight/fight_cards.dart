@@ -140,6 +140,7 @@ extension _FightCards on _FightScreenState {
                 _miniStat(Icons.shield_outlined, '$armor', Colors.blueGrey),
                 if (member.block > 0)
                   _miniStat(Icons.shield, '+${member.block}', Colors.blue),
+                if (_canParry(member)) _buildParryChip(member),
                 for (final effect in member.statusEffects)
                   _StatusEffectChip(effect: effect),
                 if (member.isKnockedOut)
@@ -526,6 +527,7 @@ extension _FightCards on _FightScreenState {
                         Colors.red.shade700),
                   ..._elementChips(enemy),
                   ..._goalMarks(enemy),
+                  ..._reactionChips(enemy),
                 ],
               ),
               if (enemy.affixes.isNotEmpty) ...[

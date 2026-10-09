@@ -282,6 +282,15 @@ class _EnemyMember {
   /// The faction whose doctrine this enemy fights under ('' for none).
   final String faction;
 
+  /// Block parries have set on this enemy's coming blow (v1.214, see
+  /// parry.dart); spent when it strikes, cleared each round.
+  int parryBlock = 0;
+
+  /// The elements that have struck this enemy lately, by the round they
+  /// struck in (v1.214, see element_reaction.dart): a partner element
+  /// springs a reaction.
+  final Map<String, int> elementMarks = {};
+
   /// The pack's captain, the mark of a Rout (v1.212, see fight_goal.dart).
   bool isCaptain = false;
 
