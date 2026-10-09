@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:math' as math;
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -20,6 +22,10 @@ enum ChartFog {
   /// Uncharted: only a dotted coastline and the lands' names, as on a
   /// chart left unfinished (v1.199).
   uncharted,
+
+  /// No fog: the whole world shown (v1.206), for a chart that has nothing
+  /// left to find.
+  none,
 }
 
 /// A calque laid over the chart (v1.199): the clans' zones of influence,
@@ -75,7 +81,9 @@ class ChartMapPainter extends CustomPainter {
     this.globe,
     this.zoomOf,
     Listenable? view,
-  }) : super(repaint: Listenable.merge([frame, walk, if (view != null) view]));
+  }) : super(
+            repaint: Listenable.merge(
+                [frame, walk, _ready, if (view != null) view]));
 
   final ValueNotifier<int> frame;
   final Animation<double> walk;
@@ -519,10 +527,304 @@ class ChartMapPainter extends CustomPainter {
     b.paint(canvas, Offset(o.dx + w - b.width, o.dy + h + 0.6));
   }
 
+  /// The light on the land: from the north-west, high.
+  static const double _lightX = -0.57, _lightY = -0.57, _lightZ = 0.59;
+
+  /// How much higher the heights are drawn than they are wide, for the
+  /// shading to show them.
+  static const double _reliefExaggeration = 18;
+
+  /// Ticks when a skin or a shading rendered in the background is ready,
+  /// so every chart painting repaints with it (never disposed, unlike a
+  /// map's own frame).
+  static final ValueNotifier<int> _ready = ValueNotifier(0);
+
+  /// The shaded relief as an image over the whole chart, per geography:
+  /// made once, in the background, and kept; drawn smooth at any zoom.
+  static final Map<ChartGeography, ui.Image> _shades = {};
+  static final Set<ChartGeography> _shadesPending = {};
+
+  /// Pixels per chart unit in the shading.
+  static const double _shadePx = 2;
+
+  ui.Image? _shadeImage() {
+    final made = _shades[geography];
+    if (made != null) return made;
+    if (_shadesPending.add(geography)) {
+      prepareShade().then((_) => _ready.value++);
+    }
+    return null;
+  }
+
+  /// Renders the shaded relief for this chart and keeps it; done once per
+  /// chart. Tests and screenshots await it before painting.
+  Future<ui.Image> prepareShade() async {
+    final made = _shades[geography];
+    if (made != null) return made;
+    _shadesPending.add(geography);
+    final image = await _renderShade(geography);
+    _shades[geography] = image;
+    _shadesPending.remove(geography);
+    return image;
+  }
+
+  /// Each pixel's slope against the light: the lit side white, the far
+  /// side black, both faint; the sea and the flat left clear.
+  static Future<ui.Image> _renderShade(ChartGeography geography) {
+    final climate = ChartClimate.of(geography);
+    final w = (worldMapWidth * _shadePx).round();
+    final h = (worldMapHeight * _shadePx).round();
+    final pixels = Uint8List(w * h * 4);
+    double height(Offset p) {
+      final e = climate.elevationAt(p);
+      if (e <= 0) return 0;
+      // A fine grain on the slopes, so the shading has texture.
+      return e + 0.04 * (fbm(p, 5, 2, 77) - 0.5) * math.min(1, e * 8);
+    }
+
+    for (var y = 0; y < h; y++) {
+      for (var x = 0; x < w; x++) {
+        final p = Offset((x + 0.5) / _shadePx, (y + 0.5) / _shadePx);
+        if (!climate.isLand(p)) continue;
+        final gx = (height(p + const Offset(0.7, 0)) -
+                height(p - const Offset(0.7, 0))) /
+            1.4 *
+            _reliefExaggeration;
+        final gy = (height(p + const Offset(0, 0.7)) -
+                height(p - const Offset(0, 0.7))) /
+            1.4 *
+            _reliefExaggeration;
+        final len = math.sqrt(gx * gx + gy * gy + 1);
+        final lit = (-gx * _lightX - gy * _lightY + _lightZ) / len;
+        final delta = lit - _lightZ;
+        if (delta.abs() < 0.01) continue;
+        final k = (y * w + x) * 4;
+        // The engine reads the pixels premultiplied: a white at part
+        // alpha is written as that alpha in every channel.
+        if (delta < 0) {
+          pixels[k + 3] = (math.min(0.42, -delta * 0.9) * 255).round();
+        } else {
+          final a = (math.min(0.24, delta * 0.5) * 255).round();
+          pixels[k] = a;
+          pixels[k + 1] = a;
+          pixels[k + 2] = a;
+          pixels[k + 3] = a;
+        }
+      }
+    }
+    final completer = Completer<ui.Image>();
+    ui.decodeImageFromPixels(
+        pixels, w, h, ui.PixelFormat.rgba8888, completer.complete);
+    return completer.future;
+  }
+
+  // ------------------------------------------------------------ sphere
+
+  /// The flat chart rendered as an image, per look and detail, to wrap
+  /// the sphere in; made once, in the background, and kept.
+  static final Map<String, ui.Image> _skins = {};
+  static final Set<String> _skinsPending = {};
+
+  /// Pixels per chart unit in the skin, by detail.
+  static double _skinScale(int lod) => lod >= 2 ? 6 : (lod == 1 ? 4 : 3);
+
+  String _skinKey(ChartRelief relief) =>
+      '${identityHashCode(relief)}:${palette.hashCode}:$detail:${calque == ChartCalque.lands}:$_lod';
+
+  /// A twin of this painter looking at the chart flat, at this zoom.
+  ChartMapPainter _flatTwin() {
+    final zoom = _zoom;
+    return ChartMapPainter(
+      frame: frame,
+      walk: walk,
+      geography: geography,
+      palette: palette,
+      language: language,
+      discovered: discovered,
+      legs: legs,
+      ahead: ahead,
+      selectedId: selectedId,
+      here: here,
+      walking: walking,
+      walkPath: walkPath,
+      chapterFilter: chapterFilter,
+      reduceMotion: reduceMotion,
+      chapterColor: chapterColor,
+      fog: fog,
+      calque: calque,
+      clanColours: clanColours,
+      standingOf: standingOf,
+      shopPlaces: shopPlaces,
+      campPlaces: campPlaces,
+      detail: detail,
+      zoomOf: () => zoom,
+    ).._whole =
+        const Rect.fromLTWH(0, 0, worldMapWidth * 1.0, worldMapHeight * 1.0);
+  }
+
+  /// The sphere's skin, or null while it is still being made (the first
+  /// look at the sphere, and the first at each level of detail).
+  ui.Image? _globeSkin(ChartRelief relief) {
+    final key = _skinKey(relief);
+    final made = _skins[key];
+    if (made != null) return made;
+    if (_skinsPending.add(key)) {
+      prepareSkin().then((_) => _ready.value++);
+    }
+    return null;
+  }
+
+  /// Renders the flat chart into the sphere's skin for this look and
+  /// detail, and keeps it; done once per key. Tests and screenshots await
+  /// it before painting the sphere.
+  Future<ui.Image> prepareSkin() async {
+    final relief = ChartRelief.of(geography);
+    final key = _skinKey(relief);
+    final made = _skins[key];
+    if (made != null) return made;
+    _skinsPending.add(key);
+    // The shaded relief goes into the skin, so it is rendered first.
+    await prepareShade();
+    final s = _skinScale(_lod);
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
+    canvas.scale(s);
+    _flatTwin()._paintGround(canvas, relief);
+    final picture = recorder.endRecording();
+    final image = await picture.toImage(
+        (worldMapWidth * s).round(), (worldMapHeight * s).round());
+    picture.dispose();
+    _skins[key] = image;
+    _skinsPending.remove(key);
+    return image;
+  }
+
+  /// How far the heights lift the sphere's surface, as a share of its
+  /// radius at the highest peak: enough to show on the limb.
+  static const double _reliefLift = 0.014;
+
+  /// The sphere with the chart wrapped on it: the sky, the open sea, a
+  /// mesh over the chart's rectangle textured with its skin (each vertex
+  /// lifted by its height), then the parallels and meridians.
+  void _paintGlobeSkinned(Canvas canvas, GlobeView g, ui.Image skin) {
+    canvas.drawRect(_whole, Paint()..color = palette.fog);
+    canvas.drawCircle(g.centre, g.radius, Paint()..color = palette.sea);
+    final climate = ChartClimate.of(geography);
+    final s = skin.width / worldMapWidth;
+    const step = 3.0;
+    final cols = (worldMapWidth / step).ceil() + 1;
+    final rows = (worldMapHeight / step).ceil() + 1;
+    final positions = Float32List(cols * rows * 2);
+    final texture = Float32List(cols * rows * 2);
+    final shown = List<bool>.filled(cols * rows, false);
+    for (var j = 0; j < rows; j++) {
+      for (var i = 0; i < cols; i++) {
+        final p = Offset(math.min(i * step, worldMapWidth * 1.0),
+            math.min(j * step, worldMapHeight * 1.0));
+        final k = j * cols + i;
+        texture[k * 2] = p.dx * s;
+        texture[k * 2 + 1] = p.dy * s;
+        if (!g.visible(p)) continue;
+        shown[k] = true;
+        var q = g.clamp(p);
+        final lift = climate.elevationAt(p) * _reliefLift;
+        if (lift > 0) q = g.centre + (q - g.centre) * (1 + lift);
+        positions[k * 2] = q.dx;
+        positions[k * 2 + 1] = q.dy;
+      }
+    }
+    final indices = <int>[];
+    for (var j = 0; j + 1 < rows; j++) {
+      for (var i = 0; i + 1 < cols; i++) {
+        final a = j * cols + i, b = a + 1, c = a + cols, d = c + 1;
+        if (!shown[a] || !shown[b] || !shown[c] || !shown[d]) continue;
+        indices
+          ..add(a)
+          ..add(b)
+          ..add(c)
+          ..add(b)
+          ..add(d)
+          ..add(c);
+      }
+    }
+    if (indices.isNotEmpty) {
+      final vertices = ui.Vertices.raw(ui.VertexMode.triangles, positions,
+          textureCoordinates: texture, indices: Uint16List.fromList(indices));
+      canvas.drawVertices(
+          vertices,
+          BlendMode.srcOver,
+          Paint()
+            ..shader = ui.ImageShader(skin, TileMode.clamp, TileMode.clamp,
+                Matrix4.identity().storage,
+                filterQuality: FilterQuality.medium));
+    }
+    final grid = Paint()
+      ..color = palette.seaLine.withValues(alpha: 0.7)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.4;
+    for (final line in GlobeView.graticule()) {
+      canvas.drawPath(_line(line), grid);
+    }
+  }
+
+  /// The light on the sphere (v1.206): the limb darkened away from the
+  /// light in the upper left, a soft highlight toward it, a thin pale air
+  /// round the edge, and the limb drawn.
+  void _globeLight(Canvas canvas, GlobeView g) {
+    final c = g.centre, r = g.radius;
+    canvas.drawCircle(
+        c,
+        r,
+        Paint()
+          ..shader = ui.Gradient.radial(
+            c + Offset(-r * 0.35, -r * 0.35),
+            r * 1.42,
+            [
+              Colors.transparent,
+              Colors.transparent,
+              Colors.black.withValues(alpha: 0.2),
+              Colors.black.withValues(alpha: 0.6),
+            ],
+            const [0, 0.45, 0.8, 1],
+          ));
+    canvas.drawCircle(
+        c,
+        r,
+        Paint()
+          ..shader = ui.Gradient.radial(
+            c + Offset(-r * 0.45, -r * 0.45),
+            r * 0.9,
+            [Colors.white.withValues(alpha: 0.07), Colors.transparent],
+          ));
+    final air = Color.lerp(palette.place, palette.sea, 0.5)!;
+    canvas.drawCircle(
+        c,
+        r * 1.04,
+        Paint()
+          ..shader = ui.Gradient.radial(
+            c,
+            r * 1.04,
+            [
+              Colors.transparent,
+              Colors.transparent,
+              air.withValues(alpha: 0.3),
+              Colors.transparent,
+            ],
+            const [0, 0.95, 0.965, 1],
+          ));
+    canvas.drawCircle(
+        c,
+        r,
+        Paint()
+          ..color = palette.coast.withValues(alpha: 0.7)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.6);
+  }
+
   /// The static layers of [relief] in this look, recorded once.
   ui.Picture _groundFor(ChartRelief relief) {
     final key =
-        '${identityHashCode(relief)}:${palette.hashCode}:$detail:${calque == ChartCalque.lands}:${globe?.key}:$_lod';
+        '${identityHashCode(relief)}:${palette.hashCode}:$detail:${calque == ChartCalque.lands}:${globe?.key}:$_lod:${_shades.containsKey(geography)}';
     return _ground[key] ??= () {
       final recorder = ui.PictureRecorder();
       final canvas = Canvas(recorder);
@@ -649,6 +951,20 @@ class ChartMapPainter extends CustomPainter {
     if (detail && lod >= 1) {
       for (var i = 0; i < geography.zones.length; i++) {
         _stipple(canvas, relief.zones[i], geography.zones[i], lod);
+      }
+    }
+    // The relief shaded (v1.206): the land lit from the north-west,
+    // its slopes toward the light paler, those away darker, grey on grey.
+    if (detail && globe == null) {
+      final shade = _shadeImage();
+      if (shade != null) {
+        canvas.drawImageRect(
+            shade,
+            Rect.fromLTWH(
+                0, 0, shade.width.toDouble(), shade.height.toDouble()),
+            const Rect.fromLTWH(
+                0, 0, worldMapWidth * 1.0, worldMapHeight * 1.0),
+            Paint()..filterQuality = FilterQuality.medium);
       }
     }
     if (detail) _terrain(canvas, relief);
@@ -1474,7 +1790,16 @@ class ChartMapPainter extends CustomPainter {
     if (globe == null) {
       canvas.drawPicture(_groundFor(relief));
     } else {
-      _paintGround(canvas, relief);
+      // The sphere wears the flat chart as its skin (v1.206), at the
+      // chart's own detail, once that skin is rendered; until then it is
+      // painted coarse, as before.
+      final skin = _globeSkin(relief);
+      if (skin != null) {
+        _paintGlobeSkinned(canvas, globe!, skin);
+      } else {
+        _paintGround(canvas, relief);
+      }
+      _globeLight(canvas, globe!);
     }
     // The climate calques (v1.204), under the fog like the ground.
     if (calque.climate) {
@@ -1622,43 +1947,46 @@ class ChartMapPainter extends CustomPainter {
       }
     }
 
-    // Fog over what the story has not reached.
-    canvas.saveLayer(whole, Paint());
-    final fogPaint = Paint()
-      ..color =
-          palette.fog.withValues(alpha: fog == ChartFog.uncharted ? 0.94 : 0.9);
-    if (globe case final g?) {
-      canvas.drawCircle(g.centre, g.radius, fogPaint);
-    } else {
-      canvas.drawRect(whole, fogPaint);
-    }
-    if (fog == ChartFog.uncharted) {
-      // The coasts, dotted, and the lands' names: the world has a shape
-      // before the story.
-      final dotted = Paint()
-        ..color = palette.coast.withValues(alpha: 0.9)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 0.5;
-      for (final coast in relief.coasts) {
-        _dashedPath(canvas, _poly(coast), dotted, dash: 1.2, gap: 1.2);
+    // Fog over what the story has not reached (none on a chart with
+    // nothing left to find, v1.206).
+    if (fog != ChartFog.none) {
+      canvas.saveLayer(whole, Paint());
+      final fogPaint = Paint()
+        ..color = palette.fog
+            .withValues(alpha: fog == ChartFog.uncharted ? 0.94 : 0.9);
+      if (globe case final g?) {
+        canvas.drawCircle(g.centre, g.radius, fogPaint);
+      } else {
+        canvas.drawRect(whole, fogPaint);
       }
+      if (fog == ChartFog.uncharted) {
+        // The coasts, dotted, and the lands' names: the world has a shape
+        // before the story.
+        final dotted = Paint()
+          ..color = palette.coast.withValues(alpha: 0.9)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.5;
+        for (final coast in relief.coasts) {
+          _dashedPath(canvas, _poly(coast), dotted, dash: 1.2, gap: 1.2);
+        }
+      }
+      for (final l in worldMapLandmarks) {
+        if (!discovered.contains(l.id)) continue;
+        if (!_vis(geography.of(l))) continue;
+        final p = _at(geography.of(l));
+        canvas.drawCircle(
+          p,
+          30,
+          Paint()
+            ..blendMode = BlendMode.dstOut
+            ..shader = const RadialGradient(
+              colors: [Colors.black, Colors.black, Colors.transparent],
+              stops: [0, 0.6, 1],
+            ).createShader(Rect.fromCircle(center: p, radius: 30)),
+        );
+      }
+      canvas.restore();
     }
-    for (final l in worldMapLandmarks) {
-      if (!discovered.contains(l.id)) continue;
-      if (!_vis(geography.of(l))) continue;
-      final p = _at(geography.of(l));
-      canvas.drawCircle(
-        p,
-        30,
-        Paint()
-          ..blendMode = BlendMode.dstOut
-          ..shader = const RadialGradient(
-            colors: [Colors.black, Colors.black, Colors.transparent],
-            stops: [0, 0.6, 1],
-          ).createShader(Rect.fromCircle(center: p, radius: 30)),
-      );
-    }
-    canvas.restore();
     // A compass rose and a scale bar on the flat chart (v1.202), over the
     // fog: a chart has them before the story does.
     if (globe == null && detail) {
