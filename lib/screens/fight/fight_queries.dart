@@ -339,10 +339,22 @@ extension _FightQueries on _FightScreenState {
   /// Every party member able to act this round — conscious, and not
   /// currently Stunned (see status_effect.dart; a stunned member is
   /// skipped for the round entirely, announced in [_startPartyRound]).
-  List<_PartyMember> get _actingParty => _party
-      .where((m) =>
-          !m.isKnockedOut &&
-          !isStunned(m.statusEffects) &&
-          !_sittingOut.contains(m.id))
-      .toList();
+  /// In Dexterity order, the quickest first (v1.213, see turn_order.dart).
+  List<_PartyMember> get _actingParty => actingOrder(
+      _party
+          .where((m) =>
+              !m.isKnockedOut &&
+              !isStunned(m.statusEffects) &&
+              !_sittingOut.contains(m.id))
+          .toList(),
+      (m) => m.dexterity);
+
+  /// [member]'s place in this round's order (1 is first), or null when
+  /// they act alone or not at all.
+  int? _orderOf(_PartyMember member) {
+    final acting = _actingParty;
+    if (acting.length < 2) return null;
+    final index = acting.indexWhere((a) => a.id == member.id);
+    return index < 0 ? null : index + 1;
+  }
 }

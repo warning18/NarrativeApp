@@ -3,7 +3,7 @@ part of '../fight_screen.dart';
 /// The on-screen effects: screen shake, and the effects played for
 /// faces, enemy moves and spells.
 extension _FightEffects on _FightScreenState {
-  bool get _effectsOn => ref.read(combatEffectsEnabledProvider);
+  bool get _effectsOn => ref.read(combatEffectsEnabledProvider) && !_quick;
 
   void _triggerShake() {
     if (!ref.read(trembleEnabledProvider)) return;

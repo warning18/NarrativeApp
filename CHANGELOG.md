@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.213.0+248]
+
+### Added
+- The party acts in Dexterity order. The quickest fighter strikes first, and ties keep the party's own order (you first, then your companions as they joined). A small number on each card shows its place in the round. An Echo copies the strike played before it, so order now matters there too.
+- Loadout by situation. Before a fight you can swap the die you roll for another you own. Each die you could pick is starred when it can hit an element the party knows its enemies are weak to, and a line says which weaknesses are known and which of them this die hits. The swap holds for this fight only.
+- Quick resolve. Against enemies you have already beaten five times or more, with your health above sixty percent, a fight offers to play itself: a roll and a confirm a round, short animations, the same rules as a played fight. It stops and hands the fight back when you tap Stop, when your health falls below forty-five percent, or when a companion is knocked out. Bosses, uniques, hunts, ambushes, lessons, elites and story fights with a defeat branch never offer it.
+
+### Internal
+- `turn_order.dart`, `quick_resolve.dart` and `loadout.dart` hold the pure rules. The fight screen gains a `fight_quick.dart` part. A player's die fields can now change before the first roll.
+
 ## [1.212.0+247]
 
 ### Added
