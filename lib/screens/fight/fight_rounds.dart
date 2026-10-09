@@ -449,6 +449,7 @@ extension _FightRounds on _FightScreenState {
       ref.read(playerSessionProvider.notifier).setMana(_mana);
     }
 
+    _noteGoalProgress(newEntries, lang);
     _noteSkittishFlights(newEntries, lang);
 
     _update(() {
@@ -517,14 +518,18 @@ extension _FightRounds on _FightScreenState {
     // round's best hit (what a Mirror sends back) starts over.
     _silenced = _silencePending;
     _silencePending = false;
+    // The Writ (v1.212, see doctrine.dart) silences every third round.
+    final writ = _writFalls(_roundsStarted);
+    if (writ) _silenced = true;
     _bestHitThisRound = 0;
     _signGuardArmed = false;
     // An enemy that fell in their turn (poison, thorns, a guard sign)
     // feeds a kill-heal sign now.
     _feedSignKills(newEntries, lang);
     if (_silenced) {
-      newEntries.add(
-          _LogEntry(trFor(lang, 'silence_round_note'), _LogKind.enemyDamage));
+      newEntries.add(_LogEntry(
+          trFor(lang, writ ? 'writ_log' : 'silence_round_note'),
+          _LogKind.enemyDamage));
     }
 
     for (final member in _party) {
@@ -1145,6 +1150,7 @@ extension _FightRounds on _FightScreenState {
         _lastDamageTaken = damageTaken;
         _lastDamagedMemberId = target.id;
         if (damageTaken > 0) _momentum = momentumAfterHit(_momentum);
+        if (damageTaken > 0) _plunderFrom(enemy, lang);
         if (wasDodged) {
           _log.add(_LogEntry(
             target.isPlayer
@@ -1272,6 +1278,13 @@ extension _FightRounds on _FightScreenState {
     }
 
     if (_enemies.every((e) => !e.isAlive)) {
+      _finishFight(won: true);
+      return;
+    }
+
+    if (_holdHeld) {
+      _update(() => _log
+          .add(_LogEntry(trFor(lang, 'goal_won_hold_log'), _LogKind.victory)));
       _finishFight(won: true);
       return;
     }

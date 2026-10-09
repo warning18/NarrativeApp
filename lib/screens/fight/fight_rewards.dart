@@ -98,8 +98,9 @@ extension _FightRewards on _FightScreenState {
                   as Map<String, dynamic>?)?['preferredScalingStat']
               ?.toString() ??
           '';
-      final rewardMultiplier =
-          widget.modifiers.rewardMultiplier * chapterRewardMultiplier(_chapter);
+      final rewardMultiplier = widget.modifiers.rewardMultiplier *
+          chapterRewardMultiplier(_chapter) *
+          goalRewardMultiplier(_goal.kind);
       var affixCount = 0;
       var anyFled = false;
       var firstKill = false;
@@ -113,6 +114,10 @@ extension _FightRewards on _FightScreenState {
         if (_isElite) {
           enemyGold = (enemyGold * _eliteRewardMultiplier).round();
           enemyXp = (enemyXp * _eliteRewardMultiplier).round();
+        }
+        // A fighter who yielded pays a ransom instead of its spoils.
+        if (enemy.yielded) {
+          enemyGold = (enemyGold * ransomGoldMultiplier).round();
         }
         if (enemy.fled) {
           enemyGold = (enemyGold * skittishFledRewardShare).round();
@@ -129,8 +134,10 @@ extension _FightRewards on _FightScreenState {
         // An enemy's loot table now only steers WHICH gear its chest
         // favors (see LootContext.signatureItemIds); the chest itself
         // decides whether anything drops at all.
-        final lootTable =
-            (enemy.data['lootTable'] as List?)?.cast<Map<String, dynamic>>() ??
+        final lootTable = enemy.yielded
+            ? const <Map<String, dynamic>>[]
+            : (enemy.data['lootTable'] as List?)
+                    ?.cast<Map<String, dynamic>>() ??
                 const [];
         for (final entry in lootTable) {
           final itemId = entry['itemID']?.toString();
@@ -193,6 +200,19 @@ extension _FightRewards on _FightScreenState {
       // The Crow's Price: the gold stolen on the player's hits.
       final stolen = _signs.crowsGold(_crowsHits);
       goldGain += stolen;
+      // The Short Con (see doctrine.dart): whatever a thief still carries,
+      // having fled or outlasted the fight, is missing from the spoils.
+      final escaped = plunderLoss(goldGain: goldGain, escapedStashes: [
+        for (final e in _enemies)
+          if (e.stash > 0 && (e.isAlive || e.fled)) e.stash,
+      ]);
+      if (escaped > 0) {
+        goldGain -= escaped;
+        _log.add(_LogEntry(
+            trFor(ref.read(appLanguageProvider), 'plunder_loss_log')
+                .replaceAll('{n}', '$escaped'),
+            _LogKind.enemyDamage));
+      }
       xpGain = _signs.scaleXp(_perks.scaleXp(xpGain));
 
       final lang = ref.read(appLanguageProvider);

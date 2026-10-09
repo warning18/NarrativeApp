@@ -17,7 +17,9 @@ import '../combat/duo_techniques.dart';
 import '../combat/face_smithing.dart';
 import '../combat/party_combos.dart';
 import '../combat/encounter.dart';
+import '../combat/doctrine.dart';
 import '../combat/enemy_affix.dart';
+import '../combat/fight_goal.dart';
 import '../combat/gear_effects.dart';
 import '../combat/loot_box.dart';
 import '../combat/spells.dart';
@@ -70,6 +72,7 @@ part 'fight/fight_cards.dart';
 part 'fight/fight_controls.dart';
 part 'fight/fight_dice_rules.dart';
 part 'fight/fight_effects.dart';
+part 'fight/fight_goals.dart';
 part 'fight/fight_lucky_die.dart';
 part 'fight/fight_models.dart';
 part 'fight/fight_queries.dart';
@@ -306,6 +309,14 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// This fight's one-off circumstance, if any -- see
   /// battlefield_condition.dart. Rolled once in [_ensureEnemiesBuilt].
   BattlefieldCondition? _condition;
+
+  /// What this fight asks of the party besides killing everything
+  /// (v1.212, see fight_goal.dart). Rolled once in [_ensureEnemiesBuilt].
+  FightGoal _goal = FightGoal.slay;
+
+  /// The doctrine the enemies fight under, if any (v1.212, see
+  /// doctrine.dart). Set once in [_ensureEnemiesBuilt].
+  Doctrine? _doctrine;
 
   /// What the day's sky does to this fight (v1.208, see
   /// weather_effects.dart): set once in [_ensureEnemiesBuilt].

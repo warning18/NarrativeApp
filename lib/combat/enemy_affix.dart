@@ -96,22 +96,33 @@ EnemyAffix? affixFromName(String name) {
 /// enemy may draw one of the four solo affixes; each pack member may draw
 /// one of all five, with [EnemyAffix.packLeader] appearing at most once
 /// per pack.
+///
+/// [tastes], when given, holds for each enemy the affixes its faction's
+/// doctrine favours (see doctrine.dart; empty for none): such an enemy
+/// draws an affix [tasteBoost] likelier, and takes one of its taste
+/// [tasteShare] of the time.
 List<List<EnemyAffix>> rollEncounterAffixes({
   required List<String> enemyIds,
   required bool isElite,
   required Random random,
   double soloChance = affixChanceSolo,
   double packChance = affixChancePackMember,
+  List<List<EnemyAffix>>? tastes,
+  double tasteBoost = 0.20,
+  double tasteShare = 0.7,
 }) {
   final isPack = enemyIds.length > 1;
   var leaderTaken = false;
   final result = <List<EnemyAffix>>[];
-  for (final id in enemyIds) {
+  for (var i = 0; i < enemyIds.length; i++) {
+    final id = enemyIds[i];
     if (soloOnlyEnemyIds.contains(id) || (!isPack && isElite)) {
       result.add(const []);
       continue;
     }
-    final chance = isPack ? packChance : soloChance;
+    final taste = tastes != null && i < tastes.length ? tastes[i] : const [];
+    final chance =
+        (isPack ? packChance : soloChance) + (taste.isEmpty ? 0.0 : tasteBoost);
     if (random.nextDouble() >= chance) {
       result.add(const []);
       continue;
@@ -123,7 +134,13 @@ List<List<EnemyAffix>> rollEncounterAffixes({
       EnemyAffix.frenzied,
       if (isPack && !leaderTaken) EnemyAffix.packLeader,
     ];
-    final picked = pool[random.nextInt(pool.length)];
+    final liked = [
+      for (final affix in taste)
+        if (pool.contains(affix)) affix,
+    ];
+    final picked = liked.isNotEmpty && random.nextDouble() < tasteShare
+        ? liked[random.nextInt(liked.length)]
+        : pool[random.nextInt(pool.length)];
     if (picked == EnemyAffix.packLeader) leaderTaken = true;
     result.add([picked]);
   }

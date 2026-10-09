@@ -1017,6 +1017,14 @@ final DbSchema enemiesSchema = DbSchema(
         label: 'Guile (resists Perception telegraphing)',
         type: FieldType.integer,
         defaultValue: 0),
+    // v1.212: the faction whose doctrine (see lib/combat/doctrine.dart) the enemy fights
+    // under; empty for beasts, uniques and the tear's things.
+    FieldSchema(
+      key: 'faction',
+      label: 'Faction (fights under its doctrine)',
+      type: FieldType.reference,
+      referenceSchemaId: 'factions',
+    ),
     // v1.162: the party's hits of these elements land ×1.5 / ×½.
     FieldSchema(
       key: 'weakTo',

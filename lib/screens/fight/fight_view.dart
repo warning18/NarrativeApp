@@ -49,6 +49,14 @@ extension _FightView on _FightScreenState {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (!_goal.isSlay) ...[
+            _buildGoalBanner(),
+            const SizedBox(height: 12),
+          ],
+          if (_doctrine != null) ...[
+            _buildDoctrineBanner(_doctrine!),
+            const SizedBox(height: 12),
+          ],
           if (condition != null) ...[
             _buildConditionBanner(condition),
             const SizedBox(height: 12),
@@ -359,6 +367,7 @@ extension _FightView on _FightScreenState {
       spacing: 6,
       runSpacing: 4,
       children: [
+        ..._goalChips(),
         if (condition != null)
           _telegraphChip(Icons.terrain, tr(ref, conditionLabelKey(condition))),
         if (_sky.effectKey != null)

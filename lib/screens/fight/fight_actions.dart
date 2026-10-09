@@ -278,6 +278,7 @@ extension _FightActions on _FightScreenState {
             _LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info));
       }
     }
+    _noteGoalProgress(entries, lang);
     _noteSkittishFlights(entries, lang);
     _feedSignKills(entries, lang);
 

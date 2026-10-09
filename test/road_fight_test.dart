@@ -11,6 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/combat/battlefield_condition.dart';
+import 'package:narrative_data_app/combat/fight_goal.dart';
 import 'package:narrative_data_app/combat/encounter.dart';
 import 'package:narrative_data_app/data/journey_rules.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
@@ -81,7 +82,8 @@ void main() {
               enemyId: 'harbor_rat',
               enemy: _enemy('harbor_rat'),
               modifiers: const EncounterModifiers(
-                  forcedCondition: BattlefieldCondition.ambush),
+                  forcedCondition: BattlefieldCondition.ambush,
+                  forcedGoal: FightGoal.slay),
             )));
     await _settle(tester);
     await tester.tap(find.text('Enter Battle'));

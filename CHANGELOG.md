@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.212.0+247]
+
+### Added
+- Fights that ask for more than the slaughter. About one fight in four now has a goal, announced on the setup screen before the first die: **Hold the line** (a pack presses you; survive its turns, three against a pair and four against more, and you win whoever still stands, for a third more gold and XP), **Rout** (a pack's sturdiest member is its captain, marked on its card; bring it down and the rest flee, as a Skittish enemy does) and **Subdue** (one fighter who is a person, not a beast: bring them under thirty percent of their health and they yield and pay a ransom of half again their gold, but drop no loot; kill them outright and you get the usual spoils). Bosses, uniques, hunts, ambushes, lessons and story fights with a defeat branch never roll a goal. A battle chip shows the goal, and a hold counts its turns.
+- Faction doctrine. Each faction's fighters now fight by their own habits, announced beside the goal. The Dominion's **Writ**: every third round your skill faces fall silent, and its soldiers favour heavy armour. The Salt Crows' **Short Con**: each hit they land lifts gold, carried by the thief shown on its card; whatever a Crow still carries when the fight ends is missing from the spoils, so kill the thief to get it back, and they would rather run than die. The Ashen Penitents turn frenzied as they bleed, the Choir and the giants wear armour, the Pit's things poison, the Tide-Kin give ground. Twenty-six enemies now carry a faction in enemies.json. A fight against a boss or a unique is never under a doctrine.
+
+### Internal
+- `lib/combat/fight_goal.dart` and `lib/combat/doctrine.dart` hold the pure rules; the fight screen gains a `fight_goals.dart` part. An encounter can carry a `forcedGoal` for a hand-made fight; the story files do not use it yet. The fight tests that rely on the plain slaughter pin it.
+- The in-app playthrough simulator and the Python simulator do not model goals or doctrines yet.
+
 ## [1.211.0+246]
 
 ### Added
