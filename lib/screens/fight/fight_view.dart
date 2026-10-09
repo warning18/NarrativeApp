@@ -695,7 +695,7 @@ extension _FightView on _FightScreenState {
       key: ValueKey('die_cube_${actor.id}'),
       faces: _cubeFacesFor(actor, landing, accent),
       accent: accent,
-      size: 38,
+      size: 46,
       roll: _rollController,
       rolling: spinning,
       fx: face == null ? null : dieFxOf(_faceKindOf(face)),
@@ -922,10 +922,29 @@ extension _FightView on _FightScreenState {
                 : assigned;
           }
           return DieCubeFace(
-              glyph: _buildFaceGlyph(face, size: 26),
-              color: _faceKindOf(face).color);
+              glyph: _cubeGlyph(face), color: _faceKindOf(face).color);
         }(),
     ];
+  }
+
+  /// A side of the cube: a skill face holds the skill's own icon, large, on
+  /// a pale plaque ringed in what the skill does so the pixel art reads on
+  /// the dark stone (v1.214); any other face, its type icon over its value.
+  Widget _cubeGlyph(DiceFaceResult face) {
+    if (face.type != 'Skill') return _buildFaceGlyph(face, size: 30);
+    final color = _faceKindOf(face).color;
+    return Container(
+      key: ValueKey('die_skill_${_effectiveSkillId(face)}'),
+      width: 34,
+      height: 34,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: const Color(0xFFEFE6D2).withValues(alpha: 0.92),
+        border: Border.all(color: color, width: 2),
+      ),
+      child: SkillPixelIcon(_effectiveSkillId(face), size: 26),
+    );
   }
 
   /// A rolled face as a glyph: its type icon over its value (a Skill face
