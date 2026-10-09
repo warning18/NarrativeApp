@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.214.0+249]
+
+### Added
+- The dice are cubes in the fight. A die tumbles through the air in perspective, with a hop and a shadow, and lands on the face it rolled, which stands front; the other five sides carry the die's other faces (a die of fewer than six faces repeats them), lit by a lamp above and to the left, the far sides hidden. It rests tipped toward you so its top and a side show. A die kept through a reroll stays put.
+- A landed face lets go a burst fitted to what it does: sparks and a shock ring for an attack, a hexagonal ward for a guard, rising crosses for a heal, orbiting blue motes for mana, green bubbles for poison, amber bolts for a stun, a draining purple spiral for a weaken, grey dust for a blank. A skill face or a face worth 8 or more lands bigger, with a white glint.
+- With reduced motion the dice roll at once and no burst plays.
+
 ## [1.213.0+248]
 
 ### Fixed

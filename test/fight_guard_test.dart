@@ -105,6 +105,8 @@ void main() {
 
     await tester.tap(find.text('Roll Dice'));
     await _settle(tester);
+    // The die on the table is a cube (v1.214).
+    expect(find.byKey(const ValueKey('die_cube_player')), findsOneWidget);
     await tester.tap(find.text('Confirm'));
     await _pumpUntil(tester, () => _logShows('raises a guard of'));
 

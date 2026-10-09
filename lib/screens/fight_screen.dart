@@ -35,6 +35,7 @@ import '../combat/skill_vfx.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/combat_vfx.dart';
+import '../widgets/die_3d.dart';
 import '../widgets/item_stats.dart';
 import '../data/approval.dart';
 import '../data/chapter_loop.dart';
@@ -415,6 +416,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// sequential turns. Cleared once a roll is confirmed.
   final Map<String, DiceFaceResult> _currentFaces = {};
 
+  /// The faces the dice in the air are about to land on (v1.214): the
+  /// cubes tumble to them, and they become [_currentFaces] when the roll
+  /// ends.
+  Map<String, DiceFaceResult> _rollingTo = const {};
+
   /// How many times the party has rolled so far *this round* (0-3) — a
   /// single shared budget covering every member's die at once, not a
   /// per-member count.
@@ -483,8 +489,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    // Spins and bounces the die icon for a beat before a roll's result is
-    // applied, so a tap reads as "rolling" rather than an instant stat swap.
+    // The dice tumble in 3D for a beat before a roll's result is applied
+    // (see Die3D), so a tap reads as "rolling" rather than an instant stat
+    // swap; with reduced motion the roll is instant (see _rollDice).
     _rollController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 650),
