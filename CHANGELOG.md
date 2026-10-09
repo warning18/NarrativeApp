@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.208.0+243]
+
+### Added
+- The sky touches the play. Each day's weather over the party (the same all day, so a fight or a road reads the same whenever it is looked at) changes a fight: rain dampens Fire (−30%) and feeds Water and Electricity (+20%); snow smothers Fire (−25%) and sharpens Ice (+25%); fog damps Fire a little and hides what the enemy is about to do (the party reads its telegraphs as if its Perception were five lower); the dry dust feeds Fire and Wind (+15%) and does less to Water, and the ash and embers feed Fire (+20%) and Wind; dust, ash and snow hide the enemy's intent too. It applies to the party's blows and spells and to the enemy's own moves alike. The fight log and a chip above it say so, and the Journey's weather chip carries the day's tags (Fire −30%). Bad weather makes the road likelier to hold something: snow ×1.4, fog ×1.3, dust ×1.3, rain ×1.25, ash ×1.2, cloud ×1.05.
+- The Layers sheet can keep the weather to the world zoom, for a clear land view; the choice is kept.
+
+### Changed
+- The clouds are banks, not discs: every cell's cover is laid as a patch and the patches blurred into one field, so the banks take the shape of the sky's field, their edges penned as thin wavering ink lines; the fill is lighter, so the land under a cloud stays readable.
+- The fog of the uncharted follows the land: each land a place was read in shows whole, with a soft torn edge along its border, the roads walked show as cleared corridors, and only a place read outside any land (at sea) keeps a small clearing. Before, every place cleared one disc of the same size, so the known world was a circle round the party.
+- When the streets give way to the chart, the fog and the weather fade in over a third of a second instead of popping.
+
 ## [1.207.0+242]
 
 ### Added

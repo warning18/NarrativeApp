@@ -27,6 +27,7 @@ class ChartWeather extends StatefulWidget {
     this.globe,
     this.zoomOf,
     this.visibleOf,
+    this.showOf,
     this.still = false,
   });
 
@@ -49,14 +50,22 @@ class ChartWeather extends StatefulWidget {
   /// No motion: one still sky.
   final bool still;
 
+  /// Whether the sky is drawn at all right now (v1.208): the Layers sheet
+  /// can keep it to the world zoom.
+  final bool Function()? showOf;
+
   @override
   State<ChartWeather> createState() => _ChartWeatherState();
 }
 
 class _ChartWeatherState extends State<ChartWeather>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final Ticker _ticker;
   final ValueNotifier<double> _clock = ValueNotifier(0);
+
+  /// The sky fades in as the chart opens (v1.208), rather than popping.
+  late final AnimationController _fade = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 420));
 
   @override
   void initState() {
@@ -65,6 +74,11 @@ class _ChartWeatherState extends State<ChartWeather>
       _clock.value = elapsed.inMilliseconds / 1000;
     });
     if (!widget.still) _ticker.start();
+    if (widget.still) {
+      _fade.value = 1;
+    } else {
+      _fade.forward();
+    }
   }
 
   @override
@@ -83,23 +97,28 @@ class _ChartWeatherState extends State<ChartWeather>
   void dispose() {
     _ticker.dispose();
     _clock.dispose();
+    _fade.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
-      child: RepaintBoundary(
-        child: CustomPaint(
-          size: widget.size,
-          painter: ChartWeatherPainter(
-            clock: _clock,
-            geography: widget.geography,
-            palette: widget.palette,
-            day: widget.day,
-            globe: widget.globe,
-            zoomOf: widget.zoomOf,
-            visibleOf: widget.visibleOf,
+      child: FadeTransition(
+        opacity: _fade,
+        child: RepaintBoundary(
+          child: CustomPaint(
+            size: widget.size,
+            painter: ChartWeatherPainter(
+              clock: _clock,
+              geography: widget.geography,
+              palette: widget.palette,
+              day: widget.day,
+              globe: widget.globe,
+              zoomOf: widget.zoomOf,
+              visibleOf: widget.visibleOf,
+              showOf: widget.showOf,
+            ),
           ),
         ),
       ),
@@ -117,6 +136,7 @@ class ChartWeatherPainter extends CustomPainter {
     this.globe,
     this.zoomOf,
     this.visibleOf,
+    this.showOf,
   }) : super(repaint: clock);
 
   final ValueNotifier<double> clock;
@@ -126,6 +146,7 @@ class ChartWeatherPainter extends CustomPainter {
   final GlobeView? globe;
   final double Function()? zoomOf;
   final Rect Function()? visibleOf;
+  final bool Function()? showOf;
 
   /// The sky's time: the story's day, and the seconds this layer has
   /// been watched (the app's clock, so every map agrees).
@@ -133,6 +154,7 @@ class ChartWeatherPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (showOf?.call() == false) return;
     final climate = ChartClimate.of(geography);
     final t = time;
     final zoom = (zoomOf?.call() ?? 1).clamp(1.0, 12.0);
@@ -198,7 +220,11 @@ class ChartWeatherPainter extends CustomPainter {
     final pale = Color.lerp(palette.place, Colors.white, 0.35)!;
     final sigma = step * 0.55 * (g == null ? 1 : g.zoom.clamp(0.6, 2.0));
 
-    // The clouds' shadows on the land, blurred together.
+    // The cloud banks: the cover of every cell laid as a patch and the
+    // patches blurred into one soft field, so the banks take the shape of
+    // the sky's field rather than a scatter of discs; their shadow on the
+    // land first, offset toward the lee.
+    final sh = step * 1.05;
     canvas.saveLayer(
         whole,
         Paint()
@@ -206,17 +232,16 @@ class ChartWeatherPainter extends CustomPainter {
     for (final (p, q, w) in cells) {
       if (w.cloud < 0.3) continue;
       final f = facing(p);
-      final r = step * (0.4 + w.cloud * 0.45) * f;
-      canvas.drawCircle(
-          q + Offset(step * 0.3, step * 0.4) * f,
-          r,
+      canvas.drawRect(
+          Rect.fromCenter(
+              center: q + Offset(step * 0.3, step * 0.4) * f,
+              width: sh * f,
+              height: sh * f),
           Paint()
             ..color =
-                dark.withValues(alpha: 0.16 * _smooth(0.3, 0.9, w.cloud)));
+                dark.withValues(alpha: 0.14 * _smooth(0.3, 0.9, w.cloud)));
     }
     canvas.restore();
-
-    // The clouds themselves.
     canvas.saveLayer(
         whole,
         Paint()
@@ -226,16 +251,14 @@ class ChartWeatherPainter extends CustomPainter {
       final fog = w.kind == WeatherKind.fog;
       final cover = fog ? 0.55 : w.cloud;
       if (cover < 0.2) continue;
-      final r = step * (0.4 + cover * 0.5) * f;
-      final alpha = fog ? 0.2 : 0.06 + 0.24 * _smooth(0.2, 0.95, cover);
-      canvas.drawCircle(q, r, Paint()..color = pale.withValues(alpha: alpha));
-      if (cover > 0.7 && !fog) {
-        // A thicker heart to the heavy cloud.
-        canvas.drawCircle(q + Offset(-step * 0.2, -step * 0.15) * f, r * 0.5,
-            Paint()..color = pale.withValues(alpha: 0.18));
-      }
+      final alpha = fog ? 0.16 : 0.04 + 0.2 * _smooth(0.2, 0.95, cover);
+      canvas.drawRect(Rect.fromCenter(center: q, width: sh * f, height: sh * f),
+          Paint()..color = pale.withValues(alpha: alpha));
     }
     canvas.restore();
+    // The banks' edges drawn in ink, as a chart would pen them: the line
+    // where the cover passes half, through the cells' corners.
+    _cloudEdges(canvas, climate, t, step, shown, g, at, vis, facing);
 
     // What falls: rain slanting on the wind, snow drifting, dust and ash
     // streaming.
@@ -313,6 +336,96 @@ class ChartWeatherPainter extends CustomPainter {
   static List<(Offset, Offset, WeatherSample)> _cells = const [];
   static String _cellsKey = '';
   static double _cellsAt = -1;
+
+  /// The ink line round each cloud bank: marching squares over the sky's
+  /// cells at half cover, each segment drawn with a slight waver.
+  void _cloudEdges(
+      Canvas canvas,
+      ChartClimate climate,
+      double t,
+      double step,
+      Rect shown,
+      GlobeView? g,
+      Offset Function(Offset) at,
+      bool Function(Offset) vis,
+      double Function(Offset) facing) {
+    const level = 0.5;
+    final i0 = (shown.left / step).floor(), i1 = (shown.right / step).ceil();
+    final j0 = (shown.top / step).floor(), j1 = (shown.bottom / step).ceil();
+    final cols = i1 - i0 + 2, rows = j1 - j0 + 2;
+    final field = List<double>.filled(cols * rows, 0);
+    for (var j = 0; j < rows; j++) {
+      for (var i = 0; i < cols; i++) {
+        final p = Offset((i0 + i) * step, (j0 + j) * step);
+        if (!ChartClimate.bounds.contains(p)) continue;
+        field[j * cols + i] = climate.cloudAt(p, t);
+      }
+    }
+    final ink = Paint()
+      ..color = Color.lerp(palette.place, palette.fog, 0.35)!
+          .withValues(alpha: g == null ? 0.42 : 0.3)
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = (0.22 * math.sqrt(step)).clamp(0.25, 0.6);
+    Offset corner(int i, int j) => Offset((i0 + i) * step, (j0 + j) * step);
+    Offset lerp(Offset a, Offset b, double va, double vb) =>
+        a + (b - a) * ((level - va) / (vb - va)).clamp(0.0, 1.0);
+    void segment(Offset a, Offset b) {
+      if (!vis(a) || !vis(b)) return;
+      final pa = at(a), pb = at(b);
+      // A waver on the pen, by the place, so the edge is never a straight
+      // run of cells.
+      final mid = (pa + pb) / 2;
+      final d = pb - pa;
+      final n =
+          d.distance == 0 ? Offset.zero : Offset(-d.dy, d.dx) / d.distance;
+      final waver = (_hashOf(a, 5) - 0.5) * step * 0.35 * facing(a);
+      final path = Path()
+        ..moveTo(pa.dx, pa.dy)
+        ..quadraticBezierTo(
+            mid.dx + n.dx * waver, mid.dy + n.dy * waver, pb.dx, pb.dy);
+      canvas.drawPath(path, ink);
+    }
+
+    for (var j = 0; j + 1 < rows; j++) {
+      for (var i = 0; i + 1 < cols; i++) {
+        final v00 = field[j * cols + i], v10 = field[j * cols + i + 1];
+        final v01 = field[(j + 1) * cols + i];
+        final v11 = field[(j + 1) * cols + i + 1];
+        final code = (v00 >= level ? 1 : 0) |
+            (v10 >= level ? 2 : 0) |
+            (v11 >= level ? 4 : 0) |
+            (v01 >= level ? 8 : 0);
+        if (code == 0 || code == 15) continue;
+        final p00 = corner(i, j), p10 = corner(i + 1, j);
+        final p01 = corner(i, j + 1), p11 = corner(i + 1, j + 1);
+        final top = lerp(p00, p10, v00, v10);
+        final right = lerp(p10, p11, v10, v11);
+        final bottom = lerp(p01, p11, v01, v11);
+        final left = lerp(p00, p01, v00, v01);
+        switch (code) {
+          case 1 || 14:
+            segment(left, top);
+          case 2 || 13:
+            segment(top, right);
+          case 3 || 12:
+            segment(left, right);
+          case 4 || 11:
+            segment(right, bottom);
+          case 5:
+            segment(left, top);
+            segment(right, bottom);
+          case 6 || 9:
+            segment(top, bottom);
+          case 7 || 8:
+            segment(left, bottom);
+          case 10:
+            segment(top, right);
+            segment(left, bottom);
+        }
+      }
+    }
+  }
 
   static double _jitter(int i, int j) =>
       _hashOf(Offset(i * 1.0, j * 1.0), 7) - 0.5;

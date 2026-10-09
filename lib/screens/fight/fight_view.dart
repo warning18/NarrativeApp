@@ -361,6 +361,9 @@ extension _FightView on _FightScreenState {
       children: [
         if (condition != null)
           _telegraphChip(Icons.terrain, tr(ref, conditionLabelKey(condition))),
+        if (_sky.effectKey != null)
+          _telegraphChip(
+              Icons.cloud_outlined, tr(ref, 'weather_${_sky.kind.name}')),
         _telegraphChip(
           ready ? Icons.local_fire_department : Icons.trending_up,
           ready

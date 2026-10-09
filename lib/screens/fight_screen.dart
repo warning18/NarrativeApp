@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/battlefield_condition.dart';
+import '../data/weather_effects.dart';
+import '../providers/climate_provider.dart';
 import '../combat/combat_aftermath.dart';
 import '../combat/party_bonus.dart';
 import '../combat/combat_engine.dart';
@@ -304,6 +306,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// This fight's one-off circumstance, if any -- see
   /// battlefield_condition.dart. Rolled once in [_ensureEnemiesBuilt].
   BattlefieldCondition? _condition;
+
+  /// What the day's sky does to this fight (v1.208, see
+  /// weather_effects.dart): set once in [_ensureEnemiesBuilt].
+  WeatherEffects _sky = WeatherEffects.of(null);
 
   /// Party rounds begun so far -- the spoils chest's "swift fight" bonus
   /// reads this, and an Ambush hides every telegraph while it's still 1.

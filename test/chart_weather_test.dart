@@ -151,6 +151,63 @@ void main() {
       expect(journeyWeatherOf(null, 5), JourneyWeather.none);
     });
 
+    testWidgets(
+        'the fog clears the lands reached and the roads walked, and fades in',
+        (tester) async {
+      final walked = [
+        (worldMapLandmarks[0], worldMapLandmarks[1]),
+        (worldMapLandmarks[1], worldMapLandmarks[2]),
+      ];
+      for (final fogOf in [0.0, 0.5, 1.0]) {
+        final painter = ChartMapPainter(
+          frame: ValueNotifier(0),
+          walk: const AlwaysStoppedAnimation(0),
+          geography: chartOf(MapShape.archipelago),
+          palette: ChartPalette.of(MapLook.night),
+          language: AppLanguage.en,
+          discovered: {
+            for (final (a, b) in walked) ...[a.id, b.id]
+          },
+          legs: walked,
+          ahead: null,
+          selectedId: '',
+          here: worldMapLandmarks[2],
+          walking: false,
+          walkPath: const [],
+          chapterFilter: 0,
+          reduceMotion: true,
+          chapterColor: (_) => Colors.red,
+          fog: ChartFog.uncharted,
+          fogOf: () => fogOf,
+        );
+        await tester.pumpWidget(MaterialApp(
+          home: SizedBox(
+              width: 256, height: 176, child: CustomPaint(painter: painter)),
+        ));
+        await tester.pump();
+        expect(tester.takeException(), isNull, reason: 'fog $fogOf');
+      }
+    });
+
+    testWidgets('a sky kept to the world zoom paints nothing closer in',
+        (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Center(
+          child: ChartWeather(
+            size: const Size(256, 176),
+            geography: chartOf(MapShape.archipelago),
+            palette: ChartPalette.of(MapLook.night),
+            day: 4,
+            zoomOf: () => 3,
+            showOf: () => false,
+          ),
+        ),
+      ));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('dust and fog paint over the Journey', (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: CustomPaint(
@@ -275,11 +332,19 @@ void main() {
     await tester.tap(find.byKey(const Key('journey_layers')));
     await _settle(tester);
     expect(find.byKey(const Key('journey_weather')), findsOneWidget);
+    // With the weather on, it can be kept to the world zoom; the choice
+    // is kept.
+    expect(find.byKey(const Key('journey_weather_world_only')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('journey_weather_world_only')));
+    await _settle(tester);
+    expect(container.read(chartWeatherWorldOnlyProvider), isTrue);
     await tester.tap(find.byKey(const Key('journey_weather')));
     await _settle(tester);
     expect(container.read(chartWeatherProvider), isFalse);
+    expect(find.byKey(const Key('journey_weather_world_only')), findsNothing);
     final prefs = await tester.runAsync(SharedPreferences.getInstance);
     expect(prefs!.getBool(chartWeatherPrefsKey), isFalse);
+    expect(prefs.getBool(chartWeatherWorldOnlyPrefsKey), isTrue);
     // The height calque, with its legend.
     await tester.scrollUntilVisible(find.byKey(const Key('calque_height')), 80,
         scrollable: find.byType(Scrollable).last);

@@ -40,6 +40,10 @@ extension _FightSetup on _FightScreenState {
             ? null
             : rollBattlefieldCondition(
                 enemyCount: entries.length, random: _random));
+    // The day's sky over the party (v1.208): none for a lesson or a test.
+    _sky = lesson || modifiers.isTest
+        ? WeatherEffects.of(null)
+        : WeatherEffects.of(ref.read(skyHereProvider)?.today().kind);
 
     final affixes = lesson
         ? [for (final _ in entries) <EnemyAffix>[]]
@@ -395,6 +399,12 @@ extension _FightSetup on _FightScreenState {
         _log.add(_LogEntry(
           '${trFor(lang, conditionLabelKey(condition))}: '
           '${trFor(lang, conditionDescriptionKey(condition))}',
+          _LogKind.info,
+        ));
+      }
+      if (_sky.effectKey case final key?) {
+        _log.add(_LogEntry(
+          '${trFor(lang, 'weather_${_sky.kind.name}')}: ${trFor(lang, key)}',
           _LogKind.info,
         ));
       }

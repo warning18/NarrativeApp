@@ -70,14 +70,17 @@ extension _FightActions on _FightScreenState {
         alignedBonus.damageBonus +
         player.gear.attackDamage +
         _elementalDamageBonus(spell.element, player.equippedItemIds, items);
-    final amount = spellAmountFor(
-      spell,
-      intelligence: player.intelligence,
-      wisdom: player.wisdom,
-      strength: player.strength,
-      level: _playerLevel,
-      casterDamage: casterDamage,
-    );
+    // The day's sky dampens or feeds the spell's element (v1.208).
+    final amount = _sky.damage(
+        spellAmountFor(
+          spell,
+          intelligence: player.intelligence,
+          wisdom: player.wisdom,
+          strength: player.strength,
+          level: _playerLevel,
+          casterDamage: casterDamage,
+        ),
+        spell.element);
     // A spell sign lifts what spells deal and heal (not their block).
     return spell.effect == SpellEffectKind.damage ||
             spell.effect == SpellEffectKind.heal

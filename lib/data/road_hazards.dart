@@ -1,4 +1,6 @@
 import 'dart:math';
+import '../providers/climate_provider.dart';
+import 'weather_effects.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -104,7 +106,8 @@ Future<HazardTaken?> meetRoadHazard(
     toNodeId: toNodeId,
     historyLength: ref.read(storyPlayProvider).history.length,
     chapter: chapter,
-    oddsFactor: condition?.roadEventOdds ?? 1,
+    oddsFactor: (condition?.roadEventOdds ?? 1) *
+        WeatherEffects.of(ref.read(skyHereProvider)?.today().kind).roadOdds,
     championShare: condition?.championShare ?? 0.4,
     shrineShare: condition?.shrineShare ?? 0.3,
     hazardShare: share,

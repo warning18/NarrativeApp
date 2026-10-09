@@ -31,7 +31,9 @@ extension _FightQueries on _FightScreenState {
     if (_condition == BattlefieldCondition.ambush && _roundsStarted <= 1) {
       return TelegraphTier.none;
     }
-    final tier = telegraphTierFor(_bestPartyPerception(), enemy.guile);
+    // Fog, dust and snow take from the party's read (v1.208).
+    final tier = telegraphTierFor(
+        _bestPartyPerception() - _sky.perceptionPenalty, enemy.guile);
     return _condition == BattlefieldCondition.dark ? darkenedTier(tier) : tier;
   }
 
@@ -112,12 +114,15 @@ extension _FightQueries on _FightScreenState {
     );
     final alignedBonus =
         alignmentGearBonusFor(actor.equippedItemIds, items, _alignmentLabel);
-    return actor.baseDamage +
-        equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage') +
-        scalingBonus.damageBonus +
-        alignedBonus.damageBonus +
-        actor.gear.attackDamage +
-        elementalBonus;
+    // The day's sky dampens or feeds the element (v1.208).
+    return _sky.damage(
+        actor.baseDamage +
+            equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage') +
+            scalingBonus.damageBonus +
+            alignedBonus.damageBonus +
+            actor.gear.attackDamage +
+            elementalBonus,
+        element);
   }
 
   /// The enemy a strike by [actor] lands on if confirmed now: the only
@@ -148,6 +153,8 @@ extension _FightQueries on _FightScreenState {
             enemyDamage: enemy.damage)
         : move.damage;
     var damage = applyWeaken(base, enemy.statusEffects);
+    // The sky dampens or feeds the enemy's element too (v1.208).
+    damage = _sky.damage(damage, move.element);
     if (enemy.hasAffix(EnemyAffix.frenzied) &&
         enemy.currentHealth < enemy.maxHealth * frenziedHealthThreshold) {
       damage = (damage * frenziedDamageMultiplier).round();
