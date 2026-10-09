@@ -96,4 +96,45 @@ void main() {
       }
     }
   });
+
+  test('each beast of the design has its sprite, and the beasts wear them', () {
+    for (final beast in TopBeast.values) {
+      expect(File(beast.asset).existsSync(), isTrue, reason: beast.asset);
+    }
+    expect(File('pubspec.yaml').readAsStringSync(),
+        contains('assets/visuals/sea_beasts/'));
+    expect(TopShipLook.brinejaw.beast, TopBeast.wyrm);
+    expect(TopShipLook.paleLeviathan.beast, TopBeast.leviathan);
+    expect(TopShipLook.tideKraken.beast, TopBeast.kraken);
+    expect(TopShipLook.corsairBrig.beast, isNull);
+  });
+
+  testWidgets('a beast paints as a sprite once it is loaded', (tester) async {
+    for (final beast in TopBeast.values) {
+      SeaBeastSprites.of(beast);
+    }
+    await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 600)));
+    for (final beast in TopBeast.values) {
+      expect(SeaBeastSprites.of(beast), isNotNull, reason: '$beast');
+    }
+    final look = TopShipLook.tideKraken;
+    final recorder = ui.PictureRecorder();
+    TopShipPainter(
+      look: look,
+      flip: true,
+      facingDown: true,
+      t: 1,
+      layers: 0,
+      maxLayers: 0,
+      battered: true,
+      down: {ShipRoom.guns},
+      burning: {ShipRoom.hold},
+      water: 0,
+      shield: Colors.cyan,
+      foam: Colors.white,
+      roomColors: {for (final r in ShipRoom.values) r: Colors.amber},
+    ).paint(Canvas(recorder), Size(320, topShipBoxHeight(320, look)));
+    recorder.endRecording();
+  });
 }
