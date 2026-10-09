@@ -6,8 +6,18 @@
 //
 // Discovery itself is `npcDiscovered` in quest_tracking.dart; this file
 // reads the records around it.
+//
+// v1.210 ("Faces"): a `states` entry may also carry `conditions` in the
+// politicsIf shape (standing, marks, a claim...), read in the coast's
+// world; and the intrigues name their people (`npcId` on a stage or an
+// outcome), listed on the person's page by npcIntrigueLines.
 
+import '../l10n/app_locale.dart';
+import '../l10n/app_strings.dart' show trFor;
 import '../providers/player_session_provider.dart';
+import 'factions.dart' show Intrigue, PoliticsState;
+import 'politics_events.dart'
+    show CoastWorld, intrigueOutcomeFlag, intrigueStageFlag, politicsIfHolds;
 import 'quest_tracking.dart';
 
 List<String> _stringList(Object? raw) => [
@@ -50,26 +60,108 @@ String npcText(Map<String, dynamic> npc, String key, bool french) {
   return npc[key]?.toString() ?? '';
 }
 
+/// The `conditions` of a `states` entry (v1.210), in the politicsIf shape
+/// (see politicsIfHolds): empty when it has none.
+Map<String, dynamic> npcStateConditions(Map<String, dynamic> state) {
+  final raw = state['conditions'];
+  return raw is Map ? raw.cast<String, dynamic>() : const {};
+}
+
 /// What passed between [npc] and the player, in the record's order: every
 /// `states` entry whose `flag` is held, whose `andFlags` are all held and
 /// whose `unlessFlags` are none held (see FlagCallback in story_node.dart
 /// for the same rule on a scene), its `line` (or `line_fr` in [french]).
+///
+/// (v1.210) An entry may carry `conditions` in the politicsIf shape
+/// (standingAtLeast, marks, claim...): it shows only when they hold with
+/// [politics] in [world], so never when either is not given. Its `flag`
+/// may then be "" (no flag needed); an entry with neither a flag nor
+/// conditions never shows.
 List<String> npcStateLines(
-    Map<String, dynamic> npc, Iterable<String> flags, bool french) {
+  Map<String, dynamic> npc,
+  Iterable<String> flags,
+  bool french, {
+  CoastWorld? world,
+  PoliticsState? politics,
+}) {
   final held = flags is Set<String> ? flags : flags.toSet();
   final lines = <String>[];
   for (final raw in (npc['states'] as List?) ?? const []) {
     if (raw is! Map) continue;
     final state = raw.cast<String, dynamic>();
     final flag = state['flag']?.toString().trim() ?? '';
-    if (flag.isEmpty || !held.contains(flag)) continue;
+    final conditions = npcStateConditions(state);
+    if (flag.isEmpty && conditions.isEmpty) continue;
+    if (flag.isNotEmpty && !held.contains(flag)) continue;
     if (!_stringList(state['andFlags']).every(held.contains)) continue;
     if (_stringList(state['unlessFlags']).any(held.contains)) continue;
+    if (conditions.isNotEmpty) {
+      if (world == null || politics == null) continue;
+      if (!politicsIfHolds(conditions,
+          politics: politics, flags: held, world: world)) {
+        continue;
+      }
+    }
     final line = npcText(state, 'line', french).trim();
     if (line.isNotEmpty) lines.add(line);
   }
   return lines;
 }
+
+/// One line of a person's part in the intrigues (v1.210, see
+/// npcIntrigueLines): the [intrigue]'s name, the [stage]'s name (or
+/// "Outcome") and the stage's [text] (or the outcome's name), shown as
+/// `<intrigue> · <stage>: <text>`.
+typedef NpcIntrigueLine = ({String intrigue, String stage, String text});
+
+/// [npc]'s id: the record's `npcID` (or `id`), '' when it has none.
+String npcRecordId(Map<String, dynamic> npc) =>
+    (npc['npcID'] ?? npc['id'])?.toString().trim() ?? '';
+
+/// Where [npc] stands in the [intrigues] the story has reached, in the
+/// records' order: every stage whose `npcId` is theirs and whose flag
+/// `intrigue_<id>_stage_<n>` is held (n counting from 1), then every
+/// outcome whose `npcId` is theirs and whose flag
+/// `intrigue_<id>_outcome_<i>` is held (i counting from 0). The stage's
+/// text (or the outcome's name) in [french] when written so.
+List<NpcIntrigueLine> npcIntrigueLines(
+  Map<String, dynamic> npc,
+  Iterable<Intrigue> intrigues,
+  Iterable<String> flags,
+  bool french,
+) {
+  final id = npcRecordId(npc);
+  if (id.isEmpty) return const [];
+  final held = flags is Set<String> ? flags : flags.toSet();
+  final language = french ? AppLanguage.fr : AppLanguage.en;
+  final lines = <NpcIntrigueLine>[];
+  for (final intrigue in intrigues) {
+    for (final (i, stage) in intrigue.stages.indexed) {
+      if (stage.npcId != id) continue;
+      if (!held.contains(intrigueStageFlag(intrigue.id, i + 1))) continue;
+      lines.add((
+        intrigue: intrigue.nameFor(language),
+        stage: trFor(language, stage.key),
+        text: stage.textFor(language),
+      ));
+    }
+    for (final (i, outcome) in intrigue.outcomes.indexed) {
+      if (outcome.npcId != id) continue;
+      if (!held.contains(intrigueOutcomeFlag(intrigue.id, i))) continue;
+      lines.add((
+        intrigue: intrigue.nameFor(language),
+        stage: trFor(language, 'npc_intrigue_outcome'),
+        text: outcome.nameFor(language),
+      ));
+    }
+  }
+  return lines;
+}
+
+/// [line] as the person's page shows it, `<intrigue> · <stage>: <text>`
+/// (a no-break space before the colon in [french]).
+String npcIntrigueLineText(NpcIntrigueLine line, bool french) =>
+    '${line.intrigue} · ${line.stage}${french ? '\u00a0:' : ':'} ${line.text}';
 
 /// The people of [records] the player knows (see npcDiscovered), in the
 /// file's order.

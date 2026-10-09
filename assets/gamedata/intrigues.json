@@ -20,31 +20,36 @@
         "stage": "Clue",
         "chapter": 1,
         "text": "A Harbor informant is paid in Inquisition silver for anything the tide brings in from the tear.",
-        "text_fr": "Au port, un indicateur est payé en argent de l’Inquisition pour tout ce que la marée rapporte de la déchirure."
+        "text_fr": "Au port, un indicateur est payé en argent de l’Inquisition pour tout ce que la marée rapporte de la déchirure.",
+        "npcId": "wharf_informant"
       },
       {
         "stage": "Hook",
         "chapter": 3,
         "text": "At the Spire trial, a condemned voidkin whispers: “They are not closing it.”",
-        "text_fr": "Au procès de la Flèche, un enfant du Néant condamné murmure : « Ils ne la referment pas. »"
+        "text_fr": "Au procès de la Flèche, un enfant du Néant condamné murmure : « Ils ne la referment pas. »",
+        "npcId": "condemned_voidkin"
       },
       {
         "stage": "Turn",
         "chapter": 4,
         "text": "An Inquisitor’s letter in the Hollow Court shows the pieces go to the Reliquary, not the fire.",
-        "text_fr": "Dans la Cour Creuse, la lettre d’un inquisiteur montre que les pièces vont au Reliquaire, pas au feu."
+        "text_fr": "Dans la Cour Creuse, la lettre d’un inquisiteur montre que les pièces vont au Reliquaire, pas au feu.",
+        "npcId": "drowned_courier"
       },
       {
         "stage": "Reveal",
         "chapter": 5,
         "text": "The Inquisition wants the Fourth Piece for a rite that widens the tear.",
-        "text_fr": "L’Inquisition veut la Quatrième Pièce pour un rite qui élargit la déchirure."
+        "text_fr": "L’Inquisition veut la Quatrième Pièce pour un rite qui élargit la déchirure.",
+        "npcId": "chart_keeper"
       },
       {
         "stage": "Crisis",
         "chapter": 6,
         "text": "In the White Fleet’s grave, proof that the rite was tried once before.",
-        "text_fr": "Dans le tombeau de la Flotte Blanche, la preuve que le rite a déjà été tenté une fois."
+        "text_fr": "Dans le tombeau de la Flotte Blanche, la preuve que le rite a déjà été tenté une fois.",
+        "npcId": "fleet_helmsman"
       },
       {
         "stage": "Choice",
@@ -70,7 +75,8 @@
             "faction": "penitents",
             "delta": 15
           }
-        ]
+        ],
+        "npcId": "the_white_admiral"
       },
       {
         "name": "Keep",
@@ -92,7 +98,8 @@
             "companion": "vess",
             "change": "leaves"
           }
-        ]
+        ],
+        "npcId": "the_white_admiral"
       }
     ]
   },
@@ -117,31 +124,36 @@
         "stage": "Clue",
         "chapter": 1,
         "text": "A ship brings word that the Lantern-Bearer is failing.",
-        "text_fr": "Un navire apporte la nouvelle : le Porte-Lanterne décline."
+        "text_fr": "Un navire apporte la nouvelle : le Porte-Lanterne décline.",
+        "npcId": "crape_courier"
       },
       {
         "stage": "Hook",
         "chapter": 3,
         "text": "Inquisitor-General Aurel Vane, Grand Master Hesk Morrow and Eldest Wickwarden Maud Tallis each send an envoy to camp, with gifts.",
-        "text_fr": "L’Inquisiteur général Aurel Vane, le Grand Maître Hesk Morrow et l’Aînée des Garde-Mèches Maud Tallis envoient chacun un émissaire au campement, avec des présents."
+        "text_fr": "L’Inquisiteur général Aurel Vane, le Grand Maître Hesk Morrow et l’Aînée des Garde-Mèches Maud Tallis envoient chacun un émissaire au campement, avec des présents.",
+        "npcId": "hesk_morrow"
       },
       {
         "stage": "Turn",
         "chapter": 4,
         "text": "The Tribunal asks you to carry a sealed vote to Candlehold’s envoy.",
-        "text_fr": "Le Tribunal vous demande de porter un vote scellé à l’émissaire de Candlehold."
+        "text_fr": "Le Tribunal vous demande de porter un vote scellé à l’émissaire de Candlehold.",
+        "npcId": "tribunal_clerk"
       },
       {
         "stage": "Reveal",
         "chapter": 5,
         "text": "One candidate tries to have another killed on the coast, and you find the knife.",
-        "text_fr": "L’un des prétendants tente de faire assassiner un autre sur la côte, et c’est vous qui trouvez le couteau."
+        "text_fr": "L’un des prétendants tente de faire assassiner un autre sur la côte, et c’est vous qui trouvez le couteau.",
+        "npcId": "frozen_pilgrim"
       },
       {
         "stage": "Crisis",
         "chapter": 6,
         "text": "The Admiralty’s vote hangs on what you bring back from the Fleet’s grave.",
-        "text_fr": "Le vote de l’Amirauté dépend de ce que vous rapporterez du tombeau de la Flotte."
+        "text_fr": "Le vote de l’Amirauté dépend de ce que vous rapporterez du tombeau de la Flotte.",
+        "npcId": "fleet_chaplain"
       },
       {
         "stage": "Choice",
@@ -166,7 +178,8 @@
           {
             "title": "kingmaker"
           }
-        ]
+        ],
+        "npcId": "hesk_morrow"
       },
       {
         "name": "Vane: an inquisition",
@@ -183,7 +196,8 @@
           {
             "title": "kingmaker"
           }
-        ]
+        ],
+        "npcId": "aurel_vane"
       },
       {
         "name": "Tallis: a church",
@@ -200,7 +214,8 @@
           {
             "title": "kingmaker"
           }
-        ]
+        ],
+        "npcId": "maud_tallis"
       }
     ]
   },
@@ -232,7 +247,8 @@
         "stage": "Hook",
         "chapter": 3,
         "text": "On the Spire, the Tribunal offers the Scaffolders gold to rebuild the gallows.",
-        "text_fr": "Sur la Flèche, le Tribunal offre de l’or aux Échafaudeurs pour rebâtir les gibets."
+        "text_fr": "Sur la Flèche, le Tribunal offre de l’or aux Échafaudeurs pour rebâtir les gibets.",
+        "npcId": "dorran_quill"
       },
       {
         "stage": "Turn",
@@ -244,7 +260,8 @@
         "stage": "Reveal",
         "chapter": 5,
         "text": "The Anvil-Deaf vote in signs, and ask you to witness.",
-        "text_fr": "Les Sourds de l’Enclume votent par signes, et vous demandent d’en être témoin."
+        "text_fr": "Les Sourds de l’Enclume votent par signes, et vous demandent d’en être témoin.",
+        "npcId": "keeper_hammersmith_forge"
       },
       {
         "stage": "Crisis",
@@ -334,7 +351,8 @@
         "stage": "Turn",
         "chapter": 4,
         "text": "The Keyholder is found, and offers you a cut.",
-        "text_fr": "Le Porte-Clefs est démasqué, et vous propose une part."
+        "text_fr": "Le Porte-Clefs est démasqué, et vous propose une part.",
+        "npcId": "keyholder_wharf"
       },
       {
         "stage": "Reveal",
@@ -346,7 +364,8 @@
         "stage": "Crisis",
         "chapter": 6,
         "text": "Pick the Crows’ new master, or let the Vault burn.",
-        "text_fr": "Choisir le nouveau maître des Corneilles, ou laisser brûler le Coffre."
+        "text_fr": "Choisir le nouveau maître des Corneilles, ou laisser brûler le Coffre.",
+        "npcId": "keeper_smugglers_vault"
       },
       {
         "stage": "Choice",
@@ -503,7 +522,8 @@
         "stage": "Clue",
         "chapter": 1,
         "text": "A drunk White Fleet survivor at the Harbor says: “It wasn’t a storm.”",
-        "text_fr": "Au port, un survivant ivre de la Flotte Blanche affirme : « Ce n’était pas une tempête. »"
+        "text_fr": "Au port, un survivant ivre de la Flotte Blanche affirme : « Ce n’était pas une tempête. »",
+        "npcId": "fleet_helmsman"
       },
       {
         "stage": "Hook",
@@ -692,7 +712,8 @@
         "stage": "Hook",
         "chapter": 3,
         "text": "The Vigil’s count of the dead is wrong by one.",
-        "text_fr": "Le compte des morts de la Veille est faux d’une unité."
+        "text_fr": "Le compte des morts de la Veille est faux d’une unité.",
+        "npcId": "orsabet_vell"
       },
       {
         "stage": "Turn",
