@@ -42,7 +42,7 @@ import '../providers/climate_provider.dart';
 import '../data/weather_effects.dart';
 import '../widgets/weather_chip.dart';
 import '../widgets/room_plan_painter.dart';
-import '../widgets/chart_map_painter.dart' show ChartCalque;
+import '../widgets/chart_map_painter.dart' show ChartCalque, ChartFog;
 import '../widgets/journey_world_map.dart';
 import '../widgets/geography_widgets.dart';
 import '../widgets/journey_fx.dart';
@@ -1057,7 +1057,11 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // The world under the fog (v1.199), framed on the party's land or
     // the whole of it.
     final journeyWalked = journeyOf(play.history, play.currentNodeId);
-    final worldDiscovered = {...discovered, if (standing != null) standing.id};
+    // Edit Mode sees the world whole (v1.209): every place, no fog.
+    final editing = ref.watch(appModeProvider) == AppMode.edit;
+    final worldDiscovered = editing
+        ? {for (final l in worldMapLandmarks) l.id}
+        : {...discovered, if (standing != null) standing.id};
     Landmark? nextPlace;
     if (standing != null) {
       final index = worldMapLandmarks.indexOf(standing);
@@ -1092,6 +1096,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         onSelect: (landmark) => setState(() => _lookedAt = landmark),
         onZoomIn: _arriveAtStreets,
         enterZoom: _enterZoom,
+        fog: editing ? ChartFog.none : ChartFog.uncharted,
       ),
     );
 

@@ -9,7 +9,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/world_map.dart';
 import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/screens/world_map_screen.dart';
+import 'package:narrative_data_app/widgets/journey_world_map.dart';
 import 'package:narrative_data_app/widgets/chart_map_painter.dart';
 
 Future<void> _settle(WidgetTester tester) async {
@@ -55,6 +57,26 @@ void main() {
     expect(painter.discovered.length, worldMapLandmarks.length);
     expect(painter.legs.length, greaterThan(worldMapLandmarks.length ~/ 2));
     expect(painter.ahead, isNull);
+    expect(tester.takeException(), isNull);
+
+    // Back home, the Journey tab is there too, and its chart has no fog.
+    tester.state<NavigatorState>(find.byType(Navigator).first).pop();
+    await _settle(tester);
+    await tester.tap(find.text('Journey'));
+    await _settle(tester);
+    expect(find.byType(JourneyScreen), findsOneWidget);
+    await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
+    await _settle(tester);
+    expect(find.byType(JourneyWorldMap), findsOneWidget);
+    final journeyPainter = tester
+        .widgetList<CustomPaint>(find.descendant(
+            of: find.byType(JourneyWorldMap),
+            matching: find.byType(CustomPaint)))
+        .map((w) => w.painter)
+        .whereType<ChartMapPainter>()
+        .first;
+    expect(journeyPainter.fog, ChartFog.none);
+    expect(journeyPainter.discovered.length, worldMapLandmarks.length);
     expect(tester.takeException(), isNull);
   });
 }

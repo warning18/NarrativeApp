@@ -58,6 +58,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     PlayScreen(),
     AiGeneratorScreen(),
     GameDataHomeScreen(),
+    // The Journey's map of the edited scene (v1.209), with no fog.
+    JourneyScreen(),
   ];
 
   static const List<Widget> _inGameScreens = [
@@ -202,6 +204,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             tr(ref, 'title_play'),
             tr(ref, 'title_generate'),
             tr(ref, 'title_data'),
+            tr(ref, 'nav_journey'),
           ]
         : [
             tr(ref, 'title_story'),
@@ -217,7 +220,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     // In play the story is followed on the Journey (v1.201: no Story
     // tab); the reader stays index 0 for Edit Mode and the ending.
     final visibleTabs = isEditMode
-        ? const [0, 1, 2, 3]
+        ? const [0, journeyTabIndex, 1, 2, 3]
         : storyHidden
             ? const [_campTab, 1, 3]
             : const [journeyTabIndex, 1, 2, 3];
@@ -361,6 +364,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                   NavigationDestination(
                       icon: const Icon(Icons.menu_book),
                       label: tr(ref, 'nav_story')),
+                  NavigationDestination(
+                      icon: const Icon(Icons.alt_route),
+                      label: tr(ref, 'nav_journey')),
                   NavigationDestination(
                       icon: const Icon(Icons.videogame_asset),
                       label: tr(ref, 'nav_play')),

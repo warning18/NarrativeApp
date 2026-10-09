@@ -43,7 +43,12 @@ class JourneyWorldMap extends ConsumerStatefulWidget {
     this.onSelect,
     this.onZoomIn,
     this.enterZoom,
+    this.fog = ChartFog.uncharted,
   });
+
+  /// The fog over what the story has not reached; none in Edit Mode
+  /// (v1.209), which sees the world whole.
+  final ChartFog fog;
 
   final JourneyMapLevel level;
   final ChartPalette palette;
@@ -415,7 +420,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                 calque == ChartCalque.chapters || calque == ChartCalque.none
                     ? widget.chapterColor
                     : (_) => widget.palette.road,
-            fog: ChartFog.uncharted,
+            fog: widget.fog,
             calque: calque,
             clanColours: clanColours,
             standingOf: standings,

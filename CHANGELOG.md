@@ -11,6 +11,7 @@ isn't reconstructable from git history alone.
 ## [1.209.0+244]
 
 ### Added
+- The Journey in Edit Mode: a Journey tab beside the Story tab shows the edited scene's map (the room, the streets, the land, the world) with no fog and every place known.
 - The world chart in Edit Mode. A second map button in the header (beside the story's scene graph) opens the chart whole: no fog, every place with its name, every chapter's road in its colour, the party's mark where the edited scene stands; the looks, the calques, the sphere and the weather as in play. In play the chart is as before, under the fog of the uncharted.
 
 ## [1.208.0+243]
