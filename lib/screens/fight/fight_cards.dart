@@ -90,6 +90,24 @@ extension _FightCards on _FightScreenState {
                   ),
                 ),
                 const SizedBox(width: 6),
+                if (_orderOf(member) case final order?)
+                  Tooltip(
+                    message:
+                        tr(ref, 'turn_order_tip').replaceAll('{n}', '$order'),
+                    child: Container(
+                      key: Key('turn_order_${member.id}'),
+                      margin: const EdgeInsets.only(right: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 1),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: colorScheme.outline),
+                      ),
+                      child: Text('$order',
+                          style: const TextStyle(
+                              fontSize: 10, fontWeight: FontWeight.bold)),
+                    ),
+                  ),
                 Expanded(
                   child: Text(
                     member.displayName,

@@ -6718,6 +6718,48 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Carries {n} gold',
     AppLanguage.fr: 'Porte {n} or',
   },
+  'quick_resolve_button': {
+    AppLanguage.en: 'Quick resolve',
+    AppLanguage.fr: 'Résolution rapide',
+  },
+  'quick_resolve_hint': {
+    AppLanguage.en:
+        'You have beaten these before. The dice roll themselves; stop whenever you like.',
+    AppLanguage.fr:
+        'Vous les avez déjà battus. Les dés se lancent seuls ; arrêtez quand vous voulez.',
+  },
+  'quick_resolve_running': {
+    AppLanguage.en: 'Quick resolve…',
+    AppLanguage.fr: 'Résolution rapide…',
+  },
+  'quick_resolve_stop': {
+    AppLanguage.en: 'Stop',
+    AppLanguage.fr: 'Arrêter',
+  },
+  'quick_resolve_paused': {
+    AppLanguage.en: 'Quick resolve stops: the party is hurt.',
+    AppLanguage.fr: 'La résolution rapide s’arrête : le groupe est blessé.',
+  },
+  'turn_order_tip': {
+    AppLanguage.en: 'Acts number {n} in the round, by Dexterity',
+    AppLanguage.fr: 'Agit en position {n} dans le tour, selon la Dextérité',
+  },
+  'loadout_title': {
+    AppLanguage.en: 'Die for this fight',
+    AppLanguage.fr: 'Dé pour ce combat',
+  },
+  'loadout_known_weak': {
+    AppLanguage.en: 'Known weaknesses: {e}',
+    AppLanguage.fr: 'Faiblesses connues : {e}',
+  },
+  'loadout_die_hits': {
+    AppLanguage.en: 'This die hits: {e}',
+    AppLanguage.fr: 'Ce dé frappe : {e}',
+  },
+  'loadout_die_misses': {
+    AppLanguage.en: 'This die hits none of them',
+    AppLanguage.fr: 'Ce dé n’en frappe aucune',
+  },
   'flees_suffix': {
     AppLanguage.en: 'breaks and flees the fight!',
     AppLanguage.fr: 'panique et fuit le combat !',

@@ -18,6 +18,9 @@ import '../combat/face_smithing.dart';
 import '../combat/party_combos.dart';
 import '../combat/encounter.dart';
 import '../combat/doctrine.dart';
+import '../combat/loadout.dart';
+import '../combat/quick_resolve.dart';
+import '../combat/turn_order.dart';
 import '../combat/enemy_affix.dart';
 import '../combat/fight_goal.dart';
 import '../combat/gear_effects.dart';
@@ -76,6 +79,7 @@ part 'fight/fight_effects.dart';
 part 'fight/fight_goals.dart';
 part 'fight/fight_lucky_die.dart';
 part 'fight/fight_models.dart';
+part 'fight/fight_quick.dart';
 part 'fight/fight_queries.dart';
 part 'fight/fight_rewards.dart';
 part 'fight/fight_rounds.dart';
@@ -310,6 +314,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// This fight's one-off circumstance, if any -- see
   /// battlefield_condition.dart. Rolled once in [_ensureEnemiesBuilt].
   BattlefieldCondition? _condition;
+
+  /// True while a quick resolve plays the fight (v1.213, see
+  /// quick_resolve.dart): short animations, the choices made for the
+  /// player, a Stop button in place of the dice.
+  bool _quick = false;
 
   /// What this fight asks of the party besides killing everything
   /// (v1.212, see fight_goal.dart). Rolled once in [_ensureEnemiesBuilt].

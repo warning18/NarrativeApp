@@ -171,7 +171,7 @@ class _PartyMember {
 
   /// This member's die as it rolls: its dice.json faces with the
   /// Hammersmith's work on them (see face_smithing.dart).
-  final List<Map<String, dynamic>> dieFaces;
+  List<Map<String, dynamic>> dieFaces;
 
   /// A companion's approval of the player (see approval.dart) -- what opens
   /// their duo techniques; 0 for the player.
@@ -192,7 +192,7 @@ class _PartyMember {
   final int baseDamage;
   final int armor;
   final List<String> equippedItemIds;
-  final List<String> unlockedSkillIds;
+  List<String> unlockedSkillIds;
 
   /// Ability scores, used only to resolve each equipped item's own
   /// `scalingStat` bonus (see [equipmentScalingBonusFor]) — not part of the
@@ -226,8 +226,8 @@ class _PartyMember {
   /// faceIndex (as string) -> skillId. For the player this is their
   /// currently-equipped die's slice of [PlayerSession.diceSkillAssignments];
   /// for an ally it's their own flat [AllyState.diceSkillAssignments] as-is.
-  final Map<String, String> diceSkillAssignments;
-  final String? equippedDiceId;
+  Map<String, String> diceSkillAssignments;
+  String? equippedDiceId;
 
   int currentHealth;
   int block = 0;

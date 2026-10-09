@@ -10,18 +10,14 @@ isn't reconstructable from git history alone.
 
 ## [1.214.0+249]
 
-### Added
-- The dice are cubes in the fight. A die tumbles through the air in perspective, with a hop and a shadow, and lands on the face it rolled, which stands front; the other five sides carry the die's other faces (a die of fewer than six faces repeats them), lit by a lamp above and to the left, the far sides hidden. It rests tipped toward you so its top and a side show. A die kept through a reroll stays put.
-- A landed face lets go a burst fitted to what it does: sparks and a shock ring for an attack, a hexagonal ward for a guard, rising crosses for a heal, orbiting blue motes for mana, green bubbles for poison, amber bolts for a stun, a draining purple spiral for a weaken, grey dust for a blank. A skill face or a face worth 8 or more lands bigger, with a white glint.
-- With reduced motion the dice roll at once and no burst plays.
-
-## [1.213.0+248]
-
 ### Fixed
 - The map no longer moves when a way is picked. The panel under the Journey map keeps one height whether or not a way or a place is chosen, so the map keeps its size and every mark stays where it was.
 - The sky holds still. The game plays turn by turn, so the clouds, fogs and rain no longer drift while the map is watched, and zooming or pinching shows the same clouds at every distance. The sky is the day's, and a new day brings a new one. The weather chip no longer changes on its own either.
 
 ### Added
+- The dice are cubes in the fight. A die tumbles through the air in perspective, with a hop and a shadow, and lands on the face it rolled, which stands front; the other five sides carry the die's other faces (a die of fewer than six faces repeats them), lit by a lamp above and to the left, the far sides hidden. It rests tipped toward you so its top and a side show. A die kept through a reroll stays put.
+- A landed face lets go a burst fitted to what it does: sparks and a shock ring for an attack, a hexagonal ward for a guard, rising crosses for a heal, orbiting blue motes for mana, green bubbles for poison, amber bolts for a stun, a draining purple spiral for a weaken, grey dust for a blank. A skill face or a face worth 8 or more lands bigger, with a white glint.
+- With reduced motion the dice roll at once and no burst plays.
 - The sea beasts are drawn again, from above, in the dark-fantasy art of the Grey Shroud design ("Sea beasts to hunt"), no longer borrowing a ship's look. Old Brinejaw is the Drowned Wyrm, a sea dragon with sunken coils, fin-wings and a fanged head; the Pale Leviathan is the Deep Leviathan, a vast barnacled back with old harpoons in it and one pale eye; the Tide-Mother is the Mother of Wrecks, a kraken among the timbers of the ships it took. A room knocked out darkens its part of the body, and a beast below half its hull shows gashes. The designs' Ash Drake and Bone Tide are not in the game yet.
 - The Tide-Mother's arm has its own icon again for the fight on the dice.
 - Seven new kinds of building for the inside view, each with its own plan: casino (a wheel ringed with card tables, a cashier, private rooms, a vault), barracks (guardroom, bunks round a mess table, armoury, officers), library (stacks, reading tables, archive, scriptorium), prison (guardroom and two rows of barred cells), forge (forge, anvil, quench trough, store), theatre (foyer, benches, pit rail, stage, dressing and props rooms) and baths (changing hall, great pool, hot and cold rooms).
@@ -30,6 +26,16 @@ isn't reconstructable from git history alone.
 
 ### Changed
 - The quest on the Journey is a small round button beside Read, with its icon, a tick when the goal is met and a dot when it moves on, instead of a full bar above the map. Its name and goal are on its tooltip, and a tap opens the quest, where it can be turned in. The map gains the height the bar took.
+
+## [1.213.0+248]
+
+### Added
+- The party acts in Dexterity order. The quickest fighter strikes first, and ties keep the party's own order (you first, then your companions as they joined). A small number on each card shows its place in the round. An Echo copies the strike played before it, so order now matters there too.
+- Loadout by situation. Before a fight you can swap the die you roll for another you own. Each die you could pick is starred when it can hit an element the party knows its enemies are weak to, and a line says which weaknesses are known and which of them this die hits. The swap holds for this fight only.
+- Quick resolve. Against enemies you have already beaten five times or more, with your health above sixty percent, a fight offers to play itself: a roll and a confirm a round, short animations, the same rules as a played fight. It stops and hands the fight back when you tap Stop, when your health falls below forty-five percent, or when a companion is knocked out. Bosses, uniques, hunts, ambushes, lessons, elites and story fights with a defeat branch never offer it.
+
+### Internal
+- `turn_order.dart`, `quick_resolve.dart` and `loadout.dart` hold the pure rules. The fight screen gains a `fight_quick.dart` part. A player's die fields can now change before the first roll.
 
 ## [1.212.0+247]
 

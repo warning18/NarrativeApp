@@ -41,10 +41,14 @@ extension _FightRounds on _FightScreenState {
       _rolling = true;
       _rollingTo = rolled;
     });
-    _rollController.duration = MediaQuery.of(context).disableAnimations
-        ? const Duration(milliseconds: 1)
-        : const Duration(milliseconds: 650);
-    await _rollController.forward(from: 0);
+    if (_quick) {
+      _rollController.value = 1;
+    } else {
+      _rollController.duration = MediaQuery.of(context).disableAnimations
+          ? const Duration(milliseconds: 1)
+          : const Duration(milliseconds: 650);
+      await _rollController.forward(from: 0);
+    }
     if (!mounted) return;
 
     final rollNumber = _rollCount + 1;
@@ -476,8 +480,11 @@ extension _FightRounds on _FightScreenState {
 
     // Give the round's effects time to land before the enemy answers.
     await Future.delayed(Duration(
-        milliseconds:
-            _effectsOn ? max(400, (fxIndex - 1) * _fxStagger + 450) : 400));
+        milliseconds: _quick
+            ? 60
+            : _effectsOn
+                ? max(400, (fxIndex - 1) * _fxStagger + 450)
+                : 400));
     if (!mounted) return;
 
     if (_enemies.every((e) => !e.isAlive)) {

@@ -220,6 +220,10 @@ extension _FightView on _FightScreenState {
                 subtitle: Text('$faceCount ${tr(ref, 'faces_label')}'),
               ),
             ),
+          if (session.ownedDiceIds.length > 1) ...[
+            const SizedBox(height: 8),
+            _buildLoadoutPicker(dice, skills, session),
+          ],
           const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed:
@@ -227,6 +231,20 @@ extension _FightView on _FightScreenState {
             icon: const Icon(Icons.sports_martial_arts),
             label: Text(tr(ref, 'enter_battle_button')),
           ),
+          if (equippedDie != null && _quickOffered(session)) ...[
+            const SizedBox(height: 8),
+            Tooltip(
+              message: tr(ref, 'quick_resolve_hint'),
+              child: OutlinedButton.icon(
+                key: const Key('quick_resolve_button'),
+                onPressed: () => _quickResolve(dice, skills, items),
+                icon: const Icon(Icons.fast_forward),
+                label: Text(tr(ref, 'quick_resolve_button')),
+              ),
+            ),
+            Text(tr(ref, 'quick_resolve_hint'),
+                style: Theme.of(context).textTheme.labelSmall),
+          ],
         ],
       ),
     );
