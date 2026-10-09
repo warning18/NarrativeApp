@@ -528,6 +528,7 @@ extension _FightCards on _FightScreenState {
                   ..._elementChips(enemy),
                   ..._goalMarks(enemy),
                   ..._reactionChips(enemy),
+                  ..._squadMarks(enemy),
                 ],
               ),
               if (enemy.affixes.isNotEmpty) ...[

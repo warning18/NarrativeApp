@@ -19,6 +19,8 @@ import '../combat/party_combos.dart';
 import '../combat/encounter.dart';
 import '../combat/doctrine.dart';
 import '../combat/element_reaction.dart';
+import '../combat/enemy_response.dart';
+import '../combat/squad.dart';
 import '../combat/parry.dart';
 import '../combat/loadout.dart';
 import '../combat/quick_resolve.dart';
@@ -86,6 +88,7 @@ part 'fight/fight_queries.dart';
 part 'fight/fight_rewards.dart';
 part 'fight/fight_rounds.dart';
 part 'fight/fight_setup.dart';
+part 'fight/fight_squad.dart';
 part 'fight/fight_view.dart';
 part 'fight/fight_widgets.dart';
 

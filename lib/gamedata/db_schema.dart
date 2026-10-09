@@ -1025,6 +1025,17 @@ final DbSchema enemiesSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'factions',
     ),
+    // v1.215: how the enemy answers what the party does (see
+    // lib/combat/enemy_response.dart).
+    FieldSchema(
+      key: 'reaction',
+      label: 'Reaction (answers the party)',
+      type: FieldType.enumeration,
+      enumOptions: ['', 'counter', 'press', 'hunt_healer'],
+      help: 'counter: a heavy blow provokes a harder reply. press: a round '
+          'of Defend faces from everyone makes it press. hunt_healer: it '
+          'turns on whoever heals.',
+    ),
     // v1.162: the party's hits of these elements land ×1.5 / ×½.
     FieldSchema(
       key: 'weakTo',

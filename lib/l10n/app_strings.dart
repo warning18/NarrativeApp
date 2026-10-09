@@ -6855,6 +6855,63 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Amorcé par {e}. Frappez-le avec {p} pour provoquer une réaction.',
   },
+  'squad_healer': {
+    AppLanguage.en: 'Healer',
+    AppLanguage.fr: 'Soigneur',
+  },
+  'squad_healer_desc': {
+    AppLanguage.en:
+        'Mends its most wounded friend each turn, but hits weaker. Kill it first.',
+    AppLanguage.fr:
+        'Soigne chaque tour son allié le plus blessé, mais frappe plus faiblement. Tuez-le en premier.',
+  },
+  'squad_guard': {
+    AppLanguage.en: 'Guard',
+    AppLanguage.fr: 'Garde',
+  },
+  'squad_guard_desc': {
+    AppLanguage.en:
+        'While it stands, blows on the others are cut by a quarter. A Pierce goes through.',
+    AppLanguage.fr:
+        'Tant qu’il tient, les coups portés aux autres sont réduits d’un quart. Une Perforation passe.',
+  },
+  'squad_striker': {
+    AppLanguage.en: 'Striker',
+    AppLanguage.fr: 'Frappeur',
+  },
+  'squad_striker_desc': {
+    AppLanguage.en: 'Hits harder on less health. It dies fast if it is hit.',
+    AppLanguage.fr:
+        'Frappe plus fort avec moins de vie. Il tombe vite s’il est touché.',
+  },
+  'squad_healer_mends': {
+    AppLanguage.en: '{healer} mends {name} for {n}.',
+    AppLanguage.fr: '{healer} soigne {name} de {n}.',
+  },
+  'squad_guard_covers': {
+    AppLanguage.en: 'The guard covers {name}: {n} less.',
+    AppLanguage.fr: 'Le garde couvre {name} : {n} de moins.',
+  },
+  'response_provoked': {
+    AppLanguage.en: '{name} is provoked by the heavy blow.',
+    AppLanguage.fr: '{name} est provoqué par ce coup violent.',
+  },
+  'response_pressing': {
+    AppLanguage.en: '{name} presses: nobody struck back.',
+    AppLanguage.fr: '{name} presse son avantage : personne n’a riposté.',
+  },
+  'response_hunts': {
+    AppLanguage.en: '{name} turns on {target}.',
+    AppLanguage.fr: '{name} se tourne vers {target}.',
+  },
+  'response_provoked_chip': {
+    AppLanguage.en: 'Provoked',
+    AppLanguage.fr: 'Provoqué',
+  },
+  'response_pressing_chip': {
+    AppLanguage.en: 'Pressing',
+    AppLanguage.fr: 'Presse',
+  },
   'flees_suffix': {
     AppLanguage.en: 'breaks and flees the fight!',
     AppLanguage.fr: 'panique et fuit le combat !',

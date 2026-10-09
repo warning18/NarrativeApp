@@ -95,6 +95,19 @@ extension _FightSetup on _FightScreenState {
           random: _random,
         );
 
+    // The pack's squad (v1.215, see squad.dart): none for a lesson, a test
+    // or a boss.
+    final roles = modifiers.forcedSquad ??
+        (lesson || modifiers.isTest
+            ? List<SquadRole?>.filled(entries.length, null)
+            : rollSquadRoles(
+                packSize: entries.length,
+                eligible: [
+                  for (final e in entries) !isBossEnemy(e.key, e.value),
+                ],
+                random: _random,
+              ));
+
     final baseNames = [
       for (final entry in entries)
         entry.value['enemyName']?.toString() ?? entry.key,
@@ -119,6 +132,7 @@ extension _FightSetup on _FightScreenState {
           affixes: affixes[i],
           nameOverride: i == 0 ? modifiers.namedEnemyName : null,
           healthMultiplier: i == 0 ? modifiers.healthMultiplier : 1.0,
+          role: roles[i],
         ),
     ];
     // A Rout's mark is the pack's sturdiest member; a pack of one has no
@@ -148,6 +162,7 @@ extension _FightSetup on _FightScreenState {
     List<EnemyAffix> affixes = const [],
     String? nameOverride,
     double healthMultiplier = 1.0,
+    SquadRole? role,
   }) {
     final elitePrefixedName =
         _isElite ? '${trFor(lang, 'elite_prefix')} $baseName' : baseName;
@@ -201,6 +216,17 @@ extension _FightSetup on _FightScreenState {
     if (healthMultiplier != 1.0) {
       maxHealth = max(1, (maxHealth * healthMultiplier).round());
     }
+    // A squad's roles (v1.215, see squad.dart).
+    switch (role) {
+      case SquadRole.healer:
+        damage = (damage * healerDamageMultiplier).round();
+      case SquadRole.striker:
+        damage = (damage * strikerDamageMultiplier).round();
+        maxHealth = max(1, (maxHealth * strikerHealthMultiplier).round());
+      case SquadRole.guard:
+      case null:
+        break;
+    }
     // A hold presses harder: the party need not kill them.
     if (_goal.kind == FightGoalKind.hold) {
       damage = (damage * holdDamageMultiplier).round();
@@ -220,7 +246,10 @@ extension _FightSetup on _FightScreenState {
       currentHealth: maxHealth,
       affixes: affixes,
       faction: raw['faction']?.toString() ?? '',
-    )..phases = parseBossPhases(raw);
+    )
+      ..phases = parseBossPhases(raw)
+      ..role = role
+      ..response = enemyResponseFromName(raw['reaction']?.toString());
   }
 
   /// Builds [_party] (the player plus every currently-active ally) once

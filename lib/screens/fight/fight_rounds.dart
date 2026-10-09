@@ -335,6 +335,10 @@ extension _FightRounds on _FightScreenState {
         target.currentHealth = max(0, target.currentHealth - landed);
         dealt = landed;
         _bestHitThisRound = max(_bestHitThisRound, landed);
+        if (landed > target.topHitDamage) {
+          target.topHitDamage = landed;
+          target.topHitterId = actor.id;
+        }
         if (landed > 0) {
           lastDamagedEnemyKey = target.key;
           lastEnemyDamage = landed;
@@ -446,6 +450,7 @@ extension _FightRounds on _FightScreenState {
     _guardianId =
         _party.where((m) => !m.isKnockedOut).length > 1 ? guardianId : null;
     _checkChargeBreaks(newEntries, lang);
+    _applyEnemyResponses(played, results, newEntries, lang);
     _advanceBossPhases(newEntries, lang, skills);
 
     if (hitsLanded > 0) {
@@ -638,6 +643,8 @@ extension _FightRounds on _FightScreenState {
       enemy.damageThisRound = 0;
       enemy.hitWeaknessThisRound = false;
       enemy.parryBlock = 0;
+      enemy.topHitDamage = 0;
+      enemy.topHitterId = null;
     }
 
     final sellswordWon = !playerDied && _sellswordStrikes(newEntries, lang);
@@ -806,6 +813,23 @@ extension _FightRounds on _FightScreenState {
       if (soaked > 0) {
         entries.add(_LogEntry(
           '${enemy.displayName} ${trFor(lang, 'guard_soaks_suffix')} $soaked.',
+          _LogKind.info,
+        ));
+      }
+    }
+    // A standing guard covers its pack (v1.215, see squad.dart).
+    if (landed > 0 &&
+        !pierce &&
+        enemy.role != SquadRole.guard &&
+        _enemies
+            .any((e) => e != enemy && e.isAlive && e.role == SquadRole.guard)) {
+      final cut = (landed * guardCoverShare).round();
+      if (cut > 0) {
+        landed -= cut;
+        entries.add(_LogEntry(
+          trFor(lang, 'squad_guard_covers')
+              .replaceAll('{name}', enemy.displayName)
+              .replaceAll('{n}', '$cut'),
           _LogKind.info,
         ));
       }
@@ -1022,6 +1046,7 @@ extension _FightRounds on _FightScreenState {
           rotated.skip(crampedMaxActingEnemies).map((e) => e.key).toSet();
     }
 
+    _squadHealersMend(lang);
     var enemyFx = 0;
     var guardAnnounced = false;
     for (final enemy in _enemies) {
@@ -1095,6 +1120,8 @@ extension _FightRounds on _FightScreenState {
       if (pending.release) enemy.chargedBlow = null;
       final moveDamage =
           _incomingDamage(enemy, move, leaderStanding: leaderStanding);
+      enemy.provoked = false;
+      enemy.pressing = false;
 
       _PartyMember target;
       final cachedTarget = _memberById(pending.targetId);
