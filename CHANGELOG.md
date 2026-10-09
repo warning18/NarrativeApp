@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.206.0+241]
+
+### Added
+- The sphere wears the chart. Looked at as a sphere, the world map is now the flat chart wrapped round the ball as a texture, at the chart's own level of detail (woods, hills, rivers, roads, the fine names), where before the sphere was painted coarse on every turn. The skin is rendered once per look and detail in the background; until it is there the sphere paints as before. Each point of the surface is lifted by its height, so the ranges stand off the limb.
+- The sphere is lit: from the upper left, the limb darkening away from the light, a soft highlight toward it, a thin pale air round the edge and the limb drawn. Grey on grey, as the chart is.
+- Shaded relief on the chart, flat and on the sphere: the land lit from the north-west, its slopes toward the light paler and those away darker, from the climate's heights with a fine grain on the slopes. Rendered once per chart as a smooth image, so it stays soft at any zoom.
+- A chart can show the whole world with no fog (ChartFog.none), for a chart that has nothing left to find.
+
 ## [1.205.0+240]
 
 ### Added
