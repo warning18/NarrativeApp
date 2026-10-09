@@ -1970,19 +1970,56 @@ class ChartMapPainter extends CustomPainter {
           _dashedPath(canvas, _poly(coast), dotted, dash: 1.2, gap: 1.2);
         }
       }
+      // What the story has reached shows through (v1.208): each land a
+      // place was read in, whole, its torn edge softened; the roads
+      // walked as corridors; and a small clearing round a place read
+      // outside any land (at sea), where before every place cleared one
+      // disc of the same size.
+      final clear = Paint()
+        ..blendMode = BlendMode.dstOut
+        ..color = Colors.black
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.5);
+      for (final i in reachedZones) {
+        canvas.drawPath(_poly(relief.zones[i]), clear);
+      }
+      final corridor = Paint()
+        ..blendMode = BlendMode.dstOut
+        ..color = Colors.black
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 14
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+      for (final (a, b) in legs) {
+        if (!discovered.contains(a.id) || !discovered.contains(b.id)) {
+          continue;
+        }
+        final from = geography.of(a), to = geography.of(b);
+        final seaLeg =
+            a.atSea || b.atSea || (a.id == 'shore' && b.id == 'candlehold');
+        canvas.drawPath(
+            _line(windingRoad(from, to,
+                seed: chartSeed('${a.id}-${b.id}'),
+                bends: seaLeg ? 2 : 3,
+                amp: seaLeg ? 0.08 : 0.16)),
+            corridor);
+      }
       for (final l in worldMapLandmarks) {
         if (!discovered.contains(l.id)) continue;
-        if (!_vis(geography.of(l))) continue;
-        final p = _at(geography.of(l));
+        final at = geography.of(l);
+        if (!_vis(at)) continue;
+        final inLand = reachedZones
+            .any((i) => pointInPolygon(at, geography.zones[i].polygon));
+        final p = _at(at);
+        final r = inLand ? 10.0 : 18.0;
         canvas.drawCircle(
           p,
-          30,
+          r,
           Paint()
             ..blendMode = BlendMode.dstOut
-            ..shader = const RadialGradient(
-              colors: [Colors.black, Colors.black, Colors.transparent],
-              stops: [0, 0.6, 1],
-            ).createShader(Rect.fromCircle(center: p, radius: 30)),
+            ..shader = RadialGradient(
+              colors: const [Colors.black, Colors.black, Colors.transparent],
+              stops: const [0, 0.5, 1],
+            ).createShader(Rect.fromCircle(center: p, radius: r)),
         );
       }
       canvas.restore();
