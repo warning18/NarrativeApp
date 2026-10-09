@@ -1265,9 +1265,6 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               PlayerStatsBar(trailing: tools),
-              // The followed quest and the goal it waits on (v1.201: here,
-              // now the Story tab is gone from the game).
-              if (!_reading) const QuestTrackerBar(),
               const SizedBox(height: 8),
               Expanded(
                 child: LayoutBuilder(builder: (context, area) {
@@ -1305,6 +1302,11 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                         : const SizedBox(
                                             height: GeoBreadcrumb.height),
                                   ),
+                                  // The followed quest and the goal it waits
+                                  // on (v1.201), a small button here since
+                                  // v1.213: the map keeps the room.
+                                  if (!_reading)
+                                    const QuestTrackerBar(compact: true),
                                   TutorialTarget(
                                     id: 'journey.scene',
                                     child: TextButton.icon(

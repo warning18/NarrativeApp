@@ -7,10 +7,8 @@ class EnemyIcons {
       'assets/icons/enemies/${_borrowed[enemyId] ?? enemyId}.png';
 
   /// Enemies drawn with another's icon until they have their own: the
-  /// Tide-Mother's arm (see sea_beasts.dart) as the Unstitched, and the
   /// v1.176-v1.182 foes as the nearest of their kind.
   static const Map<String, String> _borrowed = {
-    'kraken_arm': 'tear_spawn',
     // v1.196's chapter 1: the casino's first fight, the wreck's
     // scavengers and the Inquisitor-General.
     'den_bouncer': 'slum_thug',

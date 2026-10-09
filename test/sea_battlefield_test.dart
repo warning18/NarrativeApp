@@ -37,12 +37,10 @@ void main() {
       final box = Size(width, topShipBoxHeight(width, look));
       final band = topShipHullBand(box, look);
       for (final flip in [false, true]) {
-        final order = [
-          ShipRoom.helm,
-          ShipRoom.hold,
-          ShipRoom.guns,
-          ShipRoom.bulwark
-        ];
+        // A beast lies fins, hide, heart, jaws: the jaws at the head.
+        final order = look.beast != null
+            ? [ShipRoom.helm, ShipRoom.bulwark, ShipRoom.hold, ShipRoom.guns]
+            : [ShipRoom.helm, ShipRoom.hold, ShipRoom.guns, ShipRoom.bulwark];
         final rects = [
           for (final r in order) topShipRoomRect(r, box, look, flip: flip)
         ];

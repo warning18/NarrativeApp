@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.213.0+248]
+
+### Added
+- The sea beasts are drawn again, from above, in the sea fight. Old Brinejaw is a scarred grey shark, the Pale Leviathan a long pale serpent-whale with a ridged back and great eyes, and the Tide-Mother a kraken with a mantle, tail fins and eight arms that sway on the tide. Their rooms lie along the body, fins at the tail, then the hide, the heart and the jaws at the head. A beast below half its hull shows gashes, and a room knocked out darkens its part of the body. They no longer borrow a ship's look.
+- The Tide-Mother's arm has its own icon again for the fight on the dice.
+
+### Changed
+- The quest on the Journey is a small round button beside Read, with its icon, a tick when the goal is met and a dot when it moves on, instead of a full bar above the map. Its name and goal are on its tooltip, and a tap opens the quest, where it can be turned in. The map gains the height the bar took.
+
 ## [1.212.0+247]
 
 ### Fixed
