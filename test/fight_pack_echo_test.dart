@@ -108,6 +108,9 @@ void main() {
           'professionId': 'warrior',
           'ownedDiceIds': ['strike_test_die'],
           'equippedDiceId': 'strike_test_die',
+          // Quicker than Vess: the party acts in Dexterity order (v1.213),
+          // and the echo copies the strike played before it.
+          'dexterity': 60,
           'maxHealth': 400,
           'currentHealth': 400,
           'recruitedAllies': [
