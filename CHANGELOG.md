@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.214.0+249]
+
+### Added
+- Targeted defence. A Defend face no longer only guards whoever rolled it. When an enemy has an attack coming, the defender's card shows a Parry chip: tap it to set the face on that enemy's blow, tap again to move to the next enemy or back to a plain guard. A parry counts half again as much as the guard, covers whoever the blow was aimed at, and blocks its status. A blow it stops outright is turned aside and answered for half the parry. A parry set on an enemy that does not strike that turn is wasted, and the roller's own guard is not raised.
+- Element reactions. A hit with an element primes the enemy with it for the rest of that round and the next, shown as a chip on its card. A partner element striking the primed enemy springs a reaction and uses the prime up: **Conduct** (Water and Electricity: half again as much damage, and an arc to the other enemies), **Shatter** (Fire and Ice: sixty percent more and the guard broken), **Firestorm** (Fire and Wind: a quarter more, and the blaze catches the others), **Freeze** (Water and Ice: stunned for a turn, a boss shrugs it off), **Sandblast** (Earth and Wind: weakened) and **Eclipse** (Light and Void: double). Spells react as well as dice. With the Dexterity order, putting the bigger hit second now pays.
+
+### Internal
+- `parry.dart` and `element_reaction.dart` hold the pure rules; the fight screen gains a `fight_clash.dart` part.
+
 ## [1.213.0+248]
 
 ### Added

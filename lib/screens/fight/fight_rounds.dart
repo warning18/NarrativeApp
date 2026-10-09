@@ -246,7 +246,29 @@ extension _FightRounds on _FightScreenState {
       }
       // A spell's block this round (Mana Ward, War Shout) stacks under the
       // face's own -- see [_spellBlock].
-      actor.block = block + (_spellBlock[actor.id] ?? 0) + signShield;
+      // A parry (v1.214): the Defend face met an enemy's coming blow
+      // instead of guarding its roller.
+      _EnemyMember? parryEnemy;
+      if (face.type == 'Defend' && block > 0) {
+        final parryKey = _parryTargets[actor.id];
+        final candidate = parryKey == null ? null : _enemyByKey(parryKey);
+        if (candidate != null && _canParryEnemy(candidate)) {
+          parryEnemy = candidate;
+        }
+      }
+      actor.block = (parryEnemy != null ? 0 : block) +
+          (_spellBlock[actor.id] ?? 0) +
+          signShield;
+      if (parryEnemy != null) {
+        final amount = parryAmount(block);
+        parryEnemy.parryBlock += amount;
+        newEntries.add(_LogEntry(
+            trFor(lang, 'parry_set_log')
+                .replaceAll('{name}', actor.displayName)
+                .replaceAll('{enemy}', parryEnemy.displayName)
+                .replaceAll('{n}', '$amount'),
+            _LogKind.playerBlock));
+      }
       if (result.blockAmount > 0 && actor.block > guardianBlock) {
         guardianId = actor.id;
         guardianBlock = actor.block;
@@ -339,6 +361,7 @@ extension _FightRounds on _FightScreenState {
         }
         if (element != 'None' && landed > 0) {
           target.elementsHitThisRound.add(element);
+          _reactOnHit(target, element, landed, newEntries, lang);
         }
         // A Cleave, or any strike of a Volley, catches the rest of the pack
         // (a Cleave for more).
@@ -461,6 +484,7 @@ extension _FightRounds on _FightScreenState {
       _rollCount = 0;
       _currentFaces.clear();
       _selectedTargets.clear();
+      _parryTargets.clear();
       _lockedActorIds.clear();
       _steadyActorIds.clear();
       _selectedActorId = null;
@@ -613,6 +637,7 @@ extension _FightRounds on _FightScreenState {
     for (final enemy in _enemies) {
       enemy.damageThisRound = 0;
       enemy.hitWeaknessThisRound = false;
+      enemy.parryBlock = 0;
     }
 
     final sellswordWon = !playerDied && _sellswordStrikes(newEntries, lang);
@@ -1118,8 +1143,17 @@ extension _FightRounds on _FightScreenState {
       // rather than just softening it further on top of block/armor/resist.
       final wasDodged = _random.nextDouble() * 100 <
           dodgeChanceFor(target.dexterity) + target.gear.dodgeChance;
-      var damageTaken =
-          wasDodged ? 0 : max(0, moveDamage - target.block - mitigation);
+      // A parry (v1.214) takes its share of the blow first.
+      final parry = enemy.parryBlock;
+      enemy.parryBlock = 0;
+      var damageTaken = wasDodged
+          ? 0
+          : damageAfterParry(
+              blow: moveDamage,
+              parry: parry,
+              block: target.block,
+              mitigation: mitigation);
+      final parriedOutright = !wasDodged && parryStopsBlow(moveDamage, parry);
       // A Warding Knot swallows the first real hit on the player outright.
       var warded = false;
       if (damageTaken > 0 && target.isPlayer && _wardingCharges > 0) {
@@ -1148,8 +1182,10 @@ extension _FightRounds on _FightScreenState {
               ? _signs.guardRetaliate
               : 0;
       final wasKnockedOutAlready = target.isKnockedOut;
-      final inflicted = move.inflictedStatus ??
-          (enemy.hasAffix(EnemyAffix.venomous) ? _venomousPoison : null);
+      final inflicted = parriedOutright
+          ? null
+          : move.inflictedStatus ??
+              (enemy.hasAffix(EnemyAffix.venomous) ? _venomousPoison : null);
 
       _update(() {
         target.currentHealth = max(0, target.currentHealth - damageTaken);
@@ -1224,6 +1260,7 @@ extension _FightRounds on _FightScreenState {
         inflicted: inflicted,
         delayMs: fxDelay,
       );
+      _resolveParry(enemy, moveDamage, parry, wasDodged, lang, skills);
       if (move.healAmount > 0 && enemy.isAlive) {
         final healed = min(
             scaledEnemyHeal(move.healAmount,
