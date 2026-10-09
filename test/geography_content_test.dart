@@ -14,8 +14,19 @@ import 'package:narrative_data_app/data/world_map.dart';
 Map<String, dynamic> _json(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
 
-const _levels = ['continent', 'country', 'zone', 'location', 'district'];
+const _levels = [
+  'continent',
+  'country',
+  'zone',
+  'location',
+  'district',
+  'building',
+];
 const _kinds = {'city', 'town', 'village', 'camp', 'site', 'wild', 'sea'};
+const _buildingKinds = {
+  'den', 'tavern', 'inn', 'house', 'hall', 'keep', 'temple', 'shop', //
+  'warehouse', 'cellar', 'cave', 'tower',
+};
 const _patterns = {
   'fields', 'dunes', 'salt_flats', 'waves', 'ash', 'terraces', //
   'cliffs', 'reeds', 'snow', 'glass',
@@ -74,7 +85,7 @@ void main() {
 
   bool isPlaceToStand(String id) =>
       geo.containsKey(id) &&
-      const {'location', 'district'}.contains(place(id)['level']);
+      const {'location', 'district', 'building'}.contains(place(id)['level']);
 
   group('geography.json', () {
     test('each place sits one level under its parent, up to a continent', () {
@@ -106,7 +117,9 @@ void main() {
         final level = record['level'];
         expect(record.containsKey('biome'), level == 'zone', reason: key);
         expect(record.containsKey('ruler'), level == 'country', reason: key);
-        expect(record.containsKey('kind'), level == 'location', reason: key);
+        expect(record.containsKey('kind'),
+            level == 'location' || level == 'building',
+            reason: key);
         if (level == 'zone') {
           expect(biomes.containsKey(record['biome']), isTrue,
               reason: '$key: biome ${record['biome']}');
@@ -118,6 +131,9 @@ void main() {
         }
         if (level == 'location') {
           expect(_kinds, contains(record['kind']), reason: key);
+        }
+        if (level == 'building') {
+          expect(_buildingKinds, contains(record['kind']), reason: key);
         }
       }
     });

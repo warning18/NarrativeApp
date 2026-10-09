@@ -39,6 +39,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Pincez pour zoomer, glissez pour regarder ; touchez un lieu atteint pour le lire. Zoomez sur votre lieu, ou touchez-le, pour revenir à ses rues.',
   },
+  'journey_go_inside': {
+    AppLanguage.en: 'Go back inside',
+    AppLanguage.fr: 'Rentrer',
+  },
   'journey_look_out': {
     AppLanguage.en: 'Look out at the land',
     AppLanguage.fr: 'Regarder le pays',

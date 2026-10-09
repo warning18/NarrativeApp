@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.207.0+242]
+
+### Added
+- The inside of a building, one level in from the streets. The geography has a sixth level, `building`, under a district or a location, with a kind (den, tavern, inn, house, hall, keep, temple, shop, warehouse, cellar, cave, tower) that lays out its rooms: walls, doors front and back, the furniture of the kind (a bar, tables, a hearth, beds, a cage, a counting-room with its strongbox, a gallery's rail, pillars and a dais, pews and an altar, a counter and shelves, crates and casks, rocks, a stair), and named spots (the bar, the tables, the cage, the gallery, the stairs, the door, the back…). A scene can say where in the building it happens (`spot`), and a way where it is taken (`spot` on the choice).
+- The Journey draws the room when the scene is inside: the party at its spot, each way at the spot it is taken from, a way that leaves the building at the door it leaves by (the back door from the back rooms), and the walk between two rooms through the doorway. A look out (pinch in, or −) shows the streets round the building with the ways kept inside; the + button or a pinch out goes back in; a second look out is the land, as before. Coming back in from the land arrives on the streets first.
+- The Blind Beggar is in the geography as a den in the Lower Town, and the story's first scenes (the tables, the room coming down, the fight, the counting-room, the gallery, the way out the back) stand in it at their spots, so the opening no longer sends the party out of town for a choice made at a card table.
+
 ## [1.206.0+241]
 
 ### Added

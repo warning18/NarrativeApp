@@ -53,6 +53,16 @@
     ],
     "glyph": "slum"
   },
+  "blind_beggar": {
+    "level": "building",
+    "parent": "alster_lower_town",
+    "kind": "den",
+    "name": "The Blind Beggar",
+    "name_fr": "Le Mendiant Aveugle",
+    "blurb": "A tavern at the front and something else at the back: a room with no sign on its door, four tables, a cage for the dice, a counting-room and a gallery over the floor. The story begins at its tables.",
+    "blurb_fr": "Une taverne devant et autre chose derrière : une salle sans enseigne, quatre tables, une cage pour les dés, un comptoir des comptes et une galerie au-dessus. L’histoire commence à ses tables.",
+    "landmark": ""
+  },
   "alster_stone_bridge": {
     "level": "district",
     "parent": "alster",
