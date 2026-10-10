@@ -7365,9 +7365,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_room_bulwark_hint': {
     AppLanguage.en:
-        'One shield layer per pip, one back each round (two with a hand here). Each shot it stops cracks a pip.',
+        'One shield layer per pip, one back each round (two with a hand here). Each shot it stops cracks a pip and still shakes the hull; a shot at the bulwark itself, or a heavy one, strips more layers; a perfect aim finds the gap.',
     AppLanguage.fr:
-        'Une couche de bouclier par cran, une qui revient chaque tour (deux avec une main ici). Chaque tir arrêté fêle un cran.',
+        'Une couche de bouclier par cran, une qui revient chaque tour (deux avec une main ici). Chaque tir arrêté fêle un cran et ébranle tout de même la coque\u00a0; un tir sur le pavois lui-même, ou un tir lourd, arrache plus de couches\u00a0; une visée parfaite trouve la brèche.',
   },
   'ship_room_hold_hint': {
     AppLanguage.en:
@@ -7634,6 +7634,38 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_log_shot_absorbed': {
     AppLanguage.en: '{weapon} breaks on the {ship}\'s bulwark',
     AppLanguage.fr: '{weapon} se brise sur le pavois de {ship}',
+  },
+  'ship_log_shield_chip': {
+    AppLanguage.en: 'The blow still shakes the hull: -{n}',
+    AppLanguage.fr: 'Le choc ébranle tout de même la coque\u00a0: -{n}',
+  },
+  'ship_log_shield_stripped': {
+    AppLanguage.en: '{n} shield layers torn away at once!',
+    AppLanguage.fr: '{n} couches de bouclier arrachées d\'un coup\u00a0!',
+  },
+  'ship_log_shield_gap': {
+    AppLanguage.en: 'The shot finds the gap in the shield!',
+    AppLanguage.fr: 'Le tir trouve la brèche dans le bouclier\u00a0!',
+  },
+  'ship_sums': {
+    AppLanguage.en: '{n} shield layers: {m} shots to get through',
+    AppLanguage.fr: '{n} couches de bouclier\u00a0: {m} tirs pour passer',
+  },
+  'ship_sums_one': {
+    AppLanguage.en: '1 shield layer: {m} shots to get through',
+    AppLanguage.fr: '1 couche de bouclier\u00a0: {m} tirs pour passer',
+  },
+  'ship_sums_pierce': {
+    AppLanguage.en: '{n} shield layers: this shot pierces them',
+    AppLanguage.fr: '{n} couches de bouclier\u00a0: ce tir les perce',
+  },
+  'ship_sums_bulwark': {
+    AppLanguage.en: ' ({k} at the bulwark)',
+    AppLanguage.fr: ' ({k} sur le pavois)',
+  },
+  'ship_sums_salvo': {
+    AppLanguage.en: 'Salvo ready',
+    AppLanguage.fr: 'Salve prête',
   },
   'ship_log_shot_dodged': {
     AppLanguage.en: 'The {ship} slips {weapon}',

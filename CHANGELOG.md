@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.219.0+255]
+
+### Changed
+- Ship battles are less of a wall. A shield layer that stops a shot no longer cancels it: about a third of the blow (at least 1) still reaches the hull, on either ship, and the log says so. Before, four shots in ten were swallowed whole and a quarter of all rounds saw nothing land on either side.
+- A shield can now be broken on purpose. A shot aimed at the bulwark itself strips a second layer; a heavy weapon (damage 20 or more: the fire pots, the hot-shot carronade) strips two; and a perfect aim slips through the gap, landing on the hull and leaving the layers standing. Piercing shots still ignore the layers, and a sea beast's hide keeps its old rule.
+- The enemy's bar shows the sums: its shield layers and how many shots of the armed weapon it takes to get one through (fewer when aimed at the bulwark), with a "Salvo ready" flag when the guns ready now can break it and land this turn. The room preview shows the chip a stopped shot would cost.
+
+### Balance
+- Against the late Void Barge a captain who ignores the tools now wins one fight in four (3% before); the captain who aims, braces and gives orders wins most of them (53% before, 86% now). The simulator's band for the new rules was widened from +35 to +65 points for that fight, and a new check keeps the plain captain from being walled by the shield again.
+
 ## [1.218.0+254]
 
 ### Changed

@@ -396,10 +396,23 @@ void main() {
         // shot against a hard ship, so the late void barge falls more
         // often (55% against 23%, her hull raised from 140 to 150).
         // Still a fight, not a walkover.
-        expect(now, lessThanOrEqualTo(old + 0.35),
+        //
+        // Since v1.217 a shield layer lets a third of the shot through, a
+        // shot at the bulwark or a heavy one strips more layers and a
+        // perfect aim slips the gap: the skilled captain now takes the
+        // late void barge (two layers, 150 hull) 86% of the time against
+        // 23% before, and 53% with the old rules and her tools. The plain
+        // captain, walled by those layers at 3%, now wins one in four.
+        expect(now, lessThanOrEqualTo(old + 0.65),
             reason: '$fitting vs $enemy: $now vs $old before');
       }
     }
+  });
+
+  test('a player who ignores the tools is no longer walled by the shield', () {
+    // v1.217: a stopped shot still chips the hull, so the plain captain's
+    // late guns wear the void barge down (3% before the chip).
+    expect(plain['late']!['void_barge']!.winRate, greaterThan(0.1));
   });
 
   test('a player who ignores the new tools still wins the early fights', () {
