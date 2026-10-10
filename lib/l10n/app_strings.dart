@@ -7663,6 +7663,52 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{crew} patches the hull, +{n}',
     AppLanguage.fr: '{crew} colmate la coque, +{n}',
   },
+  'ship_log_dice_stun': {
+    AppLanguage.en: "{crew}'s die stuns the {weapon}: a step of charge lost",
+    AppLanguage.fr:
+        'Le dé de {crew} étourdit {weapon} : un cran de charge perdu',
+  },
+  'ship_log_dice_wound': {
+    AppLanguage.en: "{crew}'s die winds the {weapon} a step",
+    AppLanguage.fr: 'Le dé de {crew} remonte {weapon} d\'un cran',
+  },
+  'ship_dice_blank': {
+    AppLanguage.en: 'Its die has no face for this room: nothing this turn',
+    AppLanguage.fr: 'Son dé n\'a aucune face pour cette salle : rien ce tour',
+  },
+  'ship_dice_attack': {
+    AppLanguage.en: 'Its die landed a strike: your shots +{n}% this turn',
+    AppLanguage.fr: 'Son dé donne un coup : vos tirs +{n} % ce tour',
+  },
+  'ship_dice_poison': {
+    AppLanguage.en: 'Its die landed a venom: your shots +{n}% this turn',
+    AppLanguage.fr: 'Son dé donne un venin : vos tirs +{n} % ce tour',
+  },
+  'ship_dice_defend': {
+    AppLanguage.en: 'Its die landed a guard: enemy shots -{n}% this turn',
+    AppLanguage.fr: 'Son dé donne une garde : tirs ennemis -{n} % ce tour',
+  },
+  'ship_dice_heal': {
+    AppLanguage.en: 'Its die landed a mending: hull +{n} when the round ends',
+    AppLanguage.fr: 'Son dé donne un soin : coque +{n} en fin de tour',
+  },
+  'ship_dice_mana': {
+    AppLanguage.en:
+        'Its die landed a charge: a gun wound a step when the round ends',
+    AppLanguage.fr:
+        'Son dé donne une charge : un canon remonté d\'un cran en fin de tour',
+  },
+  'ship_dice_stun': {
+    AppLanguage.en:
+        "Its die landed a stun: the enemy's most charged gun loses a step",
+    AppLanguage.fr:
+        'Son dé donne un étourdissement : le canon ennemi le plus chargé perd un cran',
+  },
+  'ship_dice_weaken': {
+    AppLanguage.en: 'Its die landed a sap: enemy shots -{n}% this turn',
+    AppLanguage.fr:
+        'Son dé donne un affaiblissement : tirs ennemis -{n} % ce tour',
+  },
   'ship_log_crew_hurt': {
     AppLanguage.en: '{crew} is hurt at the {room}, -{n}',
     AppLanguage.fr: '{crew} prend un coup à {room}, -{n}',

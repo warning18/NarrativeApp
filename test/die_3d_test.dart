@@ -1,6 +1,8 @@
 // The dice as cubes (v1.214, see die_3d.dart): six sides in 3D, three of
 // them showing at rest, the far ones culled as it tumbles; a landed face
 // lets go a burst fitted to what it does; with reduced motion, none.
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -40,6 +42,25 @@ void main() {
             CubeFacePlacement.of(i, Matrix4.identity(), 20),
         ].where((p) => p.visible).map((p) => p.slot),
         [0]);
+  });
+
+  test('the landed face stands nearly square to the viewer at rest', () {
+    final model = Matrix4.identity()
+      ..rotateX(dieRestTipX)
+      ..rotateY(dieRestTurnY);
+    final placed = [
+      for (var i = 0; i < 6; i++) CubeFacePlacement.of(i, model, 20),
+    ];
+    // Of the sides that show, the front one is the most lit and faces the
+    // viewer most squarely: its normal sits within 20 degrees of the line
+    // of sight.
+    final shown = placed.where((p) => p.visible).toList();
+    expect(shown.map((p) => p.slot), contains(0));
+    final front = shown.firstWhere((p) => p.slot == 0);
+    expect(front.light,
+        greaterThanOrEqualTo(shown.map((p) => p.light).reduce(math.max)));
+    expect(math.cos(dieRestTipX) * math.cos(dieRestTurnY),
+        greaterThan(math.cos(20 * math.pi / 180)));
   });
 
   test('a tumble never loses the cube: one to three sides show', () {
