@@ -580,8 +580,8 @@
   },
   "smuggler_captain": {
     "enemyName": "Smuggler Captain",
-    "maxHealth": 180,
-    "damage": 21,
+    "maxHealth": 135,
+    "damage": 16,
     "guile": 3,
     "faction": "crows",
     "reaction": "",
@@ -662,8 +662,8 @@
   },
   "plague_hound": {
     "enemyName": "Plague Hound",
-    "maxHealth": 175,
-    "damage": 21,
+    "maxHealth": 130,
+    "damage": 16,
     "guile": 2,
     "faction": "",
     "reaction": "hunt_healer",
@@ -1275,8 +1275,8 @@
   },
   "dock_overseer": {
     "enemyName": "Overseer Renn",
-    "maxHealth": 139,
-    "damage": 17,
+    "maxHealth": 112,
+    "damage": 14,
     "guile": 2,
     "faction": "dominion",
     "reaction": "",
