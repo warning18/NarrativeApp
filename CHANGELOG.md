@@ -8,6 +8,22 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.216.0+251]
+
+### Fixed
+- Chapter 2's bosses were walls. In the fight simulator a solo character won the Tanner's Court plague hound 10% of the time per attempt, the smuggler captain 14%, the Fisherman's Row dock overseer 27% and the Tern Row overseer 29%; the two repair-zone bosses gate casting off. All four are about a quarter lighter (plague hound 175 → 130 health, 21 → 16 damage; smuggler captain 180 → 135, 21 → 16; dock overseer 139 → 112, 17 → 14) and now sit near 45–55% per attempt, which takes Chapter 2 from 38% to 63% across the chapter.
+- Kelda's offer is now told: the scene opens on the dwarf holding the wharf gate alone and asking for one more pair of hands, instead of starting after the offer.
+- The woman under the bar is introduced in the opening scene before a choice names her. A cloaked woman now waits at the far well for a character the tear has marked, before the choice to answer her.
+- The Rusty Eel's capacity matches the choice: twenty in comfort, and a hundred only with the stores over the side and a skiff in tow, which is the skiff the storm later asks you to cut loose.
+- "Go find Vane" at the informant now reads "Go after the warden he named", which is who the trap is about.
+- French spacing: non-breaking spaces before `;`, `:`, `!`, `?` and inside « » in the Chapter 1 and 2 strings that had ordinary spaces.
+
+### Added
+- Chapter 2 has its own main quest, "A Hull to Leave In" (get the Rusty Eel, patch her hull, mend her sail), offered on the way into the wharf market, by any of its three doors. The three optional hub quests that were marked Main (burning manifest, captain's gambit, harbor reckoning) are now Side quests.
+
+### Notes
+- Liora's three ability checks can still be retried: she is a recruit, and the refusal says she will be there when you come back.
+
 ## [1.215.0+250]
 
 ### Added
