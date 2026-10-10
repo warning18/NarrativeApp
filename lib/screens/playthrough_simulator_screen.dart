@@ -218,7 +218,16 @@ class _SimContext {
     this.skillTrees = const {},
     this.progression = SimProgression.offers,
     this.geography,
+    this.clash = true,
+    this.clashOff = const {},
   });
+
+  /// Play the v1.212-v1.215 fight rules (goals, squads, parries, ...).
+  final bool clash;
+
+  /// Clash rules to leave out ('goal', 'squad', 'response', 'parry',
+  /// 'reaction', 'writ'), to see what each one does to the numbers.
+  final Set<String> clashOff;
 
   final Map<String, dynamic> dice;
   final Map<String, dynamic> skills;
@@ -482,6 +491,8 @@ _SimResult _simulate(
         random: random,
         signs: signs,
         perks: perks,
+        clash: sim.clash,
+        clashOff: sim.clashOff,
       );
       // Every pact runs one fight on, won or lost.
       c.heldSigns = countDownPacts(c.heldSigns);
@@ -902,6 +913,8 @@ _SimResult _simulate(
   required int runs,
   required int seed,
   SimProgression progression = SimProgression.offers,
+  bool clash = true,
+  Set<String> clashOff = const {},
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
   final sim = _SimContext(
@@ -927,6 +940,8 @@ _SimResult _simulate(
     progression: progression,
     geography:
         Geography.parse(geography: table('geography'), biomes: table('biomes')),
+    clash: clash,
+    clashOff: clashOff,
   );
   final random = Random(seed);
   final tally = <String, ({int runs, int attempts, int won})>{};

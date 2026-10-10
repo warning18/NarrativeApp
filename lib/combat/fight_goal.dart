@@ -30,7 +30,7 @@ const double ransomGoldMultiplier = 1.5;
 
 /// Every enemy hits this much harder in a [FightGoalKind.hold] fight: the
 /// party need not kill them, so they press.
-const double holdDamageMultiplier = 1.1;
+const double holdDamageMultiplier = 1.25;
 
 /// The gold and XP multiplier a fight with [kind] pays on top of its
 /// usual rewards -- the price of a harder ask than a plain slaughter.
@@ -66,9 +66,9 @@ class FightGoal {
 }
 
 /// The enemy turns a [FightGoalKind.hold] fight against [enemyCount]
-/// enemies asks the party to survive: three against a pair, four against
+/// enemies asks the party to survive: four against a pair, five against
 /// three or more.
-int holdRoundsFor(int enemyCount) => enemyCount >= 3 ? 4 : 3;
+int holdRoundsFor(int enemyCount) => enemyCount >= 3 ? 5 : 4;
 
 /// Rolls a fight's goal. [eligible] is the caller's verdict on the fight
 /// itself (never a lesson, a test, a boss, a hunt or an ambush);

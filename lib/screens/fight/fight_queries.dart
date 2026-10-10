@@ -162,6 +162,11 @@ extension _FightQueries on _FightScreenState {
     if (leaderStanding && !enemy.hasAffix(EnemyAffix.packLeader)) {
       damage = (damage * packLeaderAllyDamageMultiplier).round();
     }
+    // Provoked by a heavy blow, or pressing a party that only defended
+    // (v1.215, see enemy_response.dart).
+    final answer = responseDamageMultiplier(
+        provoked: enemy.provoked, pressing: enemy.pressing);
+    if (answer != 1.0) damage = (damage * answer).round();
     // A pact's curse, while it runs (see signs.dart).
     return _signs.enemyDamage(damage);
   }

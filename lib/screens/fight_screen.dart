@@ -18,6 +18,10 @@ import '../combat/face_smithing.dart';
 import '../combat/party_combos.dart';
 import '../combat/encounter.dart';
 import '../combat/doctrine.dart';
+import '../combat/element_reaction.dart';
+import '../combat/enemy_response.dart';
+import '../combat/squad.dart';
+import '../combat/parry.dart';
 import '../combat/loadout.dart';
 import '../combat/quick_resolve.dart';
 import '../combat/turn_order.dart';
@@ -74,6 +78,7 @@ import 'death_screen.dart';
 part 'fight/fight_actions.dart';
 part 'fight/fight_cards.dart';
 part 'fight/fight_controls.dart';
+part 'fight/fight_clash.dart';
 part 'fight/fight_dice_rules.dart';
 part 'fight/fight_effects.dart';
 part 'fight/fight_goals.dart';
@@ -84,6 +89,7 @@ part 'fight/fight_queries.dart';
 part 'fight/fight_rewards.dart';
 part 'fight/fight_rounds.dart';
 part 'fight/fight_setup.dart';
+part 'fight/fight_squad.dart';
 part 'fight/fight_view.dart';
 part 'fight/fight_widgets.dart';
 
@@ -319,6 +325,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// quick_resolve.dart): short animations, the choices made for the
   /// player, a Stop button in place of the dice.
   bool _quick = false;
+
+  /// Which enemy each defender's Defend face parries this round (v1.214,
+  /// see parry.dart): actor id -> enemy key. Empty means a plain guard.
+  final Map<String, String> _parryTargets = {};
 
   /// What this fight asks of the party besides killing everything
   /// (v1.212, see fight_goal.dart). Rolled once in [_ensureEnemiesBuilt].

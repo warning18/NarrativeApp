@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.214.0+249]
+## [1.216.0+251]
 
 ### Fixed
 - The map no longer moves when a way is picked. The panel under the Journey map keeps one height whether or not a way or a place is chosen, so the map keeps its size and every mark stays where it was.
@@ -27,6 +27,29 @@ isn't reconstructable from git history alone.
 
 ### Changed
 - The quest on the Journey is a small round button beside Read, with its icon, a tick when the goal is met and a dot when it moves on, instead of a full bar above the map. Its name and goal are on its tooltip, and a tap opens the quest, where it can be turned in. The map gains the height the bar took.
+
+## [1.215.0+250]
+
+### Added
+- Enemy squads. From chapter 2 on, about half the packs of two or three field a squad: a **Healer** (mends its most wounded friend by an eighth of its health each turn, hits at seventy percent), a **Guard** (while it stands, blows on the others are cut by a quarter unless they Pierce) or a **Striker** (hits a quarter harder on a fifth less health). A pack never gives roles to all its members, never doubles a Healer or a Guard, and never to a boss. The role shows as a chip on the enemy's card with its rules on a long press.
+- Enemies that answer the party. Fifteen enemies now carry a reaction in `enemies.json` (from chapter 2 on; the opening chapter keeps the plain rules): a **counter** enemy (a blow of a fifth of its health in one round provokes it; its next blow lands half again as hard, at whoever struck), a **press** enemy (a round in which everyone played Defend makes it press: its next blow lands three tenths harder) and a **hunt_healer** enemy (it turns its next blow on whoever healed most). A *Provoked* or *Pressing* chip says so before it strikes.
+- The pack fights back harder when it is held rather than slain: a Hold the line fight now asks four of the enemies' turns against a pair and five against more (it was three and four), and they hit a quarter harder (it was a tenth).
+
+### Balance
+- The fight simulator plays the whole clash set (goals, the Writ, squads, answers, parries, reactions) when `clash` is on, and each rule can be left out to see what it does (`clashOff`). Four seeds of 400 random walks each, win rate per fight attempt, plain rules → clash rules: Chapter 1 85.9% → 87.1%, Chapter 2 37.3% → 38.3%, Chapter 3 36.8% → 38.0%, Chapter 4 25.7% → 29.6%, Chapter 5 14.0% → 17.1%, Chapter 6 22.1% → 25.4%, Chapter 7 10.5% → 11.2%, Chapter 8 15.4% → 17.6% (all fights 28.5% → 30.4%). Left out one at a time (before the Hold was made harder), the goals were worth about five points of that, the Hold alone four; parries and reactions about one each; squads, answers and the Writ under one. The model plays the rules as well as they can be played (the best parry, the Healer struck first), so a real party will see less of the gain.
+- `test/clash_balance_test.dart` keeps every chapter's simulated win rate within ten points of the plain rules'.
+
+### Internal
+- `squad.dart` and `enemy_response.dart` hold the pure rules; the fight screen gains a `fight_squad.dart` part. `EncounterModifiers.forcedSquad` pins a pack's roles for tests. The `reaction` field joins the enemies schema.
+
+## [1.214.0+249]
+
+### Added
+- Targeted defence. A Defend face no longer only guards whoever rolled it. When an enemy has an attack coming, the defender's card shows a Parry chip: tap it to set the face on that enemy's blow, tap again to move to the next enemy or back to a plain guard. A parry counts half again as much as the guard, covers whoever the blow was aimed at, and blocks its status. A blow it stops outright is turned aside and answered for half the parry. A parry set on an enemy that does not strike that turn is wasted, and the roller's own guard is not raised.
+- Element reactions. A hit with an element primes the enemy with it for the rest of that round and the next, shown as a chip on its card. A partner element striking the primed enemy springs a reaction and uses the prime up: **Conduct** (Water and Electricity: half again as much damage, and an arc to the other enemies), **Shatter** (Fire and Ice: sixty percent more and the guard broken), **Firestorm** (Fire and Wind: a quarter more, and the blaze catches the others), **Freeze** (Water and Ice: stunned for a turn, a boss shrugs it off), **Sandblast** (Earth and Wind: weakened) and **Eclipse** (Light and Void: double). Spells react as well as dice. With the Dexterity order, putting the bigger hit second now pays.
+
+### Internal
+- `parry.dart` and `element_reaction.dart` hold the pure rules; the fight screen gains a `fight_clash.dart` part.
 
 ## [1.213.0+248]
 

@@ -6760,6 +6760,158 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'This die hits none of them',
     AppLanguage.fr: 'Ce dé n’en frappe aucune',
   },
+  'parry_off': {
+    AppLanguage.en: 'Parry…',
+    AppLanguage.fr: 'Parer…',
+  },
+  'parry_on': {
+    AppLanguage.en: 'Parry {name}',
+    AppLanguage.fr: 'Parer {name}',
+  },
+  'parry_tip': {
+    AppLanguage.en:
+        'Set this guard on one enemy’s coming blow: it counts half again, and a blow it stops is answered.',
+    AppLanguage.fr:
+        'Placez cette garde sur le prochain coup d’un ennemi : elle compte une fois et demie, et un coup arrêté net reçoit une riposte.',
+  },
+  'parry_set_log': {
+    AppLanguage.en: '{name} readies a parry against {enemy} ({n}).',
+    AppLanguage.fr: '{name} prépare une parade contre {enemy} ({n}).',
+  },
+  'parry_stopped_log': {
+    AppLanguage.en: '{enemy}’s blow is turned aside and answered for {n}.',
+    AppLanguage.fr:
+        'Le coup de {enemy} est détourné et reçoit une riposte de {n}.',
+  },
+  'parry_soaks_log': {
+    AppLanguage.en: 'The parry soaks {n} of {enemy}’s blow.',
+    AppLanguage.fr: 'La parade absorbe {n} du coup de {enemy}.',
+  },
+  'reaction_conduct': {
+    AppLanguage.en: 'Conduct',
+    AppLanguage.fr: 'Conduction',
+  },
+  'reaction_conduct_desc': {
+    AppLanguage.en:
+        'Water and Electricity: the hit does half again, and arcs to the others.',
+    AppLanguage.fr:
+        'Eau et Électricité : le coup fait moitié plus et se propage aux autres.',
+  },
+  'reaction_shatter': {
+    AppLanguage.en: 'Shatter',
+    AppLanguage.fr: 'Éclatement',
+  },
+  'reaction_shatter_desc': {
+    AppLanguage.en:
+        'Fire and Ice: the hit does much more and breaks the guard.',
+    AppLanguage.fr: 'Feu et Glace : le coup fait bien plus et brise la garde.',
+  },
+  'reaction_firestorm': {
+    AppLanguage.en: 'Firestorm',
+    AppLanguage.fr: 'Tempête de feu',
+  },
+  'reaction_firestorm_desc': {
+    AppLanguage.en: 'Fire and Wind: the blaze catches every other enemy.',
+    AppLanguage.fr: 'Feu et Vent : le brasier gagne tous les autres ennemis.',
+  },
+  'reaction_freeze': {
+    AppLanguage.en: 'Freeze',
+    AppLanguage.fr: 'Gel',
+  },
+  'reaction_freeze_desc': {
+    AppLanguage.en: 'Water and Ice: the enemy is stunned for a turn.',
+    AppLanguage.fr: 'Eau et Glace : l’ennemi est étourdi pour un tour.',
+  },
+  'reaction_sandblast': {
+    AppLanguage.en: 'Sandblast',
+    AppLanguage.fr: 'Tempête de sable',
+  },
+  'reaction_sandblast_desc': {
+    AppLanguage.en: 'Earth and Wind: the enemy is weakened.',
+    AppLanguage.fr: 'Terre et Vent : l’ennemi est affaibli.',
+  },
+  'reaction_eclipse': {
+    AppLanguage.en: 'Eclipse',
+    AppLanguage.fr: 'Éclipse',
+  },
+  'reaction_eclipse_desc': {
+    AppLanguage.en: 'Light and Void: the hit does double.',
+    AppLanguage.fr: 'Lumière et Néant : le coup fait le double.',
+  },
+  'reaction_log': {
+    AppLanguage.en: '{reaction}! {name} is caught in it.',
+    AppLanguage.fr: '{reaction} ! {name} est pris dedans.',
+  },
+  'reaction_log_bonus': {
+    AppLanguage.en: '{reaction}! {name} takes {n} more.',
+    AppLanguage.fr: '{reaction} ! {name} subit {n} de plus.',
+  },
+  'reaction_freeze_resisted': {
+    AppLanguage.en: '{name} shrugs off the freeze.',
+    AppLanguage.fr: '{name} ignore le gel.',
+  },
+  'reaction_primed_tip': {
+    AppLanguage.en: 'Primed by {e}. Strike it with {p} to spring a reaction.',
+    AppLanguage.fr:
+        'Amorcé par {e}. Frappez-le avec {p} pour provoquer une réaction.',
+  },
+  'squad_healer': {
+    AppLanguage.en: 'Healer',
+    AppLanguage.fr: 'Soigneur',
+  },
+  'squad_healer_desc': {
+    AppLanguage.en:
+        'Mends its most wounded friend each turn, but hits weaker. Kill it first.',
+    AppLanguage.fr:
+        'Soigne chaque tour son allié le plus blessé, mais frappe plus faiblement. Tuez-le en premier.',
+  },
+  'squad_guard': {
+    AppLanguage.en: 'Guard',
+    AppLanguage.fr: 'Garde',
+  },
+  'squad_guard_desc': {
+    AppLanguage.en:
+        'While it stands, blows on the others are cut by a quarter. A Pierce goes through.',
+    AppLanguage.fr:
+        'Tant qu’il tient, les coups portés aux autres sont réduits d’un quart. Une Perforation passe.',
+  },
+  'squad_striker': {
+    AppLanguage.en: 'Striker',
+    AppLanguage.fr: 'Frappeur',
+  },
+  'squad_striker_desc': {
+    AppLanguage.en: 'Hits harder on less health. It dies fast if it is hit.',
+    AppLanguage.fr:
+        'Frappe plus fort avec moins de vie. Il tombe vite s’il est touché.',
+  },
+  'squad_healer_mends': {
+    AppLanguage.en: '{healer} mends {name} for {n}.',
+    AppLanguage.fr: '{healer} soigne {name} de {n}.',
+  },
+  'squad_guard_covers': {
+    AppLanguage.en: 'The guard covers {name}: {n} less.',
+    AppLanguage.fr: 'Le garde couvre {name} : {n} de moins.',
+  },
+  'response_provoked': {
+    AppLanguage.en: '{name} is provoked by the heavy blow.',
+    AppLanguage.fr: '{name} est provoqué par ce coup violent.',
+  },
+  'response_pressing': {
+    AppLanguage.en: '{name} presses: nobody struck back.',
+    AppLanguage.fr: '{name} presse son avantage : personne n’a riposté.',
+  },
+  'response_hunts': {
+    AppLanguage.en: '{name} turns on {target}.',
+    AppLanguage.fr: '{name} se tourne vers {target}.',
+  },
+  'response_provoked_chip': {
+    AppLanguage.en: 'Provoked',
+    AppLanguage.fr: 'Provoqué',
+  },
+  'response_pressing_chip': {
+    AppLanguage.en: 'Pressing',
+    AppLanguage.fr: 'Presse',
+  },
   'flees_suffix': {
     AppLanguage.en: 'breaks and flees the fight!',
     AppLanguage.fr: 'panique et fuit le combat !',
