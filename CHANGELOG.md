@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.218.0+253]
+## [1.219.0+255]
 
 ### Changed
 - Ship battles are less of a wall. A shield layer that stops a shot no longer cancels it: about a third of the blow (at least 1) still reaches the hull, on either ship, and the log says so. Before, four shots in ten were swallowed whole and a quarter of all rounds saw nothing land on either side.
@@ -17,6 +17,20 @@ isn't reconstructable from git history alone.
 
 ### Balance
 - Against the late Void Barge a captain who ignores the tools now wins one fight in four (3% before); the captain who aims, braces and gives orders wins most of them (53% before, 86% now). The simulator's band for the new rules was widened from +35 to +65 points for that fight, and a new check keeps the plain captain from being walled by the shield again.
+
+## [1.218.0+254]
+
+### Changed
+- Close and far read at a glance in the ship fight. The sea is seen from the masthead, so the farther apart the ships lie the smaller each is drawn (full size close, a little over four fifths at medium, under two thirds at long) and the wider the open water between them; closing in or pulling away glides between the three. The closest range now also gives the ships more of the sea's width.
+
+### Added
+- Station dice on the Eel. Each hand with a die (the player's equipped die, a companion's signature die, as the Hammersmith left them) has it at their station in the ship fight, a small cube on the room's tile that tumbles when the turn opens or the hand moves, and shows only the faces that room can use: the guns, attack and poison; the bulwark, defend; the hold, heal and mana; the helm, stun and weaken. A skill face shows its skill's icon. A room the die has no face for shows a pale blank cube and gives nothing.
+- What a landed face does, while its hand stays at the station and is not busy: at the guns, the Eel's shots hit harder by the face's share (half as much for poison); at the bulwark, the enemy's shots hit softer; at the helm, a weaken face does the same and a stun face costs the enemy's most charged gun a step after it winds; in the hold, a heal face patches the hull and a mana face winds a gun a step when the round ends. The landing depends only on the battle, the turn, the hand and the room, so moving hands about cannot shake out a better roll. Hold a room's tile for what its die landed.
+
+## [1.217.1+253]
+
+### Fixed
+- A die now ends its roll on the face that rolled, standing almost square to you, so the skill icon (or the value) of the face that can trigger is what you read. Before, the cube settled tipped far over with its top and sides as large as the landed face.
 
 ## [1.217.0+252]
 

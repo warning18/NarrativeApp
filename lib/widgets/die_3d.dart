@@ -46,10 +46,11 @@ DieFx dieFxOf(FaceKind kind) => switch (kind) {
       FaceKind.empty => DieFx.fizzle,
     };
 
-/// Where the die rests: tipped toward the viewer and turned, so its top and
-/// a side show beside the landed face.
-const double _restTipX = 0.5;
-const double _restTurnY = 0.62;
+/// Where the die rests: the landed face stands almost square to the viewer,
+/// tipped and turned just enough for an edge of the top and of a side to
+/// show, so the face that rolled (and its skill icon) is what reads.
+const double dieRestTipX = 0.2;
+const double dieRestTurnY = 0.26;
 
 /// Perspective: the eye sits `1 / _perspective` in front of the cube.
 const double _perspective = 0.0016;
@@ -286,8 +287,8 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
       ..rotateX(spin * 0.9)
       ..rotateY(spin * 1.3)
       ..rotateZ(spin * 0.35)
-      ..rotateX(_restTipX)
-      ..rotateY(_restTurnY);
+      ..rotateX(dieRestTipX)
+      ..rotateY(dieRestTurnY);
     // A hop that dies away as it settles, with the shadow shrinking under it.
     final hop = widget.rolling && widget.roll != null
         ? size *
