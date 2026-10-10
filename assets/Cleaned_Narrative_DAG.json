@@ -23,8 +23,8 @@
   },
   "100": {
     "id": "100",
-    "description": "The Blind Beggar on Tallow Street was a tavern at the front and something else at the back: a room with no sign on its door, four tables, a cage for the house's money, and a rule about knives that nobody had kept since I was old enough to break it. I had been losing there since supper with the steady, almost restful competence of a professional, and when the house dice went cold I took out my own, the old bone one, and rolled it once for luck, the way I always did. It came up six. Then the wall came in. There is no better way to say it: one moment there was a wall, and the next there was a great breath of brick and fire, and the floor was where the ceiling should have been, and the blast had thrown me on my back under a card table with my ears full of bells. When I could stand, there was a hole where the street side of the room had been, and through it Alster was burning. White masks were in the street. They went from door to door with lanterns and chalk, and when they came out again they were dragging people by the arms. The Inquisition had come for the city, all at once, and from the sky. Two thoughts arrived together and would not take turns. Lysa, my little sister, was at home on her own. And under our house lay the one thing our mother had made us both swear never to dig for.",
-    "description_fr": "Le Mendiant Aveugle, rue du Suif, était une taverne par-devant et autre chose par-derrière : une salle sans enseigne à la porte, quatre tables, une cage pour l’argent de la maison, et une règle sur les couteaux que personne n’avait respectée depuis que j’étais en âge de l’enfreindre. J’y perdais depuis le souper avec la compétence régulière, presque reposante, d’un professionnel, et quand les dés de la maison refroidirent, je sortis les miens, le vieux dé d’os, et le lançai une fois pour la chance, comme toujours. Il fit six. Puis le mur entra. Il n’y a pas de meilleure façon de le dire : un instant il y eut un mur, et l’instant d’après un grand souffle de brique et de feu, et le plancher se trouva là où aurait dû être le plafond, et le souffle me jeta sur le dos sous une table de cartes, les oreilles pleines de cloches. Quand je pus me relever, il y avait un trou à la place du côté rue de la salle, et par ce trou, Alster brûlait. Des masques blancs étaient dans la rue. Ils allaient de porte en porte avec des lanternes et de la craie, et quand ils ressortaient, ils traînaient des gens par les bras. L’Inquisition était venue prendre la ville, d’un seul coup, et par le ciel. Deux pensées arrivèrent ensemble et refusèrent d’attendre leur tour. Lysa, ma petite sœur, était à la maison, sans personne. Et sous notre maison dormait la seule chose que notre mère nous avait fait jurer, à tous les deux, de ne jamais déterrer.",
+    "description": "The Blind Beggar on Tallow Street was a tavern at the front and something else at the back: a room with no sign on its door, four tables, a cage for the house's money, and a rule about knives that nobody had kept since I was old enough to break it. I had been losing there since supper with the steady, almost restful competence of a professional, and when the house dice went cold I took out my own, the old bone one, and rolled it once for luck, the way I always did. It came up six. Then the wall came in. There is no better way to say it: one moment there was a wall, and the next there was a great breath of brick and fire, and the floor was where the ceiling should have been, and the blast had thrown me on my back under a card table with my ears full of bells. When I could stand, there was a hole where the street side of the room had been, and through it Alster was burning. White masks were in the street. They went from door to door with lanterns and chalk, and when they came out again they were dragging people by the arms. The Inquisition had come for the city, all at once, and from the sky. Nearer, under the bar, a woman lay pinned beneath a fallen beam, calling for anyone at all. Two thoughts arrived together and would not take turns. Lysa, my little sister, was at home on her own. And under our house lay the one thing our mother had made us both swear never to dig for.",
+    "description_fr": "Le Mendiant Aveugle, rue du Suif, était une taverne par-devant et autre chose par-derrière : une salle sans enseigne à la porte, quatre tables, une cage pour l’argent de la maison, et une règle sur les couteaux que personne n’avait respectée depuis que j’étais en âge de l’enfreindre. J’y perdais depuis le souper avec la compétence régulière, presque reposante, d’un professionnel, et quand les dés de la maison refroidirent, je sortis les miens, le vieux dé d’os, et le lançai une fois pour la chance, comme toujours. Il fit six. Puis le mur entra. Il n’y a pas de meilleure façon de le dire : un instant il y eut un mur, et l’instant d’après un grand souffle de brique et de feu, et le plancher se trouva là où aurait dû être le plafond, et le souffle me jeta sur le dos sous une table de cartes, les oreilles pleines de cloches. Quand je pus me relever, il y avait un trou à la place du côté rue de la salle, et par ce trou, Alster brûlait. Des masques blancs étaient dans la rue. Ils allaient de porte en porte avec des lanternes et de la craie, et quand ils ressortaient, ils traînaient des gens par les bras. L’Inquisition était venue prendre la ville, d’un seul coup, et par le ciel. Tout près, sous le comptoir, une femme gisait coincée sous une poutre et appelait n’importe qui. Deux pensées arrivèrent ensemble et refusèrent d’attendre leur tour. Lysa, ma petite sœur, était à la maison, sans personne. Et sous notre maison dormait la seule chose que notre mère nous avait fait jurer, à tous les deux, de ne jamais déterrer.",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "action",
@@ -1518,7 +1518,7 @@
       {
         "flag": "hound_wardens",
         "en": "I had not known whether it still remembered its old handler's whistle. It came in through the breach behind the resistance, a grey blur taking the nearest Warden by the throat before he could shout; the second turned just in time to receive my dagger. The dog sat afterward, panting, waiting for whatever came next.",
-        "fr": "Je ne savais pas s'il se souvenait encore du sifflement de son ancien maître. Il arriva par la brèche derrière la résistance, un éclair gris saisissant le Gardien le plus proche à la gorge avant qu'il ne puisse crier ; le second se retourna juste à temps pour recevoir ma dague. Le chien s'assit ensuite, haletant, attendant ce qui viendrait."
+        "fr": "Je ne savais pas s'il se souvenait encore du sifflement de son ancien maître. Il arriva par la brèche derrière la résistance, un éclair gris saisissant le Gardien le plus proche à la gorge avant qu'il ne puisse crier ; le second se retourna juste à temps pour recevoir ma dague. Le chien s'assit ensuite, haletant, attendant ce qui viendrait."
       },
       {
         "flag": "wardens_fooled",
@@ -2480,6 +2480,11 @@
     ],
     "flag_callbacks": [
       {
+        "flag": "void_marked",
+        "en": "At the far well, where the lamplight gave out, a cloaked woman stood as if she had been waiting for me, and the thread the tear had left in me hummed at the sight of her.",
+        "fr": "Au puits le plus éloigné, là où la lumière des lampes s’éteignait, une femme encapuchonnée se tenait comme si elle m’attendait, et le fil que la Déchirure avait laissé en moi vibra à sa vue."
+      },
+      {
         "flag": "looters_fought",
         "en": "The Lark's cargo was not mine to sell, and I sold some of it anyway, to a man at the Wells who did not ask where it had come from.",
         "fr": "La cargaison de l’Alouette n’était pas à moi, et j’en vendis quand même une partie à un homme des Puits qui ne demanda pas d’où elle venait."
@@ -2784,7 +2789,8 @@
         "next_id": "2015",
         "flagsToAdd": [
           "wharf_scouted"
-        ]
+        ],
+        "unlockQuestId": "q_ch2_leave_saltmouth"
       },
       {
         "text": "Lift what you can from an unwatched crate",
@@ -2794,7 +2800,8 @@
         "alignmentMod": -1,
         "flagsToAdd": [
           "wharf_pilfered"
-        ]
+        ],
+        "unlockQuestId": "q_ch2_leave_saltmouth"
       }
     ]
   },
@@ -3150,7 +3157,7 @@
         {
           "after": 3,
           "en": "The wharf had started to know my face: two stallholders nodded as I passed, and a third moved his purse to the other hip.",
-          "fr": "Le quai commençait à connaître mon visage : deux marchands me saluèrent d'un signe de tête, et un troisième changea sa bourse de hanche."
+          "fr": "Le quai commençait à connaître mon visage : deux marchands me saluèrent d'un signe de tête, et un troisième changea sa bourse de hanche."
         },
         {
           "after": 7,
@@ -3170,7 +3177,7 @@
       },
       "race:elf": {
         "en": "An elf on the wharf drew the kind of attention a rare coin draws: everyone wanted to know what I was worth, and to whom.",
-        "fr": "Un elfe sur le quai attirait l'attention qu'attire une pièce rare : tout le monde voulait savoir ce que je valais, et pour qui."
+        "fr": "Un elfe sur le quai attirait l'attention qu'attire une pièce rare : tout le monde voulait savoir ce que je valais, et pour qui."
       },
       "race:dwarf": {
         "en": "The dockside smiths straightened when a dwarf walked past their work, and one of them, unasked, showed me a blade he was ashamed of.",
@@ -3548,8 +3555,8 @@
   },
   "2015_kelda": {
     "id": "2015_kelda",
-    "description": "She held her spot at the gate with the stubborn economy of someone who'd already decided how this went regardless of my answer, and I found I didn't especially want to make a liar of her. I told her I'd keep her offer in mind, which is about as close to a promise as I generally allow myself with strangers who fight for a living. \"Keep it in mind, then,\" she said, without taking her eyes off the wharf. \"Minds are cheap. Gates aren't.\" Vane could wait a little longer.\n\nShe had not been waiting for my answer, as it turned out. She had been waiting for the boarding party she had been holding the gate against. It came up the wharf before I had taken three steps back toward the stalls: an Inquisition soldier at its head, sword already out, and no interest at all in which of us had been talking to whom.",
-    "description_fr": "Elle tenait sa position à la porte avec l'économie obstinée de quelqu'un qui avait déjà décidé de l'issue, quelle que fût ma réponse, et je découvris que je n'avais pas particulièrement envie de la démentir. Je lui dis que je garderais son offre à l'esprit, ce qui est à peu près la promesse la plus engageante que je m'autorise généralement envers des inconnus qui se battent pour vivre. « Gardez-la à l'esprit, alors, dit-elle sans quitter le quai des yeux. Les esprits, ça ne coûte rien. Les portes, si. » Vane pouvait attendre encore un peu.\n\nElle n'attendait pas ma réponse, en fin de compte. Elle attendait l'équipe d'abordage contre laquelle elle tenait la porte. Celle-ci remonta le quai avant que j'aie fait trois pas vers les étals : un soldat de l'Inquisition à sa tête, l'épée déjà tirée, et aucun intérêt pour savoir lequel de nous deux avait parlé à l'autre.",
+    "description": "A dwarf in a dented cuirass was holding the wharf gate alone, a barrel for a barricade and no one at her back. She did not ask for coin. She asked for one more pair of hands at the gate when the next boarding party came up the wharf, and nothing besides: no pay, no promises, only a gate that would not hold itself.\n\nShe held her spot at the gate with the stubborn economy of someone who'd already decided how this went regardless of my answer, and I found I didn't especially want to make a liar of her. I told her I'd keep her offer in mind, which is about as close to a promise as I generally allow myself with strangers who fight for a living. \"Keep it in mind, then,\" she said, without taking her eyes off the wharf. \"Minds are cheap. Gates aren't.\" Vane could wait a little longer.\n\nShe had not been waiting for my answer, as it turned out. She had been waiting for the boarding party she had been holding the gate against. It came up the wharf before I had taken three steps back toward the stalls: an Inquisition soldier at its head, sword already out, and no interest at all in which of us had been talking to whom.",
+    "description_fr": "Une naine en cuirasse cabossée tenait seule la porte du quai, un tonneau pour barricade et personne dans le dos. Elle ne demandait pas d’argent. Elle demandait une paire de mains de plus à la porte quand la prochaine équipe d’abordage remonterait le quai, et rien d’autre : ni solde, ni promesses, seulement une porte qui ne se tiendrait pas toute seule.\n\nElle tenait sa position à la porte avec l'économie obstinée de quelqu'un qui avait déjà décidé de l'issue, quelle que fût ma réponse, et je découvris que je n'avais pas particulièrement envie de la démentir. Je lui dis que je garderais son offre à l'esprit, ce qui est à peu près la promesse la plus engageante que je m'autorise généralement envers des inconnus qui se battent pour vivre. « Gardez-la à l'esprit, alors, dit-elle sans quitter le quai des yeux. Les esprits, ça ne coûte rien. Les portes, si. » Vane pouvait attendre encore un peu.\n\nElle n'attendait pas ma réponse, en fin de compte. Elle attendait l'équipe d'abordage contre laquelle elle tenait la porte. Celle-ci remonta le quai avant que j'aie fait trois pas vers les étals : un soldat de l'Inquisition à sa tête, l'épée déjà tirée, et aucun intérêt pour savoir lequel de nous deux avait parlé à l'autre.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -3654,7 +3661,7 @@
       {
         "flag": "sable_marker_won",
         "en": "I already had it. The folded marker signed S had come to me with the pot at the dockhands' barrel, and when I held it up between two fingers she stopped talking. \"Well,\" she said at last. \"That saves us both a walk. I'm yours while it pays.\"",
-        "fr": "Je l'avais déjà. La reconnaissance pliée, signée S, m'était venue avec le pot au tonneau des dockers, et quand je la levai entre deux doigts, elle se tut. « Eh bien, dit-elle enfin. Voilà qui nous épargne une course. Je suis à vous tant que ça paie. »"
+        "fr": "Je l'avais déjà. La reconnaissance pliée, signée S, m'était venue avec le pot au tonneau des dockers, et quand je la levai entre deux doigts, elle se tut. « Eh bien, dit-elle enfin. Voilà qui nous épargne une course. Je suis à vous tant que ça paie. »"
       },
       {
         "flag": "hub_2015_cards",
@@ -3714,7 +3721,8 @@
         "goldMod": 20,
         "flagsToAdd": [
           "inspector_dead"
-        ]
+        ],
+        "unlockQuestId": "q_ch2_leave_saltmouth"
       }
     ]
   },
@@ -3765,7 +3773,7 @@
     "persona_variants": {
       "profession:rogue": {
         "en": "\"One of mine,\" Vane said, \"or near enough to know the tunnel's worth more than the key.\"",
-        "fr": "« Un des miens, dit Vane, ou d'assez près pour savoir que le tunnel vaut plus que la clé. »"
+        "fr": "« Un des miens, dit Vane, ou d'assez près pour savoir que le tunnel vaut plus que la clé. »"
       },
       "race:voidkin": {
         "en": "Vane's eyes went, once, to the thread the tear had left in me. He did not ask. Men like Vane price what they do not understand higher, not lower.",
@@ -3827,7 +3835,8 @@
         "healAmount": -10,
         "flagsToAdd": [
           "bilge_swum"
-        ]
+        ],
+        "unlockQuestId": "q_ch2_leave_saltmouth"
       }
     ]
   },
@@ -3961,7 +3970,7 @@
       {
         "flag": "tern_row_spared",
         "en": "Word of Tern Row had gone up the wharf ahead of me: a Tide-Kin boy ran alongside for the length of a street and pressed a paper lantern into my hand before peeling off, and I carried it, absurdly, all the way to the Eel's slip, and hung it from her stern.",
-        "fr": "La nouvelle de Tern Row avait remonté le quai avant moi : un gamin des Enfants-de-Marée courut à mes côtés le temps d'une rue et me fourra une lanterne de papier dans la main avant de disparaître, et je la portai, absurdement, jusqu’à la cale de l’Eel, et la suspendis à sa poupe."
+        "fr": "La nouvelle de Tern Row avait remonté le quai avant moi : un gamin des Enfants-de-Marée courut à mes côtés le temps d'une rue et me fourra une lanterne de papier dans la main avant de disparaître, et je la portai, absurdement, jusqu’à la cale de l’Eel, et la suspendis à sa poupe."
       },
       {
         "flag": "void_marked",
@@ -3985,7 +3994,7 @@
       {
         "flag": "hull_patched",
         "en": "Her hull was sound now, honest pitch-and-timber work from Fisherman's Row; the sail was still in rags, and Tanner's Court had canvas, if anyone was left to sell it.",
-        "fr": "Sa coque était saine désormais, un honnête travail de poix et de bois de l'Allée des Pêcheurs ; la voile était encore en lambeaux, et la Cour des Tanneurs avait de la toile, s'il restait quelqu'un pour la vendre.",
+        "fr": "Sa coque était saine désormais, un honnête travail de poix et de bois de l'Allée des Pêcheurs ; la voile était encore en lambeaux, et la Cour des Tanneurs avait de la toile, s'il restait quelqu'un pour la vendre.",
         "unlessFlags": [
           "sail_mended"
         ]
@@ -3993,7 +4002,7 @@
       {
         "flag": "sail_mended",
         "en": "Her sail was whole again, Tanner's Court canvas in a shade that did not match; the hull still drank at the pike-hole, and Fisherman's Row had pitch and timber, if anyone was left to sell it.",
-        "fr": "Sa voile était de nouveau entière, de la toile de la Cour des Tanneurs d'une teinte qui ne s'accordait pas ; la coque buvait encore au trou de pique, et l'Allée des Pêcheurs avait de la poix et du bois, s'il restait quelqu'un pour les vendre.",
+        "fr": "Sa voile était de nouveau entière, de la toile de la Cour des Tanneurs d'une teinte qui ne s'accordait pas ; la coque buvait encore au trou de pique, et l'Allée des Pêcheurs avait de la poix et du bois, s'il restait quelqu'un pour les vendre.",
         "unlessFlags": [
           "hull_patched"
         ]
@@ -4001,7 +4010,7 @@
       {
         "flag": "hull_patched",
         "en": "Hull sound, sail patched: she would float. All that was left was the deciding.",
-        "fr": "Coque saine, voile rapiécée : il flotterait. Il ne restait plus que la décision.",
+        "fr": "Coque saine, voile rapiécée : il flotterait. Il ne restait plus que la décision.",
         "andFlags": [
           "sail_mended"
         ]
@@ -4066,8 +4075,8 @@
   },
   "2900_boat_fixed": {
     "id": "2900_boat_fixed",
-    "description": "The Rusty Eel sat lower in the water than she had sat on the slip, but evenly now, her hull sound and her sail patched in a shade of canvas that didn't quite match the rest. Honest work, done by hands that hadn't asked for thanks and hadn't gotten any from me either, until now. She would carry twenty. The wharf held a hundred: Tern Row's families with their paper lanterns, the harbor's last dockhands, a cleric with three orphans and no boat, all of them watching the Eel the way the drowning watch a plank. The Inquisition's drums were already at the landward gate. Whatever I decided, I would be deciding it for people who would not get another chance to be decided for.",
-    "description_fr": "Le Rusty Eel s’enfonçait dans l’eau plus bas qu’il ne reposait sur sa cale, mais d’aplomb désormais, la coque saine et la voile rapiécée d'une toile dont la teinte ne s'accordait pas tout à fait au reste. Un travail honnête, fait par des mains qui n'avaient pas demandé de merci et n'en avaient pas reçu de moi non plus, jusqu'à maintenant. Il en porterait vingt. Le quai en comptait cent : les familles de Tern Row avec leurs lanternes de papier, les derniers dockers du port, une clerc avec trois orphelins et pas de bateau, tous regardant l'Eel comme les noyés regardent une planche. Les tambours de l’Inquisition étaient déjà à la porte de la terre. Quoi que je décide, je le déciderais pour des gens qui n'auraient pas d'autre occasion qu'on décide pour eux.",
+    "description": "The Rusty Eel sat lower in the water than she had sat on the slip, but evenly now, her hull sound and her sail patched in a shade of canvas that didn't quite match the rest. Honest work, done by hands that hadn't asked for thanks and hadn't gotten any from me either, until now. She would carry twenty in comfort, and a hundred only if the stores went over the side and a skiff was towed astern for the rest. The wharf held a hundred: Tern Row's families with their paper lanterns, the harbor's last dockhands, a cleric with three orphans and no boat, all of them watching the Eel the way the drowning watch a plank. The Inquisition's drums were already at the landward gate. Whatever I decided, I would be deciding it for people who would not get another chance to be decided for.",
+    "description_fr": "Le Rusty Eel s’enfonçait dans l’eau plus bas qu’il ne reposait sur sa cale, mais d’aplomb désormais, la coque saine et la voile rapiécée d'une toile dont la teinte ne s'accordait pas tout à fait au reste. Un travail honnête, fait par des mains qui n'avaient pas demandé de merci et n'en avaient pas reçu de moi non plus, jusqu'à maintenant. Il en porterait vingt à l’aise, et cent seulement si les réserves passaient par-dessus bord et qu’on remorquait une yole à l’arrière pour le reste. Le quai en comptait cent : les familles de Tern Row avec leurs lanternes de papier, les derniers dockers du port, une clerc avec trois orphelins et pas de bateau, tous regardant l'Eel comme les noyés regardent une planche. Les tambours de l’Inquisition étaient déjà à la porte de la terre. Quoi que je décide, je le déciderais pour des gens qui n'auraient pas d'autre occasion qu'on décide pour eux.",
     "context_taxonomy": {
       "ui_theme": "gate",
       "mood": "reflective",
@@ -4119,7 +4128,7 @@
       {
         "flag": "lysa_survived",
         "en": "Lysa came; that was never a question. She was already aboard, counting the children on the wharf against the space between the thwarts, and she did not look at me while she counted.",
-        "fr": "Lysa venait ; cela n'avait jamais été une question. Elle était déjà à bord, comptant les enfants du quai contre l'espace entre les bancs, et elle ne me regarda pas pendant qu'elle comptait."
+        "fr": "Lysa venait ; cela n'avait jamais été une question. Elle était déjà à bord, comptant les enfants du quai contre l'espace entre les bancs, et elle ne me regarda pas pendant qu'elle comptait."
       }
     ],
     "noDetour": true
@@ -6040,8 +6049,8 @@
     "location": "saltmouth_wharf",
     "choices": [
       {
-        "text": "Go find Vane",
-        "text_fr": "Aller trouver Vane",
+        "text": "Go after the warden he named",
+        "text_fr": "Aller trouver le gardien qu’il a nommé",
         "next_id": "2015_informant_trap"
       },
       {
@@ -15643,7 +15652,7 @@
       {
         "flag": "liora_refused",
         "en": "She was still on her roof. \"Back again,\" she said, not quite a question.",
-        "fr": "Elle était toujours sur son toit. « Encore vous », dit-elle, sans que ce soit tout à fait une question."
+        "fr": "Elle était toujours sur son toit. « Encore vous », dit-elle, sans que ce soit tout à fait une question."
       }
     ]
   },
@@ -15681,7 +15690,7 @@
       {
         "flag": "hub_2015_smuggler",
         "en": "\"You already put one of his captains in the water,\" she added. \"He keeps another on the raiding skiff. That one is the one who matters.\"",
-        "fr": "« Vous avez déjà envoyé un de ses capitaines par le fond, ajouta-t-elle. Il en garde un autre sur le skiff de pillage. C'est celui-là qui compte. »"
+        "fr": "« Vous avez déjà envoyé un de ses capitaines par le fond, ajouta-t-elle. Il en garde un autre sur le skiff de pillage. C'est celui-là qui compte. »"
       }
     ]
   },
@@ -15748,7 +15757,7 @@
       {
         "flag": "void_marked",
         "en": "\"And the Tear has had its hand on you already,\" she added, very quietly. \"I can see where.\"",
-        "fr": "« Et la Déchirure a déjà posé la main sur vous, ajouta-t-elle très bas. Je vois où. »"
+        "fr": "« Et la Déchirure a déjà posé la main sur vous, ajouta-t-elle très bas. Je vois où. »"
       },
       {
         "flag": "tear_touched",
@@ -15756,7 +15765,7 @@
           "void_marked"
         ],
         "en": "\"You were at the Tear, too,\" she added. \"It remembers that as well.\"",
-        "fr": "« Vous étiez aussi à la Déchirure, ajouta-t-elle. Elle s'en souvient également. »"
+        "fr": "« Vous étiez aussi à la Déchirure, ajouta-t-elle. Elle s'en souvient également. »"
       }
     ]
   },

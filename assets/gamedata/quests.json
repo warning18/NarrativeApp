@@ -90,6 +90,77 @@
     "questName_fr": "L’Héritage de la famille",
     "npcDialogueText_fr": "Quoi que votre mère ait caché sous la maison, l’Inquisition met la rue en pièces pour le trouver. Arrivez-y avant elle, trouvez Lysa, et quittez Alster avec ce que vous aurez trouvé."
   },
+  "q_ch2_leave_saltmouth": {
+    "questID": "q_ch2_leave_saltmouth",
+    "questName": "A Hull to Leave In",
+    "chapter": 2,
+    "category": "Main",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Get the Rusty Eel: buy her, or work off her price in the yard",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "eel_owned",
+        "description_fr": "Obtenir le Rusty Eel : l’acheter, ou en payer le prix au chantier",
+        "targetNPCName_fr": ""
+      },
+      {
+        "description": "Patch her hull at Fisherman's Row",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "hull_patched",
+        "description_fr": "Rapiécer sa coque à l’Allée des Pêcheurs",
+        "targetNPCName_fr": ""
+      },
+      {
+        "description": "Mend her sail at Tanner's Court",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "sail_mended",
+        "description_fr": "Réparer sa voile à la Cour des Tanneurs",
+        "targetNPCName_fr": ""
+      }
+    ],
+    "rewardGold": 80,
+    "rewardXP": 120,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "Nobody leaves Saltmouth by the landward road with the Inquisition at the gate. The yards will sell a stranger one hull, the Rusty Eel, and she needs her hull patched and her sail mended before she will float. Get her, fix her, and cast off.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Find a way out",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_leave_saltmouth_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Chercher une sortie"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "grantsBannerPieceId": "",
+    "questName_fr": "Une coque pour partir",
+    "npcDialogueText_fr": "Personne ne quitte Saltmouth par la route de terre avec l’Inquisition à la porte. Les chantiers vendront à un étranger une seule coque, le Rusty Eel, et il lui faut une coque rapiécée et une voile réparée avant qu’il flotte. Obtenez-le, réparez-le, et larguez les amarres."
+  },
   "q_ch2_dockside_debts": {
     "questID": "q_ch2_dockside_debts",
     "questName": "Dockside Debts",
@@ -182,7 +253,7 @@
     "questID": "q_ch2_burning_manifest",
     "questName": "The Burning Manifest",
     "chapter": 2,
-    "category": "Main",
+    "category": "Side",
     "difficulty": "4",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -226,7 +297,7 @@
     "questID": "q_ch2_captains_gambit",
     "questName": "The Captain's Gambit",
     "chapter": 2,
-    "category": "Main",
+    "category": "Side",
     "difficulty": "5",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -270,7 +341,7 @@
     "questID": "q_ch2_harbor_reckoning",
     "questName": "Harbor Reckoning",
     "chapter": 2,
-    "category": "Main",
+    "category": "Side",
     "difficulty": "5",
     "requiredAlignment": "Neutral",
     "objectives": [
