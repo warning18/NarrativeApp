@@ -62,6 +62,15 @@ class ShipBattleOutcome {
   final int enemyHull;
 }
 
+/// How big the ships are drawn at [range], against the closest: the sea is
+/// seen from the masthead, so the farther apart they lie the smaller each
+/// looks.
+double seaZoomFor(ShipRange range) => switch (range) {
+      ShipRange.close => 1.0,
+      ShipRange.medium => 0.82,
+      ShipRange.long => 0.64,
+    };
+
 /// The room-by-room ship battle (see ship_battle.dart and
 /// ship_combat.dart), seen from above (see sea_battlefield.dart): two
 /// ships broadside to broadside on the waters of the voyage, four rooms
@@ -2092,13 +2101,15 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       const label = 14.0;
       const top = 40.0;
       const bottom = 50.0;
-      // The ships fit the sea's height as well as its width: a quarter of
-      // the open water is always left for the gap between them, so the
-      // range reads on a phone.
+      // The ships fit the sea's height as well as its width, with the
+      // closest range at full size and nearly no water between them; at
+      // each longer range they are drawn smaller (see [seaZoomFor]) and the
+      // water between them opens, so being close or far reads at a glance.
       final byHeight = max(0.0, height - top - bottom - 2 * label) *
-          0.75 /
+          0.9 /
           (topShipBoxHeight(1, enemyLook) + topShipBoxHeight(1, eelLook));
-      final length = min(min(width * 0.64, 260.0), byHeight);
+      final full = min(min(width * 0.72, 290.0), byHeight);
+      final length = full * seaZoomFor(_battle.range);
       final left = (width - length) / 2;
       final enemyBox = topShipBoxHeight(length, enemyLook);
       final eelBox = topShipBoxHeight(length, eelLook);
@@ -2108,7 +2119,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       // rest is split above and below.
       final gap = spare *
           switch (_battle.range) {
-            ShipRange.close => 0.04,
+            ShipRange.close => 0.03,
             ShipRange.medium => 0.5,
             ShipRange.long => 1.0,
           };
