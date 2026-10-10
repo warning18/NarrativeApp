@@ -50,6 +50,7 @@ import '../widgets/city_plan_painter.dart';
 import '../widgets/journey_place.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/camp_travel.dart' show CampReturnButton, TravelOnList;
+import '../widgets/pixel_sprite.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/timed_choice_bar.dart';
 import 'journal_screen.dart';
@@ -846,7 +847,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // The sky over the party (v1.204): what falls on the map, and the
     // ground's climate the town is laid out for.
     final skyHere = ref.watch(skyHereProvider);
-    final sky = skyHere?.now();
+    final sky = skyHere?.today();
     // A choice behind a politics gate that fails (v1.196) is hidden, or
     // shut with its locked text.
     final gateWorld = ref.watch(coastGateWorldProvider);
@@ -996,7 +997,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     var hereSpot = '';
     if (hereBuilding != null && !_outside) {
       room = RoomPlan.of(
-          seed: _stableSeed(hereBuilding.id), kind: hereBuilding.kind);
+          seed: _stableSeed(hereBuilding.id),
+          kind: RoomKind.resolve(hereBuilding.kind, hereBuilding.name));
       hereSpot = room.has(node.spot ?? '') ? node.spot! : 'floor';
       districtOfStep.clear();
       for (var i = 0; i < choices.length; i++) {
@@ -1264,9 +1266,6 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               PlayerStatsBar(trailing: tools),
-              // The followed quest and the goal it waits on (v1.201: here,
-              // now the Story tab is gone from the game).
-              if (!_reading) const QuestTrackerBar(),
               const SizedBox(height: 8),
               Expanded(
                 child: LayoutBuilder(builder: (context, area) {
@@ -1304,6 +1303,11 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                         : const SizedBox(
                                             height: GeoBreadcrumb.height),
                                   ),
+                                  // The followed quest and the goal it waits
+                                  // on (v1.201), a small button here since
+                                  // v1.213: the map keeps the room.
+                                  if (!_reading)
+                                    const QuestTrackerBar(compact: true),
                                   TutorialTarget(
                                     id: 'journey.scene',
                                     child: TextButton.icon(
@@ -1375,24 +1379,36 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                         const SizedBox(height: 10),
                         TutorialTarget(
                           id: 'journey.pick',
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                                maxHeight:
-                                    math.max(104, area.maxHeight * 0.26)),
-                            child: _level == JourneyMapLevel.place
-                                ? _StepDetail(
-                                    step: selected,
-                                    busy: _busy,
-                                    french: french,
-                                    isExcursion: play.isInExcursion,
-                                    onGo: selected == null
-                                        ? null
-                                        : () => _take(_selected!, selected),
-                                  )
-                                : _LookedAtPanel(
-                                    landmark: _lookedAt,
-                                    language: language,
-                                  ),
+                          // A fixed height (v1.210): a way picked, or a
+                          // place looked at, fills the panel without
+                          // changing the map's height, so no mark moves.
+                          child: SizedBox(
+                            height: math.min(
+                                124.0, math.max(104.0, area.maxHeight * 0.26)),
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                    maxHeight: math.min(
+                                        124.0,
+                                        math.max(
+                                            104.0, area.maxHeight * 0.26))),
+                                child: _level == JourneyMapLevel.place
+                                    ? _StepDetail(
+                                        step: selected,
+                                        busy: _busy,
+                                        french: french,
+                                        isExcursion: play.isInExcursion,
+                                        onGo: selected == null
+                                            ? null
+                                            : () => _take(_selected!, selected),
+                                      )
+                                    : _LookedAtPanel(
+                                        landmark: _lookedAt,
+                                        language: language,
+                                      ),
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -2888,7 +2904,27 @@ class _JourneyChartState extends State<_JourneyChart>
     final fade = ((4.2 - now) / 0.6).clamp(0.0, 1.0);
     final s = Curves.easeOutBack.transform(appear);
     final spread = ((now - 0.95) / 1.1).clamp(0.0, 1.0);
+    // The seal that stamps it, in pixel art (v1.216): it comes down, the
+    // ink flies and it dissolves, under the name that follows.
+    PixelStrips.preload(const ['moment_seal']);
     return [
+      if (now >= 0.9 && now < 3.2)
+        Positioned(
+          left: 0,
+          width: width,
+          top: here.dy + _hereRadius + 10 + 13 - 48,
+          height: 96,
+          child: IgnorePointer(
+            child: CustomPaint(
+              key: const ValueKey('journey_stamp_seal'),
+              painter: PixelStripPainter(
+                names: const ['moment_seal'],
+                progress: ((now - 0.9) / 2.3).clamp(0.0, 0.999),
+                scale: 2,
+              ),
+            ),
+          ),
+        ),
       if (spread > 0 && spread < 1)
         Positioned(
           left: here.dx - 90,

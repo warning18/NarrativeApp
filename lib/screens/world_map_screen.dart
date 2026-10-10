@@ -184,18 +184,6 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
 
   double get _scale => _view.value.storage[0];
 
-  /// The part of the chart in the box, in chart units: what the weather
-  /// is painted over.
-  Rect _visibleChart() {
-    const whole =
-        Rect.fromLTWH(0, 0, worldMapWidth * 1.0, worldMapHeight * 1.0);
-    final inverse = Matrix4.tryInvert(_view.value);
-    if (inverse == null) return whole;
-    final r = MatrixUtils.transformRect(inverse, Offset.zero & _mapSize);
-    final k = _mapSize.width / worldMapWidth;
-    return Rect.fromLTRB(r.left / k, r.top / k, r.right / k, r.bottom / k);
-  }
-
   /// The view [scale]× over the map, centred as near [focus] (a point on
   /// the map's drawing area) as its edges allow.
   Matrix4 _viewAt(Offset focus, double scale) {
@@ -439,9 +427,6 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
                             geography: _geo,
                             palette: palette,
                             day: session.day,
-                            zoomOf: () => _scale,
-                            visibleOf: _visibleChart,
-                            still: _reduceMotion,
                           ),
                       ]),
                     ),

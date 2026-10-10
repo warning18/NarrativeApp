@@ -21,13 +21,12 @@ class SkyHere {
   final Offset at;
   final int day;
 
-  /// The weather this moment.
-  WeatherSample now() => climate.weather(at, ChartClimate.timeOf(day));
-
-  /// The day's weather, the same all day: what the play reads (fights,
-  /// the road), so a fight or a road is the same whenever it is looked
-  /// at that day (v1.208, see weather_effects.dart).
-  WeatherSample today() => climate.weather(at, day + 0.5);
+  /// The day's weather, the same all day: what the map shows and what the
+  /// play reads (fights, the road), so a fight or a road is the same
+  /// whenever it is looked at that day (v1.208, see weather_effects.dart).
+  /// Time stands still between turns (v1.210): there is no 'now' that
+  /// moves.
+  WeatherSample today() => climate.weather(at, ChartClimate.timeOf(day));
 
   /// The ground's climate today.
   ClimateSample get ground => climate.sample(at, day: day);

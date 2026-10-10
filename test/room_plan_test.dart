@@ -178,4 +178,79 @@ void main() {
       expect(worldMapLandmarks.any((l) => l.id == 'beggar'), isTrue);
     });
   });
+
+  group('Kinds and variants by name (v1.210)', () {
+    test('a name says what the building is, in English or French', () {
+      expect(RoomKind.resolve('house', 'The Gilded Casino'), 'casino');
+      expect(RoomKind.resolve('hall', 'North Barracks'), 'barracks');
+      expect(RoomKind.resolve('', 'Caserne du Port'), 'barracks');
+      expect(RoomKind.resolve('hall', "Saint Orla's Chapel"), 'temple');
+      expect(RoomKind.resolve('house', 'Église Saint-Orla'), 'temple');
+      expect(RoomKind.resolve('hall', 'The Old Gaol'), 'prison');
+      expect(RoomKind.resolve('house', 'Ashby Smithy'), 'forge');
+      expect(RoomKind.resolve('house', 'The Grey Inn'), 'inn');
+      // The kind stands when the name says nothing, and a word inside
+      // another word says nothing.
+      expect(RoomKind.resolve('den', 'The Blind Beggar'), 'den');
+      expect(RoomKind.resolve('house', 'Linnet House'), 'house');
+      expect(RoomKind.resolve('house', 'Gatekeeper Row'), 'house');
+    });
+
+    test('each new kind is laid with its own spots and its own look', () {
+      final spots = {
+        'casino': ['wheel', 'tables', 'cashier', 'vip', 'vault', 'back'],
+        'barracks': ['bunks', 'mess', 'armoury', 'officers', 'guard', 'back'],
+        'library': ['stacks', 'reading', 'archive', 'scriptorium', 'counter'],
+        'prison': ['cells', 'cell1', 'cell10', 'guard', 'back'],
+        'forge': ['anvil', 'forge', 'trough', 'store', 'back'],
+        'theatre': ['stage', 'pit', 'seats', 'dressing', 'props', 'back'],
+        'baths': ['pool', 'hot', 'cold', 'changing', 'back'],
+      };
+      for (final entry in spots.entries) {
+        final plan = RoomPlan.of(seed: 4, kind: entry.key);
+        expect(plan.kind, RoomKind.of(entry.key), reason: entry.key);
+        expect(plan.kind, isNot(RoomKind.plain), reason: entry.key);
+        for (final spot in entry.value) {
+          expect(plan.has(spot), isTrue, reason: '${entry.key} $spot');
+        }
+        // No spot falls on a piece of furniture (but the stage, which the
+        // party stands on).
+        for (final spot in entry.value) {
+          final at = plan.anchorOf(spot);
+          expect(
+              plan.furniture.any(
+                  (f) => f.kind != FurnitureKind.stage && f.rect.contains(at)),
+              isFalse,
+              reason: '${entry.key} $spot');
+        }
+      }
+      // A way out from the cells leaves by the back gate, from the
+      // guardroom by the front door.
+      final prison = RoomPlan.of(seed: 4, kind: 'prison');
+      expect(prison.exitFrom('cell3'), 'back');
+      expect(prison.exitFrom('guard'), 'door');
+    });
+
+    test('a seed picks a temple and an inn their shape', () {
+      final nave = RoomPlan.of(seed: 9, kind: 'temple');
+      final cross = RoomPlan.of(seed: 7, kind: 'temple');
+      final round = RoomPlan.of(seed: 5, kind: 'temple');
+      expect(nave.outline.length, 4);
+      expect(cross.outline.length, 12);
+      expect(round.outline.length, greaterThan(20));
+      for (final plan in [nave, cross, round]) {
+        expect(plan.has('altar'), isTrue);
+        expect(plan.has('door'), isTrue);
+      }
+      final street = RoomPlan.of(seed: 9, kind: 'inn');
+      final yard = RoomPlan.of(seed: 7, kind: 'inn');
+      expect(street.outline.length, 4);
+      expect(yard.outline.length, 8);
+      for (final plan in [street, yard]) {
+        for (final spot in ['bar', 'hearth', 'kitchen', 'rooms', 'stairs']) {
+          expect(plan.has(spot), isTrue, reason: spot);
+        }
+      }
+    });
+  });
 }

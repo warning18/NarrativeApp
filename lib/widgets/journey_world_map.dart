@@ -359,20 +359,6 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   /// A pinch that ends at the closest zoom on the party's place.
   double _pinchFrom = 1;
 
-  /// The part of the flat chart in the box, in chart units: what the
-  /// weather is painted over.
-  Rect _visibleChart(Size box) {
-    const whole =
-        Rect.fromLTWH(0, 0, worldMapWidth * 1.0, worldMapHeight * 1.0);
-    final inverse = Matrix4.tryInvert(_view.value);
-    if (inverse == null) return whole;
-    final r = MatrixUtils.transformRect(inverse, Offset.zero & box);
-    final dy = (_childHeight - _size.height) / 2;
-    final k = _size.width / worldMapWidth;
-    return Rect.fromLTRB(
-        r.left / k, (r.top - dy) / k, r.right / k, (r.bottom - dy) / k);
-  }
-
   @override
   Widget build(BuildContext context) {
     final language = ref.watch(appLanguageProvider);
@@ -460,11 +446,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                   palette: widget.palette,
                   day: day,
                   globe: globeView,
-                  zoomOf: () => globeView?.zoom ?? 1,
                   showOf: () =>
                       !weatherWorldOnly ||
                       (globeView?.zoom ?? 1) < JourneyWorldMapZoom.land,
-                  still: reduceMotion,
                 ),
             ],
           ),
@@ -505,12 +489,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                         geography: geo,
                         palette: widget.palette,
                         day: day,
-                        zoomOf: () => _scale,
-                        visibleOf: () => _visibleChart(boxSize),
                         showOf: () =>
                             !weatherWorldOnly ||
                             _scale < JourneyWorldMapZoom.land,
-                        still: reduceMotion,
                       ),
                   ],
                 ),

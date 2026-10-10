@@ -10,8 +10,10 @@
 // same picture at t = 0.
 
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
@@ -924,6 +926,59 @@ class SeaWeatherPainter extends CustomPainter {
       old.enemyBand != enemyBand;
 }
 
+/// The great beasts of the sea, seen from above, as the Grey Shroud design
+/// draws them (v1.213, 'Sea beasts to hunt'): which body a [TopShipLook]
+/// is, and its sprite (head to the right, mirrored for the enemy like any
+/// ship).
+enum TopBeast {
+  /// The Drowned Wyrm: a sea dragon, coils sunk under the swell, fin-wings
+  /// and a fanged head.
+  wyrm('assets/visuals/sea_beasts/drowned_wyrm.png'),
+
+  /// The Deep Leviathan: a vast scaled back, barnacled, old harpoons in
+  /// it, one pale eye.
+  leviathan('assets/visuals/sea_beasts/deep_leviathan.png'),
+
+  /// The Mother of Wrecks: a kraken among the timbers of the ships it took,
+  /// its arms rising.
+  kraken('assets/visuals/sea_beasts/mother_of_wrecks.png');
+
+  const TopBeast(this.asset);
+  final String asset;
+}
+
+/// The beasts' sprites, loaded once and kept (the painter reads them as
+/// they come in, [loaded] telling it to paint again).
+class SeaBeastSprites {
+  SeaBeastSprites._();
+
+  static final Map<TopBeast, ui.Image> _images = {};
+  static final Set<TopBeast> _asked = {};
+
+  /// Counts the sprites in, for a painter to repaint on.
+  static final ValueNotifier<int> loaded = ValueNotifier(0);
+
+  /// [beast]'s sprite, or null while it loads.
+  static ui.Image? of(TopBeast beast) {
+    final image = _images[beast];
+    if (image == null && _asked.add(beast)) _load(beast);
+    return image;
+  }
+
+  static Future<void> _load(TopBeast beast) async {
+    try {
+      final data = await rootBundle.load(beast.asset);
+      final codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
+      final frame = await codec.getNextFrame();
+      _images[beast] = frame.image;
+      loaded.value++;
+    } catch (_) {
+      // No sprite: the beast stays a shadow on the water.
+      _asked.remove(beast);
+    }
+  }
+}
+
 /// How a ship looks from above.
 class TopShipLook {
   const TopShipLook({
@@ -937,6 +992,7 @@ class TopShipLook {
     this.masts = 1,
     this.sails = true,
     this.glow,
+    this.beast,
   });
 
   final String id;
@@ -955,6 +1011,11 @@ class TopShipLook {
 
   /// A light it gives off, if any.
   final Color? glow;
+
+  /// The body drawn instead of a hull, for a sea beast (see
+  /// sea_beasts.dart): [hull] is its back, [deck] its flank, [trim] its
+  /// marks.
+  final TopBeast? beast;
 
   static const rustyEel = TopShipLook(
       id: 'rusty_eel',
@@ -1001,11 +1062,48 @@ class TopShipLook {
       sails: false,
       glow: Color(0xFF9A6BFF));
 
+  // The beasts (see sea_beasts.dart; ids are enemy_ships.json keys): the
+  // designs' bodies are sprites, so only the size and the room tints
+  // matter here.
+  static const brinejaw = TopShipLook(
+      id: 'brinejaw',
+      length: 1,
+      beam: 0.3,
+      hull: Color(0xFF1E2B26),
+      deck: Color(0xFF2A4238),
+      sail: Color(0xFFC9C2A8),
+      trim: Color(0xFFC9C2A8),
+      sails: false,
+      beast: TopBeast.wyrm);
+  static const paleLeviathan = TopShipLook(
+      id: 'pale_leviathan',
+      length: 1,
+      beam: 0.3,
+      hull: Color(0xFF2C3A44),
+      deck: Color(0xFF4A5A66),
+      sail: Color(0xFFB7B09A),
+      trim: Color(0xFFB7B09A),
+      sails: false,
+      beast: TopBeast.leviathan);
+  static const tideKraken = TopShipLook(
+      id: 'tide_kraken',
+      length: 1,
+      beam: 0.3,
+      hull: Color(0xFF4A2A36),
+      deck: Color(0xFF6A3A4A),
+      sail: Color(0xFFD9B0B8),
+      trim: Color(0xFFD9B0B8),
+      sails: false,
+      beast: TopBeast.kraken);
+
   static const enemies = [
     raiderSkiff,
     corsairBrig,
     inquisitionCutter,
-    voidBarge
+    voidBarge,
+    brinejaw,
+    paleLeviathan,
+    tideKraken,
   ];
 
   /// The look of the enemy [id] (its enemy_ships.json key) or, for one
@@ -1033,6 +1131,15 @@ const Map<ShipRoom, (double, double)> _roomSpan = {
   ShipRoom.bulwark: (0.69, 0.90),
 };
 
+/// A beast's rooms along its body, tail to head: the fins, the hide on
+/// its back, the heart, the jaws at the head.
+const Map<ShipRoom, (double, double)> _beastSpan = {
+  ShipRoom.helm: (0.03, 0.25),
+  ShipRoom.bulwark: (0.26, 0.46),
+  ShipRoom.hold: (0.47, 0.68),
+  ShipRoom.guns: (0.69, 0.92),
+};
+
 /// The height of a ship's box for a ship [length] long: its beam and the
 /// space around it.
 double topShipBoxHeight(double length, TopShipLook look) =>
@@ -1050,7 +1157,7 @@ Rect topShipHullBand(Size box, TopShipLook look) {
 Rect topShipRoomRect(ShipRoom room, Size box, TopShipLook look,
     {required bool flip}) {
   final band = topShipHullBand(box, look);
-  final (a, b) = _roomSpan[room]!;
+  final (a, b) = (look.beast == null ? _roomSpan : _beastSpan)[room]!;
   final left = flip ? 1 - b : a;
   final inset = room == ShipRoom.bulwark ? band.height * 0.08 : 0.0;
   return Rect.fromLTRB(box.width * left, band.top + inset,
@@ -1063,7 +1170,7 @@ Rect topShipRoomRect(ShipRoom room, Size box, TopShipLook look,
 /// broadside faces down the screen). A ship below half its hull is
 /// battered: holes in the deck, the sails torn.
 class TopShipPainter extends CustomPainter {
-  const TopShipPainter({
+  TopShipPainter({
     required this.look,
     required this.flip,
     required this.facingDown,
@@ -1079,7 +1186,7 @@ class TopShipPainter extends CustomPainter {
     required this.roomColors,
     this.refit = 0,
     this.speed = 1,
-  });
+  }) : super(repaint: SeaBeastSprites.loaded);
 
   final TopShipLook look;
   final bool flip;
@@ -1122,6 +1229,12 @@ class TopShipPainter extends CustomPainter {
     // end, so it has no say in this.
     final side = facingDown ? 1.0 : -1.0;
 
+    if (look.beast != null) {
+      _beast(canvas, size, band, x0, len, cy);
+      canvas.restore();
+      _shields(canvas, size, band, side);
+      return;
+    }
     _wake(canvas, x0, cy, beam);
     if (look.glow != null) {
       canvas.drawOval(
@@ -1219,6 +1332,63 @@ class TopShipPainter extends CustomPainter {
     // The shields: arcs off the broadside toward the enemy (drawn after
     // the flip is undone, the side is the same either way).
     _shields(canvas, size, band, side);
+  }
+
+  /// A sea beast from above: its sprite fitted in the box, head to the
+  /// right (the canvas is mirrored for the enemy), dark where a room is
+  /// knocked out. Below half its hull
+  /// it shows wounds. While the sprite loads, a shadow on the water.
+  void _beast(
+      Canvas canvas, Size size, Rect band, double x0, double len, double cy) {
+    final image = SeaBeastSprites.of(look.beast!);
+    final room = Rect.fromCenter(
+        center: Offset(x0 + len / 2, cy), width: len, height: size.height);
+    if (image == null) {
+      canvas.drawOval(room.deflate(room.height * 0.2),
+          Paint()..color = Colors.black.withValues(alpha: 0.3));
+      return;
+    }
+    final fitted = applyBoxFit(BoxFit.contain,
+        Size(image.width.toDouble(), image.height.toDouble()), room.size);
+    final dst = Alignment.center.inscribe(fitted.destination, room);
+    canvas.saveLayer(dst, Paint());
+    canvas.drawImageRect(
+        image,
+        Offset.zero & Size(image.width.toDouble(), image.height.toDouble()),
+        dst,
+        Paint()..filterQuality = FilterQuality.medium);
+    // A room knocked out darkens its part of the body, one on fire
+    // glows, over the sprite's own pixels only.
+    final over = Paint()..blendMode = BlendMode.srcATop;
+    for (final r in ShipRoom.values) {
+      final zone = _roomOnDeck(r, size, band);
+      if (down.contains(r)) {
+        canvas.drawRect(
+            zone, over..color = Colors.black.withValues(alpha: 0.5));
+      }
+      if (burning.contains(r)) {
+        canvas.drawRect(
+            zone,
+            over
+              ..color = const Color(0xFFFF7A2E)
+                  .withValues(alpha: 0.18 + 0.1 * math.sin(t * 9 + r.index)));
+      }
+    }
+    canvas.restore();
+    if (battered) {
+      // Gashes across its back.
+      final gash = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 2.4
+        ..color = const Color(0xFFB0372C).withValues(alpha: 0.85);
+      for (final (fx, fy) in [(0.36, 0.14), (0.58, -0.2), (0.72, 0.08)]) {
+        final a = Offset(x0 + len * fx, cy + band.height * fy);
+        canvas.drawLine(a, a + const Offset(9, 15), gash);
+        canvas.drawLine(
+            a + const Offset(3, -4), a + const Offset(12, 10), gash);
+      }
+    }
   }
 
   Rect _roomOnDeck(ShipRoom room, Size size, Rect band) {

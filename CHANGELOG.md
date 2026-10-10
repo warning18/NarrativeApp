@@ -8,6 +8,35 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.217.0+252]
+
+### Fixed
+- The map no longer moves when a way is picked. The panel under the Journey map keeps one height whether or not a way or a place is chosen, so the map keeps its size and every mark stays where it was.
+- The sky holds still. The game plays turn by turn, so the clouds, fogs and rain no longer drift while the map is watched, and zooming or pinching shows the same clouds at every distance. The sky is the day's, and a new day brings a new one. The weather chip no longer changes on its own either.
+
+### Added
+- Each of the thirty-one dice wears a cube skin of its own, from the dice sheet: the stone it is cut from (bone, riveted iron, ember, sea glass, stormcast, Dwarven stone, black lacquer, ivory and gold, blood-iron, rune crystal, antler and oak, living wood, chalk, sky-glass, reliquary bronze, rust, casino ivory, ice, thunder iron, bone mosaic, candle wax, tear-glass, black iron and more), the colour of its edge, a mark cut into its faces and, for the glowing ones, a light round the cube. A die without a skin reads as bone.
+- A die kept through the reroll has a gold dashed ring and a lock round its cube.
+- Over the burst of a landed face go: a flourish for each rule word it carries (cleave flings arcs to either side, pierce drives a line through, growth lifts a +1, echo sends rings, pain cracks and drips, steady drops an anchor); a tint for its element (embers, droplets, wind arcs, pebbles, forks, ice shards, void arcs, light rays); a turning gold ring and crown for a momentum surge; chains for a curse; and a single shudder for a blank.
+- Pixel animations (`tool/gen_pixel_fx.py` draws them as sprite strips in `assets/visuals/pixel_fx/`; `PixelSprite` and `PixelStripPainter` play them, pixels kept square):
+  - A die's landing is now pixel art: eight bursts by kind of face, eight element tints, six rule-word marks, a surge ring and crown, curse chains and a white glint, each eight frames. The drawn burst remains until the strips are in.
+  - A place found is stamped on the Journey map by a pixel seal that comes down, flings its ink and dissolves, under the place's name.
+  - The camp has a pixel campfire that flickers in its header.
+  - A spoils chest bursts open in its tier's light, one burst each for wooden, iron, silver, gold and void; a tap anywhere on the chest now opens it.
+  - With reduced motion the seal and the chest's burst are skipped and the fire holds one frame.
+- The dice are cubes in the fight. A die tumbles through the air in perspective, with a hop and a shadow, and lands on the face it rolled, which stands front; the other five sides carry the die's other faces (a die of fewer than six faces repeats them), lit by a lamp above and to the left, the far sides hidden. It rests tipped toward you so its top and a side show. A die kept through a reroll stays put.
+- A skill face on a cube holds the skill's own icon, large, on a pale plaque ringed in what the skill does, so the pixel art reads on the dark stone; the cube is a little bigger on the tray.
+- A landed face lets go a burst fitted to what it does: sparks and a shock ring for an attack, a hexagonal ward for a guard, rising crosses for a heal, orbiting blue motes for mana, green bubbles for poison, amber bolts for a stun, a draining purple spiral for a weaken, grey dust for a blank. A skill face or a face worth 8 or more lands bigger, with a white glint.
+- With reduced motion the dice roll at once and no burst plays.
+- The sea beasts are drawn again, from above, in the dark-fantasy art of the Grey Shroud design ("Sea beasts to hunt"), no longer borrowing a ship's look. Old Brinejaw is the Drowned Wyrm, a sea dragon with sunken coils, fin-wings and a fanged head; the Pale Leviathan is the Deep Leviathan, a vast barnacled back with old harpoons in it and one pale eye; the Tide-Mother is the Mother of Wrecks, a kraken among the timbers of the ships it took. A room knocked out darkens its part of the body, and a beast below half its hull shows gashes. The designs' Ash Drake and Bone Tide are not in the game yet.
+- The Tide-Mother's arm has its own icon again for the fight on the dice.
+- Seven new kinds of building for the inside view, each with its own plan: casino (a wheel ringed with card tables, a cashier, private rooms, a vault), barracks (guardroom, bunks round a mess table, armoury, officers), library (stacks, reading tables, archive, scriptorium), prison (guardroom and two rows of barred cells), forge (forge, anvil, quench trough, store), theatre (foyer, benches, pit rail, stage, dressing and props rooms) and baths (changing hall, great pool, hot and cold rooms).
+- Variants by seed: a temple may be a nave and choir, a cross or a round shrine, and an inn may front the street or stand round a yard.
+- A building's name can say what it is: a name with "casino", "barracks", "caserne", "chapel", "gaol", "smithy" and the like (English or French) is laid as that kind, whatever kind the geography gives.
+
+### Changed
+- The quest on the Journey is a small round button beside Read, with its icon, a tick when the goal is met and a dot when it moves on, instead of a full bar above the map. Its name and goal are on its tooltip, and a tap opens the quest, where it can be turned in. The map gains the height the bar took.
+
 ## [1.216.0+251]
 
 ### Fixed

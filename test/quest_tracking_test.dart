@@ -209,10 +209,17 @@ void main() {
     await _settle(tester);
     await _closeDialogs(tester);
 
+    // On the Journey the quest is a small button (v1.213): its sheet
+    // names the quest and shows the progress.
     final tracker = find.byKey(const Key('quest_tracker'));
     expect(tracker, findsOneWidget);
+    expect(find.byKey(const Key('quest_tracker_ready')), findsNothing);
+    await tester.tap(tracker);
+    await _settle(tester);
     expect(find.text('The Ossuary Bounty'), findsOneWidget);
     expect(find.textContaining('(1/3)'), findsOneWidget);
+    await tester.tapAt(const Offset(10, 10));
+    await _settle(tester);
 
     // Two more ghouls: the goal is reached and can be turned in here.
     await tester.runAsync(() => container
@@ -221,13 +228,15 @@ void main() {
             .read(playerSessionProvider)
             .copyWith(enemyKillCounts: const {'catacomb_ghoul': 3})));
     await _settle(tester);
-    expect(find.text('Goal reached: turn it in'), findsOneWidget);
+    expect(find.byKey(const Key('quest_tracker_ready')), findsOneWidget);
     // It is announced once, then the notice goes by itself.
     expect(find.textContaining('Goal reached: The Ossuary Bounty'),
         findsOneWidget);
     await tester.pump(const Duration(seconds: 3));
     await _settle(tester);
-    await tester.tap(find.byKey(const Key('quest_tracker_turn_in')));
+    await tester.tap(tracker);
+    await _settle(tester);
+    await tester.tap(find.text('Turn in'));
     await _settle(tester);
     // The bounty asks how it's settled (v1.163): take the sapper's coins.
     expect(find.text('How do you settle it?'), findsOneWidget);
@@ -242,7 +251,8 @@ void main() {
     await tester.pump(const Duration(seconds: 3));
     await _settle(tester);
     // The other quest in progress now stands in.
-    expect(find.text('Dockside Debts'), findsOneWidget);
+    expect(followedQuestIdOf(container.read(playerSessionProvider)),
+        'q_ch2_dockside_debts');
     await tester.pump(const Duration(seconds: 5));
   });
 }

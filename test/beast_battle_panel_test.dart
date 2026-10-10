@@ -44,7 +44,7 @@ void main() {
               body: ShipBattlePanel(
                 key: ValueKey(finsTorn),
                 player: _ship(),
-                // A beast's size: it borrows the void barge's look.
+                // A beast has a body of its own, drawn from above.
                 enemy: _ship(hull: 200, maxHull: 240, finsTorn: finsTorn),
                 shipName: 'The Rusty Eel',
                 enemyName: 'The Pale Leviathan',
@@ -76,7 +76,8 @@ void main() {
 
     final sprite =
         tester.widget<CustomPaint>(find.byKey(const Key('ship_sprite_enemy')));
-    expect((sprite.painter! as TopShipPainter).look, TopShipLook.voidBarge);
+    expect((sprite.painter! as TopShipPainter).look, TopShipLook.paleLeviathan);
+    expect(TopShipLook.paleLeviathan.beast, TopBeast.leviathan);
     for (final title in ['FINS', 'HIDE', 'JAWS', 'HEART']) {
       expect(find.text(title), findsOneWidget, reason: title);
     }

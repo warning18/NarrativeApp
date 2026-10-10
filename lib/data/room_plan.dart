@@ -23,6 +23,13 @@ enum RoomKind {
   cellar,
   cave,
   tower,
+  casino,
+  barracks,
+  library,
+  prison,
+  forge,
+  theatre,
+  baths,
   plain;
 
   static RoomKind of(String kind) => switch (kind) {
@@ -38,8 +45,53 @@ enum RoomKind {
         'cellar' => cellar,
         'cave' => cave,
         'tower' => tower,
+        'casino' => casino,
+        'barracks' => barracks,
+        'library' => library,
+        'prison' => prison,
+        'forge' => forge,
+        'theatre' => theatre,
+        'baths' => baths,
         _ => plain,
       };
+
+  /// What a building's name says it is (v1.210): a 'Gilded Casino' is laid
+  /// as a casino, 'North Barracks' as barracks, 'Saint Orla's Chapel' as a
+  /// temple. The name decides when it holds one of these words (English or
+  /// French); otherwise the kind the geography gives stands.
+  static String resolve(String kind, String name) {
+    for (final (resolved, words) in _nameWords) {
+      if (RegExp('(?<![\\p{L}])($words)', caseSensitive: false, unicode: true)
+          .hasMatch(name)) {
+        return resolved;
+      }
+    }
+    return kind;
+  }
+
+  static const List<(String, String)> _nameWords = [
+    (
+      'casino',
+      'casino|gambling|gaming house|dice(?![\\p{L}])|cards(?![\\p{L}])'
+    ),
+    ('barracks', 'barrack|caserne|garrison|guardhouse|watchhouse'),
+    ('prison', 'prison|gaol|jail|dungeon|geôle|cachot|bridewell'),
+    (
+      'temple',
+      'temple|church|chapel|cathedral|shrine|abbey|sanctuary|monastery|chapelle|église|eglise|cathédrale|abbaye'
+    ),
+    ('library', 'library|archive|scriptorium|biblioth'),
+    ('forge', 'forge|smithy|smith(?![\\p{L}])|foundry|forgeron'),
+    ('theatre', 'theatre|theater|playhouse|opera|théâtre'),
+    ('baths', 'bathhouse|baths|thermae|hammam|bains'),
+    ('tavern', 'tavern|taproom|alehouse|taverne'),
+    ('inn', 'inn(?![\\p{L}])|hostel|lodge|auberge'),
+    ('tower', 'tower|tour(?![\\p{L}])|belfry'),
+    ('keep', 'keep(?![\\p{L}])|donjon|citadel'),
+    ('warehouse', 'warehouse|granary|entrepôt|entrepot'),
+    ('cellar', 'cellar|crypt|cave(?![\\p{L}])|cellier'),
+    ('shop', 'shop|market|boutique|apothecary|bakery|boulangerie'),
+  ];
 
   /// Rough ground, not a built floor.
   bool get rough => this == cave;
@@ -51,6 +103,10 @@ enum RoomKind {
       this == temple ||
       this == cellar ||
       this == tower ||
+      this == barracks ||
+      this == prison ||
+      this == forge ||
+      this == baths ||
       this == cave;
 }
 
@@ -91,6 +147,13 @@ enum FurnitureKind {
   railing,
   rock,
   counter,
+  wheel,
+  stage,
+  pool,
+  anvil,
+  rack,
+  desk,
+  bench,
 }
 
 class Furniture {
@@ -194,6 +257,33 @@ class RoomPlan implements PlacePlan {
   // ------------------------------------------------------------------ lay
 
   static RoomPlan _lay(int seed, RoomKind kind) {
+    // The kinds laid in their own functions (v1.210), and the variants a
+    // seed picks for a temple and an inn.
+    final variant = seed.abs() % 3;
+    switch (kind) {
+      case RoomKind.casino:
+        return _casino(seed);
+      case RoomKind.barracks:
+        return _barracks(seed);
+      case RoomKind.library:
+        return _library(seed);
+      case RoomKind.prison:
+        return _prison(seed);
+      case RoomKind.forge:
+        return _forge(seed);
+      case RoomKind.theatre:
+        return _theatre(seed);
+      case RoomKind.baths:
+        return _baths(seed);
+      case RoomKind.temple when variant == 1:
+        return _cruciform(seed);
+      case RoomKind.temple when variant == 2:
+        return _rotunda(seed);
+      case RoomKind.inn when variant == 1:
+        return _courtyardInn(seed);
+      default:
+        break;
+    }
     final rng = math.Random(seed);
     final rooms = <Room>[];
     final walls = <(Offset, Offset)>[];
@@ -567,7 +657,14 @@ class RoomPlan implements PlacePlan {
           ..['stairs'] = const Offset(600, 440)
           ..['top'] = const Offset(600, 440)
           ..['hearth'] = const Offset(330, 500);
-      case RoomKind.plain:
+      case RoomKind.plain ||
+            RoomKind.casino ||
+            RoomKind.barracks ||
+            RoomKind.library ||
+            RoomKind.prison ||
+            RoomKind.forge ||
+            RoomKind.theatre ||
+            RoomKind.baths:
         final box = const Rect.fromLTWH(250, 250, 500, 500);
         outline = _corners(box);
         rooms.add(Room('room', box));
@@ -589,6 +686,462 @@ class RoomPlan implements PlacePlan {
       anchors: anchors,
       outline: outline,
     );
+  }
+
+  // ------------------------------------------------- the other layouts
+
+  /// The gaming house of the rich: a wheel ringed with card tables on a
+  /// wide floor, the cashier, two private rooms and the vault behind.
+  static RoomPlan _casino(int seed) {
+    final b = _B();
+    const box = Rect.fromLTWH(140, 90, 720, 820);
+    b.room('floor', Rect.fromLTRB(box.left, 330, box.right, box.bottom));
+    b.room('cashier', Rect.fromLTRB(box.left, box.top, 340, 330));
+    b.room('vip1', Rect.fromLTRB(340, box.top, 520, 330));
+    b.room('vip2', Rect.fromLTRB(520, box.top, 700, 330));
+    b.room('vault', Rect.fromLTRB(700, box.top, box.right, 330));
+    b.hwall(
+        330, box.left, box.right, [(250, 60), (430, 60), (610, 60), (780, 50)]);
+    for (final x in [340.0, 520.0, 700.0]) {
+      b.vwall(x, box.top, 330);
+    }
+    b.door('door', Offset(box.center.dx, box.bottom), math.pi / 2, width: 70);
+    b.door('back', Offset(240, box.top), -math.pi / 2, width: 50);
+    b.door('cashier', const Offset(250, 330), -math.pi / 2, width: 60);
+    b.door('vip1', const Offset(430, 330), -math.pi / 2, width: 60);
+    b.door('vip2', const Offset(610, 330), -math.pi / 2, width: 60);
+    b.door('vault', const Offset(780, 330), -math.pi / 2, width: 50);
+    b.put(FurnitureKind.wheel, const Offset(500, 560), 150, 150);
+    for (var i = 0; i < 6; i++) {
+      final a = i * math.pi / 3;
+      b.table(Offset(500 + math.cos(a) * 270, 560 + math.sin(a) * 130), r: 40);
+    }
+    b.put(FurnitureKind.bar, const Offset(180, 780), 50, 160);
+    b.put(FurnitureKind.stair, Offset(box.right - 40, 780), 60, 110);
+    b.put(FurnitureKind.counter, const Offset(680, 868), 150, 26);
+    b.put(FurnitureKind.counter, const Offset(235, 200), 130, 26);
+    b.put(FurnitureKind.strongbox, const Offset(305, 130), 44, 32);
+    b.table(const Offset(430, 205), r: 40);
+    b.table(const Offset(610, 205), r: 40);
+    b.put(FurnitureKind.bench, const Offset(430, 298), 100, 24);
+    b.put(FurnitureKind.bench, const Offset(610, 298), 100, 24);
+    for (final c in const [
+      Offset(740, 130),
+      Offset(820, 130),
+      Offset(780, 205)
+    ]) {
+      b.put(FurnitureKind.strongbox, c, 44, 32);
+    }
+    b.anchors
+      ..['door'] = const Offset(500, 850)
+      ..['back'] = const Offset(240, 140)
+      ..['floor'] = const Offset(500, 720)
+      ..['wheel'] = const Offset(500, 455)
+      ..['tables'] = const Offset(700, 495)
+      ..['bar'] = const Offset(260, 780)
+      ..['stairs'] = const Offset(750, 780)
+      ..['cloak'] = const Offset(680, 825)
+      ..['cashier'] = const Offset(240, 270)
+      ..['cage'] = const Offset(240, 270)
+      ..['vip'] = const Offset(430, 262)
+      ..['vip2'] = const Offset(610, 262)
+      ..['vault'] = const Offset(780, 270)
+      ..['strongbox'] = const Offset(780, 270);
+    return b.finish(seed, RoomKind.casino, _corners(box));
+  }
+
+  /// The caserne: the guardroom at the door, the long dormitory of bunks
+  /// round a mess table, the armoury and the officers' rooms behind.
+  static RoomPlan _barracks(int seed) {
+    final b = _B();
+    const box = Rect.fromLTWH(190, 60, 620, 880);
+    b.room('guard', Rect.fromLTRB(box.left, 720, box.right, box.bottom));
+    b.room('dorm', Rect.fromLTRB(box.left, 270, box.right, 720));
+    b.room('armoury', Rect.fromLTRB(box.left, box.top, 420, 270));
+    b.room('officers', Rect.fromLTRB(420, box.top, box.right, 270));
+    b.hwall(720, box.left, box.right, [(500, 100)]);
+    b.hwall(270, box.left, box.right, [(300, 60), (610, 60)]);
+    b.vwall(420, box.top, 270);
+    b.door('door', Offset(box.center.dx, box.bottom), math.pi / 2, width: 80);
+    b.door('back', Offset(box.right, 485), 0, width: 60);
+    b.door('inner', const Offset(500, 720), -math.pi / 2, width: 100);
+    b.door('armoury', const Offset(300, 270), -math.pi / 2, width: 60);
+    b.door('officers', const Offset(610, 270), -math.pi / 2, width: 60);
+    b.put(FurnitureKind.desk, const Offset(330, 830), 150, 34);
+    b.put(FurnitureKind.rack, const Offset(214, 800), 24, 110);
+    b.put(FurnitureKind.rack, const Offset(786, 800), 24, 110);
+    b.put(FurnitureKind.bench, const Offset(670, 890), 130, 26);
+    for (var i = 0; i < 5; i++) {
+      final y = 325 + i * 80.0;
+      b.put(FurnitureKind.bed, Offset(235, y), 56, 70);
+      b.put(FurnitureKind.bed, Offset(305, y), 56, 70);
+      if (i != 2) b.put(FurnitureKind.bed, Offset(765, y), 56, 70);
+      b.put(FurnitureKind.bed, Offset(695, y), 56, 70);
+    }
+    b.put(FurnitureKind.longTable, const Offset(500, 495), 70, 300);
+    b.put(FurnitureKind.rack, const Offset(300, 86), 190, 22);
+    b.put(FurnitureKind.rack, const Offset(214, 180), 22, 120);
+    b.put(FurnitureKind.crate, const Offset(340, 215), 50, 50);
+    b.put(FurnitureKind.crate, const Offset(385, 160), 50, 50);
+    b.put(FurnitureKind.hearth, const Offset(450, 170), 44, 80);
+    b.put(FurnitureKind.desk, const Offset(540, 190), 110, 34);
+    b.put(FurnitureKind.bed, const Offset(730, 150), 70, 120);
+    b.anchors
+      ..['door'] = const Offset(500, 880)
+      ..['back'] = const Offset(770, 485)
+      ..['floor'] = const Offset(500, 800)
+      ..['guard'] = const Offset(640, 770)
+      ..['desk'] = const Offset(330, 885)
+      ..['dorm'] = const Offset(390, 485)
+      ..['bunks'] = const Offset(390, 400)
+      ..['mess'] = const Offset(600, 490)
+      ..['armoury'] = const Offset(300, 190)
+      ..['officers'] = const Offset(560, 235);
+    return b.finish(seed, RoomKind.barracks, _corners(box));
+  }
+
+  /// A library: shelves in stacks with an aisle between, tables to read
+  /// at, the librarian's counter, a locked archive and the scriptorium.
+  static RoomPlan _library(int seed) {
+    final b = _B();
+    const box = Rect.fromLTWH(170, 110, 660, 780);
+    b.room('hall', Rect.fromLTRB(box.left, 330, box.right, box.bottom));
+    b.room('archive', Rect.fromLTRB(box.left, box.top, 470, 330));
+    b.room('scriptorium', Rect.fromLTRB(470, box.top, box.right, 330));
+    b.hwall(330, box.left, box.right, [(320, 50), (650, 60)]);
+    b.vwall(470, box.top, 330);
+    b.door('door', Offset(box.center.dx, box.bottom), math.pi / 2, width: 60);
+    b.door('back', const Offset(700, 110), -math.pi / 2, width: 50);
+    b.door('archive', const Offset(320, 330), -math.pi / 2, width: 50);
+    b.door('scriptorium', const Offset(650, 330), -math.pi / 2, width: 60);
+    b.put(FurnitureKind.shelf, const Offset(192, 610), 30, 440);
+    for (final x in [300.0, 330.0, 420.0, 450.0]) {
+      b.put(FurnitureKind.shelf, Offset(x, 520), 28, 260);
+    }
+    b.put(FurnitureKind.longTable, const Offset(640, 470), 220, 56);
+    b.put(FurnitureKind.longTable, const Offset(640, 600), 220, 56);
+    b.put(FurnitureKind.counter, const Offset(650, 800), 130, 30);
+    b.put(FurnitureKind.shelf, const Offset(320, 134), 260, 26);
+    b.put(FurnitureKind.shelf, const Offset(192, 230), 30, 180);
+    b.put(FurnitureKind.strongbox, const Offset(440, 150), 44, 32);
+    b.put(FurnitureKind.desk, const Offset(570, 230), 110, 44);
+    b.put(FurnitureKind.desk, const Offset(720, 230), 110, 44);
+    b.put(FurnitureKind.hearth, const Offset(805, 290), 46, 70);
+    b.anchors
+      ..['door'] = const Offset(500, 830)
+      ..['back'] = const Offset(700, 165)
+      ..['floor'] = const Offset(540, 720)
+      ..['stacks'] = const Offset(375, 520)
+      ..['reading'] = const Offset(640, 535)
+      ..['counter'] = const Offset(650, 850)
+      ..['archive'] = const Offset(320, 230)
+      ..['strongbox'] = const Offset(440, 205)
+      ..['scriptorium'] = const Offset(520, 170);
+    return b.finish(seed, RoomKind.library, _corners(box));
+  }
+
+  /// A prison: the guardroom at the door, then a corridor between two
+  /// rows of barred cells.
+  static RoomPlan _prison(int seed) {
+    final b = _B();
+    const box = Rect.fromLTWH(280, 90, 440, 820);
+    b.room('corridor', Rect.fromLTRB(440, box.top, 560, 700));
+    b.room('guard', Rect.fromLTRB(box.left, 700, box.right, box.bottom));
+    b.hwall(700, box.left, 440);
+    b.hwall(700, 560, box.right);
+    b.door('door', Offset(box.center.dx, box.bottom), math.pi / 2, width: 70);
+    b.door('back', Offset(box.center.dx, box.top), -math.pi / 2, width: 50);
+    b.door('inner', const Offset(500, 700), -math.pi / 2, width: 120);
+    for (var i = 0; i < 5; i++) {
+      final top = 90 + 122.0 * i;
+      final mid = top + 61;
+      final left = Rect.fromLTRB(280, top, 440, top + 122);
+      final right = Rect.fromLTRB(560, top, 720, top + 122);
+      b.room('cell${i + 1}', left);
+      b.room('cell${i + 6}', right);
+      if (i > 0) {
+        b.hwall(top, 280, 440);
+        b.hwall(top, 560, 720);
+      }
+      b.put(FurnitureKind.cage, Offset(440, mid), 12, 56);
+      b.put(FurnitureKind.cage, Offset(560, mid), 12, 56);
+      b.put(FurnitureKind.bed, Offset(316, mid), 46, 90);
+      b.put(FurnitureKind.bed, Offset(684, mid), 46, 90);
+      b.anchors['cell${i + 1}'] = Offset(385, mid);
+      b.anchors['cell${i + 6}'] = Offset(615, mid);
+    }
+    for (var i = 0; i < 5; i++) {
+      final mid = 151 + 122.0 * i;
+      b.vwall(440, 90 + 122.0 * i, 90 + 122.0 * (i + 1), [(mid, 60)]);
+      b.vwall(560, 90 + 122.0 * i, 90 + 122.0 * (i + 1), [(mid, 60)]);
+    }
+    b.put(FurnitureKind.desk, const Offset(400, 800), 150, 34);
+    b.put(FurnitureKind.rack, const Offset(302, 790), 24, 100);
+    b.put(FurnitureKind.bench, const Offset(650, 860), 130, 26);
+    b.put(FurnitureKind.hearth, const Offset(690, 790), 40, 90);
+    b.anchors
+      ..['door'] = const Offset(500, 850)
+      ..['back'] = const Offset(500, 150)
+      ..['floor'] = const Offset(500, 420)
+      ..['cells'] = const Offset(500, 300)
+      ..['guard'] = const Offset(580, 810)
+      ..['desk'] = const Offset(400, 860);
+    return b.finish(seed, RoomKind.prison, _corners(box));
+  }
+
+  /// A smithy: a wide door onto the working floor, the forge, the anvil
+  /// and the quench trough, a store behind.
+  static RoomPlan _forge(int seed) {
+    final b = _B();
+    const box = Rect.fromLTWH(200, 200, 600, 600);
+    b.room('forge', Rect.fromLTRB(box.left, 360, box.right, box.bottom));
+    b.room('store', Rect.fromLTRB(box.left, box.top, box.right, 360));
+    b.hwall(360, box.left, box.right, [(340, 70)]);
+    b.door('door', Offset(box.center.dx, box.bottom), math.pi / 2, width: 130);
+    b.door('back', const Offset(200, 280), math.pi, width: 50);
+    b.door('inner', const Offset(340, 360), -math.pi / 2, width: 70);
+    b.put(FurnitureKind.hearth, const Offset(690, 410), 150, 56);
+    b.put(FurnitureKind.anvil, const Offset(500, 520), 60, 34);
+    b.put(FurnitureKind.pool, const Offset(320, 470), 100, 44);
+    b.put(FurnitureKind.rack, const Offset(224, 640), 22, 150);
+    b.put(FurnitureKind.rack, const Offset(776, 640), 22, 150);
+    b.put(FurnitureKind.crate, const Offset(740, 480), 46, 46);
+    b.put(FurnitureKind.crate, const Offset(740, 730), 50, 50);
+    b.put(FurnitureKind.shelf, const Offset(500, 222), 400, 26);
+    b.put(FurnitureKind.crate, const Offset(700, 300), 50, 50);
+    b.put(FurnitureKind.crate, const Offset(750, 300), 50, 50);
+    b.put(FurnitureKind.cask, const Offset(560, 300), 50, 50);
+    b.anchors
+      ..['door'] = const Offset(500, 740)
+      ..['back'] = const Offset(270, 280)
+      ..['floor'] = const Offset(500, 650)
+      ..['anvil'] = const Offset(500, 580)
+      ..['forge'] = const Offset(690, 475)
+      ..['trough'] = const Offset(320, 525)
+      ..['store'] = const Offset(450, 290);
+    return b.finish(seed, RoomKind.forge, _corners(box));
+  }
+
+  /// A playhouse: the foyer, rows of benches either side of an aisle, the
+  /// pit rail, the stage with a dressing room and a props room beside it.
+  static RoomPlan _theatre(int seed) {
+    final b = _B();
+    const box = Rect.fromLTWH(150, 90, 700, 820);
+    b.room('foyer', Rect.fromLTRB(box.left, 780, box.right, box.bottom));
+    b.room('house', Rect.fromLTRB(box.left, 330, box.right, 780));
+    b.room('stage', Rect.fromLTRB(310, box.top, 690, 330));
+    b.room('dressing', Rect.fromLTRB(box.left, box.top, 310, 330));
+    b.room('props', Rect.fromLTRB(690, box.top, box.right, 330));
+    b.hwall(780, box.left, box.right, [(500, 110)]);
+    b.hwall(330, box.left, 310);
+    b.hwall(330, 690, box.right);
+    b.vwall(310, box.top, 330, [(250, 50)]);
+    b.vwall(690, box.top, 330, [(250, 50)]);
+    b.door('door', Offset(box.center.dx, box.bottom), math.pi / 2, width: 90);
+    b.door('back', Offset(box.right, 170), 0, width: 50);
+    b.door('inner', const Offset(500, 780), -math.pi / 2, width: 110);
+    b.door('dressing', const Offset(310, 250), 0, width: 50);
+    b.door('props', const Offset(690, 250), 0, width: 50);
+    b.put(FurnitureKind.stage, const Offset(500, 205), 380, 160);
+    b.put(FurnitureKind.railing, const Offset(500, 330), 380, 6);
+    for (var row = 0; row < 7; row++) {
+      final y = 440 + row * 50.0;
+      for (final x in [250.0, 380.0, 620.0, 750.0]) {
+        b.put(FurnitureKind.bench, Offset(x, y), 120, 24);
+      }
+    }
+    b.put(FurnitureKind.counter, const Offset(400, 850), 140, 28);
+    b.put(FurnitureKind.shelf, const Offset(172, 210), 30, 160);
+    b.put(FurnitureKind.desk, const Offset(235, 135), 100, 34);
+    b.put(FurnitureKind.crate, const Offset(730, 140), 50, 50);
+    b.put(FurnitureKind.crate, const Offset(790, 300), 50, 50);
+    b.put(FurnitureKind.crate, const Offset(730, 300), 50, 50);
+    b.anchors
+      ..['door'] = const Offset(500, 860)
+      ..['back'] = const Offset(810, 170)
+      ..['floor'] = const Offset(500, 600)
+      ..['stage'] = const Offset(500, 265)
+      ..['pit'] = const Offset(500, 380)
+      ..['seats'] = const Offset(380, 565)
+      ..['tickets'] = const Offset(400, 810)
+      ..['dressing'] = const Offset(235, 240)
+      ..['props'] = const Offset(770, 235);
+    return b.finish(seed, RoomKind.theatre, _corners(box));
+  }
+
+  /// Baths: a changing hall at the door, the great pool between pillars,
+  /// a hot room and a cold room behind it.
+  static RoomPlan _baths(int seed) {
+    final b = _B();
+    const box = Rect.fromLTWH(160, 130, 680, 740);
+    b.room('changing', Rect.fromLTRB(box.left, 650, box.right, box.bottom));
+    b.room('pool', Rect.fromLTRB(box.left, 330, box.right, 650));
+    b.room('hot', Rect.fromLTRB(box.left, box.top, 460, 330));
+    b.room('cold', Rect.fromLTRB(460, box.top, box.right, 330));
+    b.hwall(650, box.left, box.right, [(500, 110)]);
+    b.hwall(330, box.left, box.right, [(310, 60), (690, 60)]);
+    b.vwall(460, box.top, 330);
+    b.door('door', Offset(box.center.dx, box.bottom), math.pi / 2, width: 60);
+    b.door('back', Offset(box.right, 520), 0, width: 50);
+    b.door('inner', const Offset(500, 650), -math.pi / 2, width: 110);
+    b.door('hot', const Offset(310, 330), -math.pi / 2, width: 60);
+    b.door('cold', const Offset(690, 330), -math.pi / 2, width: 60);
+    b.put(FurnitureKind.pool, const Offset(500, 490), 400, 180);
+    for (final c in const [
+      Offset(330, 375),
+      Offset(670, 375),
+      Offset(330, 605),
+      Offset(670, 605)
+    ]) {
+      b.put(FurnitureKind.pillar, c, 40, 40);
+    }
+    b.put(FurnitureKind.bench, const Offset(260, 790), 160, 26);
+    b.put(FurnitureKind.bench, const Offset(740, 790), 160, 26);
+    b.put(FurnitureKind.counter, const Offset(700, 700), 130, 28);
+    b.put(FurnitureKind.pool, const Offset(330, 235), 140, 100);
+    b.put(FurnitureKind.hearth, const Offset(190, 230), 46, 100);
+    b.put(FurnitureKind.pool, const Offset(620, 235), 140, 100);
+    b.put(FurnitureKind.shelf, const Offset(815, 230), 28, 120);
+    b.anchors
+      ..['door'] = const Offset(500, 810)
+      ..['back'] = const Offset(790, 520)
+      ..['floor'] = const Offset(240, 520)
+      ..['pool'] = const Offset(500, 625)
+      ..['hot'] = const Offset(330, 305)
+      ..['cold'] = const Offset(620, 305)
+      ..['changing'] = const Offset(500, 740)
+      ..['counter'] = const Offset(700, 745);
+    return b.finish(seed, RoomKind.baths, _corners(box));
+  }
+
+  /// A temple in a cross: nave, transepts, a choir and altar at the head.
+  static RoomPlan _cruciform(int seed) {
+    final b = _B();
+    b.room('nave', const Rect.fromLTRB(380, 560, 620, 910));
+    b.room('crossing', const Rect.fromLTRB(380, 360, 620, 560));
+    b.room('choir', const Rect.fromLTRB(380, 90, 620, 360));
+    b.room('west', const Rect.fromLTRB(180, 360, 380, 560));
+    b.room('east', const Rect.fromLTRB(620, 360, 820, 560));
+    b.door('door', const Offset(500, 910), math.pi / 2, width: 80);
+    b.door('side', const Offset(820, 460), 0, width: 60);
+    for (var i = 0; i < 4; i++) {
+      final y = 610 + i * 75.0;
+      b.put(FurnitureKind.pew, Offset(437, y), 90, 22);
+      b.put(FurnitureKind.pew, Offset(563, y), 90, 22);
+    }
+    b.put(FurnitureKind.altar, const Offset(500, 150), 120, 50);
+    b.put(FurnitureKind.pew, const Offset(430, 270), 24, 130);
+    b.put(FurnitureKind.pew, const Offset(570, 270), 24, 130);
+    b.put(FurnitureKind.altar, const Offset(225, 460), 50, 120, angle: 0);
+    b.put(FurnitureKind.pillar, const Offset(740, 440), 56, 56);
+    b.put(FurnitureKind.pew, const Offset(740, 520), 150, 22);
+    b.anchors
+      ..['door'] = const Offset(500, 850)
+      ..['side'] = const Offset(780, 460)
+      ..['pews'] = const Offset(500, 700)
+      ..['floor'] = const Offset(500, 770)
+      ..['crossing'] = const Offset(500, 460)
+      ..['altar'] = const Offset(500, 235)
+      ..['chapel'] = const Offset(320, 460);
+    return b.finish(seed, RoomKind.temple, [
+      const Offset(380, 90),
+      const Offset(620, 90),
+      const Offset(620, 360),
+      const Offset(820, 360),
+      const Offset(820, 560),
+      const Offset(620, 560),
+      const Offset(620, 910),
+      const Offset(380, 910),
+      const Offset(380, 560),
+      const Offset(180, 560),
+      const Offset(180, 360),
+      const Offset(380, 360),
+    ]);
+  }
+
+  /// A round shrine: a ring of pillars, the altar in the middle.
+  static RoomPlan _rotunda(int seed) {
+    final b = _B();
+    b.room('round', const Rect.fromLTRB(200, 200, 800, 800));
+    b.door('door', const Offset(500, 830), math.pi / 2, width: 70);
+    for (var i = 0; i < 8; i++) {
+      final a = math.pi / 8 + i * math.pi / 4;
+      b.put(
+          FurnitureKind.pillar,
+          const Offset(500, 500) + Offset(math.cos(a), math.sin(a)) * 235,
+          44,
+          44);
+    }
+    b.put(FurnitureKind.altar, const Offset(500, 470), 100, 50);
+    for (final y in [600.0, 670.0]) {
+      b.put(FurnitureKind.pew, Offset(400, y), 130, 20);
+      b.put(FurnitureKind.pew, Offset(600, y), 130, 20);
+    }
+    b.anchors
+      ..['door'] = const Offset(500, 770)
+      ..['floor'] = const Offset(500, 640)
+      ..['pews'] = const Offset(400, 635)
+      ..['altar'] = const Offset(500, 395);
+    return b.finish(
+        seed, RoomKind.temple, _circle(const Offset(500, 500), 330, 32));
+  }
+
+  /// An inn round a yard: the taproom along the street, bedrooms in one
+  /// wing and the kitchen in the other, the yard open between them.
+  static RoomPlan _courtyardInn(int seed) {
+    final b = _B();
+    b.room('taproom', const Rect.fromLTRB(130, 520, 870, 850));
+    b.room('bedrooms', const Rect.fromLTRB(130, 150, 330, 520));
+    b.room('kitchen', const Rect.fromLTRB(670, 150, 870, 520));
+    b.hwall(520, 130, 330, [(230, 50)]);
+    b.hwall(520, 670, 870, [(770, 50)]);
+    b.door('door', const Offset(500, 850), math.pi / 2, width: 60);
+    b.door('back', const Offset(500, 520), -math.pi / 2, width: 80);
+    b.door('bedrooms', const Offset(230, 520), -math.pi / 2, width: 50);
+    b.door('kitchen', const Offset(770, 520), -math.pi / 2, width: 50);
+    b.put(FurnitureKind.bar, const Offset(700, 570), 240, 50);
+    b.put(FurnitureKind.hearth, const Offset(160, 690), 46, 110);
+    for (final c in const [
+      Offset(290, 590),
+      Offset(290, 740),
+      Offset(420, 680),
+      Offset(620, 740),
+      Offset(780, 740)
+    ]) {
+      b.table(c);
+    }
+    for (final c in const [
+      Offset(180, 230),
+      Offset(280, 230),
+      Offset(180, 420),
+      Offset(280, 420)
+    ]) {
+      b.put(FurnitureKind.bed, c, 60, 110);
+    }
+    b.put(FurnitureKind.hearth, const Offset(840, 300), 46, 100);
+    b.put(FurnitureKind.longTable, const Offset(760, 400), 150, 46);
+    b.put(FurnitureKind.crate, const Offset(720, 200), 50, 50);
+    b.put(FurnitureKind.cask, const Offset(790, 200), 46, 46);
+    b.anchors
+      ..['door'] = const Offset(500, 790)
+      ..['back'] = const Offset(500, 575)
+      ..['floor'] = const Offset(500, 730)
+      ..['bar'] = const Offset(700, 640)
+      ..['hearth'] = const Offset(240, 690)
+      ..['tables'] = const Offset(350, 665)
+      ..['rooms'] = const Offset(230, 330)
+      ..['stairs'] = const Offset(230, 330)
+      ..['kitchen'] = const Offset(770, 330);
+    return b.finish(seed, RoomKind.inn, [
+      const Offset(130, 150),
+      const Offset(330, 150),
+      const Offset(330, 520),
+      const Offset(670, 520),
+      const Offset(670, 150),
+      const Offset(870, 150),
+      const Offset(870, 850),
+      const Offset(130, 850),
+    ]);
   }
 
   static List<Offset> _corners(Rect r) =>
@@ -617,5 +1170,61 @@ class RoomPlan implements PlacePlan {
       }
     }
     return pts;
+  }
+}
+
+/// What a layout is assembled in.
+class _B {
+  final rooms = <Room>[];
+  final walls = <(Offset, Offset)>[];
+  final doors = <RoomDoor>[];
+  final furniture = <Furniture>[];
+  final anchors = <String, Offset>{};
+
+  void room(String id, Rect r) => rooms.add(Room(id, r));
+
+  void door(String id, Offset at, double angle, {double width = 44}) =>
+      doors.add(RoomDoor(id, at, angle, width: width));
+
+  void put(FurnitureKind k, Offset c, double w, double h, {double angle = 0}) =>
+      furniture.add(Furniture(k, c, Size(w, h), angle: angle));
+
+  void table(Offset c, {double r = 34}) =>
+      put(FurnitureKind.table, c, r * 2, r * 2);
+
+  /// A wall along y from x0 to x1, broken by gaps at (centre, width).
+  void hwall(double y, double x0, double x1,
+      [List<(double, double)> gaps = const []]) {
+    var from = x0;
+    for (final (c, w) in [...gaps]..sort((a, b) => a.$1.compareTo(b.$1))) {
+      if (c - w / 2 > from) walls.add((Offset(from, y), Offset(c - w / 2, y)));
+      from = c + w / 2;
+    }
+    if (x1 > from) walls.add((Offset(from, y), Offset(x1, y)));
+  }
+
+  /// A wall along x from y0 to y1, broken by gaps at (centre, width).
+  void vwall(double x, double y0, double y1,
+      [List<(double, double)> gaps = const []]) {
+    var from = y0;
+    for (final (c, w) in [...gaps]..sort((a, b) => a.$1.compareTo(b.$1))) {
+      if (c - w / 2 > from) walls.add((Offset(x, from), Offset(x, c - w / 2)));
+      from = c + w / 2;
+    }
+    if (y1 > from) walls.add((Offset(x, from), Offset(x, y1)));
+  }
+
+  RoomPlan finish(int seed, RoomKind kind, List<Offset> outline) {
+    anchors[''] = anchors['floor']!;
+    return RoomPlan._(
+      seed: seed,
+      kind: kind,
+      rooms: rooms,
+      walls: walls,
+      doors: doors,
+      furniture: furniture,
+      anchors: anchors,
+      outline: outline,
+    );
   }
 }

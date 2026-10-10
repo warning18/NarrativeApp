@@ -37,10 +37,16 @@ extension _FightRounds on _FightScreenState {
     }
     if (rolled.isEmpty) return;
 
-    _update(() => _rolling = true);
+    _update(() {
+      _rolling = true;
+      _rollingTo = rolled;
+    });
     if (_quick) {
       _rollController.value = 1;
     } else {
+      _rollController.duration = MediaQuery.of(context).disableAnimations
+          ? const Duration(milliseconds: 1)
+          : const Duration(milliseconds: 650);
       await _rollController.forward(from: 0);
     }
     if (!mounted) return;
@@ -49,6 +55,7 @@ extension _FightRounds on _FightScreenState {
     final forced = rollNumber >= _maxRollsThisFight;
     _update(() {
       _rolling = false;
+      _rollingTo = const {};
       _rollCount = rollNumber;
       _currentFaces
         ..clear()

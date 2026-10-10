@@ -178,10 +178,15 @@ void main() {
     expect(climate.contours(0.5, humidity: true), isNotEmpty);
   });
 
-  test('the clock runs a day in forty seconds from the story day', () {
-    final t = ChartClimate.timeOf(7);
-    expect(t, greaterThanOrEqualTo(7));
-    expect(t, lessThan(8 + 1e6));
+  test('the sky of a day is fixed: time stands still between turns', () {
+    expect(ChartClimate.timeOf(7), 7.5);
+    expect(ChartClimate.timeOf(8), 8.5);
+    final climate = ChartClimate.of(chartOf(MapShape.archipelago));
+    const at = Offset(120, 90);
+    final a = climate.weather(at, ChartClimate.timeOf(7));
+    final b = climate.weather(at, ChartClimate.timeOf(7));
+    expect(a.kind, b.kind);
+    expect(a.cloud, b.cloud);
   });
 
   test('noise is smooth and bounded', () {

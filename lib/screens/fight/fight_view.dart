@@ -687,29 +687,31 @@ extension _FightView on _FightScreenState {
     final locked = _lockedActorIds.contains(actor.id);
     final spinning = _rolling && !locked;
 
-    Widget inner;
-    if (spinning) {
-      inner = AnimatedBuilder(
-        animation: _rollController,
-        builder: (context, _) {
-          final t = _rollController.value;
-          final angle = Curves.easeOutCubic.transform(t) * 6 * pi;
-          final scale = 1 + (sin(t * pi) * 0.25);
-          return Transform.rotate(
-            angle: angle,
-            child: Transform.scale(
-              scale: scale,
-              child: Icon(Icons.casino, size: 30, color: accent),
-            ),
-          );
-        },
-      );
-    } else if (face == null) {
-      inner =
-          Icon(Icons.casino, size: 30, color: accent.withValues(alpha: 0.45));
-    } else {
-      inner = _buildFaceGlyph(face, size: 30);
-    }
+    // The die as a cube (v1.214, see Die3D): it tumbles to the face it
+    // rolled, which stands front, and a landed face lets go a burst fitted
+    // to what it does; a skill face or a heavy blow lands bigger.
+    final landing = spinning ? _rollingTo[actor.id] ?? face : face;
+    final Widget inner = Die3D(
+      key: ValueKey('die_cube_${actor.id}'),
+      faces: _cubeFacesFor(actor, landing, accent),
+      accent: accent,
+      size: 46,
+      roll: _rollController,
+      rolling: spinning,
+      fx: face == null ? null : dieFxOf(_faceKindOf(face)),
+      big: face != null && (face.type == 'Skill' || face.value >= 8),
+      dim: face == null && !spinning,
+      still: MediaQuery.of(context).disableAnimations,
+      // The die's own skin, a gold ring when kept, and what the landed face
+      // adds to the burst: its rule words, its element, a surge, a curse.
+      skin: dieSkinOf(actor.equippedDiceId),
+      held: locked,
+      keywords: face?.keywords ?? const {},
+      element: face == null ? 'None' : _elementFor(face, skills),
+      surge: preview?.surge ?? false,
+      cursed: face != null &&
+          (_cursedFaces[actor.id]?.contains(face.faceIndex) ?? false),
+    );
     // A landed face tints its tile with what it does (red hits, pink
     // heals, blue mana...); the border stays the roller's own colour.
     final faceTint = face == null || spinning
@@ -893,6 +895,65 @@ extension _FightView on _FightScreenState {
     final skills =
         ref.read(localizedDbProvider(skillsSchema)).value ?? const {};
     return skillKind(skills[_effectiveSkillId(face)] as Map<String, dynamic>?);
+  }
+
+  /// The six sides of [actor]'s die as a cube, [landed] (the face on the
+  /// table, or the one the die is tumbling to) in front and the die's next
+  /// faces round it; a die of fewer than six faces repeats them.
+  List<DieCubeFace> _cubeFacesFor(
+      _PartyMember actor, DiceFaceResult? landed, Color accent) {
+    final raws = actor.dieFaces;
+    if (raws.isEmpty) {
+      return List.filled(
+          6,
+          DieCubeFace(
+              glyph: Icon(Icons.casino, size: 22, color: accent),
+              color: accent));
+    }
+    final language = ref.read(appLanguageProvider);
+    final start = landed?.faceIndex ?? 0;
+    return [
+      for (var slot = 0; slot < 6; slot++)
+        () {
+          final index = (start + slot) % raws.length;
+          final DiceFaceResult face;
+          if (slot == 0 && landed != null) {
+            face = landed;
+          } else {
+            final assigned = applyFaceAssignment(
+              faceFromJson(raws[index], index).withFaceName(''),
+              raws[index],
+              actor.diceSkillAssignments[index.toString()],
+              language: language,
+            );
+            face = (_cursedFaces[actor.id]?.contains(index) ?? false)
+                ? cursedFace(assigned)
+                : assigned;
+          }
+          return DieCubeFace(
+              glyph: _cubeGlyph(face), color: _faceKindOf(face).color);
+        }(),
+    ];
+  }
+
+  /// A side of the cube: a skill face holds the skill's own icon, large, on
+  /// a pale plaque ringed in what the skill does so the pixel art reads on
+  /// the dark stone (v1.214); any other face, its type icon over its value.
+  Widget _cubeGlyph(DiceFaceResult face) {
+    if (face.type != 'Skill') return _buildFaceGlyph(face, size: 30);
+    final color = _faceKindOf(face).color;
+    return Container(
+      key: ValueKey('die_skill_${_effectiveSkillId(face)}'),
+      width: 34,
+      height: 34,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: const Color(0xFFEFE6D2).withValues(alpha: 0.92),
+        border: Border.all(color: color, width: 2),
+      ),
+      child: SkillPixelIcon(_effectiveSkillId(face), size: 26),
+    );
   }
 
   /// A rolled face as a glyph: its type icon over its value (a Skill face
