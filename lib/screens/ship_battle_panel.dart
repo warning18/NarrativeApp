@@ -4,10 +4,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/combat_engine.dart' show faceFromJson;
+import '../combat/dice_faces.dart';
 import '../combat/encounter.dart';
+import '../combat/face_smithing.dart';
 import '../combat/sea_beasts.dart';
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
+import '../combat/station_dice.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -15,11 +19,15 @@ import '../providers/aftermath_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/player_session_provider.dart';
 import '../providers/tutorial_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../widgets/ship_cutaway.dart';
 import '../widgets/sea_battlefield.dart';
+import '../utils/face_style.dart';
+import '../widgets/die_skins.dart';
 import '../widgets/ship_fx.dart';
+import '../widgets/station_die.dart';
 import 'fight_screen.dart';
 
 /// How a ship battle ended: who won, the Eel as she is now (hull, rooms),
@@ -240,9 +248,97 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       canFlee: widget.canFlee,
       beast: widget.beast,
     );
+    _ensureCrewDice();
     _armedWeaponId = _firstReadyWeaponId();
     _placing = widget.placeCrew && widget.crew.length > 1;
     if (!_placing) _startClock();
+  }
+
+  /// True once the hands' dice are read from the game data (see
+  /// [_ensureCrewDice]).
+  bool _diceRead = false;
+  final Map<String, String?> _dieIds = {};
+
+  /// The die [crew] rolls, for its skin.
+  String? _equippedDieOf(ShipCrew crew) => _dieIds[crew.id];
+
+  /// Each hand's die (station_dice.dart): the player's equipped die and a
+  /// companion's signature die as the Hammersmith left them, read once the
+  /// dice data is in.
+  void _ensureCrewDice() {
+    if (_diceRead) return;
+    final dice = ref.read(localizedDbProvider(diceSchema)).value;
+    if (dice == null || dice.isEmpty) return;
+    _diceRead = true;
+    final session = ref.read(playerSessionProvider);
+    final skills =
+        ref.read(localizedDbProvider(skillsSchema)).value ?? const {};
+    final companions =
+        ref.read(localizedDbProvider(companionsSchema)).value ?? const {};
+    final lang = ref.read(appLanguageProvider);
+    final result = <String, CrewDie>{};
+    for (final member in widget.crew) {
+      final String? dieId = member.isPlayer
+          ? session.equippedDiceId ??
+              (session.ownedDiceIds.isNotEmpty
+                  ? session.ownedDiceIds.first
+                  : null)
+          : (companions[member.id] as Map<String, dynamic>?)?['signatureDiceId']
+              ?.toString();
+      final raws =
+          ((dice[dieId ?? ''] as Map<String, dynamic>?)?['faces'] as List?)
+                  ?.cast<Map<String, dynamic>>() ??
+              const <Map<String, dynamic>>[];
+      if (raws.isEmpty) continue;
+      _dieIds[member.id] = dieId;
+      final faces = smithedFaces(
+          raws,
+          session.upgradesOfDie(dieId,
+              companionId: member.isPlayer ? null : member.id));
+      var assigned = const <String, String>{};
+      if (member.isPlayer) {
+        assigned = session.diceSkillAssignments[dieId] ?? assigned;
+      } else {
+        for (final ally in session.recruitedAllies) {
+          if (ally.companionId == member.id) {
+            assigned = ally.diceSkillAssignments;
+          }
+        }
+      }
+      assigned = limitedFaceAssignments(faces, assigned, skills);
+      result[member.id] = CrewDie([
+        for (var i = 0; i < faces.length; i++)
+          () {
+            final face = applyFaceAssignment(
+              faceFromJson(faces[i], i).withFaceName(''),
+              faces[i],
+              assigned[i.toString()],
+              language: lang,
+            );
+            final kind = face.type == 'Skill'
+                ? skillKind(skills[face.linkedSkillID.isEmpty
+                    ? 'heavy_attack'
+                    : face.linkedSkillID] as Map<String, dynamic>?)
+                : faceKind(face.type);
+            return StationFace(face, kind);
+          }(),
+      ]);
+    }
+    _battle.crewDice = result;
+  }
+
+  /// What a die landed at its station does this turn, for the room's tip.
+  String _stationRollHint(AppLanguage lang, StationRoll roll) {
+    final kind = roll.kind;
+    if (kind == null) return trFor(lang, 'ship_dice_blank');
+    final share =
+        (stationShare(roll.value) * (kind == FaceKind.poison ? 0.5 : 1.0) * 100)
+            .round();
+    final n = switch (kind) {
+      FaceKind.heal => stationPatch(roll.value),
+      _ => share,
+    };
+    return trFor(lang, 'ship_dice_${kind.name}').replaceAll('{n}', '$n');
   }
 
   /// Whole turns each order die has spun, one per order given.
@@ -1149,6 +1245,9 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
 
   @override
   Widget build(BuildContext context) {
+    // The dice data arrives after the panel opens on a cold start.
+    if (!_diceRead) ref.watch(localizedDbProvider(diceSchema));
+    _ensureCrewDice();
     final lang = ref.watch(appLanguageProvider);
     final fr = lang == AppLanguage.fr;
     final ink = InkColors.of(context);
@@ -2436,6 +2535,22 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
         ],
       ),
     );
+    final stationRoll =
+        crew == null || !isPlayer ? null : _battle.stationRoll(crew.id);
+    final die = stationRoll == null
+        ? null
+        : Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: StationDie(
+              die: _battle.crewDice[crew!.id]!,
+              roll: stationRoll,
+              turn: _battle.turn,
+              accent: ink.tide,
+              skin: dieSkinOf(_equippedDieOf(crew)),
+              size: 24,
+              still: MediaQuery.of(context).disableAnimations,
+            ),
+          );
     final token = crew == null
         ? null
         : isPlayer && !_busy && !_over
@@ -2469,6 +2584,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (token != null) token,
+                  if (die != null) die,
                   if (focused)
                     Tooltip(
                       message: trFor(lang, 'ship_focus_hint'),
@@ -2490,7 +2606,10 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     final tile = Tooltip(
       message: railOpen
           ? trFor(lang, 'ship_room_bulwark_open_hint')
-          : _roomName(lang, room, enemy: !isPlayer, suffix: '_hint'),
+          : [
+              _roomName(lang, room, enemy: !isPlayer, suffix: '_hint'),
+              if (stationRoll != null) _stationRollHint(lang, stationRoll),
+            ].join('\n'),
       child: GestureDetector(
         key: Key('ship_room_${isPlayer ? 'eel' : 'enemy'}_${room.name}'),
         onTap: () {

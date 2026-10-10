@@ -8,6 +8,12 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.218.0+254]
+
+### Added
+- Station dice on the Eel. Each hand with a die (the player's equipped die, a companion's signature die, as the Hammersmith left them) has it at their station in the ship fight, a small cube on the room's tile that tumbles when the turn opens or the hand moves, and shows only the faces that room can use: the guns, attack and poison; the bulwark, defend; the hold, heal and mana; the helm, stun and weaken. A skill face shows its skill's icon. A room the die has no face for shows a pale blank cube and gives nothing.
+- What a landed face does, while its hand stays at the station and is not busy: at the guns, the Eel's shots hit harder by the face's share (half as much for poison); at the bulwark, the enemy's shots hit softer; at the helm, a weaken face does the same and a stun face costs the enemy's most charged gun a step after it winds; in the hold, a heal face patches the hull and a mana face winds a gun a step when the round ends. The landing depends only on the battle, the turn, the hand and the room, so moving hands about cannot shake out a better roll. Hold a room's tile for what its die landed.
+
 ## [1.217.1+253]
 
 ### Fixed
