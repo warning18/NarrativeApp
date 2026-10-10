@@ -470,6 +470,7 @@ class ShipBattleRules {
     this.intents = true,
     this.push = true,
     this.escalation = true,
+    this.shieldBreak = true,
   });
 
   static const classic = ShipBattleRules(
@@ -482,6 +483,7 @@ class ShipBattleRules {
     intents: false,
     push: false,
     escalation: false,
+    shieldBreak: false,
   );
 
   final bool range;
@@ -502,6 +504,11 @@ class ShipBattleRules {
   /// Fire spreads, leaks weigh a ship down, the weather keeps a trend and
   /// a second sail may come.
   final bool escalation;
+
+  /// A shield layer lets a share of the shot through, a shot at the
+  /// bulwark or a heavy one strips more layers, a perfect aim finds the
+  /// gap (see [ShotMods.shieldBreak]).
+  final bool shieldBreak;
 }
 
 /// How a battle ended: [escaped] is the enemy getting away, [fled] the
@@ -1027,6 +1034,10 @@ class ShipBattle {
   bool canFire(ShipWeapon weapon) =>
       !over && !ran && weapon.isReady && inRange(weapon);
 
+  /// The shield rules of v1.217 are on: in the rules, and not against a
+  /// beast, whose hide glances shots off as it always has.
+  bool get shieldBreakOn => rules.shieldBreak && beast == null;
+
   /// What the weapon's shot, the room's focus and a pending critical do to a
   /// shot at [room].
   ShotMods shotMods(ShipRoom room, {ShipWeapon? weapon, AimResult? aim}) {
@@ -1047,11 +1058,53 @@ class ShipBattle {
     }
     if (eagleEye || aim == AimResult.perfect) mods = mods.merge(criticalMods);
     if (!rules.flooding) mods = mods.merge(const ShotMods(floods: false));
+    if (shieldBreakOn) {
+      mods = mods
+          .merge(ShotMods(shieldBreak: true, slips: aim == AimResult.perfect));
+    }
     // Braced for the volley: half the hull, the room's pips as ever.
     if (enemyBraced) {
       mods = mods.merge(const ShotMods(damageFactor: braceDamageFactor));
     }
     return mods;
+  }
+
+  /// Shots of [weaponId] it takes before one gets past the enemy's shield
+  /// layers: the layers each shot strips at [room], then the one that
+  /// lands. One for a piercing weapon or a ship with no layer standing;
+  /// null when there is no such weapon.
+  int? shotsToLand(String? weaponId, ShipRoom room) {
+    final weapon = weaponById(weaponId);
+    if (weapon == null) return null;
+    if (weapon.piercing || enemy.layers == 0) return 1;
+    final strip = layersStripped(weapon, room, shotMods(room, weapon: weapon));
+    return (enemy.layers / strip).ceil() + 1;
+  }
+
+  /// True when the guns ready now, all aimed at the bulwark, take the
+  /// enemy's layers down and still land a shot this turn (evasion aside).
+  /// False when no layer stands: there is nothing to break.
+  bool get salvoReady {
+    if (enemy.layers == 0) return false;
+    final strips = <int>[];
+    var piercing = false;
+    for (final w in player.weapons) {
+      if (!canFire(w)) continue;
+      if (w.piercing) {
+        piercing = true;
+      } else {
+        strips.add(layersStripped(
+            w, ShipRoom.bulwark, shotMods(ShipRoom.bulwark, weapon: w)));
+      }
+    }
+    if (piercing) return true;
+    strips.sort((a, b) => b.compareTo(a));
+    var left = enemy.layers;
+    for (var i = 0; i < strips.length; i++) {
+      if (left <= 0) return true;
+      left -= strips[i];
+    }
+    return false;
   }
 
   /// What [weaponId] would do to [room] if it lands, for the room's preview.
@@ -1079,6 +1132,10 @@ class ShipBattle {
     }
     final critical = eagleEye || aim == AimResult.perfect;
     final focused = (focus[room] ?? 0) > 0;
+    final gap = shieldBreakOn &&
+        aim == AimResult.perfect &&
+        enemy.layers > 0 &&
+        !weapon.piercing;
     final outcome = resolveShot(
       target: enemy,
       weapon: weapon,
@@ -1095,6 +1152,9 @@ class ShipBattle {
     }
     if (outcome.landed && critical) _add('ship_log_critical');
     if (outcome.landed && focused) _add('ship_log_focus', room: room);
+    if (outcome.landed && gap) {
+      _add('ship_log_shield_gap', side: BattleSide.enemy);
+    }
     _logShot(outcome, weapon, BattleSide.enemy);
     if (outcome.landed && beast != null && weapon.tetherRounds > 0) {
       tether = max(tether, weapon.tetherRounds);
@@ -1599,6 +1659,7 @@ class ShipBattle {
         damageFactor: braced ? 0.5 : 1.0,
         noFire: weather == SeaWeather.squall,
         floods: rules.flooding,
+        shieldBreak: shieldBreakOn,
       ),
     );
     player = outcome.target;
@@ -1888,6 +1949,12 @@ class ShipBattle {
     }
     if (outcome.absorbed) {
       _add('ship_log_shot_absorbed', side: target, weapon: weapon);
+      if (outcome.layersLost > 1) {
+        _add('ship_log_shield_stripped', side: target, n: outcome.layersLost);
+      }
+      if (outcome.hullDamage > 0) {
+        _add('ship_log_shield_chip', side: target, n: outcome.hullDamage);
+      }
       if (outcome.roomKnockedOut) {
         _add('ship_log_room_down', side: target, room: ShipRoom.bulwark);
       }

@@ -1104,7 +1104,9 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     final text = outcome.dodged
         ? trFor(lang, 'ship_slipped_label')
         : outcome.absorbed
-            ? trFor(lang, 'ship_blocked_label')
+            ? (outcome.hullDamage > 0
+                ? '${trFor(lang, 'ship_blocked_label')} −${outcome.hullDamage}'
+                : trFor(lang, 'ship_blocked_label'))
             : '−${outcome.hullDamage}';
     final key = (onEel, outcome.room);
     final flash = (text, ++_flashCount);
@@ -1199,6 +1201,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                     color: ink.blood,
                     habit: widget.habit,
                   ),
+                  _buildShieldSums(lang),
                   _buildEnemyStatus(lang),
                 ],
               ),
@@ -1822,6 +1825,58 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
             ink.tide,
             'beast_edge'),
     ];
+  }
+
+  /// The sums of the enemy's shield: its layers and how many shots of the
+  /// armed weapon it takes to get one through (fewer aimed at the
+  /// bulwark), and a flag when the guns ready now can do it this turn.
+  Widget _buildShieldSums(AppLanguage lang) {
+    final b = _battle;
+    final layers = b.enemy.layers;
+    final weapon = b.weaponById(_armedWeaponId);
+    if (!b.shieldBreakOn || _over || layers == 0 || weapon == null) {
+      return const SizedBox.shrink();
+    }
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final style = theme.textTheme.labelSmall;
+    final plain = b.shotsToLand(weapon.id, ShipRoom.guns) ?? 1;
+    final aimed = b.shotsToLand(weapon.id, ShipRoom.bulwark) ?? plain;
+    var text = weapon.piercing
+        ? trFor(lang, 'ship_sums_pierce').replaceAll('{n}', '$layers')
+        : trFor(lang, layers == 1 ? 'ship_sums_one' : 'ship_sums')
+            .replaceAll('{n}', '$layers')
+            .replaceAll('{m}', '$plain');
+    if (!weapon.piercing && aimed < plain) {
+      text += trFor(lang, 'ship_sums_bulwark').replaceAll('{k}', '$aimed');
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 2),
+      child: Row(
+        children: [
+          Flexible(
+            child: Text(text,
+                key: const Key('ship_shield_sums'),
+                style: style?.copyWith(
+                    color: _roomColor(context, ShipRoom.bulwark)),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis),
+          ),
+          if (b.salvoReady) ...[
+            const SizedBox(width: 8),
+            Icon(Icons.bolt, size: 12, color: ink.gold),
+            Flexible(
+              child: Text(trFor(lang, 'ship_sums_salvo'),
+                  key: const Key('ship_salvo_ready'),
+                  style: style?.copyWith(
+                      color: ink.gold, fontWeight: FontWeight.bold),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 
   /// A ship on one line and a bar: her name, the enemy's habit, her
@@ -2997,7 +3052,8 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
         mainAxisSize: MainAxisSize.min,
         children: [
           const Icon(Icons.shield, size: 13, color: _previewColor),
-          Text('0', style: style),
+          Text(preview.hullDamage > 0 ? '−${preview.hullDamage}' : '0',
+              style: style),
         ],
       );
     }

@@ -229,6 +229,84 @@ void main() {
     });
   });
 
+  group('shield rules', () {
+    const rules = ShotMods(shieldBreak: true);
+    final deep = {
+      for (final room in ShipRoom.values) room: const RoomState(level: 3),
+    };
+    ShotOutcome shoot(ShipState t, ShipWeapon w, ShipRoom r, ShotMods m) =>
+        resolveShot(
+            target: t,
+            weapon: w,
+            room: r,
+            evasionPercent: 0,
+            roll: 0.5,
+            mods: m);
+
+    test('a stopped shot chips the hull for about a third of its damage', () {
+      final shot = shoot(
+          makeShip(layers: 2, rooms: deep), ballista, ShipRoom.guns, rules);
+      expect(shot.absorbed, isTrue);
+      expect(shot.landed, isFalse);
+      expect(shot.hullDamage, 4);
+      expect(shot.target.hull, 56);
+      expect(shot.target.layers, 1);
+      expect(shot.layersLost, 1);
+    });
+
+    test('the classic rules chip nothing', () {
+      final shot = shoot(makeShip(layers: 2, rooms: deep), ballista,
+          ShipRoom.guns, const ShotMods());
+      expect(shot.hullDamage, 0);
+      expect(shot.target.hull, 60);
+    });
+
+    test('a shot at the bulwark strips an extra layer', () {
+      final shot = shoot(
+          makeShip(layers: 3, rooms: deep), ballista, ShipRoom.bulwark, rules);
+      expect(shot.target.layers, 1);
+      expect(shot.layersLost, 2);
+      final plain = shoot(makeShip(layers: 3, rooms: deep), ballista,
+          ShipRoom.bulwark, const ShotMods());
+      expect(plain.layersLost, 1);
+    });
+
+    test('a heavy weapon strips two layers, and never more than stand', () {
+      final heavy = shoot(
+          makeShip(layers: 3, rooms: deep), firePots, ShipRoom.guns, rules);
+      expect(heavy.layersLost, 2);
+      expect(heavy.hullDamage, 11);
+      final last = shoot(
+          makeShip(layers: 1, rooms: deep), firePots, ShipRoom.bulwark, rules);
+      expect(last.target.layers, 0);
+      expect(last.layersLost, 1);
+      expect(layersStripped(firePots, ShipRoom.bulwark, rules), 3);
+    });
+
+    test('a perfect aim slips through the gap and leaves the layers', () {
+      final shot = shoot(makeShip(layers: 2, rooms: deep), ballista,
+          ShipRoom.guns, rules.merge(const ShotMods(slips: true)));
+      expect(shot.absorbed, isFalse);
+      expect(shot.landed, isTrue);
+      expect(shot.target.layers, 2);
+      expect(shot.hullDamage, 12);
+    });
+
+    test('a chip can sink a ship at the last hull points', () {
+      final shot = shoot(makeShip(hull: 3, layers: 1, rooms: deep), ballista,
+          ShipRoom.guns, rules);
+      expect(shot.target.hull, 0);
+      expect(shot.target.isAfloat, isFalse);
+    });
+
+    test('a piercing shot still ignores the layers', () {
+      final shot = shoot(
+          makeShip(layers: 2, rooms: deep), harpoon, ShipRoom.guns, rules);
+      expect(shot.landed, isTrue);
+      expect(shot.target.layers, 2);
+    });
+  });
+
   group('chargeWeapons', () {
     test('every weapon charges a step while the guns work', () {
       final ship = makeShip(weapons: const [ballista, harpoon, firePots]);
