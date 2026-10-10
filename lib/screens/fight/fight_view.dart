@@ -702,6 +702,15 @@ extension _FightView on _FightScreenState {
       big: face != null && (face.type == 'Skill' || face.value >= 8),
       dim: face == null && !spinning,
       still: MediaQuery.of(context).disableAnimations,
+      // The die's own skin, a gold ring when kept, and what the landed face
+      // adds to the burst: its rule words, its element, a surge, a curse.
+      skin: dieSkinOf(actor.equippedDiceId),
+      held: locked,
+      keywords: face?.keywords ?? const {},
+      element: face == null ? 'None' : _elementFor(face, skills),
+      surge: preview?.surge ?? false,
+      cursed: face != null &&
+          (_cursedFaces[actor.id]?.contains(face.faceIndex) ?? false),
     );
     // A landed face tints its tile with what it does (red hits, pink
     // heals, blue mana...); the border stays the roller's own colour.
