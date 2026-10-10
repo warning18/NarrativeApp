@@ -8,6 +8,12 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.220.0+256]
+
+### Changed
+- The party's walk through a place is slower and smoother. It strolls at a steady pace whatever the street's length (a second and a half for a short way, up to four and a quarter for a long one) instead of a fixed second, and its footprints keep a stride apart. The road up the map keeps its short walk.
+- The city's map follows the walk: it zooms in on the party as it sets off (to one and three fifths of its size), keeps it toward the middle while it strolls, and eases back out as it arrives, never past the plan's edges. With reduced motion, the map holds still as before.
+
 ## [1.219.0+255]
 
 ### Changed

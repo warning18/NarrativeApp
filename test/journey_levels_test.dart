@@ -79,6 +79,17 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('journey_step_0')));
     await tester.pump(const Duration(milliseconds: 300));
     await tester.tap(find.byKey(const ValueKey('journey_go')));
+    // The city's camera (v1.219): the map zooms in on the party as it
+    // strolls, and is back to its size when the walk is done.
+    expect(find.byKey(const ValueKey('journey_walk_camera')), findsNothing);
+    await tester.pump(const Duration(milliseconds: 100));
+    for (var i = 0; i < 6; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    final camera = find.byKey(const ValueKey('journey_walk_camera'));
+    expect(camera, findsOneWidget);
+    expect(tester.widget<Transform>(camera).transform.storage[0],
+        greaterThan(1.2));
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }

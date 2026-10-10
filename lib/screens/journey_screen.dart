@@ -1935,6 +1935,24 @@ class _JourneyChart extends StatefulWidget {
 @visibleForTesting
 final ValueNotifier<int> debugJourneyMapsTicking = ValueNotifier(0);
 
+/// How long the party takes to walk a road [length] logical pixels long
+/// (v1.219): in a place, at a steady stroll (about 130 px a second, from a
+/// second and a half to four and a quarter), so a long street no longer
+/// flashes by; on the road up the map, the short walk it always was.
+Duration journeyWalkDuration(double length, {required bool place}) => place
+    ? Duration(milliseconds: (length * 7.5).round().clamp(1500, 4200))
+    : const Duration(milliseconds: 950);
+
+/// The most the place's map zooms in on a walking party.
+const double journeyWalkZoom = 1.6;
+
+/// The place's map zoom [t] of the way through a walk (v1.219): in over the
+/// first fifth, held while the party strolls, out over the last fifth.
+double journeyWalkZoomAt(double t) {
+  final edge = math.min(t / 0.2, (1 - t) / 0.2).clamp(0.0, 1.0);
+  return 1 + (journeyWalkZoom - 1) * edge * edge * (3 - 2 * edge);
+}
+
 class _JourneyChartState extends State<_JourneyChart>
     with TickerProviderStateMixin {
   static const double _stepRadius = 22;
@@ -2045,6 +2063,9 @@ class _JourneyChartState extends State<_JourneyChart>
   (Offset, double)? _dust;
   ui.PathMetric? _walkRoad;
   double _nextPrint = 0;
+
+  /// The share of the road between two footprints.
+  double _printStep = 0.07;
   int _printSide = 1;
 
   @override
@@ -2153,7 +2174,7 @@ class _JourneyChartState extends State<_JourneyChart>
         ));
         _printSide = -_printSide;
       }
-      _nextPrint += 0.07;
+      _nextPrint += _printStep;
     }
   }
 
@@ -2179,7 +2200,13 @@ class _JourneyChartState extends State<_JourneyChart>
   Future<Offset?> walkTo(int index) async {
     if (index >= _centres.length) return null;
     _walkRoad = _road(_here, _centres[index]).computeMetrics().first;
-    _nextPrint = 0.07;
+    // Slow in a place, a stroll whatever the street's length, and the
+    // footprints a stride apart.
+    _walk.duration = _animate
+        ? journeyWalkDuration(_walkRoad!.length, place: _placeMode)
+        : const Duration(milliseconds: 950);
+    _printStep = (26 / math.max(1.0, _walkRoad!.length)).clamp(0.02, 0.07);
+    _nextPrint = _printStep;
     _footprints.clear();
     _dust = null;
     _lastEvent = _clock.value;
@@ -2531,7 +2558,7 @@ class _JourneyChartState extends State<_JourneyChart>
                   }
                   final burning = _animate && widget.burn && now < 1.4;
                   final burnT = (now / 1.3).clamp(0.0, 1.0);
-                  final chart = Transform.translate(
+                  final panned = Transform.translate(
                     offset: camera,
                     child: Stack(
                       clipBehavior: Clip.none,
@@ -2799,6 +2826,42 @@ class _JourneyChartState extends State<_JourneyChart>
                       ],
                     ),
                   );
+                  // The city's camera (v1.219): the map zooms in on the
+                  // party while it walks, keeping it toward the middle,
+                  // and out again as it arrives.
+                  var chart = panned as Widget;
+                  if (walking != null &&
+                      walking < centres.length &&
+                      traveller != null &&
+                      _placeMode &&
+                      _animate) {
+                    final z = journeyWalkZoomAt(_walk.value);
+                    if (z > 1.001) {
+                      final focus = traveller + camera;
+                      final k = (z - 1) / (journeyWalkZoom - 1);
+                      final seen = (_scroll?.hasClients ?? false)
+                          ? _scroll!.offset
+                          : _openAt;
+                      final middle =
+                          Offset(width / 2, seen + box.maxHeight / 2);
+                      final target = Offset.lerp(focus, middle, k)!;
+                      var d = target - focus * z;
+                      // Never past the map's edges.
+                      d = Offset(
+                        d.dx.clamp(width * (1 - z), 0.0),
+                        d.dy.clamp(seen + box.maxHeight - z * height, seen),
+                      );
+                      chart = Transform(
+                        key: const ValueKey('journey_walk_camera'),
+                        transform: Matrix4.identity()
+                          ..setEntry(0, 0, z)
+                          ..setEntry(1, 1, z)
+                          ..setEntry(0, 3, d.dx)
+                          ..setEntry(1, 3, d.dy),
+                        child: panned,
+                      );
+                    }
+                  }
                   if (!burning) return chart;
                   // A new chapter: its map burns open from the mark.
                   return Stack(
