@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.217.1+253]
+
+### Fixed
+- A die now ends its roll on the face that rolled, standing almost square to you, so the skill icon (or the value) of the face that can trigger is what you read. Before, the cube settled tipped far over with its top and sides as large as the landed face.
+
 ## [1.217.0+252]
 
 ### Fixed
