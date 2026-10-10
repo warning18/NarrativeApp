@@ -8,6 +8,7 @@ import '../l10n/app_strings.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../utils/pixel_icons/pixel_icon.dart';
 import 'item_stats.dart';
+import 'pixel_sprite.dart';
 
 /// What the player chose to do with the spoils before closing the chest:
 /// gear to put on at once and healing potions to drink on the spot.
@@ -104,6 +105,9 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
   late final AnimationController _shake;
   bool _opened = false;
   bool _opening = false;
+
+  /// The chest's burst of light is playing (v1.216).
+  bool _bursting = false;
   final Set<int> _revealed = {};
 
   /// Drop slot index -> chosen action. Keyed by slot so two copies of the
@@ -141,6 +145,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
     setState(() {
       _opened = true;
       _opening = false;
+      _bursting = true;
     });
   }
 
@@ -191,6 +196,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: _opened ? null : _open,
                 child: AnimatedBuilder(
                   animation: _shake,
@@ -204,9 +210,36 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
                     );
                   },
                   child: Center(
-                    child: PixelIcon(
-                      chestAssetPath(result.tier, open: _opened),
-                      size: 112,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      clipBehavior: Clip.none,
+                      children: [
+                        PixelIcon(
+                          chestAssetPath(result.tier, open: _opened),
+                          size: 112,
+                        ),
+                        // It bursts open in its tier's light, in pixel art.
+                        if (_bursting)
+                          Positioned(
+                            left: -16,
+                            top: -44,
+                            child: IgnorePointer(
+                              child: PixelSprite(
+                                name:
+                                    'chest_${chestTierAssetName(result.tier)}',
+                                frames: 8,
+                                frameSize: 48,
+                                scale: 3,
+                                fps: 9,
+                                onDone: () {
+                                  if (mounted) {
+                                    setState(() => _bursting = false);
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ),

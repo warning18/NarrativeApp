@@ -40,6 +40,7 @@ import '../widgets/bounty_board.dart';
 import '../widgets/ink_fold.dart';
 import '../widgets/coast_news.dart';
 import '../widgets/camp_travel.dart';
+import '../widgets/pixel_sprite.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/ship_widgets.dart';
 import '../widgets/zone_card.dart';
@@ -338,8 +339,19 @@ class CampScreen extends ConsumerWidget {
         // One header: the camp, its chapter and the hour, and the purse.
         Row(
           children: [
-            Icon(Icons.local_fire_department_outlined,
-                color: InkColors.of(context).ember),
+            // The camp's fire (v1.216): a pixel flame that flickers.
+            const SizedBox(
+              width: 36,
+              height: 36,
+              child: PixelSprite(
+                name: 'campfire',
+                frames: 6,
+                frameSize: 18,
+                scale: 2,
+                fps: 7,
+                loop: true,
+              ),
+            ),
             const SizedBox(width: 8),
             Expanded(
               child: Column(

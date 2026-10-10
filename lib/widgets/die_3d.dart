@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import '../combat/face_keywords.dart';
 import '../utils/face_style.dart';
 import 'die_skins.dart';
+import 'pixel_sprite.dart';
 
 /// One side of the cube: what it shows, and the colour it is tinted.
 class DieCubeFace {
@@ -131,6 +132,24 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
   late final AnimationController _burst = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 900));
 
+  @override
+  void initState() {
+    super.initState();
+    PixelStrips.preload(_pixelNames(widget.fx));
+  }
+
+  /// The strips that make a landing, in pixel art (see
+  /// tool/gen_pixel_fx.py): the kind's burst, the element's tint, a mark
+  /// for each rule word, and the special landings.
+  List<String> _pixelNames(DieFx? fx) => [
+        if (fx != null) 'die_${fx.name}',
+        if (widget.element != 'None') 'el_${widget.element.toLowerCase()}',
+        for (final keyword in widget.keywords) 'kw_${keyword.name}',
+        if (widget.surge) 'die_surge',
+        if (widget.cursed) 'die_curse',
+        if (widget.big) 'die_glint',
+      ];
+
   DieSkin get _skin =>
       widget.skin ?? DieSkin('', _faceStone, widget.accent, DiePattern.none);
 
@@ -220,21 +239,35 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
               child: IgnorePointer(
                 child: AnimatedBuilder(
                   animation: _burst,
-                  builder: (context, _) => _burst.isAnimating
-                      ? CustomPaint(
-                          key: const ValueKey('die_burst'),
-                          painter: DieBurstPainter(
-                            fx: fx,
-                            t: _burst.value,
-                            big: widget.big,
-                            unit: size,
-                            keywords: widget.keywords,
-                            element: widget.element,
-                            surge: widget.surge,
-                            cursed: widget.cursed,
-                          ),
-                        )
-                      : const SizedBox.shrink(),
+                  builder: (context, _) => !_burst.isAnimating
+                      ? const SizedBox.shrink()
+                      : PixelStrips.ready(_pixelNames(fx))
+                          // The landing in pixel art.
+                          ? CustomPaint(
+                              key: const ValueKey('die_burst'),
+                              painter: PixelStripPainter(
+                                names: _pixelNames(fx),
+                                progress: _burst.value,
+                                scale: (size * 2.6 / 40)
+                                    .round()
+                                    .clamp(1, 4)
+                                    .toDouble(),
+                              ),
+                            )
+                          // Until its strips are in, the drawn one.
+                          : CustomPaint(
+                              key: const ValueKey('die_burst'),
+                              painter: DieBurstPainter(
+                                fx: fx,
+                                t: _burst.value,
+                                big: widget.big,
+                                unit: size,
+                                keywords: widget.keywords,
+                                element: widget.element,
+                                surge: widget.surge,
+                                cursed: widget.cursed,
+                              ),
+                            ),
                 ),
               ),
             ),

@@ -50,6 +50,7 @@ import '../widgets/city_plan_painter.dart';
 import '../widgets/journey_place.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/camp_travel.dart' show CampReturnButton, TravelOnList;
+import '../widgets/pixel_sprite.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/timed_choice_bar.dart';
 import 'journal_screen.dart';
@@ -2903,7 +2904,27 @@ class _JourneyChartState extends State<_JourneyChart>
     final fade = ((4.2 - now) / 0.6).clamp(0.0, 1.0);
     final s = Curves.easeOutBack.transform(appear);
     final spread = ((now - 0.95) / 1.1).clamp(0.0, 1.0);
+    // The seal that stamps it, in pixel art (v1.216): it comes down, the
+    // ink flies and it dissolves, under the name that follows.
+    PixelStrips.preload(const ['moment_seal']);
     return [
+      if (now >= 0.9 && now < 3.2)
+        Positioned(
+          left: 0,
+          width: width,
+          top: here.dy + _hereRadius + 10 + 13 - 48,
+          height: 96,
+          child: IgnorePointer(
+            child: CustomPaint(
+              key: const ValueKey('journey_stamp_seal'),
+              painter: PixelStripPainter(
+                names: const ['moment_seal'],
+                progress: ((now - 0.9) / 2.3).clamp(0.0, 0.999),
+                scale: 2,
+              ),
+            ),
+          ),
+        ),
       if (spread > 0 && spread < 1)
         Positioned(
           left: here.dx - 90,

@@ -101,6 +101,7 @@ flutter:
     - assets/visuals/ship_parts/
     - assets/visuals/ship_cutaways/
     - assets/visuals/sea_beasts/
+    - assets/visuals/pixel_fx/
     - assets/visuals/quests/
     - assets/visuals/shops/
     - assets/visuals/gates/
