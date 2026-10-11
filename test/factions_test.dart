@@ -57,18 +57,26 @@ StandingResult _change(PoliticsState state, String id, num delta) =>
 
 void main() {
   group('tiers', () {
-    test('the seven ranges, edges included, and their prices', () {
+    test('the eleven ranges, edges included, and their prices', () {
       const cases = {
         -100: StandingTier.hunted,
         -61: StandingTier.hunted,
         -60: StandingTier.hostile,
         -26: StandingTier.hostile,
-        -25: StandingTier.wary,
+        -25: StandingTier.resented,
+        -19: StandingTier.resented,
+        -18: StandingTier.unfriendly,
+        -12: StandingTier.unfriendly,
+        -11: StandingTier.wary,
         -6: StandingTier.wary,
         -5: StandingTier.unknown,
         5: StandingTier.unknown,
         6: StandingTier.known,
-        25: StandingTier.known,
+        11: StandingTier.known,
+        12: StandingTier.friendly,
+        18: StandingTier.friendly,
+        19: StandingTier.friend,
+        25: StandingTier.friend,
         26: StandingTier.trusted,
         60: StandingTier.trusted,
         61: StandingTier.sworn,
@@ -81,9 +89,13 @@ void main() {
       expect(standingTierFor(5.5), StandingTier.known, reason: 'read rounded');
       expect(tierPriceFactor(StandingTier.hunted), isNull);
       expect(tierPriceFactor(StandingTier.hostile), 1.40);
+      expect(tierPriceFactor(StandingTier.resented), 1.30);
+      expect(tierPriceFactor(StandingTier.unfriendly), 1.22);
       expect(tierPriceFactor(StandingTier.wary), 1.15);
       expect(tierPriceFactor(StandingTier.unknown), 1.0);
       expect(tierPriceFactor(StandingTier.known), 0.95);
+      expect(tierPriceFactor(StandingTier.friendly), 0.92);
+      expect(tierPriceFactor(StandingTier.friend), 0.89);
       expect(tierPriceFactor(StandingTier.trusted), 0.85);
       expect(tierPriceFactor(StandingTier.sworn), 0.75);
       expect(tierColor(StandingTier.sworn), 0xFFF2C14E);
@@ -208,7 +220,7 @@ void main() {
       expect(state.swornFactionId, 'red');
       state = setStandingValue(state, 'green', 80, 'edit', data: _data).state;
       expect(state.standingOf('green', _data), swornRivalCap);
-      expect(state.tierOf('green', _data), StandingTier.known);
+      expect(state.tierOf('green', _data), StandingTier.friend);
       expect(state.swornFactionId, 'red');
     });
 

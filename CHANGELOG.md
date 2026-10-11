@@ -8,6 +8,35 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.233.0+269]
+
+Standing with a clan now has eleven steps, and fusions ask for more.
+
+### Changed
+- **Standing ladder.** Five steps up from Unknown and, as their bad
+  equivalents, five down:
+
+  | Up | Standing | Price | Down | Standing | Price |
+  |---|---|---|---|---|---|
+  | Known | 6 to 11 | −5% | Wary | −6 to −11 | +15% |
+  | Friendly | 12 to 18 | −8% | Unfriendly | −12 to −18 | +22% |
+  | Friend | 19 to 25 | −11% | Resented | −19 to −25 | +30% |
+  | Trusted | 26 to 60 | −15% | Hostile | −26 to −60 | +40% |
+  | Sworn | 61 to 100 | −25% | Hunted | −61 to −100 | no trade |
+
+  Unknown stays −5 to 5. The ends of the ladder keep their old ranges
+  (Trusted from 26, Sworn from 61, Hostile from −26, Hunted from −61); the
+  two new steps on each side split what Known and Wary used to cover. French:
+  Estime, Cordialité, Amitié, Confiance, Serment; Méfiance, Froideur, Rancune,
+  Hostilité, Traque. Shopkeepers use their Wary line for the three lower
+  steps above Hostile too.
+- **Fusions need Trusted with both clans** (was Known). **Ascensions need
+  Friend with their clan** (was Trusted), one step easier since only one clan
+  is asked. In 300 simulated runs, skills learned per run: 9.6 (9.9 before),
+  level 11.1, win rate 40%.
+- The Edit Mode Affinities tab and the offer texts name the new steps.
+- Tier titles stay at Known, Trusted and Sworn; the new steps have none yet.
+
 ## [1.232.0+268]
 
 Each clan now has a home among the peoples and the classes, and two clans

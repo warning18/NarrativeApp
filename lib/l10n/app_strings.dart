@@ -9826,12 +9826,25 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Hostile',
     AppLanguage.fr: 'Hostilité',
   },
+  'standing_tier_resented': {
+    AppLanguage.en: 'Resented',
+    AppLanguage.fr: 'Rancune',
+  },
+  'standing_tier_unfriendly': {
+    AppLanguage.en: 'Unfriendly',
+    AppLanguage.fr: 'Froideur',
+  },
   'standing_tier_wary': {AppLanguage.en: 'Wary', AppLanguage.fr: 'Méfiance'},
   'standing_tier_unknown': {
     AppLanguage.en: 'Unknown',
     AppLanguage.fr: 'Anonymat',
   },
   'standing_tier_known': {AppLanguage.en: 'Known', AppLanguage.fr: 'Estime'},
+  'standing_tier_friendly': {
+    AppLanguage.en: 'Friendly',
+    AppLanguage.fr: 'Cordialité',
+  },
+  'standing_tier_friend': {AppLanguage.en: 'Friend', AppLanguage.fr: 'Amitié'},
   'standing_tier_trusted': {
     AppLanguage.en: 'Trusted',
     AppLanguage.fr: 'Confiance',
@@ -10699,9 +10712,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'clans_affinity_cards_hint': {
     AppLanguage.en:
-        'A fusion needs both parent skills and Known standing with both clans; either clan offers it, and taking it raises both. An ascension raises a skill you know and needs Trusted standing with its clan.',
+        'A fusion needs both parent skills and Trusted standing with both clans; either clan offers it, and taking it raises both. An ascension raises a skill you know and needs Friend standing with its clan.',
     AppLanguage.fr:
-        'Une fusion demande les deux compétences d’origine et le palier « Estime » auprès des deux clans\u00a0; l’un ou l’autre la propose, et la prendre élève les deux. Une ascension élève une compétence que vous connaissez et demande le palier « Confiance » auprès de son clan.',
+        'Une fusion demande les deux compétences d’origine et le palier « Confiance » auprès des deux clans\u00a0; l’un ou l’autre la propose, et la prendre élève les deux. Une ascension élève une compétence que vous connaissez et demande le palier « Amitié » auprès de son clan.',
   },
   'clans_tab_throne': {AppLanguage.en: 'Throne', AppLanguage.fr: 'Trône'},
   'throne_edit_hint': {

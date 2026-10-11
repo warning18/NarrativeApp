@@ -94,7 +94,7 @@ OfferContext _ctx(
         {Set<String> known = const {'a1', 'b1'}, PoliticsState? politics}) =>
     OfferContext(
       data: _data,
-      politics: politics ?? _at({'red': 10, 'blue': 10}),
+      politics: politics ?? _at({'red': 30, 'blue': 30}),
       skills: _skills,
       skillTrees: _trees,
       raceId: 'human',
@@ -181,29 +181,47 @@ void main() {
   });
 
   group('fusions and ascensions', () {
-    test('a fusion needs both parents and Known with both clans', () {
-      expect(accordsFor('red', _ctx()).map((a) => (a.skillId, a.partnerId)),
+    test('a fusion needs both parents and Trusted with both clans', () {
+      expect(
+          accordsFor('red', _ctx())
+              .where((a) => a.skillId == 'fuse')
+              .map((a) => (a.skillId, a.partnerId)),
           [('fuse', 'blue')]);
       expect(accordsFor('blue', _ctx()).map((a) => (a.skillId, a.partnerId)),
           [('fuse', 'red')]);
+      List<String> fusions(String clan, PoliticsState politics,
+              {Set<String> known = const {'a1', 'b1'}}) =>
+          accordsFor(clan, _ctx(politics: politics, known: known))
+              .where((a) => a.skillId == 'fuse')
+              .map((a) => a.skillId)
+              .toList();
       // A parent missing.
-      expect(accordsFor('red', _ctx(known: {'a1'})), isEmpty);
-      // Unknown with one of the clans.
-      expect(accordsFor('red', _ctx(politics: _at({'red': 10}))), isEmpty);
-      expect(accordsFor('blue', _ctx(politics: _at({'red': 10}))), isEmpty);
+      expect(
+          fusions('red', _at({'red': 30, 'blue': 30}), known: {'a1'}), isEmpty);
+      // Unknown with one of the clans, or only Friend with it.
+      expect(fusions('red', _at({'red': 30})), isEmpty);
+      expect(fusions('blue', _at({'red': 30})), isEmpty);
+      expect(fusions('red', _at({'red': 30, 'blue': 22})), isEmpty);
       // Already known.
-      expect(accordsFor('red', _ctx(known: {'a1', 'b1', 'fuse'})), isEmpty);
+      expect(
+          fusions('red', _at({'red': 30, 'blue': 30}),
+              known: {'a1', 'b1', 'fuse'}),
+          isEmpty);
     });
 
-    test('an ascension needs Trusted with its clan, and offers one only', () {
-      final trusted = _ctx(politics: _at({'red': 30, 'blue': 10}));
-      final byRed = accordsFor('red', trusted);
-      expect(byRed.map((a) => a.skillId), containsAll(['fuse', 'rise']));
-      expect(byRed.firstWhere((a) => a.skillId == 'rise').partnerId, isEmpty);
-      // Blue is only Known, and does not sponsor a1.
-      expect(accordsFor('blue', trusted).map((a) => a.skillId), ['fuse']);
-      // Known is not enough.
-      expect(accordsFor('red', _ctx()).map((a) => a.skillId), ['fuse']);
+    test('an ascension needs Friend with its clan alone, and offers one only',
+        () {
+      // Red is Friend (22), blue only Known: red offers the ascension, not
+      // the fusion; blue sponsors nothing to raise.
+      final friend = _ctx(politics: _at({'red': 22, 'blue': 10}));
+      expect(accordsFor('red', friend).map((a) => a.skillId), ['rise']);
+      expect(accordsFor('red', friend).single.partnerId, isEmpty);
+      expect(accordsFor('blue', friend), isEmpty);
+      // Friendly is not enough.
+      expect(accordsFor('red', _ctx(politics: _at({'red': 15}))), isEmpty);
+      // Both Trusted: the fusion joins it.
+      expect(accordsFor('red', _ctx()).map((a) => a.skillId),
+          containsAll(['fuse', 'rise']));
     });
 
     test('the clans behind a card are the clans behind its parents', () {
@@ -216,7 +234,7 @@ void main() {
           skills: _skills);
       expect(sponsors('fuse'), unorderedEquals(['red', 'blue']));
       expect(sponsors('rise'), ['red']);
-      expect(c.tierOf('red'), StandingTier.known);
+      expect(c.tierOf('red'), StandingTier.trusted);
     });
 
     test('taking a fusion raises both clans, the second by half', () {

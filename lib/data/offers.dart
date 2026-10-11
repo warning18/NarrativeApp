@@ -63,10 +63,10 @@ const double homeAccordWeight = 1.5;
 /// than a skill of its branches.
 const double accordPickChance = 0.5;
 
-/// Standing a fusion needs with *both* clans, and an ascension with its
-/// one (v1.232).
-const StandingTier fusionMinTier = StandingTier.known;
-const StandingTier ascensionMinTier = StandingTier.trusted;
+/// Standing a fusion needs with *both* clans (Trusted), and an ascension
+/// with its one (Friend, a step easier since one clan alone is asked); v1.233.
+const StandingTier fusionMinTier = StandingTier.trusted;
+const StandingTier ascensionMinTier = StandingTier.friend;
 
 /// The weight of each kind of gift a clan may bring, among those it has.
 const Map<GiftKind, int> giftKindWeights = {
