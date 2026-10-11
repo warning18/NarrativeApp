@@ -8,6 +8,12 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.242.0+278]
+
+### Changed
+- **The faces below the die are squares of one size.** Each is a fixed square (three across or more) with its skill's icon (or its own kind and value), its name on two lines at most, and a mark for what can be done with it (a lock, a cross to clear its skill, a pencil to choose one, a warning when its skill is over its limit), so a long name or text can no longer stretch or crowd it. What the picked face does, in full (its summary, its rule words and what they do, whether it is fixed or custom or over its limit, its element) is told in the panel beside the die, which grows with the text.
+- **A double tap chooses a skill.** Double-tap a face's square, or a side of the cube, to open its skill picker; the pencil on a square and a "Choose this face's skill" button in the panel do the same. A single tap only picks the face (the cube turns to it). A cube stood on its top or bottom sits upright.
+
 ## [1.241.0+277]
 
 ### Changed

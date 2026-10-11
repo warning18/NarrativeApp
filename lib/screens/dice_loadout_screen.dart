@@ -191,9 +191,10 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
               restriction;
     }
 
-    // A tap on a face (its slot, or the face in front on the cube): it is the
-    // picked one, and an open face asks for its skill.
-    void tapFace(int index) {
+    // A tap on a face picks it (the cube turns to it); a double tap, on its
+    // slot or on the cube, chooses its skill (v1.242).
+    void selectFace(int index) => setState(() => _faceSel = index);
+    void pickFace(int index) {
       setState(() => _faceSel = index);
       final face = faces[index];
       final open = isAssignableFace(face);
@@ -250,7 +251,8 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                 totalWeight: totalWeight,
                 still: MediaQuery.of(context).disableAnimations,
                 onSelect: (i) => setState(() => _faceSel = i),
-                onActivate: (i) => tapFace(i),
+                onActivate: pickFace,
+                picks: assignments,
                 accepts: (i, id) => dropOk(i, id),
                 onDrop: (i, id) => assignTo(i, id),
               ),
@@ -278,55 +280,67 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
               const SizedBox(height: 12),
               TutorialTarget(
                 id: 'dice.faces',
-                child: Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: [
-                    for (var index = 0; index < faces.length; index++)
-                      Builder(builder: (context) {
-                        final face = faces[index];
-                        final open = isAssignableFace(face);
-                        final pickedSkillId =
-                            open ? assignments[index.toString()] : null;
-                        final overLimit = pickedSkillId != null &&
-                            limited[index.toString()] != pickedSkillId;
-                        final assignedSkillId =
-                            overLimit ? null : pickedSkillId;
-                        // A skill set on the face snaps into place.
-                        return SnapIn(
-                          snapKey: assignedSkillId ?? '',
-                          child: _FaceSlot(
-                            key: Key('face_slot_$index'),
-                            face: face,
-                            chance: totalWeight <= 0
-                                ? 0
-                                : ((face['weight'] as num?)?.toDouble() ??
-                                        1.0) /
-                                    totalWeight,
-                            showOdds:
-                                ref.watch(appModeProvider) == AppMode.edit,
-                            picked: index == _faceSel,
-                            assignedSkillId: assignedSkillId,
-                            overLimitSkillId: overLimit ? pickedSkillId : null,
-                            language: language,
-                            locked: !open,
-                            restrictionElement: restrictionOf(index),
-                            skills: skills,
-                            accepts: (id) => canSetSkillOnFace(
-                                id, index, faces, assignments, skills),
-                            onAccept: (id) {
-                              setState(() => _faceSel = index);
-                              assignTo(index, id);
-                            },
-                            onClear: pickedSkillId == null
-                                ? null
-                                : () => clearAt(index),
-                            onTap: () => tapFace(index),
-                          ),
-                        );
-                      }),
-                  ],
-                ),
+                child: LayoutBuilder(builder: (context, box) {
+                  // Squares of one fixed size, three across or more.
+                  final columns = (box.maxWidth / 120).floor().clamp(3, 8);
+                  const gap = 10.0;
+                  final side = (box.maxWidth - gap * (columns - 1)) / columns;
+                  return Wrap(
+                    spacing: gap,
+                    runSpacing: gap,
+                    children: [
+                      for (var index = 0; index < faces.length; index++)
+                        SizedBox(
+                          width: side,
+                          height: side,
+                          child: Builder(builder: (context) {
+                            final face = faces[index];
+                            final open = isAssignableFace(face);
+                            final pickedSkillId =
+                                open ? assignments[index.toString()] : null;
+                            final overLimit = pickedSkillId != null &&
+                                limited[index.toString()] != pickedSkillId;
+                            final assignedSkillId =
+                                overLimit ? null : pickedSkillId;
+                            // A skill set on the face snaps into place.
+                            return SnapIn(
+                              snapKey: assignedSkillId ?? '',
+                              child: _FaceSlot(
+                                key: Key('face_slot_$index'),
+                                face: face,
+                                chance: totalWeight <= 0
+                                    ? 0
+                                    : ((face['weight'] as num?)?.toDouble() ??
+                                            1.0) /
+                                        totalWeight,
+                                showOdds:
+                                    ref.watch(appModeProvider) == AppMode.edit,
+                                picked: index == _faceSel,
+                                assignedSkillId: assignedSkillId,
+                                overLimitSkillId:
+                                    overLimit ? pickedSkillId : null,
+                                language: language,
+                                locked: !open,
+                                restrictionElement: restrictionOf(index),
+                                skills: skills,
+                                accepts: (id) => canSetSkillOnFace(
+                                    id, index, faces, assignments, skills),
+                                onAccept: (id) {
+                                  setState(() => _faceSel = index);
+                                  assignTo(index, id);
+                                },
+                                onClear: pickedSkillId == null
+                                    ? null
+                                    : () => clearAt(index),
+                                onTap: () => selectFace(index),
+                                onPick: open ? () => pickFace(index) : null,
+                              ),
+                            );
+                          }),
+                        ),
+                    ],
+                  );
+                }),
               ),
               const Divider(height: 40),
               Text(tr(ref, 'your_unlocked_skills'),
@@ -601,10 +615,12 @@ class _SkillChip extends StatelessWidget {
   }
 }
 
-/// One face of the die: named after the skill it casts (or its basic
-/// action), with what it does, how often it comes up, and whether it is
-/// fixed, open, or set to a skill of the player's choosing. Open faces take
-/// a skill by tap (a picker) or by dragging a skill chip onto them.
+/// One face of the die as a square of a fixed size (v1.242), so a long name
+/// or a long line of text never stretches or crowds it: the skill's icon (or
+/// the face's own), its name on two lines at most, a mark for what can be done
+/// with it. What it does, in full, is told beside the cube. A tap picks the
+/// face (the cube turns to it); a double tap, or its pencil, chooses its
+/// skill; a skill chip dragged onto it goes on it.
 class _FaceSlot extends StatelessWidget {
   const _FaceSlot({
     super.key,
@@ -622,6 +638,7 @@ class _FaceSlot extends StatelessWidget {
     this.overLimitSkillId,
     this.restrictionElement,
     this.onTap,
+    this.onPick,
   });
 
   final Map<String, dynamic> face;
@@ -635,8 +652,8 @@ class _FaceSlot extends StatelessWidget {
   final bool picked;
   final String? assignedSkillId;
 
-  /// A pick past its skill's limit (a save from before the limits): shown,
-  /// but the face does its own action.
+  /// A pick past its skill's limit (a save from before the limits): marked,
+  /// and the face does its own action.
   final String? overLimitSkillId;
 
   /// Whether a dragged skill may go on this face (its rarity's limit).
@@ -649,18 +666,18 @@ class _FaceSlot extends StatelessWidget {
 
   /// When set, only skills whose own `element` matches this may be dropped.
   final String? restrictionElement;
+
+  /// A tap: the face becomes the picked one.
   final VoidCallback? onTap;
+
+  /// A double tap, or the pencil: choose its skill.
+  final VoidCallback? onPick;
 
   @override
   Widget build(BuildContext context) {
-    String t(String key) => trFor(language, key);
     final name = faceDisplayName(face,
         assignedSkillId: assignedSkillId, language: language);
     final skillId = faceSkillId(face, assignedSkillId);
-    final channeled = assignedSkillId != null && isBasicFace(face);
-    final detail = skillId == null
-        ? _basicFaceSummary(face, language)
-        : _skillSummary(skills[skillId] as Map<String, dynamic>?, language);
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     // The face wears the colour of what it does (see FaceKind): red hits,
@@ -669,99 +686,103 @@ class _FaceSlot extends StatelessWidget {
     final kind = skillId == null
         ? faceKind(face['type']?.toString() ?? '')
         : skillKind(skills[skillId] as Map<String, dynamic>?);
+    final value = (face['value'] as num?)?.toInt() ?? 0;
 
     Widget content(bool isHovering, bool isInvalidHover) {
+      final border = isInvalidHover
+          ? colorScheme.error
+          : (isHovering || picked
+              ? colorScheme.primary
+              : kind.color.withValues(alpha: locked ? 0.45 : 0.9));
       return GestureDetector(
         onTap: onTap,
+        onDoubleTap: onPick,
         child: Container(
-          width: 160,
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
             color: isInvalidHover
                 ? colorScheme.errorContainer
                 : (isHovering
                     ? colorScheme.primaryContainer
                     : kind.color.withValues(alpha: locked ? 0.08 : 0.14)),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: isInvalidHover
-                  ? colorScheme.error
-                  : (isHovering || picked
-                      ? colorScheme.primary
-                      : kind.color.withValues(alpha: locked ? 0.45 : 0.9)),
-              width: (isHovering ||
-                      isInvalidHover ||
-                      picked ||
-                      assignedSkillId != null)
-                  ? 2
-                  : 1,
+              color: border,
+              width: (isHovering || isInvalidHover || picked) ? 2.4 : 1,
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
+          child: Stack(
             children: [
-              Row(
-                children: [
-                  Icon(kind.icon, size: 16, color: kind.color),
-                  const SizedBox(width: 4),
-                  Expanded(child: Text(name, style: textTheme.titleSmall)),
-                  // Its keywords (see face_keywords.dart), a tap on the
-                  // badge naming them.
-                  if (faceKeywordsOf(face).isNotEmpty)
-                    Tooltip(
-                      message: [
-                        for (final k in faceKeywordsOf(face))
-                          '${t(keywordLabelKey(k))}: ${t(keywordDescriptionKey(k))}',
-                      ].join('\n'),
-                      child: FaceKeywordBadges(faceKeywordsOf(face), size: 14),
-                    ),
-                  if (locked)
-                    Icon(Icons.lock_outline,
-                        size: 16, color: colorScheme.outline)
-                  else if (onClear != null)
-                    IconButton(
-                      icon: const Icon(Icons.close, size: 16),
-                      tooltip: t('clear_assigned_skill_tooltip'),
-                      visualDensity: VisualDensity.compact,
-                      onPressed: onClear,
-                    )
-                  else
-                    Icon(Icons.edit_outlined,
-                        size: 16, color: colorScheme.primary),
-                ],
+              // The face: its skill's icon, or its own kind over its value.
+              Align(
+                alignment: const Alignment(0, -0.35),
+                child: skillId != null
+                    ? SkillPixelIcon(skillId, size: 34)
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(kind.icon,
+                              size: value > 0 ? 22 : 30, color: kind.color),
+                          if (value > 0)
+                            Text('$value',
+                                style: textTheme.titleSmall?.copyWith(
+                                    color: kind.color,
+                                    fontWeight: FontWeight.bold,
+                                    height: 1)),
+                        ],
+                      ),
               ),
-              const SizedBox(height: 4),
-              Text(detail, style: textTheme.bodySmall),
-              if (showOdds)
-                Text(
-                  '${(chance * 100).round()}% ${t('face_chance_suffix')}',
-                  style: textTheme.labelSmall
-                      ?.copyWith(color: colorScheme.onSurfaceVariant),
+              // Its name, on two lines at most.
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  name,
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: textTheme.labelSmall?.copyWith(height: 1.1),
                 ),
-              if (overLimitSkillId != null)
-                Text(
-                  '${skillDisplayName(overLimitSkillId!, language: language)}: '
-                  '${t('face_over_limit_label')}',
-                  style:
-                      textTheme.labelSmall?.copyWith(color: colorScheme.error),
-                ),
-              if (locked)
-                Text(t('fixed_face_label'), style: textTheme.labelSmall)
-              else if (channeled)
-                Text(
-                  t('channeled_face_badge').replaceAll('{face}',
-                      t(basicFaceLabelKey(face['type']?.toString() ?? ''))),
-                  style: textTheme.labelSmall
-                      ?.copyWith(color: colorScheme.tertiary),
-                )
-              else if (assignedSkillId != null)
-                Text(t('custom_label'),
-                    style: textTheme.labelSmall
-                        ?.copyWith(color: colorScheme.tertiary)),
-              if (!locked && restrictionElement != null)
-                Text('$restrictionElement ${t('only_suffix')}',
-                    style: textTheme.labelSmall),
+              ),
+              // What can be done: a lock for a fixed face, a cross to clear
+              // a skill, a pencil to choose one.
+              Align(
+                alignment: Alignment.topRight,
+                child: locked
+                    ? Icon(Icons.lock_outline,
+                        size: 15, color: colorScheme.outline)
+                    : onClear != null
+                        ? InkResponse(
+                            onTap: onClear,
+                            radius: 16,
+                            child: Tooltip(
+                              message: trFor(
+                                  language, 'clear_assigned_skill_tooltip'),
+                              child: const Icon(Icons.close, size: 16),
+                            ),
+                          )
+                        : InkResponse(
+                            onTap: onPick,
+                            radius: 16,
+                            child: Icon(Icons.edit_outlined,
+                                size: 16, color: colorScheme.primary),
+                          ),
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: overLimitSkillId != null
+                    ? Tooltip(
+                        message:
+                            '${skillDisplayName(overLimitSkillId!, language: language)}: '
+                            '${trFor(language, 'face_over_limit_label')}',
+                        child: Icon(Icons.warning_amber_rounded,
+                            size: 16, color: colorScheme.error),
+                      )
+                    : showOdds
+                        ? Text('${(chance * 100).round()}%',
+                            style: textTheme.labelSmall
+                                ?.copyWith(color: colorScheme.onSurfaceVariant))
+                        : const SizedBox.shrink(),
+              ),
             ],
           ),
         ),
@@ -947,6 +968,7 @@ class _DieStage extends StatelessWidget {
     required this.language,
     required this.faces,
     required this.assignments,
+    required this.picks,
     required this.skills,
     required this.selected,
     required this.showOdds,
@@ -962,6 +984,9 @@ class _DieStage extends StatelessWidget {
   final AppLanguage language;
   final List<Map<String, dynamic>> faces;
   final Map<String, String> assignments;
+
+  /// What the player picked for each face, before the skill limits.
+  final Map<String, String> picks;
   final Map<String, dynamic> skills;
 
   /// The face index the die is turned to.
@@ -989,6 +1014,11 @@ class _DieStage extends StatelessWidget {
     final name =
         faceDisplayName(face, assignedSkillId: assigned, language: language);
     final open = isAssignableFace(face);
+    final picked = open ? picks[selected.toString()] : null;
+    final overSkill = picked != null && assigned != picked ? picked : null;
+    final element = face['element']?.toString() ?? 'None';
+    final restriction =
+        face['type'] == 'Skill' && element != 'None' ? element : null;
     String t(String key) => trFor(language, key);
     final weight = (face['weight'] as num?)?.toDouble() ?? 1.0;
     return Padding(
@@ -1048,12 +1078,64 @@ class _DieStage extends StatelessWidget {
                       style: theme.textTheme.labelSmall
                           ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                     ),
+                  // Its rule words, named in full (a tap on a badge used to).
+                  for (final k in faceKeywordsOf(face))
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Text.rich(
+                        TextSpan(children: [
+                          TextSpan(
+                              text: '${t(keywordLabelKey(k))}: ',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w700)),
+                          TextSpan(text: t(keywordDescriptionKey(k))),
+                        ]),
+                        style: theme.textTheme.labelSmall,
+                      ),
+                    ),
+                  // What kind of face it is, in full: this panel grows with
+                  // the text, so the squares below never have to.
+                  if (!open)
+                    Text(t('fixed_face_label'),
+                        style: theme.textTheme.labelSmall)
+                  else if (assigned != null && isBasicFace(face))
+                    Text(
+                      t('channeled_face_badge').replaceAll('{face}',
+                          t(basicFaceLabelKey(face['type']?.toString() ?? ''))),
+                      style: theme.textTheme.labelSmall
+                          ?.copyWith(color: theme.colorScheme.tertiary),
+                    )
+                  else if (assigned != null)
+                    Text(t('custom_label'),
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: theme.colorScheme.tertiary)),
+                  if (overSkill != null)
+                    Text(
+                      '${skillDisplayName(overSkill, language: language)}: '
+                      '${t('face_over_limit_label')}',
+                      style: theme.textTheme.labelSmall
+                          ?.copyWith(color: theme.colorScheme.error),
+                    ),
+                  if (open && restriction != null)
+                    Text('$restriction ${t('only_suffix')}',
+                        style: theme.textTheme.labelSmall),
                   const SizedBox(height: 6),
                   Text(
                     open ? t('die_turn_hint_open') : t('die_turn_hint'),
                     style: theme.textTheme.labelSmall
                         ?.copyWith(color: theme.colorScheme.primary),
                   ),
+                  if (open)
+                    TextButton.icon(
+                      key: const Key('die_pick_skill'),
+                      style: TextButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
+                          padding: EdgeInsets.zero,
+                          alignment: Alignment.centerLeft),
+                      onPressed: () => onActivate(selected),
+                      icon: const Icon(Icons.edit_outlined, size: 16),
+                      label: Text(t('pick_face_skill_title')),
+                    ),
                 ],
               ),
             ),

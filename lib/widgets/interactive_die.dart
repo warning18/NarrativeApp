@@ -1,8 +1,8 @@
 // A die cube the player turns (v1.241): the same cube the fight tumbles (see
 // die_3d.dart), but dragged round with a finger and let go onto the face
 // nearest the viewer, which it then reports as the picked one. A tap on a
-// side that shows turns the cube to it; a tap on the face in front acts on
-// it (the loadout opens its skill picker). The cube is six flat faces in 3D
+// side that shows turns the cube to it; a double tap on a side acts on it
+// (the loadout opens its skill picker). The cube is six flat faces in 3D
 // like the fight's, so what is drawn on them is the same widgets.
 import 'dart:math' as math;
 
@@ -19,8 +19,9 @@ import 'die_skins.dart';
       1 => (dieRestTipX, dieRestTurnY + math.pi / 2),
       2 => (dieRestTipX, dieRestTurnY + math.pi),
       3 => (dieRestTipX, dieRestTurnY - math.pi / 2),
-      4 => (math.pi / 2 + dieRestTipX, dieRestTurnY),
-      _ => (-math.pi / 2 + dieRestTipX, dieRestTurnY),
+      // Standing on its top or bottom, no yaw, so the face sits upright.
+      4 => (math.pi / 2 + dieRestTipX, 0.0),
+      _ => (-math.pi / 2 + dieRestTipX, 0.0),
     };
 
 /// The side of the cube nearest the viewer for a cube tipped [rx] and
@@ -71,7 +72,7 @@ class InteractiveDie extends StatefulWidget {
   /// A side was turned to the front, by a drag or a tap on it.
   final ValueChanged<int> onSelect;
 
-  /// The side in front was tapped.
+  /// A side was double-tapped.
   final ValueChanged<int>? onActivate;
 
   /// The cube's edge in logical pixels.
@@ -95,6 +96,7 @@ class _InteractiveDieState extends State<InteractiveDie>
   late double _toX = _rx;
   late double _toY = _ry;
   bool _dragging = false;
+  int? _doubleTapAt;
 
   @override
   void initState() {
@@ -224,16 +226,25 @@ class _InteractiveDieState extends State<InteractiveDie>
           _dragging = false;
           _settle();
         },
+        // A tap on a side that shows turns the cube to it.
         onTapUp: (d) {
-          final local = d.localPosition - Offset(area / 2, area / 2);
-          final slot = _hit(local);
+          final slot = _hit(d.localPosition - Offset(area / 2, area / 2));
+          if (slot == null || slot == front && slot == widget.selected) return;
+          _turnTo(slot);
+          widget.onSelect(slot);
+        },
+        // A double tap acts on the side it lands on (the loadout opens its
+        // skill picker).
+        onDoubleTapDown: (d) =>
+            _doubleTapAt = _hit(d.localPosition - Offset(area / 2, area / 2)),
+        onDoubleTap: () {
+          final slot = _doubleTapAt;
           if (slot == null) return;
-          if (slot == front && slot == widget.selected) {
-            widget.onActivate?.call(slot);
-          } else {
+          if (slot != widget.selected) {
             _turnTo(slot);
             widget.onSelect(slot);
           }
+          widget.onActivate?.call(slot);
         },
         child: SizedBox(
           width: area,

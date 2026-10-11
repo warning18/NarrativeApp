@@ -64,7 +64,8 @@ void main() {
     expect(picked.last, isNot(1));
   });
 
-  testWidgets('a tap on the front side acts on it', (tester) async {
+  testWidgets('a double tap acts on a side, a single tap on the front does not',
+      (tester) async {
     final acted = <int>[];
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
@@ -79,6 +80,11 @@ void main() {
         ),
       ),
     ));
+    await tester.tap(find.byKey(const ValueKey('interactive_die')));
+    await tester.pumpAndSettle();
+    expect(acted, isEmpty);
+    await tester.tap(find.byKey(const ValueKey('interactive_die')));
+    await tester.pump(const Duration(milliseconds: 60));
     await tester.tap(find.byKey(const ValueKey('interactive_die')));
     await tester.pumpAndSettle();
     expect(acted, [0]);
@@ -132,6 +138,14 @@ void main() {
     await _settle(tester);
     final after = tester.widget<Text>(find.byKey(const Key('die_face_name')));
     expect(after.data, isNot(before.data));
+
+    // A double tap on a face chooses its skill.
+    expect(find.byType(BottomSheet), findsNothing);
+    await tester.tap(find.byKey(const Key('face_slot_3')));
+    await tester.pump(const Duration(milliseconds: 60));
+    await tester.tap(find.byKey(const Key('face_slot_3')));
+    await _settle(tester);
+    expect(find.byType(BottomSheet), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }
