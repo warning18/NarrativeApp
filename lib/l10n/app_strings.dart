@@ -3204,6 +3204,39 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "La race et la profession ne peuvent être modifiées qu'en recommençant "
             "l'histoire depuis le tout début.",
   },
+  'luck_abbrev': {AppLanguage.en: 'LUCK', AppLanguage.fr: 'CHC'},
+  'cha_abbrev': {AppLanguage.en: 'CHA', AppLanguage.fr: 'CHR'},
+  'radar_before_label': {AppLanguage.en: 'Before', AppLanguage.fr: 'Avant'},
+  'radar_memories_label': {
+    AppLanguage.en: 'Your memories',
+    AppLanguage.fr: 'Vos souvenirs',
+  },
+  'element_short_electricity': {
+    AppLanguage.en: 'Elec',
+    AppLanguage.fr: 'Élec',
+  },
+  'elements_title': {AppLanguage.en: 'Elements', AppLanguage.fr: 'Éléments'},
+  'elements_hint': {
+    AppLanguage.en: 'Damage and resistance from what you wear and carry',
+    AppLanguage.fr: 'Dégâts et résistance de ce que vous portez',
+  },
+  'elements_empty': {
+    AppLanguage.en: 'Equip gear to see your elements.',
+    AppLanguage.fr: 'Équipez-vous pour voir vos éléments.',
+  },
+  'elements_damage': {AppLanguage.en: 'Damage', AppLanguage.fr: 'Dégâts'},
+  'elements_resist': {
+    AppLanguage.en: 'Resistance',
+    AppLanguage.fr: 'Résistance',
+  },
+  'elements_view_radar': {AppLanguage.en: 'Radar', AppLanguage.fr: 'Radar'},
+  'elements_view_split': {AppLanguage.en: 'Split', AppLanguage.fr: 'Séparé'},
+  'elements_view_rose': {AppLanguage.en: 'Rose', AppLanguage.fr: 'Rose'},
+  'elements_view_rows': {AppLanguage.en: 'Rows', AppLanguage.fr: 'Liste'},
+  'sheet_belongings_title': {
+    AppLanguage.en: 'Belongings',
+    AppLanguage.fr: 'Possessions',
+  },
   'granted_skill_label': {
     AppLanguage.en: 'Starting Skill',
     AppLanguage.fr: 'Compétence de départ',
@@ -3264,6 +3297,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'origin_stage_youth': {
     AppLanguage.en: 'Adolescence',
     AppLanguage.fr: 'Adolescence',
+  },
+  'origin_random_one': {
+    AppLanguage.en: 'Let fate choose',
+    AppLanguage.fr: 'Laisser le destin choisir',
+  },
+  'origin_random_all': {
+    AppLanguage.en: 'Choose my whole life at random',
+    AppLanguage.fr: 'Tirer toute ma vie au sort',
+  },
+  'origin_random_again': {
+    AppLanguage.en: 'Choose again at random',
+    AppLanguage.fr: 'Tirer de nouveau au sort',
   },
   'origin_teaches': {
     AppLanguage.en: '+1 {ability}',
