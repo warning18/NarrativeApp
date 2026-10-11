@@ -100,9 +100,10 @@ void main() {
     // The chip takes her off the test again.
     await tester
         .ensureVisible(find.byKey(const Key('fight_lab_companion_maren')));
-    await tester.tap(find.descendant(
-        of: find.byKey(const Key('fight_lab_companion_maren')),
-        matching: find.byIcon(Icons.cancel)));
+    // The chip's delete button: its icon differs between Flutter versions.
+    tester
+        .widget<InputChip>(find.byKey(const Key('fight_lab_companion_maren')))
+        .onDeleted!();
     await _settle(tester);
     expect(find.byKey(const Key('fight_lab_companion_maren')), findsNothing);
   });
