@@ -8,6 +8,45 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.235.0+271]
+
+Titles for the new standing steps, dedicated art for the forty clan cards,
+and particles for them in a fight.
+
+### Added
+- **24 titles**, English and French: for each of the six clans, a good title
+  at Friendly and at Friend and a bad one at Unfriendly and at Resented. They
+  use the new source `while:<tier>`: **held only while the standing lasts**,
+  good or bad. A good title is lost when standing falls below its step; a
+  bad one is worn automatically (like "the Marked") and lost when standing
+  recovers. The older tier titles (Known, Trusted, Sworn) are still kept once
+  earned.
+
+  | Clan | Friendly | Friend | Unfriendly | Resented |
+  |---|---|---|---|---|
+  | Dominion | Lamp-Lit | Stamped and Sealed | Marked Absent | Struck from the Roll |
+  | Vigil | Watch-Friend | Keeps a Candle | Cold Shoulder | Left in the Dark |
+  | Compact | Asked In | Seat at the Anvil | Short Measure | Barred from the Row |
+  | Mire | Reed-Friend | Fed at the Fire | Wrong Foot | Led Astray |
+  | Crows | Good for a Loan | Name in the Ledger | Overdue | Collected Upon |
+  | Penitents | Shared Road | Ash on the Brow | Unforgiven | Anathema |
+
+  Each carries one or two small effects in its clan's theme (a good one a
+  buff, a bad one a penalty of the same size).
+- **Dedicated icons for the 40 clan-card skills** (10 fusions, 10 ascensions,
+  10 sub-clan skills, 10 secrets): a frame per kind (twin gems, a gem with a
+  rising crest, a shield, a dark rune plate) in the skill's element colors,
+  with a glyph for what it does. They are generated pixel art
+  (`tools/gen_skill_card_icons.py`); replace any PNG in `assets/icons/skills/`
+  with hand-drawn art and nothing else needs to change.
+- **Clan-card particles in fights** (`VfxAccent`): over the skill's own
+  effect, a fusion plays two colors circling and flaring as one, an ascension
+  a rising pillar with climbing chevrons, a sub-clan's skill a sigil of two
+  rings with orbiting motes, a secret a violet veil with drifting rune
+  fragments. They ride on the skill's style, so a heal still plays on a
+  friend and a strike on a foe. The accent is read off the skill (nothing
+  new to author), and shows in the effects gallery too.
+
 ## [1.234.0+270]
 
 Twenty more skills: ten that belong to sub-clans and ten secrets.

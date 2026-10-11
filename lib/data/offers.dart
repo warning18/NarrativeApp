@@ -1303,7 +1303,8 @@ Map<String, double> suitorPreview(
 /// What [politics] says of [held] titles: every tier title whose tier the
 /// character has reached with its faction (kept once earned), and the
 /// mark titles (`mark:<mark>:<sub-clan>`, "the Marked") held only while
-/// the mark stands; with [flags], the Open Hand's remembrance titles
+/// the mark stands, and the `while:<tier>` titles (v1.235) held only while
+/// the standing is at that tier or beyond it; with [flags], the Open Hand's remembrance titles
 /// (v1.195, see remembranceTitlesFor), kept once earned; and the
 /// coronation's (`throne:<faction>`, v1.196) once that faction is on the
 /// Throne, kept. Returns the titles held after, and those [gained] and
@@ -1333,6 +1334,26 @@ Map<String, double> suitorPreview(
           politics.tierOf(title.factionId, data).isAtLeast(tier)) {
         next.add(title.id);
         gained.add(title.id);
+      }
+    } else if (source.startsWith('while:')) {
+      // Held only while the standing lasts (v1.235): a good title while the
+      // tier is reached or better, a bad one while it is reached or worse;
+      // lost again, gained again, with the standing.
+      final tier = standingTierNamed(source.substring('while:'.length));
+      if (tier == null ||
+          title.factionId.isEmpty ||
+          data.faction(title.factionId) == null) {
+        continue;
+      }
+      final now = politics.tierOf(title.factionId, data);
+      final has = tier.index > StandingTier.unknown.index
+          ? now.isAtLeast(tier)
+          : now.index <= tier.index;
+      if (has && !next.contains(title.id)) {
+        next.add(title.id);
+        gained.add(title.id);
+      } else if (!has && next.remove(title.id)) {
+        lost.add(title.id);
       }
     } else if (source.startsWith('mark:')) {
       final parts = source.split(':');

@@ -218,6 +218,7 @@ void main() {
     expect(data.titles.length, greaterThanOrEqualTo(30));
     final source =
         RegExp(r'^(offer|quest|intrigue|story|tier:(known|trusted|sworn)|'
+            r'while:(unfriendly|resented|friendly|friend)|'
             r'mark:foe:[a-z_]+|throne:[a-z_]+)$');
     for (final t in data.titles.values) {
       final id = t.id;
@@ -240,6 +241,20 @@ void main() {
       expect(t.unknownEffectKinds, isEmpty, reason: id);
     }
     expect(data.titlesFor(source: 'mark:foe:inquisition'), isNotEmpty);
+    // The new steps (v1.235): a good and a bad title for each, per clan, the
+    // bad ones negative, the good ones not.
+    for (final clan in clanIds) {
+      for (final tier in ['friendly', 'friend']) {
+        final titles = data.titlesFor(factionId: clan, source: 'while:$tier');
+        expect(titles, hasLength(1), reason: '$clan $tier');
+        expect(titles.single.negative, isFalse, reason: '$clan $tier');
+      }
+      for (final tier in ['unfriendly', 'resented']) {
+        final titles = data.titlesFor(factionId: clan, source: 'while:$tier');
+        expect(titles, hasLength(1), reason: '$clan $tier');
+        expect(titles.single.negative, isTrue, reason: '$clan $tier');
+      }
+    }
     for (final clan in clanIds) {
       expect(data.titlesFor(factionId: clan, source: 'tier:sworn'), isNotEmpty,
           reason: clan);

@@ -21,6 +21,7 @@ import 'package:narrative_data_app/data/skill_tree.dart';
 import 'package:narrative_data_app/gamedata/db_schema.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/providers/game_db_providers.dart';
+import 'package:narrative_data_app/utils/pixel_icons/skill_icons.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/clans_politics_screen.dart';
 
@@ -204,6 +205,21 @@ void main() {
               hasLength(2),
               reason: '$p $kind');
         }
+      }
+    });
+
+    test('every card has its own icon, not a borrowed one', () {
+      for (final entry in skills.entries) {
+        final skill = entry.value as Map<String, dynamic>;
+        if (skill['fusionOf'] == null &&
+            skill['ascendsSkillID'] == null &&
+            skill['subclanId'] == null &&
+            skill['hiddenFlags'] == null) {
+          continue;
+        }
+        final path = 'assets/icons/skills/${entry.key}.png';
+        expect(SkillIcons.pathFor(entry.key), path);
+        expect(File(path).existsSync(), isTrue, reason: path);
       }
     });
 

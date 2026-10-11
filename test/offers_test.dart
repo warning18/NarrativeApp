@@ -79,6 +79,20 @@ final ClanData _data = ClanData.fromTables(
         {'kind': 'armor', 'value': 1},
       ],
     },
+    'red_friend': {
+      'name': 'Red Friend Indeed',
+      'faction': 'red',
+      'source': 'while:friend',
+    },
+    'red_cold': {
+      'name': 'Cold Shoulder',
+      'faction': 'red',
+      'source': 'while:unfriendly',
+      'negative': true,
+      'effects': [
+        {'kind': 'goldPercent', 'value': -4},
+      ],
+    },
     'marked': {
       'name': 'Marked',
       'faction': 'red',
@@ -534,6 +548,37 @@ void main() {
       titles = titlesEarned(titles.held, politics, _data);
       expect(titles.held, ['red_known']);
       expect(titles.lost, ['marked']);
+    });
+
+    test('a while-title is held only while the standing lasts, good or bad',
+        () {
+      var politics = _at({'red': 22});
+      var titles = titlesEarned(const [], politics, _data);
+      expect(titles.held, ['red_known', 'red_friend']);
+      // Falls to Known: the Friend title is lost, the tier title kept.
+      politics =
+          setStandingValue(politics, 'red', 8, 'edit', data: _data).state;
+      titles = titlesEarned(titles.held, politics, _data);
+      expect(titles.held, ['red_known']);
+      expect(titles.lost, ['red_friend']);
+      // Friend again: it returns.
+      politics =
+          setStandingValue(politics, 'red', 20, 'edit', data: _data).state;
+      titles = titlesEarned(titles.held, politics, _data);
+      expect(titles.held, ['red_known', 'red_friend']);
+      // Down to Unfriendly: the bad title comes (and the good ones go on
+      // being earned and kept only by the tier rule).
+      politics =
+          setStandingValue(politics, 'red', -14, 'edit', data: _data).state;
+      titles = titlesEarned(titles.held, politics, _data);
+      expect(titles.held, ['red_known', 'red_cold']);
+      expect(titles.lost, ['red_friend']);
+      // Recovered to Unknown: lost again.
+      politics =
+          setStandingValue(politics, 'red', 0, 'edit', data: _data).state;
+      titles = titlesEarned(titles.held, politics, _data);
+      expect(titles.held, ['red_known']);
+      expect(titles.lost, ['red_cold']);
     });
 
     test('the worn title and every bad one count, and the boon while sworn',

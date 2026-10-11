@@ -127,6 +127,22 @@ void main() {
       }
     });
 
+    test('each clan card has its accent, and nothing else does', () {
+      final skills = _load('skills.json');
+      final counts = <VfxAccent, int>{};
+      for (final entry in skills.entries) {
+        final accent = vfxAccentOf(entry.value as Map<String, dynamic>);
+        counts[accent] = (counts[accent] ?? 0) + 1;
+      }
+      expect(counts[VfxAccent.fusion], 10);
+      expect(counts[VfxAccent.ascension], 10);
+      expect(counts[VfxAccent.subclan], 10);
+      expect(counts[VfxAccent.secret], 10);
+      expect(vfxAccentOf(null), VfxAccent.none);
+      expect(vfxAccentOf(skills['fireball'] as Map<String, dynamic>),
+          VfxAccent.none);
+    });
+
     test('an enemy move reports the skill it used', () {
       final skills = _load('skills.json');
       final result = resolveEnemyMove(
@@ -202,6 +218,60 @@ void main() {
       }
       expect(tester.takeException(), isNull);
       // Every burst has run its course: the layer stops asking for frames.
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(tester.binding.hasScheduledFrame, isFalse);
+      controller.dispose();
+    });
+
+    testWidgets('plays every clan accent over a style, then goes quiet',
+        (tester) async {
+      final controller = CombatVfxController();
+      final hero = GlobalKey();
+      final foe = GlobalKey();
+      await tester.pumpWidget(MaterialApp(
+        home: Stack(
+          children: [
+            Positioned(
+                left: 20,
+                top: 300,
+                width: 160,
+                height: 70,
+                child: SizedBox(key: hero)),
+            Positioned(
+                left: 220,
+                top: 200,
+                width: 160,
+                height: 140,
+                child: SizedBox(key: foe)),
+            Positioned.fill(
+              child: IgnorePointer(
+                child: CombatVfxLayer(controller: controller),
+              ),
+            ),
+          ],
+        ),
+      ));
+      var i = 0;
+      for (final accent in VfxAccent.values) {
+        for (final style in [VfxStyle.impact, VfxStyle.heal, VfxStyle.flame]) {
+          controller.play(
+            style: style,
+            target: i.isEven ? foe : hero,
+            source: i.isEven ? hero : foe,
+            element: const ['Fire', 'Void', 'None', 'Ice', 'Light'][i % 5],
+            delayMs: (i % 4) * 60,
+            text: '-${i + 1}',
+            textKind: VfxTextKind.values[i % VfxTextKind.values.length],
+            power: 0.85 + (i % 4) * 0.2,
+            accent: accent,
+          );
+          i++;
+        }
+      }
+      for (var frame = 0; frame < 40; frame++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      expect(tester.takeException(), isNull);
       await tester.pump(const Duration(milliseconds: 100));
       expect(tester.binding.hasScheduledFrame, isFalse);
       controller.dispose();
