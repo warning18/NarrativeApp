@@ -6,6 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/battlefield_condition.dart';
+import '../combat/field_anomaly.dart';
+import '../data/climate.dart' show WeatherKind;
+import '../providers/geography_provider.dart';
+import '../widgets/fight_backdrop.dart';
 import '../data/weather_effects.dart';
 import '../providers/climate_provider.dart';
 import '../combat/combat_aftermath.dart';
@@ -86,6 +90,7 @@ part 'fight/fight_clash.dart';
 part 'fight/fight_dice_rules.dart';
 part 'fight/fight_effects.dart';
 part 'fight/fight_goals.dart';
+part 'fight/fight_ground.dart';
 part 'fight/fight_lucky_die.dart';
 part 'fight/fight_models.dart';
 part 'fight/fight_quick.dart';
@@ -345,6 +350,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// What the day's sky does to this fight (v1.208, see
   /// weather_effects.dart): set once in [_ensureEnemiesBuilt].
   WeatherEffects _sky = WeatherEffects.of(null);
+
+  /// Where the fight is drawn, and the anomaly that may break over it
+  /// (v1.241, see fight_ground.dart). Set once in [_ensureEnemiesBuilt].
+  FightStage _stage = FightStage.fields;
+  FieldAnomalyPlan? _anomaly;
 
   /// Party rounds begun so far -- the spoils chest's "swift fight" bonus
   /// reads this, and an Ambush hides every telegraph while it's still 1.
@@ -675,7 +685,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
+          title: _buildTitle(),
           actions: [
             if (_canRetreat)
               IconButton(

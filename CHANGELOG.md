@@ -8,6 +8,64 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.241.0+277]
+
+A place for every fight, and ground that sometimes turns on someone.
+
+### Added
+- **A background for every fight**, painted in code (no image files) from the
+  place the fight is at: open country, dunes, salt flats, the shore, the
+  ashlands, volcanic terraces, sea cliffs, the fen, a frozen waste, the glass
+  shore, and the inside of a building (a hall of arches and torches). The
+  stage comes from the biome of the place the story stands at; a scene can
+  name its own, and an expedition fights on the stage of its zone's place.
+  It sits behind the setup screen and the battle under a veil that keeps the
+  cards and the log readable in either theme, with the day's weather (rain,
+  snow, dust, ash, fog) drifting over it. It holds still with reduced motion.
+- **Ground anomalies**: in about three fights in ten, the ground or the sky
+  turns on someone for a few rounds. 28 of them, named after the roads'
+  hazards where there is one (sandstorm, killing heat, whiteout, black ice,
+  rockslide, crumbling path, sinking ground, flash flood, hailstorm, racing
+  tide, field of glass…) plus a few of their own (thunderstorm, downpour,
+  earth break, rising wind, break in the clouds, wellspring, eclipse, falling
+  masonry, burning rafters). Each fits its stage and, for the wet and dry
+  ones, the day's sky: a thunderstorm needs rain, a sandstorm is likelier
+  under dust, and under a roof only the earth, the masonry and the fire can
+  come of it.
+  - **Announced a round ahead** (in the log and as a chip over the battle),
+    it breaks in the second to fourth round and lasts two or three. The chip
+    is green when it favours the party, red when it favours the enemies,
+    neutral when it spares no one; a party with Perception 5 or more reads
+    whom it will favour from the omen, the others only that something is
+    coming.
+  - **What it does**: it feeds or dampens elements for both sides (Wind +25 %,
+    Water −15 %…), takes Perception from the party's read of the enemy,
+    slows or spurs one side's damage, and ticks: a share of health lost or
+    mended each round by everyone on a side or by one of them. Some fall on
+    both sides alike; the others pick a side at the roll, and the same
+    anomaly that helps the party in one fight helps the enemy in the next.
+    **A wound never finishes anyone**: a tick leaves at least one health.
+  - Drawn over the battle as it breaks: streaks and a veil for the storms,
+    rain and lightning, falling rock, cracks glowing in the earth, heat
+    shimmer and embers, god rays, an eclipse, rising motes for a spring.
+- **Story and tools**: a choice can name its fight's ground (`forcedAnomaly`,
+  `forcedStage`); a place can name its stage (`stage` in geography.json, and
+  in the Data tab): the prison, the sewers, the cathedral, the cloister, the
+  Hollow Court and the Lantern Hall are halls. The Edit Mode fight lab picks
+  the stage and the anomaly of a test fight (a test fight rolls none unless
+  one is picked).
+- Pure rules in `lib/combat/field_anomaly.dart`; the painter in
+  `lib/widgets/fight_backdrop.dart`; the fight screen's part in
+  `lib/screens/fight/fight_ground.dart`.
+
+### Notes
+- A fight whose circumstances the story set (a forced condition, such as the
+  ambush of a sneak gone wrong) and a lesson roll no anomaly of their own.
+- The in-app simulator and the Python one still play fights without
+  conditions or anomalies; the anomalies are balanced to be even-handed over
+  many fights (sides picked at random, ticks of at most 12 %, factors of 0.6
+  to 1.4).
+
 ## [1.240.0+276]
 
 ### Changed

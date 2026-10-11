@@ -44,209 +44,217 @@ extension _FightView on _FightScreenState {
         if (_spells[id] != null) _spells[id]!.nameFor(lang),
     ];
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (!_goal.isSlay) ...[
-            _buildGoalBanner(),
-            const SizedBox(height: 12),
-          ],
-          if (_doctrine != null) ...[
-            _buildDoctrineBanner(_doctrine!),
-            const SizedBox(height: 12),
-          ],
-          if (condition != null) ...[
-            _buildConditionBanner(condition),
-            const SizedBox(height: 12),
-          ],
-          if (_newGamePlusCycle > 0) ...[
-            Text(
-              '${tr(ref, 'new_game_plus_label')} · '
-              '${tr(ref, 'new_game_plus_cycle_label')} $_newGamePlusCycle · '
-              '+${(newGamePlusStep * _newGamePlusCycle * 100).round()}% '
-              '${tr(ref, 'new_game_plus_enemies_suffix')}',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-          ],
-          if (_partyBonus.resolveStacks > 0) ...[
-            Text(
-              '${tr(ref, 'resolve_label')} ×${_partyBonus.resolveStacks} · '
-              '+${_partyBonus.resolvePercent}% '
-              '${tr(ref, 'resolve_bonus_suffix')}',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-          ],
-          if (_partyBonus.hasHouseBonus) ...[
-            Text(
-              '${tr(ref, 'camp_works_label')} · '
-              '+${_partyBonus.houseHealthPercent}% '
-              '${tr(ref, 'party_health_bonus_label')} · '
-              '+${_partyBonus.houseDamagePercent}% '
-              '${tr(ref, 'party_damage_bonus_label')}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            const SizedBox(height: 8),
-          ],
-          // One of the last battles (v1.196): the Host stands with the
-          // party.
-          if (widget.modifiers.hostFight && !_host.isEmpty) ...[
-            Row(
-              key: const Key('fight_host_note'),
-              children: [
-                const Icon(Icons.groups_2_outlined, size: 16),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    tr(ref, 'host_fight_note'),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(fontStyle: FontStyle.italic),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-          ],
-          if (widget.modifiers.isHunt ||
-              widget.modifiers.isHunterAmbush ||
-              widget.modifiers.isZoneBoss) ...[
-            Text(
-              tr(ref, _encounterNoteKey(widget.modifiers)),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(fontStyle: FontStyle.italic),
-            ),
-            const SizedBox(height: 8),
-          ],
-          for (final enemy in _enemies) ...[
-            _buildEnemySetupCard(enemy),
-            const SizedBox(height: 8),
-          ],
-          if (charmCounts.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(tr(ref, 'charms_label'),
-                style: Theme.of(context).textTheme.titleSmall),
-            const SizedBox(height: 4),
-            Text(tr(ref, 'charms_hint'),
-                style: Theme.of(context).textTheme.bodySmall),
-            const SizedBox(height: 6),
-            Wrap(
-              spacing: 6,
-              runSpacing: 4,
-              children: [
-                for (final entry in charmCounts.entries)
-                  FilterChip(
-                    avatar: ItemPixelIcon(entry.key, 'Charm', size: 18),
-                    label: Text(
-                      '${(items[entry.key] as Map<String, dynamic>?)?['itemName'] ?? entry.key}'
-                      '${entry.value > 1 ? ' x${entry.value}' : ''}',
-                    ),
-                    tooltip: tr(ref, '${entry.key}_desc'),
-                    selected: _armedCharmIds.contains(entry.key),
-                    onSelected: (selected) => _update(() {
-                      if (selected) {
-                        _armedCharmIds.add(entry.key);
-                      } else {
-                        _armedCharmIds.remove(entry.key);
-                      }
-                    }),
-                  ),
-              ],
-            ),
-          ],
-          if (damageBonus > 0 || armorBonus > 0) ...[
-            const SizedBox(height: 4),
-            Text(
-              '${tr(ref, 'your_equipment_prefix')}: +$damageBonus ${tr(ref, 'damage_word')}, '
-              '+$armorBonus ${tr(ref, 'armor_label')}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ],
-          if (activeAllies.isNotEmpty) ...[
-            const SizedBox(height: 4),
-            Text(
-              '${tr(ref, 'fighting_alongside_prefix')}: '
-              '${activeAllies.map((a) => a.displayName).join(", ")}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ],
-          const SizedBox(height: 4),
-          Row(
+    // The ground behind the setup, as it is behind the battle.
+    return Stack(
+      children: [
+        Positioned.fill(
+            child: IgnorePointer(child: _buildBackdrop(veil: 0.55))),
+        SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Icon(manaIcon, size: 14, color: manaColor),
-              const SizedBox(width: 4),
-              Expanded(
-                child: Text(
-                  '${tr(ref, 'mana_label')} $_mana/$_maxMana · '
-                  '${tr(ref, 'spells_label')}: '
-                  '${knownSpellNames.isEmpty ? '—' : knownSpellNames.join(", ")}',
+              if (!_goal.isSlay) ...[
+                _buildGoalBanner(),
+                const SizedBox(height: 12),
+              ],
+              if (_doctrine != null) ...[
+                _buildDoctrineBanner(_doctrine!),
+                const SizedBox(height: 12),
+              ],
+              if (condition != null) ...[
+                _buildConditionBanner(condition),
+                const SizedBox(height: 12),
+              ],
+              if (_newGamePlusCycle > 0) ...[
+                Text(
+                  '${tr(ref, 'new_game_plus_label')} · '
+                  '${tr(ref, 'new_game_plus_cycle_label')} $_newGamePlusCycle · '
+                  '+${(newGamePlusStep * _newGamePlusCycle * 100).round()}% '
+                  '${tr(ref, 'new_game_plus_enemies_suffix')}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+              ],
+              if (_partyBonus.resolveStacks > 0) ...[
+                Text(
+                  '${tr(ref, 'resolve_label')} ×${_partyBonus.resolveStacks} · '
+                  '+${_partyBonus.resolvePercent}% '
+                  '${tr(ref, 'resolve_bonus_suffix')}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+              ],
+              if (_partyBonus.hasHouseBonus) ...[
+                Text(
+                  '${tr(ref, 'camp_works_label')} · '
+                  '+${_partyBonus.houseHealthPercent}% '
+                  '${tr(ref, 'party_health_bonus_label')} · '
+                  '+${_partyBonus.houseDamagePercent}% '
+                  '${tr(ref, 'party_damage_bonus_label')}',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
+                const SizedBox(height: 8),
+              ],
+              // One of the last battles (v1.196): the Host stands with the
+              // party.
+              if (widget.modifiers.hostFight && !_host.isEmpty) ...[
+                Row(
+                  key: const Key('fight_host_note'),
+                  children: [
+                    const Icon(Icons.groups_2_outlined, size: 16),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        tr(ref, 'host_fight_note'),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+              ],
+              if (widget.modifiers.isHunt ||
+                  widget.modifiers.isHunterAmbush ||
+                  widget.modifiers.isZoneBoss) ...[
+                Text(
+                  tr(ref, _encounterNoteKey(widget.modifiers)),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontStyle: FontStyle.italic),
+                ),
+                const SizedBox(height: 8),
+              ],
+              for (final enemy in _enemies) ...[
+                _buildEnemySetupCard(enemy),
+                const SizedBox(height: 8),
+              ],
+              if (charmCounts.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(tr(ref, 'charms_label'),
+                    style: Theme.of(context).textTheme.titleSmall),
+                const SizedBox(height: 4),
+                Text(tr(ref, 'charms_hint'),
+                    style: Theme.of(context).textTheme.bodySmall),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: [
+                    for (final entry in charmCounts.entries)
+                      FilterChip(
+                        avatar: ItemPixelIcon(entry.key, 'Charm', size: 18),
+                        label: Text(
+                          '${(items[entry.key] as Map<String, dynamic>?)?['itemName'] ?? entry.key}'
+                          '${entry.value > 1 ? ' x${entry.value}' : ''}',
+                        ),
+                        tooltip: tr(ref, '${entry.key}_desc'),
+                        selected: _armedCharmIds.contains(entry.key),
+                        onSelected: (selected) => _update(() {
+                          if (selected) {
+                            _armedCharmIds.add(entry.key);
+                          } else {
+                            _armedCharmIds.remove(entry.key);
+                          }
+                        }),
+                      ),
+                  ],
+                ),
+              ],
+              if (damageBonus > 0 || armorBonus > 0) ...[
+                const SizedBox(height: 4),
+                Text(
+                  '${tr(ref, 'your_equipment_prefix')}: +$damageBonus ${tr(ref, 'damage_word')}, '
+                  '+$armorBonus ${tr(ref, 'armor_label')}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+              if (activeAllies.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  '${tr(ref, 'fighting_alongside_prefix')}: '
+                  '${activeAllies.map((a) => a.displayName).join(", ")}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  const Icon(manaIcon, size: 14, color: manaColor),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      '${tr(ref, 'mana_label')} $_mana/$_maxMana · '
+                      '${tr(ref, 'spells_label')}: '
+                      '${knownSpellNames.isEmpty ? '—' : knownSpellNames.join(", ")}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                ],
               ),
+              Text(tr(ref, 'mana_faces_note'),
+                  style: Theme.of(context).textTheme.labelSmall),
+              const SizedBox(height: 24),
+              Text(tr(ref, 'equipped_die_label'),
+                  style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 8),
+              if (equippedDie == null)
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.error_outline),
+                    title: Text(tr(ref, 'no_die_equipped')),
+                    subtitle: Text(tr(ref, 'equip_die_hint')),
+                  ),
+                )
+              else
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.casino),
+                    title: Text(dieDisplayName(_selectedDiceId!,
+                        language: ref.watch(appLanguageProvider))),
+                    subtitle: Text('$faceCount ${tr(ref, 'faces_label')}'),
+                  ),
+                ),
+              if (session.ownedDiceIds.length > 1) ...[
+                const SizedBox(height: 8),
+                _buildLoadoutPicker(dice, skills, session),
+              ],
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: equippedDie == null
+                    ? null
+                    : () => _startFight(skills, items),
+                icon: const Icon(Icons.sports_martial_arts),
+                label: Text(tr(ref, 'enter_battle_button')),
+              ),
+              if (equippedDie != null && _quickOffered(session)) ...[
+                const SizedBox(height: 8),
+                Tooltip(
+                  message: tr(ref, 'quick_resolve_hint'),
+                  child: OutlinedButton.icon(
+                    key: const Key('quick_resolve_button'),
+                    onPressed: () => _quickResolve(dice, skills, items),
+                    icon: const Icon(Icons.fast_forward),
+                    label: Text(tr(ref, 'quick_resolve_button')),
+                  ),
+                ),
+                Text(tr(ref, 'quick_resolve_hint'),
+                    style: Theme.of(context).textTheme.labelSmall),
+              ],
             ],
           ),
-          Text(tr(ref, 'mana_faces_note'),
-              style: Theme.of(context).textTheme.labelSmall),
-          const SizedBox(height: 24),
-          Text(tr(ref, 'equipped_die_label'),
-              style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          if (equippedDie == null)
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.error_outline),
-                title: Text(tr(ref, 'no_die_equipped')),
-                subtitle: Text(tr(ref, 'equip_die_hint')),
-              ),
-            )
-          else
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.casino),
-                title: Text(dieDisplayName(_selectedDiceId!,
-                    language: ref.watch(appLanguageProvider))),
-                subtitle: Text('$faceCount ${tr(ref, 'faces_label')}'),
-              ),
-            ),
-          if (session.ownedDiceIds.length > 1) ...[
-            const SizedBox(height: 8),
-            _buildLoadoutPicker(dice, skills, session),
-          ],
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed:
-                equippedDie == null ? null : () => _startFight(skills, items),
-            icon: const Icon(Icons.sports_martial_arts),
-            label: Text(tr(ref, 'enter_battle_button')),
-          ),
-          if (equippedDie != null && _quickOffered(session)) ...[
-            const SizedBox(height: 8),
-            Tooltip(
-              message: tr(ref, 'quick_resolve_hint'),
-              child: OutlinedButton.icon(
-                key: const Key('quick_resolve_button'),
-                onPressed: () => _quickResolve(dice, skills, items),
-                icon: const Icon(Icons.fast_forward),
-                label: Text(tr(ref, 'quick_resolve_button')),
-              ),
-            ),
-            Text(tr(ref, 'quick_resolve_hint'),
-                style: Theme.of(context).textTheme.labelSmall),
-          ],
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -391,6 +399,7 @@ extension _FightView on _FightScreenState {
         if (_sky.effectKey != null)
           _telegraphChip(
               Icons.cloud_outlined, tr(ref, 'weather_${_sky.kind.name}')),
+        if (_anomalyChip() case final chip?) chip,
         _telegraphChip(
           ready ? Icons.local_fire_department : Icons.trending_up,
           ready
@@ -495,6 +504,7 @@ extension _FightView on _FightScreenState {
       ready: !widget.modifiers.luckyDieReveal || _luckyDieTourReady,
       child: Stack(
         children: [
+          Positioned.fill(child: IgnorePointer(child: _buildBackdrop())),
           Positioned.fill(child: battle),
           Positioned.fill(
             child: IgnorePointer(

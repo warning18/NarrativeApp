@@ -44,6 +44,7 @@ extension _FightSetup on _FightScreenState {
     _sky = lesson || modifiers.isTest
         ? WeatherEffects.of(null)
         : WeatherEffects.of(ref.read(skyHereProvider)?.today().kind);
+    _setTheGround(lesson: lesson);
 
     // The doctrine the enemies fight under (v1.212), unless one of them is
     // a boss or a unique; its affix taste shapes the affix roll below.
@@ -495,6 +496,12 @@ extension _FightSetup on _FightScreenState {
           '${trFor(lang, 'weather_${_sky.kind.name}')}: ${trFor(lang, key)}',
           _LogKind.info,
         ));
+      }
+      // The ground's first word: an anomaly set for the second round is
+      // announced now (an ambush starts its first round in the enemies' turn
+      // and says it there).
+      if (condition != BattlefieldCondition.ambush) {
+        _groundRoundStart(_log, lang);
       }
       for (final id in _armedCharmIds) {
         final name =
