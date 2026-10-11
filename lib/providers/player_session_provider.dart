@@ -77,6 +77,36 @@ int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
           (sum, h) => sum + ((h['partyCapacityBonus'] as num?)?.toInt() ?? 0));
 }
 
+/// The skills a companion starts with: their profession's and race's
+/// standard skill, and every skill one of their signature die's faces links
+/// to, so the die works from their very first fight (see
+/// [PlayerSessionNotifier.recruitAlly]).
+List<String> companionStarterSkillIds({
+  Map<String, dynamic>? race,
+  Map<String, dynamic>? profession,
+  Map<String, dynamic>? companion,
+  Map<String, dynamic> dice = const {},
+}) {
+  final professionSkillId = profession?['standardSkillID']?.toString() ?? '';
+  final raceSkillId = race?['standardSkillID']?.toString() ?? '';
+  // A companion's signature die IS their kit: every skill one of its
+  // faces links to has to resolve from their very first fight, not
+  // fizzle until the player happens to spend ally skill points on that
+  // exact id (Maren shipped with 2 of her 3 skill faces dead that way).
+  final signatureDiceId = companion?['signatureDiceId']?.toString() ?? '';
+  final signatureFaces =
+      ((dice[signatureDiceId] as Map<String, dynamic>?)?['faces'] as List?)
+              ?.cast<Map<String, dynamic>>() ??
+          const [];
+  return <String>{
+    if (professionSkillId.isNotEmpty) professionSkillId,
+    if (raceSkillId.isNotEmpty) raceSkillId,
+    for (final face in signatureFaces)
+      if ((face['linkedSkillID']?.toString() ?? '').isNotEmpty)
+        face['linkedSkillID'].toString(),
+  }.toList();
+}
+
 /// Companions the "Full House" achievement asks for: six of the eight.
 /// Tobin follows only a Good leader and Malrik only an Evil one, so no
 /// single run can recruit everyone.
@@ -3192,24 +3222,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (state.recruitedAllies.any((a) => a.companionId == companionId)) return;
     if (state.lostAllyIds.contains(companionId)) return;
     if (state.departedAllyIds.contains(companionId)) return;
-    final professionSkillId = profession?['standardSkillID']?.toString() ?? '';
-    final raceSkillId = race?['standardSkillID']?.toString() ?? '';
-    // A companion's signature die IS their kit: every skill one of its
-    // faces links to has to resolve from their very first fight, not
-    // fizzle until the player happens to spend ally skill points on that
-    // exact id (Maren shipped with 2 of her 3 skill faces dead that way).
-    final signatureDiceId = companion?['signatureDiceId']?.toString() ?? '';
-    final signatureFaces =
-        ((dice[signatureDiceId] as Map<String, dynamic>?)?['faces'] as List?)
-                ?.cast<Map<String, dynamic>>() ??
-            const [];
-    final starterUnlocked = <String>{
-      if (professionSkillId.isNotEmpty) professionSkillId,
-      if (raceSkillId.isNotEmpty) raceSkillId,
-      for (final face in signatureFaces)
-        if ((face['linkedSkillID']?.toString() ?? '').isNotEmpty)
-          face['linkedSkillID'].toString(),
-    }.toList();
+    final starterUnlocked = companionStarterSkillIds(
+      race: race,
+      profession: profession,
+      companion: companion,
+      dice: dice,
+    );
     // A freshly recruited companion joins the fight immediately, up to
     // capacity -- Camp is where the roster is *managed*, not a
     // precondition for a new ally actually helping in combat (and Camp

@@ -783,6 +783,20 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Add an enemy (up to 3)',
     AppLanguage.fr: 'Ajouter un ennemi (3 max.)',
   },
+  'fight_lab_companions': {
+    AppLanguage.en: 'Companions added to the fight',
+    AppLanguage.fr: 'Compagnons ajoutés au combat',
+  },
+  'fight_lab_add_companion': {
+    AppLanguage.en: 'Add a companion',
+    AppLanguage.fr: 'Ajouter un compagnon',
+  },
+  'fight_lab_companions_desc': {
+    AppLanguage.en:
+        'Any companion joins the party for the test, recruited or not (put back afterwards, unless "Keep what happens" is on and they were already recruited).',
+    AppLanguage.fr:
+        'Tout compagnon rejoint le groupe pour le test, recruté ou non (remis comme avant ensuite, sauf si «\u00a0Garder le résultat\u00a0» est activé et qu’il était déjà recruté).',
+  },
   'fight_lab_search_enemy': {
     AppLanguage.en: 'Search by name or id',
     AppLanguage.fr: 'Chercher par nom ou id',

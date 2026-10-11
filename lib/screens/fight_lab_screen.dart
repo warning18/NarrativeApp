@@ -11,6 +11,7 @@ import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/chapter_grid_layout.dart';
 import '../data/sail_powers.dart';
+import '../models/ally_state.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -32,7 +33,8 @@ import 'voyage_screen.dart';
 const List<double> _difficulties = [0.75, 1.0, 1.25, 1.5, 2.0];
 
 /// Edit Mode: launches any land fight (one to three enemies, a chapter, a
-/// difficulty, an affix, a die, alone or with the party) or any ship
+/// difficulty, an affix, a die, alone, with the party or with any
+/// companions added for the test) or any ship
 /// battle, as a test. Tests never run permadeath, and the game is put
 /// back as it was afterwards unless "Keep what happens" is on.
 class FightLabScreen extends ConsumerStatefulWidget {
@@ -44,6 +46,9 @@ class FightLabScreen extends ConsumerStatefulWidget {
 
 class _FightLabScreenState extends ConsumerState<FightLabScreen> {
   final List<String> _enemyIds = [];
+
+  /// Companions added to the fight for the test, recruited or not.
+  final List<String> _companionIds = [];
   late int _chapter;
   double _difficulty = 1.0;
   EnemyAffix? _affix;
@@ -68,6 +73,10 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
   String _enemyName(Map<String, dynamic> enemies, String id) =>
       (enemies[id] as Map<String, dynamic>?)?['enemyName']?.toString() ?? id;
 
+  String _companionName(Map<String, dynamic> companions, String id) =>
+      (companions[id] as Map<String, dynamic>?)?['companionName']?.toString() ??
+      id;
+
   Future<void> _pickEnemy(Map<String, dynamic> enemies) async {
     final picked = await showModalBottomSheet<String>(
       context: context,
@@ -79,6 +88,22 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
       ),
     );
     if (picked != null && mounted) setState(() => _enemyIds.add(picked));
+  }
+
+  Future<void> _pickCompanion(Map<String, dynamic> companions) async {
+    final taken = {..._companionIds};
+    final picked = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      builder: (_) => _CompanionPicker(
+        companions: {
+          for (final e in companions.entries)
+            if (!taken.contains(e.key) && e.value is Map<String, dynamic>)
+              e.key: e.value as Map<String, dynamic>,
+        },
+      ),
+    );
+    if (picked != null && mounted) setState(() => _companionIds.add(picked));
   }
 
   /// Runs [battle] as a test: the session is prepared (die, party, health)
@@ -101,6 +126,39 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
       );
     }
     if (_solo) test = test.copyWith(activeAllyIds: const []);
+    // The companions added join the party, recruited for the test when the
+    // story has not recruited them yet (put back with the rest below).
+    final labAllyIds = <String>{};
+    if (_companionIds.isNotEmpty) {
+      final companions =
+          ref.read(localizedDbProvider(companionsSchema)).value ?? {};
+      final races = ref.read(localizedDbProvider(racesSchema)).value ?? {};
+      final professions =
+          ref.read(localizedDbProvider(professionsSchema)).value ?? {};
+      final dice = ref.read(localizedDbProvider(diceSchema)).value ?? {};
+      final known = {for (final a in test.recruitedAllies) a.companionId};
+      final fresh = <AllyState>[];
+      for (final id in _companionIds) {
+        if (known.contains(id)) continue;
+        labAllyIds.add(id);
+        final companion = companions[id] as Map<String, dynamic>?;
+        fresh.add(AllyState(
+          companionId: id,
+          currentHealth: AllyState.fullHealthSentinel,
+          unlockedSkillIds: companionStarterSkillIds(
+            race: races[companion?['raceId']] as Map<String, dynamic>?,
+            profession: professions[companion?['professionId']]
+                as Map<String, dynamic>?,
+            companion: companion,
+            dice: dice,
+          ),
+        ));
+      }
+      test = test.copyWith(
+        recruitedAllies: [...test.recruitedAllies, ...fresh],
+        activeAllyIds: {...test.activeAllyIds, ..._companionIds}.toList(),
+      );
+    }
     await notifier.loadSession(test);
     if (_fullHealth) await notifier.healPartyToFull();
 
@@ -116,6 +174,10 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
             .where((id) => id != die || before.ownedDiceIds.contains(id))
             .toList(),
         activeAllyIds: before.activeAllyIds,
+        recruitedAllies: [
+          for (final a in after.recruitedAllies)
+            if (!labAllyIds.contains(a.companionId)) a,
+        ],
       ));
     } else {
       await notifier.loadSession(before);
@@ -326,6 +388,8 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
         const <String, dynamic>{};
     final dice = ref.watch(localizedDbProvider(diceSchema)).value ??
         const <String, dynamic>{};
+    final companions = ref.watch(localizedDbProvider(companionsSchema)).value ??
+        const <String, dynamic>{};
     final enemyShips = ref.watch(localizedDbProvider(enemyShipsSchema)).value ??
         const <String, dynamic>{};
     final session = ref.watch(playerSessionProvider);
@@ -461,6 +525,34 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                 : '${tr(ref, 'fight_lab_party')}: ${session.activeAllyIds.length}'),
             value: _solo,
             onChanged: (v) => setState(() => _solo = v),
+          ),
+          Text(tr(ref, 'fight_lab_companions'),
+              style: theme.textTheme.labelLarge),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              for (final id in _companionIds)
+                InputChip(
+                  key: Key('fight_lab_companion_$id'),
+                  label: Text(_companionName(companions, id)),
+                  onDeleted: () => setState(() => _companionIds.remove(id)),
+                ),
+              ActionChip(
+                key: const Key('fight_lab_add_companion'),
+                avatar: const Icon(Icons.group_add, size: 18),
+                label: Text(tr(ref, 'fight_lab_add_companion')),
+                onPressed: _companionIds.length >= companions.length ||
+                        companions.isEmpty
+                    ? null
+                    : () => _pickCompanion(companions),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 4, bottom: 12),
+            child: Text(tr(ref, 'fight_lab_companions_desc'),
+                style: theme.textTheme.bodySmall),
           ),
           FilledButton.icon(
             key: const Key('fight_lab_start_fight'),
@@ -607,6 +699,38 @@ class _EnemyPickerState extends ConsumerState<_EnemyPicker> {
             ],
           ),
         ),
+      ],
+    );
+  }
+}
+
+/// Every companion not yet added to the test fight, with their race and
+/// profession.
+class _CompanionPicker extends ConsumerWidget {
+  const _CompanionPicker({required this.companions});
+
+  final Map<String, Map<String, dynamic>> companions;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final races = ref.watch(localizedDbProvider(racesSchema)).value ?? {};
+    final professions =
+        ref.watch(localizedDbProvider(professionsSchema)).value ?? {};
+    String nameOf(Map<String, dynamic> db, Object? id, String key) =>
+        (db[id] as Map<String, dynamic>?)?[key]?.toString() ?? '';
+    return ListView(
+      shrinkWrap: true,
+      children: [
+        for (final e in companions.entries)
+          ListTile(
+            key: Key('fight_lab_pick_${e.key}'),
+            title: Text(e.value['companionName']?.toString() ?? e.key),
+            subtitle: Text([
+              nameOf(races, e.value['raceId'], 'raceName'),
+              nameOf(professions, e.value['professionId'], 'professionName'),
+            ].where((t) => t.isNotEmpty).join(' · ')),
+            onTap: () => Navigator.of(context).pop(e.key),
+          ),
       ],
     );
   }
