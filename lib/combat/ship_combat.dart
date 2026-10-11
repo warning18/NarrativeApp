@@ -821,6 +821,22 @@ List<String> partsWithinSlots({
   return kept;
 }
 
+/// The parts of [installedPartIds] a ship has no slot for (see
+/// [partsWithinSlots]): what a rebuild moves into the Harbor's store.
+List<String> partsBeyondSlots({
+  required Map<String, dynamic> ship,
+  required Map<String, dynamic> parts,
+  required List<String> installedPartIds,
+}) {
+  final within = partsWithinSlots(
+          ship: ship, parts: parts, installedPartIds: installedPartIds)
+      .toSet();
+  return [
+    for (final id in installedPartIds)
+      if (!within.contains(id)) id,
+  ];
+}
+
 const Map<String, String> _slotCountKeys = {
   'Weapon': 'weaponSlots',
   'Shield': 'shieldSlots',
@@ -828,8 +844,21 @@ const Map<String, String> _slotCountKeys = {
   'Sail': 'sailSlots',
 };
 
+/// The hull the [partIds] add together (ship_parts.json `hullBonus`: oak
+/// planking, a reinforced keel...).
+int hullBonusOf(Map<String, dynamic> parts, Iterable<String> partIds) {
+  var bonus = 0;
+  for (final id in partIds) {
+    bonus +=
+        ((parts[id] as Map<String, dynamic>?)?['hullBonus'] as num?)?.toInt() ??
+            0;
+  }
+  return bonus;
+}
+
 /// The player's ship as it sets out: hull and rooms from ships.json plus
-/// the `roomBonus` of every installed part it has a slot for (see
+/// the `hullBonus` and `roomBonus` of every installed part it has a slot
+/// for (see
 /// [partsWithinSlots]), its weapons from those that fire, layers full; a
 /// stored hull of -1 (a fresh save, or just repaired) means full.
 /// [voidVolleyBonus] is the painted sail's extra on its own volley, if
@@ -847,12 +876,17 @@ ShipState buildPlayerShip({
 }) {
   int lifted(int value, int percent) =>
       percent == 0 ? value : (value * (100 + percent) / 100).round();
+  final fitted = partsWithinSlots(
+      ship: ship, parts: parts, installedPartIds: installedPartIds);
   final maxHull = max(
-      1, lifted((ship['baseMaxHull'] as num?)?.toInt() ?? 100, hullPercent));
+      1,
+      lifted(
+          ((ship['baseMaxHull'] as num?)?.toInt() ?? 100) +
+              hullBonusOf(parts, fitted),
+          hullPercent));
   final rooms = _roomsFrom(ship['rooms']);
   final weapons = <ShipWeapon>[];
-  for (final id in partsWithinSlots(
-      ship: ship, parts: parts, installedPartIds: installedPartIds)) {
+  for (final id in fitted) {
     final part = parts[id] as Map<String, dynamic>?;
     if (part == null) continue;
     final bonus = part['roomBonus'];

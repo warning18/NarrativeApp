@@ -146,6 +146,8 @@ IconData gameDbIcon(String schemaId) {
       return Icons.directions_boat;
     case 'ship_parts':
       return Icons.build;
+    case 'ship_looks':
+      return Icons.palette;
     case 'quests':
       return Icons.assignment;
     case 'shops':

@@ -264,6 +264,10 @@ void main() {
     await tester.tap(find.byKey(const Key('camp_harbor')));
     await _settle(tester);
     expect(find.byType(HarborScreen), findsOneWidget);
+    // The shipwright's parts come below the yard (the list builds lazily).
+    await tester.scrollUntilVisible(find.text('Shipwright'), 300,
+        scrollable: find.descendant(
+            of: find.byType(HarborScreen), matching: find.byType(Scrollable)));
     expect(find.text('Shipwright'), findsOneWidget);
     await tester.pageBack();
     await _settle(tester);
