@@ -299,6 +299,8 @@ void main() {
     expect(find.text('Not remembered yet'), findsOneWidget);
     expect(find.byKey(const Key('lost_clan_silhouette_open_hand')),
         findsOneWidget);
+    await tester.ensureVisible(find.byKey(const Key('open_hand_stage_3')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('open_hand_stage_3')));
     await tester.runAsync(() => Future<void>.delayed(Duration.zero));
     await tester.pumpAndSettle();

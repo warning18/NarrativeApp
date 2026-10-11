@@ -11,9 +11,9 @@ isn't reconstructable from git history alone.
 ## [1.229.0+265]
 
 ### Added
-- **Pixel-art banners, after bold poster lettering.** Twenty 48×96 banners drawn by `tool/gen_banners.py`: a black woven cloth with folds, cream strokes of one weight with rounded ends and a bevel, two signs stacked like vertical writing (circles, bars and arcs), one shaded round disc of colour laid across them, a header band, stitched hem and tassels in the banner's own colour, and a turned pole with rings and brass finials.
-  - **The Shroud, in Pieces** (Character tab) now lays the six pieces out as banners: each recovered piece in colour with its name, the others a dark silhouette marked "Not yet found", with a count.
-  - **Every clan's main banner** (the Lantern Dominion, the Grey Vigil, the Cinder Compact, the Mire Courts, the Salt Crows, the Ashen Penitents, the Choir, the Pit, the giants, the oni, the Tide-Kin, the Kindly Ones and the Open Hand) in the clan's own colour from `factions.json`, at the left of its standing card; the Open Hand's stays a silhouette until its banner is raised on the Hollow Shore.
+- **Pixel-art banners in the style of Japanese kanji posters.** Twenty 64×128 banners drawn by `tool/gen_banners.py`: a black woven cloth filled edge to edge by two heavy signs stacked like vertical writing, built the way the posters build their lettering: fat slabs with rounded corners and rounded bends (a box on a bar, an E-comb, a square spiral, a gate, a stepped tower, a hand, a torn eye), thin black stencil slits where pieces meet, round discs, eyes (a ring round a dot), and fine concentric lines along the curves. Kept to few colours: the signs are always cream on black, with one accent colour per banner (the clan's own) for its discs, a thin header line and the tail's edge; the tassels and finials are brass.
+  - **The Shroud, in Pieces** (Character tab) lays the six pieces out as banners: each recovered piece in colour with its name, the others a dark silhouette marked "Not yet found", with a count.
+  - **Every clan's main banner** (the Lantern Dominion, the Grey Vigil, the Cinder Compact, the Mire Courts, the Salt Crows, the Ashen Penitents, the Choir, the Pit, the giants, the oni, the Tide-Kin, the Kindly Ones and the Open Hand) in the clan's colour from `factions.json`, beside its standing card; the Open Hand's stays a silhouette until its banner is raised on the Hollow Shore.
 
 ### Changed
 - The title's mark is the Void's standard in pixel art, replacing the vector banner.

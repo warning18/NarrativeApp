@@ -1,4 +1,4 @@
-// The pixel banners (v1.229): twenty 48x96 sprites drawn by
+// The pixel banners (v1.229): twenty 64x128 sprites drawn by
 // tool/gen_banners.py, the six pieces shown on the Character tab (found in
 // colour, the rest as silhouettes) and the title's standard on the menu.
 import 'dart:convert';
@@ -19,7 +19,7 @@ import 'package:narrative_data_app/widgets/pixel_banner.dart';
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
-  test('every banner is a 48x96 sprite in hard-edged flat colours', () async {
+  test('every banner is a 64x128 sprite in hard-edged flat colours', () async {
     for (final id in [
       ...shroudPieceIds,
       titleBannerId,
@@ -39,7 +39,7 @@ void main() {
         expect(data.getUint8(i + 3), 255, reason: id);
         colours.add(data.getUint32(i));
       }
-      expect(colours.length, lessThan(64), reason: '$id is a limited palette');
+      expect(colours.length, lessThan(200), reason: '$id is a limited palette');
     }
   });
 

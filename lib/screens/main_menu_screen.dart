@@ -219,7 +219,7 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                         // small on a short one so the menu stays in view.
                         Center(
                           child: _BannerMark(
-                            scale: MediaQuery.sizeOf(context).height >= 760
+                            scale: MediaQuery.sizeOf(context).height >= 900
                                 ? 2
                                 : 1,
                           ),

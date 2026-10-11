@@ -837,7 +837,7 @@ class _ShroudPiece extends ConsumerWidget {
     return Semantics(
       label: label,
       child: SizedBox(
-        width: 96,
+        width: 128,
         child: Column(
           children: [
             ExcludeSemantics(

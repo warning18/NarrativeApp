@@ -1,5 +1,5 @@
 // Pixel banners (v1.229): the Shroud's six pieces, the title's standard and
-// the twelve clans' main banners, drawn by tool/gen_banners.py as 48x96
+// the twelve clans' main banners, drawn by tool/gen_banners.py as 64x128
 // sprites in assets/visuals/banners/, after bold poster lettering: a black
 // woven cloth, cream strokes of one weight, two signs stacked like vertical
 // writing and one round disc of colour, a header band and tassels in the
@@ -41,7 +41,7 @@ String? clanBannerId(String factionId) =>
     clanBannerFactionIds.contains(factionId) ? 'clan_$factionId' : null;
 
 /// A banner's sprite size.
-const Size pixelBannerSize = Size(48, 96);
+const Size pixelBannerSize = Size(64, 128);
 
 /// Dims a banner to a silhouette: the piece not yet recovered.
 const ColorFilter _unfound = ColorFilter.matrix(<double>[

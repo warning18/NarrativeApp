@@ -253,7 +253,9 @@ class FactionStandingCard extends ConsumerWidget {
                         style: theme.textTheme.titleSmall),
                   ),
                   const SizedBox(width: 6),
-                  StandingTierLabel(value: value, language: lang),
+                  Flexible(
+                    child: StandingTierLabel(value: value, language: lang),
+                  ),
                 ],
               ),
               const SizedBox(height: 4),
