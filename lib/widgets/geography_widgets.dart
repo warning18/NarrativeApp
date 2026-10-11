@@ -311,6 +311,10 @@ class ThisLandSheet extends ConsumerWidget {
               Text(spot.blurbFor(french), style: prose),
             const SizedBox(height: 12),
           ],
+          if (place.isSpot) ...[
+            _PlaceTraits(placeId: placeId),
+            const SizedBox(height: 12),
+          ],
           if (focus.isNotEmpty) const Divider(height: 12),
           Text(tr(ref, 'geo_this_land').toUpperCase(), style: caption),
           const SizedBox(height: 4),
@@ -775,6 +779,83 @@ class _GeoLocationFieldState extends ConsumerState<GeoLocationField> {
                 ],
               ),
       ),
+    );
+  }
+}
+
+/// What a place is like (v1.242, see place_traits.dart): its danger and
+/// light, who holds it, what kind of place it is and how long a walk to it
+/// takes, as small chips under its name.
+class _PlaceTraits extends ConsumerWidget {
+  const _PlaceTraits({required this.placeId});
+
+  final String placeId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final geo = ref.watch(geographyProvider);
+    final language = ref.watch(appLanguageProvider);
+    final clans = ref.watch(clanDataProvider);
+    final ink = InkColors.of(context);
+    final danger = geo.dangerOf(placeId);
+    final light = geo.lightOf(placeId);
+    final holder = geo.heldBy(placeId);
+    final tags = geo.tagsOf(placeId);
+    final watches = geo.watchesTo(placeId, fallback: 0);
+    Widget chip(IconData icon, String text, {Color? colour}) => Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            border:
+                Border.all(color: (colour ?? ink.ash).withValues(alpha: 0.6)),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 12, color: colour ?? ink.ash),
+              const SizedBox(width: 4),
+              Flexible(
+                child: Text(text,
+                    style: TextStyle(fontSize: 11, color: colour ?? ink.ash)),
+              ),
+            ],
+          ),
+        );
+    return Wrap(
+      key: const ValueKey('place_traits'),
+      spacing: 6,
+      runSpacing: 6,
+      children: [
+        if (danger != geoDefaultDanger)
+          chip(
+            danger > geoDefaultDanger
+                ? Icons.warning_amber_rounded
+                : Icons.shield_outlined,
+            // French sets a non-breaking space before the colon.
+            '${tr(ref, 'place_danger')}${language == AppLanguage.fr ? '\u00A0' : ''}: '
+            '${tr(ref, 'place_danger_$danger')}',
+            colour: danger > geoDefaultDanger ? ink.blood : ink.heal,
+          ),
+        if (light.isNotEmpty)
+          chip(
+            light == 'day'
+                ? Icons.wb_sunny_outlined
+                : Icons.nightlight_outlined,
+            tr(ref, 'place_light_$light'),
+          ),
+        if (holder.isNotEmpty)
+          chip(
+            Icons.flag_outlined,
+            tr(ref, 'place_held_by').replaceAll(
+                '{clan}', clans.faction(holder)?.nameFor(language) ?? holder),
+          ),
+        for (final tag in geoPlaceTags)
+          if (tags.contains(tag))
+            chip(Icons.label_outline, tr(ref, 'place_tag_$tag')),
+        if (watches > 0)
+          chip(Icons.directions_walk,
+              tr(ref, 'place_walk').replaceAll('{n}', '$watches')),
+      ],
     );
   }
 }

@@ -3,6 +3,7 @@ import 'dart:math';
 import '../models/story_node.dart';
 import 'geography.dart';
 import 'journey_rules.dart';
+import 'place_traits.dart';
 import 'story_repository.dart';
 import 'sub_node_engine.dart';
 
@@ -133,7 +134,14 @@ RoadEventKind? roadEventFor({
   // Two independent draws: whether the road holds anything, and what.
   final key = '$fromNodeId>$toNodeId#$historyLength#$chapter';
   double draw(String salt) => stableHash('$key$salt') / 0x100000000;
-  if (draw('?') >= roadEventChance * oddsFactor) return null;
+  // A road to a dangerous place holds something more often, one to a safe
+  // one less (v1.242, see place_traits.dart).
+  final danger = world == null
+      ? geoDefaultDanger
+      : world.dangerOf(world.placeOfNode(to)?.id);
+  if (draw('?') >= roadEventChance * oddsFactor * dangerRoadFactor(danger)) {
+    return null;
+  }
   final roll = draw('!');
   if (roll < championShare) return RoadEventKind.champion;
   // The hazards' share comes out of the shrines' and the caravan's, each

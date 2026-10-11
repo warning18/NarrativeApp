@@ -35,11 +35,12 @@ extension _FightSetup on _FightScreenState {
     _threat = modifiers.isTest || modifiers.isZoneBoss || lesson
         ? 0
         : session.threatIn(ref.read(reachedChapterProvider));
+    _light = _lightHere();
     _condition = modifiers.forcedCondition ??
         (lesson
             ? null
             : rollBattlefieldCondition(
-                enemyCount: entries.length, random: _random));
+                enemyCount: entries.length, random: _random, light: _light));
     // The day's sky over the party (v1.208): none for a lesson or a test.
     _sky = lesson || modifiers.isTest
         ? WeatherEffects.of(null)

@@ -13,6 +13,7 @@ import '../providers/chapter_loop_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../screens/story_player_screen.dart'
@@ -114,12 +115,17 @@ Future<void> travelTo(
       ports: ports, savedPortId: ref.read(playerSessionProvider).currentPortId);
   final play = ref.read(storyPlayProvider.notifier);
   if (walk) {
-    await walkRoadStep(ref, watches: walkWatches);
+    // The watches of where the walk goes (a far place can take a day, see
+    // GeoPlace.watches).
+    final story = await ref.read(storyDataProvider.future);
+    final world = await loadGeography(ref);
+    await walkRoadStep(ref,
+        watches: world.watchesToNode(story.nodeFor(targetNodeId),
+            fallback: walkWatches));
     if (!context.mounted) return;
     // A road event on the way (see road_events.dart), else what the road
     // may hold.
     final from = ref.read(storyPlayProvider);
-    final story = await ref.read(storyDataProvider.future);
     final event = await roadEventOn(ref, story,
         fromNodeId: from.currentNodeId,
         toNodeId: targetNodeId,

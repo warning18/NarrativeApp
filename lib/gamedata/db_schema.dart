@@ -2,7 +2,15 @@ import '../combat/field_anomaly.dart' show FightStage;
 import '../combat/skill_vfx.dart';
 import '../data/companion_remarks.dart' show remarkTriggerOptions;
 import '../data/geography.dart'
-    show BiomePattern, GeoLevel, geoBuildingKinds, geoGlyphs, geoKinds;
+    show
+        BiomePattern,
+        GeoLevel,
+        geoBuildingKinds,
+        geoGlyphs,
+        geoKinds,
+        geoLights,
+        geoMaxDanger,
+        geoPlaceTags;
 import '../data/ship_forms.dart' show HullKind;
 import '../data/ship_looks.dart' show allShipLookPatterns, shipLookCategories;
 import '../data/signs.dart'
@@ -3278,6 +3286,52 @@ final DbSchema geographySchema = DbSchema(
           'Empty: the stage of the land (its zone\'s biome); a place inside '
           'a building (a prison, a crypt, a cathedral) is a hall. The '
           'nearest one up the chain applies.',
+    ),
+    FieldSchema(
+      key: 'danger',
+      label: 'Danger (v1.242)',
+      type: FieldType.enumeration,
+      enumOptions: ['', for (var i = 0; i <= geoMaxDanger; i++) '$i'],
+      help: '0 safe, 1 ordinary, up to $geoMaxDanger deadly. The roads to a '
+          'dangerous place hold events more often, and a fight there meets '
+          'a ground anomaly more often. Empty: the place above it says, and '
+          'with none, 1.',
+    ),
+    FieldSchema(
+      key: 'light',
+      label: 'Light (v1.242)',
+      type: FieldType.enumeration,
+      enumOptions: ['', ...geoLights],
+      help: 'The light a fight here is fought in: night and dark make the '
+          'Dark battlefield likelier and dim the backdrop. Empty: the place '
+          'above it says, and with none, the day\'s.',
+    ),
+    FieldSchema(
+      key: 'controller',
+      label: 'Controller (v1.242)',
+      type: FieldType.reference,
+      referenceSchemaId: 'factions',
+      help: 'The faction that holds this place. Its shops here price by '
+          'the standing with it. Empty: the place above it says, and with '
+          'none, the country\'s ruler.',
+    ),
+    FieldSchema(
+      key: 'tags',
+      label: 'Tags (v1.242)',
+      type: FieldType.multiEnum,
+      enumOptions: geoPlaceTags,
+      help: 'What kind of place it is. A holy place favours a spring or '
+          'the light, a haunted one an eclipse, a ruin falling stone. A '
+          'place has its own tags and those of the places above it.',
+    ),
+    FieldSchema(
+      key: 'watches',
+      label: 'Watches to walk here (v1.242)',
+      type: FieldType.integer,
+      defaultValue: 0,
+      help: 'Watches a walk to this place takes (four make a day, each '
+          'costs the road\'s ration). 0: the place above it says, and with '
+          'none, 2.',
     ),
     FieldSchema(
       key: 'landmark',

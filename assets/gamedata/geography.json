@@ -41,6 +41,10 @@
   },
   "alster_lower_town": {
     "level": "district",
+    "danger": 2,
+    "light": "dusk",
+    "controller": "crows",
+    "tags": ["market"],
     "parent": "alster",
     "name": "The Lower Town",
     "name_fr": "La Ville basse",
@@ -75,6 +79,10 @@
   },
   "alster_black_hold": {
     "level": "district",
+    "danger": 3,
+    "light": "dark",
+    "controller": "dominion",
+    "tags": ["underground", "stronghold"],
     "stage": "hall",
     "parent": "alster",
     "name": "The Black Hold",
@@ -86,6 +94,9 @@
   },
   "alster_undercroft": {
     "level": "district",
+    "danger": 3,
+    "light": "dark",
+    "tags": ["underground"],
     "stage": "hall",
     "parent": "alster",
     "name": "The Undercroft",
@@ -97,6 +108,7 @@
   },
   "alster_high_quay": {
     "level": "district",
+    "tags": ["sea", "market"],
     "parent": "alster",
     "name": "The High Quay",
     "name_fr": "Le Haut Quai",
@@ -127,6 +139,8 @@
   },
   "lark_wreck": {
     "level": "location",
+    "light": "dusk",
+    "tags": ["ruin", "wild"],
     "parent": "dune_sea",
     "kind": "site",
     "name": "The Wreck of the Lark",
@@ -137,6 +151,8 @@
   },
   "sleepers_face": {
     "level": "location",
+    "danger": 2,
+    "tags": ["wild", "ruin"],
     "parent": "dune_sea",
     "kind": "site",
     "name": "The Sleeper’s Face",
@@ -147,6 +163,8 @@
   },
   "white_wells": {
     "level": "location",
+    "danger": 0,
+    "tags": ["wild"],
     "parent": "dune_sea",
     "kind": "village",
     "name": "The White Wells",
@@ -177,6 +195,7 @@
   },
   "saltmouth": {
     "level": "location",
+    "tags": ["market"],
     "parent": "saltmouth_headland",
     "kind": "city",
     "name": "Saltmouth",
@@ -198,6 +217,7 @@
   },
   "saltmouth_tern_row": {
     "level": "district",
+    "controller": "tidekin",
     "parent": "saltmouth",
     "name": "Tern Row",
     "name_fr": "Tern Row",
@@ -208,6 +228,10 @@
   },
   "saltmouth_wharf": {
     "level": "district",
+    "danger": 2,
+    "light": "night",
+    "controller": "crows",
+    "tags": ["sea", "market"],
     "parent": "saltmouth",
     "name": "Smugglers’ Wharf",
     "name_fr": "Le Quai des Contrebandiers",
@@ -218,6 +242,7 @@
   },
   "saltmouth_yard": {
     "level": "district",
+    "tags": ["sea"],
     "parent": "saltmouth",
     "name": "The Ship-breaker’s Yard",
     "name_fr": "Le Chantier des démolisseurs",
@@ -257,6 +282,7 @@
   },
   "the_crossing": {
     "level": "location",
+    "tags": ["sea"],
     "parent": "open_water",
     "kind": "sea",
     "name": "The Crossing",
@@ -296,6 +322,8 @@
   },
   "cove_camp": {
     "level": "location",
+    "danger": 0,
+    "tags": ["sea"],
     "parent": "the_cove",
     "kind": "camp",
     "name": "The Cove Camp",
@@ -317,6 +345,8 @@
   },
   "ashen_quarter": {
     "level": "location",
+    "danger": 2,
+    "tags": ["ruin"],
     "parent": "ashlands",
     "kind": "town",
     "name": "The Ashen Quarter",
@@ -327,6 +357,7 @@
   },
   "emberwick": {
     "level": "location",
+    "controller": "compact",
     "parent": "ashlands",
     "kind": "village",
     "name": "Emberwick",
@@ -337,6 +368,10 @@
   },
   "spire_of_judgment": {
     "level": "location",
+    "danger": 3,
+    "controller": "dominion",
+    "tags": ["holy", "stronghold"],
+    "watches": 4,
     "stage": "hall",
     "parent": "ashlands",
     "kind": "site",
@@ -358,6 +393,8 @@
   },
   "akagiri": {
     "level": "location",
+    "controller": "oni",
+    "watches": 3,
     "parent": "spring_terraces",
     "kind": "village",
     "name": "Akagiri",
@@ -388,6 +425,7 @@
   },
   "wracks_end": {
     "level": "location",
+    "tags": ["sea"],
     "parent": "wrack_cliffs",
     "kind": "village",
     "name": "Wrack’s End",
@@ -409,6 +447,8 @@
   },
   "kindly_hill": {
     "level": "location",
+    "danger": 0,
+    "controller": "kindly",
     "parent": "the_fen",
     "kind": "village",
     "name": "The Kindly Hill",
@@ -419,6 +459,10 @@
   },
   "drowned_cloister": {
     "level": "location",
+    "danger": 2,
+    "light": "dusk",
+    "tags": ["holy", "haunted", "ruin"],
+    "watches": 3,
     "stage": "hall",
     "parent": "the_fen",
     "kind": "town",
@@ -431,6 +475,9 @@
   },
   "hollow_court": {
     "level": "location",
+    "danger": 3,
+    "light": "dark",
+    "tags": ["haunted", "underground"],
     "stage": "hall",
     "parent": "the_fen",
     "kind": "site",
@@ -462,6 +509,9 @@
   },
   "black_reliquary": {
     "level": "location",
+    "danger": 2,
+    "tags": ["holy"],
+    "watches": 4,
     "parent": "frost_road",
     "kind": "city",
     "name": "The Black Reliquary",
@@ -473,6 +523,7 @@
   },
   "reliquary_quarter": {
     "level": "district",
+    "tags": ["holy"],
     "parent": "black_reliquary",
     "name": "The Reliquary Quarter",
     "name_fr": "Le Quartier des Reliquaires",
@@ -483,6 +534,9 @@
   },
   "dead_heart": {
     "level": "district",
+    "danger": 3,
+    "light": "dusk",
+    "tags": ["haunted"],
     "parent": "black_reliquary",
     "name": "The Dead Heart",
     "name_fr": "Le Cœur mort",
@@ -493,6 +547,7 @@
   },
   "rimewell": {
     "level": "location",
+    "danger": 0,
     "parent": "frost_road",
     "kind": "village",
     "name": "Rimewell",
@@ -503,6 +558,9 @@
   },
   "highhearth": {
     "level": "location",
+    "danger": 0,
+    "controller": "giants",
+    "watches": 3,
     "parent": "frost_road",
     "kind": "village",
     "name": "Highhearth",
@@ -533,6 +591,7 @@
   },
   "white_anchorage": {
     "level": "location",
+    "tags": ["sea", "market"],
     "parent": "glass_shore",
     "kind": "town",
     "name": "The White Anchorage",
@@ -544,6 +603,7 @@
   },
   "greyhithe": {
     "level": "location",
+    "tags": ["sea"],
     "parent": "glass_shore",
     "kind": "village",
     "name": "Greyhithe",
@@ -555,6 +615,7 @@
   },
   "white_fleet_grave": {
     "level": "location",
+    "tags": ["sea", "haunted"],
     "parent": "glass_shore",
     "kind": "sea",
     "name": "The White Fleet’s Grave",
@@ -565,6 +626,9 @@
   },
   "hollow_shore": {
     "level": "location",
+    "danger": 2,
+    "tags": ["wild"],
+    "watches": 3,
     "parent": "glass_shore",
     "kind": "site",
     "name": "The Hollow Shore",
@@ -576,6 +640,9 @@
   },
   "hollow_shore_battlefield": {
     "level": "district",
+    "danger": 3,
+    "light": "dusk",
+    "tags": ["haunted"],
     "parent": "hollow_shore",
     "name": "The Battlefield",
     "name_fr": "Le Champ de bataille",
@@ -586,6 +653,9 @@
   },
   "beyond_the_tear": {
     "level": "district",
+    "danger": 3,
+    "light": "dark",
+    "tags": ["haunted"],
     "parent": "hollow_shore",
     "name": "Beyond the Tear",
     "name_fr": "Au-delà de la déchirure",
@@ -625,6 +695,8 @@
   },
   "candlehold": {
     "level": "location",
+    "controller": "dominion",
+    "tags": ["stronghold"],
     "parent": "lantern_cliffs",
     "kind": "city",
     "name": "Candlehold",
@@ -636,6 +708,7 @@
   },
   "candlehold_gates": {
     "level": "district",
+    "tags": ["stronghold"],
     "parent": "candlehold",
     "name": "The Gates",
     "name_fr": "Les Portes",
@@ -646,6 +719,9 @@
   },
   "candlehold_lantern_hall": {
     "level": "district",
+    "danger": 2,
+    "controller": "dominion",
+    "tags": ["holy", "stronghold"],
     "stage": "hall",
     "parent": "candlehold",
     "name": "The Lantern Hall",

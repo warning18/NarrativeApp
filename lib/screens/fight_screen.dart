@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/battlefield_condition.dart';
 import '../combat/field_anomaly.dart';
+import '../data/place_traits.dart';
 import '../data/climate.dart' show WeatherKind;
 import '../providers/geography_provider.dart';
 import '../widgets/fight_backdrop.dart';
@@ -355,6 +356,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// (v1.241, see fight_ground.dart). Set once in [_ensureEnemiesBuilt].
   FightStage _stage = FightStage.fields;
   FieldAnomalyPlan? _anomaly;
+
+  /// The light the fight is fought in ('' for the day's, see
+  /// place_traits.dart): set with the battlefield condition.
+  String _light = '';
 
   /// Party rounds begun so far -- the spoils chest's "swift fight" bonus
   /// reads this, and an Ambush hides every telegraph while it's still 1.

@@ -96,6 +96,33 @@ enum BiomePattern {
   }
 }
 
+/// How dangerous places are when nothing says: ordinary, between a safe
+/// camp and a deadly pit.
+const int geoDefaultDanger = 1;
+const int geoMaxDanger = 3;
+
+/// The lights a place can be fought in, from the day's to the pitch dark.
+const List<String> geoLights = ['day', 'dusk', 'night', 'dark'];
+
+/// The kinds a place can be of: what lets a few rules (the ground's
+/// anomalies, the codex) read it.
+const List<String> geoPlaceTags = [
+  'holy',
+  'haunted',
+  'ruin',
+  'underground',
+  'market',
+  'sea',
+  'wild',
+  'stronghold',
+];
+
+/// [raw] as a danger from 0 to [geoMaxDanger], or null for none written.
+int? _dangerOf(Object? raw) {
+  final value = raw is num ? raw.toInt() : int.tryParse(raw?.toString() ?? '');
+  return value?.clamp(0, geoMaxDanger);
+}
+
 String _text(Map<dynamic, dynamic> raw, String key) =>
     raw[key]?.toString().trim() ?? '';
 
@@ -292,6 +319,11 @@ class GeoPlace {
     this.water = '',
     this.glyph = '',
     this.stage = '',
+    this.danger,
+    this.light = '',
+    this.controller = '',
+    this.tags = const [],
+    this.watches = 0,
     this.landmarks = const [],
   });
 
@@ -322,6 +354,15 @@ class GeoPlace {
       water: level == GeoLevel.location ? _text(raw, 'water') : '',
       glyph: level == GeoLevel.district ? _text(raw, 'glyph') : '',
       stage: _text(raw, 'stage'),
+      danger: _dangerOf(raw['danger']),
+      light: geoLights.contains(_text(raw, 'light')) ? _text(raw, 'light') : '',
+      controller: _text(raw, 'controller'),
+      tags: [
+        if (raw['tags'] is List)
+          for (final tag in raw['tags'] as List)
+            if (tag.toString().trim().isNotEmpty) tag.toString().trim(),
+      ],
+      watches: (raw['watches'] is num) ? (raw['watches'] as num).toInt() : 0,
       landmarks: landmarks.toList(),
     );
   }
@@ -358,6 +399,29 @@ class GeoPlace {
   /// 'hall' for the inside of a prison, a crypt or a cathedral. '' takes
   /// the stage of the land the place lies in (its zone's biome).
   final String stage;
+
+  /// How dangerous this place is, 0 (safe) to [geoMaxDanger], or null for
+  /// what the places above it say (and, with none, [geoDefaultDanger]).
+  /// It makes the roads to it, and the fights in it, likelier to hold
+  /// something (v1.242, see place_traits.dart).
+  final int? danger;
+
+  /// The light a fight here is fought in (see [geoLights]); '' takes the
+  /// light of the place above, and with none, the day's.
+  final String light;
+
+  /// The faction that holds this place (a factions.json id); '' takes the
+  /// holder of the place above, and with none, the country's ruler. A
+  /// faction's shops here price by the standing with the holder.
+  final String controller;
+
+  /// What kind of place it is (see [geoPlaceTags]); a place has its own and
+  /// those of the places above it.
+  final List<String> tags;
+
+  /// Watches a walk to this place takes (0: what the places above it say,
+  /// and with none, a plain walk, see walkWatches in journey_rules.dart).
+  final int watches;
 
   /// The world_map.dart landmarks that lie here.
   final List<String> landmarks;
@@ -469,6 +533,59 @@ class Geography {
 
   /// The biome of [id]'s zone.
   Biome? biomeOf(String? id) => biomes[zoneOf(id)?.biome];
+
+  /// The danger of [id]: its own, else the nearest place above it that
+  /// says, else [geoDefaultDanger].
+  int dangerOf(String? id) {
+    for (final place in pathOf(id).reversed) {
+      if (place.danger != null) return place.danger!;
+    }
+    return geoDefaultDanger;
+  }
+
+  /// The light of [id] (see [geoLights]), or '' for the day's.
+  String lightOf(String? id) {
+    for (final place in pathOf(id).reversed) {
+      if (place.light.isNotEmpty) return place.light;
+    }
+    return '';
+  }
+
+  /// The faction that holds [id]: the nearest controller written up the
+  /// chain, else the country's ruler, else ''.
+  String controllerOf(String? id) {
+    for (final place in pathOf(id).reversed) {
+      if (place.controller.isNotEmpty) return place.controller;
+    }
+    return countryOf(id)?.ruler ?? '';
+  }
+
+  /// The faction that holds [id] by a controller written on it or a place
+  /// above it, with no fall back to a country's ruler (a ruler holds its
+  /// land, but does not set the price of every shop in it): '' for none.
+  String heldBy(String? id) {
+    for (final place in pathOf(id).reversed) {
+      if (place.controller.isNotEmpty) return place.controller;
+    }
+    return '';
+  }
+
+  /// What [id] is: its own tags and those of every place above it.
+  Set<String> tagsOf(String? id) =>
+      {for (final place in pathOf(id)) ...place.tags};
+
+  /// The watches a walk to [id] takes: its own, else the nearest place above
+  /// it that says, else [fallback].
+  int watchesTo(String? id, {required int fallback}) {
+    for (final place in pathOf(id).reversed) {
+      if (place.watches > 0) return place.watches;
+    }
+    return fallback;
+  }
+
+  /// The watches a walk to where [node] happens takes (see [watchesTo]).
+  int watchesToNode(StoryNode? node, {required int fallback}) =>
+      watchesTo(placeOfNode(node)?.id, fallback: fallback);
 
   /// The stage a fight at [id] is drawn on, as a FightStage name: the
   /// nearest `stage` written on [id] or the places above it, else the

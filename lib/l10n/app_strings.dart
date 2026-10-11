@@ -7274,6 +7274,82 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The place\'s own',
     AppLanguage.fr: 'Celui du lieu',
   },
+  'place_danger': {
+    AppLanguage.en: 'Danger',
+    AppLanguage.fr: 'Danger',
+  },
+  'place_danger_0': {
+    AppLanguage.en: 'Safe',
+    AppLanguage.fr: 'Sûr',
+  },
+  'place_danger_1': {
+    AppLanguage.en: 'Ordinary',
+    AppLanguage.fr: 'Ordinaire',
+  },
+  'place_danger_2': {
+    AppLanguage.en: 'Dangerous',
+    AppLanguage.fr: 'Dangereux',
+  },
+  'place_danger_3': {
+    AppLanguage.en: 'Deadly',
+    AppLanguage.fr: 'Mortel',
+  },
+  'place_light_day': {
+    AppLanguage.en: 'Daylight',
+    AppLanguage.fr: 'Plein jour',
+  },
+  'place_light_dusk': {
+    AppLanguage.en: 'Dusk',
+    AppLanguage.fr: 'Crépuscule',
+  },
+  'place_light_night': {
+    AppLanguage.en: 'Night',
+    AppLanguage.fr: 'Nuit',
+  },
+  'place_light_dark': {
+    AppLanguage.en: 'Pitch dark',
+    AppLanguage.fr: 'Noir complet',
+  },
+  'place_held_by': {
+    AppLanguage.en: 'Held by {clan}',
+    AppLanguage.fr: 'Tenu par\u00A0: {clan}',
+  },
+  'place_walk': {
+    AppLanguage.en: 'A walk of {n} watches',
+    AppLanguage.fr: 'Une marche de {n} quarts',
+  },
+  'place_tag_holy': {
+    AppLanguage.en: 'Holy',
+    AppLanguage.fr: 'Sacré',
+  },
+  'place_tag_haunted': {
+    AppLanguage.en: 'Haunted',
+    AppLanguage.fr: 'Hanté',
+  },
+  'place_tag_ruin': {
+    AppLanguage.en: 'Ruin',
+    AppLanguage.fr: 'Ruine',
+  },
+  'place_tag_underground': {
+    AppLanguage.en: 'Underground',
+    AppLanguage.fr: 'Souterrain',
+  },
+  'place_tag_market': {
+    AppLanguage.en: 'Market',
+    AppLanguage.fr: 'Marché',
+  },
+  'place_tag_sea': {
+    AppLanguage.en: 'Sea',
+    AppLanguage.fr: 'Mer',
+  },
+  'place_tag_wild': {
+    AppLanguage.en: 'Wild',
+    AppLanguage.fr: 'Sauvage',
+  },
+  'place_tag_stronghold': {
+    AppLanguage.en: 'Stronghold',
+    AppLanguage.fr: 'Place forte',
+  },
   'momentum_label': {AppLanguage.en: 'Momentum', AppLanguage.fr: 'Élan'},
   'momentum_ready_label': {
     AppLanguage.en: 'Momentum: next strike crits!',

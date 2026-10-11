@@ -4,6 +4,14 @@ part of '../fight_screen.dart';
 /// and the anomaly that may break over it -- see field_anomaly.dart for the
 /// rules and fight_backdrop.dart for the picture.
 extension _FightGround on _FightScreenState {
+  /// The place the story stands at (null with no place: a detour, a test).
+  String? _placeIdHere() {
+    final geography = ref.read(geographyProvider);
+    final story = ref.read(storyDataProvider).value;
+    final play = ref.read(storyPlayProvider);
+    return geography.placeOfNode(story?.nodeFor(play.currentNodeId))?.id;
+  }
+
   /// Where this fight is drawn: the scene's own stage when the choice names
   /// one, else the stage of the place the story stands at (a hall for a
   /// prison or a crypt, otherwise the pattern of the land's biome), else
@@ -12,12 +20,15 @@ extension _FightGround on _FightScreenState {
     final forced = widget.modifiers.forcedStage;
     if (forced != null) return forced;
     final geography = ref.read(geographyProvider);
-    final story = ref.read(storyDataProvider).value;
-    final play = ref.read(storyPlayProvider);
-    final node = story?.nodeFor(play.currentNodeId);
-    final place = geography.placeOfNode(node);
-    final named = fightStageFromName(geography.stageNameOf(place?.id));
+    final named = fightStageFromName(geography.stageNameOf(_placeIdHere()));
     return named ?? FightStage.fields;
+  }
+
+  /// The light this fight is fought in (see place_traits.dart): the place's,
+  /// else the day's.
+  String _lightHere() {
+    if (widget.modifiers.tutorial) return '';
+    return ref.read(geographyProvider).lightOf(_placeIdHere());
   }
 
   /// Sets the stage and rolls (or takes the forced) anomaly, once, in
@@ -34,10 +45,16 @@ extension _FightGround on _FightScreenState {
       return;
     }
     if (modifiers.isTest || modifiers.forcedCondition != null) return;
+    final geography = ref.read(geographyProvider);
+    final placeId = _placeIdHere();
     _anomaly = rollFieldAnomaly(
       stage: _stage,
       sky: _sky.kind == WeatherKind.clear ? null : _sky.kind,
       random: _random,
+      // A dangerous place turns on its visitors more often; a holy one, a
+      // haunted one or a ruin in its own way (see field_anomaly.dart).
+      chanceFactor: dangerAnomalyFactor(geography.dangerOf(placeId)),
+      tags: geography.tagsOf(placeId),
     );
   }
 
@@ -185,6 +202,7 @@ extension _FightGround on _FightScreenState {
           sky: _sky.kind == WeatherKind.clear ? null : _sky.kind,
           anomaly: plan?.anomaly,
           phase: _anomalyPhase,
+          light: lightLevel(_light),
         ),
         DecoratedBox(
           decoration: BoxDecoration(

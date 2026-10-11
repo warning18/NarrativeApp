@@ -65,16 +65,32 @@ BattlefieldCondition? battlefieldConditionFromName(String? name) {
 
 /// Rolls this fight's condition, or null (the common case). Cramped only
 /// makes sense against three or more enemies, so it's left out of the pool
-/// for anything smaller.
+/// for anything smaller. A fight fought after dusk ([light] 'night' or
+/// 'dark', see place_traits.dart) is likelier to have one at all, and
+/// likelier to be Dark.
 BattlefieldCondition? rollBattlefieldCondition({
   required int enemyCount,
   required Random random,
   double chance = battlefieldConditionChance,
+  String light = '',
 }) {
-  if (random.nextDouble() >= chance) return null;
+  final odds = switch (light) {
+    'night' => max(chance, 0.4),
+    'dark' => max(chance, 0.6),
+    _ => chance,
+  };
+  if (random.nextDouble() >= odds) return null;
   final pool = <BattlefieldCondition>[
     BattlefieldCondition.ambush,
-    BattlefieldCondition.dark,
+    // The dark fills the pool the darker it is: one share by day, three at
+    // night, five in the pitch dark.
+    ...List.filled(
+        switch (light) {
+          'night' => 3,
+          'dark' => 5,
+          _ => 1,
+        },
+        BattlefieldCondition.dark),
     if (enemyCount >= 3) BattlefieldCondition.cramped,
     BattlefieldCondition.highGround,
     BattlefieldCondition.shrine,
