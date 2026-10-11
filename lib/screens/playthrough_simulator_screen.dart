@@ -1057,7 +1057,8 @@ _SimResult _simulate(
     // chapter breakdown and CSV/JSON exports stay consistent with finalGold.
     // The signs take their share of it (a pact's curse some back).
     // A sneak that works leaves the fight behind.
-    final sneaked = checkPassed && choice.avoidFightOnSuccess;
+    final sneaked =
+        choice.hasAbilityCheck && checkPassed && choice.avoidFightOnSuccess;
     final killsBefore =
         questLog == null ? null : Map<String, int>.of(questLog.kills);
     final fightResult = sneaked

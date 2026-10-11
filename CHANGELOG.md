@@ -47,6 +47,17 @@ and particles for them in a fight.
   friend and a strike on a foe. The accent is read off the skill (nothing
   new to author), and shows in the effects gallery too.
 
+### Fixed
+- Review of the whole branch: a clan Unfriendly or Resented (the new steps
+  between Wary and Hostile) was shut out as a suitor and from the Host, as the
+  old "at least Wary" test now stopped higher; both now stop at Hostile as
+  documented. A fusion is found when a clan stands behind both parents. The
+  simulator's sneak skips a fight only when the choice has an ability check
+  that succeeds, as the game does. The ascension label in the data editor says
+  Friend. The offer draw works out each clan's cards once. The unused Journey
+  "past scenes" helper is gone, and the Intrigues section header is back above
+  its tab.
+
 ## [1.238.0+274]
 
 Twenty more skills: ten that belong to sub-clans and ten secrets.

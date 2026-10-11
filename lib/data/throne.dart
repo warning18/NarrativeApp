@@ -173,7 +173,7 @@ String climbFocusFor(
 
 /// Whether [factionId] stands Hostile or worse: it never comes.
 bool _hostile(String factionId, PoliticsState politics, ClanData data) =>
-    !politics.tierOf(factionId, data).isAtLeast(StandingTier.wary);
+    !politics.tierOf(factionId, data).isAtLeast(StandingTier.resented);
 
 /// The Host the character would muster now (see the file's notes): the
 /// banner (the faction on the Throne, else the claim), the allies in the

@@ -1136,8 +1136,6 @@ class _StandingChartPainter extends CustomPainter {
       old.history != history || old.ticks != ticks || old.axis != axis;
 }
 
-// --- Intrigues --------------------------------------------------------------
-
 // --- Affinities -------------------------------------------------------------
 
 /// The favorability matrix (v1.232, see clan_affinity.dart): a row per
@@ -1323,6 +1321,8 @@ class _AffinityTab extends ConsumerWidget {
     );
   }
 }
+
+// --- Intrigues --------------------------------------------------------------
 
 class _IntriguesTab extends ConsumerWidget {
   const _IntriguesTab({this.play = false});

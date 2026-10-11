@@ -206,6 +206,17 @@ void main() {
       }
     });
 
+    test('a clan Unfriendly or Resented still comes; a Hostile one does not',
+        () {
+      for (final value in [-8, -15, -22]) {
+        expect(eligibleSuitors(_ctx(politics: _at({'red': value}))),
+            contains('red'),
+            reason: '$value');
+      }
+      expect(eligibleSuitors(_ctx(politics: _at({'red': -30}))),
+          isNot(contains('red')));
+    });
+
     test('a Hostile clan never comes; a tribe only once found', () {
       final random = Random(2);
       final seen = <String>{};

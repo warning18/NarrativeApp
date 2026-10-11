@@ -708,7 +708,7 @@ final DbSchema skillsSchema = DbSchema(
     ),
     FieldSchema(
       key: 'ascendsSkillID',
-      label: 'Ascends Skill (the upgrade a clan offers at Trusted standing)',
+      label: 'Ascends Skill (the upgrade a clan offers at Friend standing)',
       type: FieldType.text,
     ),
     FieldSchema(

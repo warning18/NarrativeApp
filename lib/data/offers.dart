@@ -556,7 +556,15 @@ class AccordOffer {
 /// - **Ascension** (`ascendsSkillID`): the skill it raises is known, the
 ///   character at [ascensionMinTier] with [factionId], which sponsors it.
 /// In the skills' file order, no repeats.
-List<AccordOffer> accordsFor(String factionId, OfferContext c) {
+List<AccordOffer> accordsFor(String factionId, OfferContext c) =>
+    (_accordCache[c] ??= {})
+        .putIfAbsent(factionId, () => _accordsFor(factionId, c));
+
+/// The cards of each context drawn so far (a context is built per draw and
+/// never changes, so each clan's cards are worked out once).
+final Expando<Map<String, List<AccordOffer>>> _accordCache = Expando();
+
+List<AccordOffer> _accordsFor(String factionId, OfferContext c) {
   final out = <AccordOffer>[];
   final tier = c.tierOf(factionId);
   List<String> sponsors(String skillId) => sponsorsOfSkill(skillId,
@@ -582,19 +590,22 @@ List<AccordOffer> accordsFor(String factionId, OfferContext c) {
           !tier.isAtLeast(fusionMinTier)) {
         continue;
       }
-      final mine = parents.indexWhere((p) => sponsors(p).contains(factionId));
-      if (mine < 0) continue;
-      final partners = [
-        for (final id in sponsors(parents[1 - mine]))
-          if (id != factionId &&
-              (c.data.faction(id)?.isClan ?? false) &&
-              c.data.faction(id) != null &&
-              suitorOpen(c.data.faction(id)!, c) &&
-              c.tierOf(id).isAtLeast(fusionMinTier))
-            id,
-      ]..sort((a, b) => c.politics
-          .standingOf(b, c.data)
-          .compareTo(c.politics.standingOf(a, c.data)));
+      // The clan may stand behind either parent (or both): the partner is
+      // whoever stands behind the other one.
+      final partners = <String>{
+        for (var i = 0; i < 2; i++)
+          if (sponsors(parents[i]).contains(factionId))
+            for (final id in sponsors(parents[1 - i]))
+              if (id != factionId &&
+                  c.data.faction(id) != null &&
+                  c.data.faction(id)!.isClan &&
+                  suitorOpen(c.data.faction(id)!, c) &&
+                  c.tierOf(id).isAtLeast(fusionMinTier))
+                id,
+      }.toList()
+        ..sort((a, b) => c.politics
+            .standingOf(b, c.data)
+            .compareTo(c.politics.standingOf(a, c.data)));
       if (partners.isNotEmpty) out.add(AccordOffer(entry.key, partners.first));
       continue;
     }
@@ -758,13 +769,12 @@ Map<GiftKind, int> availableGiftKinds(String factionId, OfferContext c,
     return {if (hasSign) GiftKind.sign: 1};
   }
   final bonus = better ? 1 : 0;
+  final skillOptions = offerableSkillsFor(factionId, c, tierBonus: bonus);
+  final accords = accordsFor(factionId, c);
   return {
     if (swornBoonDue(factionId, c)) GiftKind.sworn: 1,
-    if (offerableSkillsFor(factionId, c, tierBonus: bonus).isNotEmpty ||
-        accordsFor(factionId, c).isNotEmpty)
-      GiftKind.skill:
-          offerableSkillsFor(factionId, c, tierBonus: bonus).length +
-              accordsFor(factionId, c).length,
+    if (skillOptions.isNotEmpty || accords.isNotEmpty)
+      GiftKind.skill: skillOptions.length + accords.length,
     if (hasSign) GiftKind.sign: 1,
     if (offerableObjectsFor(factionId, c, tierBonus: bonus).isNotEmpty)
       GiftKind.object: 1,
@@ -782,7 +792,7 @@ bool suitorOpen(Faction faction, OfferContext c) =>
         alignment: c.alignment,
         patronsThisLife: c.patronsThisLife,
         patrons: c.patrons) &&
-    c.tierOf(faction.id).isAtLeast(StandingTier.wary);
+    c.tierOf(faction.id).isAtLeast(StandingTier.resented);
 
 /// Every faction that could come now and has something to give, in the
 /// file's order.

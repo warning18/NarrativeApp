@@ -385,6 +385,51 @@ void main() {
           isEmpty);
     });
 
+    test('a fusion is found when the clan stands behind both parents', () {
+      // Red sponsors a branch holding both parents; blue only the second.
+      final data = ClanData.fromTables(
+        factions: {
+          'red': _clan(['warrior_ab']),
+          'blue': _clan(['warrior_b']),
+        },
+        subclans: const {},
+        relations: const {},
+        titles: const {},
+      );
+      const trees = {
+        'warrior_ab': {
+          'professionId': 'warrior',
+          'skillIds': ['a1', 'b1'],
+        },
+        'warrior_b': {
+          'professionId': 'warrior',
+          'skillIds': ['b1', 'b2'],
+        },
+      };
+      PoliticsState at(Map<String, num> values) {
+        var state = PoliticsState.empty;
+        values.forEach((id, v) {
+          state = setStandingValue(state, id, v, 'edit', data: data).state;
+        });
+        return state;
+      }
+
+      final ctx = OfferContext(
+        data: data,
+        politics: at({'red': 30, 'blue': 30}),
+        skills: _skills,
+        skillTrees: trees,
+        raceId: 'human',
+        professionId: 'warrior',
+        knownSkillIds: const {'a1', 'b1'},
+      );
+      expect(
+          accordsFor('red', ctx)
+              .where((a) => a.skillId == 'fuse')
+              .map((a) => a.partnerId),
+          ['blue']);
+    });
+
     test('a grown tree still has a home seat while a card is left', () {
       // Every branch skill known: only the fusion and the ascension remain.
       final grown = _ctx(
