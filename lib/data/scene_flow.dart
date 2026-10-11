@@ -73,29 +73,36 @@ StoryChoice? passThroughChoiceOf(StoryNode node, Iterable<String> flags,
 }
 
 /// The scene the story really lands on after a way leads to [firstId]
-/// (v1.224): the scenes the story reads straight through (see
+/// (v1.227): the scenes the story reads straight through (see
 /// [passThroughChoiceOf]) are passed on the way, at most [maxPassThrough] of
 /// them, so the party stands where the last of them leads. The Journey walks
 /// the party there, not to the first scene, so its mark never jumps.
 ///
-/// [nodeFor] finds a scene; [flags], [hidden] and [travels] are as for
-/// [passThroughChoiceOf]; [blocked] says a way on the party cannot take yet
-/// (the story stops at such a scene, with its reason).
+/// Each scene passed sets the flags its way on notes, as the real read-through
+/// does, so the next scene's ways are judged with them: [hidden] and
+/// [blocked] are given the flags held at that point. [nodeFor] finds a scene;
+/// [flags] and [travels] are as for [passThroughChoiceOf]; [blocked] says a
+/// way on the party cannot take yet (the story stops at such a scene, with
+/// its reason). What a scene does to the coast's politics as it is entered
+/// is not foreseen.
 String readThroughEnd(
   String firstId, {
   required StoryNode? Function(String id) nodeFor,
   required Iterable<String> flags,
-  bool Function(StoryChoice choice)? hidden,
+  bool Function(StoryChoice choice, Set<String> flags)? hidden,
   bool Function(String from, String to)? travels,
-  bool Function(StoryChoice choice)? blocked,
+  bool Function(StoryChoice choice, Set<String> flags)? blocked,
 }) {
   var id = firstId;
+  final held = flags.toSet();
   for (var i = 0; i < maxPassThrough; i++) {
     final node = nodeFor(id);
     if (node == null) break;
-    final way =
-        passThroughChoiceOf(node, flags, hidden: hidden, travels: travels);
-    if (way == null || (blocked?.call(way) ?? false)) break;
+    final way = passThroughChoiceOf(node, held,
+        hidden: hidden == null ? null : (c) => hidden(c, held),
+        travels: travels);
+    if (way == null || (blocked?.call(way, held) ?? false)) break;
+    held.addAll(way.flagsToAdd);
     id = way.nextId;
   }
   return id;

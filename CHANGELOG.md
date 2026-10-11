@@ -12,6 +12,11 @@ isn't reconstructable from git history alone.
 
 ### Added
 - The Edit Mode fight lab can add a companion to a test fight. Under the party switch, "Add a companion" lists all eight companions with their race and profession; any of them, recruited by the story or not, joins the party for the test with the skills of their signature die, and a chip takes them off again. They are put back afterwards like the rest of the test: a companion the story never recruited is gone again even with "Keep what happens" on; one the story had recruited keeps what the fight did to them.
+- Full simulated playthroughs for the balance review: `simulatePlaythroughs` runs the in-app simulator's walk and fight model headless for any list of goals, professions and races, and `test/sim_playthroughs_test.dart` pins that every goal and profession reaches a real ending through chapter 8. `docs/simulation/` holds the report and the per-run table of 100 runs.
+
+### Changed
+- The Journey's read-through prediction follows the real one: the flags each passed scene sets count for the next scene's ways, a way out of a building by a door walks the party out even from that door, and the scenes a way reads through are worked out once per build instead of for every use.
+- The fight lab keeps the companions added to a test within the most the camp can field (the base party and every house's bonus), picks first.
 
 ## [1.227.0+263]
 

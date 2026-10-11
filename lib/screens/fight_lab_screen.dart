@@ -73,6 +73,13 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
   String _enemyName(Map<String, dynamic> enemies, String id) =>
       (enemies[id] as Map<String, dynamic>?)?['enemyName']?.toString() ?? id;
 
+  /// The most companions the party can ever hold: the base size and every
+  /// house's bonus (see partyCapacityFor).
+  int _mostAllies(Map<String, dynamic> houses) => partyCapacityFor([
+        for (final h in houses.values.whereType<Map<String, dynamic>>())
+          h['houseID']?.toString() ?? '',
+      ], houses);
+
   String _companionName(Map<String, dynamic> companions, String id) =>
       (companions[id] as Map<String, dynamic>?)?['companionName']?.toString() ??
       id;
@@ -154,9 +161,15 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
           ),
         ));
       }
+      // The companions picked first, then the party the character has,
+      // within the most the camp can ever field.
+      final houses = ref.read(localizedDbProvider(housesSchema)).value ?? {};
+      final party = <String>{..._companionIds, ...test.activeAllyIds}
+          .take(_mostAllies(houses))
+          .toList();
       test = test.copyWith(
         recruitedAllies: [...test.recruitedAllies, ...fresh],
-        activeAllyIds: {...test.activeAllyIds, ..._companionIds}.toList(),
+        activeAllyIds: party,
       );
     }
     await notifier.loadSession(test);
@@ -390,6 +403,8 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
         const <String, dynamic>{};
     final companions = ref.watch(localizedDbProvider(companionsSchema)).value ??
         const <String, dynamic>{};
+    final houses = ref.watch(localizedDbProvider(housesSchema)).value ??
+        const <String, dynamic>{};
     final enemyShips = ref.watch(localizedDbProvider(enemyShipsSchema)).value ??
         const <String, dynamic>{};
     final session = ref.watch(playerSessionProvider);
@@ -543,6 +558,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                 avatar: const Icon(Icons.group_add, size: 18),
                 label: Text(tr(ref, 'fight_lab_add_companion')),
                 onPressed: _companionIds.length >= companions.length ||
+                        _companionIds.length >= _mostAllies(houses) ||
                         companions.isEmpty
                     ? null
                     : () => _pickCompanion(companions),

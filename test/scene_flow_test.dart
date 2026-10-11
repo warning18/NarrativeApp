@@ -55,6 +55,44 @@ void main() {
       expect(readThroughEnd('d', nodeFor: story.nodeFor, flags: const []), 'd');
     });
 
+    test('the flags a passed scene sets count for the next one', () {
+      // a notes "met" on its way on; b's only way on shows only to those
+      // who met, so with the flag carried the story reads on through b.
+      final flagged = StoryData({
+        'a': _node('a', [
+          {
+            'text': 'On',
+            'next_id': 'b',
+            'flagsToAdd': ['met']
+          }
+        ]),
+        'b': _node('b', [
+          {
+            'text': 'On',
+            'next_id': 'c',
+            'showIfFlags': ['met']
+          }
+        ]),
+        'c': _node('c', [
+          {'text': 'Left', 'next_id': 'd'},
+          {'text': 'Right', 'next_id': 'e'},
+        ]),
+      });
+      expect(
+          readThroughEnd('a',
+              nodeFor: flagged.nodeFor,
+              flags: const [],
+              hidden: (c, held) => c.isHiddenFor(held)),
+          'c');
+      // Without carrying the flag b would have no way on and be a stop.
+      expect(
+          readThroughEnd('b',
+              nodeFor: flagged.nodeFor,
+              flags: const [],
+              hidden: (c, held) => c.isHiddenFor(held)),
+          'b');
+    });
+
     test('a road, a way not yet takeable and an unknown scene stop it', () {
       expect(
           readThroughEnd('a',
@@ -66,7 +104,7 @@ void main() {
           readThroughEnd('a',
               nodeFor: story.nodeFor,
               flags: const [],
-              blocked: (way) => way.nextId == 'b'),
+              blocked: (way, held) => way.nextId == 'b'),
           'a');
       expect(
           readThroughEnd('zz', nodeFor: story.nodeFor, flags: const []), 'zz');

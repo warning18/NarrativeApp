@@ -93,7 +93,7 @@ class JourneyScreen extends ConsumerWidget {
 
 /// One way on from the scene, as the map shows it.
 class _Step {
-  const _Step({
+  _Step({
     required this.choice,
     required this.kind,
     required this.slot,
@@ -105,7 +105,6 @@ class _Step {
     this.hazard,
     this.bearing,
     this.chartTarget,
-    this.moves = false,
   });
 
   final StoryChoice choice;
@@ -139,22 +138,7 @@ class _Step {
   /// bridge, into another district or building, through a door, out along a
   /// road. A way that keeps the party where it stands (a word with the
   /// innkeeper, a stall, a scuffle in the square) leaves it on its mark.
-  final bool moves;
-
-  _Step withMoves(bool moves) => _Step(
-        choice: choice,
-        kind: kind,
-        slot: slot,
-        label: label,
-        locked: locked,
-        leadsTo: leadsTo,
-        onwardKinds: onwardKinds,
-        event: event,
-        hazard: hazard,
-        bearing: bearing,
-        chartTarget: chartTarget,
-        moves: moves,
-      );
+  bool moves = false;
 }
 
 /// The place the party stands in, as the map draws it up close (v1.181):
@@ -737,11 +721,15 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             c.nextId,
             nodeFor: story.nodeFor,
             flags: session.flags,
-            hidden: (x) => choiceHiddenFor(x, session, gateWorld),
+            hidden: (x, held) => choiceHiddenFor(
+                x, session.copyWith(flags: held.toList()), gateWorld),
             travels: (from, to) => world.travelsBetween(story, from, to),
-            blocked: (x) =>
-                isStoryChoiceLocked(x, story, session, world: gateWorld),
+            blocked: (x, held) => isStoryChoiceLocked(
+                x, story, session.copyWith(flags: held.toList()),
+                world: gateWorld),
           );
+    // Once per build: every use below reads the same scene.
+    final ends = {for (final c in choices) c: endOf(c)};
     final rawSteps = [
       for (var i = 0; i < choices.length; i++)
         () {
@@ -761,7 +749,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
               : null;
           final target = play.isInExcursion || choice.isEnding
               ? null
-              : landmarkOfScene(endOf(choice));
+              : landmarkOfScene(ends[choice]!);
           // A way to another landmark points out of the square; only one
           // that leaves the location (the city, not one of its districts)
           // is a journey over the world chart (v1.197).
@@ -782,7 +770,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             onwardKinds: play.isInExcursion || choice.isEnding
                 ? const []
                 : <JourneyStepKind>{
-                    for (final next in story.nodeFor(endOf(choice))?.choices ??
+                    for (final next in story.nodeFor(ends[choice]!)?.choices ??
                         const <StoryChoice>[])
                       if (!choiceHiddenFor(next, session, gateWorld))
                         journeyStepKindOf(next),
@@ -852,7 +840,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         climate: skyHere == null ? null : CityClimate.of(skyHere.ground),
       );
       for (var i = 0; i < choices.length; i++) {
-        final place = world.placeOfNode(story.nodeFor(endOf(choices[i])));
+        final place = world.placeOfNode(story.nodeFor(ends[choices[i]]!));
         if (place == null || place.id == herePlace?.id) continue;
         if (world.locationOf(place.id)?.id != hereLocation.id) continue;
         districtOfStep[i] = place.level == GeoLevel.district ? place.id : '';
@@ -865,6 +853,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     _sceneInside = hereBuilding != null;
     RoomPlan? room;
     var hereSpot = '';
+    final leavesRoom = <int>{};
     if (hereBuilding != null && !_outside) {
       room = RoomPlan.of(
           seed: _stableSeed(hereBuilding.id),
@@ -872,9 +861,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       hereSpot = room.has(node.spot ?? '') ? node.spot! : 'floor';
       districtOfStep.clear();
       for (var i = 0; i < choices.length; i++) {
-        final next = story.nodeFor(endOf(choices[i]));
+        final next = story.nodeFor(ends[choices[i]]!);
         final inside = world.placeOfNode(next)?.id == hereBuilding.id;
         final wanted = choices[i].spot ?? (inside ? next?.spot : null);
+        if (!inside) leavesRoom.add(i);
         districtOfStep[i] = wanted != null && room.has(wanted)
             ? wanted
             : inside
@@ -912,15 +902,18 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         };
       }
       if (step.bearing != null) return true;
+      // In a room, a way to another spot of it, or out of the building by
+      // a door (even from that very door: it leads to the street).
       return room != null
-          ? districtOfStep[i] != null && districtOfStep[i] != hereSpot
+          ? leavesRoom.contains(i) ||
+              (districtOfStep[i] != null && districtOfStep[i] != hereSpot)
           : districtOfStep.containsKey(i);
     }
 
-    final steps = [
-      for (var i = 0; i < rawSteps.length; i++)
-        rawSteps[i].withMoves(carries(i)),
-    ];
+    final steps = rawSteps;
+    for (var i = 0; i < steps.length; i++) {
+      steps[i].moves = carries(i);
+    }
     // A scene with one way on has its step picked already: one tap on Go.
     if (_autoPickPending) {
       _autoPickPending = false;
@@ -946,7 +939,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             districtOfStep: districtOfStep,
             glyphs: {
               for (var i = 0; i < choices.length; i++)
-                if (world.placeOfNode(story.nodeFor(endOf(choices[i])))?.glyph
+                if (world.placeOfNode(story.nodeFor(ends[choices[i]]!))?.glyph
                     case final glyph? when glyph.isNotEmpty)
                   i: glyph,
             },

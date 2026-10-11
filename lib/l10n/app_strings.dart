@@ -793,9 +793,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'fight_lab_companions_desc': {
     AppLanguage.en:
-        'Any companion joins the party for the test, recruited or not (put back afterwards, unless "Keep what happens" is on and they were already recruited).',
+        'Any companion joins the party for the test, recruited or not, up to the most the camp can field (put back afterwards, unless "Keep what happens" is on and they were already recruited).',
     AppLanguage.fr:
-        'Tout compagnon rejoint le groupe pour le test, recruté ou non (remis comme avant ensuite, sauf si «\u00a0Garder le résultat\u00a0» est activé et qu’il était déjà recruté).',
+        'Tout compagnon rejoint le groupe pour le test, recruté ou non, dans la limite de ce que le camp peut aligner (remis comme avant ensuite, sauf si «\u00a0Garder le résultat\u00a0» est activé et qu’il était déjà recruté).',
   },
   'fight_lab_search_enemy': {
     AppLanguage.en: 'Search by name or id',

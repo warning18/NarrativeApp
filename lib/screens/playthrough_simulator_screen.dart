@@ -299,6 +299,8 @@ _SimResult _simulate(
   int maxSteps = 400,
   bool french = false,
   _SimContext? sim,
+  String? forceRaceId,
+  String? forceProfessionId,
 }) {
   int combatGoldReward(StoryChoice c) {
     if (!c.triggersCombat) return 0;
@@ -314,8 +316,20 @@ _SimResult _simulate(
   if (sim != null && sim.races.isNotEmpty && sim.professions.isNotEmpty) {
     final raceIds = sim.races.keys.toList()..sort();
     final professionIds = sim.professions.keys.toList()..sort();
-    final raceId = raceIds[random.nextInt(raceIds.length)];
-    final professionId = professionIds[random.nextInt(professionIds.length)];
+    // The race and profession are drawn either way (the run's other draws
+    // do not shift), then replaced when the caller names one.
+    final drawnRace = raceIds[random.nextInt(raceIds.length)];
+    final drawnProfession = professionIds[random.nextInt(professionIds.length)];
+    if (forceRaceId != null && !sim.races.containsKey(forceRaceId)) {
+      throw ArgumentError.value(forceRaceId, 'forceRaceId', 'unknown race');
+    }
+    if (forceProfessionId != null &&
+        !sim.professions.containsKey(forceProfessionId)) {
+      throw ArgumentError.value(
+          forceProfessionId, 'forceProfessionId', 'unknown profession');
+    }
+    final raceId = forceRaceId ?? drawnRace;
+    final professionId = forceProfessionId ?? drawnProfession;
     character = SimCharacter.create(
       raceId: raceId,
       race: sim.races[raceId] as Map<String, dynamic>,
@@ -917,32 +931,8 @@ _SimResult _simulate(
   Set<String> clashOff = const {},
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
-  final sim = _SimContext(
-    dice: table('dice'),
-    skills: table('skills'),
-    items: table('items'),
-    shops: table('shops'),
-    races: table('races'),
-    professions: table('professions'),
-    spells: parseSpells(table('spells')),
-    gameConfig: gameConfig,
-    itemSets: parseItemSets(table('item_sets')),
-    zones: table('zones'),
-    patrons: parsePatrons(table('factions')),
-    signs: parseSigns(table('signs')),
-    clans: ClanData.fromTables(
-      factions: table('factions'),
-      subclans: table('subclans'),
-      relations: table('relations'),
-      titles: table('titles'),
-    ),
-    skillTrees: table('skill_trees'),
-    progression: progression,
-    geography:
-        Geography.parse(geography: table('geography'), biomes: table('biomes')),
-    clash: clash,
-    clashOff: clashOff,
-  );
+  final sim = _simContextOf(tables, gameConfig,
+      progression: progression, clash: clash, clashOff: clashOff);
   final random = Random(seed);
   final tally = <String, ({int runs, int attempts, int won})>{};
   var signsTaken = 0;
@@ -972,6 +962,156 @@ _SimResult _simulate(
     offersTaken: offersTaken,
     skillsLearned: skillsLearned,
   );
+}
+
+_SimContext _simContextOf(
+  Map<String, Map<String, dynamic>> tables,
+  Map<String, dynamic> gameConfig, {
+  SimProgression progression = SimProgression.offers,
+  bool clash = true,
+  Set<String> clashOff = const {},
+}) {
+  Map<String, dynamic> table(String name) => tables[name] ?? const {};
+  return _SimContext(
+    dice: table('dice'),
+    skills: table('skills'),
+    items: table('items'),
+    shops: table('shops'),
+    races: table('races'),
+    professions: table('professions'),
+    spells: parseSpells(table('spells')),
+    gameConfig: gameConfig,
+    itemSets: parseItemSets(table('item_sets')),
+    zones: table('zones'),
+    patrons: parsePatrons(table('factions')),
+    signs: parseSigns(table('signs')),
+    clans: ClanData.fromTables(
+      factions: table('factions'),
+      subclans: table('subclans'),
+      relations: table('relations'),
+      titles: table('titles'),
+    ),
+    skillTrees: table('skill_trees'),
+    progression: progression,
+    geography:
+        Geography.parse(geography: table('geography'), biomes: table('biomes')),
+    clash: clash,
+    clashOff: clashOff,
+  );
+}
+
+/// What one simulated playthrough came to (see [simulatePlaythroughs]).
+typedef SimRunSummary = ({
+  SimStrategy strategy,
+  String raceId,
+  String professionId,
+  int finalLevel,
+  int finalGold,
+  int finalAlignment,
+  String endedHow,
+  String ending,
+  int? furthestChapter,
+  int steps,
+  int uniqueNodes,
+  int fightsWon,
+  int fightsLost,
+  int combatEncounters,
+  int totalCasts,
+  int potionsUsed,
+  int shops,
+  int quests,
+  int flags,
+  int signs,
+  int offers,
+  int skillsLearned,
+  Map<String, ({int attempts, int won, int fights})> byChapter,
+  Map<String, int> enemiesFought,
+  Map<String, int> enemiesLost,
+});
+
+/// Full playthroughs, one per entry of [plan] (a strategy and, optionally,
+/// the race and profession to play), each from the first scene with the
+/// real fight model, for the balance and consistency review: how far each
+/// run gets, what it earns and where its fights are lost.
+@visibleForTesting
+List<SimRunSummary> simulatePlaythroughs(
+  StoryData story, {
+  required Map<String, Map<String, dynamic>> tables,
+  required Map<String, dynamic> gameConfig,
+  required List<({SimStrategy strategy, String? raceId, String? professionId})>
+      plan,
+  required int seed,
+  int maxSteps = 1500,
+}) {
+  final sim = _simContextOf(tables, gameConfig);
+  final enemies = tables['enemies'] ?? const {};
+  final out = <SimRunSummary>[];
+  for (var i = 0; i < plan.length; i++) {
+    final random = Random(seed * 100003 + i);
+    final result = _simulate(story, random,
+        enemies: enemies,
+        strategy: plan[i].strategy,
+        maxSteps: maxSteps,
+        sim: sim,
+        forceRaceId: plan[i].raceId,
+        forceProfessionId: plan[i].professionId);
+    final byChapter = <String, ({int attempts, int won, int fights})>{};
+    final fought = <String, int>{};
+    final lost = <String, int>{};
+    for (final step in result.steps) {
+      if (step.fightWon == null) continue;
+      final key = _chapterLabel(step.chapter);
+      final before = byChapter[key] ?? (attempts: 0, won: 0, fights: 0);
+      byChapter[key] = (
+        attempts: before.attempts + step.fightAttempts,
+        won: before.won + (step.fightWon == true ? 1 : 0),
+        fights: before.fights + 1,
+      );
+      final enemy = step.enemyId ?? '?';
+      fought[enemy] = (fought[enemy] ?? 0) + 1;
+      if (step.fightWon == false) lost[enemy] = (lost[enemy] ?? 0) + 1;
+    }
+    // A real ending is a choice that ends the story; the walk also stops on
+    // a scene with no way on and on a link to a scene that does not exist.
+    final last = result.steps.isEmpty ? null : result.steps.last;
+    final endedHow = result.reachedStepCap
+        ? 'step_cap'
+        : last == null
+            ? 'none'
+            : result.endingText.startsWith('Broken link')
+                ? 'broken_link'
+                : last.choiceText == null
+                    ? 'dead_end'
+                    : 'ending';
+    out.add((
+      strategy: plan[i].strategy,
+      raceId: result.raceId,
+      professionId: result.professionId,
+      finalLevel: result.finalLevel,
+      finalGold: result.finalGold,
+      finalAlignment: result.finalAlignment,
+      endedHow: endedHow,
+      ending: result.endingSummary,
+      furthestChapter: result.furthestChapter,
+      steps: result.steps.length,
+      uniqueNodes: result.uniqueNodesVisited,
+      fightsWon: result.fightsWon,
+      fightsLost: result.fightsLost,
+      combatEncounters: result.combatEncounters,
+      totalCasts: result.totalCasts,
+      potionsUsed: result.potionsUsed,
+      shops: result.shopsDiscovered.length,
+      quests: result.questsDiscovered.length,
+      flags: result.flags.length,
+      signs: result.signsTaken.length,
+      offers: result.offersTaken,
+      skillsLearned: result.skillsLearned,
+      byChapter: byChapter,
+      enemiesFought: fought,
+      enemiesLost: lost,
+    ));
+  }
+  return out;
 }
 
 /// Total casts per spell id across [results], most cast first.
