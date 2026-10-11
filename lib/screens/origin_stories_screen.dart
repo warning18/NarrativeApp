@@ -7,6 +7,7 @@ import '../data/origin_stories.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
+import '../widgets/ability_radar.dart';
 import '../widgets/ability_visuals.dart';
 
 /// The formative memories, on their own page once the character is named:
@@ -373,6 +374,43 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
         const SizedBox(height: 20),
         Text(tr(ref, 'origin_summary_lessons'),
             style: theme.textTheme.titleSmall),
+        const SizedBox(height: 8),
+        Center(
+          child: AbilityRadar(
+            key: const Key('origin_radar'),
+            t: (key) => tr(ref, key),
+            size: 300,
+            color: radarMore,
+            before: {
+              'strength': session.strength,
+              'dexterity': session.dexterity,
+              'constitution': session.constitution,
+              'intelligence': session.intelligence,
+              'wisdom': session.wisdom,
+              'perception': session.perception,
+              'luck': session.luck,
+              'charisma': session.charisma,
+            },
+            values: {
+              'strength':
+                  session.strength + (result.abilities['strength'] ?? 0),
+              'dexterity':
+                  session.dexterity + (result.abilities['dexterity'] ?? 0),
+              'constitution': session.constitution +
+                  (result.abilities['constitution'] ?? 0),
+              'intelligence': session.intelligence +
+                  (result.abilities['intelligence'] ?? 0),
+              'wisdom': session.wisdom + (result.abilities['wisdom'] ?? 0),
+              'perception':
+                  session.perception + (result.abilities['perception'] ?? 0),
+              'luck': session.luck + (result.abilities['luck'] ?? 0),
+              'charisma':
+                  session.charisma + (result.abilities['charisma'] ?? 0),
+            },
+            beforeLabel: tr(ref, 'radar_before_label'),
+            nowLabel: tr(ref, 'radar_memories_label'),
+          ),
+        ),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/character_start.dart';
+import '../data/element_points.dart';
 import '../data/origin_stories.dart';
 import '../data/random_names.dart';
 import '../gamedata/db_schema.dart';
@@ -16,6 +17,7 @@ import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../utils/pixel_icons/pixel_icon.dart';
 import '../theme/stitched_ink.dart';
+import '../widgets/ability_radar.dart';
 import '../widgets/ability_visuals.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
@@ -44,6 +46,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     final racesAsync = ref.watch(localizedDbProvider(racesSchema));
     final professionsAsync = ref.watch(localizedDbProvider(professionsSchema));
     final skillsAsync = ref.watch(localizedDbProvider(skillsSchema));
+    final items = ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
     final session = ref.watch(playerSessionProvider);
     _selectedRaceId ??= session.raceId.isNotEmpty ? session.raceId : null;
     _selectedProfessionId ??=
@@ -63,6 +66,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
                   profession: professions[session.professionId]
                       as Map<String, dynamic>?,
                   skills: skills,
+                  items: items,
                   language: ref.watch(appLanguageProvider),
                   onStartGame: _justCreated ? _handleContinue : null,
                 );
@@ -566,6 +570,18 @@ class _PresetDetail extends ConsumerWidget {
   }
 }
 
+/// The eight abilities of [totals] by key, for the radar.
+Map<String, int> _abilityMap(StartingTotals totals) => {
+      'strength': totals.strength,
+      'dexterity': totals.dexterity,
+      'constitution': totals.constitution,
+      'intelligence': totals.intelligence,
+      'wisdom': totals.wisdom,
+      'perception': totals.perception,
+      'luck': totals.luck,
+      'charisma': totals.charisma,
+    };
+
 /// What the picked race and profession add up to at the start: the name
 /// of the pair, its roles, the four numbers that matter, the abilities and
 /// the two skills — before the choice is confirmed.
@@ -591,6 +607,7 @@ class _StartPreview extends ConsumerWidget {
     final both = race != null && profession != null;
     final totals =
         startingTotals(defaults: defaults, race: race, profession: profession);
+    final raceOnly = startingTotals(defaults: defaults, race: race);
     Widget stat(IconData icon, String label, String value) => Expanded(
           child: Column(
             children: [
@@ -664,25 +681,18 @@ class _StartPreview extends ConsumerWidget {
                       '${totals.gold}'),
                 ],
               ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 6,
-                runSpacing: 4,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  Text('${tr(ref, 'abilities_label')}:',
-                      style: theme.textTheme.labelSmall
-                          ?.copyWith(color: scheme.onSurfaceVariant)),
-                  for (final e in totals.abilities.entries)
-                    Text('${tr(ref, e.key)} ${e.value}',
-                        style: theme.textTheme.labelMedium),
-                  if (totals.luck != 0)
-                    Text('${tr(ref, 'luck_label')} ${totals.luck}',
-                        style: theme.textTheme.labelMedium),
-                  if (totals.charisma != 0)
-                    Text('${tr(ref, 'charisma_label')} ${totals.charisma}',
-                        style: theme.textTheme.labelMedium),
-                ],
+              const SizedBox(height: 4),
+              Center(
+                child: AbilityRadar(
+                  key: const Key('start_preview_radar'),
+                  t: (key) => tr(ref, key),
+                  size: 300,
+                  before: _abilityMap(raceOnly),
+                  values: _abilityMap(totals),
+                  beforeLabel: '${race!['raceName']}',
+                  nowLabel:
+                      '${race!['raceName']} ${profession!['professionName']}',
+                ),
               ),
               const SizedBox(height: 8),
               Row(
@@ -992,6 +1002,7 @@ class _CharacterSheet extends StatelessWidget {
     required this.race,
     required this.profession,
     required this.skills,
+    required this.items,
     required this.language,
     this.onStartGame,
   });
@@ -1000,6 +1011,9 @@ class _CharacterSheet extends StatelessWidget {
   final Map<String, dynamic>? race;
   final Map<String, dynamic>? profession;
   final Map<String, dynamic> skills;
+
+  /// The items table, for the elemental points the equipped ones give.
+  final Map<String, dynamic> items;
   final AppLanguage language;
   final VoidCallback? onStartGame;
 
@@ -1256,6 +1270,21 @@ class _CharacterSheet extends StatelessWidget {
           ),
         ),
         section(t('abilities_label')),
+        Card(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            child: Center(
+              child: AbilityRadar(
+                key: const Key('sheet_radar'),
+                t: t,
+                size: 320,
+                values: {for (final (k, v) in abilities) k: v},
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
         Column(
           key: const Key('sheet_abilities'),
           children: [
@@ -1282,6 +1311,12 @@ class _CharacterSheet extends StatelessWidget {
               ),
             ],
           ],
+        ),
+        section(t('elements_title'), hint: t('elements_hint')),
+        ElementsCard(
+          key: const Key('sheet_elements'),
+          t: t,
+          points: elementPointsFor(session.equippedItemIds, items),
         ),
         section(t('sheet_belongings_title')),
         Card(

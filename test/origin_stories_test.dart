@@ -361,6 +361,8 @@ void main() {
       // The summary: every memory answered, ready to begin, any one
       // reopened to change, and another draw one tap away.
       expect(find.text(en('origin_summary_title')), findsOneWidget);
+      // What the memories taught, as a shape over the one before.
+      expect(find.byKey(const Key('origin_radar')), findsOneWidget);
       expect(find.byKey(const Key('origin_random_again')), findsOneWidget);
       await tester.scrollUntilVisible(find.text(en('begin_story_button')), 300,
           scrollable: find.byType(Scrollable).first);
@@ -374,7 +376,7 @@ void main() {
       await tester.ensureVisible(find.byKey(const Key('origin_random_again')));
       await tester.tap(find.byKey(const Key('origin_random_again')));
       await tester.pumpAndSettle();
-      expect(find.text(en('origin_summary_title')), findsOneWidget);
+      expect(find.byKey(const Key('origin_random_again')), findsOneWidget);
       await tester.scrollUntilVisible(find.text(en('begin_story_button')), 300,
           scrollable: find.byType(Scrollable).first);
       await tester.tap(find.text(en('begin_story_button')));
@@ -430,6 +432,8 @@ void main() {
       await _answer(tester, memories[4], 'good');
       await _answer(tester, memories[5], 'good');
 
+      await tester.scrollUntilVisible(find.text(en('begin_story_button')), 300,
+          scrollable: find.byType(Scrollable).first);
       await _tap(tester, find.text(en('begin_story_button')));
       final result = results.single!;
       expect(result.alignment, 20);
@@ -533,6 +537,8 @@ void main() {
     expect(find.text('Maren'), findsOneWidget);
     expect(find.text(en('origin_portrait_mixed')), findsOneWidget);
     expect(container.read(playerSessionProvider).alignmentScore, 0);
+    await tester.scrollUntilVisible(find.text(en('begin_story_button')), 300,
+        scrollable: find.byType(Scrollable).first);
     await _tap(tester, find.text(en('begin_story_button')));
     await _settle(tester);
 

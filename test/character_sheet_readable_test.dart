@@ -21,6 +21,8 @@ Future<void> _settle(WidgetTester tester, [int n = 6]) async {
 }
 
 void main() {
+  setUp(rootBundle.clear);
+
   test('a lore text splits into its first sentence and the rest', () {
     final (lead, rest) = leadAndRest(
         'Quick and attuned to the around, at the cost of a frailer frame. '
@@ -60,6 +62,7 @@ void main() {
           'characterName': 'Maren',
           'strength': 3,
           'luck': 2,
+          'equippedItemIds': ['staff_t6', 'cloak_frostward'],
         })));
     await _settle(tester);
     expect(tester.takeException(), isNull);
@@ -99,6 +102,48 @@ void main() {
     expect(find.byType(AlertDialog), findsOneWidget);
     await tester.tap(find.byType(TextButton).last);
     await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+
+    // The elements the equipped items give: a staff of fire and a frost
+    // cloak, four views of them.
+    await tester.scrollUntilVisible(
+        find.byKey(const Key('sheet_elements')), 300,
+        scrollable: find.byType(Scrollable).first);
+    expect(find.byKey(const Key('elements_view_0')), findsOneWidget);
+    expect(find.text('12/0'), findsOneWidget); // Fire: +12 damage
+    expect(find.text('0/14'), findsOneWidget); // Ice: 14 resistance
+    await tester.tap(find.text('Rose'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('elements_view_2')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('choosing a race and a profession draws the shape they make',
+      (tester) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+            const MethodChannel('flutter_tts'), (call) async => 1);
+    SharedPreferences.setMockInitialValues({});
+    tester.view.physicalSize = const Size(420, 2600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(const ProviderScope(
+      child: MaterialApp(home: RaceProfessionScreen()),
+    ));
+    for (var i = 0; i < 40 && find.text('Human').evaluate().isEmpty; i++) {
+      await _settle(tester, 1);
+    }
+    expect(find.byKey(const Key('start_preview_radar')), findsNothing);
+    await tester.tap(find.text('Human').first);
+    await tester.pump();
+    await tester.scrollUntilVisible(find.text('Warrior'), 300,
+        scrollable: find.byType(Scrollable).first);
+    await tester.tap(find.text('Warrior').first);
+    await tester.pump();
+    await tester.scrollUntilVisible(
+        find.byKey(const Key('start_preview_radar')), 300,
+        scrollable: find.byType(Scrollable).first);
+    expect(find.byKey(const Key('start_preview_radar')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }
