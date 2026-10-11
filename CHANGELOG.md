@@ -8,6 +8,12 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.230.0+266]
+
+### Added
+- The simulator plays quests the way the game does. A scene that offers or starts a quest is accepted when the character qualifies (alignment, flags, gold); Kill objectives count the fights won since it was taken, Flag objectives the story flags, Fetch objectives what the story hands over and what beaten foes drop (by their loot tables' own odds), Talk objectives once the person's chapter is reached. A finished quest is handed in at once for its gold, XP (which levels the character), item, alignment and follow-up, and a quest with turn-in choices takes the one the player leans to. New goal "Do every quest" (`completionist`) takes every way on of a scene it has not taken yet, work on offer first. See `docs/simulation/report-quests.md`.
+- `test/sim_quests_test.dart` covers the quest log (alignment gate, bounty baselines, a quest offered by a fight, pay and chaining, turn-in bias, what a quest waits on).
+
 ## [1.229.0+265]
 
 ### Added

@@ -5788,6 +5788,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Explore every branch',
     AppLanguage.fr: 'Explorer toutes les branches',
   },
+  'sim_strategy_completionist': {
+    AppLanguage.en: 'Thorough (every beat and quest)',
+    AppLanguage.fr: 'Minutieux (chaque scène et chaque quête)',
+  },
   'runs_label': {AppLanguage.en: 'Runs', AppLanguage.fr: 'Parties'},
   'clear_all_button': {
     AppLanguage.en: 'Clear All',
