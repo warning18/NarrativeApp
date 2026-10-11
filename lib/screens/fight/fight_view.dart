@@ -54,8 +54,6 @@ extension _FightView on _FightScreenState {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _buildGroundCaption(),
-              const SizedBox(height: 8),
               if (!_goal.isSlay) ...[
                 _buildGoalBanner(),
                 const SizedBox(height: 12),

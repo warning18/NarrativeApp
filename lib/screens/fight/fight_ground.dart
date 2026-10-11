@@ -254,21 +254,22 @@ extension _FightGround on _FightScreenState {
     );
   }
 
-  /// The setup screen's line about the ground the party is about to fight
-  /// on: its stage and the day's sky.
-  Widget _buildGroundCaption() {
+  /// The fight's title with the ground under it (its stage and the day's
+  /// sky), for the app bar: it adds no height to the setup screen.
+  Widget _buildTitle() {
     final lang = ref.watch(appLanguageProvider);
     final sky = _sky.kind == WeatherKind.clear
         ? ''
         : ' · ${trFor(lang, 'weather_${_sky.kind.name}')}';
-    return Row(
-      key: const Key('fight_ground_strip'),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.terrain, size: 14, color: Theme.of(context).hintColor),
-        const SizedBox(width: 4),
+        Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
         Text(
           '${trFor(lang, 'stage_${_stage.name}')}$sky',
-          style: Theme.of(context).textTheme.labelMedium,
+          key: const Key('fight_ground_strip'),
+          style: Theme.of(context).textTheme.labelSmall,
         ),
       ],
     );

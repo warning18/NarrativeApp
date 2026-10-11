@@ -685,7 +685,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
+          title: _buildTitle(),
           actions: [
             if (_canRetreat)
               IconButton(
