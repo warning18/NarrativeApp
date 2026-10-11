@@ -42,6 +42,7 @@ isn't reconstructable from git history alone.
 
 ### Added
 - Fate can choose your story: "Let fate choose" under a memory's answers picks that one at random, and "Choose my whole life at random" on the first memory picks all six and goes to the summary, where any memory can still be reopened and changed. The summary has "Choose again at random" to draw them all anew.
+
 ## [1.222.0+258]
 
 ### Changed
