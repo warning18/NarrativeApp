@@ -7018,6 +7018,262 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Every Heal face and potion restores half again as much.',
     AppLanguage.fr: 'Chaque face Soin et chaque potion soigne moitié plus.',
   },
+  'anomaly_sandstorm': {
+    AppLanguage.en: 'Sandstorm',
+    AppLanguage.fr: 'Tempête de sable',
+  },
+  'anomaly_heatstroke': {
+    AppLanguage.en: 'Killing heat',
+    AppLanguage.fr: 'Fournaise',
+  },
+  'anomaly_salt_glare': {
+    AppLanguage.en: 'Salt glare',
+    AppLanguage.fr: 'Réverbération du sel',
+  },
+  'anomaly_brine_crust': {
+    AppLanguage.en: 'Brine crust',
+    AppLanguage.fr: 'Croûte de saumure',
+  },
+  'anomaly_sea_storm': {
+    AppLanguage.en: 'Storm at sea',
+    AppLanguage.fr: 'Tempête en mer',
+  },
+  'anomaly_fog_bank': {
+    AppLanguage.en: 'Fog bank',
+    AppLanguage.fr: 'Banc de brume',
+  },
+  'anomaly_racing_tide': {
+    AppLanguage.en: 'Racing tide',
+    AppLanguage.fr: 'Marée folle',
+  },
+  'anomaly_cliff_fall': {
+    AppLanguage.en: 'Crumbling path',
+    AppLanguage.fr: 'Sentier effondré',
+  },
+  'anomaly_ash_storm': {
+    AppLanguage.en: 'Ash storm',
+    AppLanguage.fr: 'Tempête de cendre',
+  },
+  'anomaly_ember_pits': {
+    AppLanguage.en: 'Ember pits',
+    AppLanguage.fr: 'Fosses de braises',
+  },
+  'anomaly_scalding_vent': {
+    AppLanguage.en: 'Scalding vents',
+    AppLanguage.fr: 'Évents brûlants',
+  },
+  'anomaly_rockslide': {
+    AppLanguage.en: 'Rockslide',
+    AppLanguage.fr: 'Éboulement',
+  },
+  'anomaly_flash_flood': {
+    AppLanguage.en: 'Flash flood',
+    AppLanguage.fr: 'Crue subite',
+  },
+  'anomaly_hailstorm': {
+    AppLanguage.en: 'Hailstorm',
+    AppLanguage.fr: 'Orage de grêle',
+  },
+  'anomaly_sinking_ground': {
+    AppLanguage.en: 'Sinking ground',
+    AppLanguage.fr: 'Fondrière',
+  },
+  'anomaly_marsh_lights': {
+    AppLanguage.en: 'Lights in the reeds',
+    AppLanguage.fr: 'Lumières dans les roseaux',
+  },
+  'anomaly_whiteout': {
+    AppLanguage.en: 'Whiteout',
+    AppLanguage.fr: 'Jour blanc',
+  },
+  'anomaly_black_ice': {
+    AppLanguage.en: 'Black ice',
+    AppLanguage.fr: 'Verglas',
+  },
+  'anomaly_glass_field': {
+    AppLanguage.en: 'Field of glass',
+    AppLanguage.fr: 'Champ de verre',
+  },
+  'anomaly_thunderstorm': {
+    AppLanguage.en: 'Thunderstorm',
+    AppLanguage.fr: 'Orage',
+  },
+  'anomaly_downpour': {
+    AppLanguage.en: 'Downpour',
+    AppLanguage.fr: 'Pluie battante',
+  },
+  'anomaly_tailwind': {
+    AppLanguage.en: 'Rising wind',
+    AppLanguage.fr: 'Vent porteur',
+  },
+  'anomaly_sunburst': {
+    AppLanguage.en: 'Break in the clouds',
+    AppLanguage.fr: 'Éclaircie',
+  },
+  'anomaly_wellspring': {
+    AppLanguage.en: 'Wellspring',
+    AppLanguage.fr: 'Source vive',
+  },
+  'anomaly_eclipse': {
+    AppLanguage.en: 'Eclipse',
+    AppLanguage.fr: 'Éclipse',
+  },
+  'anomaly_earth_break': {
+    AppLanguage.en: 'Earth break',
+    AppLanguage.fr: 'Terre fendue',
+  },
+  'anomaly_collapse': {
+    AppLanguage.en: 'Falling masonry',
+    AppLanguage.fr: 'Chute de pierres',
+  },
+  'anomaly_blaze': {
+    AppLanguage.en: 'Burning rafters',
+    AppLanguage.fr: 'Charpente en feu',
+  },
+  'stage_fields': {
+    AppLanguage.en: 'Open country',
+    AppLanguage.fr: 'Pleine campagne',
+  },
+  'stage_dunes': {
+    AppLanguage.en: 'Dunes',
+    AppLanguage.fr: 'Dunes',
+  },
+  'stage_saltFlats': {
+    AppLanguage.en: 'Salt flats',
+    AppLanguage.fr: 'Salines',
+  },
+  'stage_waves': {
+    AppLanguage.en: 'The shore',
+    AppLanguage.fr: 'Le rivage',
+  },
+  'stage_ash': {
+    AppLanguage.en: 'Ashlands',
+    AppLanguage.fr: 'Terres de cendre',
+  },
+  'stage_terraces': {
+    AppLanguage.en: 'Volcanic terraces',
+    AppLanguage.fr: 'Terrasses volcaniques',
+  },
+  'stage_cliffs': {
+    AppLanguage.en: 'Sea cliffs',
+    AppLanguage.fr: 'Falaises marines',
+  },
+  'stage_reeds': {
+    AppLanguage.en: 'The fen',
+    AppLanguage.fr: 'Le marais',
+  },
+  'stage_snow': {
+    AppLanguage.en: 'Frozen waste',
+    AppLanguage.fr: 'Étendue gelée',
+  },
+  'stage_glass': {
+    AppLanguage.en: 'The glass shore',
+    AppLanguage.fr: 'La grève de verre',
+  },
+  'stage_hall': {
+    AppLanguage.en: 'Within walls',
+    AppLanguage.fr: 'Entre quatre murs',
+  },
+  'anomaly_omen_storm': {
+    AppLanguage.en: 'The air turns heavy: {name} is coming.',
+    AppLanguage.fr: 'L’air s’alourdit : {name} approche.',
+  },
+  'anomaly_omen_ground': {
+    AppLanguage.en: 'The ground shudders underfoot: {name} is near.',
+    AppLanguage.fr: 'Le sol frémit sous vos pieds : {name} approche.',
+  },
+  'anomaly_omen_cold': {
+    AppLanguage.en: 'The cold bites harder: {name} is coming.',
+    AppLanguage.fr: 'Le froid mord plus fort : {name} approche.',
+  },
+  'anomaly_omen_heat': {
+    AppLanguage.en: 'The heat thickens: {name} is coming.',
+    AppLanguage.fr: 'La chaleur s’épaissit : {name} approche.',
+  },
+  'anomaly_omen_water': {
+    AppLanguage.en: 'The water stirs: {name} is coming.',
+    AppLanguage.fr: 'L’eau s’agite : {name} approche.',
+  },
+  'anomaly_omen_light': {
+    AppLanguage.en: 'The light turns strange: {name} is coming.',
+    AppLanguage.fr: 'La lumière tourne à l’étrange : {name} approche.',
+  },
+  'anomaly_for_party': {
+    AppLanguage.en: 'That favours you.',
+    AppLanguage.fr: 'Cela vous favorise.',
+  },
+  'anomaly_for_enemies': {
+    AppLanguage.en: 'That favours the enemy.',
+    AppLanguage.fr: 'Cela favorise l’ennemi.',
+  },
+  'anomaly_for_both': {
+    AppLanguage.en: 'Neither side is spared.',
+    AppLanguage.fr: 'Aucun camp n’est épargné.',
+  },
+  'anomaly_for_unknown': {
+    AppLanguage.en: 'You cannot tell whom it will favour.',
+    AppLanguage.fr: 'Impossible de dire qui cela favorisera.',
+  },
+  'anomaly_over': {
+    AppLanguage.en: '{name} dies down.',
+    AppLanguage.fr: '{name} s’apaise.',
+  },
+  'anomaly_soon': {
+    AppLanguage.en: 'soon',
+    AppLanguage.fr: 'bientôt',
+  },
+  'anomaly_rounds_left': {
+    AppLanguage.en: ' rounds left',
+    AppLanguage.fr: ' manches restantes',
+  },
+  'anomaly_who_party': {
+    AppLanguage.en: 'Your side',
+    AppLanguage.fr: 'Votre camp',
+  },
+  'anomaly_who_enemies': {
+    AppLanguage.en: 'The enemy',
+    AppLanguage.fr: 'L’ennemi',
+  },
+  'anomaly_who_both': {
+    AppLanguage.en: 'Both sides',
+    AppLanguage.fr: 'Les deux camps',
+  },
+  'anomaly_damage_word': {
+    AppLanguage.en: 'damage',
+    AppLanguage.fr: 'dégâts',
+  },
+  'anomaly_health_round': {
+    AppLanguage.en: 'health each round',
+    AppLanguage.fr: 'de santé par manche',
+  },
+  'anomaly_one_suffix': {
+    AppLanguage.en: ' (one at a time)',
+    AppLanguage.fr: ' (un à la fois)',
+  },
+  'anomaly_hurts_line': {
+    AppLanguage.en: '{name} strikes {who} for {n} damage.',
+    AppLanguage.fr: '{name} frappe {who} : {n} dégâts.',
+  },
+  'anomaly_mends_line': {
+    AppLanguage.en: '{name} mends {who} for {n} {hp}.',
+    AppLanguage.fr: '{name} soigne {who} : {n} {hp}.',
+  },
+  'anomaly_lab_label': {
+    AppLanguage.en: 'Ground anomaly',
+    AppLanguage.fr: 'Anomalie du terrain',
+  },
+  'anomaly_lab_none': {
+    AppLanguage.en: 'None',
+    AppLanguage.fr: 'Aucune',
+  },
+  'stage_lab_label': {
+    AppLanguage.en: 'Stage',
+    AppLanguage.fr: 'Décor',
+  },
+  'stage_lab_place': {
+    AppLanguage.en: 'The place\'s own',
+    AppLanguage.fr: 'Celui du lieu',
+  },
   'momentum_label': {AppLanguage.en: 'Momentum', AppLanguage.fr: 'Élan'},
   'momentum_ready_label': {
     AppLanguage.en: 'Momentum: next strike crits!',

@@ -291,6 +291,7 @@ class GeoPlace {
     this.kind = '',
     this.water = '',
     this.glyph = '',
+    this.stage = '',
     this.landmarks = const [],
   });
 
@@ -320,6 +321,7 @@ class GeoPlace {
           : '',
       water: level == GeoLevel.location ? _text(raw, 'water') : '',
       glyph: level == GeoLevel.district ? _text(raw, 'glyph') : '',
+      stage: _text(raw, 'stage'),
       landmarks: landmarks.toList(),
     );
   }
@@ -351,6 +353,11 @@ class GeoPlace {
   /// A district's glyph (see [geoGlyphs]), drawn over its way on the
   /// Journey map (v1.199).
   final String glyph;
+
+  /// How a fight here looks (v1.241, see FightStage in field_anomaly.dart):
+  /// 'hall' for the inside of a prison, a crypt or a cathedral. '' takes
+  /// the stage of the land the place lies in (its zone's biome).
+  final String stage;
 
   /// The world_map.dart landmarks that lie here.
   final List<String> landmarks;
@@ -462,6 +469,16 @@ class Geography {
 
   /// The biome of [id]'s zone.
   Biome? biomeOf(String? id) => biomes[zoneOf(id)?.biome];
+
+  /// The stage a fight at [id] is drawn on, as a FightStage name: the
+  /// nearest `stage` written on [id] or the places above it, else the
+  /// pattern of its biome; '' with neither (open country).
+  String stageNameOf(String? id) {
+    for (final place in pathOf(id).reversed) {
+      if (place.stage.isNotEmpty) return place.stage;
+    }
+    return biomeOf(id)?.pattern.name ?? '';
+  }
 
   /// The place that holds the world_map.dart landmark [landmarkId].
   GeoPlace? placeOfLandmark(String? landmarkId) =>
