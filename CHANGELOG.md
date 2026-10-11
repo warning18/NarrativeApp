@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.223.0+259]
+
+### Changed
+- The character sheet (Race & Profession) reads at a glance. The race and the profession each lead with the first sentence of their lore, set larger, with the rest below at a comfortable size and full contrast; their tag is a chip of its own instead of a prefix, and what they change shows as chips. The starting skills are cards with the skill's icon framed, its name large and its words below. The sheet itself is in sections: level, health and experience as bars, damage and armour as tiles, the eight abilities as a grid of tiles (held, each tells what it does), and the counters as one plain list. The race and profession pickers' descriptions are brighter and larger too.
+- "A Life Before This One" is easier to read. The introduction is no longer faint italics; the scene is set larger; the age dots and numbers are bigger; each answer is a card in the book's own type (not the pixel font), left-aligned, with what it teaches as a clear tag under it.
+
+### Added
+- Fate can choose your story: "Let fate choose" under a memory's answers picks that one at random, and "Choose my whole life at random" on the first memory picks all six and goes to the summary, where any memory can still be reopened and changed. The summary has "Choose again at random" to draw them all anew.
+
 ## [1.222.0+258]
 
 ### Changed

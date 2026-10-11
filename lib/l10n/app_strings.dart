@@ -3204,6 +3204,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "La race et la profession ne peuvent être modifiées qu'en recommençant "
             "l'histoire depuis le tout début.",
   },
+  'sheet_belongings_title': {
+    AppLanguage.en: 'Belongings',
+    AppLanguage.fr: 'Possessions',
+  },
   'granted_skill_label': {
     AppLanguage.en: 'Starting Skill',
     AppLanguage.fr: 'Compétence de départ',
@@ -3264,6 +3268,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'origin_stage_youth': {
     AppLanguage.en: 'Adolescence',
     AppLanguage.fr: 'Adolescence',
+  },
+  'origin_random_one': {
+    AppLanguage.en: 'Let fate choose',
+    AppLanguage.fr: 'Laisser le destin choisir',
+  },
+  'origin_random_all': {
+    AppLanguage.en: 'Choose my whole life at random',
+    AppLanguage.fr: 'Tirer toute ma vie au sort',
+  },
+  'origin_random_again': {
+    AppLanguage.en: 'Choose again at random',
+    AppLanguage.fr: 'Tirer de nouveau au sort',
   },
   'origin_teaches': {
     AppLanguage.en: '+1 {ability}',

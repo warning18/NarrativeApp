@@ -319,9 +319,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text(memories[0].answers[0].outcomeEn), findsNothing);
       expect(
-        find.ancestor(
-          of: find.text(memories[0].answers.first.en),
-          matching: find.byWidgetPredicate((w) => w is FilledButton),
+        find.descendant(
+          of: find.byKey(const Key('origin_answer_selected')),
+          matching: find.text(memories[0].answers.first.en),
         ),
         findsOneWidget,
       );
@@ -337,6 +337,53 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(OriginStoriesScreen), findsNothing);
       expect(results, [null]);
+    });
+
+    testWidgets('fate can choose one answer, or the whole life',
+        (tester) async {
+      final results = await pumpPage(tester);
+      // One memory: the answer is told, as if it had been tapped.
+      expect(find.byKey(const Key('origin_random_one')), findsOneWidget);
+      await tester.ensureVisible(find.byKey(const Key('origin_random_one')));
+      await tester.tap(find.byKey(const Key('origin_random_one')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('origin_outcome')), findsOneWidget);
+      expect(
+          [for (final a in memories[0].answers) a.outcomeEn]
+              .where((t) => find.text(t).evaluate().isNotEmpty),
+          hasLength(1));
+      // Back to the answers, then the whole life at once.
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('origin_random_all')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('origin_random_all')));
+      await tester.pumpAndSettle();
+      // The summary: every memory answered, ready to begin, any one
+      // reopened to change, and another draw one tap away.
+      expect(find.text(en('origin_summary_title')), findsOneWidget);
+      expect(find.byKey(const Key('origin_random_again')), findsOneWidget);
+      await tester.scrollUntilVisible(find.text(en('begin_story_button')), 300,
+          scrollable: find.byType(Scrollable).first);
+      expect(
+          tester
+              .widget<FilledButton>(find.ancestor(
+                  of: find.text(en('begin_story_button')),
+                  matching: find.byType(FilledButton)))
+              .onPressed,
+          isNotNull);
+      await tester.ensureVisible(find.byKey(const Key('origin_random_again')));
+      await tester.tap(find.byKey(const Key('origin_random_again')));
+      await tester.pumpAndSettle();
+      expect(find.text(en('origin_summary_title')), findsOneWidget);
+      await tester.scrollUntilVisible(find.text(en('begin_story_button')), 300,
+          scrollable: find.byType(Scrollable).first);
+      await tester.tap(find.text(en('begin_story_button')));
+      await tester.pumpAndSettle();
+      // Six answers, each from its own memory.
+      final result = results.single!;
+      expect(result.abilities.values.fold(0, (a, b) => a + b), 6);
+      expect(result.flags,
+          containsAll([for (final m in memories) 'origin_${m.id}']));
     });
 
     testWidgets('a later memory remembers an earlier answer', (tester) async {
