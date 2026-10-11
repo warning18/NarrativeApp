@@ -3448,8 +3448,8 @@
   },
   "2015_dockside": {
     "id": "2015_dockside",
-    "description": "The harbor master turned out to be a weathered woman with the specific exhaustion of someone who has spent decades solving problems that kept turning out to be other people's fault. She had rats fouling the stores and no patience left for them. \"Kill them, burn them, marry them, I don't care,\" she said. \"Just get them out of my flour.\" By the time she finished explaining the situation I had, somewhat against my better judgment, agreed to become her solution of choice. It would keep, I decided, until after I'd finished with the rest of the market — and with Vane.",
-    "description_fr": "La maîtresse du port se révéla être une femme éprouvée, avec l'épuisement particulier de quelqu'un qui a passé des décennies à résoudre des problèmes qui se révélaient toujours être la faute d'autrui. Des rats infestaient ses réserves et elle n'avait plus la patience de s'en occuper elle-même. « Tuez-les, brûlez-les, épousez-les, ça m'est égal, dit-elle. Sortez-les de ma farine, c'est tout. » Le temps qu'elle finisse de m'exposer la situation, j'avais, un peu contre mon meilleur jugement, accepté de devenir sa solution de choix. Cela pouvait attendre, décidai-je, que j'en aie fini avec le reste du marché — et avec Vane.",
+    "description": "The harbor master turned out to be a weathered woman with the specific exhaustion of someone who has spent decades solving problems that kept turning out to be other people's fault. She had rats fouling the stores and no patience left for them. \"Kill them, burn them, marry them, I don't care,\" she said. \"Just get them out of my flour.\" By the time she finished explaining the situation I had, somewhat against my better judgment, agreed to become her solution of choice. It would keep, I decided, until after I'd finished with the rest of the market — and with Vane. Before I left the stores, a man with soot to the elbows and no business on the harbor master's side of the wall caught my sleeve. \"Rats are the least of what comes up through these floors,\" he said. \"Bring me iron ore. The overseers and the Inquisition's soldiers carry more of it than they admit. My forge is under the sea wall, and I will cut you a fair price on steel.\" He was gone before I could ask whose forge it was.",
+    "description_fr": "La maîtresse du port se révéla être une femme éprouvée, avec l'épuisement particulier de quelqu'un qui a passé des décennies à résoudre des problèmes qui se révélaient toujours être la faute d'autrui. Des rats infestaient ses réserves et elle n'avait plus la patience de s'en occuper elle-même. « Tuez-les, brûlez-les, épousez-les, ça m'est égal, dit-elle. Sortez-les de ma farine, c'est tout. » Le temps qu'elle finisse de m'exposer la situation, j'avais, un peu contre mon meilleur jugement, accepté de devenir sa solution de choix. Cela pouvait attendre, décidai-je, que j'en aie fini avec le reste du marché — et avec Vane. Avant que je quitte les réserves, un homme noirci de suie jusqu'aux coudes, qui n'avait rien à faire du côté de la maîtresse du port, m'attrapa par la manche. « Les rats sont le moindre de ce qui remonte par ces planchers, dit-il. Rapportez-moi du minerai de fer. Les contremaîtres et les soldats de l'Inquisition en portent plus qu'ils ne l'avouent. Ma forge est sous la digue, et je vous ferai un bon prix sur l'acier. » Il avait disparu avant que je puisse demander à qui elle était.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -6065,8 +6065,8 @@
   },
   "2015_informant_trap": {
     "id": "2015_informant_trap",
-    "description": "The warehouse the informant had pointed me to had opinions of its own about visitors. Three men peeled out of the shadows the moment I said the warden's name aloud, moving with the unhurried confidence of people who'd been told exactly when to expect me. The informant, it turned out, had been selling more than gossip. Their purses, when I came to them, would be full of new Inquisition silver, the hooded lantern still sharp on every coin: the going rate on this wharf, a dockhand told me afterward, for anything the tide brought in from the tear. Someone had decided that tonight the tide was me.",
-    "description_fr": "L'entrepôt que l'informateur m'avait indiqué avait ses propres idées sur les visiteurs. Trois hommes se détachèrent de l'ombre à l'instant où je prononçai le nom du gardien, avec l'assurance tranquille de gens à qui l'on avait dit exactement quand m'attendre. L'informateur, semblait-il, vendait plus que des ragots. Leurs bourses, quand j'y viendrais, seraient pleines d'argent neuf de l'Inquisition, la lanterne encapuchonnée encore nette sur chaque pièce : le tarif, sur ce quai, m'apprit plus tard un docker, de tout ce que la marée rapportait de la déchirure. Quelqu'un avait décidé que ce soir, la marée, c'était moi.",
+    "description": "The warehouse the informant had pointed me to had opinions of its own about visitors. Two men peeled out of the shadows the moment I said the warden's name aloud, and the warden himself stepped into the doorway behind them, all of them moving with the unhurried confidence of people who'd been told exactly when to expect me. The informant, it turned out, had been selling more than gossip. Their purses, when I came to them, would be full of new Inquisition silver, the hooded lantern still sharp on every coin: the going rate on this wharf, a dockhand told me afterward, for anything the tide brought in from the tear. Someone had decided that tonight the tide was me.",
+    "description_fr": "L'entrepôt que l'informateur m'avait indiqué avait ses propres idées sur les visiteurs. Deux hommes se détachèrent de l'ombre à l'instant où je prononçai le nom du gardien, et le gardien lui-même apparut dans l'encadrure derrière eux, tous avec l'assurance tranquille de gens à qui l'on avait dit exactement quand m'attendre. L'informateur, semblait-il, vendait plus que des ragots. Leurs bourses, quand j'y viendrais, seraient pleines d'argent neuf de l'Inquisition, la lanterne encapuchonnée encore nette sur chaque pièce : le tarif, sur ce quai, m'apprit plus tard un docker, de tout ce que la marée rapportait de la déchirure. Quelqu'un avait décidé que ce soir, la marée, c'était moi.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "tense",
@@ -6081,8 +6081,7 @@
         "unlockQuestId": "q_ch2_informants_tip",
         "triggerEnemyIds": [
           "street_bandit",
-          "street_bandit",
-          "street_bandit"
+          "inquisition_warden"
         ],
         "flagsToAdd": [
           "hub_2015_informant"
@@ -6112,7 +6111,6 @@
         "text_fr": "Retour au marché",
         "next_id": "2015",
         "goldMod": 15,
-        "unlockQuestId": "q_ch2_informants_tip",
         "flagsToAdd": [
           "hub_2015_informant"
         ],
@@ -6127,7 +6125,6 @@
         "text": "Give his name to the Crows instead of his coin",
         "text_fr": "Donner son nom aux Corneilles plutôt que prendre son argent",
         "next_id": "2015",
-        "unlockQuestId": "q_ch2_informants_tip",
         "flagsToAdd": [
           "hub_2015_informant",
           "crows_warned"
@@ -6139,6 +6136,22 @@
           },
           "standing": {
             "crows": 5
+          }
+        }
+      },
+      {
+        "text": "Go after the warden he named",
+        "text_fr": "Aller trouver le gardien qu’il a nommé",
+        "next_id": "2015",
+        "unlockQuestId": "q_ch2_informants_tip",
+        "triggerEnemyId": "inquisition_warden",
+        "flagsToAdd": [
+          "hub_2015_informant"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "stage": 1
           }
         }
       }
@@ -6285,8 +6298,8 @@
     "reqGold": 80,
     "choices": [
       {
-        "text": "Head back toward the Spire's shadow",
-        "text_fr": "Revenir vers l'ombre de la Flèche",
+        "text": "Take his contract and clear the zealot he names",
+        "text_fr": "Prendre son contrat et abattre le zélote qu’il désigne",
         "next_id": "3005",
         "unlockQuestId": "q_ch3_groshs_price",
         "flagsToAdd": [
@@ -6299,7 +6312,8 @@
           "marks": {
             "last_watch": "friend"
           }
-        }
+        },
+        "triggerEnemyId": "hollow_court_zealot"
       }
     ]
   },
@@ -7221,8 +7235,8 @@
   },
   "5010_ghouls": {
     "id": "5010_ghouls",
-    "description": "They came up with the water, as the sapper had promised, and went down again in pieces, which he had not promised but seemed to appreciate. He counted the coin onto the ledge one piece at a time, as a man does who does not expect to earn any more of it. \"Three,\" he said, \"was the number I could afford. There are more than three.\"",
-    "description_fr": "Elles montèrent avec l'eau, comme le sapeur l'avait promis, et redescendirent en morceaux, ce qu'il n'avait pas promis mais sembla apprécier. Il compta les pièces sur la corniche une à une, comme un homme qui ne s'attend pas à en gagner davantage. « Trois, dit-il, c'était le nombre que je pouvais payer. Il y en a plus de trois. »",
+    "description": "They came up with the water, as the sapper had promised, and went down again in pieces, which he had not promised but seemed to appreciate. He counted the coin onto the ledge one piece at a time, as a man does who does not expect to earn any more of it. \"Two,\" he said, \"was the number I could afford. There are more than two.\"",
+    "description_fr": "Elles montèrent avec l'eau, comme le sapeur l'avait promis, et redescendirent en morceaux, ce qu'il n'avait pas promis mais sembla apprécier. Il compta les pièces sur la corniche une à une, comme un homme qui ne s'attend pas à en gagner davantage. « Deux, dit-il, c'était le nombre que je pouvais payer. Il y en a plus de deux. »",
     "context_taxonomy": {
       "ui_theme": "catacombs",
       "mood": "grim",
@@ -8270,39 +8284,9 @@
         "text_fr": "Revenir aux reliquaires",
         "next_id": "6010",
         "flagsToAdd": [
-          "hub_6010_confession"
+          "hub_6010_confession",
+          "confession_heard"
         ]
-      },
-      {
-        "text": "Take his blade: he carries water for the camp now",
-        "text_fr": "Prendre sa lame : désormais, il porte l’eau du camp",
-        "next_id": "6010",
-        "alignmentMod": 3,
-        "flagsToAdd": [
-          "hub_6010_confession",
-          "confession_spared"
-        ],
-        "politics": {
-          "standing": {
-            "penitents": 10
-          }
-        }
-      },
-      {
-        "text": "Pick up the blade and give him the answer he came for",
-        "text_fr": "Ramasser la lame et lui donner la réponse qu’il est venu chercher",
-        "next_id": "6010",
-        "alignmentMod": -3,
-        "flagsToAdd": [
-          "hub_6010_confession",
-          "confession_executed"
-        ],
-        "politics": {
-          "standing": {
-            "penitents": -10,
-            "dominion": 5
-          }
-        }
       }
     ]
   },
@@ -8513,6 +8497,11 @@
         "flag": "confession_executed",
         "en": "I had given the Inquisitor the answer he came for, on the frost of the Reliquary Quarter. Nobody at the camp asked me about it, which meant everyone knew.",
         "fr": "J'avais donné à l'Inquisiteur la réponse qu'il était venu chercher, sur le givre du Quartier des Reliquaires. Personne au camp ne m'en parla, ce qui voulait dire que tout le monde savait."
+      },
+      {
+        "flag": "confession_robbed",
+        "en": "The Inquisitor's purse paid for a month of lamp oil. Nobody at the camp asked where it had come from, and nobody asked after him.",
+        "fr": "La bourse de l’Inquisiteur paya un mois d’huile de lampe. Personne au camp ne demanda d’où elle venait, et personne ne demanda de ses nouvelles."
       },
       {
         "flag": "lysa_to_camp",
@@ -9732,8 +9721,8 @@
     "reqAlignmentScore": 20,
     "choices": [
       {
-        "text": "Wade back to the candle-lit ledges",
-        "text_fr": "Retourner en pataugeant vers les corniches aux chandelles",
+        "text": "Keep the first watch beside him at the water's edge",
+        "text_fr": "Veiller à ses côtés, au bord de l’eau, la première nuit",
         "next_id": "5010",
         "unlockQuestId": "q_ch4_tobins_vigil",
         "flagsToAdd": [
@@ -9746,7 +9735,8 @@
           "marks": {
             "wickwardens": "friend"
           }
-        }
+        },
+        "triggerEnemyId": "catacomb_ghoul"
       }
     ],
     "persona_variants": {
@@ -9773,8 +9763,8 @@
     "reqAlignmentMax": -20,
     "choices": [
       {
-        "text": "Return to the reliquaries",
-        "text_fr": "Revenir aux reliquaires",
+        "text": "Walk the reliquaries with him at dusk",
+        "text_fr": "Parcourir les reliquaires avec lui à la nuit tombante",
         "next_id": "6010",
         "unlockQuestId": "q_ch5_malriks_cut",
         "flagsToAdd": [
@@ -9787,7 +9777,8 @@
           "marks": {
             "brig_born": "friend"
           }
-        }
+        },
+        "triggerEnemyId": "void_hound"
       }
     ],
     "persona_variants": {

@@ -177,7 +177,8 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Chasser les rats qui souillent les réserves du port"
+        "description_fr": "Chasser les rats qui souillent les réserves du port",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 30,
@@ -265,7 +266,8 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Arrêter le bandit qui incendie les manifestes de cargaison"
+        "description_fr": "Arrêter le bandit qui incendie les manifestes de cargaison",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 50,
@@ -309,7 +311,8 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Affronter le capitaine contrebandier"
+        "description_fr": "Affronter le capitaine contrebandier",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 70,
@@ -353,7 +356,8 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Abattre le chien pestiféré qui rôde sur le port"
+        "description_fr": "Abattre le chien pestiféré qui rôde sur le port",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 90,
@@ -621,7 +625,8 @@
         "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Aider Kelda à tenir la porte du quai contre les hommes d’abordage",
-        "targetNPCName_fr": "Kelda"
+        "targetNPCName_fr": "Kelda",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 40,
@@ -756,7 +761,8 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "S’occuper du gardien désigné par l’indicateur"
+        "description_fr": "S’occuper du gardien désigné par l’indicateur",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 45,
@@ -790,8 +796,8 @@
         "rewardGold": 90,
         "alignmentChange": -3,
         "flag": "informant_cut_taken",
-        "resultText": "The informant counts it out twice, smiling the whole time.",
-        "resultText_fr": "L’informateur compte deux fois, sans cesser de sourire."
+        "resultText": "A fence on the wharf counts it out twice, smiling the whole time.",
+        "resultText_fr": "Un receleur du quai compte deux fois, sans cesser de sourire."
       },
       {
         "choiceText": "Give the goods back to the dockhands he robbed",
@@ -820,7 +826,8 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "S’occuper du contremaître qui rançonne Tern Row"
+        "description_fr": "S’occuper du contremaître qui rançonne Tern Row",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 40,
@@ -854,7 +861,8 @@
         "rewardGold": 85,
         "alignmentChange": -4,
         "resultText": "Nadira sees the purse go into your coat. Tern Row will remember that too.",
-        "resultText_fr": "Nadira voit la bourse disparaître dans votre manteau. Tern Row s’en souviendra aussi."
+        "resultText_fr": "Nadira voit la bourse disparaître dans votre manteau. Tern Row s’en souviendra aussi.",
+        "flag": "tern_toll_pocketed"
       },
       {
         "choiceText": "Give the toll back to Tern Row",
@@ -884,7 +892,8 @@
         "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Aider Liora à mettre fin aux raids du capitaine contrebandier contre les bateaux de réfugiés",
-        "targetNPCName_fr": "Liora"
+        "targetNPCName_fr": "Liora",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 40,
@@ -921,7 +930,8 @@
           "liora": -2
         },
         "resultText": "Liora watches you weigh the purse, and says nothing at all.",
-        "resultText_fr": "Liora vous regarde soupeser la bourse, sans rien dire."
+        "resultText_fr": "Liora vous regarde soupeser la bourse, sans rien dire.",
+        "flag": "liora_purse_kept"
       },
       {
         "choiceText": "Refund the refugees their fares",
@@ -932,7 +942,8 @@
           "liora": 2
         },
         "resultText": "The families are gone by morning, on a boat that actually sails.",
-        "resultText_fr": "Les familles sont parties au matin, sur un bateau qui prend vraiment la mer."
+        "resultText_fr": "Les familles sont parties au matin, sur un bateau qui prend vraiment la mer.",
+        "flag": "liora_fares_refunded"
       }
     ]
   },
@@ -999,7 +1010,8 @@
         "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Prouver que votre argent est bon en abattant un zélote de la Cour Creuse avec Grosh",
-        "targetNPCName_fr": "Grosh"
+        "targetNPCName_fr": "Grosh",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 55,
@@ -1043,7 +1055,8 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Arrêter l’auxiliaire de l’Inquisition envoyé détruire le mur des survivants"
+        "description_fr": "Arrêter l’auxiliaire de l’Inquisition envoyé détruire le mur des survivants",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 50,
@@ -1077,7 +1090,8 @@
         "rewardGold": 30,
         "alignmentChange": 8,
         "resultText": "Reya chalks one more line on the wall: the day it was not taken down.",
-        "resultText_fr": "Reya trace une ligne de plus sur le mur : le jour où il n’a pas été abattu."
+        "resultText_fr": "Reya trace une ligne de plus sur le mur : le jour où il n’a pas été abattu.",
+        "flag": "reckoning_wall_guarded"
       },
       {
         "choiceText": "Copy the list for the camp's records",
@@ -1253,15 +1267,15 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Clear three catacomb ghouls from the flooded galleries",
+        "description": "Clear two catacomb ghouls from the flooded galleries",
         "type": "Kill",
         "targetEnemyID": "catacomb_ghoul",
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 3,
+        "requiredAmount": 2,
         "countFromAccept": true,
-        "description_fr": "Débarrasser les galeries inondées de trois goules des catacombes"
+        "description_fr": "Débarrasser les galeries inondées de deux goules des catacombes"
       }
     ],
     "rewardGold": 90,
@@ -1269,7 +1283,7 @@
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
-    "npcDialogueText": "\"They come up with the water and they go down with it, and in between they eat whatever the Court left behind.\" The sapper counts three coins onto the ledge. \"Three ghouls, three of these. I'm not made of coin, and neither are they.\"",
+    "npcDialogueText": "\"They come up with the water and they go down with it, and in between they eat whatever the Court left behind.\" The sapper counts two coins onto the ledge. \"Two ghouls, two of these. I'm not made of coin, and neither are they.\"",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -1287,15 +1301,16 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "La Prime de l’Ossuaire",
-    "npcDialogueText_fr": "« Elles montent avec l’eau et redescendent avec elle, et entre-temps elles dévorent tout ce que la Cour a laissé derrière elle. » Le sapeur aligne trois pièces sur la corniche. « Trois goules, trois pièces. Je ne suis pas cousu d’or, et elles non plus. »",
+    "npcDialogueText_fr": "« Elles montent avec l’eau et redescendent avec elle, et entre-temps elles dévorent tout ce que la Cour a laissé derrière elle. » Le sapeur aligne deux pièces sur la corniche. « Deux goules, deux pièces. Je ne suis pas cousu d’or, et elles non plus. »",
     "turnInChoices": [
       {
         "choiceText": "Take the sapper's coins",
         "choiceText_fr": "Prendre les pièces du sapeur",
         "rewardGold": 90,
         "alignmentChange": 0,
-        "resultText": "Three coins, as promised. The sapper doesn't watch them go.",
-        "resultText_fr": "Trois pièces, comme promis. Le sapeur ne les regarde pas partir."
+        "resultText": "Two coins, as promised. The sapper doesn't watch them go.",
+        "resultText_fr": "Deux pièces, comme promis. Le sapeur ne les regarde pas partir.",
+        "flag": "ossuary_coins_taken"
       },
       {
         "choiceText": "Leave the coins on the ledge",
@@ -1303,7 +1318,8 @@
         "rewardGold": 0,
         "alignmentChange": 5,
         "resultText": "The sapper stares at the coins, then at you, then pockets them fast.",
-        "resultText_fr": "Le sapeur fixe les pièces, puis vous, puis les empoche en vitesse."
+        "resultText_fr": "Le sapeur fixe les pièces, puis vous, puis les empoche en vitesse.",
+        "flag": "ossuary_coins_left"
       }
     ]
   },
@@ -1360,14 +1376,15 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Answer the penitent Inquisitor's challenge",
-        "type": "Kill",
-        "targetEnemyID": "inquisition_penitent",
+        "description": "Hear the penitent Inquisitor's confession",
+        "type": "Flag",
+        "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Relever le défi de l’Inquisiteur pénitent"
+        "targetFlag": "confession_heard",
+        "description_fr": "Entendre la confession de l’Inquisiteur pénitent"
       }
     ],
     "rewardGold": 120,
@@ -1396,40 +1413,56 @@
     "npcDialogueText_fr": "« J’ai brûlé le Quartier des Cendres sur un ordre que je n’ai jamais lu. Si vous portez la liste des enlevés, alors vous portez aussi mon nom — et je préfère en répondre devant vous que devant ce qui attend à la déchirure. » Le pénitent pose sa lame entre vous, la garde en avant.",
     "turnInChoices": [
       {
-        "choiceText": "Grant him absolution",
-        "choiceText_fr": "Lui accorder l’absolution",
+        "choiceText": "Take his blade: he carries water for the camp now",
+        "choiceText_fr": "Prendre sa lame : désormais, il porte l’eau du camp",
         "rewardGold": 60,
         "alignmentChange": 10,
-        "flag": "penitent_absolved",
+        "flag": "confession_spared",
         "approvalMods": {
           "maren": 2,
           "tobin": 1
         },
-        "resultText": "He weeps without a sound, and walks toward the tear to meet it unarmed.",
-        "resultText_fr": "Il pleure sans un bruit, et marche vers la déchirure pour l’affronter sans arme."
+        "resultText": "He weeps without a sound, and takes the water-yokes from the camp's carriers without being asked.",
+        "resultText_fr": "Il pleure sans un bruit, et prend sans qu’on le lui demande les palonniers des porteurs d’eau du camp.",
+        "politics": {
+          "standing": {
+            "penitents": 10
+          }
+        }
       },
       {
-        "choiceText": "Carry out the sentence",
-        "choiceText_fr": "Exécuter la sentence",
+        "choiceText": "Pick up the blade and give him the answer he came for",
+        "choiceText_fr": "Ramasser la lame et lui donner la réponse qu’il est venu chercher",
         "rewardGold": 120,
         "alignmentChange": 0,
-        "flag": "penitent_executed",
+        "flag": "confession_executed",
         "approvalMods": {
           "maren": -2,
           "kelda": 1,
           "grosh": 1
         },
         "resultText": "It is quick. It is more than he gave the Ashen Quarter.",
-        "resultText_fr": "C’est rapide. C’est plus qu’il n’en a accordé au Quartier des Cendres."
+        "resultText_fr": "C’est rapide. C’est plus qu’il n’en a accordé au Quartier des Cendres.",
+        "politics": {
+          "standing": {
+            "penitents": -10,
+            "dominion": 5
+          }
+        }
       },
       {
         "choiceText": "Take his blade and his purse, and leave him to the tear",
         "choiceText_fr": "Prendre sa lame et sa bourse, et l’abandonner à la déchirure",
         "rewardGold": 220,
         "alignmentChange": -8,
-        "flag": "penitent_robbed",
+        "flag": "confession_robbed",
         "resultText": "His purse is heavy. The Inquisition paid well for what he did.",
-        "resultText_fr": "Sa bourse est lourde. L’Inquisition payait bien pour ce qu’il a fait."
+        "resultText_fr": "Sa bourse est lourde. L’Inquisition payait bien pour ce qu’il a fait.",
+        "politics": {
+          "standing": {
+            "penitents": -5
+          }
+        }
       }
     ]
   },
@@ -1539,7 +1572,8 @@
         "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Chasser une goule des catacombes loin des chandelles du cloître noyé avec Frère Tobin",
-        "targetNPCName_fr": "Tobin"
+        "targetNPCName_fr": "Tobin",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 60,
@@ -1584,7 +1618,8 @@
         "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Abattre un molosse du Néant avec Malrik et prouver que l’association paie",
-        "targetNPCName_fr": "Malrik"
+        "targetNPCName_fr": "Malrik",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 80,

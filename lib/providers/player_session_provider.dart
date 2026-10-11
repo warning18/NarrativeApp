@@ -2674,13 +2674,47 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final baseline = _bountyBaseline(quest);
     state = state.copyWith(
       activeQuestIds: [...state.activeQuestIds, questId],
+      // A baseline already taken (see [noteQuestOfferedBeforeFight]) stands.
       questKillBaselines: baseline.isEmpty
           ? state.questKillBaselines
-          : {...state.questKillBaselines, questId: baseline},
+          : {
+              ...state.questKillBaselines,
+              questId: state.questKillBaselines[questId] ?? baseline,
+            },
       // With no quest followed yet, the one just taken on is followed.
       trackedQuestId: state.activeQuestIds.contains(state.trackedQuestId)
           ? state.trackedQuestId
           : questId,
+    );
+    await _persist();
+  }
+
+  /// A choice that fights and offers [questId] at once: the offer comes
+  /// after the fight, so the bounty's kill baseline is taken from
+  /// [killsBefore] (the counts before the fight) and the fight's own
+  /// kills count towards it. Nothing is stored for a quest already
+  /// taken or turned in, or one with no `countFromAccept` bounty.
+  Future<void> noteQuestOfferedBeforeFight(
+    String questId,
+    Map<String, int> killsBefore, {
+    required Map<String, dynamic>? quest,
+  }) async {
+    if (quest == null ||
+        state.activeQuestIds.contains(questId) ||
+        state.completedQuestIds.contains(questId) ||
+        state.questKillBaselines.containsKey(questId)) {
+      return;
+    }
+    final baseline = {
+      for (final objective in (quest['objectives'] as List?) ?? const [])
+        if (objective is Map<String, dynamic> &&
+            objective['type'] == 'Kill' &&
+            objective['countFromAccept'] == true)
+          for (final id in killTargetsOf(objective)) id: killsBefore[id] ?? 0,
+    };
+    if (baseline.isEmpty) return;
+    state = state.copyWith(
+      questKillBaselines: {...state.questKillBaselines, questId: baseline},
     );
     await _persist();
   }
