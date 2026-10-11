@@ -1325,6 +1325,13 @@ Future<void> _selectChoice({
 
   var resolvedEnemyIds =
       fightAvoided ? const <String>[] : choice.allTriggerEnemyIds;
+  // A quest offered by the choice that fights counts that fight's kills:
+  // the offer comes after it, so the kill counts are kept now.
+  final killsBeforeFight = choice.triggersCombat &&
+          !fightAvoided &&
+          (choice.unlockQuestId ?? '').isNotEmpty
+      ? Map<String, int>.of(ref.read(playerSessionProvider).enemyKillCounts)
+      : null;
   if (choice.triggersCombat && !fightAvoided) {
     final enemies = await loadedGameDb(ref, enemiesSchema);
     final ids = await _resolveEnemyIds(ref, choice.allTriggerEnemyIds);
@@ -1463,6 +1470,14 @@ Future<void> _selectChoice({
     }
     final newShopId = choice.unlockShopId ?? '';
     final newQuestId = choice.unlockQuestId ?? '';
+    if (killsBeforeFight != null && newQuestId.isNotEmpty) {
+      final questRecord = (await loadedGameDb(ref, questsSchema))[newQuestId]
+          as Map<String, dynamic>?;
+      await ref
+          .read(playerSessionProvider.notifier)
+          .noteQuestOfferedBeforeFight(newQuestId, killsBeforeFight,
+              quest: questRecord);
+    }
     if (isExcursion && newShopId.isNotEmpty) {
       // A stall met on the road is only there while the player stands at
       // it: "Take a look" opens it now, and the Shops list marks it as met
