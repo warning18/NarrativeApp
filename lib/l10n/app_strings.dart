@@ -2617,6 +2617,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'of rolls',
     AppLanguage.fr: 'des jets'
   },
+  'die_turn_hint': {
+    AppLanguage.en: 'Drag the die to turn it; tap a side to bring it round.',
+    AppLanguage.fr:
+        'Faites tourner le dé du doigt\u00a0; touchez une face pour l’amener devant vous.',
+  },
+  'die_turn_hint_open': {
+    AppLanguage.en:
+        'Double-tap a face to give it a skill, or drop a skill on the die.',
+    AppLanguage.fr:
+        'Touchez deux fois une face pour lui donner une compétence, ou déposez-y une compétence.',
+  },
   'channeled_face_badge': {
     AppLanguage.en: 'On a {face} face · 70%',
     AppLanguage.fr: 'Sur une face {face} · 70 %',
@@ -3470,9 +3481,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'drag_skill_hint': {
     AppLanguage.en:
-        'Each face casts the skill it shows. Tap an open face (pencil) to choose its skill, or drag a skill below onto it. Locked faces are the die\'s own signature.',
+        'Each face casts the skill it shows. Double-tap an open face (or tap its pencil) to choose its skill, or drag a skill below onto it. Locked faces are the die\'s own signature.',
     AppLanguage.fr:
-        'Chaque face lance la compétence affichée. Touchez une face ouverte (crayon) pour choisir sa compétence, ou glissez-y une compétence ci-dessous. Les faces verrouillées sont la signature du dé.',
+        'Chaque face lance la compétence affichée. Touchez deux fois une face ouverte (ou son crayon) pour choisir sa compétence, ou glissez-y une compétence ci-dessous. Les faces verrouillées sont la signature du dé.',
   },
   'no_skill_faces': {
     AppLanguage.en: 'This die has no Skill faces to customize.',

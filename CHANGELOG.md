@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.242.0+278]
+## [1.243.0+279]
 
 Places say what they are like, and the game listens.
 
@@ -42,6 +42,16 @@ Places say what they are like, and the game listens.
 - The in-app and Python simulators still model plain walks and no ground
   anomalies; roads to deadly places will hold more events in play than they
   do there.
+
+## [1.242.0+278]
+
+### Changed
+- **The dice loadout shows the die as a cube you turn.** The same 3D cube the fight tumbles (with the die's own skin, and a skill face drawn as its pixel icon on a plaque) stands above the faces: drag it round with a finger and it settles on the side nearest you, tap a side to bring it round, tap the face in front to give it a skill, or drop a skill chip on the die to put it on that face. The face it stands on is outlined in the list below and told beside the cube (its name and what it does), and a face tapped in the list turns the cube to it. Reduced motion turns the cube without the glide.
+  - The dropdown of dice is a row of small cubes, one per die you own, each showing its faces (shown when you own more than one die).
+  - A die of seven faces shows six on the cube and slides the window to keep the picked one on it.
+- **The faces' odds are Edit Mode only.** In-Game mode no longer says how often each face comes up ("19% of rolls"), on the faces or beside the cube.
+- **The faces below the die are squares of one size.** Each is a fixed square (three across or more) with its skill's icon (or its own kind and value), its name on two lines at most, and a mark for what can be done with it (a lock, a cross to clear its skill, a pencil to choose one, a warning when its skill is over its limit), so a long name or text can no longer stretch or crowd it. What the picked face does, in full (its summary, its rule words and what they do, whether it is fixed or custom or over its limit, its element) is told in the panel beside the die, which grows with the text.
+- **A double tap chooses a skill.** Double-tap a face's square, or a side of the cube, to open its skill picker; the pencil on a square and a "Choose this face's skill" button in the panel do the same. A single tap only picks the face (the cube turns to it). A cube stood on its top or bottom sits upright.
 
 ## [1.241.0+277]
 
