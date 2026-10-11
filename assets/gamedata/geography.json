@@ -75,6 +75,7 @@
   },
   "alster_black_hold": {
     "level": "district",
+    "stage": "hall",
     "parent": "alster",
     "name": "The Black Hold",
     "name_fr": "La Geôle Noire",
@@ -85,6 +86,7 @@
   },
   "alster_undercroft": {
     "level": "district",
+    "stage": "hall",
     "parent": "alster",
     "name": "The Undercroft",
     "name_fr": "Les Souterrains",
@@ -335,6 +337,7 @@
   },
   "spire_of_judgment": {
     "level": "location",
+    "stage": "hall",
     "parent": "ashlands",
     "kind": "site",
     "name": "The Spire of Judgment",
@@ -416,6 +419,7 @@
   },
   "drowned_cloister": {
     "level": "location",
+    "stage": "hall",
     "parent": "the_fen",
     "kind": "town",
     "name": "The Drowned Cloister",
@@ -427,6 +431,7 @@
   },
   "hollow_court": {
     "level": "location",
+    "stage": "hall",
     "parent": "the_fen",
     "kind": "site",
     "name": "The Hollow Court",
@@ -641,6 +646,7 @@
   },
   "candlehold_lantern_hall": {
     "level": "district",
+    "stage": "hall",
     "parent": "candlehold",
     "name": "The Lantern Hall",
     "name_fr": "La Salle de la Lanterne",

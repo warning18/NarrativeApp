@@ -7,6 +7,7 @@ import '../combat/sea_beasts.dart';
 import '../combat/dice_faces.dart';
 import '../combat/encounter.dart';
 import '../combat/enemy_affix.dart';
+import '../combat/field_anomaly.dart';
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/chapter_grid_layout.dart';
@@ -52,6 +53,11 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
   late int _chapter;
   double _difficulty = 1.0;
   EnemyAffix? _affix;
+
+  /// The ground the test fight is on and the anomaly it is set under
+  /// (v1.241); null is the place's own stage and no anomaly.
+  FightStage? _stage;
+  FieldAnomaly? _anomaly;
   String? _dieId;
   bool _solo = false;
   bool _fullHealth = true;
@@ -222,6 +228,8 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                 chapter: _chapter,
                 difficultyMultiplier: _difficulty,
                 forcedAffixes: [if (_affix != null) _affix!],
+                forcedStage: _stage,
+                forcedAnomaly: forcedFieldAnomaly(_anomaly?.id),
                 isTest: true,
               ),
             ),
@@ -511,6 +519,45 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                   onSelected: (_) => setState(() => _affix = affix),
                 ),
             ],
+          ),
+          const SizedBox(height: 12),
+          DropdownButtonFormField<FightStage?>(
+            key: const Key('fight_lab_stage'),
+            initialValue: _stage,
+            isExpanded: true,
+            decoration: InputDecoration(labelText: tr(ref, 'stage_lab_label')),
+            items: [
+              DropdownMenuItem<FightStage?>(
+                value: null,
+                child: Text(tr(ref, 'stage_lab_place')),
+              ),
+              for (final stage in FightStage.values)
+                DropdownMenuItem<FightStage?>(
+                  value: stage,
+                  child: Text(tr(ref, 'stage_${stage.name}')),
+                ),
+            ],
+            onChanged: (v) => setState(() => _stage = v),
+          ),
+          const SizedBox(height: 12),
+          DropdownButtonFormField<FieldAnomaly?>(
+            key: const Key('fight_lab_anomaly'),
+            initialValue: _anomaly,
+            isExpanded: true,
+            decoration:
+                InputDecoration(labelText: tr(ref, 'anomaly_lab_label')),
+            items: [
+              DropdownMenuItem<FieldAnomaly?>(
+                value: null,
+                child: Text(tr(ref, 'anomaly_lab_none')),
+              ),
+              for (final anomaly in fieldAnomalies)
+                DropdownMenuItem<FieldAnomaly?>(
+                  value: anomaly,
+                  child: Text(tr(ref, 'anomaly_${anomaly.id}')),
+                ),
+            ],
+            onChanged: (v) => setState(() => _anomaly = v),
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String?>(

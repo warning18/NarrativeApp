@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/combat_aftermath.dart';
 import '../combat/combat_engine.dart';
 import '../combat/encounter.dart';
+import '../combat/field_anomaly.dart';
 import '../data/ability_check.dart';
 import '../data/alignment_events.dart';
 import '../data/chapter_conditions.dart';
@@ -28,6 +29,7 @@ import '../providers/chapter_loop_provider.dart'
     show chapterConditionProvider, reachedChapterProvider;
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../tutorial/guide_tour.dart';
@@ -144,7 +146,18 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         chapter: _zoneChapter,
         difficultyMultiplier: zoneTierMultiplier(zoneTier(widget.zone)),
         hostFight: base.hostFight || widget.hostFight,
+        forcedStage: _zoneStage,
       );
+
+  /// How the zone's fights look (v1.241): the stage of the place the zone
+  /// lies at, so an expedition into the dunes is fought in the dunes
+  /// wherever the party set out from. Null when the zone names no place.
+  FightStage? get _zoneStage {
+    final location = widget.zone['location']?.toString() ?? '';
+    if (location.isEmpty) return null;
+    return fightStageFromName(
+        ref.read(geographyProvider).stageNameOf(location));
+  }
 
   bool _isBossNode(StoryNode? node) =>
       node != null && node.id == 'zone_boss_${widget.zoneId}';
@@ -421,7 +434,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                     chapter: _zoneChapter,
                     difficultyMultiplier:
                         zoneTierMultiplier(zoneTier(widget.zone)),
-                  ).copyWith(hostFight: widget.hostFight)
+                  ).copyWith(
+                    hostFight: widget.hostFight, forcedStage: _zoneStage)
                 : _zoneModifiers(EncounterModifiers.fromChoice(choice)),
           ),
         ),

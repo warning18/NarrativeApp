@@ -598,6 +598,8 @@ class _ChoiceEditState {
         travelPlaceId: _original.travelPlaceId,
         avoidFightOnSuccess: _original.avoidFightOnSuccess,
         forcedCondition: _original.forcedCondition,
+        forcedAnomaly: _original.forcedAnomaly,
+        forcedStage: _original.forcedStage,
         spot: _original.spot,
         approvalMods: _original.approvalMods,
         roadEvent: _original.roadEvent,

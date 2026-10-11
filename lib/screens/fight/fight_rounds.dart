@@ -569,6 +569,8 @@ extension _FightRounds on _FightScreenState {
     // An enemy that fell in their turn (poison, thorns, a guard sign)
     // feeds a kill-heal sign now.
     _feedSignKills(newEntries, lang);
+    // The ground's anomaly: its omen, its break, its tick, its end.
+    _groundRoundStart(newEntries, lang);
     if (_silenced) {
       newEntries.add(_LogEntry(
           trFor(lang, writ ? 'writ_log' : 'silence_round_note'),

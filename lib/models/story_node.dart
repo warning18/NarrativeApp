@@ -40,6 +40,8 @@ class StoryChoice {
     this.travelPlaceId,
     this.avoidFightOnSuccess = false,
     this.forcedCondition,
+    this.forcedAnomaly,
+    this.forcedStage,
     this.approvalMods = const {},
     this.roadEvent,
     this.shipBattleId,
@@ -99,6 +101,8 @@ class StoryChoice {
       travelPlaceId: json['travelPlaceId'] as String?,
       avoidFightOnSuccess: json['avoidFightOnSuccess'] as bool? ?? false,
       forcedCondition: json['forcedCondition'] as String?,
+      forcedAnomaly: json['forcedAnomaly'] as String?,
+      forcedStage: json['forcedStage'] as String?,
       approvalMods: (json['approvalMods'] as Map?)?.map(
             (id, delta) =>
                 MapEntry(id.toString(), (delta as num?)?.toInt() ?? 0),
@@ -185,6 +189,13 @@ class StoryChoice {
   /// 'ambush') the fight this choice starts is forced into, instead of
   /// rolling one.
   final String? forcedCondition;
+
+  /// A ground or sky anomaly (field_anomaly.dart's id, e.g. 'sandstorm') the
+  /// fight this choice starts is set under (v1.241), and the stage it is
+  /// drawn on ('dunes', 'hall'…): the scene's own ground, instead of the
+  /// place's. Empty rolls both.
+  final String? forcedAnomaly;
+  final String? forcedStage;
   final int goldMod;
   final int alignmentMod;
   final int healAmount;
@@ -394,6 +405,10 @@ class StoryChoice {
         if (avoidFightOnSuccess) 'avoidFightOnSuccess': avoidFightOnSuccess,
         if (forcedCondition != null && forcedCondition!.isNotEmpty)
           'forcedCondition': forcedCondition,
+        if (forcedAnomaly != null && forcedAnomaly!.isNotEmpty)
+          'forcedAnomaly': forcedAnomaly,
+        if (forcedStage != null && forcedStage!.isNotEmpty)
+          'forcedStage': forcedStage,
         if (approvalMods.isNotEmpty) 'approvalMods': approvalMods,
         if (roadEvent != null && roadEvent!.isNotEmpty) 'roadEvent': roadEvent,
         if (triggersShipBattle) 'shipBattleId': shipBattleId,

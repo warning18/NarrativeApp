@@ -4,6 +4,7 @@ import '../models/story_node.dart';
 import 'battlefield_condition.dart';
 import 'combat_engine.dart' show zoneTierMultiplier;
 import 'enemy_affix.dart';
+import 'field_anomaly.dart';
 import 'fight_goal.dart';
 import 'loot_box.dart';
 import 'squad.dart';
@@ -58,6 +59,8 @@ class EncounterModifiers {
     this.lossContinues = false,
     this.isTest = false,
     this.forcedCondition,
+    this.forcedAnomaly,
+    this.forcedStage,
     this.forceElite = false,
     this.keepWounds = false,
     this.tutorial = false,
@@ -118,6 +121,13 @@ class EncounterModifiers {
   /// wrong is an ambush), instead of rolling one.
   final BattlefieldCondition? forcedCondition;
 
+  /// The ground or sky anomaly this fight is set under (v1.241, see
+  /// field_anomaly.dart) instead of rolling one (a test fight rolls none
+  /// unless it is forced one); and the stage the fight is drawn on, instead
+  /// of the place's own.
+  final FieldAnomalyPlan? forcedAnomaly;
+  final FightStage? forcedStage;
+
   /// A lone enemy that is Elite for certain (a road event's champion, see
   /// road_events.dart), instead of rolling for it.
   final bool forceElite;
@@ -162,6 +172,8 @@ class EncounterModifiers {
       !lossContinues &&
       !isTest &&
       forcedCondition == null &&
+      forcedAnomaly == null &&
+      forcedStage == null &&
       !forceElite &&
       !keepWounds &&
       !tutorial &&
@@ -174,7 +186,10 @@ class EncounterModifiers {
   /// multiplier (an expedition applies its zone's to every draw), or made
   /// one of the last battles ([hostFight]).
   EncounterModifiers copyWith(
-          {int? chapter, double? difficultyMultiplier, bool? hostFight}) =>
+          {int? chapter,
+          double? difficultyMultiplier,
+          bool? hostFight,
+          FightStage? forcedStage}) =>
       EncounterModifiers(
         forcedAffixes: forcedAffixes,
         namedEnemyName: namedEnemyName,
@@ -189,6 +204,8 @@ class EncounterModifiers {
         lossContinues: lossContinues,
         isTest: isTest,
         forcedCondition: forcedCondition,
+        forcedAnomaly: forcedAnomaly,
+        forcedStage: forcedStage ?? this.forcedStage,
         forceElite: forceElite,
         keepWounds: keepWounds,
         tutorial: tutorial,
@@ -229,6 +246,8 @@ class EncounterModifiers {
     final own = EncounterModifiers(
       lossContinues: choice.hasLossBranch,
       forcedCondition: battlefieldConditionFromName(choice.forcedCondition),
+      forcedAnomaly: forcedFieldAnomaly(choice.forcedAnomaly),
+      forcedStage: fightStageFromName(choice.forcedStage),
       keepWounds: choice.noHeal,
       tutorial: choice.tutorialFight,
       luckyDieReveal: choice.luckyDieReveal,
@@ -293,6 +312,8 @@ class EncounterModifiers {
         lossContinues: lossContinues,
         isTest: isTest,
         forcedCondition: forcedCondition,
+        forcedAnomaly: forcedAnomaly,
+        forcedStage: forcedStage,
         forceElite: forceElite ?? this.forceElite,
         keepWounds: keepWounds,
         tutorial: tutorial,

@@ -42,6 +42,8 @@ void main() {
       'travelPlaceId': 'p1',
       'avoidFightOnSuccess': true,
       'forcedCondition': 'ambush',
+      'forcedAnomaly': 'sandstorm',
+      'forcedStage': 'dunes',
       'approvalMods': {'*': -4},
     });
     expect(debugEditorRoundTrip(choice).toJson(), choice.toJson());

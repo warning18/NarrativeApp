@@ -1,3 +1,4 @@
+import '../combat/field_anomaly.dart' show FightStage;
 import '../combat/skill_vfx.dart';
 import '../data/companion_remarks.dart' show remarkTriggerOptions;
 import '../data/geography.dart'
@@ -3267,6 +3268,16 @@ final DbSchema geographySchema = DbSchema(
       label: 'Glyph (districts only): drawn on the Journey map',
       type: FieldType.enumeration,
       enumOptions: ['', ...geoGlyphs],
+    ),
+    FieldSchema(
+      key: 'stage',
+      label: 'Fight stage (v1.241)',
+      type: FieldType.enumeration,
+      enumOptions: ['', for (final stage in FightStage.values) stage.name],
+      help: 'How a fight here looks and which ground anomalies it can meet. '
+          'Empty: the stage of the land (its zone\'s biome); a place inside '
+          'a building (a prison, a crypt, a cathedral) is a hall. The '
+          'nearest one up the chain applies.',
     ),
     FieldSchema(
       key: 'landmark',
