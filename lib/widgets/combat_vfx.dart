@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../combat/skill_vfx.dart';
+import 'pixel_portrait.dart';
+import 'pixel_vfx.dart';
 
 /// What a floating number says, which sets its color.
 enum VfxTextKind { damage, hurt, heal, block, mana, crit, info }
@@ -108,6 +110,17 @@ List<VfxParticle> _makeParticles(int seed) {
   ];
 }
 
+/// A cue for a portrait: do [cue] after [delay].
+class VfxCue {
+  const VfxCue(this.target, this.cue,
+      {this.delay = Duration.zero, this.dir = const Offset(-1, 0)});
+
+  final GlobalKey target;
+  final PortraitCue cue;
+  final Duration delay;
+  final Offset dir;
+}
+
 /// The moment a strong or mighty effect lands on [target], as the layer
 /// plays it: a card recoils (see [VfxRecoil]), a mighty blow shakes the
 /// screen.
@@ -140,6 +153,30 @@ class CombatVfxController extends ChangeNotifier {
   void removeImpactListener(void Function(VfxImpact) listener) =>
       _impactListeners.remove(listener);
 
+  final List<void Function(VfxCue)> _cueListeners = [];
+
+  /// Calls [listener] for every cue to a pixel portrait (see
+  /// pixel_portrait.dart): a blow landing, a strike, a fall.
+  void addCueListener(void Function(VfxCue) listener) =>
+      _cueListeners.add(listener);
+
+  void removeCueListener(void Function(VfxCue) listener) =>
+      _cueListeners.remove(listener);
+
+  /// Cues the portrait on [target] to [cue] after [delayMs] ([dir] points
+  /// to whom a lunge strikes).
+  void cue(GlobalKey target, PortraitCue cue,
+      {int delayMs = 0, Offset dir = const Offset(-1, 0)}) {
+    _emitCue(VfxCue(target, cue,
+        delay: Duration(milliseconds: max(0, delayMs)), dir: dir));
+  }
+
+  void _emitCue(VfxCue cue) {
+    for (final listener in List.of(_cueListeners)) {
+      listener(cue);
+    }
+  }
+
   void _reportImpact(VfxImpact impact) {
     for (final listener in List.of(_impactListeners)) {
       listener(impact);
@@ -162,9 +199,11 @@ class CombatVfxController extends ChangeNotifier {
     double? power,
     bool? hit,
   }) {
+    final palette = paletteFor(style, element);
+    PixelVfxTints.request(style, palette);
     _queue.add(VfxBurst(
       style: style,
-      palette: paletteFor(style, element),
+      palette: palette,
       target: target,
       source: source,
       targetFallback: globalRectOf(target),
@@ -225,11 +264,16 @@ class VfxRecoil extends StatefulWidget {
     required this.controller,
     required this.anchor,
     required this.child,
+    this.flash = true,
   });
 
   final CombatVfxController controller;
   final GlobalKey anchor;
   final Widget child;
+
+  /// Whether the card is washed in the effect's colour (a card with a
+  /// pixel portrait flashes that instead).
+  final bool flash;
 
   @override
   State<VfxRecoil> createState() => _VfxRecoilState();
@@ -288,7 +332,7 @@ class _VfxRecoilState extends State<VfxRecoil>
             : impact.hit
                 ? Offset(swing, 0)
                 : Offset(0, -sin(t * pi) * 3);
-        final flash = live
+        final flash = live && widget.flash
             ? Color(impact.palette.primary)
                 .withValues(alpha: (impact.hit ? 0.35 : 0.2) * fade * fade)
             : Colors.transparent;
@@ -403,6 +447,10 @@ class _CombatVfxLayerState extends State<CombatVfxLayer>
     for (final burst in _active) {
       if (burst.impacted || now < burst.impactAt) continue;
       burst.impacted = true;
+      // Any blow landing flashes a pixel portrait, light or mighty.
+      if (burst.hit && !systemVfxStyles.contains(burst.style)) {
+        widget.controller._emitCue(VfxCue(burst.target, PortraitCue.hit));
+      }
       if (burst.tier.index < VfxTier.strong.index ||
           systemVfxStyles.contains(burst.style)) {
         continue;
@@ -660,6 +708,30 @@ class _Fx {
       sourceRect?.center ?? Offset(rect.left - s * 1.2, c.dy - s * 0.8);
 
   void paint() {
+    // In pixel art (see pixel_vfx.dart) once the strips are in; the vector
+    // effect below plays until then.
+    if (paintPixelBurst(
+      canvas,
+      style: burst.style,
+      palette: burst.palette,
+      tier: tier,
+      hit: burst.hit,
+      rect: rect,
+      sourceRect: sourceRect,
+      t: t,
+      s: s,
+      scale: scale,
+    )) {
+      // The flash across the screen stays: it is light, not a shape.
+      if (mighty && !systemVfxStyles.contains(burst.style)) {
+        if (burst.hit) {
+          _screenFlash(vfxImpactAt(burst.style), 0.25);
+        } else {
+          _screenFlash(0.05, 0.25, opacity: 0.1);
+        }
+      }
+      return;
+    }
     _style();
     _tierDetails();
   }

@@ -185,6 +185,14 @@ extension _FightEffects on _FightScreenState {
     if (!_effectsOn) return;
     final targetKey = _memberCardKey(target.id);
     final lang = ref.read(appLanguageProvider);
+    // The enemy lunges at whom it strikes, as the blow sets off.
+    final from = globalRectOf(_enemyCardKey(enemy.key));
+    final to = globalRectOf(targetKey);
+    _vfx.cue(_enemyCardKey(enemy.key), PortraitCue.lunge,
+        delayMs: delayMs,
+        dir: from == null || to == null
+            ? const Offset(-1, 0)
+            : to.center - from.center);
     if (dodged) {
       _vfx.play(
         style: VfxStyle.miss,

@@ -369,6 +369,7 @@ extension _FightCards on _FightScreenState {
             child: VfxRecoil(
               controller: _vfx,
               anchor: _enemyCardKey(enemy.key),
+              flash: false,
               child: _buildEnemyCard(enemy, previews),
             ),
           ),
@@ -411,6 +412,9 @@ extension _FightCards on _FightScreenState {
     ];
     final aimedBySelected =
         canRetarget && _selectedTargets[selectedActor.id] == enemy.key;
+    // The portrait's moves, and the card's dimming, unless animations are off.
+    final animateFall = _effectsOn &&
+        !(MediaQuery.maybeOf(context)?.disableAnimations ?? false);
     final borderColor = aimedBySelected
         ? _accentFor(selectedActor)
         : _isElite && enemy.isAlive
@@ -428,7 +432,10 @@ extension _FightCards on _FightScreenState {
                   })
               : () => _showEnemySheet(enemy),
       onLongPress: () => _showEnemySheet(enemy),
-      child: Opacity(
+      child: AnimatedOpacity(
+        // The card dims as its portrait dissolves.
+        duration:
+            animateFall ? const Duration(milliseconds: 900) : Duration.zero,
         opacity: enemy.isAlive ? 1 : 0.45,
         child: Container(
           padding: const EdgeInsets.all(6),
@@ -446,7 +453,15 @@ extension _FightCards on _FightScreenState {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  EnemyPixelIcon(enemy.enemyId, size: 30),
+                  PixelEnemyPortrait(
+                    key: ValueKey('enemy_portrait_${enemy.key}'),
+                    enemyId: enemy.enemyId,
+                    alive: enemy.isAlive,
+                    controller: _vfx,
+                    anchor: _enemyCardKey(enemy.key),
+                    boss: isBossEnemy(enemy.enemyId, enemy.data),
+                    animate: animateFall,
+                  ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
