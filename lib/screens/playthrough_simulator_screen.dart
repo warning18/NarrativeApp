@@ -23,6 +23,7 @@ import '../data/politics_events.dart' show choicePoliticsKey, enterPoliticsKey;
 import '../data/signs.dart';
 import '../data/sim_combat.dart';
 import '../data/sim_growth.dart';
+import '../data/sim_quests.dart';
 import '../data/story_graph_integrity.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
@@ -51,13 +52,52 @@ AutoplayStrategy _toAutoplayStrategy(SimStrategy strategy) {
       return AutoplayStrategy.favorEvil;
     case SimStrategy.maximizeGold:
       return AutoplayStrategy.maximizeGold;
+    case SimStrategy.explore:
+    case SimStrategy.completionist:
+      return AutoplayStrategy.random;
   }
 }
 
 /// How the simulator picks among a node's valid (non-locked) choices. Lets
 /// the user compare "what if the player always chased gold" against "what
 /// if they always leaned good/evil" instead of only pure-random runs.
-enum SimStrategy { random, favorGood, favorEvil, maximizeGold }
+enum SimStrategy {
+  random,
+  favorGood,
+  favorEvil,
+  maximizeGold,
+  explore,
+
+  /// A thorough human (v1.230): takes every way on of a scene it has not
+  /// taken yet, offers of work first and the ways that serve a quest it
+  /// holds before the rest, the way that leaves the place last.
+  completionist,
+}
+
+/// The label the game gives an alignment score (see
+/// PlayerSession.alignmentLabel).
+String _alignmentLabelOf(int score) =>
+    score >= 20 ? 'Good' : (score <= -20 ? 'Evil' : 'Neutral');
+
+/// How often each way on has been taken over a batch of runs, shared by
+/// them: the [SimStrategy.explore] walk takes the way on taken least so far,
+/// so run after run the batch covers every branch it can (see
+/// [simulatePlaythroughs]).
+class SimCoverage {
+  SimCoverage({this.alternateChecks = false});
+
+  final Map<String, int> taken = {};
+
+  /// Whether the explore walk settles an ability check by the outcome seen
+  /// fewer times so far (a pass, or a fail) instead of by the roll, so both
+  /// sides of every check are walked. Off, the dice decide.
+  final bool alternateChecks;
+}
+
+/// A way on's key in [SimCoverage] and in a run's choices taken: the scene,
+/// where it leads and its words.
+String simChoiceKey(String nodeId, StoryChoice choice) =>
+    '$nodeId|${choice.nextId}|${choice.text}';
 
 String _strategyLabelKey(SimStrategy strategy) {
   switch (strategy) {
@@ -69,6 +109,10 @@ String _strategyLabelKey(SimStrategy strategy) {
       return 'sim_strategy_favor_evil';
     case SimStrategy.maximizeGold:
       return 'sim_strategy_maximize_gold';
+    case SimStrategy.explore:
+      return 'sim_strategy_explore';
+    case SimStrategy.completionist:
+      return 'sim_strategy_completionist';
   }
 }
 
@@ -146,9 +190,26 @@ class _SimResult {
     this.signsTaken = const [],
     this.offersTaken = 0,
     this.skillsLearned = 0,
+    this.choicesTaken = const [],
+    this.checksRolled = 0,
+    this.checksFailed = 0,
+    this.questRecords = const [],
+    this.questsStuck = const {},
   });
 
   final List<_SimStep> steps;
+
+  /// The ways on taken, in order (see [simChoiceKey]).
+  final List<String> choicesTaken;
+
+  /// Ability checks rolled in the run, and how many failed.
+  final int checksRolled;
+  final int checksFailed;
+
+  /// The quests taken on in the run, with when they were handed in and what
+  /// they paid, and what each still undone had left to do at the end.
+  final List<SimQuestRecord> questRecords;
+  final Map<String, List<String>> questsStuck;
   final int finalGold;
   final int finalAlignment;
   final Set<String> flags;
@@ -220,7 +281,13 @@ class _SimContext {
     this.geography,
     this.clash = true,
     this.clashOff = const {},
+    this.quests = const {},
+    this.npcs = const {},
   });
+
+  /// quests.json and npcs.json: the quests the walk takes on and hands in.
+  final Map<String, dynamic> quests;
+  final Map<String, dynamic> npcs;
 
   /// Play the v1.212-v1.215 fight rules (goals, squads, parries, ...).
   final bool clash;
@@ -299,7 +366,16 @@ _SimResult _simulate(
   int maxSteps = 400,
   bool french = false,
   _SimContext? sim,
+  String? forceRaceId,
+  String? forceProfessionId,
+  SimCoverage? coverage,
 }) {
+  final choicesTaken = <String>[];
+  final takenHere = <String, int>{};
+  var checksRolled = 0, checksFailed = 0;
+  final questLog = sim == null || sim.quests.isEmpty
+      ? null
+      : SimQuestLog(sim.quests, npcs: sim.npcs);
   int combatGoldReward(StoryChoice c) {
     if (!c.triggersCombat) return 0;
     var total = 0;
@@ -314,8 +390,20 @@ _SimResult _simulate(
   if (sim != null && sim.races.isNotEmpty && sim.professions.isNotEmpty) {
     final raceIds = sim.races.keys.toList()..sort();
     final professionIds = sim.professions.keys.toList()..sort();
-    final raceId = raceIds[random.nextInt(raceIds.length)];
-    final professionId = professionIds[random.nextInt(professionIds.length)];
+    // The race and profession are drawn either way (the run's other draws
+    // do not shift), then replaced when the caller names one.
+    final drawnRace = raceIds[random.nextInt(raceIds.length)];
+    final drawnProfession = professionIds[random.nextInt(professionIds.length)];
+    if (forceRaceId != null && !sim.races.containsKey(forceRaceId)) {
+      throw ArgumentError.value(forceRaceId, 'forceRaceId', 'unknown race');
+    }
+    if (forceProfessionId != null &&
+        !sim.professions.containsKey(forceProfessionId)) {
+      throw ArgumentError.value(
+          forceProfessionId, 'forceProfessionId', 'unknown profession');
+    }
+    final raceId = forceRaceId ?? drawnRace;
+    final professionId = forceProfessionId ?? drawnProfession;
     character = SimCharacter.create(
       raceId: raceId,
       race: sim.races[raceId] as Map<String, dynamic>,
@@ -385,10 +473,16 @@ _SimResult _simulate(
       signsTaken: List.unmodifiable(growth?.signsTaken ?? const <String>[]),
       offersTaken: growth?.giftsTaken.values.fold<int>(0, (a, b) => a + b) ?? 0,
       skillsLearned: growth?.skillsLearned ?? 0,
+      choicesTaken: List.unmodifiable(choicesTaken),
+      checksRolled: checksRolled,
+      checksFailed: checksFailed,
+      questRecords: List<SimQuestRecord>.unmodifiable(
+          questLog?.records.values ?? const <SimQuestRecord>[]),
+      questsStuck: questLog?.unmet(flags) ?? const {},
     );
   }
 
-  StoryChoice pickChoice(List<StoryChoice> pool) {
+  StoryChoice pickAmong(List<StoryChoice> pool) {
     if (strategy == SimStrategy.random || pool.length == 1) {
       return pool[random.nextInt(pool.length)];
     }
@@ -400,6 +494,32 @@ _SimResult _simulate(
           return -c.alignmentMod;
         case SimStrategy.maximizeGold:
           return c.goldMod + combatGoldReward(c);
+        case SimStrategy.explore:
+          // The way taken fewest times so far, over every run of the batch.
+          return -(coverage?.taken[simChoiceKey(currentId, c)] ?? 0);
+        case SimStrategy.completionist:
+          // Ways not taken yet first (a hub's every beat before leaving it),
+          // the work on offer and what serves a quest held before the rest,
+          // the way on out of the place last.
+          var score = (takenHere[simChoiceKey(currentId, c)] ?? 0) == 0
+              ? 10
+              : -3 * takenHere[simChoiceKey(currentId, c)]!;
+          final log = questLog;
+          if (log != null) {
+            final id = c.unlockQuestId ?? '';
+            if (id.isNotEmpty &&
+                log.canTake(id,
+                    flags: flags,
+                    gold: gold,
+                    alignmentLabel: _alignmentLabelOf(alignment))) {
+              score += 6;
+            }
+            final want = log.wanted(flags);
+            if (c.flagsToAdd.any(want.flags.contains)) score += 5;
+            if (c.allTriggerEnemyIds.any(want.foes.contains)) score += 5;
+          }
+          if (c.mainQuest || c.isEnding) score -= 4;
+          return score;
         case SimStrategy.random:
           return 0;
       }
@@ -408,6 +528,17 @@ _SimResult _simulate(
     final best = pool.map(score).reduce(max);
     final tied = pool.where((c) => score(c) == best).toList();
     return tied[random.nextInt(tied.length)];
+  }
+
+  StoryChoice pickChoice(List<StoryChoice> pool) {
+    final picked = pickAmong(pool);
+    final key = simChoiceKey(currentId, picked);
+    choicesTaken.add(key);
+    takenHere[key] = (takenHere[key] ?? 0) + 1;
+    if (coverage != null) {
+      coverage.taken[key] = (coverage.taken[key] ?? 0) + 1;
+    }
+    return picked;
   }
 
   /// What the character fights with now; in one of the last battles
@@ -440,6 +571,55 @@ _SimResult _simulate(
     final g = growth;
     if (g == null) return;
     alignment = g.settle(alignment: alignment, flags: flags, random: random);
+  }
+
+  /// Hands in every quest whose objectives are met (the player does it at
+  /// once): talks to the people they ask for, takes the pay, the XP, the
+  /// item and the follow-up quest, and settles a quest that offers a choice
+  /// the way the player leans.
+  void settleQuests(int atStep) {
+    final log = questLog;
+    if (log == null) return;
+    log.talkToAvailable(lastKnownChapter ?? 1);
+    final bias = switch (strategy) {
+      SimStrategy.favorGood => SimTurnInBias.good,
+      SimStrategy.favorEvil => SimTurnInBias.evil,
+      SimStrategy.maximizeGold => SimTurnInBias.gold,
+      _ => SimTurnInBias.any,
+    };
+    for (final id in log.ready(flags)) {
+      final pay = log.complete(id, step: atStep, bias: bias, random: random);
+      gold = (gold + pay.gold).clamp(0, 1 << 30).toInt();
+      alignment += pay.alignment;
+      if (pay.flag.isNotEmpty) flags.add(pay.flag);
+      final c = character;
+      if (c != null) {
+        final before = c.level;
+        c.gainXp(pay.xp);
+        growth?.levelsReached(before, c.level);
+      }
+      steps.add(_SimStep(
+        nodeId: 'quest:$id',
+        chapter: lastKnownChapter,
+        mood: null,
+        uiTheme: null,
+        description:
+            (french ? 'Quête rendue\u00a0: ' : 'Quest done: ') + pay.name,
+        choiceText: pay.turnIn.isEmpty
+            ? (french ? 'Rendre la quête' : 'Hand in')
+            : pay.turnIn,
+        goldMod: pay.gold,
+        alignmentMod: pay.alignment,
+      ));
+      settle();
+      if (pay.nextQuestId.isNotEmpty) {
+        log.accept(pay.nextQuestId,
+            step: atStep,
+            flags: flags,
+            gold: gold,
+            alignmentLabel: _alignmentLabelOf(alignment));
+      }
+    }
   }
 
   /// Plays out a fight against [enemyIds] (a pack when several) for the
@@ -500,6 +680,21 @@ _SimResult _simulate(
         casts[entry.key] = (casts[entry.key] ?? 0) + entry.value;
       }
       if (outcome.won) {
+        questLog?.recordKills(entries.map((e) => e.key));
+        // What the foes drop, by their loot tables' own odds: a quest's
+        // item (the sealed letter) or a material is picked up.
+        if (questLog != null) {
+          for (final entry in entries) {
+            for (final drop
+                in (entry.value['lootTable'] as List?) ?? const []) {
+              if (drop is! Map) continue;
+              final rate = (drop['dropRate'] as num?)?.toInt() ?? 0;
+              if (random.nextInt(100) < rate) {
+                questLog.inventory.add(drop['itemID'].toString());
+              }
+            }
+          }
+        }
         var xp = 0;
         for (final entry in entries) {
           xp += scaledReward(
@@ -801,14 +996,77 @@ _SimResult _simulate(
     final pool = available.isNotEmpty ? available : visible;
     final choice = pickChoice(pool);
 
+    // An ability check (v1.229) is rolled as the game rolls it: a d20 plus
+    // the character's score against the DC, a natural 20 passing and a
+    // natural 1 failing; a skill challenge takes rounds until enough pass or
+    // too many fail. A failed check with a scene of its own goes there,
+    // none of the choice's effects done.
+    var checkPassed = true;
+    if (character != null && choice.hasAbilityCheck) {
+      final bonus = character.abilityBonus(choice.checkAbility!);
+      final dc = choice.checkDC ?? 10;
+      bool roll() {
+        final d = random.nextInt(20) + 1;
+        return d == 20 || (d != 1 && d + bonus >= dc);
+      }
+
+      if (choice.hasSkillChallenge) {
+        var passes = 0, fails = 0;
+        while (passes < choice.challengeSuccessesNeeded! &&
+            fails < choice.challengeMaxFailures!) {
+          roll() ? passes++ : fails++;
+        }
+        checkPassed = passes >= choice.challengeSuccessesNeeded!;
+      } else {
+        checkPassed = roll();
+      }
+      // Exploring with alternating checks takes the side seen less often.
+      if (strategy == SimStrategy.explore &&
+          coverage != null &&
+          coverage.alternateChecks) {
+        final key = simChoiceKey(currentId, choice);
+        checkPassed = (coverage.taken['$key#pass'] ?? 0) <=
+            (coverage.taken['$key#fail'] ?? 0);
+        coverage.taken['$key#${checkPassed ? 'pass' : 'fail'}'] =
+            (coverage.taken['$key#${checkPassed ? 'pass' : 'fail'}'] ?? 0) + 1;
+      }
+      checksRolled++;
+      if (!checkPassed) checksFailed++;
+    }
+    final failTarget = choice.failNextId ?? '';
+    if (!checkPassed && failTarget.isNotEmpty) {
+      steps.add(_SimStep(
+        nodeId: currentId,
+        chapter: lastKnownChapter,
+        mood: node.mood,
+        uiTheme: node.uiTheme,
+        description: node.descriptionFor(french),
+        choiceText: choice.textFor(french),
+      ));
+      if (failTarget == 'EXIT' || failTarget == 'END') {
+        return finish(
+            endingText: choice.textFor(french), reachedStepCap: false);
+      }
+      currentId = failTarget;
+      visited.add(currentId);
+      continue;
+    }
+
     // A won fight pays out the enemy's goldReward just like a real playthrough
     // (see FightScreen._finishFight) — folded into this step's goldMod so the
     // chapter breakdown and CSV/JSON exports stay consistent with finalGold.
     // The signs take their share of it (a pact's curse some back).
-    final fightResult = fight(choice, lastKnownChapter ?? 1);
+    // A sneak that works leaves the fight behind.
+    final sneaked =
+        choice.hasAbilityCheck && checkPassed && choice.avoidFightOnSuccess;
+    final killsBefore =
+        questLog == null ? null : Map<String, int>.of(questLog.kills);
+    final fightResult = sneaked
+        ? fightEnemies(const [], lastKnownChapter ?? 1)
+        : fight(choice, lastKnownChapter ?? 1);
     final effectiveGoldMod = choice.goldMod +
-        fightResult.signs
-            .scaleGold(fightResult.perks.scaleGold(combatGoldReward(choice))) +
+        fightResult.signs.scaleGold(fightResult.perks
+            .scaleGold(sneaked ? 0 : combatGoldReward(choice))) +
         fightResult.stolen;
     if (fightResult.won == false && choice.hasLossBranch) {
       // Lost, and the story goes on: the defeat branch, with none of the
@@ -872,6 +1130,21 @@ _SimResult _simulate(
     if ((choice.unlockQuestId ?? '').isNotEmpty) {
       quests.add(choice.unlockQuestId!);
     }
+    // The player takes the work on offer if the character qualifies, and an
+    // item the scene puts in the pack goes in it.
+    if (questLog != null) {
+      if (choice.grantsItem) questLog.inventory.add(choice.grantItemId!);
+      for (final id in [choice.unlockQuestId, choice.questIDToProgress]) {
+        if (id != null && id.isNotEmpty) {
+          questLog.accept(id,
+              step: step,
+              flags: flags,
+              gold: gold,
+              alignmentLabel: _alignmentLabelOf(alignment),
+              killsBefore: killsBefore);
+        }
+      }
+    }
     // What waits on the road there (v1.197).
     if (!choice.isEnding) roadHazard(currentId, choice.nextId, step);
     if (choice.triggersCombat) combatCount++;
@@ -881,6 +1154,7 @@ _SimResult _simulate(
       expedition(choice.launchZoneId!, node, host: choice.hostFight);
     }
 
+    settleQuests(step);
     if (choice.isEnding) {
       return finish(endingText: choice.text, reachedStepCap: false);
     }
@@ -917,32 +1191,8 @@ _SimResult _simulate(
   Set<String> clashOff = const {},
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
-  final sim = _SimContext(
-    dice: table('dice'),
-    skills: table('skills'),
-    items: table('items'),
-    shops: table('shops'),
-    races: table('races'),
-    professions: table('professions'),
-    spells: parseSpells(table('spells')),
-    gameConfig: gameConfig,
-    itemSets: parseItemSets(table('item_sets')),
-    zones: table('zones'),
-    patrons: parsePatrons(table('factions')),
-    signs: parseSigns(table('signs')),
-    clans: ClanData.fromTables(
-      factions: table('factions'),
-      subclans: table('subclans'),
-      relations: table('relations'),
-      titles: table('titles'),
-    ),
-    skillTrees: table('skill_trees'),
-    progression: progression,
-    geography:
-        Geography.parse(geography: table('geography'), biomes: table('biomes')),
-    clash: clash,
-    clashOff: clashOff,
-  );
+  final sim = _simContextOf(tables, gameConfig,
+      progression: progression, clash: clash, clashOff: clashOff);
   final random = Random(seed);
   final tally = <String, ({int runs, int attempts, int won})>{};
   var signsTaken = 0;
@@ -972,6 +1222,181 @@ _SimResult _simulate(
     offersTaken: offersTaken,
     skillsLearned: skillsLearned,
   );
+}
+
+_SimContext _simContextOf(
+  Map<String, Map<String, dynamic>> tables,
+  Map<String, dynamic> gameConfig, {
+  SimProgression progression = SimProgression.offers,
+  bool clash = true,
+  Set<String> clashOff = const {},
+}) {
+  Map<String, dynamic> table(String name) => tables[name] ?? const {};
+  return _SimContext(
+    dice: table('dice'),
+    skills: table('skills'),
+    items: table('items'),
+    shops: table('shops'),
+    races: table('races'),
+    professions: table('professions'),
+    spells: parseSpells(table('spells')),
+    gameConfig: gameConfig,
+    itemSets: parseItemSets(table('item_sets')),
+    zones: table('zones'),
+    patrons: parsePatrons(table('factions')),
+    signs: parseSigns(table('signs')),
+    clans: ClanData.fromTables(
+      factions: table('factions'),
+      subclans: table('subclans'),
+      relations: table('relations'),
+      titles: table('titles'),
+    ),
+    skillTrees: table('skill_trees'),
+    progression: progression,
+    geography:
+        Geography.parse(geography: table('geography'), biomes: table('biomes')),
+    clash: clash,
+    clashOff: clashOff,
+    quests: table('quests'),
+    npcs: table('npcs'),
+  );
+}
+
+/// What one simulated playthrough came to (see [simulatePlaythroughs]).
+typedef SimRunSummary = ({
+  SimStrategy strategy,
+  String raceId,
+  String professionId,
+  int finalLevel,
+  int finalGold,
+  int finalAlignment,
+  String endedHow,
+  String ending,
+  int? furthestChapter,
+  int steps,
+  int uniqueNodes,
+  int fightsWon,
+  int fightsLost,
+  int combatEncounters,
+  int totalCasts,
+  int potionsUsed,
+  int shops,
+  int quests,
+  int flags,
+  int signs,
+  int offers,
+  int skillsLearned,
+  Map<String, ({int attempts, int won, int fights})> byChapter,
+  Map<String, int> enemiesFought,
+  Map<String, int> enemiesLost,
+  Set<String> visitedNodes,
+  List<String> choicesTaken,
+  Set<String> questIds,
+  Set<String> shopIds,
+  Set<String> flagIds,
+  int checksRolled,
+  int checksFailed,
+  List<SimQuestRecord> questRecords,
+  Map<String, List<String>> questsStuck,
+});
+
+/// Full playthroughs, one per entry of [plan] (a strategy and, optionally,
+/// the race and profession to play), each from the first scene with the
+/// real fight model, for the balance and consistency review: how far each
+/// run gets, what it earns and where its fights are lost.
+@visibleForTesting
+List<SimRunSummary> simulatePlaythroughs(
+  StoryData story, {
+  required Map<String, Map<String, dynamic>> tables,
+  required Map<String, dynamic> gameConfig,
+  required List<({SimStrategy strategy, String? raceId, String? professionId})>
+      plan,
+  required int seed,
+  int maxSteps = 1500,
+  SimCoverage? coverage,
+}) {
+  final sim = _simContextOf(tables, gameConfig);
+  final enemies = tables['enemies'] ?? const {};
+  final out = <SimRunSummary>[];
+  for (var i = 0; i < plan.length; i++) {
+    final random = Random(seed * 100003 + i);
+    final result = _simulate(story, random,
+        enemies: enemies,
+        strategy: plan[i].strategy,
+        maxSteps: maxSteps,
+        sim: sim,
+        forceRaceId: plan[i].raceId,
+        forceProfessionId: plan[i].professionId,
+        coverage: coverage);
+    final byChapter = <String, ({int attempts, int won, int fights})>{};
+    final fought = <String, int>{};
+    final lost = <String, int>{};
+    for (final step in result.steps) {
+      if (step.fightWon == null) continue;
+      final key = _chapterLabel(step.chapter);
+      final before = byChapter[key] ?? (attempts: 0, won: 0, fights: 0);
+      byChapter[key] = (
+        attempts: before.attempts + step.fightAttempts,
+        won: before.won + (step.fightWon == true ? 1 : 0),
+        fights: before.fights + 1,
+      );
+      final enemy = step.enemyId ?? '?';
+      fought[enemy] = (fought[enemy] ?? 0) + 1;
+      if (step.fightWon == false) lost[enemy] = (lost[enemy] ?? 0) + 1;
+    }
+    // A real ending is a choice that ends the story; the walk also stops on
+    // a scene with no way on and on a link to a scene that does not exist.
+    final last = result.steps.isEmpty ? null : result.steps.last;
+    final endedHow = result.reachedStepCap
+        ? 'step_cap'
+        : last == null
+            ? 'none'
+            : result.endingText.startsWith('Broken link')
+                ? 'broken_link'
+                : last.choiceText == null
+                    ? 'dead_end'
+                    : 'ending';
+    out.add((
+      strategy: plan[i].strategy,
+      raceId: result.raceId,
+      professionId: result.professionId,
+      finalLevel: result.finalLevel,
+      finalGold: result.finalGold,
+      finalAlignment: result.finalAlignment,
+      endedHow: endedHow,
+      ending: result.endingSummary,
+      furthestChapter: result.furthestChapter,
+      steps: result.steps.length,
+      uniqueNodes: result.uniqueNodesVisited,
+      fightsWon: result.fightsWon,
+      fightsLost: result.fightsLost,
+      combatEncounters: result.combatEncounters,
+      totalCasts: result.totalCasts,
+      potionsUsed: result.potionsUsed,
+      shops: result.shopsDiscovered.length,
+      quests: result.questsDiscovered.length,
+      flags: result.flags.length,
+      signs: result.signsTaken.length,
+      offers: result.offersTaken,
+      skillsLearned: result.skillsLearned,
+      byChapter: byChapter,
+      enemiesFought: fought,
+      enemiesLost: lost,
+      visitedNodes: {
+        for (final step in result.steps)
+          if (!step.nodeId.contains(':')) step.nodeId,
+      },
+      choicesTaken: result.choicesTaken,
+      questIds: result.questsDiscovered,
+      shopIds: result.shopsDiscovered,
+      flagIds: result.flags,
+      checksRolled: result.checksRolled,
+      checksFailed: result.checksFailed,
+      questRecords: result.questRecords,
+      questsStuck: result.questsStuck,
+    ));
+  }
+  return out;
 }
 
 /// Total casts per spell id across [results], most cast first.

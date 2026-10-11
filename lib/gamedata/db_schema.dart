@@ -686,6 +686,32 @@ final DbSchema skillsSchema = DbSchema(
       defaultValue: false,
     ),
     FieldSchema(
+      key: 'fusionOf',
+      label: 'Fusion Of (two skills known; offered by the clans behind them)',
+      type: FieldType.stringList,
+    ),
+    FieldSchema(
+      key: 'subclanId',
+      label:
+          'Sub-clan (offered once it is your friend, by its clan, in its voice)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'hiddenFlags',
+      label: 'Secret: story flags that reveal it (all held)',
+      type: FieldType.stringList,
+    ),
+    FieldSchema(
+      key: 'hiddenClan',
+      label: 'Secret: the clan that teaches it',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'ascendsSkillID',
+      label: 'Ascends Skill (the upgrade a clan offers at Friend standing)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
       key: 'inflictsStatus',
       label: 'Inflicts Status Effect (on hit)',
       type: FieldType.enumeration,

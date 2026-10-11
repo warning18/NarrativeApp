@@ -276,18 +276,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Read the scene in the Story tab',
     AppLanguage.fr: 'Lire la scène dans l’onglet Histoire',
   },
-  'journey_chapter_start': {
-    AppLanguage.en: 'Where the chapter began',
-    AppLanguage.fr: 'Là où le chapitre a commencé',
-  },
   'journey_continue': {AppLanguage.en: 'Continue', AppLanguage.fr: 'Continuer'},
   'journey_reading_exit': {
     AppLanguage.en: 'Back to the map',
     AppLanguage.fr: 'Revenir à la carte',
-  },
-  'journey_way_taken': {
-    AppLanguage.en: 'Way taken: {way}',
-    AppLanguage.fr: 'Chemin pris : {way}',
   },
   'journey_kind_ending': {AppLanguage.en: 'Ending', AppLanguage.fr: 'Fin'},
   'journey_kind_mainQuest': {
@@ -790,6 +782,20 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'fight_lab_add_enemy': {
     AppLanguage.en: 'Add an enemy (up to 3)',
     AppLanguage.fr: 'Ajouter un ennemi (3 max.)',
+  },
+  'fight_lab_companions': {
+    AppLanguage.en: 'Companions added to the fight',
+    AppLanguage.fr: 'Compagnons ajoutés au combat',
+  },
+  'fight_lab_add_companion': {
+    AppLanguage.en: 'Add a companion',
+    AppLanguage.fr: 'Ajouter un compagnon',
+  },
+  'fight_lab_companions_desc': {
+    AppLanguage.en:
+        'Any companion joins the party for the test, recruited or not, up to the most the camp can field (put back afterwards, unless "Keep what happens" is on and they were already recruited).',
+    AppLanguage.fr:
+        'Tout compagnon rejoint le groupe pour le test, recruté ou non, dans la limite de ce que le camp peut aligner (remis comme avant ensuite, sauf si «\u00a0Garder le résultat\u00a0» est activé et qu’il était déjà recruté).',
   },
   'fight_lab_search_enemy': {
     AppLanguage.en: 'Search by name or id',
@@ -5782,6 +5788,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Maximize Gold',
     AppLanguage.fr: "Maximiser l'or",
   },
+  'sim_strategy_explore': {
+    AppLanguage.en: 'Explore every branch',
+    AppLanguage.fr: 'Explorer toutes les branches',
+  },
+  'sim_strategy_completionist': {
+    AppLanguage.en: 'Thorough (every beat and quest)',
+    AppLanguage.fr: 'Minutieux (chaque scène et chaque quête)',
+  },
   'runs_label': {AppLanguage.en: 'Runs', AppLanguage.fr: 'Parties'},
   'clear_all_button': {
     AppLanguage.en: 'Clear All',
@@ -9932,12 +9946,25 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Hostile',
     AppLanguage.fr: 'Hostilité',
   },
+  'standing_tier_resented': {
+    AppLanguage.en: 'Resented',
+    AppLanguage.fr: 'Rancune',
+  },
+  'standing_tier_unfriendly': {
+    AppLanguage.en: 'Unfriendly',
+    AppLanguage.fr: 'Froideur',
+  },
   'standing_tier_wary': {AppLanguage.en: 'Wary', AppLanguage.fr: 'Méfiance'},
   'standing_tier_unknown': {
     AppLanguage.en: 'Unknown',
     AppLanguage.fr: 'Anonymat',
   },
   'standing_tier_known': {AppLanguage.en: 'Known', AppLanguage.fr: 'Estime'},
+  'standing_tier_friendly': {
+    AppLanguage.en: 'Friendly',
+    AppLanguage.fr: 'Cordialité',
+  },
+  'standing_tier_friend': {AppLanguage.en: 'Friend', AppLanguage.fr: 'Amitié'},
   'standing_tier_trusted': {
     AppLanguage.en: 'Trusted',
     AppLanguage.fr: 'Confiance',
@@ -10281,6 +10308,33 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'offer_gift_skill': {
     AppLanguage.en: 'Skill',
     AppLanguage.fr: 'Compétence',
+  },
+  'offer_gift_fusion': {
+    AppLanguage.en: 'Fusion',
+    AppLanguage.fr: 'Fusion',
+  },
+  'offer_gift_ascension': {
+    AppLanguage.en: 'Ascension',
+    AppLanguage.fr: 'Ascension',
+  },
+  'offer_gift_subclan': {
+    AppLanguage.en: 'Sub-clan',
+    AppLanguage.fr: 'Sous-clan',
+  },
+  'offer_gift_secret': {AppLanguage.en: 'Secret', AppLanguage.fr: 'Secret'},
+  'offer_secret_line': {
+    AppLanguage.en: 'Taught only to those who did what you did.',
+    AppLanguage.fr:
+        'Enseigné seulement à ceux qui ont fait ce que vous avez fait.',
+  },
+  'offer_fusion_line': {
+    AppLanguage.en: 'Two clans, one skill: {a} and {b}, offered with {clan}.',
+    AppLanguage.fr:
+        'Deux clans, une compétence\u00a0: {a} et {b}, proposée avec {clan}.',
+  },
+  'offer_ascension_line': {
+    AppLanguage.en: 'Raises {skill} to its ascended form.',
+    AppLanguage.fr: 'Élève {skill} à sa forme supérieure.',
   },
   'offer_gift_sign': {
     AppLanguage.en: 'Sign',
@@ -10767,6 +10821,30 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'host_fight_note': {
     AppLanguage.en: 'Your Host fights beside you.',
     AppLanguage.fr: 'Votre Ost combat à vos côtés.',
+  },
+  'clans_tab_affinity': {
+    AppLanguage.en: 'Affinities',
+    AppLanguage.fr: 'Affinités',
+  },
+  'clans_affinity_hint': {
+    AppLanguage.en:
+        'Which peoples and which classes each clan grows. A people’s cell is filled when the clan sponsors its heritage; a class’s cell counts the clan’s branches out of three. Read off factions.json (sponsors), so edit them there. Tap a cell for the branches.',
+    AppLanguage.fr:
+        'Quels peuples et quelles vocations chaque clan fait grandir. La case d’un peuple est pleine quand le clan parraine son héritage\u00a0; celle d’une vocation compte les branches du clan sur trois. Lu dans factions.json (parrainages), à modifier là. Touchez une case pour voir les branches.',
+  },
+  'clans_affinity_issues': {
+    AppLanguage.en: 'Inconsistencies',
+    AppLanguage.fr: 'Incohérences',
+  },
+  'clans_affinity_cards': {
+    AppLanguage.en: 'Fusions and ascensions',
+    AppLanguage.fr: 'Fusions et ascensions',
+  },
+  'clans_affinity_cards_hint': {
+    AppLanguage.en:
+        'A fusion needs both parent skills and Trusted standing with both clans; either clan offers it, and taking it raises both. An ascension raises a skill you know and needs Friend standing with its clan. A sub-clan skill comes in the sub-clan’s voice once it is your friend; a secret is taught by its clan to those who did the deed.',
+    AppLanguage.fr:
+        'Une fusion demande les deux compétences d’origine et le palier « Confiance » auprès des deux clans\u00a0; l’un ou l’autre la propose, et la prendre élève les deux. Une ascension élève une compétence que vous connaissez et demande le palier « Amitié » auprès de son clan. Une compétence de sous-clan arrive avec la voix du sous-clan une fois qu’il est votre ami ; un secret est enseigné par son clan à ceux qui ont accompli l’acte.',
   },
   'clans_tab_throne': {AppLanguage.en: 'Throne', AppLanguage.fr: 'Trône'},
   'throne_edit_hint': {

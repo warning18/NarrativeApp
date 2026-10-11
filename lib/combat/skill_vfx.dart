@@ -276,6 +276,28 @@ VfxStyle fallbackStyleFor({
   }
 }
 
+/// The extra particles a clan card plays over its own effect (v1.235): two
+/// colors circling and merging for a fusion, a rising pillar and chevrons
+/// for an ascension, a clan sigil with orbiting motes for a sub-clan's
+/// skill, drifting rune fragments and a violet veil for a secret. They ride
+/// on the skill's own style, so a heal still plays on a friend and a blow on
+/// a foe.
+enum VfxAccent { none, fusion, ascension, subclan, secret }
+
+/// The accent of a skills.json record, read off what makes it a clan card.
+VfxAccent vfxAccentOf(Map<String, dynamic>? skill) {
+  if (skill == null) return VfxAccent.none;
+  if (skill['fusionOf'] is List) return VfxAccent.fusion;
+  if ((skill['ascendsSkillID']?.toString() ?? '').isNotEmpty) {
+    return VfxAccent.ascension;
+  }
+  if ((skill['subclanId']?.toString() ?? '').isNotEmpty) {
+    return VfxAccent.subclan;
+  }
+  if (skill['hiddenFlags'] is List) return VfxAccent.secret;
+  return VfxAccent.none;
+}
+
 /// The style of a skills.json record: its `vfx`, else its fallback.
 VfxStyle styleForSkill(Map<String, dynamic>? skill) {
   if (skill == null) return VfxStyle.slash;

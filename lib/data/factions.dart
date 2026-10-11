@@ -42,7 +42,23 @@ typedef FactionKind = PatronKind;
 
 /// Where the character stands with a faction, from worst to best (see
 /// [standingTierFor]). The order matters: compare with [isAtLeast].
-enum StandingTier { hunted, hostile, wary, unknown, known, trusted, sworn }
+///
+/// Eleven steps (v1.233): five up from Unknown (Known, Friendly, Friend,
+/// Trusted, Sworn) and, as their bad equivalents, five down (Wary,
+/// Unfriendly, Resented, Hostile, Hunted).
+enum StandingTier {
+  hunted,
+  hostile,
+  resented,
+  unfriendly,
+  wary,
+  unknown,
+  known,
+  friendly,
+  friend,
+  trusted,
+  sworn,
+}
 
 extension StandingTierOrder on StandingTier {
   /// Whether this tier is [other] or better.
@@ -75,12 +91,20 @@ const Map<StandingTier, StandingTierInfo> standingTiers = {
       min: -100, max: -61, priceFactor: null, color: 0xFF8A1A1A),
   StandingTier.hostile: StandingTierInfo(
       min: -60, max: -26, priceFactor: 1.40, color: 0xFFD9544D),
+  StandingTier.resented: StandingTierInfo(
+      min: -25, max: -19, priceFactor: 1.30, color: 0xFFDB5F44),
+  StandingTier.unfriendly: StandingTierInfo(
+      min: -18, max: -12, priceFactor: 1.22, color: 0xFFDC6A3C),
   StandingTier.wary:
-      StandingTierInfo(min: -25, max: -6, priceFactor: 1.15, color: 0xFFE0762B),
+      StandingTierInfo(min: -11, max: -6, priceFactor: 1.15, color: 0xFFE0762B),
   StandingTier.unknown:
       StandingTierInfo(min: -5, max: 5, priceFactor: 1.0, color: 0xFFA8A194),
   StandingTier.known:
-      StandingTierInfo(min: 6, max: 25, priceFactor: 0.95, color: 0xFF4FB0B0),
+      StandingTierInfo(min: 6, max: 11, priceFactor: 0.95, color: 0xFF4FB0B0),
+  StandingTier.friendly:
+      StandingTierInfo(min: 12, max: 18, priceFactor: 0.92, color: 0xFF5FB7A0),
+  StandingTier.friend:
+      StandingTierInfo(min: 19, max: 25, priceFactor: 0.89, color: 0xFF6BB985),
   StandingTier.trusted:
       StandingTierInfo(min: 26, max: 60, priceFactor: 0.85, color: 0xFF7DBE6A),
   StandingTier.sworn:

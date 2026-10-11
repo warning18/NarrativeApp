@@ -100,6 +100,7 @@ extension _FightEffects on _FightScreenState {
           text: '-$dealt',
           textKind: result.isCritical ? VfxTextKind.crit : VfxTextKind.damage,
           power: power,
+          accent: vfxAccentOf(skill),
         );
         if (result.isCritical) {
           _vfx.play(
@@ -142,6 +143,7 @@ extension _FightEffects on _FightScreenState {
         text: '+$healing',
         textKind: VfxTextKind.heal,
         power: powerFor(healing, actor.maxHealth),
+        accent: vfxAccentOf(skill),
       );
     }
     if (block > 0) {

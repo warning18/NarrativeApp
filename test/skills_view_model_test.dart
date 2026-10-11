@@ -65,7 +65,7 @@ void main() {
       // heritage the Dominion's.
       expect(model['power_strike']!.sponsors, ['dominion']);
       expect(model['rallying_shout']!.sponsors, ['vigil']);
-      expect(model['human_diplomacy']!.sponsors, ['dominion']);
+      expect(model['human_diplomacy']!.sponsors, ['dominion', 'penitents']);
       expect(model.readyCount, 0);
     });
 

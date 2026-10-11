@@ -8,6 +8,213 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.239.0+275]
+
+Titles for the new standing steps, dedicated art for the forty clan cards,
+and particles for them in a fight.
+
+### Added
+- **24 titles**, English and French: for each of the six clans, a good title
+  at Friendly and at Friend and a bad one at Unfriendly and at Resented. They
+  use the new source `while:<tier>`: **held only while the standing lasts**,
+  good or bad. A good title is lost when standing falls below its step; a
+  bad one is worn automatically (like "the Marked") and lost when standing
+  recovers. The older tier titles (Known, Trusted, Sworn) are still kept once
+  earned.
+
+  | Clan | Friendly | Friend | Unfriendly | Resented |
+  |---|---|---|---|---|
+  | Dominion | Lamp-Lit | Stamped and Sealed | Marked Absent | Struck from the Roll |
+  | Vigil | Watch-Friend | Keeps a Candle | Cold Shoulder | Left in the Dark |
+  | Compact | Asked In | Seat at the Anvil | Short Measure | Barred from the Row |
+  | Mire | Reed-Friend | Fed at the Fire | Wrong Foot | Led Astray |
+  | Crows | Good for a Loan | Name in the Ledger | Overdue | Collected Upon |
+  | Penitents | Shared Road | Ash on the Brow | Unforgiven | Anathema |
+
+  Each carries one or two small effects in its clan's theme (a good one a
+  buff, a bad one a penalty of the same size).
+- **Dedicated icons for the 40 clan-card skills** (10 fusions, 10 ascensions,
+  10 sub-clan skills, 10 secrets): a frame per kind (twin gems, a gem with a
+  rising crest, a shield, a dark rune plate) in the skill's element colors,
+  with a glyph for what it does. They are generated pixel art
+  (`tools/gen_skill_card_icons.py`); replace any PNG in `assets/icons/skills/`
+  with hand-drawn art and nothing else needs to change.
+- **Clan-card particles in fights** (`VfxAccent`): over the skill's own
+  effect, a fusion plays two colors circling and flaring as one, an ascension
+  a rising pillar with climbing chevrons, a sub-clan's skill a sigil of two
+  rings with orbiting motes, a secret a violet veil with drifting rune
+  fragments. They ride on the skill's style, so a heal still plays on a
+  friend and a strike on a foe. The accent is read off the skill (nothing
+  new to author), and shows in the effects gallery too.
+
+### Fixed
+- Review of the whole branch: a clan Unfriendly or Resented (the new steps
+  between Wary and Hostile) was shut out as a suitor and from the Host, as the
+  old "at least Wary" test now stopped higher; both now stop at Hostile as
+  documented. A fusion is found when a clan stands behind both parents. The
+  simulator's sneak skips a fight only when the choice has an ability check
+  that succeeds, as the game does. The ascension label in the data editor says
+  Friend. The offer draw works out each clan's cards once. The unused Journey
+  "past scenes" helper is gone, and the Intrigues section header is back above
+  its tab.
+
+## [1.238.0+274]
+
+Twenty more skills: ten that belong to sub-clans and ten secrets.
+
+### Added
+- **Sub-clan skills** (`subclanId`). Once a sub-clan is your friend (taking a
+  gift it voiced makes it one), its clan can put its skill on the table, in
+  its voice, from Known standing. Rare, one class each:
+
+  | Class | Skills (sub-clan) |
+  |---|---|
+  | Warrior | Quarry Break (Quarrymen), Last Watch Stand (Last Watch) |
+  | Mage | Emberwife Coal (Emberwives), Whispered Ledger (Whisper Ledger) |
+  | Rogue | Tar Snare (Tar-Hands), Heron Step (Heron’s Wake) |
+  | Cleric | Candle Vigil (Candlebearers), Scorched Hymn (Scorched Choir) |
+  | Ranger | Moss Dirge (Moss Choir), Wayside Ward (Road Exorcists) |
+- **Secrets** (`hiddenFlags`, `hiddenClan`). Listed nowhere, with no sponsor
+  shown, until the story flags are held: then the named clan teaches them
+  (from Known standing), the card tagged "Secret". Epic, one class each:
+
+  | Class | Secret (flag, clan) |
+  |---|---|
+  | Warrior | Matriarch Reckoning (matriarch_slain, Vigil), Gate Oath (siege_gate_held, Compact) |
+  | Mage | Tear Sight (tear_touched, Crows), Ash Ledger (ashen_ledger_decoded, Crows) |
+  | Rogue | Marked Deck (sable_marker_won, Crows), Borrowed Face (lysa_mask_kept, Penitents) |
+  | Cleric | Absolved Penance (maren_absolved, Penitents), Kept Lantern (lantern_kept, Dominion) |
+  | Ranger | Followed Trail (tracks_followed, Mire), Horn Call (oni_horns_returned, Vigil) |
+
+  Every flag is one the story really sets (a test checks it).
+- All twenty have English and French text, an effect and an icon (the base
+  skill’s for now). The Edit Mode Affinities tab lists all forty clan cards
+  (fusions, ascensions, sub-clan skills, secrets) with their clans. Companions
+  never learn them with points. In 300 simulated runs, skills learned per run
+  go from 9.6 to 10.4, level and win rate unchanged.
+
+## [1.237.0+273]
+
+Standing with a clan now has eleven steps, and fusions ask for more.
+
+### Changed
+- **Standing ladder.** Five steps up from Unknown and, as their bad
+  equivalents, five down:
+
+  | Up | Standing | Price | Down | Standing | Price |
+  |---|---|---|---|---|---|
+  | Known | 6 to 11 | −5% | Wary | −6 to −11 | +15% |
+  | Friendly | 12 to 18 | −8% | Unfriendly | −12 to −18 | +22% |
+  | Friend | 19 to 25 | −11% | Resented | −19 to −25 | +30% |
+  | Trusted | 26 to 60 | −15% | Hostile | −26 to −60 | +40% |
+  | Sworn | 61 to 100 | −25% | Hunted | −61 to −100 | no trade |
+
+  Unknown stays −5 to 5. The ends of the ladder keep their old ranges
+  (Trusted from 26, Sworn from 61, Hostile from −26, Hunted from −61); the
+  two new steps on each side split what Known and Wary used to cover. French:
+  Estime, Cordialité, Amitié, Confiance, Serment; Méfiance, Froideur, Rancune,
+  Hostilité, Traque. Shopkeepers use their Wary line for the three lower
+  steps above Hostile too.
+- **Fusions need Trusted with both clans** (was Known). **Ascensions need
+  Friend with their clan** (was Trusted), one step easier since only one clan
+  is asked. In 300 simulated runs, skills learned per run: 9.6 (9.9 before),
+  level 11.1, win rate 40%.
+- The Edit Mode Affinities tab and the offer texts name the new steps.
+- Tier titles stay at Known, Trusted and Sworn; the new steps have none yet.
+
+## [1.236.0+272]
+
+Each clan now has a home among the peoples and the classes, and two clans
+together, or one at Trusted, can put a stronger skill on the table.
+
+### Added
+- **Favorability matrix** in Edit Mode (Clans & Politics, new "Affinities"
+  tab): a row per clan, a column per people and per class. A people's cell is
+  filled when the clan sponsors its heritage; a class's cell counts the
+  clan's branches out of three; tap a cell for the branches. It is read off
+  `factions.json` (`sponsors`), so that file stays the one source, and it
+  lists any inconsistency (a clan with no people or no class, a people with
+  fewer than two clans, a class with fewer than three).
+- **Fusions** (`fusionOf`: two skills): with both parent skills known and
+  Known standing with *both* clans, either clan puts the fusion on the table
+  and the card shows both. Taking it raises the lead clan by 6 and the other
+  by 3.
+- **Ascensions** (`ascendsSkillID`): with the skill it raises known and
+  Trusted standing with the clan behind that skill, the clan offers its
+  stronger form. The base skill is kept.
+- **20 new skills**, in English and French, with their effect and icon (the
+  base skill's icon for now): ten fusions (two per class) and ten
+  ascensions (two per class).
+
+  | Class | Fusion (clans) | Ascension (clan) |
+  |---|---|---|
+  | Warrior | Bastion Charge (Compact × Dominion), Writ Banner (Vigil × Dominion) | Unbroken Stance (Compact), Reaping Whirl (Dominion) |
+  | Mage | Scalding Tempest (Dominion × Crows), Ember Aegis (Dominion × Penitents) | Pyre Heart (Dominion), Mending Tide (Penitents) |
+  | Rogue | Viper Kiss (Crows × Mire), Borrowed Time (Crows × Penitents) | Deadeye Thrust (Crows), Second Skin (Penitents) |
+  | Cleric | Sentinel Verdict (Dominion × Vigil), Absolution (Dominion × Penitents) | Hallowed Sanctuary (Penitents), Unyielding Vigil (Vigil) |
+  | Ranger | Snared Shot (Crows × Compact), Pack Ambush (Mire × Compact) | Deadeye Volley (Crows), Call of the Wilds (Mire) |
+
+### Changed
+- **Peoples and clans:** human → Dominion and Penitents; elf → Mire and
+  Penitents; dwarf → Compact and Dominion; orc → Vigil and Mire; voidkin →
+  Vigil and Crows. Every clan now favors a people, and every people has a
+  second patron.
+- **The home seat** reaches one tier deeper than standing allows (the fourth
+  skill of a branch still waits for Sworn), and a clan whose branches are
+  grown but that has a fusion or an ascension left still takes the seat, so a
+  finished tree keeps growing.
+- A companion never learns a fusion or an ascension with points: only the
+  clans offer them.
+- In 300 simulated runs (same seed), skills learned per run go from 7.0 to
+  9.9, with level (10.9) and win rate (39%) unchanged. The simulator takes the
+  rarest gift, which favors these epic cards, so this is the upper end.
+
+## [1.235.0+271]
+
+### Changed
+- **Every offer now has a home seat.** One of the three suitors is a clan that sponsors a branch of your own tree (your class's branches or your people's heritage) and brings a skill from it, so your tree keeps growing instead of depending on the draw. The clan of your own people is three times likelier while your heritage branch still has a skill to give; once it is done, your class's clans take over. A quest's or an intrigue's clan fills the seat itself when it sponsors your tree; the Choir at a chapter's end and the Wayfarer keep their places, so an offer may then show four cards. A clan you are Hostile with, or whose next skill is deeper than your standing allows, is no home; with a fully grown tree there is no home seat.
+- In 300 simulated runs (same seed), skills learned per run go from 3.4 to 7.0 (mage 2.9 to 5.7, ranger 4.2 to 8.3), signs from 15.0 to 12.6, with level and win rate unchanged (10.9, 39%).
+
+## [1.234.0+270]
+
+### Added
+- The simulator plays quests the way the game does. A scene that offers or starts a quest is accepted when the character qualifies (alignment, flags, gold); Kill objectives count the fights won since it was taken, Flag objectives the story flags, Fetch objectives what the story hands over and what beaten foes drop (by their loot tables' own odds), Talk objectives once the person's chapter is reached. A finished quest is handed in at once for its gold, XP (which levels the character), item, alignment and follow-up, and a quest with turn-in choices takes the one the player leans to. New goal "Do every quest" (`completionist`) takes every way on of a scene it has not taken yet, work on offer first. See `docs/simulation/report-quests.md`.
+- `test/sim_quests_test.dart` covers the quest log (alignment gate, bounty baselines, a quest offered by a fight, pay and chaining, turn-in bias, what a quest waits on).
+
+## [1.233.0+269]
+
+### Added
+- The simulator can explore: the new goal "Explore every branch" takes, at every scene, the way on taken least so far over a whole batch of runs, so batch after batch covers more of the story. `simulatePlaythroughs` takes a shared `SimCoverage`; `test/sim_coverage_test.dart` pins that exploring covers more scenes and ways on than random runs, with every run ending in a real ending. `docs/simulation/report-branches.md` and `runs-explore-100.csv` hold the result of 300 runs: 363 of 385 scenes (94%) reached, the 22 that no run reached with what blocks each, and the one quest nothing offers.
+
+### Changed
+- The simulator rolls ability checks as the game does (a d20 plus the character's score against the DC, a natural 20 passing and a natural 1 failing, a skill challenge taking rounds), takes the failure scene when a check fails, and lets a sneak that works skip its fight. Before, no run ever took a failure branch, so 70 scenes (18% of the story) were never played. The simulated character's win rate in fights falls from 34% to 31% of attempts.
+
+## [1.232.0+268]
+
+### Added
+- The Edit Mode fight lab can add a companion to a test fight. Under the party switch, "Add a companion" lists all eight companions with their race and profession; any of them, recruited by the story or not, joins the party for the test with the skills of their signature die, and a chip takes them off again. They are put back afterwards like the rest of the test: a companion the story never recruited is gone again even with "Keep what happens" on; one the story had recruited keeps what the fight did to them.
+- Full simulated playthroughs for the balance review: `simulatePlaythroughs` runs the in-app simulator's walk and fight model headless for any list of goals, professions and races, and `test/sim_playthroughs_test.dart` pins that every goal and profession reaches a real ending through chapter 8. `docs/simulation/` holds the report and the per-run table of 100 runs.
+
+### Changed
+- The Journey's read-through prediction follows the real one: the flags each passed scene sets count for the next scene's ways, a way out of a building by a door walks the party out even from that door, and the scenes a way reads through are worked out once per build instead of for every use.
+- The fight lab keeps the companions added to a test within the most the camp can field (the base party and every house's bonus), picks first.
+
+## [1.231.0+267]
+
+### Changed
+- The Journey walks the party only where the story does. A way that keeps the party where it stands (working the table it is at, a roll, a stall, a scuffle in the square) leaves it on its mark: no walk, no road drawn to it. A way that carries it somewhere still walks it there: across a bridge or a street to another district or building, through a door or to a spot of the room, out along the road to another place.
+- The map is closer. The city's plan no longer fits whole in the view: it keeps the party and the places its ways lead to (with some margin, never less than half of the plan), so a scene whose ways all lie close shows just that corner of the city. A scene whose ways cross the city still shows all of it. The camera's zoom on a walking party is 1.5 (was 1.6) on top of that.
+- The party's mark never jumps. The plain scenes the story reads straight through on the way (see Fewer presses of Continue) are passed on the road, so the map now places and walks each way to the scene the story really lands on, not to the first scene it leads to: the district or building, the spot of the room and the glimpse of what comes next all follow where the party will stand after the read-through. Edit Mode, which stops at every scene, keeps the first one.
+- The road already taken (the chapter's earlier scenes below the party, with the way taken out of each) is gone from the Journey. The Map tab keeps showing it.
+
+## [1.230.0+266]
+
+### Fixed
+- Side quest rewards now follow one scale. A turn-in choice pays instead of the quest's base gold, not on top of it, so the clan quests of Chapters 3 to 6 paid far less than the fights of their chapter: the Chapter 5 candle count and hearth-stone paid at most 60 and 70 gold, the Chapter 6 salvage 90, against 80 to 150 for the kill quests beside them, while their XP ran well above (150 to 180 against 110 to 200). Gold and XP now follow the difficulty (about 12 gold and 17 XP per point) and a choice pays about 0.3, 0.8 or 1.5 times the base:
+  - Glass from the Terraces 50 gold and 70 XP (was 45 and 90); Bark Tithe 75 and 105 (was 50 and 120); Candle Count and Hearth-Stone 90 and 130 (was 55 and 150); Salvage Rights 140 and 185 (was 60 and 180). The Reckoning Wall's sale to the Inquisition pays 100, not 150.
+  - Difficulty ratings follow the pay: Vess 2 (was 4), Bark Tithe 6, Candle Count and Hearth-Stone 7, Salvage Rights 11.
+- Only the Chapter 2 harbor chain paid in gear. The four hardest side quests now do: Ossuary Bounty (Bone-Laced Boots), Penitent's Confession (Frostward Cloak), Faces of the Fallen (Tearwalker Boots) and Salvage Rights (Voidsteel Greaves).
+
 ## [1.229.0+265]
 
 ### Added

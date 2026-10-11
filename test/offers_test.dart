@@ -79,6 +79,20 @@ final ClanData _data = ClanData.fromTables(
         {'kind': 'armor', 'value': 1},
       ],
     },
+    'red_friend': {
+      'name': 'Red Friend Indeed',
+      'faction': 'red',
+      'source': 'while:friend',
+    },
+    'red_cold': {
+      'name': 'Cold Shoulder',
+      'faction': 'red',
+      'source': 'while:unfriendly',
+      'negative': true,
+      'effects': [
+        {'kind': 'goldPercent', 'value': -4},
+      ],
+    },
     'marked': {
       'name': 'Marked',
       'faction': 'red',
@@ -192,6 +206,17 @@ void main() {
       }
     });
 
+    test('a clan Unfriendly or Resented still comes; a Hostile one does not',
+        () {
+      for (final value in [-8, -15, -22]) {
+        expect(eligibleSuitors(_ctx(politics: _at({'red': value}))),
+            contains('red'),
+            reason: '$value');
+      }
+      expect(eligibleSuitors(_ctx(politics: _at({'red': -30}))),
+          isNot(contains('red')));
+    });
+
     test('a Hostile clan never comes; a tribe only once found', () {
       final random = Random(2);
       final seen = <String>{};
@@ -283,6 +308,61 @@ void main() {
         final offer = drawOffer(chapter, _ctx(alignment: 12), random)!;
         expect(offer.suitorOf('choir'), isNotNull);
         expect(offer.suitorOf('pit'), isNull);
+      }
+    });
+  });
+
+  group('the home seat', () {
+    test('every offer carries a skill from the character\'s own tree', () {
+      final random = Random(21);
+      for (var i = 0; i < 300; i++) {
+        final offer = drawOffer(_level, _ctx(), random)!;
+        expect(offer.suitors, hasLength(lessThanOrEqualTo(4)));
+        expect(
+            offer.suitors.any(
+                (s) => s.gift.kind == GiftKind.skill && s.factionId == 'red'),
+            isTrue,
+            reason: 'a warrior human: red sponsors both of their branches');
+      }
+    });
+
+    test('the clan of their people is likelier while the heritage lasts', () {
+      // A human mage: red sponsors the human heritage, blue the mage branch.
+      final weights = homeClansFor(_ctx(profession: 'mage'));
+      expect(weights, {'red': homeHeritageWeight, 'blue': 1.0});
+      // Heritage learned: only the class's clan is left.
+      final done =
+          homeClansFor(_ctx(profession: 'mage', known: {'h1', 'h2', 'h3'}));
+      expect(done, {'blue': 1.0});
+      final random = Random(22);
+      var red = 0;
+      var blue = 0;
+      for (var i = 0; i < 600; i++) {
+        final seat = drawHomeSuitor(_ctx(profession: 'mage'), random)!;
+        expect(seat.gift.kind, GiftKind.skill);
+        seat.factionId == 'red' ? red++ : blue++;
+      }
+      expect(red / blue, inInclusiveRange(2.2, 4.0));
+    });
+
+    test('a Hostile clan is no home; a grown tree leaves no home seat', () {
+      expect(homeClansFor(_ctx(politics: _at({'red': -50}))), isEmpty);
+      final grown = _ctx(
+          known: {'s1', 's2', 's3', 's4', 'h1', 'h2', 'h3'},
+          politics: _at({'red': 100}));
+      expect(homeClansFor(grown), isEmpty);
+      expect(drawHomeSuitor(grown, Random(23)), isNull);
+      expect(drawOffer(_level, grown, Random(23)), isNotNull);
+    });
+
+    test('a quest\'s clan that sponsors their tree fills the seat itself', () {
+      const quest = OfferTicket(
+          source: OfferSource.quest, detail: 'q1', factionId: 'red');
+      final random = Random(24);
+      for (var i = 0; i < 100; i++) {
+        final offer = drawOffer(quest, _ctx(), random)!;
+        expect(offer.suitors.where((s) => s.factionId == 'red'), hasLength(1));
+        expect(offer.suitors.length, lessThanOrEqualTo(4));
       }
     });
   });
@@ -479,6 +559,37 @@ void main() {
       titles = titlesEarned(titles.held, politics, _data);
       expect(titles.held, ['red_known']);
       expect(titles.lost, ['marked']);
+    });
+
+    test('a while-title is held only while the standing lasts, good or bad',
+        () {
+      var politics = _at({'red': 22});
+      var titles = titlesEarned(const [], politics, _data);
+      expect(titles.held, ['red_known', 'red_friend']);
+      // Falls to Known: the Friend title is lost, the tier title kept.
+      politics =
+          setStandingValue(politics, 'red', 8, 'edit', data: _data).state;
+      titles = titlesEarned(titles.held, politics, _data);
+      expect(titles.held, ['red_known']);
+      expect(titles.lost, ['red_friend']);
+      // Friend again: it returns.
+      politics =
+          setStandingValue(politics, 'red', 20, 'edit', data: _data).state;
+      titles = titlesEarned(titles.held, politics, _data);
+      expect(titles.held, ['red_known', 'red_friend']);
+      // Down to Unfriendly: the bad title comes (and the good ones go on
+      // being earned and kept only by the tier rule).
+      politics =
+          setStandingValue(politics, 'red', -14, 'edit', data: _data).state;
+      titles = titlesEarned(titles.held, politics, _data);
+      expect(titles.held, ['red_known', 'red_cold']);
+      expect(titles.lost, ['red_friend']);
+      // Recovered to Unknown: lost again.
+      politics =
+          setStandingValue(politics, 'red', 0, 'edit', data: _data).state;
+      titles = titlesEarned(titles.held, politics, _data);
+      expect(titles.held, ['red_known']);
+      expect(titles.lost, ['red_cold']);
     });
 
     test('the worn title and every bad one count, and the boon while sworn',

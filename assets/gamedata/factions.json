@@ -42,7 +42,8 @@
       "heritage_human",
       "warrior_vanguard",
       "cleric_judgment",
-      "mage_evocation"
+      "mage_evocation",
+      "heritage_dwarf"
     ],
     "objects": [
       {
@@ -334,7 +335,8 @@
     "sponsors": [
       "heritage_elf",
       "rogue_venom",
-      "ranger_wilds"
+      "ranger_wilds",
+      "heritage_orc"
     ],
     "objects": [
       {
@@ -435,7 +437,8 @@
     "sponsors": [
       "rogue_shadow",
       "mage_tempest",
-      "ranger_marksman"
+      "ranger_marksman",
+      "heritage_voidkin"
     ],
     "objects": [
       {
@@ -536,7 +539,9 @@
     "sponsors": [
       "cleric_devotion",
       "rogue_trickster",
-      "mage_aegis"
+      "mage_aegis",
+      "heritage_human",
+      "heritage_elf"
     ],
     "objects": [
       {

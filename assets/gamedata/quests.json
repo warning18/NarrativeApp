@@ -952,7 +952,7 @@
     "questName": "Vess in the Dark",
     "chapter": 1,
     "category": "Side",
-    "difficulty": "4",
+    "difficulty": "2",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
@@ -1096,7 +1096,7 @@
       {
         "choiceText": "Copy the list for the camp's records",
         "choiceText_fr": "Recopier la liste pour les archives du camp",
-        "rewardGold": 80,
+        "rewardGold": 75,
         "alignmentChange": 5,
         "flag": "reckoning_list_copied",
         "resultText": "The list goes into your pack, name by name. Someone should carry it.",
@@ -1108,7 +1108,7 @@
       {
         "choiceText": "Sell the list to the Inquisition's clerks",
         "choiceText_fr": "Vendre la liste aux greffiers de l’Inquisition",
-        "rewardGold": 150,
+        "rewardGold": 100,
         "alignmentChange": -10,
         "flag": "reckoning_list_sold",
         "resultText": "The clerk pays without reading it. That was always the point.",
@@ -1280,7 +1280,7 @@
     ],
     "rewardGold": 90,
     "rewardXP": 120,
-    "rewardItemID": "",
+    "rewardItemID": "boots_bone_laced",
     "alignmentChange": 0,
     "nextQuestID": "",
     "npcDialogueText": "\"They come up with the water and they go down with it, and in between they eat whatever the Court left behind.\" The sapper counts two coins onto the ledge. \"Two ghouls, two of these. I'm not made of coin, and neither are they.\"",
@@ -1389,7 +1389,7 @@
     ],
     "rewardGold": 120,
     "rewardXP": 160,
-    "rewardItemID": "",
+    "rewardItemID": "cloak_frostward",
     "alignmentChange": 5,
     "nextQuestID": "",
     "npcDialogueText": "\"I burned the Ashen Quarter on an order I never read. If you carry the list of the taken, then you carry my name too — and I would rather answer for it to you than to what waits at the tear.\" The penitent sets his blade between you, hilt first.",
@@ -1533,7 +1533,7 @@
     ],
     "rewardGold": 150,
     "rewardXP": 200,
-    "rewardItemID": "",
+    "rewardItemID": "boots_tearwalker",
     "alignmentChange": 0,
     "nextQuestID": "",
     "npcDialogueText": "They walk the Hollow Shore wearing faces you put down on a bridge, in a locked chamber, on the docks. None of them are glad to see you. All of them remember how it ended.",
@@ -1810,8 +1810,8 @@
         "targetNPCName_fr": "Imeh"
       }
     ],
-    "rewardGold": 45,
-    "rewardXP": 90,
+    "rewardGold": 50,
+    "rewardXP": 70,
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
@@ -1839,7 +1839,7 @@
       {
         "choiceText": "Stand with Imeh at the fire",
         "choiceText_fr": "Tenir avec Imeh devant le feu",
-        "rewardGold": 25,
+        "rewardGold": 45,
         "alignmentChange": 0,
         "flag": "glass_defended",
         "resultText": "The Choir looks at you, then at the glass that did not break, and takes its fire elsewhere.",
@@ -1872,7 +1872,7 @@
       {
         "choiceText": "Carry the glass to the camp",
         "choiceText_fr": "Porter le verre jusqu’au camp",
-        "rewardGold": 10,
+        "rewardGold": 25,
         "alignmentChange": 0,
         "flag": "glass_carried",
         "resultText": "A hundred pieces in straw, a day across the flats; the camp has light it did not have.",
@@ -1890,7 +1890,7 @@
     "questName": "The Bark Tithe",
     "chapter": 4,
     "category": "Side",
-    "difficulty": "4",
+    "difficulty": "6",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
@@ -1906,8 +1906,8 @@
         "targetNPCName_fr": "Brannoc Reedtithe"
       }
     ],
-    "rewardGold": 50,
-    "rewardXP": 120,
+    "rewardGold": 75,
+    "rewardXP": 105,
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
@@ -1935,7 +1935,7 @@
       {
         "choiceText": "Return the bark to Brannoc",
         "choiceText_fr": "Rendre l’écorce à Brannoc",
-        "rewardGold": 10,
+        "rewardGold": 30,
         "alignmentChange": 0,
         "flag": "bark_returned",
         "resultText": "He doses the lowest ledge first. By morning two of them are sitting up.",
@@ -1953,7 +1953,7 @@
       {
         "choiceText": "Sell the bark back to the Keyholders",
         "choiceText_fr": "Revendre l’écorce aux Porte-Clés",
-        "rewardGold": 80,
+        "rewardGold": 110,
         "alignmentChange": -5,
         "flag": "bark_sold",
         "resultText": "The Keyholders pay in good coin and ask no questions. Brannoc asks one, and you do not answer it.",
@@ -1968,7 +1968,7 @@
       {
         "choiceText": "Keep half for the camp infirmary",
         "choiceText_fr": "Garder la moitié pour l’infirmerie du camp",
-        "rewardGold": 20,
+        "rewardGold": 55,
         "alignmentChange": 0,
         "flag": "bark_kept",
         "resultText": "Brannoc weighs his half by hand and says it is fair. His hands say something else.",
@@ -1987,7 +1987,7 @@
     "questName": "The Candle Count",
     "chapter": 5,
     "category": "Side",
-    "difficulty": "5",
+    "difficulty": "7",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
@@ -2003,8 +2003,8 @@
         "targetNPCName_fr": "Orsabet Vell"
       }
     ],
-    "rewardGold": 55,
-    "rewardXP": 150,
+    "rewardGold": 90,
+    "rewardXP": 130,
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
@@ -2032,7 +2032,7 @@
       {
         "choiceText": "Give the count to the Vigil",
         "choiceText_fr": "Confier le compte à la Veille",
-        "rewardGold": 20,
+        "rewardGold": 40,
         "alignmentChange": 0,
         "flag": "count_to_vigil",
         "resultText": "A Candlebearer copies it twice before she lets go of the paper. Orsabet lights one candle for all of them.",
@@ -2050,7 +2050,7 @@
       {
         "choiceText": "Seal it in the Reliquary",
         "choiceText_fr": "Le sceller dans le Reliquaire",
-        "rewardGold": 60,
+        "rewardGold": 130,
         "alignmentChange": 0,
         "flag": "count_sealed",
         "resultText": "The Reliquary gives it a number and a shelf. Orsabet asks where, and is not told.",
@@ -2088,7 +2088,7 @@
     "questName": "The Hearth-Stone",
     "chapter": 5,
     "category": "Side",
-    "difficulty": "5",
+    "difficulty": "7",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
@@ -2104,8 +2104,8 @@
         "targetNPCName_fr": "Ghrem Stonebrow"
       }
     ],
-    "rewardGold": 55,
-    "rewardXP": 150,
+    "rewardGold": 90,
+    "rewardXP": 130,
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
@@ -2133,7 +2133,7 @@
       {
         "choiceText": "Give the giants their stone",
         "choiceText_fr": "Laisser leur pierre aux géants",
-        "rewardGold": 10,
+        "rewardGold": 35,
         "alignmentChange": 0,
         "flag": "hearth_stone_kept",
         "resultText": "Ghrem breaks a chip off the face with his thumb and sets it by the fire, where you can see it from the door.",
@@ -2148,7 +2148,7 @@
       {
         "choiceText": "Let the Quarrymen cut",
         "choiceText_fr": "Laisser tailler les Carriers",
-        "rewardGold": 70,
+        "rewardGold": 130,
         "alignmentChange": 0,
         "flag": "hearth_stone_cut",
         "resultText": "The foreman pays by the cart. Ghrem counts the carts from the moot-hall door and says nothing to you.",
@@ -2166,7 +2166,7 @@
       {
         "choiceText": "Split the face between them",
         "choiceText_fr": "Partager le front entre eux",
-        "rewardGold": 35,
+        "rewardGold": 75,
         "alignmentChange": 0,
         "flag": "hearth_stone_split",
         "resultText": "A line is chalked across the stone at head height, a giant’s head. Both sides call it a bad bargain, which is how you know it is one.",
@@ -2185,7 +2185,7 @@
     "questName": "Salvage Rights",
     "chapter": 6,
     "category": "Side",
-    "difficulty": "6",
+    "difficulty": "11",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
@@ -2201,9 +2201,9 @@
         "targetNPCName_fr": "Nkem Tallow"
       }
     ],
-    "rewardGold": 60,
-    "rewardXP": 180,
-    "rewardItemID": "",
+    "rewardGold": 140,
+    "rewardXP": 185,
+    "rewardItemID": "greaves_voidsteel",
     "alignmentChange": 0,
     "nextQuestID": "",
     "npcDialogueText": "“A flagship’s bronze, a case of chart-weights and a bell, and the Admiralty put a seal on the lot in the name of a Crusade that is at the bottom of the bay,” Nkem says, mending a net he does not look at. “I went down for it. They did not. Get it out of their hull and we will talk about whose it is.”",
@@ -2230,7 +2230,7 @@
       {
         "choiceText": "Give Nkem the salvage",
         "choiceText_fr": "Remettre la prise à Nkem",
-        "rewardGold": 30,
+        "rewardGold": 60,
         "alignmentChange": 0,
         "flag": "salvage_to_crows",
         "resultText": "He gives you the chart-weights, one by one, until you tell him to stop.",
@@ -2248,7 +2248,7 @@
       {
         "choiceText": "Hand it to the Admiralty",
         "choiceText_fr": "La remettre à l’Amirauté",
-        "rewardGold": 45,
+        "rewardGold": 110,
         "alignmentChange": 0,
         "flag": "salvage_to_admiralty",
         "resultText": "The fleet’s clerk puts a new seal on it and a reward in your hand. Nkem is not on the beach to see either.",
@@ -2266,7 +2266,7 @@
       {
         "choiceText": "Sell it to the wreck-wrights",
         "choiceText_fr": "La vendre aux charpentiers d’épaves",
-        "rewardGold": 90,
+        "rewardGold": 210,
         "alignmentChange": 0,
         "flag": "salvage_sold",
         "resultText": "The wreck-wrights weigh the bronze and do not ask where it came from. Everyone else on the sand knows.",

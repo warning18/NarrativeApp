@@ -77,6 +77,8 @@ String? shopKeeperLine(Map<String, dynamic> shop, AppLanguage language,
   final special = switch (tier) {
     StandingTier.hunted ||
     StandingTier.hostile ||
+    StandingTier.resented ||
+    StandingTier.unfriendly ||
     StandingTier.wary =>
       line('keeperLineWary'),
     StandingTier.trusted => line('keeperLineTrusted'),
