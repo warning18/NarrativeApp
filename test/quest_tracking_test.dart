@@ -217,16 +217,16 @@ void main() {
     await tester.tap(tracker);
     await _settle(tester);
     expect(find.text('The Ossuary Bounty'), findsOneWidget);
-    expect(find.textContaining('(1/3)'), findsOneWidget);
+    expect(find.textContaining('(1/2)'), findsOneWidget);
     await tester.tapAt(const Offset(10, 10));
     await _settle(tester);
 
-    // Two more ghouls: the goal is reached and can be turned in here.
+    // One more ghoul: the goal is reached and can be turned in here.
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(container
             .read(playerSessionProvider)
-            .copyWith(enemyKillCounts: const {'catacomb_ghoul': 3})));
+            .copyWith(enemyKillCounts: const {'catacomb_ghoul': 2})));
     await _settle(tester);
     expect(find.byKey(const Key('quest_tracker_ready')), findsOneWidget);
     // It is announced once, then the notice goes by itself.
@@ -247,7 +247,7 @@ void main() {
     final s = container.read(playerSessionProvider);
     expect(s.completedQuestIds, contains('q_ch4_ossuary_bounty'));
     expect(s.gold, 10 + 90);
-    expect(find.textContaining('Three coins, as promised'), findsOneWidget);
+    expect(find.textContaining('Two coins, as promised'), findsOneWidget);
     await tester.pump(const Duration(seconds: 3));
     await _settle(tester);
     // The other quest in progress now stands in.

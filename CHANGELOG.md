@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.221.0+257]
+## [1.222.0+258]
 
 ### Changed
 - Every skill and spell effect in the fight is now pixel art. All thirty-four styles (slash, heavy slash, claw, pierce, impact, whirl, arrow, volley, bolt, lightning, flame, fireball, meteor, holy fire, frost, splash, poison, smoke, wind, quake, void rift, drain, shadow, radiance, heal, shield, stone shield, mana, shout, stun, weaken, critical hit, miss and a boss's change of phase) play as short strips drawn with hard edges and dithered fades, flown from the caster to the target where they travel. The strips are drawn in four flat tones that the game recolours to the skill's element, so a Fire slash is orange and an Ice one blue from the same strip. A strong or mighty blow adds a pixel shockwave under it, and a mighty one still washes the screen. The old vector effects play only for the instant before a strip is in.
@@ -16,6 +16,20 @@ isn't reconstructable from git history alone.
 
 ### Added
 - `tool/gen_fight_fx.py` draws the effect strips (`assets/visuals/pixel_fx/vfx_*.png`): run it to change them.
+
+## [1.221.0+257]
+
+### Fixed
+- Side quests that did not match their own scenes, from a review of all 27:
+  - The Penitent's Confession (ch5) asked for a kill, but its scene is a confession with no fight, and its turn-in offered absolution for a man the quest had you kill. The quest now asks you to hear the confession, and the turn-in is where you decide: take his blade (he hauls water for the camp, as the camp's later lines say), give him the answer he came for, or take his purse and leave him to the tear. The three outcomes now leave `confession_spared`, `confession_executed` and `confession_robbed`, with a camp line for each.
+  - The Informant's Tip (ch2) named a warden the scene never fought. The warden now steps out of the warehouse with two hired men; the other branch offers "Go after the warden he named" and only that choice starts the quest.
+  - The Ossuary Bounty (ch4) asked for three ghouls where the scene fights two, and the sapper counts two coins now.
+  - A Smuggler's Favor (ch2) appeared out of nowhere. A soot-black smith now asks for iron ore at the end of the harbor master's job.
+  - Grosh, Tobin and Malrik asked for a kill they had no scene for (and Grosh's zealot only appears from Chapter 4). Each now has the fight in their own scene.
+- A quest offered by a choice that also fights now counts that fight. The offer comes after the fight, so a bounty's kills were counted from after it; the kill counts are now kept from before.
+- Twelve kill quests counted every kill in the game, so a rat from the first scene could complete Dockside Debts before it was taken. They now count from the moment they are taken.
+- Six turn-in options had no flag (Tern's Toll, Liora's Watch, the Reckoning Wall, the Ossuary Bounty), so what you chose was forgotten; each now leaves one.
+- The chapter validator reported 14 problems because it held open side quests to the one-start, one-end rule of a linear chain. It now checks the main chain only (a chain running on into the next chapter ends there) and reports none.
 
 ## [1.220.0+256]
 

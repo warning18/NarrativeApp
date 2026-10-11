@@ -300,6 +300,30 @@ void main() {
       expect(notifier.state.questKillBaselines, isEmpty);
     });
 
+    test('a quest offered by the choice that fights counts that fight',
+        () async {
+      final notifier = await _notifierWith(
+          baseSession().copyWith(enemyKillCounts: {'bone_warden': 3}));
+      // The fight is won first (the offer comes after it), the baseline
+      // taken from before it.
+      await notifier
+          .applyCombatResult(hpAfter: 100, enemyIds: const ['bone_warden']);
+      await notifier.noteQuestOfferedBeforeFight('q_bounty', {'bone_warden': 3},
+          quest: bounty);
+      expect(notifier.state.questKillBaselines['q_bounty'], {'bone_warden': 3});
+      // Taking the quest keeps that baseline rather than the later count.
+      await notifier.acceptQuest('q_bounty', quest: bounty);
+      expect(notifier.state.questKillBaselines['q_bounty'], {'bone_warden': 3});
+      final status =
+          objectiveStatusesFor('q_bounty', bounty, notifier.state).single;
+      expect(status.current, 1);
+      // A lifetime quest, or one already taken, stores nothing.
+      await notifier.noteQuestOfferedBeforeFight('q_lifetime', {},
+          quest: lifetime);
+      expect(
+          notifier.state.questKillBaselines.containsKey('q_lifetime'), isFalse);
+    });
+
     test('the baseline survives the save file', () {
       final session = baseSession().copyWith(questKillBaselines: {
         'q_bounty': {'bone_warden': 3},
