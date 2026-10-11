@@ -73,6 +73,9 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/level_up_dialog.dart';
 import '../widgets/offer_dialog.dart';
+import '../widgets/pixel_sprite.dart';
+import '../widgets/pixel_portrait.dart';
+import '../widgets/pixel_vfx.dart';
 import '../widgets/spoils_chest_dialog.dart';
 import 'death_screen.dart';
 
@@ -503,6 +506,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
     _maxMana = session.maxMana;
     _mana = session.mana.clamp(0, _maxMana);
     _ensureEnemiesBuilt();
+    // The skill effects in pixel art (see pixel_vfx.dart).
+    PixelStrips.preload(allPixelVfxAssets);
     _selectedDiceId = session.equippedDiceId ??
         (session.ownedDiceIds.isNotEmpty ? session.ownedDiceIds.first : null);
     _shakeController = AnimationController(

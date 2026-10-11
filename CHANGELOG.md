@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.221.0+257]
+
+### Changed
+- Every skill and spell effect in the fight is now pixel art. All thirty-four styles (slash, heavy slash, claw, pierce, impact, whirl, arrow, volley, bolt, lightning, flame, fireball, meteor, holy fire, frost, splash, poison, smoke, wind, quake, void rift, drain, shadow, radiance, heal, shield, stone shield, mana, shout, stun, weaken, critical hit, miss and a boss's change of phase) play as short strips drawn with hard edges and dithered fades, flown from the caster to the target where they travel. The strips are drawn in four flat tones that the game recolours to the skill's element, so a Fire slash is orange and an Ice one blue from the same strip. A strong or mighty blow adds a pixel shockwave under it, and a mighty one still washes the screen. The old vector effects play only for the instant before a strip is in.
+- The enemy portraits move in pixel art: a flash and a shake when a blow lands (every blow, light or mighty), a lunge at the party member it strikes, with a smear and a puff of dust, and, when it is beaten, a fall in which the portrait dissolves from the feet up into rising pixels (a boss's fall adds a ring of light and takes longer). The card dims as it falls. The art is drawn from each enemy's own portrait, so all fifty-one have the three moves. With reduced motion, or with the effects off or in a quick fight, the portrait stays the still sprite.
+
+### Added
+- `tool/gen_fight_fx.py` draws the effect strips (`assets/visuals/pixel_fx/vfx_*.png`): run it to change them.
+
 ## [1.220.0+256]
 
 ### Changed
