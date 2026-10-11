@@ -51,6 +51,10 @@ const double wayfarerPerkChance = 0.75;
 const int offerStandingGain = 6;
 const int majorOfferStandingGain = 10;
 
+/// How much likelier the clan of the character's own people is to take the
+/// home seat while their heritage branch still has a skill to offer.
+const double homeHeritageWeight = 3.0;
+
 /// The weight of each kind of gift a clan may bring, among those it has.
 const Map<GiftKind, int> giftKindWeights = {
   GiftKind.skill: 35,
@@ -771,13 +775,49 @@ OfferGift? drawWayfarerGift(OfferContext c, Random random) {
       kind: GiftKind.object, id: objects[random.nextInt(objects.length)]);
 }
 
+/// The skills [factionId] can offer from the branches it sponsors for the
+/// character (not the reputation skills a clan's lean adds), and whether
+/// one of those branches is the character's heritage.
+({List<String> skills, bool heritage}) _homeSkillsOf(
+    String factionId, OfferContext c) {
+  final offerable = offerableSkillsFor(factionId, c);
+  if (offerable.isEmpty) return (skills: const [], heritage: false);
+  final skills = <String>[];
+  var heritage = false;
+  for (final branch in sponsoredBranchesFor(factionId, c)) {
+    for (final id in branch.skillIds) {
+      if (offerable.contains(id) && !skills.contains(id)) {
+        skills.add(id);
+        if (branch.heritage) heritage = true;
+      }
+    }
+  }
+  return (skills: skills, heritage: heritage);
+}
+
+/// The clans that can be the character's home seat now (v1.231): a clan,
+/// open as a suitor, that sponsors a branch the character grows on and has
+/// a skill on it to offer. Mapped to the weight each has in the draw:
+/// [homeHeritageWeight] for the clan of their own people while the
+/// heritage branch has a skill left, 1 for the class's clans.
+Map<String, double> homeClansFor(OfferContext c) {
+  final out = <String, double>{};
+  for (final f in c.data.factions.values) {
+    if (!f.isClan || !suitorOpen(f, c)) continue;
+    final home = _homeSkillsOf(f.id, c);
+    if (home.skills.isEmpty) continue;
+    out[f.id] = home.heritage ? homeHeritageWeight : 1.0;
+  }
+  return out;
+}
+
 /// The suitor [factionId] sends: a sub-clan of theirs at random voices a
 /// clan's gift (none for the others), with the gift drawn by [drawGift].
 Suitor? drawSuitor(String factionId, OfferContext c, Random random,
-    {bool better = false}) {
+    {bool better = false, OfferGift? gift}) {
   final faction = c.data.faction(factionId);
   if (faction == null) return null;
-  final gift = drawGift(factionId, c, random, better: better);
+  gift ??= drawGift(factionId, c, random, better: better);
   if (gift == null) return null;
   final voices = faction.isClan ? c.data.subclansOf(factionId) : const [];
   final greetings = max(1, faction.patron.greetings.length);
@@ -790,6 +830,26 @@ Suitor? drawSuitor(String factionId, OfferContext c, Random random,
   );
 }
 
+/// The home seat (v1.231): a clan that sponsors a branch the character
+/// grows on, drawn at [homeClansFor]'s weights, bringing a skill from that
+/// branch, so every offer has a skill to take while their tree has one
+/// left. Null when no clan has one. A sworn boon due still takes the seat
+/// (it comes once).
+Suitor? drawHomeSuitor(OfferContext c, Random random,
+    {Set<String> exclude = const {}}) {
+  final clans = homeClansFor(c)..removeWhere((id, _) => exclude.contains(id));
+  if (clans.isEmpty) return null;
+  final id = _weighted(clans, random);
+  if (swornBoonDue(id, c)) return drawSuitor(id, c, random);
+  final skills = _homeSkillsOf(id, c).skills;
+  final skill = skills[random.nextInt(skills.length)];
+  return drawSuitor(id, c, random,
+      gift: OfferGift(
+          kind: GiftKind.skill,
+          id: skill,
+          rarity: rarityOfSkill(c.skills[skill] as Map<String, dynamic>?)));
+}
+
 /// Draws the offer for [ticket]: up to [offerSuitorCount] suitors from
 /// different factions.
 /// - **Who may come:** [eligibleSuitors] (clans not Hostile or Hunted,
@@ -798,6 +858,9 @@ Suitor? drawSuitor(String factionId, OfferContext c, Random random,
 /// - **Guaranteed places:** the ticket's faction (a quest's clan, one
 ///   rarity better), and at a chapter's end the Choir or the Pit when the
 ///   alignment leans to them.
+/// - **The home seat:** a clan sponsoring a branch of the character's tree
+///   brings a skill from it ([drawHomeSuitor]), unless a guaranteed place
+///   already does, so growth never depends on luck of the draw.
 /// - **The other places:** one leans to the factions the character stands
 ///   well with ([standingWeightFor]); the rest are drawn evenly (a tribe
 ///   at [tribeOfferWeight]).
@@ -831,6 +894,14 @@ ClanOffer? drawOffer(OfferTicket ticket, OfferContext c, Random random) {
     if (leaning != null && !taken.contains(leaning)) {
       take(drawSuitor(leaning, c, random));
     }
+  }
+
+  // The home seat: a skill of the character's own tree.
+  final hasHomeSkill = suitors.any((s) =>
+      s.gift.kind == GiftKind.skill &&
+      _homeSkillsOf(s.factionId, c).skills.contains(s.gift.id));
+  if (!hasHomeSkill && suitors.length < offerSuitorCount) {
+    take(drawHomeSuitor(c, random, exclude: taken));
   }
 
   List<String> pool() => [

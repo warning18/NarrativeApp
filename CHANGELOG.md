@@ -8,6 +8,12 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.231.0+267]
+
+### Changed
+- **Every offer now has a home seat.** One of the three suitors is a clan that sponsors a branch of your own tree (your class's branches or your people's heritage) and brings a skill from it, so your tree keeps growing instead of depending on the draw. The clan of your own people is three times likelier while your heritage branch still has a skill to give; once it is done, your class's clans take over. A quest's or an intrigue's clan fills the seat itself when it sponsors your tree; the Choir at a chapter's end and the Wayfarer keep their places, so an offer may then show four cards. A clan you are Hostile with, or whose next skill is deeper than your standing allows, is no home; with a fully grown tree there is no home seat.
+- In 300 simulated runs (same seed), skills learned per run go from 3.4 to 7.0 (mage 2.9 to 5.7, ranger 4.2 to 8.3), signs from 15.0 to 12.6, with level and win rate unchanged (10.9, 39%).
+
 ## [1.230.0+266]
 
 ### Added
