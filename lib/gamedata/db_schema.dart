@@ -680,6 +680,22 @@ final DbSchema skillsSchema = DbSchema(
       type: FieldType.stringList,
     ),
     FieldSchema(
+      key: 'subclanId',
+      label:
+          'Sub-clan (offered once it is your friend, by its clan, in its voice)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'hiddenFlags',
+      label: 'Secret: story flags that reveal it (all held)',
+      type: FieldType.stringList,
+    ),
+    FieldSchema(
+      key: 'hiddenClan',
+      label: 'Secret: the clan that teaches it',
+      type: FieldType.text,
+    ),
+    FieldSchema(
       key: 'ascendsSkillID',
       label: 'Ascends Skill (the upgrade a clan offers at Trusted standing)',
       type: FieldType.text,

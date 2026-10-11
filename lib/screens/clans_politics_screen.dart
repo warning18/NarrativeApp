@@ -1281,15 +1281,15 @@ class _AffinityTab extends ConsumerWidget {
             contentPadding: EdgeInsets.zero,
             title: Text(skillDisplayName(card.skillId, language: lang)),
             subtitle: Text([
-              tr(
-                  ref,
-                  card.ascension
-                      ? 'offer_gift_ascension'
-                      : 'offer_gift_fusion'),
+              tr(ref, 'offer_gift_${card.kind.name}'),
               nameOf(professions, 'professionName', card.professionId),
-              card.parents
-                  .map((p) => skillDisplayName(p, language: lang))
-                  .join(' + '),
+              if (card.parents.isNotEmpty)
+                card.parents
+                    .map((p) => skillDisplayName(p, language: lang))
+                    .join(' + '),
+              if (card.kind == ClanCardKind.subclan)
+                data.subclan(card.detail)?.nameFor(lang) ?? card.detail,
+              if (card.kind == ClanCardKind.secret) card.detail,
               card.clanIds
                   .map((id) => data.faction(id)?.shortFor(lang) ?? id)
                   .join(' × '),

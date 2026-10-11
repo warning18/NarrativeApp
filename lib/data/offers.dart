@@ -68,6 +68,11 @@ const double accordPickChance = 0.5;
 const StandingTier fusionMinTier = StandingTier.trusted;
 const StandingTier ascensionMinTier = StandingTier.friend;
 
+/// Standing a sub-clan's skill and a secret need with the clan that offers
+/// them (v1.234).
+const StandingTier subclanMinTier = StandingTier.known;
+const StandingTier secretMinTier = StandingTier.known;
+
 /// The weight of each kind of gift a clan may bring, among those it has.
 const Map<GiftKind, int> giftKindWeights = {
   GiftKind.skill: 35,
@@ -593,6 +598,33 @@ List<AccordOffer> accordsFor(String factionId, OfferContext c) {
       if (partners.isNotEmpty) out.add(AccordOffer(entry.key, partners.first));
       continue;
     }
+    // A sub-clan's skill (v1.234): its clan offers it, in its voice, once
+    // the sub-clan is the character's friend.
+    final subclan = c.data.subclan(skill['subclanId']?.toString() ?? '');
+    if (subclan != null) {
+      if (subclan.clanId == factionId &&
+          c.politics.markOf(subclan.id) == SubclanMark.friend &&
+          tier.isAtLeast(subclanMinTier) &&
+          _prerequisiteKnown(skill, c)) {
+        out.add(AccordOffer(entry.key));
+      }
+      continue;
+    }
+    // A secret (v1.234): hidden until the story flags are held, then taught
+    // by its clan.
+    final secretFlags = [
+      for (final f in (skill['hiddenFlags'] as List?) ?? const []) f.toString(),
+    ];
+    if (secretFlags.isNotEmpty) {
+      final held = c.flags.toSet();
+      if (skill['hiddenClan']?.toString() == factionId &&
+          secretFlags.every(held.contains) &&
+          tier.isAtLeast(secretMinTier) &&
+          _prerequisiteKnown(skill, c)) {
+        out.add(AccordOffer(entry.key));
+      }
+      continue;
+    }
     final base = skill['ascendsSkillID']?.toString() ?? '';
     if (base.isNotEmpty &&
         c.knownSkillIds.contains(base) &&
@@ -602,6 +634,11 @@ List<AccordOffer> accordsFor(String factionId, OfferContext c) {
     }
   }
   return out;
+}
+
+bool _prerequisiteKnown(Map<String, dynamic> skill, OfferContext c) {
+  final required = skill['requiredSkillID']?.toString() ?? '';
+  return required.isEmpty || c.knownSkillIds.contains(required);
 }
 
 /// The factions sponsoring [skillId] for this character: what the skill
@@ -616,6 +653,13 @@ List<String> sponsorsOfSkill(
   Map<String, dynamic> skills = const {},
 }) {
   final skill = skills[skillId];
+  // A sub-clan's skill is its clan's (v1.234); a secret has no sponsor to
+  // show until it is found.
+  if (skill is Map<String, dynamic>) {
+    final sub = data.subclan(skill['subclanId']?.toString() ?? '');
+    if (sub != null) return [sub.clanId];
+    if (skill['hiddenFlags'] is List) return const [];
+  }
   // A fusion is offered by the clans behind its two parents, an ascension
   // by the clans behind the skill it raises (v1.232).
   if (skill is Map<String, dynamic>) {
@@ -963,9 +1007,18 @@ Suitor? drawSuitor(String factionId, OfferContext c, Random random,
   if (gift == null) return null;
   final voices = faction.isClan ? c.data.subclansOf(factionId) : const [];
   final greetings = max(1, faction.patron.greetings.length);
+  // A sub-clan's skill is voiced by that sub-clan.
+  final giftSkill = c.skills[gift.id];
+  final owner = gift.kind == GiftKind.skill && giftSkill is Map<String, dynamic>
+      ? giftSkill['subclanId']?.toString() ?? ''
+      : '';
   return Suitor(
     factionId: factionId,
-    subclanId: voices.isEmpty ? '' : voices[random.nextInt(voices.length)].id,
+    subclanId: owner.isNotEmpty && voices.any((v) => v.id == owner)
+        ? owner
+        : voices.isEmpty
+            ? ''
+            : voices[random.nextInt(voices.length)].id,
     gift: gift,
     firstMeeting: !c.patronsMet.contains(factionId),
     greetingIndex: random.nextInt(greetings),

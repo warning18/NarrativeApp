@@ -101,15 +101,19 @@ ClanAffinityMatrix buildAffinityMatrix({
   );
 }
 
-/// A fusion or an ascension in the skills table, with the clans behind it
-/// for a character of its class.
+/// What kind of card a clan puts on the table (v1.232, v1.234).
+enum ClanCardKind { fusion, ascension, subclan, secret }
+
+/// A fusion, an ascension, a sub-clan's skill or a secret in the skills
+/// table, with the clans behind it for a character of its class.
 class ClanCardSkill {
   const ClanCardSkill({
     required this.skillId,
     required this.professionId,
     required this.parents,
     required this.clanIds,
-    required this.ascension,
+    required this.kind,
+    this.detail = '',
   });
 
   final String skillId;
@@ -118,13 +122,19 @@ class ClanCardSkill {
   /// The two skills a fusion needs, or the one an ascension raises.
   final List<String> parents;
 
-  /// The clans that offer it: both of a fusion, the one of an ascension.
+  /// The clans that offer it: both of a fusion, the one of the others.
   final List<String> clanIds;
-  final bool ascension;
+  final ClanCardKind kind;
+
+  /// A sub-clan's id, or a secret's flags.
+  final String detail;
+
+  bool get ascension => kind == ClanCardKind.ascension;
+  bool get fusion => kind == ClanCardKind.fusion;
 }
 
-/// Every fusion and ascension in [skills], for a character of its class
-/// (and [raceId]'s heritage), with the clans that offer it.
+/// Every card in [skills], for a character of its class (and [raceId]'s
+/// heritage), with the clans that offer it.
 List<ClanCardSkill> clanCardSkills({
   required ClanData data,
   required Map<String, dynamic> skills,
@@ -135,12 +145,39 @@ List<ClanCardSkill> clanCardSkills({
   for (final entry in skills.entries) {
     final skill = entry.value;
     if (skill is! Map<String, dynamic>) continue;
+    final profession = skill['restrictedProfessionID']?.toString() ?? '';
+    final sub = data.subclan(skill['subclanId']?.toString() ?? '');
+    if (sub != null) {
+      out.add(ClanCardSkill(
+        skillId: entry.key,
+        professionId: profession,
+        parents: const [],
+        clanIds: [sub.clanId],
+        kind: ClanCardKind.subclan,
+        detail: sub.id,
+      ));
+      continue;
+    }
+    if (skill['hiddenFlags'] is List) {
+      out.add(ClanCardSkill(
+        skillId: entry.key,
+        professionId: profession,
+        parents: const [],
+        clanIds: [
+          if (data.faction(skill['hiddenClan']?.toString() ?? '') != null)
+            skill['hiddenClan'].toString(),
+        ],
+        kind: ClanCardKind.secret,
+        detail: [for (final f in skill['hiddenFlags'] as List) f.toString()]
+            .join(', '),
+      ));
+      continue;
+    }
     final fusion = skill['fusionOf'] is List
         ? [for (final p in skill['fusionOf'] as List) p.toString()]
         : const <String>[];
     final base = skill['ascendsSkillID']?.toString() ?? '';
     if (fusion.isEmpty && base.isEmpty) continue;
-    final profession = skill['restrictedProfessionID']?.toString() ?? '';
     final parents = fusion.isNotEmpty ? fusion : [base];
     final clans = <String>[];
     for (final parent in parents) {
@@ -160,7 +197,7 @@ List<ClanCardSkill> clanCardSkills({
       professionId: profession,
       parents: parents,
       clanIds: clans,
-      ascension: fusion.isEmpty,
+      kind: fusion.isEmpty ? ClanCardKind.ascension : ClanCardKind.fusion,
     ));
   }
   return out;

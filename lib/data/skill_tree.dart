@@ -214,6 +214,8 @@ Map<String, int> effectiveSkillTiers(
 /// clans offer them, so a companion never learns one with points.
 bool _isClanCard(Map<String, dynamic> skill) =>
     skill['fusionOf'] is List ||
+    (skill['subclanId']?.toString() ?? '').isNotEmpty ||
+    skill['hiddenFlags'] is List ||
     (skill['ascendsSkillID']?.toString() ?? '').isNotEmpty;
 
 /// A companion's skills: their own class's (learned with their points, in

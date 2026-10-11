@@ -8,6 +8,41 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.234.0+270]
+
+Twenty more skills: ten that belong to sub-clans and ten secrets.
+
+### Added
+- **Sub-clan skills** (`subclanId`). Once a sub-clan is your friend (taking a
+  gift it voiced makes it one), its clan can put its skill on the table, in
+  its voice, from Known standing. Rare, one class each:
+
+  | Class | Skills (sub-clan) |
+  |---|---|
+  | Warrior | Quarry Break (Quarrymen), Last Watch Stand (Last Watch) |
+  | Mage | Emberwife Coal (Emberwives), Whispered Ledger (Whisper Ledger) |
+  | Rogue | Tar Snare (Tar-Hands), Heron Step (Heron’s Wake) |
+  | Cleric | Candle Vigil (Candlebearers), Scorched Hymn (Scorched Choir) |
+  | Ranger | Moss Dirge (Moss Choir), Wayside Ward (Road Exorcists) |
+- **Secrets** (`hiddenFlags`, `hiddenClan`). Listed nowhere, with no sponsor
+  shown, until the story flags are held: then the named clan teaches them
+  (from Known standing), the card tagged "Secret". Epic, one class each:
+
+  | Class | Secret (flag, clan) |
+  |---|---|
+  | Warrior | Matriarch Reckoning (matriarch_slain, Vigil), Gate Oath (siege_gate_held, Compact) |
+  | Mage | Tear Sight (tear_touched, Crows), Ash Ledger (ashen_ledger_decoded, Crows) |
+  | Rogue | Marked Deck (sable_marker_won, Crows), Borrowed Face (lysa_mask_kept, Penitents) |
+  | Cleric | Absolved Penance (maren_absolved, Penitents), Kept Lantern (lantern_kept, Dominion) |
+  | Ranger | Followed Trail (tracks_followed, Mire), Horn Call (oni_horns_returned, Vigil) |
+
+  Every flag is one the story really sets (a test checks it).
+- All twenty have English and French text, an effect and an icon (the base
+  skill’s for now). The Edit Mode Affinities tab lists all forty clan cards
+  (fusions, ascensions, sub-clan skills, secrets) with their clans. Companions
+  never learn them with points. In 300 simulated runs, skills learned per run
+  go from 9.6 to 10.4, level and win rate unchanged.
+
 ## [1.233.0+269]
 
 Standing with a clan now has eleven steps, and fusions ask for more.

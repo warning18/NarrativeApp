@@ -48,7 +48,9 @@ final ClanData _data = ClanData.fromTables(
     'red': _clan(['warrior_a']),
     'blue': _clan(['warrior_b']),
   },
-  subclans: const {},
+  subclans: {
+    'red_sub': {'clan': 'red', 'name': 'Red Sub', 'lean': 0},
+  },
   relations: const {},
   titles: const {},
 );
@@ -80,6 +82,17 @@ const Map<String, dynamic> _skills = {
     'ascendsSkillID': 'a1',
     'requiredSkillID': 'a1',
   },
+  'subby': {
+    'rarity': 'rare',
+    'restrictedProfessionID': 'warrior',
+    'subclanId': 'red_sub',
+  },
+  'secretly': {
+    'rarity': 'epic',
+    'restrictedProfessionID': 'warrior',
+    'hiddenFlags': ['deed_done'],
+    'hiddenClan': 'blue',
+  },
 };
 
 PoliticsState _at(Map<String, num> values) {
@@ -91,9 +104,12 @@ PoliticsState _at(Map<String, num> values) {
 }
 
 OfferContext _ctx(
-        {Set<String> known = const {'a1', 'b1'}, PoliticsState? politics}) =>
+        {Set<String> known = const {'a1', 'b1'},
+        PoliticsState? politics,
+        List<String> flags = const []}) =>
     OfferContext(
       data: _data,
+      flags: flags,
       politics: politics ?? _at({'red': 30, 'blue': 30}),
       skills: _skills,
       skillTrees: _trees,
@@ -141,11 +157,14 @@ void main() {
       }
     });
 
-    test('the twenty cards: ten fusions of two clans, ten ascensions', () {
+    test('the forty cards: fusions, ascensions, sub-clans and secrets', () {
       final cards =
           clanCardSkills(data: data, skills: skills, skillTrees: trees);
-      expect(cards.where((c) => !c.ascension), hasLength(10));
-      expect(cards.where((c) => c.ascension), hasLength(10));
+      int count(ClanCardKind k) => cards.where((c) => c.kind == k).length;
+      expect(count(ClanCardKind.fusion), 10);
+      expect(count(ClanCardKind.ascension), 10);
+      expect(count(ClanCardKind.subclan), 10);
+      expect(count(ClanCardKind.secret), 10);
       for (final card in cards) {
         final skill = skills[card.skillId] as Map<String, dynamic>;
         final branches = skillBranchesFor(trees,
@@ -155,27 +174,57 @@ void main() {
         for (final parent in card.parents) {
           expect(onTree, contains(parent), reason: card.skillId);
         }
-        expect(skill['rarity'], 'epic');
         expect(skill['name_fr'], isNotEmpty);
         expect(skill['description_fr'], isNotEmpty);
         expect(skill['vfx'], isNotEmpty);
-        if (card.ascension) {
-          expect(card.clanIds, hasLength(1), reason: card.skillId);
-          expect(skill['requiredSkillID'], card.parents.single);
-        } else {
-          // Two clans, behind two different branches.
-          expect(card.clanIds, hasLength(2), reason: card.skillId);
-          expect(skill['requiredSkillID'], '');
+        switch (card.kind) {
+          case ClanCardKind.ascension:
+            expect(skill['rarity'], 'epic');
+            expect(card.clanIds, hasLength(1), reason: card.skillId);
+            expect(skill['requiredSkillID'], card.parents.single);
+          case ClanCardKind.fusion:
+            expect(skill['rarity'], 'epic');
+            // Two clans, behind two different branches.
+            expect(card.clanIds, hasLength(2), reason: card.skillId);
+            expect(skill['requiredSkillID'], '');
+          case ClanCardKind.subclan:
+            expect(skill['rarity'], 'rare');
+            expect(data.subclan(card.detail), isNotNull, reason: card.skillId);
+            expect(card.clanIds, [data.subclan(card.detail)!.clanId]);
+          case ClanCardKind.secret:
+            expect(skill['rarity'], 'epic');
+            expect(card.clanIds, hasLength(1), reason: card.skillId);
+            expect(data.faction(card.clanIds.single)!.isClan, isTrue);
         }
       }
-      // Two fusions and two ascensions for each of the five classes.
+      // Two of each kind for each of the five classes.
       for (final p in matrix.professionIds) {
-        expect(cards.where((c) => c.professionId == p && !c.ascension),
-            hasLength(2),
-            reason: p);
-        expect(cards.where((c) => c.professionId == p && c.ascension),
-            hasLength(2),
-            reason: p);
+        for (final kind in ClanCardKind.values) {
+          expect(cards.where((c) => c.professionId == p && c.kind == kind),
+              hasLength(2),
+              reason: '$p $kind');
+        }
+      }
+    });
+
+    test('every secret is revealed by a flag the story really sets', () {
+      final story = jsonDecode(
+              File('assets/Cleaned_Narrative_DAG.json').readAsStringSync())
+          as Map<String, dynamic>;
+      final set = <String>{};
+      for (final node in story.values) {
+        for (final c in (node['choices'] as List?) ?? const []) {
+          for (final f in (c['flagsToAdd'] as List?) ?? const []) {
+            set.add(f.toString());
+          }
+        }
+      }
+      for (final entry in skills.entries) {
+        final flags = (entry.value as Map)['hiddenFlags'];
+        if (flags is! List) continue;
+        for (final f in flags) {
+          expect(set, contains(f), reason: '${entry.key}: $f');
+        }
       }
     });
   });
@@ -260,6 +309,64 @@ void main() {
       expect(preview['blue'], closeTo(3, 0.01));
       // The partner survives a save.
       expect(OfferGift.tryParse(suitor.gift.toJson()), suitor.gift);
+    });
+
+    test('a sub-clan skill needs the sub-clan a friend, and is voiced by it',
+        () {
+      List<String> subs(PoliticsState p) => accordsFor('red', _ctx(politics: p))
+          .where((a) => a.skillId == 'subby')
+          .map((a) => a.skillId)
+          .toList();
+      expect(subs(_at({'red': 30, 'blue': 30})), isEmpty,
+          reason: 'not yet a friend');
+      final friend = setSubclanMark(_at({'red': 30, 'blue': 30}), 'red_sub',
+              SubclanMark.friend, 'edit',
+              data: _data)
+          .state;
+      expect(subs(friend), ['subby']);
+      // Only its own clan, and only from Known.
+      expect(
+          accordsFor('blue', _ctx(politics: friend))
+              .where((a) => a.skillId == 'subby'),
+          isEmpty);
+      final unknown = setSubclanMark(_at({'red': 0, 'blue': 30}), 'red_sub',
+              SubclanMark.friend, 'edit',
+              data: _data)
+          .state;
+      expect(subs(unknown), isEmpty);
+      // The card is voiced by the sub-clan.
+      final suitor = drawSuitor('red', _ctx(politics: friend), Random(3),
+          gift: const OfferGift(
+              kind: GiftKind.skill, id: 'subby', rarity: SignRarity.rare));
+      expect(suitor!.subclanId, 'red_sub');
+      expect(
+          sponsorsOfSkill('subby',
+              data: _data,
+              skillTrees: _trees,
+              raceId: 'human',
+              professionId: 'warrior',
+              skills: _skills),
+          ['red']);
+    });
+
+    test('a secret waits for its flags and is taught by its clan alone', () {
+      List<String> secrets(String clan, List<String> flags) =>
+          accordsFor(clan, _ctx(flags: flags))
+              .where((a) => a.skillId == 'secretly')
+              .map((a) => a.skillId)
+              .toList();
+      expect(secrets('blue', const []), isEmpty);
+      expect(secrets('blue', ['deed_done']), ['secretly']);
+      expect(secrets('red', ['deed_done']), isEmpty);
+      // Hidden: no sponsor is shown for it.
+      expect(
+          sponsorsOfSkill('secretly',
+              data: _data,
+              skillTrees: _trees,
+              raceId: 'human',
+              professionId: 'warrior',
+              skills: _skills),
+          isEmpty);
     });
 
     test('a grown tree still has a home seat while a card is left', () {

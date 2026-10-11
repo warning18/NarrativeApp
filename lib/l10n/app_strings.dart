@@ -10197,6 +10197,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Ascension',
     AppLanguage.fr: 'Ascension',
   },
+  'offer_gift_subclan': {
+    AppLanguage.en: 'Sub-clan',
+    AppLanguage.fr: 'Sous-clan',
+  },
+  'offer_gift_secret': {AppLanguage.en: 'Secret', AppLanguage.fr: 'Secret'},
+  'offer_secret_line': {
+    AppLanguage.en: 'Taught only to those who did what you did.',
+    AppLanguage.fr:
+        'Enseigné seulement à ceux qui ont fait ce que vous avez fait.',
+  },
   'offer_fusion_line': {
     AppLanguage.en: 'Two clans, one skill: {a} and {b}, offered with {clan}.',
     AppLanguage.fr:
@@ -10712,9 +10722,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'clans_affinity_cards_hint': {
     AppLanguage.en:
-        'A fusion needs both parent skills and Trusted standing with both clans; either clan offers it, and taking it raises both. An ascension raises a skill you know and needs Friend standing with its clan.',
+        'A fusion needs both parent skills and Trusted standing with both clans; either clan offers it, and taking it raises both. An ascension raises a skill you know and needs Friend standing with its clan. A sub-clan skill comes in the sub-clan’s voice once it is your friend; a secret is taught by its clan to those who did the deed.',
     AppLanguage.fr:
-        'Une fusion demande les deux compétences d’origine et le palier « Confiance » auprès des deux clans\u00a0; l’un ou l’autre la propose, et la prendre élève les deux. Une ascension élève une compétence que vous connaissez et demande le palier « Amitié » auprès de son clan.',
+        'Une fusion demande les deux compétences d’origine et le palier « Confiance » auprès des deux clans\u00a0; l’un ou l’autre la propose, et la prendre élève les deux. Une ascension élève une compétence que vous connaissez et demande le palier « Amitié » auprès de son clan. Une compétence de sous-clan arrive avec la voix du sous-clan une fois qu’il est votre ami ; un secret est enseigné par son clan à ceux qui ont accompli l’acte.',
   },
   'clans_tab_throne': {AppLanguage.en: 'Throne', AppLanguage.fr: 'Trône'},
   'throne_edit_hint': {

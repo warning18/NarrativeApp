@@ -60,12 +60,15 @@ void main() {
           onTree.addAll(branch.skillIds);
         }
         expect(onTree.toSet(), hasLength(onTree.length));
-        // Every skill of the class grows on its tree, bar the fusions and
-        // ascensions (v1.232): the clans put those on the table.
+        // Every skill of the class grows on its tree, bar the fusions,
+        // ascensions, sub-clan skills and secrets (v1.232, v1.234): the clans put those on the table.
         for (final entry in skills.entries) {
           final skill = entry.value as Map;
           if (skill['restrictedProfessionID'] == professionId) {
-            if (skill['fusionOf'] != null || skill['ascendsSkillID'] != null) {
+            if (skill['fusionOf'] != null ||
+                skill['ascendsSkillID'] != null ||
+                skill['subclanId'] != null ||
+                skill['hiddenFlags'] != null) {
               continue;
             }
             expect(onTree, contains(entry.key));

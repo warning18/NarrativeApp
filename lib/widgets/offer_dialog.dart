@@ -87,6 +87,10 @@ String _giftTagKey(OfferGift gift, Map<String, dynamic> skills) {
     final skill = skills[gift.id];
     if (skill is Map<String, dynamic>) {
       if (skill['fusionOf'] is List) return 'offer_gift_fusion';
+      if ((skill['subclanId']?.toString() ?? '').isNotEmpty) {
+        return 'offer_gift_subclan';
+      }
+      if (skill['hiddenFlags'] is List) return 'offer_gift_secret';
       if ((skill['ascendsSkillID']?.toString() ?? '').isNotEmpty) {
         return 'offer_gift_ascension';
       }
@@ -688,6 +692,7 @@ class _GiftBody extends StatelessWidget {
                 .replaceAll('{a}', parents[0])
                 .replaceAll('{b}', parents[1])
                 .replaceAll('{clan}', partner ?? ''),
+          if (skill?['hiddenFlags'] is List) trFor(lang, 'offer_secret_line'),
           if (base.isNotEmpty)
             trFor(lang, 'offer_ascension_line')
                 .replaceAll('{skill}', skillDisplayName(base, language: lang)),
