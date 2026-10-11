@@ -238,4 +238,49 @@ void main() {
       controller.dispose();
     });
   });
+
+  group('a weapon sets the plain strike, and the power sets its size', () {
+    test('each family strikes its own way', () {
+      WeaponFamily of(String id, String name, int dmg) =>
+          weaponFamilyOf(id, name, dmg);
+      expect(of('spear_t3', 'Iron War Spear', 14), WeaponFamily.spear);
+      expect(of('halo_lance', 'Halo Lance', 15), WeaponFamily.spear);
+      expect(of('dagger_t1', 'Chipped Dagger', 4), WeaponFamily.dagger);
+      expect(of('blackened_fang', 'Blackened Fang', 14), WeaponFamily.dagger);
+      expect(of('staff_t6', 'Runed Staff', 13), WeaponFamily.staff);
+      expect(of('sword_t3', 'Steel Broadsword', 12), WeaponFamily.sword);
+      expect(of('sword_t6', 'Warforged Claymore', 21), WeaponFamily.greatsword);
+      expect(of('shield_t1', 'Cracked Buckler', 0), WeaponFamily.bare);
+      expect(styleForFace('Attack', null), VfxStyle.slash);
+      expect(styleForFace('Attack', null, weapon: WeaponFamily.spear),
+          VfxStyle.pierce);
+      expect(styleForFace('Attack', null, weapon: WeaponFamily.bare),
+          VfxStyle.impact);
+      expect(styleForFace('Attack', null, weapon: WeaponFamily.dagger),
+          VfxStyle.claw);
+      expect(styleForFace('Attack', null, weapon: WeaponFamily.greatsword),
+          VfxStyle.heavySlash);
+      // A skill face keeps its own style whatever is in hand.
+      expect(
+          styleForFace('Skill', {'vfx': 'meteor'}, weapon: WeaponFamily.spear),
+          VfxStyle.meteor);
+    });
+
+    test('a plain strike covers little, a legendary spell a lot', () {
+      final plain = vfxExtentFor(VfxStyle.slash, 0.85);
+      final heavy = vfxExtentFor(VfxStyle.heavySlash, 1.3);
+      final meteor = vfxExtentFor(VfxStyle.meteor, 1.45);
+      expect(plain, lessThan(0.55));
+      expect(heavy, greaterThan(plain * 2));
+      expect(meteor, greaterThan(heavy));
+      expect(meteor, lessThanOrEqualTo(1.5));
+      // The same style grows with its power.
+      expect(vfxExtentFor(VfxStyle.fireball, 1.3),
+          greaterThan(vfxExtentFor(VfxStyle.fireball, 0.9)));
+      // Every style has a size.
+      for (final style in VfxStyle.values) {
+        expect(vfxGrandeur(style), inInclusiveRange(0.5, 1.3));
+      }
+    });
+  });
 }
