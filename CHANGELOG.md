@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.225.0+261]
+
+### Changed
+- The fight's effects are sized to what they are. Each effect now has a size of its own (a thud or a scratch is small, a meteor or a quake large) and its power grows or shrinks it, so a plain blow is a small flash and a rare or legendary skill takes the card and more; before, nearly every effect was about as large as the card or larger. A single effect never grows past one and a half cards.
+- A plain Attack face plays by the weapon in hand: a sword slashes (a great blade cuts heavy), a spear thrusts, a dagger scratches, a staff or bare fists thud. The weapon's rarity sets how strongly it plays. Skill faces keep their own effect.
+- The dice in the fight no longer sit on a coloured square: the cube stands on its own, and a kept die keeps its gold ring.
+
 ## [1.224.0+260]
 
 ### Added

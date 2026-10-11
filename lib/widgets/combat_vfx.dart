@@ -720,7 +720,7 @@ class _Fx {
       sourceRect: sourceRect,
       t: t,
       s: s,
-      scale: scale,
+      extent: vfxExtentFor(burst.style, burst.power),
     )) {
       // The flash across the screen stays: it is light, not a shape.
       if (mighty && !systemVfxStyles.contains(burst.style)) {

@@ -34,10 +34,13 @@ void main() {
     expect(fire[0], isNot(fire[2]));
   });
 
-  test('a power sets the pixel size, from two to five', () {
-    expect(pixelSizeFor(40, 1.0), 2);
-    expect(pixelSizeFor(110, 1.4), 4);
-    expect(pixelSizeFor(200, 3), 5);
+  test('the extent sets the pixel size, from one to four and a half', () {
+    // A plain strike on a small card is drawn small, a legendary spell on a
+    // big one large.
+    expect(pixelSizeFor(40, 0.3), 1);
+    expect(pixelSizeFor(90, vfxExtentFor(VfxStyle.slash, 0.85)), 1);
+    expect(pixelSizeFor(90, vfxExtentFor(VfxStyle.meteor, 1.45)), 3);
+    expect(pixelSizeFor(200, 3), 4.5);
   });
 
   testWidgets('every style draws in pixel art once its strips are in',
@@ -77,7 +80,7 @@ void main() {
               sourceRect: const Rect.fromLTWH(100, 500, 90, 90),
               t: t,
               s: 90,
-              scale: 1,
+              extent: 1,
             );
             recorder.endRecording().dispose();
             expect(drew, isTrue,
