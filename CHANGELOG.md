@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.240.0+276]
+
+### Changed
+- **Every skill and spell effect is redrawn in the poster hand**, after the Japanese kanji posters used for the banners. All 36 pixel strips of a fight (strikes, projectiles, landings, the elements, support, the five states and the tier shock) keep their names, size, frame counts and anchors, so every style, spell, weapon strike and status plays as before, but each is now built from heavy slabs with rounded corners and bevelled rims, fat arcs and rings, thin stencil slits cut through them, shaded round discs and eyes, fine concentric lines and flying pixel particles. They are still drawn in four flat tones, so the game still recolours one strip to any element.
+  - A slash is one fat arc swept through with a slit cut along it; a heavy slash two arcs and a ground shock of discs; claws three heavy bars; a pierce a spear slab and a starburst; an arrow a shaft and fletching with speed bars; a fireball a bright disc with a trail of smaller ones and an explosion ring of discs; lightning a heavy bolt with branches; a fat eye opens for the void rift; a dome sweeps up for the shield; slabs drop onto each other for the stone shield; a fat plus swells for the heal; a mouth slab and arcs radiating both ways for the shout; a halo with orbiting discs for the stun; twelve rays for the critical hit.
+  - A blow of a strong or mighty tier lays the new shock under its landing: a ring of discs running out along the ground.
+- `tool/gen_fight_fx.py` is the poster-hand generator (it replaces the first one, which drew the same strips as thin shapes).
+
 ## [1.239.0+275]
 
 Titles for the new standing steps, dedicated art for the forty clan cards,

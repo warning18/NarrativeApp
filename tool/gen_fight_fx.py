@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
-"""Draws the fight's skill and spell effects as pixel strips.
+"""Draws the fight's skill and spell effects as pixel strips, in the poster hand.
 
     python3 tool/gen_fight_fx.py
 
 One strip per effect in assets/visuals/pixel_fx/ (vfx_<name>.png): a row of
-square 48 px frames, drawn with no antialiasing in three flat tones (a
-white highlight, a light-steel middle and a slate shadow) and faded by
-Bayer dithering. The game recolours the three tones to a skill's element at
+square 48 px frames, drawn with no antialiasing in four flat tones (a white
+highlight, a light-steel middle, a slate shadow and a deep one) and faded by
+Bayer dithering. The game recolours the four tones to a skill's element at
 run time (lib/widgets/pixel_vfx.dart), so one strip serves every element.
+
+The hand is taken from the Japanese kanji posters (see tool/gen_banners.py):
+heavy slabs with rounded corners and fat arcs, thin stencil slits cut through
+them, shaded round discs and eyes, fine concentric lines, and pixel particles.
+The middle tone is the body of a slab, the highlight lights its top-left rim
+and the discs, the shadow its bottom-right rim and the fine lines.
 
   strikes      slash heavy claw pierce impact whirl
   projectiles  arrow_proj orb meteor_proj  (loop while they travel)
@@ -20,6 +26,7 @@ run time (lib/widgets/pixel_vfx.dart), so one strip serves every element.
 """
 import math
 import os
+import random
 from PIL import Image, ImageDraw
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'assets', 'visuals', 'pixel_fx')
@@ -28,6 +35,7 @@ BAYER = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]
 
 FR = 48          # frame size of every strip
 N = 8
+K = 0.75         # the motions are drawn in a 64 px space and set down at this scale
 
 
 def rgb(h, a=255):
@@ -35,941 +43,1021 @@ def rgb(h, a=255):
     return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16), a)
 
 
-RAMPS = {  # highlight, mid, shadow
-    'steel': ('#FFFFFF', '#C9D1DC', '#5E6B7E'),
-    'fire': ('#FFF0B0', '#FF9A3D', '#B3361A'),
-    'ice': ('#F2FCFF', '#7FD3FF', '#2E78AE'),
-    'electricity': ('#FFFBD0', '#FFD54F', '#9A6A08'),
-    'void': ('#F1E6FF', '#A07CE0', '#43296E'),
-    'light': ('#FFFFFF', '#FFF08A', '#D19B1A'),
-    'water': ('#EAFBFF', '#4FC3F7', '#1D6EA8'),
-    'earth': ('#F0E2D2', '#B08C70', '#5E4636'),
-    'wind': ('#F4FFFA', '#A5D6C8', '#4F8E80'),
-    'poison': ('#F2FFD8', '#8BD04F', '#3B7A1E'),
-}
+HI = rgb('#FFFFFF')      # highlight: a slab's lit rim, discs, glints
+MID = rgb('#C9D1DC')     # the body of a slab
+LO = rgb('#5E6B7E')      # shadow rim, fine lines
+DEEP = rgb('#2A303B')    # cores, stone
+CLEAR = (0, 0, 0, 0)
+CREAM, DARK = MID, DEEP
 
 
-DEEP = rgb('#2A303B')  # the fourth tone: the darkest, for cores and stone
+def shade(c, t):
+    return DEEP if (t >= .5 or c in (LO, DEEP)) else LO
 
 
-def ramp(name):
-    return tuple(rgb(c) for c in RAMPS[name])
+def light(c, t):
+    return HI
 
 
-def new(size=FR):
-    im = Image.new('RGBA', (size, size), (0, 0, 0, 0))
-    return im, ImageDraw.Draw(im)
+def clamp(x, a=0.0, b=1.0):
+    return max(a, min(b, x))
 
 
-def fade(im, amount):
+def ease(x):
+    x = clamp(x)
+    return x * x * (3 - 2 * x)
+
+
+def eout(x):
+    x = clamp(x)
+    return 1 - (1 - x) ** 2
+
+
+def seg(t, a, b):
+    return clamp((t - a) / (b - a)) if b > a else (1.0 if t >= a else 0.0)
+
+
+def fade_img(im, amount):
     px = im.load()
     for y in range(im.height):
         for x in range(im.width):
             if px[x, y][3] and BAYER[y % 4][x % 4] / 16 < amount:
-                px[x, y] = (0, 0, 0, 0)
+                px[x, y] = CLEAR
     return im
 
 
-def dot(d, x, y, c, w=1):
-    d.rectangle([round(x), round(y), round(x) + w - 1, round(y) + w - 1], fill=c)
+class Cv:
+    """One frame. Heavy shapes on [main] (cut by slits, then bevelled), fine
+    lines and particles on [fine], shaded discs on [top]. The motions are
+    written in a 64 px space; [target] is the point of it that lands on the
+    frame's [anchor]."""
+
+    def __init__(self, seed, target=(32, 32), anchor=(24, 24)):
+        self.seed = seed
+        self.tx, self.ty = target
+        self.ax, self.ay = anchor
+        self.S = 1.0
+        self.A, self.B = HI, LO
+        self.grade = [HI, MID, HI]
+        self.k = 14
+        self.ex = 0
+        self.main = Image.new('RGBA', (FR, FR), CLEAR)
+        self.fine = Image.new('RGBA', (FR, FR), CLEAR)
+        self.top = Image.new('RGBA', (FR, FR), CLEAR)
+
+    def X(self, x):
+        return self.ax + (x - self.tx) * K
+
+    def Y(self, y):
+        return self.ay + (y - self.ty) * K
+
+    def layer(self, name):
+        return {'main': self.main, 'fine': self.fine, 'top': self.top}[name]
+
+    def put(self, im, x, y, c):
+        if 0 <= x < FR and 0 <= y < FR:
+            im.putpixel((x, y), c)
+
+    def disc(self, cx, cy, r, c, layer='main'):
+        cx, cy, r = self.X(cx), self.Y(cy), max(.8, r * K)
+        im = self.layer(layer)
+        for y in range(int(cy - r) - 1, int(cy + r) + 2):
+            for x in range(int(cx - r) - 1, int(cx + r) + 2):
+                if (x - cx) ** 2 + (y - cy) ** 2 <= r * r + .3:
+                    self.put(im, x, y, c)
+
+    def ring(self, cx, cy, ro, ri, c, layer='main'):
+        cx, cy, ro, ri = self.X(cx), self.Y(cy), ro * K, max(0, ri * K)
+        if ro - ri < 1:
+            ri = max(0, ro - 1)
+        im = self.layer(layer)
+        for y in range(int(cy - ro) - 1, int(cy + ro) + 2):
+            for x in range(int(cx - ro) - 1, int(cx + ro) + 2):
+                d = (x - cx) ** 2 + (y - cy) ** 2
+                if ri * ri <= d <= ro * ro + .3:
+                    self.put(im, x, y, c)
+
+    def arc(self, cx, cy, ro, ri, a0, sweep, c, layer='main', caps=True):
+        if sweep <= 0:
+            return
+        sweep = min(sweep, 360)
+        cx_, cy_ = self.X(cx), self.Y(cy)
+        ro_, ri_ = ro * K, ri * K
+        if ro_ - ri_ < 1:
+            ri_ = max(0, ro_ - 1)
+        im = self.layer(layer)
+        for y in range(int(cy_ - ro_) - 1, int(cy_ + ro_) + 2):
+            for x in range(int(cx_ - ro_) - 1, int(cx_ + ro_) + 2):
+                d = math.hypot(x - cx_, y - cy_)
+                if not ri_ <= d <= ro_ + .3:
+                    continue
+                a = math.degrees(math.atan2(y - cy_, x - cx_))
+                if (a - a0) % 360 <= sweep:
+                    self.put(im, x, y, c)
+        if caps and sweep < 359:
+            rm, w = (ro + ri) / 2, (ro - ri) / 2
+            for a in (a0, a0 + sweep):
+                self.disc(cx + rm * math.cos(math.radians(a)),
+                          cy + rm * math.sin(math.radians(a)), w, c, layer)
+
+    def line(self, x0, y0, x1, y1, w, c, layer='main'):
+        n = int(max(abs(x1 - x0), abs(y1 - y0)) * K * 1.5) + 1
+        for i in range(n + 1):
+            t = i / n
+            self.disc(x0 + (x1 - x0) * t, y0 + (y1 - y0) * t, w * 0.65, c, layer)
+
+    def slab(self, x0, y0, x1, y1, c, r=2, layer='main'):
+        im = self.layer(layer)
+        xa, xb = sorted((round(self.X(x0)), round(self.X(x1))))
+        ya, yb = sorted((round(self.Y(y0)), round(self.Y(y1))))
+        ImageDraw.Draw(im).rounded_rectangle(
+            [xa, ya, xb, yb], radius=max(0, min(round(r * K), (xb - xa) // 2, (yb - ya) // 2)), fill=c)
+
+    def poly(self, pts, c, layer='main'):
+        ImageDraw.Draw(self.layer(layer)).polygon(
+            [(self.X(x), self.Y(y)) for x, y in pts], fill=c)
+
+    def stripes(self, cx, cy, ro, ri, a0, sweep, c, step=3):
+        cx_, cy_ = self.X(cx), self.Y(cy)
+        ro_, ri_ = ro * K, ri * K
+        for y in range(int(cy_ - ro_) - 1, int(cy_ + ro_) + 2):
+            for x in range(int(cx_ - ro_) - 1, int(cx_ + ro_) + 2):
+                d = math.hypot(x - cx_, y - cy_)
+                if ri_ <= d <= ro_ and int(round(d)) % step == 0:
+                    a = math.degrees(math.atan2(y - cy_, x - cx_))
+                    if (a - a0) % 360 <= sweep:
+                        self.put(self.fine, x, y, c)
+
+    def cutline(self, x0, y0, x1, y1, w=2):
+        n = int(max(abs(x1 - x0), abs(y1 - y0)) * K * 1.5) + 1
+        for i in range(n + 1):
+            t = i / n
+            cx, cy = self.X(x0 + (x1 - x0) * t), self.Y(y0 + (y1 - y0) * t)
+            for y in range(int(cy - w), int(cy + w) + 1):
+                for x in range(int(cx - w), int(cx + w) + 1):
+                    if (x - cx) ** 2 + (y - cy) ** 2 <= (w * K / 2) ** 2 + .2:
+                        self.put(self.main, x, y, CLEAR)
+
+    def cutarc(self, cx, cy, r, a0, sweep, w=2):
+        steps = max(2, int(sweep / 6))
+        for i in range(steps + 1):
+            a = math.radians(a0 + sweep * i / steps)
+            x, y = self.X(cx + r * math.cos(a)), self.Y(cy + r * math.sin(a))
+            for yy in range(int(y - w), int(y + w) + 1):
+                for xx in range(int(x - w), int(x + w) + 1):
+                    if (xx - x) ** 2 + (yy - y) ** 2 <= (w * K / 2) ** 2 + .2:
+                        self.put(self.main, xx, yy, CLEAR)
+
+    def bead(self, cx, cy, r, base, core=None):
+        """A shaded round disc (lit top-left) on the top layer: a deep rim,
+        the body in [base], a glint; [core] sets a dot in it."""
+        im = self.top
+        cx, cy, r = self.X(cx), self.Y(cy), max(1.2, r * K)
+
+        def fill(cx_, cy_, r_, c):
+            for y in range(int(cy_ - r_) - 1, int(cy_ + r_) + 2):
+                for x in range(int(cx_ - r_) - 1, int(cx_ + r_) + 2):
+                    if (x - cx_) ** 2 + (y - cy_) ** 2 <= r_ * r_ + .3:
+                        self.put(im, x, y, c)
+        fill(cx, cy, r, LO)
+        if r >= 2:
+            fill(cx - .6, cy - .6, r - 1, base)
+        if r >= 3:
+            for y in range(int(cy - r), int(cy + r) + 1):
+                for x in range(int(cx - r), int(cx + r) + 1):
+                    if (x - cx) ** 2 + (y - cy) ** 2 <= (r - .5) ** 2 and \
+                            (x - cx) + (y - cy) > r * .7 and BAYER[y % 4][x % 4] < 8:
+                        self.put(im, x, y, MID if base == HI else LO)
+        if core:
+            fill(cx, cy, max(1, r * .42), core)
+
+    def dust(self, x, y, size, c):
+        x, y = round(x), round(y)
+        for yy in range(y, y + size):
+            for xx in range(x, x + size):
+                self.put(self.fine, xx, yy, c)
+
+    def spark(self, x, y, c):
+        x, y = round(x), round(y)
+        for dx, dy in ((0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)):
+            self.put(self.fine, x + dx, y + dy, c)
+
+    def burst(self, t, ox, oy, t0, life, speed, cols, tag, n=None, grav=0.0,
+              ang=(0, 360), inward=False, plus=0.25):
+        n = self.k if n is None else n
+        rnd = random.Random(f'{self.seed}{tag}')
+        for i in range(n):
+            b = t0 + rnd.random() * life * .55
+            age = (t - b) / life
+            a = math.radians(ang[0] + rnd.random() * (ang[1] - ang[0]))
+            sp = speed * (.45 + rnd.random() * .7)
+            big = rnd.random() < .4
+            kind_plus = rnd.random() < plus
+            c = cols[i % len(cols)]
+            if not 0 <= age <= 1:
+                continue
+            dist = sp * (eout(age) if not inward else (1 - age) ** 1.4)
+            x = self.X(ox) + math.cos(a) * dist * K
+            y = self.Y(oy) + math.sin(a) * dist * K + grav * age * age * 22 * K
+            if age > .8:
+                self.dust(x, y, 1, c)
+            elif kind_plus and big:
+                self.spark(x, y, c)
+            else:
+                self.dust(x, y, 2 if big else 1, c)
+
+    def halo(self, *a, **k):
+        """Rarity's extra is the game's tier layers now (the shock strip)."""
 
 
-def disc(d, cx, cy, r, c):
-    d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=c)
-
-
-def ring(d, cx, cy, r, c, w=1):
-    d.ellipse([cx - r, cy - r, cx + r, cy + r], outline=c, width=w)
-
-
-def line(d, a, b, c, w=1):
-    d.line([round(a[0]), round(a[1]), round(b[0]), round(b[1])], fill=c, width=w)
-
-
-def hash01(i, salt):
-    x = math.sin(i * 12.9898 + salt * 78.233) * 43758.5453
-    return x - math.floor(x)
-
-
-def ease(t):
-    return 1 - (1 - t) ** 3
-
-
-def clamp(v, a=0.0, b=1.0):
-    return max(a, min(b, v))
-
-
-def strip(frames):
-    s = frames[0].width
-    out = Image.new('RGBA', (s * len(frames), s), (0, 0, 0, 0))
-    for i, f in enumerate(frames):
-        out.paste(f, (i * s, 0))
+def bevel(layer):
+    out = layer.copy()
+    w, h = layer.size
+    for y in range(h):
+        for x in range(w):
+            p = layer.getpixel((x, y))
+            if not p[3]:
+                continue
+            up = layer.getpixel((x, y - 1))[3] if y > 0 else 0
+            left = layer.getpixel((x - 1, y))[3] if x > 0 else 0
+            down = layer.getpixel((x, y + 1))[3] if y < h - 1 else 0
+            right = layer.getpixel((x + 1, y))[3] if x < w - 1 else 0
+            if not up or not left:
+                out.putpixel((x, y), HI)
+            elif not down or not right:
+                out.putpixel((x, y), LO)
     return out
 
 
-def bez(p0, p1, p2, u):
-    a = (1 - u) ** 2
-    b = 2 * (1 - u) * u
-    c = u * u
-    return (a * p0[0] + b * p1[0] + c * p2[0], a * p0[1] + b * p1[1] + c * p2[1])
+def quantise(im):
+    """Every pixel one of the four tones (or clear): the game recolours by them."""
+    tones = [HI, MID, LO, DEEP]
+    px = im.load()
+    for y in range(im.height):
+        for x in range(im.width):
+            p = px[x, y]
+            if p[3] == 0:
+                px[x, y] = CLEAR
+            elif p not in tones:
+                px[x, y] = min(tones, key=lambda c: sum((c[i] - p[i]) ** 2 for i in range(3)))
+    return im
 
 
-def sparks(d, cx, cy, i, n, rmin, rmax, c1, c2, seed=1, life=1.0, t=0.0):
-    for k in range(n):
-        a = k * 2 * math.pi / n + hash01(k, seed) * 0.6
-        r = rmin + ease(clamp(t / life)) * (rmax - rmin) * (0.6 + 0.4 * hash01(k, seed + 3))
-        dot(d, cx + math.cos(a) * r, cy + math.sin(a) * r, c1 if k % 2 else c2, 2 if (k % 3 == 0 and t < .5) else 1)
+# ------------------------------------------------------------------ motions
+def swipe(cv, t, cx, cy, ro, ri, a0, sweep, rev=False, c=CREAM, cut=True):
+    front = sweep * ease(seg(t, 0, .45))
+    back = sweep * ease(seg(t, .5, .95))
+    if front - back > 1:
+        cv.arc(cx, cy, ro, ri, a0 + back, front - back, c)
+        if cut:
+            cv.cutarc(cx, cy, (ro + ri) / 2, a0 + back + 6, max(0, front - back - 12), 2)
+        cv.stripes(cx, cy, ri - 1, ri - 6, a0 + back, front - back, cv.B, 3)
+    return a0 + front
 
 
-# ================================================================== strikes
-def swoosh(d, curve, tail, head, maxw, hi, mid, lo):
-    """A tapering crescent between [tail] and [head] along [curve]."""
-    if head <= tail:
-        return
-    steps = 40
-    for s in range(steps + 1):
-        u = tail + (head - tail) * s / steps
-        x, y = curve(u)
-        k = math.sin(math.pi * (s / steps)) ** 0.8
-        w = 1 + round(maxw * k)
-        r = w / 2
-        d.rectangle([round(x - r), round(y - r), round(x + r), round(y + r)], fill=lo if w > 3 else mid)
-    for s in range(steps + 1):
-        u = tail + (head - tail) * s / steps
-        x, y = curve(u)
-        k = math.sin(math.pi * (s / steps)) ** 0.8
-        w = max(1, round(maxw * k * 0.62))
-        r = w / 2
-        d.rectangle([round(x - r), round(y - r), round(x + r), round(y + r)], fill=mid)
-    for s in range(steps + 1):
-        u = tail + (head - tail) * s / steps
-        x, y = curve(u)
-        k = math.sin(math.pi * (s / steps)) ** 0.8
-        w = max(1, round(maxw * k * 0.28))
-        r = w / 2
-        d.rectangle([round(x - r), round(y - r), round(x + r), round(y + r)], fill=hi)
+def m_slash(cv, t):
+    end = swipe(cv, t, 30, 46, 27, 19, 205, 135)
+    ex, ey = 30 + 23 * math.cos(math.radians(end)), 46 + 23 * math.sin(math.radians(end))
+    if t > .1:
+        cv.bead(ex, ey, 3.5 * (1 - seg(t, .5, 1)) + 1, cv.A)
+    cv.burst(t, ex, ey, .35, .5, 12, [CREAM, cv.A, cv.B], 'a')
 
 
-def fx_slash(i, rp):
-    hi, mid, lo = rp
-    t = 0.06 + i / (N - 1) * 0.94
-    im, d = new()
-    c = lambda u: bez((41, 5), (38, 36), (7, 43), u)
-    head = ease(clamp(t / 0.5))
-    tail = clamp((t - 0.22) / 0.6)
-    swoosh(d, c, tail, head, 7, hi, mid, lo)
-    if 0.3 < t < 0.9:
-        sparks(d, 8, 42, i, 8, 2, 11, hi, mid, 5, 0.6, t - 0.3)
-    return fade(im, clamp((t - 0.62) * 2.3))
+def m_heavy_slash(cv, t):
+    swipe(cv, t, 32, 44, 27, 18, 200, 140)
+    swipe(cv, seg(t, .15, 1) if t > .15 else 0, 32, 20, 27, 18, 20, 140)
+    if t > .4:
+        e = eout(seg(t, .4, .9))
+        for k in range(9):
+            a = k * 20 - 80
+            cv.disc(32 + math.cos(math.radians(a)) * 24 * e * 1.0, 52 + math.sin(math.radians(a)) * 5 * e,
+                    max(1, round(3 * (1 - e)) + 1), cv.grade[k % 3], 'fine')
+    cv.burst(t, 32, 32, .3, .5, 18, [CREAM, cv.A, cv.B], 'b', grav=.4)
+    cv.halo(t, .35, 32, 32)
 
 
-def fx_heavy(i, rp):
-    hi, mid, lo = rp
-    t = 0.06 + i / (N - 1) * 0.94
-    im, d = new()
-    c = lambda u: bez((43, 2), (40, 38), (4, 44), u)
-    c2 = lambda u: bez((46, 10), (44, 40), (14, 46), u)
-    head = ease(clamp(t / 0.45))
-    swoosh(d, c, clamp((t - 0.28) / 0.6), head, 11, hi, mid, lo)
-    swoosh(d, c2, clamp((t - 0.35) / 0.6), ease(clamp((t - 0.1) / 0.45)), 6, mid, lo, lo)
-    if t > 0.4:
-        e = clamp((t - 0.4) / 0.5)
-        ry = 3 + round(ease(e) * 5)
-        d.ellipse([24 - 4 - round(ease(e) * 16), 44 - ry, 24 + 4 + round(ease(e) * 16), 44 + ry // 2], outline=mid, width=1)
-        for k in range(10):
-            a = math.pi + k * math.pi / 9
-            r = 6 + ease(e) * (10 + hash01(k, 2) * 9)
-            dot(d, 22 + math.cos(a) * r, 42 + math.sin(a) * r * 0.9 - 6 * e, hi if k % 2 else mid, 2 if k % 3 == 0 else 1)
-    return fade(im, clamp((t - 0.7) * 3.2))
+def m_claw(cv, t):
+    for i in range(3):
+        a = seg(t, i * .12, i * .12 + .32)
+        b = seg(t, .5 + i * .06, .9)
+        x0, y0 = 14 + i * 14, 8
+        x1, y1 = 24 + i * 14, 54
+        if a > 0:
+            p0 = ease(b)
+            p1 = ease(a)
+            if p1 - p0 > .02:
+                cv.line(x0 + (x1 - x0) * p0, y0 + (y1 - y0) * p0,
+                        x0 + (x1 - x0) * p1, y0 + (y1 - y0) * p1, 6 - i, CREAM)
+        if 0 < a < 1:
+            cv.bead(x0 + (x1 - x0) * ease(a), y0 + (y1 - y0) * ease(a), 2.5, cv.A)
+    cv.burst(t, 32, 34, .3, .5, 16, [CREAM, cv.A], 'c')
+    cv.halo(t, .4, 32, 32)
 
 
-def fx_claw(i, rp):
-    hi, mid, lo = rp
-    t = 0.06 + i / (N - 1) * 0.94
-    im, d = new()
+def m_pierce(cv, t):
+    tip = -6 + 52 * ease(seg(t, 0, .4))
+    tail = tip - 34
+    if t < .75:
+        cv.line(max(2, tail), 32, tip, 32, 6, CREAM)
+        cv.poly([(tip, 24), (tip + 10, 32), (tip, 40)], CREAM)
+        cv.cutline(max(2, tail) + 2, 32, tip - 2, 32, 1)
+    if t > .38:
+        e = eout(seg(t, .38, .85))
+        for k in range(8):
+            a = math.radians(k * 45)
+            r0, r1 = 8 + 4 * e, 8 + 20 * e
+            cv.line(46 + math.cos(a) * r0, 32 + math.sin(a) * r0, 46 + math.cos(a) * r1,
+                    32 + math.sin(a) * r1, 4 * (1 - e) + 1.5, CREAM)
+        cv.bead(46, 32, 6 * (1 - seg(t, .5, 1)) + 1, cv.A)
+    cv.burst(t, 46, 32, .4, .5, 14, [CREAM, cv.A, cv.B], 'd')
+    cv.halo(t, .4, 46, 32)
+
+
+def m_impact(cv, t):
+    r = 11 * ease(seg(t, 0, .25)) * (1 - .5 * seg(t, .5, 1))
+    if r > 1:
+        cv.disc(32, 32, r, CREAM)
+    e = ease(seg(t, .05, .45))
+    shrink = 1 - seg(t, .55, 1)
+    for k in range(8):
+        a = math.radians(k * 45 + 22)
+        r0, r1 = 11 + 2 * e, 11 + 15 * e
+        if shrink > .05:
+            cv.line(32 + math.cos(a) * r0, 32 + math.sin(a) * r0, 32 + math.cos(a) * r1,
+                    32 + math.sin(a) * r1, 5 * shrink + 1, CREAM)
+    a = seg(t, .1, .9)
+    if 0 < a < 1:
+        cv.ring(32, 32, 8 + 22 * eout(a), 8 + 22 * eout(a) - 3, cv.A, 'fine')
+    cv.bead(32, 32, 6 * (1 - seg(t, .25, .7)), cv.A)
+    cv.burst(t, 32, 32, .15, .6, 22, [CREAM, cv.A, cv.B], 'e', grav=.6)
+    cv.halo(t, .2, 32, 32)
+
+
+def m_whirl(cv, t):
+    rot = 360 * t * 1.2
+    f = ease(seg(t, 0, .2)) * (1 - ease(seg(t, .8, 1)))
     for k in range(3):
-        off = (k - 1) * 9
-        start = k * 0.09
-        u = clamp((t - start) / 0.4)
-        c = lambda v, off=off: bez((30 + off, 4 + abs(off) * 0.2), (27 + off, 24), (22 + off - 6, 44), v)
-        swoosh(d, c, clamp((t - start - 0.18) / 0.5), ease(u), 5, hi, mid, lo)
-    if 0.35 < t:
-        for k in range(8):
-            dot(d, 16 + hash01(k, 4) * 20, 12 + hash01(k, 8) * 28 + (t - .35) * 8, mid if k % 2 else hi)
-    return fade(im, clamp((t - 0.6) * 2.5))
+        cv.arc(32, 32, 26, 19, rot + k * 120, 85 * f, CREAM)
+    cv.stripes(32, 32, 17, 11, -rot * 1.3, 240 * f, cv.B, 3)
+    cv.bead(32, 32, 5 * f, cv.A)
+    cv.burst(t, 32, 32, .2, .6, 20, [CREAM, cv.A], 'f')
+    cv.halo(t, .3, 32, 32)
 
 
-def fx_pierce(i, rp):
-    hi, mid, lo = rp
-    t = 0.06 + i / (N - 1) * 0.94
-    im, d = new()
-    x = -6 + ease(clamp(t / 0.45)) * 36
-    y = 24
-    for k, (yy, ln) in enumerate(((19, 12), (24, 18), (29, 10))):
-        if t < 0.7:
-            line(d, (x - ln - 4, yy), (x - 5, yy), mid if k != 1 else hi, 1)
-    if t < 0.62:
-        d.polygon([(round(x + 8), y), (round(x - 2), y - 5), (round(x - 2), y + 5)], fill=mid, outline=lo)
-        d.polygon([(round(x + 6), y), (round(x - 1), y - 2), (round(x - 1), y + 2)], fill=hi)
-        line(d, (x - 2, y), (x - 20, y), lo, 2)
-    if t > 0.4:
-        e = clamp((t - 0.4) / 0.5)
-        for k in range(8):
-            a = k * math.pi / 4
-            r0 = 3 + ease(e) * 4
-            r1 = r0 + 4 + ease(e) * 8 * (1.4 if k % 2 == 0 else 0.8)
-            line(d, (30 + math.cos(a) * r0, 24 + math.sin(a) * r0), (30 + math.cos(a) * r1, 24 + math.sin(a) * r1), hi if k % 2 == 0 else mid, 2 if e < .5 else 1)
-        if e < .4:
-            disc(d, 30, 24, 3, hi)
-    return fade(im, clamp((t - 0.72) * 3.5))
+def arrow_at(cv, x, y, f=1.0):
+    cv.line(x - 20, y, x, y, 3, CREAM)
+    cv.poly([(x - 2, y - 6), (x + 9, y), (x - 2, y + 6)], CREAM)
+    cv.slab(x - 24, y - 5, x - 17, y - 1, cv.A, 1)
+    cv.slab(x - 24, y + 1, x - 17, y + 5, cv.A, 1)
 
 
-def star(d, cx, cy, ro, ri, n, fill, outline):
-    pts = []
-    for k in range(n * 2):
-        a = k * math.pi / n - math.pi / 2
-        r = ro if k % 2 == 0 else ri
-        pts.append((round(cx + math.cos(a) * r), round(cy + math.sin(a) * r)))
-    d.polygon(pts, fill=fill, outline=outline)
+def m_arrow(cv, t):
+    x = -6 + 56 * ease(seg(t, 0, .6))
+    if t < .65:
+        arrow_at(cv, x, 32)
+        cv.stripes(x - 20, 32, 14, 6, 0, 360, cv.B, 4)
+    if t > .58:
+        a = seg(t, .58, 1)
+        cv.ring(50, 32, 4 + 12 * eout(a), 4 + 12 * eout(a) - 2, cv.A, 'fine')
+    cv.burst(t, 50, 32, .58, .4, 14, [CREAM, cv.A], 'g', ang=(100, 260))
+    cv.halo(t, .6, 50, 32, 20)
 
 
-def fx_impact(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    e = ease(clamp(t / 0.55))
-    ro = 4 + e * 17
-    star(d, 24, 24, round(ro), round(ro * 0.45), 8, mid, lo)
-    if t < 0.75:
-        star(d, 24, 24, round(ro * 0.62), round(ro * 0.28), 8, hi, hi)
-    if t > 0.15:
-        ring(d, 24, 24, round(6 + ease(clamp((t - .15) / .7)) * 18), mid, 2 if t < .5 else 1)
-    for k in range(12):
-        a = k * 2 * math.pi / 12 + hash01(k, 7) * .5
-        r = 10 + ease(t) * (12 + hash01(k, 9) * 8)
-        dot(d, 24 + math.cos(a) * r, 24 + math.sin(a) * r, hi if k % 2 else mid, 3 if k % 4 == 0 else 2)
-    return fade(im, clamp((t - 0.6) * 2.6))
+def m_volley(cv, t):
+    for i, y in enumerate((16, 32, 48)):
+        s = i * .08
+        x = -6 + 56 * ease(seg(t, s, .55 + s))
+        if t < .6 + s:
+            arrow_at(cv, x, y)
+        if t > .52 + s:
+            a = seg(t, .52 + s, 1)
+            cv.ring(50, y, 3 + 8 * eout(a), 3 + 8 * eout(a) - 2, cv.A, 'fine')
+    cv.burst(t, 50, 32, .55, .45, 16, [CREAM, cv.A], 'h', ang=(100, 260))
+    cv.halo(t, .6, 50, 32, 22)
 
 
-# ================================================================ elements
-def flame_tongue(d, bx, by, h, sway, hi, mid, lo, width):
-    for s in range(h):
-        k = s / max(1, h - 1)
-        w = max(1, round(width * (1 - k) ** 0.75))
-        x = bx + math.sin(k * 3.1 + sway) * 3.2 * k
-        y = by - s
-        col = lo if k > .66 else (mid if k > .3 or w > 3 else hi)
-        d.rectangle([round(x - w / 2), round(y), round(x + w / 2), round(y)], fill=col)
-    # bright core
-    for s in range(int(h * .5)):
-        k = s / max(1, h - 1)
-        w = max(1, round(width * .5 * (1 - k * 1.4)))
-        x = bx + math.sin(k * 3.1 + sway) * 3.2 * k
-        d.rectangle([round(x - w / 2), round(by - s), round(x + w / 2), round(by - s)], fill=hi)
-
-
-def fx_flame(i, rp):
-    hi, mid, lo = rp
-    t = 0.06 + i / (N - 1) * 0.94
-    im, d = new()
-    grow = ease(clamp(t / 0.35))
-    for k, (bx, h, wd) in enumerate(((24, 30, 9), (15, 21, 6), (33, 23, 6), (9, 12, 4), (39, 13, 4))):
-        flame_tongue(d, bx, 44, round(h * grow * (0.9 + 0.1 * math.sin(i * 1.7 + k))), i * 0.9 + k * 1.3, hi, mid, lo, wd)
-    for k in range(8):
-        r = hash01(k, 3)
-        age = (t * 1.6 + r) % 1
-        dot(d, 12 + r * 24 + math.sin(age * 6 + k) * 3, 40 - age * 34, mid if k % 2 else hi)
-    return fade(im, clamp((t - 0.72) * 3.4))
-
-
-def fx_frost(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    if i < 5:
-        g = ease(i / 4)
-        for k in range(6):
-            a = k * math.pi / 3 + math.pi / 6
-            L = (10 + (k % 2) * 6) * g
-            ca, sa = math.cos(a), math.sin(a)
-            px, py = -sa, ca
-            tip = (24 + ca * L, 24 + sa * L)
-            base1 = (24 + px * 3.4, 24 + py * 3.4)
-            base2 = (24 - px * 3.4, 24 - py * 3.4)
-            d.polygon([tuple(map(round, tip)), tuple(map(round, base1)), tuple(map(round, base2))], fill=mid, outline=lo)
-            line(d, (24, 24), tip, hi, 1)
-        disc(d, 24, 24, round(3 + g * 2), hi)
-        if i >= 2:
-            ring(d, 24, 24, round(5 + g * 14), mid, 1)
+def m_fireball(cv, t):
+    p = ease(seg(t, 0, .6))
+    x, y = 6 + 40 * p, 52 - 28 * p
+    if t < .62:
+        for k in range(1, 5):
+            q = max(0, p - k * .06)
+            cv.disc(6 + 40 * q, 52 - 28 * q, 6 - k, cv.grade[min(2, k // 2 + 1)], 'fine')
+        cv.bead(x, y, 8, cv.grade[0])
     else:
-        e = (i - 4) / 3
-        for k in range(18):
-            a = k * 2 * math.pi / 18 + hash01(k, 11) * .4
-            r = 9 + ease(e) * (8 + hash01(k, 12) * 14)
-            x, y = 24 + math.cos(a) * r, 24 + math.sin(a) * r + e * 5 * hash01(k, 13)
-            w = 3 if k % 3 == 0 else 2
-            d.rectangle([round(x), round(y), round(x) + w - 1, round(y) + w - 1], fill=hi if k % 2 else mid)
-        im = fade(im, clamp(e * 0.9))
-    return im
+        a = seg(t, .6, 1)
+        e = eout(a)
+        for k in range(12):
+            ang = math.radians(k * 30)
+            r = 4 + 20 * e
+            cv.disc(46 + math.cos(ang) * r, 24 + math.sin(ang) * r,
+                    max(1, round(5 * (1 - a))), cv.grade[k % 3], 'fine')
+        cv.bead(46, 24, 9 * (1 - a) + 1, cv.grade[0])
+        cv.ring(46, 24, 6 + 16 * e, 6 + 16 * e - 3, CREAM)
+    cv.burst(t, 46, 24, .6, .4, 18, [CREAM, cv.A, cv.B], 'i', grav=.3)
+    cv.halo(t, .62, 46, 24, 24)
 
 
-def fx_lightning(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
+def zig(cv, pts, w, c):
+    for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+        cv.line(x0, y0, x1, y1, w, c)
 
-    def bolt(seed, w, col, x0=24, forks=True):
-        pts = [(x0, 0)]
-        y = 0
-        while y < 38:
-            y += 6 + hash01(len(pts), seed) * 5
-            pts.append((x0 + (hash01(len(pts), seed + 2) - .5) * 16, min(y, 40)))
-        for a, b in zip(pts, pts[1:]):
-            line(d, a, b, col, w)
-        if forks:
-            for k in (2, 4):
-                if k < len(pts):
-                    s = pts[k]
-                    e = (s[0] + (14 if k % 4 == 0 else -14), s[1] + 9)
-                    line(d, s, e, col, max(1, w - 1))
-        return pts
 
-    if i == 0:
-        disc(d, 24, 40, 4, hi)
-        for k in range(8):
-            dot(d, 12 + k * 3, 3 + hash01(k, 1) * 6, mid)
-    elif i < 5:
-        seed = 1 + (i % 2) * 7
-        bolt(seed, 5 if i < 3 else 3, lo)
-        bolt(seed, 3 if i < 3 else 2, mid)
-        bolt(seed, 1, hi)
-        disc(d, 24, 40, 6 - (i - 1), mid)
-        disc(d, 24, 40, 3, hi)
-        if i < 3:
-            ring(d, 24, 40, 9 + i * 2, mid, 1)
+def m_bolt(cv, t):
+    on = (int(t * 12) % 2 == 0) or t > .55
+    pts = [(10, 8), (30, 22), (22, 28), (46, 50)]
+    k = ease(seg(t, 0, .4))
+    n = max(1, int(round(k * 3 + .4)))
+    if on and t < .85:
+        zig(cv, pts[:n + 1], 5, CREAM)
+        cv.cutline(pts[0][0], pts[0][1], pts[1][0], pts[1][1], 1)
+    if t > .35:
+        a = seg(t, .35, 1)
+        cv.bead(46, 50, 8 * (1 - a) + 2, cv.A)
+        cv.ring(46, 50, 4 + 14 * eout(a), 4 + 14 * eout(a) - 2, cv.B, 'fine')
+    cv.burst(t, 46, 50, .35, .5, 14, [CREAM, cv.A, cv.B], 'j', plus=.6)
+    cv.halo(t, .4, 46, 50, 22)
+
+
+def m_lightning(cv, t):
+    on = (int(t * 14) % 2 == 0) or t > .5
+    k = ease(seg(t, 0, .3))
+    pts = [(32, 0), (26, 14), (36, 24), (28, 38), (34, 52)]
+    n = max(1, int(round(k * 4 + .4)))
+    if on and t < .85:
+        zig(cv, pts[:n + 1], 5, CREAM)
+        if n >= 3:
+            zig(cv, [(36, 24), (46, 30), (50, 42)], 3, CREAM)
+        if n >= 2:
+            zig(cv, [(26, 14), (16, 22), (14, 32)], 3, CREAM)
+    if t > .3:
+        a = seg(t, .3, 1)
+        cv.bead(34, 52, 7 * (1 - a) + 2, cv.A)
+        cv.ring(34, 56, 4 + 20 * eout(a), 4 + 20 * eout(a) - 2, cv.B, 'fine')
+    cv.burst(t, 34, 52, .3, .5, 16, [CREAM, cv.A, cv.B], 'k', plus=.7, ang=(180, 360))
+    cv.halo(t, .35, 34, 52, 22)
+
+
+def m_meteor(cv, t):
+    p = ease(seg(t, 0, .55))
+    x, y = 4 + 40 * p, 0 + 44 * p
+    if t < .58:
+        for k in range(1, 6):
+            q = max(0, p - k * .05)
+            cv.line(4 + 40 * q, 44 * q, 4 + 40 * (q - .02), 44 * (q - .02), 7 - k, CREAM, 'fine')
+        cv.bead(x, y, 9, cv.grade[0])
     else:
-        e = (i - 4) / 3
-        bolt(3, 1, mid)
-        for k in range(10):
-            a = math.pi + hash01(k, 21) * math.pi
-            r = 6 + ease(e) * 14
-            dot(d, 24 + math.cos(a) * r * 1.3, 40 + math.sin(a) * r * 0.9, hi if k % 2 else mid)
-        im = fade(im, clamp(e * 1.15))
-    return im
+        a = seg(t, .58, 1)
+        cv.slab(6, 52, 58, 56, CREAM, 2)
+        cv.ring(44, 50, 4 + 18 * eout(a), 4 + 18 * eout(a) - 4, CREAM)
+        cv.bead(44, 48, 10 * (1 - a) + 1, cv.grade[0])
+    cv.burst(t, 44, 50, .56, .5, 20, [CREAM, cv.A, cv.B], 'l', grav=.9, ang=(200, 340))
+    cv.halo(t, .6, 44, 50, 24)
 
 
+def flame_at(cv, cx, base, h, w, c, sway):
+    cv.disc(cx, base - w * .6, w, c)
+    cv.poly([(cx - w, base - w * .6), (cx + sway, base - h), (cx + w, base - w * .6)], c)
 
 
-# ---------------------------------------------------------------- helpers
-def veil(im, painter, amount):
-    """Draws [painter] on a fresh layer, dithers it by [amount], lays it on [im]."""
-    layer = Image.new('RGBA', (FR, FR), (0, 0, 0, 0))
-    painter(ImageDraw.Draw(layer))
-    im.alpha_composite(fade(layer, clamp(amount)))
+def m_flame(cv, t):
+    g = ease(seg(t, 0, .25)) * (1 - ease(seg(t, .8, 1)))
+    for i, (cx, h, w) in enumerate(((20, 24, 7), (44, 28, 8), (32, 40, 11))):
+        sw = math.sin(t * 12 + i * 2) * 4
+        flame_at(cv, cx, 56, h * g, w * max(.2, g), CREAM, sw)
+    flame_at(cv, 32, 54, 30 * g, 6 * max(.2, g), cv.grade[0], math.sin(t * 14) * 3)
+    cv.slab(10, 56, 54, 59, CREAM, 2)
+    cv.burst(t, 32, 40, .1, .8, 22, [cv.A, cv.B, CREAM], 'm', ang=(230, 310), plus=.15)
+    cv.halo(t, .3, 32, 40, 22)
 
 
-def arc_swoosh(d, cx, cy, r, a_tail, a_head, maxw, hi, mid, lo):
-    steps = 36
-    for layer, k0, col in ((0, 1.0, lo), (1, 0.62, mid), (2, 0.28, hi)):
-        for s in range(steps + 1):
-            u = s / steps
-            a = a_tail + (a_head - a_tail) * u
-            k = math.sin(math.pi * u) ** 0.8
-            w = max(1, round(maxw * k * k0))
-            x, y = cx + math.cos(a) * r, cy + math.sin(a) * r
-            d.rectangle([round(x - w / 2), round(y - w / 2), round(x + w / 2), round(y + w / 2)], fill=col)
-
-
-# ---------------------------------------------------------------- strikes
-def fx_whirl(i, rp):
-    hi, mid, lo = rp
-    t = 0.06 + i / (N - 1) * 0.94
-    im, d = new()
-    spin = ease(clamp(t / 0.8)) * math.pi * 2.6
-    for k in range(2):
-        a0 = spin + k * math.pi
-        arc_swoosh(d, 24, 24, 15, a0 - 1.9, a0, 7, hi, mid, lo)
-    if t > 0.25:
-        ring(d, 24, 24, 17 + round(ease(clamp((t - .25) / .6)) * 5), mid, 1)
-    for k in range(8):
-        a = spin + k * math.pi / 4
-        dot(d, 24 + math.cos(a) * (19 + 3 * math.sin(i + k)), 24 + math.sin(a) * (19 + 3 * math.cos(i + k)), hi if k % 2 else mid)
-    return fade(im, clamp((t - 0.7) * 3.2))
-
-
-# ------------------------------------------------------------ projectiles
-def fx_arrow_proj(i, rp):
-    hi, mid, lo = rp
-    im, d = new()
-    y = 24
-    for k, ln in enumerate((16 + (i % 2) * 3, 10 + (i % 3) * 2)):
-        line(d, (28 - ln, y - 4 + k * 8), (24, y - 4 + k * 8), mid if k else lo, 1)
-    line(d, (12, y), (35, y), lo, 3)
-    line(d, (12, y), (35, y), mid, 1)
-    d.polygon([(41, y), (34, y - 4), (34, y + 4)], fill=hi, outline=lo)
-    for off in (-1, 1):
-        d.polygon([(12, y), (7, y + off * 5), (16, y)], fill=mid, outline=lo)
-    return im
-
-
-def fx_orb(i, rp):
-    hi, mid, lo = rp
-    im, d = new()
-    cx = 32
-    for g in range(1, 6):
-        veil(im, lambda dd, g=g: disc(dd, cx - g * 4, 24 + round(math.sin(g + i * 1.3) * 2), max(1, 6 - g), lo if g > 2 else mid), 0.18 * g + 0.1)
-    disc(d, cx, 24, 7, lo)
-    disc(d, cx, 24, 6, mid)
-    disc(d, cx - 1, 23, 3 + (i % 2), hi)
-    for k in range(5):
-        a = i * 1.3 + k * 1.26
-        dot(d, cx + math.cos(a) * 9, 24 + math.sin(a) * 9, hi if k % 2 else mid)
-    return im
-
-
-def fx_meteor_proj(i, rp):
-    hi, mid, lo = rp
-    im, d = new()
-    for g in range(1, 8):
-        veil(im, lambda dd, g=g: disc(dd, 24 - g * 1 + round(math.sin(g * 1.7 + i) * 2), 22 - g * 4, max(1, 8 - g), lo if g > 3 else mid), 0.12 * g + 0.05)
-    disc(d, 24, 30, 9, lo)
-    disc(d, 24, 30, 8, DEEP)
-    disc(d, 21, 27, 3, lo)
-    dot(d, 20, 25, mid, 2)
+def m_frost(cv, t):
+    g = ease(seg(t, 0, .45)) * (1 - ease(seg(t, .78, 1)))
     for k in range(6):
-        dot(d, 17 + k * 3 + (i % 2), 22 + (k % 3) * 2 - 3, mid if k % 2 else hi, 2)
-    ring(d, 24, 30, 9, mid, 1)
-    return im
+        a = math.radians(k * 60 + 30 * t)
+        r = 24 * g
+        cv.line(32, 32, 32 + math.cos(a) * r, 32 + math.sin(a) * r, 4, CREAM)
+        cv.disc(32 + math.cos(a) * r, 32 + math.sin(a) * r, 3, cv.A)
+        a2 = a + math.radians(26)
+        cv.line(32 + math.cos(a) * r * .55, 32 + math.sin(a) * r * .55,
+                32 + math.cos(a) * r * .55 + math.cos(a2) * 6 * g,
+                32 + math.sin(a) * r * .55 + math.sin(a2) * 6 * g, 2, CREAM)
+    cv.ring(32, 32, 9 * g + 1, 5 * g, CREAM)
+    cv.bead(32, 32, 4 * g, cv.A)
+    cv.stripes(32, 32, 20, 12, 0, 360, cv.B, 4)
+    cv.burst(t, 32, 20, .2, .8, 12, [CREAM, cv.B], 'n', grav=.9, plus=.5, ang=(200, 340))
+    cv.halo(t, .4, 32, 32, 24)
 
 
-# --------------------------------------------------------------- landings
-def fx_impact_s(i, rp):
-    hi, mid, lo = rp
-    t = 0.06 + i / (N - 1) * 0.94
-    im, d = new()
-    e = ease(clamp(t / 0.55))
-    ro = 3 + e * 10
-    star(d, 24, 24, round(ro), round(ro * 0.45), 6, mid, lo)
-    if t < 0.75:
-        star(d, 24, 24, round(ro * 0.6), round(ro * 0.28), 6, hi, hi)
-    for k in range(8):
-        a = k * math.pi / 4 + hash01(k, 7) * .4
-        r = 7 + ease(t) * (7 + hash01(k, 9) * 5)
-        dot(d, 24 + math.cos(a) * r, 24 + math.sin(a) * r, hi if k % 2 else mid, 2 if k % 3 == 0 else 1)
-    return fade(im, clamp((t - 0.6) * 2.6))
-
-
-def fx_zap(i, rp):
-    hi, mid, lo = rp
-    t = 0.06 + i / (N - 1) * 0.94
-    im, d = new()
-    for b in range(5):
-        a = b * 2 * math.pi / 5 + 0.4 + (i % 2) * 0.5
-        pts = [(24, 24)]
-        r = 0
-        while r < 20:
-            r += 4 + hash01(len(pts) + b * 5 + i, 3) * 4
-            aa = a + (hash01(len(pts) + b * 7 + i, 5) - .5) * 0.9
-            pts.append((24 + math.cos(aa) * r, 24 + math.sin(aa) * r))
-        for p0, p1 in zip(pts, pts[1:]):
-            line(d, p0, p1, lo, 3 if t < .5 else 2)
-            line(d, p0, p1, mid, 1)
-    disc(d, 24, 24, max(2, round(7 * (1 - t) + 2)), mid)
-    disc(d, 24, 24, max(1, round(4 * (1 - t) + 1)), hi)
-    ring(d, 24, 24, 5 + round(ease(t) * 12), mid, 1)
-    return fade(im, clamp((t - 0.55) * 2.4))
-
-
-def fx_explosion(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    r = 5 + round(ease(clamp(t / .7)) * 17)
-    veil(im, lambda dd: disc(dd, 24, 24, r, lo), t * 0.55)
-    veil(im, lambda dd: disc(dd, 24, 24, round(r * 0.72), mid), t * 0.45)
-    disc(d, 24, 24, max(1, round(r * 0.45 * (1 - t * .7))), hi)
-    ring(d, 24, 24, min(23, r + 2), mid, 2 if t < .5 else 1)
-    for k in range(12):
-        a = k * 2 * math.pi / 12 + hash01(k, 5)
-        rr = r * 0.6 + ease(t) * (7 + hash01(k, 6) * 9)
-        dot(d, 24 + math.cos(a) * rr, 24 + math.sin(a) * rr - t * 5, hi if k % 2 else mid, 2 if k % 3 == 0 else 1)
-    return fade(im, clamp((t - 0.5) * 1.9)) if t > .5 else im
-
-
-# --------------------------------------------------------------- elements
-def fx_holy_beam(i, rp):
-    hi, mid, lo = rp
-    t = 0.06 + i / (N - 1) * 0.94
-    im, d = new()
-    w = round(4 + 7 * math.sin(math.pi * clamp(t / 0.8)) ** 0.7)
-    veil(im, lambda dd: dd.rectangle([24 - w - 3, 0, 24 + w + 3, 41], fill=mid), 0.62 - t * 0.25)
-    d.rectangle([24 - w, 0, 24 + w, 41], fill=mid)
-    d.rectangle([24 - w // 2, 0, 24 + w // 2, 41], fill=hi)
-    d.ellipse([24 - 12 - round(t * 8), 38, 24 + 12 + round(t * 8), 46], outline=hi, width=2 if t < .5 else 1)
-    for k in range(10):
-        age = (t * 1.5 + hash01(k, 3)) % 1
-        dot(d, 24 + (hash01(k, 4) - .5) * 2 * (w + 6), 42 - age * 40, hi if k % 2 else mid, 2 if k % 3 == 0 else 1)
-    return fade(im, clamp((t - 0.7) * 3.3))
-
-
-def fx_splash(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    for k in range(14):
-        a = -math.pi / 2 + (k - 6.5) * 0.19
-        v = 11 + hash01(k, 2) * 9
-        x = 24 + math.cos(a) * v * t * 1.6
-        y = 30 + math.sin(a) * v * t * 1.6 + 26 * t * t
-        w = 3 if k % 3 == 0 else 2
-        d.ellipse([round(x), round(y), round(x) + w, round(y) + w + 1], fill=hi if k % 2 else mid, outline=lo)
-    for k, t0 in enumerate((0.0, 0.2, 0.4)):
-        e = clamp((t - t0) / 0.6)
-        if 0 < e < 1:
-            rx = 3 + round(ease(e) * 17)
-            d.ellipse([24 - rx, 32 - rx // 3, 24 + rx, 32 + rx // 3 + 1], outline=mid if k % 2 == 0 else hi, width=1)
-    return fade(im, clamp((t - 0.65) * 2.8))
-
-
-def fx_poison(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    for k, (cx, cy, r) in enumerate(((24, 30, 11), (15, 32, 8), (33, 32, 8), (24, 24, 8))):
-        layer = Image.new('RGBA', (FR, FR), (0, 0, 0, 0)); ld = ImageDraw.Draw(layer)
-        disc(ld, cx, cy - round(t * 3), round(r * (0.6 + 0.4 * ease(t))), lo if k % 2 else mid)
-        im.alpha_composite(fade(layer, 0.38 + 0.08 * k))
-    for k in range(9):
-        age = (t * 1.2 + hash01(k, 3)) % 1
-        x = 12 + hash01(k, 4) * 24 + math.sin(age * 6 + k) * 2
-        y = 40 - age * 34
-        r = 1 + round(age * 2.5)
-        ring(d, round(x), round(y), r, hi if k % 2 else mid, 1)
-        if r > 2 and age > .8:
-            dot(d, x, y, hi, 1)
-    return fade(im, clamp((t - 0.7) * 3.2))
-
-
-def fx_smoke(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
+def m_splash(cv, t):
+    g = ease(seg(t, 0, .35)) * (1 - ease(seg(t, .75, 1)))
+    cv.arc(32, 58, 28 * g + 2, 20 * g, 200, 60, CREAM)
+    cv.arc(32, 58, 28 * g + 2, 20 * g, 280, 60, CREAM)
+    cv.arc(32, 58, 17 * g + 1, 10 * g, 215, 110, cv.A)
+    cv.stripes(32, 58, 31 * g, 28 * g, 200, 140, cv.B, 2)
+    cv.slab(8, 56, 56, 59, CREAM, 2)
     for k in range(7):
-        age = clamp(t * 1.1 - k * 0.07)
-        if age <= 0:
-            continue
-        x = 24 + (hash01(k, 1) - .5) * 18 + math.sin(age * 4 + k) * 3
-        y = 40 - age * 26
-        r = 3 + round(age * 8)
-        layer = Image.new('RGBA', (FR, FR), (0, 0, 0, 0)); ld = ImageDraw.Draw(layer)
-        disc(ld, round(x), round(y), r, mid if k % 2 else lo)
-        disc(ld, round(x - 1), round(y - 1), max(1, r - 3), hi if k % 3 == 0 else mid)
-        im.alpha_composite(fade(layer, 0.25 + age * 0.7))
-    return im
+        a = seg(t, .22 + k * .02, .85)
+        if 0 < a < 1:
+            ang = math.radians(215 + k * 18)
+            cv.disc(32 + math.cos(ang) * 26 * eout(a), 58 + math.sin(ang) * 30 * eout(a) + a * a * 22,
+                    max(1, 3 * (1 - a) + 1), cv.grade[k % 3], 'fine')
+    cv.burst(t, 32, 40, .25, .55, 16, [cv.A, cv.B, CREAM], 'o', grav=.8, ang=(200, 340))
+    cv.halo(t, .3, 32, 50, 24)
 
 
-def fx_wind(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    for k, (cy, ph) in enumerate(((14, 0.0), (24, 0.15), (34, 0.3))):
-        u = clamp((t - ph) / 0.7)
-        if u <= 0:
-            continue
-        pts = []
-        for s in range(14):
-            q = s / 13
-            x = 4 + (q * 40) * (0.4 + 0.6 * ease(u)) + 0
-            y = cy + math.sin(q * 6 + k * 1.2 + t * 7) * 4
-            pts.append((x, y))
-        n = max(2, int(len(pts) * ease(u)))
-        for a, b in zip(pts[max(0, n - 10):n - 1], pts[max(0, n - 9):n]):
-            line(d, a, b, mid if k != 1 else hi, 2 if k == 1 else 1)
-        if n >= len(pts) - 1:
-            x, y = pts[-1]
-            ring(d, round(x), round(y), 2 + round(u * 2), mid, 1)
-    for k in range(6):
-        age = (t * 1.3 + hash01(k, 3)) % 1
-        dot(d, 4 + age * 40, 10 + hash01(k, 5) * 28 + math.sin(age * 8 + k) * 3, hi, 2 if k % 3 == 0 else 1)
-    return fade(im, clamp((t - 0.7) * 3.3))
+def m_poison(cv, t):
+    for k, (x, y0, r, s) in enumerate(((18, 54, 6, 0), (34, 56, 9, .12), (46, 52, 5, .2),
+                                       (28, 58, 4, .3), (40, 58, 7, .38))):
+        a = seg(t, s, s + .55)
+        if 0 < a < 1:
+            y = y0 - 40 * ease(a)
+            xx = x + math.sin(a * 6 + k) * 3
+            if a < .9:
+                cv.ring(xx, y, r, r - 2.5, CREAM)
+                cv.bead(xx, y, max(1, r * .45), cv.A)
+            else:
+                cv.burst(t, xx, y, t - .001, .12, 6, [CREAM, cv.A], f'p{k}', n=5)
+    cv.slab(12, 58, 52, 60, cv.A, 1)
+    cv.burst(t, 32, 40, .1, .8, 8, [cv.A, cv.B], 'q', ang=(230, 310), plus=0)
+    cv.halo(t, .5, 32, 36, 22)
 
 
-def fx_quake(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    e = ease(clamp(t / 0.5))
-    cy = 34
+def m_smoke(cv, t):
+    for k in range(7):
+        s = k * .07
+        a = seg(t, s, s + .6)
+        if 0 < a < 1:
+            r = 6 + 9 * eout(a)
+            x = 32 + math.sin(k * 2.1) * 14 + a * (k - 3) * 3
+            y = 52 - 36 * ease(a)
+            cv.disc(x, y, r, CREAM if k % 2 == 0 else cv.B, 'fine')
+            cv.ring(x, y, r, r - 2, shade(CREAM, .2), 'fine')
+    # dither the smoke away
+    fade_img(cv.fine, 0.0)
+    cv.burst(t, 32, 40, .1, .8, 10, [cv.A, cv.B], 'r', ang=(230, 310), plus=0)
+    cv.halo(t, .5, 32, 36, 22)
+
+
+def m_wind(cv, t):
+    for k in range(3):
+        s = k * .1
+        a = seg(t, s, s + .75)
+        if 0 < a < 1:
+            y = 18 + k * 14
+            x1 = -6 + 70 * ease(a)
+            x0 = x1 - 30
+            cv.line(max(2, x0), y, min(62, x1), y, 4, CREAM)
+            cv.arc(min(58, x1) , y - 5, 6, 3, 0, 270, CREAM)
+            cv.cutline(max(2, x0) + 2, y, min(62, x1) - 6, y, 1)
+    cv.burst(t, 6, 32, .05, .8, 36, [cv.A, cv.B, CREAM], 's', ang=(-30, 30), plus=0.1)
+    cv.halo(t, .4, 32, 32, 24)
+
+
+def m_quake(cv, t):
+    g = ease(seg(t, 0, .4))
+    out = 1 - ease(seg(t, .8, 1))
+    pts = [(32, 46), (24, 50), (18, 46), (10, 52), (4, 48)]
+    pts2 = [(32, 46), (40, 50), (46, 46), (54, 52), (60, 48)]
+    n = max(1, int(round(g * 4)))
+    if out > .1:
+        zig(cv, pts[:n + 1], 4, CREAM)
+        zig(cv, pts2[:n + 1], 4, CREAM)
+    for k, (x, s) in enumerate(((16, 0), (32, .05), (46, .1))):
+        a = seg(t, .15 + s, .8)
+        if 0 < a < 1:
+            y = 46 - 18 * math.sin(a * math.pi)
+            cv.slab(x - 6, y - 8, x + 6, y + 4, CREAM, 2)
+            cv.cutline(x - 5, y - 2, x + 5, y - 2, 1)
+    a = seg(t, .1, .9)
+    if 0 < a < 1:
+        cv.arc(32, 46, 6 + 24 * eout(a), 3 + 24 * eout(a), 190, 160, cv.A)
+    cv.burst(t, 32, 46, .1, .6, 22, [CREAM, cv.A, cv.B], 't', grav=.9, ang=(200, 340))
+    cv.halo(t, .2, 32, 46, 24)
+
+
+def m_void_rift(cv, t):
+    o = ease(seg(t, 0, .4)) * (1 - ease(seg(t, .78, 1)))
+    h = 16 * o
+    if o > .05:
+        cv.arc(32, 32 + h * 1.2, 26 + 2, 18, 232, 76, CREAM)
+        cv.arc(32, 32 - h * 1.2, 26 + 2, 18, 52, 76, CREAM)
+        cv.bead(32, 32, 8 * o + 1, cv.A, DARK)
+        cv.cutline(46, 12, 18, 52, 2)
+        cv.stripes(32, 32, 30, 24, 0, 360, cv.B, 3)
+    cv.burst(t, 32, 32, .1, .7, 34, [cv.A, cv.B, CREAM], 'u', inward=True, plus=.2)
+    cv.halo(t, .5, 32, 32, 26)
+
+
+def m_drain(cv, t):
     for k in range(10):
-        a = math.pi * 2 * k / 10 + 0.2
-        pts = [(24, cy)]
-        r = 0
-        L = 5 + e * 19 + (k % 2) * 3
-        while r < L:
-            r += 3 + hash01(len(pts) + k, 2) * 3
-            aa = a + (hash01(len(pts) + k * 3, 4) - .5) * 0.8
-            pts.append((24 + math.cos(aa) * r * 1.15, cy + math.sin(aa) * r * 0.5))
-        for p0, p1 in zip(pts, pts[1:]):
-            line(d, p0, p1, DEEP, 3)
-            line(d, p0, p1, mid, 1)
-    for k in range(10):
-        a = (k - 4.5) * 0.42
-        h = math.sin(math.pi * clamp(t * 1.25 - hash01(k, 3) * 0.2)) * (9 + hash01(k, 4) * 14)
-        x = 24 + a * 13
-        y = cy + 2 - h
-        w = 3 if k % 2 else 2
-        d.rectangle([round(x), round(y), round(x) + w, round(y) + w], fill=mid, outline=lo)
-        if h > 4:
-            dot(d, x, y - 1, hi, 1)
-    if t > 0.08:
-        ex = round(4 + ease(clamp((t - .08) / .7)) * 19)
-        d.ellipse([24 - ex, cy - ex // 3, 24 + ex, cy + ex // 3], outline=hi, width=1)
-    return fade(im, clamp((t - 0.7) * 3.3))
+        s = k * .05
+        a = seg(t, s, s + .55)
+        if 0 < a < 1:
+            ang = math.radians(k * 36 + 220 * a)
+            r = 26 * (1 - ease(a))
+            cv.disc(32 + math.cos(ang) * r, 32 + math.sin(ang) * r, max(1, 4 * (1 - a) + 1),
+                    cv.grade[k % 3], 'fine')
+            cv.arc(32, 32, r + 3, r, math.degrees(ang) - 30, 30, CREAM, caps=False)
+    g = ease(seg(t, .4, .75)) * (1 - ease(seg(t, .85, 1)))
+    cv.bead(32, 32, 9 * g, cv.A, DARK)
+    cv.ring(32, 32, 12 * g + 1, 9 * g, CREAM)
+    cv.burst(t, 32, 32, .3, .6, 20, [cv.A, cv.B, CREAM], 'v', inward=True)
+    cv.halo(t, .7, 32, 32, 24)
 
 
-def fx_void_rift(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    op = ease(clamp(t / 0.4)) * (1 - clamp((t - 0.7) / 0.3))
-    rx, ry = round(3 + 8 * op), round(4 + 17 * op)
-    d.ellipse([24 - rx - 2, 24 - ry - 2, 24 + rx + 2, 24 + ry + 2], fill=mid)
-    d.ellipse([24 - rx, 24 - ry, 24 + rx, 24 + ry], fill=lo)
-    d.ellipse([24 - rx // 2, 24 - ry // 2, 24 + rx // 2, 24 + ry // 2], fill=DEEP)
-    for k in range(14):
-        a = k * 2 * math.pi / 14 + t * 5
-        r = (22 - ((t * 1.4 + hash01(k, 3)) % 1) * 20)
-        dot(d, 24 + math.cos(a) * r * 0.8, 24 + math.sin(a) * r, hi if k % 2 else mid, 2 if k % 4 == 0 else 1)
-    for k in range(6):
-        a = k * math.pi / 3 + 0.5
-        line(d, (24 + math.cos(a) * (rx + 2), 24 + math.sin(a) * (ry + 2)), (24 + math.cos(a) * (rx + 7 + k % 3 * 2), 24 + math.sin(a) * (ry + 7 + k % 3 * 2)), mid, 1)
-    return fade(im, clamp((t - 0.82) * 5)) if t > .82 else im
-
-
-def fx_drain(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    for k in range(26):
-        u = clamp((t - hash01(k, 2) * 0.3) / 0.7)
-        if u <= 0 or u >= 1:
+def m_shadow(cv, t):
+    x = 10 + 32 * ease(seg(t, 0, .6))
+    for k in range(4, -1, -1):
+        xx = x - k * 8
+        if xx < 6:
             continue
-        a = hash01(k, 3) * 2 * math.pi + u * 6
-        r = 22 * (1 - ease(u)) + 2
-        x, y = 24 + math.cos(a) * r, 24 + math.sin(a) * r * 0.85 - u * 5
-        w = 3 if (u < .5 and k % 3 == 0) else 2
-        d.rectangle([round(x), round(y), round(x) + w - 1, round(y) + w - 1], fill=hi if k % 2 else mid)
-        for tail in (1, 2, 3):
-            uu = max(0, u - 0.05 * tail)
-            r2 = 22 * (1 - ease(uu)) + 2
-            a2 = a - 0.5 * tail
-            dot(d, 24 + math.cos(a2) * r2, 24 + math.sin(a2) * r2 * 0.85 - uu * 5, lo if tail > 1 else mid, 1)
-    veil(im, lambda dd: disc(dd, 24, 20, 3 + round(7 * math.sin(math.pi * t)), lo), 0.3)
-    ring(d, 24, 20, 3 + round(9 * math.sin(math.pi * t)), mid, 1)
-    return im
+        sub = Image.new('RGBA', (FR, FR), CLEAR)
+        keep = cv.main
+        cv.main = sub
+        cv.slab(xx - 6, 10, xx + 6, 54, CREAM if k == 0 else cv.B, 5)
+        if k == 0:
+            cv.cutline(xx, 14, xx, 50, 2)
+        cv.main = keep
+        fade_img(sub, 0.0 if k == 0 else min(.85, .2 + k * .16))
+        cv.fine.alpha_composite(sub)
+    out = ease(seg(t, .75, 1))
+    cv.bead(x, 20, 3.5 * (1 - out) + .8, cv.A, DARK)
+    cv.burst(t, x, 36, .1, .7, 18, [cv.B, cv.A, CREAM], 'w', ang=(150, 210))
+    cv.halo(t, .5, x, 36, 22)
 
 
-def fx_shadow(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
+def m_radiance(cv, t):
+    g = ease(seg(t, 0, .35)) * (1 - ease(seg(t, .8, 1)))
+    for k in range(12):
+        a = math.radians(k * 30 + 20 * t)
+        r0, r1 = 12 * g + 4, 12 + 16 * g * (1.1 if k % 2 else .8)
+        cv.line(32 + math.cos(a) * r0, 32 + math.sin(a) * r0, 32 + math.cos(a) * r1,
+                32 + math.sin(a) * r1, 3.5 if k % 2 == 0 else 2.5, CREAM)
+    cv.ring(32, 32, 13 * g + 1, 9 * g, CREAM)
+    cv.bead(32, 32, 7 * g, cv.A)
+    cv.burst(t, 32, 32, .2, .7, 22, [CREAM, cv.A, cv.B], 'x', plus=.8)
+    cv.halo(t, .3, 32, 32, 26)
+
+
+def m_holy_fire(cv, t):
+    g = ease(seg(t, 0, .3)) * (1 - ease(seg(t, .8, 1)))
+    flame_at(cv, 32, 52, 38 * g, 11 * max(.2, g), CREAM, math.sin(t * 10) * 3)
+    flame_at(cv, 32, 50, 24 * g, 6 * max(.2, g), cv.A, math.sin(t * 12) * 2)
+    cv.ring(32, 14, 14 * g + 1, 11 * g, cv.B, 'fine')
+    cv.line(32, 4, 32, 24, 3 * g + .5, CREAM)
+    cv.line(23, 12, 41, 12, 3 * g + .5, CREAM)
+    cv.slab(14, 52, 50, 56, CREAM, 2)
+    cv.burst(t, 32, 40, .1, .8, 22, [cv.B, cv.A, CREAM], 'y', ang=(230, 310), plus=.5)
+    cv.halo(t, .3, 32, 32, 24)
+
+
+def m_heal(cv, t):
+    g = ease(seg(t, 0, .35)) * (1 - ease(seg(t, .8, 1)))
+    cv.slab(32 - 6 * g, 32 - 22 * g, 32 + 6 * g, 32 + 22 * g, CREAM, 4)
+    cv.slab(32 - 22 * g, 32 - 6 * g, 32 + 22 * g, 32 + 6 * g, CREAM, 4)
+    cv.cutline(32, 32 - 20 * g, 32, 32 + 20 * g, 1)
+    cv.bead(32, 32, 5 * g, cv.A)
+    for k, (dx, dy) in enumerate(((-17, -17), (17, -17), (-17, 17), (17, 17))):
+        a = seg(t, .25 + k * .05, .8)
+        if 0 < a < 1:
+            cv.bead(32 + dx, 32 + dy, 4 * math.sin(a * math.pi) + .5, cv.grade[k % 3])
+    cv.burst(t, 32, 44, .2, .75, 14, [cv.A, cv.B, CREAM], 'z', ang=(250, 290), plus=1.0)
+    cv.halo(t, .35, 32, 32, 26)
+
+
+def m_shield(cv, t):
+    g = ease(seg(t, 0, .4))
+    out = 1 - ease(seg(t, .85, 1))
+    if out > .1:
+        cv.arc(32, 44, 24, 16, 180 + 90 * (1 - g), 180 * g, CREAM)
+        if g > .5:
+            cv.slab(8, 44, 15, 56, CREAM, 3)
+            cv.slab(49, 44, 56, 56, CREAM, 3)
+            cv.slab(8, 58, 56, 61, CREAM, 2)
+        for k in range(3):
+            if g > .3 + k * .15:
+                a = math.radians(205 + k * 65)
+                cv.bead(32 + math.cos(a) * 20, 44 + math.sin(a) * 20, 3, cv.grade[k])
+    a = seg(t, .4, .95)
+    if 0 < a < 1:
+        cv.arc(32, 44, 14 + 20 * eout(a), 14 + 20 * eout(a) - 3, 180, 180, cv.A, 'fine')
+    cv.stripes(32, 44, 14, 8, 180, 180 * g, cv.B, 3)
+    cv.burst(t, 32, 28, .35, .5, 14, [CREAM, cv.A, cv.B], 'aa', ang=(180, 360))
+    cv.halo(t, .4, 32, 40, 26)
+
+
+def m_stone_shield(cv, t):
+    slabs = [(10, 50, 54, 58), (14, 38, 50, 47), (20, 26, 44, 35)]
+    for k, (x0, y0, x1, y1) in enumerate(slabs):
+        s = k * .16
+        a = seg(t, s, s + .25)
+        if a <= 0:
+            continue
+        drop = (1 - eout(a)) * 40
+        bounce = math.sin(seg(t, s + .25, s + .4) * math.pi) * 3
+        if seg(t, .85, 1) < .95:
+            cv.slab(x0, y0 - drop - bounce, x1, y1 - drop - bounce, CREAM, 3)
+            cv.slab(x0 + 3, y0 + 2 - drop - bounce, x1 - 3, y0 + 3 - drop - bounce, cv.B, 0, 'fine')
+        if 0 < seg(t, s + .25, s + .6) < 1:
+            q = seg(t, s + .25, s + .6)
+            cv.disc(x0 - 2 - 8 * q, y1 - 2, max(1, 3 * (1 - q)), CREAM, 'fine')
+            cv.disc(x1 + 2 + 8 * q, y1 - 2, max(1, 3 * (1 - q)), CREAM, 'fine')
+    if t > .5:
+        cv.bead(32, 22, 4 * (1 - seg(t, .7, 1)) + 1, cv.A)
+    cv.burst(t, 32, 54, .3, .5, 16, [CREAM, cv.A, cv.B], 'ab', grav=.7, ang=(190, 350))
+    cv.halo(t, .6, 32, 40, 26)
+
+
+def m_mana(cv, t):
+    g = ease(seg(t, 0, .25)) * (1 - ease(seg(t, .85, 1)))
+    cv.ring(32, 32, 20 * g + 1, 15 * g, CREAM)
+    cv.stripes(32, 32, 13 * g, 7 * g, 360 * t, 220, cv.B, 3)
+    for k in range(3):
+        a = math.radians(360 * t * 1.3 + k * 120)
+        cv.bead(32 + math.cos(a) * 17 * g, 32 + math.sin(a) * 17 * g, 4 * g, cv.grade[k])
+    cv.bead(32, 32, 5 * g, cv.A)
+    cv.burst(t, 32, 32, .15, .8, 18, [cv.A, cv.B, CREAM], 'ac', plus=.9)
+    cv.halo(t, .4, 32, 32, 26)
+
+
+def m_shout(cv, t):
+    cv.slab(2, 24, 14, 40, CREAM, 5)
+    cv.slab(5, 28, 11, 36, cv.A, 2, 'fine')
+    for k in range(3):
+        s = k * .14
+        a = seg(t, s, s + .55)
+        if 0 < a < 1:
+            r = 8 + 36 * eout(a)
+            cv.arc(10, 32, r + 4, r - 3 * (1 - a) - 1, -48, 96, CREAM if k != 1 else cv.A)
+            cv.cutarc(10, 32, r + 1, -36, 72, 1)
+    cv.stripes(10, 32, 44, 30, -40, 80, cv.B, 4)
+    cv.burst(t, 16, 32, .1, .8, 20, [CREAM, cv.A, cv.B], 'ad', ang=(-35, 35), plus=.1)
+    cv.halo(t, .35, 28, 32, 26)
+
+
+def m_stun(cv, t):
+    g = ease(seg(t, 0, .2)) * (1 - ease(seg(t, .85, 1)))
+    cv.ring(32, 30, 18 * g + 1, 13 * g, CREAM)
+    for k in range(3):
+        a = math.radians(360 * t * 1.5 + k * 120)
+        cv.bead(32 + math.cos(a) * 18 * g, 30 + math.sin(a) * 9 * g, 4 * g, cv.grade[k])
+    zig(cv, [(22, 48), (28, 42), (24, 38), (32, 32)], 3 * g + .5, CREAM)
+    cv.burst(t, 32, 30, .1, .8, 16, [cv.A, cv.B, CREAM], 'st', plus=.9, ang=(200, 340))
+    cv.halo(t, .3, 32, 30, 24)
+
+
+def m_weaken(cv, t):
+    g = ease(seg(t, 0, .35))
+    out = 1 - ease(seg(t, .85, 1))
+    if out > .1:
+        cv.slab(26, 8, 38, 36 * g + 8, CREAM, 3)
+        cv.poly([(14, 36 * g + 6), (50, 36 * g + 6), (32, 36 * g + 28)], CREAM)
+        cv.cutline(32, 12, 32, 36 * g + 8, 2)
+    cv.stripes(32, 48, 18, 8, 0, 360, cv.B, 3)
+    cv.burst(t, 32, 44, .3, .7, 20, [cv.A, cv.B, CREAM], 'wk', grav=.9, ang=(40, 140))
+    cv.halo(t, .4, 32, 44, 24)
+
+
+def m_crit(cv, t):
+    g = ease(seg(t, 0, .2)) * (1 - ease(seg(t, .75, 1)))
+    for k in range(12):
+        a = math.radians(k * 30)
+        r1 = 8 + (24 if k % 2 == 0 else 15) * g
+        cv.line(32 + math.cos(a) * 6, 32 + math.sin(a) * 6, 32 + math.cos(a) * r1, 32 + math.sin(a) * r1,
+                4 if k % 2 == 0 else 3, CREAM)
+    cv.disc(32, 32, 9 * g + 1, CREAM)
+    cv.bead(32, 32, 6 * g, cv.A)
+    for q in (0, .12):
+        a = seg(t, .1 + q, .8)
+        if 0 < a < 1:
+            cv.ring(32, 32, 6 + 24 * eout(a), 6 + 24 * eout(a) - 3, cv.B if q else cv.A, 'fine')
+    cv.burst(t, 32, 32, .1, .6, 30, [CREAM, cv.A, cv.B], 'cr', plus=.7, grav=.4)
+    cv.halo(t, .2, 32, 32, 26)
+
+
+def m_miss(cv, t):
+    p = ease(seg(t, 0, .7))
+    cv.arc(30, 40, 24, 21, 215, 100 * p, CREAM)
+    cv.arc(30, 40, 24, 21, 215 + 100 * max(0, p - .5), 100 * min(p, .5), CREAM, 'fine')
+    cv.stripes(30, 40, 20, 12, 215, 110 * p, cv.B, 3)
+    for k in range(3):
+        a = seg(t, .3 + k * .1, 1)
+        if 0 < a < 1:
+            cv.disc(44 + k * 5, 28 - a * 12 + k * 2, max(1, 3 * (1 - a)), CREAM, 'fine')
+    cv.burst(t, 46, 32, .35, .6, 10, [CREAM, cv.A], 'ms', ang=(-60, 60), plus=0)
+
+
+def m_phase(cv, t):
+    g = ease(seg(t, 0, .4)) * (1 - ease(seg(t, .8, 1)))
+    for k in range(8):
+        a = math.radians(k * 45 + 40 * t)
+        r0, r1 = 10 + 8 * g, 14 + 14 * g
+        cv.slab(32 + math.cos(a) * r0 - 4, 32 + math.sin(a) * r0 - 4, 32 + math.cos(a) * r1 + 4,
+                32 + math.sin(a) * r1 + 4, CREAM, 3)
+    cv.ring(32, 32, 10 * g + 1, 6 * g, CREAM)
+    cv.bead(32, 32, 7 * g, cv.A, DARK)
+    for q in (0, .18):
+        a = seg(t, .2 + q, .95)
+        if 0 < a < 1:
+            cv.ring(32, 32, 8 + 26 * eout(a), 8 + 26 * eout(a) - 3, cv.A if q == 0 else cv.B, 'fine')
+    cv.burst(t, 32, 32, .2, .7, 24, [cv.A, cv.B, CREAM], 'ph', plus=.4)
+    cv.halo(t, .4, 32, 32, 26)
+
+
+
+
+def m_shout2(cv, t):
+    """A shout from the middle: a mouth slab, fat arcs radiating both ways."""
+    cv.slab(26, 24, 38, 40, CREAM, 5)
+    cv.slab(29, 28, 35, 36, cv.A, 2, 'fine')
+    for k in range(3):
+        s = k * .14
+        a = seg(t, s, s + .55)
+        if 0 < a < 1:
+            r = 6 + 24 * eout(a)
+            for sgn, a0 in ((1, -48), (-1, 132)):
+                cv.arc(32, 32, r + 4, r - 3 * (1 - a) - 1, a0, 96, CREAM if k != 1 else cv.A)
+                cv.cutarc(32, 32, r + 1, a0 + 12, 72, 1)
+    cv.stripes(32, 32, 34, 22, -40, 80, cv.B, 4)
+    cv.stripes(32, 32, 34, 22, 140, 80, cv.B, 4)
+    cv.burst(t, 32, 32, .1, .8, 20, [CREAM, cv.A, cv.B], 'ad', ang=(-35, 35), plus=.1)
+    cv.burst(t, 32, 32, .1, .8, 20, [CREAM, cv.A, cv.B], 'ae', ang=(145, 215), plus=.1)
+
+
+# ---- the strips that are not a skill's own motion: what flies, lands, shakes
+def s_arrow_proj(cv, i):
+    x = 46
+    cv.line(x - 20, 32, x, 32, 3.4, CREAM)
+    cv.poly([(x - 2, 25), (x + 9, 32), (x - 2, 39)], CREAM)
+    cv.slab(x - 24, 27, x - 17, 31, HI, 1)
+    cv.slab(x - 24, 33, x - 17, 37, HI, 1)
+    for k, ln in enumerate((16 + (i % 2) * 5, 10 + (i % 3) * 3)):
+        cv.slab(x - 26 - ln, 22 + k * 20, x - 28, 24 + k * 20, LO, 1, 'fine')
+    cv.stripes(x - 22, 32, 10, 5, 0, 360, LO, 4)
+    cv.burst(i / 2, x - 28, 32, 0, .9, 12, [HI, MID], 'ap', n=5, ang=(150, 210), plus=0)
+
+
+def s_orb(cv, i):
+    cx = 42.7
+    for g in range(1, 6):
+        cv.disc(cx - g * 5.5, 32 + round(math.sin(g + i * 1.6) * 3), max(1.3, 7 - g * 1.1),
+                MID if g < 3 else LO, 'fine')
+    cv.bead(cx, 32, 9, HI)
     for k in range(5):
-        bx = 10 + k * 7
-        h = round((10 + hash01(k, 2) * 18) * ease(clamp((t - hash01(k, 4) * 0.2) / 0.5)))
-        for s in range(h):
-            q = s / max(1, h)
-            x = bx + math.sin(q * 5 + k + t * 4) * 4
-            w = max(1, round(4 * (1 - q)))
-            d.rectangle([round(x - w / 2), 42 - s, round(x + w / 2), 42 - s], fill=lo if q < .7 else mid)
-        if h > 8:
-            dot(d, bx + math.sin(h / h * 5 + k + t * 4) * 4, 42 - h, hi, 2)
-    veil(im, lambda dd: dd.ellipse([8, 38, 40, 46], fill=lo), 0.3)
+        a = i * 1.5 + k * 1.26
+        cv.dust(cv.X(cx + math.cos(a) * 13), cv.Y(32 + math.sin(a) * 13), 1 + (k % 2), HI if k % 2 else MID)
+
+
+def s_meteor_proj(cv, i):
+    for g in range(1, 7):
+        cv.line(32 - g * 2.5 + (i + g) % 2 * 2, 40 - g * 6, 32 - g * 2.5 + (i + g) % 2 * 2, 40 - g * 6 - 4,
+                max(1, 9 - g * 1.2), MID if g < 4 else LO, 'fine')
+    cv.bead(32, 40, 10, HI, DEEP)
+    cv.stripes(32, 40, 15, 12, 180, 180, LO, 2)
+    for k in range(5):
+        cv.dust(cv.X(32 + (k - 2) * 5 + (i % 2)), cv.Y(24 - (k % 3) * 5 - i * 2), 2 if k % 2 else 1, HI if k % 2 else MID)
+
+
+def s_impact_s(cv, t):
+    r = 7 * ease(seg(t, 0, .3)) * (1 - .5 * seg(t, .5, 1))
+    if r > 1:
+        cv.disc(32, 32, r, CREAM)
+    e = ease(seg(t, .05, .45))
+    shrink = 1 - seg(t, .55, 1)
     for k in range(8):
-        age = (t * 1.2 + hash01(k, 3)) % 1
-        dot(d, 12 + hash01(k, 4) * 24, 40 - age * 30, mid, 1)
-    return fade(im, clamp((t - 0.72) * 3.5))
+        a = math.radians(k * 45 + 22)
+        r0, r1 = 7 + 2 * e, 7 + 11 * e
+        if shrink > .05:
+            cv.line(32 + math.cos(a) * r0, 32 + math.sin(a) * r0, 32 + math.cos(a) * r1,
+                    32 + math.sin(a) * r1, 3.6 * shrink + 1, CREAM)
+    a = seg(t, .1, .9)
+    if 0 < a < 1:
+        cv.ring(32, 32, 6 + 16 * eout(a), 6 + 16 * eout(a) - 2.5, MID, 'fine')
+    cv.bead(32, 32, 4.5 * (1 - seg(t, .25, .7)), HI)
+    cv.burst(t, 32, 32, .15, .6, 12, [HI, MID], 'is', n=14, grav=.6)
 
 
-def fx_radiance(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    w = round(2 + 4 * math.sin(math.pi * clamp(t / 0.85)) ** 0.7)
-    veil(im, lambda dd: dd.rectangle([24 - w - 3, 0, 24 + w + 3, 40], fill=mid), 0.7 - t * 0.15)
-    d.rectangle([24 - w, 0, 24 + w, 40], fill=hi)
-    rot = t * 1.2
-    g = round(5 + 6 * math.sin(math.pi * clamp(t / .9)))
-    disc(d, 24, 24, g, lo)
-    disc(d, 24, 24, g - 1, mid)
-    disc(d, 24, 24, max(1, g // 2), hi)
-    for k in range(12):
-        a = k * math.pi / 6 + rot
-        r0 = g + 2
-        r1 = g + 4 + (10 if k % 2 == 0 else 5) * ease(clamp(t / .6))
-        line(d, (24 + math.cos(a) * r0, 24 + math.sin(a) * r0), (24 + math.cos(a) * r1, 24 + math.sin(a) * r1), hi if k % 2 == 0 else mid, 2 if k % 2 == 0 else 1)
-    for k in range(8):
-        a = hash01(k, 3) * 6.28
-        r = 8 + hash01(k, 5) * 14
-        x, y = 24 + math.cos(a) * r, 24 + math.sin(a) * r * 0.9
-        if int(t * 8 + k) % 3 == 0:
-            line(d, (x - 3, y), (x + 3, y), hi, 1)
-            line(d, (x, y - 3), (x, y + 3), hi, 1)
-        else:
-            dot(d, x, y, mid)
-    return fade(im, clamp((t - 0.72) * 3.5))
-
-
-# ---------------------------------------------------------------- support
-def plus(d, x, y, r, c, w=1):
-    d.rectangle([round(x - r), round(y - w // 2), round(x + r), round(y - w // 2 + w - 1)], fill=c)
-    d.rectangle([round(x - w // 2), round(y - r), round(x - w // 2 + w - 1), round(y + r)], fill=c)
-
-
-def fx_heal(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    veil(im, lambda dd: disc(dd, 24, 26, round(8 + 11 * ease(clamp(t / .6))), mid), 0.55 + t * 0.3)
-    for k, (x, ph, r) in enumerate(((14, 0.0, 4), (24, 0.12, 5), (34, 0.05, 4), (19, 0.3, 3), (30, 0.4, 3))):
-        age = clamp((t - ph) / 0.6)
-        if 0 < age < 1:
-            plus(d, x + math.sin(age * 5 + k) * 2, 38 - age * 30, r, lo, 4 if r > 3 else 3)
-            plus(d, x + math.sin(age * 5 + k) * 2, 38 - age * 30, r, hi if k % 2 else mid, 2)
-    for k in range(10):
-        age = (t * 1.3 + hash01(k, 2)) % 1
-        dot(d, 8 + hash01(k, 3) * 32, 40 - age * 34, hi, 1)
-    return fade(im, clamp((t - 0.72) * 3.5))
-
-
-def fx_shield(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    rad = round(8 + 11 * ease(clamp(t / 0.4)))
-    pts = [(24 + math.cos(k * math.pi / 3 + math.pi / 6) * rad, 26 + math.sin(k * math.pi / 3 + math.pi / 6) * rad * 1.15) for k in range(6)]
-    veil(im, lambda dd: dd.polygon([(round(x), round(y)) for x, y in pts], fill=mid), 0.5 + t * 0.4)
-    d.polygon([(round(x), round(y)) for x, y in pts], outline=hi, width=3 if t < .6 else 2)
-    d.polygon([(round(x), round(y)) for x, y in pts], outline=lo, width=1)
-    for k in range(6):
-        x, y = pts[k]
-        dot(d, x - 1, y - 1, hi, 3)
-    if 0.35 < t < 0.8:
-        e = (t - .35) / .45
-        line(d, (24 - rad * .5, 26 - rad * .6 + e * rad), (24 + rad * .5, 26 - rad * .2 + e * rad * .9), hi, 2)
-    return fade(im, clamp((t - 0.72) * 3.5))
-
-
-def fx_stone_shield(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    rise = ease(clamp(t / 0.4))
-    w, h = 11, round(20 * rise)
-    top = 42 - h
-    for row in range(0, h, 5):
-        y0 = top + row
-        off = 0 if (row // 5) % 2 == 0 else 5
-        for bx in range(24 - w - 5, 24 + w + 5, 10):
-            x0 = bx + off
-            xa, xb = max(24 - w - 3, x0), min(24 + w + 2, x0 + 9)
-            if xb > xa:
-                d.rectangle([xa, y0, xb, min(41, y0 + 4)], fill=mid, outline=lo)
-                dot(d, xa + 1, y0 + 1, hi, 2)
-    if 0.4 < t < 0.8:
-        e = (t - .4) / .4
-        for k in range(8):
-            a = k * math.pi / 4
-            dot(d, 24 + math.cos(a) * (12 + e * 9), 28 + math.sin(a) * (12 + e * 9), hi if k % 2 else mid, 2)
-    d.ellipse([24 - w - 6, 40, 24 + w + 6, 46], outline=lo, width=1)
-    return fade(im, clamp((t - 0.72) * 3.5))
-
-
-def fx_mana(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    for k in range(18):
-        u = clamp((t - hash01(k, 2) * 0.3) / 0.6)
-        if u <= 0 or u >= 1:
-            continue
-        a = hash01(k, 3) * 6.28 + u * 4.5
-        r = 21 * (1 - ease(u))
-        dot(d, 24 + math.cos(a) * r, 26 + math.sin(a) * r * 0.85, hi if k % 2 else mid, 2 if k % 3 == 0 else 1)
-    if t > 0.45:
-        e = clamp((t - .45) / .55)
-        rr = round(4 + 7 * math.sin(math.pi * e))
-        d.polygon([(24, 26 - rr - 2), (24 + rr, 26), (24, 26 + rr + 2), (24 - rr, 26)], fill=mid, outline=lo)
-        d.polygon([(24, 26 - rr // 2 - 1), (24 + rr // 2, 26), (24, 26 + rr // 2 + 1), (24 - rr // 2, 26)], fill=hi)
-        ring(d, 24, 26, rr + 5, mid, 1)
-    return fade(im, clamp((t - 0.78) * 4.5))
-
-
-def fx_shout(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    for k, t0 in enumerate((0.0, 0.18, 0.36)):
-        e = clamp((t - t0) / 0.6)
-        if 0 < e < 1:
-            r = 5 + round(ease(e) * 18)
-            for a0 in (-0.9, math.pi - 0.9):
-                for s in range(12):
-                    a = a0 + s / 11 * 1.8
-                    x, y = 24 + math.cos(a) * r, 26 + math.sin(a) * r
-                    d.rectangle([round(x), round(y), round(x) + 1 + (1 if k == 0 else 0), round(y) + 1], fill=hi if k % 2 == 0 else mid)
-    for k in range(10):
-        a = k * 2 * math.pi / 10 + hash01(k, 2) * .3
-        r = 4 + ease(t) * (12 + hash01(k, 3) * 6)
-        line(d, (24 + math.cos(a) * r, 26 + math.sin(a) * r), (24 + math.cos(a) * (r + 4), 26 + math.sin(a) * (r + 4)), mid, 1)
-    return fade(im, clamp((t - 0.7) * 3.4))
-
-
-# ----------------------------------------------------------------- states
-def star4(d, x, y, r, c, o):
-    d.polygon([(round(x), round(y - r)), (round(x + r * .35), round(y - r * .35)), (round(x + r), round(y)), (round(x + r * .35), round(y + r * .35)),
-               (round(x), round(y + r)), (round(x - r * .35), round(y + r * .35)), (round(x - r), round(y)), (round(x - r * .35), round(y - r * .35))], fill=c, outline=o)
-
-
-def fx_stun(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    for k in range(4):
-        a = t * 2 * math.pi + k * math.pi / 2
-        x, y = 24 + math.cos(a) * 13, 14 + math.sin(a) * 4.5
-        star4(d, x, y, 5 if math.sin(a) > 0 else 4, hi if k % 2 else mid, lo)
-    for k in range(3):
-        a = -t * 2 * math.pi + k * 2.1
-        dot(d, 24 + math.cos(a) * 10, 14 + math.sin(a) * 3.5, mid, 1)
-    return im
-
-
-def fx_weaken(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    for k, x in enumerate((13, 24, 35)):
-        for row in range(3):
-            ph = (t * 1.2 - k * 0.12 + row * 0.18) % 1
-            y = 8 + ph * 32 + row * 3
-            w = 6 - row
-            alpha = 1 - ph
-            if alpha < 0.15:
-                continue
-            col = hi if row == 0 else mid if row == 1 else lo
-            d.line([(x - w, y), (x, y + w), (x + w, y)], fill=col, width=2)
-    return fade(im, clamp((t - 0.8) * 4))
-
-
-def fx_crit(i, rp):
-    hi, mid, lo = rp
-    t = 0.06 + i / (N - 1) * 0.94
-    im, d = new()
-    e = ease(clamp(t / 0.45))
-    ro = 5 + e * 19
-    star(d, 24, 24, round(ro), round(ro * 0.38), 10, lo, lo)
-    star(d, 24, 24, round(ro * .86), round(ro * 0.34), 10, mid, mid)
-    star(d, 24, 24, round(ro * 0.5), round(ro * 0.22), 10, hi, hi)
-    for k in range(16):
-        a = k * math.pi / 8
-        r0 = ro + 1
-        r1 = ro + 3 + ease(t) * 8
-        line(d, (24 + math.cos(a) * r0, 24 + math.sin(a) * r0), (24 + math.cos(a) * r1, 24 + math.sin(a) * r1), hi if k % 2 == 0 else mid, 1)
-    return fade(im, clamp((t - 0.55) * 2.4))
-
-
-def fx_miss(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    head = ease(clamp(t / 0.5))
-    for s_ in range(34):
-        u = s_ / 33 * head
-        x = 3 + u * 42
-        y = 31 - math.sin(u * math.pi) * 15
-        w = max(1, round(5 * math.sin(math.pi * s_ / 33)))
-        d.rectangle([round(x), round(y), round(x) + 1, round(y) + w], fill=lo if w > 3 else mid)
-        d.rectangle([round(x), round(y), round(x) + 1, round(y) + max(1, w - 2)], fill=hi if s_ % 3 else mid)
-    for k in range(3):
-        y = 16 + k * 7
-        line(d, (6, y), (6 + round(14 * head), y), mid, 1)
-    if t > 0.4:
-        e = clamp((t - .4) / .6)
-        for k in range(10):
-            side = -1 if k % 2 else 1
-            dot(d, 38 + side * (2 + e * 8 * hash01(k, 2)), 40 - e * 5 * hash01(k, 3), mid if k % 3 else hi, 2 if e < .5 else 1)
-    return fade(im, clamp((t - 0.62) * 2.6))
-
-
-def fx_phase(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    e = ease(clamp(t / 0.7))
-    r1, r2 = round(5 + e * 18), round(3 + ease(clamp((t - .2) / .7)) * 17)
-    ring(d, 24, 24, r1, lo, 4 if t < .4 else 3 if t < .7 else 1)
-    ring(d, 24, 24, r1, mid, 2 if t < .5 else 1)
-    ring(d, 24, 24, r2, hi, 1)
-    for k in range(8):
-        a = k * math.pi / 4 + .3
-        pts = [(24 + math.cos(a) * 4, 24 + math.sin(a) * 4)]
-        L = 5 + e * 18
-        r = 4
-        while r < L:
-            r += 3 + hash01(k * 5 + int(r), 3) * 3
-            aa = a + (hash01(k * 3 + int(r), 4) - .5) * .7
-            pts.append((24 + math.cos(aa) * r, 24 + math.sin(aa) * r))
+def s_zap(cv, t):
+    for b in range(5):
+        a = b * 2 * math.pi / 5 + .4 + (int(t * 7) % 2) * .5
+        pts = [(32, 32)]
+        r = 0
+        rnd = random.Random(f'zap{b}{int(t * 7)}')
+        while r < 26:
+            r += 5 + rnd.random() * 5
+            aa = a + (rnd.random() - .5) * .9
+            pts.append((32 + math.cos(aa) * r, 32 + math.sin(aa) * r))
         for p0, p1 in zip(pts, pts[1:]):
-            line(d, p0, p1, lo, 2)
-            line(d, p0, p1, mid, 1)
-    if t < .35:
-        disc(d, 24, 24, round(9 * (1 - t / .35)) + 1, hi)
-    return fade(im, clamp((t - 0.62) * 2.7))
+            cv.line(p0[0], p0[1], p1[0], p1[1], 3.4 if t < .5 else 2.4, CREAM)
+    cv.bead(32, 32, 7 * (1 - t) + 3, HI)
+    cv.ring(32, 32, 7 + 16 * eout(t), 7 + 16 * eout(t) - 2.5, MID, 'fine')
+    cv.burst(t, 32, 32, .05, .6, 18, [HI, MID, LO], 'zp', plus=.7)
 
 
-def fx_shock(i, rp):
-    hi, mid, lo = rp
-    t = i / (N - 1)
-    im, d = new()
-    e = ease(clamp(t / 0.8))
-    rx = 4 + round(e * 20)
-    ry = max(2, rx // 3)
-    d.ellipse([24 - rx, 38 - ry, 24 + rx, 38 + ry], outline=lo, width=3 if t < .5 else 2)
-    d.ellipse([24 - rx, 38 - ry, 24 + rx, 38 + ry], outline=mid, width=1)
+def s_explosion(cv, t):
+    a = clamp(t)
+    e = eout(a)
     for k in range(12):
-        a = math.pi * (k / 11)
-        r = rx * (0.5 + hash01(k, 2) * 0.5)
-        dot(d, 24 + math.cos(a + math.pi) * r * 0.8 * (1 if k % 2 else -1), 38 - e * (4 + hash01(k, 3) * 9) + math.sin(a) * 2, hi if k % 2 else mid, 2 if k % 3 == 0 else 1)
-    return fade(im, clamp((t - 0.5) * 2.2))
+        ang = math.radians(k * 30 + 12 * a)
+        r = 6 + 22 * e
+        cv.disc(32 + math.cos(ang) * r, 32 + math.sin(ang) * r, max(1.3, round(6 * (1 - a * .8))),
+                [HI, MID, HI][k % 3], 'fine')
+    cv.ring(32, 32, 8 + 20 * e, 8 + 20 * e - 4 * (1 - a) - 1.5, CREAM)
+    cv.bead(32, 32, 11 * (1 - a * .8) + 1, HI)
+    cv.stripes(32, 32, 5 + 20 * e, 2 + 12 * e, 0, 360, LO, 3)
+    cv.burst(t, 32, 32, 0, .8, 24, [HI, MID, LO], 'ex', n=22, grav=.4)
 
 
+def s_shock(cv, t):
+    e = ease(seg(t, 0, .8))
+    rx = 6 + 30 * e
+    ry = max(3, rx / 3)
+    n = 18
+    for k in range(n):
+        a = k * 2 * math.pi / n
+        cv.disc(32 + math.cos(a) * rx, 50 + math.sin(a) * ry, max(1.2, 3.4 * (1 - e * .7)),
+                HI if k % 2 else MID, 'fine')
+    for sgn in (-1, 1):
+        cv.line(32, 50, 32 + sgn * rx * .9, 50 + ry * .4, 3.4 * (1 - e * .5) + 1, CREAM)
+    cv.burst(t, 32, 50, .05, .7, 16, [HI, MID], 'sk', grav=.9, ang=(210, 330), plus=.2)
+
+
+def draw_frame(fn, i, n, tag, target=(32, 32), anchor=(24, 24), loop=False):
+    cv = Cv(tag, target, anchor)
+    t = i / (N - 1) if not loop else i
+    fn(cv, t)
+    out = Image.new('RGBA', (FR, FR), CLEAR)
+    out.alpha_composite(bevel(cv.main))
+    out.alpha_composite(cv.fine)
+    out.alpha_composite(cv.top)
+    if not loop and i == n - 1:
+        fade_img(out, .8)
+    elif not loop and i == n - 2:
+        fade_img(out, .35)
+    return quantise(out)
+
+
+# name: (frames, motion, target in the 64 px space, the strip pixel it lands on, loops)
 STRIPS = {
     # strikes
-    'slash': fx_slash, 'heavy': fx_heavy, 'claw': fx_claw, 'pierce': fx_pierce, 'impact': fx_impact, 'whirl': fx_whirl,
+    'slash': (N, m_slash, (30, 34), (24, 24), False),
+    'heavy': (N, m_heavy_slash, (32, 36), (24, 24), False),
+    'claw': (N, m_claw, (36, 31), (24, 24), False),
+    'pierce': (N, m_pierce, (46, 32), (24, 24), False),
+    'impact': (N, m_impact, (32, 32), (24, 24), False),
+    'whirl': (N, m_whirl, (32, 32), (24, 24), False),
     # projectiles (loops), landings
-    'arrow_proj': (fx_arrow_proj, 3), 'orb': (fx_orb, 4), 'meteor_proj': (fx_meteor_proj, 4),
-    'impact_s': fx_impact_s, 'zap': fx_zap, 'explosion': fx_explosion,
+    'arrow_proj': (3, s_arrow_proj, (32, 32), (24, 24), True),
+    'orb': (4, s_orb, (32, 32), (24, 24), True),
+    'meteor_proj': (4, s_meteor_proj, (32, 40), (24, 30), True),
+    'impact_s': (N, s_impact_s, (32, 32), (24, 24), False),
+    'zap': (N, s_zap, (32, 32), (24, 24), False),
+    'explosion': (N, s_explosion, (32, 32), (24, 24), False),
     # elements
-    'flame': fx_flame, 'frost': fx_frost, 'lightning': fx_lightning, 'holy_beam': fx_holy_beam, 'splash': fx_splash,
-    'poison': fx_poison, 'smoke': fx_smoke, 'wind': fx_wind, 'quake': fx_quake, 'void_rift': fx_void_rift,
-    'drain': fx_drain, 'shadow': fx_shadow, 'radiance': fx_radiance,
+    'flame': (N, m_flame, (32, 52), (24, 40), False),
+    'frost': (N, m_frost, (32, 32), (24, 24), False),
+    'lightning': (N, m_lightning, (34, 52), (24, 40), False),
+    'holy_beam': (N, m_holy_fire, (32, 50), (24, 40), False),
+    'splash': (N, m_splash, (32, 52), (24, 32), False),
+    'poison': (N, m_poison, (32, 44), (24, 32), False),
+    'smoke': (N, m_smoke, (32, 40), (24, 36), False),
+    'wind': (N, m_wind, (32, 32), (24, 24), False),
+    'quake': (N, m_quake, (32, 46), (24, 34), False),
+    'void_rift': (N, m_void_rift, (32, 32), (24, 24), False),
+    'drain': (N, m_drain, (32, 32), (24, 24), False),
+    'shadow': (N, m_shadow, (30, 44), (24, 40), False),
+    'radiance': (N, m_radiance, (32, 32), (24, 24), False),
     # support
-    'heal': fx_heal, 'shield': fx_shield, 'stone_shield': fx_stone_shield, 'mana': fx_mana, 'shout': fx_shout,
+    'heal': (N, m_heal, (32, 32), (24, 28), False),
+    'shield': (N, m_shield, (32, 38), (24, 26), False),
+    'stone_shield': (N, m_stone_shield, (32, 44), (24, 32), False),
+    'mana': (N, m_mana, (32, 32), (24, 26), False),
+    'shout': (N, m_shout2, (32, 32), (24, 26), False),
     # states
-    'stun': fx_stun, 'weaken': fx_weaken, 'crit': fx_crit, 'miss': fx_miss, 'phase': fx_phase,
+    'stun': (N, m_stun, (32, 30), (24, 14), False),
+    'weaken': (N, m_weaken, (32, 36), (24, 24), False),
+    'crit': (N, m_crit, (32, 32), (24, 24), False),
+    'miss': (N, m_miss, (34, 30), (24, 24), False),
+    'phase': (N, m_phase, (32, 32), (24, 24), False),
     # tiers
-    'shock': fx_shock,
+    'shock': (N, s_shock, (32, 50), (24, 38), False),
 }
 
 
+def make(name):
+    n, fn, target, anchor, loop = STRIPS[name]
+    out = Image.new('RGBA', (FR * n, FR), CLEAR)
+    for i in range(n):
+        out.alpha_composite(draw_frame(fn, i, n, name, target, anchor, loop), (i * FR, 0))
+    return out
+
+
 def main():
+    import sys
     os.makedirs(OUT, exist_ok=True)
-    rp = ramp('steel')
-    for name, fn in STRIPS.items():
-        count = N
-        if isinstance(fn, tuple):
-            fn, count = fn
-        strip([fn(i, rp) for i in range(count)]).save(os.path.join(OUT, 'vfx_' + name + '.png'), optimize=True)
+    for name in STRIPS:
+        make(name).save(os.path.join(OUT, 'vfx_' + name + '.png'), optimize=True)
     print('drew', len(STRIPS), 'strips in', os.path.normpath(OUT))
 
 
