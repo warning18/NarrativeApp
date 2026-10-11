@@ -681,7 +681,6 @@ extension _FightView on _FightScreenState {
     bool canLock,
     _FacePreview? preview,
   ) {
-    final colorScheme = Theme.of(context).colorScheme;
     final accent = _accentFor(actor);
     final face = _currentFaces[actor.id];
     final locked = _lockedActorIds.contains(actor.id);
@@ -712,12 +711,6 @@ extension _FightView on _FightScreenState {
       cursed: face != null &&
           (_cursedFaces[actor.id]?.contains(face.faceIndex) ?? false),
     );
-    // A landed face tints its tile with what it does (red hits, pink
-    // heals, blue mana...); the border stays the roller's own colour.
-    final faceTint = face == null || spinning
-        ? null
-        : _faceKindOf(face).color.withValues(alpha: 0.16);
-
     final label = face == null || spinning
         ? ''
         : (face.faceName.isEmpty ? face.type : face.faceName);
@@ -745,23 +738,11 @@ extension _FightView on _FightScreenState {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
+          // No tile under the die: the cube stands on its own, and a kept
+          // die shows its gold ring.
+          SizedBox(
             width: 58,
             height: 58,
-            decoration: BoxDecoration(
-              color: locked
-                  ? accent.withValues(alpha: 0.22)
-                  : faceTint ?? colorScheme.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: accent, width: locked ? 3 : 2),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.18),
-                  blurRadius: 3,
-                  offset: const Offset(1, 2),
-                ),
-              ],
-            ),
             child: Stack(
               children: [
                 Center(child: inner),

@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.226.0+262]
+## [1.227.0+263]
 
 ### Changed
 - The Journey walks the party only where the story does. A way that keeps the party where it stands (working the table it is at, a roll, a stall, a scuffle in the square) leaves it on its mark: no walk, no road drawn to it. A way that carries it somewhere still walks it there: across a bridge or a street to another district or building, through a door or to a spot of the room, out along the road to another place.
@@ -16,13 +16,20 @@ isn't reconstructable from git history alone.
 - The party's mark never jumps. The plain scenes the story reads straight through on the way (see Fewer presses of Continue) are passed on the road, so the map now places and walks each way to the scene the story really lands on, not to the first scene it leads to: the district or building, the spot of the room and the glimpse of what comes next all follow where the party will stand after the read-through. Edit Mode, which stops at every scene, keeps the first one.
 - The road already taken (the chapter's earlier scenes below the party, with the way taken out of each) is gone from the Journey. The Map tab keeps showing it.
 
-## [1.225.0+261]
+## [1.226.0+262]
 
 ### Fixed
 - Side quest rewards now follow one scale. A turn-in choice pays instead of the quest's base gold, not on top of it, so the clan quests of Chapters 3 to 6 paid far less than the fights of their chapter: the Chapter 5 candle count and hearth-stone paid at most 60 and 70 gold, the Chapter 6 salvage 90, against 80 to 150 for the kill quests beside them, while their XP ran well above (150 to 180 against 110 to 200). Gold and XP now follow the difficulty (about 12 gold and 17 XP per point) and a choice pays about 0.3, 0.8 or 1.5 times the base:
   - Glass from the Terraces 50 gold and 70 XP (was 45 and 90); Bark Tithe 75 and 105 (was 50 and 120); Candle Count and Hearth-Stone 90 and 130 (was 55 and 150); Salvage Rights 140 and 185 (was 60 and 180). The Reckoning Wall's sale to the Inquisition pays 100, not 150.
   - Difficulty ratings follow the pay: Vess 2 (was 4), Bark Tithe 6, Candle Count and Hearth-Stone 7, Salvage Rights 11.
 - Only the Chapter 2 harbor chain paid in gear. The four hardest side quests now do: Ossuary Bounty (Bone-Laced Boots), Penitent's Confession (Frostward Cloak), Faces of the Fallen (Tearwalker Boots) and Salvage Rights (Voidsteel Greaves).
+
+## [1.225.0+261]
+
+### Changed
+- The fight's effects are sized to what they are. Each effect now has a size of its own (a thud or a scratch is small, a meteor or a quake large) and its power grows or shrinks it, so a plain blow is a small flash and a rare or legendary skill takes the card and more; before, nearly every effect was about as large as the card or larger. A single effect never grows past one and a half cards.
+- A plain Attack face plays by the weapon in hand: a sword slashes (a great blade cuts heavy), a spear thrusts, a dagger scratches, a staff or bare fists thud. The weapon's rarity sets how strongly it plays. Skill faces keep their own effect.
+- The dice in the fight no longer sit on a coloured square: the cube stands on its own, and a kept die keeps its gold ring.
 
 ## [1.224.0+260]
 

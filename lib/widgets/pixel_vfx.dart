@@ -234,10 +234,12 @@ class PixelVfxTints {
 
 // ---------------------------------------------------------------- painting
 
-/// The pixel size a burst of size [s] (the target's, 40 to 110) and
-/// [scale] is drawn at.
-int pixelSizeFor(double s, double scale) =>
-    max(2, min(5, (s * scale / 36).round()));
+/// The pixel size a burst of size [s] (the target's, 40 to 110) is drawn
+/// at, from how much of the target it covers ([extent], see
+/// [vfxExtentFor]: a 48-pixel strip covers its pixel size times 48), in
+/// half pixels from 1 to 4.5.
+double pixelSizeFor(double s, double extent) =>
+    (s * extent * 1.05 / 48 * 2).round().clamp(2, 9) / 2;
 
 double _easeInOut(double t) {
   final x = t.clamp(0.0, 1.0);
@@ -256,11 +258,11 @@ bool paintPixelBurst(
   required Rect? sourceRect,
   required double t,
   required double s,
-  required double scale,
+  required double extent,
 }) {
   final layers = <PixelLayer>[];
   final c = rect.center;
-  final unit = pixelSizeFor(s, scale);
+  final unit = pixelSizeFor(s, extent);
   final paint = Paint()
     ..filterQuality = FilterQuality.none
     ..isAntiAlias = false;
