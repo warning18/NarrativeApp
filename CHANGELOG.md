@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.224.0+260]
+
+### Changed
+- The Journey walks the party only where the story does. A way that keeps the party where it stands (working the table it is at, a roll, a stall, a scuffle in the square) leaves it on its mark: no walk, no road drawn to it. A way that carries it somewhere still walks it there: across a bridge or a street to another district or building, through a door or to a spot of the room, out along the road to another place.
+- The map is closer. The city's plan no longer fits whole in the view: it keeps the party and the places its ways lead to (with some margin, never less than half of the plan), so a scene whose ways all lie close shows just that corner of the city. A scene whose ways cross the city still shows all of it. The camera's zoom on a walking party is 1.5 (was 1.6) on top of that.
+- The road already taken (the chapter's earlier scenes below the party, with the way taken out of each) is gone from the Journey. The Map tab keeps showing it.
+
 ## [1.223.0+259]
 
 ### Fixed

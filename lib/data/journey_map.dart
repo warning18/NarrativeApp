@@ -435,3 +435,39 @@ double _angleBetween(double a, double b) {
   if (d > math.pi) d -= 2 * math.pi;
   return d;
 }
+
+/// The part of a place's [frame] the Journey zooms in on (v1.224): the
+/// [points] the party and its ways run between, with [pad] of the frame
+/// around them and no less than [least] of its width and height, kept
+/// inside the frame. A scene whose ways all lie close shows just that
+/// corner of the city, close up; one that crosses the city shows it all.
+Rect journeyFocusFrame(
+  Rect frame,
+  Iterable<Offset> points, {
+  double pad = 0.12,
+  double least = 0.5,
+}) {
+  if (points.isEmpty) return frame;
+  var left = double.infinity, top = double.infinity;
+  var right = -double.infinity, bottom = -double.infinity;
+  for (final p in points) {
+    left = math.min(left, p.dx);
+    top = math.min(top, p.dy);
+    right = math.max(right, p.dx);
+    bottom = math.max(bottom, p.dy);
+  }
+  var width =
+      math.max(right - left + 2 * pad * frame.width, least * frame.width);
+  var height =
+      math.max(bottom - top + 2 * pad * frame.height, least * frame.height);
+  width = math.min(width, frame.width);
+  height = math.min(height, frame.height);
+  final centre = Offset((left + right) / 2, (top + bottom) / 2);
+  final x = (centre.dx - width / 2)
+      .clamp(frame.left, math.max(frame.left, frame.right - width))
+      .toDouble();
+  final y = (centre.dy - height / 2)
+      .clamp(frame.top, math.max(frame.top, frame.bottom - height))
+      .toDouble();
+  return Rect.fromLTWH(x, y, width, height);
+}

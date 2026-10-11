@@ -259,4 +259,33 @@ void main() {
       }
     });
   });
+
+  group('focus frame', () {
+    const frame = Rect.fromLTWH(0, 0, 1000, 800);
+
+    test('close ways show a corner of the city, close up', () {
+      final focus = journeyFocusFrame(
+          frame, [const Offset(300, 300), const Offset(380, 340)]);
+      expect(focus.width, lessThan(frame.width * 0.7));
+      expect(focus.height, lessThan(frame.height * 0.7));
+      expect(focus.contains(const Offset(300, 300)), isTrue);
+      expect(focus.contains(const Offset(380, 340)), isTrue);
+    });
+
+    test('never smaller than half the frame, never outside it', () {
+      final focus = journeyFocusFrame(frame, [const Offset(10, 790)]);
+      expect(focus.width, greaterThanOrEqualTo(frame.width * 0.5));
+      expect(focus.height, greaterThanOrEqualTo(frame.height * 0.5));
+      expect(frame.contains(focus.topLeft), isTrue);
+      expect(focus.right, lessThanOrEqualTo(frame.right));
+      expect(focus.bottom, lessThanOrEqualTo(frame.bottom));
+    });
+
+    test('ways across the city show all of it; none shows the frame', () {
+      final wide = journeyFocusFrame(
+          frame, [const Offset(50, 60), const Offset(950, 740)]);
+      expect(wide, frame);
+      expect(journeyFocusFrame(frame, const []), frame);
+    });
+  });
 }

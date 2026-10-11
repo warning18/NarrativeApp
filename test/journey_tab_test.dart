@@ -72,18 +72,9 @@ void main() {
     }
     expect(find.text('You are here'.toUpperCase()), findsOneWidget);
 
-    // The scene before, on the road below the party, and what happened
-    // there a tap away.
-    expect(find.byKey(const ValueKey('journey_past_0')), findsOneWidget);
-    expect(find.text('Join the queue at the landward gate'), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('journey_past_0')));
-    await tester.pump(const Duration(milliseconds: 400));
-    expect(find.text('Way taken: Join the queue at the landward gate'),
-        findsOneWidget);
-    await tester.tapAt(const Offset(200, 40));
-    await tester.pump(const Duration(milliseconds: 400));
-    expect(find.text('Way taken: Join the queue at the landward gate'),
-        findsNothing);
+    // The road already taken is the Map tab's to show (v1.224): the
+    // Journey draws only the party and the ways on.
+    expect(find.byKey(const ValueKey('journey_past_0')), findsNothing);
 
     // Read opens the scene full screen (v1.199: the scene no longer sits
     // over the map); the map button brings the map back.
