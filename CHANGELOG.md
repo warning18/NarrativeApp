@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.224.0+260]
+## [1.226.0+262]
 
 ### Changed
 - The Journey walks the party only where the story does. A way that keeps the party where it stands (working the table it is at, a roll, a stall, a scuffle in the square) leaves it on its mark: no walk, no road drawn to it. A way that carries it somewhere still walks it there: across a bridge or a street to another district or building, through a door or to a spot of the room, out along the road to another place.
@@ -16,7 +16,7 @@ isn't reconstructable from git history alone.
 - The party's mark never jumps. The plain scenes the story reads straight through on the way (see Fewer presses of Continue) are passed on the road, so the map now places and walks each way to the scene the story really lands on, not to the first scene it leads to: the district or building, the spot of the room and the glimpse of what comes next all follow where the party will stand after the read-through. Edit Mode, which stops at every scene, keeps the first one.
 - The road already taken (the chapter's earlier scenes below the party, with the way taken out of each) is gone from the Journey. The Map tab keeps showing it.
 
-## [1.223.0+259]
+## [1.225.0+261]
 
 ### Fixed
 - Side quest rewards now follow one scale. A turn-in choice pays instead of the quest's base gold, not on top of it, so the clan quests of Chapters 3 to 6 paid far less than the fights of their chapter: the Chapter 5 candle count and hearth-stone paid at most 60 and 70 gold, the Chapter 6 salvage 90, against 80 to 150 for the kill quests beside them, while their XP ran well above (150 to 180 against 110 to 200). Gold and XP now follow the difficulty (about 12 gold and 17 XP per point) and a choice pays about 0.3, 0.8 or 1.5 times the base:
@@ -24,6 +24,24 @@ isn't reconstructable from git history alone.
   - Difficulty ratings follow the pay: Vess 2 (was 4), Bark Tithe 6, Candle Count and Hearth-Stone 7, Salvage Rights 11.
 - Only the Chapter 2 harbor chain paid in gear. The four hardest side quests now do: Ossuary Bounty (Bone-Laced Boots), Penitent's Confession (Frostward Cloak), Faces of the Fallen (Tearwalker Boots) and Salvage Rights (Voidsteel Greaves).
 
+## [1.224.0+260]
+
+### Added
+- Radar charts, so the numbers read as shapes:
+  - The character sheet draws the eight abilities as one shape (Strength at the top, clockwise to Charisma), with each corner's name and value, above the stat tiles.
+  - Choosing a race and a profession shows the shape they make: the race alone as a dashed outline, the race with the profession as the solid one, and what the profession adds (+4 STR, +2 CON) at its corner.
+  - "A Life Before This One" draws what the memories taught you on the summary: your abilities before as a dashed outline, with your memories as the solid one and the gains at their corners.
+  - An Elements section on the sheet shows the elemental damage and resistance of the equipped items in four views you can switch between: Radar (damage and resistance as two shapes), Split (one radar for each), Rose (wedges for damage, an inner ring for resistance) and Rows (a bar per element). With nothing equipped that carries an element, it says so.
+  - The charts shrink to fit a narrow screen and are read aloud as a list.
+
+## [1.223.0+259]
+
+### Changed
+- The character sheet (Race & Profession) reads at a glance. The race and the profession each lead with the first sentence of their lore, set larger, with the rest below at a comfortable size and full contrast; their tag is a chip of its own instead of a prefix, and what they change shows as chips. The starting skills are cards with the skill's icon framed, its name large and its words below. The sheet itself is in sections: level, health and experience as bars, damage and armour as tiles, the eight abilities as a grid of tiles (held, each tells what it does), and the counters as one plain list. The race and profession pickers' descriptions are brighter and larger too.
+- "A Life Before This One" is easier to read. The introduction is no longer faint italics; the scene is set larger; the age dots and numbers are bigger; each answer is a card in the book's own type (not the pixel font), left-aligned, with what it teaches as a clear tag under it.
+
+### Added
+- Fate can choose your story: "Let fate choose" under a memory's answers picks that one at random, and "Choose my whole life at random" on the first memory picks all six and goes to the summary, where any memory can still be reopened and changed. The summary has "Choose again at random" to draw them all anew.
 ## [1.222.0+258]
 
 ### Changed

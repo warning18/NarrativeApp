@@ -7,6 +7,8 @@ import '../data/origin_stories.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
+import '../widgets/ability_radar.dart';
+import '../widgets/ability_visuals.dart';
 
 /// The formative memories, on their own page once the character is named:
 /// six moments from the age of six to sixteen (origin_stories.dart), one
@@ -76,6 +78,28 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
     setState(() {
       _answers[_index] = answer;
       _showingOutcome = true;
+    });
+  }
+
+  /// Fate picks the answer to the memory on screen.
+  void _chooseAtRandom() {
+    final random = widget.random ?? Random();
+    final pool = _memories[_index].answers;
+    _answer(pool[random.nextInt(pool.length)]);
+  }
+
+  /// Fate picks every answer: the page goes to the summary, where any
+  /// memory can still be reopened and changed.
+  void _chooseLifeAtRandom() {
+    final random = widget.random ?? Random();
+    setState(() {
+      for (var i = 0; i < _memories.length; i++) {
+        final pool = _memories[i].answers;
+        _answers[i] = pool[random.nextInt(pool.length)];
+      }
+      _showingOutcome = false;
+      _editingFromSummary = false;
+      _index = _memories.length;
     });
   }
 
@@ -168,11 +192,17 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
         if (_index == 0 && !_editingFromSummary && !_showingOutcome) ...[
           Text(
             tr(ref, 'origin_stories_intro'),
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontStyle: FontStyle.italic,
-              color: colors.onSurfaceVariant,
-              height: 1.45,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: colors.onSurface.withValues(alpha: 0.85),
+              height: 1.55,
             ),
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            key: const Key('origin_random_all'),
+            onPressed: _chooseLifeAtRandom,
+            icon: const Icon(Icons.casino_outlined, size: 18),
+            label: Text(tr(ref, 'origin_random_all')),
           ),
           const SizedBox(height: 18),
         ],
@@ -220,10 +250,10 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
               Expanded(
                 child: Text(
                   recall.textFor(french),
-                  style: theme.textTheme.bodyMedium?.copyWith(
+                  style: theme.textTheme.bodyLarge?.copyWith(
                     fontStyle: FontStyle.italic,
-                    color: colors.onSurfaceVariant,
-                    height: 1.45,
+                    color: colors.onSurface.withValues(alpha: 0.8),
+                    height: 1.5,
                   ),
                 ),
               ),
@@ -241,6 +271,7 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
           child: Text(
             memory.sceneFor(french),
             style: theme.textTheme.bodyLarge?.copyWith(
+              fontSize: 18,
               height: 1.6,
               letterSpacing: 0.1,
             ),
@@ -263,17 +294,27 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
             onNext: _moveOn,
             onChooseAgain: _back,
           )
-        else
+        else ...[
           for (final answer in _answerOrder[_index])
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: _AnswerButton(
                 label: answer.textFor(french),
                 lesson: _lessonLabel(answer),
+                ability: answer.ability,
                 selected: identical(answer, chosen),
                 onPressed: () => _answer(answer),
               ),
             ),
+          Center(
+            child: TextButton.icon(
+              key: const Key('origin_random_one'),
+              onPressed: _chooseAtRandom,
+              icon: const Icon(Icons.casino_outlined, size: 18),
+              label: Text(tr(ref, 'origin_random_one')),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -320,12 +361,56 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
           ),
         Text(
           tr(ref, 'origin_summary_change_hint'),
-          style: theme.textTheme.bodySmall
-              ?.copyWith(color: colors.onSurfaceVariant),
+          style: theme.textTheme.bodyMedium
+              ?.copyWith(color: colors.onSurface.withValues(alpha: 0.75)),
+        ),
+        const SizedBox(height: 4),
+        TextButton.icon(
+          key: const Key('origin_random_again'),
+          onPressed: _chooseLifeAtRandom,
+          icon: const Icon(Icons.casino_outlined, size: 18),
+          label: Text(tr(ref, 'origin_random_again')),
         ),
         const SizedBox(height: 20),
         Text(tr(ref, 'origin_summary_lessons'),
             style: theme.textTheme.titleSmall),
+        const SizedBox(height: 8),
+        Center(
+          child: AbilityRadar(
+            key: const Key('origin_radar'),
+            t: (key) => tr(ref, key),
+            size: 300,
+            color: radarMore,
+            before: {
+              'strength': session.strength,
+              'dexterity': session.dexterity,
+              'constitution': session.constitution,
+              'intelligence': session.intelligence,
+              'wisdom': session.wisdom,
+              'perception': session.perception,
+              'luck': session.luck,
+              'charisma': session.charisma,
+            },
+            values: {
+              'strength':
+                  session.strength + (result.abilities['strength'] ?? 0),
+              'dexterity':
+                  session.dexterity + (result.abilities['dexterity'] ?? 0),
+              'constitution': session.constitution +
+                  (result.abilities['constitution'] ?? 0),
+              'intelligence': session.intelligence +
+                  (result.abilities['intelligence'] ?? 0),
+              'wisdom': session.wisdom + (result.abilities['wisdom'] ?? 0),
+              'perception':
+                  session.perception + (result.abilities['perception'] ?? 0),
+              'luck': session.luck + (result.abilities['luck'] ?? 0),
+              'charisma':
+                  session.charisma + (result.abilities['charisma'] ?? 0),
+            },
+            beforeLabel: tr(ref, 'radar_before_label'),
+            nowLabel: tr(ref, 'radar_memories_label'),
+          ),
+        ),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -403,7 +488,7 @@ class _AgeTimeline extends StatelessWidget {
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 220),
                 height: 2,
-                margin: const EdgeInsets.only(bottom: 16),
+                margin: const EdgeInsets.only(bottom: 20),
                 color: answered[i - 1]
                     ? colors.primary.withValues(alpha: 0.5)
                     : colors.outlineVariant,
@@ -414,8 +499,8 @@ class _AgeTimeline extends StatelessWidget {
             children: [
               AnimatedContainer(
                 duration: const Duration(milliseconds: 220),
-                width: i == current ? 16 : 12,
-                height: i == current ? 16 : 12,
+                width: i == current ? 20 : 15,
+                height: i == current ? 20 : 15,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: answered[i] ? colors.primary : colors.surface,
@@ -430,9 +515,10 @@ class _AgeTimeline extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 '${ages[i]}',
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color:
-                      i == current ? colors.primary : colors.onSurfaceVariant,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: i == current
+                      ? colors.primary
+                      : colors.onSurface.withValues(alpha: 0.75),
                   fontWeight: i == current ? FontWeight.w700 : null,
                 ),
               ),
@@ -507,8 +593,9 @@ class _Outcome extends StatelessWidget {
                 Text(
                   outcome,
                   style: theme.textTheme.bodyLarge?.copyWith(
+                    fontSize: 17,
                     fontStyle: FontStyle.italic,
-                    height: 1.55,
+                    height: 1.6,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -582,47 +669,66 @@ class _Tag extends StatelessWidget {
   }
 }
 
+/// One answer: its words in the book's own type, left-aligned and large
+/// enough to read through, with what it teaches as a tag under them.
 class _AnswerButton extends StatelessWidget {
   const _AnswerButton({
     required this.label,
     required this.lesson,
+    required this.ability,
     required this.selected,
     required this.onPressed,
   });
 
   final String label;
   final String lesson;
+  final String ability;
   final bool selected;
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    const padding = EdgeInsets.symmetric(horizontal: 16, vertical: 12);
-    final child = Column(
-      children: [
-        Text(label, textAlign: TextAlign.center),
-        const SizedBox(height: 4),
-        Text(
-          lesson,
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-            letterSpacing: 0.4,
+    final colors = theme.colorScheme;
+    return Material(
+      key: selected ? const Key('origin_answer_selected') : null,
+      color: selected
+          ? colors.primaryContainer.withValues(alpha: 0.35)
+          : colors.surfaceContainerHigh,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: selected ? colors.primary : colors.outlineVariant,
+          width: selected ? 2 : 1,
+        ),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  fontSize: 17,
+                  height: 1.4,
+                  color: colors.onSurface,
+                ),
+              ),
+              const SizedBox(height: 10),
+              AbilityPill(
+                icon: abilityIcon(ability),
+                label: lesson,
+                color: colors.primary,
+              ),
+            ],
           ),
         ),
-      ],
+      ),
     );
-    return selected
-        ? FilledButton.tonal(
-            style: FilledButton.styleFrom(padding: padding),
-            onPressed: onPressed,
-            child: child,
-          )
-        : OutlinedButton(
-            style: OutlinedButton.styleFrom(padding: padding),
-            onPressed: onPressed,
-            child: child,
-          );
   }
 }
 
