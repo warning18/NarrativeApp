@@ -7303,6 +7303,47 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Legendary',
     AppLanguage.fr: 'Légendaire'
   },
+  'hull_section': {AppLanguage.en: 'Hull', AppLanguage.fr: 'Coque'},
+  'hull_hint': {
+    AppLanguage.en:
+        'Rebuild the Eel on another hull: her name, looks and crew stay. A hull is built once; going back to one is free.',
+    AppLanguage.fr:
+        'Rebâtir l\'Eel sur une autre coque : son nom, ses parures et son équipage restent. Une coque se bâtit une fois ; y revenir ne coûte rien.',
+  },
+  'hull_aboard_label': {AppLanguage.en: 'Aboard', AppLanguage.fr: 'En service'},
+  'hull_owned_note': {
+    AppLanguage.en: 'Built before: back on her for nothing.',
+    AppLanguage.fr: 'Déjà bâtie : on y revient sans frais.',
+  },
+  'hull_build_button': {AppLanguage.en: 'Build', AppLanguage.fr: 'Bâtir'},
+  'hull_switch_button': {
+    AppLanguage.en: 'Back on this hull',
+    AppLanguage.fr: 'Revenir à cette coque',
+  },
+  'hull_flying_label': {AppLanguage.en: 'Flies', AppLanguage.fr: 'Vole'},
+  'hull_confirm_title': {
+    AppLanguage.en: 'Rebuild the Eel as a {hull}?',
+    AppLanguage.fr: 'Rebâtir l\'Eel en {hull} ?',
+  },
+  'hull_confirm_body': {
+    AppLanguage.en:
+        'No slot for {parts} on the new hull: they wait in the Harbor\'s store.',
+    AppLanguage.fr:
+        'Pas de place pour {parts} sur la nouvelle coque : elles attendent au dépôt du port.',
+  },
+  'hull_confirm_all_fit': {
+    AppLanguage.en: 'Every part aboard has a slot on the new hull.',
+    AppLanguage.fr: 'Chaque pièce à bord a sa place sur la nouvelle coque.',
+  },
+  'hull_confirm_yes': {AppLanguage.en: 'Rebuild', AppLanguage.fr: 'Rebâtir'},
+  'hull_rebuilt_notice': {
+    AppLanguage.en: 'The Eel is rebuilt: {hull}',
+    AppLanguage.fr: 'L\'Eel est rebâtie : {hull}',
+  },
+  'hull_trying_label': {
+    AppLanguage.en: 'Trying the {hull} hull: not yet built.',
+    AppLanguage.fr: 'Essai de la coque {hull} : pas encore bâtie.',
+  },
   'sail_repaint_note': {
     AppLanguage.en: 'Painting the sail replaces the sigil already on it.',
     AppLanguage.fr: 'Peindre la voile remplace le sigil qui s\'y trouve déjà.',

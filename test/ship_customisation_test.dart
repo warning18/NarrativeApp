@@ -532,6 +532,8 @@ void main() {
       final container = await pumpHarbor(tester, chapter: 4);
       await tester.scrollUntilVisible(
           find.byKey(const Key('try_siege_ballista')), 600);
+      await tester.ensureVisible(find.byKey(const Key('try_siege_ballista')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('try_siege_ballista')));
       await tester.pump();
       await tester.scrollUntilVisible(
@@ -555,6 +557,9 @@ void main() {
       await tester.scrollUntilVisible(
           find.byKey(const Key('install_reinforced_keel')), 600);
       // The one utility slot is free on this Eel.
+      await tester
+          .ensureVisible(find.byKey(const Key('install_reinforced_keel')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('install_reinforced_keel')));
       await _pumpUntil(
           tester,

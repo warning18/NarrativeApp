@@ -2149,7 +2149,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       });
     }
     _shownWeather = weather;
-    final eelLook = TopShipLook.rustyEel.dressed(ref.watch(shipDressProvider));
+    final eelLook = ref.watch(playerShipLookProvider);
     final enemyLook = TopShipLook.forEnemy(widget.enemyShipId, widget.enemy);
     return LayoutBuilder(builder: (context, constraints) {
       final width = constraints.maxWidth;
@@ -2945,7 +2945,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
   Widget _buildPlacement(AppLanguage lang, Map<String, dynamic>? enemies) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final look = TopShipLook.rustyEel.dressed(ref.watch(shipDressProvider));
+    final look = ref.watch(playerShipLookProvider);
     return Container(
       key: const Key('ship_placement'),
       color: theme.colorScheme.surface,

@@ -192,7 +192,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
             ship: ship,
             parts: parts,
             installedPartIds: labParts ?? session.shipPartIds);
-        final sail = installedSail(parts, installed);
+        final sails = battleSailsOf(parts, installed, session.raceId);
         List<ShipCrew> crew() => buildShipCrew(
               session: ref.read(playerSessionProvider),
               companions: companions,
@@ -221,8 +221,8 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                 enemyName: enemyName,
                 enemyShipId: shipId,
                 crew: crew(),
-                foresight: sail?.power == SailPower.foresight,
-                windKnot: sail?.power == SailPower.windknot,
+                foresight: sails.foresight,
+                windKnot: sails.windKnot,
                 random: Random(),
                 boarding: boardingProfileFor(data),
                 chapter: chapter,

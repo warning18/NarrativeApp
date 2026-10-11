@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -5,6 +7,7 @@ import '../combat/sea_beasts.dart';
 import '../combat/ship_combat.dart';
 import '../data/port_helpers.dart';
 import '../data/sail_powers.dart';
+import '../data/ship_forms.dart';
 import '../data/ship_looks.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -77,6 +80,9 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
   /// The part being tried on the ship (not yet fitted), if any.
   String? _tryPartId;
 
+  /// The hull being tried on the ship (not yet built), if any.
+  String? _tryHullId;
+
   /// The looks being tried, by category (not yet worn).
   final Map<String, String> _tryLooks = {};
 
@@ -99,6 +105,87 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
     );
   }
 
+  /// Rebuilds the Eel on the hull [hullId] after saying which parts have no
+  /// slot on it and go to the Harbor's store.
+  Future<void> _rebuild(
+    String hullId,
+    Map<String, dynamic> ships,
+    Map<String, dynamic> parts,
+    bool fr,
+  ) async {
+    final session = ref.read(playerSessionProvider);
+    final next = ships[hullId] as Map<String, dynamic>?;
+    final current = playerShipRecord(ships, session.shipHullId);
+    if (next == null || current == null) return;
+    final toStore = partsBeyondSlots(
+        ship: next, parts: parts, installedPartIds: session.shipPartIds);
+    final hullName = _hullName(next, fr);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        key: const Key('rebuild_confirm'),
+        title:
+            Text(tr(ref, 'hull_confirm_title').replaceAll('{hull}', hullName)),
+        content: Text(toStore.isEmpty
+            ? tr(ref, 'hull_confirm_all_fit')
+            : tr(ref, 'hull_confirm_body').replaceAll(
+                '{parts}',
+                toStore
+                    .map((id) =>
+                        shipPartName(parts[id] as Map<String, dynamic>, fr))
+                    .join(', '))),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(tr(ref, 'cancel')),
+          ),
+          ElevatedButton(
+            key: const Key('rebuild_confirm_yes'),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(tr(ref, 'hull_confirm_yes')),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    // She keeps the share of her hull she has, on the new one.
+    final now = buildPlayerShip(
+        ship: current,
+        parts: parts,
+        installedPartIds: session.shipPartIds,
+        currentHull: session.shipHull);
+    final share = now.maxHull == 0 ? 1.0 : now.hull / now.maxHull;
+    final kept = [
+      for (final id in session.shipPartIds)
+        if (!toStore.contains(id)) id,
+    ];
+    final built = buildPlayerShip(
+        ship: next, parts: parts, installedPartIds: kept, currentHull: -1);
+    final hull = session.shipHull < 0
+        ? -1
+        : math.max(1, (share * built.maxHull).round());
+    final cost = (next['hullCost'] as num?)?.toInt() ?? 0;
+    final done = await ref
+        .read(playerSessionProvider.notifier)
+        .rebuildHull(hullId, cost, toStore: toStore, hull: hull);
+    if (!done || !mounted) return;
+    setState(() {
+      _tryHullId = null;
+      _tryPartId = null;
+    });
+    showImmersiveNotice(
+      context,
+      icon: Icons.construction,
+      message: tr(ref, 'hull_rebuilt_notice').replaceAll('{hull}', hullName),
+    );
+  }
+
+  String _hullName(Map<String, dynamic> hull, bool fr) {
+    final name = hull['hullName']?.toString() ?? '';
+    final nameFr = hull['hullName_fr']?.toString() ?? '';
+    return fr && nameFr.isNotEmpty ? nameFr : name;
+  }
+
   @override
   Widget build(BuildContext context) {
     final fr = ref.watch(appLanguageProvider) == AppLanguage.fr;
@@ -109,7 +196,8 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
     final lookRecords = ref.watch(localizedDbProvider(shipLooksSchema)).value;
     final enemyShips = ref.watch(localizedDbProvider(enemyShipsSchema)).value;
     final ports = ref.watch(localizedDbProvider(portsSchema)).value;
-    final ship = ships == null ? null : playerShipRecord(ships);
+    final ship =
+        ships == null ? null : playerShipRecord(ships, session.shipHullId);
 
     Widget body;
     if (ships == null || parts == null) {
@@ -159,20 +247,28 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
         for (final entry in session.seaBeasts.entries)
           if (entry.value.slain) entry.key,
       };
+      final currentHullId = ships.containsKey(session.shipHullId)
+          ? session.shipHullId
+          : defaultHullId;
+      final tryHull = _tryHullId == null
+          ? null
+          : ships[_tryHullId] as Map<String, dynamic>?;
+      final yardShip = tryHull ?? ship;
+      final yardHullId = tryHull == null ? currentHullId : _tryHullId!;
       final tryingPart = _tryPartId == null
           ? null
           : parts[_tryPartId] as Map<String, dynamic>?;
       final shownParts = tryingPart == null
           ? session.shipPartIds
           : fittedWith(
-              ship: ship,
+              ship: yardShip,
               parts: parts,
               installed: session.shipPartIds,
               partId: _tryPartId!);
       final yardDress = lookRecords == null
           ? null
           : buildShipDress(
-              ship: ship,
+              ship: yardShip,
               parts: parts,
               installed: shownParts,
               lookRecords: lookRecords,
@@ -210,6 +306,7 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
                     const SizedBox(height: 10),
                     ShipYardPreview(
                         dress: yardDress,
+                        form: ShipForm.fromRecord(yardHullId, yardShip),
                         refit: ShipCutaway.refitOf(buildPlayerShip(
                             ship: ship,
                             parts: parts,
@@ -233,6 +330,29 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
                           TextButton(
                             key: const Key('yard_clear_try'),
                             onPressed: () => setState(() => _tryPartId = null),
+                            child: Text(tr(ref, 'part_try_clear')),
+                          ),
+                        ],
+                      ),
+                    ],
+                    if (tryHull != null) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(Icons.visibility_outlined,
+                              size: 18, color: ink.gold),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              tr(ref, 'hull_trying_label')
+                                  .replaceAll('{hull}', _hullName(tryHull, fr)),
+                              key: const Key('yard_trying_hull'),
+                              style: theme.textTheme.bodySmall,
+                            ),
+                          ),
+                          TextButton(
+                            key: const Key('yard_clear_hull'),
+                            onPressed: () => setState(() => _tryHullId = null),
                             child: Text(tr(ref, 'part_try_clear')),
                           ),
                         ],
@@ -272,6 +392,32 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
                   ],
                 ),
               ),
+            ),
+          const SizedBox(height: 16),
+          Text(tr(ref, 'hull_section'),
+              key: const Key('hull_section'),
+              style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 2),
+          Text(tr(ref, 'hull_hint'),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: InkColors.of(context).ash)),
+          const SizedBox(height: 6),
+          for (final hullId in hullIdsInOrder(ships))
+            _HullCard(
+              hullId: hullId,
+              record: ships[hullId] as Map<String, dynamic>,
+              current: hullId == currentHullId,
+              owned: session.ownedHullIds.contains(hullId),
+              unlocked: hullUnlocked(ships[hullId] as Map<String, dynamic>,
+                  chapter, session.ownedHullIds.contains(hullId)),
+              gold: session.gold,
+              trying: _tryHullId == hullId,
+              fr: fr,
+              onTry: () => setState(
+                  () => _tryHullId = _tryHullId == hullId ? null : hullId),
+              onRebuild: () => _rebuild(hullId, ships, parts, fr),
             ),
           const SizedBox(height: 16),
           Text(tr(ref, 'shipwright_section'),
@@ -346,6 +492,189 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
           actions: const [GoldBadge()],
         ),
         body: body,
+      ),
+    );
+  }
+}
+
+/// One hull the Eel can be rebuilt on: its picture from above, what it
+/// carries, and the button that builds it (or says why not).
+class _HullCard extends ConsumerWidget {
+  const _HullCard({
+    required this.hullId,
+    required this.record,
+    required this.current,
+    required this.owned,
+    required this.unlocked,
+    required this.gold,
+    required this.trying,
+    required this.fr,
+    required this.onTry,
+    required this.onRebuild,
+  });
+
+  final String hullId;
+  final Map<String, dynamic> record;
+
+  /// The hull she is built on now.
+  final bool current;
+
+  /// She has been built on it before: back on it for nothing.
+  final bool owned;
+  final bool unlocked;
+  final int gold;
+  final bool trying;
+  final bool fr;
+  final VoidCallback onTry;
+  final VoidCallback onRebuild;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final name = fr && (record['hullName_fr']?.toString() ?? '').isNotEmpty
+        ? record['hullName_fr'].toString()
+        : record['hullName']?.toString() ?? hullId;
+    final description = fr
+        ? (record['description_fr']?.toString() ?? '')
+        : (record['description']?.toString() ?? '');
+    final cost = (record['hullCost'] as num?)?.toInt() ?? 0;
+    final chapter = (record['unlockChapter'] as num?)?.toInt() ?? 0;
+    final flying = record['flying'] == true;
+    int slots(String key) => (record[key] as num?)?.toInt() ?? 0;
+    final chips = [
+      '${tr(ref, 'hull_label')} ${record['baseMaxHull']}',
+      '${shipSlotLabel(ref, 'Weapon')} ${slots('weaponSlots')}',
+      '${shipSlotLabel(ref, 'Shield')} ${slots('shieldSlots')}',
+      '${shipSlotLabel(ref, 'Utility')} ${slots('utilitySlots')}',
+      '${shipSlotLabel(ref, 'Sail')} ${slots('sailSlots')}',
+      if (flying) tr(ref, 'hull_flying_label'),
+    ];
+    final price =
+        cost == 0 ? tr(ref, 'free_label') : '$cost ${tr(ref, 'gold_label')}';
+    Widget? action;
+    if (current) {
+      action = null;
+    } else if (!unlocked) {
+      action = null;
+    } else if (owned) {
+      action = OutlinedButton(
+        key: Key('rebuild_$hullId'),
+        onPressed: onRebuild,
+        child: Text(tr(ref, 'hull_switch_button')),
+      );
+    } else {
+      action = ElevatedButton(
+        key: Key('rebuild_$hullId'),
+        onPressed: gold < cost ? null : onRebuild,
+        child: Text('${tr(ref, 'hull_build_button')} ($price)'),
+      );
+    }
+    return Opacity(
+      opacity: unlocked || current ? 1 : 0.55,
+      child: Card(
+        key: Key('hull_card_$hullId'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(
+              color: current
+                  ? ink.heal
+                  : trying
+                      ? ink.gold
+                      : InkColors.of(context).seam,
+              width: current || trying ? 2 : 1),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Text(name, style: theme.textTheme.titleMedium),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: current
+                          ? Text(tr(ref, 'hull_aboard_label'),
+                              style: theme.textTheme.labelMedium
+                                  ?.copyWith(color: ink.heal))
+                          : !unlocked
+                              ? Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.lock_outline,
+                                        size: 14, color: ink.ash),
+                                    const SizedBox(width: 4),
+                                    Flexible(
+                                      child: Text(
+                                          tr(ref, 'look_locked_note')
+                                              .replaceAll('{n}', '$chapter'),
+                                          style: theme.textTheme.labelSmall
+                                              ?.copyWith(color: ink.ash)),
+                                    ),
+                                  ],
+                                )
+                              : owned
+                                  ? Text(tr(ref, 'hull_owned_note'),
+                                      textAlign: TextAlign.end,
+                                      style: theme.textTheme.labelSmall
+                                          ?.copyWith(color: ink.heal))
+                                  : const SizedBox.shrink(),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  HullThumb(
+                      form: ShipForm.fromRecord(hullId, record), width: 150),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(chips.join(' · '),
+                            style: theme.textTheme.labelSmall
+                                ?.copyWith(color: ink.gold)),
+                        if (description.isNotEmpty) ...[
+                          const SizedBox(height: 4),
+                          Text(description,
+                              style: theme.textTheme.bodySmall
+                                  ?.copyWith(color: ink.ash)),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              if (!current) ...[
+                const SizedBox(height: 6),
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    TextButton.icon(
+                      key: Key('try_hull_$hullId'),
+                      onPressed: onTry,
+                      icon: Icon(
+                          trying
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                          size: 18),
+                      label: Text(tr(
+                          ref, trying ? 'part_try_clear' : 'part_try_button')),
+                    ),
+                    if (action != null) action,
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -465,10 +794,24 @@ class _PartCard extends ConsumerWidget {
     final slot = part['slotType']?.toString() ?? '';
     // A painted sail is repainted rather than added: the sigil already on
     // the canvas comes off when a new one goes on.
-    final currentSail = slot == 'Sail' ? installedSail(parts, installed) : null;
-    final replacing = currentSail != null && currentSail.partId != partId
-        ? [currentSail.partId]
-        : const <String>[];
+    final sails = slot == 'Sail'
+        ? installedSails(parts, installed)
+        : const <({String partId, SailPower power, String medium})>[];
+    final power = sailPowerOf(part);
+    // A sail of a power already aboard is painted over by it (one of each
+    // power counts); with a single sail slot, any sail is.
+    final sameKind = [
+      for (final sail in sails)
+        if (sail.power == power && sail.partId != partId) sail.partId,
+    ];
+    final replacing = sameKind.isNotEmpty
+        ? [sameKind.first]
+        : (slot == 'Sail' &&
+                slotCapacity(ship, 'Sail') == 1 &&
+                sails.isNotEmpty &&
+                sails.first.partId != partId)
+            ? [sails.first.partId]
+            : const <String>[];
     final fits = canInstallPart(
             ship: ship,
             parts: parts,

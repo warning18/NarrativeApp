@@ -104,7 +104,7 @@ class ShipDress {
     this.mounts = const [],
     this.plating,
     this.gear,
-    this.sigil,
+    this.sigils = const [],
   });
 
   final Color? hull;
@@ -128,7 +128,11 @@ class ShipDress {
   /// The utility's family (stores, orders, helm, gunnery, hold, command,
   /// trophy_hull), if one is fitted, which draws its gear on deck.
   final String? gear;
-  final ShipSigil? sigil;
+
+  /// The painted sails' sigils, one a sail aboard.
+  final List<ShipSigil> sigils;
+
+  ShipSigil? get sigil => sigils.isEmpty ? null : sigils.first;
 
   static const bare = ShipDress();
 
@@ -151,7 +155,7 @@ class ShipDress {
       _sameList(other.mounts, mounts) &&
       other.plating == plating &&
       other.gear == gear &&
-      other.sigil == sigil;
+      _sameList(other.sigils, sigils);
 
   @override
   int get hashCode => Object.hashAll([
@@ -171,7 +175,7 @@ class ShipDress {
         ...mounts,
         plating,
         gear,
-        sigil,
+        ...sigils,
       ]);
 }
 
@@ -237,7 +241,6 @@ ShipDress buildShipDress({
         gear ??= family;
     }
   }
-  final painted = installedSail(parts, fitted);
   return ShipDress(
     hull: hull?.color,
     deck: hull?.color2,
@@ -255,10 +258,11 @@ ShipDress buildShipDress({
     mounts: mounts,
     plating: plating,
     gear: gear,
-    sigil: painted == null
-        ? null
-        : ShipSigil(painted.power,
+    sigils: [
+      for (final painted in installedSails(parts, fitted))
+        ShipSigil(painted.power,
             sailMediumColors[painted.medium] ?? const Color(0xFF6B4A2E)),
+    ],
   );
 }
 
@@ -276,6 +280,20 @@ List<String> fittedWith({
   final part = parts[partId] as Map<String, dynamic>?;
   if (part == null || installed.contains(partId)) return installed;
   final slot = part['slotType']?.toString() ?? '';
+  // A painted sail of a power already aboard goes over it.
+  final power = sailPowerOf(part);
+  if (power != null) {
+    for (final id in installed) {
+      final other = parts[id] as Map<String, dynamic>?;
+      if (other != null && sailPowerOf(other) == power) {
+        return [
+          for (final kept in installed)
+            if (kept != id) kept,
+          partId,
+        ];
+      }
+    }
+  }
   final sameSlot = [
     for (final id in installed)
       if ((parts[id] as Map<String, dynamic>?)?['slotType']?.toString() == slot)

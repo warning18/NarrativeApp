@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.228.0+264]
+
+### Added
+- **Ten hulls, and four flying boats.** The Eel can be rebuilt at the Harbor on another hull, each with its own outline, masts and sails seen from above, its own slots and its own price: Longboat, Cutter, the Sloop she is today, Brigantine, Brig, Corvette, Frigate, Galleon, an elven Twin-hull and a dwarven Ironclad (no sail to paint); and, from chapter 5, the Sky-sloop (twin gasbags, a boiler and a screw), the Cloud-cutter (bat-wing sails and a soul furnace), the Lodestone barge (four glowing lodestones) and the Void carrack (bone wings). A flying boat lets the storms and raiders of a voyage pass beneath her keel, as the Gull's Wing sail does.
+  - The Harbor has a **Hull** section: each hull's picture from above, what it carries, its price and the chapter it is built from. A hull is paid for once; going back to one already built is free. Rebuilding says which parts have no slot on the new hull (they wait in the Harbor's store), keeps her name, looks and crew, and keeps her share of hull. "Try on the ship" shows a hull in the yard before it is built.
+  - **Several painted sails at once**: a hull with several sail slots carries one sail of each power (a second sail of a power already aboard paints over it), each with its sigil on its own mast, and the voyage and the sea battle take all of their powers together.
+  - Hull points, rooms, slots, sail plans and prices are in `ships.json` (new fields: hull name, price, chapter, kind, outline, sail plan, jibs, oars, castles, beak, flying), editable in the data editor.
+
+### Changed
+- **The ships are pixel art.** Every ship seen from above (the sea fight, the camp's boat card, the voyage, the yard) is drawn small and stretched back hard-edged, with a hard drop shadow and a heavier wake, so the fleet reads like the skill effects: flat tones, hard edges, one pixel size. Sea beasts keep their own sprites.
+- The rooms of a ship shorter than the battle's box sit along her own length, so a small hull's tiles are on her deck.
+
 ## [1.227.0+263]
 
 ### Changed

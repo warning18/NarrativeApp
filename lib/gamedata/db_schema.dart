@@ -2,6 +2,7 @@ import '../combat/skill_vfx.dart';
 import '../data/companion_remarks.dart' show remarkTriggerOptions;
 import '../data/geography.dart'
     show BiomePattern, GeoLevel, geoBuildingKinds, geoGlyphs, geoKinds;
+import '../data/ship_forms.dart' show HullKind;
 import '../data/ship_looks.dart' show allShipLookPatterns, shipLookCategories;
 import '../data/signs.dart'
     show PatronKind, SignEffectKind, SignSlot, patronIconNames;
@@ -1239,13 +1240,100 @@ final DbSchema shipsSchema = DbSchema(
   label: 'Player Ships',
   assetPath: 'assets/gamedata/ships.json',
   primaryKeyField: 'shipID',
-  titleField: 'shipName',
+  titleField: 'hullName',
   visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'shipID', label: 'Ship ID', type: FieldType.text),
     FieldSchema(key: 'shipName', label: 'Ship Name', type: FieldType.text),
     FieldSchema(
         key: 'shipName_fr', label: 'Ship Name (FR)', type: FieldType.text),
+    FieldSchema(
+      key: 'hullName',
+      label: 'Hull Name (the class: Sloop, Brig, Galleon...)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+        key: 'hullName_fr', label: 'Hull Name (FR)', type: FieldType.text),
+    FieldSchema(
+      key: 'hullCost',
+      label: 'Hull Cost (gold to build her on this hull at the Harbor, once)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'unlockChapter',
+      label:
+          'Unlock Chapter (the story chapter from which the shipwright builds it; 0 = always)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'flying',
+      label:
+          'Flying (a flying boat: storms and raiders pass beneath her keel on a voyage)',
+      type: FieldType.boolean,
+      defaultValue: false,
+    ),
+    FieldSchema(
+      key: 'kind',
+      label: 'Kind (how she is drawn from above)',
+      type: FieldType.enumeration,
+      enumOptions: [for (final kind in HullKind.values) kind.name],
+      defaultValue: 'hull',
+    ),
+    FieldSchema(
+      key: 'length',
+      label: 'Length (drawn, of the battle box\'s width)',
+      type: FieldType.decimal,
+      defaultValue: 1.0,
+    ),
+    FieldSchema(
+      key: 'beam',
+      label: 'Beam (drawn, of the battle box\'s width)',
+      type: FieldType.decimal,
+      defaultValue: 0.24,
+    ),
+    FieldSchema(
+      key: 'outline',
+      label:
+          'Outline {u0, a, b, tipw, bowtip}: where she is widest, how full stern and bow are, how wide transom and stem',
+      type: FieldType.json,
+    ),
+    FieldSchema(
+      key: 'sailPlan',
+      label: 'Sail Plan [{kind: square|gaff|lateen, at: 0-1, size}] per mast',
+      type: FieldType.json,
+    ),
+    FieldSchema(
+        key: 'jibs',
+        label: 'Jibs (headsails on the bowsprit)',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'oars',
+        label: 'Oars (a side)',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+      key: 'castles',
+      label:
+          'Castles [[from, to], ...] along the hull: raised stern and bow decks',
+      type: FieldType.json,
+    ),
+    FieldSchema(
+      key: 'beak',
+      label: 'Beak (a long bowsprit and a spritsail, as on a galleon)',
+      type: FieldType.boolean,
+      defaultValue: false,
+    ),
+    FieldSchema(
+        key: 'description',
+        label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
+        type: FieldType.multilineText),
     FieldSchema(
         key: 'baseMaxHull',
         label: 'Base Max Hull',

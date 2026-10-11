@@ -14,6 +14,665 @@
     "utilitySlots": 1,
     "sailSlots": 1,
     "shipName_fr": "Le Rusty Eel",
-    "turnSeconds": 20
+    "turnSeconds": 20,
+    "hullName": "Sloop",
+    "hullName_fr": "Sloop",
+    "hullCost": 0,
+    "unlockChapter": 0,
+    "flying": false,
+    "kind": "hull",
+    "length": 1.0,
+    "beam": 0.24,
+    "outline": {
+      "u0": 0.5,
+      "a": 2.2,
+      "b": 1.7,
+      "tipw": 0.3,
+      "bowtip": 0.0
+    },
+    "sailPlan": [
+      {
+        "kind": "square",
+        "at": 0.5,
+        "size": 1.0
+      }
+    ],
+    "jibs": 1,
+    "oars": 0,
+    "castles": [],
+    "beak": false,
+    "description": "What she is today: a hull that takes a beating, with room for little beyond the plain.",
+    "description_fr": "Ce qu’elle est aujourd’hui : une coque qui encaisse, avec place pour peu de chose hors l’ordinaire."
+  },
+  "longboat": {
+    "shipID": "longboat",
+    "shipName": "The Rusty Eel",
+    "shipName_fr": "Le Rusty Eel",
+    "hullName": "Longboat",
+    "hullName_fr": "Barque longue",
+    "baseMaxHull": 40,
+    "rooms": {
+      "helm": 2,
+      "guns": 1,
+      "bulwark": 1,
+      "hold": 1
+    },
+    "weaponSlots": 1,
+    "shieldSlots": 0,
+    "utilitySlots": 1,
+    "sailSlots": 1,
+    "turnSeconds": 24,
+    "hullCost": 60,
+    "unlockChapter": 0,
+    "flying": false,
+    "kind": "hull",
+    "length": 0.72,
+    "beam": 0.15,
+    "outline": {
+      "u0": 0.5,
+      "a": 1.3,
+      "b": 1.3,
+      "tipw": 0.0,
+      "bowtip": 0.0
+    },
+    "sailPlan": [
+      {
+        "kind": "square",
+        "at": 0.5,
+        "size": 0.9
+      }
+    ],
+    "jibs": 0,
+    "oars": 8,
+    "castles": [],
+    "beak": false,
+    "description": "Double-ended and oared: it moves when the wind does not, and it is the hardest ship to hit. Small, and not for a fight.",
+    "description_fr": "À deux étraves et à rames : elle avance quand le vent tombe, et c’est le navire le plus dur à toucher. Petite, et pas faite pour le combat."
+  },
+  "cutter": {
+    "shipID": "cutter",
+    "shipName": "The Rusty Eel",
+    "shipName_fr": "Le Rusty Eel",
+    "hullName": "Cutter",
+    "hullName_fr": "Cotre",
+    "baseMaxHull": 55,
+    "rooms": {
+      "helm": 2,
+      "guns": 1,
+      "bulwark": 1,
+      "hold": 1
+    },
+    "weaponSlots": 1,
+    "shieldSlots": 1,
+    "utilitySlots": 1,
+    "sailSlots": 1,
+    "turnSeconds": 22,
+    "hullCost": 180,
+    "unlockChapter": 1,
+    "flying": false,
+    "kind": "hull",
+    "length": 0.82,
+    "beam": 0.18,
+    "outline": {
+      "u0": 0.4,
+      "a": 2.2,
+      "b": 1.15,
+      "tipw": 0.22,
+      "bowtip": 0.0
+    },
+    "sailPlan": [
+      {
+        "kind": "gaff",
+        "at": 0.5,
+        "size": 1.0
+      }
+    ],
+    "jibs": 2,
+    "oars": 0,
+    "castles": [],
+    "beak": false,
+    "description": "Slim and quick, close-winded: it slips the first volley and runs from what it cannot beat.",
+    "description_fr": "Fine et vive, elle remonte le vent : elle esquive la première bordée et fuit ce qu’elle ne peut battre."
+  },
+  "brigantine": {
+    "shipID": "brigantine",
+    "shipName": "The Rusty Eel",
+    "shipName_fr": "Le Rusty Eel",
+    "hullName": "Brigantine",
+    "hullName_fr": "Brigantin",
+    "baseMaxHull": 120,
+    "rooms": {
+      "helm": 1,
+      "guns": 2,
+      "bulwark": 1,
+      "hold": 1
+    },
+    "weaponSlots": 2,
+    "shieldSlots": 1,
+    "utilitySlots": 2,
+    "sailSlots": 2,
+    "turnSeconds": 20,
+    "hullCost": 420,
+    "unlockChapter": 2,
+    "flying": false,
+    "kind": "hull",
+    "length": 1.0,
+    "beam": 0.25,
+    "outline": {
+      "u0": 0.5,
+      "a": 2.4,
+      "b": 1.6,
+      "tipw": 0.36,
+      "bowtip": 0.04
+    },
+    "sailPlan": [
+      {
+        "kind": "square",
+        "at": 0.34,
+        "size": 0.9
+      },
+      {
+        "kind": "gaff",
+        "at": 0.66,
+        "size": 1.0
+      }
+    ],
+    "jibs": 1,
+    "oars": 0,
+    "castles": [],
+    "beak": false,
+    "description": "Two masts, two sigils: handy in any wind, and a place to hang a second painted power.",
+    "description_fr": "Deux mâts, deux sigils : à l’aise par tout vent, et la place d’un second pouvoir peint."
+  },
+  "brig": {
+    "shipID": "brig",
+    "shipName": "The Rusty Eel",
+    "shipName_fr": "Le Rusty Eel",
+    "hullName": "Brig",
+    "hullName_fr": "Brick",
+    "baseMaxHull": 140,
+    "rooms": {
+      "helm": 1,
+      "guns": 2,
+      "bulwark": 2,
+      "hold": 1
+    },
+    "weaponSlots": 3,
+    "shieldSlots": 2,
+    "utilitySlots": 2,
+    "sailSlots": 2,
+    "turnSeconds": 20,
+    "hullCost": 650,
+    "unlockChapter": 3,
+    "flying": false,
+    "kind": "hull",
+    "length": 1.0,
+    "beam": 0.28,
+    "outline": {
+      "u0": 0.52,
+      "a": 3.0,
+      "b": 2.0,
+      "tipw": 0.46,
+      "bowtip": 0.12
+    },
+    "sailPlan": [
+      {
+        "kind": "square",
+        "at": 0.36,
+        "size": 1.05
+      },
+      {
+        "kind": "square",
+        "at": 0.64,
+        "size": 1.1
+      }
+    ],
+    "jibs": 1,
+    "oars": 0,
+    "castles": [],
+    "beak": false,
+    "description": "Broad and bluff: a broadside of three guns and a bulwark that holds two layers.",
+    "description_fr": "Large et ronde : une bordée de trois canons et un pavois qui tient deux couches."
+  },
+  "corvette": {
+    "shipID": "corvette",
+    "shipName": "The Rusty Eel",
+    "shipName_fr": "Le Rusty Eel",
+    "hullName": "Corvette",
+    "hullName_fr": "Corvette",
+    "baseMaxHull": 165,
+    "rooms": {
+      "helm": 2,
+      "guns": 2,
+      "bulwark": 1,
+      "hold": 1
+    },
+    "weaponSlots": 3,
+    "shieldSlots": 1,
+    "utilitySlots": 2,
+    "sailSlots": 3,
+    "turnSeconds": 18,
+    "hullCost": 900,
+    "unlockChapter": 4,
+    "flying": false,
+    "kind": "hull",
+    "length": 1.0,
+    "beam": 0.19,
+    "outline": {
+      "u0": 0.45,
+      "a": 2.2,
+      "b": 1.25,
+      "tipw": 0.22,
+      "bowtip": 0.0
+    },
+    "sailPlan": [
+      {
+        "kind": "square",
+        "at": 0.3,
+        "size": 0.8
+      },
+      {
+        "kind": "square",
+        "at": 0.52,
+        "size": 0.9
+      },
+      {
+        "kind": "gaff",
+        "at": 0.75,
+        "size": 0.9
+      }
+    ],
+    "jibs": 2,
+    "oars": 0,
+    "castles": [],
+    "beak": false,
+    "description": "Long and narrow: the fastest of the big hulls, thin of plating, with three painted sails to hang.",
+    "description_fr": "Longue et étroite : la plus rapide des grandes coques, peu blindée, avec trois voiles peintes à porter."
+  },
+  "frigate": {
+    "shipID": "frigate",
+    "shipName": "The Rusty Eel",
+    "shipName_fr": "Le Rusty Eel",
+    "hullName": "Frigate",
+    "hullName_fr": "Frégate",
+    "baseMaxHull": 195,
+    "rooms": {
+      "helm": 1,
+      "guns": 3,
+      "bulwark": 2,
+      "hold": 2
+    },
+    "weaponSlots": 4,
+    "shieldSlots": 2,
+    "utilitySlots": 2,
+    "sailSlots": 3,
+    "turnSeconds": 20,
+    "hullCost": 1250,
+    "unlockChapter": 5,
+    "flying": false,
+    "kind": "hull",
+    "length": 1.0,
+    "beam": 0.25,
+    "outline": {
+      "u0": 0.5,
+      "a": 3.0,
+      "b": 1.9,
+      "tipw": 0.5,
+      "bowtip": 0.1
+    },
+    "sailPlan": [
+      {
+        "kind": "square",
+        "at": 0.28,
+        "size": 0.95
+      },
+      {
+        "kind": "square",
+        "at": 0.5,
+        "size": 1.1
+      },
+      {
+        "kind": "square",
+        "at": 0.72,
+        "size": 1.0
+      }
+    ],
+    "jibs": 2,
+    "oars": 0,
+    "castles": [
+      [
+        0.04,
+        0.2
+      ]
+    ],
+    "beak": false,
+    "description": "A man-of-war: four guns a side and two layers of shield, slow to turn.",
+    "description_fr": "Un navire de guerre : quatre canons par bord et deux couches de bouclier, lent à virer."
+  },
+  "galleon": {
+    "shipID": "galleon",
+    "shipName": "The Rusty Eel",
+    "shipName_fr": "Le Rusty Eel",
+    "hullName": "Galleon",
+    "hullName_fr": "Galion",
+    "baseMaxHull": 230,
+    "rooms": {
+      "helm": 1,
+      "guns": 3,
+      "bulwark": 2,
+      "hold": 2
+    },
+    "weaponSlots": 4,
+    "shieldSlots": 3,
+    "utilitySlots": 3,
+    "sailSlots": 3,
+    "turnSeconds": 22,
+    "hullCost": 1800,
+    "unlockChapter": 6,
+    "flying": false,
+    "kind": "hull",
+    "length": 1.0,
+    "beam": 0.31,
+    "outline": {
+      "u0": 0.45,
+      "a": 4.0,
+      "b": 1.6,
+      "tipw": 0.62,
+      "bowtip": 0.22
+    },
+    "sailPlan": [
+      {
+        "kind": "square",
+        "at": 0.3,
+        "size": 1.0
+      },
+      {
+        "kind": "square",
+        "at": 0.5,
+        "size": 1.15
+      },
+      {
+        "kind": "square",
+        "at": 0.68,
+        "size": 1.0
+      },
+      {
+        "kind": "lateen",
+        "at": 0.15,
+        "size": 0.7
+      }
+    ],
+    "jibs": 0,
+    "oars": 0,
+    "castles": [
+      [
+        0.03,
+        0.27
+      ],
+      [
+        0.8,
+        0.94
+      ]
+    ],
+    "beak": true,
+    "description": "A floating fortress: the most guns, the thickest side, the slowest to answer the helm.",
+    "description_fr": "Une forteresse flottante : le plus de canons, le flanc le plus épais, la plus lente à répondre à la barre."
+  },
+  "twin_hull": {
+    "shipID": "twin_hull",
+    "shipName": "The Rusty Eel",
+    "shipName_fr": "Le Rusty Eel",
+    "hullName": "Twin-hull",
+    "hullName_fr": "Catamaran elfique",
+    "baseMaxHull": 110,
+    "rooms": {
+      "helm": 3,
+      "guns": 1,
+      "bulwark": 1,
+      "hold": 1
+    },
+    "weaponSlots": 2,
+    "shieldSlots": 1,
+    "utilitySlots": 1,
+    "sailSlots": 2,
+    "turnSeconds": 20,
+    "hullCost": 800,
+    "unlockChapter": 4,
+    "flying": false,
+    "kind": "twin",
+    "length": 0.92,
+    "beam": 0.31,
+    "outline": {
+      "u0": 0.46,
+      "a": 1.8,
+      "b": 1.2,
+      "tipw": 0.0,
+      "bowtip": 0.0
+    },
+    "sailPlan": [
+      {
+        "kind": "lateen",
+        "at": 0.42,
+        "size": 1.0
+      },
+      {
+        "kind": "lateen",
+        "at": 0.68,
+        "size": 0.9
+      }
+    ],
+    "jibs": 0,
+    "oars": 0,
+    "castles": [],
+    "beak": false,
+    "description": "Two slender hulls under a deck: it leans into the wind and is hard to hit, and it fears a ram.",
+    "description_fr": "Deux coques fines sous un pont : elle s’appuie sur le vent et se laisse mal toucher, mais redoute l’éperon."
+  },
+  "ironclad": {
+    "shipID": "ironclad",
+    "shipName": "The Rusty Eel",
+    "shipName_fr": "Le Rusty Eel",
+    "hullName": "Ironclad",
+    "hullName_fr": "Cuirassé nain",
+    "baseMaxHull": 210,
+    "rooms": {
+      "helm": 1,
+      "guns": 2,
+      "bulwark": 3,
+      "hold": 2
+    },
+    "weaponSlots": 3,
+    "shieldSlots": 3,
+    "utilitySlots": 2,
+    "sailSlots": 0,
+    "turnSeconds": 20,
+    "hullCost": 1500,
+    "unlockChapter": 6,
+    "flying": false,
+    "kind": "iron",
+    "length": 0.96,
+    "beam": 0.29,
+    "outline": {
+      "u0": 0.5,
+      "a": 3.0,
+      "b": 1.2,
+      "tipw": 0.5,
+      "bowtip": 0.0
+    },
+    "sailPlan": [],
+    "jibs": 0,
+    "oars": 0,
+    "castles": [],
+    "beak": false,
+    "description": "Steam and plate: it ignores the wind and weathers a broadside, and it has no sail to paint.",
+    "description_fr": "Vapeur et blindage : elle ignore le vent et encaisse une bordée, et n’a aucune voile à peindre."
+  },
+  "sky_sloop": {
+    "shipID": "sky_sloop",
+    "shipName": "The Rusty Eel",
+    "shipName_fr": "Le Rusty Eel",
+    "hullName": "Sky-sloop",
+    "hullName_fr": "Sloop des airs",
+    "baseMaxHull": 130,
+    "rooms": {
+      "helm": 2,
+      "guns": 1,
+      "bulwark": 1,
+      "hold": 1
+    },
+    "weaponSlots": 2,
+    "shieldSlots": 1,
+    "utilitySlots": 2,
+    "sailSlots": 1,
+    "turnSeconds": 20,
+    "hullCost": 1100,
+    "unlockChapter": 5,
+    "flying": true,
+    "kind": "gasbag",
+    "length": 1.0,
+    "beam": 0.22,
+    "outline": {
+      "u0": 0.5,
+      "a": 2.2,
+      "b": 1.7,
+      "tipw": 0.3,
+      "bowtip": 0.0
+    },
+    "sailPlan": [
+      {
+        "kind": "gaff",
+        "at": 0.52,
+        "size": 0.9
+      }
+    ],
+    "jibs": 0,
+    "oars": 0,
+    "castles": [],
+    "beak": false,
+    "description": "The Eel with twin gasbags on outriggers, a boiler and a pusher screw. Storms and raiders pass beneath her keel.",
+    "description_fr": "L’Eel dotée de deux ballons sur balancines, d’une chaudière et d’une hélice propulsive. Tempêtes et pillards passent sous sa quille."
+  },
+  "cloud_cutter": {
+    "shipID": "cloud_cutter",
+    "shipName": "The Rusty Eel",
+    "shipName_fr": "Le Rusty Eel",
+    "hullName": "Cloud-cutter",
+    "hullName_fr": "Cotre des nuées",
+    "baseMaxHull": 120,
+    "rooms": {
+      "helm": 3,
+      "guns": 1,
+      "bulwark": 1,
+      "hold": 1
+    },
+    "weaponSlots": 2,
+    "shieldSlots": 1,
+    "utilitySlots": 1,
+    "sailSlots": 0,
+    "turnSeconds": 18,
+    "hullCost": 1300,
+    "unlockChapter": 5,
+    "flying": true,
+    "kind": "batwing",
+    "length": 1.0,
+    "beam": 0.17,
+    "outline": {
+      "u0": 0.42,
+      "a": 2.0,
+      "b": 1.2,
+      "tipw": 0.2,
+      "bowtip": 0.0
+    },
+    "sailPlan": [],
+    "jibs": 0,
+    "oars": 0,
+    "castles": [],
+    "beak": false,
+    "description": "Rigid bat-wing sails and a soul furnace: fast and high, though the furnace burns the crew that stoke it. Storms and raiders pass beneath her keel.",
+    "description_fr": "Des voiles rigides en ailes de chauve-souris et un four à âmes : rapide et haut, mais le four brûle ceux qui l’alimentent. Tempêtes et pillards passent sous sa quille."
+  },
+  "lodestone_barge": {
+    "shipID": "lodestone_barge",
+    "shipName": "The Rusty Eel",
+    "shipName_fr": "Le Rusty Eel",
+    "hullName": "Lodestone barge",
+    "hullName_fr": "Barge d’aimant",
+    "baseMaxHull": 220,
+    "rooms": {
+      "helm": 1,
+      "guns": 2,
+      "bulwark": 3,
+      "hold": 2
+    },
+    "weaponSlots": 3,
+    "shieldSlots": 3,
+    "utilitySlots": 2,
+    "sailSlots": 0,
+    "turnSeconds": 22,
+    "hullCost": 1900,
+    "unlockChapter": 6,
+    "flying": true,
+    "kind": "lodestone",
+    "length": 0.98,
+    "beam": 0.31,
+    "outline": {
+      "u0": 0.5,
+      "a": 3.4,
+      "b": 1.4,
+      "tipw": 0.6,
+      "bowtip": 0.12
+    },
+    "sailPlan": [],
+    "jibs": 0,
+    "oars": 0,
+    "castles": [],
+    "beak": false,
+    "description": "Iron and stone held up by four lodestones: slow, hard to push off its height, three layers of plate. Storms and raiders pass beneath her keel.",
+    "description_fr": "Du fer et de la pierre tenus en l’air par quatre aimants : lente, difficile à déloger de sa hauteur, trois couches de plaques. Tempêtes et pillards passent sous sa quille."
+  },
+  "void_carrack": {
+    "shipID": "void_carrack",
+    "shipName": "The Rusty Eel",
+    "shipName_fr": "Le Rusty Eel",
+    "hullName": "Void carrack",
+    "hullName_fr": "Caraque du Néant",
+    "baseMaxHull": 180,
+    "rooms": {
+      "helm": 2,
+      "guns": 3,
+      "bulwark": 1,
+      "hold": 1
+    },
+    "weaponSlots": 3,
+    "shieldSlots": 1,
+    "utilitySlots": 2,
+    "sailSlots": 1,
+    "turnSeconds": 20,
+    "hullCost": 1700,
+    "unlockChapter": 6,
+    "flying": true,
+    "kind": "bone",
+    "length": 1.0,
+    "beam": 0.27,
+    "outline": {
+      "u0": 0.46,
+      "a": 2.6,
+      "b": 1.5,
+      "tipw": 0.45,
+      "bowtip": 0.0
+    },
+    "sailPlan": [
+      {
+        "kind": "square",
+        "at": 0.5,
+        "size": 0.8
+      }
+    ],
+    "jibs": 0,
+    "oars": 0,
+    "castles": [],
+    "beak": false,
+    "description": "Rowed through the sky on bone wings: it climbs faster than anything, and its wings are its weakness. Storms and raiders pass beneath her keel.",
+    "description_fr": "Ramée dans le ciel sur des ailes d’os : elle monte plus vite que tout, et ses ailes sont sa faiblesse. Tempêtes et pillards passent sous sa quille."
   }
 }

@@ -23,11 +23,15 @@ import 'ship_cutaway.dart';
 /// The Rusty Eel's own record in ships.json.
 const String playerShipId = 'rusty_eel';
 
-/// The Rusty Eel's record, or the first ship on file.
-Map<String, dynamic>? playerShipRecord(Map<String, dynamic> ships) {
-  final id = ships.containsKey(playerShipId)
-      ? playerShipId
-      : (ships.keys.isEmpty ? null : ships.keys.first);
+/// The hull the Eel is built on ([hullId], the Rusty Eel's own sloop until
+/// she is rebuilt), or the first on file.
+Map<String, dynamic>? playerShipRecord(Map<String, dynamic> ships,
+    [String hullId = playerShipId]) {
+  final id = ships.containsKey(hullId)
+      ? hullId
+      : (ships.containsKey(playerShipId)
+          ? playerShipId
+          : (ships.keys.isEmpty ? null : ships.keys.first));
   return id == null ? null : ships[id] as Map<String, dynamic>?;
 }
 
@@ -68,7 +72,8 @@ class ShipStatusCard extends ConsumerWidget {
     final ports = ref.watch(localizedDbProvider(portsSchema)).value;
     final busy =
         ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);
-    final ship = ships == null ? null : playerShipRecord(ships);
+    final ship =
+        ships == null ? null : playerShipRecord(ships, session.shipHullId);
     if (ship == null || parts == null || ports == null) {
       return const SizedBox.shrink();
     }
@@ -394,7 +399,7 @@ class ShipAtSea extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dress = ref.watch(shipDressProvider);
-    final look = TopShipLook.rustyEel.dressed(dress);
+    final look = ref.watch(playerShipLookProvider);
     // From above she is long and low: as wide as the band is tall, twice
     // over and more.
     final shipWidth = height * 1.75;

@@ -21,6 +21,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../screens/ship_battle_panel.dart';
 import '../screens/voyage_screen.dart' show buildShipCrew;
+import 'ship_widgets.dart' show playerShipRecord;
 
 /// A sea battle the story itself starts (a choice's `shipBattleId`, see
 /// StoryChoice.shipBattleId): the Eel as she is fitted out and as damaged
@@ -52,11 +53,9 @@ Future<bool?> runStoryShipBattle(
       data['displayName']?.toString() ??
       enemyShipId;
   final session = ref.read(playerSessionProvider);
-  final ship = ships['rusty_eel'] as Map<String, dynamic>? ??
-      (ships.values.isEmpty
-          ? const <String, dynamic>{}
-          : ships.values.first as Map<String, dynamic>);
-  final sail = installedSail(parts, session.shipPartIds);
+  final ship =
+      playerShipRecord(ships, session.shipHullId) ?? const <String, dynamic>{};
+  final sails = battleSailsOf(parts, session.shipPartIds, session.raceId);
   // The character's sea signs (see signs.dart), the title worn and the
   // Sworn boon with them (see offers.dart).
   final signs = signEffectsFor(session.heldSigns, parseSigns(signsDb),
@@ -68,7 +67,6 @@ Future<bool?> runStoryShipBattle(
         swornFactionId: session.politics.swornFactionId,
         data: clans,
       ));
-  final strength = sail == null ? 1 : sailStrength(sail.medium, session.raceId);
   List<ShipCrew> crew() => buildShipCrew(
         session: ref.read(playerSessionProvider),
         companions: companions,
@@ -96,9 +94,8 @@ Future<bool?> runStoryShipBattle(
               parts: parts,
               installedPartIds: session.shipPartIds,
               currentHull: session.shipHull,
-              voidVolleyPartId:
-                  sail?.power == SailPower.voidmark ? sail!.partId : null,
-              voidVolleyBonus: voidVolleyBonus(strength),
+              voidVolleyPartId: sails.voidPartId,
+              voidVolleyBonus: voidVolleyBonus(sails.voidStrength),
               hullPercent: signs.shipHullPercent,
               gunPercent: signs.shipGunPercent,
             ),
@@ -107,8 +104,8 @@ Future<bool?> runStoryShipBattle(
             enemyName: enemyName,
             enemyShipId: enemyShipId,
             crew: crew(),
-            foresight: sail?.power == SailPower.foresight,
-            windKnot: sail?.power == SailPower.windknot,
+            foresight: sails.foresight,
+            windKnot: sails.windKnot,
             random: Random(),
             boarding: boardingProfileFor(data),
             chapter: boardingChapterFor(chapter, data),

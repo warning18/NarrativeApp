@@ -821,6 +821,22 @@ List<String> partsWithinSlots({
   return kept;
 }
 
+/// The parts of [installedPartIds] a ship has no slot for (see
+/// [partsWithinSlots]): what a rebuild moves into the Harbor's store.
+List<String> partsBeyondSlots({
+  required Map<String, dynamic> ship,
+  required Map<String, dynamic> parts,
+  required List<String> installedPartIds,
+}) {
+  final within = partsWithinSlots(
+          ship: ship, parts: parts, installedPartIds: installedPartIds)
+      .toSet();
+  return [
+    for (final id in installedPartIds)
+      if (!within.contains(id)) id,
+  ];
+}
+
 const Map<String, String> _slotCountKeys = {
   'Weapon': 'weaponSlots',
   'Shield': 'shieldSlots',

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
+import '../data/ship_forms.dart';
 import '../data/ship_looks.dart';
 import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
@@ -33,11 +34,15 @@ class ShipYardPreview extends StatefulWidget {
   const ShipYardPreview({
     super.key,
     required this.dress,
+    this.form,
     this.height = 176,
     this.refit = 0,
   });
 
   final ShipDress dress;
+
+  /// The hull to draw her on (see ship_forms.dart); the sloop when null.
+  final ShipForm? form;
   final double height;
   final int refit;
 
@@ -67,7 +72,10 @@ class _ShipYardPreviewState extends State<ShipYardPreview>
       _started = false;
       _clock.stop();
     }
-    final look = TopShipLook.rustyEel.dressed(widget.dress);
+    final look = (widget.form == null
+            ? TopShipLook.rustyEel
+            : TopShipLook.player(widget.form!))
+        .dressed(widget.dress);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: SizedBox(
@@ -86,7 +94,7 @@ class _ShipYardPreviewState extends State<ShipYardPreview>
                   ),
                 ),
                 LayoutBuilder(builder: (context, c) {
-                  final width = (c.maxWidth - 36).clamp(180.0, 400.0);
+                  final width = ((c.maxWidth - 36) * 0.86).clamp(180.0, 400.0);
                   final box = topShipBoxHeight(width, look);
                   return Center(
                     child: SizedBox(
@@ -460,6 +468,64 @@ class _LookTile extends StatelessWidget {
                       color: isWorn ? ink.heal : ink.ash, fontSize: 10)),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A hull in miniature, from above: its outline and rig on the sea.
+class HullThumb extends StatelessWidget {
+  const HullThumb({super.key, required this.form, this.width = 120});
+
+  final ShipForm form;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    final look = TopShipLook.player(form);
+    final height = topShipBoxHeight(width, look);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: SizedBox(
+        width: width,
+        height: height + 10,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: CustomPaint(
+                painter: SeaSurfacePainter(
+                    waters: SeaWaters.open, weather: SeaWeather.calm, t: 1.3),
+              ),
+            ),
+            Positioned(
+              left: 0,
+              top: 5,
+              width: width,
+              height: height,
+              child: CustomPaint(
+                painter: TopShipPainter(
+                  look: look,
+                  flip: false,
+                  facingDown: false,
+                  t: 1.3,
+                  layers: 0,
+                  maxLayers: 0,
+                  battered: false,
+                  down: const {},
+                  burning: const {},
+                  water: 0,
+                  shield: const Color(0xFF80D8FF),
+                  foam: const Color(0xFFE6F2F4),
+                  roomColors: {
+                    for (final r in ShipRoom.values) r: const Color(0xFFAAAAAA)
+                  },
+                  speed: 0.2,
+                  pixel: 2,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
