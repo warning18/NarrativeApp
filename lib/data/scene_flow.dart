@@ -72,6 +72,35 @@ StoryChoice? passThroughChoiceOf(StoryNode node, Iterable<String> flags,
   return way;
 }
 
+/// The scene the story really lands on after a way leads to [firstId]
+/// (v1.224): the scenes the story reads straight through (see
+/// [passThroughChoiceOf]) are passed on the way, at most [maxPassThrough] of
+/// them, so the party stands where the last of them leads. The Journey walks
+/// the party there, not to the first scene, so its mark never jumps.
+///
+/// [nodeFor] finds a scene; [flags], [hidden] and [travels] are as for
+/// [passThroughChoiceOf]; [blocked] says a way on the party cannot take yet
+/// (the story stops at such a scene, with its reason).
+String readThroughEnd(
+  String firstId, {
+  required StoryNode? Function(String id) nodeFor,
+  required Iterable<String> flags,
+  bool Function(StoryChoice choice)? hidden,
+  bool Function(String from, String to)? travels,
+  bool Function(StoryChoice choice)? blocked,
+}) {
+  var id = firstId;
+  for (var i = 0; i < maxPassThrough; i++) {
+    final node = nodeFor(id);
+    if (node == null) break;
+    final way =
+        passThroughChoiceOf(node, flags, hidden: hidden, travels: travels);
+    if (way == null || (blocked?.call(way) ?? false)) break;
+    id = way.nextId;
+  }
+  return id;
+}
+
 /// A scene read on the way to the next one, shown above it.
 class ScenePrelude {
   const ScenePrelude({

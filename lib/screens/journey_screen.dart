@@ -12,6 +12,7 @@ import '../data/city_plan.dart';
 import '../data/place_plan.dart';
 import '../data/room_plan.dart';
 import '../data/journey_map.dart';
+import '../data/scene_flow.dart';
 import '../data/journey_relief.dart';
 import '../data/map_charts.dart' show ChartGeography, ChartPalette, chartOf;
 import '../data/narration_tokens.dart';
@@ -726,6 +727,21 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final condition = ref.watch(chapterConditionProvider);
     final eventsOn =
         !play.isInExcursion && ref.watch(appModeProvider) != AppMode.edit;
+    // The scene each way really lands on (v1.224): the plain scenes the
+    // story reads straight through are passed on the way, so the party
+    // walks to where the last of them is, and the map never jumps.
+    final reading = ref.watch(appModeProvider) != AppMode.edit;
+    String endOf(StoryChoice c) => play.isInExcursion || c.isEnding || !reading
+        ? c.nextId
+        : readThroughEnd(
+            c.nextId,
+            nodeFor: story.nodeFor,
+            flags: session.flags,
+            hidden: (x) => choiceHiddenFor(x, session, gateWorld),
+            travels: (from, to) => world.travelsBetween(story, from, to),
+            blocked: (x) =>
+                isStoryChoiceLocked(x, story, session, world: gateWorld),
+          );
     final rawSteps = [
       for (var i = 0; i < choices.length; i++)
         () {
@@ -745,7 +761,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
               : null;
           final target = play.isInExcursion || choice.isEnding
               ? null
-              : landmarkOfScene(choice.nextId);
+              : landmarkOfScene(endOf(choice));
           // A way to another landmark points out of the square; only one
           // that leaves the location (the city, not one of its districts)
           // is a journey over the world chart (v1.197).
@@ -766,7 +782,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             onwardKinds: play.isInExcursion || choice.isEnding
                 ? const []
                 : <JourneyStepKind>{
-                    for (final next in story.nodeFor(choice.nextId)?.choices ??
+                    for (final next in story.nodeFor(endOf(choice))?.choices ??
                         const <StoryChoice>[])
                       if (!choiceHiddenFor(next, session, gateWorld))
                         journeyStepKindOf(next),
@@ -836,7 +852,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         climate: skyHere == null ? null : CityClimate.of(skyHere.ground),
       );
       for (var i = 0; i < choices.length; i++) {
-        final place = world.placeOfNode(story.nodeFor(choices[i].nextId));
+        final place = world.placeOfNode(story.nodeFor(endOf(choices[i])));
         if (place == null || place.id == herePlace?.id) continue;
         if (world.locationOf(place.id)?.id != hereLocation.id) continue;
         districtOfStep[i] = place.level == GeoLevel.district ? place.id : '';
@@ -856,7 +872,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       hereSpot = room.has(node.spot ?? '') ? node.spot! : 'floor';
       districtOfStep.clear();
       for (var i = 0; i < choices.length; i++) {
-        final next = story.nodeFor(choices[i].nextId);
+        final next = story.nodeFor(endOf(choices[i]));
         final inside = world.placeOfNode(next)?.id == hereBuilding.id;
         final wanted = choices[i].spot ?? (inside ? next?.spot : null);
         districtOfStep[i] = wanted != null && room.has(wanted)
@@ -930,7 +946,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             districtOfStep: districtOfStep,
             glyphs: {
               for (var i = 0; i < choices.length; i++)
-                if (world.placeOfNode(story.nodeFor(choices[i].nextId))?.glyph
+                if (world.placeOfNode(story.nodeFor(endOf(choices[i])))?.glyph
                     case final glyph? when glyph.isNotEmpty)
                   i: glyph,
             },

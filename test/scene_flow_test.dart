@@ -33,6 +33,46 @@ StoryNode _node(String id, List<Map<String, dynamic>> choices,
         id, {'description': 'Scene $id.', 'choices': choices, ...extra});
 
 void main() {
+  group('where a way really lands (v1.224)', () {
+    StoryNode plain(String id, String to) => _node(id, [
+          {'text': 'On', 'next_id': to}
+        ]);
+    final story = StoryData({
+      'a': plain('a', 'b'),
+      'b': plain('b', 'c'),
+      'c': plain('c', 'd'),
+      'd': _node('d', [
+        {'text': 'Left', 'next_id': 'e'},
+        {'text': 'Right', 'next_id': 'f'},
+      ]),
+    });
+
+    test('the plain scenes passed on the way are walked through', () {
+      // a and b are read through (at most two), c is where the story stands.
+      expect(readThroughEnd('a', nodeFor: story.nodeFor, flags: const []), 'c');
+      expect(readThroughEnd('b', nodeFor: story.nodeFor, flags: const []), 'd');
+      // A real stop is where the party lands.
+      expect(readThroughEnd('d', nodeFor: story.nodeFor, flags: const []), 'd');
+    });
+
+    test('a road, a way not yet takeable and an unknown scene stop it', () {
+      expect(
+          readThroughEnd('a',
+              nodeFor: story.nodeFor,
+              flags: const [],
+              travels: (from, to) => to == 'c'),
+          'b');
+      expect(
+          readThroughEnd('a',
+              nodeFor: story.nodeFor,
+              flags: const [],
+              blocked: (way) => way.nextId == 'b'),
+          'a');
+      expect(
+          readThroughEnd('zz', nodeFor: story.nodeFor, flags: const []), 'zz');
+    });
+  });
+
   group('a plain way on', () {
     test('moves on and may leave a mark, nothing more', () {
       StoryChoice c(Map<String, dynamic> json) =>
