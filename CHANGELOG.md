@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.235.0+271]
+## [1.239.0+275]
 
 Titles for the new standing steps, dedicated art for the forty clan cards,
 and particles for them in a fight.
@@ -47,7 +47,7 @@ and particles for them in a fight.
   friend and a strike on a foe. The accent is read off the skill (nothing
   new to author), and shows in the effects gallery too.
 
-## [1.234.0+270]
+## [1.238.0+274]
 
 Twenty more skills: ten that belong to sub-clans and ten secrets.
 
@@ -82,7 +82,7 @@ Twenty more skills: ten that belong to sub-clans and ten secrets.
   never learn them with points. In 300 simulated runs, skills learned per run
   go from 9.6 to 10.4, level and win rate unchanged.
 
-## [1.233.0+269]
+## [1.237.0+273]
 
 Standing with a clan now has eleven steps, and fusions ask for more.
 
@@ -111,7 +111,7 @@ Standing with a clan now has eleven steps, and fusions ask for more.
 - The Edit Mode Affinities tab and the offer texts name the new steps.
 - Tier titles stay at Known, Trusted and Sworn; the new steps have none yet.
 
-## [1.232.0+268]
+## [1.236.0+272]
 
 Each clan now has a home among the peoples and the classes, and two clans
 together, or one at Trusted, can put a stronger skill on the table.
@@ -158,19 +158,19 @@ together, or one at Trusted, can put a stronger skill on the table.
   9.9, with level (10.9) and win rate (39%) unchanged. The simulator takes the
   rarest gift, which favors these epic cards, so this is the upper end.
 
-## [1.231.0+267]
+## [1.235.0+271]
 
 ### Changed
 - **Every offer now has a home seat.** One of the three suitors is a clan that sponsors a branch of your own tree (your class's branches or your people's heritage) and brings a skill from it, so your tree keeps growing instead of depending on the draw. The clan of your own people is three times likelier while your heritage branch still has a skill to give; once it is done, your class's clans take over. A quest's or an intrigue's clan fills the seat itself when it sponsors your tree; the Choir at a chapter's end and the Wayfarer keep their places, so an offer may then show four cards. A clan you are Hostile with, or whose next skill is deeper than your standing allows, is no home; with a fully grown tree there is no home seat.
 - In 300 simulated runs (same seed), skills learned per run go from 3.4 to 7.0 (mage 2.9 to 5.7, ranger 4.2 to 8.3), signs from 15.0 to 12.6, with level and win rate unchanged (10.9, 39%).
 
-## [1.230.0+266]
+## [1.234.0+270]
 
 ### Added
 - The simulator plays quests the way the game does. A scene that offers or starts a quest is accepted when the character qualifies (alignment, flags, gold); Kill objectives count the fights won since it was taken, Flag objectives the story flags, Fetch objectives what the story hands over and what beaten foes drop (by their loot tables' own odds), Talk objectives once the person's chapter is reached. A finished quest is handed in at once for its gold, XP (which levels the character), item, alignment and follow-up, and a quest with turn-in choices takes the one the player leans to. New goal "Do every quest" (`completionist`) takes every way on of a scene it has not taken yet, work on offer first. See `docs/simulation/report-quests.md`.
 - `test/sim_quests_test.dart` covers the quest log (alignment gate, bounty baselines, a quest offered by a fight, pay and chaining, turn-in bias, what a quest waits on).
 
-## [1.229.0+265]
+## [1.233.0+269]
 
 ### Added
 - The simulator can explore: the new goal "Explore every branch" takes, at every scene, the way on taken least so far over a whole batch of runs, so batch after batch covers more of the story. `simulatePlaythroughs` takes a shared `SimCoverage`; `test/sim_coverage_test.dart` pins that exploring covers more scenes and ways on than random runs, with every run ending in a real ending. `docs/simulation/report-branches.md` and `runs-explore-100.csv` hold the result of 300 runs: 363 of 385 scenes (94%) reached, the 22 that no run reached with what blocks each, and the one quest nothing offers.
@@ -178,7 +178,7 @@ together, or one at Trusted, can put a stronger skill on the table.
 ### Changed
 - The simulator rolls ability checks as the game does (a d20 plus the character's score against the DC, a natural 20 passing and a natural 1 failing, a skill challenge taking rounds), takes the failure scene when a check fails, and lets a sneak that works skip its fight. Before, no run ever took a failure branch, so 70 scenes (18% of the story) were never played. The simulated character's win rate in fights falls from 34% to 31% of attempts.
 
-## [1.228.0+264]
+## [1.232.0+268]
 
 ### Added
 - The Edit Mode fight lab can add a companion to a test fight. Under the party switch, "Add a companion" lists all eight companions with their race and profession; any of them, recruited by the story or not, joins the party for the test with the skills of their signature die, and a chip takes them off again. They are put back afterwards like the rest of the test: a companion the story never recruited is gone again even with "Keep what happens" on; one the story had recruited keeps what the fight did to them.
@@ -188,7 +188,7 @@ together, or one at Trusted, can put a stronger skill on the table.
 - The Journey's read-through prediction follows the real one: the flags each passed scene sets count for the next scene's ways, a way out of a building by a door walks the party out even from that door, and the scenes a way reads through are worked out once per build instead of for every use.
 - The fight lab keeps the companions added to a test within the most the camp can field (the base party and every house's bonus), picks first.
 
-## [1.227.0+263]
+## [1.231.0+267]
 
 ### Changed
 - The Journey walks the party only where the story does. A way that keeps the party where it stands (working the table it is at, a roll, a stall, a scuffle in the square) leaves it on its mark: no walk, no road drawn to it. A way that carries it somewhere still walks it there: across a bridge or a street to another district or building, through a door or to a spot of the room, out along the road to another place.
@@ -196,13 +196,55 @@ together, or one at Trusted, can put a stronger skill on the table.
 - The party's mark never jumps. The plain scenes the story reads straight through on the way (see Fewer presses of Continue) are passed on the road, so the map now places and walks each way to the scene the story really lands on, not to the first scene it leads to: the district or building, the spot of the room and the glimpse of what comes next all follow where the party will stand after the read-through. Edit Mode, which stops at every scene, keeps the first one.
 - The road already taken (the chapter's earlier scenes below the party, with the way taken out of each) is gone from the Journey. The Map tab keeps showing it.
 
-## [1.226.0+262]
+## [1.230.0+266]
 
 ### Fixed
 - Side quest rewards now follow one scale. A turn-in choice pays instead of the quest's base gold, not on top of it, so the clan quests of Chapters 3 to 6 paid far less than the fights of their chapter: the Chapter 5 candle count and hearth-stone paid at most 60 and 70 gold, the Chapter 6 salvage 90, against 80 to 150 for the kill quests beside them, while their XP ran well above (150 to 180 against 110 to 200). Gold and XP now follow the difficulty (about 12 gold and 17 XP per point) and a choice pays about 0.3, 0.8 or 1.5 times the base:
   - Glass from the Terraces 50 gold and 70 XP (was 45 and 90); Bark Tithe 75 and 105 (was 50 and 120); Candle Count and Hearth-Stone 90 and 130 (was 55 and 150); Salvage Rights 140 and 185 (was 60 and 180). The Reckoning Wall's sale to the Inquisition pays 100, not 150.
   - Difficulty ratings follow the pay: Vess 2 (was 4), Bark Tithe 6, Candle Count and Hearth-Stone 7, Salvage Rights 11.
 - Only the Chapter 2 harbor chain paid in gear. The four hardest side quests now do: Ossuary Bounty (Bone-Laced Boots), Penitent's Confession (Frostward Cloak), Faces of the Fallen (Tearwalker Boots) and Salvage Rights (Voidsteel Greaves).
+
+## [1.229.0+265]
+
+### Added
+- **Pixel-art banners in the style of Japanese kanji posters.** Twenty 64×128 banners drawn by `tool/gen_banners.py`: a black woven cloth filled edge to edge by two heavy signs stacked like vertical writing, built the way the posters build their lettering: fat slabs with rounded corners and rounded bends (a box on a bar, an E-comb, a square spiral, a gate, a stepped tower, a hand, a torn eye), thin black stencil slits where pieces meet, round discs, eyes (a ring round a dot), and fine concentric lines along the curves. Kept to few colours: the signs are always cream on black, with one accent colour per banner (the clan's own) for its discs, a thin header line and the tail's edge; the tassels and finials are brass.
+  - **The Shroud, in Pieces** (Character tab) lays the six pieces out as banners: each recovered piece in colour with its name, the others a dark silhouette marked "Not yet found", with a count.
+  - **Every clan's main banner** (the Lantern Dominion, the Grey Vigil, the Cinder Compact, the Mire Courts, the Salt Crows, the Ashen Penitents, the Choir, the Pit, the giants, the oni, the Tide-Kin, the Kindly Ones and the Open Hand) in the clan's colour from `factions.json`, beside its standing card; the Open Hand's stays a silhouette until its banner is raised on the Hollow Shore.
+
+### Changed
+- The title's mark is the Void's standard in pixel art, replacing the vector banner: twice the size on a tall screen, once on a medium one, and left out on a short one so the menu stays in view.
+- A sworn clan's boon name in a standing card wraps instead of overflowing on a narrow phone.
+
+## [1.228.0+264]
+
+### Added
+- **Ten hulls, and four flying boats.** The Eel can be rebuilt at the Harbor on another hull, each with its own outline, masts and sails seen from above, its own slots and its own price: Longboat, Cutter, the Sloop she is today, Brigantine, Brig, Corvette, Frigate, Galleon, an elven Twin-hull and a dwarven Ironclad (no sail to paint); and, from chapter 5, the Sky-sloop (twin gasbags, a boiler and a screw), the Cloud-cutter (bat-wing sails and a soul furnace), the Lodestone barge (four glowing lodestones) and the Void carrack (bone wings). A flying boat lets the storms and raiders of a voyage pass beneath her keel, as the Gull's Wing sail does.
+  - The Harbor has a **Hull** section: each hull's picture from above, what it carries, its price and the chapter it is built from. A hull is paid for once; going back to one already built is free. Rebuilding says which parts have no slot on the new hull (they wait in the Harbor's store), keeps her name, looks and crew, and keeps her share of hull. "Try on the ship" shows a hull in the yard before it is built.
+  - **Several painted sails at once**: a hull with several sail slots carries one sail of each power (a second sail of a power already aboard paints over it), each with its sigil on its own mast, and the voyage and the sea battle take all of their powers together.
+  - Hull points, rooms, slots, sail plans and prices are in `ships.json` (new fields: hull name, price, chapter, kind, outline, sail plan, jibs, oars, castles, beak, flying), editable in the data editor.
+
+### Changed
+- **The ships are pixel art.** Every ship seen from above (the sea fight, the camp's boat card, the voyage, the yard) is drawn small and stretched back hard-edged, with a hard drop shadow and a heavier wake, so the fleet reads like the skill effects: flat tones, hard edges, one pixel size. Sea beasts keep their own sprites.
+- The rooms of a ship shorter than the battle's box sit along her own length, so a small hull's tiles are on her deck.
+
+## [1.227.0+263]
+
+### Changed
+- Ships are drawn from above only, as in the sea battle. The Eel at sea (on the voyage, in the camp's boat card, on the ship screen) is the same top-down ship the battle draws, in her paint, cloth, guns and plating, instead of the old side cutaway; the Harbor shows her once, larger, in the yard.
+
+## [1.226.0+262]
+
+### Added
+- Ship customisation, in the Harbor, now a shipwright's yard. Above the parts, the Eel is drawn from above on the open sea, as she would look with what is tried on her.
+  - **Sixty-seven parts** (forty-eight new), at least a dozen in each of the four slots, in *versions* of a family from the plain to the rare: the ballista becomes an iron-bound one and then a siege engine, the chain swivel a bar-shot swivel and a reaper chain gun, the grape swivel a canister swivel and a shrapnel mortar, the fire pots naphtha pots, the carronade a hot-shot battery and then the dragonfire cannon, the harpoon rack a barbed rack and a whaling gun; plus a culverin that carries long. Shields come as plating (steel, blackiron, pavise, bastion, dwarven, the Aegis of the Deep), as bracing that is all hull, and as screens (shuttered gunports, netted rails, runed wards). Utilities are stores and a keel for hull, a wheel, tackle, a gunner's chest and kit, lanterns and a chart table for the turn clock, the captain's quarters and the admiral's standard. The five powers of the painted sail are now painted in more peoples' ways (twelve new sails), so a sail is a choice of version: the one in your own people's medium holds twice as strong.
+  - Each part has a rarity and a version, and the shipwright sells it from its chapter on (a part of a later chapter takes one line, with the chapter it comes in). A new `hullBonus` adds hull to the ship (oak planking, ironwood bracing, ribbed keel plates, oakum stores, a reinforced keel, the Aegis).
+  - **Try before you buy**: each part has "Try on the ship", which shows it on the Eel (in place of her weakest gun when the slots are full) without buying or fitting it.
+  - **Looks**, thirty-five of them, cosmetic only: eight hull paints, eight sail cloths (plain, patchwork, striped, black, moonsilk...), eleven figureheads (a gull, an eel, a siren, a wolf, a skull, a lion, a dragon, and the trophies of the Brinejaw, the pale Leviathan and the Tide-Mother, which are free once the beast is slain) and eight flags. One free default in each; the rest are bought, from their chapter on, and tried on the ship first.
+  - **The parts you carry are drawn on her**, in the yard and in every sea battle: each gun in the gun room as the kind of gun it is (a ballista's bow, a swivel on its post, a carronade that glows when it is loaded hot, pots of fire, a rack of harpoons, a long culverin, the Tide-Mother's beak), grown with its version and tinted by its rarity; the bulwark in its plating (steel, blackiron, bone, scales, shutters, nets, ribs, glowing runes); the utility's gear on deck (barrels, lanterns, a chart table, a cabin roof); and the painted sail's sigil on the canvas (wings, an eye, a flame, a knot, a void spiral) in the colour of the people who painted it.
+
+### Changed
+- The one-sail-per-power rule is now one sail per power *and people*: every power is painted by at least two peoples, and no pair is repeated.
+- Harbor part cards show their rarity and version, and the description of every part.
 
 ## [1.225.0+261]
 

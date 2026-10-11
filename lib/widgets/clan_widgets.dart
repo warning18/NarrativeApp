@@ -13,6 +13,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/signs_provider.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import 'pixel_banner.dart';
 import 'sign_widgets.dart';
 import 'throne_widgets.dart';
 
@@ -238,74 +239,119 @@ class FactionStandingCard extends ConsumerWidget {
           : null,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                PatronEmblem(patron: faction.patron, size: 30),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(faction.nameFor(lang),
-                      style: theme.textTheme.titleSmall),
-                ),
-                const SizedBox(width: 6),
-                StandingTierLabel(value: value, language: lang),
-              ],
-            ),
-            const SizedBox(height: 4),
-            StandingMeter(value: value),
-            if (subclans.isNotEmpty || sworn) ...[
-              const SizedBox(height: 4),
+        child: _WithBanner(
+          factionId: faction.id,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  PatronEmblem(patron: faction.patron, size: 30),
+                  const SizedBox(width: 8),
                   Expanded(
-                    child: SubclanSquares(
-                      subclans: subclans,
-                      politics: politics,
-                      language: lang,
-                      onTap: editable
-                          ? (s) => notifier.setSubclanMark(
-                              s.id, nextSubclanMark(politics.markOf(s.id)),
-                              data: data, cause: 'edit', chapter: chapter())
-                          : null,
-                    ),
+                    child: Text(faction.nameFor(lang),
+                        style: theme.textTheme.titleSmall),
                   ),
-                  if (sworn)
-                    Tooltip(
-                      message: trFor(lang, 'clans_sworn_marker'),
-                      child: Row(
-                        key: Key('faction_sworn_${faction.id}'),
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.military_tech,
-                              size: 18,
-                              color: standingTierColor(StandingTier.sworn)),
-                          Text(
-                            faction.sworn?.nameFor(lang) ??
-                                trFor(lang, 'standing_tier_sworn'),
-                            style: theme.textTheme.labelSmall?.copyWith(
-                                color: standingTierTextColor(
-                                    context, StandingTier.sworn)),
-                          ),
-                        ],
-                      ),
-                    ),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: StandingTierLabel(value: value, language: lang),
+                  ),
                 ],
               ),
+              const SizedBox(height: 4),
+              StandingMeter(value: value),
+              if (subclans.isNotEmpty || sworn) ...[
+                const SizedBox(height: 4),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: SubclanSquares(
+                        subclans: subclans,
+                        politics: politics,
+                        language: lang,
+                        onTap: editable
+                            ? (s) => notifier.setSubclanMark(
+                                s.id, nextSubclanMark(politics.markOf(s.id)),
+                                data: data, cause: 'edit', chapter: chapter())
+                            : null,
+                      ),
+                    ),
+                    if (sworn)
+                      Flexible(
+                        child: Tooltip(
+                          message: trFor(lang, 'clans_sworn_marker'),
+                          child: Row(
+                            key: Key('faction_sworn_${faction.id}'),
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.military_tech,
+                                  size: 18,
+                                  color: standingTierColor(StandingTier.sworn)),
+                              Flexible(
+                                child: Text(
+                                  faction.sworn?.nameFor(lang) ??
+                                      trFor(lang, 'standing_tier_sworn'),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.labelSmall?.copyWith(
+                                      color: standingTierTextColor(
+                                          context, StandingTier.sworn)),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+              _FactionShops(factionId: faction.id),
+              if (editable)
+                _StandingSlider(
+                  key: Key('faction_slider_${faction.id}'),
+                  value: value,
+                  onSet: (v) => notifier.setStandingForEdit(faction.id, v,
+                      data: data, chapter: chapter()),
+                ),
             ],
-            _FactionShops(factionId: faction.id),
-            if (editable)
-              _StandingSlider(
-                key: Key('faction_slider_${faction.id}'),
-                value: value,
-                onSet: (v) => notifier.setStandingForEdit(faction.id, v,
-                    data: data, chapter: chapter()),
-              ),
-          ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+/// A faction's main banner, in pixel art, at the left of its card's [child]
+/// (nothing added for a faction that has none).
+class _WithBanner extends StatelessWidget {
+  const _WithBanner({
+    required this.factionId,
+    required this.child,
+    this.found = true,
+  });
+
+  final String factionId;
+  final Widget child;
+  final bool found;
+
+  @override
+  Widget build(BuildContext context) {
+    final id = clanBannerId(factionId);
+    if (id == null) return child;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: PixelBanner(
+              key: Key('clan_banner_$factionId'),
+              id: id,
+              scale: 1,
+              found: found),
+        ),
+        Expanded(child: child),
+      ],
     );
   }
 }
@@ -432,88 +478,92 @@ class LostClanCard extends ConsumerWidget {
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                LostClanEmblem(faction: faction, stage: stage),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(lostClanNameFor(faction, stage, lang),
-                      style: theme.textTheme.titleSmall),
-                ),
-                const SizedBox(width: 6),
-                Flexible(
-                  child: Text(
-                    remembranceLabel(stage, lang),
-                    key: Key('lost_clan_stage_${faction.id}'),
-                    textAlign: TextAlign.end,
-                    style: theme.textTheme.labelLarge?.copyWith(
-                        color: stage > 0
-                            ? gold
-                            : theme.colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w700),
-                  ),
-                ),
-              ],
-            ),
-            if (raised)
-              Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: Text(trFor(lang, 'open_hand_banner_raised'),
-                    style: theme.textTheme.labelSmall?.copyWith(color: gold)),
-              ),
-            // Its House (v1.196: the Fishbasket Line), the first rung of
-            // its climb; Edit Mode taps its mark round.
-            if (data.subclansOf(faction.id).isNotEmpty) ...[
-              const SizedBox(height: 4),
-              SubclanSquares(
-                subclans: data.subclansOf(faction.id),
-                politics: politics,
-                language: lang,
-                onTap: editable
-                    ? (s) => notifier.setSubclanMark(
-                        s.id, nextSubclanMark(politics.markOf(s.id)),
-                        data: data,
-                        cause: 'edit',
-                        chapter: ref.read(reachedChapterProvider))
-                    : null,
-              ),
-            ],
-            if (editable) ...[
-              const SizedBox(height: 4),
-              Text(trFor(lang, 'open_hand_edit_hint'),
-                  style: theme.textTheme.labelSmall
-                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-              const SizedBox(height: 4),
-              Wrap(
-                spacing: 4,
-                runSpacing: 4,
+        child: _WithBanner(
+          factionId: faction.id,
+          found: raised,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
                 children: [
-                  for (var n = 0; n <= openHandStages; n++)
-                    ChoiceChip(
-                      key: Key('open_hand_stage_$n'),
-                      label: Text('$n'),
-                      selected: stage == n,
-                      visualDensity: VisualDensity.compact,
-                      onSelected: (_) => notifier.setOpenHandStage(n,
-                          data: ref.read(clanDataProvider)),
+                  LostClanEmblem(faction: faction, stage: stage),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(lostClanNameFor(faction, stage, lang),
+                        style: theme.textTheme.titleSmall),
+                  ),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      remembranceLabel(stage, lang),
+                      key: Key('lost_clan_stage_${faction.id}'),
+                      textAlign: TextAlign.end,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                          color: stage > 0
+                              ? gold
+                              : theme.colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w700),
                     ),
+                  ),
                 ],
               ),
-              SwitchListTile(
-                key: const Key('open_hand_banner_switch'),
-                contentPadding: EdgeInsets.zero,
-                dense: true,
-                title: Text(trFor(lang, 'open_hand_banner_raised')),
-                subtitle: const Text(bannerRaisedFlag),
-                value: raised,
-                onChanged: (on) => notifier.setStoryFlag(bannerRaisedFlag, on,
-                    data: ref.read(clanDataProvider)),
-              ),
+              if (raised)
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Text(trFor(lang, 'open_hand_banner_raised'),
+                      style: theme.textTheme.labelSmall?.copyWith(color: gold)),
+                ),
+              // Its House (v1.196: the Fishbasket Line), the first rung of
+              // its climb; Edit Mode taps its mark round.
+              if (data.subclansOf(faction.id).isNotEmpty) ...[
+                const SizedBox(height: 4),
+                SubclanSquares(
+                  subclans: data.subclansOf(faction.id),
+                  politics: politics,
+                  language: lang,
+                  onTap: editable
+                      ? (s) => notifier.setSubclanMark(
+                          s.id, nextSubclanMark(politics.markOf(s.id)),
+                          data: data,
+                          cause: 'edit',
+                          chapter: ref.read(reachedChapterProvider))
+                      : null,
+                ),
+              ],
+              if (editable) ...[
+                const SizedBox(height: 4),
+                Text(trFor(lang, 'open_hand_edit_hint'),
+                    style: theme.textTheme.labelSmall
+                        ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                const SizedBox(height: 4),
+                Wrap(
+                  spacing: 4,
+                  runSpacing: 4,
+                  children: [
+                    for (var n = 0; n <= openHandStages; n++)
+                      ChoiceChip(
+                        key: Key('open_hand_stage_$n'),
+                        label: Text('$n'),
+                        selected: stage == n,
+                        visualDensity: VisualDensity.compact,
+                        onSelected: (_) => notifier.setOpenHandStage(n,
+                            data: ref.read(clanDataProvider)),
+                      ),
+                  ],
+                ),
+                SwitchListTile(
+                  key: const Key('open_hand_banner_switch'),
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                  title: Text(trFor(lang, 'open_hand_banner_raised')),
+                  subtitle: const Text(bannerRaisedFlag),
+                  value: raised,
+                  onChanged: (on) => notifier.setStoryFlag(bannerRaisedFlag, on,
+                      data: ref.read(clanDataProvider)),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
