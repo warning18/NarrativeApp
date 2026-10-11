@@ -191,7 +191,7 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
       body = ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const ShipStatusCard(),
+          const ShipStatusCard(showShip: false),
           const SizedBox(height: 16),
           if (yardDress != null && looks != null)
             Card(

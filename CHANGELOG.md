@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.227.0+263]
+
+### Changed
+- Ships are drawn from above only, as in the sea battle. The Eel at sea (on the voyage, in the camp's boat card, on the ship screen) is the same top-down ship the battle draws, in her paint, cloth, guns and plating, instead of the old side cutaway; the Harbor shows her once, larger, in the yard.
+
 ## [1.226.0+262]
 
 ### Added

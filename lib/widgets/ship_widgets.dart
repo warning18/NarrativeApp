@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/port_helpers.dart';
 import '../gamedata/db_schema.dart';
@@ -11,10 +12,12 @@ import '../providers/combat_active_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/ship_dress_provider.dart';
 import '../providers/signs_provider.dart';
 import '../screens/voyage_screen.dart';
 import '../theme/stitched_ink.dart';
 import 'immersive_notice.dart';
+import 'sea_battlefield.dart';
 import 'ship_cutaway.dart';
 
 /// The Rusty Eel's own record in ships.json.
@@ -50,7 +53,11 @@ String shipPartName(Map<String, dynamic> part, bool fr) {
 /// The Rusty Eel as she stands: where she is moored, her hull, her rooms,
 /// what is fitted in each slot, and a repair when her hull is down.
 class ShipStatusCard extends ConsumerWidget {
-  const ShipStatusCard({super.key});
+  const ShipStatusCard({super.key, this.showShip = true});
+
+  /// Draws the Eel from above at the card's head (the Harbor's yard shows
+  /// her larger, and leaves her out here).
+  final bool showShip;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -101,7 +108,7 @@ class ShipStatusCard extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // The Eel herself, on the water.
-          ShipAtSea(ship: playerShip, borderRadius: 0),
+          if (showShip) ShipAtSea(ship: playerShip, borderRadius: 0),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
             child: Column(
@@ -366,10 +373,11 @@ class HullBar extends ConsumerWidget {
   }
 }
 
-/// The Eel drawn on the water: her pixel cutaway (battered below half her
-/// hull, refitted by her rooms) on a band of sea, and [beside] -- what she
-/// meets -- to her right.
-class ShipAtSea extends StatelessWidget {
+/// The Eel drawn on the water from above, as in the sea battle (see
+/// TopShipPainter): her paint, cloth, guns and plating as she is fitted
+/// (battered below half her hull, refitted by her rooms) on a band of sea,
+/// and [beside] -- what she meets -- to her right.
+class ShipAtSea extends ConsumerWidget {
   const ShipAtSea({
     super.key,
     required this.ship,
@@ -384,73 +392,75 @@ class ShipAtSea extends StatelessWidget {
   final double borderRadius;
 
   @override
-  Widget build(BuildContext context) {
-    final cutaway = ShipCutaway.rustyEel;
-    final asset = cutaway.asset(
-        battered: ship.hull * 2 < ship.maxHull,
-        refit: ShipCutaway.refitOf(ship));
-    final shipHeight = height * 0.82;
-    final shipWidth = shipHeight *
-        ShipCutaway.spriteSize.width /
-        ShipCutaway.spriteSize.height;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dress = ref.watch(shipDressProvider);
+    final look = TopShipLook.rustyEel.dressed(dress);
+    // From above she is long and low: as wide as the band is tall, twice
+    // over and more.
+    final shipWidth = height * 1.75;
+    final shipHeight = topShipBoxHeight(shipWidth, look);
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: SizedBox(
         key: const Key('ship_at_sea'),
         height: height,
-        child: DecoratedBox(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFF1C2A3E), Color(0xFF14212E)],
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: CustomPaint(
+                painter: SeaSurfacePainter(
+                    waters: SeaWaters.open, weather: SeaWeather.calm, t: 1.3),
+              ),
             ),
-          ),
-          child: Stack(
-            children: [
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                height: height * 0.24,
-                child: const DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [Color(0xFF24596A), Color(0xFF1A3F4C)],
+            // Centred alone; to the left when she meets something.
+            Positioned(
+              left: beside == null ? 0 : 12,
+              right: beside == null ? 0 : null,
+              top: (height - shipHeight) / 2,
+              height: shipHeight,
+              child: Align(
+                alignment:
+                    beside == null ? Alignment.topCenter : Alignment.topLeft,
+                child: SizedBox(
+                  width: shipWidth,
+                  height: shipHeight,
+                  child: CustomPaint(
+                    painter: TopShipPainter(
+                      look: look,
+                      flip: false,
+                      facingDown: false,
+                      t: 1.3,
+                      layers: 0,
+                      maxLayers: 0,
+                      battered: ship.hull * 2 < ship.maxHull,
+                      down: {
+                        for (final r in ShipRoom.values)
+                          if (ship.room(r).isDown) r
+                      },
+                      burning: const {},
+                      water: 0,
+                      shield: const Color(0xFF80D8FF),
+                      foam: const Color(0xFFE6F2F4),
+                      roomColors: {
+                        for (final r in ShipRoom.values)
+                          r: const Color(0xFFAAAAAA)
+                      },
+                      refit: ShipCutaway.refitOf(ship),
+                      speed: 0.4,
+                      dress: dress,
                     ),
                   ),
                 ),
               ),
-              // Centred alone; to the left when she meets something.
+            ),
+            if (beside != null)
               Positioned(
-                left: beside == null ? 0 : 16,
-                right: beside == null ? 0 : null,
-                bottom: height * 0.06,
-                height: shipHeight,
-                child: Align(
-                  alignment: beside == null
-                      ? Alignment.bottomCenter
-                      : Alignment.bottomLeft,
-                  child: Image.asset(asset,
-                      width: shipWidth,
-                      height: shipHeight,
-                      filterQuality: FilterQuality.none,
-                      fit: BoxFit.contain),
-                ),
+                right: 20,
+                top: 0,
+                bottom: 0,
+                child: Center(child: beside),
               ),
-              if (beside == null)
-                const SizedBox.shrink()
-              else
-                Positioned(
-                  right: 20,
-                  top: 0,
-                  bottom: height * 0.14,
-                  child: Center(child: beside),
-                ),
-            ],
-          ),
+          ],
         ),
       ),
     );

@@ -20,6 +20,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/harbor_screen.dart';
 import 'package:narrative_data_app/widgets/sea_battlefield.dart';
 import 'package:narrative_data_app/widgets/ship_dress.dart';
+import 'package:narrative_data_app/widgets/ship_widgets.dart';
 
 Map<String, dynamic> _data(String name) =>
     json.decode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -570,6 +571,46 @@ void main() {
           currentHull: -1);
       expect(built.maxHull, 128);
       await _drain(tester);
+    });
+  });
+
+  group('ships are drawn from above', () {
+    testWidgets('the Eel at sea is the top-down ship, not a side cutaway',
+        (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      tester.view.physicalSize = const Size(420, 400);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      final ship = ShipState(
+        hull: 40,
+        maxHull: 100,
+        layers: 0,
+        rooms: {for (final r in ShipRoom.values) r: const RoomState(level: 1)},
+        weapons: const [],
+      );
+      await tester.pumpWidget(ProviderScope(
+        child: MaterialApp(
+          home: Scaffold(
+            body: ShipAtSea(
+                ship: ship, beside: const Icon(Icons.storm, size: 40)),
+          ),
+        ),
+      ));
+      await tester.pump();
+      final at = find.byKey(const Key('ship_at_sea'));
+      expect(at, findsOneWidget);
+      // No sprite: a painter draws her, battered below half her hull.
+      expect(
+          find.descendant(of: at, matching: find.byType(Image)), findsNothing);
+      final painters = tester
+          .widgetList<CustomPaint>(
+              find.descendant(of: at, matching: find.byType(CustomPaint)))
+          .map((c) => c.painter)
+          .whereType<TopShipPainter>()
+          .toList();
+      expect(painters, hasLength(1));
+      expect(painters.single.battered, isTrue);
+      expect(painters.single.flip, isFalse);
     });
   });
 }
