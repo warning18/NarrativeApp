@@ -8284,8 +8284,7 @@
         "text_fr": "Revenir aux reliquaires",
         "next_id": "6010",
         "flagsToAdd": [
-          "hub_6010_confession",
-          "confession_heard"
+          "hub_6010_confession"
         ]
       }
     ]

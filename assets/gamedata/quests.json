@@ -1383,7 +1383,7 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "targetFlag": "confession_heard",
+        "targetFlag": "hub_6010_confession",
         "description_fr": "Entendre la confession de l’Inquisiteur pénitent"
       }
     ],
@@ -1464,7 +1464,8 @@
           }
         }
       }
-    ]
+    ],
+    "detourEligible": false
   },
   "q_ch6_beyond_the_tear": {
     "questID": "q_ch6_beyond_the_tear",
