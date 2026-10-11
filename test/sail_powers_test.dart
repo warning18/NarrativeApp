@@ -30,19 +30,24 @@ void main() {
   final races = _loadJson('assets/gamedata/races.json');
   final enemyShips = _loadJson('assets/gamedata/enemy_ships.json');
 
-  group('the five painted sails', () {
+  group('the painted sails', () {
     test(
-        'one sail per power, each painted in a real race\'s medium, with '
-        'French', () {
-      final byPower = <SailPower, String>{};
+        'five powers, each sail painted in a real race\'s medium, no power '
+        'painted twice the same way, with French', () {
+      final pairs = <String, String>{};
+      final powers = <SailPower>{};
+      final media = <String>{};
       for (final entry in parts.entries) {
         final part = entry.value as Map<String, dynamic>;
         final power = sailPowerOf(part);
         if (part['slotType'] == 'Sail') {
           expect(power, isNotNull, reason: entry.key);
-          expect(byPower.containsKey(power), isFalse,
-              reason: '${entry.key} repeats ${power!.name}');
-          byPower[power] = entry.key;
+          final pair = '${power!.name} ${sailMediumOf(part)}';
+          expect(pairs.containsKey(pair), isFalse,
+              reason: '${entry.key} repeats ${pairs[pair]} ($pair)');
+          pairs[pair] = entry.key;
+          powers.add(power);
+          media.add(sailMediumOf(part));
           expect(races.keys, contains(sailMediumOf(part)), reason: entry.key);
           expect(part['description']?.toString() ?? '', isNotEmpty);
           expect(part['description_fr']?.toString() ?? '', isNotEmpty);
@@ -51,13 +56,25 @@ void main() {
           expect(power, isNull, reason: entry.key);
         }
       }
-      expect(byPower.keys.toSet(), SailPower.values.toSet());
-      // Five media, five peoples: every race paints one sail.
-      final media = {
-        for (final id in byPower.values)
-          sailMediumOf(parts[id] as Map<String, dynamic>),
-      };
+      expect(powers, SailPower.values.toSet());
+      // Five media, five peoples: every race paints a sail.
       expect(media, races.keys.toSet());
+    });
+
+    test(
+        'every power is painted by at least two peoples, so a choice of '
+        'sail is a choice of version', () {
+      final byPower = <SailPower, Set<String>>{};
+      for (final part in parts.values) {
+        final power = sailPowerOf(part as Map<String, dynamic>);
+        if (power != null) {
+          (byPower[power] ??= {}).add(sailMediumOf(part));
+        }
+      }
+      for (final power in SailPower.values) {
+        expect(byPower[power]!.length, greaterThanOrEqualTo(2),
+            reason: power.name);
+      }
     });
 
     test('the Eel has one sail slot and a painted sail fits it, once', () {

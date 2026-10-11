@@ -2,6 +2,7 @@ import '../combat/skill_vfx.dart';
 import '../data/companion_remarks.dart' show remarkTriggerOptions;
 import '../data/geography.dart'
     show BiomePattern, GeoLevel, geoBuildingKinds, geoGlyphs, geoKinds;
+import '../data/ship_looks.dart' show allShipLookPatterns, shipLookCategories;
 import '../data/signs.dart'
     show PatronKind, SignEffectKind, SignSlot, patronIconNames;
 import 'field_schema.dart';
@@ -173,6 +174,15 @@ const List<String> spellScalingOptions = [
 ];
 
 const List<String> slotTypeOptions = ['Weapon', 'Shield', 'Utility', 'Sail'];
+
+/// How rare a ship part is, lowest first (ship_parts.json `rarity`).
+const List<String> shipPartRarityOptions = [
+  'common',
+  'uncommon',
+  'rare',
+  'epic',
+  'legendary',
+];
 
 const List<String> questCategoryOptions = ['Main', 'Side', 'Daily', 'Event'];
 
@@ -1365,6 +1375,38 @@ final DbSchema shipPartsSchema = DbSchema(
       defaultValue: 0,
     ),
     FieldSchema(
+      key: 'hullBonus',
+      label: 'Hull Bonus (hull points this part adds to the ship)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'family',
+      label:
+          'Family (parts that are versions of one another share it; the Harbor groups them and the ship draws the family\'s fitting)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'tier',
+      label: 'Version (1 is the first of its family, higher is a better one)',
+      type: FieldType.integer,
+      defaultValue: 1,
+    ),
+    FieldSchema(
+      key: 'rarity',
+      label: 'Rarity (colours the part in the Harbor)',
+      type: FieldType.enumeration,
+      enumOptions: shipPartRarityOptions,
+      defaultValue: 'common',
+    ),
+    FieldSchema(
+      key: 'unlockChapter',
+      label:
+          'Unlock Chapter (the story chapter from which the shipwright offers it; 0 = always)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
       key: 'tetherRounds',
       label:
           'Tether Rounds (a weapon: rounds a landed hit holds a sea beast on the line)',
@@ -1398,6 +1440,88 @@ final DbSchema shipPartsSchema = DbSchema(
           'Sail Medium (the race whose way it is painted in; matching the character doubles it)',
       type: FieldType.reference,
       referenceSchemaId: 'races',
+    ),
+    FieldSchema(
+        key: 'description',
+        label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
+        type: FieldType.multilineText),
+  ],
+);
+
+final DbSchema shipLooksSchema = DbSchema(
+  id: 'ship_looks',
+  label: 'Ship Looks',
+  assetPath: 'assets/gamedata/ship_looks.json',
+  primaryKeyField: 'lookID',
+  titleField: 'lookName',
+  fields: [
+    FieldSchema(key: 'lookID', label: 'Look ID', type: FieldType.text),
+    FieldSchema(key: 'lookName', label: 'Look Name', type: FieldType.text),
+    FieldSchema(
+        key: 'lookName_fr', label: 'Look Name (FR)', type: FieldType.text),
+    FieldSchema(
+      key: 'category',
+      label: 'Category (what of the ship it dresses)',
+      type: FieldType.enumeration,
+      enumOptions: shipLookCategories,
+    ),
+    FieldSchema(
+        key: 'cost', label: 'Cost', type: FieldType.integer, defaultValue: 0),
+    FieldSchema(
+      key: 'rarity',
+      label: 'Rarity (colours the look in the Harbor)',
+      type: FieldType.enumeration,
+      enumOptions: shipPartRarityOptions,
+      defaultValue: 'common',
+    ),
+    FieldSchema(
+      key: 'unlockChapter',
+      label:
+          'Unlock Chapter (the story chapter from which the shipwright offers it; 0 = always)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'isDefault',
+      label:
+          'Is Default (the look a category wears until another is chosen; free, always owned)',
+      type: FieldType.boolean,
+      defaultValue: false,
+    ),
+    FieldSchema(
+      key: 'trophyOf',
+      label:
+          'Trophy Of (enemy_ships.json beast id: given free once it is slain, hidden until then)',
+      type: FieldType.reference,
+      referenceSchemaId: 'enemy_ships',
+    ),
+    FieldSchema(
+      key: 'color',
+      label:
+          'Color ("#RRGGBB": hull paint = the hull, sail = the cloth, figurehead = the carving, ensign = the cloth; empty = the ship\'s own)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'color2',
+      label:
+          'Color 2 (hull = the deck, sail = the pattern, figurehead = the eye, ensign = the device)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'color3',
+      label: 'Color 3 (hull = the trim, sail = the edge)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'pattern',
+      label:
+          'Pattern (sail: how the cloth is worked; figurehead: what is carved; ensign: the flag\'s shape)',
+      type: FieldType.enumeration,
+      enumOptions: allShipLookPatterns,
     ),
     FieldSchema(
         key: 'description',
@@ -3115,6 +3239,7 @@ final List<DbSchema> gameDbSchemas = [
   enemyShipsSchema,
   shipsSchema,
   shipPartsSchema,
+  shipLooksSchema,
   questsSchema,
   shopsSchema,
   gatesSchema,

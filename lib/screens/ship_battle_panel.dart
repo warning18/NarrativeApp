@@ -20,6 +20,7 @@ import '../providers/combat_active_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/ship_dress_provider.dart';
 import '../providers/tutorial_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../widgets/ship_cutaway.dart';
@@ -2148,7 +2149,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       });
     }
     _shownWeather = weather;
-    final eelLook = TopShipLook.rustyEel;
+    final eelLook = TopShipLook.rustyEel.dressed(ref.watch(shipDressProvider));
     final enemyLook = TopShipLook.forEnemy(widget.enemyShipId, widget.enemy);
     return LayoutBuilder(builder: (context, constraints) {
       final width = constraints.maxWidth;
@@ -2473,6 +2474,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                             r: _roomColor(context, r)
                         },
                         refit: isPlayer ? ShipCutaway.refitOf(ship) : 0,
+                        dress: isPlayer ? ref.read(shipDressProvider) : null,
                         speed: (evasion / 22).clamp(0.0, 2.0),
                       ),
                     ),
@@ -2943,7 +2945,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
   Widget _buildPlacement(AppLanguage lang, Map<String, dynamic>? enemies) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final look = TopShipLook.rustyEel;
+    final look = TopShipLook.rustyEel.dressed(ref.watch(shipDressProvider));
     return Container(
       key: const Key('ship_placement'),
       color: theme.colorScheme.surface,

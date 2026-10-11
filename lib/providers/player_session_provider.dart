@@ -233,6 +233,8 @@ class PlayerSession {
     this.shipHull = -1,
     this.shipPartIds = const ['ballista'],
     this.storedShipPartIds = const [],
+    this.shipLooks = const {},
+    this.ownedShipLooks = const [],
     this.currentPortId = '',
     this.visitedPortIds = const [],
     this.enemyKillCounts = const {},
@@ -558,6 +560,14 @@ class PlayerSession {
   /// (v1.185): they wait at the Harbor and go back on for nothing.
   final List<String> storedShipPartIds;
 
+  /// The Eel's looks (ship_looks.json): the id worn in each category
+  /// (`hull`, `sail`, `figurehead`, `ensign`); a category with none wears
+  /// its default. Cosmetic only.
+  final Map<String, String> shipLooks;
+
+  /// Looks bought or won, which stay the player's whichever is worn.
+  final List<String> ownedShipLooks;
+
   /// ports.json id the boat is moored at; empty means the home port.
   final String currentPortId;
 
@@ -820,6 +830,8 @@ class PlayerSession {
     int? shipHull,
     List<String>? shipPartIds,
     List<String>? storedShipPartIds,
+    Map<String, String>? shipLooks,
+    List<String>? ownedShipLooks,
     String? currentPortId,
     List<String>? visitedPortIds,
     Map<String, int>? enemyKillCounts,
@@ -925,6 +937,8 @@ class PlayerSession {
       shipHull: shipHull ?? this.shipHull,
       shipPartIds: shipPartIds ?? this.shipPartIds,
       storedShipPartIds: storedShipPartIds ?? this.storedShipPartIds,
+      shipLooks: shipLooks ?? this.shipLooks,
+      ownedShipLooks: ownedShipLooks ?? this.ownedShipLooks,
       currentPortId: currentPortId ?? this.currentPortId,
       visitedPortIds: visitedPortIds ?? this.visitedPortIds,
       bannerPiecesCollected:
@@ -1034,6 +1048,8 @@ class PlayerSession {
         'shipHull': shipHull,
         'shipPartIds': shipPartIds,
         'storedShipPartIds': storedShipPartIds,
+        'shipLooks': shipLooks,
+        'ownedShipLooks': ownedShipLooks,
         'currentPortId': currentPortId,
         'visitedPortIds': visitedPortIds,
         'bannerPiecesCollected': bannerPiecesCollected,
@@ -1274,6 +1290,14 @@ class PlayerSession {
           (json['shipPartIds'] as List?)?.map((e) => e.toString()).toList() ??
               const ['ballista'],
       storedShipPartIds: (json['storedShipPartIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      shipLooks: {
+        for (final entry in ((json['shipLooks'] as Map?) ?? const {}).entries)
+          entry.key.toString(): entry.value.toString(),
+      },
+      ownedShipLooks: (json['ownedShipLooks'] as List?)
               ?.map((e) => e.toString())
               .toList() ??
           const [],
@@ -3416,6 +3440,24 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state =
         state.copyWith(storedShipPartIds: [...state.storedShipPartIds, partId]);
     await _persist();
+  }
+
+  /// Wears the look [lookId] in its [category], buying it first for [cost]
+  /// when it is not yet owned; false (and nothing changed) if it cannot be
+  /// afforded. A default look is always owned, so [cost] 0 is the caller's
+  /// way to wear one.
+  Future<bool> wearShipLook(String category, String lookId, int cost) async {
+    final owned = state.ownedShipLooks.contains(lookId);
+    final price = owned ? 0 : cost;
+    if (state.gold < price) return false;
+    state = state.copyWith(
+      gold: state.gold - price,
+      shipLooks: {...state.shipLooks, category: lookId},
+      ownedShipLooks:
+          owned ? state.ownedShipLooks : [...state.ownedShipLooks, lookId],
+    );
+    await _persist();
+    return true;
   }
 
   /// Pays [cost] to restore the hull to full; false if unaffordable.

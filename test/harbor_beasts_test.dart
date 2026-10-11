@@ -58,7 +58,7 @@ void main() {
     // The beasts are listed below the shipwright's parts.
     await tester.runAsync(
         () => Future<void>.delayed(const Duration(milliseconds: 300)));
-    await tester.scrollUntilVisible(card, 300);
+    await tester.scrollUntilVisible(card, 600);
 
     // The beasts the crew has seen, and which one can be hunted.
     expect(card, findsOneWidget);
@@ -74,6 +74,7 @@ void main() {
     expect(find.byKey(const Key('install_sharkskin_hull')), findsNothing);
 
     // Both gun slots full: the harpoon goes on in place of the rack.
+    await tester.scrollUntilVisible(swap, -600);
     await tester.ensureVisible(swap);
     await tester.tap(swap);
     await tester.pumpAndSettle();
@@ -95,6 +96,8 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(seconds: 3));
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+        find.byKey(const Key('beast_hunt_brinejaw')), 600);
     await tester.ensureVisible(find.byKey(const Key('beast_hunt_brinejaw')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('beast_hunt_brinejaw')));

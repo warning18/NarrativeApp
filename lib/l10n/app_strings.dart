@@ -7228,6 +7228,81 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Painted sail',
     AppLanguage.fr: 'Voile peinte',
   },
+  'yard_title': {
+    AppLanguage.en: 'The shipwright\'s yard',
+    AppLanguage.fr: 'Le chantier naval',
+  },
+  'yard_hint': {
+    AppLanguage.en:
+        'The Eel as she would look: try a part or a look on her before you pay for it.',
+    AppLanguage.fr:
+        'L\'Eel telle qu\'elle serait : essayez une pièce ou une parure sur elle avant de payer.',
+  },
+  'looks_section': {
+    AppLanguage.en: 'Paint, cloth, carving and flag',
+    AppLanguage.fr: 'Peinture, toile, sculpture et pavillon',
+  },
+  'look_category_hull': {AppLanguage.en: 'Hull', AppLanguage.fr: 'Coque'},
+  'look_category_sail': {AppLanguage.en: 'Cloth', AppLanguage.fr: 'Toile'},
+  'look_category_figurehead': {
+    AppLanguage.en: 'Figurehead',
+    AppLanguage.fr: 'Figure de proue',
+  },
+  'look_category_ensign': {AppLanguage.en: 'Flag', AppLanguage.fr: 'Pavillon'},
+  'look_worn_label': {AppLanguage.en: 'Worn', AppLanguage.fr: 'Portée'},
+  'look_wear_button': {AppLanguage.en: 'Wear', AppLanguage.fr: 'Porter'},
+  'look_buy_button': {
+    AppLanguage.en: 'Buy and wear',
+    AppLanguage.fr: 'Acheter et porter',
+  },
+  'look_worn_notice': {AppLanguage.en: 'Fitted', AppLanguage.fr: 'Posée'},
+  'look_trophy_locked': {
+    AppLanguage.en: 'A beast\'s trophy',
+    AppLanguage.fr: 'Trophée d\'une bête',
+  },
+  'look_trophy_note': {
+    AppLanguage.en: 'Won from {beast}, once it is slain.',
+    AppLanguage.fr: 'Prise sur {beast}, une fois la bête terrassée.',
+  },
+  'look_locked_note': {
+    AppLanguage.en: 'From chapter {n}',
+    AppLanguage.fr: 'Dès le chapitre {n}',
+  },
+  'part_try_button': {
+    AppLanguage.en: 'Try on the ship',
+    AppLanguage.fr: 'Essayer'
+  },
+  'part_try_clear': {
+    AppLanguage.en: 'Stop trying',
+    AppLanguage.fr: 'Annuler l\'essai'
+  },
+  'part_trying_label': {
+    AppLanguage.en: 'Trying {part}: not yet fitted.',
+    AppLanguage.fr: 'Essai de {part} : pas encore posée.',
+  },
+  'part_locked_note': {
+    AppLanguage.en: 'The shipwright sells it from chapter {n}.',
+    AppLanguage.fr: 'Le charpentier la vend dès le chapitre {n}.',
+  },
+  'part_version_label': {
+    AppLanguage.en: 'Version {n}',
+    AppLanguage.fr: 'Version {n}',
+  },
+  'hull_bonus_label': {
+    AppLanguage.en: '+{n} hull',
+    AppLanguage.fr: '+{n} de coque',
+  },
+  'rarity_common': {AppLanguage.en: 'Common', AppLanguage.fr: 'Courante'},
+  'rarity_uncommon': {
+    AppLanguage.en: 'Uncommon',
+    AppLanguage.fr: 'Peu courante'
+  },
+  'rarity_rare': {AppLanguage.en: 'Rare', AppLanguage.fr: 'Rare'},
+  'rarity_epic': {AppLanguage.en: 'Epic', AppLanguage.fr: 'Épique'},
+  'rarity_legendary': {
+    AppLanguage.en: 'Legendary',
+    AppLanguage.fr: 'Légendaire'
+  },
   'sail_repaint_note': {
     AppLanguage.en: 'Painting the sail replaces the sigil already on it.',
     AppLanguage.fr: 'Peindre la voile remplace le sigil qui s\'y trouve déjà.',

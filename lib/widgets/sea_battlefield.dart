@@ -17,6 +17,7 @@ import 'package:flutter/services.dart' show rootBundle;
 
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
+import 'ship_dress.dart';
 
 /// The waters a battle is fought on, which set the sea's colour, its kind
 /// of waves and what drifts over it.
@@ -1017,6 +1018,24 @@ class TopShipLook {
   /// marks.
   final TopBeast? beast;
 
+  /// This look in the colours of [dress] (see ship_dress.dart): its paint
+  /// and its cloth; what a dress leaves unset stays.
+  TopShipLook dressed(ShipDress? dress) => dress == null
+      ? this
+      : TopShipLook(
+          id: id,
+          length: length,
+          beam: beam,
+          hull: dress.hull ?? hull,
+          deck: dress.deck ?? deck,
+          sail: dress.cloth ?? sail,
+          trim: dress.trim ?? trim,
+          masts: masts,
+          sails: sails,
+          glow: glow,
+          beast: beast,
+        );
+
   static const rustyEel = TopShipLook(
       id: 'rusty_eel',
       length: 1,
@@ -1186,6 +1205,7 @@ class TopShipPainter extends CustomPainter {
     required this.roomColors,
     this.refit = 0,
     this.speed = 1,
+    this.dress,
   }) : super(repaint: SeaBeastSprites.loaded);
 
   final TopShipLook look;
@@ -1210,6 +1230,10 @@ class TopShipPainter extends CustomPainter {
 
   /// How fast she goes, for her wake: the helm's evasion, 0 to 2.
   final double speed;
+
+  /// What the Eel wears and carries (see ship_dress.dart); null for a ship
+  /// drawn as it always was.
+  final ShipDress? dress;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1321,10 +1345,27 @@ class TopShipPainter extends CustomPainter {
           ..strokeWidth = 1.2
           ..color = look.trim.withValues(alpha: 0.7));
 
+    if (dress != null) {
+      // What the utility brings aboard goes under the helm and the hatch.
+      paintGear(
+          canvas,
+          dress!.gear,
+          _roomOnDeck(ShipRoom.helm, size, band),
+          _roomOnDeck(ShipRoom.hold, size, band),
+          _roomOnDeck(ShipRoom.guns, size, band),
+          cy,
+          beam,
+          side,
+          t);
+    }
     _helm(canvas, _roomOnDeck(ShipRoom.helm, size, band));
     _hatch(canvas, _roomOnDeck(ShipRoom.hold, size, band));
     _guns(canvas, _roomOnDeck(ShipRoom.guns, size, band), cy, beam, side);
     _bulwark(canvas, _roomOnDeck(ShipRoom.bulwark, size, band), cy, beam);
+    if (dress != null && dress!.figurehead != 'none') {
+      paintFigurehead(
+          canvas, Offset(x0 + len * 0.985, cy), beam * 0.42, dress!, t);
+    }
     if (look.sails) _sails(canvas, x0, len, cy, beam);
     if (look.glow != null) _runes(canvas, x0, len, cy, beam);
     canvas.restore();
@@ -1476,6 +1517,10 @@ class TopShipPainter extends CustomPainter {
   }
 
   void _guns(Canvas canvas, Rect r, double cy, double beam, double towards) {
+    if (dress != null) {
+      paintMounts(canvas, r, cy, beam, towards, dress!, t);
+      return;
+    }
     final barrel = Paint()..color = const Color(0xFF1C1B1F);
     final ring = Paint()
       ..color = const Color(0xFF55525A)
@@ -1495,15 +1540,20 @@ class TopShipPainter extends CustomPainter {
   }
 
   void _bulwark(Canvas canvas, Rect r, double cy, double beam) {
-    final plate = Paint()
-      ..color = refit >= 2 || look.id != TopShipLook.rustyEel.id
-          ? const Color(0xFF8C98A6)
-          : const Color(0xFF6E5A46)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.5;
-    for (final s in [-1.0, 1.0]) {
-      canvas.drawLine(Offset(r.left + 4, cy + s * beam * 0.34),
-          Offset(r.right - 2, cy + s * beam * 0.18), plate);
+    if (dress != null) {
+      paintPlating(
+          canvas, r, cy, beam, dress!.plating, refit, const Color(0xFF6E5A46));
+    } else {
+      final plate = Paint()
+        ..color = refit >= 2 || look.id != TopShipLook.rustyEel.id
+            ? const Color(0xFF8C98A6)
+            : const Color(0xFF6E5A46)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.5;
+      for (final s in [-1.0, 1.0]) {
+        canvas.drawLine(Offset(r.left + 4, cy + s * beam * 0.34),
+            Offset(r.right - 2, cy + s * beam * 0.18), plate);
+      }
     }
     // The bowsprit.
     canvas.drawLine(
@@ -1531,12 +1581,26 @@ class TopShipPainter extends CustomPainter {
           Paint()..color = Colors.black.withValues(alpha: 0.2));
       canvas.drawPath(sail,
           Paint()..color = look.sail.withValues(alpha: battered ? 0.7 : 0.92));
+      final worked = dress;
+      if (worked != null) {
+        paintCloth(
+            canvas,
+            sail,
+            Rect.fromLTRB(x, cy - span / 2, x + belly, cy + span / 2),
+            worked.clothPattern,
+            worked.clothPatternColor ?? look.trim);
+        // The painted sail's sigil, on the mainsail.
+        if (i == spots.length - 1 && worked.sigil != null) {
+          paintSigil(canvas, Offset(x + belly * 0.4, cy),
+              math.min(beam * 0.3, belly * 0.95), worked.sigil!, t);
+        }
+      }
       canvas.drawPath(
           sail,
           Paint()
             ..style = PaintingStyle.stroke
             ..strokeWidth = 1
-            ..color = look.trim.withValues(alpha: 0.8));
+            ..color = (dress?.clothEdge ?? look.trim).withValues(alpha: 0.8));
       if (battered) {
         canvas.drawLine(
             Offset(x + belly * 0.3, cy - span * 0.2),
@@ -1553,6 +1617,11 @@ class TopShipPainter extends CustomPainter {
             ..strokeWidth = 2.5);
       canvas.drawCircle(
           Offset(x, cy), 3.5, Paint()..color = const Color(0xFF2A1C10));
+    }
+    if (dress != null) {
+      // The flag at the masthead, streaming aft.
+      paintEnsign(canvas, Offset(x0 + len * spots.last, cy), beam * 0.5, dress!,
+          look.trim, t);
     }
     if (look.id == TopShipLook.rustyEel.id && refit >= 1) {
       // The crow's nest on the mainmast.

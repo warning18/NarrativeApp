@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.226.0+262]
+
+### Added
+- Ship customisation, in the Harbor, now a shipwright's yard. Above the parts, the Eel is drawn from above on the open sea, as she would look with what is tried on her.
+  - **Sixty-seven parts** (forty-eight new), at least a dozen in each of the four slots, in *versions* of a family from the plain to the rare: the ballista becomes an iron-bound one and then a siege engine, the chain swivel a bar-shot swivel and a reaper chain gun, the grape swivel a canister swivel and a shrapnel mortar, the fire pots naphtha pots, the carronade a hot-shot battery and then the dragonfire cannon, the harpoon rack a barbed rack and a whaling gun; plus a culverin that carries long. Shields come as plating (steel, blackiron, pavise, bastion, dwarven, the Aegis of the Deep), as bracing that is all hull, and as screens (shuttered gunports, netted rails, runed wards). Utilities are stores and a keel for hull, a wheel, tackle, a gunner's chest and kit, lanterns and a chart table for the turn clock, the captain's quarters and the admiral's standard. The five powers of the painted sail are now painted in more peoples' ways (twelve new sails), so a sail is a choice of version: the one in your own people's medium holds twice as strong.
+  - Each part has a rarity and a version, and the shipwright sells it from its chapter on (a part of a later chapter takes one line, with the chapter it comes in). A new `hullBonus` adds hull to the ship (oak planking, ironwood bracing, ribbed keel plates, oakum stores, a reinforced keel, the Aegis).
+  - **Try before you buy**: each part has "Try on the ship", which shows it on the Eel (in place of her weakest gun when the slots are full) without buying or fitting it.
+  - **Looks**, thirty-five of them, cosmetic only: eight hull paints, eight sail cloths (plain, patchwork, striped, black, moonsilk...), eleven figureheads (a gull, an eel, a siren, a wolf, a skull, a lion, a dragon, and the trophies of the Brinejaw, the pale Leviathan and the Tide-Mother, which are free once the beast is slain) and eight flags. One free default in each; the rest are bought, from their chapter on, and tried on the ship first.
+  - **The parts you carry are drawn on her**, in the yard and in every sea battle: each gun in the gun room as the kind of gun it is (a ballista's bow, a swivel on its post, a carronade that glows when it is loaded hot, pots of fire, a rack of harpoons, a long culverin, the Tide-Mother's beak), grown with its version and tinted by its rarity; the bulwark in its plating (steel, blackiron, bone, scales, shutters, nets, ribs, glowing runes); the utility's gear on deck (barrels, lanterns, a chart table, a cabin roof); and the painted sail's sigil on the canvas (wings, an eye, a flame, a knot, a void spiral) in the colour of the people who painted it.
+
+### Changed
+- The one-sail-per-power rule is now one sail per power *and people*: every power is painted by at least two peoples, and no pair is repeated.
+- Harbor part cards show their rarity and version, and the description of every part.
+
 ## [1.225.0+261]
 
 ### Changed
