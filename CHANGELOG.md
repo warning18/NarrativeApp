@@ -16,7 +16,7 @@ isn't reconstructable from git history alone.
   - **Every clan's main banner** (the Lantern Dominion, the Grey Vigil, the Cinder Compact, the Mire Courts, the Salt Crows, the Ashen Penitents, the Choir, the Pit, the giants, the oni, the Tide-Kin, the Kindly Ones and the Open Hand) in the clan's colour from `factions.json`, beside its standing card; the Open Hand's stays a silhouette until its banner is raised on the Hollow Shore.
 
 ### Changed
-- The title's mark is the Void's standard in pixel art, replacing the vector banner.
+- The title's mark is the Void's standard in pixel art, replacing the vector banner: twice the size on a tall screen, once on a medium one, and left out on a short one so the menu stays in view.
 - A sworn clan's boon name in a standing card wraps instead of overflowing on a narrow phone.
 
 ## [1.228.0+264]

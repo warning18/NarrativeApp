@@ -215,16 +215,19 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // Full size where the screen has room for it,
-                        // small on a short one so the menu stays in view.
-                        Center(
-                          child: _BannerMark(
-                            scale: MediaQuery.sizeOf(context).height >= 900
-                                ? 2
-                                : 1,
+                        // The standard where the screen has room for it (twice
+                        // the size on a tall one); none on a short one, so the
+                        // menu stays in view.
+                        if (MediaQuery.sizeOf(context).height >= 700) ...[
+                          Center(
+                            child: _BannerMark(
+                              scale: MediaQuery.sizeOf(context).height >= 900
+                                  ? 2
+                                  : 1,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 16),
+                          const SizedBox(height: 16),
+                        ],
                         Text(
                           tr(ref, 'menu_title'),
                           textAlign: TextAlign.center,
