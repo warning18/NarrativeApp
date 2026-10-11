@@ -334,12 +334,42 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _face(DieCubeFace face, CubeFacePlacement p) {
-    final size = widget.size;
-    final skin = _skin;
+  Widget _face(DieCubeFace face, CubeFacePlacement p) => DieFaceTile(
+        face: face,
+        size: widget.size,
+        skin: _skin,
+        skinned: widget.skin != null,
+        placement: p,
+      );
+}
+
+/// One side of a die cube: the stone in the face's tint, the mark cut into
+/// it, the glyph, and the lamp's shade for how [placement] stands to it.
+/// [ring] outlines it (the face a player has picked).
+class DieFaceTile extends StatelessWidget {
+  const DieFaceTile({
+    super.key,
+    required this.face,
+    required this.size,
+    required this.skin,
+    required this.skinned,
+    required this.placement,
+    this.ring,
+  });
+
+  final DieCubeFace face;
+  final double size;
+  final DieSkin skin;
+
+  /// Whether the die wears a skin of its own (a lighter tint over it).
+  final bool skinned;
+  final CubeFacePlacement placement;
+  final Color? ring;
+
+  @override
+  Widget build(BuildContext context) {
     final base = Color.alphaBlend(
-        face.color.withValues(alpha: widget.skin == null ? 0.34 : 0.24),
-        skin.base);
+        face.color.withValues(alpha: skinned ? 0.24 : 0.34), skin.base);
     return SizedBox(
       width: size,
       height: size,
@@ -347,7 +377,8 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
         decoration: BoxDecoration(
           color: base,
           borderRadius: BorderRadius.circular(size * 0.16),
-          border: Border.all(color: skin.edge, width: 1.6),
+          border: Border.all(
+              color: ring ?? skin.edge, width: ring == null ? 1.6 : 2.6),
         ),
         child: Stack(
           fit: StackFit.expand,
@@ -356,8 +387,10 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
             ClipRRect(
               borderRadius: BorderRadius.circular(size * 0.16),
               child: CustomPaint(
-                painter: DiePatternPainter(skin.pattern,
-                    Color.lerp(skin.edge, skin.base, 0.25)!, 7 + p.slot),
+                painter: DiePatternPainter(
+                    skin.pattern,
+                    Color.lerp(skin.edge, skin.base, 0.25)!,
+                    7 + placement.slot),
               ),
             ),
             Center(child: FittedBox(fit: BoxFit.scaleDown, child: face.glyph)),
@@ -365,7 +398,8 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
             DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(size * 0.16),
-                color: Colors.black.withValues(alpha: (1 - p.light) * 0.62),
+                color: Colors.black
+                    .withValues(alpha: (1 - placement.light) * 0.62),
               ),
             ),
           ],

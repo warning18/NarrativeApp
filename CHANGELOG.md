@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.241.0+277]
+
+### Changed
+- **The dice loadout shows the die as a cube you turn.** The same 3D cube the fight tumbles (with the die's own skin, and a skill face drawn as its pixel icon on a plaque) stands above the faces: drag it round with a finger and it settles on the side nearest you, tap a side to bring it round, tap the face in front to give it a skill, or drop a skill chip on the die to put it on that face. The face it stands on is outlined in the list below and told beside the cube (its name and what it does), and a face tapped in the list turns the cube to it. Reduced motion turns the cube without the glide.
+  - The dropdown of dice is a row of small cubes, one per die you own, each showing its faces (shown when you own more than one die).
+  - A die of seven faces shows six on the cube and slides the window to keep the picked one on it.
+- **The faces' odds are Edit Mode only.** In-Game mode no longer says how often each face comes up ("19% of rolls"), on the faces or beside the cube.
+
 ## [1.240.0+276]
 
 ### Changed

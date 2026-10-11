@@ -9,13 +9,18 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
+import '../providers/app_mode_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/face_style.dart';
 import '../utils/game_icons.dart';
+import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/detail_dialog.dart';
+import '../widgets/die_3d.dart';
+import '../widgets/die_skins.dart';
+import '../widgets/interactive_die.dart';
 import '../widgets/moments.dart';
 
 class DiceLoadoutScreen extends ConsumerStatefulWidget {
@@ -33,6 +38,10 @@ class DiceLoadoutScreen extends ConsumerStatefulWidget {
 
 class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
   String? _selectedDiceId;
+
+  /// The face of the die the player has turned to (v1.241), by its index.
+  int _faceSel = 0;
+  String? _selDieFor;
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +109,10 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
     } else {
       _selectedDiceId = diceIds.first;
     }
+    if (_selDieFor != _selectedDiceId) {
+      _selDieFor = _selectedDiceId;
+      _faceSel = 0;
+    }
     final selectedDice = dice[_selectedDiceId] as Map<String, dynamic>;
     // The die as the Hammersmith left it (see face_smithing.dart), an
     // ally's apart from the player's own copy of the same die.
@@ -139,43 +152,111 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
     final totalWeight = faces.fold<double>(
         0, (sum, f) => sum + ((f['weight'] as num?)?.toDouble() ?? 1.0));
 
+    // What a face allows, from its index: shared by its slot and the cube.
+    String? restrictionOf(int index) {
+      final face = faces[index];
+      final element = face['element']?.toString() ?? 'None';
+      // A skill face with an element takes only skills of that element; a
+      // basic face takes any skill.
+      return isAssignableFace(face) &&
+              face['type'] == 'Skill' &&
+              element != 'None'
+          ? element
+          : null;
+    }
+
+    void assignTo(int index, String skillId) => ally != null
+        ? ref
+            .read(playerSessionProvider.notifier)
+            .assignSkillToAllyDiceFace(ally.companionId, index, skillId)
+        : ref
+            .read(playerSessionProvider.notifier)
+            .assignSkillToDiceFace(_selectedDiceId!, index, skillId);
+    void clearAt(int index) => ally != null
+        ? ref
+            .read(playerSessionProvider.notifier)
+            .clearAllyDiceFaceSkill(ally.companionId, index)
+        : ref
+            .read(playerSessionProvider.notifier)
+            .clearDiceFaceSkill(_selectedDiceId!, index);
+
+    bool dropOk(int index, String skillId) {
+      if (!isAssignableFace(faces[index])) return false;
+      if (!canSetSkillOnFace(skillId, index, faces, assignments, skills)) {
+        return false;
+      }
+      final restriction = restrictionOf(index);
+      return restriction == null ||
+          (skills[skillId] as Map<String, dynamic>?)?['element']?.toString() ==
+              restriction;
+    }
+
+    // A tap on a face (its slot, or the face in front on the cube): it is the
+    // picked one, and an open face asks for its skill.
+    void tapFace(int index) {
+      setState(() => _faceSel = index);
+      final face = faces[index];
+      final open = isAssignableFace(face);
+      final picked = open ? assignments[index.toString()] : null;
+      final over = picked != null && limited[index.toString()] != picked;
+      final assigned = over ? null : picked;
+      final skillId = faceSkillId(face, assigned);
+      if (open) {
+        _pickSkill(
+          context,
+          face: face,
+          faceIndex: index,
+          faces: faces,
+          assignments: assignments,
+          skills: skills,
+          unlockedSkillIds: unlockedSkillIds,
+          restriction: restrictionOf(index),
+          current: assigned,
+          onPick: (id) => assignTo(index, id),
+          onClear: picked == null ? null : () => clearAt(index),
+        );
+      } else if (skillId != null) {
+        _showSkillDetail(
+            context, skillId, skills[skillId] as Map<String, dynamic>?);
+      }
+    }
+
     return Column(
       children: [
-        if (ally == null)
-          TutorialTarget(
-            id: 'dice.choice',
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: DropdownButtonFormField<String>(
-                // `value` (not `initialValue`) is needed here: this field must
-                // stay reactive to _selectedDiceId, not just seed from it once.
-                // ignore: deprecated_member_use
-                value: _selectedDiceId,
-                decoration: InputDecoration(
-                  labelText: tr(ref, 'die_label'),
-                  border: const OutlineInputBorder(),
+        // The die as a cube the player turns (v1.241) beside what its picked
+        // face does, and the owned dice as small cubes to choose from.
+        TutorialTarget(
+          id: 'dice.choice',
+          child: Column(
+            children: [
+              if (ally == null && diceIds.length > 1)
+                _DieRail(
+                  ids: diceIds,
+                  selected: _selectedDiceId!,
+                  dice: dice,
+                  session: session,
+                  skills: skills,
+                  language: language,
+                  onPick: (id) => setState(() => _selectedDiceId = id),
                 ),
-                items: diceIds
-                    .map((id) => DropdownMenuItem(
-                        value: id,
-                        child: Text(dieDisplayName(id,
-                            language: ref.watch(appLanguageProvider)))))
-                    .toList(),
-                onChanged: (value) => setState(() => _selectedDiceId = value),
+              _DieStage(
+                dieId: _selectedDiceId!,
+                language: language,
+                faces: faces,
+                assignments: limited,
+                skills: skills,
+                selected: _faceSel.clamp(0, faces.length - 1),
+                showOdds: ref.watch(appModeProvider) == AppMode.edit,
+                totalWeight: totalWeight,
+                still: MediaQuery.of(context).disableAnimations,
+                onSelect: (i) => setState(() => _faceSel = i),
+                onActivate: (i) => tapFace(i),
+                accepts: (i, id) => dropOk(i, id),
+                onDrop: (i, id) => assignTo(i, id),
               ),
-            ),
-          )
-        else
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '${tr(ref, 'die_label')}: ${dieDisplayName(_selectedDiceId ?? '', language: ref.watch(appLanguageProvider))}',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
+            ],
           ),
+        ),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -211,32 +292,6 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                             limited[index.toString()] != pickedSkillId;
                         final assignedSkillId =
                             overLimit ? null : pickedSkillId;
-                        final faceElement =
-                            face['element']?.toString() ?? 'None';
-                        // A skill face with an element takes only skills of
-                        // that element; a basic face takes any skill.
-                        final restriction = open &&
-                                face['type'] == 'Skill' &&
-                                faceElement != 'None'
-                            ? faceElement
-                            : null;
-                        void assign(String skillId) => ally != null
-                            ? ref
-                                .read(playerSessionProvider.notifier)
-                                .assignSkillToAllyDiceFace(
-                                    ally.companionId, index, skillId)
-                            : ref
-                                .read(playerSessionProvider.notifier)
-                                .assignSkillToDiceFace(
-                                    _selectedDiceId!, index, skillId);
-                        void clear() => ally != null
-                            ? ref
-                                .read(playerSessionProvider.notifier)
-                                .clearAllyDiceFaceSkill(ally.companionId, index)
-                            : ref
-                                .read(playerSessionProvider.notifier)
-                                .clearDiceFaceSkill(_selectedDiceId!, index);
-                        final skillId = faceSkillId(face, assignedSkillId);
                         // A skill set on the face snaps into place.
                         return SnapIn(
                           snapKey: assignedSkillId ?? '',
@@ -248,38 +303,25 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                                 : ((face['weight'] as num?)?.toDouble() ??
                                         1.0) /
                                     totalWeight,
+                            showOdds:
+                                ref.watch(appModeProvider) == AppMode.edit,
+                            picked: index == _faceSel,
                             assignedSkillId: assignedSkillId,
                             overLimitSkillId: overLimit ? pickedSkillId : null,
                             language: language,
                             locked: !open,
-                            restrictionElement: restriction,
+                            restrictionElement: restrictionOf(index),
                             skills: skills,
                             accepts: (id) => canSetSkillOnFace(
                                 id, index, faces, assignments, skills),
-                            onAccept: assign,
-                            onClear: pickedSkillId == null ? null : clear,
-                            onTap: open
-                                ? () => _pickSkill(
-                                      context,
-                                      face: face,
-                                      faceIndex: index,
-                                      faces: faces,
-                                      assignments: assignments,
-                                      skills: skills,
-                                      unlockedSkillIds: unlockedSkillIds,
-                                      restriction: restriction,
-                                      current: assignedSkillId,
-                                      onPick: assign,
-                                      onClear:
-                                          pickedSkillId == null ? null : clear,
-                                    )
-                                : skillId == null
-                                    ? null
-                                    : () => _showSkillDetail(
-                                        context,
-                                        skillId,
-                                        skills[skillId]
-                                            as Map<String, dynamic>?),
+                            onAccept: (id) {
+                              setState(() => _faceSel = index);
+                              assignTo(index, id);
+                            },
+                            onClear: pickedSkillId == null
+                                ? null
+                                : () => clearAt(index),
+                            onTap: () => tapFace(index),
                           ),
                         );
                       }),
@@ -568,6 +610,8 @@ class _FaceSlot extends StatelessWidget {
     super.key,
     required this.face,
     required this.chance,
+    required this.showOdds,
+    required this.picked,
     required this.assignedSkillId,
     required this.language,
     required this.onAccept,
@@ -582,6 +626,13 @@ class _FaceSlot extends StatelessWidget {
 
   final Map<String, dynamic> face;
   final double chance;
+
+  /// Whether its odds are told: in Edit Mode only (v1.241); a player rolls
+  /// the die without being shown the numbers.
+  final bool showOdds;
+
+  /// The face the die on the screen is turned to.
+  final bool picked;
   final String? assignedSkillId;
 
   /// A pick past its skill's limit (a save from before the limits): shown,
@@ -635,10 +686,13 @@ class _FaceSlot extends StatelessWidget {
             border: Border.all(
               color: isInvalidHover
                   ? colorScheme.error
-                  : (isHovering
+                  : (isHovering || picked
                       ? colorScheme.primary
                       : kind.color.withValues(alpha: locked ? 0.45 : 0.9)),
-              width: (isHovering || isInvalidHover || assignedSkillId != null)
+              width: (isHovering ||
+                      isInvalidHover ||
+                      picked ||
+                      assignedSkillId != null)
                   ? 2
                   : 1,
             ),
@@ -679,11 +733,12 @@ class _FaceSlot extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(detail, style: textTheme.bodySmall),
-              Text(
-                '${(chance * 100).round()}% ${t('face_chance_suffix')}',
-                style: textTheme.labelSmall
-                    ?.copyWith(color: colorScheme.onSurfaceVariant),
-              ),
+              if (showOdds)
+                Text(
+                  '${(chance * 100).round()}% ${t('face_chance_suffix')}',
+                  style: textTheme.labelSmall
+                      ?.copyWith(color: colorScheme.onSurfaceVariant),
+                ),
               if (overLimitSkillId != null)
                 Text(
                   '${skillDisplayName(overLimitSkillId!, language: language)}: '
@@ -731,6 +786,280 @@ class _FaceSlot extends StatelessWidget {
         final isInvalidHover = rejectedData.isNotEmpty && candidateData.isEmpty;
         return content(isHovering, isInvalidHover);
       },
+    );
+  }
+}
+
+/// A face of a die as a side of its cube: a skill on it as its own pixel icon
+/// on a pale plaque ringed in what the skill does (the way the fight draws a
+/// skill face), any other face its type's icon over its value.
+DieCubeFace _cubeSide(Map<String, dynamic> face, String? assigned,
+    Map<String, dynamic> skills, double size) {
+  final skillId = faceSkillId(face, assigned);
+  final skill =
+      skillId == null ? null : skills[skillId] as Map<String, dynamic>?;
+  final kind = skillId == null
+      ? faceKind(face['type']?.toString() ?? '')
+      : skillKind(skill);
+  if (skillId != null) {
+    return DieCubeFace(
+      color: kind.color,
+      glyph: Container(
+        width: size * 0.72,
+        height: size * 0.72,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: const Color(0xFFEFE6D2).withValues(alpha: 0.92),
+          border: Border.all(color: kind.color, width: size * 0.04 + 0.6),
+        ),
+        child: SkillPixelIcon(skillId, size: size * 0.55),
+      ),
+    );
+  }
+  final value = (face['value'] as num?)?.toInt() ?? 0;
+  return DieCubeFace(
+    color: kind.color,
+    glyph: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(kind.icon,
+            size: value > 0 ? size * 0.4 : size * 0.52, color: kind.color),
+        if (value > 0)
+          Text('$value',
+              style: TextStyle(
+                  fontSize: size * 0.28,
+                  fontWeight: FontWeight.bold,
+                  height: 1,
+                  color: kind.color)),
+      ],
+    ),
+  );
+}
+
+/// The six sides of a die: its faces from [first], repeated when it has fewer
+/// than six.
+List<DieCubeFace> _cubeSides(List<Map<String, dynamic>> faces,
+    Map<String, String> assignments, Map<String, dynamic> skills, double size,
+    {int first = 0}) {
+  return [
+    for (var slot = 0; slot < 6; slot++)
+      () {
+        final index = faces.length >= 6 ? first + slot : slot % faces.length;
+        return _cubeSide(
+            faces[index], assignments[index.toString()], skills, size);
+      }(),
+  ];
+}
+
+/// The dice a player owns, as small cubes to pick from.
+class _DieRail extends StatelessWidget {
+  const _DieRail({
+    required this.ids,
+    required this.selected,
+    required this.dice,
+    required this.session,
+    required this.skills,
+    required this.language,
+    required this.onPick,
+  });
+
+  final List<String> ids;
+  final String selected;
+  final Map<String, dynamic> dice;
+  final PlayerSession session;
+  final Map<String, dynamic> skills;
+  final AppLanguage language;
+  final ValueChanged<String> onPick;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return SizedBox(
+      height: 84,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+        children: [
+          for (final id in ids)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: InkWell(
+                key: Key('die_pick_$id'),
+                borderRadius: BorderRadius.circular(10),
+                onTap: () => onPick(id),
+                child: Container(
+                  width: 72,
+                  padding: const EdgeInsets.only(top: 8, bottom: 2),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                        color: id == selected
+                            ? scheme.primary
+                            : scheme.outlineVariant,
+                        width: id == selected ? 2 : 1),
+                    color: id == selected
+                        ? scheme.primary.withValues(alpha: 0.10)
+                        : null,
+                  ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: Die3D(
+                          faces: _cubeSides(
+                              smithedFaces(
+                                  (dice[id]['faces'] as List)
+                                      .cast<Map<String, dynamic>>(),
+                                  session.upgradesOfDie(id)),
+                              session.diceSkillAssignments[id] ??
+                                  const <String, String>{},
+                              skills,
+                              26),
+                          accent: dieSkinOf(id).edge,
+                          size: 26,
+                          still: true,
+                          skin: dieSkinOf(id),
+                        ),
+                      ),
+                      Text(
+                        dieDisplayName(id, language: language),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The die the player is setting, as a cube to turn, beside the face it
+/// stands on. A skill chip dragged onto the cube goes on that face.
+class _DieStage extends StatelessWidget {
+  const _DieStage({
+    required this.dieId,
+    required this.language,
+    required this.faces,
+    required this.assignments,
+    required this.skills,
+    required this.selected,
+    required this.showOdds,
+    required this.totalWeight,
+    required this.still,
+    required this.onSelect,
+    required this.onActivate,
+    required this.accepts,
+    required this.onDrop,
+  });
+
+  final String dieId;
+  final AppLanguage language;
+  final List<Map<String, dynamic>> faces;
+  final Map<String, String> assignments;
+  final Map<String, dynamic> skills;
+
+  /// The face index the die is turned to.
+  final int selected;
+  final bool showOdds;
+  final double totalWeight;
+  final bool still;
+  final ValueChanged<int> onSelect;
+  final ValueChanged<int> onActivate;
+  final bool Function(int index, String skillId) accepts;
+  final void Function(int index, String skillId) onDrop;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final n = faces.length;
+    // A die of seven faces shows six at a time: the window slides to keep the
+    // picked one on the cube.
+    final first = n > 6 ? (selected - 5).clamp(0, n - 6) : 0;
+    int slotOf(int index) => n >= 6 ? (index - first).clamp(0, 5) : index;
+    int indexOf(int slot) => n >= 6 ? first + slot : slot % n;
+    final face = faces[selected];
+    final assigned = assignments[selected.toString()];
+    final skillId = faceSkillId(face, assigned);
+    final name =
+        faceDisplayName(face, assignedSkillId: assigned, language: language);
+    final open = isAssignableFace(face);
+    String t(String key) => trFor(language, key);
+    final weight = (face['weight'] as num?)?.toDouble() ?? 1.0;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
+        ),
+        padding: const EdgeInsets.fromLTRB(0, 4, 12, 4),
+        child: Row(
+          children: [
+            DragTarget<String>(
+              onWillAcceptWithDetails: (d) => accepts(selected, d.data),
+              onAcceptWithDetails: (d) => onDrop(selected, d.data),
+              builder: (context, candidate, rejected) => SizedBox(
+                width: 150,
+                height: 150,
+                child: Center(
+                  child: InteractiveDie(
+                    size: 78,
+                    still: still,
+                    skin: dieSkinOf(dieId),
+                    faces: _cubeSides(faces, assignments, skills, 78,
+                        first: first),
+                    selected: slotOf(selected),
+                    onSelect: (slot) => onSelect(indexOf(slot)),
+                    onActivate: (slot) => onActivate(indexOf(slot)),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(dieDisplayName(dieId, language: language),
+                      style: theme.textTheme.titleMedium),
+                  Text(dieSkinOf(dieId).material,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant)),
+                  const SizedBox(height: 8),
+                  Text(name,
+                      key: const Key('die_face_name'),
+                      style: theme.textTheme.titleSmall),
+                  Text(
+                    skillId == null
+                        ? _basicFaceSummary(face, language)
+                        : _skillSummary(
+                            skills[skillId] as Map<String, dynamic>?, language),
+                    style: theme.textTheme.bodySmall,
+                  ),
+                  if (showOdds && totalWeight > 0)
+                    Text(
+                      '${(weight / totalWeight * 100).round()}% ${t('face_chance_suffix')}',
+                      style: theme.textTheme.labelSmall
+                          ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                    ),
+                  const SizedBox(height: 6),
+                  Text(
+                    open ? t('die_turn_hint_open') : t('die_turn_hint'),
+                    style: theme.textTheme.labelSmall
+                        ?.copyWith(color: theme.colorScheme.primary),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

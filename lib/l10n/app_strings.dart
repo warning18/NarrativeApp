@@ -2617,6 +2617,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'of rolls',
     AppLanguage.fr: 'des jets'
   },
+  'die_turn_hint': {
+    AppLanguage.en: 'Drag the die to turn it; tap a side to bring it round.',
+    AppLanguage.fr:
+        'Faites tourner le dé du doigt\u00a0; touchez une face pour l’amener devant vous.',
+  },
+  'die_turn_hint_open': {
+    AppLanguage.en:
+        'Tap the front face to give it a skill, or drop a skill on the die.',
+    AppLanguage.fr:
+        'Touchez la face de devant pour lui donner une compétence, ou déposez-y une compétence.',
+  },
   'channeled_face_badge': {
     AppLanguage.en: 'On a {face} face · 70%',
     AppLanguage.fr: 'Sur une face {face} · 70 %',
