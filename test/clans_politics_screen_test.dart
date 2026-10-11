@@ -109,7 +109,7 @@ Future<void> _settle(WidgetTester tester) async {
 
 void main() {
   testWidgets('the four tabs at 360 px, in English', (tester) async {
-    tester.view.physicalSize = const Size(360, 2400);
+    tester.view.physicalSize = const Size(360, 3400);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     final container = await _container(tester, language: 'en');

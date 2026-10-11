@@ -3943,6 +3943,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Shroud, in Pieces',
     AppLanguage.fr: 'Le Linceul, en morceaux'
   },
+  'banner_piece_unfound': {
+    AppLanguage.en: 'Not yet found',
+    AppLanguage.fr: 'Pas encore trouvé',
+  },
   'banner_piece_heirloom_shroud': {
     AppLanguage.en: 'The heirloom piece',
     AppLanguage.fr: "Le fragment de l'héritage",

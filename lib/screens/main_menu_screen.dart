@@ -15,9 +15,9 @@ import '../providers/permadeath_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/save_game_provider.dart';
 import '../providers/story_providers.dart';
-import '../theme/stitched_ink.dart';
 import '../widgets/save_slots_sheet.dart';
 import '../widgets/moments.dart';
+import '../widgets/pixel_banner.dart';
 import 'home_shell.dart';
 import 'settings_screen.dart';
 
@@ -219,9 +219,9 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                         // small on a short one so the menu stays in view.
                         Center(
                           child: _BannerMark(
-                            size: MediaQuery.sizeOf(context).height >= 760
-                                ? 150
-                                : 48,
+                            scale: MediaQuery.sizeOf(context).height >= 760
+                                ? 2
+                                : 1,
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -400,151 +400,14 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
   }
 }
 
-/// The title's mark: a tattered banner on its pole, a seam stitched along
-/// its edge and the tear's Void sigil sewn in the middle.
+/// The title's mark: the Void's standard, in pixel art, on its pole.
 class _BannerMark extends StatelessWidget {
-  const _BannerMark({required this.size});
+  const _BannerMark({required this.scale});
 
-  final double size;
+  final int scale;
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final ink = InkColors.of(context);
-    return SizedBox(
-      width: size * 220 / 250,
-      height: size,
-      child: CustomPaint(
-        painter: _BannerPainter(
-          cloth: scheme.surfaceContainer,
-          edge: scheme.onSurfaceVariant,
-          pole: scheme.outline,
-          seam: ink.seam,
-          sigil: ink.voidColor,
-          thread: ink.gold,
-        ),
-      ),
-    );
+    return PixelBanner(id: titleBannerId, scale: scale);
   }
-}
-
-class _BannerPainter extends CustomPainter {
-  const _BannerPainter({
-    required this.cloth,
-    required this.edge,
-    required this.pole,
-    required this.seam,
-    required this.sigil,
-    required this.thread,
-  });
-
-  final Color cloth;
-  final Color edge;
-  final Color pole;
-  final Color seam;
-  final Color sigil;
-  final Color thread;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Drawn on a 220 x 250 grid, scaled to fit.
-    canvas.scale(size.width / 220, size.height / 250);
-    final stroke = Paint()..style = PaintingStyle.stroke;
-
-    canvas.drawLine(
-        const Offset(30, 10),
-        const Offset(30, 240),
-        stroke
-          ..color = pole
-          ..strokeWidth = 3);
-    canvas.drawCircle(const Offset(30, 8), 5, Paint()..color = pole);
-
-    final banner = Path()
-      ..moveTo(33, 20)
-      ..lineTo(196, 20)
-      ..lineTo(186, 52)
-      ..lineTo(198, 86)
-      ..lineTo(180, 110)
-      ..lineTo(194, 142)
-      ..lineTo(170, 150)
-      ..lineTo(176, 176)
-      ..lineTo(150, 168)
-      ..lineTo(128, 188)
-      ..lineTo(112, 170)
-      ..lineTo(86, 196)
-      ..lineTo(70, 172)
-      ..lineTo(48, 186)
-      ..lineTo(33, 178)
-      ..close();
-    canvas.drawPath(banner, Paint()..color = cloth);
-    canvas.drawPath(
-        banner,
-        stroke
-          ..color = edge
-          ..strokeWidth = 1.5);
-
-    // The stitched seam just inside the top and right edges.
-    final seamPaint = Paint()
-      ..color = seam
-      ..strokeWidth = 1;
-    const seamPoints = [
-      Offset(40, 28),
-      Offset(186, 28),
-      Offset(178, 54),
-      Offset(188, 84),
-      Offset(172, 108),
-      Offset(184, 136),
-    ];
-    for (var i = 0; i < seamPoints.length - 1; i++) {
-      _dashed(canvas, seamPoints[i], seamPoints[i + 1], seamPaint, 4, 4);
-    }
-
-    // The Void's sigil: a torn eye, and the gold thread that holds it.
-    final eye = Path()
-      ..moveTo(112, 70)
-      ..cubicTo(98, 96, 104, 124, 116, 140)
-      ..cubicTo(126, 118, 134, 96, 112, 70)
-      ..close();
-    canvas.drawPath(
-        eye,
-        stroke
-          ..color = sigil
-          ..strokeWidth = 2);
-    _dashed(
-        canvas,
-        const Offset(112, 84),
-        const Offset(114, 128),
-        Paint()
-          ..color = sigil
-          ..strokeWidth = 1.5,
-        3,
-        3);
-    canvas.drawLine(
-        const Offset(86, 104),
-        const Offset(138, 104),
-        Paint()
-          ..color = thread
-          ..strokeWidth = 1.5);
-  }
-
-  void _dashed(
-      Canvas canvas, Offset a, Offset b, Paint paint, double dash, double gap) {
-    final delta = b - a;
-    final length = delta.distance;
-    if (length == 0) return;
-    final dir = delta / length;
-    for (var d = 0.0; d < length; d += dash + gap) {
-      final end = (d + dash).clamp(0.0, length);
-      canvas.drawLine(a + dir * d, a + dir * end, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(_BannerPainter old) =>
-      old.cloth != cloth ||
-      old.edge != edge ||
-      old.pole != pole ||
-      old.seam != seam ||
-      old.sigil != sigil ||
-      old.thread != thread;
 }

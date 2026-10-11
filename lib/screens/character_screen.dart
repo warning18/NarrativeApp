@@ -18,6 +18,7 @@ import '../data/offers.dart' show OfferSource;
 import '../widgets/ink_fold.dart';
 import '../widgets/offer_dialog.dart';
 import '../widgets/perk_list.dart';
+import '../widgets/pixel_banner.dart';
 import '../widgets/sign_widgets.dart';
 import '../widgets/title_widgets.dart';
 import '../widgets/mana_meter.dart';
@@ -61,20 +62,7 @@ class CharacterScreen extends ConsumerWidget {
         const SizedBox(height: 16),
         if (session.newGamePlusCycle > 0) const _NewGamePlusCard(),
         const _ManaSpellsCard(),
-        if (session.bannerPiecesCollected.isNotEmpty)
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.auto_stories_outlined),
-              title: Text(tr(ref, 'banner_pieces_title')),
-              subtitle: Text(
-                session.bannerPiecesCollected.map((id) {
-                  final key = 'banner_piece_$id';
-                  final label = tr(ref, key);
-                  return label == key ? id : label;
-                }).join(' · '),
-              ),
-            ),
-          ),
+        if (session.bannerPiecesCollected.isNotEmpty) const _ShroudCard(),
         Card(
           child: ListTile(
             leading: const Icon(Icons.badge_outlined),
@@ -782,6 +770,83 @@ class _DebugStatsEditorState extends ConsumerState<_DebugStatsEditor> {
                   child: Text(tr(ref, 'debug_titan_blood')),
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The Shroud, in its six banners: each recovered piece in colour, the
+/// others a dark silhouette waiting to be found.
+class _ShroudCard extends ConsumerWidget {
+  const _ShroudCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final collected =
+        ref.watch(playerSessionProvider.select((s) => s.bannerPiecesCollected));
+    final found = collected.toSet();
+    final theme = Theme.of(context);
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.auto_stories_outlined),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(tr(ref, 'banner_pieces_title'),
+                      style: theme.textTheme.titleMedium),
+                ),
+                Text('${found.length} / ${shroudPieceIds.length}',
+                    style: theme.textTheme.labelLarge),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              alignment: WrapAlignment.spaceEvenly,
+              spacing: 4,
+              runSpacing: 12,
+              children: [
+                for (final id in shroudPieceIds)
+                  _ShroudPiece(id: id, found: found.contains(id)),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ShroudPiece extends ConsumerWidget {
+  const _ShroudPiece({required this.id, required this.found});
+
+  final String id;
+  final bool found;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final key = 'banner_piece_$id';
+    final label = found ? tr(ref, key) : tr(ref, 'banner_piece_unfound');
+    return Semantics(
+      label: label,
+      child: SizedBox(
+        width: 96,
+        child: Column(
+          children: [
+            ExcludeSemantics(
+                child: PixelBanner(id: id, scale: 2, found: found)),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.labelSmall,
             ),
           ],
         ),
