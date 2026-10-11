@@ -51,13 +51,35 @@ AutoplayStrategy _toAutoplayStrategy(SimStrategy strategy) {
       return AutoplayStrategy.favorEvil;
     case SimStrategy.maximizeGold:
       return AutoplayStrategy.maximizeGold;
+    case SimStrategy.explore:
+      return AutoplayStrategy.random;
   }
 }
 
 /// How the simulator picks among a node's valid (non-locked) choices. Lets
 /// the user compare "what if the player always chased gold" against "what
 /// if they always leaned good/evil" instead of only pure-random runs.
-enum SimStrategy { random, favorGood, favorEvil, maximizeGold }
+enum SimStrategy { random, favorGood, favorEvil, maximizeGold, explore }
+
+/// How often each way on has been taken over a batch of runs, shared by
+/// them: the [SimStrategy.explore] walk takes the way on taken least so far,
+/// so run after run the batch covers every branch it can (see
+/// [simulatePlaythroughs]).
+class SimCoverage {
+  SimCoverage({this.alternateChecks = false});
+
+  final Map<String, int> taken = {};
+
+  /// Whether the explore walk settles an ability check by the outcome seen
+  /// fewer times so far (a pass, or a fail) instead of by the roll, so both
+  /// sides of every check are walked. Off, the dice decide.
+  final bool alternateChecks;
+}
+
+/// A way on's key in [SimCoverage] and in a run's choices taken: the scene,
+/// where it leads and its words.
+String simChoiceKey(String nodeId, StoryChoice choice) =>
+    '$nodeId|${choice.nextId}|${choice.text}';
 
 String _strategyLabelKey(SimStrategy strategy) {
   switch (strategy) {
@@ -69,6 +91,8 @@ String _strategyLabelKey(SimStrategy strategy) {
       return 'sim_strategy_favor_evil';
     case SimStrategy.maximizeGold:
       return 'sim_strategy_maximize_gold';
+    case SimStrategy.explore:
+      return 'sim_strategy_explore';
   }
 }
 
@@ -146,9 +170,19 @@ class _SimResult {
     this.signsTaken = const [],
     this.offersTaken = 0,
     this.skillsLearned = 0,
+    this.choicesTaken = const [],
+    this.checksRolled = 0,
+    this.checksFailed = 0,
   });
 
   final List<_SimStep> steps;
+
+  /// The ways on taken, in order (see [simChoiceKey]).
+  final List<String> choicesTaken;
+
+  /// Ability checks rolled in the run, and how many failed.
+  final int checksRolled;
+  final int checksFailed;
   final int finalGold;
   final int finalAlignment;
   final Set<String> flags;
@@ -301,7 +335,10 @@ _SimResult _simulate(
   _SimContext? sim,
   String? forceRaceId,
   String? forceProfessionId,
+  SimCoverage? coverage,
 }) {
+  final choicesTaken = <String>[];
+  var checksRolled = 0, checksFailed = 0;
   int combatGoldReward(StoryChoice c) {
     if (!c.triggersCombat) return 0;
     var total = 0;
@@ -399,10 +436,13 @@ _SimResult _simulate(
       signsTaken: List.unmodifiable(growth?.signsTaken ?? const <String>[]),
       offersTaken: growth?.giftsTaken.values.fold<int>(0, (a, b) => a + b) ?? 0,
       skillsLearned: growth?.skillsLearned ?? 0,
+      choicesTaken: List.unmodifiable(choicesTaken),
+      checksRolled: checksRolled,
+      checksFailed: checksFailed,
     );
   }
 
-  StoryChoice pickChoice(List<StoryChoice> pool) {
+  StoryChoice pickAmong(List<StoryChoice> pool) {
     if (strategy == SimStrategy.random || pool.length == 1) {
       return pool[random.nextInt(pool.length)];
     }
@@ -414,6 +454,9 @@ _SimResult _simulate(
           return -c.alignmentMod;
         case SimStrategy.maximizeGold:
           return c.goldMod + combatGoldReward(c);
+        case SimStrategy.explore:
+          // The way taken fewest times so far, over every run of the batch.
+          return -(coverage?.taken[simChoiceKey(currentId, c)] ?? 0);
         case SimStrategy.random:
           return 0;
       }
@@ -422,6 +465,16 @@ _SimResult _simulate(
     final best = pool.map(score).reduce(max);
     final tied = pool.where((c) => score(c) == best).toList();
     return tied[random.nextInt(tied.length)];
+  }
+
+  StoryChoice pickChoice(List<StoryChoice> pool) {
+    final picked = pickAmong(pool);
+    final key = simChoiceKey(currentId, picked);
+    choicesTaken.add(key);
+    if (coverage != null) {
+      coverage.taken[key] = (coverage.taken[key] ?? 0) + 1;
+    }
+    return picked;
   }
 
   /// What the character fights with now; in one of the last battles
@@ -815,14 +868,74 @@ _SimResult _simulate(
     final pool = available.isNotEmpty ? available : visible;
     final choice = pickChoice(pool);
 
+    // An ability check (v1.229) is rolled as the game rolls it: a d20 plus
+    // the character's score against the DC, a natural 20 passing and a
+    // natural 1 failing; a skill challenge takes rounds until enough pass or
+    // too many fail. A failed check with a scene of its own goes there,
+    // none of the choice's effects done.
+    var checkPassed = true;
+    if (character != null && choice.hasAbilityCheck) {
+      final bonus = character.abilityBonus(choice.checkAbility!);
+      final dc = choice.checkDC ?? 10;
+      bool roll() {
+        final d = random.nextInt(20) + 1;
+        return d == 20 || (d != 1 && d + bonus >= dc);
+      }
+
+      if (choice.hasSkillChallenge) {
+        var passes = 0, fails = 0;
+        while (passes < choice.challengeSuccessesNeeded! &&
+            fails < choice.challengeMaxFailures!) {
+          roll() ? passes++ : fails++;
+        }
+        checkPassed = passes >= choice.challengeSuccessesNeeded!;
+      } else {
+        checkPassed = roll();
+      }
+      // Exploring with alternating checks takes the side seen less often.
+      if (strategy == SimStrategy.explore &&
+          coverage != null &&
+          coverage.alternateChecks) {
+        final key = simChoiceKey(currentId, choice);
+        checkPassed = (coverage.taken['$key#pass'] ?? 0) <=
+            (coverage.taken['$key#fail'] ?? 0);
+        coverage.taken['$key#${checkPassed ? 'pass' : 'fail'}'] =
+            (coverage.taken['$key#${checkPassed ? 'pass' : 'fail'}'] ?? 0) + 1;
+      }
+      checksRolled++;
+      if (!checkPassed) checksFailed++;
+    }
+    final failTarget = choice.failNextId ?? '';
+    if (!checkPassed && failTarget.isNotEmpty) {
+      steps.add(_SimStep(
+        nodeId: currentId,
+        chapter: lastKnownChapter,
+        mood: node.mood,
+        uiTheme: node.uiTheme,
+        description: node.descriptionFor(french),
+        choiceText: choice.textFor(french),
+      ));
+      if (failTarget == 'EXIT' || failTarget == 'END') {
+        return finish(
+            endingText: choice.textFor(french), reachedStepCap: false);
+      }
+      currentId = failTarget;
+      visited.add(currentId);
+      continue;
+    }
+
     // A won fight pays out the enemy's goldReward just like a real playthrough
     // (see FightScreen._finishFight) — folded into this step's goldMod so the
     // chapter breakdown and CSV/JSON exports stay consistent with finalGold.
     // The signs take their share of it (a pact's curse some back).
-    final fightResult = fight(choice, lastKnownChapter ?? 1);
+    // A sneak that works leaves the fight behind.
+    final sneaked = checkPassed && choice.avoidFightOnSuccess;
+    final fightResult = sneaked
+        ? fightEnemies(const [], lastKnownChapter ?? 1)
+        : fight(choice, lastKnownChapter ?? 1);
     final effectiveGoldMod = choice.goldMod +
-        fightResult.signs
-            .scaleGold(fightResult.perks.scaleGold(combatGoldReward(choice))) +
+        fightResult.signs.scaleGold(fightResult.perks
+            .scaleGold(sneaked ? 0 : combatGoldReward(choice))) +
         fightResult.stolen;
     if (fightResult.won == false && choice.hasLossBranch) {
       // Lost, and the story goes on: the defeat branch, with none of the
@@ -1027,6 +1140,13 @@ typedef SimRunSummary = ({
   Map<String, ({int attempts, int won, int fights})> byChapter,
   Map<String, int> enemiesFought,
   Map<String, int> enemiesLost,
+  Set<String> visitedNodes,
+  List<String> choicesTaken,
+  Set<String> questIds,
+  Set<String> shopIds,
+  Set<String> flagIds,
+  int checksRolled,
+  int checksFailed,
 });
 
 /// Full playthroughs, one per entry of [plan] (a strategy and, optionally,
@@ -1042,6 +1162,7 @@ List<SimRunSummary> simulatePlaythroughs(
       plan,
   required int seed,
   int maxSteps = 1500,
+  SimCoverage? coverage,
 }) {
   final sim = _simContextOf(tables, gameConfig);
   final enemies = tables['enemies'] ?? const {};
@@ -1054,7 +1175,8 @@ List<SimRunSummary> simulatePlaythroughs(
         maxSteps: maxSteps,
         sim: sim,
         forceRaceId: plan[i].raceId,
-        forceProfessionId: plan[i].professionId);
+        forceProfessionId: plan[i].professionId,
+        coverage: coverage);
     final byChapter = <String, ({int attempts, int won, int fights})>{};
     final fought = <String, int>{};
     final lost = <String, int>{};
@@ -1109,6 +1231,16 @@ List<SimRunSummary> simulatePlaythroughs(
       byChapter: byChapter,
       enemiesFought: fought,
       enemiesLost: lost,
+      visitedNodes: {
+        for (final step in result.steps)
+          if (!step.nodeId.contains(':')) step.nodeId,
+      },
+      choicesTaken: result.choicesTaken,
+      questIds: result.questsDiscovered,
+      shopIds: result.shopsDiscovered,
+      flagIds: result.flags,
+      checksRolled: result.checksRolled,
+      checksFailed: result.checksFailed,
     ));
   }
   return out;

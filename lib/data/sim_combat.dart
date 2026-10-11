@@ -67,6 +67,8 @@ class SimCharacter {
     required this.intelligence,
     required this.wisdom,
     required this.luck,
+    required this.charisma,
+    required this.perception,
     required this.diceFaces,
     required this.diceSkillAssignments,
     required this.unlockedSkillIds,
@@ -121,6 +123,8 @@ class SimCharacter {
       intelligence: stat('intelligence', 'bonusIntelligence'),
       wisdom: stat('wisdom', 'bonusWisdom'),
       luck: stat('luck', 'bonusLuck'),
+      charisma: stat('charisma', 'bonusCharisma'),
+      perception: stat('perception', 'bonusPerception'),
       diceFaces: faces,
       // The same starting kit as PlayerSessionNotifier.startNewGame: a
       // caster's mana skill sits on the apprentice die's Channeling face.
@@ -161,6 +165,22 @@ class SimCharacter {
   int intelligence;
   int wisdom;
   int luck;
+  int charisma;
+  int perception;
+
+  /// The flat bonus on a d20 for an ability check (see ability_check.dart):
+  /// the score itself. Equipment and level-up points are not counted.
+  int abilityBonus(String ability) => switch (ability) {
+        'strength' => strength,
+        'dexterity' => dexterity,
+        'constitution' => constitution,
+        'intelligence' => intelligence,
+        'wisdom' => wisdom,
+        'charisma' => charisma,
+        'luck' => luck,
+        'perception' => perception,
+        _ => 0,
+      };
 
   /// The faces of the die in play -- the starting die, or the sage die
   /// once a caster buys one.

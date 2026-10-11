@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.229.0+265]
+
+### Added
+- The simulator can explore: the new goal "Explore every branch" takes, at every scene, the way on taken least so far over a whole batch of runs, so batch after batch covers more of the story. `simulatePlaythroughs` takes a shared `SimCoverage`; `test/sim_coverage_test.dart` pins that exploring covers more scenes and ways on than random runs, with every run ending in a real ending. `docs/simulation/report-branches.md` and `runs-explore-100.csv` hold the result of 300 runs: 363 of 385 scenes (94%) reached, the 22 that no run reached with what blocks each, and the one quest nothing offers.
+
+### Changed
+- The simulator rolls ability checks as the game does (a d20 plus the character's score against the DC, a natural 20 passing and a natural 1 failing, a skill challenge taking rounds), takes the failure scene when a check fails, and lets a sneak that works skip its fight. Before, no run ever took a failure branch, so 70 scenes (18% of the story) were never played. The simulated character's win rate in fights falls from 34% to 31% of attempts.
+
 ## [1.228.0+264]
 
 ### Added

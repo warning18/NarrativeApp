@@ -1,5 +1,7 @@
 # Simulation report: 100 playthroughs (v1.228.0)
 
+> Run before the simulator rolled ability checks (1.229.0). With them the attempt win rate is 31% instead of 34%; see section 5 of `report-branches.md` for the updated headline.
+
 Harness: `simulatePlaythroughs` in `lib/screens/playthrough_simulator_screen.dart` (the in-app simulator's walk and fight model, run headless). Seed 7, 100 runs from the first scene to the end, 25 per goal (strategy), professions rotated so every one is played 20 times, race drawn at random. A lost fight is retried up to 3 times, then the walk moves on counting it lost (so reaching the end says nothing about difficulty). "Attempt" = one try at a fight; "encounter" = one fight scene (up to 3 attempts). A 800-run check (seeds 11 and 23, 400 each) gives the same picture; its figures are quoted where they differ by more than 2 points.
 
 What it does **not** cover: quest rewards (not read by the simulator), the Journey map, the fight lab, ship battles on voyages, the player's real choices of dice faces and loadouts.

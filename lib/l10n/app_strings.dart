@@ -5784,6 +5784,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Maximize Gold',
     AppLanguage.fr: "Maximiser l'or",
   },
+  'sim_strategy_explore': {
+    AppLanguage.en: 'Explore every branch',
+    AppLanguage.fr: 'Explorer toutes les branches',
+  },
   'runs_label': {AppLanguage.en: 'Runs', AppLanguage.fr: 'Parties'},
   'clear_all_button': {
     AppLanguage.en: 'Clear All',
