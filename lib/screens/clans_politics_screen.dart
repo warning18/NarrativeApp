@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/dice_faces.dart' show skillDisplayName;
 import '../data/chapter_spine.dart' show chapterSpines;
+import '../data/clan_affinity.dart';
 import '../data/factions.dart';
 import '../data/offers.dart' show OfferSource;
 import '../data/politics_events.dart';
@@ -39,6 +41,9 @@ import '../widgets/throne_edit_tab.dart';
 ///   events' news among it, under `event:<id>`).
 /// - **Intrigues:** the eight plots, the stage each has reached, and their
 ///   outcomes.
+/// - **Affinities** (v1.232): the favorability matrix, which peoples and
+///   which classes each clan grows (read off the branches it sponsors),
+///   and the fusions and ascensions the clans offer.
 /// - **Throne** (v1.196, see throne.dart): each faction's climb (its
 ///   House, its clan steps, the claim, the Throne) with buttons to set
 ///   it, pledges, and "Muster now" with a preview of the Host.
@@ -56,7 +61,7 @@ class ClansPoliticsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultTabController(
-      length: play ? 4 : 5,
+      length: play ? 4 : 6,
       child: Scaffold(
         appBar: AppBar(
           title: Text(tr(ref, play ? 'clans_title_play' : 'clans_title')),
@@ -80,6 +85,10 @@ class ClansPoliticsScreen extends ConsumerWidget {
                   text: tr(ref, 'clans_tab_intrigues')),
               if (!play)
                 Tab(
+                    key: const Key('clans_tab_affinity'),
+                    text: tr(ref, 'clans_tab_affinity')),
+              if (!play)
+                Tab(
                     key: const Key('clans_tab_throne'),
                     text: tr(ref, 'clans_tab_throne')),
             ],
@@ -91,6 +100,7 @@ class ClansPoliticsScreen extends ConsumerWidget {
             _PoliticsTab(play: play),
             const _EvolutionTab(),
             _IntriguesTab(play: play),
+            if (!play) const _AffinityTab(),
             if (!play) const ThroneEditTab(),
           ],
         ),
@@ -1127,6 +1137,192 @@ class _StandingChartPainter extends CustomPainter {
 }
 
 // --- Intrigues --------------------------------------------------------------
+
+// --- Affinities -------------------------------------------------------------
+
+/// The favorability matrix (v1.232, see clan_affinity.dart): a row per
+/// clan, a column per people and per class. A people's cell is filled when
+/// the clan sponsors its heritage; a class's cell counts the clan's
+/// branches of the three. Below: the fusions (two clans) and ascensions
+/// (one clan at Trusted) it offers, and any inconsistency in the table.
+class _AffinityTab extends ConsumerWidget {
+  const _AffinityTab();
+
+  static const double _head = 40;
+  static const double _cellW = 46;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final data = ref.watch(clanDataProvider);
+    final lang = ref.watch(appLanguageProvider);
+    final theme = Theme.of(context);
+    final trees = ref.watch(gameDbProvider(skillTreesSchema)).value ?? const {};
+    final skills = ref.watch(gameDbProvider(skillsSchema)).value ?? const {};
+    final races = ref.watch(localizedDbProvider(racesSchema)).value ?? const {};
+    final professions =
+        ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
+    final raceIds = races.keys.toList();
+    final professionIds = professions.keys.toList();
+    final matrix = buildAffinityMatrix(
+        data: data,
+        skillTrees: trees,
+        raceIds: raceIds,
+        professionIds: professionIds);
+    String nameOf(Map<String, dynamic> table, String key, String id) =>
+        (table[id] as Map?)?[key]?.toString() ?? id;
+    Widget head(String text) => SizedBox(
+          width: _cellW,
+          height: _head,
+          child: Center(
+            child: Text(text,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelSmall?.copyWith(fontSize: 9.5)),
+          ),
+        );
+    Widget cell(Faction clan, String column, int level, int of) {
+      final color = theme.colorScheme.primary;
+      return Padding(
+        padding: const EdgeInsets.all(1.5),
+        child: InkWell(
+          key: Key('affinity_cell_${clan.id}_$column'),
+          onTap: level == 0
+              ? null
+              : () => _showBranches(context, ref, clan, column),
+          child: Container(
+            width: _cellW - 3,
+            height: 38,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color:
+                  color.withValues(alpha: level == 0 ? 0 : 0.12 * level + 0.08),
+              border: Border.all(
+                  color: level == 0
+                      ? theme.colorScheme.outlineVariant
+                      : color.withValues(alpha: 0.8)),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              level == 0 ? '·' : (of == 1 ? '●' : '$level/$of'),
+              style: theme.textTheme.labelMedium?.copyWith(
+                  fontWeight: level == 0 ? FontWeight.normal : FontWeight.bold),
+            ),
+          ),
+        ),
+      );
+    }
+
+    final clans = [
+      for (final id in matrix.clanIds)
+        if (data.faction(id) != null) data.faction(id)!,
+    ];
+    final cards = clanCardSkills(data: data, skills: skills, skillTrees: trees);
+    final issues = matrix.issues();
+    return ListView(
+      key: const Key('clans_affinity_list'),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+      children: [
+        Text(tr(ref, 'clans_affinity_hint'),
+            style: theme.textTheme.bodySmall
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        const SizedBox(height: 8),
+        SingleChildScrollView(
+          key: const Key('clans_affinity_matrix'),
+          scrollDirection: Axis.horizontal,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                const SizedBox(width: 36, height: _head),
+                for (final id in raceIds) head(nameOf(races, 'raceName', id)),
+                const SizedBox(width: 8),
+                for (final id in professionIds)
+                  head(nameOf(professions, 'professionName', id)),
+              ]),
+              for (final clan in clans)
+                Row(children: [
+                  SizedBox(
+                    width: 36,
+                    height: 38,
+                    child: Center(
+                      child: Tooltip(
+                        message: clan.nameFor(lang),
+                        child: PatronEmblem(patron: clan.patron, size: 26),
+                      ),
+                    ),
+                  ),
+                  for (final id in raceIds)
+                    cell(clan, id, matrix.raceLevel(clan.id, id), 1),
+                  const SizedBox(width: 8),
+                  for (final id in professionIds)
+                    cell(clan, id, matrix.professionLevel(clan.id, id), 3),
+                ]),
+            ],
+          ),
+        ),
+        if (issues.isNotEmpty) ...[
+          _sectionLabel(context, tr(ref, 'clans_affinity_issues')),
+          for (final issue in issues)
+            Text(issue,
+                key: const Key('clans_affinity_issue'),
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: theme.colorScheme.error)),
+        ],
+        _sectionLabel(context, tr(ref, 'clans_affinity_cards')),
+        Text(tr(ref, 'clans_affinity_cards_hint'),
+            style: theme.textTheme.bodySmall
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        const SizedBox(height: 4),
+        for (final card in cards)
+          ListTile(
+            key: Key('affinity_card_${card.skillId}'),
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            title: Text(skillDisplayName(card.skillId, language: lang)),
+            subtitle: Text([
+              tr(
+                  ref,
+                  card.ascension
+                      ? 'offer_gift_ascension'
+                      : 'offer_gift_fusion'),
+              nameOf(professions, 'professionName', card.professionId),
+              card.parents
+                  .map((p) => skillDisplayName(p, language: lang))
+                  .join(' + '),
+              card.clanIds
+                  .map((id) => data.faction(id)?.shortFor(lang) ?? id)
+                  .join(' × '),
+            ].join(' · ')),
+          ),
+      ],
+    );
+  }
+
+  /// The branches [clan] sponsors for [column] (a people or a class).
+  void _showBranches(
+      BuildContext context, WidgetRef ref, Faction clan, String column) {
+    final trees = ref.read(gameDbProvider(skillTreesSchema)).value ?? const {};
+    final lines = [
+      for (final id in clan.sponsors)
+        if (trees[id] case final Map<String, dynamic> record)
+          if (record['raceId'] == column || record['professionId'] == column)
+            '${record['branchName']} ($id)',
+    ];
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(clan.nameFor(ref.read(appLanguageProvider))),
+        content: Text(lines.join('\n')),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(tr(ref, 'close_button'))),
+        ],
+      ),
+    );
+  }
+}
 
 class _IntriguesTab extends ConsumerWidget {
   const _IntriguesTab({this.play = false});

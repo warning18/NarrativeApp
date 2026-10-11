@@ -80,6 +80,21 @@ String suitorGreeting(Suitor suitor, ClanData data, AppLanguage lang) {
   return patron.greetingFor(lang, suitor.greetingIndex);
 }
 
+/// The tag over a gift: its kind, or "Fusion" / "Ascension" for a skill
+/// that is one (v1.232).
+String _giftTagKey(OfferGift gift, Map<String, dynamic> skills) {
+  if (gift.kind == GiftKind.skill) {
+    final skill = skills[gift.id];
+    if (skill is Map<String, dynamic>) {
+      if (skill['fusionOf'] is List) return 'offer_gift_fusion';
+      if ((skill['ascendsSkillID']?.toString() ?? '').isNotEmpty) {
+        return 'offer_gift_ascension';
+      }
+    }
+  }
+  return 'offer_gift_${gift.kind.name}';
+}
+
 /// The gift's name in [lang].
 String giftName(
   OfferGift gift, {
@@ -518,7 +533,7 @@ class SuitorCard extends ConsumerWidget {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       _Tag(
-                        text: trFor(lang, 'offer_gift_${gift.kind.name}'),
+                        text: trFor(lang, _giftTagKey(gift, skills)),
                         color: color,
                       ),
                       Text(
@@ -661,7 +676,23 @@ class _GiftBody extends StatelessWidget {
         );
       case GiftKind.skill:
         final skill = skills[gift.id] as Map<String, dynamic>?;
-        return lines([skill?['description']?.toString() ?? '']);
+        final parents = [
+          for (final p in (skill?['fusionOf'] as List?) ?? const [])
+            skillDisplayName(p.toString(), language: lang),
+        ];
+        final base = skill?['ascendsSkillID']?.toString() ?? '';
+        final partner = tables.data.faction(gift.partnerId)?.shortFor(lang);
+        return lines([
+          if (parents.length == 2)
+            trFor(lang, 'offer_fusion_line')
+                .replaceAll('{a}', parents[0])
+                .replaceAll('{b}', parents[1])
+                .replaceAll('{clan}', partner ?? ''),
+          if (base.isNotEmpty)
+            trFor(lang, 'offer_ascension_line')
+                .replaceAll('{skill}', skillDisplayName(base, language: lang)),
+          skill?['description']?.toString() ?? '',
+        ]);
       case GiftKind.object:
         final item = items[gift.id] as Map<String, dynamic>?;
         final stats = [

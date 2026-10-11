@@ -10176,6 +10176,23 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Skill',
     AppLanguage.fr: 'Compétence',
   },
+  'offer_gift_fusion': {
+    AppLanguage.en: 'Fusion',
+    AppLanguage.fr: 'Fusion',
+  },
+  'offer_gift_ascension': {
+    AppLanguage.en: 'Ascension',
+    AppLanguage.fr: 'Ascension',
+  },
+  'offer_fusion_line': {
+    AppLanguage.en: 'Two clans, one skill: {a} and {b}, offered with {clan}.',
+    AppLanguage.fr:
+        'Deux clans, une compétence\u00a0: {a} et {b}, proposée avec {clan}.',
+  },
+  'offer_ascension_line': {
+    AppLanguage.en: 'Raises {skill} to its ascended form.',
+    AppLanguage.fr: 'Élève {skill} à sa forme supérieure.',
+  },
   'offer_gift_sign': {
     AppLanguage.en: 'Sign',
     AppLanguage.fr: 'Signe',
@@ -10661,6 +10678,30 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'host_fight_note': {
     AppLanguage.en: 'Your Host fights beside you.',
     AppLanguage.fr: 'Votre Ost combat à vos côtés.',
+  },
+  'clans_tab_affinity': {
+    AppLanguage.en: 'Affinities',
+    AppLanguage.fr: 'Affinités',
+  },
+  'clans_affinity_hint': {
+    AppLanguage.en:
+        'Which peoples and which classes each clan grows. A people’s cell is filled when the clan sponsors its heritage; a class’s cell counts the clan’s branches out of three. Read off factions.json (sponsors), so edit them there. Tap a cell for the branches.',
+    AppLanguage.fr:
+        'Quels peuples et quelles vocations chaque clan fait grandir. La case d’un peuple est pleine quand le clan parraine son héritage\u00a0; celle d’une vocation compte les branches du clan sur trois. Lu dans factions.json (parrainages), à modifier là. Touchez une case pour voir les branches.',
+  },
+  'clans_affinity_issues': {
+    AppLanguage.en: 'Inconsistencies',
+    AppLanguage.fr: 'Incohérences',
+  },
+  'clans_affinity_cards': {
+    AppLanguage.en: 'Fusions and ascensions',
+    AppLanguage.fr: 'Fusions et ascensions',
+  },
+  'clans_affinity_cards_hint': {
+    AppLanguage.en:
+        'A fusion needs both parent skills and Known standing with both clans; either clan offers it, and taking it raises both. An ascension raises a skill you know and needs Trusted standing with its clan.',
+    AppLanguage.fr:
+        'Une fusion demande les deux compétences d’origine et le palier « Estime » auprès des deux clans\u00a0; l’un ou l’autre la propose, et la prendre élève les deux. Une ascension élève une compétence que vous connaissez et demande le palier « Confiance » auprès de son clan.',
   },
   'clans_tab_throne': {AppLanguage.en: 'Throne', AppLanguage.fr: 'Trône'},
   'throne_edit_hint': {

@@ -8,6 +8,53 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.232.0+268]
+
+Each clan now has a home among the peoples and the classes, and two clans
+together, or one at Trusted, can put a stronger skill on the table.
+
+### Added
+- **Favorability matrix** in Edit Mode (Clans & Politics, new "Affinities"
+  tab): a row per clan, a column per people and per class. A people's cell is
+  filled when the clan sponsors its heritage; a class's cell counts the
+  clan's branches out of three; tap a cell for the branches. It is read off
+  `factions.json` (`sponsors`), so that file stays the one source, and it
+  lists any inconsistency (a clan with no people or no class, a people with
+  fewer than two clans, a class with fewer than three).
+- **Fusions** (`fusionOf`: two skills): with both parent skills known and
+  Known standing with *both* clans, either clan puts the fusion on the table
+  and the card shows both. Taking it raises the lead clan by 6 and the other
+  by 3.
+- **Ascensions** (`ascendsSkillID`): with the skill it raises known and
+  Trusted standing with the clan behind that skill, the clan offers its
+  stronger form. The base skill is kept.
+- **20 new skills**, in English and French, with their effect and icon (the
+  base skill's icon for now): ten fusions (two per class) and ten
+  ascensions (two per class).
+
+  | Class | Fusion (clans) | Ascension (clan) |
+  |---|---|---|
+  | Warrior | Bastion Charge (Compact × Dominion), Writ Banner (Vigil × Dominion) | Unbroken Stance (Compact), Reaping Whirl (Dominion) |
+  | Mage | Scalding Tempest (Dominion × Crows), Ember Aegis (Dominion × Penitents) | Pyre Heart (Dominion), Mending Tide (Penitents) |
+  | Rogue | Viper Kiss (Crows × Mire), Borrowed Time (Crows × Penitents) | Deadeye Thrust (Crows), Second Skin (Penitents) |
+  | Cleric | Sentinel Verdict (Dominion × Vigil), Absolution (Dominion × Penitents) | Hallowed Sanctuary (Penitents), Unyielding Vigil (Vigil) |
+  | Ranger | Snared Shot (Crows × Compact), Pack Ambush (Mire × Compact) | Deadeye Volley (Crows), Call of the Wilds (Mire) |
+
+### Changed
+- **Peoples and clans:** human → Dominion and Penitents; elf → Mire and
+  Penitents; dwarf → Compact and Dominion; orc → Vigil and Mire; voidkin →
+  Vigil and Crows. Every clan now favors a people, and every people has a
+  second patron.
+- **The home seat** reaches one tier deeper than standing allows (the fourth
+  skill of a branch still waits for Sworn), and a clan whose branches are
+  grown but that has a fusion or an ascension left still takes the seat, so a
+  finished tree keeps growing.
+- A companion never learns a fusion or an ascension with points: only the
+  clans offer them.
+- In 300 simulated runs (same seed), skills learned per run go from 7.0 to
+  9.9, with level (10.9) and win rate (39%) unchanged. The simulator takes the
+  rarest gift, which favors these epic cards, so this is the upper end.
+
 ## [1.231.0+267]
 
 ### Changed

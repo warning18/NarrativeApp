@@ -675,6 +675,16 @@ final DbSchema skillsSchema = DbSchema(
       defaultValue: false,
     ),
     FieldSchema(
+      key: 'fusionOf',
+      label: 'Fusion Of (two skills known; offered by the clans behind them)',
+      type: FieldType.stringList,
+    ),
+    FieldSchema(
+      key: 'ascendsSkillID',
+      label: 'Ascends Skill (the upgrade a clan offers at Trusted standing)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
       key: 'inflictsStatus',
       label: 'Inflicts Status Effect (on hit)',
       type: FieldType.enumeration,
