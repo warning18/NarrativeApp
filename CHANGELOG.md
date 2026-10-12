@@ -8,6 +8,12 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.248.0+284]
+
+### Changed
+- **The throne room is restaged as a dark stage.** The Lantern Throne is now a gilded throne with a red velvet back and seat, in the middle of a dark hall lit from above and by a pool of light on the floor, its two braziers burning. Each banner you have earned stands on its own tall gilt standard (a pole, a foot and a finial) instead of hanging on a wall: one each side of the throne, the rest in pairs down the long carpet.
+- **The banners blow in the wind.** A wind from the left rises and falls in gusts: it pushes the cloth to the right more the lower it hangs, a ripple runs down it and the hem flutters, while the rod at the top holds still; a few specks of dust drift across the hall. The cycle loops without a seam, and with reduced motion everything stands still.
+
 ## [1.247.0+283]
 
 ### Added

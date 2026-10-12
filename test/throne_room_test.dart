@@ -140,8 +140,6 @@ void main() {
     expect(find.text('7 banners earned'), findsOneWidget);
 
     // A tap names a banner; a second tap lets it go.
-    await tester
-        .ensureVisible(find.byKey(const Key('throne_banner_clan_vigil')));
     await tester.tap(find.byKey(const Key('throne_banner_clan_vigil')));
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.textContaining(' · '), findsWidgets);

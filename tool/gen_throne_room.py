@@ -2,7 +2,8 @@
 """Draws the Lantern Throne room of the Clans screen (v1.247).
 
 Writes to assets/visuals/throne/: the throne on its dais (throne.png, 128x144),
-a brazier (brazier.png, 24x40) and three tiles (wall, floor, carpet), and to
+a brazier (brazier.png, 24x40), the carpet tile and the parts of a standard
+(pole tile, foot and finial) the banners stand on, and to
 assets/visuals/pixel_fx/ the brazier's flame (throne_flame.png, six 24x24
 frames, in fire colours). The app shows the scenery at x2.
 Run from the repo root:  python3 tool/gen_throne_room.py
@@ -44,72 +45,104 @@ def trapezoid(d, top_y, bottom_y, top_x0, top_x1, bottom_x0, bottom_x1, fill, ed
 
 
 def throne():
+    """A gilded throne with a red velvet back and seat, on a low dais."""
     im, d = canvas(128, 144)
     # --- the dais: three steps, a lit top and a dark front on each
     steps = [(104, 115, 22, 105), (116, 127, 14, 113), (128, 143, 6, 121)]
     for y0, y1, x0, x1 in steps:
         box(d, x0, y0, x1, y1, S1)
-        d.rectangle([x0 + 1, y0 + 1, x1 - 1, y0 + 3], fill=S3)         # the lit tread
+        d.rectangle([x0 + 1, y0 + 1, x1 - 1, y0 + 3], fill=S3)
         d.rectangle([x0 + 1, y0 + 4, x1 - 1, y0 + 5], fill=S2)
-        d.rectangle([x0 + 1, y1 - 2, x1 - 1, y1 - 1], fill=S0)         # shadow under the edge
-        for x in range(x0 + 6, x1 - 4, 14):                            # joints in the stone
+        d.rectangle([x0 + 1, y1 - 2, x1 - 1, y1 - 1], fill=S0)
+        for x in range(x0 + 6, x1 - 4, 14):
             d.line([(x, y0 + 6), (x, y1 - 3)], fill=S0)
-    # --- the carpet runs down the steps
     for y0, y1, x0, x1 in [(104, 115, 52, 75), (116, 127, 49, 78), (128, 143, 46, 81)]:
         d.rectangle([x0, y0 + 1, x1, y1], fill=GOLD_D)
         d.rectangle([x0 + 2, y0 + 1, x1 - 2, y1], fill=RED)
         d.rectangle([x0 + 2, y0 + 1, x0 + 3, y1], fill=RED_L)
         d.rectangle([x1 - 3, y0 + 1, x1 - 2, y1], fill=RED_D)
-    # --- the throne: wings, back, arch
-    box(d, 36, 50, 91, 103, S1)
-    box(d, 44, 28, 83, 103, S2)
-    d.polygon([(43, 29), (64, 3), (84, 29)], fill=OUT)
-    d.polygon([(45, 29), (64, 6), (82, 29)], fill=S2)
-    # the lit left edge and the dark right edge of the back
-    d.rectangle([45, 29, 47, 84], fill=S3)
-    d.rectangle([80, 29, 82, 84], fill=S1)
-    # an inner panel with gold trim and thin slits cut in it
-    box(d, 50, 36, 77, 84, S0, GOLD_D)
-    d.rectangle([51, 37, 76, 38], fill=GOLD)
-    d.polygon([(50, 36), (64, 17), (77, 36)], fill=GOLD_D)
-    d.polygon([(52, 36), (64, 20), (75, 36)], fill=S0)
-    for x in (56, 64, 71):
-        d.rectangle([x, 56, x + 1, 82], fill=S1)
-        d.point((x, 56), fill=CREAM)
-    # the crest: a gold ring round a lantern
-    d.ellipse([54, 17, 74, 37], fill=OUT)
-    d.ellipse([55, 18, 73, 36], fill=GOLD)
-    d.ellipse([57, 20, 71, 34], fill=GOLD_D)
-    d.ellipse([58, 21, 70, 33], fill=S0)
-    d.rectangle([62, 24, 66, 31], fill=CREAM)                          # the lantern
-    d.rectangle([63, 26, 65, 29], fill=GOLD_L)
-    d.rectangle([61, 23, 67, 23], fill=GOLD)
-    d.rectangle([62, 32, 66, 32], fill=GOLD)
-    d.rectangle([63, 21, 65, 22], fill=GOLD)                           # its ring
-    # a bead on the apex and one on each wing
-    for cx, cy in [(64, 3), (38, 50), (89, 50)]:
+    # --- the throne's back: a gilded frame round a tufted red panel
+    d.polygon([(41, 36), (46, 22), (56, 14), (64, 6), (72, 14), (82, 22), (87, 36), (87, 96), (41, 96)], fill=OUT)
+    d.polygon([(43, 36), (47, 24), (57, 16), (64, 9), (71, 16), (81, 24), (85, 36), (85, 94), (43, 94)], fill=GOLD)
+    d.rectangle([43, 24, 45, 94], fill=GOLD_L)                          # the lit side of the frame
+    d.rectangle([83, 30, 85, 94], fill=GOLD_D)
+    d.polygon([(49, 38), (52, 28), (60, 21), (64, 17), (68, 21), (76, 28), (79, 38), (79, 90), (49, 90)], fill=OUT)
+    d.polygon([(50, 38), (53, 29), (60, 22), (64, 19), (68, 22), (75, 29), (78, 38), (78, 89), (50, 89)], fill=RED)
+    d.rectangle([50, 38, 52, 89], fill=RED_L)
+    d.rectangle([76, 38, 78, 89], fill=RED_D)
+    # tufting: a lattice of gold buttons
+    for yy in range(34, 88, 9):
+        for k, xx in enumerate(range(57, 78, 10)):
+            ox = 5 if (yy // 9) % 2 else 0
+            x = xx - ox
+            if 52 <= x <= 76:
+                d.point((x, yy), fill=GOLD_L)
+                d.point((x + 1, yy + 1), fill=RED_D)
+    # the crest: a gilded shell and a bead on the apex
+    d.ellipse([57, 9, 71, 23], fill=OUT)
+    d.ellipse([58, 10, 70, 22], fill=GOLD)
+    d.ellipse([60, 12, 68, 20], fill=GOLD_D)
+    d.point((63, 13), fill=GOLD_L)
+    d.line([(64, 11), (64, 21)], fill=GOLD_L)
+    for cx, cy in [(64, 5), (44, 36), (84, 36)]:
         d.ellipse([cx - 3, cy - 3, cx + 3, cy + 3], fill=OUT)
         d.ellipse([cx - 2, cy - 2, cx + 2, cy + 2], fill=GOLD)
         d.point((cx - 1, cy - 1), fill=GOLD_L)
-    # armrests
-    for x0 in (34, 85):
-        box(d, x0, 70, x0 + 9, 98, S1)
-        d.rectangle([x0 + 1, 71, x0 + 8, 73], fill=S3)
-        d.ellipse([x0 + 1, 64, x0 + 8, 72], fill=OUT)
-        d.ellipse([x0 + 2, 65, x0 + 7, 71], fill=GOLD)
-        d.point((x0 + 3, 66), fill=GOLD_L)
-    # the seat: a deep red cushion on a stone base
-    box(d, 40, 92, 87, 103, S1)
-    d.rectangle([41, 93, 86, 94], fill=S3)
-    box(d, 46, 80, 81, 93, RED, OUT)
-    d.rectangle([47, 81, 80, 83], fill=RED_L)
-    d.rectangle([47, 90, 80, 92], fill=RED_D)
-    for x in range(52, 78, 8):
-        d.point((x, 86), fill=GOLD)
-    # the throne's feet on the top step
-    box(d, 38, 100, 49, 104, S0)
-    box(d, 78, 100, 89, 104, S0)
+    # --- armrests: gilded scrolls with red pads
+    for x0, sign in ((34, -1), (85, 1)):
+        d.rectangle([x0, 66, x0 + 9, 100], fill=OUT)
+        d.rectangle([x0 + 1, 67, x0 + 8, 99], fill=GOLD)
+        d.rectangle([x0 + 1, 67, x0 + 2, 99], fill=GOLD_L)
+        d.rectangle([x0 + 7, 67, x0 + 8, 99], fill=GOLD_D)
+        d.rectangle([x0 - 1, 60, x0 + 10, 68], fill=OUT)
+        d.rectangle([x0, 61, x0 + 9, 67], fill=RED)
+        d.rectangle([x0, 61, x0 + 9, 62], fill=RED_L)
+        fx = x0 + 1 if sign < 0 else x0 + 3
+        d.ellipse([fx - 1, 53, fx + 6, 60], fill=OUT)
+        d.ellipse([fx, 54, fx + 5, 59], fill=GOLD)
+        d.point((fx + 1, 55), fill=GOLD_L)
+    # --- the seat: a deep red cushion in a gilded base, on carved legs
+    d.rectangle([38, 88, 90, 104], fill=OUT)
+    d.rectangle([39, 89, 89, 103], fill=GOLD)
+    d.rectangle([39, 89, 89, 90], fill=GOLD_L)
+    d.rectangle([39, 101, 89, 103], fill=GOLD_D)
+    d.rectangle([44, 78, 84, 90], fill=OUT)
+    d.rectangle([45, 79, 83, 89], fill=RED)
+    d.rectangle([45, 79, 83, 81], fill=RED_L)
+    d.rectangle([45, 87, 83, 89], fill=RED_D)
+    for x in range(51, 80, 8):
+        d.point((x, 84), fill=GOLD)
+    for x0 in (40, 80):
+        d.rectangle([x0, 103, x0 + 8, 108], fill=OUT)
+        d.rectangle([x0 + 1, 103, x0 + 7, 107], fill=GOLD_D)
     return im
+
+
+def standard_parts():
+    """The pole, its foot and its finial: what the banners stand on."""
+    pole, d = canvas(6, 8)
+    d.rectangle([0, 0, 5, 7], fill=OUT)
+    d.rectangle([1, 0, 4, 7], fill=GOLD)
+    d.rectangle([1, 0, 1, 7], fill=GOLD_L)
+    d.rectangle([4, 0, 4, 7], fill=GOLD_D)
+    d.point((2, 3), fill=GOLD_L)
+    foot, d = canvas(30, 12)
+    d.ellipse([0, 4, 29, 11], fill=OUT)
+    d.ellipse([1, 4, 28, 10], fill=GOLD_D)
+    d.ellipse([3, 4, 26, 8], fill=GOLD)
+    d.ellipse([6, 4, 22, 6], fill=GOLD_L)
+    d.rectangle([11, 0, 18, 7], fill=OUT)
+    d.rectangle([12, 0, 17, 7], fill=GOLD)
+    d.rectangle([12, 0, 13, 7], fill=GOLD_L)
+    d.rectangle([16, 0, 17, 7], fill=GOLD_D)
+    fin, d = canvas(12, 16)
+    d.ellipse([1, 5, 10, 14], fill=OUT)
+    d.ellipse([2, 6, 9, 13], fill=GOLD)
+    d.ellipse([3, 7, 6, 10], fill=GOLD_L)
+    d.polygon([(6, 0), (9, 6), (3, 6)], fill=OUT)
+    d.polygon([(6, 2), (8, 6), (4, 6)], fill=GOLD)
+    d.rectangle([5, 14, 6, 15], fill=OUT)
+    return pole, foot, fin
 
 
 def brazier():
@@ -151,30 +184,6 @@ def flame_frames():
     return strip
 
 
-def wall_tile():
-    im, d = canvas(16, 16)
-    d.rectangle([0, 0, 15, 15], fill=S0)
-    for row, (y0, off) in enumerate([(0, 0), (8, 8)]):
-        for x0 in (-8 + off, 0 + off, 8 + off):
-            x0 = x0 % 16
-            d.rectangle([x0 + 1, y0 + 1, min(15, x0 + 6), y0 + 6], fill=S1)
-            d.line([(x0 + 1, y0 + 1), (min(15, x0 + 6), y0 + 1)], fill=S2)
-    d.point((3, 4), fill=S2)
-    d.point((12, 12), fill=S2)
-    return im
-
-
-def floor_tile():
-    im, d = canvas(16, 16)
-    d.rectangle([0, 0, 15, 15], fill=S0)
-    d.rectangle([1, 1, 14, 14], fill=S1)
-    d.line([(1, 1), (14, 1)], fill=S2)
-    d.line([(1, 1), (1, 14)], fill=S2)
-    d.point((6, 7), fill=S2)
-    d.point((10, 10), fill=S0)
-    return im
-
-
 def carpet_tile():
     """36 wide: the carpet as it runs over the dais's lowest step."""
     im, d = canvas(36, 16)
@@ -196,8 +205,10 @@ def main():
     os.makedirs(root, exist_ok=True)
     throne().save(os.path.join(root, 'throne.png'))
     brazier().save(os.path.join(root, 'brazier.png'))
-    wall_tile().save(os.path.join(root, 'wall_tile.png'))
-    floor_tile().save(os.path.join(root, 'floor_tile.png'))
+    pole, foot, fin = standard_parts()
+    pole.save(os.path.join(root, 'pole_tile.png'))
+    foot.save(os.path.join(root, 'standard_foot.png'))
+    fin.save(os.path.join(root, 'finial.png'))
     carpet_tile().save(os.path.join(root, 'carpet_tile.png'))
     flame_frames().save(os.path.join('assets', 'visuals', 'pixel_fx', 'throne_flame.png'))
     print('throne room written')

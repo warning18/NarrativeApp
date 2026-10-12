@@ -1,6 +1,7 @@
-// The throne room (v1.247): the Lantern Throne on its dais in pixel art, its
-// braziers flickering, and every banner the player has earned hanging along
-// the walls and swaying. Drawn by tool/gen_throne_room.py (assets/visuals/
+// The throne room (v1.247, restaged v1.248): the Lantern Throne on its dais
+// in pixel art, centred on a dark stage with its braziers flickering, and
+// every banner the player has earned on a tall standard beside it, blowing in
+// the wind. Drawn by tool/gen_throne_room.py (assets/visuals/
 // throne/, and the flame strip in pixel_fx/); the banners are the ones of
 // pixel_banner.dart. A clan's banner hangs once it is the player's friend
 // (the Open Hand's once it is raised), then the Shroud's recovered pieces.
@@ -57,9 +58,6 @@ const double throneSceneWidth = 384;
 
 /// Height of the throne's own part of the hall.
 const double _throneSectionHeight = 312;
-
-/// Room each banner has: its height and the space between two.
-const double _bannerRow = 144;
 
 class ThroneRoomTab extends ConsumerStatefulWidget {
   const ThroneRoomTab({super.key});
@@ -170,8 +168,9 @@ class _ThroneRoomTabState extends ConsumerState<ThroneRoomTab> {
   }
 }
 
-/// The hall itself: the throne's section with up to four banners beside it,
-/// then, for the rest, a long carpet with a banner each side of every row.
+/// The hall itself: a dark stage with the throne in the middle, a standard
+/// on each side of it (a banner on a tall gilt pole, blowing in the wind),
+/// then, for the rest, a long carpet with a standard each side of every row.
 class ThroneRoom extends StatefulWidget {
   const ThroneRoom({
     super.key,
@@ -188,11 +187,27 @@ class ThroneRoom extends StatefulWidget {
   State<ThroneRoom> createState() => _ThroneRoomState();
 }
 
+/// A standard's own size: room for the cloth to blow, the banner, a pole
+/// below it and a foot.
+const double _standardWidth = 88;
+const double _standardTop = 14;
+const double _standardFoot = 8;
+
+/// The pole under the banner, by the throne and in the rows down the hall.
+const double _poleByThrone = 128;
+const double _poleInRows = 64;
+
+/// How much a row of the long hall takes.
+const double _hallRow = _standardTop + 128 + _poleInRows + _standardFoot + 8;
+
 class _ThroneRoomState extends State<ThroneRoom>
     with SingleTickerProviderStateMixin {
   late final AnimationController _clock =
-      AnimationController(vsync: this, duration: const Duration(seconds: 6));
+      AnimationController(vsync: this, duration: _windPeriod);
   bool _still = false;
+
+  /// One wind cycle: everything that moves loops seamlessly over it.
+  static const Duration _windPeriod = Duration(seconds: 6);
 
   @override
   void initState() {
@@ -228,59 +243,104 @@ class _ThroneRoomState extends State<ThroneRoom>
     super.dispose();
   }
 
-  Widget _banner(int index) {
+  /// Banner [index] on its standard, [pole] pixels of pole under the cloth.
+  Widget _standard(int index, double pole) {
     final banner = widget.banners[index];
-    return GestureDetector(
-      key: Key('throne_banner_${banner.id}'),
-      behavior: HitTestBehavior.opaque,
-      onTap: () => widget.onPick?.call(banner),
-      child: Semantics(
-        label: '${banner.name}, ${banner.caption}',
-        button: true,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            boxShadow: widget.pickedId == banner.id
-                ? [
-                    BoxShadow(
-                        color: const Color(0xFFF2C14E).withValues(alpha: 0.55),
-                        blurRadius: 14),
-                  ]
-                : null,
-          ),
-          child: CustomPaint(
-            size: const Size(64, 128),
-            painter: _SwayPainter(
-              id: banner.id,
-              clock: _clock,
-              phase: index * 1.7,
-              still: _still,
+    final height = _standardTop + 128 + pole + _standardFoot;
+    return SizedBox(
+      width: _standardWidth,
+      height: height,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // The pole, from the rod to the floor, behind the cloth.
+          Positioned(
+            left: (_standardWidth - 6) / 2,
+            width: 6,
+            top: _standardTop + 4,
+            bottom: 6,
+            child: const DecoratedBox(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/visuals/throne/pole_tile.png'),
+                  repeat: ImageRepeat.repeatY,
+                  filterQuality: FilterQuality.none,
+                  alignment: Alignment.topCenter,
+                ),
+              ),
             ),
           ),
-        ),
+          Positioned(
+            left: (_standardWidth - 30) / 2,
+            bottom: 0,
+            width: 30,
+            height: 12,
+            child: Image.asset('assets/visuals/throne/standard_foot.png',
+                fit: BoxFit.fill,
+                filterQuality: FilterQuality.none,
+                isAntiAlias: false),
+          ),
+          Positioned(
+            left: (_standardWidth - 12) / 2,
+            top: 0,
+            width: 12,
+            height: 16,
+            child: Image.asset('assets/visuals/throne/finial.png',
+                fit: BoxFit.fill,
+                filterQuality: FilterQuality.none,
+                isAntiAlias: false),
+          ),
+          Positioned(
+            left: 0,
+            top: _standardTop,
+            width: _standardWidth,
+            height: 128,
+            child: GestureDetector(
+              key: Key('throne_banner_${banner.id}'),
+              behavior: HitTestBehavior.opaque,
+              onTap: () => widget.onPick?.call(banner),
+              child: Semantics(
+                label: '${banner.name}, ${banner.caption}',
+                button: true,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    boxShadow: widget.pickedId == banner.id
+                        ? [
+                            BoxShadow(
+                                color: const Color(0xFFF2C14E)
+                                    .withValues(alpha: 0.5),
+                                blurRadius: 16),
+                          ]
+                        : null,
+                  ),
+                  child: CustomPaint(
+                    size: const Size(_standardWidth, 128),
+                    painter: _WindPainter(
+                      id: banner.id,
+                      clock: _clock,
+                      phase: index * 1.7,
+                      still: _still,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _tiled(String asset, {ImageRepeat repeat = ImageRepeat.repeat}) =>
-      DecoratedBox(
-        decoration: BoxDecoration(
-          color: const Color(0xFF18121C),
-          image: DecorationImage(
-            image: AssetImage('assets/visuals/throne/$asset.png'),
-            repeat: repeat,
-            scale: 0.5,
-            filterQuality: FilterQuality.none,
-            alignment: Alignment.topCenter,
-          ),
-        ),
-      );
-
   @override
   Widget build(BuildContext context) {
     final n = widget.banners.length;
-    final beside = math.min(n, 4);
+    final beside = math.min(n, 2);
     final rows = ((n - beside) / 2).ceil();
-    final hallHeight = _throneSectionHeight + rows * _bannerRow;
+    final hallHeight = _throneSectionHeight + rows * _hallRow;
+    const poleHeightByThrone =
+        _standardTop + 128 + _poleByThrone + _standardFoot;
+    // The standards by the throne stand on the dais's floor line.
+    const byThroneTop = 300 - poleHeightByThrone;
     return SizedBox(
       key: const Key('throne_hall'),
       width: throneSceneWidth,
@@ -288,30 +348,17 @@ class _ThroneRoomState extends State<ThroneRoom>
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
-          // The long hall: a floor with the carpet down its middle.
-          if (rows > 0)
-            Positioned(
-              left: 0,
-              right: 0,
-              top: _throneSectionHeight,
-              bottom: 0,
-              child: _tiled('floor_tile'),
+          // A dark stage, lit from above and by a pool of light on the floor.
+          const Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFF1E212B), Color(0xFF14151C)],
+                ),
+              ),
             ),
-          if (rows > 0)
-            Positioned(
-              left: (throneSceneWidth - 72) / 2,
-              width: 72,
-              top: _throneSectionHeight,
-              bottom: 0,
-              child: _tiled('carpet_tile', repeat: ImageRepeat.repeatY),
-            ),
-          // The throne's wall, glowing a little with the lantern.
-          Positioned(
-            left: 0,
-            right: 0,
-            top: 0,
-            height: _throneSectionHeight,
-            child: _tiled('wall_tile'),
           ),
           Positioned(
             left: 0,
@@ -327,11 +374,12 @@ class _ThroneRoomState extends State<ThroneRoom>
                   return DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: RadialGradient(
-                        center: const Alignment(0, -0.35),
-                        radius: 0.75,
+                        center: const Alignment(0, -0.2),
+                        radius: 0.85,
                         colors: [
-                          const Color(0xFFF2C14E)
-                              .withValues(alpha: 0.14 + 0.08 * pulse),
+                          Color.lerp(const Color(0xFF8C93A8),
+                                  const Color(0xFFC9A66A), pulse)!
+                              .withValues(alpha: 0.18),
                           Colors.transparent,
                         ],
                       ),
@@ -341,6 +389,43 @@ class _ThroneRoomState extends State<ThroneRoom>
               ),
             ),
           ),
+          Positioned(
+            left: 8,
+            right: 8,
+            top: 236,
+            height: 150,
+            child: IgnorePointer(
+              child: Transform.scale(
+                scaleY: 0.4,
+                child: const DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      colors: [Color(0x55E8A8A0), Color(0x00E8A8A0)],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // The carpet down the middle of the long hall.
+          if (rows > 0)
+            Positioned(
+              left: (throneSceneWidth - 72) / 2,
+              width: 72,
+              top: _throneSectionHeight,
+              bottom: 0,
+              child: const DecoratedBox(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/visuals/throne/carpet_tile.png'),
+                    repeat: ImageRepeat.repeatY,
+                    scale: 0.5,
+                    filterQuality: FilterQuality.none,
+                    alignment: Alignment.topCenter,
+                  ),
+                ),
+              ),
+            ),
           Positioned(
             left: 64,
             top: 24,
@@ -385,23 +470,26 @@ class _ThroneRoomState extends State<ThroneRoom>
               ),
             ),
           ],
-          // Up to four banners beside the throne: two a side...
+          // A standard each side of the throne...
           for (var i = 0; i < beside; i++)
             Positioned(
-              left: i.isEven ? 0 : throneSceneWidth - 64,
-              top: 24 + (i ~/ 2) * _bannerRow,
-              width: 64,
-              height: 128,
-              child: _banner(i),
+              left: i.isEven ? 0 : throneSceneWidth - _standardWidth,
+              top: byThroneTop,
+              child: _standard(i, _poleByThrone),
             ),
           // ...and the rest down the long hall, a pair to a row.
           for (var i = beside; i < n; i++)
             Positioned(
-              left: i.isEven ? 8 : throneSceneWidth - 72,
-              top: _throneSectionHeight + ((i - beside) ~/ 2) * _bannerRow + 8,
-              width: 64,
-              height: 128,
-              child: _banner(i),
+              left: i.isEven ? 0 : throneSceneWidth - _standardWidth,
+              top: _throneSectionHeight + ((i - beside) ~/ 2) * _hallRow + 8,
+              child: _standard(i, _poleInRows),
+            ),
+          // Wind-blown specks drifting across it all.
+          if (!_still)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: CustomPaint(painter: _BreezePainter(_clock)),
+              ),
             ),
         ],
       ),
@@ -409,10 +497,13 @@ class _ThroneRoomState extends State<ThroneRoom>
   }
 }
 
-/// A banner's sprite, drawn in strips four pixels high that swing a little
-/// further the lower they hang, the pole at the top held still.
-class _SwayPainter extends CustomPainter {
-  _SwayPainter({
+/// A banner's sprite in the wind: drawn in strips four pixels high. The
+/// wind (always from the left, in gusts) pushes the cloth to the right more
+/// the lower it hangs, a ripple runs down it, and the hem flutters; the rod
+/// at the top holds still. Every cycle of the clock is the same, so it loops
+/// without a seam.
+class _WindPainter extends CustomPainter {
+  _WindPainter({
     required this.id,
     required this.clock,
     required this.phase,
@@ -424,8 +515,25 @@ class _SwayPainter extends CustomPainter {
   final double phase;
   final bool still;
 
-  static const int _strip = 4;
-  static const int _pole = 14;
+  static const int _strip = 2;
+  static const int _rod = 12;
+
+  /// The cloth's offset (in pixels) at row [y] of a banner [h] high, at
+  /// cycle position [u] (0 to 1).
+  static double offsetAt(double u, double phase, int y, int h) {
+    final w = 2 * math.pi * u;
+    final hang = ((y - _rod) / (h - _rod)).clamp(0.0, 1.0);
+    // Gusts: the wind rises and falls twice a cycle.
+    final gust = 0.62 + 0.38 * math.sin(2 * w + phase);
+    final push = 7.0 * gust * math.pow(hang, 1.3);
+    // A ripple runs down the cloth, six times a cycle.
+    final ripple =
+        3.4 * gust * math.pow(hang, 1.4) * math.sin(6 * w - y * 0.085 + phase);
+    // The hem flutters faster.
+    final flutter =
+        1.8 * gust * math.pow(hang, 3) * math.sin(11 * w - y * 0.2 + phase * 2);
+    return push + ripple + flutter;
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -435,29 +543,61 @@ class _SwayPainter extends CustomPainter {
       ..filterQuality = FilterQuality.none
       ..isAntiAlias = false;
     final w = image.width.toDouble();
-    final sx = size.width / image.width;
-    final sy = size.height / image.height;
+    // The banner sits in the middle of the room the wind needs.
+    final left = (size.width - w) / 2;
+    final u = still ? 0.0 : clock.value;
+    // The cloth rides up a little as the wind lifts it.
+    final gust = still ? 0.0 : 0.62 + 0.38 * math.sin(4 * math.pi * u + phase);
+    final lift = 0.05 * gust;
     for (var y = 0; y < image.height; y += _strip) {
-      final hang = ((y - _pole) / (image.height - _pole)).clamp(0.0, 1.0);
-      final swing = still
-          ? 0
-          : (math.sin(clock.value * 2 * math.pi + phase + y * 0.07) *
-                  3.2 *
-                  hang *
-                  hang)
-              .round();
+      final dx = still ? 0.0 : offsetAt(u, phase, y, image.height);
+      final top = (y * (1 - lift * (y / image.height))).roundToDouble();
+      final bottom = ((y + _strip) * (1 - lift * ((y + _strip) / image.height)))
+          .roundToDouble();
       canvas.drawImageRect(
         image,
         Rect.fromLTWH(0, y.toDouble(), w, _strip.toDouble()),
-        Rect.fromLTWH(swing * sx, y * sy, size.width, _strip * sy),
+        Rect.fromLTWH(
+            left + dx.roundToDouble(), top, w, math.max(1, bottom - top)),
         paint,
       );
     }
   }
 
   @override
-  bool shouldRepaint(_SwayPainter old) =>
+  bool shouldRepaint(_WindPainter old) =>
       old.id != id || old.phase != phase || old.still != still;
+}
+
+/// Specks of dust and light blown across the hall, left to right.
+class _BreezePainter extends CustomPainter {
+  _BreezePainter(this.clock) : super(repaint: clock);
+
+  final Animation<double> clock;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final u = clock.value;
+    final paint = Paint()
+      ..isAntiAlias = false
+      ..strokeWidth = 1;
+    for (var i = 0; i < 18; i++) {
+      // Each speck's own row, speed (a whole number of crossings a cycle)
+      // and length, spread out by a fixed hash of its number.
+      final h = (i * 0.6180339887) % 1.0;
+      final y = 20 + (i * 37 % 29) / 29 * (size.height - 40);
+      final crossings = 1 + i % 3;
+      final x = ((h + u * crossings) % 1.0) * (size.width + 40) - 20;
+      final len = 5.0 + (i % 4) * 3;
+      final wobble = math.sin(2 * math.pi * (u * 3 + h)) * 2;
+      paint.color = Colors.white.withValues(alpha: 0.10 + 0.02 * (i % 4));
+      canvas.drawLine(
+          Offset(x, y + wobble), Offset(x + len, y + wobble * 0.5), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_BreezePainter old) => false;
 }
 
 /// The banner sprites, loaded once and kept.
