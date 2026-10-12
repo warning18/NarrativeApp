@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.255.0+291]
+
+A text pass over the story: the Shroud's pieces counted right, one name for Saltmouth in French, steadier French typography, and four shopkeepers with something to say.
+
+### Fixed
+- **The Shroud's pieces are counted the same way everywhere.** The chapter 4 hint and the Drowned Cloister scene (`5010`) called the moon-shard the Shroud's second piece; it is the third, after the heirloom and the Warden's standard. The Lantern Docks' lead, which promised "the second piece" in chapter 2, now speaks of the next piece (English and French, in the zone text and the lead's label).
+- **Saltmouth is Bouche-de-Sel in French everywhere.** Three strings (a scene callback in the Ashen Quarter, the Saltmouth quest giver's pitch and a scaffolders' news item) still said "Saltmouth".
+- **French punctuation.** Twenty-four story passages had a plain space before `?`, `!`, `:`, `;` or `»` (or after `«`) and now carry a no-break space like the rest. Every French apostrophe in the story files is the curly one (`’`), as is "Wrack’s End" in the people list.
+
+### Added
+- **Four more shopkeepers have a line in the People list.** The cellar-boy (remembers how the party left the Blind Beggar), Old Pell (the camp) and Hesta Brann and Needle (read the party's standing with the Compact and the Crows, as the other keepers do), in both languages.
+
+### Docs
+- `docs/chapter-flow-roadmap.md` and `docs/quest-progress-tracking.md` describe the game as it is now (chapters 7 and 8, the order of the pieces, how quest objectives are tracked), and `docs/narrative-audit.md` holds the audit this pass came from.
+
 ## [1.254.0+290]
 
 The party walks the world's roads, stop by stop.

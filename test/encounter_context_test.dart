@@ -293,7 +293,7 @@ void main() {
     test('Kelda\'s gate sets up the boarding party before its fight', () {
       final node = story['2015_kelda'] as Map<String, dynamic>;
       expect(node['description'], contains('boarding party'));
-      expect(node['description_fr'], contains("l'équipe d'abordage"));
+      expect(node['description_fr'], contains('l’équipe d’abordage'));
       final choice = (node['choices'] as List).single as Map<String, dynamic>;
       expect(choice['triggerEnemyId'], 'inquisition_soldier');
       expect(choice['text'], 'Hold the gate beside her');

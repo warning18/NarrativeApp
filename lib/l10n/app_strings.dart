@@ -3977,8 +3977,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Retourner en ville'
   },
   'zone_flag_banner_second_piece_lead': {
-    AppLanguage.en: "A lead on the Shroud's second piece",
-    AppLanguage.fr: "Une piste vers le deuxième fragment du Linceul",
+    AppLanguage.en: "A lead on the Shroud's next piece",
+    AppLanguage.fr: "Une piste vers le prochain fragment du Linceul",
   },
   'zone_flag_hull_patched': {
     AppLanguage.en: "The Rusty Eel's hull, patched",

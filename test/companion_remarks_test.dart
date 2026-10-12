@@ -90,8 +90,9 @@ void main() {
         for (final kind in RemarkKind.values) {
           for (final line in book.linesFor(id, kind, french: true)) {
             // « s'est tu » is the Void falling silent, not « tu ».
-            expect(tu.hasMatch(line.replaceAll("s'est tu", '')), isFalse,
-                reason: line);
+            final spoken =
+                line.replaceAll("s'est tu", '').replaceAll('s’est tu', '');
+            expect(tu.hasMatch(spoken), isFalse, reason: line);
           }
         }
       }
