@@ -2,6 +2,10 @@
 
 First audit by the Narrative session, taken on `origin/main` at v1.254.0
 (76c8773). Nothing in the game was changed; this file is the only output.
+**Status after this PR:** P1-3, P1-4, P2-1, P2-2 and the four silent
+shopkeepers of P2-3 are fixed (the rest of P2-3 is a proposal, section 4C).
+P1-1 and P1-2, P2-4 and the P3 items wait for a decision.
+
 Every id below can be looked up as written: a story node in
 `assets/Cleaned_Narrative_DAG.json`, a quest in `quests.json`, and so on.
 
@@ -168,8 +172,9 @@ English and are consistent.)
   `keeper_blind_beggar_stall`, `keeper_shieldwrights_hall`,
   `keeper_sharpweave_den`, `keeper_wayfarer_caravan` (the last also has an
   empty `placeId`).
-- Thirteen `keeper_*` NPCs have empty `metNodes` and `metFlags`; I believe
-  the shop screen unlocks them (not verified with Core).
+- Thirteen `keeper_*` NPCs have empty `metNodes` and `metFlags`; that is
+  fine: `npcDiscovered` (`lib/data/quest_tracking.dart`) lists a keeper once
+  their shop is found.
 - Only 3 NPCs use `dialogueLines` (`lysa`, `old_harker`, `sister_ines`);
   the other 49 speak only through flag-dependent `states`. Only 10 of the
   385 story nodes have a speaker other than the Narrator. The people are
@@ -250,15 +255,16 @@ reason to replay rather than a reset. *Needs:* **Core** for the NG+ state
 (which flags survive), **UX** for a distinct prologue card; the writing is
 Narrative's.
 
-## 5. Suggested first fix batch (no mechanic needed)
+## 5. First fix batch (done in this PR)
 
-All text/data, all Narrative-owned, one PR when the user decides:
-P1-3 (piece count), P1-4 (two docs), P2-1 (3 French strings), P2-2
-(non-breaking spaces and apostrophes in the French of the 12 nodes and the
-two companion files), and the four shopkeepers' missing lines (P2-3). P1-2
-needs Core's answer on chapter numbering before it is touched. Whether
-this ships with a version bump depends on CLAUDE.md's rule (docs-only PRs
-do not).
+All text/data, all Narrative-owned: P1-3 (piece count, also in the
+Lantern Docks lead, which now says "next piece"), P1-4 (the two docs), P2-1
+(3 French strings), P2-2 (24 no-break spaces; every French apostrophe in the
+story files made curly; "Wrack's End" in `npcs.json`) and four
+shopkeepers' lines (P2-3: standing-based lines for Hesta Brann and Needle, in
+the shape the other keepers use, flag-based ones for the cellar-boy and
+Old Pell). P1-2 needs Core's answer on chapter numbering before it is
+touched. English apostrophes are still mixed and were left alone.
 
 ## 6. Limits of this audit
 
@@ -269,6 +275,11 @@ do not).
   `7003`, `7400`, `7800`).
 - French was sampled (22 UI strings and the Saltmouth/typography scans),
   not proofread.
-- Items marked "I believe" (the `keeper_*` NPCs) need Core to confirm.
+- `flutter` and `dart` were not available in the session that wrote the
+  fixes, so the data was checked with scripts that mirror
+  `test/french_data_lint_test.dart` (no-break spaces, tutoiement) and a
+  JSON parse of every file touched; CI is the real test. The lint test
+  skips the story graph's bare `fr` keys (it only reads keys ending in
+  `_fr` or `Fr`), which is how the 24 plain spaces got through.
 - `CLAUDE.md` is not on `main` yet (PR #168 on the manager's branch), so
   the ownership rules were taken from the briefing.

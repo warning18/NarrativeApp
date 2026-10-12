@@ -263,9 +263,9 @@
       "\"Go on, then. The camp will want to hear this from someone who was actually there, not from a rumor wearing a rumor's coat.\""
     ],
     "dialogueLines_fr": [
-      "« Vous respirez encore. Bien — je n'avais pas envie de brûler une deuxième tenue. »",
-      "« On dit que le Gardien est tombé. C'est vrai ? Dites-le-moi franchement, j'en ai assez qu'on m'épargne les détails. »",
-      "« Allez-y, alors. Le camp voudra l'entendre de quelqu'un qui y était vraiment, pas d'une rumeur déguisée en rumeur. »"
+      "« Vous respirez encore. Bien — je n’avais pas envie de brûler une deuxième tenue. »",
+      "« On dit que le Gardien est tombé. C’est vrai ? Dites-le-moi franchement, j’en ai assez qu’on m’épargne les détails. »",
+      "« Allez-y, alors. Le camp voudra l’entendre de quelqu’un qui y était vraiment, pas d’une rumeur déguisée en rumeur. »"
     ]
   },
   "renn": {
@@ -913,9 +913,9 @@
       "\"Half the city thinks the invasion changed everything. The other half is right — nothing changed, it just got louder.\""
     ],
     "dialogueLines_fr": [
-      "« Cinquante ans sur ces quais et j'ai appris exactement une chose : la marée se moque de savoir qui gagne. »",
-      "« Vous avez la tête de quelqu'un qui s'apprête à faire une bêtise. Ne vous laissez pas arrêter par moi. »",
-      "« La moitié de la ville pense que l'invasion a tout changé. L'autre moitié a raison — rien n'a changé, c'est juste devenu plus bruyant. »"
+      "« Cinquante ans sur ces quais et j’ai appris exactement une chose : la marée se moque de savoir qui gagne. »",
+      "« Vous avez la tête de quelqu’un qui s’apprête à faire une bêtise. Ne vous laissez pas arrêter par moi. »",
+      "« La moitié de la ville pense que l’invasion a tout changé. L’autre moitié a raison — rien n’a changé, c’est juste devenu plus bruyant. »"
     ]
   },
   "sister_ines": {
@@ -945,9 +945,9 @@
       "\"Whatever brought you to the Quarter, I hope it's worth what it's cost you so far.\""
     ],
     "dialogueLines_fr": [
-      "« J'allume une bougie pour tous ceux qui passent par ici, qu'ils le demandent ou non. Moins cher qu'une dispute. »",
-      "« Le Linceul nous a pris le ciel avant de nous prendre le reste. Je regarde encore en l'air parfois, par habitude. »",
-      "« Quelle que soit la raison de votre venue au Quartier, j'espère qu'elle vaut ce qu'elle vous a coûté jusqu'ici. »"
+      "« J’allume une bougie pour tous ceux qui passent par ici, qu’ils le demandent ou non. Moins cher qu’une dispute. »",
+      "« Le Linceul nous a pris le ciel avant de nous prendre le reste. Je regarde encore en l’air parfois, par habitude. »",
+      "« Quelle que soit la raison de votre venue au Quartier, j’espère qu’elle vaut ce qu’elle vous a coûté jusqu’ici. »"
     ]
   },
   "high_warden": {
@@ -1211,7 +1211,7 @@
   },
   "wracks_end_headman": {
     "npcID": "wracks_end_headman",
-    "npcName": "The headman of Wrack's End",
+    "npcName": "The headman of Wrack’s End",
     "npcName_fr": "Le chef de Bout-du-Varech",
     "role": "Headman of the wreckers",
     "role_fr": "Chef des pilleurs d’épaves",
@@ -1535,7 +1535,7 @@
     "placeId": "wracks_end",
     "chapter": 4,
     "kind": "scholar",
-    "description": "The Tribunal of the Spire's last clerk on this coast, who walked to Wrack's End with the Tribunal's seal in his sleeve and its sealed vote for the Lantern Throne in his coat. He has waited a week for anyone who would row him out to Candlehold's envoy, and he cannot swim.",
+    "description": "The Tribunal of the Spire's last clerk on this coast, who walked to Wrack’s End with the Tribunal's seal in his sleeve and its sealed vote for the Lantern Throne in his coat. He has waited a week for anyone who would row him out to Candlehold's envoy, and he cannot swim.",
     "description_fr": "Le dernier greffier du Tribunal de la Flèche sur cette côte, venu à pied jusqu’à Bout-du-Varech, le sceau du Tribunal dans la manche et son vote scellé pour le Trône de la Lanterne dans son manteau. Il a attendu une semaine quelqu’un qui le mène à la rame jusqu’à l’émissaire de Candlehold, et il ne sait pas nager.",
     "want": "Wants the Tribunal's vote carried out to the envoy's ship with its seal unbroken.",
     "want_fr": "Veut que le vote du Tribunal soit porté au navire de l’émissaire, sceau intact.",
@@ -2035,7 +2035,29 @@
     "metFlags": [],
     "shopId": "blind_beggar_stall",
     "requiredFlag": "",
-    "states": [],
+    "states": [
+      {
+        "flag": "casino_rescue",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "He knew who had gone under the bar at the Blind Beggar for the woman, and he kept the good bottles back for you without saying why.",
+        "line_fr": "Il savait qui avait plongé sous le comptoir du Mendiant Aveugle pour la femme ; il a gardé les bonnes bouteilles de côté sans dire pourquoi."
+      },
+      {
+        "flag": "casino_tables",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "He remembered the tables at the Blind Beggar, and whose hands had gone into the house’s cage; he counted your coins twice.",
+        "line_fr": "Il se souvenait des tables du Mendiant Aveugle et de qui avait plongé la main dans la cage de la maison ; il a compté vos pièces deux fois."
+      },
+      {
+        "flag": "casino_fled",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "He knew you had left the Blind Beggar with your stake and nothing more, the same as he had, and he sold to you without ceremony.",
+        "line_fr": "Il savait que vous aviez quitté le Mendiant Aveugle avec votre mise et rien de plus, comme lui, et il vous a vendu ses bouteilles sans façons."
+      }
+    ],
     "dialogueLines": [],
     "dialogueLines_fr": []
   },
@@ -2151,7 +2173,32 @@
     "metFlags": [],
     "shopId": "shieldwrights_hall",
     "requiredFlag": "",
-    "states": [],
+    "states": [
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "compact": 26
+          }
+        },
+        "line": "The Compact vouches for you; Hesta sets the shield she keeps behind the counter in your hands and watches how you lift it.",
+        "line_fr": "Le Pacte se porte garant de vous ; Hesta pose dans vos mains le bouclier qu’elle garde derrière le comptoir et regarde comment vous le soulevez."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtMost": {
+            "compact": -26
+          }
+        },
+        "line": "The Compact has struck your name from its books; Hesta lets you handle the cracked bucklers and says a shield is a promise, and she has heard yours.",
+        "line_fr": "Le Pacte a rayé votre nom de ses livres ; Hesta vous laisse manier les rondaches fêlées et dit qu’un bouclier est une promesse, et qu’elle a entendu la vôtre."
+      }
+    ],
     "dialogueLines": [],
     "dialogueLines_fr": []
   },
@@ -2398,7 +2445,32 @@
     "metFlags": [],
     "shopId": "sharpweave_den",
     "requiredFlag": "",
-    "states": [],
+    "states": [
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtLeast": {
+            "crows": 26
+          }
+        },
+        "line": "The Ledger says you keep quiet; Needle has the good drawer open before you finish knocking.",
+        "line_fr": "Le Registre dit que vous savez vous taire ; l’Aiguille a ouvert le bon tiroir avant que vous ayez fini de frapper."
+      },
+      {
+        "flag": "",
+        "andFlags": [],
+        "unlessFlags": [],
+        "conditions": {
+          "standingAtMost": {
+            "crows": -26
+          }
+        },
+        "line": "The Ledger says you talk; Needle opens the door on its chain, and the drawer that opens is the cheap one.",
+        "line_fr": "Le Registre dit que vous parlez ; l’Aiguille entrouvre la porte sur sa chaîne, et le tiroir qui s’ouvre est celui des lames d’occasion."
+      }
+    ],
     "dialogueLines": [],
     "dialogueLines_fr": []
   },
@@ -2546,7 +2618,15 @@
     "metFlags": [],
     "shopId": "wayfarer_caravan",
     "requiredFlag": "",
-    "states": [],
+    "states": [
+      {
+        "flag": "camp_founded",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You told him you had made a camp on the shore. Pell said he had never sold to people who stood still, and looked at the cove the way a man looks at a stranger’s marriage.",
+        "line_fr": "Vous lui avez dit que vous aviez fondé un camp sur la rive. Pell a dit n’avoir jamais vendu à des gens qui restent en place, et il a regardé la crique comme on regarde le mariage d’un inconnu."
+      }
+    ],
     "dialogueLines": [],
     "dialogueLines_fr": []
   },
