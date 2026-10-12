@@ -10018,8 +10018,8 @@
   },
   "5010_tobin_hymn": {
     "id": "5010_tobin_hymn",
-    "description": "I sat on the ledge while Tobin trimmed the wicks and did not sing, and somewhere in the not-singing the cloister got quieter, and the water got lower, or seemed to, and I slept for the first time underground. When I woke there was a candle beside me that had not been there, and it had been burning a while.",
-    "description_fr": "Je m’assis sur la corniche pendant que Tobin taillait les mèches sans chanter, et quelque part dans ce non-chant le cloître devint plus calme, l’eau plus basse, ou sembla l’être, et je dormis pour la première fois sous terre. À mon réveil, une chandelle qui n’était pas là brûlait à côté de moi, et depuis un moment.",
+    "description": "I sat on the ledge while Tobin trimmed the wicks and did not sing. “I will tell you what I tell the dying,” he said, without turning. “The song is not for the one who hears it. It is so the one who sings knows they are not alone in the dark.” He went on trimming. I sat there, and he did not sing, and somewhere in the not-singing the cloister got quieter, and the water got lower, or seemed to, and I slept for the first time underground. When I woke there was a candle beside me that had not been there, and it had been burning a while.",
+    "description_fr": "Je m’assis sur la corniche pendant que Tobin taillait les mèches sans chanter. « Je vous dirai ce que je dis aux mourants, fit-il sans se retourner. Le chant n’est pas pour celui qui l’entend. C’est pour que celui qui chante sache qu’il n’est pas seul dans le noir. » Il continua de tailler. Je restai là, et il ne chanta pas, et quelque part dans ce non-chant le cloître devint plus calme, l’eau plus basse, ou sembla l’être, et je dormis pour la première fois sous terre. À mon réveil, une chandelle qui n’était pas là brûlait à côté de moi, et depuis un moment.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
       "mood": "grim",
@@ -11362,12 +11362,12 @@
   },
   "3100_widow_later": {
     "id": "3100_widow_later",
-    "description": "I had been up the yards since, and I had heard what was singing there. The widow listened to me the way people listen to a verdict they have already served most of.",
-    "description_fr": "J’avais gravi les chantiers depuis, et j’avais entendu ce qui y chantait. La veuve m’écouta comme on écoute un verdict dont on a déjà purgé l’essentiel.",
+    "description": "I had been up the yards since, and I had heard what was singing there. The widow heard me out with her hand on the lintel, under her husband’s hammer, the way people listen to a verdict they have already served most of. “Was it him?” she said at last. “Do not tell me what I want to hear. Tell me whose voice it was. I have listened to it six winters, and I would like to know whom I have been keeping house with.”",
+    "description_fr": "J’avais gravi les chantiers depuis, et j’avais entendu ce qui y chantait. La veuve m’écouta la main sur le linteau, sous le marteau de son mari, comme on écoute un verdict dont on a déjà purgé l’essentiel. « C’était lui ? dit-elle enfin. Ne me dites pas ce que je veux entendre. Dites-moi à qui était cette voix. Je l’écoute depuis six hivers, et j’aimerais savoir avec qui je tiens maison. »",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "neutral",
-      "speaker": "Narrator"
+      "speaker": "Widow"
     },
     "location": "emberwick",
     "choices": [
@@ -11781,8 +11781,8 @@
   },
   "3200_smith_later": {
     "id": "3200_smith_later",
-    "description": "The Horn-Taker had kept his proofs in a lacquered chest in the chapel at the top of the road, three hundred and six of them, each tagged in a neat clerical hand with a date, a village and the words ‘demon expelled’. I carried the chest down to Akagiri. Tetsu found his on the second try. He turned it over in his hands for a long time, and then he did not put it back on, because it cannot be put back on; he hung it from his eaves among the bells. The chest went round the terraces all evening. By morning there were horns hanging from half the eaves in the village, and a few going down the road in the arms of people walking to other villages, to ask whether anyone there was missing theirs.",
-    "description_fr": "Le Preneur de Cornes gardait ses preuves dans un coffre laqué, dans la chapelle en haut de la route : trois cent six, chacune étiquetée d’une écriture de clerc soignée, avec une date, un village et les mots « démon expulsé ». Je descendis le coffre jusqu’à Akagiri. Tetsu trouva la sienne au deuxième essai. Il la tourna longtemps entre ses mains, puis il ne la remit pas, parce qu’on ne peut pas la remettre ; il la pendit à son avant-toit, parmi les cloches. Le coffre fit le tour des terrasses toute la soirée. Au matin, des cornes pendaient à la moitié des avant-toits du village, et quelques-unes descendaient la route dans les bras de gens partis vers d’autres villages demander si quelqu’un, là-bas, cherchait la sienne.",
+    "description": "The Horn-Taker had kept his proofs in a lacquered chest in the chapel at the top of the road, three hundred and six of them, each tagged in a neat clerical hand with a date, a village and the words ‘demon expelled’. I carried the chest down to Akagiri. Tetsu found his on the second try. He turned it over in his hands for a long time, and then he did not put it back on, because it cannot be put back on; he hung it from his eaves among the bells. “Three hundred and six,” he said, to nobody. “And I thought mine was the only one.” The chest went round the terraces all evening. By morning there were horns hanging from half the eaves in the village, and a few going down the road in the arms of people walking to other villages, to ask whether anyone there was missing theirs.",
+    "description_fr": "Le Preneur de Cornes gardait ses preuves dans un coffre laqué, dans la chapelle en haut de la route : trois cent six, chacune étiquetée d’une écriture de clerc soignée, avec une date, un village et les mots « démon expulsé ». Je descendis le coffre jusqu’à Akagiri. Tetsu trouva la sienne au deuxième essai. Il la tourna longtemps entre ses mains, puis il ne la remit pas, parce qu’on ne peut pas la remettre ; il la pendit à son avant-toit, parmi les cloches. « Trois cent six, dit-il, à personne. Et je croyais que la mienne était la seule. » Le coffre fit le tour des terrasses toute la soirée. Au matin, des cornes pendaient à la moitié des avant-toits du village, et quelques-unes descendaient la route dans les bras de gens partis vers d’autres villages demander si quelqu’un, là-bas, cherchait la sienne.",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "neutral",
@@ -12462,12 +12462,12 @@
   },
   "5100_headman_later": {
     "id": "5100_headman_later",
-    "description": "I had been in the Court’s ledger since, and I knew now what the people were for. The headman knew it from my face before I said it. He named a price for the lamps, the way men name prices for things they would be glad to be rid of.",
-    "description_fr": "J’avais lu le registre de la Cour depuis, et je savais à présent à quoi servaient ces gens. Le chef le lut sur mon visage avant que je le dise. Il annonça un prix pour les lampes, comme on annonce le prix d’une chose dont on serait content d’être débarrassé.",
+    "description": "“You have read it,” the headman said, before I had sat down. He took the pipe out of his mouth, which I had not seen him do. “It is on your face. What the people are for.” He looked out at the lamp on the point, and the lamp on the rocks, the way a man looks at two old dogs. “I will put them out. I have always said I would, if anyone made it worth the oil. Sixty. A man should be paid for the last honest thing he does, and oil is dear.”",
+    "description_fr": "« Vous avez lu », dit le chef avant que je me sois assis. Il ôta la pipe de sa bouche, ce que je ne lui avais jamais vu faire. « Cela se voit sur votre visage. À quoi servaient les gens. » Il regarda la lampe de la pointe, puis celle des récifs, comme on regarde deux vieux chiens. « Je les éteindrai. J’ai toujours dit que je le ferais, si quelqu’un y mettait de quoi payer l’huile. Soixante. Un homme doit être payé pour la dernière chose honnête qu’il fait, et l’huile coûte cher. »",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
-      "speaker": "Narrator"
+      "speaker": "Headman"
     },
     "location": "wracks_end",
     "choices": [
@@ -13709,12 +13709,12 @@
   },
   "6100_keeper_later": {
     "id": "6100_keeper_later",
-    "description": "She held the lantern out to me without getting up. It was the only warm thing on the road, and she meant it for whoever needed it more.",
-    "description_fr": "Elle me tendit la lanterne sans se lever. C’était la seule chose chaude sur la route, et elle la destinait à qui en aurait le plus besoin.",
+    "description": "She held the lantern out to me without getting up. “It is the only warm thing on this road,” the road-keeper said, “and I mean it for whoever needs it more. I used to know who that was. I could tell by the walk.” She looked up the road towards the Quarter. “My daughter walked like someone carrying a full cup. If you meet a girl carrying a full cup, you may give it to her.”",
+    "description_fr": "Elle me tendit la lanterne sans se lever. « C’est la seule chose chaude sur cette route, dit la gardienne, et je la destine à qui en a le plus besoin. Je savais qui c’était, autrefois. Je le voyais à la démarche. » Elle regarda la route qui montait vers le Quartier. « Ma fille marchait comme quelqu’un qui porte une tasse pleine. Si vous croisez une fille qui porte une tasse pleine, vous pourrez la lui donner. »",
     "context_taxonomy": {
       "ui_theme": "cathedral",
       "mood": "neutral",
-      "speaker": "Narrator"
+      "speaker": "Road-keeper"
     },
     "location": "rimewell",
     "choices": [
@@ -14132,8 +14132,8 @@
   },
   "6200_eldest_later": {
     "id": "6200_eldest_later",
-    "description": "The tally-stone was the size of a cart and I could not carry it, so I brought what I could: a rubbing of every name on it, in charcoal, on the backs of Reliquary requisition forms, which took two days. And I brought word of Gorm, who had been standing at the tally-stone when the frost took him, and had gone on standing there. Hathra read the names aloud in the moot-hall, all of them, one at a time, while the fire burned, and it took the whole night, and nobody left. Then she asked me how Gorm had looked at the end.",
-    "description_fr": "La pierre de compte avait la taille d’une charrette et je ne pouvais pas la porter, alors j’apportai ce que je pouvais : un frottis de chaque nom, au charbon, au dos de bons de réquisition du Reliquaire, ce qui prit deux jours. Et j’apportai des nouvelles de Gorm, qui se tenait devant la pierre de compte quand le givre l’avait pris, et qui avait continué de s’y tenir. Hathra lut les noms à voix haute dans la salle du conseil, tous, un par un, pendant que le feu brûlait, et cela prit la nuit entière, et personne ne partit. Puis elle me demanda de quoi Gorm avait l’air, à la fin.",
+    "description": "The tally-stone was the size of a cart and I could not carry it, so I brought what I could: a rubbing of every name on it, in charcoal, on the backs of Reliquary requisition forms, which took two days. And I brought word of Gorm, who had been standing at the tally-stone when the frost took him, and had gone on standing there. Hathra read the names aloud in the moot-hall, all of them, one at a time, while the fire burned, and it took the whole night, and nobody left. Then she folded the last form. “Gorm,” she said. “I knew him four hundred years. How did he look, at the end? Do not be kind. I have been kind to myself long enough.”",
+    "description_fr": "La pierre de compte avait la taille d’une charrette et je ne pouvais pas la porter, alors j’apportai ce que je pouvais : un frottis de chaque nom, au charbon, au dos de bons de réquisition du Reliquaire, ce qui prit deux jours. Et j’apportai des nouvelles de Gorm, qui se tenait devant la pierre de compte quand le givre l’avait pris, et qui avait continué de s’y tenir. Hathra lut les noms à voix haute dans la salle du conseil, tous, un par un, pendant que le feu brûlait, et cela prit la nuit entière, et personne ne partit. Puis elle plia le dernier bon. « Gorm, dit-elle. Je l’ai connu quatre cents ans. De quoi avait-il l’air, à la fin ? Ne soyez pas aimable. J’ai été aimable avec moi-même assez longtemps. »",
     "context_taxonomy": {
       "ui_theme": "cathedral",
       "mood": "neutral",
@@ -14908,12 +14908,12 @@
   },
   "7100_helmsman_later": {
     "id": "7100_helmsman_later",
-    "description": "He wanted to see her once more, with the grey still on the mast, and then he wanted never to see her again. We took the Eel along the point at dusk. He did not say anything for a long time.",
-    "description_fr": "Il voulait la revoir une fois, avec le gris encore au mât, puis ne plus jamais la revoir. Nous longeâmes la pointe avec l’Eel au crépuscule. Il resta longtemps sans rien dire.",
+    "description": "“I want to see her once more,” the helmsman said, “with the grey still on the mast. Then I never want to see her again. That seems to me a fair trade. Most of the trades I made on that ship were not.” We took the Eel along the point at dusk. He said nothing else for a long time, and I did not ask him to.",
+    "description_fr": "« Je veux la revoir une fois, dit le timonier, avec le gris encore au mât. Ensuite je ne veux plus jamais la revoir. Cela me paraît un marché honnête. La plupart de ceux que j’ai faits sur ce navire ne l’étaient pas. » Nous longeâmes la pointe avec l’Eel au crépuscule. Il ne dit plus rien de longtemps, et je ne le lui demandai pas.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
-      "speaker": "Narrator"
+      "speaker": "Helmsman"
     },
     "location": "white_anchorage",
     "choices": [
@@ -15477,12 +15477,12 @@
   },
   "7200_elder_later": {
     "id": "7200_elder_later",
-    "description": "The Court’s ledger had a page for a coast that no longer existed, in the same fair hand as the others, and I had read it. The eldest waited with her hands in her lap for whatever I had brought her.",
-    "description_fr": "Le registre de la Cour avait une page pour une côte qui n’existait plus, de la même belle écriture que les autres, et je l’avais lue. L’aînée attendait, les mains sur les genoux, ce que je lui apportais.",
+    "description": "The Court’s ledger had a page for a coast that no longer existed, in the same fair hand as the others, and I had read it. The eldest waited with her hands in her lap. “Tell me what it says,” she said. “Or tell me it says nothing, and I will believe you for one night. After one night I will want to know which you were being.” She looked at the water. “My daughter was nineteen. She counted her stitches aloud.”",
+    "description_fr": "Le registre de la Cour avait une page pour une côte qui n’existait plus, de la même belle écriture que les autres, et je l’avais lue. L’aînée attendait, les mains sur les genoux. « Dites-moi ce qu’elle dit, fit-elle. Ou dites-moi qu’elle ne dit rien, et je vous croirai pour une nuit. Au bout d’une nuit, je voudrai savoir lequel des deux vous étiez. » Elle regarda l’eau. « Ma fille avait dix-neuf ans. Elle comptait ses points à voix haute. »",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "neutral",
-      "speaker": "Narrator"
+      "speaker": "Eldest"
     },
     "location": "greyhithe",
     "choices": [
@@ -24812,7 +24812,7 @@
   "7100_orsabet_later": {
     "id": "7100_orsabet_later",
     "description": "A Candlebearer came down the Anchorage quay at dusk with a jar of lit tallow held in both hands, walking the way people walk with a flame that must not go out. She asked the dockers for me by name, and waited at the quay’s end while the harbour lamps came on one by one. “Orsabet Vell sent me from the Reliquary Quarter,” she said. “She asked me to light this where you could see it.”",
-    "description_fr": "Une Porte-Chandelle descendit le quai de l’Ancrage à la tombée du jour, un pot de suif allumé dans les deux mains, marchant comme marchent ceux qui portent une flamme qui ne doit pas mourir. Elle me demanda par mon nom aux dockers, et attendit au bout du quai pendant que les lampes du port s’allumaient une à une. « Orsabet Vell m’envoie du Quartier des Reliquaires, dit-elle. Elle m’a demandé de l’allumer là où vous pourriez la voir. »",
+    "description_fr": "Une Porte-Chandelle descendit le quai du Mouillage à la tombée du jour, un pot de suif allumé dans les deux mains, marchant comme marchent ceux qui portent une flamme qui ne doit pas mourir. Elle me demanda par mon nom aux dockers, et attendit au bout du quai pendant que les lampes du port s’allumaient une à une. « Orsabet Vell m’envoie du Quartier des Reliquaires, dit-elle. Elle m’a demandé de l’allumer là où vous pourriez la voir. »",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -24864,12 +24864,12 @@
   },
   "7100_ghrem_later": {
     "id": "7100_ghrem_later",
-    "description": "A giant sat at the end of the long pier with his feet in the tide, and the Anchorage was pretending not to stare. Ghrem Stonebrow had come down from Highhearth, which took a giant three days and a cart he had refused to ride in, and the sea in front of him seemed small for the effort. He did not turn his head when I came up, but a hand the size of a door shifted to make room.",
-    "description_fr": "Un géant était assis au bout de la longue jetée, les pieds dans la marée, et l’Ancrage faisait semblant de ne pas regarder. Ghrem Stonebrow était descendu de Haut-Âtre, ce qui prend trois jours à un géant et une charrette dans laquelle il avait refusé de monter, et la mer devant lui semblait bien petite pour l’effort. Il ne tourna pas la tête quand je m’approchai, mais une main grande comme une porte se déplaça pour me faire de la place.",
+    "description": "Ghrem Stonebrow sat at the end of the long pier with his feet in the tide, and the Anchorage was pretending not to stare. He had come down from Highhearth, three days on foot and a cart he had refused to ride in. He did not turn his head when I came up, but a hand the size of a door shifted to make room. “I had not seen the sea before,” he said, after a while, to the water. “It is smaller than I was told. It goes on a long time, though. That is the part nobody mentions: that it goes on, and does not mind.”",
+    "description_fr": "Ghrem Stonebrow était assis au bout de la longue jetée, les pieds dans la marée, et le Mouillage faisait semblant de ne pas regarder. Il était descendu de Haut-Âtre, trois jours à pied et une charrette dans laquelle il avait refusé de monter. Il ne tourna pas la tête quand je m’approchai, mais une main grande comme une porte se déplaça pour me faire de la place. « Je n’avais jamais vu la mer, dit-il au bout d’un moment, à l’eau. Elle est plus petite qu’on me l’avait dit. Elle dure longtemps, pourtant. C’est ce que personne ne dit : qu’elle dure, et que cela ne la dérange pas. »",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
-      "speaker": "Narrator"
+      "speaker": "Ghrem"
     },
     "location": "white_anchorage",
     "choices": [
