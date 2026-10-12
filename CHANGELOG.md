@@ -8,6 +8,25 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.258.0+294]
+
+The main-quest chain runs in story order, chapter 7 gets its quest, chapters end with a card, and the English text follows the French in using one apostrophe.
+
+### Added
+- **A main quest for chapter 7, "The Lantern Throne".** Offered when the party sails for Candlehold; done when the Throne is taken, by any of the seven roads. Its rewards (350 gold, 450 XP) are placeholders for Core to confirm.
+- **Chapter-end cards.** Chapters 3, 4, 5, 6 and 7 close with a `[CHAPTER N END]` card (in French `[FIN DU CHAPITRE N]`) on the scene that closes them, like chapter 2 already did: the Warden's standard, the moon-shard, the Dead Heart, the White Fleet's sail and each of the seven crowning scenes.
+- **A tag for the "hopeful" mood.** Eleven scenes carried the mood with no label.
+
+### Fixed
+- **The main quests chain in order.** Finishing the Dead Heart no longer puts the Sovereign's quest in the log at the end of chapter 5; it now leads to the White Fleet's Grave, which leads to The Lantern Throne, which leads to Beyond the Tear.
+- **"Beyond the Tear" is a chapter 8 quest.** Its id (`q_ch6_beyond_the_tear`) is unchanged so that saves keep working; only its chapter changes.
+
+### Changed
+- **One apostrophe in the English story text.** All the straight `'` in the English story, quest, people, companion and remark text are now the curly `’`, as the French has been since 1.255.0 (names too, such as "The High Warden’s Fall"). Nothing is recorded for read-aloud yet, so no recording is made stale.
+
+### Docs
+- `docs/narrative-proposals.md`: what Core is asked to decide for chapters 7 and 8, three intrigues for them, new moods and themes, and a list of achievements, for the user to choose from.
+
 ## [1.257.0+293]
 
 The UX polish proposed in the design-system review.
