@@ -261,11 +261,15 @@ extension _FightGround on _FightScreenState {
           children: [
             Icon(anomalyIcon(plan.anomaly.family), size: 12, color: colour),
             const SizedBox(width: 3),
-            Text('$name$soon',
-                style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: scheme.onSurface)),
+            Flexible(
+              child: Text('$name$soon',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: scheme.onSurface)),
+            ),
           ],
         ),
       ),
