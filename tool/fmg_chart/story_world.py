@@ -99,6 +99,16 @@ RIVERS = [  # Alster's river to its harbour; the freshwater burn at the Cove
     [(121, 33), (122, 38), (121, 43)],
 ]
 
+ARCHIPELAGOS = {
+    # empty for now: open water with small lands, for ship content (voyages, wrecks, hunts) later.
+    # id: (centre x, centre y, half-width, half-height, islands, seed). Each sits clear of the crossing,
+    # the sea roads and the chart's edges.
+    'south_west': (28, 130, 13, 24, 7, 3),
+    'mid_west': (100, 91, 12, 6, 5, 5),
+    'east_narrows': (190, 75, 17, 10, 6, 8),
+    'south_east': (219, 136, 14, 17, 6, 11),
+}
+
 SEAS = [('the Narrow Sea', 'la Mer Étroite', (118, 78)), ('the Open Water', 'la Haute Mer', (214, 128)),
         ('the Grey Water', 'l’Eau Grise', (236, 50))]
 
@@ -146,6 +156,39 @@ def build_lands():
                 polys.append(Polygon(pts))
         polys.sort(key=lambda p: -p.area)
         out[name] = polys
+    return out
+
+
+def build_archipelagos(main_union):
+    rng = np.random.default_rng(SEED + 100)
+    shape = (int(H * RES), int(W * RES))
+    n1, n2, n3 = noise(shape, 8, rng), noise(shape, 4, rng), noise(shape, 2, rng)
+    out = {}
+    for aid, (cx, cy, hx, hy, count, seed) in ARCHIPELAGOS.items():
+        r = np.random.default_rng(seed * 17 + 1)
+        centres = []
+        tries = 0
+        while len(centres) < count and tries < 4000:
+            tries += 1
+            a, rr = r.random() * 2 * math.pi, math.sqrt(r.random())
+            x, y = cx + hx * rr * math.cos(a), cy + hy * rr * math.sin(a)
+            if all(math.dist((x, y), c[:2]) > 7.5 for c in centres) and main_union.distance(Point(x, y)) > 6:
+                centres.append((x, y, 2.4 + 3.4 * r.random() ** 1.3))
+        field = np.full(shape, -50.0)
+        yy, xx = np.mgrid[0:shape[0], 0:shape[1]]
+        for (x, y, rad) in centres:
+            field = np.maximum(field, rad - np.hypot(xx / RES - x, yy / RES - y))
+        field = field + 1.6 * n1 + 0.8 * n2 + 0.35 * n3
+        field = ndimage.gaussian_filter(field, 1.0)
+        polys = []
+        for c in measure.find_contours(field, 0.0):
+            pts = [(p[1] / RES, p[0] / RES) for p in c]
+            if len(pts) > 4:
+                poly = Polygon(pts).buffer(0)
+                if isinstance(poly, Polygon) and poly.area >= 3.0:
+                    polys.append(poly.simplify(0.25, preserve_topology=True))
+        polys.sort(key=lambda p: -p.area)
+        out[aid] = polys
     return out
 
 
@@ -282,9 +325,15 @@ def write_dart(lands, zones):
         out.append("    '%s': Offset(%g, %g)," % (k, x, y))
     out.append('  },')
     loops = []
+    loops_index = {}
     for name in ('ashen', 'old', 'lantern'):
         poly = lands[name][0].simplify(0.3, preserve_topology=True)
         loops.append(list(poly.exterior.coords)[:-1])
+    for aid in ARCHIPELAGOS:
+        loops_index[aid] = []
+        for poly in lands['arch:' + aid]:
+            loops_index[aid].append(len(loops))
+            loops.append(list(poly.exterior.coords)[:-1])
     out.append('  lands: [' + ',\n    '.join(dart_pts(l) for l in loops) + ',\n  ],')
     out.append('  rivers: [' + ',\n    '.join(dart_pts(smooth_line(r)) for r in RIVERS) + ',\n  ],')
     out.append('  labels: [')
@@ -306,11 +355,20 @@ def write_dart(lands, zones):
     for k, (x, y) in FEATURES.items():
         out.append("  '%s': Offset(%g, %g)," % (k.replace("'", "\\'"), x, y))
     out.append('};')
+    out.append('')
+    out.append('/// The archipelagos: empty lands for ship content, by id, each the indices of its islands in `lands`.')
+    out.append('const Map<String, List<int>> storyArchipelagoLands = {')
+    for aid, ix in loops_index.items():
+        out.append("  '%s': %s," % (aid, ix))
+    out.append('};')
     return '\n'.join(out)
 
 
 def main():
     lands = build_lands()
+    main_union = unary_union([p for v in lands.values() for p in v])
+    for aid, polys in build_archipelagos(main_union).items():
+        lands['arch:' + aid] = polys
     bad, close = checks(lands)
     print('off-land / spacing:', bad, [(round(a, 1), b, c) for a, b, c in close], file=sys.stderr)
     zones = build_zones(lands)

@@ -9,8 +9,9 @@ where the globe puts it, instead of from a generator's atlas. Everything is in `
   (needs numpy, scipy, scikit-image, shapely and PIL).
 - `preview_test.dart` paints it with the game's own `ChartMapPainter` next to chart B, flat and on the globe, and prints what the
   game's `ChartClimate` makes of each place: `flutter test tool/fmg_chart/preview_test.dart`.
-- Images (chart B on the left, the story world on the right): `story-night.jpg`, `story-parchment.jpg`, `story-globe.jpg`
-  (the whole sphere), `story-globe-north.jpg` (zoomed on the Ashen Continent, the relief and features as the game draws them).
+- Images (chart B on the left, the story world on the right): `story-night.jpg`, `story-parchment.jpg` (flat). On the globe:
+  `story-globe-whole.jpg` (and `-whole-parchment`), `story-globe-turn.gif` (a turn of the sphere), and views
+  turned toward each part: `-north`, `-south`, `-west`, `-east`, `-crossing`.
 
 I did not use the Fantasy Map Generator this time. Its lands can't be placed to a latitude without fighting it, and the
 brief wants simple lands with only the detail the story needs, so the lands are drawn by hand as rough outlines and then
@@ -25,8 +26,20 @@ grown with noise (distance to the outline plus three octaves of value noise, con
 | the Old Continent | the south, lat 2°S to 57°S | Alster's vale about 42°S, the Waste in the dry belt 26°S to 32°S, Saltmouth on the northern headland at 10°S |
 | the Lantern Isles | the west, between them, lat 3°S to 17°N | reached by sea from the Cove Camp; kept off the straight crossing so no road crosses it |
 
-Three lands and nothing else: no extra islands or islets drawn into the data (the painter adds a few skerries off the
-coasts of any chart; see "For Core").
+Three lands for the story, and **four empty archipelagos** for ship content (voyages, wrecks, hunts, later):
+
+| Archipelago (`storyArchipelagoLands`) | Where | Islands |
+|---|---|---|
+| `south_west` | the open sea south-west of the Lantern Isles, west of Alster (lat 20°S to 55°S, lon 90°W to 65°W) | 5 |
+| `mid_west` | the Narrow Sea's western end, between the Lantern Isles and the Old Continent | 4 |
+| `east_narrows` | the Narrow Sea east of the crossing | 4 |
+| `south_east` | the Open Water off the Old Continent's east coast | 5 |
+
+They hold no place, zone or feature (plain land), each sits clear of the crossing, every sea road and the chart's edges
+(at least 6 units from any land, 9 from an edge), and none is named: names are Narrative's. In `chartWorldStory.lands`
+the three story lands come first (indices 0 to 2) and the islands follow; `storyArchipelagoLands` gives each
+archipelago's indices, so ship content can find them. Apart from these, no other islands are drawn into the data
+(the painter adds a few skerries off the coasts of any chart; see "For Core").
 
 ## How each constraint is met
 
@@ -76,7 +89,8 @@ coasts of any chart; see "For Core").
    (`storm`) sits at sea in the middle of it, on the route, with nothing between.
 6. **The Lantern Isles** lie across the sea from the Cove Camp (65 units west and 33 south), off both the crossing and any
    other road. They are one island (see "Choices to confirm"), with Candlehold on its high cliffs.
-7. **Only what the story needs.** 34 places (every landmark), 3 lands, 2 rivers (Alster's, the freshwater burn at the
+7. **Only what the story needs.** 34 places (every landmark), 3 lands (plus the 4 empty archipelagos, 18 islands, asked for
+   separately), 2 rivers (Alster's, the freshwater burn at the
    Cove), 4 mountain ranges (the Rime Teeth, the Firebacks of the Red Hills, the Alster Downs, the Lantern Cliffs), 11 zones
    (the story's own biome zones) and 23 features (below). Chart B has 8 lands, 2 rivers, 6 ranges and 55 features.
 

@@ -320,4 +320,37 @@ void main() {
           '${entry.$1} land extent x ${x0.toStringAsFixed(0)}..${x1.toStringAsFixed(0)} of 256, y ${y0.toStringAsFixed(0)}..${y1.toStringAsFixed(0)} of 176 (margins ${x0.toStringAsFixed(0)} ${(256 - x1).toStringAsFixed(0)} ${y0.toStringAsFixed(0)} ${(176 - y1).toStringAsFixed(0)})');
     }
   });
+
+  testWidgets('the story world turning on the globe', (tester) async {
+    await loadFonts();
+    tester.view.physicalSize = const Size(256 * 4 * 2, 176 * 4 * 2);
+    tester.view.devicePixelRatio = 2;
+    addTearDown(tester.view.reset);
+    final story = storyWorld();
+    // Stills: each land, then the whole sphere in both looks.
+    final stills = {
+      'west': GlobeView.at(const Offset(60, 100), 1.9, const Offset(128, 88)),
+      'east': GlobeView.at(const Offset(200, 60), 1.9, const Offset(128, 88)),
+      'crossing':
+          GlobeView.at(const Offset(135, 75), 1.9, const Offset(128, 88)),
+    };
+    for (final e in stills.entries) {
+      await shoot(tester, 'GLOBE_story_${e.key}', story, MapLook.night,
+          globe: e.value);
+    }
+    await shoot(tester, 'GLOBE_story_whole_parchment', story, MapLook.parchment,
+        globe: GlobeView.at(const Offset(128, 88), 1, const Offset(128, 88)));
+    // A turn of the sphere, east to west, tilted a little to the north.
+    for (var i = 0; i <= 18; i++) {
+      final lon = (80 - i * 160 / 18) * math.pi / 180;
+      final view = GlobeView(
+          lon0: lon,
+          lat0: 0.22,
+          radius: GlobeView.baseRadius * 1.0,
+          centre: const Offset(128, 88));
+      await shoot(
+          tester, 'TURN_${i.toString().padLeft(2, '0')}', story, MapLook.night,
+          globe: view);
+    }
+  });
 }
