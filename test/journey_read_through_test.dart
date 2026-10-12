@@ -58,6 +58,9 @@ void main() {
     await _settle(tester);
     await tester.tap(find.text('Journey'));
     await _settle(tester);
+    // The jump set the party down here along no choice: the map walks it
+    // by the road first (a tap would skip it).
+    await tester.pump(const Duration(seconds: 3));
 
     // The city's plan, with the fight and the way to pay on it.
     expect(find.byKey(const ValueKey('journey_streets')), findsOneWidget);

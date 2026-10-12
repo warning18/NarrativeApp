@@ -23,6 +23,10 @@ class StoryChoice {
     this.checkDC,
     this.failNextId,
     this.loseNextId,
+    this.failNote,
+    this.failNoteFr,
+    this.loseNote,
+    this.loseNoteFr,
     this.challengeSuccessesNeeded,
     this.challengeMaxFailures,
     this.huntName,
@@ -83,6 +87,10 @@ class StoryChoice {
       checkDC: (json['checkDC'] as num?)?.toInt(),
       failNextId: json['failNextId'] as String?,
       loseNextId: json['loseNextId'] as String?,
+      failNote: json['failNote'] as String?,
+      failNoteFr: json['failNote_fr'] as String?,
+      loseNote: json['loseNote'] as String?,
+      loseNoteFr: json['loseNote_fr'] as String?,
       challengeSuccessesNeeded:
           (json['challengeSuccessesNeeded'] as num?)?.toInt(),
       challengeMaxFailures: (json['challengeMaxFailures'] as num?)?.toInt(),
@@ -246,6 +254,22 @@ class StoryChoice {
 
   bool get hasLossBranch => loseNextId != null && loseNextId!.isNotEmpty;
 
+  /// A few words the Journey map tells while the party is carried along a
+  /// branch it did not pick (v1.245): "You are put in prison" when the
+  /// fight is lost ([loseNote]) or the roll fails ([failNote]), with a
+  /// French reading each. Empty, the map says the branch's place in its own
+  /// words.
+  final String? failNote;
+  final String? failNoteFr;
+  final String? loseNote;
+  final String? loseNoteFr;
+
+  String? failNoteFor(bool french) =>
+      french && (failNoteFr?.isNotEmpty ?? false) ? failNoteFr : failNote;
+
+  String? loseNoteFor(bool french) =>
+      french && (loseNoteFr?.isNotEmpty ?? false) ? loseNoteFr : loseNote;
+
   /// Set alongside [checkAbility]/[checkDC] to turn a single roll into a
   /// "skill challenge": a sequence of rolls against the same ability and
   /// DC, won by reaching [challengeSuccessesNeeded] successes before
@@ -382,6 +406,12 @@ class StoryChoice {
           'failNextId': failNextId,
         if (loseNextId != null && loseNextId!.isNotEmpty)
           'loseNextId': loseNextId,
+        if (failNote != null && failNote!.isNotEmpty) 'failNote': failNote,
+        if (failNoteFr != null && failNoteFr!.isNotEmpty)
+          'failNote_fr': failNoteFr,
+        if (loseNote != null && loseNote!.isNotEmpty) 'loseNote': loseNote,
+        if (loseNoteFr != null && loseNoteFr!.isNotEmpty)
+          'loseNote_fr': loseNoteFr,
         if (challengeSuccessesNeeded != null)
           'challengeSuccessesNeeded': challengeSuccessesNeeded,
         if (challengeMaxFailures != null)

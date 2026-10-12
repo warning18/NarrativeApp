@@ -1556,7 +1556,9 @@
         "healAmount": -15,
         "flagsToAdd": [
           "sewer_waded"
-        ]
+        ],
+        "failNote": "The rot gives way under you: you fall into the Undercroft.",
+        "failNote_fr": "La pourriture cède sous vous : vous tombez dans les Souterrains."
       }
     ]
   },
@@ -1592,7 +1594,9 @@
         "failNextId": "850_fed_failed",
         "flagsToAdd": [
           "matriarch_spared"
-        ]
+        ],
+        "failNote": "The brood is not fooled: it drives you down into the Undercroft.",
+        "failNote_fr": "La couvée n’est pas dupe : elle vous chasse vers les Souterrains."
       }
     ]
   },
@@ -2345,7 +2349,9 @@
         "failNextId": "1140_spotted",
         "flagsToAdd": [
           "looters_slipped"
-        ]
+        ],
+        "failNote": "You are spotted, and the camp comes up around you.",
+        "failNote_fr": "On vous repère, et le camp se lève autour de vous."
       },
       {
         "text": "Go the long way round",
@@ -2834,7 +2840,9 @@
         "flagsToAdd": [
           "roofs_taken"
         ],
-        "failNextId": "2011_roof_fall"
+        "failNextId": "2011_roof_fall",
+        "failNote": "A gutter gives way: you fall among them on the wharf.",
+        "failNote_fr": "Une gouttière cède : vous tombez parmi eux, sur le quai."
       }
     ]
   },
@@ -3876,7 +3884,9 @@
         "flagsToAdd": [
           "vane_crossed",
           "vane_robbed"
-        ]
+        ],
+        "failNote": "Vane’s hand closes on your wrist: you are held on the wharf.",
+        "failNote_fr": "La main de Vane se referme sur votre poignet : on vous retient sur le quai."
       }
     ],
     "noDetour": true
@@ -15417,7 +15427,9 @@
         ],
         "showIfFlags": [
           "banner_five"
-        ]
+        ],
+        "failNote": "The host turns as one and closes on you.",
+        "failNote_fr": "La foule se retourne d’un seul mouvement et se referme sur vous."
       },
       {
         "text": "Walk among them under the Shroud’s grey",
@@ -15433,7 +15445,9 @@
         ],
         "showIfFlags": [
           "banner_five"
-        ]
+        ],
+        "failNote": "The host turns as one and closes on you.",
+        "failNote_fr": "La foule se retourne d’un seul mouvement et se referme sur vous."
       },
       {
         "text": "Cut a road straight through them",
