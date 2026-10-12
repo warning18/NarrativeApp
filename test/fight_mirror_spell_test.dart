@@ -3,6 +3,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +15,7 @@ import 'package:narrative_data_app/combat/battlefield_condition.dart';
 import 'package:narrative_data_app/combat/fight_goal.dart';
 import 'package:narrative_data_app/combat/encounter.dart';
 import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 
@@ -89,7 +92,9 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+    await tester.pumpWidget(ProviderScope(
+        overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
+        child: const MyApp()));
     await _settle(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
@@ -144,7 +149,8 @@ void main() {
     await tester.tap(find.byIcon(Icons.unfold_more));
     await _settle(tester);
     final spell = _logged(RegExp(r'takes (\d+) damage'));
-    final mirrored = _logged(RegExp(r'You take (\d+) damage'));
+    // Not the Venomous affix's "You take 3 damage from poison." line.
+    final mirrored = _logged(RegExp(r'You take (\d+) damage(?! from poison)'));
     expect(mirrored, spell);
     expect(tester.takeException(), isNull);
     await tester.pump(const Duration(seconds: 3));

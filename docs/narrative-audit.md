@@ -2,9 +2,13 @@
 
 First audit by the Narrative session, taken on `origin/main` at v1.254.0
 (76c8773). Nothing in the game was changed; this file is the only output.
-**Status after this PR:** P1-3, P1-4, P2-1, P2-2 and the four silent
-shopkeepers of P2-3 are fixed (the rest of P2-3 is a proposal, section 4C).
-P1-1 and P1-2, P2-4 and the P3 items wait for a decision.
+**Status:** P1-3, P1-4, P2-1, P2-2 and the four silent shopkeepers of P2-3
+were fixed in #171. P1-2 (the quest chain, the chapter label and the missing
+chapter 7 quest), the chapter-end headers, the `hopeful` mood tag, the
+English apostrophes and the proposals for moods, themes and achievements are
+in the follow-up PR; the options Core and the user decide on are in
+`docs/narrative-proposals.md`. P1-1 (the dormant intrigues, five of them) was done in #179 and the NPC
+voices of 4C in the PR after it (the rest of P2-3). P2-4 and the other P3 items wait.
 
 Every id below can be looked up as written: a story node in
 `assets/Cleaned_Narrative_DAG.json`, a quest in `quests.json`, and so on.

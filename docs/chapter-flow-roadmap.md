@@ -96,8 +96,8 @@ story rules them out).
 | 4 | 4999_camp | Wrack's End 5100, Drowned Cloister 5010 (Ossuary Galleries) | Ossuary Galleries (1 · 8 · Bone Warden) | The Drowned Stair (2 · 9 · Hollow Court Inquisitor) → the moon-shard, the third piece |
 | 5 | 6002_camp | Rimewell 6100, Reliquary Quarter 6010 (Dead Heart Approach) | Dead Heart Approach (2 · 10 · Tear-Spawn) | The fourth piece: the Shroud's Vigil (3 · 11 · Void Archon) → the reliquary thread |
 | 6 | 7001 | Hollow Shore 7002, Greyhithe 7200, White Anchorage 7100 (Glass Strand) | Glass Strand (2 · 12 · Strand Colossus) | The White Fleet's Grave (3 · 13 · White Admiral) → the White Fleet's sail |
-| 7 | 7400 | Candlehold 7500 (the Houses, 7510_*; the Lantern Hall 7520_*, 7590_*) | — | Sail for Candlehold: a claimant is faced in the Lantern Hall and the Throne is filled → no piece |
-| 8 | 7800 | Hollow Shore 7002 | the Herald (7810) | Lead the Host to the Hollow Shore, then the Sovereign (7003; 3 · 14 · Void Sovereign) → the Sovereign's mantle |
+| 7 | 7400 | Candlehold 7500 (the Houses, 7510_*; the Lantern Hall 7520_*, 7590_*) | — | Sail for Candlehold (`q_ch7_lantern_throne`): a claimant is faced in the Lantern Hall and the Throne is filled → no piece |
+| 8 | 7800 | Hollow Shore 7002 | the Herald (7810) | Lead the Host to the Hollow Shore, then the Sovereign (`q_ch6_beyond_the_tear`, 7003; 3 · 14 · Void Sovereign) → the Sovereign's mantle |
 
 The throne campaign (chapters 7 and 8) is written as scenes, not loops:
 the party arrives under a clan's banner (`7510_*`), faces a claimant in
@@ -175,15 +175,42 @@ party that skips every quest.
 | Voyages / raiders a run | 20.5 / 10.9 | 18.4 / 10.0 | — | 17.9 / 9.9 | 10.8 / 11.2 |
 | First try: Archon · White Admiral · Sovereign | 98% · 92% · 94.5% | 98% · 93.5% · 96% | — | 95% · 87% · 89% | 87.5% · — · 89.5% |
 
+## The intrigues in the graph
+
+Each intrigue is one scene per stage, offered by a place's hub once the stage
+before it is reached (`showIfFlags: intrigue_<id>_stage_<n>`), and settled by
+an outcome scene at Greyhithe (`7200`), the last hub of the chapter before the White Fleet's grave. Every choice of a stage scene
+advances the stage, so no intrigue can stall on a choice; the choices differ
+in standing, gold, alignment and the flags the later scenes and the ending
+read (`flag_callbacks`).
+
+| Intrigue | Clue | Hook | Turn | Reveal | Crisis | Outcome |
+|---|---|---|---|---|---|---|
+| `hooded_lantern` | `2015_informant_*` | `3002` | `5010_letter` | `6010_thread` | `7100_log` | `7002_orders` |
+| `dying_lantern_bearer` | `2005` | `3005_envoys` | `5100_vote` | `6100_knife` | `7100_chaplain` | `7002_throne` |
+| `double_ledger` | `2015_route_sold` | `3005_black_thread` | `5100_keyholder_cut` | `6100_debt_rising` | `7100_vault_burns` | `7200_ledger` |
+| `admiraltys_silence` | `2015_survivor` | `3005_logbook_gap` | `5100_tar_hand_book` | `6010_lantern_manifest` | `7100_flagship_hold` | `7200_relic` |
+| `relic_road` | `2015_bundle` | `3005_shrine_break` | `5010_thieves_ship` | `6010_heist_night` | `7200_thieves_aboard` | `7200_fourth_piece` |
+| `the_returned` | `2015_child_tongue` | `3005_spire_takings` | `5010_vigil_envoy` | `6010_returned_roll` | `7200_courts_children` | `7200_returned` |
+| `unwatched_hour` | `3100_new_moon` | `6010_count_short` | `6100_stitcher_door` | `7200_stitcher_kin` | `7200_followed` | `7200_stitcher` |
+| `broken_charter` | — | — | `coal_stops` (event) | — | — | — |
+
+The outcomes pay off in the closing scenes through callbacks: the Crows'
+brigs at `7810`, the Returned children at `7002_approach`, the second door at
+`7003`, the relic and the Fourth Piece at `7004`. An outcome's effects
+(standing, marks, companions, titles) are the ones written in
+`intrigues.json`. Its `note` effects ("A Crow squadron sails with you at the
+end") are only told in the Intrigues tab: no code reads them.
+
 ## Open points
 
-- **Chapters 7 and 8 have one main quest between them** (`q_ch6_beyond_the_tear`,
-  unlocked at `7800` although its id and `chapter` field say 6) and no side
-  quests; chapter 7 has none at all. Needs a decision with Core.
-- **Six of the eight intrigues are not yet played in the graph** (only
-  `hooded_lantern` and `dying_lantern_bearer` are; `broken_charter` has one
-  stage). See `docs/narrative-audit.md`.
-
+- **Chapters 7 and 8 have one main quest each** (`q_ch7_lantern_throne`,
+  offered at `7400`; `q_ch6_beyond_the_tear`, filed under chapter 8, offered
+  at `7800`) and no side quests. Their activity and quest goals are 0. See
+  `docs/narrative-proposals.md` for the options.
+- **`broken_charter` is the one intrigue still short**: it has its stage 3
+  (`coal_stops`, a politics event) and nothing else. The other seven are
+  played end to end (see below).
 - **The activity goal and thorough players.** A thorough player reaches
   10–12 things done before setting out; the goal of 8 mostly shapes the
   rusher's pace (two trips a chapter).

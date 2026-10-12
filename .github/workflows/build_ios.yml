@@ -2,8 +2,8 @@ name: Build iOS
 
 # Builds the iPhone app by hand, on any branch (Actions > Build iOS > Run
 # workflow); the IPA is kept as the run's artifact. It doesn't run on pull
-# requests: the iPhone build is only checked when asked. Releases get their
-# IPA from build_apk.yml, next to the APK.
+# requests: the iPhone build is only checked when asked. Releases are
+# Android only; this is the one place an IPA is built.
 on:
   workflow_dispatch:
 

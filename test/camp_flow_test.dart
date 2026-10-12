@@ -222,7 +222,7 @@ void main() {
         container.read(playerSessionProvider).flags, contains(campFoundedFlag));
     expect(_tab('Journey'), findsNothing);
     // Founding the camp gives the chapter's quest.
-    expect(find.text("The High Warden's Fall"), findsOneWidget);
+    expect(find.text('The High Warden’s Fall'), findsOneWidget);
     await tester.tap(find.text('Accept'));
     await _settle(tester);
     await _waitOutNotices(tester);

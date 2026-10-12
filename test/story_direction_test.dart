@@ -291,7 +291,7 @@ void main() {
       }
       expect(nodes['2999']!.description, contains('Three weeks'));
       expect(nodes['3001']!.description, contains('Ashen Coast'));
-      expect(nodes['3001']!.description, contains('a day\'s walk'));
+      expect(nodes['3001']!.description, contains('a day’s walk'));
       expect(nodes['3001_camp']!.description, contains('sailed with me'));
       // The old geography is gone from chapter 3 onward.
       for (final node in nodes.values) {
@@ -494,7 +494,7 @@ void main() {
     test(
         'Vane\'s tunnel leads to the yards and the harbor\'s end knows '
         'its own state', () {
-      expect(nodes['2030']!.description, contains("ship-breakers' yards"));
+      expect(nodes['2030']!.description, contains('ship-breakers’ yards'));
       expect(nodes['2030']!.description, isNot(contains('checkpoint')));
       final hub = nodes['2900']!;
       expect(hub.description, isNot(contains('would need a hull')));
@@ -521,7 +521,7 @@ void main() {
       }
       expect(nodes['3002']!.description,
           isNot(contains('a second set of doors sealed')));
-      expect(nodes['3002']!.description, contains("Spire's outer gate"));
+      expect(nodes['3002']!.description, contains('Spire’s outer gate'));
     });
 
     test(

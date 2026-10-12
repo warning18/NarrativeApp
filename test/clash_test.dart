@@ -4,6 +4,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +19,7 @@ import 'package:narrative_data_app/combat/fight_goal.dart';
 import 'package:narrative_data_app/combat/parry.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 
@@ -164,7 +167,9 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+    await tester.pumpWidget(ProviderScope(
+        overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
+        child: const MyApp()));
     await _settle(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
@@ -241,7 +246,11 @@ void main() {
     await tester.tap(find.byIcon(Icons.unfold_more));
     await _settle(tester);
     expect(_inLog('readies a parry against'), findsOneWidget);
-    expect(_inLog('turned aside and answered'), findsOneWidget);
+    // A character with no dexterity still has the 5% dodge floor, and a
+    // dodged blow is not parried: the log then says the dodge instead.
+    final dodged = _inLog('you dodge it!').evaluate().isNotEmpty;
+    expect(_inLog(dodged ? 'you dodge it!' : 'turned aside and answered'),
+        findsOneWidget);
     await tester.tapAt(const Offset(195, 40));
     await _settle(tester);
     navigator().pop();

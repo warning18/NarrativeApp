@@ -8,6 +8,103 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.263.0+299]
+
+Two choices at the Hollow Shore can be seen at last.
+
+### Fixed
+- **The Admiral's log and the throne vote were never offered.** "Decide who
+  reads the Admiral's log" and "Cast the Admiralty's vote for the Lantern
+  Throne" sat on the Hollow Shore (`7002`), which every run visits before
+  the Anchorage sets the flags they need, and chapter 8 hides them again.
+  Both choices are now offered from Greyhithe (`7200`), after the Anchorage,
+  and their scenes (`7002_orders`, `7002_throne`, same ids as before) lead
+  back there. No numbers or flags changed. Fixes #182.
+
+## [1.262.0+298]
+
+Fight tests roll the same dice every run.
+
+### Changed
+- **A fight can be given its dice.** `FightScreen` takes an optional
+  `random:`, and the new `fightRandomProvider` (a Random factory, like the
+  road's) hands every fight its Random, so a test that reaches a fight
+  through another screen (the ship battle's boarding) can seed it too. In
+  play nothing changes: each fight makes its own unseeded Random. Every roll
+  of the fight screen already came from that one Random (the faces, crits and
+  dodges, the enemy's moves and targets, the affixes, the ground and its
+  anomaly, the loot); the plan of an anomaly the story forces is made before
+  the fight, by `forcedFieldAnomaly(id, random:, side:)`, which already took
+  its own.
+
+### Tests
+- The fight widget tests that assert an outcome (18 files, from `clash_test`
+  to the `skill_*_fight_test` harness) run on `Random(7)`, so a dodge, an
+  affix or an anomaly cannot turn up in one run and not the next.
+- `fight_mirror_spell_test` reads the Mirror's line, not the Venomous
+  affix's "You take 3 damage from poison." that it could match first.
+
+## [1.261.0+297]
+
+The people of the coast speak for themselves.
+
+### Added
+- **Thirty people have words of their own.** Aurel Vane, Overseer Renn, Nadira, Maud Tallis, Hesk Morrow, Brother Clement, the Keyholder, the chart-keeper, the High Warden, the Tear-Herald, Hathra, Tetsu, Ghrem Stonebrow, Orsabet Vell, Nkem Tallow, the White Admiral and fourteen more now say three lines each on their People page, in both languages (before, only three people did).
+- **Six follow-up scenes are spoken by the person they are about**, under their name: Ghrem on the pier, the headman of Wrack’s End, the flagship’s helmsman, the smith’s widow, the eldest of Greyhithe and the road-keeper. Hathra, Tetsu and Tobin gain a spoken line in theirs.
+
+### Fixed
+- "l’Ancrage" in two scenes at the White Anchorage is "le Mouillage" in French, as everywhere else.
+
+## [1.260.0+296]
+
+Five more plots play out: every intrigue now runs from its first clue to its outcome.
+
+### Added
+- **Five intrigues play end to end.** *The Double Ledger*, *The Admiralty’s Silence*, *The Relic Road*, *The Returned* and *The Unwatched Hour* each have a scene for every stage, in both languages: thirty new scenes in all, offered by a place’s hub once the stage before is reached (Saltmouth, the Ashen Quarter, Emberwick, the Drowned Cloister, Wrack’s End, Rimewell, the Reliquary Quarter, the White Anchorage, Greyhithe), and a closing scene at Greyhithe that settles the plot. Every choice of a stage scene advances the plot, so none can stall.
+- **The endings answer back.** What you did shows in the closing scenes: the Crows’ brigs at the landing (`7810`), the Returned children at the water’s edge (`7002_approach`), the second door sewn into the tear (`7003`), the relic and the Fourth Piece in the epilogue (`7004`).
+- Stage anchors in `intrigues.json` match where the scenes play (people met in the scenes now carry the plot in their People page).
+
+### Docs
+- `docs/chapter-flow-roadmap.md` lists the scenes of all the intrigues; only *The Broken Charter* still has one stage (its coal event).
+
+## [1.259.0+295]
+
+Two flaky tests traced: one was the test, one was a real clipped label.
+
+### Fixed
+- **The anomaly chip no longer overflows on a narrow fight.** The chip in
+  the fight's header (an anomaly's name, then "soon" or the rounds left)
+  was a row around an unwrapped label, so a long name plus its suffix, such
+  as « Lumières dans les roseaux · 3 manches restantes », ran past the edge
+  of a phone. The label now takes the room there is and ends in an ellipsis;
+  the tooltip still shows the whole effect. It also removes a 1 to 2% flake
+  of `ship_boarding_retreat_test`.
+
+### Tests
+- `test/clash_test.dart` accepts a dodged blow in the parry round. A
+  character with no dexterity still has the 5% dodge floor, and a dodged
+  blow is not parried by design, so the log then says "you dodge it!"
+  instead of "turned aside and answered" (about 4% of runs).
+
+## [1.258.0+294]
+
+The main-quest chain runs in story order, chapter 7 gets its quest, chapters end with a card, and the English text follows the French in using one apostrophe.
+
+### Added
+- **A main quest for chapter 7, "The Lantern Throne".** Offered when the party sails for Candlehold; done when the Throne is taken, by any of the seven roads. Its rewards (350 gold, 450 XP) are placeholders for Core to confirm.
+- **Chapter-end cards.** Chapters 3, 4, 5, 6 and 7 close with a `[CHAPTER N END]` card (in French `[FIN DU CHAPITRE N]`) on the scene that closes them, like chapter 2 already did: the Warden's standard, the moon-shard, the Dead Heart, the White Fleet's sail and each of the seven crowning scenes.
+- **A tag for the "hopeful" mood.** Eleven scenes carried the mood with no label.
+
+### Fixed
+- **The main quests chain in order.** Finishing the Dead Heart no longer puts the Sovereign's quest in the log at the end of chapter 5; it now leads to the White Fleet's Grave, which leads to The Lantern Throne, which leads to Beyond the Tear.
+- **"Beyond the Tear" is a chapter 8 quest.** Its id (`q_ch6_beyond_the_tear`) is unchanged so that saves keep working; only its chapter changes.
+
+### Changed
+- **One apostrophe in the English story text.** All the straight `'` in the English story, quest, people, companion and remark text are now the curly `’`, as the French has been since 1.255.0 (names too, such as "The High Warden’s Fall"). Nothing is recorded for read-aloud yet, so no recording is made stale.
+
+### Docs
+- `docs/narrative-proposals.md`: what Core is asked to decide for chapters 7 and 8, three intrigues for them, new moods and themes, and a list of achievements, for the user to choose from.
+
 ## [1.257.0+293]
 
 The UX polish proposed in the design-system review.
