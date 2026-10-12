@@ -95,8 +95,8 @@ each, but only the first two are ever advanced by the game:
 
 | Intrigue | Stages played | Where |
 |---|---|---|
-| `hooded_lantern` | 1–5 and the outcome | `2015_informant_*`, `3002`, `5010_letter`, `6010_thread`, `7100_log`, `7200_orders` |
-| `dying_lantern_bearer` | 1–5 and the outcome | `2005`, `3005_envoys`, `5100_vote`, `6100_knife`, `7100_chaplain`, `7200_throne` |
+| `hooded_lantern` | 1–5 and the outcome | `2015_informant_*`, `3002`, `5010_letter`, `6010_thread`, `7100_log`, `7002_orders` |
+| `dying_lantern_bearer` | 1–5 and the outcome | `2005`, `3005_envoys`, `5100_vote`, `6100_knife`, `7100_chaplain`, `7002_throne` |
 | `broken_charter` | stage 3 only | `politics_events.json` `coal_stops` |
 | `double_ledger`, `the_returned`, `admiraltys_silence`, `relic_road`, `unwatched_hour` | **none** | — |
 
