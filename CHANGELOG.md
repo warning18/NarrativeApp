@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.247.0+283]
+
+### Added
+- **A throne room in the Clans screen** (a new "Throne room" tab, in play and in Edit Mode): the Lantern Throne in pixel art on its dais, a brazier lit at each end of it, a red carpet running down a long hall, and every banner you have earned hanging along the walls and swaying: the cloth swings a little further the lower it hangs, the pole held still. A clan's banner hangs once it is your friend, the Open Hand's once it is raised, and the Shroud's pieces as you find them; a tap names a banner and its standing. Above it, the hall says who holds the throne, or your claim, or that it stands empty. With reduced motion the banners hang still. Drawn by `tool/gen_throne_room.py`.
+
+### Changed
+- **"Every skill in motion" on the design canvas is back in the basic hand.** Both boards now play the game's own effect strips, recoloured to each skill's element as the fight does, for all 162 skills (the 20 newest marked NEW), in place of the poster-style motions.
+
 ## [1.246.0+282]
 
 ### Changed

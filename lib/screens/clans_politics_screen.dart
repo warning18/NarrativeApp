@@ -26,6 +26,7 @@ import '../widgets/coast_news.dart';
 import '../widgets/offer_dialog.dart';
 import '../widgets/sign_widgets.dart';
 import '../widgets/throne_edit_tab.dart';
+import '../widgets/throne_room.dart';
 
 /// Edit Mode's "Clans & Politics" (v1.193, see factions.dart), from the
 /// top bar's scales: four tabs.
@@ -61,7 +62,7 @@ class ClansPoliticsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultTabController(
-      length: play ? 4 : 6,
+      length: play ? 5 : 7,
       child: Scaffold(
         appBar: AppBar(
           title: Text(tr(ref, play ? 'clans_title_play' : 'clans_title')),
@@ -83,6 +84,9 @@ class ClansPoliticsScreen extends ConsumerWidget {
               Tab(
                   key: const Key('clans_tab_intrigues'),
                   text: tr(ref, 'clans_tab_intrigues')),
+              Tab(
+                  key: const Key('clans_tab_throne_room'),
+                  text: tr(ref, 'clans_tab_throne_room')),
               if (!play)
                 Tab(
                     key: const Key('clans_tab_affinity'),
@@ -100,6 +104,7 @@ class ClansPoliticsScreen extends ConsumerWidget {
             _PoliticsTab(play: play),
             const _EvolutionTab(),
             _IntriguesTab(play: play),
+            const ThroneRoomTab(),
             if (!play) const _AffinityTab(),
             if (!play) const ThroneEditTab(),
           ],

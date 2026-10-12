@@ -11217,6 +11217,36 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Une fusion demande les deux compétences d’origine et le palier « Confiance » auprès des deux clans\u00a0; l’un ou l’autre la propose, et la prendre élève les deux. Une ascension élève une compétence que vous connaissez et demande le palier « Amitié » auprès de son clan. Une compétence de sous-clan arrive avec la voix du sous-clan une fois qu’il est votre ami ; un secret est enseigné par son clan à ceux qui ont accompli l’acte.',
   },
   'clans_tab_throne': {AppLanguage.en: 'Throne', AppLanguage.fr: 'Trône'},
+  'clans_tab_throne_room': {
+    AppLanguage.en: 'Throne room',
+    AppLanguage.fr: 'Salle du trône',
+  },
+  'throne_room_title': {
+    AppLanguage.en: 'The Lantern Throne',
+    AppLanguage.fr: 'Le Trône de la Lanterne',
+  },
+  'throne_room_empty': {
+    AppLanguage.en: 'The throne stands empty.',
+    AppLanguage.fr: 'Le trône est vide.',
+  },
+  'throne_room_held': {
+    AppLanguage.en: 'The throne is held by {name}.',
+    AppLanguage.fr: 'Le trône est tenu par {name}.',
+  },
+  'throne_room_none': {
+    AppLanguage.en: 'No banner hangs here yet.',
+    AppLanguage.fr: 'Aucune bannière ne pend encore ici.',
+  },
+  'throne_room_count': {
+    AppLanguage.en: 'banners earned',
+    AppLanguage.fr: 'bannières gagnées',
+  },
+  'throne_room_hint': {
+    AppLanguage.en:
+        'A clan’s banner hangs here once it is your friend, the Open Hand’s once it is raised, and the Shroud’s pieces as you find them. Tap one for its name.',
+    AppLanguage.fr:
+        'La bannière d’un clan pend ici dès qu’il est votre ami, celle de la Main ouverte une fois relevée, et les pièces du Linceul à mesure que vous les trouvez. Touchez-en une pour son nom.',
+  },
   'throne_edit_hint': {
     AppLanguage.en:
         'Each faction’s climb: its House, its clan steps (the flags clan_<id>_step_1 to 3), the claim and the Throne. Set them here, and muster the Host.',
