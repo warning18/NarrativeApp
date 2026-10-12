@@ -3078,6 +3078,38 @@
         ]
       },
       {
+        "text": "Buy a quiet route from a Crow tout",
+        "text_fr": "Acheter une route discrète à un rabatteur des Corneilles",
+        "next_id": "2015_route_sold",
+        "hideIfFlags": [
+          "hub_2015_route_sold"
+        ]
+      },
+      {
+        "text": "Sit with the sailor in the White Fleet’s sash",
+        "text_fr": "S’asseoir près du marin à l’écharpe de la Flotte Blanche",
+        "next_id": "2015_survivor",
+        "hideIfFlags": [
+          "hub_2015_survivor"
+        ]
+      },
+      {
+        "text": "Take the wrapped bundle a grey pilgrim holds out",
+        "text_fr": "Prendre le paquet qu’une pèlerine en gris vous tend",
+        "next_id": "2015_bundle",
+        "hideIfFlags": [
+          "hub_2015_bundle"
+        ]
+      },
+      {
+        "text": "Follow the child who is talking to the gulls",
+        "text_fr": "Suivre l’enfant qui parle aux mouettes",
+        "next_id": "2015_child_tongue",
+        "hideIfFlags": [
+          "hub_2015_child_tongue"
+        ]
+      },
+      {
         "text": "Bribe Vane with information",
         "text_fr": "Soudoyer Vane avec des informations",
         "next_id": "2030"
@@ -4509,6 +4541,50 @@
             "scaffold_split"
           ]
         }
+      },
+      {
+        "text": "Find a black thread knotted to your door",
+        "text_fr": "Trouver un fil noir noué à votre porte",
+        "next_id": "3005_black_thread",
+        "showIfFlags": [
+          "plot_ledger_1"
+        ],
+        "hideIfFlags": [
+          "hub_3005_black_thread"
+        ]
+      },
+      {
+        "text": "Ask the archive clerk for the Admiralty’s last log",
+        "text_fr": "Demander au commis des archives le dernier journal de l’Amirauté",
+        "next_id": "3005_logbook_gap",
+        "showIfFlags": [
+          "plot_admiralty_1"
+        ],
+        "hideIfFlags": [
+          "hub_3005_logbook_gap"
+        ]
+      },
+      {
+        "text": "Go to the shrine where something broke in the night",
+        "text_fr": "Aller au sanctuaire où quelque chose s’est brisé dans la nuit",
+        "next_id": "3005_shrine_break",
+        "showIfFlags": [
+          "plot_relic_1"
+        ],
+        "hideIfFlags": [
+          "hub_3005_shrine_break"
+        ]
+      },
+      {
+        "text": "Watch the Inquisitors take children up the Spire stair",
+        "text_fr": "Regarder les Inquisiteurs conduire des enfants dans l’escalier de la Flèche",
+        "next_id": "3005_spire_takings",
+        "showIfFlags": [
+          "plot_returned_1"
+        ],
+        "hideIfFlags": [
+          "hub_3005_spire_takings"
+        ]
       }
     ],
     "flag_callbacks": [
@@ -6893,6 +6969,28 @@
             "glass_carried"
           ]
         }
+      },
+      {
+        "text": "Meet the woman in grey who is asking for a ship",
+        "text_fr": "Rencontrer la femme en gris qui demande un navire",
+        "next_id": "5010_thieves_ship",
+        "showIfFlags": [
+          "plot_relic_2"
+        ],
+        "hideIfFlags": [
+          "hub_5010_thieves_ship"
+        ]
+      },
+      {
+        "text": "Hear the Last Watch’s envoy on the driest ledge",
+        "text_fr": "Écouter l’émissaire de la Dernière Veille sur la corniche la plus sèche",
+        "next_id": "5010_vigil_envoy",
+        "showIfFlags": [
+          "plot_returned_2"
+        ],
+        "hideIfFlags": [
+          "hub_5010_vigil_envoy"
+        ]
       }
     ],
     "flag_callbacks": [
@@ -7801,6 +7899,51 @@
             "bark_kept"
           ]
         }
+      },
+      {
+        "text": "Ask Tallis what the Reliquary shipped to sea",
+        "text_fr": "Demander à Tallis ce que le Reliquaire a envoyé en mer",
+        "next_id": "6010_lantern_manifest",
+        "showIfFlags": [
+          "plot_admiralty_3"
+        ],
+        "hideIfFlags": [
+          "hub_6010_lantern_manifest"
+        ]
+      },
+      {
+        "text": "Follow the grey cloth to the Thieves’ meeting",
+        "text_fr": "Suivre le tissu gris jusqu’à la réunion des Voleurs",
+        "next_id": "6010_heist_night",
+        "showIfFlags": [
+          "plot_relic_3"
+        ],
+        "hideIfFlags": [
+          "hub_6010_heist_night"
+        ]
+      },
+      {
+        "text": "Set Orsabet’s count beside the Last Watch’s tally",
+        "text_fr": "Confronter le compte d’Orsabet au registre de la Dernière Veille",
+        "next_id": "6010_count_short",
+        "showIfFlags": [
+          "plot_stitcher_1",
+          "hub_6010_orsabet"
+        ],
+        "hideIfFlags": [
+          "hub_6010_count_short"
+        ]
+      },
+      {
+        "text": "Read the roll in the Reliquary’s opened archive",
+        "text_fr": "Lire le rôle dans les archives ouvertes du Reliquaire",
+        "next_id": "6010_returned_roll",
+        "showIfFlags": [
+          "plot_returned_3"
+        ],
+        "hideIfFlags": [
+          "hub_6010_returned_roll"
+        ]
       }
     ],
     "flag_callbacks": [
@@ -8872,6 +9015,16 @@
         "flag": "on_throne",
         "en": "Across the water another throne was waiting for me to come home and sit in it. I found I did not like this one any better for that.",
         "fr": "De l’autre côté de l’eau, un autre trône attendait que je rentre m’y asseoir. Je découvris que je n’aimais pas davantage celui-ci pour autant."
+      },
+      {
+        "flag": "stitcher_turned",
+        "en": "I had given the Last Watch a name, and a doorframe of glowing thread had been cut out of the dark behind me. I did not look to see whether it had closed.",
+        "fr": "J’avais donné un nom à la Dernière Veille, et un chambranle de fil luisant avait été tranché dans le noir derrière moi. Je ne me retournai pas pour voir s’il s’était refermé."
+      },
+      {
+        "flag": "stitcher_kept",
+        "en": "There was a second way back through the tear, a doorframe of glowing thread at the edge of the grey, sewn by a woman I had not given away. I did not need it. I knew where it was.",
+        "fr": "Il y avait un second chemin de retour à travers la déchirure, un chambranle de fil luisant au bord du gris, cousu par une femme que je n’avais pas dénoncée. Je n’en avais pas besoin. Je savais où il était."
       }
     ],
     "noDetour": true
@@ -9042,6 +9195,26 @@
         "flag": "seal_returned",
         "en": "The Seal was the drawers’ again, and whole on my back, and for the first time since the Unmaking there was somebody it belonged to.",
         "fr": "Le Sceau était de nouveau aux traceurs, et entier sur mon dos, et pour la première fois depuis la Défaite du Sceau il appartenait à quelqu’un."
+      },
+      {
+        "flag": "relic_raised",
+        "en": "The relic had come up out of the flagship’s hold and stood on dry land at last, in a Reliquary’s keeping I tried not to think about.",
+        "fr": "La relique était remontée de la cale du vaisseau amiral et reposait enfin sur la terre ferme, sous la garde d’un Reliquaire auquel j’essayais de ne pas penser."
+      },
+      {
+        "flag": "relic_sunk",
+        "en": "The flagship’s hold was still under forty fathoms with its cradle and its coffin, and no one on this coast would carry anything through again.",
+        "fr": "La cale du vaisseau amiral était toujours par quarante brasses de fond avec son berceau et son cercueil, et nul, sur cette côte, ne porterait plus jamais rien au travers."
+      },
+      {
+        "flag": "piece_broken",
+        "en": "The Fourth Piece still lay in my pack, broken across and cold. The Thieves had been right that it would hum for no one again.",
+        "fr": "La Quatrième Pièce reposait toujours dans mon sac, brisée en deux et froide. Les Voleurs avaient eu raison : elle ne bourdonnerait plus pour personne."
+      },
+      {
+        "flag": "piece_betrayed",
+        "en": "The Fourth Piece was in the Inquisition’s hands, on a cutter’s deck, and I had been paid for it. I told myself the coin was heavy for some other reason.",
+        "fr": "La Quatrième Pièce était aux mains de l’Inquisition, sur le pont d’un cotre, et l’on m’avait payé pour elle. Je me dis que la pièce était lourde pour une tout autre raison."
       }
     ],
     "noDetour": true
@@ -9845,8 +10018,8 @@
   },
   "5010_tobin_hymn": {
     "id": "5010_tobin_hymn",
-    "description": "I sat on the ledge while Tobin trimmed the wicks and did not sing, and somewhere in the not-singing the cloister got quieter, and the water got lower, or seemed to, and I slept for the first time underground. When I woke there was a candle beside me that had not been there, and it had been burning a while.",
-    "description_fr": "Je m’assis sur la corniche pendant que Tobin taillait les mèches sans chanter, et quelque part dans ce non-chant le cloître devint plus calme, l’eau plus basse, ou sembla l’être, et je dormis pour la première fois sous terre. À mon réveil, une chandelle qui n’était pas là brûlait à côté de moi, et depuis un moment.",
+    "description": "I sat on the ledge while Tobin trimmed the wicks and did not sing. “I will tell you what I tell the dying,” he said, without turning. “The song is not for the one who hears it. It is so the one who sings knows they are not alone in the dark.” He went on trimming. I sat there, and he did not sing, and somewhere in the not-singing the cloister got quieter, and the water got lower, or seemed to, and I slept for the first time underground. When I woke there was a candle beside me that had not been there, and it had been burning a while.",
+    "description_fr": "Je m’assis sur la corniche pendant que Tobin taillait les mèches sans chanter. « Je vous dirai ce que je dis aux mourants, fit-il sans se retourner. Le chant n’est pas pour celui qui l’entend. C’est pour que celui qui chante sache qu’il n’est pas seul dans le noir. » Il continua de tailler. Je restai là, et il ne chanta pas, et quelque part dans ce non-chant le cloître devint plus calme, l’eau plus basse, ou sembla l’être, et je dormis pour la première fois sous terre. À mon réveil, une chandelle qui n’était pas là brûlait à côté de moi, et depuis un moment.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
       "mood": "grim",
@@ -10881,6 +11054,14 @@
         "hideIfFlags": [
           "hub_3100_house_anvil_deaf"
         ]
+      },
+      {
+        "text": "Watch the Salt Road from the slag heaps at the new moon",
+        "text_fr": "Guetter la route du sel depuis les crassiers à la nouvelle lune",
+        "next_id": "3100_new_moon",
+        "hideIfFlags": [
+          "hub_3100_new_moon"
+        ]
       }
     ],
     "settlement": {
@@ -11181,12 +11362,12 @@
   },
   "3100_widow_later": {
     "id": "3100_widow_later",
-    "description": "I had been up the yards since, and I had heard what was singing there. The widow listened to me the way people listen to a verdict they have already served most of.",
-    "description_fr": "J’avais gravi les chantiers depuis, et j’avais entendu ce qui y chantait. La veuve m’écouta comme on écoute un verdict dont on a déjà purgé l’essentiel.",
+    "description": "I had been up the yards since, and I had heard what was singing there. The widow heard me out with her hand on the lintel, under her husband’s hammer, the way people listen to a verdict they have already served most of. “Was it him?” she said at last. “Do not tell me what I want to hear. Tell me whose voice it was. I have listened to it six winters, and I would like to know whom I have been keeping house with.”",
+    "description_fr": "J’avais gravi les chantiers depuis, et j’avais entendu ce qui y chantait. La veuve m’écouta la main sur le linteau, sous le marteau de son mari, comme on écoute un verdict dont on a déjà purgé l’essentiel. « C’était lui ? dit-elle enfin. Ne me dites pas ce que je veux entendre. Dites-moi à qui était cette voix. Je l’écoute depuis six hivers, et j’aimerais savoir avec qui je tiens maison. »",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "neutral",
-      "speaker": "Narrator"
+      "speaker": "Widow"
     },
     "location": "emberwick",
     "choices": [
@@ -11230,6 +11411,68 @@
         "flagsToAdd": [
           "hub_3100_bread"
         ]
+      }
+    ]
+  },
+  "3100_new_moon": {
+    "id": "3100_new_moon",
+    "description": "The kilns bank down on the new moon, the ironworkers say, because a fire shows for miles on a night with no moon to rival it, and I never understood how true that was until I climbed the slag heaps with a kiln-wife’s lantern shuttered and watched the Salt Road go grey under no moon at all. Something came along it. I do not mean a traveller. It walked the way a thing walks that has not yet learned how knees go, and it carried itself carefully, as if it had been warned about the floor. The old woman beside me put out her hand and covered the lantern’s slit. The Vigil’s wall at the pass was supposed to have been watched that night, she said, in the voice of someone reading a tide table she does not like. “They watch it every new moon. Every month someone is listening to the dark.”",
+    "description_fr": "Les fours sont mis en veille à la nouvelle lune, disent les forgerons, parce qu’un feu se voit à des lieues par une nuit sans lune pour lui faire concurrence, et je n’avais jamais compris à quel point c’était vrai avant de grimper sur les crassiers avec la lanterne obturée d’une femme de fourneau et de regarder la route du sel virer au gris sans aucune lune. Quelque chose y passa. Je ne parle pas d’un voyageur. Cela marchait comme marche une chose qui n’a pas encore appris comment fonctionnent les genoux, et se portait avec précaution, comme si on l’avait mise en garde contre le sol. La vieille, à côté de moi, avança la main et couvrit la fente de la lanterne. Le mur de la Veille, au col, aurait dû être surveillé cette nuit-là, dit-elle, de la voix de quelqu’un qui lit une table des marées qui ne lui plaît pas. « Ils le surveillent à chaque nouvelle lune. Chaque mois, quelqu’un écoute le noir. »",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "creepy",
+      "speaker": "Narrator"
+    },
+    "location": "emberwick",
+    "choices": [
+      {
+        "text": "Follow it down the road",
+        "text_fr": "La suivre sur la route",
+        "next_id": "3100",
+        "flagsToAdd": [
+          "hub_3100_new_moon",
+          "plot_stitcher_1",
+          "newmoon_followed"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "stage": 1
+          }
+        }
+      },
+      {
+        "text": "Mark the place, and tell the Last Watch",
+        "text_fr": "Marquer l’endroit, et prévenir la Dernière Veille",
+        "next_id": "3100",
+        "flagsToAdd": [
+          "hub_3100_new_moon",
+          "plot_stitcher_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "stage": 1
+          },
+          "standing": {
+            "vigil": 5
+          }
+        }
+      },
+      {
+        "text": "Say nothing, and let the lantern burn low",
+        "text_fr": "Ne rien dire, et laisser la lanterne baisser",
+        "next_id": "3100",
+        "flagsToAdd": [
+          "hub_3100_new_moon",
+          "plot_stitcher_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "stage": 1
+          }
+        }
       }
     ]
   },
@@ -11538,8 +11781,8 @@
   },
   "3200_smith_later": {
     "id": "3200_smith_later",
-    "description": "The Horn-Taker had kept his proofs in a lacquered chest in the chapel at the top of the road, three hundred and six of them, each tagged in a neat clerical hand with a date, a village and the words ‘demon expelled’. I carried the chest down to Akagiri. Tetsu found his on the second try. He turned it over in his hands for a long time, and then he did not put it back on, because it cannot be put back on; he hung it from his eaves among the bells. The chest went round the terraces all evening. By morning there were horns hanging from half the eaves in the village, and a few going down the road in the arms of people walking to other villages, to ask whether anyone there was missing theirs.",
-    "description_fr": "Le Preneur de Cornes gardait ses preuves dans un coffre laqué, dans la chapelle en haut de la route : trois cent six, chacune étiquetée d’une écriture de clerc soignée, avec une date, un village et les mots « démon expulsé ». Je descendis le coffre jusqu’à Akagiri. Tetsu trouva la sienne au deuxième essai. Il la tourna longtemps entre ses mains, puis il ne la remit pas, parce qu’on ne peut pas la remettre ; il la pendit à son avant-toit, parmi les cloches. Le coffre fit le tour des terrasses toute la soirée. Au matin, des cornes pendaient à la moitié des avant-toits du village, et quelques-unes descendaient la route dans les bras de gens partis vers d’autres villages demander si quelqu’un, là-bas, cherchait la sienne.",
+    "description": "The Horn-Taker had kept his proofs in a lacquered chest in the chapel at the top of the road, three hundred and six of them, each tagged in a neat clerical hand with a date, a village and the words ‘demon expelled’. I carried the chest down to Akagiri. Tetsu found his on the second try. He turned it over in his hands for a long time, and then he did not put it back on, because it cannot be put back on; he hung it from his eaves among the bells. “Three hundred and six,” he said, to nobody. “And I thought mine was the only one.” The chest went round the terraces all evening. By morning there were horns hanging from half the eaves in the village, and a few going down the road in the arms of people walking to other villages, to ask whether anyone there was missing theirs.",
+    "description_fr": "Le Preneur de Cornes gardait ses preuves dans un coffre laqué, dans la chapelle en haut de la route : trois cent six, chacune étiquetée d’une écriture de clerc soignée, avec une date, un village et les mots « démon expulsé ». Je descendis le coffre jusqu’à Akagiri. Tetsu trouva la sienne au deuxième essai. Il la tourna longtemps entre ses mains, puis il ne la remit pas, parce qu’on ne peut pas la remettre ; il la pendit à son avant-toit, parmi les cloches. « Trois cent six, dit-il, à personne. Et je croyais que la mienne était la seule. » Le coffre fit le tour des terrasses toute la soirée. Au matin, des cornes pendaient à la moitié des avant-toits du village, et quelques-unes descendaient la route dans les bras de gens partis vers d’autres villages demander si quelqu’un, là-bas, cherchait la sienne.",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "neutral",
@@ -11706,6 +11949,28 @@
             "crows": 1
           }
         }
+      },
+      {
+        "text": "Follow a Keyholder’s low lantern down the cliff path",
+        "text_fr": "Suivre la lanterne basse d’une Porte-Clef sur le sentier de la falaise",
+        "next_id": "5100_keyholder_cut",
+        "showIfFlags": [
+          "plot_ledger_2"
+        ],
+        "hideIfFlags": [
+          "hub_5100_keyholder_cut"
+        ]
+      },
+      {
+        "text": "Ask an old Tar-Hand about the Fleet’s last refit",
+        "text_fr": "Interroger une vieille Main-de-Goudron sur le dernier radoub de la Flotte",
+        "next_id": "5100_tar_hand_book",
+        "showIfFlags": [
+          "plot_admiralty_2"
+        ],
+        "hideIfFlags": [
+          "hub_5100_tar_hand_book"
+        ]
       }
     ],
     "settlement": {
@@ -12197,12 +12462,12 @@
   },
   "5100_headman_later": {
     "id": "5100_headman_later",
-    "description": "I had been in the Court’s ledger since, and I knew now what the people were for. The headman knew it from my face before I said it. He named a price for the lamps, the way men name prices for things they would be glad to be rid of.",
-    "description_fr": "J’avais lu le registre de la Cour depuis, et je savais à présent à quoi servaient ces gens. Le chef le lut sur mon visage avant que je le dise. Il annonça un prix pour les lampes, comme on annonce le prix d’une chose dont on serait content d’être débarrassé.",
+    "description": "“You have read it,” the headman said, before I had sat down. He took the pipe out of his mouth, which I had not seen him do. “It is on your face. What the people are for.” He looked out at the lamp on the point, and the lamp on the rocks, the way a man looks at two old dogs. “I will put them out. I have always said I would, if anyone made it worth the oil. Sixty. A man should be paid for the last honest thing he does, and oil is dear.”",
+    "description_fr": "« Vous avez lu », dit le chef avant que je me sois assis. Il ôta la pipe de sa bouche, ce que je ne lui avais jamais vu faire. « Cela se voit sur votre visage. À quoi servaient les gens. » Il regarda la lampe de la pointe, puis celle des récifs, comme on regarde deux vieux chiens. « Je les éteindrai. J’ai toujours dit que je le ferais, si quelqu’un y mettait de quoi payer l’huile. Soixante. Un homme doit être payé pour la dernière chose honnête qu’il fait, et l’huile coûte cher. »",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
-      "speaker": "Narrator"
+      "speaker": "Headman"
     },
     "location": "wracks_end",
     "choices": [
@@ -12892,6 +13157,28 @@
             "penitents": 6
           }
         }
+      },
+      {
+        "text": "Follow the branded debtors off the pilgrims’ road",
+        "text_fr": "Suivre les débiteurs marqués hors de la route des pèlerins",
+        "next_id": "6100_debt_rising",
+        "showIfFlags": [
+          "plot_ledger_3"
+        ],
+        "hideIfFlags": [
+          "hub_6100_debt_rising"
+        ]
+      },
+      {
+        "text": "Follow the needle-song behind the milestone",
+        "text_fr": "Suivre le chant de l’aiguille derrière la borne",
+        "next_id": "6100_stitcher_door",
+        "showIfFlags": [
+          "plot_stitcher_2"
+        ],
+        "hideIfFlags": [
+          "hub_6100_stitcher_door"
+        ]
       }
     ],
     "settlement": {
@@ -13422,12 +13709,12 @@
   },
   "6100_keeper_later": {
     "id": "6100_keeper_later",
-    "description": "She held the lantern out to me without getting up. It was the only warm thing on the road, and she meant it for whoever needed it more.",
-    "description_fr": "Elle me tendit la lanterne sans se lever. C’était la seule chose chaude sur la route, et elle la destinait à qui en aurait le plus besoin.",
+    "description": "She held the lantern out to me without getting up. “It is the only warm thing on this road,” the road-keeper said, “and I mean it for whoever needs it more. I used to know who that was. I could tell by the walk.” She looked up the road towards the Quarter. “My daughter walked like someone carrying a full cup. If you meet a girl carrying a full cup, you may give it to her.”",
+    "description_fr": "Elle me tendit la lanterne sans se lever. « C’est la seule chose chaude sur cette route, dit la gardienne, et je la destine à qui en a le plus besoin. Je savais qui c’était, autrefois. Je le voyais à la démarche. » Elle regarda la route qui montait vers le Quartier. « Ma fille marchait comme quelqu’un qui porte une tasse pleine. Si vous croisez une fille qui porte une tasse pleine, vous pourrez la lui donner. »",
     "context_taxonomy": {
       "ui_theme": "cathedral",
       "mood": "neutral",
-      "speaker": "Narrator"
+      "speaker": "Road-keeper"
     },
     "location": "rimewell",
     "choices": [
@@ -13845,8 +14132,8 @@
   },
   "6200_eldest_later": {
     "id": "6200_eldest_later",
-    "description": "The tally-stone was the size of a cart and I could not carry it, so I brought what I could: a rubbing of every name on it, in charcoal, on the backs of Reliquary requisition forms, which took two days. And I brought word of Gorm, who had been standing at the tally-stone when the frost took him, and had gone on standing there. Hathra read the names aloud in the moot-hall, all of them, one at a time, while the fire burned, and it took the whole night, and nobody left. Then she asked me how Gorm had looked at the end.",
-    "description_fr": "La pierre de compte avait la taille d’une charrette et je ne pouvais pas la porter, alors j’apportai ce que je pouvais : un frottis de chaque nom, au charbon, au dos de bons de réquisition du Reliquaire, ce qui prit deux jours. Et j’apportai des nouvelles de Gorm, qui se tenait devant la pierre de compte quand le givre l’avait pris, et qui avait continué de s’y tenir. Hathra lut les noms à voix haute dans la salle du conseil, tous, un par un, pendant que le feu brûlait, et cela prit la nuit entière, et personne ne partit. Puis elle me demanda de quoi Gorm avait l’air, à la fin.",
+    "description": "The tally-stone was the size of a cart and I could not carry it, so I brought what I could: a rubbing of every name on it, in charcoal, on the backs of Reliquary requisition forms, which took two days. And I brought word of Gorm, who had been standing at the tally-stone when the frost took him, and had gone on standing there. Hathra read the names aloud in the moot-hall, all of them, one at a time, while the fire burned, and it took the whole night, and nobody left. Then she folded the last form. “Gorm,” she said. “I knew him four hundred years. How did he look, at the end? Do not be kind. I have been kind to myself long enough.”",
+    "description_fr": "La pierre de compte avait la taille d’une charrette et je ne pouvais pas la porter, alors j’apportai ce que je pouvais : un frottis de chaque nom, au charbon, au dos de bons de réquisition du Reliquaire, ce qui prit deux jours. Et j’apportai des nouvelles de Gorm, qui se tenait devant la pierre de compte quand le givre l’avait pris, et qui avait continué de s’y tenir. Hathra lut les noms à voix haute dans la salle du conseil, tous, un par un, pendant que le feu brûlait, et cela prit la nuit entière, et personne ne partit. Puis elle plia le dernier bon. « Gorm, dit-elle. Je l’ai connu quatre cents ans. De quoi avait-il l’air, à la fin ? Ne soyez pas aimable. J’ai été aimable avec moi-même assez longtemps. »",
     "context_taxonomy": {
       "ui_theme": "cathedral",
       "mood": "neutral",
@@ -14113,6 +14400,28 @@
             "hearth_stone_split"
           ]
         }
+      },
+      {
+        "text": "Run down to the Vault under the chandlery",
+        "text_fr": "Courir au Coffre sous la chandlerie",
+        "next_id": "7100_vault_burns",
+        "showIfFlags": [
+          "plot_ledger_4"
+        ],
+        "hideIfFlags": [
+          "hub_7100_vault_burns"
+        ]
+      },
+      {
+        "text": "Let the helmsman take you down to the flagship’s hold",
+        "text_fr": "Laisser le timonier vous conduire à la cale du vaisseau amiral",
+        "next_id": "7100_flagship_hold",
+        "showIfFlags": [
+          "plot_admiralty_4"
+        ],
+        "hideIfFlags": [
+          "hub_7100_flagship_hold"
+        ]
       }
     ],
     "settlement": {
@@ -14599,12 +14908,12 @@
   },
   "7100_helmsman_later": {
     "id": "7100_helmsman_later",
-    "description": "He wanted to see her once more, with the grey still on the mast, and then he wanted never to see her again. We took the Eel along the point at dusk. He did not say anything for a long time.",
-    "description_fr": "Il voulait la revoir une fois, avec le gris encore au mât, puis ne plus jamais la revoir. Nous longeâmes la pointe avec l’Eel au crépuscule. Il resta longtemps sans rien dire.",
+    "description": "“I want to see her once more,” the helmsman said, “with the grey still on the mast. Then I never want to see her again. That seems to me a fair trade. Most of the trades I made on that ship were not.” We took the Eel along the point at dusk. He said nothing else for a long time, and I did not ask him to.",
+    "description_fr": "« Je veux la revoir une fois, dit le timonier, avec le gris encore au mât. Ensuite je ne veux plus jamais la revoir. Cela me paraît un marché honnête. La plupart de ceux que j’ai faits sur ce navire ne l’étaient pas. » Nous longeâmes la pointe avec l’Eel au crépuscule. Il ne dit plus rien de longtemps, et je ne le lui demandai pas.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
-      "speaker": "Narrator"
+      "speaker": "Helmsman"
     },
     "location": "white_anchorage",
     "choices": [
@@ -14789,6 +15098,105 @@
             "mire": 26
           }
         }
+      },
+      {
+        "text": "Answer the Crows’ brigs off the point",
+        "text_fr": "Répondre aux bricks des Corneilles au large de la pointe",
+        "next_id": "7200_ledger",
+        "showIfFlags": [
+          "plot_ledger_5"
+        ],
+        "hideIfFlags": [
+          "hub_7200_ledger"
+        ]
+      },
+      {
+        "text": "Decide what comes up from the flagship’s hold",
+        "text_fr": "Décider ce qui remontera de la cale du vaisseau amiral",
+        "next_id": "7200_relic",
+        "showIfFlags": [
+          "plot_admiralty_5"
+        ],
+        "hideIfFlags": [
+          "hub_7200_relic"
+        ]
+      },
+      {
+        "text": "Answer the muffled oars under the Eel’s stern",
+        "text_fr": "Répondre aux avirons étouffés sous la poupe de l’Eel",
+        "next_id": "7200_thieves_aboard",
+        "showIfFlags": [
+          "plot_relic_4"
+        ],
+        "hideIfFlags": [
+          "hub_7200_thieves_aboard"
+        ]
+      },
+      {
+        "text": "Settle the Fourth Piece with the Reliquary Thieves",
+        "text_fr": "Régler le sort de la Quatrième Pièce avec les Voleurs de Reliques",
+        "next_id": "7200_fourth_piece",
+        "showIfFlags": [
+          "plot_relic_5"
+        ],
+        "hideIfFlags": [
+          "hub_7200_fourth_piece"
+        ]
+      },
+      {
+        "text": "Hear Wenna Tarn’s bargain at the water’s edge",
+        "text_fr": "Écouter le marché de Wenna Tarn au bord de l’eau",
+        "next_id": "7200_stitcher_kin",
+        "showIfFlags": [
+          "plot_stitcher_3"
+        ],
+        "hideIfFlags": [
+          "hub_7200_stitcher_kin"
+        ]
+      },
+      {
+        "text": "Watch what has followed the Eel to the shore",
+        "text_fr": "Observer ce qui a suivi l’Eel jusqu’à la rive",
+        "next_id": "7200_followed",
+        "showIfFlags": [
+          "plot_stitcher_4"
+        ],
+        "hideIfFlags": [
+          "hub_7200_followed"
+        ]
+      },
+      {
+        "text": "Decide what the Last Watch hears about Wenna Tarn",
+        "text_fr": "Décider de ce que la Dernière Veille apprendra sur Wenna Tarn",
+        "next_id": "7200_stitcher",
+        "showIfFlags": [
+          "plot_stitcher_5"
+        ],
+        "hideIfFlags": [
+          "hub_7200_stitcher"
+        ]
+      },
+      {
+        "text": "Meet the heron-masked envoy from the Courts",
+        "text_fr": "Rencontrer l’émissaire des Cours masqué en héron",
+        "next_id": "7200_courts_children",
+        "showIfFlags": [
+          "plot_returned_4"
+        ],
+        "hideIfFlags": [
+          "hub_7200_courts_children"
+        ]
+      },
+      {
+        "text": "Decide the fate of the children in the Eel’s hold",
+        "text_fr": "Décider du sort des enfants dans la cale de l’Eel",
+        "next_id": "7200_returned",
+        "showIfFlags": [
+          "plot_returned_5"
+        ],
+        "hideIfFlags": [
+          "hub_7200_returned"
+        ]
       }
     ],
     "settlement": {
@@ -15069,12 +15477,12 @@
   },
   "7200_elder_later": {
     "id": "7200_elder_later",
-    "description": "The Court’s ledger had a page for a coast that no longer existed, in the same fair hand as the others, and I had read it. The eldest waited with her hands in her lap for whatever I had brought her.",
-    "description_fr": "Le registre de la Cour avait une page pour une côte qui n’existait plus, de la même belle écriture que les autres, et je l’avais lue. L’aînée attendait, les mains sur les genoux, ce que je lui apportais.",
+    "description": "The Court’s ledger had a page for a coast that no longer existed, in the same fair hand as the others, and I had read it. The eldest waited with her hands in her lap. “Tell me what it says,” she said. “Or tell me it says nothing, and I will believe you for one night. After one night I will want to know which you were being.” She looked at the water. “My daughter was nineteen. She counted her stitches aloud.”",
+    "description_fr": "Le registre de la Cour avait une page pour une côte qui n’existait plus, de la même belle écriture que les autres, et je l’avais lue. L’aînée attendait, les mains sur les genoux. « Dites-moi ce qu’elle dit, fit-elle. Ou dites-moi qu’elle ne dit rien, et je vous croirai pour une nuit. Au bout d’une nuit, je voudrai savoir lequel des deux vous étiez. » Elle regarda l’eau. « Ma fille avait dix-neuf ans. Elle comptait ses points à voix haute. »",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "neutral",
-      "speaker": "Narrator"
+      "speaker": "Eldest"
     },
     "location": "greyhithe",
     "choices": [
@@ -15141,6 +15549,592 @@
         "flagsToAdd": [
           "hub_7200_tide"
         ]
+      }
+    ]
+  },
+  "7200_ledger": {
+    "id": "7200_ledger",
+    "description": "The Crows’ brigs had come round the point in the night and lay off Greyhithe in a line, lamps shuttered, waiting to be told whose they were. They did not ask me. They never ask; a Crow’s brig answers to whoever paid last, and what the coast had been trying to do since the first suspicion was to make that me. Whatever had come of the Vault, whoever sat in its chair, they had heard the Ledger’s count and the Keyholders’ count and mine, and the three did not agree. A signal-lamp on the lead brig asked the only question a Crow ever asks: whose door? I had a lamp of my own on the Eel’s rail. I found, looking down, that my hand was already on it.",
+    "description_fr": "Les bricks des Corneilles avaient doublé la pointe dans la nuit et se tenaient au large de Grisegrève, en ligne, fanaux voilés, attendant qu’on leur dise à qui ils étaient. Ils ne me demandèrent rien. Ils ne demandent jamais : le brick d’une Corneille répond à celui qui a payé en dernier, et ce que la côte tentait de faire depuis le premier soupçon, c’était que ce fût moi. Quoi qu’il fût advenu du Coffre, quel que fût celui qui occupait son fauteuil, ils avaient entendu le compte du Registre, celui des Porte-Clefs et le mien, et les trois ne s’accordaient pas. Un fanal de signalisation, sur le brick de tête, posa la seule question qu’une Corneille pose jamais : à quelle porte ? J’avais une lampe à moi sur le bastingage de l’Eel. Je m’aperçus, en baissant les yeux, que ma main était déjà posée dessus.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Flash the Crows’ own sign, and mean it",
+        "text_fr": "Faire le signe des Corneilles, et le penser",
+        "next_id": "7200",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_7200_ledger",
+          "ledger_loyal"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "outcome": 0
+          }
+        }
+      },
+      {
+        "text": "Flash the cutters’ code, and sell them out",
+        "text_fr": "Faire le code des cotres, et les vendre",
+        "next_id": "7200",
+        "goldMod": 150,
+        "alignmentMod": -2,
+        "flagsToAdd": [
+          "hub_7200_ledger",
+          "ledger_sold"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "outcome": 1
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "vault_burned",
+        "en": "Behind them the sky over the Anchorage was still smudged with the Vault’s smoke.",
+        "fr": "Derrière eux, le ciel au-dessus du Mouillage était encore souillé de la fumée du Coffre."
+      },
+      {
+        "flag": "debt_marched",
+        "en": "The Drowned Debt stood at the rail of the second brig, their chainless hands in plain sight, and I did not know which way they were leaning.",
+        "fr": "La Dette Noyée se tenait au bastingage du second brick, ses mains sans chaîne bien en vue, et je ne savais de quel côté elle penchait."
+      },
+      {
+        "flag": "vault_debt_chair",
+        "en": "The master’s chair at the Vault had a debtor in it now, a link of chain still branded on the hand that held the arm.",
+        "fr": "Le fauteuil du maître, au Coffre, avait désormais un débiteur dedans, un maillon de chaîne encore marqué sur la main qui tenait l’accoudoir."
+      },
+      {
+        "flag": "vault_keyholder_chair",
+        "en": "The Keyholder sat in the master’s chair now, and the debt-books were ash, and nobody on the brigs seemed to remember them.",
+        "fr": "La Porte-Clef occupait désormais le fauteuil du maître, les livres de dettes étaient en cendres, et nul, sur les bricks, ne semblait s’en souvenir."
+      }
+    ]
+  },
+  "7200_relic": {
+    "id": "7200_relic",
+    "description": "The Admiralty’s chaplain was waiting on the sand with a boat’s crew and a block and tackle, because he had understood before I did what lay in the hold, and had understood too that there were two honest answers. The relic could come up. The Reliquary would pay for it, the Dominion would be grateful, and the one thing the Inquisition had hidden under forty ships would at last be on dry land and in daylight, which was not the same as safe. Or it could be sunk where the water was deepest, with the Admiral and the cradle and the order that had never been written down, so that no one would carry anything through again. The chaplain did not ask me which. He had stopped asking people what they wanted. He held out the rope.",
+    "description_fr": "L’aumônier de l’Amirauté m’attendait sur le sable avec l’équipage d’une chaloupe et un palan, car il avait compris avant moi ce qui reposait dans la cale, et compris aussi qu’il y avait deux réponses honnêtes. La relique pouvait remonter. Le Reliquaire la paierait, le Dominion serait reconnaissant, et la seule chose que l’Inquisition avait cachée sous quarante navires serait enfin sur la terre ferme et au grand jour, ce qui n’est pas la même chose que hors de danger. Ou bien on la coulerait là où l’eau était la plus profonde, avec l’Amiral, le berceau et l’ordre qui n’avait jamais été mis par écrit, pour que plus personne ne porte rien au travers. L’aumônier ne me demanda pas laquelle. Il avait cessé de demander aux gens ce qu’ils voulaient. Il me tendit la corde.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Bring it up",
+        "text_fr": "La faire remonter",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_relic",
+          "relic_raised"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "outcome": 0
+          }
+        }
+      },
+      {
+        "text": "Sink it where no one will find it",
+        "text_fr": "La couler là où personne ne la trouvera",
+        "next_id": "7200",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_7200_relic",
+          "relic_sunk"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "outcome": 1
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "relic_opened",
+        "en": "I could still see the light that had come out of the lid, cold and white as skimmed milk, and I knew what it would do to anyone who wore it.",
+        "fr": "Je revoyais la lumière qui s’était échappée du couvercle, froide et blanche comme du lait écrémé, et je savais ce qu’elle ferait à quiconque la porterait."
+      },
+      {
+        "flag": "relic_proof",
+        "en": "The lock of the cradle’s wool was in my pocket, still smelling of the sea.",
+        "fr": "La mèche de laine du berceau était dans ma poche, sentant encore la mer."
+      },
+      {
+        "flag": "relic_marked",
+        "en": "I had marked the place on the chart, nine fathoms from the point.",
+        "fr": "J’avais marqué l’endroit sur la carte, à neuf brasses de la pointe."
+      }
+    ]
+  },
+  "7200_thieves_aboard": {
+    "id": "7200_thieves_aboard",
+    "description": "They came out to the Eel in the small hours, three boats rowing with sacking on the oars, and a grey lantern on the lead boat that gave no light at all. The Thieves had not got what they came for: the Fourth Piece had been lifted from the Reliquary by another hand, mine, and was not theirs to break. It lay in my keeping. The woman in grey said so from the boat, without heat, as a fact about the weather. You lifted it, she said. It is yours to give. Give it to the sea. And at the point, where Greyhithe’s last house leaned into the dark, a white cutter’s lamp had begun, very slowly, to turn towards the Eel.",
+    "description_fr": "Ils vinrent jusqu’à l’Eel au petit matin, trois barques dont les avirons étaient enveloppés de toile à sac, et une lanterne grise en tête qui ne donnait aucune lumière. Les Voleurs n’avaient pas obtenu ce pour quoi ils étaient venus : la Quatrième Pièce avait été levée du Reliquaire par une autre main, la mienne, et n’était plus à eux de briser. Elle était sous ma garde. La femme en gris le dit de sa barque, sans chaleur, comme un fait sur le temps qu’il fait. Vous l’avez levée, dit-elle. C’est à vous de la donner. Donnez-la à la mer. Et sur la pointe, là où la dernière maison de Grisegrève se penchait vers l’obscurité, le fanal d’un cotre blanc avait commencé, très lentement, à se tourner vers l’Eel.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Take them aboard, and douse the Eel’s lamps",
+        "text_fr": "Les prendre à bord, et éteindre les lampes de l’Eel",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_thieves_aboard",
+          "plot_relic_5",
+          "thieves_aboard"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "stage": 5
+          },
+          "standing": {
+            "penitents": 5
+          }
+        }
+      },
+      {
+        "text": "Keep them in their boats, and bargain",
+        "text_fr": "Les garder dans leurs barques, et marchander",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_thieves_aboard",
+          "plot_relic_5",
+          "thieves_bargained"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "stage": 5
+          }
+        }
+      },
+      {
+        "text": "Show the cutter’s lamp a quiet signal",
+        "text_fr": "Faire au fanal du cotre un signal discret",
+        "next_id": "7200",
+        "alignmentMod": -2,
+        "flagsToAdd": [
+          "hub_7200_thieves_aboard",
+          "plot_relic_5",
+          "cutter_signalled"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "stage": 5
+          },
+          "standing": {
+            "dominion": 5,
+            "penitents": -5
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "heist_sworn",
+        "en": "I had sworn in the chapel to be on the Eel’s deck when the bells rang. I was, though the bells had rung without me.",
+        "fr": "J’avais juré dans la chapelle d’être sur le pont de l’Eel quand les cloches sonneraient. J’y étais, bien que les cloches eussent sonné sans moi."
+      }
+    ]
+  },
+  "7200_fourth_piece": {
+    "id": "7200_fourth_piece",
+    "description": "The Fourth Piece lay on the Eel’s deck on a folded sail, reliquary-grey and humming, and the Thieves stood round it with their hammers wrapped in cloth, because even a breaking should be quiet. Past the point a white cutter’s lamp had burned since dusk. It was the one thing in the world I could use against the Inquisition and the one thing the Inquisition most wished me to use. If it were broken, I could never use it, and neither could they. If I gave it to the cutter, the Dominion would be grateful, and the Penitents would learn what I was. The woman in grey did not ask. She had stopped asking at the Cloister. She held out the hammer.",
+    "description_fr": "La Quatrième Pièce reposait sur le pont de l’Eel, sur une voile pliée, grise comme un reliquaire et bourdonnante, et les Voleurs l’entouraient, leurs marteaux enveloppés de tissu, car même un bris doit être silencieux. Au-delà de la pointe, le fanal d’un cotre blanc brûlait depuis le crépuscule. C’était la seule chose au monde dont je pouvais me servir contre l’Inquisition, et la seule dont l’Inquisition voulait le plus que je me serve. Brisée, je ne pourrais plus jamais m’en servir, ni eux. Donnée au cotre, le Dominion m’en saurait gré, et les Pénitents apprendraient ce que j’étais. La femme en gris ne demanda rien. Elle avait cessé de demander au Cloître. Elle me tendit le marteau.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Take the hammer, and break the Fourth Piece",
+        "text_fr": "Prendre le marteau, et briser la Quatrième Pièce",
+        "next_id": "7200",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_7200_fourth_piece",
+          "piece_broken"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "outcome": 0
+          }
+        }
+      },
+      {
+        "text": "Hand the Fourth Piece to the cutter",
+        "text_fr": "Remettre la Quatrième Pièce au cotre",
+        "next_id": "7200",
+        "goldMod": 200,
+        "alignmentMod": -3,
+        "flagsToAdd": [
+          "hub_7200_fourth_piece",
+          "piece_betrayed"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "outcome": 1
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "cutter_signalled",
+        "en": "The cutter had already answered my signal. It lay closer than it had any right to.",
+        "fr": "Le cotre avait déjà répondu à mon signal. Il se tenait plus près qu’il n’en avait le droit."
+      },
+      {
+        "flag": "thieves_aboard",
+        "en": "The Thieves were already on the Eel’s deck, because I had taken them aboard at Greyhithe and put out the lamps.",
+        "fr": "Les Voleurs étaient déjà sur le pont de l’Eel, car je les avais pris à bord à Grisegrève et éteint les lampes."
+      },
+      {
+        "flag": "thieves_bargained",
+        "en": "I had kept them in their boats at Greyhithe and bargained, and they had not forgotten the bargaining.",
+        "fr": "Je les avais gardés dans leurs barques à Grisegrève et j’avais marchandé, et ils n’avaient pas oublié ce marchandage."
+      }
+    ]
+  },
+  "7200_stitcher_kin": {
+    "id": "7200_stitcher_kin",
+    "description": "Greyhithe was the place for it: a village the tear had eaten somewhere else and coughed up here, faces and all, so that nobody on its beach was surprised by what the water brought. Wenna Tarn waited at the tide-line with her apron full of thread and told me what the door was for. Her people were tear-marked, she said, a hundred of them in the Vigil’s villages, children and grandmothers, and the Inquisition was closing the roads to them one wall at a time. The Vigil would not open the wall. So she was bargaining with whatever lived on the far side of the tear: a door, in exchange for room. A place for her kin to go, and a price she did not name. “I am no traitor,” she said. “I am a seamstress who has run out of cloth.”",
+    "description_fr": "Grisegrève était l’endroit idéal : un village que la déchirure avait dévoré ailleurs et recraché ici, visages compris, si bien que personne, sur sa plage, ne s’étonnait de ce que l’eau apportait. Wenna Tarn attendait à la laisse de marée, le tablier plein de fil, et me dit à quoi servait la porte. Les siens étaient marqués par la déchirure, dit-elle, une centaine dans les villages de la Veille, des enfants et des grand-mères, et l’Inquisition leur fermait les routes, un mur après l’autre. La Veille n’ouvrirait pas le mur. Alors elle marchandait avec ce qui vivait de l’autre côté de la déchirure : une porte, en échange de place. Un endroit où aller pour les siens, et un prix qu’elle ne nomma pas. « Je ne suis pas une traîtresse, dit-elle. Je suis une couturière qui n’a plus de tissu. »",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "reflective",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Promise to say nothing until you have seen the door",
+        "text_fr": "Promettre de ne rien dire avant d’avoir vu la porte",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_stitcher_kin",
+          "plot_stitcher_4",
+          "stitcher_promised"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "stage": 4
+          },
+          "standing": {
+            "vigil": -3
+          }
+        }
+      },
+      {
+        "text": "Tell her the price is not hers to name alone",
+        "text_fr": "Lui dire que le prix n’est pas à elle seule de le nommer",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_stitcher_kin",
+          "plot_stitcher_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "stage": 4
+          }
+        }
+      },
+      {
+        "text": "Ask her to name the price now",
+        "text_fr": "Lui demander de nommer le prix maintenant",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_stitcher_kin",
+          "plot_stitcher_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "stage": 4
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "stitcher_lamp",
+        "en": "I had held her lamp at the milestone. She mentioned it only by not mentioning it.",
+        "fr": "J’avais tenu sa lampe à la borne. Elle n’y fit allusion qu’en n’y faisant pas allusion."
+      }
+    ]
+  },
+  "7200_followed": {
+    "id": "7200_followed",
+    "description": "It had followed us. I should have known: a thing that comes through a door is not interested in the door. It stood in the surf behind the Eel at dawn, the thing from the Salt Road, still learning its knees, and the grey sand around it rose in small drifts like frost on a pane. The reflections on the beach had turned to look at it. So had my crew. It did not attack. It did what it had been taught by whoever sent it, which was to stand and be seen and to be, quite patiently, a question: whether the door Wenna Tarn had sewn was a danger or a mercy. It had followed the Eel to sea because the Eel was the only ship that would ever carry the answer.",
+    "description_fr": "Cela nous avait suivis. J’aurais dû m’en douter : ce qui passe par une porte ne s’intéresse pas à la porte. Cela se tenait dans le ressac derrière l’Eel, à l’aube, la chose de la route du sel, apprenant encore ses genoux, et le sable gris autour d’elle se levait en petites congères comme le givre sur une vitre. Les reflets, sur la plage, s’étaient tournés pour la regarder. Mon équipage aussi. Elle n’attaquait pas. Elle faisait ce que lui avait appris celui ou celle qui l’avait envoyée, c’est-à-dire se tenir là, être vue, et être, avec une grande patience, une question : la porte que Wenna Tarn avait cousue était-elle un danger ou une grâce ? Elle avait suivi l’Eel en mer parce que l’Eel était le seul navire qui porterait jamais la réponse.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "creepy",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Speak to it",
+        "text_fr": "Lui parler",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_followed",
+          "plot_stitcher_5",
+          "followed_spoken"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "stage": 5
+          }
+        }
+      },
+      {
+        "text": "Keep the crew back from it",
+        "text_fr": "Tenir l’équipage à distance",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_followed",
+          "plot_stitcher_5"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "stage": 5
+          }
+        }
+      },
+      {
+        "text": "Put the Eel’s lamps on it",
+        "text_fr": "Braquer les lampes de l’Eel sur elle",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_followed",
+          "plot_stitcher_5"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "stage": 5
+          }
+        }
+      }
+    ]
+  },
+  "7200_stitcher": {
+    "id": "7200_stitcher",
+    "description": "A Last Watch runner came down the shingle in the night with the Vigil’s question in his mouth: where had the thing on the beach come from, and who had let it in. He did not say that it was a question. The Watch does not ask what it already knows. If I told him, Wenna Tarn would answer for the wall and the Stitchers would be struck from the Watch’s roll, and her kin with them, since the Inquisition read every roll the Watch wrote. If I did not, the door stayed sewn and open and the Vigil’s wall stayed half blind, and somewhere on the Salt Road in the dark a hundred tear-marked people could walk through it, or something else could. Both were true. I had not known until then that a door could be loyal and a wall afraid.",
+    "description_fr": "Un coureur de la Dernière Veille descendit les galets dans la nuit, la question de la Veille à la bouche : d’où venait la chose sur la plage, et qui l’avait laissée entrer. Il ne dit pas que c’était une question. La Veille ne demande pas ce qu’elle sait déjà. Si je le lui disais, Wenna Tarn répondrait du mur et les Porte-Aiguilles seraient rayés du registre de la Veille, et les siens avec eux, puisque l’Inquisition lisait tout registre que la Veille écrivait. Si je ne le disais pas, la porte restait cousue et ouverte et le mur de la Veille restait à demi aveugle, et quelque part sur la route du sel, dans le noir, une centaine de gens marqués par la déchirure pouvaient passer par elle, ou autre chose. Les deux étaient vrais. Je n’avais pas su, jusqu’alors, qu’une porte pouvait être loyale et un mur avoir peur.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Keep her secret",
+        "text_fr": "Garder son secret",
+        "next_id": "7200",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_7200_stitcher",
+          "stitcher_kept"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "outcome": 0
+          }
+        }
+      },
+      {
+        "text": "Turn her in",
+        "text_fr": "La dénoncer",
+        "next_id": "7200",
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_7200_stitcher",
+          "stitcher_turned"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "outcome": 1
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "followed_spoken",
+        "en": "The thing on the beach had listened when I spoke to it. It had not answered. Nothing in my life had been quite so politely unanswered.",
+        "fr": "La chose, sur la plage, avait écouté quand je lui avais parlé. Elle n’avait pas répondu. Rien, dans ma vie, n’était resté si poliment sans réponse."
+      },
+      {
+        "flag": "stitcher_promised",
+        "en": "I had promised her my silence until I had seen the door, and I had seen it now.",
+        "fr": "Je lui avais promis mon silence jusqu’à ce que j’aie vu la porte, et je l’avais vue à présent."
+      }
+    ]
+  },
+  "7200_courts_children": {
+    "id": "7200_courts_children",
+    "description": "They sent an envoy in a heron’s mask to Greyhithe, in a boat with no oars, which came in on the tide and stopped exactly where the water ended, as if it had been told how far to go. The Courts asked, in the old formal way, for a thing they had never asked a stranger: to hide their children aboard the Eel. Not many, thirty or so, from the Reedholm shallows, before the Inquisition’s cutters and the Vigil’s rope and the Dominion’s mercy arrived at the same conclusion. The Eel had carried worse. She had carried me. The envoy did not say what the Courts would give. She said what they would not do, which was ask a second time.",
+    "description_fr": "Ils envoyèrent à Grisegrève un émissaire au masque de héron, dans une barque sans avirons, qui vint avec la marée et s’arrêta exactement là où finissait l’eau, comme si on lui avait dit jusqu’où aller. Les Cours demandèrent, à l’ancienne et en forme, une chose qu’elles n’avaient jamais demandée à un étranger : cacher leurs enfants à bord de l’Eel. Pas beaucoup, une trentaine, des hauts-fonds de Reedholm, avant que les cotres de l’Inquisition, la corde de la Veille et la clémence du Dominion n’en viennent à la même conclusion. L’Eel avait porté pire. Elle m’avait porté. L’émissaire ne dit pas ce que les Cours donneraient. Elle dit ce qu’elles ne feraient pas, c’est-à-dire demander une seconde fois.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Take the children aboard the Eel",
+        "text_fr": "Prendre les enfants à bord de l’Eel",
+        "next_id": "7200",
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "hub_7200_courts_children",
+          "plot_returned_5",
+          "children_aboard"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "stage": 5
+          },
+          "standing": {
+            "mire": 10
+          }
+        }
+      },
+      {
+        "text": "Agree to hide them, and ask a price (100 gold)",
+        "text_fr": "Accepter de les cacher, et demander un prix (100 or)",
+        "next_id": "7200",
+        "goldMod": 100,
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_7200_courts_children",
+          "plot_returned_5"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "stage": 5
+          },
+          "standing": {
+            "mire": 3
+          }
+        }
+      },
+      {
+        "text": "Say you will decide at the Shore",
+        "text_fr": "Dire que vous déciderez sur la Rive",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_courts_children",
+          "plot_returned_5"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "stage": 5
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "clan_mire_step_2",
+        "en": "I had hidden one Returned child for three days at Rimewell. Thirty was a larger number than one, but the arithmetic was the same.",
+        "fr": "J’avais caché un enfant rendu pendant trois jours à Puits-de-Givre. Trente était un plus grand nombre qu’un, mais l’arithmétique était la même."
+      }
+    ]
+  },
+  "7200_returned": {
+    "id": "7200_returned",
+    "description": "The children were on the Eel, thirty of them, packed into the hold like salvage and as quiet as salvage, and the shore had found out. The Vigil’s rope lay on the sand. The Dominion’s cutter stood off the point under a legate’s flag. The Courts’ heron stood in the surf with nothing in its hands. And the smallest child, the girl from Fisherman’s Row, if it was the same girl, which I could no longer be sure of, stood on the Eel’s rail and looked at the tear across the water, and at me, and said my name. She was no longer seven. She had a way of growing when I was not looking. A child can lead you through the tear, if one is still free. I looked at the thirty and thought of the roll. I looked at the legate’s flag and thought of the price. I had one boat, one hand on the tiller, and a question that had never once been about the children.",
+    "description_fr": "Les enfants étaient sur l’Eel, une trentaine, tassés dans la cale comme du butin de naufrage et aussi silencieux que lui, et la rive l’avait appris. La corde de la Veille gisait sur le sable. Le cotre du Dominion se tenait au large de la pointe sous le pavillon d’un légat. Le héron des Cours se tenait dans le ressac, les mains vides. Et la plus petite des enfants, la fillette de l’Allée des Pêcheurs, si c’était bien la même, ce dont je ne pouvais plus être sûr, se tenait sur le bastingage de l’Eel et regardait la déchirure de l’autre côté de l’eau, puis moi, et dit mon nom. Elle n’avait plus sept ans. Elle avait une façon de grandir quand je ne regardais pas. Un enfant peut vous guider à travers la déchirure, s’il en reste un de libre. Je regardai la trentaine et pensai au rôle. Je regardai le pavillon du légat et pensai au prix. J’avais un bateau, une main sur la barre, et une question qui n’avait jamais été, pas une fois, au sujet des enfants.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Hide them below, and sail",
+        "text_fr": "Les cacher dans la cale, et appareiller",
+        "next_id": "7200",
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "hub_7200_returned",
+          "children_hidden"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "outcome": 0
+          }
+        }
+      },
+      {
+        "text": "Hand them over to the legate",
+        "text_fr": "Les remettre au légat",
+        "next_id": "7200",
+        "goldMod": 250,
+        "alignmentMod": -3,
+        "flagsToAdd": [
+          "hub_7200_returned",
+          "children_handed"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "outcome": 1
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "roll_taken",
+        "en": "The page torn from the Reliquary’s roll was in my coat, four hundred names long, and the last ten had no second date.",
+        "fr": "La page arrachée au rôle du Reliquaire était dans mon manteau, longue de quatre cents noms, et les dix derniers n’avaient pas de seconde date."
+      },
+      {
+        "flag": "children_aboard",
+        "en": "They had come aboard at Greyhithe without a sound, thirty small bundles in the dark, and I had not once been asked to explain.",
+        "fr": "Ils étaient montés à bord à Grisegrève sans un bruit, trente petits paquets dans le noir, et l’on ne m’avait pas une fois demandé de m’expliquer."
       }
     ]
   },
@@ -15486,6 +16480,16 @@
         "flag": "banner_raised",
         "en": "The grey hand went before us on its spar, and the reflections drew back from it the way the sea draws back before a wave.",
         "fr": "La main grise nous précédait sur son espar, et les reflets reculaient devant elle comme la mer recule avant une vague."
+      },
+      {
+        "flag": "children_hidden",
+        "en": "One of the children I had hidden in the Eel’s hold walked ahead of the Host to the water’s edge, and the tear’s rim softened wherever she set down a foot.",
+        "fr": "L’un des enfants que j’avais cachés dans la cale de l’Eel marcha devant l’Ost jusqu’au bord de l’eau, et le rebord de la déchirure s’adoucissait partout où elle posait le pied."
+      },
+      {
+        "flag": "children_handed",
+        "en": "The legate’s boat lay at the water’s edge as well, with thirty small figures in its stern, and none of them looked at me.",
+        "fr": "La barque du légat se trouvait aussi au bord de l’eau, avec une trentaine de petites silhouettes à la poupe, et aucune ne me regarda."
       }
     ],
     "noDetour": true
@@ -16650,6 +17654,150 @@
       }
     ]
   },
+  "5100_keyholder_cut": {
+    "id": "5100_keyholder_cut",
+    "description": "I found the leak at the foot of the cliff path, in the lee of a hull that had once been somebody’s house, with a lantern turned low and a good coat spread under her against the damp. It was the Keyholder from the Smugglers’ Wharf, the one whose key had been warm, and she did not trouble to stand. She had sold the Crows’ routes to the Inquisition for two years, she said, and the Inquisition’s lists to the Crows for three, and had grown rich on the gap between the two books and tired of the arithmetic. A woman cannot keep two ledgers honest, only profitable. The Whisper Ledger was closing on her. She needed a ship nobody would search, and she would cut me in for a third, which was, she observed, exactly what the coast had suspected me of taking.",
+    "description_fr": "Je trouvai la fuite au pied du sentier de la falaise, à l’abri d’une coque qui avait été la maison de quelqu’un, une lanterne tournée bas et un bon manteau étalé sous elle contre l’humidité. C’était la Porte-Clef du Quai des Contrebandiers, celle dont la clef était tiède, et elle ne prit pas la peine de se lever. Elle avait vendu les routes des Corneilles à l’Inquisition pendant deux ans, dit-elle, et les listes de l’Inquisition aux Corneilles pendant trois, et s’était enrichie sur l’écart entre les deux livres et lassée de l’arithmétique. On ne peut pas tenir deux registres honnêtes, seulement rentables. Le Registre des Murmures se resserrait sur elle. Il lui fallait un navire que personne ne fouillerait, et elle me donnerait un tiers, ce qui était, fit-elle remarquer, exactement ce que la côte me soupçonnait d’avoir pris.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "wracks_end",
+    "choices": [
+      {
+        "text": "Take the third, and keep her secret",
+        "text_fr": "Prendre le tiers, et garder son secret",
+        "next_id": "5100",
+        "goldMod": 90,
+        "alignmentMod": -2,
+        "flagsToAdd": [
+          "hub_5100_keyholder_cut",
+          "plot_ledger_3",
+          "keyholder_cut_taken"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "stage": 3
+          },
+          "standing": {
+            "dominion": 3,
+            "crows": -5
+          }
+        }
+      },
+      {
+        "text": "Refuse the cut, and tell her you know",
+        "text_fr": "Refuser la part, et lui dire que vous savez",
+        "next_id": "5100",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_5100_keyholder_cut",
+          "plot_ledger_3",
+          "keyholder_cut_refused"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "stage": 3
+          },
+          "standing": {
+            "crows": 3
+          }
+        }
+      },
+      {
+        "text": "Say nothing, take the measure of her lantern, and go",
+        "text_fr": "Ne rien dire, jauger sa lanterne, et partir",
+        "next_id": "5100",
+        "flagsToAdd": [
+          "hub_5100_keyholder_cut",
+          "plot_ledger_3"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "stage": 3
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "ledger_paid",
+        "en": "I had paid the Ledger thirty gold to stop suspecting me, and here sat the one it should have suspected, warm and comfortable, as if she had been paid by the same hand.",
+        "fr": "J’avais payé trente pièces d’or au Registre pour qu’il cesse de me soupçonner, et voilà celle qu’il aurait dû soupçonner, au chaud et à son aise, comme payée de la même main."
+      }
+    ]
+  },
+  "5100_tar_hand_book": {
+    "id": "5100_tar_hand_book",
+    "description": "The Tar-Hands will fit any hull overnight and forget it by morning, and it is a point of professional honour with them that they do. The old caulker at Wrack’s End had forgotten the White Fleet very thoroughly. She had to be reminded, and it cost me a bottle, which is the rate. One ship, she said, the night before the Fleet weighed: a flagship’s tender, if memory served, though it did not. They had not been asked to fit guns or stores. They had been asked to build a cradle in the hold, oak padded with sealed wool, and to cut a hatch in the deck above it wide enough for a coffin, and to ask nothing. “For something carried,” she said. “Not something fought with. You build a cradle for a thing that must not be jolted, and that must arrive.”",
+    "description_fr": "Les Mains-de-Goudron radoubent n’importe quelle coque en une nuit et l’oublient au matin, et c’est pour elles un point d’honneur professionnel. La vieille calfate de Bout-du-Varech avait oublié la Flotte Blanche très consciencieusement. Il fallut la lui rappeler, et il m’en coûta une bouteille, qui est le tarif. Un seul navire, dit-elle, la nuit avant l’appareillage de la Flotte : la chaloupe d’un vaisseau amiral, si ses souvenirs étaient bons, mais ils ne l’étaient pas. On ne leur avait demandé ni canons ni vivres. On leur avait demandé de construire un berceau dans la cale, en chêne garni de laine scellée, et de percer dans le pont, au-dessus, une écoutille assez large pour un cercueil, et de ne rien demander. « Pour quelque chose qu’on porte, dit-elle. Pas quelque chose avec quoi on se bat. On bâtit un berceau pour ce qui ne doit pas être secoué, et qui doit arriver. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "location": "wracks_end",
+    "choices": [
+      {
+        "text": "Buy the caulker’s refit book (40 gold)",
+        "text_fr": "Acheter le livre de radoub de la calfate (40 or)",
+        "next_id": "5100",
+        "goldMod": -40,
+        "pays": true,
+        "flagsToAdd": [
+          "hub_5100_tar_hand_book",
+          "plot_admiralty_3",
+          "tar_book_bought"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "stage": 3
+          },
+          "standing": {
+            "crows": 2
+          }
+        }
+      },
+      {
+        "text": "Take her word, and leave the bottle",
+        "text_fr": "Se contenter de sa parole, et lui laisser la bouteille",
+        "next_id": "5100",
+        "flagsToAdd": [
+          "hub_5100_tar_hand_book",
+          "plot_admiralty_3"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "stage": 3
+          }
+        }
+      },
+      {
+        "text": "Ask what else she has forgotten for the Inquisition",
+        "text_fr": "Demander ce qu’elle a encore oublié pour l’Inquisition",
+        "next_id": "5100",
+        "flagsToAdd": [
+          "hub_5100_tar_hand_book",
+          "plot_admiralty_3"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "stage": 3
+          },
+          "standing": {
+            "dominion": -2
+          }
+        }
+      }
+    ]
+  },
   "6100_knife": {
     "id": "6100_knife",
     "description": "He had frozen sitting up, in a pilgrim’s grey, with his back to the milestone and his eyes on the road from the coast, the way a man sits who is waiting for someone in particular. Rimewell had left him there because the ground was too hard to dig and nobody knew his name. The road-keeper knew who he had been waiting for, though. The Eldest Wickwarden walked the pilgrims’ road to the Reliquary every year, on foot, with one lamp, and she was on it now. Under his coat he had a knife. The hilt bore the Order’s lantern on a sword, plain as a signature. But I had drawn once, on the Spire, and I knew now how a sign sits on a thing: this one sat on top of another. Under the Order’s mark, scraped out and painted over, was a lantern with a hood on it. Someone had wanted Maud Tallis dead on this road, and the Grand Master hanged for it.",
@@ -16701,6 +17849,162 @@
         "flag": "vote_read",
         "en": "I had read the Tribunal’s vote by steam at Wrack’s End. It had been cast for Vane.",
         "fr": "J’avais lu à la vapeur le vote du Tribunal, à Bout-du-Varech. Il était pour Vane."
+      }
+    ]
+  },
+  "6100_debt_rising": {
+    "id": "6100_debt_rising",
+    "description": "They came up the pilgrims’ road in a line, forty of them, each with a link of chain branded into the back of the hand and no chain on them anywhere. The Drowned Debt, the road-keeper said, though not kindly. They had walked off the Crows’ ships at three ports in a month, the way a tide walks off a beach, and they were bound for the Quarter because the Inquisition paid its informers in forgiven debts. Somebody was feeding Keyholders’ names to the white masks, one name a week, and every name came back marked paid. The debtors had worked out whose name came next. They had decided, with the unhurried clarity of people who have nothing left to be afraid of, to begin with the Keyholders.",
+    "description_fr": "Ils montèrent la route des pèlerins en file, quarante, chacun un maillon de chaîne marqué au fer sur le dos de la main et aucune chaîne nulle part. La Dette Noyée, dit la gardienne de la route, sans douceur. Ils avaient quitté les navires des Corneilles dans trois ports en un mois, comme une marée quitte une plage, et ils allaient vers le Quartier parce que l’Inquisition payait ses indicateurs en dettes remises. Quelqu’un donnait des noms de Porte-Clefs aux masques blancs, un nom par semaine, et chaque nom revenait marqué « payé ». Les débiteurs avaient deviné quel nom viendrait ensuite. Ils avaient décidé, avec la clarté tranquille de ceux qui n’ont plus rien à craindre, de commencer par les Porte-Clefs.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "location": "rimewell",
+    "choices": [
+      {
+        "text": "Walk with them, and carry their list",
+        "text_fr": "Marcher avec eux, et porter leur liste",
+        "next_id": "6100",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_6100_debt_rising",
+          "plot_ledger_4",
+          "debt_marched"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "stage": 4
+          },
+          "standing": {
+            "crows": -5
+          }
+        }
+      },
+      {
+        "text": "Warn the Keyholders by the Rimewell post",
+        "text_fr": "Prévenir les Porte-Clefs par le courrier de Puits-de-Givre",
+        "next_id": "6100",
+        "goldMod": 20,
+        "flagsToAdd": [
+          "hub_6100_debt_rising",
+          "plot_ledger_4",
+          "debt_warned"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "stage": 4
+          },
+          "standing": {
+            "crows": 5
+          }
+        }
+      },
+      {
+        "text": "Pay the debts of those who will go home (40 gold)",
+        "text_fr": "Payer les dettes de ceux qui rentreront chez eux (40 or)",
+        "next_id": "6100",
+        "goldMod": -40,
+        "pays": true,
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "hub_6100_debt_rising",
+          "plot_ledger_4",
+          "debt_bought_out"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "stage": 4
+          },
+          "standing": {
+            "crows": -2
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "keyholder_cut_taken",
+        "en": "I thought of the third I had taken, and of whose names had paid for it.",
+        "fr": "Je pensai au tiers que j’avais pris, et aux noms qui l’avaient payé."
+      },
+      {
+        "flag": "keyholder_cut_refused",
+        "en": "I had refused her third at the foot of the cliff path, and told her I knew. She had looked relieved, which I had not expected.",
+        "fr": "J’avais refusé son tiers au pied du sentier de la falaise, et lui avais dit que je savais. Elle avait paru soulagée, ce à quoi je ne m’attendais pas."
+      }
+    ]
+  },
+  "6100_stitcher_door": {
+    "id": "6100_stitcher_door",
+    "description": "I heard the needle before I saw her, a small dry sound in the frost, the sound of thread drawn through something that was not cloth. She sat on the lee side of the milestone where the road-keeper never looked: a voidkin woman in a Stitcher’s grey apron, sleeves rolled, a curved needle in her fingers, sewing. Not a wound. The Stitchers sew wounds, and rents in cloth, and now and then a small tear in the air, to hold it shut. This was none of those. She was sewing the air into the shape of a doorframe, stitch by stitch, with a thread that glowed at its edges, and the hole it made did not close. It opened. She neither stopped nor looked up. “Wenna Tarn,” she said, “and I know what it looks like. Sit. It takes a long time, and I would rather you held the lamp than the knife.”",
+    "description_fr": "J’entendis l’aiguille avant de la voir, un petit bruit sec dans le givre, le bruit d’un fil que l’on tire à travers quelque chose qui n’était pas du tissu. Elle était assise du côté abrité de la borne, là où la gardienne de la route ne regardait jamais : une enfant du Néant en tablier gris de Porte-Aiguilles, manches retroussées, une aiguille courbe aux doigts, cousant. Pas une plaie. Les Porte-Aiguilles recousent les plaies, les accrocs de la toile, et de temps en temps une petite déchirure de l’air, pour la tenir fermée. Ce n’était rien de cela. Elle cousait l’air en forme de chambranle, point après point, d’un fil qui luisait sur ses bords, et le trou qu’il faisait ne se refermait pas. Il s’ouvrait. Elle ne s’arrêta ni ne leva les yeux. « Wenna Tarn, dit-elle, et je sais à quoi cela ressemble. Asseyez-vous. Cela prend longtemps, et je préfère que vous teniez la lampe plutôt que le couteau. »",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "creepy",
+      "speaker": "Narrator"
+    },
+    "location": "rimewell",
+    "choices": [
+      {
+        "text": "Hold the lamp",
+        "text_fr": "Tenir la lampe",
+        "next_id": "6100",
+        "flagsToAdd": [
+          "hub_6100_stitcher_door",
+          "plot_stitcher_3",
+          "stitcher_lamp"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "stage": 3
+          },
+          "standing": {
+            "vigil": -3
+          }
+        }
+      },
+      {
+        "text": "Ask what the door is for",
+        "text_fr": "Demander à quoi sert la porte",
+        "next_id": "6100",
+        "flagsToAdd": [
+          "hub_6100_stitcher_door",
+          "plot_stitcher_3"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "stage": 3
+          }
+        }
+      },
+      {
+        "text": "Walk away: you did not see this",
+        "text_fr": "Vous éloigner : vous n’avez rien vu",
+        "next_id": "6100",
+        "flagsToAdd": [
+          "hub_6100_stitcher_door",
+          "plot_stitcher_3"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "stage": 3
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "count_name_heard",
+        "en": "I had heard the name read out from a stone in the frost. I had not expected to hear it spoken to me.",
+        "fr": "J’avais entendu ce nom lu à voix haute devant une pierre dans le givre. Je ne m’attendais pas à l’entendre prononcé pour moi."
       }
     ]
   },
@@ -21972,6 +23276,16 @@
         "flag": "lines_watched",
         "en": "I had stood the watch so that the company could sleep, and they had slept, and it showed.",
         "fr": "J’avais monté la garde pour que la compagnie puisse dormir, et elle avait dormi, et cela se voyait."
+      },
+      {
+        "flag": "ledger_loyal",
+        "en": "The Crows’ brigs came in on the Host’s flank with their lamps shuttered and every gun run out, which is how a Crow says that it has paid.",
+        "fr": "Les bricks des Corneilles arrivèrent sur le flanc de l’Ost, fanaux voilés et tous les canons sortis, ce qui est la façon dont une Corneille dit qu’elle a payé."
+      },
+      {
+        "flag": "ledger_sold",
+        "en": "The Crows’ brigs were not with us. Two of them stood off the point with their lamps shuttered, watching the Eel the way a creditor watches a door.",
+        "fr": "Les bricks des Corneilles n’étaient pas avec nous. Deux d’entre eux se tenaient au large de la pointe, fanaux voilés, et regardaient l’Eel comme un créancier regarde une porte."
       }
     ],
     "noDetour": true
@@ -22038,6 +23352,258 @@
         "flagsToAdd": [
           "scaffold_clerk_faced"
         ]
+      }
+    ]
+  },
+  "2015_route_sold": {
+    "id": "2015_route_sold",
+    "description": "The tout sold me the route the way the wharf sells everything, by the half-hour and in a whisper: out past the second mole at dusk, hug the weed line, and no cutter would see a hull that did not wish to be seen. I paid, I went, and the cutter was waiting at the second mole with her lamps shuttered and her crew along the rail, as though the route had been read to them before it was read to me. They let me pass with a polite wave. That was the part I disliked. A cutter that has caught nobody does not wave. Somebody on the Crows’ side of the ledger had sold my road to the Inquisition before selling it to me, and had been paid twice for the same half-hour.",
+    "description_fr": "Le rabatteur me vendit la route comme le quai vend tout, à la demi-heure et dans un souffle : passer le second môle à la tombée du jour, longer la ligne des algues, et aucun cotre ne verrait une coque qui ne souhaitait pas être vue. Je payai, j’y allai, et le cotre m’attendait au second môle, fanaux voilés, l’équipage tout au long du bastingage, comme si on leur avait lu la route avant de me la lire. Ils me laissèrent passer d’un geste poli. C’est cela qui me déplut. Un cotre qui n’a arrêté personne ne salue pas. Quelqu’un, du côté des Corneilles, avait vendu ma route à l’Inquisition avant de me la vendre, et s’était fait payer deux fois la même demi-heure.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_wharf",
+    "choices": [
+      {
+        "text": "Say nothing, and keep the route in your head",
+        "text_fr": "Ne rien dire, et garder la route en tête",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_route_sold",
+          "plot_ledger_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "stage": 1
+          }
+        }
+      },
+      {
+        "text": "Tell the tout the cutter was waiting",
+        "text_fr": "Dire au rabatteur que le cotre attendait",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_route_sold",
+          "plot_ledger_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "stage": 1
+          },
+          "standing": {
+            "crows": 5
+          }
+        }
+      },
+      {
+        "text": "Mark the cutter’s signals in a book of your own",
+        "text_fr": "Noter les signaux du cotre dans un livre à vous",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_route_sold",
+          "plot_ledger_1",
+          "ledger_own_book"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "stage": 1
+          }
+        }
+      }
+    ]
+  },
+  "2015_survivor": {
+    "id": "2015_survivor",
+    "description": "He wore the Fleet’s white sash the way other men wear a bandage, and he had been drinking since the tide turned. The White Fleet had sailed to burn my city and never come home, and the wharf sang that it was a storm; he was the only man I had met who had been there. He told the bottom of his cup. The sea had been flat as a plate, he said. No wind at all. The Admiral had given the order to turn into the dark, calmly, as a man gives an order he has himself been given, and the fleet had gone, ship after ship, in good order, into a place where there was nothing to hit. “It wasn’t a storm,” he said. “A storm would have been kinder. Somebody told them where to sail.” Then he asked whether I had ever seen forty ships behave.",
+    "description_fr": "Il portait l’écharpe blanche de la Flotte comme d’autres portent un bandage, et il buvait depuis que la marée avait tourné. La Flotte Blanche était partie brûler ma ville et n’était jamais rentrée, et le quai chantait que c’était une tempête ; il était le seul homme que j’eusse rencontré qui y avait été. Il le dit au fond de sa tasse. La mer était plate comme une assiette, dit-il. Pas un souffle. L’Amiral avait donné l’ordre de virer dans le noir, calmement, comme on donne un ordre que l’on a soi-même reçu, et la flotte était partie, navire après navire, en bon ordre, vers un endroit où il n’y avait rien à heurter. « Ce n’était pas une tempête, dit-il. Une tempête aurait été plus clémente. Quelqu’un leur a dit où faire voile. » Puis il me demanda si j’avais déjà vu quarante navires se conduire.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "reflective",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_wharf",
+    "choices": [
+      {
+        "text": "Buy him another cup, and let him talk (5 gold)",
+        "text_fr": "Lui offrir une autre tasse, et le laisser parler (5 or)",
+        "next_id": "2015",
+        "goldMod": -5,
+        "pays": true,
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_2015_survivor",
+          "plot_admiralty_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "stage": 1
+          }
+        }
+      },
+      {
+        "text": "Take his name, and the name of his ship",
+        "text_fr": "Prendre son nom, et celui de son navire",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_survivor",
+          "plot_admiralty_1",
+          "survivor_named"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "stage": 1
+          }
+        }
+      },
+      {
+        "text": "Tell him the wharf prefers the storm",
+        "text_fr": "Lui dire que le quai préfère la tempête",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_survivor",
+          "plot_admiralty_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "stage": 1
+          },
+          "standing": {
+            "dominion": 2
+          }
+        }
+      }
+    ]
+  },
+  "2015_bundle": {
+    "id": "2015_bundle",
+    "description": "The pilgrim had stood by the water-barrels since dawn, in the Penitents’ grey, with a burnt-out lantern at her belt and a bundle in her arms the size of a loaf, wrapped in sacking and bound with a strip of white cloth. She did not ask my name. She asked whether I was going north, and when I said that I might be, she said that would do. “There is a woman at the Cloister who will know what to do with it. You need not know. It is better if you do not.” It was heavier than a loaf. It was cold, on a wharf at noon, cold through the sacking, and something in it ticked once, like a clock reminded of the hour. I could have dropped it off the quay. A Penitent had asked, and the Penitents ask so seldom.",
+    "description_fr": "La pèlerine se tenait près des tonneaux d’eau depuis l’aube, dans le gris des Pénitents, une lanterne éteinte à la ceinture et dans les bras un paquet de la taille d’un pain, enveloppé de toile à sac et lié d’une bande de tissu blanc. Elle ne demanda pas mon nom. Elle demanda si j’allais vers le nord, et quand je répondis que c’était possible, elle dit que cela suffirait. « Il y a une femme au Cloître qui saura quoi en faire. Vous n’avez pas besoin de savoir. Mieux vaut que vous ne sachiez pas. » C’était plus lourd qu’un pain. C’était froid, sur un quai en plein midi, froid à travers la toile, et quelque chose dedans tictaqua une fois, comme une horloge à qui l’on rappelle l’heure. J’aurais pu le jeter du quai. Une Pénitente l’avait demandé, et les Pénitents demandent si rarement.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_wharf",
+    "choices": [
+      {
+        "text": "Carry it, and ask nothing",
+        "text_fr": "Le porter, sans rien demander",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_bundle",
+          "plot_relic_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "stage": 1
+          },
+          "standing": {
+            "penitents": 5
+          }
+        }
+      },
+      {
+        "text": "Open the sacking a finger’s width",
+        "text_fr": "Entrouvrir la toile de la largeur d’un doigt",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_bundle",
+          "plot_relic_1",
+          "bundle_opened"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "stage": 1
+          }
+        }
+      },
+      {
+        "text": "Hand it back: you carry nobody’s secrets",
+        "text_fr": "Le lui rendre : vous ne portez les secrets de personne",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_bundle",
+          "plot_relic_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "stage": 1
+          },
+          "standing": {
+            "penitents": -3
+          }
+        }
+      }
+    ]
+  },
+  "2015_child_tongue": {
+    "id": "2015_child_tongue",
+    "description": "The child sat on an upturned crate at the end of Fisherman’s Row and spoke to the gulls in a language nobody on the wharf had ever taught her. It had verbs in it that ran the wrong way. The gulls, who are not an audience that flatters, listened. She was perhaps seven, in a boy’s jerkin, barefoot, with eyes the pale green of a pond in a dry year, and the net-menders around her had stopped mending and begun instead to count the gaps between the tides. “The fen gave her back,” said the oldest of them. “It does, now and then. She’ll be a Returned. Don’t look at her too long. People who look too long start to be looked at.” She looked straight at me then, and said something in her tongue, and I understood a single word of it, which was my name.",
+    "description_fr": "L’enfant était assise sur une caisse retournée au bout de l’Allée des Pêcheurs et parlait aux mouettes dans une langue que nul, sur le quai, ne lui avait apprise. Elle avait des verbes qui couraient à l’envers. Les mouettes, qui ne sont pas un public flatteur, écoutaient. Elle avait sept ans peut-être, un justaucorps de garçon, les pieds nus, des yeux du vert pâle d’un étang en année sèche, et les raccommodeurs de filets autour d’elle avaient cessé de raccommoder pour se mettre à compter les écarts entre les marées. « Le marais l’a rendue, dit le plus vieux d’entre eux. Il le fait, de temps en temps. Ce sera une Rendue. Ne la regardez pas trop longtemps. Ceux qui regardent trop longtemps finissent par être regardés. » Elle me regarda droit dans les yeux, alors, et dit quelque chose dans sa langue, et j’en compris un seul mot, qui était mon nom.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "creepy",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_wharf",
+    "choices": [
+      {
+        "text": "Give her your bread, and sit beside her",
+        "text_fr": "Lui donner votre pain, et vous asseoir à côté d’elle",
+        "next_id": "2015",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_2015_child_tongue",
+          "plot_returned_1",
+          "child_fed"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "stage": 1
+          }
+        }
+      },
+      {
+        "text": "Ask the net-menders where she was found",
+        "text_fr": "Demander aux raccommodeurs de filets où on l’a trouvée",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_child_tongue",
+          "plot_returned_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "stage": 1
+          }
+        }
+      },
+      {
+        "text": "Walk on; some things are not yours to look at",
+        "text_fr": "Passer votre chemin : certaines choses ne sont pas à vous de les regarder",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_child_tongue",
+          "plot_returned_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "stage": 1
+          }
+        }
       }
     ]
   },
@@ -22424,6 +23990,293 @@
       }
     ]
   },
+  "3005_black_thread": {
+    "id": "3005_black_thread",
+    "description": "There was a black thread knotted round the latch of the shed I had slept in, three knots, tight as a fist. I knew it for what it was before I had finished looking. The Whisper Ledger does not threaten; it ties a thread and waits to see whether you can count. A runner sat on the next roof with a sack of other people’s letters across his knees, not even pretending to read them. Word had come up the coast faster than I had: the Crows had a leak, the leak had a route, the route had been mine, and the Ledger had decided, as it decides everything, by arithmetic, that one stranger with a ship was cheaper to suspect than five Keyholders. He named the price of being unsuspected. It was lower than I had expected, and I liked it the less for that.",
+    "description_fr": "Un fil noir était noué autour du loquet de la remise où j’avais dormi, trois nœuds, serrés comme un poing. Je sus ce que c’était avant d’avoir fini de regarder. Le Registre des Murmures ne menace pas : il noue un fil et attend de voir si l’on sait compter. Un coursier était assis sur le toit voisin, un sac de lettres d’autrui en travers des genoux, sans même faire semblant de les lire. La nouvelle était montée le long de la côte plus vite que moi : les Corneilles avaient une fuite, la fuite avait une route, la route avait été la mienne, et le Registre avait décidé, comme il décide de tout, par arithmétique, qu’un étranger avec un navire coûtait moins cher à soupçonner que cinq Porte-Clefs. Il me dit le prix pour cesser d’être soupçonné. Il était plus bas que je ne l’espérais, et cela me plut d’autant moins.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "ashen_quarter",
+    "choices": [
+      {
+        "text": "Pay the Ledger’s price (30 gold)",
+        "text_fr": "Payer le prix du Registre (30 or)",
+        "next_id": "3005",
+        "goldMod": -30,
+        "pays": true,
+        "flagsToAdd": [
+          "hub_3005_black_thread",
+          "plot_ledger_2",
+          "ledger_paid"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "stage": 2
+          },
+          "standing": {
+            "crows": 5
+          }
+        }
+      },
+      {
+        "text": "Show the Ledger your own notes on the cutter",
+        "text_fr": "Montrer au Registre vos propres notes sur le cotre",
+        "next_id": "3005",
+        "showIfFlags": [
+          "ledger_own_book"
+        ],
+        "flagsToAdd": [
+          "hub_3005_black_thread",
+          "plot_ledger_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "stage": 2
+          },
+          "standing": {
+            "crows": 8
+          }
+        }
+      },
+      {
+        "text": "Burn the thread, and tell the runner to count again",
+        "text_fr": "Brûler le fil, et dire au coursier de recompter",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_black_thread",
+          "plot_ledger_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "stage": 2
+          },
+          "standing": {
+            "crows": -5
+          }
+        }
+      }
+    ]
+  },
+  "3005_logbook_gap": {
+    "id": "3005_logbook_gap",
+    "description": "The Quarter’s archive was a cellar of what the Spire had thrown out in a hurry: ledgers, deeds, a rack of ship’s logs with the Admiralty’s anchor stamped on every spine. The clerk, a refugee with a candle-end and a squint, found the place on the rack in under a minute. He could not find the log. The White Fleet’s last log was not on the shelf where the Spire’s catalogue said it stood, and where it should have been the dust had been wiped in a neat rectangle, the way you wipe a place for a thing you mean to put back. Somebody had taken it, before the Spire fell, and carefully. “Not stolen,” said the clerk. “Borrowed, by someone with a key.”",
+    "description_fr": "Les archives du Quartier étaient une cave de ce que la Flèche avait jeté à la hâte : registres, actes, un râtelier de journaux de bord portant l’ancre de l’Amirauté sur chaque dos. Le commis, un réfugié à la chandelle écourtée et au regard louche, trouva l’endroit sur le râtelier en moins d’une minute. Il ne trouva pas le journal. Le dernier journal de la Flotte Blanche n’était pas sur le rayon où le catalogue de la Flèche le plaçait, et là où il aurait dû être la poussière avait été essuyée en un rectangle net, comme on essuie la place d’une chose qu’on compte remettre. Quelqu’un l’avait pris, avant la chute de la Flèche, et avec soin. « Pas volé, dit le commis. Emprunté, par quelqu’un qui avait une clef. »",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "ashen_quarter",
+    "choices": [
+      {
+        "text": "Ask who held the archive’s keys",
+        "text_fr": "Demander qui détenait les clefs des archives",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_logbook_gap",
+          "plot_admiralty_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "stage": 2
+          }
+        }
+      },
+      {
+        "text": "Pay the clerk to copy the catalogue entry (10 gold)",
+        "text_fr": "Payer le commis pour recopier la fiche du catalogue (10 or)",
+        "next_id": "3005",
+        "goldMod": -10,
+        "pays": true,
+        "flagsToAdd": [
+          "hub_3005_logbook_gap",
+          "plot_admiralty_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "stage": 2
+          }
+        }
+      },
+      {
+        "text": "Leave it; archives lose things",
+        "text_fr": "Laisser : les archives perdent des choses",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_logbook_gap",
+          "plot_admiralty_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "stage": 2
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "survivor_named",
+        "en": "I had the sailor’s name in my pocket, and now a gap on a shelf to set beside it.",
+        "fr": "J’avais le nom du marin en poche, et maintenant un vide sur un rayon pour le lui poser à côté."
+      }
+    ]
+  },
+  "3005_shrine_break": {
+    "id": "3005_shrine_break",
+    "description": "Sister Inès was sweeping up what was left of the Quarter’s one relic: the hand-bone of a saint, in a case of Spire silver, that the refugees had touched for luck since the first week. Someone had broken it in the night. Not stolen: broken, on the altar step, ground to a pale dust under the heel of a boot and swept into a neat little heap. It had come down from the Spire’s own chapel, she said, held here by the Inquisition’s leave. She was not angry. She was frightened the way a person is who has watched a thing done deliberately and carefully by someone who believed in it. “They left a grey cloth tied round the case,” she said. “Penitents. They did it so the Inquisition could not use it. Do you know, I understand them.”",
+    "description_fr": "Sœur Inès balayait ce qui restait de l’unique relique du Quartier : l’os de la main d’un saint, dans un étui d’argent de la Flèche, que les réfugiés touchaient pour la chance depuis la première semaine. Quelqu’un l’avait brisé dans la nuit. Pas volé : brisé, sur la marche de l’autel, réduit en poudre pâle sous un talon de botte et balayé en un petit tas bien net. Elle venait de la chapelle même de la Flèche, dit-elle, gardée ici avec la permission de l’Inquisition. Elle n’était pas en colère. Elle avait peur comme a peur celle qui a vu une chose faite délibérément et soigneusement par quelqu’un qui y croyait. « Ils ont laissé un tissu gris noué autour de l’étui, dit-elle. Des Pénitents. Ils l’ont fait pour que l’Inquisition ne puisse pas s’en servir. Vous savez, je les comprends. »",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "creepy",
+      "speaker": "Narrator"
+    },
+    "location": "ashen_quarter",
+    "choices": [
+      {
+        "text": "Help Inès sweep the dust up for a proper burial",
+        "text_fr": "Aider Inès à recueillir la poudre pour une vraie sépulture",
+        "next_id": "3005",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_3005_shrine_break",
+          "plot_relic_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "stage": 2
+          }
+        }
+      },
+      {
+        "text": "Follow the bootprints in the ash",
+        "text_fr": "Suivre les traces de bottes dans la cendre",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_shrine_break",
+          "plot_relic_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "stage": 2
+          },
+          "standing": {
+            "penitents": 3
+          }
+        }
+      },
+      {
+        "text": "Tell the Quarter’s wardens a thief walked among them",
+        "text_fr": "Dire aux gardiens du Quartier qu’un voleur a marché parmi eux",
+        "next_id": "3005",
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_3005_shrine_break",
+          "plot_relic_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "stage": 2
+          },
+          "standing": {
+            "dominion": 3,
+            "penitents": -5
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "bundle_opened",
+        "en": "I thought of the sliver of white stone in the sacking at the Saltmouth wharf, warm as a hand, and of how little it would take to turn that into this heap.",
+        "fr": "Je pensai à l’éclat de pierre blanche dans la toile, sur le quai de Bouche-de-Sel, tiède comme une main, et à ce qu’il faudrait peu pour en faire ce tas."
+      }
+    ]
+  },
+  "3005_spire_takings": {
+    "id": "3005_spire_takings",
+    "description": "The Inquisitors went up the Spire stair at noon in a file of white masks with a child between each two of them, and the Quarter stopped what it was doing and looked at the ground, as it had learned to. I counted six. They were not chained. That was the worst of it. They walked with the quiet unconcern of children being taken to be fed, and every one had the same pale pond-green gaze, turned a little to the left of whatever was in front of her, as if reading something printed on the air. A refugee woman beside me said it was the third file this month. They went up to the Spire, she said, and the Spire did not send them back. Nobody asked what was done to them there. The Quarter’s silence was the only answer the Inquisition had ever needed to that question.",
+    "description_fr": "Les Inquisiteurs montèrent l’escalier de la Flèche à midi, en file de masques blancs avec un enfant entre deux d’entre eux, et le Quartier cessa ce qu’il faisait pour regarder le sol, comme il l’avait appris. J’en comptai six. Ils n’étaient pas enchaînés. C’était le pire. Ils marchaient avec l’insouciance tranquille d’enfants que l’on mène manger, et tous avaient le même regard vert pâle d’étang, tourné un peu à gauche de ce qui se trouvait devant eux, comme s’ils lisaient quelque chose d’imprimé dans l’air. Une réfugiée, près de moi, dit que c’était la troisième file du mois. Ils montaient à la Flèche, dit-elle, et la Flèche ne les renvoyait pas. Personne ne demandait ce qu’on leur y faisait. Le silence du Quartier était la seule réponse dont l’Inquisition eût jamais eu besoin à cette question.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "location": "ashen_quarter",
+    "choices": [
+      {
+        "text": "Follow the file to the Spire’s first gate",
+        "text_fr": "Suivre la file jusqu’à la première porte de la Flèche",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_spire_takings",
+          "plot_returned_2",
+          "child_followed"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "stage": 2
+          },
+          "standing": {
+            "dominion": -2
+          }
+        }
+      },
+      {
+        "text": "Pass the count to the Mire Courts’ runner",
+        "text_fr": "Transmettre le compte au coureur des Cours du Marais",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_spire_takings",
+          "plot_returned_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "stage": 2
+          },
+          "standing": {
+            "mire": 5
+          }
+        }
+      },
+      {
+        "text": "Look at the ground like everyone else",
+        "text_fr": "Regarder le sol comme tout le monde",
+        "next_id": "3005",
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_3005_spire_takings",
+          "plot_returned_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "stage": 2
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "child_fed",
+        "en": "I thought of the girl on the crate at Fisherman’s Row, and of the heel of bread she had held in both hands like a small, serious animal.",
+        "fr": "Je pensai à la fillette sur la caisse, dans l’Allée des Pêcheurs, et au quignon de pain qu’elle avait tenu à deux mains comme un petit animal sérieux."
+      }
+    ]
+  },
   "5010_imeh_later": {
     "id": "5010_imeh_later",
     "description": "A boatman from the oni terraces poled a flat skiff down the flooded nave, a hand-bell at its prow and a crate packed in straw amidships. The cloister’s sick turned their faces toward the bell as though it were medicine. “I carry word from Imeh,” he said, in the lilting Akagiri way of speaking, “and she said you would know what it was about.”",
@@ -22474,6 +24327,138 @@
         "flag": "glass_carried",
         "en": "“Her glass sells at the camp, and she sells with it,” he said, “and she says a stall under a roof does better than a stall in a fire.” He lifted the straw from the crate and showed me a share of the first crate and a green cup. “She says it is not payment. It is only the glass, saying thank you.”",
         "fr": "« Son verre se vend au camp, et elle avec, dit-il, et elle dit qu’un étal sous un toit vaut mieux qu’un étal dans le feu. » Il souleva la paille de la caisse et me montra une part de la première caisse et une coupe verte. « Elle dit que ce n’est pas un paiement. C’est seulement le verre qui dit merci. »"
+      }
+    ]
+  },
+  "5010_thieves_ship": {
+    "id": "5010_thieves_ship",
+    "description": "She came out of the dark between two candles, in the Penitents’ grey, and waited for the deserter at the ossuary stall to look away before she spoke to me. Hask looked away. He was good at it. She said she was the one who had asked me to carry the bundle at the Saltmouth wharf, and the one who had stood in the Ashen Quarter’s shrine the night the bone was ground to dust, and she said both things as if reading them off a bill. The Reliquary Thieves did not steal relics so much as take them out of the Inquisition’s reach, she said, and there was one more to take, the greatest, and a thing that large does not travel by cart. They needed a ship that could sail where the cutters had learned not to look. They needed the Eel.",
+    "description_fr": "Elle sortit de l’obscurité entre deux chandelles, dans le gris des Pénitents, et attendit que le déserteur de l’étal de l’ossuaire détourne les yeux avant de me parler. Hask détourna les yeux. Il était doué pour cela. Elle dit que c’était elle qui m’avait demandé de porter le paquet sur le quai de Bouche-de-Sel, et elle qui s’était tenue dans le sanctuaire du Quartier des Cendres la nuit où l’os fut réduit en poudre, et elle dit les deux choses comme si elle les lisait sur une note. Les Voleurs de Reliques ne volaient pas tant les reliques qu’ils ne les mettaient hors de portée de l’Inquisition, dit-elle, et il en restait une à prendre, la plus grande, et une chose de cette taille ne voyage pas en charrette. Il leur fallait un navire capable d’aller là où les cotres avaient appris à ne pas regarder. Il leur fallait l’Eel.",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "drowned_cloister",
+    "choices": [
+      {
+        "text": "Promise her the Eel’s deck",
+        "text_fr": "Lui promettre le pont de l’Eel",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_thieves_ship",
+          "plot_relic_3"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "stage": 3
+          },
+          "standing": {
+            "penitents": 8
+          }
+        }
+      },
+      {
+        "text": "Say you will think it over",
+        "text_fr": "Dire que vous allez y réfléchir",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_thieves_ship",
+          "plot_relic_3"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "stage": 3
+          }
+        }
+      },
+      {
+        "text": "Say no, and walk away",
+        "text_fr": "Dire non, et s’éloigner",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_thieves_ship",
+          "plot_relic_3",
+          "thieves_refused"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "stage": 3
+          },
+          "standing": {
+            "penitents": -5
+          }
+        }
+      }
+    ]
+  },
+  "5010_vigil_envoy": {
+    "id": "5010_vigil_envoy",
+    "description": "A Last Watch envoy had come down the Drowned Stair in her boots, through water to the knee, and sat on the driest ledge in the cloister and spoke to nobody in particular, which is how the Watch addresses someone it needs. The Vigil had been listening to the tear for a year, she said, and had noticed a pattern: wherever a Returned child walked, the tear’s edge softened. A child could hold a door. A child could lead a party where the dark was thin. The Watch did not mean the children harm. It meant only that if the tear could ever be crossed, it would be crossed by one of them, and the Watch intended to be there when it happened, with a rope, and a kind face, and a very good wall.",
+    "description_fr": "Une émissaire de la Dernière Veille était descendue par l’Escalier Noyé en bottes, de l’eau jusqu’aux genoux, s’était assise sur la corniche la plus sèche du cloître et parlait à personne en particulier, ce qui est la façon dont la Veille s’adresse à qui elle a besoin. La Veille écoutait la déchirure depuis un an, dit-elle, et avait remarqué une régularité : partout où marchait un enfant rendu, le bord de la déchirure s’adoucissait. Un enfant pouvait tenir une porte. Un enfant pouvait mener une troupe là où le noir était mince. La Veille ne voulait pas de mal aux enfants. Elle voulait seulement dire que si la déchirure pouvait jamais être franchie, ce serait par l’un d’eux, et que la Veille comptait être là quand cela arriverait, avec une corde, un visage aimable et un très bon mur.",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "reflective",
+      "speaker": "Narrator"
+    },
+    "location": "drowned_cloister",
+    "choices": [
+      {
+        "text": "Say the Watch may ask the children themselves",
+        "text_fr": "Dire que la Veille peut interroger les enfants elle-même",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_vigil_envoy",
+          "plot_returned_3"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "stage": 3
+          },
+          "standing": {
+            "vigil": 3
+          }
+        }
+      },
+      {
+        "text": "Tell her the Mire will not give them up",
+        "text_fr": "Lui dire que le Marais ne les livrera pas",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_vigil_envoy",
+          "plot_returned_3",
+          "child_envoy_refused"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "stage": 3
+          },
+          "standing": {
+            "mire": 5,
+            "vigil": -3
+          }
+        }
+      },
+      {
+        "text": "Ask what the Watch would do with a child at the tear",
+        "text_fr": "Demander ce que la Veille ferait d’un enfant devant la déchirure",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_vigil_envoy",
+          "plot_returned_3",
+          "child_envoy_questioned"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "stage": 3
+          }
+        }
       }
     ]
   },
@@ -22529,10 +24514,305 @@
       }
     ]
   },
+  "6010_lantern_manifest": {
+    "id": "6010_lantern_manifest",
+    "description": "Tallis sold lamp-oil and charms one street from the tear, and kept under her counter a thing she did not sell: the Reliquary’s shipping book, pages torn from the quay office the week the Quarter emptied. She read me the entry herself, not trusting me with the page. The Black Reliquary had sent a sealed relic to sea on the White Fleet’s flagship, by order of an Inquisitor whose name had been scraped from the line, “to be carried through at the Fleet’s last moment of weather.” Carried through. She said it twice. The Fleet had not been wrecked by the tear. It had been sent into it, on purpose, with a coffin in the hold, by the people who had told the faithful it was a storm.",
+    "description_fr": "Tallis vendait de l’huile de lampe et des charmes à une rue de la déchirure, et gardait sous son comptoir une chose qu’elle ne vendait pas : le livre d’expédition du Reliquaire, des pages arrachées au bureau du quai la semaine où le Quartier s’était vidé. Elle me lut l’entrée elle-même, ne me confiant pas la page. Le Reliquaire Noir avait envoyé en mer une relique scellée à bord du vaisseau amiral de la Flotte Blanche, sur l’ordre d’un Inquisiteur dont le nom avait été gratté de la ligne, « pour être porté au travers au dernier moment de gros temps de la Flotte ». Porté au travers. Elle le répéta. La Flotte n’avait pas été détruite par la déchirure. On l’y avait envoyée, exprès, avec un cercueil dans la cale, par ceux qui avaient dit aux fidèles que c’était une tempête.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "reliquary_quarter",
+    "choices": [
+      {
+        "text": "Ask her to let you copy the entry",
+        "text_fr": "Lui demander de vous laisser recopier l’entrée",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_lantern_manifest",
+          "plot_admiralty_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "stage": 4
+          },
+          "standing": {
+            "dominion": 3
+          }
+        }
+      },
+      {
+        "text": "Pay her for the page itself (60 gold)",
+        "text_fr": "Lui payer la page elle-même (60 or)",
+        "next_id": "6010",
+        "goldMod": -60,
+        "pays": true,
+        "flagsToAdd": [
+          "hub_6010_lantern_manifest",
+          "plot_admiralty_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "stage": 4
+          }
+        }
+      },
+      {
+        "text": "Say you never saw the book",
+        "text_fr": "Dire que vous n’avez jamais vu le livre",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_lantern_manifest",
+          "plot_admiralty_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "stage": 4
+          },
+          "standing": {
+            "penitents": 3
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "tar_book_bought",
+        "en": "The caulker’s refit book lay open in my coat, and the cradle it described had a hatch cut for exactly this coffin.",
+        "fr": "Le livre de radoub de la calfate reposait ouvert dans mon manteau, et le berceau qu’il décrivait avait une écoutille taillée pour ce cercueil-là."
+      }
+    ]
+  },
+  "6010_heist_night": {
+    "id": "6010_heist_night",
+    "description": "They met in a chapel whose saints had been chipped off the walls, under the frost, with their lamps out: eleven of them, and a plan drawn on the back of a pilgrim’s blessing. The Fourth Piece of the Shroud lay in the Black Reliquary’s innermost reliquary, and the Inquisition meant to wake it in a rite on a night the Quarter’s bells had already named. The Thieves did not mean to use it. They meant to take it the moment it was lifted, carry it out to sea on the Eel, and break it where no one could mend it: no Inquisitor, no Penitent, not even a stranger with a ship. A broken piece can be used by no one. They said it like a prayer. Then they looked at me, who had the ship, and who also needed the Piece.",
+    "description_fr": "Ils se réunissaient dans une chapelle dont on avait ciselé les saints sur les murs, sous le givre, lampes éteintes : onze, et un plan dessiné au dos d’une bénédiction de pèlerin. La Quatrième Pièce du Linceul reposait dans le reliquaire le plus profond du Reliquaire Noir, et l’Inquisition comptait l’éveiller lors d’un rite, une nuit que les cloches du Quartier avaient déjà nommée. Les Voleurs ne comptaient pas s’en servir. Ils comptaient la prendre à l’instant où on la lèverait, l’emporter en mer sur l’Eel, et la briser là où nul ne pourrait la réparer : ni Inquisiteur, ni Pénitent, pas même un étranger avec un navire. Une pièce brisée ne sert à personne. Ils le dirent comme une prière. Puis ils me regardèrent, moi qui avais le navire, et qui avais aussi besoin de la Pièce.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "reliquary_quarter",
+    "choices": [
+      {
+        "text": "Swear to be on the Eel’s deck when the bells ring",
+        "text_fr": "Jurer d’être sur le pont de l’Eel quand les cloches sonneront",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_heist_night",
+          "plot_relic_4",
+          "heist_sworn"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "stage": 4
+          },
+          "standing": {
+            "penitents": 8
+          }
+        }
+      },
+      {
+        "text": "Ask for the plan on paper",
+        "text_fr": "Demander le plan par écrit",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_heist_night",
+          "plot_relic_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "stage": 4
+          }
+        }
+      },
+      {
+        "text": "Slip away before they finish, with what you have heard",
+        "text_fr": "Vous éclipser avant la fin, avec ce que vous avez entendu",
+        "next_id": "6010",
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_6010_heist_night",
+          "plot_relic_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "relic_road",
+            "stage": 4
+          },
+          "standing": {
+            "dominion": 3
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "thieves_refused",
+        "en": "The woman in grey had said she would not ask twice. I had not understood that she meant she would not need to.",
+        "fr": "La femme en gris avait dit qu’elle ne demanderait pas deux fois. Je n’avais pas compris qu’elle voulait dire qu’elle n’en aurait pas besoin."
+      }
+    ]
+  },
+  "6010_count_short": {
+    "id": "6010_count_short",
+    "description": "Orsabet’s count and the Last Watch’s tally ought to have agreed, since the Watch had cut half its figures from her stone. I laid them side by side on the chapel step, and they did not. The Vigil’s count of the dead was wrong by one. Not an error in the sum; she checked it twice, with her finger, in the frost. By one name: a woman who had stood on the Vigil’s wall the night the tear opened, and been counted among the lost, and had been seen on the Salt Road since, walking. The Watch had counted a living woman dead. It had been done in a good hand, with the Watch’s own pen, by someone who needed her to be a name on a stone. Orsabet did not want to know who. She wanted the number made right.",
+    "description_fr": "Le compte d’Orsabet et le registre de la Dernière Veille auraient dû s’accorder, puisque la Veille avait taillé la moitié de ses chiffres dans sa pierre. Je les posai côte à côte sur la marche de la chapelle, et ils ne s’accordaient pas. Le compte des morts de la Veille était faux d’un. Pas une erreur de somme ; elle la vérifia deux fois, du doigt, dans le givre. D’un nom : une femme qui s’était tenue sur le mur de la Veille la nuit où la déchirure s’était ouverte, avait été comptée parmi les perdus, et qu’on avait vue depuis sur la route du sel, marchant. La Veille avait compté une vivante parmi les morts. C’était fait d’une belle main, avec la plume même de la Veille, par quelqu’un qui avait besoin qu’elle soit un nom sur une pierre. Orsabet ne voulait pas savoir qui. Elle voulait que le chiffre soit juste.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "reflective",
+      "speaker": "Narrator"
+    },
+    "location": "reliquary_quarter",
+    "choices": [
+      {
+        "text": "Carry the question to the Last Watch",
+        "text_fr": "Porter la question à la Dernière Veille",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_count_short",
+          "plot_stitcher_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "stage": 2
+          },
+          "standing": {
+            "vigil": 3
+          }
+        }
+      },
+      {
+        "text": "Ask Orsabet to read the missing name aloud",
+        "text_fr": "Demander à Orsabet de lire à voix haute le nom manquant",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_count_short",
+          "plot_stitcher_2",
+          "count_name_heard"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "stage": 2
+          }
+        }
+      },
+      {
+        "text": "Say nothing, and give Orsabet back her figure",
+        "text_fr": "Ne rien dire, et rendre à Orsabet son chiffre",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_count_short",
+          "plot_stitcher_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "unwatched_hour",
+            "stage": 2
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "newmoon_followed",
+        "en": "I knew the walk that had gone down the Salt Road. I had followed it as far as the pass, and I had not said whose it was.",
+        "fr": "Je connaissais la démarche qui avait descendu la route du sel. Je l’avais suivie jusqu’au col, et je n’avais pas dit à qui elle était."
+      }
+    ]
+  },
+  "6010_returned_roll": {
+    "id": "6010_returned_roll",
+    "description": "The Reliquary’s archive kept a roll, in a clerk’s hand, headed with nothing but a word in the fen tongue. I broke no seal to read it; someone had broken it before me. Four hundred names, each with a date and the place where the water had given a child back, and beside each a second date in a different ink: the day the child had turned eleven, and ceased to be a child, and been entered as returned to the source. The Inquisition had not been keeping the children. It had been keeping count of what the tear sent back, and of what it sent back as: not a child at all, but a piece of the other side, wearing one. They could see through the Shroud because they were cut from the same cloth. And at eleven, the roll said, in a clerk’s patient hand, they went back.",
+    "description_fr": "Les archives du Reliquaire gardaient un rôle, d’une main de greffier, intitulé d’un seul mot dans la langue du marais. Je ne brisai aucun sceau pour le lire ; quelqu’un l’avait brisé avant moi. Quatre cents noms, chacun avec une date et le lieu où l’eau avait rendu un enfant, et, à côté, une seconde date d’une autre encre : le jour où l’enfant avait eu onze ans, avait cessé d’être un enfant, et avait été inscrit comme rendu à la source. L’Inquisition ne gardait pas les enfants. Elle tenait le compte de ce que la déchirure renvoyait, et de ce qu’elle le renvoyait en guise de : pas un enfant du tout, mais un morceau de l’autre côté, qui en portait l’apparence. Ils voyaient à travers le Linceul parce qu’ils étaient taillés dans la même étoffe. Et à onze ans, disait le rôle, d’une main patiente de greffier, ils retournaient.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "location": "reliquary_quarter",
+    "choices": [
+      {
+        "text": "Tear out the page for the Mire Courts",
+        "text_fr": "Arracher la page pour les Cours du Marais",
+        "next_id": "6010",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_6010_returned_roll",
+          "plot_returned_4",
+          "roll_taken"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "stage": 4
+          },
+          "standing": {
+            "mire": 8
+          }
+        }
+      },
+      {
+        "text": "Copy the dates, and leave the roll",
+        "text_fr": "Recopier les dates, et laisser le rôle",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_returned_roll",
+          "plot_returned_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "stage": 4
+          }
+        }
+      },
+      {
+        "text": "Close the roll, and tell no one",
+        "text_fr": "Refermer le rôle, et n’en parler à personne",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_returned_roll",
+          "plot_returned_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "the_returned",
+            "stage": 4
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "child_envoy_questioned",
+        "en": "The Watch’s envoy had said it was only a question of what they would do with a child at the tear. The roll answered it before I could ask again.",
+        "fr": "L’émissaire de la Veille avait dit que ce n’était qu’une question de ce qu’on ferait d’un enfant devant la déchirure. Le rôle y répondit avant que je puisse la reposer."
+      },
+      {
+        "flag": "child_followed",
+        "en": "I had followed the file to the Spire’s first gate, and the gate had a door in it that did not open from the outside.",
+        "fr": "J’avais suivi la file jusqu’à la première porte de la Flèche, et cette porte avait un battant qui ne s’ouvrait pas de l’extérieur."
+      },
+      {
+        "flag": "child_envoy_refused",
+        "en": "I had told the Watch’s envoy that the Mire would not give them up. She had nodded as if I had confirmed a figure.",
+        "fr": "J’avais dit à l’émissaire de la Veille que le Marais ne les livrerait pas. Elle avait hoché la tête comme si je lui confirmais un chiffre."
+      }
+    ]
+  },
   "7100_orsabet_later": {
     "id": "7100_orsabet_later",
     "description": "A Candlebearer came down the Anchorage quay at dusk with a jar of lit tallow held in both hands, walking the way people walk with a flame that must not go out. She asked the dockers for me by name, and waited at the quay’s end while the harbour lamps came on one by one. “Orsabet Vell sent me from the Reliquary Quarter,” she said. “She asked me to light this where you could see it.”",
-    "description_fr": "Une Porte-Chandelle descendit le quai de l’Ancrage à la tombée du jour, un pot de suif allumé dans les deux mains, marchant comme marchent ceux qui portent une flamme qui ne doit pas mourir. Elle me demanda par mon nom aux dockers, et attendit au bout du quai pendant que les lampes du port s’allumaient une à une. « Orsabet Vell m’envoie du Quartier des Reliquaires, dit-elle. Elle m’a demandé de l’allumer là où vous pourriez la voir. »",
+    "description_fr": "Une Porte-Chandelle descendit le quai du Mouillage à la tombée du jour, un pot de suif allumé dans les deux mains, marchant comme marchent ceux qui portent une flamme qui ne doit pas mourir. Elle me demanda par mon nom aux dockers, et attendit au bout du quai pendant que les lampes du port s’allumaient une à une. « Orsabet Vell m’envoie du Quartier des Reliquaires, dit-elle. Elle m’a demandé de l’allumer là où vous pourriez la voir. »",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -22584,12 +24864,12 @@
   },
   "7100_ghrem_later": {
     "id": "7100_ghrem_later",
-    "description": "A giant sat at the end of the long pier with his feet in the tide, and the Anchorage was pretending not to stare. Ghrem Stonebrow had come down from Highhearth, which took a giant three days and a cart he had refused to ride in, and the sea in front of him seemed small for the effort. He did not turn his head when I came up, but a hand the size of a door shifted to make room.",
-    "description_fr": "Un géant était assis au bout de la longue jetée, les pieds dans la marée, et l’Ancrage faisait semblant de ne pas regarder. Ghrem Stonebrow était descendu de Haut-Âtre, ce qui prend trois jours à un géant et une charrette dans laquelle il avait refusé de monter, et la mer devant lui semblait bien petite pour l’effort. Il ne tourna pas la tête quand je m’approchai, mais une main grande comme une porte se déplaça pour me faire de la place.",
+    "description": "Ghrem Stonebrow sat at the end of the long pier with his feet in the tide, and the Anchorage was pretending not to stare. He had come down from Highhearth, three days on foot and a cart he had refused to ride in. He did not turn his head when I came up, but a hand the size of a door shifted to make room. “I had not seen the sea before,” he said, after a while, to the water. “It is smaller than I was told. It goes on a long time, though. That is the part nobody mentions: that it goes on, and does not mind.”",
+    "description_fr": "Ghrem Stonebrow était assis au bout de la longue jetée, les pieds dans la marée, et le Mouillage faisait semblant de ne pas regarder. Il était descendu de Haut-Âtre, trois jours à pied et une charrette dans laquelle il avait refusé de monter. Il ne tourna pas la tête quand je m’approchai, mais une main grande comme une porte se déplaça pour me faire de la place. « Je n’avais jamais vu la mer, dit-il au bout d’un moment, à l’eau. Elle est plus petite qu’on me l’avait dit. Elle dure longtemps, pourtant. C’est ce que personne ne dit : qu’elle dure, et que cela ne la dérange pas. »",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
-      "speaker": "Narrator"
+      "speaker": "Ghrem"
     },
     "location": "white_anchorage",
     "choices": [
@@ -22631,6 +24911,153 @@
         "flag": "hearth_stone_split",
         "en": "“Half a face,” he said to the water. “Highhearth made its first bargain in a century, and it was not a good one, and it was ours.” He turned one eye on me, which was the size of a ladle. “I have decided to be glad of it. Do not make me say so twice.”",
         "fr": "« Une moitié de front, dit-il à l’eau. Haut-Âtre a conclu son premier marché en un siècle, et il n’était pas bon, mais c’était le nôtre. » Il tourna vers moi un œil de la taille d’une louche. « J’ai décidé de m’en réjouir. Ne me le faites pas dire deux fois. »"
+      }
+    ]
+  },
+  "7100_vault_burns": {
+    "id": "7100_vault_burns",
+    "description": "The Vault was on fire, which was not a thing I had thought a Vault could be. The cellar under the chandlery, the one that follows the Crusade’s ships, glowed from inside like a lantern of a hundred panes, and the Keyholders stood in the street with their keys in their fists, because a Keyholder who loses her door loses her oath, and every one of them had just lost one. Behind them the Drowned Debt were passing buckets, to my surprise, towards the fire and not away. The master’s chair at the head of the table stood empty, and would not do so much longer. The Vault’s own Keyholder stood at the top of the cellar stair with a lamp in each hand, and she looked at me, because a Crow who must pick a master picks whoever is holding the water.",
+    "description_fr": "Le Coffre brûlait, ce que je n’aurais pas cru possible d’un Coffre. La cave sous la chandlerie, celle qui suit les navires de la Croisade, luisait de l’intérieur comme une lanterne à cent vitres, et les Porte-Clefs se tenaient dans la rue, leurs clefs au poing, car un Porte-Clef qui perd sa porte perd son serment, et chacun d’eux venait d’en perdre une. Derrière eux, la Dette Noyée se passait des seaux, à ma surprise, vers le feu et non loin de lui. Le fauteuil du maître, en bout de table, était vide, et ne le resterait pas longtemps. La Porte-Clef du Coffre se tenait en haut de l’escalier de la cave, une lampe dans chaque main, et elle me regarda, car une Corneille qui doit choisir un maître choisit celui qui tient l’eau.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "white_anchorage",
+    "choices": [
+      {
+        "text": "Put the Drowned Debt’s spokesman in the master’s chair",
+        "text_fr": "Installer le porte-parole de la Dette Noyée dans le fauteuil du maître",
+        "next_id": "7100",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_7100_vault_burns",
+          "plot_ledger_5",
+          "vault_debt_chair"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "stage": 5
+          },
+          "standing": {
+            "crows": 10,
+            "dominion": -5
+          }
+        }
+      },
+      {
+        "text": "Seat the Keyholder, and burn the debt-books",
+        "text_fr": "Installer la Porte-Clef, et brûler les livres de dettes",
+        "next_id": "7100",
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_7100_vault_burns",
+          "plot_ledger_5",
+          "vault_keyholder_chair"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "stage": 5
+          },
+          "standing": {
+            "crows": 5
+          }
+        }
+      },
+      {
+        "text": "Let the Vault burn",
+        "text_fr": "Laisser brûler le Coffre",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_vault_burns",
+          "plot_ledger_5",
+          "vault_burned"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "double_ledger",
+            "stage": 5
+          },
+          "standing": {
+            "crows": -10,
+            "dominion": 5
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "debt_warned",
+        "en": "I had sent word to the Keyholders from Rimewell, and a few of them stood in the street now with the look of people who had listened.",
+        "fr": "J’avais fait prévenir les Porte-Clefs depuis Puits-de-Givre, et quelques-uns se tenaient dans la rue avec l’air de ceux qui avaient écouté."
+      },
+      {
+        "flag": "debt_bought_out",
+        "en": "Some of the debtors passing buckets had been in the line I bought out at Rimewell. They did not look at me, but they passed faster.",
+        "fr": "Certains des débiteurs qui se passaient les seaux avaient fait partie de la file dont j’avais payé les dettes à Puits-de-Givre. Ils ne me regardaient pas, mais ils passaient les seaux plus vite."
+      }
+    ]
+  },
+  "7100_flagship_hold": {
+    "id": "7100_flagship_hold",
+    "description": "He took me out at slack water in a pilot’s skiff and did not look at the flagship until we were over her, a long dark shape under the glass-green water with her masts leaning like a field after weather. The helmsman had sworn a hundred times he would never go down to her again. He made the skiff fast, said nothing, and went down the lashed helm-rope hand over hand, because it was the way he knew. In the hold, past the ribs of a hatch cut too wide, was the cradle: oak, padded, still sealed, and in it a coffin of white stone with the Reliquary’s mark on the lid and a hum under it that I felt in my teeth. The relic was still here. The Fleet had carried it all the way through, and it had gone nowhere.",
+    "description_fr": "Il m’emmena à l’étale dans un esquif de pilote et ne regarda le vaisseau amiral qu’une fois au-dessus de lui, longue forme sombre sous l’eau vert-verre, ses mâts penchés comme un champ après le gros temps. Le timonier avait juré cent fois qu’il ne redescendrait jamais auprès d’elle. Il amarra l’esquif, ne dit rien, et descendit la bosse de barre, main sur main, parce que c’était la voie qu’il connaissait. Dans la cale, au-delà des membrures d’une écoutille taillée trop large, se trouvait le berceau : du chêne garni, toujours scellé, et dedans un cercueil de pierre blanche à la marque du Reliquaire sur le couvercle, avec en dessous un bourdonnement que je sentis dans mes dents. La relique était toujours là. La Flotte l’avait portée jusqu’au bout, et elle n’était allée nulle part.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "white_anchorage",
+    "choices": [
+      {
+        "text": "Lift the lid",
+        "text_fr": "Soulever le couvercle",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_flagship_hold",
+          "plot_admiralty_5",
+          "relic_opened"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "stage": 5
+          }
+        }
+      },
+      {
+        "text": "Leave it sealed, and mark the place",
+        "text_fr": "Le laisser scellé, et marquer l’endroit",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_flagship_hold",
+          "plot_admiralty_5",
+          "relic_marked"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "stage": 5
+          }
+        }
+      },
+      {
+        "text": "Cut a lock of the cradle’s wool for proof",
+        "text_fr": "Couper une mèche de la laine du berceau pour preuve",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_flagship_hold",
+          "plot_admiralty_5",
+          "relic_proof"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "admiraltys_silence",
+            "stage": 5
+          }
+        }
       }
     ]
   },

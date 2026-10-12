@@ -30,6 +30,28 @@ Fight tests roll the same dice every run.
   affix or an anomaly cannot turn up in one run and not the next.
 - `fight_mirror_spell_test` reads the Mirror's line, not the Venomous
   affix's "You take 3 damage from poison." that it could match first.
+## [1.261.0+297]
+
+The people of the coast speak for themselves.
+
+### Added
+- **Thirty people have words of their own.** Aurel Vane, Overseer Renn, Nadira, Maud Tallis, Hesk Morrow, Brother Clement, the Keyholder, the chart-keeper, the High Warden, the Tear-Herald, Hathra, Tetsu, Ghrem Stonebrow, Orsabet Vell, Nkem Tallow, the White Admiral and fourteen more now say three lines each on their People page, in both languages (before, only three people did).
+- **Six follow-up scenes are spoken by the person they are about**, under their name: Ghrem on the pier, the headman of Wrack’s End, the flagship’s helmsman, the smith’s widow, the eldest of Greyhithe and the road-keeper. Hathra, Tetsu and Tobin gain a spoken line in theirs.
+
+### Fixed
+- "l’Ancrage" in two scenes at the White Anchorage is "le Mouillage" in French, as everywhere else.
+
+## [1.260.0+296]
+
+Five more plots play out: every intrigue now runs from its first clue to its outcome.
+
+### Added
+- **Five intrigues play end to end.** *The Double Ledger*, *The Admiralty’s Silence*, *The Relic Road*, *The Returned* and *The Unwatched Hour* each have a scene for every stage, in both languages: thirty new scenes in all, offered by a place’s hub once the stage before is reached (Saltmouth, the Ashen Quarter, Emberwick, the Drowned Cloister, Wrack’s End, Rimewell, the Reliquary Quarter, the White Anchorage, Greyhithe), and a closing scene at Greyhithe that settles the plot. Every choice of a stage scene advances the plot, so none can stall.
+- **The endings answer back.** What you did shows in the closing scenes: the Crows’ brigs at the landing (`7810`), the Returned children at the water’s edge (`7002_approach`), the second door sewn into the tear (`7003`), the relic and the Fourth Piece in the epilogue (`7004`).
+- Stage anchors in `intrigues.json` match where the scenes play (people met in the scenes now carry the plot in their People page).
+
+### Docs
+- `docs/chapter-flow-roadmap.md` lists the scenes of all the intrigues; only *The Broken Charter* still has one stage (its coal event).
 
 ## [1.259.0+295]
 

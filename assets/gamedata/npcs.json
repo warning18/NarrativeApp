@@ -99,8 +99,16 @@
         "line_fr": "L’Inquisition a votre nom parmi ses amis ; il appelle cela un acompte, et n’a pas dit sur quoi."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"Your house was a very small price for a door that size. I hope you will come to see it that way.\"",
+      "\"I have read every page of your mother’s hiding. She was thorough. You are not thorough, and that is how we will know you.\"",
+      "\"Do not run. It is a courtesy I extend only once: I will not follow you tonight.\""
+    ],
+    "dialogueLines_fr": [
+      "« Votre maison était un bien petit prix pour une porte de cette taille. J’espère que vous en viendrez à le voir ainsi. »",
+      "« J’ai lu chaque page de la cachette de votre mère. Elle était minutieuse. Vous ne l’êtes pas, et c’est ainsi que nous vous reconnaîtrons. »",
+      "« Ne courez pas. C’est une courtoisie que je n’accorde qu’une fois : je ne vous suivrai pas ce soir. »"
+    ]
   },
   "vane_quartermaster": {
     "npcID": "vane_quartermaster",
@@ -168,8 +176,16 @@
         "line_fr": "Vous lui avez coupé la bourse au passage ; il lui faudrait traverser la mer pour la réclamer."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"I priced your boots when you walked in. Do not take it personally; I price the tide.\"",
+      "\"Nothing leaves these yards without a line in my book. That includes you, if I decide you are cargo.\"",
+      "\"Sharing a name with a bigger rogue has made me honest. Nobody wants to be mistaken for him.\""
+    ],
+    "dialogueLines_fr": [
+      "« J’ai estimé vos bottes dès que vous avez franchi la porte. Ne le prenez pas mal : j’estime la marée. »",
+      "« Rien ne quitte ces chantiers sans une ligne dans mon livre. Vous compris, si je décide que vous êtes de la marchandise. »",
+      "« Partager un nom avec un plus gros coquin m’a rendu honnête. Personne ne veut qu’on le confonde avec lui. »"
+    ]
   },
   "lysa": {
     "npcID": "lysa",
@@ -337,8 +353,16 @@
         "line_fr": "Le Dominion vous tient en amitié ; il vous salue sur Tern Row et garde ses péages hors de votre vue."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"It is not a toll, it is a courtesy fee. The Inquisition prefers the word courtesy.\"",
+      "\"I have a list. You are not on it. I would be very happy to keep it that way.\"",
+      "\"Deportation is an unpleasant word. I use it so rarely that people sometimes believe me.\""
+    ],
+    "dialogueLines_fr": [
+      "« Ce n’est pas un péage, c’est une redevance de courtoisie. L’Inquisition préfère le mot courtoisie. »",
+      "« J’ai une liste. Vous n’y êtes pas. Je serais très heureux que cela dure. »",
+      "« Déportation est un vilain mot. Je l’emploie si rarement que les gens finissent par me croire. »"
+    ]
   },
   "nadira": {
     "npcID": "nadira",
@@ -407,8 +431,16 @@
         "line_fr": "Tern Row a entendu ce que vous faites sur l’eau ; elle vous parle comme elle parle à l’Inquisition, avec précaution."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"Light one. It costs nothing, and nobody has ever been sorry they did.\"",
+      "\"The sea keeps what it keeps. We only ask it to keep it kindly.\"",
+      "\"I will explain it again, slowly. I have time. The lanterns do not mind waiting.\""
+    ],
+    "dialogueLines_fr": [
+      "« Allumez-en une. Cela ne coûte rien, et personne ne l’a jamais regretté. »",
+      "« La mer garde ce qu’elle garde. Nous lui demandons seulement de le garder avec douceur. »",
+      "« Je vais vous l’expliquer encore, lentement. J’ai le temps. Les lanternes ne craignent pas d’attendre. »"
+    ]
   },
   "maud_tallis": {
     "npcID": "maud_tallis",
@@ -510,8 +542,16 @@
         "line_fr": "Les Garde-Mèches ont votre nom parmi leurs amis ; chacune de leurs lampes sur la côte s’allume un peu plus tôt à votre passage."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"A lamp does not stop a plague. It lets the nurse see the face she is closing the eyes of.\"",
+      "\"The Dominion burns many things. The Wickwardens only ask that it leave the light.\"",
+      "\"I am old enough to have lit the First Lantern with my mother. I would like to light it once more before I forget how.\""
+    ],
+    "dialogueLines_fr": [
+      "« Une lampe n’arrête pas une peste. Elle permet à la garde-malade de voir le visage dont elle ferme les yeux. »",
+      "« Le Dominion brûle bien des choses. Les Garde-Mèches demandent seulement qu’il épargne la lumière. »",
+      "« Je suis assez vieille pour avoir allumé la Première Lanterne avec ma mère. J’aimerais l’allumer une dernière fois avant d’oublier comment on fait. »"
+    ]
   },
   "hesk_morrow": {
     "npcID": "hesk_morrow",
@@ -587,8 +627,16 @@
         "line_fr": "L’Ordre a votre nom parmi ses amis ; ses chevaliers s’écartent pour vous sur la route, et le Grand Maître demande des nouvelles de votre fil."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"Thirty-nine years. I have buried more knights than I have trained. I do not mean to bury another for nothing.\"",
+      "\"A sword does one thing, and does it honestly. I envy it.\"",
+      "\"You carry the grey as if it were a burden. Good. The ones who carry it lightly are the ones I worry about.\""
+    ],
+    "dialogueLines_fr": [
+      "« Trente-neuf ans. J’ai enterré plus de chevaliers que je n’en ai formé. Je ne compte pas en enterrer un de plus pour rien. »",
+      "« Une épée fait une seule chose, et la fait honnêtement. Je l’envie. »",
+      "« Vous portez le gris comme un fardeau. Bien. Ce sont ceux qui le portent à la légère qui m’inquiètent. »"
+    ]
   },
   "old_hesk": {
     "npcID": "old_hesk",
@@ -714,8 +762,16 @@
         "line_fr": "Le Dominion a de nouveau votre nom ; la chaise de la Geôle Noire est tenue prête, et les questions sur l’étoffe sont les mêmes."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"You are not being hurt. You are being measured. The difference will matter to you later.\"",
+      "\"The hands on the cloth. Open or shut? I ask only so that the file is complete.\"",
+      "\"Nobody here is angry with you. That is the worst of it, I am told.\""
+    ],
+    "dialogueLines_fr": [
+      "« On ne vous fait pas de mal. On vous mesure. La différence aura de l’importance pour vous plus tard. »",
+      "« Les mains sur le tissu. Ouvertes ou fermées ? Je ne demande que pour que le dossier soit complet. »",
+      "« Personne ici n’est en colère contre vous. C’est le pire, à ce qu’on me dit. »"
+    ]
   },
   "keyholder_wharf": {
     "npcID": "keyholder_wharf",
@@ -779,8 +835,16 @@
         "line_fr": "Les Corneilles de Sel ont mis un prix sur votre nom, et elle garde la main dans sa poche quand vous passez ; quoi qu’elle y tienne, ce n’est plus une clef."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"One key, one door. What is behind it is the door’s business.\"",
+      "\"Do not turn it. Everyone wants to. I pay for the ones who do not.\"",
+      "\"The Crows never break a paid contract. We only sometimes forget who paid.\""
+    ],
+    "dialogueLines_fr": [
+      "« Une clef, une porte. Ce qu’il y a derrière regarde la porte. »",
+      "« Ne la tournez pas. Tout le monde en a envie. Je paie pour ceux qui s’en abstiennent. »",
+      "« Les Corneilles ne rompent jamais un contrat payé. Il nous arrive seulement d’oublier qui a payé. »"
+    ]
   },
   "chart_keeper": {
     "npcID": "chart_keeper",
@@ -842,8 +906,16 @@
         "line_fr": "Le Reliquaire Noir vous tient pour hostile ; elle déroule ses cartes pour vous sans qu’on le lui demande."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"The tear moves a finger’s width a month. I move my pin. That is all a chart is: someone willing to keep correcting herself.\"",
+      "\"Do not open the reliquary. I say it to everyone. Most of them are polite enough to wait until I am out of the room.\"",
+      "\"The saints were chipped off long ago. I do not mind. Being watched was the least of what they did.\""
+    ],
+    "dialogueLines_fr": [
+      "« La déchirure bouge d’un doigt par mois. Je déplace mon épingle. Une carte n’est que cela : quelqu’un qui accepte de se corriger sans cesse. »",
+      "« N’ouvrez pas le reliquaire. Je le dis à tout le monde. La plupart ont la politesse d’attendre que je sois sortie. »",
+      "« Les saints ont été ciselés depuis longtemps. Cela m’est égal. Être regardée était le moindre de ce qu’ils faisaient. »"
+    ]
   },
   "sign_painter": {
     "npcID": "sign_painter",
@@ -883,8 +955,16 @@
         "line_fr": "Vous avez acheté son silence pour vingt pièces d’or, et il le garda."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"A fish for the fishmonger, a key for the locksmith. A hand, I think, for you. But I did not say so.\"",
+      "\"Luck is paint, friend. It wears off. You have to keep touching it up.\"",
+      "\"I never said those words. If anyone asks, I painted a gull.\""
+    ],
+    "dialogueLines_fr": [
+      "« Un poisson pour le poissonnier, une clef pour le serrurier. Une main, je crois, pour vous. Mais je ne l’ai pas dit. »",
+      "« La chance, c’est de la peinture. Elle s’écaille. Il faut la retoucher sans cesse. »",
+      "« Je n’ai jamais dit ces mots. Si on me le demande, j’ai peint une mouette. »"
+    ]
   },
   "old_harker": {
     "npcID": "old_harker",
@@ -1000,8 +1080,16 @@
         "line_fr": "Vous lui avez donné la lame avant l’étendard, et l’étendard se détacha propre."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"I did not light the fire. I signed the paper that lets it be lit. There is a difference, and I have prayed on it.\"",
+      "\"The standard weighs more each year. You will find that anything worn long enough becomes the one wearing it.\"",
+      "\"Burn it clean. A coast half burned is a coast that remembers.\""
+    ],
+    "dialogueLines_fr": [
+      "« Ce n’est pas moi qui ai allumé le feu. J’ai signé le papier qui permet de l’allumer. Il y a une différence, et j’ai prié dessus. »",
+      "« L’étendard pèse plus lourd chaque année. Vous verrez que ce qu’on porte assez longtemps finit par vous porter. »",
+      "« Brûlez proprement. Une côte à demi brûlée est une côte qui se souvient. »"
+    ]
   },
   "rat_matriarch": {
     "npcID": "rat_matriarch",
@@ -1086,8 +1174,16 @@
         "line_fr": "Vous avez répondu à sa copie couronnée par la vraie main tracée sur le sable, et la copie se défit fil à fil."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"We were many, and we were taken, and we are all speaking to you at once. Please be patient. It takes some practice.\"",
+      "\"Kneel. Not to us. To what we are the faces of.\"",
+      "\"You wear the cloth. We wear the thread. Notice how little separates us.\""
+    ],
+    "dialogueLines_fr": [
+      "« Nous étions nombreux, et nous avons été pris, et nous vous parlons tous à la fois. Prenez patience, je vous prie. Cela demande de l’habitude. »",
+      "« Agenouillez-vous. Pas devant nous. Devant ce dont nous sommes les visages. »",
+      "« Vous portez l’étoffe. Nous portons le fil. Voyez comme peu de chose nous sépare. »"
+    ]
   },
   "hathra": {
     "npcID": "hathra",
@@ -1146,8 +1242,16 @@
         "line_fr": "Haut-Âtre vous compte parmi ses hôtes ; un bol est posé pour vous près du feu de la salle du conseil, et elle se souvient duquel est le vôtre."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"I remember the contract word for word. We forgive by appointment. Yours is not made yet.\"",
+      "\"Gorm stood at the tally-stone when the frost came. A giant does not move once he has begun to count.\"",
+      "\"The Reliquary was our first stone and our last wage. We were paid by being written out of the story.\""
+    ],
+    "dialogueLines_fr": [
+      "« Je me souviens du contrat mot pour mot. Nous pardonnons sur rendez-vous. Le vôtre n’est pas encore pris. »",
+      "« Gorm se tenait devant la pierre de compte quand le givre est venu. Un géant ne bouge plus une fois qu’il a commencé à compter. »",
+      "« Le Reliquaire fut notre première pierre et notre dernier salaire. On nous a payés en nous effaçant du récit. »"
+    ]
   },
   "tetsu": {
     "npcID": "tetsu",
@@ -1206,8 +1310,16 @@
         "line_fr": "Les oni vous tiennent en amitié à Akagiri ; il vous laisse vous tenir à son enclume, ce qu’il n’accorde à aucun pèlerin."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"One horn is a handicap. Two horns is a vanity. I have decided not to miss the other.\"",
+      "\"The bells were hung to keep demons out. Funny. They kept every demon the Spire sent us in.\"",
+      "\"Soak first. Ask later. Nobody here forgives a man who talks with ash on his face.\""
+    ],
+    "dialogueLines_fr": [
+      "« Une corne, c’est un handicap. Deux cornes, c’est de la vanité. J’ai décidé de ne pas regretter l’autre. »",
+      "« On a pendu les cloches pour tenir les démons dehors. Drôle. Elles ont retenu tous ceux que la Flèche nous a envoyés. »",
+      "« Trempez d’abord. Questionnez ensuite. Ici, personne ne pardonne à qui parle avec de la cendre sur le visage. »"
+    ]
   },
   "wracks_end_headman": {
     "npcID": "wracks_end_headman",
@@ -1261,8 +1373,16 @@
         "line_fr": "Vous saviez alors à quoi servaient les gens, et avez tout de même laissé au village son métier."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"One lamp on the point, one on the rocks. The sea is an honest partner. It takes only what it is given.\"",
+      "\"We do not ask what the Court does with what we send up the Stair. It is a good arrangement. It keeps us fed and ignorant.\"",
+      "\"You have the face of a person who reads ledgers. I would be careful where you read them aloud.\""
+    ],
+    "dialogueLines_fr": [
+      "« Une lampe sur la pointe, une sur les récifs. La mer est une associée honnête. Elle ne prend que ce qu’on lui donne. »",
+      "« Nous ne demandons pas ce que la Cour fait de ce que nous envoyons par l’Escalier. C’est un bon arrangement. Il nous garde nourris et ignorants. »",
+      "« Vous avez le visage de quelqu’un qui lit des registres. Je me méfierais de l’endroit où vous les lisez à voix haute. »"
+    ]
   },
   "fleet_helmsman": {
     "npcID": "fleet_helmsman",
@@ -1330,8 +1450,16 @@
         "line_fr": "L’Amirauté a votre nom parmi ses amis ; il dit que l’Amiral vous aurait confié la barre, et l’entend comme un avertissement."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"I cut the rope. Every night, I cut the rope again. It is surprising how new it feels.\"",
+      "\"The sea was flat. I have never told anyone how flat. It makes the next part harder to believe.\"",
+      "\"Buy me a drink, or leave me to it. Do not do both. I can tell when I am being managed.\""
+    ],
+    "dialogueLines_fr": [
+      "« J’ai coupé la corde. Chaque nuit, je la coupe encore. C’est étonnant comme elle paraît neuve. »",
+      "« La mer était plate. Je n’ai jamais dit à personne à quel point. Cela rend la suite plus difficile à croire. »",
+      "« Payez-moi un verre, ou laissez-moi à mon affaire. Pas les deux. Je sens quand on me ménage. »"
+    ]
   },
   "fleet_chaplain": {
     "npcID": "fleet_chaplain",
@@ -1410,8 +1538,16 @@
         "line_fr": "L’Amirauté a votre nom parmi ses amis ; il prie pour vous avec les morts de la flotte, nommément, et a cessé de s’excuser de la compagnie."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"I preached the Fleet’s crusade for twenty years. I find I have only one sermon left, and it is a question.\"",
+      "\"The Admiralty is whoever is still standing on this shore. At the moment that is me, and a boat.\"",
+      "\"Vote with your eyes open. I did not, once, and I have had a very long time to count what it cost.\""
+    ],
+    "dialogueLines_fr": [
+      "« J’ai prêché la croisade de la Flotte pendant vingt ans. Il ne me reste qu’un sermon, et c’est une question. »",
+      "« L’Amirauté, c’est ce qui tient encore debout sur cette rive. Pour l’instant, c’est moi, et une barque. »",
+      "« Votez les yeux ouverts. Moi, je ne l’ai pas fait, une fois, et j’ai eu très longtemps pour compter ce que cela a coûté. »"
+    ]
   },
   "cloister_archivist": {
     "npcID": "cloister_archivist",
@@ -1466,8 +1602,16 @@
         "line_fr": "Vous lui avez apporté ce que vous aviez reconstitué, et elle trouva la forme du second registre : pas un livre, mais un mur, un nom par marche."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"There were two ledgers. The one everyone knows is the list of the taken. The one that matters is the list of who took.\"",
+      "\"I copied my sister’s name in a fair hand. It was a very good hand. That is what I cannot forgive.\"",
+      "\"Walls last longer than books. If I were building a record to outlive the Court, I would cut it into stone.\""
+    ],
+    "dialogueLines_fr": [
+      "« Il y avait deux registres. Celui que tout le monde connaît est la liste des pris. Celui qui compte est la liste de ceux qui ont pris. »",
+      "« J’ai recopié le nom de ma sœur d’une belle main. C’était une très belle main. C’est cela que je ne puis me pardonner. »",
+      "« Les murs durent plus longtemps que les livres. Si je bâtissais une mémoire pour survivre à la Cour, je la taillerais dans la pierre. »"
+    ]
   },
   "court_deserter": {
     "npcID": "court_deserter",
@@ -1522,8 +1666,16 @@
         "line_fr": "Il vous trouva avant que vous le trouviez, pour dire que la Cour tient l’Escalier parce que quelque chose en dessous le lui a ordonné, et que si vous descendiez, c’était en faisant du bruit."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"Ask me something else. Anything. Ask me what my mother cooked. I have been waiting to be asked.\"",
+      "\"The Stair is not held out of loyalty. It is held because there is nobody left who dares say the order is wrong.\"",
+      "\"I ran, yes. But I ran toward something. People forget that. They only ask what I ran from.\""
+    ],
+    "dialogueLines_fr": [
+      "« Demandez-moi autre chose. N’importe quoi. Demandez-moi ce que cuisinait ma mère. J’attends qu’on me le demande. »",
+      "« L’Escalier n’est pas tenu par loyauté. Il est tenu parce qu’il ne reste plus personne qui ose dire que l’ordre est mauvais. »",
+      "« J’ai fui, oui. Mais j’ai fui vers quelque chose. On l’oublie. On ne demande que ce que j’ai fui. »"
+    ]
   },
   "tribunal_clerk": {
     "npcID": "tribunal_clerk",
@@ -1570,8 +1722,16 @@
         "line_fr": "Vous avez refusé de le porter, parce que le Tribunal a pendu quatre cents personnes, et le vote partit vers le navire de l’émissaire sans vous."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"I cannot swim. It has been a very educational week.\"",
+      "\"The seal is unbroken. That is the whole of my duty and the whole of my pride.\"",
+      "\"A vote is only a vote while its envelope is shut. After that it is an opinion, and the Tribunal has never had those.\""
+    ],
+    "dialogueLines_fr": [
+      "« Je ne sais pas nager. Ce fut une semaine très instructive. »",
+      "« Le sceau est intact. C’est tout mon devoir et toute ma fierté. »",
+      "« Un vote n’est un vote que tant que son enveloppe est fermée. Ensuite, c’est une opinion, et le Tribunal n’en a jamais eu. »"
+    ]
   },
   "dorran_quill": {
     "npcID": "dorran_quill",
@@ -1644,8 +1804,16 @@
         "line_fr": "Dorran vous garde dans ses comptes comme une demi-dette, payée et sans remerciement."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"My crew rigged that yard in a month. They have not seen a coin for it. I do not take that lightly.\"",
+      "\"I would pick the fight myself, but a foreman who goes to the Ledger loses his men to the Ledger.\"",
+      "\"Scaffolds hold if the crew trusts them. Wages are only the way the crew says it out loud.\""
+    ],
+    "dialogueLines_fr": [
+      "« Mon équipe a gréé ce chantier en un mois. Elle n’a pas vu une pièce. Je ne le prends pas à la légère. »",
+      "« Je ferais bien le coup moi-même, mais un contremaître qui va voir le Registre perd ses hommes au profit du Registre. »",
+      "« Les échafaudages tiennent si l’équipe leur fait confiance. Les gages sont seulement la façon de le dire tout haut. »"
+    ]
   },
   "imeh": {
     "npcID": "imeh",
@@ -1718,8 +1886,16 @@
         "line_fr": "Imeh vend à l’abri d’un toit au camp et appelle la coupe verte qu’elle vous a envoyée le verre qui dit merci."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"Glass is only honest under fire. Test it before the Choir does, and stand where I can see you.\"",
+      "\"They burn what they call unclean. They have never once asked the glass.\"",
+      "\"A stall in the ash is a stall that expects to be burned. I am stubborn, that is all.\""
+    ],
+    "dialogueLines_fr": [
+      "« Le verre n’est honnête que dans le feu. Éprouvez-le avant que le Chœur le fasse, et tenez-vous là où je vous vois. »",
+      "« Ils brûlent ce qu’ils disent impur. Ils n’ont jamais une fois demandé son avis au verre. »",
+      "« Un étal dans la cendre est un étal qui s’attend à brûler. Je suis têtue, voilà tout. »"
+    ]
   },
   "brannoc_reedtithe": {
     "npcID": "brannoc_reedtithe",
@@ -1792,8 +1968,16 @@
         "line_fr": "Brannoc travaille avec une demi-guérison et appelle juste votre moitié en paroles, et n’envoie aucun paquet au camp."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"Fen-bark does not cure the fever. It lets the body win the argument. I have no other medicine.\"",
+      "\"My whole season’s tithe, locked in a Keyholder’s cellar to be sold back to the dying. I would laugh, if I had the strength.\"",
+      "\"Candles and prayers are fine things. They are not what you give a child with a fever.\""
+    ],
+    "dialogueLines_fr": [
+      "« L’écorce du marais ne guérit pas la fièvre. Elle permet au corps de gagner la discussion. Je n’ai pas d’autre remède. »",
+      "« Toute ma dîme de la saison, enfermée dans la cave d’un Porte-Clef pour être revendue aux mourants. J’en rirais, si j’en avais la force. »",
+      "« Les bougies et les prières sont de belles choses. Ce n’est pas ce qu’on donne à un enfant qui a de la fièvre. »"
+    ]
   },
   "orsabet_vell": {
     "npcID": "orsabet_vell",
@@ -1866,8 +2050,16 @@
         "line_fr": "Orsabet allume chaque soir une chandelle pour une autre raison, et a gardé pour vous la dernière de la nuit de la lecture."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"One candle for each of them. I know the number. I am not sure anyone else does.\"",
+      "\"The stone is past the frost. I cut every name myself. My hands are too old to go back and read them.\"",
+      "\"The Dominion keeps its own count. Ours is only the true one.\""
+    ],
+    "dialogueLines_fr": [
+      "« Une chandelle pour chacun d’eux. Je connais le nombre. Je ne suis pas sûre que quelqu’un d’autre le connaisse. »",
+      "« La pierre est au-delà du givre. J’ai taillé chaque nom moi-même. Mes mains sont trop vieilles pour y retourner les lire. »",
+      "« Le Dominion tient son propre compte. Le nôtre est seulement le vrai. »"
+    ]
   },
   "ghrem_stonebrow": {
     "npcID": "ghrem_stonebrow",
@@ -1940,8 +2132,16 @@
         "line_fr": "Ghrem a décidé de se réjouir d’une moitié de front, et vous demande de ne pas le lui faire dire deux fois."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"The fire has not gone out in six hundred years. I would like to be the one it does not go out on.\"",
+      "\"I was cut from that face. When they take the stone, they take the part of me that remembers where it came from.\"",
+      "\"Giants are slow to anger, so we are slow to forgive. It evens out.\""
+    ],
+    "dialogueLines_fr": [
+      "« Le feu ne s’est pas éteint depuis six cents ans. Je voudrais être celui sur qui il ne s’éteint pas. »",
+      "« J’ai été taillé dans cette face. Quand ils prennent la pierre, ils prennent la part de moi qui se souvient d’où elle vient. »",
+      "« Les géants mettent du temps à se fâcher, alors nous mettons du temps à pardonner. Cela s’équilibre. »"
+    ]
   },
   "nkem_tallow": {
     "npcID": "nkem_tallow",
@@ -2014,8 +2214,16 @@
         "line_fr": "Nkem est là pour la mer et pas pour vous, et sa barque flotte sans votre aide."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"What the wreck gives up belongs to whoever went down for it. I have gone down for it. Count the times.\"",
+      "\"Seals are paper. The sea has never respected paper.\"",
+      "\"I will work for you, or against you, or beside you. I only need to know whose boat it is first.\""
+    ],
+    "dialogueLines_fr": [
+      "« Ce que l’épave rend appartient à qui est descendu la chercher. Je suis descendu. Comptez les fois. »",
+      "« Les sceaux, c’est du papier. La mer n’a jamais respecté le papier. »",
+      "« Je travaillerai pour vous, contre vous ou à côté de vous. Je dois juste savoir d’abord à qui est la barque. »"
+    ]
   },
   "keeper_blind_beggar_stall": {
     "npcID": "keeper_blind_beggar_stall",
@@ -2670,8 +2878,16 @@
         "line_fr": "Vous avez donné son nom aux Corneilles de Sel plutôt que de prendre son argent ; les Corneilles tiennent un long registre, et il y figure désormais."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"Do you want to know what the tide brought in last night? I do. It pays better than anything else I know.\"",
+      "\"Nobody notices a man who stands still. They notice the ones who work at being unnoticed. I am working on it.\"",
+      "\"I name names to anyone who listens. The Inquisition just happens to listen best.\""
+    ],
+    "dialogueLines_fr": [
+      "« Voulez-vous savoir ce que la marée a rapporté cette nuit ? Moi, oui. Cela paie mieux que tout ce que je connais. »",
+      "« Personne ne remarque un homme immobile. On remarque ceux qui s’efforcent de passer inaperçus. J’y travaille. »",
+      "« Je donne des noms à qui veut bien les entendre. Il se trouve que l’Inquisition est celle qui écoute le mieux. »"
+    ]
   },
   "condemned_voidkin": {
     "npcID": "condemned_voidkin",
@@ -2711,8 +2927,16 @@
         "line_fr": "Vess aurait voulu son nom ; vous ne l’avez pas eu, et l’avez regretté depuis."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"They are not closing it.\"",
+      "\"Carry it past the doors. The Spire does not want it said out loud.\"",
+      "\"Do not pity me. I have been carrying this a long way. I am glad to put it down.\""
+    ],
+    "dialogueLines_fr": [
+      "« Ils ne la referment pas. »",
+      "« Portez-le au-delà des portes. La Flèche ne veut pas qu’on le dise tout haut. »",
+      "« Ne me plaignez pas. Je porte cela depuis longtemps. Je suis content de le poser. »"
+    ]
   },
   "drowned_courier": {
     "npcID": "drowned_courier",
@@ -2786,8 +3010,16 @@
         "line_fr": "Vous avez attendu derrière lui à la porte de la terre et entendu le crieur le dire : le Porte-Lanterne déclinait, et l’on priait les fidèles de prier."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"The Lantern-Bearer is failing. Pray. The crape means he is not yet gone.\"",
+      "\"I carry black crape on my lantern and bad news in my mouth. The second weighs more.\"",
+      "\"Say a prayer or step aside. The queue is long, and the faithful are tired.\""
+    ],
+    "dialogueLines_fr": [
+      "« Le Porte-Lanterne décline. Priez. Le crêpe signifie qu’il n’est pas encore parti. »",
+      "« Je porte du crêpe noir sur ma lanterne et de mauvaises nouvelles dans la bouche. Les secondes pèsent plus lourd. »",
+      "« Dites une prière ou écartez-vous. La file est longue, et les fidèles sont fatigués. »"
+    ]
   },
   "frozen_pilgrim": {
     "npcID": "frozen_pilgrim",
@@ -2902,7 +3134,15 @@
         "line_fr": "Vous avez revendu sa dernière page au légat de l’Inquisition, et portez son mandat."
       }
     ],
-    "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines": [
+      "\"Forty ships, in good order, into the dark. I gave the order calmly. I was told to.\"",
+      "\"The sail was grey. They told me it was white. I never once looked up to check.\"",
+      "\"My log is steady until the last line. Read the last line. Then decide what I was.\""
+    ],
+    "dialogueLines_fr": [
+      "« Quarante navires, en bon ordre, dans le noir. J’ai donné l’ordre calmement. On me l’avait dit. »",
+      "« La voile était grise. On m’avait dit qu’elle était blanche. Je n’ai pas une fois levé les yeux pour vérifier. »",
+      "« Mon journal est ferme jusqu’à la dernière ligne. Lisez la dernière ligne. Puis décidez ce que j’étais. »"
+    ]
   }
 }

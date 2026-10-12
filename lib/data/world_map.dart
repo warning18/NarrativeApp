@@ -277,6 +277,10 @@ final List<Landmark> worldMapLandmarks = [
       '2070_cut_failed',
       '2015_house_drowned_debt', '2015_house_keyholders',
       '2015_house_keyholders_turned', '2015_house_salt_ledger',
+      '2015_route_sold',
+      '2015_survivor',
+      '2015_bundle',
+      '2015_child_tongue',
     ],
     fights: [
       'harbor_rat', 'smuggler_captain', 'plague_hound', 'street_bandit', //
@@ -350,6 +354,10 @@ final List<Landmark> worldMapLandmarks = [
       '3005_clan_compact_1_lit', '3005_imeh', '3005_dorran_later',
       '3005_glass_fire',
       '3005_glass_fire_fight',
+      '3005_black_thread',
+      '3005_logbook_gap',
+      '3005_shrine_break',
+      '3005_spire_takings',
     ],
     fights: [
       'cultist_acolyte', 'void_wisp', 'void_stalker', 'iron_golem', //
@@ -371,6 +379,7 @@ final List<Landmark> worldMapLandmarks = [
       '3100_widow', '3100_widow_later', '3100_bread',
       '3100_house_cantors', '3100_house_emberwives', '3100_house_anvil_deaf',
       '3100_house_anvil_deaf_failed',
+      '3100_new_moon',
     ],
     fights: [
       'inquisition_auxiliary',
@@ -435,6 +444,8 @@ final List<Landmark> worldMapLandmarks = [
       '5100_clan_crows_1',
       '5100_clan_crows_1_seen',
       '5100_clan_crows_1_lost',
+      '5100_keyholder_cut',
+      '5100_tar_hand_book',
     ],
     fights: ['drowned_pilgrim'],
   ),
@@ -483,6 +494,8 @@ final List<Landmark> worldMapLandmarks = [
       '5010_clan_crows_2_failed', '5010_brannoc', '5010_imeh_later',
       '5010_bark_cache',
       '5010_bark_cache_fight',
+      '5010_thieves_ship',
+      '5010_vigil_envoy',
     ],
     fights: ['catacomb_ghoul', 'bone_warden', 'void_wisp'],
   ),
@@ -527,6 +540,10 @@ final List<Landmark> worldMapLandmarks = [
       '6010_clan_compact_3_hammer', '6010_orsabet', '6010_brannoc_later',
       '6010_candle_walk',
       '6010_candle_walk_fight',
+      '6010_lantern_manifest',
+      '6010_heist_night',
+      '6010_count_short',
+      '6010_returned_roll',
     ],
     fights: [
       'void_hound', 'inquisition_penitent', 'tear_spawn', 'masked_penitent', //
@@ -555,6 +572,8 @@ final List<Landmark> worldMapLandmarks = [
       '6100_clan_penitents_2',
       '6100_clan_penitents_2_heard',
       '6100_clan_penitents_2_broken',
+      '6100_debt_rising',
+      '6100_stitcher_door',
     ],
     fights: [
       'void_hound',
@@ -616,6 +635,8 @@ final List<Landmark> worldMapLandmarks = [
       '7100_clan_penitents_3_through', '7100_nkem', '7100_orsabet_later',
       '7100_ghrem_later', '7100_impound',
       '7100_impound_fight',
+      '7100_vault_burns',
+      '7100_flagship_hold',
     ],
     fights: [
       'inquisition_soldier',
@@ -640,6 +661,15 @@ final List<Landmark> worldMapLandmarks = [
       '7200_clan_vigil_3_changed',
       '7200_clan_vigil_3_sworn',
       '7200_clan_mire_3',
+      '7200_ledger',
+      '7200_relic',
+      '7200_thieves_aboard',
+      '7200_fourth_piece',
+      '7200_stitcher_kin',
+      '7200_followed',
+      '7200_stitcher',
+      '7200_courts_children',
+      '7200_returned',
     ],
     fights: ['hollow_reflection'],
   ),

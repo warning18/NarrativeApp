@@ -200,4 +200,4 @@ the French is for Narrative to finish once the list is fixed.
 From the audit, section 4: **B** (chapters 7 and 8 as a game, see section 1
 here), **D** (companion loyalty scenes, needs a trigger from Core) and **E**
 (New Game+ as story, needs state from Core and a prologue card from UX).
-**A** (the dormant intrigues) and **C** (NPC voices) are under way.
+**A** (the dormant intrigues) and **C** (NPC voices) are done.

@@ -522,8 +522,7 @@
         "stage": "Clue",
         "chapter": 1,
         "text": "A drunk White Fleet survivor at the Harbor says: “It wasn’t a storm.”",
-        "text_fr": "Au port, un survivant ivre de la Flotte Blanche affirme : « Ce n’était pas une tempête. »",
-        "npcId": "fleet_helmsman"
+        "text_fr": "Au port, un survivant ivre de la Flotte Blanche affirme : « Ce n’était pas une tempête. »"
       },
       {
         "stage": "Hook",
@@ -541,13 +540,15 @@
         "stage": "Reveal",
         "chapter": 5,
         "text": "The Fleet sailed into the tear on purpose.",
-        "text_fr": "La Flotte est entrée délibérément dans la déchirure."
+        "text_fr": "La Flotte est entrée délibérément dans la déchirure.",
+        "npcId": "keeper_last_lantern"
       },
       {
         "stage": "Crisis",
         "chapter": 6,
         "text": "The White Fleet’s Grave, where the relic still lies in the flagship.",
-        "text_fr": "Le Tombeau de la Flotte Blanche, où la relique repose encore dans le vaisseau amiral."
+        "text_fr": "Le Tombeau de la Flotte Blanche, où la relique repose encore dans le vaisseau amiral.",
+        "npcId": "fleet_helmsman"
       },
       {
         "stage": "Choice",
@@ -621,13 +622,15 @@
         "stage": "Hook",
         "chapter": 3,
         "text": "The Reliquary Thieves break a relic in the Spire’s own chapel.",
-        "text_fr": "Les Voleurs de Reliques brisent une relique dans la chapelle même de la Flèche."
+        "text_fr": "Les Voleurs de Reliques brisent une relique dans la chapelle même de la Flèche.",
+        "npcId": "sister_ines"
       },
       {
         "stage": "Turn",
         "chapter": 4,
         "text": "They need a ship: the Eel.",
-        "text_fr": "Il leur faut un navire : l’Eel."
+        "text_fr": "Il leur faut un navire : l’Eel.",
+        "npcId": "keeper_ossuary_relics"
       },
       {
         "stage": "Reveal",
@@ -662,8 +665,8 @@
             "mark": "foe"
           },
           {
-            "note": "The Fourth Piece is gone from the ending.",
-            "note_fr": "La Quatrième Pièce disparaît du dénouement."
+            "note": "The Fourth Piece is broken: it hums for no one, you included.",
+            "note_fr": "La Quatrième Pièce est brisée : elle ne bourdonnera plus pour personne, vous compris."
           }
         ]
       },
@@ -704,26 +707,26 @@
     "stages": [
       {
         "stage": "Clue",
-        "chapter": 1,
+        "chapter": 3,
         "text": "Something from the tear is seen on the Salt Road on a new moon.",
         "text_fr": "Une chose venue de la déchirure est aperçue sur la Route du Sel, une nuit de nouvelle lune."
       },
       {
         "stage": "Hook",
-        "chapter": 3,
+        "chapter": 5,
         "text": "The Vigil’s count of the dead is wrong by one.",
         "text_fr": "Le compte des morts de la Veille est faux d’une unité.",
         "npcId": "orsabet_vell"
       },
       {
         "stage": "Turn",
-        "chapter": 4,
+        "chapter": 5,
         "text": "A Stitcher is sewing a door, not a wound.",
         "text_fr": "Une Porte-Aiguilles coud une porte, pas une plaie."
       },
       {
         "stage": "Reveal",
-        "chapter": 5,
+        "chapter": 6,
         "text": "She bargains with what lives beyond the tear, to save her tear-marked kin from the Inquisition.",
         "text_fr": "Elle marchande avec ce qui vit au-delà de la déchirure, pour sauver de l’Inquisition les siens, marqués de la déchirure."
       },
