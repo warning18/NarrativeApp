@@ -212,6 +212,11 @@ ColorScheme stitchedInkScheme(Brightness brightness) {
   );
 }
 
+/// One transition on every platform: the app moves the same way everywhere.
+final PageTransitionsTheme _inkTransitions = PageTransitionsTheme(builders: {
+  for (final p in TargetPlatform.values) p: const InkPageTransitions(),
+});
+
 /// The app's theme over [scheme]: Stitched Ink's type, shapes and
 /// components, in whatever colours the palette gives.
 ThemeData buildAppTheme(ColorScheme scheme) {
@@ -257,6 +262,7 @@ ThemeData buildAppTheme(ColorScheme scheme) {
   const buttonPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 10);
 
   return base.copyWith(
+    pageTransitionsTheme: _inkTransitions,
     textTheme: textTheme,
     scaffoldBackgroundColor: scheme.surface,
     extensions: [colors],
@@ -491,6 +497,52 @@ class InkTag extends StatelessWidget {
           height: 1.2,
           color: color,
         ),
+      ),
+    );
+  }
+}
+
+/// Every screen change in the app: the new page fades in over 180 ms while
+/// sliding up 12 px, the old one holds still. With "reduce motion" on, the
+/// pages just swap.
+class InkPageTransitions extends PageTransitionsBuilder {
+  const InkPageTransitions();
+
+  /// How long a page takes to arrive.
+  static const Duration duration = Duration(milliseconds: 180);
+
+  /// How far the new page rises as it arrives, in logical pixels.
+  static const double rise = 12;
+
+  @override
+  Duration get transitionDuration => duration;
+
+  @override
+  Duration get reverseTransitionDuration => duration;
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    if (MediaQuery.maybeDisableAnimationsOf(context) ?? false) return child;
+    final eased = CurvedAnimation(
+      parent: animation,
+      curve: Curves.easeOutCubic,
+      reverseCurve: Curves.easeInCubic,
+    );
+    return FadeTransition(
+      opacity: eased,
+      child: AnimatedBuilder(
+        animation: eased,
+        builder: (context, child) => Transform.translate(
+          offset: Offset(0, (1 - eased.value) * rise),
+          child: child,
+        ),
+        child: child,
       ),
     );
   }

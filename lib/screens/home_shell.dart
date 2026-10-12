@@ -258,6 +258,83 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           tooltip: show ? '$label · $reason' : label,
         );
 
+    final List<NavigationDestination> destinations = isEditMode
+        ? [
+            NavigationDestination(
+                icon: const Icon(Icons.menu_book), label: tr(ref, 'nav_story')),
+            NavigationDestination(
+                icon: const Icon(Icons.alt_route),
+                label: tr(ref, 'nav_journey')),
+            NavigationDestination(
+                icon: const Icon(Icons.videogame_asset),
+                label: tr(ref, 'nav_play')),
+            NavigationDestination(
+                icon: const Icon(Icons.auto_awesome),
+                label: tr(ref, 'nav_generate')),
+            NavigationDestination(
+                icon: const Icon(Icons.storage), label: tr(ref, 'nav_data')),
+          ]
+        : [
+            for (final tab in visibleTabs)
+              switch (tab) {
+                0 => NavigationDestination(
+                    icon: const Icon(Icons.menu_book),
+                    label: tr(ref, 'nav_story')),
+                journeyTabIndex => NavigationDestination(
+                    icon: const Icon(Icons.alt_route),
+                    label: tr(ref, 'nav_journey')),
+                1 => dotted(Icons.person_outline, tr(ref, 'nav_character'),
+                    show: badges.character,
+                    reason: tr(ref, 'badge_points_waiting')),
+                2 => atCampTab
+                    ? dotted(Icons.local_fire_department_outlined,
+                        tr(ref, 'nav_camp'),
+                        show: badges.camp,
+                        reason: tr(ref, 'badge_house_affordable'))
+                    : NavigationDestination(
+                        icon: const Icon(Icons.sailing_outlined),
+                        label: tr(ref, 'nav_ship')),
+                _ => dotted(Icons.more_horiz, tr(ref, 'nav_other'),
+                    show: badges.other, reason: tr(ref, 'badge_quest_ready')),
+              },
+          ];
+
+    // A tablet (or a desktop window) puts the tabs in a rail down the left
+    // edge and gives the page the rest, instead of a bar under it.
+    final window = MediaQuery.sizeOf(context);
+    final wide =
+        window.width >= wideShellWidth && window.height >= wideShellHeight;
+    final pages = Stack(
+      fit: StackFit.expand,
+      children: [
+        IndexedStack(index: index, children: screens),
+        // The screen's edges throb red while the hero's health is low.
+        if (ref.watch(playerSessionProvider.select((s) =>
+            s.characterName.isNotEmpty &&
+            s.maxHealth > 0 &&
+            s.currentHealth * 10 <= s.maxHealth * 3)))
+          const LowHealthEdge(),
+      ],
+    );
+    final rail = TutorialTarget(
+      id: 'home.nav',
+      child: NavigationRail(
+        key: const Key('home_nav_rail'),
+        selectedIndex: visibleTabs.indexOf(index),
+        onDestinationSelected: (i) =>
+            ref.read(homeTabIndexProvider.notifier).state = visibleTabs[i],
+        labelType: NavigationRailLabelType.all,
+        destinations: [
+          for (final d in destinations)
+            NavigationRailDestination(
+              icon: d.icon,
+              selectedIcon: d.selectedIcon,
+              label: Text(d.label),
+            ),
+        ],
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -341,73 +418,35 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           ),
         ],
       ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          IndexedStack(index: index, children: screens),
-          // The screen's edges throb red while the hero's health is low.
-          if (ref.watch(playerSessionProvider.select((s) =>
-              s.characterName.isNotEmpty &&
-              s.maxHealth > 0 &&
-              s.currentHealth * 10 <= s.maxHealth * 3)))
-            const LowHealthEdge(),
-        ],
-      ),
-      bottomNavigationBar: TutorialTarget(
-        id: 'home.nav',
-        child: NavigationBar(
-          selectedIndex: visibleTabs.indexOf(index),
-          onDestinationSelected: (i) =>
-              ref.read(homeTabIndexProvider.notifier).state = visibleTabs[i],
-          destinations: isEditMode
-              ? [
-                  NavigationDestination(
-                      icon: const Icon(Icons.menu_book),
-                      label: tr(ref, 'nav_story')),
-                  NavigationDestination(
-                      icon: const Icon(Icons.alt_route),
-                      label: tr(ref, 'nav_journey')),
-                  NavigationDestination(
-                      icon: const Icon(Icons.videogame_asset),
-                      label: tr(ref, 'nav_play')),
-                  NavigationDestination(
-                      icon: const Icon(Icons.auto_awesome),
-                      label: tr(ref, 'nav_generate')),
-                  NavigationDestination(
-                      icon: const Icon(Icons.storage),
-                      label: tr(ref, 'nav_data')),
-                ]
-              : [
-                  for (final tab in visibleTabs)
-                    switch (tab) {
-                      0 => NavigationDestination(
-                          icon: const Icon(Icons.menu_book),
-                          label: tr(ref, 'nav_story')),
-                      journeyTabIndex => NavigationDestination(
-                          icon: const Icon(Icons.alt_route),
-                          label: tr(ref, 'nav_journey')),
-                      1 => dotted(
-                          Icons.person_outline, tr(ref, 'nav_character'),
-                          show: badges.character,
-                          reason: tr(ref, 'badge_points_waiting')),
-                      2 => atCampTab
-                          ? dotted(Icons.local_fire_department_outlined,
-                              tr(ref, 'nav_camp'),
-                              show: badges.camp,
-                              reason: tr(ref, 'badge_house_affordable'))
-                          : NavigationDestination(
-                              icon: const Icon(Icons.sailing_outlined),
-                              label: tr(ref, 'nav_ship')),
-                      _ => dotted(Icons.more_horiz, tr(ref, 'nav_other'),
-                          show: badges.other,
-                          reason: tr(ref, 'badge_quest_ready')),
-                    },
-                ],
-        ),
-      ),
+      body: wide
+          ? Row(children: [
+              rail,
+              const VerticalDivider(width: 1),
+              Expanded(child: pages)
+            ])
+          : pages,
+      bottomNavigationBar: wide
+          ? null
+          : TutorialTarget(
+              id: 'home.nav',
+              child: NavigationBar(
+                selectedIndex: visibleTabs.indexOf(index),
+                onDestinationSelected: (i) => ref
+                    .read(homeTabIndexProvider.notifier)
+                    .state = visibleTabs[i],
+                destinations: destinations,
+              ),
+            ),
     );
   }
 }
+
+/// From this window width and height the tabs sit in a rail at the side (a
+/// tablet in either direction, a desktop window); under either, the bar at
+/// the bottom. The height keeps a phone on its side (844 x 390) on the bar:
+/// a rail of five tabs needs about 480 px.
+const double wideShellWidth = 840;
+const double wideShellHeight = 480;
 
 /// The Camp tab's index among the play-mode tabs.
 const int _campTab = 2;

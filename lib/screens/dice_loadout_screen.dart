@@ -22,6 +22,7 @@ import '../widgets/die_3d.dart';
 import '../widgets/die_skins.dart';
 import '../widgets/interactive_die.dart';
 import '../widgets/moments.dart';
+import '../widgets/empty_state.dart';
 
 class DiceLoadoutScreen extends ConsumerStatefulWidget {
   const DiceLoadoutScreen({super.key, this.allyId});
@@ -75,12 +76,12 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
             data: (skills) =>
                 _buildBody(context, dice, skills, session, companion, ally),
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Center(
-                child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
+            error: (error, stack) => InkErrorState(
+                message: tr(ref, 'failed_to_load_skills'), detail: error),
           ),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) =>
-              Center(child: Text('${tr(ref, 'failed_to_load_dice')}: $error')),
+          error: (error, stack) => InkErrorState(
+              message: tr(ref, 'failed_to_load_dice'), detail: error),
         ),
       ),
     );
@@ -101,7 +102,7 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
         ? [companion?['signatureDiceId']?.toString() ?? '']
         : (session.ownedDiceIds.where(dice.containsKey).toList()..sort());
     if (diceIds.isEmpty || !dice.containsKey(diceIds.first)) {
-      return Center(child: Text(tr(ref, 'own_no_dice')));
+      return InkEmptyState(message: tr(ref, 'own_no_dice'));
     }
     if (ally == null) {
       _selectedDiceId =

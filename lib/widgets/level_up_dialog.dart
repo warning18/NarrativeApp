@@ -6,6 +6,7 @@ import '../providers/player_session_provider.dart';
 import 'detail_dialog.dart';
 import 'moments.dart';
 import 'offer_dialog.dart';
+import 'pixel_vfx.dart';
 
 /// Shown right after a fight that leveled the character up. Lets the player
 /// spend their new stat point(s) immediately, right in the modal, or close
@@ -140,6 +141,23 @@ class _LevelUpDialog extends ConsumerWidget {
           height: 90,
           child: Stack(alignment: Alignment.center, children: [
             const Positioned.fill(child: RayBurst()),
+            // A pixel starburst, a ring and a rain of sparks, once.
+            const Positioned(
+              left: -17,
+              top: -27,
+              width: 144,
+              height: 144,
+              child: PixelMoment(
+                key: Key('level_up_burst'),
+                palette: PixelMoment.gold,
+                duration: Duration(milliseconds: 1500),
+                layers: [
+                  PixelMomentLayer('vfx_crit', span: 0.55),
+                  PixelMomentLayer('vfx_shout', t0: 0.15, span: 0.6),
+                  PixelMomentLayer('vfx_heal', t0: 0.3, span: 0.7),
+                ],
+              ),
+            ),
             _medal(),
           ]),
         ),

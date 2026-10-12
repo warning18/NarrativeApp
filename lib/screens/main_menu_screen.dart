@@ -18,6 +18,7 @@ import '../providers/story_providers.dart';
 import '../widgets/save_slots_sheet.dart';
 import '../widgets/moments.dart';
 import '../widgets/pixel_banner.dart';
+import '../widgets/wind_banner.dart';
 import 'home_shell.dart';
 import 'settings_screen.dart';
 
@@ -403,7 +404,7 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
   }
 }
 
-/// The title's mark: the Void's standard, in pixel art, on its pole.
+/// The title's mark: the Void's standard, in pixel art, blowing in the wind.
 class _BannerMark extends StatelessWidget {
   const _BannerMark({required this.scale});
 
@@ -411,6 +412,6 @@ class _BannerMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PixelBanner(id: titleBannerId, scale: scale);
+    return WindBanner(id: titleBannerId, scale: scale);
   }
 }

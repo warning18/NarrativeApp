@@ -371,3 +371,141 @@ bool paintPixelBurst(
   }
   return true;
 }
+
+// ----------------------------------------------------------------- moments
+
+/// One strip of a [PixelMoment]: played over a share of its time.
+class PixelMomentLayer {
+  const PixelMomentLayer(this.asset,
+      {this.t0 = 0, this.span = 1, this.scale = 3});
+
+  /// The strip's file under assets/visuals/pixel_fx/, without `.png`.
+  final String asset;
+
+  /// When it starts and how long it plays, as shares of the moment.
+  final double t0;
+  final double span;
+
+  /// The pixel size it is drawn at.
+  final double scale;
+}
+
+/// A short pixel flourish for a big moment (a level gained, a chapter
+/// opened): the fight's strips, recoloured to [palette], laid one over
+/// another and played once over [duration], then gone. With reduced motion
+/// it plays nothing.
+class PixelMoment extends StatefulWidget {
+  const PixelMoment({
+    super.key,
+    required this.layers,
+    required this.palette,
+    this.duration = const Duration(milliseconds: 1400),
+    this.delay = Duration.zero,
+  });
+
+  final List<PixelMomentLayer> layers;
+  final VfxPalette palette;
+  final Duration duration;
+  final Duration delay;
+
+  /// The gold of a moment worth marking.
+  static const VfxPalette gold = VfxPalette(0xFFF2C14E, 0xFFFFE9A8);
+
+  @override
+  State<PixelMoment> createState() => _PixelMomentState();
+}
+
+class _PixelMomentState extends State<PixelMoment>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _t = AnimationController(
+      vsync: this, duration: widget.duration + widget.delay);
+  bool _started = false;
+
+  @override
+  void initState() {
+    super.initState();
+    for (final l in widget.layers) {
+      PixelVfxTints.of(l.asset, widget.palette);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) return;
+    _started = true;
+    if (!(MediaQuery.maybeDisableAnimationsOf(context) ?? false)) {
+      _t.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _t.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: ExcludeSemantics(
+        child: CustomPaint(
+          key: const ValueKey('pixel_moment'),
+          painter: _MomentPainter(
+            layers: widget.layers,
+            palette: widget.palette,
+            clock: _t,
+            delayShare: widget.delay.inMilliseconds /
+                (widget.duration + widget.delay).inMilliseconds,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MomentPainter extends CustomPainter {
+  _MomentPainter({
+    required this.layers,
+    required this.palette,
+    required this.clock,
+    required this.delayShare,
+  }) : super(repaint: Listenable.merge([clock, PixelStrips.loaded]));
+
+  final List<PixelMomentLayer> layers;
+  final VfxPalette palette;
+  final Animation<double> clock;
+  final double delayShare;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final raw = clock.value;
+    if (raw <= delayShare || raw >= 1) return;
+    final u = (raw - delayShare) / (1 - delayShare);
+    final paint = Paint()
+      ..filterQuality = FilterQuality.none
+      ..isAntiAlias = false;
+    for (final l in layers) {
+      final v = (u - l.t0) / l.span;
+      if (v < 0 || v >= 1) continue;
+      final image = PixelVfxTints.of(l.asset, palette);
+      if (image == null) continue;
+      final side = image.height.toDouble();
+      final frames = (image.width / side).round();
+      final i = (v * frames).floor().clamp(0, frames - 1);
+      canvas.drawImageRect(
+        image,
+        Rect.fromLTWH(i * side, 0, side, side),
+        Rect.fromCenter(
+            center: size.center(Offset.zero),
+            width: side * l.scale,
+            height: side * l.scale),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_MomentPainter old) =>
+      old.layers != layers || old.palette != palette;
+}

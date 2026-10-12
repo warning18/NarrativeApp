@@ -36,6 +36,10 @@ void main() {
       }
     }
 
+    // A phone: the tabs are a bar at the bottom (a wide window has a rail).
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     // The main menu's Shroud drifts for ever; still, it lets the test settle.
     tester.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(disableAnimations: true);

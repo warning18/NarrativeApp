@@ -146,10 +146,12 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('journey_go')));
     await tester.pump();
     // The party walks, then the fight opens.
+    // (In steps shorter than the page transition, so the fight is popped as
+    // it arrives, while the map still ticks under it.)
     for (var i = 0;
-        i < 60 && find.byType(FightScreen).evaluate().isEmpty;
+        i < 240 && find.byType(FightScreen).evaluate().isEmpty;
         i++) {
-      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pump(const Duration(milliseconds: 50));
     }
     expect(find.byType(FightScreen), findsOneWidget);
     Navigator.of(tester.element(find.byType(FightScreen))).pop(false);
@@ -184,6 +186,46 @@ void main() {
     await tester.pump(const Duration(seconds: 4));
     expect(find.byKey(const ValueKey('journey_arriving')), findsNothing);
     expect(find.byKey(_transit), findsNothing);
+    expect(tester.takeException(), isNull);
+
+    // A way out to another place says by which road it goes (v1.256): the
+    // stops it passes, under where it leads.
+    play.jumpTo('960');
+    await _settle(tester);
+    await tester.pump(const Duration(seconds: 6));
+    await clearCards();
+    await tester.runAsync(() => container
+        .read(appLanguageProvider.notifier)
+        .setLanguage(AppLanguage.en));
+    await _settle(tester);
+    // The stops of every way out, read in the language of the moment.
+    Future<List<String>> roadLines(String label) async {
+      final lines = <String>[];
+      for (var i = 0; i < 3; i++) {
+        if (find.byKey(ValueKey('journey_step_$i')).evaluate().isEmpty) break;
+        await tester.tap(find.byKey(ValueKey('journey_step_$i')));
+        await tester.pump(const Duration(milliseconds: 500));
+        lines.addAll([
+          for (final t in tester.widgetList<Text>(find.textContaining(label)))
+            t.data!,
+        ]);
+      }
+      return lines;
+    }
+
+    final roads = await roadLines('Road: ');
+    expect(roads, isNotEmpty, reason: 'a way out names its road');
+    expect(roads.any((t) => t.contains('Road: The Harbour Chain')), isTrue,
+        reason: '$roads');
+    await tester.runAsync(() => container
+        .read(appLanguageProvider.notifier)
+        .setLanguage(AppLanguage.fr));
+    await _settle(tester);
+    final routes = await roadLines('Route\u00a0: ');
+    expect(routes, isNotEmpty, reason: 'the road is named in French too');
+    expect(
+        routes.any((t) => t.contains('Route\u00a0: La chaîne du port')), isTrue,
+        reason: '$routes');
     expect(tester.takeException(), isNull);
   });
 }

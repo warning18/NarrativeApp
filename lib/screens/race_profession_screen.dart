@@ -22,6 +22,7 @@ import '../widgets/ability_visuals.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
 import 'origin_stories_screen.dart';
+import '../widgets/empty_state.dart';
 
 class RaceProfessionScreen extends ConsumerStatefulWidget {
   const RaceProfessionScreen({super.key});
@@ -80,16 +81,16 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
               return _buildPicker(context, races, professions, skills);
             },
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Center(
-                child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
+            error: (error, stack) => InkErrorState(
+                message: tr(ref, 'failed_to_load_skills'), detail: error),
           ),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(
-              child: Text('${tr(ref, 'failed_to_load_professions')}: $error')),
+          error: (error, stack) => InkErrorState(
+              message: tr(ref, 'failed_to_load_professions'), detail: error),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) =>
-            Center(child: Text('${tr(ref, 'failed_to_load_races')}: $error')),
+        error: (error, stack) => InkErrorState(
+            message: tr(ref, 'failed_to_load_races'), detail: error),
       ),
     );
   }

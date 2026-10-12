@@ -16,6 +16,7 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/clan_widgets.dart' show standingTierColor;
 import '../widgets/coast_news.dart';
+import '../widgets/empty_state.dart';
 
 /// [entry]'s opening line with the reader's name and people filled in.
 String _personal(String text, PlayerSession session, bool french) =>
@@ -130,7 +131,7 @@ class JournalScreen extends ConsumerWidget {
           body: TabBarView(children: [
             const StorySoFarPage(),
             entries.isEmpty
-                ? Center(child: Text(tr(ref, 'journal_empty')))
+                ? InkEmptyState(message: tr(ref, 'journal_empty'))
                 : ListView(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                     children: children,

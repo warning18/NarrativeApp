@@ -6,10 +6,8 @@
 // pixel_banner.dart. A clan's banner hangs once it is the player's friend
 // (the Open Hand's once it is raised), then the Shroud's recovered pieces.
 import 'dart:math' as math;
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/factions.dart';
@@ -20,6 +18,7 @@ import '../providers/clans_provider.dart';
 import '../providers/player_session_provider.dart';
 import 'pixel_banner.dart';
 import 'pixel_sprite.dart';
+import 'wind_banner.dart';
 
 /// One banner hanging in the hall.
 class HungBanner {
@@ -214,7 +213,7 @@ class _ThroneRoomState extends State<ThroneRoom>
     super.initState();
     PixelStrips.preload(const ['throne_flame']);
     for (final b in widget.banners) {
-      _BannerImages.of(b.id);
+      BannerImages.of(b.id);
     }
   }
 
@@ -233,7 +232,7 @@ class _ThroneRoomState extends State<ThroneRoom>
   void didUpdateWidget(ThroneRoom old) {
     super.didUpdateWidget(old);
     for (final b in widget.banners) {
-      _BannerImages.of(b.id);
+      BannerImages.of(b.id);
     }
   }
 
@@ -315,7 +314,7 @@ class _ThroneRoomState extends State<ThroneRoom>
                   ),
                   child: CustomPaint(
                     size: const Size(_standardWidth, 128),
-                    painter: _WindPainter(
+                    painter: WindPainter(
                       id: banner.id,
                       clock: _clock,
                       phase: index * 1.7,
@@ -497,78 +496,6 @@ class _ThroneRoomState extends State<ThroneRoom>
   }
 }
 
-/// A banner's sprite in the wind: drawn in strips four pixels high. The
-/// wind (always from the left, in gusts) pushes the cloth to the right more
-/// the lower it hangs, a ripple runs down it, and the hem flutters; the rod
-/// at the top holds still. Every cycle of the clock is the same, so it loops
-/// without a seam.
-class _WindPainter extends CustomPainter {
-  _WindPainter({
-    required this.id,
-    required this.clock,
-    required this.phase,
-    required this.still,
-  }) : super(repaint: Listenable.merge([clock, _BannerImages.loaded]));
-
-  final String id;
-  final Animation<double> clock;
-  final double phase;
-  final bool still;
-
-  static const int _strip = 2;
-  static const int _rod = 12;
-
-  /// The cloth's offset (in pixels) at row [y] of a banner [h] high, at
-  /// cycle position [u] (0 to 1).
-  static double offsetAt(double u, double phase, int y, int h) {
-    final w = 2 * math.pi * u;
-    final hang = ((y - _rod) / (h - _rod)).clamp(0.0, 1.0);
-    // Gusts: the wind rises and falls twice a cycle.
-    final gust = 0.62 + 0.38 * math.sin(2 * w + phase);
-    final push = 7.0 * gust * math.pow(hang, 1.3);
-    // A ripple runs down the cloth, six times a cycle.
-    final ripple =
-        3.4 * gust * math.pow(hang, 1.4) * math.sin(6 * w - y * 0.085 + phase);
-    // The hem flutters faster.
-    final flutter =
-        1.8 * gust * math.pow(hang, 3) * math.sin(11 * w - y * 0.2 + phase * 2);
-    return push + ripple + flutter;
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final image = _BannerImages.of(id);
-    if (image == null) return;
-    final paint = Paint()
-      ..filterQuality = FilterQuality.none
-      ..isAntiAlias = false;
-    final w = image.width.toDouble();
-    // The banner sits in the middle of the room the wind needs.
-    final left = (size.width - w) / 2;
-    final u = still ? 0.0 : clock.value;
-    // The cloth rides up a little as the wind lifts it.
-    final gust = still ? 0.0 : 0.62 + 0.38 * math.sin(4 * math.pi * u + phase);
-    final lift = 0.05 * gust;
-    for (var y = 0; y < image.height; y += _strip) {
-      final dx = still ? 0.0 : offsetAt(u, phase, y, image.height);
-      final top = (y * (1 - lift * (y / image.height))).roundToDouble();
-      final bottom = ((y + _strip) * (1 - lift * ((y + _strip) / image.height)))
-          .roundToDouble();
-      canvas.drawImageRect(
-        image,
-        Rect.fromLTWH(0, y.toDouble(), w, _strip.toDouble()),
-        Rect.fromLTWH(
-            left + dx.roundToDouble(), top, w, math.max(1, bottom - top)),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(_WindPainter old) =>
-      old.id != id || old.phase != phase || old.still != still;
-}
-
 /// Specks of dust and light blown across the hall, left to right.
 class _BreezePainter extends CustomPainter {
   _BreezePainter(this.clock) : super(repaint: clock);
@@ -598,33 +525,4 @@ class _BreezePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_BreezePainter old) => false;
-}
-
-/// The banner sprites, loaded once and kept.
-class _BannerImages {
-  _BannerImages._();
-
-  static final Map<String, ui.Image> _images = {};
-  static final Set<String> _asked = {};
-
-  /// Counts the sprites in, for a painter to repaint on.
-  static final ValueNotifier<int> loaded = ValueNotifier(0);
-
-  static ui.Image? of(String id) {
-    final image = _images[id];
-    if (image == null && _asked.add(id)) _load(id);
-    return image;
-  }
-
-  static Future<void> _load(String id) async {
-    try {
-      final data = await rootBundle.load('assets/visuals/banners/$id.png');
-      final codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
-      final frame = await codec.getNextFrame();
-      _images[id] = frame.image;
-      loaded.value++;
-    } catch (_) {
-      _asked.remove(id);
-    }
-  }
 }
