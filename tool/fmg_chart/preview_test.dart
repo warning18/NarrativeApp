@@ -16,13 +16,16 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:narrative_data_app/data/chart_globe.dart';
 import 'package:narrative_data_app/data/chart_worlds.dart';
+import 'package:narrative_data_app/data/climate.dart';
 import 'package:narrative_data_app/data/map_charts.dart';
 import 'package:narrative_data_app/data/world_map.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/widgets/chart_map_painter.dart';
 
 import 'chart_fmg.dart';
+import 'chart_story.dart';
 
 /// Where [p] lands on the new chart when the landmarks move from [from] to
 /// [to]: every landmark's shift, weighted by 1/d^2 (Shepard), so a village
@@ -90,6 +93,34 @@ ChartGeography carried() {
   );
 }
 
+/// The story world with the features that have a story role, taken from chart B (names, notes, clans) and set
+/// where story_world.py puts them.
+ChartGeography storyWorld() {
+  final g = chartWorldStory;
+  final seen = <String>{};
+  return ChartGeography(
+    places: g.places,
+    lands: g.lands,
+    rivers: g.rivers,
+    labels: g.labels,
+    zones: g.zones,
+    ranges: g.ranges,
+    features: [
+      for (final f in chartWorldB.features)
+        if (storyFeatureAt['${f.kind.name}|${f.nameEn}'] != null &&
+            seen.add('${f.kind.name}|${f.nameEn}'))
+          ChartFeature(f.kind, storyFeatureAt['${f.kind.name}|${f.nameEn}']!,
+              f.nameEn, f.nameFr,
+              noteEn: f.noteEn,
+              noteFr: f.noteFr,
+              clan: f.clan,
+              angle: f.angle,
+              landmark: f.landmark,
+              atSea: f.atSea),
+    ],
+  );
+}
+
 Future<void> loadFonts() async {
   Future<void> font(String family, List<String> files) async {
     final l = FontLoader(family);
@@ -108,7 +139,7 @@ Future<void> loadFonts() async {
 }
 
 ChartMapPainter painterFor(ChartGeography g, MapLook look,
-        {double zoom = 1, ChartFog fog = ChartFog.none}) =>
+        {double zoom = 1, ChartFog fog = ChartFog.none, GlobeView? globe}) =>
     ChartMapPainter(
       frame: ValueNotifier(0),
       walk: const AlwaysStoppedAnimation(0),
@@ -126,7 +157,8 @@ ChartMapPainter painterFor(ChartGeography g, MapLook look,
       reduceMotion: true,
       chapterColor: (_) => const Color(0xFFF2C14E),
       fog: fog,
-      zoomOf: () => zoom,
+      zoomOf: () => globe?.zoom ?? zoom,
+      globe: globe,
     );
 
 void main() {
@@ -135,9 +167,9 @@ void main() {
 
   Future<void> shoot(
       WidgetTester tester, String name, ChartGeography g, MapLook look,
-      {double zoom = 1, ChartFog fog = ChartFog.none}) async {
+      {double zoom = 1, ChartFog fog = ChartFog.none, GlobeView? globe}) async {
     final key = GlobalKey();
-    final painter = painterFor(g, look, zoom: zoom, fog: fog);
+    final painter = painterFor(g, look, zoom: zoom, fog: fog, globe: globe);
     await tester.pumpWidget(MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Center(
@@ -151,6 +183,7 @@ void main() {
       ),
     ));
     await tester.runAsync(painter.prepareShade);
+    if (globe != null) await tester.runAsync(painter.prepareSkin);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 50));
     await tester.runAsync(() async {
@@ -191,5 +224,100 @@ void main() {
     stdout.writeln('features off land: $stranded');
     final math0 = math.min(1, 2);
     expect(math0, 1);
+  });
+
+  testWidgets('chart B and the story world, side by side', (tester) async {
+    await loadFonts();
+    tester.view.physicalSize = const Size(256 * 4 * 2, 176 * 4 * 2);
+    tester.view.devicePixelRatio = 2;
+    addTearDown(tester.view.reset);
+    final story = storyWorld();
+    for (final look in [MapLook.night, MapLook.parchment]) {
+      await shoot(tester, 'B_${look.name}', chartWorldB, look);
+      await shoot(tester, 'STORY_${look.name}', story, look);
+    }
+    await shoot(tester, 'STORY_bare_night', chartWorldStory, MapLook.night);
+    await shoot(tester, 'STORY_fogged_night', story, MapLook.night,
+        fog: ChartFog.uncharted);
+    stdout.writeln(
+        'STORY: lands ${story.lands.length} pts ${story.lands.fold<int>(0, (a, l) => a + l.length)}, features ${story.features.length}, zones ${story.zones.length}, ranges ${story.ranges.length}, rivers ${story.rivers.length}');
+    final off = [
+      for (final f in story.features)
+        if (!f.atSea &&
+            f.kind != ChartFeatureKind.giant &&
+            f.name(AppLanguage.en) != 'The Brig' &&
+            f.name(AppLanguage.en) != 'Lowtide' &&
+            !story.lands.any((l) => pointInPolygon(f.at, l)))
+          f.nameEn
+    ];
+    stdout.writeln('features off land: $off');
+  });
+
+  testWidgets('the story world on the globe, and its climate', (tester) async {
+    await loadFonts();
+    tester.view.physicalSize = const Size(256 * 4 * 2, 176 * 4 * 2);
+    tester.view.devicePixelRatio = 2;
+    addTearDown(tester.view.reset);
+    final story = storyWorld();
+    // The whole globe, then turned toward each land.
+    final views = {
+      'whole': GlobeView.at(const Offset(128, 88), 1, const Offset(128, 88)),
+      'north': GlobeView.at(const Offset(130, 34), 2.4, const Offset(128, 88)),
+      'south': GlobeView.at(const Offset(110, 134), 2.4, const Offset(128, 88)),
+    };
+    for (final e in views.entries) {
+      await shoot(tester, 'GLOBE_story_${e.key}', story, MapLook.night,
+          globe: e.value);
+    }
+    await shoot(tester, 'GLOBE_B_whole', chartWorldB, MapLook.night,
+        globe: views['whole']);
+    // Where each place sits and what the game's climate model makes of it.
+    for (final entry in [('B', chartWorldB), ('STORY', story)]) {
+      final g = entry.$2;
+      final climate = ChartClimate.of(g);
+      stdout.writeln(
+          '--- climate on ${entry.$1}: id lat lon | biome temp humidity elev');
+      for (final id in [
+        'camp',
+        'quarter',
+        'spire',
+        'akagiri',
+        'reliquary',
+        'highhearth',
+        'rimewell',
+        'shore',
+        'wrack',
+        'kindly',
+        'cloister',
+        'candlehold',
+        'hovel',
+        'crash',
+        'sleeper',
+        'wells',
+        'wharf',
+        'upper',
+        'storm'
+      ]) {
+        final p = g.places[id]!;
+        final (lon, lat) = GlobeView.lonLatOf(p);
+        final c = climate.sample(p);
+        stdout.writeln(
+            '$id ${(lat * 180 / math.pi).toStringAsFixed(0)} ${(lon * 180 / math.pi).toStringAsFixed(0)} | ${c.biome} ${c.temperature.toStringAsFixed(0)}C hum ${c.humidity.toStringAsFixed(2)} elev ${c.elevation.toStringAsFixed(2)}');
+      }
+    }
+    // The lands' extent and their margin to the chart's edges.
+    for (final entry in [('B', chartWorldB), ('STORY', story)]) {
+      var x0 = 999.0, x1 = -1.0, y0 = 999.0, y1 = -1.0;
+      for (final l in entry.$2.lands) {
+        for (final p in l) {
+          x0 = math.min(x0, p.dx);
+          x1 = math.max(x1, p.dx);
+          y0 = math.min(y0, p.dy);
+          y1 = math.max(y1, p.dy);
+        }
+      }
+      stdout.writeln(
+          '${entry.$1} land extent x ${x0.toStringAsFixed(0)}..${x1.toStringAsFixed(0)} of 256, y ${y0.toStringAsFixed(0)}..${y1.toStringAsFixed(0)} of 176 (margins ${x0.toStringAsFixed(0)} ${(256 - x1).toStringAsFixed(0)} ${y0.toStringAsFixed(0)} ${(176 - y1).toStringAsFixed(0)})');
+    }
   });
 }
