@@ -9,6 +9,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../data/map_charts.dart';
+import '../data/road_chart.dart';
 
 /// What a place is drawn as, up close.
 enum PlaceKind { town, camp, site, sea, wild }
@@ -787,6 +788,7 @@ class RegionFlightPainter extends CustomPainter {
     required this.palette,
     required this.fromName,
     required this.toName,
+    this.route,
   });
 
   final ChartGeography geography;
@@ -798,12 +800,44 @@ class RegionFlightPainter extends CustomPainter {
   final String fromName;
   final String toName;
 
+  /// The roads the party takes there (v1.254), with the stops it passes;
+  /// without one the road is drawn straight from [from] to [to].
+  final ChartRoute? route;
+
+  /// How far along the road the party has walked at [t] (0 to 1): it stands
+  /// at the start while the map zooms out and again at the end.
+  static double walkAt(double t) =>
+      Curves.easeInOut.transform(((t - 0.18) / 0.62).clamp(0.0, 1.0));
+
+  /// A road wider than this is followed over, not framed whole.
+  static const double _followFrom = 90;
+  static const double _followView = 100;
+
   @override
   void paint(Canvas canvas, Size size) {
-    // Framed on the two places with room around, then zoomed: in from the
-    // place left, out, and in again on the place reached.
-    final mid = (from + to) / 2;
-    final span = math.max((to - from).distance, 30.0) * 1.9;
+    // Framed on the road with room around, then zoomed: in from the place
+    // left, out, and in again on the place reached. A road too long to
+    // frame whole is followed instead, the party in the middle.
+    final route = this.route;
+    final corners = route?.bounds;
+    final reach = corners == null
+        ? (to - from).distance
+        : math.max(
+            corners.$2.dx - corners.$1.dx, corners.$2.dy - corners.$1.dy);
+    final mid =
+        corners == null ? (from + to) / 2 : (corners.$1 + corners.$2) / 2;
+    final follows = route != null && reach > _followFrom;
+    final walk = walkAt(t);
+    final d = to - from;
+    final roadPath = route == null
+        ? (Path()
+          ..moveTo(from.dx, from.dy)
+          ..quadraticBezierTo(from.dx + d.dx / 2 - d.dy * 0.14,
+              from.dy + d.dy / 2 + d.dx * 0.14, to.dx, to.dy))
+        : _smooth(route.points, closed: false);
+    final metric = roadPath.computeMetrics().first;
+    final party = metric.getTangentForOffset(metric.length * walk)!.position;
+    final span = follows ? _followView : math.max(reach, 30.0) * 1.9;
     final fit = math.min(size.width, size.height) / span;
     final zoomIn = t < 0.2
         ? 1 - Curves.easeOut.transform(t / 0.2)
@@ -811,7 +845,9 @@ class RegionFlightPainter extends CustomPainter {
             ? Curves.easeIn.transform((t - 0.8) / 0.2)
             : 0.0;
     final focus = t < 0.5 ? from : to;
-    final centre = Offset.lerp(mid, focus, zoomIn)!;
+    final centre = follows
+        ? Offset.lerp(party, focus, zoomIn)!
+        : Offset.lerp(mid, focus, zoomIn)!;
     final scale = fit * (1 + zoomIn * 5);
     canvas.drawRect(Offset.zero & size, Paint()..color = palette.sea);
     canvas.save();
@@ -837,17 +873,8 @@ class RegionFlightPainter extends CustomPainter {
             ..strokeWidth = 2.2 / scale);
     }
     // The road, walked so far in the party's colour.
-    final d = to - from;
-    final bend = Offset(-d.dy, d.dx) * 0.14;
-    final road = Path()
-      ..moveTo(from.dx, from.dy)
-      ..quadraticBezierTo(from.dx + d.dx / 2 + bend.dx,
-          from.dy + d.dy / 2 + bend.dy, to.dx, to.dy);
-    final metric = road.computeMetrics().first;
-    final walk =
-        Curves.easeInOut.transform(((t - 0.18) / 0.62).clamp(0.0, 1.0));
     canvas.drawPath(
-        road,
+        roadPath,
         Paint()
           ..color = palette.ahead
           ..style = PaintingStyle.stroke
@@ -859,6 +886,19 @@ class RegionFlightPainter extends CustomPainter {
           ..style = PaintingStyle.stroke
           ..strokeCap = StrokeCap.round
           ..strokeWidth = 3 / scale);
+    // The stops on the way, the ones passed in the party's colour.
+    for (final stop in route?.stops ?? const <ChartRouteStop>[]) {
+      final passed = stop.along <= walk;
+      canvas.drawCircle(stop.at, 2.4 / scale,
+          Paint()..color = passed ? palette.mark : palette.land);
+      canvas.drawCircle(
+          stop.at,
+          2.4 / scale,
+          Paint()
+            ..color = passed ? palette.mark : palette.label
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.2 / scale);
+    }
     for (final mark in marks) {
       canvas.drawCircle(
           mark.at, 3.2 / scale * 1.4, Paint()..color = palette.land);
@@ -870,7 +910,6 @@ class RegionFlightPainter extends CustomPainter {
             ..style = PaintingStyle.stroke
             ..strokeWidth = 1.6 / scale);
     }
-    final party = metric.getTangentForOffset(metric.length * walk)!.position;
     canvas.drawCircle(party, 7 / scale, Paint()..color = palette.mark);
     canvas.drawCircle(
         party,
@@ -884,13 +923,13 @@ class RegionFlightPainter extends CustomPainter {
     // The two names, on screen.
     Offset onScreen(Offset p) =>
         (p - centre) * scale + Offset(size.width / 2, size.height / 2);
-    void name(String text, Offset p, Color colour) {
+    void name(String text, Offset p, Color colour, {double fontSize = 13}) {
       final painter = TextPainter(
         text: TextSpan(
           text: text,
           style: TextStyle(
               color: colour,
-              fontSize: 13,
+              fontSize: fontSize,
               fontFamily: 'PixelifySans',
               shadows: [Shadow(color: palette.land, blurRadius: 4)]),
         ),
@@ -906,6 +945,21 @@ class RegionFlightPainter extends CustomPainter {
     if (zoomIn < 0.6) {
       name(fromName, from, palette.place);
       name(toName, to, palette.mark);
+    }
+    // The stops' names, those near enough to read.
+    final near = math.min(size.width, size.height) * 0.7;
+    for (final stop in route?.stops ?? const <ChartRouteStop>[]) {
+      final at = onScreen(stop.at);
+      if (at.dx < 0 ||
+          at.dy < 0 ||
+          at.dx > size.width ||
+          at.dy > size.height ||
+          (stop.at - party).distance * scale > near) {
+        continue;
+      }
+      name(
+          stop.name, stop.at, stop.along <= walk ? palette.mark : palette.label,
+          fontSize: 11);
     }
   }
 
@@ -930,5 +984,9 @@ class RegionFlightPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(RegionFlightPainter old) =>
-      old.t != t || old.from != from || old.to != to || old.palette != palette;
+      old.t != t ||
+      old.from != from ||
+      old.to != to ||
+      old.route != route ||
+      old.palette != palette;
 }
