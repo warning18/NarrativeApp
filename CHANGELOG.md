@@ -8,6 +8,29 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.262.0+298]
+
+Fight tests roll the same dice every run.
+
+### Changed
+- **A fight can be given its dice.** `FightScreen` takes an optional
+  `random:`, and the new `fightRandomProvider` (a Random factory, like the
+  road's) hands every fight its Random, so a test that reaches a fight
+  through another screen (the ship battle's boarding) can seed it too. In
+  play nothing changes: each fight makes its own unseeded Random. Every roll
+  of the fight screen already came from that one Random (the faces, crits and
+  dodges, the enemy's moves and targets, the affixes, the ground and its
+  anomaly, the loot); the plan of an anomaly the story forces is made before
+  the fight, by `forcedFieldAnomaly(id, random:, side:)`, which already took
+  its own.
+
+### Tests
+- The fight widget tests that assert an outcome (18 files, from `clash_test`
+  to the `skill_*_fight_test` harness) run on `Random(7)`, so a dodge, an
+  affix or an anomaly cannot turn up in one run and not the next.
+- `fight_mirror_spell_test` reads the Mirror's line, not the Venomous
+  affix's "You take 3 damage from poison." that it could match first.
+
 ## [1.261.0+297]
 
 The people of the coast speak for themselves.

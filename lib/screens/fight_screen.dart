@@ -9,6 +9,7 @@ import '../combat/battlefield_condition.dart';
 import '../combat/field_anomaly.dart';
 import '../data/place_traits.dart';
 import '../data/climate.dart' show WeatherKind;
+import '../providers/fight_random_provider.dart';
 import '../providers/geography_provider.dart';
 import '../widgets/fight_backdrop.dart';
 import '../data/weather_effects.dart';
@@ -182,7 +183,12 @@ class FightScreen extends ConsumerStatefulWidget {
     this.additionalEnemyIds = const [],
     this.additionalEnemies = const {},
     this.modifiers = EncounterModifiers.none,
+    this.random,
   });
+
+  /// The dice this fight rolls (see [fightRandomProvider]): null in play, so
+  /// the fight makes its own unseeded Random; a test gives a seeded one.
+  final Random? random;
 
   final String enemyId;
   final Map<String, dynamic> enemy;
@@ -216,7 +222,7 @@ class FightScreen extends ConsumerStatefulWidget {
 
 class _FightScreenState extends ConsumerState<FightScreen>
     with TickerProviderStateMixin {
-  final Random _random = Random();
+  late final Random _random = widget.random ?? ref.read(fightRandomProvider)();
   final List<_LogEntry> _log = [];
 
   bool _started = false;
