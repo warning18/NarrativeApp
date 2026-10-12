@@ -55,7 +55,7 @@ MCP server.
   standing thresholds) and may add the fields a new system needs.
 
 **QA owns:**
-- new test files named `test/qa_*_test.dart`
+- new test files named `test/qa_*_test.dart`, and `docs/qa/`
 - GitHub issues labelled `qa`, and reviews on open PRs.
 - QA never edits `lib/` or another session's tests. A failing or wrong test
   goes to the session that owns the code, as an issue or a PR review.
@@ -91,11 +91,11 @@ Every push to `main` publishes a GitHub Release tagged with the version in
 `pubspec.yaml`. Two PRs that ship the same version mean the second one
 overwrites the first release and the in-app updater never sees it.
 
+- The manager reserves version numbers. Use the one the manager gave you; if
+  you don't have one, ask before opening the PR.
 - Bump `pubspec.yaml`, `lib/app_info.dart` and add the `CHANGELOG.md` entry
   **last, right before opening the PR**, after `git fetch origin main` and
-  merging `origin/main` into your branch. Take the next version after
-  `origin/main` **and after every open PR from another branch**
-  (`git show origin/<branch>:pubspec.yaml | grep ^version`).
+  merging `origin/main` into your branch.
 - A PR with only docs or test changes doesn't bump the version.
 
 ## Pull requests and merging
@@ -106,10 +106,28 @@ overwrites the first release and the in-app updater never sees it.
   the tests for what you changed.
 - **Don't merge your own PR.** When CI is green, send the manager the PR
   number. The manager merges PRs one at a time, in order, and renumbers the
-  version if another PR merged first. QA reviews PRs before they merge.
+  version if another PR merged first. QA reviews PRs before they merge, at
+  the level the manager sets (below).
 - After your PR merges, restart your branch from the fresh `main` before
   starting the next change.
 - Resolve merge conflicts by keeping both sides' work; never take "ours"
   wholesale on a file another session owns. Never force-push over commits
   you didn't write. Resetting your own branch to `main` is fine only when
   everything on it is already merged.
+
+## QA levels
+
+CI already runs the format check, `flutter analyze` and the whole test suite
+(including the simulator tests and the `qa_` guards) on every PR. QA doesn't
+run those again. It adds what CI can't see, at one of four levels. The
+manager picks the level when it sends QA a PR. QA may raise it, and says why.
+
+| Level | When | What QA does |
+|---|---|---|
+| **L0: CI only** | docs-only or test-only PRs, art/asset-only PRs, text fixes with no new keys | nothing; the manager merges on green CI |
+| **L1: diff review** (default) | a PR within one session's area | reads the diff for bugs, ownership breaches, missing French, a wrong version or changelog; one short review |
+| **L2: feature check** | a PR that touches a shared screen, combat rules, save data or providers, more than one session's area, or over ~800 changed lines | L1, plus runs the affected flow in a widget test or the simulator, checks that old saves still load, and checks the new screens' text in both languages |
+| **L3: full regression** | every 10th release, before a release the user plans to share, after a big refactor, or on request | full 100-run simulator batch compared with the last report, a cross-reference audit of all gamedata, a read-through of every screen changed since the last L3; results go in `docs/qa/` |
+
+An L3 is never done on an ordinary PR. QA keeps the version of the last L3 at
+the top of `docs/qa/README.md`.
