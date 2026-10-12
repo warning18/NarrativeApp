@@ -8,6 +8,24 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.245.0+281]
+
+Twenty new skills, and the rules they needed.
+
+### Added
+- **20 skills** for the mage, cleric, rogue, ranger and warrior (names, texts and battle lines in English and French, a pixel icon each, a place on a profession's tree, in seven new branches: Storm and Frost for the mage, Dawn and Tides for the cleric, Gale for the rogue, Skyhunter for the ranger, Stoneward for the warrior):
+  - Mage, ice and storm: Rime Lance, Glacial Ward, Chain Lightning, Static Charge, Thunderclap and the legendary Stormcaller.
+  - Cleric, water and light: Tidal Wash, Undertow, Dawn Lance, Lantern Ward and the legendary Winter's Hush and Second Dawn.
+  - Rogue and ranger, wind: Gale Cut, Dust Devil, Rain of Arrows, Hawk Mark, Windwalker.
+  - Warrior, earth: Rockfall, Bastion Slam, Thornwall.
+  - Ice, Electricity and Light now each have player skills (Ice had none).
+- **What the skills ask of the fight** (`lib/combat/skill_extras.dart`, all optional fields of a skill, editable in Edit Mode): a shield (`blockAmount`), several blows struck one after the other (`strikes`), a share of the blow on the other enemies, and how many (`splashShare`, `splashTargets`), a status on every enemy (`statusAll`) and a second status beside the first, a ward that lays a status on whoever strikes the shield (`reflectStatus`), a cleanse of the caster (`cleanse`), a heal for the whole party (`healAll`), a blow that goes through guards (`pierces`), damage drawn from armor (`damageFromArmor`), full momentum (`chargesMomentum`) and a free reroll next round (`bonusRolls`).
+- `tool/gen_skill_icons.py` draws the twenty icons.
+
+### Changed
+- The new skills that only shield, heal or control have a damage multiplier of 0, so they do not also strike for the caster's base damage.
+- Windwalker gives a free reroll next round rather than a second action, and Bastion Slam draws its extra damage from the armor you wear rather than from the shield you hold; both read from the same rules as the others.
+
 ## [1.244.0+280]
 
 ### Changed

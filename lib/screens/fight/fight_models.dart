@@ -232,6 +232,10 @@ class _PartyMember {
   int currentHealth;
   int block = 0;
 
+  /// The status this member's shield lays on the enemy that strikes it
+  /// (Glacial Ward, Thornwall), for the round the shield stands.
+  StatusEffect? reflect;
+
   /// Poison/Stun/Weaken currently afflicting this member — see
   /// status_effect.dart. Applied by an enemy's moves, ticked down once per
   /// round in [_FightScreenState._startPartyRound].

@@ -313,5 +313,109 @@
       "voidkin_starless_gaze",
       "voidkin_entropy_touch"
     ]
+  },
+  "mage_storm": {
+    "branchID": "mage_storm",
+    "professionId": "mage",
+    "raceId": "",
+    "order": 4,
+    "branchName": "Storm",
+    "branchName_fr": "Orage",
+    "description": "Thunder and lightning: shocks that leap, stun and bring the sky down.",
+    "description_fr": "Tonnerre et éclairs : des chocs qui bondissent, étourdissent et font tomber le ciel.",
+    "skillIds": [
+      "mage_static_charge",
+      "mage_chain_lightning",
+      "mage_thunderclap",
+      "mage_stormcaller"
+    ]
+  },
+  "mage_frost": {
+    "branchID": "mage_frost",
+    "professionId": "mage",
+    "raceId": "",
+    "order": 5,
+    "branchName": "Frost",
+    "branchName_fr": "Givre",
+    "description": "Ice that bites and guards: a lance and a wall of rime.",
+    "description_fr": "La glace qui mord et protège : une lance et un mur de givre.",
+    "skillIds": [
+      "mage_rime_lance",
+      "mage_glacial_ward"
+    ]
+  },
+  "cleric_dawn": {
+    "branchID": "cleric_dawn",
+    "professionId": "cleric",
+    "raceId": "",
+    "order": 4,
+    "branchName": "Dawn",
+    "branchName_fr": "Aube",
+    "description": "Light that pierces, guards and mends the whole camp.",
+    "description_fr": "La lumière qui perce, protège et soigne tout le camp.",
+    "skillIds": [
+      "cleric_dawn_lance",
+      "cleric_lantern_ward",
+      "cleric_second_dawn"
+    ]
+  },
+  "cleric_tides": {
+    "branchID": "cleric_tides",
+    "professionId": "cleric",
+    "raceId": "",
+    "order": 5,
+    "branchName": "Tides",
+    "branchName_fr": "Marées",
+    "description": "Water and winter: a wash that cleanses, a current that drags, a hush that stills them all.",
+    "description_fr": "L’eau et l’hiver : un ressac qui purifie, un courant qui entraîne, un silence qui les fige tous.",
+    "skillIds": [
+      "cleric_tidal_wash",
+      "cleric_undertow",
+      "cleric_winter_hush"
+    ]
+  },
+  "rogue_gale": {
+    "branchID": "rogue_gale",
+    "professionId": "rogue",
+    "raceId": "",
+    "order": 4,
+    "branchName": "Gale",
+    "branchName_fr": "Bourrasque",
+    "description": "The wind at your back: grit in their eyes and a double cut.",
+    "description_fr": "Le vent dans le dos : de la poussière dans les yeux et une double entaille.",
+    "skillIds": [
+      "rogue_dust_devil",
+      "rogue_gale_cut"
+    ]
+  },
+  "ranger_skyhunter": {
+    "branchID": "ranger_skyhunter",
+    "professionId": "ranger",
+    "raceId": "",
+    "order": 4,
+    "branchName": "Skyhunter",
+    "branchName_fr": "Chasseur du ciel",
+    "description": "Marks, volleys and the wind itself.",
+    "description_fr": "Des marques, des volées et le vent lui-même.",
+    "skillIds": [
+      "ranger_hawk_mark",
+      "ranger_rain_of_arrows",
+      "ranger_windwalker"
+    ]
+  },
+  "warrior_stoneward": {
+    "branchID": "warrior_stoneward",
+    "professionId": "warrior",
+    "raceId": "",
+    "order": 4,
+    "branchName": "Stoneward",
+    "branchName_fr": "Garde de pierre",
+    "description": "Earth as weapon and wall: thorns, weight and falling rock.",
+    "description_fr": "La terre comme arme et comme mur : épines, poids et éboulis.",
+    "skillIds": [
+      "warrior_thornwall",
+      "warrior_bastion_slam",
+      "warrior_rockfall"
+    ]
   }
 }

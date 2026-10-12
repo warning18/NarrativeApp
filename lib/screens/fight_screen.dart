@@ -413,6 +413,14 @@ class _FightScreenState extends ConsumerState<FightScreen>
   final Set<String> _armedCharmIds = {};
   int _maxRollsThisFight = _maxRolls;
 
+  /// Free rerolls this round (a Windwalker's last turn) and those granted
+  /// for the next one.
+  int _bonusRolls = 0;
+  int _bonusRollsNext = 0;
+
+  /// Rolls the party may make this round.
+  int get _rollCap => _maxRollsThisFight + _bonusRolls;
+
   /// The player's level-up perks (see perks.dart), read at party build.
   PerkEffects _perks = PerkEffects.none;
 

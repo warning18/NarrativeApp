@@ -133,7 +133,7 @@ extension _FightControls on _FightScreenState {
       );
     }
     if (_quick) return _buildQuickBar();
-    final rollsLeft = _maxRollsThisFight - _rollCount;
+    final rollsLeft = _rollCap - _rollCount;
     final allLocked = acting.isNotEmpty &&
         acting.every((a) => _lockedActorIds.contains(a.id));
     return Container(

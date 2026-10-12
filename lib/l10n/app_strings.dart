@@ -4820,6 +4820,31 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'vous vous préparez à bloquer',
   },
   'block_word': {AppLanguage.en: 'block', AppLanguage.fr: 'blocage'},
+  'blows_word': {AppLanguage.en: 'blows', AppLanguage.fr: 'coups'},
+  'skill_blow_lands': {
+    AppLanguage.en: 'Blow {i}: {n} damage.',
+    AppLanguage.fr: 'Coup {i} : {n} dégâts.',
+  },
+  'skill_chain_hits': {
+    AppLanguage.en: 'The strike leaps to {name}: {n} damage.',
+    AppLanguage.fr: 'Le coup bondit sur {name} : {n} dégâts.',
+  },
+  'skill_ward_bites': {
+    AppLanguage.en: 'The ward strikes back at {name}.',
+    AppLanguage.fr: 'La protection se retourne contre {name}.',
+  },
+  'skill_cleansed': {
+    AppLanguage.en: '{name} is cleansed.',
+    AppLanguage.fr: '{name} est purifié.',
+  },
+  'skill_party_mended': {
+    AppLanguage.en: '{name} recovers {n} HP.',
+    AppLanguage.fr: '{name} récupère {n} PV.',
+  },
+  'skill_bonus_roll': {
+    AppLanguage.en: 'The wind lends a free reroll next round.',
+    AppLanguage.fr: 'Le vent offre un relancer gratuit au prochain tour.',
+  },
   'redirected_hit_prefix': {
     AppLanguage.en: 'That one was already down — the blow lands on',
     AppLanguage.fr: 'Celui-là était déjà à terre — le coup atteint',

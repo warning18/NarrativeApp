@@ -18,7 +18,7 @@ extension _FightRounds on _FightScreenState {
     Map<String, dynamic> skills,
     Map<String, dynamic> items,
   ) async {
-    if (_over || _rolling || _rollCount >= _maxRollsThisFight) return;
+    if (_over || _rolling || _rollCount >= _rollCap) return;
     final acting = _actingParty;
 
     final rolled = <String, DiceFaceResult>{};
@@ -52,7 +52,7 @@ extension _FightRounds on _FightScreenState {
     if (!mounted) return;
 
     final rollNumber = _rollCount + 1;
-    final forced = rollNumber >= _maxRollsThisFight;
+    final forced = rollNumber >= _rollCap;
     _update(() {
       _rolling = false;
       _rollingTo = const {};
@@ -173,6 +173,7 @@ extension _FightRounds on _FightScreenState {
     String? lastDamagedEnemyKey;
     var lastEnemyDamage = 0;
     var hitsLanded = 0;
+    var bonusRollsNext = 0;
     var manaGained = 0;
     // Taunt (v1.162): the member who kept the biggest Defend face this round
     // draws the enemies' attacks in a party fight (see _takeEnemyTurn).
@@ -200,7 +201,8 @@ extension _FightRounds on _FightScreenState {
       final availableSkills = _skillsForFace(actor, face, skills);
       final element = _elementFor(face, availableSkills);
       final isStrike = face.type == 'Attack' || face.type == 'Skill';
-      final pierce = face.hasKeyword(FaceKeyword.pierce);
+      final extras = result.extras;
+      final pierce = face.hasKeyword(FaceKeyword.pierce) || extras.pierces;
       final fxDelay = fxIndex++ * _fxStagger;
       var dealt = 0;
       var drainedFx = 0;
@@ -238,6 +240,10 @@ extension _FightRounds on _FightScreenState {
               maxHealth: actor.maxHealth)
           : 0;
       actor.currentHealth = min(actor.maxHealth, actor.currentHealth + healing);
+      if (!extras.isNone) {
+        bonusRollsNext +=
+            _applySkillExtrasOnCaster(actor, healing, extras, newEntries, lang);
+      }
       // A Shelter passes part of every Heal to the rest of the party.
       if (combos.contains(PartyCombo.shelter) &&
           _roleOf(result) == FaceRole.heal &&
@@ -266,6 +272,8 @@ extension _FightRounds on _FightScreenState {
       actor.block = (parryEnemy != null ? 0 : block) +
           (_spellBlock[actor.id] ?? 0) +
           signShield;
+      // A ward (Glacial Ward, Thornwall) wounds whoever strikes it.
+      actor.reflect = result.blockAmount > 0 ? extras.reflect : null;
       if (parryEnemy != null) {
         final amount = parryAmount(block);
         parryEnemy.parryBlock += amount;
@@ -336,10 +344,28 @@ extension _FightRounds on _FightScreenState {
           ));
         }
         final wasAlive = target.isAlive;
-        final landed = _landHitOnEnemy(
-            target, damage, element, newEntries, lang,
-            pierce: pierce, edge: actor.isPlayer);
-        target.currentHealth = max(0, target.currentHealth - landed);
+        // A skill of several blows (Gale Cut) lands them one by one: a
+        // raised guard soaks the first and the rest go through.
+        final blows = max(1, extras.strikes);
+        var landed = 0;
+        var blowsLanded = 0;
+        for (var blow = 1; blow <= blows; blow++) {
+          if (blow > 1 && !target.isAlive) break;
+          final share = blows > 1 ? (damage / blows).round() : damage;
+          final one = _landHitOnEnemy(target, share, element, newEntries, lang,
+              pierce: pierce, edge: actor.isPlayer);
+          target.currentHealth = max(0, target.currentHealth - one);
+          landed += one;
+          if (one > 0) blowsLanded++;
+          if (blows > 1 && one > 0) {
+            newEntries.add(_LogEntry(
+              trFor(lang, 'skill_blow_lands')
+                  .replaceAll('{i}', '$blow')
+                  .replaceAll('{n}', '$one'),
+              _LogKind.playerDamage,
+            ));
+          }
+        }
         dealt = landed;
         _bestHitThisRound = max(_bestHitThisRound, landed);
         if (landed > target.topHitDamage) {
@@ -349,7 +375,7 @@ extension _FightRounds on _FightScreenState {
         if (landed > 0) {
           lastDamagedEnemyKey = target.key;
           lastEnemyDamage = landed;
-          hitsLanded++;
+          hitsLanded += max(1, blowsLanded);
           // The Crow's Price steals on each hit the player lands.
           if (actor.isPlayer) _crowsHits++;
           // Lifesteal (a Bloodthorn Blade, the full Hollow Court set) and
@@ -377,7 +403,16 @@ extension _FightRounds on _FightScreenState {
         // A Cleave, or any strike of a Volley, catches the rest of the pack
         // (a Cleave for more).
         final cleave = face.hasKeyword(FaceKeyword.cleave);
-        if (damage > 0 && (cleave || combos.contains(PartyCombo.volley))) {
+        if (damage > 0 && extras.splashShare > 0) {
+          // A chain or a volley skill (Chain Lightning, Rain of Arrows).
+          _splashFrom(actor, target, damage, extras.splashShare, element,
+              pierce, newEntries, lang,
+              limit: extras.splashTargets,
+              logKey: extras.splashTargets > 0
+                  ? 'skill_chain_hits'
+                  : 'splash_hits');
+        } else if (damage > 0 &&
+            (cleave || combos.contains(PartyCombo.volley))) {
           _splashFrom(
               actor,
               target,
@@ -393,15 +428,25 @@ extension _FightRounds on _FightScreenState {
         final inflicted = rawInflicted != null && actor.isPlayer
             ? _signs.playerInflicted(rawInflicted)
             : rawInflicted;
-        if (inflicted != null) {
-          target.statusEffects = applyStatusEffect(
-            target.statusEffects,
-            inflicted,
-          );
-          newEntries.add(_LogEntry(
-            _statusInflictedMessage(inflicted, target.displayName, lang),
-            _LogKind.info,
-          ));
+        // The status lands on the one struck, or on every enemy standing
+        // (Winter's Hush); a second status rides beside it.
+        final laid = [
+          if (inflicted != null) inflicted,
+          if (extras.secondStatus != null) extras.secondStatus!,
+        ];
+        if (laid.isNotEmpty) {
+          for (final enemy in extras.statusAll
+              ? _enemies.where((e) => e.isAlive).toList()
+              : [target]) {
+            for (final status in laid) {
+              enemy.statusEffects =
+                  applyStatusEffect(enemy.statusEffects, status);
+              newEntries.add(_LogEntry(
+                _statusInflictedMessage(status, enemy.displayName, lang),
+                _LogKind.info,
+              ));
+            }
+          }
         }
         // A strike sign's status, on the player's Attack face that landed.
         if (actor.isPlayer && face.type == 'Attack' && landed > 0) {
@@ -450,6 +495,7 @@ extension _FightRounds on _FightScreenState {
       }
       _lastPlayedFaces[entry.key] = entry.value;
     }
+    _bonusRollsNext += bonusRollsNext;
     manaGained += _applyAfterFaceCombos(combos, newEntries, lang);
     _applyDuos(newEntries, lang);
     _feedSignKills(newEntries, lang);
@@ -661,6 +707,8 @@ extension _FightRounds on _FightScreenState {
     _update(() {
       _log.addAll(newEntries);
       _rollCount = 0;
+      _bonusRolls = _bonusRollsNext;
+      _bonusRollsNext = 0;
       _currentFaces.clear();
       _selectedTargets.clear();
       _lockedActorIds.clear();
@@ -1217,6 +1265,11 @@ extension _FightRounds on _FightScreenState {
           target.isPlayer && _signGuardArmed && !wasDodged && target.block > 0
               ? _signs.guardRetaliate
               : 0;
+      // A ward (Glacial Ward, Thornwall) wounds the enemy that struck it,
+      // even when the shield took the whole blow.
+      final wardBite = !wasDodged && !parriedOutright && target.block > 0
+          ? target.reflect
+          : null;
       final wasKnockedOutAlready = target.isKnockedOut;
       final inflicted = parriedOutright
           ? null
@@ -1226,6 +1279,22 @@ extension _FightRounds on _FightScreenState {
       _update(() {
         target.currentHealth = max(0, target.currentHealth - damageTaken);
         target.block = 0;
+        target.reflect = null;
+        if (wardBite != null && enemy.isAlive) {
+          enemy.statusEffects =
+              applyStatusEffect(enemy.statusEffects, wardBite);
+          _log.add(_LogEntry(
+            trFor(lang, 'skill_ward_bites')
+                .replaceAll('{name}', enemy.displayName),
+            _LogKind.playerBlock,
+          ));
+          _fx(
+              wardBite.type == StatusEffectType.poison
+                  ? VfxStyle.poison
+                  : VfxStyle.frost,
+              _enemyCardKey(enemy.key),
+              delayMs: fxDelay + 250);
+        }
         _lastDamageTaken = damageTaken;
         _lastDamagedMemberId = target.id;
         if (damageTaken > 0) _momentum = momentumAfterHit(_momentum);
