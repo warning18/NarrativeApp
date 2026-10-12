@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.246.0+282]
+
+### Changed
+- **The fight effects are back in their earlier pixel-art hand.** The poster-style redraw of 1.240.0 is undone: the 35 effect strips in `assets/visuals/pixel_fx` and `tool/gen_fight_fx.py` return to their 1.239 state, with their earlier shapes and animations. Nothing else of 1.240.0 changed, and the 20 new skills of 1.245.0 play the same effects as before.
+
 ## [1.245.0+281]
 
 Twenty new skills, and the rules they needed.
