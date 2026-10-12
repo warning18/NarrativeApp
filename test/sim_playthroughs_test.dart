@@ -2,7 +2,7 @@
 // the first scene to the end with the real fight model. The story must lead
 // each of them to a real ending (no dead end, no broken link, no step cap),
 // through chapter 8. For the balance review set SIM_RUNS (default 40), SIM_STRATEGY,
-// SIM_SEED and SIM_OUT: the runs are then also written to that file as JSON
+// SIM_GOALS, SIM_SEED and SIM_OUT: the runs are then also written to that file as JSON
 // (see docs/simulation/).
 import 'dart:convert';
 import 'dart:io';
@@ -41,14 +41,22 @@ void main() {
     final only = Platform.environment['SIM_STRATEGY'] == null
         ? null
         : SimStrategy.values.byName(Platform.environment['SIM_STRATEGY']!);
+    // SIM_GOALS (comma-separated goal names) plays those goals in turn, the
+    // professions rotating after each round of them: the balance reports of
+    // docs/simulation/ play random, favorGood, favorEvil and maximizeGold.
+    final goals = Platform.environment['SIM_GOALS'] == null
+        ? SimStrategy.values
+        : [
+            for (final name in Platform.environment['SIM_GOALS']!.split(','))
+              SimStrategy.values.byName(name),
+          ];
     final plan = [
       for (var i = 0; i < runs; i++)
         (
-          strategy: only ?? SimStrategy.values[i % SimStrategy.values.length],
+          strategy: only ?? goals[i % goals.length],
           raceId: null as String?,
           professionId:
-              professions[(i ~/ SimStrategy.values.length) % professions.length]
-                  as String?,
+              professions[(i ~/ goals.length) % professions.length] as String?,
         ),
     ];
     final results = simulatePlaythroughs(story,
@@ -63,13 +71,8 @@ void main() {
       expect(r.furthestChapter, 8, reason: who);
     }
     // Every goal and every profession was played.
-    expect(
-        {for (final r in results) r.strategy}.length,
-        only != null
-            ? 1
-            : (runs >= SimStrategy.values.length
-                ? SimStrategy.values.length
-                : runs));
+    expect({for (final r in results) r.strategy}.length,
+        only != null ? 1 : (runs >= goals.length ? goals.length : runs));
 
     final out = Platform.environment['SIM_OUT'];
     if (out != null) {
