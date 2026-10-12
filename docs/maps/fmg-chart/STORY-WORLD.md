@@ -30,7 +30,7 @@ Three lands for the story, and **four empty archipelagos** for ship content (voy
 
 | Archipelago (`storyArchipelagoLands`) | Where | Islands |
 |---|---|---|
-| `south_west` | the open sea south-west of the Lantern Isles, west of Alster (lat 20°S to 55°S, lon 90°W to 65°W) | 5 |
+| `south_west` | the open sea south-west of the Lantern Isles, west of Alster (lat 15°S to 53°S, lon 98°W to 76°W) | 5 |
 | `mid_west` | the Narrow Sea's western end, between the Lantern Isles and the Old Continent | 4 |
 | `east_narrows` | the Narrow Sea east of the crossing | 4 |
 | `south_east` | the Open Water off the Old Continent's east coast | 5 |
