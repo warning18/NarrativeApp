@@ -816,6 +816,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           final elsewhere = target != null && target.id != standing?.id;
           final travels = elsewhere &&
               world.travelsBetween(story, play.currentNodeId, choice.nextId);
+          // The roads and stops that way takes over the world chart.
+          final route = travels && standing != null
+              ? chartRoadsBetween(geography, standing.id, target.id, language)
+              : null;
           return _Step(
             choice: choice,
             kind: journeyStepKindOf(choice),
@@ -852,15 +856,19 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     world: world,
                   ),
             hazard: hazardOn(choice),
+            // A way out leaves by the first stop of its road (v1.255), not
+            // straight at where it ends.
             bearing: chartHere != null && elsewhere
-                ? (geography.of(target) - chartHere).direction
+                ? ((route != null && route.points.length > 1
+                            ? route.points[1]
+                            : geography.of(target)) -
+                        chartHere)
+                    .direction
                 : null,
             chartTarget:
                 chartHere != null && travels ? geography.of(target) : null,
             targetLandmark: travels ? target.id : null,
-            route: travels && standing != null
-                ? chartRoadsBetween(geography, standing.id, target.id, language)
-                : null,
+            route: route,
           );
         }(),
     ];
@@ -4002,6 +4010,14 @@ class _StepDetail extends ConsumerWidget {
                       Text(
                         tr(ref, 'journey_leads_to')
                             .replaceAll('{place}', step.leadsTo!),
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: ink.ash),
+                      ),
+                    // The road it takes, by the stops it passes (v1.255).
+                    if (step.route != null && step.route!.stops.isNotEmpty)
+                      Text(
+                        tr(ref, 'journey_by_road').replaceAll('{stops}',
+                            step.route!.stops.map((s) => s.name).join(' · ')),
                         style: theme.textTheme.labelSmall
                             ?.copyWith(color: ink.ash),
                       ),

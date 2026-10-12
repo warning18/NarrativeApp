@@ -185,5 +185,30 @@ void main() {
     expect(find.byKey(const ValueKey('journey_arriving')), findsNothing);
     expect(find.byKey(_transit), findsNothing);
     expect(tester.takeException(), isNull);
+
+    // A way out to another place says by which road it goes (v1.255): the
+    // stops it passes, under where it leads.
+    play.jumpTo('960');
+    await _settle(tester);
+    await tester.pump(const Duration(seconds: 6));
+    await clearCards();
+    await tester.runAsync(() => container
+        .read(appLanguageProvider.notifier)
+        .setLanguage(AppLanguage.en));
+    await _settle(tester);
+    final roads = <String>[];
+    for (var i = 0; i < 3; i++) {
+      if (find.byKey(ValueKey('journey_step_$i')).evaluate().isEmpty) break;
+      await tester.tap(find.byKey(ValueKey('journey_step_$i')));
+      await tester.pump(const Duration(milliseconds: 500));
+      roads.addAll([
+        for (final t in tester.widgetList<Text>(find.textContaining('By ')))
+          t.data!,
+      ]);
+    }
+    expect(roads, isNotEmpty, reason: 'a way out names its road');
+    expect(roads.any((t) => t.contains('Harbour Chain')), isTrue,
+        reason: '$roads');
+    expect(tester.takeException(), isNull);
   });
 }

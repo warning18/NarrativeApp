@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.255.0+291]
+
+A way out of a place leaves by its road, and says which.
+
+### Changed
+- **A way out to another place leaves by the first stop of its road.** On the
+  Journey map the mark of a way that leaves the location sits toward the
+  first stop of the road it takes, not straight toward where it ends, so the
+  marks of the roads out of a place point where the roads go.
+- **The picked way names its road.** Under where it leads, the details of a
+  picked way out list the stops it passes ("By the Harbour Chain · The
+  Painted Sails"), in English and French.
+
 ## [1.254.0+290]
 
 The party walks the world's roads, stop by stop.

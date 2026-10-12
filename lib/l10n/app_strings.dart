@@ -45,6 +45,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'To {place}',
     AppLanguage.fr: 'Vers {place}',
   },
+  'journey_by_road': {
+    AppLanguage.en: 'By {stops}',
+    AppLanguage.fr: 'Par {stops}',
+  },
   'journey_read': {AppLanguage.en: 'Read', AppLanguage.fr: 'Lire'},
   'journey_level_place': {AppLanguage.en: 'Here', AppLanguage.fr: 'Ici'},
   'journey_level_land': {AppLanguage.en: 'Land', AppLanguage.fr: 'Pays'},
