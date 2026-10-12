@@ -8,6 +8,25 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.259.0+295]
+
+Two flaky tests traced: one was the test, one was a real clipped label.
+
+### Fixed
+- **The anomaly chip no longer overflows on a narrow fight.** The chip in
+  the fight's header (an anomaly's name, then "soon" or the rounds left)
+  was a row around an unwrapped label, so a long name plus its suffix, such
+  as « Lumières dans les roseaux · 3 manches restantes », ran past the edge
+  of a phone. The label now takes the room there is and ends in an ellipsis;
+  the tooltip still shows the whole effect. It also removes a 1 to 2% flake
+  of `ship_boarding_retreat_test`.
+
+### Tests
+- `test/clash_test.dart` accepts a dodged blow in the parry round. A
+  character with no dexterity still has the 5% dodge floor, and a dodged
+  blow is not parried by design, so the log then says "you dodge it!"
+  instead of "turned aside and answered" (about 4% of runs).
+
 ## [1.258.0+294]
 
 The main-quest chain runs in story order, chapter 7 gets its quest, chapters end with a card, and the English text follows the French in using one apostrophe.
