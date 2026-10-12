@@ -21,6 +21,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Touchez une étape de la carte pour voir où elle mène ; touchez-la encore ou appuyez sur Partir pour la prendre.',
   },
   'journey_go': {AppLanguage.en: 'Go', AppLanguage.fr: 'Partir'},
+  'journey_move_lost': {
+    AppLanguage.en: 'The fight is lost: you are taken to {place}.',
+    AppLanguage.fr: 'Le combat est perdu\u00a0: on vous mène à {place}.',
+  },
+  'journey_move_failed': {
+    AppLanguage.en: 'It goes wrong, and you end up at {place}.',
+    AppLanguage.fr: 'Tout tourne mal, et vous voilà à {place}.',
+  },
+  'journey_move_carried': {
+    AppLanguage.en: 'You make your way to {place}.',
+    AppLanguage.fr: 'Vous gagnez {place}.',
+  },
   'journey_you_are_here': {
     AppLanguage.en: 'You are here',
     AppLanguage.fr: 'Vous êtes ici',
@@ -1551,6 +1563,24 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'locked_text_fr': {
     AppLanguage.en: 'Locked text (French)',
     AppLanguage.fr: 'Texte verrouillé (français)',
+  },
+  'fail_note': {
+    AppLanguage.en:
+        'Map note when the roll fails (English, e.g. "You are put in prison")',
+    AppLanguage.fr: 'Note de carte si le jet échoue (anglais)',
+  },
+  'fail_note_fr': {
+    AppLanguage.en: 'Map note when the roll fails (French)',
+    AppLanguage.fr: 'Note de carte si le jet échoue (français)',
+  },
+  'lose_note': {
+    AppLanguage.en:
+        'Map note when the fight is lost (English, e.g. "You are put in prison")',
+    AppLanguage.fr: 'Note de carte si le combat est perdu (anglais)',
+  },
+  'lose_note_fr': {
+    AppLanguage.en: 'Map note when the fight is lost (French)',
+    AppLanguage.fr: 'Note de carte si le combat est perdu (français)',
   },
   'opens_character_creation': {
     AppLanguage.en: 'Opens character creation',

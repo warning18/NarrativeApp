@@ -16,6 +16,7 @@ import '../data/scene_flow.dart';
 import '../data/journey_relief.dart';
 import '../data/map_charts.dart' show ChartGeography, ChartPalette, chartOf;
 import '../data/narration_tokens.dart';
+import '../data/party_trail.dart';
 import '../data/road_events.dart';
 import '../data/story_repository.dart';
 import '../data/world_map.dart';
@@ -139,6 +140,10 @@ class _Step {
   /// road. A way that keeps the party where it stands (a word with the
   /// innkeeper, a stall, a scuffle in the square) leaves it on its mark.
   bool moves = false;
+
+  /// The district (or room spot) of the party's own place that taking this
+  /// step brings it to, when it stays inside the place (v1.246).
+  String? district;
 }
 
 /// The place the party stands in, as the map draws it up close (v1.181):
@@ -222,6 +227,25 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// short.
   String? _takingFrom;
   bool get _busy => _takingFrom != null && _takingFrom == _sceneKey;
+
+  /// Where the party stands on the world chart, and under what name (v1.245):
+  /// kept from scene to scene, so a scene the story carries the party to
+  /// without a walk (a fight lost, a roll failed, the travel list) starts
+  /// from where it was.
+  Offset? _partyChart;
+  String _partyName = '';
+
+  /// The road the party is carried along, with what is said of it, shown
+  /// over the map until it ends or is tapped.
+  _Transit? _transit;
+
+  /// Where the party stood inside the place it was last shown in (v1.246):
+  /// the plan it stood on (the city's or a room's) and its district or spot.
+  /// A scene the story carries it to along no walk, in the same place, has
+  /// it travel the streets from there ([_arriveFrom], until shown once).
+  String? _partyPlan;
+  String _partyDistrict = '';
+  String? _arriveFrom;
 
   /// A new scene's lone step is still to be picked for the player.
   bool _autoPickPending = false;
@@ -495,6 +519,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final before = _sceneKey;
     if (_busy || step.locked || before == null) return;
     setState(() => _takingFrom = before);
+    // Where the party stands before it sets out.
+    final home = _partyChart;
+    final homePlan = _partyPlan, homeDistrict = _partyDistrict;
     // The story moved on meanwhile (the walk cut short with its map): the
     // step is no longer one to take.
     bool moved() => _sceneKeyOf(ref.read(storyPlayProvider)) != before;
@@ -511,6 +538,16 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       }
       if (!mounted || moved()) return;
       if (walked != null) _terrainShift += walked;
+      // The party has walked to where the step leads: it stands there from
+      // now on, whatever the scene after turns out to be.
+      final reached = step.chartTarget;
+      if (step.moves && reached != null) {
+        _partyChart = reached;
+        // Another place: its own plan, not this one's streets.
+        _partyPlan = null;
+      } else if (step.moves && step.district != null) {
+        _partyDistrict = step.district!;
+      }
       if (step.kind == JourneyStepKind.fight ||
           step.kind == JourneyStepKind.expedition) {
         if (!MediaQuery.of(context).disableAnimations) {
@@ -526,15 +563,25 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         // fled) brings the party back to its mark.
         final stayed = _sceneKeyOf(ref.read(storyPlayProvider)) == before;
         if (stayed) {
-          if (walked != null) _terrainShift -= walked;
-          _chartKey.currentState?.resetWalk();
+          // The party walks back along the road it took (v1.245), and
+          // stands where it set out from again.
+          final chart = _chartKey.currentState;
+          if (chart != null) await chart.walkBack();
+          if (mounted) {
+            if (walked != null) _terrainShift -= walked;
+            _partyChart = home;
+            _partyPlan = homePlan;
+            _partyDistrict = homeDistrict;
+          }
         }
-        setState(() {
-          if (_takingFrom == before) _takingFrom = null;
-          // The choice moved the story on: the new scene is read full
-          // screen, and Continue brings the map back.
-          if (taken && !stayed) _reading = true;
-        });
+        if (mounted) {
+          setState(() {
+            if (_takingFrom == before) _takingFrom = null;
+            // The choice moved the story on: the new scene is read full
+            // screen, and Continue brings the map back.
+            if (taken && !stayed) _reading = true;
+          });
+        }
       }
     }
   }
@@ -913,6 +960,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final steps = rawSteps;
     for (var i = 0; i < steps.length; i++) {
       steps[i].moves = carries(i);
+      steps[i].district = districtOfStep[i];
     }
     // A scene with one way on has its step picked already: one tap on Go.
     if (_autoPickPending) {
@@ -953,6 +1001,58 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   ),
             ],
           );
+
+    // Where the party stands on the world (v1.245): a scene the story
+    // carried it to without a walk (a fight lost, a roll failed, the travel
+    // list) is reached by the road from where it stood, and the map says why.
+    if (newScene && !play.isInExcursion) {
+      final to = placeView?.chartHere;
+      // The editor's jumps are tools, not travel: no road walked for them.
+      final editorJump = ref.read(appModeProvider) == AppMode.edit;
+      if (to != null) {
+        final from = _partyChart;
+        final previousId = play.history.isEmpty ? null : play.history.last;
+        final cause = partyMoveCause(story, previousId, play.currentNodeId);
+        // The same city's plan (or the same room) is one place, whatever
+        // the world chart says of its districts: the party travels its
+        // streets, not the roads between places.
+        final planKey = '${placeView!.room != null ? 'room' : 'city'}'
+            '${placeView.seed}';
+        final samePlan = _partyPlan == planKey;
+        final far = !samePlan && from != null && (from - to).distance > 0.5;
+        final forced =
+            cause == PartyMoveCause.lost || cause == PartyMoveCause.failed;
+        _transit =
+            from != null && cause != null && (far || forced) && !editorJump
+                ? _Transit(
+                    from: from,
+                    to: to,
+                    fromName: _partyName,
+                    toName: hereName,
+                    flight: far,
+                    forced: forced,
+                    caption: partyMoveNote(
+                            story, previousId, play.currentNodeId,
+                            french: french) ??
+                        tr(ref, 'journey_move_${cause.name}')
+                            .replaceAll('{place}', hereName),
+                  )
+                : null;
+        // Inside the place (v1.246): the party travels the streets, or the
+        // room, from the district or spot it stood at.
+        _arriveFrom = cause != null &&
+                !far &&
+                !editorJump &&
+                samePlan &&
+                _partyDistrict != placeView.hereDistrict
+            ? _partyDistrict
+            : null;
+        _partyPlan = planKey;
+        _partyDistrict = placeView.hereDistrict;
+        _partyChart = to;
+        _partyName = hereName;
+      }
+    }
 
     // The world under the fog (v1.199), framed on the party's land or
     // the whole of it.
@@ -1110,6 +1210,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                           unroll: _unroll,
                           weather: journeyWeatherOf(sky?.kind, chapter),
                           place: placeView,
+                          arriveFrom: _arriveFrom,
                         ),
                       ),
                     ),
@@ -1219,7 +1320,30 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                             const SizedBox(height: 2),
                             Expanded(
                               child: _level == JourneyMapLevel.place || ended
-                                  ? map
+                                  ? Stack(
+                                      children: [
+                                        Positioned.fill(child: map),
+                                        if (_transit != null &&
+                                            placeView != null &&
+                                            !ended)
+                                          Positioned.fill(
+                                            child: _PartyTransit(
+                                              key: ValueKey(
+                                                  'journey_transit_$sceneKey'),
+                                              transit: _transit!,
+                                              geography: placeView.geography,
+                                              marks: placeView.marks,
+                                              palette: palette,
+                                              onDone: () {
+                                                if (mounted) {
+                                                  setState(
+                                                      () => _transit = null);
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                      ],
+                                    )
                                   : worldMap,
                             ),
                             // Under the map (v1.201): once the camp
@@ -1313,6 +1437,166 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// A road the party is carried along (v1.245): from where it stood to the
+/// place the story set it down, with a few words on why.
+class _Transit {
+  const _Transit({
+    required this.from,
+    required this.to,
+    required this.fromName,
+    required this.toName,
+    required this.flight,
+    required this.forced,
+    required this.caption,
+  });
+
+  /// The two places on the world chart.
+  final Offset from;
+  final Offset to;
+  final String fromName;
+  final String toName;
+
+  /// Whether the places differ, so there is a road to draw; else only the
+  /// words are told.
+  final bool flight;
+
+  /// Whether the story took the party there against its pick (a lost fight,
+  /// a failed roll), not a journey the player started.
+  final bool forced;
+  final String caption;
+}
+
+/// The [_Transit] over the map: the world chart with the party walking the
+/// road, and the caption under it. A tap skips it; with reduced motion only
+/// the caption shows, a few seconds.
+class _PartyTransit extends StatefulWidget {
+  const _PartyTransit({
+    super.key,
+    required this.transit,
+    required this.geography,
+    required this.marks,
+    required this.palette,
+    required this.onDone,
+  });
+
+  final _Transit transit;
+  final ChartGeography geography;
+  final List<ChartMark> marks;
+  final ChartPalette palette;
+  final VoidCallback onDone;
+
+  @override
+  State<_PartyTransit> createState() => _PartyTransitState();
+}
+
+class _PartyTransitState extends State<_PartyTransit>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: Duration(milliseconds: widget.transit.flight ? 2400 : 2000),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _c.forward().whenComplete(() {
+      if (mounted) widget.onDone();
+    });
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final transit = widget.transit;
+    final still = MediaQuery.of(context).disableAnimations;
+    final scheme = Theme.of(context).colorScheme;
+    void skip() {
+      _c.stop();
+      widget.onDone();
+    }
+
+    final road = transit.flight && !still;
+    return ClipRRect(
+      key: const ValueKey('journey_transit'),
+      borderRadius: BorderRadius.circular(10),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          // The road over the whole map takes a tap to skip; a few words
+          // alone (the party moved inside its place) leave the map to be
+          // played with, and the map shows the move.
+          if (road)
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: skip,
+              child: AnimatedBuilder(
+                animation: _c,
+                builder: (context, _) => CustomPaint(
+                  size: Size.infinite,
+                  painter: RegionFlightPainter(
+                    geography: widget.geography,
+                    from: transit.from,
+                    to: transit.to,
+                    marks: widget.marks,
+                    t: Curves.easeInOut.transform(_c.value),
+                    palette: widget.palette,
+                    fromName: transit.fromName,
+                    toName: transit.toName,
+                  ),
+                ),
+              ),
+            ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: GestureDetector(
+              onTap: skip,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Material(
+                  color: scheme.surface.withValues(alpha: 0.94),
+                  elevation: 3,
+                  borderRadius: BorderRadius.circular(10),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          transit.forced
+                              ? Icons.warning_amber_rounded
+                              : Icons.directions_walk,
+                          size: 18,
+                          color: transit.forced
+                              ? scheme.error
+                              : scheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            transit.caption,
+                            key: const ValueKey('journey_transit_caption'),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1768,7 +2052,12 @@ class _JourneyChart extends StatefulWidget {
     this.unroll = 0,
     this.weather = JourneyWeather.none,
     this.place,
+    this.arriveFrom,
   });
+
+  /// The district (or room spot) the party comes from when the story set it
+  /// down here along no walk: its mark travels the plan from there.
+  final String? arriveFrom;
 
   /// The place up close, when the party stands at one the world chart
   /// knows: the ways ring the party and the ways out point where they
@@ -1850,6 +2139,15 @@ class _JourneyChartState extends State<_JourneyChart>
     vsync: this,
     duration: const Duration(milliseconds: 950),
   );
+
+  /// The party's mark travelling the plan from [_JourneyChart.arriveFrom]
+  /// to where it stands (v1.246); done (1) when there is nothing to show.
+  late final AnimationController _arrival = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1500),
+    value: 1,
+  );
+  bool _arrivalStarted = false;
 
   /// Out of a place and along the world chart to the next (v1.181).
   late final AnimationController _flight = AnimationController(
@@ -1971,6 +2269,14 @@ class _JourneyChartState extends State<_JourneyChart>
     if (animate == _animate) return;
     _animate = animate;
     if (animate) {
+      final from = widget.arriveFrom;
+      if (!_arrivalStarted &&
+          from != null &&
+          _anchors != null &&
+          from != widget.place?.hereDistrict) {
+        _arrivalStarted = true;
+        _arrival.forward(from: 0);
+      }
       _ticker ??= createTicker((elapsed) {
         final now = _clockBase + elapsed.inMicroseconds / 1e6;
         _clock.value = now;
@@ -1992,6 +2298,7 @@ class _JourneyChartState extends State<_JourneyChart>
   /// ticker stops: the Journey draws no frame until something moves.
   bool _movingAt(double now) =>
       _walk.isAnimating ||
+      _arrival.isAnimating ||
       _flight.isAnimating ||
       _reveal < 1 ||
       (widget.burn && now < 1.4) ||
@@ -2119,6 +2426,31 @@ class _JourneyChartState extends State<_JourneyChart>
     return _centres[index] - _here;
   }
 
+  /// The party walks back along the road it took, to its mark (the story
+  /// stayed where it was: a fight fled, a shop shut), instead of snapping
+  /// there (v1.245). With reduced motion it is there at once.
+  Future<void> walkBack() async {
+    if (!mounted) return;
+    if (_walking != null && _animate) {
+      try {
+        if (_flying != null) {
+          await _flight
+              .animateBack(0,
+                  duration: const Duration(milliseconds: 700),
+                  curve: Curves.easeInOut)
+              .orCancel;
+        }
+        final span = _walk.duration ?? const Duration(milliseconds: 950);
+        await _walk
+            .animateBack(0, duration: span * 0.6, curve: Curves.easeInOut)
+            .orCancel;
+      } on TickerCanceled {
+        // The map went mid-walk: nothing left to bring back.
+      }
+    }
+    resetWalk();
+  }
+
   /// Brings the party back to its mark (the story stayed where it was).
   void resetWalk() {
     if (!mounted) return;
@@ -2137,6 +2469,7 @@ class _JourneyChartState extends State<_JourneyChart>
     _clock.dispose();
     _phase.dispose();
     _walk.dispose();
+    _arrival.dispose();
     _flight.dispose();
     _scroll?.dispose();
     super.dispose();
@@ -2392,7 +2725,7 @@ class _JourneyChartState extends State<_JourneyChart>
               width: width,
               height: height,
               child: AnimatedBuilder(
-                animation: Listenable.merge([_walk, _phase]),
+                animation: Listenable.merge([_walk, _arrival, _phase]),
                 builder: (context, _) {
                   // The walk: the mark goes along its road, and the map
                   // follows a little behind, so the step taken ends where
@@ -2408,6 +2741,26 @@ class _JourneyChartState extends State<_JourneyChart>
                         metric.getTangentForOffset(metric.length * f)!.position;
                     traveller = at(t);
                     camera = here - at(t * t);
+                  }
+                  // Set down here along no walk: the mark comes by the
+                  // streets from where it stood.
+                  Offset? arriving;
+                  final cameFrom = widget.arriveFrom;
+                  final arrivalPlan = _anchors;
+                  final planScale = _planScale, planOrigin = _planOrigin;
+                  if (cameFrom != null &&
+                      _arrival.isAnimating &&
+                      traveller == null &&
+                      arrivalPlan != null &&
+                      planScale != null &&
+                      planOrigin != null) {
+                    final start =
+                        planOrigin + arrivalPlan.anchorOf(cameFrom) * planScale;
+                    final metric = _road(start, here).computeMetrics().first;
+                    arriving = metric
+                        .getTangentForOffset(metric.length *
+                            Curves.easeInOut.transform(_arrival.value))!
+                        .position;
                   }
                   final now = _clock.value;
                   final walkingKind = walking != null && walking < steps.length
@@ -2600,7 +2953,8 @@ class _JourneyChartState extends State<_JourneyChart>
                             ),
                           ),
                         // Where the party stood, while it walks away.
-                        _hereMark(here, faded: traveller != null),
+                        _hereMark(here,
+                            faded: traveller != null || arriving != null),
                         Positioned(
                           left: _placeMode ? 8 : here.dx + _hereRadius + 10,
                           width: _placeMode
@@ -2665,6 +3019,13 @@ class _JourneyChartState extends State<_JourneyChart>
                             key: const ValueKey('journey_traveller'),
                             left: traveller.dx - _hereRadius,
                             top: traveller.dy - _hereRadius,
+                            child: _partyMark(palette),
+                          ),
+                        if (arriving != null)
+                          Positioned(
+                            key: const ValueKey('journey_arriving'),
+                            left: arriving.dx - _hereRadius,
+                            top: arriving.dy - _hereRadius,
                             child: _partyMark(palette),
                           ),
                         // A place the map hadn't shown: its name stamped

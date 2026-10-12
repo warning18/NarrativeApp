@@ -1556,7 +1556,9 @@
         "healAmount": -15,
         "flagsToAdd": [
           "sewer_waded"
-        ]
+        ],
+        "failNote": "The rot gives way under you: you fall into the Undercroft.",
+        "failNote_fr": "La pourriture cède sous vous : vous tombez dans les Souterrains."
       }
     ]
   },
@@ -1592,7 +1594,9 @@
         "failNextId": "850_fed_failed",
         "flagsToAdd": [
           "matriarch_spared"
-        ]
+        ],
+        "failNote": "The brood is not fooled: it drives you down into the Undercroft.",
+        "failNote_fr": "La couvée n’est pas dupe : elle vous chasse vers les Souterrains."
       }
     ]
   },
@@ -2345,7 +2349,9 @@
         "failNextId": "1140_spotted",
         "flagsToAdd": [
           "looters_slipped"
-        ]
+        ],
+        "failNote": "You are spotted, and the camp comes up around you.",
+        "failNote_fr": "On vous repère, et le camp se lève autour de vous."
       },
       {
         "text": "Go the long way round",
@@ -2834,7 +2840,9 @@
         "flagsToAdd": [
           "roofs_taken"
         ],
-        "failNextId": "2011_roof_fall"
+        "failNextId": "2011_roof_fall",
+        "failNote": "A gutter gives way: you fall among them on the wharf.",
+        "failNote_fr": "Une gouttière cède : vous tombez parmi eux, sur le quai."
       }
     ]
   },
@@ -3876,7 +3884,9 @@
         "flagsToAdd": [
           "vane_crossed",
           "vane_robbed"
-        ]
+        ],
+        "failNote": "Vane’s hand closes on your wrist: you are held on the wharf.",
+        "failNote_fr": "La main de Vane se referme sur votre poignet : on vous retient sur le quai."
       }
     ],
     "noDetour": true
@@ -15417,7 +15427,9 @@
         ],
         "showIfFlags": [
           "banner_five"
-        ]
+        ],
+        "failNote": "The host turns as one and closes on you.",
+        "failNote_fr": "La foule se retourne d’un seul mouvement et se referme sur vous."
       },
       {
         "text": "Walk among them under the Shroud’s grey",
@@ -15433,7 +15445,9 @@
         ],
         "showIfFlags": [
           "banner_five"
-        ]
+        ],
+        "failNote": "The host turns as one and closes on you.",
+        "failNote_fr": "La foule se retourne d’un seul mouvement et se referme sur vous."
       },
       {
         "text": "Cut a road straight through them",
@@ -17231,7 +17245,9 @@
             "dominion_leader_vane",
             "throne_vane"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Speak before the Houses on the First Lantern’s cliff",
@@ -17253,7 +17269,9 @@
             "dominion_leader_morrow",
             "throne_morrow"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Speak before the Houses on the First Lantern’s cliff",
@@ -17275,7 +17293,9 @@
             "dominion_leader_tallis",
             "throne_tallis"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Take the Hall stair with the Houses behind you",
@@ -17499,7 +17519,9 @@
             "dominion_leader_vane",
             "throne_vane"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Go over the sea-wall at the new moon, unseen",
@@ -17516,7 +17538,9 @@
             "dominion_leader_morrow",
             "throne_morrow"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Go over the sea-wall at the new moon, unseen",
@@ -17533,7 +17557,9 @@
             "dominion_leader_tallis",
             "throne_tallis"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Break the Sun Gate with the Last Watch’s spears",
@@ -17772,7 +17798,9 @@
             "dominion_leader_vane",
             "throne_vane"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Open the Anvil Gate by its own forge-marks",
@@ -17789,7 +17817,9 @@
             "dominion_leader_morrow",
             "throne_morrow"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Open the Anvil Gate by its own forge-marks",
@@ -17806,7 +17836,9 @@
             "dominion_leader_tallis",
             "throne_tallis"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Break the Anvil Gate with the Row’s master hammer",
@@ -18045,7 +18077,9 @@
             "dominion_leader_vane",
             "throne_vane"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Follow a Heron’s Wake guide through the salt marsh",
@@ -18062,7 +18096,9 @@
             "dominion_leader_morrow",
             "throne_morrow"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Follow a Heron’s Wake guide through the salt marsh",
@@ -18079,7 +18115,9 @@
             "dominion_leader_tallis",
             "throne_tallis"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Take the Reed Gate with fever-bark and blades",
@@ -18323,7 +18361,9 @@
             "dominion_leader_vane",
             "throne_vane"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Bribe the chain-master to drop the chain",
@@ -18342,7 +18382,9 @@
             "dominion_leader_morrow",
             "throne_morrow"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Bribe the chain-master to drop the chain",
@@ -18361,7 +18403,9 @@
             "dominion_leader_tallis",
             "throne_tallis"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Ram the harbour chain with the Eel",
@@ -18601,7 +18645,9 @@
             "dominion_leader_vane",
             "throne_vane"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Walk before the procession, no weapon drawn",
@@ -18619,7 +18665,9 @@
             "dominion_leader_morrow",
             "throne_morrow"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Walk before the procession, no weapon drawn",
@@ -18637,7 +18685,9 @@
             "dominion_leader_tallis",
             "throne_tallis"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Break the shield-wall at the Exorcists’ Gate",
@@ -18877,7 +18927,9 @@
             "dominion_leader_vane",
             "throne_vane"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Draw a door in the cliff and walk through it",
@@ -18895,7 +18947,9 @@
             "dominion_leader_morrow",
             "throne_morrow"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Draw a door in the cliff and walk through it",
@@ -18913,7 +18967,9 @@
             "dominion_leader_tallis",
             "throne_tallis"
           ]
-        }
+        },
+        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
+        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Hold the grey hand up at the gate until it breaks",

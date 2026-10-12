@@ -8,23 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.250.0+286]
+## [1.253.0+289]
 
 ### Changed
 - **The throne has no spikes: its top is broken.** The crown of spires, the spiked arms and the spiked shoulders are gone. The back is now a tall slab of black stone whose top has broken away in a ragged fracture, pale where the stone is fresh; the recess with its three ember slits is open to the break, the brass ring is chipped, one armrest is chipped, and rubble that fell from the top lies on the steps, the carpet and the cushion. The banners' finials are round.
 
-## [1.249.0+285]
+## [1.252.0+288]
 
 ### Changed
 - **The throne room is darker.** The throne is now an old seat of black stone: a tall back crowned with jagged spires, a pointed recess cut deep with three ember-red slits glowing in it under a worn brass ring, cracked stone, spiked armrests, a worn wine cushion, clawed feet and dark steps. The stage is nearly black, lit from behind the throne and by a dull red pool on the floor, the carpet is a worn wine, the braziers burn lower, and the banners stand on black iron poles with tarnished brass.
 
-## [1.248.0+284]
+## [1.251.0+287]
 
 ### Changed
 - **The throne room is restaged as a dark stage.** The Lantern Throne is now a gilded throne with a red velvet back and seat, in the middle of a dark hall lit from above and by a pool of light on the floor, its two braziers burning. Each banner you have earned stands on its own tall gilt standard (a pole, a foot and a finial) instead of hanging on a wall: one each side of the throne, the rest in pairs down the long carpet.
 - **The banners blow in the wind.** A wind from the left rises and falls in gusts: it pushes the cloth to the right more the lower it hangs, a ripple runs down it and the hem flutters, while the rod at the top holds still; a few specks of dust drift across the hall. The cycle loops without a seam, and with reduced motion everything stands still.
 
-## [1.247.0+283]
+## [1.250.0+286]
 
 ### Added
 - **A throne room in the Clans screen** (a new "Throne room" tab, in play and in Edit Mode): the Lantern Throne in pixel art on its dais, a brazier lit at each end of it, a red carpet running down a long hall, and every banner you have earned hanging along the walls and swaying: the cloth swings a little further the lower it hangs, the pole held still. A clan's banner hangs once it is your friend, the Open Hand's once it is raised, and the Shroud's pieces as you find them; a tap names a banner and its standing. Above it, the hall says who holds the throne, or your claim, or that it stands empty. With reduced motion the banners hang still. Drawn by `tool/gen_throne_room.py`.
@@ -32,12 +32,12 @@ isn't reconstructable from git history alone.
 ### Changed
 - **"Every skill in motion" on the design canvas is back in the basic hand.** Both boards now play the game's own effect strips, recoloured to each skill's element as the fight does, for all 162 skills (the 20 newest marked NEW), in place of the poster-style motions.
 
-## [1.246.0+282]
+## [1.249.0+285]
 
 ### Changed
 - **The fight effects are back in their earlier pixel-art hand.** The poster-style redraw of 1.240.0 is undone: the 35 effect strips in `assets/visuals/pixel_fx` and `tool/gen_fight_fx.py` return to their 1.239 state, with their earlier shapes and animations. Nothing else of 1.240.0 changed, and the 20 new skills of 1.245.0 play the same effects as before.
 
-## [1.245.0+281]
+## [1.248.0+284]
 
 Twenty new skills, and the rules they needed.
 
@@ -54,6 +54,80 @@ Twenty new skills, and the rules they needed.
 ### Changed
 - The new skills that only shield, heal or control have a damage multiplier of 0, so they do not also strike for the caster's base damage.
 - Windwalker gives a free reroll next round rather than a second action, and Bastion Slam draws its extra damage from the armor you wear rather than from the shield you hold; both read from the same rules as the others.
+## [1.247.0+283]
+
+The world's fixed roads: the groundwork for a map where the party only takes roads.
+
+### Added
+- **A fixed road graph (`lib/data/world_roads.dart`).** 41 roads join the
+  34 landmarks by id, on land or by sea, so they hold on all three chart
+  geographies. Each road passes one or two named stops (the Dyers' Gate, the
+  Caravan Ford, the Glass Shoals...), in English and French, in the order
+  met from either end. `roadRoute(from, to)` finds the shortest way along
+  the roads and the stops on it.
+- **A content test (`world_roads_test.dart`).** Every landmark is on a road
+  and leads to every other, every sea road touches the water, and every
+  branch of the story between two landmarks (a chosen way, a failed roll,
+  a lost fight) follows a road, so a new branch that skips the map fails
+  the build.
+
+No change to play yet: the Journey map uses the roads in the next versions.
+
+## [1.246.0+282]
+
+The party walks the streets of a city, and a 'seen' failure in the Undercroft says why.
+
+### Added
+- **Inside one city or room, the mark comes by the streets.** When the story
+  sets the party down in another district of the place it already stands in
+  (a lost fight, a failed roll, a jump along no choice), the Journey map no
+  longer draws the mark in the new district out of nowhere: it walks from
+  the district where the party stood to the new one along the plan's roads.
+  Nothing needs saying for a plain move inside a city, so no world transit
+  plays there.
+- **The twenty-one failed rolls of the Undercroft's watch** (every choice of
+  the 7510 scenes that falls back to being seen) carry an authored
+  `failNote` that says why the party is set down elsewhere.
+
+### Changed
+- A step that stays in the same place now walks the party back, instead of
+  snapping it home, also when the step's district differed.
+
+## [1.245.0+281]
+
+The party's mark keeps its place on the world, and the map says when the story moves it.
+
+### Added
+- **Carried along a branch you did not pick, the party travels there by the
+  world chart's road.** When a fight is lost or a roll fails and the story
+  sets the party down somewhere other than where the step it took was
+  leading, or when a jump along no choice (the travel list, the way back to
+  camp) moves it, the Journey map plays the road from where the party stood
+  to where it is now, with a short caption under it ("Vane's hand closes on
+  your wrist: you are held on the wharf."). A tap skips it; with reduced
+  motion only the caption shows. The Edit Mode's jumps are tools and play
+  nothing.
+- **The author writes that caption** on the choice: `failNote` / `loseNote`
+  (with `failNote_fr` / `loseNote_fr`), four new fields in the node editor.
+  Without one, the map says it in plain words ("The fight is lost: you are
+  taken to {place}."). The seven existing branches that set the party down
+  elsewhere (the rot giving way into the Undercroft, the brood driving you
+  down, being spotted at the sleepers' camp, the gutter on the roofs, Vane's
+  grip, the host turning on you) now carry theirs, in both languages.
+- A content test keeps the promise: a lost fight or a failed roll that ends
+  at another place than its chosen step must carry a note in both languages,
+  and every scene must stand at a place on the world chart.
+
+### Fixed
+- **A step that walked the party on and was turned back from** (a fight
+  retreated from, a shop shut) no longer snaps the mark back to where it set
+  out: it walks back along the road it took.
+
+### Notes
+- This is the first stage of the fixed world: the party's position on the
+  world is now kept from scene to scene. Still to come: the same for
+  districts and rooms inside a place (a forced move between two spots of one
+  city shows its caption only), and a fixed road graph with named stops.
 
 ## [1.244.0+280]
 
