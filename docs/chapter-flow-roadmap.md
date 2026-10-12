@@ -103,8 +103,8 @@ The throne campaign (chapters 7 and 8) is written as scenes, not loops:
 the party arrives under a clan's banner (`7510_*`), faces a claimant in
 the Lantern Hall (`7520_vane`, `7520_morrow`, `7520_tallis`) and is crowned
 in a clan's own way (`7590_*`, one per clan). The two intrigues that end
-the Hollow Shore chapter are settled earlier, at `7002_orders`
-(`hooded_lantern`) and `7002_throne` (`dying_lantern_bearer`). The Host
+the Hollow Shore chapter are settled earlier, at `7200_orders`
+(`hooded_lantern`) and `7200_throne` (`dying_lantern_bearer`). The Host
 (`7800_council`, `host_*` flags) is the clans and tribes the party carries
 across the tear. There are no side quests in either chapter yet.
 
@@ -186,8 +186,8 @@ read (`flag_callbacks`).
 
 | Intrigue | Clue | Hook | Turn | Reveal | Crisis | Outcome |
 |---|---|---|---|---|---|---|
-| `hooded_lantern` | `2015_informant_*` | `3002` | `5010_letter` | `6010_thread` | `7100_log` | `7002_orders` |
-| `dying_lantern_bearer` | `2005` | `3005_envoys` | `5100_vote` | `6100_knife` | `7100_chaplain` | `7002_throne` |
+| `hooded_lantern` | `2015_informant_*` | `3002` | `5010_letter` | `6010_thread` | `7100_log` | `7200_orders` |
+| `dying_lantern_bearer` | `2005` | `3005_envoys` | `5100_vote` | `6100_knife` | `7100_chaplain` | `7200_throne` |
 | `double_ledger` | `2015_route_sold` | `3005_black_thread` | `5100_keyholder_cut` | `6100_debt_rising` | `7100_vault_burns` | `7200_ledger` |
 | `admiraltys_silence` | `2015_survivor` | `3005_logbook_gap` | `5100_tar_hand_book` | `6010_lantern_manifest` | `7100_flagship_hold` | `7200_relic` |
 | `relic_road` | `2015_bundle` | `3005_shrine_break` | `5010_thieves_ship` | `6010_heist_night` | `7200_thieves_aboard` | `7200_fourth_piece` |

@@ -8725,31 +8725,6 @@
         "lockedText_fr": "La voile blanche vira avant d’atteindre le rivage."
       },
       {
-        "text": "Decide who reads the Admiral’s log",
-        "text_fr": "Décider qui lira le journal de l’Amiral",
-        "next_id": "7002_orders",
-        "showIfFlags": [
-          "fleet_log_read"
-        ],
-        "hideIfFlags": [
-          "hub_7002_orders",
-          "on_throne"
-        ]
-      },
-      {
-        "text": "Cast the Admiralty’s vote for the Lantern Throne",
-        "text_fr": "Donner la voix de l’Amirauté pour le Trône de la Lanterne",
-        "next_id": "7002_throne",
-        "showIfFlags": [
-          "admiralty_vote"
-        ],
-        "hideIfFlags": [
-          "throne_backed",
-          "throne_filled",
-          "on_throne"
-        ]
-      },
-      {
         "text": "Raise the grey hand over the shore",
         "text_fr": "Lever la main grise sur le rivage",
         "next_id": "7002_banner",
@@ -15197,6 +15172,31 @@
         "hideIfFlags": [
           "hub_7200_returned"
         ]
+      },
+      {
+        "text": "Decide who reads the Admiral’s log",
+        "text_fr": "Décider qui lira le journal de l’Amiral",
+        "next_id": "7200_orders",
+        "showIfFlags": [
+          "fleet_log_read"
+        ],
+        "hideIfFlags": [
+          "hub_7200_orders",
+          "on_throne"
+        ]
+      },
+      {
+        "text": "Cast the Admiralty’s vote for the Lantern Throne",
+        "text_fr": "Donner la voix de l’Amirauté pour le Trône de la Lanterne",
+        "next_id": "7200_throne",
+        "showIfFlags": [
+          "admiralty_vote"
+        ],
+        "hideIfFlags": [
+          "throne_backed",
+          "throne_filled",
+          "on_throne"
+        ]
       }
     ],
     "settlement": {
@@ -17426,64 +17426,6 @@
       }
     ]
   },
-  "7002_orders": {
-    "id": "7002_orders",
-    "description": "The Admiral’s last page was in my coat, and it was, as far as I could tell, the only thing on this coast that could break the Dominion in two. The Order had buried a third of its knights fighting a tear the Reliquary had made, and did not know it. Shown that page, the Grand Master’s knights would turn on the Inquisition before the ink was dry. Or I could sell it back. The Inquisition had a legate somewhere off this shore and very deep pockets, and a writ under its seal would open every port from here to Candlehold. I sat on the grey sand with the page on my knee and tried to decide what I owed a fleet that had sailed to burn my city.",
-    "description_fr": "La dernière page de l’Amiral était dans mon manteau, et c’était, autant que je pouvais en juger, la seule chose sur cette côte capable de briser le Dominion en deux. L’Ordre avait enterré un tiers de ses chevaliers à combattre une déchirure que le Reliquaire avait faite, et il l’ignorait. Qu’on montre cette page aux chevaliers du Grand Maître, et ils se retourneraient contre l’Inquisition avant que l’encre ne sèche. Ou bien je pouvais la revendre. L’Inquisition avait un légat quelque part au large de ce rivage, et les poches très profondes, et un mandat sous son sceau ouvrirait tous les ports d’ici à Candlehold. Je m’assis sur le sable gris, la page sur le genou, et tâchai de décider ce que je devais à une flotte qui avait fait voile pour brûler ma ville.",
-    "context_taxonomy": {
-      "ui_theme": "epilogue",
-      "mood": "tense",
-      "speaker": "Narrator"
-    },
-    "location": "hollow_shore",
-    "choices": [
-      {
-        "text": "Send it to the Order’s knights at the Anchorage",
-        "text_fr": "L’envoyer aux chevaliers de l’Ordre, au Mouillage",
-        "next_id": "7002",
-        "alignmentMod": 1,
-        "flagsToAdd": [
-          "hub_7002_orders",
-          "lantern_exposed"
-        ],
-        "politics": {
-          "intrigue": {
-            "id": "hooded_lantern",
-            "outcome": 0
-          }
-        }
-      },
-      {
-        "text": "Sell it to the legate, and carry the writ",
-        "text_fr": "La vendre au légat, et porter le mandat",
-        "next_id": "7002",
-        "goldMod": 150,
-        "alignmentMod": -2,
-        "flagsToAdd": [
-          "hub_7002_orders",
-          "lantern_kept"
-        ],
-        "politics": {
-          "intrigue": {
-            "id": "hooded_lantern",
-            "outcome": 1
-          }
-        }
-      }
-    ],
-    "flag_callbacks": [
-      {
-        "flag": "fleet_log_taken",
-        "en": "It was not even a copy. The log itself was under my coat, and the stern-chapel had a gap under its altar.",
-        "fr": "Ce n’était même pas une copie. Le journal lui-même était sous mon manteau, et la chapelle de poupe avait un vide sous son autel."
-      },
-      {
-        "flag": "truth_told",
-        "en": "The coast had already heard the Reliquary’s roll read aloud, at my say-so. This page would only make it louder.",
-        "fr": "La côte avait déjà entendu lire le rouleau du Reliquaire, parce que je l’avais voulu. Cette page ne ferait que hausser la voix."
-      }
-    ]
-  },
   "3005_envoys": {
     "id": "3005_envoys",
     "description": "They had come looking for me, which was new. Three envoys sat in a row on a fallen beam at the Quarter’s gate, each pretending the other two were not there. The first wore the Order’s sword-and-lantern and the face of a man who had buried friends on this coast: Grand Master Morrow sent his regards, and a whetstone. The second was a Wickwarden with a lamp in her lap: the Eldest, Maud Tallis, sent oil for my wounds and asked for nothing at all, which I distrusted most. The third was an Inquisitor, young, gentle-voiced, with the hooded lantern at his collar: Aurel Vane, the Inquisitor-General, sent a purse, and his interest. The last time I had seen the Inquisitor-General he had been walking out of the dust of my own street, and I kept my hands very still while his envoy talked. The Lantern-Bearer was dying, the three of them agreed, if on nothing else, and when the Throne was empty their masters would remember who had stood where. The Inquisitor’s eyes went to the grey on my back twice while he talked, and the second time he forgot to smile.",
@@ -18005,182 +17947,6 @@
         "flag": "count_name_heard",
         "en": "I had heard the name read out from a stone in the frost. I had not expected to hear it spoken to me.",
         "fr": "J’avais entendu ce nom lu à voix haute devant une pierre dans le givre. Je ne m’attendais pas à l’entendre prononcé pour moi."
-      }
-    ]
-  },
-  "7002_throne": {
-    "id": "7002_throne",
-    "description": "I laid the three of them out on the sand in my head, the way you lay out cards you already know. The Inquisitor-General, who wanted the tear for a door and my blood for its key. The Grand Master, who wanted it shut with a sword and had lost a third of his Order trying. The Eldest Wickwarden, who wanted the dying stopped and had nothing to stop it with but lamps. The Lantern-Bearer was dead and the Houses were counting their votes like coins; the Admiralty’s was in my hand, and the chaplain had told me it would tip the count. Whoever I chose would be waiting on the far side of all this, with the whole Dominion behind them, to meet me.",
-    "description_fr": "J’étalai les trois sur le sable, dans ma tête, comme on étale des cartes qu’on connaît déjà. L’Inquisiteur général, qui voulait la déchirure pour en faire une porte, et mon sang pour en faire la clef. Le Grand Maître, qui voulait la refermer à l’épée et avait perdu un tiers de son Ordre à essayer. L’Aînée des Garde-Mèches, qui voulait qu’on cesse de mourir et n’avait pour l’empêcher que des lampes. Le Porte-Lanterne était mort et les Maisons comptaient leurs voix comme des pièces ; celle de l’Amirauté était dans ma main, et l’aumônier m’avait dit qu’elle ferait pencher le compte. Qui que je choisisse m’attendrait de l’autre côté de tout cela, tout le Dominion derrière soi, pour m’accueillir.",
-    "context_taxonomy": {
-      "ui_theme": "epilogue",
-      "mood": "tense",
-      "speaker": "Narrator"
-    },
-    "location": "hollow_shore",
-    "choices": [
-      {
-        "text": "For Grand Master Morrow: a crusade",
-        "text_fr": "Pour le Grand Maître Morrow : une croisade",
-        "next_id": "7002",
-        "flagsToAdd": [
-          "throne_backed",
-          "throne_backed_morrow"
-        ],
-        "politics": {
-          "intrigue": {
-            "id": "dying_lantern_bearer",
-            "outcome": 0
-          },
-          "standing": {
-            "dominion": 10,
-            "vigil": 5
-          }
-        }
-      },
-      {
-        "text": "For Inquisitor-General Vane: an inquisition",
-        "text_fr": "Pour l’Inquisiteur général Vane : une inquisition",
-        "next_id": "7002",
-        "alignmentMod": -2,
-        "flagsToAdd": [
-          "throne_backed",
-          "throne_backed_vane"
-        ],
-        "politics": {
-          "intrigue": {
-            "id": "dying_lantern_bearer",
-            "outcome": 1
-          },
-          "standing": {
-            "dominion": 15,
-            "vigil": -10,
-            "penitents": -10
-          }
-        }
-      },
-      {
-        "text": "For Eldest Wickwarden Tallis: a church",
-        "text_fr": "Pour l’Aînée des Garde-Mèches Tallis : une Église",
-        "next_id": "7002",
-        "alignmentMod": 1,
-        "flagsToAdd": [
-          "throne_backed",
-          "throne_backed_tallis"
-        ],
-        "politics": {
-          "intrigue": {
-            "id": "dying_lantern_bearer",
-            "outcome": 2
-          },
-          "standing": {
-            "dominion": 5,
-            "penitents": 5,
-            "mire": 5
-          }
-        }
-      },
-      {
-        "text": "Keep the vote for your own claim",
-        "text_fr": "Garder la voix pour votre propre prétention",
-        "next_id": "7002",
-        "flagsToAdd": [
-          "throne_backed",
-          "vote_kept"
-        ],
-        "politicsIf": {
-          "claim": "any"
-        }
-      }
-    ],
-    "flag_callbacks": [
-      {
-        "flag": "envoy_gift_vane",
-        "en": "Vane’s purse was long spent. Vane, I suspected, had kept the receipt.",
-        "fr": "La bourse de Vane était dépensée depuis longtemps. Vane, je le soupçonnais, avait gardé le reçu."
-      },
-      {
-        "flag": "envoy_gift_morrow",
-        "en": "Morrow’s whetstone was in my pack; it had kept my edge all the way from the Spire.",
-        "fr": "La pierre à aiguiser de Morrow était dans mon sac ; elle avait entretenu mon fil depuis la Flèche."
-      },
-      {
-        "flag": "envoy_gift_tallis",
-        "en": "Tallis’s oil had closed a wound of mine on the Spire road. Lamps, it turned out, were not all she had.",
-        "fr": "L’huile de Tallis avait refermé une de mes plaies sur la route de la Flèche. Elle n’avait pas que des lampes, finalement."
-      },
-      {
-        "flag": "envoys_refused",
-        "en": "I had sent all three envoys home with their gifts. None of their masters had forgotten it, in either direction.",
-        "fr": "J’avais renvoyé les trois émissaires avec leurs présents. Aucun de leurs maîtres ne l’avait oublié, dans un sens ou dans l’autre."
-      },
-      {
-        "flag": "vote_read",
-        "en": "The Tribunal’s vote, which I had read by steam at Wrack’s End, had been cast for Vane.",
-        "fr": "Le vote du Tribunal, que j’avais lu à la vapeur à Bout-du-Varech, était pour Vane."
-      },
-      {
-        "flag": "vote_refused",
-        "en": "The Tribunal’s vote had gone out to the envoy’s ship without me. I had not been sorry.",
-        "fr": "Le vote du Tribunal était parti vers le navire de l’émissaire sans moi. Je ne l’avais pas regretté."
-      },
-      {
-        "flag": "knife_kept",
-        "en": "The frozen pilgrim’s knife was in my coat, the Order’s mark on top and the hooded lantern underneath.",
-        "fr": "Le couteau du pèlerin gelé était dans mon manteau, la marque de l’Ordre dessus et la lanterne encapuchonnée dessous."
-      },
-      {
-        "flag": "knife_to_tallis",
-        "en": "Maud Tallis had taken the knife from me on the Rimewell road, looked at both its marks, and thanked me for her life the way you thank someone for directions.",
-        "fr": "Maud Tallis m’avait pris le couteau des mains sur la route de Puits-de-Givre, en avait regardé les deux marques, et m’avait dit merci pour sa vie comme on dit merci pour un renseignement."
-      },
-      {
-        "flag": "open_hand_5",
-        "en": "And I had read the Reliquary’s roll. Whoever took the Throne would inherit the Reliquary’s crime with it, and the Reliquary’s interest in my blood.",
-        "fr": "Et j’avais lu le rouleau du Reliquaire. Qui prendrait le Trône hériterait avec lui du crime du Reliquaire, et de l’intérêt du Reliquaire pour mon sang."
-      },
-      {
-        "flag": "vote_carried",
-        "en": "I had rowed the Tribunal’s vote out to Candlehold’s envoy with its seal unbroken. Whatever it said, it was said, and I had not looked.",
-        "fr": "J’avais porté à la rame le vote du Tribunal à l’émissaire de Candlehold, son sceau intact. Quoi qu’il dît, c’était dit, et je n’avais pas regardé.",
-        "unlessFlags": [
-          "vote_read"
-        ]
-      },
-      {
-        "flag": "claim_dominion",
-        "en": "Or the vote could go to none of them. I carried a banner of my own toward the Throne, and the Admiralty’s seal would open Candlehold’s harbour chain for it as readily as for any of theirs.",
-        "fr": "Ou la voix pouvait n’aller à aucun des trois. Je portais ma propre bannière vers le Trône, et le sceau de l’Amirauté ouvrirait la chaîne du port de Candlehold pour elle aussi bien que pour les leurs."
-      },
-      {
-        "flag": "claim_vigil",
-        "en": "Or the vote could go to none of them. I carried a banner of my own toward the Throne, and the Admiralty’s seal would open Candlehold’s harbour chain for it as readily as for any of theirs.",
-        "fr": "Ou la voix pouvait n’aller à aucun des trois. Je portais ma propre bannière vers le Trône, et le sceau de l’Amirauté ouvrirait la chaîne du port de Candlehold pour elle aussi bien que pour les leurs."
-      },
-      {
-        "flag": "claim_compact",
-        "en": "Or the vote could go to none of them. I carried a banner of my own toward the Throne, and the Admiralty’s seal would open Candlehold’s harbour chain for it as readily as for any of theirs.",
-        "fr": "Ou la voix pouvait n’aller à aucun des trois. Je portais ma propre bannière vers le Trône, et le sceau de l’Amirauté ouvrirait la chaîne du port de Candlehold pour elle aussi bien que pour les leurs."
-      },
-      {
-        "flag": "claim_mire",
-        "en": "Or the vote could go to none of them. I carried a banner of my own toward the Throne, and the Admiralty’s seal would open Candlehold’s harbour chain for it as readily as for any of theirs.",
-        "fr": "Ou la voix pouvait n’aller à aucun des trois. Je portais ma propre bannière vers le Trône, et le sceau de l’Amirauté ouvrirait la chaîne du port de Candlehold pour elle aussi bien que pour les leurs."
-      },
-      {
-        "flag": "claim_crows",
-        "en": "Or the vote could go to none of them. I carried a banner of my own toward the Throne, and the Admiralty’s seal would open Candlehold’s harbour chain for it as readily as for any of theirs.",
-        "fr": "Ou la voix pouvait n’aller à aucun des trois. Je portais ma propre bannière vers le Trône, et le sceau de l’Amirauté ouvrirait la chaîne du port de Candlehold pour elle aussi bien que pour les leurs."
-      },
-      {
-        "flag": "claim_penitents",
-        "en": "Or the vote could go to none of them. I carried a banner of my own toward the Throne, and the Admiralty’s seal would open Candlehold’s harbour chain for it as readily as for any of theirs.",
-        "fr": "Ou la voix pouvait n’aller à aucun des trois. Je portais ma propre bannière vers le Trône, et le sceau de l’Amirauté ouvrirait la chaîne du port de Candlehold pour elle aussi bien que pour les leurs."
-      },
-      {
-        "flag": "claim_open_hand",
-        "en": "Or the vote could go to none of them. I carried a banner of my own toward the Throne, and the Admiralty’s seal would open Candlehold’s harbour chain for it as readily as for any of theirs.",
-        "fr": "Ou la voix pouvait n’aller à aucun des trois. Je portais ma propre bannière vers le Trône, et le sceau de l’Amirauté ouvrirait la chaîne du port de Candlehold pour elle aussi bien que pour les leurs."
       }
     ]
   },
@@ -25110,6 +24876,240 @@
         "flag": "salvage_sold",
         "en": "“I am here for the sea,” he said, “not for you.” He coiled a line without looking at it. “The wreck-wrights paid you for my haul. I hope it bought something that floats. Mine does, and it is built from three others, and it did not need your help to do it.”",
         "fr": "« Je suis là pour la mer, dit-il, pas pour vous. » Il lova une aussière sans la regarder. « Les charpentiers d’épaves vous ont payé ma prise. J’espère que ça a acheté quelque chose qui flotte. La mienne flotte, elle est bâtie de trois autres, et elle n’a pas eu besoin de votre aide pour ça. »"
+      }
+    ]
+  },
+  "7200_orders": {
+    "id": "7200_orders",
+    "description": "The Admiral’s last page was in my coat, and it was, as far as I could tell, the only thing on this coast that could break the Dominion in two. The Order had buried a third of its knights fighting a tear the Reliquary had made, and did not know it. Shown that page, the Grand Master’s knights would turn on the Inquisition before the ink was dry. Or I could sell it back. The Inquisition had a legate somewhere off this shore and very deep pockets, and a writ under its seal would open every port from here to Candlehold. I sat on the grey sand with the page on my knee and tried to decide what I owed a fleet that had sailed to burn my city.",
+    "description_fr": "La dernière page de l’Amiral était dans mon manteau, et c’était, autant que je pouvais en juger, la seule chose sur cette côte capable de briser le Dominion en deux. L’Ordre avait enterré un tiers de ses chevaliers à combattre une déchirure que le Reliquaire avait faite, et il l’ignorait. Qu’on montre cette page aux chevaliers du Grand Maître, et ils se retourneraient contre l’Inquisition avant que l’encre ne sèche. Ou bien je pouvais la revendre. L’Inquisition avait un légat quelque part au large de ce rivage, et les poches très profondes, et un mandat sous son sceau ouvrirait tous les ports d’ici à Candlehold. Je m’assis sur le sable gris, la page sur le genou, et tâchai de décider ce que je devais à une flotte qui avait fait voile pour brûler ma ville.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Send it to the Order’s knights at the Anchorage",
+        "text_fr": "L’envoyer aux chevaliers de l’Ordre, au Mouillage",
+        "next_id": "7200",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_7200_orders",
+          "lantern_exposed"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "outcome": 0
+          }
+        }
+      },
+      {
+        "text": "Sell it to the legate, and carry the writ",
+        "text_fr": "La vendre au légat, et porter le mandat",
+        "next_id": "7200",
+        "goldMod": 150,
+        "alignmentMod": -2,
+        "flagsToAdd": [
+          "hub_7200_orders",
+          "lantern_kept"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "outcome": 1
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "fleet_log_taken",
+        "en": "It was not even a copy. The log itself was under my coat, and the stern-chapel had a gap under its altar.",
+        "fr": "Ce n’était même pas une copie. Le journal lui-même était sous mon manteau, et la chapelle de poupe avait un vide sous son autel."
+      },
+      {
+        "flag": "truth_told",
+        "en": "The coast had already heard the Reliquary’s roll read aloud, at my say-so. This page would only make it louder.",
+        "fr": "La côte avait déjà entendu lire le rouleau du Reliquaire, parce que je l’avais voulu. Cette page ne ferait que hausser la voix."
+      }
+    ]
+  },
+  "7200_throne": {
+    "id": "7200_throne",
+    "description": "I laid the three of them out on the sand in my head, the way you lay out cards you already know. The Inquisitor-General, who wanted the tear for a door and my blood for its key. The Grand Master, who wanted it shut with a sword and had lost a third of his Order trying. The Eldest Wickwarden, who wanted the dying stopped and had nothing to stop it with but lamps. The Lantern-Bearer was dead and the Houses were counting their votes like coins; the Admiralty’s was in my hand, and the chaplain had told me it would tip the count. Whoever I chose would be waiting on the far side of all this, with the whole Dominion behind them, to meet me.",
+    "description_fr": "J’étalai les trois sur le sable, dans ma tête, comme on étale des cartes qu’on connaît déjà. L’Inquisiteur général, qui voulait la déchirure pour en faire une porte, et mon sang pour en faire la clef. Le Grand Maître, qui voulait la refermer à l’épée et avait perdu un tiers de son Ordre à essayer. L’Aînée des Garde-Mèches, qui voulait qu’on cesse de mourir et n’avait pour l’empêcher que des lampes. Le Porte-Lanterne était mort et les Maisons comptaient leurs voix comme des pièces ; celle de l’Amirauté était dans ma main, et l’aumônier m’avait dit qu’elle ferait pencher le compte. Qui que je choisisse m’attendrait de l’autre côté de tout cela, tout le Dominion derrière soi, pour m’accueillir.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "For Grand Master Morrow: a crusade",
+        "text_fr": "Pour le Grand Maître Morrow : une croisade",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "throne_backed",
+          "throne_backed_morrow"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "outcome": 0
+          },
+          "standing": {
+            "dominion": 10,
+            "vigil": 5
+          }
+        }
+      },
+      {
+        "text": "For Inquisitor-General Vane: an inquisition",
+        "text_fr": "Pour l’Inquisiteur général Vane : une inquisition",
+        "next_id": "7200",
+        "alignmentMod": -2,
+        "flagsToAdd": [
+          "throne_backed",
+          "throne_backed_vane"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "outcome": 1
+          },
+          "standing": {
+            "dominion": 15,
+            "vigil": -10,
+            "penitents": -10
+          }
+        }
+      },
+      {
+        "text": "For Eldest Wickwarden Tallis: a church",
+        "text_fr": "Pour l’Aînée des Garde-Mèches Tallis : une Église",
+        "next_id": "7200",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "throne_backed",
+          "throne_backed_tallis"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "outcome": 2
+          },
+          "standing": {
+            "dominion": 5,
+            "penitents": 5,
+            "mire": 5
+          }
+        }
+      },
+      {
+        "text": "Keep the vote for your own claim",
+        "text_fr": "Garder la voix pour votre propre prétention",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "throne_backed",
+          "vote_kept"
+        ],
+        "politicsIf": {
+          "claim": "any"
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "envoy_gift_vane",
+        "en": "Vane’s purse was long spent. Vane, I suspected, had kept the receipt.",
+        "fr": "La bourse de Vane était dépensée depuis longtemps. Vane, je le soupçonnais, avait gardé le reçu."
+      },
+      {
+        "flag": "envoy_gift_morrow",
+        "en": "Morrow’s whetstone was in my pack; it had kept my edge all the way from the Spire.",
+        "fr": "La pierre à aiguiser de Morrow était dans mon sac ; elle avait entretenu mon fil depuis la Flèche."
+      },
+      {
+        "flag": "envoy_gift_tallis",
+        "en": "Tallis’s oil had closed a wound of mine on the Spire road. Lamps, it turned out, were not all she had.",
+        "fr": "L’huile de Tallis avait refermé une de mes plaies sur la route de la Flèche. Elle n’avait pas que des lampes, finalement."
+      },
+      {
+        "flag": "envoys_refused",
+        "en": "I had sent all three envoys home with their gifts. None of their masters had forgotten it, in either direction.",
+        "fr": "J’avais renvoyé les trois émissaires avec leurs présents. Aucun de leurs maîtres ne l’avait oublié, dans un sens ou dans l’autre."
+      },
+      {
+        "flag": "vote_read",
+        "en": "The Tribunal’s vote, which I had read by steam at Wrack’s End, had been cast for Vane.",
+        "fr": "Le vote du Tribunal, que j’avais lu à la vapeur à Bout-du-Varech, était pour Vane."
+      },
+      {
+        "flag": "vote_refused",
+        "en": "The Tribunal’s vote had gone out to the envoy’s ship without me. I had not been sorry.",
+        "fr": "Le vote du Tribunal était parti vers le navire de l’émissaire sans moi. Je ne l’avais pas regretté."
+      },
+      {
+        "flag": "knife_kept",
+        "en": "The frozen pilgrim’s knife was in my coat, the Order’s mark on top and the hooded lantern underneath.",
+        "fr": "Le couteau du pèlerin gelé était dans mon manteau, la marque de l’Ordre dessus et la lanterne encapuchonnée dessous."
+      },
+      {
+        "flag": "knife_to_tallis",
+        "en": "Maud Tallis had taken the knife from me on the Rimewell road, looked at both its marks, and thanked me for her life the way you thank someone for directions.",
+        "fr": "Maud Tallis m’avait pris le couteau des mains sur la route de Puits-de-Givre, en avait regardé les deux marques, et m’avait dit merci pour sa vie comme on dit merci pour un renseignement."
+      },
+      {
+        "flag": "open_hand_5",
+        "en": "And I had read the Reliquary’s roll. Whoever took the Throne would inherit the Reliquary’s crime with it, and the Reliquary’s interest in my blood.",
+        "fr": "Et j’avais lu le rouleau du Reliquaire. Qui prendrait le Trône hériterait avec lui du crime du Reliquaire, et de l’intérêt du Reliquaire pour mon sang."
+      },
+      {
+        "flag": "vote_carried",
+        "en": "I had rowed the Tribunal’s vote out to Candlehold’s envoy with its seal unbroken. Whatever it said, it was said, and I had not looked.",
+        "fr": "J’avais porté à la rame le vote du Tribunal à l’émissaire de Candlehold, son sceau intact. Quoi qu’il dît, c’était dit, et je n’avais pas regardé.",
+        "unlessFlags": [
+          "vote_read"
+        ]
+      },
+      {
+        "flag": "claim_dominion",
+        "en": "Or the vote could go to none of them. I carried a banner of my own toward the Throne, and the Admiralty’s seal would open Candlehold’s harbour chain for it as readily as for any of theirs.",
+        "fr": "Ou la voix pouvait n’aller à aucun des trois. Je portais ma propre bannière vers le Trône, et le sceau de l’Amirauté ouvrirait la chaîne du port de Candlehold pour elle aussi bien que pour les leurs."
+      },
+      {
+        "flag": "claim_vigil",
+        "en": "Or the vote could go to none of them. I carried a banner of my own toward the Throne, and the Admiralty’s seal would open Candlehold’s harbour chain for it as readily as for any of theirs.",
+        "fr": "Ou la voix pouvait n’aller à aucun des trois. Je portais ma propre bannière vers le Trône, et le sceau de l’Amirauté ouvrirait la chaîne du port de Candlehold pour elle aussi bien que pour les leurs."
+      },
+      {
+        "flag": "claim_compact",
+        "en": "Or the vote could go to none of them. I carried a banner of my own toward the Throne, and the Admiralty’s seal would open Candlehold’s harbour chain for it as readily as for any of theirs.",
+        "fr": "Ou la voix pouvait n’aller à aucun des trois. Je portais ma propre bannière vers le Trône, et le sceau de l’Amirauté ouvrirait la chaîne du port de Candlehold pour elle aussi bien que pour les leurs."
+      },
+      {
+        "flag": "claim_mire",
+        "en": "Or the vote could go to none of them. I carried a banner of my own toward the Throne, and the Admiralty’s seal would open Candlehold’s harbour chain for it as readily as for any of theirs.",
+        "fr": "Ou la voix pouvait n’aller à aucun des trois. Je portais ma propre bannière vers le Trône, et le sceau de l’Amirauté ouvrirait la chaîne du port de Candlehold pour elle aussi bien que pour les leurs."
+      },
+      {
+        "flag": "claim_crows",
+        "en": "Or the vote could go to none of them. I carried a banner of my own toward the Throne, and the Admiralty’s seal would open Candlehold’s harbour chain for it as readily as for any of theirs.",
+        "fr": "Ou la voix pouvait n’aller à aucun des trois. Je portais ma propre bannière vers le Trône, et le sceau de l’Amirauté ouvrirait la chaîne du port de Candlehold pour elle aussi bien que pour les leurs."
+      },
+      {
+        "flag": "claim_penitents",
+        "en": "Or the vote could go to none of them. I carried a banner of my own toward the Throne, and the Admiralty’s seal would open Candlehold’s harbour chain for it as readily as for any of theirs.",
+        "fr": "Ou la voix pouvait n’aller à aucun des trois. Je portais ma propre bannière vers le Trône, et le sceau de l’Amirauté ouvrirait la chaîne du port de Candlehold pour elle aussi bien que pour les leurs."
+      },
+      {
+        "flag": "claim_open_hand",
+        "en": "Or the vote could go to none of them. I carried a banner of my own toward the Throne, and the Admiralty’s seal would open Candlehold’s harbour chain for it as readily as for any of theirs.",
+        "fr": "Ou la voix pouvait n’aller à aucun des trois. Je portais ma propre bannière vers le Trône, et le sceau de l’Amirauté ouvrirait la chaîne du port de Candlehold pour elle aussi bien que pour les leurs."
       }
     ]
   }

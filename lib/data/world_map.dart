@@ -656,7 +656,7 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '7200', '7200_nets', '7200_reflection', '7200_elder', //
       '7200_elder_later', '7200_tide', '7200_tide_failed',
-      '7200_house_spire_fallen',
+      '7200_house_spire_fallen', '7200_orders', '7200_throne',
       '7200_clan_vigil_3',
       '7200_clan_vigil_3_changed',
       '7200_clan_vigil_3_sworn',
@@ -698,7 +698,7 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '7002', '7002_reflections', '7002_rest', '7002_pact', //
       '7002_betrayal', '7002_crew', //
-      '7002_orders', '7002_throne', '7002_banner', //
+      '7002_banner', //
       '7002_confront', '7002_price', '7003',
       '7004', '7005', '7005_seeker', '7005_dawn', '7005_crown',
     ],
