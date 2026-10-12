@@ -146,10 +146,12 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('journey_go')));
     await tester.pump();
     // The party walks, then the fight opens.
+    // (In steps shorter than the page transition, so the fight is popped as
+    // it arrives, while the map still ticks under it.)
     for (var i = 0;
-        i < 60 && find.byType(FightScreen).evaluate().isEmpty;
+        i < 240 && find.byType(FightScreen).evaluate().isEmpty;
         i++) {
-      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pump(const Duration(milliseconds: 50));
     }
     expect(find.byType(FightScreen), findsOneWidget);
     Navigator.of(tester.element(find.byType(FightScreen))).pop(false);

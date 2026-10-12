@@ -27,6 +27,7 @@ import '../widgets/offer_dialog.dart';
 import '../widgets/sign_widgets.dart';
 import '../widgets/throne_edit_tab.dart';
 import '../widgets/throne_room.dart';
+import '../widgets/empty_state.dart';
 
 /// Edit Mode's "Clans & Politics" (v1.193, see factions.dart), from the
 /// top bar's scales: four tabs.
@@ -136,7 +137,7 @@ class _StandingTab extends ConsumerWidget {
     final data = ref.watch(clanDataProvider);
     final theme = Theme.of(context);
     if (data.factions.isEmpty) {
-      return Center(child: Text(tr(ref, 'clans_none')));
+      return InkEmptyState(message: tr(ref, 'clans_none'));
     }
     if (play) return const _PlayStanding();
     return ListView(

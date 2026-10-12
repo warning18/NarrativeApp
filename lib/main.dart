@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,6 +31,9 @@ void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
 
+/// The widest the app draws; a larger window leaves margins either side.
+const double maxAppWidth = 1280;
+
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
@@ -44,7 +49,16 @@ class MyApp extends ConsumerWidget {
       builder: (context, child) => SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(bottom: 12),
-          child: child ?? const SizedBox.shrink(),
+          // On a big window the app keeps to a readable width, centred.
+          child: LayoutBuilder(
+            builder: (context, box) {
+              final margin = math.max(0.0, (box.maxWidth - maxAppWidth) / 2);
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: margin),
+                child: child ?? const SizedBox.shrink(),
+              );
+            },
+          ),
         ),
       ),
       home: const MainMenuScreen(),
