@@ -233,8 +233,9 @@ void main() {
     // 42 with the old sign-painter who names the Open Hand (v1.195); 46
     // with the three Houses' favours and the door that was turned, less the
     // landward gate's scenes, which have a place of their own (v1.196);
-    // 41 once the gate guard's ambush stands at the gate too (v1.201.2).
-    expect(find.text('Scenes read: 3 / 41'), findsOneWidget);
+    // 41 once the gate guard's ambush stands at the gate too (v1.201.2);
+    // 45 with the first clues of four plots at the wharf (v1.260.0).
+    expect(find.text('Scenes read: 3 / 45'), findsOneWidget);
     // The rat was beaten; the rest are still unknown.
     expect(find.text('Harbor Rat'), findsOneWidget);
     expect(find.text('???'), findsNWidgets(4));
