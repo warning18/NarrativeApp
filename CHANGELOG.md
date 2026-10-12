@@ -18,7 +18,7 @@ A way out of a place leaves by its road, and says which.
   first stop of the road it takes, not straight toward where it ends, so the
   marks of the roads out of a place point where the roads go.
 - **The picked way names its road.** Under where it leads, the details of a
-  picked way out list the stops it passes ("By the Harbour Chain · The
+  picked way out list the stops it passes ("Road: The Harbour Chain · The
   Painted Sails"), in English and French.
 
 ## [1.255.0+291]

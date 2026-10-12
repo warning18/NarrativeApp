@@ -196,19 +196,34 @@ void main() {
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.en));
     await _settle(tester);
-    final roads = <String>[];
-    for (var i = 0; i < 3; i++) {
-      if (find.byKey(ValueKey('journey_step_$i')).evaluate().isEmpty) break;
-      await tester.tap(find.byKey(ValueKey('journey_step_$i')));
-      await tester.pump(const Duration(milliseconds: 500));
-      roads.addAll([
-        for (final t in tester.widgetList<Text>(find.textContaining('By ')))
-          t.data!,
-      ]);
+    // The stops of every way out, read in the language of the moment.
+    Future<List<String>> roadLines(String label) async {
+      final lines = <String>[];
+      for (var i = 0; i < 3; i++) {
+        if (find.byKey(ValueKey('journey_step_$i')).evaluate().isEmpty) break;
+        await tester.tap(find.byKey(ValueKey('journey_step_$i')));
+        await tester.pump(const Duration(milliseconds: 500));
+        lines.addAll([
+          for (final t in tester.widgetList<Text>(find.textContaining(label)))
+            t.data!,
+        ]);
+      }
+      return lines;
     }
+
+    final roads = await roadLines('Road: ');
     expect(roads, isNotEmpty, reason: 'a way out names its road');
-    expect(roads.any((t) => t.contains('Harbour Chain')), isTrue,
+    expect(roads.any((t) => t.contains('Road: The Harbour Chain')), isTrue,
         reason: '$roads');
+    await tester.runAsync(() => container
+        .read(appLanguageProvider.notifier)
+        .setLanguage(AppLanguage.fr));
+    await _settle(tester);
+    final routes = await roadLines('Route\u00a0: ');
+    expect(routes, isNotEmpty, reason: 'the road is named in French too');
+    expect(
+        routes.any((t) => t.contains('Route\u00a0: La chaîne du port')), isTrue,
+        reason: '$routes');
     expect(tester.takeException(), isNull);
   });
 }
