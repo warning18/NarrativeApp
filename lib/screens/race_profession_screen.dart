@@ -35,6 +35,12 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
   String? _selectedRaceId;
   String? _selectedProfessionId;
 
+  /// Which of the two the detail card below the rails tells: 0 the race, 1
+  /// the profession (the one picked last), and whether its lore is open in
+  /// full (v1.244).
+  int _tab = 0;
+  bool _loreOpen = false;
+
   // Set once a brand-new character has just been confirmed in this screen
   // instance, so the character sheet below shows a "Continue" button that
   // starts the game — as opposed to viewing an already-created character's
@@ -106,100 +112,135 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
         ? null
         : professions[_selectedProfessionId!] as Map<String, dynamic>?;
 
-    return ListView(
-      padding: const EdgeInsets.all(16),
+    final totals =
+        startingTotals(defaults: defaults, race: race, profession: profession);
+    final plain = startingTotals(defaults: defaults);
+    final raceOnly = startingTotals(defaults: defaults, race: race);
+    // The picked tab's detail: the race until a profession is picked.
+    final showProfession = _tab == 1 && profession != null;
+
+    // The radar and the numbers stay in view above the rails (v1.244): it
+    // answers each pick as it is made, so nothing has to be scrolled to.
+    return Column(
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(tr(ref, 'choose_who_desc'),
-                  style: theme.textTheme.bodySmall),
-            ),
-            const SizedBox(width: 8),
-            OutlinedButton.icon(
-              onPressed: () => setState(() {
-                _selectedRaceId = raceIds[Random().nextInt(raceIds.length)];
-                _selectedProfessionId =
-                    professionIds[Random().nextInt(professionIds.length)];
-              }),
-              icon: const Icon(Icons.casino_outlined, size: 18),
-              label: Text(tr(ref, 'randomize_character_button')),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        // The five peoples in one row, the picked one told below (v1.198).
-        _sectionHeader(context, tr(ref, 'race_label'),
-            race == null ? tr(ref, 'pick_race_hint') : null),
-        _PresetRail(
-          ids: raceIds,
-          folder: 'races',
-          presetOf: (id) => races[id] as Map<String, dynamic>?,
-          nameOf: (id) =>
-              (races[id] as Map<String, dynamic>)['raceName']?.toString() ?? id,
-          tagOf: (id) =>
-              (races[id] as Map<String, dynamic>)['tag']?.toString() ?? '',
-          selectedId: _selectedRaceId,
-          onPick: (id) => setState(() => _selectedRaceId = id),
-        ),
-        if (race != null)
-          _PresetDetail(
-            presetId: _selectedRaceId!,
-            preset: race,
-            folder: 'races',
-            name: race['raceName']?.toString() ?? _selectedRaceId!,
-            skills: skills,
-            language: lang,
-            withOffers: false,
-          ),
-        const SizedBox(height: 20),
-        _sectionHeader(context, tr(ref, 'profession_label'),
-            profession == null ? tr(ref, 'pick_profession_hint') : null),
-        _PresetRail(
-          ids: professionIds,
-          folder: 'professions',
-          presetOf: (id) => professions[id] as Map<String, dynamic>?,
-          nameOf: (id) =>
-              (professions[id] as Map<String, dynamic>)['professionName']
-                  ?.toString() ??
-              id,
-          tagOf: (id) =>
-              (professions[id] as Map<String, dynamic>)['tag']?.toString() ??
-              '',
-          selectedId: _selectedProfessionId,
-          onPick: (id) => setState(() => _selectedProfessionId = id),
-        ),
-        if (profession != null)
-          _PresetDetail(
-            presetId: _selectedProfessionId!,
-            preset: profession,
-            folder: 'professions',
-            name: profession['professionName']?.toString() ??
-                _selectedProfessionId!,
-            skills: skills,
-            language: lang,
-            withOffers: true,
-          ),
-        const SizedBox(height: 20),
-        // What the two add up to, before anything is set in stone.
-        _StartPreview(
+        _LiveCharacter(
           race: race,
           profession: profession,
-          defaults: defaults,
-          skills: skills,
-          language: lang,
+          totals: totals,
+          before: race != null && profession != null ? raceOnly : plain,
+          compareWithRace: race != null && profession != null,
         ),
-        const SizedBox(height: 12),
-        FilledButton.icon(
-          onPressed: (_selectedRaceId == null || _selectedProfessionId == null)
-              ? null
-              : () => _confirmStart(
-                    context,
-                    races[_selectedRaceId!] as Map<String, dynamic>,
-                    professions[_selectedProfessionId!] as Map<String, dynamic>,
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(tr(ref, 'choose_who_desc'),
+                        style: theme.textTheme.bodySmall),
                   ),
-          icon: const Icon(Icons.play_arrow),
-          label: Text(tr(ref, 'start_new_game_button')),
+                  const SizedBox(width: 8),
+                  OutlinedButton.icon(
+                    onPressed: () => setState(() {
+                      _selectedRaceId =
+                          raceIds[Random().nextInt(raceIds.length)];
+                      _selectedProfessionId =
+                          professionIds[Random().nextInt(professionIds.length)];
+                      _loreOpen = false;
+                    }),
+                    icon: const Icon(Icons.casino_outlined, size: 18),
+                    label: Text(tr(ref, 'randomize_character_button')),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              // The five peoples in one row, the picked one told below.
+              _sectionHeader(context, tr(ref, 'race_label'),
+                  race == null ? tr(ref, 'pick_race_hint') : null),
+              _PresetRail(
+                ids: raceIds,
+                folder: 'races',
+                presetOf: (id) => races[id] as Map<String, dynamic>?,
+                nameOf: (id) =>
+                    (races[id] as Map<String, dynamic>)['raceName']
+                        ?.toString() ??
+                    id,
+                tagOf: (id) =>
+                    (races[id] as Map<String, dynamic>)['tag']?.toString() ??
+                    '',
+                selectedId: _selectedRaceId,
+                onPick: (id) => setState(() {
+                  _selectedRaceId = id;
+                  _tab = 0;
+                  _loreOpen = false;
+                }),
+              ),
+              const SizedBox(height: 14),
+              _sectionHeader(context, tr(ref, 'profession_label'),
+                  profession == null ? tr(ref, 'pick_profession_hint') : null),
+              _PresetRail(
+                ids: professionIds,
+                folder: 'professions',
+                presetOf: (id) => professions[id] as Map<String, dynamic>?,
+                nameOf: (id) =>
+                    (professions[id] as Map<String, dynamic>)['professionName']
+                        ?.toString() ??
+                    id,
+                tagOf: (id) =>
+                    (professions[id] as Map<String, dynamic>)['tag']
+                        ?.toString() ??
+                    '',
+                selectedId: _selectedProfessionId,
+                onPick: (id) => setState(() {
+                  _selectedProfessionId = id;
+                  _tab = 1;
+                  _loreOpen = false;
+                }),
+              ),
+              const SizedBox(height: 12),
+              // One detail card for the two: a switch between them, the first
+              // sentence of the lore, the rest behind "more".
+              if (race != null || profession != null)
+                _PickedDetail(
+                  race: race,
+                  raceId: _selectedRaceId,
+                  profession: profession,
+                  professionId: _selectedProfessionId,
+                  showProfession: showProfession || race == null,
+                  skills: skills,
+                  language: lang,
+                  loreOpen: _loreOpen,
+                  onTab: (i) => setState(() {
+                    _tab = i;
+                    _loreOpen = false;
+                  }),
+                  onLore: () => setState(() => _loreOpen = !_loreOpen),
+                ),
+            ],
+          ),
+        ),
+        SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+            child: SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed:
+                    (_selectedRaceId == null || _selectedProfessionId == null)
+                        ? null
+                        : () => _confirmStart(
+                              context,
+                              races[_selectedRaceId!] as Map<String, dynamic>,
+                              professions[_selectedProfessionId!]
+                                  as Map<String, dynamic>,
+                            ),
+                icon: const Icon(Icons.play_arrow),
+                label: Text(tr(ref, 'start_new_game_button')),
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -472,104 +513,6 @@ class _BonusChip extends StatelessWidget {
 
 /// The picked preset told in full: its lore, what it changes, and the
 /// skill it grants.
-class _PresetDetail extends ConsumerWidget {
-  const _PresetDetail({
-    required this.presetId,
-    required this.preset,
-    required this.folder,
-    required this.name,
-    required this.skills,
-    required this.language,
-    required this.withOffers,
-  });
-
-  final String presetId;
-  final Map<String, dynamic> preset;
-  final String folder;
-  final String name;
-  final Map<String, dynamic> skills;
-  final AppLanguage language;
-  final bool withOffers;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final skillId = preset['standardSkillID']?.toString() ?? '';
-    final skill = skills[skillId] as Map<String, dynamic>?;
-    final tag = preset['tag']?.toString() ?? '';
-    return Card(
-      key: Key('preset_detail_$presetId'),
-      margin: const EdgeInsets.only(top: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                PresetMark(folder: folder, preset: preset, size: 40),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(name, style: theme.textTheme.titleMedium),
-                ),
-                if (tag.isNotEmpty)
-                  Text(tag.toUpperCase(),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                          color: scheme.primary, letterSpacing: 0.8)),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Text(preset['description']?.toString() ?? '',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                    color: scheme.onSurface.withValues(alpha: 0.85),
-                    height: 1.5)),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 6,
-              runSpacing: 4,
-              children: [
-                for (final e in presetBonuses(preset, withOffers: withOffers))
-                  _BonusChip(label: tr(ref, e.key), value: e.value),
-              ],
-            ),
-            if (skillId.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SkillPixelIcon(skillId, size: 28),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text.rich(
-                      TextSpan(children: [
-                        TextSpan(
-                            text: '${tr(ref, 'granted_skill_label')}: '
-                                '${grantedSkillName(skillId, presetId: presetId)}',
-                            style: TextStyle(
-                                color: scheme.primary,
-                                fontWeight: FontWeight.w600)),
-                        if ((skill?['description']?.toString() ?? '')
-                            .isNotEmpty)
-                          TextSpan(
-                              text: ' — ${skill!['description']}',
-                              style: TextStyle(
-                                  color: scheme.onSurfaceVariant,
-                                  fontStyle: FontStyle.italic)),
-                      ]),
-                      style: theme.textTheme.bodySmall,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 /// The eight abilities of [totals] by key, for the radar.
 Map<String, int> _abilityMap(StartingTotals totals) => {
       'strength': totals.strength,
@@ -582,38 +525,43 @@ Map<String, int> _abilityMap(StartingTotals totals) => {
       'charisma': totals.charisma,
     };
 
-/// What the picked race and profession add up to at the start: the name
-/// of the pair, its roles, the four numbers that matter, the abilities and
-/// the two skills — before the choice is confirmed.
-class _StartPreview extends ConsumerWidget {
-  const _StartPreview({
+/// What the picked race and profession add up to, always in view above the
+/// rails (v1.244): the radar with the race alone dashed behind it, the name of
+/// the pair, and the four numbers that matter. Nothing picked shows the plain
+/// start.
+class _LiveCharacter extends ConsumerWidget {
+  const _LiveCharacter({
     required this.race,
     required this.profession,
-    required this.defaults,
-    required this.skills,
-    required this.language,
+    required this.totals,
+    required this.before,
+    required this.compareWithRace,
   });
 
   final Map<String, dynamic>? race;
   final Map<String, dynamic>? profession;
-  final Map<String, dynamic> defaults;
-  final Map<String, dynamic> skills;
-  final AppLanguage language;
+  final StartingTotals totals;
+  final StartingTotals before;
+
+  /// Whether [before] is the race alone (told in the legend).
+  final bool compareWithRace;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final both = race != null && profession != null;
-    final totals =
-        startingTotals(defaults: defaults, race: race, profession: profession);
-    final raceOnly = startingTotals(defaults: defaults, race: race);
-    Widget stat(IconData icon, String label, String value) => Expanded(
+    final name = [
+      race?['raceName'],
+      profession?['professionName'],
+    ].where((n) => (n?.toString() ?? '').isNotEmpty).join(' ');
+    final tags = [race?['tag'], profession?['tag']]
+        .where((t) => (t?.toString() ?? '').isNotEmpty)
+        .join(' · ');
+    Widget stat(String label, int value) => Expanded(
           child: Column(
             children: [
-              Icon(icon, size: 18, color: scheme.onSurfaceVariant),
-              const SizedBox(height: 2),
-              Text(value,
+              Text('$value',
                   style: theme.textTheme.titleMedium
                       ?.copyWith(fontWeight: FontWeight.w700)),
               Text(label,
@@ -624,113 +572,235 @@ class _StartPreview extends ConsumerWidget {
         );
     return Card(
       key: const Key('start_preview'),
+      margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: both ? scheme.primary : scheme.outlineVariant),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.fromLTRB(4, 6, 12, 6),
+        child: Row(
           children: [
-            Text(tr(ref, 'your_character_label').toUpperCase(),
-                style: theme.textTheme.labelSmall?.copyWith(
-                    color: scheme.onSurfaceVariant, letterSpacing: 1)),
-            const SizedBox(height: 4),
-            if (!both)
-              Text(tr(ref, 'your_character_waiting'),
-                  style: theme.textTheme.bodySmall)
-            else ...[
-              Row(
-                children: [
-                  PresetMark(folder: 'races', preset: race, size: 32),
-                  const SizedBox(width: 4),
-                  PresetMark(
-                      folder: 'professions', preset: profession, size: 32),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            '${race!['raceName']} ${profession!['professionName']}',
-                            key: const Key('start_preview_name'),
-                            style: theme.textTheme.titleMedium),
-                        Text(
-                          [race!['tag'], profession!['tag']]
-                              .where((t) => (t?.toString() ?? '').isNotEmpty)
-                              .join(' · '),
-                          style: theme.textTheme.labelSmall
-                              ?.copyWith(color: scheme.primary),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+            // Its corner labels reach past the chart: room above and below.
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: AbilityRadar(
+                key: const Key('start_preview_radar'),
+                t: (key) => tr(ref, key),
+                size: 176,
+                before: _abilityMap(before),
+                values: _abilityMap(totals),
               ),
-              const SizedBox(height: 10),
-              Row(
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  stat(Icons.favorite, tr(ref, 'hp_label'),
-                      '${totals.maxHealth}'),
-                  stat(Icons.gavel, tr(ref, 'damage_label'),
-                      '${totals.baseDamage}'),
-                  stat(Icons.shield, tr(ref, 'arm_abbrev'),
-                      '${totals.baseArmor}'),
-                  stat(Icons.toll, tr(ref, 'gold_field_label'),
-                      '${totals.gold}'),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Center(
-                child: AbilityRadar(
-                  key: const Key('start_preview_radar'),
-                  t: (key) => tr(ref, key),
-                  size: 300,
-                  before: _abilityMap(raceOnly),
-                  values: _abilityMap(totals),
-                  beforeLabel: '${race!['raceName']}',
-                  nowLabel:
-                      '${race!['raceName']} ${profession!['professionName']}',
-                ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  for (final (preset, id) in [
-                    (race!, race!['raceID']?.toString() ?? ''),
-                    (
-                      profession!,
-                      profession!['professionID']?.toString() ?? ''
-                    ),
-                  ])
-                    if ((preset['standardSkillID']?.toString() ?? '')
-                        .isNotEmpty)
+                  if (name.isEmpty)
+                    Text(tr(ref, 'your_character_waiting'),
+                        style: theme.textTheme.bodySmall)
+                  else ...[
+                    Text(name,
+                        key: const Key('start_preview_name'),
+                        style: theme.textTheme.titleMedium),
+                    if (tags.isNotEmpty)
+                      Text(tags.toUpperCase(),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                              color: scheme.primary, letterSpacing: 0.6)),
+                  ],
+                  const SizedBox(height: 8),
+                  Row(children: [
+                    stat(tr(ref, 'hp_label'), totals.maxHealth),
+                    stat(tr(ref, 'damage_label'), totals.baseDamage),
+                  ]),
+                  const SizedBox(height: 4),
+                  Row(children: [
+                    stat(tr(ref, 'arm_abbrev'), totals.baseArmor),
+                    stat(tr(ref, 'gold_field_label'), totals.gold),
+                  ]),
+                  if (compareWithRace) ...[
+                    const SizedBox(height: 8),
+                    Row(children: [
+                      Container(
+                          width: 16,
+                          height: 0,
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  top: BorderSide(
+                                      color: radarCompare, width: 2)))),
+                      const SizedBox(width: 6),
                       Expanded(
-                        child: Row(
-                          children: [
-                            SkillPixelIcon(preset['standardSkillID'].toString(),
-                                size: 22),
-                            const SizedBox(width: 6),
-                            Flexible(
-                              child: Text(
-                                grantedSkillName(
-                                    preset['standardSkillID'].toString(),
-                                    presetId: id),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.labelMedium
-                                    ?.copyWith(color: scheme.primary),
-                              ),
-                            ),
-                          ],
-                        ),
+                        child: Text('${race!['raceName']}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.labelSmall
+                                ?.copyWith(color: scheme.onSurfaceVariant)),
                       ),
+                    ]),
+                  ],
                 ],
               ),
-            ],
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// One card for the race and the profession that are picked (v1.244): a
+/// switch between the two, then the first sentence of the lore (the rest
+/// behind "more"), what it adds, and its starting skill.
+class _PickedDetail extends ConsumerWidget {
+  const _PickedDetail({
+    required this.race,
+    required this.raceId,
+    required this.profession,
+    required this.professionId,
+    required this.showProfession,
+    required this.skills,
+    required this.language,
+    required this.loreOpen,
+    required this.onTab,
+    required this.onLore,
+  });
+
+  final Map<String, dynamic>? race;
+  final String? raceId;
+  final Map<String, dynamic>? profession;
+  final String? professionId;
+  final bool showProfession;
+  final Map<String, dynamic> skills;
+  final AppLanguage language;
+  final bool loreOpen;
+  final ValueChanged<int> onTab;
+  final VoidCallback onLore;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final preset = showProfession ? profession : race;
+    final presetId = showProfession ? professionId : raceId;
+    if (preset == null || presetId == null) return const SizedBox.shrink();
+    final skillId = preset['standardSkillID']?.toString() ?? '';
+    final skill = skills[skillId] as Map<String, dynamic>?;
+    final (lead, rest) = leadAndRest(preset['description']?.toString() ?? '');
+
+    Widget tab(int i, Map<String, dynamic>? p, String f, String? name) {
+      final on = (i == 1) == showProfession;
+      return Expanded(
+        child: InkWell(
+          key: Key(i == 0 ? 'detail_tab_race' : 'detail_tab_profession'),
+          onTap: p == null ? null : () => onTab(i),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            color: on ? scheme.primary.withValues(alpha: 0.14) : null,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (p != null) PresetMark(folder: f, preset: p, size: 22),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    name ?? '–',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                        color: on ? scheme.primary : scheme.onSurfaceVariant),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Card(
+      key: Key('preset_detail_$presetId'),
+      margin: EdgeInsets.zero,
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            tab(0, race, 'races', race?['raceName']?.toString()),
+            tab(1, profession, 'professions',
+                profession?['professionName']?.toString()),
+          ]),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text.rich(
+                  TextSpan(children: [
+                    TextSpan(text: lead),
+                    if (loreOpen && rest.isNotEmpty) TextSpan(text: ' $rest'),
+                  ]),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                      color: scheme.onSurface.withValues(alpha: 0.88),
+                      height: 1.45),
+                ),
+                if (rest.isNotEmpty)
+                  InkWell(
+                    key: const Key('detail_lore_toggle'),
+                    onTap: onLore,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Text(
+                        '${tr(ref, loreOpen ? 'lore_less' : 'lore_more')} ${loreOpen ? '▴' : '▾'}',
+                        style: theme.textTheme.labelMedium
+                            ?.copyWith(color: scheme.primary),
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: [
+                    for (final e
+                        in presetBonuses(preset, withOffers: showProfession))
+                      _BonusChip(label: tr(ref, e.key), value: e.value),
+                  ],
+                ),
+                if (skillId.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SkillPixelIcon(skillId, size: 26),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text.rich(
+                          TextSpan(children: [
+                            TextSpan(
+                                text: '${tr(ref, 'granted_skill_label')}: '
+                                    '${grantedSkillName(skillId, presetId: presetId)}',
+                                style: TextStyle(
+                                    color: scheme.primary,
+                                    fontWeight: FontWeight.w600)),
+                            if ((skill?['description']?.toString() ?? '')
+                                .isNotEmpty)
+                              TextSpan(
+                                  text: ' — ${skill!['description']}',
+                                  style: TextStyle(
+                                      color: scheme.onSurfaceVariant,
+                                      fontStyle: FontStyle.italic)),
+                          ]),
+                          style: theme.textTheme.bodySmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
