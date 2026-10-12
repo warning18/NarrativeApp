@@ -305,6 +305,31 @@ void main() {
             '$id ${(lat * 180 / math.pi).toStringAsFixed(0)} ${(lon * 180 / math.pi).toStringAsFixed(0)} | ${c.biome} ${c.temperature.toStringAsFixed(0)}C hum ${c.humidity.toStringAsFixed(2)} elev ${c.elevation.toStringAsFixed(2)}');
       }
     }
+    // The climate down a line of the globe, pole to pole: Earth's bands.
+    final climate = ChartClimate.of(story);
+    stdout
+        .writeln('--- climate bands on STORY: spot lat | biome temp humidity');
+    for (final e in {
+      'north: the Frost Reach': const Offset(130, 14),
+      'north: the Ash Flats': const Offset(135, 36),
+      'north: the Cove': const Offset(121, 44),
+      'tropics: the Lantern Isles': const Offset(56, 77),
+      'east land, dry north': const Offset(222, 68),
+      'east land, jungle on the equator': const Offset(222, 92),
+      'east land, temperate south': const Offset(222, 118),
+      'equator: Saltmouth': const Offset(156, 92),
+      'subtropics: the Waste': const Offset(125, 112),
+      'temperate: Alster': const Offset(87, 131),
+      'cool: the Old Continent south': const Offset(150, 140),
+      'west land, dry coast': const Offset(26, 108),
+      'west land, temperate': const Offset(26, 136),
+      'south pole land': const Offset(150, 162),
+    }.entries) {
+      final (_, lat) = GlobeView.lonLatOf(e.value);
+      final c = climate.sample(e.value);
+      stdout.writeln(
+          '${e.key}: ${(lat * 180 / math.pi).toStringAsFixed(0)} | ${c.biome} ${c.temperature.toStringAsFixed(0)}C hum ${c.humidity.toStringAsFixed(2)}');
+    }
     // The lands' extent and their margin to the chart's edges.
     for (final entry in [('B', chartWorldB), ('STORY', story)]) {
       var x0 = 999.0, x1 = -1.0, y0 = 999.0, y1 = -1.0;
@@ -329,8 +354,10 @@ void main() {
     final story = storyWorld();
     // Stills: each land, then the whole sphere in both looks.
     final stills = {
-      'west': GlobeView.at(const Offset(60, 100), 1.9, const Offset(128, 88)),
-      'east': GlobeView.at(const Offset(200, 60), 1.9, const Offset(128, 88)),
+      'west': GlobeView.at(const Offset(45, 105), 1.9, const Offset(128, 88)),
+      'east': GlobeView.at(const Offset(205, 85), 1.9, const Offset(128, 88)),
+      'polar_south':
+          GlobeView.at(const Offset(140, 150), 2.2, const Offset(128, 88)),
       'crossing':
           GlobeView.at(const Offset(135, 75), 1.9, const Offset(128, 88)),
     };
@@ -340,17 +367,19 @@ void main() {
     }
     await shoot(tester, 'GLOBE_story_whole_parchment', story, MapLook.parchment,
         globe: GlobeView.at(const Offset(128, 88), 1, const Offset(128, 88)));
-    // A turn of the sphere, east to west, tilted a little to the north.
-    for (var i = 0; i <= 18; i++) {
-      final lon = (80 - i * 160 / 18) * math.pi / 180;
-      final view = GlobeView(
-          lon0: lon,
-          lat0: 0.22,
-          radius: GlobeView.baseRadius * 1.0,
-          centre: const Offset(128, 88));
-      await shoot(
-          tester, 'TURN_${i.toString().padLeft(2, '0')}', story, MapLook.night,
-          globe: view);
+    // A turn of the sphere, east to west, tilted a little to the north, in both looks.
+    for (final look in [MapLook.night, MapLook.parchment]) {
+      for (var i = 0; i <= 18; i++) {
+        final lon = (80 - i * 160 / 18) * math.pi / 180;
+        final view = GlobeView(
+            lon0: lon,
+            lat0: 0.22,
+            radius: GlobeView.baseRadius * 1.0,
+            centre: const Offset(128, 88));
+        await shoot(tester, 'TURN_${look.name}_${i.toString().padLeft(2, '0')}',
+            story, look,
+            globe: view);
+      }
     }
   });
 }

@@ -37,6 +37,12 @@ LANDS = {
             (172, 100), (183, 106), (188, 118), (184, 132), (172, 144), (150, 152), (121, 157), (96, 161),
             (74, 161), (58, 153), (52, 144)],
     'lantern': [(33, 74), (42, 66), (58, 62), (74, 66), (82, 76), (76, 87), (58, 92), (40, 88)],
+    # empty lands, for what comes later: the climate bands fill the rest of the globe
+    'west': [(22, 102), (32, 99), (40, 104), (42, 118), (38, 132), (40, 144), (32, 150), (22, 148), (15, 136), (13, 120)],
+    'east': [(210, 66), (224, 61), (238, 66), (243, 80), (239, 96), (243, 110), (235, 122), (221, 126), (209, 116),
+             (203, 100), (203, 82)],
+    'polar_south': [(68, 163), (82, 158), (104, 156), (126, 159), (152, 156), (178, 158), (198, 157), (208, 162),
+                    (192, 167), (150, 166), (112, 167), (82, 167)],
 }
 
 PLACES = {
@@ -57,12 +63,17 @@ PLACES = {
     'candlehold': (56, 77),
 }
 SEA_PLACES = {'storm', 'wreck'}
+NOISE = {'polar_south': 0.3, 'west': 0.8, 'east': 0.8}   # a thin land keeps its shape; the others get the full noise
+LAND_ORDER = ('ashen', 'old', 'lantern', 'west', 'east', 'polar_south')
 
-# a zone is a biome land; each is the part of its land nearest its seeds
+# a zone is a biome land; each is the part of its land nearest its seeds. The climate follows the latitude, as on
+# Earth: frost at both poles, temperate and cold lands in the middle latitudes, and the hot, dry and wet belts
+# about the equator (the Waste and Saltmouth, with a jungle in between). Zones with no name belong to the empty lands.
 ZONES = [
-    ('temperate', 'The Alster Marches', 'Les Marches d’Alster', [(80, 148), (74, 138), (92, 156), (62, 150), (100, 140), (102, 150)]),
-    ('desert', 'The Waste', 'La Désolation', [(112, 126), (126, 120), (140, 126), (120, 110), (112, 138), (172, 134), (160, 142)]),
-    ('arid_coast', 'The Salt Coast', 'La Côte de Sel', [(158, 101), (168, 108), (166, 116), (148, 100)]),
+    ('temperate', 'The Alster Marches', 'Les Marches d’Alster', [(80, 138), (74, 128), (92, 146), (62, 140), (100, 130), (102, 140)]),
+    ('desert', 'The Waste', 'La Désolation', [(112, 116), (126, 110), (140, 116), (120, 100), (112, 128), (150, 114)]),
+    ('arid_coast', 'The Salt Coast', 'La Côte de Sel', [(158, 91), (168, 98), (166, 106), (148, 90), (148, 102)]),
+    ('temperate', '', '', [(150, 138), (176, 126), (130, 142), (170, 142)]),            # the Old Continent's south-east
     ('sea_cliffs', 'The Lantern Isles', 'Les Îles de la Lanterne', [(56, 77)]),
     ('sea_cliffs', 'The Cove', 'La Crique', [(121, 47)]),
     ('ashlands', 'The Ash Flats', 'Les Plaines de cendre', [(134, 36), (126, 38), (146, 31)]),
@@ -71,7 +82,24 @@ ZONES = [
     ('tear', 'The Hollow Cape', 'Le Cap Creux', [(204, 24), (192, 30), (216, 26), (190, 18)]),
     ('fen', 'The Grey Fen', 'Le Marais gris', [(74, 38), (60, 44), (48, 30), (66, 32), (56, 38)]),
     ('sea_cliffs', 'The Wrack Cliffs', 'Les Falaises du Varech', [(94, 50), (100, 54), (86, 54), (88, 48)]),
+    # the east land: hot and dry in the north, a jungle on the equator, temperate in the south
+    ('desert', '', '', [(222, 68), (212, 72), (234, 70)]),
+    ('temperate', '', '', [(222, 88), (222, 98), (212, 94)]),                           # the jungle (no jungle biome yet)
+    ('temperate', '', '', [(222, 116), (212, 114)]),
+    # the west land: a hot dry coast in the north, temperate in the south
+    ('desert', '', '', [(26, 106), (30, 112)]),
+    ('temperate', '', '', [(26, 128), (28, 140)]),
+    # the south polar land
+    ('frost', '', '', [(90, 163), (130, 162), (170, 162), (70, 165), (195, 160)]),
 ]
+
+# The Old Continent sits ten units further north than first drawn, so Saltmouth is on the equator's edge
+# and the crossing to the Cove Camp is about three weeks long (58 units).
+OLD_DY = -10
+LANDS['old'] = [(x, y + OLD_DY) for x, y in LANDS['old']]
+for _k in ('hovel', 'beggar', 'alley', 'bridge', 'hold', 'sewers', 'docks', 'crash', 'sleeper', 'wells', 'upper',
+           'wharf', 'tern', 'berths'):
+    PLACES[_k] = (PLACES[_k][0], PLACES[_k][1] + OLD_DY)
 
 PLACE_ZONE = {  # the zone each place belongs to (geography.json)
     'The Alster Marches': ['hovel', 'beggar', 'alley', 'bridge', 'hold', 'sewers', 'docks'],
@@ -90,27 +118,27 @@ PLACE_ZONE = {  # the zone each place belongs to (geography.json)
 RANGES = [  # (name, fr, line, size, snow, ember)
     ('The Rime Teeth', 'Les Dents de Givre', [(84, 20), (92, 25), (98, 32)], 5.0, True, False),
     ('The Firebacks', 'Les Dos-de-Feu', [(150, 46), (158, 48), (170, 46)], 4.4, False, True),
-    ('The Alster Downs', 'Les Collines d’Alster', [(68, 130), (84, 126), (96, 122)], 3.6, False, False),
-    ('The Lantern Cliffs', 'Les Falaises de la Lanterne', [(46, 72), (58, 69), (72, 73)], 3.6, False, False),
+    ('The Alster Downs', 'Les Collines d’Alster', [(68, 120), (84, 116), (96, 112)], 3.6, False, False),
+    ('The Lantern Cliffs', 'Les Falaises de la Lanterne', [(44, 70), (56, 66), (70, 68)], 3.0, False, False),
 ]
 
 RIVERS = [  # Alster's river to its harbour; the freshwater burn at the Cove
-    [(106, 117), (104, 128), (100, 138), (92, 141), (82, 140), (72, 140), (64, 141)],
+    [(106, 107), (104, 118), (100, 128), (92, 131), (82, 130), (72, 130), (64, 131)],
     [(121, 33), (122, 38), (121, 43)],
 ]
 
 ARCHIPELAGOS = {
     # empty for now: open water with small lands, for ship content (voyages, wrecks, hunts) later.
     # id: (centre x, centre y, half-width, half-height, islands, seed). Each sits clear of the crossing,
-    # the sea roads and the chart's edges.
-    'south_west': (28, 130, 13, 24, 7, 3),
-    'mid_west': (100, 91, 12, 6, 5, 5),
-    'east_narrows': (190, 75, 17, 10, 6, 8),
-    'south_east': (219, 136, 14, 17, 6, 11),
+    # the sea roads, the other lands and the chart's edges.
+    'north_west': (22, 40, 7, 13, 4, 3),
+    'mid_sea': (102, 78, 8, 6, 4, 5),
+    'east_narrows': (180, 66, 10, 7, 5, 8),
+    'south_east': (222, 144, 14, 9, 5, 11),
 }
 
-SEAS = [('the Narrow Sea', 'la Mer Étroite', (118, 78)), ('the Open Water', 'la Haute Mer', (214, 128)),
-        ('the Grey Water', 'l’Eau Grise', (236, 50))]
+SEAS = [('the Narrow Sea', 'la Mer Étroite', (112, 64)), ('the Open Water', 'la Haute Mer', (60, 154)),
+        ('the Grey Water', 'l’Eau Grise', (236, 46))]
 
 
 # ------------------------------------------------------------------- the land
@@ -138,7 +166,7 @@ def build_lands():
     out = {}
     for name, outline in LANDS.items():
         f = signed_field(outline)
-        f = f + 13.0 * n1 + 6.5 * n2 + 2.6 * n3
+        f = f + NOISE.get(name, 1.0) * (13.0 * n1 + 6.5 * n2 + 2.6 * n3)
         # land stays off the chart's edges: the band ends at 70N and 70S, and beyond it is open sea
         yy, xx = np.mgrid[0:shape[0], 0:shape[1]]
         edge = np.minimum(np.minimum(xx, shape[1] - xx), np.minimum(yy, shape[0] - yy)) / RES
@@ -304,9 +332,9 @@ def latlon(x, y):
 
 
 FEATURES = {  # 'kind|name' -> where; the rest of each feature is chart B's (names, notes, clan, angle)
-    'village|Tallow Street': (75, 143), 'bridge|The Stone Bridge': (100, 138), 'giant|the stone giant of Alster’s harbour': (57, 136),
-    'village|the Salt Pans': (139, 108), 'giant|the giant in Saltmouth’s harbour mouth': (151, 95),
-    'seat|The Brig': (140, 91), 'seat|Lowtide': (194, 100),
+    'village|Tallow Street': (75, 133), 'bridge|The Stone Bridge': (100, 128), 'giant|the stone giant of Alster’s harbour': (57, 126),
+    'village|the Salt Pans': (139, 98), 'giant|the giant in Saltmouth’s harbour mouth': (151, 85),
+    'seat|The Brig': (140, 81), 'seat|Lowtide': (194, 90),
     'seat|The Lantern Throne': PLACES['candlehold'], 'village|the Salt Marsh': (66, 83), 'seat|The Open Hand’s hall': (66, 76),
     'seat|The Spire of Judgment': PLACES['spire'], 'seat|Anvil Gate': (155, 46), 'seat|Highhearth': PLACES['highhearth'],
     'village|the Frost Quarry': (170, 17), 'seat|Akagiri': PLACES['akagiri'], 'village|the Hot Springs': (172, 43),
@@ -326,7 +354,7 @@ def write_dart(lands, zones):
     out.append('  },')
     loops = []
     loops_index = {}
-    for name in ('ashen', 'old', 'lantern'):
+    for name in LAND_ORDER:
         poly = lands[name][0].simplify(0.3, preserve_topology=True)
         loops.append(list(poly.exterior.coords)[:-1])
     for aid in ARCHIPELAGOS:
@@ -354,6 +382,12 @@ def write_dart(lands, zones):
     out.append('const Map<String, Offset> storyFeatureAt = {')
     for k, (x, y) in FEATURES.items():
         out.append("  '%s': Offset(%g, %g)," % (k.replace("'", "\\'"), x, y))
+    out.append('};')
+    out.append('')
+    out.append('/// The empty lands (the climate bands\' fill, for what comes later), by id, the index in `lands`.')
+    out.append('const Map<String, int> storyEmptyLands = {')
+    for name in LAND_ORDER[3:]:
+        out.append("  '%s': %d," % (name, LAND_ORDER.index(name)))
     out.append('};')
     out.append('')
     out.append('/// The archipelagos: empty lands for ship content, by id, each the indices of its islands in `lands`.')
