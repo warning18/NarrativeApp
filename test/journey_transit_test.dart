@@ -88,8 +88,9 @@ void main() {
     );
     expect(tester.takeException(), isNull);
 
-    // A tap skips it.
-    await tester.tap(find.byKey(_transit));
+    // Inside one city the words show over the map, which stays to be played
+    // with; a tap on them puts them away.
+    await tester.tap(find.byKey(_caption));
     await tester.pump();
     expect(find.byKey(_transit), findsNothing);
 
@@ -154,6 +155,25 @@ void main() {
     }
     expect(find.byKey(const ValueKey('journey_traveller')), findsNothing);
     expect(container.read(storyPlayProvider).currentNodeId, '2011');
+    expect(find.byKey(_transit), findsNothing);
+    expect(tester.takeException(), isNull);
+
+    // Set down in another district of the same city along no choice (from
+    // the lower town into the Undercroft), the mark comes by the streets from
+    // where it stood and is home after.
+    play.jumpTo('470');
+    await _settle(tester);
+    await tester.pump(const Duration(seconds: 4));
+    await clearCards();
+    expect(find.byKey(const ValueKey('journey_arriving')), findsNothing);
+    play.choose('855');
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byKey(const ValueKey('journey_arriving')), findsOneWidget);
+    // Along the streets of one city nothing needs saying: no world transit.
+    expect(find.byKey(_transit), findsNothing);
+    await tester.pump(const Duration(seconds: 4));
+    expect(find.byKey(const ValueKey('journey_arriving')), findsNothing);
     expect(find.byKey(_transit), findsNothing);
     expect(tester.takeException(), isNull);
   });

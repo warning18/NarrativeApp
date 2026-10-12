@@ -8,6 +8,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:narrative_data_app/data/geography.dart';
 import 'package:narrative_data_app/data/party_trail.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/data/world_map.dart';
@@ -125,18 +126,29 @@ void main() {
 
     test('a branch that sets the party down elsewhere says why', () {
       // The party walks the chosen step to its place before the fight or the
-      // roll, so only a branch ending at another place than that is a move
-      // the player never saw coming.
+      // roll, so only a branch ending at another place than that (another
+      // district or building, another city) is a move the player never saw
+      // coming. On the world's own places.
+      final world = Geography.parse(
+        geography: jsonDecode(
+                File('assets/gamedata/geography.json').readAsStringSync())
+            as Map<String, dynamic>,
+        biomes:
+            jsonDecode(File('assets/gamedata/biomes.json').readAsStringSync())
+                as Map<String, dynamic>,
+      );
+      final story = StoryData(nodes);
+      String? placeOf(String id) => world.placeOfNode(story.nodeFor(id))?.id;
       final silent = <String>[];
       for (final node in nodes.values) {
         for (final choice in node.choices) {
-          final walkedTo = landmarkOfScene(choice.nextId)?.id;
+          final walkedTo = placeOf(choice.nextId);
           for (final (branch, note, noteFr) in [
             (choice.loseNextId, choice.loseNote, choice.loseNoteFr),
             (choice.failNextId, choice.failNote, choice.failNoteFr),
           ]) {
             if (branch == null || branch.isEmpty) continue;
-            if (landmarkOfScene(branch)?.id == walkedTo) continue;
+            if (placeOf(branch) == walkedTo) continue;
             if ((note ?? '').isEmpty || (noteFr ?? '').isEmpty) {
               silent.add('${node.id} > $branch');
             }

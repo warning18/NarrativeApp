@@ -8,6 +8,26 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.246.0+282]
+
+The party walks the streets of a city, and a 'seen' failure in the Undercroft says why.
+
+### Added
+- **Inside one city or room, the mark comes by the streets.** When the story
+  sets the party down in another district of the place it already stands in
+  (a lost fight, a failed roll, a jump along no choice), the Journey map no
+  longer draws the mark in the new district out of nowhere: it walks from
+  the district where the party stood to the new one along the plan's roads.
+  Nothing needs saying for a plain move inside a city, so no world transit
+  plays there.
+- **The twenty-one failed rolls of the Undercroft's watch** (every choice of
+  the 7510 scenes that falls back to being seen) carry an authored
+  `failNote` that says why the party is set down elsewhere.
+
+### Changed
+- A step that stays in the same place now walks the party back, instead of
+  snapping it home, also when the step's district differed.
+
 ## [1.245.0+281]
 
 The party's mark keeps its place on the world, and the map says when the story moves it.
