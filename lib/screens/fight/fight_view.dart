@@ -458,11 +458,6 @@ extension _FightView on _FightScreenState {
             child: TutorialTarget(id: 'fight.top', child: _buildTopStrip()),
           ),
           const SizedBox(height: 6),
-          TutorialTarget(
-            id: 'fight.dice',
-            child: _buildDiceTray(acting, dice, skills, items, plan),
-          ),
-          const SizedBox(height: 6),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -484,6 +479,11 @@ extension _FightView on _FightScreenState {
                 ],
               ),
             ),
+          ),
+          const SizedBox(height: 6),
+          TutorialTarget(
+            id: 'fight.dice',
+            child: _buildDiceTray(acting, dice, skills, items, plan),
           ),
           const SizedBox(height: 6),
           _buildLogTicker(),
@@ -522,7 +522,7 @@ extension _FightView on _FightScreenState {
   // --- Top strip -----------------------------------------------------------
 
   /// The battlefield condition, the momentum meter and the round counter --
-  /// the fight-wide state, above the dice.
+  /// the fight-wide state, above the fighters.
   Widget _buildTopStrip() {
     return Row(
       children: [
@@ -535,7 +535,7 @@ extension _FightView on _FightScreenState {
 
   // --- Dice tray -----------------------------------------------------------
 
-  /// The party's rolled dice, one tile per acting member, in the member's
+  /// The party's rolled dice (under the party and the enemies, v1.258), one tile per acting member, in the member's
   /// own accent color, with what the landed face is worth this round under
   /// its name (see [_buildPreviewLine]). A tap on a landed die keeps it
   /// through the next reroll (tap again to release it); a long-press opens

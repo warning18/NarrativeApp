@@ -122,6 +122,14 @@ Future<ProviderContainer> _open(WidgetTester tester,
   return container;
 }
 
+/// A selected flag's banner waves for ever, so `pumpAndSettle` never ends
+/// once one is picked: pump a bounded second instead.
+Future<void> _settle(WidgetTester tester) async {
+  for (var i = 0; i < 10; i++) {
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+}
+
 void main() {
   testWidgets('three suitors stacked at 360 px; one taken, the next kept',
       (tester) async {
@@ -130,32 +138,65 @@ void main() {
     expect(find.byType(OfferDialog), findsOneWidget);
     expect(find.text('The clans come to you'), findsOneWidget);
     expect(find.textContaining('2 waiting'), findsOneWidget);
-    // The suitors, their voices and their first words.
-    expect(find.text('The Emberwives of the Cinder Compact'), findsOneWidget);
-    expect(
-        find.text('The Ember Sisters of the Ashen Penitents'), findsOneWidget);
-    expect(find.text('The Wayfarer'), findsOneWidget);
-    expect(find.textContaining('broke every hammer in the Row'), findsOneWidget,
-        reason: 'the Compact\'s intro, the first time');
-    // The gifts: kind, name, rarity, what they do.
+    // Three little flags, each with what it gives and nothing more: the
+    // gift's kind, name and rarity and the first standing it moves.
+    for (final id in ['compact', 'penitents', 'wayfarer']) {
+      expect(find.byKey(Key('offer_suitor_$id')), findsOneWidget);
+    }
     expect(find.text('Skill'), findsOneWidget);
     expect(find.text('Iron Stance'), findsOneWidget);
     expect(find.text('Sign'), findsOneWidget);
     expect(find.text('Spark Letter'), findsOneWidget);
-    expect(find.textContaining('+3 damage'), findsOneWidget);
-    expect(find.text('Replaces: Ember Knuckles'), findsOneWidget);
     expect(find.text('Perk'), findsOneWidget);
     expect(find.text('Keen Eye'), findsOneWidget);
-    // The politics of the pick, by the relations as they stand.
+    expect(find.text('+6\u00a0Compact'), findsOneWidget);
+    expect(find.text('+6\u00a0Penitents'), findsOneWidget);
+    // The rest is the summary: none of it shows until a finger is held on a
+    // flag, and it goes when the finger lifts.
+    expect(find.text('The Emberwives of the Cinder Compact'), findsNothing);
+    expect(find.textContaining('broke every hammer in the Row'), findsNothing);
+    expect(find.byKey(const Key('offer_hold_hint')), findsOneWidget);
+    final hold = await tester.startGesture(
+        tester.getCenter(find.byKey(const Key('offer_suitor_compact'))));
+    await tester.pump(const Duration(milliseconds: 700));
+    await tester.pumpAndSettle();
+    expect(find.text('The Emberwives of the Cinder Compact'), findsOneWidget);
+    expect(find.textContaining('broke every hammer in the Row'), findsOneWidget,
+        reason: 'the Compact\'s intro, the first time');
     expect(
         find.text('+6\u00a0Compact · +1.5\u00a0Vigil · +1.5\u00a0Mire · '
             '−3\u00a0Penitents'),
-        findsOneWidget);
+        findsOneWidget,
+        reason: 'the politics of the pick, by the relations as they stand');
+    expect(find.byKey(const Key('offer_hold_hint')), findsNothing);
+    await hold.up();
+    await tester.pumpAndSettle();
+    expect(find.text('The Emberwives of the Cinder Compact'), findsNothing);
+    expect(find.byKey(const Key('offer_hold_hint')), findsOneWidget);
+    // Held on the sign's flag: what it does, and what it replaces.
+    final sign = await tester.startGesture(
+        tester.getCenter(find.byKey(const Key('offer_suitor_penitents'))));
+    await tester.pump(const Duration(milliseconds: 700));
+    await tester.pumpAndSettle();
+    expect(
+        find.text('The Ember Sisters of the Ashen Penitents'), findsOneWidget);
+    expect(find.textContaining('+3 damage'), findsOneWidget);
+    expect(find.text('Replaces: Ember Knuckles'), findsOneWidget);
     expect(
         find.text('+6\u00a0Penitents · +1.5\u00a0Vigil · −3\u00a0Dominion · '
             '−3\u00a0Compact · −3\u00a0Mire · alignment\u00a0+1'),
         findsOneWidget);
+    await sign.up();
+    await tester.pumpAndSettle();
+    // The Wayfarer moves no standing.
+    final way = await tester.startGesture(
+        tester.getCenter(find.byKey(const Key('offer_suitor_wayfarer'))));
+    await tester.pump(const Duration(milliseconds: 700));
+    await tester.pumpAndSettle();
+    expect(find.text('The Wayfarer'), findsOneWidget);
     expect(find.text('No faction: standing doesn’t move.'), findsOneWidget);
+    await way.up();
+    await tester.pumpAndSettle();
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
 
     // Nothing is taken before a suitor is chosen, and then confirmed.
@@ -165,7 +206,7 @@ void main() {
     await tester.pump();
     await tester.ensureVisible(take);
     await tester.tap(take);
-    await tester.pumpAndSettle();
+    await _settle(tester);
     expect(find.text('Take Iron Stance?'), findsOneWidget);
     expect(find.text('Offered by: The Emberwives of the Cinder Compact'),
         findsOneWidget);
@@ -213,21 +254,40 @@ void main() {
     final container = await _open(tester, french: true);
 
     expect(find.text('Les clans viennent à vous'), findsOneWidget);
-    expect(find.text('Les Charbonnières du Pacte des Cendres'), findsOneWidget);
-    expect(find.text('Les Sœurs de Braise des Pénitents de Cendre'),
-        findsOneWidget);
-    expect(find.text('Le Voyageur'), findsOneWidget);
     expect(find.text('Compétence'), findsOneWidget);
     expect(find.text('Signe'), findsOneWidget);
     expect(find.text('Atout'), findsOneWidget);
     expect(find.text('Œil perçant'), findsOneWidget);
-    expect(find.text('Remplace : Poings de braise'), findsOneWidget);
+    expect(find.text('+6\u00a0Pacte'), findsOneWidget);
+    final hold = await tester.startGesture(
+        tester.getCenter(find.byKey(const Key('offer_suitor_compact'))));
+    await tester.pump(const Duration(milliseconds: 700));
+    await tester.pumpAndSettle();
+    expect(find.text('Les Charbonnières du Pacte des Cendres'), findsOneWidget);
     expect(
         find.text('+6\u00a0Pacte · +1,5\u00a0Veille · +1,5\u00a0Marais · '
             '−3\u00a0Pénitents'),
         findsOneWidget);
-    expect(find.text('Sans faction : la réputation ne bouge pas.'),
+    await hold.up();
+    await tester.pumpAndSettle();
+    final sign = await tester.startGesture(
+        tester.getCenter(find.byKey(const Key('offer_suitor_penitents'))));
+    await tester.pump(const Duration(milliseconds: 700));
+    await tester.pumpAndSettle();
+    expect(find.text('Les Sœurs de Braise des Pénitents de Cendre'),
         findsOneWidget);
+    expect(find.text('Remplace\u00a0: Poings de braise'), findsOneWidget);
+    await sign.up();
+    await tester.pumpAndSettle();
+    final way = await tester.startGesture(
+        tester.getCenter(find.byKey(const Key('offer_suitor_wayfarer'))));
+    await tester.pump(const Duration(milliseconds: 700));
+    await tester.pumpAndSettle();
+    expect(find.text('Le Voyageur'), findsOneWidget);
+    expect(find.text('Sans faction\u00a0: la réputation ne bouge pas.'),
+        findsOneWidget);
+    await way.up();
+    await tester.pumpAndSettle();
     expect(find.text('Prendre ce don'), findsOneWidget);
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
 
