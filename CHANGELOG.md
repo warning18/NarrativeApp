@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.261.0+297]
+
+The people of the coast speak for themselves.
+
+### Added
+- **Thirty people have words of their own.** Aurel Vane, Overseer Renn, Nadira, Maud Tallis, Hesk Morrow, Brother Clement, the Keyholder, the chart-keeper, the High Warden, the Tear-Herald, Hathra, Tetsu, Ghrem Stonebrow, Orsabet Vell, Nkem Tallow, the White Admiral and fourteen more now say three lines each on their People page, in both languages (before, only three people did).
+- **Six follow-up scenes are spoken by the person they are about**, under their name: Ghrem on the pier, the headman of Wrack’s End, the flagship’s helmsman, the smith’s widow, the eldest of Greyhithe and the road-keeper. Hathra, Tetsu and Tobin gain a spoken line in theirs.
+
+### Fixed
+- "l’Ancrage" in two scenes at the White Anchorage is "le Mouillage" in French, as everywhere else.
+
 ## [1.260.0+296]
 
 Five more plots play out: every intrigue now runs from its first clue to its outcome.

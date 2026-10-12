@@ -109,6 +109,18 @@ const Map<String, ({String en, String fr})> _speakerLabels = {
     fr: 'La Gardienne de la Lanterne'
   ),
   'Legate': (en: 'The Legate', fr: 'Le Légat'),
+  'Ghrem': (en: 'Ghrem Stonebrow', fr: 'Ghrem Stonebrow'),
+  'Headman': (
+    en: 'The headman of Wrack’s End',
+    fr: 'Le chef de Bout-du-Varech'
+  ),
+  'Helmsman': (
+    en: 'The flagship’s helmsman',
+    fr: 'Le timonier du vaisseau amiral'
+  ),
+  'Widow': (en: 'The smith’s widow', fr: 'La veuve du forgeron'),
+  'Eldest': (en: 'The eldest of Greyhithe', fr: 'L’aînée de Grisegrève'),
+  'Road-keeper': (en: 'The road-keeper', fr: 'La gardienne de la route'),
 };
 
 /// Null for the Narrator (or no speaker at all): the plain card needs no
