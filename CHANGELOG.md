@@ -13,7 +13,7 @@ isn't reconstructable from git history alone.
 Five more plots play out: every intrigue now runs from its first clue to its outcome.
 
 ### Added
-- **Five intrigues play end to end.** *The Double Ledger*, *The Admiralty’s Silence*, *The Relic Road*, *The Returned* and *The Unwatched Hour* each have a scene for every stage, in both languages: thirty new scenes in all, offered by a place’s hub once the stage before is reached (Saltmouth, the Ashen Quarter, Emberwick, the Drowned Cloister, Wrack’s End, Rimewell, the Reliquary Quarter, the White Anchorage, Greyhithe), and a closing scene at the Hollow Shore that settles the plot. Every choice of a stage scene advances the plot, so none can stall.
+- **Five intrigues play end to end.** *The Double Ledger*, *The Admiralty’s Silence*, *The Relic Road*, *The Returned* and *The Unwatched Hour* each have a scene for every stage, in both languages: thirty new scenes in all, offered by a place’s hub once the stage before is reached (Saltmouth, the Ashen Quarter, Emberwick, the Drowned Cloister, Wrack’s End, Rimewell, the Reliquary Quarter, the White Anchorage, Greyhithe), and a closing scene at Greyhithe that settles the plot. Every choice of a stage scene advances the plot, so none can stall.
 - **The endings answer back.** What you did shows in the closing scenes: the Crows’ brigs at the landing (`7810`), the Returned children at the water’s edge (`7002_approach`), the second door sewn into the tear (`7003`), the relic and the Fourth Piece in the epilogue (`7004`).
 - Stage anchors in `intrigues.json` match where the scenes play (people met in the scenes now carry the plot in their People page).
 

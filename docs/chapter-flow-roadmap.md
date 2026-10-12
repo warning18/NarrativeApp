@@ -179,7 +179,7 @@ party that skips every quest.
 
 Each intrigue is one scene per stage, offered by a place's hub once the stage
 before it is reached (`showIfFlags: intrigue_<id>_stage_<n>`), and settled by
-an outcome scene at the Hollow Shore (`7002`). Every choice of a stage scene
+an outcome scene at Greyhithe (`7200`), the last hub of the chapter before the White Fleet's grave. Every choice of a stage scene
 advances the stage, so no intrigue can stall on a choice; the choices differ
 in standing, gold, alignment and the flags the later scenes and the ending
 read (`flag_callbacks`).
@@ -188,11 +188,11 @@ read (`flag_callbacks`).
 |---|---|---|---|---|---|---|
 | `hooded_lantern` | `2015_informant_*` | `3002` | `5010_letter` | `6010_thread` | `7100_log` | `7002_orders` |
 | `dying_lantern_bearer` | `2005` | `3005_envoys` | `5100_vote` | `6100_knife` | `7100_chaplain` | `7002_throne` |
-| `double_ledger` | `2015_route_sold` | `3005_black_thread` | `5100_keyholder_cut` | `6100_debt_rising` | `7100_vault_burns` | `7002_ledger` |
-| `admiraltys_silence` | `2015_survivor` | `3005_logbook_gap` | `5100_tar_hand_book` | `6010_lantern_manifest` | `7100_flagship_hold` | `7002_relic` |
-| `relic_road` | `3100_bundle` | `3005_shrine_break` | `5010_thieves_ship` | `6010_heist_night` | `7200_thieves_aboard` | `7002_fourth_piece` |
-| `the_returned` | `2015_child_tongue` | `3005_spire_takings` | `5010_vigil_envoy` | `6010_returned_roll` | `7200_courts_children` | `7002_returned` |
-| `unwatched_hour` | `3100_new_moon` | `6010_count_short` | `6100_stitcher_door` | `7200_stitcher_kin` | `7002_followed` | `7002_stitcher` |
+| `double_ledger` | `2015_route_sold` | `3005_black_thread` | `5100_keyholder_cut` | `6100_debt_rising` | `7100_vault_burns` | `7200_ledger` |
+| `admiraltys_silence` | `2015_survivor` | `3005_logbook_gap` | `5100_tar_hand_book` | `6010_lantern_manifest` | `7100_flagship_hold` | `7200_relic` |
+| `relic_road` | `2015_bundle` | `3005_shrine_break` | `5010_thieves_ship` | `6010_heist_night` | `7200_thieves_aboard` | `7200_fourth_piece` |
+| `the_returned` | `2015_child_tongue` | `3005_spire_takings` | `5010_vigil_envoy` | `6010_returned_roll` | `7200_courts_children` | `7200_returned` |
+| `unwatched_hour` | `3100_new_moon` | `6010_count_short` | `6100_stitcher_door` | `7200_stitcher_kin` | `7200_followed` | `7200_stitcher` |
 | `broken_charter` | — | — | `coal_stops` (event) | — | — | — |
 
 The outcomes pay off in the closing scenes through callbacks: the Crows'
