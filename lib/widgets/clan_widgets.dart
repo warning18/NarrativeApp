@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -36,23 +38,76 @@ Color standingTierTextColor(BuildContext context, StandingTier tier) =>
 
 /// A standing from -100 to +100 as a thin bar: dark red at the bottom,
 /// a dark neutral middle, green then gold at the top, and a tick where
-/// [value] stands.
-class StandingMeter extends StatelessWidget {
+/// [value] stands. When the standing changes the tick slides to its new place
+/// (over 600 ms) and the stretch it crossed glows gold for a gain, red for a
+/// loss, and fades; it just jumps with reduced motion.
+class StandingMeter extends StatefulWidget {
   const StandingMeter({super.key, required this.value, this.height = 6});
 
   final double value;
   final double height;
 
+  /// How long the tick takes to slide, and the glow to fade.
+  static const Duration slide = Duration(milliseconds: 600);
+
+  @override
+  State<StandingMeter> createState() => _StandingMeterState();
+}
+
+class _StandingMeterState extends State<StandingMeter>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _t =
+      AnimationController(vsync: this, duration: StandingMeter.slide);
+  late double _from = widget.value;
+
+  /// Where the stretch the last change crossed began.
+  double _glowFrom = 0;
+
+  /// Where the tick is drawn now, on its way from [_from] to the value.
+  double get _shown =>
+      _from + (widget.value - _from) * Curves.easeOutCubic.transform(_t.value);
+
+  @override
+  void didUpdateWidget(StandingMeter old) {
+    super.didUpdateWidget(old);
+    if (old.value == widget.value) return;
+    if (MediaQuery.maybeDisableAnimationsOf(context) ?? false) {
+      _from = widget.value;
+      return;
+    }
+    // Slide on from wherever the tick is now, so a second change mid-slide
+    // does not jump.
+    final here = _t.isAnimating
+        ? _from + (old.value - _from) * Curves.easeOutCubic.transform(_t.value)
+        : old.value;
+    _glowFrom = here;
+    _from = here;
+    _t.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _t.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) => SizedBox(
-        height: height + 6,
-        child: CustomPaint(
-          painter: _StandingMeterPainter(
-            value: value,
-            barHeight: height,
-            tick: Theme.of(context).colorScheme.onSurface,
+        height: widget.height + 6,
+        child: AnimatedBuilder(
+          animation: _t,
+          builder: (context, _) => CustomPaint(
+            key: const ValueKey('standing_meter'),
+            painter: _StandingMeterPainter(
+              value: _t.isAnimating ? _shown : widget.value,
+              barHeight: widget.height,
+              tick: Theme.of(context).colorScheme.onSurface,
+              glowFrom: _t.isAnimating ? _glowFrom : null,
+              glowTo: widget.value,
+              glow: _t.isAnimating ? 1 - _t.value : 0,
+            ),
+            size: Size.infinite,
           ),
-          size: Size.infinite,
         ),
       );
 }
@@ -62,11 +117,24 @@ class _StandingMeterPainter extends CustomPainter {
     required this.value,
     required this.barHeight,
     required this.tick,
+    this.glowFrom,
+    this.glowTo = 0,
+    this.glow = 0,
   });
 
   final double value;
   final double barHeight;
   final Color tick;
+
+  /// The stretch a change crossed, glowing as it fades ([glow] 1 to 0).
+  final double? glowFrom;
+  final double glowTo;
+  final double glow;
+
+  double _x(double v, double width) =>
+      ((v.clamp(minStanding, maxStanding) - minStanding) /
+          (maxStanding - minStanding)) *
+      width;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -89,9 +157,22 @@ class _StandingMeterPainter extends CustomPainter {
           1,
         ]).createShader(bar.outerRect),
     );
-    final x = ((value.clamp(minStanding, maxStanding) - minStanding) /
-            (maxStanding - minStanding)) *
-        size.width;
+    final from = glowFrom;
+    if (from != null && glow > 0) {
+      final a = _x(math.min(from, glowTo), size.width);
+      final b = _x(math.max(from, glowTo), size.width);
+      final colour =
+          glowTo >= from ? const Color(0xFFF2C14E) : const Color(0xFFD9544D);
+      final span =
+          Rect.fromLTRB(a, top - 2, math.max(b, a + 3), top + barHeight + 2);
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(span, const Radius.circular(3)),
+        Paint()
+          ..color = colour.withValues(alpha: 0.75 * glow)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, 3 * glow + 0.5),
+      );
+    }
+    final x = _x(value, size.width);
     canvas.drawRect(
       Rect.fromLTWH((x - 1.5).clamp(0, size.width - 3), 0, 3, size.height),
       Paint()..color = tick,
@@ -100,7 +181,12 @@ class _StandingMeterPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_StandingMeterPainter old) =>
-      old.value != value || old.tick != tick || old.barHeight != barHeight;
+      old.value != value ||
+      old.tick != tick ||
+      old.barHeight != barHeight ||
+      old.glow != glow ||
+      old.glowFrom != glowFrom ||
+      old.glowTo != glowTo;
 }
 
 /// One small square per sub-clan: filled in its colour for a friend, red

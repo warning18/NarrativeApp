@@ -6,6 +6,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/signs_provider.dart';
+import 'pixel_banner.dart';
 
 /// A faction's icon (factions.json `icon`, see patronIconNames): a
 /// Material icon, since factions have no image of their own.
@@ -89,8 +90,10 @@ Color signRarityColor(SignRarity rarity) => switch (rarity) {
       SignRarity.heroic => const Color(0xFFE08A1E),
     };
 
-/// A patron's mark: their icon on a disc of their color. [dimmed] greys it
-/// (a silent vow).
+/// A patron's mark: the sign off the top of their pixel banner (the same
+/// cloth the Clans screen and the throne room hang), on a dark tile edged in
+/// their colour. A patron with no banner keeps their icon on a disc of their
+/// colour. [dimmed] greys it (a silent vow).
 class PatronEmblem extends StatelessWidget {
   const PatronEmblem({
     super.key,
@@ -103,10 +106,59 @@ class PatronEmblem extends StatelessWidget {
   final double size;
   final bool dimmed;
 
+  /// The square of a 64x128 banner that holds its top sign: x, y, side.
+  static const Rect _sign = Rect.fromLTWH(8, 12, 48, 48);
+
   @override
   Widget build(BuildContext context) {
     final base = Color(patron?.color ?? 0xFFB08D3C);
     final color = dimmed ? Colors.grey : base;
+    final banner = patron == null ? null : clanBannerId(patron!.id);
+    if (banner != null) {
+      final k = size / _sign.width;
+      Widget cloth = ClipRRect(
+        borderRadius: BorderRadius.circular(3),
+        child: SizedBox(
+          width: size - 3,
+          height: size - 3,
+          child: Stack(children: [
+            Positioned(
+              left: -_sign.left * k,
+              top: -_sign.top * k,
+              width: pixelBannerSize.width * k,
+              height: pixelBannerSize.height * k,
+              child: Image.asset(
+                'assets/visuals/banners/$banner.png',
+                fit: BoxFit.fill,
+                filterQuality:
+                    k >= 1 ? FilterQuality.none : FilterQuality.medium,
+                isAntiAlias: false,
+                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+              ),
+            ),
+          ]),
+        ),
+      );
+      if (dimmed) {
+        cloth = ColorFiltered(
+          colorFilter:
+              const ColorFilter.mode(Colors.grey, BlendMode.saturation),
+          child: cloth,
+        );
+      }
+      return Container(
+        key: ValueKey('patron_banner_${patron!.id}'),
+        width: size,
+        height: size,
+        padding: const EdgeInsets.all(1.5),
+        decoration: BoxDecoration(
+          color: const Color(0xFF141217),
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: color.withValues(alpha: 0.9)),
+        ),
+        child: cloth,
+      );
+    }
     return Container(
       width: size,
       height: size,

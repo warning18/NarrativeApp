@@ -31,6 +31,7 @@ import '../widgets/shop_trade_sheets.dart';
 import 'inventory_screen.dart' show requirementSummary;
 import '../widgets/player_stats_bar.dart';
 import '../widgets/moments.dart';
+import '../widgets/empty_state.dart';
 
 enum _ShopSort { nameAsc, priceLow, priceHigh, stockLeft }
 
@@ -137,7 +138,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
           data: (items) => diceAsync.when(
             data: (dice) {
               if (stock.isEmpty && diceStock.isEmpty) {
-                return Center(child: Text(tr(ref, 'shop_no_stock')));
+                return InkEmptyState(message: tr(ref, 'shop_no_stock'));
               }
 
               // Potions and scrolls restock each chapter; gear doesn't.
@@ -687,12 +688,12 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
               );
             },
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Center(
-                child: Text('${tr(ref, 'failed_to_load_dice')}: $error')),
+            error: (error, stack) => InkErrorState(
+                message: tr(ref, 'failed_to_load_dice'), detail: error),
           ),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) =>
-              Center(child: Text('${tr(ref, 'failed_to_load_items')}: $error')),
+          error: (error, stack) => InkErrorState(
+              message: tr(ref, 'failed_to_load_items'), detail: error),
         ),
         bottomNavigationBar: SafeArea(
           minimum: const EdgeInsets.fromLTRB(16, 8, 16, 12),

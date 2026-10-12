@@ -8,6 +8,37 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.257.0+293]
+
+The UX polish proposed in the design-system review.
+
+### Added
+- **One page transition for every screen.** A new page fades in over 180 ms
+  while rising 12 px (`InkPageTransitions`, on every platform); with reduced
+  motion the pages just swap.
+- **The title screen's standard blows in the wind.** The Void's banner uses
+  the throne room's gusts, ripple and hem flutter (`WindBanner`; the wind
+  painter and the banner image cache moved out of `throne_room.dart` into
+  `wind_banner.dart`).
+- **A pixel flourish for a level gained and a chapter opened** (`PixelMoment`):
+  the fight's strips recoloured to gold (a starburst, a ring and a rain of
+  sparks behind the level-up medal) or to the chapter's colour (a ring and a
+  spark rising from the chapter card).
+- **Empty and error states with the companion.** `InkEmptyState` and
+  `InkErrorState` seat the dog by the message in place of a bare line of text
+  (the journal, the clans list, an empty shop, no dice, and every "failed to
+  load" on the race, dice and shop screens).
+- **A tablet layout.** From 840 px wide the Home tabs sit in a rail down the
+  left edge instead of the bar at the bottom, and the app keeps to 1280 px,
+  centred, on a larger window.
+
+### Changed
+- **Patrons are shown by their pixel banner.** The patron emblem (offers, the
+  Clans screen, signs) is the top sign off the clan's pixel banner on a dark
+  tile in its colour; a patron without a banner keeps its icon on a disc.
+- **The standing meter moves.** When a standing changes the tick slides to its
+  new place over 600 ms and the stretch it crossed glows gold for a gain, red
+  for a loss, and fades.
 ## [1.256.0+292]
 
 A way out of a place leaves by its road, and says which.
