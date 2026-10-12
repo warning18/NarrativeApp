@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.249.0+285]
+
+### Changed
+- **The throne room is darker.** The throne is now an old seat of black stone: a tall back crowned with jagged spires, a pointed recess cut deep with three ember-red slits glowing in it under a worn brass ring, cracked stone, spiked armrests, a worn wine cushion, clawed feet and dark steps. The stage is nearly black, lit from behind the throne and by a dull red pool on the floor, the carpet is a worn wine, the braziers burn lower, and the banners stand on black iron poles with tarnished brass.
+
 ## [1.248.0+284]
 
 ### Changed

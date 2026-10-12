@@ -355,7 +355,7 @@ class _ThroneRoomState extends State<ThroneRoom>
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Color(0xFF1E212B), Color(0xFF14151C)],
+                  colors: [Color(0xFF12141B), Color(0xFF07080B)],
                 ),
               ),
             ),
@@ -377,9 +377,9 @@ class _ThroneRoomState extends State<ThroneRoom>
                         center: const Alignment(0, -0.2),
                         radius: 0.85,
                         colors: [
-                          Color.lerp(const Color(0xFF8C93A8),
-                                  const Color(0xFFC9A66A), pulse)!
-                              .withValues(alpha: 0.18),
+                          Color.lerp(const Color(0xFF7A84A6),
+                                  const Color(0xFFA6624A), pulse)!
+                              .withValues(alpha: 0.30),
                           Colors.transparent,
                         ],
                       ),
@@ -400,7 +400,7 @@ class _ThroneRoomState extends State<ThroneRoom>
                 child: const DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: RadialGradient(
-                      colors: [Color(0x55E8A8A0), Color(0x00E8A8A0)],
+                      colors: [Color(0x66B0483C), Color(0x00B0483C)],
                     ),
                   ),
                 ),

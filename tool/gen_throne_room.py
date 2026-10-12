@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draws the Lantern Throne room of the Clans screen (v1.247).
+"""Draws the Lantern Throne room of the Clans screen (v1.247, darkened v1.249).
 
 Writes to assets/visuals/throne/: the throne on its dais (throne.png, 128x144),
 a brazier (brazier.png, 24x40), the carpet tile and the parts of a standard
@@ -26,6 +26,22 @@ RED = (120, 24, 36, 255)
 RED_L = (168, 44, 52, 255)
 RED_D = (70, 12, 22, 255)
 CLEAR = (0, 0, 0, 0)
+# the dark throne's own tones: old black stone, ember light, tarnished brass
+B0 = (14, 10, 18, 255)
+B1 = (30, 25, 38, 255)
+B2 = (52, 45, 64, 255)
+B3 = (88, 78, 104, 255)
+B4 = (126, 114, 140, 255)
+EMBER = (214, 78, 34, 255)
+EMBER_L = (255, 150, 64, 255)
+EMBER_D = (120, 32, 24, 255)
+BRASS = (140, 108, 52, 255)
+BRASS_L = (196, 160, 88, 255)
+BRASS_D = (84, 62, 30, 255)
+BONE = (186, 174, 148, 255)
+WINE = (88, 18, 30, 255)
+WINE_L = (126, 30, 42, 255)
+WINE_D = (48, 10, 18, 255)
 
 
 def canvas(w, h):
@@ -45,126 +61,146 @@ def trapezoid(d, top_y, bottom_y, top_x0, top_x1, bottom_x0, bottom_x1, fill, ed
 
 
 def throne():
-    """A gilded throne with a red velvet back and seat, on a low dais."""
+    """An old throne of black stone: spired back, ember slits, worn wine cushion."""
     im, d = canvas(128, 144)
-    # --- the dais: three steps, a lit top and a dark front on each
+    # --- the dais: dark worn steps
     steps = [(104, 115, 22, 105), (116, 127, 14, 113), (128, 143, 6, 121)]
     for y0, y1, x0, x1 in steps:
-        box(d, x0, y0, x1, y1, S1)
-        d.rectangle([x0 + 1, y0 + 1, x1 - 1, y0 + 3], fill=S3)
-        d.rectangle([x0 + 1, y0 + 4, x1 - 1, y0 + 5], fill=S2)
-        d.rectangle([x0 + 1, y1 - 2, x1 - 1, y1 - 1], fill=S0)
+        box(d, x0, y0, x1, y1, B1)
+        d.rectangle([x0 + 1, y0 + 1, x1 - 1, y0 + 2], fill=B3)
+        d.rectangle([x0 + 1, y0 + 3, x1 - 1, y0 + 4], fill=B2)
+        d.rectangle([x0 + 1, y1 - 2, x1 - 1, y1 - 1], fill=B0)
         for x in range(x0 + 6, x1 - 4, 14):
-            d.line([(x, y0 + 6), (x, y1 - 3)], fill=S0)
+            d.line([(x, y0 + 5), (x, y1 - 3)], fill=B0)
+        d.point((x0 + 9, y0 + 8 if y1 - y0 > 9 else y0 + 6), fill=B3)
     for y0, y1, x0, x1 in [(104, 115, 52, 75), (116, 127, 49, 78), (128, 143, 46, 81)]:
-        d.rectangle([x0, y0 + 1, x1, y1], fill=GOLD_D)
-        d.rectangle([x0 + 2, y0 + 1, x1 - 2, y1], fill=RED)
-        d.rectangle([x0 + 2, y0 + 1, x0 + 3, y1], fill=RED_L)
-        d.rectangle([x1 - 3, y0 + 1, x1 - 2, y1], fill=RED_D)
-    # --- the throne's back: a gilded frame round a tufted red panel
-    d.polygon([(41, 36), (46, 22), (56, 14), (64, 6), (72, 14), (82, 22), (87, 36), (87, 96), (41, 96)], fill=OUT)
-    d.polygon([(43, 36), (47, 24), (57, 16), (64, 9), (71, 16), (81, 24), (85, 36), (85, 94), (43, 94)], fill=GOLD)
-    d.rectangle([43, 24, 45, 94], fill=GOLD_L)                          # the lit side of the frame
-    d.rectangle([83, 30, 85, 94], fill=GOLD_D)
-    d.polygon([(49, 38), (52, 28), (60, 21), (64, 17), (68, 21), (76, 28), (79, 38), (79, 90), (49, 90)], fill=OUT)
-    d.polygon([(50, 38), (53, 29), (60, 22), (64, 19), (68, 22), (75, 29), (78, 38), (78, 89), (50, 89)], fill=RED)
-    d.rectangle([50, 38, 52, 89], fill=RED_L)
-    d.rectangle([76, 38, 78, 89], fill=RED_D)
-    # tufting: a lattice of gold buttons
-    for yy in range(34, 88, 9):
-        for k, xx in enumerate(range(57, 78, 10)):
-            ox = 5 if (yy // 9) % 2 else 0
-            x = xx - ox
-            if 52 <= x <= 76:
-                d.point((x, yy), fill=GOLD_L)
-                d.point((x + 1, yy + 1), fill=RED_D)
-    # the crest: a gilded shell and a bead on the apex
-    d.ellipse([57, 9, 71, 23], fill=OUT)
-    d.ellipse([58, 10, 70, 22], fill=GOLD)
-    d.ellipse([60, 12, 68, 20], fill=GOLD_D)
-    d.point((63, 13), fill=GOLD_L)
-    d.line([(64, 11), (64, 21)], fill=GOLD_L)
-    for cx, cy in [(64, 5), (44, 36), (84, 36)]:
-        d.ellipse([cx - 3, cy - 3, cx + 3, cy + 3], fill=OUT)
-        d.ellipse([cx - 2, cy - 2, cx + 2, cy + 2], fill=GOLD)
-        d.point((cx - 1, cy - 1), fill=GOLD_L)
-    # --- armrests: gilded scrolls with red pads
-    for x0, sign in ((34, -1), (85, 1)):
-        d.rectangle([x0, 66, x0 + 9, 100], fill=OUT)
-        d.rectangle([x0 + 1, 67, x0 + 8, 99], fill=GOLD)
-        d.rectangle([x0 + 1, 67, x0 + 2, 99], fill=GOLD_L)
-        d.rectangle([x0 + 7, 67, x0 + 8, 99], fill=GOLD_D)
-        d.rectangle([x0 - 1, 60, x0 + 10, 68], fill=OUT)
-        d.rectangle([x0, 61, x0 + 9, 67], fill=RED)
-        d.rectangle([x0, 61, x0 + 9, 62], fill=RED_L)
-        fx = x0 + 1 if sign < 0 else x0 + 3
-        d.ellipse([fx - 1, 53, fx + 6, 60], fill=OUT)
-        d.ellipse([fx, 54, fx + 5, 59], fill=GOLD)
-        d.point((fx + 1, 55), fill=GOLD_L)
-    # --- the seat: a deep red cushion in a gilded base, on carved legs
-    d.rectangle([38, 88, 90, 104], fill=OUT)
-    d.rectangle([39, 89, 89, 103], fill=GOLD)
-    d.rectangle([39, 89, 89, 90], fill=GOLD_L)
-    d.rectangle([39, 101, 89, 103], fill=GOLD_D)
-    d.rectangle([44, 78, 84, 90], fill=OUT)
-    d.rectangle([45, 79, 83, 89], fill=RED)
-    d.rectangle([45, 79, 83, 81], fill=RED_L)
-    d.rectangle([45, 87, 83, 89], fill=RED_D)
+        d.rectangle([x0, y0 + 1, x1, y1], fill=BRASS_D)
+        d.rectangle([x0 + 2, y0 + 1, x1 - 2, y1], fill=WINE)
+        d.rectangle([x0 + 2, y0 + 1, x0 + 3, y1], fill=WINE_L)
+        d.rectangle([x1 - 3, y0 + 1, x1 - 2, y1], fill=WINE_D)
+    # --- buttresses either side, ending in spikes
+    for sx in (0, 1):
+        def mx(x):
+            return x if sx == 0 else 127 - x
+        d.polygon([(mx(30), 100), (mx(30), 60), (mx(33), 46), (mx(36), 58), (mx(40), 50), (mx(40), 100)], fill=OUT)
+        d.polygon([(mx(31), 99), (mx(31), 61), (mx(33), 49), (mx(36), 60), (mx(39), 53), (mx(39), 99)], fill=B1 if sx else B2)
+        d.line([(mx(32), 62), (mx(32), 98)], fill=B3 if sx == 0 else B0)
+    # --- the back: a tall slab with a crown of spires
+    outline = [(40, 96), (40, 52), (37, 40), (41, 34), (41, 20), (45, 30), (48, 26), (48, 12),
+               (52, 22), (56, 18), (58, 8), (64, 0), (70, 8), (72, 18), (76, 22), (80, 12),
+               (80, 26), (83, 30), (87, 20), (87, 34), (91, 40), (88, 52), (88, 96)]
+    d.polygon(outline, fill=OUT)
+    inner = [(x + (1 if x < 64 else -1 if x > 64 else 0), y + (1 if y < 96 else 0)) for x, y in outline]
+    d.polygon(inner, fill=B1)
+    # light from the left, dark on the right
+    d.line([(41, 96), (41, 52), (38, 41), (42, 35), (42, 22), (46, 31), (49, 27), (49, 14), (53, 23), (57, 19), (59, 9), (64, 2)], fill=B3)
+    d.line([(64, 2), (69, 9), (71, 19), (75, 23), (79, 14), (79, 27), (82, 31), (86, 22)], fill=B0)
+    d.rectangle([84, 36, 87, 96], fill=B0)
+    d.rectangle([42, 40, 44, 96], fill=B2)
+    # a recess: a pointed arch cut deep, its edge worn
+    d.polygon([(49, 92), (49, 44), (52, 33), (58, 25), (64, 21), (70, 25), (76, 33), (79, 44), (79, 92)], fill=B3)
+    d.polygon([(50, 92), (50, 45), (53, 34), (58, 26), (64, 22), (70, 26), (75, 34), (78, 45), (78, 92)], fill=(9, 6, 13, 255))
+    # ember slits glowing in the dark
+    for x, top in ((57, 52), (64, 40), (71, 52)):
+        d.rectangle([x - 1, top, x + 1, 88], fill=EMBER_D)
+        d.line([(x, top + 2), (x, 86)], fill=EMBER)
+        d.line([(x, top + 6), (x, top + 14)], fill=EMBER_L)
+    # the sigil above them: a worn brass ring round an ember
+    d.ellipse([57, 28, 71, 42], fill=OUT)
+    d.ellipse([58, 29, 70, 41], fill=BRASS_D)
+    d.ellipse([59, 30, 69, 40], fill=BRASS)
+    d.ellipse([60, 31, 68, 39], fill=(9, 6, 13, 255))
+    d.ellipse([62, 33, 66, 37], fill=EMBER)
+    d.point((63, 34), fill=EMBER_L)
+    d.point((64, 29), fill=BRASS_L)
+    # cracks across the old stone
+    for pts in ([(43, 60), (45, 66), (44, 72), (46, 80)], [(84, 46), (82, 54), (84, 60)], [(54, 46), (52, 50), (53, 54)]):
+        d.line(pts, fill=B0)
+    # spike tips catching the light
+    for x, y in ((64, 1), (58, 9), (48, 13), (41, 21), (80, 13), (87, 21)):
+        d.point((x, y), fill=B4)
+    # --- armrests: blocks of black stone, spiked, with a brass band
+    for x0 in (35, 83):
+        d.rectangle([x0, 70, x0 + 10, 100], fill=OUT)
+        d.rectangle([x0 + 1, 71, x0 + 9, 99], fill=B1)
+        d.rectangle([x0 + 1, 71, x0 + 2, 99], fill=B3 if x0 < 64 else B2)
+        d.rectangle([x0 + 8, 71, x0 + 9, 99], fill=B0)
+        d.rectangle([x0 - 1, 66, x0 + 11, 72], fill=OUT)
+        d.rectangle([x0, 67, x0 + 10, 71], fill=B2)
+        d.polygon([(x0 + 2, 66), (x0 + 5, 56), (x0 + 8, 66)], fill=OUT)
+        d.polygon([(x0 + 3, 66), (x0 + 5, 59), (x0 + 7, 66)], fill=B2)
+        d.rectangle([x0 + 1, 84, x0 + 9, 85], fill=BRASS_D)
+        d.point((x0 + 2, 84), fill=BRASS_L)
+    # --- the seat: a worn wine cushion on a banded stone base
+    d.rectangle([38, 90, 90, 106], fill=OUT)
+    d.rectangle([39, 91, 89, 105], fill=B1)
+    d.rectangle([39, 91, 89, 92], fill=B3)
+    d.rectangle([39, 99, 89, 99], fill=B0)
+    d.rectangle([39, 102, 89, 103], fill=BRASS_D)
+    for x in range(44, 88, 11):
+        d.point((x, 95), fill=B3)
+    d.rectangle([44, 79, 84, 91], fill=OUT)
+    d.rectangle([45, 80, 83, 90], fill=WINE)
+    d.rectangle([45, 80, 83, 81], fill=WINE_L)
+    d.rectangle([45, 88, 83, 90], fill=WINE_D)
     for x in range(51, 80, 8):
-        d.point((x, 84), fill=GOLD)
-    for x0 in (40, 80):
-        d.rectangle([x0, 103, x0 + 8, 108], fill=OUT)
-        d.rectangle([x0 + 1, 103, x0 + 7, 107], fill=GOLD_D)
+        d.point((x, 85), fill=BRASS)
+    # clawed feet on the top step
+    for x0 in (39, 81):
+        d.polygon([(x0, 106), (x0 + 9, 106), (x0 + 10, 110), (x0 - 1, 110)], fill=OUT)
+        d.polygon([(x0 + 1, 106), (x0 + 8, 106), (x0 + 8, 109), (x0, 109)], fill=B2)
     return im
 
 
 def standard_parts():
-    """The pole, its foot and its finial: what the banners stand on."""
+    """The pole, its foot and its finial: what the banners stand on, in black
+    iron with tarnished brass."""
     pole, d = canvas(6, 8)
     d.rectangle([0, 0, 5, 7], fill=OUT)
-    d.rectangle([1, 0, 4, 7], fill=GOLD)
-    d.rectangle([1, 0, 1, 7], fill=GOLD_L)
-    d.rectangle([4, 0, 4, 7], fill=GOLD_D)
-    d.point((2, 3), fill=GOLD_L)
+    d.rectangle([1, 0, 4, 7], fill=B2)
+    d.rectangle([1, 0, 1, 7], fill=B4)
+    d.rectangle([4, 0, 4, 7], fill=B0)
+    d.point((2, 3), fill=BRASS_L)
     foot, d = canvas(30, 12)
     d.ellipse([0, 4, 29, 11], fill=OUT)
-    d.ellipse([1, 4, 28, 10], fill=GOLD_D)
-    d.ellipse([3, 4, 26, 8], fill=GOLD)
-    d.ellipse([6, 4, 22, 6], fill=GOLD_L)
+    d.ellipse([1, 4, 28, 10], fill=B1)
+    d.ellipse([3, 4, 26, 8], fill=B2)
+    d.ellipse([6, 4, 22, 6], fill=B3)
     d.rectangle([11, 0, 18, 7], fill=OUT)
-    d.rectangle([12, 0, 17, 7], fill=GOLD)
-    d.rectangle([12, 0, 13, 7], fill=GOLD_L)
-    d.rectangle([16, 0, 17, 7], fill=GOLD_D)
+    d.rectangle([12, 0, 17, 7], fill=B2)
+    d.rectangle([12, 0, 13, 7], fill=B4)
+    d.rectangle([16, 0, 17, 7], fill=B0)
+    d.rectangle([12, 3, 17, 4], fill=BRASS_D)
     fin, d = canvas(12, 16)
-    d.ellipse([1, 5, 10, 14], fill=OUT)
-    d.ellipse([2, 6, 9, 13], fill=GOLD)
-    d.ellipse([3, 7, 6, 10], fill=GOLD_L)
-    d.polygon([(6, 0), (9, 6), (3, 6)], fill=OUT)
-    d.polygon([(6, 2), (8, 6), (4, 6)], fill=GOLD)
-    d.rectangle([5, 14, 6, 15], fill=OUT)
+    d.polygon([(6, 0), (10, 8), (8, 13), (4, 13), (2, 8)], fill=OUT)
+    d.polygon([(6, 2), (9, 8), (7, 12), (5, 12), (3, 8)], fill=BRASS)
+    d.polygon([(6, 2), (5, 8), (4, 8), (3, 8)], fill=BRASS_L)
+    d.polygon([(6, 3), (8, 8), (7, 11), (6, 11)], fill=BRASS_D)
+    d.rectangle([4, 13, 7, 15], fill=OUT)
+    d.rectangle([5, 13, 6, 14], fill=B2)
     return pole, foot, fin
 
 
 def brazier():
     im, d = canvas(24, 40)
-    box(d, 9, 14, 14, 33, S1)                                           # the stem
-    d.rectangle([10, 15, 11, 32], fill=S3)
-    trapezoid(d, 6, 14, 3, 20, 7, 16, S2)                               # the bowl
-    d.rectangle([3, 6, 20, 8], fill=GOLD)
-    d.rectangle([4, 6, 8, 6], fill=GOLD_L)
-    d.rectangle([5, 9, 18, 10], fill=S3)
-    box(d, 5, 32, 18, 39, S1)                                           # the foot
-    d.rectangle([6, 33, 17, 34], fill=S3)
-    d.rectangle([6, 37, 17, 38], fill=S0)
-    # coals
-    for x in (6, 9, 12, 15, 17):
-        d.point((x, 5), fill=RED_L)
+    box(d, 9, 14, 14, 33, B1)                                           # the stem
+    d.rectangle([10, 15, 11, 32], fill=B3)
+    d.rectangle([9, 22, 14, 23], fill=BRASS_D)
+    trapezoid(d, 6, 14, 3, 20, 7, 16, B2)                               # the bowl
+    d.rectangle([3, 6, 20, 8], fill=BRASS)
+    d.rectangle([4, 6, 8, 6], fill=BRASS_L)
+    d.rectangle([5, 9, 18, 10], fill=B3)
+    box(d, 5, 32, 18, 39, B1)                                           # the foot
+    d.rectangle([6, 33, 17, 34], fill=B3)
+    d.rectangle([6, 37, 17, 38], fill=B0)
+    for x in (6, 9, 12, 15, 17):                                        # coals
+        d.point((x, 5), fill=EMBER)
     return im
 
 
 def flame_frames():
     """Six 24x24 frames in the lantern's own fire: core, flame, edge, ember."""
-    tones = [(255, 240, 170, 255), (255, 168, 58, 255), (214, 84, 38, 255), (120, 34, 30, 255)]
+    tones = [(255, 214, 130, 255), (236, 120, 44, 255), (176, 52, 30, 255), (96, 24, 24, 255)]
     rnd = random.Random(7)
     strip = Image.new('RGBA', (24 * 6, 24), CLEAR)
     for f in range(6):
@@ -185,18 +221,19 @@ def flame_frames():
 
 
 def carpet_tile():
-    """36 wide: the carpet as it runs over the dais's lowest step."""
+    """36 wide: the carpet as it runs over the dais's lowest step, worn wine."""
     im, d = canvas(36, 16)
-    d.rectangle([0, 0, 35, 15], fill=GOLD_D)
-    d.rectangle([2, 0, 33, 15], fill=RED)
-    d.rectangle([2, 0, 3, 15], fill=RED_L)
-    d.rectangle([31, 0, 33, 15], fill=RED_D)
-    # a diamond down the middle
-    d.polygon([(18, 2), (24, 8), (18, 14), (12, 8)], fill=GOLD_D)
-    d.polygon([(18, 4), (22, 8), (18, 12), (14, 8)], fill=RED_D)
-    d.point((18, 8), fill=GOLD_L)
-    d.point((7, 8), fill=GOLD)
-    d.point((28, 8), fill=GOLD)
+    d.rectangle([0, 0, 35, 15], fill=BRASS_D)
+    d.rectangle([2, 0, 33, 15], fill=WINE)
+    d.rectangle([2, 0, 3, 15], fill=WINE_L)
+    d.rectangle([31, 0, 33, 15], fill=WINE_D)
+    d.polygon([(18, 2), (24, 8), (18, 14), (12, 8)], fill=BRASS_D)
+    d.polygon([(18, 4), (22, 8), (18, 12), (14, 8)], fill=WINE_D)
+    d.point((18, 8), fill=BRASS_L)
+    d.point((7, 8), fill=BRASS)
+    d.point((28, 8), fill=BRASS)
+    d.point((9, 3), fill=WINE_D)
+    d.point((26, 12), fill=WINE_D)
     return im
 
 
