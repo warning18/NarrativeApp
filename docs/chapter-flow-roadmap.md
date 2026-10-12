@@ -96,8 +96,8 @@ story rules them out).
 | 4 | 4999_camp | Wrack's End 5100, Drowned Cloister 5010 (Ossuary Galleries) | Ossuary Galleries (1 · 8 · Bone Warden) | The Drowned Stair (2 · 9 · Hollow Court Inquisitor) → the moon-shard, the third piece |
 | 5 | 6002_camp | Rimewell 6100, Reliquary Quarter 6010 (Dead Heart Approach) | Dead Heart Approach (2 · 10 · Tear-Spawn) | The fourth piece: the Shroud's Vigil (3 · 11 · Void Archon) → the reliquary thread |
 | 6 | 7001 | Hollow Shore 7002, Greyhithe 7200, White Anchorage 7100 (Glass Strand) | Glass Strand (2 · 12 · Strand Colossus) | The White Fleet's Grave (3 · 13 · White Admiral) → the White Fleet's sail |
-| 7 | 7400 | Candlehold 7500 (the Houses, 7510_*; the Lantern Hall 7520_*, 7590_*) | — | Sail for Candlehold: a claimant is faced in the Lantern Hall and the Throne is filled → no piece |
-| 8 | 7800 | Hollow Shore 7002 | the Herald (7810) | Lead the Host to the Hollow Shore, then the Sovereign (7003; 3 · 14 · Void Sovereign) → the Sovereign's mantle |
+| 7 | 7400 | Candlehold 7500 (the Houses, 7510_*; the Lantern Hall 7520_*, 7590_*) | — | Sail for Candlehold (`q_ch7_lantern_throne`): a claimant is faced in the Lantern Hall and the Throne is filled → no piece |
+| 8 | 7800 | Hollow Shore 7002 | the Herald (7810) | Lead the Host to the Hollow Shore, then the Sovereign (`q_ch6_beyond_the_tear`, 7003; 3 · 14 · Void Sovereign) → the Sovereign's mantle |
 
 The throne campaign (chapters 7 and 8) is written as scenes, not loops:
 the party arrives under a clan's banner (`7510_*`), faces a claimant in
@@ -177,13 +177,13 @@ party that skips every quest.
 
 ## Open points
 
-- **Chapters 7 and 8 have one main quest between them** (`q_ch6_beyond_the_tear`,
-  unlocked at `7800` although its id and `chapter` field say 6) and no side
-  quests; chapter 7 has none at all. Needs a decision with Core.
+- **Chapters 7 and 8 have one main quest each** (`q_ch7_lantern_throne`,
+  offered at `7400`; `q_ch6_beyond_the_tear`, filed under chapter 8, offered
+  at `7800`) and no side quests. Their activity and quest goals are 0. See
+  `docs/narrative-proposals.md` for the options.
 - **Six of the eight intrigues are not yet played in the graph** (only
   `hooded_lantern` and `dying_lantern_bearer` are; `broken_charter` has one
   stage). See `docs/narrative-audit.md`.
-
 - **The activity goal and thorough players.** A thorough player reaches
   10–12 things done before setting out; the goal of 8 mostly shapes the
   rusher's pace (two trips a chapter).
