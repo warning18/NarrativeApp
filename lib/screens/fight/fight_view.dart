@@ -549,8 +549,7 @@ extension _FightView on _FightScreenState {
   ) {
     final previews = plan.previews;
     final colorScheme = Theme.of(context).colorScheme;
-    final canLock =
-        _awaitingDecision && !_rolling && _rollCount < _maxRollsThisFight;
+    final canLock = _awaitingDecision && !_rolling && _rollCount < _rollCap;
     final hintKey = acting.isEmpty
         ? 'nobody_can_act_label'
         : _currentFaces.isEmpty

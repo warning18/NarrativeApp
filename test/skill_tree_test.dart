@@ -40,14 +40,24 @@ void main() {
 
   group('the trees', () {
     for (final professionId in professions.keys) {
-      test('$professionId: three branches of four, all theirs, once each', () {
+      test(
+          '$professionId: three branches of four, more of a few, all theirs, once each',
+          () {
         final branches = skillBranchesFor(trees,
             raceId: 'human', professionId: professionId);
         final classBranches = branches.where((b) => !b.heritage).toList();
-        expect(classBranches, hasLength(3));
+        // Three core branches of four, and (v1.245) a few more of two to four
+        // for the elements a class grew into.
+        final core = classBranches.where((b) => b.order <= 3).toList();
+        expect(core, hasLength(3));
         final onTree = <String>[];
         for (final branch in classBranches) {
-          expect(branch.skillIds, hasLength(4), reason: branch.id);
+          if (branch.order <= 3) {
+            expect(branch.skillIds, hasLength(4), reason: branch.id);
+          } else {
+            expect(branch.skillIds.length, inInclusiveRange(2, 4),
+                reason: branch.id);
+          }
           for (final id in branch.skillIds) {
             final skill = skills[id] as Map<String, dynamic>?;
             expect(skill, isNotNull, reason: id);

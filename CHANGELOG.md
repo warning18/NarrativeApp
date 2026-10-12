@@ -8,6 +8,52 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.253.0+289]
+
+### Changed
+- **The throne has no spikes: its top is broken.** The crown of spires, the spiked arms and the spiked shoulders are gone. The back is now a tall slab of black stone whose top has broken away in a ragged fracture, pale where the stone is fresh; the recess with its three ember slits is open to the break, the brass ring is chipped, one armrest is chipped, and rubble that fell from the top lies on the steps, the carpet and the cushion. The banners' finials are round.
+
+## [1.252.0+288]
+
+### Changed
+- **The throne room is darker.** The throne is now an old seat of black stone: a tall back crowned with jagged spires, a pointed recess cut deep with three ember-red slits glowing in it under a worn brass ring, cracked stone, spiked armrests, a worn wine cushion, clawed feet and dark steps. The stage is nearly black, lit from behind the throne and by a dull red pool on the floor, the carpet is a worn wine, the braziers burn lower, and the banners stand on black iron poles with tarnished brass.
+
+## [1.251.0+287]
+
+### Changed
+- **The throne room is restaged as a dark stage.** The Lantern Throne is now a gilded throne with a red velvet back and seat, in the middle of a dark hall lit from above and by a pool of light on the floor, its two braziers burning. Each banner you have earned stands on its own tall gilt standard (a pole, a foot and a finial) instead of hanging on a wall: one each side of the throne, the rest in pairs down the long carpet.
+- **The banners blow in the wind.** A wind from the left rises and falls in gusts: it pushes the cloth to the right more the lower it hangs, a ripple runs down it and the hem flutters, while the rod at the top holds still; a few specks of dust drift across the hall. The cycle loops without a seam, and with reduced motion everything stands still.
+
+## [1.250.0+286]
+
+### Added
+- **A throne room in the Clans screen** (a new "Throne room" tab, in play and in Edit Mode): the Lantern Throne in pixel art on its dais, a brazier lit at each end of it, a red carpet running down a long hall, and every banner you have earned hanging along the walls and swaying: the cloth swings a little further the lower it hangs, the pole held still. A clan's banner hangs once it is your friend, the Open Hand's once it is raised, and the Shroud's pieces as you find them; a tap names a banner and its standing. Above it, the hall says who holds the throne, or your claim, or that it stands empty. With reduced motion the banners hang still. Drawn by `tool/gen_throne_room.py`.
+
+### Changed
+- **"Every skill in motion" on the design canvas is back in the basic hand.** Both boards now play the game's own effect strips, recoloured to each skill's element as the fight does, for all 162 skills (the 20 newest marked NEW), in place of the poster-style motions.
+
+## [1.249.0+285]
+
+### Changed
+- **The fight effects are back in their earlier pixel-art hand.** The poster-style redraw of 1.240.0 is undone: the 35 effect strips in `assets/visuals/pixel_fx` and `tool/gen_fight_fx.py` return to their 1.239 state, with their earlier shapes and animations. Nothing else of 1.240.0 changed, and the 20 new skills of 1.245.0 play the same effects as before.
+
+## [1.248.0+284]
+
+Twenty new skills, and the rules they needed.
+
+### Added
+- **20 skills** for the mage, cleric, rogue, ranger and warrior (names, texts and battle lines in English and French, a pixel icon each, a place on a profession's tree, in seven new branches: Storm and Frost for the mage, Dawn and Tides for the cleric, Gale for the rogue, Skyhunter for the ranger, Stoneward for the warrior):
+  - Mage, ice and storm: Rime Lance, Glacial Ward, Chain Lightning, Static Charge, Thunderclap and the legendary Stormcaller.
+  - Cleric, water and light: Tidal Wash, Undertow, Dawn Lance, Lantern Ward and the legendary Winter's Hush and Second Dawn.
+  - Rogue and ranger, wind: Gale Cut, Dust Devil, Rain of Arrows, Hawk Mark, Windwalker.
+  - Warrior, earth: Rockfall, Bastion Slam, Thornwall.
+  - Ice, Electricity and Light now each have player skills (Ice had none).
+- **What the skills ask of the fight** (`lib/combat/skill_extras.dart`, all optional fields of a skill, editable in Edit Mode): a shield (`blockAmount`), several blows struck one after the other (`strikes`), a share of the blow on the other enemies, and how many (`splashShare`, `splashTargets`), a status on every enemy (`statusAll`) and a second status beside the first, a ward that lays a status on whoever strikes the shield (`reflectStatus`), a cleanse of the caster (`cleanse`), a heal for the whole party (`healAll`), a blow that goes through guards (`pierces`), damage drawn from armor (`damageFromArmor`), full momentum (`chargesMomentum`) and a free reroll next round (`bonusRolls`).
+- `tool/gen_skill_icons.py` draws the twenty icons.
+
+### Changed
+- The new skills that only shield, heal or control have a damage multiplier of 0, so they do not also strike for the caster's base damage.
+- Windwalker gives a free reroll next round rather than a second action, and Bastion Slam draws its extra damage from the armor you wear rather than from the shield you hold; both read from the same rules as the others.
 ## [1.247.0+283]
 
 The world's fixed roads: the groundwork for a map where the party only takes roads.
