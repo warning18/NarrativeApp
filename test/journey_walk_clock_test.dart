@@ -66,10 +66,11 @@ void main() {
         container.read(homeTabIndexProvider.notifier).state = tab;
     // What arriving somewhere opens over the game (a new place's card, a
     // chapter's notice) is closed.
-    Future<void> arrive(String id) async {
+    Future<void> arrive(String id, {int walk = 2}) async {
       play.jumpTo(id);
       await _settle(tester);
-      await tester.pump(const Duration(seconds: 2));
+      // The road walked to a place far off takes its time.
+      await tester.pump(Duration(seconds: walk));
       for (var i = 0; i < 3; i++) {
         Navigator.of(tester.element(find.byType(JourneyScreen)))
             .popUntil(isGameRoute);
@@ -135,7 +136,7 @@ void main() {
     expect(tester.takeException(), isNull);
 
     // The alley: the same on a plain scene.
-    await arrive('270');
+    await arrive('270', walk: 6);
     await tester.tap(_step(0));
     await tester.pump(const Duration(milliseconds: 500));
     expect(

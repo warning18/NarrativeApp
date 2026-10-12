@@ -8,6 +8,27 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.254.0+290]
+
+The party walks the world's roads, stop by stop.
+
+### Added
+- **A journey between two landmarks follows the roads.** When the party leaves
+  a place along a way on the Journey map, or the story carries it somewhere
+  (a lost fight, a failed roll, a jump along no choice), the world chart no
+  longer draws one straight line: it walks the shortest way along the fixed
+  roads (`world_roads.dart`), through every landmark on it, with the stops
+  of each road marked and named as the party passes them. A road too long to
+  frame whole is followed with the party in the middle of the view.
+- **The words name the stop.** Under the caption of a carried move, a line
+  says which stop the party has just passed ("You pass the Dyers' Gate."), in
+  English and French. A road with more to pass takes longer to walk, up to a
+  few seconds more; a tap still skips it.
+
+### Changed
+- The flight over the chart that follows a picked way out of a place takes the
+  same roads and stops, and is as long as the road it takes.
+
 ## [1.253.0+289]
 
 ### Changed

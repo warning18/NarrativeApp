@@ -15,6 +15,7 @@ import '../data/journey_map.dart';
 import '../data/scene_flow.dart';
 import '../data/journey_relief.dart';
 import '../data/map_charts.dart' show ChartGeography, ChartPalette, chartOf;
+import '../data/road_chart.dart';
 import '../data/narration_tokens.dart';
 import '../data/party_trail.dart';
 import '../data/road_events.dart';
@@ -106,6 +107,8 @@ class _Step {
     this.hazard,
     this.bearing,
     this.chartTarget,
+    this.targetLandmark,
+    this.route,
   });
 
   final StoryChoice choice;
@@ -134,6 +137,12 @@ class _Step {
   /// world chart (radians, 0 east, clockwise), and where it is there.
   final double? bearing;
   final Offset? chartTarget;
+
+  /// The landmark that way leads to, for a journey over the world chart.
+  final String? targetLandmark;
+
+  /// The roads and named stops along the way there (v1.254).
+  final ChartRoute? route;
 
   /// Whether taking the step carries the party somewhere (v1.224): across a
   /// bridge, into another district or building, through a door, out along a
@@ -234,6 +243,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// from where it was.
   Offset? _partyChart;
   String _partyName = '';
+  String? _partyLandmark;
 
   /// The road the party is carried along, with what is said of it, shown
   /// over the map until it ends or is tapped.
@@ -522,6 +532,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // Where the party stands before it sets out.
     final home = _partyChart;
     final homePlan = _partyPlan, homeDistrict = _partyDistrict;
+    final homeLandmark = _partyLandmark;
     // The story moved on meanwhile (the walk cut short with its map): the
     // step is no longer one to take.
     bool moved() => _sceneKeyOf(ref.read(storyPlayProvider)) != before;
@@ -543,6 +554,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       final reached = step.chartTarget;
       if (step.moves && reached != null) {
         _partyChart = reached;
+        _partyLandmark = step.targetLandmark ?? _partyLandmark;
         // Another place: its own plan, not this one's streets.
         _partyPlan = null;
       } else if (step.moves && step.district != null) {
@@ -572,6 +584,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             _partyChart = home;
             _partyPlan = homePlan;
             _partyDistrict = homeDistrict;
+            _partyLandmark = homeLandmark;
           }
         }
         if (mounted) {
@@ -844,6 +857,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                 : null,
             chartTarget:
                 chartHere != null && travels ? geography.of(target) : null,
+            targetLandmark: travels ? target.id : null,
+            route: travels && standing != null
+                ? chartRoadsBetween(geography, standing.id, target.id, language)
+                : null,
           );
         }(),
     ];
@@ -1030,6 +1047,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     fromName: _partyName,
                     toName: hereName,
                     flight: far,
+                    route: far && _partyLandmark != null && standing != null
+                        ? chartRoadsBetween(
+                            geography, _partyLandmark!, standing.id, language)
+                        : null,
                     forced: forced,
                     caption: partyMoveNote(
                             story, previousId, play.currentNodeId,
@@ -1050,6 +1071,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         _partyPlan = planKey;
         _partyDistrict = placeView.hereDistrict;
         _partyChart = to;
+        _partyLandmark = standing?.id;
         _partyName = hereName;
       }
     }
@@ -1334,6 +1356,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                               geography: placeView.geography,
                                               marks: placeView.marks,
                                               palette: palette,
+                                              passText:
+                                                  tr(ref, 'journey_pass_stop'),
                                               onDone: () {
                                                 if (mounted) {
                                                   setState(
@@ -1453,6 +1477,7 @@ class _Transit {
     required this.flight,
     required this.forced,
     required this.caption,
+    this.route,
   });
 
   /// The two places on the world chart.
@@ -1469,6 +1494,16 @@ class _Transit {
   /// a failed roll), not a journey the player started.
   final bool forced;
   final String caption;
+
+  /// The roads and named stops between the two places (v1.254), when the
+  /// world's roads lead there.
+  final ChartRoute? route;
+
+  /// How long the walk takes: longer for a road with more to pass.
+  Duration get duration => Duration(
+      milliseconds: flight
+          ? math.min(5000, 2400 + 400 * (route?.stops.length ?? 0))
+          : 2000);
 }
 
 /// The [_Transit] over the map: the world chart with the party walking the
@@ -1481,6 +1516,7 @@ class _PartyTransit extends StatefulWidget {
     required this.geography,
     required this.marks,
     required this.palette,
+    required this.passText,
     required this.onDone,
   });
 
@@ -1488,6 +1524,9 @@ class _PartyTransit extends StatefulWidget {
   final ChartGeography geography;
   final List<ChartMark> marks;
   final ChartPalette palette;
+
+  /// "You pass {stop}.", the words said of the stop the party has reached.
+  final String passText;
   final VoidCallback onDone;
 
   @override
@@ -1498,7 +1537,7 @@ class _PartyTransitState extends State<_PartyTransit>
     with SingleTickerProviderStateMixin {
   late final AnimationController _c = AnimationController(
     vsync: this,
-    duration: Duration(milliseconds: widget.transit.flight ? 2400 : 2000),
+    duration: widget.transit.duration,
   );
 
   @override
@@ -1552,6 +1591,7 @@ class _PartyTransitState extends State<_PartyTransit>
                     palette: widget.palette,
                     fromName: transit.fromName,
                     toName: transit.toName,
+                    route: transit.route,
                   ),
                 ),
               ),
@@ -1583,10 +1623,40 @@ class _PartyTransitState extends State<_PartyTransit>
                         ),
                         const SizedBox(width: 8),
                         Flexible(
-                          child: Text(
-                            transit.caption,
-                            key: const ValueKey('journey_transit_caption'),
-                            style: Theme.of(context).textTheme.bodyMedium,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                transit.caption,
+                                key: const ValueKey('journey_transit_caption'),
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              // The stop the party has just passed on the
+                              // way there (v1.254).
+                              if (road && transit.route != null)
+                                AnimatedBuilder(
+                                  animation: _c,
+                                  builder: (context, _) {
+                                    final stop = transit.route!.passed(
+                                        RegionFlightPainter.walkAt(Curves
+                                            .easeInOut
+                                            .transform(_c.value)));
+                                    if (stop == null) return const SizedBox();
+                                    return Text(
+                                      widget.passText
+                                          .replaceAll('{stop}', stop.name),
+                                      key: const ValueKey(
+                                          'journey_transit_stop'),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                              color: scheme.onSurfaceVariant),
+                                    );
+                                  },
+                                ),
+                            ],
                           ),
                         ),
                       ],
@@ -2414,6 +2484,10 @@ class _JourneyChartState extends State<_JourneyChart>
       final target =
           index < widget.steps.length ? widget.steps[index].chartTarget : null;
       if (place != null && target != null && _animate && mounted) {
+        // A road with more to pass takes longer to walk.
+        final stops = widget.steps[index].route?.stops.length ?? 0;
+        _flight.duration =
+            Duration(milliseconds: math.min(4500, 1900 + 350 * stops));
         setState(() => _flying = index);
         _wake();
         await _flight.forward(from: 0).orCancel;
@@ -3159,6 +3233,7 @@ class _JourneyChartState extends State<_JourneyChart>
                       palette: palette,
                       fromName: widget.hereName,
                       toName: steps[flying].leadsTo ?? '',
+                      route: steps[flying].route,
                     ),
                   ),
                 ),

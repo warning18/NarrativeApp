@@ -1,7 +1,8 @@
 // The party's road on the Journey map (v1.245): when the story sets it down
 // somewhere it did not walk to (a jump along no choice, a failed roll that
 // drops it at another place), the map walks it there by the world chart's
-// road and says why, in the language read; a tap skips the walk.
+// road and says why, in the language read; a tap skips the walk. Its road is
+// the world's own (v1.254): the stops it passes are named on the way.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,6 +28,7 @@ Future<void> _settle(WidgetTester tester) async {
 
 const _transit = ValueKey('journey_transit');
 const _caption = ValueKey('journey_transit_caption');
+const _stop = ValueKey('journey_transit_stop');
 
 void main() {
   testWidgets('a failed roll sets the party down elsewhere and the map says so',
@@ -101,6 +103,13 @@ void main() {
     expect(find.byKey(_transit), findsOneWidget);
     expect(tester.widget<Text>(find.byKey(_caption)).data,
         startsWith('You make your way to'));
+    // From the wharf to the alley the party goes by the world's roads
+    // (v1.254), and the words name the stops it passes.
+    expect(find.byKey(_stop), findsNothing, reason: 'none passed yet');
+    await tester.pump(const Duration(seconds: 2));
+    expect(find.byKey(_stop), findsOneWidget);
+    expect(
+        tester.widget<Text>(find.byKey(_stop)).data, startsWith('You pass '));
     await tester.pump(const Duration(seconds: 4));
     await clearCards();
     expect(find.byKey(_transit), findsNothing, reason: 'the transit ends');
