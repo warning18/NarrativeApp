@@ -8,6 +8,33 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.264.0+300]
+
+The level-up pop-up, the clans' offer and the dice, redrawn; and a story-true
+world chart to look at.
+
+### Changed
+- **The level-up pop-up wears the Level Up screen's design.** The medal and
+  its pixel burst, the level and the points to spend stay at the top; the
+  stats scroll below in four groups (fighting, body, mind, fortune) as seam-
+  bordered rows with a gold value and a "+1 Point". A tap or a long press on
+  a row says what the stat does. The screen and the pop-up share one list
+  (`LevelUpStats`), so they read alike.
+- **The clans' offer is three little flags.** Each suitor is a flag showing
+  only what the choice turns on: the gift's kind, name and rarity, and the
+  first standing it moves. Hold a flag to read the rest (the clan, its intro,
+  what the gift replaces and the politics of the pick); it goes when the
+  finger lifts. The chosen flag waves, the others dim.
+- **The dice roll sits under the fighters**, below the party and the
+  enemies, instead of above them.
+
+### Added
+- **A story-true world chart (docs and tool only).** `tool/fmg_chart/` draws
+  the story's world with Earth-like climate bands, archipelagos kept empty
+  for ship content and a globe render; previews are in
+  `docs/maps/fmg-chart/` (see `STORY-WORLD.md`). Nothing in the game reads it.
+- New string `offer_hold_hint` (English and French).
+
 ## [1.263.0+299]
 
 Two choices at the Hollow Shore can be seen at last.

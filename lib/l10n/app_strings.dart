@@ -10633,6 +10633,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The clans come to you',
     AppLanguage.fr: 'Les clans viennent à vous',
   },
+  'offer_hold_hint': {
+    AppLanguage.en: 'Press and hold a flag to read it.',
+    AppLanguage.fr: 'Appuyez longuement sur un drapeau pour le lire.',
+  },
   'offer_hint': {
     AppLanguage.en: 'Take one gift: the one you take is a side chosen.',
     AppLanguage.fr:
