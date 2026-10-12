@@ -41,7 +41,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Premier sang",
-    "npcDialogueText_fr": "Il faut bien que quelqu'un débarrasse le pont de ce péage."
+    "npcDialogueText_fr": "Il faut bien que quelqu’un débarrasse le pont de ce péage."
   },
   "q_retrieve_banner": {
     "questID": "q_retrieve_banner",
@@ -159,7 +159,7 @@
     "rewardAllyId": "",
     "grantsBannerPieceId": "",
     "questName_fr": "Une coque pour partir",
-    "npcDialogueText_fr": "Personne ne quitte Saltmouth par la route de terre avec l’Inquisition à la porte. Les chantiers vendront à un étranger une seule coque, le Rusty Eel, et il lui faut une coque rapiécée et une voile réparée avant qu’il flotte. Obtenez-le, réparez-le, et larguez les amarres."
+    "npcDialogueText_fr": "Personne ne quitte Bouche-de-Sel par la route de terre avec l’Inquisition à la porte. Les chantiers vendront à un étranger une seule coque, le Rusty Eel, et il lui faut une coque rapiécée et une voile réparée avant qu’il flotte. Obtenez-le, réparez-le, et larguez les amarres."
   },
   "q_ch2_dockside_debts": {
     "questID": "q_ch2_dockside_debts",

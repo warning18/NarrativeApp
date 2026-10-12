@@ -9,7 +9,7 @@
       "My old sergeant would have bought you a drink for that. He'd have hated it, but he'd have bought it."
     ],
     "lines_fr": [
-      "C'est ça, le métier. Pas la paie : le métier.",
+      "C’est ça, le métier. Pas la paie : le métier.",
       "Vous avez fait rempart entre eux et le danger. Je sais ce que ça coûte. Bien joué.",
       "Mon vieux sergent vous aurait payé à boire pour ça. Il aurait détesté ça, mais il aurait payé."
     ]
@@ -25,8 +25,8 @@
     ],
     "lines_fr": [
       "On tenait des portes pour que personne ne fasse ce genre de chose.",
-      "Hum. Je m'en souviendrai. Pas avec tendresse.",
-      "Rien ne l'exigeait. Rien ne l'exige jamais."
+      "Hum. Je m’en souviendrai. Pas avec tendresse.",
+      "Rien ne l’exigeait. Rien ne l’exige jamais."
     ]
   },
   "kelda_approved": {
@@ -38,7 +38,7 @@
       "That'll do. That'll do nicely."
     ],
     "lines_fr": [
-      "Bonne décision. Je l'aurais prise moins vite.",
+      "Bonne décision. Je l’aurais prise moins vite.",
       "Ça ira. Ça ira même très bien."
     ]
   },
@@ -51,8 +51,8 @@
       "I've seen that choice made before. It didn't end well then."
     ],
     "lines_fr": [
-      "Ce n'est pas ce que j'aurais fait. Mais ce n'est pas moi qui décide.",
-      "J'ai déjà vu faire ce choix. Ça n'avait pas bien fini."
+      "Ce n’est pas ce que j’aurais fait. Mais ce n’est pas moi qui décide.",
+      "J’ai déjà vu faire ce choix. Ça n’avait pas bien fini."
     ]
   },
   "kelda_checkPassed": {
@@ -65,9 +65,9 @@
       "Hah. Didn't even need me."
     ],
     "lines_fr": [
-      "Du travail propre. J'aurais mis un coup d'épaule, mais c'est propre.",
+      "Du travail propre. J’aurais mis un coup d’épaule, mais c’est propre.",
       "Vous voyez ? Mains sûres, pieds sûrs. Rien de plus.",
-      "Ha. Vous n'aviez même pas besoin de moi."
+      "Ha. Vous n’aviez même pas besoin de moi."
     ]
   },
   "kelda_checkFailed": {
@@ -81,7 +81,7 @@
     ],
     "lines_fr": [
       "Allez, on se relève. Tout le monde rate une marche.",
-      "Oubliez ça. Le mur s'en fiche, faites pareil.",
+      "Oubliez ça. Le mur s’en fiche, faites pareil.",
       "La prochaine fois, laissez-moi passer devant. Je suis plus petite, je tombe de moins haut."
     ]
   },
@@ -94,7 +94,7 @@
       "Quietly done. My shield thanks you."
     ],
     "lines_fr": [
-      "Contourner un combat, ce n'est pas mon genre. Mais personne n'a saigné.",
+      "Contourner un combat, ce n’est pas mon genre. Mais personne n’a saigné.",
       "Proprement fait. Mon bouclier vous remercie."
     ]
   },
@@ -107,7 +107,7 @@
       "Dwarven ale's better. Don't tell the barkeep. Thank you."
     ],
     "lines_fr": [
-      "À la porte, et à ceux qui sont derrière. C'est votre tournée, à ce que je vois.",
+      "À la porte, et à ceux qui sont derrière. C’est votre tournée, à ce que je vois.",
       "La bière naine est meilleure. Ne le dites pas au tavernier. Merci."
     ]
   },
@@ -121,8 +121,8 @@
       "Lovely gesture. Remind me never to let you hold the purse."
     ],
     "lines_fr": [
-      "C'est généreux. Coûteux, mais généreux.",
-      "La charité ne rapporte rien, mon chou. J'ai vérifié les cotes.",
+      "C’est généreux. Coûteux, mais généreux.",
+      "La charité ne rapporte rien, mon chou. J’ai vérifié les cotes.",
       "Joli geste. Rappelez-moi de ne jamais vous confier la bourse."
     ]
   },
@@ -138,7 +138,7 @@
     "lines_fr": [
       "Froid. Je ne vous savais pas capable de ça.",
       "Les mains dures gagnent les parties dures. Non que je compte les points.",
-      "Personne n'en fera une chanson. Tant mieux. Les chansons, ce sont des preuves."
+      "Personne n’en fera une chanson. Tant mieux. Les chansons, ce sont des preuves."
     ]
   },
   "sable_profitApproved": {
@@ -151,8 +151,8 @@
       "Let me count it. You've got an honest face, and honest faces miscount."
     ],
     "lines_fr": [
-      "Voilà une main qui vaut la peine d'être jouée.",
-      "De l'argent en poche. Le seul argument qui ne perd jamais.",
+      "Voilà une main qui vaut la peine d’être jouée.",
+      "De l’argent en poche. Le seul argument qui ne perd jamais.",
       "Laissez-moi compter. Vous avez une tête honnête, et les têtes honnêtes comptent mal."
     ]
   },
@@ -166,7 +166,7 @@
     ],
     "lines_fr": [
       "Joliment joué.",
-      "J'aurais parié là-dessus. Et j'aurais gagné."
+      "J’aurais parié là-dessus. Et j’aurais gagné."
     ]
   },
   "sable_disapproved": {
@@ -179,7 +179,7 @@
     ],
     "lines_fr": [
       "Mauvais pari. Je dis ça comme ça.",
-      "Moi, je me serais couchée. Mais c'est votre table."
+      "Moi, je me serais couchée. Mais c’est votre table."
     ]
   },
   "sable_checkPassed": {
@@ -192,9 +192,9 @@
       "The dice like you today. Don't tell them I said so."
     ],
     "lines_fr": [
-      "La chance du débutant. Continuez et j'appellerai ça du talent.",
+      "La chance du débutant. Continuez et j’appellerai ça du talent.",
       "En douceur. Presque autant que moi.",
-      "Les dés vous aiment, aujourd'hui. Ne leur dites pas que je l'ai dit."
+      "Les dés vous aiment, aujourd’hui. Ne leur dites pas que je l’ai dit."
     ]
   },
   "sable_checkFailed": {
@@ -207,9 +207,9 @@
       "I'd have tried that too. Then pretended I hadn't."
     ],
     "lines_fr": [
-      "Aïe. Celle-là, c'est pour la maison.",
+      "Aïe. Celle-là, c’est pour la maison.",
       "Tout le monde perd parfois, mon chou. Certains plus discrètement.",
-      "J'aurais tenté ça aussi. Puis j'aurais fait comme si de rien n'était."
+      "J’aurais tenté ça aussi. Puis j’aurais fait comme si de rien n’était."
     ]
   },
   "sable_sneakedPast": {
@@ -221,7 +221,7 @@
       "Quiet feet. I could make something of you yet."
     ],
     "lines_fr": [
-      "Là, vous pensez comme moi. Le meilleur combat, c'est celui dont ils n'ont jamais rien su.",
+      "Là, vous pensez comme moi. Le meilleur combat, c’est celui dont ils n’ont jamais rien su.",
       "Des pas discrets. Je finirai peut-être par faire quelque chose de vous."
     ]
   },
@@ -248,9 +248,9 @@
       "I have seen a great deal of cruelty done in the Light's name. It is good to see the other thing."
     ],
     "lines_fr": [
-      "Rien ne vous y obligeait. C'est pour cela que ça comptait.",
-      "La Lumière tient ses propres comptes. Aujourd'hui, elle a écrit votre nom avec douceur.",
-      "J'ai vu beaucoup de cruauté commise au nom de la Lumière. Cela fait du bien de voir l'inverse."
+      "Rien ne vous y obligeait. C’est pour cela que ça comptait.",
+      "La Lumière tient ses propres comptes. Aujourd’hui, elle a écrit votre nom avec douceur.",
+      "J’ai vu beaucoup de cruauté commise au nom de la Lumière. Cela fait du bien de voir l’inverse."
     ]
   },
   "maren_cruelDisapproved": {
@@ -264,7 +264,7 @@
     ],
     "lines_fr": [
       "Je prierai pour eux. Et, si vous le permettez, pour vous.",
-      "J'ai côtoyé des gens qui faisaient cela, autrefois. Je me disais que c'était nécessaire. Ça ne l'a jamais été.",
+      "J’ai côtoyé des gens qui faisaient cela, autrefois. Je me disais que c’était nécessaire. Ça ne l’a jamais été.",
       "Je vous en prie. Pas comme ça. Plus jamais."
     ]
   },
@@ -277,7 +277,7 @@
       "Thank you. I mean it."
     ],
     "lines_fr": [
-      "Bien choisi. La Lumière n'aura pas à pardonner celui-là.",
+      "Bien choisi. La Lumière n’aura pas à pardonner celui-là.",
       "Merci. Je le pense vraiment."
     ]
   },
@@ -304,9 +304,9 @@
       "Well done. I held my breath the whole time."
     ],
     "lines_fr": [
-      "Quelqu'un veille encore sur nous deux.",
+      "Quelqu’un veille encore sur nous deux.",
       "Posément. La Lumière aime les mains sûres.",
-      "Bien joué. J'ai retenu mon souffle tout du long."
+      "Bien joué. J’ai retenu mon souffle tout du long."
     ]
   },
   "maren_checkFailed": {
@@ -319,8 +319,8 @@
       "Let me look at that. No, don't argue."
     ],
     "lines_fr": [
-      "Rien de cassé ? Alors ce n'était que l'orgueil, et l'orgueil guérit.",
-      "Échouer est une sorte de prière. Cela nous rappelle qu'il en faut une.",
+      "Rien de cassé ? Alors ce n’était que l’orgueil, et l’orgueil guérit.",
+      "Échouer est une sorte de prière. Cela nous rappelle qu’il en faut une.",
       "Laissez-moi regarder ça. Non, ne discutez pas."
     ]
   },
@@ -333,7 +333,7 @@
       "Mercy is sometimes only a quiet step. That one was well placed."
     ],
     "lines_fr": [
-      "Personne n'est mort. Je prendrai toujours ça.",
+      "Personne n’est mort. Je prendrai toujours ça.",
       "La miséricorde tient parfois à un pas silencieux. Celui-ci était bien placé."
     ]
   },
@@ -346,8 +346,8 @@
       "Thank you. It's been a long time since anyone poured for me."
     ],
     "lines_fr": [
-      "J'ai fait vœu de ne pas boire, autrefois. Demain, j'en ferai un autre.",
-      "Merci. Il y a longtemps que personne ne m'avait servie."
+      "J’ai fait vœu de ne pas boire, autrefois. Demain, j’en ferai un autre.",
+      "Merci. Il y a longtemps que personne ne m’avait servie."
     ]
   },
   "liora_kindApproved": {
@@ -361,8 +361,8 @@
     ],
     "lines_fr": [
       "Bien. Une personne de moins que je verrai tomber, de là-haut.",
-      "Je compte aussi ceux qu'on sauve. Un de plus.",
-      "C'est pour ça que je suis descendue des toits."
+      "Je compte aussi ceux qu’on sauve. Un de plus.",
+      "C’est pour ça que je suis descendue des toits."
     ]
   },
   "liora_cruelDisapproved": {
@@ -375,9 +375,9 @@
       "Don't. Don't make me count those too."
     ],
     "lines_fr": [
-      "J'ai vu ça. Je vois tout. Souvenez-vous-en.",
-      "C'est le genre de chose sur laquelle je tirais, avant.",
-      "Non. Ne m'obligez pas à compter ceux-là aussi."
+      "J’ai vu ça. Je vois tout. Souvenez-vous-en.",
+      "C’est le genre de chose sur laquelle je tirais, avant.",
+      "Non. Ne m’obligez pas à compter ceux-là aussi."
     ]
   },
   "liora_approved": {
@@ -390,7 +390,7 @@
     ],
     "lines_fr": [
       "Choix net.",
-      "J'aurais fait pareil. Plus lentement, et de plus haut."
+      "J’aurais fait pareil. Plus lentement, et de plus haut."
     ]
   },
   "liora_disapproved": {
@@ -403,7 +403,7 @@
     ],
     "lines_fr": [
       "Hum. Mauvais angle.",
-      "J'aurais visé autrement."
+      "J’aurais visé autrement."
     ]
   },
   "liora_checkPassed": {
@@ -416,9 +416,9 @@
       "Three steps, none wasted. I counted."
     ],
     "lines_fr": [
-      "Bonne trajectoire. J'aurais pris la même.",
+      "Bonne trajectoire. J’aurais pris la même.",
       "Bien jugé.",
-      "Trois pas, aucun de trop. J'ai compté."
+      "Trois pas, aucun de trop. J’ai compté."
     ]
   },
   "liora_checkFailed": {
@@ -445,8 +445,8 @@
       "Quiet. Good. I had an arrow ready anyway."
     ],
     "lines_fr": [
-      "Personne n'a levé les yeux. Personne ne lève jamais les yeux.",
-      "Silence. Bien. J'avais une flèche prête, au cas où."
+      "Personne n’a levé les yeux. Personne ne lève jamais les yeux.",
+      "Silence. Bien. J’avais une flèche prête, au cas où."
     ]
   },
   "liora_drink": {
@@ -472,9 +472,9 @@
       "That was a human thing to do. I'm still learning those."
     ],
     "lines_fr": [
-      "Le Vide s'est tu, à l'instant. Il n'aime pas ce genre de chose.",
-      "Personne n'a fait ça pour moi, quand je suis sortie du noir. Je suis contente que quelqu'un le fasse.",
-      "C'était humain, ce que vous avez fait. J'apprends encore ce genre de chose."
+      "Le Vide s’est tu, à l’instant. Il n’aime pas ce genre de chose.",
+      "Personne n’a fait ça pour moi, quand je suis sortie du noir. Je suis contente que quelqu’un le fasse.",
+      "C’était humain, ce que vous avez fait. J’apprends encore ce genre de chose."
     ]
   },
   "vess_cruelDisapproved": {
@@ -487,9 +487,9 @@
       "Please don't do that again where I can hear it."
     ],
     "lines_fr": [
-      "Ça lui a plu. À la chose dans le noir. Je l'ai sentie sourire.",
-      "Pas besoin du Vide pour faire preuve de cruauté. C'est ce qui m'effraie.",
-      "S'il vous plaît, ne refaites pas ça là où je peux l'entendre."
+      "Ça lui a plu. À la chose dans le noir. Je l’ai sentie sourire.",
+      "Pas besoin du Vide pour faire preuve de cruauté. C’est ce qui m’effraie.",
+      "S’il vous plaît, ne refaites pas ça là où je peux l’entendre."
     ]
   },
   "vess_approved": {
@@ -501,8 +501,8 @@
       "I think that was right. I'm not always sure what right is."
     ],
     "lines_fr": [
-      "Bien. Les murmures n'avaient rien à redire.",
-      "Je crois que c'était juste. Je ne sais pas toujours ce qui l'est."
+      "Bien. Les murmures n’avaient rien à redire.",
+      "Je crois que c’était juste. Je ne sais pas toujours ce qui l’est."
     ]
   },
   "vess_disapproved": {
@@ -515,7 +515,7 @@
     ],
     "lines_fr": [
       "Les murmures ont ri. Pas moi.",
-      "Je n'aime pas ça. Je ne sais pas encore pourquoi."
+      "Je n’aime pas ça. Je ne sais pas encore pourquoi."
     ]
   },
   "vess_checkPassed": {
@@ -529,8 +529,8 @@
     ],
     "lines_fr": [
       "Le Vide disait que vous tomberiez. Il ment.",
-      "Élégant. Pour quelqu'un sans néant en soi.",
-      "Je n'ai pas aidé. Je tiens à ce que ce soit noté."
+      "Élégant. Pour quelqu’un sans néant en soi.",
+      "Je n’ai pas aidé. Je tiens à ce que ce soit noté."
     ]
   },
   "vess_checkFailed": {
@@ -544,8 +544,8 @@
     ],
     "lines_fr": [
       "Le noir voulait que ça arrive. Ne lui donnez rien de plus.",
-      "J'aurais pu vous rattraper. Je n'étais pas sûre que vous le vouliez.",
-      "Échouer n'est pas le pire. J'ai fait pire qu'échouer."
+      "J’aurais pu vous rattraper. Je n’étais pas sûre que vous le vouliez.",
+      "Échouer n’est pas le pire. J’ai fait pire qu’échouer."
     ]
   },
   "vess_sneakedPast": {
@@ -557,8 +557,8 @@
       "Not a sound. Like the dark. I'd know."
     ],
     "lines_fr": [
-      "Les ombres sont plus faciles quand on n'en a pas peur.",
-      "Pas un bruit. Comme dans le noir. Je m'y connais."
+      "Les ombres sont plus faciles quand on n’en a pas peur.",
+      "Pas un bruit. Comme dans le noir. Je m’y connais."
     ]
   },
   "vess_drink": {
@@ -570,8 +570,8 @@
       "The whispers go quiet when I'm warm. Thank you."
     ],
     "lines_fr": [
-      "Personne ne buvait avec moi, dans le noir. C'était très calme. C'est mieux ainsi.",
-      "Les murmures se taisent quand j'ai chaud. Merci."
+      "Personne ne buvait avec moi, dans le noir. C’était très calme. C’est mieux ainsi.",
+      "Les murmures se taisent quand j’ai chaud. Merci."
     ]
   },
   "grosh_kindDisapproved": {
@@ -584,9 +584,9 @@
       "Saints get buried poor. Grosh has seen it."
     ],
     "lines_fr": [
-      "Grosh ne comprend pas. Grosh n'a pas besoin de comprendre.",
+      "Grosh ne comprend pas. Grosh n’a pas besoin de comprendre.",
       "Gentil. Gentil, ça ne paie pas. Grosh dit ça comme ça.",
-      "Les saints finissent enterrés pauvres. Grosh l'a vu."
+      "Les saints finissent enterrés pauvres. Grosh l’a vu."
     ]
   },
   "grosh_cruelApproved": {
@@ -599,9 +599,9 @@
       "They will remember that. Fear is cheaper than guards."
     ],
     "lines_fr": [
-      "Ha ! Dur. Grosh aime quand c'est dur.",
-      "Pas de sermon. C'est fait. Bien.",
-      "Ils s'en souviendront. La peur coûte moins cher que des gardes."
+      "Ha ! Dur. Grosh aime quand c’est dur.",
+      "Pas de sermon. C’est fait. Bien.",
+      "Ils s’en souviendront. La peur coûte moins cher que des gardes."
     ]
   },
   "grosh_profitApproved": {
@@ -614,7 +614,7 @@
       "Good. Heavy purse, light heart."
     ],
     "lines_fr": [
-      "DE L'ARGENT ! Grosh entend de l'argent !",
+      "DE L’ARGENT ! Grosh entend de l’argent !",
       "Ce soir, on mange bien.",
       "Bien. Bourse lourde, cœur léger."
     ]
@@ -656,8 +656,8 @@
     ],
     "lines_fr": [
       "Ha ! De la force ! Presque autant que Grosh !",
-      "Grosh l'aurait cassé. Comme ça, c'est bien aussi.",
-      "Bien ! Grosh n'aura pas à vous porter."
+      "Grosh l’aurait cassé. Comme ça, c’est bien aussi.",
+      "Bien ! Grosh n’aura pas à vous porter."
     ]
   },
   "grosh_checkFailed": {
@@ -685,7 +685,7 @@
     ],
     "lines_fr": [
       "Grosh voulait frapper. Grosh frappera plus tard.",
-      "Se faufiler. Hmpf. Plus rapide que se battre, Grosh l'admet."
+      "Se faufiler. Hmpf. Plus rapide que se battre, Grosh l’admet."
     ]
   },
   "grosh_drink": {
@@ -697,7 +697,7 @@
       "Grosh will drink yours too, if you are slow."
     ],
     "lines_fr": [
-      "À BOIRE ! Grosh vous aime davantage maintenant. C'est comme ça que ça marche.",
+      "À BOIRE ! Grosh vous aime davantage maintenant. C’est comme ça que ça marche.",
       "Grosh boira aussi le vôtre, si vous traînez."
     ]
   },
@@ -711,8 +711,8 @@
       "I'll hum something for them tonight. And for you."
     ],
     "lines_fr": [
-      "Voilà. Une chandelle d'allumée. Le noir en est un peu plus petit.",
-      "Le chœur chantait ce genre de chose. Vous, vous l'avez fait.",
+      "Voilà. Une chandelle d’allumée. Le noir en est un peu plus petit.",
+      "Le chœur chantait ce genre de chose. Vous, vous l’avez fait.",
       "Je fredonnerai quelque chose pour eux ce soir. Et pour vous."
     ]
   },
@@ -726,7 +726,7 @@
       "I'll not sing tonight."
     ],
     "lines_fr": [
-      "J'ai enterré ce que des actes pareils laissent derrière eux.",
+      "J’ai enterré ce que des actes pareils laissent derrière eux.",
       "Le Quartier des Cendres a commencé par un choix comme celui-là.",
       "Je ne chanterai pas ce soir."
     ]
@@ -741,9 +741,9 @@
       "The choir took coin too. It never sang any better for it."
     ],
     "lines_fr": [
-      "L'argent pèse. Prenez garde qu'il ne vous entraîne au fond.",
-      "Chaque bourse de cette côte a été celle de quelqu'un.",
-      "Le chœur prenait l'argent, lui aussi. Il n'en chantait pas mieux."
+      "L’argent pèse. Prenez garde qu’il ne vous entraîne au fond.",
+      "Chaque bourse de cette côte a été celle de quelqu’un.",
+      "Le chœur prenait l’argent, lui aussi. Il n’en chantait pas mieux."
     ]
   },
   "tobin_approved": {
@@ -756,7 +756,7 @@
     ],
     "lines_fr": [
       "Bien fait. Je mettrai ça dans mes prières, du côté des remerciements.",
-      "C'était juste. Je ne le dis pas à la légère."
+      "C’était juste. Je ne le dis pas à la légère."
     ]
   },
   "tobin_disapproved": {
@@ -768,8 +768,8 @@
       "Hm. The hymn for that one is in a minor key."
     ],
     "lines_fr": [
-      "Je ne discuterai pas. Je dirai seulement que j'aurais fait autrement.",
-      "Hum. L'hymne pour celui-là est en mineur."
+      "Je ne discuterai pas. Je dirai seulement que j’aurais fait autrement.",
+      "Hum. L’hymne pour celui-là est en mineur."
     ]
   },
   "tobin_checkPassed": {
@@ -783,8 +783,8 @@
     ],
     "lines_fr": [
       "Solide comme un mur de cloître. Bien.",
-      "Bien joué. Mes genoux vous remercient de ne pas m'avoir fait essayer.",
-      "La Lumière ne rate pas. Vous non plus, aujourd'hui."
+      "Bien joué. Mes genoux vous remercient de ne pas m’avoir fait essayer.",
+      "La Lumière ne rate pas. Vous non plus, aujourd’hui."
     ]
   },
   "tobin_checkFailed": {
@@ -798,8 +798,8 @@
     ],
     "lines_fr": [
       "Rien qui ne se répare. Venez, laissez-moi voir.",
-      "Les frères laissaient tomber l'encensoir à chaque fête. La fête continuait.",
-      "Ce n'était pas votre heure. Il y en aura une autre."
+      "Les frères laissaient tomber l’encensoir à chaque fête. La fête continuait.",
+      "Ce n’était pas votre heure. Il y en aura une autre."
     ]
   },
   "tobin_sneakedPast": {
@@ -811,8 +811,8 @@
       "Good. Let them live to change their minds."
     ],
     "lines_fr": [
-      "Personne de blessé. C'est un hymne que je connais par cœur.",
-      "Bien. Qu'ils vivent assez pour changer d'avis."
+      "Personne de blessé. C’est un hymne que je connais par cœur.",
+      "Bien. Qu’ils vivent assez pour changer d’avis."
     ]
   },
   "tobin_drink": {
@@ -825,7 +825,7 @@
     ],
     "lines_fr": [
       "Les frères brassaient mieux, mais ils ne partageaient jamais. À votre santé.",
-      "Je chanterai après la deuxième coupe. C'est dit."
+      "Je chanterai après la deuxième coupe. C’est dit."
     ]
   },
   "malrik_kindDisapproved": {
@@ -839,8 +839,8 @@
     ],
     "lines_fr": [
       "La pitié. Charmant. Impossible à facturer.",
-      "Rien de personnel, mais c'est une perte, dans les comptes.",
-      "La Cour aurait ri. J'essaie de m'en abstenir."
+      "Rien de personnel, mais c’est une perte, dans les comptes.",
+      "La Cour aurait ri. J’essaie de m’en abstenir."
     ]
   },
   "malrik_cruelApproved": {
@@ -853,7 +853,7 @@
       "You're learning. I'll send you my rates for the lessons."
     ],
     "lines_fr": [
-      "Rien de personnel. C'est comme ça qu'on fait.",
+      "Rien de personnel. C’est comme ça qu’on fait.",
       "Efficace. La Cour vous aurait offert un siège.",
       "Vous apprenez. Je vous enverrai mes tarifs pour les leçons."
     ]
@@ -882,7 +882,7 @@
       "Good. I'm revising my estimate of you upward."
     ],
     "lines_fr": [
-      "Décision saine. Je l'aurais facturée.",
+      "Décision saine. Je l’aurais facturée.",
       "Bien. Je révise mon estimation à la hausse."
     ]
   },
@@ -896,7 +896,7 @@
     ],
     "lines_fr": [
       "Rien de personnel. Mais non.",
-      "Ça va nous coûter. J'ai déjà fait le calcul."
+      "Ça va nous coûter. J’ai déjà fait le calcul."
     ]
   },
   "malrik_checkPassed": {
@@ -909,8 +909,8 @@
       "See? Risk, managed. There's some Court in you yet."
     ],
     "lines_fr": [
-      "Du travail compétent. Presque décevant : j'avais parié contre vous.",
-      "Bien joué. Je ferai comme si je n'avais jamais douté.",
+      "Du travail compétent. Presque décevant : j’avais parié contre vous.",
+      "Bien joué. Je ferai comme si je n’avais jamais douté.",
       "Vous voyez ? Le risque, maîtrisé. Il y a encore de la Cour en vous."
     ]
   },
@@ -925,7 +925,7 @@
     ],
     "lines_fr": [
       "Ah. Je range ça dans les pertes.",
-      "Rien de personnel, mais c'était pénible à regarder.",
+      "Rien de personnel, mais c’était pénible à regarder.",
       "Tout le monde échoue. Les plus malins échouent là où personne ne regarde."
     ]
   },
@@ -951,7 +951,7 @@
       "To profit. And, fine, to you."
     ],
     "lines_fr": [
-      "Un verre à vos frais. Je le note comme un cadeau, pas une dette. C'est rare, chez moi.",
+      "Un verre à vos frais. Je le note comme un cadeau, pas une dette. C’est rare, chez moi.",
       "Au profit. Et, bon, à vous."
     ]
   },
@@ -965,7 +965,7 @@
       "You could have made him scream. He'd have deserved it. I'm glad you didn't want to."
     ],
     "lines_fr": [
-      "Vous auriez pu le faire hurler. Il l'aurait mérité. Je suis contente que vous n'en ayez pas eu envie."
+      "Vous auriez pu le faire hurler. Il l’aurait mérité. Je suis contente que vous n’en ayez pas eu envie."
     ]
   },
   "choice_960_2_vess": {
@@ -978,7 +978,7 @@
       "The dark taught me that too. Making them pay. It never once felt like being paid back."
     ],
     "lines_fr": [
-      "Le noir m'a appris ça aussi. Leur faire payer. Ça n'a jamais ressemblé à une dette qu'on me rendait."
+      "Le noir m’a appris ça aussi. Leur faire payer. Ça n’a jamais ressemblé à une dette qu’on me rendait."
     ]
   },
   "choice_refugees_aboard_kelda": {
@@ -991,7 +991,7 @@
       "A hundred on a boat built for twenty, and the stores over the side. That's a gate held. I'll bail if I have to."
     ],
     "lines_fr": [
-      "Cent personnes sur un bateau fait pour vingt, et les vivres par-dessus bord. Ça, c'est une porte tenue. J'écoperai s'il le faut."
+      "Cent personnes sur un bateau fait pour vingt, et les vivres par-dessus bord. Ça, c’est une porte tenue. J’écoperai s’il le faut."
     ]
   },
   "choice_refugees_aboard_sable": {
@@ -1004,7 +1004,7 @@
       "There go three weeks of food, for a hundred mouths that'll eat for three days. I'll be hungry and right, love. There are worse things to be."
     ],
     "lines_fr": [
-      "Voilà trois semaines de vivres jetées pour cent bouches qui mangeront trois jours. J'aurai faim et raison, mon chou. Il y a pire."
+      "Voilà trois semaines de vivres jetées pour cent bouches qui mangeront trois jours. J’aurai faim et raison, mon chou. Il y a pire."
     ]
   },
   "choice_refugees_aboard_liora": {
@@ -1017,7 +1017,7 @@
       "I counted them up the gangway. All of them. I'll count them off again on the other side."
     ],
     "lines_fr": [
-      "Je les ai comptés sur la passerelle. Tous. Je les recompterai de l'autre côté."
+      "Je les ai comptés sur la passerelle. Tous. Je les recompterai de l’autre côté."
     ]
   },
   "choice_refugees_aboard_vess": {
@@ -1030,7 +1030,7 @@
       "The children didn't look at me like I was the dark. I think it's because you let me carry one."
     ],
     "lines_fr": [
-      "Les enfants ne m'ont pas regardée comme si j'étais le noir. Je crois que c'est parce que vous m'avez laissée en porter un."
+      "Les enfants ne m’ont pas regardée comme si j’étais le noir. Je crois que c’est parce que vous m’avez laissée en porter un."
     ]
   },
   "choice_refugees_left_kelda": {
@@ -1043,7 +1043,7 @@
       "Twenty who can fight. I'd have picked the same twenty. I'll hate it the same, too."
     ],
     "lines_fr": [
-      "Vingt qui savent se battre. J'aurais choisi les mêmes. Et je détesterai ça tout autant."
+      "Vingt qui savent se battre. J’aurais choisi les mêmes. Et je détesterai ça tout autant."
     ]
   },
   "choice_refugees_left_sable": {
@@ -1069,7 +1069,7 @@
       "I can still see their lanterns from up here. I'm going to watch them until I can't."
     ],
     "lines_fr": [
-      "Je vois encore leurs lanternes d'ici. Je vais les regarder jusqu'à ce que je ne puisse plus."
+      "Je vois encore leurs lanternes d’ici. Je vais les regarder jusqu’à ce que je ne puisse plus."
     ]
   },
   "choice_refugees_left_vess": {
@@ -1082,7 +1082,7 @@
       "They will remember who chose. I remember every door that closed on me."
     ],
     "lines_fr": [
-      "Ils se souviendront de qui a choisi. Je me souviens de chaque porte qui s'est fermée devant moi."
+      "Ils se souviendront de qui a choisi. Je me souviens de chaque porte qui s’est fermée devant moi."
     ]
   },
   "choice_sailed_alone_kelda": {
@@ -1095,7 +1095,7 @@
       "A hundred people on that wharf, and the Eel sails light. I held a gate once so nobody would ever have to watch that."
     ],
     "lines_fr": [
-      "Cent personnes sur ce quai, et l'Eel navigue légère. J'ai tenu une porte, autrefois, pour que personne n'ait jamais à voir ça."
+      "Cent personnes sur ce quai, et l’Eel navigue légère. J’ai tenu une porte, autrefois, pour que personne n’ait jamais à voir ça."
     ]
   },
   "choice_sailed_alone_sable": {
@@ -1108,7 +1108,7 @@
       "Light, fast and full. I'd have said it myself. I didn't think you would."
     ],
     "lines_fr": [
-      "Légère, rapide et pleine. Je l'aurais dit moi-même. Je ne pensais pas que vous le feriez."
+      "Légère, rapide et pleine. Je l’aurais dit moi-même. Je ne pensais pas que vous le feriez."
     ]
   },
   "choice_sailed_alone_liora": {
@@ -1121,7 +1121,7 @@
       "I watched the three orphans until the smoke took the wharf. I'm still watching them."
     ],
     "lines_fr": [
-      "J'ai regardé les trois orphelins jusqu'à ce que la fumée avale le quai. Je les regarde encore."
+      "J’ai regardé les trois orphelins jusqu’à ce que la fumée avale le quai. Je les regarde encore."
     ]
   },
   "choice_sailed_alone_vess": {
@@ -1160,7 +1160,7 @@
       "Them or us, and you chose us. I'll drink to that. I won't enjoy the drink."
     ],
     "lines_fr": [
-      "Eux ou nous, et vous avez choisi nous. J'y boirai. Sans y prendre plaisir."
+      "Eux ou nous, et vous avez choisi nous. J’y boirai. Sans y prendre plaisir."
     ]
   },
   "choice_skiff_cut_liora": {
@@ -1173,7 +1173,7 @@
       "I had that rope in my sights. I could have held it. You didn't ask."
     ],
     "lines_fr": [
-      "J'avais cette corde en vue. J'aurais pu la tenir. Vous ne m'avez rien demandé."
+      "J’avais cette corde en vue. J’aurais pu la tenir. Vous ne m’avez rien demandé."
     ]
   },
   "choice_skiff_cut_vess": {
@@ -1199,7 +1199,7 @@
       "No blood on the Row, and the toll-man walked off thinking it was his idea. That's how a gate should be held."
     ],
     "lines_fr": [
-      "Pas de sang dans Tern Row, et l'homme du péage est parti en croyant que c'était son idée. C'est comme ça qu'on tient une porte."
+      "Pas de sang dans Tern Row, et l’homme du péage est parti en croyant que c’était son idée. C’est comme ça qu’on tient une porte."
     ]
   },
   "choice_tern_row_spared_sable": {
@@ -1225,7 +1225,7 @@
       "Nadira's lanterns are still lit. I checked from the roof."
     ],
     "lines_fr": [
-      "Les lanternes de Nadira sont encore allumées. J'ai vérifié depuis le toit."
+      "Les lanternes de Nadira sont encore allumées. J’ai vérifié depuis le toit."
     ]
   },
   "choice_reckoning_wall_saved_maren": {
@@ -1238,7 +1238,7 @@
       "You quoted the Code at him. I once wrote notes in the margins of those procedures. I never thought I'd hear them save a wall of names."
     ],
     "lines_fr": [
-      "Vous lui avez cité le Code. J'ai annoté ces procédures, autrefois. Je n'aurais jamais cru les entendre sauver un mur de noms."
+      "Vous lui avez cité le Code. J’ai annoté ces procédures, autrefois. Je n’aurais jamais cru les entendre sauver un mur de noms."
     ]
   },
   "choice_reckoning_wall_saved_grosh": {
@@ -1251,7 +1251,7 @@
       "Grosh wanted to break the oil man. Words worked. Grosh is... surprised."
     ],
     "lines_fr": [
-      "Grosh voulait casser l'homme à l'huile. Les mots ont marché. Grosh est... surpris."
+      "Grosh voulait casser l’homme à l’huile. Les mots ont marché. Grosh est... surpris."
     ]
   },
   "choice_reckoning_wall_saved_liora": {
@@ -1264,7 +1264,7 @@
       "The names stay on the wall. Good. Somebody has to keep counting them."
     ],
     "lines_fr": [
-      "Les noms restent sur le mur. Bien. Il faut bien que quelqu'un continue à les compter."
+      "Les noms restent sur le mur. Bien. Il faut bien que quelqu’un continue à les compter."
     ]
   },
   "choice_standard_cut_living_maren": {
@@ -1277,7 +1277,7 @@
       "He was still breathing. I have watched the Inquisition take cloth from the living. I never thought I would watch you do it."
     ],
     "lines_fr": [
-      "Il respirait encore. J'ai vu l'Inquisition arracher du tissu à des vivants. Je ne pensais pas vous voir le faire."
+      "Il respirait encore. J’ai vu l’Inquisition arracher du tissu à des vivants. Je ne pensais pas vous voir le faire."
     ]
   },
   "choice_standard_cut_living_grosh": {
@@ -1303,7 +1303,7 @@
       "The camp needed us back. I know. I also know what I heard in that sanctum."
     ],
     "lines_fr": [
-      "Le camp avait besoin de nous. Je sais. Je sais aussi ce que j'ai entendu dans ce sanctuaire."
+      "Le camp avait besoin de nous. Je sais. Je sais aussi ce que j’ai entendu dans ce sanctuaire."
     ]
   },
   "choice_4999_standard_2_maren": {
@@ -1316,7 +1316,7 @@
       "The blade first. It was the only kindness left in that room, and you found it."
     ],
     "lines_fr": [
-      "La lame d'abord. C'était la seule bonté qui restait dans cette pièce, et vous l'avez trouvée."
+      "La lame d’abord. C’était la seule bonté qui restait dans cette pièce, et vous l’avez trouvée."
     ]
   },
   "choice_4999_standard_2_kelda": {
@@ -1329,7 +1329,7 @@
       "Clean and quick, the way a soldier would want it. He was one, once."
     ],
     "lines_fr": [
-      "Net et rapide, comme un soldat l'aurait voulu. Il en était un, autrefois."
+      "Net et rapide, comme un soldat l’aurait voulu. Il en était un, autrefois."
     ]
   },
   "choice_court_woken_malrik": {
@@ -1342,7 +1342,7 @@
       "Waking them cost us a quarter hour we didn't have. Nothing personal, but I'd have let them sleep. Lucky for them you're not me."
     ],
     "lines_fr": [
-      "Les réveiller nous a coûté un quart d’heure que nous n'avions pas. Rien de personnel, mais je les aurais laissés dormir. Heureusement pour eux, vous n'êtes pas moi."
+      "Les réveiller nous a coûté un quart d’heure que nous n’avions pas. Rien de personnel, mais je les aurais laissés dormir. Heureusement pour eux, vous n’êtes pas moi."
     ]
   },
   "choice_court_woken_tobin": {
@@ -1355,7 +1355,7 @@
       "They knew their own names at the end. I've sung over worse deaths than that. Not many."
     ],
     "lines_fr": [
-      "Ils connaissaient leur propre nom, à la fin. J'ai chanté sur de pires morts. Pas beaucoup."
+      "Ils connaissaient leur propre nom, à la fin. J’ai chanté sur de pires morts. Pas beaucoup."
     ]
   },
   "choice_court_woken_maren": {
@@ -1368,7 +1368,7 @@
       "They died as themselves. That is more than the Inquisition ever gave anyone it wrapped in cloth."
     ],
     "lines_fr": [
-      "Ils sont morts en étant eux-mêmes. C'est plus que l'Inquisition n'a jamais accordé à ceux qu'elle enveloppait de tissu."
+      "Ils sont morts en étant eux-mêmes. C’est plus que l’Inquisition n’a jamais accordé à ceux qu’elle enveloppait de tissu."
     ]
   },
   "choice_court_never_woke_malrik": {
@@ -1381,7 +1381,7 @@
       "Efficient. The Court kept them asleep because asleep is cheaper. You've learned the ledger."
     ],
     "lines_fr": [
-      "Efficace. La Cour les gardait endormis parce que c'est moins cher. Vous avez appris le registre."
+      "Efficace. La Cour les gardait endormis parce que c’est moins cher. Vous avez appris le registre."
     ]
   },
   "choice_court_never_woke_tobin": {
@@ -1394,7 +1394,7 @@
       "Two of those faces had names you knew. I'll say them tonight, since they didn't get to."
     ],
     "lines_fr": [
-      "Deux de ces visages avaient des noms que vous connaissiez. Je les dirai ce soir, puisqu'ils n'ont pas pu."
+      "Deux de ces visages avaient des noms que vous connaissiez. Je les dirai ce soir, puisqu’ils n’ont pas pu."
     ]
   },
   "choice_court_never_woke_maren": {
@@ -1407,7 +1407,7 @@
       "They never woke. I keep telling myself that is a mercy. I keep not believing it."
     ],
     "lines_fr": [
-      "Ils ne se sont jamais réveillés. Je me répète que c'est une miséricorde. Je n'arrive pas à le croire."
+      "Ils ne se sont jamais réveillés. Je me répète que c’est une miséricorde. Je n’arrive pas à le croire."
     ]
   },
   "choice_inquisition_pact_maren": {
@@ -1420,7 +1420,7 @@
       "A white pole above a white cathedral. I carried that pole once. I swore I never would again, and now I am walking behind it."
     ],
     "lines_fr": [
-      "Un mât blanc au-dessus d'une cathédrale blanche. J'ai porté ce mât, autrefois. J'avais juré de ne jamais recommencer, et me voilà qui marche derrière."
+      "Un mât blanc au-dessus d’une cathédrale blanche. J’ai porté ce mât, autrefois. J’avais juré de ne jamais recommencer, et me voilà qui marche derrière."
     ]
   },
   "choice_inquisition_pact_tobin": {
@@ -1459,7 +1459,7 @@
       "Heavy purse. Grosh does not like the rowers. Grosh will watch them."
     ],
     "lines_fr": [
-      "Grosse bourse. Grosh n'aime pas les rameurs. Grosh va les surveiller."
+      "Grosse bourse. Grosh n’aime pas les rameurs. Grosh va les surveiller."
     ]
   },
   "choice_pact_refused_maren": {
@@ -1472,7 +1472,7 @@
       "You sent the white sail back. I have waited half my life to see someone do that."
     ],
     "lines_fr": [
-      "Vous avez renvoyé la voile blanche. J'ai attendu la moitié de ma vie de voir quelqu’un faire ça."
+      "Vous avez renvoyé la voile blanche. J’ai attendu la moitié de ma vie de voir quelqu’un faire ça."
     ]
   },
   "choice_pact_refused_tobin": {
@@ -1485,7 +1485,7 @@
       "No crown from them. Good. Let the tide have their saint."
     ],
     "lines_fr": [
-      "Pas de couronne venue d'eux. Bien. Que la marée garde leur saint."
+      "Pas de couronne venue d’eux. Bien. Que la marée garde leur saint."
     ]
   },
   "choice_pact_refused_malrik": {
@@ -1498,7 +1498,7 @@
       "Three hundred gold, rowing away. I'll mourn it in private."
     ],
     "lines_fr": [
-      "Trois cents pièces d'or qui s'éloignent à la rame. Je les pleurerai en privé."
+      "Trois cents pièces d’or qui s’éloignent à la rame. Je les pleurerai en privé."
     ]
   },
   "choice_pact_refused_kelda": {
@@ -1511,7 +1511,7 @@
       "Good. I've held gates against that sail. I wasn't about to start holding them for it."
     ],
     "lines_fr": [
-      "Bien. J'ai tenu des portes contre cette voile. Pas question de commencer à les tenir pour elle."
+      "Bien. J’ai tenu des portes contre cette voile. Pas question de commencer à les tenir pour elle."
     ]
   },
   "choice_sovereign_took_companion_kelda": {
@@ -1524,7 +1524,7 @@
       "It took one of us, and you held out the hand. I've buried soldiers. I'd never seen one sold."
     ],
     "lines_fr": [
-      "Il a pris quelqu'un d'entre nous, et c'est vous qui avez tendu la main. J'ai enterré des soldats. Je n'en avais jamais vu vendre."
+      "Il a pris quelqu’un d’entre nous, et c’est vous qui avez tendu la main. J’ai enterré des soldats. Je n’en avais jamais vu vendre."
     ]
   },
   "choice_sovereign_took_companion_sable": {
@@ -1563,7 +1563,7 @@
       "Nothing personal. That's what I told myself the first time I sold someone. It stopped working."
     ],
     "lines_fr": [
-      "Rien de personnel. C'est ce que je me suis dit la première fois que j'ai vendu quelqu'un. Ça a cessé de marcher."
+      "Rien de personnel. C’est ce que je me suis dit la première fois que j’ai vendu quelqu’un. Ça a cessé de marcher."
     ]
   },
   "choice_legate_given_malrik": {
@@ -1589,7 +1589,7 @@
       "He was a bad man. It was still a man you gave to that thing."
     ],
     "lines_fr": [
-      "C'était un homme mauvais. C'était quand même un homme que vous avez livré à cette chose."
+      "C’était un homme mauvais. C’était quand même un homme que vous avez livré à cette chose."
     ]
   },
   "choice_legate_given_grosh": {
@@ -1602,7 +1602,7 @@
       "Good. Nobody liked the legate. Not even the rowers."
     ],
     "lines_fr": [
-      "Bien. Personne n'aimait le légat. Pas même les rameurs."
+      "Bien. Personne n’aimait le légat. Pas même les rameurs."
     ]
   },
   "choice_sovereign_blood_maren": {
@@ -1615,7 +1615,7 @@
       "Your own blood, and not ours. I will pray over the crossing. Over you first."
     ],
     "lines_fr": [
-      "Votre propre sang, et pas le nôtre. Je prierai sur la traversée. Sur vous d'abord."
+      "Votre propre sang, et pas le nôtre. Je prierai sur la traversée. Sur vous d’abord."
     ]
   },
   "choice_sovereign_blood_kelda": {
@@ -1628,7 +1628,7 @@
       "You paid it yourself. That's the whole of being in charge, and you knew it."
     ],
     "lines_fr": [
-      "Vous avez payé vous-même. C'est tout ce que veut dire commander, et vous le saviez."
+      "Vous avez payé vous-même. C’est tout ce que veut dire commander, et vous le saviez."
     ]
   },
   "choice_sovereign_blood_grosh": {
@@ -1641,7 +1641,7 @@
       "Grosh would have given Grosh blood. You did not ask. Grosh... remembers that."
     ],
     "lines_fr": [
-      "Grosh aurait donné le sang de Grosh. Vous n'avez pas demandé. Grosh... s'en souvient."
+      "Grosh aurait donné le sang de Grosh. Vous n’avez pas demandé. Grosh... s’en souvient."
     ]
   },
   "choice_sovereign_blood_liora": {
@@ -1654,7 +1654,7 @@
       "I'll watch your back on the crossing. Closer than usual."
     ],
     "lines_fr": [
-      "Je surveillerai vos arrières pendant la traversée. De plus près que d'habitude."
+      "Je surveillerai vos arrières pendant la traversée. De plus près que d’habitude."
     ]
   },
   "choice_camp_given_kelda": {
@@ -1667,7 +1667,7 @@
       "I built half those walls. Let the coast burn, you said. I'll be a while forgiving that."
     ],
     "lines_fr": [
-      "J'ai monté la moitié de ces murs. Que la côte brûle, avez-vous dit. Il me faudra du temps pour vous le pardonner."
+      "J’ai monté la moitié de ces murs. Que la côte brûle, avez-vous dit. Il me faudra du temps pour vous le pardonner."
     ]
   },
   "choice_camp_given_tobin": {
@@ -1680,7 +1680,7 @@
       "There were candles in that camp. I lit most of them."
     ],
     "lines_fr": [
-      "Il y avait des chandelles dans ce camp. J'en ai allumé la plupart."
+      "Il y avait des chandelles dans ce camp. J’en ai allumé la plupart."
     ]
   },
   "choice_camp_given_sable": {
@@ -1693,7 +1693,7 @@
       "All that coin in timber and rope, gone for a door. At least it's a big door."
     ],
     "lines_fr": [
-      "Tout cet argent en bois et en cordage, parti pour une porte. Au moins, c'est une grande porte."
+      "Tout cet argent en bois et en cordage, parti pour une porte. Au moins, c’est une grande porte."
     ]
   },
   "choice_camp_given_vess": {
@@ -1706,7 +1706,7 @@
       "Places burn. I know. It was the first place that ever let me stay."
     ],
     "lines_fr": [
-      "Les lieux brûlent. Je sais. C'était le premier endroit qui m'ait laissée rester."
+      "Les lieux brûlent. Je sais. C’était le premier endroit qui m’ait laissée rester."
     ]
   },
   "choice_flagship_burned_sable": {
@@ -1732,7 +1732,7 @@
       "There were sailors still below. The fire didn't ask which ones were living."
     ],
     "lines_fr": [
-      "Il restait des marins en bas. Le feu n'a pas demandé lesquels vivaient encore."
+      "Il restait des marins en bas. Le feu n’a pas demandé lesquels vivaient encore."
     ]
   },
   "choice_flagship_burned_kelda": {
@@ -1758,7 +1758,7 @@
       "A hundred and fifty to riggers, for a job a torch would have done. My heart."
     ],
     "lines_fr": [
-      "Cent cinquante pièces à des gréeurs, pour un travail qu'une torche aurait fait. Mon cœur."
+      "Cent cinquante pièces à des gréeurs, pour un travail qu’une torche aurait fait. Mon cœur."
     ]
   },
   "choice_sail_bought_tobin": {
@@ -1784,7 +1784,7 @@
       "You paid people for honest work. It seems small. It isn't."
     ],
     "lines_fr": [
-      "Vous avez payé des gens pour un travail honnête. Ça semble peu de chose. Ça ne l'est pas."
+      "Vous avez payé des gens pour un travail honnête. Ça semble peu de chose. Ça ne l’est pas."
     ]
   },
   "choice_greyhithe_names_read_maren": {
@@ -1797,7 +1797,7 @@
       "You read her daughter's name aloud. That is what a ledger is for, in the end."
     ],
     "lines_fr": [
-      "Vous avez lu à voix haute le nom de sa fille. C'est à ça que sert un registre, au bout du compte."
+      "Vous avez lu à voix haute le nom de sa fille. C’est à ça que sert un registre, au bout du compte."
     ]
   },
   "choice_greyhithe_names_read_tobin": {
@@ -1823,7 +1823,7 @@
       "She held your hands while you read. I've never seen anyone hold on that hard."
     ],
     "lines_fr": [
-      "Elle vous a tenu les mains pendant que vous lisiez. Je n'ai jamais vu personne s'accrocher aussi fort."
+      "Elle vous a tenu les mains pendant que vous lisiez. Je n’ai jamais vu personne s’accrocher aussi fort."
     ]
   },
   "choice_7200_elder_later_1_maren": {
@@ -1836,7 +1836,7 @@
       "You lied to spare her. I have told that lie. It never spared anyone for long."
     ],
     "lines_fr": [
-      "Vous avez menti pour l'épargner. J'ai dit ce mensonge-là. Il n'a jamais épargné personne longtemps."
+      "Vous avez menti pour l’épargner. J’ai dit ce mensonge-là. Il n’a jamais épargné personne longtemps."
     ]
   },
   "choice_7200_elder_later_1_malrik": {
@@ -1862,7 +1862,7 @@
       "She'll go on waiting now. That's the price of the lie, and she pays it, not you."
     ],
     "lines_fr": [
-      "Elle va continuer d'attendre, maintenant. C'est le prix du mensonge, et c'est elle qui le paie, pas vous."
+      "Elle va continuer d’attendre, maintenant. C’est le prix du mensonge, et c’est elle qui le paie, pas vous."
     ]
   },
   "choice_false_lamps_out_grosh": {
@@ -1875,7 +1875,7 @@
       "Grosh does not understand paying a man to stop. But the lamps are out. Good."
     ],
     "lines_fr": [
-      "Grosh ne comprend pas qu'on paie un homme pour qu'il arrête. Mais les lampes sont éteintes. Bien."
+      "Grosh ne comprend pas qu’on paie un homme pour qu’il arrête. Mais les lampes sont éteintes. Bien."
     ]
   },
   "choice_false_lamps_out_sable": {
@@ -1888,7 +1888,7 @@
       "Paying a wrecker to stop wrecking. Charming. Ruinous, but charming."
     ],
     "lines_fr": [
-      "Payer un naufrageur pour qu'il cesse. Charmant. Ruineux, mais charmant."
+      "Payer un naufrageur pour qu’il cesse. Charmant. Ruineux, mais charmant."
     ]
   },
   "choice_false_lamps_out_tobin": {
@@ -1901,7 +1901,7 @@
       "No more ships on those rocks. I'll light a candle for the ones already there."
     ],
     "lines_fr": [
-      "Plus de navires sur ces rochers. J'allumerai une chandelle pour ceux qui y sont déjà."
+      "Plus de navires sur ces rochers. J’allumerai une chandelle pour ceux qui y sont déjà."
     ]
   },
   "choice_false_lamps_out_liora": {
@@ -1914,7 +1914,7 @@
       "I watched the last lamp go out from the headland. Clean dark. Good dark."
     ],
     "lines_fr": [
-      "J'ai regardé la dernière lampe s'éteindre depuis le cap. Un noir propre. Un bon noir."
+      "J’ai regardé la dernière lampe s’éteindre depuis le cap. Un noir propre. Un bon noir."
     ]
   }
 }
