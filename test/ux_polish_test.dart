@@ -217,6 +217,9 @@ void main() {
             () => Future<void>.delayed(const Duration(milliseconds: 100)));
         await tester.pump(const Duration(milliseconds: 100));
       }
+      // On a short window the menu scrolls: bring the button into view.
+      await tester.ensureVisible(find.byKey(const Key('menu_edit_mode')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('menu_edit_mode')));
       for (var i = 0; i < 5; i++) {
         await tester.runAsync(
@@ -230,6 +233,21 @@ void main() {
       expect(find.byKey(const Key('home_nav_rail')), findsOneWidget);
       expect(find.byType(NavigationBar), findsNothing);
       expect(find.text('Generate'), findsOneWidget);
+    });
+
+    testWidgets('a phone on its side keeps the bar and does not overflow',
+        (tester) async {
+      await openEditMode(tester, const Size(844, 390));
+      expect(tester.takeException(), isNull);
+      expect(find.byKey(const Key('home_nav_rail')), findsNothing);
+      expect(find.byType(NavigationBar), findsOneWidget);
+    });
+
+    testWidgets('a small tablet takes the rail without overflowing',
+        (tester) async {
+      await openEditMode(tester, const Size(900, 500));
+      expect(tester.takeException(), isNull);
+      expect(find.byKey(const Key('home_nav_rail')), findsOneWidget);
     });
 
     testWidgets('a phone keeps the bar', (tester) async {

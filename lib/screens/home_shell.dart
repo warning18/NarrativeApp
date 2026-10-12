@@ -301,7 +301,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
 
     // A tablet (or a desktop window) puts the tabs in a rail down the left
     // edge and gives the page the rest, instead of a bar under it.
-    final wide = MediaQuery.sizeOf(context).width >= wideShellWidth;
+    final window = MediaQuery.sizeOf(context);
+    final wide =
+        window.width >= wideShellWidth && window.height >= wideShellHeight;
     final pages = Stack(
       fit: StackFit.expand,
       children: [
@@ -439,9 +441,12 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   }
 }
 
-/// From this window width the tabs sit in a rail at the side (a tablet in
-/// either direction, a desktop window); under it, the bar at the bottom.
+/// From this window width and height the tabs sit in a rail at the side (a
+/// tablet in either direction, a desktop window); under either, the bar at
+/// the bottom. The height keeps a phone on its side (844 x 390) on the bar:
+/// a rail of five tabs needs about 480 px.
 const double wideShellWidth = 840;
+const double wideShellHeight = 480;
 
 /// The Camp tab's index among the play-mode tabs.
 const int _campTab = 2;

@@ -81,8 +81,8 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
               return _buildPicker(context, races, professions, skills);
             },
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Center(
-                child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
+            error: (error, stack) => InkErrorState(
+                message: tr(ref, 'failed_to_load_skills'), detail: error),
           ),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stack) => InkErrorState(
