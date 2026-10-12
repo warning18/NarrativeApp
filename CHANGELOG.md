@@ -30,6 +30,7 @@ Fight tests roll the same dice every run.
   affix or an anomaly cannot turn up in one run and not the next.
 - `fight_mirror_spell_test` reads the Mirror's line, not the Venomous
   affix's "You take 3 damage from poison." that it could match first.
+
 ## [1.261.0+297]
 
 The people of the coast speak for themselves.
