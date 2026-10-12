@@ -72,8 +72,11 @@ normally.
 - Gather and Reach objectives are not built; no quest needs them.
 - `Fetch` does not consume the item, so one item can satisfy two quests.
   No two current quests share an item.
-- `q_ch6_beyond_the_tear` is unlocked at node `7800` (chapter 8) but is
-  filed under chapter 6, and there is no chapter 7 quest; see
-  `docs/narrative-audit.md`.
+- A quest's `chapter` is what the camp's quest goal counts
+  (`chapterQuestCount`) and what the detour pool draws from
+  (`filterQuestPool`); a quest id keeps its original chapter prefix once it
+  is in saves, so `q_ch6_beyond_the_tear` is a chapter 8 quest
+  (`"chapter": 8`) with a chapter 6 id. Each chapter has exactly one start
+  and one end among its Main quests (`test/quest_validation_test.dart`).
 - The playthrough simulator plays quests the same way the game does; see
   `docs/simulation/report-quests.md`.

@@ -3704,6 +3704,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Triomphant'
   },
   'mood_reflective': {AppLanguage.en: 'Reflective', AppLanguage.fr: 'Pensif'},
+  'mood_hopeful': {AppLanguage.en: 'Hopeful', AppLanguage.fr: 'Plein d’espoir'},
   'town_title': {
     AppLanguage.en: 'The cliff town',
     AppLanguage.fr: 'La ville de la falaise'

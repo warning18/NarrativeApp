@@ -93,7 +93,7 @@ void main() {
     await tester.tap(find.byKey(const Key('hub_tab_people')));
     await _settle(tester);
     expect(bazaar, findsNothing);
-    expect(find.text("Take the harbor master's job"), findsOneWidget);
+    expect(find.text('Take the harbor master’s job'), findsOneWidget);
     await tester.ensureVisible(find.byKey(const Key('hub_tab_all')));
     await tester.tap(find.byKey(const Key('hub_tab_all')));
     await _settle(tester);
