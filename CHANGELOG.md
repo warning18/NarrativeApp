@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.250.0+286]
+
+### Changed
+- **The throne has no spikes: its top is broken.** The crown of spires, the spiked arms and the spiked shoulders are gone. The back is now a tall slab of black stone whose top has broken away in a ragged fracture, pale where the stone is fresh; the recess with its three ember slits is open to the break, the brass ring is chipped, one armrest is chipped, and rubble that fell from the top lies on the steps, the carpet and the cushion. The banners' finials are round.
+
 ## [1.249.0+285]
 
 ### Changed

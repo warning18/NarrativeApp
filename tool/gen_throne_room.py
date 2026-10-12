@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draws the Lantern Throne room of the Clans screen (v1.247, darkened v1.249).
+"""Draws the Lantern Throne room of the Clans screen (v1.247, darkened v1.249, broken v1.250).
 
 Writes to assets/visuals/throne/: the throne on its dais (throne.png, 128x144),
 a brazier (brazier.png, 24x40), the carpet tile and the parts of a standard
@@ -61,7 +61,9 @@ def trapezoid(d, top_y, bottom_y, top_x0, top_x1, bottom_x0, bottom_x1, fill, ed
 
 
 def throne():
-    """An old throne of black stone: spired back, ember slits, worn wine cushion."""
+    """An old throne of black stone whose top has broken off: a cracked back
+    with a ragged fracture, ember slits in its recess, a worn wine cushion,
+    rubble on the steps. Nothing on it is sharp."""
     im, d = canvas(128, 144)
     # --- the dais: dark worn steps
     steps = [(104, 115, 22, 105), (116, 127, 14, 113), (128, 143, 6, 121)]
@@ -72,54 +74,55 @@ def throne():
         d.rectangle([x0 + 1, y1 - 2, x1 - 1, y1 - 1], fill=B0)
         for x in range(x0 + 6, x1 - 4, 14):
             d.line([(x, y0 + 5), (x, y1 - 3)], fill=B0)
-        d.point((x0 + 9, y0 + 8 if y1 - y0 > 9 else y0 + 6), fill=B3)
     for y0, y1, x0, x1 in [(104, 115, 52, 75), (116, 127, 49, 78), (128, 143, 46, 81)]:
         d.rectangle([x0, y0 + 1, x1, y1], fill=BRASS_D)
         d.rectangle([x0 + 2, y0 + 1, x1 - 2, y1], fill=WINE)
         d.rectangle([x0 + 2, y0 + 1, x0 + 3, y1], fill=WINE_L)
         d.rectangle([x1 - 3, y0 + 1, x1 - 2, y1], fill=WINE_D)
-    # --- buttresses either side, ending in spikes
-    for sx in (0, 1):
-        def mx(x):
-            return x if sx == 0 else 127 - x
-        d.polygon([(mx(30), 100), (mx(30), 60), (mx(33), 46), (mx(36), 58), (mx(40), 50), (mx(40), 100)], fill=OUT)
-        d.polygon([(mx(31), 99), (mx(31), 61), (mx(33), 49), (mx(36), 60), (mx(39), 53), (mx(39), 99)], fill=B1 if sx else B2)
-        d.line([(mx(32), 62), (mx(32), 98)], fill=B3 if sx == 0 else B0)
-    # --- the back: a tall slab with a crown of spires
-    outline = [(40, 96), (40, 52), (37, 40), (41, 34), (41, 20), (45, 30), (48, 26), (48, 12),
-               (52, 22), (56, 18), (58, 8), (64, 0), (70, 8), (72, 18), (76, 22), (80, 12),
-               (80, 26), (83, 30), (87, 20), (87, 34), (91, 40), (88, 52), (88, 96)]
+    # --- the shoulders either side: squat blocks, their tops worn flat
+    d.polygon([(30, 100), (30, 62), (34, 58), (39, 60), (40, 66), (40, 100)], fill=OUT)
+    d.polygon([(31, 99), (31, 63), (34, 59), (38, 61), (39, 67), (39, 99)], fill=B2)
+    d.line([(32, 64), (32, 98)], fill=B3)
+    d.polygon([(88, 100), (88, 52), (92, 50), (96, 56), (97, 100)], fill=OUT)
+    d.polygon([(89, 99), (89, 53), (92, 51), (95, 57), (96, 99)], fill=B1)
+    d.line([(95, 58), (95, 98)], fill=B0)
+    # --- the back: a tall slab, the top of it gone in a ragged break
+    outline = [(40, 96), (40, 52), (41, 40), (40, 30), (44, 24), (43, 18), (48, 15), (50, 20), (54, 17),
+               (57, 24), (61, 22), (63, 30), (67, 28), (70, 35), (75, 33), (78, 40), (82, 38),
+               (84, 46), (88, 50), (88, 96)]
     d.polygon(outline, fill=OUT)
-    inner = [(x + (1 if x < 64 else -1 if x > 64 else 0), y + (1 if y < 96 else 0)) for x, y in outline]
+    inner = [(x + (1 if x < 64 else -1), y + (1 if y < 96 else 0)) for x, y in outline]
     d.polygon(inner, fill=B1)
-    # light from the left, dark on the right
-    d.line([(41, 96), (41, 52), (38, 41), (42, 35), (42, 22), (46, 31), (49, 27), (49, 14), (53, 23), (57, 19), (59, 9), (64, 2)], fill=B3)
-    d.line([(64, 2), (69, 9), (71, 19), (75, 23), (79, 14), (79, 27), (82, 31), (86, 22)], fill=B0)
-    d.rectangle([84, 36, 87, 96], fill=B0)
-    d.rectangle([42, 40, 44, 96], fill=B2)
-    # a recess: a pointed arch cut deep, its edge worn
-    d.polygon([(49, 92), (49, 44), (52, 33), (58, 25), (64, 21), (70, 25), (76, 33), (79, 44), (79, 92)], fill=B3)
-    d.polygon([(50, 92), (50, 45), (53, 34), (58, 26), (64, 22), (70, 26), (75, 34), (78, 45), (78, 92)], fill=(9, 6, 13, 255))
+    # the old face of the stone: lit left, dark right
+    d.rectangle([42, 42, 44, 96], fill=B2)
+    d.rectangle([84, 52, 87, 96], fill=B0)
+    # the fresh, pale edge of the break
+    d.line([(41, 31), (45, 25), (44, 19), (48, 16), (50, 21), (54, 18), (57, 25), (61, 23)], fill=B4)
+    d.line([(63, 31), (67, 29), (70, 36), (75, 34), (78, 41), (82, 39), (84, 47), (87, 51)], fill=B3)
+    d.line([(41, 40), (41, 96)], fill=B3)
+    # a recess cut deep, its top broken away with the rest
+    d.polygon([(49, 92), (49, 46), (50, 36), (53, 29), (56, 31), (58, 26), (61, 28), (63, 34), (66, 33),
+               (69, 38), (74, 38), (77, 44), (79, 50), (79, 92)], fill=B3)
+    d.polygon([(50, 92), (50, 47), (51, 37), (53, 31), (56, 33), (58, 28), (61, 30), (63, 36), (66, 35),
+               (69, 40), (74, 40), (77, 46), (78, 51), (78, 92)], fill=(9, 6, 13, 255))
     # ember slits glowing in the dark
-    for x, top in ((57, 52), (64, 40), (71, 52)):
+    for x, top in ((57, 56), (64, 50), (71, 56)):
         d.rectangle([x - 1, top, x + 1, 88], fill=EMBER_D)
         d.line([(x, top + 2), (x, 86)], fill=EMBER)
         d.line([(x, top + 6), (x, top + 14)], fill=EMBER_L)
-    # the sigil above them: a worn brass ring round an ember
-    d.ellipse([57, 28, 71, 42], fill=OUT)
-    d.ellipse([58, 29, 70, 41], fill=BRASS_D)
-    d.ellipse([59, 30, 69, 40], fill=BRASS)
-    d.ellipse([60, 31, 68, 39], fill=(9, 6, 13, 255))
-    d.ellipse([62, 33, 66, 37], fill=EMBER)
-    d.point((63, 34), fill=EMBER_L)
-    d.point((64, 29), fill=BRASS_L)
+    # a worn brass ring with an ember in it, cracked across
+    d.ellipse([57, 40, 71, 54], fill=OUT)
+    d.ellipse([58, 41, 70, 53], fill=BRASS_D)
+    d.ellipse([59, 42, 69, 52], fill=BRASS)
+    d.ellipse([60, 43, 68, 51], fill=(9, 6, 13, 255))
+    d.ellipse([62, 45, 66, 49], fill=EMBER)
+    d.point((63, 46), fill=EMBER_L)
+    d.rectangle([66, 40, 67, 44], fill=(9, 6, 13, 255))                 # a chip gone from the ring
     # cracks across the old stone
-    for pts in ([(43, 60), (45, 66), (44, 72), (46, 80)], [(84, 46), (82, 54), (84, 60)], [(54, 46), (52, 50), (53, 54)]):
+    for pts in ([(43, 62), (45, 68), (44, 74), (46, 82)], [(85, 56), (83, 64), (85, 70)],
+                [(52, 58), (50, 62), (51, 67)], [(46, 34), (48, 40), (47, 46)]):
         d.line(pts, fill=B0)
-    # spike tips catching the light
-    for x, y in ((64, 1), (58, 9), (48, 13), (41, 21), (80, 13), (87, 21)):
-        d.point((x, y), fill=B4)
-    # --- armrests: blocks of black stone, spiked, with a brass band
+    # --- armrests: rounded blocks of black stone, one chipped
     for x0 in (35, 83):
         d.rectangle([x0, 70, x0 + 10, 100], fill=OUT)
         d.rectangle([x0 + 1, 71, x0 + 9, 99], fill=B1)
@@ -127,10 +130,11 @@ def throne():
         d.rectangle([x0 + 8, 71, x0 + 9, 99], fill=B0)
         d.rectangle([x0 - 1, 66, x0 + 11, 72], fill=OUT)
         d.rectangle([x0, 67, x0 + 10, 71], fill=B2)
-        d.polygon([(x0 + 2, 66), (x0 + 5, 56), (x0 + 8, 66)], fill=OUT)
-        d.polygon([(x0 + 3, 66), (x0 + 5, 59), (x0 + 7, 66)], fill=B2)
+        d.rectangle([x0, 67, x0 + 10, 67], fill=B3)
         d.rectangle([x0 + 1, 84, x0 + 9, 85], fill=BRASS_D)
         d.point((x0 + 2, 84), fill=BRASS_L)
+    d.rectangle([89, 66, 93, 69], fill=CLEAR)                           # the right arm chipped
+    d.point((88, 70), fill=OUT)
     # --- the seat: a worn wine cushion on a banded stone base
     d.rectangle([38, 90, 90, 106], fill=OUT)
     d.rectangle([39, 91, 89, 105], fill=B1)
@@ -145,10 +149,25 @@ def throne():
     d.rectangle([45, 88, 83, 90], fill=WINE_D)
     for x in range(51, 80, 8):
         d.point((x, 85), fill=BRASS)
-    # clawed feet on the top step
+    # stout feet on the top step
     for x0 in (39, 81):
-        d.polygon([(x0, 106), (x0 + 9, 106), (x0 + 10, 110), (x0 - 1, 110)], fill=OUT)
-        d.polygon([(x0 + 1, 106), (x0 + 8, 106), (x0 + 8, 109), (x0, 109)], fill=B2)
+        d.rectangle([x0, 106, x0 + 9, 109], fill=OUT)
+        d.rectangle([x0 + 1, 106, x0 + 8, 108], fill=B2)
+    # --- rubble: what fell from the top lies on the steps and the seat
+    def chunk(pts, fill=B2, lit=B3):
+        d.polygon(pts, fill=OUT)
+        inner = [(x + (1 if x < sum(p[0] for p in pts) / len(pts) else -1),
+                  y + (1 if y < sum(p[1] for p in pts) / len(pts) else -1)) for x, y in pts]
+        d.polygon(inner, fill=fill)
+        d.point(inner[0], fill=lit)
+    chunk([(25, 106), (33, 103), (36, 108), (29, 111)])
+    chunk([(92, 108), (99, 105), (102, 110), (95, 112)], B1, B2)
+    chunk([(16, 123), (24, 121), (26, 126), (18, 127)], B1, B2)
+    chunk([(100, 121), (106, 118), (109, 123), (103, 125)])
+    chunk([(66, 76), (73, 74), (76, 79), (69, 81)], B2, B3)         # on the cushion
+    chunk([(54, 134), (60, 132), (63, 137), (57, 138)], B1, B2)     # on the carpet
+    for x, y in ((38, 112), (86, 113), (30, 118), (108, 130), (12, 139), (118, 137), (46, 139)):
+        d.point((x, y), fill=B2)
     return im
 
 
@@ -172,12 +191,13 @@ def standard_parts():
     d.rectangle([16, 0, 17, 7], fill=B0)
     d.rectangle([12, 3, 17, 4], fill=BRASS_D)
     fin, d = canvas(12, 16)
-    d.polygon([(6, 0), (10, 8), (8, 13), (4, 13), (2, 8)], fill=OUT)
-    d.polygon([(6, 2), (9, 8), (7, 12), (5, 12), (3, 8)], fill=BRASS)
-    d.polygon([(6, 2), (5, 8), (4, 8), (3, 8)], fill=BRASS_L)
-    d.polygon([(6, 3), (8, 8), (7, 11), (6, 11)], fill=BRASS_D)
-    d.rectangle([4, 13, 7, 15], fill=OUT)
-    d.rectangle([5, 13, 6, 14], fill=B2)
+    d.ellipse([1, 5, 10, 14], fill=OUT)
+    d.ellipse([2, 6, 9, 13], fill=BRASS)
+    d.ellipse([3, 7, 6, 10], fill=BRASS_L)
+    d.rectangle([3, 11, 9, 12], fill=BRASS_D)
+    d.rectangle([4, 3, 7, 5], fill=OUT)
+    d.rectangle([5, 4, 6, 5], fill=B2)
+    d.rectangle([5, 14, 6, 15], fill=OUT)
     return pole, foot, fin
 
 
