@@ -494,7 +494,7 @@ void main() {
     test(
         'Vane\'s tunnel leads to the yards and the harbor\'s end knows '
         'its own state', () {
-      expect(nodes['2030']!.description, contains("ship-breakers' yards"));
+      expect(nodes['2030']!.description, contains('ship-breakers’ yards'));
       expect(nodes['2030']!.description, isNot(contains('checkpoint')));
       final hub = nodes['2900']!;
       expect(hub.description, isNot(contains('would need a hull')));
