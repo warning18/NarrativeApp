@@ -17435,7 +17435,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "hollow_shore",
     "choices": [
       {
         "text": "Send it to the Order’s knights at the Anchorage",
@@ -18017,7 +18017,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "hollow_shore",
     "choices": [
       {
         "text": "For Grand Master Morrow: a crusade",
