@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.255.0+291]
+## [1.256.0+292]
 
 A way out of a place leaves by its road, and says which.
 
