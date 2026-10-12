@@ -108,6 +108,12 @@ overwrites the first release and the in-app updater never sees it.
   number. The manager merges PRs one at a time, in order, and renumbers the
   version if another PR merged first. QA reviews PRs before they merge, at
   the level the manager sets (below).
+- After your PR merges, restart your branch from the fresh `main` before
+  starting the next change.
+- Resolve merge conflicts by keeping both sides' work; never take "ours"
+  wholesale on a file another session owns. Never force-push over commits
+  you didn't write. Resetting your own branch to `main` is fine only when
+  everything on it is already merged.
 
 ## QA levels
 
@@ -125,9 +131,3 @@ manager picks the level when it sends QA a PR. QA may raise it, and says why.
 
 An L3 is never done on an ordinary PR. QA keeps the version of the last L3 at
 the top of `docs/qa/README.md`.
-- After your PR merges, restart your branch from the fresh `main` before
-  starting the next change.
-- Resolve merge conflicts by keeping both sides' work; never take "ours"
-  wholesale on a file another session owns. Never force-push over commits
-  you didn't write. Resetting your own branch to `main` is fine only when
-  everything on it is already merged.
