@@ -24,7 +24,8 @@ import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/biome_backdrop.dart';
 import 'package:narrative_data_app/widgets/geography_widgets.dart';
 
-import 'geography_test.dart' show fixture, storyFixture;
+import 'geography_test.dart'
+    show biomesFixture, fixture, geoFixture, storyFixture;
 
 const String _nb = ' ';
 
@@ -43,11 +44,12 @@ Future<ProviderContainer> _container(
   WidgetTester tester, {
   String language = 'en',
   List<String> visited = const ['n_alley'],
+  Geography? world,
 }) async {
   SharedPreferences.setMockInitialValues(
       {'app_language': language, 'tutorial_enabled': false});
   final container = ProviderContainer(overrides: [
-    geographyProvider.overrideWithValue(fixture()),
+    geographyProvider.overrideWithValue(world ?? fixture()),
     clanDataProvider.overrideWithValue(
         ClanData.fromTables(factions: _json('assets/gamedata/factions.json'))),
     storyDataProvider.overrideWith((ref) async => storyFixture()),
@@ -178,6 +180,62 @@ void main() {
         expect(tester.takeException(), isNull);
       });
     }
+
+    for (final french in [false, true]) {
+      testWidgets(
+          'a place says its danger, light, holder, kind and walk'
+          ' (${french ? 'fr' : 'en'})', (tester) async {
+        _phone(tester, height: 640);
+        final geo = geoFixture();
+        geo['lower_town'] = <String, dynamic>{
+          ...(geo['lower_town'] as Map),
+          'danger': 3,
+          'light': 'night',
+          'controller': 'dominion',
+          'tags': ['market', 'haunted'],
+          'watches': 3,
+        };
+        final container = await _container(tester,
+            language: french ? 'fr' : 'en',
+            world: Geography.parse(geography: geo, biomes: biomesFixture()));
+        await tester.pumpWidget(_app(
+          container,
+          const ThisLandSheet(placeId: 'lower_town'),
+        ));
+        await tester.pump();
+        final traits = find.byKey(const ValueKey('place_traits'));
+        expect(traits, findsOneWidget);
+        Finder inTraits(String text) =>
+            find.descendant(of: traits, matching: find.text(text));
+        expect(inTraits(french ? 'Danger$_nb: Mortel' : 'Danger: Deadly'),
+            findsOneWidget);
+        expect(inTraits(french ? 'Nuit' : 'Night'), findsOneWidget);
+        expect(
+            inTraits(french
+                ? 'Tenu par$_nb: Le Dominion de la Lanterne'
+                : 'Held by The Lantern Dominion'),
+            findsOneWidget);
+        expect(inTraits(french ? 'Marché' : 'Market'), findsOneWidget);
+        expect(inTraits(french ? 'Hanté' : 'Haunted'), findsOneWidget);
+        expect(
+            inTraits(french ? 'Une marche de 3 quarts' : 'A walk of 3 watches'),
+            findsOneWidget);
+        expect(tester.takeException(), isNull);
+      });
+    }
+
+    testWidgets('an ordinary place shows no traits row', (tester) async {
+      _phone(tester, height: 640);
+      final container = await _container(tester);
+      await tester.pumpWidget(_app(
+        container,
+        const ThisLandSheet(placeId: 'wells'),
+      ));
+      await tester.pump();
+      expect(find.byKey(const ValueKey('place_traits')), findsOneWidget);
+      expect(find.textContaining('Danger'), findsNothing);
+      expect(find.textContaining('walk of'), findsNothing);
+    });
 
     testWidgets('a free land is ruled by no one', (tester) async {
       _phone(tester, height: 640);

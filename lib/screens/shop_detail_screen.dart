@@ -7,6 +7,7 @@ import '../combat/spells.dart';
 import '../data/chapter_conditions.dart';
 import '../data/factions.dart';
 import '../data/item_origin_here.dart';
+import '../data/place_traits.dart';
 import '../data/shop_pricing.dart';
 import '../data/shop_stock.dart';
 import '../gamedata/db_schema.dart';
@@ -16,7 +17,9 @@ import '../models/ally_state.dart';
 import '../providers/chapter_loop_provider.dart';
 import '../providers/clans_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/story_providers.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/game_icons.dart';
@@ -67,7 +70,16 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
     // A faction's shop prices by the character's standing with them, and
     // won't trade with someone it hunts (v1.193).
     final clans = ref.watch(clanDataProvider);
-    final faction = clans.faction(shopFactionId(widget.shop));
+    // A shop with no faction of its own prices by the standing with the
+    // faction that holds the place it is in, when the place names one
+    // (v1.242, see place_traits.dart).
+    final geography = ref.watch(geographyProvider);
+    final here = geography.placeOfNode(ref
+        .watch(storyDataProvider)
+        .value
+        ?.nodeFor(ref.watch(storyPlayProvider).currentNodeId));
+    final faction = clans.faction(shopFactionHere(
+        shopFactionId(widget.shop), geography.heldBy(here?.id)));
     final tier = faction == null
         ? null
         : ref.watch(politicsProvider).tierOf(faction.id, clans);

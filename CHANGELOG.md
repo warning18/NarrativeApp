@@ -8,6 +8,41 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.243.0+279]
+
+Places say what they are like, and the game listens.
+
+### Added
+- **Five parameters on every place** (`geography.json`, editable in Edit
+  Mode, inherited from the places above when a place says nothing):
+  - `danger` 0 to 3 (safe, ordinary, dangerous, deadly): roads to a safe place
+    hold half the events, to a deadly one 1.6 times as many; a fight in a
+    safe place meets half the ground anomalies, in a deadly one 1.7 times as
+    many (never past seven in ten).
+  - `light` (day, dusk, night, dark): the backdrop dims with it, and a fight
+    at night or in the pitch dark is likelier to have a battlefield
+    condition at all, and far likelier to be Dark.
+  - `controller`: the faction that holds the place. A faction's shops there
+    price by your standing with the holder when the shop names none of its
+    own (a country's ruler does not set every shop's price).
+  - `tags` (holy, haunted, ruin, underground, market, sea, wild, stronghold):
+    the places above add theirs. Some ground anomalies favour a kind of place
+    three times over: a wellspring in a holy or wild place, an eclipse or
+    marsh lights in a haunted one, a collapse in a ruin or underground, a
+    blaze in a stronghold, a sea storm or racing tide by the sea.
+  - `watches`: how many watches of the day a walk to the place takes (a
+    mountain pass or a far fortress is longer than the plain two).
+- The "This land" card of a place shows its danger (when not ordinary), light,
+  holder, kinds and the length of the walk to it.
+- About 35 places carry values (the Black Hold and the undercroft deadly and
+  dark, the Spire of Judgment deadly and four watches away, the safe white
+  wells, Highhearth and Kindly Hill, Saltmouth's night wharf…).
+
+### Notes
+- The in-app and Python simulators still model plain walks and no ground
+  anomalies; roads to deadly places will hold more events in play than they
+  do there.
+
 ## [1.242.0+278]
 
 ### Changed

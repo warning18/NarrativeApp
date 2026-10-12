@@ -1554,7 +1554,13 @@ Future<void> _selectChoice({
   if (!choice.opensCharacterCreation &&
       (choice.travels ||
           world.travelsBetween(story, currentNodeId, choice.nextId))) {
-    await walkRoadStep(ref, watches: choice.travels ? walkWatches : 1);
+    // A walk between places takes the watches of where it goes (a far place
+    // can take a day, see GeoPlace.watches).
+    await walkRoadStep(ref,
+        watches: choice.travels
+            ? world.watchesToNode(story.nodeFor(choice.travelPlaceId ?? ''),
+                fallback: walkWatches)
+            : 1);
     // What waits on this road (see road_events.dart), known before the
     // party set out, takes the place of a detour.
     final event = await roadEventOn(ref, story,

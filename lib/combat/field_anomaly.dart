@@ -112,6 +112,7 @@ class FieldAnomaly {
     this.sideDamage = 1,
     this.perception = 0,
     this.tick,
+    this.favouredBy = const {},
   });
 
   /// Also the key of its name: `anomaly_<id>`.
@@ -148,19 +149,26 @@ class FieldAnomaly {
 
   final AnomalyTick? tick;
 
+  /// The kinds of place (see geoPlaceTags) it is likelier in: a holy place
+  /// favours a spring, a haunted one an eclipse.
+  final Set<String> favouredBy;
+
   /// Whether it picks a side.
   bool get picksSide => !shared;
 
   /// Whether the roll for the weather and the stage lets it in, and how
   /// likely it is among the others.
-  double weightUnder(FightStage stage, WeatherKind? sky) {
+  double weightUnder(FightStage stage, WeatherKind? sky,
+      {Set<String> tags = const {}}) {
     if (!stages.contains(stage)) return 0;
     final matches = skies.isEmpty || (sky != null && skies.contains(sky));
-    return switch (skyRule) {
+    final base = switch (skyRule) {
       SkyRule.any => weight.toDouble(),
       SkyRule.prefers => matches ? weight * 3.0 : weight * 0.35,
-      SkyRule.requires => matches ? weight.toDouble() : 0,
+      SkyRule.requires => matches ? weight.toDouble() : 0.0,
     };
+    // A place of the kind it favours makes it three times likelier.
+    return favouredBy.any(tags.contains) ? base * 3 : base;
   }
 }
 
@@ -225,6 +233,7 @@ const List<FieldAnomaly> fieldAnomalies = [
     elements: {'Water': 1.3, 'Electricity': 1.3, 'Fire': 0.7},
     perception: 2,
     tick: AnomalyTick(mend: false, percent: 8, one: true),
+    favouredBy: {'sea'},
   ),
   FieldAnomaly(
     id: 'fog_bank',
@@ -235,6 +244,7 @@ const List<FieldAnomaly> fieldAnomalies = [
     shared: true,
     elements: {'Fire': 0.9},
     perception: 5,
+    favouredBy: {'haunted', 'sea'},
   ),
   FieldAnomaly(
     id: 'racing_tide',
@@ -242,6 +252,7 @@ const List<FieldAnomaly> fieldAnomalies = [
     stages: {FightStage.glass, FightStage.waves},
     elements: {'Water': 1.3},
     tick: AnomalyTick(mend: false, percent: 8, one: true),
+    favouredBy: {'sea'},
   ),
   FieldAnomaly(
     id: 'cliff_fall',
@@ -249,6 +260,7 @@ const List<FieldAnomaly> fieldAnomalies = [
     stages: {FightStage.cliffs},
     sideDamage: 0.85,
     tick: AnomalyTick(mend: false, percent: 6, one: true),
+    favouredBy: {'wild'},
   ),
   // --- The burnt lands ---
   FieldAnomaly(
@@ -285,6 +297,7 @@ const List<FieldAnomaly> fieldAnomalies = [
     stages: {FightStage.terraces, FightStage.cliffs},
     weight: 2,
     tick: AnomalyTick(mend: false, percent: 12, one: true),
+    favouredBy: {'wild', 'ruin'},
   ),
   // --- The wet lands ---
   FieldAnomaly(
@@ -322,6 +335,7 @@ const List<FieldAnomaly> fieldAnomalies = [
     shared: true,
     elements: {'Light': 1.25, 'Void': 1.25},
     perception: 2,
+    favouredBy: {'haunted'},
   ),
   // --- The frozen lands ---
   FieldAnomaly(
@@ -352,6 +366,7 @@ const List<FieldAnomaly> fieldAnomalies = [
     shared: true,
     elements: {'Light': 1.3, 'Electricity': 1.15},
     tick: AnomalyTick(mend: false, percent: 3),
+    favouredBy: {'haunted'},
   ),
   // --- Anywhere the sky is open ---
   FieldAnomaly(
@@ -411,6 +426,7 @@ const List<FieldAnomaly> fieldAnomalies = [
     boon: true,
     sideElements: {'Light': 1.3},
     sideDamage: 1.1,
+    favouredBy: {'holy'},
   ),
   FieldAnomaly(
     id: 'wellspring',
@@ -423,6 +439,7 @@ const List<FieldAnomaly> fieldAnomalies = [
     },
     boon: true,
     tick: AnomalyTick(mend: true, percent: 8),
+    favouredBy: {'holy', 'wild'},
   ),
   FieldAnomaly(
     id: 'eclipse',
@@ -431,6 +448,7 @@ const List<FieldAnomaly> fieldAnomalies = [
     shared: true,
     elements: {'Light': 0.7, 'Void': 1.3},
     perception: 2,
+    favouredBy: {'haunted'},
   ),
   FieldAnomaly(
     id: 'earth_break',
@@ -450,6 +468,7 @@ const List<FieldAnomaly> fieldAnomalies = [
     weight: 2,
     elements: {'Earth': 1.3},
     tick: AnomalyTick(mend: false, percent: 10, one: true),
+    favouredBy: {'underground'},
   ),
   // --- Under a roof ---
   FieldAnomaly(
@@ -458,6 +477,7 @@ const List<FieldAnomaly> fieldAnomalies = [
     stages: {FightStage.hall},
     weight: 3,
     tick: AnomalyTick(mend: false, percent: 12, one: true),
+    favouredBy: {'ruin', 'underground'},
   ),
   FieldAnomaly(
     id: 'blaze',
@@ -467,6 +487,7 @@ const List<FieldAnomaly> fieldAnomalies = [
     shared: true,
     elements: {'Fire': 1.25, 'Ice': 0.85},
     tick: AnomalyTick(mend: false, percent: 3),
+    favouredBy: {'stronghold', 'ruin'},
   ),
 ];
 
@@ -597,9 +618,14 @@ FieldAnomalyPlan? rollFieldAnomaly({
   required WeatherKind? sky,
   required Random random,
   double chance = fieldAnomalyChance,
+  double chanceFactor = 1,
+  Set<String> tags = const {},
 }) {
-  if (random.nextDouble() >= chance) return null;
-  return pickFieldAnomaly(stage: stage, sky: sky, random: random);
+  // Danger raises the odds, but never past seven in ten (or the chance asked).
+  if (random.nextDouble() >= min(chance * chanceFactor, max(chance, 0.7))) {
+    return null;
+  }
+  return pickFieldAnomaly(stage: stage, sky: sky, random: random, tags: tags);
 }
 
 /// An anomaly for [stage] under [sky] among those that fit, whatever the
@@ -608,9 +634,11 @@ FieldAnomalyPlan? pickFieldAnomaly({
   required FightStage stage,
   required WeatherKind? sky,
   required Random random,
+  Set<String> tags = const {},
 }) {
   final weights = [
-    for (final anomaly in fieldAnomalies) anomaly.weightUnder(stage, sky),
+    for (final anomaly in fieldAnomalies)
+      anomaly.weightUnder(stage, sky, tags: tags),
   ];
   final total = weights.fold<double>(0, (a, b) => a + b);
   if (total <= 0) return null;

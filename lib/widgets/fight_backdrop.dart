@@ -143,7 +143,12 @@ class FightBackdrop extends StatefulWidget {
     this.sky,
     this.anomaly,
     this.phase = AnomalyPhase.quiet,
+    this.light = 1,
   });
+
+  /// How much of the day's light there is (see lightLevel in
+  /// place_traits.dart): 1 by day, down to pitch dark.
+  final double light;
 
   final FightStage stage;
   final WeatherKind? sky;
@@ -241,6 +246,7 @@ class _FightBackdropState extends State<FightBackdrop>
           stage: widget.stage,
           sky: widget.sky,
           anomalyId: widget.anomaly?.id,
+          light: widget.light,
         ),
       ),
     );
@@ -253,6 +259,7 @@ class _FightBackdropPainter extends CustomPainter {
     required this.stage,
     required this.sky,
     required this.anomalyId,
+    required this.light,
   })  : _frame = frame,
         super(repaint: frame);
 
@@ -260,6 +267,7 @@ class _FightBackdropPainter extends CustomPainter {
   final FightStage stage;
   final WeatherKind? sky;
   final String? anomalyId;
+  final double light;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -271,12 +279,16 @@ class _FightBackdropPainter extends CustomPainter {
       anomalyId: anomalyId,
       t: _frame.t,
       level: _frame.level,
+      light: light,
     );
   }
 
   @override
   bool shouldRepaint(_FightBackdropPainter old) =>
-      old.stage != stage || old.sky != sky || old.anomalyId != anomalyId;
+      old.stage != stage ||
+      old.sky != sky ||
+      old.anomalyId != anomalyId ||
+      old.light != light;
 }
 
 /// One frame of the backdrop, from time and level alone (so a test can draw
@@ -289,6 +301,7 @@ void paintFightBackdrop(
   required String? anomalyId,
   required double t,
   required double level,
+  double light = 1,
 }) {
   if (size.isEmpty) return;
   final scenery = FightScenery.of(stage);
@@ -303,6 +316,14 @@ void paintFightBackdrop(
   }
   if (anomalyId != null && level > 0) {
     _paintAnomaly(canvas, size, anomalyId, scenery, t, level);
+  }
+  // Night and dark: the missing light as a cold veil over everything.
+  if (light < 1) {
+    canvas.drawRect(
+      Offset.zero & size,
+      Paint()
+        ..color = const Color(0xFF070A18).withValues(alpha: (1 - light) * 0.7),
+    );
   }
   canvas.restore();
 }
