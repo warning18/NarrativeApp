@@ -428,6 +428,12 @@ class _ChoiceEditState {
             TextEditingController(text: choice.checkDC?.toString() ?? ''),
         failNextId = choice.failNextId,
         loseNextId = choice.loseNextId,
+        failNoteController = TextEditingController(text: choice.failNote ?? ''),
+        failNoteFrController =
+            TextEditingController(text: choice.failNoteFr ?? ''),
+        loseNoteController = TextEditingController(text: choice.loseNote ?? ''),
+        loseNoteFrController =
+            TextEditingController(text: choice.loseNoteFr ?? ''),
         challengeSuccessesNeededController = TextEditingController(
             text: choice.challengeSuccessesNeeded?.toString() ?? ''),
         challengeMaxFailuresController = TextEditingController(
@@ -483,6 +489,13 @@ class _ChoiceEditState {
   final TextEditingController checkDCController;
   String? failNextId;
   String? loseNextId;
+
+  /// What the Journey map tells while the party is carried along the fail
+  /// or lose branch (see [StoryChoice.failNote]).
+  final TextEditingController failNoteController;
+  final TextEditingController failNoteFrController;
+  final TextEditingController loseNoteController;
+  final TextEditingController loseNoteFrController;
   final TextEditingController challengeSuccessesNeededController;
   final TextEditingController challengeMaxFailuresController;
 
@@ -511,6 +524,10 @@ class _ChoiceEditState {
     loseAllyIdController.dispose();
     lockedTextController.dispose();
     lockedTextFrController.dispose();
+    failNoteController.dispose();
+    failNoteFrController.dispose();
+    loseNoteController.dispose();
+    loseNoteFrController.dispose();
     triggerEnemyIdController.dispose();
     triggerEnemyIdsController.dispose();
     unlockShopIdController.dispose();
@@ -581,6 +598,18 @@ class _ChoiceEditState {
         checkDC: int.tryParse(checkDCController.text.trim()),
         failNextId: (failNextId?.isEmpty ?? true) ? null : failNextId,
         loseNextId: (loseNextId?.isEmpty ?? true) ? null : loseNextId,
+        failNote: failNoteController.text.trim().isEmpty
+            ? null
+            : failNoteController.text.trim(),
+        failNoteFr: failNoteFrController.text.trim().isEmpty
+            ? null
+            : failNoteFrController.text.trim(),
+        loseNote: loseNoteController.text.trim().isEmpty
+            ? null
+            : loseNoteController.text.trim(),
+        loseNoteFr: loseNoteFrController.text.trim().isEmpty
+            ? null
+            : loseNoteFrController.text.trim(),
         challengeSuccessesNeeded:
             int.tryParse(challengeSuccessesNeededController.text.trim()),
         challengeMaxFailures:
@@ -899,6 +928,21 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   onChanged: (value) =>
                       setState(() => state.loseNextId = value),
                 ),
+                for (final (controller, label) in [
+                  (state.failNoteController, 'fail_note'),
+                  (state.failNoteFrController, 'fail_note_fr'),
+                  (state.loseNoteController, 'lose_note'),
+                  (state.loseNoteFrController, 'lose_note_fr'),
+                ]) ...[
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                      labelText: t(label),
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 8),
                 Row(
                   children: [

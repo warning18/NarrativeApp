@@ -16,6 +16,7 @@ import '../data/scene_flow.dart';
 import '../data/journey_relief.dart';
 import '../data/map_charts.dart' show ChartGeography, ChartPalette, chartOf;
 import '../data/narration_tokens.dart';
+import '../data/party_trail.dart';
 import '../data/road_events.dart';
 import '../data/story_repository.dart';
 import '../data/world_map.dart';
@@ -222,6 +223,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// short.
   String? _takingFrom;
   bool get _busy => _takingFrom != null && _takingFrom == _sceneKey;
+
+  /// Where the party stands on the world chart, and under what name (v1.245):
+  /// kept from scene to scene, so a scene the story carries the party to
+  /// without a walk (a fight lost, a roll failed, the travel list) starts
+  /// from where it was.
+  Offset? _partyChart;
+  String _partyName = '';
+
+  /// The road the party is carried along, with what is said of it, shown
+  /// over the map until it ends or is tapped.
+  _Transit? _transit;
 
   /// A new scene's lone step is still to be picked for the player.
   bool _autoPickPending = false;
@@ -495,6 +507,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final before = _sceneKey;
     if (_busy || step.locked || before == null) return;
     setState(() => _takingFrom = before);
+    // Where the party stands before it sets out.
+    final home = _partyChart;
     // The story moved on meanwhile (the walk cut short with its map): the
     // step is no longer one to take.
     bool moved() => _sceneKeyOf(ref.read(storyPlayProvider)) != before;
@@ -511,6 +525,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       }
       if (!mounted || moved()) return;
       if (walked != null) _terrainShift += walked;
+      // The party has walked to where the step leads: it stands there from
+      // now on, whatever the scene after turns out to be.
+      final reached = step.chartTarget;
+      if (step.moves && reached != null) _partyChart = reached;
       if (step.kind == JourneyStepKind.fight ||
           step.kind == JourneyStepKind.expedition) {
         if (!MediaQuery.of(context).disableAnimations) {
@@ -526,15 +544,23 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         // fled) brings the party back to its mark.
         final stayed = _sceneKeyOf(ref.read(storyPlayProvider)) == before;
         if (stayed) {
-          if (walked != null) _terrainShift -= walked;
-          _chartKey.currentState?.resetWalk();
+          // The party walks back along the road it took (v1.245), and
+          // stands where it set out from again.
+          final chart = _chartKey.currentState;
+          if (chart != null) await chart.walkBack();
+          if (mounted) {
+            if (walked != null) _terrainShift -= walked;
+            _partyChart = home;
+          }
         }
-        setState(() {
-          if (_takingFrom == before) _takingFrom = null;
-          // The choice moved the story on: the new scene is read full
-          // screen, and Continue brings the map back.
-          if (taken && !stayed) _reading = true;
-        });
+        if (mounted) {
+          setState(() {
+            if (_takingFrom == before) _takingFrom = null;
+            // The choice moved the story on: the new scene is read full
+            // screen, and Continue brings the map back.
+            if (taken && !stayed) _reading = true;
+          });
+        }
       }
     }
   }
@@ -954,6 +980,41 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             ],
           );
 
+    // Where the party stands on the world (v1.245): a scene the story
+    // carried it to without a walk (a fight lost, a roll failed, the travel
+    // list) is reached by the road from where it stood, and the map says why.
+    if (newScene && !play.isInExcursion) {
+      final to = placeView?.chartHere;
+      // The editor's jumps are tools, not travel: no road walked for them.
+      final editorJump = ref.read(appModeProvider) == AppMode.edit;
+      if (to != null) {
+        final from = _partyChart;
+        final previousId = play.history.isEmpty ? null : play.history.last;
+        final cause = partyMoveCause(story, previousId, play.currentNodeId);
+        final far = from != null && (from - to).distance > 0.5;
+        final forced =
+            cause == PartyMoveCause.lost || cause == PartyMoveCause.failed;
+        _transit =
+            from != null && cause != null && (far || forced) && !editorJump
+                ? _Transit(
+                    from: from,
+                    to: to,
+                    fromName: _partyName,
+                    toName: hereName,
+                    flight: far,
+                    forced: forced,
+                    caption: partyMoveNote(
+                            story, previousId, play.currentNodeId,
+                            french: french) ??
+                        tr(ref, 'journey_move_${cause.name}')
+                            .replaceAll('{place}', hereName),
+                  )
+                : null;
+        _partyChart = to;
+        _partyName = hereName;
+      }
+    }
+
     // The world under the fog (v1.199), framed on the party's land or
     // the whole of it.
     final journeyWalked = journeyOf(play.history, play.currentNodeId);
@@ -1219,7 +1280,30 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                             const SizedBox(height: 2),
                             Expanded(
                               child: _level == JourneyMapLevel.place || ended
-                                  ? map
+                                  ? Stack(
+                                      children: [
+                                        Positioned.fill(child: map),
+                                        if (_transit != null &&
+                                            placeView != null &&
+                                            !ended)
+                                          Positioned.fill(
+                                            child: _PartyTransit(
+                                              key: ValueKey(
+                                                  'journey_transit_$sceneKey'),
+                                              transit: _transit!,
+                                              geography: placeView.geography,
+                                              marks: placeView.marks,
+                                              palette: palette,
+                                              onDone: () {
+                                                if (mounted) {
+                                                  setState(
+                                                      () => _transit = null);
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                      ],
+                                    )
                                   : worldMap,
                             ),
                             // Under the map (v1.201): once the camp
@@ -1312,6 +1396,158 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A road the party is carried along (v1.245): from where it stood to the
+/// place the story set it down, with a few words on why.
+class _Transit {
+  const _Transit({
+    required this.from,
+    required this.to,
+    required this.fromName,
+    required this.toName,
+    required this.flight,
+    required this.forced,
+    required this.caption,
+  });
+
+  /// The two places on the world chart.
+  final Offset from;
+  final Offset to;
+  final String fromName;
+  final String toName;
+
+  /// Whether the places differ, so there is a road to draw; else only the
+  /// words are told.
+  final bool flight;
+
+  /// Whether the story took the party there against its pick (a lost fight,
+  /// a failed roll), not a journey the player started.
+  final bool forced;
+  final String caption;
+}
+
+/// The [_Transit] over the map: the world chart with the party walking the
+/// road, and the caption under it. A tap skips it; with reduced motion only
+/// the caption shows, a few seconds.
+class _PartyTransit extends StatefulWidget {
+  const _PartyTransit({
+    super.key,
+    required this.transit,
+    required this.geography,
+    required this.marks,
+    required this.palette,
+    required this.onDone,
+  });
+
+  final _Transit transit;
+  final ChartGeography geography;
+  final List<ChartMark> marks;
+  final ChartPalette palette;
+  final VoidCallback onDone;
+
+  @override
+  State<_PartyTransit> createState() => _PartyTransitState();
+}
+
+class _PartyTransitState extends State<_PartyTransit>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: Duration(milliseconds: widget.transit.flight ? 2400 : 2000),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _c.forward().whenComplete(() {
+      if (mounted) widget.onDone();
+    });
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final transit = widget.transit;
+    final still = MediaQuery.of(context).disableAnimations;
+    final scheme = Theme.of(context).colorScheme;
+    return GestureDetector(
+      key: const ValueKey('journey_transit'),
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        _c.stop();
+        widget.onDone();
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            if (transit.flight && !still)
+              AnimatedBuilder(
+                animation: _c,
+                builder: (context, _) => CustomPaint(
+                  painter: RegionFlightPainter(
+                    geography: widget.geography,
+                    from: transit.from,
+                    to: transit.to,
+                    marks: widget.marks,
+                    t: Curves.easeInOut.transform(_c.value),
+                    palette: widget.palette,
+                    fromName: transit.fromName,
+                    toName: transit.toName,
+                  ),
+                ),
+              )
+            else
+              ColoredBox(color: scheme.scrim.withValues(alpha: 0.35)),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Material(
+                  color: scheme.surface.withValues(alpha: 0.94),
+                  elevation: 3,
+                  borderRadius: BorderRadius.circular(10),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          transit.forced
+                              ? Icons.warning_amber_rounded
+                              : Icons.directions_walk,
+                          size: 18,
+                          color: transit.forced
+                              ? scheme.error
+                              : scheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            transit.caption,
+                            key: const ValueKey('journey_transit_caption'),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -2117,6 +2353,31 @@ class _JourneyChartState extends State<_JourneyChart>
       return null;
     }
     return _centres[index] - _here;
+  }
+
+  /// The party walks back along the road it took, to its mark (the story
+  /// stayed where it was: a fight fled, a shop shut), instead of snapping
+  /// there (v1.245). With reduced motion it is there at once.
+  Future<void> walkBack() async {
+    if (!mounted) return;
+    if (_walking != null && _animate) {
+      try {
+        if (_flying != null) {
+          await _flight
+              .animateBack(0,
+                  duration: const Duration(milliseconds: 700),
+                  curve: Curves.easeInOut)
+              .orCancel;
+        }
+        final span = _walk.duration ?? const Duration(milliseconds: 950);
+        await _walk
+            .animateBack(0, duration: span * 0.6, curve: Curves.easeInOut)
+            .orCancel;
+      } on TickerCanceled {
+        // The map went mid-walk: nothing left to bring back.
+      }
+    }
+    resetWalk();
   }
 
   /// Brings the party back to its mark (the story stayed where it was).

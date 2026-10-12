@@ -8,6 +8,42 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.245.0+281]
+
+The party's mark keeps its place on the world, and the map says when the story moves it.
+
+### Added
+- **Carried along a branch you did not pick, the party travels there by the
+  world chart's road.** When a fight is lost or a roll fails and the story
+  sets the party down somewhere other than where the step it took was
+  leading, or when a jump along no choice (the travel list, the way back to
+  camp) moves it, the Journey map plays the road from where the party stood
+  to where it is now, with a short caption under it ("Vane's hand closes on
+  your wrist: you are held on the wharf."). A tap skips it; with reduced
+  motion only the caption shows. The Edit Mode's jumps are tools and play
+  nothing.
+- **The author writes that caption** on the choice: `failNote` / `loseNote`
+  (with `failNote_fr` / `loseNote_fr`), four new fields in the node editor.
+  Without one, the map says it in plain words ("The fight is lost: you are
+  taken to {place}."). The seven existing branches that set the party down
+  elsewhere (the rot giving way into the Undercroft, the brood driving you
+  down, being spotted at the sleepers' camp, the gutter on the roofs, Vane's
+  grip, the host turning on you) now carry theirs, in both languages.
+- A content test keeps the promise: a lost fight or a failed roll that ends
+  at another place than its chosen step must carry a note in both languages,
+  and every scene must stand at a place on the world chart.
+
+### Fixed
+- **A step that walked the party on and was turned back from** (a fight
+  retreated from, a shop shut) no longer snaps the mark back to where it set
+  out: it walks back along the road it took.
+
+### Notes
+- This is the first stage of the fixed world: the party's position on the
+  world is now kept from scene to scene. Still to come: the same for
+  districts and rooms inside a place (a forced move between two spots of one
+  city shows its caption only), and a fixed road graph with named stops.
+
 ## [1.244.0+280]
 
 ### Changed
