@@ -4539,7 +4539,7 @@
         "text_fr": "Trouver un fil noir noué à votre porte",
         "next_id": "3005_black_thread",
         "showIfFlags": [
-          "intrigue_double_ledger_stage_1"
+          "plot_ledger_1"
         ],
         "hideIfFlags": [
           "hub_3005_black_thread"
@@ -4550,7 +4550,7 @@
         "text_fr": "Demander au commis des archives le dernier journal de l’Amirauté",
         "next_id": "3005_logbook_gap",
         "showIfFlags": [
-          "intrigue_admiraltys_silence_stage_1"
+          "plot_admiralty_1"
         ],
         "hideIfFlags": [
           "hub_3005_logbook_gap"
@@ -4561,7 +4561,7 @@
         "text_fr": "Aller au sanctuaire où quelque chose s’est brisé dans la nuit",
         "next_id": "3005_shrine_break",
         "showIfFlags": [
-          "intrigue_relic_road_stage_1"
+          "plot_relic_1"
         ],
         "hideIfFlags": [
           "hub_3005_shrine_break"
@@ -4572,7 +4572,7 @@
         "text_fr": "Regarder les Inquisiteurs conduire des enfants dans l’escalier de la Flèche",
         "next_id": "3005_spire_takings",
         "showIfFlags": [
-          "intrigue_the_returned_stage_1"
+          "plot_returned_1"
         ],
         "hideIfFlags": [
           "hub_3005_spire_takings"
@@ -6967,7 +6967,7 @@
         "text_fr": "Rencontrer la femme en gris qui demande un navire",
         "next_id": "5010_thieves_ship",
         "showIfFlags": [
-          "intrigue_relic_road_stage_2"
+          "plot_relic_2"
         ],
         "hideIfFlags": [
           "hub_5010_thieves_ship"
@@ -6978,7 +6978,7 @@
         "text_fr": "Écouter l’émissaire de la Dernière Veille sur la corniche la plus sèche",
         "next_id": "5010_vigil_envoy",
         "showIfFlags": [
-          "intrigue_the_returned_stage_2"
+          "plot_returned_2"
         ],
         "hideIfFlags": [
           "hub_5010_vigil_envoy"
@@ -7893,22 +7893,22 @@
         }
       },
       {
-        "text": "Ask the Last Lantern’s keeper what the Reliquary shipped to sea",
-        "text_fr": "Demander à la gardienne de la Dernière Lanterne ce que le Reliquaire a envoyé en mer",
+        "text": "Ask Tallis what the Reliquary shipped to sea",
+        "text_fr": "Demander à Tallis ce que le Reliquaire a envoyé en mer",
         "next_id": "6010_lantern_manifest",
         "showIfFlags": [
-          "intrigue_admiraltys_silence_stage_3"
+          "plot_admiralty_3"
         ],
         "hideIfFlags": [
           "hub_6010_lantern_manifest"
         ]
       },
       {
-        "text": "Follow the grey cloth to the Thieves’ meeting under the frost",
-        "text_fr": "Suivre le tissu gris jusqu’à la réunion des Voleurs sous le givre",
+        "text": "Follow the grey cloth to the Thieves’ meeting",
+        "text_fr": "Suivre le tissu gris jusqu’à la réunion des Voleurs",
         "next_id": "6010_heist_night",
         "showIfFlags": [
-          "intrigue_relic_road_stage_3"
+          "plot_relic_3"
         ],
         "hideIfFlags": [
           "hub_6010_heist_night"
@@ -7919,7 +7919,7 @@
         "text_fr": "Confronter le compte d’Orsabet au registre de la Dernière Veille",
         "next_id": "6010_count_short",
         "showIfFlags": [
-          "intrigue_unwatched_hour_stage_1",
+          "plot_stitcher_1",
           "hub_6010_orsabet"
         ],
         "hideIfFlags": [
@@ -7931,7 +7931,7 @@
         "text_fr": "Lire le rôle dans les archives ouvertes du Reliquaire",
         "next_id": "6010_returned_roll",
         "showIfFlags": [
-          "intrigue_the_returned_stage_3"
+          "plot_returned_3"
         ],
         "hideIfFlags": [
           "hub_6010_returned_roll"
@@ -8766,7 +8766,7 @@
         "text_fr": "Répondre aux bricks des Corneilles au large de la pointe",
         "next_id": "7002_ledger",
         "showIfFlags": [
-          "intrigue_double_ledger_stage_5"
+          "plot_ledger_5"
         ],
         "hideIfFlags": [
           "hub_7002_ledger",
@@ -8778,7 +8778,7 @@
         "text_fr": "Décider ce qui remontera de la cale du vaisseau amiral",
         "next_id": "7002_relic",
         "showIfFlags": [
-          "intrigue_admiraltys_silence_stage_5"
+          "plot_admiralty_5"
         ],
         "hideIfFlags": [
           "hub_7002_relic",
@@ -8790,7 +8790,7 @@
         "text_fr": "Régler le sort de la Quatrième Pièce avec les Voleurs de Reliques",
         "next_id": "7002_fourth_piece",
         "showIfFlags": [
-          "intrigue_relic_road_stage_5"
+          "plot_relic_5"
         ],
         "hideIfFlags": [
           "hub_7002_fourth_piece",
@@ -8802,7 +8802,7 @@
         "text_fr": "Observer ce qui a suivi l’Eel jusqu’à la rive",
         "next_id": "7002_followed",
         "showIfFlags": [
-          "intrigue_unwatched_hour_stage_4"
+          "plot_stitcher_4"
         ],
         "hideIfFlags": [
           "hub_7002_followed",
@@ -8814,7 +8814,7 @@
         "text_fr": "Décider de ce que la Dernière Veille apprendra sur Wenna Tarn",
         "next_id": "7002_stitcher",
         "showIfFlags": [
-          "intrigue_unwatched_hour_stage_5"
+          "plot_stitcher_5"
         ],
         "hideIfFlags": [
           "hub_7002_stitcher",
@@ -8826,7 +8826,7 @@
         "text_fr": "Décider du sort des enfants dans la cale de l’Eel",
         "next_id": "7002_returned",
         "showIfFlags": [
-          "intrigue_the_returned_stage_5"
+          "plot_returned_5"
         ],
         "hideIfFlags": [
           "hub_7002_returned",
@@ -9079,6 +9079,11 @@
         "flag": "on_throne",
         "en": "Across the water another throne was waiting for me to come home and sit in it. I found I did not like this one any better for that.",
         "fr": "De l’autre côté de l’eau, un autre trône attendait que je rentre m’y asseoir. Je découvris que je n’aimais pas davantage celui-ci pour autant."
+      },
+      {
+        "flag": "stitcher_turned",
+        "en": "I had given the Last Watch a name, and a doorframe of glowing thread had been cut out of the dark behind me. I did not look to see whether it had closed.",
+        "fr": "J’avais donné un nom à la Dernière Veille, et un chambranle de fil luisant avait été tranché dans le noir derrière moi. Je ne me retournai pas pour voir s’il s’était refermé."
       },
       {
         "flag": "stitcher_kept",
@@ -11498,7 +11503,7 @@
         "next_id": "3100",
         "flagsToAdd": [
           "hub_3100_bundle",
-          "bundle_carried"
+          "plot_relic_1"
         ],
         "politics": {
           "intrigue": {
@@ -11516,6 +11521,7 @@
         "next_id": "3100",
         "flagsToAdd": [
           "hub_3100_bundle",
+          "plot_relic_1",
           "bundle_opened"
         ],
         "politics": {
@@ -11531,7 +11537,7 @@
         "next_id": "3100",
         "flagsToAdd": [
           "hub_3100_bundle",
-          "bundle_refused"
+          "plot_relic_1"
         ],
         "politics": {
           "intrigue": {
@@ -11562,6 +11568,7 @@
         "next_id": "3100",
         "flagsToAdd": [
           "hub_3100_new_moon",
+          "plot_stitcher_1",
           "newmoon_followed"
         ],
         "politics": {
@@ -11577,7 +11584,7 @@
         "next_id": "3100",
         "flagsToAdd": [
           "hub_3100_new_moon",
-          "newmoon_reported"
+          "plot_stitcher_1"
         ],
         "politics": {
           "intrigue": {
@@ -11595,7 +11602,7 @@
         "next_id": "3100",
         "flagsToAdd": [
           "hub_3100_new_moon",
-          "newmoon_ignored"
+          "plot_stitcher_1"
         ],
         "politics": {
           "intrigue": {
@@ -12085,18 +12092,18 @@
         "text_fr": "Suivre la lanterne basse d’une Porte-Clef sur le sentier de la falaise",
         "next_id": "5100_keyholder_cut",
         "showIfFlags": [
-          "intrigue_double_ledger_stage_2"
+          "plot_ledger_2"
         ],
         "hideIfFlags": [
           "hub_5100_keyholder_cut"
         ]
       },
       {
-        "text": "Ask an old Tar-Hand about the last ship she fitted for the Fleet",
-        "text_fr": "Interroger une vieille Main-de-Goudron sur le dernier navire qu’elle a radoubé pour la Flotte",
+        "text": "Ask an old Tar-Hand about the Fleet’s last refit",
+        "text_fr": "Interroger une vieille Main-de-Goudron sur le dernier radoub de la Flotte",
         "next_id": "5100_tar_hand_book",
         "showIfFlags": [
-          "intrigue_admiraltys_silence_stage_2"
+          "plot_admiralty_2"
         ],
         "hideIfFlags": [
           "hub_5100_tar_hand_book"
@@ -13293,7 +13300,7 @@
         "text_fr": "Suivre les débiteurs marqués hors de la route des pèlerins",
         "next_id": "6100_debt_rising",
         "showIfFlags": [
-          "intrigue_double_ledger_stage_3"
+          "plot_ledger_3"
         ],
         "hideIfFlags": [
           "hub_6100_debt_rising"
@@ -13304,7 +13311,7 @@
         "text_fr": "Suivre le chant de l’aiguille derrière la borne",
         "next_id": "6100_stitcher_door",
         "showIfFlags": [
-          "intrigue_unwatched_hour_stage_2"
+          "plot_stitcher_2"
         ],
         "hideIfFlags": [
           "hub_6100_stitcher_door"
@@ -14536,7 +14543,7 @@
         "text_fr": "Courir au Coffre sous la chandlerie",
         "next_id": "7100_vault_burns",
         "showIfFlags": [
-          "intrigue_double_ledger_stage_4"
+          "plot_ledger_4"
         ],
         "hideIfFlags": [
           "hub_7100_vault_burns"
@@ -14547,7 +14554,7 @@
         "text_fr": "Laisser le timonier vous conduire à la cale du vaisseau amiral",
         "next_id": "7100_flagship_hold",
         "showIfFlags": [
-          "intrigue_admiraltys_silence_stage_4"
+          "plot_admiralty_4"
         ],
         "hideIfFlags": [
           "hub_7100_flagship_hold"
@@ -15234,7 +15241,7 @@
         "text_fr": "Répondre aux avirons étouffés sous la poupe de l’Eel",
         "next_id": "7200_thieves_aboard",
         "showIfFlags": [
-          "intrigue_relic_road_stage_4"
+          "plot_relic_4"
         ],
         "hideIfFlags": [
           "hub_7200_thieves_aboard"
@@ -15245,7 +15252,7 @@
         "text_fr": "Écouter le marché de Wenna Tarn au bord de l’eau",
         "next_id": "7200_stitcher_kin",
         "showIfFlags": [
-          "intrigue_unwatched_hour_stage_3"
+          "plot_stitcher_3"
         ],
         "hideIfFlags": [
           "hub_7200_stitcher_kin"
@@ -15256,7 +15263,7 @@
         "text_fr": "Rencontrer l’émissaire des Cours masqué en héron",
         "next_id": "7200_courts_children",
         "showIfFlags": [
-          "intrigue_the_returned_stage_4"
+          "plot_returned_4"
         ],
         "hideIfFlags": [
           "hub_7200_courts_children"
@@ -15633,6 +15640,7 @@
         "next_id": "7200",
         "flagsToAdd": [
           "hub_7200_thieves_aboard",
+          "plot_relic_5",
           "thieves_aboard"
         ],
         "politics": {
@@ -15651,6 +15659,7 @@
         "next_id": "7200",
         "flagsToAdd": [
           "hub_7200_thieves_aboard",
+          "plot_relic_5",
           "thieves_bargained"
         ],
         "politics": {
@@ -15667,6 +15676,7 @@
         "alignmentMod": -2,
         "flagsToAdd": [
           "hub_7200_thieves_aboard",
+          "plot_relic_5",
           "cutter_signalled"
         ],
         "politics": {
@@ -15706,6 +15716,7 @@
         "next_id": "7200",
         "flagsToAdd": [
           "hub_7200_stitcher_kin",
+          "plot_stitcher_4",
           "stitcher_promised"
         ],
         "politics": {
@@ -15724,7 +15735,7 @@
         "next_id": "7200",
         "flagsToAdd": [
           "hub_7200_stitcher_kin",
-          "stitcher_warned"
+          "plot_stitcher_4"
         ],
         "politics": {
           "intrigue": {
@@ -15739,7 +15750,7 @@
         "next_id": "7200",
         "flagsToAdd": [
           "hub_7200_stitcher_kin",
-          "stitcher_price_asked"
+          "plot_stitcher_4"
         ],
         "politics": {
           "intrigue": {
@@ -15747,6 +15758,13 @@
             "stage": 4
           }
         }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "stitcher_lamp",
+        "en": "I had held her lamp at the milestone. She mentioned it only by not mentioning it.",
+        "fr": "J’avais tenu sa lampe à la borne. Elle n’y fit allusion qu’en n’y faisant pas allusion."
       }
     ]
   },
@@ -15768,6 +15786,7 @@
         "alignmentMod": 2,
         "flagsToAdd": [
           "hub_7200_courts_children",
+          "plot_returned_5",
           "children_aboard"
         ],
         "politics": {
@@ -15788,7 +15807,7 @@
         "alignmentMod": -1,
         "flagsToAdd": [
           "hub_7200_courts_children",
-          "children_priced"
+          "plot_returned_5"
         ],
         "politics": {
           "intrigue": {
@@ -15806,7 +15825,7 @@
         "next_id": "7200",
         "flagsToAdd": [
           "hub_7200_courts_children",
-          "children_deferred"
+          "plot_returned_5"
         ],
         "politics": {
           "intrigue": {
@@ -17359,6 +17378,7 @@
         "alignmentMod": -2,
         "flagsToAdd": [
           "hub_5100_keyholder_cut",
+          "plot_ledger_3",
           "keyholder_cut_taken"
         ],
         "politics": {
@@ -17379,6 +17399,7 @@
         "alignmentMod": 1,
         "flagsToAdd": [
           "hub_5100_keyholder_cut",
+          "plot_ledger_3",
           "keyholder_cut_refused"
         ],
         "politics": {
@@ -17397,7 +17418,7 @@
         "next_id": "5100",
         "flagsToAdd": [
           "hub_5100_keyholder_cut",
-          "keyholder_cut_watched"
+          "plot_ledger_3"
         ],
         "politics": {
           "intrigue": {
@@ -17431,8 +17452,10 @@
         "text_fr": "Acheter le livre de radoub de la calfate (40 or)",
         "next_id": "5100",
         "goldMod": -40,
+        "pays": true,
         "flagsToAdd": [
           "hub_5100_tar_hand_book",
+          "plot_admiralty_3",
           "tar_book_bought"
         ],
         "politics": {
@@ -17451,7 +17474,7 @@
         "next_id": "5100",
         "flagsToAdd": [
           "hub_5100_tar_hand_book",
-          "tar_word_only"
+          "plot_admiralty_3"
         ],
         "politics": {
           "intrigue": {
@@ -17466,7 +17489,7 @@
         "next_id": "5100",
         "flagsToAdd": [
           "hub_5100_tar_hand_book",
-          "tar_forgot_more"
+          "plot_admiralty_3"
         ],
         "politics": {
           "intrigue": {
@@ -17552,6 +17575,7 @@
         "alignmentMod": 1,
         "flagsToAdd": [
           "hub_6100_debt_rising",
+          "plot_ledger_4",
           "debt_marched"
         ],
         "politics": {
@@ -17571,6 +17595,7 @@
         "goldMod": 20,
         "flagsToAdd": [
           "hub_6100_debt_rising",
+          "plot_ledger_4",
           "debt_warned"
         ],
         "politics": {
@@ -17588,9 +17613,11 @@
         "text_fr": "Payer les dettes de ceux qui rentreront chez eux (40 or)",
         "next_id": "6100",
         "goldMod": -40,
+        "pays": true,
         "alignmentMod": 2,
         "flagsToAdd": [
           "hub_6100_debt_rising",
+          "plot_ledger_4",
           "debt_bought_out"
         ],
         "politics": {
@@ -17609,6 +17636,11 @@
         "flag": "keyholder_cut_taken",
         "en": "I thought of the third I had taken, and of whose names had paid for it.",
         "fr": "Je pensai au tiers que j’avais pris, et aux noms qui l’avaient payé."
+      },
+      {
+        "flag": "keyholder_cut_refused",
+        "en": "I had refused her third at the foot of the cliff path, and told her I knew. She had looked relieved, which I had not expected.",
+        "fr": "J’avais refusé son tiers au pied du sentier de la falaise, et lui avais dit que je savais. Elle avait paru soulagée, ce à quoi je ne m’attendais pas."
       }
     ]
   },
@@ -17629,6 +17661,7 @@
         "next_id": "6100",
         "flagsToAdd": [
           "hub_6100_stitcher_door",
+          "plot_stitcher_3",
           "stitcher_lamp"
         ],
         "politics": {
@@ -17647,7 +17680,7 @@
         "next_id": "6100",
         "flagsToAdd": [
           "hub_6100_stitcher_door",
-          "stitcher_asked"
+          "plot_stitcher_3"
         ],
         "politics": {
           "intrigue": {
@@ -17662,7 +17695,7 @@
         "next_id": "6100",
         "flagsToAdd": [
           "hub_6100_stitcher_door",
-          "stitcher_unseen"
+          "plot_stitcher_3"
         ],
         "politics": {
           "intrigue": {
@@ -17911,6 +17944,16 @@
         "flag": "debt_marched",
         "en": "The Drowned Debt stood at the rail of the second brig, their chainless hands in plain sight, and I did not know which way they were leaning.",
         "fr": "La Dette Noyée se tenait au bastingage du second brick, ses mains sans chaîne bien en vue, et je ne savais de quel côté elle penchait."
+      },
+      {
+        "flag": "vault_debt_chair",
+        "en": "The master’s chair at the Vault had a debtor in it now, a link of chain still branded on the hand that held the arm.",
+        "fr": "Le fauteuil du maître, au Coffre, avait désormais un débiteur dedans, un maillon de chaîne encore marqué sur la main qui tenait l’accoudoir."
+      },
+      {
+        "flag": "vault_keyholder_chair",
+        "en": "The Keyholder sat in the master’s chair now, and the debt-books were ash, and nobody on the brigs seemed to remember them.",
+        "fr": "La Porte-Clef occupait désormais le fauteuil du maître, les livres de dettes étaient en cendres, et nul, sur les bricks, ne semblait s’en souvenir."
       }
     ]
   },
@@ -17962,6 +18005,16 @@
         "flag": "relic_opened",
         "en": "I could still see the light that had come out of the lid, cold and white as skimmed milk, and I knew what it would do to anyone who wore it.",
         "fr": "Je revoyais la lumière qui s’était échappée du couvercle, froide et blanche comme du lait écrémé, et je savais ce qu’elle ferait à quiconque la porterait."
+      },
+      {
+        "flag": "relic_proof",
+        "en": "The lock of the cradle’s wool was in my pocket, still smelling of the sea.",
+        "fr": "La mèche de laine du berceau était dans ma poche, sentant encore la mer."
+      },
+      {
+        "flag": "relic_marked",
+        "en": "I had marked the place on the chart, nine fathoms from the point.",
+        "fr": "J’avais marqué l’endroit sur la carte, à neuf brasses de la pointe."
       }
     ]
   },
@@ -18015,6 +18068,16 @@
         "flag": "cutter_signalled",
         "en": "The cutter had already answered my signal. It lay closer than it had any right to.",
         "fr": "Le cotre avait déjà répondu à mon signal. Il se tenait plus près qu’il n’en avait le droit."
+      },
+      {
+        "flag": "thieves_aboard",
+        "en": "The Thieves were already on the Eel’s deck, because I had taken them aboard at Greyhithe and put out the lamps.",
+        "fr": "Les Voleurs étaient déjà sur le pont de l’Eel, car je les avais pris à bord à Grisegrève et éteint les lampes."
+      },
+      {
+        "flag": "thieves_bargained",
+        "en": "I had kept them in their boats at Greyhithe and bargained, and they had not forgotten the bargaining.",
+        "fr": "Je les avais gardés dans leurs barques à Grisegrève et j’avais marchandé, et ils n’avaient pas oublié ce marchandage."
       }
     ]
   },
@@ -18035,6 +18098,7 @@
         "next_id": "7002",
         "flagsToAdd": [
           "hub_7002_followed",
+          "plot_stitcher_5",
           "followed_spoken"
         ],
         "politics": {
@@ -18050,7 +18114,7 @@
         "next_id": "7002",
         "flagsToAdd": [
           "hub_7002_followed",
-          "followed_kept_back"
+          "plot_stitcher_5"
         ],
         "politics": {
           "intrigue": {
@@ -18065,7 +18129,7 @@
         "next_id": "7002",
         "flagsToAdd": [
           "hub_7002_followed",
-          "followed_lit"
+          "plot_stitcher_5"
         ],
         "politics": {
           "intrigue": {
@@ -18125,6 +18189,11 @@
         "flag": "followed_spoken",
         "en": "The thing on the beach had listened when I spoke to it. It had not answered. Nothing in my life had been quite so politely unanswered.",
         "fr": "La chose, sur la plage, avait écouté quand je lui avais parlé. Elle n’avait pas répondu. Rien, dans ma vie, n’était resté si poliment sans réponse."
+      },
+      {
+        "flag": "stitcher_promised",
+        "en": "I had promised her my silence until I had seen the door, and I had seen it now.",
+        "fr": "Je lui avais promis mon silence jusqu’à ce que j’aie vu la porte, et je l’avais vue à présent."
       }
     ]
   },
@@ -18178,6 +18247,11 @@
         "flag": "roll_taken",
         "en": "The page torn from the Reliquary’s roll was in my coat, four hundred names long, and the last ten had no second date.",
         "fr": "La page arrachée au rôle du Reliquaire était dans mon manteau, longue de quatre cents noms, et les dix derniers n’avaient pas de seconde date."
+      },
+      {
+        "flag": "children_aboard",
+        "en": "They had come aboard at Greyhithe without a sound, thirty small bundles in the dark, and I had not once been asked to explain.",
+        "fr": "Ils étaient montés à bord à Grisegrève sans un bruit, trente petits paquets dans le noir, et l’on ne m’avait pas une fois demandé de m’expliquer."
       }
     ]
   },
@@ -23369,7 +23443,7 @@
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_route_sold",
-          "ledger_quiet"
+          "plot_ledger_1"
         ],
         "politics": {
           "intrigue": {
@@ -23384,7 +23458,7 @@
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_route_sold",
-          "ledger_told_tout"
+          "plot_ledger_1"
         ],
         "politics": {
           "intrigue": {
@@ -23402,6 +23476,7 @@
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_route_sold",
+          "plot_ledger_1",
           "ledger_own_book"
         ],
         "politics": {
@@ -23429,10 +23504,11 @@
         "text_fr": "Lui offrir une autre tasse, et le laisser parler (5 or)",
         "next_id": "2015",
         "goldMod": -5,
+        "pays": true,
         "alignmentMod": 1,
         "flagsToAdd": [
           "hub_2015_survivor",
-          "survivor_heard_more"
+          "plot_admiralty_1"
         ],
         "politics": {
           "intrigue": {
@@ -23447,6 +23523,7 @@
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_survivor",
+          "plot_admiralty_1",
           "survivor_named"
         ],
         "politics": {
@@ -23462,7 +23539,7 @@
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_survivor",
-          "survivor_hushed"
+          "plot_admiralty_1"
         ],
         "politics": {
           "intrigue": {
@@ -23494,6 +23571,7 @@
         "alignmentMod": 1,
         "flagsToAdd": [
           "hub_2015_child_tongue",
+          "plot_returned_1",
           "child_fed"
         ],
         "politics": {
@@ -23509,7 +23587,7 @@
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_child_tongue",
-          "child_asked"
+          "plot_returned_1"
         ],
         "politics": {
           "intrigue": {
@@ -23524,7 +23602,7 @@
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_child_tongue",
-          "child_left"
+          "plot_returned_1"
         ],
         "politics": {
           "intrigue": {
@@ -23934,8 +24012,10 @@
         "text_fr": "Payer le prix du Registre (30 or)",
         "next_id": "3005",
         "goldMod": -30,
+        "pays": true,
         "flagsToAdd": [
           "hub_3005_black_thread",
+          "plot_ledger_2",
           "ledger_paid"
         ],
         "politics": {
@@ -23957,7 +24037,7 @@
         ],
         "flagsToAdd": [
           "hub_3005_black_thread",
-          "ledger_notes_shown"
+          "plot_ledger_2"
         ],
         "politics": {
           "intrigue": {
@@ -23975,7 +24055,7 @@
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_black_thread",
-          "ledger_thread_burned"
+          "plot_ledger_2"
         ],
         "politics": {
           "intrigue": {
@@ -24006,7 +24086,7 @@
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_logbook_gap",
-          "logbook_keys"
+          "plot_admiralty_2"
         ],
         "politics": {
           "intrigue": {
@@ -24020,9 +24100,10 @@
         "text_fr": "Payer le commis pour recopier la fiche du catalogue (10 or)",
         "next_id": "3005",
         "goldMod": -10,
+        "pays": true,
         "flagsToAdd": [
           "hub_3005_logbook_gap",
-          "logbook_catalogue"
+          "plot_admiralty_2"
         ],
         "politics": {
           "intrigue": {
@@ -24037,7 +24118,7 @@
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_logbook_gap",
-          "logbook_left"
+          "plot_admiralty_2"
         ],
         "politics": {
           "intrigue": {
@@ -24067,13 +24148,13 @@
     "location": "ashen_quarter",
     "choices": [
       {
-        "text": "Help Inès sweep the dust into a pouch, for a proper burial",
-        "text_fr": "Aider Inès à recueillir la poudre dans une bourse, pour une vraie sépulture",
+        "text": "Help Inès sweep the dust up for a proper burial",
+        "text_fr": "Aider Inès à recueillir la poudre pour une vraie sépulture",
         "next_id": "3005",
         "alignmentMod": 1,
         "flagsToAdd": [
           "hub_3005_shrine_break",
-          "shrine_swept"
+          "plot_relic_2"
         ],
         "politics": {
           "intrigue": {
@@ -24088,7 +24169,7 @@
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_shrine_break",
-          "shrine_followed"
+          "plot_relic_2"
         ],
         "politics": {
           "intrigue": {
@@ -24107,7 +24188,7 @@
         "alignmentMod": -1,
         "flagsToAdd": [
           "hub_3005_shrine_break",
-          "shrine_reported"
+          "plot_relic_2"
         ],
         "politics": {
           "intrigue": {
@@ -24146,6 +24227,7 @@
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_spire_takings",
+          "plot_returned_2",
           "child_followed"
         ],
         "politics": {
@@ -24164,7 +24246,7 @@
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_spire_takings",
-          "child_counted"
+          "plot_returned_2"
         ],
         "politics": {
           "intrigue": {
@@ -24183,7 +24265,7 @@
         "alignmentMod": -1,
         "flagsToAdd": [
           "hub_3005_spire_takings",
-          "child_ignored"
+          "plot_returned_2"
         ],
         "politics": {
           "intrigue": {
@@ -24271,7 +24353,7 @@
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_thieves_ship",
-          "thieves_promised"
+          "plot_relic_3"
         ],
         "politics": {
           "intrigue": {
@@ -24289,7 +24371,7 @@
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_thieves_ship",
-          "thieves_waiting"
+          "plot_relic_3"
         ],
         "politics": {
           "intrigue": {
@@ -24304,6 +24386,7 @@
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_thieves_ship",
+          "plot_relic_3",
           "thieves_refused"
         ],
         "politics": {
@@ -24335,7 +24418,7 @@
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_vigil_envoy",
-          "child_envoy_asked"
+          "plot_returned_3"
         ],
         "politics": {
           "intrigue": {
@@ -24353,6 +24436,7 @@
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_vigil_envoy",
+          "plot_returned_3",
           "child_envoy_refused"
         ],
         "politics": {
@@ -24372,6 +24456,7 @@
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_vigil_envoy",
+          "plot_returned_3",
           "child_envoy_questioned"
         ],
         "politics": {
@@ -24452,7 +24537,7 @@
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_lantern_manifest",
-          "manifest_copied"
+          "plot_admiralty_4"
         ],
         "politics": {
           "intrigue": {
@@ -24469,9 +24554,10 @@
         "text_fr": "Lui payer la page elle-même (60 or)",
         "next_id": "6010",
         "goldMod": -60,
+        "pays": true,
         "flagsToAdd": [
           "hub_6010_lantern_manifest",
-          "manifest_bought"
+          "plot_admiralty_4"
         ],
         "politics": {
           "intrigue": {
@@ -24486,7 +24572,7 @@
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_lantern_manifest",
-          "manifest_unseen"
+          "plot_admiralty_4"
         ],
         "politics": {
           "intrigue": {
@@ -24524,6 +24610,7 @@
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_heist_night",
+          "plot_relic_4",
           "heist_sworn"
         ],
         "politics": {
@@ -24542,7 +24629,7 @@
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_heist_night",
-          "heist_paper"
+          "plot_relic_4"
         ],
         "politics": {
           "intrigue": {
@@ -24558,7 +24645,7 @@
         "alignmentMod": -1,
         "flagsToAdd": [
           "hub_6010_heist_night",
-          "heist_overheard"
+          "plot_relic_4"
         ],
         "politics": {
           "intrigue": {
@@ -24596,7 +24683,7 @@
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_count_short",
-          "count_asked_watch"
+          "plot_stitcher_2"
         ],
         "politics": {
           "intrigue": {
@@ -24614,6 +24701,7 @@
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_count_short",
+          "plot_stitcher_2",
           "count_name_heard"
         ],
         "politics": {
@@ -24629,7 +24717,7 @@
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_count_short",
-          "count_kept"
+          "plot_stitcher_2"
         ],
         "politics": {
           "intrigue": {
@@ -24665,6 +24753,7 @@
         "alignmentMod": 1,
         "flagsToAdd": [
           "hub_6010_returned_roll",
+          "plot_returned_4",
           "roll_taken"
         ],
         "politics": {
@@ -24683,7 +24772,7 @@
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_returned_roll",
-          "roll_copied"
+          "plot_returned_4"
         ],
         "politics": {
           "intrigue": {
@@ -24698,7 +24787,7 @@
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_returned_roll",
-          "roll_closed"
+          "plot_returned_4"
         ],
         "politics": {
           "intrigue": {
@@ -24713,6 +24802,16 @@
         "flag": "child_envoy_questioned",
         "en": "The Watch’s envoy had said it was only a question of what they would do with a child at the tear. The roll answered it before I could ask again.",
         "fr": "L’émissaire de la Veille avait dit que ce n’était qu’une question de ce qu’on ferait d’un enfant devant la déchirure. Le rôle y répondit avant que je puisse la reposer."
+      },
+      {
+        "flag": "child_followed",
+        "en": "I had followed the file to the Spire’s first gate, and the gate had a door in it that did not open from the outside.",
+        "fr": "J’avais suivi la file jusqu’à la première porte de la Flèche, et cette porte avait un battant qui ne s’ouvrait pas de l’extérieur."
+      },
+      {
+        "flag": "child_envoy_refused",
+        "en": "I had told the Watch’s envoy that the Mire would not give them up. She had nodded as if I had confirmed a figure.",
+        "fr": "J’avais dit à l’émissaire de la Veille que le Marais ne les livrerait pas. Elle avait hoché la tête comme si je lui confirmais un chiffre."
       }
     ]
   },
@@ -24839,6 +24938,7 @@
         "alignmentMod": 1,
         "flagsToAdd": [
           "hub_7100_vault_burns",
+          "plot_ledger_5",
           "vault_debt_chair"
         ],
         "politics": {
@@ -24859,6 +24959,7 @@
         "alignmentMod": -1,
         "flagsToAdd": [
           "hub_7100_vault_burns",
+          "plot_ledger_5",
           "vault_keyholder_chair"
         ],
         "politics": {
@@ -24877,6 +24978,7 @@
         "next_id": "7100",
         "flagsToAdd": [
           "hub_7100_vault_burns",
+          "plot_ledger_5",
           "vault_burned"
         ],
         "politics": {
@@ -24889,6 +24991,18 @@
             "dominion": 5
           }
         }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "debt_warned",
+        "en": "I had sent word to the Keyholders from Rimewell, and a few of them stood in the street now with the look of people who had listened.",
+        "fr": "J’avais fait prévenir les Porte-Clefs depuis Puits-de-Givre, et quelques-uns se tenaient dans la rue avec l’air de ceux qui avaient écouté."
+      },
+      {
+        "flag": "debt_bought_out",
+        "en": "Some of the debtors passing buckets had been in the line I bought out at Rimewell. They did not look at me, but they passed faster.",
+        "fr": "Certains des débiteurs qui se passaient les seaux avaient fait partie de la file dont j’avais payé les dettes à Puits-de-Givre. Ils ne me regardaient pas, mais ils passaient les seaux plus vite."
       }
     ]
   },
@@ -24909,6 +25023,7 @@
         "next_id": "7100",
         "flagsToAdd": [
           "hub_7100_flagship_hold",
+          "plot_admiralty_5",
           "relic_opened"
         ],
         "politics": {
@@ -24924,6 +25039,7 @@
         "next_id": "7100",
         "flagsToAdd": [
           "hub_7100_flagship_hold",
+          "plot_admiralty_5",
           "relic_marked"
         ],
         "politics": {
@@ -24939,6 +25055,7 @@
         "next_id": "7100",
         "flagsToAdd": [
           "hub_7100_flagship_hold",
+          "plot_admiralty_5",
           "relic_proof"
         ],
         "politics": {
