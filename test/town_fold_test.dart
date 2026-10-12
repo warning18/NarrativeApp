@@ -69,7 +69,7 @@ void main() {
     await goTo('2015');
     expect(scene, findsOneWidget);
     expect(enter, findsOneWidget);
-    expect(find.text("Enter Smugglers' Wharf"), findsOneWidget);
+    expect(find.text('Enter Smugglers’ Wharf'), findsOneWidget);
     expect(card, findsNothing);
     expect(bazaar, findsNothing);
 
@@ -93,7 +93,7 @@ void main() {
     await tester.tap(find.byKey(const Key('hub_tab_people')));
     await _settle(tester);
     expect(bazaar, findsNothing);
-    expect(find.text("Take the harbor master's job"), findsOneWidget);
+    expect(find.text('Take the harbor master’s job'), findsOneWidget);
     await tester.ensureVisible(find.byKey(const Key('hub_tab_all')));
     await tester.tap(find.byKey(const Key('hub_tab_all')));
     await _settle(tester);
@@ -111,7 +111,7 @@ void main() {
     await tester.tap(find.byKey(const Key('hub_reread')));
     await _settle(tester);
     expect(scene, findsOneWidget);
-    expect(find.text("Back to Smugglers' Wharf"), findsOneWidget);
+    expect(find.text('Back to Smugglers’ Wharf'), findsOneWidget);
     await tester.tap(enter);
     await _settle(tester);
     expect(scene, findsNothing);
@@ -136,7 +136,7 @@ void main() {
         .applyChoiceEffects(flagsToAdd: ['wharf_scouted']);
     await goTo('2015');
     expect(scene, findsOneWidget);
-    expect(find.text("Back to Smugglers' Wharf"), findsOneWidget);
+    expect(find.text('Back to Smugglers’ Wharf'), findsOneWidget);
     expect(card, findsNothing);
     expect(tester.takeException(), isNull);
   });

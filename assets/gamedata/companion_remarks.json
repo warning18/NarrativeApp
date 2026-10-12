@@ -4,9 +4,9 @@
     "companionID": "kelda",
     "trigger": "kindApproved",
     "lines": [
-      "That's the job. Not the pay. The job.",
+      "That’s the job. Not the pay. The job.",
       "You stood between them and harm. I know what that costs. Well done.",
-      "My old sergeant would have bought you a drink for that. He'd have hated it, but he'd have bought it."
+      "My old sergeant would have bought you a drink for that. He’d have hated it, but he’d have bought it."
     ],
     "lines_fr": [
       "C’est ça, le métier. Pas la paie : le métier.",
@@ -19,9 +19,9 @@
     "companionID": "kelda",
     "trigger": "cruelDisapproved",
     "lines": [
-      "We held gates so people wouldn't do things like that.",
-      "Hm. I'll remember that. Not fondly.",
-      "There was no need for it. There's never a need for it."
+      "We held gates so people wouldn’t do things like that.",
+      "Hm. I’ll remember that. Not fondly.",
+      "There was no need for it. There’s never a need for it."
     ],
     "lines_fr": [
       "On tenait des portes pour que personne ne fasse ce genre de chose.",
@@ -34,8 +34,8 @@
     "companionID": "kelda",
     "trigger": "approved",
     "lines": [
-      "Good call. I'd have made it slower.",
-      "That'll do. That'll do nicely."
+      "Good call. I’d have made it slower.",
+      "That’ll do. That’ll do nicely."
     ],
     "lines_fr": [
       "Bonne décision. Je l’aurais prise moins vite.",
@@ -47,8 +47,8 @@
     "companionID": "kelda",
     "trigger": "disapproved",
     "lines": [
-      "Not what I'd have done. Not my call, either.",
-      "I've seen that choice made before. It didn't end well then."
+      "Not what I’d have done. Not my call, either.",
+      "I’ve seen that choice made before. It didn’t end well then."
     ],
     "lines_fr": [
       "Ce n’est pas ce que j’aurais fait. Mais ce n’est pas moi qui décide.",
@@ -60,9 +60,9 @@
     "companionID": "kelda",
     "trigger": "checkPassed",
     "lines": [
-      "Clean work. I'd have used a shoulder, but clean.",
+      "Clean work. I’d have used a shoulder, but clean.",
       "See? Steady hands, steady feet. Nothing to it.",
-      "Hah. Didn't even need me."
+      "Hah. Didn’t even need me."
     ],
     "lines_fr": [
       "Du travail propre. J’aurais mis un coup d’épaule, mais c’est propre.",
@@ -76,8 +76,8 @@
     "trigger": "checkFailed",
     "lines": [
       "Up you get. Everyone misses a step.",
-      "Shake it off. The wall doesn't care, and neither should you.",
-      "Next time let me go first. I'm shorter; I fall less far."
+      "Shake it off. The wall doesn’t care, and neither should you.",
+      "Next time let me go first. I’m shorter; I fall less far."
     ],
     "lines_fr": [
       "Allez, on se relève. Tout le monde rate une marche.",
@@ -103,8 +103,8 @@
     "companionID": "kelda",
     "trigger": "drink",
     "lines": [
-      "To the gate, and whoever's behind it. Your round, I see.",
-      "Dwarven ale's better. Don't tell the barkeep. Thank you."
+      "To the gate, and whoever’s behind it. Your round, I see.",
+      "Dwarven ale’s better. Don’t tell the barkeep. Thank you."
     ],
     "lines_fr": [
       "À la porte, et à ceux qui sont derrière. C’est votre tournée, à ce que je vois.",
@@ -117,7 +117,7 @@
     "trigger": "kindDisapproved",
     "lines": [
       "Generous. Expensive, but generous.",
-      "Charity doesn't pay out, love. I've checked the odds.",
+      "Charity doesn’t pay out, love. I’ve checked the odds.",
       "Lovely gesture. Remind me never to let you hold the purse."
     ],
     "lines_fr": [
@@ -131,9 +131,9 @@
     "companionID": "sable",
     "trigger": "cruelApproved",
     "lines": [
-      "Cold. I didn't know you had it in you.",
-      "Hard hands win hard games. Not that I'm keeping score.",
-      "Nobody's going to write a song about that. Good. Songs are evidence."
+      "Cold. I didn’t know you had it in you.",
+      "Hard hands win hard games. Not that I’m keeping score.",
+      "Nobody’s going to write a song about that. Good. Songs are evidence."
     ],
     "lines_fr": [
       "Froid. Je ne vous savais pas capable de ça.",
@@ -146,9 +146,9 @@
     "companionID": "sable",
     "trigger": "profitApproved",
     "lines": [
-      "Now that's a hand worth playing.",
+      "Now that’s a hand worth playing.",
       "Coin in the pocket. The only argument that never loses.",
-      "Let me count it. You've got an honest face, and honest faces miscount."
+      "Let me count it. You’ve got an honest face, and honest faces miscount."
     ],
     "lines_fr": [
       "Voilà une main qui vaut la peine d’être jouée.",
@@ -162,7 +162,7 @@
     "trigger": "approved",
     "lines": [
       "Nicely played.",
-      "I'd have bet on that. I'd have won, too."
+      "I’d have bet on that. I’d have won, too."
     ],
     "lines_fr": [
       "Joliment joué.",
@@ -174,8 +174,8 @@
     "companionID": "sable",
     "trigger": "disapproved",
     "lines": [
-      "Bad bet. I'm just saying.",
-      "I'd have folded. But it's your table."
+      "Bad bet. I’m just saying.",
+      "I’d have folded. But it’s your table."
     ],
     "lines_fr": [
       "Mauvais pari. Je dis ça comme ça.",
@@ -187,9 +187,9 @@
     "companionID": "sable",
     "trigger": "checkPassed",
     "lines": [
-      "Beginner's luck. Keep it up and I'll start calling it skill.",
+      "Beginner’s luck. Keep it up and I’ll start calling it skill.",
       "Smooth. Almost as smooth as me.",
-      "The dice like you today. Don't tell them I said so."
+      "The dice like you today. Don’t tell them I said so."
     ],
     "lines_fr": [
       "La chance du débutant. Continuez et j’appellerai ça du talent.",
@@ -204,7 +204,7 @@
     "lines": [
       "Ooh. The house takes that one.",
       "Everyone busts sometimes, love. Some of us just do it quieter.",
-      "I'd have tried that too. Then pretended I hadn't."
+      "I’d have tried that too. Then pretended I hadn’t."
     ],
     "lines_fr": [
       "Aïe. Celle-là, c’est pour la maison.",
@@ -217,7 +217,7 @@
     "companionID": "sable",
     "trigger": "sneakedPast",
     "lines": [
-      "Now you're thinking like me. The best fight is the one they never knew about.",
+      "Now you’re thinking like me. The best fight is the one they never knew about.",
       "Quiet feet. I could make something of you yet."
     ],
     "lines_fr": [
@@ -230,8 +230,8 @@
     "companionID": "sable",
     "trigger": "drink",
     "lines": [
-      "Buying the drinks. You're learning how to keep a partner, love.",
-      "I'll pretend I don't know what this costs. Cheers."
+      "Buying the drinks. You’re learning how to keep a partner, love.",
+      "I’ll pretend I don’t know what this costs. Cheers."
     ],
     "lines_fr": [
       "Vous payez la tournée. Vous apprenez à garder une associée, mon chou.",
@@ -243,9 +243,9 @@
     "companionID": "maren",
     "trigger": "kindApproved",
     "lines": [
-      "You didn't have to. That is why it mattered.",
+      "You didn’t have to. That is why it mattered.",
       "The Light keeps its own accounts. Today it wrote your name kindly.",
-      "I have seen a great deal of cruelty done in the Light's name. It is good to see the other thing."
+      "I have seen a great deal of cruelty done in the Light’s name. It is good to see the other thing."
     ],
     "lines_fr": [
       "Rien ne vous y obligeait. C’est pour cela que ça comptait.",
@@ -316,7 +316,7 @@
     "lines": [
       "Nothing broken? Then it was only pride, and pride mends.",
       "Failing is a kind of prayer. It reminds us we need one.",
-      "Let me look at that. No, don't argue."
+      "Let me look at that. No, don’t argue."
     ],
     "lines_fr": [
       "Rien de cassé ? Alors ce n’était que l’orgueil, et l’orgueil guérit.",
@@ -342,8 +342,8 @@
     "companionID": "maren",
     "trigger": "drink",
     "lines": [
-      "I took a vow against this, once. Tomorrow I'll take another.",
-      "Thank you. It's been a long time since anyone poured for me."
+      "I took a vow against this, once. Tomorrow I’ll take another.",
+      "Thank you. It’s been a long time since anyone poured for me."
     ],
     "lines_fr": [
       "J’ai fait vœu de ne pas boire, autrefois. Demain, j’en ferai un autre.",
@@ -355,9 +355,9 @@
     "companionID": "liora",
     "trigger": "kindApproved",
     "lines": [
-      "Good. One less person I'll watch fall from up there.",
-      "I count the ones we save, too. That's another.",
-      "That's why I came down off the roofs."
+      "Good. One less person I’ll watch fall from up there.",
+      "I count the ones we save, too. That’s another.",
+      "That’s why I came down off the roofs."
     ],
     "lines_fr": [
       "Bien. Une personne de moins que je verrai tomber, de là-haut.",
@@ -371,8 +371,8 @@
     "trigger": "cruelDisapproved",
     "lines": [
       "I saw that. I see everything. Remember it.",
-      "That's the kind of thing I used to shoot at.",
-      "Don't. Don't make me count those too."
+      "That’s the kind of thing I used to shoot at.",
+      "Don’t. Don’t make me count those too."
     ],
     "lines_fr": [
       "J’ai vu ça. Je vois tout. Souvenez-vous-en.",
@@ -386,7 +386,7 @@
     "trigger": "approved",
     "lines": [
       "Clean choice.",
-      "I'd have done the same. Slower, from higher up."
+      "I’d have done the same. Slower, from higher up."
     ],
     "lines_fr": [
       "Choix net.",
@@ -399,7 +399,7 @@
     "trigger": "disapproved",
     "lines": [
       "Hm. Wrong angle.",
-      "I'd have called that differently."
+      "I’d have called that differently."
     ],
     "lines_fr": [
       "Hum. Mauvais angle.",
@@ -411,7 +411,7 @@
     "companionID": "liora",
     "trigger": "checkPassed",
     "lines": [
-      "Good line. I'd have taken the same one.",
+      "Good line. I’d have taken the same one.",
       "Nicely judged.",
       "Three steps, none wasted. I counted."
     ],
@@ -455,7 +455,7 @@
     "trigger": "drink",
     "lines": [
       "Up on the roof, then. Better view, and nobody hears us toast.",
-      "One cup. I'm still on watch. I'm always on watch."
+      "One cup. I’m still on watch. I’m always on watch."
     ],
     "lines_fr": [
       "Sur le toit, alors. Meilleure vue, et personne ne nous entend trinquer.",
@@ -467,9 +467,9 @@
     "companionID": "vess",
     "trigger": "kindApproved",
     "lines": [
-      "The Void went quiet just then. It doesn't like that sort of thing.",
-      "Nobody did that for me when I came out of the dark. I'm glad someone does it.",
-      "That was a human thing to do. I'm still learning those."
+      "The Void went quiet just then. It doesn’t like that sort of thing.",
+      "Nobody did that for me when I came out of the dark. I’m glad someone does it.",
+      "That was a human thing to do. I’m still learning those."
     ],
     "lines_fr": [
       "Le Vide s’est tu, à l’instant. Il n’aime pas ce genre de chose.",
@@ -483,8 +483,8 @@
     "trigger": "cruelDisapproved",
     "lines": [
       "It liked that. The thing in the dark. I felt it smile.",
-      "You don't need the Void to be cruel. That's what frightens me.",
-      "Please don't do that again where I can hear it."
+      "You don’t need the Void to be cruel. That’s what frightens me.",
+      "Please don’t do that again where I can hear it."
     ],
     "lines_fr": [
       "Ça lui a plu. À la chose dans le noir. Je l’ai sentie sourire.",
@@ -498,7 +498,7 @@
     "trigger": "approved",
     "lines": [
       "Good. The whispers had nothing to say about that.",
-      "I think that was right. I'm not always sure what right is."
+      "I think that was right. I’m not always sure what right is."
     ],
     "lines_fr": [
       "Bien. Les murmures n’avaient rien à redire.",
@@ -510,8 +510,8 @@
     "companionID": "vess",
     "trigger": "disapproved",
     "lines": [
-      "The whispers laughed. I didn't.",
-      "I don't like that. I don't know why yet."
+      "The whispers laughed. I didn’t.",
+      "I don’t like that. I don’t know why yet."
     ],
     "lines_fr": [
       "Les murmures ont ri. Pas moi.",
@@ -523,9 +523,9 @@
     "companionID": "vess",
     "trigger": "checkPassed",
     "lines": [
-      "The Void said you'd fall. It lies.",
+      "The Void said you’d fall. It lies.",
       "Elegant. For someone with no void in them.",
-      "I didn't help. I want that noted."
+      "I didn’t help. I want that noted."
     ],
     "lines_fr": [
       "Le Vide disait que vous tomberiez. Il ment.",
@@ -538,9 +538,9 @@
     "companionID": "vess",
     "trigger": "checkFailed",
     "lines": [
-      "The dark wanted that to happen. Don't give it more.",
-      "I could have caught you. I wasn't sure you'd want me to.",
-      "Failing isn't the worst thing. I've done worse than fail."
+      "The dark wanted that to happen. Don’t give it more.",
+      "I could have caught you. I wasn’t sure you’d want me to.",
+      "Failing isn’t the worst thing. I’ve done worse than fail."
     ],
     "lines_fr": [
       "Le noir voulait que ça arrive. Ne lui donnez rien de plus.",
@@ -553,8 +553,8 @@
     "companionID": "vess",
     "trigger": "sneakedPast",
     "lines": [
-      "Shadows are easier when you're not afraid of them.",
-      "Not a sound. Like the dark. I'd know."
+      "Shadows are easier when you’re not afraid of them.",
+      "Not a sound. Like the dark. I’d know."
     ],
     "lines_fr": [
       "Les ombres sont plus faciles quand on n’en a pas peur.",
@@ -567,7 +567,7 @@
     "trigger": "drink",
     "lines": [
       "Nobody drank with me in the dark. It was very quiet. This is better.",
-      "The whispers go quiet when I'm warm. Thank you."
+      "The whispers go quiet when I’m warm. Thank you."
     ],
     "lines_fr": [
       "Personne ne buvait avec moi, dans le noir. C’était très calme. C’est mieux ainsi.",
@@ -706,9 +706,9 @@
     "companionID": "tobin",
     "trigger": "kindApproved",
     "lines": [
-      "There. That's a candle lit. The dark is a little smaller for it.",
+      "There. That’s a candle lit. The dark is a little smaller for it.",
       "The choir sang about that sort of thing. You just did it.",
-      "I'll hum something for them tonight. And for you."
+      "I’ll hum something for them tonight. And for you."
     ],
     "lines_fr": [
       "Voilà. Une chandelle d’allumée. Le noir en est un peu plus petit.",
@@ -721,9 +721,9 @@
     "companionID": "tobin",
     "trigger": "cruelDisapproved",
     "lines": [
-      "I've buried what deeds like that leave behind.",
+      "I’ve buried what deeds like that leave behind.",
       "The Ashen Quarter started with one choice like that.",
-      "I'll not sing tonight."
+      "I’ll not sing tonight."
     ],
     "lines_fr": [
       "J’ai enterré ce que des actes pareils laissent derrière eux.",
@@ -736,8 +736,8 @@
     "companionID": "tobin",
     "trigger": "profitDisapproved",
     "lines": [
-      "Coin is heavy. Mind it doesn't pull you under.",
-      "Every purse on this coast was somebody's once.",
+      "Coin is heavy. Mind it doesn’t pull you under.",
+      "Every purse on this coast was somebody’s once.",
       "The choir took coin too. It never sang any better for it."
     ],
     "lines_fr": [
@@ -751,8 +751,8 @@
     "companionID": "tobin",
     "trigger": "approved",
     "lines": [
-      "Well done. I'll put that in my prayers, on the grateful side.",
-      "That was right. I don't say it lightly."
+      "Well done. I’ll put that in my prayers, on the grateful side.",
+      "That was right. I don’t say it lightly."
     ],
     "lines_fr": [
       "Bien fait. Je mettrai ça dans mes prières, du côté des remerciements.",
@@ -764,7 +764,7 @@
     "companionID": "tobin",
     "trigger": "disapproved",
     "lines": [
-      "I'll not argue. I'll only say I'd have done otherwise.",
+      "I’ll not argue. I’ll only say I’d have done otherwise.",
       "Hm. The hymn for that one is in a minor key."
     ],
     "lines_fr": [
@@ -779,7 +779,7 @@
     "lines": [
       "Steady as a cloister wall. Good.",
       "Well done. My knees thank you for not making me try.",
-      "The Light doesn't miss. Neither, today, did you."
+      "The Light doesn’t miss. Neither, today, did you."
     ],
     "lines_fr": [
       "Solide comme un mur de cloître. Bien.",
@@ -792,9 +792,9 @@
     "companionID": "tobin",
     "trigger": "checkFailed",
     "lines": [
-      "No harm that won't mend. Come, let me see.",
+      "No harm that won’t mend. Come, let me see.",
       "The brothers dropped the censer at every feast. The feast went on.",
-      "Not your hour for it. There'll be another."
+      "Not your hour for it. There’ll be another."
     ],
     "lines_fr": [
       "Rien qui ne se répare. Venez, laissez-moi voir.",
@@ -807,7 +807,7 @@
     "companionID": "tobin",
     "trigger": "sneakedPast",
     "lines": [
-      "Nobody hurt. That's a hymn I know by heart.",
+      "Nobody hurt. That’s a hymn I know by heart.",
       "Good. Let them live to change their minds."
     ],
     "lines_fr": [
@@ -821,7 +821,7 @@
     "trigger": "drink",
     "lines": [
       "The brothers brewed better, but they never shared it. Your health.",
-      "I'll sing after the second cup. You've been warned."
+      "I’ll sing after the second cup. You’ve been warned."
     ],
     "lines_fr": [
       "Les frères brassaient mieux, mais ils ne partageaient jamais. À votre santé.",
@@ -835,7 +835,7 @@
     "lines": [
       "Mercy. Charming. Unbillable.",
       "Nothing personal, but that was a loss on the books.",
-      "The Court would have laughed. I'm trying not to."
+      "The Court would have laughed. I’m trying not to."
     ],
     "lines_fr": [
       "La pitié. Charmant. Impossible à facturer.",
@@ -848,9 +848,9 @@
     "companionID": "malrik",
     "trigger": "cruelApproved",
     "lines": [
-      "Nothing personal. That's how it's done.",
+      "Nothing personal. That’s how it’s done.",
       "Efficient. The Court would have offered you a seat.",
-      "You're learning. I'll send you my rates for the lessons."
+      "You’re learning. I’ll send you my rates for the lessons."
     ],
     "lines_fr": [
       "Rien de personnel. C’est comme ça qu’on fait.",
@@ -863,9 +863,9 @@
     "companionID": "malrik",
     "trigger": "profitApproved",
     "lines": [
-      "Now that's a return on investment.",
+      "Now that’s a return on investment.",
       "Profit. My favourite kind of ending.",
-      "I'll keep the ledger. You keep doing that."
+      "I’ll keep the ledger. You keep doing that."
     ],
     "lines_fr": [
       "Voilà un bon retour sur investissement.",
@@ -878,8 +878,8 @@
     "companionID": "malrik",
     "trigger": "approved",
     "lines": [
-      "Sound decision. I'd have charged for it.",
-      "Good. I'm revising my estimate of you upward."
+      "Sound decision. I’d have charged for it.",
+      "Good. I’m revising my estimate of you upward."
     ],
     "lines_fr": [
       "Décision saine. Je l’aurais facturée.",
@@ -892,7 +892,7 @@
     "trigger": "disapproved",
     "lines": [
       "Nothing personal. But no.",
-      "That will cost us. I've already done the sum."
+      "That will cost us. I’ve already done the sum."
     ],
     "lines_fr": [
       "Rien de personnel. Mais non.",
@@ -904,9 +904,9 @@
     "companionID": "malrik",
     "trigger": "checkPassed",
     "lines": [
-      "Competent work. Almost disappointing; I'd wagered against you.",
-      "Well done. I'll pretend I never doubted it.",
-      "See? Risk, managed. There's some Court in you yet."
+      "Competent work. Almost disappointing; I’d wagered against you.",
+      "Well done. I’ll pretend I never doubted it.",
+      "See? Risk, managed. There’s some Court in you yet."
     ],
     "lines_fr": [
       "Du travail compétent. Presque décevant : j’avais parié contre vous.",
@@ -919,9 +919,9 @@
     "companionID": "malrik",
     "trigger": "checkFailed",
     "lines": [
-      "Ah. I'll file that under losses.",
+      "Ah. I’ll file that under losses.",
       "Nothing personal, but that was painful to watch.",
-      "Everyone fails. The clever ones fail where no one's looking."
+      "Everyone fails. The clever ones fail where no one’s looking."
     ],
     "lines_fr": [
       "Ah. Je range ça dans les pertes.",
@@ -947,7 +947,7 @@
     "companionID": "malrik",
     "trigger": "drink",
     "lines": [
-      "A drink on your coin. I'll book it as a gift, not a debt. Rare, for me.",
+      "A drink on your coin. I’ll book it as a gift, not a debt. Rare, for me.",
       "To profit. And, fine, to you."
     ],
     "lines_fr": [
@@ -962,7 +962,7 @@
     "choiceKey": "960#1",
     "note": "The Inquisitor on the pier, beaten: end it quickly",
     "lines": [
-      "You could have made him scream. He'd have deserved it. I'm glad you didn't want to."
+      "You could have made him scream. He’d have deserved it. I’m glad you didn’t want to."
     ],
     "lines_fr": [
       "Vous auriez pu le faire hurler. Il l’aurait mérité. Je suis contente que vous n’en ayez pas eu envie."
@@ -988,7 +988,7 @@
     "choiceKey": "refugees_aboard",
     "note": "The wharf, a boat for twenty and a hundred waiting: take everyone",
     "lines": [
-      "A hundred on a boat built for twenty, and the stores over the side. That's a gate held. I'll bail if I have to."
+      "A hundred on a boat built for twenty, and the stores over the side. That’s a gate held. I’ll bail if I have to."
     ],
     "lines_fr": [
       "Cent personnes sur un bateau fait pour vingt, et les vivres par-dessus bord. Ça, c’est une porte tenue. J’écoperai s’il le faut."
@@ -1001,7 +1001,7 @@
     "choiceKey": "refugees_aboard",
     "note": "The wharf, a boat for twenty and a hundred waiting: take everyone",
     "lines": [
-      "There go three weeks of food, for a hundred mouths that'll eat for three days. I'll be hungry and right, love. There are worse things to be."
+      "There go three weeks of food, for a hundred mouths that’ll eat for three days. I’ll be hungry and right, love. There are worse things to be."
     ],
     "lines_fr": [
       "Voilà trois semaines de vivres jetées pour cent bouches qui mangeront trois jours. J’aurai faim et raison, mon chou. Il y a pire."
@@ -1014,7 +1014,7 @@
     "choiceKey": "refugees_aboard",
     "note": "The wharf, a boat for twenty and a hundred waiting: take everyone",
     "lines": [
-      "I counted them up the gangway. All of them. I'll count them off again on the other side."
+      "I counted them up the gangway. All of them. I’ll count them off again on the other side."
     ],
     "lines_fr": [
       "Je les ai comptés sur la passerelle. Tous. Je les recompterai de l’autre côté."
@@ -1027,7 +1027,7 @@
     "choiceKey": "refugees_aboard",
     "note": "The wharf, a boat for twenty and a hundred waiting: take everyone",
     "lines": [
-      "The children didn't look at me like I was the dark. I think it's because you let me carry one."
+      "The children didn’t look at me like I was the dark. I think it’s because you let me carry one."
     ],
     "lines_fr": [
       "Les enfants ne m’ont pas regardée comme si j’étais le noir. Je crois que c’est parce que vous m’avez laissée en porter un."
@@ -1040,7 +1040,7 @@
     "choiceKey": "refugees_left",
     "note": "The wharf: take the twenty who can fight",
     "lines": [
-      "Twenty who can fight. I'd have picked the same twenty. I'll hate it the same, too."
+      "Twenty who can fight. I’d have picked the same twenty. I’ll hate it the same, too."
     ],
     "lines_fr": [
       "Vingt qui savent se battre. J’aurais choisi les mêmes. Et je détesterai ça tout autant."
@@ -1053,7 +1053,7 @@
     "choiceKey": "refugees_left",
     "note": "The wharf: take the twenty who can fight",
     "lines": [
-      "Hard sum. Right sum. Don't look back at the wharf; it doesn't change the numbers."
+      "Hard sum. Right sum. Don’t look back at the wharf; it doesn’t change the numbers."
     ],
     "lines_fr": [
       "Calcul dur. Calcul juste. Ne regardez pas le quai ; ça ne change pas les chiffres."
@@ -1066,7 +1066,7 @@
     "choiceKey": "refugees_left",
     "note": "The wharf: take the twenty who can fight",
     "lines": [
-      "I can still see their lanterns from up here. I'm going to watch them until I can't."
+      "I can still see their lanterns from up here. I’m going to watch them until I can’t."
     ],
     "lines_fr": [
       "Je vois encore leurs lanternes d’ici. Je vais les regarder jusqu’à ce que je ne puisse plus."
@@ -1105,7 +1105,7 @@
     "choiceKey": "sailed_alone",
     "note": "The wharf: take no one",
     "lines": [
-      "Light, fast and full. I'd have said it myself. I didn't think you would."
+      "Light, fast and full. I’d have said it myself. I didn’t think you would."
     ],
     "lines_fr": [
       "Légère, rapide et pleine. Je l’aurais dit moi-même. Je ne pensais pas que vous le feriez."
@@ -1118,7 +1118,7 @@
     "choiceKey": "sailed_alone",
     "note": "The wharf: take no one",
     "lines": [
-      "I watched the three orphans until the smoke took the wharf. I'm still watching them."
+      "I watched the three orphans until the smoke took the wharf. I’m still watching them."
     ],
     "lines_fr": [
       "J’ai regardé les trois orphelins jusqu’à ce que la fumée avale le quai. Je les regarde encore."
@@ -1131,7 +1131,7 @@
     "choiceKey": "sailed_alone",
     "note": "The wharf: take no one",
     "lines": [
-      "The Void does this. Leaves people on a shore. I didn't think you would."
+      "The Void does this. Leaves people on a shore. I didn’t think you would."
     ],
     "lines_fr": [
       "Le Vide fait ça. Il laisse les gens sur un rivage. Je ne pensais pas que vous le feriez."
@@ -1144,7 +1144,7 @@
     "choiceKey": "skiff_cut",
     "note": "The storm: cut the tow-line to the refugees' skiff",
     "lines": [
-      "There were people in that skiff. I heard them over the storm. I'll hear them for a while."
+      "There were people in that skiff. I heard them over the storm. I’ll hear them for a while."
     ],
     "lines_fr": [
       "Il y avait des gens dans cette barque. Je les ai entendus par-dessus la tempête. Je les entendrai encore un moment."
@@ -1157,7 +1157,7 @@
     "choiceKey": "skiff_cut",
     "note": "The storm: cut the tow-line to the refugees' skiff",
     "lines": [
-      "Them or us, and you chose us. I'll drink to that. I won't enjoy the drink."
+      "Them or us, and you chose us. I’ll drink to that. I won’t enjoy the drink."
     ],
     "lines_fr": [
       "Eux ou nous, et vous avez choisi nous. J’y boirai. Sans y prendre plaisir."
@@ -1170,7 +1170,7 @@
     "choiceKey": "skiff_cut",
     "note": "The storm: cut the tow-line to the refugees' skiff",
     "lines": [
-      "I had that rope in my sights. I could have held it. You didn't ask."
+      "I had that rope in my sights. I could have held it. You didn’t ask."
     ],
     "lines_fr": [
       "J’avais cette corde en vue. J’aurais pu la tenir. Vous ne m’avez rien demandé."
@@ -1196,7 +1196,7 @@
     "choiceKey": "tern_row_spared",
     "note": "Tern Row: the toll-man talked down",
     "lines": [
-      "No blood on the Row, and the toll-man walked off thinking it was his idea. That's how a gate should be held."
+      "No blood on the Row, and the toll-man walked off thinking it was his idea. That’s how a gate should be held."
     ],
     "lines_fr": [
       "Pas de sang dans Tern Row, et l’homme du péage est parti en croyant que c’était son idée. C’est comme ça qu’on tient une porte."
@@ -1209,7 +1209,7 @@
     "choiceKey": "tern_row_spared",
     "note": "Tern Row: the toll-man talked down",
     "lines": [
-      "You talked a tyrant out of his toll and came away paid. I'm almost proud. Almost."
+      "You talked a tyrant out of his toll and came away paid. I’m almost proud. Almost."
     ],
     "lines_fr": [
       "Vous avez fait renoncer un petit tyran à son péage, avec une récompense en prime. Je suis presque fière. Presque."
@@ -1222,7 +1222,7 @@
     "choiceKey": "tern_row_spared",
     "note": "Tern Row: the toll-man talked down",
     "lines": [
-      "Nadira's lanterns are still lit. I checked from the roof."
+      "Nadira’s lanterns are still lit. I checked from the roof."
     ],
     "lines_fr": [
       "Les lanternes de Nadira sont encore allumées. J’ai vérifié depuis le toit."
@@ -1235,7 +1235,7 @@
     "choiceKey": "reckoning_wall_saved",
     "note": "The Reckoning Wall: the auxiliary out-argued",
     "lines": [
-      "You quoted the Code at him. I once wrote notes in the margins of those procedures. I never thought I'd hear them save a wall of names."
+      "You quoted the Code at him. I once wrote notes in the margins of those procedures. I never thought I’d hear them save a wall of names."
     ],
     "lines_fr": [
       "Vous lui avez cité le Code. J’ai annoté ces procédures, autrefois. Je n’aurais jamais cru les entendre sauver un mur de noms."
@@ -1339,7 +1339,7 @@
     "choiceKey": "court_woken",
     "note": "The Court's sleepers in the Shroud's twin: wake them first",
     "lines": [
-      "Waking them cost us a quarter hour we didn't have. Nothing personal, but I'd have let them sleep. Lucky for them you're not me."
+      "Waking them cost us a quarter hour we didn’t have. Nothing personal, but I’d have let them sleep. Lucky for them you’re not me."
     ],
     "lines_fr": [
       "Les réveiller nous a coûté un quart d’heure que nous n’avions pas. Rien de personnel, mais je les aurais laissés dormir. Heureusement pour eux, vous n’êtes pas moi."
@@ -1352,7 +1352,7 @@
     "choiceKey": "court_woken",
     "note": "The Court's sleepers in the Shroud's twin: wake them first",
     "lines": [
-      "They knew their own names at the end. I've sung over worse deaths than that. Not many."
+      "They knew their own names at the end. I’ve sung over worse deaths than that. Not many."
     ],
     "lines_fr": [
       "Ils connaissaient leur propre nom, à la fin. J’ai chanté sur de pires morts. Pas beaucoup."
@@ -1378,7 +1378,7 @@
     "choiceKey": "court_never_woke",
     "note": "The Court's sleepers: cut the Shroud free without waking them",
     "lines": [
-      "Efficient. The Court kept them asleep because asleep is cheaper. You've learned the ledger."
+      "Efficient. The Court kept them asleep because asleep is cheaper. You’ve learned the ledger."
     ],
     "lines_fr": [
       "Efficace. La Cour les gardait endormis parce que c’est moins cher. Vous avez appris le registre."
@@ -1391,7 +1391,7 @@
     "choiceKey": "court_never_woke",
     "note": "The Court's sleepers: cut the Shroud free without waking them",
     "lines": [
-      "Two of those faces had names you knew. I'll say them tonight, since they didn't get to."
+      "Two of those faces had names you knew. I’ll say them tonight, since they didn’t get to."
     ],
     "lines_fr": [
       "Deux de ces visages avaient des noms que vous connaissiez. Je les dirai ce soir, puisqu’ils n’ont pas pu."
@@ -1495,7 +1495,7 @@
     "choiceKey": "pact_refused",
     "note": "The Hollow Shore: refuse the pact",
     "lines": [
-      "Three hundred gold, rowing away. I'll mourn it in private."
+      "Three hundred gold, rowing away. I’ll mourn it in private."
     ],
     "lines_fr": [
       "Trois cents pièces d’or qui s’éloignent à la rame. Je les pleurerai en privé."
@@ -1508,7 +1508,7 @@
     "choiceKey": "pact_refused",
     "note": "The Hollow Shore: refuse the pact",
     "lines": [
-      "Good. I've held gates against that sail. I wasn't about to start holding them for it."
+      "Good. I’ve held gates against that sail. I wasn’t about to start holding them for it."
     ],
     "lines_fr": [
       "Bien. J’ai tenu des portes contre cette voile. Pas question de commencer à les tenir pour elle."
@@ -1521,7 +1521,7 @@
     "choiceKey": "sovereign_took_companion",
     "note": "The tear's price: one of the crew",
     "lines": [
-      "It took one of us, and you held out the hand. I've buried soldiers. I'd never seen one sold."
+      "It took one of us, and you held out the hand. I’ve buried soldiers. I’d never seen one sold."
     ],
     "lines_fr": [
       "Il a pris quelqu’un d’entre nous, et c’est vous qui avez tendu la main. J’ai enterré des soldats. Je n’en avais jamais vu vendre."
@@ -1534,7 +1534,7 @@
     "choiceKey": "sovereign_took_companion",
     "note": "The tear's price: one of the crew",
     "lines": [
-      "Everyone has a price. I didn't think you'd pay yours in people."
+      "Everyone has a price. I didn’t think you’d pay yours in people."
     ],
     "lines_fr": [
       "Tout le monde a un prix. Je ne pensais pas que vous paieriez le vôtre en gens."
@@ -1560,7 +1560,7 @@
     "choiceKey": "sovereign_took_companion",
     "note": "The tear's price: one of the crew",
     "lines": [
-      "Nothing personal. That's what I told myself the first time I sold someone. It stopped working."
+      "Nothing personal. That’s what I told myself the first time I sold someone. It stopped working."
     ],
     "lines_fr": [
       "Rien de personnel. C’est ce que je me suis dit la première fois que j’ai vendu quelqu’un. Ça a cessé de marcher."
@@ -1573,7 +1573,7 @@
     "choiceKey": "legate_given",
     "note": "The tear's price: the legate",
     "lines": [
-      "The legate. Now that's a price I can respect. He'd have sold us for less."
+      "The legate. Now that’s a price I can respect. He’d have sold us for less."
     ],
     "lines_fr": [
       "Le légat. Voilà un prix que je respecte. Il nous aurait vendus pour moins que ça."
@@ -1625,7 +1625,7 @@
     "choiceKey": "sovereign_blood",
     "note": "The tear's price: your own blood",
     "lines": [
-      "You paid it yourself. That's the whole of being in charge, and you knew it."
+      "You paid it yourself. That’s the whole of being in charge, and you knew it."
     ],
     "lines_fr": [
       "Vous avez payé vous-même. C’est tout ce que veut dire commander, et vous le saviez."
@@ -1651,7 +1651,7 @@
     "choiceKey": "sovereign_blood",
     "note": "The tear's price: your own blood",
     "lines": [
-      "I'll watch your back on the crossing. Closer than usual."
+      "I’ll watch your back on the crossing. Closer than usual."
     ],
     "lines_fr": [
       "Je surveillerai vos arrières pendant la traversée. De plus près que d’habitude."
@@ -1664,7 +1664,7 @@
     "choiceKey": "camp_given",
     "note": "The tear's price: the camp",
     "lines": [
-      "I built half those walls. Let the coast burn, you said. I'll be a while forgiving that."
+      "I built half those walls. Let the coast burn, you said. I’ll be a while forgiving that."
     ],
     "lines_fr": [
       "J’ai monté la moitié de ces murs. Que la côte brûle, avez-vous dit. Il me faudra du temps pour vous le pardonner."
@@ -1690,7 +1690,7 @@
     "choiceKey": "camp_given",
     "note": "The tear's price: the camp",
     "lines": [
-      "All that coin in timber and rope, gone for a door. At least it's a big door."
+      "All that coin in timber and rope, gone for a door. At least it’s a big door."
     ],
     "lines_fr": [
       "Tout cet argent en bois et en cordage, parti pour une porte. Au moins, c’est une grande porte."
@@ -1716,7 +1716,7 @@
     "choiceKey": "flagship_burned",
     "note": "The flagship's sail: burn the flagship",
     "lines": [
-      "Burn the ship, keep the sail, sell the brass. I've taught you well."
+      "Burn the ship, keep the sail, sell the brass. I’ve taught you well."
     ],
     "lines_fr": [
       "Brûler le navire, garder la voile, vendre le cuivre. Je vous ai bien appris."
@@ -1729,7 +1729,7 @@
     "choiceKey": "flagship_burned",
     "note": "The flagship's sail: burn the flagship",
     "lines": [
-      "There were sailors still below. The fire didn't ask which ones were living."
+      "There were sailors still below. The fire didn’t ask which ones were living."
     ],
     "lines_fr": [
       "Il restait des marins en bas. Le feu n’a pas demandé lesquels vivaient encore."
@@ -1742,7 +1742,7 @@
     "choiceKey": "flagship_burned",
     "note": "The flagship's sail: burn the flagship",
     "lines": [
-      "Fastest way to a sail. Not the way I'll tell it, later."
+      "Fastest way to a sail. Not the way I’ll tell it, later."
     ],
     "lines_fr": [
       "Le chemin le plus court vers une voile. Pas celui que je raconterai, plus tard."
@@ -1768,7 +1768,7 @@
     "choiceKey": "sail_bought",
     "note": "The flagship's sail: pay the riggers",
     "lines": [
-      "The Anchorage eats this winter. That's worth more than the sail."
+      "The Anchorage eats this winter. That’s worth more than the sail."
     ],
     "lines_fr": [
       "Le Mouillage mangera cet hiver. Ça vaut plus que la voile."
@@ -1781,7 +1781,7 @@
     "choiceKey": "sail_bought",
     "note": "The flagship's sail: pay the riggers",
     "lines": [
-      "You paid people for honest work. It seems small. It isn't."
+      "You paid people for honest work. It seems small. It isn’t."
     ],
     "lines_fr": [
       "Vous avez payé des gens pour un travail honnête. Ça semble peu de chose. Ça ne l’est pas."
@@ -1794,7 +1794,7 @@
     "choiceKey": "greyhithe_names_read",
     "note": "Greyhithe's eldest: read her the page",
     "lines": [
-      "You read her daughter's name aloud. That is what a ledger is for, in the end."
+      "You read her daughter’s name aloud. That is what a ledger is for, in the end."
     ],
     "lines_fr": [
       "Vous avez lu à voix haute le nom de sa fille. C’est à ça que sert un registre, au bout du compte."
@@ -1807,7 +1807,7 @@
     "choiceKey": "greyhithe_names_read",
     "note": "Greyhithe's eldest: read her the page",
     "lines": [
-      "I'll sing for the daughter tonight, now that I know her name."
+      "I’ll sing for the daughter tonight, now that I know her name."
     ],
     "lines_fr": [
       "Je chanterai pour la fille ce soir, maintenant que je connais son nom."
@@ -1820,7 +1820,7 @@
     "choiceKey": "greyhithe_names_read",
     "note": "Greyhithe's eldest: read her the page",
     "lines": [
-      "She held your hands while you read. I've never seen anyone hold on that hard."
+      "She held your hands while you read. I’ve never seen anyone hold on that hard."
     ],
     "lines_fr": [
       "Elle vous a tenu les mains pendant que vous lisiez. Je n’ai jamais vu personne s’accrocher aussi fort."
@@ -1846,7 +1846,7 @@
     "choiceKey": "7200_elder_later#1",
     "note": "Greyhithe's eldest: tell her the ledger kept no names",
     "lines": [
-      "A kind lie. Cheap, too. I'd have charged her for the truth."
+      "A kind lie. Cheap, too. I’d have charged her for the truth."
     ],
     "lines_fr": [
       "Un mensonge gentil. Et bon marché. Moi, je lui aurais fait payer la vérité."
@@ -1859,7 +1859,7 @@
     "choiceKey": "7200_elder_later#1",
     "note": "Greyhithe's eldest: tell her the ledger kept no names",
     "lines": [
-      "She'll go on waiting now. That's the price of the lie, and she pays it, not you."
+      "She’ll go on waiting now. That’s the price of the lie, and she pays it, not you."
     ],
     "lines_fr": [
       "Elle va continuer d’attendre, maintenant. C’est le prix du mensonge, et c’est elle qui le paie, pas vous."
@@ -1898,7 +1898,7 @@
     "choiceKey": "false_lamps_out",
     "note": "The wreckers' false lamps: pay the headman to put them out",
     "lines": [
-      "No more ships on those rocks. I'll light a candle for the ones already there."
+      "No more ships on those rocks. I’ll light a candle for the ones already there."
     ],
     "lines_fr": [
       "Plus de navires sur ces rochers. J’allumerai une chandelle pour ceux qui y sont déjà."
