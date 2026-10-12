@@ -175,15 +175,42 @@ party that skips every quest.
 | Voyages / raiders a run | 20.5 / 10.9 | 18.4 / 10.0 | — | 17.9 / 9.9 | 10.8 / 11.2 |
 | First try: Archon · White Admiral · Sovereign | 98% · 92% · 94.5% | 98% · 93.5% · 96% | — | 95% · 87% · 89% | 87.5% · — · 89.5% |
 
+## The intrigues in the graph
+
+Each intrigue is one scene per stage, offered by a place's hub once the stage
+before it is reached (`showIfFlags: intrigue_<id>_stage_<n>`), and settled by
+an outcome scene at the Hollow Shore (`7002`). Every choice of a stage scene
+advances the stage, so no intrigue can stall on a choice; the choices differ
+in standing, gold, alignment and the flags the later scenes and the ending
+read (`flag_callbacks`).
+
+| Intrigue | Clue | Hook | Turn | Reveal | Crisis | Outcome |
+|---|---|---|---|---|---|---|
+| `hooded_lantern` | `2015_informant_*` | `3002` | `5010_letter` | `6010_thread` | `7100_log` | `7002_orders` |
+| `dying_lantern_bearer` | `2005` | `3005_envoys` | `5100_vote` | `6100_knife` | `7100_chaplain` | `7002_throne` |
+| `double_ledger` | `2015_route_sold` | `3005_black_thread` | `5100_keyholder_cut` | `6100_debt_rising` | `7100_vault_burns` | `7002_ledger` |
+| `admiraltys_silence` | `2015_survivor` | `3005_logbook_gap` | `5100_tar_hand_book` | `6010_lantern_manifest` | `7100_flagship_hold` | `7002_relic` |
+| `relic_road` | `3100_bundle` | `3005_shrine_break` | `5010_thieves_ship` | `6010_heist_night` | `7200_thieves_aboard` | `7002_fourth_piece` |
+| `the_returned` | `2015_child_tongue` | `3005_spire_takings` | `5010_vigil_envoy` | `6010_returned_roll` | `7200_courts_children` | `7002_returned` |
+| `unwatched_hour` | `3100_new_moon` | `6010_count_short` | `6100_stitcher_door` | `7200_stitcher_kin` | `7002_followed` | `7002_stitcher` |
+| `broken_charter` | — | — | `coal_stops` (event) | — | — | — |
+
+The outcomes pay off in the closing scenes through callbacks: the Crows'
+brigs at `7810`, the Returned children at `7002_approach`, the second door at
+`7003`, the relic and the Fourth Piece at `7004`. An outcome's effects
+(standing, marks, companions, titles) are the ones written in
+`intrigues.json`. Its `note` effects ("A Crow squadron sails with you at the
+end") are only told in the Intrigues tab: no code reads them.
+
 ## Open points
 
 - **Chapters 7 and 8 have one main quest each** (`q_ch7_lantern_throne`,
   offered at `7400`; `q_ch6_beyond_the_tear`, filed under chapter 8, offered
   at `7800`) and no side quests. Their activity and quest goals are 0. See
   `docs/narrative-proposals.md` for the options.
-- **Six of the eight intrigues are not yet played in the graph** (only
-  `hooded_lantern` and `dying_lantern_bearer` are; `broken_charter` has one
-  stage). See `docs/narrative-audit.md`.
+- **`broken_charter` is the one intrigue still short**: it has its stage 3
+  (`coal_stops`, a politics event) and nothing else. The other seven are
+  played end to end (see below).
 - **The activity goal and thorough players.** A thorough player reaches
   10–12 things done before setting out; the goal of 8 mostly shapes the
   rusher's pace (two trips a chapter).

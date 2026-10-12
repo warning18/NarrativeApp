@@ -7,8 +7,8 @@ were fixed in #171. P1-2 (the quest chain, the chapter label and the missing
 chapter 7 quest), the chapter-end headers, the `hopeful` mood tag, the
 English apostrophes and the proposals for moods, themes and achievements are
 in the follow-up PR; the options Core and the user decide on are in
-`docs/narrative-proposals.md`. P1-1 (the dormant intrigues) and the NPC
-voices of 4C are the next two PRs. P2-4 and the other P3 items wait.
+`docs/narrative-proposals.md`. P1-1 (the dormant intrigues, five of them) is done in the PR after that; the NPC
+voices of 4C are the one after. P2-4 and the other P3 items wait.
 
 Every id below can be looked up as written: a story node in
 `assets/Cleaned_Narrative_DAG.json`, a quest in `quests.json`, and so on.
