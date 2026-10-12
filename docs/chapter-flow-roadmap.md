@@ -1,4 +1,4 @@
-# Chapter flow roadmap — status after v1.149
+# Chapter flow roadmap — status after v1.254
 
 The owner's intended structure (restated for v1.147):
 
@@ -16,12 +16,27 @@ The owner's intended structure (restated for v1.147):
   of the banner.
 - **Chapters 4, 5 and 6** — the same loop, each with its own lands, its
   own places and its own piece of the banner.
-- **Ending** — from the camp, the last boss and the last piece.
+- **Chapter 7, the Lantern Throne** — with five pieces on the Eel's deck,
+  the party sails to Candlehold, wins the Houses and fills the Throne
+  (the throne campaign, below).
+- **Chapter 8, Beyond the Tear** — the crowning is answered: the Host is
+  mustered at the cove, crosses the tear and meets the Sovereign, the last
+  piece.
 - **Epilogue** — the whole banner turns time back: New Game+.
 
 Chapters 1 and 2 are a straight road. From chapter 3 the game is not
 linear: each chapter is split between exploring (expeditions, places,
 bosses) and its main quest, which waits until enough has been explored.
+Chapters 7 and 8 are a story campaign again: one main quest each, no
+activity or quest goal (both are 0 in `chapters.json`).
+
+The six pieces of the Shroud, in the order they are won: the heirloom
+(chapter 1, `heirloom_shroud`), the Warden's standard (chapter 3,
+`warden_standard`), the moon-shard (chapter 4, `moon_shard_shroud`), the
+reliquary thread (chapter 5, `reliquary_thread`), the White Fleet's sail
+(chapter 6, `white_fleet_sail`) and the Sovereign's mantle (chapter 8,
+`sovereign_mantle`). Text that counts them ("the third piece") counts this
+way.
 
 ## What shipped
 
@@ -35,6 +50,7 @@ bosses) and its main quest, which waits until enough has been explored.
 | 1.147.0+176 | Open chapters | Chapters 3–6 as loops around the camp, found places, villages, a chapter 6 loop, six banner pieces, the time-rewind epilogue. |
 | 1.148.0+177 | Companion hint | The camp names places with a companion to meet; each chapter asks for 8 things done. |
 | 1.149.0+178 | Camp and quests | No camp before it is set up; every place leads back to the camp; the main quest waits for the chapter's quests. |
+| 1.150 → 1.254 | Throne, clans, journey | See `CHANGELOG.md`. For the story: chapters 7 and 8 (the Lantern Throne and Beyond the Tear), the clans and Houses with their politics and eight intrigues, the Houses' claimants, the Host, the four epilogues; objective tracking for quests; the Journey map and world roads. |
 
 ## How the chapters flow now
 
@@ -77,15 +93,25 @@ story rules them out).
 | 1 | — | — | — | the heirloom (every origin) |
 | 2 | — | Harbor market (2015) | Fisherman's Row, Tanner's Court, Lantern Docks | — (the boat) |
 | 3 | 3001_camp | Ashen Quarter 3005 (Cinder Row), Emberwick 3100 (Scaffold Yards) | Cinder Row (2 · 6 · Iron Golem), Scaffold Yards (3 · 8 · Void Stalker) | Climb the Spire → the Warden's standard |
-| 4 | 4999_camp | Wrack's End 5100, Drowned Cloister 5010 (Ossuary Galleries) | Ossuary Galleries (1 · 8 · Bone Warden) | The Drowned Stair (2 · 9 · Hollow Court Inquisitor) → the Court's twin |
+| 4 | 4999_camp | Wrack's End 5100, Drowned Cloister 5010 (Ossuary Galleries) | Ossuary Galleries (1 · 8 · Bone Warden) | The Drowned Stair (2 · 9 · Hollow Court Inquisitor) → the moon-shard, the third piece |
 | 5 | 6002_camp | Rimewell 6100, Reliquary Quarter 6010 (Dead Heart Approach) | Dead Heart Approach (2 · 10 · Tear-Spawn) | The fourth piece: the Shroud's Vigil (3 · 11 · Void Archon) → the reliquary thread |
 | 6 | 7001 | Hollow Shore 7002, Greyhithe 7200, White Anchorage 7100 (Glass Strand) | Glass Strand (2 · 12 · Strand Colossus) | The White Fleet's Grave (3 · 13 · White Admiral) → the White Fleet's sail |
-| End | 7400 | — | — | Into the tear: Beyond the Tear (3 · 14 · Void Sovereign) → the Sovereign's mantle |
+| 7 | 7400 | Candlehold 7500 (the Houses, 7510_*; the Lantern Hall 7520_*, 7590_*) | — | Sail for Candlehold: a claimant is faced in the Lantern Hall and the Throne is filled → no piece |
+| 8 | 7800 | Hollow Shore 7002 | the Herald (7810) | Lead the Host to the Hollow Shore, then the Sovereign (7003; 3 · 14 · Void Sovereign) → the Sovereign's mantle |
+
+The throne campaign (chapters 7 and 8) is written as scenes, not loops:
+the party arrives under a clan's banner (`7510_*`), faces a claimant in
+the Lantern Hall (`7520_vane`, `7520_morrow`, `7520_tallis`) and is crowned
+in a clan's own way (`7590_*`, one per clan). The two intrigues that end
+the Hollow Shore chapter are settled earlier, at `7002_orders`
+(`hooded_lantern`) and `7002_throne` (`dying_lantern_bearer`). The Host
+(`7800_council`, `host_*` flags) is the clans and tribes the party carries
+across the tear. There are no side quests in either chapter yet.
 
 The Reliquary Quarter's first visit goes through its gate (`arrivalNodeId`
 6010_gate), where Lysa's fate plays out; its main quest needs the Quarter
 visited, so that scene is never skipped. The epilogue (7005 and its three
-variants) ends on the night before the invasion: the whole Banner turns
+variants, after the Sovereign at 7003 and the choice at 7004) ends on the night before the invasion: the whole Banner turns
 time back, which is where New Game+ starts.
 
 Old saves standing on the two scenes the update removed (5001, 5002) pick
@@ -150,6 +176,13 @@ party that skips every quest.
 | First try: Archon · White Admiral · Sovereign | 98% · 92% · 94.5% | 98% · 93.5% · 96% | — | 95% · 87% · 89% | 87.5% · — · 89.5% |
 
 ## Open points
+
+- **Chapters 7 and 8 have one main quest between them** (`q_ch6_beyond_the_tear`,
+  unlocked at `7800` although its id and `chapter` field say 6) and no side
+  quests; chapter 7 has none at all. Needs a decision with Core.
+- **Six of the eight intrigues are not yet played in the graph** (only
+  `hooded_lantern` and `dying_lantern_bearer` are; `broken_charter` has one
+  stage). See `docs/narrative-audit.md`.
 
 - **The activity goal and thorough players.** A thorough player reaches
   10–12 things done before setting out; the goal of 8 mostly shapes the

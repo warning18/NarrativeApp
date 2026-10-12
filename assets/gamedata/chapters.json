@@ -15,7 +15,7 @@
     "mainQuestTitle": "Climb the Spire",
     "mainQuestTitle_fr": "Gravir la Flèche",
     "mainQuestHint": "The Spire's gate is a day's walk inland, past the Ashen Quarter. Learn the coast first: its expeditions, its town, and the people left on it, who will not show a stranger the way in for nothing.",
-    "mainQuestHint_fr": "La porte de la Flèche est à un jour de marche dans les terres, au-delà du Quartier des Cendres. Apprenez d'abord la côte : ses expéditions, sa ville, et les gens qui y restent, qui ne montreront pas le chemin à un inconnu pour rien."
+    "mainQuestHint_fr": "La porte de la Flèche est à un jour de marche dans les terres, au-delà du Quartier des Cendres. Apprenez d’abord la côte : ses expéditions, sa ville, et les gens qui y restent, qui ne montreront pas le chemin à un inconnu pour rien."
   },
   "ch4": {
     "chapterID": "ch4",
@@ -31,9 +31,9 @@
       "5010"
     ],
     "mainQuestTitle": "Down the Drowned Stair",
-    "mainQuestTitle_fr": "Descendre l'Escalier Noyé",
-    "mainQuestHint": "The Court keeps the second piece at the bottom of the Drowned Stair, three days along the coast. Find the way down first, and the people who live beside it.",
-    "mainQuestHint_fr": "La Cour garde la deuxième pièce au fond de l'Escalier Noyé, à trois jours le long de la côte. Trouvez d'abord le chemin, et les gens qui vivent à côté."
+    "mainQuestTitle_fr": "Descendre l’Escalier Noyé",
+    "mainQuestHint": "The Court keeps the third piece at the bottom of the Drowned Stair, three days along the coast. Find the way down first, and the people who live beside it.",
+    "mainQuestHint_fr": "La Cour garde la troisième pièce au fond de l’Escalier Noyé, à trois jours le long de la côte. Trouvez d’abord le chemin, et les gens qui vivent à côté."
   },
   "ch5": {
     "chapterID": "ch5",
@@ -51,7 +51,7 @@
     "mainQuestTitle": "The Fourth Piece",
     "mainQuestTitle_fr": "La quatrième pièce",
     "mainQuestHint": "The ledger names a chapel in the Reliquary Quarter, in the Black Reliquary's city. Reach the city first, and learn what its frost has done to the people there.",
-    "mainQuestHint_fr": "Le registre nomme une chapelle du Quartier des Reliquaires, dans la cité du Reliquaire Noir. Atteignez d'abord la cité, et apprenez ce que son givre a fait à ceux qui y vivent."
+    "mainQuestHint_fr": "Le registre nomme une chapelle du Quartier des Reliquaires, dans la cité du Reliquaire Noir. Atteignez d’abord la cité, et apprenez ce que son givre a fait à ceux qui y vivent."
   },
   "ch6": {
     "chapterID": "ch6",
@@ -69,7 +69,7 @@
     "mainQuestTitle": "The White Fleet's Grave",
     "mainQuestTitle_fr": "Le Tombeau de la Flotte Blanche",
     "mainQuestHint": "The fifth piece went down with the White Fleet off the Hollow Shore. Someone on that shore knows where the flagship lies; find them first.",
-    "mainQuestHint_fr": "La cinquième pièce a sombré avec la Flotte Blanche au large de la Rive Creuse. Quelqu'un, sur ce rivage, sait où gît le vaisseau amiral ; trouvez-le d'abord."
+    "mainQuestHint_fr": "La cinquième pièce a sombré avec la Flotte Blanche au large de la Rive Creuse. Quelqu’un, sur ce rivage, sait où gît le vaisseau amiral ; trouvez-le d’abord."
   },
   "ch7": {
     "chapterID": "ch7",
