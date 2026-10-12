@@ -8,6 +8,25 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.247.0+283]
+
+The world's fixed roads: the groundwork for a map where the party only takes roads.
+
+### Added
+- **A fixed road graph (`lib/data/world_roads.dart`).** 41 roads join the
+  34 landmarks by id, on land or by sea, so they hold on all three chart
+  geographies. Each road passes one or two named stops (the Dyers' Gate, the
+  Caravan Ford, the Glass Shoals...), in English and French, in the order
+  met from either end. `roadRoute(from, to)` finds the shortest way along
+  the roads and the stops on it.
+- **A content test (`world_roads_test.dart`).** Every landmark is on a road
+  and leads to every other, every sea road touches the water, and every
+  branch of the story between two landmarks (a chosen way, a failed roll,
+  a lost fight) follows a road, so a new branch that skips the map fails
+  the build.
+
+No change to play yet: the Journey map uses the roads in the next versions.
+
 ## [1.246.0+282]
 
 The party walks the streets of a city, and a 'seen' failure in the Undercroft says why.
