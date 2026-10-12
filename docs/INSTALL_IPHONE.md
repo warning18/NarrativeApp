@@ -1,9 +1,9 @@
 # Installing the app on an iPhone (no Mac needed)
 
-Every release has two files under **Assets**: `app-release.apk` for
-Android and `NarrativeApp-<version>.ipa` for iPhone. The Android file
-installs as it is. The iPhone file doesn't, because an iPhone only runs
-apps signed for it by Apple. The `.ipa` is unsigned: whoever installs it
+Releases carry only the Android file (`app-release.apk`). The iPhone
+file, `NarrativeApp-<version>.ipa`, is built by hand when needed (see
+"Where the `.ipa` comes from" below). It doesn't install as it is,
+because an iPhone only runs apps signed for it by Apple. The `.ipa` is unsigned: whoever installs it
 signs it with their own **free Apple ID**, using one of the tools below.
 None of them needs a Mac; the first two need a Windows (or Mac) computer.
 
@@ -18,7 +18,7 @@ None of them needs a Mac; the first two need a Windows (or Mac) computer.
 
 ## Option 1: Sideloadly (Windows or Mac)
 
-1. Download the `.ipa` from the latest release on GitHub.
+1. Download the `.ipa` from the artifacts of a **Build iOS** run.
 2. Install [Sideloadly](https://sideloadly.io) on the computer. On
    Windows it also needs iTunes and iCloud from Apple's website, not the
    Microsoft Store versions (its site explains this).
@@ -55,9 +55,7 @@ one of the ways above. They don't need access to the GitHub repository.
 
 ## Where the `.ipa` comes from
 
-- **Releases:** `.github/workflows/build_apk.yml` publishes a release on
-  each push to `main`. Its `ios-release` job then builds the app on a
-  macOS runner (`.github/actions/build-ios`) and adds the `.ipa` to that
-  release.
+- **Releases:** none. `.github/workflows/build_apk.yml` publishes Android
+  only; the release no longer carries an `.ipa`.
 - **By hand, any branch:** Actions → **Build iOS** → Run workflow. The
   `.ipa` is in the run's artifacts.
