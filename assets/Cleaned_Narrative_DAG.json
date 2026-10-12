@@ -8725,31 +8725,6 @@
         "lockedText_fr": "La voile blanche vira avant d’atteindre le rivage."
       },
       {
-        "text": "Decide who reads the Admiral’s log",
-        "text_fr": "Décider qui lira le journal de l’Amiral",
-        "next_id": "7002_orders",
-        "showIfFlags": [
-          "fleet_log_read"
-        ],
-        "hideIfFlags": [
-          "hub_7002_orders",
-          "on_throne"
-        ]
-      },
-      {
-        "text": "Cast the Admiralty’s vote for the Lantern Throne",
-        "text_fr": "Donner la voix de l’Amirauté pour le Trône de la Lanterne",
-        "next_id": "7002_throne",
-        "showIfFlags": [
-          "admiralty_vote"
-        ],
-        "hideIfFlags": [
-          "throne_backed",
-          "throne_filled",
-          "on_throne"
-        ]
-      },
-      {
         "text": "Raise the grey hand over the shore",
         "text_fr": "Lever la main grise sur le rivage",
         "next_id": "7002_banner",
@@ -15197,6 +15172,31 @@
         "hideIfFlags": [
           "hub_7200_returned"
         ]
+      },
+      {
+        "text": "Decide who reads the Admiral’s log",
+        "text_fr": "Décider qui lira le journal de l’Amiral",
+        "next_id": "7002_orders",
+        "showIfFlags": [
+          "fleet_log_read"
+        ],
+        "hideIfFlags": [
+          "hub_7002_orders",
+          "on_throne"
+        ]
+      },
+      {
+        "text": "Cast the Admiralty’s vote for the Lantern Throne",
+        "text_fr": "Donner la voix de l’Amirauté pour le Trône de la Lanterne",
+        "next_id": "7002_throne",
+        "showIfFlags": [
+          "admiralty_vote"
+        ],
+        "hideIfFlags": [
+          "throne_backed",
+          "throne_filled",
+          "on_throne"
+        ]
       }
     ],
     "settlement": {
@@ -17440,7 +17440,7 @@
       {
         "text": "Send it to the Order’s knights at the Anchorage",
         "text_fr": "L’envoyer aux chevaliers de l’Ordre, au Mouillage",
-        "next_id": "7002",
+        "next_id": "7200",
         "alignmentMod": 1,
         "flagsToAdd": [
           "hub_7002_orders",
@@ -17456,7 +17456,7 @@
       {
         "text": "Sell it to the legate, and carry the writ",
         "text_fr": "La vendre au légat, et porter le mandat",
-        "next_id": "7002",
+        "next_id": "7200",
         "goldMod": 150,
         "alignmentMod": -2,
         "flagsToAdd": [
@@ -18022,7 +18022,7 @@
       {
         "text": "For Grand Master Morrow: a crusade",
         "text_fr": "Pour le Grand Maître Morrow : une croisade",
-        "next_id": "7002",
+        "next_id": "7200",
         "flagsToAdd": [
           "throne_backed",
           "throne_backed_morrow"
@@ -18041,7 +18041,7 @@
       {
         "text": "For Inquisitor-General Vane: an inquisition",
         "text_fr": "Pour l’Inquisiteur général Vane : une inquisition",
-        "next_id": "7002",
+        "next_id": "7200",
         "alignmentMod": -2,
         "flagsToAdd": [
           "throne_backed",
@@ -18062,7 +18062,7 @@
       {
         "text": "For Eldest Wickwarden Tallis: a church",
         "text_fr": "Pour l’Aînée des Garde-Mèches Tallis : une Église",
-        "next_id": "7002",
+        "next_id": "7200",
         "alignmentMod": 1,
         "flagsToAdd": [
           "throne_backed",
@@ -18083,7 +18083,7 @@
       {
         "text": "Keep the vote for your own claim",
         "text_fr": "Garder la voix pour votre propre prétention",
-        "next_id": "7002",
+        "next_id": "7200",
         "flagsToAdd": [
           "throne_backed",
           "vote_kept"

@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.263.0+299]
+
+Two choices at the Hollow Shore can be seen at last.
+
+### Fixed
+- **The Admiral's log and the throne vote were never offered.** "Decide who
+  reads the Admiral's log" and "Cast the Admiralty's vote for the Lantern
+  Throne" sat on the Hollow Shore (`7002`), which every run visits before
+  the Anchorage sets the flags they need, and chapter 8 hides them again.
+  Both choices are now offered from Greyhithe (`7200`), after the Anchorage,
+  and their scenes (`7002_orders`, `7002_throne`, same ids as before) lead
+  back there. No numbers or flags changed. Fixes #182.
+
 ## [1.262.0+298]
 
 Fight tests roll the same dice every run.
