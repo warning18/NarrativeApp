@@ -8,6 +8,12 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.244.0+280]
+
+### Changed
+- **Choosing a race and a profession no longer scrolls for the radar.** The radar is pinned above the rails and answers every pick: it starts as the plain start, grows with the race, and with a profession picked it shows the race alone dashed behind it with the corners that moved marked (+4 CHA, +4 WIS). Beside it, the name of the pair, its tags and the four numbers (HP, damage, armour, gold).
+- **One detail card for the two.** A switch between the race and the profession (it follows whichever was picked last) shows the first sentence of the lore, the rest behind "more", the bonuses and the starting skill, in place of two long cards one under the other. The list between the radar and the Start button is the only part that scrolls, and the Start button stays in view.
+
 ## [1.243.0+279]
 
 Places say what they are like, and the game listens.

@@ -133,16 +133,21 @@ void main() {
     for (var i = 0; i < 40 && find.text('Human').evaluate().isEmpty; i++) {
       await _settle(tester, 1);
     }
-    expect(find.byKey(const Key('start_preview_radar')), findsNothing);
+    // The radar is there from the start, showing the plain start, and
+    // answers each pick.
+    expect(find.byKey(const Key('start_preview_radar')), findsOneWidget);
     await tester.tap(find.text('Human').first);
     await tester.pump();
-    await tester.scrollUntilVisible(find.text('Warrior'), 300,
-        scrollable: find.byType(Scrollable).first);
+    expect(find.byKey(const Key('preset_detail_human')), findsOneWidget);
     await tester.tap(find.text('Warrior').first);
     await tester.pump();
-    await tester.scrollUntilVisible(
-        find.byKey(const Key('start_preview_radar')), 300,
-        scrollable: find.byType(Scrollable).first);
+    // One detail card for the two: the profession's now, the race behind its tab.
+    expect(find.byKey(const Key('preset_detail_warrior')), findsOneWidget);
+    expect(find.byKey(const Key('preset_detail_human')), findsNothing);
+    expect(find.byKey(const Key('start_preview_name')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('detail_tab_race')));
+    await tester.pump();
+    expect(find.byKey(const Key('preset_detail_human')), findsOneWidget);
     expect(find.byKey(const Key('start_preview_radar')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

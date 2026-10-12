@@ -3158,6 +3158,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Choisissez qui vous êtes. Ceci définit vos statistiques de départ et démarre une nouvelle partie.',
   },
+  'lore_more': {AppLanguage.en: 'more', AppLanguage.fr: 'plus'},
+  'lore_less': {AppLanguage.en: 'less', AppLanguage.fr: 'moins'},
   'randomize_character_button': {
     AppLanguage.en: 'Randomize',
     AppLanguage.fr: 'Aléatoire',
