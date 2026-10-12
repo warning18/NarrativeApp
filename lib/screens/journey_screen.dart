@@ -856,7 +856,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     world: world,
                   ),
             hazard: hazardOn(choice),
-            // A way out leaves by the first stop of its road (v1.255), not
+            // A way out leaves by the first stop of its road (v1.256), not
             // straight at where it ends.
             bearing: chartHere != null && elsewhere
                 ? ((route != null && route.points.length > 1
@@ -4013,7 +4013,7 @@ class _StepDetail extends ConsumerWidget {
                         style: theme.textTheme.labelSmall
                             ?.copyWith(color: ink.ash),
                       ),
-                    // The road it takes, by the stops it passes (v1.255).
+                    // The road it takes, by the stops it passes (v1.256).
                     if (step.route != null && step.route!.stops.isNotEmpty)
                       Text(
                         tr(ref, 'journey_by_road').replaceAll('{stops}',

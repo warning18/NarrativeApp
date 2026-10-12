@@ -186,7 +186,7 @@ void main() {
     expect(find.byKey(_transit), findsNothing);
     expect(tester.takeException(), isNull);
 
-    // A way out to another place says by which road it goes (v1.255): the
+    // A way out to another place says by which road it goes (v1.256): the
     // stops it passes, under where it leads.
     play.jumpTo('960');
     await _settle(tester);
