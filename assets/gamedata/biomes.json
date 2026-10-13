@@ -1268,5 +1268,132 @@
       "water": "#5A5470"
     },
     "pattern": "glass"
+  },
+  "jungle": {
+    "name": "Jungle",
+    "name_fr": "Jungle",
+    "blurb": "Green so thick the noon comes down in pieces, rain every afternoon, and a road that has to be cut again by whoever walks it next. Nothing here is far; everything here is slow.",
+    "blurb_fr": "Un vert si dense que midi tombe en morceaux, la pluie chaque après-midi, et un chemin qu’il faut retailler à chaque passage. Rien n’y est loin, tout y est lent.",
+    "fauna": [
+      {
+        "name": "Howler monkey",
+        "name_fr": "Singe hurleur",
+        "note": "Wakes the canopy before dawn and argues with it until noon.",
+        "note_fr": "Réveille la canopée avant l’aube et se dispute avec elle jusqu’à midi."
+      },
+      {
+        "name": "Jaguar",
+        "name_fr": "Jaguar",
+        "note": "Seen by nobody who lived to say where.",
+        "note_fr": "Vu par personne qui ait vécu pour dire où."
+      },
+      {
+        "name": "Tree frog",
+        "name_fr": "Grenouille arboricole",
+        "note": "Bright as a warning, and it is one.",
+        "note_fr": "Éclatante comme un avertissement, et c’en est un."
+      },
+      {
+        "name": "Leaf-cutter ant",
+        "name_fr": "Fourmi coupe-feuille",
+        "note": "Carries the forest away one green flag at a time.",
+        "note_fr": "Emporte la forêt un drapeau vert après l’autre."
+      },
+      {
+        "name": "Parrot",
+        "name_fr": "Perroquet",
+        "note": "Learns the words of whoever camps beneath it, and repeats the worst ones.",
+        "note_fr": "Apprend les mots de ceux qui campent dessous, et répète les pires."
+      },
+      {
+        "name": "River caiman",
+        "name_fr": "Caïman de rivière",
+        "note": "Lies in the brown water like a log that waits.",
+        "note_fr": "Repose dans l’eau brune comme une bûche qui attend."
+      }
+    ],
+    "flora": [
+      {
+        "name": "Strangler fig",
+        "name_fr": "Figuier étrangleur",
+        "note": "Grows on another tree until there is no other tree.",
+        "note_fr": "Pousse sur un autre arbre jusqu’à ce qu’il n’y ait plus d’autre arbre."
+      },
+      {
+        "name": "Kapok",
+        "name_fr": "Kapokier",
+        "note": "The tallest thing for a day’s walk; its roots are walls.",
+        "note_fr": "La chose la plus haute à une journée de marche, ses racines sont des murs."
+      },
+      {
+        "name": "Liana",
+        "name_fr": "Liane",
+        "note": "A rope for the climber, a noose for the careless.",
+        "note_fr": "Une corde pour qui grimpe, un nœud coulant pour l’imprudent."
+      },
+      {
+        "name": "Rain lily",
+        "name_fr": "Lis de pluie",
+        "note": "Opens the hour after the downpour and is gone by night.",
+        "note_fr": "S’ouvre l’heure qui suit l’averse et disparaît à la nuit."
+      },
+      {
+        "name": "Bitter bark",
+        "name_fr": "Écorce amère",
+        "note": "Chewed against the fevers, and against the taste of everything else.",
+        "note_fr": "Mâchée contre les fièvres, et contre le goût de tout le reste."
+      },
+      {
+        "name": "Plantain",
+        "name_fr": "Plantain",
+        "note": "Feeds every village under the canopy, raw, fried or brewed.",
+        "note_fr": "Nourrit chaque village sous la canopée, cru, frit ou brassé."
+      }
+    ],
+    "weather": [
+      {
+        "name": "Afternoon downpour",
+        "name_fr": "Averse de l’après-midi"
+      },
+      {
+        "name": "Steaming heat",
+        "name_fr": "Chaleur moite"
+      },
+      {
+        "name": "Canopy mist",
+        "name_fr": "Brume de canopée"
+      }
+    ],
+    "hazards": [
+      {
+        "id": "swollen_river",
+        "name": "Swollen river",
+        "name_fr": "Rivière en crue",
+        "text": "The stream we had stepped over in the morning was a brown river by afternoon, and it was carrying whole trees past us as if they weighed nothing.",
+        "text_fr": "Le ruisseau enjambé le matin était devenu une rivière brune l’après-midi, et elle charriait des arbres entiers devant nous comme s’ils ne pesaient rien.",
+        "push": "Wade across on the ropes",
+        "push_fr": "Traverser à gué sur les cordes",
+        "wait": "Wait for the water to fall",
+        "wait_fr": "Attendre que l’eau baisse"
+      },
+      {
+        "id": "jungle_fever",
+        "name": "Jungle fever",
+        "name_fr": "Fièvre de la jungle",
+        "text": "It came on in the heat of the day: shaking, then sweat, then a long hour where the trees talked. The others walked either side of me and did not let me lie down.",
+        "text_fr": "Elle est venue dans la chaleur du jour, d’abord des tremblements, puis la sueur, puis une longue heure où les arbres parlaient. Les autres marchaient de chaque côté de moi et ne m’ont pas laissé m’allonger.",
+        "push": "Walk it off",
+        "push_fr": "Marcher malgré la fièvre",
+        "wait": "Rest a day in a hammock",
+        "wait_fr": "Se reposer un jour dans un hamac"
+      }
+    ],
+    "palette": {
+      "ground": "#4E7A3A",
+      "detail": "#2F5224",
+      "accent": "#9CC77A",
+      "water": "#3F7F6A"
+    },
+    "pattern": "fields"
   }
 }

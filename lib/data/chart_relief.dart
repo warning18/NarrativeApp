@@ -94,6 +94,8 @@ const Map<String, ChartBiomeColours> chartBiomeColours = {
       Color(0xFFD7DEE6), Color(0xFF9AA7B4), Color(0xFFF4F7FA)),
   'tear': ChartBiomeColours(
       Color(0xFFA7A39C), Color(0xFF6E6A73), Color(0xFFE9E6DF)),
+  'jungle': ChartBiomeColours(
+      Color(0xFF4E7A3A), Color(0xFF2F5224), Color(0xFF9CC77A)),
 };
 
 ChartBiomeColours chartBiome(String id) =>
@@ -397,6 +399,9 @@ class ChartRelief {
         case 'fen':
           small(TerrainKind.tuft, 120, 0.6, 1.0);
           woods(700, 1, 3);
+        case 'jungle':
+          woods(140, 2, 4);
+          small(TerrainKind.tuft, 400, 0.5, 0.8);
         case 'desert':
           small(TerrainKind.rock, 500, 0.3, 0.6);
           small(TerrainKind.dune, 400, 1.2, 2.2);
@@ -450,6 +455,10 @@ class ChartRelief {
         add(TerrainKind.hill, 700, 4, 1.4, 2.4);
         add(TerrainKind.lake, 2200, 6, 1.0, 2.0);
         add(TerrainKind.rock, 1800, 3, 0.4, 0.7);
+      case 'jungle':
+        woods(120, 3, 8);
+        add(TerrainKind.pool, 1400, 4, 0.8, 1.4);
+        add(TerrainKind.hill, 1400, 4, 1.2, 2.0);
       case 'fen':
         add(TerrainKind.tuft, 220, 3, 0.8, 1.2);
         add(TerrainKind.pool, 700, 4, 0.8, 1.6);
