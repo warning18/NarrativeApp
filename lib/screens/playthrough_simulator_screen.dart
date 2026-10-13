@@ -195,9 +195,14 @@ class _SimResult {
     this.checksFailed = 0,
     this.questRecords = const [],
     this.questsStuck = const {},
+    this.arrivals = const {},
   });
 
   final List<_SimStep> steps;
+
+  /// The character's level and gold when the run first rested at each
+  /// chapter's hub (chapter -> (level, gold)), for the balance reports.
+  final Map<int, ({int level, int gold})> arrivals;
 
   /// The ways on taken, in order (see [simChoiceKey]).
   final List<String> choicesTaken;
@@ -425,6 +430,7 @@ _SimResult _simulate(
   int? furthestChapter = chapterForNode(currentId);
   int? lastKnownChapter = furthestChapter;
   int? restedChapter = lastKnownChapter;
+  final arrivals = <int, ({int level, int gold})>{};
   final steps = <_SimStep>[];
   // How the character grows (see sim_growth.dart): the clans' offers, or
   // the old skill points, perks and sign picks.
@@ -479,6 +485,7 @@ _SimResult _simulate(
       questRecords: List<SimQuestRecord>.unmodifiable(
           questLog?.records.values ?? const <SimQuestRecord>[]),
       questsStuck: questLog?.unmet(flags) ?? const {},
+      arrivals: Map.unmodifiable(arrivals),
     );
   }
 
@@ -893,6 +900,8 @@ _SimResult _simulate(
       restedChapter = lastKnownChapter;
       final reached = lastKnownChapter;
       if (reached != null) {
+        arrivals.putIfAbsent(
+            reached, () => (level: character!.level, gold: gold));
         growth?.chapterReached(reached);
         settle();
       }
@@ -1289,6 +1298,8 @@ typedef SimRunSummary = ({
   Map<String, ({int attempts, int won, int fights})> byChapter,
   Map<String, int> enemiesFought,
   Map<String, int> enemiesLost,
+  Map<String, Map<String, ({int fought, int lost})>> enemiesByChapter,
+  Map<int, ({int level, int gold})> arrivals,
   Set<String> visitedNodes,
   List<String> choicesTaken,
   Set<String> questIds,
@@ -1331,6 +1342,7 @@ List<SimRunSummary> simulatePlaythroughs(
     final byChapter = <String, ({int attempts, int won, int fights})>{};
     final fought = <String, int>{};
     final lost = <String, int>{};
+    final byChapterEnemy = <String, Map<String, ({int fought, int lost})>>{};
     for (final step in result.steps) {
       if (step.fightWon == null) continue;
       final key = _chapterLabel(step.chapter);
@@ -1343,6 +1355,12 @@ List<SimRunSummary> simulatePlaythroughs(
       final enemy = step.enemyId ?? '?';
       fought[enemy] = (fought[enemy] ?? 0) + 1;
       if (step.fightWon == false) lost[enemy] = (lost[enemy] ?? 0) + 1;
+      final tally = byChapterEnemy.putIfAbsent(key, () => {});
+      final was = tally[enemy] ?? (fought: 0, lost: 0);
+      tally[enemy] = (
+        fought: was.fought + 1,
+        lost: was.lost + (step.fightWon == false ? 1 : 0),
+      );
     }
     // A real ending is a choice that ends the story; the walk also stops on
     // a scene with no way on and on a link to a scene that does not exist.
@@ -1382,6 +1400,8 @@ List<SimRunSummary> simulatePlaythroughs(
       byChapter: byChapter,
       enemiesFought: fought,
       enemiesLost: lost,
+      enemiesByChapter: byChapterEnemy,
+      arrivals: result.arrivals,
       visitedNodes: {
         for (final step in result.steps)
           if (!step.nodeId.contains(':')) step.nodeId,
