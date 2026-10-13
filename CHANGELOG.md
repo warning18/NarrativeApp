@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.265.0+301]
+
+### Fixed
+- **The simulator's "Play to chapter" button could not be reached on a phone.**
+  With no batch yet, the strategy, runs and chapter controls were taller than
+  the screen and did not scroll, so the button ended past the bottom edge.
+  They now scroll with the results (`PlaythroughSimulatorScreen`); once
+  there are results the compact bar and the scrolling results are as before,
+  and scrolling down no longer folds the controls away. Checked at 360 x 640
+  and 320 x 568, in English and French, with the app's own fonts and a 48 px
+  system bar (`test/simulator_insets_test.dart`).
+
 ## [1.264.0+300]
 
 The level-up pop-up, the clans' offer and the dice, redrawn; and a story-true
