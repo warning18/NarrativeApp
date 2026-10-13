@@ -19,7 +19,8 @@ The travel map, and a pack of layout fixes.
   round each place the camp can travel to. A tap on a ringed place offers
   the journey; on a place only heard of, it says the road is not open yet.
   The names are laid out clear of each other, also on the crowded north
-  continent. It zooms and pans.
+  continent, and kept inside what the screen shows; the box round the chart
+  is the colour of the uncharted. It zooms and pans.
 - **Tap a built building in the camp town** to read its name and what it
   gives.
 - **Help pattern.** An ⓘ in a page's header replays the page's guide; holding

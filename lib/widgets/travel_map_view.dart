@@ -224,9 +224,14 @@ class _TravelMapViewState extends State<TravelMapView> {
           .expandToInclude(Rect.fromCircle(center: _px(id) + lift, radius: 1));
     }
     rect = rect.inflate(math.max(24, 0.12 * math.max(rect.width, rect.height)));
-    final s = math
-        .min(box.width / rect.width, box.height / rect.height)
-        .clamp(1.0, widget.maxZoom);
+    final fit = math.min(box.width / rect.width, box.height / rect.height);
+    // A road as wide as the chart: the whole chart, as it sits (a pan to
+    // the road's middle would cut a side off).
+    if (fit <= 1) {
+      _view.value = Matrix4.identity();
+      return;
+    }
+    final s = fit.clamp(1.0, widget.maxZoom);
     final c = rect.center;
     _view.value = Matrix4.identity()
       ..translateByDouble(box.width / 2, box.height / 2, 0, 1)
@@ -307,8 +312,12 @@ class _TravelMapViewState extends State<TravelMapView> {
               ),
             ),
           );
+      // The box round the chart is the colour of the uncharted, so the chart
+      // goes on past its own edge instead of floating in a band of sea.
       return ColoredBox(
-          color: widget.palette.sea,
+          color: widget.fog == ChartFog.none
+              ? widget.palette.sea
+              : widget.palette.fog,
           child: Stack(
             children: [
               InteractiveViewer(
@@ -355,6 +364,7 @@ class _TravelMapViewState extends State<TravelMapView> {
                                 targets: widget.travelTargets,
                                 here: widget.here,
                                 nameOf: widget.nameOf,
+                                viewport: boxSize,
                               ),
                             ),
                           ],
@@ -400,10 +410,14 @@ class _TravelPainter extends CustomPainter {
     required this.targets,
     required this.here,
     required this.nameOf,
+    required this.viewport,
   }) : super(repaint: view);
 
   final TransformationController view;
   final Size chart;
+
+  /// The box the chart is looked at through: names are kept inside it.
+  final Size viewport;
   final ChartPalette palette;
   final AppLanguage language;
   final ChartGeography geography;
@@ -544,7 +558,15 @@ class _TravelPainter extends CustomPainter {
       requests.add(
           TravelLabelRequest(id, _px(id) * z, Size(tp.width + 2, tp.height)));
     }
-    final bounds = Rect.fromLTWH(0, 0, chart.width * z, chart.height * z);
+    // The chart, cut to what the box shows of it: a name never goes where
+    // the eye cannot see it (the chart's edge may be off screen when zoomed).
+    final m = view.value.storage;
+    final lift = (math.max(viewport.height, chart.height) - chart.height) / 2;
+    final visible = Rect.fromLTRB(-m[12], -m[13] - lift * z,
+        viewport.width - m[12], viewport.height - m[13] - lift * z);
+    final whole = Rect.fromLTWH(0, 0, chart.width * z, chart.height * z);
+    final cut = whole.intersect(visible);
+    final bounds = cut.width > 40 && cut.height > 20 ? cut.deflate(2) : whole;
     final placed = placeTravelLabels(requests,
         bounds: bounds,
         markRadius: z >= 2.2 ? 8 : 5,
@@ -559,7 +581,7 @@ class _TravelPainter extends CustomPainter {
       // A backing so a name reads over the coast.
       canvas.drawRRect(
           RRect.fromRectAndRadius(box.inflate(1), const Radius.circular(2)),
-          Paint()..color = palette.sea.withValues(alpha: 0.55));
+          Paint()..color = palette.sea.withValues(alpha: 0.8));
       painters[entry.key]!.paint(canvas, box.topLeft + const Offset(1, 0));
       canvas.restore();
     }
