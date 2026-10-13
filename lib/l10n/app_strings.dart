@@ -2927,18 +2927,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'crossing_arrived': {
     AppLanguage.en: 'You reach the far side, {n} days on.',
-    AppLanguage.fr: 'Vous atteignez l\'autre bout, {n} jours plus tard.',
+    AppLanguage.fr: 'Vous atteignez l’autre bout, {n} jours plus tard.',
   },
   'crossing_failed': {
     AppLanguage.en:
         'The road beats you. You are carried back to where you set out, wounded, {n} days lost.',
     AppLanguage.fr:
-        'La route a raison de vous. On vous ramène là d\'où vous êtes parti, blessé, {n} jours perdus.',
+        'La route a raison de vous. On vous ramène là d’où vous êtes parti, blessé, {n} jours perdus.',
   },
   'crossing_turned_back': {
     AppLanguage.en: 'You turn back to where you set out, {n} days lost.',
     AppLanguage.fr:
-        'Vous rebroussez chemin jusqu\'à votre point de départ, {n} jours perdus.',
+        'Vous rebroussez chemin jusqu’à votre point de départ, {n} jours perdus.',
   },
   'harbour_needed_to_sail': {
     AppLanguage.en:
@@ -6621,13 +6621,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A long road is crossed a day at a time, and each day brings something: a storm, a well, a spring, raiders.',
     AppLanguage.fr:
-        'Une longue route se traverse jour après jour, et chaque jour apporte quelque chose : une tempête, un puits, une source, des pillards.',
+        'Une longue route se traverse jour après jour, et chaque jour apporte quelque chose : une tempête, un puits, une source, des pillards.',
   },
   'tut_landCrossing_2': {
     AppLanguage.en:
         'Your health is what the road wears down. Run out and you are carried back to where you set out, wounded.',
     AppLanguage.fr:
-        'C\'est votre santé que la route use. Si elle s\'épuise, on vous ramène à votre point de départ, blessé.',
+        'C’est votre santé que la route use. Si elle s’épuise, on vous ramène à votre point de départ, blessé.',
   },
   'tut_voyage_1': {
     AppLanguage.en:

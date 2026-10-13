@@ -31,8 +31,9 @@ Land expeditions, the first: the crossing from the wreck of the Lark.
     with the same rules. The simulator rolls them on a stream of their
     own, so the walk's seeded results stay comparable.
   - **A tutorial** for crossings, shown the first time the screen opens.
-  - The screen is a plain one for now; its side view is UX's to come, and
-    its words are drafts for Narrative.
+  - The screen is a plain one for now; its side view is UX's to come.
+    The event and tutorial texts were read by Narrative, who kept them and
+    gave the route its geography names.
 
 ### Changed
 - **"Play to chapter" hands back a stronger character late in the story.**
