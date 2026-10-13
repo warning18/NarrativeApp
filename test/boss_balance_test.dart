@@ -153,7 +153,7 @@ void main() {
     });
   });
 
-  // The boss curve (v1.27x, the user's design): each chapter's bosses won
+  // The boss curve (v1.280.0, the user's design): each chapter's bosses won
   // about this share of the time where the story puts them -- after the
   // chapter's own fights, at the level a run has by then -- easier early,
   // harder late, about half on average. Measured with the playthrough
