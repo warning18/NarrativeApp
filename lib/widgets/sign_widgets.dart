@@ -268,7 +268,11 @@ class SignEffectText extends StatelessWidget {
 /// offer_dialog.dart). A tap on a sign while
 /// blood waits raises it.
 class SignsSection extends ConsumerWidget {
-  const SignsSection({super.key});
+  const SignsSection({super.key, this.header = true});
+
+  /// Whether the section writes its own "Signs" line (the Character tab's
+  /// fold takes its place, v1.266).
+  final bool header;
 
   Future<void> _raise(
       BuildContext context, WidgetRef ref, HeldSign held, SignDef sign) async {
@@ -397,8 +401,10 @@ class SignsSection extends ConsumerWidget {
         Row(
           children: [
             Expanded(
-              child: Text(tr(ref, 'signs_section'),
-                  style: theme.textTheme.titleSmall),
+              child: header
+                  ? Text(tr(ref, 'signs_section'),
+                      style: theme.textTheme.titleSmall)
+                  : const SizedBox.shrink(),
             ),
             if (session.titanBlood > 0)
               Row(

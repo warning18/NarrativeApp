@@ -925,6 +925,170 @@ class _IdentityCard extends ConsumerWidget {
   }
 }
 
+/// A race's or profession's recap as one row (v1.266): its mark, name, tag
+/// and the numbers it changes as chips, and the skill it grants as a line
+/// under them. A tap opens the lore (and the skill's words) in a sheet.
+class _ChoiceRow extends ConsumerWidget {
+  const _ChoiceRow({
+    required this.cardKey,
+    required this.folder,
+    required this.preset,
+    required this.name,
+    required this.withOffers,
+    required this.skills,
+  });
+
+  final Key cardKey;
+  final String folder;
+  final Map<String, dynamic>? preset;
+  final String name;
+  final bool withOffers;
+  final Map<String, dynamic> skills;
+
+  String get _skillId => preset?['standardSkillID']?.toString() ?? '';
+
+  String get _skillName => grantedSkillName(_skillId,
+      presetId: (preset?['raceID'] ?? preset?['professionID'])?.toString());
+
+  void _read(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.85),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _IdentityCard(
+                  cardKey: Key('${(cardKey as ValueKey).value}_lore'),
+                  folder: folder,
+                  preset: preset,
+                  name: name,
+                  withOffers: withOffers,
+                ),
+                if (_skillId.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  _SkillCard(
+                    label: tr(ref, 'granted_skill_label'),
+                    skillId: _skillId,
+                    name: _skillName,
+                    description: (skills[_skillId]
+                                as Map<String, dynamic>?)?['description']
+                            ?.toString() ??
+                        '',
+                  ),
+                ],
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(tr(ref, 'close_button')),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final tag = preset?['tag']?.toString() ?? '';
+    return Card(
+      key: cardKey,
+      margin: EdgeInsets.zero,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(4),
+        onTap: () => _read(context, ref),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Container(
+                width: 52,
+                height: 52,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: scheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: scheme.outlineVariant),
+                ),
+                child: PresetMark(folder: folder, preset: preset, size: 38),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(name, style: theme.textTheme.titleLarge),
+                        if (tag.isNotEmpty)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 7, vertical: 2),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: scheme.primary.withValues(alpha: 0.14),
+                              border: Border.all(
+                                  color: scheme.primary.withValues(alpha: 0.6)),
+                            ),
+                            child: Text(tag.toUpperCase(),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                    color: scheme.primary, letterSpacing: 0.8)),
+                          ),
+                      ],
+                    ),
+                    if (preset != null) ...[
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 4,
+                        runSpacing: 4,
+                        children: [
+                          for (final e
+                              in presetBonuses(preset!, withOffers: withOffers))
+                            _BonusChip(label: tr(ref, e.key), value: e.value),
+                        ],
+                      ),
+                    ],
+                    if (_skillId.isNotEmpty) ...[
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          SkillPixelIcon(_skillId, size: 18),
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(_skillName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.bodySmall
+                                    ?.copyWith(color: scheme.onSurfaceVariant)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right, color: scheme.onSurfaceVariant),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// The skill a race or a profession grants, on the character sheet: an
 /// overline, its name large and its words below.
 class _SkillCard extends StatelessWidget {
@@ -1088,25 +1252,6 @@ class _CharacterSheet extends StatelessWidget {
   final AppLanguage language;
   final VoidCallback? onStartGame;
 
-  /// The skill card of [preset]'s granted skill, if it has one.
-  Widget _skillCard(
-      BuildContext context, String label, Map<String, dynamic>? preset) {
-    final skillId = preset?['standardSkillID']?.toString() ?? '';
-    if (skillId.isEmpty) return const SizedBox.shrink();
-    final skill = skills[skillId] as Map<String, dynamic>?;
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: _SkillCard(
-        label: label,
-        skillId: skillId,
-        name: grantedSkillName(skillId,
-            presetId:
-                (preset?['raceID'] ?? preset?['professionID'])?.toString()),
-        description: skill?['description']?.toString() ?? '',
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -1248,23 +1393,29 @@ class _CharacterSheet extends StatelessWidget {
           ),
           const SizedBox(height: 14),
         ],
-        _IdentityCard(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(t('recap_who_you_are').toUpperCase(),
+              style: theme.textTheme.labelMedium?.copyWith(
+                  color: scheme.onSurfaceVariant, letterSpacing: 1.2)),
+        ),
+        _ChoiceRow(
           cardKey: const Key('sheet_race_card'),
           folder: 'races',
           preset: race,
           name: raceName,
           withOffers: false,
+          skills: skills,
         ),
-        _skillCard(context, t('granted_skill_label'), race),
-        const SizedBox(height: 14),
-        _IdentityCard(
+        const SizedBox(height: 8),
+        _ChoiceRow(
           cardKey: const Key('sheet_profession_card'),
           folder: 'professions',
           preset: profession,
           name: professionName,
           withOffers: true,
+          skills: skills,
         ),
-        _skillCard(context, t('granted_skill_label'), profession),
         section(t('character_sheet_title'),
             hint: t('hold_stat_for_details_hint')),
         Card(
