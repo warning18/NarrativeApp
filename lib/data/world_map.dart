@@ -266,7 +266,8 @@ final List<Landmark> worldMapLandmarks = [
         'Le carrefour du chapitre 2, le quartier du port de Bouche-de-Sel. Un intendant nommé Vane, sans lien avec l’Inquisiteur général, garde la porte des chantiers navals\u00a0; autour de lui, le marché regorge de travail\u00a0: le Bazar, la rue des Apothicaires, des primes, des parties de cartes, un faux informateur, Kelda à la porte, la reconnaissance de dette de Sable, Liora sur le toit, et Vess, qui suit le Balluchon.',
     scenes: [
       '2010', '2010_crane', '2010_liora', '2011', //
-      '2015', '2015_apothecary', '2015_bandits', '2015_bazaar', '2015_cards',
+      '2015', '2015_dominion_blades', '2015_apothecary', '2015_bandits',
+      '2015_bazaar', '2015_cards',
       '2015_cards_won', '2015_cards_lost', '2015_dockside', '2015_hound',
       '2015_informant', '2015_informant_trap', '2015_informant_exposed',
       '2015_informant_caught', '2015_kelda', '2015_rats', '2015_sable',
@@ -343,7 +344,8 @@ final List<Landmark> worldMapLandmarks = [
     blurbFr:
         'Le carrefour du chapitre 3, à une journée de marche du camp\u00a0: une ville que l’Inquisition a brûlée elle-même. Le Serment de Cendres, le contrat de la Relique du Néant, la confession de Maren, Grosh le mercenaire, le mur des noms de Reya, et un message pour Lysa.',
     scenes: [
-      '3005', '3005_oath', '3005_acolyte', '3005_relic', //
+      '3005', '3005_tribunal_gold', '3005_oath', '3005_acolyte',
+      '3005_relic', //
       '3005_wisp', '3005_stalker', '3005_golem', '3005_auxiliaries',
       '3005_maren', '3005_archive', '3005_archive_failed', '3005_ledger',
       '3005_ledger_failed', '3005_grosh', '3005_wall', '3005_wall_argued',
@@ -435,7 +437,8 @@ final List<Landmark> worldMapLandmarks = [
     blurbFr:
         'Des pilleurs d’épaves et des coupeurs de varech sur la falaise au-dessus de l’Escalier Noyé, dans des maisons bâties avec des coques, de fausses lampes sur la pointe et les noyés qui grimpent vers elles.',
     scenes: [
-      '5100', '5100_drowned', '5100_salvage', '5100_salvage_failed', //
+      '5100', '5100_anvil_deaf_vote', '5100_drowned', '5100_salvage',
+      '5100_salvage_failed', //
       '5100_headman', '5100_headman_later', '5100_nets', '5100_vote',
       '5100_house_tar_hands',
       '5100_house_fishbasket_line',
@@ -562,7 +565,8 @@ final List<Landmark> worldMapLandmarks = [
     blurbFr:
         'Une halte de pèlerins sur la route du Reliquaire Noir, où le givre de la déchirure est arrivé en premier\u00a0: une cloche qui compte les disparus, la lanterne d’une gardienne de la route, et un pain rassis partagé avec ceux qui marchent encore.',
     scenes: [
-      '6100', '6100_bell', '6100_bell_failed', '6100_road', //
+      '6100', '6100_charter_signing', '6100_bell', '6100_bell_failed',
+      '6100_road', //
       '6100_keeper', '6100_keeper_later', '6100_bread', '6100_knife',
       '6100_house_scorched_choir',
       '6100_house_scorched_choir_failed',
@@ -626,7 +630,8 @@ final List<Landmark> worldMapLandmarks = [
     blurbFr:
         'Une ville bâtie avec les épaves de la Flotte Blanche par les croisés qui s’y sont échoués\u00a0: un aumônier qui sait où gît le vaisseau amiral, une chandlerie, le mal gris, et une dernière compagnie encore en guerre.',
     scenes: [
-      '7100', '7100_chaplain', '7100_chandlery', '7100_company', //
+      '7100', '7100_charter_choice', '7100_chaplain', '7100_chandlery',
+      '7100_company', //
       '7100_sick', '7100_sick_failed', '7100_helmsman', '7100_helmsman_refused',
       '7100_helmsman_later', '7100_cutter', '7100_cutter_lost', '7100_log',
       '7100_house_order',

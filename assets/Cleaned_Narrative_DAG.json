@@ -3110,6 +3110,14 @@
         ]
       },
       {
+        "text": "Look at the blades on the Inquisitors’ belts",
+        "text_fr": "Regarder les lames à la ceinture des Inquisiteurs",
+        "next_id": "2015_dominion_blades",
+        "hideIfFlags": [
+          "hub_2015_dominion_blades"
+        ]
+      },
+      {
         "text": "Bribe Vane with information",
         "text_fr": "Soudoyer Vane avec des informations",
         "next_id": "2030"
@@ -4584,6 +4592,17 @@
         ],
         "hideIfFlags": [
           "hub_3005_spire_takings"
+        ]
+      },
+      {
+        "text": "Watch the Tribunal’s purse come down the Spire stair",
+        "text_fr": "Regarder la bourse du Tribunal descendre l’escalier de la Flèche",
+        "next_id": "3005_tribunal_gold",
+        "showIfFlags": [
+          "plot_charter_1"
+        ],
+        "hideIfFlags": [
+          "hub_3005_tribunal_gold"
         ]
       }
     ],
@@ -11946,6 +11965,17 @@
         "hideIfFlags": [
           "hub_5100_tar_hand_book"
         ]
+      },
+      {
+        "text": "Witness the Anvil-Deaf vote on the quay",
+        "text_fr": "Être témoin du vote des Sourds de l’Enclume sur le quai",
+        "next_id": "5100_anvil_deaf_vote",
+        "showIfFlags": [
+          "plot_charter_2"
+        ],
+        "hideIfFlags": [
+          "hub_5100_anvil_deaf_vote"
+        ]
       }
     ],
     "settlement": {
@@ -13153,6 +13183,17 @@
         ],
         "hideIfFlags": [
           "hub_6100_stitcher_door"
+        ]
+      },
+      {
+        "text": "Meet the Row and the Tribunal at the quarry’s edge",
+        "text_fr": "Rencontrer la Rue et le Tribunal au bord de la carrière",
+        "next_id": "6100_charter_signing",
+        "showIfFlags": [
+          "plot_charter_4"
+        ],
+        "hideIfFlags": [
+          "hub_6100_charter_signing"
         ]
       }
     ],
@@ -14396,6 +14437,17 @@
         ],
         "hideIfFlags": [
           "hub_7100_flagship_hold"
+        ]
+      },
+      {
+        "text": "Decide what becomes of the Charter",
+        "text_fr": "Décider du sort de la Charte",
+        "next_id": "7100_charter_choice",
+        "showIfFlags": [
+          "plot_charter_5"
+        ],
+        "hideIfFlags": [
+          "hub_7100_charter_choice"
         ]
       }
     ],
@@ -17855,6 +17907,87 @@
       }
     ]
   },
+  "5100_anvil_deaf_vote": {
+    "id": "5100_anvil_deaf_vote",
+    "description": "The Anvil-Deaf voted at the end of the quay, in signs, with their hands held up in the grey light for the whole quay to see. There were forty of them, and the question was the Charter of Anvils: whether to let the Tribunal’s buyers have the Row’s forges back, a trade at a time, in return for the coal and the peace. A raised hammer meant yes. A closed fist meant no. They had asked me to stand at the end of the line and witness, because I was nobody’s kin and nobody’s creditor, and because a count taken in signs can be argued about afterwards by anyone who was not looking. The Tribunal’s last clerk stood on the other side of the quay with the seal in his sleeve, and did not look at the hands at all.",
+    "description_fr": "Les Sourds de l’Enclume votaient au bout du quai, par signes, les mains levées dans la lumière grise pour que tout le quai les voie. Ils étaient quarante, et la question était la Charte des Enclumes : fallait-il rendre au Tribunal les forges de la Rue, un métier après l’autre, en échange du charbon et de la paix. Un marteau levé voulait dire oui. Un poing fermé, non. Ils m’avaient demandé de me tenir au bout de la ligne en témoin, parce que je n’étais la parenté ni le créancier de personne, et parce qu’un compte fait par signes peut être contesté ensuite par quiconque n’avait pas regardé. Le dernier clerc du Tribunal se tenait de l’autre côté du quai, le sceau dans la manche, et ne regardait pas les mains du tout.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "wracks_end",
+    "choices": [
+      {
+        "text": "Count the hands aloud and sign the tally",
+        "text_fr": "Compter les mains à voix haute et signer le décompte",
+        "next_id": "5100",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_5100_anvil_deaf_vote",
+          "plot_charter_4",
+          "charter_witnessed"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "broken_charter",
+            "stage": 4
+          },
+          "standing": {
+            "compact": 3
+          }
+        }
+      },
+      {
+        "text": "Call the count for the Row",
+        "text_fr": "Annoncer le décompte en faveur de la Rue",
+        "next_id": "5100",
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_5100_anvil_deaf_vote",
+          "plot_charter_4",
+          "charter_vote_bent"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "broken_charter",
+            "stage": 4
+          },
+          "standing": {
+            "compact": 5,
+            "dominion": -3
+          }
+        }
+      },
+      {
+        "text": "Refuse; the smiths should count themselves",
+        "text_fr": "Refuser : aux forgerons de se compter",
+        "next_id": "5100",
+        "flagsToAdd": [
+          "hub_5100_anvil_deaf_vote",
+          "plot_charter_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "broken_charter",
+            "stage": 4
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "charter_bills",
+        "en": "The bills of lading with the Row’s own seal were still in my coat. The clerk at the wharf had been right about them, and wrong about what they proved.",
+        "fr": "Les lettres de voiture au sceau même de la Rue étaient toujours dans mon manteau. Le commis du quai avait eu raison à leur sujet, et tort sur ce qu’elles prouvaient."
+      },
+      {
+        "flag": "charter_dorran_warned",
+        "en": "Dorran Quill had carried my warning back to his yard. I heard on the quay that he had spent a week not touching the strongbox.",
+        "fr": "Dorran Quill avait rapporté mon avertissement à son chantier. J’appris sur le quai qu’il avait passé une semaine sans toucher au coffre."
+      }
+    ]
+  },
   "6100_knife": {
     "id": "6100_knife",
     "description": "He had frozen sitting up, in a pilgrim’s grey, with his back to the milestone and his eyes on the road from the coast, the way a man sits who is waiting for someone in particular. Rimewell had left him there because the ground was too hard to dig and nobody knew his name. The road-keeper knew who he had been waiting for, though. The Eldest Wickwarden walked the pilgrims’ road to the Reliquary every year, on foot, with one lamp, and she was on it now. Under his coat he had a knife. The hilt bore the Order’s lantern on a sword, plain as a signature. But I had drawn once, on the Spire, and I knew now how a sign sits on a thing: this one sat on top of another. Under the Order’s mark, scraped out and painted over, was a lantern with a hood on it. Someone had wanted Maud Tallis dead on this road, and the Grand Master hanged for it.",
@@ -18062,6 +18195,78 @@
         "flag": "count_name_heard",
         "en": "I had heard the name read out from a stone in the frost. I had not expected to hear it spoken to me.",
         "fr": "J’avais entendu ce nom lu à voix haute devant une pierre dans le givre. Je ne m’attendais pas à l’entendre prononcé pour moi."
+      }
+    ]
+  },
+  "6100_charter_signing": {
+    "id": "6100_charter_signing",
+    "description": "They would not meet in each other’s cities, so they met at Rimewell, on a block of quarry stone at the frozen edge of the pit: a Tribunal clerk with a lead-bound case, three of the Anvil-Deaf with their hands tucked into their sleeves against the cold, and an Emberwife who had walked up behind her mule with the last sack of coal in the Row. The Charter lay in its case between them, five hundred years of oaths on one sheet of vellum. Signed again, it handed the forges back to the Tribunal’s writs. Burned, it would hand them to nobody, and the Row would choose what it forged and for whom. Both sides had come to be told it was safe to choose. I could not tell them that.",
+    "description_fr": "Ils ne voulaient pas se rencontrer dans la ville de l’autre, alors ils se retrouvèrent à Puits-de-Givre, sur un bloc de pierre au bord gelé de la fosse : un clerc du Tribunal avec un étui relié de plomb, trois Sourds de l’Enclume les mains rentrées dans les manches contre le froid, et une Charbonnière montée derrière sa mule avec le dernier sac de charbon de la Rue. La Charte reposait dans son étui entre eux, cinq cents ans de serments sur une seule feuille de vélin. Signée de nouveau, elle rendait les forges aux mandats du Tribunal. Brûlée, elle ne les rendrait à personne, et la Rue choisirait ce qu’elle forgeait et pour qui. Les deux camps étaient venus pour s’entendre dire qu’il était sans danger de choisir. Je ne pouvais pas le leur dire.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "rimewell",
+    "choices": [
+      {
+        "text": "Carry the Tribunal’s terms to the smiths",
+        "text_fr": "Porter les conditions du Tribunal aux forgerons",
+        "next_id": "6100",
+        "flagsToAdd": [
+          "hub_6100_charter_signing",
+          "plot_charter_5"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "broken_charter",
+            "stage": 5
+          },
+          "standing": {
+            "dominion": 3
+          }
+        }
+      },
+      {
+        "text": "Carry the smiths’ answer to the clerk",
+        "text_fr": "Porter la réponse des forgerons au clerc",
+        "next_id": "6100",
+        "flagsToAdd": [
+          "hub_6100_charter_signing",
+          "plot_charter_5"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "broken_charter",
+            "stage": 5
+          },
+          "standing": {
+            "compact": 3
+          }
+        }
+      },
+      {
+        "text": "Take the lead case into your own keeping",
+        "text_fr": "Prendre l’étui de plomb sous votre garde",
+        "next_id": "6100",
+        "flagsToAdd": [
+          "hub_6100_charter_signing",
+          "plot_charter_5",
+          "charter_case_held"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "broken_charter",
+            "stage": 5
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "charter_wage_paid",
+        "en": "Dorran Quill’s crew had been paid out of my purse. A Scaffolder at the quarry’s edge nodded at me once, the way a man nods at a debt he does not mind.",
+        "fr": "L’équipe de Dorran Quill avait été payée de ma bourse. Un Échafaudeur, au bord de la carrière, me fit un signe de tête, comme on salue une dette qui ne pèse pas."
       }
     ]
   },
@@ -23373,6 +23578,16 @@
         "flag": "ledger_sold",
         "en": "The Crows’ brigs were not with us. Two of them stood off the point with their lamps shuttered, watching the Eel the way a creditor watches a door.",
         "fr": "Les bricks des Corneilles n’étaient pas avec nous. Deux d’entre eux se tenaient au large de la pointe, fanaux voilés, et regardaient l’Eel comme un créancier regarde une porte."
+      },
+      {
+        "flag": "charter_restored",
+        "en": "The wreck-wrights’ new blades bore the Tribunal’s writ stamped at the ricasso, under the anvil. They were good blades. Half the Host would not take them.",
+        "fr": "Les lames neuves des charpentiers d’épaves portaient le mandat du Tribunal estampé au talon, sous l’enclume. C’étaient de bonnes lames. La moitié de l’Ost refusa de les prendre."
+      },
+      {
+        "flag": "charter_burned",
+        "en": "The blades came up from the Anchorage unmarked, with no writ and no anvil, and the smiths of the Row who carried them said they were forged for whoever stood in the line.",
+        "fr": "Les lames montèrent du Mouillage sans marque, ni mandat ni enclume, et les forgerons de la Rue qui les portaient dirent qu’elles étaient forgées pour quiconque tenait la ligne."
       }
     ],
     "noDetour": true
@@ -23688,6 +23903,68 @@
         "politics": {
           "intrigue": {
             "id": "the_returned",
+            "stage": 1
+          }
+        }
+      }
+    ]
+  },
+  "2015_dominion_blades": {
+    "id": "2015_dominion_blades",
+    "description": "A file of Inquisition guards stood waiting at the customs steps, and every sword on every hip had the Compact’s anvil stamped at the ricasso: the hammer-and-chisel mark of the Cinder Row smiths, who had sworn in a charter older than the Dominion never to forge for a hand that held a writ. A dock clerk with ink on his thumb said the blades came in by the crate, paid for in coin, with the Row’s own bills of lading. The Row denied it, he said. The Row always denied it, and the crates always came.",
+    "description_fr": "Une file de gardes de l’Inquisition attendait aux marches de la douane, et chaque épée à chaque hanche portait l’enclume du Pacte estampée au talon : la marque du marteau et du ciseau des forgerons de la Rue des Braises, qui avaient juré, dans une charte plus vieille que le Dominion, de ne jamais forger pour une main qui tient un mandat. Un commis des quais, de l’encre sur le pouce, dit que les lames arrivaient par caisses, payées en monnaie, avec les propres lettres de voiture de la Rue. La Rue le niait, dit-il. La Rue le niait toujours, et les caisses arrivaient toujours.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_wharf",
+    "choices": [
+      {
+        "text": "Ask the clerk whose seal is on the bills",
+        "text_fr": "Demander au commis de qui est le sceau des lettres",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_dominion_blades",
+          "plot_charter_1",
+          "charter_bills"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "broken_charter",
+            "stage": 1
+          }
+        }
+      },
+      {
+        "text": "Buy one blade and show it to a smith",
+        "text_fr": "Acheter une lame et la montrer à un forgeron",
+        "next_id": "2015",
+        "goldMod": -20,
+        "pays": true,
+        "flagsToAdd": [
+          "hub_2015_dominion_blades",
+          "plot_charter_1",
+          "charter_blade"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "broken_charter",
+            "stage": 1
+          }
+        }
+      },
+      {
+        "text": "Leave the blades where they hang",
+        "text_fr": "Laisser les lames là où elles pendent",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_dominion_blades",
+          "plot_charter_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "broken_charter",
             "stage": 1
           }
         }
@@ -24361,6 +24638,79 @@
         "flag": "child_fed",
         "en": "I thought of the girl on the crate at Fisherman’s Row, and of the heel of bread she had held in both hands like a small, serious animal.",
         "fr": "Je pensai à la fillette sur la caisse, dans l’Allée des Pêcheurs, et au quignon de pain qu’elle avait tenu à deux mains comme un petit animal sérieux."
+      }
+    ]
+  },
+  "3005_tribunal_gold": {
+    "id": "3005_tribunal_gold",
+    "description": "The Tribunal’s purser came down the Spire stair with a strongbox on a porter’s back and set it on the Scaffolders’ trestle with the lid open, so that the yard could see the coin. It was a year’s back wages for every hand who had rigged the gallows the Inquisition tore down in the riots, and the price of it was a gallows: the Tribunal wanted its scaffold rebuilt on the Spire’s old forecourt before the next feast. Dorran Quill stood with his arms folded and his crew behind him, looking at the money the way a man looks at a rope held out to him in a well. Beside the strongbox the purser had laid a second paper, folded small, with an anvil on its seal. He did not mention it, and neither did Dorran, which was how I knew it mattered.",
+    "description_fr": "Le boursier du Tribunal descendit l’escalier de la Flèche, un coffre sur le dos d’un portefaix, et le posa sur le tréteau des Échafaudeurs, couvercle ouvert, pour que le chantier voie la monnaie. C’était une année d’arriérés pour chaque main qui avait gréé les gibets que l’Inquisition avait abattus pendant les émeutes, et le prix en était un gibet : le Tribunal voulait son échafaud rebâti sur le vieux parvis de la Flèche avant la prochaine fête. Dorran Quill se tenait bras croisés, son équipe derrière lui, et regardait l’argent comme un homme regarde la corde qu’on lui tend au fond d’un puits. À côté du coffre, le boursier avait posé un second papier, plié petit, dont le sceau portait une enclume. Il n’en dit rien, et Dorran non plus, ce qui me fit comprendre qu’il comptait.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "ashen_quarter",
+    "choices": [
+      {
+        "text": "Warn Dorran the Tribunal pays in more than coin",
+        "text_fr": "Prévenir Dorran que le Tribunal paie de plus que de la monnaie",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_tribunal_gold",
+          "plot_charter_2",
+          "charter_dorran_warned"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "broken_charter",
+            "stage": 2
+          },
+          "standing": {
+            "compact": 3
+          }
+        }
+      },
+      {
+        "text": "Offer his crew a year’s wages from your purse",
+        "text_fr": "Offrir à son équipe une année de gages de votre bourse",
+        "next_id": "3005",
+        "goldMod": -60,
+        "pays": true,
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_3005_tribunal_gold",
+          "plot_charter_2",
+          "charter_wage_paid"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "broken_charter",
+            "stage": 2
+          }
+        }
+      },
+      {
+        "text": "Say nothing; a gallows is a gallows",
+        "text_fr": "Ne rien dire : un gibet est un gibet",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_tribunal_gold",
+          "plot_charter_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "broken_charter",
+            "stage": 2
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "charter_blade",
+        "en": "The Compact blade from the wharf was in my pack, its anvil mark rubbed bright. I did not take it out, but Dorran looked at the pack.",
+        "fr": "La lame du Pacte achetée au quai était dans mon sac, sa marque d’enclume frottée jusqu’à briller. Je ne la sortis pas, mais Dorran regarda le sac."
       }
     ]
   },
@@ -25145,6 +25495,66 @@
             "stage": 5
           }
         }
+      }
+    ]
+  },
+  "7100_charter_choice": {
+    "id": "7100_charter_choice",
+    "description": "The Charter came down the Anchorage quay on a pilot’s boat in its lead-bound case, with one of the Anvil-Deaf sitting on one end of it and a Tribunal clerk on the other, neither willing to lose the other from sight. The wreck-wrights had their forges lit for the first time since the fleet went down, and they wanted iron, and an oath to forge under. The coast was about to need a great many blades, for a host and for a war. Whoever held the Charter would say whom they were forged for. It was in my hands now, whether or not I had asked. I had read it twice by lamplight on the way. It was only a sheet of vellum with a great many names on it, and it was the heaviest thing I had ever carried.",
+    "description_fr": "La Charte descendit le quai du Mouillage sur une barque de pilote, dans son étui de plomb, un Sourd de l’Enclume assis à un bout et un clerc du Tribunal à l’autre, aucun des deux prêt à perdre l’autre de vue. Les charpentiers d’épaves avaient allumé leurs forges pour la première fois depuis la chute de la flotte, et il leur fallait du fer, et un serment sous lequel forger. La côte allait avoir besoin de beaucoup de lames, pour un ost et pour une guerre. Qui tenait la Charte dirait pour qui on les forgeait. Elle était entre mes mains à présent, que je l’aie demandé ou non. Je l’avais lue deux fois à la lampe en chemin. Ce n’était qu’une feuille de vélin couverte de noms, et c’était la chose la plus lourde que j’aie jamais portée.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "white_anchorage",
+    "choices": [
+      {
+        "text": "Sign it again: the forges go to the Tribunal",
+        "text_fr": "La signer de nouveau : les forges vont au Tribunal",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_charter_choice",
+          "charter_restored"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "broken_charter",
+            "outcome": 0
+          }
+        }
+      },
+      {
+        "text": "Burn it in the Anchorage’s own forge",
+        "text_fr": "La brûler dans la forge même du Mouillage",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_charter_choice",
+          "charter_burned"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "broken_charter",
+            "outcome": 1
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "charter_witnessed",
+        "en": "The forty hands of the Anvil-Deaf were in my tally, counted aloud, and I had signed under them. It was the only part of the Charter I was sure of.",
+        "fr": "Les quarante mains des Sourds de l’Enclume étaient dans mon décompte, comptées à voix haute, et j’avais signé dessous. C’était la seule partie de la Charte dont j’étais sûr."
+      },
+      {
+        "flag": "charter_vote_bent",
+        "en": "I had called the Anvil-Deaf count for the Row. I no longer knew whether the hands had said what I said they did.",
+        "fr": "J’avais annoncé le décompte des Sourds de l’Enclume en faveur de la Rue. Je ne savais plus si les mains avaient dit ce que j’avais dit qu’elles disaient."
+      },
+      {
+        "flag": "charter_case_held",
+        "en": "I had taken the case into my own keeping at the quarry’s edge, and nobody had argued, which told me what they thought of the choice.",
+        "fr": "J’avais pris l’étui sous ma garde au bord de la carrière, et personne n’avait protesté, ce qui m’en disait long sur ce qu’ils pensaient du choix."
       }
     ]
   },
