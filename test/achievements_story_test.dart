@@ -96,6 +96,9 @@ void main() {
         contains('friend_of_four_clans'));
     expect(await newlyFor(withStandings(trustedBy(3))),
         isNot(contains('friend_of_four_clans')));
+    // "Without swearing to any": an oath sworn takes the achievement away.
+    expect(await newlyFor(withStandings(trustedBy(4), sworn: 'dominion')),
+        isNot(contains('friend_of_four_clans')));
     // A friend (19 to 25) is not yet Trusted (26 and up).
     expect(
         await newlyFor(withStandings({

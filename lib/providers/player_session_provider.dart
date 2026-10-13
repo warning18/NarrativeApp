@@ -3798,11 +3798,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
             StandingTier.hunted));
     check(
         'friend_of_four_clans',
-        coastClanIds
-                .where((id) => standingTierFor(politics.standings[id] ?? 0)
-                    .isAtLeast(StandingTier.trusted))
-                .length >=
-            trustedClansForFriend);
+        politics.swornFactionId.isEmpty &&
+            coastClanIds
+                    .where((id) => standingTierFor(politics.standings[id] ?? 0)
+                        .isAtLeast(StandingTier.trusted))
+                    .length >=
+                trustedClansForFriend);
     check('akagiri_found', state.flags.contains(placeFoundFlag('3200')));
     check('kindly_hill_found', state.flags.contains(placeFoundFlag('5200')));
     check('highhearth_found', state.flags.contains(placeFoundFlag('6200')));
