@@ -524,6 +524,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         healAmount: choice.healAmount,
         flagsToAdd: choice.flagsToAdd,
         questIDToProgress: choice.questIDToProgress,
+        materials: choice.grantMaterials,
         approvalMods: choice.approvalMods,
         companions:
             ref.read(gameDbProvider(companionsSchema)).value ?? const {},

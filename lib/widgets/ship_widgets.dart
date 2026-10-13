@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
+import '../data/harbour.dart';
 import '../data/port_helpers.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -219,9 +220,22 @@ Future<bool> sailTo(
   required Map<String, dynamic> toPort,
 }) async {
   final ports = ref.read(localizedDbProvider(portsSchema)).value ?? const {};
-  final fromPortId =
-      currentPortIdFor(ports, ref.read(playerSessionProvider).currentPortId) ??
-          toPortId;
+  // Hauled up at the camp, the Eel waits on her harbour (see harbour.dart);
+  // the way home is never shut.
+  final session = ref.read(playerSessionProvider);
+  if (toPortId != homePortId(ports) &&
+      voyageWaitsOnHarbour(
+          flags: session.flags,
+          builtHouseIds: session.builtHouseIds,
+          gold: session.gold,
+          inventory: session.inventoryItemIds,
+          houses: ref.read(gameDbProvider(housesSchema)).value ?? const {})) {
+    await showImmersiveNotice(context,
+        icon: Icons.anchor, message: tr(ref, 'harbour_needed_to_sail'));
+    return false;
+  }
+  if (!context.mounted) return false;
+  final fromPortId = currentPortIdFor(ports, session.currentPortId) ?? toPortId;
   // Landfall can swap the tab this was called from (the camp gives way to
   // the ship), so nothing here touches [ref] once the voyage is under way.
   final expedition = ref.read(expeditionActiveProvider.notifier);

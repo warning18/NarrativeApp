@@ -803,6 +803,9 @@ void main() {
 
     test('a save with houses but no house flags gets them on load', () {
       final session = PlayerSession.fromJson({
+        // On the current version: an older one is also given the harbour
+        // (see harbour_test.dart).
+        'saveVersion': playerSessionSaveVersion,
         'flags': ['camp_founded'],
         'builtHouseIds': ['keldas_hall', 'hearth_hall'],
       });

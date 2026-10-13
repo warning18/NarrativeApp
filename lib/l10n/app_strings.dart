@@ -2913,9 +2913,38 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'harbour_not_built_body': {
     AppLanguage.en:
-        'Build it in Town ({cost} gold) to fit guns, plates and a sail to the Eel.',
+        'The Eel lies hauled up on the shingle. Build the harbour in Town ({cost}) and she sails again, with guns, plates and a sail to fit.',
     AppLanguage.fr:
-        'Bâtissez-le en Ville ({cost} or) pour armer le Rusty Eel : canons, plaques, voile.',
+        'Le Rusty Eel est hissé sur les galets. Bâtissez le port en Ville ({cost}) et il reprend la mer, avec canons, plaques et voile à monter.',
+  },
+  'crossing_day': {
+    AppLanguage.en: 'Day {n} of {m}',
+    AppLanguage.fr: 'Jour {n} sur {m}',
+  },
+  'crossing_turn_back': {
+    AppLanguage.en: 'Turn back',
+    AppLanguage.fr: 'Rebrousser chemin',
+  },
+  'crossing_arrived': {
+    AppLanguage.en: 'You reach the far side, {n} days on.',
+    AppLanguage.fr: 'Vous atteignez l’autre bout, {n} jours plus tard.',
+  },
+  'crossing_failed': {
+    AppLanguage.en:
+        'The road beats you. You are carried back to where you set out, wounded, {n} days lost.',
+    AppLanguage.fr:
+        'La route a raison de vous. On vous ramène là d’où vous êtes parti, blessé, {n} jours perdus.',
+  },
+  'crossing_turned_back': {
+    AppLanguage.en: 'You turn back to where you set out, {n} days lost.',
+    AppLanguage.fr:
+        'Vous rebroussez chemin jusqu’à votre point de départ, {n} jours perdus.',
+  },
+  'harbour_needed_to_sail': {
+    AppLanguage.en:
+        'The Eel is hauled up at the camp. Build the harbour in Town before she can sail.',
+    AppLanguage.fr:
+        'Le Rusty Eel est hissé au camp. Bâtissez le port en Ville avant qu\'il puisse prendre la mer.',
   },
   'harbour_built_body': {
     AppLanguage.en: 'Refit the Eel: parts for her slots.',
@@ -2926,6 +2955,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Next: what the chapter\'s main quest still needs. Tap a place to find it on the Road.',
     AppLanguage.fr:
         'Ensuite : ce qu\'il manque à la quête principale du chapitre. Touchez un lieu pour le trouver sur la Route.',
+  },
+  'tut_camp_harbour': {
+    AppLanguage.en:
+        'First, the harbour. The wreck’s timber and the burned wall’s stone are set aside: that is what it costs. Until the quay stands, the Eel cannot put to sea.',
+    AppLanguage.fr:
+        'D’abord, le port. Le bois de l’épave et la pierre du mur brûlé sont mis de côté\u00a0: voilà ce qu’il coûte. Tant que le quai n’est pas debout, le Rusty Eel ne peut pas reprendre la mer.',
   },
   'tut_camp_6': {
     AppLanguage.en:
@@ -6160,6 +6195,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Harbor',
     AppLanguage.fr: 'Le port',
   },
+  'tut_landCrossing_title': {
+    AppLanguage.en: 'Land crossings',
+    AppLanguage.fr: 'Traversées par la terre',
+  },
   'tut_voyage_title': {
     AppLanguage.en: 'Voyages',
     AppLanguage.fr: 'Traversées',
@@ -6577,6 +6616,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "Fit the shipwright's parts into her slots to make her stronger for the sea.",
     AppLanguage.fr:
         'Installez les pièces du charpentier dans ses emplacements pour la renforcer en mer.',
+  },
+  'tut_landCrossing_1': {
+    AppLanguage.en:
+        'A long road is crossed a day at a time, and each day brings something: a storm, a well, a spring, raiders.',
+    AppLanguage.fr:
+        'Une longue route se traverse jour après jour, et chaque jour apporte quelque chose : une tempête, un puits, une source, des pillards.',
+  },
+  'tut_landCrossing_2': {
+    AppLanguage.en:
+        'Your health is what the road wears down. Run out and you are carried back to where you set out, wounded.',
+    AppLanguage.fr:
+        'C’est votre santé que la route use. Si elle s’épuise, on vous ramène à votre point de départ, blessé.',
   },
   'tut_voyage_1': {
     AppLanguage.en:

@@ -42,6 +42,8 @@ enum TutorialTopic {
     TutorialStep('tut_character_4', target: 'character.pages'),
   ]),
   camp(Icons.local_fire_department_outlined, homeTab: 2, steps: [
+    // Before it is built, the harbour comes first (see harbour.dart).
+    TutorialStep('tut_camp_harbour', target: 'camp.harbour', optional: true),
     TutorialStep('tut_camp_0', target: 'camp.next', optional: true),
     TutorialStep('tut_camp_6', target: 'camp.road'),
     TutorialStep('tut_camp_1', target: 'camp.town'),
@@ -122,6 +124,12 @@ enum TutorialTopic {
     TutorialStep('tut_shipBattle_4'),
     TutorialStep('tut_shipBattle_5'),
     TutorialStep('tut_shipBattle_6'),
+  ]),
+  // A land crossing (land_crossing.dart): first met leaving the wreck of
+  // the Lark.
+  landCrossing(Icons.hiking, steps: [
+    TutorialStep('tut_landCrossing_1'),
+    TutorialStep('tut_landCrossing_2', target: 'crossing.health'),
   ]),
   expedition(Icons.explore_outlined, steps: [
     TutorialStep('tut_expedition_1'),
