@@ -38,6 +38,7 @@ class StoryChoice {
     this.launchZoneId,
     this.grantsBannerPieceId,
     this.grantItemId,
+    this.grantMaterials = const {},
     this.loseAllyId,
     this.mainQuest = false,
     this.pays = false,
@@ -103,6 +104,11 @@ class StoryChoice {
       launchZoneId: json['launchZoneId'] as String?,
       grantsBannerPieceId: json['grantsBannerPieceId'] as String?,
       grantItemId: json['grantItemId'] as String?,
+      grantMaterials: (json['grantMaterials'] as Map?)?.map(
+            (id, count) =>
+                MapEntry(id.toString(), (count as num?)?.toInt() ?? 0),
+          ) ??
+          const {},
       loseAllyId: json['loseAllyId'] as String?,
       mainQuest: json['mainQuest'] as bool? ?? false,
       pays: json['pays'] as bool? ?? false,
@@ -321,6 +327,12 @@ class StoryChoice {
   /// on the docks in chapter 1.
   final String? grantItemId;
 
+  /// Materials this choice puts in the pack (materials.dart): item id ->
+  /// how many, as `{"material_timber": 4, "material_cut_stone": 2}`. What
+  /// the story hands over for the camp's works, the harbour first (see
+  /// harbour.dart).
+  final Map<String, int> grantMaterials;
+
   /// How companions in the party react to this choice beyond what its
   /// alignment and gold already say (see approval.dart): companion id -> a
   /// change in approval, `*` for everyone in the party.
@@ -427,6 +439,7 @@ class StoryChoice {
         if (grantsBannerPieceId != null && grantsBannerPieceId!.isNotEmpty)
           'grantsBannerPieceId': grantsBannerPieceId,
         if (grantsItem) 'grantItemId': grantItemId,
+        if (grantsMaterials) 'grantMaterials': grantMaterials,
         if (loseAllyId != null && loseAllyId!.isNotEmpty)
           'loseAllyId': loseAllyId,
         if (mainQuest) 'mainQuest': mainQuest,
@@ -481,12 +494,17 @@ class StoryChoice {
       (questIDToProgress != null && questIDToProgress!.isNotEmpty) ||
       (grantsBannerPieceId != null && grantsBannerPieceId!.isNotEmpty) ||
       grantsItem ||
+      grantsMaterials ||
       (loseAllyId != null && loseAllyId!.isNotEmpty) ||
       approvalMods.isNotEmpty;
 
   /// Whether taking this choice puts an item in the pack (see
   /// [grantItemId]).
   bool get grantsItem => grantItemId != null && grantItemId!.isNotEmpty;
+
+  /// Whether taking this choice puts materials in the pack (see
+  /// [grantMaterials]).
+  bool get grantsMaterials => grantMaterials.values.any((n) => n > 0);
 
   /// Whether a purse of [gold] covers what this choice costs (a [goldMod]
   /// below zero). A payment on the road (an offering, a toll, a fee) is

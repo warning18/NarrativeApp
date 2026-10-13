@@ -14,8 +14,10 @@ import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
 import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
 import '../data/contracts.dart';
+import '../data/camp_state.dart' show harborHouseId;
 import '../data/factions.dart';
 import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
+import '../data/harbour.dart';
 import '../data/journey_rules.dart';
 import '../data/materials.dart';
 import '../data/offers.dart';
@@ -48,7 +50,7 @@ const String unreadableSessionBackupPrefsKey = 'player_session_unreadable';
 /// The save format's version, written into every save. Bump it with a
 /// migration in [PlayerSession.fromJson] whenever a change to the format
 /// needs one; a save without it is version 1.
-const int playerSessionSaveVersion = materialsSaveVersion;
+const int playerSessionSaveVersion = harbourSaveVersion;
 const String _newGameDefaultsAssetPath = 'assets/gamedata/game_config.json';
 const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
 
@@ -1179,6 +1181,7 @@ class PlayerSession {
         ...?(json['flags'] as List?)?.map((e) => e.toString()),
         ...?(json['builtHouseIds'] as List?)
             ?.map((e) => houseFlag(e.toString())),
+        if (legacyHarbourDue(json)) houseFlag(harborHouseId),
       }.toList(),
       activeQuestIds: (json['activeQuestIds'] as List?)
               ?.map((e) => e.toString())
@@ -1339,9 +1342,12 @@ class PlayerSession {
               const [],
       // Saves from before the clans stand where every faction starts.
       politics: PoliticsState.fromJson(json['politics']),
-      builtHouseIds:
-          (json['builtHouseIds'] as List?)?.map((e) => e.toString()).toList() ??
-              const [],
+      builtHouseIds: [
+        ...?(json['builtHouseIds'] as List?)?.map((e) => e.toString()),
+        // A save from before the harbour was the player's to build, past
+        // the camp's founding, has it built (see legacyHarbourDue).
+        if (legacyHarbourDue(json)) harborHouseId,
+      ],
       townOrder:
           (json['townOrder'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -1875,7 +1881,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// detour's cache, an expedition's find), not a deed a companion who
   /// dislikes greed would hold against the player. [origin] (where the
   /// story stands, see itemOriginHere) is remembered for an [itemId] new
-  /// to the pack (see [PlayerSession.itemOrigins]).
+  /// to the pack (see [PlayerSession.itemOrigins]). [materials] (a
+  /// choice's `grantMaterials`) go in the pack too, so many of each.
   Future<List<ApprovalChange>> applyChoiceEffects({
     int goldMod = 0,
     int alignmentMod = 0,
@@ -1884,6 +1891,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? questIDToProgress,
     String? bannerPieceId,
     String? itemId,
+    Map<String, int> materials = const {},
     String? loseAllyId,
     Map<String, int> approvalMods = const {},
     Map<String, dynamic> companions = const {},
@@ -1946,9 +1954,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       questKillBaselines: newKillBaselines,
       trackedQuestId: newTracked,
       bannerPiecesCollected: newBannerPieces,
-      inventoryItemIds: itemId == null || itemId.isEmpty
-          ? state.inventoryItemIds
-          : [...state.inventoryItemIds, itemId],
+      inventoryItemIds: [
+        ...state.inventoryItemIds,
+        if (itemId != null && itemId.isNotEmpty) itemId,
+        for (final MapEntry(key: id, value: count) in materials.entries)
+          for (var i = 0; i < count; i++) id,
+      ],
       itemOrigins: itemId == null || itemId.isEmpty
           ? state.itemOrigins
           : withItemOrigins(state.itemOrigins, [itemId], origin),

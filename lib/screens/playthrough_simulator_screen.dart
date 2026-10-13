@@ -1143,6 +1143,12 @@ _SimResult _simulate(
     // item the scene puts in the pack goes in it.
     if (questLog != null) {
       if (choice.grantsItem) questLog.inventory.add(choice.grantItemId!);
+      for (final MapEntry(key: id, value: count)
+          in choice.grantMaterials.entries) {
+        for (var i = 0; i < count; i++) {
+          questLog.inventory.add(id);
+        }
+      }
       for (final id in [choice.unlockQuestId, choice.questIDToProgress]) {
         if (id != null && id.isNotEmpty) {
           questLog.accept(id,

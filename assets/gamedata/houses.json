@@ -151,7 +151,7 @@
     "houseID": "harbor",
     "houseName": "The Harbor",
     "description": "A stone quay run out from the cove's standing wall, a slipway above the tide line and a shipwright who stayed. Once it stands, the Rusty Eel is refitted here: parts fitted to her slots, her hull made sound between voyages.",
-    "buildCost": 170,
+    "buildCost": 0,
     "materialCost": {
       "material_timber": 4,
       "material_cut_stone": 2

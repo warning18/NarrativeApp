@@ -2913,9 +2913,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'harbour_not_built_body': {
     AppLanguage.en:
-        'Build it in Town ({cost} gold) to fit guns, plates and a sail to the Eel.',
+        'The Eel lies hauled up on the shingle. Build the harbour in Town ({cost}) and she sails again, with guns, plates and a sail to fit.',
     AppLanguage.fr:
-        'Bâtissez-le en Ville ({cost} or) pour armer le Rusty Eel : canons, plaques, voile.',
+        'Le Rusty Eel est hissé sur les galets. Bâtissez le port en Ville ({cost}) et il reprend la mer, avec canons, plaques et voile à monter.',
+  },
+  'harbour_needed_to_sail': {
+    AppLanguage.en:
+        'The Eel is hauled up at the camp. Build the harbour in Town before she can sail.',
+    AppLanguage.fr:
+        'Le Rusty Eel est hissé au camp. Bâtissez le port en Ville avant qu\'il puisse prendre la mer.',
   },
   'harbour_built_body': {
     AppLanguage.en: 'Refit the Eel: parts for her slots.',
@@ -2926,6 +2932,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Next: what the chapter\'s main quest still needs. Tap a place to find it on the Road.',
     AppLanguage.fr:
         'Ensuite : ce qu\'il manque à la quête principale du chapitre. Touchez un lieu pour le trouver sur la Route.',
+  },
+  'tut_camp_harbour': {
+    AppLanguage.en:
+        'First, the harbour: the story has given you what it costs. Until it stands, the Eel cannot sail.',
+    AppLanguage.fr:
+        'D\'abord, le port : l\'histoire vous a donné de quoi le bâtir. Tant qu\'il n\'est pas debout, le Rusty Eel ne peut pas prendre la mer.',
   },
   'tut_camp_6': {
     AppLanguage.en:
