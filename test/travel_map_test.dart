@@ -1,7 +1,6 @@
 // The travel-history map (v1.268): its names are laid out one clear of the
 // next even where the places crowd, it frames the road taken, and a tap
 // says which place and whether it was been to or only heard of.
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
