@@ -8,6 +8,46 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.272.0+308]
+
+The travel-history map's data, for the view UX builds beside the Journey.
+
+### Added
+- **The story world is a chart the game can use.** The story-true world
+  (the cold north, the Waste on the dry belt, Alster's vale) moves from the
+  chart tool into the game as a fourth geography, with the clans' seats, the
+  stone giants and the other places the story names. It is the travel map's
+  own chart and is not offered among the world map's looks.
+- **The party's travels, read from the story.** The places reached in the
+  order first reached, every move between two places with the roads it took
+  and whether by land or sea, the places only heard of (the far ends of known
+  roads, to show as "?"), where the party stands, and the reached places the
+  camp can travel to. All of it comes from the scenes already saved: no new
+  save field, so every save shows its whole journey.
+
+## [1.271.0+307]
+
+The Broken Charter is played end to end.
+
+### Added
+- **Five scenes for `broken_charter`, the last intrigue still short.**
+  Compact-stamped blades on Inquisition belts at the wharf
+  (`2015_dominion_blades`), the Tribunal's purse offered to the Scaffolders
+  on the Spire stair (`3005_tribunal_gold`), the Anvil-Deaf vote in signs on
+  Wrack's End quay (`5100_anvil_deaf_vote`), the Row and the Tribunal
+  meeting at the Rimewell quarry (`6100_charter_signing`) and, at the
+  Anchorage, the Charter signed again or burned (`7100_charter_choice`).
+  Earlier choices are remembered in later scenes, and two new lines at the
+  Herald's battle (`7810`) remember which way the Charter went. The
+  intrigue's stage `chapter` labels now match where the scenes sit, and the
+  Reveal's contact is the Tribunal's last clerk.
+
+### Changed
+- **The three chapter 7 quests read shorter and one notch easier.** Their
+  objectives are "Read the petition", "Read Morrow’s terms" and "Copy the
+  tide table" (the quest strip overflowed at 320 px), and their difficulty
+  shows 13 instead of 14 (display only).
+
 ## [1.270.0+306]
 
 Chapter 5 is no longer the wall.

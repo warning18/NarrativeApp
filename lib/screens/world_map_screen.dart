@@ -521,7 +521,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    for (final option in MapShape.values)
+                    for (final option in mapLookShapes)
                       Semantics(
                         button: true,
                         selected: option == shape,
