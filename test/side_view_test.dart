@@ -13,7 +13,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/land_crossing.dart';
 import 'package:narrative_data_app/screens/land_crossing_screen.dart';
+import 'package:narrative_data_app/combat/ship_battle.dart' show SeaWeather;
+import 'package:narrative_data_app/widgets/sea_battlefield.dart' show SeaWaters;
 import 'package:narrative_data_app/widgets/side_view/desert_kit.dart';
+import 'package:narrative_data_app/widgets/side_view/sea_kit.dart';
 import 'package:narrative_data_app/widgets/side_view/side_view.dart';
 
 Map<String, dynamic> _json(String path) =>
@@ -33,6 +36,24 @@ void main() {
       ));
       await tester.pump(const Duration(milliseconds: 500));
       expect(tester.takeException(), isNull, reason: kind.name);
+    }
+  });
+
+  testWidgets('every waters in every weather paints, with the ship',
+      (tester) async {
+    for (final waters in SeaWaters.values) {
+      for (final weather in SeaWeather.values) {
+        await tester.pumpWidget(MaterialApp(
+          home: SideViewScene(
+            layers: seaLayers(waters, weather),
+            actors: seaShip(lift: waters == SeaWaters.abyss ? 6 : 0),
+            particles: seaParticlesFor(waters, weather),
+          ),
+        ));
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(tester.takeException(), isNull,
+            reason: '${waters.name} ${weather.name}');
+      }
     }
   });
 
