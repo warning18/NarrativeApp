@@ -7,6 +7,8 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/camp_works.dart';
+import 'package:narrative_data_app/l10n/app_locale.dart';
+import 'package:narrative_data_app/l10n/app_strings.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -105,5 +107,18 @@ void main() {
     // Built stays built, whatever the chapter.
     expect(work(works(chapter: 1, built: ['banner_loft']), 'banner_loft').state,
         WorkState.built);
+  });
+
+  test('every section has its name and blurb in both languages', () {
+    for (final category in WorkCategory.values) {
+      for (final key in [
+        'works_category_${category.name}',
+        'works_category_${category.name}_blurb',
+      ]) {
+        for (final lang in AppLanguage.values) {
+          expect(trFor(lang, key), isNot(key), reason: '$key $lang');
+        }
+      }
+    }
   });
 }
