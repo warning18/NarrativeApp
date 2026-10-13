@@ -296,70 +296,99 @@ void main() {
         expect(overflows, isEmpty, reason: overflows.toSet().join('\n'));
       }, skip: skipUntilFixPack);
 
-      testWidgets('camp town: no house title breaks inside a word, $label',
-          (tester) async {
-        SharedPreferences.setMockInitialValues(
-            {if (french) 'app_language': 'fr'});
-        tester.view.physicalSize = size;
-        tester.view.devicePixelRatio = 1;
-        addTearDown(tester.view.reset);
-        final houses =
-            json.decode(File('assets/gamedata/houses.json').readAsStringSync())
-                as Map<String, dynamic>;
-        await tester.pumpWidget(ProviderScope(
-          child: MaterialApp(
-            theme: buildAppTheme(ColorScheme.fromSeed(
-                seedColor: Colors.amber, brightness: Brightness.dark)),
-            home: Scaffold(
-              body: SingleChildScrollView(
-                child: CampTownSection(
-                  houses: houses,
-                  shops: const {},
-                  zones: const {},
-                  achievements: const {},
+      for (final state in const ['bare', 'rich', 'built']) {
+        testWidgets(
+            'camp town: no house title breaks inside a word, $label, $state',
+            (tester) async {
+          SharedPreferences.setMockInitialValues(
+              {if (french) 'app_language': 'fr'});
+          tester.view.physicalSize = size;
+          tester.view.devicePixelRatio = 1;
+          addTearDown(tester.view.reset);
+          final houses = json.decode(
+                  File('assets/gamedata/houses.json').readAsStringSync())
+              as Map<String, dynamic>;
+          await tester.pumpWidget(ProviderScope(
+            child: MaterialApp(
+              theme: buildAppTheme(ColorScheme.fromSeed(
+                  seedColor: Colors.amber, brightness: Brightness.dark)),
+              home: Scaffold(
+                body: SingleChildScrollView(
+                  child: CampTownSection(
+                    houses: houses,
+                    shops: const {},
+                    zones: const {},
+                    achievements: const {},
+                  ),
                 ),
               ),
             ),
-          ),
-        ));
-        await _settle(tester);
-        final broken = <String>[];
-        for (final tab in ['town_tab_houses', 'town_tab_additions']) {
-          await tester.tap(find.byKey(Key(tab)));
-          await tester.pump(const Duration(milliseconds: 300));
-          final cards = find.byWidgetPredicate((w) =>
-              w.key is ValueKey<String> &&
-              (w.key as ValueKey<String>).value.startsWith('town_card_'));
-          for (var i = 0; i < cards.evaluate().length; i++) {
-            final card = cards.at(i);
-            await tester.ensureVisible(card);
-            await tester.pump();
-            // Every Text of the card: each word must fit the line it has.
-            for (final p in find
-                .descendant(of: card, matching: find.byType(RichText))
-                .evaluate()
-                .map((e) => e.renderObject)
-                .whereType<RenderParagraph>()) {
-              final span = p.text;
-              final style = span.style;
-              final text = span.toPlainText();
-              for (final word in text.split(RegExp(r'\s+'))) {
-                if (word.length < 6) continue;
-                final painter = TextPainter(
-                    text: TextSpan(text: word, style: style),
-                    textDirection: TextDirection.ltr,
-                    textScaler: p.textScaler)
-                  ..layout();
-                if (painter.width > p.size.width + 0.5) {
-                  broken.add('"$word" needs ${painter.width.round()} px in '
-                      '${p.size.width.round()} px');
+          ));
+          if (state != 'bare') {
+            // Rich and unlocked, then some built: the cards in the states a
+            // player meets them in (a button, a status chip, a built mark).
+            final container = ProviderScope.containerOf(
+                tester.element(find.byType(CampTownSection)));
+            await tester.runAsync(() => container
+                .read(playerSessionProvider.notifier)
+                .loadSession(PlayerSession.fromJson({
+                  'gold': 9000,
+                  'enemyKillCounts': <String, int>{},
+                  'flags': [
+                    'scaffold_yards_cleared',
+                    'cinder_row_cleared',
+                    'banner_second_piece_lead',
+                    'ossuary_galleries_cleared',
+                    'dead_heart_cleared',
+                  ],
+                  if (state == 'built')
+                    'builtHouseIds': [
+                      'keldas_hall',
+                      'hammersmith',
+                      'academy',
+                      'harbor',
+                    ],
+                })));
+          }
+          await _settle(tester);
+          final broken = <String>[];
+          for (final tab in ['town_tab_houses', 'town_tab_additions']) {
+            await tester.tap(find.byKey(Key(tab)));
+            await tester.pump(const Duration(milliseconds: 300));
+            final cards = find.byWidgetPredicate((w) =>
+                w.key is ValueKey<String> &&
+                (w.key as ValueKey<String>).value.startsWith('town_card_'));
+            for (var i = 0; i < cards.evaluate().length; i++) {
+              final card = cards.at(i);
+              await tester.ensureVisible(card);
+              await tester.pump();
+              // Every Text of the card: each word must fit the line it has.
+              for (final p in find
+                  .descendant(of: card, matching: find.byType(RichText))
+                  .evaluate()
+                  .map((e) => e.renderObject)
+                  .whereType<RenderParagraph>()) {
+                final span = p.text;
+                final style = span.style;
+                final text = span.toPlainText();
+                for (final word in text.split(RegExp(r'\s+'))) {
+                  if (word.length < 6) continue;
+                  final painter = TextPainter(
+                      text: TextSpan(text: word, style: style),
+                      textDirection: TextDirection.ltr,
+                      textScaler: p.textScaler)
+                    ..layout();
+                  if (painter.width > p.size.width + 0.5) {
+                    broken.add('"$word" needs ${painter.width.round()} px in '
+                        '${p.size.width.round()} px');
+                  }
                 }
               }
             }
           }
-        }
-        expect(broken, isEmpty, reason: broken.toSet().join('\n'));
-      }, skip: skipUntilFixPack);
+          expect(broken, isEmpty, reason: broken.toSet().join('\n'));
+        }, skip: skipUntilFixPack);
+      }
     }
   }
 }
