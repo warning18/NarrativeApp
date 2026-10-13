@@ -634,6 +634,7 @@ class _ChoiceEditState {
         grantMaterials: _original.grantMaterials,
         roadEvent: _original.roadEvent,
         shipBattleId: _original.shipBattleId,
+        landRouteId: _original.landRouteId,
         noHeal: _original.noHeal,
         tutorialFight: _original.tutorialFight,
         luckyDieReveal: _original.luckyDieReveal,

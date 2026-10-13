@@ -93,6 +93,8 @@ flutter:
     - assets/gamedata/politics_events.json
     - assets/gamedata/geography.json
     - assets/gamedata/biomes.json
+    - assets/gamedata/land_routes.json
+    - assets/gamedata/land_events.json
     - assets/visuals/items/
     - assets/visuals/skills/
     - assets/visuals/dice/

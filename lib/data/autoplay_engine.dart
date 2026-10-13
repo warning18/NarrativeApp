@@ -10,14 +10,18 @@ import '../combat/face_smithing.dart';
 import '../models/ally_state.dart'
     show equipmentBonusFor, equipmentScalingBonusFor;
 import '../models/story_node.dart';
+import 'ability_check.dart' show abilityModifierFor;
 import 'autoplay_build.dart';
 import 'camp_state.dart' show harborHouseId;
 import 'harbour.dart' show harbourAwaited;
+import 'journey_rules.dart' show watchesPerDay;
+import 'land_crossing.dart';
 import 'item_origin_here.dart';
 import 'materials.dart' show materialCountsOf;
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/clans_provider.dart' show loadClanData;
-import '../gamedata/db_schema.dart' show housesSchema, shopsSchema;
+import '../gamedata/db_schema.dart'
+    show housesSchema, landEventsSchema, landRoutesSchema, shopsSchema;
 import '../providers/game_db_providers.dart' show gameDbRepositoryProvider;
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
@@ -513,6 +517,8 @@ Future<AutoplayResult> autoplayToNode(
       }
     }
 
+    await _crossLand(ref, choice, random);
+
     if (choice.hasEffects) {
       await sessionNotifier.applyChoiceEffects(
         goldMod: choice.goldMod,
@@ -750,6 +756,43 @@ Future<void> applyAutoplayBuild(
   }
 }
 
+/// How many times a walk sets out on a land route it lost before it is
+/// let through (see [_crossLand]).
+const int _crossingTries = 3;
+
+/// A land route [choice] crosses (see land_crossing.dart), played without
+/// a player: each lost crossing carries the party back to set out again,
+/// up to [_crossingTries] times, after which the walk goes on regardless
+/// (a testing tool is never stopped on the road).
+Future<void> _crossLand(
+    WidgetRef ref, StoryChoice choice, Random random) async {
+  if (!choice.crossesLand) return;
+  final routes =
+      await ref.read(gameDbRepositoryProvider(landRoutesSchema)).loadRecords();
+  final route = landRouteFor(routes, choice.landRouteId!);
+  if (route == null) return;
+  final events = landEventsFrom(
+      await ref.read(gameDbRepositoryProvider(landEventsSchema)).loadRecords());
+  final notifier = ref.read(playerSessionProvider.notifier);
+  final chapter = ref.read(reachedChapterProvider);
+  for (var i = 0; i < _crossingTries; i++) {
+    final session = ref.read(playerSessionProvider);
+    final result = resolveCrossing(route, events,
+        health: session.currentHealth,
+        maxHealth: session.maxHealth,
+        gold: session.gold,
+        modifierFor: (ability) => abilityModifierFor(ability, session),
+        random: random,
+        chapter: chapter);
+    await notifier.applyChoiceEffects(
+        goldMod: result.gold,
+        healAmount: result.health - session.currentHealth,
+        goldIsProfit: false);
+    await notifier.passTime(watchesPerDay * result.days, chapter: chapter);
+    if (result.arrived) return;
+  }
+}
+
 /// One walk of [autoplayToChapter]. With [forceWins], a fight still lost
 /// after [maxCombatRetries] is won anyway.
 Future<AutoplayResult> _playTowardChapter(
@@ -922,6 +965,8 @@ Future<AutoplayResult> _playTowardChapter(
         }
       }
     }
+
+    await _crossLand(ref, choice, random);
 
     if (choice.hasEffects) {
       await sessionNotifier.applyChoiceEffects(

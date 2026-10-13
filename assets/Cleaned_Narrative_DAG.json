@@ -2042,6 +2042,7 @@
         "text": "Bury what’s left of the crew",
         "text_fr": "Enterrer ce qui reste de l’équipage",
         "next_id": "1120",
+        "landRouteId": "crash_to_sleeper",
         "alignmentMod": 1,
         "healAmount": -5,
         "flagsToAdd": [
@@ -2052,6 +2053,7 @@
         "text": "Follow the sledge tracks a while",
         "text_fr": "Suivre un moment les traces de traîneaux",
         "next_id": "1120",
+        "landRouteId": "crash_to_sleeper",
         "flagsToAdd": [
           "tracks_followed"
         ]
@@ -2103,6 +2105,7 @@
         "text": "Take what the looters left behind",
         "text_fr": "Ramasser ce que les pillards ont laissé",
         "next_id": "1120",
+        "landRouteId": "crash_to_sleeper",
         "goldMod": 30,
         "flagsToAdd": [
           "tear_touched"
@@ -2112,6 +2115,7 @@
         "text": "Take only a healer’s satchel from the sand",
         "text_fr": "Ne prendre dans le sable que la sacoche d’un guérisseur",
         "next_id": "1120",
+        "landRouteId": "crash_to_sleeper",
         "healAmount": 15,
         "flagsToAdd": [
           "tear_touched"
@@ -2121,6 +2125,7 @@
         "text": "Leave it all and go",
         "text_fr": "Tout laisser et partir",
         "next_id": "1120",
+        "landRouteId": "crash_to_sleeper",
         "flagsToAdd": [
           "tear_refused"
         ]
@@ -2142,6 +2147,7 @@
         "text": "Walk on",
         "text_fr": "Reprendre la marche",
         "next_id": "1120",
+        "landRouteId": "crash_to_sleeper",
         "healAmount": -10,
         "flagsToAdd": [
           "void_marked"

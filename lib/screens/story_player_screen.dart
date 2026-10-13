@@ -88,6 +88,7 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'expedition_screen.dart';
 import 'fight_screen.dart';
 import 'journal_screen.dart';
+import 'land_crossing_screen.dart';
 import 'race_profession_screen.dart';
 import 'shop_detail_screen.dart';
 import 'skill_challenge_screen.dart';
@@ -1389,6 +1390,18 @@ Future<void> _selectChoice({
       }
       return;
     }
+  }
+
+  // A long land route the choice crosses (v1.285.0, see
+  // land_crossing.dart): played on its own screen before the choice takes
+  // the story on; lost or turned back from, the party is where it set out
+  // and the choice is not taken. Edit Mode walks past it.
+  if (choice.crossesLand &&
+      !isExcursion &&
+      ref.read(appModeProvider) != AppMode.edit) {
+    if (!context.mounted) return;
+    final arrived = await runLandCrossing(context, ref, choice.landRouteId!);
+    if (!arrived) return;
   }
 
   final playNotifier = ref.read(storyPlayProvider.notifier);

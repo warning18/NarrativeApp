@@ -3521,6 +3521,75 @@ final DbSchema biomesSchema = DbSchema(
   ],
 );
 
+/// Land expeditions' routes (land_crossing.dart): a long land route
+/// played like a voyage, an event a day.
+final DbSchema landRoutesSchema = DbSchema(
+  id: 'land_routes',
+  label: 'Land Routes',
+  assetPath: 'assets/gamedata/land_routes.json',
+  primaryKeyField: 'id',
+  titleField: 'name',
+  fields: [
+    FieldSchema(key: 'id', label: 'Route ID', type: FieldType.text),
+    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(
+        key: 'from',
+        label: 'From (a world_roads.dart place id)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'to',
+        label: 'To (a world_roads.dart place id)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'roads',
+        label: 'Roads (world_roads.dart ids, in order)',
+        type: FieldType.stringList),
+    FieldSchema(
+        key: 'days',
+        label: 'Days (an event a day)',
+        type: FieldType.integer,
+        defaultValue: 3),
+    FieldSchema(key: 'biome', label: 'Biome', type: FieldType.text),
+    FieldSchema(
+        key: 'chapter',
+        label: 'Chapter (its checks are one harder a chapter after the first)',
+        type: FieldType.integer,
+        defaultValue: 1),
+    FieldSchema(
+      key: 'events',
+      label: 'Events {land event id: draw weight}',
+      type: FieldType.json,
+    ),
+  ],
+);
+
+/// Land expeditions' events (land_crossing.dart): what the party meets on
+/// a crossing, and what each way through costs or gives in health (a
+/// percent of the party's maximum), gold and days.
+final DbSchema landEventsSchema = DbSchema(
+  id: 'land_events',
+  label: 'Land Events',
+  assetPath: 'assets/gamedata/land_events.json',
+  primaryKeyField: 'id',
+  titleField: 'name',
+  fields: [
+    FieldSchema(key: 'id', label: 'Event ID', type: FieldType.text),
+    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(key: 'text', label: 'Text', type: FieldType.multilineText),
+    FieldSchema(
+        key: 'text_fr', label: 'Text (FR)', type: FieldType.multilineText),
+    FieldSchema(
+      key: 'choices',
+      label:
+          'Choices [{id, text, text_fr, check, dc, outcome | success, fail}]',
+      type: FieldType.json,
+      help: 'An outcome is {healthPct, gold, days, note, note_fr}.',
+    ),
+  ],
+);
+
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
   itemSetsSchema,
@@ -3557,4 +3626,6 @@ final List<DbSchema> gameDbSchemas = [
   politicsEventsSchema,
   geographySchema,
   biomesSchema,
+  landRoutesSchema,
+  landEventsSchema,
 ];
