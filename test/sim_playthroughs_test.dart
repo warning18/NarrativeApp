@@ -111,6 +111,17 @@ void main() {
             },
             'enemies': r.enemiesFought,
             'enemiesLost': r.enemiesLost,
+            'enemiesByChapter': {
+              for (final c in r.enemiesByChapter.entries)
+                c.key: {
+                  for (final e in c.value.entries)
+                    e.key: {'fought': e.value.fought, 'lost': e.value.lost},
+                },
+            },
+            'arrivals': {
+              for (final a in r.arrivals.entries)
+                '${a.key}': {'level': a.value.level, 'gold': a.value.gold},
+            },
             'questRecords': [
               for (final q in r.questRecords)
                 {

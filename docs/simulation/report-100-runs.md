@@ -1,28 +1,52 @@
-# Simulation report: 100 playthroughs (v1.256.0)
+# Simulation report: 100 playthroughs (chapter 5 softened, VERSION)
 
-Regenerated on `main` at v1.256.0 (702df94), docs only: no game or balance number was touched. The previous run was v1.228.0; this one is the same plan (see "How it was run") on the current game and the current simulator. The batches were first run on v1.254.0 and run again on v1.256.0: the output is identical (v1.255.0 reworded story text, v1.256.0 changed the Journey map; neither touches what the simulator plays).
+Regenerated after the chapter 5 tuning of VERSION. QA's L3 of 1.264.0 (`docs/qa/l3-1.264.0.md`) found chapter 5 to be the wall: 21% attempt win and the most failed attempts of any chapter. This release changes numbers only, and only for chapter 5's enemies (`assets/gamedata/enemies.json`). Every batch below was run twice on the same seeds, once on `main` at 1.267.0 and once with the change: the 100-run batch (seed 7) and the 800-run check (seeds 11 and 23).
 
-## 0. Compared with v1.228.0
+## 0. Chapter 5, before and after
 
-| measure (100 runs, seed 7) | v1.228.0 | now (v1.256.0) |
+**Why chapter 5 was the wall.** No single fight caused it; attrition did. A won fight keeps its wounds, and only a lost one refills health. In the simulator the character rests only at a new chapter's hub. Chapter 5 has the longest run of fights before that rest (16 to 17 attempts a run), and its ordinary foes were heavies. The void hound, met 3.3 times a run (mostly in pairs), borrowed the legendary player skill `venomous_ambush`: a 56 base hit plus 3 turns of poison on 30% of its turns. No other ordinary enemy hits that hard. The penitents and the Unstitched carried mini-boss health and damage. Characters arrive at level 7.5 with 1 800 gold (chapter 4: 6.3 and 1 350; chapter 6: 8.7 and 2 330), so level and gear were on the normal curve. What I checked and ruled out:
+- removing the ambush alone: 23.7%
+- removing the pack howl alone: 23.0%
+- removing the hound's counter: 21.0%
+- 15% less health on six enemies: 23.5%
+- 15% less damage: 27.0%
+- one fight fewer in the Shroud's Vigil expedition: no change
+
+Damage, not health, decides an attrition chapter.
+
+**What changed** (`enemies.json`; health / damage, then the moves):
+
+| enemy | before | after |
 |---|---|---|
-| ended in a real ending / reached chapter 8 | 100 / 100 | 100 / 100 |
-| attempt win rate | 34% | **39%** (800-run check: 33% before, 37% now) |
-| encounter win rate | 64% | **70%** (800 runs: 64% before, 68% now) |
-| level at the end (mean) | 8.6 | 11.2 |
-| gold at the end (mean) | 2716 | 3418 |
-| chapter 2 / 3 / 4 attempt win | 66% / 34% / 31% | 74% / 41% / 38% |
-| chapter 5 attempt win (the wall) | 18% | **24%** (12.8 failed attempts a run, still the most of any chapter) |
-| chapter 6 / 7 / 8 attempt win | 28% / 14% / 18% | 32% / 19% / 23% |
-| warrior / rogue / ranger attempt win | 25% / 29% / 29% | 27% / 33% / 36% |
-| cleric / mage attempt win | 45% / 45% | 59% / 48% |
-| melee against casters, 800 runs | about 17 points behind (27% against 44%) | **about 16 points behind** (31% against 48%) |
-| scenes no run reached (300 explore and random runs) | 22 of 385 | 15 of 385 (96% reached) |
-| `7002_orders`, `7002_throne` | never reached | **still never reached** |
+| void hound | 155 / 20; venomous ambush 30%, pack howl 25% | 135 / 16; venomous ambush 12%, pack howl 20% |
+| inquisition penitent | 260 / 26 | 220 / 22 |
+| masked penitent | 250 / 25 | 215 / 21 |
+| the Unstitched (`tear_spawn`) | 300 / 28 | 255 / 24 |
+| void archon (the chapter's boss) | 380 / 32; void blast 40%, eclipse 35% | 340 / 27; void blast 30%, eclipse 25% |
 
-How to read it. Much of the rise of about 5 points comes from the simulator, not the game: v1.229.0 made it roll ability checks (the same plan then scored 31%, down from 34%) and v1.230.0 made it play quests, which pay about 700 to 900 gold and 1 000 to 1 200 XP a run (more for the thorough goal) and put the characters at level 10 to 13 instead of 7 to 8 (see `report-quests.md`). The 1.228.0 column is the old simulator; the "now" column has both changes, so the two columns are not a clean before and after for the game's own balance: the v1.230.0 report already measured 35% to 43% with quests on the game as it was then, and the rest of the rise is what the game changed in between (new enemies such as the rime bailiff among them), which I did not separate. What did not move: chapter 5 is still the hardest stretch, the melee classes are still about 16 points behind the casters, the grinding goal still buys almost no odds, and the same bosses are still lost 80% to 96% of the time.
+The void manifestation is unchanged. Cutting it made `boss_balance_test` fail: its level-4 win rate rose to 75%, above the test's 15 to 55% band. The band was not touched.
 
-Not changed in this report: the number of enemies never met (23 of 65), shops opened (5 of 14) and the two unreachable Hollow Shore scenes; see `report-branches.md`.
+**Attempt win by chapter**, before → after:
+
+| batch | C1 | C2 | C3 | C4 | C5 | C6 | C7 | C8 | all |
+|---|---|---|---|---|---|---|---|---|---|
+| 800-run check (seeds 11, 23) | 84% → 84% | 74% → 74% | 40% → 40% | 36% → 36% | **21% → 31%** | 28% → 31% | 15% → 16% | 19% → 21% | 36.7% → 39.9% |
+| 100 runs (seed 7) | 83% → 83% | 72% → 72% | 40% → 40% | 34% → 34% | **21% → 29%** | 29% → 28% | 15% → 14% | 20% → 17% | 36.3% → 37.9% |
+
+Failed attempts per run in chapter 5: 14.1 → 11.1 (800 runs). Chapter 5 now sits between chapter 4 (36%) and chapter 6 (31%), and is no longer the chapter that fails most per fight. It still has the most fights, so it keeps the most failed attempts a run.
+
+**Chapter 5's enemies**, share of encounters lost, before → after:
+
+| enemy | encounters (800 runs) | 800 runs | 100 runs |
+|---|---|---|---|
+| void hound | 2 463 | 60% → 34% | 59% → 39% |
+| inquisition penitent | 459 | 63% → 41% | 67% → 43% |
+| the Unstitched | 368 | 65% → 46% | 71% → 50% |
+| masked penitent | 267 | 63% → 42% | 57% → 42% |
+| void manifestation (unchanged) | 800 | 37% → 35% | 34% → 35% |
+| void archon | 634 | 96% → 86% | 96% → 93% |
+
+**What spread.** Chapters 1 to 4 are identical: same seeds, same rolls, and none of these enemies appears before chapter 5. Chapters 6 to 8 rise by 1 to 3 points over 800 runs, for two reasons. The hounds and penitents also turn up there. And characters now reach chapter 6 at level 9.2 instead of 8.7, because fewer lost attempts leave more XP. In the 100-run batch, chapters 6 to 8 move by −3 to −1 points; that is seed noise in small samples, as the L3 report explains. Every profession gains in the 800-run check: cleric 47% → 52%, mage 45% → 49%, ranger and rogue 33% → 36%, warrior 28% → 31%. The melee gap is unchanged. The archon is still lost 86% of the time, the band every boss of the game sits in (chapter 4's inquisitor 93%, chapter 6's admiral 85%). That is a question about bosses in general, not about chapter 5.
 
 ## How it was run
 
@@ -30,155 +54,150 @@ Harness: `simulatePlaythroughs` in `lib/screens/playthrough_simulator_screen.dar
 
 ```
 SIM_GOALS=random,favorGood,favorEvil,maximizeGold SIM_RUNS=100 SIM_SEED=7   SIM_OUT=runs100.json flutter test test/sim_playthroughs_test.dart
+SIM_GOALS=random,favorGood,favorEvil,maximizeGold SIM_RUNS=400 SIM_SEED=11  SIM_OUT=runs11.json  flutter test test/sim_playthroughs_test.dart
+SIM_GOALS=random,favorGood,favorEvil,maximizeGold SIM_RUNS=400 SIM_SEED=23  SIM_OUT=runs23.json  flutter test test/sim_playthroughs_test.dart
 python3 docs/simulation/make_report.py tables runs100.json     # the tables below
 python3 docs/simulation/make_report.py csv runs100.json > docs/simulation/runs-100.csv
 ```
 
-Seed 7, 100 runs from the first scene to the end, 25 per goal (strategy), professions rotated so every one is played 20 times, race drawn at random. A lost fight is retried up to 3 times, then the walk moves on counting it lost (so reaching the end says nothing about difficulty). "Attempt" = one try at a fight; "encounter" = one fight scene (up to 3 attempts). An 800-run check (seeds 11 and 23, 400 each) gives the same picture; its figures are quoted where they differ by more than 2 points. `make_report.py` only formats the simulator's JSON; the numbers come from the harness.
+Seed 7, 100 runs from the first scene to the end, 25 per goal, professions rotated so each is played 20 times, race drawn at random. A lost fight is retried up to 3 times; then the walk moves on and counts it lost, so reaching the end says nothing about difficulty. An "attempt" is one try at a fight; an "encounter" is one fight scene (up to 3 attempts). The 800-run check plays seeds 11 and 23, 400 runs each. Since this release, the JSON also carries `enemiesByChapter` (encounters fought and lost per enemy in each chapter) and `arrivals` (the level and gold with which each chapter's hub was first reached). Section 0 is built from those. `make_report.py` only formats the simulator's JSON.
 
-What it does **not** cover: the Journey map, the fight lab, ship battles on voyages, the player's real choices of dice faces and loadouts. Quests are played (since v1.230.0) and ability checks are rolled (since v1.229.0), which the v1.228.0 report did not.
+What it does **not** cover: the Journey map, the fight lab, ship battles on voyages, and the player's real choices of dice faces and loadouts. It also does not cover resting at camp in the middle of a chapter, which a player can do and the simulator does not. For an attrition chapter like 5 that makes the simulator harsher than play.
 
 ## 1. Headline
 
-- Ended in a real ending: **100/100** (dead ends: 0, broken links: 0, step cap: 0). All 100 reach chapter 8 and the same ending, "Begin again, changed". 800-run check: 800/800.
-- Fights: 7224 attempts over 4060 encounters (72 attempts and 40.6 encounters per run). **Attempt win rate 39%; encounter win rate 70%** (an encounter is lost after 3 failed attempts). 800-run check: 37% / 68%.
-- Level at the end: mean 11.2, p10/p50/p90 = 8/11/15. Gold at the end: mean 3418 (p10/p50/p90 1911/3091/5378).
-- Runs with no lost encounter: 0%; runs with 5 or more lost attempts: 99%.
+- Ended in a real ending: **100/100** (dead ends: 0, broken links: 0, step cap: 0). All 100 reach chapter 8. 800-run check: 800/800.
+- Fights: 7 359 attempts over 4 071 encounters, 73.6 attempts and 40.7 encounters a run. **Attempt win rate 38%; encounter win rate 69%.** 800-run check: 39.9% and 71% (before: 36.7% and 67%).
+- Level at the end: mean 11.1, p10/p50/p90 = 8/11/15. Gold at the end: mean 3 707 (p10/p50/p90 2 253/3 414/5 495).
 
-## 2. By goal (strategy)
-
-| group | runs | level | gold | alignment | scenes | attempts/run | attempt win | spell casts | quests seen | shops | offers | skills |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| random | 25 | 10.3 | 2914 | 39 | 213 | 64 | 38% | 196 | 11.5 | 1.1 | 24 | 10.8 |
-| favorGood | 25 | 10.8 | 2270 | 84 | 214 | 64 | 40% | 214 | 11.2 | 1.7 | 24 | 9.8 |
-| favorEvil | 25 | 10.9 | 3201 | -48 | 218 | 65 | 40% | 200 | 11.2 | 1.6 | 25 | 10.3 |
-| maximizeGold | 25 | 12.8 | 5289 | 20 | 218 | 95 | 39% | 318 | 12.4 | 0.5 | 30 | 11.8 |
-
-Goal meaning: random picks any open choice; favorGood / favorEvil take the choice that moves alignment up / down; maximizeGold takes the choice that pays most (which also means taking every fight that pays). Alignment no longer sits near 0 for the goals that do not steer it (+20 to +39): quest rewards now move it.
-
-## 3. By profession (20 runs each)
+## 2. By goal
 
 | group | runs | level | gold | alignment | scenes | attempts/run | attempt win | spell casts | quests seen | shops | offers | skills |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| cleric | 20 | 14.2 | 4143 | 45 | 219 | 58 | 59% | 824 | 11.8 | 1.6 | 32 | 12.4 |
-| mage | 20 | 12.3 | 3340 | 18 | 218 | 68 | 48% | 336 | 11.5 | 1.4 | 30 | 11.1 |
-| ranger | 20 | 10.8 | 3341 | 18 | 215 | 75 | 36% | 0 | 11.3 | 1.2 | 24 | 10.9 |
-| rogue | 20 | 10.2 | 3278 | 17 | 214 | 77 | 33% | 0 | 11.8 | 1.1 | 23 | 9.7 |
-| warrior | 20 | 8.4 | 2990 | 22 | 212 | 83 | 27% | 0 | 11.4 | 0.8 | 19 | 9.3 |
+| random | 25 | 10.8 | 2989 | 34 | 214 | 62 | 40% | 234 | 11.9 | 1.2 | 24 | 11.1 |
+| favorGood | 25 | 9.8 | 2722 | 85 | 214 | 68 | 35% | 217 | 12.4 | 0.7 | 22 | 10.5 |
+| favorEvil | 25 | 10.6 | 3583 | -44 | 223 | 69 | 37% | 243 | 12.4 | 1.4 | 24 | 10.2 |
+| maximizeGold | 25 | 13.3 | 5534 | 19 | 218 | 95 | 39% | 327 | 13.0 | 0.6 | 31 | 12.4 |
 
-800-run check, attempt win rate: cleric 50%, mage 45%, ranger 32%, rogue 32%, warrior 29%.
+## 3. By profession
+
+| group | runs | level | gold | alignment | scenes | attempts/run | attempt win | spell casts | quests seen | shops | offers | skills |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| cleric | 20 | 12.6 | 4081 | 40 | 222 | 63 | 49% | 960 | 13.2 | 1.1 | 29 | 12.2 |
+| mage | 20 | 12.4 | 3882 | 10 | 221 | 69 | 48% | 313 | 12.8 | 1.2 | 29 | 11.2 |
+| ranger | 20 | 10.8 | 3627 | 20 | 219 | 77 | 36% | 0 | 12.8 | 0.8 | 24 | 11.8 |
+| rogue | 20 | 11.3 | 3511 | 25 | 214 | 74 | 37% | 2 | 11.9 | 1.0 | 26 | 10.2 |
+| warrior | 20 | 8.5 | 3435 | 25 | 209 | 85 | 24% | 0 | 11.5 | 0.8 | 19 | 9.8 |
 
 ## 4. By race
 
 | group | runs | level | gold | alignment | scenes | attempts/run | attempt win | spell casts | quests seen | shops | offers | skills |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| dwarf | 20 | 11.3 | 3326 | 20 | 213 | 71 | 40% | 226 | 11.2 | 1.1 | 25 | 10.2 |
-| elf | 19 | 11.6 | 3486 | 32 | 218 | 70 | 42% | 153 | 12.6 | 1.3 | 26 | 10.6 |
-| human | 24 | 10.3 | 3430 | 18 | 214 | 79 | 34% | 225 | 11.2 | 1.3 | 24 | 10.1 |
-| orc | 19 | 11.5 | 3322 | 29 | 217 | 68 | 41% | 262 | 11.3 | 1.5 | 27 | 11.4 |
-| voidkin | 18 | 11.5 | 3537 | 23 | 217 | 71 | 42% | 300 | 11.7 | 0.9 | 27 | 11.3 |
-
-800-run check: dwarf 41%, elf 38%, human 35%, orc 35%, voidkin 37% (the 100-run spread of 34% to 42% is mostly noise; the profession gap is not).
+| dwarf | 20 | 11.3 | 3584 | 15 | 223 | 70 | 42% | 221 | 12.8 | 0.8 | 26 | 11.0 |
+| elf | 19 | 11.6 | 3889 | 32 | 217 | 73 | 41% | 181 | 12.8 | 0.9 | 26 | 10.2 |
+| human | 24 | 10.6 | 3875 | 18 | 214 | 81 | 33% | 241 | 12.2 | 0.8 | 25 | 11.5 |
+| orc | 19 | 10.0 | 3176 | 30 | 215 | 71 | 33% | 363 | 11.7 | 1.2 | 23 | 10.4 |
+| voidkin | 18 | 12.3 | 3990 | 24 | 218 | 71 | 43% | 278 | 12.7 | 1.1 | 28 | 12.2 |
 
 ## 5. By chapter
 
 | chapter | runs | encounters | attempts | attempts/run | encounter win | attempt win | failed attempts/run |
 |---|---|---|---|---|---|---|---|
 | Chapter 1 | 100 | 411 | 445 | 4.5 | 90% | 83% | 0.8 |
-| Chapter 2 | 100 | 761 | 995 | 9.9 | 96% | 74% | 2.6 |
-| Chapter 3 | 100 | 482 | 879 | 8.8 | 74% | 41% | 5.2 |
-| Chapter 4 | 100 | 637 | 1175 | 11.8 | 70% | 38% | 7.3 |
-| Chapter 5 | 100 | 776 | 1687 | 16.9 | 52% | 24% | 12.8 |
-| Chapter 6 | 100 | 398 | 797 | 8.0 | 64% | 32% | 5.4 |
-| Chapter 7 | 100 | 167 | 382 | 3.8 | 44% | 19% | 3.1 |
-| Chapter 8 | 100 | 396 | 864 | 8.6 | 49% | 23% | 6.7 |
+| Chapter 2 | 100 | 786 | 1045 | 10.4 | 96% | 72% | 2.9 |
+| Chapter 3 | 100 | 468 | 868 | 8.7 | 73% | 40% | 5.2 |
+| Chapter 4 | 100 | 631 | 1211 | 12.1 | 65% | 34% | 8.0 |
+| Chapter 5 | 100 | 782 | 1606 | 16.1 | 59% | 29% | 11.4 |
+| Chapter 6 | 100 | 419 | 876 | 8.8 | 58% | 28% | 6.3 |
+| Chapter 7 | 100 | 162 | 405 | 4.0 | 34% | 14% | 3.5 |
+| Chapter 8 | 100 | 384 | 903 | 9.0 | 41% | 17% | 7.5 |
 
 Chapter by goal (attempt win / attempts per run):
 
 | strategy | C1 | C2 | C3 | C4 | C5 | C6 | C7 | C8 |
 |---|---|---|---|---|---|---|---|---|
-| random | 90% / 3 | 72% / 9 | 44% / 8 | 40% / 10 | 20% / 14 | 34% / 8 | 15% / 4 | 20% / 8 |
-| favorGood | 82% / 5 | 69% / 9 | 39% / 7 | 41% / 11 | 24% / 14 | 35% / 8 | 20% / 3 | 25% / 8 |
-| favorEvil | 84% / 5 | 77% / 8 | 40% / 8 | 38% / 10 | 23% / 16 | 32% / 6 | 23% / 4 | 29% / 8 |
-| maximizeGold | 78% / 5 | 75% / 14 | 40% / 12 | 35% / 17 | 28% / 23 | 28% / 10 | 19% / 5 | 18% / 10 |
+| random | 90% / 3 | 67% / 10 | 43% / 8 | 35% / 9 | 32% / 13 | 36% / 8 | 14% / 4 | 19% / 9 |
+| favorGood | 82% / 5 | 71% / 9 | 42% / 7 | 33% / 11 | 20% / 14 | 18% / 8 | 13% / 4 | 17% / 10 |
+| favorEvil | 84% / 5 | 73% / 9 | 41% / 7 | 32% / 11 | 26% / 17 | 28% / 8 | 15% / 3 | 18% / 9 |
+| maximizeGold | 78% / 5 | 76% / 14 | 35% / 13 | 34% / 17 | 35% / 21 | 28% / 11 | 13% / 5 | 15% / 9 |
 
 Chapter by profession (attempt win):
 
 | profession | C1 | C2 | C3 | C4 | C5 | C6 | C7 | C8 |
 |---|---|---|---|---|---|---|---|---|
-| cleric | 81% | 86% | 71% | 51% | 43% | 68% | 23% | 55% |
-| mage | 84% | 85% | 65% | 47% | 35% | 34% | 43% | 19% |
-| ranger | 73% | 72% | 39% | 33% | 21% | 28% | 19% | 24% |
-| rogue | 86% | 64% | 37% | 35% | 18% | 23% | 11% | 17% |
-| warrior | 92% | 66% | 14% | 28% | 11% | 20% | 9% | 9% |
+| cleric | 81% | 87% | 62% | 49% | 36% | 45% | 7% | 26% |
+| mage | 84% | 85% | 63% | 40% | 46% | 31% | 36% | 17% |
+| ranger | 73% | 63% | 36% | 34% | 25% | 26% | 11% | 19% |
+| rogue | 86% | 67% | 37% | 31% | 33% | 28% | 14% | 15% |
+| warrior | 92% | 67% | 16% | 19% | 10% | 13% | 6% | 12% |
 
 ## 6. Every enemy met (encounter loss = all 3 attempts failed)
 
 | enemy | first chapter | HP | damage | encounters | lost | loss rate |
 |---|---|---|---|---|---|---|
-| hollow_court_inquisitor | 4 | 340 | 33 | 95 | 89 | 94% |
-| void_archon | 5 | 380 | 32 | 77 | 70 | 91% |
-| tear_herald | 8 | 345 | 27 | 100 | 84 | 84% |
-| claimant_vane | 7 | 365 | 33 | 37 | 31 | 84% |
-| claimant_tallis | 7 | 300 | 23 | 29 | 24 | 83% |
-| white_admiral | 6 | 395 | 32 | 87 | 68 | 78% |
-| void_stalker | 3 | 200 | 23 | 42 | 32 | 76% |
-| void_sovereign | 6 | 390 | 30 | 85 | 64 | 75% |
-| bone_warden | 4 | 320 | 30 | 39 | 27 | 69% |
+| rime_bailiff | 5 | 340 | 29 | 3 | 3 | 100% |
+| hollow_court_inquisitor | 4 | 340 | 33 | 94 | 89 | 95% |
+| tear_herald | 8 | 345 | 27 | 100 | 93 | 93% |
+| void_archon | 5 | 340 | 27 | 81 | 75 | 93% |
+| white_admiral | 6 | 395 | 32 | 85 | 75 | 88% |
+| claimant_vane | 7 | 365 | 33 | 32 | 28 | 88% |
+| void_sovereign | 6 | 390 | 30 | 80 | 68 | 85% |
+| claimant_tallis | 7 | 300 | 23 | 28 | 23 | 82% |
+| bone_warden | 4 | 320 | 30 | 37 | 29 | 78% |
+| void_stalker | 3 | 200 | 23 | 45 | 35 | 78% |
+| claimant_morrow | 7 | 390 | 22 | 40 | 30 | 75% |
 | aurel_vane | 1 | 165 | 18 | 31 | 21 | 68% |
-| rime_bailiff | 5 | 340 | 29 | 11 | 7 | 64% |
-| claimant_morrow | 7 | 390 | 22 | 34 | 21 | 62% |
-| masked_penitent | 5 | 250 | 25 | 31 | 19 | 61% |
-| tear_spawn | 5 | 300 | 28 | 44 | 26 | 59% |
-| void_hound | 5 | 155 | 20 | 324 | 172 | 53% |
-| inquisition_penitent | 5 | 260 | 26 | 65 | 33 | 51% |
-| drowned_pilgrim | 5 | 165 | 21 | 89 | 40 | 45% |
-| hollow_reflection | 6 | 180 | 22 | 253 | 87 | 34% |
-| white_soldier | 1 | 80 | 19 | 54 | 18 | 33% |
-| void_manifestation | 5 | 165 | 21 | 100 | 29 | 29% |
-| inquisition_soldier | 2 | 150 | 18 | 251 | 66 | 26% |
-| unmade_knight | 6 | 175 | 23 | 35 | 9 | 26% |
-| inquisition_high_warden | 3 | 170 | 19 | 100 | 24 | 24% |
-| iron_golem | 3 | 180 | 21 | 38 | 9 | 24% |
-| inquisition_auxiliary | 3 | 120 | 14 | 194 | 40 | 21% |
-| catacomb_ghoul | 4 | 145 | 18 | 108 | 22 | 20% |
-| hollow_court_zealot | 4 | 160 | 20 | 123 | 24 | 20% |
-| smuggler_captain | 2 | 135 | 16 | 44 | 6 | 14% |
-| rat_matriarch | 2 | 150 | 18 | 61 | 6 | 10% |
-| bone_sexton | 4 | 150 | 19 | 103 | 9 | 9% |
-| plague_hound | 2 | 130 | 16 | 146 | 6 | 4% |
-| void_wisp | 3 | 121 | 14 | 148 | 5 | 3% |
-| dock_overseer | 2 | 112 | 14 | 116 | 3 | 3% |
-| inquisition_warden | 1 | 111 | 17 | 106 | 1 | 1% |
-| cultist_acolyte | 3 | 100 | 11 | 133 | 1 | 1% |
-| street_bandit | 1 | 78 | 10 | 227 | 1 | 0% |
+| drowned_pilgrim | 5 | 165 | 21 | 102 | 59 | 58% |
+| tear_spawn | 5 | 255 | 24 | 42 | 21 | 50% |
+| hollow_reflection | 6 | 180 | 22 | 252 | 119 | 47% |
+| inquisition_penitent | 5 | 220 | 22 | 71 | 32 | 45% |
+| masked_penitent | 5 | 215 | 21 | 31 | 13 | 42% |
+| void_hound | 5 | 135 | 16 | 340 | 129 | 38% |
+| unmade_knight | 6 | 175 | 23 | 37 | 14 | 38% |
+| white_soldier | 1 | 80 | 19 | 54 | 19 | 35% |
+| void_manifestation | 5 | 165 | 21 | 100 | 35 | 35% |
+| inquisition_soldier | 2 | 150 | 18 | 262 | 81 | 31% |
+| iron_golem | 3 | 180 | 21 | 34 | 10 | 29% |
+| inquisition_high_warden | 3 | 170 | 19 | 100 | 26 | 26% |
+| catacomb_ghoul | 4 | 145 | 18 | 104 | 23 | 22% |
+| bone_sexton | 4 | 150 | 19 | 88 | 19 | 22% |
+| hollow_court_zealot | 4 | 160 | 20 | 113 | 24 | 21% |
+| inquisition_auxiliary | 3 | 120 | 14 | 165 | 33 | 20% |
+| smuggler_captain | 2 | 135 | 16 | 36 | 7 | 19% |
+| rat_matriarch | 2 | 150 | 18 | 100 | 7 | 7% |
+| void_wisp | 3 | 121 | 14 | 159 | 8 | 5% |
+| plague_hound | 2 | 130 | 16 | 141 | 3 | 2% |
+| dock_overseer | 2 | 112 | 14 | 118 | 1 | 1% |
+| cultist_acolyte | 3 | 100 | 11 | 149 | 1 | 1% |
+| harbor_rat | 2 | 62 | 9 | 195 | 1 | 1% |
 | den_bouncer | 1 | 44 | 8 | 36 | 0 | 0% |
 | den_looter | 1 | 44 | 8 | 30 | 0 | 0% |
-| harbor_rat | 2 | 62 | 9 | 215 | 0 | 0% |
-| slum_thug | 1 | 56 | 9 | 99 | 0 | 0% |
+| inquisition_warden | 1 | 111 | 17 | 105 | 0 | 0% |
+| slum_thug | 1 | 56 | 9 | 102 | 0 | 0% |
 | sore_loser | 1 | 44 | 8 | 34 | 0 | 0% |
+| street_bandit | 1 | 78 | 10 | 233 | 0 | 0% |
 | wreck_scavenger | 1 | 85 | 12 | 54 | 0 | 0% |
 
-## 7. Distributions across the 100 runs
+## 7. Distributions across the runs
 
 | measure | min | p10 | median | p90 | max | mean |
 |---|---|---|---|---|---|---|
-| level | 5 | 8 | 11 | 15 | 17 | 11.2 |
-| gold | 1096 | 1911 | 3091 | 5279 | 7017 | 3418.4 |
-| alignment | -70 | -55 | 31 | 87 | 110 | 23.9 |
-| steps | 195 | 205 | 214 | 230 | 260 | 215.7 |
-| unique | 136 | 142 | 149 | 158 | 174 | 149.7 |
-| encounters | 28 | 32 | 38 | 53 | 59 | 40.6 |
-| won | 13 | 18 | 27 | 40 | 47 | 28.3 |
-| lost | 4 | 18 | 42 | 68 | 97 | 43.9 |
-| casts | 0 | 0 | 0 | 740 | 1513 | 232.1 |
-| potions | 3 | 3 | 7 | 13 | 17 | 6.6 |
-| quests | 7 | 9 | 12 | 14 | 18 | 11.6 |
-| shops | 0 | 0 | 1 | 3 | 4 | 1.2 |
-| flags | 116 | 123 | 131 | 140 | 154 | 130.9 |
-| signs | 3 | 6 | 11 | 17 | 21 | 11.1 |
-| offers | 14 | 17 | 26 | 35 | 38 | 25.7 |
-| skills | 4 | 7 | 11 | 14 | 17 | 10.7 |
+| level | 6 | 8 | 11 | 15 | 20 | 11.1 |
+| gold | 1681 | 2299 | 3495 | 5495 | 6974 | 3707.2 |
+| alignment | -74 | -54 | 31 | 84 | 121 | 23.7 |
+| steps | 196 | 202 | 215 | 234 | 262 | 217.2 |
+| unique | 136 | 141 | 151 | 161 | 181 | 150.4 |
+| encounters | 25 | 33 | 38 | 53 | 59 | 40.7 |
+| won | 14 | 17 | 27 | 41 | 56 | 27.9 |
+| lost | 12 | 23 | 43 | 68 | 103 | 45.7 |
+| casts | 0 | 0 | 0 | 929 | 1708 | 255.2 |
+| potions | 3 | 3 | 3 | 11 | 17 | 5.7 |
+| quests | 9 | 10 | 12 | 14 | 21 | 12.4 |
+| shops | 0 | 0 | 1 | 2 | 4 | 1.0 |
+| flags | 115 | 122 | 134 | 147 | 161 | 134.2 |
+| signs | 2 | 6 | 10 | 15 | 24 | 10.4 |
+| offers | 14 | 17 | 24 | 35 | 47 | 25.5 |
+| skills | 5 | 8 | 11 | 14 | 18 | 11.0 |
 
 (`won`/`lost` are attempts won / lost; `steps` scenes walked; `unique` distinct scenes; `signs`, `offers`, `skills`: growth choices taken.)
 
@@ -186,15 +205,15 @@ Chapter by profession (attempt win):
 
 Numbers are the 100-run figures; the 800-run check agrees within 2 points unless noted.
 
-1. **The story is consistent.** 100/100 runs of all four goals and all five professions reach a real ending through chapter 8; no dead end, no broken link, no step cap (also 800/800). `test/sim_playthroughs_test.dart` pins this.
-2. **Fights are still hard, and the wall is still chapter 5.** Overall 39% of attempts are won (v1.228.0: 34%). Chapter 1 is 83%, chapter 2 74%, then 41%, 38%, **24% in chapter 5** (16.9 attempts and 12.8 failed attempts per run, the most of any chapter), 32% in chapter 6, 19% in chapter 7, 23% in chapter 8. Every chapter from 2 on is 4 to 8 points easier than in v1.228.0 (chapter 5: 18% to 24%), but the shape is the same: a wall at chapter 5 and a second trough in chapter 7.
-3. **Melee classes still trail the casters by about 16 points.** Warrior 29%, rogue 32%, ranger 32% against cleric 50% and mage 45% (800 runs; 27% to 36% against 48% to 59% in the 100). The casters also end about 3 levels higher (cleric 12.7 and mage 11.8, against 8.9 to 10.0), and level matters: attempt win rate is 15% at level 5 or less, 25% at 6 to 8, 34% at 9 to 11, 49% at 12 or more (800 runs). So the gap compounds: a class that wins more levels faster. Caveat, as before: the simulator plays spells for casters and a plain dice policy for the others, so part of the gap is the policy; it still says melee classes have no comparable engine in the sim. The warrior's chapter 3 (14%), chapter 5 (11%) and chapters 7 and 8 (9%) are the lowest cells of the table.
-4. **Grinding raises level, barely odds.** The maximize-gold goal fights about 50% more (95 attempts a run against 64 to 65), ends at level 12.8 against 10.3 to 10.9 and with 1.7 to 2.3 times the gold, yet wins 39% of attempts against 38% to 40% (800 runs: 37% against 36% to 38%). Two levels buy nothing measurable.
-5. **Nine enemies are nearly unbeatable for this character** (share of encounters lost, 800 runs): void archon 96%, hollow court inquisitor 92%, claimant Vane 87%, tear herald 87%, rime bailiff 85% (26 encounters; new since v1.228.0), claimant Tallis 84%, void sovereign 84%, white admiral 82%, bone warden 82%. They are bosses and mini-bosses, so some of that is meant; but the hollow court inquisitor and bone warden are chapter 4 fights, the void stalker (chapter 3) is lost 72% of the time, and the void hound, an ordinary chapter 5 enemy met 3 times a run, is lost 58% of the time (2 633 encounters).
-6. **Easy enemies are trivial.** Wreck scavenger, sore loser, den looter and den bouncer: 0 losses in 260 to 446 encounters each (800 runs); harbor rat 4 losses in 1 631, slum thug 6 in 1 004, street bandit 9 in 1 736.
-7. **Gold is not spent.** A run ends with 3 100 gold in the median (p90 5 400) and visits 1.2 shops; the late gold sinks exist but the simulated character does not use them, so this measures the simulator's policy as much as the economy.
-8. **Alignment goals work.** Favor good ends at +84, favor evil at -48, the others at +20 to +39; the endings do not differ (one ending).
+1. **The story is consistent.** All 100 runs reach a real ending through chapter 8: all four goals and all five professions, with no dead end, no broken link and no step cap (also 800/800). `test/sim_playthroughs_test.dart` pins this.
+2. **Chapter 5 is no longer the wall.** Attempt win by chapter is 83%, 72%, 40%, 34%, **29%**, 28%, 14%, 17% (800 runs: 84%, 74%, 40%, 36%, **31%**, 31%, 16%, 21%). The curve now falls steadily from chapter 3 to chapter 6. The trough is chapters 7 and 8, where the claimants and the tear herald are fought. Chapter 5 is still the longest chapter (16 attempts a run), so it still has the most failed attempts a run (11.4).
+3. **Melee classes still trail the casters by about 15 points.** Warrior 31%, rogue 36%, ranger 36%, against cleric 52% and mage 49% (800 runs). The warrior's chapter 5 is 10% in the 100-run batch (19% over 800 runs), still the lowest cell after chapters 7 and 8. The caveat of earlier reports holds: the simulator plays spells for the casters and a plain dice policy for the others.
+4. **Grinding raises level, barely odds.** The maximize-gold goal fights about 40% more (95 attempts a run against 62 to 69). It ends at level 13.3 against 9.8 to 10.8, yet wins 39% of attempts against 35% to 40%.
+5. **The bosses are still lost 75% to 93% of the time** (800 runs): the hollow court inquisitor (chapter 4), the void archon (chapter 5: 86%, was 96%), the white admiral and the void sovereign (chapter 6), the claimants (chapter 7) and the tear herald (chapter 8). They are fought after a chapter's worth of wounds. A camp rest before a boss, which the simulator does not take, would move these more than any number.
+6. **Easy enemies are still trivial**: the wreck scavenger, the sore loser and the den looter and bouncer lose nothing.
+7. **Gold is not spent.** A run ends with about 3 400 gold in the median and visits 1 shop. This measures the simulator's policy as much as the economy.
+8. **Alignment goals work.** Favor good ends at +85, favor evil at −44, the others at +19 to +34.
 
 ## 9. Not measured here
 
-The Journey map and fight lab changes, ship battles, and the player's own choices of dice faces and loadouts. A human who reads telegraphs and picks faces will do better than this policy, so treat the absolute rates as a floor and the comparisons between classes, chapters and goals as the signal. Nothing in this report proposes a balance change; what to tune is a decision for after reading it.
+The Journey map and fight lab, ship battles, rest at camp in the middle of a chapter, and the player's own choices of dice faces and loadouts. A human who reads telegraphs, picks faces and rests before a boss will do better than this policy. Treat the absolute rates as a floor; the comparisons between classes, chapters and goals are the signal.
