@@ -2958,9 +2958,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_harbour': {
     AppLanguage.en:
-        'First, the harbour: the story has given you what it costs. Until it stands, the Eel cannot sail.',
+        'First, the harbour. The wreck’s timber and the burned wall’s stone are set aside: that is what it costs. Until the quay stands, the Eel cannot put to sea.',
     AppLanguage.fr:
-        'D\'abord, le port : l\'histoire vous a donné de quoi le bâtir. Tant qu\'il n\'est pas debout, le Rusty Eel ne peut pas prendre la mer.',
+        'D’abord, le port. Le bois de l’épave et la pierre du mur brûlé sont mis de côté\u00a0: voilà ce qu’il coûte. Tant que le quai n’est pas debout, le Rusty Eel ne peut pas reprendre la mer.',
   },
   'tut_camp_6': {
     AppLanguage.en:
