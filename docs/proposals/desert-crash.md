@@ -105,6 +105,49 @@ step on the screen itself is UX's.
 - No name or place beyond the geography already on the chart: the crash,
   the Sleeper's Face, the White Wells, the Lark.
 
+## The second leg: the Sleeper's Face to the White Wells
+
+Core has drafted `sleeper_to_wells` (2 days, desert; route and events on
+`claude/core`). It is the short leg: the party has seen the Face and the
+looters' camp is behind it, and the lights are somewhere ahead. Two days,
+each with one draw, then the Wells.
+
+| Day | Beat | Kind | Feel |
+|---|---|---|---|
+| 1 | an event from the pool (flash flood, water-seller, sandstorm, mirage, shade, scavengers) | draw | relief that the worst is over, and the desert disagreeing |
+| 2 | an event from the pool | draw | the last stretch, the lights |
+| end | the White Wells (`1200`) | story scene | the oasis, as written |
+
+**The looters' camp (`1140`) and the Face (`1130`) are not part of this leg.**
+They belong to the first leg (the wreck to the Face), as scenes the crossing
+keeps; this leg starts after them. If a save is mid-leg, Core's table in
+`land-expeditions.md` still applies.
+
+### The two new events
+
+| Event | What it adds | The line to keep |
+|---|---|---|
+| `flash_flood` | the desert's other danger: too much water, at once, in a dry wadi | the sound before the water ("a sound like a crowd, though there is no crowd and no rain") |
+| `water_seller` | the only person on the road, and he has the one thing everyone wants | his prices go up as you talk; he says the Wells are two days off, as he has said to everyone |
+
+Wording notes (Narrative will finalise once the route is approved): both
+events read well as drafted. The suggested edits are small: the water-seller
+gains one dry line tying him to the Wells (so he is *of* the road, not a
+stranger placed in it), and the French keeps «vous» and the typography the
+lint expects. No change to numbers, ids or checks.
+
+### Moods and places
+
+`desperate` for the flood and the storm, `wry` for the water-seller,
+`uncanny` for the mirage (it ties to the tear's thread if `tear_touched`
+was set at the wreck), `wondrous` for the Wells' lights at the end.
+
+### What the second leg does not need
+
+No new flag: the first leg's flags (`crew_buried`, `tracks_followed`,
+`tear_touched`, `void_marked`) are read there or at the Wells (`1210`).
+No new tutorial text: the screen is introduced once, at the wreck.
+
 ## What this needs from other sessions
 
 - **Core:** `land_routes.json` / `land_events.json` and the engine
