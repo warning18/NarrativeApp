@@ -125,6 +125,12 @@ enum TutorialTopic {
     TutorialStep('tut_shipBattle_5'),
     TutorialStep('tut_shipBattle_6'),
   ]),
+  // A land crossing (land_crossing.dart): first met leaving the wreck of
+  // the Lark.
+  landCrossing(Icons.hiking, steps: [
+    TutorialStep('tut_landCrossing_1'),
+    TutorialStep('tut_landCrossing_2', target: 'crossing.health'),
+  ]),
   expedition(Icons.explore_outlined, steps: [
     TutorialStep('tut_expedition_1'),
     TutorialStep('tut_expedition_2'),

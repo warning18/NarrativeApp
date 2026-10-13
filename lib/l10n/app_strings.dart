@@ -6195,6 +6195,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Harbor',
     AppLanguage.fr: 'Le port',
   },
+  'tut_landCrossing_title': {
+    AppLanguage.en: 'Land crossings',
+    AppLanguage.fr: 'Traversées par la terre',
+  },
   'tut_voyage_title': {
     AppLanguage.en: 'Voyages',
     AppLanguage.fr: 'Traversées',
@@ -6612,6 +6616,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "Fit the shipwright's parts into her slots to make her stronger for the sea.",
     AppLanguage.fr:
         'Installez les pièces du charpentier dans ses emplacements pour la renforcer en mer.',
+  },
+  'tut_landCrossing_1': {
+    AppLanguage.en:
+        'A long road is crossed a day at a time, and each day brings something: a storm, a well, a spring, raiders.',
+    AppLanguage.fr:
+        'Une longue route se traverse jour après jour, et chaque jour apporte quelque chose : une tempête, un puits, une source, des pillards.',
+  },
+  'tut_landCrossing_2': {
+    AppLanguage.en:
+        'Your health is what the road wears down. Run out and you are carried back to where you set out, wounded.',
+    AppLanguage.fr:
+        'C\'est votre santé que la route use. Si elle s\'épuise, on vous ramène à votre point de départ, blessé.',
   },
   'tut_voyage_1': {
     AppLanguage.en:

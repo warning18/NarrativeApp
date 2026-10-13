@@ -12,6 +12,8 @@ import '../l10n/app_strings.dart';
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 
 /// Plays the land route [routeId] (land_routes.json) on its own screen,
 /// the way a voyage plays on the voyage screen: true once the party is on
@@ -234,34 +236,40 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     return PopScope(
       // The crossing is played in one sitting: its end is the way out.
       canPop: done,
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text(widget.route.nameFor(fr)),
-        ),
-        body: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            Text(
-              tr(ref, 'crossing_day')
-                  .replaceAll('{n}', '${min(_day + 1, _drawn.length)}')
-                  .replaceAll('{m}', '${_drawn.length}'),
-              style: theme.textTheme.labelLarge,
-            ),
-            const SizedBox(height: 8),
-            Row(children: [
-              const Icon(Icons.favorite, size: 18),
-              const SizedBox(width: 8),
-              Expanded(
-                child: LinearProgressIndicator(
-                    key: const Key('crossing_health'), value: health),
+      child: TutorialTrigger(
+        topic: TutorialTopic.landCrossing,
+        child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: Text(widget.route.nameFor(fr)),
+          ),
+          body: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              Text(
+                tr(ref, 'crossing_day')
+                    .replaceAll('{n}', '${min(_day + 1, _drawn.length)}')
+                    .replaceAll('{m}', '${_drawn.length}'),
+                style: theme.textTheme.labelLarge,
               ),
-              const SizedBox(width: 8),
-              Text('${session.currentHealth}/${session.maxHealth}'),
-            ]),
-            const SizedBox(height: 16),
-            body,
-          ],
+              const SizedBox(height: 8),
+              TutorialTarget(
+                id: 'crossing.health',
+                child: Row(children: [
+                  const Icon(Icons.favorite, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: LinearProgressIndicator(
+                        key: const Key('crossing_health'), value: health),
+                  ),
+                  const SizedBox(width: 8),
+                  Text('${session.currentHealth}/${session.maxHealth}'),
+                ]),
+              ),
+              const SizedBox(height: 16),
+              body,
+            ],
+          ),
         ),
       ),
     );
