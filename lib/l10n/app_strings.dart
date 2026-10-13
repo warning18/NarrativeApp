@@ -6294,6 +6294,34 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         "Trois onglets. Aperçu est cette page. Dons réunit vos titres, atouts et signes, avec un point rouge quand un choix attend. Pages mène à votre équipement, vos compétences, vos points de niveau et vos dés.",
   },
+  'map_full_title': {
+    AppLanguage.en: 'The map',
+    AppLanguage.fr: 'La carte',
+  },
+  'map_full_open': {
+    AppLanguage.en: 'Full map',
+    AppLanguage.fr: 'Carte entière',
+  },
+  'map_on_map': {
+    AppLanguage.en: 'On the map',
+    AppLanguage.fr: 'Sur la carte',
+  },
+  'map_here': {
+    AppLanguage.en: 'The party is here.',
+    AppLanguage.fr: 'La compagnie est ici.',
+  },
+  'map_travel_here': {
+    AppLanguage.en: 'Travel here',
+    AppLanguage.fr: 'Y aller',
+  },
+  'map_no_road': {
+    AppLanguage.en: 'The party cannot set out for this place from here.',
+    AppLanguage.fr: 'La compagnie ne peut pas partir d’ici pour cet endroit.',
+  },
+  'map_busy': {
+    AppLanguage.en: 'Not while a fight or an expedition is under way.',
+    AppLanguage.fr: 'Pas pendant un combat ou une expédition.',
+  },
   'travel_map_title': {
     AppLanguage.en: 'Where you have been',
     AppLanguage.fr: 'Où vous êtes allé',
