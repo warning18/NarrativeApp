@@ -27,8 +27,11 @@ The owner's intended structure (restated for v1.147):
 Chapters 1 and 2 are a straight road. From chapter 3 the game is not
 linear: each chapter is split between exploring (expeditions, places,
 bosses) and its main quest, which waits until enough has been explored.
-Chapters 7 and 8 are a story campaign again: one main quest each, no
-activity or quest goal (both are 0 in `chapters.json`).
+Chapters 7 and 8 are a story campaign again: one main quest each and no
+activity goal. Chapter 7 has a quest goal of 1: three visitors come to the
+cove (a Reed Gate factor, an Order herald and a pilot's boy from the
+chain-master) and the party sees one of their errands through before it
+can sail. Chapter 8 has no goals (both are 0 in `chapters.json`).
 
 The six pieces of the Shroud, in the order they are won: the heirloom
 (chapter 1, `heirloom_shroud`), the Warden's standard (chapter 3,
@@ -206,8 +209,11 @@ end") are only told in the Intrigues tab: no code reads them.
 
 - **Chapters 7 and 8 have one main quest each** (`q_ch7_lantern_throne`,
   offered at `7400`; `q_ch6_beyond_the_tear`, filed under chapter 8, offered
-  at `7800`) and no side quests. Their activity and quest goals are 0. See
-  `docs/narrative-proposals.md` for the options.
+  at `7800`). Chapter 7 also has three side quests, offered by visitors at
+  the camp (`q_ch7_reed_gate_grievance`, `q_ch7_heralds_errand`,
+  `q_ch7_chain_masters_boy`, scenes `7400_reed*`, `7400_herald*`,
+  `7400_chain*`), and a quest goal of 1; its rewards are placeholders for
+  Core. Chapter 8 stays at 0. See `docs/narrative-proposals.md`.
 - **`broken_charter` is the one intrigue still short**: it has its stage 3
   (`coal_stops`, a politics event) and nothing else. The other seven are
   played end to end (see below).

@@ -11,13 +11,13 @@ against it. The code is `lib/data/quest_objectives.dart` (the rules) and
 
 Every quest in `assets/gamedata/quests.json` carries an `objectives`
 array (the schema is `questsSchema` in `lib/gamedata/db_schema.dart`).
-There are 39 quests and 41 objectives: one quest has three
+There are 43 quests and 45 objectives: one quest has three
 (`q_ch2_leave_saltmouth`), the rest one. Each objective has a `type`:
 
 | Type | Count | Met when |
 |---|---:|---|
 | `Kill` | 24 | the party has beaten `requiredAmount` of the foe in `targetEnemyID` (or of any foe in `targetEnemyIDs`; two objectives use the list). With `countFromAccept: true` (16 objectives, the bounties) only kills made since the quest was taken count; otherwise the lifetime count does. |
-| `Flag` | 13 | a story choice has set `targetFlag`. For beats the story grants directly (taking the heirloom at the hovel) rather than through an item, a kill or a person. |
+| `Flag` | 17 | a story choice has set `targetFlag`. For beats the story grants directly (taking the heirloom at the hovel) rather than through an item, a kill or a person. |
 | `Fetch` | 2 | `targetItemID` is in the party's inventory. The turn-in does not remove it. |
 | `Talk` | 2 | the party has spoken to the person named by `targetNPCID` (`talkedToNpcIds`). A Talk objective without a `targetNPCID` is treated as flavour text and is always met. |
 
