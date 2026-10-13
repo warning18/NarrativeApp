@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/autoplay_build.dart';
 import 'package:narrative_data_app/data/autoplay_engine.dart';
+import 'package:narrative_data_app/data/offers.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 
 const _items = <String, dynamic>{
@@ -236,5 +237,35 @@ void main() {
       expect(slots, containsAll(['Weapon', 'Top', 'Head']),
           reason: '$professionId: ${topUp.items}');
     }
+  });
+
+  testWidgets('the top-up keeps the walk\'s offers and queues none of its own',
+      (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    late WidgetRef ref;
+    await tester.pumpWidget(ProviderScope(
+      child: Consumer(builder: (context, r, _) {
+        ref = r;
+        return const SizedBox.shrink();
+      }),
+    ));
+    await tester.runAsync(() async {
+      ref.read(playerSessionProvider.notifier);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      final walked = PlayerSession.fromJson({
+        'raceId': 'human',
+        'professionId': 'warrior',
+        'level': 2,
+      }).copyWith(pendingOffers: const [OfferTicket(source: OfferSource.boss)]);
+      await ref.read(playerSessionProvider.notifier).loadSession(walked);
+      await applyArrivalTopUp(ref,
+          chapter: 8,
+          items: _items,
+          shops: const {},
+          professions: _professions);
+      final after = ref.read(playerSessionProvider);
+      expect(after.level, 10);
+      expect(after.pendingOffers.map((t) => t.source), [OfferSource.boss]);
+    });
   });
 }
