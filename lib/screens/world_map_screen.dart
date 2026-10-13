@@ -9,6 +9,7 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/chart_map_painter.dart';
+import '../widgets/help_hint.dart';
 import '../widgets/chart_weather.dart';
 import '../widgets/geography_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -633,6 +634,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
             style: TextStyle(
                 fontFamily: InkFonts.display, fontSize: 24, color: tokens.ink),
           ),
+          actions: const [TourInfoButton(topic: TutorialTopic.map)],
         ),
         body: LayoutBuilder(
           builder: (context, constraints) {

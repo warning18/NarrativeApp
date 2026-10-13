@@ -26,6 +26,9 @@ void main() {
         .loadSession(PlayerSession.fromJson({'statPoints': 2})));
     await tester.pump();
 
+    // The guide's ⓘ is in the header (v1.278 help pattern).
+    expect(find.byKey(const Key('help_tour_button')), findsOneWidget);
+
     final before = container.read(playerSessionProvider);
     await tester.tap(find.text('+1 Point').first);
     await tester.runAsync(() => Future<void>.delayed(Duration.zero));

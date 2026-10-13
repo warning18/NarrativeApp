@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/help_hint.dart';
 
 import '../combat/gear_effects.dart';
 import '../combat/dice_faces.dart';
@@ -112,6 +113,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
         appBar: AppBar(
           title: Text(widget.shop['shopName']?.toString() ?? widget.shopId),
           actions: [
+            const TourInfoButton(topic: TutorialTopic.shop),
             const GoldBadge(),
             if (forges && !refuses)
               IconButton(

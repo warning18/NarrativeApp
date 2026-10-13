@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/help_hint.dart';
 
 import '../data/echoes.dart';
 import '../data/journal.dart';
@@ -115,6 +116,7 @@ class JournalScreen extends ConsumerWidget {
         child: Scaffold(
           appBar: AppBar(
             title: Text(tr(ref, 'journal_title')),
+            actions: const [TourInfoButton(topic: TutorialTopic.journal)],
             bottom: TabBar(tabs: [
               Tab(
                   key: const ValueKey('journal_now_tab'),
