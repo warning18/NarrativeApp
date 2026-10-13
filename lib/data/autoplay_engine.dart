@@ -664,13 +664,23 @@ Future<void> applyArrivalTopUp(
   final topUp = planArrivalTopUp(session,
       chapter: chapter, items: items, shops: shops, professions: professions);
   if (topUp.isEmpty) return;
-  await ref.read(playerSessionProvider.notifier).applyCombatResult(
-        hpAfter: session.currentHealth,
-        xpGain: topUp.xp,
-        goldGain: topUp.gold,
-        itemsGained: topUp.items,
-        items: items,
-      );
+  final notifier = ref.read(playerSessionProvider.notifier);
+  await notifier.applyCombatResult(
+    hpAfter: session.currentHealth,
+    xpGain: topUp.xp,
+    goldGain: topUp.gold,
+    itemsGained: topUp.items,
+    items: items,
+  );
+  // The levels' clan offers are the top-up's, not the walk's: a jump to
+  // chapter 8 would otherwise hand back ten offer dialogs in a row. Those
+  // it queued (appended after the walk's own) are dropped; the walk's stay.
+  final after = ref.read(playerSessionProvider);
+  final kept = session.pendingOffers.length;
+  if (after.pendingOffers.length > kept) {
+    await notifier.loadSession(
+        after.copyWith(pendingOffers: after.pendingOffers.sublist(0, kept)));
+  }
 }
 
 /// Applies [planAutoplayBuild]'s build to the live session: the stat

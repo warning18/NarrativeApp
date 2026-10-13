@@ -8,6 +8,24 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.278.0+314]
+
+A jungle on the story world's east land.
+
+### Added
+- **A jungle biome.** The equatorial belt of the story chart's east land is
+  now jungle instead of temperate woods: warm (+3 °C) and wet (moisture
+  0.9), drawn in deep green with dense woods, pools and hills. Its
+  description, six animals, six plants, three weathers and two road hazards
+  (a swollen river, jungle fever) are in English and French, for Narrative
+  to reword. No story road crosses it yet, so its hazards cannot fire.
+
+### Fixed
+- **"Play to chapter" no longer hands back a queue of clan offers.** The
+  arrival top-up's levels each queued an offer, so a jump to chapter 8 opened
+  on ten offer dialogs in a row. The offers those levels queued are dropped;
+  any the walk itself earned stay.
+
 ## [1.277.0+313]
 
 The travel map, and a pack of layout fixes.
