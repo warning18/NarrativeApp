@@ -191,8 +191,15 @@ void main() {
             'gold': 50,
           }));
     });
+    // The scene keeps moving, so the screen never settles: a bounded wait.
+    Future<void> settle() async {
+      for (var i = 0; i < 4; i++) {
+        await tester.pump(const Duration(milliseconds: 150));
+      }
+    }
+
     await tester.tap(find.text('go'));
-    await tester.pumpAndSettle();
+    await settle();
     expect(find.text('Day 1 of ${crash.days}'), findsOneWidget);
     expect(find.byKey(const Key('crossing_health')), findsOneWidget);
 
@@ -206,19 +213,19 @@ void main() {
         await tester.tap(choice.first);
         await Future<void>.delayed(const Duration(milliseconds: 100));
       });
-      await tester.pumpAndSettle();
+      await settle();
       if (day < crash.days - 1) {
         await tester.tap(find.byKey(const Key('crossing_next')));
-        await tester.pumpAndSettle();
+        await settle();
       }
     }
     // Far too much health to lose on a three-day road: the last day ends
     // on the far side.
     await tester.tap(find.byKey(const Key('crossing_next')));
-    await tester.pumpAndSettle();
+    await settle();
     expect(find.textContaining('far side'), findsOneWidget);
     await tester.tap(find.byKey(const Key('crossing_done')));
-    await tester.pumpAndSettle();
+    await settle();
     expect(arrived, isTrue);
   });
 }
