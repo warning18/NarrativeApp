@@ -3772,6 +3772,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Touchez pour voir où il ira'
   },
   'town_need': {AppLanguage.en: 'need', AppLanguage.fr: 'manque'},
+  'town_materials': {AppLanguage.en: 'materials', AppLanguage.fr: 'matériaux'},
   'town_ready': {AppLanguage.en: 'Ready', AppLanguage.fr: 'Prêt'},
   'town_locked': {AppLanguage.en: 'Locked', AppLanguage.fr: 'Verrouillé'},
   'town_built_note': {

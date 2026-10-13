@@ -6,19 +6,9 @@ class ItemIcons {
       'assets/icons/items/${_borrowed[itemId] ?? itemId}.png';
 
   /// Items drawn with another's icon until they have their own: a sea
-  /// beast's trophy as an elite's, the building materials (v1.281.0) as
-  /// the iron ore.
+  /// beast's trophy as an elite's.
   static const Map<String, String> _borrowed = {
     'boss_trophy': 'elite_trophy',
-    'material_ash_steel': 'material_iron_ore',
-    'material_cut_stone': 'material_iron_ore',
-    'material_lantern_brass': 'material_iron_ore',
-    'material_rime_crystal': 'material_iron_ore',
-    'material_shroud_thread': 'material_iron_ore',
-    'material_slag_glass': 'material_iron_ore',
-    'material_tear_glass': 'material_iron_ore',
-    'material_timber': 'material_iron_ore',
-    'material_white_fleet_oak': 'material_iron_ore',
   };
 
   static const List<String> allIds = [
