@@ -2,9 +2,13 @@
 // to the profession's stat, the best carried gear the player may wear, the
 // best skills on the die within the rarity limits, and the same build for
 // the same session every time.
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/autoplay_build.dart';
+import 'package:narrative_data_app/data/autoplay_engine.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 
 const _items = <String, dynamic>{
@@ -111,5 +115,34 @@ void main() {
     final b = _plan(_session());
     expect(a.equip, b.equip);
     expect(a.faceAssignments, b.faceAssignments);
+  });
+
+  testWidgets('the build is applied to the live session', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    late WidgetRef ref;
+    await tester.pumpWidget(ProviderScope(
+      child: Consumer(builder: (context, r, _) {
+        ref = r;
+        return const SizedBox.shrink();
+      }),
+    ));
+    await tester.runAsync(() async {
+      // Let the notifier's own first load finish before seeding the session.
+      ref.read(playerSessionProvider.notifier);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      await ref.read(playerSessionProvider.notifier).loadSession(_session());
+      await applyAutoplayBuild(ref,
+          items: _items,
+          skills: _skills,
+          dice: _dice,
+          professions: _professions);
+      final after = ref.read(playerSessionProvider);
+      expect(after.statPoints, 0);
+      expect(after.strength, 12);
+      expect(after.equippedItemIds, containsAll(['giant_maul', 'chain']));
+      expect(after.equippedItemIds, isNot(contains('rusty_sword')));
+      expect(after.diceSkillAssignments['test_die'],
+          {'1': 'channel', '2': 'doom', '3': 'cleave', '4': 'cleave'});
+    });
   });
 }
