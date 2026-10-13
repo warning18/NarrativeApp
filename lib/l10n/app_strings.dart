@@ -10633,9 +10633,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The clans come to you',
     AppLanguage.fr: 'Les clans viennent à vous',
   },
-  'offer_hold_hint': {
-    AppLanguage.en: 'Press and hold a flag to read it.',
-    AppLanguage.fr: 'Appuyez longuement sur un drapeau pour le lire.',
+  'chest_skip_hint': {
+    AppLanguage.en: 'Tap to skip',
+    AppLanguage.fr: 'Toucher pour passer',
+  },
+  'offer_select_hint': {
+    AppLanguage.en: 'Select a banner to see its details.',
+    AppLanguage.fr: 'Choisissez une bannière pour voir son détail.',
   },
   'offer_hint': {
     AppLanguage.en: 'Take one gift: the one you take is a side chosen.',
@@ -10804,11 +10808,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Offers',
     AppLanguage.fr: 'Offres',
   },
-  'offers_none': {
+  'offers_where_from': {
     AppLanguage.en:
-        'No offer waiting. Each level, boss beaten, chapter and Tome of Mastery brings one.',
+        'Each level, boss beaten, chapter and Tome of Mastery brings an offer.',
     AppLanguage.fr:
-        'Aucune offre en attente. Chaque niveau, boss vaincu, chapitre et Tome de maîtrise en apporte une.',
+        'Chaque niveau, boss vaincu, chapitre et Tome de maîtrise apporte une offre.',
   },
   'offer_open_button': {
     AppLanguage.en: 'Choose a gift',
@@ -10865,7 +10869,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'titles_chip_hint': {
     AppLanguage.en: 'Tap to wear · hold to read',
-    AppLanguage.fr: 'Toucher : porter · maintenir : lire',
+    AppLanguage.fr: 'Toucher\u00a0: porter · maintenir\u00a0: lire',
   },
   'gifts_none_short': {
     AppLanguage.en: 'None yet',

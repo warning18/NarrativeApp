@@ -4,6 +4,12 @@
 // side that shows turns the cube to it; a double tap on a side acts on it
 // (the loadout opens its skill picker). The cube is six flat faces in 3D
 // like the fight's, so what is drawn on them is the same widgets.
+//
+// It turns on the screen's axes (v1.267): a drag across turns it about the
+// upright and a drag down tips it, whichever side is in front, so from the
+// top or the bottom it still goes to a side. It used to keep a yaw about its
+// own upright and a tip, and from the top or bottom a drag across only spun
+// it in place.
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -50,6 +56,63 @@ double _wrap(double a) {
   return (t < 0 ? t + 2 * math.pi : t) - math.pi;
 }
 
+/// The turn that stands side [slot] in front, upright.
+Matrix4 diePose(int slot) {
+  final (rx, ry) = dieFrontAngles(slot);
+  return Matrix4.identity()
+    ..rotateX(rx)
+    ..rotateY(ry);
+}
+
+/// The side of the cube nearest the viewer for a cube turned by [model].
+int dieFrontSlotOf(Matrix4 model) {
+  var best = 0;
+  var nearest = double.infinity;
+  for (var slot = 0; slot < 6; slot++) {
+    final depth = CubeFacePlacement.of(slot, model, 1).depth;
+    if (depth < nearest) {
+      nearest = depth;
+      best = slot;
+    }
+  }
+  return best;
+}
+
+/// The turn of [angle] about the unit axis (x, y, z).
+Matrix4 _axisAngle(double x, double y, double z, double angle) {
+  final c = math.cos(angle);
+  final s = math.sin(angle);
+  final t = 1 - c;
+  return Matrix4(
+    t * x * x + c, t * x * y + s * z, t * x * z - s * y, 0, //
+    t * x * y - s * z, t * y * y + c, t * y * z + s * x, 0, //
+    t * x * z + s * y, t * y * z - s * x, t * z * z + c, 0, //
+    0, 0, 0, 1,
+  );
+}
+
+/// The axis and angle of the turn [from] -> [to] (both rotations), the short
+/// way round.
+(double, double, double, double) _between(Matrix4 from, Matrix4 to) {
+  final d = to.multiplied(from.transposed());
+  final cosine = ((d.entry(0, 0) + d.entry(1, 1) + d.entry(2, 2) - 1) / 2)
+      .clamp(-1.0, 1.0);
+  final angle = math.acos(cosine);
+  if (angle < 1e-6) return (0, 1, 0, 0);
+  var ax = d.entry(2, 1) - d.entry(1, 2);
+  var ay = d.entry(0, 2) - d.entry(2, 0);
+  var az = d.entry(1, 0) - d.entry(0, 1);
+  var length = math.sqrt(ax * ax + ay * ay + az * az);
+  if (length < 1e-6) {
+    // A half turn: the axis is the one the matrix keeps.
+    ax = math.sqrt(math.max(0.0, (d.entry(0, 0) + 1) / 2));
+    ay = math.sqrt(math.max(0.0, (d.entry(1, 1) + 1) / 2));
+    az = math.sqrt(math.max(0.0, (d.entry(2, 2) + 1) / 2));
+    length = math.sqrt(ax * ax + ay * ay + az * az);
+  }
+  return (ax / length, ay / length, az / length, angle);
+}
+
 class InteractiveDie extends StatefulWidget {
   const InteractiveDie({
     super.key,
@@ -87,31 +150,24 @@ class InteractiveDie extends StatefulWidget {
 
 class _InteractiveDieState extends State<InteractiveDie>
     with SingleTickerProviderStateMixin {
-  late double _rx;
-  late double _ry;
+  /// How the cube is turned now (a rotation).
+  late Matrix4 _m = diePose(widget.selected);
   late final AnimationController _turn = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 280));
-  late double _fromX = _rx;
-  late double _fromY = _ry;
-  late double _toX = _rx;
-  late double _toY = _ry;
+
+  /// Where the turn in progress started and ends.
+  late Matrix4 _from = _m;
+  late Matrix4 _to = _m;
   bool _dragging = false;
   int? _doubleTapAt;
 
   @override
   void initState() {
     super.initState();
-    final (rx, ry) = dieFrontAngles(widget.selected);
-    _rx = rx;
-    _ry = ry;
-    _fromX = _toX = _rx;
-    _fromY = _toY = _ry;
     _turn.addListener(() {
       final e = Curves.easeOutCubic.transform(_turn.value);
-      setState(() {
-        _rx = _fromX + (_toX - _fromX) * e;
-        _ry = _fromY + (_toY - _fromY) * e;
-      });
+      final (x, y, z, angle) = _between(_from, _to);
+      setState(() => _m = _axisAngle(x, y, z, angle * e).multiplied(_from));
     });
   }
 
@@ -121,7 +177,7 @@ class _InteractiveDieState extends State<InteractiveDie>
     // Told from outside to stand another side in front.
     if (old.selected != widget.selected &&
         !_dragging &&
-        dieFrontSlot(_toX, _toY) != widget.selected) {
+        dieFrontSlotOf(_to) != widget.selected) {
       _turnTo(widget.selected);
     }
   }
@@ -134,31 +190,22 @@ class _InteractiveDieState extends State<InteractiveDie>
 
   /// Turns the cube, the short way round, to put [slot] in front.
   void _turnTo(int slot) {
-    final (tx, ty) = dieFrontAngles(slot);
-    _fromX = _rx;
-    _fromY = _ry;
-    _toX = tx;
-    // The yaw ends on the multiple of a full turn nearest to where it is.
-    _toY = _ry + _wrap(ty - _ry);
+    _from = _m;
+    _to = diePose(slot);
     if (widget.still) {
-      setState(() {
-        _rx = _toX;
-        _ry = _toY;
-      });
+      setState(() => _m = _to);
       return;
     }
     _turn.forward(from: 0);
   }
 
   void _settle() {
-    final slot = dieFrontSlot(_rx, _ry);
+    final slot = dieFrontSlotOf(_m);
     _turnTo(slot);
     if (slot != widget.selected) widget.onSelect(slot);
   }
 
-  Matrix4 get _model => Matrix4.identity()
-    ..rotateX(_rx)
-    ..rotateY(_ry);
+  Matrix4 get _model => _m;
 
   List<CubeFacePlacement> get _placed => [
         for (var i = 0; i < 6; i++)
@@ -203,7 +250,7 @@ class _InteractiveDieState extends State<InteractiveDie>
     final size = widget.size;
     final area = size * 1.7;
     final placed = _placed..sort((a, b) => b.depth.compareTo(a.depth));
-    final front = dieFrontSlot(_rx, _ry);
+    final front = dieFrontSlotOf(_m);
     return Semantics(
       label: 'die',
       child: GestureDetector(
@@ -213,10 +260,12 @@ class _InteractiveDieState extends State<InteractiveDie>
           _dragging = true;
           _turn.stop();
         },
+        // The turn is about the screen's axes: across about the upright,
+        // down about the horizontal, whichever side is in front.
         onPanUpdate: (d) => setState(() {
-          _ry -= d.delta.dx * 0.014;
-          _rx = (_rx + d.delta.dy * 0.014)
-              .clamp(-math.pi / 2 - 0.35, math.pi / 2 + 0.35);
+          final turn = Matrix4.rotationX(d.delta.dy * 0.014)
+              .multiplied(Matrix4.rotationY(-d.delta.dx * 0.014));
+          _m = turn.multiplied(_m);
         }),
         onPanEnd: (_) {
           _dragging = false;

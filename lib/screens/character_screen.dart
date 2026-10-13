@@ -366,38 +366,43 @@ class _CharacterHeader extends ConsumerWidget {
             borderRadius: BorderRadius.circular(4),
             side: BorderSide(color: ink.seam),
           ),
-          child: InkWell(
-            key: const Key('offer_open'),
-            borderRadius: BorderRadius.circular(4),
-            onTap: waiting > 0
-                ? () => showOfferIfWaiting(context, ref, sayWhenNone: true)
-                : null,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
-              child: Row(
-                children: [
-                  Icon(Icons.diversity_3,
-                      size: 18, color: waiting > 0 ? ink.gold : ink.ash),
-                  const SizedBox(width: 8),
-                  Text(tr(ref, 'offers_section'),
-                      style: theme.textTheme.titleSmall),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      waiting > 0
-                          ? '${tr(ref, 'offer_open_button')} · '
-                              '${tr(ref, 'offer_pending').replaceAll('{n}', '$waiting')}'
-                          : tr(ref, 'offers_row_none'),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.end,
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(color: waiting > 0 ? ink.gold : ink.ash),
+          // Where offers come from, for a press and hold on the row.
+          child: Tooltip(
+            message: tr(ref, 'offers_where_from'),
+            child: InkWell(
+              key: const Key('offer_open'),
+              borderRadius: BorderRadius.circular(4),
+              onTap: waiting > 0
+                  ? () => showOfferIfWaiting(context, ref, sayWhenNone: true)
+                  : null,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+                child: Row(
+                  children: [
+                    Icon(Icons.diversity_3,
+                        size: 18, color: waiting > 0 ? ink.gold : ink.ash),
+                    const SizedBox(width: 8),
+                    Text(tr(ref, 'offers_section'),
+                        style: theme.textTheme.titleSmall),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        waiting > 0
+                            ? '${tr(ref, 'offer_open_button')} · '
+                                '${tr(ref, 'offer_pending').replaceAll('{n}', '$waiting')}'
+                            : tr(ref, 'offers_row_none'),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end,
+                        style: theme.textTheme.bodySmall
+                            ?.copyWith(color: waiting > 0 ? ink.gold : ink.ash),
+                      ),
                     ),
-                  ),
-                  if (waiting > 0)
-                    Icon(Icons.chevron_right, size: 20, color: ink.ash),
-                ],
+                    if (waiting > 0)
+                      Icon(Icons.chevron_right, size: 20, color: ink.ash),
+                  ],
+                ),
               ),
             ),
           ),

@@ -184,6 +184,10 @@ void main() {
       container: container,
       child: const MaterialApp(home: ClansPoliticsScreen()),
     ));
+    // The Throne room (the first tab) never settles: step, then open the
+    // Reputation tab.
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(const Key('clans_tab_standing')));
     await tester.pumpAndSettle();
     await tester.ensureVisible(find.byKey(const Key('clans_tab_throne')));
     await tester.pumpAndSettle();

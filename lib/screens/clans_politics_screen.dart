@@ -30,8 +30,8 @@ import '../widgets/throne_room.dart';
 import '../widgets/empty_state.dart';
 
 /// Edit Mode's "Clans & Politics" (v1.193, see factions.dart), from the
-/// top bar's scales: four tabs.
-/// - **Standing:** a card per faction (the clans, the tribes, the Choir and
+/// top bar's scales: the **Throne room** first (v1.267), then the tabs below.
+/// - **Standing** (Reputation): a card per faction (the clans, the tribes, the Choir and
 ///   the Pit) with a slider to set it and squares to mark the sub-clans,
 ///   the Choir-Pit alignment with the vows and pacts held, and a reset;
 ///   the lost clan (the Open Hand, v1.195) with its remembrance stage to
@@ -74,6 +74,9 @@ class ClansPoliticsScreen extends ConsumerWidget {
             labelPadding: const EdgeInsets.symmetric(horizontal: 10),
             tabs: [
               Tab(
+                  key: const Key('clans_tab_throne_room'),
+                  text: tr(ref, 'clans_tab_throne_room')),
+              Tab(
                   key: const Key('clans_tab_standing'),
                   text: tr(ref, 'clans_tab_standing')),
               Tab(
@@ -85,9 +88,6 @@ class ClansPoliticsScreen extends ConsumerWidget {
               Tab(
                   key: const Key('clans_tab_intrigues'),
                   text: tr(ref, 'clans_tab_intrigues')),
-              Tab(
-                  key: const Key('clans_tab_throne_room'),
-                  text: tr(ref, 'clans_tab_throne_room')),
               if (!play)
                 Tab(
                     key: const Key('clans_tab_affinity'),
@@ -101,11 +101,11 @@ class ClansPoliticsScreen extends ConsumerWidget {
         ),
         body: TabBarView(
           children: [
+            const ThroneRoomTab(),
             _StandingTab(play: play),
             _PoliticsTab(play: play),
             const _EvolutionTab(),
             _IntriguesTab(play: play),
-            const ThroneRoomTab(),
             if (!play) const _AffinityTab(),
             if (!play) const ThroneEditTab(),
           ],

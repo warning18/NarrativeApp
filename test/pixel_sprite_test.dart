@@ -201,8 +201,12 @@ void main() {
         () => Future<void>.delayed(const Duration(milliseconds: 500)));
     await tester.pump();
     await tester.tap(find.byType(PixelIcon).first);
-    // The lid shakes, then the burst plays.
-    for (var i = 0; i < 8; i++) {
+    // The colours turn and stop on its own, the lid shakes, then the burst
+    // plays (v1.267: the rarity is told when the colours stop).
+    for (var i = 0;
+        i < 80 &&
+            find.byKey(const ValueKey('pixel_chest_gold')).evaluate().isEmpty;
+        i++) {
       await tester.pump(const Duration(milliseconds: 100));
     }
     expect(find.byKey(const ValueKey('pixel_chest_gold')), findsOneWidget);
