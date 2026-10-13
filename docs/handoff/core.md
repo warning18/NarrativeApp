@@ -122,14 +122,17 @@ it. Cross-checks: `lib/gamedata/balance_validation.dart` and
 - Harness: `simulatePlaythroughs` (in
   `lib/screens/playthrough_simulator_screen.dart`) run headless by
   `test/sim_playthroughs_test.dart`. Variables: `SIM_RUNS` (default 40),
-  `SIM_SEED` (7), `SIM_GOALS` (comma list: `random`, `favorGood`, `favorEvil`,
-  `maximizeGold`, `completionist`, …), `SIM_STRATEGY` (one goal), `SIM_OUT`
+  `SIM_SEED` (7), `SIM_GOALS` (comma list of `SimStrategy` names: `random`, `favorGood`,
+  `favorEvil`, `maximizeGold`, `explore`, `completionist`, …), `SIM_STRATEGY` (one goal), `SIM_OUT`
   (JSON file). `test/sim_coverage_test.dart` (exploring runs) takes `SIM_RUNS`,
   `SIM_SEED`, `SIM_OUT`.
-- **Pitfall:** `SIM_STRATEGY` and `SIM_GOALS` are not the same. The reports'
-  "thorough" and "random" batches use `SIM_GOALS=completionist` / `random`,
-  which rotates the profession every run. With `SIM_STRATEGY` the numbers
-  differ and do not match the published tables.
+- **Pitfall:** `SIM_STRATEGY` and `SIM_GOALS` are not the same. `SIM_GOALS`
+  plays the listed goals in turn and advances the profession after each round
+  of them; to play one goal alone (the reports' "thorough" batch is
+  `SIM_GOALS=completionist`, the "random" one `SIM_GOALS=random`) use it with
+  one name. `SIM_STRATEGY` fixes the goal but rotates professions over all
+  goals' count, so the profession mix differs and the numbers do not match the
+  published tables.
 - Regenerate `docs/simulation/` with `docs/simulation/make_report.py`
   (usage in its docstring: `tables`, `csv`, `explore-csv`, `branches`,
   `quests`). It only formats the harness's JSON; it changes no game data. The
