@@ -254,8 +254,13 @@ void main() {
         4: ['q_ch4_ossuary_bounty'],
         5: ['q_ch5_penitents_confession'],
         6: ['q_ch6_faces_of_the_fallen'],
+        7: [
+          'q_ch7_reed_gate_grievance',
+          'q_ch7_heralds_errand',
+          'q_ch7_chain_masters_boy',
+        ],
       };
-      expect(loops.map((l) => l.questGoal), [2, 1, 1, 1, 0, 0]);
+      expect(loops.map((l) => l.questGoal), [2, 1, 1, 1, 1, 0]);
       for (final l in loops.where((l) => l.questGoal > 0)) {
         final ids = before[l.chapter]!;
         expect(ids.length, greaterThanOrEqualTo(l.questGoal), reason: l.id);
