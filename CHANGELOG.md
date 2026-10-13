@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.276.0+312]
+
+The empty lands of the story chart have names.
+
+### Changed
+- **Seven unnamed lands on the story chart are named, in English and
+  French.** The Tallow Downs (Les Landes de suif), the Pale Dunes (Les Dunes
+  pâles), the Tidewood (Le Bois des marées), the Orchard Coast (La Côte des
+  vergers), the Ember Dunes (Les Dunes de braise), the Wick Meadows (Les
+  Prés de la mèche) and the Mute Ice (Les Glaces muettes). The chart's
+  "unnamed" exemption in `chart_relief_test` is gone: every zone of every
+  chart now has both names. Text only; no shape, biome or place moved.
+
 ## [1.273.0+309]
 
 Ten new moods, and the scenes that wear them.
