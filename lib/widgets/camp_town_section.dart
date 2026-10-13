@@ -258,23 +258,20 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.w500)),
-                  ),
-                  const SizedBox(width: 4),
-                  Flexible(
-                      child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: InkTag(label: status, color: statusColour))),
-                ],
+              // The status on its own line, so the name has the whole width
+              // of the card and never breaks inside a word.
+              Align(
+                alignment: Alignment.centerLeft,
+                child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: InkTag(label: status, color: statusColour)),
               ),
+              const SizedBox(height: 4),
+              Text(name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(fontWeight: FontWeight.w500)),
               const SizedBox(height: 4),
               Expanded(
                 child: Text(detail,
@@ -491,7 +488,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
               ),
               const SizedBox(height: 8),
               SizedBox(
-                height: 172,
+                height: 190,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: orderedCards.length,
