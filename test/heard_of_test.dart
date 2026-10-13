@@ -11,6 +11,8 @@ import 'package:narrative_data_app/data/heard_of.dart';
 import 'package:narrative_data_app/data/settlements.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/data/travel_history.dart';
+import 'package:narrative_data_app/l10n/app_locale.dart';
+import 'package:narrative_data_app/l10n/app_strings.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 
 Map<String, dynamic> _json(String path) =>
@@ -115,5 +117,16 @@ void main() {
     expect(flags.where((f) => f.startsWith(mapGoalPrefix)), ['map_goal:court']);
     expect(mapGoalIn(flags, {'court'}), isNull);
     expect(withMapGoal(flags, null), ['camp_founded']);
+  });
+
+  test('every reason and the warning have their words in both languages', () {
+    for (final key in [
+      for (final reason in HeardOfReason.values) 'heard_reason_${reason.name}',
+      'heard_setout_warning',
+    ]) {
+      for (final lang in AppLanguage.values) {
+        expect(trFor(lang, key), isNot(key), reason: '$key $lang');
+      }
+    }
   });
 }

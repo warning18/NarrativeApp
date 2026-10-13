@@ -2940,6 +2940,34 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Vous rebroussez chemin jusqu’à votre point de départ, {n} jours perdus.',
   },
+  // The full map's places only heard of (heard_of.dart).
+  'heard_reason_storyOnly': {
+    AppLanguage.en: 'The story will take you there.',
+    AppLanguage.fr: 'L’histoire vous y mènera.',
+  },
+  'heard_reason_noCamp': {
+    AppLanguage.en: 'Not while the story leads the way.',
+    AppLanguage.fr: 'Pas tant que l’histoire ouvre la route.',
+  },
+  'heard_reason_laterChapter': {
+    AppLanguage.en: 'Not yet: chapter {n}.',
+    AppLanguage.fr: 'Pas encore : chapitre {n}.',
+  },
+  'heard_reason_needsHarbour': {
+    AppLanguage.en: 'The Eel must sail: build the harbour first.',
+    AppLanguage.fr:
+        'Le Rusty Eel doit prendre la mer : bâtissez d’abord le port.',
+  },
+  'heard_reason_needsExpedition': {
+    AppLanguage.en: 'First: {zone}.',
+    AppLanguage.fr: 'D’abord : {zone}.',
+  },
+  'heard_setout_warning': {
+    AppLanguage.en:
+        'You have only heard of this place. The road may hold anything.',
+    AppLanguage.fr:
+        'Vous n’avez fait qu’en entendre parler. La route peut réserver n’importe quoi.',
+  },
   // The building screen's sections (camp_works.dart, building-screen.md).
   'works_category_sea': {AppLanguage.en: 'The Sea', AppLanguage.fr: 'La Mer'},
   'works_category_sea_blurb': {

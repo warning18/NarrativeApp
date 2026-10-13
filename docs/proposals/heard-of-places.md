@@ -107,5 +107,6 @@ of it: the road may hold anything") applies to the straight trip only.
 - **UX:** the sheet's two buttons, the warning's place and the goal's mark
   on the map.
 - **Narrative:** the warning and the five reasons' lines, English and
-  French.
+  French: done, in `app_strings.dart` as `heard_reason_<reason>` (`{n}` the
+  chapter, `{zone}` the expedition's name) and `heard_setout_warning`.
 - **QA:** L1.
