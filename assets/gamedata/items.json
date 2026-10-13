@@ -4405,7 +4405,7 @@
     "alignedArmorBonus": 0,
     "itemName_fr": "Verre de déchirure",
     "description": "Glass the tear leaves on the Hollow Shore, warm to the touch. The Vigil will not handle it; builders will, for a price.",
-    "description_fr": "Le verre que la déchirure laisse sur la Rive Creuse, tiède au toucher. La Vigile refuse d’y toucher ; les bâtisseurs, eux, le font, contre un prix.",
+    "description_fr": "Le verre que la déchirure laisse sur la Rive Creuse, tiède au toucher. La Vigile refuse d’y toucher ; les bâtisseurs, eux, le font, contre un prix.",
     "materialTier": 3
   },
   "material_shroud_thread": {
@@ -4495,7 +4495,7 @@
     "alignedArmorBonus": 0,
     "itemName_fr": "Chêne de la Flotte blanche",
     "description": "Oak from the drowned White Fleet, salt-hard and pale. It was the keel of a warship once; now it is the rarest timber on the coast.",
-    "description_fr": "Du chêne de la Flotte blanche engloutie, durci par le sel et pâle. Ce fut la quille d’un navire de guerre ; c’est aujourd’hui le bois le plus rare de la côte.",
+    "description_fr": "Du chêne de la Flotte blanche engloutie, durci par le sel et pâle. Ce fut la quille d’un navire de guerre ; c’est aujourd’hui le bois le plus rare de la côte.",
     "materialTier": 4
   }
 }
