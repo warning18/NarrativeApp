@@ -44,23 +44,24 @@ void main() {
     required String? die,
     List<String>? inventory,
     List<String>? wearing,
-  }) => {
-    'raceId': 'human',
-    'professionId': profession,
-    'level': 12,
-    'statPoints': 7,
-    'strength': 8,
-    'dexterity': 8,
-    'constitution': 8,
-    'intelligence': 8,
-    'wisdom': 8,
-    'inventoryItemIds': inventory ?? [...gear, ...gear.take(10)],
-    'equippedItemIds': wearing ?? const <String>[],
-    'equippedDiceId': die,
-    'ownedDiceIds': [if (die != null) die],
-    'unlockedSkillIds': skills.keys.toList(),
-    'enemyKillCounts': <String, int>{},
-  };
+  }) =>
+      {
+        'raceId': 'human',
+        'professionId': profession,
+        'level': 12,
+        'statPoints': 7,
+        'strength': 8,
+        'dexterity': 8,
+        'constitution': 8,
+        'intelligence': 8,
+        'wisdom': 8,
+        'inventoryItemIds': inventory ?? [...gear, ...gear.take(10)],
+        'equippedItemIds': wearing ?? const <String>[],
+        'equippedDiceId': die,
+        'ownedDiceIds': [if (die != null) die],
+        'unlockedSkillIds': skills.keys.toList(),
+        'enemyKillCounts': <String, int>{},
+      };
 
   /// Everything the finished session must satisfy.
   void check(PlayerSession after, String label) {
@@ -92,8 +93,8 @@ void main() {
     }
     final dieId = after.equippedDiceId;
     if (dieId == null) return;
-    final faces = ((dice[dieId] as Map)['faces'] as List)
-        .cast<Map<String, dynamic>>();
+    final faces =
+        ((dice[dieId] as Map)['faces'] as List).cast<Map<String, dynamic>>();
     final assigned = after.diceSkillAssignments[dieId] ?? const {};
     for (final entry in assigned.entries) {
       final i = int.parse(entry.key);
@@ -213,12 +214,12 @@ void main() {
           ),
         );
         Future<void> apply() => applyAutoplayBuild(
-          ref,
-          items: items,
-          skills: skills,
-          dice: dice,
-          professions: professions,
-        );
+              ref,
+              items: items,
+              skills: skills,
+              dice: dice,
+              professions: professions,
+            );
         await apply();
         final first = ref.read(playerSessionProvider);
         await apply();
@@ -405,12 +406,12 @@ void main() {
       for (final chapter in [2, 3, 4, 5, 6, 7, 8]) {
         final target = typicalArrival[chapter]!;
         ArrivalTopUp plan(PlayerSession s) => planArrivalTopUp(
-          s,
-          chapter: chapter,
-          items: items,
-          shops: shops,
-          professions: professions,
-        );
+              s,
+              chapter: chapter,
+              items: items,
+              shops: shops,
+              professions: professions,
+            );
         final low = plan(weak(profession));
         expect(low.gold, target.gold, reason: '$profession ch$chapter gold');
         expect(low.xp, greaterThanOrEqualTo(0));
@@ -529,9 +530,7 @@ void main() {
         final seen = <String>[];
         for (final seed in const [1, 2, 3, 1]) {
           ref.read(playerSessionProvider.notifier);
-          await ref
-              .read(playerSessionProvider.notifier)
-              .loadSession(
+          await ref.read(playerSessionProvider.notifier).loadSession(
                 PlayerSession.fromJson({'enemyKillCounts': <String, int>{}}),
               );
           ref.read(storyPlayProvider.notifier).loadState('0', const []);
@@ -557,8 +556,7 @@ void main() {
             reason: 'chapter $chapter seed $seed: level',
           );
           expect(after.gold, greaterThanOrEqualTo(target.gold));
-          final summary =
-              '${after.professionId}|${after.level}|${after.gold}|'
+          final summary = '${after.professionId}|${after.level}|${after.gold}|'
               '${after.equippedItemIds.join(",")}|'
               '${after.diceSkillAssignments[after.equippedDiceId]}|'
               '${after.pendingOffers.length}';
