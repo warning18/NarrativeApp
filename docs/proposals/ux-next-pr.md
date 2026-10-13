@@ -20,7 +20,7 @@ For the manager (read here because UX has no `send_message`). #212 (1.282) is me
 
 ## Still to do (prep)
 
-- **H, heard-of places:** Core's note is `docs/proposals/heard-of-places.md`, but `heardOfPlacesProvider`, `mapGoalProvider` and `setOutToHeardOf` are not on `claude/core` yet (only the proposal), so the full map's sheet cannot be wired. UX will wire the two buttons and the goal mark when they land. Open for the user (Core's note): may "Set out" find villages without their chapter's expedition?
+- **H, heard-of places: wired** to Core's `heardOfPlacesProvider`, `mapGoalProvider`, `setOutToHeardOf` and `setMapGoal` (`claude/core` 682c966). The chart draws a "?" in a ring for each place heard of (ringed in the mark's colour when it is the goal; `heardOf` and `goalId` on `JourneyWorldMap` and `ChartMapPainter`), tappable. The full map's sheet: **Set out** (with "You have only heard of it: the road may hold anything", and, for a place not found yet, "You set out on the expedition that finds it: {zone}"), or the reason line (storyOnly, noCamp, laterChapter, needsHarbour, needsExpedition), and **Mark as goal / Clear the goal** on both. The sheet scrolls now (the longer text would overflow a short phone). **Narrative: the five reason lines, the expedition line and the warning are UX's placeholders (`map_reason_*`, `map_set_out_expedition`, `map_set_out_warning` in `app_strings.dart`), to be worded in EN and FR.** The Journey and camp do not show the goal yet ("Goal: the Spire"): not asked for yet. Tests: `full_map_screen_test.dart`.
 
 ## Still open from the full map (#212)
 
