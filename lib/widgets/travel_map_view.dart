@@ -30,8 +30,8 @@ enum TravelPlaceState {
 }
 
 /// One move of the party between two places (a road taken), in the order made.
-class TravelLeg {
-  const TravelLeg(this.from, this.to, {this.sea = false});
+class TravelMapLeg {
+  const TravelMapLeg(this.from, this.to, {this.sea = false});
 
   final String from;
   final String to;
@@ -123,7 +123,7 @@ class TravelMapView extends StatefulWidget {
 
   /// The moves made, in order. Null reads them off [visited]: each place to
   /// the next, by land.
-  final List<TravelLeg>? legs;
+  final List<TravelMapLeg>? legs;
 
   /// The places the party can travel to now: ringed by a dotted line, so a
   /// tap on one is plainly an offer (the screen decides what the tap does).
@@ -349,7 +349,7 @@ class _TravelMapViewState extends State<TravelMapView> {
                                       for (var i = 0;
                                           i + 1 < widget.visited.length;
                                           i++)
-                                        TravelLeg(widget.visited[i],
+                                        TravelMapLeg(widget.visited[i],
                                             widget.visited[i + 1]),
                                     ],
                                 targets: widget.travelTargets,
@@ -410,7 +410,7 @@ class _TravelPainter extends CustomPainter {
   final List<String> visited;
   final Map<String, int> order;
   final Set<String> known;
-  final List<TravelLeg> legs;
+  final List<TravelMapLeg> legs;
   final Set<String> targets;
   final String? here;
   final String Function(String id) nameOf;

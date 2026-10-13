@@ -40,6 +40,20 @@ The travel map, and a pack of layout fixes.
   the weather line wraps clear of the zoom button.
 - **Chapter 7 camp hub:** the enter-the-place button scrolls in the room it
   has, so a long quest strip no longer overflows it at 320 px.
+## [1.274.0+310]
+
+"Play to chapter" hands back a character ready to play.
+
+### Changed
+- **The simulator's "Play to chapter" (edit mode) leaves the best build.**
+  Before handing back, it spends the stat points on the profession's own
+  stat, wears the best carried piece in each slot (stat and alignment
+  requirements met, a copy no companion wears), and puts the best unlocked
+  skills on the die's open Skill faces, each on no more faces than its rarity
+  allows; the mana skill keeps its face. It is the playthrough simulator's
+  own policy, so the character handed back is the one the simulator's
+  numbers describe. The build has no randomness, and the walk takes an
+  optional seed, so a seeded run hands back the same character every time.
 
 ## [1.273.0+309]
 

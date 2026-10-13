@@ -79,9 +79,9 @@ void main() {
           visited: visited,
           known: known,
           legs: [
-            TravelLeg(visited[0], visited[1]),
-            TravelLeg(visited[1], visited[2], sea: true),
-            TravelLeg(visited[2], visited[3]),
+            TravelMapLeg(visited[0], visited[1]),
+            TravelMapLeg(visited[1], visited[2], sea: true),
+            TravelMapLeg(visited[2], visited[3]),
           ],
           travelTargets: {target},
           here: visited.last,

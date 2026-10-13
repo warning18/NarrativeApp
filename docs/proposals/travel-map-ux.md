@@ -77,7 +77,7 @@ Yes, the shape is enough. The view now takes it almost as it is:
 | Core's field | The view |
 |---|---|
 | `stops` (ids in the order first reached) | `visited` (the order is each place's number on the chart) |
-| `legs` (`fromId`, `toId`, `kind` land or sea) | `legs: List<TravelLeg>` (`TravelLeg(from, to, sea:)`); a sea leg is dashed |
+| `legs` (`fromId`, `toId`, `kind` land or sea) | `legs: List<TravelMapLeg>` (`TravelMapLeg(from, to, sea:)`); a sea leg is dashed |
 | `heardOf` | `known`: drawn as a "?" with no name |
 | `currentId` | `here`: ringed |
 | `travelTargets` | `travelTargets`: a dotted ring round each, so a tap is plainly an offer |

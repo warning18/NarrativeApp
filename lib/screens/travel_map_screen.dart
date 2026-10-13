@@ -47,7 +47,7 @@ class TravelMapScreen extends ConsumerWidget {
           known: history.heardOf,
           legs: [
             for (final leg in history.legs)
-              TravelLeg(leg.fromId, leg.toId, sea: leg.kind == RoadKind.sea),
+              TravelMapLeg(leg.fromId, leg.toId, sea: leg.kind == RoadKind.sea),
           ],
           travelTargets: history.travelTargets.keys.toSet(),
           here: history.currentId,
