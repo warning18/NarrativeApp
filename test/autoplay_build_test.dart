@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/autoplay_build.dart';
 import 'package:narrative_data_app/data/autoplay_engine.dart';
+import 'package:narrative_data_app/data/offers.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 
 const _items = <String, dynamic>{
@@ -188,8 +189,8 @@ void main() {
     test('a weak character reaching chapter 8 is brought to a typical one', () {
       final topUp = planArrivalTopUp(fresh(),
           chapter: 8, items: items, shops: shops, professions: _professions);
-      // Level 2 (50 XP in) to level 10: 200 + 300 + ... + 900 - 50.
-      expect(topUp.xp, 4400 - 50);
+      // Level 2 (50 XP in) to level 12: 200 + 300 + ... + 1100 - 50.
+      expect(topUp.xp, 6500 - 50);
       expect(topUp.gold, typicalArrival[8]!.gold - 100);
       // The chapter's best per slot, by slot: the chest's plate, the open
       // forge's sword; never the forge that opens later, nor a piece no
@@ -229,12 +230,42 @@ void main() {
           items: items,
           shops: table('shops'),
           professions: professions);
-      expect(topUp.xp, 4500, reason: professionId); // level 1 to 10
+      expect(topUp.xp, 6600, reason: professionId); // level 1 to 12
       final slots = {
         for (final id in topUp.items) (items[id] as Map)['equipSlot'],
       };
       expect(slots, containsAll(['Weapon', 'Top', 'Head']),
           reason: '$professionId: ${topUp.items}');
     }
+  });
+
+  testWidgets('the top-up keeps the walk\'s offers and queues none of its own',
+      (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    late WidgetRef ref;
+    await tester.pumpWidget(ProviderScope(
+      child: Consumer(builder: (context, r, _) {
+        ref = r;
+        return const SizedBox.shrink();
+      }),
+    ));
+    await tester.runAsync(() async {
+      ref.read(playerSessionProvider.notifier);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      final walked = PlayerSession.fromJson({
+        'raceId': 'human',
+        'professionId': 'warrior',
+        'level': 2,
+      }).copyWith(pendingOffers: const [OfferTicket(source: OfferSource.boss)]);
+      await ref.read(playerSessionProvider.notifier).loadSession(walked);
+      await applyArrivalTopUp(ref,
+          chapter: 8,
+          items: _items,
+          shops: const {},
+          professions: _professions);
+      final after = ref.read(playerSessionProvider);
+      expect(after.level, 12);
+      expect(after.pendingOffers.map((t) => t.source), [OfferSource.boss]);
+    });
   });
 }

@@ -8,6 +8,209 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.285.0+321]
+
+Land expeditions, the first: the crossing from the wreck of the Lark.
+
+### Added
+- **Land crossings.** A long land route is played like a voyage, on its
+  own screen: an event a day (a sandstorm, a dry well, a spring, a mirage,
+  scavengers, shade), each asking what the party does. Some choices roll
+  an ability check, one harder a chapter after the first.
+  - **Health plays the hull.** Each outcome costs or gives a share of the
+    party's maximum health, and sometimes gold or an extra day. If health
+    runs out, the party is carried back to where it set out at half
+    health, with the days spent, and the story choice is not taken. The
+    party can also turn back at any time.
+  - **The first crossing** is from the wreck of the Lark to the Sleeper's
+    Face (3 days, desert): every way out of the wreck takes it. The
+    Sleeper's scenes stay as they were.
+  - **Data:** `land_routes.json` and `land_events.json`, editable in the
+    database editor. A story choice names its route with `landRouteId`.
+  - **"Play to chapter" and the playthrough simulator** play crossings
+    with the same rules. The simulator rolls them on a stream of their
+    own, so the walk's seeded results stay comparable.
+  - **A tutorial** for crossings, shown the first time the screen opens.
+  - The screen is a plain one for now; its side view is UX's to come.
+    The event and tutorial texts were read by Narrative, who kept them and
+    gave the route its geography names.
+
+### Changed
+- **"Play to chapter" hands back a stronger character late in the story.**
+  Its arrival table was regenerated from the 800-run simulator check after
+  the boss curve, the materials and the harbour. Chapters 6 to 8 now
+  arrive at levels 10, 11 and 12 (were 9, 10 and 10), and the gold moved
+  a little throughout.
+
+### Fixed
+- A scene whose one way on crosses land or grants materials is no longer
+  read straight through, so neither is skipped.
+
+## [1.284.0+320]
+
+The harbour has a reason to be built.
+
+### Changed
+- **The camp scene says where the harbour's timber and stone come from.**
+  In `3001_camp` the survivors stack the storm's and the tide's spars and
+  planks in one heap and the burned wall's sound stones in another: timber
+  for a quay, stone for its foot, which is what Core's grant on `3001` puts in
+  the pack. The camp tour's first step (`tut_camp_harbour`) now says the same
+  in the narrator's words, in English and French, with the typographic
+  apostrophes and the space before the colon. Text only; no ids, numbers or
+  flags changed.
+
+## [1.283.0+319]
+
+The harbour: the story hands over what it costs, and the camp builds it
+first.
+
+### Added
+- **A story choice can grant materials**: `grantMaterials`, an object of
+  item id to count (`{"material_timber": 4, "material_cut_stone": 2}`).
+  They go in the pack with a "Picked up" notice. The story, "Play to
+  chapter", expeditions and the playthrough simulator all apply it, and the
+  story editor keeps it. The camp's founding choice ("Take stock of the
+  shore", in chapter 3) grants the harbour's 4 timber and 2 cut stone;
+  Narrative writes the scene's line for it in a later PR.
+- **The camp's tour starts at the harbour** while it is unbuilt. A harbour
+  card sits above the camp's tabs until it stands, and a tap on it opens
+  Town.
+
+### Changed
+- **The harbour costs only its materials**: 4 timber and 2 cut stone, with
+  no gold, so the story's grant covers it.
+- **The Rusty Eel waits on her harbour.** Once the camp is founded, every
+  voyage away from it is refused until the harbour is built, with a notice
+  pointing at Town. Sailing home is never refused. If the pack can no longer
+  pay for the harbour (the grant spent on another building, or sold), she
+  sails anyway, so no game is stranded. Her refit already waited on the
+  harbour.
+- **"Play to chapter" builds the harbour** when its walk founds the camp.
+
+### Fixed
+- Saves get version 5. A save from before it that has passed the camp's
+  founding has the harbour built on load, once.
+
+## [1.282.0+318]
+
+The full-screen map, the help pattern on ten more pages, and small fixes.
+
+### Added
+- **The full map.** The Journey's own chart (sphere or flat, layers, weather)
+  on its own page, opened from a **Full map** button among the Journey chart's
+  controls, and from **On the map** on each known place of the camp's Road tab
+  (it opens on that place with its sheet up). A tap on a reached place opens
+  a sheet: where the party stands, **Travel here** (the camp's own way to
+  travel; disabled during a fight or an expedition), or why it cannot. Under
+  the chart: **Legend** (the marks as the chart draws them), **The story**
+  (the Journal's story so far) and **Journeys** (the roads walked, by
+  chapter; a tap turns the chart to where one ends). The layers sheet is
+  shared by both pages.
+- **The guide's ⓘ** in the header of the Skills, Inventory, Level Up,
+  Journal, Achievements, World map, Skill challenge, Harbor, Port and Shop
+  pages: it replays that page's tour.
+
+### Changed
+- "1 Stat Point" and "1 Point de statistique" in the singular (and 0 in
+  French).
+- On a screen narrower than 340 px the Journey's weather chip is an icon (a
+  tap reads the line), so it no longer covers the lowest step's name.
+
+### Fixed
+- The dice loadout's "Choose this face's skill" button stays in sight under
+  the die card's scrolling text.
+
+### Removed
+- The flat travel page and its compass button, replaced by the full map; QA's
+  guard of that page (`qa_travel_map_test.dart`) goes with it.
+
+## [1.281.0+317]
+
+Materials: the camp's buildings are raised with what the road brings back.
+
+### Added
+- **Ten materials in four tiers**, one tier for each stage of the story.
+  Timber and cut stone (chapters 1-2); iron ore and slag glass, with the
+  rare ash-steel ingot (3-4); rime crystal and tear glass, with the rare
+  Shroud thread (5-6); lantern brass, with the rare white-fleet oak (7-8).
+  Names and descriptions in English and French, for Narrative to reword.
+- **Where they come from.** Expeditions pay them on completion (each
+  chapter's main expedition its tier's rare); ordinary foes drop the commons
+  (12%); the weaponsmith, the hammersmith and the Last Lantern sell the
+  commons, never a rare; a derelict's salvage at sea yields the chapter's
+  common, and a won ship battle the chapter's rare from chapter 3 on.
+
+### Changed
+- **The camp's buildings cost materials beside gold**, and about a third
+  less gold: Kelda's hall 100 gold and 2 timber, the harbour 170 gold, 4
+  timber and 2 cut stone, the hearth hall 1 000 gold with iron ore, slag
+  glass and 2 ash-steel ingots, the Shroud shrine 2 600 gold, tear glass and
+  3 Shroud threads, and so on. A building's card says which materials are
+  missing.
+- **Older saves** (save version 3) are given, once, one rare material for
+  each tier their story has already passed, so the buildings that need them
+  stay within reach.
+
+## [1.280.0+316]
+
+The bosses are won about half the time: more often early, less often late.
+
+### Changed
+- **The boss curve.** Every chapter boss was lost 80% to 95% of the time.
+  By the user's decision, each is now won about this share of the time
+  where the story meets it, after the chapter's own fights: Aurel Vane
+  (chapter 1) 75%, the void stalker (3) 65%, the Hollow Court inquisitor and
+  the bone warden (4) 55%, the void archon (5) 50%, the white admiral (6)
+  45%, the three claimants (7) 40%, the tear herald and the void sovereign
+  (8) 35%. Numbers only: each boss's health is scaled, and its damage by
+  the square root of the same factor, so a fight keeps its shape and gets
+  shorter (the inquisitor, the hardest, loses half its health). In the
+  simulator, the bosses go from 18% to 49% won on average (800 runs), and
+  the attempt win rate from 39.8% to 45.1%.
+- `boss_balance_test` checks the curve with the simulator (200 seeded
+  runs), and `docs/simulation/` is regenerated with a before and after.
+
+## [1.279.0+315]
+
+Twelve story achievements.
+
+### Added
+- **Twelve achievements that come from what a save already holds.** The
+  Lantern Throne, Half a Banner (three pieces of the Shroud), Whole Cloth,
+  A Loose Thread (settle an intrigue), The Whole Web (all eight), Time
+  Turned (a New Game+), Sworn, Hunted, A Hand at Four Doors (trusted by four of
+  the six clans at once, with no oath sworn) and three village finds: Where the Bells Hang (Akagiri), Every
+  Bargain to the Minute (the Kindly Hill) and Under the Giants' Roof
+  (Highhearth). Each is a one-line check in `checkAchievements` over the
+  flags, banner pieces, politics and New Game+ cycle of the save, with its
+  English and French row in `achievements.json`; none needs a new counter.
+  A save that already has the thing unlocks it the next time achievements
+  are checked, and achievements are now also checked right after a story
+  choice adds a flag or a piece of the Shroud and after a choice's politics
+  (an oath, a standing, an intrigue's end), so taking the Throne unlocks
+  its achievement at once. "Hunted" counts the six coast clans, not the
+  tribes. `test/achievements_story_test.dart` covers each.
+
+
+## [1.278.0+314]
+
+A jungle on the story world's east land.
+
+### Added
+- **A jungle biome.** The equatorial belt of the story chart's east land is
+  now jungle instead of temperate woods: warm (+3 °C) and wet (moisture
+  0.9), drawn in deep green with dense woods, pools and hills. Its
+  description, six animals, six plants, three weathers and two road hazards
+  (a swollen river, jungle fever) are in English and French, for Narrative
+  to reword. No story road crosses it yet, so its hazards cannot fire.
+
+### Fixed
+- **"Play to chapter" no longer hands back a queue of clan offers.** The
+  arrival top-up's levels each queued an offer, so a jump to chapter 8 opened
+  on ten offer dialogs in a row. The offers those levels queued are dropped;
+  any the walk itself earned stay.
+
 ## [1.277.0+313]
 
 The travel map, and a pack of layout fixes.

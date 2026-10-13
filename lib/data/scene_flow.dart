@@ -18,8 +18,9 @@ import 'journey_rules.dart';
 const int maxPassThrough = 2;
 
 /// Whether [choice] only moves the story on: no gold, health, alignment,
-/// approval, roll, fight, shop, quest, zone, voyage, piece or companion
-/// change, and no ending. Flags it sets are carried along.
+/// approval, roll, fight, shop, quest, zone, voyage, land crossing,
+/// piece, item, material or companion change, and no ending. Flags it sets
+/// are carried along.
 bool isPlainGoOn(StoryChoice choice) =>
     !choice.isEnding &&
     choice.nextId.isNotEmpty &&
@@ -38,6 +39,8 @@ bool isPlainGoOn(StoryChoice choice) =>
     !choice.opensCharacterCreation &&
     (choice.grantsBannerPieceId ?? '').isEmpty &&
     !choice.grantsItem &&
+    !choice.grantsMaterials &&
+    !choice.crossesLand &&
     (choice.loseAllyId ?? '').isEmpty &&
     (choice.roadEvent ?? '').isEmpty &&
     !choice.triggersShipBattle;

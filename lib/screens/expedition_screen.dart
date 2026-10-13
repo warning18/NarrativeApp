@@ -18,6 +18,7 @@ import '../data/check_outcomes.dart';
 import '../data/companion_remarks.dart';
 import '../data/expedition_kinds.dart';
 import '../data/map_themes.dart';
+import '../data/materials.dart';
 import '../data/sub_node_engine.dart';
 import '../data/zone_gating.dart';
 import '../gamedata/db_schema.dart';
@@ -523,6 +524,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         healAmount: choice.healAmount,
         flagsToAdd: choice.flagsToAdd,
         questIDToProgress: choice.questIDToProgress,
+        materials: choice.grantMaterials,
         approvalMods: choice.approvalMods,
         companions:
             ref.read(gameDbProvider(companionsSchema)).value ?? const {},
@@ -706,6 +708,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     final rewardDiceId = widget.zone['rewardDiceId']?.toString() ?? '';
     final rewardAllyId = widget.zone['rewardAllyId']?.toString() ?? '';
     final rewardFlag = widget.zone['rewardFlag']?.toString() ?? '';
+    final rewardMaterials = materialCountsOf(widget.zone, 'rewardMaterials');
     final companions =
         ref.read(localizedDbProvider(companionsSchema)).value ?? const {};
 
@@ -715,6 +718,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       rewardItemId: rewardItemId.isNotEmpty ? rewardItemId : null,
       rewardDiceId: rewardDiceId.isNotEmpty ? rewardDiceId : null,
       rewardFlag: rewardFlag.isNotEmpty ? rewardFlag : null,
+      rewardMaterials: rewardMaterials,
       origin: itemOriginHere(ref),
     );
 
@@ -732,6 +736,14 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
           (items[rewardItemId] as Map<String, dynamic>?)?['itemName']
               ?.toString();
       lines.add(itemName ?? rewardItemId);
+    }
+    if (rewardMaterials.isNotEmpty) {
+      final items =
+          ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
+      for (final e in rewardMaterials.entries) {
+        lines.add('+${e.value} '
+            '${(items[e.key] as Map<String, dynamic>?)?['itemName'] ?? e.key}');
+      }
     }
     if (rewardDiceId.isNotEmpty) {
       final dice = ref.read(localizedDbProvider(diceSchema)).value ?? const {};

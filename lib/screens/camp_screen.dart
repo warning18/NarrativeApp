@@ -7,9 +7,11 @@ import 'package:flutter_riverpod/legacy.dart';
 import '../combat/combat_engine.dart';
 import '../data/approval.dart';
 import '../data/camp_state.dart';
+import '../data/harbour.dart' show harbourAwaited;
 import '../data/companion_remarks.dart';
 import '../data/narration_clips.dart' show storyBodyFor;
 import '../data/politics_events.dart' show ChoiceGate;
+import '../data/materials.dart' show materialCountsOf;
 import '../data/port_helpers.dart';
 import '../data/zone_gating.dart';
 import '../gamedata/db_schema.dart';
@@ -106,6 +108,18 @@ class CampScreen extends ConsumerWidget {
 
     final theme = Theme.of(context);
     final harborBuilt = session.builtHouseIds.contains(harborHouseId);
+    // What the harbour costs, as the card says it: its materials (the
+    // story's grant, see harbour.dart), and its gold if any.
+    final harbourRecord = houses[harborHouseId] as Map<String, dynamic>?;
+    final harbourGold = (harbourRecord?['buildCost'] as num?)?.toInt() ?? 0;
+    final itemNames =
+        ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
+    final harbourCost = [
+      for (final MapEntry(key: id, value: count)
+          in materialCountsOf(harbourRecord, 'materialCost').entries)
+        '$count ${(itemNames[id] as Map?)?['itemName'] ?? id}',
+      if (harbourGold > 0) '$harbourGold ${tr(ref, 'gold_label')}',
+    ].join(', ');
     final homeId = homePortId(ports);
     final homePort =
         homeId == null ? null : ports[homeId] as Map<String, dynamic>?;
@@ -315,13 +329,7 @@ class CampScreen extends ConsumerWidget {
           const SizedBox(height: 12),
           const ShipStatusCard(),
           const SizedBox(height: 8),
-          _HarbourCard(
-            built: harborBuilt,
-            cost: ((houses[harborHouseId]
-                        as Map<String, dynamic>?)?['buildCost'] as num?)
-                    ?.toInt() ??
-                0,
-          ),
+          _HarbourCard(built: harborBuilt, cost: harbourCost),
           section(tr(ref, 'camp_sail_section')),
           Text(
             tr(ref, 'camp_sail_hint'),
@@ -400,6 +408,16 @@ class CampScreen extends ConsumerWidget {
             id: 'camp.next',
             child: _ChapterCard(campNode: campNode, busy: busy),
           ),
+        // The camp's first work, until it stands (see harbour.dart): the
+        // camp's tour points at it.
+        if (harbourAwaited(
+            flags: session.flags, builtHouseIds: session.builtHouseIds)) ...[
+          const SizedBox(height: 12),
+          TutorialTarget(
+            id: 'camp.harbour',
+            child: _HarbourCard(built: false, cost: harbourCost, first: true),
+          ),
+        ],
         const SizedBox(height: 12),
         _CampTabs(selected: tab),
         ...tabContent,
@@ -885,10 +903,17 @@ class _CampTabs extends ConsumerWidget {
 /// The harbour in the Sea tab: the way to refit the Eel once it stands,
 /// and before that what building it gives and costs (a tap goes to Town).
 class _HarbourCard extends ConsumerWidget {
-  const _HarbourCard({required this.built, required this.cost});
+  const _HarbourCard(
+      {required this.built, required this.cost, this.first = false});
 
   final bool built;
-  final int cost;
+
+  /// The card above the camp's tabs, while the harbour is awaited (the Sea
+  /// tab keeps its own).
+  final bool first;
+
+  /// What building it costs, as the card says it ("4 Timber, 2 Cut Stone").
+  final String cost;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -896,7 +921,11 @@ class _HarbourCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final colour = built ? ink.tide : ink.gold;
     return InkWell(
-      key: Key(built ? 'camp_harbor' : 'camp_harbor_locked'),
+      key: Key(first
+          ? 'camp_harbour_first'
+          : built
+              ? 'camp_harbor'
+              : 'camp_harbor_locked'),
       borderRadius: BorderRadius.circular(10),
       onTap: built
           ? () => Navigator.of(context)
@@ -925,7 +954,7 @@ class _HarbourCard extends ConsumerWidget {
                   built
                       ? tr(ref, 'harbour_built_body')
                       : tr(ref, 'harbour_not_built_body')
-                          .replaceAll('{cost}', '$cost'),
+                          .replaceAll('{cost}', cost),
                   style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
                 ),
               ],

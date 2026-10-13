@@ -2913,9 +2913,38 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'harbour_not_built_body': {
     AppLanguage.en:
-        'Build it in Town ({cost} gold) to fit guns, plates and a sail to the Eel.',
+        'The Eel lies hauled up on the shingle. Build the harbour in Town ({cost}) and she sails again, with guns, plates and a sail to fit.',
     AppLanguage.fr:
-        'Bâtissez-le en Ville ({cost} or) pour armer le Rusty Eel : canons, plaques, voile.',
+        'Le Rusty Eel est hissé sur les galets. Bâtissez le port en Ville ({cost}) et il reprend la mer, avec canons, plaques et voile à monter.',
+  },
+  'crossing_day': {
+    AppLanguage.en: 'Day {n} of {m}',
+    AppLanguage.fr: 'Jour {n} sur {m}',
+  },
+  'crossing_turn_back': {
+    AppLanguage.en: 'Turn back',
+    AppLanguage.fr: 'Rebrousser chemin',
+  },
+  'crossing_arrived': {
+    AppLanguage.en: 'You reach the far side, {n} days on.',
+    AppLanguage.fr: 'Vous atteignez l’autre bout, {n} jours plus tard.',
+  },
+  'crossing_failed': {
+    AppLanguage.en:
+        'The road beats you. You are carried back to where you set out, wounded, {n} days lost.',
+    AppLanguage.fr:
+        'La route a raison de vous. On vous ramène là d’où vous êtes parti, blessé, {n} jours perdus.',
+  },
+  'crossing_turned_back': {
+    AppLanguage.en: 'You turn back to where you set out, {n} days lost.',
+    AppLanguage.fr:
+        'Vous rebroussez chemin jusqu’à votre point de départ, {n} jours perdus.',
+  },
+  'harbour_needed_to_sail': {
+    AppLanguage.en:
+        'The Eel is hauled up at the camp. Build the harbour in Town before she can sail.',
+    AppLanguage.fr:
+        'Le Rusty Eel est hissé au camp. Bâtissez le port en Ville avant qu\'il puisse prendre la mer.',
   },
   'harbour_built_body': {
     AppLanguage.en: 'Refit the Eel: parts for her slots.',
@@ -2926,6 +2955,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Next: what the chapter\'s main quest still needs. Tap a place to find it on the Road.',
     AppLanguage.fr:
         'Ensuite : ce qu\'il manque à la quête principale du chapitre. Touchez un lieu pour le trouver sur la Route.',
+  },
+  'tut_camp_harbour': {
+    AppLanguage.en:
+        'First, the harbour. The wreck’s timber and the burned wall’s stone are set aside: that is what it costs. Until the quay stands, the Eel cannot put to sea.',
+    AppLanguage.fr:
+        'D’abord, le port. Le bois de l’épave et la pierre du mur brûlé sont mis de côté\u00a0: voilà ce qu’il coûte. Tant que le quai n’est pas debout, le Rusty Eel ne peut pas reprendre la mer.',
   },
   'tut_camp_6': {
     AppLanguage.en:
@@ -3137,6 +3172,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'stat_points_label': {
     AppLanguage.en: 'Stat Points',
     AppLanguage.fr: 'Points de statistique'
+  },
+  // The singular, for one point (in French also for none).
+  'stat_point_label_one': {
+    AppLanguage.en: 'Stat Point',
+    AppLanguage.fr: 'Point de statistique'
   },
   'debug_stats_section_title': {
     AppLanguage.en: 'Debug: Edit Stats',
@@ -6155,6 +6195,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Harbor',
     AppLanguage.fr: 'Le port',
   },
+  'tut_landCrossing_title': {
+    AppLanguage.en: 'Land crossings',
+    AppLanguage.fr: 'Traversées par la terre',
+  },
   'tut_voyage_title': {
     AppLanguage.en: 'Voyages',
     AppLanguage.fr: 'Traversées',
@@ -6289,23 +6333,105 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         "Trois onglets. Aperçu est cette page. Dons réunit vos titres, atouts et signes, avec un point rouge quand un choix attend. Pages mène à votre équipement, vos compétences, vos points de niveau et vos dés.",
   },
-  'travel_map_title': {
-    AppLanguage.en: 'Where you have been',
-    AppLanguage.fr: 'Où vous êtes allé',
+  'map_full_title': {
+    AppLanguage.en: 'The map',
+    AppLanguage.fr: 'La carte',
   },
-  'travel_map_open': {
-    AppLanguage.en: 'Map of your travels',
-    AppLanguage.fr: 'Carte de vos voyages',
+  'map_full_open': {
+    AppLanguage.en: 'Full map',
+    AppLanguage.fr: 'Carte entière',
   },
-  'travel_to_title': {
-    AppLanguage.en: 'Travel to {place}?',
-    AppLanguage.fr: 'Aller à {place} ?',
+  'map_on_map': {
+    AppLanguage.en: 'On the map',
+    AppLanguage.fr: 'Sur la carte',
   },
-  'travel_heard_of': {
-    AppLanguage.en:
-        'You have only heard of {place}. You cannot go there yet; the road must be opened by the story.',
-    AppLanguage.fr:
-        'Vous n’avez fait qu’entendre parler de {place}. Vous ne pouvez pas encore y aller ; c’est l’histoire qui ouvrira la route.',
+  'map_legend': {
+    AppLanguage.en: 'Legend',
+    AppLanguage.fr: 'Légende',
+  },
+  'map_story': {
+    AppLanguage.en: 'The story',
+    AppLanguage.fr: 'L’histoire',
+  },
+  'map_journeys': {
+    AppLanguage.en: 'Journeys',
+    AppLanguage.fr: 'Voyages',
+  },
+  'map_legend_title': {
+    AppLanguage.en: 'What the map shows',
+    AppLanguage.fr: 'Ce que montre la carte',
+  },
+  'map_leg_here': {
+    AppLanguage.en: 'Where the party stands',
+    AppLanguage.fr: 'Où se tient la compagnie',
+  },
+  'map_leg_place': {
+    AppLanguage.en: 'A place the story has reached',
+    AppLanguage.fr: 'Un lieu que l’histoire a atteint',
+  },
+  'map_leg_sea_place': {
+    AppLanguage.en: 'A place at sea',
+    AppLanguage.fr: 'Un lieu en mer',
+  },
+  'map_leg_road': {
+    AppLanguage.en: 'The road the party walked',
+    AppLanguage.fr: 'La route parcourue par la compagnie',
+  },
+  'map_leg_sea_road': {
+    AppLanguage.en: 'A crossing by sea',
+    AppLanguage.fr: 'Une traversée en mer',
+  },
+  'map_leg_ahead': {
+    AppLanguage.en: 'The way on, to the next place',
+    AppLanguage.fr: 'La suite du chemin, vers le prochain lieu',
+  },
+  'map_leg_chapters': {
+    AppLanguage.en: 'Road and place colours: one colour per chapter',
+    AppLanguage.fr: 'Couleurs des routes et des lieux : une par chapitre',
+  },
+  'map_leg_fog': {
+    AppLanguage.en: 'Uncharted: the story has not reached it',
+    AppLanguage.fr: 'Inexploré : l’histoire n’y est pas encore allée',
+  },
+  'map_leg_shop': {
+    AppLanguage.en: 'A shop (Shops & camps layer)',
+    AppLanguage.fr: 'Une boutique (calque Échoppes et camps)',
+  },
+  'map_leg_camp': {
+    AppLanguage.en: 'A camp where the party can rest',
+    AppLanguage.fr: 'Un camp où la compagnie peut se reposer',
+  },
+  'map_journeys_title': {
+    AppLanguage.en: 'Your journeys',
+    AppLanguage.fr: 'Vos voyages',
+  },
+  'map_journeys_empty': {
+    AppLanguage.en: 'No road walked yet.',
+    AppLanguage.fr: 'Aucune route parcourue pour l’instant.',
+  },
+  'map_journey_foot': {
+    AppLanguage.en: 'on foot',
+    AppLanguage.fr: 'à pied',
+  },
+  'map_journey_sea': {
+    AppLanguage.en: 'by sea',
+    AppLanguage.fr: 'par mer',
+  },
+  'map_here': {
+    AppLanguage.en: 'The party is here.',
+    AppLanguage.fr: 'La compagnie est ici.',
+  },
+  'map_travel_here': {
+    AppLanguage.en: 'Travel here',
+    AppLanguage.fr: 'Y aller',
+  },
+  'map_no_road': {
+    AppLanguage.en: 'The party cannot set out for this place from here.',
+    AppLanguage.fr: 'La compagnie ne peut pas partir d’ici pour cet endroit.',
+  },
+  'map_busy': {
+    AppLanguage.en: 'Not while a fight or an expedition is under way.',
+    AppLanguage.fr: 'Pas pendant un combat ou une expédition.',
   },
   'help_replay_guide': {
     AppLanguage.en: 'Replay the guide for this page',
@@ -6490,6 +6616,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "Fit the shipwright's parts into her slots to make her stronger for the sea.",
     AppLanguage.fr:
         'Installez les pièces du charpentier dans ses emplacements pour la renforcer en mer.',
+  },
+  'tut_landCrossing_1': {
+    AppLanguage.en:
+        'A long road is crossed a day at a time, and each day brings something: a storm, a well, a spring, raiders.',
+    AppLanguage.fr:
+        'Une longue route se traverse jour après jour, et chaque jour apporte quelque chose : une tempête, un puits, une source, des pillards.',
+  },
+  'tut_landCrossing_2': {
+    AppLanguage.en:
+        'Your health is what the road wears down. Run out and you are carried back to where you set out, wounded.',
+    AppLanguage.fr:
+        'C’est votre santé que la route use. Si elle s’épuise, on vous ramène à votre point de départ, blessé.',
   },
   'tut_voyage_1': {
     AppLanguage.en:

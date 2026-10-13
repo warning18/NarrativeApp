@@ -10,11 +10,18 @@ import '../combat/face_smithing.dart';
 import '../models/ally_state.dart'
     show equipmentBonusFor, equipmentScalingBonusFor;
 import '../models/story_node.dart';
+import 'ability_check.dart' show abilityModifierFor;
 import 'autoplay_build.dart';
+import 'camp_state.dart' show harborHouseId;
+import 'harbour.dart' show harbourAwaited;
+import 'journey_rules.dart' show watchesPerDay;
+import 'land_crossing.dart';
 import 'item_origin_here.dart';
+import 'materials.dart' show materialCountsOf;
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/clans_provider.dart' show loadClanData;
-import '../gamedata/db_schema.dart' show shopsSchema;
+import '../gamedata/db_schema.dart'
+    show housesSchema, landEventsSchema, landRoutesSchema, shopsSchema;
 import '../providers/game_db_providers.dart' show gameDbRepositoryProvider;
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
@@ -204,6 +211,7 @@ Future<void> _exploreChapterBeforeMainQuest(
       entry.key,
       rewardGold: (zone['rewardGold'] as num?)?.toInt() ?? 0,
       rewardFlag: zone['rewardFlag']?.toString(),
+      rewardMaterials: materialCountsOf(zone, 'rewardMaterials'),
     );
     found.addAll(zoneDiscoveries(zone).map(placeFoundFlag));
   }
@@ -509,6 +517,8 @@ Future<AutoplayResult> autoplayToNode(
       }
     }
 
+    await _crossLand(ref, choice, random);
+
     if (choice.hasEffects) {
       await sessionNotifier.applyChoiceEffects(
         goldMod: choice.goldMod,
@@ -517,6 +527,7 @@ Future<AutoplayResult> autoplayToNode(
         flagsToAdd: choice.flagsToAdd,
         bannerPieceId: choice.grantsBannerPieceId,
         itemId: choice.grantItemId,
+        materials: choice.grantMaterials,
         questIDToProgress: choice.questIDToProgress,
         approvalMods: choice.approvalMods,
         origin: itemOriginHere(ref),
@@ -593,6 +604,7 @@ Future<AutoplayResult> autoplayToChapter(
   int maxAttempts = 10,
   int? seed,
   Map<String, dynamic>? shops,
+  Map<String, dynamic>? houses,
   void Function(int attempt)? onAttempt,
 }) async {
   final startChapter =
@@ -646,7 +658,30 @@ Future<AutoplayResult> autoplayToChapter(
   }
   await applyAutoplayBuild(ref,
       items: items, skills: skills, dice: dice, professions: professions);
+  await buildAwaitedHarbour(ref, houses: houses);
   return result._withAttempts(attempts);
+}
+
+/// Builds the camp's harbour when the walk has founded the camp without it
+/// (see harbour.dart): the camp's tour would have the player build it with
+/// the story's grant first thing, and "Play to chapter" hands back a camp
+/// whose Eel can sail. A no-op when it stands, or the pack can't pay for
+/// it. [houses]: houses.json's records, loaded when null.
+Future<void> buildAwaitedHarbour(WidgetRef ref,
+    {Map<String, dynamic>? houses}) async {
+  final session = ref.read(playerSessionProvider);
+  if (!harbourAwaited(
+      flags: session.flags, builtHouseIds: session.builtHouseIds)) {
+    return;
+  }
+  final records = houses ??
+      await ref.read(gameDbRepositoryProvider(housesSchema)).loadRecords();
+  final harbour = records[harborHouseId];
+  if (harbour is! Map<String, dynamic>) return;
+  await ref.read(playerSessionProvider.notifier).buildHouse(
+      harborHouseId, (harbour['buildCost'] as num?)?.toInt() ?? 0,
+      requiredFlags: requiredFlagsOf(harbour),
+      materialCost: materialCountsOf(harbour, 'materialCost'));
 }
 
 /// Brings a character that reached [chapter] up to where a typical run
@@ -664,13 +699,23 @@ Future<void> applyArrivalTopUp(
   final topUp = planArrivalTopUp(session,
       chapter: chapter, items: items, shops: shops, professions: professions);
   if (topUp.isEmpty) return;
-  await ref.read(playerSessionProvider.notifier).applyCombatResult(
-        hpAfter: session.currentHealth,
-        xpGain: topUp.xp,
-        goldGain: topUp.gold,
-        itemsGained: topUp.items,
-        items: items,
-      );
+  final notifier = ref.read(playerSessionProvider.notifier);
+  await notifier.applyCombatResult(
+    hpAfter: session.currentHealth,
+    xpGain: topUp.xp,
+    goldGain: topUp.gold,
+    itemsGained: topUp.items,
+    items: items,
+  );
+  // The levels' clan offers are the top-up's, not the walk's: a jump to
+  // chapter 8 would otherwise hand back ten offer dialogs in a row. Those
+  // it queued (appended after the walk's own) are dropped; the walk's stay.
+  final after = ref.read(playerSessionProvider);
+  final kept = session.pendingOffers.length;
+  if (after.pendingOffers.length > kept) {
+    await notifier.loadSession(
+        after.copyWith(pendingOffers: after.pendingOffers.sublist(0, kept)));
+  }
 }
 
 /// Applies [planAutoplayBuild]'s build to the live session: the stat
@@ -708,6 +753,43 @@ Future<void> applyAutoplayBuild(
       await notifier.assignSkillToDiceFace(
           dieId, int.parse(entry.key), entry.value);
     }
+  }
+}
+
+/// How many times a walk sets out on a land route it lost before it is
+/// let through (see [_crossLand]).
+const int _crossingTries = 3;
+
+/// A land route [choice] crosses (see land_crossing.dart), played without
+/// a player: each lost crossing carries the party back to set out again,
+/// up to [_crossingTries] times, after which the walk goes on regardless
+/// (a testing tool is never stopped on the road).
+Future<void> _crossLand(
+    WidgetRef ref, StoryChoice choice, Random random) async {
+  if (!choice.crossesLand) return;
+  final routes =
+      await ref.read(gameDbRepositoryProvider(landRoutesSchema)).loadRecords();
+  final route = landRouteFor(routes, choice.landRouteId!);
+  if (route == null) return;
+  final events = landEventsFrom(
+      await ref.read(gameDbRepositoryProvider(landEventsSchema)).loadRecords());
+  final notifier = ref.read(playerSessionProvider.notifier);
+  final chapter = ref.read(reachedChapterProvider);
+  for (var i = 0; i < _crossingTries; i++) {
+    final session = ref.read(playerSessionProvider);
+    final result = resolveCrossing(route, events,
+        health: session.currentHealth,
+        maxHealth: session.maxHealth,
+        gold: session.gold,
+        modifierFor: (ability) => abilityModifierFor(ability, session),
+        random: random,
+        chapter: chapter);
+    await notifier.applyChoiceEffects(
+        goldMod: result.gold,
+        healAmount: result.health - session.currentHealth,
+        goldIsProfit: false);
+    await notifier.passTime(watchesPerDay * result.days, chapter: chapter);
+    if (result.arrived) return;
   }
 }
 
@@ -884,6 +966,8 @@ Future<AutoplayResult> _playTowardChapter(
       }
     }
 
+    await _crossLand(ref, choice, random);
+
     if (choice.hasEffects) {
       await sessionNotifier.applyChoiceEffects(
         goldMod: choice.goldMod,
@@ -892,6 +976,7 @@ Future<AutoplayResult> _playTowardChapter(
         flagsToAdd: choice.flagsToAdd,
         bannerPieceId: choice.grantsBannerPieceId,
         itemId: choice.grantItemId,
+        materials: choice.grantMaterials,
         questIDToProgress: choice.questIDToProgress,
         approvalMods: choice.approvalMods,
         origin: itemOriginHere(ref),

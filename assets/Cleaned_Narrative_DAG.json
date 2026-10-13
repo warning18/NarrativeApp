@@ -2042,6 +2042,7 @@
         "text": "Bury what’s left of the crew",
         "text_fr": "Enterrer ce qui reste de l’équipage",
         "next_id": "1120",
+        "landRouteId": "crash_to_sleeper",
         "alignmentMod": 1,
         "healAmount": -5,
         "flagsToAdd": [
@@ -2052,6 +2053,7 @@
         "text": "Follow the sledge tracks a while",
         "text_fr": "Suivre un moment les traces de traîneaux",
         "next_id": "1120",
+        "landRouteId": "crash_to_sleeper",
         "flagsToAdd": [
           "tracks_followed"
         ]
@@ -2103,6 +2105,7 @@
         "text": "Take what the looters left behind",
         "text_fr": "Ramasser ce que les pillards ont laissé",
         "next_id": "1120",
+        "landRouteId": "crash_to_sleeper",
         "goldMod": 30,
         "flagsToAdd": [
           "tear_touched"
@@ -2112,6 +2115,7 @@
         "text": "Take only a healer’s satchel from the sand",
         "text_fr": "Ne prendre dans le sable que la sacoche d’un guérisseur",
         "next_id": "1120",
+        "landRouteId": "crash_to_sleeper",
         "healAmount": 15,
         "flagsToAdd": [
           "tear_touched"
@@ -2121,6 +2125,7 @@
         "text": "Leave it all and go",
         "text_fr": "Tout laisser et partir",
         "next_id": "1120",
+        "landRouteId": "crash_to_sleeper",
         "flagsToAdd": [
           "tear_refused"
         ]
@@ -2142,6 +2147,7 @@
         "text": "Walk on",
         "text_fr": "Reprendre la marche",
         "next_id": "1120",
+        "landRouteId": "crash_to_sleeper",
         "healAmount": -10,
         "flagsToAdd": [
           "void_marked"
@@ -4250,7 +4256,11 @@
         "unlockQuestId": "q_ch3_the_high_wardens_fall",
         "flagsToAdd": [
           "camp_founded"
-        ]
+        ],
+        "grantMaterials": {
+          "material_timber": 4,
+          "material_cut_stone": 2
+        }
       }
     ],
     "persona_variants": {
@@ -6689,8 +6699,8 @@
   },
   "3001_camp": {
     "id": "3001_camp",
-    "description": "In a cove the flats hid from the Spire, where a freshwater burn came down to the shingle, the ones who had sailed with me stopped walking and started, without anyone quite deciding it, to build. Someone found a kettle. Someone else found a wall that still stood, from whatever the Inquisition had burned here before us. By nightfall there were fires, and a rope line, and the Rusty Eel hauled up above the tide with her storm-scars showing. I understood, with the mild alarm of someone who has never owned anything they couldn’t carry, that this was going to be the place I kept coming back to. A camp, for now. Whatever it became would depend on what I brought back to it, and on who was left to build. The Spire would keep. First I meant to learn this coast, and what was left alive on it.",
-    "description_fr": "Dans une crique que les plaines cachaient à la Flèche, là où un ruisseau d’eau douce descendait jusqu’aux galets, ceux qui avaient navigué avec moi cessèrent de marcher et se mirent, sans que personne l’ait vraiment décidé, à bâtir. Quelqu’un trouva une bouilloire. Quelqu’un d’autre trouva un mur encore debout, reste de ce que l’Inquisition avait brûlé ici avant nous. À la nuit tombée il y avait des feux, une corde tendue, et le Rusty Eel hissé au-dessus de la marée, ses cicatrices de tempête visibles. Je compris, avec une légère alarme — je n’avais jamais rien possédé que je ne pusse porter —, que ce serait l’endroit où je reviendrais sans cesse. Un campement, pour l’instant. Ce qu’il deviendrait dépendrait de ce que j’y rapporterais, et de qui resterait pour bâtir. La Flèche attendrait. Je voulais d’abord apprendre cette côte, et ce qui y restait de vivant.",
+    "description": "In a cove the flats hid from the Spire, where a freshwater burn came down to the shingle, the ones who had sailed with me stopped walking and started, without anyone quite deciding it, to build. Someone found a kettle. Someone else found a wall that still stood, from whatever the Inquisition had burned here before us. By nightfall there were fires, and a rope line, and the Rusty Eel hauled up above the tide with her storm-scars showing. What the storm and the tide had left on the shingle, spars and planks from the Eel and from older wrecks, we stacked in one heap, and from the burned wall we pulled the stones that would still bear weight and stacked those in another. Timber for a quay, stone for its foot. A ship that is only ever hauled up is a ship that has stopped sailing, and I had no wish to stop. I understood, with the mild alarm of someone who has never owned anything they couldn’t carry, that this was going to be the place I kept coming back to. A camp, for now. Whatever it became would depend on what I brought back to it, and on who was left to build. The Spire would keep. First I meant to learn this coast, and what was left alive on it.",
+    "description_fr": "Dans une crique que les plaines cachaient à la Flèche, là où un ruisseau d’eau douce descendait jusqu’aux galets, ceux qui avaient navigué avec moi cessèrent de marcher et se mirent, sans que personne l’ait vraiment décidé, à bâtir. Quelqu’un trouva une bouilloire. Quelqu’un d’autre trouva un mur encore debout, reste de ce que l’Inquisition avait brûlé ici avant nous. À la nuit tombée il y avait des feux, une corde tendue, et le Rusty Eel hissé au-dessus de la marée, ses cicatrices de tempête visibles. Ce que la tempête et la marée avaient laissé sur les galets, espars et planches de l’Eel et de plus vieilles épaves, nous l’empilâmes en un seul tas, et du mur brûlé nous tirâmes les pierres qui porteraient encore, que nous empilâmes dans un autre. Du bois pour un quai, de la pierre pour son pied. Un navire qu’on ne fait que haler est un navire qui a cessé de naviguer, et je n’avais aucune envie de cesser. Je compris, avec une légère alarme — je n’avais jamais rien possédé que je ne pusse porter —, que ce serait l’endroit où je reviendrais sans cesse. Un campement, pour l’instant. Ce qu’il deviendrait dépendrait de ce que j’y rapporterais, et de qui resterait pour bâtir. La Flèche attendrait. Je voulais d’abord apprendre cette côte, et ce qui y restait de vivant.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "tender",

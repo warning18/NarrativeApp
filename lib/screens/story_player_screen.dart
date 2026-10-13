@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -87,6 +88,7 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'expedition_screen.dart';
 import 'fight_screen.dart';
 import 'journal_screen.dart';
+import 'land_crossing_screen.dart';
 import 'race_profession_screen.dart';
 import 'shop_detail_screen.dart';
 import 'skill_challenge_screen.dart';
@@ -1390,6 +1392,18 @@ Future<void> _selectChoice({
     }
   }
 
+  // A long land route the choice crosses (v1.285.0, see
+  // land_crossing.dart): played on its own screen before the choice takes
+  // the story on; lost or turned back from, the party is where it set out
+  // and the choice is not taken. Edit Mode walks past it.
+  if (choice.crossesLand &&
+      !isExcursion &&
+      ref.read(appModeProvider) != AppMode.edit) {
+    if (!context.mounted) return;
+    final arrived = await runLandCrossing(context, ref, choice.landRouteId!);
+    if (!arrived) return;
+  }
+
   final playNotifier = ref.read(storyPlayProvider.notifier);
   var reactions = const <ApprovalChange>[];
   if (choice.hasEffects && !skipRewardEffects) {
@@ -1402,6 +1416,7 @@ Future<void> _selectChoice({
               questIDToProgress: choice.questIDToProgress,
               bannerPieceId: choice.grantsBannerPieceId,
               itemId: choice.grantItemId,
+              materials: choice.grantMaterials,
               loseAllyId: choice.loseAllyId,
               approvalMods: choice.approvalMods,
               companions:
@@ -1422,6 +1437,23 @@ Future<void> _selectChoice({
         message: tr(ref, 'item_picked_up')
             .replaceAll('{item}', name ?? choice.grantItemId!),
       );
+    }
+    // And the materials it hands over (see StoryChoice.grantMaterials),
+    // told on the way: the story goes on under the card.
+    if (choice.grantsMaterials && context.mounted) {
+      final items = ref.read(localizedDbProvider(itemsSchema)).value;
+      unawaited(showImmersiveNotice(
+        context,
+        icon: Icons.backpack_outlined,
+        message: tr(ref, 'item_picked_up').replaceAll(
+            '{item}',
+            [
+              for (final MapEntry(key: id, value: count)
+                  in choice.grantMaterials.entries)
+                if (count > 0)
+                  '$count ${(items?[id] as Map?)?['itemName'] ?? id}',
+            ].join(', ')),
+      ));
     }
     // How the party took it, before the story moves on.
     if (reactions.isNotEmpty && context.mounted) {

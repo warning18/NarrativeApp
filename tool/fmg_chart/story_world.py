@@ -84,7 +84,7 @@ ZONES = [
     ('sea_cliffs', 'The Wrack Cliffs', 'Les Falaises du Varech', [(94, 50), (100, 54), (86, 54), (88, 48)]),
     # the east land: hot and dry in the north, a jungle on the equator, temperate in the south
     ('desert', 'The Pale Dunes', 'Les Dunes pâles', [(222, 68), (212, 72), (234, 70)]),
-    ('temperate', 'The Tidewood', 'Le Bois des marées', [(222, 88), (222, 98), (212, 94)]),                           # the jungle (no jungle biome yet)
+    ('jungle', 'The Tidewood', 'Le Bois des marées', [(222, 88), (222, 98), (212, 94)]),                              # the jungle
     ('temperate', 'The Orchard Coast', 'La Côte des vergers', [(222, 116), (212, 114)]),
     # the west land: a hot dry coast in the north, temperate in the south
     ('desert', 'The Ember Dunes', 'Les Dunes de braise', [(26, 106), (30, 112)]),
@@ -246,7 +246,8 @@ def debug_png(lands, path, zones=(), px=8):
         for poly in v:
             d.polygon([(x * px, y * px) for x, y in poly.exterior.coords], fill=(72, 70, 80), outline=(150, 148, 160))
     pal = {'temperate': (90, 130, 80), 'desert': (170, 140, 80), 'arid_coast': (150, 120, 90), 'sea_cliffs': (110, 110, 130),
-           'ashlands': (100, 95, 100), 'volcanic': (150, 80, 70), 'frost': (150, 170, 190), 'tear': (130, 100, 160), 'fen': (70, 110, 100)}
+           'ashlands': (100, 95, 100), 'volcanic': (150, 80, 70), 'frost': (150, 170, 190), 'tear': (130, 100, 160), 'fen': (70, 110, 100),
+           'jungle': (60, 120, 60)}
     for biome, nm, fr, poly in zones:
         d.polygon([(x * px, y * px) for x, y in poly.exterior.coords], fill=pal.get(biome, (90, 90, 90)), outline=(230, 230, 230))
         c = poly.representative_point()

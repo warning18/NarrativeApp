@@ -2,7 +2,8 @@
 // healing in a chain, a lesson, the lucky die), what they do to a fight's
 // modifiers and to the session, and their balance in the playthrough
 // simulator: the first fight easy on every path, the chains escalating,
-// the charge at the Inquisitor-General very hard but winnable.
+// the charge at the Inquisitor-General hard, but won more often than not
+// (the boss curve of v1.280.0).
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -319,7 +320,11 @@ void main() {
       }
     });
 
-    test('the charge at Vane is very hard, but winnable', () {
+    // The boss curve (v1.280.0, the user's design): chapter 1's boss is won
+    // about three times in four (boss_balance_test), so the charge at Vane,
+    // once very hard (10-40% a try), is now won more often than not, and
+    // still lost often enough to matter.
+    test('the charge at Vane is hard, but won more often than not', () {
       final charge = story['400']!.choices.singleWhere((c) => c.triggersCombat);
       final vane = charge.allTriggerEnemyIds.single;
       expect(soloOnlyEnemyIds, contains(vane));
@@ -339,7 +344,7 @@ void main() {
         }
       }
       final rate = wins / tries;
-      expect(rate, inInclusiveRange(0.1, 0.4), reason: 'won $rate');
+      expect(rate, inInclusiveRange(0.55, 0.9), reason: 'won $rate');
       expect(winners.length, greaterThanOrEqualTo(4),
           reason: 'winnable by most professions: $winners');
     });

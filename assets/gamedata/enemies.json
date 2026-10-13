@@ -18,6 +18,10 @@
       {
         "itemID": "thug_knuckle_wrap",
         "dropRate": 10
+      },
+      {
+        "itemID": "material_timber",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -230,6 +234,10 @@
       {
         "itemID": "rat_king_tooth",
         "dropRate": 10
+      },
+      {
+        "itemID": "material_timber",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -290,6 +298,10 @@
       {
         "itemID": "blackened_fang",
         "dropRate": 10
+      },
+      {
+        "itemID": "material_cut_stone",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -361,6 +373,10 @@
       {
         "itemID": "cultist_hood",
         "dropRate": 10
+      },
+      {
+        "itemID": "material_slag_glass",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -833,8 +849,8 @@
   },
   "void_stalker": {
     "enemyName": "Void Stalker",
-    "maxHealth": 200,
-    "damage": 23,
+    "maxHealth": 147,
+    "damage": 20,
     "guile": 5,
     "faction": "",
     "reaction": "",
@@ -1400,6 +1416,10 @@
       {
         "itemID": "warden_signet",
         "dropRate": 10
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -1785,6 +1805,10 @@
       {
         "itemID": "material_iron_ore",
         "dropRate": 15
+      },
+      {
+        "itemID": "material_slag_glass",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -1845,8 +1869,8 @@
   },
   "bone_warden": {
     "enemyName": "Bone Warden",
-    "maxHealth": 320,
-    "damage": 30,
+    "maxHealth": 229,
+    "damage": 25,
     "guile": 6,
     "faction": "",
     "reaction": "",
@@ -1951,8 +1975,8 @@
   },
   "hollow_court_inquisitor": {
     "enemyName": "Hollow Court Inquisitor",
-    "maxHealth": 340,
-    "damage": 33,
+    "maxHealth": 165,
+    "damage": 23,
     "guile": 9,
     "faction": "",
     "reaction": "",
@@ -2088,6 +2112,10 @@
       {
         "itemID": "antidote",
         "dropRate": 15
+      },
+      {
+        "itemID": "material_rime_crystal",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -2317,8 +2345,8 @@
   },
   "void_archon": {
     "enemyName": "Void Archon",
-    "maxHealth": 340,
-    "damage": 27,
+    "maxHealth": 235,
+    "damage": 22,
     "guile": 10,
     "faction": "",
     "reaction": "",
@@ -2439,6 +2467,10 @@
       {
         "itemID": "tear_glass_blade",
         "dropRate": 15
+      },
+      {
+        "itemID": "material_tear_glass",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -2499,8 +2531,8 @@
   },
   "void_sovereign": {
     "enemyName": "The Sovereign",
-    "maxHealth": 390,
-    "damage": 30,
+    "maxHealth": 332,
+    "damage": 28,
     "guile": 12,
     "faction": "",
     "reaction": "",
@@ -3462,6 +3494,10 @@
       {
         "itemID": "material_iron_ore",
         "dropRate": 15
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -3547,6 +3583,10 @@
       {
         "itemID": "potion_major",
         "dropRate": 10
+      },
+      {
+        "itemID": "material_rime_crystal",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -3618,6 +3658,10 @@
       {
         "itemID": "helm_last_watch",
         "dropRate": 15
+      },
+      {
+        "itemID": "material_tear_glass",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -3767,8 +3811,8 @@
   "white_admiral": {
     "enemyName": "The White Admiral",
     "enemyName_fr": "L’Amiral Blanc",
-    "maxHealth": 395,
-    "damage": 32,
+    "maxHealth": 305,
+    "damage": 28,
     "guile": 11,
     "faction": "",
     "reaction": "",
@@ -4680,8 +4724,8 @@
   "claimant_vane": {
     "enemyName": "Aurel Vane, Inquisitor-General",
     "enemyName_fr": "Aurel Vane, Inquisiteur général",
-    "maxHealth": 365,
-    "damage": 33,
+    "maxHealth": 276,
+    "damage": 29,
     "guile": 12,
     "faction": "dominion",
     "reaction": "",
@@ -4816,7 +4860,7 @@
   "claimant_morrow": {
     "enemyName": "Hesk Morrow, Grand Master",
     "enemyName_fr": "Hesk Morrow, Grand Maître",
-    "maxHealth": 390,
+    "maxHealth": 375,
     "damage": 22,
     "guile": 9,
     "faction": "",
@@ -4952,8 +4996,8 @@
   "claimant_tallis": {
     "enemyName": "Maud Tallis, Eldest Wickwarden",
     "enemyName_fr": "Maud Tallis, Aînée des Garde-Mèches",
-    "maxHealth": 300,
-    "damage": 23,
+    "maxHealth": 203,
+    "damage": 19,
     "guile": 11,
     "faction": "",
     "reaction": "",
@@ -5077,8 +5121,8 @@
   "tear_herald": {
     "enemyName": "The Tear-Herald",
     "enemyName_fr": "Le Héraut de la Déchirure",
-    "maxHealth": 345,
-    "damage": 27,
+    "maxHealth": 264,
+    "damage": 24,
     "guile": 12,
     "faction": "",
     "reaction": "",
@@ -5342,6 +5386,10 @@
       {
         "itemID": "potion_minor",
         "dropRate": 25
+      },
+      {
+        "itemID": "material_timber",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -5381,8 +5429,8 @@
   },
   "aurel_vane": {
     "enemyName": "Inquisitor-General Aurel Vane",
-    "maxHealth": 165,
-    "damage": 18,
+    "maxHealth": 111,
+    "damage": 15,
     "guile": 5,
     "faction": "dominion",
     "reaction": "",

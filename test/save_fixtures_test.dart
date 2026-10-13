@@ -106,8 +106,10 @@ void main() {
   test('the fixtures are the saves they claim to be', () {
     final old = _fixture(_v198);
     final recent = _fixture(_v204);
-    expect(old['saveVersion'], playerSessionSaveVersion);
-    expect(recent['saveVersion'], playerSessionSaveVersion);
+    // Both were saved at version 3, before materials (version 4, which
+    // migrates them on load, see legacyMaterialGrant).
+    expect(old['saveVersion'], 3);
+    expect(recent['saveVersion'], 3);
     for (final key in _keysSince198) {
       expect(old.containsKey(key), isFalse, reason: '$key is v1.204');
       expect(recent.containsKey(key), isTrue, reason: '$key is v1.204');

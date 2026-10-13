@@ -28,6 +28,7 @@ import '../data/story_graph_integrity.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
 import '../data/geography.dart';
+import '../data/land_crossing.dart';
 import '../data/road_events.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -288,7 +289,14 @@ class _SimContext {
     this.clashOff = const {},
     this.quests = const {},
     this.npcs = const {},
+    this.landRoutes = const {},
+    this.landEvents = const {},
   });
+
+  /// land_routes.json and land_events.json's events: the land crossings
+  /// the walk plays (see land_crossing.dart).
+  final Map<String, dynamic> landRoutes;
+  final Map<String, LandEvent> landEvents;
 
   /// quests.json and npcs.json: the quests the walk takes on and hands in.
   final Map<String, dynamic> quests;
@@ -750,6 +758,47 @@ _SimResult _simulate(
           once: choice.hasLossBranch, host: choice.hostFight)
       : fightEnemies(const [], chapter);
 
+  /// The land route [routeId] crossed from [fromNodeId] (v1.285.0, see
+  /// land_crossing.dart), played as "Play to chapter" plays it: each day's
+  /// event by pickLandChoice, a lost crossing carrying the party back to
+  /// set out again, up to three times, then through. Its rolls come from a
+  /// stream of their own, seeded by where and when it is crossed, so the
+  /// walk's own stream is left as it was.
+  void crossLand(String routeId, String fromNodeId, int at) {
+    final route = landRouteFor(sim?.landRoutes ?? const {}, routeId);
+    final events = sim?.landEvents ?? const {};
+    final c = character;
+    if (route == null || events.isEmpty || c == null) return;
+    var seed = at;
+    for (final unit in '$routeId/$fromNodeId'.codeUnits) {
+      seed = (seed * 31 + unit) & 0x3fffffff;
+    }
+    final crossingRandom = Random(seed);
+    for (var i = 0; i < 3; i++) {
+      final result = resolveCrossing(route, events,
+          health: c.currentHealth,
+          maxHealth: c.maxHealth,
+          gold: gold,
+          modifierFor: c.abilityBonus,
+          random: crossingRandom,
+          chapter: lastKnownChapter);
+      c.currentHealth = result.health;
+      gold = (gold + result.gold).clamp(0, 1 << 30).toInt();
+      steps.add(_SimStep(
+        nodeId: 'crossing:${route.id}',
+        chapter: lastKnownChapter,
+        mood: null,
+        uiTheme: null,
+        description: route.nameFor(french),
+        choiceText: result.arrived
+            ? (french ? 'Traversée' : 'Crossed')
+            : (french ? 'Ramené en arrière' : 'Carried back'),
+        goldMod: result.gold,
+      ));
+      if (result.arrived) return;
+    }
+  }
+
   /// The hazard on the road from [fromNodeId] to [toNodeId] (v1.197),
   /// [at] steps into the walk, met where the game would meet it (see
   /// roadEventFor): pushed through above half health (the character
@@ -1098,6 +1147,11 @@ _SimResult _simulate(
       continue;
     }
 
+    // A land route the choice crosses (v1.285.0), before it takes the
+    // story on: lost, the party is carried back to set out again (see
+    // crossLand).
+    if (choice.crossesLand) crossLand(choice.landRouteId!, currentId, step);
+
     steps.add(_SimStep(
       nodeId: currentId,
       chapter: lastKnownChapter,
@@ -1143,6 +1197,12 @@ _SimResult _simulate(
     // item the scene puts in the pack goes in it.
     if (questLog != null) {
       if (choice.grantsItem) questLog.inventory.add(choice.grantItemId!);
+      for (final MapEntry(key: id, value: count)
+          in choice.grantMaterials.entries) {
+        for (var i = 0; i < count; i++) {
+          questLog.inventory.add(id);
+        }
+      }
       for (final id in [choice.unlockQuestId, choice.questIDToProgress]) {
         if (id != null && id.isNotEmpty) {
           questLog.accept(id,
@@ -1268,6 +1328,8 @@ _SimContext _simContextOf(
     clashOff: clashOff,
     quests: table('quests'),
     npcs: table('npcs'),
+    landRoutes: table('land_routes'),
+    landEvents: landEventsFrom(table('land_events')),
   );
 }
 
@@ -1838,6 +1900,8 @@ class _PlaythroughSimulatorScreenState
       ),
       skillTrees: await load(skillTreesSchema),
       geography: await loadGeography(ref),
+      landRoutes: await load(landRoutesSchema),
+      landEvents: landEventsFrom(await load(landEventsSchema)),
     );
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
     final random = Random();
