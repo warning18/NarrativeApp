@@ -9,14 +9,20 @@ before starting a change.
 | Session | Branch | Job |
 |---|---|---|
 | **Manager** | `ccr-76229db7-131ulj` | splits tasks, merges PRs, assigns versions, owns this file, CI and releases |
-| **Core** (game mechanics) | `claude/apk-workflow-issue-24c8hx` | rules, numbers and state |
+| **Core** (game mechanics) | `claude/core` | rules, numbers and state |
 | **UX** (design and UX) | `claude/eager-pascal-y847vf` | how things look, move and read |
 | **Narrative** (story and content) | `claude/narrative` | what the game says: story, quests, characters, dialogue |
 | **QA** (testing) | `claude/qa` | finds what broke: tests, simulator, PR reviews |
 
 The manager is the Claude Code session `session_01SfVpQUmQNXErL5fGsy7HU9`.
 Sessions reach it with the `send_message` tool of the `claude-code-remote`
-MCP server.
+MCP server. A session without that tool writes what it needs in its PR
+description, or in a note under `docs/proposals/` on its branch, and the
+manager reads it there.
+
+Core moved to a new session on branch `claude/core` (v1.268); the old
+branch `claude/apk-workflow-issue-24c8hx` is retired. Its handoff note is
+`docs/handoff/core.md`.
 
 ## Who owns what
 

@@ -16243,6 +16243,63 @@
     "location": "cove_camp",
     "choices": [
       {
+        "text": "Hear the factor from the Reed Gate",
+        "text_fr": "Écouter le facteur de la Porte des Roseaux",
+        "next_id": "7400_reed",
+        "hideIfFlags": [
+          "hub_7400_reed"
+        ]
+      },
+      {
+        "text": "Read the Reed Gate’s petition by the fire",
+        "text_fr": "Lire la pétition de la Porte des Roseaux près du feu",
+        "next_id": "7400_reed_later",
+        "showIfFlags": [
+          "hub_7400_reed"
+        ],
+        "hideIfFlags": [
+          "hub_7400_reed_later"
+        ]
+      },
+      {
+        "text": "Receive the Order’s herald under his white flag",
+        "text_fr": "Recevoir le héraut de l’Ordre sous son pavillon blanc",
+        "next_id": "7400_herald",
+        "hideIfFlags": [
+          "hub_7400_herald"
+        ]
+      },
+      {
+        "text": "Break the Order’s seal and read the terms",
+        "text_fr": "Briser le sceau de l’Ordre et lire les termes",
+        "next_id": "7400_herald_later",
+        "showIfFlags": [
+          "hub_7400_herald"
+        ],
+        "hideIfFlags": [
+          "hub_7400_herald_later"
+        ]
+      },
+      {
+        "text": "Pull the pilot’s boat up onto the shingle",
+        "text_fr": "Haler la barque du pilote sur les galets",
+        "next_id": "7400_chain",
+        "hideIfFlags": [
+          "hub_7400_chain"
+        ]
+      },
+      {
+        "text": "Copy the tide table from the boy’s arm",
+        "text_fr": "Recopier la table des marées sur le bras du garçon",
+        "next_id": "7400_chain_later",
+        "showIfFlags": [
+          "hub_7400_chain"
+        ],
+        "hideIfFlags": [
+          "hub_7400_chain_later"
+        ]
+      },
+      {
         "text": "Sail for Candlehold and take the Lantern Throne",
         "text_fr": "Faire voile vers Candlehold et prendre le Trône de la Lanterne",
         "next_id": "7500",
@@ -18507,6 +18564,36 @@
           "claim_penitents",
           "claim_open_hand"
         ]
+      },
+      {
+        "flag": "reed_nine_lodged",
+        "en": "Nine households’ names were in my coat when I came up the harbour steps, and the Reed Gate’s tongue was, for the first time in three years, being counted.",
+        "fr": "Les noms de neuf foyers étaient dans mon manteau quand je montai les marches du port, et la flamme de la Porte des Roseaux, pour la première fois en trois ans, était comptée."
+      },
+      {
+        "flag": "reed_eleven_lodged",
+        "en": "The petition went up the harbour steps with eleven names on it, two of them never signed. I had decided the Reed Gate could better afford a lie than a silence.",
+        "fr": "La pétition monta les marches du port avec onze noms, dont deux n’avaient jamais signé. J’avais décidé que la Porte des Roseaux pouvait mieux se payer un mensonge qu’un silence."
+      },
+      {
+        "flag": "herald_answered_morrow",
+        "en": "The Order knew my answer before I climbed the harbour steps, and so did the knights who did not look at me on them.",
+        "fr": "L’Ordre connaissait ma réponse avant que je monte les marches du port, et les chevaliers qui ne me regardèrent pas sur ces marches aussi."
+      },
+      {
+        "flag": "herald_unanswered",
+        "en": "I had sent Morrow’s herald away with nothing. The knights on the stair would learn my banner the way he had warned they would.",
+        "fr": "J’avais renvoyé le héraut de Morrow sans rien. Les chevaliers de l’escalier apprendraient ma bannière comme il m’avait prévenu qu’ils l’apprendraient."
+      },
+      {
+        "flag": "chain_hours_kept",
+        "en": "The chain-master’s tide table was folded small in my boot. The chain came down for four hours on the night of the dark moon, and I meant to be there for them.",
+        "fr": "La table des marées du maître de chaîne était pliée en quatre dans ma botte. La chaîne s’abaissait quatre heures la nuit de la lune noire, et je comptais y être."
+      },
+      {
+        "flag": "chain_thanks_promised",
+        "en": "I had promised a stranger on the harbour wall that I would thank him to his face. It was the only debt I was looking forward to paying.",
+        "fr": "J’avais promis à un inconnu du mur du port de le remercier en face. C’était la seule dette que j’avais hâte de payer."
       }
     ],
     "settlement": {
@@ -25110,6 +25197,135 @@
         "flag": "salvage_sold",
         "en": "“I am here for the sea,” he said, “not for you.” He coiled a line without looking at it. “The wreck-wrights paid you for my haul. I hope it bought something that floats. Mine does, and it is built from three others, and it did not need your help to do it.”",
         "fr": "« Je suis là pour la mer, dit-il, pas pour vous. » Il lova une aussière sans la regarder. « Les charpentiers d’épaves vous ont payé ma prise. J’espère que ça a acheté quelque chose qui flotte. La mienne flotte, elle est bâtie de trois autres, et elle n’a pas eu besoin de votre aide pour ça. »"
+      }
+    ]
+  },
+  "7400_reed": {
+    "id": "7400_reed",
+    "description": "A man in a Candlehold factor’s grey coat was waiting on the shingle when I came down to the Eel the next morning, a leather tube under his arm and the patience of someone who had been turned away at every other camp on the coast. House Reed kept the Reed Gate, and its tongue of the gonfalon had been struck from the Conclave’s roll over three years of unpaid harbour dues; no tongue, no vote, and the Conclave was counting votes like coins. “Eleven signatures,” he said, tapping the tube. “Every household that still lives under the Reed Gate. Somebody has to put it in front of the Conclave who is not afraid of being counted against it.” He did not say that nobody in the city would take it. He did not need to.",
+    "description_fr": "Un homme en manteau gris de facteur de Candlehold m’attendait sur les galets quand je descendis à l’Eel le lendemain matin, un tube de cuir sous le bras et la patience de qui s’est fait éconduire dans tous les autres camps de la côte. La Maison du Roseau tenait la Porte des Roseaux, et sa flamme du gonfanon avait été rayée du rôle du Conclave pour trois ans de droits de port impayés ; plus de flamme, plus de voix, et le Conclave comptait les voix comme des pièces. « Onze signatures, dit-il en tapotant le tube. Chaque foyer qui vit encore sous la Porte des Roseaux. Il faut que quelqu’un la mette sous les yeux du Conclave sans craindre d’être compté contre elle. » Il ne dit pas que personne, en ville, ne s’en chargerait. Il n’en avait pas besoin.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Take the petition roll from the factor",
+        "text_fr": "Prendre le rouleau des mains du facteur",
+        "next_id": "7400",
+        "flagsToAdd": [
+          "hub_7400_reed"
+        ],
+        "unlockQuestId": "q_ch7_reed_gate_grievance"
+      }
+    ]
+  },
+  "7400_reed_later": {
+    "id": "7400_reed_later",
+    "description": "I read it by the fire that night, as the factor had asked me not to, and the signatures were not what he had made them sound. A fishwife’s cross. A pilot’s thumbprint in tar. A line in a lamplighter’s hand: we cannot pay the dues, we can pay in oars. Two names were in the factor’s own ink. The other nine were real, nine households’ worth of real, and they asked for nothing but a voice in the room where the harbour dues were set. I rolled it up again and sat looking at the fire, deciding how much of it I was willing to lie about.",
+    "description_fr": "Je la lus près du feu, cette nuit-là, comme le facteur m’avait prié de ne pas le faire, et les signatures n’étaient pas ce qu’il avait laissé entendre. Une croix de poissonnière. Une empreinte de pouce de pilote, dans le goudron. Une ligne d’une main d’allumeur de lampes : nous ne pouvons pas payer les droits, nous pouvons payer en avirons. Deux noms étaient de l’encre du facteur lui-même. Les neuf autres étaient vrais, neuf foyers de vérité, et ils ne demandaient rien d’autre qu’une voix dans la salle où l’on fixait les droits du port. Je la roulai de nouveau et restai à regarder le feu, à décider de combien j’acceptais de mentir.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Roll it up and keep it in the Eel’s chest",
+        "text_fr": "La rouler et la garder dans le coffre de l’Eel",
+        "next_id": "7400",
+        "flagsToAdd": [
+          "hub_7400_reed_later"
+        ]
+      }
+    ]
+  },
+  "7400_herald": {
+    "id": "7400_herald",
+    "description": "A white flag came round the point at noon, on a skiff rowed by two knights who looked as if they had been told not to look at the Eel’s guns. The man in the bow wore the surcoat of the Order of the Vigilant Flame over a clerk’s hands, and he stood on the shingle holding the flag straight up, like a man carrying water. “Grand Master Morrow sends his compliments,” he said, “and a question. He will be in the Lantern Hall when the Conclave sits. He would like to know, before you land, what banner you mean to land under, so that his knights need not find out on the stair.” It was a fair question. It was also the kind of fair question asked by someone who has already drawn the answer on a map.",
+    "description_fr": "Un pavillon blanc doubla la pointe à midi, à bord d’un esquif que ramaient deux chevaliers qui avaient l’air d’avoir reçu l’ordre de ne pas regarder les canons de l’Eel. L’homme à la proue portait la cotte de l’Ordre de la Flamme Vigilante sur des mains de clerc, et il se tenait sur les galets, le pavillon dressé tout droit, comme un homme qui porte de l’eau. « Le Grand Maître Morrow vous présente ses compliments, dit-il, et une question. Il sera dans la Salle de la Lanterne quand le Conclave siégera. Il voudrait savoir, avant que vous accostiez, sous quelle bannière vous comptez le faire, afin que ses chevaliers n’aient pas à l’apprendre dans l’escalier. » La question était juste. C’était aussi le genre de question juste que pose quelqu’un qui a déjà dessiné la réponse sur une carte.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Take his sealed letter and let him wait",
+        "text_fr": "Prendre sa lettre scellée et le faire attendre",
+        "next_id": "7400",
+        "flagsToAdd": [
+          "hub_7400_herald"
+        ],
+        "unlockQuestId": "q_ch7_heralds_errand"
+      }
+    ]
+  },
+  "7400_herald_later": {
+    "id": "7400_herald_later",
+    "description": "The letter was three lines in a Grand Master’s square hand, and every line was a door held half open, a hand on the latch. The Order would stand aside on the Hall stair if the claim I carried was the Dominion’s own. The Order would stand against me if it was not. And whatever I answered, the herald was to leave the cove under escort and be told nothing of the Eel’s guns, which I took as proof that Morrow already knew exactly how many there were.",
+    "description_fr": "La lettre tenait en trois lignes, de l’écriture carrée d’un Grand Maître, et chaque ligne était une porte entrouverte, la main sur le loquet. L’Ordre s’effacerait sur l’escalier de la Salle si la prétention que je portais était celle du Dominion lui-même. L’Ordre se dresserait contre moi si elle ne l’était pas. Et quelle que fût ma réponse, le héraut devait quitter la crique sous escorte sans qu’on lui dise rien des canons de l’Eel, ce que je pris pour la preuve que Morrow en savait déjà le nombre exact.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Fold the letter into the Eel’s chart-case",
+        "text_fr": "Plier la lettre dans l’étui à cartes de l’Eel",
+        "next_id": "7400",
+        "flagsToAdd": [
+          "hub_7400_herald_later"
+        ]
+      }
+    ]
+  },
+  "7400_chain": {
+    "id": "7400_chain",
+    "description": "A pilot’s boat rowed in after dark with no lamp, and the boy at the oars could not have been twelve. He had been sent from Candlehold’s harbour wall, he said, by the man who kept the chain: the great iron chain that shuts the harbour at night, with its chain-house on the mole and a winch that took four men and a prayer to turn. “He says you will want it down,” the boy said. “He says everyone who comes in under a banner wants it down, and he is tired of being asked in the dark by people who think he can be had for what is in their pockets.” He held out a hand, palm up, to show it was empty. Inked on the inside of his arm, in a clerk’s careful figures, was something that looked very like a tide table.",
+    "description_fr": "Une barque de pilote aborda après la nuit tombée, sans lampe, et le garçon aux avirons n’avait pas douze ans. Il avait été envoyé du mur du port de Candlehold, dit-il, par l’homme qui tenait la chaîne : la grande chaîne de fer qui ferme le port la nuit, avec sa maison de chaîne sur le môle et un treuil qu’il fallait quatre hommes et une prière pour tourner. « Il dit que vous la voudrez baissée, dit le garçon. Il dit que tous ceux qui entrent sous une bannière la veulent baissée, et qu’il est las qu’on le lui demande dans le noir, par des gens qui croient pouvoir l’avoir pour ce qu’ils ont en poche. » Il tendit une main, paume en l’air, pour montrer qu’elle était vide. Sur l’intérieur de son bras, d’une écriture de clerc, étaient tracés des chiffres qui ressemblaient fort à une table des marées.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Ask the boy what the chain-master wants",
+        "text_fr": "Demander au garçon ce que veut le maître de chaîne",
+        "next_id": "7400",
+        "flagsToAdd": [
+          "hub_7400_chain"
+        ],
+        "unlockQuestId": "q_ch7_chain_masters_boy"
+      }
+    ]
+  },
+  "7400_chain_later": {
+    "id": "7400_chain_later",
+    "description": "I copied the figures by lamplight while the boy held out his arm like a man having his fortune told. The chain came down for exactly four hours on the night of the dark moon, when the harbour tide ran slack and the chain-house crew went to confession, and not a minute either side of it. At the foot of the arm was a name, and no price: the chain-master wanted to be thanked, in person, by someone who would remember his face. It was the strangest bribe I had ever been offered, and the only one I believed.",
+    "description_fr": "Je recopiai les chiffres à la lueur d’une lampe, le garçon tendant le bras comme quelqu’un à qui l’on lit l’avenir. La chaîne s’abaissait pendant quatre heures exactement, la nuit de la lune noire, quand la marée du port étalait et que l’équipe de la maison de chaîne allait à confesse, et pas une minute de part ou d’autre. Au bas du bras, il y avait un nom, et pas de prix : le maître de chaîne voulait qu’on le remercie, en personne, quelqu’un qui se souviendrait de son visage. C’était le plus étrange pot-de-vin qu’on m’eût jamais offert, et le seul auquel je crus.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Pay the boy and watch him row into the dark",
+        "text_fr": "Payer le garçon et le voir ramer vers le noir",
+        "next_id": "7400",
+        "flagsToAdd": [
+          "hub_7400_chain_later"
+        ]
       }
     ]
   }

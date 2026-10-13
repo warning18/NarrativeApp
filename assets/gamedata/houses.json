@@ -61,8 +61,8 @@
   },
   "smugglers_cellar": {
     "houseID": "smugglers_cellar",
-    "houseName": "Smugglers' Cellar",
-    "description": "The Smugglers' Vault goes wherever the Crusade's supply ships go, and it found our cove before the Inquisition did. Give it a dry cellar under the camp's standing wall and it opens its counter here: contraband steel a cut above the harbor forges, and a relic or two nobody admits to owning.",
+    "houseName": "Smugglers’ Cellar",
+    "description": "The Smugglers’ Vault goes wherever the Crusade's supply ships go, and it found our cove before the Inquisition did. Give it a dry cellar under the camp's standing wall and it opens its counter here: contraband steel a cut above the harbor forges, and a relic or two nobody admits to owning.",
     "buildCost": 400,
     "partyCapacityBonus": 0,
     "unlocksShopId": "smugglers_vault",

@@ -328,6 +328,8 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '3001', '3001_camp', '4999_camp', '6002_siege', '6002_siege_2', //
       '6002_siege_breach', '6002_siege_end', '6002_camp', '7001', '7400',
+      '7400_reed', '7400_reed_later', '7400_herald', '7400_herald_later', //
+      '7400_chain', '7400_chain_later',
       '7800', '7800_council', '7800_lines', '7800_nkem_later',
     ],
   ),
