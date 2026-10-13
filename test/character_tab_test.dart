@@ -253,6 +253,15 @@ void main() {
         // A row each, not half a screen.
         expect(tester.getSize(race).height, lessThan(150));
         expect(tester.getSize(profession).height, lessThan(150));
+        // The dossier: elements, belongings and the Continue sit within a
+        // screen and a bit, not three.
+        expect(find.byKey(const Key('sheet_radar')), findsOneWidget);
+        // (Just under the fold, so it is built but not on stage yet.)
+        final belongings =
+            find.byKey(const Key('sheet_belongings'), skipOffstage: false);
+        expect(belongings, findsOneWidget);
+        expect(tester.getBottomLeft(belongings).dy, lessThan(size.height * 1.4),
+            reason: 'the whole dossier is a screen and a bit');
         // The lore is behind the tap.
         expect(find.byKey(const Key('sheet_race_card_lore')), findsNothing);
         await tester.tap(race);
