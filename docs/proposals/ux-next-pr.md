@@ -2,7 +2,7 @@
 
 For the manager (read here because UX has no `send_message`). #203 (1.277) is merged; this note replaces the one for it.
 
-**Please give me a version for the next UX PR.** It is ready on `claude/eager-pascal-y847vf` (merged with `main` at v1.277). I will not open it until I have one.
+The next UX PR is v1.282.0+318 (the version the manager gave), merged with `main` at v1.281. It merges on green CI, no QA review (manager's rule until the weekly reset).
 
 What it holds, all in UX's area but for two lines in shared screens:
 
@@ -13,7 +13,7 @@ What it holds, all in UX's area but for two lines in shared screens:
 - **The full-screen map (board 8, approved by the user):** `FullMapScreen` is the Journey's own chart (sphere or flat as set, layers, weather) on its own page. Opened from a **Full map** button among the Journey chart's controls, and from each known place on the camp's Road tab (**On the map**: the chart opens on that place with its sheet up). A tap on a reached place opens a sheet: where the party stands, **Travel here** (the camp's own `travelToPlace`; disabled during a fight or an expedition), or why it cannot. Under the chart: **Legend** (marks as the chart draws them), **The story** (opens the Journal's "story so far" page) and **Journeys** (roads walked by chapter; a tap turns the chart to where it ends). The layers sheet is now shared (`widgets/calques_sheet.dart`). The flat travel page (`TravelMapScreen`, `TravelMapView`, the compass button) is removed; the map no longer uses `MapShape.story`.
 - **docs/proposals/side-view-ux.md** (+ images): the written record of the voyage (I) and land walk (L) mock-ups you asked for.
 
-Touches another session's area: `lib/screens/journey_screen.dart` (the chip's `compact` flag; the layers sheet and the shop/camp lookups moved to shared helpers; the Full map button; the compass button removed), `lib/widgets/camp_travel.dart` (an "On the map" button on `PlaceCard`), `lib/l10n/app_strings.dart` (new `map_*` keys, four `travel_*` keys removed with the page) and the AppBars of the pages above (`actions:` only).
+Touches another session's area: the deleted QA test `test/qa_travel_map_test.dart` (it guarded the retired travel page; QA to write a guard of the full map), `lib/screens/journey_screen.dart` (the chip's `compact` flag; the layers sheet and the shop/camp lookups moved to shared helpers; the Full map button; the compass button removed), `lib/widgets/camp_travel.dart` (an "On the map" button on `PlaceCard`), `lib/l10n/app_strings.dart` (new `map_*` keys, four `travel_*` keys removed with the page) and the AppBars of the pages above (`actions:` only).
 
 Not in it, waiting on the user: **C** (the skill choice sheet with before → after: board 9 of the design file), the walking sprite for L.
 
