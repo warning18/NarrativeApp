@@ -6272,9 +6272,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_character_4': {
     AppLanguage.en:
-        'From here: your gear, your skills, your level-up points and your dice.',
+        'Three tabs. Overview is this page. Gifts holds your titles, perks and signs, with a red dot when a choice waits. Pages leads to your gear, skills, level-up points and dice.',
     AppLanguage.fr:
-        "D'ici : votre équipement, vos compétences, vos points de niveau et vos dés.",
+        "Trois onglets. Aperçu est cette page. Dons réunit vos titres, atouts et signes, avec un point rouge quand un choix attend. Pages mène à votre équipement, vos compétences, vos points de niveau et vos dés.",
+  },
+  'gifts_waiting_label': {
+    AppLanguage.en: 'A gift is waiting',
+    AppLanguage.fr: 'Un don vous attend',
   },
   'tut_camp_1': {
     AppLanguage.en:

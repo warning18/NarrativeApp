@@ -89,6 +89,63 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
     });
   }
 
+  /// What a house gives, in a line: its bonuses and the shop it opens, else
+  /// its description.
+  String _houseDetail(String houseId) {
+    final house = widget.houses[houseId] as Map<String, dynamic>;
+    final capacity = (house['partyCapacityBonus'] as num?)?.toInt() ?? 0;
+    final health = (house['partyHealthBonus'] as num?)?.toInt() ?? 0;
+    final damage = (house['partyDamageBonus'] as num?)?.toInt() ?? 0;
+    final shopId = house['unlocksShopId']?.toString() ?? '';
+    final shopName = shopId.isEmpty
+        ? null
+        : (widget.shops[shopId] as Map<String, dynamic>?)?['shopName']
+                ?.toString() ??
+            shopId;
+    final detail = [
+      if (capacity > 0) '+$capacity ${tr(ref, 'party_capacity_label')}',
+      if (health > 0) '+$health% ${tr(ref, 'party_health_bonus_label')}',
+      if (damage > 0) '+$damage% ${tr(ref, 'party_damage_bonus_label')}',
+      if (shopName != null) '${tr(ref, 'unlocks_shop_prefix')}: $shopName',
+    ];
+    return detail.isNotEmpty
+        ? detail.join(' · ')
+        : house['description']?.toString() ?? '';
+  }
+
+  /// A tap on a piece of the town: its name and what it gives, in a sheet.
+  void _showInfo(String id) {
+    final isAddition = isTownAddition(id);
+    final detail = isAddition
+        ? tr(ref, '${id}_desc')
+        : widget.houses.containsKey(id)
+            ? _houseDetail(id)
+            : '';
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (context) {
+        final theme = Theme.of(context);
+        return SafeArea(
+          child: Padding(
+            key: const Key('town_piece_info'),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(_nameOf(id), style: theme.textTheme.titleMedium),
+                if (detail.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Text(detail, style: theme.textTheme.bodyMedium),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _buildHouse(String houseId, CliffTown town) async {
     final house = widget.houses[houseId] as Map<String, dynamic>;
     final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
@@ -312,35 +369,10 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                         tr(ref, 'requires_zone_prefix'),
                         lockRequirementName(house, session.flags, widget.zones),
                       ].whereType<String>().join(': ');
-                final capacity =
-                    (house['partyCapacityBonus'] as num?)?.toInt() ?? 0;
-                final health =
-                    (house['partyHealthBonus'] as num?)?.toInt() ?? 0;
-                final damage =
-                    (house['partyDamageBonus'] as num?)?.toInt() ?? 0;
-                final shopId = house['unlocksShopId']?.toString() ?? '';
-                final shopName = shopId.isEmpty
-                    ? null
-                    : (widget.shops[shopId]
-                                as Map<String, dynamic>?)?['shopName']
-                            ?.toString() ??
-                        shopId;
-                final detail = [
-                  if (capacity > 0)
-                    '+$capacity ${tr(ref, 'party_capacity_label')}',
-                  if (health > 0)
-                    '+$health% ${tr(ref, 'party_health_bonus_label')}',
-                  if (damage > 0)
-                    '+$damage% ${tr(ref, 'party_damage_bonus_label')}',
-                  if (shopName != null)
-                    '${tr(ref, 'unlocks_shop_prefix')}: $shopName',
-                ];
                 return card(
                   id: houseId,
                   name: _nameOf(houseId),
-                  detail: detail.isNotEmpty
-                      ? detail.join(' · ')
-                      : house['description']?.toString() ?? '',
+                  detail: _houseDetail(houseId),
                   footprint: footprintOf(houseId),
                   cost: (house['buildCost'] as num?)?.toInt() ?? 0,
                   isBuilt: isBuilt,
@@ -420,6 +452,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                     highlightIndex: _lastBuilt,
                     harborAction: widget.harborAction,
                     scrollController: _scroll,
+                    onPieceTap: (id) => _showInfo(id),
                   ),
                   // The hour over the town (the world clock).
                   WatchSky(
