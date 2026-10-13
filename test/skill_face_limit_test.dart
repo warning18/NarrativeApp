@@ -173,6 +173,12 @@ void main() {
     final stoneskin = tester
         .widget<ListTile>(find.byKey(const Key('pick_skill_dwarf_stoneskin')));
     expect(stoneskin.enabled, isTrue);
+    // Each row says the face before and after, from the fight's own rule.
+    expect(
+        tester
+            .widget<Text>(find.byKey(const Key('pick_change_dwarf_stoneskin')))
+            .data,
+        contains('→'));
     // A tap lights the row and offers the change; nothing is set until the
     // button at the foot is pressed.
     await tester.tap(find.byKey(const Key('pick_skill_dwarf_stoneskin')));

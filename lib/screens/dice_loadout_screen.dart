@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/combat_engine.dart' show applySkillTier;
 import '../combat/dice_faces.dart';
+import '../combat/face_choice.dart';
 import '../combat/face_keywords.dart';
 import '../combat/face_smithing.dart';
 import '../data/skill_tree.dart';
@@ -415,17 +417,42 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
           id,
     ];
     final basic = isBasicFace(face);
+    // What each skill does to this face is the fight's own rule (Core's
+    // faceSkillChoice): the skills at the tier the player fights them at,
+    // the damage the party deals. An ally's faces use the player's damage
+    // here (the fight's perks and signs are not replayed).
+    final session = ref.read(playerSessionProvider);
+    final items = ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
+    final scaling = equipmentScalingBonusFor(session.equippedItemIds, items,
+        strength: session.strength,
+        dexterity: session.dexterity,
+        constitution: session.constitution,
+        intelligence: session.intelligence);
+    final baseDamage = session.baseDamage +
+        equipmentBonusFor(session.equippedItemIds, items, 'attackDamage') +
+        scaling.damageBonus;
+    final tiered = <String, dynamic>{
+      for (final e in skills.entries)
+        e.key: applySkillTier(
+            e.value as Map<String, dynamic>, session.skillTiers[e.key] ?? 0),
+    };
     final options = [
       for (final id in choices)
         () {
           final skill = skills[id] as Map<String, dynamic>?;
           final rarity = skillRarity(skill);
-          final max = maxFacesForSkill(skill);
+          final choice = faceSkillChoice(
+            faces: faces,
+            assignments: assignments,
+            faceIndex: faceIndex,
+            candidateId: id,
+            skills: tiered,
+            baseDamage: baseDamage,
+          );
           // At its limit a skill can't take one more face; the face's own
           // pick stays choosable.
-          final allowed = id == current ||
-              canSetSkillOnFace(id, faceIndex, faces, assignments, skills);
-          final onDie = facesCastingSkill(id, faces, assignments, skills);
+          final allowed =
+              choice.allowed || choice.block == FaceChoiceBlock.alreadyThere;
           return FaceSkillOption(
             id: id,
             name: skillDisplayName(id, language: lang),
@@ -433,12 +460,13 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
             iconColour: skillKind(skill).color,
             rarityLabel: t(rarity.labelKey),
             rarityColour: rarity.color,
-            change: _faceChangeStub(face, skill, lang),
+            change: _faceChangeOf(choice, lang),
             limitLine: (allowed
-                    ? t('skill_faces_count').replaceAll('{n}', '$onDie')
+                    ? t('skill_faces_count').replaceAll('{n}',
+                        '${choice.usedFaces + (choice.block == FaceChoiceBlock.alreadyThere ? 1 : 0)}')
                     : t('skill_faces_full'))
                 .replaceAll('{rarity}', t(rarity.labelKey))
-                .replaceAll('{max}', '$max'),
+                .replaceAll('{max}', '${choice.maxFaces}'),
             allowed: allowed,
           );
         }(),
@@ -511,34 +539,51 @@ String _basicFaceSummary(Map<String, dynamic> face, AppLanguage lang) {
   ].join(' · ');
 }
 
-/// STUB: how [skill] changes [face], until Core's compare helper (the fight's
-/// own rule for a face with a skill on it) is plugged in here. It reads the
-/// skill's own numbers, so the "after" is only a stand-in.
-FaceChange _faceChangeStub(
-    Map<String, dynamic> face, Map<String, dynamic>? skill, AppLanguage lang) {
-  final manaGain = (skill?['manaGain'] as num?)?.toInt() ?? 0;
-  final damageMod = (skill?['damageMod'] as num?)?.toInt() ?? 0;
-  final element = skill?['element']?.toString() ?? 'None';
-  final value = (face['value'] as num?)?.toInt() ?? 0;
-  final before = _basicFaceSummary(face, lang);
-  if (manaGain > 0) {
-    return FaceChange(
-        before: before,
-        after: [
-          '${trFor(lang, 'mana_label')} +$manaGain',
-          if (element != 'None') element,
-        ].join(' · '),
-        kind: FaceChangeKind.kind);
-  }
-  final type = trFor(lang, basicFaceLabelKey(face['type']?.toString() ?? ''));
+/// "Attack 7", "Mana +2", "Attack 5 · Heal 3": what a face does when it
+/// lands, in words.
+String _outputText(FaceOutput o, AppLanguage lang) {
+  String t(String key) => trFor(lang, key);
+  final parts = [
+    if (o.damage > 0) '${t('face_attack_label')} ${o.damage}',
+    if (o.heal > 0) '${t('face_heal_label')} ${o.heal}',
+    if (o.block > 0) '${t('face_guard_label')} ${o.block}',
+    if (o.mana > 0) '${t('face_mana_label')} +${o.mana}',
+    if (o.status != null) o.status!,
+  ];
+  return parts.isEmpty ? t('miss_label') : parts.join(' · ');
+}
+
+/// [choice] (Core's compare of a face with and without a skill) as the
+/// sheet's before → after: a change of kind when the face stops doing what
+/// it did (an attack that gives mana, say), else a gain or a loss in what
+/// it does.
+FaceChange _faceChangeOf(FaceSkillChoice choice, AppLanguage lang) {
+  Set<String> shape(FaceOutput o) => {
+        if (o.damage > 0) 'damage',
+        if (o.heal > 0) 'heal',
+        if (o.block > 0) 'block',
+        if (o.mana > 0) 'mana',
+        if (o.status != null) 'status',
+      };
+  int total(FaceOutput o) => o.damage + o.heal + o.block + o.mana;
+  final b = choice.before, a = choice.after;
+  final sameShape =
+      shape(b).length == shape(a).length && shape(b).containsAll(shape(a));
+  final kind = !sameShape
+      ? FaceChangeKind.kind
+      : switch (choice.effect) {
+          FaceChoiceEffect.gain => FaceChangeKind.gain,
+          FaceChoiceEffect.loss => FaceChangeKind.loss,
+          FaceChoiceEffect.same => FaceChangeKind.same,
+        };
   return FaceChange(
-      before: before,
-      after: [
-        '$type ${value + damageMod}',
-        if (element != 'None') element,
-      ].join(' · '),
-      kind: damageMod == 0 ? FaceChangeKind.same : FaceChangeKind.gain,
-      delta: damageMod == 0 ? null : damageMod);
+    before: _outputText(b, lang),
+    after: _outputText(a, lang),
+    kind: kind,
+    delta: kind == FaceChangeKind.gain || kind == FaceChangeKind.loss
+        ? total(a) - total(b)
+        : null,
+  );
 }
 
 /// "+6 dmg ×1.4 · Fire" -- a skill's numbers in one line.
