@@ -90,4 +90,35 @@ void main() {
     expect(find.byKey(const Key('travel_place_info')), findsOneWidget);
     expect(find.byKey(const Key('travel_go')), findsNothing);
   });
+
+  testWidgets('closing the map removes the map page, not what is over it',
+      (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final key = GlobalKey<NavigatorState>();
+    late Route<dynamic> mapRoute;
+    await tester.pumpWidget(MaterialApp(
+      navigatorKey: key,
+      home: const Scaffold(body: Text('journey')),
+    ));
+    mapRoute = MaterialPageRoute<void>(
+        builder: (_) => const Scaffold(body: Text('map')));
+    key.currentState!.push(mapRoute);
+    await tester.pumpAndSettle();
+    // A notice (a route here) lands over the map.
+    key.currentState!.push(MaterialPageRoute<void>(
+        builder: (_) => const Scaffold(body: Text('walked to X'))));
+    await tester.pumpAndSettle();
+
+    closeMapRoute(key.currentState!, mapRoute);
+    await tester.pumpAndSettle();
+    expect(find.text('walked to X'), findsOneWidget,
+        reason: 'the notice stays');
+    key.currentState!.pop();
+    await tester.pumpAndSettle();
+    expect(find.text('map'), findsNothing,
+        reason: 'the map is gone: popping the notice lands on the journey');
+    expect(find.text('journey'), findsOneWidget);
+    // Closing a route that is gone is harmless.
+    closeMapRoute(key.currentState!, mapRoute);
+  });
 }

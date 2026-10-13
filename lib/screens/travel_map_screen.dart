@@ -15,6 +15,14 @@ import '../providers/travel_history_provider.dart';
 import '../widgets/camp_travel.dart' show travelToPlace;
 import '../widgets/travel_map_view.dart';
 
+/// Closes the travel map's [route] wherever it is in the stack (not
+/// whatever is on top: a "walked to" notice can be over it). A route that is
+/// gone already is left alone.
+void closeMapRoute(NavigatorState nav, Route<dynamic>? route) {
+  if (route == null || !route.isActive || !nav.mounted) return;
+  nav.removeRoute(route);
+}
+
 /// The map of where the party has been: the story world's chart with the
 /// road taken in order, the places reached by name, the ones only heard of
 /// as "?" (see TravelHistory), and a ring round each place the camp can
@@ -114,9 +122,13 @@ class TravelMapScreen extends ConsumerWidget {
       final story = ref.read(storyDataProvider).value;
       final place = story?.nodeFor(nodeId);
       if (place == null) return;
+      // The map's own route, kept: a notice may be showing over it by the
+      // time the walk is done, so what is closed is this page, not the top.
+      final nav = Navigator.of(context);
+      final mapRoute = ModalRoute.of(context);
       await travelToPlace(context, ref, place);
       // The journey has begun: back to the Journey, where it is played.
-      if (context.mounted) Navigator.of(context).maybePop();
+      closeMapRoute(nav, mapRoute);
       return;
     }
 
