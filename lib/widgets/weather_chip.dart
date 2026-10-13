@@ -76,15 +76,19 @@ class WeatherChip extends ConsumerWidget {
             children: [
               Icon(iconOf(sky.kind), size: 13, color: palette.place),
               const SizedBox(width: 5),
-              Text(
-                tags.isEmpty
-                    ? describe(ref, sky)
-                    : '${describe(ref, sky)} · $tags',
-                key: const ValueKey('journey_weather_chip'),
-                style: TextStyle(
-                  fontFamily: InkFonts.system,
-                  fontSize: 11,
-                  color: palette.place,
+              Flexible(
+                child: Text(
+                  tags.isEmpty
+                      ? describe(ref, sky)
+                      : '${describe(ref, sky)} · $tags',
+                  key: const ValueKey('journey_weather_chip'),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: InkFonts.system,
+                    fontSize: 11,
+                    color: palette.place,
+                  ),
                 ),
               ),
             ],
