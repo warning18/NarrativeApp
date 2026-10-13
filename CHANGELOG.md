@@ -8,6 +8,43 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.285.0+321]
+
+Land expeditions, the first: the crossing from the wreck of the Lark.
+
+### Added
+- **Land crossings.** A long land route is played like a voyage, on its
+  own screen: an event a day (a sandstorm, a dry well, a spring, a mirage,
+  scavengers, shade), each asking what the party does. Some choices roll
+  an ability check, one harder a chapter after the first.
+  - **Health plays the hull.** Each outcome costs or gives a share of the
+    party's maximum health, and sometimes gold or an extra day. If health
+    runs out, the party is carried back to where it set out at half
+    health, with the days spent, and the story choice is not taken. The
+    party can also turn back at any time.
+  - **The first crossing** is from the wreck of the Lark to the Sleeper's
+    Face (3 days, desert): every way out of the wreck takes it. The
+    Sleeper's scenes stay as they were.
+  - **Data:** `land_routes.json` and `land_events.json`, editable in the
+    database editor. A story choice names its route with `landRouteId`.
+  - **"Play to chapter" and the playthrough simulator** play crossings
+    with the same rules. The simulator rolls them on a stream of their
+    own, so the walk's seeded results stay comparable.
+  - **A tutorial** for crossings, shown the first time the screen opens.
+  - The screen is a plain one for now; its side view is UX's to come, and
+    its words are drafts for Narrative.
+
+### Changed
+- **"Play to chapter" hands back a stronger character late in the story.**
+  Its arrival table was regenerated from the 800-run simulator check after
+  the boss curve, the materials and the harbour. Chapters 6 to 8 now
+  arrive at levels 10, 11 and 12 (were 9, 10 and 10), and the gold moved
+  a little throughout.
+
+### Fixed
+- A scene whose one way on crosses land or grants materials is no longer
+  read straight through, so neither is skipped.
+
 ## [1.284.0+320]
 
 The harbour has a reason to be built.
