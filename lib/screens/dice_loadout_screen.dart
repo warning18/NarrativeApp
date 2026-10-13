@@ -17,6 +17,7 @@ import '../tutorial/tutorial_topics.dart';
 import '../utils/face_style.dart';
 import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import '../widgets/face_skill_sheet.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/die_3d.dart';
 import '../widgets/die_skins.dart';
@@ -414,96 +415,48 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
           id,
     ];
     final basic = isBasicFace(face);
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (sheetContext) {
-        final theme = Theme.of(sheetContext);
-        return SafeArea(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(sheetContext).size.height * 0.7),
-            child: ListView(
-              shrinkWrap: true,
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              children: [
-                Text(t('pick_face_skill_title'),
-                    style: theme.textTheme.titleMedium),
-                if (basic)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      t('channeled_face_note').replaceAll('{face}',
-                          t(basicFaceLabelKey(face['type']?.toString() ?? ''))),
-                      style: theme.textTheme.bodySmall,
-                    ),
-                  ),
-                const SizedBox(height: 8),
-                if (onClear != null)
-                  ListTile(
-                    leading: const Icon(Icons.undo),
-                    title: Text(t('reset_face_button')),
-                    subtitle: Text(_basicFaceSummary(face, lang)),
-                    onTap: () {
-                      Navigator.of(sheetContext).pop();
-                      onClear();
-                    },
-                  ),
-                if (choices.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Text(t('no_skills_unlocked_hint')),
-                  ),
-                for (final id in choices)
-                  Builder(builder: (_) {
-                    final skill = skills[id] as Map<String, dynamic>?;
-                    final rarity = skillRarity(skill);
-                    final max = maxFacesForSkill(skill);
-                    // At its limit a skill can't take one more face; the
-                    // face's own pick stays choosable.
-                    final allowed = id == current ||
-                        canSetSkillOnFace(
-                            id, faceIndex, faces, assignments, skills);
-                    final onDie =
-                        facesCastingSkill(id, faces, assignments, skills);
-                    final limitLine = (allowed
-                            ? t('skill_faces_count').replaceAll('{n}', '$onDie')
-                            : t('skill_faces_full'))
-                        .replaceAll('{rarity}', t(rarity.labelKey))
-                        .replaceAll('{max}', '$max');
-                    return ListTile(
-                      key: Key('pick_skill_$id'),
-                      enabled: allowed,
-                      leading: Icon(skillKind(skill).icon,
-                          color: skillKind(skill).color),
-                      title: Text(skillDisplayName(id, language: lang)),
-                      subtitle: Text.rich(TextSpan(children: [
-                        TextSpan(text: _skillSummary(skill, lang)),
-                        TextSpan(
-                          text: '\n$limitLine',
-                          style: TextStyle(
-                              color: allowed
-                                  ? rarity.color
-                                  : theme.colorScheme.error),
-                        ),
-                      ])),
-                      isThreeLine: true,
-                      selected: id == current,
-                      trailing: id == current ? const Icon(Icons.check) : null,
-                      onTap: allowed
-                          ? () {
-                              Navigator.of(sheetContext).pop();
-                              onPick(id);
-                            }
-                          : null,
-                    );
-                  }),
-              ],
-            ),
-          ),
-        );
-      },
+    final options = [
+      for (final id in choices)
+        () {
+          final skill = skills[id] as Map<String, dynamic>?;
+          final rarity = skillRarity(skill);
+          final max = maxFacesForSkill(skill);
+          // At its limit a skill can't take one more face; the face's own
+          // pick stays choosable.
+          final allowed = id == current ||
+              canSetSkillOnFace(id, faceIndex, faces, assignments, skills);
+          final onDie = facesCastingSkill(id, faces, assignments, skills);
+          return FaceSkillOption(
+            id: id,
+            name: skillDisplayName(id, language: lang),
+            icon: skillKind(skill).icon,
+            iconColour: skillKind(skill).color,
+            rarityLabel: t(rarity.labelKey),
+            rarityColour: rarity.color,
+            change: _faceChangeStub(face, skill, lang),
+            limitLine: (allowed
+                    ? t('skill_faces_count').replaceAll('{n}', '$onDie')
+                    : t('skill_faces_full'))
+                .replaceAll('{rarity}', t(rarity.labelKey))
+                .replaceAll('{max}', '$max'),
+            allowed: allowed,
+          );
+        }(),
+    ];
+    showFaceSkillSheet(
+      context,
+      nowLine: t('face_now_line')
+          .replaceAll('{n}', '${faceIndex + 1}')
+          .replaceAll('{face}', _basicFaceSummary(face, lang)),
+      note: basic
+          ? t('channeled_face_note').replaceAll(
+              '{face}', t(basicFaceLabelKey(face['type']?.toString() ?? '')))
+          : null,
+      options: options,
+      currentId: current,
+      onSet: onPick,
+      onClear: onClear,
+      clearSubtitle: _basicFaceSummary(face, lang),
     );
   }
 
@@ -556,6 +509,36 @@ String _basicFaceSummary(Map<String, dynamic> face, AppLanguage lang) {
     '${trFor(lang, basicFaceLabelKey(type))}${value > 0 ? ' $value' : ''}',
     if (element != 'None') element,
   ].join(' · ');
+}
+
+/// STUB: how [skill] changes [face], until Core's compare helper (the fight's
+/// own rule for a face with a skill on it) is plugged in here. It reads the
+/// skill's own numbers, so the "after" is only a stand-in.
+FaceChange _faceChangeStub(
+    Map<String, dynamic> face, Map<String, dynamic>? skill, AppLanguage lang) {
+  final manaGain = (skill?['manaGain'] as num?)?.toInt() ?? 0;
+  final damageMod = (skill?['damageMod'] as num?)?.toInt() ?? 0;
+  final element = skill?['element']?.toString() ?? 'None';
+  final value = (face['value'] as num?)?.toInt() ?? 0;
+  final before = _basicFaceSummary(face, lang);
+  if (manaGain > 0) {
+    return FaceChange(
+        before: before,
+        after: [
+          '${trFor(lang, 'mana_label')} +$manaGain',
+          if (element != 'None') element,
+        ].join(' · '),
+        kind: FaceChangeKind.kind);
+  }
+  final type = trFor(lang, basicFaceLabelKey(face['type']?.toString() ?? ''));
+  return FaceChange(
+      before: before,
+      after: [
+        '$type ${value + damageMod}',
+        if (element != 'None') element,
+      ].join(' · '),
+      kind: damageMod == 0 ? FaceChangeKind.same : FaceChangeKind.gain,
+      delta: damageMod == 0 ? null : damageMod);
 }
 
 /// "+6 dmg ×1.4 · Fire" -- a skill's numbers in one line.
