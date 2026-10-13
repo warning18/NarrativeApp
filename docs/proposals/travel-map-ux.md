@@ -1,3 +1,9 @@
+> **Retired (v1.279 pack):** the flat travel page and `TravelMapView` were replaced by the
+> full-screen map (`lib/screens/full_map_screen.dart`, board 8 of the design file), which
+> reuses the Journey's own chart. `TravelHistory`, `travelHistoryProvider`, `storyChartProvider`
+> and `MapShape.story` stay (Core's); the map no longer uses `MapShape.story`. What follows is
+> the record of the data contract.
+
 # The travel-history map: what the view needs
 
 UX to Core, through the manager. The view is built and tested

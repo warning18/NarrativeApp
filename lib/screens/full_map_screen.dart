@@ -17,7 +17,16 @@ import '../widgets/calques_sheet.dart';
 import '../widgets/camp_travel.dart' show travelToPlace;
 import '../widgets/chart_map_painter.dart' show ChartFog;
 import '../widgets/journey_world_map.dart';
-import 'travel_map_screen.dart' show closeMapRoute;
+import '../widgets/map_legend_sheet.dart';
+import 'journal_screen.dart' show JournalScreen;
+
+/// Closes the full map's [route] wherever it is in the stack (not whatever
+/// is on top: a "walked to" notice can be over it). A route that is gone
+/// already is left alone.
+void closeMapRoute(NavigatorState nav, Route<dynamic>? route) {
+  if (route == null || !route.isActive || !nav.mounted) return;
+  nav.removeRoute(route);
+}
 
 /// Each landmark where a shop opens in [story].
 Set<String> shopPlacesOf(StoryData story) => {
@@ -56,10 +65,15 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
   Set<String> _shops = const {};
   Set<String> _camps = const {};
 
+  /// The place the chart is turned to and marked: the one asked for, then
+  /// the end of a journey picked from the list.
+  Landmark? _focus;
+
   @override
   void initState() {
     super.initState();
     final id = widget.focusId;
+    _focus = id == null ? null : landmarkById(id);
     if (id != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final landmark = landmarkById(id);
@@ -181,31 +195,101 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
         }
       }
     }
-    final focusId = widget.focusId;
+    Color chapterColor(int n) => switch (look) {
+          MapLook.night => mapChapter(n).dark,
+          MapLook.parchment => mapChapter(n).light,
+          MapLook.shroud => const Color(0xFFA3A3AA),
+        };
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'map_full_title'))),
       body: SafeArea(
-        child: JourneyWorldMap(
-          key: const ValueKey('full_world_map'),
-          level: JourneyMapLevel.world,
-          palette: palette,
-          here: standing,
-          discovered: worldDiscovered,
-          legs: roadLegs(
-              journeyOf(play.history, play.currentNodeId), worldDiscovered),
-          ahead: nextPlace,
-          shopPlaces: _shops,
-          campPlaces: _camps,
-          chapterColor: (n) => switch (look) {
-            MapLook.night => mapChapter(n).dark,
-            MapLook.parchment => mapChapter(n).light,
-            MapLook.shroud => const Color(0xFFA3A3AA),
-          },
-          onLayers: () => showCalquesSheet(context, ref),
-          onSelect: _placeSheet,
-          focus: focusId == null ? null : landmarkById(focusId),
-          fog: editing ? ChartFog.none : ChartFog.uncharted,
+        child: Column(
+          children: [
+            Expanded(
+              child: JourneyWorldMap(
+                key: const ValueKey('full_world_map'),
+                level: JourneyMapLevel.world,
+                palette: palette,
+                here: standing,
+                discovered: worldDiscovered,
+                legs: roadLegs(journeyOf(play.history, play.currentNodeId),
+                    worldDiscovered),
+                ahead: nextPlace,
+                shopPlaces: _shops,
+                campPlaces: _camps,
+                chapterColor: chapterColor,
+                onLayers: () => showCalquesSheet(context, ref),
+                onSelect: _placeSheet,
+                focus: _focus,
+                fog: editing ? ChartFog.none : ChartFog.uncharted,
+              ),
+            ),
+            _MapToolbar(
+              onLegend: () => showMapLegendSheet(context, ref,
+                  palette: palette, chapterColor: chapterColor),
+              onStory: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const JournalScreen()),
+              ),
+              onJourneys: () async {
+                final to = await showMapJourneysSheet(context, ref,
+                    journey: journeyOf(play.history, play.currentNodeId),
+                    chapterColor: chapterColor);
+                if (to != null && mounted) setState(() => _focus = to);
+              },
+            ),
+          ],
         ),
+      ),
+    );
+  }
+}
+
+/// Under the chart: what its marks mean, the story so far, the roads walked.
+class _MapToolbar extends ConsumerWidget {
+  const _MapToolbar({
+    required this.onLegend,
+    required this.onStory,
+    required this.onJourneys,
+  });
+
+  final VoidCallback onLegend;
+  final VoidCallback onStory;
+  final VoidCallback onJourneys;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    Widget button(String key, IconData icon, String label, VoidCallback on) =>
+        Expanded(
+          child: InkWell(
+            key: Key(key),
+            onTap: on,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, size: 20),
+                  const SizedBox(height: 2),
+                  Text(label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelSmall),
+                ],
+              ),
+            ),
+          ),
+        );
+    return Material(
+      color: Theme.of(context).colorScheme.surface,
+      child: Row(
+        children: [
+          button('map_legend', Icons.info_outline, tr(ref, 'map_legend'),
+              onLegend),
+          button('map_story', Icons.menu_book_outlined, tr(ref, 'map_story'),
+              onStory),
+          button('map_journeys', Icons.route_outlined, tr(ref, 'map_journeys'),
+              onJourneys),
+        ],
       ),
     );
   }

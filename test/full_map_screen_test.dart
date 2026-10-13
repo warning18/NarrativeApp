@@ -117,6 +117,44 @@ void main() {
     expect(find.byKey(const Key('travel_go')), findsOneWidget);
   });
 
+  testWidgets('the toolbar opens the legend, and the journeys turn the chart',
+      (tester) async {
+    await open(tester, withTarget);
+    expect(find.byKey(const Key('map_story')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('map_legend')));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('map_legend_sheet')), findsOneWidget);
+    await tester.tapAt(const Offset(10, 10));
+    await tester.pump(const Duration(milliseconds: 400));
+
+    // No road walked: the sheet says so.
+    await tester.tap(find.byKey(const Key('map_journeys')));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('map_journeys_empty')), findsOneWidget);
+    await tester.tapAt(const Offset(10, 10));
+    await tester.pump(const Duration(milliseconds: 400));
+
+    // Three places walked: a tap on a stretch faces the chart to where it ends.
+    final container =
+        ProviderScope.containerOf(tester.element(find.byType(FullMapScreen)));
+    final play = container.read(storyPlayProvider.notifier);
+    for (final id in const ['965', '1100', '1120']) {
+      play.jumpTo(id);
+    }
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(const Key('map_journeys')));
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pump(const Duration(milliseconds: 400));
+    final rows = find.byWidgetPredicate(
+        (w) => w.key.toString().contains('map_journey_') && w is ListTile);
+    expect(rows, findsWidgets);
+    await tester.tap(rows.first);
+    await tester.pump(const Duration(milliseconds: 400));
+    final map = tester
+        .widget<JourneyWorldMap>(find.byKey(const ValueKey('full_world_map')));
+    expect(map.focus, isNotNull);
+  });
+
   testWidgets('the Journey chart offers the full map from its controls',
       (tester) async {
     SharedPreferences.setMockInitialValues({});
@@ -149,5 +187,36 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     await tester.tap(find.byKey(const Key('journey_full_map')));
     expect(opened, 1);
+  });
+
+  testWidgets('closing the map removes the map page, not what is over it',
+      (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final key = GlobalKey<NavigatorState>();
+    late Route<dynamic> mapRoute;
+    await tester.pumpWidget(MaterialApp(
+      navigatorKey: key,
+      home: const Scaffold(body: Text('journey')),
+    ));
+    mapRoute = MaterialPageRoute<void>(
+        builder: (_) => const Scaffold(body: Text('map')));
+    key.currentState!.push(mapRoute);
+    await tester.pumpAndSettle();
+    // A notice (a route here) lands over the map.
+    key.currentState!.push(MaterialPageRoute<void>(
+        builder: (_) => const Scaffold(body: Text('walked to X'))));
+    await tester.pumpAndSettle();
+
+    closeMapRoute(key.currentState!, mapRoute);
+    await tester.pumpAndSettle();
+    expect(find.text('walked to X'), findsOneWidget,
+        reason: 'the notice stays');
+    key.currentState!.pop();
+    await tester.pumpAndSettle();
+    expect(find.text('map'), findsNothing,
+        reason: 'the map is gone: popping the notice lands on the journey');
+    expect(find.text('journey'), findsOneWidget);
+    // Closing a route that is gone is harmless.
+    closeMapRoute(key.currentState!, mapRoute);
   });
 }
