@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.284.0+320]
+
+The harbour has a reason to be built.
+
+### Changed
+- **The camp scene says where the harbour's timber and stone come from.**
+  In `3001_camp` the survivors stack the storm's and the tide's spars and
+  planks in one heap and the burned wall's sound stones in another: timber
+  for a quay, stone for its foot, which is what Core's grant on `3001` puts in
+  the pack. The camp tour's first step (`tut_camp_harbour`) now says the same
+  in the narrator's words, in English and French, with the typographic
+  apostrophes and the space before the colon. Text only; no ids, numbers or
+  flags changed.
+
 ## [1.283.0+319]
 
 The harbour: the story hands over what it costs, and the camp builds it
