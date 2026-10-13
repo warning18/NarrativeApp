@@ -17,6 +17,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/chart_globe.dart';
+import 'package:narrative_data_app/data/chart_story.dart';
 import 'package:narrative_data_app/data/chart_worlds.dart';
 import 'package:narrative_data_app/data/climate.dart';
 import 'package:narrative_data_app/data/map_charts.dart';
@@ -25,7 +26,6 @@ import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/widgets/chart_map_painter.dart';
 
 import 'chart_fmg.dart';
-import 'chart_story.dart';
 
 /// Where [p] lands on the new chart when the landmarks move from [from] to
 /// [to]: every landmark's shift, weighted by 1/d^2 (Shepard), so a village

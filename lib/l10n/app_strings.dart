@@ -3714,8 +3714,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'mood_tender': {AppLanguage.en: 'Tender', AppLanguage.fr: 'Tendre'},
   'mood_uncanny': {AppLanguage.en: 'Uncanny', AppLanguage.fr: 'Étrange'},
   'mood_wry': {AppLanguage.en: 'Wry', AppLanguage.fr: 'Narquois'},
-  'mood_defiant': {AppLanguage.en: 'Defiant', AppLanguage.fr: 'Frondeur'},
-  'mood_mournful': {AppLanguage.en: 'Mournful', AppLanguage.fr: 'Endeuillé'},
+  'mood_defiant': {AppLanguage.en: 'Defiant', AppLanguage.fr: 'Insoumis'},
+  'mood_mournful': {AppLanguage.en: 'Mournful', AppLanguage.fr: 'Funèbre'},
   'mood_ominous': {
     AppLanguage.en: 'Ominous',
     AppLanguage.fr: 'De mauvais augure'

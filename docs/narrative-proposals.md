@@ -120,8 +120,8 @@ Eleven nodes use `hopeful`, which has **no tag string** today: a small gap
 | `tender` | Tender | Tendre | camp evenings, Lysa and companion scenes |
 | `uncanny` | Uncanny | Étrange | the tear, the reflections, the Dead Heart (some `creepy` become this) |
 | `wry` | Wry | Narquois | the narrator's comic beats: Saltmouth bargaining, the cards, the touts |
-| `defiant` | Defiant | Frondeur | stands, sieges, "hold the gate" |
-| `mournful` | Mournful | Endeuillé | losing Lysa, Tobin's vigil, the drowned |
+| `defiant` | Defiant | Insoumis | stands, sieges, "hold the gate" |
+| `mournful` | Mournful | Funèbre | losing Lysa, Tobin's vigil, the drowned |
 | `ominous` | Ominous | De mauvais augure | arrivals under a clan's banner, the Herald |
 | `bitter` | Bitter | Amer | betrayals, the Penitent's confession |
 | `wondrous` | Wondrous | Merveilleux | first sight of the tear, the giants' hall, the glass strand |
