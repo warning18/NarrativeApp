@@ -10853,6 +10853,32 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Un clan offre les compétences de sa branche une à une, plus profondes à mesure qu’il vous fait confiance.',
   },
+  'tile_inventory': {
+    AppLanguage.en: 'Inventory',
+    AppLanguage.fr: 'Inventaire',
+  },
+  'tile_dice': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dés'},
+  'skills_see_all': {AppLanguage.en: 'All skills', AppLanguage.fr: 'Toutes'},
+  'skills_none_short': {
+    AppLanguage.en: 'No skills yet',
+    AppLanguage.fr: 'Aucune compétence',
+  },
+  'titles_chip_hint': {
+    AppLanguage.en: 'Tap to wear · hold to read',
+    AppLanguage.fr: 'Toucher : porter · maintenir : lire',
+  },
+  'gifts_none_short': {
+    AppLanguage.en: 'None yet',
+    AppLanguage.fr: 'Aucun pour l’instant',
+  },
+  'offers_row_none': {
+    AppLanguage.en: 'No offer waiting',
+    AppLanguage.fr: 'Aucune offre en attente',
+  },
+  'recap_who_you_are': {
+    AppLanguage.en: 'Who you are',
+    AppLanguage.fr: 'Qui vous êtes',
+  },
   'titles_section': {
     AppLanguage.en: 'Titles',
     AppLanguage.fr: 'Titres',

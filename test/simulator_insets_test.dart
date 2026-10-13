@@ -74,6 +74,8 @@ void main() {
         await tester.pump(const Duration(milliseconds: 300));
 
         // A chapter chip, so the button is enabled, then the button itself.
+        // The controls scroll as one list: fail here if it is not there.
+        expect(find.byKey(const Key('sim_scroll_full')), findsOneWidget);
         final button = find.byIcon(Icons.fast_forward);
         await tester.dragUntilVisible(button,
             find.byKey(const Key('sim_scroll_full')), const Offset(0, -120));

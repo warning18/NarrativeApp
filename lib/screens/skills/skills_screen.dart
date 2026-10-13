@@ -23,7 +23,11 @@ import 'skills_view_model.dart';
 import 'spells_view.dart';
 
 class SkillsScreen extends ConsumerWidget {
-  const SkillsScreen({super.key, this.allyId});
+  const SkillsScreen({super.key, this.allyId, this.initialTab = 0});
+
+  /// The tab the player's screen opens on: 0 the Tree, 1 My skills, 2
+  /// Spells (the Character tab's Mana card opens it on 2).
+  final int initialTab;
 
   /// When set, the screen is this companion's: their class's skills,
   /// learned with their own points.
@@ -111,7 +115,8 @@ class SkillsScreen extends ConsumerWidget {
           : body,
     );
     return allyId == null
-        ? DefaultTabController(length: 3, child: scaffold)
+        ? DefaultTabController(
+            length: 3, initialIndex: initialTab.clamp(0, 2), child: scaffold)
         : scaffold;
   }
 }

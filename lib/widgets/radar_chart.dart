@@ -59,7 +59,12 @@ class RadarChart extends StatelessWidget {
     this.rings = 3,
     this.size = 320,
     this.semanticsLabel,
+    this.compact = false,
   });
+
+  /// A small radar (v1.266): a larger shape, its labels one line close to
+  /// its corners, so it fits a card at about 170 px.
+  final bool compact;
 
   final List<RadarAxis> axes;
   final List<RadarLayer> layers;
@@ -81,8 +86,8 @@ class RadarChart extends StatelessWidget {
   Widget _build(BuildContext context, double size) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final radius = size * 0.28;
-    final labelRadius = radius + 21;
+    final radius = size * (compact ? 0.30 : 0.28);
+    final labelRadius = radius + (compact ? 12 : 21);
     final center = Offset(size / 2, size / 2);
     final n = axes.length;
     return Semantics(
@@ -108,7 +113,8 @@ class RadarChart extends StatelessWidget {
                 ),
               ),
               for (var i = 0; i < n; i++)
-                _label(theme, scheme, axes[i], i, n, center, labelRadius),
+                _label(
+                    theme, scheme, axes[i], i, n, center, labelRadius, compact),
             ],
           ),
         ),
@@ -117,7 +123,7 @@ class RadarChart extends StatelessWidget {
   }
 
   Widget _label(ThemeData theme, ColorScheme scheme, RadarAxis axis, int i,
-      int n, Offset center, double labelRadius) {
+      int n, Offset center, double labelRadius, bool compact) {
     final at = radarPoint(center, labelRadius, i, n);
     final a = -pi / 2 + i * 2 * pi / n;
     final align = Offset(-0.5 + cos(a) * 0.5, -0.5 + sin(a) * 0.5);
@@ -131,7 +137,7 @@ class RadarChart extends StatelessWidget {
           children: [
             Text(axis.label,
                 style: theme.textTheme.labelMedium?.copyWith(
-                    fontSize: 11.5,
+                    fontSize: compact ? 10.5 : 11.5,
                     letterSpacing: 0.4,
                     color:
                         axis.color ?? scheme.onSurface.withValues(alpha: 0.8))),

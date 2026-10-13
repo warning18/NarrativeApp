@@ -8,6 +8,41 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.266.0+302]
+
+The Character tab and the race and profession recap, shorter to read.
+
+### Changed
+- **Skills first, with a radar.** The tab opens on the skills known (their
+  icons and names, "All skills" for the rest) beside a small radar of the
+  eight abilities; the eight numbers that sat further down are gone (the
+  radar writes them at its corners). The page links are four tiles:
+  Inventory, Dice, Level Up, Race and profession. The Skills link is now the
+  skills card's own.
+- **Titles are chips.** One chip per title held, the one worn in gold; a tap
+  wears it or takes it off, a press and hold reads it (what it does, its
+  words, why a bad one stays). A bad title ("the Marked") shows a warning
+  and has no tap.
+- **Perks and signs fold to one line each**, with their count and their names
+  in the line; a tap opens them in place. Perks read one line each, with the
+  whole text behind a tap. The empty case is "None yet" instead of a
+  paragraph.
+- **Offers are one line**: "Offers · Choose a gift · 1 waiting" opens the
+  offer; with none, "No offer waiting".
+- **The Mana card opens the skills on their Spells tab** (it opened the
+  Tree).
+- **The race and profession recap is one row per choice**: its mark, name,
+  tag, the numbers it changes as chips and the skill it grants as a line; a
+  tap opens a sheet with the lore and the skill's words (nothing was cut).
+  The two lore cards and the two skill cards, a half screen each, are gone.
+
+### Added
+- New strings (English and French): `tile_inventory`, `tile_dice`,
+  `skills_see_all`, `skills_none_short`, `titles_chip_hint`,
+  `gifts_none_short`, `offers_row_none`, `recap_who_you_are`.
+- `test/character_tab_test.dart`: the tab and the recap at 360 and 320 px, in
+  both languages, with the app's own fonts.
+
 ## [1.265.0+301]
 
 ### Fixed

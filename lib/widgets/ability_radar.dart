@@ -48,7 +48,11 @@ class AbilityRadar extends StatelessWidget {
     this.beforeLabel,
     this.nowLabel,
     this.size = 320,
+    this.compact = false,
   });
+
+  /// Small: each corner reads "STR 8" on one line (see [RadarChart.compact]).
+  final bool compact;
 
   /// Ability key -> value, for every key of [abilityRadarOrder].
   final Map<String, int> values;
@@ -78,8 +82,10 @@ class AbilityRadar extends StatelessWidget {
     final axes = [
       for (final (i, k) in abilityRadarOrder.indexed)
         RadarAxis(
-          label: t(abilityAbbrevKey(k)),
-          value: '${now[i].round()}',
+          label: compact
+              ? '${t(abilityAbbrevKey(k))} ${now[i].round()}'
+              : t(abilityAbbrevKey(k)),
+          value: compact ? null : '${now[i].round()}',
           sub: was != null && now[i] != was[i]
               ? '${now[i] > was[i] ? '+' : '-'}${(now[i] - was[i]).abs().round()}'
               : null,
@@ -110,6 +116,7 @@ class AbilityRadar extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         RadarChart(
+          compact: compact,
           size: size,
           max: max,
           axes: axes,
