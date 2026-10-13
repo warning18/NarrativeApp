@@ -1,37 +1,17 @@
-# UX: which PR comes first, and the version it needs
+# UX: the next PR, and the version it needs
 
-For the manager (read here because UX has no `send_message`).
+For the manager (read here because UX has no `send_message`). #203 (1.277) is merged; this note replaces the one for it.
 
-**Fix-pack A comes first.** It is built, pushed (`claude/eager-pascal-y847vf`) and
-green on format, analyze and the tests I ran; the travel-map view waits for
-Core's PR #199 to reach `main`, so it is second.
+**Please give me a version for the next UX PR.** It is ready on `claude/eager-pascal-y847vf` (merged with `main` at v1.277). I will not open it until I have one.
 
-Please reserve the next version for fix-pack A. The PR stays closed until the
-user says to open it and a version is given.
+What it holds, all in UX's area but for two lines in shared screens:
 
-Fix-pack A holds, for QA's review (L1, one session's area plus two shared
-screens):
+- **Stat points:** "1 Stat Point" in English, and "1 Point de statistique" (and 0) in French (`stat_point_label_one`, `statPointsText`).
+- **Journey, 320 px:** the weather chip is an icon on a screen narrower than 340 px (a tap reads the line), so it no longer covers the lowest step's name in French.
+- **Help pattern, the rest of B:** the guide's ⓘ in the header of the Skills, Inventory, Level Up, Journal, Achievements, World map, Skill challenge, Harbor, Port and Shop pages (it replays that page's tour).
+- **Dice loadout:** the "Choose this face's skill" button of the die card stays in sight (a regression of #203: the fixed-height card hid it under the scrolling text).
+- **docs/proposals/side-view-ux.md** (+ images): the written record of the voyage (I) and land walk (L) mock-ups you asked for.
 
-- Dice loadout: the die card keeps one height whatever face is picked (QA's
-  `qa_real_font_cards_test`, `skipUntilFixPack` now `false`).
-- Camp town: the status tag sits above the house name, so "Hammersmith",
-  "Storehouse", "Watchtower" and "Smugglers’" get the full card width and never
-  break inside a word. (The fix QA asked about: neither a smaller font nor a
-  FittedBox, just the whole line for the name.) The card tray is 190 px tall,
-  from 172.
-- Camp town: a tap on a built building opens a sheet with its name and what it
-  gives.
-- Character: the Shroud is one row of six small banners (names on tap or hold);
-  the Gifts dot has a spoken label; tour step 4 describes the three tabs.
-- Voyage: a storm's rain falls over the Eel's water only, not behind the words
-  and buttons.
-- Journey: the "You are here" badge is kept clear of the step names; the weather
-  line wraps clear of the − button.
-- Chapter 7 camp hub: the enter-the-place button scrolls in the room it has
-  (QA's 18 px overflow at 320×568).
-- Help pattern: an ⓘ in a page's header replays its guide; holding a section
-  name explains it. First on the dice loadout.
+Touches another session's area: `lib/screens/journey_screen.dart` (the chip's `compact` flag, one line) and the AppBars of the pages above (`actions:` only).
 
-Touches another session's area: `lib/tutorial/` is not edited; new strings
-(`gifts_waiting_label`, `help_replay_guide`) and the reworded `tut_character_4`
-are in `lib/l10n/app_strings.dart`, French included.
+Not in it, waiting on the user: **C** (the skill choice sheet with before → after: board 9 of the design file), the full-screen map (board 8), the walking sprite for L.
