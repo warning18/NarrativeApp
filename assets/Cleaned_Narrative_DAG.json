@@ -797,7 +797,7 @@
     "description_fr": "L’homme de la guérite compta mes pièces deux fois, peu impressionné les deux fois, et écrivit dans son registre quelque chose dont je soupçonnai que c’était le signalement de mon visage. Il me fit signe de passer d’un grognement qui parvenait à exprimer à la fois le mépris et une certaine satisfaction professionnelle d’avoir soutiré de l’argent à quelqu’un qui en avait si manifestement besoin.",
     "context_taxonomy": {
       "ui_theme": "bridge",
-      "mood": "neutral",
+      "mood": "wry",
       "speaker": "Narrator"
     },
     "location": "alster_stone_bridge",
@@ -1075,7 +1075,7 @@
     "description_fr": "J’ai perdu. Je l’avais atteint ; cela, personne ne me l’enlèvera. Je lui portai un coup, un seul, en travers du bras qui la tenait, et il regarda l’entaille comme on regarde une tache sur sa manchette, puis il me frappa de la main qui ne tenait pas ma sœur, et la rue se retourna. La dernière chose que je vis dans notre rue fut le visage de Lysa tourné vers moi, disant mon nom, et l’Inquisiteur général l’emportant dans la poussière d’une seule main, comme si elle ne pesait rien. On m’emmena aussi. Ils ne prirent pas la peine d’être doux.",
     "context_taxonomy": {
       "ui_theme": "origin_ending",
-      "mood": "grim",
+      "mood": "bitter",
       "speaker": "Narrator"
     },
     "location": "alster_lower_town",
@@ -1134,7 +1134,7 @@
     "description_fr": "Quel que fût le chemin pris, je revins à ce qui restait de notre maison dans le gris d’avant l’aube, quand la rue ne contenait plus que de la fumée. Les fouilleurs étaient partis. Ils avaient arraché chaque latte de la maison sans rien trouver dessous, parce que ce qu’ils voulaient n’avait jamais été sous une latte. Le boulet l’avait trouvé pour eux, et ils n’étaient pas restés pour le voir : il avait poursuivi sa route à travers le plancher de la pièce du fond et une main de terre battue en dessous, et mis à nu un carré de vieux cèdre où était scellé un anneau de fer. Une trappe. J’avais vécu au-dessus toute ma vie. Dessous, dans un trou garni de toile cirée, reposait une seule pièce d’étoffe pliée, grise de vieillesse, et quand je la soulevai, elle se déplia, et se déplia encore, jusqu’à pendre de mes mains au sol : une étoffe grande comme une cape. C’était tout. Le trésor caché d’une famille, la chose pour laquelle on avait mis une ville en pièces, et c’était un vieux morceau de tissu. Qui pouvait bien en vouloir à un morceau de tissu aussi vieux ? Puis le jour se leva, et je vis ce qu’il portait. Une silhouette, immense, plus grande que l’étoffe n’avait le droit d’en contenir, debout, les deux bras levés au-dessus de la tête et les deux mains ouvertes, paumes en avant, comme un enfant dessine quelqu’un qui fait signe de très loin. Personne ne l’avait brodée. Personne ne l’avait peinte. Elle était là, simplement, comme est là une ecchymose, et elle était tiède sous mon pouce. Dans ma poche, le vieux dé d’os s’était réchauffé lui aussi.",
     "context_taxonomy": {
       "ui_theme": "hovel",
-      "mood": "reflective",
+      "mood": "wistful",
       "speaker": "Narrator"
     },
     "location": "alster_lower_town",
@@ -2091,7 +2091,7 @@
     "description_fr": "Le temps d’un battement de cœur — un seul ; je l’ai compté après coup, comme on compte ce qui a failli nous tuer — la déchirure s’élargit. Je vis, non avec mes yeux, car ce ne sont pas les yeux que de telles choses prennent pour interlocuteurs, quelque chose de vaste et de patient me regarder en retour avec ce que je ne peux décrire que comme un intérêt professionnel modéré. Puis elle se referma comme un souffle enfin relâché, et le monde ne fut plus qu’un navire brisé dans beaucoup de sable, ce qui, sur le moment, me parut un soulagement considérable. Sous l’endroit où elle avait pendu, à demi enfoui, gisait ce que les pillards avaient laissé tomber là sans oser revenir le chercher.",
     "context_taxonomy": {
       "ui_theme": "desert",
-      "mood": "creepy",
+      "mood": "uncanny",
       "speaker": "Narrator"
     },
     "location": "lark_wreck",
@@ -2133,7 +2133,7 @@
     "description_fr": "La déchirure l’emporta. La déchirure ne s’ouvrit pas tant qu’elle ne tressaillit, et quelque chose dans ce tressaillement s’accrocha à moi — un fil mince et froid qui resta après que la lumière eut disparu, vibrant faiblement sous ma peau comme une cloche frappée qui n’aurait pas décidé de s’arrêter. Je me dis que cela s’estomperait. Je ne me croyais pas entièrement.",
     "context_taxonomy": {
       "ui_theme": "desert",
-      "mood": "creepy",
+      "mood": "uncanny",
       "speaker": "Narrator"
     },
     "location": "lark_wreck",
@@ -2251,7 +2251,7 @@
     "description_fr": "La haute silhouette était un visage. Il gisait de côté dans les dunes, la joue contre le sable, grand comme une maison, poli par le vent au point que de loin il ressemblait à un rocher, et de près à rien d’autre au monde qu’à un visage. Quelqu’un l’avait taillé, ou il avait été quelqu’un. Sur son front, gravé profond et encore net là où le vent n’atteignait pas, il y avait un signe : quelques traits, simples comme un dessin d’enfant. Je le connaissais. Je l’avais dans ma poche, sur le six d’un vieux dé d’os. Au pied du visage, dans son ombre, quelqu’un avait laissé des offrandes : des colliers de perles bleues, des galets peints, une coupe d’argile retournée. D’une fente sous sa mâchoire suintait de l’eau, un filet, dans une mare pas plus grande qu’une main.",
     "context_taxonomy": {
       "ui_theme": "desert",
-      "mood": "reflective",
+      "mood": "uncanny",
       "speaker": "Narrator"
     },
     "location": "sleepers_face",
@@ -2426,7 +2426,7 @@
     "description_fr": "Les lumières étaient une oasis. J’avais entendu le mot dans des histoires sans jamais penser en avoir besoin : une mare verte au creux des dunes, des palmiers penchés au-dessus comme pour boire, et tout autour un semis de cases d’argile blanche, carrées et basses, qui luisaient dans le noir comme des pains dans un four. Les Puits blancs, disaient les gens d’ici, comme s’il n’existait aucun autre endroit où être. Une caravane de sel campait près de l’eau, ses chameaux agenouillés, et trois ou quatre marchands roulaient leurs nattes pour la nuit. Personne ne me demanda d’où je venais. Tout le monde ici venait de quelque part. Une vieille femme des tailleurs de sel, qui m’observait, vint s’asseoir près de moi au bord de l’eau, regarda le coin d’étoffe grise qui dépassait de mon sac, se figea, tendit la main sans un mot et le rentra hors de vue. « Gardez ça couvert, dit-elle. Ici, et partout où vous irez. Il y a des gens qui vous le couperaient sur le dos, et des gens qui vous couperaient, vous, pour l’avoir. » Puis, parce que je le lui demandai, elle me dit où quelqu’un sans navire pouvait en trouver un : au sud, dix jours de caravane, là où la Désolation descend jusqu’à la mer, dans une ville nommée Bouche-de-Sel. On y démolissait des navires, dit-elle, on en construisait aussi, et on les vendait à quiconque avait de l’argent et pas de questions. Et puis elle me dit de me reposer.",
     "context_taxonomy": {
       "ui_theme": "desert",
-      "mood": "hopeful",
+      "mood": "wondrous",
       "speaker": "Narrator"
     },
     "location": "white_wells",
@@ -2538,7 +2538,7 @@
     "description_fr": "Elle n’avait ni étal, ni marchandise, ni aucune des raisons ordinaires de se tenir là où elle se tenait, près du puits du fond, là où s’arrêtait la lueur des lampes, et les gens des Puits lui laissaient cette large marge particulière que l’on accorde à ce que l’instinct a signalé avant que la raison n’ait voix au chapitre. De près, la raison devenait assez évidente : un fil de cette même étrangeté froide et patiente que la déchirure avait laissée en moi, qu’elle portait comme un vêtement qu’elle avait depuis longtemps cessé d’essayer d’ôter. Elle me regarda comme on regarde quelqu’un qui porte son propre manteau. « Pas ici, dit-elle avant que je puisse demander quoi que ce soit. Rejoignez la mer en vie. Je vous retrouverai de l’autre côté du sable. » Puis elle disparut entre les cases blanches.",
     "context_taxonomy": {
       "ui_theme": "desert",
-      "mood": "creepy",
+      "mood": "uncanny",
       "speaker": "Narrator"
     },
     "location": "white_wells",
@@ -2574,7 +2574,7 @@
     "description_fr": "[ORIGINE : LE GARDIEN] Lysa dormit le dos contre le mien au bord de l’eau, comme lorsqu’elle était petite et que la maison avait froid, et s’éveilla une fois dans la nuit pour s’assurer que j’étais toujours là. Quoi qu’il advienne ensuite, nous l’affronterions ensemble, ce qui me sembla soit l’arrangement le plus sage, soit le plus insensé que j’eusse jamais conclu, peut-être les deux à la fois. L’étoffe reposait pliée entre nous dans sa toile cirée. La vieille femme des tailleurs de sel l’avait appelée un linceul quand elle pensait que je dormais — le Linceul Gris, avait-elle dit, en traçant un signe au-dessus — et je devinais comment l’Inquisition l’appelait, et ce qu’elle ferait pour le reprendre. On fait ce qu’on doit des fardeaux qu’on vous confie. Je venais simplement d’en acquérir un de plus, et au matin, la caravane partit vers le sud.",
     "context_taxonomy": {
       "ui_theme": "origin_ending",
-      "mood": "triumphant",
+      "mood": "tender",
       "speaker": "Narrator"
     },
     "location": "white_wells",
@@ -3458,7 +3458,7 @@
     "description_fr": "Le Bazar Arcanique se révéla moins un marché qu’une dispute permanente entre plusieurs dizaines de personnes toutes convaincues que leur savoir interdit particulier était le seul honnête à la vente. J’en repartis la bourse plus légère et la compréhension de ce qui circulait dans ce quartier nettement meilleure — à peu près le taux de change auquel je m’attendais en y entrant. Vane, soupçonnai-je, trouverait une partie de cela intéressante.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "wry",
       "speaker": "Narrator"
     },
     "location": "saltmouth_wharf",
@@ -3479,7 +3479,7 @@
     "description_fr": "La Rue des Apothicaires sentait comme une dispute entre la médecine et le poison qu’aucun des deux camps n’avait encore remportée, ce qui me frappa comme une publicité honnête pour ce commerce plutôt qu’une mise en garde contre lui. Entre les teintures et les réponses professionnellement vagues à des questions directes, j’appris bien plus sur les routes d’approvisionnement du quartier qu’aucun apothicaire n’avait eu l’intention de m’en vendre. Vane voudrait en entendre parler.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "wry",
       "speaker": "Narrator"
     },
     "location": "saltmouth_wharf",
@@ -3500,7 +3500,7 @@
     "description_fr": "La maîtresse du port se révéla être une femme éprouvée, avec l’épuisement particulier de quelqu’un qui a passé des décennies à résoudre des problèmes qui se révélaient toujours être la faute d’autrui. Des rats infestaient ses réserves et elle n’avait plus la patience de s’en occuper elle-même. « Tuez-les, brûlez-les, épousez-les, ça m’est égal, dit-elle. Sortez-les de ma farine, c’est tout. » Le temps qu’elle finisse de m’exposer la situation, j’avais, un peu contre mon meilleur jugement, accepté de devenir sa solution de choix. Cela pouvait attendre, décidai-je, que j’en aie fini avec le reste du marché — et avec Vane. Avant que je quitte les réserves, un homme noirci de suie jusqu’aux coudes, qui n’avait rien à faire du côté de la maîtresse du port, m’attrapa par la manche. « Les rats sont le moindre de ce qui remonte par ces planchers, dit-il. Rapportez-moi du minerai de fer. Les contremaîtres et les soldats de l’Inquisition en portent plus qu’ils ne l’avouent. Ma forge est sous la digue, et je vous ferai un bon prix sur l’acier. » Il avait disparu avant que je puisse demander à qui elle était.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "wry",
       "speaker": "Narrator"
     },
     "location": "saltmouth_wharf",
@@ -3607,7 +3607,7 @@
     "description_fr": "Une naine en cuirasse cabossée tenait seule la porte du quai, un tonneau pour barricade et personne dans le dos. Elle ne demandait pas d’argent. Elle demandait une paire de mains de plus à la porte quand la prochaine équipe d’abordage remonterait le quai, et rien d’autre : ni solde, ni promesses, seulement une porte qui ne se tiendrait pas toute seule.\n\nElle tenait sa position à la porte avec l’économie obstinée de quelqu’un qui avait déjà décidé de l’issue, quelle que fût ma réponse, et je découvris que je n’avais pas particulièrement envie de la démentir. Je lui dis que je garderais son offre à l’esprit, ce qui est à peu près la promesse la plus engageante que je m’autorise généralement envers des inconnus qui se battent pour vivre. « Gardez-la à l’esprit, alors, dit-elle sans quitter le quai des yeux. Les esprits, ça ne coûte rien. Les portes, si. » Vane pouvait attendre encore un peu.\n\nElle n’attendait pas ma réponse, en fin de compte. Elle attendait l’équipe d’abordage contre laquelle elle tenait la porte. Celle-ci remonta le quai avant que j’aie fait trois pas vers les étals : un soldat de l’Inquisition à sa tête, l’épée déjà tirée, et aucun intérêt pour savoir lequel de nous deux avait parlé à l’autre.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "defiant",
       "speaker": "Narrator"
     },
     "location": "saltmouth_wharf",
@@ -3638,7 +3638,7 @@
     "description_fr": "Elle avait l’amertume particulière de quelqu’un qui a perdu à un jeu qu’elle était certaine de pouvoir gagner, ce que je reconnus bien, ayant moi-même perdu à plusieurs jeux avec cette exacte même certitude. « Sable, dit-elle. Le tricheur du tonneau des dockers m’a pris ma reconnaissance de dette hier soir, et une reconnaissance de dette entre de mauvaises mains, c’est une laisse. » Elle désigna d’un signe de tête un homme au bon manteau, trois tables plus loin, qui comptait ses pièces avec le soin de quelqu’un qui ne les avait pas gagnées. « Récupérez-la. Peu m’importe comment. Les gages s’abîment, et moi aussi. »",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "bitter",
       "speaker": "Narrator"
     },
     "location": "saltmouth_wharf",
@@ -4954,7 +4954,7 @@
     "description_fr": "Le Serment, une fois trouvé le sanctuaire qui le proposait, exigeait exactement le genre d’engagement que j’essaie généralement d’éviter envers des institutions que je ne comprends pas encore — faire taire un cultiste qui psalmodiait encore parmi les cendres, et le penser vraiment. Je m’engageai tout de même, partant du principe qu’un serment prêté aux cendres et aux ruines avait au moins l’honnêteté de dire ce qu’il attendait de moi. La Flèche, décidai-je, pouvait attendre que j’en aie fini proprement avec cette affaire.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "grim",
+      "mood": "solemn",
       "speaker": "Narrator"
     },
     "location": "ashen_quarter",
@@ -5254,7 +5254,7 @@
     "description_fr": "L’archiviste empocha les pièces sans un mot, ni, notablement, de reçu, faisant glisser une chevalière dorée sur le bureau avec la discrétion exercée d’un homme ayant déjà fait cela et le referait, très probablement, dès que je serais hors de vue. « Troisième porte à gauche », dit-il sans lever les yeux du registre auquel il était retourné. « Ne touche pas aux bougies. » Je ne demandai pas pourquoi. Certains avertissements se prennent mieux au pied de la lettre. La troisième porte à gauche donnait sur le sanctuaire, et sur le Haut Gardien, le commandant de la Croisade sur cette côte, en prière sous son propre étendard blanc. Il regarda la chevalière, puis moi, et termina d’abord sa prière. Elle fut, je le compris, brève.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "neutral",
+      "mood": "wry",
       "speaker": "Archivist"
     },
     "location": "spire_of_judgment",
@@ -5774,7 +5774,7 @@
     "description_fr": "L’aube trouva le camp debout, pour l’essentiel. Nous comptâmes deux fois les vivants, puis une troisième fois parce que personne ne croyait au deuxième compte. Les laisses des chiens gisaient sur le sable là où elles étaient tombées, fil gris qui s’effaçait lentement dans la lumière.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "grim",
+      "mood": "defiant",
       "speaker": "Narrator"
     },
     "location": "cove_camp",
@@ -5815,7 +5815,7 @@
     "description_fr": "Je rentrai à la crique par la mer le registre sous le bras et l’adresse du Quartier des Reliquaires en tête, parce que certaines choses se disent à son propre feu avant de se faire. Le camp avait grandi pendant que j’étais sous terre. Il y avait des sentiers là où il n’y avait eu que des galets, une odeur de pain là où il n’y avait eu que de la fumée, et des enfants qui ne sursautaient plus quand le bois de l’Eel travaillait. Je leur dis où j’allais. Je ne leur dis pas ce que le registre disait qui m’y attendait. Ils me nourrirent quand même. Le Reliquaire Noir était à trois jours le long de la côte ; son givre, l’équipage de l’Eel l’avait entendu dire dans chaque port, avait gagné les villages de sa route avant tout le reste.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "hopeful",
+      "mood": "tender",
       "speaker": "Narrator"
     },
     "location": "cove_camp",
@@ -5939,7 +5939,7 @@
     "description_fr": "La dernière entrée du registre donnait un lieu aussi simplement qu’une adresse, et mes pieds, avec leur habituel manque de jugement, connaissaient le chemin avant que mon esprit n’eût proprement consenti à s’en approcher. Au cœur mort de la ville, exactement là où le livre l’avait promis, une déchirure flottait à l’air libre — petite, patiente, et familière d’une façon qui faisait plus mal que je ne m’attendais à ce que la familiarité fît mal. J’avais déjà approché l’une d’elles d’aussi près. Je ne la comprenais pas davantage cette fois-là non plus, et ne voyais aucune raison particulière de croire que ce bilan s’améliorerait.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "creepy",
+      "mood": "uncanny",
       "speaker": "Narrator"
     },
     "location": "dead_heart",
@@ -6120,7 +6120,7 @@
     "description_fr": "Le treuil résista exactement aussi longtemps que résistent toujours les treuils, c’est-à-dire jusqu’au moment précis où il cesse totalement de résister et vous laisse tomber dans la machinerie qu’il protégeait. Quoi que Vane eût compté me facturer pour le passage, la grue semblait en désaccord avec ses tarifs, et laissa tomber dans mes bras une caisse de récupération, en guise de commentaire éditorial sur la question.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "wry",
       "speaker": "Narrator"
     },
     "location": "saltmouth_wharf",
@@ -6396,7 +6396,7 @@
     "description_fr": "Il faisait ce calcul que font les mercenaires sur les inconnus — l’armure, les bottes, le nombre de cicatrices suggérant que j’avais survécu à des choses plutôt que simplement assisté à elles. Quel que fût le total auquel il parvint, il franchit le seuil qu’il s’était fixé, car il ne prit pas la peine de se présenter avant d’annoncer un prix.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "neutral",
+      "mood": "wry",
       "speaker": "Narrator"
     },
     "location": "ashen_quarter",
@@ -6514,7 +6514,7 @@
     "description_fr": "Quatre dockers avaient réquisitionné un tonneau en guise de table de jeu, disputant une partie que je reconnus à moitié pour l’avoir vue dans une douzaine de tavernes pires que celle-ci — des mises assez modestes pour que perdre ne ruine personne, assez conséquentes pour que gagner en vaille la peine. L’un d’eux m’indiqua le dernier tabouret libre avec l’hospitalité facile d’un homme qui n’a, de toute sa vie, jamais perdu une seule fois aux cartes, et qui a depuis longtemps cessé de s’y attendre.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "wry",
       "speaker": "Narrator"
     },
     "location": "saltmouth_wharf",
@@ -6537,7 +6537,7 @@
     "description_fr": "Trois manches plus tard, l’hospitalité facile du docker avait tourné en quelque chose de nettement moins facile, et à la quatrième il avait cessé de feindre apprécier la compagnie. Je quittai le tonneau la bourse sensiblement plus lourde, avec une petite satisfaction mesquine que je préférai ne pas examiner de trop près. Parmi les pièces du pot se trouvait une reconnaissance de dette pliée, signée d’un simple S. Je la gardai.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "wry",
       "speaker": "Narrator"
     },
     "location": "saltmouth_wharf",
@@ -6560,7 +6560,7 @@
     "description_fr": "Les dockers, comme il s’avéra, m’avaient laissé gagner les deux premières manches dans le seul but de voir comment j’encaisserais la troisième, ce que je fis nettement moins bien que je ne l’aurais souhaité. Je quittai le tonneau la bourse plus légère, mais riche d’une sagesse aussi précise qu’inutile : certaines hospitalités sont exactement ce qu’elles paraissent être.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "wry",
       "speaker": "Narrator"
     },
     "location": "saltmouth_wharf",
@@ -6645,7 +6645,7 @@
     "description_fr": "La serrure avait des opinions sur ma technique, et lorsque le troisième crochet se brisa à l’intérieur, je dus admettre que ses opinions étaient mieux fondées que les miennes. Ce que l’archive renfermait continuerait de l’être. Je laissai la porte telle que je l’avais trouvée, moins un peu de dignité et deux crochets, en me disant que la patience était une vertu que j’adopterais dans une vie ultérieure, plus calme.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "neutral",
+      "mood": "wry",
       "speaker": "Narrator"
     },
     "location": "ashen_quarter",
@@ -6693,7 +6693,7 @@
     "description_fr": "Dans une crique que les plaines cachaient à la Flèche, là où un ruisseau d’eau douce descendait jusqu’aux galets, ceux qui avaient navigué avec moi cessèrent de marcher et se mirent, sans que personne l’ait vraiment décidé, à bâtir. Quelqu’un trouva une bouilloire. Quelqu’un d’autre trouva un mur encore debout, reste de ce que l’Inquisition avait brûlé ici avant nous. À la nuit tombée il y avait des feux, une corde tendue, et le Rusty Eel hissé au-dessus de la marée, ses cicatrices de tempête visibles. Je compris, avec une légère alarme — je n’avais jamais rien possédé que je ne pusse porter —, que ce serait l’endroit où je reviendrais sans cesse. Un campement, pour l’instant. Ce qu’il deviendrait dépendrait de ce que j’y rapporterais, et de qui resterait pour bâtir. La Flèche attendrait. Je voulais d’abord apprendre cette côte, et ce qui y restait de vivant.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "hopeful",
+      "mood": "tender",
       "speaker": "Narrator"
     },
     "location": "cove_camp",
@@ -7299,7 +7299,7 @@
     "description_fr": "La fausse route partit et revint vendue, exactement comme prévu, et je fus incapable de dire qui l’avait vendue : trois Corneilles avaient eu le papier en main, et toutes trois avaient un bon manteau. Le Registre des Murmures apprit que je tendais des pièges aux Corneilles. Son opinion de moi ne s’en trouva pas améliorée.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
-      "mood": "grim",
+      "mood": "bitter",
       "speaker": "Narrator"
     },
     "location": "drowned_cloister",
@@ -7522,7 +7522,7 @@
     "description_fr": "Il me regarda comme la Cour lui avait appris à regarder tout le monde, décida que je venais soit pour l’emmener, soit par bêtise, et retourna à sa chandelle. Certaines portes, ici-bas, ne s’ouvraient pas au charme. La plupart, à la réflexion, ne s’étaient jamais ouvertes à rien.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
-      "mood": "grim",
+      "mood": "bitter",
       "speaker": "Narrator"
     },
     "location": "drowned_cloister",
@@ -7544,7 +7544,7 @@
     "description_fr": "Les chandelles grises étaient venues pour les vraies, comme font les chandelles grises, et étaient restées pour ce que les chandelles représentent aux yeux d’une chose faite de l’espace entre elles. Les éteindre fut rapide, et le Cloître en devint plus sombre, et pourtant plus facile à respirer.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
-      "mood": "grim",
+      "mood": "uncanny",
       "speaker": "Narrator"
     },
     "location": "drowned_cloister",
@@ -8423,7 +8423,7 @@
     "description_fr": "Ils avaient la forme de chiens comme la déchirure avait la forme d’une porte : assez proche pour tromper l’œil, et assez fausse pour le faire regretter d’avoir été trompé. Ils chassaient par deux et mouraient de même, et les dernières chandelles du reliquaire brûlèrent un peu plus droit après cela.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "uncanny",
       "speaker": "Narrator"
     },
     "location": "reliquary_quarter",
@@ -8445,7 +8445,7 @@
     "description_fr": "Il avait brûlé le Quartier des Cendres sur un ordre qu’il n’avait jamais lu, et il le dit sans détour, agenouillé sur le givre, sa lame posée entre nous, la garde en avant. Si je portais la liste des enlevés, alors je portais son nom aussi. Il préférait en répondre devant moi que devant ce qui attendait à la déchirure. Je lui dis que j’y réfléchirais. Il répondit que c’était déjà plus que l’ordre n’avait jamais offert.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "bitter",
       "speaker": "Narrator"
     },
     "location": "reliquary_quarter",
@@ -8873,7 +8873,7 @@
     "description_fr": "Ils portaient bien les visages, jusqu’à la fin, lorsque ce qui les portait se désintéressa et les laissa tomber. Je ne regardai pas ce qu’il y avait dessous. Il est des choses que l’on abat deux fois sans souhaiter les rencontrer une troisième.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "uncanny",
       "speaker": "Narrator"
     },
     "location": "hollow_shore",
@@ -9401,7 +9401,7 @@
     "description_fr": "[FIN DU VOYAGE] Je repassai la déchirure avec le Linceul entier contre mon dos et sans la moindre intention de l’y laisser reposer. L’Ost était sur le sable ; je le remerciai, et le renvoyai chez lui. Le Trône de Candlehold, je le donnai à ceux dont les bras m’avaient fait gravir la falaise, avec une lettre disant que je ne reviendrais pas avant un moment, ce qui était la première chose honnête qu’on eût écrite depuis ce trône en six cents ans. Le registre avait nommé d’autres déchirures, dans d’autres villes, d’autres nuits, et ce qui a été recousu une fois peut l’être encore par qui connaît le point. Pour la première fois depuis la nuit où la flotte était venue sur Alster, je savais où j’allais, et on peut bâtir bien des choses là-dessus, même en mer. Je comptais le porter jusqu’à chaque déchirure que nommait le registre. Il n’avait jamais voulu retourner qu’à la première. [ÉPILOGUE] Ce fut le Linceul, à la fin, et non moi. Entier pour la première fois depuis que le premier Inquisiteur l’avait coupé, le Linceul fit ce pour quoi il avait été cousu, qui n’était ni d’ouvrir une porte ni de la fermer, mais de défaire la nuit où la porte avait été faite. Je le sentis me traverser comme une marée qui se retire : la Rive Creuse, le cœur mort, le givre du Reliquaire, l’escalier noyé, la Flèche, le port, le quai, l’incendie. Tout cela fut ramené à travers le chas de l’aiguille, point après point, jusqu’à ce qu’il ne reste sur le fil que la salle de jeu derrière le Mendiant Aveugle, la veille de l’invasion, et les cartes encore face contre la table. Je m’y éveillai. Je me souvenais. Au-dessus des toits d’Alster, la première coque blanche n’avait pas encore été aperçue dans le ciel. J’avais, il fallait croire, une chance de plus d’être quelqu’un que mes morts reconnaîtraient, et cette fois je connaissais le chemin. Les autres déchirures du registre étaient toujours là, fermées, pour des nuits qui n’avaient pas encore eu lieu. J’en connaissais les dates par cœur. C’était, s’avérait-il, ce que le Linceul m’avait laissé garder.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "wistful",
       "speaker": "Narrator"
     },
     "location": "hollow_shore",
@@ -9557,7 +9557,7 @@
     "description_fr": "[FIN DU VOYAGE] Je la recousis. Le Linceul avait été fait exactement pour cela, des générations plus tôt, par des mains qui avaient regardé dans une déchirure et compris que la seule réponse honnête était une aiguille. Lorsque le dernier point fut posé, le sable gris devint d’or sous une aube que la Rive Creuse n’avait jamais vue, les visages avaient disparu, et avec eux, enfin, la chose qui connaissait le nom de ma famille. Sur la plage, l’Ost se tenait dans la lumière, les bannières pendantes, sans savoir que faire de ses mains. Je rentrai le dos vide, avec ce qui restait de l’équipage, déposai le Trône à Candlehold pour que les Maisons et les clans se le disputent, et laissai la côte faire de moi ce dont elle avait besoin. On peut bâtir bien des choses sur le fait de n’avoir plus rien à porter. Il avait voulu le Linceul entier pour que la porte puisse s’ouvrir. Entier, s’avéra-t-il, était aussi la seule façon dont la porte pouvait se fermer. Personne ne le lui avait dit. Personne ne me l’avait dit non plus, jusqu’à ce que l’aiguille soit dans ma main. Le dernier point ne fut pas le dernier. L’aiguille continua. [ÉPILOGUE] Ce fut le Linceul, à la fin, et non moi. Entier pour la première fois depuis que le premier Inquisiteur l’avait coupé, le Linceul fit ce pour quoi il avait été cousu, qui n’était ni d’ouvrir une porte ni de la fermer, mais de défaire la nuit où la porte avait été faite. Je le sentis me traverser comme une marée qui se retire : la Rive Creuse, le cœur mort, le givre du Reliquaire, l’escalier noyé, la Flèche, le port, le quai, l’incendie. Tout cela fut ramené à travers le chas de l’aiguille, point après point, jusqu’à ce qu’il ne reste sur le fil que la salle de jeu derrière le Mendiant Aveugle, la veille de l’invasion, et les cartes encore face contre la table. Je m’y éveillai. Je me souvenais. Au-dessus des toits d’Alster, la première coque blanche n’avait pas encore été aperçue dans le ciel. J’avais, il fallait croire, une chance de plus d’être quelqu’un que mes morts reconnaîtraient, et cette fois je connaissais le chemin. L’aube que j’avais cousue sur la Rive Creuse repassa par le chas avec tout le reste. Je ne la reverrais pas. Je découvris que je n’en avais pas besoin : je l’avais vue une fois, et c’était la seule chose que l’aiguille ne pouvait pas reprendre.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "wistful",
       "speaker": "Narrator"
     },
     "location": "hollow_shore",
@@ -9730,7 +9730,7 @@
     "description_fr": "[FIN DU VOYAGE] Je pris la couronne. Elle était plus légère qu’elle n’en avait l’air et plus lourde qu’elle ne le paraissait, et à l’instant où elle se posa, la déchirure dans mon dos cessa d’être une porte pour devenir, avec la tranquille obéissance d’une chose qui a reconnu à qui elle appartient, une grille dont je tenais la clef. Les visages sur le sable s’agenouillèrent. Sur la plage, l’Ost ne savait pas s’il devait s’agenouiller avec eux, et une partie le fit. J’avais passé l’eau avec un trône et je revins avec deux, et la côte apprit à la tombée de la nuit que l’invasion était finie et qu’autre chose avait commencé. J’avais mis le reste du Linceul de côté pour en porter la sixième pièce en couronne, et le croyais fini. Il n’en avait pas fini avec moi. [ÉPILOGUE] Ce fut le Linceul, à la fin, et non moi. Entier pour la première fois depuis que le premier Inquisiteur l’avait coupé, le Linceul fit ce pour quoi il avait été cousu, qui n’était ni d’ouvrir une porte ni de la fermer, mais de défaire la nuit où la porte avait été faite. Je le sentis me traverser comme une marée qui se retire : la Rive Creuse, le cœur mort, le givre du Reliquaire, l’escalier noyé, la Flèche, le port, le quai, l’incendie. Tout cela fut ramené à travers le chas de l’aiguille, point après point, jusqu’à ce qu’il ne reste sur le fil que la salle de jeu derrière le Mendiant Aveugle, la veille de l’invasion, et les cartes encore face contre la table. Je m’y éveillai. Je me souvenais. Au-dessus des toits d’Alster, la première coque blanche n’avait pas encore été aperçue dans le ciel. J’avais, il fallait croire, une chance de plus d’être quelqu’un que mes morts reconnaîtraient, et cette fois je connaissais le chemin. La couronne repassa par le chas en dernier, et je la sentis partir comme on sent partir une dent. À la table de jeu, mon front était nu. L’habitude, elle, était restée : je m’éveillai en attendant encore des visages agenouillés, et il me fallut longtemps, dans la vie qu’on m’avait rendue, pour ne plus les attendre.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "solemn",
       "speaker": "Narrator"
     },
     "location": "hollow_shore",
@@ -10016,7 +10016,7 @@
     "description_fr": "Je m’assis sur la corniche pendant que Tobin taillait les mèches sans chanter. « Je vous dirai ce que je dis aux mourants, fit-il sans se retourner. Le chant n’est pas pour celui qui l’entend. C’est pour que celui qui chante sache qu’il n’est pas seul dans le noir. » Il continua de tailler. Je restai là, et il ne chanta pas, et quelque part dans ce non-chant le cloître devint plus calme, l’eau plus basse, ou sembla l’être, et je dormis pour la première fois sous terre. À mon réveil, une chandelle qui n’était pas là brûlait à côté de moi, et depuis un moment.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
-      "mood": "grim",
+      "mood": "mournful",
       "speaker": "Narrator"
     },
     "location": "drowned_cloister",
@@ -10079,7 +10079,7 @@
     "description_fr": "Il était là où je l’avais laissé, sur le givre, et il ne leva pas les yeux. « Vous y avez réfléchi », dit-il. Ce n’était pas une question. La lame gisait toujours entre nous, poignée vers moi, et le givre commençait à la prendre.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "bitter",
       "speaker": "Penitent"
     },
     "location": "reliquary_quarter",
@@ -10118,7 +10118,7 @@
     "description_fr": "Lysa marcha sur le givre avec moi, sans parler, ce que nous avions toujours fait de mieux. À la lisière du quartier elle s’arrêta et posa la main à plat sur le froid d’un mur de chapelle, comme on vérifie la fièvre d’un enfant qui dort. « Ça se réchauffe, dit-elle. Quoi que vous fassiez. Continuez. »",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "tender",
       "speaker": "Narrator"
     },
     "location": "reliquary_quarter",
@@ -10160,7 +10160,7 @@
     "description_fr": "Je les rassemblai sur le sable, ceux qui étaient venus jusque-là, et m’aperçus que je n’avais rien à dire qu’ils ne sachent déjà. Alors je dis l’autre chose, celle que je portais depuis les quais : que je n’avais attendu aucun d’eux, que je ne pouvais plus imaginer la route sans eux, et que ce qui attendait au-delà de la déchirure devrait passer par nous tous pour m’atteindre. Personne n’applaudit. Quelqu’un rit. C’était assez.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "defiant",
       "speaker": "Narrator"
     },
     "location": "hollow_shore",
@@ -10181,7 +10181,7 @@
     "description_fr": "Elle parla avant que j’aie posé le pied sur l’eau : par la déchirure, par les reflets sur le sable, par le fil qu’elle avait laissé en moi dès le tout début, et sa voix était une certitude plutôt qu’un son. Elle connaissait le nom de ma famille. Elle l’avait connu avant qu’il y ait une famille. Elle demanda, avec quelque chose qui n’était pas tout à fait de la curiosité, ce que j’avais à lui dire de l’autre côté de l’eau. Elle me remercia, je crois, de les avoir portées jusqu’ici. Elle me salua comme une couronne salue une autre couronne, c’est-à-dire sans chaleur et sans surprise : elle avait toujours su, dit-elle, que la côte finirait par mettre quelqu’un sur son Trône, et n’attendait que de voir qui. J’avais fait en une saison ce que ses hommes agenouillés n’avaient pas réussi en une génération : cinq pièces sur six, apportées jusqu’à sa porte, et la sixième sur son propre front, où elle la portait en couronne depuis que le premier Inquisiteur avait coupé le Linceul.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "ominous",
       "speaker": "The Sovereign"
     },
     "location": "hollow_shore_battlefield",
@@ -10347,7 +10347,7 @@
     "description_fr": "[CHAPITRE 4 : LA COUR CREUSE] Le retour prit la nuit et presque toute la matinée, et la Flèche brûla derrière moi tout du long, un second lever de soleil que personne sur les plaines n’avait demandé. La crique était telle que je l’avais laissée : le cercle de pierres du foyer, la corde tendue, l’Eel hissé au-dessus de la marée, ses cicatrices de tempête visibles, et le mur encore debout. J’avais dit trois jours. Cela faisait trois jours. Je m’aperçus que cela comptait pour moi plus que je ne l’aurais cru. Dès la deuxième nuit, le camp avait appris ce que les survivants du Quartier murmuraient sans oser le dire : la Cour Creuse. Des inquisiteurs qui ne s’agenouillaient devant aucune autorité vivante et n’avaient, par courtoisie envers eux-mêmes, jamais officiellement existé, et qui gardaient une autre pièce du Linceul au fond d’un escalier que la mer avait pris, à trois jours le long de la côte. Ce qui attendait là-dessous connaissait le nom de ma famille depuis bien plus longtemps que moi le sien.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "hopeful",
+      "mood": "tender",
       "speaker": "Narrator"
     },
     "location": "cove_camp",
@@ -10638,7 +10638,7 @@
     "description_fr": "Elle m’écouta jusqu’au bout, puis nomma son prix, à la façon d’une chose qu’on n’a jamais refusée. La déchirure s’ouvrirait pour cinq pièces, dit-elle, mais pas pour rien : une porte de cette taille se paie sur le seuil, et elle prendrait son paiement sur ce que j’aimais, ou sur ce que j’étais, ou sur ce que j’avais bâti, et peu lui importait lequel. Elle avait, dit-elle, tout le temps du monde. Pas moi.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "ominous",
       "speaker": "The Sovereign"
     },
     "location": "hollow_shore_battlefield",
@@ -10791,7 +10791,7 @@
     "description_fr": "Ce fut fait sur le sable, devant le légat, avec les reflets pour témoins et l’équipage pour l’autre sorte. La bourse de l’Inquisition était lourde et son saint bien peint, et ni l’une ni l’autre n’était ce que je retiendrais de cette matinée. Quelqu’un se met toujours en travers d’un pacte de ce genre. L’Inquisition y compte, et l’a déjà inclus dans le prix.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "bitter",
       "speaker": "Narrator"
     },
     "location": "hollow_shore",
@@ -10851,7 +10851,7 @@
     "description_fr": "La chapelle avait servi à fabriquer des pénitents : une chaise à sangles, un masque de porcelaine à un crochet, un bol de la peinture blanche dont l’Inquisition se sert pour les visages qu’elle compte garder. Elle était sur la chaise. Ils avaient essayé de faire d’elle l’une des leurs, peinture, porcelaine et la voix patiente de la Cour, et cela n’avait pas pris ; sur le mur près de la chaise, gravé douze fois avec l’épingle du masque, il y avait mon nom. Pas le sien. Le mien. Je restai longtemps avec elle. Je ne dis pas ce que les gens disent. Je l’avais perdue dans la masure de mes parents, et elle avait dépensé ce qui lui restait ici-bas à m’épeler sur un mur, et il n’existe pas de phrase qui aille de l’autre côté de cela.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "mournful",
       "speaker": "Narrator"
     },
     "location": "reliquary_quarter",
@@ -10921,7 +10921,7 @@
     "description_fr": "Le masque me resta dans la main quand elle tomba, la lanière tranchée par ma propre lame, et la peinture dessous était craquelée là où elle avait dit quelque chose à travers pendant tout le combat. Je reconnus le visage avant d’avoir fini de le tourner vers la lumière. Lysa. Je l’avais perdue dans la masure de mes parents, et l’Inquisition avait passé l’année à lui apprendre mon nom pour qu’elle ait quelque chose à dire en me trouvant. Elle l’avait dit. Je n’avais pas écouté. Les pénitents ne s’approchèrent pas. Je la portai moi-même jusqu’à la chapelle la plus proche, et le givre prit la forme de la porte derrière nous, et je n’ai plus, depuis, pu supporter le son de la porcelaine.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "mournful",
       "speaker": "Narrator"
     },
     "location": "reliquary_quarter",
@@ -11308,7 +11308,7 @@
     "description_fr": "La chaleur l’emporta. Je sortis de la fumée les sourcils réduits à un souvenir et les mains cloquées jusqu’au poignet, et le four continua de réduire son charbon en cendres derrière moi pendant que son charbonnier, assis par terre, le regardait partir. Il ne me reprocha rien. C’était pire.",
     "context_taxonomy": {
       "ui_theme": "slums",
-      "mood": "neutral",
+      "mood": "wry",
       "speaker": "Narrator"
     },
     "location": "emberwick",
@@ -11393,7 +11393,7 @@
     "description_fr": "Le pain des fours était noir dehors et gris dedans et avait le goût de la fumée, et j’en ai mangé de meilleurs et apprécié de pires. Je dormis sur de la toile à sac entre deux fours, là où le sol était chaud, et personne ne me réveilla avant que le pain soit de nouveau prêt.",
     "context_taxonomy": {
       "ui_theme": "slums",
-      "mood": "neutral",
+      "mood": "tender",
       "speaker": "Narrator"
     },
     "location": "emberwick",
@@ -11476,7 +11476,7 @@
     "description_fr": "Akagiri s’accrochait aux terrasses au-dessus des sources chaudes, dans la brume rouge de sa propre vapeur, et c’était le seul endroit chaud de la Côte de Cendre. Les oni avaient franchi les montagnes quatre générations plus tôt, cornus et larges d’épaules, couleur de brique ou d’ardoise, et la Flèche les exorcisait depuis. Chaque printemps, ses exorcistes montaient la route avec des cloches et du sel. Les oni gardaient les cloches. Elles pendaient à tous les avant-toits du village, par centaines, et tintaient chaque fois que le vent venait de la mer ; les oni disaient que c’était le plus joli cadeau que l’Inquisition eût jamais fait à qui que ce soit. Le bestiaire de la Flèche les rangeait entre les diablotins et les tourmenteurs, avec une gravure qui donnait une queue à chacun. Aucun n’avait de queue. Plusieurs me demandèrent, avec une grande courtoisie, si j’en avais une.",
     "context_taxonomy": {
       "ui_theme": "slums",
-      "mood": "neutral",
+      "mood": "wondrous",
       "speaker": "Narrator"
     },
     "location": "akagiri",
@@ -11707,7 +11707,7 @@
     "description_fr": "Les oni distillent leur alcool de riz rouge et d’une chose qu’ils refusent de nommer, le boivent dans des coupes grosses comme le poing, et attendent qu’on suive. Je suivis. On m’a raconté que j’avais suivi un bon moment après avoir cessé d’y voir, que j’avais chanté, et que la chanson était belle, même si personne ne put m’en redire les paroles. Au matin, les brasseurs réglèrent les paris faits sur moi avec la gravité de gens qui soldent une dette d’honneur, et me donnèrent ma part.",
     "context_taxonomy": {
       "ui_theme": "slums",
-      "mood": "neutral",
+      "mood": "wry",
       "speaker": "Narrator"
     },
     "location": "akagiri",
@@ -11728,7 +11728,7 @@
     "description_fr": "Je tins quatre coupes. La cinquième me tint. Je me réveillai sur un muret de terrasse, au soleil, une couverture sur moi et un enfant assis sur ma poitrine, en train de lire ; les brasseurs s’étaient déjà partagé ce qu’ils avaient gagné en pariant contre moi, et en avaient très aimablement mis un peu de côté pour mon petit-déjeuner.",
     "context_taxonomy": {
       "ui_theme": "slums",
-      "mood": "neutral",
+      "mood": "wry",
       "speaker": "Narrator"
     },
     "location": "akagiri",
@@ -11812,7 +11812,7 @@
     "description_fr": "Les sources jaillissaient du rocher assez chaudes pour faire mal, puis se posaient dans des bassins qui ne faisaient qu’un peu mal, et je m’y assis jusqu’au menton avec trois grands-mères oni qui discutaient, en détail et sans baisser la voix, de l’état de mon dos. La cendre partit. Une partie du reste aussi. Quand je sortis de l’eau, l’une d’elles me tendit une serviette et m’annonça que je vivrais, du ton de quelqu’un qui avait envisagé l’autre possibilité et l’avait trouvée désordonnée.",
     "context_taxonomy": {
       "ui_theme": "slums",
-      "mood": "neutral",
+      "mood": "wondrous",
       "speaker": "Narrator"
     },
     "location": "akagiri",
@@ -12092,7 +12092,7 @@
     "description_fr": "Je m’agenouillai sur son seuil et traçai à côté de sa ligne, et ma ligne prit la sienne comme une main en prend une autre. Ide la regarda fixement. Puis elle traça, lentement, la langue entre les dents, une silhouette aux bras levés et aux mains ouvertes, ce que personne ne lui avait appris non plus ; et le trait tint, brûla un instant de cette couleur que je ne sais pas nommer, et s’éteignit. Sa mère vint à la porte, vit le dessin, et referma la porte derrière elle, très doucement. Il existe une Lignée, en fin de compte, et j’en avais trouvé le bout : une famille de coupeurs de varech qui peignait une main au-dessus de sa porte depuis trois générations sans savoir à qui elle appartenait. Quelque part en amont de nos deux lignées, un enfant avait été emporté par les feux de falaise dans un panier à poissons, ce qui faisait d’Ide ma cousine, selon le seul compte que la Main ait jamais tenu. Ils le savent, à présent. Ils n’ont pas cessé de la peindre.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "hopeful",
+      "mood": "tender",
       "speaker": "Narrator"
     },
     "location": "wracks_end",
@@ -12351,7 +12351,7 @@
     "description_fr": "Les lampes les appellent, dirent les coupeurs de varech : ceux qui ont descendu l’Escalier et en sont remontés pleins d’eau noire, grimpant vers toute lumière qui ressemble à une porte. Ils montèrent le sentier de la falaise dans le noir, lents et polis, et le redescendirent plus vite. Au matin, la ligne des lampes brûlait encore, et le village avait compté chacun de ses enfants deux fois.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "uncanny",
       "speaker": "Narrator"
     },
     "location": "wracks_end",
@@ -12471,7 +12471,7 @@
     "description_fr": "« Vous avez lu », dit le chef avant que je me sois assis. Il ôta la pipe de sa bouche, ce que je ne lui avais jamais vu faire. « Cela se voit sur votre visage. À quoi servaient les gens. » Il regarda la lampe de la pointe, puis celle des récifs, comme on regarde deux vieux chiens. « Je les éteindrai. J’ai toujours dit que je le ferais, si quelqu’un y mettait de quoi payer l’huile. Soixante. Un homme doit être payé pour la dernière chose honnête qu’il fait, et l’huile coûte cher. »",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "wistful",
       "speaker": "Headman"
     },
     "location": "wracks_end",
@@ -12526,7 +12526,7 @@
     "description_fr": "La Colline des Bienveillants se dressait hors du marais comme un pouce, verte dans un pays devenu gris, avec dans son flanc une porte qui n’apparaissait qu’à qui avait reçu une invitation, et j’en avais reçu une, apparemment, de quelqu’un dont je ne gardais aucun souvenir. Dedans, c’était toujours un soir d’été. Les gens de la colline étaient grands, lents à parler et d’une beauté insoutenable, et personne ne les appelait autrement que les Bienveillants, parce que l’autre solution avait été essayée. Ils m’offrirent à manger. J’avais entendu les mises en garde sur leur nourriture. Cela sembla beaucoup les amuser, et ils me donnèrent à la place du pain des villages du marais, acheté honnêtement, et me montrèrent le reçu. Le temps coulait autrement sous la colline. Ils y mettaient un scrupule parfait : une horloge près de la porte indiquait, à la minute près, ce que chaque visite me coûtait.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
-      "mood": "neutral",
+      "mood": "wondrous",
       "speaker": "Narrator"
     },
     "location": "kindly_hill",
@@ -12875,7 +12875,7 @@
     "description_fr": "Les fossoyeurs de la Cour creusaient les tertres au pied de la colline, pour le mobilier funéraire et pour les ossements, que la Cour compte et que la colline préférerait voir laissés en paix. Ils avaient amené une goule enchaînée pour le gros du travail. Quand ce fut fini, les Bienveillants sortirent et regazonnèrent les tertres à la main, très soigneusement, en chantant, et je ne restai pas pour apprendre la chanson. Les chansons aussi faisaient partie des mises en garde.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
-      "mood": "neutral",
+      "mood": "mournful",
       "speaker": "Narrator"
     },
     "location": "kindly_hill",
@@ -12919,7 +12919,7 @@
     "description_fr": "Je perdis à la quatrième énigme, qui parlait d’une porte, et l’enjeu se révéla être une année. Ils furent très élégants. Ils la prendraient par l’autre bout, dirent-ils, là où elle ne me manquerait pas, et je ressortis sous les étoiles sans rien à montrer de la soirée qu’une douleur dans les genoux de quelqu’un d’un peu plus vieux qu’à l’entrée.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
-      "mood": "neutral",
+      "mood": "wry",
       "speaker": "Narrator"
     },
     "location": "kindly_hill",
@@ -13004,7 +13004,7 @@
     "description_fr": "Je dormis sous la colline ce que l’horloge près de la porte promettait être une nuit, et ce fut une nuit ; ils sont d’une équité scrupuleuse. Je me réveillai sans plus aucune douleur, avec un sentiment que je ne m’expliquais pas : que quelqu’un m’avait chanté quelque chose toute la nuit, quelqu’un qui me voulait du bien et qui, sans les lois de l’hospitalité, n’aurait pas hésité une seconde.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
-      "mood": "neutral",
+      "mood": "wondrous",
       "speaker": "Narrator"
     },
     "location": "kindly_hill",
@@ -13378,7 +13378,7 @@
     "description_fr": "Ç’avait été un pèlerin, avant que la déchirure fasse son œuvre : un insigne de pèlerin était encore épinglé là où s’était trouvée son épaule. Nous l’enterrâmes avec ceux qu’il avait pris, puisque personne ne pouvait plus dire quels morceaux étaient à qui. La lance de la Dernière Veille resta au-dessus de la tombe, les yeux ouverts, à la manière de la Veille, jusqu’à ce que le givre recouvre la terre retournée, puis elle me dit que la Veille l’apprendrait.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "grim",
+      "mood": "mournful",
       "speaker": "Narrator"
     },
     "location": "rimewell",
@@ -13686,7 +13686,7 @@
     "description_fr": "Sur la route des pèlerins descendaient des choses qui n’y étaient pas l’année d’avant : un molosse fait de givre, et un pèlerin qui avait marché jusqu’à l’Escalier Noyé et en était revenu de travers. Ni l’un ni l’autre n’était pressé. Tous deux, à la fin, étaient dans le fossé, et les pèlerins encore sur la route passèrent devant sans regarder, comme on apprend à le faire.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "neutral",
+      "mood": "ominous",
       "speaker": "Narrator"
     },
     "location": "rimewell",
@@ -13761,7 +13761,7 @@
     "description_fr": "Le pain avait rassis pendant la nuit, comme toujours ici, et les pèlerins le trempaient dans de l’eau chaude et appelaient ça une soupe, et j’en fis autant. L’un d’eux dit le bénédicité dans une langue que je ne connaissais pas, sur un repas qui ne le méritait pas, et je m’aperçus que cela ne me dérangeait pas.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "neutral",
+      "mood": "tender",
       "speaker": "Narrator"
     },
     "location": "rimewell",
@@ -13782,7 +13782,7 @@
     "description_fr": "Haut-Âtre avait été bâti pour des gens trois fois plus grands que moi, et bâti pour durer, ce qu’il avait fait, plus longtemps que les gens. Des portes comme des pignons de grange, un puits où j’aurais pu noyer une charrette, une salle du conseil avec un âtre où l’on tenait debout et un feu que personne n’avait laissé s’éteindre depuis six cents ans. Quarante géants y vivaient. Ils avaient été quatre mille. Ils avaient taillé la pierre du Reliquaire, de la Flèche et de la moitié des cathédrales de la côte, et avaient été payés, par contrat, d’une ligne dans les Écritures ; et les Écritures, révisées, disaient désormais qu’il y avait des géants en ce temps-là, au passé, ce qui réglait la question. Officiellement, ils n’existaient pas. L’avantage de ne pas exister, me dit l’aînée, c’était que l’Inquisition ne pouvait pas leur prélever la dîme. L’inconvénient, c’était tout le reste.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "neutral",
+      "mood": "wondrous",
       "speaker": "Narrator"
     },
     "location": "highhearth",
@@ -14055,7 +14055,7 @@
     "description_fr": "Elles descendirent du givre au crépuscule, les choses du cœur mort, maigres, grises et affamées de tout ce qui est chaud, et les géants les reçurent à la porte de la carrière avec des masses de carrier. Je me rendis utile comme un chien l’est à un berger : j’allais là où les masses ne pouvaient pas aller, bas et vite, et je ne me fis pas marcher dessus, ce que les géants semblaient tenir pour le plus difficile. Ensuite, le géant qui avait combattu à mes côtés me souleva par le col pour vérifier qu’il ne manquait rien, et me reposa très doucement, comme si j’avais de la valeur.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "neutral",
+      "mood": "defiant",
       "speaker": "Narrator"
     },
     "location": "highhearth",
@@ -14100,7 +14100,7 @@
     "description_fr": "Je manquai de vitesse, ou de sûreté, ou l’enfant était simplement pressé. La sage-femme m’écarta d’un doigt et fit le reste elle-même, à la dure, et cela lui coûta plus que cela n’aurait dû, et à la mère plus encore. Elles vécurent, toutes les deux. L’enfant vécut. La sage-femme me remercia ensuite avec une courtoisie parfaite, et c’est ainsi que je sus.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "neutral",
+      "mood": "mournful",
       "speaker": "Narrator"
     },
     "location": "highhearth",
@@ -14152,7 +14152,7 @@
     "description_fr": "La pierre de compte avait la taille d’une charrette et je ne pouvais pas la porter, alors j’apportai ce que je pouvais : un frottis de chaque nom, au charbon, au dos de bons de réquisition du Reliquaire, ce qui prit deux jours. Et j’apportai des nouvelles de Gorm, qui se tenait devant la pierre de compte quand le givre l’avait pris, et qui avait continué de s’y tenir. Hathra lut les noms à voix haute dans la salle du conseil, tous, un par un, pendant que le feu brûlait, et cela prit la nuit entière, et personne ne partit. Puis elle plia le dernier bon. « Gorm, dit-elle. Je l’ai connu quatre cents ans. De quoi avait-il l’air, à la fin ? Ne soyez pas aimable. J’ai été aimable avec moi-même assez longtemps. »",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "neutral",
+      "mood": "wistful",
       "speaker": "Narrator"
     },
     "location": "highhearth",
@@ -14510,7 +14510,7 @@
     "description_fr": "Un tiers de l’Ordre de la Flamme vigilante est enterré sur cette côte, disent les chevaliers du Mouillage, et le reste ne l’est pas du tout. L’aumônier de l’Ordre me demanda, puisque j’arpentais la Grève de Verre plus que quiconque de sensé, de chercher une chevalière en particulier : Dame Odile Varr, qui avait mené la dernière sortie du Mouillage sur le verre un mois plus tôt et n’était pas revenue, et dont la chapelle voulait l’épée sur son autel, faute de pouvoir l’avoir, elle. Je la trouvai là où la grève devient dunes. La déchirure était passée sur elle. Elle était toujours debout, dans ce qui restait de son armure, l’épée à la main et le verre montant le long de ses jambes jusqu’aux genoux, et elle tourna la tête à mon approche, lentement, comme le font les défaits, comme si elle avait entendu son nom.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "grim",
+      "mood": "mournful",
       "speaker": "Narrator"
     },
     "location": "white_anchorage",
@@ -14791,7 +14791,7 @@
     "description_fr": "L’aumônier de la flotte avait été un zélote autrefois et était à présent quelque chose de plus calme, qu’il n’avait pas encore de mot pour nommer. Il savait où gisait le vaisseau amiral : au large de la pointe, sur le verre, l’Amiral toujours sur sa dunette, et ses couleurs toujours au mât. « Il naviguait sous le gris, dit-il. Nous tous. On nous disait que c’était blanc. » Il me traça le chemin sur un bout de toile à voile, et refusa d’être payé. Puis il me dit l’autre chose. L’Amirauté avait encore une voix pour le Trône de la Lanterne, et sur ce rivage, toute l’Amirauté, c’était lui. Il avait voulu la donner par obéissance, ou par chagrin, et ne savait plus distinguer l’un de l’autre. « Vous avez vu plus de cette côte que moi, dit-il. Votez à ma place, avant que la déchirure ne nous enlève la question des mains. » Il me mit le sceau de l’Amirauté dans la main, avec la toile.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "solemn",
       "speaker": "Narrator"
     },
     "location": "white_anchorage",
@@ -14841,7 +14841,7 @@
     "description_fr": "La dernière compagnie encore en guerre n’avait pas appris que la Croisade était finie, ou l’avait appris et décidé que c’était un mensonge ; elle montait encore la vieille garde sur le mur du port et défiait quiconque portait du gris. Ils moururent en défiant. Le Mouillage les enterra avec le reste de la flotte, et ne me demanda pas d’aider à creuser, une délicatesse que je remarquai.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "defiant",
       "speaker": "Narrator"
     },
     "location": "white_anchorage",
@@ -14884,7 +14884,7 @@
     "description_fr": "Je restai avec eux, je redis leurs noms, et en perdis deux quand même avant la fin de la nuit. Le froid passa un temps dans mes propres doigts et ne voulut plus en sortir. Les pèlerins me remercièrent d’avoir essayé, avec les voix qui leur restaient.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "mournful",
       "speaker": "Narrator"
     },
     "location": "white_anchorage",
@@ -14906,7 +14906,7 @@
     "description_fr": "Le dernier timonier du vaisseau amiral buvait pour oublier la nuit du naufrage et n’y était pas encore parvenu. L’Amiral avait gardé la barre amarrée vers la déchirure, dit-il, jusqu’au bout, la flotte derrière lui et la voile grise gonflée comme si le vent venait de l’autre bout du monde. Il s’était détaché et avait nagé. Il nageait encore, pour autant qu’il pût en juger. « Chaque nuit, je recoupe la corde, dit-il dans sa tasse. Chaque nuit, il coule sans moi. »",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "wistful",
       "speaker": "Narrator"
     },
     "location": "white_anchorage",
@@ -14939,7 +14939,7 @@
     "description_fr": "« Je veux la revoir une fois, dit le timonier, avec le gris encore au mât. Ensuite je ne veux plus jamais la revoir. Cela me paraît un marché honnête. La plupart de ceux que j’ai faits sur ce navire ne l’étaient pas. » Nous longeâmes la pointe avec l’Eel au crépuscule. Il ne dit plus rien de longtemps, et je ne le lui demandai pas.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "wistful",
       "speaker": "Helmsman"
     },
     "location": "white_anchorage",
@@ -15371,7 +15371,7 @@
     "description_fr": "Sur le rivage, les lances de la Veille formaient un cercle, les yeux ouverts, et je leur racontai ce que j’avais vu dans la déchirure. Je ne l’écrirai pas ici ; c’est la règle. Quand j’eus fini, la sergente découpa l’étoffe gris cendre de la hampe qu’elle portait, l’étoffe de guerre de la Veille avec son œil ouvert, et me la tendit. Qui a regardé le plus longtemps garde l’étoffe, et la Veille suit l’étoffe, et personne n’avait regardé plus longtemps que moi, dit-elle, pas en trente-huit ans : Garde du Mur, dirait-on. Ou bien je pouvais la rendre, et la Veille monterait la garde à mes côtés, où que j’aille, les yeux ouverts.",
     "context_taxonomy": {
       "ui_theme": "slums",
-      "mood": "hopeful",
+      "mood": "solemn",
       "speaker": "Narrator"
     },
     "location": "greyhithe",
@@ -15460,7 +15460,7 @@
     "description_fr": "Les filets remontèrent pleins de poissons qui n’avaient jamais nagé dans aucune mer que je connaisse, pâles, vifs et parfaitement comestibles, et les pêcheurs gris les triaient sans commentaire. Nous mangeâmes sur le sable. Le temps d’un repas, la déchirure de l’autre côté de l’eau ne fut qu’une question de temps qu’il fait.",
     "context_taxonomy": {
       "ui_theme": "slums",
-      "mood": "neutral",
+      "mood": "wondrous",
       "speaker": "Narrator"
     },
     "location": "greyhithe",
@@ -15481,7 +15481,7 @@
     "description_fr": "Il portait le visage d’un enfant que le village avait perdu, et le village le savait, et n’avait pas pu faire ce qu’il fallait. Je le fis. Quand le visage tomba, il n’y avait dessous que du gris, et la mère qui avait regardé depuis les dunes descendit s’asseoir près de moi ensuite sans parler, ce que je compris comme le seul remerciement que nous pouvions supporter, elle et moi.",
     "context_taxonomy": {
       "ui_theme": "slums",
-      "mood": "neutral",
+      "mood": "uncanny",
       "speaker": "Narrator"
     },
     "location": "greyhithe",
@@ -15567,7 +15567,7 @@
     "description_fr": "La marée basse de la Rive Creuse laissait des choses qu’elle n’avait aucune raison de laisser : une cloche de chapelle, une chaussure d’enfant, une bourse de pièces frappées dans une ville disparue depuis cent ans et qui restaient, m’assura le chandelier du Mouillage, du bon argent.",
     "context_taxonomy": {
       "ui_theme": "slums",
-      "mood": "neutral",
+      "mood": "wondrous",
       "speaker": "Narrator"
     },
     "location": "greyhithe",
@@ -15947,7 +15947,7 @@
     "description_fr": "Cela nous avait suivis. J’aurais dû m’en douter : ce qui passe par une porte ne s’intéresse pas à la porte. Cela se tenait dans le ressac derrière l’Eel, à l’aube, la chose de la route du sel, apprenant encore ses genoux, et le sable gris autour d’elle se levait en petites congères comme le givre sur une vitre. Les reflets, sur la plage, s’étaient tournés pour la regarder. Mon équipage aussi. Elle n’attaquait pas. Elle faisait ce que lui avait appris celui ou celle qui l’avait envoyée, c’est-à-dire se tenir là, être vue, et être, avec une grande patience, une question : la porte que Wenna Tarn avait cousue était-elle un danger ou une grâce ? Elle avait suivi l’Eel en mer parce que l’Eel était le seul navire qui porterait jamais la réponse.",
     "context_taxonomy": {
       "ui_theme": "slums",
-      "mood": "creepy",
+      "mood": "uncanny",
       "speaker": "Narrator"
     },
     "location": "greyhithe",
@@ -16839,7 +16839,7 @@
     "description_fr": "Elle me suivait à deux rues de distance depuis la porte du port. Quand je m’arrêtai enfin pour l’attendre, elle s’arrêta aussi, puis franchit le reste de la distance comme si celle-ci avait été une question et mon attente la réponse. De près, je le sentis avant de le voir : un fil de cette même étrangeté froide et patiente qui bourdonnait dans le Balluchon sur mon dos, qu’elle portait comme un vêtement qu’elle avait depuis longtemps cessé d’essayer d’ôter. « Vous en portez un morceau, dit-elle en regardant le Balluchon et non moi. Il se souvient de tous ceux qui le portent. Je préfère que vous appreniez ce que cela signifie de ma bouche plutôt que de la sienne. »",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "creepy",
+      "mood": "ominous",
       "speaker": "Narrator"
     },
     "location": "saltmouth_wharf",
@@ -16893,7 +16893,7 @@
     "description_fr": "Le plus proche éclata de rire. La résistance était à l’intérieur, convint-il ; c’était bien pour cela qu’ils se tenaient là, tous les deux.",
     "context_taxonomy": {
       "ui_theme": "torture_chamber",
-      "mood": "grim",
+      "mood": "bitter",
       "speaker": "Narrator"
     },
     "location": "alster_black_hold",
@@ -17026,7 +17026,7 @@
     "description_fr": "Elle la recopia le temps que je compte les pièces, et souffla sur l’encre comme sur une soupe. « La place a des dalles descellées, dit-elle. Marchez là où j’ai mis des points. »",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "bitter",
       "speaker": "Narrator"
     },
     "location": "reliquary_quarter",
@@ -17290,7 +17290,7 @@
     "description_fr": "L’héritage n’avait jamais été un drapeau ; je le savais à présent. C’était la seule pièce que le Reliquaire n’avait jamais ramenée à la taille d’un saint, et la silhouette y était encore entière, bras levés, mains ouvertes, telle que la Main Ouverte l’avait tracée pour tenir une côte d’un seul tenant. Un clan qui n’a jamais été, disaient les registres. J’étais ce qu’il en restait. Je pouvais lever la main grise ici, sur un espar planté dans le sable gris, la déchirure de l’autre côté de l’eau, et laisser la côte voir qui viendrait se tenir dessous. L’Inquisition le verrait aussi. À la marée suivante, chaque inquisiteur d’ici à Candlehold saurait que la main était de nouveau levée, et quel sang l’avait levée. Ou je pouvais la garder roulée sur mon dos, où elle était depuis le plancher de mes parents, et entrer dans la déchirure sans être personne en particulier.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "reflective",
+      "mood": "wistful",
       "speaker": "Narrator"
     },
     "location": "hollow_shore",
@@ -17599,7 +17599,7 @@
     "description_fr": "Ils étaient venus me chercher, ce qui était nouveau. Trois émissaires étaient assis en rang sur une poutre tombée à la porte du Quartier, chacun faisant semblant que les deux autres n’étaient pas là. Le premier portait l’épée-lanterne de l’Ordre et le visage d’un homme qui avait enterré des amis sur cette côte : le Grand Maître Morrow m’envoyait ses salutations, et une pierre à aiguiser. La deuxième était une Garde-Mèche, une lampe sur les genoux : l’Aînée, Maud Tallis, m’envoyait de l’huile pour mes plaies et ne demandait rien du tout, ce dont je me méfiai le plus. Le troisième était un inquisiteur, jeune, à la voix douce, la lanterne encapuchonnée au col : Aurel Vane, l’Inquisiteur général, m’envoyait une bourse, et son intérêt. La dernière fois que j’avais vu l’Inquisiteur général, il sortait de la poussière de ma propre rue, et je gardai les mains très immobiles pendant que son émissaire parlait. Le Porte-Lanterne se mourait, en convenaient-ils tous trois, à défaut d’autre chose, et quand le Trône serait vide, leurs maîtres se souviendraient de qui s’était tenu où. Les yeux de l’inquisiteur se posèrent deux fois sur le gris de mon dos pendant qu’il parlait, et la seconde fois, il oublia de sourire.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "neutral",
+      "mood": "ominous",
       "speaker": "Narrator"
     },
     "location": "ashen_quarter",
@@ -17697,7 +17697,7 @@
     "description_fr": "Le Tribunal avait perdu sa Flèche, mais pas son sceau. Son dernier greffier sur cette côte était venu à pied jusqu’à Bout-du-Varech, le sceau dans la manche et une lettre dans son manteau, et attendait depuis une semaine quiconque voudrait bien le mener à la rame jusqu’au navire mouillé au large de la pointe : celui de l’émissaire de Candlehold, qui refusait d’entrer en deçà des fausses lampes, et on pouvait difficilement l’en blâmer. La lettre était le vote du Tribunal pour le Trône de la Lanterne, scellé en prévision du jour où le Trône serait vide. « Le Porte-Lanterne se meurt, dit le greffier, et le Tribunal vote d’une seule voix ou pas du tout. Il faut que quelqu’un porte ceci là-bas. Les pilleurs refusent, et je ne sais pas nager. » Il me la tendit à deux mains, comme on tend une chose qui pourrait exploser.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "ominous",
       "speaker": "Narrator"
     },
     "location": "wracks_end",
@@ -17994,7 +17994,7 @@
     "description_fr": "Il avait gelé assis, en gris de pèlerin, le dos contre la borne et les yeux sur la route de la côte, comme s’assied un homme qui attend quelqu’un en particulier. Puits-de-Givre l’avait laissé là parce que le sol était trop dur pour creuser et que personne ne savait son nom. La gardienne de la route savait qui il attendait, en revanche. L’Aînée des Garde-Mèches remontait chaque année la route des pèlerins jusqu’au Reliquaire, à pied, avec une seule lampe, et elle était en chemin. Sous son manteau, il avait un couteau. La garde portait la lanterne sur une épée de l’Ordre, nette comme une signature. Mais j’avais tracé une fois, sur la Flèche, et je savais désormais comment un signe repose sur une chose : celui-ci reposait sur un autre. Sous la marque de l’Ordre, grattée et repeinte, il y avait une lanterne encapuchonnée. Quelqu’un avait voulu Maud Tallis morte sur cette route, et le Grand Maître pendu pour cela.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "grim",
+      "mood": "mournful",
       "speaker": "Narrator"
     },
     "location": "rimewell",
@@ -18048,7 +18048,7 @@
     "description_fr": "Ils montèrent la route des pèlerins en file, quarante, chacun un maillon de chaîne marqué au fer sur le dos de la main et aucune chaîne nulle part. La Dette Noyée, dit la gardienne de la route, sans douceur. Ils avaient quitté les navires des Corneilles dans trois ports en un mois, comme une marée quitte une plage, et ils allaient vers le Quartier parce que l’Inquisition payait ses indicateurs en dettes remises. Quelqu’un donnait des noms de Porte-Clefs aux masques blancs, un nom par semaine, et chaque nom revenait marqué « payé ». Les débiteurs avaient deviné quel nom viendrait ensuite. Ils avaient décidé, avec la clarté tranquille de ceux qui n’ont plus rien à craindre, de commencer par les Porte-Clefs.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "grim",
+      "mood": "ominous",
       "speaker": "Narrator"
     },
     "location": "rimewell",
@@ -18135,7 +18135,7 @@
     "description_fr": "J’entendis l’aiguille avant de la voir, un petit bruit sec dans le givre, le bruit d’un fil que l’on tire à travers quelque chose qui n’était pas du tissu. Elle était assise du côté abrité de la borne, là où la gardienne de la route ne regardait jamais : une enfant du Néant en tablier gris de Porte-Aiguilles, manches retroussées, une aiguille courbe aux doigts, cousant. Pas une plaie. Les Porte-Aiguilles recousent les plaies, les accrocs de la toile, et de temps en temps une petite déchirure de l’air, pour la tenir fermée. Ce n’était rien de cela. Elle cousait l’air en forme de chambranle, point après point, d’un fil qui luisait sur ses bords, et le trou qu’il faisait ne se refermait pas. Il s’ouvrait. Elle ne s’arrêta ni ne leva les yeux. « Wenna Tarn, dit-elle, et je sais à quoi cela ressemble. Asseyez-vous. Cela prend longtemps, et je préfère que vous teniez la lampe plutôt que le couteau. »",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "creepy",
+      "mood": "uncanny",
       "speaker": "Narrator"
     },
     "location": "rimewell",
@@ -21638,7 +21638,7 @@
     "description_fr": "[FIN DU CHAPITRE 7] On remit la Première Lanterne à son fer et on l’alluma, et les Maisons descendirent des tribunes une à une, dans l’ordre où elles avaient gravi la falaise six cents ans plus tôt, les Garde-Mèches en tête, pour déposer à mes pieds leurs flammes du gonfanon. Personne ne me posa de couronne sur la tête. Le Dominion n’a jamais couronné personne ; il tend une lampe, et regarde si on la laisse s’éteindre. Porte-Lanterne de la Lanterne qui ne meurt pas : les mots furent dits sur moi dans une langue plus vieille que la ville, et les envoyés des clans, au fond de la Salle, ne les dirent pas.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "reflective",
+      "mood": "solemn",
       "speaker": "Narrator"
     },
     "location": "candlehold_lantern_hall",
@@ -21811,7 +21811,7 @@
     "description_fr": "[FIN DU CHAPITRE 7] La Veille ne couronne personne. Elle ne sait pas comment. À la fin, une vieille orque de la Dernière Veille décrocha de sa lance la toile de guerre grise, jamais lavée, déchirée au pied, trouée par ce qui était passé au travers, et la tendit sur le dossier du Trône de la Lanterne, et les Enfants du Néant qui avaient gravi la falaise capuchon rejeté se rangèrent autour et regardèrent les Maisons dans les tribunes sans ciller. « Nous ne détournons pas les yeux », dit l’orque, à moi, à la Salle, au Dominion qui les avait tous dits marqués de la déchirure. Puis elle s’assit sur la marche du Trône, parce qu’elle avait mal aux genoux, et attendit que je m’asseye au-dessus d’elle.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "reflective",
+      "mood": "solemn",
       "speaker": "Narrator"
     },
     "location": "candlehold_lantern_hall",
@@ -21988,7 +21988,7 @@
     "description_fr": "[FIN DU CHAPITRE 7] Le Pacte avait forgé une couronne en gravissant la falaise, sur une forge de charrette, entre une porte et la suivante : du fer simple, bleui au feu, riveté, sans pierre, parce que personne n’avait donné aux forgerons de raison d’en mettre une. Les Sourds de l’Enclume l’apportèrent dans la Salle et ne me la tendirent pas. Leur doyenne la leva et signa une question, lentement, pour que je n’en manque rien, et un jeune forgeron à côté d’elle la lut à voix haute pour les tribunes, au cas où les Maisons auraient oublié le mot. Pourquoi ? Deux cents ans, la Rue avait forgé pour ce Trône sans rien demander. Elle demandait, à présent.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "reflective",
+      "mood": "solemn",
       "speaker": "Narrator"
     },
     "location": "candlehold_lantern_hall",
@@ -22165,7 +22165,7 @@
     "description_fr": "[FIN DU CHAPITRE 7] Les Cours n’apportèrent pas de couronne. Elles apportèrent une cour : quatre maisonnées sorties des roseaux, qui n’avaient jamais dit à personne hors du marais où elles siégeaient, s’assirent en cercle sur le sol de la Salle de la Lanterne comme sur un banc de vase, le héron sur sa branche de saule au milieu. Une enfant rendue, sous un masque de fête, me mena par la main au milieu du cercle. « Ce que le marais prend, le marais le rend », dit l’aînée, et elle me peignit le héron sur le dos de la main avec une sève qui piquait. « Le marais vous y tient. » Je compris qu’on venait de me couronner, et que personne ne m’avait encore lu les conditions.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "reflective",
+      "mood": "solemn",
       "speaker": "Narrator"
     },
     "location": "candlehold_lantern_hall",
@@ -22338,7 +22338,7 @@
     "description_fr": "[FIN DU CHAPITRE 7] Les Corneilles me couronnèrent de la seule façon que connaissent les Corneilles : par un contrat. Leurs Porte-Clefs entrèrent dans la Salle un à un et déposèrent chacun une clef sur la marche du Trône sans dire quelle porte elle ouvrait, jusqu’à ce qu’il y ait quarante clefs sur la marche et que les Maisons, dans les tribunes, se mettent à compter. La dernière clef était la mienne. Une capitaine des Corneilles me la mit dans la main, me referma les doigts dessus, et dit le prix : une guerre qui dure, dit-elle, ou une paix qui paie, et les Corneilles se souciaient peu de laquelle, pourvu qu’on paie à l’heure.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "reflective",
+      "mood": "solemn",
       "speaker": "Narrator"
     },
     "location": "candlehold_lantern_hall",
@@ -22510,7 +22510,7 @@
     "description_fr": "[FIN DU CHAPITRE 7] Les Pénitents ne voulaient couronner personne ; c’était la première chose à laquelle ils avaient renoncé. Alors ils firent l’autre chose qu’ils savent faire, et lurent les noms. Un à un, depuis l’étoffe montée jusqu’en haut de la falaise, le Chœur Calciné chanta les noms des quatre cents que la Flèche avait pendus, et les noms de Reedholm, et ceux de tous les brûlés de l’Inquisition depuis, tandis que les Maisons, dans les tribunes, ne pouvaient pas partir. Cela dura jusqu’à l’aube. À la fin, l’un des Déchus de la Flèche posa une épée brisée en travers des bras du Trône, et une Sœur de Braise déposa sur la marche une lanterne brûlée où vivait encore une seule braise, et ce fut la couronne.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "reflective",
+      "mood": "solemn",
       "speaker": "Narrator"
     },
     "location": "candlehold_lantern_hall",
@@ -22682,7 +22682,7 @@
     "description_fr": "[FIN DU CHAPITRE 7] Personne à Candlehold ne savait comment couronner la Main Ouverte. Personne de vivant ne l’avait vu faire, et les registres qui auraient pu le dire avaient brûlé quarante-neuf ans plus tôt, dans le même feu que le clan. Alors je fis comme le clan avait tout fait : je traçai. Sur le sol de la Salle de la Lanterne, devant les Maisons et ceux qui s’étaient tenus sous la main grise, j’étendis les cinq pièces du Sceau que je portais et traçai sur elles la silhouette entière, bras levés, mains ouvertes ; et la pierre répondit, et la Première Lanterne au-dessus du Trône vacilla et brûla grise le temps d’un souffle, comme si elle se rappelait sur quelle côte on l’avait allumée. Ce qui est tracé tient. Le Sceau était de nouveau aux traceurs, et j’étais ce qu’il en restait.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "reflective",
+      "mood": "solemn",
       "speaker": "Narrator"
     },
     "location": "candlehold_lantern_hall",
@@ -23432,7 +23432,7 @@
     "description_fr": "Cette nuit-là, je parcourus les rangs de l’Ost avec la compagnie, ceux qui étaient là depuis le début de tout cela, devant des feux que je ne connaissais pas et des bannières que je n’avais jamais vues que sur des murs. Personne ne dormit beaucoup. La déchirure teignait le ciel du nord couleur d’ecchymose, et de temps en temps, très faiblement, le vent apportait le long de la côte la voix du Héraut, qui criait mon nom. La compagnie marcha à mes côtés et dit ce qu’elle avait à dire, et j’en garderai une partie.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "reflective",
+      "mood": "wistful",
       "speaker": "Narrator"
     },
     "location": "cove_camp",
@@ -24110,7 +24110,7 @@
     "description_fr": "Orsabet Vell allumait une chandelle pour chaque personne que la déchirure avait prise au Quartier des Reliquaires, et elle en avait allumé, selon son propre compte, quatre cent onze. Le compte lui-même, elle le gardait gravé dans une pierre au-delà de la ligne de givre, là où les clercs du Dominion n’allaient pas, parce que le Dominion inscrivait les disparus comme absents, et que les absents n’ont pas besoin de chandelles. Ses jambes avaient cessé de la porter jusque-là un mois plus tôt. « Quelqu’un devrait avoir le compte, qui le gardera, dit-elle. Rapportez-le-moi, et je déciderai qui. »",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "grim",
+      "mood": "mournful",
       "speaker": "Narrator"
     },
     "location": "reliquary_quarter",
@@ -24175,7 +24175,7 @@
     "description_fr": "Ghrem Stonebrow entretenait le feu de la salle du conseil, qui ne s’était pas éteint depuis six cents ans, et il connaissait le front de carrière d’où sa pierre du foyer avait été taillée comme d’autres connaissent la tombe d’un parent. Les Carriers du Pacte avaient des papiers de l’Inquisition pour le reste de ce front, une équipe, et personne à Haut-Âtre d’assez jeune pour se tenir devant. « La pierre de ce front est dans chaque âtre de cette salle, dit-il, de très haut. J’aimerais qu’il en reste un peu dans la montagne. »",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "neutral",
+      "mood": "wondrous",
       "speaker": "Narrator"
     },
     "location": "highhearth",
@@ -24197,7 +24197,7 @@
     "description_fr": "Le front taillé se dressait au fond de la Carrière de Givre, six siècles de marques d’outils de géants dessus et l’équipe des Carriers au pied, coins déjà posés, et l’argument devait se faire le dos contre la pierre. Ils posèrent le premier coin contre ma botte et je ne bougeai pas, le deuxième contre mon épaule et je ne bougeai pas, et au troisième le contremaître avait cessé de frapper et commencé à parler. Lentement. Il dit que le papier ne précisait pas quel front, et qu’il n’allait pas être le premier nain de l’histoire à tailler l’âtre d’un géant sous les pieds de quelqu’un qui refusait de s’écarter.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "neutral",
+      "mood": "wondrous",
       "speaker": "Narrator"
     },
     "location": "highhearth",
@@ -24574,7 +24574,7 @@
     "description_fr": "Les Inquisiteurs montèrent l’escalier de la Flèche à midi, en file de masques blancs avec un enfant entre deux d’entre eux, et le Quartier cessa ce qu’il faisait pour regarder le sol, comme il l’avait appris. J’en comptai six. Ils n’étaient pas enchaînés. C’était le pire. Ils marchaient avec l’insouciance tranquille d’enfants que l’on mène manger, et tous avaient le même regard vert pâle d’étang, tourné un peu à gauche de ce qui se trouvait devant eux, comme s’ils lisaient quelque chose d’imprimé dans l’air. Une réfugiée, près de moi, dit que c’était la troisième file du mois. Ils montaient à la Flèche, dit-elle, et la Flèche ne les renvoyait pas. Personne ne demandait ce qu’on leur y faisait. Le silence du Quartier était la seule réponse dont l’Inquisition eût jamais eu besoin à cette question.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
-      "mood": "grim",
+      "mood": "ominous",
       "speaker": "Narrator"
     },
     "location": "ashen_quarter",
@@ -25252,7 +25252,7 @@
     "description_fr": "Une Porte-Chandelle descendit le quai du Mouillage à la tombée du jour, un pot de suif allumé dans les deux mains, marchant comme marchent ceux qui portent une flamme qui ne doit pas mourir. Elle me demanda par mon nom aux dockers, et attendit au bout du quai pendant que les lampes du port s’allumaient une à une. « Orsabet Vell m’envoie du Quartier des Reliquaires, dit-elle. Elle m’a demandé de l’allumer là où vous pourriez la voir. »",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "wistful",
       "speaker": "Narrator"
     },
     "location": "white_anchorage",
@@ -25305,7 +25305,7 @@
     "description_fr": "Ghrem Stonebrow était assis au bout de la longue jetée, les pieds dans la marée, et le Mouillage faisait semblant de ne pas regarder. Il était descendu de Haut-Âtre, trois jours à pied et une charrette dans laquelle il avait refusé de monter. Il ne tourna pas la tête quand je m’approchai, mais une main grande comme une porte se déplaça pour me faire de la place. « Je n’avais jamais vu la mer, dit-il au bout d’un moment, à l’eau. Elle est plus petite qu’on me l’avait dit. Elle dure longtemps, pourtant. C’est ce que personne ne dit : qu’elle dure, et que cela ne la dérange pas. »",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "wistful",
       "speaker": "Ghrem"
     },
     "location": "white_anchorage",
@@ -25659,7 +25659,7 @@
     "description_fr": "Un pavillon blanc doubla la pointe à midi, à bord d’un esquif que ramaient deux chevaliers qui avaient l’air d’avoir reçu l’ordre de ne pas regarder les canons de l’Eel. L’homme à la proue portait la cotte de l’Ordre de la Flamme Vigilante sur des mains de clerc, et il se tenait sur les galets, le pavillon dressé tout droit, comme un homme qui porte de l’eau. « Le Grand Maître Morrow vous présente ses compliments, dit-il, et une question. Il sera dans la Salle de la Lanterne quand le Conclave siégera. Il voudrait savoir, avant que vous accostiez, sous quelle bannière vous comptez le faire, afin que ses chevaliers n’aient pas à l’apprendre dans l’escalier. » La question était juste. C’était aussi le genre de question juste que pose quelqu’un qui a déjà dessiné la réponse sur une carte.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "ominous",
       "speaker": "Narrator"
     },
     "location": "cove_camp",
@@ -25702,7 +25702,7 @@
     "description_fr": "Une barque de pilote aborda après la nuit tombée, sans lampe, et le garçon aux avirons n’avait pas douze ans. Il avait été envoyé du mur du port de Candlehold, dit-il, par l’homme qui tenait la chaîne : la grande chaîne de fer qui ferme le port la nuit, avec sa maison de chaîne sur le môle et un treuil qu’il fallait quatre hommes et une prière pour tourner. « Il dit que vous la voudrez baissée, dit le garçon. Il dit que tous ceux qui entrent sous une bannière la veulent baissée, et qu’il est las qu’on le lui demande dans le noir, par des gens qui croient pouvoir l’avoir pour ce qu’ils ont en poche. » Il tendit une main, paume en l’air, pour montrer qu’elle était vide. Sur l’intérieur de son bras, d’une écriture de clerc, étaient tracés des chiffres qui ressemblaient fort à une table des marées.",
     "context_taxonomy": {
       "ui_theme": "docks",
-      "mood": "neutral",
+      "mood": "ominous",
       "speaker": "Narrator"
     },
     "location": "cove_camp",
