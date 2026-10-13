@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.279.0+315]
+
+Twelve story achievements.
+
+### Added
+- **Twelve achievements that come from what a save already holds.** The
+  Lantern Throne, Half a Banner (three pieces of the Shroud), Whole Cloth,
+  A Loose Thread (settle an intrigue), The Whole Web (all eight), Time
+  Turned (a New Game+), Sworn, Hunted, A Hand for Every Door (trusted by all
+  six clans) and three village finds: Where the Bells Hang (Akagiri), Every
+  Bargain to the Minute (the Kindly Hill) and Under the Giants' Roof
+  (Highhearth). Each is a one-line check in `checkAchievements` over the
+  flags, banner pieces, politics and New Game+ cycle of the save, with its
+  English and French row in `achievements.json`; none needs a new counter.
+  A save that already has the thing unlocks it the next time achievements
+  are checked. `test/achievements_story_test.dart` covers each.
+
 ## [1.276.0+312]
 
 The empty lands of the story chart have names.
