@@ -25,7 +25,8 @@ Three visitors at the cove, and a quest goal for chapter 7.
 - **Chapter 7 now asks for one quest before the sail.** `questGoal` goes from
   0 to 1 in `chapters.json`, so the camp's "Sail for Candlehold" opens once
   one of the three is turned in; the chapter hint says so. The rewards of
-  the three quests (170 to 190 gold, 220 to 240 XP, difficulty 14) and the
+  the three quests (170 to 190 gold, 220 to 240 XP, difficulty 14, and a gear
+  piece each: a coat, a helm and a blade already in the game) and the
   small standing changes of their turn-ins are placeholders for Core to
   confirm. `chapter_loop_test` lists the chapter 7 quests and the new goal.
 
