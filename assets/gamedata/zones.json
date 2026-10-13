@@ -7,6 +7,9 @@
     "mapTheme": "saltRoads",
     "flavorText": "A crooked stretch of net-sheds and gutting tables between the harbor wall and the tide line. Nobody who works it looks twice at a stranger asking questions -- not because they trust you, but because they've learned not to ask why, which suited someone quietly scavenging pitch and spare timber for a leaking hull just fine.",
     "rewardGold": 60,
+    "rewardMaterials": {
+      "material_timber": 3
+    },
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -30,6 +33,9 @@
     "mapTheme": "saltRoads",
     "flavorText": "The smell reaches you before the court does -- lime, salt, and something under it best not examined too closely. Whatever's worth finding here, someone tanned a hide over it first -- including, if you asked the right tanner, hide tough enough to patch a torn sail.",
     "rewardGold": 0,
+    "rewardMaterials": {
+      "material_cut_stone": 3
+    },
     "rewardItemId": "armor_leather",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -53,6 +59,10 @@
     "mapTheme": "saltRoads",
     "flavorText": "Where the harbor's official business gives way to its unofficial business. A woman who trades in old charts keeps a lantern lit past curfew for anyone willing to pay for what she knows -- and what she knows, this week, is where the Shroud's next piece went.",
     "rewardGold": 0,
+    "rewardMaterials": {
+      "material_timber": 2,
+      "material_cut_stone": 1
+    },
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -78,6 +88,9 @@
     "mapTheme": "ashenStreets",
     "flavorText": "What the purge left of the Ashen Quarter's market stalls, picked over by the same crowds twice: once for anything still worth selling, once for anything still worth burning. There's a particular kind of person who comes back a third time.",
     "rewardGold": 90,
+    "rewardMaterials": {
+      "material_slag_glass": 2
+    },
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -106,6 +119,10 @@
     "mapTheme": "ashenStreets",
     "flavorText": "The ironworkers who forged the Inquisition's plate abandoned their yard once the golems started outlasting their masters. The forges have gone cold, but cold iron still holds its shape better than most promises made in this district.",
     "rewardGold": 0,
+    "rewardMaterials": {
+      "material_iron_ore": 2,
+      "material_slag_glass": 1
+    },
     "rewardItemId": "plate_emberproof",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -136,6 +153,10 @@
     "mapTheme": "hollowReaches",
     "flavorText": "Galleries of stacked bone below the Drowned Cloister, flooded to the second shelf. The Court stored its dead here by the thousand and its secrets by the handful, and the water has been quietly rearranging both.",
     "rewardGold": 140,
+    "rewardMaterials": {
+      "material_iron_ore": 2,
+      "material_ash_steel": 1
+    },
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -165,6 +186,10 @@
     "mapTheme": "hollowReaches",
     "flavorText": "The Court's own road down: a spiral stair the black water has claimed one turn at a time, its landings still lit by the candles of people who never came back up. The second ledger waits at the bottom, and so does the man who keeps it.",
     "rewardGold": 0,
+    "rewardMaterials": {
+      "material_slag_glass": 2,
+      "material_ash_steel": 2
+    },
     "rewardItemId": "sword_t8",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -192,6 +217,10 @@
     "mapTheme": "ashenStreets",
     "flavorText": "The streets between the Reliquary Quarter and the tear, where the weather has gone wrong: frost in summer, shadows that lie the wrong way, and things that came through when the tear first opened and never found a reason to go back.",
     "rewardGold": 180,
+    "rewardMaterials": {
+      "material_rime_crystal": 2,
+      "material_shroud_thread": 1
+    },
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -221,6 +250,10 @@
     "mapTheme": "hollowReaches",
     "flavorText": "The square at the city's dead heart, where the tear hangs in the open air and something that was once an Inquisitor has kept watch over it since the night it opened. The last stretch of the ledger's road, and the worst of it.",
     "rewardGold": 200,
+    "rewardMaterials": {
+      "material_tear_glass": 2,
+      "material_shroud_thread": 2
+    },
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -248,6 +281,10 @@
     "mapTheme": "wildsBeyond",
     "flavorText": "The far side of the tear: no sky, no ground that stays where it is left, and the faces of everyone the invasion took, walking. The Rusty Eel is the only thing here that remembers what a world is supposed to look like.",
     "rewardGold": 300,
+    "rewardMaterials": {
+      "material_tear_glass": 2,
+      "material_lantern_brass": 2
+    },
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -275,6 +312,9 @@
     "flavorText": "Where the tear first touched the Hollow Shore the sand ran to glass in one breath: a strand of it, smooth and dark and humming, strewn with the White Fleet’s wreckage and whatever came ashore with it.",
     "flavorText_fr": "Là où la déchirure a d’abord touché la Rive Creuse, le sable s’est changé en verre d’un seul souffle : une grève entière, lisse, sombre et bourdonnante, jonchée des débris de la Flotte Blanche et de ce qui est venu à terre avec eux.",
     "rewardGold": 220,
+    "rewardMaterials": {
+      "material_tear_glass": 3
+    },
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -304,6 +344,10 @@
     "flavorText": "Off the point the White Fleet lies where the tear put it: forty hulls on a floor of glass, masts still standing, and the flagship in their midst with its colours flying and its Admiral on the quarterdeck. The fifth piece of the Shroud is its mainsail.",
     "flavorText_fr": "Au large de la pointe, la Flotte Blanche gît là où la déchirure l’a posée : quarante coques sur un fond de verre, les mâts encore debout, et au milieu le vaisseau amiral, couleurs au vent et son Amiral sur la dunette. La cinquième pièce du Linceul est sa grand-voile.",
     "rewardGold": 260,
+    "rewardMaterials": {
+      "material_white_fleet_oak": 1,
+      "material_lantern_brass": 1
+    },
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -329,6 +373,9 @@
     "flavorText": "The pilgrim road the Spire’s exorcists walk up into the red hills every spring, marked every mile with a warding post, a bell and a bowl of salt. It is the best-kept road on the Ashen Coast. Nothing has ever been exorcised by it, but the posts are beautifully kept.",
     "flavorText_fr": "La route de pèlerinage que les exorcistes de la Flèche gravissent chaque printemps vers les collines rouges, marquée à chaque mille d’un poteau de garde, d’une cloche et d’un bol de sel. C’est la route la mieux entretenue de la Côte de Cendre. Elle n’a jamais exorcisé quoi que ce soit, mais ses poteaux sont magnifiquement entretenus.",
     "rewardGold": 110,
+    "rewardMaterials": {
+      "material_iron_ore": 2
+    },
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -359,6 +406,9 @@
     "flavorText": "Reed-beds and black pools between the Drowned Cloister and the higher ground, lit at night by lights that belong neither to the Court nor to the villages, and crossed every seventh year by a rider with a lantern and a ledger. The fen villages bar their doors when he passes, and count their children in the morning.",
     "flavorText_fr": "Des roselières et des mares noires entre le Cloître noyé et les hauteurs, éclairées la nuit par des lumières qui n’appartiennent ni à la Cour ni aux villages, et traversées tous les sept ans par un cavalier avec une lanterne et un registre. Les villages du marais barrent leurs portes à son passage, et comptent leurs enfants au matin.",
     "rewardGold": 150,
+    "rewardMaterials": {
+      "material_iron_ore": 2
+    },
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -389,6 +439,9 @@
     "flavorText": "The quarries above Highhearth where the Reliquary’s stone was cut, a hundred steps of white rock climbing into the frost the tear sends down. The Inquisition owns them, on paper. Nobody has worked them since the giants stopped being written down.",
     "flavorText_fr": "Les carrières au-dessus de Haut-Âtre, où l’on a taillé la pierre du Reliquaire : cent gradins de roche blanche qui montent dans le givre que la déchirure envoie. L’Inquisition les possède, sur le papier. Personne ne les exploite plus depuis qu’on a cessé d’écrire les géants.",
     "rewardGold": 190,
+    "rewardMaterials": {
+      "material_rime_crystal": 3
+    },
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -419,6 +472,9 @@
     "flavorText": "The saltworks on the flats south of the Wharf have not sold a sack inland since the Wreckers started working the coast road. Old Maudry, who runs the pans, has four wagons loaded and nobody willing to drive them. She pays by the sack that arrives, and she counts.",
     "flavorText_fr": "Les salines, sur les plaines au sud du Quai, n’ont plus vendu un sac à l’intérieur des terres depuis que les Naufrageurs écument la route côtière. La vieille Maudry, qui tient les bassins, a quatre chariots chargés et personne pour les conduire. Elle paie au sac arrivé, et elle compte.",
     "rewardGold": 100,
+    "rewardMaterials": {
+      "material_cut_stone": 2
+    },
     "rewardItemId": "coat_brigandine",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -445,6 +501,9 @@
     "flavorText": "Fever has got into the shacks under the Reckoning Wall, where the survivors of the purge live on what the Inquisition missed. The apothecary at the landing has a chest of fever-bark, enough for all of them, and a boy who ran the whole way to ask for it. It has to be there in six days. After that, he says, it will not matter.",
     "flavorText_fr": "La fièvre s’est glissée dans les baraques au pied du Mur du Jugement, où les survivants de la purge vivent de ce que l’Inquisition a laissé. L’apothicaire du débarcadère a un coffre d’écorce à fièvre, assez pour tous, et un garçon qui a couru tout le chemin pour la demander. Elle doit y être dans six jours. Après, dit-il, cela n’aura plus d’importance.",
     "rewardGold": 130,
+    "rewardMaterials": {
+      "material_slag_glass": 2
+    },
     "rewardItemId": "boots_iron_shod",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -474,6 +533,9 @@
     "flavorText": "The fen villages ring bells at dusk to keep the Court’s lights from their doors, and the Court’s servants have been cutting them down one by one. The foundry by the Drowned Stair has cast three new ones. They are loaded on wagons under straw, and the villages have pooled every coin they have to see them brought home.",
     "flavorText_fr": "Les villages du marais font sonner des cloches au crépuscule pour tenir les lumières de la Cour loin de leurs portes, et les serviteurs de la Cour les abattent une à une. La fonderie près de l’Escalier Noyé en a coulé trois nouvelles. Elles sont chargées sous la paille, et les villages ont mis en commun chaque pièce qu’ils avaient pour les voir rentrer.",
     "rewardGold": 180,
+    "rewardMaterials": {
+      "material_slag_glass": 2
+    },
     "rewardItemId": "helm_drowned_sallet",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -500,6 +562,9 @@
     "flavorText": "The frost that came down from the Reliquary has put out every hearth in Rimewell, and fire will not catch there any more, not from flint, not from sulphur. The last forge in the city keeps a coal it lit before the frost. Sealed in iron pots, embers from it will keep six days on the road. Somebody has to carry them.",
     "flavorText_fr": "Le givre descendu du Reliquaire a éteint tous les foyers de Puits-de-Givre, et le feu n’y prend plus, ni au silex, ni au soufre. La dernière forge de la ville garde une braise allumée avant le givre. Scellées dans des pots de fer, des braises tirées d’elle tiendront six jours sur la route. Il faut que quelqu’un les porte.",
     "rewardGold": 210,
+    "rewardMaterials": {
+      "material_rime_crystal": 2
+    },
     "rewardItemId": "phoenix_sigil",
     "rewardDiceId": "",
     "rewardAllyId": "",
@@ -529,6 +594,9 @@
     "flavorText": "The shore villages have gone up to the high ground ahead of the widening Tear, and left their grain and lamp oil behind in the barns. Without the oil there will be no lanterns, and the things that come out of the Tear do not like a steady light. The elders have loaded what was left onto six wagons, and need someone to bring them up.",
     "flavorText_fr": "Les villages de la côte sont montés sur les hauteurs devant la Déchirure qui s’élargit, et ont laissé leur grain et leur huile de lampe dans les granges. Sans l’huile, pas de lanternes, et les choses qui sortent de la Déchirure n’aiment pas la lumière qui ne tremble pas. Les anciens ont chargé ce qui restait sur six chariots, et il leur faut quelqu’un pour les faire monter.",
     "rewardGold": 250,
+    "rewardMaterials": {
+      "material_lantern_brass": 2
+    },
     "rewardItemId": "boots_tearwalker",
     "rewardDiceId": "",
     "rewardAllyId": "",

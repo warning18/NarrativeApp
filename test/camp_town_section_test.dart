@@ -41,7 +41,11 @@ void main() {
         ProviderScope.containerOf(tester.element(find.byType(CampTownSection)));
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson({'gold': 400})));
+        .loadSession(PlayerSession.fromJson({
+          // Kelda's hall costs 100 gold and 2 timber (v1.28x, materials).
+          'gold': 350,
+          'inventoryItemIds': ['material_timber', 'material_timber'],
+        })));
     await tester.pump();
 
     // A house behind a zone waits on it; one out of reach says so.

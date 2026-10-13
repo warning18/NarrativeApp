@@ -12,6 +12,7 @@ import '../models/ally_state.dart'
 import '../models/story_node.dart';
 import 'autoplay_build.dart';
 import 'item_origin_here.dart';
+import 'materials.dart' show materialCountsOf;
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/clans_provider.dart' show loadClanData;
 import '../gamedata/db_schema.dart' show shopsSchema;
@@ -204,6 +205,7 @@ Future<void> _exploreChapterBeforeMainQuest(
       entry.key,
       rewardGold: (zone['rewardGold'] as num?)?.toInt() ?? 0,
       rewardFlag: zone['rewardFlag']?.toString(),
+      rewardMaterials: materialCountsOf(zone, 'rewardMaterials'),
     );
     found.addAll(zoneDiscoveries(zone).map(placeFoundFlag));
   }

@@ -17,6 +17,7 @@ import '../data/contracts.dart';
 import '../data/factions.dart';
 import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
 import '../data/journey_rules.dart';
+import '../data/materials.dart';
 import '../data/offers.dart';
 import '../data/perks.dart';
 import '../data/politics_events.dart';
@@ -47,7 +48,7 @@ const String unreadableSessionBackupPrefsKey = 'player_session_unreadable';
 /// The save format's version, written into every save. Bump it with a
 /// migration in [PlayerSession.fromJson] whenever a change to the format
 /// needs one; a save without it is version 1.
-const int playerSessionSaveVersion = 3;
+const int playerSessionSaveVersion = materialsSaveVersion;
 const String _newGameDefaultsAssetPath = 'assets/gamedata/game_config.json';
 const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
 
@@ -164,13 +165,7 @@ bool canSellItem(Map<String, dynamic>? item) =>
 /// The materials forging [item] takes (items.json `craftMaterials`, item
 /// id to count); empty for anything not forged.
 Map<String, int> craftMaterialsFor(Map<String, dynamic>? item) {
-  final raw = item?['craftMaterials'];
-  if (raw is! Map) return const {};
-  return {
-    for (final e in raw.entries)
-      if (((e.value as num?)?.toInt() ?? 0) > 0)
-        e.key.toString(): (e.value as num).toInt(),
-  };
+  return materialCountsOf(item, 'craftMaterials');
 }
 
 /// The items forged at [shopId] (items.json `craftedAt`), sorted by id.
@@ -1193,10 +1188,15 @@ class PlayerSession {
               ?.map((e) => e.toString())
               .toList() ??
           const [],
-      inventoryItemIds: (json['inventoryItemIds'] as List?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          const [],
+      inventoryItemIds: [
+        ...?(json['inventoryItemIds'] as List?)?.map((e) => e.toString()),
+        // A save from before materials gets, once, a rare material of each
+        // tier its story has passed (see legacyMaterialGrant); it is saved
+        // with the new version, so it never gets them again.
+        if (((json['saveVersion'] as num?)?.toInt() ?? 1) <
+            materialsSaveVersion)
+          ...legacyMaterialGrant((json['clockChapter'] as num?)?.toInt() ?? 0),
+      ],
       equippedItemIds: (json['equippedItemIds'] as List?)
               ?.map((e) => e.toString())
               .toList() ??
@@ -3366,18 +3366,25 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// are one atomic action, exactly like [recruitAlly]'s starter-skill
   /// unlock is one action rather than two.
   /// Spends [cost] and marks [houseId] built, unlocking [unlocksShopId] if
-  /// any. A no-op if unaffordable, already built, or any of
-  /// [requiredFlags] (houses.json) is still unset -- the camp's late
-  /// workshops wait on the zones that supply them.
+  /// any. A no-op if unaffordable (gold, or the [materialCost] in the pack,
+  /// see materials.dart), already built, or any of [requiredFlags]
+  /// (houses.json) is still unset -- the camp's late workshops wait on the
+  /// zones that supply them.
   Future<void> buildHouse(String houseId, int cost,
-      {String? unlocksShopId, List<String> requiredFlags = const []}) async {
+      {String? unlocksShopId,
+      List<String> requiredFlags = const [],
+      Map<String, int> materialCost = const {}}) async {
     if (state.gold < cost || state.builtHouseIds.contains(houseId)) return;
     if (requiredFlags.any((flag) => !state.flags.contains(flag))) return;
+    if (missingMaterials(state.inventoryItemIds, materialCost).isNotEmpty) {
+      return;
+    }
     // The story reads the camp's buildings back through a flag per house
     // (see houseFlag).
     final flag = houseFlag(houseId);
     state = state.copyWith(
       gold: state.gold - cost,
+      inventoryItemIds: withoutMaterials(state.inventoryItemIds, materialCost),
       builtHouseIds: [...state.builtHouseIds, houseId],
       flags: state.flags.contains(flag) ? state.flags : [...state.flags, flag],
       townOrder: [...state.townPieces, houseId],
@@ -3415,10 +3422,16 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? rewardItemId,
     String? rewardDiceId,
     String? rewardFlag,
+    Map<String, int> rewardMaterials = const {},
     ItemOrigin? origin,
   }) async {
     if (state.completedZoneIds.contains(zoneId)) return;
-    final newInventory = [...state.inventoryItemIds];
+    final newInventory = [
+      ...state.inventoryItemIds,
+      // The zone's materials (zones.json rewardMaterials).
+      for (final e in rewardMaterials.entries)
+        for (var i = 0; i < e.value; i++) e.key,
+    ];
     var newOrigins = state.itemOrigins;
     if (rewardItemId != null && rewardItemId.isNotEmpty) {
       newInventory.add(rewardItemId);
