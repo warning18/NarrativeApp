@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -216,6 +217,149 @@ void main() {
         }
         expect(overflows, isEmpty, reason: overflows.toSet().join('\n'));
       });
+    }
+  }
+
+  // The user's own die: the Apprentice Die with a locked Mana face, open
+  // Attack and Defend faces and three skills on its skill faces. UX's
+  // fix-pack should make the picked face's card hold one height.
+  // Both fail on main today (card heights 154 to 210 px as faces are picked;
+  // "Storehouse", "Watchtower", "Smugglers'" wider than their line). Turn
+  // them on (set to false) when UX's fix-pack PR merges.
+  const skipUntilFixPack = true;
+  for (final size in _sizes) {
+    for (final french in [false, true]) {
+      final label = '${size.width.toInt()} px ${french ? 'French' : 'English'}';
+      testWidgets(
+          'dice loadout: the picked face\'s card keeps its height, '
+          '$label', (tester) async {
+        final overflows = _collectOverflows(tester);
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+            .setMockMethodCallHandler(
+                const MethodChannel('flutter_tts'), (call) async => 1);
+        SharedPreferences.setMockInitialValues(
+            {if (french) 'app_language': 'fr'});
+        tester.view.physicalSize = Size(size.width, 1800);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.reset);
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+        await tester.pumpWidget(UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            theme: buildAppTheme(ColorScheme.fromSeed(
+                seedColor: Colors.amber, brightness: Brightness.dark)),
+            home: const DiceLoadoutScreen(),
+          ),
+        ));
+        await _settle(tester);
+        await tester.runAsync(() => container
+            .read(playerSessionProvider.notifier)
+            .loadSession(PlayerSession.fromJson({
+              'raceId': 'human',
+              'professionId': 'cleric',
+              'ownedDiceIds': ['apprentice_die'],
+              'equippedDiceId': 'apprentice_die',
+              'unlockedSkillIds': [
+                'cleric_prayer',
+                'cleric_holy_light',
+                'orc_berserk_rage',
+              ],
+              'diceSkillAssignments': {
+                'apprentice_die': {
+                  '1': 'cleric_prayer',
+                  '4': 'cleric_holy_light',
+                  '5': 'orc_berserk_rage',
+                },
+              },
+            })));
+        await _settle(tester);
+        final heights = <int, double>{};
+        final tiles = <int, Size>{};
+        for (var pick = 0; pick < 6; pick++) {
+          final slot = find.byKey(Key('face_slot_$pick'));
+          expect(slot, findsOneWidget, reason: 'face $pick');
+          await tester.tap(slot, warnIfMissed: false);
+          await tester.pump(const Duration(milliseconds: 300));
+          // The card is the row that holds the cube and the face's text.
+          final card = find
+              .ancestor(
+                  of: find.byKey(const Key('die_face_name')),
+                  matching: find.byType(Row))
+              .first;
+          heights[pick] = tester.getSize(card).height;
+          tiles[pick] = tester.getSize(slot);
+        }
+        expect(tiles.values.toSet().length, 1, reason: 'tiles $tiles');
+        expect(heights.values.toSet().length, 1,
+            reason: 'the card changes height with the face: $heights');
+        expect(overflows, isEmpty, reason: overflows.toSet().join('\n'));
+      }, skip: skipUntilFixPack);
+
+      testWidgets('camp town: no house title breaks inside a word, $label',
+          (tester) async {
+        SharedPreferences.setMockInitialValues(
+            {if (french) 'app_language': 'fr'});
+        tester.view.physicalSize = size;
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.reset);
+        final houses =
+            json.decode(File('assets/gamedata/houses.json').readAsStringSync())
+                as Map<String, dynamic>;
+        await tester.pumpWidget(ProviderScope(
+          child: MaterialApp(
+            theme: buildAppTheme(ColorScheme.fromSeed(
+                seedColor: Colors.amber, brightness: Brightness.dark)),
+            home: Scaffold(
+              body: SingleChildScrollView(
+                child: CampTownSection(
+                  houses: houses,
+                  shops: const {},
+                  zones: const {},
+                  achievements: const {},
+                ),
+              ),
+            ),
+          ),
+        ));
+        await _settle(tester);
+        final broken = <String>[];
+        for (final tab in ['town_tab_houses', 'town_tab_additions']) {
+          await tester.tap(find.byKey(Key(tab)));
+          await tester.pump(const Duration(milliseconds: 300));
+          final cards = find.byWidgetPredicate((w) =>
+              w.key is ValueKey<String> &&
+              (w.key as ValueKey<String>).value.startsWith('town_card_'));
+          for (var i = 0; i < cards.evaluate().length; i++) {
+            final card = cards.at(i);
+            await tester.ensureVisible(card);
+            await tester.pump();
+            // Every Text of the card: each word must fit the line it has.
+            for (final p in find
+                .descendant(of: card, matching: find.byType(RichText))
+                .evaluate()
+                .map((e) => e.renderObject)
+                .whereType<RenderParagraph>()) {
+              final span = p.text;
+              final style = span.style;
+              final text = span.toPlainText();
+              for (final word in text.split(RegExp(r'\s+'))) {
+                if (word.length < 6) continue;
+                final painter = TextPainter(
+                    text: TextSpan(text: word, style: style),
+                    textDirection: TextDirection.ltr,
+                    textScaler: p.textScaler)
+                  ..layout();
+                if (painter.width > p.size.width + 0.5) {
+                  broken.add('"$word" needs ${painter.width.round()} px in '
+                      '${p.size.width.round()} px');
+                }
+              }
+            }
+          }
+        }
+        expect(broken, isEmpty, reason: broken.toSet().join('\n'));
+      }, skip: skipUntilFixPack);
     }
   }
 }
