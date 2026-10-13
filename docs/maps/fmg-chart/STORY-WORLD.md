@@ -1,11 +1,11 @@
 # A story-true world for the chart
 
-A preview, not a change to the game (nothing in `lib/` reads it). The world is drawn from what the story says and
+Since v1.27x the game reads it: `lib/data/chart_story.dart` is the travel-history map's chart (`MapShape.story`, kept out of the map-look setting). The world is drawn from what the story says and
 where the globe puts it, with Earth's climate bands. Everything is in `tool/fmg_chart/`:
 
 - `story_world.py` holds the design (lands, places, zones, ranges, rivers, archipelagos) and writes `chart_story.dart`
   (`chartWorldStory`, a `ChartGeography`, plus `storyFeatureAt`, `storyEmptyLands` and `storyArchipelagoLands`).
-  `python3 tool/fmg_chart/story_world.py > tool/fmg_chart/chart_story.dart && dart format tool/fmg_chart/chart_story.dart`
+  `python3 tool/fmg_chart/story_world.py > lib/data/chart_story.dart && dart format lib/data/chart_story.dart`
   (needs numpy, scipy, scikit-image, shapely and PIL).
 - `preview_test.dart` paints it with the game's own `ChartMapPainter` next to chart B, flat and on the globe, and prints what the
   game's `ChartClimate` makes of each place and of each band: `flutter test tool/fmg_chart/preview_test.dart`.

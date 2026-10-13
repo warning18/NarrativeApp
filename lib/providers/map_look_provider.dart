@@ -51,7 +51,7 @@ class MapShapeNotifier extends StateNotifier<MapShape> {
     final prefs = await SharedPreferences.getInstance();
     final name = prefs.getString(mapShapePrefsKey);
     if (_chosen || name == null) return;
-    for (final shape in MapShape.values) {
+    for (final shape in mapLookShapes) {
       if (shape.name == name) state = shape;
     }
   }

@@ -67,8 +67,14 @@ void main() {
 
       test('names every zone in both languages, inside the chart', () {
         for (final zone in chart.zones) {
-          expect(zone.nameEn, isNotEmpty);
-          expect(zone.nameFr, isNotEmpty);
+          // The story world's empty lands (chart_story.dart) wait for their
+          // names from Narrative: unnamed in both languages, never in one.
+          if (shape == MapShape.story && zone.nameEn.isEmpty) {
+            expect(zone.nameFr, isEmpty);
+          } else {
+            expect(zone.nameEn, isNotEmpty);
+            expect(zone.nameFr, isNotEmpty);
+          }
           expect(chartBiomeColours.containsKey(zone.biome), isTrue,
               reason: zone.biome);
           expect(zone.labelAt.dx, inInclusiveRange(0, worldMapWidth));

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/app_locale.dart';
+import 'chart_story.dart';
 import 'chart_worlds.dart';
 import 'world_map.dart';
 
@@ -24,7 +25,19 @@ import 'world_map.dart';
 /// ranges, villages, bridges, the clans' seats and the trade and quest
 /// roads: the chart painter draws them, with coasts broken into bays and
 /// headlands and terrain over each land (see chart_relief.dart).
-enum MapShape { continental, archipelago, delta }
+/// - [MapShape.story] (the story world, v1.27x): the world as the story
+///   and the globe place it, cold north, the Waste on the equator's dry
+///   belt (chart_story.dart). The travel-history map's chart, beside the
+///   Journey; not one of the looks the map offers (see [mapLookShapes]).
+enum MapShape { continental, archipelago, delta, story }
+
+/// The geographies the map's look setting offers (every [MapShape] but
+/// the travel-history map's own [MapShape.story]).
+const List<MapShape> mapLookShapes = [
+  MapShape.continental,
+  MapShape.archipelago,
+  MapShape.delta,
+];
 
 /// One region's name on the chart, shown once the story reaches
 /// [chapter].
@@ -188,7 +201,36 @@ ChartGeography chartOf(MapShape shape) => switch (shape) {
       MapShape.continental => chartWorldA,
       MapShape.archipelago => chartWorldB,
       MapShape.delta => chartWorldC,
+      MapShape.story => chartWorldStoryFull,
     };
+
+/// The story world with the features that have a story role: chart B's
+/// (names, notes, clans), each where the story world puts it
+/// ([storyFeatureAt]); the rest of chart B's stay off it.
+final ChartGeography chartWorldStoryFull = () {
+  final g = chartWorldStory;
+  final seen = <String>{};
+  return ChartGeography(
+    places: g.places,
+    lands: g.lands,
+    rivers: g.rivers,
+    labels: g.labels,
+    zones: g.zones,
+    ranges: g.ranges,
+    features: [
+      for (final f in chartWorldB.features)
+        if (storyFeatureAt['${f.kind.name}|${f.nameEn}'] case final at?
+            when seen.add('${f.kind.name}|${f.nameEn}'))
+          ChartFeature(f.kind, at, f.nameEn, f.nameFr,
+              noteEn: f.noteEn,
+              noteFr: f.noteFr,
+              clan: f.clan,
+              angle: f.angle,
+              landmark: f.landmark,
+              atSea: f.atSea),
+    ],
+  );
+}();
 
 /// A look's colours for the chart.
 class ChartPalette {
