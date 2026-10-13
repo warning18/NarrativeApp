@@ -243,6 +243,15 @@ void main() {
         'port_ashen_landing');
     // Kelda's hall is not on offer before Kelda joins.
     expect(find.text("Kelda's Hall"), findsNothing);
+    // The founding hands over the harbour's materials, and the harbour is
+    // the camp's first work (harbour.dart).
+    expect(
+        container
+            .read(playerSessionProvider)
+            .inventoryItemIds
+            .where((id) => id == 'material_timber'),
+        hasLength(4));
+    expect(find.byKey(const Key('camp_harbour_first')), findsOneWidget);
 
     // The harbour sits in the Sea tab: what it would give until built,
     // then one tap away.
@@ -263,6 +272,7 @@ void main() {
     await _settle(tester);
     await tester.scrollUntilVisible(find.byKey(const Key('camp_harbor')), 200,
         scrollable: campList);
+    expect(find.byKey(const Key('camp_harbour_first')), findsNothing);
     await tester.tap(find.byKey(const Key('camp_harbor')));
     await _settle(tester);
     expect(find.byType(HarborScreen), findsOneWidget);

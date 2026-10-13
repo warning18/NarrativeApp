@@ -415,7 +415,7 @@ class CampScreen extends ConsumerWidget {
           const SizedBox(height: 12),
           TutorialTarget(
             id: 'camp.harbour',
-            child: _HarbourCard(built: false, cost: harbourCost),
+            child: _HarbourCard(built: false, cost: harbourCost, first: true),
           ),
         ],
         const SizedBox(height: 12),
@@ -903,9 +903,14 @@ class _CampTabs extends ConsumerWidget {
 /// The harbour in the Sea tab: the way to refit the Eel once it stands,
 /// and before that what building it gives and costs (a tap goes to Town).
 class _HarbourCard extends ConsumerWidget {
-  const _HarbourCard({required this.built, required this.cost});
+  const _HarbourCard(
+      {required this.built, required this.cost, this.first = false});
 
   final bool built;
+
+  /// The card above the camp's tabs, while the harbour is awaited (the Sea
+  /// tab keeps its own).
+  final bool first;
 
   /// What building it costs, as the card says it ("4 Timber, 2 Cut Stone").
   final String cost;
@@ -916,7 +921,11 @@ class _HarbourCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final colour = built ? ink.tide : ink.gold;
     return InkWell(
-      key: Key(built ? 'camp_harbor' : 'camp_harbor_locked'),
+      key: Key(first
+          ? 'camp_harbour_first'
+          : built
+              ? 'camp_harbor'
+              : 'camp_harbor_locked'),
       borderRadius: BorderRadius.circular(10),
       onTap: built
           ? () => Navigator.of(context)
