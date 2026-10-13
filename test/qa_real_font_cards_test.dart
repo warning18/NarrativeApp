@@ -226,7 +226,7 @@ void main() {
   // Both fail on main today (card heights 154 to 210 px as faces are picked;
   // "Storehouse", "Watchtower", "Smugglers'" wider than their line). Turn
   // them on (set to false) when UX's fix-pack PR merges.
-  const skipUntilFixPack = true;
+  const skipUntilFixPack = false;
   for (final size in _sizes) {
     for (final french in [false, true]) {
       final label = '${size.width.toInt()} px ${french ? 'French' : 'English'}';

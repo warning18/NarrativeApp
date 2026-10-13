@@ -2521,34 +2521,39 @@ class _EnterPlaceButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final name = place.nameFor(french);
+    // Scrolls inside the room the choices are given (a long quest strip
+    // above leaves a short phone little): the button comes first, so the
+    // hint is what slides out of sight, never an overflow (320 px).
     return Padding(
       padding: const EdgeInsets.only(top: 8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          FilledButton.icon(
-            key: const Key('hub_enter'),
-            style: FilledButton.styleFrom(minimumSize: const Size(0, 52)),
-            onPressed: onEnter,
-            icon: Icon(place.isCamp
-                ? Icons.local_fire_department_outlined
-                : Icons.location_city_outlined),
-            label: Text(
-              tr(ref, again ? 'hub_back_button' : 'hub_enter_button')
-                  .replaceAll('{place}', name),
-              textAlign: TextAlign.center,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            FilledButton.icon(
+              key: const Key('hub_enter'),
+              style: FilledButton.styleFrom(minimumSize: const Size(0, 52)),
+              onPressed: onEnter,
+              icon: Icon(place.isCamp
+                  ? Icons.local_fire_department_outlined
+                  : Icons.location_city_outlined),
+              label: Text(
+                tr(ref, again ? 'hub_back_button' : 'hub_enter_button')
+                    .replaceAll('{place}', name),
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
-          if (!again) ...[
-            const SizedBox(height: 6),
-            Text(
-              tr(ref, 'hub_enter_hint'),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.labelSmall,
-            ),
+            if (!again) ...[
+              const SizedBox(height: 6),
+              Text(
+                tr(ref, 'hub_enter_hint'),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
