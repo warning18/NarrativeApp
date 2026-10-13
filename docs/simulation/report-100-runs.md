@@ -1,6 +1,6 @@
-# Simulation report: 100 playthroughs (chapter 5 softened, VERSION)
+# Simulation report: 100 playthroughs (chapter 5 softened, v1.270.0)
 
-Regenerated after the chapter 5 tuning of VERSION. QA's L3 of 1.264.0 (`docs/qa/l3-1.264.0.md`) found chapter 5 to be the wall: 21% attempt win and the most failed attempts of any chapter. This release changes numbers only, and only for chapter 5's enemies (`assets/gamedata/enemies.json`). Every batch below was run twice on the same seeds, once on `main` at 1.267.0 and once with the change: the 100-run batch (seed 7) and the 800-run check (seeds 11 and 23).
+Regenerated after the chapter 5 tuning of v1.270.0. QA's L3 of 1.264.0 (`docs/qa/l3-1.264.0.md`) found chapter 5 to be the wall: 21% attempt win and the most failed attempts of any chapter. This release changes numbers only, and only for chapter 5's enemies (`assets/gamedata/enemies.json`). Every batch below was run twice on the same seeds, once on `main` at 1.267.0 and once with the change: the 100-run batch (seed 7) and the 800-run check (seeds 11 and 23).
 
 ## 0. Chapter 5, before and after
 
