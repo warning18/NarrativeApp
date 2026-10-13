@@ -8,6 +8,39 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.277.0+313]
+
+The travel map, and a pack of layout fixes.
+
+### Added
+- **A map of where you have been.** A compass button in the Journey's header
+  opens the story world with the road taken in order (sea legs dashed), the
+  places reached by name, the places only heard of as "?", and a dotted ring
+  round each place the camp can travel to. A tap on a ringed place offers
+  the journey; on a place only heard of, it says the road is not open yet.
+  The names are laid out clear of each other, also on the crowded north
+  continent. It zooms and pans.
+- **Tap a built building in the camp town** to read its name and what it
+  gives.
+- **Help pattern.** An ⓘ in a page's header replays the page's guide; holding
+  a section name explains it. First on the dice loadout, where the two
+  paragraphs under "Faces" are now behind the title.
+- A spoken label on the Gifts tab's dot (`gifts_waiting_label`).
+
+### Changed
+- **Dice loadout:** the die card keeps one height whatever face is picked.
+- **Camp town cards:** the status sits above the name, so "Hammersmith",
+  "Storehouse", "Watchtower" and "Smugglers’" are never broken inside a word.
+- **The Shroud card** on the Character page's Pages tab is one row of six
+  small banners (the names are a tap away).
+- **Tour step 4** of the Character tour describes the three tabs.
+- **Voyage:** a storm's rain falls over the Eel's water only, no longer
+  behind the words and the buttons.
+- **Journey:** the "You are here" badge is kept clear of the step names, and
+  the weather line wraps clear of the zoom button.
+- **Chapter 7 camp hub:** the enter-the-place button scrolls in the room it
+  has, so a long quest strip no longer overflows it at 320 px.
+
 ## [1.273.0+309]
 
 Ten new moods, and the scenes that wear them.
