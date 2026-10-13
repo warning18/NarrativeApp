@@ -10,9 +10,12 @@ import '../combat/face_smithing.dart';
 import '../models/ally_state.dart'
     show equipmentBonusFor, equipmentScalingBonusFor;
 import '../models/story_node.dart';
+import 'autoplay_build.dart';
 import 'item_origin_here.dart';
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/clans_provider.dart' show loadClanData;
+import '../gamedata/db_schema.dart' show shopsSchema;
+import '../providers/game_db_providers.dart' show gameDbRepositoryProvider;
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
 import '../providers/story_providers.dart';
@@ -143,11 +146,12 @@ Future<void> _maybeCreateCharacter(
   WidgetRef ref, {
   required Map<String, dynamic> races,
   required Map<String, dynamic> professions,
+  Random? random,
 }) async {
   final session = ref.read(playerSessionProvider);
   if (session.raceId.isNotEmpty && session.professionId.isNotEmpty) return;
   if (races.isEmpty || professions.isEmpty) return;
-  final random = Random();
+  random ??= Random();
   final raceIds = races.keys.toList();
   final professionIds = professions.keys.toList();
   final raceId = raceIds[random.nextInt(raceIds.length)];
@@ -567,6 +571,11 @@ Future<AutoplayResult> autoplayToNode(
 /// it cannot win, so the walk always reaches the chapter unless the story
 /// itself offers no way there. [onAttempt] reports each attempt as it
 /// starts.
+///
+/// Before handing back, the player gets the best build the session allows
+/// (see [planAutoplayBuild]): stat points spent, the best carried gear
+/// worn, the best skills on the die. With a [seed] the whole run is
+/// deterministic (each attempt its own stream); without one it rolls fresh.
 Future<AutoplayResult> autoplayToChapter(
   WidgetRef ref, {
   required StoryData story,
@@ -582,6 +591,8 @@ Future<AutoplayResult> autoplayToChapter(
   int maxSteps = 200,
   int maxCombatRetries = 8,
   int maxAttempts = 10,
+  int? seed,
+  Map<String, dynamic>? shops,
   void Function(int attempt)? onAttempt,
 }) async {
   final startChapter =
@@ -619,10 +630,85 @@ Future<AutoplayResult> autoplayToChapter(
       maxSteps: last ? maxSteps * 3 : maxSteps,
       maxCombatRetries: maxCombatRetries,
       forceWins: last,
+      random: seed == null ? Random() : Random(seed * 1009 + attempt),
     );
     if (result.status == AutoplayStatus.reachedTarget) break;
   }
+  if (result.status == AutoplayStatus.reachedTarget) {
+    await applyArrivalTopUp(ref,
+        chapter: targetChapter,
+        items: items,
+        professions: professions,
+        shops: shops ??
+            await ref
+                .read(gameDbRepositoryProvider(shopsSchema))
+                .loadRecords());
+  }
+  await applyAutoplayBuild(ref,
+      items: items, skills: skills, dice: dice, professions: professions);
   return result._withAttempts(attempts);
+}
+
+/// Brings a character that reached [chapter] up to where a typical run
+/// arrives there ([planArrivalTopUp]): the XP and gold as a won fight's
+/// reward (its levels give their stat points and a full heal), the tier's
+/// gear into the pack. [shops]: shops.json's records.
+Future<void> applyArrivalTopUp(
+  WidgetRef ref, {
+  required int chapter,
+  required Map<String, dynamic> items,
+  required Map<String, dynamic> shops,
+  required Map<String, dynamic> professions,
+}) async {
+  final session = ref.read(playerSessionProvider);
+  final topUp = planArrivalTopUp(session,
+      chapter: chapter, items: items, shops: shops, professions: professions);
+  if (topUp.isEmpty) return;
+  await ref.read(playerSessionProvider.notifier).applyCombatResult(
+        hpAfter: session.currentHealth,
+        xpGain: topUp.xp,
+        goldGain: topUp.gold,
+        itemsGained: topUp.items,
+        items: items,
+      );
+}
+
+/// Applies [planAutoplayBuild]'s build to the live session: the stat
+/// points, then the gear (a score can open it), then the die's faces.
+Future<void> applyAutoplayBuild(
+  WidgetRef ref, {
+  required Map<String, dynamic> items,
+  required Map<String, dynamic> skills,
+  required Map<String, dynamic> dice,
+  required Map<String, dynamic> professions,
+}) async {
+  final notifier = ref.read(playerSessionProvider.notifier);
+  final before = ref.read(playerSessionProvider);
+  if (before.professionId.isEmpty) return;
+  final build = planAutoplayBuild(before,
+      items: items, skills: skills, dice: dice, professions: professions);
+  for (var i = 0; i < build.statPoints; i++) {
+    await notifier.spendStatPoint(stat: build.statToRaise);
+  }
+  for (final entry in build.equip.entries) {
+    await notifier.equipItem(entry.value, slot: entry.key, items: items);
+  }
+  final dieId = before.equippedDiceId;
+  final faces = build.faceAssignments;
+  if (dieId == null || faces == null) return;
+  final current = ref.read(playerSessionProvider).diceSkillAssignments[dieId] ??
+      const <String, String>{};
+  for (final index in current.keys.toList()..sort()) {
+    if (!faces.containsKey(index)) {
+      await notifier.clearDiceFaceSkill(dieId, int.parse(index));
+    }
+  }
+  for (final entry in faces.entries) {
+    if (current[entry.key] != entry.value) {
+      await notifier.assignSkillToDiceFace(
+          dieId, int.parse(entry.key), entry.value);
+    }
+  }
 }
 
 /// One walk of [autoplayToChapter]. With [forceWins], a fight still lost
@@ -642,11 +728,11 @@ Future<AutoplayResult> _playTowardChapter(
   required int maxSteps,
   required int maxCombatRetries,
   required bool forceWins,
+  required Random random,
 }) async {
   var forcedWins = 0;
   final sessionNotifier = ref.read(playerSessionProvider.notifier);
   final playNotifier = ref.read(storyPlayProvider.notifier);
-  final random = Random();
   var stepsApplied = 0;
   // The clans, for the choices' politics gates (v1.196).
   final clans = await loadClanData(ref);
@@ -744,7 +830,8 @@ Future<AutoplayResult> _playTowardChapter(
     }
 
     if (choice.opensCharacterCreation) {
-      await _maybeCreateCharacter(ref, races: races, professions: professions);
+      await _maybeCreateCharacter(ref,
+          races: races, professions: professions, random: random);
       playNotifier.choose(choice.nextId);
       stepsApplied += 1;
       continue;

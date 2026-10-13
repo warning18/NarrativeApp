@@ -120,8 +120,8 @@ Eleven nodes use `hopeful`, which has **no tag string** today: a small gap
 | `tender` | Tender | Tendre | camp evenings, Lysa and companion scenes |
 | `uncanny` | Uncanny | Étrange | the tear, the reflections, the Dead Heart (some `creepy` become this) |
 | `wry` | Wry | Narquois | the narrator's comic beats: Saltmouth bargaining, the cards, the touts |
-| `defiant` | Defiant | Frondeur | stands, sieges, "hold the gate" |
-| `mournful` | Mournful | Endeuillé | losing Lysa, Tobin's vigil, the drowned |
+| `defiant` | Defiant | Insoumis | stands, sieges, "hold the gate" |
+| `mournful` | Mournful | Funèbre | losing Lysa, Tobin's vigil, the drowned |
 | `ominous` | Ominous | De mauvais augure | arrivals under a clan's banner, the Herald |
 | `bitter` | Bitter | Amer | betrayals, the Penitent's confession |
 | `wondrous` | Wondrous | Merveilleux | first sight of the tear, the giants' hall, the glass strand |
@@ -129,6 +129,14 @@ Eleven nodes use `hopeful`, which has **no tag string** today: a small gap
 Adding a mood is a pair of strings. Only the tag changes; none of them is a
 "tense" mood unless Core adds it to `tenseMoods` (suggested: `defiant`,
 `ominous`).
+
+**Done (v1.273):** all ten moods exist, and 101 scenes carry one (11 wistful,
+11 solemn, 8 tender, 12 uncanny, 15 wry, 5 defiant, 10 mournful, 10 ominous,
+9 bitter, 10 wondrous). Only scenes that were not already `tense`,
+`action`, `suspense` or `desperate` were re-tagged, so no random detour
+gate changed; `defiant` and `ominous` are therefore not tense moods, and Core
+can add them to `tenseMoods` later if it wants the stands and omens to hold
+detours back.
 
 ### New themes (need UX)
 
