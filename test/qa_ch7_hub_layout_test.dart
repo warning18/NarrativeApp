@@ -68,7 +68,7 @@ Future<void> _settle(WidgetTester tester) async {
 }
 
 // Set to false when the 320 px fix lands.
-const skipUntilFixPack = true;
+const skipUntilFixPack = false;
 
 void main() {
   setUpAll(() async {
