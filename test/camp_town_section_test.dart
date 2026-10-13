@@ -42,7 +42,7 @@ void main() {
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(PlayerSession.fromJson({
-          // Kelda's hall costs 100 gold and 2 timber (v1.28x, materials).
+          // Kelda's hall costs 100 gold and 2 timber (v1.281.0, materials).
           'gold': 350,
           'inventoryItemIds': ['material_timber', 'material_timber'],
         })));

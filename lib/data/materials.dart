@@ -1,4 +1,4 @@
-/// The building economy's materials (v1.28x, docs/proposals/
+/// The building economy's materials (v1.281.0, docs/proposals/
 /// building-materials.md): Material items in four tiers, one per stage of
 /// the story, each with a common one (it stacks, sells, a shop or two stocks
 /// it) and, from tier 2, a rare one no shop sells. The camp's buildings cost
