@@ -8,10 +8,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/map_charts.dart' show ChartPalette;
+import 'package:narrative_data_app/data/heard_of.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/data/travel_history.dart';
 import 'package:narrative_data_app/data/world_map.dart';
 import 'package:narrative_data_app/providers/combat_active_provider.dart';
+import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/providers/travel_history_provider.dart';
 import 'package:narrative_data_app/screens/full_map_screen.dart';
@@ -36,7 +38,9 @@ void main() {
   );
 
   Future<void> open(WidgetTester tester, TravelHistory history,
-      {String? focusId, bool fighting = false}) async {
+      {String? focusId,
+      bool fighting = false,
+      Map<String, HeardOfPlace> heard = const {}}) async {
     SharedPreferences.setMockInitialValues({});
     tester.view.physicalSize = const Size(360, 740);
     tester.view.devicePixelRatio = 1;
@@ -44,6 +48,7 @@ void main() {
     await tester.pumpWidget(ProviderScope(
       overrides: [
         travelHistoryProvider.overrideWithValue(history),
+        heardOfPlacesProvider.overrideWithValue(heard),
         storyDataProvider.overrideWith((ref) async => const StoryData({})),
         if (fighting) combatActiveProvider.overrideWith((ref) => true),
       ],
@@ -98,6 +103,54 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.byKey(const Key('map_here')), findsOneWidget);
     expect(find.byKey(const Key('travel_go')), findsNothing);
+  });
+
+  testWidgets(
+      'a place heard of with a road offers to set out, by its expedition',
+      (tester) async {
+    final id = travels.heardOf.first;
+    await open(tester, travels, heard: {
+      id: HeardOfPlace(
+          landmarkId: id,
+          action: HeardOfAction.setOut,
+          expeditionId: 'z_nowhere',
+          expeditionPortId: 'port_x'),
+    });
+    tapPlace(tester, id);
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('map_set_out')), findsOneWidget);
+    expect(find.byKey(const Key('map_set_out_expedition')), findsOneWidget);
+    expect(find.byKey(const Key('map_set_out_warning')), findsOneWidget);
+    expect(find.byKey(const Key('travel_go')), findsNothing);
+    final out =
+        tester.widget<FilledButton>(find.byKey(const Key('map_set_out')));
+    expect(out.onPressed, isNotNull);
+  });
+
+  testWidgets('a place heard of with no way yet says why, and can be the goal',
+      (tester) async {
+    final id = travels.heardOf.first;
+    await open(tester, travels, heard: {
+      id: HeardOfPlace(
+          landmarkId: id,
+          action: HeardOfAction.markGoal,
+          reason: HeardOfReason.laterChapter,
+          chapter: 4),
+    });
+    tapPlace(tester, id);
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('map_reason_laterChapter')), findsOneWidget);
+    expect(find.textContaining('chapter 4'), findsOneWidget);
+    expect(find.byKey(const Key('map_set_out')), findsNothing);
+    await tester.tap(find.byKey(const Key('map_goal_button')));
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+    await tester.pump(const Duration(milliseconds: 400));
+    final container =
+        ProviderScope.containerOf(tester.element(find.byType(FullMapScreen)));
+    expect(
+        container.read(playerSessionProvider).flags, contains(mapGoalFlag(id)));
   });
 
   testWidgets('during a fight the offer stays but cannot be taken',

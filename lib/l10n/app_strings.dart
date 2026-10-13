@@ -6476,6 +6476,51 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'by sea',
     AppLanguage.fr: 'par mer',
   },
+  'map_set_out': {
+    AppLanguage.en: 'Set out',
+    AppLanguage.fr: 'Partir',
+  },
+  'map_set_out_expedition': {
+    AppLanguage.en: 'You set out on the expedition that finds it: {zone}.',
+    AppLanguage.fr: 'Vous partez en expédition pour la trouver : {zone}.',
+  },
+  'map_set_out_warning': {
+    AppLanguage.en: 'You have only heard of it: the road may hold anything.',
+    AppLanguage.fr:
+        'Vous n’en avez fait qu’entendre parler : la route peut réserver n’importe quoi.',
+  },
+  'map_mark_goal': {
+    AppLanguage.en: 'Mark as goal',
+    AppLanguage.fr: 'En faire un objectif',
+  },
+  'map_clear_goal': {
+    AppLanguage.en: 'Clear the goal',
+    AppLanguage.fr: 'Retirer l’objectif',
+  },
+  'map_goal_is': {
+    AppLanguage.en: 'This is your goal.',
+    AppLanguage.fr: 'C’est votre objectif.',
+  },
+  'map_reason_storyOnly': {
+    AppLanguage.en: 'The story will take you there.',
+    AppLanguage.fr: 'L’histoire vous y mènera.',
+  },
+  'map_reason_noCamp': {
+    AppLanguage.en: 'Not while the story leads.',
+    AppLanguage.fr: 'Pas tant que l’histoire vous guide.',
+  },
+  'map_reason_laterChapter': {
+    AppLanguage.en: 'Not yet: chapter {n}.',
+    AppLanguage.fr: 'Pas encore : chapitre {n}.',
+  },
+  'map_reason_needsHarbour': {
+    AppLanguage.en: 'The Eel must sail: build the harbour.',
+    AppLanguage.fr: 'Le Rusty Eel doit prendre la mer : bâtissez le port.',
+  },
+  'map_reason_needsExpedition': {
+    AppLanguage.en: 'An expedition must open the way first.',
+    AppLanguage.fr: 'Une expédition doit d’abord ouvrir la voie.',
+  },
   'map_here': {
     AppLanguage.en: 'The party is here.',
     AppLanguage.fr: 'La compagnie est ici.',
