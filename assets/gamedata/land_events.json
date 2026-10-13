@@ -259,8 +259,8 @@
     "id": "water_seller",
     "name": "A water-seller",
     "name_fr": "Un porteur d’eau",
-    "text": "An old man with a donkey and four skins of water, going nowhere in particular, prices going up.",
-    "text_fr": "Un vieil homme, un âne et quatre outres d’eau, qui ne va nulle part en particulier, et dont les prix montent.",
+    "text": "An old man with a donkey and four skins of water, going nowhere in particular, prices going up. The Wells are two days off, he says; he has said so to everyone.",
+    "text_fr": "Un vieil homme, un âne et quatre outres d’eau, qui ne va nulle part en particulier, et dont les prix montent. « Les Puits sont à deux jours, dit-il ; il l’a dit à tout le monde. »",
     "choices": [
       {
         "id": "buy",
