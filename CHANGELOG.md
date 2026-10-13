@@ -8,6 +8,33 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.281.0+317]
+
+Materials: the camp's buildings are raised with what the road brings back.
+
+### Added
+- **Ten materials in four tiers**, one tier for each stage of the story.
+  Timber and cut stone (chapters 1-2); iron ore and slag glass, with the
+  rare ash-steel ingot (3-4); rime crystal and tear glass, with the rare
+  Shroud thread (5-6); lantern brass, with the rare white-fleet oak (7-8).
+  Names and descriptions in English and French, for Narrative to reword.
+- **Where they come from.** Expeditions pay them on completion (each
+  chapter's main expedition its tier's rare); ordinary foes drop the commons
+  (12%); the weaponsmith, the hammersmith and the Last Lantern sell the
+  commons, never a rare; a derelict's salvage at sea yields the chapter's
+  common, and a won ship battle the chapter's rare from chapter 3 on.
+
+### Changed
+- **The camp's buildings cost materials beside gold**, and about a third
+  less gold: Kelda's hall 100 gold and 2 timber, the harbour 170 gold, 4
+  timber and 2 cut stone, the hearth hall 1 000 gold with iron ore, slag
+  glass and 2 ash-steel ingots, the Shroud shrine 2 600 gold, tear glass and
+  3 Shroud threads, and so on. A building's card says which materials are
+  missing.
+- **Older saves** (save version 3) are given, once, one rare material for
+  each tier their story has already passed, so the buildings that need them
+  stay within reach.
+
 ## [1.280.0+316]
 
 The bosses are won about half the time: more often early, less often late.

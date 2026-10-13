@@ -160,7 +160,9 @@ void main() {
   // simulator (encounter win: an encounter is lost after 3 failed
   // attempts); docs/simulation/ has the 800-run figures. Seeded, so the
   // numbers are fixed for given data; the tolerance is for data changes
-  // elsewhere moving them a little.
+  // elsewhere moving them a little. 400 runs (about 20 s): with 200, a new
+  // loot roll anywhere shifted the seeded stream enough to move a boss met
+  // only 64 times by 12 points (v1.281.0).
   group('the boss curve', () {
     const targets = {
       'aurel_vane': (1, 0.75),
@@ -207,7 +209,7 @@ void main() {
           tables: tables,
           gameConfig: table('game_config'),
           plan: [
-            for (var i = 0; i < 200; i++)
+            for (var i = 0; i < 400; i++)
               (
                 strategy: goals[i % goals.length],
                 raceId: null,

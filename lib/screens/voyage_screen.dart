@@ -9,6 +9,7 @@ import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/contracts.dart';
 import '../data/item_origin_here.dart';
+import '../data/materials.dart' show salvageMaterialFor, shipBattleMaterialFor;
 import '../data/port_helpers.dart';
 import '../data/ability_check.dart';
 import '../data/companion_remarks.dart';
@@ -544,7 +545,10 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         final gold = _has(SailPower.windknot)
             ? windknotSalvage(event.gold, _strength(SailPower.windknot))
             : event.gold;
-        await notifier.applyChoiceEffects(goldMod: gold);
+        // A derelict's salvage also yields the chapter's common
+        // material (materials.dart).
+        await notifier.applyChoiceEffects(
+            goldMod: gold, itemId: salvageMaterialFor(_chapter));
         _log.add(_t('ship_log_salvage', n: gold));
         await _advance();
       case SeaAction.board:
@@ -901,6 +905,13 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           hpAfter: member.health,
           goldGain: gold,
           xpGain: xp,
+          // A won sea fight brings the chapter's rare material, from
+          // chapter 3 on (materials.dart).
+          itemsGained: [
+            if (outcome.won && shipBattleMaterialFor(_chapter) != null)
+              shipBattleMaterialFor(_chapter)!,
+          ],
+          items: ref.read(localizedDbProvider(itemsSchema)).value ?? const {},
           origin: itemOriginHere(ref),
           // A won sea fight counts on the camp's board (see contracts.dart).
           contractTally: outcome.won

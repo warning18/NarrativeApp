@@ -100,7 +100,9 @@
       "dagger_t5",
       "spellbook_war_shout",
       "spellbook_hunters_mark",
-      "material_iron_ore"
+      "material_iron_ore",
+      "material_timber",
+      "material_cut_stone"
     ],
     "merchantSpecialties": [
       "Weapon",
@@ -129,7 +131,9 @@
       "dagger_t5": 1,
       "spellbook_war_shout": 1,
       "spellbook_hunters_mark": 1,
-      "material_iron_ore": 1
+      "material_iron_ore": 1,
+      "material_timber": 6,
+      "material_cut_stone": 6
     },
     "minChapter": 2,
     "detourEligible": true,
@@ -355,7 +359,8 @@
       "thornmail_hauberk",
       "plate_emberproof",
       "spellbook_rally_the_line",
-      "material_iron_ore"
+      "material_iron_ore",
+      "material_slag_glass"
     ],
     "merchantSpecialties": [
       "Weapon",
@@ -385,7 +390,8 @@
       "thornmail_hauberk": 1,
       "plate_emberproof": 1,
       "spellbook_rally_the_line": 1,
-      "material_iron_ore": 1
+      "material_iron_ore": 1,
+      "material_slag_glass": 6
     },
     "minChapter": 3,
     "detourEligible": false,
@@ -579,7 +585,9 @@
       "phoenix_sigil",
       "helm_last_watch",
       "coat_last_watch",
-      "potion_major"
+      "potion_major",
+      "material_rime_crystal",
+      "material_tear_glass"
     ],
     "merchantSpecialties": [
       "Charm",
@@ -602,7 +610,9 @@
       "phoenix_sigil": 1,
       "helm_last_watch": 1,
       "coat_last_watch": 1,
-      "potion_major": 2
+      "potion_major": 2,
+      "material_rime_crystal": 6,
+      "material_tear_glass": 6
     },
     "minChapter": 6,
     "detourEligible": false,

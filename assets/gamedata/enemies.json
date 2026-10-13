@@ -18,6 +18,10 @@
       {
         "itemID": "thug_knuckle_wrap",
         "dropRate": 10
+      },
+      {
+        "itemID": "material_timber",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -230,6 +234,10 @@
       {
         "itemID": "rat_king_tooth",
         "dropRate": 10
+      },
+      {
+        "itemID": "material_timber",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -290,6 +298,10 @@
       {
         "itemID": "blackened_fang",
         "dropRate": 10
+      },
+      {
+        "itemID": "material_cut_stone",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -361,6 +373,10 @@
       {
         "itemID": "cultist_hood",
         "dropRate": 10
+      },
+      {
+        "itemID": "material_slag_glass",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -1400,6 +1416,10 @@
       {
         "itemID": "warden_signet",
         "dropRate": 10
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -1785,6 +1805,10 @@
       {
         "itemID": "material_iron_ore",
         "dropRate": 15
+      },
+      {
+        "itemID": "material_slag_glass",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -2088,6 +2112,10 @@
       {
         "itemID": "antidote",
         "dropRate": 15
+      },
+      {
+        "itemID": "material_rime_crystal",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -2439,6 +2467,10 @@
       {
         "itemID": "tear_glass_blade",
         "dropRate": 15
+      },
+      {
+        "itemID": "material_tear_glass",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -3462,6 +3494,10 @@
       {
         "itemID": "material_iron_ore",
         "dropRate": 15
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -3547,6 +3583,10 @@
       {
         "itemID": "potion_major",
         "dropRate": 10
+      },
+      {
+        "itemID": "material_rime_crystal",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -3618,6 +3658,10 @@
       {
         "itemID": "helm_last_watch",
         "dropRate": 15
+      },
+      {
+        "itemID": "material_tear_glass",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
@@ -5342,6 +5386,10 @@
       {
         "itemID": "potion_minor",
         "dropRate": 25
+      },
+      {
+        "itemID": "material_timber",
+        "dropRate": 12
       }
     ],
     "skillMoves": [
