@@ -128,8 +128,8 @@
   "friend_of_four_clans": {
     "achievementID": "friend_of_four_clans",
     "achievementName": "A Hand at Four Doors",
-    "description": "Be trusted by four of the six clans at once.",
+    "description": "Be trusted by four of the six clans at once. An oath sworn to one is a door shut on its rivals.",
     "achievementName_fr": "Une main à quatre portes",
-    "description_fr": "Gagnez la confiance de quatre des six clans en même temps."
+    "description_fr": "Gagnez la confiance de quatre des six clans en même temps. Un serment prêté à l’un ferme la porte à ses rivaux."
   }
 }
