@@ -196,7 +196,7 @@ read (`flag_callbacks`).
 | `relic_road` | `2015_bundle` | `3005_shrine_break` | `5010_thieves_ship` | `6010_heist_night` | `7200_thieves_aboard` | `7200_fourth_piece` |
 | `the_returned` | `2015_child_tongue` | `3005_spire_takings` | `5010_vigil_envoy` | `6010_returned_roll` | `7200_courts_children` | `7200_returned` |
 | `unwatched_hour` | `3100_new_moon` | `6010_count_short` | `6100_stitcher_door` | `7200_stitcher_kin` | `7200_followed` | `7200_stitcher` |
-| `broken_charter` | — | — | `coal_stops` (event) | — | — | — |
+| `broken_charter` | `2015_dominion_blades` | `3005_tribunal_gold` | `coal_stops` (event) | `5100_anvil_deaf_vote` | `6100_charter_signing` | `7100_charter_choice` |
 
 The outcomes pay off in the closing scenes through callbacks: the Crows'
 brigs at `7810`, the Returned children at `7002_approach`, the second door at
@@ -214,9 +214,11 @@ end") are only told in the Intrigues tab: no code reads them.
   `q_ch7_chain_masters_boy`, scenes `7400_reed*`, `7400_herald*`,
   `7400_chain*`), and a quest goal of 1; its rewards are placeholders for
   Core. Chapter 8 stays at 0. See `docs/narrative-proposals.md`.
-- **`broken_charter` is the one intrigue still short**: it has its stage 3
-  (`coal_stops`, a politics event) and nothing else. The other seven are
-  played end to end (see below).
+- **All eight intrigues are played end to end** (see below). The last
+  one, `broken_charter`, has its stage 3 as a politics event (`coal_stops`,
+  which fires on reaching chapter 2, so the coal may stop before its Clue
+  and Hook are read; the stage flags only ever raise the stage). Its
+  outcome is chosen at the Anchorage (`7100_charter_choice`).
 - **The activity goal and thorough players.** A thorough player reaches
   10–12 things done before setting out; the goal of 8 mostly shapes the
   rusher's pace (two trips a chapter).

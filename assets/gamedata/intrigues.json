@@ -239,7 +239,7 @@
     "stages": [
       {
         "stage": "Clue",
-        "chapter": 1,
+        "chapter": 2,
         "text": "Compact blades turn up in Inquisition hands. Who sold them?",
         "text_fr": "Des lames du Pacte apparaissent entre les mains de l’Inquisition. Qui les a vendues ?"
       },
@@ -258,14 +258,14 @@
       },
       {
         "stage": "Reveal",
-        "chapter": 5,
+        "chapter": 4,
         "text": "The Anvil-Deaf vote in signs, and ask you to witness.",
         "text_fr": "Les Sourds de l’Enclume votent par signes, et vous demandent d’en être témoin.",
-        "npcId": "keeper_hammersmith_forge"
+        "npcId": "tribunal_clerk"
       },
       {
         "stage": "Crisis",
-        "chapter": 6,
+        "chapter": 5,
         "text": "The Charter is signed again, or burned for good.",
         "text_fr": "La Charte est signée de nouveau, ou brûlée pour de bon."
       },
