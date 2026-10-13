@@ -27,6 +27,28 @@ The bosses are won about half the time: more often early, less often late.
 - `boss_balance_test` checks the curve with the simulator (200 seeded
   runs), and `docs/simulation/` is regenerated with a before and after.
 
+## [1.279.0+315]
+
+Twelve story achievements.
+
+### Added
+- **Twelve achievements that come from what a save already holds.** The
+  Lantern Throne, Half a Banner (three pieces of the Shroud), Whole Cloth,
+  A Loose Thread (settle an intrigue), The Whole Web (all eight), Time
+  Turned (a New Game+), Sworn, Hunted, A Hand at Four Doors (trusted by four of
+  the six clans at once, with no oath sworn) and three village finds: Where the Bells Hang (Akagiri), Every
+  Bargain to the Minute (the Kindly Hill) and Under the Giants' Roof
+  (Highhearth). Each is a one-line check in `checkAchievements` over the
+  flags, banner pieces, politics and New Game+ cycle of the save, with its
+  English and French row in `achievements.json`; none needs a new counter.
+  A save that already has the thing unlocks it the next time achievements
+  are checked, and achievements are now also checked right after a story
+  choice adds a flag or a piece of the Shroud and after a choice's politics
+  (an oath, a standing, an intrigue's end), so taking the Throne unlocks
+  its achievement at once. "Hunted" counts the six coast clans, not the
+  tribes. `test/achievements_story_test.dart` covers each.
+
+
 ## [1.278.0+314]
 
 A jungle on the story world's east land.

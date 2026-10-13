@@ -35,6 +35,7 @@ import '../data/throne.dart'
         throneWinnerFlag;
 import '../models/ally_state.dart';
 import '../models/item_origin.dart';
+import '../models/story_node.dart' show placeFoundFlag;
 import '../models/story_politics.dart';
 
 const String _playerSessionPrefsKey = 'player_session';
@@ -111,6 +112,28 @@ List<String> companionStarterSkillIds({
 /// Tobin follows only a Good leader and Malrik only an Evil one, so no
 /// single run can recruit everyone.
 const int fullRosterCompanionCount = 6;
+
+/// The intrigues of intrigues.json: "settle them all" needs this many
+/// distinct ones (a test keeps the count in step with the file).
+const int intrigueCount = 8;
+
+/// How many of the six clans must trust the character at once for "A Hand
+/// at Four Doors": a clan's gains cost its rivals half, so all six is out of
+/// reach (QA's search never passed five).
+const int trustedClansForFriend = 4;
+
+/// The six clans a character can swear to (the ones with a Sworn boon).
+const List<String> coastClanIds = [
+  'dominion',
+  'vigil',
+  'compact',
+  'mire',
+  'crows',
+  'penitents',
+];
+
+/// `intrigue_<id>_outcome_<n>`: an intrigue settled (see politics_events).
+final RegExp _intrigueOutcomeFlag = RegExp(r'^intrigue_(.+)_outcome_\d+$');
 
 /// The share of the purse a retreat costs (see [retreatCostFor]); a
 /// potion, when the pack holds one, is dropped too.
@@ -1934,6 +1957,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       loseAlly(lostId, persist: false, companions: companions);
     }
     await _persist();
+    // A flag or a piece of the Shroud may be what an achievement asks for.
+    if (flagsToAdd.isNotEmpty || (bannerPieceId ?? '').isNotEmpty) {
+      await checkAchievements();
+    }
     return reactions;
   }
 
@@ -2563,6 +2590,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
     await _persist();
+    // A standing, an oath or an intrigue's end may be what one asks for.
+    await checkAchievements();
     return change;
   }
 
@@ -3746,6 +3775,38 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     check('keldas_hall_built', state.builtHouseIds.contains('keldas_hall'));
     check('first_quest', state.completedQuestIds.isNotEmpty);
     check('first_shop', state.unlockedShopIds.isNotEmpty);
+
+    // The story's milestones: plain functions of the saved flags, banner
+    // pieces, politics and New Game+ cycle.
+    check('on_the_throne', state.flags.contains('on_throne'));
+    check('half_a_banner', state.bannerPiecesCollected.length >= 3);
+    check('whole_cloth', state.flags.contains('banner_whole'));
+    final settled = <String>{
+      for (final flag in state.flags)
+        if (_intrigueOutcomeFlag.firstMatch(flag) case final match?)
+          match.group(1)!,
+    };
+    check('first_thread', settled.isNotEmpty);
+    check('whole_web', settled.length >= intrigueCount);
+    check('time_turned', state.newGamePlusCycle >= 1);
+    final politics = state.politics;
+    check('sworn_to_a_clan', politics.swornFactionId.isNotEmpty);
+    check(
+        'hunted_by_a_clan',
+        coastClanIds.any((id) =>
+            standingTierFor(politics.standings[id] ?? 0) ==
+            StandingTier.hunted));
+    check(
+        'friend_of_four_clans',
+        politics.swornFactionId.isEmpty &&
+            coastClanIds
+                    .where((id) => standingTierFor(politics.standings[id] ?? 0)
+                        .isAtLeast(StandingTier.trusted))
+                    .length >=
+                trustedClansForFriend);
+    check('akagiri_found', state.flags.contains(placeFoundFlag('3200')));
+    check('kindly_hill_found', state.flags.contains(placeFoundFlag('5200')));
+    check('highhearth_found', state.flags.contains(placeFoundFlag('6200')));
 
     if (newly.isNotEmpty) {
       state = state.copyWith(
