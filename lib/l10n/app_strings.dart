@@ -3709,6 +3709,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'mood_reflective': {AppLanguage.en: 'Reflective', AppLanguage.fr: 'Pensif'},
   'mood_hopeful': {AppLanguage.en: 'Hopeful', AppLanguage.fr: 'Plein d’espoir'},
+  'mood_wistful': {AppLanguage.en: 'Wistful', AppLanguage.fr: 'Nostalgique'},
+  'mood_solemn': {AppLanguage.en: 'Solemn', AppLanguage.fr: 'Solennel'},
+  'mood_tender': {AppLanguage.en: 'Tender', AppLanguage.fr: 'Tendre'},
+  'mood_uncanny': {AppLanguage.en: 'Uncanny', AppLanguage.fr: 'Étrange'},
+  'mood_wry': {AppLanguage.en: 'Wry', AppLanguage.fr: 'Narquois'},
+  'mood_defiant': {AppLanguage.en: 'Defiant', AppLanguage.fr: 'Insoumis'},
+  'mood_mournful': {AppLanguage.en: 'Mournful', AppLanguage.fr: 'Funèbre'},
+  'mood_ominous': {
+    AppLanguage.en: 'Ominous',
+    AppLanguage.fr: 'De mauvais augure'
+  },
+  'mood_bitter': {AppLanguage.en: 'Bitter', AppLanguage.fr: 'Amer'},
+  'mood_wondrous': {AppLanguage.en: 'Wondrous', AppLanguage.fr: 'Merveilleux'},
   'town_title': {
     AppLanguage.en: 'The cliff town',
     AppLanguage.fr: 'La ville de la falaise'
