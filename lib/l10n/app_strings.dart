@@ -6276,6 +6276,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         "Trois onglets. Aperçu est cette page. Dons réunit vos titres, atouts et signes, avec un point rouge quand un choix attend. Pages mène à votre équipement, vos compétences, vos points de niveau et vos dés.",
   },
+  'help_replay_guide': {
+    AppLanguage.en: 'Replay the guide for this page',
+    AppLanguage.fr: 'Rejouer le guide de cette page',
+  },
   'gifts_waiting_label': {
     AppLanguage.en: 'A gift is waiting',
     AppLanguage.fr: 'Un don vous attend',

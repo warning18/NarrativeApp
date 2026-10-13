@@ -20,6 +20,7 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/die_3d.dart';
 import '../widgets/die_skins.dart';
+import '../widgets/help_hint.dart';
 import '../widgets/interactive_die.dart';
 import '../widgets/moments.dart';
 import '../widgets/empty_state.dart';
@@ -68,7 +69,10 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
         : '';
 
     return Scaffold(
-      appBar: AppBar(title: Text('${tr(ref, 'dice_loadout')}$titleSuffix')),
+      appBar: AppBar(
+        title: Text('${tr(ref, 'dice_loadout')}$titleSuffix'),
+        actions: const [TourInfoButton(topic: TutorialTopic.dice)],
+      ),
       body: TutorialTrigger(
         topic: TutorialTopic.dice,
         child: diceAsync.when(
@@ -264,20 +268,19 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
-              Text(tr(ref, 'skill_faces_title'),
-                  style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: 4),
-              Text(
-                tr(ref, 'drag_skill_hint'),
-                style: Theme.of(context).textTheme.bodySmall,
+              // Hold the name for how faces work and the limits (they were
+              // two paragraphs here).
+              Align(
+                alignment: Alignment.centerLeft,
+                child: HelpTitle(
+                  key: const Key('faces_help'),
+                  title: tr(ref, 'skill_faces_title'),
+                  help:
+                      '${tr(ref, 'drag_skill_hint')}\n\n${tr(ref, 'skill_faces_limit_hint')}',
+                ),
               ),
               const SizedBox(height: 8),
               FaceColorLegend(language: language),
-              const SizedBox(height: 8),
-              Text(
-                tr(ref, 'skill_faces_limit_hint'),
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
               const SizedBox(height: 12),
               TutorialTarget(
                 id: 'dice.faces',
