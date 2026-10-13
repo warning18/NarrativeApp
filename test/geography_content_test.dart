@@ -37,7 +37,7 @@ const _patterns = {
 };
 const _biomeIds = {
   'temperate', 'desert', 'arid_coast', 'sea', 'ashlands', 'volcanic', //
-  'sea_cliffs', 'fen', 'frost', 'tear',
+  'sea_cliffs', 'fen', 'frost', 'tear', 'jungle',
 };
 
 /// French typography: a non-breaking space (or a narrow one) before
@@ -234,7 +234,8 @@ void main() {
   });
 
   group('biomes.json', () {
-    test('the ten biomes, each with its fauna, flora, weather and hazards', () {
+    test('the eleven biomes, each with its fauna, flora, weather and hazards',
+        () {
       expect(biomes.keys.toSet(), _biomeIds);
       final hazardIds = <String>{};
       for (final MapEntry(:key, :value) in biomes.entries) {
@@ -349,9 +350,12 @@ void main() {
       // lands, so their hazards cannot fire until a journey does. Alster's
       // vale and the dune sea lie in chapter 1, whose roads have no rules;
       // Saltmouth's headland is left by boat (a crossing, the sea's);
-      // Akagiri's terraces no scene travels to. Remove one from here once
-      // the story gains a road through it.
-      const knownRoadless = ['arid_coast', 'desert', 'temperate', 'volcanic'];
+      // Akagiri's terraces no scene travels to; the jungle (v1.275) lies
+      // only on the story chart's empty east land. Remove one from here
+      // once the story gains a road through it.
+      const knownRoadless = [
+        'arid_coast', 'desert', 'temperate', 'volcanic', 'jungle', //
+      ];
       expect(roadless, unorderedEquals(knownRoadless),
           reason: 'lands with hazards off every chapter-2+ journey: '
               '$roadless; crossed: $crossed');

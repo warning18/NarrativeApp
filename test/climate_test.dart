@@ -198,4 +198,18 @@ void main() {
     final b = valueNoise(const Offset(10.1, 10), 8, 1);
     expect((a - b).abs(), lessThan(0.05));
   });
+
+  test('the story chart\'s jungle is hot and wet', () {
+    final story = chartOf(MapShape.story);
+    final jungle = story.zones.firstWhere((z) => z.biome == 'jungle');
+    final temperate =
+        story.zones.firstWhere((z) => z.nameEn == 'The Alster Marches');
+    final storyClimate = ChartClimate.of(story);
+    final hot = storyClimate.sample(jungle.labelAt);
+    final mild = storyClimate.sample(temperate.labelAt);
+    expect(hot.sea, isFalse);
+    expect(hot.biome, 'jungle');
+    expect(hot.humidity, greaterThan(0.7));
+    expect(hot.temperature, greaterThan(mild.temperature));
+  });
 }

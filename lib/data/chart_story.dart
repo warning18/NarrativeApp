@@ -932,7 +932,7 @@ final ChartGeography chartWorldStory = ChartGeography(
       Offset(220, 78),
       Offset(226.8, 78)
     ]),
-    ChartZone('temperate', '', '', Offset(221, 93.3), [
+    ChartZone('jungle', '', '', Offset(221, 93.3), [
       Offset(239.2, 107),
       Offset(239.7, 106.4),
       Offset(239.5, 105.3),

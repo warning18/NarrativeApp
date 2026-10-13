@@ -298,6 +298,7 @@ class ChartClimate {
   static double _biomeMoisture(String biome) => switch (biome) {
         'temperate' => 0.62,
         'fen' => 0.92,
+        'jungle' => 0.9,
         'desert' => 0.1,
         'arid_coast' => 0.3,
         'ashlands' => 0.3,
@@ -384,6 +385,7 @@ class ChartClimate {
         'arid_coast' => 5,
         'ashlands' => 3,
         'volcanic' => 6,
+        'jungle' => 3,
         'fen' => -1,
         'sea_cliffs' => -2,
         'tear' => -5,
