@@ -2278,6 +2278,14 @@ final DbSchema housesSchema = DbSchema(
   visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'houseID', label: 'House ID', type: FieldType.text),
+    FieldSchema(
+      key: 'category',
+      label: 'Category (the building screen\'s section)',
+      type: FieldType.enumeration,
+      enumOptions: ['sea', 'company', 'workshops', 'greatWorks'],
+      help:
+          'Left empty, it is read from what the house gives (camp_works.dart).',
+    ),
     FieldSchema(key: 'houseName', label: 'House Name', type: FieldType.text),
     FieldSchema(
         key: 'houseName_fr', label: 'House Name (FR)', type: FieldType.text),
