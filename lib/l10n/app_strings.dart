@@ -6276,6 +6276,24 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         "Trois onglets. Aperçu est cette page. Dons réunit vos titres, atouts et signes, avec un point rouge quand un choix attend. Pages mène à votre équipement, vos compétences, vos points de niveau et vos dés.",
   },
+  'travel_map_title': {
+    AppLanguage.en: 'Where you have been',
+    AppLanguage.fr: 'Où vous êtes allé',
+  },
+  'travel_map_open': {
+    AppLanguage.en: 'Map of your travels',
+    AppLanguage.fr: 'Carte de vos voyages',
+  },
+  'travel_to_title': {
+    AppLanguage.en: 'Travel to {place}?',
+    AppLanguage.fr: 'Aller à {place} ?',
+  },
+  'travel_heard_of': {
+    AppLanguage.en:
+        'You have only heard of {place}. You cannot go there yet; the road must be opened by the story.',
+    AppLanguage.fr:
+        'Vous n’avez fait qu’entendre parler de {place}. Vous ne pouvez pas encore y aller ; c’est l’histoire qui ouvrira la route.',
+  },
   'help_replay_guide': {
     AppLanguage.en: 'Replay the guide for this page',
     AppLanguage.fr: 'Rejouer le guide de cette page',
