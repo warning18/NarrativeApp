@@ -237,10 +237,10 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
         );
     }
 
-    // The scene over the words (board 6): the desert kit while the route
-    // crosses a desert; a route with no kit yet keeps only the strip of
-    // day and health.
-    final scene = widget.route.biome == 'desert';
+    // The scene over the words (board 6), by the route's terrain: the
+    // desert kit while it crosses a desert; a terrain with no kit yet keeps
+    // only the strip of day and health.
+    final scene = widget.route.terrain == 'desert';
     final progress = _phase == _Phase.arrived
         ? 1.0
         : _drawn.isEmpty

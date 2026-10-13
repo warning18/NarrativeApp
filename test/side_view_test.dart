@@ -86,7 +86,7 @@ void main() {
       (tester) async {
     final route = landRouteFor(
         _json('assets/gamedata/land_routes.json'), 'crash_to_sleeper')!;
-    expect(route.biome, 'desert');
+    expect(route.terrain, 'desert');
     await crossing(tester, route);
     expect(find.byKey(const Key('crossing_scene')), findsOneWidget);
     expect(find.byKey(const Key('crossing_health')), findsOneWidget);
@@ -104,6 +104,7 @@ void main() {
       roads: base.roads,
       days: base.days,
       biome: 'marsh',
+      terrain: 'marsh',
       chapter: base.chapter,
       events: base.events,
     );
