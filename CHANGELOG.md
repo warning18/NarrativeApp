@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.273.0+309]
+
+Ten new moods, and the scenes that wear them.
+
+### Added
+- **Ten scene moods: wistful, solemn, tender, uncanny, wry, defiant,
+  mournful, ominous, bitter and wondrous.** Each is a tag string pair
+  (`mood_<name>`) in English and French, and 101 scenes carry one: the
+  crowning scenes are solemn, the Saltmouth card games wry, Highhearth
+  wondrous, the Hollow Shore reflections uncanny, the drowned and the
+  vigils mournful. Only scenes that were not already tense, action,
+  suspense or desperate were re-tagged, so no random-detour gate changes.
+  `defiant` and `ominous` are not tense moods; Core can add them to
+  `tenseMoods` later.
+
 ## [1.271.0+307]
 
 The Broken Charter is played end to end.
