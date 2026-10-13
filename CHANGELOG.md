@@ -8,6 +8,53 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.270.0+306]
+
+Chapter 5 is no longer the wall.
+
+### Changed
+- **Chapter 5's enemies hit less hard.** The void hound used the legendary
+  Venomous Ambush on 30% of its turns, a hit no other ordinary enemy has; it
+  now does on 12% (pack howl 25% to 20%), with 135 health and 16 damage
+  (was 155 and 20). The inquisition penitent (220 / 22, was 260 / 26), the
+  masked penitent (215 / 21, was 250 / 25) and the Unstitched (255 / 24, was
+  300 / 28) lose about a sixth of their health and damage. The void archon
+  goes to 340 / 27 (was 380 / 32), with Void Blast on 30% of its turns (was
+  40%) and Eclipse on 25% (was 35%). In the simulator, chapter 5's attempt
+  win rate goes from 21% to 31% over 800 runs, between chapter 4 (36%) and
+  chapter 6 (31%); chapters 1 to 4 do not move, chapters 6 to 8 rise 1 to 3
+  points.
+- **The simulator's report shows where each chapter is lost.** Its JSON adds
+  every enemy's encounters and losses per chapter, and the level and gold
+  with which each chapter is reached; `docs/simulation/` is regenerated with
+  a before and after.
+
+### Added
+- Two proposals for decision in `docs/proposals/`: a building economy with
+  materials, and land expeditions in side view.
+
+## [1.269.0+305]
+
+Three visitors at the cove, and a quest goal for chapter 7.
+
+### Added
+- **Three side quests before Candlehold.** A Reed Gate factor, an Order
+  herald and a pilot's boy sent by the chain-master come to the cove camp.
+  Each has a scene to hear them out and a second one to follow up, then a
+  turn-in with two ways to answer (`q_ch7_reed_gate_grievance`,
+  `q_ch7_heralds_errand`, `q_ch7_chain_masters_boy`; scenes `7400_reed*`,
+  `7400_herald*`, `7400_chain*`). Six new gate lines at Candlehold (`7500`)
+  remember how each was answered.
+
+### Changed
+- **Chapter 7 now asks for one quest before the sail.** `questGoal` goes from
+  0 to 1 in `chapters.json`, so the camp's "Sail for Candlehold" opens once
+  one of the three is turned in; the chapter hint says so. The rewards of
+  the three quests (170 to 190 gold, 220 to 240 XP, difficulty 14, and a gear
+  piece each: a coat, a helm and a blade already in the game) and the
+  small standing changes of their turn-ins are placeholders for Core to
+  confirm. `chapter_loop_test` lists the chapter 7 quests and the new goal.
+
 ## [1.268.0+304]
 
 One spelling for two place names.
