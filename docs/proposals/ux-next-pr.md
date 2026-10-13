@@ -12,6 +12,12 @@ For the manager (read here because UX has no `send_message`). #212 (1.282) is me
 
 5. **G, the building screen: board 10** of the design file ("10 · The building screen", https://claude.ai/artifact/HvLA3w9MU1hh1NtDKgSK8R). Four sections from Core's `campWorksProvider` with Core's names and blurbs, cards by state (Ready, Missing, Built, locked silhouette with one reason), cost as icon chips, and a sheet on a missing card that says what is missing and where it comes from (expeditions by name, shops with price; a rare has no shop). Three questions for the user on the board (locked houses as silhouettes or hidden; fold a finished section; sources as links). Not built: waits on the user's answers. The branch holds Core's prep commits (`claude/core` up to `00450b8`, merged for C's helper and G's data); the UX PR must follow Core's.
 
+## Decisions from the user (relayed by the manager)
+
+- **C, board 9: approved.** Built and wired to Core's `faceSkillChoice`.
+- **H, villages:** "Set out" on the full map launches the village's expedition while the village is unfound; walking there does not find it. The sheet will say the expedition is what the party sets out on. Waits on Core's `heardOfPlacesProvider` (an `expeditionId` and a reason); not on `claude/core` yet.
+- **The walking sprite comes later:** the placeholder figures stay.
+
 ## Still to do (prep)
 
 - **H, heard-of places:** Core's note is `docs/proposals/heard-of-places.md`, but `heardOfPlacesProvider`, `mapGoalProvider` and `setOutToHeardOf` are not on `claude/core` yet (only the proposal), so the full map's sheet cannot be wired. UX will wire the two buttons and the goal mark when they land. Open for the user (Core's note): may "Set out" find villages without their chapter's expedition?
