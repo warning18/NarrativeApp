@@ -1,6 +1,6 @@
 # A story-true world for the chart
 
-Since v1.27x the game reads it: `lib/data/chart_story.dart` is the travel-history map's chart (`MapShape.story`, kept out of the map-look setting). The world is drawn from what the story says and
+Since v1.272.0 the game reads it: `lib/data/chart_story.dart` is the travel-history map's chart (`MapShape.story`, kept out of the map-look setting). The world is drawn from what the story says and
 where the globe puts it, with Earth's climate bands. Everything is in `tool/fmg_chart/`:
 
 - `story_world.py` holds the design (lands, places, zones, ranges, rivers, archipelagos) and writes `chart_story.dart`

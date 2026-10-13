@@ -2,7 +2,7 @@ import '../models/story_node.dart';
 import 'world_map.dart';
 import 'world_roads.dart';
 
-/// The travel-history map's data (v1.27x): where the party has been, in
+/// The travel-history map's data (v1.272.0): where the party has been, in
 /// order, the roads it took, and what it has only heard of, read from the
 /// story's own record (the scenes left, in order, see `StoryPlayState`)
 /// with no save field of its own. Drawn on the story world's chart

@@ -25,7 +25,7 @@ import 'world_map.dart';
 /// ranges, villages, bridges, the clans' seats and the trade and quest
 /// roads: the chart painter draws them, with coasts broken into bays and
 /// headlands and terrain over each land (see chart_relief.dart).
-/// - [MapShape.story] (the story world, v1.27x): the world as the story
+/// - [MapShape.story] (the story world, v1.272.0): the world as the story
 ///   and the globe place it, cold north, the Waste on the equator's dry
 ///   belt (chart_story.dart). The travel-history map's chart, beside the
 ///   Journey; not one of the looks the map offers (see [mapLookShapes]).

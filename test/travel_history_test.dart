@@ -1,12 +1,16 @@
 // The travel-history map's data (travel_history.dart): the places reached in
 // order, the roads taken, what is only heard of, and the story chart it is
 // drawn on, from the story's record alone.
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/map_charts.dart';
 import 'package:narrative_data_app/data/travel_history.dart';
 import 'package:narrative_data_app/data/world_map.dart';
 import 'package:narrative_data_app/data/world_roads.dart';
+import 'package:narrative_data_app/providers/story_providers.dart';
+import 'package:narrative_data_app/providers/travel_history_provider.dart';
 
 void main() {
   // The wreck of the Lark, the Sleeper's Face, the White Wells.
@@ -58,5 +62,22 @@ void main() {
     }
     expect(chart.features, isNotEmpty);
     expect(mapLookShapes, isNot(contains(MapShape.story)));
+  });
+
+  test('the provider follows the story as it moves', () {
+    SharedPreferences.setMockInitialValues({});
+    final container = ProviderContainer(overrides: [
+      storyPlayProvider.overrideWith((ref) => StoryPlayNotifier('965')),
+    ]);
+    addTearDown(container.dispose);
+    expect(container.read(travelHistoryProvider).currentId, 'crash');
+    container.read(storyPlayProvider.notifier)
+      ..choose('1120')
+      ..choose('1200');
+    final travels = container.read(travelHistoryProvider);
+    expect([for (final s in travels.stops) s.landmarkId],
+        ['crash', 'sleeper', 'wells']);
+    expect(travels.currentId, 'wells');
+    expect(container.read(storyChartProvider).places, contains('wells'));
   });
 }
