@@ -324,12 +324,15 @@ class _CharacterTabs extends ConsumerWidget {
               'gifts',
               tr(ref, 'tab_gifts'),
               after: waiting > 0
-                  ? Container(
-                      key: const Key('character_gifts_dot'),
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                          color: ink.blood, shape: BoxShape.circle),
+                  ? Semantics(
+                      label: tr(ref, 'gifts_waiting_label'),
+                      child: Container(
+                        key: const Key('character_gifts_dot'),
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                            color: ink.blood, shape: BoxShape.circle),
+                      ),
                     )
                   : (gifts > 0
                       ? Text('$gifts',
@@ -991,11 +994,9 @@ class _ShroudCard extends ConsumerWidget {
                     style: theme.textTheme.labelLarge),
               ],
             ),
-            const SizedBox(height: 12),
-            Wrap(
-              alignment: WrapAlignment.spaceEvenly,
-              spacing: 4,
-              runSpacing: 12,
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 for (final id in shroudPieceIds)
                   _ShroudPiece(id: id, found: found.contains(id)),
@@ -1014,25 +1015,25 @@ class _ShroudPiece extends ConsumerWidget {
   final String id;
   final bool found;
 
+  /// Each banner at 40 x 80, small enough for six in a row; its name is a
+  /// tap (or a hold) away.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final key = 'banner_piece_$id';
-    final label = found ? tr(ref, key) : tr(ref, 'banner_piece_unfound');
+    final label =
+        found ? tr(ref, 'banner_piece_$id') : tr(ref, 'banner_piece_unfound');
     return Semantics(
       label: label,
-      child: SizedBox(
-        width: 128,
-        child: Column(
-          children: [
-            ExcludeSemantics(
-                child: PixelBanner(id: id, scale: 2, found: found)),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.labelSmall,
-            ),
-          ],
+      child: Tooltip(
+        message: label,
+        triggerMode: TooltipTriggerMode.tap,
+        child: ExcludeSemantics(
+          child: SizedBox(
+            key: Key('shroud_piece_$id'),
+            width: 40,
+            height: 80,
+            child:
+                FittedBox(child: PixelBanner(id: id, scale: 1, found: found)),
+          ),
         ),
       ),
     );

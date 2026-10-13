@@ -15,6 +15,7 @@ class CliffTownView extends StatelessWidget {
     this.highlightIndex,
     this.harborAction,
     this.scrollController,
+    this.onPieceTap,
   });
 
   final CliffTown town;
@@ -31,6 +32,25 @@ class CliffTownView extends StatelessWidget {
   final Widget? harborAction;
 
   final ScrollController? scrollController;
+
+  /// A tap on a built piece of the town, by its id.
+  final ValueChanged<String>? onPieceTap;
+
+  /// The piece standing at [local] (in the view's pixels), the topmost first.
+  String? _pieceAt(Offset local, double scale, double unitsHigh) {
+    final x = local.dx / scale, y = local.dy / scale;
+    for (final piece in town.pieces.reversed) {
+      final left = townCliffWidth + piece.column * townCellWidth;
+      final top = unitsHigh - townHarborHeight - piece.top * townRowHeight;
+      final rect = Rect.fromLTWH(
+          left,
+          top,
+          piece.footprint.width * townCellWidth,
+          piece.footprint.height * townRowHeight);
+      if (rect.contains(Offset(x, y))) return piece.id;
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,14 +93,25 @@ class CliffTownView extends StatelessWidget {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: CustomPaint(
-                    painter: _CliffTownPainter(
-                      town: town,
-                      unitsHigh: unitsHigh,
-                      preview: spot == null
-                          ? null
-                          : TownPiece('', spot.$1, spot.$2, preview!),
-                      highlightIndex: highlightIndex,
+                  child: GestureDetector(
+                    key: const Key('cliff_town_hit'),
+                    behavior: HitTestBehavior.opaque,
+                    onTapUp: onPieceTap == null
+                        ? null
+                        : (d) {
+                            final id =
+                                _pieceAt(d.localPosition, scale, unitsHigh);
+                            if (id != null) onPieceTap!(id);
+                          },
+                    child: CustomPaint(
+                      painter: _CliffTownPainter(
+                        town: town,
+                        unitsHigh: unitsHigh,
+                        preview: spot == null
+                            ? null
+                            : TownPiece('', spot.$1, spot.$2, preview!),
+                        highlightIndex: highlightIndex,
+                      ),
                     ),
                   ),
                 ),

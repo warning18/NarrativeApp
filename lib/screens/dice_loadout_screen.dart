@@ -20,6 +20,7 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/die_3d.dart';
 import '../widgets/die_skins.dart';
+import '../widgets/help_hint.dart';
 import '../widgets/interactive_die.dart';
 import '../widgets/moments.dart';
 import '../widgets/empty_state.dart';
@@ -68,7 +69,10 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
         : '';
 
     return Scaffold(
-      appBar: AppBar(title: Text('${tr(ref, 'dice_loadout')}$titleSuffix')),
+      appBar: AppBar(
+        title: Text('${tr(ref, 'dice_loadout')}$titleSuffix'),
+        actions: const [TourInfoButton(topic: TutorialTopic.dice)],
+      ),
       body: TutorialTrigger(
         topic: TutorialTopic.dice,
         child: diceAsync.when(
@@ -264,20 +268,19 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
-              Text(tr(ref, 'skill_faces_title'),
-                  style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: 4),
-              Text(
-                tr(ref, 'drag_skill_hint'),
-                style: Theme.of(context).textTheme.bodySmall,
+              // Hold the name for how faces work and the limits (they were
+              // two paragraphs here).
+              Align(
+                alignment: Alignment.centerLeft,
+                child: HelpTitle(
+                  key: const Key('faces_help'),
+                  title: tr(ref, 'skill_faces_title'),
+                  help:
+                      '${tr(ref, 'drag_skill_hint')}\n\n${tr(ref, 'skill_faces_limit_hint')}',
+                ),
               ),
               const SizedBox(height: 8),
               FaceColorLegend(language: language),
-              const SizedBox(height: 8),
-              Text(
-                tr(ref, 'skill_faces_limit_hint'),
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
               const SizedBox(height: 12),
               TutorialTarget(
                 id: 'dice.faces',
@@ -963,6 +966,10 @@ class _DieRail extends StatelessWidget {
 
 /// The die the player is setting, as a cube to turn, beside the face it
 /// stands on. A skill chip dragged onto the cube goes on that face.
+/// The height of the die card at the top of the loadout: the cube's 150 px
+/// and a little air, whatever the picked face has to say.
+const double _stageCardHeight = 160;
+
 class _DieStage extends StatelessWidget {
   const _DieStage({
     required this.dieId,
@@ -1030,117 +1037,129 @@ class _DieStage extends StatelessWidget {
           border: Border.all(color: theme.colorScheme.outlineVariant),
         ),
         padding: const EdgeInsets.fromLTRB(0, 4, 12, 4),
-        child: Row(
-          children: [
-            DragTarget<String>(
-              onWillAcceptWithDetails: (d) => accepts(selected, d.data),
-              onAcceptWithDetails: (d) => onDrop(selected, d.data),
-              builder: (context, candidate, rejected) => SizedBox(
-                width: 150,
-                height: 150,
-                child: Center(
-                  child: InteractiveDie(
-                    size: 78,
-                    still: still,
-                    skin: dieSkinOf(dieId),
-                    faces: _cubeSides(faces, assignments, skills, 78,
-                        first: first),
-                    selected: slotOf(selected),
-                    onSelect: (slot) => onSelect(indexOf(slot)),
-                    onActivate: (slot) => onActivate(indexOf(slot)),
+        // One height for every face: the card used to grow and shrink as the
+        // picked face changed, pushing the squares below up and down. The
+        // text scrolls inside it when a face has more to say.
+        child: SizedBox(
+          height: _stageCardHeight,
+          child: Row(
+            children: [
+              DragTarget<String>(
+                onWillAcceptWithDetails: (d) => accepts(selected, d.data),
+                onAcceptWithDetails: (d) => onDrop(selected, d.data),
+                builder: (context, candidate, rejected) => SizedBox(
+                  width: 150,
+                  height: 150,
+                  child: Center(
+                    child: InteractiveDie(
+                      size: 78,
+                      still: still,
+                      skin: dieSkinOf(dieId),
+                      faces: _cubeSides(faces, assignments, skills, 78,
+                          first: first),
+                      selected: slotOf(selected),
+                      onSelect: (slot) => onSelect(indexOf(slot)),
+                      onActivate: (slot) => onActivate(indexOf(slot)),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(dieDisplayName(dieId, language: language),
-                      style: theme.textTheme.titleMedium),
-                  Text(dieSkinOf(dieId).material,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant)),
-                  const SizedBox(height: 8),
-                  Text(name,
-                      key: const Key('die_face_name'),
-                      style: theme.textTheme.titleSmall),
-                  Text(
-                    skillId == null
-                        ? _basicFaceSummary(face, language)
-                        : _skillSummary(
-                            skills[skillId] as Map<String, dynamic>?, language),
-                    style: theme.textTheme.bodySmall,
-                  ),
-                  if (showOdds && totalWeight > 0)
-                    Text(
-                      '${(weight / totalWeight * 100).round()}% ${t('face_chance_suffix')}',
-                      style: theme.textTheme.labelSmall
-                          ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                    ),
-                  // Its rule words, named in full (a tap on a badge used to).
-                  for (final k in faceKeywordsOf(face))
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Text.rich(
-                        TextSpan(children: [
-                          TextSpan(
-                              text: '${t(keywordLabelKey(k))}: ',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w700)),
-                          TextSpan(text: t(keywordDescriptionKey(k))),
-                        ]),
-                        style: theme.textTheme.labelSmall,
+              Expanded(
+                child: SingleChildScrollView(
+                  key: const Key('die_stage_text'),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(dieDisplayName(dieId, language: language),
+                          style: theme.textTheme.titleMedium),
+                      Text(dieSkinOf(dieId).material,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant)),
+                      const SizedBox(height: 8),
+                      Text(name,
+                          key: const Key('die_face_name'),
+                          style: theme.textTheme.titleSmall),
+                      Text(
+                        skillId == null
+                            ? _basicFaceSummary(face, language)
+                            : _skillSummary(
+                                skills[skillId] as Map<String, dynamic>?,
+                                language),
+                        style: theme.textTheme.bodySmall,
                       ),
-                    ),
-                  // What kind of face it is, in full: this panel grows with
-                  // the text, so the squares below never have to.
-                  if (!open)
-                    Text(t('fixed_face_label'),
-                        style: theme.textTheme.labelSmall)
-                  else if (assigned != null && isBasicFace(face))
-                    Text(
-                      t('channeled_face_badge').replaceAll('{face}',
-                          t(basicFaceLabelKey(face['type']?.toString() ?? ''))),
-                      style: theme.textTheme.labelSmall
-                          ?.copyWith(color: theme.colorScheme.tertiary),
-                    )
-                  else if (assigned != null)
-                    Text(t('custom_label'),
+                      if (showOdds && totalWeight > 0)
+                        Text(
+                          '${(weight / totalWeight * 100).round()}% ${t('face_chance_suffix')}',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant),
+                        ),
+                      // Its rule words, named in full (a tap on a badge used to).
+                      for (final k in faceKeywordsOf(face))
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text.rich(
+                            TextSpan(children: [
+                              TextSpan(
+                                  text: '${t(keywordLabelKey(k))}: ',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w700)),
+                              TextSpan(text: t(keywordDescriptionKey(k))),
+                            ]),
+                            style: theme.textTheme.labelSmall,
+                          ),
+                        ),
+                      // What kind of face it is, in full: this panel grows with
+                      // the text, so the squares below never have to.
+                      if (!open)
+                        Text(t('fixed_face_label'),
+                            style: theme.textTheme.labelSmall)
+                      else if (assigned != null && isBasicFace(face))
+                        Text(
+                          t('channeled_face_badge').replaceAll(
+                              '{face}',
+                              t(basicFaceLabelKey(
+                                  face['type']?.toString() ?? ''))),
+                          style: theme.textTheme.labelSmall
+                              ?.copyWith(color: theme.colorScheme.tertiary),
+                        )
+                      else if (assigned != null)
+                        Text(t('custom_label'),
+                            style: theme.textTheme.labelSmall
+                                ?.copyWith(color: theme.colorScheme.tertiary)),
+                      if (overSkill != null)
+                        Text(
+                          '${skillDisplayName(overSkill, language: language)}: '
+                          '${t('face_over_limit_label')}',
+                          style: theme.textTheme.labelSmall
+                              ?.copyWith(color: theme.colorScheme.error),
+                        ),
+                      if (open && restriction != null)
+                        Text('$restriction ${t('only_suffix')}',
+                            style: theme.textTheme.labelSmall),
+                      const SizedBox(height: 6),
+                      Text(
+                        open ? t('die_turn_hint_open') : t('die_turn_hint'),
                         style: theme.textTheme.labelSmall
-                            ?.copyWith(color: theme.colorScheme.tertiary)),
-                  if (overSkill != null)
-                    Text(
-                      '${skillDisplayName(overSkill, language: language)}: '
-                      '${t('face_over_limit_label')}',
-                      style: theme.textTheme.labelSmall
-                          ?.copyWith(color: theme.colorScheme.error),
-                    ),
-                  if (open && restriction != null)
-                    Text('$restriction ${t('only_suffix')}',
-                        style: theme.textTheme.labelSmall),
-                  const SizedBox(height: 6),
-                  Text(
-                    open ? t('die_turn_hint_open') : t('die_turn_hint'),
-                    style: theme.textTheme.labelSmall
-                        ?.copyWith(color: theme.colorScheme.primary),
+                            ?.copyWith(color: theme.colorScheme.primary),
+                      ),
+                      if (open)
+                        TextButton.icon(
+                          key: const Key('die_pick_skill'),
+                          style: TextButton.styleFrom(
+                              visualDensity: VisualDensity.compact,
+                              padding: EdgeInsets.zero,
+                              alignment: Alignment.centerLeft),
+                          onPressed: () => onActivate(selected),
+                          icon: const Icon(Icons.edit_outlined, size: 16),
+                          label: Text(t('pick_face_skill_title')),
+                        ),
+                    ],
                   ),
-                  if (open)
-                    TextButton.icon(
-                      key: const Key('die_pick_skill'),
-                      style: TextButton.styleFrom(
-                          visualDensity: VisualDensity.compact,
-                          padding: EdgeInsets.zero,
-                          alignment: Alignment.centerLeft),
-                      onPressed: () => onActivate(selected),
-                      icon: const Icon(Icons.edit_outlined, size: 16),
-                      label: Text(t('pick_face_skill_title')),
-                    ),
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
