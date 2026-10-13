@@ -8,6 +8,38 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.283.0+319]
+
+The harbour: the story hands over what it costs, and the camp builds it
+first.
+
+### Added
+- **A story choice can grant materials**: `grantMaterials`, an object of
+  item id to count (`{"material_timber": 4, "material_cut_stone": 2}`).
+  They go in the pack with a "Picked up" notice. The story, "Play to
+  chapter", expeditions and the playthrough simulator all apply it, and the
+  story editor keeps it. The camp's founding choice ("Take stock of the
+  shore", in chapter 3) grants the harbour's 4 timber and 2 cut stone;
+  Narrative writes the scene's line for it in a later PR.
+- **The camp's tour starts at the harbour** while it is unbuilt. A harbour
+  card sits above the camp's tabs until it stands, and a tap on it opens
+  Town.
+
+### Changed
+- **The harbour costs only its materials**: 4 timber and 2 cut stone, with
+  no gold, so the story's grant covers it.
+- **The Rusty Eel waits on her harbour.** Once the camp is founded, every
+  voyage away from it is refused until the harbour is built, with a notice
+  pointing at Town. Sailing home is never refused. If the pack can no longer
+  pay for the harbour (the grant spent on another building, or sold), she
+  sails anyway, so no game is stranded. Her refit already waited on the
+  harbour.
+- **"Play to chapter" builds the harbour** when its walk founds the camp.
+
+### Fixed
+- Saves get version 5. A save from before it that has passed the camp's
+  founding has the harbour built on load, once.
+
 ## [1.282.0+318]
 
 The full-screen map, the help pattern on ten more pages, and small fixes.

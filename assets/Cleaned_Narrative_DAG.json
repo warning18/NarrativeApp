@@ -4250,7 +4250,11 @@
         "unlockQuestId": "q_ch3_the_high_wardens_fall",
         "flagsToAdd": [
           "camp_founded"
-        ]
+        ],
+        "grantMaterials": {
+          "material_timber": 4,
+          "material_cut_stone": 2
+        }
       }
     ],
     "persona_variants": {

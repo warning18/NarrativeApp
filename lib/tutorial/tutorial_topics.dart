@@ -42,6 +42,8 @@ enum TutorialTopic {
     TutorialStep('tut_character_4', target: 'character.pages'),
   ]),
   camp(Icons.local_fire_department_outlined, homeTab: 2, steps: [
+    // Before it is built, the harbour comes first (see harbour.dart).
+    TutorialStep('tut_camp_harbour', target: 'camp.harbour', optional: true),
     TutorialStep('tut_camp_0', target: 'camp.next', optional: true),
     TutorialStep('tut_camp_6', target: 'camp.road'),
     TutorialStep('tut_camp_1', target: 'camp.town'),

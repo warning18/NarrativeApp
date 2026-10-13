@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -1402,6 +1403,7 @@ Future<void> _selectChoice({
               questIDToProgress: choice.questIDToProgress,
               bannerPieceId: choice.grantsBannerPieceId,
               itemId: choice.grantItemId,
+              materials: choice.grantMaterials,
               loseAllyId: choice.loseAllyId,
               approvalMods: choice.approvalMods,
               companions:
@@ -1422,6 +1424,23 @@ Future<void> _selectChoice({
         message: tr(ref, 'item_picked_up')
             .replaceAll('{item}', name ?? choice.grantItemId!),
       );
+    }
+    // And the materials it hands over (see StoryChoice.grantMaterials),
+    // told on the way: the story goes on under the card.
+    if (choice.grantsMaterials && context.mounted) {
+      final items = ref.read(localizedDbProvider(itemsSchema)).value;
+      unawaited(showImmersiveNotice(
+        context,
+        icon: Icons.backpack_outlined,
+        message: tr(ref, 'item_picked_up').replaceAll(
+            '{item}',
+            [
+              for (final MapEntry(key: id, value: count)
+                  in choice.grantMaterials.entries)
+                if (count > 0)
+                  '$count ${(items?[id] as Map?)?['itemName'] ?? id}',
+            ].join(', ')),
+      ));
     }
     // How the party took it, before the story moves on.
     if (reactions.isNotEmpty && context.mounted) {

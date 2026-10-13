@@ -11,11 +11,13 @@ import '../models/ally_state.dart'
     show equipmentBonusFor, equipmentScalingBonusFor;
 import '../models/story_node.dart';
 import 'autoplay_build.dart';
+import 'camp_state.dart' show harborHouseId;
+import 'harbour.dart' show harbourAwaited;
 import 'item_origin_here.dart';
 import 'materials.dart' show materialCountsOf;
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/clans_provider.dart' show loadClanData;
-import '../gamedata/db_schema.dart' show shopsSchema;
+import '../gamedata/db_schema.dart' show housesSchema, shopsSchema;
 import '../providers/game_db_providers.dart' show gameDbRepositoryProvider;
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
@@ -519,6 +521,7 @@ Future<AutoplayResult> autoplayToNode(
         flagsToAdd: choice.flagsToAdd,
         bannerPieceId: choice.grantsBannerPieceId,
         itemId: choice.grantItemId,
+        materials: choice.grantMaterials,
         questIDToProgress: choice.questIDToProgress,
         approvalMods: choice.approvalMods,
         origin: itemOriginHere(ref),
@@ -595,6 +598,7 @@ Future<AutoplayResult> autoplayToChapter(
   int maxAttempts = 10,
   int? seed,
   Map<String, dynamic>? shops,
+  Map<String, dynamic>? houses,
   void Function(int attempt)? onAttempt,
 }) async {
   final startChapter =
@@ -648,7 +652,30 @@ Future<AutoplayResult> autoplayToChapter(
   }
   await applyAutoplayBuild(ref,
       items: items, skills: skills, dice: dice, professions: professions);
+  await buildAwaitedHarbour(ref, houses: houses);
   return result._withAttempts(attempts);
+}
+
+/// Builds the camp's harbour when the walk has founded the camp without it
+/// (see harbour.dart): the camp's tour would have the player build it with
+/// the story's grant first thing, and "Play to chapter" hands back a camp
+/// whose Eel can sail. A no-op when it stands, or the pack can't pay for
+/// it. [houses]: houses.json's records, loaded when null.
+Future<void> buildAwaitedHarbour(WidgetRef ref,
+    {Map<String, dynamic>? houses}) async {
+  final session = ref.read(playerSessionProvider);
+  if (!harbourAwaited(
+      flags: session.flags, builtHouseIds: session.builtHouseIds)) {
+    return;
+  }
+  final records = houses ??
+      await ref.read(gameDbRepositoryProvider(housesSchema)).loadRecords();
+  final harbour = records[harborHouseId];
+  if (harbour is! Map<String, dynamic>) return;
+  await ref.read(playerSessionProvider.notifier).buildHouse(
+      harborHouseId, (harbour['buildCost'] as num?)?.toInt() ?? 0,
+      requiredFlags: requiredFlagsOf(harbour),
+      materialCost: materialCountsOf(harbour, 'materialCost'));
 }
 
 /// Brings a character that reached [chapter] up to where a typical run
@@ -904,6 +931,7 @@ Future<AutoplayResult> _playTowardChapter(
         flagsToAdd: choice.flagsToAdd,
         bannerPieceId: choice.grantsBannerPieceId,
         itemId: choice.grantItemId,
+        materials: choice.grantMaterials,
         questIDToProgress: choice.questIDToProgress,
         approvalMods: choice.approvalMods,
         origin: itemOriginHere(ref),
