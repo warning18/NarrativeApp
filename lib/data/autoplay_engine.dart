@@ -14,6 +14,8 @@ import 'autoplay_build.dart';
 import 'item_origin_here.dart';
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/clans_provider.dart' show loadClanData;
+import '../gamedata/db_schema.dart' show shopsSchema;
+import '../providers/game_db_providers.dart' show gameDbRepositoryProvider;
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
 import '../providers/story_providers.dart';
@@ -590,6 +592,7 @@ Future<AutoplayResult> autoplayToChapter(
   int maxCombatRetries = 8,
   int maxAttempts = 10,
   int? seed,
+  Map<String, dynamic>? shops,
   void Function(int attempt)? onAttempt,
 }) async {
   final startChapter =
@@ -631,9 +634,43 @@ Future<AutoplayResult> autoplayToChapter(
     );
     if (result.status == AutoplayStatus.reachedTarget) break;
   }
+  if (result.status == AutoplayStatus.reachedTarget) {
+    await applyArrivalTopUp(ref,
+        chapter: targetChapter,
+        items: items,
+        professions: professions,
+        shops: shops ??
+            await ref
+                .read(gameDbRepositoryProvider(shopsSchema))
+                .loadRecords());
+  }
   await applyAutoplayBuild(ref,
       items: items, skills: skills, dice: dice, professions: professions);
   return result._withAttempts(attempts);
+}
+
+/// Brings a character that reached [chapter] up to where a typical run
+/// arrives there ([planArrivalTopUp]): the XP and gold as a won fight's
+/// reward (its levels give their stat points and a full heal), the tier's
+/// gear into the pack. [shops]: shops.json's records.
+Future<void> applyArrivalTopUp(
+  WidgetRef ref, {
+  required int chapter,
+  required Map<String, dynamic> items,
+  required Map<String, dynamic> shops,
+  required Map<String, dynamic> professions,
+}) async {
+  final session = ref.read(playerSessionProvider);
+  final topUp = planArrivalTopUp(session,
+      chapter: chapter, items: items, shops: shops, professions: professions);
+  if (topUp.isEmpty) return;
+  await ref.read(playerSessionProvider.notifier).applyCombatResult(
+        hpAfter: session.currentHealth,
+        xpGain: topUp.xp,
+        goldGain: topUp.gold,
+        itemsGained: topUp.items,
+        items: items,
+      );
 }
 
 /// Applies [planAutoplayBuild]'s build to the live session: the stat

@@ -3,6 +3,7 @@ import '../models/ally_state.dart'
     show equipmentScalingBonusFor, meetsItemAlignment, meetsItemStatRequirement;
 import '../providers/player_session_provider.dart'
     show PlayerSession, playerWearerId;
+import 'shop_stock.dart' show allShopStock;
 import 'sim_growth.dart' show simSkillScore;
 
 /// The build "Play to chapter" (autoplay_engine.dart) leaves the player
@@ -165,4 +166,143 @@ Map<String, String>? _bestFaces(
     }
   }
   return assignments;
+}
+
+/// Where a typical run stands as it reaches each chapter's hub: the
+/// median level and gold of the playthrough simulator's 800-run check
+/// (seeds 11 and 23, v1.270.0, its `arrivals`; see docs/simulation/).
+const Map<int, ({int level, int gold})> typicalArrival = {
+  2: (level: 3, gold: 400),
+  3: (level: 5, gold: 780),
+  4: (level: 6, gold: 1350),
+  5: (level: 8, gold: 1780),
+  6: (level: 9, gold: 2330),
+  7: (level: 10, gold: 2690),
+  8: (level: 10, gold: 3240),
+};
+
+/// What "Play to chapter" adds on arrival at [chapter] so the character
+/// handed back is one a player could have there (see [planArrivalTopUp]).
+class ArrivalTopUp {
+  const ArrivalTopUp({
+    required this.xp,
+    required this.gold,
+    required this.items,
+  });
+
+  static const none = ArrivalTopUp(xp: 0, gold: 0, items: []);
+
+  /// XP that brings the character to the chapter's typical level.
+  final int xp;
+
+  /// Gold that brings the purse to the chapter's typical gold.
+  final int gold;
+
+  /// The best piece per slot the chapter's shops and chests hold, for the
+  /// slots where it beats everything carried.
+  final List<String> items;
+
+  bool get isEmpty => xp <= 0 && gold <= 0 && items.isEmpty;
+}
+
+/// The top-up for [session] reaching [chapter]: only ever up, never down
+/// (a stronger character keeps what it has). Level and gold to
+/// [typicalArrival]'s; then, per slot, the best piece the character could
+/// have met by then (stocked by a shop open by [chapter], or a chest's
+/// loot of a chapter up to it) that it may wear once the new levels' stat
+/// points are spent as [planAutoplayBuild] spends them. Pure and free of
+/// randomness, ties to the lower id.
+ArrivalTopUp planArrivalTopUp(
+  PlayerSession session, {
+  required int chapter,
+  required Map<String, dynamic> items,
+  required Map<String, dynamic> shops,
+  required Map<String, dynamic> professions,
+}) {
+  final target = typicalArrival[chapter.clamp(2, 8)];
+  if (target == null || session.professionId.isEmpty) return ArrivalTopUp.none;
+
+  var xp = -session.currentXP;
+  for (var l = session.level; l < target.level; l++) {
+    xp += l * 100;
+  }
+  if (session.level >= target.level) xp = 0;
+  final levelsGained =
+      session.level >= target.level ? 0 : target.level - session.level;
+  final gold = target.gold > session.gold ? target.gold - session.gold : 0;
+
+  // The scores the build will have: every point to the profession's stat.
+  final profession = professions[session.professionId] as Map?;
+  final preferred = profession?['preferredScalingStat']?.toString() ?? '';
+  final stat = _abilityStats.contains(preferred) ? preferred : 'wisdom';
+  final points =
+      (session.statPoints < 0 ? 0 : session.statPoints) + 5 * levelsGained;
+  int raised(String name, int value) => name == stat ? value + points : value;
+  final strength = raised('strength', session.strength);
+  final dexterity = raised('dexterity', session.dexterity);
+  final constitution = raised('constitution', session.constitution);
+  final intelligence = raised('intelligence', session.intelligence);
+  int scoreOf(String id) {
+    final item = items[id] as Map<String, dynamic>?;
+    if (item == null) return -1;
+    final scaling = equipmentScalingBonusFor([id], items,
+        strength: strength,
+        dexterity: dexterity,
+        constitution: constitution,
+        intelligence: intelligence);
+    return ((item['attackDamage'] as num?)?.toInt() ?? 0) +
+        ((item['armor'] as num?)?.toInt() ?? 0) +
+        scaling.damageBonus +
+        scaling.armorBonus;
+  }
+
+  String slotOf(String id) =>
+      (items[id] as Map?)?['equipSlot']?.toString() ?? '';
+
+  // What the chapter's shops and chests hold.
+  final available = <String>{
+    for (final shop in shops.values)
+      if (shop is Map<String, dynamic> &&
+          ((shop['minChapter'] as num?)?.toInt() ?? 1) <= chapter)
+        ...allShopStock(shop),
+    for (final entry in items.entries)
+      if (entry.value is Map &&
+          ((entry.value as Map)['lootChapter'] as num?) != null &&
+          ((entry.value as Map)['lootChapter'] as num).toInt() >= 1 &&
+          ((entry.value as Map)['lootChapter'] as num).toInt() <= chapter)
+        entry.key,
+  }.toList()
+    ..sort();
+
+  final bestHeld = <String, int>{};
+  for (final id in session.inventoryItemIds) {
+    final slot = slotOf(id);
+    if (slot.isEmpty) continue;
+    final score = scoreOf(id);
+    if (score > (bestHeld[slot] ?? -1)) bestHeld[slot] = score;
+  }
+  final best = <String, String>{};
+  for (final id in available) {
+    final item = items[id] as Map<String, dynamic>?;
+    if (item == null || item['isEquippable'] != true) continue;
+    final slot = slotOf(id);
+    if (slot.isEmpty || session.inventoryItemIds.contains(id)) continue;
+    if (!meetsItemStatRequirement(item,
+            strength: strength,
+            dexterity: dexterity,
+            constitution: constitution,
+            intelligence: intelligence) ||
+        !meetsItemAlignment(item, session.alignmentLabel)) {
+      continue;
+    }
+    final score = scoreOf(id);
+    if (score <= (bestHeld[slot] ?? -1)) continue;
+    final current = best[slot];
+    if (current == null || score > scoreOf(current)) best[slot] = id;
+  }
+  return ArrivalTopUp(
+    xp: xp < 0 ? 0 : xp,
+    gold: gold,
+    items: [for (final slot in best.keys.toList()..sort()) best[slot]!],
+  );
 }
