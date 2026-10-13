@@ -2331,11 +2331,11 @@
     "questName": "The Reed Gate’s Grievance",
     "chapter": 7,
     "category": "Side",
-    "difficulty": "14",
+    "difficulty": "13",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Read the Reed Gate’s petition",
+        "description": "Read the petition",
         "type": "Flag",
         "targetEnemyID": "",
         "targetItemID": "",
@@ -2343,7 +2343,7 @@
         "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "hub_7400_reed_later",
-        "description_fr": "Lire la pétition de la Porte des Roseaux"
+        "description_fr": "Lire la pétition"
       }
     ],
     "rewardGold": 180,
@@ -2408,11 +2408,11 @@
     "questName": "The Herald’s Errand",
     "chapter": 7,
     "category": "Side",
-    "difficulty": "14",
+    "difficulty": "13",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Read the Grand Master’s terms",
+        "description": "Read Morrow’s terms",
         "type": "Flag",
         "targetEnemyID": "",
         "targetItemID": "",
@@ -2420,7 +2420,7 @@
         "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "hub_7400_herald_later",
-        "description_fr": "Lire les termes du Grand Maître"
+        "description_fr": "Lire les termes de Morrow"
       }
     ],
     "rewardGold": 170,
@@ -2484,11 +2484,11 @@
     "questName": "The Chain-Master’s Boy",
     "chapter": 7,
     "category": "Side",
-    "difficulty": "14",
+    "difficulty": "13",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Copy the chain-master’s tide table",
+        "description": "Copy the tide table",
         "type": "Flag",
         "targetEnemyID": "",
         "targetItemID": "",
@@ -2496,7 +2496,7 @@
         "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "hub_7400_chain_later",
-        "description_fr": "Recopier la table des marées du maître de chaîne"
+        "description_fr": "Recopier la table des marées"
       }
     ],
     "rewardGold": 190,
