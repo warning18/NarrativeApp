@@ -130,7 +130,7 @@ Adding a mood is a pair of strings. Only the tag changes; none of them is a
 "tense" mood unless Core adds it to `tenseMoods` (suggested: `defiant`,
 `ominous`).
 
-**Done (v1.272):** all ten moods exist, and 101 scenes carry one (11 wistful,
+**Done (v1.274):** all ten moods exist, and 101 scenes carry one (11 wistful,
 11 solemn, 8 tender, 12 uncanny, 15 wry, 5 defiant, 10 mournful, 10 ominous,
 9 bitter, 10 wondrous). Only scenes that were not already `tense`,
 `action`, `suspense` or `desperate` were re-tagged, so no random detour
