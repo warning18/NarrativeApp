@@ -280,7 +280,7 @@ void main() {
     await tester.runAsync(() => notifier.arriveAtPort('port_smugglers_wharf'));
     await _settle(tester);
     expect(find.byKey(const Key('chapter_card')), findsNothing);
-    expect(find.textContaining("Ashore at Smugglers' Wharf"), findsOneWidget);
+    expect(find.textContaining("Ashore at Smugglers’ Wharf"), findsOneWidget);
     expect(find.byKey(const Key('ship_sail_home')), findsOneWidget);
     expect(_tab('Ship'), findsOneWidget);
     expect(_tab('Journey'), findsNothing);

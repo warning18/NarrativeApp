@@ -286,7 +286,7 @@
   },
   "smugglers_vault": {
     "shopID": "smugglers_vault",
-    "shopName": "The Smugglers' Vault",
+    "shopName": "The Smugglers’ Vault",
     "shopDescription": "A hidden cache of contraband steel a cut above anything the harbor forges will admit to selling, and one relic nobody will admit to owning.",
     "unlockLevel": 5,
     "buildCost": 400,
