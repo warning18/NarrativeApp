@@ -106,6 +106,16 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
   bool _opened = false;
   bool _opening = false;
 
+  /// Whether the chest's rarity is told yet (v1.267): its name, its colour
+  /// and its art stay neutral until the player taps it, and the colours then
+  /// cycle and slow down onto the real one.
+  bool _tierShown = false;
+
+  /// The tier the colour wheel shows while it turns (null: not turning).
+  ChestTier? _cycle;
+  bool _spinning = false;
+  bool _skipSpin = false;
+
   /// The chest's burst of light is playing (v1.216).
   bool _bursting = false;
   final Set<int> _revealed = {};
@@ -125,8 +135,21 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
       vsync: this,
       duration: const Duration(milliseconds: 550),
     );
+    // The chest's own art is ready by the time its rarity is told.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      for (final open in [false, true]) {
+        precacheImage(
+            AssetImage(chestAssetPath(widget.result.tier, open: open)),
+            context);
+      }
+    });
+    _shake.addStatusListener((status) {
+      if (status == AnimationStatus.completed) _finishOpen();
+    });
     if (widget.autoOpen) {
       _opened = true;
+      _tierShown = true;
       _revealed.addAll(List.generate(_slotCount, (i) => i));
     }
   }
@@ -137,15 +160,65 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
     super.dispose();
   }
 
+  /// A tap on the chest: the first starts the colours turning, a second
+  /// while they turn skips to where they stop, a third while it shakes
+  /// opens it at once.
+  void _onChestTap() {
+    if (_opened) return;
+    if (!_opening) {
+      _open();
+    } else if (_spinning) {
+      _skipSpin = true;
+    } else {
+      _finishOpen();
+    }
+  }
+
   Future<void> _open() async {
     if (_opened || _opening) return;
+    final reduced = MediaQuery.of(context).disableAnimations;
     setState(() => _opening = true);
-    await _shake.forward(from: 0);
-    if (!mounted) return;
+    if (!reduced) {
+      await _spin();
+      if (!mounted) return;
+    }
     setState(() {
+      _tierShown = true;
+      _cycle = null;
+    });
+    // With reduced motion it simply opens.
+    reduced ? _finishOpen() : _shake.forward(from: 0);
+  }
+
+  /// The colours of the tiers turn, one after another, a few laps, slower
+  /// and slower, and stop on the chest's own.
+  Future<void> _spin() async {
+    const tiers = ChestTier.values;
+    final target = tiers.indexOf(widget.result.tier);
+    final start = Random().nextInt(tiers.length);
+    final steps = tiers.length * 3 +
+        ((target - start) % tiers.length + tiers.length) % tiers.length;
+    _spinning = true;
+    for (var i = 0; i <= steps; i++) {
+      if (_skipSpin || !mounted) break;
+      setState(() => _cycle = tiers[(start + i) % tiers.length]);
+      final t = i / steps;
+      await Future<void>.delayed(
+          Duration(milliseconds: (55 + 365 * t * t * t).round()));
+    }
+    _spinning = false;
+  }
+
+  void _finishOpen() {
+    if (_opened || !mounted) return;
+    final reduced = MediaQuery.of(context).disableAnimations;
+    _shake.stop();
+    setState(() {
+      _tierShown = true;
+      _cycle = null;
       _opened = true;
       _opening = false;
-      _bursting = true;
+      _bursting = !reduced;
     });
   }
 
@@ -173,19 +246,21 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
       title: Row(
         children: [
           Expanded(child: Text(_t('spoils_title'))),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: tierColor.withValues(alpha: 0.2),
-              border: Border.all(color: tierColor),
-              borderRadius: BorderRadius.circular(8),
+          if (_tierShown)
+            Container(
+              key: const Key('chest_tier_chip'),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: tierColor.withValues(alpha: 0.2),
+                border: Border.all(color: tierColor),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                _t(chestTierLabelKey(result.tier)),
+                style: theme.textTheme.labelMedium
+                    ?.copyWith(color: tierColor, fontWeight: FontWeight.bold),
+              ),
             ),
-            child: Text(
-              _t(chestTierLabelKey(result.tier)),
-              style: theme.textTheme.labelMedium
-                  ?.copyWith(color: tierColor, fontWeight: FontWeight.bold),
-            ),
-          ),
         ],
       ),
       content: SizedBox(
@@ -197,7 +272,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
             children: [
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: _opened ? null : _open,
+                onTap: _opened ? null : _onChestTap,
                 child: AnimatedBuilder(
                   animation: _shake,
                   builder: (context, child) {
@@ -214,10 +289,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
                       alignment: Alignment.center,
                       clipBehavior: Clip.none,
                       children: [
-                        PixelIcon(
-                          chestAssetPath(result.tier, open: _opened),
-                          size: 112,
-                        ),
+                        _chestArt(result.tier),
                         // It bursts open in its tier's light, in pixel art.
                         if (_bursting)
                           Positioned(
@@ -250,7 +322,9 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
                     ? (_allRevealed
                         ? _t('chest_all_revealed_hint')
                         : _t('chest_slot_hint'))
-                    : _t('chest_tap_hint'),
+                    : (_opening && !_tierShown
+                        ? _t('chest_skip_hint')
+                        : _t('chest_tap_hint')),
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodySmall,
               ),
@@ -275,8 +349,10 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
                 ],
                 ..._buildSpoilsList(theme),
               ],
-              const SizedBox(height: 12),
-              _buildFortune(theme),
+              if (_tierShown) ...[
+                const SizedBox(height: 12),
+                _buildFortune(theme),
+              ],
             ],
           ),
         ),
@@ -302,6 +378,36 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
         ),
       ],
     );
+  }
+
+  /// The chest before its rarity is told: one neutral grey chest, whatever
+  /// it is, tinted by the colour the wheel is on while it turns; once told,
+  /// its own art.
+  Widget _chestArt(ChestTier tier) {
+    if (_tierShown) {
+      return PixelIcon(chestAssetPath(tier, open: _opened), size: 112);
+    }
+    // Grey, and lifted, so the tint of the wheel reads on it.
+    const grey = ColorFilter.matrix(<double>[
+      0.6, 0.6, 0.6, 0, 0, //
+      0.6, 0.6, 0.6, 0, 0, //
+      0.6, 0.6, 0.6, 0, 0, //
+      0, 0, 0, 1, 0,
+    ]);
+    final cycle = _cycle;
+    Widget art = ColorFiltered(
+      colorFilter: grey,
+      child:
+          PixelIcon(chestAssetPath(ChestTier.wooden, open: false), size: 112),
+    );
+    if (cycle != null) {
+      final tint = Color.lerp(chestTierColor(cycle), Colors.white, 0.12)!;
+      art = ColorFiltered(
+        colorFilter: ColorFilter.mode(tint, BlendMode.modulate),
+        child: art,
+      );
+    }
+    return KeyedSubtree(key: const Key('chest_art_hidden'), child: art);
   }
 
   Widget _buildSlot(int index) {

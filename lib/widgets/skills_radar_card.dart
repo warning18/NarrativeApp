@@ -1,20 +1,20 @@
-// The Character tab's top card (v1.266): the skills known, a few of them
-// with their icon, beside a small radar of the eight abilities.
+// The Character page's Overview (v1.267): the eight abilities as a radar in a
+// card, and under it the skills known as chips, a tap on one reading it.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/dice_faces.dart' show skillDisplayName;
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
 import '../screens/skills/skill_sheet.dart';
 import '../screens/skills/skills_screen.dart';
-import '../combat/dice_faces.dart' show skillDisplayName;
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'ability_radar.dart';
 
-/// How many skills the card lists before "All skills".
-const int skillsCardRows = 5;
+/// How many skills the page lists before "All skills".
+const int skillsCardRows = 6;
 
 class SkillsRadarCard extends ConsumerWidget {
   const SkillsRadarCard({super.key});
@@ -42,96 +42,104 @@ class SkillsRadarCard extends ConsumerWidget {
     void openSkills() => Navigator.of(context)
         .push(MaterialPageRoute(builder: (_) => const SkillsScreen()));
 
-    Widget skill(String id) => InkWell(
-          key: Key('character_skill_$id'),
-          onTap: () => showSkillSheet(context, id),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: Row(
-              children: [
-                Container(
-                  width: 28,
-                  height: 28,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: ink.seam),
-                  ),
-                  child: SkillPixelIcon(id, size: 20),
+    Widget skill(String id, double width) => SizedBox(
+          width: width,
+          child: Material(
+            color: theme.colorScheme.surfaceContainer,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+              side: BorderSide(color: ink.seam),
+            ),
+            child: InkWell(
+              key: Key('character_skill_$id'),
+              borderRadius: BorderRadius.circular(4),
+              onTap: () => showSkillSheet(context, id),
+              child: Padding(
+                padding: const EdgeInsets.all(6),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 26,
+                      height: 26,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: ink.seam),
+                      ),
+                      child: SkillPixelIcon(id, size: 20),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(skillDisplayName(id, language: lang),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodyMedium),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(skillDisplayName(id, language: lang),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodyMedium),
-                ),
-              ],
+              ),
             ),
           ),
         );
 
-    return Material(
-      key: const Key('character_skills_card'),
-      color: theme.colorScheme.surfaceContainer,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4),
-        side: BorderSide(color: ink.seam),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 8, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(tr(ref, 'skills').toUpperCase(),
-                      style: theme.textTheme.labelMedium
-                          ?.copyWith(color: ink.gold, letterSpacing: 1.2)),
-                ),
-                InkWell(
-                  key: const Key('character_skills_all'),
-                  onTap: openSkills,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: Text('${tr(ref, 'skills_see_all')} ›',
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(color: ink.ash)),
-                  ),
-                ),
-              ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Material(
+          key: const Key('character_skills_card'),
+          color: theme.colorScheme.surfaceContainer,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+            side: BorderSide(color: ink.seam),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: Center(
+              child: AbilityRadar(
+                key: const Key('character_radar'),
+                size: 250,
+                t: (key) => tr(ref, key),
+                values: abilities,
+              ),
             ),
-            const SizedBox(height: 4),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: shown.isEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Text(tr(ref, 'skills_none_short'),
-                              style: theme.textTheme.bodySmall
-                                  ?.copyWith(color: ink.ash)),
-                        )
-                      : Column(children: [for (final id in shown) skill(id)]),
-                ),
-                const SizedBox(width: 4),
-                Semantics(
-                  container: true,
-                  child: AbilityRadar(
-                    key: const Key('character_radar'),
-                    size: 170,
-                    compact: true,
-                    t: (key) => tr(ref, key),
-                    values: abilities,
-                  ),
-                ),
-              ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: Text(tr(ref, 'skills').toUpperCase(),
+                  style: theme.textTheme.labelMedium
+                      ?.copyWith(color: ink.gold, letterSpacing: 1.2)),
+            ),
+            InkWell(
+              key: const Key('character_skills_all'),
+              onTap: openSkills,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                child: Text('${tr(ref, 'skills_see_all')} ›',
+                    style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+              ),
             ),
           ],
         ),
-      ),
+        const SizedBox(height: 4),
+        if (shown.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(tr(ref, 'skills_none_short'),
+                style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+          )
+        else
+          LayoutBuilder(builder: (context, box) {
+            final width = (box.maxWidth - 6) / 2;
+            return Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [for (final id in shown) skill(id, width)],
+            );
+          }),
+      ],
     );
   }
 }

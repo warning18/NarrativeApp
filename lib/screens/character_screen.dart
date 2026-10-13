@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../combat/combat_engine.dart' show newGamePlusStep;
 import '../combat/spells.dart';
@@ -10,14 +11,11 @@ import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
-import '../providers/signs_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/game_icons.dart';
 import '../data/offers.dart' show OfferSource;
-import '../data/perks.dart';
-import '../widgets/gift_fold.dart';
 import '../widgets/offer_dialog.dart';
 import '../widgets/perk_list.dart';
 import '../widgets/pixel_banner.dart';
@@ -58,63 +56,19 @@ class CharacterScreen extends ConsumerWidget {
       subtitle = '$raceName $professionName';
     }
 
-    Widget tile(IconData icon, String label, Widget page, {String? note}) =>
-        _PageTile(icon: icon, label: label, note: note, page: page);
-
+    final tab = ref.watch(_characterTabProvider);
     final body = ListView(
       padding: const EdgeInsets.all(16),
       children: [
         _CharacterHeader(subtitle: subtitle),
         const SizedBox(height: 12),
-        if (session.newGamePlusCycle > 0) const _NewGamePlusCard(),
-        const _ManaSpellsCard(),
-        if (session.bannerPiecesCollected.isNotEmpty) const _ShroudCard(),
-        TutorialTarget(
-          id: 'character.pages',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              IntrinsicHeight(
-                  child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: tile(Icons.backpack, tr(ref, 'tile_inventory'),
-                        const InventoryScreen()),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: tile(Icons.casino, tr(ref, 'tile_dice'),
-                        const DiceLoadoutScreen()),
-                  ),
-                ],
-              )),
-              const SizedBox(height: 8),
-              IntrinsicHeight(
-                  child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: tile(Icons.trending_up, tr(ref, 'level_up'),
-                        const LevelUpScreen()),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: tile(
-                        Icons.badge_outlined,
-                        tr(ref, 'race_profession_title'),
-                        const RaceProfessionScreen(),
-                        note: subtitle),
-                  ),
-                ],
-              )),
-            ],
-          ),
-        ),
-        if (isEditMode) ...[
-          const SizedBox(height: 16),
-          const _DebugStatsEditor(),
-        ],
+        const _CharacterTabs(),
+        const SizedBox(height: 12),
+        switch (tab) {
+          1 => const _GiftsTab(),
+          2 => _PagesTab(subtitle: subtitle, isEditMode: isEditMode),
+          _ => const _OverviewTab(),
+        },
       ],
     );
     final triggered = TutorialTrigger(
@@ -129,11 +83,9 @@ class CharacterScreen extends ConsumerWidget {
   }
 }
 
-/// The top of the character sheet (v1.266): who the character is, their
-/// level and experience, health, mana and gold, any points waiting, then the
-/// skills beside the radar of the eight abilities, the gifts (titles as
-/// chips, perks and signs folded to a line each), the offer waiting and
-/// where their alignment stands between Evil and Good.
+/// The top of the character sheet: who the character is, their level and
+/// experience, health, mana and gold, and any points waiting. Under it, three
+/// tabs (v1.267): Overview, Gifts, Pages.
 class _CharacterHeader extends ConsumerWidget {
   const _CharacterHeader({required this.subtitle});
 
@@ -145,7 +97,6 @@ class _CharacterHeader extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final lang = ref.watch(appLanguageProvider);
     final name = session.characterName.isNotEmpty
         ? session.characterName
         : tr(ref, 'character');
@@ -175,20 +126,6 @@ class _CharacterHeader extends ConsumerWidget {
             ),
           ),
         );
-
-    // The perks and signs folds say what is inside in one line.
-    final perkNames = <String>[
-      for (final perk in Perk.values)
-        if ((session.perkRanks[perk.name] ?? 0) > 0)
-          '${tr(ref, perkNameKey(perk))}'
-              '${perkInfo[perk]!.maxRank > 1 ? ' ${session.perkRanks[perk.name]}' : ''}',
-    ];
-    final signDefs = ref.watch(signDefsProvider);
-    final signNames = <String>[
-      for (final h in session.heldSigns)
-        if (signDefs[h.signId] != null) signDefs[h.signId]!.nameFor(lang),
-    ];
-    final waiting = session.pendingOffers.length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -313,100 +250,296 @@ class _CharacterHeader extends ConsumerWidget {
             ),
           ),
         ],
-        // The skills known, beside the shape of the eight abilities.
-        const SizedBox(height: 12),
-        const TutorialTarget(
-          id: 'character.abilities',
-          child: SkillsRadarCard(),
-        ),
-        // Titles (see offers.dart): chips, the one worn in gold.
-        const SizedBox(height: 8),
-        Material(
-          key: const Key('character_titles'),
-          color: theme.colorScheme.surfaceContainer,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
-            side: BorderSide(color: ink.seam),
-          ),
-          child: const Padding(
-            padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
-            child: TitleChips(),
-          ),
-        ),
-        // Perk ranks (see perks.dart): the Wayfarer's gifts.
-        const SizedBox(height: 8),
-        GiftFold(
-          key: const Key('character_perks'),
-          id: 'perks',
-          title: tr(ref, 'perk_section'),
-          count: perkNames.length,
-          summary: perkNames.isEmpty
-              ? tr(ref, 'gifts_none_short')
-              : perkNames.join(' · '),
-          child: const PerkList(compact: true),
-        ),
-        // Signs (see signs.dart): the patrons' boons for this life.
-        const SizedBox(height: 8),
-        GiftFold(
-          key: const Key('character_signs'),
-          id: 'signs',
-          title: tr(ref, 'signs_section'),
-          count: signNames.length,
-          summary: signNames.isEmpty
-              ? tr(ref, 'gifts_none_short')
-              : signNames.join(' · '),
-          child: const SignsSection(header: false),
-        ),
-        // The clans' offers (see offers.dart): the one waiting, if any.
-        const SizedBox(height: 8),
-        Material(
-          key: const Key('character_offers'),
-          color: theme.colorScheme.surfaceContainer,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
-            side: BorderSide(color: ink.seam),
-          ),
+      ],
+    );
+  }
+}
+
+/// Which tab the Character page is on (kept for the session).
+final _characterTabProvider = StateProvider<int>((ref) => 0);
+
+/// The three tabs under the header (v1.267): Overview (the abilities as a
+/// radar, the skills known, the alignment), Gifts (titles, perks, signs, the
+/// offer waiting) and Pages (mana and the links).
+class _CharacterTabs extends ConsumerWidget {
+  const _CharacterTabs();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tab = ref.watch(_characterTabProvider);
+    final session = ref.watch(playerSessionProvider);
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final gifts = session.heldTitleIds.length +
+        session.perkRanks.values.where((r) => r > 0).length +
+        session.heldSigns.length;
+    final waiting = session.pendingOffers.length;
+
+    Widget segment(int index, String key, String label, {Widget? after}) {
+      final on = tab == index;
+      return Expanded(
+        child: Semantics(
+          button: true,
+          selected: on,
           child: InkWell(
-            key: const Key('offer_open'),
-            borderRadius: BorderRadius.circular(4),
-            onTap: waiting > 0
-                ? () => showOfferIfWaiting(context, ref, sayWhenNone: true)
-                : null,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+            key: Key('character_tab_$key'),
+            onTap: () => ref.read(_characterTabProvider.notifier).state = index,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 9),
+              alignment: Alignment.center,
+              color: on ? theme.colorScheme.primaryContainer : null,
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.diversity_3,
-                      size: 18, color: waiting > 0 ? ink.gold : ink.ash),
-                  const SizedBox(width: 8),
-                  Text(tr(ref, 'offers_section'),
-                      style: theme.textTheme.titleSmall),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      waiting > 0
-                          ? '${tr(ref, 'offer_open_button')} · '
-                              '${tr(ref, 'offer_pending').replaceAll('{n}', '$waiting')}'
-                          : tr(ref, 'offers_row_none'),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.end,
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(color: waiting > 0 ? ink.gold : ink.ash),
-                    ),
+                  Flexible(
+                    child: Text(label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.labelLarge
+                            ?.copyWith(color: on ? ink.gold : ink.ash)),
                   ),
-                  if (waiting > 0)
-                    Icon(Icons.chevron_right, size: 20, color: ink.ash),
+                  if (after != null) ...[const SizedBox(width: 5), after],
                 ],
               ),
             ),
           ),
         ),
+      );
+    }
+
+    return TutorialTarget(
+      id: 'character.pages',
+      child: Material(
+        color: theme.colorScheme.surfaceContainer,
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+          side: BorderSide(color: ink.seam),
+        ),
+        child: Row(
+          children: [
+            segment(0, 'overview', tr(ref, 'tab_overview')),
+            segment(
+              1,
+              'gifts',
+              tr(ref, 'tab_gifts'),
+              after: waiting > 0
+                  ? Container(
+                      key: const Key('character_gifts_dot'),
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                          color: ink.blood, shape: BoxShape.circle),
+                    )
+                  : (gifts > 0
+                      ? Text('$gifts',
+                          style: theme.textTheme.labelSmall
+                              ?.copyWith(color: ink.gold))
+                      : null),
+            ),
+            segment(2, 'pages', tr(ref, 'tab_pages')),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Overview: the eight abilities as a radar, the skills known, and where the
+/// alignment stands.
+class _OverviewTab extends ConsumerWidget {
+  const _OverviewTab();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final alignment =
+        ref.watch(playerSessionProvider.select((s) => s.alignmentScore));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const TutorialTarget(
+          id: 'character.abilities',
+          child: SkillsRadarCard(),
+        ),
         const SizedBox(height: 10),
         TutorialTarget(
           id: 'character.alignment',
-          child: _AlignmentBar(score: session.alignmentScore),
+          child: _AlignmentBar(score: alignment),
         ),
+      ],
+    );
+  }
+}
+
+/// Gifts: the titles as chips, the perks, the signs, and the clans' offer
+/// waiting.
+class _GiftsTab extends ConsumerWidget {
+  const _GiftsTab();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(playerSessionProvider);
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final waiting = session.pendingOffers.length;
+    final perks = session.perkRanks.values.where((r) => r > 0).length;
+
+    Widget card(Key key, Widget child) => Material(
+          key: key,
+          color: theme.colorScheme.surfaceContainer,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+            side: BorderSide(color: ink.seam),
+          ),
+          child: Padding(padding: const EdgeInsets.all(12), child: child),
+        );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // The clans' offers (see offers.dart): the one waiting, if any.
+        Material(
+          key: const Key('character_offers'),
+          color: theme.colorScheme.surfaceContainer,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+            side: BorderSide(color: waiting > 0 ? ink.gold : ink.seam),
+          ),
+          // Where offers come from, for a press and hold on the row.
+          child: Tooltip(
+            message: tr(ref, 'offers_where_from'),
+            child: InkWell(
+              key: const Key('offer_open'),
+              borderRadius: BorderRadius.circular(4),
+              onTap: waiting > 0
+                  ? () => showOfferIfWaiting(context, ref, sayWhenNone: true)
+                  : null,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+                child: Row(
+                  children: [
+                    Icon(Icons.diversity_3,
+                        size: 18, color: waiting > 0 ? ink.gold : ink.ash),
+                    const SizedBox(width: 8),
+                    Text(tr(ref, 'offers_section'),
+                        style: theme.textTheme.titleSmall),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        waiting > 0
+                            ? '${tr(ref, 'offer_open_button')} · '
+                                '${tr(ref, 'offer_pending').replaceAll('{n}', '$waiting')}'
+                            : tr(ref, 'offers_row_none'),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end,
+                        style: theme.textTheme.bodySmall
+                            ?.copyWith(color: waiting > 0 ? ink.gold : ink.ash),
+                      ),
+                    ),
+                    if (waiting > 0)
+                      Icon(Icons.chevron_right, size: 20, color: ink.ash),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        // Titles (see offers.dart): chips, the one worn in gold.
+        card(const Key('character_titles'), const TitleChips()),
+        const SizedBox(height: 8),
+        // Perk ranks (see perks.dart): the Wayfarer's gifts.
+        card(
+          const Key('character_perks'),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Text(tr(ref, 'perk_section'),
+                      style: theme.textTheme.titleSmall),
+                  if (perks > 0) ...[
+                    const SizedBox(width: 8),
+                    Text('$perks',
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: ink.ash)),
+                  ],
+                ],
+              ),
+              const SizedBox(height: 4),
+              const PerkList(compact: true),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        // Signs (see signs.dart): the patrons' boons for this life.
+        card(const Key('character_signs'), const SignsSection()),
+      ],
+    );
+  }
+}
+
+/// Pages: mana and spells, the Shroud, a New Game+ cycle, and the links.
+class _PagesTab extends ConsumerWidget {
+  const _PagesTab({required this.subtitle, required this.isEditMode});
+
+  final String subtitle;
+  final bool isEditMode;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(playerSessionProvider);
+    Widget tile(IconData icon, String label, Widget page, {String? note}) =>
+        _PageTile(icon: icon, label: label, note: note, page: page);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (session.newGamePlusCycle > 0) const _NewGamePlusCard(),
+        const _ManaSpellsCard(),
+        if (session.bannerPiecesCollected.isNotEmpty) const _ShroudCard(),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: tile(Icons.backpack, tr(ref, 'tile_inventory'),
+                    const InventoryScreen()),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: tile(Icons.casino, tr(ref, 'tile_dice'),
+                    const DiceLoadoutScreen()),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: tile(Icons.trending_up, tr(ref, 'level_up'),
+                    const LevelUpScreen()),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: tile(
+                    Icons.badge_outlined,
+                    tr(ref, 'race_profession_title'),
+                    const RaceProfessionScreen(),
+                    note: subtitle),
+              ),
+            ],
+          ),
+        ),
+        if (isEditMode) ...[
+          const SizedBox(height: 16),
+          const _DebugStatsEditor(),
+        ],
       ],
     );
   }

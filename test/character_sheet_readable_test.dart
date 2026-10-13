@@ -36,7 +36,8 @@ void main() {
     expect(leadAndRest(''), ('', ''));
   });
 
-  testWidgets('the sheet reads in sections and the abilities are tiles',
+  testWidgets(
+      'the sheet is a dossier: the abilities beside the radar, chips for the elements',
       (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
@@ -105,13 +106,18 @@ void main() {
     expect(tester.takeException(), isNull);
 
     // The elements the equipped items give: a staff of fire and a frost
-    // cloak, four views of them.
+    // cloak, a chip each; the four views of them a tap away.
     await tester.scrollUntilVisible(
         find.byKey(const Key('sheet_elements')), 300,
         scrollable: find.byType(Scrollable).first);
+    expect(find.text('Fire 12/0'), findsOneWidget); // +12 damage
+    expect(find.text('Ice 0/14'), findsOneWidget); // 14 resistance
+    expect(find.byKey(const Key('elements_view_0')), findsNothing);
+    await tester.tap(find.byKey(const Key('sheet_elements_open')));
+    await tester.pumpAndSettle();
     expect(find.byKey(const Key('elements_view_0')), findsOneWidget);
-    expect(find.text('12/0'), findsOneWidget); // Fire: +12 damage
-    expect(find.text('0/14'), findsOneWidget); // Ice: 14 resistance
+    expect(find.text('12/0'), findsOneWidget);
+    expect(find.text('0/14'), findsOneWidget);
     await tester.tap(find.text('Rose'));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('elements_view_2')), findsOneWidget);

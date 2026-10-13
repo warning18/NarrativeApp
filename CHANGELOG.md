@@ -20,6 +20,52 @@ One spelling for two place names.
   story and the French strings say "Haut-Âtre". Text only; no ids, numbers
   or flags changed.
 
+## [1.267.0+303]
+
+The clans' offer, the loot chest, the dice cube, the Clans screen, the Character
+page and the race and profession recap.
+
+### Changed
+- **The offer's banners are one size, picked or not.** Unpicked banners were
+  drawn at twice the size of the picked one, so they grew and shrank. A tap
+  picks one (it takes the wind); press and hold is gone. The chosen banner's
+  words show in a zone of one fixed size under the banners; with none chosen
+  it says "Select a banner to see its details." (`offer_select_hint`, which
+  replaces `offer_hold_hint`).
+- **The loot chest hides its rarity until it is tapped.** Before: one neutral
+  grey chest, no tier name or colour, no fortune roll. A tap turns the tiers'
+  colours, slower and slower, and stops on the real one; the name, the art
+  and the fortune roll then appear and the chest opens. A second tap skips to
+  where it stops, a third opens it. With reduced motion it opens at once.
+  The rarity was rolled before; this is only how it is shown
+  (`chest_skip_hint`).
+- **The Throne room is the first tab of Clans, then Reputation, then the rest;**
+  the screen opens on the Throne room.
+- **The Character page is three tabs under its header** (name, level, vitals,
+  "Level Up" when points wait): *Overview* (the eight abilities as a radar, the
+  skills known as chips, the alignment), *Gifts* (the offer waiting, titles as
+  chips, perks, signs; a dot on the tab while an offer waits) and *Pages*
+  (mana and spells, the Shroud, New Game+, the links to Inventory, Dice,
+  Level Up and Race and profession). It replaces the folded version of
+  v1.266 (`tab_overview`, `tab_gifts`, `tab_pages`).
+- **The race and profession recap is a dossier**, about a screen and a bit
+  instead of three and a half: the name and level, the two choices as rows
+  (numbers they change, the skill they grant), health and experience as thin
+  bars with damage and armour, the radar beside the eight numbers, the
+  elements as chips, the belongings as one line. A tap opens what needs room
+  (a choice's lore, the elements' chart, the belongings' list); a press and
+  hold on a number says what it does.
+- The Character page's offers row says where offers come from on a press and
+  hold (`offers_where_from`), in place of the paragraph of the old panel
+  (`OffersPanel` and `offers_none` are gone). French `titles_chip_hint` keeps
+  its non-breaking spaces before the colons.
+
+### Fixed
+- **The dice cube could not be turned sideways from its top or bottom.** It
+  kept a yaw about its own upright, so once tipped a drag across only spun it in
+  place. It now turns on the screen's axes, so a drag in any direction works
+  from any side.
+
 ## [1.266.0+302]
 
 The Character tab and the race and profession recap, shorter to read.
