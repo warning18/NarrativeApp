@@ -1246,10 +1246,16 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     ),
                   ),
                   // The sky over the party (v1.204).
+                  // Clear of the zoom buttons: a long line wraps, it is not
+                  // cut off under them.
                   Positioned(
                     left: 8,
+                    right: 56,
                     bottom: 8,
-                    child: WeatherChip(palette: palette),
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: WeatherChip(palette: palette),
+                    ),
                   ),
                   if (_sceneInside && _outside)
                     Positioned(
@@ -2784,7 +2790,11 @@ class _JourneyChartState extends State<_JourneyChart>
                   centres: centres,
                   radius: _stepRadius,
                   labels: names,
-                  avoid: [Rect.fromCircle(center: here, radius: _hereRadius)],
+                  avoid: [
+                    Rect.fromCircle(center: here, radius: _hereRadius),
+                    // The "You are here" badge in the corner.
+                    Rect.fromLTWH(8, 8, math.min(width * 0.5, 190), 56),
+                  ],
                   keep: widget.selected,
                   keepAll: _anchors != null,
                 )

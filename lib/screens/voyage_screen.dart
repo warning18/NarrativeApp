@@ -1035,18 +1035,12 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                 ? EdgeInsets.zero
                 : const EdgeInsets.all(20),
             child: switch (_phase) {
-              // A storm day rains and flashes behind its card.
-              _VoyagePhase.event => Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    if (_events![_index].kind == SeaEventKind.storm)
-                      const Positioned.fill(child: StormLayer()),
-                    FlipIn(
-                      flipKey: _index,
-                      child: _buildEvent(context,
-                          fr: fr, enemyShips: enemyShips, parts: parts),
-                    ),
-                  ],
+              // (A storm day rains over the Eel's water only, see _buildEvent:
+              // rain behind the words and the buttons made them hard to read.)
+              _VoyagePhase.event => FlipIn(
+                  flipKey: _index,
+                  child: _buildEvent(context,
+                      fr: fr, enemyShips: enemyShips, parts: parts),
                 ),
               _VoyagePhase.fight => _buildFight(
                   fr: fr,
@@ -1151,10 +1145,20 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           // The Eel on the water, beside what she meets. On a short phone
           // the day's words need the room more: she is left out.
           if (constraints.maxHeight >= dayPictureMinHeight) ...[
-            ShipAtSea(
-              ship: _player!,
-              height: 104,
-              beside: Icon(icon, size: 46, color: colour),
+            // A storm day rains and flashes over the water, and stops there.
+            ClipRect(
+              child: Stack(
+                children: [
+                  if (event.kind == SeaEventKind.storm)
+                    const Positioned.fill(
+                        child: IgnorePointer(child: StormLayer())),
+                  ShipAtSea(
+                    ship: _player!,
+                    height: 104,
+                    beside: Icon(icon, size: 46, color: colour),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 8),
           ],
