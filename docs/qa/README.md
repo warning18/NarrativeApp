@@ -4,6 +4,9 @@
 1.274.0, before a release the user shares, after a big refactor, or on
 request. See "QA levels" in `CLAUDE.md` for what each level covers.
 
+Prepared for the next L3: [the 1.270.0 baseline and the screens to read](l3-prep-1.270.0.md)
+(compare 1.274.0 against it).
+
 Full-regression (L3) passes, newest first. The detail of each is in its own
 file in this folder.
 

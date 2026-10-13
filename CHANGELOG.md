@@ -21,6 +21,21 @@ The empty lands of the story chart have names.
   "unnamed" exemption in `chart_relief_test` is gone: every zone of every
   chart now has both names. Text only; no shape, biome or place moved.
 
+## [1.274.0+310]
+
+"Play to chapter" hands back a character ready to play.
+
+### Changed
+- **The simulator's "Play to chapter" (edit mode) leaves the best build.**
+  Before handing back, it spends the stat points on the profession's own
+  stat, wears the best carried piece in each slot (stat and alignment
+  requirements met, a copy no companion wears), and puts the best unlocked
+  skills on the die's open Skill faces, each on no more faces than its rarity
+  allows; the mana skill keeps its face. It is the playthrough simulator's
+  own policy, so the character handed back is the one the simulator's
+  numbers describe. The build has no randomness, and the walk takes an
+  optional seed, so a seeded run hands back the same character every time.
+
 ## [1.273.0+309]
 
 Ten new moods, and the scenes that wear them.
