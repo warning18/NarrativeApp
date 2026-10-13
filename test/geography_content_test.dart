@@ -350,7 +350,7 @@ void main() {
       // lands, so their hazards cannot fire until a journey does. Alster's
       // vale and the dune sea lie in chapter 1, whose roads have no rules;
       // Saltmouth's headland is left by boat (a crossing, the sea's);
-      // Akagiri's terraces no scene travels to; the jungle (v1.275) lies
+      // Akagiri's terraces no scene travels to; the jungle (v1.278) lies
       // only on the story chart's empty east land. Remove one from here
       // once the story gains a road through it.
       const knownRoadless = [
