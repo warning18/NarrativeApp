@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/cliff_town.dart';
+import '../data/materials.dart';
 import '../data/zone_gating.dart';
 import '../l10n/app_locale.dart';
+import '../gamedata/db_schema.dart' show itemsSchema;
 import '../l10n/app_strings.dart';
+import '../providers/game_db_providers.dart' show localizedDbProvider;
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
@@ -146,13 +149,23 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
     );
   }
 
+  /// "2 Timber, 1 Cut Stone": the materials in [counts], by their names.
+  String _materialsLabel(Map<String, int> counts) {
+    final items = ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
+    return [
+      for (final e in counts.entries)
+        '${e.value} ${(items[e.key] as Map?)?['itemName'] ?? e.key}',
+    ].join(', ');
+  }
+
   Future<void> _buildHouse(String houseId, CliffTown town) async {
     final house = widget.houses[houseId] as Map<String, dynamic>;
     final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
     final notifier = ref.read(playerSessionProvider.notifier);
     await notifier.buildHouse(houseId, cost,
         unlocksShopId: house['unlocksShopId']?.toString() ?? '',
-        requiredFlags: requiredFlagsOf(house));
+        requiredFlags: requiredFlagsOf(house),
+        materialCost: materialCountsOf(house, 'materialCost'));
     if (!mounted) return;
     // Nothing to tell if it did not go up (the purse or the flags changed
     // under the button).
@@ -253,10 +266,14 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
       required int cost,
       required bool isBuilt,
       String? lockReason,
+      Map<String, int> materials = const {},
       required VoidCallback onBuild,
     }) {
       final isSelected = id == selected;
-      final affordable = session.gold >= cost;
+      // Gold, and the materials a house costs beside it (materials.dart).
+      final missing = missingMaterials(session.inventoryItemIds, materials);
+      final goldEnough = session.gold >= cost;
+      final affordable = goldEnough && missing.isEmpty;
       final canBuild = !isBuilt && lockReason == null && affordable;
       // The card says at a glance where the house stands (v1.201): built,
       // ready to go up, short of gold, or locked; then what it gives,
@@ -267,10 +284,15 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
               ? (tr(ref, 'town_locked'), ink.ash)
               : affordable
                   ? (tr(ref, 'town_ready'), ink.gold)
-                  : (
-                      '${tr(ref, 'town_need')} ${cost - session.gold} G',
-                      ink.ember
-                    );
+                  : goldEnough
+                      ? (
+                          '${tr(ref, 'town_need')} ${_materialsLabel(missing)}',
+                          ink.ember
+                        )
+                      : (
+                          '${tr(ref, 'town_need')} ${cost - session.gold} G',
+                          ink.ember
+                        );
       Widget action;
       if (isBuilt) {
         action = Text(tr(ref, 'town_built_note'),
@@ -375,6 +397,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                   detail: _houseDetail(houseId),
                   footprint: footprintOf(houseId),
                   cost: (house['buildCost'] as num?)?.toInt() ?? 0,
+                  materials: materialCountsOf(house, 'materialCost'),
                   isBuilt: isBuilt,
                   lockReason: lock,
                   onBuild: () => _buildHouse(houseId, town),
@@ -389,7 +412,11 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
       final house = widget.houses[id] as Map<String, dynamic>;
       if (!meetsRequiredFlags(house, session.flags)) return 2;
       final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
-      return session.gold >= cost ? 0 : 1;
+      final materials = materialCountsOf(house, 'materialCost');
+      return session.gold >= cost &&
+              missingMaterials(session.inventoryItemIds, materials).isEmpty
+          ? 0
+          : 1;
     }
 
     final cardIds = _showAdditions

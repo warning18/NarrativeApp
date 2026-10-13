@@ -10,6 +10,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/combat/party_bonus.dart';
+import 'package:narrative_data_app/data/materials.dart';
 import 'package:narrative_data_app/data/zone_gating.dart';
 
 Map<String, dynamic> _loadJson(String relative) {
@@ -102,12 +103,21 @@ void main() {
       for (final entry in works) {
         final h = entry.value as Map<String, dynamic>;
         final cost = (h['buildCost'] as num).toInt();
-        expect(cost, greaterThanOrEqualTo(1500), reason: entry.key);
+        // Gold and materials since v1.281.0 (gold down a third, each work
+        // needing its tier's rare, see materials.dart).
+        expect(cost, greaterThanOrEqualTo(1000), reason: entry.key);
+        expect(
+            materialCountsOf(h, 'materialCost').keys.any((id) => {
+                  for (final t in materialTiers.values)
+                    if (t.rare != null) t.rare!,
+                }.contains(id)),
+            isTrue,
+            reason: '${entry.key} needs a rare material');
         expect(requiredFlagsOf(h), isNotEmpty, reason: entry.key);
         expect(h['description']?.toString() ?? '', isNotEmpty);
         total += cost;
       }
-      expect(total, greaterThanOrEqualTo(8000),
+      expect(total, greaterThanOrEqualTo(5000),
           reason: 'together they sink most of a finished run\'s spare gold');
       // Together a small edge, not a new difficulty: the Sovereign stays
       // the fight of the game (at +10/+10 simulated parties beat it first

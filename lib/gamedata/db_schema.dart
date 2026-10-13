@@ -510,6 +510,10 @@ final DbSchema itemsSchema = DbSchema(
         key: 'craftMaterials',
         label: 'Forging materials {itemId: count}',
         type: FieldType.json),
+    FieldSchema(
+        key: 'materialTier',
+        label: 'Material tier (1-4, a Material only; see materials.dart)',
+        type: FieldType.integer),
     visualAssetFieldSchema('items'),
   ],
 );
@@ -2291,6 +2295,10 @@ final DbSchema housesSchema = DbSchema(
         type: FieldType.integer,
         defaultValue: 0),
     FieldSchema(
+        key: 'materialCost',
+        label: 'Build materials {itemId: count}',
+        type: FieldType.json),
+    FieldSchema(
       key: 'partyCapacityBonus',
       label: 'Party Capacity Bonus',
       type: FieldType.integer,
@@ -2370,6 +2378,11 @@ final DbSchema zonesSchema = DbSchema(
       label: 'Reward Gold (on zone completion)',
       type: FieldType.integer,
       defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'rewardMaterials',
+      label: 'Reward materials {itemId: count} (on zone completion)',
+      type: FieldType.json,
     ),
     FieldSchema(
       key: 'rewardItemId',

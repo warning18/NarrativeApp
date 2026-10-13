@@ -8,6 +8,52 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.281.0+317]
+
+Materials: the camp's buildings are raised with what the road brings back.
+
+### Added
+- **Ten materials in four tiers**, one tier for each stage of the story.
+  Timber and cut stone (chapters 1-2); iron ore and slag glass, with the
+  rare ash-steel ingot (3-4); rime crystal and tear glass, with the rare
+  Shroud thread (5-6); lantern brass, with the rare white-fleet oak (7-8).
+  Names and descriptions in English and French, for Narrative to reword.
+- **Where they come from.** Expeditions pay them on completion (each
+  chapter's main expedition its tier's rare); ordinary foes drop the commons
+  (12%); the weaponsmith, the hammersmith and the Last Lantern sell the
+  commons, never a rare; a derelict's salvage at sea yields the chapter's
+  common, and a won ship battle the chapter's rare from chapter 3 on.
+
+### Changed
+- **The camp's buildings cost materials beside gold**, and about a third
+  less gold: Kelda's hall 100 gold and 2 timber, the harbour 170 gold, 4
+  timber and 2 cut stone, the hearth hall 1 000 gold with iron ore, slag
+  glass and 2 ash-steel ingots, the Shroud shrine 2 600 gold, tear glass and
+  3 Shroud threads, and so on. A building's card says which materials are
+  missing.
+- **Older saves** (save version 3) are given, once, one rare material for
+  each tier their story has already passed, so the buildings that need them
+  stay within reach.
+
+## [1.280.0+316]
+
+The bosses are won about half the time: more often early, less often late.
+
+### Changed
+- **The boss curve.** Every chapter boss was lost 80% to 95% of the time.
+  By the user's decision, each is now won about this share of the time
+  where the story meets it, after the chapter's own fights: Aurel Vane
+  (chapter 1) 75%, the void stalker (3) 65%, the Hollow Court inquisitor and
+  the bone warden (4) 55%, the void archon (5) 50%, the white admiral (6)
+  45%, the three claimants (7) 40%, the tear herald and the void sovereign
+  (8) 35%. Numbers only: each boss's health is scaled, and its damage by
+  the square root of the same factor, so a fight keeps its shape and gets
+  shorter (the inquisitor, the hardest, loses half its health). In the
+  simulator, the bosses go from 18% to 49% won on average (800 runs), and
+  the attempt win rate from 39.8% to 45.1%.
+- `boss_balance_test` checks the curve with the simulator (200 seeded
+  runs), and `docs/simulation/` is regenerated with a before and after.
+
 ## [1.279.0+315]
 
 Twelve story achievements.
