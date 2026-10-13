@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.268.0+304]
+
+One spelling for two place names.
+
+### Fixed
+- **"Smugglers’ Wharf" and "Haut-Âtre" read the same everywhere.** The
+  wharf's port, its Vault shop, the Cellar house and one item description
+  used a straight apostrophe where the rest of the game uses the curly one,
+  and the chart labelled the giants' hall "Hautâtre" while the map, the
+  story and the French strings say "Haut-Âtre". Text only; no ids, numbers
+  or flags changed.
+
 ## [1.267.0+303]
 
 The clans' offer, the loot chest, the dice cube, the Clans screen, the Character

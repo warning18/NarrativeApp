@@ -665,7 +665,7 @@ final ChartGeography chartWorldB = ChartGeography(
         clan: 'penitents',
         landmark: ''),
     ChartFeature(
-        ChartFeatureKind.seat, Offset(244, 46), 'Highhearth', 'Hautâtre',
+        ChartFeatureKind.seat, Offset(244, 46), 'Highhearth', 'Haut-Âtre',
         noteEn: 'forty giants, a fire six hundred years old',
         noteFr: 'quarante géants',
         clan: 'giants',
