@@ -3,6 +3,7 @@
 // groups, each a seam-bordered row with its value and a "+1 Point".
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/help_hint.dart';
 
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
@@ -26,7 +27,9 @@ class LevelUpScreen extends ConsumerWidget {
         : (session.currentXP / session.xpToNextLevel).clamp(0.0, 1.0);
 
     return Scaffold(
-      appBar: AppBar(title: Text(tr(ref, 'level_up'))),
+      appBar: AppBar(title: Text(tr(ref, 'level_up')), actions: const [
+        TourInfoButton(topic: TutorialTopic.levelUp),
+      ]),
       body: TutorialTrigger(
         topic: TutorialTopic.levelUp,
         child: ListView(

@@ -14,9 +14,13 @@ import '../providers/climate_provider.dart';
 import '../theme/stitched_ink.dart';
 
 class WeatherChip extends ConsumerWidget {
-  const WeatherChip({super.key, required this.palette});
+  const WeatherChip({super.key, required this.palette, this.compact = false});
 
   final ChartPalette palette;
+
+  /// Just the sky's icon (a tap reads the whole line): for a narrow screen,
+  /// where the line would lie over the lowest step's name.
+  final bool compact;
 
   static IconData iconOf(WeatherKind kind) => switch (kind) {
         WeatherKind.clear => Icons.wb_sunny_outlined,
@@ -60,6 +64,31 @@ class WeatherChip extends ConsumerWidget {
     final today = WeatherEffects.of(sky.kind);
     final tags = effects(ref, today);
     final ink = InkColors.of(context);
+    if (compact) {
+      final line =
+          tags.isEmpty ? describe(ref, sky) : '${describe(ref, sky)} · $tags';
+      return Semantics(
+        container: true,
+        label: line,
+        child: Tooltip(
+          message: line,
+          triggerMode: TooltipTriggerMode.tap,
+          showDuration: const Duration(seconds: 6),
+          child: DecoratedBox(
+            key: const ValueKey('journey_weather_chip_compact'),
+            decoration: BoxDecoration(
+              color: palette.fog.withValues(alpha: 0.82),
+              borderRadius: BorderRadius.circular(3),
+              border: Border.all(color: ink.gold.withValues(alpha: 0.55)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(6),
+              child: Icon(iconOf(sky.kind), size: 16, color: palette.place),
+            ),
+          ),
+        ),
+      );
+    }
     return Semantics(
       container: true,
       label: describe(ref, sky),

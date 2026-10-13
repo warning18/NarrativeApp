@@ -43,8 +43,18 @@ class JourneyWorldMap extends ConsumerStatefulWidget {
     this.onSelect,
     this.onZoomIn,
     this.enterZoom,
+    this.onFullMap,
+    this.focus,
     this.fog = ChartFog.uncharted,
   });
+
+  /// The "Full map" button among the chart's controls (board 8): shown
+  /// only when the Journey gives a way to open the full-screen map.
+  final VoidCallback? onFullMap;
+
+  /// A place the world level opens on, marked, instead of the party's
+  /// (the full map opened from the camp's "On the map").
+  final Landmark? focus;
 
   /// The fog over what the story has not reached; none in Edit Mode
   /// (v1.209), which sees the world whole.
@@ -150,6 +160,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   static const double _landZoom = JourneyWorldMapZoom.land;
   static const double _maxZoom = JourneyWorldMapZoom.max;
 
+  /// How close a place asked for is framed.
+  static const double _focusZoom = 2.4;
+
   @override
   void dispose() {
     _glide.dispose();
@@ -196,7 +209,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   void _frameFor(Size box) {
     final geo = chartOf(ref.read(mapShapeProvider));
     final here = widget.here;
-    final on = '${widget.level.name}:${here?.id}:${box.width.round()}';
+    final focus = widget.focus;
+    final on =
+        '${widget.level.name}:${here?.id}:${focus?.id}:${box.width.round()}';
     if (_framed == widget.level && _framedOn == on) return;
     _framed = widget.level;
     _framedOn = on;
@@ -222,6 +237,11 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
           }
         });
       }
+    } else if (focus != null) {
+      // Opened on a place asked for: framed close on it, and marked.
+      _selectedId = focus.id;
+      _look(geo.of(focus), _focusZoom, box);
+      _globe = GlobeView.at(geo.of(focus), _focusZoom, centre);
     } else {
       _view.value = Matrix4.identity();
       _globe = GlobeView.at(
@@ -542,6 +562,11 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                     tr(ref, 'journey_calques'), widget.onLayers,
                     on: calque != ChartCalque.none),
                 const SizedBox(height: 6),
+                if (widget.onFullMap != null) ...[
+                  button('journey_full_map', Icons.fullscreen,
+                      tr(ref, 'map_full_open'), widget.onFullMap),
+                  const SizedBox(height: 6),
+                ],
                 button('journey_recentre', Icons.my_location,
                     tr(ref, 'journey_recentre'), () {
                   final here = widget.here;

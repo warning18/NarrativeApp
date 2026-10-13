@@ -18,6 +18,7 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
+import 'package:narrative_data_app/screens/full_map_screen.dart';
 import 'package:narrative_data_app/screens/harbor_screen.dart';
 import 'package:narrative_data_app/screens/story_player_screen.dart';
 import 'package:narrative_data_app/screens/voyage_screen.dart';
@@ -305,6 +306,18 @@ void main() {
             'might join you.'),
         findsOneWidget);
     expect(find.byKey(const Key('place_companion_3005')), findsOneWidget);
+
+    // "On the map": the full map opens on the place with its offer up.
+    await tester.ensureVisible(find.byKey(const Key('map_3005')));
+    await tester.tap(find.byKey(const Key('map_3005')));
+    await _settle(tester);
+    expect(find.byType(FullMapScreen), findsOneWidget);
+    expect(find.byKey(const Key('map_place_sheet')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('map_cancel')));
+    await _settle(tester);
+    await tester.pageBack();
+    await _settle(tester);
+    expect(find.byType(FullMapScreen), findsNothing);
 
     // Going there: the road may hold something first; the story plays it,
     // then arrives. A walk between places is two watches and a ration.

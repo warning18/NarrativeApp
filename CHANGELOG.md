@@ -8,6 +8,39 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.282.0+318]
+
+The full-screen map, the help pattern on ten more pages, and small fixes.
+
+### Added
+- **The full map.** The Journey's own chart (sphere or flat, layers, weather)
+  on its own page, opened from a **Full map** button among the Journey chart's
+  controls, and from **On the map** on each known place of the camp's Road tab
+  (it opens on that place with its sheet up). A tap on a reached place opens
+  a sheet: where the party stands, **Travel here** (the camp's own way to
+  travel; disabled during a fight or an expedition), or why it cannot. Under
+  the chart: **Legend** (the marks as the chart draws them), **The story**
+  (the Journal's story so far) and **Journeys** (the roads walked, by
+  chapter; a tap turns the chart to where one ends). The layers sheet is
+  shared by both pages.
+- **The guide's ⓘ** in the header of the Skills, Inventory, Level Up,
+  Journal, Achievements, World map, Skill challenge, Harbor, Port and Shop
+  pages: it replays that page's tour.
+
+### Changed
+- "1 Stat Point" and "1 Point de statistique" in the singular (and 0 in
+  French).
+- On a screen narrower than 340 px the Journey's weather chip is an icon (a
+  tap reads the line), so it no longer covers the lowest step's name.
+
+### Fixed
+- The dice loadout's "Choose this face's skill" button stays in sight under
+  the die card's scrolling text.
+
+### Removed
+- The flat travel page and its compass button, replaced by the full map; QA's
+  guard of that page (`qa_travel_map_test.dart`) goes with it.
+
 ## [1.281.0+317]
 
 Materials: the camp's buildings are raised with what the road brings back.

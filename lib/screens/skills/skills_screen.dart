@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../widgets/help_hint.dart';
 
 import '../../gamedata/db_schema.dart';
 import '../../l10n/app_strings.dart';
@@ -108,7 +109,9 @@ class SkillsScreen extends ConsumerWidget {
     }
 
     final scaffold = Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(title: Text(title), actions: [
+        if (allyId == null) const TourInfoButton(topic: TutorialTopic.skills),
+      ]),
       // The tour is the player's screen's; a companion's has none of it.
       body: allyId == null
           ? TutorialTrigger(topic: TutorialTopic.skills, child: body)
