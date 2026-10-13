@@ -175,7 +175,7 @@ line. "Counter" means Core must also track something new.
 | `first_combo` | In Step / Au pas | land a party combo | Counter (combos landed, by kind) |
 | `every_combo` | Five Ways to Fight / Cinq façons de se battre | land each combo: Flank, Volley, Shelter, Shield Wall, Wellspring | Counter (set of kinds) |
 | `sworn_to_a_clan` | Sworn / Lié par serment | reach Sworn (standing 61+) with any clan | Data today (politics standing) |
-| `friend_of_each_clan` | A Hand for Every Door / Une main pour chaque porte | Trusted or better with all six clans | Data today |
+| `friend_of_four_clans` | A Hand at Four Doors / Une main à quatre portes | Trusted or better with four of the six clans at once and no oath sworn (a challenge: any four include a rival pair, and an oath at 61 shuts the rivals) | Data today |
 | `hunted_by_a_clan` | Hunted / Traqué | fall to Hunted (−61 or lower) with a clan | Data today |
 | `both_sides` | Both Sides of the Wall / Des deux côtés du mur | Trusted with two clans that are at odds | Data today (relations) |
 | `akagiri_found` | Where the Bells Hang / Là où pendent les cloches | reach Akagiri, the oni village | Data today (visited nodes) |
