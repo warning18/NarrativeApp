@@ -1,6 +1,6 @@
 // The UX pass of v1.201: sections fold and remember it, the inventory
 // lays its slots out in boxes at phone width, the Character tab keeps
-// its perks behind a fold (v1.266: a row each, folded) and has no Clans card.
+// three tabs (v1.267) and no Clans card.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -73,7 +73,8 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('the Character tab folds its perks and has no Clans card',
+  testWidgets(
+      'the Character tab has three tabs, the perks in Gifts, and no Clans card',
       (tester) async {
     tester.view.physicalSize = const Size(360, 800);
     tester.view.devicePixelRatio = 1;
@@ -94,15 +95,14 @@ void main() {
     }
     expect(find.byKey(const Key('character_clans'), skipOffstage: false),
         findsNothing);
-    final fold = find.byKey(const Key('gift_fold_perks'), skipOffstage: false);
-    expect(fold, findsOneWidget);
-    expect(find.byKey(const Key('gift_fold_body_perks'), skipOffstage: false),
-        findsNothing);
-    await tester.ensureVisible(fold);
-    await tester.tap(fold);
+    // v1.267: three tabs under the header; perks sit in Gifts.
+    for (final k in ['overview', 'gifts', 'pages']) {
+      expect(find.byKey(Key('character_tab_$k')), findsOneWidget);
+    }
+    expect(find.byKey(const Key('character_perks')), findsNothing);
+    await tester.tap(find.byKey(const Key('character_tab_gifts')));
     await tester.pumpAndSettle();
-    expect(find.byKey(const Key('gift_fold_body_perks'), skipOffstage: false),
-        findsOneWidget);
+    expect(find.byKey(const Key('character_perks')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

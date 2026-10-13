@@ -10857,6 +10857,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Un clan offre les compétences de sa branche une à une, plus profondes à mesure qu’il vous fait confiance.',
   },
+  'tab_overview': {AppLanguage.en: 'Overview', AppLanguage.fr: 'Aperçu'},
+  'tab_gifts': {AppLanguage.en: 'Gifts', AppLanguage.fr: 'Dons'},
+  'tab_pages': {AppLanguage.en: 'Pages', AppLanguage.fr: 'Pages'},
   'tile_inventory': {
     AppLanguage.en: 'Inventory',
     AppLanguage.fr: 'Inventaire',

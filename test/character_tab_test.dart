@@ -134,49 +134,48 @@ void main() {
     await _loadFonts();
   });
 
+  Future<void> openTab(WidgetTester tester, String key) async {
+    await tester.tap(find.byKey(Key('character_tab_$key')));
+    await tester.pump(const Duration(milliseconds: 250));
+  }
+
   for (final size in const [Size(360, 740), Size(320, 640)]) {
     for (final french in [false, true]) {
       testWidgets(
-          'the tab fits ${size.width.toInt()} px '
-          '${french ? 'in French' : 'in English'}, gifts folded',
-          (tester) async {
+          'the three tabs fit ${size.width.toInt()} px '
+          '${french ? 'in French' : 'in English'}', (tester) async {
         final overflows = _collectOverflows();
         await _open(tester, _tab, size: size, french: french);
 
-        // The skills and the radar come first, before any gift.
-        final card = find.byKey(const Key('character_skills_card'));
-        expect(card, findsOneWidget);
+        // The header and the tabs: Overview is where it opens.
+        for (final k in ['overview', 'gifts', 'pages']) {
+          expect(find.byKey(Key('character_tab_$k')), findsOneWidget);
+        }
+        expect(find.byKey(const Key('character_level_up')), findsOneWidget);
+        // Overview: the radar and the skills known, and the alignment.
         expect(find.byKey(const Key('character_radar')), findsOneWidget);
         expect(find.byKey(const Key('character_skill_warrior_shield_bash')),
             findsOneWidget);
-        expect(
-            tester.getTopLeft(card).dy,
-            lessThan(tester
-                .getTopLeft(find.byKey(const Key('character_titles')))
-                .dy));
-        // Titles are chips; perks and signs are one folded line each.
-        expect(find.byKey(const Key('title_coal_guard')), findsOneWidget);
-        expect(find.byKey(const Key('title_the_marked')), findsOneWidget);
-        for (final id in ['perks', 'signs']) {
-          expect(find.byKey(Key('gift_fold_$id'), skipOffstage: false),
-              findsOneWidget);
-          expect(find.byKey(Key('gift_fold_body_$id'), skipOffstage: false),
-              findsNothing);
-        }
-        expect(find.byKey(const Key('offer_open')), findsOneWidget);
+        expect(find.byKey(const Key('character_titles')), findsNothing);
+        // The Gifts tab says an offer waits.
+        expect(find.byKey(const Key('character_gifts_dot')), findsOneWidget);
         expect(overflows, isEmpty, reason: overflows.toSet().join('\n'));
 
-        // The folds open in place and still fit.
-        for (final id in ['perks', 'signs']) {
-          final fold = find.byKey(Key('gift_fold_$id'));
-          await tester.ensureVisible(fold);
-          await tester.tap(fold);
-          await tester.pump(const Duration(milliseconds: 200));
-          expect(find.byKey(Key('gift_fold_body_$id')), findsOneWidget);
-        }
+        // Gifts: the offer, the titles as chips, the perks and the signs.
+        await openTab(tester, 'gifts');
+        expect(find.byKey(const Key('offer_open')), findsOneWidget);
+        expect(find.byKey(const Key('title_coal_guard')), findsOneWidget);
+        expect(find.byKey(const Key('title_the_marked')), findsOneWidget);
         expect(find.byKey(const Key('perk_owned_keenEye')), findsOneWidget);
         expect(find.byKey(const Key('sign_held_inked_strike_ember')),
             findsOneWidget);
+        expect(find.byKey(const Key('character_radar')), findsNothing);
+        expect(overflows, isEmpty, reason: overflows.toSet().join('\n'));
+
+        // Pages: mana, the links.
+        await openTab(tester, 'pages');
+        expect(find.byKey(const Key('character_mana')), findsOneWidget);
+        expect(find.byKey(const Key('character_titles')), findsNothing);
         expect(overflows, isEmpty, reason: overflows.toSet().join('\n'));
       });
     }
@@ -188,6 +187,7 @@ void main() {
     String worn() => container.read(playerSessionProvider).activeTitleId;
     expect(worn(), 'coal_guard');
 
+    await openTab(tester, 'gifts');
     await tester.ensureVisible(find.byKey(const Key('title_coal_guard')));
     await tester.tap(find.byKey(const Key('title_coal_guard')));
     await tester.pump();
@@ -217,9 +217,9 @@ void main() {
   testWidgets('the Mana card opens the skills on their Spells tab',
       (tester) async {
     await _open(tester, _tab, size: const Size(360, 740));
+    await openTab(tester, 'pages');
     final mana = find.byKey(const Key('character_mana'));
-    await tester.dragUntilVisible(
-        mana, find.byType(ListView).first, const Offset(0, -200));
+    await tester.ensureVisible(mana);
     await tester.tap(mana);
     for (var i = 0; i < 6; i++) {
       await tester.pump(const Duration(milliseconds: 100));
