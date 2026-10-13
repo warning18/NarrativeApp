@@ -8,6 +8,27 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.269.0+305]
+
+Three visitors at the cove, and a quest goal for chapter 7.
+
+### Added
+- **Three side quests before Candlehold.** A Reed Gate factor, an Order
+  herald and a pilot's boy sent by the chain-master come to the cove camp.
+  Each has a scene to hear them out and a second one to follow up, then a
+  turn-in with two ways to answer (`q_ch7_reed_gate_grievance`,
+  `q_ch7_heralds_errand`, `q_ch7_chain_masters_boy`; scenes `7400_reed*`,
+  `7400_herald*`, `7400_chain*`). Six new gate lines at Candlehold (`7500`)
+  remember how each was answered.
+
+### Changed
+- **Chapter 7 now asks for one quest before the sail.** `questGoal` goes from
+  0 to 1 in `chapters.json`, so the camp's "Sail for Candlehold" opens once
+  one of the three is turned in; the chapter hint says so. The rewards of
+  the three quests (170 to 190 gold, 220 to 240 XP, difficulty 14) and the
+  small standing changes of their turn-ins are placeholders for Core to
+  confirm. `chapter_loop_test` lists the chapter 7 quests and the new goal.
+
 ## [1.268.0+304]
 
 One spelling for two place names.
