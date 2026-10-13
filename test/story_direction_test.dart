@@ -204,7 +204,7 @@ void main() {
           reason: 'the crossing sets out from the camp');
       // Five pieces first take the party to Candlehold and the Lantern
       // Throne (v1.196, chapter 7)...
-      final war = nodes['7400']!.choices.single;
+      final war = nodes['7400']!.choices.singleWhere((c) => c.mainQuest);
       expect(war.nextId, '7500');
       expect(war.mainQuest, isTrue);
       expect(war.travelPlaceId, '7500');

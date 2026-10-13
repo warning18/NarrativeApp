@@ -2325,5 +2325,234 @@
         }
       }
     ]
+  },
+  "q_ch7_reed_gate_grievance": {
+    "questID": "q_ch7_reed_gate_grievance",
+    "questName": "The Reed Gate’s Grievance",
+    "chapter": 7,
+    "category": "Side",
+    "difficulty": "14",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Read the Reed Gate’s petition",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "hub_7400_reed_later",
+        "description_fr": "Lire la pétition de la Porte des Roseaux"
+      }
+    ],
+    "rewardGold": 180,
+    "rewardXP": 230,
+    "rewardItemID": "coat_last_watch",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“Eleven households,” the factor says. “Three years of dues they cannot pay, and a tongue struck off the gonfalon for it. Carry their names to the Conclave and the Reed Gate will remember who did.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch7_reed_gate_grievance_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Le grief de la Porte des Roseaux",
+    "npcDialogueText_fr": "« Onze foyers, dit le facteur. Trois ans de droits qu’ils ne peuvent pas payer, et une flamme rayée du gonfanon pour cela. Portez leurs noms au Conclave et la Porte des Roseaux se souviendra de qui l’a fait. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Strike the two forged names; lodge nine",
+        "choiceText_fr": "Rayer les deux faux noms et en déposer neuf",
+        "rewardGold": 0,
+        "alignmentChange": 1,
+        "flag": "reed_nine_lodged",
+        "resultText": "The factor takes the news badly, and the nine households take it very well.",
+        "resultText_fr": "Le facteur le prend mal, et les neuf foyers le prennent fort bien.",
+        "politics": {
+          "standing": {
+            "dominion": 4
+          }
+        }
+      },
+      {
+        "choiceText": "Lodge all eleven, as the factor wrote them",
+        "choiceText_fr": "Déposer les onze, comme le facteur les a écrits",
+        "rewardGold": 60,
+        "alignmentChange": -1,
+        "flag": "reed_eleven_lodged",
+        "resultText": "The factor pays in coin, quickly, and does not meet your eye.",
+        "resultText_fr": "Le facteur paie en monnaie, vite, sans vous regarder dans les yeux.",
+        "politics": {
+          "standing": {
+            "dominion": 2,
+            "compact": -2
+          }
+        }
+      }
+    ]
+  },
+  "q_ch7_heralds_errand": {
+    "questID": "q_ch7_heralds_errand",
+    "questName": "The Herald’s Errand",
+    "chapter": 7,
+    "category": "Side",
+    "difficulty": "14",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Read the Grand Master’s terms",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "hub_7400_herald_later",
+        "description_fr": "Lire les termes du Grand Maître"
+      }
+    ],
+    "rewardGold": 170,
+    "rewardXP": 220,
+    "rewardItemID": "helm_last_watch",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“The Grand Master asks only what banner you mean to land under,” the herald says. “He would rather know it on the shingle than on the stair.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch7_heralds_errand_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "La mission du héraut",
+    "npcDialogueText_fr": "« Le Grand Maître demande seulement sous quelle bannière vous comptez accoster, dit le héraut. Il préfère le savoir sur les galets que dans l’escalier. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Answer Morrow: the Dominion’s banner, or none",
+        "choiceText_fr": "Répondre à Morrow : la bannière du Dominion, ou aucune",
+        "rewardGold": 50,
+        "alignmentChange": 0,
+        "flag": "herald_answered_morrow",
+        "resultText": "The herald salutes, for the first time, and rows away fast.",
+        "resultText_fr": "Le héraut salue, pour la première fois, et s’éloigne vite à la rame.",
+        "politics": {
+          "standing": {
+            "dominion": 5
+          }
+        }
+      },
+      {
+        "choiceText": "Send the herald back with no answer at all",
+        "choiceText_fr": "Renvoyer le héraut sans aucune réponse",
+        "rewardGold": 0,
+        "alignmentChange": 0,
+        "flag": "herald_unanswered",
+        "resultText": "The herald looks relieved and a little insulted.",
+        "resultText_fr": "Le héraut a l’air soulagé, et un peu offensé.",
+        "politics": {
+          "standing": {
+            "dominion": -2
+          }
+        }
+      }
+    ]
+  },
+  "q_ch7_chain_masters_boy": {
+    "questID": "q_ch7_chain_masters_boy",
+    "questName": "The Chain-Master’s Boy",
+    "chapter": 7,
+    "category": "Side",
+    "difficulty": "14",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Copy the chain-master’s tide table",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "hub_7400_chain_later",
+        "description_fr": "Recopier la table des marées du maître de chaîne"
+      }
+    ],
+    "rewardGold": 190,
+    "rewardXP": 240,
+    "rewardItemID": "tear_glass_blade",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“He says he can’t be bought,” the boy says, “and he would like to see what you do about that.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch7_chain_masters_boy_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Le garçon du maître de chaîne",
+    "npcDialogueText_fr": "« Il dit qu’on ne peut pas l’acheter, dit le garçon, et qu’il aimerait voir ce que vous en ferez. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Keep the tide table for the night you need it",
+        "choiceText_fr": "Garder la table des marées pour la nuit où il le faudra",
+        "rewardGold": 60,
+        "alignmentChange": 0,
+        "flag": "chain_hours_kept",
+        "resultText": "The boy leaves a new tide table inked on his other arm. You do not ask why.",
+        "resultText_fr": "Le garçon repart avec une nouvelle table des marées sur l’autre bras. Vous ne demandez pas pourquoi.",
+        "politics": {
+          "standing": {
+            "crows": 3
+          }
+        }
+      },
+      {
+        "choiceText": "Send word that you will thank him in person",
+        "choiceText_fr": "Lui faire dire que vous le remercierez en personne",
+        "rewardGold": 0,
+        "alignmentChange": 1,
+        "flag": "chain_thanks_promised",
+        "resultText": "The boy grins for the first time, and rows home with the message.",
+        "resultText_fr": "Le garçon sourit pour la première fois, et rentre à la rame avec le message.",
+        "politics": {
+          "standing": {
+            "dominion": 3
+          }
+        }
+      }
+    ]
   }
 }

@@ -80,12 +80,12 @@
     "title_fr": "Le Trône de la Lanterne",
     "campNodeId": "7400",
     "activityGoal": 0,
-    "questGoal": 0,
+    "questGoal": 1,
     "mainQuestNeedsPlaceIds": [],
     "mainQuestTitle": "Take the Lantern Throne",
     "mainQuestTitle_fr": "Prendre le Trône de la Lanterne",
-    "mainQuestHint": "Candlehold lies across the sea, on the First Lantern’s cliff, and whoever holds its Lantern Hall holds the Throne. Settle what you owe on the Hollow Shore first: the legate’s pact, the Admiralty’s vote, the grey hand.",
-    "mainQuestHint_fr": "Candlehold se trouve de l’autre côté de la mer, sur la falaise de la Première Lanterne, et qui tient sa Salle de la Lanterne tient le Trône. Réglez d’abord ce que vous devez sur la Rive Creuse : le pacte du légat, la voix de l’Amirauté, la main grise."
+    "mainQuestHint": "Candlehold lies across the sea, on the First Lantern’s cliff, and whoever holds its Lantern Hall holds the Throne. Settle what you owe on the Hollow Shore first: the legate’s pact, the Admiralty’s vote, the grey hand. A herald, a House’s factor and a pilot’s boy have come asking at the cove; see one of their errands through before you sail.",
+    "mainQuestHint_fr": "Candlehold se trouve de l’autre côté de la mer, sur la falaise de la Première Lanterne, et qui tient sa Salle de la Lanterne tient le Trône. Réglez d’abord ce que vous devez sur la Rive Creuse : le pacte du légat, la voix de l’Amirauté, la main grise. Un héraut, le facteur d’une Maison et le garçon d’un pilote sont venus demander à la crique ; menez l’une de leurs missions à bien avant d’embarquer."
   },
   "ending": {
     "chapterID": "ending",
