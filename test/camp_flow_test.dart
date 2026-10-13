@@ -146,7 +146,9 @@ void main() {
 
     test('the harbor is a house of its own, in both languages', () {
       final harbor = houses[harborHouseId] as Map<String, dynamic>;
-      expect(harbor['buildCost'], greaterThan(0));
+      // The story's grant pays for it: materials, no gold (harbour.dart).
+      expect(harbor['buildCost'], 0);
+      expect(harbor['materialCost'], isNotEmpty);
       expect(harbor['houseName_fr'], isNotEmpty);
       expect(harbor['description_fr'], isNotEmpty);
     });
