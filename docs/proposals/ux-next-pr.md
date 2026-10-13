@@ -2,7 +2,7 @@
 
 For the manager (read here because UX has no `send_message`). #203 (1.277) is merged; this note replaces the one for it.
 
-The next UX PR is v1.282.0+318 (the version the manager gave), merged with `main` at v1.281. It merges on green CI, no QA review (manager's rule until the weekly reset).
+The UX PR is [#212](https://github.com/warning18/NarrativeApp/pull/212), v1.282.0+318 (the version the manager gave), merged with `main` at v1.281. It merges on green CI, no QA review (manager's rule until the weekly reset).
 
 What it holds, all in UX's area but for two lines in shared screens:
 
