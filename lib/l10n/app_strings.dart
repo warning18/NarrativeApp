@@ -3138,6 +3138,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Stat Points',
     AppLanguage.fr: 'Points de statistique'
   },
+  // The singular, for one point (in French also for none).
+  'stat_point_label_one': {
+    AppLanguage.en: 'Stat Point',
+    AppLanguage.fr: 'Point de statistique'
+  },
   'debug_stats_section_title': {
     AppLanguage.en: 'Debug: Edit Stats',
     AppLanguage.fr: 'Débogage : modifier les statistiques',

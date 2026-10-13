@@ -244,7 +244,8 @@ class _CharacterHeader extends ConsumerWidget {
               children: [
                 Expanded(
                     child: Text(
-                        '${session.statPoints} ${tr(ref, 'stat_points_label')}')),
+                        key: const Key('character_stat_points'),
+                        statPointsText(ref, session.statPoints))),
                 Text(tr(ref, 'level_up')),
               ],
             ),
@@ -1038,4 +1039,11 @@ class _ShroudPiece extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// "1 Stat Point", "2 Stat Points" ("0 Point de statistique" in French, which
+/// keeps the singular for none).
+String statPointsText(WidgetRef ref, int n) {
+  final one = n == 1 || (n == 0 && ref.read(appLanguageProvider).name == 'fr');
+  return '$n ${tr(ref, one ? 'stat_point_label_one' : 'stat_points_label')}';
 }

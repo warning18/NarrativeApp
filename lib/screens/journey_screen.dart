@@ -1264,7 +1264,11 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     bottom: 8,
                     child: Align(
                       alignment: Alignment.bottomLeft,
-                      child: WeatherChip(palette: palette),
+                      // A narrow screen (320 px) has no room for the line
+                      // beside the zoom buttons: the icon, the line on a tap.
+                      child: WeatherChip(
+                          palette: palette,
+                          compact: MediaQuery.sizeOf(context).width < 340),
                     ),
                   ),
                   if (_sceneInside && _outside)
