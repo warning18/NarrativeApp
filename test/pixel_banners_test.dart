@@ -92,6 +92,9 @@ void main() {
           () => Future<void>.delayed(const Duration(milliseconds: 200)));
       await tester.pump(const Duration(milliseconds: 100));
     }
+    // The Shroud is on the Pages tab (v1.267).
+    await tester.tap(find.byKey(const Key('character_tab_pages')));
+    await tester.pump(const Duration(milliseconds: 200));
     expect(find.text('2 / 6', skipOffstage: false), findsOneWidget);
     expect(find.byType(PixelBanner, skipOffstage: false), findsNWidgets(6));
     expect(

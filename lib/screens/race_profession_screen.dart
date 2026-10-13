@@ -925,6 +925,176 @@ class _IdentityCard extends ConsumerWidget {
   }
 }
 
+/// A race's or profession's recap as one row (v1.266): its mark, name, tag
+/// and the numbers it changes as chips, and the skill it grants as a line
+/// under them. A tap opens the lore (and the skill's words) in a sheet.
+class _ChoiceRow extends ConsumerWidget {
+  const _ChoiceRow({
+    required this.cardKey,
+    required this.folder,
+    required this.preset,
+    required this.name,
+    required this.withOffers,
+    required this.skills,
+  });
+
+  final Key cardKey;
+  final String folder;
+  final Map<String, dynamic>? preset;
+  final String name;
+  final bool withOffers;
+  final Map<String, dynamic> skills;
+
+  String get _skillId => preset?['standardSkillID']?.toString() ?? '';
+
+  String get _skillName => grantedSkillName(_skillId,
+      presetId: (preset?['raceID'] ?? preset?['professionID'])?.toString());
+
+  void _read(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.85),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _IdentityCard(
+                  cardKey: Key('${(cardKey as ValueKey).value}_lore'),
+                  folder: folder,
+                  preset: preset,
+                  name: name,
+                  withOffers: withOffers,
+                ),
+                if (_skillId.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  _SkillCard(
+                    label: tr(ref, 'granted_skill_label'),
+                    skillId: _skillId,
+                    name: _skillName,
+                    description: (skills[_skillId]
+                                as Map<String, dynamic>?)?['description']
+                            ?.toString() ??
+                        '',
+                  ),
+                ],
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(tr(ref, 'close_button')),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final tag = preset?['tag']?.toString() ?? '';
+    return Card(
+      key: cardKey,
+      margin: EdgeInsets.zero,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(4),
+        onTap: () => _read(context, ref),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: scheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: scheme.outlineVariant),
+                ),
+                child: PresetMark(folder: folder, preset: preset, size: 32),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(name, style: theme.textTheme.titleLarge),
+                        if (tag.isNotEmpty)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 7, vertical: 2),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: scheme.primary.withValues(alpha: 0.14),
+                              border: Border.all(
+                                  color: scheme.primary.withValues(alpha: 0.6)),
+                            ),
+                            child: Text(tag.toUpperCase(),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                    color: scheme.primary, letterSpacing: 0.8)),
+                          ),
+                      ],
+                    ),
+                    if (preset != null || _skillId.isNotEmpty) ...[
+                      const SizedBox(height: 5),
+                      Wrap(
+                        spacing: 4,
+                        runSpacing: 4,
+                        children: [
+                          if (preset != null)
+                            for (final e in presetBonuses(preset!,
+                                withOffers: withOffers))
+                              _BonusChip(label: tr(ref, e.key), value: e.value),
+                          if (_skillId.isNotEmpty)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 7, vertical: 2),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                border:
+                                    Border.all(color: scheme.outlineVariant),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SkillPixelIcon(_skillId, size: 14),
+                                  const SizedBox(width: 4),
+                                  Text(_skillName,
+                                      style: theme.textTheme.labelSmall
+                                          ?.copyWith(
+                                              color: scheme.onSurfaceVariant)),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right, color: scheme.onSurfaceVariant),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// The skill a race or a profession grants, on the character sheet: an
 /// overline, its name large and its words below.
 class _SkillCard extends StatelessWidget {
@@ -994,68 +1164,6 @@ class _SkillCard extends StatelessWidget {
   }
 }
 
-/// A number with its icon and name, as one tile of a grid; held, it tells
-/// what the stat does.
-class _StatTile extends StatelessWidget {
-  const _StatTile({
-    required this.icon,
-    required this.label,
-    required this.value,
-    this.description,
-    this.closeLabel = '',
-  });
-
-  final IconData icon;
-  final String label;
-  final String value;
-  final String? description;
-  final String closeLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final tile = Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
-      decoration: BoxDecoration(
-        color: scheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: scheme.outlineVariant),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 22, color: scheme.primary),
-          const SizedBox(height: 4),
-          Text(value,
-              style: theme.textTheme.titleLarge?.copyWith(
-                  fontFamily: InkFonts.system, color: scheme.onSurface)),
-          const SizedBox(height: 2),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(label,
-                maxLines: 1,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                    fontSize: 13.5,
-                    color: scheme.onSurface.withValues(alpha: 0.8))),
-          ),
-        ],
-      ),
-    );
-    if (description == null) return tile;
-    return GestureDetector(
-      onLongPress: () => showDetailDialog(
-        context,
-        title: label,
-        description: description!,
-        icon: icon,
-        closeLabel: closeLabel,
-      ),
-      child: tile,
-    );
-  }
-}
-
 /// Full character info, shown once a race and profession are set. Race/
 /// profession can only be changed by restarting the story from the
 /// beginning (Node 0), not from here. When [onStartGame] is set (right
@@ -1063,10 +1171,12 @@ class _StatTile extends StatelessWidget {
 /// carry on into the story; viewed later from the Character hub, it's
 /// read-only.
 ///
-/// v1.223: the identity cards lead with the first sentence of their lore,
-/// the numbers that matter come first as bars and tiles (health, experience,
-/// damage, armour, the eight abilities in a grid), and the counters follow
-/// as one plain list.
+/// v1.267, "the dossier": everything at first glance in about one screen --
+/// the name and level, the two choices as rows, health and experience as thin
+/// bars with damage and armour, the radar beside the eight numbers, the
+/// elements as chips and the belongings as one line. What needs room is a tap
+/// away (a choice's lore, the elements' chart, the belongings' list); what a
+/// number means is a press and hold away.
 class _CharacterSheet extends StatelessWidget {
   const _CharacterSheet({
     required this.session,
@@ -1088,120 +1198,95 @@ class _CharacterSheet extends StatelessWidget {
   final AppLanguage language;
   final VoidCallback? onStartGame;
 
-  /// The skill card of [preset]'s granted skill, if it has one.
-  Widget _skillCard(
-      BuildContext context, String label, Map<String, dynamic>? preset) {
-    final skillId = preset?['standardSkillID']?.toString() ?? '';
-    if (skillId.isEmpty) return const SizedBox.shrink();
-    final skill = skills[skillId] as Map<String, dynamic>?;
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: _SkillCard(
-        label: label,
-        skillId: skillId,
-        name: grantedSkillName(skillId,
-            presetId:
-                (preset?['raceID'] ?? preset?['professionID'])?.toString()),
-        description: skill?['description']?.toString() ?? '',
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final ink = InkColors.of(context);
     final raceName = race?['raceName']?.toString() ?? session.raceId;
     final professionName =
         profession?['professionName']?.toString() ?? session.professionId;
     String t(String key) => trFor(language, key);
 
-    Widget section(String title, {String? hint}) => Padding(
-          padding: const EdgeInsets.only(top: 22, bottom: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: theme.textTheme.titleLarge),
-              if (hint != null)
-                Text(hint,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                        color: scheme.onSurface.withValues(alpha: 0.7))),
-            ],
-          ),
+    void read(String title, String description, {IconData? icon}) =>
+        showDetailDialog(
+          context,
+          title: title,
+          description: description,
+          icon: icon,
+          closeLabel: t('close_button'),
         );
 
-    /// A bar with its caption and numbers: health, experience.
-    Widget bar(
-        String label, IconData? icon, double value, String numbers, Color color,
-        {String? description}) {
-      final body = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              if (icon != null) ...[
-                Icon(icon, size: 18, color: color),
-                const SizedBox(width: 6),
-              ],
-              Expanded(
-                  child: Text(label,
-                      style:
-                          theme.textTheme.bodyLarge?.copyWith(fontSize: 16))),
-              Text(numbers,
-                  style: theme.textTheme.titleSmall
-                      ?.copyWith(color: scheme.onSurface)),
-            ],
+    /// A card with the page's seam border.
+    Widget panel({required Widget child, Key? key, EdgeInsets? padding}) =>
+        Material(
+          key: key,
+          color: scheme.surfaceContainer,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+            side: BorderSide(color: ink.seam),
           ),
-          const SizedBox(height: 6),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(5),
-            child: LinearProgressIndicator(
-              value: value.clamp(0.0, 1.0),
-              minHeight: 10,
-              color: color,
-              backgroundColor: scheme.surfaceContainerHighest,
+          clipBehavior: Clip.antiAlias,
+          child: Padding(
+              padding: padding ??
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: child),
+        );
+
+    /// A thin bar with its caption and numbers: health, experience.
+    Widget bar(String label, double value, String numbers, Color color,
+        {String? description}) {
+      final body = Row(
+        children: [
+          SizedBox(
+            width: 30,
+            child: Text(label.toUpperCase(),
+                style: theme.textTheme.labelSmall?.copyWith(color: color)),
+          ),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(2),
+              child: LinearProgressIndicator(
+                value: value.clamp(0.0, 1.0),
+                minHeight: 7,
+                color: color,
+                backgroundColor: scheme.surfaceContainerHighest,
+              ),
             ),
           ),
+          const SizedBox(width: 8),
+          Text(numbers, style: theme.textTheme.labelMedium),
         ],
       );
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: description == null
-            ? body
-            : GestureDetector(
-                onLongPress: () => showDetailDialog(
-                      context,
-                      title: label,
-                      description: description,
-                      icon: icon,
-                      closeLabel: t('close_button'),
-                    ),
-                child: body),
+      if (description == null) return body;
+      return InkWell(
+        onTap: () => read(label, description),
+        onLongPress: () => read(label, description),
+        child: body,
       );
     }
 
-    /// A plain counter: the label to the left, its number to the right.
-    Widget row(String label, String value, {bool last = false}) => Container(
-          padding: const EdgeInsets.symmetric(vertical: 9),
-          decoration: BoxDecoration(
-            border: last
-                ? null
-                : Border(bottom: BorderSide(color: scheme.outlineVariant)),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(label,
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                        fontSize: 16,
-                        color: scheme.onSurface.withValues(alpha: 0.85))),
-              ),
-              const SizedBox(width: 12),
-              Text(value,
-                  style: theme.textTheme.titleSmall
-                      ?.copyWith(color: scheme.onSurface)),
-            ],
+    Widget chip(IconData icon, String text, String title, String description,
+            {Key? key}) =>
+        InkWell(
+          key: key,
+          borderRadius: BorderRadius.circular(4),
+          onTap: () => read(title, description, icon: icon),
+          onLongPress: () => read(title, description, icon: icon),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(color: ink.seam),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 14, color: ink.gold),
+                const SizedBox(width: 5),
+                Text(text, style: theme.textTheme.labelMedium),
+              ],
+            ),
           ),
         );
 
@@ -1215,6 +1300,7 @@ class _CharacterSheet extends StatelessWidget {
       ('luck', session.luck),
       ('charisma', session.charisma),
     ];
+    final elements = elementPointsFor(session.equippedItemIds, items);
     final counters = <(String, String)>[
       (t('gold_field_label'), '${session.gold}'),
       (
@@ -1230,186 +1316,304 @@ class _CharacterSheet extends StatelessWidget {
       (t('unlocked_skills_label'), '${session.unlockedSkillIds.length}'),
     ];
 
+    void openBelongings() => showModalBottomSheet<void>(
+          context: context,
+          isScrollControlled: true,
+          showDragHandle: true,
+          builder: (sheetContext) => SafeArea(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(sheetContext).size.height * 0.8),
+              child: ListView(
+                key: const Key('sheet_belongings_list'),
+                shrinkWrap: true,
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                children: [
+                  Text(t('sheet_belongings_title'),
+                      style: theme.textTheme.titleLarge),
+                  const SizedBox(height: 6),
+                  for (final (i, (label, value)) in counters.indexed)
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 9),
+                      decoration: BoxDecoration(
+                        border: i == counters.length - 1
+                            ? null
+                            : Border(bottom: BorderSide(color: ink.seam)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                              child: Text(label,
+                                  style: theme.textTheme.bodyLarge)),
+                          const SizedBox(width: 12),
+                          Text(value, style: theme.textTheme.titleSmall),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+
+    void openElements() => showModalBottomSheet<void>(
+          context: context,
+          isScrollControlled: true,
+          showDragHandle: true,
+          builder: (sheetContext) => SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: ElementsCard(
+                key: const Key('sheet_elements_chart'),
+                t: t,
+                points: elements,
+              ),
+            ),
+          ),
+        );
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        if (session.characterName.isNotEmpty) ...[
-          Text(
-            session.characterName,
-            style: theme.textTheme.headlineMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            '$raceName · $professionName',
-            style: theme.textTheme.bodyLarge
-                ?.copyWith(color: scheme.primary, fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 14),
-        ],
-        _IdentityCard(
+        // Who, and how far.
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (session.characterName.isNotEmpty)
+                    Text(session.characterName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.headlineSmall),
+                  Text('$raceName · $professionName',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          theme.textTheme.bodyMedium?.copyWith(color: ink.ash)),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: scheme.primary.withValues(alpha: 0.14),
+                border:
+                    Border.all(color: scheme.primary.withValues(alpha: 0.6)),
+              ),
+              child: Text('${t('level_field_label')} ${session.level}',
+                  key: const Key('sheet_level'),
+                  style: theme.textTheme.labelLarge
+                      ?.copyWith(color: scheme.primary)),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        _ChoiceRow(
           cardKey: const Key('sheet_race_card'),
           folder: 'races',
           preset: race,
           name: raceName,
           withOffers: false,
+          skills: skills,
         ),
-        _skillCard(context, t('granted_skill_label'), race),
-        const SizedBox(height: 14),
-        _IdentityCard(
+        const SizedBox(height: 8),
+        _ChoiceRow(
           cardKey: const Key('sheet_profession_card'),
           folder: 'professions',
           preset: profession,
           name: professionName,
           withOffers: true,
+          skills: skills,
         ),
-        _skillCard(context, t('granted_skill_label'), profession),
-        section(t('character_sheet_title'),
-            hint: t('hold_stat_for_details_hint')),
-        Card(
-          margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: scheme.primary.withValues(alpha: 0.14),
-                        border: Border.all(
-                            color: scheme.primary.withValues(alpha: 0.6)),
-                      ),
-                      child: Text('${t('level_field_label')} ${session.level}',
-                          key: const Key('sheet_level'),
-                          style: theme.textTheme.titleMedium
-                              ?.copyWith(color: scheme.primary)),
-                    ),
-                    const Spacer(),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                bar(
-                  t('health_label'),
-                  Icons.favorite,
-                  session.maxHealth == 0
-                      ? 0
-                      : session.currentHealth / session.maxHealth,
-                  '${session.currentHealth} / ${session.maxHealth}',
-                  Colors.red.shade400,
-                  description: t('max_health_desc'),
-                ),
-                bar(
-                  t('experience_label'),
-                  Icons.trending_up,
-                  session.xpToNextLevel == 0
-                      ? 0
-                      : session.currentXP / session.xpToNextLevel,
-                  '${session.currentXP} / ${session.xpToNextLevel}',
-                  scheme.primary,
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _StatTile(
-                        icon: Icons.gavel,
-                        label: t('base_damage_label'),
-                        value: '${session.baseDamage}',
-                        description: t('base_damage_desc'),
-                        closeLabel: t('close_button'),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: _StatTile(
-                        icon: Icons.shield,
-                        label: t('base_armor_label'),
-                        value: '${session.baseArmor}',
-                        description: t('base_armor_desc'),
-                        closeLabel: t('close_button'),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        section(t('abilities_label')),
-        Card(
-          margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            child: Center(
-              child: AbilityRadar(
-                key: const Key('sheet_radar'),
-                t: t,
-                size: 320,
-                values: {for (final (k, v) in abilities) k: v},
+        const SizedBox(height: 8),
+        // Health and experience as thin bars, damage and armour as chips.
+        panel(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              bar(
+                t('hp_label'),
+                session.maxHealth == 0
+                    ? 0
+                    : session.currentHealth / session.maxHealth,
+                '${session.currentHealth} / ${session.maxHealth}',
+                ink.blood,
+                description: t('max_health_desc'),
               ),
-            ),
+              const SizedBox(height: 7),
+              bar(
+                t('xp_label'),
+                session.xpToNextLevel == 0
+                    ? 0
+                    : session.currentXP / session.xpToNextLevel,
+                '${session.currentXP} / ${session.xpToNextLevel}',
+                ink.gold,
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  chip(
+                      Icons.gavel,
+                      '${t('damage_label')} ${session.baseDamage}',
+                      t('base_damage_label'),
+                      t('base_damage_desc'),
+                      key: const Key('sheet_damage')),
+                  chip(Icons.shield, '${t('arm_abbrev')} ${session.baseArmor}',
+                      t('base_armor_label'), t('base_armor_desc'),
+                      key: const Key('sheet_armor')),
+                ],
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 8),
-        Column(
-          key: const Key('sheet_abilities'),
-          children: [
-            for (var r = 0; r < 2; r++) ...[
-              if (r > 0) const SizedBox(height: 8),
-              IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+        // The shape of the eight abilities beside their numbers.
+        panel(
+          padding: const EdgeInsets.fromLTRB(6, 6, 10, 6),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AbilityRadar(
+                key: const Key('sheet_radar'),
+                t: t,
+                size: 176,
+                compact: true,
+                values: {for (final (k, v) in abilities) k: v},
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Column(
+                  key: const Key('sheet_abilities'),
                   children: [
-                    for (var c = 0; c < 4; c++) ...[
-                      if (c > 0) const SizedBox(width: 8),
-                      Expanded(
-                        child: _StatTile(
-                          icon: abilityIcon(abilities[r * 4 + c].$1),
-                          label: t('${abilities[r * 4 + c].$1}_label'),
-                          value: '${abilities[r * 4 + c].$2}',
-                          description: t('${abilities[r * 4 + c].$1}_desc'),
-                          closeLabel: t('close_button'),
+                    for (final (i, (k, v)) in abilities.indexed)
+                      InkWell(
+                        onTap: () => read(t('${k}_label'), t('${k}_desc'),
+                            icon: abilityIcon(k)),
+                        onLongPress: () => read(t('${k}_label'), t('${k}_desc'),
+                            icon: abilityIcon(k)),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          decoration: BoxDecoration(
+                            border: i == abilities.length - 1
+                                ? null
+                                : Border(bottom: BorderSide(color: ink.seam)),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(t('${k}_label'),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.textTheme.bodyMedium
+                                        ?.copyWith(color: ink.ash)),
+                              ),
+                              Text('$v', style: theme.textTheme.titleSmall),
+                            ],
+                          ),
                         ),
                       ),
-                    ],
                   ],
                 ),
               ),
             ],
-          ],
+          ),
         ),
-        section(t('elements_title'), hint: t('elements_hint')),
-        ElementsCard(
+        Padding(
+          padding: const EdgeInsets.only(top: 4, bottom: 8),
+          child: Text(t('hold_stat_for_details_hint'),
+              style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+        ),
+        // The elements: a chip each, the chart a tap away.
+        panel(
           key: const Key('sheet_elements'),
-          t: t,
-          points: elementPointsFor(session.equippedItemIds, items),
-        ),
-        section(t('sheet_belongings_title')),
-        Card(
-          margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          child: InkWell(
+            key: const Key('sheet_elements_open'),
+            onTap: elements.isEmpty ? null : openElements,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                for (final (i, (label, value)) in counters.indexed)
-                  row(label, value, last: i == counters.length - 1),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(t('elements_title'),
+                          style: theme.textTheme.titleSmall),
+                    ),
+                    if (!elements.isEmpty)
+                      Icon(Icons.chevron_right, size: 18, color: ink.ash),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                if (elements.isEmpty)
+                  Text(t('elements_empty'),
+                      key: const Key('elements_empty'),
+                      style:
+                          theme.textTheme.bodySmall?.copyWith(color: ink.ash))
+                else
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      for (final e in elementChartOrder)
+                        if ((elements.damage[e] ?? 0) != 0 ||
+                            (elements.resist[e] ?? 0) != 0)
+                          chip(
+                            Icons.local_fire_department,
+                            '${t('element_name_${e.toLowerCase()}')} '
+                                '${elements.damage[e] ?? 0}/${elements.resist[e] ?? 0}',
+                            t('element_name_${e.toLowerCase()}'),
+                            '${t('elements_damage')}: ${elements.damage[e] ?? 0}\n'
+                                '${t('elements_resist')}: ${elements.resist[e] ?? 0}',
+                          ),
+                    ],
+                  ),
               ],
             ),
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
+        // The belongings in one line, the list a tap away.
+        panel(
+          key: const Key('sheet_belongings'),
+          padding: EdgeInsets.zero,
+          child: InkWell(
+            onTap: openBelongings,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(t('sheet_belongings_title'),
+                        style: theme.textTheme.titleSmall),
+                  ),
+                  for (final (icon, count) in [
+                    (Icons.monetization_on, session.gold),
+                    (Icons.science_outlined, session.potionCount),
+                    (Icons.backpack, session.inventoryItemIds.length),
+                  ]) ...[
+                    Icon(icon, size: 15, color: ink.gold),
+                    const SizedBox(width: 3),
+                    Text('$count', style: theme.textTheme.labelMedium),
+                    const SizedBox(width: 10),
+                  ],
+                  Icon(Icons.chevron_right, size: 18, color: ink.ash),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
         Text(
           t('race_profession_footer_note'),
-          style: theme.textTheme.bodyMedium
-              ?.copyWith(color: scheme.onSurface.withValues(alpha: 0.7)),
+          style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
         ),
         if (onStartGame != null) ...[
-          const SizedBox(height: 20),
+          const SizedBox(height: 14),
           FilledButton(
               onPressed: onStartGame, child: Text(t('continue_button'))),
         ],

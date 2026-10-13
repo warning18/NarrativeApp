@@ -10633,9 +10633,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The clans come to you',
     AppLanguage.fr: 'Les clans viennent à vous',
   },
-  'offer_hold_hint': {
-    AppLanguage.en: 'Press and hold a flag to read it.',
-    AppLanguage.fr: 'Appuyez longuement sur un drapeau pour le lire.',
+  'chest_skip_hint': {
+    AppLanguage.en: 'Tap to skip',
+    AppLanguage.fr: 'Toucher pour passer',
+  },
+  'offer_select_hint': {
+    AppLanguage.en: 'Select a banner to see its details.',
+    AppLanguage.fr: 'Choisissez une bannière pour voir son détail.',
   },
   'offer_hint': {
     AppLanguage.en: 'Take one gift: the one you take is a side chosen.',
@@ -10804,11 +10808,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Offers',
     AppLanguage.fr: 'Offres',
   },
-  'offers_none': {
+  'offers_where_from': {
     AppLanguage.en:
-        'No offer waiting. Each level, boss beaten, chapter and Tome of Mastery brings one.',
+        'Each level, boss beaten, chapter and Tome of Mastery brings an offer.',
     AppLanguage.fr:
-        'Aucune offre en attente. Chaque niveau, boss vaincu, chapitre et Tome de maîtrise en apporte une.',
+        'Chaque niveau, boss vaincu, chapitre et Tome de maîtrise apporte une offre.',
   },
   'offer_open_button': {
     AppLanguage.en: 'Choose a gift',
@@ -10852,6 +10856,35 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'A clan offers its branch’s skills one by one, deeper as it trusts you more.',
     AppLanguage.fr:
         'Un clan offre les compétences de sa branche une à une, plus profondes à mesure qu’il vous fait confiance.',
+  },
+  'tab_overview': {AppLanguage.en: 'Overview', AppLanguage.fr: 'Aperçu'},
+  'tab_gifts': {AppLanguage.en: 'Gifts', AppLanguage.fr: 'Dons'},
+  'tab_pages': {AppLanguage.en: 'Pages', AppLanguage.fr: 'Pages'},
+  'tile_inventory': {
+    AppLanguage.en: 'Inventory',
+    AppLanguage.fr: 'Inventaire',
+  },
+  'tile_dice': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dés'},
+  'skills_see_all': {AppLanguage.en: 'All skills', AppLanguage.fr: 'Toutes'},
+  'skills_none_short': {
+    AppLanguage.en: 'No skills yet',
+    AppLanguage.fr: 'Aucune compétence',
+  },
+  'titles_chip_hint': {
+    AppLanguage.en: 'Tap to wear · hold to read',
+    AppLanguage.fr: 'Toucher\u00a0: porter · maintenir\u00a0: lire',
+  },
+  'gifts_none_short': {
+    AppLanguage.en: 'None yet',
+    AppLanguage.fr: 'Aucun pour l’instant',
+  },
+  'offers_row_none': {
+    AppLanguage.en: 'No offer waiting',
+    AppLanguage.fr: 'Aucune offre en attente',
+  },
+  'recap_who_you_are': {
+    AppLanguage.en: 'Who you are',
+    AppLanguage.fr: 'Qui vous êtes',
   },
   'titles_section': {
     AppLanguage.en: 'Titles',

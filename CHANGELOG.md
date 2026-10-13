@@ -8,6 +8,99 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.267.0+303]
+
+The clans' offer, the loot chest, the dice cube, the Clans screen, the Character
+page and the race and profession recap.
+
+### Changed
+- **The offer's banners are one size, picked or not.** Unpicked banners were
+  drawn at twice the size of the picked one, so they grew and shrank. A tap
+  picks one (it takes the wind); press and hold is gone. The chosen banner's
+  words show in a zone of one fixed size under the banners; with none chosen
+  it says "Select a banner to see its details." (`offer_select_hint`, which
+  replaces `offer_hold_hint`).
+- **The loot chest hides its rarity until it is tapped.** Before: one neutral
+  grey chest, no tier name or colour, no fortune roll. A tap turns the tiers'
+  colours, slower and slower, and stops on the real one; the name, the art
+  and the fortune roll then appear and the chest opens. A second tap skips to
+  where it stops, a third opens it. With reduced motion it opens at once.
+  The rarity was rolled before; this is only how it is shown
+  (`chest_skip_hint`).
+- **The Throne room is the first tab of Clans, then Reputation, then the rest;**
+  the screen opens on the Throne room.
+- **The Character page is three tabs under its header** (name, level, vitals,
+  "Level Up" when points wait): *Overview* (the eight abilities as a radar, the
+  skills known as chips, the alignment), *Gifts* (the offer waiting, titles as
+  chips, perks, signs; a dot on the tab while an offer waits) and *Pages*
+  (mana and spells, the Shroud, New Game+, the links to Inventory, Dice,
+  Level Up and Race and profession). It replaces the folded version of
+  v1.266 (`tab_overview`, `tab_gifts`, `tab_pages`).
+- **The race and profession recap is a dossier**, about a screen and a bit
+  instead of three and a half: the name and level, the two choices as rows
+  (numbers they change, the skill they grant), health and experience as thin
+  bars with damage and armour, the radar beside the eight numbers, the
+  elements as chips, the belongings as one line. A tap opens what needs room
+  (a choice's lore, the elements' chart, the belongings' list); a press and
+  hold on a number says what it does.
+- The Character page's offers row says where offers come from on a press and
+  hold (`offers_where_from`), in place of the paragraph of the old panel
+  (`OffersPanel` and `offers_none` are gone). French `titles_chip_hint` keeps
+  its non-breaking spaces before the colons.
+
+### Fixed
+- **The dice cube could not be turned sideways from its top or bottom.** It
+  kept a yaw about its own upright, so once tipped a drag across only spun it in
+  place. It now turns on the screen's axes, so a drag in any direction works
+  from any side.
+
+## [1.266.0+302]
+
+The Character tab and the race and profession recap, shorter to read.
+
+### Changed
+- **Skills first, with a radar.** The tab opens on the skills known (their
+  icons and names, "All skills" for the rest) beside a small radar of the
+  eight abilities; the eight numbers that sat further down are gone (the
+  radar writes them at its corners). The page links are four tiles:
+  Inventory, Dice, Level Up, Race and profession. The Skills link is now the
+  skills card's own.
+- **Titles are chips.** One chip per title held, the one worn in gold; a tap
+  wears it or takes it off, a press and hold reads it (what it does, its
+  words, why a bad one stays). A bad title ("the Marked") shows a warning
+  and has no tap.
+- **Perks and signs fold to one line each**, with their count and their names
+  in the line; a tap opens them in place. Perks read one line each, with the
+  whole text behind a tap. The empty case is "None yet" instead of a
+  paragraph.
+- **Offers are one line**: "Offers · Choose a gift · 1 waiting" opens the
+  offer; with none, "No offer waiting".
+- **The Mana card opens the skills on their Spells tab** (it opened the
+  Tree).
+- **The race and profession recap is one row per choice**: its mark, name,
+  tag, the numbers it changes as chips and the skill it grants as a line; a
+  tap opens a sheet with the lore and the skill's words (nothing was cut).
+  The two lore cards and the two skill cards, a half screen each, are gone.
+
+### Added
+- New strings (English and French): `tile_inventory`, `tile_dice`,
+  `skills_see_all`, `skills_none_short`, `titles_chip_hint`,
+  `gifts_none_short`, `offers_row_none`, `recap_who_you_are`.
+- `test/character_tab_test.dart`: the tab and the recap at 360 and 320 px, in
+  both languages, with the app's own fonts.
+
+## [1.265.0+301]
+
+### Fixed
+- **The simulator's "Play to chapter" button could not be reached on a phone.**
+  With no batch yet, the strategy, runs and chapter controls were taller than
+  the screen and did not scroll, so the button ended past the bottom edge.
+  They now scroll with the results (`PlaythroughSimulatorScreen`); once
+  there are results the compact bar and the scrolling results are as before,
+  and scrolling down no longer folds the controls away. Checked at 360 x 640
+  and 320 x 568, in English and French, with the app's own fonts and a 48 px
+  system bar (`test/simulator_insets_test.dart`).
+
 ## [1.264.0+300]
 
 The level-up pop-up, the clans' offer and the dice, redrawn; and a story-true

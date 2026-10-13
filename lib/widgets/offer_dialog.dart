@@ -216,9 +216,6 @@ class OfferDialog extends ConsumerStatefulWidget {
 
 class _OfferDialogState extends ConsumerState<OfferDialog> {
   String? _selected;
-
-  /// The flag a finger is held on, whose summary shows under the flags.
-  String? _peek;
   bool _busy = false;
 
   Future<void> _take(ClanOffer offer) async {
@@ -379,43 +376,40 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                                     ? null
                                     : () => setState(
                                         () => _selected = suitor.factionId),
-                                onHold: (held) => setState(() {
-                                  if (held) {
-                                    _peek = suitor.factionId;
-                                  } else if (_peek == suitor.factionId) {
-                                    _peek = null;
-                                  }
-                                }),
                               ),
                             ),
                         ],
                       ),
                       const SizedBox(height: 10),
-                      // The summary, for as long as a finger stays on a flag.
-                      AnimatedSize(
-                        duration: const Duration(milliseconds: 140),
-                        alignment: Alignment.topCenter,
-                        child: _peek != null && offer.suitorOf(_peek!) != null
-                            ? SuitorCard(
-                                key: Key('offer_summary_$_peek'),
-                                suitor: offer.suitorOf(_peek!)!,
-                                ticket: ticket,
-                                tables: widget.tables,
+                      // The chosen banner's words, in a zone of one size so
+                      // nothing moves when another banner is picked; a hint
+                      // while none is.
+                      SizedBox(
+                        key: const Key('offer_detail_zone'),
+                        height: 250,
+                        child: selected != null
+                            ? SingleChildScrollView(
+                                child: SuitorCard(
+                                  key: Key(
+                                      'offer_summary_${selected.factionId}'),
+                                  suitor: selected,
+                                  ticket: ticket,
+                                  tables: widget.tables,
+                                ),
                               )
-                            : Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 4),
+                            : Center(
                                 child: Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(Icons.touch_app_outlined,
                                         size: 18,
                                         color:
                                             theme.colorScheme.onSurfaceVariant),
                                     const SizedBox(width: 8),
-                                    Expanded(
+                                    Flexible(
                                       child: Text(
-                                        trFor(lang, 'offer_hold_hint'),
-                                        key: const Key('offer_hold_hint'),
+                                        trFor(lang, 'offer_select_hint'),
+                                        key: const Key('offer_select_hint'),
                                         style: theme.textTheme.bodySmall
                                             ?.copyWith(
                                                 color: theme.colorScheme
@@ -463,9 +457,9 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
 
 /// A suitor as a little flag: their banner (a Wayfarer's plain pennant), the
 /// kind and name of the gift under it, its rarity, and the first standing it
-/// moves. Everything else is the summary: press and hold the flag to read
-/// it, let go and it goes. A tap picks the flag, and its banner takes the
-/// wind.
+/// moves. Every banner is the same size, picked or not (v1.267); a tap picks
+/// the flag, and its banner takes the wind. The rest is told in the zone
+/// under the flags.
 class _OfferFlag extends ConsumerWidget {
   const _OfferFlag({
     super.key,
@@ -475,7 +469,6 @@ class _OfferFlag extends ConsumerWidget {
     required this.selected,
     required this.dimmed,
     required this.onTap,
-    required this.onHold,
   });
 
   final Suitor suitor;
@@ -484,7 +477,6 @@ class _OfferFlag extends ConsumerWidget {
   final bool selected;
   final bool dimmed;
   final VoidCallback? onTap;
-  final ValueChanged<bool> onHold;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -508,27 +500,27 @@ class _OfferFlag extends ConsumerWidget {
     final who = suitorName(suitor, data, lang);
     const good = Color(0xFF3E9B57);
 
+    // One box for every banner, so none changes size when another is picked
+    // (the picked one only takes the wind).
+    final bannerBox = (pixelBannerSize.width + 2 * WindBanner.room).toDouble();
     final Widget flag = bannerId == null
         ? _PlainFlag(color: color, wayfarer: suitor.isWayfarer)
-        : selected
-            ? WindBanner(id: bannerId, scale: 1)
-            : Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: WindBanner.room.toDouble()),
-                child: PixelBanner(id: bannerId),
-              );
+        : SizedBox(
+            key: Key('offer_banner_${suitor.factionId}'),
+            width: bannerBox,
+            height: pixelBannerSize.height.toDouble(),
+            child: selected
+                ? WindBanner(id: bannerId, scale: 1)
+                : Center(child: PixelBanner(id: bannerId, scale: 1)),
+          );
 
     return Semantics(
       button: true,
       selected: selected,
       label: '$who: $name',
-      onLongPressHint: trFor(lang, 'offer_hold_hint'),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        onLongPressStart: (_) => onHold(true),
-        onLongPressEnd: (_) => onHold(false),
-        onLongPressCancel: () => onHold(false),
         child: AnimatedOpacity(
           duration: const Duration(milliseconds: 160),
           opacity: dimmed ? 0.62 : 1,
@@ -998,40 +990,5 @@ class _GiftBody extends StatelessWidget {
                 .replaceAll('{max}', '${perkInfo[perk]!.maxRank}'),
         ]);
     }
-  }
-}
-
-/// The Character tab's offers: the button to the one due, with how many
-/// wait, or a line saying how offers come.
-class OffersPanel extends ConsumerWidget {
-  const OffersPanel({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final waiting =
-        ref.watch(playerSessionProvider.select((s) => s.pendingOffers.length));
-    final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(tr(ref, 'offers_section'), style: theme.textTheme.titleSmall),
-        const SizedBox(height: 4),
-        if (waiting > 0)
-          FilledButton.tonalIcon(
-            key: const Key('offer_open'),
-            icon: const Icon(Icons.diversity_3),
-            onPressed: () =>
-                showOfferIfWaiting(context, ref, sayWhenNone: true),
-            label: Text(
-              '${tr(ref, 'offer_open_button')} · '
-              '${tr(ref, 'offer_pending').replaceAll('{n}', '$waiting')}',
-            ),
-          )
-        else
-          Text(tr(ref, 'offers_none'),
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-      ],
-    );
   }
 }

@@ -1684,14 +1684,11 @@ class _PlaythroughSimulatorScreenState
   int _autoplayAttempt = 0;
 
   /// Whether the strategy/runs/simulate controls are shown in full. They
-  /// collapse to a compact bar the moment there's a result to look at, so
-  /// results don't start halfway down a small screen — and re-expand
-  /// automatically once the results list is scrolled back to the top, and
-  /// collapse again the moment the user scrolls down into the results, or
-  /// on a manual tap.
+  /// collapse to a compact bar on a tap (or a new result to look at), and
+  /// come back on a tap or once the compact view's results are scrolled
+  /// back to the top.
   bool _controlsExpanded = true;
   final ScrollController _resultsScrollController = ScrollController();
-  double _lastResultsScrollOffset = 0;
 
   @override
   void initState() {
@@ -1707,13 +1704,12 @@ class _PlaythroughSimulatorScreenState
   }
 
   void _onResultsScroll() {
-    final offset = _resultsScrollController.offset;
-    if (offset <= 4) {
-      if (!_controlsExpanded) setState(() => _controlsExpanded = true);
-    } else if (offset > _lastResultsScrollOffset && _controlsExpanded) {
-      setState(() => _controlsExpanded = false);
+    // Only the compact view's results use this controller: back at the top,
+    // the full controls come back. (The full view scrolls the controls away
+    // with the rest, so scrolling down must not collapse it.)
+    if (_resultsScrollController.offset <= 4 && !_controlsExpanded) {
+      setState(() => _controlsExpanded = true);
     }
-    _lastResultsScrollOffset = offset;
   }
 
   /// Plays [_strategy]-weighted real choices forward against the actual
@@ -2066,6 +2062,19 @@ class _PlaythroughSimulatorScreenState
     final batches = ref.watch(_simulatorBatchesProvider);
     final showFullControls = batches.isEmpty || _controlsExpanded;
     final reversedBatches = batches.reversed.toList();
+    List<Widget> resultCards() => [
+          for (var i = 0; i < reversedBatches.length; i++)
+            _BatchCard(
+              key: ValueKey(reversedBatches[i].id),
+              batch: reversedBatches[i],
+              shops: shops,
+              quests: quests,
+              companions: companions,
+              professions: professions,
+              spells: spells,
+              initiallyExpanded: i == 0,
+            ),
+        ];
 
     return Scaffold(
       appBar: AppBar(
@@ -2082,39 +2091,43 @@ class _PlaythroughSimulatorScreenState
             ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: showFullControls
-                  ? _fullControls(context, batches)
-                  : _compactControlsBar(context),
-            ),
-            const SizedBox(height: 12),
-            Expanded(
-              child: batches.isEmpty
-                  ? Center(child: Text(tr(ref, 'no_batches_yet_message')))
-                  : ListView(
-                      controller: _resultsScrollController,
-                      children: [
-                        for (var i = 0; i < reversedBatches.length; i++)
-                          _BatchCard(
-                            key: ValueKey(reversedBatches[i].id),
-                            batch: reversedBatches[i],
-                            shops: shops,
-                            quests: quests,
-                            companions: companions,
-                            professions: professions,
-                            spells: spells,
-                            initiallyExpanded: i == 0,
-                          ),
-                      ],
+      // The full controls are taller than a phone, so they scroll with the
+      // results (a plain Column ran the last button off the screen). The app
+      // already keeps clear of the system bars in main.dart; the SafeArea
+      // here keeps the screen right wherever it is shown without that.
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: showFullControls
+              ? ListView(
+                  key: const Key('sim_scroll_full'),
+                  children: [
+                    _fullControls(context, batches),
+                    const SizedBox(height: 12),
+                    if (batches.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 24),
+                        child: Center(
+                            child: Text(tr(ref, 'no_batches_yet_message'))),
+                      )
+                    else
+                      ...resultCards(),
+                  ],
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _compactControlsBar(context),
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: ListView(
+                        key: const Key('sim_scroll_compact'),
+                        controller: _resultsScrollController,
+                        children: resultCards(),
+                      ),
                     ),
-            ),
-          ],
+                  ],
+                ),
         ),
       ),
     );

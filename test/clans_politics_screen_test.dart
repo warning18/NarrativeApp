@@ -108,6 +108,36 @@ Future<void> _settle(WidgetTester tester) async {
 }
 
 void main() {
+  testWidgets(
+      'the Throne room is the first tab, then Reputation, then the rest',
+      (tester) async {
+    tester.view.physicalSize = const Size(360, 1200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final container = await _container(tester, language: 'en');
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: ClansPoliticsScreen()),
+    ));
+    await tester.pump(const Duration(milliseconds: 300));
+    final keys = [
+      'clans_tab_throne_room',
+      'clans_tab_standing',
+      'clans_tab_politics',
+      'clans_tab_evolution',
+      'clans_tab_intrigues',
+    ];
+    final xs = [
+      for (final k in keys) tester.getTopLeft(find.byKey(Key(k))).dx,
+    ];
+    expect(xs, [...xs]..sort(), reason: 'the tabs run in this order');
+    // It opens on the Throne room.
+    final controller = DefaultTabController.of(
+        tester.element(find.byKey(const Key('clans_tab_throne_room'))));
+    expect(controller.index, 0);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('the four tabs at 360 px, in English', (tester) async {
     tester.view.physicalSize = const Size(360, 3400);
     tester.view.devicePixelRatio = 1;
@@ -117,6 +147,10 @@ void main() {
       container: container,
       child: const MaterialApp(home: ClansPoliticsScreen()),
     ));
+    // The Throne room (the first tab) never settles: step, then open the
+    // Reputation tab.
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(const Key('clans_tab_standing')));
     await tester.pumpAndSettle();
     PoliticsState politics() => container.read(playerSessionProvider).politics;
 
@@ -220,6 +254,10 @@ void main() {
       container: container,
       child: const MaterialApp(home: ClansPoliticsScreen()),
     ));
+    // The Throne room (the first tab) never settles: step, then open the
+    // Reputation tab.
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(const Key('clans_tab_standing')));
     await tester.pumpAndSettle();
 
     expect(find.text('Clans et politique'), findsOneWidget);
@@ -325,6 +363,10 @@ void main() {
       container: container,
       child: const MaterialApp(home: ClansPoliticsScreen(play: true)),
     ));
+    // The Throne room (the first tab) never settles: step, then open the
+    // Reputation tab.
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(const Key('clans_tab_standing')));
     await tester.pumpAndSettle();
 
     // Standing: the cards, read only.
@@ -400,6 +442,10 @@ void main() {
       container: container,
       child: const MaterialApp(home: ClansPoliticsScreen(play: true)),
     ));
+    // The Throne room (the first tab) never settles: step, then open the
+    // Reputation tab.
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(const Key('clans_tab_standing')));
     await tester.pumpAndSettle();
     await _openTab(tester, 'clans_tab_intrigues');
     // Stage 3 reached: the face at stage 1, none at 2 (unknown) or 4
@@ -427,6 +473,10 @@ void main() {
       container: container,
       child: const MaterialApp(home: ClansPoliticsScreen(play: true)),
     ));
+    // The Throne room (the first tab) never settles: step, then open the
+    // Reputation tab.
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(const Key('clans_tab_standing')));
     await tester.pumpAndSettle();
     await _openTab(tester, 'clans_tab_intrigues');
     expect(find.byKey(const Key('clans_intrigues_empty')), findsOneWidget);
