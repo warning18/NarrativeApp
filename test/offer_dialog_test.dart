@@ -151,15 +151,27 @@ void main() {
     expect(find.text('Keen Eye'), findsOneWidget);
     expect(find.text('+6\u00a0Compact'), findsOneWidget);
     expect(find.text('+6\u00a0Penitents'), findsOneWidget);
-    // The rest is the summary: none of it shows until a finger is held on a
-    // flag, and it goes when the finger lifts.
+    // The rest is told under the flags, once one is picked: none of it shows
+    // before, only a hint.
     expect(find.text('The Emberwives of the Cinder Compact'), findsNothing);
     expect(find.textContaining('broke every hammer in the Row'), findsNothing);
-    expect(find.byKey(const Key('offer_hold_hint')), findsOneWidget);
-    final hold = await tester.startGesture(
-        tester.getCenter(find.byKey(const Key('offer_suitor_compact'))));
-    await tester.pump(const Duration(milliseconds: 700));
-    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('offer_select_hint')), findsOneWidget);
+    expect(find.text('Select a banner to see its details.'), findsOneWidget);
+    expect(
+        tester
+            .widget<FilledButton>(find.byKey(const Key('offer_take_button')))
+            .onPressed,
+        isNull,
+        reason: 'nothing is taken before a banner is picked');
+    // Every banner is one size, picked or not, and so is the zone.
+    Size banner(String id) =>
+        tester.getSize(find.byKey(Key('offer_banner_$id')));
+    final zone = tester.getSize(find.byKey(const Key('offer_detail_zone')));
+    expect(banner('compact'), const Size(88, 128));
+    expect(banner('penitents'), const Size(88, 128));
+
+    await tester.tap(find.byKey(const Key('offer_suitor_compact')));
+    await _settle(tester);
     expect(find.text('The Emberwives of the Cinder Compact'), findsOneWidget);
     expect(find.textContaining('broke every hammer in the Row'), findsOneWidget,
         reason: 'the Compact\'s intro, the first time');
@@ -168,16 +180,15 @@ void main() {
             '−3\u00a0Penitents'),
         findsOneWidget,
         reason: 'the politics of the pick, by the relations as they stand');
-    expect(find.byKey(const Key('offer_hold_hint')), findsNothing);
-    await hold.up();
-    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('offer_select_hint')), findsNothing);
+    expect(banner('compact'), const Size(88, 128),
+        reason: 'the picked banner keeps its size');
+    expect(banner('penitents'), const Size(88, 128));
+    expect(tester.getSize(find.byKey(const Key('offer_detail_zone'))), zone);
+    // Another flag: its words take the same zone.
+    await tester.tap(find.byKey(const Key('offer_suitor_penitents')));
+    await _settle(tester);
     expect(find.text('The Emberwives of the Cinder Compact'), findsNothing);
-    expect(find.byKey(const Key('offer_hold_hint')), findsOneWidget);
-    // Held on the sign's flag: what it does, and what it replaces.
-    final sign = await tester.startGesture(
-        tester.getCenter(find.byKey(const Key('offer_suitor_penitents'))));
-    await tester.pump(const Duration(milliseconds: 700));
-    await tester.pumpAndSettle();
     expect(
         find.text('The Ember Sisters of the Ashen Penitents'), findsOneWidget);
     expect(find.textContaining('+3 damage'), findsOneWidget);
@@ -186,22 +197,16 @@ void main() {
         find.text('+6\u00a0Penitents · +1.5\u00a0Vigil · −3\u00a0Dominion · '
             '−3\u00a0Compact · −3\u00a0Mire · alignment\u00a0+1'),
         findsOneWidget);
-    await sign.up();
-    await tester.pumpAndSettle();
+    expect(tester.getSize(find.byKey(const Key('offer_detail_zone'))), zone);
     // The Wayfarer moves no standing.
-    final way = await tester.startGesture(
-        tester.getCenter(find.byKey(const Key('offer_suitor_wayfarer'))));
-    await tester.pump(const Duration(milliseconds: 700));
-    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('offer_suitor_wayfarer')));
+    await _settle(tester);
     expect(find.text('The Wayfarer'), findsOneWidget);
     expect(find.text('No faction: standing doesn’t move.'), findsOneWidget);
-    await way.up();
-    await tester.pumpAndSettle();
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
 
     // Nothing is taken before a suitor is chosen, and then confirmed.
     final take = find.byKey(const Key('offer_take_button'));
-    expect(tester.widget<FilledButton>(take).onPressed, isNull);
     await tester.tap(find.byKey(const Key('offer_suitor_compact')));
     await tester.pump();
     await tester.ensureVisible(take);
@@ -259,35 +264,25 @@ void main() {
     expect(find.text('Atout'), findsOneWidget);
     expect(find.text('Œil perçant'), findsOneWidget);
     expect(find.text('+6\u00a0Pacte'), findsOneWidget);
-    final hold = await tester.startGesture(
-        tester.getCenter(find.byKey(const Key('offer_suitor_compact'))));
-    await tester.pump(const Duration(milliseconds: 700));
-    await tester.pumpAndSettle();
+    expect(find.text('Choisissez une bannière pour voir son détail.'),
+        findsOneWidget);
+    await tester.tap(find.byKey(const Key('offer_suitor_compact')));
+    await _settle(tester);
     expect(find.text('Les Charbonnières du Pacte des Cendres'), findsOneWidget);
     expect(
         find.text('+6\u00a0Pacte · +1,5\u00a0Veille · +1,5\u00a0Marais · '
             '−3\u00a0Pénitents'),
         findsOneWidget);
-    await hold.up();
-    await tester.pumpAndSettle();
-    final sign = await tester.startGesture(
-        tester.getCenter(find.byKey(const Key('offer_suitor_penitents'))));
-    await tester.pump(const Duration(milliseconds: 700));
-    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('offer_suitor_penitents')));
+    await _settle(tester);
     expect(find.text('Les Sœurs de Braise des Pénitents de Cendre'),
         findsOneWidget);
     expect(find.text('Remplace\u00a0: Poings de braise'), findsOneWidget);
-    await sign.up();
-    await tester.pumpAndSettle();
-    final way = await tester.startGesture(
-        tester.getCenter(find.byKey(const Key('offer_suitor_wayfarer'))));
-    await tester.pump(const Duration(milliseconds: 700));
-    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('offer_suitor_wayfarer')));
+    await _settle(tester);
     expect(find.text('Le Voyageur'), findsOneWidget);
     expect(find.text('Sans faction\u00a0: la réputation ne bouge pas.'),
         findsOneWidget);
-    await way.up();
-    await tester.pumpAndSettle();
     expect(find.text('Prendre ce don'), findsOneWidget);
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
 

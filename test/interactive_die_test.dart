@@ -64,6 +64,41 @@ void main() {
     expect(picked.last, isNot(1));
   });
 
+  testWidgets('from the top or bottom a drag across turns it to a side',
+      (tester) async {
+    final picked = <int>[];
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: StatefulBuilder(
+            builder: (context, setState) => InteractiveDie(
+              faces: _faces(),
+              skin: boneSkin,
+              selected: picked.isEmpty ? 0 : picked.last,
+              onSelect: (slot) => setState(() => picked.add(slot)),
+            ),
+          ),
+        ),
+      ),
+    ));
+    final cube = find.byKey(const ValueKey('interactive_die'));
+    // Down tips the top toward the viewer: the top (4) or bottom (5) is in
+    // front now.
+    await tester.drag(cube, const Offset(0, 112));
+    await tester.pumpAndSettle();
+    expect(picked.last, anyOf(4, 5));
+    // Across, the cube turns on to a side, not in place where it stands.
+    await tester.drag(cube, const Offset(-112, 0));
+    await tester.pumpAndSettle();
+    expect(picked.last, isNot(anyOf(4, 5)),
+        reason: 'a drag across from the top or bottom goes to a side');
+    // And from there down again.
+    await tester.drag(cube, const Offset(0, 112));
+    await tester.pumpAndSettle();
+    expect(picked.last, anyOf(4, 5, 0, 2));
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('a double tap acts on a side, a single tap on the front does not',
       (tester) async {
     final acted = <int>[];
