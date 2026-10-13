@@ -8,6 +8,29 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.271.0+307]
+
+The Broken Charter is played end to end.
+
+### Added
+- **Five scenes for `broken_charter`, the last intrigue still short.**
+  Compact-stamped blades on Inquisition belts at the wharf
+  (`2015_dominion_blades`), the Tribunal's purse offered to the Scaffolders
+  on the Spire stair (`3005_tribunal_gold`), the Anvil-Deaf vote in signs on
+  Wrack's End quay (`5100_anvil_deaf_vote`), the Row and the Tribunal
+  meeting at the Rimewell quarry (`6100_charter_signing`) and, at the
+  Anchorage, the Charter signed again or burned (`7100_charter_choice`).
+  Earlier choices are remembered in later scenes, and two new lines at the
+  Herald's battle (`7810`) remember which way the Charter went. The
+  intrigue's stage `chapter` labels now match where the scenes sit, and the
+  Reveal's contact is the Tribunal's last clerk.
+
+### Changed
+- **The three chapter 7 quests read shorter and one notch easier.** Their
+  objectives are "Read the petition", "Read Morrow’s terms" and "Copy the
+  tide table" (the quest strip overflowed at 320 px), and their difficulty
+  shows 13 instead of 14 (display only).
+
 ## [1.269.0+305]
 
 Three visitors at the cove, and a quest goal for chapter 7.
