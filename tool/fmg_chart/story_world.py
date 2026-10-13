@@ -68,12 +68,12 @@ LAND_ORDER = ('ashen', 'old', 'lantern', 'west', 'east', 'polar_south')
 
 # a zone is a biome land; each is the part of its land nearest its seeds. The climate follows the latitude, as on
 # Earth: frost at both poles, temperate and cold lands in the middle latitudes, and the hot, dry and wet belts
-# about the equator (the Waste and Saltmouth, with a jungle in between). Zones with no name belong to the empty lands.
+# about the equator (the Waste and Saltmouth, with a jungle in between).
 ZONES = [
     ('temperate', 'The Alster Marches', 'Les Marches d’Alster', [(80, 138), (74, 128), (92, 146), (62, 140), (100, 130), (102, 140)]),
     ('desert', 'The Waste', 'La Désolation', [(112, 116), (126, 110), (140, 116), (120, 100), (112, 128), (150, 114)]),
     ('arid_coast', 'The Salt Coast', 'La Côte de Sel', [(158, 91), (168, 98), (166, 106), (148, 90), (148, 102)]),
-    ('temperate', '', '', [(150, 138), (176, 126), (130, 142), (170, 142)]),            # the Old Continent's south-east
+    ('temperate', 'The Tallow Downs', 'Les Landes de suif', [(150, 138), (176, 126), (130, 142), (170, 142)]),            # the Old Continent's south-east
     ('sea_cliffs', 'The Lantern Isles', 'Les Îles de la Lanterne', [(56, 77)]),
     ('sea_cliffs', 'The Cove', 'La Crique', [(121, 47)]),
     ('ashlands', 'The Ash Flats', 'Les Plaines de cendre', [(134, 36), (126, 38), (146, 31)]),
@@ -83,14 +83,14 @@ ZONES = [
     ('fen', 'The Grey Fen', 'Le Marais gris', [(74, 38), (60, 44), (48, 30), (66, 32), (56, 38)]),
     ('sea_cliffs', 'The Wrack Cliffs', 'Les Falaises du Varech', [(94, 50), (100, 54), (86, 54), (88, 48)]),
     # the east land: hot and dry in the north, a jungle on the equator, temperate in the south
-    ('desert', '', '', [(222, 68), (212, 72), (234, 70)]),
-    ('temperate', '', '', [(222, 88), (222, 98), (212, 94)]),                           # the jungle (no jungle biome yet)
-    ('temperate', '', '', [(222, 116), (212, 114)]),
+    ('desert', 'The Pale Dunes', 'Les Dunes pâles', [(222, 68), (212, 72), (234, 70)]),
+    ('temperate', 'The Tidewood', 'Le Bois des marées', [(222, 88), (222, 98), (212, 94)]),                           # the jungle (no jungle biome yet)
+    ('temperate', 'The Orchard Coast', 'La Côte des vergers', [(222, 116), (212, 114)]),
     # the west land: a hot dry coast in the north, temperate in the south
-    ('desert', '', '', [(26, 106), (30, 112)]),
-    ('temperate', '', '', [(26, 128), (28, 140)]),
+    ('desert', 'The Ember Dunes', 'Les Dunes de braise', [(26, 106), (30, 112)]),
+    ('temperate', 'The Wick Meadows', 'Les Prés de la mèche', [(26, 128), (28, 140)]),
     # the south polar land
-    ('frost', '', '', [(90, 163), (130, 162), (170, 162), (70, 165), (195, 160)]),
+    ('frost', 'The Mute Ice', 'Les Glaces muettes', [(90, 163), (130, 162), (170, 162), (70, 165), (195, 160)]),
 ]
 
 # The Old Continent sits ten units further north than first drawn, so Saltmouth is on the equator's edge

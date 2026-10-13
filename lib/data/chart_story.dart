@@ -693,7 +693,8 @@ final ChartGeography chartWorldStory = ChartGeography(
       Offset(143.8, 108.7),
       Offset(156.6, 106.8)
     ]),
-    ChartZone('temperate', '', '', Offset(156.3, 128.4), [
+    ChartZone('temperate', 'The Tallow Downs', 'Les Landes de suif',
+        Offset(156.3, 128.4), [
       Offset(119.4, 146.7),
       Offset(134.5, 141.7),
       Offset(141.9, 142.5),
@@ -910,7 +911,8 @@ final ChartGeography chartWorldStory = ChartGeography(
       Offset(100, 58.7),
       Offset(109.6, 62.2)
     ]),
-    ChartZone('desert', '', '', Offset(225.5, 76.5), [
+    ChartZone(
+        'desert', 'The Pale Dunes', 'Les Dunes pâles', Offset(225.5, 76.5), [
       Offset(240.5, 87.2),
       Offset(241.5, 86.2),
       Offset(243.5, 80.2),
@@ -932,7 +934,8 @@ final ChartGeography chartWorldStory = ChartGeography(
       Offset(220, 78),
       Offset(226.8, 78)
     ]),
-    ChartZone('temperate', '', '', Offset(221, 93.3), [
+    ChartZone(
+        'temperate', 'The Tidewood', 'Le Bois des marées', Offset(221, 93.3), [
       Offset(239.2, 107),
       Offset(239.7, 106.4),
       Offset(239.5, 105.3),
@@ -956,7 +959,8 @@ final ChartGeography chartWorldStory = ChartGeography(
       Offset(214, 104),
       Offset(218.8, 107)
     ]),
-    ChartZone('temperate', '', '', Offset(224.4, 115.5), [
+    ChartZone('temperate', 'The Orchard Coast', 'La Côte des vergers',
+        Offset(224.4, 115.5), [
       Offset(224.9, 131.2),
       Offset(229.7, 127.5),
       Offset(235.7, 124.7),
@@ -977,7 +981,8 @@ final ChartGeography chartWorldStory = ChartGeography(
       Offset(215.8, 129.2),
       Offset(223.1, 131.2)
     ]),
-    ChartZone('desert', '', '', Offset(30.5, 110.3), [
+    ChartZone('desert', 'The Ember Dunes', 'Les Dunes de braise',
+        Offset(30.5, 110.3), [
       Offset(41.2, 123.2),
       Offset(43.2, 117.6),
       Offset(42.2, 107.8),
@@ -990,7 +995,8 @@ final ChartGeography chartWorldStory = ChartGeography(
       Offset(17.5, 112.8),
       Offset(15.3, 116.4)
     ]),
-    ChartZone('temperate', '', '', Offset(28.5, 134), [
+    ChartZone('temperate', 'The Wick Meadows', 'Les Prés de la mèche',
+        Offset(28.5, 134), [
       Offset(32.2, 153.2),
       Offset(39.2, 148.5),
       Offset(42, 145.2),
@@ -1010,7 +1016,8 @@ final ChartGeography chartWorldStory = ChartGeography(
       Offset(21, 148.4),
       Offset(28.3, 152.5)
     ]),
-    ChartZone('frost', '', '', Offset(145.6, 160.5), [
+    ChartZone(
+        'frost', 'The Mute Ice', 'Les Glaces muettes', Offset(145.6, 160.5), [
       Offset(183.8, 167),
       Offset(198.9, 166.5),
       Offset(208.2, 163.5),

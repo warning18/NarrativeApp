@@ -40,6 +40,19 @@ The travel map, and a pack of layout fixes.
   the weather line wraps clear of the zoom button.
 - **Chapter 7 camp hub:** the enter-the-place button scrolls in the room it
   has, so a long quest strip no longer overflows it at 320 px.
+## [1.276.0+312]
+
+The empty lands of the story chart have names.
+
+### Changed
+- **Seven unnamed lands on the story chart are named, in English and
+  French.** The Tallow Downs (Les Landes de suif), the Pale Dunes (Les Dunes
+  pâles), the Tidewood (Le Bois des marées), the Orchard Coast (La Côte des
+  vergers), the Ember Dunes (Les Dunes de braise), the Wick Meadows (Les
+  Prés de la mèche) and the Mute Ice (Les Glaces muettes). The chart's
+  "unnamed" exemption in `chart_relief_test` is gone: every zone of every
+  chart now has both names. Text only; no shape, biome or place moved.
+
 ## [1.275.0+311]
 
 "Play to chapter" hands back a character fit for the chapter it reaches.
