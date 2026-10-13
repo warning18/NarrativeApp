@@ -97,9 +97,12 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
     expect(find.text('2 / 6', skipOffstage: false), findsOneWidget);
     expect(find.byType(PixelBanner, skipOffstage: false), findsNWidgets(6));
+    // The names are a tap away (v1.269): a found piece is named, the others
+    // wait unfound.
+    expect(find.byTooltip('The heirloom piece', skipOffstage: false),
+        findsOneWidget);
     expect(
-        find.text('The heirloom piece', skipOffstage: false), findsOneWidget);
-    expect(find.text('Not yet found', skipOffstage: false), findsNWidgets(4));
+        find.byTooltip('Not yet found', skipOffstage: false), findsNWidgets(4));
     expect(tester.takeException(), isNull);
   });
 }
