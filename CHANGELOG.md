@@ -18,8 +18,9 @@ first.
   item id to count (`{"material_timber": 4, "material_cut_stone": 2}`).
   They go in the pack with a "Picked up" notice. The story, "Play to
   chapter", expeditions and the playthrough simulator all apply it, and the
-  story editor keeps it. Narrative adds the harbour's grant to the camp's
-  founding choice in its own PR.
+  story editor keeps it. The camp's founding choice ("Take stock of the
+  shore", in chapter 3) grants the harbour's 4 timber and 2 cut stone;
+  Narrative writes the scene's line for it in a later PR.
 - **The camp's tour starts at the harbour** while it is unbuilt. A harbour
   card sits above the camp's tabs until it stands, and a tap on it opens
   Town.

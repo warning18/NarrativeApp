@@ -49,6 +49,24 @@ void main() {
     expect(materialCountsOf(harbour, 'materialCost'), _grant);
   });
 
+  test('the camp\'s founding choice grants exactly the harbour', () {
+    final story =
+        jsonDecode(File('assets/Cleaned_Narrative_DAG.json').readAsStringSync())
+            as Map<String, dynamic>;
+    final founding = [
+      for (final node in story.values)
+        if (node is Map<String, dynamic>)
+          for (final choice in (node['choices'] as List? ?? const []))
+            if (((choice as Map)['flagsToAdd'] as List?)
+                    ?.contains(campFoundedFlag) ??
+                false)
+              StoryChoice.fromJson(Map<String, dynamic>.from(choice)),
+    ];
+    expect(founding, hasLength(1));
+    expect(founding.single.grantMaterials,
+        materialCountsOf(harbour, 'materialCost'));
+  });
+
   test('a choice\'s grantMaterials is read, written back and is an effect', () {
     final choice = StoryChoice.fromJson({
       'text': 'Take stock of the shore',
