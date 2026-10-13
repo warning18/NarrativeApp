@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.272.0+308]
+
+The travel-history map's data, for the view UX builds beside the Journey.
+
+### Added
+- **The story world is a chart the game can use.** The story-true world
+  (the cold north, the Waste on the dry belt, Alster's vale) moves from the
+  chart tool into the game as a fourth geography, with the clans' seats, the
+  stone giants and the other places the story names. It is the travel map's
+  own chart and is not offered among the world map's looks.
+- **The party's travels, read from the story.** The places reached in the
+  order first reached, every move between two places with the roads it took
+  and whether by land or sea, the places only heard of (the far ends of known
+  roads, to show as "?"), where the party stands, and the reached places the
+  camp can travel to. All of it comes from the scenes already saved: no new
+  save field, so every save shows its whole journey.
+
 ## [1.271.0+307]
 
 The Broken Charter is played end to end.
