@@ -40,6 +40,28 @@ The travel map, and a pack of layout fixes.
   the weather line wraps clear of the zoom button.
 - **Chapter 7 camp hub:** the enter-the-place button scrolls in the room it
   has, so a long quest strip no longer overflows it at 320 px.
+## [1.275.0+311]
+
+"Play to chapter" hands back a character fit for the chapter it reaches.
+
+### Changed
+- **A jump in the simulator's "Play to chapter" (edit mode) tops the
+  character up on arrival.** A long jump used to force its last fights and
+  hand back a level 3 to 5 character with one or two pieces worn, even at
+  chapter 8. On reaching the chapter, the character is now brought up to
+  where a typical run arrives there: its level and gold are raised to the
+  simulator's median (chapter 6: level 9 and 2 330 gold; chapter 8: level 10
+  and 3 240), and, per slot, it receives the best piece the chapter's open
+  shops and chests hold that it may wear. Only ever up, never down. The
+  levels come as a won fight's would, with their stat points and full
+  health, and the best build of 1.274 then spends and equips them.
+  Deterministic, and only in edit mode.
+
+### Added
+- The land expeditions proposal (`docs/proposals/`) is updated to the
+  user's decisions: the party's health plays the hull (no water or food, no
+  new save field), and the crash is the first expedition.
+
 ## [1.274.0+310]
 
 "Play to chapter" hands back a character ready to play.

@@ -2,6 +2,9 @@
 // to the profession's stat, the best carried gear the player may wear, the
 // best skills on the die within the rarity limits, and the same build for
 // the same session every time.
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -144,5 +147,94 @@ void main() {
       expect(after.diceSkillAssignments['test_die'],
           {'1': 'channel', '2': 'doom', '3': 'cleave', '4': 'cleave'});
     });
+  });
+
+  group('arrival top-up', () {
+    const shops = <String, dynamic>{
+      'early_forge': {
+        'minChapter': 2,
+        'stockPool': ['fine_sword'],
+      },
+      'late_forge': {
+        'minChapter': 9,
+        'stockPool': ['dawn_blade'],
+      },
+    };
+    const items = <String, dynamic>{
+      ..._items,
+      'dawn_blade': {
+        'isEquippable': true,
+        'equipSlot': 'weapon',
+        'attackDamage': 40,
+      },
+      'tower_plate': {
+        'isEquippable': true,
+        'equipSlot': 'armor',
+        'armor': 20,
+        'lootChapter': 7,
+      },
+    };
+    PlayerSession fresh() => PlayerSession.fromJson({
+          'raceId': 'human',
+          'professionId': 'warrior',
+          'level': 2,
+          'currentXP': 50,
+          'gold': 100,
+          'strength': 1,
+          'inventoryItemIds': ['rusty_sword'],
+          'equippedItemIds': ['rusty_sword'],
+        });
+
+    test('a weak character reaching chapter 8 is brought to a typical one', () {
+      final topUp = planArrivalTopUp(fresh(),
+          chapter: 8, items: items, shops: shops, professions: _professions);
+      // Level 2 (50 XP in) to level 10: 200 + 300 + ... + 900 - 50.
+      expect(topUp.xp, 4400 - 50);
+      expect(topUp.gold, typicalArrival[8]!.gold - 100);
+      // The chapter's best per slot, by slot: the chest's plate, the open
+      // forge's sword; never the forge that opens later, nor a piece no
+      // shop or chest holds (the maul).
+      expect(topUp.items, ['tower_plate', 'fine_sword']);
+    });
+
+    test(
+        'a strong character is never lowered, and a reached tier adds '
+        'nothing it already beats', () {
+      final strong = PlayerSession.fromJson({
+        'raceId': 'human',
+        'professionId': 'warrior',
+        'level': 14,
+        'gold': 9000,
+        'inventoryItemIds': ['dawn_blade', 'tower_plate'],
+      });
+      final topUp = planArrivalTopUp(strong,
+          chapter: 8, items: items, shops: shops, professions: _professions);
+      expect(topUp.isEmpty, isTrue);
+    });
+  });
+
+  test(
+      'on the real data, a level-1 character jumping to chapter 8 gets a '
+      'full kit for its profession', () {
+    Map<String, dynamic> table(String name) =>
+        jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
+            as Map<String, dynamic>;
+    final items = table('items');
+    final professions = table('professions');
+    for (final professionId in professions.keys) {
+      final topUp = planArrivalTopUp(
+          PlayerSession.fromJson(
+              {'raceId': 'human', 'professionId': professionId, 'level': 1}),
+          chapter: 8,
+          items: items,
+          shops: table('shops'),
+          professions: professions);
+      expect(topUp.xp, 4500, reason: professionId); // level 1 to 10
+      final slots = {
+        for (final id in topUp.items) (items[id] as Map)['equipSlot'],
+      };
+      expect(slots, containsAll(['Weapon', 'Top', 'Head']),
+          reason: '$professionId: ${topUp.items}');
+    }
   });
 }
