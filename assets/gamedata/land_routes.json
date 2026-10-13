@@ -10,6 +10,7 @@
     ],
     "days": 3,
     "biome": "desert",
+    "terrain": "desert",
     "chapter": 1,
     "events": {
       "sandstorm": 2,
@@ -18,6 +19,28 @@
       "mirage": 1,
       "scavengers": 1,
       "shade": 1
+    }
+  },
+  "sleeper_to_wells": {
+    "id": "sleeper_to_wells",
+    "name": "From the Sleeper’s Face to the White Wells",
+    "name_fr": "Du Visage du dormeur aux Puits blancs",
+    "from": "sleeper",
+    "to": "wells",
+    "roads": [
+      "sleeper_wells"
+    ],
+    "days": 2,
+    "biome": "desert",
+    "terrain": "desert",
+    "chapter": 1,
+    "events": {
+      "flash_flood": 1,
+      "water_seller": 1,
+      "sandstorm": 1,
+      "mirage": 1,
+      "shade": 1,
+      "scavengers": 1
     }
   }
 }

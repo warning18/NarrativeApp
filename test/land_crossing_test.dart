@@ -34,6 +34,7 @@ void main() {
       expect(route.days, greaterThan(0), reason: id);
       expect(route.nameFr, isNotEmpty, reason: id);
       expect(route.roads, isNotEmpty, reason: id);
+      expect(landTerrains, contains(route.terrain), reason: id);
       for (final road in route.roads) {
         expect(roads.containsKey(road), isTrue, reason: '$id: $road');
       }
@@ -130,6 +131,25 @@ void main() {
         modifierFor: (_) => 0,
         random: Random(1));
     if (!spent.arrived) expect(spent.health, turnBackHealth(140));
+  });
+
+  test('the second leg, the Sleeper to the White Wells, is drawn and crossed',
+      () {
+    final wells = landRouteFor(routes, 'sleeper_to_wells')!;
+    expect(wells.from, 'sleeper');
+    expect(wells.to, 'wells');
+    var arrived = 0;
+    for (var seed = 0; seed < 500; seed++) {
+      final result = resolveCrossing(wells, events,
+          health: 140,
+          maxHealth: 140,
+          gold: 30,
+          modifierFor: (_) => 1,
+          random: Random(seed));
+      expect(result.events, hasLength(wells.days));
+      if (result.arrived) arrived++;
+    }
+    expect(arrived, greaterThan(475));
   });
 
   test('every way out of the wreck toward the Sleeper crosses the desert', () {
