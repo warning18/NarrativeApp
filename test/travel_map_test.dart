@@ -62,6 +62,13 @@ void main() {
     final ids = [for (final l in worldMapLandmarks) l.id];
     final visited = ids.take(4).toList();
     final known = {ids[8]};
+    // A place the party can travel to: one clear of the others.
+    final geoPlaces = geo.places;
+    final target = ids.skip(12).firstWhere((id) =>
+        !visited.contains(id) &&
+        id != ids[8] &&
+        [...visited, ids[8]]
+            .every((o) => (geoPlaces[o]! - geoPlaces[id]!).distance > 30));
     final taps = <(String, TravelPlaceState)>[];
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
@@ -71,6 +78,12 @@ void main() {
           language: AppLanguage.en,
           visited: visited,
           known: known,
+          legs: [
+            TravelLeg(visited[0], visited[1]),
+            TravelLeg(visited[1], visited[2], sea: true),
+            TravelLeg(visited[2], visited[3]),
+          ],
+          travelTargets: {target},
           here: visited.last,
           nameOf: (id) => landmarkById(id)?.nameEn ?? id,
           onTapPlace: (id, state) => taps.add((id, state)),
@@ -88,9 +101,12 @@ void main() {
 
     await tester.tapAt(at(visited[1]));
     await tester.tapAt(at(ids[8]));
+    // A place the party can travel to is tappable too (an offer).
+    await tester.tapAt(at(target));
     expect(taps, [
       (visited[1], TravelPlaceState.visited),
       (ids[8], TravelPlaceState.known),
+      (target, TravelPlaceState.known),
     ]);
     // Nothing near: nothing tapped.
     taps.clear();

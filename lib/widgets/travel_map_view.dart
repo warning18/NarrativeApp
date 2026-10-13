@@ -29,6 +29,17 @@ enum TravelPlaceState {
   known,
 }
 
+/// One move of the party between two places (a road taken), in the order made.
+class TravelLeg {
+  const TravelLeg(this.from, this.to, {this.sea = false});
+
+  final String from;
+  final String to;
+
+  /// By sea: drawn dashed.
+  final bool sea;
+}
+
 /// The names of the places that fit, each beside its mark and clear of the
 /// others, in the order [requests] come (the ones that matter most first): a
 /// name tries the right of its mark, then the left, then above, then below,
@@ -91,6 +102,8 @@ class TravelMapView extends StatefulWidget {
     required this.visited,
     required this.nameOf,
     this.known = const {},
+    this.legs,
+    this.travelTargets = const {},
     this.here,
     this.fog = ChartFog.uncharted,
     this.onTapPlace,
@@ -107,6 +120,14 @@ class TravelMapView extends StatefulWidget {
 
   /// The ids of the places heard of and not reached.
   final Set<String> known;
+
+  /// The moves made, in order. Null reads them off [visited]: each place to
+  /// the next, by land.
+  final List<TravelLeg>? legs;
+
+  /// The places the party can travel to now: ringed by a dotted line, so a
+  /// tap on one is plainly an offer (the screen decides what the tap does).
+  final Set<String> travelTargets;
 
   /// Where the party stands.
   final String? here;
@@ -191,6 +212,7 @@ class _TravelMapViewState extends State<TravelMapView> {
     final ids = [
       ...widget.visited,
       ...widget.known,
+      ...widget.travelTargets,
       if (widget.here != null) widget.here!,
     ].where(widget.geography.places.containsKey).toList();
     if (ids.length < 2) return;
@@ -219,7 +241,11 @@ class _TravelMapViewState extends State<TravelMapView> {
     String? best;
     var bestDistance = reach;
     TravelPlaceState? state;
-    for (final id in [...widget.visited.toSet(), ...widget.known]) {
+    for (final id in {
+      ...widget.visited,
+      ...widget.known,
+      ...widget.travelTargets,
+    }) {
       final d = (_px(id) - local).distance;
       if (d <= bestDistance) {
         bestDistance = d;
@@ -318,6 +344,15 @@ class _TravelMapViewState extends State<TravelMapView> {
                                 visited: widget.visited,
                                 order: order,
                                 known: widget.known,
+                                legs: widget.legs ??
+                                    [
+                                      for (var i = 0;
+                                          i + 1 < widget.visited.length;
+                                          i++)
+                                        TravelLeg(widget.visited[i],
+                                            widget.visited[i + 1]),
+                                    ],
+                                targets: widget.travelTargets,
                                 here: widget.here,
                                 nameOf: widget.nameOf,
                               ),
@@ -361,6 +396,8 @@ class _TravelPainter extends CustomPainter {
     required this.visited,
     required this.order,
     required this.known,
+    required this.legs,
+    required this.targets,
     required this.here,
     required this.nameOf,
   }) : super(repaint: view);
@@ -373,6 +410,8 @@ class _TravelPainter extends CustomPainter {
   final List<String> visited;
   final Map<String, int> order;
   final Set<String> known;
+  final List<TravelLeg> legs;
+  final Set<String> targets;
   final String? here;
   final String Function(String id) nameOf;
 
@@ -397,22 +436,21 @@ class _TravelPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
     final arrowPaint = Paint()..color = palette.road;
     final seen = <String>{};
-    for (var i = 0; i + 1 < visited.length; i++) {
-      final a = _px(visited[i]);
-      final b = _px(visited[i + 1]);
+    for (final leg in legs) {
+      final a = _px(leg.from);
+      final b = _px(leg.to);
       if (a == b) continue;
-      final key = '${visited[i]}>${visited[i + 1]}';
+      final key = '${leg.from}>${leg.to}';
       final again = !seen.add(key);
       final mid = Offset.lerp(a, b, 0.5)!;
       final along = (b - a);
       final normal = Offset(-along.dy, along.dx) / along.distance;
       final bow = normal * (along.distance * (again ? -0.16 : 0.08));
       final control = mid + bow;
-      canvas.drawPath(
-          Path()
-            ..moveTo(a.dx, a.dy)
-            ..quadraticBezierTo(control.dx, control.dy, b.dx, b.dy),
-          roadPaint);
+      final route = Path()
+        ..moveTo(a.dx, a.dy)
+        ..quadraticBezierTo(control.dx, control.dy, b.dx, b.dy);
+      canvas.drawPath(leg.sea ? _dashed(route, u(5), u(4)) : route, roadPaint);
       // The arrow where the curve is at its middle, pointing the way on.
       final at = Offset.lerp(
           Offset.lerp(a, control, 0.5)!, Offset.lerp(control, b, 0.5)!, 0.5)!;
@@ -464,6 +502,20 @@ class _TravelPainter extends CustomPainter {
       q.paint(canvas, Offset(-q.width / 2, -q.height / 2));
       canvas.restore();
     }
+    // The places the party can travel to now: a dotted ring.
+    final offer = Paint()
+      ..color = palette.mark
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = u(1.4);
+    for (final id in targets) {
+      if (!geography.places.containsKey(id) || id == here) continue;
+      canvas.drawPath(
+          _dashed(
+              Path()..addOval(Rect.fromCircle(center: _px(id), radius: u(10))),
+              u(3),
+              u(3)),
+          offer);
+    }
     // Where the party is: a ring round its mark.
     if (here != null && geography.places.containsKey(here)) {
       final at = _px(here!);
@@ -513,6 +565,21 @@ class _TravelPainter extends CustomPainter {
     }
   }
 
+  /// [path] cut into dashes of [dash] with [gap] between, for a crossing by
+  /// sea.
+  Path _dashed(Path path, double dash, double gap) {
+    final out = Path();
+    for (final metric in path.computeMetrics()) {
+      var at = 0.0;
+      while (at < metric.length) {
+        out.addPath(metric.extractPath(at, math.min(at + dash, metric.length)),
+            Offset.zero);
+        at += dash + gap;
+      }
+    }
+    return out;
+  }
+
   TextPainter _text(String text, double size, Color color, bool bold) {
     return TextPainter(
       text: TextSpan(
@@ -534,6 +601,8 @@ class _TravelPainter extends CustomPainter {
   bool shouldRepaint(_TravelPainter old) =>
       old.visited != visited ||
       old.known != known ||
+      old.legs != legs ||
+      old.targets != targets ||
       old.here != here ||
       old.geography != geography ||
       old.palette != palette ||

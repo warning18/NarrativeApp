@@ -69,3 +69,41 @@ TravelMapView(
   mark; the view draws the mark at the place's real position today.
 - Whether the roads taken keep their order numbers at the world zoom (they show
   from the second zoom today, to keep the first one clean).
+
+## UX's answer to Core's proposal (`TravelHistory`)
+
+Yes, the shape is enough. The view now takes it almost as it is:
+
+| Core's field | The view |
+|---|---|
+| `stops` (ids in the order first reached) | `visited` (the order is each place's number on the chart) |
+| `legs` (`fromId`, `toId`, `kind` land or sea) | `legs: List<TravelLeg>` (`TravelLeg(from, to, sea:)`); a sea leg is dashed |
+| `heardOf` | `known`: drawn as a "?" with no name |
+| `currentId` | `here`: ringed |
+| `travelTargets` | `travelTargets`: a dotted ring round each, so a tap is plainly an offer |
+| neither visited nor heard of | **hidden** (not drawn as "?"; fewer spoilers) |
+
+`onTapPlace(id, visited | known)` reports the tap; the screen decides: a place in
+`travelTargets` opens a "Travel to X?" sheet that calls Core's
+`arrivalNodeForLandmark` through today's `camp_travel.dart`; a place only heard
+of says it is not reachable yet (in its own words); a visited place that is not a
+target opens its place note.
+
+Answers to Core's questions:
+
+- **(a)** Yes (above). One thing I would like in `TravelLeg`: the `chapter`, as an
+  optional field, in case the roads are later coloured by chapter as on the
+  Journey. Not needed now.
+- **(b)** No day count on a leg. Not now.
+- **(c)** Travel map only, and I would go one step further: no `MapShape.story`
+  at all. The painter takes a `ChartGeography` directly, so the travel map can
+  read `storyChartProvider`, and the map-look setting (and every
+  `switch (MapShape)` and test that loops over `MapShape.values`) stays as it
+  is. If a `MapShape.story` is added anyway, keep it out of the setting's list.
+- **(d)** Yes, a jungle biome. Core adds `jungle` to `biomes.json`, its climate
+  row and the east land's equator zone; I draw its colours and the dense canopy
+  with palms in `chart_relief.dart` in a PR after Core's. Until then the zone
+  stays `temperate` (green), as in the preview, and nothing breaks.
+- **The path change** (`story_world.py` writing to `lib/data/chart_story.dart`,
+  the import in `tool/fmg_chart/preview_test.dart`): fine, Core may change those
+  two; I am not editing them.
