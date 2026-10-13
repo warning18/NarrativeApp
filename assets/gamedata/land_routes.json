@@ -1,0 +1,23 @@
+{
+  "crash_to_sleeper": {
+    "id": "crash_to_sleeper",
+    "name": "From the Lark’s wreck to the Sleeper’s Face",
+    "name_fr": "De l’épave de l’Alouette au Visage du dormeur",
+    "from": "crash",
+    "to": "sleeper",
+    "roads": [
+      "crash_sleeper"
+    ],
+    "days": 3,
+    "biome": "desert",
+    "chapter": 1,
+    "events": {
+      "sandstorm": 2,
+      "dry_well": 1,
+      "spring": 1,
+      "mirage": 1,
+      "scavengers": 1,
+      "shade": 1
+    }
+  }
+}

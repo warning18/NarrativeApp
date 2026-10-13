@@ -39,6 +39,7 @@ class StoryChoice {
     this.grantsBannerPieceId,
     this.grantItemId,
     this.grantMaterials = const {},
+    this.landRouteId,
     this.loseAllyId,
     this.mainQuest = false,
     this.pays = false,
@@ -130,6 +131,7 @@ class StoryChoice {
               const [],
       roadEvent: json['roadEvent'] as String?,
       shipBattleId: json['shipBattleId'] as String?,
+      landRouteId: json['landRouteId'] as String?,
       politics: StoryPolitics.tryParse(json['politics']),
       politicsIf: json['politicsIf'] is Map
           ? Map<String, dynamic>.from(json['politicsIf'] as Map)
@@ -190,6 +192,14 @@ class StoryChoice {
   final String? shipBattleId;
 
   bool get triggersShipBattle => (shipBattleId ?? '').isNotEmpty;
+
+  /// A long land route this choice crosses before the story goes on
+  /// (land_routes.json, see land_crossing.dart): played like a voyage, the
+  /// party's health the hull; lost, the party is carried back and the
+  /// choice is not taken.
+  final String? landRouteId;
+
+  bool get crossesLand => (landRouteId ?? '').isNotEmpty;
 
   final String text;
   final String nextId;
@@ -455,6 +465,7 @@ class StoryChoice {
         if (approvalMods.isNotEmpty) 'approvalMods': approvalMods,
         if (roadEvent != null && roadEvent!.isNotEmpty) 'roadEvent': roadEvent,
         if (triggersShipBattle) 'shipBattleId': shipBattleId,
+        if (crossesLand) 'landRouteId': landRouteId,
         if (politics != null) 'politics': politics!.toJson(),
         if (politicsIf.isNotEmpty) 'politicsIf': politicsIf,
         if (hostFight) 'hostFight': hostFight,

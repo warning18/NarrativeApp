@@ -189,8 +189,8 @@ void main() {
     test('a weak character reaching chapter 8 is brought to a typical one', () {
       final topUp = planArrivalTopUp(fresh(),
           chapter: 8, items: items, shops: shops, professions: _professions);
-      // Level 2 (50 XP in) to level 10: 200 + 300 + ... + 900 - 50.
-      expect(topUp.xp, 4400 - 50);
+      // Level 2 (50 XP in) to level 12: 200 + 300 + ... + 1100 - 50.
+      expect(topUp.xp, 6500 - 50);
       expect(topUp.gold, typicalArrival[8]!.gold - 100);
       // The chapter's best per slot, by slot: the chest's plate, the open
       // forge's sword; never the forge that opens later, nor a piece no
@@ -230,7 +230,7 @@ void main() {
           items: items,
           shops: table('shops'),
           professions: professions);
-      expect(topUp.xp, 4500, reason: professionId); // level 1 to 10
+      expect(topUp.xp, 6600, reason: professionId); // level 1 to 12
       final slots = {
         for (final id in topUp.items) (items[id] as Map)['equipSlot'],
       };
@@ -264,7 +264,7 @@ void main() {
           shops: const {},
           professions: _professions);
       final after = ref.read(playerSessionProvider);
-      expect(after.level, 10);
+      expect(after.level, 12);
       expect(after.pendingOffers.map((t) => t.source), [OfferSource.boss]);
     });
   });

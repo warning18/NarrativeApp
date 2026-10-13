@@ -1,0 +1,215 @@
+{
+  "sandstorm": {
+    "id": "sandstorm",
+    "name": "Sandstorm",
+    "name_fr": "Tempête de sable",
+    "text": "The horizon goes brown, then goes away. The wind brings the desert with it, a grain at a time and all at once.",
+    "text_fr": "L’horizon brunit, puis disparaît. Le vent apporte le désert avec lui, grain à grain et tout à la fois.",
+    "choices": [
+      {
+        "id": "push",
+        "text": "Push on through it",
+        "text_fr": "Avancer à travers",
+        "check": "constitution",
+        "dc": 10,
+        "success": {
+          "healthPct": -6,
+          "note": "You come out the far side scoured, but walking.",
+          "note_fr": "Vous en sortez écorché, mais debout."
+        },
+        "fail": {
+          "healthPct": -18,
+          "note": "The sand takes skin and breath and a long hour.",
+          "note_fr": "Le sable prend la peau, le souffle et une longue heure."
+        }
+      },
+      {
+        "id": "shelter",
+        "text": "Dig in behind a dune and wait",
+        "text_fr": "S’abriter derrière une dune et attendre",
+        "outcome": {
+          "healthPct": -4,
+          "days": 1,
+          "note": "It blows itself out by morning. You lose the day.",
+          "note_fr": "Elle s’épuise au matin. Vous perdez la journée."
+        }
+      }
+    ]
+  },
+  "dry_well": {
+    "id": "dry_well",
+    "name": "A dry well",
+    "name_fr": "Un puits à sec",
+    "text": "A ring of stones, a rope rotted to the knot, and at the bottom a dark that might be damp.",
+    "text_fr": "Un cercle de pierres, une corde pourrie jusqu’au nœud, et au fond une ombre qui pourrait être humide.",
+    "choices": [
+      {
+        "id": "dig",
+        "text": "Climb down and dig",
+        "text_fr": "Descendre et creuser",
+        "check": "strength",
+        "dc": 10,
+        "success": {
+          "healthPct": 10,
+          "note": "A hand’s depth of brown water. It is enough.",
+          "note_fr": "Une main d’eau brune. Cela suffit."
+        },
+        "fail": {
+          "healthPct": -8,
+          "note": "Nothing but sand, and the climb back up.",
+          "note_fr": "Rien que du sable, et la remontée."
+        }
+      },
+      {
+        "id": "leave",
+        "text": "Leave it and walk on",
+        "text_fr": "Le laisser et marcher",
+        "outcome": {
+          "healthPct": -6,
+          "note": "The thirst walks with you.",
+          "note_fr": "La soif marche avec vous."
+        }
+      }
+    ]
+  },
+  "spring": {
+    "id": "spring",
+    "name": "A spring",
+    "name_fr": "Une source",
+    "text": "Green, where nothing should be green: a seep under a shelf of rock, and the tracks of everything that drinks there.",
+    "text_fr": "Du vert, là où rien ne devrait l’être : un suintement sous une dalle, et les traces de tout ce qui vient y boire.",
+    "choices": [
+      {
+        "id": "rest",
+        "text": "Drink, and rest the day",
+        "text_fr": "Boire, et se reposer la journée",
+        "outcome": {
+          "healthPct": 20,
+          "days": 1,
+          "note": "You sleep in the shade of the rock until the heat breaks.",
+          "note_fr": "Vous dormez à l’ombre de la roche jusqu’à ce que la chaleur retombe."
+        }
+      },
+      {
+        "id": "drink",
+        "text": "Drink, and push on",
+        "text_fr": "Boire, et repartir",
+        "outcome": {
+          "healthPct": 10,
+          "note": "Enough to carry you to the next ridge.",
+          "note_fr": "Assez pour vous porter jusqu’à la prochaine crête."
+        }
+      }
+    ]
+  },
+  "mirage": {
+    "id": "mirage",
+    "name": "A mirage",
+    "name_fr": "Un mirage",
+    "text": "Water, to the west: a lake with trees on it, a mile off, the most beautiful thing you have ever seen.",
+    "text_fr": "De l’eau, à l’ouest : un lac bordé d’arbres, à une lieue, la plus belle chose que vous ayez jamais vue.",
+    "choices": [
+      {
+        "id": "trust",
+        "text": "Trust your eyes and go to it",
+        "text_fr": "Croire vos yeux et y aller",
+        "check": "wisdom",
+        "dc": 11,
+        "success": {
+          "healthPct": 0,
+          "note": "Halfway there you see it for what it is, and turn back in time.",
+          "note_fr": "À mi-chemin vous le voyez pour ce qu’il est, et rebroussez chemin à temps."
+        },
+        "fail": {
+          "healthPct": -12,
+          "note": "It walks away from you all afternoon.",
+          "note_fr": "Il s’éloigne de vous tout l’après-midi."
+        }
+      },
+      {
+        "id": "ignore",
+        "text": "Keep to the tracks",
+        "text_fr": "Garder la piste",
+        "outcome": {
+          "healthPct": -3,
+          "note": "You do not look west again.",
+          "note_fr": "Vous ne regardez plus vers l’ouest."
+        }
+      }
+    ]
+  },
+  "scavengers": {
+    "id": "scavengers",
+    "name": "Scavengers",
+    "name_fr": "Pillards",
+    "text": "Three of the sledge-men from the wreck, sitting on a dune as if they had been waiting. Perhaps they had.",
+    "text_fr": "Trois des hommes aux traîneaux de l’épave, assis sur une dune comme s’ils attendaient. Peut-être attendaient-ils.",
+    "choices": [
+      {
+        "id": "fight",
+        "text": "Go at them",
+        "text_fr": "Leur tomber dessus",
+        "check": "strength",
+        "dc": 11,
+        "success": {
+          "healthPct": -8,
+          "gold": 15,
+          "note": "They break and run, and leave a purse behind.",
+          "note_fr": "Ils cèdent et s’enfuient, en laissant une bourse."
+        },
+        "fail": {
+          "healthPct": -20,
+          "note": "You drive them off, and bleed for it.",
+          "note_fr": "Vous les chassez, et vous en saignez."
+        }
+      },
+      {
+        "id": "slip",
+        "text": "Slip away down the far side",
+        "text_fr": "Filer par l’autre versant",
+        "check": "dexterity",
+        "dc": 11,
+        "success": {
+          "healthPct": 0,
+          "note": "They never see you go.",
+          "note_fr": "Ils ne vous voient pas partir."
+        },
+        "fail": {
+          "healthPct": -14,
+          "note": "A thrown knife finds you on the way.",
+          "note_fr": "Un couteau lancé vous trouve en chemin."
+        }
+      },
+      {
+        "id": "pay",
+        "text": "Throw them a purse",
+        "text_fr": "Leur jeter une bourse",
+        "outcome": {
+          "gold": -10,
+          "healthPct": 0,
+          "note": "They count it, and let you by.",
+          "note_fr": "Ils comptent, et vous laissent passer."
+        }
+      }
+    ]
+  },
+  "shade": {
+    "id": "shade",
+    "name": "Shade",
+    "name_fr": "De l’ombre",
+    "text": "A wind-carved arch, and under it a band of shade as cold as a cellar.",
+    "text_fr": "Une arche taillée par le vent, et dessous une bande d’ombre fraîche comme une cave.",
+    "choices": [
+      {
+        "id": "rest",
+        "text": "Lie up through the heat",
+        "text_fr": "S’y étendre pendant la chaleur",
+        "outcome": {
+          "healthPct": 12,
+          "note": "You walk on in the evening, lighter.",
+          "note_fr": "Vous repartez le soir, plus léger."
+        }
+      }
+    ]
+  }
+}
