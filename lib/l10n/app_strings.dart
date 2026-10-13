@@ -2960,6 +2960,44 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Vous rebroussez chemin jusqu’à votre point de départ, {n} jours perdus.',
   },
+  // The building screen's sections (camp_works.dart, building-screen.md).
+  'works_category_sea': {AppLanguage.en: 'The Sea', AppLanguage.fr: 'La Mer'},
+  'works_category_sea_blurb': {
+    AppLanguage.en:
+        'What the Rusty Eel needs to put out: a quay, a yard, a berth.',
+    AppLanguage.fr:
+        'Ce qu’il faut au Rusty Eel pour reprendre la mer : un quai, un chantier, un poste d’amarrage.',
+  },
+  'works_category_company': {
+    AppLanguage.en: 'The Company',
+    AppLanguage.fr: 'La Compagnie',
+  },
+  'works_category_company_blurb': {
+    AppLanguage.en:
+        'Roofs for the people who follow you, and a home for some of them.',
+    AppLanguage.fr:
+        'Des toits pour ceux qui vous suivent, et un foyer pour certains d’entre eux.',
+  },
+  'works_category_workshops': {
+    AppLanguage.en: 'The Workshops',
+    AppLanguage.fr: 'Les Ateliers',
+  },
+  'works_category_workshops_blurb': {
+    AppLanguage.en:
+        'Four houses that sell the camp what the road does not give.',
+    AppLanguage.fr:
+        'Quatre maisons qui vendent au camp ce que la route ne donne pas.',
+  },
+  'works_category_greatWorks': {
+    AppLanguage.en: 'The Great Works',
+    AppLanguage.fr: 'Les Grands Ouvrages',
+  },
+  'works_category_greatWorks_blurb': {
+    AppLanguage.en:
+        'What is built to outlast you: the hearth, the banner, the shrine.',
+    AppLanguage.fr:
+        'Ce qu’on bâtit pour vous survivre : le foyer, la bannière, le sanctuaire.',
+  },
   'harbour_needed_to_sail': {
     AppLanguage.en:
         'The Eel is hauled up at the camp. Build the harbour in Town before she can sail.',
