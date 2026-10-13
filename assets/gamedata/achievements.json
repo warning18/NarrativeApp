@@ -104,13 +104,6 @@
     "achievementName_fr": "Traqué",
     "description_fr": "Tombez si bas auprès d’un clan qu’il vous traque."
   },
-  "friend_of_each_clan": {
-    "achievementID": "friend_of_each_clan",
-    "achievementName": "A Hand for Every Door",
-    "description": "Be trusted by all six clans at once.",
-    "achievementName_fr": "Une main pour chaque porte",
-    "description_fr": "Gagnez la confiance des six clans en même temps."
-  },
   "akagiri_found": {
     "achievementID": "akagiri_found",
     "achievementName": "Where the Bells Hang",
@@ -131,5 +124,12 @@
     "description": "Find Highhearth, where the last giants live.",
     "achievementName_fr": "Sous le toit des géants",
     "description_fr": "Trouvez Haut-Âtre, où vivent les derniers géants."
+  },
+  "friend_of_four_clans": {
+    "achievementID": "friend_of_four_clans",
+    "achievementName": "A Hand at Four Doors",
+    "description": "Be trusted by four of the six clans at once.",
+    "achievementName_fr": "Une main à quatre portes",
+    "description_fr": "Gagnez la confiance de quatre des six clans en même temps."
   }
 }

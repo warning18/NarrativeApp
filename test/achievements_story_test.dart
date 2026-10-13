@@ -74,7 +74,7 @@ void main() {
     expect(await newlyFor(withFlags(all)), contains('whole_web'));
   });
 
-  test('clan standing unlocks sworn, hunted and trusted by all', () async {
+  test('clan standing unlocks sworn, hunted and trusted by four', () async {
     PlayerSession withStandings(Map<String, double> standings,
             {String sworn = ''}) =>
         baseSession().copyWith(
@@ -88,12 +88,21 @@ void main() {
         contains('hunted_by_a_clan'));
     expect(await newlyFor(withStandings({'crows': -30})),
         isNot(contains('hunted_by_a_clan')));
-    final trusted = {for (final id in coastClanIds) id: 80.0};
-    expect(await newlyFor(withStandings(trusted)),
-        contains('friend_of_each_clan'));
-    final five = Map.of(trusted)..remove('mire');
-    expect(await newlyFor(withStandings(five)),
-        isNot(contains('friend_of_each_clan')));
+    Map<String, double> trustedBy(int n) =>
+        {for (final id in coastClanIds.take(n)) id: 80.0};
+    expect(await newlyFor(withStandings(trustedBy(4))),
+        contains('friend_of_four_clans'));
+    expect(await newlyFor(withStandings(trustedBy(6))),
+        contains('friend_of_four_clans'));
+    expect(await newlyFor(withStandings(trustedBy(3))),
+        isNot(contains('friend_of_four_clans')));
+    // A friend (19 to 25) is not yet Trusted (26 and up).
+    expect(
+        await newlyFor(withStandings({
+          ...trustedBy(3),
+          coastClanIds[3]: 20.0,
+        })),
+        isNot(contains('friend_of_four_clans')));
   });
 
   test('a story choice that only adds a flag unlocks it at once', () async {

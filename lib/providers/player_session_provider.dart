@@ -117,6 +117,11 @@ const int fullRosterCompanionCount = 6;
 /// distinct ones (a test keeps the count in step with the file).
 const int intrigueCount = 8;
 
+/// How many of the six clans must trust the character at once for "A Hand
+/// at Four Doors": a clan's gains cost its rivals half, so all six is out of
+/// reach (QA's search never passed five).
+const int trustedClansForFriend = 4;
+
 /// The six clans a character can swear to (the ones with a Sworn boon).
 const List<String> coastClanIds = [
   'dominion',
@@ -3792,9 +3797,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
             standingTierFor(politics.standings[id] ?? 0) ==
             StandingTier.hunted));
     check(
-        'friend_of_each_clan',
-        coastClanIds.every((id) => standingTierFor(politics.standings[id] ?? 0)
-            .isAtLeast(StandingTier.trusted)));
+        'friend_of_four_clans',
+        coastClanIds
+                .where((id) => standingTierFor(politics.standings[id] ?? 0)
+                    .isAtLeast(StandingTier.trusted))
+                .length >=
+            trustedClansForFriend);
     check('akagiri_found', state.flags.contains(placeFoundFlag('3200')));
     check('kindly_hill_found', state.flags.contains(placeFoundFlag('5200')));
     check('highhearth_found', state.flags.contains(placeFoundFlag('6200')));

@@ -16,8 +16,8 @@ Twelve story achievements.
 - **Twelve achievements that come from what a save already holds.** The
   Lantern Throne, Half a Banner (three pieces of the Shroud), Whole Cloth,
   A Loose Thread (settle an intrigue), The Whole Web (all eight), Time
-  Turned (a New Game+), Sworn, Hunted, A Hand for Every Door (trusted by all
-  six clans) and three village finds: Where the Bells Hang (Akagiri), Every
+  Turned (a New Game+), Sworn, Hunted, A Hand at Four Doors (trusted by four of
+  the six clans at once) and three village finds: Where the Bells Hang (Akagiri), Every
   Bargain to the Minute (the Kindly Hill) and Under the Giants' Roof
   (Highhearth). Each is a one-line check in `checkAchievements` over the
   flags, banner pieces, politics and New Game+ cycle of the save, with its
