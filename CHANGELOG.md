@@ -31,6 +31,31 @@ The Broken Charter is played end to end.
   tide table" (the quest strip overflowed at 320 px), and their difficulty
   shows 13 instead of 14 (display only).
 
+## [1.270.0+306]
+
+Chapter 5 is no longer the wall.
+
+### Changed
+- **Chapter 5's enemies hit less hard.** The void hound used the legendary
+  Venomous Ambush on 30% of its turns, a hit no other ordinary enemy has; it
+  now does on 12% (pack howl 25% to 20%), with 135 health and 16 damage
+  (was 155 and 20). The inquisition penitent (220 / 22, was 260 / 26), the
+  masked penitent (215 / 21, was 250 / 25) and the Unstitched (255 / 24, was
+  300 / 28) lose about a sixth of their health and damage. The void archon
+  goes to 340 / 27 (was 380 / 32), with Void Blast on 30% of its turns (was
+  40%) and Eclipse on 25% (was 35%). In the simulator, chapter 5's attempt
+  win rate goes from 21% to 31% over 800 runs, between chapter 4 (36%) and
+  chapter 6 (31%); chapters 1 to 4 do not move, chapters 6 to 8 rise 1 to 3
+  points.
+- **The simulator's report shows where each chapter is lost.** Its JSON adds
+  every enemy's encounters and losses per chapter, and the level and gold
+  with which each chapter is reached; `docs/simulation/` is regenerated with
+  a before and after.
+
+### Added
+- Two proposals for decision in `docs/proposals/`: a building economy with
+  materials, and land expeditions in side view.
+
 ## [1.269.0+305]
 
 Three visitors at the cove, and a quest goal for chapter 7.
