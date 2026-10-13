@@ -96,6 +96,25 @@ void main() {
         isNot(contains('friend_of_each_clan')));
   });
 
+  test('a story choice that only adds a flag unlocks it at once', () async {
+    final notifier = await notifierWith(baseSession());
+    expect(notifier.state.unlockedAchievementIds, isEmpty);
+    await notifier.applyChoiceEffects(flagsToAdd: const ['on_throne']);
+    expect(notifier.state.unlockedAchievementIds, contains('on_the_throne'));
+    await notifier.applyChoiceEffects(
+        flagsToAdd: const ['intrigue_hooded_lantern_outcome_0']);
+    expect(notifier.state.unlockedAchievementIds, contains('first_thread'));
+    await notifier.applyChoiceEffects(
+        bannerPieceId: 'a', flagsToAdd: const ['banner_whole']);
+    expect(notifier.state.unlockedAchievementIds, contains('whole_cloth'));
+  });
+
+  test('a tribe at Hunted is not a clan hunting you', () async {
+    final tribe = baseSession()
+        .copyWith(politics: const PoliticsState(standings: {'giants': -80.0}));
+    expect(await newlyFor(tribe), isNot(contains('hunted_by_a_clan')));
+  });
+
   test('finding a village unlocks its achievement', () async {
     expect(
         await newlyFor(withFlags(['found_3200'])), contains('akagiri_found'));

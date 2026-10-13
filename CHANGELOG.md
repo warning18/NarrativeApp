@@ -23,7 +23,11 @@ Twelve story achievements.
   flags, banner pieces, politics and New Game+ cycle of the save, with its
   English and French row in `achievements.json`; none needs a new counter.
   A save that already has the thing unlocks it the next time achievements
-  are checked. `test/achievements_story_test.dart` covers each.
+  are checked, and achievements are now also checked right after a story
+  choice adds a flag or a piece of the Shroud and after a choice's politics
+  (an oath, a standing, an intrigue's end), so taking the Throne unlocks
+  its achievement at once. "Hunted" counts the six coast clans, not the
+  tribes. `test/achievements_story_test.dart` covers each.
 
 ## [1.276.0+312]
 

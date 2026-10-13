@@ -1952,6 +1952,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       loseAlly(lostId, persist: false, companions: companions);
     }
     await _persist();
+    // A flag or a piece of the Shroud may be what an achievement asks for.
+    if (flagsToAdd.isNotEmpty || (bannerPieceId ?? '').isNotEmpty) {
+      await checkAchievements();
+    }
     return reactions;
   }
 
@@ -2581,6 +2585,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
     await _persist();
+    // A standing, an oath or an intrigue's end may be what one asks for.
+    await checkAchievements();
     return change;
   }
 
@@ -3782,8 +3788,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     check('sworn_to_a_clan', politics.swornFactionId.isNotEmpty);
     check(
         'hunted_by_a_clan',
-        politics.standings.values
-            .any((v) => standingTierFor(v) == StandingTier.hunted));
+        coastClanIds.any((id) =>
+            standingTierFor(politics.standings[id] ?? 0) ==
+            StandingTier.hunted));
     check(
         'friend_of_each_clan',
         coastClanIds.every((id) => standingTierFor(politics.standings[id] ?? 0)
