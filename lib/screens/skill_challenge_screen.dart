@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/help_hint.dart';
 
 import '../data/ability_check.dart';
 import '../data/skill_challenge.dart';
@@ -85,7 +86,10 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
     final latest = revealedRounds.isEmpty ? null : revealedRounds.last;
 
     return Scaffold(
-      appBar: AppBar(title: Text(tr(ref, 'skill_challenge_title'))),
+      appBar:
+          AppBar(title: Text(tr(ref, 'skill_challenge_title')), actions: const [
+        TourInfoButton(topic: TutorialTopic.skillChallenge),
+      ]),
       body: TutorialTrigger(
         topic: TutorialTopic.skillChallenge,
         child: SafeArea(

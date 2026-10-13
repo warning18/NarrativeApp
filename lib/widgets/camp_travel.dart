@@ -18,6 +18,8 @@ import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../screens/story_player_screen.dart'
     show roadEventOn, rollRoadEncounter, takeStoryChoice, walkRoadStep;
+import '../data/world_map.dart' show landmarkOfScene;
+import '../screens/full_map_screen.dart' show FullMapScreen;
 import 'immersive_notice.dart';
 import 'ship_widgets.dart';
 
@@ -286,6 +288,8 @@ class PlaceCard extends ConsumerWidget {
         ports: ports, savedPortId: session.currentPortId);
     final theme = Theme.of(context);
     final blurb = settlement.blurbFor(fr);
+    final landmark = landmarkOfScene(place.id) ??
+        landmarkOfScene(settlement.arrivalNodeId ?? '');
     return Card(
       child: ListTile(
         key: Key('place_${place.id}'),
@@ -313,18 +317,40 @@ class PlaceCard extends ConsumerWidget {
                   Icon(Icons.person_add_alt_1_outlined,
                       size: 14, color: theme.colorScheme.tertiary),
                   const SizedBox(width: 4),
-                  Text(tr(ref, 'place_companion_label'),
-                      style: theme.textTheme.labelMedium
-                          ?.copyWith(color: theme.colorScheme.tertiary)),
+                  Flexible(
+                    child: Text(tr(ref, 'place_companion_label'),
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.labelMedium
+                            ?.copyWith(color: theme.colorScheme.tertiary)),
+                  ),
                 ],
               ),
           ],
         ),
         isThreeLine: blurb != null || companionHere,
-        trailing: FilledButton.tonal(
-          key: Key('go_${place.id}'),
-          onPressed: busy ? null : () => travelToPlace(context, ref, place),
-          child: Text(tr(ref, 'place_go_button')),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // The place on the full map, with the offer to go there.
+            if (landmark != null)
+              IconButton(
+                key: Key('map_${place.id}'),
+                icon: const Icon(Icons.map_outlined, size: 20),
+                tooltip: tr(ref, 'map_on_map'),
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (_) => FullMapScreen(focusId: landmark.id)),
+                ),
+              ),
+            FilledButton.tonal(
+              key: Key('go_${place.id}'),
+              onPressed: busy ? null : () => travelToPlace(context, ref, place),
+              child: Text(tr(ref, 'place_go_button')),
+            ),
+          ],
         ),
       ),
     );

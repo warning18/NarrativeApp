@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/help_hint.dart';
 
 import '../data/camp_state.dart';
 import '../data/port_helpers.dart';
@@ -44,7 +45,9 @@ class PortScreen extends ConsumerWidget {
     return TutorialTrigger(
       topic: TutorialTopic.town,
       child: Scaffold(
-        appBar: AppBar(title: Text(title)),
+        appBar: AppBar(title: Text(title), actions: const [
+          TourInfoButton(topic: TutorialTopic.town),
+        ]),
         body: ListView(
           padding: const EdgeInsets.all(16),
           children: [PortServices(portId: portId)],

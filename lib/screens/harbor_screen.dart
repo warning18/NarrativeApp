@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/help_hint.dart';
 
 import '../combat/sea_beasts.dart';
 import '../combat/ship_combat.dart';
@@ -489,7 +490,10 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(tr(ref, 'harbor_title')),
-          actions: const [GoldBadge()],
+          actions: const [
+            TourInfoButton(topic: TutorialTopic.boat),
+            GoldBadge()
+          ],
         ),
         body: body,
       ),
