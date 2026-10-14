@@ -7,6 +7,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import 'side_sprite.dart';
+
 /// The scene's height in "pixels": every kit paints on this grid, scaled up
 /// to the box, so the art stays chunky at any size.
 const int sideViewRows = 72;
@@ -106,7 +108,7 @@ class _SideViewSceneState extends State<SideViewScene>
       child: ClipRect(
         child: RepaintBoundary(
           child: AnimatedBuilder(
-            animation: _clock,
+            animation: Listenable.merge([_clock, SideSprites.ready]),
             builder: (context, _) {
               final t = still ? 1.3 : _clock.value * 3600;
               final dt = math.max(0.0, t - _lastT);

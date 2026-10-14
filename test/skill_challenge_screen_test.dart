@@ -62,10 +62,10 @@ void main() {
     // successesNeeded + maxFailures - 1 = 4 rounds; advance the fake clock
     // through more than that so the real (unseeded) outcome always
     // finishes revealing, whichever way it went.
-    for (var i = 0; i < 6; i++) {
-      await tester.pump(const Duration(milliseconds: 550));
+    // Each round now waits for the die to tumble and land (about 1.5 s).
+    for (var i = 0; i < 24; i++) {
+      await tester.pump(const Duration(milliseconds: 400));
     }
-    await tester.pump(const Duration(milliseconds: 400));
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);

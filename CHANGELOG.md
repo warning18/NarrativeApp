@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.311.0+347]
+
+Every check rolls a d20 on screen; the Journey's marks say what the ways are.
+
+### Changed
+- **A d20 tumbles and lands on every check's roll,** drawn without a panel behind it: its number flickers while it turns in perspective, then the roll settles, the edge turns gold for a success or red for a failure and a ring flashes out of it (a failure shudders). The Skill Challenge waits for each round's die to land before the round counts; a single ability check, in the story and on the expeditions, is rolled the same way and then tells its sum. One reusable widget (`D20Roll`), for the crossings and the voyage to use next.
+- **The Journey's marks look like what the ways are:** a fight with a beast, a guard, a ghost or an archer each have their own mark, a check has one for each ability, a shop is a forge, an apothecary, an arcane bazaar or a chandler, an expedition a cave, ruins, a wood, the shore or the desert. Each mark moves a little when nothing else does (a flag sways, a flame flickers, a boat bobs, a blade glints).
+- **A quest badge on a mark:** a gold bookmark when the way is the main quest's, a plain one for a side job; shown on a way that offers a quest not taken yet or carries one under way forward.
+- **The place's name no longer stamps itself, in yellow, over the map** when the party arrives somewhere new (the seal and the ink still do; the name is in the corner).
+
+## [1.310.0+346]
+
+The ronin walks.
+
+### Changed
+- **The hero in the side-view scenes is the ronin sprite** the user supplied (a samurai vagabond, eight walk frames east and west): she walks at the head of the party over the desert and the ruins while the scene scrolls, and stands with a slow breath when the party waits on a choice. The companions behind her are still the placeholders, drawn a little bigger so they stand as tall as she does. Until her images are loaded the old placeholder stands in.
+
 ## [1.309.0+345]
 
 The story world on the whole sphere.
