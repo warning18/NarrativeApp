@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.321.0+357]
+## [1.324.0+360]
 
 The Skillwright's bench shows what it fuses.
 
