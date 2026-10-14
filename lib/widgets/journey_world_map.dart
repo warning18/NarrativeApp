@@ -45,19 +45,12 @@ class JourneyWorldMap extends ConsumerStatefulWidget {
     this.enterZoom,
     this.onFullMap,
     this.focus,
-    this.heardOf = const {},
-    this.goalId,
     this.fog = ChartFog.uncharted,
   });
 
   /// The "Full map" button among the chart's controls (board 8): shown
   /// only when the Journey gives a way to open the full-screen map.
   final VoidCallback? onFullMap;
-
-  /// Places only heard of, drawn as a "?" and tappable (the full map's
-  /// sheet), and the one marked as the goal.
-  final Set<String> heardOf;
-  final String? goalId;
 
   /// A place the world level opens on, marked, instead of the party's
   /// (the full map opened from the camp's "On the map").
@@ -309,10 +302,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     Landmark? nearest;
     var best = 12.0 * 12.0 / (g.zoom * g.zoom);
     for (final landmark in worldMapLandmarks) {
-      if (!widget.discovered.contains(landmark.id) &&
-          !widget.heardOf.contains(landmark.id)) {
-        continue;
-      }
+      if (!widget.discovered.contains(landmark.id)) continue;
       final d = (geo.of(landmark) - chart).distanceSquared;
       if (d <= best) {
         best = d;
@@ -370,10 +360,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     Landmark? nearest;
     var best = 12.0 * 12.0;
     for (final landmark in worldMapLandmarks) {
-      if (!widget.discovered.contains(landmark.id) &&
-          !widget.heardOf.contains(landmark.id)) {
-        continue;
-      }
+      if (!widget.discovered.contains(landmark.id)) continue;
       final d = (geo.of(landmark) - at).distanceSquared;
       if (d <= best) {
         best = d;
@@ -445,8 +432,6 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
             standingOf: standings,
             shopPlaces: widget.shopPlaces,
             campPlaces: widget.campPlaces,
-            heardOf: widget.heardOf,
-            goalId: widget.goalId,
             globe: globe,
             zoomOf: () => globe?.zoom ?? _scale,
             fogOf: () => _reveal.value,

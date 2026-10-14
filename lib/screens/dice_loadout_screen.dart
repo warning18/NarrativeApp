@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../combat/combat_engine.dart' show applySkillTier;
 import '../combat/dice_faces.dart';
-import '../combat/face_choice.dart';
 import '../combat/face_keywords.dart';
 import '../combat/face_smithing.dart';
 import '../data/skill_tree.dart';
@@ -19,7 +17,6 @@ import '../tutorial/tutorial_topics.dart';
 import '../utils/face_style.dart';
 import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
-import '../widgets/face_skill_sheet.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/die_3d.dart';
 import '../widgets/die_skins.dart';
@@ -417,74 +414,96 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
           id,
     ];
     final basic = isBasicFace(face);
-    // What each skill does to this face is the fight's own rule (Core's
-    // faceSkillChoice): the skills at the tier the player fights them at,
-    // the damage the party deals. An ally's faces use the player's damage
-    // here (the fight's perks and signs are not replayed).
-    final session = ref.read(playerSessionProvider);
-    final items = ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
-    final scaling = equipmentScalingBonusFor(session.equippedItemIds, items,
-        strength: session.strength,
-        dexterity: session.dexterity,
-        constitution: session.constitution,
-        intelligence: session.intelligence);
-    final baseDamage = session.baseDamage +
-        equipmentBonusFor(session.equippedItemIds, items, 'attackDamage') +
-        scaling.damageBonus;
-    final tiered = <String, dynamic>{
-      for (final e in skills.entries)
-        e.key: applySkillTier(
-            e.value as Map<String, dynamic>, session.skillTiers[e.key] ?? 0),
-    };
-    final options = [
-      for (final id in choices)
-        () {
-          final skill = skills[id] as Map<String, dynamic>?;
-          final rarity = skillRarity(skill);
-          final choice = faceSkillChoice(
-            faces: faces,
-            assignments: assignments,
-            faceIndex: faceIndex,
-            candidateId: id,
-            skills: tiered,
-            baseDamage: baseDamage,
-          );
-          // At its limit a skill can't take one more face; the face's own
-          // pick stays choosable.
-          final allowed =
-              choice.allowed || choice.block == FaceChoiceBlock.alreadyThere;
-          return FaceSkillOption(
-            id: id,
-            name: skillDisplayName(id, language: lang),
-            icon: skillKind(skill).icon,
-            iconColour: skillKind(skill).color,
-            rarityLabel: t(rarity.labelKey),
-            rarityColour: rarity.color,
-            change: _faceChangeOf(choice, lang),
-            limitLine: (allowed
-                    ? t('skill_faces_count').replaceAll('{n}',
-                        '${choice.usedFaces + (choice.block == FaceChoiceBlock.alreadyThere ? 1 : 0)}')
-                    : t('skill_faces_full'))
-                .replaceAll('{rarity}', t(rarity.labelKey))
-                .replaceAll('{max}', '${choice.maxFaces}'),
-            allowed: allowed,
-          );
-        }(),
-    ];
-    showFaceSkillSheet(
-      context,
-      nowLine: t('face_now_line')
-          .replaceAll('{n}', '${faceIndex + 1}')
-          .replaceAll('{face}', _basicFaceSummary(face, lang)),
-      note: basic
-          ? t('channeled_face_note').replaceAll(
-              '{face}', t(basicFaceLabelKey(face['type']?.toString() ?? '')))
-          : null,
-      options: options,
-      currentId: current,
-      onSet: onPick,
-      onClear: onClear,
-      clearSubtitle: _basicFaceSummary(face, lang),
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        final theme = Theme.of(sheetContext);
+        return SafeArea(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(sheetContext).size.height * 0.7),
+            child: ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              children: [
+                Text(t('pick_face_skill_title'),
+                    style: theme.textTheme.titleMedium),
+                if (basic)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      t('channeled_face_note').replaceAll('{face}',
+                          t(basicFaceLabelKey(face['type']?.toString() ?? ''))),
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ),
+                const SizedBox(height: 8),
+                if (onClear != null)
+                  ListTile(
+                    leading: const Icon(Icons.undo),
+                    title: Text(t('reset_face_button')),
+                    subtitle: Text(_basicFaceSummary(face, lang)),
+                    onTap: () {
+                      Navigator.of(sheetContext).pop();
+                      onClear();
+                    },
+                  ),
+                if (choices.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Text(t('no_skills_unlocked_hint')),
+                  ),
+                for (final id in choices)
+                  Builder(builder: (_) {
+                    final skill = skills[id] as Map<String, dynamic>?;
+                    final rarity = skillRarity(skill);
+                    final max = maxFacesForSkill(skill);
+                    // At its limit a skill can't take one more face; the
+                    // face's own pick stays choosable.
+                    final allowed = id == current ||
+                        canSetSkillOnFace(
+                            id, faceIndex, faces, assignments, skills);
+                    final onDie =
+                        facesCastingSkill(id, faces, assignments, skills);
+                    final limitLine = (allowed
+                            ? t('skill_faces_count').replaceAll('{n}', '$onDie')
+                            : t('skill_faces_full'))
+                        .replaceAll('{rarity}', t(rarity.labelKey))
+                        .replaceAll('{max}', '$max');
+                    return ListTile(
+                      key: Key('pick_skill_$id'),
+                      enabled: allowed,
+                      leading: Icon(skillKind(skill).icon,
+                          color: skillKind(skill).color),
+                      title: Text(skillDisplayName(id, language: lang)),
+                      subtitle: Text.rich(TextSpan(children: [
+                        TextSpan(text: _skillSummary(skill, lang)),
+                        TextSpan(
+                          text: '\n$limitLine',
+                          style: TextStyle(
+                              color: allowed
+                                  ? rarity.color
+                                  : theme.colorScheme.error),
+                        ),
+                      ])),
+                      isThreeLine: true,
+                      selected: id == current,
+                      trailing: id == current ? const Icon(Icons.check) : null,
+                      onTap: allowed
+                          ? () {
+                              Navigator.of(sheetContext).pop();
+                              onPick(id);
+                            }
+                          : null,
+                    );
+                  }),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -537,53 +556,6 @@ String _basicFaceSummary(Map<String, dynamic> face, AppLanguage lang) {
     '${trFor(lang, basicFaceLabelKey(type))}${value > 0 ? ' $value' : ''}',
     if (element != 'None') element,
   ].join(' · ');
-}
-
-/// "Attack 7", "Mana +2", "Attack 5 · Heal 3": what a face does when it
-/// lands, in words.
-String _outputText(FaceOutput o, AppLanguage lang) {
-  String t(String key) => trFor(lang, key);
-  final parts = [
-    if (o.damage > 0) '${t('face_attack_label')} ${o.damage}',
-    if (o.heal > 0) '${t('face_heal_label')} ${o.heal}',
-    if (o.block > 0) '${t('face_guard_label')} ${o.block}',
-    if (o.mana > 0) '${t('face_mana_label')} +${o.mana}',
-    if (o.status != null) o.status!,
-  ];
-  return parts.isEmpty ? t('miss_label') : parts.join(' · ');
-}
-
-/// [choice] (Core's compare of a face with and without a skill) as the
-/// sheet's before → after: a change of kind when the face stops doing what
-/// it did (an attack that gives mana, say), else a gain or a loss in what
-/// it does.
-FaceChange _faceChangeOf(FaceSkillChoice choice, AppLanguage lang) {
-  Set<String> shape(FaceOutput o) => {
-        if (o.damage > 0) 'damage',
-        if (o.heal > 0) 'heal',
-        if (o.block > 0) 'block',
-        if (o.mana > 0) 'mana',
-        if (o.status != null) 'status',
-      };
-  int total(FaceOutput o) => o.damage + o.heal + o.block + o.mana;
-  final b = choice.before, a = choice.after;
-  final sameShape =
-      shape(b).length == shape(a).length && shape(b).containsAll(shape(a));
-  final kind = !sameShape
-      ? FaceChangeKind.kind
-      : switch (choice.effect) {
-          FaceChoiceEffect.gain => FaceChangeKind.gain,
-          FaceChoiceEffect.loss => FaceChangeKind.loss,
-          FaceChoiceEffect.same => FaceChangeKind.same,
-        };
-  return FaceChange(
-    before: _outputText(b, lang),
-    after: _outputText(a, lang),
-    kind: kind,
-    delta: kind == FaceChangeKind.gain || kind == FaceChangeKind.loss
-        ? total(a) - total(b)
-        : null,
-  );
 }
 
 /// "+6 dmg ×1.4 · Fire" -- a skill's numbers in one line.

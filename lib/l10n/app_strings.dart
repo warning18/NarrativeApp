@@ -2647,26 +2647,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Choose this face\'s skill',
     AppLanguage.fr: 'Choisir la compétence de cette face',
   },
-  'face_set_button': {
-    AppLanguage.en: 'Set on this face',
-    AppLanguage.fr: 'Mettre sur cette face',
-  },
-  'face_full_pill': {
-    AppLanguage.en: 'full',
-    AppLanguage.fr: 'complet',
-  },
-  'face_change_kind': {
-    AppLanguage.en: 'changes kind',
-    AppLanguage.fr: 'change de nature',
-  },
-  'face_change_same': {
-    AppLanguage.en: 'same',
-    AppLanguage.fr: 'identique',
-  },
-  'face_now_line': {
-    AppLanguage.en: 'Face {n} · now: {face}',
-    AppLanguage.fr: 'Face {n} · actuellement : {face}',
-  },
   'reset_face_button': {
     AppLanguage.en: 'Back to the face\'s own action',
     AppLanguage.fr: 'Revenir à l’action de la face',
@@ -2959,44 +2939,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'You turn back to where you set out, {n} days lost.',
     AppLanguage.fr:
         'Vous rebroussez chemin jusqu’à votre point de départ, {n} jours perdus.',
-  },
-  // The building screen's sections (camp_works.dart, building-screen.md).
-  'works_category_sea': {AppLanguage.en: 'The Sea', AppLanguage.fr: 'La Mer'},
-  'works_category_sea_blurb': {
-    AppLanguage.en:
-        'What the Rusty Eel needs to put out: a quay, a yard, a berth.',
-    AppLanguage.fr:
-        'Ce qu’il faut au Rusty Eel pour reprendre la mer : un quai, un chantier, un poste d’amarrage.',
-  },
-  'works_category_company': {
-    AppLanguage.en: 'The Company',
-    AppLanguage.fr: 'La Compagnie',
-  },
-  'works_category_company_blurb': {
-    AppLanguage.en:
-        'Roofs for the people who follow you, and a home for some of them.',
-    AppLanguage.fr:
-        'Des toits pour ceux qui vous suivent, et un foyer pour certains d’entre eux.',
-  },
-  'works_category_workshops': {
-    AppLanguage.en: 'The Workshops',
-    AppLanguage.fr: 'Les Ateliers',
-  },
-  'works_category_workshops_blurb': {
-    AppLanguage.en:
-        'Four houses that sell the camp what the road does not give.',
-    AppLanguage.fr:
-        'Quatre maisons qui vendent au camp ce que la route ne donne pas.',
-  },
-  'works_category_greatWorks': {
-    AppLanguage.en: 'The Great Works',
-    AppLanguage.fr: 'Les Grands Ouvrages',
-  },
-  'works_category_greatWorks_blurb': {
-    AppLanguage.en:
-        'What is built to outlast you: the hearth, the banner, the shrine.',
-    AppLanguage.fr:
-        'Ce qu’on bâtit pour vous survivre : le foyer, la bannière, le sanctuaire.',
   },
   'harbour_needed_to_sail': {
     AppLanguage.en:
@@ -6475,51 +6417,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'map_journey_sea': {
     AppLanguage.en: 'by sea',
     AppLanguage.fr: 'par mer',
-  },
-  'map_set_out': {
-    AppLanguage.en: 'Set out',
-    AppLanguage.fr: 'Partir',
-  },
-  'map_set_out_expedition': {
-    AppLanguage.en: 'You set out on the expedition that finds it: {zone}.',
-    AppLanguage.fr: 'Vous partez en expédition pour la trouver : {zone}.',
-  },
-  'map_set_out_warning': {
-    AppLanguage.en: 'You have only heard of it: the road may hold anything.',
-    AppLanguage.fr:
-        'Vous n’en avez fait qu’entendre parler : la route peut réserver n’importe quoi.',
-  },
-  'map_mark_goal': {
-    AppLanguage.en: 'Mark as goal',
-    AppLanguage.fr: 'En faire un objectif',
-  },
-  'map_clear_goal': {
-    AppLanguage.en: 'Clear the goal',
-    AppLanguage.fr: 'Retirer l’objectif',
-  },
-  'map_goal_is': {
-    AppLanguage.en: 'This is your goal.',
-    AppLanguage.fr: 'C’est votre objectif.',
-  },
-  'map_reason_storyOnly': {
-    AppLanguage.en: 'The story will take you there.',
-    AppLanguage.fr: 'L’histoire vous y mènera.',
-  },
-  'map_reason_noCamp': {
-    AppLanguage.en: 'Not while the story leads.',
-    AppLanguage.fr: 'Pas tant que l’histoire vous guide.',
-  },
-  'map_reason_laterChapter': {
-    AppLanguage.en: 'Not yet: chapter {n}.',
-    AppLanguage.fr: 'Pas encore : chapitre {n}.',
-  },
-  'map_reason_needsHarbour': {
-    AppLanguage.en: 'The Eel must sail: build the harbour.',
-    AppLanguage.fr: 'Le Rusty Eel doit prendre la mer : bâtissez le port.',
-  },
-  'map_reason_needsExpedition': {
-    AppLanguage.en: 'An expedition must open the way first.',
-    AppLanguage.fr: 'Une expédition doit d’abord ouvrir la voie.',
   },
   'map_here': {
     AppLanguage.en: 'The party is here.',

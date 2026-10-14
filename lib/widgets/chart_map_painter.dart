@@ -77,8 +77,6 @@ class ChartMapPainter extends CustomPainter {
     this.standingOf = const {},
     this.shopPlaces = const {},
     this.campPlaces = const {},
-    this.heardOf = const {},
-    this.goalId,
     this.detail = true,
     this.globe,
     this.zoomOf,
@@ -120,12 +118,6 @@ class ChartMapPainter extends CustomPainter {
   /// shops calque.
   final Set<String> shopPlaces;
   final Set<String> campPlaces;
-
-  /// Places only heard of: a "?" in a ring where they lie, no name (the
-  /// full map's sheet offers to set out for them); [goalId], the one marked
-  /// as the goal, is ringed in the mark's colour.
-  final Set<String> heardOf;
-  final String? goalId;
 
   /// Terrain, features and the trade roads drawn (off for a small chart).
   final bool detail;
@@ -2122,48 +2114,6 @@ class ChartMapPainter extends CustomPainter {
               ..color = palette.mark
               ..style = PaintingStyle.stroke
               ..strokeWidth = 1.4 * m);
-      }
-      if (l.id == selectedId && (reduceMotion || f % 4 < 3)) {
-        canvas.drawCircle(
-            p,
-            6.8 * m,
-            Paint()
-              ..color = palette.place.withValues(alpha: 0.8)
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 0.6 * m);
-      }
-    }
-
-    // The places only heard of: a "?" in a ring.
-    for (final l in worldMapLandmarks) {
-      if (!heardOf.contains(l.id) || discovered.contains(l.id)) continue;
-      if (!_vis(geography.of(l))) continue;
-      final p = _at(geography.of(l));
-      final isGoal = l.id == goalId;
-      final colour =
-          isGoal ? palette.mark : palette.place.withValues(alpha: 0.9);
-      canvas.drawCircle(
-          p, 2.8 * m, Paint()..color = palette.land.withValues(alpha: 0.75));
-      canvas.drawCircle(
-          p,
-          2.8 * m,
-          Paint()
-            ..color = colour
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 0.7 * m);
-      final q = _layout(
-          '?',
-          TextStyle(
-              color: colour, fontSize: 4.4 * m, fontWeight: FontWeight.w700));
-      q.paint(canvas, p - Offset(q.width / 2, q.height / 2));
-      if (isGoal) {
-        canvas.drawCircle(
-            p,
-            4.8 * m,
-            Paint()
-              ..color = palette.mark
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 0.9 * m);
       }
       if (l.id == selectedId && (reduceMotion || f % 4 < 3)) {
         canvas.drawCircle(

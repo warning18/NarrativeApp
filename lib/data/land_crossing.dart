@@ -139,7 +139,6 @@ class LandRoute {
     this.roads = const [],
     required this.days,
     this.biome = '',
-    this.terrain = '',
     this.chapter = 1,
     this.events = const {},
   });
@@ -153,7 +152,6 @@ class LandRoute {
         roads: [...?(json['roads'] as List?)?.map((e) => e.toString())],
         days: (json['days'] as num?)?.toInt() ?? 1,
         biome: json['biome']?.toString() ?? '',
-        terrain: json['terrain']?.toString() ?? '',
         chapter: (json['chapter'] as num?)?.toInt() ?? 1,
         events: {
           for (final MapEntry(:key, :value)
@@ -170,24 +168,11 @@ class LandRoute {
   final List<String> roads;
   final int days;
   final String biome;
-
-  /// The scene kit the side view draws it with (one of [landTerrains]).
-  final String terrain;
   final int chapter;
   final Map<String, int> events;
 
   String nameFor(bool fr) => fr && nameFr.isNotEmpty ? nameFr : name;
 }
-
-/// The side view's scene kits: what a route's `terrain` may be.
-const List<String> landTerrains = [
-  'desert',
-  'mountain',
-  'forest',
-  'marsh',
-  'snow',
-  'ruins',
-];
 
 /// [routes]' record [id] (land_routes.json), or null.
 LandRoute? landRouteFor(Map<String, dynamic> routes, String id) {

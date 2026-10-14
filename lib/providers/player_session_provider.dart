@@ -18,7 +18,6 @@ import '../data/camp_state.dart' show harborHouseId;
 import '../data/factions.dart';
 import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
 import '../data/harbour.dart';
-import '../data/heard_of.dart' show withMapGoal;
 import '../data/journey_rules.dart';
 import '../data/materials.dart';
 import '../data/offers.dart';
@@ -4359,13 +4358,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       antidoteCount: antidoteCount,
       mana: mana,
     );
-    await _persist();
-  }
-
-  /// Marks [landmarkId] as the map's one goal (null clears it), see
-  /// heard_of.dart's withMapGoal: a flag, no save field of its own.
-  Future<void> setMapGoal(String? landmarkId) async {
-    state = state.copyWith(flags: withMapGoal(state.flags, landmarkId));
     await _persist();
   }
 

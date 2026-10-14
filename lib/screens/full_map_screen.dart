@@ -2,17 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/map_charts.dart' show ChartPalette;
-import '../data/heard_of.dart';
 import '../data/story_repository.dart';
-import '../gamedata/db_schema.dart' show zonesSchema;
 import '../data/world_map.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/expedition_active_provider.dart';
-import '../providers/game_db_providers.dart' show localizedDbProvider;
-import '../providers/player_session_provider.dart';
 import '../providers/map_look_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/travel_history_provider.dart';
@@ -22,7 +18,6 @@ import '../widgets/camp_travel.dart' show travelToPlace;
 import '../widgets/chart_map_painter.dart' show ChartFog;
 import '../widgets/journey_world_map.dart';
 import '../widgets/map_legend_sheet.dart';
-import 'heard_of_travel.dart' show setOutToHeardOf;
 import 'journal_screen.dart' show JournalScreen;
 
 /// Closes the full map's [route] wherever it is in the stack (not whatever
@@ -51,8 +46,6 @@ Map<String, String> placeKindsOf(StoryData story) {
   }
   return kinds;
 }
-
-enum _MapSheetChoice { travel, setOut, markGoal, clearGoal }
 
 /// The full-screen map (board 8): the Journey's own chart, whole, on its
 /// own page. A tap on a place opens a sheet: where the party stands, or the
@@ -99,36 +92,10 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
     final here = history.currentId == landmark.id;
     final busy =
         ref.read(combatActiveProvider) || ref.read(expeditionActiveProvider);
-    // A place only heard of: the sheet offers to set out for it, or to mark
-    // it as the goal, by Core's rule (heard_of.dart).
-    final heard = history.visited.contains(landmark.id) || here
-        ? null
-        : ref.read(heardOfPlacesProvider)[landmark.id];
-    final isGoal = ref.read(mapGoalProvider) == landmark.id;
-    final zoneName = heard?.expeditionId == null
-        ? null
-        : (ref
-                .read(localizedDbProvider(zonesSchema))
-                .value?[heard!.expeditionId] as Map?)?['zoneName']
-            ?.toString();
-    Text note(String key, {Color? colour, String? text}) => Text(
-        text ?? tr(ref, key),
-        key: Key(key),
-        style: theme.textTheme.labelMedium?.copyWith(color: colour ?? ink.ash));
-    final reasonLine = heard == null || heard.setsOut
-        ? null
-        : switch (heard.reason!) {
-            HeardOfReason.storyOnly => 'map_reason_storyOnly',
-            HeardOfReason.noCamp => 'map_reason_noCamp',
-            HeardOfReason.laterChapter => 'map_reason_laterChapter',
-            HeardOfReason.needsHarbour => 'map_reason_needsHarbour',
-            HeardOfReason.needsExpedition => 'map_reason_needsExpedition',
-          };
-    final choice = await showModalBottomSheet<_MapSheetChoice>(
+    final go = await showModalBottomSheet<bool>(
       context: context,
-      isScrollControlled: true,
       builder: (sheet) => SafeArea(
-        child: SingleChildScrollView(
+        child: Padding(
           key: const Key('map_place_sheet'),
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
           child: Column(
@@ -143,73 +110,39 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
                   style: theme.textTheme.bodySmall),
               const SizedBox(height: 10),
               if (here)
-                note('map_here', colour: ink.gold)
-              else if (heard != null) ...[
-                if (heard.setsOut) ...[
-                  if (heard.byExpedition)
-                    note('map_set_out_expedition',
-                        colour: ink.gold,
-                        text: tr(ref, 'map_set_out_expedition')
-                            .replaceAll('{zone}', zoneName ?? '?')),
-                  const SizedBox(height: 4),
-                  note('map_set_out_warning'),
-                  if (busy) ...[
-                    const SizedBox(height: 4),
-                    note('map_busy'),
-                  ],
-                ] else
-                  note(reasonLine!,
-                      text: tr(ref, reasonLine)
-                          .replaceAll('{n}', '${heard.chapter ?? ''}')),
-                if (isGoal) ...[
-                  const SizedBox(height: 4),
-                  note('map_goal_is', colour: ink.gold),
-                ],
-              ] else if (nodeId == null)
-                note('map_no_road')
+                Text(tr(ref, 'map_here'),
+                    key: const Key('map_here'),
+                    style:
+                        theme.textTheme.labelLarge?.copyWith(color: ink.gold))
+              else if (nodeId == null)
+                Text(tr(ref, 'map_no_road'),
+                    key: const Key('map_no_road'),
+                    style:
+                        theme.textTheme.labelMedium?.copyWith(color: ink.ash))
               else if (busy)
-                note('map_busy'),
+                Text(tr(ref, 'map_busy'),
+                    key: const Key('map_busy'),
+                    style:
+                        theme.textTheme.labelMedium?.copyWith(color: ink.ash)),
               const SizedBox(height: 12),
-              Wrap(
-                alignment: WrapAlignment.end,
-                spacing: 8,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
                     key: const Key('map_cancel'),
-                    onPressed: () => Navigator.of(sheet).pop(),
-                    child: Text(tr(
-                        ref,
-                        here || (nodeId == null && heard == null)
-                            ? 'close_button'
-                            : 'cancel')),
+                    onPressed: () => Navigator.of(sheet).pop(false),
+                    child: Text(tr(ref,
+                        here || nodeId == null ? 'close_button' : 'cancel')),
                   ),
-                  if (heard != null)
-                    TextButton(
-                      key: const Key('map_goal_button'),
-                      onPressed: () => Navigator.of(sheet).pop(isGoal
-                          ? _MapSheetChoice.clearGoal
-                          : _MapSheetChoice.markGoal),
-                      child: Text(
-                          tr(ref, isGoal ? 'map_clear_goal' : 'map_mark_goal')),
-                    ),
-                  if (heard != null && heard.setsOut)
-                    FilledButton(
-                      key: const Key('map_set_out'),
-                      onPressed: busy
-                          ? null
-                          : () =>
-                              Navigator.of(sheet).pop(_MapSheetChoice.setOut),
-                      child: Text(tr(ref, 'map_set_out')),
-                    ),
-                  if (!here && heard == null && nodeId != null)
+                  if (!here && nodeId != null) ...[
+                    const SizedBox(width: 8),
                     FilledButton(
                       key: const Key('travel_go'),
-                      onPressed: busy
-                          ? null
-                          : () =>
-                              Navigator.of(sheet).pop(_MapSheetChoice.travel),
+                      onPressed:
+                          busy ? null : () => Navigator.of(sheet).pop(true),
                       child: Text(tr(ref, 'map_travel_here')),
                     ),
+                  ],
                 ],
               ),
             ],
@@ -217,32 +150,15 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
         ),
       ),
     );
-    if (choice == null || !mounted) return;
-    switch (choice) {
-      case _MapSheetChoice.markGoal:
-        await ref.read(playerSessionProvider.notifier).setMapGoal(landmark.id);
-        return;
-      case _MapSheetChoice.clearGoal:
-        await ref.read(playerSessionProvider.notifier).setMapGoal(null);
-        return;
-      case _MapSheetChoice.setOut:
-        // The map's own route, kept (see travel below).
-        final nav = Navigator.of(context);
-        final mapRoute = ModalRoute.of(context);
-        await setOutToHeardOf(context, ref, heard!);
-        closeMapRoute(nav, mapRoute);
-        return;
-      case _MapSheetChoice.travel:
-        if (nodeId == null) return;
-        final place = ref.read(storyDataProvider).value?.nodeFor(nodeId);
-        if (place == null) return;
-        // The map's own route, kept: a notice may be showing over it by the
-        // time the walk is done, so what is closed is this page, not the top.
-        final nav = Navigator.of(context);
-        final mapRoute = ModalRoute.of(context);
-        await travelToPlace(context, ref, place);
-        closeMapRoute(nav, mapRoute);
-    }
+    if (go != true || nodeId == null || !mounted) return;
+    final place = ref.read(storyDataProvider).value?.nodeFor(nodeId);
+    if (place == null) return;
+    // The map's own route, kept: a notice may be showing over it by the
+    // time the walk is done, so what is closed is this page, not the top.
+    final nav = Navigator.of(context);
+    final mapRoute = ModalRoute.of(context);
+    await travelToPlace(context, ref, place);
+    closeMapRoute(nav, mapRoute);
   }
 
   @override
@@ -305,10 +221,6 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
                 onLayers: () => showCalquesSheet(context, ref),
                 onSelect: _placeSheet,
                 focus: _focus,
-                heardOf: editing
-                    ? const {}
-                    : ref.watch(heardOfPlacesProvider).keys.toSet(),
-                goalId: ref.watch(mapGoalProvider),
                 fog: editing ? ChartFog.none : ChartFog.uncharted,
               ),
             ),

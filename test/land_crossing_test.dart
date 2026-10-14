@@ -34,7 +34,6 @@ void main() {
       expect(route.days, greaterThan(0), reason: id);
       expect(route.nameFr, isNotEmpty, reason: id);
       expect(route.roads, isNotEmpty, reason: id);
-      expect(landTerrains, contains(route.terrain), reason: id);
       for (final road in route.roads) {
         expect(roads.containsKey(road), isTrue, reason: '$id: $road');
       }
@@ -133,25 +132,6 @@ void main() {
     if (!spent.arrived) expect(spent.health, turnBackHealth(140));
   });
 
-  test('the second leg, the Sleeper to the White Wells, is drawn and crossed',
-      () {
-    final wells = landRouteFor(routes, 'sleeper_to_wells')!;
-    expect(wells.from, 'sleeper');
-    expect(wells.to, 'wells');
-    var arrived = 0;
-    for (var seed = 0; seed < 500; seed++) {
-      final result = resolveCrossing(wells, events,
-          health: 140,
-          maxHealth: 140,
-          gold: 30,
-          modifierFor: (_) => 1,
-          random: Random(seed));
-      expect(result.events, hasLength(wells.days));
-      if (result.arrived) arrived++;
-    }
-    expect(arrived, greaterThan(475));
-  });
-
   test('every way out of the wreck toward the Sleeper crosses the desert', () {
     final story = _json('assets/Cleaned_Narrative_DAG.json');
     var ways = 0;
@@ -211,15 +191,8 @@ void main() {
             'gold': 50,
           }));
     });
-    // The scene keeps moving, so the screen never settles: a bounded wait.
-    Future<void> settle() async {
-      for (var i = 0; i < 4; i++) {
-        await tester.pump(const Duration(milliseconds: 150));
-      }
-    }
-
     await tester.tap(find.text('go'));
-    await settle();
+    await tester.pumpAndSettle();
     expect(find.text('Day 1 of ${crash.days}'), findsOneWidget);
     expect(find.byKey(const Key('crossing_health')), findsOneWidget);
 
@@ -233,19 +206,19 @@ void main() {
         await tester.tap(choice.first);
         await Future<void>.delayed(const Duration(milliseconds: 100));
       });
-      await settle();
+      await tester.pumpAndSettle();
       if (day < crash.days - 1) {
         await tester.tap(find.byKey(const Key('crossing_next')));
-        await settle();
+        await tester.pumpAndSettle();
       }
     }
     // Far too much health to lose on a three-day road: the last day ends
     // on the far side.
     await tester.tap(find.byKey(const Key('crossing_next')));
-    await settle();
+    await tester.pumpAndSettle();
     expect(find.textContaining('far side'), findsOneWidget);
     await tester.tap(find.byKey(const Key('crossing_done')));
-    await settle();
+    await tester.pumpAndSettle();
     expect(arrived, isTrue);
   });
 }
