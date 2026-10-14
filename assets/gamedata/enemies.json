@@ -52,15 +52,15 @@
     "packEligible": true,
     "hunterAlignment": "",
     "hunterTier": 0,
-    "description": "A slum tough who rents out his fists to whoever pays, and collects from whoever doesn't.",
+    "description": "A slum tough who rents out his fists to whoever pays, and collects from whoever doesn’t.",
     "description_fr": "Un dur des bas-quartiers qui loue ses poings à qui paie, et se paie sur qui ne paie pas.",
     "encounterText": [
       "A slum thug peels off a doorframe and into your path, knuckles wrapped in rag. He has seen the bundle on your back and decided it is worth more than you are.",
       "\"Toll,\" says the thug blocking the passage, though no one has ever built a road here. He names a price, then decides he would rather take all of it."
     ],
     "encounterText_fr": [
-      "Un voyou des bas-quartiers se décolle d'un chambranle et se plante sur votre chemin, les phalanges bandées de chiffons. Il a vu le paquet sur votre dos et décidé qu'il valait plus que vous.",
-      "« Péage », dit le voyou qui barre le passage, bien que personne n'ait jamais construit de route ici. Il annonce un prix, puis décide qu'il préfère tout prendre."
+      "Un voyou des bas-quartiers se décolle d’un chambranle et se plante sur votre chemin, les phalanges bandées de chiffons. Il a vu le paquet sur votre dos et décidé qu’il valait plus que vous.",
+      "« Péage », dit le voyou qui barre le passage, bien que personne n’ait jamais construit de route ici. Il annonce un prix, puis décide qu’il préfère tout prendre."
     ],
     "packText": "Slum thugs work in gangs, and this one has followed you for two streets, waiting for a quiet corner. This is the quiet corner.",
     "packText_fr": "Les voyous des bas-quartiers chassent en bande, et celle-ci vous suit depuis deux rues, attendant un coin tranquille. Voici le coin tranquille.",
@@ -128,14 +128,14 @@
     "hunterAlignment": "",
     "hunterTier": 0,
     "description": "A gaoler of the Inquisition, sworn to keep what the Church takes and to bring back what escapes it.",
-    "description_fr": "Un geôlier de l'Inquisition, qui a juré de garder ce que l'Église prend et de ramener ce qui lui échappe.",
+    "description_fr": "Un geôlier de l’Inquisition, qui a juré de garder ce que l’Église prend et de ramener ce qui lui échappe.",
     "encounterText": [
       "An Inquisition warden is checking faces against a sheaf of warrants. He reaches yours, then the bundle you carry, and his hand finds his sword before his mouth can shout.",
-      "A warden in grey steps out of a checkpoint's shadow. \"What you carry belongs to the Church,\" he says, as if he had been told to expect you. \"Put it down, and yourself with it.\""
+      "A warden in grey steps out of a checkpoint’s shadow. \"What you carry belongs to the Church,\" he says, as if he had been told to expect you. \"Put it down, and yourself with it.\""
     ],
     "encounterText_fr": [
-      "Un gardien de l'Inquisition compare des visages à une liasse de mandats. Il arrive au vôtre, puis au paquet que vous portez, et sa main trouve son épée avant que sa bouche ne crie.",
-      "Un gardien en gris sort de l'ombre d'un poste de contrôle. « Ce que vous portez appartient à l'Église », dit-il, comme si on lui avait annoncé votre venue. « Posez-le, et couchez-vous avec. »"
+      "Un gardien de l’Inquisition compare des visages à une liasse de mandats. Il arrive au vôtre, puis au paquet que vous portez, et sa main trouve son épée avant que sa bouche ne crie.",
+      "Un gardien en gris sort de l’ombre d’un poste de contrôle. « Ce que vous portez appartient à l’Église », dit-il, comme si on lui avait annoncé votre venue. « Posez-le, et couchez-vous avec. »"
     ],
     "enemyName_fr": "Gardien de l’Inquisition",
     "biomes": [
@@ -204,8 +204,8 @@
       "A cart of spoiled grain lies overturned ahead, and a rat the size of a calf is feeding from it. She lifts her head at your step. You are between her and her young, and she does not share."
     ],
     "encounterText_fr": [
-      "Les couinements dans les murs cessent d'un coup. Une chose de la taille d'un chien se fraie un passage hors d'un grenier éventré, et vous comprenez que le tas sur lequel vous vous tenez est son nid.",
-      "Une charrette de grain gâté gît renversée devant vous, et une rate de la taille d'un veau s'en nourrit. Elle lève la tête à votre pas. Vous êtes entre elle et ses petits, et elle ne partage pas."
+      "Les couinements dans les murs cessent d’un coup. Une chose de la taille d’un chien se fraie un passage hors d’un grenier éventré, et vous comprenez que le tas sur lequel vous vous tenez est son nid.",
+      "Une charrette de grain gâté gît renversée devant vous, et une rate de la taille d’un veau s’en nourrit. Elle lève la tête à votre pas. Vous êtes entre elle et ses petits, et elle ne partage pas."
     ],
     "enemyName_fr": "Matriarche des rats",
     "biomes": [
@@ -264,8 +264,8 @@
       "Hunger makes the harbor rats bold. This one smells the food in your pack before it sees you, and comes on as if you were only the wrapping."
     ],
     "encounterText_fr": [
-      "Un sac de farine éventré s'est répandu en travers du chemin, et un rat des quais s'en gave déjà. Vous marchez dans son souper, et il n'a pas l'intention de vous contourner.",
-      "La faim rend les rats des quais hardis. Celui-ci sent la nourriture dans votre sac avant de vous voir, et avance comme si vous n'étiez que l'emballage."
+      "Un sac de farine éventré s’est répandu en travers du chemin, et un rat des quais s’en gave déjà. Vous marchez dans son souper, et il n’a pas l’intention de vous contourner.",
+      "La faim rend les rats des quais hardis. Celui-ci sent la nourriture dans votre sac avant de vous voir, et avance comme si vous n’étiez que l’emballage."
     ],
     "packText": "The rats have claimed a stretch of wall between you and where you are going, and they are hungry enough to hold it.",
     "packText_fr": "Les rats ont pris un pan de muraille entre vous et votre destination, et ils ont assez faim pour le tenir.",
@@ -339,11 +339,11 @@
       "Someone watched you pay for something earlier and counted the coin. He has followed you since, and here, out of sight of anyone, he stops pretending otherwise."
     ],
     "encounterText_fr": [
-      "Un bandit s'avance avec un sourire exercé et une lame courte. « La bourse, les bottes ou le sang, dit-il. À vous de choisir, mais vite. » Aucun des trois n'est à vendre.",
-      "Quelqu'un vous a vu payer plus tôt et a compté la monnaie. Il vous suit depuis, et ici, loin de tout regard, il cesse de faire semblant."
+      "Un bandit s’avance avec un sourire exercé et une lame courte. « La bourse, les bottes ou le sang, dit-il. À vous de choisir, mais vite. » Aucun des trois n’est à vendre.",
+      "Quelqu’un vous a vu payer plus tôt et a compté la monnaie. Il vous suit depuis, et ici, loin de tout regard, il cesse de faire semblant."
     ],
     "packText": "Bandits step out ahead and behind: the lane was a snare, and your purse is what it was set for.",
-    "packText_fr": "Des bandits surgissent devant et derrière : la ruelle était un piège, et c'est pour votre bourse qu'il a été tendu.",
+    "packText_fr": "Des bandits surgissent devant et derrière : la ruelle était un piège, et c’est pour votre bourse qu’il a été tendu.",
     "enemyName_fr": "Bandit des rues",
     "biomes": [
       "temperate",
@@ -425,11 +425,11 @@
       "Ash-drawn circles on the stones, and an acolyte in the middle of them. \"It told us you would bring it,\" it says, and lifts a hand that is already burning."
     ],
     "encounterText_fr": [
-      "Un acolyte cultiste est agenouillé sur la route, psalmodiant pour personne. Le chant s'arrête à votre passage. Il tourne la tête vers ce que vous portez et sourit, comme si une prière venait d'être exaucée.",
-      "Des cercles tracés à la cendre sur les pavés, et un acolyte en leur centre. « Il nous a dit que vous l'apporteriez », dit-il, en levant une main qui brûle déjà."
+      "Un acolyte cultiste est agenouillé sur la route, psalmodiant pour personne. Le chant s’arrête à votre passage. Il tourne la tête vers ce que vous portez et sourit, comme si une prière venait d’être exaucée.",
+      "Des cercles tracés à la cendre sur les pavés, et un acolyte en leur centre. « Il nous a dit que vous l’apporteriez », dit-il, en levant une main qui brûle déjà."
     ],
     "packText": "The void cults gather where the Shroud passes. A knot of acolytes has been waiting at the crossroads, and every one of them turns toward you at once.",
-    "packText_fr": "Les cultes du vide se rassemblent là où passe le Linceul. Un groupe d'acolytes attendait au carrefour, et tous se tournent vers vous d'un seul mouvement.",
+    "packText_fr": "Les cultes du vide se rassemblent là où passe le Linceul. Un groupe d’acolytes attendait au carrefour, et tous se tournent vers vous d’un seul mouvement.",
     "enemyName_fr": "Acolyte cultiste",
     "biomes": [
       "ashlands"
@@ -492,14 +492,14 @@
     "packEligible": false,
     "hunterAlignment": "",
     "hunterTier": 0,
-    "description": "A soldier of the Inquisition's own companies: drilled, armoured, and paid by the heresy found.",
-    "description_fr": "Un soldat des compagnies de l'Inquisition : entraîné, cuirassé, et payé à l'hérésie trouvée.",
+    "description": "A soldier of the Inquisition’s own companies: drilled, armoured, and paid by the heresy found.",
+    "description_fr": "Un soldat des compagnies de l’Inquisition : entraîné, cuirassé, et payé à l’hérésie trouvée.",
     "encounterText": [
       "An Inquisition patrol has stopped a cart ahead. One soldier looks at you twice, then at what you carry, and does not bother calling the others.",
       "Your description has been read out at every muster since you fled with the Shroud. The soldier at the corner has clearly been listening."
     ],
     "encounterText_fr": [
-      "Une patrouille de l'Inquisition a arrêté une charrette devant vous. Un soldat vous regarde à deux fois, puis ce que vous portez, et ne prend pas la peine d'appeler les autres.",
+      "Une patrouille de l’Inquisition a arrêté une charrette devant vous. Un soldat vous regarde à deux fois, puis ce que vous portez, et ne prend pas la peine d’appeler les autres.",
       "Votre signalement est lu à chaque rassemblement depuis que vous avez fui avec le Linceul. Le soldat au coin de la rue a manifestement écouté."
     ],
     "enemyName_fr": "Soldat de l’Inquisition",
@@ -576,18 +576,18 @@
     "packEligible": true,
     "hunterAlignment": "",
     "hunterTier": 0,
-    "description": "A mote of the tear's cold light, drawn to warmth and to the Shroud like a moth that eats the flame.",
+    "description": "A mote of the tear’s cold light, drawn to warmth and to the Shroud like a moth that eats the flame.",
     "description_fr": "Une étincelle de la lumière froide de la déchirure, attirée par la chaleur et par le Linceul comme une phalène qui dévore la flamme.",
     "encounterText": [
       "A cold light drifts across your path and stops. It has no face, but it leans toward what you carry the way a flame leans toward air, and the air around you begins to freeze.",
       "The candles along the way have all gone out, and something is eating their light. The grey candle turns from the last wick toward you, because you are warmer."
     ],
     "encounterText_fr": [
-      "Une lumière froide dérive en travers de votre chemin et s'arrête. Elle n'a pas de visage, mais elle se penche vers ce que vous portez comme une flamme vers l'air, et l'air autour de vous commence à geler.",
+      "Une lumière froide dérive en travers de votre chemin et s’arrête. Elle n’a pas de visage, mais elle se penche vers ce que vous portez comme une flamme vers l’air, et l’air autour de vous commence à geler.",
       "Les chandelles le long du chemin se sont toutes éteintes, et quelque chose dévore leur lumière. La chandelle grise se détourne de la dernière mèche vers vous, parce que vous dégagez plus de chaleur."
     ],
-    "packText": "Grey candles gather where the tear is thin, and they have felt the Shroud's pull. They circle you in slow, tightening rings.",
-    "packText_fr": "Les chandelles grises se rassemblent là où la déchirure est mince, et elles ont senti l'attrait du Linceul. Elles vous encerclent en anneaux lents qui se resserrent.",
+    "packText": "Grey candles gather where the tear is thin, and they have felt the Shroud’s pull. They circle you in slow, tightening rings.",
+    "packText_fr": "Les chandelles grises se rassemblent là où la déchirure est mince, et elles ont senti l’attrait du Linceul. Elles vous encerclent en anneaux lents qui se resserrent.",
     "enemyName_fr": "Chandelle grise",
     "biomes": [
       "ashlands",
@@ -639,7 +639,7 @@
         "healthThreshold": 50,
         "name": "Dirty Tricks",
         "nameFr": "Coups bas",
-        "message": "The Captain drops the swordsman's manners and fights like a smuggler.",
+        "message": "The Captain drops the swordsman’s manners and fights like a smuggler.",
         "messageFr": "Le Capitaine oublie ses manières de bretteur et se bat comme un contrebandier.",
         "damageMultiplier": 1.1,
         "healPercent": 0,
@@ -660,15 +660,15 @@
         "replaceMoves": false
       }
     ],
-    "description": "A captain who runs cargo and people past the Inquisition's cordon, and sells the ones who look expensive.",
-    "description_fr": "Un capitaine qui fait passer marchandises et gens à travers le cordon de l'Inquisition, et vend ceux qui ont l'air de valoir cher.",
+    "description": "A captain who runs cargo and people past the Inquisition’s cordon, and sells the ones who look expensive.",
+    "description_fr": "Un capitaine qui fait passer marchandises et gens à travers le cordon de l’Inquisition, et vend ceux qui ont l’air de valoir cher.",
     "encounterText": [
       "A smuggling crew is unloading where it should not be, and its captain has seen you see the cargo. In that trade a witness is a debt, and this captain settles debts at once.",
       "Word is out that someone carries a thing the Inquisition would pay a fortune for. A smuggler captain has decided to collect that fortune in person."
     ],
     "encounterText_fr": [
       "Un équipage de contrebandiers décharge là où il ne devrait pas, et son capitaine vous a vu voir la cargaison. Dans ce métier, un témoin est une dette, et ce capitaine règle ses dettes sur-le-champ.",
-      "Le bruit court que quelqu'un porte une chose pour laquelle l'Inquisition paierait une fortune. Un capitaine contrebandier a décidé d'encaisser cette fortune en personne."
+      "Le bruit court que quelqu’un porte une chose pour laquelle l’Inquisition paierait une fortune. Un capitaine contrebandier a décidé d’encaisser cette fortune en personne."
     ],
     "enemyName_fr": "Capitaine contrebandier",
     "biomes": [
@@ -724,7 +724,7 @@
         "name": "Rabid",
         "nameFr": "Enragé",
         "message": "Foam flecks its jaws; the sickness in it takes the reins.",
-        "messageFr": "L'écume perle à ses crocs ; la maladie en lui prend les rênes.",
+        "messageFr": "L’écume perle à ses crocs ; la maladie en lui prend les rênes.",
         "damageMultiplier": 1.15,
         "healPercent": 0,
         "cleanse": false,
@@ -745,14 +745,14 @@
       }
     ],
     "description": "A hound gone feral in the plague years, its bite as sick as its temper.",
-    "description_fr": "Un chien retourné à l'état sauvage pendant les années de peste, à la morsure aussi malade que son humeur.",
+    "description_fr": "Un chien retourné à l’état sauvage pendant les années de peste, à la morsure aussi malade que son humeur.",
     "encounterText": [
       "A plague hound is gnawing at something in the gutter. It raises its head, sees that you are bigger and fresher than what it has, and trades up.",
       "You hear the panting before you see it: a plague hound, starved to the bone, following your scent. It has decided you are the last meal it will need."
     ],
     "encounterText_fr": [
-      "Un chien de peste ronge quelque chose dans le caniveau. Il lève la tête, voit que vous êtes plus gros et plus frais que ce qu'il tient, et change de proie.",
-      "Vous entendez le halètement avant de le voir : un chien de peste, affamé jusqu'à l'os, qui suit votre odeur. Il a décidé que vous seriez le dernier repas dont il aura besoin."
+      "Un chien de peste ronge quelque chose dans le caniveau. Il lève la tête, voit que vous êtes plus gros et plus frais que ce qu’il tient, et change de proie.",
+      "Vous entendez le halètement avant de le voir : un chien de peste, affamé jusqu’à l’os, qui suit votre odeur. Il a décidé que vous seriez le dernier repas dont il aura besoin."
     ],
     "enemyName_fr": "Chien pestiféré",
     "biomes": [
@@ -812,7 +812,7 @@
         "name": "Meltdown",
         "nameFr": "Fusion",
         "message": "Something inside the golem gives way, and its seams glow white.",
-        "messageFr": "Quelque chose cède à l'intérieur du golem, et ses jointures luisent à blanc.",
+        "messageFr": "Quelque chose cède à l’intérieur du golem, et ses jointures luisent à blanc.",
         "damageMultiplier": 1.15,
         "healPercent": 0,
         "cleanse": false,
@@ -833,14 +833,14 @@
       }
     ],
     "description": "An iron guardian built by the old Church to keep its vaults, still keeping them long after the Church forgot what was inside.",
-    "description_fr": "Un gardien de fer bâti par l'ancienne Église pour garder ses caveaux, et qui les garde encore longtemps après que l'Église a oublié ce qu'ils contenaient.",
+    "description_fr": "Un gardien de fer bâti par l’ancienne Église pour garder ses caveaux, et qui les garde encore longtemps après que l’Église a oublié ce qu’ils contenaient.",
     "encounterText": [
       "Your way runs past a sealed vault door, and the iron statue beside it turns its head. It was set to guard this door against anyone who comes near, and you have come near.",
       "Something clanks awake in the rubble: an old Church golem, its orders a century stale. It does not know the Church is gone. It knows you are not a priest."
     ],
     "encounterText_fr": [
-      "Votre chemin longe une porte de caveau scellée, et la statue de fer à côté tourne la tête. On l'a placée là pour garder cette porte contre quiconque s'approche, et vous voilà tout près.",
-      "Quelque chose s'éveille dans les décombres avec un bruit de fer : un vieux golem de l'Église, aux ordres vieux d'un siècle. Il ne sait pas que l'Église n'est plus. Il sait que vous n'êtes pas prêtre."
+      "Votre chemin longe une porte de caveau scellée, et la statue de fer à côté tourne la tête. On l’a placée là pour garder cette porte contre quiconque s’approche, et vous voilà tout près.",
+      "Quelque chose s’éveille dans les décombres avec un bruit de fer : un vieux golem de l’Église, aux ordres vieux d’un siècle. Il ne sait pas que l’Église n’est plus. Il sait que vous n’êtes pas prêtre."
     ],
     "enemyName_fr": "Golem de fer",
     "biomes": [
@@ -921,7 +921,7 @@
         "name": "Smoke",
         "nameFr": "Fumée",
         "message": "The stalker stops pretending to have a shape.",
-        "messageFr": "Le rôdeur cesse de faire semblant d'avoir une forme.",
+        "messageFr": "Le rôdeur cesse de faire semblant d’avoir une forme.",
         "damageMultiplier": 1.1,
         "healPercent": 0,
         "cleanse": false,
@@ -945,7 +945,7 @@
         "name": "Cornered",
         "nameFr": "Acculé",
         "message": "Cornered, it drinks the dark around it and comes back harder.",
-        "messageFr": "Acculé, il boit l'obscurité alentour et revient plus fort.",
+        "messageFr": "Acculé, il boit l’obscurité alentour et revient plus fort.",
         "damageMultiplier": 1.1,
         "healPercent": 15,
         "cleanse": true,
@@ -953,8 +953,8 @@
         "replaceMoves": false
       }
     ],
-    "description": "A hunter out of the tear that follows the Shroud's trail for days and strikes only when it is sure.",
-    "description_fr": "Un chasseur sorti de la déchirure, qui suit la piste du Linceul des jours durant et ne frappe que lorsqu'il est sûr de lui.",
+    "description": "A hunter out of the tear that follows the Shroud’s trail for days and strikes only when it is sure.",
+    "description_fr": "Un chasseur sorti de la déchirure, qui suit la piste du Linceul des jours durant et ne frappe que lorsqu’il est sûr de lui.",
     "enemyName_fr": "Rôdeur du Néant",
     "biomes": [
       "ashlands"
@@ -1019,7 +1019,7 @@
         "name": "Sanctified Fury",
         "nameFr": "Fureur sanctifiée",
         "message": "The High Warden speaks a word that was never meant for a street, and the air catches fire.",
-        "messageFr": "Le Haut Gardien prononce un mot qui n'était pas fait pour une rue, et l'air prend feu.",
+        "messageFr": "Le Haut Gardien prononce un mot qui n’était pas fait pour une rue, et l’air prend feu.",
         "damageMultiplier": 1.15,
         "healPercent": 0,
         "cleanse": true,
@@ -1039,8 +1039,8 @@
         "replaceMoves": false
       }
     ],
-    "description": "The Inquisition's High Warden, commander of the Crusade's vanguard, who wears a piece of the Shroud stitched to his own back.",
-    "description_fr": "Le Haut Gardien de l'Inquisition, commandant de l'avant-garde de la Croisade, qui porte un fragment du Linceul cousu à même le dos.",
+    "description": "The Inquisition’s High Warden, commander of the Crusade’s vanguard, who wears a piece of the Shroud stitched to his own back.",
+    "description_fr": "Le Haut Gardien de l’Inquisition, commandant de l’avant-garde de la Croisade, qui porte un fragment du Linceul cousu à même le dos.",
     "enemyName_fr": "Haut Gardien de l’Inquisition",
     "biomes": []
   },
@@ -1167,7 +1167,7 @@
         "name": "Martyrdom",
         "nameFr": "Martyre",
         "message": "The zealot smiles, and sets himself alight.",
-        "messageFr": "Le zélote sourit, et s'embrase.",
+        "messageFr": "Le zélote sourit, et s’embrase.",
         "damageMultiplier": 1.15,
         "healPercent": 0,
         "cleanse": false,
@@ -1187,8 +1187,8 @@
         "replaceMoves": false
       }
     ],
-    "description": "A zealot of the Hollow Court, the inquisitors who kneel to no living master and pray to the tear in the Church's own words.",
-    "description_fr": "Un fanatique de la Cour creuse, ces inquisiteurs qui ne s'agenouillent devant aucun maître vivant et prient la déchirure avec les mots mêmes de l'Église.",
+    "description": "A zealot of the Hollow Court, the inquisitors who kneel to no living master and pray to the tear in the Church’s own words.",
+    "description_fr": "Un fanatique de la Cour creuse, ces inquisiteurs qui ne s’agenouillent devant aucun maître vivant et prient la déchirure avec les mots mêmes de l’Église.",
     "enemyName_fr": "Zélote de la Cour Creuse",
     "biomes": [
       "fen"
@@ -1264,7 +1264,7 @@
         "name": "Many Faces",
         "nameFr": "Mille visages",
         "message": "Every face it wears turns toward you at once.",
-        "messageFr": "Chaque visage qu'elle porte se tourne vers vous en même temps.",
+        "messageFr": "Chaque visage qu’elle porte se tourne vers vous en même temps.",
         "damageMultiplier": 1.1,
         "healPercent": 0,
         "cleanse": true,
@@ -1285,7 +1285,7 @@
       }
     ],
     "description": "The tear given a borrowed shape: every face it has taken from you along the way, folded into one.",
-    "description_fr": "La déchirure revêtue d'une forme d'emprunt : chaque visage qu'elle vous a pris en chemin, replié en un seul.",
+    "description_fr": "La déchirure revêtue d’une forme d’emprunt : chaque visage qu’elle vous a pris en chemin, replié en un seul.",
     "enemyName_fr": "Manifestation du Néant",
     "biomes": []
   },
@@ -1376,15 +1376,15 @@
         "replaceMoves": false
       }
     ],
-    "description": "Renn, the Inquisition's customs officer, who invents tolls and collects them himself.",
-    "description_fr": "Renn, l'officier des douanes de l'Inquisition, qui invente des péages et les perçoit lui-même.",
+    "description": "Renn, the Inquisition’s customs officer, who invents tolls and collects them himself.",
+    "description_fr": "Renn, l’officier des douanes de l’Inquisition, qui invente des péages et les perçoit lui-même.",
     "encounterText": [
       "Overseer Renn has invented a toll for this stretch of road and is collecting it himself. He names a price, then sees what you carry and names another: you, delivered to the Inquisition.",
       "Renn, the customs man, steps out with a gaff hook and a ledger. Your name is in the ledger under bounties, and he has never once let a bounty walk past him."
     ],
     "encounterText_fr": [
-      "Le contremaître Renn a inventé un péage pour ce bout de chemin et le perçoit lui-même. Il annonce un prix, puis voit ce que vous portez et en annonce un autre : vous, livré à l'Inquisition.",
-      "Renn, l'homme des douanes, surgit avec une gaffe et un registre. Votre nom figure au registre, à la rubrique des primes, et il n'a jamais laissé une prime lui filer sous le nez."
+      "Le contremaître Renn a inventé un péage pour ce bout de chemin et le perçoit lui-même. Il annonce un prix, puis voit ce que vous portez et en annonce un autre : vous, livré à l’Inquisition.",
+      "Renn, l’homme des douanes, surgit avec une gaffe et un registre. Votre nom figure au registre, à la rubrique des primes, et il n’a jamais laissé une prime lui filer sous le nez."
     ],
     "enemyName_fr": "Contremaître Renn",
     "biomes": []
@@ -1450,18 +1450,18 @@
     "packEligible": true,
     "hunterAlignment": "",
     "hunterTier": 0,
-    "description": "A local levied into the Inquisition's service, given a tabard and a spear and told whom to hate.",
-    "description_fr": "Un habitant enrôlé au service de l'Inquisition, à qui l'on a donné un tabard, une lance, et le nom de ceux qu'il faut haïr.",
+    "description": "A local levied into the Inquisition’s service, given a tabard and a spear and told whom to hate.",
+    "description_fr": "Un habitant enrôlé au service de l’Inquisition, à qui l’on a donné un tabard, une lance, et le nom de ceux qu’il faut haïr.",
     "encounterText": [
       "An Inquisition auxiliary is sifting a burnt house for anything heretical. He finds you instead, and the reward on you is worth more than the house ever was.",
       "A levy-man in an Inquisition tabard lowers his spear across the road. He is frightened, and a frightened man with a spear and orders is more dangerous than a brave one."
     ],
     "encounterText_fr": [
-      "Un auxiliaire de l'Inquisition fouille une maison brûlée en quête de tout ce qui serait hérétique. Il vous trouve à la place, et la prime sur votre tête vaut plus que la maison n'a jamais valu.",
-      "Un homme de la levée en tabard de l'Inquisition abaisse sa lance en travers de la route. Il a peur, et un homme effrayé avec une lance et des ordres est plus dangereux qu'un brave."
+      "Un auxiliaire de l’Inquisition fouille une maison brûlée en quête de tout ce qui serait hérétique. Il vous trouve à la place, et la prime sur votre tête vaut plus que la maison n’a jamais valu.",
+      "Un homme de la levée en tabard de l’Inquisition abaisse sa lance en travers de la route. Il a peur, et un homme effrayé avec une lance et des ordres est plus dangereux qu’un brave."
     ],
     "packText": "An Inquisition levy is sweeping the ruins in a line, and the line has reached you. They call to one another, and close.",
-    "packText_fr": "Une levée de l'Inquisition ratisse les ruines en ligne, et la ligne vous a atteint. Ils s'appellent les uns les autres, et se referment.",
+    "packText_fr": "Une levée de l’Inquisition ratisse les ruines en ligne, et la ligne vous a atteint. Ils s’appellent les uns les autres, et se referment.",
     "enemyName_fr": "Auxiliaire de l’Inquisition",
     "biomes": [
       "ashlands",
@@ -1610,8 +1610,8 @@
         "healthThreshold": 50,
         "name": "Wrath",
         "nameFr": "Courroux",
-        "message": "The Judicator's patience ends, and the dawn comes early.",
-        "messageFr": "La patience du Justicier prend fin, et l'aube arrive en avance.",
+        "message": "The Judicator’s patience ends, and the dawn comes early.",
+        "messageFr": "La patience du Justicier prend fin, et l’aube arrive en avance.",
         "damageMultiplier": 1.15,
         "healPercent": 0,
         "cleanse": true,
@@ -1679,7 +1679,7 @@
     "hunterAlignment": "Good",
     "hunterTier": 1,
     "description": "A small, grinning thing of the Pit, sent to spoil the righteous and bring back something they loved.",
-    "description_fr": "Une petite chose ricanante de la Fosse, envoyée corrompre les justes et rapporter quelque chose qu'ils aimaient.",
+    "description_fr": "Une petite chose ricanante de la Fosse, envoyée corrompre les justes et rapporter quelque chose qu’ils aimaient.",
     "enemyName_fr": "Gueux de la Fosse",
     "biomes": []
   },
@@ -1768,7 +1768,7 @@
         "name": "Torment",
         "nameFr": "Tourment",
         "message": "The Tormentor laughs, and starts enjoying itself.",
-        "messageFr": "Le Tourmenteur rit, et commence à s'amuser.",
+        "messageFr": "Le Tourmenteur rit, et commence à s’amuser.",
         "damageMultiplier": 1.15,
         "healPercent": 0,
         "cleanse": true,
@@ -1850,15 +1850,15 @@
     "packEligible": true,
     "hunterAlignment": "",
     "hunterTier": 0,
-    "description": "A corpse-eater of the deep ossuaries, once a pilgrim, now only hunger in a pilgrim's rags.",
+    "description": "A corpse-eater of the deep ossuaries, once a pilgrim, now only hunger in a pilgrim’s rags.",
     "description_fr": "Un mangeur de cadavres des ossuaires profonds, jadis pèlerin, désormais faim pure dans des haillons de pèlerin.",
     "encounterText": [
       "Something is feeding in the dark of a side crypt. It stops when your light reaches it and turns, and you see that it has finished what it was eating.",
       "The ghoul has been following your warmth through the ossuary for some time. Here the passage narrows, and it stops following and starts closing."
     ],
     "encounterText_fr": [
-      "Quelque chose se nourrit dans le noir d'une crypte latérale. Il s'arrête quand votre lumière l'atteint et se retourne, et vous voyez qu'il a fini ce qu'il mangeait.",
-      "La goule suit votre chaleur à travers l'ossuaire depuis un moment. Ici, le passage se rétrécit, et elle cesse de suivre pour se rapprocher."
+      "Quelque chose se nourrit dans le noir d’une crypte latérale. Il s’arrête quand votre lumière l’atteint et se retourne, et vous voyez qu’il a fini ce qu’il mangeait.",
+      "La goule suit votre chaleur à travers l’ossuaire depuis un moment. Ici, le passage se rétrécit, et elle cesse de suivre pour se rapprocher."
     ],
     "packText": "The ghouls of the deep crypts hunt in packs, and they have your scent. Their scraping comes from ahead and behind at once.",
     "packText_fr": "Les goules des cryptes profondes chassent en meute, et elles ont votre odeur. Leur grattement vient à la fois de devant et de derrière.",
@@ -1959,14 +1959,14 @@
       }
     ],
     "description": "A guardian of lashed bones and old oaths, raised to keep a sealed stair and never told when to stop.",
-    "description_fr": "Un gardien d'os liés et de vieux serments, levé pour garder un escalier scellé, et à qui l'on n'a jamais dit quand s'arrêter.",
+    "description_fr": "Un gardien d’os liés et de vieux serments, levé pour garder un escalier scellé, et à qui l’on n’a jamais dit quand s’arrêter.",
     "encounterText": [
       "A shape of lashed bone stands across the only way down, a sword in each of its many hands. It was raised to keep this passage, and it asks you nothing before it raises them.",
       "The ossuary wall is not a wall. It unfolds, rib over rib, into a warden of the dead, and the oath that binds it is older than any language you know."
     ],
     "encounterText_fr": [
-      "Une forme d'os liés se dresse en travers du seul passage vers le bas, une épée dans chacune de ses nombreuses mains. On l'a levée pour garder ce passage, et elle ne vous demande rien avant de les lever.",
-      "Le mur de l'ossuaire n'est pas un mur. Il se déplie, côte après côte, en un gardien des morts, et le serment qui le lie est plus ancien que toute langue que vous connaissiez."
+      "Une forme d’os liés se dresse en travers du seul passage vers le bas, une épée dans chacune de ses nombreuses mains. On l’a levée pour garder ce passage, et elle ne vous demande rien avant de les lever.",
+      "Le mur de l’ossuaire n’est pas un mur. Il se déplie, côte après côte, en un gardien des morts, et le serment qui le lie est plus ancien que toute langue que vous connaissiez."
     ],
     "enemyName_fr": "Gardien d’Os",
     "biomes": [
@@ -2054,7 +2054,7 @@
         "name": "Last Rites",
         "nameFr": "Derniers sacrements",
         "message": "The Inquisitor kneels on the frost and the wounds close with a sound like a hymn.",
-        "messageFr": "L'Inquisiteur s'agenouille sur le givre et ses plaies se referment dans un bruit d'hymne.",
+        "messageFr": "L’Inquisiteur s’agenouille sur le givre et ses plaies se referment dans un bruit d’hymne.",
         "damageMultiplier": 1.1,
         "healPercent": 20,
         "cleanse": true,
@@ -2066,7 +2066,7 @@
         "name": "Judgment",
         "nameFr": "Jugement",
         "message": "No more prayers. The Inquisitor opens the tear behind him and lets it speak.",
-        "messageFr": "Plus de prières. L'Inquisiteur ouvre la déchirure derrière lui et la laisse parler.",
+        "messageFr": "Plus de prières. L’Inquisiteur ouvre la déchirure derrière lui et la laisse parler.",
         "damageMultiplier": 1.1,
         "healPercent": 0,
         "cleanse": false,
@@ -2146,15 +2146,15 @@
     "packEligible": true,
     "hunterAlignment": "",
     "hunterTier": 0,
-    "description": "A hound of the tear's making, all smoke and teeth, that hunts by the scent of the Shroud.",
-    "description_fr": "Un chien né de la déchirure, tout de fumée et de crocs, qui chasse à l'odeur du Linceul.",
+    "description": "A hound of the tear’s making, all smoke and teeth, that hunts by the scent of the Shroud.",
+    "description_fr": "Un chien né de la déchirure, tout de fumée et de crocs, qui chasse à l’odeur du Linceul.",
     "encounterText": [
       "A void hound pours out of a shadow and stands between you and the way ahead. It does not growl. It points, like a hunting dog, at what you carry.",
       "Something has been tracking the Shroud since your last crossing. It has found it now, and it has brought its teeth."
     ],
     "encounterText_fr": [
-      "Un chien du vide se déverse d'une ombre et se poste entre vous et le chemin. Il ne grogne pas. Il marque l'arrêt, comme un chien de chasse, sur ce que vous portez.",
-      "Quelque chose suit la piste du Linceul depuis votre dernière traversée. Il l'a trouvé, et il a apporté ses crocs."
+      "Un chien du vide se déverse d’une ombre et se poste entre vous et le chemin. Il ne grogne pas. Il marque l’arrêt, comme un chien de chasse, sur ce que vous portez.",
+      "Quelque chose suit la piste du Linceul depuis votre dernière traversée. Il l’a trouvé, et il a apporté ses crocs."
     ],
     "packText": "The void hounds hunt the Shroud in packs, and the pack has caught up. They spread out around you without a sound.",
     "packText_fr": "Les chiens du vide chassent le Linceul en meute, et la meute vous a rattrapé. Ils se déploient autour de vous sans un bruit.",
@@ -2229,7 +2229,7 @@
         "healthThreshold": 50,
         "name": "Regrowth",
         "nameFr": "Repousse",
-        "message": "The spawn knits itself back together out of the chapel's glass.",
+        "message": "The spawn knits itself back together out of the chapel’s glass.",
         "messageFr": "La progéniture se recompose à partir du verre de la chapelle.",
         "damageMultiplier": 1.05,
         "healPercent": 25,
@@ -2239,14 +2239,14 @@
       }
     ],
     "description": "A thing that crawled through the tear before it was a thing, and has been learning to be one since.",
-    "description_fr": "Une chose qui a rampé hors de la déchirure avant d'être une chose, et qui apprend depuis à en être une.",
+    "description_fr": "Une chose qui a rampé hors de la déchirure avant d’être une chose, et qui apprend depuis à en être une.",
     "encounterText": [
       "The air splits along a seam no wider than a hair, and something climbs out of it in the wrong order. It is drawn to the Shroud the way water is drawn downhill.",
       "An unstitched thing is feeding on what is left of a shrine. It has almost learned what a mouth is for, and it turns toward you to practise."
     ],
     "encounterText_fr": [
-      "L'air se fend le long d'une couture pas plus large qu'un cheveu, et quelque chose en sort dans le mauvais ordre. Il est attiré par le Linceul comme l'eau par la pente.",
-      "Un rejeton de la déchirure se nourrit de ce qui reste d'un sanctuaire. Il a presque appris à quoi sert une bouche, et il se tourne vers vous pour s'exercer."
+      "L’air se fend le long d’une couture pas plus large qu’un cheveu, et quelque chose en sort dans le mauvais ordre. Il est attiré par le Linceul comme l’eau par la pente.",
+      "Un rejeton de la déchirure se nourrit de ce qui reste d’un sanctuaire. Il a presque appris à quoi sert une bouche, et il se tourne vers vous pour s’exercer."
     ],
     "enemyName_fr": "Le Décousu",
     "biomes": [
@@ -2329,14 +2329,14 @@
       }
     ],
     "description": "A penitent of the Inquisition, flogged into holiness and sent out to find the sinners who owe for it.",
-    "description_fr": "Un pénitent de l'Inquisition, fouetté jusqu'à la sainteté et envoyé chercher les pécheurs qui en doivent le prix.",
+    "description_fr": "Un pénitent de l’Inquisition, fouetté jusqu’à la sainteté et envoyé chercher les pécheurs qui en doivent le prix.",
     "encounterText": [
       "A penitent in a scourged robe kneels in your path, whipping himself in rhythm. As you come close the rhythm changes, and the whip is for you.",
       "\"The Shroud-bearer,\" says the penitent, rising from prayer with a mace in his hand. \"I was promised my sins forgiven for your head. I have so many.\""
     ],
     "encounterText_fr": [
       "Un pénitent en robe lacérée est agenouillé sur votre chemin, se flagellant en cadence. Quand vous approchez, la cadence change, et le fouet est pour vous.",
-      "« Le porteur du Linceul », dit le pénitent en se relevant de sa prière, une masse à la main. « On m'a promis le pardon de mes péchés pour votre tête. J'en ai tant. »"
+      "« Le porteur du Linceul », dit le pénitent en se relevant de sa prière, une masse à la main. « On m’a promis le pardon de mes péchés pour votre tête. J’en ai tant. »"
     ],
     "enemyName_fr": "Pénitent de l’Inquisition",
     "biomes": [
@@ -2413,7 +2413,7 @@
         "name": "Eclipse",
         "nameFr": "Éclipse",
         "message": "The Archon swallows the light. Somewhere, a clock skips.",
-        "messageFr": "L'Archonte avale la lumière. Quelque part, une horloge saute un battement.",
+        "messageFr": "L’Archonte avale la lumière. Quelque part, une horloge saute un battement.",
         "damageMultiplier": 1.1,
         "healPercent": 0,
         "cleanse": true,
@@ -2437,7 +2437,7 @@
         "name": "Unlight",
         "nameFr": "Antilumière",
         "message": "What is left of it stops pretending to be wounded.",
-        "messageFr": "Ce qu'il en reste cesse de faire semblant d'être blessé.",
+        "messageFr": "Ce qu’il en reste cesse de faire semblant d’être blessé.",
         "damageMultiplier": 1.05,
         "healPercent": 6,
         "cleanse": false,
@@ -2445,8 +2445,8 @@
         "replaceMoves": false
       }
     ],
-    "description": "A lord of the tear's host, the first to meet whoever carries the whole Shroud toward the door.",
-    "description_fr": "Un seigneur de l'armée de la déchirure, le premier à affronter quiconque porte le Linceul entier vers la porte.",
+    "description": "A lord of the tear’s host, the first to meet whoever carries the whole Shroud toward the door.",
+    "description_fr": "Un seigneur de l’armée de la déchirure, le premier à affronter quiconque porte le Linceul entier vers la porte.",
     "enemyName_fr": "Archonte du Néant",
     "biomes": []
   },
@@ -2519,7 +2519,7 @@
       "The Hollow Shore keeps what it sees. It has seen you, and now it sends you back, hollow, to take the Shroud from you the way you would."
     ],
     "encounterText_fr": [
-      "Quelqu'un marche vers vous le long du rivage, avec votre démarche. Quand il est assez proche, vous voyez votre propre visage sur lui, et votre propre main qui cherche votre propre lame.",
+      "Quelqu’un marche vers vous le long du rivage, avec votre démarche. Quand il est assez proche, vous voyez votre propre visage sur lui, et votre propre main qui cherche votre propre lame.",
       "La Rive Creuse garde ce qu’elle voit. Elle a vu votre visage, et vous en renvoie un double creux, pour vous prendre le Linceul comme vous le feriez."
     ],
     "packText": "Reflections rise out of the wet sand, each wearing your face at a different age. The shore wants the Shroud, and it has sent you to take it.",
@@ -2666,7 +2666,7 @@
       }
     ],
     "description": "The thing behind the tear, which has wanted the Shroud whole for longer than there has been a Church to hide it.",
-    "description_fr": "La chose derrière la déchirure, qui veut le Linceul entier depuis plus longtemps qu'il n'existe d'Église pour le cacher.",
+    "description_fr": "La chose derrière la déchirure, qui veut le Linceul entier depuis plus longtemps qu’il n’existe d’Église pour le cacher.",
     "enemyName_fr": "Le Souverain",
     "biomes": []
   },
@@ -2720,7 +2720,7 @@
         "name": "Shield Wall",
         "nameFr": "Shield Wall",
         "message": "She sets her feet the way she set them at the gate. It was never for you.",
-        "messageFr": "Elle campe ses pieds comme elle les campait à la porte. Ce n'était jamais pour vous.",
+        "messageFr": "Elle campe ses pieds comme elle les campait à la porte. Ce n’était jamais pour vous.",
         "damageMultiplier": 1.1,
         "healPercent": 5,
         "cleanse": true,
@@ -2740,7 +2740,7 @@
         "replaceMoves": false
       }
     ],
-    "description": "Kelda once held the wharf gate beside you. The legate's pact has set her against you.",
+    "description": "Kelda once held the wharf gate beside you. The legate’s pact has set her against you.",
     "description_fr": "Kelda a jadis tenu la porte du quai à vos côtés. Le pacte du légat la dresse désormais contre vous.",
     "enemyName_fr": "Kelda, retournée",
     "biomes": []
@@ -2815,7 +2815,7 @@
         "replaceMoves": false
       }
     ],
-    "description": "Sable won a place in your crew on a wager. The legate's pact has placed the last bet.",
+    "description": "Sable won a place in your crew on a wager. The legate’s pact has placed the last bet.",
     "description_fr": "Sable a gagné sa place dans votre équipage sur un pari. Le pacte du légat a placé la dernière mise.",
     "enemyName_fr": "Sable, retournée",
     "biomes": []
@@ -2890,7 +2890,7 @@
         "replaceMoves": false
       }
     ],
-    "description": "Sister Maren prayed over your wounded. The legate's pact has given her a new litany, and you are in it.",
+    "description": "Sister Maren prayed over your wounded. The legate’s pact has given her a new litany, and you are in it.",
     "description_fr": "Sœur Maren priait sur vos blessés. Le pacte du légat lui a donné une nouvelle litanie, et vous y figurez.",
     "enemyName_fr": "Maren, retournée",
     "biomes": []
@@ -2965,7 +2965,7 @@
         "replaceMoves": false
       }
     ],
-    "description": "Liora kept watch over your camp from forty feet up. The legate's pact has turned her bow around.",
+    "description": "Liora kept watch over your camp from forty feet up. The legate’s pact has turned her bow around.",
     "description_fr": "Liora veillait sur votre camp du haut des arbres. Le pacte du légat a retourné son arc.",
     "enemyName_fr": "Liora, retournée",
     "biomes": []
@@ -3040,8 +3040,8 @@
         "replaceMoves": false
       }
     ],
-    "description": "Vess came out of the dark with you. The legate's pact sends Vess back into it, and wants you to follow.",
-    "description_fr": "Vess a quitté les ténèbres avec vous. Le pacte du légat l'y renvoie, et veut vous y entraîner.",
+    "description": "Vess came out of the dark with you. The legate’s pact sends Vess back into it, and wants you to follow.",
+    "description_fr": "Vess a quitté les ténèbres avec vous. Le pacte du légat l’y renvoie, et veut vous y entraîner.",
     "enemyName_fr": "Vess, retournée",
     "biomes": []
   },
@@ -3095,7 +3095,7 @@
         "name": "Unfinished Job",
         "nameFr": "Unfinished Job",
         "message": "He puts his shield down. He never needed it against you.",
-        "messageFr": "Il pose son bouclier. Il n'en a jamais eu besoin contre vous.",
+        "messageFr": "Il pose son bouclier. Il n’en a jamais eu besoin contre vous.",
         "damageMultiplier": 1.1,
         "healPercent": 5,
         "cleanse": true,
@@ -3115,8 +3115,8 @@
         "replaceMoves": false
       }
     ],
-    "description": "Grosh smashed first for you and asked questions after. The legate's pact has answered them.",
-    "description_fr": "Grosh frappait d'abord pour vous et posait les questions après. Le pacte du légat y a répondu.",
+    "description": "Grosh smashed first for you and asked questions after. The legate’s pact has answered them.",
+    "description_fr": "Grosh frappait d’abord pour vous et posait les questions après. Le pacte du légat y a répondu.",
     "enemyName_fr": "Grosh, retourné",
     "biomes": []
   },
@@ -3170,7 +3170,7 @@
         "name": "The Hymn",
         "nameFr": "The Hymn",
         "message": "He sings, at last, and the sand goes still to listen.",
-        "messageFr": "Il chante, enfin, et le sable s'immobilise pour écouter.",
+        "messageFr": "Il chante, enfin, et le sable s’immobilise pour écouter.",
         "damageMultiplier": 1.1,
         "healPercent": 5,
         "cleanse": true,
@@ -3190,7 +3190,7 @@
         "replaceMoves": false
       }
     ],
-    "description": "Brother Tobin kept vigil for the cloister's dead. The legate's pact has given him one more to keep.",
+    "description": "Brother Tobin kept vigil for the cloister’s dead. The legate’s pact has given him one more to keep.",
     "description_fr": "Frère Tobin veillait les morts du cloître. Le pacte du légat lui en donne un de plus à veiller.",
     "enemyName_fr": "Tobin, retourné",
     "biomes": []
@@ -3245,7 +3245,7 @@
         "name": "First Pick",
         "nameFr": "First Pick",
         "message": "\"I did say I get first pick,\" he says, and means the crown, and means you.",
-        "messageFr": "« J'avais dit que j'avais la priorité », dit-il, et il parle de la couronne, et il parle de vous.",
+        "messageFr": "« J’avais dit que j’avais la priorité », dit-il, et il parle de la couronne, et il parle de vous.",
         "damageMultiplier": 1.1,
         "healPercent": 5,
         "cleanse": true,
@@ -3265,8 +3265,8 @@
         "replaceMoves": false
       }
     ],
-    "description": "Malrik Sarn always took half of what was dropped. The legate's pact paid the other half.",
-    "description_fr": "Malrik Sarn prenait toujours la moitié de ce qui tombait. Le pacte du légat a payé l'autre moitié.",
+    "description": "Malrik Sarn always took half of what was dropped. The legate’s pact paid the other half.",
+    "description_fr": "Malrik Sarn prenait toujours la moitié de ce qui tombait. Le pacte du légat a payé l’autre moitié.",
     "enemyName_fr": "Malrik, retourné",
     "biomes": []
   },
@@ -3340,8 +3340,8 @@
         "replaceMoves": false
       }
     ],
-    "description": "The champion the Inquisition's last legate brought ashore, to fight the fights his pact starts.",
-    "description_fr": "Le champion que le dernier légat de l'Inquisition a amené à terre, pour livrer les combats que son pacte déclenche.",
+    "description": "The champion the Inquisition’s last legate brought ashore, to fight the fights his pact starts.",
+    "description_fr": "Le champion que le dernier légat de l’Inquisition a amené à terre, pour livrer les combats que son pacte déclenche.",
     "enemyName_fr": "Le Champion du légat",
     "biomes": []
   },
@@ -3395,7 +3395,7 @@
         "name": "The Mask Slips",
         "nameFr": "Le masque glisse",
         "message": "She says your name through the porcelain. You do not hear it.",
-        "messageFr": "Elle dit votre nom à travers la porcelaine. Vous ne l'entendez pas.",
+        "messageFr": "Elle dit votre nom à travers la porcelaine. Vous ne l’entendez pas.",
         "damageMultiplier": 1.0,
         "healPercent": 0,
         "cleanse": false,
@@ -3457,8 +3457,8 @@
     "packEligible": false,
     "hunterAlignment": "",
     "hunterTier": 0,
-    "description": "One of the Inquisition's White Soldiers: porcelain-masked, faceless, sent when the Church wants something taken back.",
-    "description_fr": "Un des Soldats blancs de l'Inquisition : masqué de porcelaine, sans visage, envoyé quand l'Église veut reprendre quelque chose.",
+    "description": "One of the Inquisition’s White Soldiers: porcelain-masked, faceless, sent when the Church wants something taken back.",
+    "description_fr": "Un des Soldats blancs de l’Inquisition : masqué de porcelaine, sans visage, envoyé quand l’Église veut reprendre quelque chose.",
     "enemyName_fr": "Soldat Blanc",
     "biomes": [
       "temperate",
@@ -3542,7 +3542,7 @@
     "description": "A sexton of the Ossuary who died at his work and never stopped: he keeps the galleries in order, and the living are out of place in them.",
     "description_fr": "Un sacristain de l’Ossuaire mort à la tâche et qui ne s’est jamais arrêté : il tient les galeries en ordre, et les vivants n’y ont pas leur place.",
     "encounterText": [
-      "A skeleton in a sexton's rotted cassock is stacking skulls in a niche, one by one, in careful rows. It counts the gap left on the shelf, turns its empty sockets on you, and reaches for its spade.",
+      "A skeleton in a sexton’s rotted cassock is stacking skulls in a niche, one by one, in careful rows. It counts the gap left on the shelf, turns its empty sockets on you, and reaches for its spade.",
       "Somewhere ahead, bone clicks on bone. The sexton has heard living footsteps in its galleries, and the Ossuary keeps a place for everyone who walks here."
     ],
     "encounterText_fr": [
@@ -4710,7 +4710,7 @@
     "hunterAlignment": "",
     "hunterTier": 0,
     "description": "One arm of the Tide-Mother, come over the rail on its own: grey-green, thick as a mast and lined with hooked cups. It does not need the rest of the kraken to know what to do with a deckhand.",
-    "description_fr": "Un bras de la Mère-des-Marées, passé seul par-dessus le bastingage : gris-vert, épais comme un mât et bordé de ventouses crochues. Il n'a pas besoin du reste du kraken pour savoir quoi faire d'un matelot.",
+    "description_fr": "Un bras de la Mère-des-Marées, passé seul par-dessus le bastingage : gris-vert, épais comme un mât et bordé de ventouses crochues. Il n’a pas besoin du reste du kraken pour savoir quoi faire d’un matelot.",
     "encounterText": [
       "An arm as thick as the mainmast slides over the rail, feeling along the deck for something to hold."
     ],
@@ -5288,7 +5288,7 @@
     "packEligible": false,
     "hunterAlignment": "",
     "hunterTier": 0,
-    "description": "The Blind Beggar's back-room bouncer, paid to keep the tables honest and the till shut. Tonight he is only keeping the till.",
+    "description": "The Blind Beggar’s back-room bouncer, paid to keep the tables honest and the till shut. Tonight he is only keeping the till.",
     "description_fr": "Le videur de l’arrière-salle du Mendiant Aveugle, payé pour que les tables restent honnêtes et la caisse fermée. Cette nuit, il ne garde plus que la caisse.",
     "enemyName_fr": "Le videur de la maison",
     "biomes": []

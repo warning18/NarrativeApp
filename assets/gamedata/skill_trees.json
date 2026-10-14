@@ -102,7 +102,7 @@
     "order": 1,
     "branchName": "Shadow",
     "branchName_fr": "Ombre",
-    "description": "Strike from where they aren't looking, then be somewhere else.",
+    "description": "Strike from where they aren’t looking, then be somewhere else.",
     "description_fr": "Frapper d’où l’on ne regarde pas, puis être ailleurs.",
     "skillIds": [
       "rogue_backstab",

@@ -2,7 +2,7 @@
   "blind_beggar_stall": {
     "shopID": "blind_beggar_stall",
     "shopName": "Blind Beggar Stall",
-    "shopDescription": "The Blind Beggar's cellar-boy got out with a barrow of the tavern's stores, and sells them off the wharf a bottle at a time.",
+    "shopDescription": "The Blind Beggar’s cellar-boy got out with a barrow of the tavern’s stores, and sells them off the wharf a bottle at a time.",
     "unlockLevel": 1,
     "buildCost": 0,
     "initialStock": [
@@ -25,7 +25,7 @@
     "minChapter": 2,
     "detourEligible": false,
     "shopName_fr": "L’Étal du Mendiant Aveugle",
-    "shopDescription_fr": "Le garçon de cave du Mendiant Aveugle s'est enfui avec une brouette des réserves de la taverne, et les vend sur le quai, bouteille par bouteille.",
+    "shopDescription_fr": "Le garçon de cave du Mendiant Aveugle s’est enfui avec une brouette des réserves de la taverne, et les vend sur le quai, bouteille par bouteille.",
     "keeperName": "The cellar-boy",
     "keeperName_fr": "Le garçon de cave",
     "keeperLine": "A bottle, a bandage, a pair of boots that fit somebody once. Nobody’s boy, nobody’s prices: coin first.",
@@ -412,7 +412,7 @@
   "arcane_academy": {
     "shopID": "arcane_academy",
     "shopName": "The Arcane Academy",
-    "shopDescription": "Past the Bazaar's incense stalls, a real academy: staves bound with old wardings, for hands trained enough to hold them.",
+    "shopDescription": "Past the Bazaar’s incense stalls, a real academy: staves bound with old wardings, for hands trained enough to hold them.",
     "unlockLevel": 1,
     "buildCost": 0,
     "initialStock": [
@@ -469,7 +469,7 @@
   "sharpweave_den": {
     "shopID": "sharpweave_den",
     "shopName": "The Needle House",
-    "shopDescription": "No sign, no stall -- just a door that opens if you already know it's there, and the finest edges in the city behind it.",
+    "shopDescription": "No sign, no stall -- just a door that opens if you already know it’s there, and the finest edges in the city behind it.",
     "unlockLevel": 1,
     "buildCost": 0,
     "initialStock": [
