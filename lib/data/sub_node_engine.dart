@@ -40,13 +40,16 @@ class SubNodeEngine {
     required List<String> unlockedQuestIds,
     required List<String> completedQuestIds,
     MapTheme theme = defaultMapTheme,
+    ExcursionFlavor? flavor,
     double triggerChance = detourChance,
     int partySize = 3,
     String alignmentLabel = 'Neutral',
   }) {
     if (random.nextDouble() > triggerChance) return null;
 
-    final flavor = flavorFor(theme);
+    // The lines of the place the detour leaves from (place_pools.dart),
+    // else the theme's.
+    flavor ??= flavorFor(theme);
 
     final shopPool = filterShopPool(
       shops: shops,

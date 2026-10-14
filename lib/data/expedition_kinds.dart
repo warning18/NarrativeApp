@@ -45,9 +45,10 @@ bool escortKeepsItem(int cargo) => cargo >= escortItemCargo;
 /// A delivery's deadline in days: the zone's `deadlineDays`, else two
 /// spare days over its stages (in the simulator, a careful party is on
 /// time about 85% of the time with two, 45% with one).
-int deliveryDeadlineOf(Map<String, dynamic> zone) =>
+/// A zone with written steps passes their [count] (expedition_steps.dart).
+int deliveryDeadlineOf(Map<String, dynamic> zone, {int? count}) =>
     (zone['deadlineDays'] as num?)?.toInt() ??
-    ((zone['expeditionCount'] as num?)?.toInt() ?? 3) + 2;
+    (count ?? (zone['expeditionCount'] as num?)?.toInt() ?? 3) + 2;
 
 /// Whether a parcel [daysUsed] days on the road beat its [deadline].
 bool deliveryOnTime({required int daysUsed, required int deadline}) =>
@@ -71,6 +72,12 @@ class StepOutcome {
     this.days = 0,
     this.failDays = 0,
     this.hurtOnFail = 0,
+    this.note = '',
+    this.noteFr = '',
+    this.successNote = '',
+    this.successNoteFr = '',
+    this.failNote = '',
+    this.failNoteFr = '',
   });
 
   /// Load gained or (negative) lost whatever happens, in percent.
@@ -92,6 +99,28 @@ class StepOutcome {
   /// Share of the leader's maximum health lost when the roll fails, in
   /// percent.
   final int hurtOnFail;
+
+  /// A written step's words on what the choice did (expedition_steps.dart):
+  /// [note] whatever happens, then [successNote] or [failNote] as its roll
+  /// went.
+  final String note;
+  final String noteFr;
+  final String successNote;
+  final String successNoteFr;
+  final String failNote;
+  final String failNoteFr;
+
+  /// The written notes for a choice whose roll [failed] (or that had
+  /// none, [checked] false), in French when [french]; empty for none.
+  String notesFor(
+      {required bool failed, required bool checked, required bool french}) {
+    String pick(String en, String fr) => french && fr.isNotEmpty ? fr : en;
+    return [
+      if (checked)
+        failed ? pick(failNote, failNoteFr) : pick(successNote, successNoteFr),
+      pick(note, noteFr),
+    ].where((n) => n.isNotEmpty).join(' ');
+  }
 
   /// The load change, extra days and hurt for a choice whose roll
   /// [failed] and in which the party [fought].
