@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.302.0+338]
+
+The hulls in side view, armed and equipped.
+
+### Changed
+- **What is fitted aboard her shows in side view** (voyage, arrival, the shipwright's yard, the fight strip): **the guns**, each family its own: cannon muzzles out of the gun ports (stubby for the carronade and the grape, long for the culverin, chain-shot at the chain gun's mouth, a glowing tip on the carronade, brass on the better ones), a ballista on a post at the rail, flickering clay fire-pots, a harpoon gun at the bow, the bone horn of the trophy beak; **the plating on her side**: riveted iron plates covering more of her at each version, timbers crossed over the planking for bracing, round shields hung along the rail for the screens, the pale spined scales of the trophy plating; **the gear on deck** for her utility: crates for stores, signal flags for orders, a glowing lantern at the stern for the helm, a pyramid of shot and a rammer for gunnery, roped barrels for the hold, a banner on a tall pole for command, crossed tusks for the trophy hull. They show on the sailing hulls and the sky-sloop and the cloud-cutter, which carry guns on the same side.
+
 ## [1.301.0+337]
 
 The hulls in side view, in the fight.

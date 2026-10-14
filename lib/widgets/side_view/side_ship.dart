@@ -6,6 +6,8 @@ import '../../data/ship_forms.dart';
 import '../ship_dress.dart';
 import 'side_view.dart';
 
+part 'side_gear.dart';
+
 /// The Eel's hulls in side view (v1.298): every hull of ships.json, drawn
 /// in scene pixels from its record (the same [ShipForm] the top-down
 /// painter reads): the length, the beam (how high she sits and how deep),
@@ -224,6 +226,10 @@ void paintSideShip(
       final r = _hullAndRig(canvas, u, x, base, len, form, pal, t);
       sails = r.sails;
       top = r.top;
+  }
+  final worn = dress;
+  if (worn != null && top != null) {
+    _paintGear(canvas, u, x, base, len, form, pal, worn, t, top);
   }
   if (condition < 0.8) {
     _damage(canvas, u, x, base, len, form, pal, t, condition, sails, top);

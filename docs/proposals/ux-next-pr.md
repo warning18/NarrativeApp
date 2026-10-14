@@ -107,3 +107,6 @@ The Eel's side view shows her hull: scorch, a hole, patched sails, smoke, rips, 
 
 ## The fight strip (v1.301.0+337)
 The sea battle shows the two hulls in side view (the Eel dressed and battered, the enemy's own hull or beast, easing apart with the range) above the sea on a tall screen (>= 720 high); the fight stays from above and `ship_battle_panel.dart` got only the strip. Next: deck gear and mounted guns, painted sail powers.
+
+## Deck gear and mounted guns (v1.302.0+338)
+Guns by family, plating and the utility's gear on the Eel's side view (voyage, arrival, Harbor yard, fight strip). Left: painted sail powers (the sigils), and the iron, twin and the other flying hulls' own gear.

@@ -39,6 +39,55 @@ void main() {
     expect(sideShipLength(longboat), lessThan(sideShipLength(sloop)));
   });
 
+  testWidgets('every gun, plating and gear she can carry paints on every hull',
+      (tester) async {
+    const families = [
+      'ballista',
+      'chain',
+      'grape',
+      'carronade',
+      'culverin',
+      'fire_pots',
+      'harpoon',
+      'hunters_harpoon',
+      'trophy_beak',
+    ];
+    const platings = ['plating', 'bracing', 'screens', 'trophy_plating'];
+    const gears = [
+      'stores',
+      'orders',
+      'helm',
+      'gunnery',
+      'hold',
+      'command',
+      'trophy_hull'
+    ];
+    for (final id in ships.keys) {
+      final form = ShipForm.fromRecord(id, ships[id] as Map<String, dynamic>);
+      for (var i = 0; i < gears.length; i++) {
+        final dress = ShipDress(
+          mounts: [
+            for (var k = 0; k < 3; k++)
+              ShipMount(
+                  family: families[(i + k * 3) % families.length],
+                  tier: 1 + k,
+                  rarity: k == 2 ? 'epic' : 'common'),
+          ],
+          plating: ShipPlating(platings[i % platings.length], 1 + i % 3, 'x'),
+          gear: gears[i],
+        );
+        await tester.pumpWidget(MaterialApp(
+          home: Scaffold(
+            body:
+                SeaSideScene(waters: SeaWaters.open, ship: form, dress: dress),
+          ),
+        ));
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(tester.takeException(), isNull, reason: '$id with ${gears[i]}');
+      }
+    }
+  });
+
   test('she sits lower in the water only once she is half gone', () {
     expect(sideShipSink(1.0), 0);
     expect(sideShipSink(0.5), 0);
