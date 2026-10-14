@@ -3267,7 +3267,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_tern_row",
     "choices": [
       {
         "text": "Pay off his chain (30 gold)",
@@ -3329,7 +3329,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_landward_gate",
     "choices": [
       {
         "text": "Leave the key in the lock, unturned",
@@ -3388,7 +3388,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_landward_gate",
     "choices": [
       {
         "text": "Back down the Rope Stair",
@@ -3414,7 +3414,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_landward_gate",
     "choices": [
       {
         "text": "Collect the tenth for him, and take your cut",
@@ -3472,7 +3472,7 @@
       "mood": "wry",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_lantern_alleys",
     "choices": [
       {
         "text": "Return to the stalls",
@@ -3493,7 +3493,7 @@
       "mood": "wry",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_lantern_alleys",
     "choices": [
       {
         "text": "Back to the market",
@@ -3557,7 +3557,7 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_yard",
     "choices": [
       {
         "text": "Turn back toward the wharf",
@@ -3599,7 +3599,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_landward_gate",
     "choices": [
       {
         "text": "Back among the merchants",
@@ -3621,7 +3621,7 @@
       "mood": "defiant",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_landward_gate",
     "choices": [
       {
         "text": "Hold the gate beside her",
@@ -3652,7 +3652,7 @@
       "mood": "bitter",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_card_row",
     "choices": [
       {
         "text": "Hand her the marker from the pot",
@@ -6166,7 +6166,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_landward_gate",
     "choices": [
       {
         "text": "Go after the warden he named",
@@ -6192,7 +6192,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_landward_gate",
     "choices": [
       {
         "text": "Drift back along the wharf",
@@ -6224,7 +6224,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_landward_gate",
     "choices": [
       {
         "text": "Back to the market",
@@ -6532,7 +6532,7 @@
       "mood": "wry",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_card_row",
     "choices": [
       {
         "text": "Play to win",
@@ -6555,7 +6555,7 @@
       "mood": "wry",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_card_row",
     "choices": [
       {
         "text": "Head back toward the harbor master’s post",
@@ -6578,7 +6578,7 @@
       "mood": "wry",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_card_row",
     "choices": [
       {
         "text": "Let the market crowd swallow you again",
@@ -16656,7 +16656,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_card_row",
     "choices": [
       {
         "text": "Head back toward the harbor master’s post",
@@ -16685,7 +16685,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_card_row",
     "choices": [
       {
         "text": "Head back toward the harbor master’s post",
@@ -16707,7 +16707,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_card_row",
     "choices": [
       {
         "text": "Head back toward the harbor master’s post",
@@ -16729,7 +16729,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_card_row",
     "choices": [
       {
         "text": "Head back toward the harbor master’s post",
@@ -16750,7 +16750,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_yard",
     "choices": [
       {
         "text": "Talk to her from the ground",
@@ -16799,7 +16799,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_yard",
     "choices": [
       {
         "text": "Agree to hunt the captain with her",
@@ -16837,7 +16837,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_yard",
     "choices": [
       {
         "text": "Leave her to her watch",
@@ -16858,7 +16858,7 @@
       "mood": "ominous",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_lantern_alleys",
     "choices": [
       {
         "text": "Hear her out",
@@ -17135,7 +17135,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_tern_row",
     "choices": [
       {
         "text": "Buy his silence (20 gold)",
@@ -23744,7 +23744,7 @@
       "mood": "reflective",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_tern_row",
     "choices": [
       {
         "text": "Buy him another cup, and let him talk (5 gold)",
@@ -23809,7 +23809,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_landward_gate",
     "choices": [
       {
         "text": "Carry it, and ask nothing",
@@ -23874,7 +23874,7 @@
       "mood": "creepy",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_tern_row",
     "choices": [
       {
         "text": "Give her your bread, and sit beside her",
@@ -23934,7 +23934,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_landward_gate",
     "choices": [
       {
         "text": "Ask the clerk whose seal is on the bills",

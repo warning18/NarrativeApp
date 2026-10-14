@@ -105,7 +105,7 @@ void main() {
       expect(landmarkOfScene('470')!.id, 'hovel');
       expect(landmarkOfScene('1100')!.id, 'crash');
       expect(landmarkOfScene('2900')!.id, 'berths');
-      expect(landmarkOfScene('2015_kelda')!.id, 'wharf');
+      expect(landmarkOfScene('2015_kelda')!.id, 'upper');
     });
 
     test('every scene of every landmark resolves to it (v1.209: one lookup)',
@@ -250,8 +250,10 @@ void main() {
     // with the three Houses' favours and the door that was turned, less the
     // landward gate's scenes, which have a place of their own (v1.196);
     // 41 once the gate guard's ambush stands at the gate too (v1.201.2);
-    // 46 with the first clues of five plots at the wharf (v1.270.0).
-    expect(find.text('Scenes read: 3 / 46'), findsOneWidget);
+    // 46 with the first clues of five plots at the wharf (v1.270.0); 17
+    // once the ways moved to their districts (the gate, Tern Row, the yard,
+    // the Lantern Alleys and Card Row take the other 29).
+    expect(find.text('Scenes read: 3 / 17'), findsOneWidget);
     // The rat was beaten; the rest are still unknown.
     expect(find.text('Harbor Rat'), findsOneWidget);
     expect(find.text('???'), findsNWidgets(4));

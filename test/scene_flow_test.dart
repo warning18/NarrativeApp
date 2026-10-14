@@ -206,21 +206,21 @@ void main() {
         'with the world known, a way to another district of the same city '
         'reads through; one that leaves the city is a stop (v1.209)', () {
       // Saltmouth's landward gate (2005, the Upper City landmark) and its
-      // wharf (2015_kelda, the wharf landmark): two landmarks, one city.
+      // wharf (2015_dockside, the wharf landmark): two landmarks, one city.
       final gate = _node('2005', [
-        {'text': 'Down to the wharf', 'next_id': '2015_kelda'}
+        {'text': 'Down to the wharf', 'next_id': '2015_dockside'}
       ], {
         'location': 'gate'
       });
       expect(isPlainGoOn(gate.choices.single), isTrue);
       // By landmark alone, a change of landmark is the road: a stop.
-      expect(isRoadStep('2005', '2015_kelda'), isTrue);
+      expect(isRoadStep('2005', '2015_dockside'), isTrue);
       expect(passThroughChoiceOf(gate, const []), isNull);
       // With the world's places, the wharf is a district of the same
       // city: a walk through its streets, read through.
       final story = StoryData({
         gate.id: gate,
-        '2015_kelda': _node('2015_kelda', const [], {'location': 'wharf'}),
+        '2015_dockside': _node('2015_dockside', const [], {'location': 'wharf'}),
       });
       final oneCity = Geography.parse(geography: {
         'old': {'level': 'continent', 'parent': '', 'name': 'Old'},
@@ -243,7 +243,7 @@ void main() {
       expect(
           passThroughChoiceOf(gate, const [],
               travels: (a, b) => oneCity.travelsBetween(story, a, b))?.nextId,
-          '2015_kelda');
+          '2015_dockside');
       // Two locations: the road, a stop.
       final twoTowns = Geography.parse(geography: {
         'old': {'level': 'continent', 'parent': '', 'name': 'Old'},
