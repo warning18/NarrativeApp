@@ -54,7 +54,9 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
-    SharedPreferences.setMockInitialValues({});
+    // The drawn stages, not the zones' written roads (expedition_steps.json),
+    // whatever that file holds: an empty saved copy of it.
+    SharedPreferences.setMockInitialValues({'gamedb_expedition_steps': '{}'});
     tester.view.physicalSize = const Size(420, 900);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
