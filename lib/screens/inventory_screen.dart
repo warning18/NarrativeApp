@@ -17,7 +17,7 @@ import '../tutorial/tutorial_topics.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../theme/stitched_ink.dart';
 import '../widgets/compare_dialog.dart';
-import '../widgets/detail_dialog.dart';
+import '../widgets/item_detail_view.dart';
 import '../widgets/item_lore.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
@@ -763,18 +763,6 @@ class _ItemTile extends StatelessWidget {
   /// why the equip action is unavailable instead of just hiding it.
   final bool requirementUnmet;
 
-  /// Formats [value], appending a "(+n)"/"(-n)" delta against
-  /// [comparisonItem]'s value for the same stat when one is set.
-  String _statValue(String key) {
-    final value = (item?[key] as num?) ?? 0;
-    if (comparisonItem == null) return '$value';
-    final cmp = (comparisonItem?[key] as num?) ?? 0;
-    final delta = value - cmp;
-    if (delta == 0) return '$value';
-    final sign = delta > 0 ? '+' : '';
-    return '$value ($sign$delta)';
-  }
-
   @override
   Widget build(BuildContext context) {
     final itemName = item?['itemName']?.toString() ?? itemId;
@@ -834,7 +822,6 @@ class _ItemTile extends StatelessWidget {
     final theme = Theme.of(context);
     final rarity = item?['rarity']?.toString() ?? '';
     final rarityLabel = itemRarityLabelFor(language, rarity);
-    final lore = itemLoreOf(item);
     return Card(
       margin: const EdgeInsets.only(bottom: 6),
       color: selectedForCompare
@@ -895,66 +882,29 @@ class _ItemTile extends StatelessWidget {
                         : null,
         onTap: compareMode
             ? onCompareTap
-            : () => showDetailDialog(
+            : () => showItemDetailsSheet(
                   context,
-                  title: itemName,
-                  leading: ItemPixelIcon(itemId, itemType, size: 24),
-                  closeLabel: t('close_button'),
-                  // Its lore (v1.204), then where it came from.
-                  description: lore.isEmpty ? null : lore,
-                  note: originLine,
-                  rows: [
-                    MapEntry(
-                        t('item_type_label'), itemType ?? t('unknown_label')),
-                    if (rarityLabel.isNotEmpty)
-                      MapEntry(t('item_rarity_label'), rarityLabel),
-                    MapEntry(t('cost_label'), '${item?['cost'] ?? 0}'),
-                    if (equipSlot != null && equipSlot.isNotEmpty)
-                      MapEntry(t('equip_slot_label'), equipSlot),
-                    MapEntry(
-                        t('attack_damage_label'), _statValue('attackDamage')),
-                    MapEntry(t('armor_label'), _statValue('armor')),
-                    if (scalingAbbrev != null)
-                      MapEntry(t('scales_with_label'), scalingAbbrev),
-                    if (requirementText != null && requirementText.isNotEmpty)
-                      MapEntry(t('stat_requirement_label'), requirementText),
-                    if (uniqueText != null)
-                      MapEntry(t('unique_label'), uniqueText),
-                    if (set != null) ...[
-                      MapEntry(
-                          t('set_label'),
-                          '${set.nameFor(language)} '
-                          '($setPiecesWorn/${set.itemIds.length})'),
-                      for (final tier in set.tiers)
-                        MapEntry(
-                          '${tier.pieces} ${t('set_pieces_label')}'
-                          '${tier.pieces <= setPiecesWorn ? ' ✓' : ''}',
-                          tier.descriptionFor(language),
-                        ),
-                    ],
-                    for (final entry in {
-                      'fireDmgBonus': t('fire_dmg_label'),
-                      'windDmgBonus': t('wind_dmg_label'),
-                      'earthDmgBonus': t('earth_dmg_label'),
-                      'waterDmgBonus': t('water_dmg_label'),
-                      'elecDmgBonus': t('elec_dmg_label'),
-                    }.entries)
-                      if (((item?[entry.key] as num?) ?? 0) != 0 ||
-                          ((comparisonItem?[entry.key] as num?) ?? 0) != 0)
-                        MapEntry(entry.value, _statValue(entry.key)),
-                    for (final entry in {
-                      'fireResist': t('fire_resist_label'),
-                      'windResist': t('wind_resist_label'),
-                      'earthResist': t('earth_resist_label'),
-                      'waterResist': t('water_resist_label'),
-                      'elecResist': t('elec_resist_label'),
-                    }.entries)
-                      if (((item?[entry.key] as num?) ?? 0) != 0 ||
-                          ((comparisonItem?[entry.key] as num?) ?? 0) != 0)
-                        MapEntry(entry.value, _statValue(entry.key)),
-                    if (count != null && count! > 1)
-                      MapEntry(t('owned_label'), '$count'),
-                  ],
+                  itemId: itemId,
+                  item: item,
+                  language: language,
+                  equipped: comparisonItem,
+                  equippedId: comparisonItemId,
+                  equippedName: comparisonItem?['itemName']?.toString() ??
+                      comparisonItemId,
+                  priceLine: '${t('cost_label')}: ${item?['cost'] ?? 0}',
+                  unmetRequirement: requirementText,
+                  itemSet: set,
+                  setPiecesWorn: setPiecesWorn,
+                  originLine: originLine,
+                  count: count,
+                  wornBy: wornBy,
+                  isWorn: isEquipped,
+                  actionLabel: onUnequip != null
+                      ? t('unequip')
+                      : onEquip != null
+                          ? t('equip_button')
+                          : null,
+                  onAction: onUnequip ?? onEquip,
                 ),
       ),
     );
