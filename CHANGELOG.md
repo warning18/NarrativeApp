@@ -8,13 +8,28 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.317.0+353]
+## [1.319.0+355]
 
 Skills are crafted at the camp's Skillwright.
 
 ### Changed
 - **Craft a Skill is done at the camp, at the new Skillwright** (a workshop: 350 gold, timber and slag glass, from chapter 3). Until it stands, no skill can be crafted, and the craft entries on the skills screen do not show.
 - **The craft lists name the skills** in your language ("Fireball + Shadow Step → Blazing Shadow", "Requires: Second Wind"), never their ids.
+
+## [1.318.0+354]
+
+The title popin names its clan.
+
+### Changed
+- **Reading a title** (hold its chip on the Character tab) opens a sheet instead of a plain dialog: the granting clan's banner beside the title's own badge in the clan's colour, "Granted by" and the clan's name, the effect in a card of its own, then the words it came with, quiet. A title you can choose has Wear or Take off in the sheet; a brand ("the Marked") stays unchoosable and shows in red.
+
+## [1.317.0+353]
+
+The item popin reads at a glance.
+
+### Changed
+- **An item's detail sheet has a hierarchy** (inventory, shop and loot chest alike): its art on a tile in its rarity colour (a Relic glows), the name with rarity, type and slot tags, then attack and armor as big numbers with a bar and a tick where the item you wear sits, and the gain or loss beside them. Elements, what it scales with, its unique effect, alignment and any requirement you miss follow; the set shows its pieces and which bonuses you have earned; the lore comes last, in quiet type.
+- **From the inventory** the sheet offers Equip or Unequip, and nothing is compared with itself when the item is the one worn.
 
 ## [1.316.0+352]
 

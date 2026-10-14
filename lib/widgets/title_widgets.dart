@@ -8,7 +8,7 @@ import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
-import 'detail_dialog.dart';
+import 'title_detail_view.dart';
 
 /// The title worn, as it shows under the character's name ('' for none;
 /// see offers.dart's titles).
@@ -157,24 +157,17 @@ class TitleChips extends ConsumerWidget {
         if (data.titles[id] != null) data.titles[id]!,
     ];
 
-    void read(TitleDef title) {
-      final faction = data.faction(title.factionId);
-      final lines = [
-        for (final e in title.effects) signEffectText(e, lang),
-        if (title.lineFor(lang).isNotEmpty) title.lineFor(lang),
-        if (title.negative) trFor(lang, 'title_bad_note'),
-      ];
-      showDetailDialog(
-        context,
-        title: title.nameFor(lang),
-        description: lines.join('\n'),
-        note: faction?.shortFor(lang),
-        icon: title.negative
-            ? Icons.report_outlined
-            : Icons.workspace_premium_outlined,
-        closeLabel: trFor(lang, 'close_button'),
-      );
-    }
+    void read(TitleDef title) => showTitleSheet(
+          context,
+          title: title,
+          faction: data.faction(title.factionId),
+          language: lang,
+          worn: session.activeTitleId == title.id,
+          onToggle: () => ref
+              .read(playerSessionProvider.notifier)
+              .setActiveTitle(
+                  session.activeTitleId == title.id ? '' : title.id),
+        );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
