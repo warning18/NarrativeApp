@@ -14,6 +14,7 @@ import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import 'cliff_town_view.dart';
+import '../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
 import 'immersive_notice.dart';
 import 'moments.dart';
 
@@ -149,13 +150,13 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
     );
   }
 
-  /// "2 Timber, 1 Cut Stone": the materials in [counts], by their names.
-  String _materialsLabel(Map<String, int> counts) {
+  /// Each item's name, for the material chips' tooltips.
+  Map<String, String> _itemNames() {
     final items = ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
-    return [
-      for (final e in counts.entries)
-        '${e.value} ${(items[e.key] as Map?)?['itemName'] ?? e.key}',
-    ].join(', ');
+    return {
+      for (final e in items.entries)
+        e.key: (e.value as Map?)?['itemName']?.toString() ?? e.key,
+    };
   }
 
   Future<void> _buildHouse(String houseId, CliffTown town) async {
@@ -275,6 +276,8 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
       final goldEnough = session.gold >= cost;
       final affordable = goldEnough && missing.isEmpty;
       final canBuild = !isBuilt && lockReason == null && affordable;
+      // What a house needs beside gold, as chips: held or missing.
+      final showMaterials = !isBuilt && materials.isNotEmpty;
       // The card says at a glance where the house stands (v1.201): built,
       // ready to go up, short of gold, or locked; then what it gives,
       // its price, and the one thing to do about it.
@@ -286,7 +289,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                   ? (tr(ref, 'town_ready'), ink.gold)
                   : goldEnough
                       ? (
-                          '${tr(ref, 'town_need')} ${_materialsLabel(missing)}',
+                          '${tr(ref, 'town_need')} ${tr(ref, 'town_materials')}',
                           ink.ember
                         )
                       : (
@@ -354,11 +357,20 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
               const SizedBox(height: 4),
               Expanded(
                 child: Text(detail,
-                    maxLines: 3,
+                    maxLines: showMaterials ? 2 : 3,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall
                         ?.copyWith(color: ink.ash, height: 1.3)),
               ),
+              if (showMaterials) ...[
+                const SizedBox(height: 4),
+                _MaterialChips(
+                  key: Key('town_materials_$id'),
+                  cost: materials,
+                  missing: missing,
+                  names: _itemNames(),
+                ),
+              ],
               const SizedBox(height: 6),
               action,
             ],
@@ -559,6 +571,52 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
             ],
           ),
         ),
+      ],
+    );
+  }
+}
+
+/// The materials a house costs beside gold, each as its icon and the count
+/// ("2" held and enough, "1/2" short, in the ember colour when short).
+class _MaterialChips extends StatelessWidget {
+  const _MaterialChips({
+    super.key,
+    required this.cost,
+    required this.missing,
+    required this.names,
+  });
+
+  final Map<String, int> cost;
+  final Map<String, int> missing;
+  final Map<String, String> names;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    return Wrap(
+      spacing: 6,
+      runSpacing: 2,
+      children: [
+        for (final e in cost.entries)
+          Tooltip(
+            message: names[e.key] ?? e.key,
+            child: Row(
+              key: Key('town_material_${e.key}'),
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ItemPixelIcon(e.key, 'Material', size: 18),
+                const SizedBox(width: 2),
+                Text(
+                  missing.containsKey(e.key)
+                      ? '${e.value - missing[e.key]!}/${e.value}'
+                      : '${e.value}',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                      color: missing.containsKey(e.key) ? ink.ember : ink.ash),
+                ),
+              ],
+            ),
+          ),
       ],
     );
   }
