@@ -3,18 +3,21 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/camp_works.dart' show tierFirstChapter, workTierOf;
 import '../data/cliff_town.dart';
 import '../data/materials.dart';
 import '../data/zone_gating.dart';
 import '../l10n/app_locale.dart';
-import '../gamedata/db_schema.dart' show itemsSchema;
+import '../gamedata/db_schema.dart'
+    show companionsSchema, housesSchema, itemsSchema;
 import '../l10n/app_strings.dart';
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/game_db_providers.dart' show localizedDbProvider;
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
+import '../data/camp_works.dart' show WorkState, tierFirstChapter, workTierOf;
+import '../providers/camp_works_provider.dart';
+import 'camp_works_list.dart';
 import 'cliff_town_view.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
 import 'immersive_notice.dart';
@@ -98,7 +101,9 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
   /// What a house gives, in a line: its bonuses and the shop it opens, else
   /// its description.
   String _houseDetail(String houseId) {
-    final house = widget.houses[houseId] as Map<String, dynamic>;
+    final house = (widget.houses[houseId] ??
+        ref.read(localizedDbProvider(housesSchema)).value?[houseId] ??
+        const <String, dynamic>{}) as Map<String, dynamic>;
     final capacity = (house['partyCapacityBonus'] as num?)?.toInt() ?? 0;
     final health = (house['partyHealthBonus'] as num?)?.toInt() ?? 0;
     final damage = (house['partyDamageBonus'] as num?)?.toInt() ?? 0;
@@ -236,7 +241,6 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(playerSessionProvider);
-    final reached = ref.watch(reachedChapterProvider);
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final town = CliffTown.build(session.townPieces);
@@ -399,63 +403,23 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                 onBuild: () => _buildAddition(addition, town),
               ),
           ]
+        : const <Widget>[];
+
+    final orderedCards = _showAdditions
+        ? [
+            for (final a in townAdditions)
+              cards.firstWhere(
+                  (c) => (c.key as Key) == Key('town_card_${a.id}')),
+          ]
+        : const <Widget>[];
+    final works = ref.watch(campWorksProvider);
+    final readyCount = _showAdditions
+        ? townAdditions.length
         : [
-            for (final houseId in _houseIds)
-              () {
-                final house = widget.houses[houseId] as Map<String, dynamic>;
-                final isBuilt = built.contains(houseId);
-                final comesIn = tierFirstChapter(workTierOf(house));
-                final lock = isBuilt
-                    ? null
-                    : reached < comesIn
-                        ? tr(ref, 'heard_reason_laterChapter')
-                            .replaceAll('{n}', '$comesIn')
-                        : meetsRequiredFlags(house, session.flags)
-                            ? null
-                            : [
-                                tr(ref, 'requires_zone_prefix'),
-                                lockRequirementName(
-                                    house, session.flags, widget.zones),
-                              ].whereType<String>().join(': ');
-                return card(
-                  id: houseId,
-                  name: _nameOf(houseId),
-                  detail: _houseDetail(houseId),
-                  footprint: footprintOf(houseId),
-                  cost: (house['buildCost'] as num?)?.toInt() ?? 0,
-                  materials: materialCountsOf(house, 'materialCost'),
-                  isBuilt: isBuilt,
-                  lockReason: lock,
-                  onBuild: () => _buildHouse(houseId, town),
-                );
-              }(),
-          ];
-
-    // Ready to go up first, then short of gold, locked, and the built.
-    int rank(String id) {
-      if (isTownAddition(id)) return 0;
-      if (built.contains(id)) return 3;
-      final house = widget.houses[id] as Map<String, dynamic>;
-      if (!meetsRequiredFlags(house, session.flags) ||
-          reached < tierFirstChapter(workTierOf(house))) {
-        return 2;
-      }
-      final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
-      final materials = materialCountsOf(house, 'materialCost');
-      return session.gold >= cost &&
-              missingMaterials(session.inventoryItemIds, materials).isEmpty
-          ? 0
-          : 1;
-    }
-
-    final cardIds = _showAdditions
-        ? [for (final a in townAdditions) a.id]
-        : (_houseIds..sort((a, b) => rank(a).compareTo(rank(b))));
-    final orderedCards = [
-      for (final id in cardIds)
-        cards.firstWhere((c) => (c.key as Key) == Key('town_card_$id')),
-    ];
-    final readyCount = _houseIds.where(buildable).length;
+            for (final list in works.values)
+              for (final w in list)
+                if (w.state == WorkState.buildable) w,
+          ].length;
 
     final selectedAvailable = isTownAddition(selected) || buildable(selected);
     // Where the outlined piece would go, said in words under the town.
@@ -576,15 +540,40 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                 ],
               ),
               const SizedBox(height: 8),
-              SizedBox(
-                height: 190,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: orderedCards.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 10),
-                  itemBuilder: (_, i) => orderedCards[i],
+              if (_showAdditions)
+                SizedBox(
+                  height: 190,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: orderedCards.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 10),
+                    itemBuilder: (_, i) => orderedCards[i],
+                  ),
+                )
+              else
+                CampWorksList(
+                  houses: ref.watch(localizedDbProvider(housesSchema)).value ??
+                      widget.houses,
+                  shops: widget.shops,
+                  zones: widget.zones,
+                  itemNames: _itemNames(),
+                  companionNames: {
+                    for (final e in (ref
+                                .watch(localizedDbProvider(companionsSchema))
+                                .value ??
+                            const <String, dynamic>{})
+                        .entries)
+                      e.key: (e.value as Map?)?['companionName']?.toString() ??
+                          e.key,
+                  },
+                  selectedId: selected,
+                  detailOf: _houseDetail,
+                  onSelect: (id) {
+                    setState(() => _selected = id);
+                    _reveal(town, footprintOf(id));
+                  },
+                  onBuild: (id) => _buildHouse(id, town),
                 ),
-              ),
             ],
           ),
         ),
