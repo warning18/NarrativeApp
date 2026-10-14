@@ -414,7 +414,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                       layers: ruins
                           ? ruinsLayers(progress: progress)
                           : desertLayers(progress: progress),
-                      actors: desertActors(),
+                      actors: desertActors(moving: _phase == _Phase.result),
                       particles: particles,
                       intensity: storm ? 1 : 0.6,
                       moving: _phase == _Phase.result,
