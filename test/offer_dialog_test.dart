@@ -1,11 +1,17 @@
-// Offers (v1.194) on a 360-px phone: the offer dialog -- three suitors
-// stacked, each with their colour, "The Emberwives of the Cinder
+// Offers (v1.194) on a 360-px phone: the offer dialog -- the hall of the
+// picked suitor (banner, charter, the clans' compass, the gift) over three
+// ledger rows, each with their colour, "The Emberwives of the Cinder
 // Compact", their first words, the gift (its kind, name, rarity and what
 // it does) and the standing it would move by the real relations; a
 // suitor taken with a confirm (the gift, the standing and its ripple, the
 // voice a friend), the next offer drawn, never left for later -- in English
 // and in French, with the Character tab's titles.
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,6 +23,7 @@ import 'package:narrative_data_app/gamedata/db_schema.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/providers/game_db_providers.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
+import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/offer_dialog.dart';
 import 'package:narrative_data_app/widgets/title_widgets.dart';
 
@@ -51,9 +58,55 @@ const ClanOffer _offer = ClanOffer(ticket: _level, suitors: [
   ),
 ]);
 
+final _shotKey = GlobalKey();
+
+/// The app's own fonts and icon font, for the pictures (set UX_SHOTS to a folder).
+Future<void> _loadFonts() async {
+  for (final (family, files) in [
+    (
+      InkFonts.system,
+      ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']
+    ),
+    (
+      InkFonts.prose,
+      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
+    ),
+    (InkFonts.display, ['IMFellEnglishSC-Regular.ttf']),
+  ]) {
+    final loader = FontLoader(family);
+    for (final file in files) {
+      loader.addFont(Future.value(
+          ByteData.sublistView(File('assets/fonts/$file').readAsBytesSync())));
+    }
+    await loader.load();
+  }
+  final icons = File('/tmp/flutter/bin/cache/artifacts/material_fonts/'
+      'MaterialIcons-Regular.otf');
+  if (icons.existsSync()) {
+    final loader = FontLoader('MaterialIcons')
+      ..addFont(Future.value(ByteData.sublistView(icons.readAsBytesSync())));
+    await loader.load();
+  }
+}
+
+Future<void> _shot(WidgetTester tester, String name) async {
+  final dir = Platform.environment['UX_SHOTS'];
+  if (dir == null) return;
+  await tester
+      .runAsync(() => Future<void>.delayed(const Duration(milliseconds: 300)));
+  await tester.pump();
+  await tester.runAsync(() async {
+    final boundary =
+        _shotKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+    final image = await boundary.toImage(pixelRatio: 1.5);
+    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    File('$dir/$name.png').writeAsBytesSync(bytes!.buffer.asUint8List());
+  });
+}
+
 Future<ProviderContainer> _open(WidgetTester tester,
-    {required bool french}) async {
-  tester.view.physicalSize = const Size(360, 740);
+    {required bool french, Size size = const Size(360, 740)}) async {
+  tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
   SharedPreferences.setMockInitialValues({if (french) 'app_language': 'fr'});
@@ -97,6 +150,8 @@ Future<ProviderContainer> _open(WidgetTester tester,
   await tester.pumpWidget(UncontrolledProviderScope(
     container: container,
     child: MaterialApp(
+      theme: buildAppTheme(const ColorScheme.dark()),
+      builder: (context, child) => RepaintBoundary(key: _shotKey, child: child),
       home: Scaffold(
         body: Consumer(
           builder: (context, ref, _) => ListView(
@@ -131,6 +186,11 @@ Future<void> _settle(WidgetTester tester) async {
 }
 
 void main() {
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    if (Platform.environment['UX_SHOTS'] != null) await _loadFonts();
+  });
+
   testWidgets('three suitors stacked at 360 px; one taken, the next kept',
       (tester) async {
     final container = await _open(tester, french: false);
@@ -138,8 +198,8 @@ void main() {
     expect(find.byType(OfferDialog), findsOneWidget);
     expect(find.text('The clans come to you'), findsOneWidget);
     expect(find.textContaining('2 waiting'), findsOneWidget);
-    // Three little flags, each with what it gives and nothing more: the
-    // gift's kind, name and rarity and the first standing it moves.
+    // Three ledger rows, each with what it gives and nothing more: the
+    // gift's kind and name, the first standing it moves, the clan's line.
     for (final id in ['compact', 'penitents', 'wayfarer']) {
       expect(find.byKey(Key('offer_suitor_$id')), findsOneWidget);
     }
@@ -151,41 +211,43 @@ void main() {
     expect(find.text('Keen Eye'), findsOneWidget);
     expect(find.text('+6\u00a0Compact'), findsOneWidget);
     expect(find.text('+6\u00a0Penitents'), findsOneWidget);
-    // The rest is told under the flags, once one is picked: none of it shows
-    // before, only a hint.
+    // The rest is the hall's, once a row is picked: before, only a hint and
+    // the clans' compass.
     expect(find.text('The Emberwives of the Cinder Compact'), findsNothing);
     expect(find.textContaining('broke every hammer in the Row'), findsNothing);
     expect(find.byKey(const Key('offer_select_hint')), findsOneWidget);
-    expect(find.text('Select a banner to see its details.'), findsOneWidget);
+    expect(find.byKey(const Key('clan_compass')), findsOneWidget);
     expect(
         tester
             .widget<FilledButton>(find.byKey(const Key('offer_take_button')))
             .onPressed,
         isNull,
-        reason: 'nothing is taken before a banner is picked');
-    // Every banner is one size, picked or not, and so is the zone.
-    Size banner(String id) =>
-        tester.getSize(find.byKey(Key('offer_banner_$id')));
+        reason: 'nothing is taken before a row is picked');
     final zone = tester.getSize(find.byKey(const Key('offer_detail_zone')));
-    expect(banner('compact'), const Size(88, 128));
-    expect(banner('penitents'), const Size(88, 128));
 
     await tester.tap(find.byKey(const Key('offer_suitor_compact')));
     await _settle(tester);
     expect(find.text('The Emberwives of the Cinder Compact'), findsOneWidget);
     expect(find.textContaining('broke every hammer in the Row'), findsOneWidget,
         reason: 'the Compact\'s intro, the first time');
-    expect(
-        find.text('+6\u00a0Compact · +1.5\u00a0Vigil · +1.5\u00a0Mire · '
-            '−3\u00a0Penitents'),
-        findsOneWidget,
-        reason: 'the politics of the pick, by the relations as they stand');
+    expect(tester.getSize(find.byKey(const Key('offer_banner_compact'))),
+        const Size(88, 128),
+        reason: 'one banner, at its own size');
+    // The politics of the pick, by the relations as they stand, on the
+    // crests: +6 for the Compact, +1.5 for its friends, -3 for its foe.
+    Finder badge(String id, String text) => find.descendant(
+        of: find.byKey(Key('compass_$id')), matching: find.text(text));
+    expect(badge('compact', '+6'), findsOneWidget);
+    expect(badge('vigil', '+1.5'), findsOneWidget);
+    expect(badge('mire', '+1.5'), findsOneWidget);
+    expect(badge('penitents', '−3'), findsOneWidget);
+    expect(find.text('Alignment · no change'), findsOneWidget,
+        reason: 'the alignment as a word');
     expect(find.byKey(const Key('offer_select_hint')), findsNothing);
-    expect(banner('compact'), const Size(88, 128),
-        reason: 'the picked banner keeps its size');
-    expect(banner('penitents'), const Size(88, 128));
-    expect(tester.getSize(find.byKey(const Key('offer_detail_zone'))), zone);
-    // Another flag: its words take the same zone.
+    expect(tester.getSize(find.byKey(const Key('offer_detail_zone'))).width,
+        zone.width);
+    await _shot(tester, 'gift_compact');
+    // Another row: its hall takes the same place.
     await tester.tap(find.byKey(const Key('offer_suitor_penitents')));
     await _settle(tester);
     expect(find.text('The Emberwives of the Cinder Compact'), findsNothing);
@@ -193,16 +255,17 @@ void main() {
         find.text('The Ember Sisters of the Ashen Penitents'), findsOneWidget);
     expect(find.textContaining('+3 damage'), findsOneWidget);
     expect(find.text('Replaces: Ember Knuckles'), findsOneWidget);
-    expect(
-        find.text('+6\u00a0Penitents · +1.5\u00a0Vigil · −3\u00a0Dominion · '
-            '−3\u00a0Compact · −3\u00a0Mire · alignment\u00a0+1'),
-        findsOneWidget);
-    expect(tester.getSize(find.byKey(const Key('offer_detail_zone'))), zone);
+    expect(badge('penitents', '+6'), findsOneWidget);
+    expect(badge('dominion', '−3'), findsOneWidget);
+    expect(find.text('Alignment · toward Good'), findsOneWidget);
+    await _shot(tester, 'gift_penitents');
     // The Wayfarer moves no standing.
     await tester.tap(find.byKey(const Key('offer_suitor_wayfarer')));
     await _settle(tester);
-    expect(find.text('The Wayfarer'), findsOneWidget);
+    expect(find.text('The Wayfarer'), findsNWidgets(2),
+        reason: 'the row and the hall');
     expect(find.text('No faction: standing doesn’t move.'), findsOneWidget);
+    await _shot(tester, 'gift_wayfarer');
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
 
     // Nothing is taken before a suitor is chosen, and then confirmed.
@@ -266,15 +329,25 @@ void main() {
     expect(find.text('Atout'), findsOneWidget);
     expect(find.text('Œil perçant'), findsOneWidget);
     expect(find.text('+6\u00a0Pacte'), findsOneWidget);
-    expect(find.text('Choisissez une bannière pour voir son détail.'),
+    expect(
+        find.text('Choisissez un clan ci-dessous pour voir sa bannière et son '
+            'don.'),
         findsOneWidget);
     await tester.tap(find.byKey(const Key('offer_suitor_compact')));
     await _settle(tester);
     expect(find.text('Les Charbonnières du Pacte des Cendres'), findsOneWidget);
     expect(
-        find.text('+6\u00a0Pacte · +1,5\u00a0Veille · +1,5\u00a0Marais · '
-            '−3\u00a0Pénitents'),
+        find.descendant(
+            of: find.byKey(const Key('compass_compact')),
+            matching: find.text('+6')),
         findsOneWidget);
+    expect(
+        find.descendant(
+            of: find.byKey(const Key('compass_vigil')),
+            matching: find.text('+1,5')),
+        findsOneWidget);
+    expect(find.text('Alignement · inchangé'), findsOneWidget);
+    await _shot(tester, 'gift_compact_fr');
     await tester.tap(find.byKey(const Key('offer_suitor_penitents')));
     await _settle(tester);
     expect(find.text('Les Sœurs de Braise des Pénitents de Cendre'),
@@ -282,7 +355,7 @@ void main() {
     expect(find.text('Remplace\u00a0: Poings de braise'), findsOneWidget);
     await tester.tap(find.byKey(const Key('offer_suitor_wayfarer')));
     await _settle(tester);
-    expect(find.text('Le Voyageur'), findsOneWidget);
+    expect(find.text('Le Voyageur'), findsNWidgets(2));
     expect(find.text('Sans faction\u00a0: la réputation ne bouge pas.'),
         findsOneWidget);
     expect(find.text('Prendre ce don'), findsOneWidget);
@@ -323,6 +396,16 @@ void main() {
     await tester.runAsync(() => Future<void>.delayed(Duration.zero));
     await tester.pump();
     expect(container.read(playerSessionProvider).activeTitleId, '');
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a tall phone shows the whole hall', (tester) async {
+    await _open(tester, french: false, size: const Size(412, 900));
+    await tester.tap(find.byKey(const Key('offer_suitor_compact')));
+    await _settle(tester);
+    expect(find.byKey(const Key('clan_compass')), findsOneWidget);
+    expect(find.text('Iron Stance'), findsNWidgets(2));
+    await _shot(tester, 'gift_tall');
     expect(tester.takeException(), isNull);
   });
 }

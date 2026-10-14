@@ -11049,8 +11049,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Toucher pour passer',
   },
   'offer_select_hint': {
-    AppLanguage.en: 'Select a banner to see its details.',
-    AppLanguage.fr: 'Choisissez une bannière pour voir son détail.',
+    AppLanguage.en: 'Pick a clan below to see its banner and its gift.',
+    AppLanguage.fr:
+        'Choisissez un clan ci-dessous pour voir sa bannière et son don.',
   },
   'offer_hint': {
     AppLanguage.en: 'Take one gift: the one you take is a side chosen.',
@@ -11088,6 +11089,35 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'offer_no_standing': {
     AppLanguage.en: 'No faction: standing doesn’t move.',
     AppLanguage.fr: 'Sans faction\u00a0: la réputation ne bouge pas.',
+  },
+  'clans_compass_title': {
+    AppLanguage.en: 'The clans of the coast',
+    AppLanguage.fr: 'Les clans de la côte',
+  },
+  'clans_compass_hint': {
+    AppLanguage.en:
+        'Friends sit side by side, blood feuds face each other. The number is where you stand. Tap a clan for its lines.',
+    AppLanguage.fr:
+        'Les amis sont côte à côte, les vendettas face à face. Le chiffre est votre réputation. Touchez un clan pour ses liens.',
+  },
+  'clans_compass_friends': {AppLanguage.en: 'Friends', AppLanguage.fr: 'Amis'},
+  'clans_compass_foes': {AppLanguage.en: 'Foes', AppLanguage.fr: 'Ennemis'},
+  'offer_stands_for': {AppLanguage.en: 'Stands for', AppLanguage.fr: 'Défend'},
+  'offer_wayfarer_stands': {
+    AppLanguage.en: 'No clan, no debt',
+    AppLanguage.fr: 'Aucun clan, aucune dette',
+  },
+  'offer_align_good': {
+    AppLanguage.en: 'toward Good',
+    AppLanguage.fr: 'vers le Bon',
+  },
+  'offer_align_evil': {
+    AppLanguage.en: 'toward Evil',
+    AppLanguage.fr: 'vers le Mauvais',
+  },
+  'offer_align_none': {
+    AppLanguage.en: 'no change',
+    AppLanguage.fr: 'inchangé',
   },
   'offer_alignment_nudge': {
     AppLanguage.en: 'alignment\u00a0{n}',

@@ -330,6 +330,8 @@ class Faction {
     this.shortFr = '',
     this.motto = '',
     this.mottoFr = '',
+    this.standsFor = '',
+    this.standsForFr = '',
     this.lean = 0,
     this.startStanding = 0,
     this.subclans = const [],
@@ -352,6 +354,11 @@ class Faction {
   final String shortFr;
   final String motto;
   final String mottoFr;
+
+  /// What it wants of you, in a line (`stands_for`, Narrative's): the clan
+  /// offer's one-line orientation. Empty until the data has it.
+  final String standsFor;
+  final String standsForFr;
 
   /// The alignment nudge when the character accepts their gift: -1, 0 or
   /// 1.
@@ -401,6 +408,13 @@ class Faction {
   }
 
   String mottoFor(AppLanguage language) => _pick(language, motto, mottoFr);
+
+  /// The line on what it stands for; its motto while the data has none.
+  String standsForFor(AppLanguage language) {
+    final own = _pick(language, standsFor, standsForFr);
+    return own.isNotEmpty ? own : mottoFor(language);
+  }
+
   String introFor(AppLanguage language) => patron.introFor(language);
   List<String> greetingsFor(AppLanguage language) =>
       patron.greetingsFor(language);
@@ -413,6 +427,8 @@ class Faction {
         shortFr: _text(json['short_fr']),
         motto: _text(json['motto']),
         mottoFr: _text(json['motto_fr']),
+        standsFor: _text(json['stands_for']),
+        standsForFr: _text(json['stands_for_fr']),
         lean: _int(json['lean']).clamp(-1, 1),
         startStanding:
             _int(json['startStanding']).clamp(minStanding, maxStanding),
