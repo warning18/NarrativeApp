@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.347.0+383]
+
+Settings honoured from the first moment; the ways round a fight have their price.
+
+### Fixed
+- **A setting is honoured from the first road after a start**: with the hunters turned off, no temptation or hunter on the first detour after opening the game; the spoils chest opens itself on the first fight if that is the choice.
+
+### Changed
+- **The ways round a fight that cost something by their words now do**: the patrol's toll is 20 gold (shut if the purse can't pay), throwing the hound a salt sack or burning the lantern oil costs a tenth of the load, giving away the coal's warmth or outpacing the reed ghoul costs a day; the thieves' bargain pays 5 gold. The other ways round stay free, but leave the fight's spoils behind.
+
 ## [1.345.0+381]
 
 The written expeditions, balanced.
