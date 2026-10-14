@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.305.0+341]
+
+The desert scavengers are a real fight.
+
+### Changed
+- **"Go at them" against the scavengers on a land crossing is fought on the battle screen** (a Wreck Scavenger), with the party's own health, rewards and loot. Won, the road goes on and the sledge is left behind; broken off, the party gets clear with a cut; lost, the crossing is lost and the party is carried back wounded, as when its health runs out. The choice reads "(fight)". "Play to chapter" and the simulator never stop for the battle screen: they slip away or pay, as they mostly did. A crossing's choice can name any enemy with a `fight` field.
+
 ## [1.304.0+340]
 
 The Shroud Shrine opens on the Shroud's Vigil too.
