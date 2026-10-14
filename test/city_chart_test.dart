@@ -1,5 +1,6 @@
 // The city chart (lib/widgets/city_chart): the record reads, the view opens
 // on the whole city, zooms in and out, and fogs the districts not found.
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -10,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/data/city_plan_record.dart';
 import 'package:narrative_data_app/data/world_map.dart';
 import 'package:narrative_data_app/screens/city_chart_screen.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
@@ -123,6 +125,58 @@ void main() {
         find.byKey(const Key('city_chart_whole')).hitTestable(), findsNothing);
   });
 
+  /// Saltmouth's stored plan (Core's record), with a way for each anchor.
+  Future<(CityPlanRecord, CityChart)> stored() async {
+    final raw = jsonDecode(
+        await rootBundle.loadString('assets/gamedata/city_plans.json'));
+    final record =
+        cityPlanRecordsFrom(raw as Map<String, dynamic>)['saltmouth']!;
+    const kinds = CityWayKind.values;
+    final ways = <CityWayInput>[];
+    var n = 0;
+    for (final e in record.anchors.entries) {
+      final b = record.building(e.value)!;
+      ways.add(CityWayInput(
+          id: 'way_${e.key}',
+          districtId: b.district,
+          kind: kinds[n++ % kinds.length],
+          name: 'Way ${e.key}',
+          sceneId: e.key));
+    }
+    final chart = CityChart.fromRecord(record,
+        districtNames: {
+          for (final id in record.districts.keys)
+            id: id.replaceFirst('saltmouth_', '').replaceAll('_', ' ')
+        },
+        ways: ways);
+    return (record, chart);
+  }
+
+  testWidgets(
+      'Core\'s stored Saltmouth reads: six districts, every way on a '
+      'building of its district, and it zooms like the stub', (tester) async {
+    final (record, real) =
+        await tester.runAsync(stored) as (CityPlanRecord, CityChart);
+    expect(real.districts, hasLength(6));
+    expect(real.ways, hasLength(record.anchors.length));
+    for (final w in real.ways) {
+      final b = real.buildingOf(w);
+      expect(b, isNotNull, reason: w.id);
+      expect(b!.district, w.district, reason: w.id);
+      expect(b.story, isTrue, reason: 'a pinned building is drawn as itself');
+    }
+    // Halls and temples are the story's own; the houses are lots.
+    expect(real.buildings.where((b) => b.story).length,
+        lessThan(real.buildings.length));
+    await tester.pumpWidget(host(tester,
+        CityChartView(chart: real, look: MapLook.night, animate: false)));
+    await tester.tap(find.byKey(const Key('city_chart_zoom_in')));
+    await tester.pump();
+    expect(tester.takeException(), isNull);
+    expect(find.byKey(const Key('city_chart_whole')).hitTestable(),
+        findsOneWidget);
+  });
+
   testWidgets('the zoom buttons zoom in and out', (tester) async {
     await tester.pumpWidget(host(tester,
         CityChartView(chart: chart, look: MapLook.parchment, animate: false)));
@@ -143,8 +197,8 @@ void main() {
     tester.view.physicalSize = const Size(390, 760);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    await tester.pumpWidget(
-        const ProviderScope(child: MaterialApp(home: CityChartScreen())));
+    await tester.pumpWidget(const ProviderScope(
+        child: MaterialApp(home: CityChartScreen(preview: true))));
     await tester.runAsync(
         () => Future<void>.delayed(const Duration(milliseconds: 200)));
     await tester.pump();
@@ -232,5 +286,47 @@ void main() {
         zoomTo: 'wharf', hereWay: wharf.first.id, goalWay: wharf[2].id);
     await shot('alleys', MapLook.parchment, zoomTo: 'alleys');
     await shot('tern', MapLook.night, zoomTo: 'tern');
+    final (_, real) =
+        await tester.runAsync(stored) as (CityPlanRecord, CityChart);
+    Future<void> realShot(String name, MapLook look,
+        {String? zoomTo, Set<String>? explored}) async {
+      final key = GlobalKey();
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: RepaintBoundary(
+            key: key,
+            child: CityChartView(
+              chart: real,
+              look: look,
+              explored: explored,
+              hereDistrict: 'saltmouth_tern_row',
+              animate: false,
+            ),
+          ),
+        ),
+      ));
+      if (zoomTo != null) {
+        final d = real.districtById(zoomTo)!;
+        final s = 780 / real.width < 860 / real.height
+            ? 780 / real.width
+            : 860 / real.height;
+        await tester.tapAt(
+            Offset((780 - real.width * s) / 2, (860 - real.height * s) / 2) +
+                d.centre * s);
+        await tester.pump();
+      }
+      await tester.runAsync(() async {
+        final boundary =
+            key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+        final img = await boundary.toImage(pixelRatio: 1.5);
+        final data = await img.toByteData(format: ui.ImageByteFormat.png);
+        File('$out/$name.png').writeAsBytesSync(data!.buffer.asUint8List());
+      });
+    }
+
+    await realShot('real_night', MapLook.night);
+    await realShot('real_parch', MapLook.parchment,
+        explored: {'saltmouth_tern_row', 'saltmouth_wharf'});
+    await realShot('real_wharf', MapLook.night, zoomTo: 'saltmouth_wharf');
   });
 }

@@ -8,9 +8,12 @@
 // Until the game's own per-city records land, Saltmouth's comes from a stub
 // generated offline (assets/visuals/city/saltmouth_stub.json).
 import 'dart:convert';
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/services.dart';
+
+import '../../data/city_plan_record.dart';
 
 /// What a way does, as the pin on its building says it.
 enum CityWayKind { quest, fight, check, shop, road }
@@ -66,9 +69,15 @@ class CityChartBuilding {
     required this.quiet,
     required this.at,
     required this.ridge,
+    this.story = true,
   });
 
   final String key;
+
+  /// Drawn as one of the buildings the story stands at (a hall, a temple,
+  /// one a way is pinned on); the rest are only houses of the district's
+  /// lots.
+  final bool story;
 
   /// Index into [CityChart.districts].
   final int district;
@@ -101,6 +110,35 @@ class CityChartWay {
   final String building;
 }
 
+/// A line of the plan with its width: a river, a canal, an avenue, a street.
+class CityChartStroke {
+  const CityChartStroke(this.path, this.width, {this.main = false});
+  final Path path;
+  final double width;
+
+  /// An avenue (the star from the gates and the market) rather than a lane.
+  final bool main;
+}
+
+/// A way to pin on a city chart, as the host reads it from the story: its
+/// own id, the district it stands in, what it is, what it is called and
+/// the scene it leads to (the plan's anchors are keyed by it).
+class CityWayInput {
+  const CityWayInput({
+    required this.id,
+    required this.districtId,
+    required this.kind,
+    required this.name,
+    required this.sceneId,
+  });
+
+  final String id;
+  final String districtId;
+  final CityWayKind kind;
+  final String name;
+  final String sceneId;
+}
+
 class CityChart {
   CityChart._({
     required this.name,
@@ -124,6 +162,9 @@ class CityChart {
     required this.boats,
     required this.trees,
     required this.piers,
+    this.waterways = const [],
+    this.roads = const [],
+    this.islands,
   });
 
   final String name;
@@ -151,6 +192,14 @@ class CityChart {
   final List<Offset> trees;
   final List<Rect> piers;
 
+  /// Rivers, canals, avenues and streets drawn as lines (a record gives them
+  /// so; the stub gives them as shapes above).
+  final List<CityChartStroke> waterways;
+  final List<CityChartStroke> roads;
+
+  /// Islands in the water, drawn over it.
+  final Path? islands;
+
   CityChartDistrict? districtById(String id) {
     for (final d in districts) {
       if (d.id == id) return d;
@@ -174,6 +223,220 @@ class CityChart {
   static Future<CityChart> load(AssetBundle bundle, String asset) async =>
       CityChart.fromJson(
           jsonDecode(await bundle.loadString(asset)) as Map<String, dynamic>);
+
+  /// The colours the districts wear, in the order the plan lists them.
+  static const List<Color> districtColours = [
+    Color(0xFF7FA6D8),
+    Color(0xFFE8B94E),
+    Color(0xFF3FB8B0),
+    Color(0xFFD98A3C),
+    Color(0xFFD9544D),
+    Color(0xFF9A6BFF),
+    Color(0xFF6BBF59),
+    Color(0xFFC77DBA),
+  ];
+
+  /// The chart of a stored city plan (see city_plan_record.dart), with the
+  /// names the districts go by ([districtNames], by geography id) and the
+  /// [ways] the story gives: each is pinned on the building its scene is
+  /// anchored to. A building a way is pinned on, and every hall and temple,
+  /// is drawn as itself; the rest are the houses of the district's lots.
+  factory CityChart.fromRecord(
+    CityPlanRecord record, {
+    required Map<String, String> districtNames,
+    List<CityWayInput> ways = const [],
+    bool french = false,
+    String name = '',
+  }) {
+    Path polygon(List<Offset> pts, [Path? into]) {
+      final path = into ?? Path();
+      if (pts.length < 3) return path;
+      path.moveTo(pts.first.dx, pts.first.dy);
+      for (final p in pts.skip(1)) {
+        path.lineTo(p.dx, p.dy);
+      }
+      return path..close();
+    }
+
+    Path line(List<Offset> pts, [Path? into]) {
+      final path = into ?? Path();
+      if (pts.length < 2) return path;
+      path.moveTo(pts.first.dx, pts.first.dy);
+      for (final p in pts.skip(1)) {
+        path.lineTo(p.dx, p.dy);
+      }
+      return path;
+    }
+
+    final ids = record.districts.keys.toList();
+    final index = {for (final (i, id) in ids.indexed) id: i};
+
+    // The ways, each on its building.
+    final pinned = <String, String>{};
+    final chartWays = <CityChartWay>[];
+    for (final w in ways) {
+      final d = index[w.districtId];
+      if (d == null) continue;
+      final b = record.buildingOfWay(w.sceneId, w.districtId);
+      if (b == null) continue;
+      pinned[b.id] = w.name;
+      chartWays.add(CityChartWay(
+          id: w.id, district: d, kind: w.kind, name: w.name, building: b.id));
+    }
+
+    // The buildings: the story's own, and the lots of the rest.
+    final lots = List.generate(ids.length, (_) => Path());
+    final ridges = List.generate(ids.length, (_) => Path());
+    final buildings = <CityChartBuilding>[];
+    for (final b in record.buildings) {
+      final d = index[b.district];
+      if (d == null || b.shape.length < 3) continue;
+      final story = b.notable || pinned.containsKey(b.id);
+      final ridge = _ridgeOf(b.shape);
+      if (!story) {
+        polygon(b.shape, lots[d]);
+        ridges[d]
+          ..moveTo(ridge.$1.dx, ridge.$1.dy)
+          ..lineTo(ridge.$2.dx, ridge.$2.dy);
+      }
+      final written = record.nameOf(b.id, french: french);
+      buildings.add(CityChartBuilding(
+        key: b.id,
+        district: d,
+        name: written.isNotEmpty ? written : (pinned[b.id] ?? ''),
+        shape: polygon(b.shape),
+        round: false,
+        quiet: false,
+        at: b.centre,
+        ridge: ridge,
+        story: story,
+      ));
+    }
+
+    final districts = <CityChartDistrict>[
+      for (final (i, id) in ids.indexed)
+        () {
+          final shape = record.districts[id]!;
+          final path = polygon(shape.shape);
+          var box = path.getBounds().inflate(14);
+          // Never a sliver: at least a block or two across.
+          final cx = box.center.dx, cy = box.center.dy;
+          final hw = math.max(box.width / 2, 90.0);
+          final hh = math.max(box.height / 2, 90.0);
+          box = Rect.fromLTRB(cx - hw, cy - hh, cx + hw, cy + hh);
+          return CityChartDistrict(
+            id: id,
+            name: districtNames[id] ?? id,
+            colour: districtColours[i % districtColours.length],
+            blocks: path,
+            lots: lots[i],
+            ridges: ridges[i],
+            box: box,
+            centre: shape.label,
+          );
+        }(),
+    ];
+
+    // The ground inside the town: the districts together.
+    var ground = Path();
+    for (final d in districts) {
+      ground = Path.combine(PathOperation.union, ground, d.blocks);
+    }
+
+    final bridges = Path();
+    for (final b in record.bridges) {
+      final a = b.angleDegrees * math.pi / 180;
+      final m = Matrix4.identity()
+        ..translateByDouble(b.at.dx, b.at.dy, 0, 1)
+        ..rotateZ(a);
+      bridges.addPath(
+          Path()
+            ..addRect(Rect.fromCenter(
+                center: Offset.zero, width: b.length, height: 13)),
+          Offset.zero,
+          matrix4: m.storage);
+    }
+
+    var islands = Path();
+    for (final i in record.islands) {
+      polygon(i, islands);
+    }
+
+    // Squares: the arena is a ring of stone round a sand floor; the others
+    // are open ground.
+    final squares = Path();
+    var arena = Path(), arenaInner = Path();
+    for (final sq in record.squares) {
+      if (sq.kind == 'arena') {
+        arena = polygon(sq.shape);
+        final c = sq.centre;
+        arenaInner = polygon([
+          for (final p in sq.shape) c + (p - c) * 0.62,
+        ]);
+      } else {
+        polygon(sq.shape, squares);
+      }
+    }
+
+    final wall = Path();
+    for (final run in record.wallRuns) {
+      line(run, wall);
+    }
+
+    return CityChart._(
+      name: name,
+      width: CityPlanRecord.bounds.width,
+      height: CityPlanRecord.bounds.height,
+      sea: polygon(record.sea),
+      ground: ground,
+      wall: wall,
+      towers: record.towers,
+      avenues: Path(),
+      squares: squares,
+      water: Path(),
+      bridges: bridges,
+      arena: arena,
+      arenaInner: arenaInner,
+      districts: districts,
+      buildings: buildings,
+      ways: chartWays,
+      lanterns: const [],
+      stalls: const [],
+      boats: const [],
+      trees: const [],
+      piers: const [],
+      waterways: [
+        for (final r in [...record.rivers, ...record.canals])
+          CityChartStroke(line(r.points), r.width),
+      ],
+      roads: [
+        for (final r in record.streets)
+          CityChartStroke(line(r.points), r.width),
+        for (final r in record.avenues)
+          CityChartStroke(line(r.points), r.width, main: true),
+      ],
+      islands: islands,
+    );
+  }
+
+  /// The roof's ridge: a line through the middle along the longer side.
+  static (Offset, Offset) _ridgeOf(List<Offset> poly) {
+    var best = 0.0;
+    var a = poly.first, b = poly.last;
+    for (var i = 0; i < poly.length; i++) {
+      final p = poly[i], q = poly[(i + 1) % poly.length];
+      final d = (q - p).distance;
+      if (d > best) {
+        best = d;
+        a = p;
+        b = q;
+      }
+    }
+    final c = polygonCentre(poly);
+    final dir = (b - a) / math.max(best, 0.001);
+    final half = best / 2;
+    return (c - dir * half, c + dir * half);
+  }
 
   static const String saltmouthStub = 'assets/visuals/city/saltmouth_stub.json';
 

@@ -453,7 +453,8 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
             subtitle: Text(tr(ref, 'fight_lab_city_desc')),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const CityChartScreen()),
+              MaterialPageRoute(
+                  builder: (_) => const CityChartScreen(preview: true)),
             ),
           ),
           SwitchListTile(

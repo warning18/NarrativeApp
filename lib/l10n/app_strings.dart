@@ -4942,6 +4942,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Pas encore exploré',
   },
   'city_go': {AppLanguage.en: 'Go', AppLanguage.fr: 'Y aller'},
+  'city_walk': {
+    AppLanguage.en: 'Walk here',
+    AppLanguage.fr: 'Y aller à pied',
+  },
+  'city_plan_tooltip': {
+    AppLanguage.en: 'City plan',
+    AppLanguage.fr: 'Plan de la ville',
+  },
   'city_here': {
     AppLanguage.en: 'You are here',
     AppLanguage.fr: 'Vous êtes ici'

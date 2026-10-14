@@ -139,6 +139,49 @@ class CityChartPainter extends CustomPainter {
     canvas.drawPath(chart.avenues, stroke);
     canvas.drawPath(chart.squares, fill..color = street);
     canvas.drawPath(chart.squares, stroke);
+    // Streets and avenues as lines: an edge, then the road on it.
+    final line = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    for (final r in chart.roads) {
+      canvas.drawPath(
+          r.path,
+          line
+            ..strokeWidth = r.width + 1.6
+            ..color = edge);
+    }
+    for (final r in chart.roads) {
+      canvas.drawPath(
+          r.path,
+          line
+            ..strokeWidth = r.width
+            ..color = street);
+    }
+    // Rivers and canals.
+    for (final r in chart.waterways) {
+      canvas.drawPath(
+          r.path,
+          line
+            ..strokeWidth = r.width + 2.4
+            ..color = p.coast);
+    }
+    for (final r in chart.waterways) {
+      canvas.drawPath(
+          r.path,
+          line
+            ..strokeWidth = r.width
+            ..color = p.river);
+    }
+    final isles = chart.islands;
+    if (isles != null) {
+      canvas.drawPath(isles, fill..color = ground);
+      canvas.drawPath(
+          isles,
+          stroke
+            ..strokeWidth = 1.2
+            ..color = p.coast);
+    }
     canvas.drawPath(chart.water, fill..color = p.river);
     canvas.drawPath(
         chart.water,
@@ -184,7 +227,7 @@ class CityChartPainter extends CustomPainter {
 
     // The buildings the story stands at.
     for (final b in chart.buildings) {
-      if (b.quiet) continue;
+      if (b.quiet || !b.story) continue;
       final d = chart.districts[b.district];
       canvas.drawPath(b.shape, fill..color = _mix(p.roofs, d.colour, 0.55));
       canvas.drawPath(
@@ -353,7 +396,7 @@ class CityChartPainter extends CustomPainter {
     if (!detailed) return;
     // Building names, in the district being looked at.
     for (final b in chart.buildings) {
-      if (b.quiet) continue;
+      if (b.quiet || !b.story || b.name.isEmpty) continue;
       final d = chart.districts[b.district];
       if (focusDistrict != null && d.id != focusDistrict) continue;
       if (!_known(d.id)) continue;

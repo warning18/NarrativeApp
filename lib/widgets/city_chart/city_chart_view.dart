@@ -20,6 +20,7 @@ class CityChartText {
     this.wholeCity = 'Whole city',
     this.unexplored = 'Not explored yet',
     this.go = 'Go',
+    this.walk = 'Walk here',
     this.here = 'You are here',
     this.zoomIn = 'Zoom in',
     this.zoomOut = 'Zoom out',
@@ -37,6 +38,7 @@ class CityChartText {
   final String wholeCity;
   final String unexplored;
   final String go;
+  final String walk;
   final String here;
   final String zoomIn;
   final String zoomOut;
@@ -60,6 +62,7 @@ class CityChartView extends StatefulWidget {
     this.goalWayId,
     this.text = const CityChartText(),
     this.onWay,
+    this.onWalk,
     this.animate = true,
   });
 
@@ -77,6 +80,10 @@ class CityChartView extends StatefulWidget {
 
   /// A way picked from its card.
   final void Function(CityChartWay way)? onWay;
+
+  /// Walking to a district (free, no road): offered on the district card
+  /// when the party is not in it.
+  final void Function(CityChartDistrict district)? onWalk;
   final bool animate;
 
   @override
@@ -440,6 +447,17 @@ class _CityChartViewState extends State<CityChartView>
             ],
           ),
         ),
+        if (way == null &&
+            fog == null &&
+            widget.onWalk != null &&
+            d.id != widget.hereDistrict)
+          FilledButton(
+            key: const Key('city_chart_walk'),
+            style: FilledButton.styleFrom(
+                backgroundColor: d.colour, foregroundColor: palette.fog),
+            onPressed: () => widget.onWalk!(d),
+            child: Text(text.walk),
+          ),
         if (way != null && widget.onWay != null && !here)
           FilledButton(
             key: const Key('city_chart_go'),

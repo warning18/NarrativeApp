@@ -4,20 +4,6 @@
 
 **Where the code is.** `lib/widgets/city_chart/` (UX): `city_chart.dart` reads the record, `city_chart_painter.dart` draws it, `city_chart_view.dart` is the page's body. `lib/screens/city_chart_screen.dart` shows it on Saltmouth's stub plan, opened from the fight lab ("City chart (preview)").
 
-**The record (what Core's per-city record has to give, or UX's reader adapts to).** Plain JSON, one per city, plan units (Saltmouth is 880 x 980). Rings are flat `[x0,y0,x1,y1,...]` lists; shapes are lists of rings, filled even-odd (an island is a ring inside the river's).
-
-| field | what |
-|---|---|
-| `w`, `h`, `name`, `seed` | the plan's size and the city's name |
-| `sea`, `ground`, `avenues`, `squares`, `water`, `bridges` | shapes |
-| `wall`, `towers` | the wall's ring; tower points |
-| `arena` | outer ring, inner ring (or `[]`) |
-| `districts[]` | `id`, `name`, `colour` (`#RRGGBB`), `blocks` (the district's region, a shape, closed up over the avenues between its blocks), `seed` (where its name sits) |
-| `lots[]` | `d` (district index), `r` (the lot's ring), `g` (its roof ridge `x0,y0,x1,y1`) |
-| `buildings[]` | the buildings the story stands at: `key`, `d`, `name`, `r`, `round`, `quiet` (a spot, not a house: a notice board, a slip), `at` (its middle, where the pin and the party stand), `g` (ridge) |
-| `ways[]` | `id`, `d`, `kind` (`quest`, `fight`, `check`, `shop`, `road`), `name`, `at` (a building's `key`) |
-| `marks` | quiet decoration: `lanterns`, `stalls`, `boats` (x, y, angle), `trees`, `piers` (x, y, width, thickness) |
-
-`assets/visuals/city/saltmouth_stub.json` is a full example (about 190 KB: the 1,500 lots are most of it; a record can drop `lots` for a city that is far from the party and the painter would draw the blocks alone). UX generated it offline; Core can take it as Saltmouth's first record, or generate its own to this shape.
+**The record.** The game reads Core's `assets/gamedata/city_plans.json` (`docs/proposals/city-plan-record.md`) through `CityChart.fromRecord`: sea, rivers and canals and the avenues and streets as widths over paths (drawn as lines), islands, bridges, squares (the arena as a ring of stone round a floor), the wall's runs, the districts as polygons that tile the town, and the buildings. A hall, a temple or a building a way is pinned on is drawn as itself and named; the other buildings are the district's houses. Ways come from the story's scene (each choice, in the district of the scene it leads to, on the building `buildingOfWay` gives it). The older stub (`assets/visuals/city/saltmouth_stub.json`, with about 1,500 cut lots, canals and an island of two arms, the plan the user chose on board 15) is what the fight lab's preview shows; it is a denser plan than the stored one. Core can take the stub's richer shapes (house lots, polygon water) into the generator if the density is wanted in the game.
 
 **What the Journey needs from Core for the next step.** Per city: the record above; which district each way belongs to and which building it is pinned on (here `ways[].d` and `.at`); the districts the party has found; the party's district and building. UX then opens this page from the Journey's city level, with the way card's "Go" taking the way. **Narrative:** the districts' and buildings' names (and ambiance lines), in EN and FR (the stub is English only).
