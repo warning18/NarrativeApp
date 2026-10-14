@@ -39,6 +39,22 @@ void main() {
     expect(sideShipLength(longboat), lessThan(sideShipLength(sloop)));
   });
 
+  test('every raider of the sea has her own hull, the skiff the fallback', () {
+    for (final id in [
+      'raider_skiff',
+      'corsair_brig',
+      'inquisition_cutter',
+      'void_barge'
+    ]) {
+      final enemy = sideEnemyOf(id);
+      expect(enemy.form.id, id);
+      expect(sideShipLength(enemy.form), inInclusiveRange(24, 40));
+    }
+    expect(sideEnemyOf('brinejaw').form.id, 'raider_skiff');
+    expect(sideEnemyOf(null).form.id, 'raider_skiff');
+    expect(sideEnemyOf('void_barge').glow, isNotNull);
+  });
+
   testWidgets('every hull paints, plain and dressed, calm and in a squall',
       (tester) async {
     const dress = ShipDress(

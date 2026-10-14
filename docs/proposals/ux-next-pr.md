@@ -98,3 +98,6 @@ The user asked for the city drawn like a real old city (Paris, Venice, Rome: cro
 
 ## Hulls in side view (v1.298.0+334)
 All 14 hulls drawn in the sea kit from their records (forms, rigs, castles, oars, twin, ironclad, the four flying boats), dressed with the worn looks. Parts still to do if wanted: the painted sail powers (one of each) on the side view, mounted guns and utility gear on deck, damage/repair states, the hulls in the fight and Harbor side views.
+
+## Hulls in the Harbor and the raiders (v1.299.0+335)
+The yard shows the Eel in side view above her plan (with the try-on of hulls, parts and looks); the raiders at sea use the same hull painter. Next, in the manager's order: damage states (smoke, list, patched sails by hull %, in the voyage scene), a side-view strip for the fight (the two real hulls facing each other above the grid; the fight itself stays from above), deck gear and mounted guns, painted sail powers.

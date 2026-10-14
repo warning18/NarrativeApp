@@ -305,6 +305,10 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
                         style: theme.textTheme.bodySmall
                             ?.copyWith(color: ink.ash)),
                     const SizedBox(height: 10),
+                    ShipYardSideView(
+                        dress: yardDress,
+                        form: ShipForm.fromRecord(yardHullId, yardShip)),
+                    const SizedBox(height: 8),
                     ShipYardPreview(
                         dress: yardDress,
                         form: ShipForm.fromRecord(yardHullId, yardShip),
