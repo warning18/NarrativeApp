@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.322.0+358]
+
+A brand's toll reads right.
+
+### Fixed
+- **A negative effect reads with its own sign**: the Marked's toll is "-10% gold from fights", no longer "+-10%". The same holds for every title, sign, boon and pact line.
+
 ## [1.320.0+356]
 
 A level-up is a choice of training, not a pile of points.
