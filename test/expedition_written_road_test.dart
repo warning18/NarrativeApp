@@ -32,7 +32,8 @@ void main() {
     // The road, as the Data tab's saved copy of expedition_steps.json.
     SharedPreferences.setMockInitialValues({
       'gamedb_expedition_steps': jsonEncode({
-        'z_fishermans_row': {
+        // A test zone of its own, so the real file's roads never meet it.
+        'z_test_road': {
           'steps': [
             {
               'id': 'gutting',
@@ -94,7 +95,7 @@ void main() {
         tester.state<NavigatorState>(find.byType(Navigator).first);
     navigator.push(MaterialPageRoute<bool>(
         builder: (_) =>
-            ExpeditionScreen(zoneId: 'z_fishermans_row', zone: zone)));
+            ExpeditionScreen(zoneId: 'z_test_road', zone: zone)));
     await _settle(tester);
 
     expect(find.textContaining('A gutting-table line'), findsOneWidget);

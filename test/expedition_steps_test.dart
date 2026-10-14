@@ -83,6 +83,21 @@ void main() {
     expect(deliveryDeadlineOf({'expeditionCount': 4}, count: 9), 11);
   });
 
+  test('the file may wrap its zones with a version', () {
+    final wrapped = writtenStepsFrom({
+      'version': 1,
+      'zones': {
+        'z_a': {
+          'steps': [
+            {'id': 'one', 'text': 'One.'},
+          ],
+        },
+      },
+    });
+    expect(wrapped.keys, ['z_a']);
+    expect(wrapped['z_a']!.single.type, 'event');
+  });
+
   test('a check step: the chapter\'s DC, harder when hard; a sneak past foes',
       () {
     final built = buildWrittenStep(steps['z_test']![0],
@@ -178,9 +193,11 @@ void main() {
       }
     }
     // Every step's type is one the engine plays.
-    for (final list in (raw.values)) {
+    final zoneRecords = raw['zones'] is Map ? raw['zones'] as Map : raw;
+    for (final list in zoneRecords.values) {
       final steps = list is Map ? list['steps'] : list;
-      for (final step in (steps as List? ?? const [])) {
+      if (steps is! List) continue;
+      for (final step in steps) {
         final type = (step as Map)['type'];
         if (type != null) expect(writtenStepTypes, contains(type));
       }

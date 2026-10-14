@@ -155,19 +155,21 @@ class WrittenStep {
   final List<WrittenChoice> choices;
 }
 
-/// expedition_steps.json's steps by zone id: a zone's record is
-/// `{"steps": [...]}` (or the list itself). Zones without steps are left
-/// out.
+/// expedition_steps.json's steps by zone id: the file is
+/// `{"version": 1, "zones": {<zone id>: {"steps": [...]}}}` (or the zones
+/// map itself), a zone's record `{"steps": [...]}` or the list itself.
+/// Zones without steps are left out.
 Map<String, List<WrittenStep>> writtenStepsFrom(Map<String, dynamic> raw) {
+  final zones = raw['zones'] is Map ? raw['zones'] as Map : raw;
   final out = <String, List<WrittenStep>>{};
-  for (final MapEntry(:key, :value) in raw.entries) {
+  for (final MapEntry(:key, :value) in zones.entries) {
     final list = value is Map ? value['steps'] : value;
     if (list is! List) continue;
     final steps = [
       for (final s in list)
         if (s is Map) WrittenStep.fromJson(s),
     ];
-    if (steps.isNotEmpty) out[key] = steps;
+    if (steps.isNotEmpty) out[key.toString()] = steps;
   }
   return out;
 }
