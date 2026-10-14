@@ -75,3 +75,8 @@ Branch `ux-g` (local, one commit on `origin/main`) has the building screen: `lib
 
 - **[#230](https://github.com/warning18/NarrativeApp/pull/230): v1.295.0+331, the ash squall fills the ruins scene with ash.** Format, analyze and `land_crossing_test` + `side_view_test` pass locally.
 - **For the manager:** the ruins scene kit for `camp_to_quarter` is already in `main` since v1.291.0 (#223, `ruins_kit.dart`, route terrain `ruins`); #230 adds only the ash squall's thick ash. Nothing else is queued for UX except what the user decides: board 11 (the world sphere) waits on their three answers, and the Journey's same-place choices (E) on where it still looks like travel.
+
+## The user's answers, 14 Oct (boards 11 and 12)
+
+- **Board 11 (the world sphere):** two poles (north and south): yes. **No heat view**: the sphere keeps its own look; climate by latitude is only the rule behind the world's generation. The story lands move (Ashen Continent west, Old Continent east, Lantern Isles between, latitudes kept): yes. If built, Core generates a whole-sphere chart (360° x 180°, ten lands, 12 archipelagos, a polar land at each pole) from the layout on the board; UX takes the smaller sphere (250 px) and the two pole buttons. Not started: it waits on Core's chart.
+- **Board 12 (E, the Journey in a busy place):** drawn on the design artifact, waiting for the user's pick (stacks by kind with a sheet per stack, or six named marks and "More ways"; threshold of 8 ways). Real numbers: Smugglers' Wharf shows 23 ways at once, the Ashen Quarter 18, the Ossuary and the Reliquary Quarter 13.
