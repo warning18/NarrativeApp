@@ -10,6 +10,8 @@
     "short_fr": "Dominion",
     "motto": "One flame, one law.",
     "motto_fr": "Une flamme, une loi.",
+    "stands_for": "Law, order, one flame over all",
+    "stands_for_fr": "La loi, l’ordre, une seule flamme sur tous",
     "intro": "The Lantern Dominion rules half the world from the Lantern Throne. On this coast, a stranger with a ship is a smuggler until proven otherwise.",
     "intro_fr": "Le Dominion de la Lanterne règne sur la moitié du monde depuis le Trône de la Lanterne. Sur cette côte, un navire venu d’ailleurs transporte de la contrebande jusqu’à preuve du contraire.",
     "greetings": [
@@ -116,6 +118,8 @@
     "short_fr": "Veille",
     "motto": "We do not look away.",
     "motto_fr": "Nous ne détournons pas le regard.",
+    "stands_for": "Watchfulness, duty, the long watch",
+    "stands_for_fr": "La vigilance, le devoir, la longue veille",
     "intro": "The Grey Vigil has kept the watch on the last ridge before the tear, every hour of every day, for thirty-eight years.",
     "intro_fr": "La Veille Grise monte la garde sur la dernière crête avant la déchirure, à chaque heure de chaque jour, depuis trente-huit ans.",
     "greetings": [
@@ -208,6 +212,8 @@
     "short_fr": "Pacte",
     "motto": "What we make, we choose.",
     "motto_fr": "Ce que nous forgeons, nous le choisissons.",
+    "stands_for": "Craft, restraint, blades by invitation",
+    "stands_for_fr": "L’art, la retenue, des lames sur invitation",
     "intro": "The Cinder Compact broke every hammer in the Row on its own anvil, and now a Compact blade has to be asked for.",
     "intro_fr": "Le Pacte des Cendres a brisé chaque marteau de la Rue sur sa propre enclume ; désormais, une lame du Pacte, il faut la demander.",
     "greetings": [
@@ -308,6 +314,8 @@
     "short_fr": "Marais",
     "motto": "What the fen takes, the fen returns.",
     "motto_fr": "Ce que le marais prend, le marais le rend.",
+    "stands_for": "Patience, courtesy, secrets kept",
+    "stands_for_fr": "La patience, la courtoisie, les secrets gardés",
     "intro": "The Mire Courts are polite, patient, and never the first to break a bargain; nobody from outside has been told where they sit.",
     "intro_fr": "Les Cours du Marais sont polies, patientes, et jamais les premières à rompre un marché ; personne du dehors n’a jamais su où elles siègent.",
     "greetings": [
@@ -409,6 +417,8 @@
     "short_fr": "Corneilles",
     "motto": "Every door has a price.",
     "motto_fr": "Chaque porte a son prix.",
+    "stands_for": "Coin, contracts, the long game",
+    "stands_for_fr": "Les pièces, les contrats, le long jeu",
     "intro": "The Salt Crows have never once broken a paid contract, and never once kept an unpaid one.",
     "intro_fr": "Les Corneilles de Sel n’ont jamais rompu un contrat payé, ni jamais honoré un contrat impayé.",
     "greetings": [
@@ -511,6 +521,8 @@
     "short_fr": "Pénitents",
     "motto": "We carry what we burned.",
     "motto_fr": "Nous portons ce que nous avons brûlé.",
+    "stands_for": "Penance, ash, burdens carried",
+    "stands_for_fr": "La pénitence, la cendre, les fardeaux portés",
     "intro": "The Ashen Penitents burnt the flame out of their lanterns and carry them down the Exorcists’ Road, as a confession.",
     "intro_fr": "Les Pénitents de Cendre ont éteint la flamme de leurs lanternes et les portent sur la Route des Exorcistes, en guise de confession.",
     "greetings": [
@@ -618,6 +630,8 @@
     "short_fr": "Chœur",
     "motto": "A vow is a light.",
     "motto_fr": "Un vœu est une lumière.",
+    "stands_for": "Vows, light, a promise kept",
+    "stands_for_fr": "Les vœux, la lumière, la parole tenue",
     "intro": "The Choir gives nothing away. It accepts vows, and holds you to them.",
     "intro_fr": "Le Chœur ne donne rien. Il reçoit des vœux, et vous y tient.",
     "greetings": [
@@ -669,6 +683,8 @@
     "short_fr": "Fosse",
     "motto": "Nothing is free.",
     "motto_fr": "Rien n’est gratuit.",
+    "stands_for": "Clauses, prices, nothing free",
+    "stands_for_fr": "Des clauses, des prix, rien de gratuit",
     "intro": "The Pit draws nothing itself. It writes clauses, with a pen that is always wet.",
     "intro_fr": "La Fosse ne dessine rien elle-même. Elle rédige des clauses, d’une plume toujours humide.",
     "greetings": [
@@ -720,6 +736,8 @@
     "short_fr": "Géants",
     "motto": "Once, and for good.",
     "motto_fr": "Une fois, et pour de bon.",
+    "stands_for": "Stone, signs, once and for good",
+    "stands_for_fr": "La pierre, les signes, une fois pour toutes",
     "intro": "The last giants of Highhearth cut a sign the way they cut stone: once, and for good.",
     "intro_fr": "Les derniers géants de Haut-Âtre taillent un signe comme ils taillent la pierre : une fois, et pour de bon.",
     "greetings": [
@@ -771,6 +789,8 @@
     "short_fr": "Oni",
     "motto": "Cup for cup.",
     "motto_fr": "Coupe pour coupe.",
+    "stands_for": "Bells, blood, cup for cup",
+    "stands_for_fr": "Les cloches, le sang, coupe pour coupe",
     "intro": "The oni of Akagiri keep the exorcists’ bells, and a red that rises with the blood.",
     "intro_fr": "Les oni d’Akagiri gardent les cloches des exorcistes, et un rouge qui monte avec le sang.",
     "greetings": [
@@ -822,6 +842,8 @@
     "short_fr": "Gens de la Marée",
     "motto": "We call, you answer.",
     "motto_fr": "Nous appelons, vous répondez.",
+    "stands_for": "Tides, calls, the drowned remembered",
+    "stands_for_fr": "Les marées, les appels, les noyés qu’on n’oublie pas",
     "intro": "The Tide-Kin came up the coast one drowned island at a time, and draw what the sea taught them.",
     "intro_fr": "Les Gens de la Marée ont remonté la côte une île engloutie après l’autre, et dessinent ce que la mer leur a appris.",
     "greetings": [
@@ -873,6 +895,8 @@
     "short_fr": "Bienveillants",
     "motto": "Every bargain to the minute.",
     "motto_fr": "Chaque marché à la minute près.",
+    "stands_for": "Treaties, patience, every minute owed",
+    "stands_for_fr": "Les traités, la patience, chaque minute due",
     "intro": "The Kindly Ones keep the oldest treaty on the coast, and every bargain to the minute.",
     "intro_fr": "Les Bienveillants tiennent le plus vieux traité de la côte, et chaque marché à la minute près.",
     "greetings": [
@@ -924,6 +948,8 @@
     "short_fr": "Main Ouverte",
     "motto": "What is drawn, holds.",
     "motto_fr": "Ce qui est tracé tient.",
+    "stands_for": "Old blood, the sealed word, your own hand",
+    "stands_for_fr": "Le vieux sang, la parole scellée, votre propre main",
     "intro": "No clan offers this; your own hand does. The Open Hand drew with the old blood and held the Seal whole on this coast for centuries, until the Dominion burned them and struck their name from every record.",
     "intro_fr": "Aucun clan ne vous offre ceci : c’est votre propre main. La Main Ouverte traçait avec le sang ancien et a tenu le Sceau entier sur cette côte pendant des siècles, jusqu’à ce que le Dominion la brûle et raye son nom de tous les registres.",
     "greetings": [

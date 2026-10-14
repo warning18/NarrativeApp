@@ -161,3 +161,7 @@ The user sent the hero's side-view sprite (Idle-Walking: a ronin, 8 walk frames 
 - **D, the clan gift popin: board published, nothing built.** Board 16 on the Design artifact shows three designs (1 the hall, 2 the compass, 3 the ledger of flags), each with the Compact picked and with the Penitents picked. UX builds only after the user picks. Two questions for Narrative/Core on the board: one "stands for" line per clan (EN and FR), and whether alignment shows as a gauge or a word.
 - **Order after D:** A (item detail), C (title popin), B (craft a skill; waits on Core's camp building and localized names), E (level-up sheet; waits on Core's data shape).
 - **Versions wanted** (from `main` at v1.316.0): **A 1.317.0+353**, then **C 1.318.0+354** and **D's build 1.319.0+355** in whatever order they are ready. Please confirm or renumber; I take the number only when the PR is opened.
+
+## Wave 7 D, built (v1.326.0, 14 Oct): what it waits on
+- **`stands_for` / `stands_for_fr` in `factions.json`** (Narrative's lines are in `docs/proposals/clan-stands-for.md`): `Faction.standsForFor(lang)` reads them and falls back to the motto until Core adds them, so the popin works now and gains its "Stands for" line (hall) and the ledger rows' line when the data lands. Please brief Core.
+- The radar needed no new data: it reads `relations.json` through `politics.relationStep` and the offer's own standing preview.
