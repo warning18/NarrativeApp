@@ -45,13 +45,23 @@ void main() {
           // Kelda's hall costs 100 gold and 2 timber (v1.281.0, materials).
           'gold': 350,
           'inventoryItemIds': ['material_timber', 'material_timber'],
+          // Her hall waits for her (v1.287.0, camp_works.dart).
+          'recruitedAllies': [
+            {'companionId': 'kelda'},
+          ],
         })));
     await tester.pump();
 
-    // A house behind a zone waits on it; one out of reach says so.
+    // A house behind a zone or a later chapter waits on it; one out of
+    // reach says so (here, in chapter 1, the later tiers' "Not yet").
     await tester.drag(find.byType(ListView), const Offset(-900, 0));
     await tester.pump();
-    expect(find.textContaining('Requires'), findsWidgets);
+    expect(
+        find.byWidgetPredicate((w) =>
+            w is Text &&
+            ((w.data ?? '').contains('Requires') ||
+                (w.data ?? '').contains('Not yet'))),
+        findsWidgets);
     await tester.drag(find.byType(ListView), const Offset(900, 0));
     await tester.pump();
 
