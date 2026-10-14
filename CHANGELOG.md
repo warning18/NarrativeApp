@@ -12,6 +12,22 @@ isn't reconstructable from git history alone.
 
 ### Added
 - Detours and expeditions that fit their place (first batch, data only; the engine reads it in Core's coming PR): `assets/gamedata/expedition_steps.json` with six steps each for the three tier-1 expeditions (Fisherman’s Row, Tanner’s Court, the Ossuary Galleries), and `assets/gamedata/detours.json` with the tear shore and frost-city pools (six kinds of six lines). English and French.
+## [1.322.0+358]
+
+A brand's toll reads right.
+
+### Fixed
+- **A negative effect reads with its own sign**: the Marked's toll is "-10% gold from fights", no longer "+-10%". The same holds for every title, sign, boon and pact line.
+
+## [1.320.0+356]
+
+A level-up is a choice of training, not a pile of points.
+
+### Changed
+- **Each level's five stat points buy one of three training paths**, each a bundle toward a playstyle: the Bruiser, the Duelist, the Warden, the Juggernaut, the Arcanist, the Zealot, the Skirmisher, the Hunter, the Envoy and the Brawler. Every path is worth exactly what five points were. The three on offer are one of your calling (your profession or people, likelier the more you have taken it), your habit (the path you take most), and a turn (any other).
+- **No "decide later"**: the pop-up after a fight closes once the training is taken, and the Level Up screen shows the offer while points wait. Stats are no longer raised one by one.
+- **A Tome of Insight** (one point) brings a small offer: three single gains, each from a likely path.
+- Old saves keep their unspent points; they come back as offers.
 
 ## [1.319.0+355]
 
