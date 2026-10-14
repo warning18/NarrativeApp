@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.288.0+324]
+## [1.290.0+326]
 
 The skill choice sheet, places heard of on the full map, and the land crossing in the desert side view.
 
