@@ -3,7 +3,7 @@
     "houseID": "keldas_hall",
     "category": "company",
     "houseName": "Kelda's Hall",
-    "description": "A reinforced forge-hall built to Kelda's own specifications. She's fought under enough collapsing roofs for one lifetime and won't stand watch under another until she's satisfied this one holds.",
+    "description": "A reinforced forge-hall built to Kelda’s own specifications. She’s fought under enough collapsing roofs for one lifetime and won’t stand watch under another until she’s satisfied this one holds.",
     "buildCost": 100,
     "materialCost": {
       "material_timber": 2
@@ -18,7 +18,7 @@
     "houseID": "barracks_annex",
     "category": "company",
     "houseName": "Barracks Annex",
-    "description": "Extra bunks, a second mess table, room enough for one more pair of hands at your back — no one companion's claim on it, just more camp than you started with.",
+    "description": "Extra bunks, a second mess table, room enough for one more pair of hands at your back — no one companion’s claim on it, just more camp than you started with.",
     "buildCost": 130,
     "materialCost": {
       "material_timber": 3,
@@ -33,7 +33,7 @@
     "houseID": "hammersmith",
     "category": "workshops",
     "houseName": "Hammersmith",
-    "description": "A proper forge, not a market stall — anvil, bellows, and a hammersmith who only works metal worth the effort. Opens the Forge's finest work to anyone strong and sturdy enough to carry it.",
+    "description": "A proper forge, not a market stall — anvil, bellows, and a hammersmith who only works metal worth the effort. Opens the Forge’s finest work to anyone strong and sturdy enough to carry it.",
     "buildCost": 230,
     "materialCost": {
       "material_iron_ore": 3,
@@ -51,7 +51,7 @@
     "houseID": "academy",
     "category": "workshops",
     "houseName": "Academy",
-    "description": "A study built for one purpose: giving whatever's left of your arcane education somewhere real to go. The staves it can now order in aren't for browsing — they're for a mind that's already done the work.",
+    "description": "A study built for one purpose: giving whatever’s left of your arcane education somewhere real to go. The staves it can now order in aren’t for browsing — they’re for a mind that’s already done the work.",
     "buildCost": 230,
     "materialCost": {
       "material_slag_glass": 2,
@@ -87,7 +87,7 @@
     "houseID": "smugglers_cellar",
     "category": "workshops",
     "houseName": "Smugglers’ Cellar",
-    "description": "The Smugglers’ Vault goes wherever the Crusade's supply ships go, and it found our cove before the Inquisition did. Give it a dry cellar under the camp's standing wall and it opens its counter here: contraband steel a cut above the harbor forges, and a relic or two nobody admits to owning.",
+    "description": "The Smugglers’ Vault goes wherever the Crusade’s supply ships go, and it found our cove before the Inquisition did. Give it a dry cellar under the camp’s standing wall and it opens its counter here: contraband steel a cut above the harbor forges, and a relic or two nobody admits to owning.",
     "buildCost": 270,
     "materialCost": {
       "material_timber": 3,
@@ -97,7 +97,7 @@
     "unlocksShopId": "smugglers_vault",
     "requiredFlags": [],
     "houseName_fr": "La Cave des contrebandiers",
-    "description_fr": "Le Coffre des Contrebandiers va partout où vont les navires de ravitaillement de la Croisade, et il a trouvé notre crique avant l'Inquisition. Donnez-lui une cave au sec sous le mur encore debout du camp, et il y ouvre son comptoir : de l'acier de contrebande d'une autre trempe que celui des forges du port, et une relique ou deux que personne n'avoue posséder."
+    "description_fr": "Le Coffre des Contrebandiers va partout où vont les navires de ravitaillement de la Croisade, et il a trouvé notre crique avant l’Inquisition. Donnez-lui une cave au sec sous le mur encore debout du camp, et il y ouvre son comptoir : de l’acier de contrebande d’une autre trempe que celui des forges du port, et une relique ou deux que personne n’avoue posséder."
   },
   "hearth_hall": {
     "houseID": "hearth_hall",
@@ -122,7 +122,7 @@
     "houseID": "banner_loft",
     "category": "greatWorks",
     "houseName": "Banner Loft",
-    "description": "A loft where the camp's banners are sewn and painted, and where every companion's sigil is worked into the cloth the party fights under. Power is worn here, not held: the whole party hits harder for it.",
+    "description": "A loft where the camp’s banners are sewn and painted, and where every companion’s sigil is worked into the cloth the party fights under. Power is worn here, not held: the whole party hits harder for it.",
     "buildCost": 1600,
     "materialCost": {
       "material_rime_crystal": 4,
@@ -141,7 +141,7 @@
     "houseID": "shroud_shrine",
     "category": "greatWorks",
     "houseName": "Shroud Shrine",
-    "description": "A shrine to hold the Shroud's pieces between the road and the crossing, built from the Dead Heart's stone. Whatever the Shroud has learned of the tear, the party wears a little of it.",
+    "description": "A shrine to hold the Shroud’s pieces between the road and the crossing, built from the Dead Heart’s stone. Whatever the Shroud has learned of the tear, the party wears a little of it.",
     "buildCost": 2600,
     "materialCost": {
       "material_tear_glass": 4,
@@ -160,7 +160,7 @@
     "houseID": "harbor",
     "category": "sea",
     "houseName": "The Harbor",
-    "description": "A stone quay run out from the cove's standing wall, a slipway above the tide line and a shipwright who stayed. Once it stands, the Rusty Eel is refitted here: parts fitted to her slots, her hull made sound between voyages.",
+    "description": "A stone quay run out from the cove’s standing wall, a slipway above the tide line and a shipwright who stayed. Once it stands, the Rusty Eel is refitted here: parts fitted to her slots, her hull made sound between voyages.",
     "buildCost": 0,
     "materialCost": {
       "material_timber": 4,
