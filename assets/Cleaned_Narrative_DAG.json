@@ -6721,7 +6721,8 @@
         "text_fr": "Une fois la côte connue, gravir la Flèche",
         "next_id": "3002",
         "mainQuest": true,
-        "travelPlaceId": "3005"
+        "travelPlaceId": "3005",
+        "landRouteId": "camp_to_quarter"
       }
     ],
     "flag_callbacks": [

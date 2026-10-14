@@ -2,6 +2,7 @@
 // between trips, the Story tab gives way to it, expeditions find the
 // chapter's places, the party walks or sails to them and back, and the
 // chapter's main quest opens at the camp once enough of it is done.
+import 'dart:math';
 import 'dart:convert';
 import 'dart:io';
 
@@ -20,6 +21,8 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/full_map_screen.dart';
 import 'package:narrative_data_app/screens/harbor_screen.dart';
+import 'package:narrative_data_app/screens/land_crossing_screen.dart'
+    show landCrossingRandomProvider;
 import 'package:narrative_data_app/screens/story_player_screen.dart';
 import 'package:narrative_data_app/screens/voyage_screen.dart';
 
@@ -167,7 +170,10 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+    // The road's crossing (land_crossing.dart) goes the same way every run.
+    await tester.pumpWidget(ProviderScope(overrides: [
+      landCrossingRandomProvider.overrideWithValue(Random(7)),
+    ], child: const MyApp()));
     await _settle(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
@@ -455,8 +461,29 @@ void main() {
     rationsBefore = rations();
     await tester.tap(find.byKey(const Key('main_quest_3002')));
     await _settle(tester);
-    expect(clock(), clockBefore + walkWatches);
-    expect(rations(), rationsBefore - 1);
+    // The road to the Quarter is crossed first, a day an event, on its own
+    // screen (land_crossing.dart); the crossing is the walk there.
+    for (var day = 0; day < 10; day++) {
+      final choice = find.byWidgetPredicate((w) =>
+          w is FilledButton &&
+          w.key is ValueKey<String> &&
+          (w.key as ValueKey<String>).value.startsWith('crossing_choice_') &&
+          w.onPressed != null);
+      if (choice.evaluate().isEmpty) break;
+      await tester.runAsync(() async {
+        await tester.tap(choice.first);
+        await Future<void>.delayed(const Duration(milliseconds: 100));
+      });
+      await _settle(tester);
+      if (find.byKey(const Key('crossing_next')).evaluate().isNotEmpty) {
+        await tester.tap(find.byKey(const Key('crossing_next')));
+        await _settle(tester);
+      }
+    }
+    await tester.tap(find.byKey(const Key('crossing_done')));
+    await _settle(tester);
+    expect(clock(), greaterThanOrEqualTo(clockBefore + 4));
+    expect(rations(), rationsBefore);
     if (container.read(storyPlayProvider).isInExcursion) {
       play.jumpTo('3002');
       await _settle(tester);

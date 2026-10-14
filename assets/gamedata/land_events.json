@@ -427,7 +427,7 @@
         "fail": {
           "healthPct": -6,
           "note": "A beam comes down where you were kneeling.",
-          "note_fr": "Une poutre tombe là où vous étiez agenouillé."
+          "note_fr": "Une poutre tombe là où vous vous agenouilliez."
         }
       }
     ]
@@ -448,7 +448,7 @@
         "success": {
           "healthPct": -4,
           "note": "They break and scatter into the ruins.",
-          "note_fr": "Ils cèdent et se dispersent dans les ruines."
+          "note_fr": "Ils lâchent prise et se dispersent dans les ruines."
         },
         "fail": {
           "healthPct": -14,
@@ -498,9 +498,9 @@
         "text_fr": "Faire le grand tour",
         "outcome": {
           "healthPct": -4,
-          "days": 1,
+          "days": 0,
           "note": "Half a day of rubble, but whole.",
-          "note_fr": "Une demi-journée de gravats, mais entier."
+          "note_fr": "Une demi-journée de gravats, mais en un seul morceau."
         }
       }
     ]
