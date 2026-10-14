@@ -129,3 +129,12 @@ The twin hull, the ironclad, the lodestone barge and the void carrack now carry 
 
 ## Version requests
 Next time I will ask the manager for a version here before opening a PR. Request for the city plan (when Core's record is in): one version, to be given then.
+
+## The world sphere (board 11), built on `claude/eager-pascal-y847vf-4` (14 Oct)
+- **The sphere wears the story world** (`chartOf(MapShape.story)`, the whole globe, via `geo.globeAt`); the flat map keeps the look's own chart (A, B or C). Turning between the two frames afresh.
+- **Two pole buttons** (`journey_pole_north`, `journey_pole_south`) glide the sphere right over either pole (`GlobeView.toPole`); a drag still turns it past the seam.
+- **A 250 px ball:** on a wide box the sphere no longer grows with the screen (`sphereMaxWidth` 400 → a radius of 125 px at the first zoom; on a phone it was already that). Both painters take `sphereMaxScale`.
+- **Painter fix:** `fractalLine` keeps an edge lying on the chart's border (the seam and the top and bottom edges) straight, so the ice caps are no longer torn along the seam and the pole (every other coast falls as before: the random draw is still taken).
+- **QA's `prepareSkin` race:** a render of the skin already under way is now the one every caller waits for (`_skinsPending` holds the future), so a background render can no longer replace the kept skin; `chart_sphere_test` no longer depends on order.
+- Seen, not fixed (data, not painter): at the pole the caps still read as dark ground in the night look; a lighter cap colour is a Core/palette call.
+- **Needs a version** (suggested 1.313.0+349) and a free PR slot (two are open: #246, #247).

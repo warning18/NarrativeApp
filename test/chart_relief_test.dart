@@ -21,6 +21,51 @@ void main() {
       expect(a, isNot(c));
     });
 
+    test(
+        'keeps an edge along the chart border straight (the ice caps of the '
+        'whole sphere run there)', () {
+      final w = worldMapWidth.toDouble(), h = worldMapHeight.toDouble();
+      // A cap: along the top edge, down the seam on both sides, and a
+      // ragged lower edge between.
+      final cap = [
+        Offset(0, 0),
+        Offset(w, 0),
+        Offset(w, 30),
+        Offset(w * 0.6, 42),
+        Offset(w * 0.3, 36),
+        Offset(0, 30),
+      ];
+      for (final seed in [1, 2, 3]) {
+        final pts = fractalLine(cap, seed: seed);
+        for (final p in pts) {
+          // Nothing leaves the border it started on: no point above the
+          // top edge, none past the seam on either side.
+          expect(p.dy, greaterThanOrEqualTo(0), reason: 'seed $seed top');
+          expect(p.dx, inInclusiveRange(0, w), reason: 'seed $seed seam');
+        }
+        // And every point along the top is on it.
+        final top = [
+          for (final p in pts)
+            if (p.dy < 1.0) p
+        ];
+        expect(top.every((p) => p.dy == 0), isTrue, reason: 'seed $seed');
+      }
+      // The south edge as well, and a ragged coast is still ragged.
+      final south = fractalLine(
+          [Offset(0, h), Offset(w, h), Offset(w / 2, h - 30)],
+          seed: 1);
+      expect(
+          [
+            // The first edge's sixteen points (depth 4) are the border's.
+            for (final p in south.take(16)) p.dy
+          ].every((y) => y == h),
+          isTrue);
+      expect(
+          fractalLine(square, seed: 1)
+              .any((p) => p.dx % 40 != 0 && p.dy % 40 != 0),
+          isTrue);
+    });
+
     test('keeps every corner and adds a point per edge per level', () {
       final pts = fractalLine(square, depth: 2, seed: 1);
       expect(pts.length, 16);

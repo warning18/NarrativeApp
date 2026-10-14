@@ -192,6 +192,14 @@ void main() {
     expect(globe, findsOneWidget);
     await tester.tap(find.byKey(const Key('journey_zoom_in')));
     await tester.pump();
+    // The sphere wears the whole story world: two pole buttons turn it right
+    // over either pole.
+    expect(find.byKey(const Key('journey_pole_north')), findsOneWidget);
+    expect(find.byKey(const Key('journey_pole_south')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('journey_pole_north')));
+    await tester.pump(const Duration(milliseconds: 900));
+    await tester.tap(find.byKey(const Key('journey_pole_south')));
+    await tester.pump(const Duration(milliseconds: 900));
     await tester.drag(globe, const Offset(-60, 20));
     await tester.pump();
     await tester.tap(find.byKey(const Key('journey_recentre')));

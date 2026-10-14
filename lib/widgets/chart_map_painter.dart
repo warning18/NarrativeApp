@@ -81,6 +81,7 @@ class ChartMapPainter extends CustomPainter {
     this.goalId,
     this.detail = true,
     this.globe,
+    this.sphereMaxScale = double.infinity,
     this.zoomOf,
     this.fogOf,
     Listenable? view,
@@ -132,6 +133,10 @@ class ChartMapPainter extends CustomPainter {
 
   /// The chart as a sphere (v1.200, see chart_globe.dart), or flat.
   final GlobeView? globe;
+
+  /// The most chart units to pixels a sphere is drawn at: on a wide box the
+  /// ball stays the size it has at that scale (about 250 px across).
+  final double sphereMaxScale;
 
   /// How close the chart is looked at (1 = the whole of it in the box):
   /// the names keep a readable size and the small detail shows as the
@@ -636,7 +641,7 @@ class ChartMapPainter extends CustomPainter {
   /// The flat chart rendered as an image, per look and detail, to wrap
   /// the sphere in; made once, in the background, and kept.
   static final Map<String, ui.Image> _skins = {};
-  static final Set<String> _skinsPending = {};
+  static final Map<String, Future<ui.Image>> _skinsPending = {};
 
   /// Pixels per chart unit in the skin, by detail.
   static double _skinScale(int lod) => lod >= 2 ? 6 : (lod == 1 ? 4 : 3);
@@ -681,35 +686,43 @@ class ChartMapPainter extends CustomPainter {
     final key = _skinKey(relief);
     final made = _skins[key];
     if (made != null) return made;
-    if (_skinsPending.add(key)) {
+    if (!_skinsPending.containsKey(key)) {
       prepareSkin().then((_) => _ready.value++);
     }
     return null;
   }
 
   /// Renders the flat chart into the sphere's skin for this look and
-  /// detail, and keeps it; done once per key. Tests and screenshots await
-  /// it before painting the sphere.
-  Future<ui.Image> prepareSkin() async {
+  /// detail, and keeps it; done once per key, and a render already under
+  /// way is the one every caller waits for (so the skin kept is never
+  /// replaced by a second render of the same key). Tests and screenshots
+  /// await it before painting the sphere.
+  Future<ui.Image> prepareSkin() {
     final relief = ChartRelief.of(geography);
     final key = _skinKey(relief);
     final made = _skins[key];
-    if (made != null) return made;
-    _skinsPending.add(key);
-    // The shaded relief goes into the skin, so it is rendered first.
-    await prepareShade();
-    final s = _skinScale(_lod);
-    final recorder = ui.PictureRecorder();
-    final canvas = Canvas(recorder);
-    canvas.scale(s);
-    _flatTwin()._paintGround(canvas, relief);
-    final picture = recorder.endRecording();
-    final image = await picture.toImage(
-        (worldMapWidth * s).round(), (worldMapHeight * s).round());
-    picture.dispose();
-    _skins[key] = image;
-    _skinsPending.remove(key);
-    return image;
+    if (made != null) return Future.value(made);
+    return _skinsPending[key] ??= _renderSkin(key, relief);
+  }
+
+  Future<ui.Image> _renderSkin(String key, ChartRelief relief) async {
+    try {
+      // The shaded relief goes into the skin, so it is rendered first.
+      await prepareShade();
+      final s = _skinScale(_lod);
+      final recorder = ui.PictureRecorder();
+      final canvas = Canvas(recorder);
+      canvas.scale(s);
+      _flatTwin()._paintGround(canvas, relief);
+      final picture = recorder.endRecording();
+      final image = await picture.toImage(
+          (worldMapWidth * s).round(), (worldMapHeight * s).round());
+      picture.dispose();
+      _skins[key] = image;
+      return image;
+    } finally {
+      _skinsPending.remove(key);
+    }
   }
 
   /// How far the heights lift the sphere's surface, as a share of its
@@ -1788,7 +1801,9 @@ class ChartMapPainter extends CustomPainter {
     final f = reduceMotion ? 0 : frame.value;
     canvas.save();
     canvas.clipRect(Offset.zero & size);
-    final k = size.width / worldMapWidth;
+    final k = globe == null
+        ? size.width / worldMapWidth
+        : math.min(size.width / worldMapWidth, sphereMaxScale);
     canvas.scale(k);
     final whole = globe == null
         ? const Rect.fromLTWH(0, 0, worldMapWidth * 1.0, worldMapHeight * 1.0)

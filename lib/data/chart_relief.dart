@@ -7,6 +7,19 @@ import 'dart:math' as math;
 import 'dart:ui' show Color, Offset;
 
 import 'map_charts.dart';
+import 'world_map.dart' show worldMapHeight, worldMapWidth;
+
+/// Whether the edge [a]-[b] lies along the chart's border (the seam at the
+/// left and right, the top or the bottom): the ice caps of the whole sphere
+/// run there, and a border edge stays straight, or the cap would be torn
+/// along the seam and the pole.
+bool _alongBorder(Offset a, Offset b) {
+  const e = 0.05;
+  return (a.dx <= e && b.dx <= e) ||
+      (a.dx >= worldMapWidth - e && b.dx >= worldMapWidth - e) ||
+      (a.dy <= e && b.dy <= e) ||
+      (a.dy >= worldMapHeight - e && b.dy >= worldMapHeight - e);
+}
 
 /// Each edge of [points] split at its middle, the middle pushed sideways
 /// by a seeded amount that shrinks by [depth] levels: a coast with
@@ -25,8 +38,11 @@ List<Offset> fractalLine(List<Offset> points,
       final d = b - a;
       final length = d.distance;
       if (length < 1.5) continue;
-      final k =
+      var k =
           (rng.nextDouble() - 0.5) * 2 * rough * length / math.pow(1.6, level);
+      // (The draw above is kept for border edges too, so every other edge
+      // of every coast falls as it always has.)
+      if (_alongBorder(a, b)) k = 0;
       out.add(Offset(a.dx + d.dx / 2 - d.dy / length * k,
           a.dy + d.dy / 2 + d.dx / length * k));
     }
