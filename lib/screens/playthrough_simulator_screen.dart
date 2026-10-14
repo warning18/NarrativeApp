@@ -30,6 +30,7 @@ import '../data/sim_quests.dart';
 import '../data/story_graph_integrity.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
+import '../data/zone_gating.dart' show meetsRequiredFlags, zoneIsMain;
 import '../data/geography.dart';
 import '../data/land_crossing.dart';
 import '../data/road_events.dart';
@@ -476,6 +477,8 @@ _SimResult _simulate(
   final visited = <String>{currentId};
   String? campId;
   final toured = <String>{};
+  // The camp expeditions the walk has played (see the camp tour).
+  final campExpeditionsPlayed = <String>{};
   String? tourPlaceId;
   var tourBudget = 0;
 
@@ -1128,6 +1131,29 @@ _SimResult _simulate(
         currentId = arrivalNodeFor(next, visited);
         visited.add(currentId);
         continue;
+      }
+      // Every place toured: the camp's expeditions of the chapters reached
+      // (v1.291), each played once, as "Play to chapter" plays them before
+      // the main quest -- one cleared may open the next (a zone's
+      // requiredFlags), so the list is read again until none is left. The
+      // chapter's main zone stays its main quest's.
+      while (true) {
+        String? zoneId;
+        for (final MapEntry(:key, :value)
+            in (sim?.zones ?? const <String, dynamic>{}).entries) {
+          if (value is! Map<String, dynamic> ||
+              zoneIsMain(value) ||
+              campExpeditionsPlayed.contains(key) ||
+              ((value['chapter'] as num?)?.toInt() ?? 1) > here.chapter! ||
+              !meetsRequiredFlags(value, flags)) {
+            continue;
+          }
+          zoneId = key;
+          break;
+        }
+        if (zoneId == null) break;
+        campExpeditionsPlayed.add(zoneId);
+        expedition(zoneId, node);
       }
     }
     if (tourPlaceId != null && currentId == tourPlaceId) {
