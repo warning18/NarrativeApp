@@ -15,6 +15,13 @@ The Shroud Shrine opens on the Shroud's Vigil too.
 ### Changed
 - **Clearing the Shroud's Vigil unlocks the Shroud Shrine** at the camp, as clearing the Dead Heart's approach already did. The story can send the party into the Vigil without the Dead Heart expedition, and the shrine no longer waits on that one. The building screen lists both expeditions under what it still needs. Houses (and anything else gated by flags) gain an `unlockedByFlags` field: any one of those flags opens it, whatever its required flags.
 
+## [1.303.0+339]
+
+The hulls in side view, with their painted sails.
+
+### Changed
+- **The painted sails' sigils show on the canvas in side view** (voyage, arrival, the shipwright's yard, the fight strip): a flight sail's spread wings, a foresight sail's eye, a hearth sail's flame, a wind-knot sail's crossed loops, a void-mark sail's ring with a spiral turning in it, each in the colour of the people whose medium it is painted in (human gold, elf green, dwarf grey-blue, orc black, voidkin violet). A hull with several sail slots carries several sigils, on the biggest sails first; on a fore-and-aft or lateen sail the sigil sits low toward the mast. They show on the sailing hulls (the others' own sails come later).
+
 ## [1.302.0+338]
 
 The hulls in side view, armed and equipped.
