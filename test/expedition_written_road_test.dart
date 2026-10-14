@@ -23,6 +23,16 @@ Future<void> _settle(WidgetTester tester) async {
   }
 }
 
+/// Settles until [done] holds (at most 5 s): the session, the zone's steps
+/// and the screen all load in their own time, slower on a busy runner.
+Future<void> _settleUntil(WidgetTester tester, bool Function() done) async {
+  for (var i = 0; i < 50 && !done(); i++) {
+    await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 100)));
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+}
+
 void main() {
   testWidgets('a written road is walked step by step', (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -95,12 +105,20 @@ void main() {
         tester.state<NavigatorState>(find.byType(Navigator).first);
     navigator.push(MaterialPageRoute<bool>(
         builder: (_) => ExpeditionScreen(zoneId: 'z_test_road', zone: zone)));
-    await _settle(tester);
+    await _settleUntil(
+        tester,
+        () =>
+            find.textContaining('A gutting-table line').evaluate().isNotEmpty);
 
     expect(find.textContaining('A gutting-table line'), findsOneWidget);
     expect(find.textContaining('Expedition 1 / 2'), findsOneWidget);
     await tester.tap(find.text('Ask after the overseer'));
-    await _settle(tester);
+    await _settleUntil(
+        tester,
+        () => find
+            .textContaining('The smokehouse brazier.')
+            .evaluate()
+            .isNotEmpty);
 
     // The note opens the next step, the rest.
     expect(find.textContaining('Nobody answers a stranger.'), findsOneWidget);
@@ -108,7 +126,8 @@ void main() {
     expect(find.textContaining('Expedition 2 / 2'), findsOneWidget);
     final before = container.read(playerSessionProvider).currentHealth;
     await tester.tap(find.text('Warm up'));
-    await _settle(tester);
+    await _settleUntil(tester,
+        () => container.read(playerSessionProvider).currentHealth > before);
     expect(container.read(playerSessionProvider).currentHealth,
         greaterThan(before));
     expect(tester.takeException(), isNull);
