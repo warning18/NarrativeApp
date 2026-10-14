@@ -33,3 +33,13 @@ I would rather not build either without the user saying which crowding they mean
 ## Instead, UX work that needs nobody (if the manager agrees): the home bar's map icon
 
 Open the full map instead of `WorldMapPage`, after moving what only the old page has: the look and shape pickers (into the layers sheet), the chapter chips, the replay of the walked road (board 8's "Replay all"), its tutorial topic. UX-only, independent of Core's 1.287.
+
+## The user's answers (building screen, board 10), relayed by UX
+
+- **Locked houses: silhouettes** with one reason ("Chapter 5", "When Kelda joins").
+- **Finished sections: no fold.** Every house stays a card, each one may be tapped.
+- **Sources on the sheet: plain text** for now (expeditions and shops by name).
+- **Branches** are the coordinator's decision (the manager's), not the user's.
+- **E (same-place choices):** the user asked for the link to the design file to look at; there is no board for E (the Journey already draws those ways without roads), so the question stands: where does it still look like travel when it is not?
+
+G (the building screen) is unblocked: UX builds it as its own PR, after #223 and the home map PR; it needs a version from the manager.
