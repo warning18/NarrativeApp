@@ -218,6 +218,8 @@ extension _FightRewards on _FightScreenState {
       final lang = ref.read(appLanguageProvider);
       final chestBanter =
           chest.isBigChest ? _rollBanter(kind: _BanterKind.chest) : null;
+      // The saved auto-open choice, even on the first chest after a start.
+      await ref.read(chestAutoOpenProvider.notifier).loaded;
       if (!mounted) return;
       final spoils = await showSpoilsChestDialog(
         context,

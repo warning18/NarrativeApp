@@ -278,7 +278,8 @@
             "text_fr": "Proposer d’oublier le manteau",
             "outcome": {
               "note": "They agree faster than they should have, and one of them pays you not to remember his face.",
-              "note_fr": "Ils acceptent plus vite qu’ils ne l’auraient dû, et l’un d’eux vous paie pour ne pas retenir son visage."
+              "note_fr": "Ils acceptent plus vite qu’ils ne l’auraient dû, et l’un d’eux vous paie pour ne pas retenir son visage.",
+              "gold": 5
             }
           }
         ]
@@ -751,7 +752,8 @@
             "text_fr": "Payer le péage inventé",
             "outcome": {
               "note": "They bless you, which is worse, and pocket the coin.",
-              "note_fr": "Ils vous bénissent, ce qui est pire, et empochent la pièce."
+              "note_fr": "Ils vous bénissent, ce qui est pire, et empochent la pièce.",
+              "gold": -20
             }
           }
         ]
@@ -2932,7 +2934,8 @@
             "text_fr": "Lui jeter un sac de viande éventré",
             "outcome": {
               "note": "It takes the sack and goes. You will have to account for the sack to Maudry.",
-              "note_fr": "Il prend le sac et s’en va. Il faudra rendre compte du sac à Maudry."
+              "note_fr": "Il prend le sac et s’en va. Il faudra rendre compte du sac à Maudry.",
+              "cargo": -10
             }
           }
         ]
@@ -3445,7 +3448,8 @@
             "text_fr": "Presser l’allure et le distancer",
             "outcome": {
               "note": "It follows at a wade, then at a stand, then not at all.",
-              "note_fr": "Il suit en pataugeant, puis à l’arrêt, puis plus du tout."
+              "note_fr": "Il suit en pataugeant, puis à l’arrêt, puis plus du tout.",
+              "days": 1
             }
           }
         ]
@@ -3628,7 +3632,8 @@
             "text_fr": "Leur offrir un peu de chaleur du pot",
             "outcome": {
               "note": "They hold their hands over the lid, and when you walk on neither of them follows.",
-              "note_fr": "Ils tendent leurs mains au-dessus du couvercle, et quand vous repartez aucun ne vous suit."
+              "note_fr": "Ils tendent leurs mains au-dessus du couvercle, et quand vous repartez aucun ne vous suit.",
+              "days": 1
             }
           }
         ]
@@ -3953,7 +3958,8 @@
             "text_fr": "Allumer une lanterne et la tenir entre eux et l’huile",
             "outcome": {
               "note": "They stop. The light is steady, and they do not like steadiness. They fall back into the dark.",
-              "note_fr": "Ils s’arrêtent. La lumière est stable, et ils n’aiment pas la stabilité. Ils retombent dans l’ombre."
+              "note_fr": "Ils s’arrêtent. La lumière est stable, et ils n’aiment pas la stabilité. Ils retombent dans l’ombre.",
+              "cargo": -10
             }
           }
         ]
