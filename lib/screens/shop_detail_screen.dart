@@ -27,6 +27,7 @@ import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/item_stats.dart';
+import '../widgets/item_detail_view.dart';
 import '../widgets/dice_smithing_sheet.dart';
 import '../widgets/shop_trade_sheets.dart';
 import 'inventory_screen.dart' show requirementSummary;
@@ -484,6 +485,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                 item: item,
                                 language: lang,
                                 equipped: worn,
+                                equippedId: wornId,
                                 equippedName: wornName,
                                 priceLine: priceLine,
                                 unmetRequirement: unmetRequirement,

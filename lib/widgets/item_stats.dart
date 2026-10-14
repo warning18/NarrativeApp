@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import '../combat/gear_effects.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
-import '../utils/pixel_icons/game_pixel_icons.dart';
-import 'item_lore.dart' show itemLoreOf, itemRarityLabelFor;
 
 /// Gear stats in display order, each with its label key.
 const List<(String, String)> gearStatKeys = [
@@ -78,10 +76,27 @@ List<GearStatLine> gearStatLines(Map<String, dynamic>? item,
 String _fmt(num n) =>
     n == n.roundToDouble() ? n.toInt().toString() : n.toStringAsFixed(1);
 
-/// The short text a list row shows about [item] besides its stats: the
-/// stat it scales with, its unique effect, its alignment, a requirement it
-/// does not meet.
-List<String> itemTraitNotes(Map<String, dynamic>? item, AppLanguage lang,
+/// One trait of an item besides its numbers: the stat it scales with, its
+/// unique effect, its alignment, a requirement it does not meet.
+class ItemTrait {
+  const ItemTrait(this.icon, this.label, this.value, {this.warn = false});
+  final IconData icon;
+  final String label;
+
+  /// The part after the label ('' when the label says it all).
+  final String value;
+
+  /// A requirement the player does not meet.
+  final bool warn;
+
+  String note(AppLanguage lang) {
+    // French typography: a no-break space before the colon.
+    final colon = lang == AppLanguage.fr ? '\u00a0: ' : ': ';
+    return value.isEmpty ? label : '$label$colon$value';
+  }
+}
+
+List<ItemTrait> itemTraits(Map<String, dynamic>? item, AppLanguage lang,
     {String? unmetRequirement}) {
   String t(String key) => trFor(lang, key);
   final scaling = switch (item?['scalingStat']?.toString() ?? '') {
@@ -93,8 +108,6 @@ List<String> itemTraitNotes(Map<String, dynamic>? item, AppLanguage lang,
   };
   final unique = uniqueEffectOf(item);
   final alignment = item?['alignment']?.toString() ?? '';
-  // French typography: a no-break space before the colon.
-  final colon = lang == AppLanguage.fr ? '\u00a0: ' : ': ';
   final alignedAttack = (item?['alignedAttackBonus'] as num?)?.toInt() ?? 0;
   final alignedArmor = (item?['alignedArmorBonus'] as num?)?.toInt() ?? 0;
   final alignedParts = [
@@ -102,17 +115,37 @@ List<String> itemTraitNotes(Map<String, dynamic>? item, AppLanguage lang,
     if (alignedArmor > 0) '${t('arm_abbrev')} +$alignedArmor',
   ];
   return [
-    if (scaling != null) '${t('scales_with_label')}$colon$scaling',
+    if (scaling != null)
+      ItemTrait(Icons.trending_up, t('scales_with_label'), scaling),
     if (unique != null)
-      '${t('unique_label')}$colon${t(uniqueEffectDescriptionKey(unique)).replaceAll('{v}', '${uniqueValueOf(item)}')}',
+      ItemTrait(
+          Icons.auto_awesome,
+          t('unique_label'),
+          t(uniqueEffectDescriptionKey(unique))
+              .replaceAll('{v}', '${uniqueValueOf(item)}')),
     if (alignment.isNotEmpty)
-      '${t('aligned_gear_label')} '
-          '(${alignment == 'Good' ? t('alignment_good') : t('alignment_evil')})'
-          '${alignedParts.isEmpty ? '' : '$colon${alignedParts.join(', ')}'}',
+      ItemTrait(
+          Icons.balance,
+          '${t('aligned_gear_label')} '
+          '(${alignment == 'Good' ? t('alignment_good') : t('alignment_evil')})',
+          alignedParts.join(', ')),
     if (unmetRequirement != null && unmetRequirement.isNotEmpty)
-      '${t('stat_requirement_label')}$colon$unmetRequirement',
+      ItemTrait(
+          Icons.lock_outline, t('stat_requirement_label'), unmetRequirement,
+          warn: true),
   ];
 }
+
+/// The short text a list row shows about [item] besides its stats: the
+/// stat it scales with, its unique effect, its alignment, a requirement it
+/// does not meet.
+List<String> itemTraitNotes(Map<String, dynamic>? item, AppLanguage lang,
+        {String? unmetRequirement}) =>
+    [
+      for (final trait
+          in itemTraits(item, lang, unmetRequirement: unmetRequirement))
+        trait.note(lang),
+    ];
 
 /// What a consumable does when used, in plain words: a potion's heal, an
 /// antidote's cure, a charm's effect for one fight, a tome's points. Null
@@ -217,224 +250,6 @@ class ItemStatChips extends StatelessWidget {
         ]),
         style: theme.textTheme.labelSmall,
       ),
-    );
-  }
-}
-
-/// A full look at one item: what it is, every stat beside the item worn in
-/// the same slot with the difference, what it scales with, its unique
-/// effect, set, alignment and requirement, and an action (buy, equip).
-Future<void> showItemDetailsSheet(
-  BuildContext context, {
-  required String itemId,
-  required Map<String, dynamic>? item,
-  required AppLanguage language,
-  Map<String, dynamic>? equipped,
-  String? equippedName,
-  String? priceLine,
-  String? unmetRequirement,
-  String? setLine,
-  String? extraNote,
-  String? originLine,
-  String? actionLabel,
-  VoidCallback? onAction,
-}) {
-  String t(String key) => trFor(language, key);
-  final name = item?['itemName']?.toString() ?? itemId;
-  final type = item?['itemType']?.toString() ?? '';
-  final slot = item?['equipSlot']?.toString() ?? '';
-  // The rarity in words (v1.204: Common ... Relic).
-  final rarity = itemRarityLabelFor(language, item?['rarity']?.toString());
-  final lore = itemLoreOf(item);
-  final lines = gearStatLines(item, equipped, language);
-  final notes =
-      itemTraitNotes(item, language, unmetRequirement: unmetRequirement);
-  return showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    showDragHandle: true,
-    builder: (sheetContext) {
-      final theme = Theme.of(sheetContext);
-      final gear = isGear(item);
-      return SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    ItemPixelIcon(itemId, type, size: 40),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(name, style: theme.textTheme.titleMedium),
-                          Text(
-                            [
-                              if (type.isNotEmpty) type,
-                              if (slot.isNotEmpty) slot,
-                              if (rarity.isNotEmpty) rarity,
-                            ].join(' · '),
-                            style: theme.textTheme.bodySmall,
-                          ),
-                          if (priceLine != null)
-                            Text(priceLine, style: theme.textTheme.labelMedium),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                // Its lore (v1.204), and where it came from when it is
-                // the player's own.
-                if (lore.isNotEmpty) ...[
-                  const SizedBox(height: 10),
-                  Text(lore,
-                      key: const Key('item_lore'),
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                          fontFamily: 'serif',
-                          fontStyle: FontStyle.italic,
-                          height: 1.45)),
-                ],
-                if (originLine != null && originLine.isNotEmpty) ...[
-                  const SizedBox(height: 6),
-                  Text(originLine,
-                      key: const Key('item_origin'),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant)),
-                ],
-                if (lines.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  _StatTable(
-                    lines: lines,
-                    showEquipped: gear,
-                    equippedHeader: equipped == null
-                        ? t('slot_empty_label')
-                        : (equippedName ?? t('equipped_prefix')),
-                    thisHeader: t('this_item_header'),
-                  ),
-                ],
-                for (final note in notes) ...[
-                  const SizedBox(height: 6),
-                  Text(note, style: theme.textTheme.bodyMedium),
-                ],
-                if (setLine != null) ...[
-                  const SizedBox(height: 6),
-                  Text(setLine, style: theme.textTheme.bodyMedium),
-                ],
-                if (extraNote != null) ...[
-                  const SizedBox(height: 6),
-                  Text(extraNote,
-                      style: theme.textTheme.bodyMedium
-                          ?.copyWith(fontStyle: FontStyle.italic)),
-                ],
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.of(sheetContext).pop(),
-                        child: Text(t('close_button')),
-                      ),
-                    ),
-                    if (actionLabel != null) ...[
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: FilledButton(
-                          onPressed: onAction == null
-                              ? null
-                              : () {
-                                  Navigator.of(sheetContext).pop();
-                                  onAction();
-                                },
-                          child: Text(actionLabel),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    },
-  );
-}
-
-class _StatTable extends StatelessWidget {
-  const _StatTable({
-    required this.lines,
-    required this.showEquipped,
-    required this.equippedHeader,
-    required this.thisHeader,
-  });
-
-  final List<GearStatLine> lines;
-  final bool showEquipped;
-  final String equippedHeader;
-  final String thisHeader;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final head =
-        theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold);
-    Widget cell(String text, {TextStyle? style, TextAlign? align}) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-          child: Text(text,
-              style: style ?? theme.textTheme.bodyMedium,
-              textAlign: align ?? TextAlign.center),
-        );
-    return Table(
-      columnWidths: showEquipped
-          ? const {
-              0: FlexColumnWidth(2),
-              1: FlexColumnWidth(1.2),
-              2: FlexColumnWidth(1.6),
-              3: FlexColumnWidth(1),
-            }
-          : const {0: FlexColumnWidth(2), 1: FlexColumnWidth(1.2)},
-      children: [
-        TableRow(
-          decoration: BoxDecoration(
-            border: Border(
-                bottom: BorderSide(color: theme.colorScheme.outlineVariant)),
-          ),
-          children: [
-            cell('', align: TextAlign.left),
-            cell(thisHeader, style: head),
-            if (showEquipped) ...[
-              cell(equippedHeader, style: head),
-              cell('±', style: head),
-            ],
-          ],
-        ),
-        for (final line in lines)
-          TableRow(children: [
-            cell(line.label, align: TextAlign.left),
-            cell(_fmt(line.value)),
-            if (showEquipped) ...[
-              cell(_fmt(line.equipped)),
-              cell(
-                line.delta == 0
-                    ? '='
-                    : '${line.delta > 0 ? '+' : ''}${_fmt(line.delta)}',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: line.delta == 0
-                      ? null
-                      : line.delta > 0
-                          ? Colors.green.shade600
-                          : theme.colorScheme.error,
-                ),
-              ),
-            ],
-          ]),
-      ],
     );
   }
 }
