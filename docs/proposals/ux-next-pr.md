@@ -58,3 +58,9 @@ Branch `ux-g` (local, one commit on `origin/main`) has the building screen: `lib
 - **Second PR, the map icon, v1.292.0+328** (ready locally on `ux-home-map`, needs #223's code, so it merges after it). **I need a branch name for it** (Core's second is `claude/core-2`; I would use `claude/eager-pascal-2`). I will not push it until you say.
 - **Third, the building screen (G),** built on `ux-g` (one commit): it needs **a version** (1.293.0+329?) and a third branch, so it opens when one of the two is merged.
 - G edits QA's `test/qa_real_font_cards_test.dart` (the houses tray is a list of cards by state, not a strip of equal cards; the preload list gains the tables the list reads). Listed in G's PR.
+
+## Open PRs (14 Oct, after #223 merged as 1.291.0)
+
+- **[#228](https://github.com/warning18/NarrativeApp/pull/228): v1.293.0+329, the map icon opens the full map.** Format, analyze and the six map test files pass locally. It merges after Core's 1.292 (renumber if it goes first). The ruins kit for `camp_to_quarter` was already in #223.
+- Next, built locally on `ux-g`: the building screen (G). It needs a version.
+- Design board 11 (the world sphere: smaller, two poles, the whole sphere filled, climate by latitude) is on the design artifact; it asks Core for a whole-sphere chart if the user picks it.
