@@ -117,7 +117,9 @@ void main() {
         expect(h['description']?.toString() ?? '', isNotEmpty);
         total += cost;
       }
-      expect(total, greaterThanOrEqualTo(5000),
+      // 4 600 once the Shroud Shrine costs 2 000 (so that it comes
+      // in its tier's chapters, see sim_houses_test.dart).
+      expect(total, greaterThanOrEqualTo(4500),
           reason: 'together they sink most of a finished run\'s spare gold');
       // Together a small edge, not a new difficulty: the Sovereign stays
       // the fight of the game (at +10/+10 simulated parties beat it first

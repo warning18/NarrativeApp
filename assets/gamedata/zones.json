@@ -219,7 +219,7 @@
     "rewardGold": 180,
     "rewardMaterials": {
       "material_rime_crystal": 2,
-      "material_shroud_thread": 1
+      "material_shroud_thread": 2
     },
     "rewardItemId": "",
     "rewardDiceId": "",
@@ -440,7 +440,9 @@
     "flavorText_fr": "Les carrières au-dessus de Haut-Âtre, où l’on a taillé la pierre du Reliquaire : cent gradins de roche blanche qui montent dans le givre que la déchirure envoie. L’Inquisition les possède, sur le papier. Personne ne les exploite plus depuis qu’on a cessé d’écrire les géants.",
     "rewardGold": 190,
     "rewardMaterials": {
-      "material_rime_crystal": 3
+      "material_rime_crystal": 3,
+      "material_shroud_thread": 1,
+      "material_tear_glass": 2
     },
     "rewardItemId": "",
     "rewardDiceId": "",
@@ -563,7 +565,8 @@
     "flavorText_fr": "Le givre descendu du Reliquaire a éteint tous les foyers de Puits-de-Givre, et le feu n’y prend plus, ni au silex, ni au soufre. La dernière forge de la ville garde une braise allumée avant le givre. Scellées dans des pots de fer, des braises tirées d’elle tiendront six jours sur la route. Il faut que quelqu’un les porte.",
     "rewardGold": 210,
     "rewardMaterials": {
-      "material_rime_crystal": 2
+      "material_rime_crystal": 2,
+      "material_tear_glass": 2
     },
     "rewardItemId": "phoenix_sigil",
     "rewardDiceId": "",
