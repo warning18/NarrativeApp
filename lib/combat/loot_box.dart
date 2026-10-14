@@ -321,14 +321,15 @@ _SlotKind _rollSlotKind(ChestTier tier, int slotIndex, Random random) {
   }
 }
 
-/// Rarities a [tier] chest's gear slot may draw from.
+/// Rarities a [tier] chest's gear slot may draw from. A Relic (v1.204)
+/// sits with the Rares: the Gold and Void bands, and a rare-only slot.
 Set<String> gearRaritiesFor(ChestTier tier, {bool rareOnly = false}) {
-  if (rareOnly) return const {'Rare'};
+  if (rareOnly) return const {'Rare', 'Relic'};
   return switch (tier) {
     ChestTier.wooden || ChestTier.iron => const {'Common'},
     ChestTier.silver => const {'Common', 'Uncommon'},
-    ChestTier.gold => const {'Uncommon', 'Rare'},
-    ChestTier.voidTier => const {'Uncommon', 'Rare'},
+    ChestTier.gold => const {'Uncommon', 'Rare', 'Relic'},
+    ChestTier.voidTier => const {'Uncommon', 'Rare', 'Relic'},
   };
 }
 
@@ -336,6 +337,11 @@ String _rarityOf(Map<String, dynamic> item) =>
     item['rarity']?.toString().isNotEmpty == true
         ? item['rarity'].toString()
         : 'Common';
+
+/// Whether [item] is a Rare or a Relic: gear that never ages out of the
+/// chest once introduced, and the scarce draw among charms and tomes.
+bool _isRareOrRelic(Map<String, dynamic> item) =>
+    _rarityOf(item) == 'Rare' || _rarityOf(item) == 'Relic';
 
 int _lootChapterOf(Map<String, dynamic> item) =>
     (item['lootChapter'] as num?)?.toInt() ?? 0;
@@ -368,10 +374,10 @@ Map<String, double> gearWeightsFor(
     if (item['isEquippable'] != true) continue;
     final lootChapter = _lootChapterOf(item);
     if (lootChapter <= 0) continue;
-    // A rare stays eligible for the rest of the game once introduced;
-    // common/uncommon gear ages out two chapters later so a chapter-5
-    // chest never hands over a rusty shortsword.
-    final isRare = _rarityOf(item) == 'Rare';
+    // A rare (or a relic) stays eligible for the rest of the game once
+    // introduced; common/uncommon gear ages out two chapters later so a
+    // chapter-5 chest never hands over a rusty shortsword.
+    final isRare = _isRareOrRelic(item);
     if (lootChapter > context.chapter) continue;
     if (!isRare && lootChapter < context.chapter - 1) continue;
     if (!rarities.contains(_rarityOf(item))) continue;
@@ -417,7 +423,7 @@ Map<String, double> _idsOfType(
     final item = entry.value as Map<String, dynamic>;
     if (item['itemType']?.toString() != itemType) continue;
     if (!_alignmentAllows(item, context.alignmentLabel)) continue;
-    weights[entry.key] = _rarityOf(item) == 'Rare' ? 1 : 4;
+    weights[entry.key] = _isRareOrRelic(item) ? 1 : 4;
   }
   return weights;
 }

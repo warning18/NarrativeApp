@@ -171,7 +171,7 @@ class _PartyMember {
 
   /// This member's die as it rolls: its dice.json faces with the
   /// Hammersmith's work on them (see face_smithing.dart).
-  final List<Map<String, dynamic>> dieFaces;
+  List<Map<String, dynamic>> dieFaces;
 
   /// A companion's approval of the player (see approval.dart) -- what opens
   /// their duo techniques; 0 for the player.
@@ -192,7 +192,7 @@ class _PartyMember {
   final int baseDamage;
   final int armor;
   final List<String> equippedItemIds;
-  final List<String> unlockedSkillIds;
+  List<String> unlockedSkillIds;
 
   /// Ability scores, used only to resolve each equipped item's own
   /// `scalingStat` bonus (see [equipmentScalingBonusFor]) — not part of the
@@ -226,11 +226,15 @@ class _PartyMember {
   /// faceIndex (as string) -> skillId. For the player this is their
   /// currently-equipped die's slice of [PlayerSession.diceSkillAssignments];
   /// for an ally it's their own flat [AllyState.diceSkillAssignments] as-is.
-  final Map<String, String> diceSkillAssignments;
-  final String? equippedDiceId;
+  Map<String, String> diceSkillAssignments;
+  String? equippedDiceId;
 
   int currentHealth;
   int block = 0;
+
+  /// The status this member's shield lays on the enemy that strikes it
+  /// (Glacial Ward, Thornwall), for the round the shield stands.
+  StatusEffect? reflect;
 
   /// Poison/Stun/Weaken currently afflicting this member — see
   /// status_effect.dart. Applied by an enemy's moves, ticked down once per
@@ -276,7 +280,48 @@ class _EnemyMember {
     required this.hasReactiveMoves,
     required this.currentHealth,
     this.affixes = const [],
+    this.faction = '',
   });
+
+  /// The faction whose doctrine this enemy fights under ('' for none).
+  final String faction;
+
+  /// This enemy's place in its pack's squad (v1.215, see squad.dart), if
+  /// it has one.
+  SquadRole? role;
+
+  /// How it answers what the party does (v1.215, see enemy_response.dart).
+  EnemyResponse response = EnemyResponse.none;
+
+  /// Provoked by a heavy blow, or pressing a party that only defended: its
+  /// next blow lands harder, once.
+  bool provoked = false;
+  bool pressing = false;
+
+  /// The hardest blow the party landed on this enemy this round, and who
+  /// landed it (what a counter answers).
+  int topHitDamage = 0;
+  String? topHitterId;
+
+  /// Block parries have set on this enemy's coming blow (v1.214, see
+  /// parry.dart); spent when it strikes, cleared each round.
+  int parryBlock = 0;
+
+  /// The elements that have struck this enemy lately, by the round they
+  /// struck in (v1.214, see element_reaction.dart): a partner element
+  /// springs a reaction.
+  final Map<String, int> elementMarks = {};
+
+  /// The pack's captain, the mark of a Rout (v1.212, see fight_goal.dart).
+  bool isCaptain = false;
+
+  /// True once a Subdue's fighter has broken and yielded: out of the
+  /// fight like a defeated one, paying a ransom instead of its spoils.
+  bool yielded = false;
+
+  /// Gold this enemy has lifted off the party (the Short Con, see
+  /// doctrine.dart), carried until it is defeated.
+  int stash = 0;
 
   /// This enemy's affixes (see enemy_affix.dart) -- rolled once at fight
   /// start, or forced by the encounter for a hunt's quarry.

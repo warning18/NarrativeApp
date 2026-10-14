@@ -9,7 +9,10 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/politics_provider.dart';
 import '../data/companion_remarks.dart';
+import '../data/item_origin_here.dart';
+import '../data/politics_events.dart' show questTurnInPoliticsKey;
 import '../data/turn_in_choices.dart';
 import 'approval_notice.dart';
 import 'companion_remark_bubble.dart';
@@ -100,7 +103,20 @@ Future<void> turnInQuest(
     grantsBannerPieceId: grantsBannerPieceId,
     alignmentMod: alignmentMod,
     rewardItem: rewardItem,
+    origin: itemOriginHere(ref),
   );
+  // How it was settled moves the clans (v1.204, see
+  // TurnInChoice.politics): once, logged under the quest.
+  if (picked != null && picked.hasPolitics) {
+    await applyStoryPoliticsNow(
+      ref,
+      picked.politics!,
+      nodeId: questId,
+      key: questTurnInPoliticsKey(questId, choices.indexOf(picked)),
+      cause: 'quest:$questId',
+    );
+    if (!context.mounted) return;
+  }
   String? recruitedName;
   if (rewardAllyId != null && rewardAllyId.isNotEmpty) {
     final companion = companions[rewardAllyId] as Map<String, dynamic>?;

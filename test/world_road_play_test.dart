@@ -94,20 +94,33 @@ void main() {
 
     // 2. A wayside shrine with nothing in the purse: kneeling is free, the
     // offering shut, saying why.
-    container.read(homeTabIndexProvider.notifier).state = 0;
+    // The reader is no tab of the game (v1.201): it is read off stage.
+    container.read(homeTabIndexProvider.notifier).state = journeyTabIndex;
     play.startExcursion(
         roadEventChain(RoadEventKind.shrine,
             chapter: 5, enemyPool: const [], seed: 3),
         '6010_thread',
         origin: 'The road to the chapel');
     await _settle(tester);
-    expect(find.byType(StoryPlayerScreen), findsOneWidget);
-    final shut = find.textContaining('not enough gold (0 in the purse)');
+    expect(find.byType(StoryPlayerScreen, skipOffstage: false), findsOneWidget);
+    final shut = find.descendant(
+        of: find.byType(StoryPlayerScreen, skipOffstage: false),
+        matching: find.textContaining('not enough gold (0 in the purse)',
+            skipOffstage: false),
+        skipOffstage: false);
     expect(shut, findsOneWidget);
-    ElevatedButton button(Finder label) => tester.widget<ElevatedButton>(
-        find.ancestor(of: label, matching: find.byType(ElevatedButton)));
+    ElevatedButton button(Finder label) =>
+        tester.widget<ElevatedButton>(find.ancestor(
+            of: label,
+            matching: find.byType(ElevatedButton, skipOffstage: false)));
     expect(button(shut).onPressed, isNull);
-    expect(button(find.text('Kneel a while')).onPressed, isNotNull);
+    expect(
+        button(find.descendant(
+                of: find.byType(StoryPlayerScreen, skipOffstage: false),
+                matching: find.text('Kneel a while', skipOffstage: false),
+                skipOffstage: false))
+            .onPressed,
+        isNotNull);
 
     // Taken from anywhere else (the Journey's step), it still waits: no
     // double heal and no alignment for nothing.
@@ -116,7 +129,8 @@ void main() {
         .activeExcursionNode!
         .choices
         .firstWhere((c) => c.goldMod < 0);
-    final story = tester.element(find.byType(StoryPlayerScreen));
+    final story =
+        tester.element(find.byType(StoryPlayerScreen, skipOffstage: false));
     final paying = takeStoryChoice(story, story as WidgetRef, offering);
     await _settle(tester);
     await tester.runAsync(() => paying);
@@ -130,9 +144,16 @@ void main() {
     await tester.runAsync(() =>
         notifier.loadSession(session().copyWith(gold: offering.goldMod.abs())));
     await _settle(tester);
-    expect(find.textContaining('not enough gold'), findsNothing);
+    expect(find.textContaining('not enough gold', skipOffstage: false),
+        findsNothing);
     expect(
-        button(find.textContaining('Leave an offering')).onPressed, isNotNull);
+        button(find.descendant(
+                of: find.byType(StoryPlayerScreen, skipOffstage: false),
+                matching: find.textContaining('Leave an offering',
+                    skipOffstage: false),
+                skipOffstage: false))
+            .onPressed,
+        isNotNull);
     expect(tester.takeException(), isNull);
     await tester.pump(const Duration(seconds: 5));
   });

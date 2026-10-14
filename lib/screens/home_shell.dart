@@ -10,6 +10,8 @@ import '../l10n/app_strings.dart';
 import '../gamedata/db_schema.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/camp_presence_provider.dart';
+import '../providers/chapter_loop_provider.dart' show chapterLoopsProvider;
+import '../providers/clans_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
@@ -21,6 +23,7 @@ import '../tutorial/guide_tour.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/moments.dart';
 import '../widgets/immersive_notice.dart';
+import '../widgets/throne_widgets.dart' show showHostSheet;
 import 'ai_generator_screen.dart';
 import 'camp_screen.dart';
 import 'character_screen.dart';
@@ -32,6 +35,7 @@ import 'settings_screen.dart';
 import 'ship_screen.dart';
 import 'story_graph_screen.dart';
 import 'story_player_screen.dart';
+import 'full_map_screen.dart';
 import 'world_map_screen.dart';
 
 /// The game under the main menu. In play: Story, Journey (the story on a
@@ -55,6 +59,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     PlayScreen(),
     AiGeneratorScreen(),
     GameDataHomeScreen(),
+    // The Journey's map of the edited scene (v1.209), with no fog.
+    JourneyScreen(),
   ];
 
   static const List<Widget> _inGameScreens = [
@@ -71,6 +77,15 @@ class _HomeShellState extends ConsumerState<HomeShell> {
 
   /// Goals reached during a fight, announced once it is over.
   final List<String> _pendingReadyQuestIds = [];
+
+  /// "Your Host" after the story mustered it (see
+  /// hostMusteredNoticeProvider), once.
+  void _showMusteredHost() {
+    ref.read(hostMusteredNoticeProvider.notifier).state = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) showHostSheet(context);
+    });
+  }
 
   void _announceReady(List<String> questIds) {
     final quests =
@@ -94,7 +109,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     // Reset to the Story tab whenever the mode changes, so a stale index
     // from the other mode's tab list never points at the wrong page.
     ref.listen<AppMode>(appModeProvider, (previous, next) {
-      ref.read(homeTabIndexProvider.notifier).state = 0;
+      ref.read(homeTabIndexProvider.notifier).state = storyTabIndex(next);
     });
     // A quest in progress whose goal is reached says so once, in play;
     // during a fight it waits for the fight to end.
@@ -116,6 +131,14 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         _pendingReadyQuestIds.clear();
         _announceReady(ids);
       }
+      if (previous == true && !next && ref.read(hostMusteredNoticeProvider)) {
+        _showMusteredHost();
+      }
+    });
+    // The story mustered the Host (v1.196): "Your Host", once, out of any
+    // fight.
+    ref.listen<bool>(hostMusteredNoticeProvider, (previous, next) {
+      if (next && !ref.read(combatActiveProvider)) _showMusteredHost();
     });
     // The story coming to the camp brings the party home, the Rusty Eel
     // with it; the camp then opens in the Story tab's place, and the story
@@ -182,6 +205,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             tr(ref, 'title_play'),
             tr(ref, 'title_generate'),
             tr(ref, 'title_data'),
+            tr(ref, 'nav_journey'),
           ]
         : [
             tr(ref, 'title_story'),
@@ -194,16 +218,30 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     // While the story stands at the camp its tabs are closed: the tabs are
     // Camp, Character and Other, and the Story tab's index means the camp.
     final storyHidden = !isEditMode && ref.watch(partyAtCampProvider);
+    // In play the story is followed on the Journey (v1.201: no Story
+    // tab); the reader stays index 0 for Edit Mode and the ending.
     final visibleTabs = isEditMode
-        ? const [0, 1, 2, 3]
+        ? const [0, journeyTabIndex, 1, 2, 3]
         : storyHidden
             ? const [_campTab, 1, 3]
-            : const [0, journeyTabIndex, 1, 2, 3];
+            : const [journeyTabIndex, 1, 2, 3];
     var index = ref.watch(homeTabIndexProvider).clamp(0, screens.length - 1);
-    if (!visibleTabs.contains(index)) index = isEditMode ? 0 : _campTab;
-    if (!isEditMode && (index == 0 || index == journeyTabIndex)) {
-      _storyTab = index;
+    if (!visibleTabs.contains(index)) {
+      index = isEditMode
+          ? 0
+          : storyHidden
+              ? _campTab
+              : journeyTabIndex;
+      // Written back, so what reads the index (a scene's clock, the
+      // tours) sees the tab that is shown.
+      final shown = index;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final notifier = ref.read(homeTabIndexProvider.notifier);
+        if (!visibleTabs.contains(notifier.state)) notifier.state = shown;
+      });
     }
+    if (!isEditMode && index == journeyTabIndex) _storyTab = index;
     final canLeave = Navigator.of(context).canPop();
     final badges = ref.watch(tabBadgesProvider);
 
@@ -220,6 +258,83 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           label: label,
           tooltip: show ? '$label · $reason' : label,
         );
+
+    final List<NavigationDestination> destinations = isEditMode
+        ? [
+            NavigationDestination(
+                icon: const Icon(Icons.menu_book), label: tr(ref, 'nav_story')),
+            NavigationDestination(
+                icon: const Icon(Icons.alt_route),
+                label: tr(ref, 'nav_journey')),
+            NavigationDestination(
+                icon: const Icon(Icons.videogame_asset),
+                label: tr(ref, 'nav_play')),
+            NavigationDestination(
+                icon: const Icon(Icons.auto_awesome),
+                label: tr(ref, 'nav_generate')),
+            NavigationDestination(
+                icon: const Icon(Icons.storage), label: tr(ref, 'nav_data')),
+          ]
+        : [
+            for (final tab in visibleTabs)
+              switch (tab) {
+                0 => NavigationDestination(
+                    icon: const Icon(Icons.menu_book),
+                    label: tr(ref, 'nav_story')),
+                journeyTabIndex => NavigationDestination(
+                    icon: const Icon(Icons.alt_route),
+                    label: tr(ref, 'nav_journey')),
+                1 => dotted(Icons.person_outline, tr(ref, 'nav_character'),
+                    show: badges.character,
+                    reason: tr(ref, 'badge_points_waiting')),
+                2 => atCampTab
+                    ? dotted(Icons.local_fire_department_outlined,
+                        tr(ref, 'nav_camp'),
+                        show: badges.camp,
+                        reason: tr(ref, 'badge_house_affordable'))
+                    : NavigationDestination(
+                        icon: const Icon(Icons.sailing_outlined),
+                        label: tr(ref, 'nav_ship')),
+                _ => dotted(Icons.more_horiz, tr(ref, 'nav_other'),
+                    show: badges.other, reason: tr(ref, 'badge_quest_ready')),
+              },
+          ];
+
+    // A tablet (or a desktop window) puts the tabs in a rail down the left
+    // edge and gives the page the rest, instead of a bar under it.
+    final window = MediaQuery.sizeOf(context);
+    final wide =
+        window.width >= wideShellWidth && window.height >= wideShellHeight;
+    final pages = Stack(
+      fit: StackFit.expand,
+      children: [
+        IndexedStack(index: index, children: screens),
+        // The screen's edges throb red while the hero's health is low.
+        if (ref.watch(playerSessionProvider.select((s) =>
+            s.characterName.isNotEmpty &&
+            s.maxHealth > 0 &&
+            s.currentHealth * 10 <= s.maxHealth * 3)))
+          const LowHealthEdge(),
+      ],
+    );
+    final rail = TutorialTarget(
+      id: 'home.nav',
+      child: NavigationRail(
+        key: const Key('home_nav_rail'),
+        selectedIndex: visibleTabs.indexOf(index),
+        onDestinationSelected: (i) =>
+            ref.read(homeTabIndexProvider.notifier).state = visibleTabs[i],
+        labelType: NavigationRailLabelType.all,
+        destinations: [
+          for (final d in destinations)
+            NavigationRailDestination(
+              icon: d.icon,
+              selectedIcon: d.selectedIcon,
+              label: Text(d.label),
+            ),
+        ],
+      ),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -249,22 +364,39 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (_) =>
-                      isEditMode ? const StoryMapPage() : const WorldMapPage(),
+                      isEditMode ? const StoryMapPage() : const FullMapScreen(),
                 ),
               ),
             ),
           ),
-          // Edit Mode's Clans & Politics (v1.193): standing, relations,
-          // their history and the intrigues.
+          // Edit Mode also has the world chart, whole: no fog, every place
+          // and every chapter's road (v1.209).
           if (isEditMode)
             IconButton(
-              key: const Key('home_clans_politics'),
-              icon: const Icon(Icons.balance),
-              tooltip: tr(ref, 'clans_title'),
+              key: const Key('home_world_map'),
+              icon: const Icon(Icons.map_outlined),
+              tooltip: tr(ref, 'world_map_title'),
               onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const ClansPoliticsScreen()),
+                MaterialPageRoute(builder: (_) => const WorldMapPage()),
               ),
             ),
+          // Clans & Politics (v1.193): standing, relations, their history
+          // and the intrigues. In the story (v1.196) the same place opens
+          // its read-only view, a dot while the coast's news waits unread.
+          IconButton(
+            key: const Key('home_clans_politics'),
+            icon: Badge(
+              isLabelVisible: !isEditMode &&
+                  ref.watch(
+                      politicsProvider.select((p) => p.unreadNews.isNotEmpty)),
+              child: const Icon(Icons.balance),
+            ),
+            tooltip: tr(ref, isEditMode ? 'clans_title' : 'clans_title_play'),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (_) => ClansPoliticsScreen(play: !isEditMode)),
+            ),
+          ),
           IconButton(
             icon: Text(language == AppLanguage.fr ? '🇫🇷' : '🇬🇧'),
             tooltip: tr(ref, 'language'),
@@ -287,70 +419,35 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           ),
         ],
       ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          IndexedStack(index: index, children: screens),
-          // The screen's edges throb red while the hero's health is low.
-          if (ref.watch(playerSessionProvider.select((s) =>
-              s.characterName.isNotEmpty &&
-              s.maxHealth > 0 &&
-              s.currentHealth * 10 <= s.maxHealth * 3)))
-            const LowHealthEdge(),
-        ],
-      ),
-      bottomNavigationBar: TutorialTarget(
-        id: 'home.nav',
-        child: NavigationBar(
-          selectedIndex: visibleTabs.indexOf(index),
-          onDestinationSelected: (i) =>
-              ref.read(homeTabIndexProvider.notifier).state = visibleTabs[i],
-          destinations: isEditMode
-              ? [
-                  NavigationDestination(
-                      icon: const Icon(Icons.menu_book),
-                      label: tr(ref, 'nav_story')),
-                  NavigationDestination(
-                      icon: const Icon(Icons.videogame_asset),
-                      label: tr(ref, 'nav_play')),
-                  NavigationDestination(
-                      icon: const Icon(Icons.auto_awesome),
-                      label: tr(ref, 'nav_generate')),
-                  NavigationDestination(
-                      icon: const Icon(Icons.storage),
-                      label: tr(ref, 'nav_data')),
-                ]
-              : [
-                  for (final tab in visibleTabs)
-                    switch (tab) {
-                      0 => NavigationDestination(
-                          icon: const Icon(Icons.menu_book),
-                          label: tr(ref, 'nav_story')),
-                      journeyTabIndex => NavigationDestination(
-                          icon: const Icon(Icons.alt_route),
-                          label: tr(ref, 'nav_journey')),
-                      1 => dotted(
-                          Icons.person_outline, tr(ref, 'nav_character'),
-                          show: badges.character,
-                          reason: tr(ref, 'badge_points_waiting')),
-                      2 => atCampTab
-                          ? dotted(Icons.local_fire_department_outlined,
-                              tr(ref, 'nav_camp'),
-                              show: badges.camp,
-                              reason: tr(ref, 'badge_house_affordable'))
-                          : NavigationDestination(
-                              icon: const Icon(Icons.sailing_outlined),
-                              label: tr(ref, 'nav_ship')),
-                      _ => dotted(Icons.more_horiz, tr(ref, 'nav_other'),
-                          show: badges.other,
-                          reason: tr(ref, 'badge_quest_ready')),
-                    },
-                ],
-        ),
-      ),
+      body: wide
+          ? Row(children: [
+              rail,
+              const VerticalDivider(width: 1),
+              Expanded(child: pages)
+            ])
+          : pages,
+      bottomNavigationBar: wide
+          ? null
+          : TutorialTarget(
+              id: 'home.nav',
+              child: NavigationBar(
+                selectedIndex: visibleTabs.indexOf(index),
+                onDestinationSelected: (i) => ref
+                    .read(homeTabIndexProvider.notifier)
+                    .state = visibleTabs[i],
+                destinations: destinations,
+              ),
+            ),
     );
   }
 }
+
+/// From this window width and height the tabs sit in a rail at the side (a
+/// tablet in either direction, a desktop window); under either, the bar at
+/// the bottom. The height keeps a phone on its side (844 x 390) on the bar:
+/// a rail of five tabs needs about 480 px.
+const double wideShellWidth = 840;
+const double wideShellHeight = 480;
 
 /// The Camp tab's index among the play-mode tabs.
 const int _campTab = 2;
@@ -410,12 +507,29 @@ class _ChapterTitle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final number = chapterOfNode(ref.watch(storyPlayProvider).currentNodeId);
-    final chapter = mapChapters.where((c) => c.number == number).firstOrNull;
+    var chapter = mapChapters.where((c) => c.number == number).firstOrNull;
+    String? label;
+    String? name;
+    if (chapter == null && number > 0) {
+      // A chapter the map's list has no heading for yet (one added to
+      // chapters.json, v1.196): its own label and title there, in the
+      // colours of the latest chapter before it.
+      final loop = ref
+          .watch(chapterLoopsProvider)
+          .where((l) => l.chapter == number)
+          .firstOrNull;
+      final before = mapChapters.where((c) => c.number < number);
+      if (loop != null && loop.title.isNotEmpty && before.isNotEmpty) {
+        chapter = before.last;
+        label = loop.label.isEmpty ? '$number' : loop.label;
+        name = loop.title;
+      }
+    }
     if (chapter == null) return Text(fallback);
     final title = chapter.title(ref.watch(appLanguageProvider));
     final split = title.indexOf(':');
-    final label = split < 0 ? title : title.substring(0, split).trim();
-    final name = split < 0 ? fallback : title.substring(split + 1).trim();
+    label ??= split < 0 ? title : title.substring(0, split).trim();
+    name ??= split < 0 ? fallback : title.substring(split + 1).trim();
     final theme = Theme.of(context);
     return FittedBox(
       fit: BoxFit.scaleDown,

@@ -1,7 +1,9 @@
 import 'dart:math';
 
+import '../utils/face_style.dart';
 import 'sea_beasts.dart';
 import 'ship_combat.dart';
+import 'station_dice.dart';
 import 'ship_combat.dart' as combat show endRound;
 
 /// One ship battle from the first turn to the last, on top of the room
@@ -470,6 +472,7 @@ class ShipBattleRules {
     this.intents = true,
     this.push = true,
     this.escalation = true,
+    this.shieldBreak = true,
   });
 
   static const classic = ShipBattleRules(
@@ -482,6 +485,7 @@ class ShipBattleRules {
     intents: false,
     push: false,
     escalation: false,
+    shieldBreak: false,
   );
 
   final bool range;
@@ -502,6 +506,11 @@ class ShipBattleRules {
   /// Fire spreads, leaks weigh a ship down, the weather keeps a trend and
   /// a second sail may come.
   final bool escalation;
+
+  /// A shield layer lets a share of the shot through, a shot at the
+  /// bulwark or a heavy one strips more layers, a perfect aim finds the
+  /// gap (see [ShotMods.shieldBreak]).
+  final bool shieldBreak;
 }
 
 /// How a battle ended: [escaped] is the enemy getting away, [fled] the
@@ -545,7 +554,10 @@ class ShipBattle {
     this.windKnot = false,
     this.canFlee = true,
     this.beast,
-  }) : crew = List.of(crew) {
+    this.crewDice = const {},
+    int? diceSeed,
+  })  : crew = List.of(crew),
+        _diceSeed = diceSeed {
     // Everyone starts somewhere useful: the player at the helm, the next
     // hand at the guns, the next at the bulwark, the last in the hold.
     for (var i = 0; i < this.crew.length && i < ShipRoom.values.length; i++) {
@@ -571,6 +583,11 @@ class ShipBattle {
 
   /// The enemy is a sea beast, not a ship (see sea_beasts.dart).
   final BeastProfile? beast;
+
+  /// Crew id -> the hand's die (see station_dice.dart). A hand with none
+  /// rolls nothing; set by the panel once the dice are read.
+  Map<String, CrewDie> crewDice;
+  int? _diceSeed;
 
   ShipState player;
   ShipState enemy;
@@ -742,6 +759,96 @@ class ShipBattle {
       stations.containsKey(ShipRoom.hold) &&
       !busyRooms.contains(ShipRoom.hold) &&
       !player.room(ShipRoom.hold).isDown;
+
+  // --- Station dice (v1.218) -----------------------------------------------
+
+  /// [crewId]'s die as it landed this turn at their station: null with no
+  /// die, or no station.
+  StationRoll? stationRoll(String crewId) {
+    final die = crewDice[crewId];
+    final room = stationOf(crewId);
+    if (die == null || room == null) return null;
+    _diceSeed ??= Random().nextInt(1 << 30);
+    return rollStationDie(die, crewId, room, turn, _diceSeed!);
+  }
+
+  /// The landed face working at [room] now: its hand is there and not
+  /// busy, and the room stands.
+  StationRoll? _workingRoll(ShipRoom room) {
+    final id = stations[room];
+    if (id == null || busyRooms.contains(room) || player.room(room).isDown) {
+      return null;
+    }
+    final roll = stationRoll(id);
+    return roll?.face == null ? null : roll;
+  }
+
+  /// What the Eel's own shots are multiplied by: an attack face at the
+  /// guns adds its share, a poison face half of it.
+  double get stationGunFactor {
+    final roll = _workingRoll(ShipRoom.guns);
+    if (roll == null) return 1.0;
+    final share = stationShare(roll.value);
+    return 1 + (roll.kind == FaceKind.poison ? share / 2 : share);
+  }
+
+  /// What the enemy's shots are multiplied by: a defend face at the
+  /// bulwark and a weaken face at the helm each take their share off.
+  double get stationWardFactor {
+    var factor = 1.0;
+    final bulwark = _workingRoll(ShipRoom.bulwark);
+    if (bulwark != null) factor *= 1 - stationShare(bulwark.value);
+    final helm = _workingRoll(ShipRoom.helm);
+    if (helm != null && helm.kind == FaceKind.weaken) {
+      factor *= 1 - stationShare(helm.value);
+    }
+    return factor;
+  }
+
+  /// A stun face at the helm: the enemy's most charged weapon loses a step,
+  /// just after it winds, so it may not be ready to fire.
+  void _stationStun() {
+    final roll = _workingRoll(ShipRoom.helm);
+    if (roll == null || roll.kind != FaceKind.stun) return;
+    ShipWeapon? target;
+    for (final w in enemy.weapons) {
+      if (w.charge > 0 && (target == null || w.charge > target.charge)) {
+        target = w;
+      }
+    }
+    if (target == null) return;
+    final hit = target;
+    enemy = enemy.copyWith(weapons: [
+      for (final w in enemy.weapons)
+        w.id == hit.id ? w.withCharge(w.charge - 1) : w,
+    ]);
+    _add('ship_log_dice_stun', crew: crewById(roll.crewId)?.name, weapon: hit);
+  }
+
+  /// The hold's face when the round ends: a heal face patches the hull, a
+  /// mana face winds one gun a step.
+  void _stationHold() {
+    final roll = _workingRoll(ShipRoom.hold);
+    if (roll == null) return;
+    final name = crewById(roll.crewId)?.name;
+    if (roll.kind == FaceKind.heal && player.hull < player.maxHull) {
+      final patch = min(stationPatch(roll.value), player.maxHull - player.hull);
+      player = player.copyWith(hull: player.hull + patch);
+      _add('ship_log_hull_patched', crew: name, n: patch);
+    } else if (roll.kind == FaceKind.mana) {
+      ShipWeapon? slow;
+      for (final w in player.weapons) {
+        if (!w.isReady && (slow == null || w.charge < slow.charge)) slow = w;
+      }
+      if (slow == null) return;
+      final wound = slow;
+      player = player.copyWith(weapons: [
+        for (final w in player.weapons)
+          w.id == wound.id ? w.withCharge(w.charge + 1) : w,
+      ]);
+      _add('ship_log_dice_wound', crew: name, weapon: wound);
+    }
+  }
 
   // --- Evasion ------------------------------------------------------------
 
@@ -1027,6 +1134,10 @@ class ShipBattle {
   bool canFire(ShipWeapon weapon) =>
       !over && !ran && weapon.isReady && inRange(weapon);
 
+  /// The shield rules of v1.217 are on: in the rules, and not against a
+  /// beast, whose hide glances shots off as it always has.
+  bool get shieldBreakOn => rules.shieldBreak && beast == null;
+
   /// What the weapon's shot, the room's focus and a pending critical do to a
   /// shot at [room].
   ShotMods shotMods(ShipRoom room, {ShipWeapon? weapon, AimResult? aim}) {
@@ -1046,12 +1157,56 @@ class ShipBattle {
       mods = mods.merge(const ShotMods(extraRoomDamage: focusRoomDamage));
     }
     if (eagleEye || aim == AimResult.perfect) mods = mods.merge(criticalMods);
+    final gunners = stationGunFactor;
+    if (gunners != 1.0) mods = mods.merge(ShotMods(damageFactor: gunners));
     if (!rules.flooding) mods = mods.merge(const ShotMods(floods: false));
+    if (shieldBreakOn) {
+      mods = mods
+          .merge(ShotMods(shieldBreak: true, slips: aim == AimResult.perfect));
+    }
     // Braced for the volley: half the hull, the room's pips as ever.
     if (enemyBraced) {
       mods = mods.merge(const ShotMods(damageFactor: braceDamageFactor));
     }
     return mods;
+  }
+
+  /// Shots of [weaponId] it takes before one gets past the enemy's shield
+  /// layers: the layers each shot strips at [room], then the one that
+  /// lands. One for a piercing weapon or a ship with no layer standing;
+  /// null when there is no such weapon.
+  int? shotsToLand(String? weaponId, ShipRoom room) {
+    final weapon = weaponById(weaponId);
+    if (weapon == null) return null;
+    if (weapon.piercing || enemy.layers == 0) return 1;
+    final strip = layersStripped(weapon, room, shotMods(room, weapon: weapon));
+    return (enemy.layers / strip).ceil() + 1;
+  }
+
+  /// True when the guns ready now, all aimed at the bulwark, take the
+  /// enemy's layers down and still land a shot this turn (evasion aside).
+  /// False when no layer stands: there is nothing to break.
+  bool get salvoReady {
+    if (enemy.layers == 0) return false;
+    final strips = <int>[];
+    var piercing = false;
+    for (final w in player.weapons) {
+      if (!canFire(w)) continue;
+      if (w.piercing) {
+        piercing = true;
+      } else {
+        strips.add(layersStripped(
+            w, ShipRoom.bulwark, shotMods(ShipRoom.bulwark, weapon: w)));
+      }
+    }
+    if (piercing) return true;
+    strips.sort((a, b) => b.compareTo(a));
+    var left = enemy.layers;
+    for (var i = 0; i < strips.length; i++) {
+      if (left <= 0) return true;
+      left -= strips[i];
+    }
+    return false;
   }
 
   /// What [weaponId] would do to [room] if it lands, for the room's preview.
@@ -1079,6 +1234,10 @@ class ShipBattle {
     }
     final critical = eagleEye || aim == AimResult.perfect;
     final focused = (focus[room] ?? 0) > 0;
+    final gap = shieldBreakOn &&
+        aim == AimResult.perfect &&
+        enemy.layers > 0 &&
+        !weapon.piercing;
     final outcome = resolveShot(
       target: enemy,
       weapon: weapon,
@@ -1095,6 +1254,9 @@ class ShipBattle {
     }
     if (outcome.landed && critical) _add('ship_log_critical');
     if (outcome.landed && focused) _add('ship_log_focus', room: room);
+    if (outcome.landed && gap) {
+      _add('ship_log_shield_gap', side: BattleSide.enemy);
+    }
     _logShot(outcome, weapon, BattleSide.enemy);
     if (outcome.landed && beast != null && weapon.tetherRounds > 0) {
       tether = max(tether, weapon.tetherRounds);
@@ -1453,6 +1615,7 @@ class ShipBattle {
       _add('ship_log_enemy_repairs', side: BattleSide.enemy, room: room);
     }
     enemy = chargeWeapons(enemy);
+    _stationStun();
     if (beast != null && roundsToDive == 0 && !tethered && steers) {
       _dive();
       return;
@@ -1596,9 +1759,10 @@ class ShipBattle {
       evasionPercent: playerEvasion,
       roll: random.nextDouble(),
       mods: ShotMods(
-        damageFactor: braced ? 0.5 : 1.0,
+        damageFactor: (braced ? 0.5 : 1.0) * stationWardFactor,
         noFire: weather == SeaWeather.squall,
         floods: rules.flooding,
+        shieldBreak: shieldBreakOn,
       ),
     );
     player = outcome.target;
@@ -1706,6 +1870,7 @@ class ShipBattle {
         rain: rain);
     player = mine.ship;
     _roundLines(mine, BattleSide.eel);
+    _stationHold();
     final theirs = combat.endRound(enemy, rain: rain);
     enemy = theirs.ship;
     _roundLines(theirs, BattleSide.enemy);
@@ -1888,6 +2053,12 @@ class ShipBattle {
     }
     if (outcome.absorbed) {
       _add('ship_log_shot_absorbed', side: target, weapon: weapon);
+      if (outcome.layersLost > 1) {
+        _add('ship_log_shield_stripped', side: target, n: outcome.layersLost);
+      }
+      if (outcome.hullDamage > 0) {
+        _add('ship_log_shield_chip', side: target, n: outcome.hullDamage);
+      }
       if (outcome.roomKnockedOut) {
         _add('ship_log_room_down', side: target, room: ShipRoom.bulwark);
       }

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../combat/skill_vfx.dart';
+import 'pixel_portrait.dart';
+import 'pixel_vfx.dart';
 
 /// What a floating number says, which sets its color.
 enum VfxTextKind { damage, hurt, heal, block, mana, crit, info }
@@ -29,6 +31,7 @@ class VfxBurst {
     this.big = false,
     this.power = 1.0,
     this.hit = true,
+    this.accent = VfxAccent.none,
     required this.seed,
   })  : tier = vfxTierFor(power),
         durationMs =
@@ -55,6 +58,9 @@ class VfxBurst {
   /// give a blow a shockwave, embers and a flash, and the rest a rising
   /// aura.
   final bool hit;
+
+  /// The clan card's own particles over the style (see [VfxAccent]).
+  final VfxAccent accent;
   final VfxTier tier;
   final int seed;
   final int durationMs;
@@ -108,6 +114,17 @@ List<VfxParticle> _makeParticles(int seed) {
   ];
 }
 
+/// A cue for a portrait: do [cue] after [delay].
+class VfxCue {
+  const VfxCue(this.target, this.cue,
+      {this.delay = Duration.zero, this.dir = const Offset(-1, 0)});
+
+  final GlobalKey target;
+  final PortraitCue cue;
+  final Duration delay;
+  final Offset dir;
+}
+
 /// The moment a strong or mighty effect lands on [target], as the layer
 /// plays it: a card recoils (see [VfxRecoil]), a mighty blow shakes the
 /// screen.
@@ -140,6 +157,30 @@ class CombatVfxController extends ChangeNotifier {
   void removeImpactListener(void Function(VfxImpact) listener) =>
       _impactListeners.remove(listener);
 
+  final List<void Function(VfxCue)> _cueListeners = [];
+
+  /// Calls [listener] for every cue to a pixel portrait (see
+  /// pixel_portrait.dart): a blow landing, a strike, a fall.
+  void addCueListener(void Function(VfxCue) listener) =>
+      _cueListeners.add(listener);
+
+  void removeCueListener(void Function(VfxCue) listener) =>
+      _cueListeners.remove(listener);
+
+  /// Cues the portrait on [target] to [cue] after [delayMs] ([dir] points
+  /// to whom a lunge strikes).
+  void cue(GlobalKey target, PortraitCue cue,
+      {int delayMs = 0, Offset dir = const Offset(-1, 0)}) {
+    _emitCue(VfxCue(target, cue,
+        delay: Duration(milliseconds: max(0, delayMs)), dir: dir));
+  }
+
+  void _emitCue(VfxCue cue) {
+    for (final listener in List.of(_cueListeners)) {
+      listener(cue);
+    }
+  }
+
   void _reportImpact(VfxImpact impact) {
     for (final listener in List.of(_impactListeners)) {
       listener(impact);
@@ -161,10 +202,13 @@ class CombatVfxController extends ChangeNotifier {
     bool big = false,
     double? power,
     bool? hit,
+    VfxAccent accent = VfxAccent.none,
   }) {
+    final palette = paletteFor(style, element);
+    PixelVfxTints.request(style, palette);
     _queue.add(VfxBurst(
       style: style,
-      palette: paletteFor(style, element),
+      palette: palette,
       target: target,
       source: source,
       targetFallback: globalRectOf(target),
@@ -175,6 +219,7 @@ class CombatVfxController extends ChangeNotifier {
       big: big,
       power: power ?? (big ? 1.35 : 1.0),
       hit: hit ?? _isBlow(style, textKind),
+      accent: accent,
       seed: _seed++ * 7919,
     ));
     notifyListeners();
@@ -225,11 +270,16 @@ class VfxRecoil extends StatefulWidget {
     required this.controller,
     required this.anchor,
     required this.child,
+    this.flash = true,
   });
 
   final CombatVfxController controller;
   final GlobalKey anchor;
   final Widget child;
+
+  /// Whether the card is washed in the effect's colour (a card with a
+  /// pixel portrait flashes that instead).
+  final bool flash;
 
   @override
   State<VfxRecoil> createState() => _VfxRecoilState();
@@ -288,7 +338,7 @@ class _VfxRecoilState extends State<VfxRecoil>
             : impact.hit
                 ? Offset(swing, 0)
                 : Offset(0, -sin(t * pi) * 3);
-        final flash = live
+        final flash = live && widget.flash
             ? Color(impact.palette.primary)
                 .withValues(alpha: (impact.hit ? 0.35 : 0.2) * fade * fade)
             : Colors.transparent;
@@ -403,6 +453,10 @@ class _CombatVfxLayerState extends State<CombatVfxLayer>
     for (final burst in _active) {
       if (burst.impacted || now < burst.impactAt) continue;
       burst.impacted = true;
+      // Any blow landing flashes a pixel portrait, light or mighty.
+      if (burst.hit && !systemVfxStyles.contains(burst.style)) {
+        widget.controller._emitCue(VfxCue(burst.target, PortraitCue.hit));
+      }
       if (burst.tier.index < VfxTier.strong.index ||
           systemVfxStyles.contains(burst.style)) {
         continue;
@@ -660,8 +714,117 @@ class _Fx {
       sourceRect?.center ?? Offset(rect.left - s * 1.2, c.dy - s * 0.8);
 
   void paint() {
+    // In pixel art (see pixel_vfx.dart) once the strips are in; the vector
+    // effect below plays until then.
+    if (paintPixelBurst(
+      canvas,
+      style: burst.style,
+      palette: burst.palette,
+      tier: tier,
+      hit: burst.hit,
+      rect: rect,
+      sourceRect: sourceRect,
+      t: t,
+      s: s,
+      extent: vfxExtentFor(burst.style, burst.power),
+    )) {
+      // The flash across the screen stays: it is light, not a shape.
+      if (mighty && !systemVfxStyles.contains(burst.style)) {
+        if (burst.hit) {
+          _screenFlash(vfxImpactAt(burst.style), 0.25);
+        } else {
+          _screenFlash(0.05, 0.25, opacity: 0.1);
+        }
+      }
+      _accent();
+      return;
+    }
     _style();
     _tierDetails();
+    _accent();
+  }
+
+  /// The clan card's particles over the style (see [VfxAccent]).
+  void _accent() {
+    switch (burst.accent) {
+      case VfxAccent.none:
+        return;
+      case VfxAccent.fusion:
+        // Two colors circle each other, close in and flare as one.
+        final lt = _window(t, 0, 0.55);
+        if (lt != null) {
+          final r = s * 0.5 * (1 - _easeInOut(lt)) * scale;
+          for (var k = 0; k < 2; k++) {
+            final angle = lt * pi * 3 + k * pi;
+            final at = c + Offset(cos(angle), sin(angle)) * r;
+            final color = k == 0 ? primary : secondary;
+            final a = _fade(lt, 0.1, 0.8);
+            canvas.drawCircle(at, s * 0.16 * scale, _fill(color, 0.25 * a));
+            canvas.drawCircle(at, s * 0.08 * scale, _fill(color, a));
+          }
+        }
+        _glow(c, s * 0.6, 0.5, 0.4, Colors.white);
+        _ring(0.5, 0.45, s * 0.1, s * 0.9, width: 3, color: Colors.white);
+        _sparks(0.5, 0.45, count: 10, reach: 0.7);
+      case VfxAccent.ascension:
+        // A pillar rises with the sparks, and chevrons climb it.
+        _beam(0, 0.7, width: 0.35);
+        _rise(0.05, 0.95, count: 18, height: 1.4, width: 0.35, sizeK: 0.07);
+        final lt = _window(t, 0.1, 0.8);
+        if (lt != null) {
+          for (var k = 0; k < 3; k++) {
+            final local = ((lt - k * 0.18) / (1 - k * 0.18)).clamp(0.0, 1.0);
+            if (local <= 0 || local >= 1) continue;
+            final y = c.dy + s * 0.3 - local * s * 1.1;
+            final w = s * 0.22 * scale;
+            final chevron = Path()
+              ..moveTo(c.dx - w, y + w * 0.5)
+              ..lineTo(c.dx, y - w * 0.2)
+              ..lineTo(c.dx + w, y + w * 0.5);
+            canvas.drawPath(
+                chevron, _stroke(secondary, (1 - local) * 0.9, 3 * scale));
+          }
+        }
+      case VfxAccent.subclan:
+        // A sigil of two rings, six motes orbiting it and flying off.
+        final lt = _window(t, 0, 0.8);
+        if (lt == null) return;
+        final r = s * 0.62 * scale * (0.7 + 0.3 * _easeOut(lt));
+        canvas.drawCircle(
+            c, r, _stroke(primary, 0.55 * _fade(lt, 0.15, 0.6), 2.5));
+        canvas.drawCircle(
+            c, r * 0.72, _stroke(secondary, 0.4 * _fade(lt, 0.2, 0.6), 1.5));
+        final spread = lt > 0.6 ? (lt - 0.6) * 2.5 : 0.0;
+        for (var i = 0; i < 6; i++) {
+          final angle = lt * pi * 2 + i * pi / 3;
+          final at = c + Offset(cos(angle), sin(angle)) * (r * (1 + spread));
+          final k = s * 0.06 * scale;
+          final mote = Path()
+            ..moveTo(at.dx, at.dy - k)
+            ..lineTo(at.dx + k, at.dy)
+            ..lineTo(at.dx, at.dy + k)
+            ..lineTo(at.dx - k, at.dy)
+            ..close();
+          canvas.drawPath(mote, _fill(secondary, _fade(lt, 0.1, 0.7)));
+        }
+      case VfxAccent.secret:
+        // A violet veil, rune fragments drifting up, a late pale ring.
+        _glow(c, s * 0.8, 0, 0.7, const Color(0xFF4A2A7A));
+        _twinkles(0.05, 0.9, color: Colors.white);
+        final lt = _window(t, 0.1, 0.85);
+        if (lt != null) {
+          for (var i = 0; i < _n(10); i++) {
+            final q = p[i];
+            final x = c.dx + q.dx * s * 0.55;
+            final y = c.dy + s * 0.3 - lt * s * 0.9 * q.speed;
+            final len = s * 0.08 * q.size * scale;
+            final dir = Offset(cos(q.angle), sin(q.angle)) * len;
+            canvas.drawLine(Offset(x, y) - dir, Offset(x, y) + dir,
+                _stroke(secondary, (1 - lt) * 0.9, 2));
+          }
+        }
+        _ring(0.55, 0.4, s * 0.15, s * 0.8, width: 2, color: primary);
+    }
   }
 
   void _style() {

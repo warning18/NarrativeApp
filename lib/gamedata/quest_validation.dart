@@ -1,29 +1,39 @@
-/// Validates that each quest chapter has exactly one start quest (a quest no
-/// other quest in the same chapter points to via `nextQuestID`) and exactly
-/// one end quest (a quest whose `nextQuestID` is empty).
+/// Validates that each chapter's main quest chain has exactly one start
+/// quest (a main quest no other main quest of the chapter points to via
+/// `nextQuestID`) and exactly one end quest (one whose `nextQuestID` is
+/// empty, or leads into another chapter's chain).
+///
+/// Side quests are open (taken in any order, or chained loosely like the
+/// harbor jobs), so they are not part of the chain; a chapter with no main
+/// quest has nothing to check.
 List<String> validateQuestChapters(Map<String, dynamic> quests) {
   final byChapter = <int, List<MapEntry<String, Map<String, dynamic>>>>{};
   for (final entry in quests.entries) {
     final quest = entry.value as Map<String, dynamic>;
+    if ((quest['category']?.toString() ?? 'Main') != 'Main') continue;
     final chapter = (quest['chapter'] as num?)?.toInt() ?? 1;
     byChapter.putIfAbsent(chapter, () => []).add(MapEntry(entry.key, quest));
   }
+
+  String nextOf(Map<String, dynamic> quest) =>
+      quest['nextQuestID']?.toString() ?? '';
 
   final issues = <String>[];
   final chapters = byChapter.keys.toList()..sort();
   for (final chapter in chapters) {
     final questsInChapter = byChapter[chapter]!;
+    final ids = {for (final e in questsInChapter) e.key};
     final targeted = <String>{
       for (final e in questsInChapter)
-        if ((e.value['nextQuestID']?.toString() ?? '').isNotEmpty)
-          e.value['nextQuestID'].toString(),
+        if (nextOf(e.value).isNotEmpty) nextOf(e.value),
     };
     final starts = questsInChapter
         .where((e) => !targeted.contains(e.key))
         .map((e) => e.key)
         .toList();
+    // A chain may run on into the next chapter's: that link is its end.
     final ends = questsInChapter
-        .where((e) => (e.value['nextQuestID']?.toString() ?? '').isEmpty)
+        .where((e) => nextOf(e.value).isEmpty || !ids.contains(nextOf(e.value)))
         .map((e) => e.key)
         .toList();
 

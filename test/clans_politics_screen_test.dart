@@ -60,9 +60,9 @@ PlayerSession _session() {
 }
 
 Future<ProviderContainer> _container(WidgetTester tester,
-    {required String language}) async {
+    {required String language, Map<String, Object> prefs = const {}}) async {
   SharedPreferences.setMockInitialValues(
-      {'app_language': language, 'tutorial_enabled': false});
+      {'app_language': language, 'tutorial_enabled': false, ...prefs});
   final container = ProviderContainer();
   addTearDown(container.dispose);
   container.read(appLanguageProvider);
@@ -108,8 +108,10 @@ Future<void> _settle(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('the four tabs at 360 px, in English', (tester) async {
-    tester.view.physicalSize = const Size(360, 2400);
+  testWidgets(
+      'the Throne room is the first tab, then Reputation, then the rest',
+      (tester) async {
+    tester.view.physicalSize = const Size(360, 1200);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     final container = await _container(tester, language: 'en');
@@ -117,6 +119,38 @@ void main() {
       container: container,
       child: const MaterialApp(home: ClansPoliticsScreen()),
     ));
+    await tester.pump(const Duration(milliseconds: 300));
+    final keys = [
+      'clans_tab_throne_room',
+      'clans_tab_standing',
+      'clans_tab_politics',
+      'clans_tab_evolution',
+      'clans_tab_intrigues',
+    ];
+    final xs = [
+      for (final k in keys) tester.getTopLeft(find.byKey(Key(k))).dx,
+    ];
+    expect(xs, [...xs]..sort(), reason: 'the tabs run in this order');
+    // It opens on the Throne room.
+    final controller = DefaultTabController.of(
+        tester.element(find.byKey(const Key('clans_tab_throne_room'))));
+    expect(controller.index, 0);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('the four tabs at 360 px, in English', (tester) async {
+    tester.view.physicalSize = const Size(360, 3400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final container = await _container(tester, language: 'en');
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: ClansPoliticsScreen()),
+    ));
+    // The Throne room (the first tab) never settles: step, then open the
+    // Reputation tab.
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(const Key('clans_tab_standing')));
     await tester.pumpAndSettle();
     PoliticsState politics() => container.read(playerSessionProvider).politics;
 
@@ -220,11 +254,22 @@ void main() {
       container: container,
       child: const MaterialApp(home: ClansPoliticsScreen()),
     ));
+    // The Throne room (the first tab) never settles: step, then open the
+    // Reputation tab.
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(const Key('clans_tab_standing')));
     await tester.pumpAndSettle();
 
     expect(find.text('Clans et politique'), findsOneWidget);
     expect(find.text('La Veille Grise'), findsWidgets);
     expect(find.textContaining('CONFIANCE'), findsWidgets);
+    // The clans' shops (v1.197) lengthen the cards: bring the panel in.
+    await tester.scrollUntilVisible(
+        find.byKey(const Key('clans_otherworld')), 300,
+        scrollable: find.descendant(
+            of: find.byKey(const Key('clans_standing_list')),
+            matching: find.byType(Scrollable)));
+    await tester.pumpAndSettle();
     expect(find.textContaining('Vœux tenus\u00a0: 0'), findsOneWidget);
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
 
@@ -287,9 +332,12 @@ void main() {
     ));
     await tester.pumpAndSettle();
 
-    // Trusted: 15% off. The Bloodthorn Blade's 260 is 221.
+    // Trusted: 15% off. The Bloodthorn Blade's 260 is 221 (and so is the
+    // dawnward shield's, since v1.197); the Keyholder speaks.
     expect(find.textContaining('Trusted, prices'), findsOneWidget);
-    expect(find.textContaining('221 gold'), findsOneWidget);
+    expect(find.textContaining('221 gold'), findsWidgets);
+    expect(find.byKey(const ValueKey('shop_keeper_name')), findsOneWidget);
+    expect(find.textContaining('second shelf'), findsOneWidget);
     expect(find.byTooltip('Sell'), findsOneWidget);
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
 
@@ -304,5 +352,133 @@ void main() {
     expect(buys.every((b) => b.onPressed == null), isTrue);
     expect(find.byTooltip('Sell'), findsNothing);
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
+  });
+
+  testWidgets('the story\'s view: nothing to set, no spoilers', (tester) async {
+    tester.view.physicalSize = const Size(360, 2400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final container = await _container(tester, language: 'en');
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: ClansPoliticsScreen(play: true)),
+    ));
+    // The Throne room (the first tab) never settles: step, then open the
+    // Reputation tab.
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(const Key('clans_tab_standing')));
+    await tester.pumpAndSettle();
+
+    // Standing: the cards, read only.
+    expect(find.text('Clans'), findsOneWidget);
+    expect(find.byKey(const Key('faction_card_vigil')), findsOneWidget);
+    expect(find.byKey(const Key('faction_slider_vigil')), findsNothing);
+    expect(find.byKey(const Key('clans_reset')), findsNothing);
+    expect(find.byKey(const Key('clans_offer_now')), findsNothing);
+    final before = container.read(playerSessionProvider).politics;
+    await tester.tap(find.byKey(const Key('subclan_square_candlebearers')),
+        warnIfMissed: false);
+    await _settle(tester);
+    expect(
+        container.read(playerSessionProvider).politics.markOf('candlebearers'),
+        before.markOf('candlebearers'),
+        reason: 'a square is not a switch in the story');
+
+    // Politics: the table fits, a cell gives the reason with no shift; the
+    // news in place of the events.
+    await _openTab(tester, 'clans_tab_politics');
+    expect(tester.takeException(), isNull, reason: 'fits 360 px');
+    await tester.tap(find.byKey(const Key('relation_cell_compact_mire')));
+    await tester.pumpAndSettle();
+    expect(find.text(_data.relations.pair('compact', 'mire')!.reason),
+        findsOneWidget);
+    expect(find.byKey(const Key('relation_shift_down')), findsNothing);
+    await tester.tap(find.text('Close'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('clans_events_list')), findsNothing);
+    expect(find.text('News from the coast'.toUpperCase()), findsOneWidget);
+
+    // Intrigues: only the one begun, up to its stage, the next one locked;
+    // no premise before the reveal, no outcome before the choice.
+    await _openTab(tester, 'clans_tab_intrigues');
+    expect(find.byKey(const Key('intrigue_hooded_lantern')), findsOneWidget);
+    expect(find.text('Not started'), findsNothing);
+    expect(
+        find.byKey(const Key('intrigue_next_hooded_lantern')), findsOneWidget);
+    final lantern = _data.intrigues['hooded_lantern']!;
+    expect(find.text(lantern.premiseFor(AppLanguage.en)), findsNothing);
+    expect(find.text(lantern.stages[3].textFor(AppLanguage.en)), findsNothing);
+    expect(find.textContaining('The Grey Vigil +25'), findsNothing);
+    expect(tester.takeException(), isNull, reason: 'fits 360 px');
+  });
+
+  testWidgets('a stage reached shows the face it names (v1.210)',
+      (tester) async {
+    tester.view.physicalSize = const Size(360, 2400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    // The real intrigues, the Hooded Lantern's first and fourth stages
+    // naming Vane, its second a person the npcs table does not know.
+    final intrigues = _json('intrigues');
+    final lantern = intrigues['hooded_lantern'] as Map<String, dynamic>;
+    final stages = (lantern['stages'] as List).cast<Map<String, dynamic>>();
+    stages[0]['npcId'] = 'aurel_vane';
+    stages[1]['npcId'] = 'nobody_known';
+    stages[3]['npcId'] = 'aurel_vane';
+    final container = await _container(tester, language: 'en', prefs: {
+      'gamedb_intrigues': jsonEncode(intrigues),
+      'gamedb_npcs': jsonEncode({
+        'aurel_vane': {
+          'npcID': 'aurel_vane',
+          'npcName': 'Aurel Vane',
+          'npcName_fr': 'Aurel Vane',
+          'chapter': 1,
+        },
+      }),
+    });
+    await tester.runAsync(
+        () => container.read(gameDbProvider(npcsSchema).notifier).whenLoaded());
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: ClansPoliticsScreen(play: true)),
+    ));
+    // The Throne room (the first tab) never settles: step, then open the
+    // Reputation tab.
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(const Key('clans_tab_standing')));
+    await tester.pumpAndSettle();
+    await _openTab(tester, 'clans_tab_intrigues');
+    // Stage 3 reached: the face at stage 1, none at 2 (unknown) or 4
+    // (not reached).
+    expect(find.byKey(const Key('intrigue_face_hooded_lantern_1')),
+        findsOneWidget);
+    expect(find.text('Aurel Vane'), findsOneWidget);
+    expect(
+        find.byKey(const Key('intrigue_face_hooded_lantern_2')), findsNothing);
+    expect(
+        find.byKey(const Key('intrigue_face_hooded_lantern_4')), findsNothing);
+    expect(tester.takeException(), isNull, reason: 'fits 360 px');
+  });
+
+  testWidgets('the story\'s view with no intrigue begun says so',
+      (tester) async {
+    tester.view.physicalSize = const Size(360, 1200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final container = await _container(tester, language: 'en');
+    await tester.runAsync(() => container
+        .read(playerSessionProvider.notifier)
+        .loadSession(baseSession()));
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: ClansPoliticsScreen(play: true)),
+    ));
+    // The Throne room (the first tab) never settles: step, then open the
+    // Reputation tab.
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(const Key('clans_tab_standing')));
+    await tester.pumpAndSettle();
+    await _openTab(tester, 'clans_tab_intrigues');
+    expect(find.byKey(const Key('clans_intrigues_empty')), findsOneWidget);
   });
 }

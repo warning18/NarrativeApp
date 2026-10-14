@@ -1,11 +1,14 @@
 import 'dart:math';
 
+import '../models/story_politics.dart';
+
 /// One way to settle a quest when it's turned in (v1.163): keep the purse
 /// or give it back, sell the list or guard it. A quest's `turnInChoices`
 /// replaces its fixed reward with a decision; each choice sets its own
 /// gold and alignment (the quest's own when left out), may set a story
-/// flag, and may move companions' approval (see approval.dart). XP, items,
-/// dice and companions come from the quest as usual.
+/// flag, may move companions' approval (see approval.dart) and (v1.204)
+/// may move the clans' [politics], written as a story choice's are. XP,
+/// items, dice and companions come from the quest as usual.
 class TurnInChoice {
   const TurnInChoice({
     required this.text,
@@ -14,6 +17,7 @@ class TurnInChoice {
     this.alignmentChange,
     this.flag = '',
     this.approvalMods = const {},
+    this.politics,
   });
 
   factory TurnInChoice.fromJson(Map<String, dynamic> json) => TurnInChoice(
@@ -27,6 +31,7 @@ class TurnInChoice {
                   MapEntry(id.toString(), (delta as num?)?.toInt() ?? 0),
             ) ??
             const {},
+        politics: StoryPolitics.tryParse(json['politics']),
       );
 
   final String text;
@@ -37,6 +42,14 @@ class TurnInChoice {
   final int? alignmentChange;
   final String flag;
   final Map<String, int> approvalMods;
+
+  /// What settling it this way moves among the clans (standing, marks...,
+  /// see story_politics.dart), applied once at turn-in under
+  /// `questTurnInPoliticsKey` and logged under `quest:<questId>`; null
+  /// when the choice moves nothing.
+  final StoryPolitics? politics;
+
+  bool get hasPolitics => politics != null && !politics!.isEmpty;
 
   int goldFor(int questGold) => rewardGold ?? questGold;
   int alignmentFor(int questAlignment) => alignmentChange ?? questAlignment;

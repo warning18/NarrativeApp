@@ -18,8 +18,9 @@ import 'journey_rules.dart';
 const int maxPassThrough = 2;
 
 /// Whether [choice] only moves the story on: no gold, health, alignment,
-/// approval, roll, fight, shop, quest, zone, voyage, piece or companion
-/// change, and no ending. Flags it sets are carried along.
+/// approval, roll, fight, shop, quest, zone, voyage, land crossing,
+/// piece, item, material or companion change, and no ending. Flags it sets
+/// are carried along.
 bool isPlainGoOn(StoryChoice choice) =>
     !choice.isEnding &&
     choice.nextId.isNotEmpty &&
@@ -38,6 +39,8 @@ bool isPlainGoOn(StoryChoice choice) =>
     !choice.opensCharacterCreation &&
     (choice.grantsBannerPieceId ?? '').isEmpty &&
     !choice.grantsItem &&
+    !choice.grantsMaterials &&
+    !choice.crossesLand &&
     (choice.loseAllyId ?? '').isEmpty &&
     (choice.roadEvent ?? '').isEmpty &&
     !choice.triggersShipBattle;
@@ -46,15 +49,66 @@ bool isPlainGoOn(StoryChoice choice) =>
 /// null when [node] is a real stop: a place (town, camp, village), an
 /// ending, a timed scene, a scene with more than one way on (hidden ones aside) or whose
 /// one way on does more than move on, or takes the road to another place.
-StoryChoice? passThroughChoiceOf(StoryNode node, Iterable<String> flags) {
+///
+/// [hidden] says which choices are out of sight (v1.196: a politics gate
+/// that fails, see choiceHiddenFor); by default, those [flags] hide.
+///
+/// [travels] says whether a way on from one scene to another takes the
+/// road (v1.209): with the world's places loaded, callers pass
+/// Geography.travelsBetween, so a way to another district of the same
+/// city is a walk through its streets and reads through. Without one,
+/// a change of landmark decides (see [isRoadStep]).
+StoryChoice? passThroughChoiceOf(StoryNode node, Iterable<String> flags,
+    {bool Function(StoryChoice choice)? hidden,
+    bool Function(String from, String to)? travels}) {
   if (node.settlement != null || isStoryEnding(node)) return null;
   if (node.hubProgress != null || node.isTimed) return null;
   final held = flags.toSet();
-  final ways = node.choices.where((c) => !c.isHiddenFor(held)).toList();
+  final ways = node.choices
+      .where((c) => !(hidden?.call(c) ?? c.isHiddenFor(held)))
+      .toList();
   if (ways.length != 1) return null;
   final way = ways.single;
-  if (!isPlainGoOn(way) || isRoadStep(node.id, way.nextId)) return null;
+  if (!isPlainGoOn(way) || (travels ?? isRoadStep)(node.id, way.nextId)) {
+    return null;
+  }
   return way;
+}
+
+/// The scene the story really lands on after a way leads to [firstId]
+/// (v1.227): the scenes the story reads straight through (see
+/// [passThroughChoiceOf]) are passed on the way, at most [maxPassThrough] of
+/// them, so the party stands where the last of them leads. The Journey walks
+/// the party there, not to the first scene, so its mark never jumps.
+///
+/// Each scene passed sets the flags its way on notes, as the real read-through
+/// does, so the next scene's ways are judged with them: [hidden] and
+/// [blocked] are given the flags held at that point. [nodeFor] finds a scene;
+/// [flags] and [travels] are as for [passThroughChoiceOf]; [blocked] says a
+/// way on the party cannot take yet (the story stops at such a scene, with
+/// its reason). What a scene does to the coast's politics as it is entered
+/// is not foreseen.
+String readThroughEnd(
+  String firstId, {
+  required StoryNode? Function(String id) nodeFor,
+  required Iterable<String> flags,
+  bool Function(StoryChoice choice, Set<String> flags)? hidden,
+  bool Function(String from, String to)? travels,
+  bool Function(StoryChoice choice, Set<String> flags)? blocked,
+}) {
+  var id = firstId;
+  final held = flags.toSet();
+  for (var i = 0; i < maxPassThrough; i++) {
+    final node = nodeFor(id);
+    if (node == null) break;
+    final way = passThroughChoiceOf(node, held,
+        hidden: hidden == null ? null : (c) => hidden(c, held),
+        travels: travels);
+    if (way == null || (blocked?.call(way, held) ?? false)) break;
+    held.addAll(way.flagsToAdd);
+    id = way.nextId;
+  }
+  return id;
 }
 
 /// A scene read on the way to the next one, shown above it.

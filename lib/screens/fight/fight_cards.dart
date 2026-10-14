@@ -90,6 +90,24 @@ extension _FightCards on _FightScreenState {
                   ),
                 ),
                 const SizedBox(width: 6),
+                if (_orderOf(member) case final order?)
+                  Tooltip(
+                    message:
+                        tr(ref, 'turn_order_tip').replaceAll('{n}', '$order'),
+                    child: Container(
+                      key: Key('turn_order_${member.id}'),
+                      margin: const EdgeInsets.only(right: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 1),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: colorScheme.outline),
+                      ),
+                      child: Text('$order',
+                          style: const TextStyle(
+                              fontSize: 10, fontWeight: FontWeight.bold)),
+                    ),
+                  ),
                 Expanded(
                   child: Text(
                     member.displayName,
@@ -122,6 +140,7 @@ extension _FightCards on _FightScreenState {
                 _miniStat(Icons.shield_outlined, '$armor', Colors.blueGrey),
                 if (member.block > 0)
                   _miniStat(Icons.shield, '+${member.block}', Colors.blue),
+                if (_canParry(member)) _buildParryChip(member),
                 for (final effect in member.statusEffects)
                   _StatusEffectChip(effect: effect),
                 if (member.isKnockedOut)
@@ -350,6 +369,7 @@ extension _FightCards on _FightScreenState {
             child: VfxRecoil(
               controller: _vfx,
               anchor: _enemyCardKey(enemy.key),
+              flash: false,
               child: _buildEnemyCard(enemy, previews),
             ),
           ),
@@ -392,6 +412,9 @@ extension _FightCards on _FightScreenState {
     ];
     final aimedBySelected =
         canRetarget && _selectedTargets[selectedActor.id] == enemy.key;
+    // The portrait's moves, and the card's dimming, unless animations are off.
+    final animateFall = _effectsOn &&
+        !(MediaQuery.maybeOf(context)?.disableAnimations ?? false);
     final borderColor = aimedBySelected
         ? _accentFor(selectedActor)
         : _isElite && enemy.isAlive
@@ -409,7 +432,10 @@ extension _FightCards on _FightScreenState {
                   })
               : () => _showEnemySheet(enemy),
       onLongPress: () => _showEnemySheet(enemy),
-      child: Opacity(
+      child: AnimatedOpacity(
+        // The card dims as its portrait dissolves.
+        duration:
+            animateFall ? const Duration(milliseconds: 900) : Duration.zero,
         opacity: enemy.isAlive ? 1 : 0.45,
         child: Container(
           padding: const EdgeInsets.all(6),
@@ -427,7 +453,15 @@ extension _FightCards on _FightScreenState {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  EnemyPixelIcon(enemy.enemyId, size: 30),
+                  PixelEnemyPortrait(
+                    key: ValueKey('enemy_portrait_${enemy.key}'),
+                    enemyId: enemy.enemyId,
+                    alive: enemy.isAlive,
+                    controller: _vfx,
+                    anchor: _enemyCardKey(enemy.key),
+                    boss: isBossEnemy(enemy.enemyId, enemy.data),
+                    animate: animateFall,
+                  ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
@@ -507,6 +541,9 @@ extension _FightCards on _FightScreenState {
                         '${tr(ref, 'rallied_label')} ×${enemy.rallyStacks}',
                         Colors.red.shade700),
                   ..._elementChips(enemy),
+                  ..._goalMarks(enemy),
+                  ..._reactionChips(enemy),
+                  ..._squadMarks(enemy),
                 ],
               ),
               if (enemy.affixes.isNotEmpty) ...[

@@ -8,14 +8,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/combat_aftermath.dart';
 import '../combat/combat_engine.dart';
 import '../combat/encounter.dart';
+import '../combat/field_anomaly.dart';
 import '../data/ability_check.dart';
 import '../data/alignment_events.dart';
 import '../data/chapter_conditions.dart';
+import '../data/item_origin_here.dart';
 import '../data/chapter_loop.dart';
 import '../data/check_outcomes.dart';
 import '../data/companion_remarks.dart';
 import '../data/expedition_kinds.dart';
 import '../data/map_themes.dart';
+import '../data/materials.dart';
 import '../data/sub_node_engine.dart';
 import '../data/zone_gating.dart';
 import '../gamedata/db_schema.dart';
@@ -27,6 +30,7 @@ import '../providers/chapter_loop_provider.dart'
     show chapterConditionProvider, reachedChapterProvider;
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../tutorial/guide_tour.dart';
@@ -56,11 +60,20 @@ enum _ExpeditionPhase { event, completed, retreated }
 /// days on the road are shown under the progress bar, each choice says
 /// what it cost, and the pay at the end follows what arrived and when.
 class ExpeditionScreen extends ConsumerStatefulWidget {
-  const ExpeditionScreen(
-      {super.key, required this.zoneId, required this.zone, this.random});
+  const ExpeditionScreen({
+    super.key,
+    required this.zoneId,
+    required this.zone,
+    this.random,
+    this.hostFight = false,
+  });
 
   final String zoneId;
   final Map<String, dynamic> zone;
+
+  /// Launched by a `hostFight` choice (v1.196): every fight of the zone
+  /// is one of the last battles, the Host beside the party.
+  final bool hostFight;
 
   /// The expedition's draws (a test's seeded one); a fresh one by default.
   final Random? random;
@@ -133,7 +146,19 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   EncounterModifiers _zoneModifiers(EncounterModifiers base) => base.copyWith(
         chapter: _zoneChapter,
         difficultyMultiplier: zoneTierMultiplier(zoneTier(widget.zone)),
+        hostFight: base.hostFight || widget.hostFight,
+        forcedStage: _zoneStage,
       );
+
+  /// How the zone's fights look (v1.241): the stage of the place the zone
+  /// lies at, so an expedition into the dunes is fought in the dunes
+  /// wherever the party set out from. Null when the zone names no place.
+  FightStage? get _zoneStage {
+    final location = widget.zone['location']?.toString() ?? '';
+    if (location.isEmpty) return null;
+    return fightStageFromName(
+        ref.read(geographyProvider).stageNameOf(location));
+  }
 
   bool _isBossNode(StoryNode? node) =>
       node != null && node.id == 'zone_boss_${widget.zoneId}';
@@ -410,7 +435,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                     chapter: _zoneChapter,
                     difficultyMultiplier:
                         zoneTierMultiplier(zoneTier(widget.zone)),
-                  )
+                  ).copyWith(
+                    hostFight: widget.hostFight, forcedStage: _zoneStage)
                 : _zoneModifiers(EncounterModifiers.fromChoice(choice)),
           ),
         ),
@@ -498,6 +524,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         healAmount: choice.healAmount,
         flagsToAdd: choice.flagsToAdd,
         questIDToProgress: choice.questIDToProgress,
+        materials: choice.grantMaterials,
         approvalMods: choice.approvalMods,
         companions:
             ref.read(gameDbProvider(companionsSchema)).value ?? const {},
@@ -681,6 +708,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     final rewardDiceId = widget.zone['rewardDiceId']?.toString() ?? '';
     final rewardAllyId = widget.zone['rewardAllyId']?.toString() ?? '';
     final rewardFlag = widget.zone['rewardFlag']?.toString() ?? '';
+    final rewardMaterials = materialCountsOf(widget.zone, 'rewardMaterials');
     final companions =
         ref.read(localizedDbProvider(companionsSchema)).value ?? const {};
 
@@ -690,6 +718,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       rewardItemId: rewardItemId.isNotEmpty ? rewardItemId : null,
       rewardDiceId: rewardDiceId.isNotEmpty ? rewardDiceId : null,
       rewardFlag: rewardFlag.isNotEmpty ? rewardFlag : null,
+      rewardMaterials: rewardMaterials,
+      origin: itemOriginHere(ref),
     );
 
     final lines = <String>[
@@ -706,6 +736,14 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
           (items[rewardItemId] as Map<String, dynamic>?)?['itemName']
               ?.toString();
       lines.add(itemName ?? rewardItemId);
+    }
+    if (rewardMaterials.isNotEmpty) {
+      final items =
+          ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
+      for (final e in rewardMaterials.entries) {
+        lines.add('+${e.value} '
+            '${(items[e.key] as Map<String, dynamic>?)?['itemName'] ?? e.key}');
+      }
     }
     if (rewardDiceId.isNotEmpty) {
       final dice = ref.read(localizedDbProvider(diceSchema)).value ?? const {};

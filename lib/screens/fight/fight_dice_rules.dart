@@ -208,6 +208,7 @@ extension _FightDiceRules on _FightScreenState {
       forceCritical: surge,
       alignmentLabel: _alignmentLabel,
       critChanceBonus: rollCritical ? actor.gear.critChance : 0,
+      armor: actor.armor,
     );
     if (!played.hasKeyword(FaceKeyword.pain) || result.damageDealt <= 0) {
       return result;
@@ -221,6 +222,7 @@ extension _FightDiceRules on _FightScreenState {
       inflictedStatus: result.inflictedStatus,
       isCritical: result.isCritical,
       manaGained: result.manaGained,
+      extras: result.extras,
     );
   }
 
@@ -354,6 +356,57 @@ extension _FightDiceRules on _FightScreenState {
     ));
   }
 
+  /// What a skill's [extras] do for its caster's side once its heal has
+  /// landed: cleanse [caster], mend the whole party for [healing], fill the
+  /// momentum. Returns the rerolls the skill grants the next round.
+  int _applySkillExtrasOnCaster(_PartyMember caster, int healing,
+      SkillExtras extras, List<_LogEntry> entries, AppLanguage lang) {
+    final cleansed = extras.cleanse.isEmpty
+        ? const <_PartyMember>[]
+        : [
+            for (final member in extras.healAll && extras.cleanse == 'All'
+                ? _party.where((m) => !m.isKnockedOut)
+                : [caster])
+              if (member.statusEffects.isNotEmpty) member,
+          ];
+    for (final member in cleansed) {
+      final after = extras.cleansed(member.statusEffects);
+      if (after.length == member.statusEffects.length) continue;
+      member.statusEffects = after;
+      _fx(VfxStyle.radiance, _memberCardKey(member.id), delayMs: 300);
+      entries.add(_LogEntry(
+        trFor(lang, 'skill_cleansed').replaceAll('{name}', member.displayName),
+        _LogKind.playerHeal,
+      ));
+    }
+    if (extras.healAll && healing > 0) {
+      for (final member in _party) {
+        if (member.id == caster.id || member.isKnockedOut) continue;
+        final before = member.currentHealth;
+        member.currentHealth = min(member.maxHealth, before + healing);
+        final gained = member.currentHealth - before;
+        if (gained <= 0) continue;
+        _fx(VfxStyle.heal, _memberCardKey(member.id),
+            delayMs: 300, text: '+$gained', textKind: VfxTextKind.heal);
+        entries.add(_LogEntry(
+          trFor(lang, 'skill_party_mended')
+              .replaceAll('{name}', member.displayName)
+              .replaceAll('{n}', '$gained'),
+          _LogKind.playerHeal,
+        ));
+      }
+    }
+    if (extras.chargesMomentum && _momentum < _momentumNeeded) {
+      _momentum = _momentumNeeded;
+      entries
+          .add(_LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info));
+    }
+    if (extras.bonusRolls > 0) {
+      entries.add(_LogEntry(trFor(lang, 'skill_bonus_roll'), _LogKind.info));
+    }
+    return extras.bonusRolls;
+  }
+
   /// A Cleave or a Volley: the rest of the enemies standing take [share] of
   /// [damage] (their guards and weaknesses count; a Pierce goes through the
   /// guards).
@@ -365,11 +418,17 @@ extension _FightDiceRules on _FightScreenState {
       String element,
       bool pierce,
       List<_LogEntry> entries,
-      AppLanguage lang) {
+      AppLanguage lang,
+      {int limit = 0,
+      String logKey = 'splash_hits'}) {
     final splash = (damage * share).round();
     if (splash <= 0) return;
+    var reached = 0;
     for (final other in _enemies) {
       if (other.key == target.key || !other.isAlive) continue;
+      // A chain stops after [limit] other enemies (0 = the whole pack).
+      if (limit > 0 && reached >= limit) break;
+      reached++;
       final landed = _landHitOnEnemy(other, splash, element, entries, lang,
           pierce: pierce);
       if (landed <= 0) continue;
@@ -378,7 +437,7 @@ extension _FightDiceRules on _FightScreenState {
       _fx(VfxStyle.whirl, _enemyCardKey(other.key),
           delayMs: 200, text: '-$landed', textKind: VfxTextKind.damage);
       entries.add(_LogEntry(
-        trFor(lang, 'splash_hits')
+        trFor(lang, logKey)
             .replaceAll('{name}', other.displayName)
             .replaceAll('{n}', '$landed'),
         _LogKind.playerDamage,

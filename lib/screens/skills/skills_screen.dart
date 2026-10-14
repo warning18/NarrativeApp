@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../widgets/help_hint.dart';
 
 import '../../gamedata/db_schema.dart';
 import '../../l10n/app_strings.dart';
@@ -23,7 +24,11 @@ import 'skills_view_model.dart';
 import 'spells_view.dart';
 
 class SkillsScreen extends ConsumerWidget {
-  const SkillsScreen({super.key, this.allyId});
+  const SkillsScreen({super.key, this.allyId, this.initialTab = 0});
+
+  /// The tab the player's screen opens on: 0 the Tree, 1 My skills, 2
+  /// Spells (the Character tab's Mana card opens it on 2).
+  final int initialTab;
 
   /// When set, the screen is this companion's: their class's skills,
   /// learned with their own points.
@@ -104,14 +109,17 @@ class SkillsScreen extends ConsumerWidget {
     }
 
     final scaffold = Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(title: Text(title), actions: [
+        if (allyId == null) const TourInfoButton(topic: TutorialTopic.skills),
+      ]),
       // The tour is the player's screen's; a companion's has none of it.
       body: allyId == null
           ? TutorialTrigger(topic: TutorialTopic.skills, child: body)
           : body,
     );
     return allyId == null
-        ? DefaultTabController(length: 3, child: scaffold)
+        ? DefaultTabController(
+            length: 3, initialIndex: initialTab.clamp(0, 2), child: scaffold)
         : scaffold;
   }
 }

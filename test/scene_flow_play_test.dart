@@ -81,6 +81,10 @@ void main() {
     // with the flight read above it.
     play.jumpTo('5003');
     await _settle(tester);
+    // The reader is read over the game (v1.201: no Story tab in play).
+    final journey = tester.element(find.byType(JourneyScreen));
+    openStoryReader(journey, journey as WidgetRef);
+    await _settle(tester);
     await tester.tap(find.text('Confront them'));
     await _settle(tester);
     expect(container.read(storyPlayProvider).currentNodeId, '5004_altar');
@@ -102,15 +106,24 @@ void main() {
         containsAll(['5004_altar|court_fled', '5004|origin_board_good']));
     expect(tester.takeException(), isNull);
 
-    // 2. The road from 2001 to the wharf eats the last ration, and is a
-    // watch of the day.
-    play.jumpTo('2001');
+    // 2. From Saltmouth's landward gate to its wharf is a walk inside the
+    // city (v1.197.1): no ration eaten, no watch of the day gone.
+    play.jumpTo('2005');
     await _settle(tester);
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(session().copyWith(provisions: 1, watch: 0)));
     await _settle(tester);
-    await tester.tap(find.text('Head toward the wharf'));
+    await tester.tap(find.text('Go in with the caravan'));
+    await _settle(tester);
+    expect(session().provisions, 1);
+    expect(session().watch, 0);
+    expect(container.read(pendingRoadNoteProvider), isNull);
+    // Sailing from the Hollow Court's steps home to the camp is a road: it
+    // eats the last ration, and is a watch of the day.
+    play.jumpTo('6002');
+    await _settle(tester);
+    await tester.tap(find.text('Sail home to the camp at once'));
     await _settle(tester);
     expect(session().provisions, 0);
     expect(session().watch, 1);
@@ -122,6 +135,9 @@ void main() {
     // tap on Go.
     play.jumpTo('5006_cornered');
     await _settle(tester);
+    Navigator.of(
+            tester.element(find.byType(JourneyScreen, skipOffstage: false)))
+        .popUntil(isGameRoute);
     container.read(homeTabIndexProvider.notifier).state = journeyTabIndex;
     await _settle(tester);
     expect(find.byType(JourneyScreen), findsOneWidget);

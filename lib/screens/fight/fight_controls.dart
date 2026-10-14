@@ -132,7 +132,8 @@ extension _FightControls on _FightScreenState {
         child: _buildReturnButton(),
       );
     }
-    final rollsLeft = _maxRollsThisFight - _rollCount;
+    if (_quick) return _buildQuickBar();
+    final rollsLeft = _rollCap - _rollCount;
     final allLocked = acting.isNotEmpty &&
         acting.every((a) => _lockedActorIds.contains(a.id));
     return Container(

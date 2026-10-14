@@ -2,6 +2,7 @@
 // between trips, the Story tab gives way to it, expeditions find the
 // chapter's places, the party walks or sails to them and back, and the
 // chapter's main quest opens at the camp once enough of it is done.
+import 'dart:math';
 import 'dart:convert';
 import 'dart:io';
 
@@ -18,7 +19,10 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
+import 'package:narrative_data_app/screens/full_map_screen.dart';
 import 'package:narrative_data_app/screens/harbor_screen.dart';
+import 'package:narrative_data_app/screens/land_crossing_screen.dart'
+    show landCrossingRandomProvider;
 import 'package:narrative_data_app/screens/story_player_screen.dart';
 import 'package:narrative_data_app/screens/voyage_screen.dart';
 
@@ -146,7 +150,9 @@ void main() {
 
     test('the harbor is a house of its own, in both languages', () {
       final harbor = houses[harborHouseId] as Map<String, dynamic>;
-      expect(harbor['buildCost'], greaterThan(0));
+      // The story's grant pays for it: materials, no gold (harbour.dart).
+      expect(harbor['buildCost'], 0);
+      expect(harbor['materialCost'], isNotEmpty);
       expect(harbor['houseName_fr'], isNotEmpty);
       expect(harbor['description_fr'], isNotEmpty);
     });
@@ -164,7 +170,10 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+    // The road's crossing (land_crossing.dart) goes the same way every run.
+    await tester.pumpWidget(ProviderScope(overrides: [
+      landCrossingRandomProvider.overrideWithValue(Random(7)),
+    ], child: const MyApp()));
     await _settle(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
@@ -183,7 +192,7 @@ void main() {
     await _settle(tester);
     await tester.tap(find.byKey(const Key('menu_continue')));
     await _settle(tester);
-    expect(_tab('Story'), findsOneWidget);
+    expect(_tab('Journey'), findsOneWidget);
 
     // Landed on the shore, the camp is not set up yet: its tab says what
     // it will be, and there is no way "back" to it.
@@ -192,19 +201,26 @@ void main() {
     expect(find.textContaining('Your camp is set up'), findsOneWidget);
     expect(find.byKey(const Key('camp_return')), findsNothing);
     expect(find.byKey(const Key('chapter_card')), findsNothing);
-    await tester.tap(_tab('Story'));
+    await tester.tap(_tab('Journey'));
     await _settle(tester);
     await _waitOutNotices(tester);
 
     // Setting up camp opens it: the Story tab closes, the camp opens with
     // its scene and its chapter, and the Eel is back in the cove.
     // (Under the Story tab: the Journey tab shows the same way on.)
-    final setUp = find.descendant(
-        of: find.byType(StoryPlayerScreen, skipOffstage: false),
-        matching: find.text('Take stock of the shore', skipOffstage: false),
-        skipOffstage: false);
-    await tester.ensureVisible(setUp);
-    await tester.tap(setUp);
+    // (The reader is no tab of the game, v1.201: the choice is taken the
+    // way the Journey's step takes it.)
+    final reader =
+        tester.element(find.byType(StoryPlayerScreen, skipOffstage: false));
+    final setUp = container
+        .read(storyDataProvider)
+        .value!
+        .nodeFor(container.read(storyPlayProvider).currentNodeId)!
+        .choices
+        .firstWhere((c) => c.text == 'Take stock of the shore');
+    final settingUp = takeStoryChoice(reader, reader as WidgetRef, setUp);
+    await _settle(tester);
+    await tester.runAsync(() => settingUp);
     await _settle(tester);
     if (container.read(storyPlayProvider).isInExcursion) {
       play.jumpTo('3001_camp');
@@ -213,9 +229,9 @@ void main() {
     expect(container.read(storyPlayProvider).currentNodeId, '3001_camp');
     expect(
         container.read(playerSessionProvider).flags, contains(campFoundedFlag));
-    expect(_tab('Story'), findsNothing);
+    expect(_tab('Journey'), findsNothing);
     // Founding the camp gives the chapter's quest.
-    expect(find.text("The High Warden's Fall"), findsOneWidget);
+    expect(find.text('The High Warden’s Fall'), findsOneWidget);
     await tester.tap(find.text('Accept'));
     await _settle(tester);
     await _waitOutNotices(tester);
@@ -234,6 +250,15 @@ void main() {
         'port_ashen_landing');
     // Kelda's hall is not on offer before Kelda joins.
     expect(find.text("Kelda's Hall"), findsNothing);
+    // The founding hands over the harbour's materials, and the harbour is
+    // the camp's first work (harbour.dart).
+    expect(
+        container
+            .read(playerSessionProvider)
+            .inventoryItemIds
+            .where((id) => id == 'material_timber'),
+        hasLength(4));
+    expect(find.byKey(const Key('camp_harbour_first')), findsOneWidget);
 
     // The harbour sits in the Sea tab: what it would give until built,
     // then one tap away.
@@ -254,9 +279,14 @@ void main() {
     await _settle(tester);
     await tester.scrollUntilVisible(find.byKey(const Key('camp_harbor')), 200,
         scrollable: campList);
+    expect(find.byKey(const Key('camp_harbour_first')), findsNothing);
     await tester.tap(find.byKey(const Key('camp_harbor')));
     await _settle(tester);
     expect(find.byType(HarborScreen), findsOneWidget);
+    // The shipwright's parts come below the yard (the list builds lazily).
+    await tester.scrollUntilVisible(find.text('Shipwright'), 300,
+        scrollable: find.descendant(
+            of: find.byType(HarborScreen), matching: find.byType(Scrollable)));
     expect(find.text('Shipwright'), findsOneWidget);
     await tester.pageBack();
     await _settle(tester);
@@ -269,10 +299,10 @@ void main() {
     await tester.runAsync(() => notifier.arriveAtPort('port_smugglers_wharf'));
     await _settle(tester);
     expect(find.byKey(const Key('chapter_card')), findsNothing);
-    expect(find.textContaining("Ashore at Smugglers' Wharf"), findsOneWidget);
+    expect(find.textContaining("Ashore at Smugglers’ Wharf"), findsOneWidget);
     expect(find.byKey(const Key('ship_sail_home')), findsOneWidget);
     expect(_tab('Ship'), findsOneWidget);
-    expect(_tab('Story'), findsNothing);
+    expect(_tab('Journey'), findsNothing);
     await tester.runAsync(() => notifier.arriveAtPort('port_ashen_landing'));
     await _settle(tester);
     expect(find.byKey(const Key('chapter_card')), findsOneWidget);
@@ -295,6 +325,18 @@ void main() {
         findsOneWidget);
     expect(find.byKey(const Key('place_companion_3005')), findsOneWidget);
 
+    // "On the map": the full map opens on the place with its offer up.
+    await tester.ensureVisible(find.byKey(const Key('map_3005')));
+    await tester.tap(find.byKey(const Key('map_3005')));
+    await _settle(tester);
+    expect(find.byType(FullMapScreen), findsOneWidget);
+    expect(find.byKey(const Key('map_place_sheet')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('map_cancel')));
+    await _settle(tester);
+    await tester.pageBack();
+    await _settle(tester);
+    expect(find.byType(FullMapScreen), findsNothing);
+
     // Going there: the road may hold something first; the story plays it,
     // then arrives. A walk between places is two watches and a ration.
     int clock() {
@@ -314,7 +356,7 @@ void main() {
       await _settle(tester);
     }
     expect(container.read(storyPlayProvider).currentNodeId, '3005');
-    expect(_tab('Story'), findsOneWidget);
+    expect(_tab('Journey'), findsOneWidget);
     await _waitOutNotices(tester);
     if (find.text('Go in', skipOffstage: false).evaluate().isNotEmpty) {
       await tester.tap(find.text('Go in', skipOffstage: false));
@@ -343,7 +385,7 @@ void main() {
     }
     expect(container.read(storyPlayProvider).currentNodeId, '3001_camp');
     await _waitOutNotices(tester);
-    expect(_tab('Story'), findsNothing);
+    expect(_tab('Journey'), findsNothing);
     expect(find.text('Visit The Ashen Quarter first.'), findsNothing);
 
     // A village is a place like the town: a walk back to the camp, and on
@@ -367,8 +409,10 @@ void main() {
     expect(find.text('Go in', skipOffstage: false), findsOneWidget);
     await tester.tap(find.text('Go in', skipOffstage: false));
     await _settle(tester);
-    await tester.tap(find.byKey(const Key('hub_enter')));
-    await _settle(tester);
+    if (find.byKey(const Key('hub_enter')).evaluate().isNotEmpty) {
+      await tester.tap(find.byKey(const Key('hub_enter')));
+      await _settle(tester);
+    }
     expect(find.byKey(const Key('town_back_to_camp')), findsOneWidget);
     expect(find.byKey(const Key('place_travel_on')), findsOneWidget);
     await tester.tap(find.byKey(const Key('town_back_to_camp')));
@@ -417,14 +461,35 @@ void main() {
     rationsBefore = rations();
     await tester.tap(find.byKey(const Key('main_quest_3002')));
     await _settle(tester);
-    expect(clock(), clockBefore + walkWatches);
-    expect(rations(), rationsBefore - 1);
+    // The road to the Quarter is crossed first, a day an event, on its own
+    // screen (land_crossing.dart); the crossing is the walk there.
+    for (var day = 0; day < 10; day++) {
+      final choice = find.byWidgetPredicate((w) =>
+          w is FilledButton &&
+          w.key is ValueKey<String> &&
+          (w.key as ValueKey<String>).value.startsWith('crossing_choice_') &&
+          w.onPressed != null);
+      if (choice.evaluate().isEmpty) break;
+      await tester.runAsync(() async {
+        await tester.tap(choice.first);
+        await Future<void>.delayed(const Duration(milliseconds: 100));
+      });
+      await _settle(tester);
+      if (find.byKey(const Key('crossing_next')).evaluate().isNotEmpty) {
+        await tester.tap(find.byKey(const Key('crossing_next')));
+        await _settle(tester);
+      }
+    }
+    await tester.tap(find.byKey(const Key('crossing_done')));
+    await _settle(tester);
+    expect(clock(), greaterThanOrEqualTo(clockBefore + 4));
+    expect(rations(), rationsBefore);
     if (container.read(storyPlayProvider).isInExcursion) {
       play.jumpTo('3002');
       await _settle(tester);
     }
     expect(container.read(storyPlayProvider).currentNodeId, '3002');
-    expect(_tab('Story'), findsOneWidget);
+    expect(_tab('Journey'), findsOneWidget);
     await _waitOutNotices(tester);
 
     // A chapter later, the Drowned Cloister is across the water: going

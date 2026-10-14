@@ -14,6 +14,13 @@ import 'package:narrative_data_app/screens/story_player_screen.dart';
 
 /// Story choices whose gold is a loss, not a price.
 const _losses = {
+  // A chapter 1 fight lost in the casino gives back what it paid; a
+  // failed way aboard the Lark takes the fine or the bribe out of what
+  // there is.
+  '115',
+  '125',
+  '896_failed',
+  '897_failed',
   '2900_boat_fixed',
   '2999',
   '2015_cards_lost',

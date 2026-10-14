@@ -23,6 +23,10 @@ class StoryChoice {
     this.checkDC,
     this.failNextId,
     this.loseNextId,
+    this.failNote,
+    this.failNoteFr,
+    this.loseNote,
+    this.loseNoteFr,
     this.challengeSuccessesNeeded,
     this.challengeMaxFailures,
     this.huntName,
@@ -34,21 +38,32 @@ class StoryChoice {
     this.launchZoneId,
     this.grantsBannerPieceId,
     this.grantItemId,
+    this.grantMaterials = const {},
+    this.landRouteId,
     this.loseAllyId,
     this.mainQuest = false,
     this.pays = false,
     this.travelPlaceId,
     this.avoidFightOnSuccess = false,
     this.forcedCondition,
+    this.forcedAnomaly,
+    this.forcedStage,
     this.approvalMods = const {},
     this.roadEvent,
     this.shipBattleId,
     this.politics,
+    this.spot,
+    this.politicsIf = const {},
+    this.hostFight = false,
+    this.noHeal = false,
+    this.tutorialFight = false,
+    this.luckyDieReveal = false,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
     return StoryChoice(
       text: json['text'] as String? ?? '',
+      spot: json['spot']?.toString(),
       nextId: (json['next_id'] ?? json['nextEventId'] ?? json['nextEventID'])
               as String? ??
           '',
@@ -74,6 +89,10 @@ class StoryChoice {
       checkDC: (json['checkDC'] as num?)?.toInt(),
       failNextId: json['failNextId'] as String?,
       loseNextId: json['loseNextId'] as String?,
+      failNote: json['failNote'] as String?,
+      failNoteFr: json['failNote_fr'] as String?,
+      loseNote: json['loseNote'] as String?,
+      loseNoteFr: json['loseNote_fr'] as String?,
       challengeSuccessesNeeded:
           (json['challengeSuccessesNeeded'] as num?)?.toInt(),
       challengeMaxFailures: (json['challengeMaxFailures'] as num?)?.toInt(),
@@ -86,12 +105,19 @@ class StoryChoice {
       launchZoneId: json['launchZoneId'] as String?,
       grantsBannerPieceId: json['grantsBannerPieceId'] as String?,
       grantItemId: json['grantItemId'] as String?,
+      grantMaterials: (json['grantMaterials'] as Map?)?.map(
+            (id, count) =>
+                MapEntry(id.toString(), (count as num?)?.toInt() ?? 0),
+          ) ??
+          const {},
       loseAllyId: json['loseAllyId'] as String?,
       mainQuest: json['mainQuest'] as bool? ?? false,
       pays: json['pays'] as bool? ?? false,
       travelPlaceId: json['travelPlaceId'] as String?,
       avoidFightOnSuccess: json['avoidFightOnSuccess'] as bool? ?? false,
       forcedCondition: json['forcedCondition'] as String?,
+      forcedAnomaly: json['forcedAnomaly'] as String?,
+      forcedStage: json['forcedStage'] as String?,
       approvalMods: (json['approvalMods'] as Map?)?.map(
             (id, delta) =>
                 MapEntry(id.toString(), (delta as num?)?.toInt() ?? 0),
@@ -105,15 +131,54 @@ class StoryChoice {
               const [],
       roadEvent: json['roadEvent'] as String?,
       shipBattleId: json['shipBattleId'] as String?,
+      landRouteId: json['landRouteId'] as String?,
       politics: StoryPolitics.tryParse(json['politics']),
+      politicsIf: json['politicsIf'] is Map
+          ? Map<String, dynamic>.from(json['politicsIf'] as Map)
+          : const {},
+      hostFight: json['hostFight'] as bool? ?? false,
+      noHeal: json['noHeal'] as bool? ?? false,
+      tutorialFight: json['tutorialFight'] as bool? ?? false,
+      luckyDieReveal: json['luckyDieReveal'] as bool? ?? false,
     );
   }
+
+  /// The coast this choice waits for (v1.196): conditions on standing,
+  /// marks, relations, the claim and the throne, in politics_events.json's
+  /// condition shape. Kept as written; empty when there is no gate.
+  final Map<String, dynamic> politicsIf;
+
+  /// Whether the fight this choice starts is one of the last battles
+  /// (v1.196), where the Host the character mustered fights beside the
+  /// party.
+  final bool hostFight;
+
+  /// The fight this choice starts is a link in a chain with no healing
+  /// between its fights (v1.196, chapter 1's casino): a level-up does not
+  /// refill health, a potion picked in the spoils chest is kept rather
+  /// than drunk, and a lost fight leaves the wounds where they are instead
+  /// of the usual full heal.
+  final bool noHeal;
+
+  /// The fight this choice starts is a lesson (v1.196, chapter 1's first
+  /// fight): never Elite, no affixes, no battlefield condition, no threat.
+  final bool tutorialFight;
+
+  /// The first fight's lucky die (v1.196): the enemy lands the first blow,
+  /// the player's old bone die rolls loose and strikes back with a sign,
+  /// and only then does the fight's tour explain the dice.
+  final bool luckyDieReveal;
 
   /// What taking this choice does to the coast (v1.195, see
   /// story_politics.dart): standing, marks, relations, an offer, an
   /// intrigue's stage or outcome, the Open Hand's remembrance, an event.
   /// Applied once, however often the choice is taken again.
   final StoryPolitics? politics;
+
+  /// Where in the building this way is taken (v1.207, see
+  /// room_plan.dart): a spot of its plan; null places it where its scene
+  /// is, or at the door when it leads outside.
+  final String? spot;
 
   bool get hasPolitics => politics != null && !politics!.isEmpty;
 
@@ -128,6 +193,14 @@ class StoryChoice {
 
   bool get triggersShipBattle => (shipBattleId ?? '').isNotEmpty;
 
+  /// A long land route this choice crosses before the story goes on
+  /// (land_routes.json, see land_crossing.dart): played like a voyage, the
+  /// party's health the hull; lost, the party is carried back and the
+  /// choice is not taken.
+  final String? landRouteId;
+
+  bool get crossesLand => (landRouteId ?? '').isNotEmpty;
+
   final String text;
   final String nextId;
 
@@ -140,6 +213,13 @@ class StoryChoice {
   /// 'ambush') the fight this choice starts is forced into, instead of
   /// rolling one.
   final String? forcedCondition;
+
+  /// A ground or sky anomaly (field_anomaly.dart's id, e.g. 'sandstorm') the
+  /// fight this choice starts is set under (v1.241), and the stage it is
+  /// drawn on ('dunes', 'hall'…): the scene's own ground, instead of the
+  /// place's. Empty rolls both.
+  final String? forcedAnomaly;
+  final String? forcedStage;
   final int goldMod;
   final int alignmentMod;
   final int healAmount;
@@ -189,6 +269,22 @@ class StoryChoice {
   final String? loseNextId;
 
   bool get hasLossBranch => loseNextId != null && loseNextId!.isNotEmpty;
+
+  /// A few words the Journey map tells while the party is carried along a
+  /// branch it did not pick (v1.245): "You are put in prison" when the
+  /// fight is lost ([loseNote]) or the roll fails ([failNote]), with a
+  /// French reading each. Empty, the map says the branch's place in its own
+  /// words.
+  final String? failNote;
+  final String? failNoteFr;
+  final String? loseNote;
+  final String? loseNoteFr;
+
+  String? failNoteFor(bool french) =>
+      french && (failNoteFr?.isNotEmpty ?? false) ? failNoteFr : failNote;
+
+  String? loseNoteFor(bool french) =>
+      french && (loseNoteFr?.isNotEmpty ?? false) ? loseNoteFr : loseNote;
 
   /// Set alongside [checkAbility]/[checkDC] to turn a single roll into a
   /// "skill challenge": a sequence of rolls against the same ability and
@@ -240,6 +336,12 @@ class StoryChoice {
   /// picks up where there is no shop to buy it from, like the looted racks
   /// on the docks in chapter 1.
   final String? grantItemId;
+
+  /// Materials this choice puts in the pack (materials.dart): item id ->
+  /// how many, as `{"material_timber": 4, "material_cut_stone": 2}`. What
+  /// the story hands over for the camp's works, the harbour first (see
+  /// harbour.dart).
+  final Map<String, int> grantMaterials;
 
   /// How companions in the party react to this choice beyond what its
   /// alignment and gold already say (see approval.dart): companion id -> a
@@ -299,6 +401,7 @@ class StoryChoice {
         'text': text,
         if (textFr != null && textFr!.isNotEmpty) 'text_fr': textFr,
         'next_id': nextId,
+        if (spot != null) 'spot': spot,
         if (goldMod != 0) 'goldMod': goldMod,
         if (alignmentMod != 0) 'alignmentMod': alignmentMod,
         if (healAmount != 0) 'healAmount': healAmount,
@@ -325,6 +428,12 @@ class StoryChoice {
           'failNextId': failNextId,
         if (loseNextId != null && loseNextId!.isNotEmpty)
           'loseNextId': loseNextId,
+        if (failNote != null && failNote!.isNotEmpty) 'failNote': failNote,
+        if (failNoteFr != null && failNoteFr!.isNotEmpty)
+          'failNote_fr': failNoteFr,
+        if (loseNote != null && loseNote!.isNotEmpty) 'loseNote': loseNote,
+        if (loseNoteFr != null && loseNoteFr!.isNotEmpty)
+          'loseNote_fr': loseNoteFr,
         if (challengeSuccessesNeeded != null)
           'challengeSuccessesNeeded': challengeSuccessesNeeded,
         if (challengeMaxFailures != null)
@@ -340,6 +449,7 @@ class StoryChoice {
         if (grantsBannerPieceId != null && grantsBannerPieceId!.isNotEmpty)
           'grantsBannerPieceId': grantsBannerPieceId,
         if (grantsItem) 'grantItemId': grantItemId,
+        if (grantsMaterials) 'grantMaterials': grantMaterials,
         if (loseAllyId != null && loseAllyId!.isNotEmpty)
           'loseAllyId': loseAllyId,
         if (mainQuest) 'mainQuest': mainQuest,
@@ -348,10 +458,20 @@ class StoryChoice {
         if (avoidFightOnSuccess) 'avoidFightOnSuccess': avoidFightOnSuccess,
         if (forcedCondition != null && forcedCondition!.isNotEmpty)
           'forcedCondition': forcedCondition,
+        if (forcedAnomaly != null && forcedAnomaly!.isNotEmpty)
+          'forcedAnomaly': forcedAnomaly,
+        if (forcedStage != null && forcedStage!.isNotEmpty)
+          'forcedStage': forcedStage,
         if (approvalMods.isNotEmpty) 'approvalMods': approvalMods,
         if (roadEvent != null && roadEvent!.isNotEmpty) 'roadEvent': roadEvent,
         if (triggersShipBattle) 'shipBattleId': shipBattleId,
+        if (crossesLand) 'landRouteId': landRouteId,
         if (politics != null) 'politics': politics!.toJson(),
+        if (politicsIf.isNotEmpty) 'politicsIf': politicsIf,
+        if (hostFight) 'hostFight': hostFight,
+        if (noHeal) 'noHeal': noHeal,
+        if (tutorialFight) 'tutorialFight': tutorialFight,
+        if (luckyDieReveal) 'luckyDieReveal': luckyDieReveal,
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]
@@ -385,12 +505,17 @@ class StoryChoice {
       (questIDToProgress != null && questIDToProgress!.isNotEmpty) ||
       (grantsBannerPieceId != null && grantsBannerPieceId!.isNotEmpty) ||
       grantsItem ||
+      grantsMaterials ||
       (loseAllyId != null && loseAllyId!.isNotEmpty) ||
       approvalMods.isNotEmpty;
 
   /// Whether taking this choice puts an item in the pack (see
   /// [grantItemId]).
   bool get grantsItem => grantItemId != null && grantItemId!.isNotEmpty;
+
+  /// Whether taking this choice puts materials in the pack (see
+  /// [grantMaterials]).
+  bool get grantsMaterials => grantMaterials.values.any((n) => n > 0);
 
   /// Whether a purse of [gold] covers what this choice costs (a [goldMod]
   /// below zero). A payment on the road (an offering, a toll, a fee) is
@@ -425,6 +550,8 @@ class StoryNode {
     this.timeoutChoice = 0,
     this.noDetour = false,
     this.politicsOnEnter,
+    this.location,
+    this.spot,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -461,8 +588,22 @@ class StoryNode {
       timeoutChoice: (json['timeout_choice'] as num?)?.toInt() ?? 0,
       noDetour: json['noDetour'] as bool? ?? false,
       politicsOnEnter: StoryPolitics.tryParse(json['politicsOnEnter']),
+      location: json['location']?.toString(),
+      spot: json['spot']?.toString(),
     );
   }
+
+  /// Where this scene happens (v1.197): a location or district id of
+  /// geography.json (see geography.dart), the most specific place there
+  /// is. '' says it happens nowhere (the prologue, the making of the
+  /// character); null (no `location` in the file) leaves it to the scene's
+  /// landmark (see Geography.placeOfNode).
+  final String? location;
+
+  /// Where in the building this scene happens (v1.207, see
+  /// room_plan.dart): a spot of its plan ('bar', 'tables', 'door'…); null
+  /// is the floor.
+  final String? spot;
 
   /// What entering this scene does to the coast (v1.195, see
   /// story_politics.dart), once however often it is entered.
@@ -696,6 +837,9 @@ class StoryNode {
             if (mood != null) 'mood': mood,
             if (speaker != null) 'speaker': speaker,
           },
+        // Where the story file keeps it: after the taxonomy (v1.197).
+        if (location != null) 'location': location,
+        if (spot != null) 'spot': spot,
         if (scriptTrigger != null && scriptTrigger!.isNotEmpty)
           'automations': {'script_trigger': scriptTrigger},
         if (authoringComment != null && authoringComment!.isNotEmpty)

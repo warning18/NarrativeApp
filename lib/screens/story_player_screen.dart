@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -16,9 +17,11 @@ import '../data/chapter_spine.dart';
 import '../data/check_outcomes.dart';
 import '../data/companion_remarks.dart';
 import '../data/echoes.dart';
+import '../data/item_origin_here.dart';
 import '../data/journey_rules.dart';
 import '../data/recurring_encounters.dart';
 import '../data/road_events.dart';
+import '../data/road_hazards.dart';
 import '../data/encounter_text.dart';
 import '../data/factions.dart' show CoastNews;
 import '../data/map_themes.dart';
@@ -42,6 +45,8 @@ import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/camp_presence_provider.dart';
 import '../providers/chapter_loop_provider.dart';
+import '../providers/climate_provider.dart';
+import '../data/weather_effects.dart';
 import '../providers/clans_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/combat_settings_provider.dart';
@@ -49,6 +54,7 @@ import '../providers/discovery_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/finished_story_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart';
 import '../providers/elevenlabs_tts_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/map_theme_provider.dart';
@@ -82,7 +88,7 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'expedition_screen.dart';
 import 'fight_screen.dart';
 import 'journal_screen.dart';
-import 'journey_screen.dart' show journeyTabIndex;
+import 'land_crossing_screen.dart';
 import 'race_profession_screen.dart';
 import 'shop_detail_screen.dart';
 import 'skill_challenge_screen.dart';
@@ -250,6 +256,10 @@ class _StoryView extends ConsumerWidget {
     // so; the Character tab's badge keeps the offer.
     ref.listen<int>(reachedChapterProvider, (previous, next) async {
       if (previous == null || next <= previous) return;
+      // Out of the frame that moved the chapter: the offer writes the
+      // session, which the providers being rebuilt now read.
+      await Future<void>.delayed(Duration.zero);
+      if (!context.mounted) return;
       final offered = await ref
           .read(playerSessionProvider.notifier)
           .grantChapterOffer(next);
@@ -446,8 +456,12 @@ class _StoryView extends ConsumerWidget {
     // off the node's full authored choice count, not the remaining one, so
     // it doesn't snap back to a flat list as the last activities are used.
     final isHubNode = _isHubNode(node);
-    final visibleChoices =
-        node.choices.where((c) => !c.isHiddenFor(session.flags)).toList();
+    // A choice whose politics gate fails (v1.196) is hidden too, unless
+    // it has a locked text to show instead.
+    final gateWorld = ref.watch(coastGateWorldProvider);
+    final visibleChoices = node.choices
+        .where((c) => !choiceHiddenFor(c, session, gateWorld))
+        .toList();
     // On a hub, a finished activity stays on the list, greyed and ticked,
     // so the place reads as a checklist rather than shrinking.
     final doneChoices = isHubNode
@@ -507,9 +521,11 @@ class _StoryView extends ConsumerWidget {
           language: language),
     ];
 
+    // The reader's own tour plays only while it is on screen (v1.201: in
+    // play it is pushed over the game for the ending, never a tab).
     return TutorialTrigger(
       topic: TutorialTopic.story,
-      ready: !isEditMode && session.raceId.isNotEmpty,
+      ready: !isEditMode && session.raceId.isNotEmpty && storyTab == 0,
       child: CompanionRemarksTrigger(
         remarks: pendingRemarks,
         ready: storyOnScreen,
@@ -828,7 +844,8 @@ class _StoryView extends ConsumerWidget {
                                     (c) =>
                                         c.triggersCombat &&
                                         !_isChoiceLocked(c, story, session,
-                                            playState.isInExcursion),
+                                            playState.isInExcursion,
+                                            world: gateWorld),
                                   ),
                                 ),
                               ),
@@ -1010,11 +1027,13 @@ class _StoryView extends ConsumerWidget {
 /// lockedText instead of being selectable).
 /// Whether [choice]'s road is still shut for [session] (its next scene
 /// asks for gold, alignment, flags or Charisma the character lacks, or,
-/// on a detour ([isExcursion]), it costs more gold than the purse holds).
+/// on a detour ([isExcursion]), it costs more gold than the purse holds;
+/// with [world], v1.196, its politics gate fails and it shows its locked
+/// text).
 bool isStoryChoiceLocked(
         StoryChoice choice, StoryData story, PlayerSession session,
-        {bool isExcursion = false}) =>
-    _isChoiceLocked(choice, story, session, isExcursion);
+        {bool isExcursion = false, CoastWorld? world}) =>
+    _isChoiceLocked(choice, story, session, isExcursion, world: world);
 
 /// What a shut [choice] reads as instead of its text: why it is shut (see
 /// [isStoryChoiceLocked]; [mainQuestShut]: a camp's main quest waiting for
@@ -1074,14 +1093,21 @@ bool _isChoiceLocked(
   StoryChoice choice,
   StoryData story,
   PlayerSession session,
-  bool isExcursion,
-) {
+  bool isExcursion, {
+  CoastWorld? world,
+}) {
   // A payment on the road (an offering, a toll, a fine) waits for a purse
   // that holds it, and so does a story choice marked as one (a fee, a
   // bribe, a buy-in). The story's other prices lock through the next
   // scene's gold requirement; gold it takes away unmarked is a loss.
   if (_paymentShort(choice, session.gold, isExcursion)) return true;
   if (isExcursion) return false;
+  // A politics gate that fails, on a choice with a locked text to show
+  // (v1.196); one without is hidden (see choiceHiddenFor).
+  if (world != null &&
+      choiceGateFor(choice, session, world) == ChoiceGate.locked) {
+    return true;
+  }
   final targetNode = choice.isEnding ? null : story.nodeFor(choice.nextId);
   return targetNode != null &&
       targetNode.hasRequirements &&
@@ -1196,7 +1222,16 @@ Future<void> _selectChoice({
   RemarkKind? shown;
   // A sneak that works (avoidFightOnSuccess) leaves the fight behind.
   var fightAvoided = false;
-  if (choice.hasAbilityCheck) {
+  // Set out again after a lost crossing (see crossingRetryProvider): the
+  // choice's check and fight went the party's way the first time, and
+  // aren't played again; the crossing is.
+  final crossingKey = choice.crossesLand
+      ? '$currentNodeId#${storyChoiceIndex(story, currentNodeId, choice)}'
+      : null;
+  final crossingRetry =
+      crossingKey != null && ref.read(crossingRetryProvider) == crossingKey;
+  if (crossingRetry) fightAvoided = true;
+  if (choice.hasAbilityCheck && !crossingRetry) {
     bool success;
     if (choice.hasSkillChallenge) {
       final challengeResult =
@@ -1292,8 +1327,10 @@ Future<void> _selectChoice({
       if (!context.mounted) return;
       final cleared = await Navigator.of(context).push<bool>(
         MaterialPageRoute(
-          builder: (_) =>
-              ExpeditionScreen(zoneId: choice.launchZoneId!, zone: zone),
+          builder: (_) => ExpeditionScreen(
+              zoneId: choice.launchZoneId!,
+              zone: zone,
+              hostFight: choice.hostFight),
         ),
       );
       ref.read(expeditionActiveProvider.notifier).state = false;
@@ -1303,6 +1340,13 @@ Future<void> _selectChoice({
 
   var resolvedEnemyIds =
       fightAvoided ? const <String>[] : choice.allTriggerEnemyIds;
+  // A quest offered by the choice that fights counts that fight's kills:
+  // the offer comes after it, so the kill counts are kept now.
+  final killsBeforeFight = choice.triggersCombat &&
+          !fightAvoided &&
+          (choice.unlockQuestId ?? '').isNotEmpty
+      ? Map<String, int>.of(ref.read(playerSessionProvider).enemyKillCounts)
+      : null;
   if (choice.triggersCombat && !fightAvoided) {
     final enemies = await loadedGameDb(ref, enemiesSchema);
     final ids = await _resolveEnemyIds(ref, choice.allTriggerEnemyIds);
@@ -1361,6 +1405,23 @@ Future<void> _selectChoice({
     }
   }
 
+  // A long land route the choice crosses (v1.285.0, see
+  // land_crossing.dart): played on its own screen before the choice takes
+  // the story on; lost or turned back from, the party is where it set out
+  // and the choice is not taken. Edit Mode walks past it.
+  if (choice.crossesLand &&
+      !travelled &&
+      !isExcursion &&
+      ref.read(appModeProvider) != AppMode.edit) {
+    if (!context.mounted) return;
+    final arrived = await runLandCrossing(context, ref, choice.landRouteId!);
+    ref.read(crossingRetryProvider.notifier).state =
+        arrived || !(choice.triggersCombat || choice.hasAbilityCheck)
+            ? null
+            : crossingKey;
+    if (!arrived) return;
+  }
+
   final playNotifier = ref.read(storyPlayProvider.notifier);
   var reactions = const <ApprovalChange>[];
   if (choice.hasEffects && !skipRewardEffects) {
@@ -1373,12 +1434,14 @@ Future<void> _selectChoice({
               questIDToProgress: choice.questIDToProgress,
               bannerPieceId: choice.grantsBannerPieceId,
               itemId: choice.grantItemId,
+              materials: choice.grantMaterials,
               loseAllyId: choice.loseAllyId,
               approvalMods: choice.approvalMods,
               companions:
                   ref.read(gameDbProvider(companionsSchema)).value ?? const {},
               // A detour's cache is loot, not greed.
               goldIsProfit: !isExcursion,
+              origin: itemOriginHere(ref),
             );
     // What the scene put in the pack (see StoryChoice.grantItemId).
     if (choice.grantsItem && context.mounted) {
@@ -1393,10 +1456,34 @@ Future<void> _selectChoice({
             .replaceAll('{item}', name ?? choice.grantItemId!),
       );
     }
+    // And the materials it hands over (see StoryChoice.grantMaterials),
+    // told on the way: the story goes on under the card.
+    if (choice.grantsMaterials && context.mounted) {
+      final items = ref.read(localizedDbProvider(itemsSchema)).value;
+      unawaited(showImmersiveNotice(
+        context,
+        icon: Icons.backpack_outlined,
+        message: tr(ref, 'item_picked_up').replaceAll(
+            '{item}',
+            [
+              for (final MapEntry(key: id, value: count)
+                  in choice.grantMaterials.entries)
+                if (count > 0)
+                  '$count ${(items?[id] as Map?)?['itemName'] ?? id}',
+            ].join(', ')),
+      ));
+    }
     // How the party took it, before the story moves on.
     if (reactions.isNotEmpty && context.mounted) {
       await showApprovalReactions(context, ref, reactions);
     }
+  }
+  // A hazard on the road (v1.197): pushed through, the companions take
+  // the wound the character took; waited out, a day goes by on the road.
+  if (isExcursion && isHazardPush(choice) && choice.healAmount < 0) {
+    await woundCompanionsOnRoad(ref, -choice.healAmount);
+  } else if (isExcursion && isHazardWait(choice)) {
+    await walkRoadStep(ref, watches: watchesPerDay);
   }
   // What the choice does to the coast (v1.195), once: taken again, or
   // after going back, it moves nothing.
@@ -1433,6 +1520,14 @@ Future<void> _selectChoice({
     }
     final newShopId = choice.unlockShopId ?? '';
     final newQuestId = choice.unlockQuestId ?? '';
+    if (killsBeforeFight != null && newQuestId.isNotEmpty) {
+      final questRecord = (await loadedGameDb(ref, questsSchema))[newQuestId]
+          as Map<String, dynamic>?;
+      await ref
+          .read(playerSessionProvider.notifier)
+          .noteQuestOfferedBeforeFight(newQuestId, killsBeforeFight,
+              quest: questRecord);
+    }
     if (isExcursion && newShopId.isNotEmpty) {
       // A stall met on the road is only there while the player stands at
       // it: "Take a look" opens it now, and the Shops list marks it as met
@@ -1502,10 +1597,20 @@ Future<void> _selectChoice({
   // ration eaten and part of the day gone (see journey_rules.dart). A
   // choice that travels (the camp's main quest, on foot) is a walk
   // between places, as the camp's own trips are.
+  // A move between two districts of one city is no road (v1.197, see
+  // Geography.travelsBetween).
   final historyBefore = ref.read(storyPlayProvider).history.length;
+  final world = await loadGeography(ref);
   if (!choice.opensCharacterCreation &&
-      (choice.travels || isRoadStep(currentNodeId, choice.nextId))) {
-    await walkRoadStep(ref, watches: choice.travels ? walkWatches : 1);
+      (choice.travels ||
+          world.travelsBetween(story, currentNodeId, choice.nextId))) {
+    // A walk between places takes the watches of where it goes (a far place
+    // can take a day, see GeoPlace.watches).
+    await walkRoadStep(ref,
+        watches: choice.travels
+            ? world.watchesToNode(story.nodeFor(choice.travelPlaceId ?? ''),
+                fallback: walkWatches)
+            : 1);
     // What waits on this road (see road_events.dart), known before the
     // party set out, takes the place of a detour.
     final event = await roadEventOn(ref, story,
@@ -1589,23 +1694,34 @@ Future<List<StoryNode>?> roadEventOn(
   if (ref.read(appModeProvider) == AppMode.edit) return null;
   final chapter = ref.read(reachedChapterProvider);
   final condition = ref.read(chapterConditionProvider);
+  // The land the road runs through (v1.197): its hazards, and the foes
+  // that live there.
+  final world = await loadGeography(ref);
+  final biome = world.roadBiome(story, fromNodeId, toNodeId);
   final event = roadEventFor(
     story: story,
     fromNodeId: fromNodeId,
     toNodeId: toNodeId,
     historyLength: historyLength,
     chapter: chapter,
-    oddsFactor: condition?.roadEventOdds ?? 1,
+    oddsFactor: (condition?.roadEventOdds ?? 1) *
+        WeatherEffects.of(ref.read(skyHereProvider)?.today().kind).roadOdds,
     championShare: condition?.championShare ?? 0.4,
     shrineShare: condition?.shrineShare ?? 0.3,
+    hazardShare: hazardShareFor(biome),
+    world: world,
   );
   if (event == null) return null;
   final enemies = await loadedGameDb(ref, enemiesSchema);
   return roadEventChain(
     event,
     chapter: chapter,
-    enemyPool: championPoolFor(enemies, chapter),
+    enemyPool: championPoolFor(enemies, chapter, biome: biome?.id),
     seed: stableHash('$fromNodeId>$toNodeId#$historyLength'),
+    hazard: roadHazardFor(biome,
+        fromNodeId: fromNodeId,
+        toNodeId: toNodeId,
+        historyLength: historyLength),
   );
 }
 
@@ -1648,6 +1764,9 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
   await applyEnterPolitics(ref, ref.read(storyPlayProvider).currentNodeId);
   if (ref.read(appModeProvider) == AppMode.edit) return;
   final french = ref.read(appLanguageProvider) == AppLanguage.fr;
+  // A way on that leaves the location is a stop, one to another district
+  // of the same city reads through (v1.209, see Geography.travelsBetween).
+  final world = await loadGeography(ref);
   final preludes = <ScenePrelude>[];
   for (var i = 0; i < maxPassThrough; i++) {
     // Each scene read through on the way moves it too.
@@ -1655,9 +1774,15 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
     final session = ref.read(playerSessionProvider);
     final node = story.nodeFor(ref.read(storyPlayProvider).currentNodeId);
     if (node == null) break;
-    final way = passThroughChoiceOf(node, session.flags);
+    final gateWorld = ref.read(coastGateWorldProvider);
+    final way = passThroughChoiceOf(node, session.flags,
+        hidden: (c) => choiceHiddenFor(c, session, gateWorld),
+        travels: (from, to) => world.travelsBetween(story, from, to));
     // A way on the party cannot take yet stays a stop, with its reason.
-    if (way == null || isStoryChoiceLocked(way, story, session)) break;
+    if (way == null ||
+        isStoryChoiceLocked(way, story, session, world: gateWorld)) {
+      break;
+    }
     final parts = composeNarrationParts(node, session, story, french: french);
     preludes.add(ScenePrelude(
       nodeId: node.id,
@@ -2446,34 +2571,39 @@ class _EnterPlaceButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final name = place.nameFor(french);
+    // Scrolls inside the room the choices are given (a long quest strip
+    // above leaves a short phone little): the button comes first, so the
+    // hint is what slides out of sight, never an overflow (320 px).
     return Padding(
       padding: const EdgeInsets.only(top: 8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          FilledButton.icon(
-            key: const Key('hub_enter'),
-            style: FilledButton.styleFrom(minimumSize: const Size(0, 52)),
-            onPressed: onEnter,
-            icon: Icon(place.isCamp
-                ? Icons.local_fire_department_outlined
-                : Icons.location_city_outlined),
-            label: Text(
-              tr(ref, again ? 'hub_back_button' : 'hub_enter_button')
-                  .replaceAll('{place}', name),
-              textAlign: TextAlign.center,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            FilledButton.icon(
+              key: const Key('hub_enter'),
+              style: FilledButton.styleFrom(minimumSize: const Size(0, 52)),
+              onPressed: onEnter,
+              icon: Icon(place.isCamp
+                  ? Icons.local_fire_department_outlined
+                  : Icons.location_city_outlined),
+              label: Text(
+                tr(ref, again ? 'hub_back_button' : 'hub_enter_button')
+                    .replaceAll('{place}', name),
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
-          if (!again) ...[
-            const SizedBox(height: 6),
-            Text(
-              tr(ref, 'hub_enter_hint'),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.labelSmall,
-            ),
+            if (!again) ...[
+              const SizedBox(height: 6),
+              Text(
+                tr(ref, 'hub_enter_hint'),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -2607,8 +2737,9 @@ class _HubChoiceCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mainQuestShut = _mainQuestShut(ref, choice, isExcursion);
-    final locked =
-        mainQuestShut || _isChoiceLocked(choice, story, session, isExcursion);
+    final locked = mainQuestShut ||
+        _isChoiceLocked(choice, story, session, isExcursion,
+            world: ref.watch(coastGateWorldProvider));
     final lockedLabel = locked
         ? storyChoiceLockedText(ref, choice, session,
             isExcursion: isExcursion,
@@ -2820,8 +2951,9 @@ class _ChoiceButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mainQuestShut = _mainQuestShut(ref, choice, isExcursion);
-    final locked =
-        mainQuestShut || _isChoiceLocked(choice, story, session, isExcursion);
+    final locked = mainQuestShut ||
+        _isChoiceLocked(choice, story, session, isExcursion,
+            world: ref.watch(coastGateWorldProvider));
 
     final lockedLabel = locked
         ? storyChoiceLockedText(ref, choice, session,
@@ -2941,7 +3073,8 @@ String choicePoliticsHint(WidgetRef ref, StoryChoice choice) {
   if (politics == null || !politics.hasHint) return '';
   if (!ref.watch(politicsHintsEnabledProvider)) return '';
   return politicsHint(
-      politics, ref.watch(clanDataProvider), ref.watch(appLanguageProvider));
+      politics, ref.watch(clanDataProvider), ref.watch(appLanguageProvider),
+      politics: ref.watch(politicsProvider));
 }
 
 /// The muted line under a choice: "Vigil +5 · Dominion −5".
@@ -3280,7 +3413,11 @@ class _StoryWeather extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final chapter = ref.watch(reachedChapterProvider);
-    return WeatherLayer(weather: journeyWeatherFor(chapter), strength: 0.3);
+    // What the sky brings where the story stands (v1.204), the burning
+    // chapters' ash under a clear one.
+    final sky = ref.watch(skyHereProvider)?.today();
+    return WeatherLayer(
+        weather: journeyWeatherOf(sky?.kind, chapter), strength: 0.3);
   }
 }
 

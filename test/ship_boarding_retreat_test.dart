@@ -14,6 +14,7 @@ import 'package:narrative_data_app/combat/ship_battle.dart';
 import 'package:narrative_data_app/combat/ship_combat.dart';
 import 'package:narrative_data_app/gamedata/db_schema.dart';
 import 'package:narrative_data_app/providers/aftermath_provider.dart';
+import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/game_db_providers.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
@@ -38,7 +39,10 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
 
-    final container = ProviderContainer();
+    // The fight rolls the same dice every run (its ground, its anomaly, its
+    // affixes), so the layout the test checks cannot change between runs.
+    final container = ProviderContainer(
+        overrides: [fightRandomProvider.overrideWithValue(() => Random(7))]);
     addTearDown(container.dispose);
     // Let the session's own load from storage finish first.
     await tester.runAsync(() async {

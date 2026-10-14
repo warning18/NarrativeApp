@@ -4,10 +4,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/combat_engine.dart' show faceFromJson;
+import '../combat/dice_faces.dart';
 import '../combat/encounter.dart';
+import '../combat/face_smithing.dart';
 import '../combat/sea_beasts.dart';
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
+import '../combat/station_dice.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -15,11 +19,17 @@ import '../providers/aftermath_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/player_session_provider.dart';
+import '../providers/ship_dress_provider.dart';
 import '../providers/tutorial_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../widgets/ship_cutaway.dart';
 import '../widgets/sea_battlefield.dart';
+import '../widgets/side_view/sea_kit.dart' show SeaDuelScene;
+import '../utils/face_style.dart';
+import '../widgets/die_skins.dart';
 import '../widgets/ship_fx.dart';
+import '../widgets/station_die.dart';
 import 'fight_screen.dart';
 
 /// How a ship battle ended: who won, the Eel as she is now (hull, rooms),
@@ -53,6 +63,19 @@ class ShipBattleOutcome {
   /// The enemy's hull at the end (a sea beast carries its wounds away).
   final int enemyHull;
 }
+
+/// How big the ships are drawn at [range], against the closest: the sea is
+/// seen from the masthead, so the farther apart they lie the smaller each
+/// looks.
+double seaZoomFor(ShipRange range) => switch (range) {
+      ShipRange.close => 1.0,
+      ShipRange.medium => 0.82,
+      ShipRange.long => 0.64,
+    };
+
+/// Below this height the fight leaves out the strip of the two hulls from
+/// the side, so the sea keeps the room it needs to be tapped.
+const double duelStripMinHeight = 720;
 
 /// The room-by-room ship battle (see ship_battle.dart and
 /// ship_combat.dart), seen from above (see sea_battlefield.dart): two
@@ -240,9 +263,97 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       canFlee: widget.canFlee,
       beast: widget.beast,
     );
+    _ensureCrewDice();
     _armedWeaponId = _firstReadyWeaponId();
     _placing = widget.placeCrew && widget.crew.length > 1;
     if (!_placing) _startClock();
+  }
+
+  /// True once the hands' dice are read from the game data (see
+  /// [_ensureCrewDice]).
+  bool _diceRead = false;
+  final Map<String, String?> _dieIds = {};
+
+  /// The die [crew] rolls, for its skin.
+  String? _equippedDieOf(ShipCrew crew) => _dieIds[crew.id];
+
+  /// Each hand's die (station_dice.dart): the player's equipped die and a
+  /// companion's signature die as the Hammersmith left them, read once the
+  /// dice data is in.
+  void _ensureCrewDice() {
+    if (_diceRead) return;
+    final dice = ref.read(localizedDbProvider(diceSchema)).value;
+    if (dice == null || dice.isEmpty) return;
+    _diceRead = true;
+    final session = ref.read(playerSessionProvider);
+    final skills =
+        ref.read(localizedDbProvider(skillsSchema)).value ?? const {};
+    final companions =
+        ref.read(localizedDbProvider(companionsSchema)).value ?? const {};
+    final lang = ref.read(appLanguageProvider);
+    final result = <String, CrewDie>{};
+    for (final member in widget.crew) {
+      final String? dieId = member.isPlayer
+          ? session.equippedDiceId ??
+              (session.ownedDiceIds.isNotEmpty
+                  ? session.ownedDiceIds.first
+                  : null)
+          : (companions[member.id] as Map<String, dynamic>?)?['signatureDiceId']
+              ?.toString();
+      final raws =
+          ((dice[dieId ?? ''] as Map<String, dynamic>?)?['faces'] as List?)
+                  ?.cast<Map<String, dynamic>>() ??
+              const <Map<String, dynamic>>[];
+      if (raws.isEmpty) continue;
+      _dieIds[member.id] = dieId;
+      final faces = smithedFaces(
+          raws,
+          session.upgradesOfDie(dieId,
+              companionId: member.isPlayer ? null : member.id));
+      var assigned = const <String, String>{};
+      if (member.isPlayer) {
+        assigned = session.diceSkillAssignments[dieId] ?? assigned;
+      } else {
+        for (final ally in session.recruitedAllies) {
+          if (ally.companionId == member.id) {
+            assigned = ally.diceSkillAssignments;
+          }
+        }
+      }
+      assigned = limitedFaceAssignments(faces, assigned, skills);
+      result[member.id] = CrewDie([
+        for (var i = 0; i < faces.length; i++)
+          () {
+            final face = applyFaceAssignment(
+              faceFromJson(faces[i], i).withFaceName(''),
+              faces[i],
+              assigned[i.toString()],
+              language: lang,
+            );
+            final kind = face.type == 'Skill'
+                ? skillKind(skills[face.linkedSkillID.isEmpty
+                    ? 'heavy_attack'
+                    : face.linkedSkillID] as Map<String, dynamic>?)
+                : faceKind(face.type);
+            return StationFace(face, kind);
+          }(),
+      ]);
+    }
+    _battle.crewDice = result;
+  }
+
+  /// What a die landed at its station does this turn, for the room's tip.
+  String _stationRollHint(AppLanguage lang, StationRoll roll) {
+    final kind = roll.kind;
+    if (kind == null) return trFor(lang, 'ship_dice_blank');
+    final share =
+        (stationShare(roll.value) * (kind == FaceKind.poison ? 0.5 : 1.0) * 100)
+            .round();
+    final n = switch (kind) {
+      FaceKind.heal => stationPatch(roll.value),
+      _ => share,
+    };
+    return trFor(lang, 'ship_dice_${kind.name}').replaceAll('{n}', '$n');
   }
 
   /// Whole turns each order die has spun, one per order given.
@@ -1104,7 +1215,9 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     final text = outcome.dodged
         ? trFor(lang, 'ship_slipped_label')
         : outcome.absorbed
-            ? trFor(lang, 'ship_blocked_label')
+            ? (outcome.hullDamage > 0
+                ? '${trFor(lang, 'ship_blocked_label')} −${outcome.hullDamage}'
+                : trFor(lang, 'ship_blocked_label'))
             : '−${outcome.hullDamage}';
     final key = (onEel, outcome.room);
     final flash = (text, ++_flashCount);
@@ -1149,6 +1262,9 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
 
   @override
   Widget build(BuildContext context) {
+    // The dice data arrives after the panel opens on a cold start.
+    if (!_diceRead) ref.watch(localizedDbProvider(diceSchema));
+    _ensureCrewDice();
     final lang = ref.watch(appLanguageProvider);
     final fr = lang == AppLanguage.fr;
     final ink = InkColors.of(context);
@@ -1199,6 +1315,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                     color: ink.blood,
                     habit: widget.habit,
                   ),
+                  _buildShieldSums(lang),
                   _buildEnemyStatus(lang),
                 ],
               ),
@@ -1245,7 +1362,18 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
             }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [bar, Expanded(child: sea), dock],
+              children: [
+                bar,
+                // A tall screen has room for the two hulls from the side,
+                // facing each other as the range says.
+                if (constraints.maxHeight >= duelStripMinHeight)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 6),
+                    child: _buildDuelStrip(),
+                  ),
+                Expanded(child: sea),
+                dock,
+              ],
             );
           }),
         ),
@@ -1824,6 +1952,58 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     ];
   }
 
+  /// The sums of the enemy's shield: its layers and how many shots of the
+  /// armed weapon it takes to get one through (fewer aimed at the
+  /// bulwark), and a flag when the guns ready now can do it this turn.
+  Widget _buildShieldSums(AppLanguage lang) {
+    final b = _battle;
+    final layers = b.enemy.layers;
+    final weapon = b.weaponById(_armedWeaponId);
+    if (!b.shieldBreakOn || _over || layers == 0 || weapon == null) {
+      return const SizedBox.shrink();
+    }
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final style = theme.textTheme.labelSmall;
+    final plain = b.shotsToLand(weapon.id, ShipRoom.guns) ?? 1;
+    final aimed = b.shotsToLand(weapon.id, ShipRoom.bulwark) ?? plain;
+    var text = weapon.piercing
+        ? trFor(lang, 'ship_sums_pierce').replaceAll('{n}', '$layers')
+        : trFor(lang, layers == 1 ? 'ship_sums_one' : 'ship_sums')
+            .replaceAll('{n}', '$layers')
+            .replaceAll('{m}', '$plain');
+    if (!weapon.piercing && aimed < plain) {
+      text += trFor(lang, 'ship_sums_bulwark').replaceAll('{k}', '$aimed');
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 2),
+      child: Row(
+        children: [
+          Flexible(
+            child: Text(text,
+                key: const Key('ship_shield_sums'),
+                style: style?.copyWith(
+                    color: _roomColor(context, ShipRoom.bulwark)),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis),
+          ),
+          if (b.salvoReady) ...[
+            const SizedBox(width: 8),
+            Icon(Icons.bolt, size: 12, color: ink.gold),
+            Flexible(
+              child: Text(trFor(lang, 'ship_sums_salvo'),
+                  key: const Key('ship_salvo_ready'),
+                  style: style?.copyWith(
+                      color: ink.gold, fontWeight: FontWeight.bold),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
   /// A ship on one line and a bar: her name, the enemy's habit, her
   /// shields and how often she slips a shot, then her hull as planks.
   Widget _shipBar({
@@ -1965,6 +2145,37 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     );
   }
 
+  /// The two hulls in side view above the sea (see [SeaDuelScene]): the
+  /// Eel as she is dressed and as battered as she is, the enemy as hers is.
+  Widget _buildDuelStrip() {
+    final weather = widget.rules.weather ? _battle.weather : SeaWeather.calm;
+    final player = _battle.player;
+    final enemy = _battle.enemy;
+    return SizedBox(
+      key: const Key('ship_duel_strip'),
+      height: 96,
+      child: SeaDuelScene(
+        waters: widget.waters,
+        weather: weather,
+        ship: ref.watch(shipFormProvider),
+        dress: ref.watch(shipDressProvider),
+        condition: player.maxHull <= 0
+            ? 1.0
+            : (player.hull / player.maxHull).clamp(0.0, 1.0),
+        enemyId: widget.enemyShipId,
+        enemyCondition: enemy.maxHull <= 0
+            ? 1.0
+            : (enemy.hull / enemy.maxHull).clamp(0.0, 1.0),
+        enemyIsBeast: widget.beast != null,
+        range: switch (_battle.range) {
+          ShipRange.close => 0.0,
+          ShipRange.medium => 0.5,
+          ShipRange.long => 1.0,
+        },
+      ),
+    );
+  }
+
   /// The fight from the masthead (see sea_battlefield.dart), filling the
   /// screen between the enemy's bar and the dock: the enemy above, the
   /// Eel below, broadside to broadside, the gap between them the range
@@ -1985,7 +2196,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       });
     }
     _shownWeather = weather;
-    final eelLook = TopShipLook.rustyEel;
+    final eelLook = ref.watch(playerShipLookProvider);
     final enemyLook = TopShipLook.forEnemy(widget.enemyShipId, widget.enemy);
     return LayoutBuilder(builder: (context, constraints) {
       final width = constraints.maxWidth;
@@ -1993,13 +2204,15 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       const label = 14.0;
       const top = 40.0;
       const bottom = 50.0;
-      // The ships fit the sea's height as well as its width: a quarter of
-      // the open water is always left for the gap between them, so the
-      // range reads on a phone.
+      // The ships fit the sea's height as well as its width, with the
+      // closest range at full size and nearly no water between them; at
+      // each longer range they are drawn smaller (see [seaZoomFor]) and the
+      // water between them opens, so being close or far reads at a glance.
       final byHeight = max(0.0, height - top - bottom - 2 * label) *
-          0.75 /
+          0.9 /
           (topShipBoxHeight(1, enemyLook) + topShipBoxHeight(1, eelLook));
-      final length = min(min(width * 0.64, 260.0), byHeight);
+      final full = min(min(width * 0.72, 290.0), byHeight);
+      final length = full * seaZoomFor(_battle.range);
       final left = (width - length) / 2;
       final enemyBox = topShipBoxHeight(length, enemyLook);
       final eelBox = topShipBoxHeight(length, eelLook);
@@ -2009,7 +2222,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       // rest is split above and below.
       final gap = spare *
           switch (_battle.range) {
-            ShipRange.close => 0.04,
+            ShipRange.close => 0.03,
             ShipRange.medium => 0.5,
             ShipRange.long => 1.0,
           };
@@ -2308,6 +2521,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                             r: _roomColor(context, r)
                         },
                         refit: isPlayer ? ShipCutaway.refitOf(ship) : 0,
+                        dress: isPlayer ? ref.read(shipDressProvider) : null,
                         speed: (evasion / 22).clamp(0.0, 2.0),
                       ),
                     ),
@@ -2436,6 +2650,22 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
         ],
       ),
     );
+    final stationRoll =
+        crew == null || !isPlayer ? null : _battle.stationRoll(crew.id);
+    final die = stationRoll == null
+        ? null
+        : Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: StationDie(
+              die: _battle.crewDice[crew!.id]!,
+              roll: stationRoll,
+              turn: _battle.turn,
+              accent: ink.tide,
+              skin: dieSkinOf(_equippedDieOf(crew)),
+              size: 24,
+              still: MediaQuery.of(context).disableAnimations,
+            ),
+          );
     final token = crew == null
         ? null
         : isPlayer && !_busy && !_over
@@ -2469,6 +2699,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (token != null) token,
+                  if (die != null) die,
                   if (focused)
                     Tooltip(
                       message: trFor(lang, 'ship_focus_hint'),
@@ -2490,7 +2721,10 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     final tile = Tooltip(
       message: railOpen
           ? trFor(lang, 'ship_room_bulwark_open_hint')
-          : _roomName(lang, room, enemy: !isPlayer, suffix: '_hint'),
+          : [
+              _roomName(lang, room, enemy: !isPlayer, suffix: '_hint'),
+              if (stationRoll != null) _stationRollHint(lang, stationRoll),
+            ].join('\n'),
       child: GestureDetector(
         key: Key('ship_room_${isPlayer ? 'eel' : 'enemy'}_${room.name}'),
         onTap: () {
@@ -2758,7 +2992,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
   Widget _buildPlacement(AppLanguage lang, Map<String, dynamic>? enemies) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final look = TopShipLook.rustyEel;
+    final look = ref.watch(playerShipLookProvider);
     return Container(
       key: const Key('ship_placement'),
       color: theme.colorScheme.surface,
@@ -2997,7 +3231,8 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
         mainAxisSize: MainAxisSize.min,
         children: [
           const Icon(Icons.shield, size: 13, color: _previewColor),
-          Text('0', style: style),
+          Text(preview.hullDamage > 0 ? '−${preview.hullDamage}' : '0',
+              style: style),
         ],
       );
     }

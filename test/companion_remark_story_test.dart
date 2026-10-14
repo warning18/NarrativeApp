@@ -68,17 +68,17 @@ void main() {
             activeAllyIds: const ['maren'],
           ),
         );
-    container.read(storyPlayProvider.notifier).jumpTo('100');
+    container.read(storyPlayProvider.notifier).jumpTo('270');
     await _settle(tester);
     await _closeDialogs(tester);
     expect(find.byType(CompanionRemarkOverlay), findsNothing);
 
-    await tester.tap(find.text('Help a neighbor out of the smoke first'));
+    await tester.tap(find.text('Cut it free'));
     // The approval notice, then the next scene.
     await _settle(tester, rounds: 12);
     await _closeDialogs(tester);
 
-    expect(container.read(storyPlayProvider).currentNodeId, '250');
+    expect(container.read(storyPlayProvider).currentNodeId, '300');
     final remark = container.read(pendingRemarksProvider).firstOrNull;
     expect(remark?.companionId, 'maren');
     expect(remark?.kind, RemarkKind.kindApproved);
@@ -111,10 +111,10 @@ void main() {
 
     // The next choice moves on, and the remark goes with the scene it
     // opened.
-    await tester.tap(find.text('Take the Stone Bridge'));
+    await tester.tap(find.text('Run straight for the door'));
     await _settle(tester, rounds: 12);
     await _closeDialogs(tester);
-    expect(container.read(storyPlayProvider).currentNodeId, isNot('250'));
+    expect(container.read(storyPlayProvider).currentNodeId, isNot('300'));
     expect(find.text('SISTER MAREN'), findsNothing);
     expect(tester.takeException(), isNull);
   });

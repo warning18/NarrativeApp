@@ -123,11 +123,58 @@ ChapterLoop? currentLoop({
         loops);
 
 /// The chapter a scene belongs to for its fights, its detours and the
-/// chart: a place's own chapter, else its spine chapter, else its id's.
+/// chart: a place's own chapter, else its spine chapter, else (v1.196)
+/// the chapter of the spine beat whose road leads to it (see
+/// [spineLedChapters]: the Hollow Shore's 7002_approach after the last
+/// chapter's battle is that chapter's), else its id's.
 int storyChapterOf(String nodeId, [StoryData? story]) {
   final settlementChapter = story?.nodeFor(nodeId)?.settlement?.chapter;
   if (settlementChapter != null) return settlementChapter;
-  return chapterForNode(nodeId) ?? max(1, chapterOfNode(nodeId));
+  return chapterForNode(nodeId) ??
+      (story == null ? null : spineLedChapters(story)[nodeId]) ??
+      max(1, chapterOfNode(nodeId));
+}
+
+final Expando<Map<String, int>> _spineLed = Expando('spineLedChapters');
+
+/// The scenes off the spine that a spine beat's road leads to, with the
+/// beat's chapter: every scene reached from a beat (by its choices, their
+/// failure and defeat branches included) before another beat or a place,
+/// the earliest chapter first when two reach it. Worked out once per
+/// [story].
+Map<String, int> spineLedChapters(StoryData story) =>
+    _spineLed[story] ??= _computeSpineLed(story);
+
+Map<String, int> _computeSpineLed(StoryData story) {
+  Iterable<String> next(String id) sync* {
+    for (final choice in story.nodeFor(id)?.choices ?? const <StoryChoice>[]) {
+      for (final to in [choice.nextId, choice.failNextId, choice.loseNextId]) {
+        if (to != null && story.nodes.containsKey(to)) yield to;
+      }
+    }
+  }
+
+  final led = <String, int>{};
+  for (final spine in [...chapterSpines]
+    ..sort((a, b) => a.chapter.compareTo(b.chapter))) {
+    for (final beat in spine.beats) {
+      for (final start in beat) {
+        final stack = [...next(start)];
+        final seen = <String>{};
+        while (stack.isNotEmpty) {
+          final id = stack.removeLast();
+          if (!seen.add(id)) continue;
+          if (chapterForNode(id) != null ||
+              story.nodeFor(id)?.settlement != null) {
+            continue;
+          }
+          led.putIfAbsent(id, () => spine.chapter);
+          stack.addAll(next(id));
+        }
+      }
+    }
+  }
+  return led;
 }
 
 /// The chapter the party has reached: the open chapter's, or the scene's
@@ -280,7 +327,9 @@ bool mainQuestOpen({
 /// or leads into a scene that does. A companion the party's alignment, its
 /// story so far or its Charisma rules out is left out, and so is one
 /// already met ([unavailableAllyIds]: recruited or lost); one that only
-/// asks for gold is not, since gold comes.
+/// asks for gold is not, since gold comes. [gateOpen] (v1.196) says
+/// whether a choice's politics gate lets it be taken: one shut leads
+/// nowhere yet.
 List<String> placeCompanionLeads(
   StoryNode place,
   StoryData story,
@@ -289,6 +338,7 @@ List<String> placeCompanionLeads(
   required int alignmentScore,
   required int charisma,
   required Iterable<String> unavailableAllyIds,
+  bool Function(StoryChoice choice)? gateOpen,
 }) {
   final held = flags.toSet();
   final gone = unavailableAllyIds.toSet();
@@ -310,6 +360,7 @@ List<String> placeCompanionLeads(
   final leads = <String>[];
   for (final choice in place.choices) {
     if (choice.isHiddenFor(held)) continue;
+    if (gateOpen != null && !gateOpen(choice)) continue;
     final target = story.nodeFor(choice.nextId);
     if (!open(target)) continue;
     final questIds = [

@@ -77,16 +77,42 @@ bool enemyDiscovered(String enemyId, PlayerSession session) =>
     session.unlockedEnemyIds.contains(enemyId) ||
     (session.enemyKillCounts[enemyId] ?? 0) > 0;
 
-/// Whether [npc] can appear in the play-mode people list: spoken to
-/// already, or both their flag (`requiredFlag`) is set and the story has
-/// reached their chapter ([currentChapter]).
+/// Whether [npc] can appear in the play-mode People list (v1.204):
+/// spoken to already; or the shop they keep (`shopId`) found
+/// ([unlockedShopIds], the session's when null); or one of the scenes
+/// meeting them (`metNodes`) stood in ([visitedNodeIds]: the nodes
+/// visited and the current one); or one of their `metFlags` held. A
+/// record from before the codex, with none of the three, is known the old
+/// way: its `requiredFlag` held (or empty) and the story at its chapter
+/// ([currentChapter]).
 bool npcDiscovered(String npcId, Map<String, dynamic> npc,
-    PlayerSession session, int currentChapter) {
+    PlayerSession session, int currentChapter,
+    {Iterable<String> visitedNodeIds = const [],
+    Iterable<String>? unlockedShopIds}) {
   if (session.talkedToNpcIds.contains(npcId)) return true;
-  final flag = npc['requiredFlag']?.toString() ?? '';
-  if (flag.isNotEmpty && !session.flags.contains(flag)) return false;
-  final chapter = (npc['chapter'] as num?)?.toInt() ?? 1;
-  return currentChapter >= chapter;
+  List<String> list(String key) => [
+        for (final e in (npc[key] as List?) ?? const [])
+          if (e.toString().trim().isNotEmpty) e.toString().trim(),
+      ];
+  final metNodes = list('metNodes');
+  final metFlags = list('metFlags');
+  final shopId = npc['shopId']?.toString().trim() ?? '';
+  if (metNodes.isEmpty && metFlags.isEmpty && shopId.isEmpty) {
+    final flag = npc['requiredFlag']?.toString() ?? '';
+    if (flag.isNotEmpty && !session.flags.contains(flag)) return false;
+    final chapter = (npc['chapter'] as num?)?.toInt() ?? 1;
+    return currentChapter >= chapter;
+  }
+  if (shopId.isNotEmpty &&
+      (unlockedShopIds ?? session.unlockedShopIds).contains(shopId)) {
+    return true;
+  }
+  if (metNodes.isNotEmpty) {
+    final visited =
+        visitedNodeIds is Set<String> ? visitedNodeIds : visitedNodeIds.toSet();
+    if (metNodes.any(visited.contains)) return true;
+  }
+  return metFlags.any(session.flags.contains);
 }
 
 /// The order a play-mode quest list shows [questIds] in: the followed

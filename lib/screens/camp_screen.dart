@@ -7,8 +7,11 @@ import 'package:flutter_riverpod/legacy.dart';
 import '../combat/combat_engine.dart';
 import '../data/approval.dart';
 import '../data/camp_state.dart';
+import '../data/harbour.dart' show harbourAwaited;
 import '../data/companion_remarks.dart';
 import '../data/narration_clips.dart' show storyBodyFor;
+import '../data/politics_events.dart' show ChoiceGate;
+import '../data/materials.dart' show materialCountsOf;
 import '../data/port_helpers.dart';
 import '../data/zone_gating.dart';
 import '../gamedata/db_schema.dart';
@@ -22,6 +25,7 @@ import '../providers/expedition_active_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/politics_provider.dart';
 import '../providers/remark_provider.dart';
 import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
@@ -35,8 +39,10 @@ import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/camp_town_section.dart';
 import '../widgets/bounty_board.dart';
+import '../widgets/ink_fold.dart';
 import '../widgets/coast_news.dart';
 import '../widgets/camp_travel.dart';
+import '../widgets/pixel_sprite.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/ship_widgets.dart';
 import '../widgets/zone_card.dart';
@@ -102,6 +108,18 @@ class CampScreen extends ConsumerWidget {
 
     final theme = Theme.of(context);
     final harborBuilt = session.builtHouseIds.contains(harborHouseId);
+    // What the harbour costs, as the card says it: its materials (the
+    // story's grant, see harbour.dart), and its gold if any.
+    final harbourRecord = houses[harborHouseId] as Map<String, dynamic>?;
+    final harbourGold = (harbourRecord?['buildCost'] as num?)?.toInt() ?? 0;
+    final itemNames =
+        ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
+    final harbourCost = [
+      for (final MapEntry(key: id, value: count)
+          in materialCountsOf(harbourRecord, 'materialCost').entries)
+        '$count ${(itemNames[id] as Map?)?['itemName'] ?? id}',
+      if (harbourGold > 0) '$harbourGold ${tr(ref, 'gold_label')}',
+    ].join(', ');
     final homeId = homePortId(ports);
     final homePort =
         homeId == null ? null : ports[homeId] as Map<String, dynamic>?;
@@ -170,36 +188,51 @@ class CampScreen extends ConsumerWidget {
     ].join(' · ');
 
     final List<Widget> tabContent = switch (tab) {
+      // Each section folds (v1.201), the fold kept for the session.
       CampTab.road => [
-          if (campNode != null) ...[
-            section(tr(ref, 'places_section')),
-            if (places.isEmpty)
-              Text(tr(ref, 'places_empty'),
-                  style: theme.textTheme.bodyMedium
-                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant))
-            else
-              for (final place in places) PlaceCard(place: place),
-          ],
-          section(tr(ref, 'camp_expeditions_section')),
-          if (shoreZoneIds.isEmpty)
-            Text(tr(ref, 'no_zones_available'))
-          else
-            for (final zoneId in shoreZoneIds)
-              ZoneCard(
-                zoneId: zoneId,
-                zone: zones[zoneId] as Map<String, dynamic>,
-                zones: zones,
-                enemies: ref.watch(localizedDbProvider(enemiesSchema)).value ??
-                    const <String, dynamic>{},
-                enabled: !busy,
-                onBegin: () => launchExpedition(context, ref, zoneId,
-                    zones[zoneId] as Map<String, dynamic>),
-              ),
-          if (campNode != null) ...[
+          if (campNode != null)
+            InkFold(
+              id: 'camp_places',
+              title: tr(ref, 'places_section'),
+              count: places.length,
+              children: [
+                if (places.isEmpty)
+                  Text(tr(ref, 'places_empty'),
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(color: theme.colorScheme.onSurfaceVariant))
+                else
+                  for (final place in places) PlaceCard(place: place),
+              ],
+            ),
+          InkFold(
+            id: 'camp_expeditions',
+            title: tr(ref, 'camp_expeditions_section'),
+            count: shoreZoneIds.length,
+            children: [
+              if (shoreZoneIds.isEmpty)
+                Text(tr(ref, 'no_zones_available'))
+              else
+                for (final zoneId in shoreZoneIds)
+                  ZoneCard(
+                    zoneId: zoneId,
+                    zone: zones[zoneId] as Map<String, dynamic>,
+                    zones: zones,
+                    enemies:
+                        ref.watch(localizedDbProvider(enemiesSchema)).value ??
+                            const <String, dynamic>{},
+                    enabled: !busy,
+                    onBegin: () => launchExpedition(context, ref, zoneId,
+                        zones[zoneId] as Map<String, dynamic>),
+                  ),
+            ],
+          ),
+          if (campNode != null)
             // Short goals for ordinary fights, paid at the camp (v1.162).
-            section(tr(ref, 'bounty_board_section')),
-            const BountyBoard(),
-          ],
+            InkFold(
+              id: 'camp_bounties',
+              title: tr(ref, 'bounty_board_section'),
+              children: const [BountyBoard()],
+            ),
         ],
       // The camp's town on the cliff: what has been built, and the tray
       // to build more. A house tied to a companion waits for them.
@@ -237,32 +270,38 @@ class CampScreen extends ConsumerWidget {
                   )
                 : null,
           ),
-          section(tr(ref, 'boutiques_section')),
-          if (boutiqueShopIds.isEmpty)
-            Text(tr(ref, 'no_boutiques_yet'))
-          else
-            for (final shopId in boutiqueShopIds)
-              Card(
-                child: ListTile(
-                  leading: ShopPixelIcon(shopId),
-                  title: Text(
-                      (shops[shopId] as Map<String, dynamic>)['shopName']
-                              ?.toString() ??
-                          shopId),
-                  subtitle: Text(
-                      (shops[shopId] as Map<String, dynamic>)['shopDescription']
+          InkFold(
+            id: 'camp_boutiques',
+            title: tr(ref, 'boutiques_section'),
+            count: boutiqueShopIds.length,
+            children: [
+              if (boutiqueShopIds.isEmpty)
+                Text(tr(ref, 'no_boutiques_yet'))
+              else
+                for (final shopId in boutiqueShopIds)
+                  Card(
+                    child: ListTile(
+                      leading: ShopPixelIcon(shopId),
+                      title: Text(
+                          (shops[shopId] as Map<String, dynamic>)['shopName']
+                                  ?.toString() ??
+                              shopId),
+                      subtitle: Text((shops[shopId]
+                                  as Map<String, dynamic>)['shopDescription']
                               ?.toString() ??
                           ''),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => ShopDetailScreen(
-                          shopId: shopId,
-                          shop: shops[shopId] as Map<String, dynamic>),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => ShopDetailScreen(
+                              shopId: shopId,
+                              shop: shops[shopId] as Map<String, dynamic>),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
+            ],
+          ),
         ],
       CampTab.party => [
           section(tr(ref, 'camp_party_section'),
@@ -290,13 +329,7 @@ class CampScreen extends ConsumerWidget {
           const SizedBox(height: 12),
           const ShipStatusCard(),
           const SizedBox(height: 8),
-          _HarbourCard(
-            built: harborBuilt,
-            cost: ((houses[harborHouseId]
-                        as Map<String, dynamic>?)?['buildCost'] as num?)
-                    ?.toInt() ??
-                0,
-          ),
+          _HarbourCard(built: harborBuilt, cost: harbourCost),
           section(tr(ref, 'camp_sail_section')),
           Text(
             tr(ref, 'camp_sail_hint'),
@@ -314,8 +347,19 @@ class CampScreen extends ConsumerWidget {
         // One header: the camp, its chapter and the hour, and the purse.
         Row(
           children: [
-            Icon(Icons.local_fire_department_outlined,
-                color: InkColors.of(context).ember),
+            // The camp's fire (v1.216): a pixel flame that flickers.
+            const SizedBox(
+              width: 36,
+              height: 36,
+              child: PixelSprite(
+                name: 'campfire',
+                frames: 6,
+                frameSize: 18,
+                scale: 2,
+                fps: 7,
+                loop: true,
+              ),
+            ),
             const SizedBox(width: 8),
             Expanded(
               child: Column(
@@ -364,6 +408,16 @@ class CampScreen extends ConsumerWidget {
             id: 'camp.next',
             child: _ChapterCard(campNode: campNode, busy: busy),
           ),
+        // The camp's first work, until it stands (see harbour.dart): the
+        // camp's tour points at it.
+        if (harbourAwaited(
+            flags: session.flags, builtHouseIds: session.builtHouseIds)) ...[
+          const SizedBox(height: 12),
+          TutorialTarget(
+            id: 'camp.harbour',
+            child: _HarbourCard(built: false, cost: harbourCost, first: true),
+          ),
+        ],
         const SizedBox(height: 12),
         _CampTabs(selected: tab),
         ...tabContent,
@@ -400,8 +454,19 @@ class _ChapterCard extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final visible =
-        campNode.choices.where((c) => !c.isHiddenFor(session.flags)).toList();
+    // A choice behind a politics gate that fails (v1.196) is hidden, or
+    // shut with its locked text.
+    final gateWorld = ref.watch(coastGateWorldProvider);
+    final visible = campNode.choices
+        .where((c) => !choiceHiddenFor(c, session, gateWorld))
+        .toList();
+    bool shut(StoryChoice c) =>
+        story == null ||
+        isStoryChoiceLocked(c, story, session, world: gateWorld);
+    String label(StoryChoice c) =>
+        choiceGateFor(c, session, gateWorld) == ChoiceGate.locked
+            ? c.lockedTextFor(fr) ?? c.textFor(fr)
+            : c.textFor(fr);
     final mainChoices = visible.where((c) => c.mainQuest).toList();
     final otherChoices = visible.where((c) => !c.mainQuest).toList();
     final open = progress?.mainQuestOpen ?? true;
@@ -567,14 +632,10 @@ class _ChapterCard extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 12),
                     ),
-                    onPressed: busy ||
-                            !open ||
-                            story == null ||
-                            isStoryChoiceLocked(choice, story, session)
+                    onPressed: busy || !open || shut(choice)
                         ? null
                         : () => setOutOnMainQuest(context, ref, choice),
-                    child:
-                        Text(choice.textFor(fr), textAlign: TextAlign.center),
+                    child: Text(label(choice), textAlign: TextAlign.center),
                   ),
                   if (!open && stepsLeft > 0)
                     Padding(
@@ -603,12 +664,10 @@ class _ChapterCard extends ConsumerWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
-                onPressed: busy ||
-                        story == null ||
-                        isStoryChoiceLocked(choice, story, session)
+                onPressed: busy || shut(choice)
                     ? null
                     : () => takeStoryChoice(context, ref, choice),
-                child: Text(choice.textFor(fr)),
+                child: Text(label(choice)),
               ),
             ),
         ],
@@ -844,10 +903,17 @@ class _CampTabs extends ConsumerWidget {
 /// The harbour in the Sea tab: the way to refit the Eel once it stands,
 /// and before that what building it gives and costs (a tap goes to Town).
 class _HarbourCard extends ConsumerWidget {
-  const _HarbourCard({required this.built, required this.cost});
+  const _HarbourCard(
+      {required this.built, required this.cost, this.first = false});
 
   final bool built;
-  final int cost;
+
+  /// The card above the camp's tabs, while the harbour is awaited (the Sea
+  /// tab keeps its own).
+  final bool first;
+
+  /// What building it costs, as the card says it ("4 Timber, 2 Cut Stone").
+  final String cost;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -855,7 +921,11 @@ class _HarbourCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final colour = built ? ink.tide : ink.gold;
     return InkWell(
-      key: Key(built ? 'camp_harbor' : 'camp_harbor_locked'),
+      key: Key(first
+          ? 'camp_harbour_first'
+          : built
+              ? 'camp_harbor'
+              : 'camp_harbor_locked'),
       borderRadius: BorderRadius.circular(10),
       onTap: built
           ? () => Navigator.of(context)
@@ -884,7 +954,7 @@ class _HarbourCard extends ConsumerWidget {
                   built
                       ? tr(ref, 'harbour_built_body')
                       : tr(ref, 'harbour_not_built_body')
-                          .replaceAll('{cost}', '$cost'),
+                          .replaceAll('{cost}', cost),
                   style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
                 ),
               ],

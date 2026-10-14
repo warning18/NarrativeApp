@@ -9,9 +9,11 @@ on:
 # A branch that gets several follow-up pushes in quick succession (common
 # mid-session) otherwise leaves every earlier run building to completion
 # even though its result is already superseded. Cancel those instead.
+# Only on PRs: on main, every push publishes a release, and cancelling a
+# run there would skip that release when the next merge lands quickly.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Least-privilege default; jobs that need more (the release step in
 # `build`) grant it explicitly on themselves instead of it being ambient
@@ -48,16 +50,61 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build:
-    needs: secret-scan
+  # Format and analyze: fast, and independent of the tests, so they run
+  # beside them instead of before them.
+  checks:
     runs-on: ubuntu-latest
-    permissions:
-      # Only the release step (push-to-main only) actually writes anything
-      # (a tag + a GitHub Release); every other step here is read-only.
-      contents: write
-    outputs:
-      # The release's version, for ios-release to attach the IPA to it.
-      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze
+
+  # The suite, split by file across four runners. One runner took about 17
+  # minutes for the whole suite. Whole files, not flutter test's own
+  # --total-shards (which splits a file's tests across runners and breaks
+  # the few tests that lean on a sibling run earlier in the same file).
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Run tests (shard ${{ matrix.shard }} of 4)
+        run: |
+          files=$(find test -name '*_test.dart' | sort | awk -v n=4 -v i=${{ matrix.shard }} '(NR - 1) % n == i')
+          echo "$(echo "$files" | wc -l) test files in this shard"
+          flutter test $files
+
+  # The release APK, built beside the tests rather than after them.
+  apk:
+    runs-on: ubuntu-latest
     env:
       # When these repository secrets are set (Settings > Secrets and
       # variables > Actions), every release APK is signed with the same
@@ -83,9 +130,6 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          # Caches the SDK itself and (internally, keyed on pubspec.lock)
-          # the pub package cache -- was off, so every run paid the full
-          # ~60s SDK install plus a fresh `pub get` download every time.
           cache: true
 
       - name: Cache Gradle
@@ -100,19 +144,6 @@ jobs:
 
       - name: Get dependencies
         run: flutter pub get
-
-      - name: Check formatting
-        # Was non-blocking until the codebase was actually run through
-        # `dart format` for real (see .github/workflows/format.yml --
-        # there's no local Dart SDK in the dev environment to have
-        # verified this before adding the gate). Now a real gate.
-        run: dart format --output=none --set-exit-if-changed .
-
-      - name: Analyze
-        run: flutter analyze
-
-      - name: Run tests
-        run: flutter test
 
       - name: Decode release keystore
         if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' }}
@@ -129,9 +160,40 @@ jobs:
           name: app-release
           path: build/app/outputs/flutter-apk/app-release.apk
 
+  # Keeps the check name `build` that PRs have always reported. It passes
+  # only when every job above passed (a skipped job would otherwise count
+  # as a pass), and on a push to main it publishes the release.
+  build:
+    needs: [secret-scan, checks, test, apk]
+    # A run cancelled because a newer push superseded it reports nothing
+    # rather than a failure.
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      # Only the release step (push-to-main only) actually writes anything
+      # (a tag + a GitHub Release).
+      contents: write
+    steps:
+      - name: Every job passed
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'skipped') }}
+        run: |
+          echo "A job failed or was cancelled: ${{ toJSON(needs) }}"
+          exit 1
+
+      - name: Checkout repository
+        if: github.event_name == 'push'
+        uses: actions/checkout@v7
+
+      - name: Download APK
+        if: github.event_name == 'push'
+        uses: actions/download-artifact@v7
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk
+
       - name: Extract version
         # Only a push to main produces a real release; a pull_request run is
-        # a pre-merge check (analyze/test/build) and should never tag one.
+        # a pre-merge check and never tags one.
         if: github.event_name == 'push'
         id: version
         run: |
@@ -146,29 +208,3 @@ jobs:
           name: v${{ steps.version.outputs.version }}
           make_latest: true
           files: build/app/outputs/flutter-apk/app-release.apk
-
-  ios-release:
-    # Every release carries the iPhone build too, next to the APK: an
-    # unsigned IPA that whoever installs it signs with their own Apple ID
-    # (see docs/INSTALL_IPHONE.md). It waits for the Android job, which
-    # creates the release, then adds the IPA to it. A failure here leaves
-    # the Android release as it is.
-    if: github.event_name == 'push'
-    needs: build
-    runs-on: macos-latest
-    timeout-minutes: 45
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
-
-      - name: Build the IPA
-        id: ipa
-        uses: ./.github/actions/build-ios
-
-      - name: Add the IPA to the release
-        uses: softprops/action-gh-release@v3
-        with:
-          tag_name: v${{ needs.build.outputs.version }}
-          files: ${{ steps.ipa.outputs.path }}

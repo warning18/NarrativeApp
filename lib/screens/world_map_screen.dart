@@ -9,6 +9,9 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/chart_map_painter.dart';
+import '../widgets/help_hint.dart';
+import '../widgets/chart_weather.dart';
+import '../widgets/geography_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/map_charts.dart';
@@ -17,6 +20,8 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/app_mode_provider.dart';
+import '../providers/geography_provider.dart';
 import '../providers/map_look_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
@@ -61,6 +66,15 @@ class _Tokens {
   );
 }
 
+/// Chapter [number]'s colours and title (see mapChapters); for a chapter
+/// the list has not been given yet (one added to chapters.json first), the
+/// latest one before it, so a landmark of a new chapter never breaks the
+/// map.
+MapChapter _mapChapterOf(int number) =>
+    mapChapters.where((c) => c.number == number).firstOrNull ??
+    mapChapters.lastWhere((c) => c.number <= number,
+        orElse: () => mapChapters.first);
+
 String _lookName(WidgetRef ref, MapLook look) =>
     tr(ref, 'world_map_look_${look.name}');
 
@@ -84,7 +98,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
   int _chapterFilter = 0;
 
   /// The geography the chart is drawn on (see map_charts.dart).
-  ChartGeography _geo = chartOf(MapShape.continental);
+  ChartGeography _geo = chartOf(MapShape.archipelago);
 
   final TransformationController _view = TransformationController();
   late final AnimationController _zoom = AnimationController(
@@ -300,10 +314,18 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
         const <String, dynamic>{};
     final visited = {...play.visitedNodeIds, play.currentNodeId};
     final here = currentLandmark(play.currentNodeId, play.history);
-    final journey = journeyOf(play.history, play.currentNodeId);
-    final discovered = discoveredLandmarkIds(visited);
+    // Edit Mode sees the world whole (v1.209): every place, every
+    // chapter's road in its colour, and no fog over any of it.
+    final editing = ref.watch(appModeProvider) == AppMode.edit;
+    final journey = editing
+        ? List<Landmark>.of(worldMapLandmarks)
+        : journeyOf(play.history, play.currentNodeId);
+    final discovered = editing
+        ? {for (final l in worldMapLandmarks) l.id}
+        : discoveredLandmarkIds(visited);
     if (here != null) discovered.add(here.id);
     if (discovered.isEmpty) discovered.add(worldMapLandmarks.first.id);
+    if (editing) _walkDecided = true;
 
     // On opening, the traveller walks what the story did since the map
     // last showed.
@@ -336,12 +358,12 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
     final dark = Theme.of(context).brightness == Brightness.dark;
     final tokens = dark ? _Tokens.dark : _Tokens.light;
     Color chapterColor(int n) =>
-        dark ? mapChapter(n).dark : mapChapter(n).light;
+        dark ? _mapChapterOf(n).dark : _mapChapterOf(n).light;
     // On the chart the colour follows the chart's own ground: the night
     // look is dark, the parchment light, and the Shroud has no colour.
     Color chartChapterColor(int n) => switch (look) {
-          MapLook.night => mapChapter(n).dark,
-          MapLook.parchment => mapChapter(n).light,
+          MapLook.night => _mapChapterOf(n).dark,
+          MapLook.parchment => _mapChapterOf(n).light,
           MapLook.shroud => const Color(0xFFA3A3AA),
         };
 
@@ -372,25 +394,42 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
                     onDoubleTapDown: (details) =>
                         _doubleTapAt = details.localPosition,
                     onDoubleTap: _doubleTap,
-                    child: CustomPaint(
-                      size: _mapSize,
-                      painter: ChartMapPainter(
-                        frame: _frame,
-                        walk: _walk,
-                        geography: _geo,
-                        palette: palette,
-                        language: language,
-                        discovered: discovered,
-                        legs: roadLegs(journey, discovered),
-                        ahead: _nextPlace(here, discovered),
-                        selectedId: selected.id,
-                        here: here,
-                        walking: _walking,
-                        walkPath: _walkPath,
-                        chapterFilter: _chapterFilter,
-                        reduceMotion: _reduceMotion,
-                        chapterColor: chartChapterColor,
-                      ),
+                    child: SizedBox(
+                      width: _mapSize.width,
+                      height: _mapSize.height,
+                      child: Stack(fit: StackFit.expand, children: [
+                        CustomPaint(
+                          painter: ChartMapPainter(
+                            frame: _frame,
+                            walk: _walk,
+                            geography: _geo,
+                            palette: palette,
+                            language: language,
+                            discovered: discovered,
+                            legs: roadLegs(journey, discovered),
+                            ahead:
+                                editing ? null : _nextPlace(here, discovered),
+                            fog: editing ? ChartFog.none : ChartFog.uncharted,
+                            selectedId: selected.id,
+                            here: here,
+                            walking: _walking,
+                            walkPath: _walkPath,
+                            chapterFilter: _chapterFilter,
+                            reduceMotion: _reduceMotion,
+                            chapterColor: chartChapterColor,
+                            zoomOf: () => _scale,
+                            view: _view,
+                          ),
+                        ),
+                        // The weather over the chart (v1.204).
+                        if (ref.watch(chartWeatherProvider))
+                          ChartWeather(
+                            size: _mapSize,
+                            geography: _geo,
+                            palette: palette,
+                            day: session.day,
+                          ),
+                      ]),
                     ),
                   ),
                 ),
@@ -483,7 +522,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    for (final option in MapShape.values)
+                    for (final option in mapLookShapes)
                       Semantics(
                         button: true,
                         selected: option == shape,
@@ -595,6 +634,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
             style: TextStyle(
                 fontFamily: InkFonts.display, fontSize: 24, color: tokens.ink),
           ),
+          actions: const [TourInfoButton(topic: TutorialTopic.map)],
         ),
         body: LayoutBuilder(
           builder: (context, constraints) {
@@ -861,6 +901,20 @@ class _LandmarkPanel extends ConsumerWidget {
           child: Text(text, style: pixel(15, color: tokens.muted)),
         );
 
+    // The landmark among the world's places (v1.197, see geography.dart).
+    final world = ref.watch(geographyProvider);
+    final place = world.placeOfLandmark(landmark.id);
+    // The place itself goes when it is named as the landmark is: the
+    // panel's title says it already.
+    final lands = [
+      for (final land in world.pathOf(place?.id))
+        if (land != place ||
+            land.nameFor(language == AppLanguage.fr).toLowerCase() !=
+                landmark.name(language).toLowerCase())
+          land,
+    ];
+    final biome = world.biomeOf(place?.id);
+
     Widget tag(String text, {Color? border}) => Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
           decoration: BoxDecoration(
@@ -896,7 +950,7 @@ class _LandmarkPanel extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(mapChapter(landmark.chapter).title(language),
+          Text(_mapChapterOf(landmark.chapter).title(language),
               style: pixel(15, color: chapterColor)),
           const SizedBox(height: 4),
           Text(landmark.name(language),
@@ -917,6 +971,28 @@ class _LandmarkPanel extends ConsumerWidget {
                       style: pixel(15, color: tokens.accent)),
                 ],
               ),
+            ),
+          // Where it lies (v1.197): its lands, each a tap from This land,
+          // and its land's biome.
+          if (lands.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            GeoBreadcrumb(
+              key: const Key('world_map_crumbs'),
+              path: lands,
+              french: language == AppLanguage.fr,
+              colour: tokens.muted,
+              strong: tokens.ink,
+              fontFamily: _textFont,
+              fontSize: 14,
+              onTap: (place) => showThisLand(context, place.id),
+            ),
+          ],
+          if (biome != null)
+            Padding(
+              key: const Key('world_map_biome'),
+              padding: const EdgeInsets.only(top: 4),
+              child: tag(biome.nameFor(language == AppLanguage.fr),
+                  border: const Color(0xFF4F7A4A)),
             ),
           const SizedBox(height: 10),
           Text(

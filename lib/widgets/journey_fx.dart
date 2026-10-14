@@ -3,18 +3,35 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import '../data/climate.dart';
 import '../data/journey_map.dart';
 
-/// The weather drifting over a chapter's Journey map: ash over the burning
-/// Lower City, Alster and the Spire, rain over the drowned Court and the
-/// Hollow Shore, snow over the giants' frost.
-enum JourneyWeather { none, ash, rain, snow }
+/// The weather drifting over the Journey map: ash over the burning Lower
+/// City, Alster and the Spire, and what the sky brings (v1.204, see
+/// climate.dart): rain, snow, dust off the dry lands, fog.
+enum JourneyWeather { none, ash, rain, snow, dust, fog }
 
+/// The chapter's own weather, as the story was first drawn: ash over the
+/// burning chapters, rain over the drowned ones, snow over the frost.
 JourneyWeather journeyWeatherFor(int chapter) => switch (chapter) {
       1 || 2 || 3 => JourneyWeather.ash,
       4 || 6 => JourneyWeather.rain,
       5 => JourneyWeather.snow,
       _ => JourneyWeather.none,
+    };
+
+/// The weather drawn over [chapter]'s map under [sky]: what the sky
+/// brings when it brings something; under a clear or a plain cloudy sky,
+/// the ash of a burning chapter still falls, and nothing else.
+JourneyWeather journeyWeatherOf(WeatherKind? sky, int chapter) => switch (sky) {
+      WeatherKind.rain => JourneyWeather.rain,
+      WeatherKind.snow => JourneyWeather.snow,
+      WeatherKind.dust => JourneyWeather.dust,
+      WeatherKind.ash => JourneyWeather.ash,
+      WeatherKind.fog => JourneyWeather.fog,
+      _ => journeyWeatherFor(chapter) == JourneyWeather.ash
+          ? JourneyWeather.ash
+          : JourneyWeather.none,
     };
 
 /// A chapter's weather over [size] at [t] seconds (ash, rain or snow),
@@ -24,6 +41,43 @@ void paintJourneyWeather(Canvas canvas, Size size, double t,
     {int count = 26}) {
   if (weather == JourneyWeather.none) return;
   final paint = Paint()..color = weatherColour;
+  if (weather == JourneyWeather.fog) {
+    // Banks of fog drifting slowly across, soft-edged.
+    final bank = Paint()
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 14);
+    for (var k = 0; k < 5; k++) {
+      final y = (0.1 + _weatherHash(k) * 0.8) * size.height;
+      final x =
+          ((_weatherHash(k + 5) + t * 0.012 * (1 + _weatherHash(k + 9))) % 1.3 -
+                  0.15) *
+              size.width;
+      bank.color = weatherColour.withValues(alpha: 0.16);
+      canvas.drawOval(
+          Rect.fromCenter(
+              center: Offset(x, y),
+              width: size.width * 0.55,
+              height: 26 + _weatherHash(k + 2) * 20),
+          bank);
+    }
+    return;
+  }
+  if (weather == JourneyWeather.dust) {
+    // Dust streaming on the wind, left to right, in short streaks.
+    for (var k = 0; k < count; k++) {
+      final speed = 0.18 + _weatherHash(k) * 0.14;
+      final phase = (t * speed + _weatherHash(k + 99)) % 1.0;
+      final y =
+          (_weatherHash(k + 7) + math.sin(t * 1.3 + k) * 0.01) * size.height;
+      final x = phase * size.width;
+      paint
+        ..color =
+            weatherColour.withValues(alpha: math.sin(math.pi * phase) * 0.7)
+        ..strokeWidth = 1.1
+        ..strokeCap = StrokeCap.round;
+      canvas.drawLine(Offset(x, y), Offset(x - 7, y + 0.6), paint);
+    }
+    return;
+  }
   for (var k = 0; k < count; k++) {
     final speed = switch (weather) {
       JourneyWeather.rain => 1.6 + _weatherHash(k) * 0.6,
@@ -455,8 +509,55 @@ class JourneyFxPainter extends CustomPainter {
     canvas.drawPath(path, Paint()..color = colour);
   }
 
+  /// Whether a rebuild must redraw (v1.209): only when what the layer
+  /// draws has changed. The clock's ticks repaint it on their own (see
+  /// the constructor's `repaint`), so a rebuild that hands it the same
+  /// steps, mark, weather and moments redraws nothing: the Journey's
+  /// idle frames cost no re-recording of this layer.
   @override
-  bool shouldRepaint(covariant JourneyFxPainter old) => true;
+  bool shouldRepaint(covariant JourneyFxPainter old) =>
+      !identical(time, old.time) ||
+      here != old.here ||
+      hereRadius != old.hereRadius ||
+      stepRadius != old.stepRadius ||
+      mark != old.mark ||
+      fog != old.fog ||
+      weather != old.weather ||
+      weatherColour != old.weatherColour ||
+      !identical(selectedRoad, old.selectedRoad) ||
+      selected != old.selected ||
+      footprintColour != old.footprintColour ||
+      dust != old.dust ||
+      dice != old.dice ||
+      diceColour != old.diceColour ||
+      rattle != old.rattle ||
+      rattleColour != old.rattleColour ||
+      !_sameSteps(steps, old.steps) ||
+      !_samePrints(footprints, old.footprints);
+
+  static bool _sameSteps(List<JourneyFxStep> a, List<JourneyFxStep> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      final x = a[i], y = b[i];
+      if (x.centre != y.centre ||
+          x.kind != y.kind ||
+          x.colour != y.colour ||
+          x.locked != y.locked ||
+          x.row != y.row) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  static bool _samePrints(List<JourneyFootprint> a, List<JourneyFootprint> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      final x = a[i], y = b[i];
+      if (x.at != y.at || x.born != y.born || x.angle != y.angle) return false;
+    }
+    return true;
+  }
 }
 
 /// A shake and a red vignette going into a fight (see the Journey tab's

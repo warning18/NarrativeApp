@@ -378,6 +378,7 @@ class ShotOutcome {
     this.leakOpened = false,
     this.helmDamage = 0,
     this.helmKnockedOut = false,
+    this.layersLost = 0,
   });
 
   final ShipState target;
@@ -399,6 +400,9 @@ class ShotOutcome {
   /// another room; in the helm itself, [roomKnockedOut] says it).
   final bool helmKnockedOut;
 
+  /// Shield layers the shot took down (when it was absorbed).
+  final int layersLost;
+
   bool get landed => !dodged && !absorbed;
 }
 
@@ -414,6 +418,8 @@ class ShotMods {
     this.helmPips = 0,
     this.sure = false,
     this.floods = true,
+    this.shieldBreak = false,
+    this.slips = false,
   });
 
   /// Hull damage is the weapon's times this, at least 1.
@@ -437,6 +443,15 @@ class ShotMods {
   /// A heavy hit on the hold opens a leak.
   final bool floods;
 
+  /// The shield rules of v1.217: a layer that stops a shot still lets a
+  /// share of it through to the hull ([shieldChipShare]), a shot at the
+  /// bulwark itself or a heavy one ([heavyShotDamage]) strips more layers.
+  final bool shieldBreak;
+
+  /// A perfect aim finds the gap: with [shieldBreak] on, the shot passes
+  /// the layers instead of breaking on them.
+  final bool slips;
+
   ShotMods merge(ShotMods other) => ShotMods(
         damageFactor: damageFactor * other.damageFactor,
         extraRoomDamage: extraRoomDamage + other.extraRoomDamage,
@@ -445,6 +460,8 @@ class ShotMods {
         helmPips: helmPips + other.helmPips,
         sure: sure || other.sure,
         floods: floods && other.floods,
+        shieldBreak: shieldBreak || other.shieldBreak,
+        slips: slips || other.slips,
       );
 }
 
@@ -452,6 +469,22 @@ class ShotMods {
 /// for a weapon that does any.
 int scaledDamage(int damage, double factor) =>
     damage <= 0 ? 0 : max(1, (damage * factor).round());
+
+/// The share of a shot's hull damage that gets past a shield layer.
+const double shieldChipShare = 0.3;
+
+/// A weapon this heavy strips a second layer as it breaks on the shield.
+const int heavyShotDamage = 20;
+
+/// Layers a shot that is stopped takes down: one, a second for a shot at
+/// the bulwark itself, another for a heavy weapon (never more than stand).
+int layersStripped(ShipWeapon weapon, ShipRoom room, ShotMods mods) {
+  if (!mods.shieldBreak) return 1;
+  var n = 1;
+  if (room == ShipRoom.bulwark) n++;
+  if (weapon.damage >= heavyShotDamage) n++;
+  return n;
+}
 
 /// One weapon fired at [room] of [target]. The helm's evasion is rolled
 /// first ([roll] in [0, 1)); then a shield layer stops a non-piercing shot,
@@ -470,19 +503,28 @@ ShotOutcome resolveShot({
   if (!mods.sure && roll * 100 < evasionPercent) {
     return ShotOutcome(target: target, room: room, dodged: true);
   }
-  if (!weapon.piercing && target.layers > 0) {
+  final slipsShield = mods.shieldBreak && mods.slips;
+  if (!weapon.piercing && target.layers > 0 && !slipsShield) {
     final bulwark = target.room(ShipRoom.bulwark);
     final cracked = bulwark.copyWith(damage: bulwark.damage + 1);
     var next = target
-        .copyWith(layers: target.layers - 1)
+        .copyWith(
+            layers: max(0, target.layers - layersStripped(weapon, room, mods)))
         .withRoom(ShipRoom.bulwark, cracked);
+    if (mods.shieldBreak) {
+      final chip =
+          scaledDamage(weapon.damage, mods.damageFactor * shieldChipShare);
+      next = next.copyWith(hull: max(0, next.hull - chip));
+    }
     next = next.copyWith(layers: min(next.layers, next.maxLayers));
     return ShotOutcome(
       target: next,
       room: room,
       absorbed: true,
+      hullDamage: target.hull - next.hull,
       roomDamage: cracked.damage - bulwark.damage,
       roomKnockedOut: !bulwark.isDown && cracked.isDown,
+      layersLost: target.layers - next.layers,
     );
   }
   final burns = (weapon.incendiary || mods.ignite) && !mods.noFire;
@@ -779,6 +821,22 @@ List<String> partsWithinSlots({
   return kept;
 }
 
+/// The parts of [installedPartIds] a ship has no slot for (see
+/// [partsWithinSlots]): what a rebuild moves into the Harbor's store.
+List<String> partsBeyondSlots({
+  required Map<String, dynamic> ship,
+  required Map<String, dynamic> parts,
+  required List<String> installedPartIds,
+}) {
+  final within = partsWithinSlots(
+          ship: ship, parts: parts, installedPartIds: installedPartIds)
+      .toSet();
+  return [
+    for (final id in installedPartIds)
+      if (!within.contains(id)) id,
+  ];
+}
+
 const Map<String, String> _slotCountKeys = {
   'Weapon': 'weaponSlots',
   'Shield': 'shieldSlots',
@@ -786,8 +844,21 @@ const Map<String, String> _slotCountKeys = {
   'Sail': 'sailSlots',
 };
 
+/// The hull the [partIds] add together (ship_parts.json `hullBonus`: oak
+/// planking, a reinforced keel...).
+int hullBonusOf(Map<String, dynamic> parts, Iterable<String> partIds) {
+  var bonus = 0;
+  for (final id in partIds) {
+    bonus +=
+        ((parts[id] as Map<String, dynamic>?)?['hullBonus'] as num?)?.toInt() ??
+            0;
+  }
+  return bonus;
+}
+
 /// The player's ship as it sets out: hull and rooms from ships.json plus
-/// the `roomBonus` of every installed part it has a slot for (see
+/// the `hullBonus` and `roomBonus` of every installed part it has a slot
+/// for (see
 /// [partsWithinSlots]), its weapons from those that fire, layers full; a
 /// stored hull of -1 (a fresh save, or just repaired) means full.
 /// [voidVolleyBonus] is the painted sail's extra on its own volley, if
@@ -805,12 +876,17 @@ ShipState buildPlayerShip({
 }) {
   int lifted(int value, int percent) =>
       percent == 0 ? value : (value * (100 + percent) / 100).round();
+  final fitted = partsWithinSlots(
+      ship: ship, parts: parts, installedPartIds: installedPartIds);
   final maxHull = max(
-      1, lifted((ship['baseMaxHull'] as num?)?.toInt() ?? 100, hullPercent));
+      1,
+      lifted(
+          ((ship['baseMaxHull'] as num?)?.toInt() ?? 100) +
+              hullBonusOf(parts, fitted),
+          hullPercent));
   final rooms = _roomsFrom(ship['rooms']);
   final weapons = <ShipWeapon>[];
-  for (final id in partsWithinSlots(
-      ship: ship, parts: parts, installedPartIds: installedPartIds)) {
+  for (final id in fitted) {
     final part = parts[id] as Map<String, dynamic>?;
     if (part == null) continue;
     final bonus = part['roomBonus'];

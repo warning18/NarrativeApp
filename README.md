@@ -24,6 +24,8 @@ Each release on GitHub (Releases, latest version, Assets) has:
 
 - `app-release.apk` for Android: open it on the phone to install it. Later
   versions install from the app itself (Settings → Check for Updates).
-- `NarrativeApp-<version>.ipa` for iPhone: it has to be signed with your own
-  Apple ID when you install it, which works without a Mac. See
-  [docs/INSTALL_IPHONE.md](docs/INSTALL_IPHONE.md).
+
+Releases are Android only. An iPhone build can still be made by hand
+(Actions → **Build iOS** → Run workflow); it has to be signed with your own
+Apple ID when you install it, which works without a Mac. See
+[docs/INSTALL_IPHONE.md](docs/INSTALL_IPHONE.md).

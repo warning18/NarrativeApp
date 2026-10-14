@@ -664,5 +664,556 @@
         "value": 1
       }
     ]
+  },
+  "throne_dominion": {
+    "id": "throne_dominion",
+    "name": "Lantern-Bearer",
+    "name_fr": "Porte-Lanterne",
+    "line": "You sit the Lantern Throne at Candlehold, and the flame has not touched the ground.",
+    "line_fr": "Vous siégez sur le Trône de la Lanterne à Candlehold, et la flamme n’a pas touché le sol.",
+    "faction": "dominion",
+    "source": "throne:dominion",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "partyMaxHealthPercent",
+        "value": 3
+      },
+      {
+        "kind": "partyStartBlock",
+        "value": 2
+      }
+    ]
+  },
+  "throne_vigil": {
+    "id": "throne_vigil",
+    "name": "The Throne of Open Eyes",
+    "name_fr": "Le Trône aux yeux ouverts",
+    "line": "You rule from the Lantern Throne under the Vigil’s eye, and you do not look away.",
+    "line_fr": "Vous régnez depuis le Trône de la Lanterne sous l’œil de la Veille, et vous ne détournez pas les yeux.",
+    "faction": "vigil",
+    "source": "throne:vigil",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "dodgeChance",
+        "value": 2
+      },
+      {
+        "kind": "firstRoundDamagePercent",
+        "value": 12
+      }
+    ]
+  },
+  "throne_compact": {
+    "id": "throne_compact",
+    "name": "The Asked-For Crown",
+    "name_fr": "La Couronne demandée",
+    "line": "The Compact forged your crown because you gave it a reason.",
+    "line_fr": "Le Pacte a forgé votre couronne parce que vous lui avez donné une raison.",
+    "faction": "compact",
+    "source": "throne:compact",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "armor",
+        "value": 1
+      },
+      {
+        "kind": "guardBlockPercent",
+        "value": 12
+      }
+    ]
+  },
+  "throne_mire": {
+    "id": "throne_mire",
+    "name": "The Heron Throne",
+    "name_fr": "Le Trône du Héron",
+    "line": "The Mire Courts sat in a circle on the Lantern Hall’s floor and crowned you on terms nobody has read to you yet.",
+    "line_fr": "Les Cours du Marais se sont assises en cercle sur le sol de la Salle de la Lanterne et vous ont donné la couronne à des conditions que personne ne vous a encore lues.",
+    "faction": "mire",
+    "source": "throne:mire",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "lifestealPercent",
+        "value": 3
+      },
+      {
+        "kind": "mendPercent",
+        "value": 10
+      }
+    ]
+  },
+  "throne_crows": {
+    "id": "throne_crows",
+    "name": "The Key to Candlehold",
+    "name_fr": "La Clef de Candlehold",
+    "line": "Forty keys on the Throne’s step, and the last one is yours.",
+    "line_fr": "Quarante clefs sur la marche du Trône, et la dernière est à vous.",
+    "faction": "crows",
+    "source": "throne:crows",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "critChance",
+        "value": 3
+      },
+      {
+        "kind": "goldPercent",
+        "value": 10
+      }
+    ]
+  },
+  "throne_penitents": {
+    "id": "throne_penitents",
+    "name": "The Burnt Crown",
+    "name_fr": "La Couronne brûlée",
+    "line": "A broken sword across the Throne’s arms and one live coal in a burnt lantern: the Penitents’ crown, and yours.",
+    "line_fr": "Une épée brisée en travers des bras du Trône et une seule braise vive dans une lanterne brûlée : la couronne des Pénitents, et la vôtre.",
+    "faction": "penitents",
+    "source": "throne:penitents",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "partyStartBlock",
+        "value": 1
+      },
+      {
+        "kind": "afterFightHealPercent",
+        "value": 6
+      }
+    ]
+  },
+  "throne_open_hand": {
+    "id": "throne_open_hand",
+    "name": "Keeper of the Seal",
+    "name_fr": "Garde du Sceau",
+    "line": "The Seal is the drawers’ again, and you are what is left of them.",
+    "line_fr": "Le Sceau est de nouveau aux traceurs, et vous êtes ce qu’il en reste.",
+    "faction": "open_hand",
+    "source": "throne:open_hand",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "maxMana",
+        "value": 1
+      },
+      {
+        "kind": "allyDamagePercent",
+        "value": 4
+      }
+    ]
+  },
+  "lamp_lit": {
+    "id": "lamp_lit",
+    "name": "Lamp-Lit",
+    "name_fr": "Éclairé",
+    "line": "The Dominion’s clerks greet you by name.",
+    "line_fr": "Les clercs du Dominion vous saluent par votre nom.",
+    "faction": "dominion",
+    "source": "while:friendly",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "stat",
+        "value": 1,
+        "stat": "charisma"
+      }
+    ]
+  },
+  "stamped_and_sealed": {
+    "id": "stamped_and_sealed",
+    "name": "Stamped and Sealed",
+    "name_fr": "Estampillé et scellé",
+    "line": "Your name is on a list they do not burn.",
+    "line_fr": "Votre nom figure sur une liste qu’ils ne brûlent pas.",
+    "faction": "dominion",
+    "source": "while:friend",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "armor",
+        "value": 1
+      }
+    ]
+  },
+  "marked_absent": {
+    "id": "marked_absent",
+    "name": "Marked Absent",
+    "name_fr": "Porté absent",
+    "line": "The Dominion’s clerks look through you.",
+    "line_fr": "Les clercs du Dominion regardent à travers vous.",
+    "faction": "dominion",
+    "source": "while:unfriendly",
+    "negative": true,
+    "effects": [
+      {
+        "kind": "goldPercent",
+        "value": -4
+      }
+    ]
+  },
+  "struck_from_the_roll": {
+    "id": "struck_from_the_roll",
+    "name": "Struck from the Roll",
+    "name_fr": "Rayé du rôle",
+    "line": "Your name is crossed out in their ledgers.",
+    "line_fr": "Votre nom est barré dans leurs registres.",
+    "faction": "dominion",
+    "source": "while:resented",
+    "negative": true,
+    "effects": [
+      {
+        "kind": "stat",
+        "value": -1,
+        "stat": "charisma"
+      },
+      {
+        "kind": "maxHealth",
+        "value": -3
+      }
+    ]
+  },
+  "watch_friend": {
+    "id": "watch_friend",
+    "name": "Watch-Friend",
+    "name_fr": "Ami de la veille",
+    "line": "The Grey Vigil nods as you pass the wall.",
+    "line_fr": "La Veille grise vous salue d’un signe quand vous passez le mur.",
+    "faction": "vigil",
+    "source": "while:friendly",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "stat",
+        "value": 1,
+        "stat": "perception"
+      }
+    ]
+  },
+  "keeps_a_candle": {
+    "id": "keeps_a_candle",
+    "name": "Keeps a Candle",
+    "name_fr": "Garde une chandelle",
+    "line": "A candle is kept lit for your return.",
+    "line_fr": "Une chandelle reste allumée pour votre retour.",
+    "faction": "vigil",
+    "source": "while:friend",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "dodgeChance",
+        "value": 2
+      }
+    ]
+  },
+  "cold_shoulder": {
+    "id": "cold_shoulder",
+    "name": "Cold Shoulder",
+    "name_fr": "Épaule froide",
+    "line": "The Vigil does not turn to watch you leave.",
+    "line_fr": "La Veille ne se retourne pas pour vous regarder partir.",
+    "faction": "vigil",
+    "source": "while:unfriendly",
+    "negative": true,
+    "effects": [
+      {
+        "kind": "stat",
+        "value": -1,
+        "stat": "perception"
+      }
+    ]
+  },
+  "left_in_the_dark": {
+    "id": "left_in_the_dark",
+    "name": "Left in the Dark",
+    "name_fr": "Laissé dans le noir",
+    "line": "They would not light a candle for you now.",
+    "line_fr": "Ils n’allumeraient plus une chandelle pour vous.",
+    "faction": "vigil",
+    "source": "while:resented",
+    "negative": true,
+    "effects": [
+      {
+        "kind": "dodgeChance",
+        "value": -2
+      },
+      {
+        "kind": "firstRoundDamagePercent",
+        "value": -6
+      }
+    ]
+  },
+  "asked_in": {
+    "id": "asked_in",
+    "name": "Asked In",
+    "name_fr": "Invité à entrer",
+    "line": "The Compact’s doors open when you knock.",
+    "line_fr": "Les portes du Pacte s’ouvrent quand vous frappez.",
+    "faction": "compact",
+    "source": "while:friendly",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "guardFlat",
+        "value": 1
+      }
+    ]
+  },
+  "seat_at_the_anvil": {
+    "id": "seat_at_the_anvil",
+    "name": "Seat at the Anvil",
+    "name_fr": "Place à l’enclume",
+    "line": "A stool is kept for you at the forge.",
+    "line_fr": "Un tabouret vous attend à la forge.",
+    "faction": "compact",
+    "source": "while:friend",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "stat",
+        "value": 1,
+        "stat": "strength"
+      }
+    ]
+  },
+  "short_measure": {
+    "id": "short_measure",
+    "name": "Short Measure",
+    "name_fr": "Mesure courte",
+    "line": "They weigh your coin twice.",
+    "line_fr": "Ils pèsent votre monnaie deux fois.",
+    "faction": "compact",
+    "source": "while:unfriendly",
+    "negative": true,
+    "effects": [
+      {
+        "kind": "guardFlat",
+        "value": -1
+      }
+    ]
+  },
+  "barred_from_the_row": {
+    "id": "barred_from_the_row",
+    "name": "Barred from the Row",
+    "name_fr": "Interdit de Rangée",
+    "line": "The Row closes its shutters as you pass.",
+    "line_fr": "La Rangée ferme ses volets sur votre passage.",
+    "faction": "compact",
+    "source": "while:resented",
+    "negative": true,
+    "effects": [
+      {
+        "kind": "stat",
+        "value": -1,
+        "stat": "strength"
+      },
+      {
+        "kind": "armor",
+        "value": -1
+      }
+    ]
+  },
+  "reed_friend": {
+    "id": "reed_friend",
+    "name": "Reed-Friend",
+    "name_fr": "Ami des roseaux",
+    "line": "The marsh folk leave you the dry path.",
+    "line_fr": "Les gens du marais vous laissent le sentier sec.",
+    "faction": "mire",
+    "source": "while:friendly",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "potionBonus",
+        "value": 6
+      }
+    ]
+  },
+  "fed_at_the_fire": {
+    "id": "fed_at_the_fire",
+    "name": "Fed at the Fire",
+    "name_fr": "Nourri au feu",
+    "line": "A bowl is set for you before you ask.",
+    "line_fr": "Une écuelle vous est servie avant que vous la demandiez.",
+    "faction": "mire",
+    "source": "while:friend",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "mendPercent",
+        "value": 6
+      }
+    ]
+  },
+  "wrong_foot": {
+    "id": "wrong_foot",
+    "name": "Wrong Foot",
+    "name_fr": "Mauvais pied",
+    "line": "The marsh shifts a little as you walk.",
+    "line_fr": "Le marais bouge un peu sous vos pas.",
+    "faction": "mire",
+    "source": "while:unfriendly",
+    "negative": true,
+    "effects": [
+      {
+        "kind": "potionBonus",
+        "value": -6
+      }
+    ]
+  },
+  "led_astray": {
+    "id": "led_astray",
+    "name": "Led Astray",
+    "name_fr": "Égaré",
+    "line": "The reeds lead you where they like.",
+    "line_fr": "Les roseaux vous mènent où bon leur semble.",
+    "faction": "mire",
+    "source": "while:resented",
+    "negative": true,
+    "effects": [
+      {
+        "kind": "mendPercent",
+        "value": -8
+      },
+      {
+        "kind": "maxHealth",
+        "value": -3
+      }
+    ]
+  },
+  "good_for_a_loan": {
+    "id": "good_for_a_loan",
+    "name": "Good for a Loan",
+    "name_fr": "Digne d’un prêt",
+    "line": "The Crows will advance you a little.",
+    "line_fr": "Les Corneilles vous avanceraient un peu.",
+    "faction": "crows",
+    "source": "while:friendly",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "goldPercent",
+        "value": 4
+      }
+    ]
+  },
+  "name_in_the_ledger": {
+    "id": "name_in_the_ledger",
+    "name": "Name in the Ledger",
+    "name_fr": "Nom au registre",
+    "line": "Your debts are forgiven in advance. Your favors, remembered.",
+    "line_fr": "Vos dettes sont pardonnées d’avance. Vos faveurs, retenues.",
+    "faction": "crows",
+    "source": "while:friend",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "critChance",
+        "value": 2
+      }
+    ]
+  },
+  "overdue": {
+    "id": "overdue",
+    "name": "Overdue",
+    "name_fr": "En retard",
+    "line": "Your credit is a rumor.",
+    "line_fr": "Votre crédit n’est plus qu’une rumeur.",
+    "faction": "crows",
+    "source": "while:unfriendly",
+    "negative": true,
+    "effects": [
+      {
+        "kind": "goldPercent",
+        "value": -5
+      }
+    ]
+  },
+  "collected_upon": {
+    "id": "collected_upon",
+    "name": "Collected Upon",
+    "name_fr": "Recouvré",
+    "line": "They are already counting what you owe.",
+    "line_fr": "Ils comptent déjà ce que vous devez.",
+    "faction": "crows",
+    "source": "while:resented",
+    "negative": true,
+    "effects": [
+      {
+        "kind": "critChance",
+        "value": -2
+      },
+      {
+        "kind": "stat",
+        "value": -1,
+        "stat": "luck"
+      }
+    ]
+  },
+  "shared_road": {
+    "id": "shared_road",
+    "name": "Shared Road",
+    "name_fr": "Route partagée",
+    "line": "The Penitents walk a mile with you.",
+    "line_fr": "Les Pénitents font un bout de chemin avec vous.",
+    "faction": "penitents",
+    "source": "while:friendly",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "afterFightHealPercent",
+        "value": 3
+      }
+    ]
+  },
+  "ash_on_the_brow": {
+    "id": "ash_on_the_brow",
+    "name": "Ash on the Brow",
+    "name_fr": "Cendre au front",
+    "line": "They mark you as one of their own.",
+    "line_fr": "Ils vous marquent comme l’un des leurs.",
+    "faction": "penitents",
+    "source": "while:friend",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "maxMana",
+        "value": 1
+      }
+    ]
+  },
+  "unforgiven": {
+    "id": "unforgiven",
+    "name": "Unforgiven",
+    "name_fr": "Sans pardon",
+    "line": "Penance has been refused you.",
+    "line_fr": "La pénitence vous a été refusée.",
+    "faction": "penitents",
+    "source": "while:unfriendly",
+    "negative": true,
+    "effects": [
+      {
+        "kind": "afterFightHealPercent",
+        "value": -3
+      }
+    ]
+  },
+  "anathema": {
+    "id": "anathema",
+    "name": "Anathema",
+    "name_fr": "Anathème",
+    "line": "The Penitents turn their faces from you.",
+    "line_fr": "Les Pénitents détournent le visage.",
+    "faction": "penitents",
+    "source": "while:resented",
+    "negative": true,
+    "effects": [
+      {
+        "kind": "spellDamagePercent",
+        "value": -6
+      }
+    ]
   }
 }

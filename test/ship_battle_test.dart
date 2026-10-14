@@ -743,4 +743,69 @@ void main() {
     b.endRound();
     expect(b.playerEvasion, before, reason: 'for that volley only');
   });
+
+  group('shield rules', () {
+    const rules = ShipBattleRules(
+      range: false,
+      weather: false,
+      seaEvents: false,
+      habits: false,
+      flooding: false,
+      orderStations: false,
+      intents: false,
+      push: false,
+      escalation: false,
+    );
+    ShipBattle shieldBattle({
+      ShipBattleRules r = rules,
+      List<ShipWeapon> guns = const [_gun],
+      int layers = 2,
+    }) =>
+        _battle(
+          rules: r,
+          player: _ship(weapons: guns),
+          enemy: _ship(
+              layers: layers,
+              levels: const {ShipRoom.helm: 0, ShipRoom.bulwark: 3},
+              weapons: const [_theirGun]),
+        );
+
+    test('a stopped shot still shakes the hull, and says so', () {
+      final b = shieldBattle();
+      final shot = b.fire('gun', ShipRoom.guns)!;
+      expect(shot.absorbed, isTrue);
+      expect(b.enemy.hull, 96);
+      expect(b.enemy.layers, 1);
+      expect(b.log.map((l) => l.key), contains('ship_log_shield_chip'));
+    });
+
+    test('the classic rules let a stopped shot cost nothing', () {
+      final b = shieldBattle(r: ShipBattleRules.classic);
+      b.fire('gun', ShipRoom.guns);
+      expect(b.enemy.hull, 100);
+      expect(b.salvoReady, isFalse);
+    });
+
+    test('a perfect aim slips through the gap and keeps the layers', () {
+      final b = shieldBattle();
+      final shot = b.fire('gun', ShipRoom.guns, aim: AimResult.perfect)!;
+      expect(shot.landed, isTrue);
+      expect(b.enemy.layers, 2);
+      expect(b.log.map((l) => l.key), contains('ship_log_shield_gap'));
+    });
+
+    test('the sums: shots to get through, fewer at the bulwark', () {
+      final b = shieldBattle();
+      expect(b.shotsToLand('gun', ShipRoom.guns), 3);
+      expect(b.shotsToLand('gun', ShipRoom.bulwark), 2);
+      expect(shieldBattle(layers: 0).shotsToLand('gun', ShipRoom.guns), 1);
+    });
+
+    test('a salvo is ready when the ready guns can break and land', () {
+      expect(shieldBattle().salvoReady, isFalse);
+      expect(shieldBattle(guns: const [_gun, _gun2]).salvoReady, isTrue);
+      expect(shieldBattle(guns: const [_gun, _gun2], layers: 0).salvoReady,
+          isFalse);
+    });
+  });
 }

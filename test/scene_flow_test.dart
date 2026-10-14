@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/echoes.dart';
+import 'package:narrative_data_app/data/geography.dart';
 import 'package:narrative_data_app/data/journey_rules.dart';
 import 'package:narrative_data_app/data/scene_flow.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
@@ -32,6 +33,84 @@ StoryNode _node(String id, List<Map<String, dynamic>> choices,
         id, {'description': 'Scene $id.', 'choices': choices, ...extra});
 
 void main() {
+  group('where a way really lands (v1.224)', () {
+    StoryNode plain(String id, String to) => _node(id, [
+          {'text': 'On', 'next_id': to}
+        ]);
+    final story = StoryData({
+      'a': plain('a', 'b'),
+      'b': plain('b', 'c'),
+      'c': plain('c', 'd'),
+      'd': _node('d', [
+        {'text': 'Left', 'next_id': 'e'},
+        {'text': 'Right', 'next_id': 'f'},
+      ]),
+    });
+
+    test('the plain scenes passed on the way are walked through', () {
+      // a and b are read through (at most two), c is where the story stands.
+      expect(readThroughEnd('a', nodeFor: story.nodeFor, flags: const []), 'c');
+      expect(readThroughEnd('b', nodeFor: story.nodeFor, flags: const []), 'd');
+      // A real stop is where the party lands.
+      expect(readThroughEnd('d', nodeFor: story.nodeFor, flags: const []), 'd');
+    });
+
+    test('the flags a passed scene sets count for the next one', () {
+      // a notes "met" on its way on; b's only way on shows only to those
+      // who met, so with the flag carried the story reads on through b.
+      final flagged = StoryData({
+        'a': _node('a', [
+          {
+            'text': 'On',
+            'next_id': 'b',
+            'flagsToAdd': ['met']
+          }
+        ]),
+        'b': _node('b', [
+          {
+            'text': 'On',
+            'next_id': 'c',
+            'showIfFlags': ['met']
+          }
+        ]),
+        'c': _node('c', [
+          {'text': 'Left', 'next_id': 'd'},
+          {'text': 'Right', 'next_id': 'e'},
+        ]),
+      });
+      expect(
+          readThroughEnd('a',
+              nodeFor: flagged.nodeFor,
+              flags: const [],
+              hidden: (c, held) => c.isHiddenFor(held)),
+          'c');
+      // Without carrying the flag b would have no way on and be a stop.
+      expect(
+          readThroughEnd('b',
+              nodeFor: flagged.nodeFor,
+              flags: const [],
+              hidden: (c, held) => c.isHiddenFor(held)),
+          'b');
+    });
+
+    test('a road, a way not yet takeable and an unknown scene stop it', () {
+      expect(
+          readThroughEnd('a',
+              nodeFor: story.nodeFor,
+              flags: const [],
+              travels: (from, to) => to == 'c'),
+          'b');
+      expect(
+          readThroughEnd('a',
+              nodeFor: story.nodeFor,
+              flags: const [],
+              blocked: (way, held) => way.nextId == 'b'),
+          'a');
+      expect(
+          readThroughEnd('zz', nodeFor: story.nodeFor, flags: const []), 'zz');
+    });
+  });
+
   group('a plain way on', () {
     test('moves on and may leave a mark, nothing more', () {
       StoryChoice c(Map<String, dynamic> json) =>
@@ -121,6 +200,82 @@ void main() {
         if (way == null) continue;
         expect(isRoadStep(node.id, way.nextId), isFalse, reason: node.id);
       }
+    });
+
+    test(
+        'with the world known, a way to another district of the same city '
+        'reads through; one that leaves the city is a stop (v1.209)', () {
+      // Saltmouth's landward gate (2005, the Upper City landmark) and its
+      // wharf (2015_kelda, the wharf landmark): two landmarks, one city.
+      final gate = _node('2005', [
+        {'text': 'Down to the wharf', 'next_id': '2015_kelda'}
+      ], {
+        'location': 'gate'
+      });
+      expect(isPlainGoOn(gate.choices.single), isTrue);
+      // By landmark alone, a change of landmark is the road: a stop.
+      expect(isRoadStep('2005', '2015_kelda'), isTrue);
+      expect(passThroughChoiceOf(gate, const []), isNull);
+      // With the world's places, the wharf is a district of the same
+      // city: a walk through its streets, read through.
+      final story = StoryData({
+        gate.id: gate,
+        '2015_kelda': _node('2015_kelda', const [], {'location': 'wharf'}),
+      });
+      final oneCity = Geography.parse(geography: {
+        'old': {'level': 'continent', 'parent': '', 'name': 'Old'},
+        'coast': {'level': 'country', 'parent': 'old', 'name': 'Coast'},
+        'head': {
+          'level': 'zone',
+          'parent': 'coast',
+          'biome': 'arid_coast',
+          'name': 'Headland'
+        },
+        'saltmouth': {
+          'level': 'location',
+          'parent': 'head',
+          'kind': 'city',
+          'name': 'Saltmouth'
+        },
+        'gate': {'level': 'district', 'parent': 'saltmouth', 'name': 'Gate'},
+        'wharf': {'level': 'district', 'parent': 'saltmouth', 'name': 'Wharf'},
+      }, biomes: const {});
+      expect(
+          passThroughChoiceOf(gate, const [],
+              travels: (a, b) => oneCity.travelsBetween(story, a, b))?.nextId,
+          '2015_kelda');
+      // Two locations: the road, a stop.
+      final twoTowns = Geography.parse(geography: {
+        'old': {'level': 'continent', 'parent': '', 'name': 'Old'},
+        'coast': {'level': 'country', 'parent': 'old', 'name': 'Coast'},
+        'head': {
+          'level': 'zone',
+          'parent': 'coast',
+          'biome': 'arid_coast',
+          'name': 'Headland'
+        },
+        'gate': {
+          'level': 'location',
+          'parent': 'head',
+          'kind': 'town',
+          'name': 'Gate'
+        },
+        'wharf': {
+          'level': 'location',
+          'parent': 'head',
+          'kind': 'village',
+          'name': 'Wharf'
+        },
+      }, biomes: const {});
+      expect(
+          passThroughChoiceOf(gate, const [],
+              travels: (a, b) => twoTowns.travelsBetween(story, a, b)),
+          isNull);
+      // No world at all: back to the landmarks.
+      expect(
+          passThroughChoiceOf(gate, const [],
+              travels: (a, b) => Geography.empty.travelsBetween(story, a, b)),
+          isNull);
     });
 
     test('the story has scenes to read straight through, none a stop', () {

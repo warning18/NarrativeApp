@@ -1,0 +1,508 @@
+{
+  "sandstorm": {
+    "id": "sandstorm",
+    "name": "Sandstorm",
+    "name_fr": "Tempête de sable",
+    "text": "The horizon goes brown, then goes away. The wind brings the desert with it, a grain at a time and all at once.",
+    "text_fr": "L’horizon brunit, puis disparaît. Le vent apporte le désert avec lui, grain à grain et tout à la fois.",
+    "choices": [
+      {
+        "id": "push",
+        "text": "Push on through it",
+        "text_fr": "Avancer à travers",
+        "check": "constitution",
+        "dc": 10,
+        "success": {
+          "healthPct": -6,
+          "note": "You come out the far side scoured, but walking.",
+          "note_fr": "Vous en sortez écorché, mais debout."
+        },
+        "fail": {
+          "healthPct": -18,
+          "note": "The sand takes skin and breath and a long hour.",
+          "note_fr": "Le sable prend la peau, le souffle et une longue heure."
+        }
+      },
+      {
+        "id": "shelter",
+        "text": "Dig in behind a dune and wait",
+        "text_fr": "S’abriter derrière une dune et attendre",
+        "outcome": {
+          "healthPct": -4,
+          "days": 1,
+          "note": "It blows itself out by morning. You lose the day.",
+          "note_fr": "Elle s’épuise au matin. Vous perdez la journée."
+        }
+      }
+    ]
+  },
+  "dry_well": {
+    "id": "dry_well",
+    "name": "A dry well",
+    "name_fr": "Un puits à sec",
+    "text": "A ring of stones, a rope rotted to the knot, and at the bottom a dark that might be damp.",
+    "text_fr": "Un cercle de pierres, une corde pourrie jusqu’au nœud, et au fond une ombre qui pourrait être humide.",
+    "choices": [
+      {
+        "id": "dig",
+        "text": "Climb down and dig",
+        "text_fr": "Descendre et creuser",
+        "check": "strength",
+        "dc": 10,
+        "success": {
+          "healthPct": 10,
+          "note": "A hand’s depth of brown water. It is enough.",
+          "note_fr": "Une main d’eau brune. Cela suffit."
+        },
+        "fail": {
+          "healthPct": -8,
+          "note": "Nothing but sand, and the climb back up.",
+          "note_fr": "Rien que du sable, et la remontée."
+        }
+      },
+      {
+        "id": "leave",
+        "text": "Leave it and walk on",
+        "text_fr": "Le laisser et marcher",
+        "outcome": {
+          "healthPct": -6,
+          "note": "The thirst walks with you.",
+          "note_fr": "La soif marche avec vous."
+        }
+      }
+    ]
+  },
+  "spring": {
+    "id": "spring",
+    "name": "A spring",
+    "name_fr": "Une source",
+    "text": "Green, where nothing should be green: a seep under a shelf of rock, and the tracks of everything that drinks there.",
+    "text_fr": "Du vert, là où rien ne devrait l’être : un suintement sous une dalle, et les traces de tout ce qui vient y boire.",
+    "choices": [
+      {
+        "id": "rest",
+        "text": "Drink, and rest the day",
+        "text_fr": "Boire, et se reposer la journée",
+        "outcome": {
+          "healthPct": 20,
+          "days": 1,
+          "note": "You sleep in the shade of the rock until the heat breaks.",
+          "note_fr": "Vous dormez à l’ombre de la roche jusqu’à ce que la chaleur retombe."
+        }
+      },
+      {
+        "id": "drink",
+        "text": "Drink, and push on",
+        "text_fr": "Boire, et repartir",
+        "outcome": {
+          "healthPct": 10,
+          "note": "Enough to carry you to the next ridge.",
+          "note_fr": "Assez pour vous porter jusqu’à la prochaine crête."
+        }
+      }
+    ]
+  },
+  "mirage": {
+    "id": "mirage",
+    "name": "A mirage",
+    "name_fr": "Un mirage",
+    "text": "Water, to the west: a lake with trees on it, a mile off, the most beautiful thing you have ever seen.",
+    "text_fr": "De l’eau, à l’ouest : un lac bordé d’arbres, à une lieue, la plus belle chose que vous ayez jamais vue.",
+    "choices": [
+      {
+        "id": "trust",
+        "text": "Trust your eyes and go to it",
+        "text_fr": "Croire vos yeux et y aller",
+        "check": "wisdom",
+        "dc": 11,
+        "success": {
+          "healthPct": 0,
+          "note": "Halfway there you see it for what it is, and turn back in time.",
+          "note_fr": "À mi-chemin vous le voyez pour ce qu’il est, et rebroussez chemin à temps."
+        },
+        "fail": {
+          "healthPct": -12,
+          "note": "It walks away from you all afternoon.",
+          "note_fr": "Il s’éloigne de vous tout l’après-midi."
+        }
+      },
+      {
+        "id": "ignore",
+        "text": "Keep to the tracks",
+        "text_fr": "Garder la piste",
+        "outcome": {
+          "healthPct": -3,
+          "note": "You do not look west again.",
+          "note_fr": "Vous ne regardez plus vers l’ouest."
+        }
+      }
+    ]
+  },
+  "scavengers": {
+    "id": "scavengers",
+    "name": "Scavengers",
+    "name_fr": "Pillards",
+    "text": "Three of the sledge-men from the wreck, sitting on a dune as if they had been waiting. Perhaps they had.",
+    "text_fr": "Trois des hommes aux traîneaux de l’épave, assis sur une dune comme s’ils attendaient. Peut-être attendaient-ils.",
+    "choices": [
+      {
+        "id": "fight",
+        "text": "Go at them",
+        "text_fr": "Leur tomber dessus",
+        "check": "strength",
+        "dc": 11,
+        "success": {
+          "healthPct": -8,
+          "gold": 15,
+          "note": "They break and run, and leave a purse behind.",
+          "note_fr": "Ils cèdent et s’enfuient, en laissant une bourse."
+        },
+        "fail": {
+          "healthPct": -20,
+          "note": "You drive them off, and bleed for it.",
+          "note_fr": "Vous les chassez, et vous en saignez."
+        }
+      },
+      {
+        "id": "slip",
+        "text": "Slip away down the far side",
+        "text_fr": "Filer par l’autre versant",
+        "check": "dexterity",
+        "dc": 11,
+        "success": {
+          "healthPct": 0,
+          "note": "They never see you go.",
+          "note_fr": "Ils ne vous voient pas partir."
+        },
+        "fail": {
+          "healthPct": -14,
+          "note": "A thrown knife finds you on the way.",
+          "note_fr": "Un couteau lancé vous trouve en chemin."
+        }
+      },
+      {
+        "id": "pay",
+        "text": "Throw them a purse",
+        "text_fr": "Leur jeter une bourse",
+        "outcome": {
+          "gold": -10,
+          "healthPct": 0,
+          "note": "They count it, and let you by.",
+          "note_fr": "Ils comptent, et vous laissent passer."
+        }
+      }
+    ]
+  },
+  "shade": {
+    "id": "shade",
+    "name": "Shade",
+    "name_fr": "De l’ombre",
+    "text": "A wind-carved arch, and under it a band of shade as cold as a cellar.",
+    "text_fr": "Une arche taillée par le vent, et dessous une bande d’ombre fraîche comme une cave.",
+    "choices": [
+      {
+        "id": "rest",
+        "text": "Lie up through the heat",
+        "text_fr": "S’y étendre pendant la chaleur",
+        "outcome": {
+          "healthPct": 12,
+          "note": "You walk on in the evening, lighter.",
+          "note_fr": "Vous repartez le soir, plus léger."
+        }
+      }
+    ]
+  },
+  "flash_flood": {
+    "id": "flash_flood",
+    "name": "Flash flood",
+    "name_fr": "Crue subite",
+    "text": "A sound like a crowd, far up the wadi, though there is no crowd and no rain. Then the dry bed begins to move.",
+    "text_fr": "Un bruit de foule, loin en amont de l’oued, alors qu’il n’y a ni foule ni pluie. Puis le lit à sec se met à bouger.",
+    "choices": [
+      {
+        "id": "climb",
+        "text": "Climb the bank, now",
+        "text_fr": "Escalader la berge, tout de suite",
+        "check": "dexterity",
+        "dc": 10,
+        "success": {
+          "healthPct": 0,
+          "note": "You watch it go by from the rocks, brown and roaring.",
+          "note_fr": "Vous la regardez passer depuis les rochers, brune et rugissante."
+        },
+        "fail": {
+          "healthPct": -16,
+          "note": "It takes your feet and gives them back a long way downstream.",
+          "note_fr": "Elle vous prend les pieds et vous les rend loin en aval."
+        }
+      },
+      {
+        "id": "drink",
+        "text": "Stay low, and drink when it passes",
+        "text_fr": "Rester bas, et boire quand elle passe",
+        "check": "constitution",
+        "dc": 12,
+        "success": {
+          "healthPct": 12,
+          "note": "Cold water, for once more than enough.",
+          "note_fr": "De l’eau froide, pour une fois plus qu’assez."
+        },
+        "fail": {
+          "healthPct": -12,
+          "note": "The water is generous and rough about it.",
+          "note_fr": "L’eau est généreuse, et brutale avec."
+        }
+      }
+    ]
+  },
+  "water_seller": {
+    "id": "water_seller",
+    "name": "A water-seller",
+    "name_fr": "Un porteur d’eau",
+    "text": "An old man with a donkey and four skins of water, going nowhere in particular, prices going up. The Wells are two days off, he says; he has said so to everyone.",
+    "text_fr": "Un vieil homme, un âne et quatre outres d’eau, qui ne va nulle part en particulier, et dont les prix montent. Les Puits sont à deux jours, dit-il ; il l’a dit à tout le monde.",
+    "choices": [
+      {
+        "id": "buy",
+        "text": "Buy a skin",
+        "text_fr": "Acheter une outre",
+        "outcome": {
+          "gold": -12,
+          "healthPct": 15,
+          "note": "It tastes of goat and is worth every coin.",
+          "note_fr": "Elle a un goût de chèvre et vaut chaque pièce."
+        }
+      },
+      {
+        "id": "haggle",
+        "text": "Haggle",
+        "text_fr": "Marchander",
+        "check": "charisma",
+        "dc": 11,
+        "success": {
+          "gold": -5,
+          "healthPct": 15,
+          "note": "He laughs, and takes less.",
+          "note_fr": "Il rit, et prend moins."
+        },
+        "fail": {
+          "healthPct": -4,
+          "note": "He walks on, and the day is hotter for it.",
+          "note_fr": "Il poursuit sa route, et la journée en paraît plus chaude."
+        }
+      },
+      {
+        "id": "pass",
+        "text": "Wish him well and walk on",
+        "text_fr": "Lui souhaiter bonne route et repartir",
+        "outcome": {
+          "healthPct": -4,
+          "note": "He wishes you the same, without much hope.",
+          "note_fr": "Il vous souhaite la même chose, sans grand espoir."
+        }
+      }
+    ]
+  },
+  "ash_squall": {
+    "id": "ash_squall",
+    "name": "Ash squall",
+    "name_fr": "Bourrasque de cendre",
+    "text": "The wind turns off the flats and brings the burned town with it: grey, warm, and in the mouth.",
+    "text_fr": "Le vent quitte les plaines et apporte la ville brûlée avec lui : grise, tiède, et dans la bouche.",
+    "choices": [
+      {
+        "id": "push",
+        "text": "Wrap your face and walk on",
+        "text_fr": "Vous couvrir le visage et avancer",
+        "check": "constitution",
+        "dc": 10,
+        "success": {
+          "healthPct": -5,
+          "note": "You come out of it coughing, but on the road.",
+          "note_fr": "Vous en sortez en toussant, mais sur la route."
+        },
+        "fail": {
+          "healthPct": -15,
+          "note": "It fills your lungs for an hour you will remember.",
+          "note_fr": "Elle vous remplit les poumons pendant une heure dont vous vous souviendrez."
+        }
+      },
+      {
+        "id": "cellar",
+        "text": "Shelter in a cellar until it passes",
+        "text_fr": "Vous abriter dans une cave jusqu’à ce qu’elle passe",
+        "outcome": {
+          "healthPct": -3,
+          "days": 1,
+          "note": "The cellar was someone’s. You lose the afternoon.",
+          "note_fr": "La cave était à quelqu’un. Vous perdez l’après-midi."
+        }
+      }
+    ]
+  },
+  "inquisition_patrol": {
+    "id": "inquisition_patrol",
+    "name": "A patrol",
+    "name_fr": "Une patrouille",
+    "text": "Four grey cloaks on the road ahead, walking slowly, the way people walk who expect everyone else to stop.",
+    "text_fr": "Quatre manteaux gris sur la route, qui marchent lentement, comme marchent ceux qui s’attendent à ce que tous les autres s’arrêtent.",
+    "choices": [
+      {
+        "id": "hide",
+        "text": "Get off the road and wait",
+        "text_fr": "Quitter la route et attendre",
+        "check": "dexterity",
+        "dc": 11,
+        "success": {
+          "healthPct": 0,
+          "note": "They pass close enough to smell the incense.",
+          "note_fr": "Ils passent assez près pour que vous sentiez l’encens."
+        },
+        "fail": {
+          "healthPct": -14,
+          "note": "One of them looks down. The rest is quick and bad.",
+          "note_fr": "L’un d’eux baisse les yeux. La suite est rapide et mauvaise."
+        }
+      },
+      {
+        "id": "bluff",
+        "text": "Walk up and give them a pilgrim’s name",
+        "text_fr": "Aller à leur rencontre et donner un nom de pèlerin",
+        "check": "charisma",
+        "dc": 12,
+        "success": {
+          "healthPct": 0,
+          "note": "They bless you, which is worse, and let you by.",
+          "note_fr": "Ils vous bénissent, ce qui est pire, et vous laissent passer."
+        },
+        "fail": {
+          "healthPct": -10,
+          "gold": -10,
+          "note": "They search you and keep what they like.",
+          "note_fr": "Ils vous fouillent et gardent ce qui leur plaît."
+        }
+      },
+      {
+        "id": "pay",
+        "text": "Pay the road toll they invent",
+        "text_fr": "Payer le péage qu’ils inventent",
+        "outcome": {
+          "healthPct": 0,
+          "gold": -15,
+          "note": "It is a very holy toll.",
+          "note_fr": "C’est un péage très saint."
+        }
+      }
+    ]
+  },
+  "burned_shrine": {
+    "id": "burned_shrine",
+    "name": "A burned shrine",
+    "name_fr": "Un sanctuaire brûlé",
+    "text": "A wayside shrine with its roof gone. Someone has left bread on the altar since the fire.",
+    "text_fr": "Un sanctuaire de bord de route au toit effondré. Quelqu’un a laissé du pain sur l’autel depuis l’incendie.",
+    "choices": [
+      {
+        "id": "rest",
+        "text": "Rest inside its walls",
+        "text_fr": "Vous reposer entre ses murs",
+        "outcome": {
+          "healthPct": 10,
+          "note": "For an hour nothing on the coast knows where you are.",
+          "note_fr": "Pendant une heure, rien sur la côte ne sait où vous êtes."
+        }
+      },
+      {
+        "id": "search",
+        "text": "Search the ashes",
+        "text_fr": "Fouiller les cendres",
+        "check": "wisdom",
+        "dc": 11,
+        "success": {
+          "healthPct": 0,
+          "gold": 20,
+          "note": "Under the altar, a tin of coins nobody came back for.",
+          "note_fr": "Sous l’autel, une boîte de pièces que personne n’est revenu chercher."
+        },
+        "fail": {
+          "healthPct": -6,
+          "note": "A beam comes down where you were kneeling.",
+          "note_fr": "Une poutre tombe là où vous vous agenouilliez."
+        }
+      }
+    ]
+  },
+  "feral_dogs": {
+    "id": "feral_dogs",
+    "name": "Dogs",
+    "name_fr": "Des chiens",
+    "text": "Dogs that used to belong to the town, and remember it, and blame you.",
+    "text_fr": "Des chiens qui appartenaient à la ville, qui s’en souviennent, et qui vous en veulent.",
+    "choices": [
+      {
+        "id": "stand",
+        "text": "Stand your ground and drive them off",
+        "text_fr": "Tenir bon et les chasser",
+        "check": "strength",
+        "dc": 11,
+        "success": {
+          "healthPct": -4,
+          "note": "They break and scatter into the ruins.",
+          "note_fr": "Ils lâchent prise et se dispersent dans les ruines."
+        },
+        "fail": {
+          "healthPct": -14,
+          "note": "They go, eventually, and not all of them empty-mouthed.",
+          "note_fr": "Ils finissent par partir, et pas tous la gueule vide."
+        }
+      },
+      {
+        "id": "climb",
+        "text": "Climb a wall and wait them out",
+        "text_fr": "Grimper sur un mur et attendre qu’ils se lassent",
+        "outcome": {
+          "healthPct": -3,
+          "note": "They lose interest before you lose your grip.",
+          "note_fr": "Ils se lassent avant que vous ne lâchiez prise."
+        }
+      }
+    ]
+  },
+  "falling_wall": {
+    "id": "falling_wall",
+    "name": "A street that gives way",
+    "name_fr": "Une rue qui cède",
+    "text": "The only way through is a lane of leaning walls, still warm, still settling.",
+    "text_fr": "Le seul passage est une ruelle de murs penchés, encore tièdes, qui se tassent encore.",
+    "choices": [
+      {
+        "id": "run",
+        "text": "Run it",
+        "text_fr": "La traverser en courant",
+        "check": "dexterity",
+        "dc": 10,
+        "success": {
+          "healthPct": 0,
+          "note": "Behind you, the lane folds in on itself.",
+          "note_fr": "Derrière vous, la ruelle se replie sur elle-même."
+        },
+        "fail": {
+          "healthPct": -16,
+          "note": "A wall comes down on your shoulder.",
+          "note_fr": "Un mur s’effondre sur votre épaule."
+        }
+      },
+      {
+        "id": "around",
+        "text": "Go the long way round",
+        "text_fr": "Faire le grand tour",
+        "outcome": {
+          "healthPct": -4,
+          "days": 0,
+          "note": "Half a day of rubble, but whole.",
+          "note_fr": "Une demi-journée de gravats, mais en un seul morceau."
+        }
+      }
+    ]
+  }
+}

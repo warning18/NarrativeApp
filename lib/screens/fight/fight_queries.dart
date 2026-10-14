@@ -31,7 +31,9 @@ extension _FightQueries on _FightScreenState {
     if (_condition == BattlefieldCondition.ambush && _roundsStarted <= 1) {
       return TelegraphTier.none;
     }
-    final tier = telegraphTierFor(_bestPartyPerception(), enemy.guile);
+    // Fog, dust and snow take from the party's read (v1.208).
+    final tier = telegraphTierFor(
+        _bestPartyPerception() - _groundPerceptionPenalty, enemy.guile);
     return _condition == BattlefieldCondition.dark ? darkenedTier(tier) : tier;
   }
 
@@ -112,12 +114,17 @@ extension _FightQueries on _FightScreenState {
     );
     final alignedBonus =
         alignmentGearBonusFor(actor.equippedItemIds, items, _alignmentLabel);
-    return actor.baseDamage +
-        equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage') +
-        scalingBonus.damageBonus +
-        alignedBonus.damageBonus +
-        actor.gear.attackDamage +
-        elementalBonus;
+    // The day's sky and the ground's anomaly dampen or feed the element
+    // (v1.208, v1.241).
+    return _groundDamage(
+        actor.baseDamage +
+            equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage') +
+            scalingBonus.damageBonus +
+            alignedBonus.damageBonus +
+            actor.gear.attackDamage +
+            elementalBonus,
+        element,
+        byParty: true);
   }
 
   /// The enemy a strike by [actor] lands on if confirmed now: the only
@@ -148,6 +155,8 @@ extension _FightQueries on _FightScreenState {
             enemyDamage: enemy.damage)
         : move.damage;
     var damage = applyWeaken(base, enemy.statusEffects);
+    // The sky dampens or feeds the enemy's element too (v1.208).
+    damage = _groundDamage(damage, move.element, byParty: false);
     if (enemy.hasAffix(EnemyAffix.frenzied) &&
         enemy.currentHealth < enemy.maxHealth * frenziedHealthThreshold) {
       damage = (damage * frenziedDamageMultiplier).round();
@@ -155,6 +164,11 @@ extension _FightQueries on _FightScreenState {
     if (leaderStanding && !enemy.hasAffix(EnemyAffix.packLeader)) {
       damage = (damage * packLeaderAllyDamageMultiplier).round();
     }
+    // Provoked by a heavy blow, or pressing a party that only defended
+    // (v1.215, see enemy_response.dart).
+    final answer = responseDamageMultiplier(
+        provoked: enemy.provoked, pressing: enemy.pressing);
+    if (answer != 1.0) damage = (damage * answer).round();
     // A pact's curse, while it runs (see signs.dart).
     return _signs.enemyDamage(damage);
   }
@@ -332,10 +346,22 @@ extension _FightQueries on _FightScreenState {
   /// Every party member able to act this round — conscious, and not
   /// currently Stunned (see status_effect.dart; a stunned member is
   /// skipped for the round entirely, announced in [_startPartyRound]).
-  List<_PartyMember> get _actingParty => _party
-      .where((m) =>
-          !m.isKnockedOut &&
-          !isStunned(m.statusEffects) &&
-          !_sittingOut.contains(m.id))
-      .toList();
+  /// In Dexterity order, the quickest first (v1.213, see turn_order.dart).
+  List<_PartyMember> get _actingParty => actingOrder(
+      _party
+          .where((m) =>
+              !m.isKnockedOut &&
+              !isStunned(m.statusEffects) &&
+              !_sittingOut.contains(m.id))
+          .toList(),
+      (m) => m.dexterity);
+
+  /// [member]'s place in this round's order (1 is first), or null when
+  /// they act alone or not at all.
+  int? _orderOf(_PartyMember member) {
+    final acting = _actingParty;
+    if (acting.length < 2) return null;
+    final index = acting.indexWhere((a) => a.id == member.id);
+    return index < 0 ? null : index + 1;
+  }
 }

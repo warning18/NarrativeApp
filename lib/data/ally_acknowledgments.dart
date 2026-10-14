@@ -13,15 +13,16 @@ const Map<String, Map<String, String>> _acksEn = {
     '*': ' Someone kept pace with me the whole way down to the water, which '
         'I had not asked for and did not, when it came to it, mind.',
     'vess': ' Vess ran beside me without seeming to hurry, as though the '
-        'docks were somewhere she had already been and merely intended to '
+        'quay were somewhere she had already been and merely intended to '
         'arrive at again.',
   },
   '2001': {
-    '*': ' I was not, for once, the only one watching the shore burn from '
-        'the rail, and the company made the fire smaller.',
-    'vess': " Vess watched the fire with the flat attention of someone "
-        "comparing it to another. \"It goes out,\" she said. \"Eventually. "
-        "Everything I have watched burn has.\"",
+    '*': ' I was not, for once, the only one watching the walls come up out '
+        'of the haze, and the company made the city smaller.',
+    'vess': " Vess watched the white masks at the gate with the flat "
+        "attention of someone comparing them to others. \"They are "
+        "everywhere,\" she said. \"That is not the same as being "
+        "everything.\"",
   },
   '2015': {
     '*': ' Whoever was walking with me kept a hand near a weapon and an '
@@ -36,7 +37,7 @@ const Map<String, Map<String, String>> _acksEn = {
         'would have chosen, and one she would have avoided.',
   },
   '2900': {
-    '*': ' Whoever had come down to the berths with me looked at the Eel '
+    '*': ' Whoever had come down to the yards with me looked at the Eel '
         'the way I looked at her, and did not say what we were both '
         'thinking, which was that she was a great deal of boat to trust '
         'with a great deal of sea.',
@@ -65,8 +66,8 @@ const Map<String, Map<String, String>> _acksEn = {
         'anything, "or people stay. I have done the sum. I did not like it '
         'either."',
     'liora': ' Liora had gone up the mast and was looking past the wharf to '
-        'the Upper Tier, where the drums were, and counting something I did '
-        'not want to know the total of.',
+        'the landward gate, where the drums were, and counting something I '
+        'did not want to know the total of.',
     'vess': ' Vess stood at the gangway with her hood back so the wharf '
         'could see what she was, and the ones who stepped back from her '
         'were, she told me later, the ones she would have left.',
@@ -339,6 +340,36 @@ const Map<String, Map<String, String>> _acksEn = {
         'know what the ones who had sailed with me would think of the '
         'answer, which is not something I would have said a year ago.',
   },
+  // Walking the Host's lines the night before the last battle (v1.196).
+  '7800_lines': {
+    '*': ' The company walked beside me through the Host, and every '
+        'banner we passed knew their faces better than mine.',
+    'kelda': ' Kelda walked the lines the way she walks a wall, counting. '
+        '"Enough," she said at the end. "Not enough to be sure. Enough to '
+        'hold." From Kelda it was a blessing.',
+    'grosh': ' Grosh stopped at the Vigil\'s fire and stood a long time '
+        'with the spears of the Last Watch, and when he came back he said '
+        'only that they had kept his place on the wall.',
+    'vess': ' Vess walked with her hood down through the whole Host, '
+        'tear-marked and not hiding it, and nobody in it said a word. '
+        '"A year ago they would have burned me," she said. "Now they move '
+        'their fires."',
+    'liora': ' Liora sang over three of the Host\'s wounded on the way '
+        'round, the old fen way, and would not let me thank her. "It is a '
+        'remedy," she said. "You do not thank a remedy."',
+    'sable': ' Sable had already sold the Herald\'s tabard twice, to two '
+        'different captains, and was working out how to deliver it. "If '
+        'we lose," she said, "nobody collects."',
+    'maren': ' Maren knelt by the Penitents\' cloth of names and read '
+        'them under her breath, all of them, and then asked me, quietly, '
+        'to remember hers if it came to that.',
+    'tobin': ' Tobin lit a lamp at every banner we passed, and by the end '
+        'of the line the whole cove was a cliff of lights. "Somebody has '
+        'to," he said. "Might as well be someone who makes them."',
+    'malrik': ' Malrik looked at the Host from end to end and whistled. '
+        '"I was born on a brig," he said. "I never thought I would see a '
+        'fleet that was on my side."',
+  },
 };
 
 const Map<String, Map<String, String>> _acksFr = {
@@ -346,15 +377,15 @@ const Map<String, Map<String, String>> _acksFr = {
     '*': " Quelqu'un tint mon allure jusqu'à l'eau, ce que je n'avais pas "
         "demandé et qui, au bout du compte, ne me déplut pas.",
     'vess': " Vess courait à mes côtés sans paraître se presser, comme si "
-        "les quais étaient un endroit où elle était déjà allée et où elle "
+        "le quai était un endroit où elle était déjà allée et où elle "
         "comptait simplement arriver de nouveau.",
   },
   '2001': {
-    '*': " Je n'étais pas, pour une fois, seul à regarder brûler le rivage "
-        "depuis le bastingage, et la compagnie rendait le feu plus petit.",
-    'vess': " Vess regardait le feu avec l'attention plate de qui le compare "
-        "à un autre. « Il s'éteint, dit-elle. À la longue. Tout ce que j'ai "
-        "vu brûler s'est éteint. »",
+    '*': " Pour une fois, d'autres que moi regardaient les murs sortir de "
+        "la brume, et la compagnie rendait la ville plus petite.",
+    'vess': " Vess regardait les masques blancs à la porte avec l'attention "
+        "plate de qui les compare à d'autres. « Ils sont partout, dit-elle. "
+        "Ce n'est pas la même chose qu'être tout. »",
   },
   '2015': {
     '*': " Qui marchait avec moi gardait une main près d'une arme et un œil "
@@ -369,7 +400,7 @@ const Map<String, Map<String, String>> _acksFr = {
         "aurait choisis, et un qu'elle aurait évité.",
   },
   '2900': {
-    '*': " Qui était descendu aux mouillages avec moi regardait l'Eel comme "
+    '*': " Qui était descendu aux chantiers avec moi regardait l'Eel comme "
         "je le regardais, et ne disait pas ce que nous pensions tous deux, à "
         "savoir que c'était beaucoup de bateau à confier à beaucoup de mer.",
     'kelda': " « Il flotte, dit Kelda en frappant la coque du pied. Presque. "
@@ -397,7 +428,7 @@ const Map<String, Map<String, String>> _acksFr = {
         "demandé à personne, ou les gens restent. J'ai fait le compte. Il ne "
         "m'a pas plu non plus. »",
     'liora': " Liora était montée au mât et regardait par-delà le quai vers "
-        "l'Étage Supérieur, où étaient les tambours, et comptait quelque "
+        "la porte de la terre, où étaient les tambours, et comptait quelque "
         "chose dont je ne voulais pas connaître le total.",
     'vess': " Vess se tenait à la passerelle, capuche rabattue pour que le "
         "quai voie ce qu'elle était, et ceux qui reculèrent devant elle "
@@ -679,6 +710,37 @@ const Map<String, Map<String, String>> _acksFr = {
     '*': " La question m'appartenait, mais je découvris que je voulais "
         "savoir ce que ceux qui avaient navigué avec moi penseraient de la "
         "réponse, ce que je n'aurais pas dit un an plus tôt.",
+  },
+  '7800_lines': {
+    '*': ' La compagnie marcha à mes côtés à travers l’Ost, et chaque '
+        'bannière que nous croisions connaissait mieux leurs visages que le '
+        'mien.',
+    'kelda': ' Kelda parcourut les rangs comme elle parcourt un mur, en '
+        'comptant. « Assez, dit-elle à la fin. Pas assez pour gagner à coup '
+        'sûr. Assez pour tenir. » Venant de Kelda, c’était une bénédiction.',
+    'grosh': ' Grosh s’arrêta au feu de la Veille et resta longtemps avec '
+        'les lances de la Dernière Veille, et à son retour il dit seulement '
+        'qu’on lui avait gardé sa place sur le mur.',
+    'vess': ' Vess traversa tout l’Ost capuchon baissé, marquée de la '
+        'déchirure et sans s’en cacher, et personne n’y dit un mot. « Il y '
+        'a un an, ils m’auraient brûlée, dit-elle. Maintenant, ils déplacent '
+        'leurs feux. »',
+    'liora': ' Liora chanta sur trois blessés de l’Ost en chemin, à la '
+        'vieille manière du marais, et refusa que je la remercie. « C’est un '
+        'remède, dit-elle. On ne remercie pas un remède. »',
+    'sable': ' Sable avait déjà vendu deux fois la cotte du Héraut, à deux '
+        'capitaines différents, et cherchait comment la livrer. « Si nous '
+        'perdons, dit-elle, personne ne vient réclamer. »',
+    'maren': ' Maren s’agenouilla près de l’étoffe des noms des Pénitents '
+        'et les lut à mi-voix, tous, puis me demanda, tout bas, de me '
+        'souvenir du sien s’il le fallait.',
+    'tobin': ' Tobin alluma une lampe à chaque bannière que nous croisions, '
+        'et au bout des rangs la crique entière était une falaise de '
+        'lumières. « Il faut bien que quelqu’un le fasse, dit-il. Autant '
+        'que ce soit quelqu’un qui les fabrique. »',
+    'malrik': ' Malrik regarda l’Ost d’un bout à l’autre et siffla. « Je '
+        'suis né sur un brick, dit-il. Je n’aurais jamais cru voir une '
+        'flotte qui soit de mon côté. »',
   },
 };
 

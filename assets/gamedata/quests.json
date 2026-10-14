@@ -41,18 +41,18 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Premier sang",
-    "npcDialogueText_fr": "Il faut bien que quelqu'un débarrasse le pont de ce péage."
+    "npcDialogueText_fr": "Il faut bien que quelqu’un débarrasse le pont de ce péage."
   },
   "q_retrieve_banner": {
     "questID": "q_retrieve_banner",
-    "questName": "The Heirloom of Alster",
+    "questName": "The Family Heirloom",
     "chapter": 1,
     "category": "Main",
     "difficulty": "2",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Get the Grey Bundle out of the hovel, and out of Alster",
+        "description": "Find what your mother hid under the house, and get it out of Alster",
         "type": "Flag",
         "targetEnemyID": "",
         "targetItemID": "",
@@ -60,7 +60,7 @@
         "locationID": "hovel",
         "requiredAmount": 1,
         "targetFlag": "void_banner_bearer",
-        "description_fr": "Sortir le Balluchon Gris de la masure, et d'Alster",
+        "description_fr": "Trouver ce que votre mère a caché sous la maison, et le sortir d’Alster",
         "targetNPCName_fr": "Lysa"
       }
     ],
@@ -69,26 +69,97 @@
     "rewardItemID": "void_banner",
     "alignmentChange": 10,
     "nextQuestID": "",
-    "npcDialogueText": "Whatever lies under the floorboard of your parents' hovel, the soldiers are going door to door for it. Get there first, and get it out of Alster.",
+    "npcDialogueText": "Whatever your mother hid under the house, the Inquisition is tearing the street apart for it. Get there first, find Lysa, and get out of Alster with whatever you find.",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
       {
-        "buttonText": "Go for the Bundle",
+        "buttonText": "Go home",
         "goldModifier": 0,
         "alignmentModifier": 5,
         "flagToAdd": "has_void_banner",
         "nextEventID": "",
         "actionType": "Accept",
         "lockedText": "",
-        "buttonText_fr": "Aller chercher le Balluchon"
+        "buttonText_fr": "Rentrer à la maison"
       }
     ],
     "rewardDiceID": "",
     "rewardAllyId": "",
     "grantsBannerPieceId": "",
-    "questName_fr": "L’Héritage d’Alster",
-    "npcDialogueText_fr": "Quoi qu'il y ait sous le plancher de la masure de vos parents, les soldats le cherchent porte à porte. Arrivez-y les premiers, et sortez-le d'Alster."
+    "questName_fr": "L’Héritage de la famille",
+    "npcDialogueText_fr": "Quoi que votre mère ait caché sous la maison, l’Inquisition met la rue en pièces pour le trouver. Arrivez-y avant elle, trouvez Lysa, et quittez Alster avec ce que vous aurez trouvé."
+  },
+  "q_ch2_leave_saltmouth": {
+    "questID": "q_ch2_leave_saltmouth",
+    "questName": "A Hull to Leave In",
+    "chapter": 2,
+    "category": "Main",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Get the Rusty Eel: buy her, or work off her price in the yard",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "eel_owned",
+        "description_fr": "Obtenir le Rusty Eel : l’acheter, ou en payer le prix au chantier",
+        "targetNPCName_fr": ""
+      },
+      {
+        "description": "Patch her hull at Fisherman’s Row",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "hull_patched",
+        "description_fr": "Rapiécer sa coque à l’Allée des Pêcheurs",
+        "targetNPCName_fr": ""
+      },
+      {
+        "description": "Mend her sail at Tanner’s Court",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "sail_mended",
+        "description_fr": "Réparer sa voile à la Cour des Tanneurs",
+        "targetNPCName_fr": ""
+      }
+    ],
+    "rewardGold": 80,
+    "rewardXP": 120,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "Nobody leaves Saltmouth by the landward road with the Inquisition at the gate. The yards will sell a stranger one hull, the Rusty Eel, and she needs her hull patched and her sail mended before she will float. Get her, fix her, and cast off.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Find a way out",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_leave_saltmouth_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Chercher une sortie"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "grantsBannerPieceId": "",
+    "questName_fr": "Une coque pour partir",
+    "npcDialogueText_fr": "Personne ne quitte Bouche-de-Sel par la route de terre avec l’Inquisition à la porte. Les chantiers vendront à un étranger une seule coque, le Rusty Eel, et il lui faut une coque rapiécée et une voile réparée avant qu’il flotte. Obtenez-le, réparez-le, et larguez les amarres."
   },
   "q_ch2_dockside_debts": {
     "questID": "q_ch2_dockside_debts",
@@ -106,7 +177,8 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Chasser les rats qui souillent les réserves du port"
+        "description_fr": "Chasser les rats qui souillent les réserves du port",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 30,
@@ -136,14 +208,14 @@
   },
   "q_ch2_smugglers_favor": {
     "questID": "q_ch2_smugglers_favor",
-    "questName": "A Smuggler's Favor",
+    "questName": "A Smuggler’s Favor",
     "chapter": 2,
     "category": "Side",
     "difficulty": "3",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Bring back iron ore for the smuggler's forge",
+        "description": "Bring back iron ore for the smuggler’s forge",
         "type": "Fetch",
         "targetEnemyID": "",
         "targetItemID": "material_iron_ore",
@@ -158,7 +230,7 @@
     "rewardItemID": "dagger_t2",
     "alignmentChange": 0,
     "nextQuestID": "q_ch2_burning_manifest",
-    "npcDialogueText": "Get me that ore and I'll cut you a fair price on steel.",
+    "npcDialogueText": "Get me that ore and I’ll cut you a fair price on steel.",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -182,7 +254,7 @@
     "questID": "q_ch2_burning_manifest",
     "questName": "The Burning Manifest",
     "chapter": 2,
-    "category": "Main",
+    "category": "Side",
     "difficulty": "4",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -194,7 +266,8 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Arrêter le bandit qui incendie les manifestes de cargaison"
+        "description_fr": "Arrêter le bandit qui incendie les manifestes de cargaison",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 50,
@@ -224,9 +297,9 @@
   },
   "q_ch2_captains_gambit": {
     "questID": "q_ch2_captains_gambit",
-    "questName": "The Captain's Gambit",
+    "questName": "The Captain’s Gambit",
     "chapter": 2,
-    "category": "Main",
+    "category": "Side",
     "difficulty": "5",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -238,7 +311,8 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Affronter le capitaine contrebandier"
+        "description_fr": "Affronter le capitaine contrebandier",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 70,
@@ -270,7 +344,7 @@
     "questID": "q_ch2_harbor_reckoning",
     "questName": "Harbor Reckoning",
     "chapter": 2,
-    "category": "Main",
+    "category": "Side",
     "difficulty": "5",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -282,7 +356,8 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Abattre le chien pestiféré qui rôde sur le port"
+        "description_fr": "Abattre le chien pestiféré qui rôde sur le port",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 90,
@@ -334,7 +409,7 @@
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "q_ch3_inquisition_ledger",
-    "npcDialogueText": "Their chanting hasn't stopped since the city burned. Make it stop.",
+    "npcDialogueText": "Their chanting hasn’t stopped since the city burned. Make it stop.",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -356,7 +431,7 @@
   },
   "q_ch3_inquisition_ledger": {
     "questID": "q_ch3_inquisition_ledger",
-    "questName": "The Inquisition's Ledger",
+    "questName": "The Inquisition’s Ledger",
     "chapter": 3,
     "category": "Main",
     "difficulty": "6",
@@ -444,7 +519,7 @@
   },
   "q_ch3_the_high_wardens_fall": {
     "questID": "q_ch3_the_high_wardens_fall",
-    "questName": "The High Warden's Fall",
+    "questName": "The High Warden’s Fall",
     "chapter": 3,
     "category": "Main",
     "difficulty": "9",
@@ -488,14 +563,14 @@
   },
   "q_ch3_alsters_dawn": {
     "questID": "q_ch3_alsters_dawn",
-    "questName": "Alster's Dawn",
+    "questName": "Alster’s Dawn",
     "chapter": 3,
     "category": "Main",
     "difficulty": "9",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Carry word of the Warden's fall back to the camp",
+        "description": "Carry word of the Warden’s fall back to the camp",
         "type": "Talk",
         "targetEnemyID": "",
         "targetItemID": "",
@@ -512,7 +587,7 @@
     "rewardItemID": "plate_emberproof",
     "alignmentChange": 0,
     "nextQuestID": "",
-    "npcDialogueText": "Go on. Tell them it's over. Tell them this coast can be home.",
+    "npcDialogueText": "Go on. Tell them it’s over. Tell them this coast can be home.",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -535,7 +610,7 @@
   },
   "q_ch2_keldas_stand": {
     "questID": "q_ch2_keldas_stand",
-    "questName": "Kelda's Stand",
+    "questName": "Kelda’s Stand",
     "chapter": 2,
     "category": "Side",
     "difficulty": "3",
@@ -550,7 +625,8 @@
         "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Aider Kelda à tenir la porte du quai contre les hommes d’abordage",
-        "targetNPCName_fr": "Kelda"
+        "targetNPCName_fr": "Kelda",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 40,
@@ -558,7 +634,7 @@
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
-    "npcDialogueText": "\"Name's Kelda. I've been holding this gate alone since my unit stopped being a unit, and I'll go on holding it alone if I have to — but I'd rather not have to.\" She sets her shield without waiting for an answer, which I take, correctly, as her having already decided this partnership one way or another.",
+    "npcDialogueText": "\"Name’s Kelda. I’ve been holding this gate alone since my unit stopped being a unit, and I’ll go on holding it alone if I have to — but I’d rather not have to.\" She sets her shield without waiting for an answer, which I take, correctly, as her having already decided this partnership one way or another.",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -576,18 +652,18 @@
     "rewardDiceID": "",
     "rewardAllyId": "kelda",
     "questName_fr": "Kelda tient bon",
-    "npcDialogueText_fr": "« Je m’appelle Kelda. Je tiens cette porte seule depuis que mon unité a cessé d’en être une, et je continuerai à la tenir seule s’il le faut — mais je préférerais ne pas avoir à le faire. » Elle cale son bouclier sans attendre de réponse, ce que je prends, à raison, pour le signe qu’elle a déjà tranché la question de ce partenariat, dans un sens ou dans l’autre."
+    "npcDialogueText_fr": "« Je m’appelle Kelda. Je tiens cette porte seule depuis que mon unité a cessé d’en être une, et je continuerai à la tenir seule s’il le faut — mais je préférerais ne pas avoir à le faire. » Elle cale son bouclier sans attendre de réponse, ce que je prends, à raison, pour le signe qu’elle a déjà tranché la question de ce partenariat, dans un sens ou dans l’autre."
   },
   "q_ch2_sables_wager": {
     "questID": "q_ch2_sables_wager",
-    "questName": "Sable's Wager",
+    "questName": "Sable’s Wager",
     "chapter": 2,
     "category": "Side",
     "difficulty": "3",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Get back the marker Sable lost to the card sharp at the dockhands' barrel",
+        "description": "Get back the marker Sable lost to the card sharp at the dockhands’ barrel",
         "type": "Flag",
         "targetEnemyID": "",
         "targetItemID": "",
@@ -604,7 +680,7 @@
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
-    "npcDialogueText": "\"I'm good at exactly two things,\" Sable says, not looking up from the cards she's still sore about, \"picking locks and picking the wrong table to sit down at. Get my marker back and I'm yours for as long as the arrangement keeps paying better than the alternative.\" Which is, I gather, the closest thing to loyalty she considers worth promising in writing.",
+    "npcDialogueText": "\"I’m good at exactly two things,\" Sable says, not looking up from the cards she’s still sore about, \"picking locks and picking the wrong table to sit down at. Get my marker back and I’m yours for as long as the arrangement keeps paying better than the alternative.\" Which is, I gather, the closest thing to loyalty she considers worth promising in writing.",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -622,18 +698,18 @@
     "rewardDiceID": "",
     "rewardAllyId": "sable",
     "questName_fr": "Le Pari de Sable",
-    "npcDialogueText_fr": "« Je suis douée pour exactement deux choses, dit Sable sans lever les yeux des cartes qui lui restent en travers de la gorge : crocheter les serrures, et choisir la mauvaise table où m’asseoir. Récupérez ma reconnaissance de dette et je suis à vous tant que l’arrangement paiera mieux que l’autre option. » Ce qui est, si je comprends bien, ce qui ressemble le plus à une loyauté qu’elle juge digne d’être promise par écrit."
+    "npcDialogueText_fr": "« Je suis douée pour exactement deux choses, dit Sable sans lever les yeux des cartes qui lui restent en travers de la gorge : crocheter les serrures, et choisir la mauvaise table où m’asseoir. Récupérez ma reconnaissance de dette et je suis à vous tant que l’arrangement paiera mieux que l’autre option. » Ce qui est, si je comprends bien, ce qui ressemble le plus à une loyauté qu’elle juge digne d’être promise par écrit."
   },
   "q_ch3_marens_penance": {
     "questID": "q_ch3_marens_penance",
-    "questName": "Sister Maren's Penance",
+    "questName": "Sister Maren’s Penance",
     "chapter": 3,
     "category": "Side",
     "difficulty": "6",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Hear Sister Maren's case for abandoning her Inquisition vows",
+        "description": "Hear Sister Maren’s case for abandoning her Inquisition vows",
         "type": "Talk",
         "targetEnemyID": "",
         "targetItemID": "",
@@ -649,7 +725,7 @@
     "rewardItemID": "",
     "alignmentChange": 5,
     "nextQuestID": "",
-    "npcDialogueText": "\"I took an oath to heal in the Inquisition's name, and for years I told myself the name was the smaller half of that sentence.\" Sister Maren sets down a censer that no longer smells like anything she believes in. \"I'm done arguing myself out of what I've watched this order do. Let me heal on my own terms, or don't, but I'd rather it be with you than for them.\"",
+    "npcDialogueText": "\"I took an oath to heal in the Inquisition’s name, and for years I told myself the name was the smaller half of that sentence.\" Sister Maren sets down a censer that no longer smells like anything she believes in. \"I’m done arguing myself out of what I’ve watched this order do. Let me heal on my own terms, or don’t, but I’d rather it be with you than for them.\"",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -667,11 +743,11 @@
     "rewardDiceID": "",
     "rewardAllyId": "maren",
     "questName_fr": "La Pénitence de Sœur Maren",
-    "npcDialogueText_fr": "« J’ai prêté serment de soigner au nom de l’Inquisition, et pendant des années je me suis répété que le nom était la moindre moitié de cette phrase. » Sœur Maren pose un encensoir qui ne sent plus rien de ce en quoi elle croit. « J’ai fini de me chercher des excuses pour ce que j’ai vu cet ordre faire. Laissez-moi soigner selon mes propres termes, ou non, mais je préférerais que ce soit avec vous plutôt que pour eux. »"
+    "npcDialogueText_fr": "« J’ai prêté serment de soigner au nom de l’Inquisition, et pendant des années je me suis répété que le nom était la moindre moitié de cette phrase. » Sœur Maren pose un encensoir qui ne sent plus rien de ce en quoi elle croit. « J’ai fini de me chercher des excuses pour ce que j’ai vu cet ordre faire. Laissez-moi soigner selon mes propres termes, ou non, mais je préférerais que ce soit avec vous plutôt que pour eux. »"
   },
   "q_ch2_informants_tip": {
     "questID": "q_ch2_informants_tip",
-    "questName": "The Informant's Tip",
+    "questName": "The Informant’s Tip",
     "chapter": 2,
     "category": "Side",
     "difficulty": "3",
@@ -685,7 +761,8 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "S’occuper du gardien désigné par l’indicateur"
+        "description_fr": "S’occuper du gardien désigné par l’indicateur",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 45,
@@ -693,7 +770,7 @@
     "rewardItemID": "",
     "alignmentChange": 5,
     "nextQuestID": "",
-    "npcDialogueText": "Word on the docks is a warden's been skimming smuggled goods for himself. Deal with him and there's a cut in it for you.",
+    "npcDialogueText": "Word on the docks is a warden’s been skimming smuggled goods for himself. Deal with him and there’s a cut in it for you.",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -719,8 +796,8 @@
         "rewardGold": 90,
         "alignmentChange": -3,
         "flag": "informant_cut_taken",
-        "resultText": "The informant counts it out twice, smiling the whole time.",
-        "resultText_fr": "L’informateur compte deux fois, sans cesser de sourire."
+        "resultText": "A fence on the wharf counts it out twice, smiling the whole time.",
+        "resultText_fr": "Un receleur du quai compte deux fois, sans cesser de sourire."
       },
       {
         "choiceText": "Give the goods back to the dockhands he robbed",
@@ -728,14 +805,14 @@
         "rewardGold": 15,
         "alignmentChange": 8,
         "flag": "informant_goods_returned",
-        "resultText": "The dockhands don't thank you out loud. They don't have to.",
+        "resultText": "The dockhands don’t thank you out loud. They don’t have to.",
         "resultText_fr": "Les dockers ne vous remercient pas à voix haute. Ils n’en ont pas besoin."
       }
     ]
   },
   "q_ch2_terns_toll": {
     "questID": "q_ch2_terns_toll",
-    "questName": "Tern's Toll",
+    "questName": "Tern’s Toll",
     "chapter": 2,
     "category": "Side",
     "difficulty": "3",
@@ -749,7 +826,8 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "S’occuper du contremaître qui rançonne Tern Row"
+        "description_fr": "S’occuper du contremaître qui rançonne Tern Row",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 40,
@@ -775,7 +853,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Le Péage de Tern Row",
-    "npcDialogueText_fr": "« Il appelle ça un péage de débarquement », dit Nadira, pesant chaque mot avant de le dépenser. « Ce péage n’existe pas. Il n’y a que ce qu’il pense pouvoir nous soutirer par la menace. Faites-lui refaire ses comptes, et Tern Row s’en souviendra. »",
+    "npcDialogueText_fr": "« Il appelle ça un péage de débarquement », dit Nadira, pesant chaque mot avant de le dépenser. « Ce péage n’existe pas. Il n’y a que ce qu’il pense pouvoir nous soutirer par la menace. Faites-lui refaire ses comptes, et Tern Row s’en souviendra. »",
     "turnInChoices": [
       {
         "choiceText": "Pocket the toll he collected",
@@ -783,7 +861,8 @@
         "rewardGold": 85,
         "alignmentChange": -4,
         "resultText": "Nadira sees the purse go into your coat. Tern Row will remember that too.",
-        "resultText_fr": "Nadira voit la bourse disparaître dans votre manteau. Tern Row s’en souviendra aussi."
+        "resultText_fr": "Nadira voit la bourse disparaître dans votre manteau. Tern Row s’en souviendra aussi.",
+        "flag": "tern_toll_pocketed"
       },
       {
         "choiceText": "Give the toll back to Tern Row",
@@ -798,14 +877,14 @@
   },
   "q_ch2_lioras_watch": {
     "questID": "q_ch2_lioras_watch",
-    "questName": "Liora's Watch",
+    "questName": "Liora’s Watch",
     "chapter": 2,
     "category": "Side",
     "difficulty": "3",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Help Liora end the smuggler captain's raids on refugee boats",
+        "description": "Help Liora end the smuggler captain’s raids on refugee boats",
         "type": "Kill",
         "targetEnemyID": "smuggler_captain",
         "targetItemID": "",
@@ -813,7 +892,8 @@
         "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Aider Liora à mettre fin aux raids du capitaine contrebandier contre les bateaux de réfugiés",
-        "targetNPCName_fr": "Liora"
+        "targetNPCName_fr": "Liora",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 40,
@@ -821,7 +901,7 @@
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
-    "npcDialogueText": "\"I've watched this stretch of roofline for three days,\" she says, not lowering the bow, \"and you're the first thing to cross it worth aiming at instead of past.\" The captain running boats out of the north pier has been selling refugee passage he has no intention of delivering. \"Help me close that account, and I'll consider the rest of this city marginally less worth watching alone.\"",
+    "npcDialogueText": "\"I’ve watched this stretch of roofline for three days,\" she says, not lowering the bow, \"and you’re the first thing to cross it worth aiming at instead of past.\" The captain running boats out of the north pier has been selling refugee passage he has no intention of delivering. \"Help me close that account, and I’ll consider the rest of this city marginally less worth watching alone.\"",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -839,10 +919,10 @@
     "rewardDiceID": "",
     "rewardAllyId": "liora",
     "questName_fr": "Le Guet de Liora",
-    "npcDialogueText_fr": "« Je surveille ce bout de toits depuis trois jours, dit-elle sans baisser son arc, et vous êtes la première chose à le traverser qui mérite qu’on la vise plutôt qu’on vise à côté. » Le capitaine qui fait partir des bateaux du môle nord vend aux réfugiés des passages qu’il n’a aucune intention d’assurer. « Aidez-moi à solder ce compte, et je trouverai le reste de cette ville un peu moins digne d’être surveillé seule. »",
+    "npcDialogueText_fr": "« Je surveille ce bout de toits depuis trois jours, dit-elle sans baisser son arc, et vous êtes la première chose à le traverser qui mérite qu’on la vise plutôt qu’on vise à côté. » Le capitaine qui fait partir des bateaux du môle nord vend aux réfugiés des passages qu’il n’a aucune intention d’assurer. « Aidez-moi à solder ce compte, et je trouverai le reste de cette ville un peu moins digne d’être surveillé seule. »",
     "turnInChoices": [
       {
-        "choiceText": "Keep the captain's purse",
+        "choiceText": "Keep the captain’s purse",
         "choiceText_fr": "Garder la bourse du capitaine",
         "rewardGold": 95,
         "alignmentChange": -4,
@@ -850,7 +930,8 @@
           "liora": -2
         },
         "resultText": "Liora watches you weigh the purse, and says nothing at all.",
-        "resultText_fr": "Liora vous regarde soupeser la bourse, sans rien dire."
+        "resultText_fr": "Liora vous regarde soupeser la bourse, sans rien dire.",
+        "flag": "liora_purse_kept"
       },
       {
         "choiceText": "Refund the refugees their fares",
@@ -861,7 +942,8 @@
           "liora": 2
         },
         "resultText": "The families are gone by morning, on a boat that actually sails.",
-        "resultText_fr": "Les familles sont parties au matin, sur un bateau qui prend vraiment la mer."
+        "resultText_fr": "Les familles sont parties au matin, sur un bateau qui prend vraiment la mer.",
+        "flag": "liora_fares_refunded"
       }
     ]
   },
@@ -870,18 +952,18 @@
     "questName": "Vess in the Dark",
     "chapter": 1,
     "category": "Side",
-    "difficulty": "4",
+    "difficulty": "2",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Get clear of Alster; Vess will find you",
+        "description": "Get to the sea alive; Vess will find you",
         "type": "Flag",
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Vess",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Quitter Alster ; Vess vous retrouvera",
+        "description_fr": "Rejoindre la mer en vie ; Vess vous retrouvera",
         "targetNPCName_fr": "Vess",
         "targetFlag": "void_banner_bearer"
       }
@@ -891,7 +973,7 @@
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
-    "npcDialogueText": "\"It has noticed you,\" she says, before I have said anything at all, which is either an excellent guess or the kind of thing that stops being a guess once you've carried the mark long enough yourself. \"It took its time with me. With you it is still deciding what it wants. I don't know that I can help with that, but I know what it costs to face it alone, and I'd rather not watch someone else find out the same way I did.\"",
+    "npcDialogueText": "\"It has noticed you,\" she says, before I have said anything at all, which is either an excellent guess or the kind of thing that stops being a guess once you’ve carried the mark long enough yourself. \"It took its time with me. With you it is still deciding what it wants. I don’t know that I can help with that, but I know what it costs to face it alone, and I’d rather not watch someone else find out the same way I did.\"",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -909,11 +991,11 @@
     "rewardDiceID": "",
     "rewardAllyId": "vess",
     "questName_fr": "Vess dans les ténèbres",
-    "npcDialogueText_fr": "« Elle a posé les yeux sur vous », dit-elle avant que j’aie dit quoi que ce soit, ce qui est soit une excellente intuition, soit le genre de chose qui cesse d’être une intuition quand on a soi-même porté la marque assez longtemps. « Avec moi, elle a pris son temps. Avec vous, elle décide encore de ce qu’elle attend. Je ne sais pas si je peux vous aider pour ça, mais je sais ce qu’il en coûte de l’affronter sans personne, et je préférerais ne pas regarder quelqu’un d’autre le découvrir de la même façon que moi. »"
+    "npcDialogueText_fr": "« Elle a posé les yeux sur vous », dit-elle avant que j’aie dit quoi que ce soit, ce qui est soit une excellente intuition, soit le genre de chose qui cesse d’être une intuition quand on a soi-même porté la marque assez longtemps. « Avec moi, elle a pris son temps. Avec vous, elle décide encore de ce qu’elle attend. Je ne sais pas si je peux vous aider pour ça, mais je sais ce qu’il en coûte de l’affronter sans personne, et je préférerais ne pas regarder quelqu’un d’autre le découvrir de la même façon que moi. »"
   },
   "q_ch3_groshs_price": {
     "questID": "q_ch3_groshs_price",
-    "questName": "Grosh's Price",
+    "questName": "Grosh’s Price",
     "chapter": 3,
     "category": "Side",
     "difficulty": "5",
@@ -928,7 +1010,8 @@
         "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Prouver que votre argent est bon en abattant un zélote de la Cour Creuse avec Grosh",
-        "targetNPCName_fr": "Grosh"
+        "targetNPCName_fr": "Grosh",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 55,
@@ -936,7 +1019,7 @@
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
-    "npcDialogueText": "\"I don't work for free, and I don't work for promises,\" he says, looking me over the way a butcher looks over livestock he hasn't decided is worth the knife yet. \"You look like you can actually pay, which already puts you ahead of the last four people who tried to hire me this week. Clear one of the Hollow Court's zealots with me, and we'll call the interview finished.\"",
+    "npcDialogueText": "\"I don’t work for free, and I don’t work for promises,\" he says, looking me over the way a butcher looks over livestock he hasn’t decided is worth the knife yet. \"You look like you can actually pay, which already puts you ahead of the last four people who tried to hire me this week. Clear one of the Hollow Court’s zealots with me, and we’ll call the interview finished.\"",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -954,7 +1037,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "grosh",
     "questName_fr": "Le Prix de Grosh",
-    "npcDialogueText_fr": "« Je ne travaille pas gratis, et je ne travaille pas pour des promesses », dit-il en me jaugeant comme un boucher jauge une bête dont il n’a pas encore décidé si elle vaut le couteau. « Vous avez l’air de pouvoir vraiment payer, ce qui vous place déjà devant les quatre derniers qui ont tenté de m’engager cette semaine. Abattez avec moi un des zélotes de la Cour Creuse, et on considérera l’entretien comme terminé. »"
+    "npcDialogueText_fr": "« Je ne travaille pas gratis, et je ne travaille pas pour des promesses », dit-il en me jaugeant comme un boucher jauge une bête dont il n’a pas encore décidé si elle vaut le couteau. « Vous avez l’air de pouvoir vraiment payer, ce qui vous place déjà devant les quatre derniers qui ont tenté de m’engager cette semaine. Abattez avec moi un des zélotes de la Cour Creuse, et on considérera l’entretien comme terminé. »"
   },
   "q_ch3_reckoning_wall": {
     "questID": "q_ch3_reckoning_wall",
@@ -965,14 +1048,15 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Stop the Inquisition auxiliary sent to destroy the survivors' wall",
+        "description": "Stop the Inquisition auxiliary sent to destroy the survivors’ wall",
         "type": "Kill",
         "targetEnemyID": "inquisition_auxiliary",
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Arrêter l’auxiliaire de l’Inquisition envoyé détruire le mur des survivants"
+        "description_fr": "Arrêter l’auxiliaire de l’Inquisition envoyé détruire le mur des survivants",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 50,
@@ -998,7 +1082,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Le Mur du Jugement",
-    "npcDialogueText_fr": "« Dans les rapports, ils appellent ça une relocalisation », dit Reya sans lever les yeux du mur. « Moi, j’appelle ça une liste. Il veut que la liste disparaisse avant que quiconque d’officiel ait à expliquer la différence. »",
+    "npcDialogueText_fr": "« Dans les rapports, ils appellent ça une relocalisation », dit Reya sans lever les yeux du mur. « Moi, j’appelle ça une liste. Il veut que la liste disparaisse avant que quiconque d’officiel ait à expliquer la différence. »",
     "turnInChoices": [
       {
         "choiceText": "Guard the wall where it stands",
@@ -1006,12 +1090,13 @@
         "rewardGold": 30,
         "alignmentChange": 8,
         "resultText": "Reya chalks one more line on the wall: the day it was not taken down.",
-        "resultText_fr": "Reya trace une ligne de plus sur le mur : le jour où il n’a pas été abattu."
+        "resultText_fr": "Reya trace une ligne de plus sur le mur : le jour où il n’a pas été abattu.",
+        "flag": "reckoning_wall_guarded"
       },
       {
-        "choiceText": "Copy the list for the camp's records",
+        "choiceText": "Copy the list for the camp’s records",
         "choiceText_fr": "Recopier la liste pour les archives du camp",
-        "rewardGold": 80,
+        "rewardGold": 75,
         "alignmentChange": 5,
         "flag": "reckoning_list_copied",
         "resultText": "The list goes into your pack, name by name. Someone should carry it.",
@@ -1021,9 +1106,9 @@
         }
       },
       {
-        "choiceText": "Sell the list to the Inquisition's clerks",
+        "choiceText": "Sell the list to the Inquisition’s clerks",
         "choiceText_fr": "Vendre la liste aux greffiers de l’Inquisition",
-        "rewardGold": 150,
+        "rewardGold": 100,
         "alignmentChange": -10,
         "flag": "reckoning_list_sold",
         "resultText": "The clerk pays without reading it. That was always the point.",
@@ -1171,7 +1256,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Le Second Registre",
-    "npcDialogueText_fr": "« Il y avait deux registres. Celui que vous portez est la liste des enlevés. L’autre est la liste de ceux qui ont enlevé — et l’Inquisiteur qui le tient attend au bas de l’Escalier Noyé. » L’archiviste essuie l’encre de ses doigts avec l’air d’une femme qui a déjà décidé ce qu’elle est prête à perdre."
+    "npcDialogueText_fr": "« Il y avait deux registres. Celui que vous portez est la liste des enlevés. L’autre est la liste de ceux qui ont enlevé — et l’Inquisiteur qui le tient attend au bas de l’Escalier Noyé. » L’archiviste essuie l’encre de ses doigts avec l’air d’une femme qui a déjà décidé ce qu’elle est prête à perdre."
   },
   "q_ch4_ossuary_bounty": {
     "questID": "q_ch4_ossuary_bounty",
@@ -1182,23 +1267,23 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Clear three catacomb ghouls from the flooded galleries",
+        "description": "Clear two catacomb ghouls from the flooded galleries",
         "type": "Kill",
         "targetEnemyID": "catacomb_ghoul",
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 3,
+        "requiredAmount": 2,
         "countFromAccept": true,
-        "description_fr": "Débarrasser les galeries inondées de trois goules des catacombes"
+        "description_fr": "Débarrasser les galeries inondées de deux goules des catacombes"
       }
     ],
     "rewardGold": 90,
     "rewardXP": 120,
-    "rewardItemID": "",
+    "rewardItemID": "boots_bone_laced",
     "alignmentChange": 0,
     "nextQuestID": "",
-    "npcDialogueText": "\"They come up with the water and they go down with it, and in between they eat whatever the Court left behind.\" The sapper counts three coins onto the ledge. \"Three ghouls, three of these. I'm not made of coin, and neither are they.\"",
+    "npcDialogueText": "\"They come up with the water and they go down with it, and in between they eat whatever the Court left behind.\" The sapper counts two coins onto the ledge. \"Two ghouls, two of these. I’m not made of coin, and neither are they.\"",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -1216,15 +1301,16 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "La Prime de l’Ossuaire",
-    "npcDialogueText_fr": "« Elles montent avec l’eau et redescendent avec elle, et entre-temps elles dévorent tout ce que la Cour a laissé derrière elle. » Le sapeur aligne trois pièces sur la corniche. « Trois goules, trois pièces. Je ne suis pas cousu d’or, et elles non plus. »",
+    "npcDialogueText_fr": "« Elles montent avec l’eau et redescendent avec elle, et entre-temps elles dévorent tout ce que la Cour a laissé derrière elle. » Le sapeur aligne deux pièces sur la corniche. « Deux goules, deux pièces. Je ne suis pas cousu d’or, et elles non plus. »",
     "turnInChoices": [
       {
-        "choiceText": "Take the sapper's coins",
+        "choiceText": "Take the sapper’s coins",
         "choiceText_fr": "Prendre les pièces du sapeur",
         "rewardGold": 90,
         "alignmentChange": 0,
-        "resultText": "Three coins, as promised. The sapper doesn't watch them go.",
-        "resultText_fr": "Trois pièces, comme promis. Le sapeur ne les regarde pas partir."
+        "resultText": "Two coins, as promised. The sapper doesn’t watch them go.",
+        "resultText_fr": "Deux pièces, comme promis. Le sapeur ne les regarde pas partir.",
+        "flag": "ossuary_coins_taken"
       },
       {
         "choiceText": "Leave the coins on the ledge",
@@ -1232,7 +1318,8 @@
         "rewardGold": 0,
         "alignmentChange": 5,
         "resultText": "The sapper stares at the coins, then at you, then pockets them fast.",
-        "resultText_fr": "Le sapeur fixe les pièces, puis vous, puis les empoche en vitesse."
+        "resultText_fr": "Le sapeur fixe les pièces, puis vous, puis les empoche en vitesse.",
+        "flag": "ossuary_coins_left"
       }
     ]
   },
@@ -1245,7 +1332,7 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Defeat the Void Archon keeping the Shroud's vigil",
+        "description": "Defeat the Void Archon keeping the Shroud’s vigil",
         "type": "Kill",
         "targetEnemyID": "void_archon",
         "targetItemID": "",
@@ -1259,7 +1346,7 @@
     "rewardXP": 320,
     "rewardItemID": "archon_mantle",
     "alignmentChange": 0,
-    "nextQuestID": "q_ch6_beyond_the_tear",
+    "nextQuestID": "q_ch6_the_white_fleet",
     "npcDialogueText": "\"The ledger ends at the tear, and something has been standing between it and the rest of the city since the night it opened.\" The chart-keeper taps the last page. \"It was one of ours, once. It will not be pleased to see the book.\"",
     "requiredGold": 0,
     "requiredFlags": [],
@@ -1278,30 +1365,31 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Le Cœur Mort",
-    "npcDialogueText_fr": "« Le registre s’arrête à la déchirure, et quelque chose se tient entre elle et le reste de la ville depuis la nuit où elle s’est ouverte. » La gardienne des cartes tapote la dernière page. « C’était l’un des nôtres, autrefois. Il ne sera pas ravi de voir le livre. »"
+    "npcDialogueText_fr": "« Le registre s’arrête à la déchirure, et quelque chose se tient entre elle et le reste de la ville depuis la nuit où elle s’est ouverte. » La gardienne des cartes tapote la dernière page. « C’était l’un des nôtres, autrefois. Il ne sera pas ravi de voir le livre. »"
   },
   "q_ch5_penitents_confession": {
     "questID": "q_ch5_penitents_confession",
-    "questName": "The Penitent's Confession",
+    "questName": "The Penitent’s Confession",
     "chapter": 5,
     "category": "Side",
     "difficulty": "10",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Answer the penitent Inquisitor's challenge",
-        "type": "Kill",
-        "targetEnemyID": "inquisition_penitent",
+        "description": "Hear the penitent Inquisitor’s confession",
+        "type": "Flag",
+        "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Relever le défi de l’Inquisiteur pénitent"
+        "targetFlag": "hub_6010_confession",
+        "description_fr": "Entendre la confession de l’Inquisiteur pénitent"
       }
     ],
     "rewardGold": 120,
     "rewardXP": 160,
-    "rewardItemID": "",
+    "rewardItemID": "cloak_frostward",
     "alignmentChange": 5,
     "nextQuestID": "",
     "npcDialogueText": "\"I burned the Ashen Quarter on an order I never read. If you carry the list of the taken, then you carry my name too — and I would rather answer for it to you than to what waits at the tear.\" The penitent sets his blade between you, hilt first.",
@@ -1322,50 +1410,112 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "La Confession du pénitent",
-    "npcDialogueText_fr": "« J’ai brûlé le Quartier des Cendres sur un ordre que je n’ai jamais lu. Si vous portez la liste des enlevés, alors vous portez aussi mon nom — et je préfère en répondre devant vous que devant ce qui attend à la déchirure. » Le pénitent pose sa lame entre vous, la garde en avant.",
+    "npcDialogueText_fr": "« J’ai brûlé le Quartier des Cendres sur un ordre que je n’ai jamais lu. Si vous portez la liste des enlevés, alors vous portez aussi mon nom — et je préfère en répondre devant vous que devant ce qui attend à la déchirure. » Le pénitent pose sa lame entre vous, la garde en avant.",
     "turnInChoices": [
       {
-        "choiceText": "Grant him absolution",
-        "choiceText_fr": "Lui accorder l’absolution",
+        "choiceText": "Take his blade: he carries water for the camp now",
+        "choiceText_fr": "Prendre sa lame : désormais, il porte l’eau du camp",
         "rewardGold": 60,
         "alignmentChange": 10,
-        "flag": "penitent_absolved",
+        "flag": "confession_spared",
         "approvalMods": {
           "maren": 2,
           "tobin": 1
         },
-        "resultText": "He weeps without a sound, and walks toward the tear to meet it unarmed.",
-        "resultText_fr": "Il pleure sans un bruit, et marche vers la déchirure pour l’affronter sans arme."
+        "resultText": "He weeps without a sound, and takes the water-yokes from the camp’s carriers without being asked.",
+        "resultText_fr": "Il pleure sans un bruit, et prend sans qu’on le lui demande les palonniers des porteurs d’eau du camp.",
+        "politics": {
+          "standing": {
+            "penitents": 10
+          }
+        }
       },
       {
-        "choiceText": "Carry out the sentence",
-        "choiceText_fr": "Exécuter la sentence",
+        "choiceText": "Pick up the blade and give him the answer he came for",
+        "choiceText_fr": "Ramasser la lame et lui donner la réponse qu’il est venu chercher",
         "rewardGold": 120,
         "alignmentChange": 0,
-        "flag": "penitent_executed",
+        "flag": "confession_executed",
         "approvalMods": {
           "maren": -2,
           "kelda": 1,
           "grosh": 1
         },
         "resultText": "It is quick. It is more than he gave the Ashen Quarter.",
-        "resultText_fr": "C’est rapide. C’est plus qu’il n’en a accordé au Quartier des Cendres."
+        "resultText_fr": "C’est rapide. C’est plus qu’il n’en a accordé au Quartier des Cendres.",
+        "politics": {
+          "standing": {
+            "penitents": -10,
+            "dominion": 5
+          }
+        }
       },
       {
         "choiceText": "Take his blade and his purse, and leave him to the tear",
         "choiceText_fr": "Prendre sa lame et sa bourse, et l’abandonner à la déchirure",
         "rewardGold": 220,
         "alignmentChange": -8,
-        "flag": "penitent_robbed",
+        "flag": "confession_robbed",
         "resultText": "His purse is heavy. The Inquisition paid well for what he did.",
-        "resultText_fr": "Sa bourse est lourde. L’Inquisition payait bien pour ce qu’il a fait."
+        "resultText_fr": "Sa bourse est lourde. L’Inquisition payait bien pour ce qu’il a fait.",
+        "politics": {
+          "standing": {
+            "penitents": -5
+          }
+        }
       }
-    ]
+    ],
+    "detourEligible": false
+  },
+  "q_ch7_lantern_throne": {
+    "questID": "q_ch7_lantern_throne",
+    "questName": "The Lantern Throne",
+    "questName_fr": "Le Trône de la Lanterne",
+    "chapter": 7,
+    "category": "Main",
+    "difficulty": "14",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Take the Lantern Throne",
+        "description_fr": "Prendre le Trône de la Lanterne",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "on_throne"
+      }
+    ],
+    "rewardGold": 350,
+    "rewardXP": 450,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "q_ch6_beyond_the_tear",
+    "npcDialogueText": "Five pieces lie on the Eel’s deck and the Lantern Hall stands empty across the water. Whoever sits under the First Lantern when the Houses stop arguing will hold the coast, and the tear is watching to see who that will be.",
+    "npcDialogueText_fr": "Cinq pièces reposent sur le pont de l’Eel, et la Salle de la Lanterne attend, vide, de l’autre côté de l’eau. Qui s’assiéra sous la Première Lanterne quand les Maisons cesseront de se disputer tiendra la côte, et la déchirure regarde pour voir qui ce sera.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "buttonText_fr": "Accepter",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch7_lantern_throne_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   },
   "q_ch6_beyond_the_tear": {
     "questID": "q_ch6_beyond_the_tear",
     "questName": "Beyond the Tear",
-    "chapter": 6,
+    "chapter": 8,
     "category": "Main",
     "difficulty": "15",
     "requiredAlignment": "Neutral",
@@ -1386,7 +1536,7 @@
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
-    "npcDialogueText": "The Eel's timbers creak against the sand. Across the water the tear stands open, and whatever knew your family's name is waiting on the other side for you to be polite enough to knock.",
+    "npcDialogueText": "The Eel’s timbers creak against the sand. Across the water the tear stands open, and whatever knew your family’s name is waiting on the other side for you to be polite enough to knock.",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -1403,7 +1553,7 @@
     ],
     "rewardDiceID": "",
     "rewardAllyId": "",
-    "questName_fr": "Au-delà de la Déchirure",
+    "questName_fr": "Au-delà de la déchirure",
     "npcDialogueText_fr": "Les membrures de l’Eel grincent contre le sable. De l’autre côté de l’eau, la déchirure est ouverte, et ce qui connaissait le nom de votre famille attend de l’autre côté que vous ayez la politesse de frapper."
   },
   "q_ch6_faces_of_the_fallen": {
@@ -1428,7 +1578,7 @@
     ],
     "rewardGold": 150,
     "rewardXP": 200,
-    "rewardItemID": "",
+    "rewardItemID": "boots_tearwalker",
     "alignmentChange": 0,
     "nextQuestID": "",
     "npcDialogueText": "They walk the Hollow Shore wearing faces you put down on a bridge, in a locked chamber, on the docks. None of them are glad to see you. All of them remember how it ended.",
@@ -1453,14 +1603,14 @@
   },
   "q_ch4_tobins_vigil": {
     "questID": "q_ch4_tobins_vigil",
-    "questName": "Brother Tobin's Vigil",
+    "questName": "Brother Tobin’s Vigil",
     "chapter": 4,
     "category": "Side",
     "difficulty": "6",
     "requiredAlignment": "Good",
     "objectives": [
       {
-        "description": "Clear a catacomb ghoul from the drowned cloister's candles with Brother Tobin",
+        "description": "Clear a catacomb ghoul from the drowned cloister’s candles with Brother Tobin",
         "type": "Kill",
         "targetEnemyID": "catacomb_ghoul",
         "targetItemID": "",
@@ -1468,7 +1618,8 @@
         "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Chasser une goule des catacombes loin des chandelles du cloître noyé avec Frère Tobin",
-        "targetNPCName_fr": "Tobin"
+        "targetNPCName_fr": "Tobin",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 60,
@@ -1476,12 +1627,12 @@
     "rewardItemID": "",
     "alignmentChange": 5,
     "nextQuestID": "",
-    "npcDialogueText": "\"I sang in the Court's choir for eleven years, and I left the night the choir was asked to sing over what the Court had done in the Ashen Quarter.\" He does not stop trimming the wick while he says it. \"These people have nothing but the candles and me. The ghouls come up out of the flood for the candles. Put one down beside me and I will know you are what they say you are, and I will carry a hammer for you as long as you keep being it.\"",
+    "npcDialogueText": "\"I sang in the Court’s choir for eleven years, and I left the night the choir was asked to sing over what the Court had done in the Ashen Quarter.\" He does not stop trimming the wick while he says it. \"These people have nothing but the candles and me. The ghouls come up out of the flood for the candles. Put one down beside me and I will know you are what they say you are, and I will carry a hammer for you as long as you keep being it.\"",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
       {
-        "buttonText": "Take the hammer's side",
+        "buttonText": "Take the hammer’s side",
         "goldModifier": 0,
         "alignmentModifier": 0,
         "flagToAdd": "q_ch4_tobins_vigil_accepted",
@@ -1494,11 +1645,11 @@
     "rewardDiceID": "",
     "rewardAllyId": "tobin",
     "questName_fr": "La Veillée de Frère Tobin",
-    "npcDialogueText_fr": "« J’ai chanté onze ans dans le chœur de la Cour, et je suis parti la nuit où l’on a demandé au chœur de chanter sur ce que la Cour avait fait dans le Quartier des Cendres. » Il ne cesse pas de tailler la mèche tandis qu’il parle. « Ces gens n’ont rien d’autre que les chandelles et moi. Les goules remontent de l’inondation pour les chandelles. Abattez-en une à mes côtés et je saurai que vous êtes ce qu’on dit de vous, et je porterai un marteau pour vous tant que vous continuerez à l’être. »"
+    "npcDialogueText_fr": "« J’ai chanté onze ans dans le chœur de la Cour, et je suis parti la nuit où l’on a demandé au chœur de chanter sur ce que la Cour avait fait dans le Quartier des Cendres. » Il ne cesse pas de tailler la mèche tandis qu’il parle. « Ces gens n’ont rien d’autre que les chandelles et moi. Les goules remontent de l’inondation pour les chandelles. Abattez-en une à mes côtés et je saurai que vous êtes ce qu’on dit de vous, et je porterai un marteau pour vous tant que vous continuerez à l’être. »"
   },
   "q_ch5_malriks_cut": {
     "questID": "q_ch5_malriks_cut",
-    "questName": "Malrik's Cut",
+    "questName": "Malrik’s Cut",
     "chapter": 5,
     "category": "Side",
     "difficulty": "7",
@@ -1513,7 +1664,8 @@
         "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Abattre un molosse du Néant avec Malrik et prouver que l’association paie",
-        "targetNPCName_fr": "Malrik"
+        "targetNPCName_fr": "Malrik",
+        "countFromAccept": true
       }
     ],
     "rewardGold": 80,
@@ -1521,7 +1673,7 @@
     "rewardItemID": "",
     "alignmentChange": -5,
     "nextQuestID": "",
-    "npcDialogueText": "\"I know what you are. The quarter knows. That's why I'm talking to you and not to the saints.\" He turns a reliquary over in his hands the way other men turn coins. \"The hounds circle the chapel where the good stuff is. Kill one with me and I'll believe you can keep your half of a bargain, which is rarer in this city than the relics.\"",
+    "npcDialogueText": "\"I know what you are. The quarter knows. That’s why I’m talking to you and not to the saints.\" He turns a reliquary over in his hands the way other men turn coins. \"The hounds circle the chapel where the good stuff is. Kill one with me and I’ll believe you can keep your half of a bargain, which is rarer in this city than the relics.\"",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -1539,7 +1691,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "malrik",
     "questName_fr": "La Part de Malrik",
-    "npcDialogueText_fr": "« Je sais ce que vous êtes. Le quartier le sait. C’est pour ça que je vous parle à vous et pas aux saints. » Il fait tourner un reliquaire entre ses mains comme d’autres font tourner une pièce. « Les molosses rôdent autour de la chapelle où se trouve la bonne marchandise. Tuez-en un avec moi et je croirai que vous savez tenir votre part d’un marché, ce qui est plus rare dans cette ville que les reliques. »"
+    "npcDialogueText_fr": "« Je sais ce que vous êtes. Le quartier le sait. C’est pour ça que je vous parle à vous et pas aux saints. » Il fait tourner un reliquaire entre ses mains comme d’autres font tourner une pièce. « Les molosses rôdent autour de la chapelle où se trouve la bonne marchandise. Tuez-en un avec moi et je croirai que vous savez tenir votre part d’un marché, ce qui est plus rare dans cette ville que les reliques. »"
   },
   "q_ch6_the_white_fleet": {
     "questID": "q_ch6_the_white_fleet",
@@ -1565,7 +1717,7 @@
     "rewardXP": 400,
     "rewardItemID": "",
     "alignmentChange": 0,
-    "nextQuestID": "q_ch6_beyond_the_tear",
+    "nextQuestID": "q_ch7_lantern_throne",
     "npcDialogueText": "The fleet that sailed to burn your city lies off the Hollow Shore on a floor of glass, and its flagship still flies the fifth piece of the Shroud as its mainsail.",
     "npcDialogueText_fr": "La flotte partie brûler votre ville gît au large de la Rive Creuse sur un fond de verre, et son vaisseau amiral porte encore la cinquième pièce du Linceul en guise de grand-voile.",
     "requiredGold": 0,
@@ -1584,5 +1736,823 @@
     ],
     "rewardDiceID": "",
     "rewardAllyId": ""
+  },
+  "q_ch2_unpaid_scaffold": {
+    "questID": "q_ch2_unpaid_scaffold",
+    "questName": "The Unpaid Scaffold",
+    "chapter": 2,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Face the Salt Ledger’s clerk over the Scaffolders’ wages",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Dorran Quill",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "scaffold_clerk_faced",
+        "description_fr": "Affronter le clerc du Registre du Sel pour les gages des Échafaudeurs",
+        "targetNPCName_fr": "Dorran Quill"
+      }
+    ],
+    "rewardGold": 40,
+    "rewardXP": 45,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“Thirty riggers put that yard back together, and the Ledger’s clerk has their pay in a box under his scales and calls it a tithe,” Dorran says, not loudly. “I rig scaffolds. I do not argue with clerks. Go and argue with him, and bring back whatever is left when he stops.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_unpaid_scaffold_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "L’Échafaud impayé",
+    "npcDialogueText_fr": "« Trente gréeurs ont remis ce chantier debout, et le clerc du Registre garde leur paie dans un coffre sous sa balance, et appelle ça une dîme », dit Dorran, sans élever la voix. « Je grée des échafaudages. Je ne discute pas avec les clercs. Allez discuter avec lui, et rapportez ce qui restera quand il s’arrêtera. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Hand the wages to the crew",
+        "choiceText_fr": "Remettre les gages à l’équipe",
+        "rewardGold": 15,
+        "alignmentChange": 0,
+        "flag": "scaffold_paid",
+        "resultText": "Dorran counts it out on the scaffold plank, rigger by rigger, and the last coin is yours.",
+        "resultText_fr": "Dorran compte sur la planche de l’échafaud, gréeur par gréeur, et la dernière pièce est pour vous.",
+        "politics": {
+          "standing": {
+            "compact": 6,
+            "dominion": -3
+          },
+          "marks": {
+            "scaffolders": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Take the Ledger’s cut yourself",
+        "choiceText_fr": "Prendre la part du Registre pour vous",
+        "rewardGold": 70,
+        "alignmentChange": -5,
+        "flag": "scaffold_skimmed",
+        "resultText": "The clerk writes you into the ledger as a collector. Dorran watches you do it.",
+        "resultText_fr": "Le clerc vous inscrit au registre comme collecteur. Dorran vous regarde faire.",
+        "politics": {
+          "standing": {
+            "dominion": 5,
+            "compact": -10
+          }
+        }
+      },
+      {
+        "choiceText": "Split it and keep the peace",
+        "choiceText_fr": "Partager, et garder la paix",
+        "rewardGold": 35,
+        "alignmentChange": 0,
+        "flag": "scaffold_split",
+        "resultText": "Half to the crew, half to the ledger; the yard goes back to work, and nobody thanks you.",
+        "resultText_fr": "Moitié pour l’équipe, moitié pour le registre ; le chantier reprend, et personne ne vous remercie.",
+        "politics": {
+          "standing": {
+            "dominion": 5,
+            "compact": 3
+          }
+        }
+      }
+    ]
+  },
+  "q_ch3_glass_from_the_terraces": {
+    "questID": "q_ch3_glass_from_the_terraces",
+    "questName": "Glass from the Terraces",
+    "chapter": 3,
+    "category": "Side",
+    "difficulty": "4",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Test Imeh’s terrace glass before the Scorched Choir’s fire reaches it",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Imeh",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "glass_tested",
+        "description_fr": "Éprouver le verre des terrasses d’Imeh avant que le feu du Chœur Calciné ne l’atteigne",
+        "targetNPCName_fr": "Imeh"
+      }
+    ],
+    "rewardGold": 50,
+    "rewardXP": 70,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“Glass tempered in the spring terraces does not break in fire; I have said so to the Choir, and they have a fire ready to say otherwise,” Imeh says, turning a green bowl in her hands. “Test it before they do. Stand beside the stall when they come. I will pay what the glass is worth, which is more than they think.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch3_glass_from_the_terraces_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Le Verre des Terrasses",
+    "npcDialogueText_fr": "« Le verre trempé aux terrasses des sources ne casse pas au feu ; je l’ai dit au Chœur, et ils ont un feu prêt à dire le contraire », dit Imeh en tournant un bol vert entre ses mains. « Éprouvez-le avant eux. Tenez-vous près de l’étal quand ils viendront. Je paierai ce que vaut le verre, et c’est plus qu’ils ne croient. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Stand with Imeh at the fire",
+        "choiceText_fr": "Tenir avec Imeh devant le feu",
+        "rewardGold": 45,
+        "alignmentChange": 0,
+        "flag": "glass_defended",
+        "resultText": "The Choir looks at you, then at the glass that did not break, and takes its fire elsewhere.",
+        "resultText_fr": "Le Chœur vous regarde, puis le verre qui n’a pas cassé, et porte son feu ailleurs.",
+        "politics": {
+          "standing": {
+            "oni": 10,
+            "penitents": -3
+          }
+        }
+      },
+      {
+        "choiceText": "Let the Choir burn the stall",
+        "choiceText_fr": "Laisser le Chœur brûler l’étal",
+        "rewardGold": 0,
+        "alignmentChange": 0,
+        "flag": "glass_burned",
+        "resultText": "The plank goes first. Imeh does not watch the rest, and does not look at you.",
+        "resultText_fr": "La planche part la première. Imeh ne regarde pas la suite, et ne vous regarde pas.",
+        "politics": {
+          "standing": {
+            "penitents": 10,
+            "oni": -10
+          },
+          "marks": {
+            "scorched_choir": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Carry the glass to the camp",
+        "choiceText_fr": "Porter le verre jusqu’au camp",
+        "rewardGold": 25,
+        "alignmentChange": 0,
+        "flag": "glass_carried",
+        "resultText": "A hundred pieces in straw, a day across the flats; the camp has light it did not have.",
+        "resultText_fr": "Cent pièces dans la paille, une journée à travers les plaines ; le camp a une lumière qu’il n’avait pas.",
+        "politics": {
+          "standing": {
+            "oni": 5
+          }
+        }
+      }
+    ]
+  },
+  "q_ch4_bark_tithe": {
+    "questID": "q_ch4_bark_tithe",
+    "questName": "The Bark Tithe",
+    "chapter": 4,
+    "category": "Side",
+    "difficulty": "6",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Recover Brannoc’s fever-bark from the Keyholders’ cache",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Brannoc Reedtithe",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "bark_recovered",
+        "description_fr": "Récupérer l’écorce-fièvre de Brannoc dans la cache des Porte-Clés",
+        "targetNPCName_fr": "Brannoc Reedtithe"
+      }
+    ],
+    "rewardGold": 75,
+    "rewardXP": 105,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“A season of fever-bark, bled by hand, and the Keyholders took it at the Stair for a tithe and put it in a cache to sell,” Brannoc says, with his hands on a patient who is not getting better. “I have candles and prayers down here. The bark works. Bring it up.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch4_bark_tithe_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "La Dîme d’écorce",
+    "npcDialogueText_fr": "« Une saison d’écorce-fièvre, saignée à la main, et les Porte-Clés l’ont prise à l’Escalier pour une dîme et mise en cache pour la vendre », dit Brannoc, les mains sur un malade qui ne va pas mieux. « Ici, j’ai des chandelles et des prières. L’écorce agit. Remontez-la. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Return the bark to Brannoc",
+        "choiceText_fr": "Rendre l’écorce à Brannoc",
+        "rewardGold": 30,
+        "alignmentChange": 0,
+        "flag": "bark_returned",
+        "resultText": "He doses the lowest ledge first. By morning two of them are sitting up.",
+        "resultText_fr": "Il soigne d’abord la corniche la plus basse. Au matin, deux d’entre eux sont assis.",
+        "politics": {
+          "standing": {
+            "mire": 10,
+            "crows": -5
+          },
+          "marks": {
+            "barkbleeders": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Sell the bark back to the Keyholders",
+        "choiceText_fr": "Revendre l’écorce aux Porte-Clés",
+        "rewardGold": 110,
+        "alignmentChange": -5,
+        "flag": "bark_sold",
+        "resultText": "The Keyholders pay in good coin and ask no questions. Brannoc asks one, and you do not answer it.",
+        "resultText_fr": "Les Porte-Clés paient en bonne monnaie et ne posent pas de questions. Brannoc en pose une, et vous n’y répondez pas.",
+        "politics": {
+          "standing": {
+            "crows": 10,
+            "mire": -10
+          }
+        }
+      },
+      {
+        "choiceText": "Keep half for the camp infirmary",
+        "choiceText_fr": "Garder la moitié pour l’infirmerie du camp",
+        "rewardGold": 55,
+        "alignmentChange": 0,
+        "flag": "bark_kept",
+        "resultText": "Brannoc weighs his half by hand and says it is fair. His hands say something else.",
+        "resultText_fr": "Brannoc soupèse sa moitié et dit que c’est juste. Ses mains disent autre chose.",
+        "politics": {
+          "standing": {
+            "mire": 3,
+            "crows": -3
+          }
+        }
+      }
+    ]
+  },
+  "q_ch5_candle_count": {
+    "questID": "q_ch5_candle_count",
+    "questName": "The Candle Count",
+    "chapter": 5,
+    "category": "Side",
+    "difficulty": "7",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Carry Orsabet’s count back from the tally stone past the frost",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Orsabet Vell",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "count_carried",
+        "description_fr": "Rapporter le compte d’Orsabet depuis la pierre des noms, au-delà du givre",
+        "targetNPCName_fr": "Orsabet Vell"
+      }
+    ],
+    "rewardGold": 90,
+    "rewardXP": 130,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“Four hundred and eleven, cut into a stone past the frost, because the Dominion writes them down as absent and the absent need no candles,” Orsabet says. “My legs stopped at the frost line a month ago. Bring me the count, and I will choose who keeps it.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch5_candle_count_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Le Compte des chandelles",
+    "npcDialogueText_fr": "« Quatre cent onze, gravés dans une pierre au-delà du givre, parce que le Dominion les inscrit comme absents et que les absents n’ont pas besoin de chandelles », dit Orsabet. « Mes jambes se sont arrêtées à la ligne de givre il y a un mois. Rapportez-moi le compte, et je choisirai qui le gardera. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Give the count to the Vigil",
+        "choiceText_fr": "Confier le compte à la Veille",
+        "rewardGold": 40,
+        "alignmentChange": 0,
+        "flag": "count_to_vigil",
+        "resultText": "A Candlebearer copies it twice before she lets go of the paper. Orsabet lights one candle for all of them.",
+        "resultText_fr": "Une Porte-Chandelle le recopie deux fois avant de lâcher le papier. Orsabet allume une chandelle pour eux tous.",
+        "politics": {
+          "standing": {
+            "vigil": 10,
+            "dominion": -5
+          },
+          "marks": {
+            "candlebearers": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Seal it in the Reliquary",
+        "choiceText_fr": "Le sceller dans le Reliquaire",
+        "rewardGold": 130,
+        "alignmentChange": 0,
+        "flag": "count_sealed",
+        "resultText": "The Reliquary gives it a number and a shelf. Orsabet asks where, and is not told.",
+        "resultText_fr": "Le Reliquaire lui donne un numéro et une étagère. Orsabet demande où, et on ne le lui dit pas.",
+        "politics": {
+          "standing": {
+            "dominion": 10,
+            "vigil": -10
+          },
+          "marks": {
+            "reliquary": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Read the names aloud at the gate",
+        "choiceText_fr": "Lire les noms à voix haute à la porte",
+        "rewardGold": 0,
+        "alignmentChange": 0,
+        "flag": "count_read",
+        "resultText": "It takes until dark. Nobody at the gate leaves before the last one.",
+        "resultText_fr": "Cela prend jusqu’à la nuit. Personne, à la porte, ne part avant le dernier.",
+        "politics": {
+          "standing": {
+            "vigil": 5,
+            "penitents": 8,
+            "dominion": -5
+          }
+        }
+      }
+    ]
+  },
+  "q_ch5_hearth_stone": {
+    "questID": "q_ch5_hearth_stone",
+    "questName": "The Hearth-Stone",
+    "chapter": 5,
+    "category": "Side",
+    "difficulty": "7",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Hold the hearth-stone’s quarry face against the Quarrymen’s cut",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Ghrem Stonebrow",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "quarry_face_held",
+        "description_fr": "Tenir le front de carrière de la pierre du foyer contre la taille des Carriers",
+        "targetNPCName_fr": "Ghrem Stonebrow"
+      }
+    ],
+    "rewardGold": 90,
+    "rewardXP": 130,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“The Quarrymen have a paper for the face my hearth-stone came from, and a crew, and I have forty giants too old to stand in front of it,” Ghrem says, from somewhere above the firelight. “Stand there. Hold it. I will not ask a second time; I am not young enough to.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch5_hearth_stone_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "La Pierre du foyer",
+    "npcDialogueText_fr": "« Les Carriers ont un papier pour le front d’où vient ma pierre du foyer, et une équipe, et j’ai quarante géants trop vieux pour se tenir devant », dit Ghrem, de quelque part au-dessus de la lueur du feu. « Tenez-vous là. Tenez-le. Je ne demanderai pas deux fois ; je ne suis plus assez jeune pour ça. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Give the giants their stone",
+        "choiceText_fr": "Laisser leur pierre aux géants",
+        "rewardGold": 35,
+        "alignmentChange": 0,
+        "flag": "hearth_stone_kept",
+        "resultText": "Ghrem breaks a chip off the face with his thumb and sets it by the fire, where you can see it from the door.",
+        "resultText_fr": "Ghrem détache un éclat du front avec le pouce et le pose près du feu, là où vous pouvez le voir depuis la porte.",
+        "politics": {
+          "standing": {
+            "giants": 10,
+            "compact": -3
+          }
+        }
+      },
+      {
+        "choiceText": "Let the Quarrymen cut",
+        "choiceText_fr": "Laisser tailler les Carriers",
+        "rewardGold": 130,
+        "alignmentChange": 0,
+        "flag": "hearth_stone_cut",
+        "resultText": "The foreman pays by the cart. Ghrem counts the carts from the moot-hall door and says nothing to you.",
+        "resultText_fr": "Le contremaître paie à la charrette. Ghrem compte les charrettes depuis la porte de la salle du conseil et ne vous dit rien.",
+        "politics": {
+          "standing": {
+            "compact": 6,
+            "giants": -10
+          },
+          "marks": {
+            "quarrymen": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Split the face between them",
+        "choiceText_fr": "Partager le front entre eux",
+        "rewardGold": 75,
+        "alignmentChange": 0,
+        "flag": "hearth_stone_split",
+        "resultText": "A line is chalked across the stone at head height, a giant’s head. Both sides call it a bad bargain, which is how you know it is one.",
+        "resultText_fr": "Un trait de craie barre la pierre à hauteur de tête, une tête de géant. Les deux camps parlent d’un mauvais marché, et c’est à cela qu’on reconnaît un marché.",
+        "politics": {
+          "standing": {
+            "giants": 3,
+            "compact": 3
+          }
+        }
+      }
+    ]
+  },
+  "q_ch6_salvage_rights": {
+    "questID": "q_ch6_salvage_rights",
+    "questName": "Salvage Rights",
+    "chapter": 6,
+    "category": "Side",
+    "difficulty": "11",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Free Nkem’s salvage from the Admiralty’s impound",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Nkem Tallow",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "salvage_freed",
+        "description_fr": "Libérer la prise de Nkem de la fourrière de l’Amirauté",
+        "targetNPCName_fr": "Nkem Tallow"
+      }
+    ],
+    "rewardGold": 140,
+    "rewardXP": 185,
+    "rewardItemID": "greaves_voidsteel",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“A flagship’s bronze, a case of chart-weights and a bell, and the Admiralty put a seal on the lot in the name of a Crusade that is at the bottom of the bay,” Nkem says, mending a net he does not look at. “I went down for it. They did not. Get it out of their hull and we will talk about whose it is.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch6_salvage_rights_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Droits d’épave",
+    "npcDialogueText_fr": "« Le bronze d’un vaisseau amiral, une caisse de poids de carte et une cloche, et l’Amirauté a mis un sceau sur le tout au nom d’une Croisade qui gît au fond de la baie », dit Nkem en réparant un filet qu’il ne regarde pas. « Je suis descendu le chercher. Pas eux. Sortez-le de leur coque et nous verrons à qui cela revient. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Give Nkem the salvage",
+        "choiceText_fr": "Remettre la prise à Nkem",
+        "rewardGold": 60,
+        "alignmentChange": 0,
+        "flag": "salvage_to_crows",
+        "resultText": "He gives you the chart-weights, one by one, until you tell him to stop.",
+        "resultText_fr": "Il vous donne les poids de carte, un par un, jusqu’à ce que vous lui disiez d’arrêter.",
+        "politics": {
+          "standing": {
+            "crows": 10,
+            "dominion": -3
+          },
+          "marks": {
+            "brig_born": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Hand it to the Admiralty",
+        "choiceText_fr": "La remettre à l’Amirauté",
+        "rewardGold": 110,
+        "alignmentChange": 0,
+        "flag": "salvage_to_admiralty",
+        "resultText": "The fleet’s clerk puts a new seal on it and a reward in your hand. Nkem is not on the beach to see either.",
+        "resultText_fr": "Le clerc de la flotte y pose un nouveau sceau et une récompense dans votre main. Nkem n’est pas sur la grève pour voir ni l’un ni l’autre.",
+        "politics": {
+          "standing": {
+            "dominion": 10,
+            "crows": -10
+          },
+          "marks": {
+            "admiralty": "friend"
+          }
+        }
+      },
+      {
+        "choiceText": "Sell it to the wreck-wrights",
+        "choiceText_fr": "La vendre aux charpentiers d’épaves",
+        "rewardGold": 210,
+        "alignmentChange": 0,
+        "flag": "salvage_sold",
+        "resultText": "The wreck-wrights weigh the bronze and do not ask where it came from. Everyone else on the sand knows.",
+        "resultText_fr": "Les charpentiers d’épaves pèsent le bronze et ne demandent pas d’où il vient. Tout le monde sur le sable le sait.",
+        "politics": {
+          "standing": {
+            "crows": -5,
+            "dominion": -5,
+            "tidekin": 3
+          }
+        }
+      }
+    ]
+  },
+  "q_ch7_reed_gate_grievance": {
+    "questID": "q_ch7_reed_gate_grievance",
+    "questName": "The Reed Gate’s Grievance",
+    "chapter": 7,
+    "category": "Side",
+    "difficulty": "13",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Read the petition",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "hub_7400_reed_later",
+        "description_fr": "Lire la pétition"
+      }
+    ],
+    "rewardGold": 180,
+    "rewardXP": 230,
+    "rewardItemID": "coat_last_watch",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“Eleven households,” the factor says. “Three years of dues they cannot pay, and a tongue struck off the gonfalon for it. Carry their names to the Conclave and the Reed Gate will remember who did.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch7_reed_gate_grievance_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Le grief de la Porte des Roseaux",
+    "npcDialogueText_fr": "« Onze foyers, dit le facteur. Trois ans de droits qu’ils ne peuvent pas payer, et une flamme rayée du gonfanon pour cela. Portez leurs noms au Conclave et la Porte des Roseaux se souviendra de qui l’a fait. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Strike the two forged names; lodge nine",
+        "choiceText_fr": "Rayer les deux faux noms et en déposer neuf",
+        "rewardGold": 0,
+        "alignmentChange": 1,
+        "flag": "reed_nine_lodged",
+        "resultText": "The factor takes the news badly, and the nine households take it very well.",
+        "resultText_fr": "Le facteur le prend mal, et les neuf foyers le prennent fort bien.",
+        "politics": {
+          "standing": {
+            "dominion": 4
+          }
+        }
+      },
+      {
+        "choiceText": "Lodge all eleven, as the factor wrote them",
+        "choiceText_fr": "Déposer les onze, comme le facteur les a écrits",
+        "rewardGold": 60,
+        "alignmentChange": -1,
+        "flag": "reed_eleven_lodged",
+        "resultText": "The factor pays in coin, quickly, and does not meet your eye.",
+        "resultText_fr": "Le facteur paie en monnaie, vite, sans vous regarder dans les yeux.",
+        "politics": {
+          "standing": {
+            "dominion": 2,
+            "compact": -2
+          }
+        }
+      }
+    ]
+  },
+  "q_ch7_heralds_errand": {
+    "questID": "q_ch7_heralds_errand",
+    "questName": "The Herald’s Errand",
+    "chapter": 7,
+    "category": "Side",
+    "difficulty": "13",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Read Morrow’s terms",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "hub_7400_herald_later",
+        "description_fr": "Lire les termes de Morrow"
+      }
+    ],
+    "rewardGold": 170,
+    "rewardXP": 220,
+    "rewardItemID": "helm_last_watch",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“The Grand Master asks only what banner you mean to land under,” the herald says. “He would rather know it on the shingle than on the stair.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch7_heralds_errand_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "La mission du héraut",
+    "npcDialogueText_fr": "« Le Grand Maître demande seulement sous quelle bannière vous comptez accoster, dit le héraut. Il préfère le savoir sur les galets que dans l’escalier. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Answer Morrow: the Dominion’s banner, or none",
+        "choiceText_fr": "Répondre à Morrow : la bannière du Dominion, ou aucune",
+        "rewardGold": 50,
+        "alignmentChange": 0,
+        "flag": "herald_answered_morrow",
+        "resultText": "The herald salutes, for the first time, and rows away fast.",
+        "resultText_fr": "Le héraut salue, pour la première fois, et s’éloigne vite à la rame.",
+        "politics": {
+          "standing": {
+            "dominion": 5
+          }
+        }
+      },
+      {
+        "choiceText": "Send the herald back with no answer at all",
+        "choiceText_fr": "Renvoyer le héraut sans aucune réponse",
+        "rewardGold": 0,
+        "alignmentChange": 0,
+        "flag": "herald_unanswered",
+        "resultText": "The herald looks relieved and a little insulted.",
+        "resultText_fr": "Le héraut a l’air soulagé, et un peu offensé.",
+        "politics": {
+          "standing": {
+            "dominion": -2
+          }
+        }
+      }
+    ]
+  },
+  "q_ch7_chain_masters_boy": {
+    "questID": "q_ch7_chain_masters_boy",
+    "questName": "The Chain-Master’s Boy",
+    "chapter": 7,
+    "category": "Side",
+    "difficulty": "13",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Copy the tide table",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "hub_7400_chain_later",
+        "description_fr": "Recopier la table des marées"
+      }
+    ],
+    "rewardGold": 190,
+    "rewardXP": 240,
+    "rewardItemID": "tear_glass_blade",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "“He says he can’t be bought,” the boy says, “and he would like to see what you do about that.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch7_chain_masters_boy_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Le garçon du maître de chaîne",
+    "npcDialogueText_fr": "« Il dit qu’on ne peut pas l’acheter, dit le garçon, et qu’il aimerait voir ce que vous en ferez. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Keep the tide table for the night you need it",
+        "choiceText_fr": "Garder la table des marées pour la nuit où il le faudra",
+        "rewardGold": 60,
+        "alignmentChange": 0,
+        "flag": "chain_hours_kept",
+        "resultText": "The boy leaves a new tide table inked on his other arm. You do not ask why.",
+        "resultText_fr": "Le garçon repart avec une nouvelle table des marées sur l’autre bras. Vous ne demandez pas pourquoi.",
+        "politics": {
+          "standing": {
+            "crows": 3
+          }
+        }
+      },
+      {
+        "choiceText": "Send word that you will thank him in person",
+        "choiceText_fr": "Lui faire dire que vous le remercierez en personne",
+        "rewardGold": 0,
+        "alignmentChange": 1,
+        "flag": "chain_thanks_promised",
+        "resultText": "The boy grins for the first time, and rows home with the message.",
+        "resultText_fr": "Le garçon sourit pour la première fois, et rentre à la rame avec le message.",
+        "politics": {
+          "standing": {
+            "dominion": 3
+          }
+        }
+      }
+    ]
   }
 }

@@ -2,7 +2,7 @@
   "human": {
     "raceID": "human",
     "raceName": "Human",
-    "description": "Adaptable and resourceful, humans favor coin and connections over raw power. Their power is sewn: a human's strength lives in the banner or standard they carry, and a human without one is a pair of empty hands.",
+    "description": "Adaptable and resourceful, humans favor coin and connections over raw power. Their power is sewn: a human’s strength lives in the banner or standard they carry, and a human without one is a pair of empty hands.",
     "bonusMaxHealth": 0,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 0,
@@ -19,12 +19,15 @@
     "powerMedium": "banner",
     "powerMediumFr": "bannière",
     "raceName_fr": "Humain",
-    "description_fr": "Adaptables et ingénieux, les humains préfèrent l’argent et les relations à la force brute. Leur pouvoir est cousu : la force d’un humain réside dans la bannière ou l’étendard qu’il porte, et un humain qui n’en a pas n’est qu’une paire de mains vides."
+    "description_fr": "Adaptables et ingénieux, les humains préfèrent l’argent et les relations à la force brute. Leur pouvoir est cousu : la force d’un humain réside dans la bannière ou l’étendard qu’il porte, et un humain qui n’en a pas n’est qu’une paire de mains vides.",
+    "visualAsset": "human.png",
+    "tag": "Well-off",
+    "tag_fr": "Nanti"
   },
   "elf": {
     "raceID": "elf",
     "raceName": "Elf",
-    "description": "Quick and attuned to the world's currents, at the cost of a frailer frame. The painted folk: an elf's power is a sigil painted on skin or bark, renewed by hand, and only as strong as its last coat.",
+    "description": "Quick and attuned to the world’s currents, at the cost of a frailer frame. The painted folk: an elf’s power is a sigil painted on skin or bark, renewed by hand, and only as strong as its last coat.",
     "bonusMaxHealth": -10,
     "bonusBaseDamage": 3,
     "bonusBaseArmor": 0,
@@ -41,12 +44,15 @@
     "powerMedium": "painted sigil",
     "powerMediumFr": "sigil peint",
     "raceName_fr": "Elfe",
-    "description_fr": "Vifs et accordés aux courants du monde, au prix d’une charpente plus frêle. Le peuple peint : le pouvoir d’un elfe est un sigil peint sur la peau ou l’écorce, renouvelé à la main, et il ne vaut que ce que vaut sa dernière couche."
+    "description_fr": "Vifs et accordés aux courants du monde, au prix d’une charpente plus frêle. Le peuple peint : le pouvoir d’un elfe est un sigil peint sur la peau ou l’écorce, renouvelé à la main, et il ne vaut que ce que vaut sa dernière couche.",
+    "visualAsset": "elf.png",
+    "tag": "Quick",
+    "tag_fr": "Vif"
   },
   "dwarf": {
     "raceID": "dwarf",
     "raceName": "Dwarf",
-    "description": "Stout and stubborn, built to shrug off blows that would fell others. The stone-marked: a dwarf's power is a mark cut into steel, stone or a buckle, and it does not wash off.",
+    "description": "Stout and stubborn, built to shrug off blows that would fell others. The stone-marked: a dwarf’s power is a mark cut into steel, stone or a buckle, and it does not wash off.",
     "bonusMaxHealth": 20,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 3,
@@ -63,12 +69,15 @@
     "powerMedium": "stone-mark",
     "powerMediumFr": "marque de pierre",
     "raceName_fr": "Nain",
-    "description_fr": "Trapus et têtus, bâtis pour encaisser des coups qui en abattraient d’autres. Les marqués de pierre : le pouvoir d’un nain est une marque taillée dans l’acier, la pierre ou une boucle, et elle ne s’efface pas."
+    "description_fr": "Trapus et têtus, bâtis pour encaisser des coups qui en abattraient d’autres. Les marqués de pierre : le pouvoir d’un nain est une marque taillée dans l’acier, la pierre ou une boucle, et elle ne s’efface pas.",
+    "visualAsset": "dwarf.png",
+    "tag": "Sturdy",
+    "tag_fr": "Solide"
   },
   "orc": {
     "raceID": "orc",
     "raceName": "Orc",
-    "description": "Brutal strength wins fights fast, but leaves little room for finesse. The inked: an orc's power sits under the scar tissue, in ash-ink, where no one can confiscate it.",
+    "description": "Brutal strength wins fights fast, but leaves little room for finesse. The inked: an orc’s power sits under the scar tissue, in ash-ink, where no one can confiscate it.",
     "bonusMaxHealth": 10,
     "bonusBaseDamage": 4,
     "bonusBaseArmor": -2,
@@ -85,12 +94,15 @@
     "powerMedium": "ink",
     "powerMediumFr": "encre",
     "raceName_fr": "Orc",
-    "description_fr": "Leur force brutale gagne vite les combats, mais laisse peu de place à la finesse. Les encrés : le pouvoir d’un orc repose sous les cicatrices, dans l’encre de cendre, là où personne ne peut le confisquer."
+    "description_fr": "Leur force brutale gagne vite les combats, mais laisse peu de place à la finesse. Les encrés : le pouvoir d’un orc repose sous les cicatrices, dans l’encre de cendre, là où personne ne peut le confisquer.",
+    "visualAsset": "orc.png",
+    "tag": "Brutal",
+    "tag_fr": "Brutal"
   },
   "voidkin": {
     "raceID": "voidkin",
     "raceName": "Voidkin",
-    "description": "Touched by the Shroud, they hit devastatingly hard but break easily. The tear-marked: a voidkin's power was never sewn, painted, cut or inked; the tear left it, and no door in the world is glad to see it.",
+    "description": "Touched by the Shroud, they hit devastatingly hard but break easily. The tear-marked: a voidkin’s power was never sewn, painted, cut or inked; the tear left it, and no door in the world is glad to see it.",
     "bonusMaxHealth": -15,
     "bonusBaseDamage": 6,
     "bonusBaseArmor": -1,
@@ -107,6 +119,9 @@
     "powerMedium": "void-mark",
     "powerMediumFr": "marque du Néant",
     "raceName_fr": "Enfant du Néant",
-    "description_fr": "Touchés par le Linceul, ils frappent avec une force dévastatrice mais se brisent aisément. Les marqués de la déchirure : le pouvoir d’un enfant du Néant n’a jamais été cousu, peint, taillé ni encré ; la déchirure l’a laissé, et aucune porte au monde n’est heureuse de le voir."
+    "description_fr": "Touchés par le Linceul, ils frappent avec une force dévastatrice mais se brisent aisément. Les marqués de la déchirure : le pouvoir d’un enfant du Néant n’a jamais été cousu, peint, taillé ni encré ; la déchirure l’a laissé, et aucune porte au monde n’est heureuse de le voir.",
+    "visualAsset": "voidkin.png",
+    "tag": "Volatile",
+    "tag_fr": "Volatil"
   }
 }

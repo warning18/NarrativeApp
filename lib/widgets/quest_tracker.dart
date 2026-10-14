@@ -20,8 +20,15 @@ import 'quest_turn_in.dart';
 /// ("Defeat catacomb ghouls (1/3)"), a Turn in button once every objective
 /// is met, and a short highlight when the goal moves on. Tapping it opens
 /// the quest (see [showQuestSheet]). Nothing when no quest is in progress.
+///
+/// [compact] (v1.213) is a small round button with the quest's icon and a
+/// badge (a tick when the goal is met, a dot when it moves on), for where
+/// the room is wanted, as on the Journey map: its name and goal are on its
+/// tooltip and in the sheet it opens.
 class QuestTrackerBar extends ConsumerStatefulWidget {
-  const QuestTrackerBar({super.key});
+  const QuestTrackerBar({super.key, this.compact = false});
+
+  final bool compact;
 
   @override
   ConsumerState<QuestTrackerBar> createState() => _QuestTrackerBarState();
@@ -71,6 +78,71 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
     final objectives =
         (quest['objectives'] as List?)?.cast<Map<String, dynamic>>() ??
             const [];
+    if (widget.compact) {
+      final name = quest['questName']?.toString() ?? questId;
+      final words = goal.ready
+          ? trFor(lang, 'quest_goal_ready')
+          : '${trFor(lang, 'quest_goal_prefix')} ${goal.label}';
+      return Padding(
+        padding: const EdgeInsets.only(right: 2),
+        child: Tooltip(
+          message: '$name\n$words',
+          child: Semantics(
+            button: true,
+            label: '$name. $words',
+            excludeSemantics: true,
+            child: Material(
+              color: _highlight || goal.ready
+                  ? accent.withValues(alpha: 0.2)
+                  : colors.surfaceContainerHighest.withValues(alpha: 0.55),
+              shape: CircleBorder(
+                  side: BorderSide(color: accent.withValues(alpha: 0.6))),
+              child: InkWell(
+                key: const Key('quest_tracker'),
+                customBorder: const CircleBorder(),
+                onTap: () => showQuestSheet(context, ref, questId),
+                child: SizedBox(
+                  width: 34,
+                  height: 34,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Icon(
+                          questIcon(
+                              quest['category']?.toString(),
+                              objectives.isEmpty
+                                  ? null
+                                  : objectives.first['type']?.toString()),
+                          size: 18,
+                          color: accent),
+                      if (goal.ready)
+                        Positioned(
+                            right: 1,
+                            top: 1,
+                            child: Icon(Icons.check_circle,
+                                key: const Key('quest_tracker_ready'),
+                                size: 13,
+                                color: accent))
+                      else if (_highlight)
+                        Positioned(
+                          right: 4,
+                          top: 4,
+                          child: Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                                color: accent, shape: BoxShape.circle),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.only(top: 4, bottom: 2),
       child: Material(

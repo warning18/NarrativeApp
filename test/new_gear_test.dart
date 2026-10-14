@@ -117,6 +117,9 @@ void main() {
       for (final id in newArmorIds) {
         final piece = item(id);
         for (final key in template.keys) {
+          // Lore (v1.204) is written where it has a story, not on every
+          // plate.
+          if (key == 'description' || key == 'description_fr') continue;
           expect(piece.containsKey(key), isTrue, reason: '$id lacks $key');
         }
         expect(piece['itemType'], 'Armor', reason: id);

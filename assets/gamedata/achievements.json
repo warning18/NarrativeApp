@@ -23,7 +23,7 @@
   "keldas_hall_built": {
     "achievementID": "keldas_hall_built",
     "achievementName": "A Hall of Her Own",
-    "description": "Build Kelda's Hall.",
+    "description": "Build Kelda’s Hall.",
     "achievementName_fr": "Une halle bien à elle",
     "description_fr": "Construisez la Halle de Kelda."
   },
@@ -47,5 +47,89 @@
     "description": "Discover your first shop.",
     "achievementName_fr": "Lèche-vitrines",
     "description_fr": "Découvrez votre première boutique."
+  },
+  "on_the_throne": {
+    "achievementID": "on_the_throne",
+    "achievementName": "The Lantern Throne",
+    "description": "Take the Lantern Throne.",
+    "achievementName_fr": "Le Trône de la Lanterne",
+    "description_fr": "Prenez le Trône de la Lanterne."
+  },
+  "half_a_banner": {
+    "achievementID": "half_a_banner",
+    "achievementName": "Half a Banner",
+    "description": "Hold three pieces of the Shroud.",
+    "achievementName_fr": "Une demi-bannière",
+    "description_fr": "Détenez trois pièces du Linceul."
+  },
+  "whole_cloth": {
+    "achievementID": "whole_cloth",
+    "achievementName": "Whole Cloth",
+    "description": "Hold the whole Shroud.",
+    "achievementName_fr": "Étoffe entière",
+    "description_fr": "Détenez le Linceul tout entier."
+  },
+  "first_thread": {
+    "achievementID": "first_thread",
+    "achievementName": "A Loose Thread",
+    "description": "Settle your first intrigue.",
+    "achievementName_fr": "Un fil qui dépasse",
+    "description_fr": "Dénouez votre première intrigue."
+  },
+  "whole_web": {
+    "achievementID": "whole_web",
+    "achievementName": "The Whole Web",
+    "description": "Settle all eight intrigues of the coast.",
+    "achievementName_fr": "Toute la toile",
+    "description_fr": "Dénouez les huit intrigues de la côte."
+  },
+  "time_turned": {
+    "achievementID": "time_turned",
+    "achievementName": "Time Turned",
+    "description": "Start a New Game+.",
+    "achievementName_fr": "Le temps rebroussé",
+    "description_fr": "Commencez une Nouvelle Partie+."
+  },
+  "sworn_to_a_clan": {
+    "achievementID": "sworn_to_a_clan",
+    "achievementName": "Sworn",
+    "description": "Swear yourself to a clan.",
+    "achievementName_fr": "Lié par serment",
+    "description_fr": "Jurez fidélité à un clan."
+  },
+  "hunted_by_a_clan": {
+    "achievementID": "hunted_by_a_clan",
+    "achievementName": "Hunted",
+    "description": "Fall so far with a clan that it hunts you.",
+    "achievementName_fr": "Traqué",
+    "description_fr": "Tombez si bas auprès d’un clan qu’il vous traque."
+  },
+  "akagiri_found": {
+    "achievementID": "akagiri_found",
+    "achievementName": "Where the Bells Hang",
+    "description": "Find Akagiri, the oni village.",
+    "achievementName_fr": "Là où pendent les cloches",
+    "description_fr": "Trouvez Akagiri, le village des oni."
+  },
+  "kindly_hill_found": {
+    "achievementID": "kindly_hill_found",
+    "achievementName": "Every Bargain to the Minute",
+    "description": "Find the Kindly Hill.",
+    "achievementName_fr": "Chaque marché à la minute",
+    "description_fr": "Trouvez la Colline des Bienveillants."
+  },
+  "highhearth_found": {
+    "achievementID": "highhearth_found",
+    "achievementName": "Under the Giants’ Roof",
+    "description": "Find Highhearth, where the last giants live.",
+    "achievementName_fr": "Sous le toit des géants",
+    "description_fr": "Trouvez Haut-Âtre, où vivent les derniers géants."
+  },
+  "friend_of_four_clans": {
+    "achievementID": "friend_of_four_clans",
+    "achievementName": "A Hand at Four Doors",
+    "description": "Be trusted by four of the six clans at once, without swearing to any.",
+    "achievementName_fr": "Une main à quatre portes",
+    "description_fr": "Gagnez la confiance de quatre des six clans en même temps, sans prêter serment à aucun."
   }
 }

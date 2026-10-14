@@ -210,6 +210,14 @@ Map<String, int> effectiveSkillTiers(
   };
 }
 
+/// Whether [skill] is a fusion or an ascension (v1.232): only the player's
+/// clans offer them, so a companion never learns one with points.
+bool _isClanCard(Map<String, dynamic> skill) =>
+    skill['fusionOf'] is List ||
+    (skill['subclanId']?.toString() ?? '').isNotEmpty ||
+    skill['hiddenFlags'] is List ||
+    (skill['ascendsSkillID']?.toString() ?? '').isNotEmpty;
+
 /// A companion's skills: their own class's (learned with their points, in
 /// any order), plus whatever they already know (their die's kit). Never
 /// another class's, a race's or the general ones.
@@ -224,8 +232,9 @@ List<String> allySkillIds(
       if (entry.value is Map<String, dynamic> &&
           (entry.value as Map<String, dynamic>)['enemyOnly'] != true &&
           ((entry.value as Map<String, dynamic>)['restrictedProfessionID']
-                      ?.toString() ==
-                  professionId ||
+                          ?.toString() ==
+                      professionId &&
+                  !_isClanCard(entry.value as Map<String, dynamic>) ||
               knownSet.contains(entry.key)))
         entry.key,
   ]..sort();

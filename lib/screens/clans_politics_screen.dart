@@ -3,6 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/dice_faces.dart' show skillDisplayName;
+import '../data/chapter_spine.dart' show chapterSpines;
+import '../data/clan_affinity.dart';
 import '../data/factions.dart';
 import '../data/offers.dart' show OfferSource;
 import '../data/politics_events.dart';
@@ -18,12 +21,17 @@ import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
 import '../providers/signs_provider.dart';
 import '../widgets/clan_widgets.dart';
+import '../widgets/throne_widgets.dart';
+import '../widgets/coast_news.dart';
 import '../widgets/offer_dialog.dart';
 import '../widgets/sign_widgets.dart';
+import '../widgets/throne_edit_tab.dart';
+import '../widgets/throne_room.dart';
+import '../widgets/empty_state.dart';
 
 /// Edit Mode's "Clans & Politics" (v1.193, see factions.dart), from the
-/// top bar's scales: four tabs.
-/// - **Standing:** a card per faction (the clans, the tribes, the Choir and
+/// top bar's scales: the **Throne room** first (v1.267), then the tabs below.
+/// - **Standing** (Reputation): a card per faction (the clans, the tribes, the Choir and
 ///   the Pit) with a slider to set it and squares to mark the sub-clans,
 ///   the Choir-Pit alignment with the vows and pacts held, and a reset;
 ///   the lost clan (the Open Hand, v1.195) with its remembrance stage to
@@ -35,19 +43,39 @@ import '../widgets/sign_widgets.dart';
 ///   events' news among it, under `event:<id>`).
 /// - **Intrigues:** the eight plots, the stage each has reached, and their
 ///   outcomes.
+/// - **Affinities** (v1.232): the favorability matrix, which peoples and
+///   which classes each clan grows (read off the branches it sponsors),
+///   and the fusions and ascensions the clans offer.
+/// - **Throne** (v1.196, see throne.dart): each faction's climb (its
+///   House, its clan steps, the claim, the Throne) with buttons to set
+///   it, pledges, and "Muster now" with a preview of the Host.
+///
+/// [play] (v1.196) is the story's own view, from the same place in the top
+/// bar: nothing to set, the relations only up to the chapter reached, the
+/// coast's news in place of the events, and only the intrigues the story
+/// has opened, as far as it has gone — no premise before the reveal, no
+/// stage ahead, no outcome but the one chosen.
 class ClansPoliticsScreen extends ConsumerWidget {
-  const ClansPoliticsScreen({super.key});
+  const ClansPoliticsScreen({super.key, this.play = false});
+
+  final bool play;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultTabController(
-      length: 4,
+      length: play ? 5 : 7,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(tr(ref, 'clans_title')),
+          title: Text(tr(ref, play ? 'clans_title_play' : 'clans_title')),
           bottom: TabBar(
-            labelPadding: const EdgeInsets.symmetric(horizontal: 2),
+            // Five tabs scroll on a narrow phone rather than squeeze.
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 10),
             tabs: [
+              Tab(
+                  key: const Key('clans_tab_throne_room'),
+                  text: tr(ref, 'clans_tab_throne_room')),
               Tab(
                   key: const Key('clans_tab_standing'),
                   text: tr(ref, 'clans_tab_standing')),
@@ -60,15 +88,26 @@ class ClansPoliticsScreen extends ConsumerWidget {
               Tab(
                   key: const Key('clans_tab_intrigues'),
                   text: tr(ref, 'clans_tab_intrigues')),
+              if (!play)
+                Tab(
+                    key: const Key('clans_tab_affinity'),
+                    text: tr(ref, 'clans_tab_affinity')),
+              if (!play)
+                Tab(
+                    key: const Key('clans_tab_throne'),
+                    text: tr(ref, 'clans_tab_throne')),
             ],
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            _StandingTab(),
-            _PoliticsTab(),
-            _EvolutionTab(),
-            _IntriguesTab(),
+            const ThroneRoomTab(),
+            _StandingTab(play: play),
+            _PoliticsTab(play: play),
+            const _EvolutionTab(),
+            _IntriguesTab(play: play),
+            if (!play) const _AffinityTab(),
+            if (!play) const ThroneEditTab(),
           ],
         ),
       ),
@@ -89,15 +128,18 @@ Widget _sectionLabel(BuildContext context, String text) => Padding(
 // --- Standing ---------------------------------------------------------------
 
 class _StandingTab extends ConsumerWidget {
-  const _StandingTab();
+  const _StandingTab({this.play = false});
+
+  final bool play;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(clanDataProvider);
     final theme = Theme.of(context);
     if (data.factions.isEmpty) {
-      return Center(child: Text(tr(ref, 'clans_none')));
+      return InkEmptyState(message: tr(ref, 'clans_none'));
     }
+    if (play) return const _PlayStanding();
     return ListView(
       key: const Key('clans_standing_list'),
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
@@ -164,6 +206,48 @@ class _StandingTab extends ConsumerWidget {
             ),
           ],
         ),
+      ],
+    );
+  }
+}
+
+/// Standing in play: the clans and the tribes the story has opened, the
+/// dead clan once remembered, and the Choir and the Pit — read only.
+class _PlayStanding extends ConsumerWidget {
+  const _PlayStanding();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final data = ref.watch(clanDataProvider);
+    final flags = ref.watch(playerSessionProvider.select((s) => s.flags));
+    final theme = Theme.of(context);
+    final tribes = [
+      for (final tribe in data.tribes)
+        if (tribe.unlockFlag.isEmpty || flags.contains(tribe.unlockFlag)) tribe,
+    ];
+    return ListView(
+      key: const Key('clans_standing_list'),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+      children: [
+        Text(tr(ref, 'clans_section_hint'),
+            style: theme.textTheme.bodySmall
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        // The climb (v1.201: here, now the Character tab's Clans card is
+        // gone).
+        const ClimbCard(),
+        for (final faction in data.clans) FactionStandingCard(faction: faction),
+        if (tribes.isNotEmpty) ...[
+          _sectionLabel(context, tr(ref, 'clans_tribes_label')),
+          for (final faction in tribes) FactionStandingCard(faction: faction),
+        ],
+        if (openHandStageFrom(flags) > 0 && data.lost.isNotEmpty) ...[
+          _sectionLabel(context, tr(ref, 'patron_kind_lost')),
+          for (final faction in data.lost) LostClanCard(faction: faction),
+        ],
+        _sectionLabel(context, tr(ref, 'clans_alignment_title')),
+        const _OtherworldPanel(),
+        for (final faction in data.otherworld)
+          FactionStandingCard(faction: faction),
       ],
     );
   }
@@ -307,7 +391,9 @@ class _OtherworldPanel extends ConsumerWidget {
 // --- Politics ---------------------------------------------------------------
 
 class _PoliticsTab extends ConsumerStatefulWidget {
-  const _PoliticsTab();
+  const _PoliticsTab({this.play = false});
+
+  final bool play;
 
   @override
   ConsumerState<_PoliticsTab> createState() => _PoliticsTabState();
@@ -328,7 +414,15 @@ class _PoliticsTabState extends ConsumerState<_PoliticsTab> {
       max(1, reached),
       ...politics.relationSnapshots.keys,
     ].reduce(max);
-    final last = max(7, latest);
+    // Up to the story's last chapter (chapters.json; the spine's while it
+    // has not loaded), or the latest the relations moved in; the slider
+    // needs two chapters at least.
+    final loops = ref.watch(chapterLoopsProvider);
+    final storyEnd = loops.isNotEmpty
+        ? loops.fold<int>(1, (most, loop) => max(most, loop.chapter))
+        : chapterSpines.fold<int>(1, (most, spine) => max(most, spine.chapter));
+    // In play the table looks back no further than the story has come.
+    final last = widget.play ? latest : max(2, max(storyEnd, latest));
     final chapter = (_chapter ?? last).clamp(1, last);
     final now = chapter >= latest;
     final steps = now
@@ -348,16 +442,18 @@ class _PoliticsTabState extends ConsumerState<_PoliticsTab> {
           key: const Key('clans_chapter_label'),
           style: theme.textTheme.titleSmall,
         ),
-        Slider(
-          key: const Key('clans_chapter_slider'),
-          min: 1,
-          max: last.toDouble(),
-          divisions: last - 1,
-          value: chapter.toDouble(),
-          label: '$chapter',
-          onChanged: (v) => setState(() => _chapter = v.round()),
-        ),
-        _RelationsMatrix(steps: steps, data: data, language: lang),
+        if (last > 1)
+          Slider(
+            key: const Key('clans_chapter_slider'),
+            min: 1,
+            max: last.toDouble(),
+            divisions: last - 1,
+            value: chapter.toDouble(),
+            label: '$chapter',
+            onChanged: (v) => setState(() => _chapter = v.round()),
+          ),
+        _RelationsMatrix(
+            steps: steps, data: data, language: lang, play: widget.play),
         const SizedBox(height: 4),
         Text(tr(ref, 'clans_matrix_hint'),
             style: theme.textTheme.labelSmall
@@ -365,8 +461,13 @@ class _PoliticsTabState extends ConsumerState<_PoliticsTab> {
         _sectionLabel(context, tr(ref, 'clans_history_title')),
         for (final event in data.relations.history)
           _HistoryRow(event: event, language: lang),
-        _sectionLabel(context, tr(ref, 'clans_events_title')),
-        const _EventsList(),
+        if (widget.play) ...[
+          _sectionLabel(context, tr(ref, 'coast_news_title')),
+          const CoastNewsColumn(),
+        ] else ...[
+          _sectionLabel(context, tr(ref, 'clans_events_title')),
+          const _EventsList(),
+        ],
       ],
     );
   }
@@ -379,21 +480,33 @@ class _RelationsMatrix extends ConsumerWidget {
     required this.steps,
     required this.data,
     required this.language,
+    this.play = false,
   });
 
+  /// The story's view: a cell gives the reason, with nothing to shift.
+  final bool play;
   final Map<String, int> steps;
   final ClanData data;
   final AppLanguage language;
 
-  static const double _cell = 60;
   static const double _header = 36;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    return LayoutBuilder(
+        builder: (context, box) => _table(context, ref, box.maxWidth));
+  }
+
+  /// The table, its cells as wide as the phone allows (50 to 60 px): six
+  /// clans fit a 360-px screen; more scroll sideways.
+  Widget _table(BuildContext context, WidgetRef ref, double width) {
     final clans = data.clans;
     final theme = Theme.of(context);
+    final double cellW = clans.isEmpty
+        ? 60
+        : ((width - _header) / clans.length).clamp(50.0, 60.0).floorToDouble();
     Widget head(Faction f) => SizedBox(
-          width: _cell,
+          width: cellW,
           height: _header,
           child: Center(
             child: Tooltip(
@@ -405,7 +518,7 @@ class _RelationsMatrix extends ConsumerWidget {
     Widget cell(Faction a, Faction b) {
       if (a.id == b.id) {
         return SizedBox(
-          width: _cell,
+          width: cellW,
           height: 44,
           child: Center(
               child: Text('—',
@@ -421,7 +534,7 @@ class _RelationsMatrix extends ConsumerWidget {
           key: Key('relation_cell_${a.id}_${b.id}'),
           onTap: () => _showPair(context, ref, a, b),
           child: Container(
-            width: _cell - 3,
+            width: cellW - 3,
             height: 41,
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(horizontal: 2),
@@ -542,20 +655,22 @@ class _RelationsMatrix extends ConsumerWidget {
             ),
           ),
           actions: [
-            TextButton(
-              key: const Key('relation_shift_down'),
-              onPressed: step == null || step <= minRelationStep
-                  ? null
-                  : () => shift(-1),
-              child: Text(trFor(lang, 'clans_shift_down')),
-            ),
-            TextButton(
-              key: const Key('relation_shift_up'),
-              onPressed: step == null || step >= maxRelationStep
-                  ? null
-                  : () => shift(1),
-              child: Text(trFor(lang, 'clans_shift_up')),
-            ),
+            if (!play) ...[
+              TextButton(
+                key: const Key('relation_shift_down'),
+                onPressed: step == null || step <= minRelationStep
+                    ? null
+                    : () => shift(-1),
+                child: Text(trFor(lang, 'clans_shift_down')),
+              ),
+              TextButton(
+                key: const Key('relation_shift_up'),
+                onPressed: step == null || step >= maxRelationStep
+                    ? null
+                    : () => shift(1),
+                child: Text(trFor(lang, 'clans_shift_up')),
+              ),
+            ],
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
               child: Text(trFor(lang, 'close_button')),
@@ -649,6 +764,8 @@ class _EvolutionTab extends ConsumerWidget {
               tables: tables, localizedItems: items, lang: lang),
           // An event's line names it (v1.195).
           'event' => eventCauseName(detail, events, lang),
+          // The claim given up names its faction (v1.196).
+          'renounce' => name(detail),
           _ => null,
         };
 
@@ -781,6 +898,14 @@ class _LogTile extends StatelessWidget {
             children: [
               if (entry.deltas.containsKey(entry.factionId))
                 delta(entry.factionId, entry.mainDelta, main: true),
+              // The climb's lines that move no standing (v1.196): a
+              // pledge, the crown, the muster name their faction.
+              if (entry.deltas.isEmpty &&
+                  entry.subclanId.isEmpty &&
+                  entry.factionId.isNotEmpty)
+                Text(factionName(entry.factionId),
+                    style: theme.textTheme.labelSmall
+                        ?.copyWith(fontWeight: FontWeight.w700)),
               for (final e in entry.rippleDeltas.entries) delta(e.key, e.value),
               if (entry.subclanId.isNotEmpty && entry.mark != null)
                 Text(
@@ -1017,10 +1142,198 @@ class _StandingChartPainter extends CustomPainter {
       old.history != history || old.ticks != ticks || old.axis != axis;
 }
 
+// --- Affinities -------------------------------------------------------------
+
+/// The favorability matrix (v1.232, see clan_affinity.dart): a row per
+/// clan, a column per people and per class. A people's cell is filled when
+/// the clan sponsors its heritage; a class's cell counts the clan's
+/// branches of the three. Below: the fusions (two clans) and ascensions
+/// (one clan at Trusted) it offers, and any inconsistency in the table.
+class _AffinityTab extends ConsumerWidget {
+  const _AffinityTab();
+
+  static const double _head = 40;
+  static const double _cellW = 46;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final data = ref.watch(clanDataProvider);
+    final lang = ref.watch(appLanguageProvider);
+    final theme = Theme.of(context);
+    final trees = ref.watch(gameDbProvider(skillTreesSchema)).value ?? const {};
+    final skills = ref.watch(gameDbProvider(skillsSchema)).value ?? const {};
+    final races = ref.watch(localizedDbProvider(racesSchema)).value ?? const {};
+    final professions =
+        ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
+    final raceIds = races.keys.toList();
+    final professionIds = professions.keys.toList();
+    final matrix = buildAffinityMatrix(
+        data: data,
+        skillTrees: trees,
+        raceIds: raceIds,
+        professionIds: professionIds);
+    String nameOf(Map<String, dynamic> table, String key, String id) =>
+        (table[id] as Map?)?[key]?.toString() ?? id;
+    Widget head(String text) => SizedBox(
+          width: _cellW,
+          height: _head,
+          child: Center(
+            child: Text(text,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelSmall?.copyWith(fontSize: 9.5)),
+          ),
+        );
+    Widget cell(Faction clan, String column, int level, int of) {
+      final color = theme.colorScheme.primary;
+      return Padding(
+        padding: const EdgeInsets.all(1.5),
+        child: InkWell(
+          key: Key('affinity_cell_${clan.id}_$column'),
+          onTap: level == 0
+              ? null
+              : () => _showBranches(context, ref, clan, column),
+          child: Container(
+            width: _cellW - 3,
+            height: 38,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color:
+                  color.withValues(alpha: level == 0 ? 0 : 0.12 * level + 0.08),
+              border: Border.all(
+                  color: level == 0
+                      ? theme.colorScheme.outlineVariant
+                      : color.withValues(alpha: 0.8)),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              level == 0 ? '·' : (of == 1 ? '●' : '$level/$of'),
+              style: theme.textTheme.labelMedium?.copyWith(
+                  fontWeight: level == 0 ? FontWeight.normal : FontWeight.bold),
+            ),
+          ),
+        ),
+      );
+    }
+
+    final clans = [
+      for (final id in matrix.clanIds)
+        if (data.faction(id) != null) data.faction(id)!,
+    ];
+    final cards = clanCardSkills(data: data, skills: skills, skillTrees: trees);
+    final issues = matrix.issues();
+    return ListView(
+      key: const Key('clans_affinity_list'),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+      children: [
+        Text(tr(ref, 'clans_affinity_hint'),
+            style: theme.textTheme.bodySmall
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        const SizedBox(height: 8),
+        SingleChildScrollView(
+          key: const Key('clans_affinity_matrix'),
+          scrollDirection: Axis.horizontal,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                const SizedBox(width: 36, height: _head),
+                for (final id in raceIds) head(nameOf(races, 'raceName', id)),
+                const SizedBox(width: 8),
+                for (final id in professionIds)
+                  head(nameOf(professions, 'professionName', id)),
+              ]),
+              for (final clan in clans)
+                Row(children: [
+                  SizedBox(
+                    width: 36,
+                    height: 38,
+                    child: Center(
+                      child: Tooltip(
+                        message: clan.nameFor(lang),
+                        child: PatronEmblem(patron: clan.patron, size: 26),
+                      ),
+                    ),
+                  ),
+                  for (final id in raceIds)
+                    cell(clan, id, matrix.raceLevel(clan.id, id), 1),
+                  const SizedBox(width: 8),
+                  for (final id in professionIds)
+                    cell(clan, id, matrix.professionLevel(clan.id, id), 3),
+                ]),
+            ],
+          ),
+        ),
+        if (issues.isNotEmpty) ...[
+          _sectionLabel(context, tr(ref, 'clans_affinity_issues')),
+          for (final issue in issues)
+            Text(issue,
+                key: const Key('clans_affinity_issue'),
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: theme.colorScheme.error)),
+        ],
+        _sectionLabel(context, tr(ref, 'clans_affinity_cards')),
+        Text(tr(ref, 'clans_affinity_cards_hint'),
+            style: theme.textTheme.bodySmall
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        const SizedBox(height: 4),
+        for (final card in cards)
+          ListTile(
+            key: Key('affinity_card_${card.skillId}'),
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            title: Text(skillDisplayName(card.skillId, language: lang)),
+            subtitle: Text([
+              tr(ref, 'offer_gift_${card.kind.name}'),
+              nameOf(professions, 'professionName', card.professionId),
+              if (card.parents.isNotEmpty)
+                card.parents
+                    .map((p) => skillDisplayName(p, language: lang))
+                    .join(' + '),
+              if (card.kind == ClanCardKind.subclan)
+                data.subclan(card.detail)?.nameFor(lang) ?? card.detail,
+              if (card.kind == ClanCardKind.secret) card.detail,
+              card.clanIds
+                  .map((id) => data.faction(id)?.shortFor(lang) ?? id)
+                  .join(' × '),
+            ].join(' · ')),
+          ),
+      ],
+    );
+  }
+
+  /// The branches [clan] sponsors for [column] (a people or a class).
+  void _showBranches(
+      BuildContext context, WidgetRef ref, Faction clan, String column) {
+    final trees = ref.read(gameDbProvider(skillTreesSchema)).value ?? const {};
+    final lines = [
+      for (final id in clan.sponsors)
+        if (trees[id] case final Map<String, dynamic> record)
+          if (record['raceId'] == column || record['professionId'] == column)
+            '${record['branchName']} ($id)',
+    ];
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(clan.nameFor(ref.read(appLanguageProvider))),
+        content: Text(lines.join('\n')),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(tr(ref, 'close_button'))),
+        ],
+      ),
+    );
+  }
+}
+
 // --- Intrigues --------------------------------------------------------------
 
 class _IntriguesTab extends ConsumerWidget {
-  const _IntriguesTab();
+  const _IntriguesTab({this.play = false});
+
+  final bool play;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1035,21 +1348,44 @@ class _IntriguesTab extends ConsumerWidget {
       return id.isEmpty ? id : '${id[0].toUpperCase()}${id.substring(1)}';
     }
 
-    if (data.intrigues.isEmpty) {
-      return Center(child: Text(tr(ref, 'clans_none')));
+    // The faces (v1.210): the person a stage or an outcome names, when
+    // the npcs table knows them.
+    final npcs = ref.watch(localizedDbProvider(npcsSchema)).value ?? const {};
+    String? npcName(String id) {
+      final name = (npcs[id] as Map?)?['npcName']?.toString().trim();
+      return name == null || name.isEmpty ? null : name;
+    }
+
+    // In play, only the plots the story has opened.
+    final shown = [
+      for (final intrigue in data.intrigues.values)
+        if (!play || intrigueStageFrom(flags, intrigue.id) > 0) intrigue,
+    ];
+    if (shown.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Text(
+              tr(ref, play ? 'clans_intrigues_none_play' : 'clans_none'),
+              key: const Key('clans_intrigues_empty'),
+              textAlign: TextAlign.center),
+        ),
+      );
     }
     return ListView(
       key: const Key('clans_intrigues_list'),
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
       children: [
-        for (final intrigue in data.intrigues.values)
+        for (final intrigue in shown)
           _IntrigueCard(
+            play: play,
             intrigue: intrigue,
             data: data,
             stage: intrigueStageFrom(flags, intrigue.id),
             outcome: intrigueOutcomeFrom(flags, intrigue.id),
             language: lang,
             companionName: companionName,
+            npcName: npcName,
           ),
       ],
     );
@@ -1058,17 +1394,56 @@ class _IntriguesTab extends ConsumerWidget {
 
 class _IntrigueCard extends StatelessWidget {
   const _IntrigueCard({
+    this.play = false,
     required this.intrigue,
     required this.data,
     required this.stage,
     required this.outcome,
     required this.language,
     required this.companionName,
+    this.npcName = _noNpc,
   });
+
+  static String? _noNpc(String id) => null;
 
   final Intrigue intrigue;
   final ClanData data;
   final String Function(String id) companionName;
+
+  /// The name of the person an npcs.json id names (v1.210), null when
+  /// the table has none: shown beside a stage reached or the outcome
+  /// chosen.
+  final String? Function(String id) npcName;
+
+  /// The name of the person [npcId] names, null when none or unknown.
+  String? _faceName(String npcId) => npcId.isEmpty ? null : npcName(npcId);
+
+  /// The face [name] beside a stage or an outcome.
+  Widget _face(ThemeData theme, String name, Key key) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 2),
+      child: Row(
+        key: key,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.person_outline,
+              size: 14, color: theme.colorScheme.onSurfaceVariant),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(name,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    fontStyle: FontStyle.italic)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// The story's view: the premise once revealed (stage 4), the stages
+  /// reached and the next one's chapter, only the outcome chosen.
+  final bool play;
 
   /// 1..6, 0 when not started.
   final int stage;
@@ -1128,7 +1503,8 @@ class _IntrigueCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(intrigue.nameFor(lang), style: theme.textTheme.titleSmall),
-            if (intrigue.premiseFor(lang).isNotEmpty)
+            if (intrigue.premiseFor(lang).isNotEmpty &&
+                (!play || stage >= 4 || outcome != null))
               Text(intrigue.premiseFor(lang),
                   style: theme.textTheme.bodySmall
                       ?.copyWith(fontStyle: FontStyle.italic)),
@@ -1203,74 +1579,118 @@ class _IntrigueCard extends StatelessWidget {
                       stage == 0 ? theme.colorScheme.onSurfaceVariant : gold),
             ),
             for (var i = 0; i < intrigue.stages.length; i++)
-              Container(
-                margin: const EdgeInsets.only(top: 4),
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(
-                    color: i + 1 == stage
-                        ? goldFill
-                        : theme.colorScheme.outlineVariant,
-                    width: i + 1 == stage ? 2 : 1,
+              if (play && i == stage && outcome == null)
+                Container(
+                  key: Key('intrigue_next_${intrigue.id}'),
+                  margin: const EdgeInsets.only(top: 4),
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: theme.colorScheme.outlineVariant),
                   ),
-                  color:
-                      i + 1 == stage ? goldFill.withValues(alpha: 0.14) : null,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      [
-                        trFor(lang, intrigue.stages[i].key),
-                        if (intrigue.stages[i].chapter.isNotEmpty)
-                          trFor(lang, 'clans_intrigue_chapter')
-                              .replaceAll('{c}', intrigue.stages[i].chapter),
-                      ].join(' · '),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: i + 1 > stage && stage != 0
-                            ? theme.colorScheme.onSurfaceVariant
-                            : null,
+                  child: Row(
+                    children: [
+                      Icon(Icons.lock_outline,
+                          size: 14, color: theme.colorScheme.onSurfaceVariant),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          intrigue.stages[i].chapter.isEmpty
+                              ? trFor(lang, 'clans_intrigue_next_unknown')
+                              : trFor(lang, 'clans_intrigue_next').replaceAll(
+                                  '{c}', intrigue.stages[i].chapter),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant),
+                        ),
                       ),
+                    ],
+                  ),
+                )
+              else if (!play || i < stage)
+                Container(
+                  margin: const EdgeInsets.only(top: 4),
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: i + 1 == stage
+                          ? goldFill
+                          : theme.colorScheme.outlineVariant,
+                      width: i + 1 == stage ? 2 : 1,
                     ),
-                    Text(intrigue.stages[i].textFor(lang),
-                        style: theme.textTheme.bodySmall?.copyWith(
-                            color: i + 1 > stage
-                                ? theme.colorScheme.onSurfaceVariant
-                                : null)),
-                  ],
+                    color: i + 1 == stage
+                        ? goldFill.withValues(alpha: 0.14)
+                        : null,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        [
+                          trFor(lang, intrigue.stages[i].key),
+                          if (intrigue.stages[i].chapter.isNotEmpty)
+                            trFor(lang, 'clans_intrigue_chapter')
+                                .replaceAll('{c}', intrigue.stages[i].chapter),
+                        ].join(' · '),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: i + 1 > stage && stage != 0
+                              ? theme.colorScheme.onSurfaceVariant
+                              : null,
+                        ),
+                      ),
+                      Text(intrigue.stages[i].textFor(lang),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                              color: i + 1 > stage
+                                  ? theme.colorScheme.onSurfaceVariant
+                                  : null)),
+                      if ((i < stage
+                              ? _faceName(intrigue.stages[i].npcId)
+                              : null)
+                          case final name?)
+                        _face(theme, name,
+                            Key('intrigue_face_${intrigue.id}_${i + 1}')),
+                    ],
+                  ),
                 ),
-              ),
-            if (intrigue.outcomes.isNotEmpty) ...[
+            if (intrigue.outcomes.isNotEmpty && (!play || outcome != null)) ...[
               const SizedBox(height: 8),
               Text(trFor(lang, 'clans_intrigue_outcomes').toUpperCase(),
                   style: theme.textTheme.labelSmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                       letterSpacing: 1)),
               for (var i = 0; i < intrigue.outcomes.length; i++)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text.rich(
-                    TextSpan(children: [
-                      TextSpan(
-                        text: intrigue.outcomes[i].nameFor(lang),
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: outcome == i ? gold : null),
-                      ),
-                      if (outcome == i)
+                if (!play || outcome == i)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text.rich(
+                      TextSpan(children: [
                         TextSpan(
-                            text: ' (${trFor(lang, 'clans_intrigue_chosen')})',
-                            style: TextStyle(color: gold)),
-                      if (intrigue.outcomes[i].effects.isNotEmpty)
-                        TextSpan(
-                            text:
-                                ' · ${intrigue.outcomes[i].effects.map(_effectText).where((t) => t.isNotEmpty).join(' · ')}'),
-                    ]),
-                    style: theme.textTheme.bodySmall,
+                          text: intrigue.outcomes[i].nameFor(lang),
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: outcome == i ? gold : null),
+                        ),
+                        if (outcome == i)
+                          TextSpan(
+                              text:
+                                  ' (${trFor(lang, 'clans_intrigue_chosen')})',
+                              style: TextStyle(color: gold)),
+                        if (intrigue.outcomes[i].effects.isNotEmpty)
+                          TextSpan(
+                              text:
+                                  ' · ${intrigue.outcomes[i].effects.map(_effectText).where((t) => t.isNotEmpty).join(' · ')}'),
+                      ]),
+                      style: theme.textTheme.bodySmall,
+                    ),
                   ),
-                ),
+              if ((outcome != null &&
+                          outcome! >= 0 &&
+                          outcome! < intrigue.outcomes.length
+                      ? _faceName(intrigue.outcomes[outcome!].npcId)
+                      : null)
+                  case final name?)
+                _face(theme, name, Key('intrigue_face_${intrigue.id}_outcome')),
             ],
           ],
         ),

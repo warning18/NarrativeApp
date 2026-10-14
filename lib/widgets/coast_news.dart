@@ -125,6 +125,37 @@ class CoastNewsList extends ConsumerWidget {
   }
 }
 
+/// The news so far as a column, the latest first, to sit inside another
+/// list (the Clans screen's Politics tab in play).
+class CoastNewsColumn extends ConsumerWidget {
+  const CoastNewsColumn({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final news = ref.watch(politicsProvider).news.reversed.toList();
+    final lang = ref.watch(appLanguageProvider);
+    final theme = Theme.of(context);
+    if (news.isEmpty) {
+      return Text(trFor(lang, 'journal_news_empty'),
+          style: theme.textTheme.bodySmall);
+    }
+    return Column(
+      key: const Key('clans_news_column'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final n in news)
+          Card(
+            margin: const EdgeInsets.symmetric(vertical: 3),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
+              child: _NewsLine(news: n, language: lang, dated: true),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 /// One piece of news, in italics, with when it came ([dated]).
 class _NewsLine extends StatelessWidget {
   const _NewsLine({

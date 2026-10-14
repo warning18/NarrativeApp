@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/help_hint.dart';
 
 import '../gamedata/db_schema.dart';
 import '../l10n/app_strings.dart';
@@ -25,7 +26,10 @@ class AchievementsScreen extends ConsumerWidget {
     return TutorialTrigger(
       topic: TutorialTopic.achievements,
       child: Scaffold(
-        appBar: AppBar(title: Text(tr(ref, 'achievements_title'))),
+        appBar:
+            AppBar(title: Text(tr(ref, 'achievements_title')), actions: const [
+          TourInfoButton(topic: TutorialTopic.achievements),
+        ]),
         body: achievementsAsync.when(
           data: (records) {
             final keys = records.keys.toList()..sort();

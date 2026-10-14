@@ -44,162 +44,217 @@ extension _FightView on _FightScreenState {
         if (_spells[id] != null) _spells[id]!.nameFor(lang),
     ];
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (condition != null) ...[
-            _buildConditionBanner(condition),
-            const SizedBox(height: 12),
-          ],
-          if (_newGamePlusCycle > 0) ...[
-            Text(
-              '${tr(ref, 'new_game_plus_label')} · '
-              '${tr(ref, 'new_game_plus_cycle_label')} $_newGamePlusCycle · '
-              '+${(newGamePlusStep * _newGamePlusCycle * 100).round()}% '
-              '${tr(ref, 'new_game_plus_enemies_suffix')}',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-          ],
-          if (_partyBonus.resolveStacks > 0) ...[
-            Text(
-              '${tr(ref, 'resolve_label')} ×${_partyBonus.resolveStacks} · '
-              '+${_partyBonus.resolvePercent}% '
-              '${tr(ref, 'resolve_bonus_suffix')}',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-          ],
-          if (_partyBonus.hasHouseBonus) ...[
-            Text(
-              '${tr(ref, 'camp_works_label')} · '
-              '+${_partyBonus.houseHealthPercent}% '
-              '${tr(ref, 'party_health_bonus_label')} · '
-              '+${_partyBonus.houseDamagePercent}% '
-              '${tr(ref, 'party_damage_bonus_label')}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            const SizedBox(height: 8),
-          ],
-          if (widget.modifiers.isHunt ||
-              widget.modifiers.isHunterAmbush ||
-              widget.modifiers.isZoneBoss) ...[
-            Text(
-              tr(ref, _encounterNoteKey(widget.modifiers)),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(fontStyle: FontStyle.italic),
-            ),
-            const SizedBox(height: 8),
-          ],
-          for (final enemy in _enemies) ...[
-            _buildEnemySetupCard(enemy),
-            const SizedBox(height: 8),
-          ],
-          if (charmCounts.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(tr(ref, 'charms_label'),
-                style: Theme.of(context).textTheme.titleSmall),
-            const SizedBox(height: 4),
-            Text(tr(ref, 'charms_hint'),
-                style: Theme.of(context).textTheme.bodySmall),
-            const SizedBox(height: 6),
-            Wrap(
-              spacing: 6,
-              runSpacing: 4,
-              children: [
-                for (final entry in charmCounts.entries)
-                  FilterChip(
-                    avatar: ItemPixelIcon(entry.key, 'Charm', size: 18),
-                    label: Text(
-                      '${(items[entry.key] as Map<String, dynamic>?)?['itemName'] ?? entry.key}'
-                      '${entry.value > 1 ? ' x${entry.value}' : ''}',
-                    ),
-                    tooltip: tr(ref, '${entry.key}_desc'),
-                    selected: _armedCharmIds.contains(entry.key),
-                    onSelected: (selected) => _update(() {
-                      if (selected) {
-                        _armedCharmIds.add(entry.key);
-                      } else {
-                        _armedCharmIds.remove(entry.key);
-                      }
-                    }),
-                  ),
-              ],
-            ),
-          ],
-          if (damageBonus > 0 || armorBonus > 0) ...[
-            const SizedBox(height: 4),
-            Text(
-              '${tr(ref, 'your_equipment_prefix')}: +$damageBonus ${tr(ref, 'damage_word')}, '
-              '+$armorBonus ${tr(ref, 'armor_label')}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ],
-          if (activeAllies.isNotEmpty) ...[
-            const SizedBox(height: 4),
-            Text(
-              '${tr(ref, 'fighting_alongside_prefix')}: '
-              '${activeAllies.map((a) => a.displayName).join(", ")}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ],
-          const SizedBox(height: 4),
-          Row(
+    // The ground behind the setup, as it is behind the battle.
+    return Stack(
+      children: [
+        Positioned.fill(
+            child: IgnorePointer(child: _buildBackdrop(veil: 0.55))),
+        SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Icon(manaIcon, size: 14, color: manaColor),
-              const SizedBox(width: 4),
-              Expanded(
-                child: Text(
-                  '${tr(ref, 'mana_label')} $_mana/$_maxMana · '
-                  '${tr(ref, 'spells_label')}: '
-                  '${knownSpellNames.isEmpty ? '—' : knownSpellNames.join(", ")}',
+              if (!_goal.isSlay) ...[
+                _buildGoalBanner(),
+                const SizedBox(height: 12),
+              ],
+              if (_doctrine != null) ...[
+                _buildDoctrineBanner(_doctrine!),
+                const SizedBox(height: 12),
+              ],
+              if (condition != null) ...[
+                _buildConditionBanner(condition),
+                const SizedBox(height: 12),
+              ],
+              if (_newGamePlusCycle > 0) ...[
+                Text(
+                  '${tr(ref, 'new_game_plus_label')} · '
+                  '${tr(ref, 'new_game_plus_cycle_label')} $_newGamePlusCycle · '
+                  '+${(newGamePlusStep * _newGamePlusCycle * 100).round()}% '
+                  '${tr(ref, 'new_game_plus_enemies_suffix')}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+              ],
+              if (_partyBonus.resolveStacks > 0) ...[
+                Text(
+                  '${tr(ref, 'resolve_label')} ×${_partyBonus.resolveStacks} · '
+                  '+${_partyBonus.resolvePercent}% '
+                  '${tr(ref, 'resolve_bonus_suffix')}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+              ],
+              if (_partyBonus.hasHouseBonus) ...[
+                Text(
+                  '${tr(ref, 'camp_works_label')} · '
+                  '+${_partyBonus.houseHealthPercent}% '
+                  '${tr(ref, 'party_health_bonus_label')} · '
+                  '+${_partyBonus.houseDamagePercent}% '
+                  '${tr(ref, 'party_damage_bonus_label')}',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
+                const SizedBox(height: 8),
+              ],
+              // One of the last battles (v1.196): the Host stands with the
+              // party.
+              if (widget.modifiers.hostFight && !_host.isEmpty) ...[
+                Row(
+                  key: const Key('fight_host_note'),
+                  children: [
+                    const Icon(Icons.groups_2_outlined, size: 16),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        tr(ref, 'host_fight_note'),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+              ],
+              if (widget.modifiers.isHunt ||
+                  widget.modifiers.isHunterAmbush ||
+                  widget.modifiers.isZoneBoss) ...[
+                Text(
+                  tr(ref, _encounterNoteKey(widget.modifiers)),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontStyle: FontStyle.italic),
+                ),
+                const SizedBox(height: 8),
+              ],
+              for (final enemy in _enemies) ...[
+                _buildEnemySetupCard(enemy),
+                const SizedBox(height: 8),
+              ],
+              if (charmCounts.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(tr(ref, 'charms_label'),
+                    style: Theme.of(context).textTheme.titleSmall),
+                const SizedBox(height: 4),
+                Text(tr(ref, 'charms_hint'),
+                    style: Theme.of(context).textTheme.bodySmall),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: [
+                    for (final entry in charmCounts.entries)
+                      FilterChip(
+                        avatar: ItemPixelIcon(entry.key, 'Charm', size: 18),
+                        label: Text(
+                          '${(items[entry.key] as Map<String, dynamic>?)?['itemName'] ?? entry.key}'
+                          '${entry.value > 1 ? ' x${entry.value}' : ''}',
+                        ),
+                        tooltip: tr(ref, '${entry.key}_desc'),
+                        selected: _armedCharmIds.contains(entry.key),
+                        onSelected: (selected) => _update(() {
+                          if (selected) {
+                            _armedCharmIds.add(entry.key);
+                          } else {
+                            _armedCharmIds.remove(entry.key);
+                          }
+                        }),
+                      ),
+                  ],
+                ),
+              ],
+              if (damageBonus > 0 || armorBonus > 0) ...[
+                const SizedBox(height: 4),
+                Text(
+                  '${tr(ref, 'your_equipment_prefix')}: +$damageBonus ${tr(ref, 'damage_word')}, '
+                  '+$armorBonus ${tr(ref, 'armor_label')}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+              if (activeAllies.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  '${tr(ref, 'fighting_alongside_prefix')}: '
+                  '${activeAllies.map((a) => a.displayName).join(", ")}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  const Icon(manaIcon, size: 14, color: manaColor),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      '${tr(ref, 'mana_label')} $_mana/$_maxMana · '
+                      '${tr(ref, 'spells_label')}: '
+                      '${knownSpellNames.isEmpty ? '—' : knownSpellNames.join(", ")}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                ],
               ),
+              Text(tr(ref, 'mana_faces_note'),
+                  style: Theme.of(context).textTheme.labelSmall),
+              const SizedBox(height: 24),
+              Text(tr(ref, 'equipped_die_label'),
+                  style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 8),
+              if (equippedDie == null)
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.error_outline),
+                    title: Text(tr(ref, 'no_die_equipped')),
+                    subtitle: Text(tr(ref, 'equip_die_hint')),
+                  ),
+                )
+              else
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.casino),
+                    title: Text(dieDisplayName(_selectedDiceId!,
+                        language: ref.watch(appLanguageProvider))),
+                    subtitle: Text('$faceCount ${tr(ref, 'faces_label')}'),
+                  ),
+                ),
+              if (session.ownedDiceIds.length > 1) ...[
+                const SizedBox(height: 8),
+                _buildLoadoutPicker(dice, skills, session),
+              ],
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: equippedDie == null
+                    ? null
+                    : () => _startFight(skills, items),
+                icon: const Icon(Icons.sports_martial_arts),
+                label: Text(tr(ref, 'enter_battle_button')),
+              ),
+              if (equippedDie != null && _quickOffered(session)) ...[
+                const SizedBox(height: 8),
+                Tooltip(
+                  message: tr(ref, 'quick_resolve_hint'),
+                  child: OutlinedButton.icon(
+                    key: const Key('quick_resolve_button'),
+                    onPressed: () => _quickResolve(dice, skills, items),
+                    icon: const Icon(Icons.fast_forward),
+                    label: Text(tr(ref, 'quick_resolve_button')),
+                  ),
+                ),
+                Text(tr(ref, 'quick_resolve_hint'),
+                    style: Theme.of(context).textTheme.labelSmall),
+              ],
             ],
           ),
-          Text(tr(ref, 'mana_faces_note'),
-              style: Theme.of(context).textTheme.labelSmall),
-          const SizedBox(height: 24),
-          Text(tr(ref, 'equipped_die_label'),
-              style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          if (equippedDie == null)
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.error_outline),
-                title: Text(tr(ref, 'no_die_equipped')),
-                subtitle: Text(tr(ref, 'equip_die_hint')),
-              ),
-            )
-          else
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.casino),
-                title: Text(dieDisplayName(_selectedDiceId!,
-                    language: ref.watch(appLanguageProvider))),
-                subtitle: Text('$faceCount ${tr(ref, 'faces_label')}'),
-              ),
-            ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed:
-                equippedDie == null ? null : () => _startFight(skills, items),
-            icon: const Icon(Icons.sports_martial_arts),
-            label: Text(tr(ref, 'enter_battle_button')),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -338,8 +393,13 @@ extension _FightView on _FightScreenState {
       spacing: 6,
       runSpacing: 4,
       children: [
+        ..._goalChips(),
         if (condition != null)
           _telegraphChip(Icons.terrain, tr(ref, conditionLabelKey(condition))),
+        if (_sky.effectKey != null)
+          _telegraphChip(
+              Icons.cloud_outlined, tr(ref, 'weather_${_sky.kind.name}')),
+        if (_anomalyChip() case final chip?) chip,
         _telegraphChip(
           ready ? Icons.local_fire_department : Icons.trending_up,
           ready
@@ -398,11 +458,6 @@ extension _FightView on _FightScreenState {
             child: TutorialTarget(id: 'fight.top', child: _buildTopStrip()),
           ),
           const SizedBox(height: 6),
-          TutorialTarget(
-            id: 'fight.dice',
-            child: _buildDiceTray(acting, dice, skills, items, plan),
-          ),
-          const SizedBox(height: 6),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -426,6 +481,11 @@ extension _FightView on _FightScreenState {
             ),
           ),
           const SizedBox(height: 6),
+          TutorialTarget(
+            id: 'fight.dice',
+            child: _buildDiceTray(acting, dice, skills, items, plan),
+          ),
+          const SizedBox(height: 6),
           _buildLogTicker(),
           const SizedBox(height: 4),
           TutorialTarget(
@@ -440,8 +500,11 @@ extension _FightView on _FightScreenState {
     // fight's tour plays the first time a battle is on screen.
     return TutorialTrigger(
       topic: TutorialTopic.fight,
+      // The first fight's tour waits for the lucky die to strike.
+      ready: !widget.modifiers.luckyDieReveal || _luckyDieTourReady,
       child: Stack(
         children: [
+          Positioned.fill(child: IgnorePointer(child: _buildBackdrop())),
           Positioned.fill(child: battle),
           Positioned.fill(
             child: IgnorePointer(
@@ -459,7 +522,7 @@ extension _FightView on _FightScreenState {
   // --- Top strip -----------------------------------------------------------
 
   /// The battlefield condition, the momentum meter and the round counter --
-  /// the fight-wide state, above the dice.
+  /// the fight-wide state, above the fighters.
   Widget _buildTopStrip() {
     return Row(
       children: [
@@ -472,7 +535,7 @@ extension _FightView on _FightScreenState {
 
   // --- Dice tray -----------------------------------------------------------
 
-  /// The party's rolled dice, one tile per acting member, in the member's
+  /// The party's rolled dice (under the party and the enemies, v1.258), one tile per acting member, in the member's
   /// own accent color, with what the landed face is worth this round under
   /// its name (see [_buildPreviewLine]). A tap on a landed die keeps it
   /// through the next reroll (tap again to release it); a long-press opens
@@ -486,8 +549,7 @@ extension _FightView on _FightScreenState {
   ) {
     final previews = plan.previews;
     final colorScheme = Theme.of(context).colorScheme;
-    final canLock =
-        _awaitingDecision && !_rolling && _rollCount < _maxRollsThisFight;
+    final canLock = _awaitingDecision && !_rolling && _rollCount < _rollCap;
     final hintKey = acting.isEmpty
         ? 'nobody_can_act_label'
         : _currentFaces.isEmpty
@@ -628,41 +690,36 @@ extension _FightView on _FightScreenState {
     bool canLock,
     _FacePreview? preview,
   ) {
-    final colorScheme = Theme.of(context).colorScheme;
     final accent = _accentFor(actor);
     final face = _currentFaces[actor.id];
     final locked = _lockedActorIds.contains(actor.id);
     final spinning = _rolling && !locked;
 
-    Widget inner;
-    if (spinning) {
-      inner = AnimatedBuilder(
-        animation: _rollController,
-        builder: (context, _) {
-          final t = _rollController.value;
-          final angle = Curves.easeOutCubic.transform(t) * 6 * pi;
-          final scale = 1 + (sin(t * pi) * 0.25);
-          return Transform.rotate(
-            angle: angle,
-            child: Transform.scale(
-              scale: scale,
-              child: Icon(Icons.casino, size: 30, color: accent),
-            ),
-          );
-        },
-      );
-    } else if (face == null) {
-      inner =
-          Icon(Icons.casino, size: 30, color: accent.withValues(alpha: 0.45));
-    } else {
-      inner = _buildFaceGlyph(face, size: 30);
-    }
-    // A landed face tints its tile with what it does (red hits, pink
-    // heals, blue mana...); the border stays the roller's own colour.
-    final faceTint = face == null || spinning
-        ? null
-        : _faceKindOf(face).color.withValues(alpha: 0.16);
-
+    // The die as a cube (v1.214, see Die3D): it tumbles to the face it
+    // rolled, which stands front, and a landed face lets go a burst fitted
+    // to what it does; a skill face or a heavy blow lands bigger.
+    final landing = spinning ? _rollingTo[actor.id] ?? face : face;
+    final Widget inner = Die3D(
+      key: ValueKey('die_cube_${actor.id}'),
+      faces: _cubeFacesFor(actor, landing, accent),
+      accent: accent,
+      size: 46,
+      roll: _rollController,
+      rolling: spinning,
+      fx: face == null ? null : dieFxOf(_faceKindOf(face)),
+      big: face != null && (face.type == 'Skill' || face.value >= 8),
+      dim: face == null && !spinning,
+      still: MediaQuery.of(context).disableAnimations,
+      // The die's own skin, a gold ring when kept, and what the landed face
+      // adds to the burst: its rule words, its element, a surge, a curse.
+      skin: dieSkinOf(actor.equippedDiceId),
+      held: locked,
+      keywords: face?.keywords ?? const {},
+      element: face == null ? 'None' : _elementFor(face, skills),
+      surge: preview?.surge ?? false,
+      cursed: face != null &&
+          (_cursedFaces[actor.id]?.contains(face.faceIndex) ?? false),
+    );
     final label = face == null || spinning
         ? ''
         : (face.faceName.isEmpty ? face.type : face.faceName);
@@ -690,23 +747,11 @@ extension _FightView on _FightScreenState {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
+          // No tile under the die: the cube stands on its own, and a kept
+          // die shows its gold ring.
+          SizedBox(
             width: 58,
             height: 58,
-            decoration: BoxDecoration(
-              color: locked
-                  ? accent.withValues(alpha: 0.22)
-                  : faceTint ?? colorScheme.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: accent, width: locked ? 3 : 2),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.18),
-                  blurRadius: 3,
-                  offset: const Offset(1, 2),
-                ),
-              ],
-            ),
             child: Stack(
               children: [
                 Center(child: inner),
@@ -840,6 +885,65 @@ extension _FightView on _FightScreenState {
     final skills =
         ref.read(localizedDbProvider(skillsSchema)).value ?? const {};
     return skillKind(skills[_effectiveSkillId(face)] as Map<String, dynamic>?);
+  }
+
+  /// The six sides of [actor]'s die as a cube, [landed] (the face on the
+  /// table, or the one the die is tumbling to) in front and the die's next
+  /// faces round it; a die of fewer than six faces repeats them.
+  List<DieCubeFace> _cubeFacesFor(
+      _PartyMember actor, DiceFaceResult? landed, Color accent) {
+    final raws = actor.dieFaces;
+    if (raws.isEmpty) {
+      return List.filled(
+          6,
+          DieCubeFace(
+              glyph: Icon(Icons.casino, size: 22, color: accent),
+              color: accent));
+    }
+    final language = ref.read(appLanguageProvider);
+    final start = landed?.faceIndex ?? 0;
+    return [
+      for (var slot = 0; slot < 6; slot++)
+        () {
+          final index = (start + slot) % raws.length;
+          final DiceFaceResult face;
+          if (slot == 0 && landed != null) {
+            face = landed;
+          } else {
+            final assigned = applyFaceAssignment(
+              faceFromJson(raws[index], index).withFaceName(''),
+              raws[index],
+              actor.diceSkillAssignments[index.toString()],
+              language: language,
+            );
+            face = (_cursedFaces[actor.id]?.contains(index) ?? false)
+                ? cursedFace(assigned)
+                : assigned;
+          }
+          return DieCubeFace(
+              glyph: _cubeGlyph(face), color: _faceKindOf(face).color);
+        }(),
+    ];
+  }
+
+  /// A side of the cube: a skill face holds the skill's own icon, large, on
+  /// a pale plaque ringed in what the skill does so the pixel art reads on
+  /// the dark stone (v1.214); any other face, its type icon over its value.
+  Widget _cubeGlyph(DiceFaceResult face) {
+    if (face.type != 'Skill') return _buildFaceGlyph(face, size: 30);
+    final color = _faceKindOf(face).color;
+    return Container(
+      key: ValueKey('die_skill_${_effectiveSkillId(face)}'),
+      width: 34,
+      height: 34,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: const Color(0xFFEFE6D2).withValues(alpha: 0.92),
+        border: Border.all(color: color, width: 2),
+      ),
+      child: SkillPixelIcon(_effectiveSkillId(face), size: 26),
+    );
   }
 
   /// A rolled face as a glyph: its type icon over its value (a Skill face

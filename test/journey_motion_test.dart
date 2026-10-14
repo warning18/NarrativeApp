@@ -7,13 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/data/journey_map.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/home_tab_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
-import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/widgets/journey_fx.dart';
 
 Future<void> _settle(WidgetTester tester) async {
@@ -68,12 +68,68 @@ void main() {
     expect(journeyWeatherFor(0), JourneyWeather.none);
   });
 
+  test('the effects layer redraws on a rebuild only for a change (v1.209)', () {
+    final clock = ValueNotifier<double>(0);
+    JourneyFxPainter painter({
+      Offset here = const Offset(40, 300),
+      JourneyWeather weather = JourneyWeather.ash,
+      List<JourneyFxStep> steps = const [
+        JourneyFxStep(
+            centre: Offset(60, 120),
+            kind: JourneyStepKind.fight,
+            colour: Color(0xFFAA3333),
+            locked: false,
+            row: 0),
+      ],
+      int? selected,
+      (Offset, double)? rattle,
+      ValueNotifier<double>? time,
+    }) =>
+        JourneyFxPainter(
+          time: time ?? clock,
+          steps: steps,
+          here: here,
+          hereRadius: 26,
+          stepRadius: 22,
+          mark: const Color(0xFF102030),
+          fog: const Color(0xFFEEEEEE),
+          weather: weather,
+          weatherColour: const Color(0xFF8FC3CF),
+          selected: selected,
+          rattle: rattle,
+        );
+    final same = painter();
+    // The same fields, the same clock: the ticks redraw it, a rebuild
+    // need not.
+    expect(painter().shouldRepaint(same), isFalse);
+    // Anything it draws from changing must.
+    expect(painter(here: const Offset(41, 300)).shouldRepaint(same), isTrue);
+    expect(painter(weather: JourneyWeather.rain).shouldRepaint(same), isTrue);
+    expect(painter(selected: 0).shouldRepaint(same), isTrue);
+    expect(painter(rattle: (const Offset(60, 120), 1.5)).shouldRepaint(same),
+        isTrue);
+    expect(painter(steps: const []).shouldRepaint(same), isTrue);
+    expect(
+        painter(steps: const [
+          JourneyFxStep(
+              centre: Offset(60, 120),
+              kind: JourneyStepKind.fight,
+              colour: Color(0xFFAA3333),
+              locked: true,
+              row: 0),
+        ]).shouldRepaint(same),
+        isTrue);
+    expect(painter(time: ValueNotifier<double>(0)).shouldRepaint(same), isTrue);
+  });
+
   testWidgets('the effects run only while the Journey tab is on screen',
       (tester) async {
     final container = await _openJourney(tester);
     void show(int tab) =>
         container.read(homeTabIndexProvider.notifier).state = tab;
-    // On the Story tab, the Journey map (kept behind it) draws nothing.
+    // On another tab, the Journey map (kept behind it) draws nothing.
+    show(1);
+    await _settle(tester);
     expect(_fx, findsNothing);
     show(journeyTabIndex);
     // Past the unroll and the new chapter burning open.
@@ -85,7 +141,7 @@ void main() {
         warnIfMissed: false);
     await tester.pump(const Duration(milliseconds: 500));
     expect(tester.takeException(), isNull);
-    show(0);
+    show(1);
     await _settle(tester);
     expect(_fx, findsNothing);
   });

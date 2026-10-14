@@ -101,8 +101,8 @@ void main() {
         play.jumpTo(id);
         await _settle(tester);
         // Past the map inking in (and a new chapter's burning open), and
-        // the new place's card.
-        await tester.pump(const Duration(seconds: 2));
+        // the new place's card, and the road walked to it.
+        await tester.pump(const Duration(seconds: 6));
         await clearCards();
         final count =
             List.generate(30, _step).takeWhile((f) => f.evaluate().isNotEmpty);
@@ -136,17 +136,17 @@ void main() {
     tester.view.physicalSize = const Size(360, 640);
     play.jumpTo('270');
     await _settle(tester);
-    await tester.pump(const Duration(seconds: 2));
+    await tester.pump(const Duration(seconds: 6));
     await clearCards();
     final gold = container.read(playerSessionProvider).gold;
     await tapMark(0);
     await tapMark(0);
-    // The walk out of the alley, then the road to the square.
+    // The walk out of the alley, then the road home.
     for (var i = 0; i < 8; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }
     await _settle(tester);
-    expect(container.read(storyPlayProvider).currentNodeId, '280');
+    expect(container.read(storyPlayProvider).currentNodeId, '300');
     expect(container.read(playerSessionProvider).flags,
         contains('companion_hound'));
     expect(container.read(playerSessionProvider).gold, gold);

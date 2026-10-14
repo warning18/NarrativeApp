@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/battlefield_condition.dart';
+import '../combat/field_anomaly.dart';
+import '../data/place_traits.dart';
+import '../data/climate.dart' show WeatherKind;
+import '../providers/fight_random_provider.dart';
+import '../providers/geography_provider.dart';
+import '../widgets/fight_backdrop.dart';
+import '../data/weather_effects.dart';
+import '../providers/climate_provider.dart';
 import '../combat/combat_aftermath.dart';
 import '../combat/party_bonus.dart';
 import '../combat/combat_engine.dart';
@@ -14,19 +23,33 @@ import '../combat/duo_techniques.dart';
 import '../combat/face_smithing.dart';
 import '../combat/party_combos.dart';
 import '../combat/encounter.dart';
+import '../combat/doctrine.dart';
+import '../combat/element_reaction.dart';
+import '../combat/enemy_response.dart';
+import '../combat/squad.dart';
+import '../combat/parry.dart';
+import '../combat/loadout.dart';
+import '../combat/quick_resolve.dart';
+import '../combat/turn_order.dart';
 import '../combat/enemy_affix.dart';
+import '../combat/fight_goal.dart';
 import '../combat/gear_effects.dart';
 import '../combat/loot_box.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../data/encounter_text.dart';
-import '../data/factions.dart' show ClanData, parseFactions, parseTitles;
+import '../data/item_origin_here.dart';
+import '../data/factions.dart'
+    show ClanData, Host, parseFactions, parseSubclans, parseTitles;
 import '../data/offers.dart' show clanEffectsFor;
+import '../data/throne.dart' show fieldedHost, hostEffects;
 import '../data/skill_tree.dart';
 import '../combat/skill_vfx.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/combat_vfx.dart';
+import '../widgets/die_3d.dart';
+import '../widgets/die_skins.dart';
 import '../widgets/item_stats.dart';
 import '../data/approval.dart';
 import '../data/chapter_loop.dart';
@@ -56,19 +79,28 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/level_up_dialog.dart';
 import '../widgets/offer_dialog.dart';
+import '../widgets/pixel_sprite.dart';
+import '../widgets/pixel_portrait.dart';
+import '../widgets/pixel_vfx.dart';
 import '../widgets/spoils_chest_dialog.dart';
 import 'death_screen.dart';
 
 part 'fight/fight_actions.dart';
 part 'fight/fight_cards.dart';
 part 'fight/fight_controls.dart';
+part 'fight/fight_clash.dart';
 part 'fight/fight_dice_rules.dart';
 part 'fight/fight_effects.dart';
+part 'fight/fight_goals.dart';
+part 'fight/fight_ground.dart';
+part 'fight/fight_lucky_die.dart';
 part 'fight/fight_models.dart';
+part 'fight/fight_quick.dart';
 part 'fight/fight_queries.dart';
 part 'fight/fight_rewards.dart';
 part 'fight/fight_rounds.dart';
 part 'fight/fight_setup.dart';
+part 'fight/fight_squad.dart';
 part 'fight/fight_view.dart';
 part 'fight/fight_widgets.dart';
 
@@ -151,7 +183,12 @@ class FightScreen extends ConsumerStatefulWidget {
     this.additionalEnemyIds = const [],
     this.additionalEnemies = const {},
     this.modifiers = EncounterModifiers.none,
+    this.random,
   });
+
+  /// The dice this fight rolls (see [fightRandomProvider]): null in play, so
+  /// the fight makes its own unseeded Random; a test gives a seeded one.
+  final Random? random;
 
   final String enemyId;
   final Map<String, dynamic> enemy;
@@ -185,7 +222,7 @@ class FightScreen extends ConsumerStatefulWidget {
 
 class _FightScreenState extends ConsumerState<FightScreen>
     with TickerProviderStateMixin {
-  final Random _random = Random();
+  late final Random _random = widget.random ?? ref.read(fightRandomProvider)();
   final List<_LogEntry> _log = [];
 
   bool _started = false;
@@ -216,6 +253,13 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// Resolve and the camp's works, resolved once at party build (see
   /// party_bonus.dart).
   PartyBonus _partyBonus = PartyBonus.none;
+
+  /// The Host beside the party in one of the last battles (v1.196, see
+  /// throne.dart), fixed at party build; [Host.none] in any other fight.
+  Host _host = Host.none;
+
+  /// The factions the Host's contingents are named from.
+  ClanData _hostData = ClanData.empty;
 
   /// Every enemy in this fight — a solo fight is `_enemies.length == 1`.
   /// Built once in [_ensureEnemiesBuilt], mutated in place for the rest of
@@ -281,11 +325,47 @@ class _FightScreenState extends ConsumerState<FightScreen>
   bool _rolling = false;
 
   bool _partyBuilt = false;
+
+  /// The first fight's lucky die (see fight_lucky_die.dart): whether the
+  /// fight's tour may play yet, and the timer that lets it, a moment after
+  /// the die has struck.
+  bool _luckyDieTourReady = false;
+  Timer? _luckyDieTourTimer;
   List<_PartyMember> _party = [];
 
   /// This fight's one-off circumstance, if any -- see
   /// battlefield_condition.dart. Rolled once in [_ensureEnemiesBuilt].
   BattlefieldCondition? _condition;
+
+  /// True while a quick resolve plays the fight (v1.213, see
+  /// quick_resolve.dart): short animations, the choices made for the
+  /// player, a Stop button in place of the dice.
+  bool _quick = false;
+
+  /// Which enemy each defender's Defend face parries this round (v1.214,
+  /// see parry.dart): actor id -> enemy key. Empty means a plain guard.
+  final Map<String, String> _parryTargets = {};
+
+  /// What this fight asks of the party besides killing everything
+  /// (v1.212, see fight_goal.dart). Rolled once in [_ensureEnemiesBuilt].
+  FightGoal _goal = FightGoal.slay;
+
+  /// The doctrine the enemies fight under, if any (v1.212, see
+  /// doctrine.dart). Set once in [_ensureEnemiesBuilt].
+  Doctrine? _doctrine;
+
+  /// What the day's sky does to this fight (v1.208, see
+  /// weather_effects.dart): set once in [_ensureEnemiesBuilt].
+  WeatherEffects _sky = WeatherEffects.of(null);
+
+  /// Where the fight is drawn, and the anomaly that may break over it
+  /// (v1.241, see fight_ground.dart). Set once in [_ensureEnemiesBuilt].
+  FightStage _stage = FightStage.fields;
+  FieldAnomalyPlan? _anomaly;
+
+  /// The light the fight is fought in ('' for the day's, see
+  /// place_traits.dart): set with the battlefield condition.
+  String _light = '';
 
   /// Party rounds begun so far -- the spoils chest's "swift fight" bonus
   /// reads this, and an Ambush hides every telegraph while it's still 1.
@@ -339,6 +419,14 @@ class _FightScreenState extends ConsumerState<FightScreen>
   final Set<String> _armedCharmIds = {};
   int _maxRollsThisFight = _maxRolls;
 
+  /// Free rerolls this round (a Windwalker's last turn) and those granted
+  /// for the next one.
+  int _bonusRolls = 0;
+  int _bonusRollsNext = 0;
+
+  /// Rolls the party may make this round.
+  int get _rollCap => _maxRollsThisFight + _bonusRolls;
+
   /// The player's level-up perks (see perks.dart), read at party build.
   PerkEffects _perks = PerkEffects.none;
 
@@ -379,6 +467,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// die together as one combined action instead of taking separate
   /// sequential turns. Cleared once a roll is confirmed.
   final Map<String, DiceFaceResult> _currentFaces = {};
+
+  /// The faces the dice in the air are about to land on (v1.214): the
+  /// cubes tumble to them, and they become [_currentFaces] when the roll
+  /// ends.
+  Map<String, DiceFaceResult> _rollingTo = const {};
 
   /// How many times the party has rolled so far *this round* (0-3) — a
   /// single shared budget covering every member's die at once, not a
@@ -442,14 +535,17 @@ class _FightScreenState extends ConsumerState<FightScreen>
     _maxMana = session.maxMana;
     _mana = session.mana.clamp(0, _maxMana);
     _ensureEnemiesBuilt();
+    // The skill effects in pixel art (see pixel_vfx.dart).
+    PixelStrips.preload(allPixelVfxAssets);
     _selectedDiceId = session.equippedDiceId ??
         (session.ownedDiceIds.isNotEmpty ? session.ownedDiceIds.first : null);
     _shakeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    // Spins and bounces the die icon for a beat before a roll's result is
-    // applied, so a tap reads as "rolling" rather than an instant stat swap.
+    // The dice tumble in 3D for a beat before a roll's result is applied
+    // (see Die3D), so a tap reads as "rolling" rather than an instant stat
+    // swap; with reduced motion the roll is instant (see _rollDice).
     _rollController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 650),
@@ -458,6 +554,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   @override
   void dispose() {
+    _luckyDieTourTimer?.cancel();
     _shakeController.dispose();
     _vfx.removeImpactListener(_onVfxImpact);
     _vfx.dispose();
@@ -492,6 +589,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
     // The titles worn and the Sworn boons lend their effects too.
     final titlesAsync = ref.watch(gameDbProvider(titlesSchema));
     final factionsAsync = ref.watch(gameDbProvider(factionsSchema));
+    // One of the last battles (v1.196): the sub-clans, for the Host's
+    // Houses. Any other fight waits for nothing more.
+    final subclansAsync = widget.modifiers.hostFight
+        ? ref.watch(gameDbProvider(subclansSchema))
+        : null;
     final session = ref.watch(playerSessionProvider);
     _companionsAutoAim = ref.watch(companionAutoTargetProvider);
 
@@ -509,6 +611,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final signsDb = signsAsync.value;
     final titlesDb = titlesAsync.value;
     final factionsDb = factionsAsync.value;
+    final subclansDb =
+        subclansAsync == null ? const <String, dynamic>{} : subclansAsync.value;
 
     if (dice == null ||
         skills == null ||
@@ -523,7 +627,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
         skillTrees == null ||
         signsDb == null ||
         titlesDb == null ||
-        factionsDb == null) {
+        factionsDb == null ||
+        subclansDb == null) {
       final error = diceAsync.error ??
           skillsAsync.error ??
           itemsAsync.error ??
@@ -537,7 +642,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
           skillTreesAsync.error ??
           signsAsync.error ??
           titlesAsync.error ??
-          factionsAsync.error;
+          factionsAsync.error ??
+          subclansAsync?.error;
       return Scaffold(
         appBar: AppBar(
           title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
@@ -551,28 +657,30 @@ class _FightScreenState extends ConsumerState<FightScreen>
     }
 
     _itemSets = parseItemSets(itemSetsDb);
-    _ensurePartyBuilt(
-        session,
-        companions,
-        races,
-        professions,
-        gameConfig,
-        items,
-        _itemSets,
-        houses,
-        dice,
-        skillTrees,
-        skills,
-        signsDb,
-        clanEffectsFor(
-          activeTitleId: session.activeTitleId,
-          heldTitleIds: session.heldTitleIds,
-          swornBoonIds: session.swornBoonIds,
-          swornFactionId: session.politics.swornFactionId,
-          data: ClanData(
-              factions: parseFactions(factionsDb),
-              titles: parseTitles(titlesDb)),
-        ));
+    final clanData = ClanData(
+        factions: parseFactions(factionsDb),
+        subclans: parseSubclans(subclansDb),
+        titles: parseTitles(titlesDb));
+    // One of the last battles (v1.196, see throne.dart): the Host fights
+    // beside the party, its effects through the signs' machinery.
+    if (!_partyBuilt && widget.modifiers.hostFight) {
+      _hostData = clanData;
+      _host = fieldedHost(
+          politics: session.politics,
+          data: clanData,
+          signPatrons: session.signPatronsThisLife);
+    }
+    _ensurePartyBuilt(session, companions, races, professions, gameConfig,
+        items, _itemSets, houses, dice, skillTrees, skills, signsDb, [
+      ...clanEffectsFor(
+        activeTitleId: session.activeTitleId,
+        heldTitleIds: session.heldTitleIds,
+        swornBoonIds: session.swornBoonIds,
+        swornFactionId: session.politics.swornFactionId,
+        data: clanData,
+      ),
+      ...hostEffects(_host, clanData),
+    ]);
     _spells = parseSpells(spellsDb);
 
     // Once the fight has begun, back is no way out of it: a fight in
@@ -596,7 +704,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
+          title: _buildTitle(),
           actions: [
             if (_canRetreat)
               IconButton(

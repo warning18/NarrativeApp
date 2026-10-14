@@ -97,6 +97,9 @@ List<String> _validateMandatoryCombat(StoryData story) {
 
         for (final choice in node.choices) {
           if (!choice.triggersCombat) continue;
+          // A lesson (the story's first fight) is meant to be met before
+          // any shop: it is tuned to be won without one.
+          if (choice.tutorialFight) continue;
           if (!allowed.contains(choice.nextId)) continue;
 
           final withoutThisFight =

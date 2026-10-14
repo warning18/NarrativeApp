@@ -65,8 +65,9 @@ class _DeathScreenState extends ConsumerState<DeathScreen> {
       child: Scaffold(
         backgroundColor: Colors.black,
         body: SafeArea(
+          // Scrolls when the last words run long on a short phone.
           child: Center(
-            child: Padding(
+            child: SingleChildScrollView(
               padding: const EdgeInsets.all(24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,

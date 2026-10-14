@@ -49,7 +49,7 @@ void main() {
     final main = mainQuestIdsOf(quests);
     expect(main, contains('q_retrieve_banner'));
     expect(main, isNot(contains('q_ch2_terns_toll')));
-    // Both ways over the river hand out the Heirloom of Alster.
+    // Both ways home hand out the Family Heirloom.
     for (final choice in story.nodeFor('250')!.choices) {
       expect(
           questOfferedAhead(

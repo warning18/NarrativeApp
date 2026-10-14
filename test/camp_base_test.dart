@@ -34,7 +34,7 @@ void main() {
     final camps =
         story.nodes.values.where((n) => n.settlement?.isCamp ?? false);
     expect(camps.map((n) => n.id).toSet(),
-        {'3001_camp', '4999_camp', '6002_camp', '7001', '7400'});
+        {'3001_camp', '4999_camp', '6002_camp', '7001', '7400', '7800'});
     for (final camp in camps) {
       expect(camp.settlement!.nameFor(false), 'The Cove Camp');
       expect(camp.settlement!.nameFor(true), 'Le camp de la crique');

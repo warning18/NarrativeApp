@@ -70,14 +70,19 @@ extension _FightActions on _FightScreenState {
         alignedBonus.damageBonus +
         player.gear.attackDamage +
         _elementalDamageBonus(spell.element, player.equippedItemIds, items);
-    final amount = spellAmountFor(
-      spell,
-      intelligence: player.intelligence,
-      wisdom: player.wisdom,
-      strength: player.strength,
-      level: _playerLevel,
-      casterDamage: casterDamage,
-    );
+    // The day's sky and the ground's anomaly dampen or feed the spell's
+    // element (v1.208, v1.241).
+    final amount = _groundDamage(
+        spellAmountFor(
+          spell,
+          intelligence: player.intelligence,
+          wisdom: player.wisdom,
+          strength: player.strength,
+          level: _playerLevel,
+          casterDamage: casterDamage,
+        ),
+        spell.element,
+        byParty: true);
     // A spell sign lifts what spells deal and heal (not their block).
     return spell.effect == SpellEffectKind.damage ||
             spell.effect == SpellEffectKind.heal
@@ -190,6 +195,7 @@ extension _FightActions on _FightScreenState {
           _lastEnemyDamageTaken = damage;
           if (spell.element != 'None') {
             enemy.elementsHitThisRound.add(spell.element);
+            _reactOnHit(enemy, spell.element, damage, entries, lang);
           }
         }
         if (wasAlive && !enemy.isAlive) _lastKillWasCritical = false;
@@ -275,6 +281,7 @@ extension _FightActions on _FightScreenState {
             _LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info));
       }
     }
+    _noteGoalProgress(entries, lang);
     _noteSkittishFlights(entries, lang);
     _feedSignKills(entries, lang);
 

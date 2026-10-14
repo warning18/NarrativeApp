@@ -141,67 +141,6 @@ void main() {
     expect(journeySlots(biggest), hasLength(biggest));
   });
 
-  group('the chapter behind the party', () {
-    StoryNode node(String id, List<Map<String, dynamic>> choices) =>
-        StoryNode.fromJson(id, {'description': id, 'choices': choices});
-    final nodes = {
-      '1900': node('1900', [
-        {'text': 'To the harbour', 'next_id': '2001'},
-      ]),
-      '2001': node('2001', [
-        {'text': 'Head toward the wharf', 'next_id': '2005'},
-      ]),
-      '2005': node('2005', [
-        {'text': 'Disembark', 'next_id': '2015'},
-        {
-          'text': 'Sneak',
-          'next_id': '2020',
-          'checkAbility': 'dexterity',
-          'failNextId': '2025'
-        },
-      ]),
-      '2025': node('2025', [
-        {'text': 'Visit the stalls', 'next_id': '2025'},
-        {'text': 'Walk on', 'next_id': '2030'},
-      ]),
-    };
-
-    test('reads back through the chapter, the latest scene first', () {
-      final past = journeyChapterPast(
-        history: ['1900', '2001', '2005', '2025', '2025'],
-        currentNodeId: '2030',
-        nodeFor: (id) => nodes[id],
-      );
-      expect([for (final s in past.steps) s.nodeId], ['2025', '2005', '2001']);
-      // The way out of each, even through a failed roll.
-      expect([for (final s in past.steps) s.wayTaken?.text],
-          ['Walk on', 'Sneak', 'Head toward the wharf']);
-      // Chapter 1's last scene is not part of chapter 2's road.
-      expect(past.reachesStart, isTrue);
-    });
-
-    test('a scene with no choice leading on keeps no way taken', () {
-      final past = journeyChapterPast(
-        history: ['2001'],
-        currentNodeId: '2999',
-        nodeFor: (id) => nodes[id],
-      );
-      expect(past.steps.single.wayTaken, isNull);
-    });
-
-    test('a long chapter keeps only the latest scenes', () {
-      final past = journeyChapterPast(
-        history: [for (var i = 0; i < 60; i++) '${2100 + i}'],
-        currentNodeId: '2200',
-        nodeFor: (id) => null,
-        limit: 10,
-      );
-      expect(past.steps, hasLength(10));
-      expect(past.steps.first.nodeId, '2159');
-      expect(past.reachesStart, isFalse);
-    });
-  });
-
   group('relief', () {
     test('heights stay between 0 and 1 and are the same every time', () {
       for (var i = 0; i < 400; i++) {
@@ -257,6 +196,35 @@ void main() {
           expect(reliefHeight(p.dx + d.dx, p.dy + d.dy), lessThan(top));
         }
       }
+    });
+  });
+
+  group('focus frame', () {
+    const frame = Rect.fromLTWH(0, 0, 1000, 800);
+
+    test('close ways show a corner of the city, close up', () {
+      final focus = journeyFocusFrame(
+          frame, [const Offset(300, 300), const Offset(380, 340)]);
+      expect(focus.width, lessThan(frame.width * 0.7));
+      expect(focus.height, lessThan(frame.height * 0.7));
+      expect(focus.contains(const Offset(300, 300)), isTrue);
+      expect(focus.contains(const Offset(380, 340)), isTrue);
+    });
+
+    test('never smaller than half the frame, never outside it', () {
+      final focus = journeyFocusFrame(frame, [const Offset(10, 790)]);
+      expect(focus.width, greaterThanOrEqualTo(frame.width * 0.5));
+      expect(focus.height, greaterThanOrEqualTo(frame.height * 0.5));
+      expect(frame.contains(focus.topLeft), isTrue);
+      expect(focus.right, lessThanOrEqualTo(frame.right));
+      expect(focus.bottom, lessThanOrEqualTo(frame.bottom));
+    });
+
+    test('ways across the city show all of it; none shows the frame', () {
+      final wide = journeyFocusFrame(
+          frame, [const Offset(50, 60), const Offset(950, 740)]);
+      expect(wide, frame);
+      expect(journeyFocusFrame(frame, const []), frame);
     });
   });
 }

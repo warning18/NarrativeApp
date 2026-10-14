@@ -65,30 +65,20 @@ void main() {
     expect(find.byType(JourneyScreen), findsOneWidget);
     expect(tester.takeException(), isNull);
 
-    // Both ways on from the ship are steps on the map.
+    // Both ways on from the gate are steps on the map.
     final node = container.read(storyDataProvider).value!.nodeFor('2005')!;
     for (final choice in node.choices) {
       expect(find.text(choice.text), findsOneWidget, reason: choice.text);
     }
     expect(find.text('You are here'.toUpperCase()), findsOneWidget);
 
-    // The scene before, on the road below the party, and what happened
-    // there a tap away.
-    expect(find.byKey(const ValueKey('journey_past_0')), findsOneWidget);
-    expect(find.text('Head toward the wharf'), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('journey_past_0')));
-    await tester.pump(const Duration(milliseconds: 400));
-    expect(find.text('Way taken: Head toward the wharf'), findsOneWidget);
-    await tester.tapAt(const Offset(200, 40));
-    await tester.pump(const Duration(milliseconds: 400));
-    expect(find.text('Way taken: Head toward the wharf'), findsNothing);
+    // The road already taken is the Map tab's to show (v1.224): the
+    // Journey draws only the party and the ways on.
+    expect(find.byKey(const ValueKey('journey_past_0')), findsNothing);
 
-    // A double-tap reads the scene full screen; the map button (or
-    // another double-tap) brings the map back.
-    final sceneText = find.byKey(const ValueKey('journey_scene_text'));
-    await tester.tap(sceneText);
-    await tester.pump(const Duration(milliseconds: 60));
-    await tester.tap(sceneText);
+    // Read opens the scene full screen (v1.199: the scene no longer sits
+    // over the map); the map button brings the map back.
+    await tester.tap(find.byKey(const ValueKey('journey_read')));
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.byKey(const ValueKey('journey_reading_exit')), findsOneWidget);
     expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
@@ -108,8 +98,16 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.byKey(const ValueKey('journey_traveller')), findsOneWidget);
     expect(container.read(storyPlayProvider).currentNodeId, '2005');
-    await tester.pump(const Duration(milliseconds: 700));
+    // Through the gate into the town is a walk between two places.
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+    }
     await _settle(tester);
+    // The scene reached is read full screen first; Continue brings the
+    // map back (v1.200.1).
+    expect(find.byKey(const ValueKey('journey_continue')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('journey_continue')));
+    await tester.pump(const Duration(milliseconds: 400));
     // The road there may hold a detour first, which the map then shows.
     final after = container.read(storyPlayProvider);
     if (after.isInExcursion) {

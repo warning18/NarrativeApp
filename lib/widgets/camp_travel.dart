@@ -13,10 +13,15 @@ import '../providers/chapter_loop_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../screens/story_player_screen.dart'
     show roadEventOn, rollRoadEncounter, takeStoryChoice, walkRoadStep;
+import '../data/world_map.dart' show landmarkOfScene;
+import '../screens/full_map_screen.dart' show FullMapScreen;
+import '../screens/land_crossing_screen.dart' show runLandCrossing;
+import '../providers/app_mode_provider.dart';
 import 'immersive_notice.dart';
 import 'ship_widgets.dart';
 
@@ -114,12 +119,17 @@ Future<void> travelTo(
       ports: ports, savedPortId: ref.read(playerSessionProvider).currentPortId);
   final play = ref.read(storyPlayProvider.notifier);
   if (walk) {
-    await walkRoadStep(ref, watches: walkWatches);
+    // The watches of where the walk goes (a far place can take a day, see
+    // GeoPlace.watches).
+    final story = await ref.read(storyDataProvider.future);
+    final world = await loadGeography(ref);
+    await walkRoadStep(ref,
+        watches: world.watchesToNode(story.nodeFor(targetNodeId),
+            fallback: walkWatches));
     if (!context.mounted) return;
     // A road event on the way (see road_events.dart), else what the road
     // may hold.
     final from = ref.read(storyPlayProvider);
-    final story = await ref.read(storyDataProvider.future);
     final event = await roadEventOn(ref, story,
         fromNodeId: from.currentNodeId,
         toNodeId: targetNodeId,
@@ -191,6 +201,13 @@ Future<void> returnToCamp(BuildContext context, WidgetRef ref) async {
 Future<void> setOutOnMainQuest(
     BuildContext context, WidgetRef ref, StoryChoice choice) async {
   var sailed = false;
+  // A long land road on the way (land_crossing.dart) is crossed first, as
+  // a voyage is sailed: lost or turned back from, the party stays.
+  if (choice.crossesLand && ref.read(appModeProvider) != AppMode.edit) {
+    if (!await runLandCrossing(context, ref, choice.landRouteId!)) return;
+    if (!context.mounted) return;
+    sailed = true;
+  }
   if (choice.travels) {
     final story = ref.read(storyDataProvider).value;
     final place = story?.nodeFor(choice.travelPlaceId!);
@@ -280,6 +297,8 @@ class PlaceCard extends ConsumerWidget {
         ports: ports, savedPortId: session.currentPortId);
     final theme = Theme.of(context);
     final blurb = settlement.blurbFor(fr);
+    final landmark = landmarkOfScene(place.id) ??
+        landmarkOfScene(settlement.arrivalNodeId ?? '');
     return Card(
       child: ListTile(
         key: Key('place_${place.id}'),
@@ -307,18 +326,40 @@ class PlaceCard extends ConsumerWidget {
                   Icon(Icons.person_add_alt_1_outlined,
                       size: 14, color: theme.colorScheme.tertiary),
                   const SizedBox(width: 4),
-                  Text(tr(ref, 'place_companion_label'),
-                      style: theme.textTheme.labelMedium
-                          ?.copyWith(color: theme.colorScheme.tertiary)),
+                  Flexible(
+                    child: Text(tr(ref, 'place_companion_label'),
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.labelMedium
+                            ?.copyWith(color: theme.colorScheme.tertiary)),
+                  ),
                 ],
               ),
           ],
         ),
         isThreeLine: blurb != null || companionHere,
-        trailing: FilledButton.tonal(
-          key: Key('go_${place.id}'),
-          onPressed: busy ? null : () => travelToPlace(context, ref, place),
-          child: Text(tr(ref, 'place_go_button')),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // The place on the full map, with the offer to go there.
+            if (landmark != null)
+              IconButton(
+                key: Key('map_${place.id}'),
+                icon: const Icon(Icons.map_outlined, size: 20),
+                tooltip: tr(ref, 'map_on_map'),
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (_) => FullMapScreen(focusId: landmark.id)),
+                ),
+              ),
+            FilledButton.tonal(
+              key: Key('go_${place.id}'),
+              onPressed: busy ? null : () => travelToPlace(context, ref, place),
+              child: Text(tr(ref, 'place_go_button')),
+            ),
+          ],
         ),
       ),
     );

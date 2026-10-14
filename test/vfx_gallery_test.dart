@@ -50,6 +50,9 @@ void main() {
     }
     await tester.tap(find.byKey(const Key('vfx_gallery_skill')));
     await tester.pumpAndSettle();
+    // The list is long and builds as it scrolls (v1.245: twenty more).
+    await tester.scrollUntilVisible(find.text('Fireball'), 200,
+        scrollable: find.byType(Scrollable).last);
     await tester.tap(find.text('Fireball').last);
     await tester.pumpAndSettle();
     final power = find.byKey(const Key('vfx_gallery_skill_power'));

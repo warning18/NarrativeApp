@@ -301,11 +301,18 @@ List<String> dieSignatureSkillIds(Map<String, dynamic>? die) {
 
 /// A die's name for the player: "iron_die" reads "Iron Die"; in French,
 /// its name from [diceNamesFr].
+/// Dice whose English name is not simply their id's words (see
+/// [dieDisplayName]): the starting die is the old bone die from the blind
+/// beggar's memory, the lucky charm the story's first fight reveals.
+const Map<String, String> diceNamesEn = {'starter_die': 'Lucky Die'};
+
 String dieDisplayName(String diceId, {AppLanguage language = AppLanguage.en}) {
   if (language == AppLanguage.fr) {
     final french = diceNamesFr[diceId];
     if (french != null) return french;
   }
+  final english = diceNamesEn[diceId];
+  if (english != null) return english;
   return diceId
       .split('_')
       .where((w) => w.isNotEmpty)

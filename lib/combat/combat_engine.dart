@@ -2,12 +2,14 @@ import 'dart:math';
 
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import 'skill_extras.dart';
 import 'status_effect.dart';
 import 'enemy_intent.dart';
 import 'face_keywords.dart';
 
 export 'enemy_intent.dart';
 export 'face_keywords.dart';
+export 'skill_extras.dart';
 
 /// Reads a skill or enemy-move record's `inflictsStatus`/`statusDuration`/
 /// `statusMagnitude` fields into a [StatusEffect], or null if the record
@@ -170,6 +172,7 @@ class PlayerActionResult {
     this.inflictedStatus,
     this.isCritical = false,
     this.manaGained = 0,
+    this.extras = SkillExtras.none,
   });
 
   final int damageDealt;
@@ -186,6 +189,10 @@ class PlayerActionResult {
   /// only Skill faces can carry one (see the skill's own
   /// `inflictsStatus`/`statusDuration`/`statusMagnitude` fields).
   final StatusEffect? inflictedStatus;
+
+  /// The rules the skill carries beyond the numbers above (see
+  /// skill_extras.dart) -- none for every face but a skill that names some.
+  final SkillExtras extras;
 
   /// True when [criticalChanceFor] rolled a hit on this face's damage --
   /// always false for a face that dealt no damage (a pure heal/block, or a
@@ -261,6 +268,7 @@ PlayerActionResult resolvePlayerFace(
   bool forceCritical = false,
   String alignmentLabel = 'Neutral',
   double critChanceBonus = 0,
+  int armor = 0,
 }) {
   String t(String key) => trFor(language, key);
   int withCrit(int rawDamage) => forceCritical
@@ -314,6 +322,7 @@ PlayerActionResult resolvePlayerFace(
           forceCritical: forceCritical,
           alignmentLabel: alignmentLabel,
           critChanceBonus: critChanceBonus,
+          armor: armor,
         );
       }
       if (skill == null) {
@@ -332,8 +341,15 @@ PlayerActionResult resolvePlayerFace(
       var healAmount = baseHealAmount > 0
           ? ((baseHealAmount + wisdomHealBonus) * alignmentMultiplier).round()
           : 0;
-      var skillDamage =
-          ((baseDamage + damageMod) * multiplier * alignmentMultiplier).round();
+      final extras = SkillExtras.fromRecord(skill);
+      // Damage that leans on the caster's armor (Bastion Slam), struck once
+      // for each of the skill's blows.
+      final armorBonus = (armor * extras.damageFromArmor).round();
+      var skillDamage = ((baseDamage + damageMod + armorBonus) *
+              multiplier *
+              alignmentMultiplier *
+              extras.strikes)
+          .round();
       // A skill set on a basic face works at channeled power, but never
       // below what the face did on its own: an Attack face still hits for
       // its attack, a Heal face still heals its amount.
@@ -358,6 +374,11 @@ PlayerActionResult resolvePlayerFace(
       if (face.isChanneled && manaGain > 0) {
         manaGain = max(1, (manaGain * channeledPower).round());
       }
+      // The shield a skill raises, at channeled power on a basic face.
+      var skillBlock = extras.block;
+      if (face.isChanneled && skillBlock > 0) {
+        skillBlock = max(1, (skillBlock * channeledPower).round());
+      }
       final rawDamage = applyWeaken(skillDamage, activeEffects);
       final damage = withCrit(rawDamage);
       final crit = damage != rawDamage;
@@ -368,7 +389,10 @@ PlayerActionResult resolvePlayerFace(
       final statParts = <String>[
         if (damage > 0)
           '${t('you_deal_prefix')} $damage ${t('damage_word')}'
+              '${extras.strikes > 1 ? ' (${extras.strikes} ${t('blows_word')})' : ''}'
               '${crit ? ' ${t('critical_hit_suffix')}' : ''}',
+        if (skillBlock > 0)
+          '${t('you_brace_prefix')} $skillBlock ${t('block_word')}',
         if (healAmount > 0)
           '${t('you_recover_prefix')} $healAmount ${t('hp_label')}',
         if (manaGain > 0)
@@ -379,11 +403,12 @@ PlayerActionResult resolvePlayerFace(
       return PlayerActionResult(
         damageDealt: damage,
         healingDone: healAmount,
-        blockAmount: 0,
+        blockAmount: skillBlock,
         isCritical: crit,
         manaGained: manaGain,
         message: message,
         inflictedStatus: _inflictedStatusFrom(skill),
+        extras: extras,
       );
     case 'Heal':
       final healAmount = face.value + wisdomHealBonus;
@@ -627,14 +652,31 @@ const Set<String> soloOnlyEnemyIds = {
   'malrik_turned',
   'inquisition_legate',
   'masked_penitent',
+  // The war for the Lantern Throne and the last battle (v1.196): the three
+  // claimants' last stands at Candlehold, and the Tear-Herald on the
+  // Hollow Shore.
+  'claimant_vane',
+  'claimant_morrow',
+  'claimant_tallis',
+  'tear_herald',
+  // Chapter 1's Inquisitor-General, who drags Lysa out of the house.
+  'aurel_vane',
 };
 
 /// Enemies met only where the story puts them -- never a random draw and
-/// never in a random pack -- without being bosses: the hovel's three White
-/// Soldiers (400), tuned as a pack a first character can lose to, and the
-/// Tide-Mother's arms, which come over the rail only in her battle (see
-/// sea_beasts.dart).
-const Set<String> storyOnlyEnemyIds = {'white_soldier', 'kraken_arm'};
+/// never in a random pack -- without being bosses: the White Soldiers of
+/// chapter 1's casino, the Tide-Mother's arms, which come over the rail
+/// only in her battle (see sea_beasts.dart), the casino's first fight
+/// (v1.196: the bouncer, the looter and the sore loser, each a lesson) and
+/// the wreck's scavengers in the Waste.
+const Set<String> storyOnlyEnemyIds = {
+  'white_soldier',
+  'kraken_arm',
+  'den_bouncer',
+  'den_looter',
+  'sore_loser',
+  'wreck_scavenger',
+};
 
 /// Each zone's own boss (zones.json `bossEnemyId`), met at the end of its
 /// expedition: never a random draw, never in a random pack and never

@@ -7,7 +7,9 @@ class ItemIcons {
 
   /// Items drawn with another's icon until they have their own: a sea
   /// beast's trophy as an elite's.
-  static const Map<String, String> _borrowed = {'boss_trophy': 'elite_trophy'};
+  static const Map<String, String> _borrowed = {
+    'boss_trophy': 'elite_trophy',
+  };
 
   static const List<String> allIds = [
     'antidote',
@@ -61,7 +63,16 @@ class ItemIcons {
     'hollow_court_mantle',
     'hollow_court_seal',
     'hood_gravecloth',
+    'material_ash_steel',
+    'material_cut_stone',
     'material_iron_ore',
+    'material_lantern_brass',
+    'material_rime_crystal',
+    'material_shroud_thread',
+    'material_slag_glass',
+    'material_tear_glass',
+    'material_timber',
+    'material_white_fleet_oak',
     'phoenix_sigil',
     'plate_emberproof',
     'potion_major',

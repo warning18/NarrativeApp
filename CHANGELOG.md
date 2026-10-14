@@ -8,6 +8,2106 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.301.0+337]
+
+The hulls in side view, in the fight.
+
+### Changed
+- **A sea battle shows the two hulls from the side**, on a tall screen, in a strip between the enemy's bar and the sea: the Eel on the left in what she wears and as battered as she is (scorch, a hole, patched sails, smoke, flames, lower in the water), the enemy on the right with her own hull (the raider skiff, the corsair brig, the Inquisition cutter, the void barge) or as the sea beast it is (the Brinejaw's fin, the Pale Leviathan's back, the Tide-Mother's arms), bow toward the Eel and as battered as she is. The two ease apart or together as the range changes (close, medium, long), on the waters and in the weather of the fight. On a short screen the strip is left out and the sea keeps its room; the fight itself is still from above.
+
+## [1.300.0+336]
+
+The hulls in side view, battered.
+
+### Changed
+- **The Eel shows what she has taken** on a voyage day and on arrival, by the hull she has left: below 80%, scorch marks along her side; below 60%, a hole in her planking with splinters round it and patched sails (stitched patches in a darker cloth); below 55%, smoke drifting aft from her deck; below 40%, rips across the sails; below 30%, flames on deck and heavy black smoke; and from half her hull down she sits lower in the water, up to three rows at the last. It works on every hull, the flying boats included (the gasbag, the bat-wings and the bone wings hang as they did, smoking).
+
+## [1.299.0+335]
+
+The hulls in side view, the Harbor and the raiders.
+
+### Changed
+- **The shipwright's yard shows her from the side too**: above the plan from above, the Eel in side view on the open sea, on the hull being tried and in the paint, cloth, figurehead and flag being tried, as at sea.
+- **The raiders at sea are drawn with their own hulls** (the same side painter as the Eel's), bow to the left so they face her: the raider skiff (a small oared hull with a patched sail), the corsair brig (two masts of dark cloth), the Inquisition cutter (pale gaff sail and two jibs) and the void barge (a violet lateen under a halo). The old simple raider is gone.
+
+## [1.298.0+334]
+
+The voyage in side view: the Eel's own hull.
+
+### Changed
+- **All fourteen hulls are drawn in side view** at sea, replacing the one placeholder hull. Each is read off its `ships.json` record (the same one the top-down painter uses): the length, how high she sits and how deep (beam), how full her ends are, the stern and bow castles with their lit cabin windows, gun ports on the great ships, the masts and how each is rigged (square sails with a topsail on three-masters, fore-and-aft gaff sails, lateens), the jibs, a bowsprit and the galleon's beak, the longboat's swinging oars. The odd hulls have their own build: the twin hull (two hulls under one deck and a cabin), the ironclad (a plated slab with a ram, a riveted casemate, two funnels streaming smoke), and the four flying boats (the sky-sloop's gasbag, boiler chimney and screw; the cloud-cutter's bat-wing sails and furnace glow; the lodestone barge with lodestones hanging from the keel and spark arcs; the void carrack's bone wings and void sail).
+- **What she wears shows**: the hull paint and trim, the sail cloth with its edge and pattern (stripes, patches, diamonds), the ensign colour and a figurehead at the bow. The arrival scene shows the same ship.
+
+## [1.297.0+333]
+
+The voyage in side view: what the sea meets, and the port ahead.
+
+### Changed
+- **A voyage day shows what the Eel meets** beside her: a raider under sail (a skiff, a two-masted corsair brig, the Inquisition's pale cutter, the void barge with its violet glow), a derelict heeled over with her mast snapped, a light on the horizon with a shadow slipping under the keel (sighting), and the sea beasts (the brinejaw's fin, the pale leviathan's long back, the tide kraken's arms). A quiet day has gulls. The day's icon moves to the corner of the picture.
+- **Arriving shows the port** instead of an anchor icon: a stone quay, houses with lit windows and a tower with its lantern, over the sea of the waters just crossed.
+
+## [1.296.0+332]
+
+The voyage in side view: the sea.
+
+### Changed
+- **A voyage day's picture is a side view** (board 5): the ship small, seen from the side, over a scrolling sea that wears the colours of the waters she sails (the same five records the fight paints: open, shallows, drowned, abyss, ashen), with a sky in dithered bands, what stands on the horizon (islets, a drowned palm islet, broken towers, the ashen cliffs) and what the waters carry (sandbars, kelp, slow rings of void light). A storm day is a squall (rain, higher waves, the flash as before); a windknot sail aboard gives a tailwind; a flying hull hangs above the water with her shadow on it. Reduced motion: a still scene. The ship is one placeholder hull and sail until the fourteen hulls' own side views come.
+
+## [1.295.0+331]
+
+The ash squall on the road to the Ashen Quarter.
+
+### Changed
+- **The ash squall fills the ruins scene with ash**, as the sandstorm fills the desert one with dust: on the camp-to-quarter road, when the day's event is the ash squall, the ash falls thick over the scene. Without a storm the ash still falls lightly (the ruins scene itself came in 1.291.0, for terrain `ruins`).
+
+## [1.294.0+330]
+
+The building screen: four sections, what is missing, where to find it.
+
+### Changed
+- **The Town tab's houses are a list in four sections** (the Sea, the Company, the Workshops, the Great Works, with Narrative's names and one-line blurbs, each with how many of its houses stand), read from `campWorksProvider`. A card says where a house stands: **Built**, **Ready** (with Build), **Missing** (its cost as icon chips, the count in red while short, and the first thing missing), or a **silhouette** for a house that has not come yet, with one reason ("Chapter 5", "When Kelda joins") and no word of what it gives. No section folds.
+- **A tap on a card opens a sheet** that says everything the card says, with where each missing thing comes from, in plain text: the expeditions that pay a material or set a flag, the shops that stock it ("No shop sells it" for a rare), and what is left of the gold. Build is on the sheet too, grey until the house can go up. The cliff town still outlines where the selected house would go.
+- The additions tab keeps its strip of cards.
+
+## [1.293.0+329]
+
+The home bar's map icon opens the full map.
+
+### Changed
+- **The map icon in the play-mode header opens the full map** (the sphere map of the Journey and the Camp) instead of the old map page. What only the old page had moved onto it: the **look and shape pickers** in the layers sheet, the **chapter chips** that show one chapter's road, **Replay all** in the journeys sheet (the walk of the whole road again), and the map's **tutorial topic**. The old page stays in Edit Mode (`home_world_map`), where its place panel (scenes read, foes met, lands and biome crumbs) is still needed.
+
+## [1.292.0+328]
+
+The road from the cove camp to the Ashen Quarter, crossed on chapter 3's
+main quest, and a crash on a chapter's turn fixed.
+
+### Added
+- **A third land crossing:** from the cove camp to the Ashen Quarter, 2
+  days through the burned town, played as chapter 3's main quest sets out
+  (before the story moves on, as a voyage is). Five new events: an ash
+  squall, an Inquisition patrol, a burned shrine, feral dogs and a street
+  that gives way. Their words were read by Narrative (three French fixes,
+  gender-neutral).
+
+### Fixed
+- **A crash on a chapter's turn.** With the story open, a new chapter's
+  clan offer was granted in the very frame the chapter changed, while the
+  quest, badge and chapter-progress readers were rebuilt from the save
+  ("rebuilt multiple times in the same frame"). The offer now waits a
+  moment.
+- The falling street's long way round costs no extra day (its note says
+  half a day).
+
+## [1.291.0+327]
+
+The skill choice sheet, places heard of on the full map, and the land crossing in the desert side view.
+
+### Added
+- **The face's skill sheet (board 9):** opened from a die face, it lists each skill with the face now and the face after (`Attack 5 → Attack 8`), the change as a pill (+3, changes kind, full), the skill's limit in its rarity colour, and, after a tap, a bar with **Set on this face**: nothing is set until it is pressed. The numbers are the fight's own rule for a face with a skill on it. The 70% rule is behind the title (hold it).
+- **Places heard of on the full map:** a "?" in a ring where they lie. Tapped, the sheet offers **Set out** (for a village not yet found, the expedition that finds it, sailing the Eel first when needed; always with the warning that the road may hold anything) or says why it cannot yet, and **Mark as goal** (one goal at a time, ringed on the map).
+- **The land crossing in a side view:** the desert crossing wears a scene over its words: a warm sky in dithered bands, a low sun, mesas with the goal coming nearer day by day, three bands of dunes and a path at their own speeds, and the party's placeholder figures walking in place. Heat shimmer in clear weather, a sandstorm on the sandstorm event or a dust sky, rain, snow, ash or fog by the sky. The day and the health bar sit over it. A route whose terrain has no scene yet keeps only that strip. Reduced motion stands still. (`lib/widgets/side_view/`: the scene engine, for the voyage's side view later.)
+- **The ruins in side view:** a route of terrain `ruins` (Core's camp-to-quarter road) is drawn with its own scene: a burnt dusk, a far broken skyline, ruined walls and arches, rubble, a path of grey cobbles, and the quarter's tower with one lit window coming nearer by the day; ash falls by default.
+
+### Changed
+- The full map's place sheet scrolls when its text is long.
+
+## [1.290.0+326]
+
+The Shroud Shrine within reach.
+
+### Changed
+- **More Shroud thread and tear glass in chapter 5:**
+  - the Dead Heart approach pays 2 Shroud threads (was 1);
+  - the Frost Quarry adds 1 Shroud thread and 2 tear glass;
+  - the Ember Run adds 2 tear glass.
+- **The Shroud Shrine costs 2 000 gold** (was 2 600).
+- The playthrough simulator (held-out seeds 101 and 103, 100 runs each)
+  now builds it in 42 to 43 runs (was 7), in chapter 6 at the median,
+  within its tier's chapters. The Banner Loft, which used to take the
+  thread the shrine needed, goes up in chapter 5 in a quarter to a third
+  of runs (was none). The shrine still waits on the Dead Heart approach
+  being cleared, which about 45% of runs do.
+
+## [1.289.0+325]
+
+The bosses after chapter 1 are a little tougher, so that the playthrough
+simulator, now playing the camp's expeditions, still meets them on the
+user's curve.
+
+### Changed
+- **Ten bosses re-tuned** (health and damage):
+  - Void Stalker 147→168 health, 20→22 damage;
+  - High Inquisitor 165→203, 23→27;
+  - Bone Warden 229→282, 25→29;
+  - Void Archon 235→282, 22→26;
+  - White Admiral 305→336, 28→31;
+  - Claimant Vane 276→317, 29→32;
+  - Claimant Tallis 203→248, 19→22;
+  - Claimant Morrow 375→398, 22→23;
+  - Tear Herald 264→306, 24→27;
+  - Void Sovereign 332→359, 28→30.
+  
+  Tuned on the held-out seeds 101 and 103: every boss is within about 7
+  points of its target (75% in chapter 1 down to 35% in chapter 8), with a
+  mean of 50.5%. Aurel Vane (chapter 1, before the camp) is unchanged.
+
+- **"Play to chapter" hands back a character as strong as a run that played
+  the camp's expeditions.** Its arrival table was regenerated from the
+  800-run check (seeds 11 and 23): chapters 4 to 8 now arrive at levels 8,
+  11, 13, 15 and 16 (were 6, 8, 10, 11 and 12), with gold to match (5 710
+  in chapter 8).
+
+### Simulator
+- **The walk plays the camp's expeditions.** At the camp, once every place
+  is toured, it plays each expedition of the chapters reached, once,
+  before the main quest, as "Play to chapter" does. One cleared may open
+  the next. Its XP, gold and materials made the bosses after chapter 1 won
+  12 to 26 points more often, hence the re-tune.
+- **The camp's works now come as the materials note meant** (24 runs):
+  - the Hammersmith, the Academy and the Needle House in chapter 3;
+  - the Hearth-Hall in half the runs, chapter 4;
+  - the Banner Loft in about half, chapter 6.
+
+## [1.288.0+324]
+
+One apostrophe for the whole game's descriptions.
+
+### Changed
+- **Descriptions in the game data use the curly apostrophe.** 341 texts in
+  `companion_remarks`, `enemies`, `enemy_ships`, `houses`, `item_sets`,
+  `items`, `ports`, `races`, `ship_parts`, `shops`, `skill_trees`, `skills`,
+  `spells` and `zones` had a straight apostrophe in the middle of a word
+  ("Kelda's", "l'esquive"); they now read like the story's own text, in
+  English and French. Names (`itemName`, `shopName` and the like) and ids are
+  left alone for a later pass, so nothing a test or a save matches on
+  changes. The jungle biome text from #207 was read and needs no change.
+  Text only; no ids, numbers or flags changed.
+## [1.287.0+323]
+
+Groundwork: places only heard of, the building screen's data, the skill
+choice helper, and the second desert leg.
+
+### Added
+- **Places only heard of.** For each place the full map draws as "?",
+  `heardOfPlacesProvider` says what its sheet offers:
+  - **Set out** straight there, once the place is found and its chapter is
+    open, a road leads there (by sea once the harbour stands), and the camp
+    stands;
+  - **Set out by its expedition**, for a village not found yet: the
+    expedition that finds it (`discoversPlaceIds`), sailed to first when it
+    sets out from another port. A village not found is reached only that
+    way (the user's decision);
+  - **Mark as goal** otherwise, with the reason: the story will take you
+    there, not before the camp, a later chapter, the harbour first, or an
+    expedition to clear first.
+  
+  One map goal at a time, kept as a flag and gone once the place is
+  reached. Narrative wrote the reasons and the warning. The full map's
+  sheet is UX's to come (`setOutToHeardOf`, `mapGoalProvider`).
+- **The building screen's data** (`campWorksProvider`):
+  - the camp's ten houses in four sections (the Sea, the Company, the
+    Workshops, the Great Works), each section with its name and blurb by
+    Narrative;
+  - each house coming with its tier's chapter;
+  - its state (locked, shown, buildable, built) and what it still needs,
+    with where to find it (the expeditions that open it or pay its
+    materials, the shops that stock them).
+  
+  The screen is UX's to come.
+- **The skill choice helper** (`faceSkillChoice`): what a skill on one face
+  of a die would change, worked out the way a fight does. It gives:
+  - the face before and after;
+  - gain or loss;
+  - the rarity limit;
+  - why it can't go there.
+- **The second desert leg:** from the Sleeper's Face to the White Wells
+  (2 days), on every way into the Wells. It brings two new events, a flash
+  flood and a water-seller (whose line is Narrative's). Every route now
+  names its terrain for the side view's scenes.
+
+### Changed
+- **A lost crossing is no longer a free rest.** The party is carried back
+  with what it set out with, at most half its health and at least a
+  quarter (QA found a party that set out low came back at half). Set out
+  again after a lost crossing, a choice's check and fight are not played
+  twice.
+- **A camp house comes with its chapter.** A house can't be built before
+  its tier's chapter, or before its companion joins. The Town card says
+  "Not yet: chapter N".
+
+### Text
+- Narrative's material names and notes ride along (from
+  `claude/narrative`).
+
+## [1.286.0+322]
+
+Nine pixel icons for the building materials, and chips for them on the camp's build cards.
+
+### Added
+- **Pixel icons for the nine new materials** (timber, cut stone, slag glass, ash-steel, rime crystal, tear glass, Shroud thread, lantern brass, white-fleet oak): 16×16 at 8×, in the iron ore's outline and shading. They replace the borrowed iron-ore icon (`tool/gen_material_icons.py` draws them).
+- **Material chips on the camp's build cards:** what a house costs beside gold, as each material's icon and count (`2` when held, `1/2` in red when short). The card's status tag now says "need materials" and the chips say which.
+
+## [1.285.0+321]
+
+Land expeditions, the first: the crossing from the wreck of the Lark.
+
+### Added
+- **Land crossings.** A long land route is played like a voyage, on its
+  own screen: an event a day (a sandstorm, a dry well, a spring, a mirage,
+  scavengers, shade), each asking what the party does. Some choices roll
+  an ability check, one harder a chapter after the first.
+  - **Health plays the hull.** Each outcome costs or gives a share of the
+    party's maximum health, and sometimes gold or an extra day. If health
+    runs out, the party is carried back to where it set out at half
+    health, with the days spent, and the story choice is not taken. The
+    party can also turn back at any time.
+  - **The first crossing** is from the wreck of the Lark to the Sleeper's
+    Face (3 days, desert): every way out of the wreck takes it. The
+    Sleeper's scenes stay as they were.
+  - **Data:** `land_routes.json` and `land_events.json`, editable in the
+    database editor. A story choice names its route with `landRouteId`.
+  - **"Play to chapter" and the playthrough simulator** play crossings
+    with the same rules. The simulator rolls them on a stream of their
+    own, so the walk's seeded results stay comparable.
+  - **A tutorial** for crossings, shown the first time the screen opens.
+  - The screen is a plain one for now; its side view is UX's to come.
+    The event and tutorial texts were read by Narrative, who kept them and
+    gave the route its geography names.
+
+### Changed
+- **"Play to chapter" hands back a stronger character late in the story.**
+  Its arrival table was regenerated from the 800-run simulator check after
+  the boss curve, the materials and the harbour. Chapters 6 to 8 now
+  arrive at levels 10, 11 and 12 (were 9, 10 and 10), and the gold moved
+  a little throughout.
+
+### Fixed
+- A scene whose one way on crosses land or grants materials is no longer
+  read straight through, so neither is skipped.
+
+## [1.284.0+320]
+
+The harbour has a reason to be built.
+
+### Changed
+- **The camp scene says where the harbour's timber and stone come from.**
+  In `3001_camp` the survivors stack the storm's and the tide's spars and
+  planks in one heap and the burned wall's sound stones in another: timber
+  for a quay, stone for its foot, which is what Core's grant on `3001` puts in
+  the pack. The camp tour's first step (`tut_camp_harbour`) now says the same
+  in the narrator's words, in English and French, with the typographic
+  apostrophes and the space before the colon. Text only; no ids, numbers or
+  flags changed.
+
+## [1.283.0+319]
+
+The harbour: the story hands over what it costs, and the camp builds it
+first.
+
+### Added
+- **A story choice can grant materials**: `grantMaterials`, an object of
+  item id to count (`{"material_timber": 4, "material_cut_stone": 2}`).
+  They go in the pack with a "Picked up" notice. The story, "Play to
+  chapter", expeditions and the playthrough simulator all apply it, and the
+  story editor keeps it. The camp's founding choice ("Take stock of the
+  shore", in chapter 3) grants the harbour's 4 timber and 2 cut stone;
+  Narrative writes the scene's line for it in a later PR.
+- **The camp's tour starts at the harbour** while it is unbuilt. A harbour
+  card sits above the camp's tabs until it stands, and a tap on it opens
+  Town.
+
+### Changed
+- **The harbour costs only its materials**: 4 timber and 2 cut stone, with
+  no gold, so the story's grant covers it.
+- **The Rusty Eel waits on her harbour.** Once the camp is founded, every
+  voyage away from it is refused until the harbour is built, with a notice
+  pointing at Town. Sailing home is never refused. If the pack can no longer
+  pay for the harbour (the grant spent on another building, or sold), she
+  sails anyway, so no game is stranded. Her refit already waited on the
+  harbour.
+- **"Play to chapter" builds the harbour** when its walk founds the camp.
+
+### Fixed
+- Saves get version 5. A save from before it that has passed the camp's
+  founding has the harbour built on load, once.
+
+## [1.282.0+318]
+
+The full-screen map, the help pattern on ten more pages, and small fixes.
+
+### Added
+- **The full map.** The Journey's own chart (sphere or flat, layers, weather)
+  on its own page, opened from a **Full map** button among the Journey chart's
+  controls, and from **On the map** on each known place of the camp's Road tab
+  (it opens on that place with its sheet up). A tap on a reached place opens
+  a sheet: where the party stands, **Travel here** (the camp's own way to
+  travel; disabled during a fight or an expedition), or why it cannot. Under
+  the chart: **Legend** (the marks as the chart draws them), **The story**
+  (the Journal's story so far) and **Journeys** (the roads walked, by
+  chapter; a tap turns the chart to where one ends). The layers sheet is
+  shared by both pages.
+- **The guide's ⓘ** in the header of the Skills, Inventory, Level Up,
+  Journal, Achievements, World map, Skill challenge, Harbor, Port and Shop
+  pages: it replays that page's tour.
+
+### Changed
+- "1 Stat Point" and "1 Point de statistique" in the singular (and 0 in
+  French).
+- On a screen narrower than 340 px the Journey's weather chip is an icon (a
+  tap reads the line), so it no longer covers the lowest step's name.
+
+### Fixed
+- The dice loadout's "Choose this face's skill" button stays in sight under
+  the die card's scrolling text.
+
+### Removed
+- The flat travel page and its compass button, replaced by the full map; QA's
+  guard of that page (`qa_travel_map_test.dart`) goes with it.
+
+## [1.281.0+317]
+
+Materials: the camp's buildings are raised with what the road brings back.
+
+### Added
+- **Ten materials in four tiers**, one tier for each stage of the story.
+  Timber and cut stone (chapters 1-2); iron ore and slag glass, with the
+  rare ash-steel ingot (3-4); rime crystal and tear glass, with the rare
+  Shroud thread (5-6); lantern brass, with the rare white-fleet oak (7-8).
+  Names and descriptions in English and French, for Narrative to reword.
+- **Where they come from.** Expeditions pay them on completion (each
+  chapter's main expedition its tier's rare); ordinary foes drop the commons
+  (12%); the weaponsmith, the hammersmith and the Last Lantern sell the
+  commons, never a rare; a derelict's salvage at sea yields the chapter's
+  common, and a won ship battle the chapter's rare from chapter 3 on.
+
+### Changed
+- **The camp's buildings cost materials beside gold**, and about a third
+  less gold: Kelda's hall 100 gold and 2 timber, the harbour 170 gold, 4
+  timber and 2 cut stone, the hearth hall 1 000 gold with iron ore, slag
+  glass and 2 ash-steel ingots, the Shroud shrine 2 600 gold, tear glass and
+  3 Shroud threads, and so on. A building's card says which materials are
+  missing.
+- **Older saves** (save version 3) are given, once, one rare material for
+  each tier their story has already passed, so the buildings that need them
+  stay within reach.
+
+## [1.280.0+316]
+
+The bosses are won about half the time: more often early, less often late.
+
+### Changed
+- **The boss curve.** Every chapter boss was lost 80% to 95% of the time.
+  By the user's decision, each is now won about this share of the time
+  where the story meets it, after the chapter's own fights: Aurel Vane
+  (chapter 1) 75%, the void stalker (3) 65%, the Hollow Court inquisitor and
+  the bone warden (4) 55%, the void archon (5) 50%, the white admiral (6)
+  45%, the three claimants (7) 40%, the tear herald and the void sovereign
+  (8) 35%. Numbers only: each boss's health is scaled, and its damage by
+  the square root of the same factor, so a fight keeps its shape and gets
+  shorter (the inquisitor, the hardest, loses half its health). In the
+  simulator, the bosses go from 18% to 49% won on average (800 runs), and
+  the attempt win rate from 39.8% to 45.1%.
+- `boss_balance_test` checks the curve with the simulator (200 seeded
+  runs), and `docs/simulation/` is regenerated with a before and after.
+
+## [1.279.0+315]
+
+Twelve story achievements.
+
+### Added
+- **Twelve achievements that come from what a save already holds.** The
+  Lantern Throne, Half a Banner (three pieces of the Shroud), Whole Cloth,
+  A Loose Thread (settle an intrigue), The Whole Web (all eight), Time
+  Turned (a New Game+), Sworn, Hunted, A Hand at Four Doors (trusted by four of
+  the six clans at once, with no oath sworn) and three village finds: Where the Bells Hang (Akagiri), Every
+  Bargain to the Minute (the Kindly Hill) and Under the Giants' Roof
+  (Highhearth). Each is a one-line check in `checkAchievements` over the
+  flags, banner pieces, politics and New Game+ cycle of the save, with its
+  English and French row in `achievements.json`; none needs a new counter.
+  A save that already has the thing unlocks it the next time achievements
+  are checked, and achievements are now also checked right after a story
+  choice adds a flag or a piece of the Shroud and after a choice's politics
+  (an oath, a standing, an intrigue's end), so taking the Throne unlocks
+  its achievement at once. "Hunted" counts the six coast clans, not the
+  tribes. `test/achievements_story_test.dart` covers each.
+
+
+## [1.278.0+314]
+
+A jungle on the story world's east land.
+
+### Added
+- **A jungle biome.** The equatorial belt of the story chart's east land is
+  now jungle instead of temperate woods: warm (+3 °C) and wet (moisture
+  0.9), drawn in deep green with dense woods, pools and hills. Its
+  description, six animals, six plants, three weathers and two road hazards
+  (a swollen river, jungle fever) are in English and French, for Narrative
+  to reword. No story road crosses it yet, so its hazards cannot fire.
+
+### Fixed
+- **"Play to chapter" no longer hands back a queue of clan offers.** The
+  arrival top-up's levels each queued an offer, so a jump to chapter 8 opened
+  on ten offer dialogs in a row. The offers those levels queued are dropped;
+  any the walk itself earned stay.
+
+## [1.277.0+313]
+
+The travel map, and a pack of layout fixes.
+
+### Added
+- **A map of where you have been.** A compass button in the Journey's header
+  opens the story world with the road taken in order (sea legs dashed), the
+  places reached by name, the places only heard of as "?", and a dotted ring
+  round each place the camp can travel to. A tap on a ringed place offers
+  the journey; on a place only heard of, it says the road is not open yet.
+  The names are laid out clear of each other, also on the crowded north
+  continent, and kept inside what the screen shows; the box round the chart
+  is the colour of the uncharted. It zooms and pans.
+- **Tap a built building in the camp town** to read its name and what it
+  gives.
+- **Help pattern.** An ⓘ in a page's header replays the page's guide; holding
+  a section name explains it. First on the dice loadout, where the two
+  paragraphs under "Faces" are now behind the title.
+- A spoken label on the Gifts tab's dot (`gifts_waiting_label`).
+
+### Changed
+- **Dice loadout:** the die card keeps one height whatever face is picked.
+- **Camp town cards:** the status sits above the name, so "Hammersmith",
+  "Storehouse", "Watchtower" and "Smugglers’" are never broken inside a word.
+- **The Shroud card** on the Character page's Pages tab is one row of six
+  small banners (the names are a tap away).
+- **Tour step 4** of the Character tour describes the three tabs.
+- **Voyage:** a storm's rain falls over the Eel's water only, no longer
+  behind the words and the buttons.
+- **Journey:** the "You are here" badge is kept clear of the step names, and
+  the weather line wraps clear of the zoom button.
+- **Chapter 7 camp hub:** the enter-the-place button scrolls in the room it
+  has, so a long quest strip no longer overflows it at 320 px.
+## [1.276.0+312]
+
+The empty lands of the story chart have names.
+
+### Changed
+- **Seven unnamed lands on the story chart are named, in English and
+  French.** The Tallow Downs (Les Landes de suif), the Pale Dunes (Les Dunes
+  pâles), the Tidewood (Le Bois des marées), the Orchard Coast (La Côte des
+  vergers), the Ember Dunes (Les Dunes de braise), the Wick Meadows (Les
+  Prés de la mèche) and the Mute Ice (Les Glaces muettes). The chart's
+  "unnamed" exemption in `chart_relief_test` is gone: every zone of every
+  chart now has both names. Text only; no shape, biome or place moved.
+
+## [1.275.0+311]
+
+"Play to chapter" hands back a character fit for the chapter it reaches.
+
+### Changed
+- **A jump in the simulator's "Play to chapter" (edit mode) tops the
+  character up on arrival.** A long jump used to force its last fights and
+  hand back a level 3 to 5 character with one or two pieces worn, even at
+  chapter 8. On reaching the chapter, the character is now brought up to
+  where a typical run arrives there: its level and gold are raised to the
+  simulator's median (chapter 6: level 9 and 2 330 gold; chapter 8: level 10
+  and 3 240), and, per slot, it receives the best piece the chapter's open
+  shops and chests hold that it may wear. Only ever up, never down. The
+  levels come as a won fight's would, with their stat points and full
+  health, and the best build of 1.274 then spends and equips them.
+  Deterministic, and only in edit mode.
+
+### Added
+- The land expeditions proposal (`docs/proposals/`) is updated to the
+  user's decisions: the party's health plays the hull (no water or food, no
+  new save field), and the crash is the first expedition.
+
+## [1.274.0+310]
+
+"Play to chapter" hands back a character ready to play.
+
+### Changed
+- **The simulator's "Play to chapter" (edit mode) leaves the best build.**
+  Before handing back, it spends the stat points on the profession's own
+  stat, wears the best carried piece in each slot (stat and alignment
+  requirements met, a copy no companion wears), and puts the best unlocked
+  skills on the die's open Skill faces, each on no more faces than its rarity
+  allows; the mana skill keeps its face. It is the playthrough simulator's
+  own policy, so the character handed back is the one the simulator's
+  numbers describe. The build has no randomness, and the walk takes an
+  optional seed, so a seeded run hands back the same character every time.
+
+## [1.273.0+309]
+
+Ten new moods, and the scenes that wear them.
+
+### Added
+- **Ten scene moods: wistful, solemn, tender, uncanny, wry, defiant,
+  mournful, ominous, bitter and wondrous.** Each is a tag string pair
+  (`mood_<name>`) in English and French, and 101 scenes carry one: the
+  crowning scenes are solemn, the Saltmouth card games wry, Highhearth
+  wondrous, the Hollow Shore reflections uncanny, the drowned and the
+  vigils mournful. Only scenes that were not already tense, action,
+  suspense or desperate were re-tagged, so no random-detour gate changes.
+  `defiant` and `ominous` are not tense moods; Core can add them to
+  `tenseMoods` later.
+
+## [1.272.0+308]
+
+The travel-history map's data, for the view UX builds beside the Journey.
+
+### Added
+- **The story world is a chart the game can use.** The story-true world
+  (the cold north, the Waste on the dry belt, Alster's vale) moves from the
+  chart tool into the game as a fourth geography, with the clans' seats, the
+  stone giants and the other places the story names. It is the travel map's
+  own chart and is not offered among the world map's looks.
+- **The party's travels, read from the story.** The places reached in the
+  order first reached, every move between two places with the roads it took
+  and whether by land or sea, the places only heard of (the far ends of known
+  roads, to show as "?"), where the party stands, and the reached places the
+  camp can travel to. All of it comes from the scenes already saved: no new
+  save field, so every save shows its whole journey.
+
+## [1.271.0+307]
+
+The Broken Charter is played end to end.
+
+### Added
+- **Five scenes for `broken_charter`, the last intrigue still short.**
+  Compact-stamped blades on Inquisition belts at the wharf
+  (`2015_dominion_blades`), the Tribunal's purse offered to the Scaffolders
+  on the Spire stair (`3005_tribunal_gold`), the Anvil-Deaf vote in signs on
+  Wrack's End quay (`5100_anvil_deaf_vote`), the Row and the Tribunal
+  meeting at the Rimewell quarry (`6100_charter_signing`) and, at the
+  Anchorage, the Charter signed again or burned (`7100_charter_choice`).
+  Earlier choices are remembered in later scenes, and two new lines at the
+  Herald's battle (`7810`) remember which way the Charter went. The
+  intrigue's stage `chapter` labels now match where the scenes sit, and the
+  Reveal's contact is the Tribunal's last clerk.
+
+### Changed
+- **The three chapter 7 quests read shorter and one notch easier.** Their
+  objectives are "Read the petition", "Read Morrow’s terms" and "Copy the
+  tide table" (the quest strip overflowed at 320 px), and their difficulty
+  shows 13 instead of 14 (display only).
+
+## [1.270.0+306]
+
+Chapter 5 is no longer the wall.
+
+### Changed
+- **Chapter 5's enemies hit less hard.** The void hound used the legendary
+  Venomous Ambush on 30% of its turns, a hit no other ordinary enemy has; it
+  now does on 12% (pack howl 25% to 20%), with 135 health and 16 damage
+  (was 155 and 20). The inquisition penitent (220 / 22, was 260 / 26), the
+  masked penitent (215 / 21, was 250 / 25) and the Unstitched (255 / 24, was
+  300 / 28) lose about a sixth of their health and damage. The void archon
+  goes to 340 / 27 (was 380 / 32), with Void Blast on 30% of its turns (was
+  40%) and Eclipse on 25% (was 35%). In the simulator, chapter 5's attempt
+  win rate goes from 21% to 31% over 800 runs, between chapter 4 (36%) and
+  chapter 6 (31%); chapters 1 to 4 do not move, chapters 6 to 8 rise 1 to 3
+  points.
+- **The simulator's report shows where each chapter is lost.** Its JSON adds
+  every enemy's encounters and losses per chapter, and the level and gold
+  with which each chapter is reached; `docs/simulation/` is regenerated with
+  a before and after.
+
+### Added
+- Two proposals for decision in `docs/proposals/`: a building economy with
+  materials, and land expeditions in side view.
+
+## [1.269.0+305]
+
+Three visitors at the cove, and a quest goal for chapter 7.
+
+### Added
+- **Three side quests before Candlehold.** A Reed Gate factor, an Order
+  herald and a pilot's boy sent by the chain-master come to the cove camp.
+  Each has a scene to hear them out and a second one to follow up, then a
+  turn-in with two ways to answer (`q_ch7_reed_gate_grievance`,
+  `q_ch7_heralds_errand`, `q_ch7_chain_masters_boy`; scenes `7400_reed*`,
+  `7400_herald*`, `7400_chain*`). Six new gate lines at Candlehold (`7500`)
+  remember how each was answered.
+
+### Changed
+- **Chapter 7 now asks for one quest before the sail.** `questGoal` goes from
+  0 to 1 in `chapters.json`, so the camp's "Sail for Candlehold" opens once
+  one of the three is turned in; the chapter hint says so. The rewards of
+  the three quests (170 to 190 gold, 220 to 240 XP, difficulty 14, and a gear
+  piece each: a coat, a helm and a blade already in the game) and the
+  small standing changes of their turn-ins are placeholders for Core to
+  confirm. `chapter_loop_test` lists the chapter 7 quests and the new goal.
+
+## [1.268.0+304]
+
+One spelling for two place names.
+
+### Fixed
+- **"Smugglers’ Wharf" and "Haut-Âtre" read the same everywhere.** The
+  wharf's port, its Vault shop, the Cellar house and one item description
+  used a straight apostrophe where the rest of the game uses the curly one,
+  and the chart labelled the giants' hall "Hautâtre" while the map, the
+  story and the French strings say "Haut-Âtre". Text only; no ids, numbers
+  or flags changed.
+
+## [1.267.0+303]
+
+The clans' offer, the loot chest, the dice cube, the Clans screen, the Character
+page and the race and profession recap.
+
+### Changed
+- **The offer's banners are one size, picked or not.** Unpicked banners were
+  drawn at twice the size of the picked one, so they grew and shrank. A tap
+  picks one (it takes the wind); press and hold is gone. The chosen banner's
+  words show in a zone of one fixed size under the banners; with none chosen
+  it says "Select a banner to see its details." (`offer_select_hint`, which
+  replaces `offer_hold_hint`).
+- **The loot chest hides its rarity until it is tapped.** Before: one neutral
+  grey chest, no tier name or colour, no fortune roll. A tap turns the tiers'
+  colours, slower and slower, and stops on the real one; the name, the art
+  and the fortune roll then appear and the chest opens. A second tap skips to
+  where it stops, a third opens it. With reduced motion it opens at once.
+  The rarity was rolled before; this is only how it is shown
+  (`chest_skip_hint`).
+- **The Throne room is the first tab of Clans, then Reputation, then the rest;**
+  the screen opens on the Throne room.
+- **The Character page is three tabs under its header** (name, level, vitals,
+  "Level Up" when points wait): *Overview* (the eight abilities as a radar, the
+  skills known as chips, the alignment), *Gifts* (the offer waiting, titles as
+  chips, perks, signs; a dot on the tab while an offer waits) and *Pages*
+  (mana and spells, the Shroud, New Game+, the links to Inventory, Dice,
+  Level Up and Race and profession). It replaces the folded version of
+  v1.266 (`tab_overview`, `tab_gifts`, `tab_pages`).
+- **The race and profession recap is a dossier**, about a screen and a bit
+  instead of three and a half: the name and level, the two choices as rows
+  (numbers they change, the skill they grant), health and experience as thin
+  bars with damage and armour, the radar beside the eight numbers, the
+  elements as chips, the belongings as one line. A tap opens what needs room
+  (a choice's lore, the elements' chart, the belongings' list); a press and
+  hold on a number says what it does.
+- The Character page's offers row says where offers come from on a press and
+  hold (`offers_where_from`), in place of the paragraph of the old panel
+  (`OffersPanel` and `offers_none` are gone). French `titles_chip_hint` keeps
+  its non-breaking spaces before the colons.
+
+### Fixed
+- **The dice cube could not be turned sideways from its top or bottom.** It
+  kept a yaw about its own upright, so once tipped a drag across only spun it in
+  place. It now turns on the screen's axes, so a drag in any direction works
+  from any side.
+
+## [1.266.0+302]
+
+The Character tab and the race and profession recap, shorter to read.
+
+### Changed
+- **Skills first, with a radar.** The tab opens on the skills known (their
+  icons and names, "All skills" for the rest) beside a small radar of the
+  eight abilities; the eight numbers that sat further down are gone (the
+  radar writes them at its corners). The page links are four tiles:
+  Inventory, Dice, Level Up, Race and profession. The Skills link is now the
+  skills card's own.
+- **Titles are chips.** One chip per title held, the one worn in gold; a tap
+  wears it or takes it off, a press and hold reads it (what it does, its
+  words, why a bad one stays). A bad title ("the Marked") shows a warning
+  and has no tap.
+- **Perks and signs fold to one line each**, with their count and their names
+  in the line; a tap opens them in place. Perks read one line each, with the
+  whole text behind a tap. The empty case is "None yet" instead of a
+  paragraph.
+- **Offers are one line**: "Offers · Choose a gift · 1 waiting" opens the
+  offer; with none, "No offer waiting".
+- **The Mana card opens the skills on their Spells tab** (it opened the
+  Tree).
+- **The race and profession recap is one row per choice**: its mark, name,
+  tag, the numbers it changes as chips and the skill it grants as a line; a
+  tap opens a sheet with the lore and the skill's words (nothing was cut).
+  The two lore cards and the two skill cards, a half screen each, are gone.
+
+### Added
+- New strings (English and French): `tile_inventory`, `tile_dice`,
+  `skills_see_all`, `skills_none_short`, `titles_chip_hint`,
+  `gifts_none_short`, `offers_row_none`, `recap_who_you_are`.
+- `test/character_tab_test.dart`: the tab and the recap at 360 and 320 px, in
+  both languages, with the app's own fonts.
+
+## [1.265.0+301]
+
+### Fixed
+- **The simulator's "Play to chapter" button could not be reached on a phone.**
+  With no batch yet, the strategy, runs and chapter controls were taller than
+  the screen and did not scroll, so the button ended past the bottom edge.
+  They now scroll with the results (`PlaythroughSimulatorScreen`); once
+  there are results the compact bar and the scrolling results are as before,
+  and scrolling down no longer folds the controls away. Checked at 360 x 640
+  and 320 x 568, in English and French, with the app's own fonts and a 48 px
+  system bar (`test/simulator_insets_test.dart`).
+
+## [1.264.0+300]
+
+The level-up pop-up, the clans' offer and the dice, redrawn; and a story-true
+world chart to look at.
+
+### Changed
+- **The level-up pop-up wears the Level Up screen's design.** The medal and
+  its pixel burst, the level and the points to spend stay at the top; the
+  stats scroll below in four groups (fighting, body, mind, fortune) as seam-
+  bordered rows with a gold value and a "+1 Point". A tap or a long press on
+  a row says what the stat does. The screen and the pop-up share one list
+  (`LevelUpStats`), so they read alike.
+- **The clans' offer is three little flags.** Each suitor is a flag showing
+  only what the choice turns on: the gift's kind, name and rarity, and the
+  first standing it moves. Hold a flag to read the rest (the clan, its intro,
+  what the gift replaces and the politics of the pick); it goes when the
+  finger lifts. The chosen flag waves, the others dim.
+- **The dice roll sits under the fighters**, below the party and the
+  enemies, instead of above them.
+
+### Added
+- **A story-true world chart (docs and tool only).** `tool/fmg_chart/` draws
+  the story's world with Earth-like climate bands, archipelagos kept empty
+  for ship content and a globe render; previews are in
+  `docs/maps/fmg-chart/` (see `STORY-WORLD.md`). Nothing in the game reads it.
+- New string `offer_hold_hint` (English and French).
+
+## [1.263.0+299]
+
+Two choices at the Hollow Shore can be seen at last.
+
+### Fixed
+- **The Admiral's log and the throne vote were never offered.** "Decide who
+  reads the Admiral's log" and "Cast the Admiralty's vote for the Lantern
+  Throne" sat on the Hollow Shore (`7002`), which every run visits before
+  the Anchorage sets the flags they need, and chapter 8 hides them again.
+  Both choices are now offered from Greyhithe (`7200`), after the Anchorage,
+  and their scenes (`7002_orders`, `7002_throne`, same ids as before) lead
+  back there. No numbers or flags changed. Fixes #182.
+
+## [1.262.0+298]
+
+Fight tests roll the same dice every run.
+
+### Changed
+- **A fight can be given its dice.** `FightScreen` takes an optional
+  `random:`, and the new `fightRandomProvider` (a Random factory, like the
+  road's) hands every fight its Random, so a test that reaches a fight
+  through another screen (the ship battle's boarding) can seed it too. In
+  play nothing changes: each fight makes its own unseeded Random. Every roll
+  of the fight screen already came from that one Random (the faces, crits and
+  dodges, the enemy's moves and targets, the affixes, the ground and its
+  anomaly, the loot); the plan of an anomaly the story forces is made before
+  the fight, by `forcedFieldAnomaly(id, random:, side:)`, which already took
+  its own.
+
+### Tests
+- The fight widget tests that assert an outcome (18 files, from `clash_test`
+  to the `skill_*_fight_test` harness) run on `Random(7)`, so a dodge, an
+  affix or an anomaly cannot turn up in one run and not the next.
+- `fight_mirror_spell_test` reads the Mirror's line, not the Venomous
+  affix's "You take 3 damage from poison." that it could match first.
+
+## [1.261.0+297]
+
+The people of the coast speak for themselves.
+
+### Added
+- **Thirty people have words of their own.** Aurel Vane, Overseer Renn, Nadira, Maud Tallis, Hesk Morrow, Brother Clement, the Keyholder, the chart-keeper, the High Warden, the Tear-Herald, Hathra, Tetsu, Ghrem Stonebrow, Orsabet Vell, Nkem Tallow, the White Admiral and fourteen more now say three lines each on their People page, in both languages (before, only three people did).
+- **Six follow-up scenes are spoken by the person they are about**, under their name: Ghrem on the pier, the headman of Wrack’s End, the flagship’s helmsman, the smith’s widow, the eldest of Greyhithe and the road-keeper. Hathra, Tetsu and Tobin gain a spoken line in theirs.
+
+### Fixed
+- "l’Ancrage" in two scenes at the White Anchorage is "le Mouillage" in French, as everywhere else.
+
+## [1.260.0+296]
+
+Five more plots play out: every intrigue now runs from its first clue to its outcome.
+
+### Added
+- **Five intrigues play end to end.** *The Double Ledger*, *The Admiralty’s Silence*, *The Relic Road*, *The Returned* and *The Unwatched Hour* each have a scene for every stage, in both languages: thirty new scenes in all, offered by a place’s hub once the stage before is reached (Saltmouth, the Ashen Quarter, Emberwick, the Drowned Cloister, Wrack’s End, Rimewell, the Reliquary Quarter, the White Anchorage, Greyhithe), and a closing scene at Greyhithe that settles the plot. Every choice of a stage scene advances the plot, so none can stall.
+- **The endings answer back.** What you did shows in the closing scenes: the Crows’ brigs at the landing (`7810`), the Returned children at the water’s edge (`7002_approach`), the second door sewn into the tear (`7003`), the relic and the Fourth Piece in the epilogue (`7004`).
+- Stage anchors in `intrigues.json` match where the scenes play (people met in the scenes now carry the plot in their People page).
+
+### Docs
+- `docs/chapter-flow-roadmap.md` lists the scenes of all the intrigues; only *The Broken Charter* still has one stage (its coal event).
+
+## [1.259.0+295]
+
+Two flaky tests traced: one was the test, one was a real clipped label.
+
+### Fixed
+- **The anomaly chip no longer overflows on a narrow fight.** The chip in
+  the fight's header (an anomaly's name, then "soon" or the rounds left)
+  was a row around an unwrapped label, so a long name plus its suffix, such
+  as « Lumières dans les roseaux · 3 manches restantes », ran past the edge
+  of a phone. The label now takes the room there is and ends in an ellipsis;
+  the tooltip still shows the whole effect. It also removes a 1 to 2% flake
+  of `ship_boarding_retreat_test`.
+
+### Tests
+- `test/clash_test.dart` accepts a dodged blow in the parry round. A
+  character with no dexterity still has the 5% dodge floor, and a dodged
+  blow is not parried by design, so the log then says "you dodge it!"
+  instead of "turned aside and answered" (about 4% of runs).
+
+## [1.258.0+294]
+
+The main-quest chain runs in story order, chapter 7 gets its quest, chapters end with a card, and the English text follows the French in using one apostrophe.
+
+### Added
+- **A main quest for chapter 7, "The Lantern Throne".** Offered when the party sails for Candlehold; done when the Throne is taken, by any of the seven roads. Its rewards (350 gold, 450 XP) are placeholders for Core to confirm.
+- **Chapter-end cards.** Chapters 3, 4, 5, 6 and 7 close with a `[CHAPTER N END]` card (in French `[FIN DU CHAPITRE N]`) on the scene that closes them, like chapter 2 already did: the Warden's standard, the moon-shard, the Dead Heart, the White Fleet's sail and each of the seven crowning scenes.
+- **A tag for the "hopeful" mood.** Eleven scenes carried the mood with no label.
+
+### Fixed
+- **The main quests chain in order.** Finishing the Dead Heart no longer puts the Sovereign's quest in the log at the end of chapter 5; it now leads to the White Fleet's Grave, which leads to The Lantern Throne, which leads to Beyond the Tear.
+- **"Beyond the Tear" is a chapter 8 quest.** Its id (`q_ch6_beyond_the_tear`) is unchanged so that saves keep working; only its chapter changes.
+
+### Changed
+- **One apostrophe in the English story text.** All the straight `'` in the English story, quest, people, companion and remark text are now the curly `’`, as the French has been since 1.255.0 (names too, such as "The High Warden’s Fall"). Nothing is recorded for read-aloud yet, so no recording is made stale.
+
+### Docs
+- `docs/narrative-proposals.md`: what Core is asked to decide for chapters 7 and 8, three intrigues for them, new moods and themes, and a list of achievements, for the user to choose from.
+
+## [1.257.0+293]
+
+The UX polish proposed in the design-system review.
+
+### Added
+- **One page transition for every screen.** A new page fades in over 180 ms
+  while rising 12 px (`InkPageTransitions`, on every platform); with reduced
+  motion the pages just swap.
+- **The title screen's standard blows in the wind.** The Void's banner uses
+  the throne room's gusts, ripple and hem flutter (`WindBanner`; the wind
+  painter and the banner image cache moved out of `throne_room.dart` into
+  `wind_banner.dart`).
+- **A pixel flourish for a level gained and a chapter opened** (`PixelMoment`):
+  the fight's strips recoloured to gold (a starburst, a ring and a rain of
+  sparks behind the level-up medal) or to the chapter's colour (a ring and a
+  spark rising from the chapter card).
+- **Empty and error states with the companion.** `InkEmptyState` and
+  `InkErrorState` seat the dog by the message in place of a bare line of text
+  (the journal, the clans list, an empty shop, no dice, and every "failed to
+  load" on the race, dice and shop screens).
+- **A tablet layout.** From 840 px wide the Home tabs sit in a rail down the
+  left edge instead of the bar at the bottom, and the app keeps to 1280 px,
+  centred, on a larger window.
+
+### Changed
+- **Patrons are shown by their pixel banner.** The patron emblem (offers, the
+  Clans screen, signs) is the top sign off the clan's pixel banner on a dark
+  tile in its colour; a patron without a banner keeps its icon on a disc.
+- **The standing meter moves.** When a standing changes the tick slides to its
+  new place over 600 ms and the stretch it crossed glows gold for a gain, red
+  for a loss, and fades.
+## [1.256.0+292]
+
+A way out of a place leaves by its road, and says which.
+
+### Changed
+- **A way out to another place leaves by the first stop of its road.** On the
+  Journey map the mark of a way that leaves the location sits toward the
+  first stop of the road it takes, not straight toward where it ends, so the
+  marks of the roads out of a place point where the roads go.
+- **The picked way names its road.** Under where it leads, the details of a
+  picked way out list the stops it passes ("Road: The Harbour Chain · The
+  Painted Sails"), in English and French.
+
+## [1.255.0+291]
+
+A text pass over the story: the Shroud's pieces counted right, one name for Saltmouth in French, steadier French typography, and four shopkeepers with something to say.
+
+### Fixed
+- **The Shroud's pieces are counted the same way everywhere.** The chapter 4 hint and the Drowned Cloister scene (`5010`) called the moon-shard the Shroud's second piece; it is the third, after the heirloom and the Warden's standard. The Lantern Docks' lead, which promised "the second piece" in chapter 2, now speaks of the next piece (English and French, in the zone text and the lead's label).
+- **Saltmouth is Bouche-de-Sel in French everywhere.** Three strings (a scene callback in the Ashen Quarter, the Saltmouth quest giver's pitch and a scaffolders' news item) still said "Saltmouth".
+- **French punctuation.** Twenty-four story passages had a plain space before `?`, `!`, `:`, `;` or `»` (or after `«`) and now carry a no-break space like the rest. Every French apostrophe in the story files is the curly one (`’`), as is "Wrack’s End" in the people list.
+
+### Added
+- **Four more shopkeepers have a line in the People list.** The cellar-boy (remembers how the party left the Blind Beggar), Old Pell (the camp) and Hesta Brann and Needle (read the party's standing with the Compact and the Crows, as the other keepers do), in both languages.
+
+### Docs
+- `docs/chapter-flow-roadmap.md` and `docs/quest-progress-tracking.md` describe the game as it is now (chapters 7 and 8, the order of the pieces, how quest objectives are tracked), and `docs/narrative-audit.md` holds the audit this pass came from.
+
+## [1.254.0+290]
+
+The party walks the world's roads, stop by stop.
+
+### Added
+- **A journey between two landmarks follows the roads.** When the party leaves
+  a place along a way on the Journey map, or the story carries it somewhere
+  (a lost fight, a failed roll, a jump along no choice), the world chart no
+  longer draws one straight line: it walks the shortest way along the fixed
+  roads (`world_roads.dart`), through every landmark on it, with the stops
+  of each road marked and named as the party passes them. A road too long to
+  frame whole is followed with the party in the middle of the view.
+- **The words name the stop.** Under the caption of a carried move, a line
+  says which stop the party has just passed ("You pass the Dyers' Gate."), in
+  English and French. A road with more to pass takes longer to walk, up to a
+  few seconds more; a tap still skips it.
+
+### Changed
+- The flight over the chart that follows a picked way out of a place takes the
+  same roads and stops, and is as long as the road it takes.
+
+## [1.253.0+289]
+
+### Changed
+- **The throne has no spikes: its top is broken.** The crown of spires, the spiked arms and the spiked shoulders are gone. The back is now a tall slab of black stone whose top has broken away in a ragged fracture, pale where the stone is fresh; the recess with its three ember slits is open to the break, the brass ring is chipped, one armrest is chipped, and rubble that fell from the top lies on the steps, the carpet and the cushion. The banners' finials are round.
+
+## [1.252.0+288]
+
+### Changed
+- **The throne room is darker.** The throne is now an old seat of black stone: a tall back crowned with jagged spires, a pointed recess cut deep with three ember-red slits glowing in it under a worn brass ring, cracked stone, spiked armrests, a worn wine cushion, clawed feet and dark steps. The stage is nearly black, lit from behind the throne and by a dull red pool on the floor, the carpet is a worn wine, the braziers burn lower, and the banners stand on black iron poles with tarnished brass.
+
+## [1.251.0+287]
+
+### Changed
+- **The throne room is restaged as a dark stage.** The Lantern Throne is now a gilded throne with a red velvet back and seat, in the middle of a dark hall lit from above and by a pool of light on the floor, its two braziers burning. Each banner you have earned stands on its own tall gilt standard (a pole, a foot and a finial) instead of hanging on a wall: one each side of the throne, the rest in pairs down the long carpet.
+- **The banners blow in the wind.** A wind from the left rises and falls in gusts: it pushes the cloth to the right more the lower it hangs, a ripple runs down it and the hem flutters, while the rod at the top holds still; a few specks of dust drift across the hall. The cycle loops without a seam, and with reduced motion everything stands still.
+
+## [1.250.0+286]
+
+### Added
+- **A throne room in the Clans screen** (a new "Throne room" tab, in play and in Edit Mode): the Lantern Throne in pixel art on its dais, a brazier lit at each end of it, a red carpet running down a long hall, and every banner you have earned hanging along the walls and swaying: the cloth swings a little further the lower it hangs, the pole held still. A clan's banner hangs once it is your friend, the Open Hand's once it is raised, and the Shroud's pieces as you find them; a tap names a banner and its standing. Above it, the hall says who holds the throne, or your claim, or that it stands empty. With reduced motion the banners hang still. Drawn by `tool/gen_throne_room.py`.
+
+### Changed
+- **"Every skill in motion" on the design canvas is back in the basic hand.** Both boards now play the game's own effect strips, recoloured to each skill's element as the fight does, for all 162 skills (the 20 newest marked NEW), in place of the poster-style motions.
+
+## [1.249.0+285]
+
+### Changed
+- **The fight effects are back in their earlier pixel-art hand.** The poster-style redraw of 1.240.0 is undone: the 35 effect strips in `assets/visuals/pixel_fx` and `tool/gen_fight_fx.py` return to their 1.239 state, with their earlier shapes and animations. Nothing else of 1.240.0 changed, and the 20 new skills of 1.245.0 play the same effects as before.
+
+## [1.248.0+284]
+
+Twenty new skills, and the rules they needed.
+
+### Added
+- **20 skills** for the mage, cleric, rogue, ranger and warrior (names, texts and battle lines in English and French, a pixel icon each, a place on a profession's tree, in seven new branches: Storm and Frost for the mage, Dawn and Tides for the cleric, Gale for the rogue, Skyhunter for the ranger, Stoneward for the warrior):
+  - Mage, ice and storm: Rime Lance, Glacial Ward, Chain Lightning, Static Charge, Thunderclap and the legendary Stormcaller.
+  - Cleric, water and light: Tidal Wash, Undertow, Dawn Lance, Lantern Ward and the legendary Winter's Hush and Second Dawn.
+  - Rogue and ranger, wind: Gale Cut, Dust Devil, Rain of Arrows, Hawk Mark, Windwalker.
+  - Warrior, earth: Rockfall, Bastion Slam, Thornwall.
+  - Ice, Electricity and Light now each have player skills (Ice had none).
+- **What the skills ask of the fight** (`lib/combat/skill_extras.dart`, all optional fields of a skill, editable in Edit Mode): a shield (`blockAmount`), several blows struck one after the other (`strikes`), a share of the blow on the other enemies, and how many (`splashShare`, `splashTargets`), a status on every enemy (`statusAll`) and a second status beside the first, a ward that lays a status on whoever strikes the shield (`reflectStatus`), a cleanse of the caster (`cleanse`), a heal for the whole party (`healAll`), a blow that goes through guards (`pierces`), damage drawn from armor (`damageFromArmor`), full momentum (`chargesMomentum`) and a free reroll next round (`bonusRolls`).
+- `tool/gen_skill_icons.py` draws the twenty icons.
+
+### Changed
+- The new skills that only shield, heal or control have a damage multiplier of 0, so they do not also strike for the caster's base damage.
+- Windwalker gives a free reroll next round rather than a second action, and Bastion Slam draws its extra damage from the armor you wear rather than from the shield you hold; both read from the same rules as the others.
+## [1.247.0+283]
+
+The world's fixed roads: the groundwork for a map where the party only takes roads.
+
+### Added
+- **A fixed road graph (`lib/data/world_roads.dart`).** 41 roads join the
+  34 landmarks by id, on land or by sea, so they hold on all three chart
+  geographies. Each road passes one or two named stops (the Dyers' Gate, the
+  Caravan Ford, the Glass Shoals...), in English and French, in the order
+  met from either end. `roadRoute(from, to)` finds the shortest way along
+  the roads and the stops on it.
+- **A content test (`world_roads_test.dart`).** Every landmark is on a road
+  and leads to every other, every sea road touches the water, and every
+  branch of the story between two landmarks (a chosen way, a failed roll,
+  a lost fight) follows a road, so a new branch that skips the map fails
+  the build.
+
+No change to play yet: the Journey map uses the roads in the next versions.
+
+## [1.246.0+282]
+
+The party walks the streets of a city, and a 'seen' failure in the Undercroft says why.
+
+### Added
+- **Inside one city or room, the mark comes by the streets.** When the story
+  sets the party down in another district of the place it already stands in
+  (a lost fight, a failed roll, a jump along no choice), the Journey map no
+  longer draws the mark in the new district out of nowhere: it walks from
+  the district where the party stood to the new one along the plan's roads.
+  Nothing needs saying for a plain move inside a city, so no world transit
+  plays there.
+- **The twenty-one failed rolls of the Undercroft's watch** (every choice of
+  the 7510 scenes that falls back to being seen) carry an authored
+  `failNote` that says why the party is set down elsewhere.
+
+### Changed
+- A step that stays in the same place now walks the party back, instead of
+  snapping it home, also when the step's district differed.
+
+## [1.245.0+281]
+
+The party's mark keeps its place on the world, and the map says when the story moves it.
+
+### Added
+- **Carried along a branch you did not pick, the party travels there by the
+  world chart's road.** When a fight is lost or a roll fails and the story
+  sets the party down somewhere other than where the step it took was
+  leading, or when a jump along no choice (the travel list, the way back to
+  camp) moves it, the Journey map plays the road from where the party stood
+  to where it is now, with a short caption under it ("Vane's hand closes on
+  your wrist: you are held on the wharf."). A tap skips it; with reduced
+  motion only the caption shows. The Edit Mode's jumps are tools and play
+  nothing.
+- **The author writes that caption** on the choice: `failNote` / `loseNote`
+  (with `failNote_fr` / `loseNote_fr`), four new fields in the node editor.
+  Without one, the map says it in plain words ("The fight is lost: you are
+  taken to {place}."). The seven existing branches that set the party down
+  elsewhere (the rot giving way into the Undercroft, the brood driving you
+  down, being spotted at the sleepers' camp, the gutter on the roofs, Vane's
+  grip, the host turning on you) now carry theirs, in both languages.
+- A content test keeps the promise: a lost fight or a failed roll that ends
+  at another place than its chosen step must carry a note in both languages,
+  and every scene must stand at a place on the world chart.
+
+### Fixed
+- **A step that walked the party on and was turned back from** (a fight
+  retreated from, a shop shut) no longer snaps the mark back to where it set
+  out: it walks back along the road it took.
+
+### Notes
+- This is the first stage of the fixed world: the party's position on the
+  world is now kept from scene to scene. Still to come: the same for
+  districts and rooms inside a place (a forced move between two spots of one
+  city shows its caption only), and a fixed road graph with named stops.
+
+## [1.244.0+280]
+
+### Changed
+- **Choosing a race and a profession no longer scrolls for the radar.** The radar is pinned above the rails and answers every pick: it starts as the plain start, grows with the race, and with a profession picked it shows the race alone dashed behind it with the corners that moved marked (+4 CHA, +4 WIS). Beside it, the name of the pair, its tags and the four numbers (HP, damage, armour, gold).
+- **One detail card for the two.** A switch between the race and the profession (it follows whichever was picked last) shows the first sentence of the lore, the rest behind "more", the bonuses and the starting skill, in place of two long cards one under the other. The list between the radar and the Start button is the only part that scrolls, and the Start button stays in view.
+
+## [1.243.0+279]
+
+Places say what they are like, and the game listens.
+
+### Added
+- **Five parameters on every place** (`geography.json`, editable in Edit
+  Mode, inherited from the places above when a place says nothing):
+  - `danger` 0 to 3 (safe, ordinary, dangerous, deadly): roads to a safe place
+    hold half the events, to a deadly one 1.6 times as many; a fight in a
+    safe place meets half the ground anomalies, in a deadly one 1.7 times as
+    many (never past seven in ten).
+  - `light` (day, dusk, night, dark): the backdrop dims with it, and a fight
+    at night or in the pitch dark is likelier to have a battlefield
+    condition at all, and far likelier to be Dark.
+  - `controller`: the faction that holds the place. A faction's shops there
+    price by your standing with the holder when the shop names none of its
+    own (a country's ruler does not set every shop's price).
+  - `tags` (holy, haunted, ruin, underground, market, sea, wild, stronghold):
+    the places above add theirs. Some ground anomalies favour a kind of place
+    three times over: a wellspring in a holy or wild place, an eclipse or
+    marsh lights in a haunted one, a collapse in a ruin or underground, a
+    blaze in a stronghold, a sea storm or racing tide by the sea.
+  - `watches`: how many watches of the day a walk to the place takes (a
+    mountain pass or a far fortress is longer than the plain two).
+- The "This land" card of a place shows its danger (when not ordinary), light,
+  holder, kinds and the length of the walk to it.
+- About 35 places carry values (the Black Hold and the undercroft deadly and
+  dark, the Spire of Judgment deadly and four watches away, the safe white
+  wells, Highhearth and Kindly Hill, Saltmouth's night wharf…).
+
+### Notes
+- The in-app and Python simulators still model plain walks and no ground
+  anomalies; roads to deadly places will hold more events in play than they
+  do there.
+
+## [1.242.0+278]
+
+### Changed
+- **The dice loadout shows the die as a cube you turn.** The same 3D cube the fight tumbles (with the die's own skin, and a skill face drawn as its pixel icon on a plaque) stands above the faces: drag it round with a finger and it settles on the side nearest you, tap a side to bring it round, tap the face in front to give it a skill, or drop a skill chip on the die to put it on that face. The face it stands on is outlined in the list below and told beside the cube (its name and what it does), and a face tapped in the list turns the cube to it. Reduced motion turns the cube without the glide.
+  - The dropdown of dice is a row of small cubes, one per die you own, each showing its faces (shown when you own more than one die).
+  - A die of seven faces shows six on the cube and slides the window to keep the picked one on it.
+- **The faces' odds are Edit Mode only.** In-Game mode no longer says how often each face comes up ("19% of rolls"), on the faces or beside the cube.
+- **The faces below the die are squares of one size.** Each is a fixed square (three across or more) with its skill's icon (or its own kind and value), its name on two lines at most, and a mark for what can be done with it (a lock, a cross to clear its skill, a pencil to choose one, a warning when its skill is over its limit), so a long name or text can no longer stretch or crowd it. What the picked face does, in full (its summary, its rule words and what they do, whether it is fixed or custom or over its limit, its element) is told in the panel beside the die, which grows with the text.
+- **A double tap chooses a skill.** Double-tap a face's square, or a side of the cube, to open its skill picker; the pencil on a square and a "Choose this face's skill" button in the panel do the same. A single tap only picks the face (the cube turns to it). A cube stood on its top or bottom sits upright.
+
+## [1.241.0+277]
+
+A place for every fight, and ground that sometimes turns on someone.
+
+### Added
+- **A background for every fight**, painted in code (no image files) from the
+  place the fight is at: open country, dunes, salt flats, the shore, the
+  ashlands, volcanic terraces, sea cliffs, the fen, a frozen waste, the glass
+  shore, and the inside of a building (a hall of arches and torches). The
+  stage comes from the biome of the place the story stands at; a scene can
+  name its own, and an expedition fights on the stage of its zone's place.
+  It sits behind the setup screen and the battle under a veil that keeps the
+  cards and the log readable in either theme, with the day's weather (rain,
+  snow, dust, ash, fog) drifting over it. It holds still with reduced motion.
+- **Ground anomalies**: in about three fights in ten, the ground or the sky
+  turns on someone for a few rounds. 28 of them, named after the roads'
+  hazards where there is one (sandstorm, killing heat, whiteout, black ice,
+  rockslide, crumbling path, sinking ground, flash flood, hailstorm, racing
+  tide, field of glass…) plus a few of their own (thunderstorm, downpour,
+  earth break, rising wind, break in the clouds, wellspring, eclipse, falling
+  masonry, burning rafters). Each fits its stage and, for the wet and dry
+  ones, the day's sky: a thunderstorm needs rain, a sandstorm is likelier
+  under dust, and under a roof only the earth, the masonry and the fire can
+  come of it.
+  - **Announced a round ahead** (in the log and as a chip over the battle),
+    it breaks in the second to fourth round and lasts two or three. The chip
+    is green when it favours the party, red when it favours the enemies,
+    neutral when it spares no one; a party with Perception 5 or more reads
+    whom it will favour from the omen, the others only that something is
+    coming.
+  - **What it does**: it feeds or dampens elements for both sides (Wind +25 %,
+    Water −15 %…), takes Perception from the party's read of the enemy,
+    slows or spurs one side's damage, and ticks: a share of health lost or
+    mended each round by everyone on a side or by one of them. Some fall on
+    both sides alike; the others pick a side at the roll, and the same
+    anomaly that helps the party in one fight helps the enemy in the next.
+    **A wound never finishes anyone**: a tick leaves at least one health.
+  - Drawn over the battle as it breaks: streaks and a veil for the storms,
+    rain and lightning, falling rock, cracks glowing in the earth, heat
+    shimmer and embers, god rays, an eclipse, rising motes for a spring.
+- **Story and tools**: a choice can name its fight's ground (`forcedAnomaly`,
+  `forcedStage`); a place can name its stage (`stage` in geography.json, and
+  in the Data tab): the prison, the sewers, the cathedral, the cloister, the
+  Hollow Court and the Lantern Hall are halls. The Edit Mode fight lab picks
+  the stage and the anomaly of a test fight (a test fight rolls none unless
+  one is picked).
+- Pure rules in `lib/combat/field_anomaly.dart`; the painter in
+  `lib/widgets/fight_backdrop.dart`; the fight screen's part in
+  `lib/screens/fight/fight_ground.dart`.
+
+### Notes
+- A fight whose circumstances the story set (a forced condition, such as the
+  ambush of a sneak gone wrong) and a lesson roll no anomaly of their own.
+- The in-app simulator and the Python one still play fights without
+  conditions or anomalies; the anomalies are balanced to be even-handed over
+  many fights (sides picked at random, ticks of at most 12 %, factors of 0.6
+  to 1.4).
+
+## [1.240.0+276]
+
+### Changed
+- **Every skill and spell effect is redrawn in the poster hand**, after the Japanese kanji posters used for the banners. All 36 pixel strips of a fight (strikes, projectiles, landings, the elements, support, the five states and the tier shock) keep their names, size, frame counts and anchors, so every style, spell, weapon strike and status plays as before, but each is now built from heavy slabs with rounded corners and bevelled rims, fat arcs and rings, thin stencil slits cut through them, shaded round discs and eyes, fine concentric lines and flying pixel particles. They are still drawn in four flat tones, so the game still recolours one strip to any element.
+  - A slash is one fat arc swept through with a slit cut along it; a heavy slash two arcs and a ground shock of discs; claws three heavy bars; a pierce a spear slab and a starburst; an arrow a shaft and fletching with speed bars; a fireball a bright disc with a trail of smaller ones and an explosion ring of discs; lightning a heavy bolt with branches; a fat eye opens for the void rift; a dome sweeps up for the shield; slabs drop onto each other for the stone shield; a fat plus swells for the heal; a mouth slab and arcs radiating both ways for the shout; a halo with orbiting discs for the stun; twelve rays for the critical hit.
+  - A blow of a strong or mighty tier lays the new shock under its landing: a ring of discs running out along the ground.
+- `tool/gen_fight_fx.py` is the poster-hand generator (it replaces the first one, which drew the same strips as thin shapes).
+
+## [1.239.0+275]
+
+Titles for the new standing steps, dedicated art for the forty clan cards,
+and particles for them in a fight.
+
+### Added
+- **24 titles**, English and French: for each of the six clans, a good title
+  at Friendly and at Friend and a bad one at Unfriendly and at Resented. They
+  use the new source `while:<tier>`: **held only while the standing lasts**,
+  good or bad. A good title is lost when standing falls below its step; a
+  bad one is worn automatically (like "the Marked") and lost when standing
+  recovers. The older tier titles (Known, Trusted, Sworn) are still kept once
+  earned.
+
+  | Clan | Friendly | Friend | Unfriendly | Resented |
+  |---|---|---|---|---|
+  | Dominion | Lamp-Lit | Stamped and Sealed | Marked Absent | Struck from the Roll |
+  | Vigil | Watch-Friend | Keeps a Candle | Cold Shoulder | Left in the Dark |
+  | Compact | Asked In | Seat at the Anvil | Short Measure | Barred from the Row |
+  | Mire | Reed-Friend | Fed at the Fire | Wrong Foot | Led Astray |
+  | Crows | Good for a Loan | Name in the Ledger | Overdue | Collected Upon |
+  | Penitents | Shared Road | Ash on the Brow | Unforgiven | Anathema |
+
+  Each carries one or two small effects in its clan's theme (a good one a
+  buff, a bad one a penalty of the same size).
+- **Dedicated icons for the 40 clan-card skills** (10 fusions, 10 ascensions,
+  10 sub-clan skills, 10 secrets): a frame per kind (twin gems, a gem with a
+  rising crest, a shield, a dark rune plate) in the skill's element colors,
+  with a glyph for what it does. They are generated pixel art
+  (`tools/gen_skill_card_icons.py`); replace any PNG in `assets/icons/skills/`
+  with hand-drawn art and nothing else needs to change.
+- **Clan-card particles in fights** (`VfxAccent`): over the skill's own
+  effect, a fusion plays two colors circling and flaring as one, an ascension
+  a rising pillar with climbing chevrons, a sub-clan's skill a sigil of two
+  rings with orbiting motes, a secret a violet veil with drifting rune
+  fragments. They ride on the skill's style, so a heal still plays on a
+  friend and a strike on a foe. The accent is read off the skill (nothing
+  new to author), and shows in the effects gallery too.
+
+### Fixed
+- Review of the whole branch: a clan Unfriendly or Resented (the new steps
+  between Wary and Hostile) was shut out as a suitor and from the Host, as the
+  old "at least Wary" test now stopped higher; both now stop at Hostile as
+  documented. A fusion is found when a clan stands behind both parents. The
+  simulator's sneak skips a fight only when the choice has an ability check
+  that succeeds, as the game does. The ascension label in the data editor says
+  Friend. The offer draw works out each clan's cards once. The unused Journey
+  "past scenes" helper is gone, and the Intrigues section header is back above
+  its tab.
+
+## [1.238.0+274]
+
+Twenty more skills: ten that belong to sub-clans and ten secrets.
+
+### Added
+- **Sub-clan skills** (`subclanId`). Once a sub-clan is your friend (taking a
+  gift it voiced makes it one), its clan can put its skill on the table, in
+  its voice, from Known standing. Rare, one class each:
+
+  | Class | Skills (sub-clan) |
+  |---|---|
+  | Warrior | Quarry Break (Quarrymen), Last Watch Stand (Last Watch) |
+  | Mage | Emberwife Coal (Emberwives), Whispered Ledger (Whisper Ledger) |
+  | Rogue | Tar Snare (Tar-Hands), Heron Step (Heron’s Wake) |
+  | Cleric | Candle Vigil (Candlebearers), Scorched Hymn (Scorched Choir) |
+  | Ranger | Moss Dirge (Moss Choir), Wayside Ward (Road Exorcists) |
+- **Secrets** (`hiddenFlags`, `hiddenClan`). Listed nowhere, with no sponsor
+  shown, until the story flags are held: then the named clan teaches them
+  (from Known standing), the card tagged "Secret". Epic, one class each:
+
+  | Class | Secret (flag, clan) |
+  |---|---|
+  | Warrior | Matriarch Reckoning (matriarch_slain, Vigil), Gate Oath (siege_gate_held, Compact) |
+  | Mage | Tear Sight (tear_touched, Crows), Ash Ledger (ashen_ledger_decoded, Crows) |
+  | Rogue | Marked Deck (sable_marker_won, Crows), Borrowed Face (lysa_mask_kept, Penitents) |
+  | Cleric | Absolved Penance (maren_absolved, Penitents), Kept Lantern (lantern_kept, Dominion) |
+  | Ranger | Followed Trail (tracks_followed, Mire), Horn Call (oni_horns_returned, Vigil) |
+
+  Every flag is one the story really sets (a test checks it).
+- All twenty have English and French text, an effect and an icon (the base
+  skill’s for now). The Edit Mode Affinities tab lists all forty clan cards
+  (fusions, ascensions, sub-clan skills, secrets) with their clans. Companions
+  never learn them with points. In 300 simulated runs, skills learned per run
+  go from 9.6 to 10.4, level and win rate unchanged.
+
+## [1.237.0+273]
+
+Standing with a clan now has eleven steps, and fusions ask for more.
+
+### Changed
+- **Standing ladder.** Five steps up from Unknown and, as their bad
+  equivalents, five down:
+
+  | Up | Standing | Price | Down | Standing | Price |
+  |---|---|---|---|---|---|
+  | Known | 6 to 11 | −5% | Wary | −6 to −11 | +15% |
+  | Friendly | 12 to 18 | −8% | Unfriendly | −12 to −18 | +22% |
+  | Friend | 19 to 25 | −11% | Resented | −19 to −25 | +30% |
+  | Trusted | 26 to 60 | −15% | Hostile | −26 to −60 | +40% |
+  | Sworn | 61 to 100 | −25% | Hunted | −61 to −100 | no trade |
+
+  Unknown stays −5 to 5. The ends of the ladder keep their old ranges
+  (Trusted from 26, Sworn from 61, Hostile from −26, Hunted from −61); the
+  two new steps on each side split what Known and Wary used to cover. French:
+  Estime, Cordialité, Amitié, Confiance, Serment; Méfiance, Froideur, Rancune,
+  Hostilité, Traque. Shopkeepers use their Wary line for the three lower
+  steps above Hostile too.
+- **Fusions need Trusted with both clans** (was Known). **Ascensions need
+  Friend with their clan** (was Trusted), one step easier since only one clan
+  is asked. In 300 simulated runs, skills learned per run: 9.6 (9.9 before),
+  level 11.1, win rate 40%.
+- The Edit Mode Affinities tab and the offer texts name the new steps.
+- Tier titles stay at Known, Trusted and Sworn; the new steps have none yet.
+
+## [1.236.0+272]
+
+Each clan now has a home among the peoples and the classes, and two clans
+together, or one at Trusted, can put a stronger skill on the table.
+
+### Added
+- **Favorability matrix** in Edit Mode (Clans & Politics, new "Affinities"
+  tab): a row per clan, a column per people and per class. A people's cell is
+  filled when the clan sponsors its heritage; a class's cell counts the
+  clan's branches out of three; tap a cell for the branches. It is read off
+  `factions.json` (`sponsors`), so that file stays the one source, and it
+  lists any inconsistency (a clan with no people or no class, a people with
+  fewer than two clans, a class with fewer than three).
+- **Fusions** (`fusionOf`: two skills): with both parent skills known and
+  Known standing with *both* clans, either clan puts the fusion on the table
+  and the card shows both. Taking it raises the lead clan by 6 and the other
+  by 3.
+- **Ascensions** (`ascendsSkillID`): with the skill it raises known and
+  Trusted standing with the clan behind that skill, the clan offers its
+  stronger form. The base skill is kept.
+- **20 new skills**, in English and French, with their effect and icon (the
+  base skill's icon for now): ten fusions (two per class) and ten
+  ascensions (two per class).
+
+  | Class | Fusion (clans) | Ascension (clan) |
+  |---|---|---|
+  | Warrior | Bastion Charge (Compact × Dominion), Writ Banner (Vigil × Dominion) | Unbroken Stance (Compact), Reaping Whirl (Dominion) |
+  | Mage | Scalding Tempest (Dominion × Crows), Ember Aegis (Dominion × Penitents) | Pyre Heart (Dominion), Mending Tide (Penitents) |
+  | Rogue | Viper Kiss (Crows × Mire), Borrowed Time (Crows × Penitents) | Deadeye Thrust (Crows), Second Skin (Penitents) |
+  | Cleric | Sentinel Verdict (Dominion × Vigil), Absolution (Dominion × Penitents) | Hallowed Sanctuary (Penitents), Unyielding Vigil (Vigil) |
+  | Ranger | Snared Shot (Crows × Compact), Pack Ambush (Mire × Compact) | Deadeye Volley (Crows), Call of the Wilds (Mire) |
+
+### Changed
+- **Peoples and clans:** human → Dominion and Penitents; elf → Mire and
+  Penitents; dwarf → Compact and Dominion; orc → Vigil and Mire; voidkin →
+  Vigil and Crows. Every clan now favors a people, and every people has a
+  second patron.
+- **The home seat** reaches one tier deeper than standing allows (the fourth
+  skill of a branch still waits for Sworn), and a clan whose branches are
+  grown but that has a fusion or an ascension left still takes the seat, so a
+  finished tree keeps growing.
+- A companion never learns a fusion or an ascension with points: only the
+  clans offer them.
+- In 300 simulated runs (same seed), skills learned per run go from 7.0 to
+  9.9, with level (10.9) and win rate (39%) unchanged. The simulator takes the
+  rarest gift, which favors these epic cards, so this is the upper end.
+
+## [1.235.0+271]
+
+### Changed
+- **Every offer now has a home seat.** One of the three suitors is a clan that sponsors a branch of your own tree (your class's branches or your people's heritage) and brings a skill from it, so your tree keeps growing instead of depending on the draw. The clan of your own people is three times likelier while your heritage branch still has a skill to give; once it is done, your class's clans take over. A quest's or an intrigue's clan fills the seat itself when it sponsors your tree; the Choir at a chapter's end and the Wayfarer keep their places, so an offer may then show four cards. A clan you are Hostile with, or whose next skill is deeper than your standing allows, is no home; with a fully grown tree there is no home seat.
+- In 300 simulated runs (same seed), skills learned per run go from 3.4 to 7.0 (mage 2.9 to 5.7, ranger 4.2 to 8.3), signs from 15.0 to 12.6, with level and win rate unchanged (10.9, 39%).
+
+## [1.234.0+270]
+
+### Added
+- The simulator plays quests the way the game does. A scene that offers or starts a quest is accepted when the character qualifies (alignment, flags, gold); Kill objectives count the fights won since it was taken, Flag objectives the story flags, Fetch objectives what the story hands over and what beaten foes drop (by their loot tables' own odds), Talk objectives once the person's chapter is reached. A finished quest is handed in at once for its gold, XP (which levels the character), item, alignment and follow-up, and a quest with turn-in choices takes the one the player leans to. New goal "Do every quest" (`completionist`) takes every way on of a scene it has not taken yet, work on offer first. See `docs/simulation/report-quests.md`.
+- `test/sim_quests_test.dart` covers the quest log (alignment gate, bounty baselines, a quest offered by a fight, pay and chaining, turn-in bias, what a quest waits on).
+
+## [1.233.0+269]
+
+### Added
+- The simulator can explore: the new goal "Explore every branch" takes, at every scene, the way on taken least so far over a whole batch of runs, so batch after batch covers more of the story. `simulatePlaythroughs` takes a shared `SimCoverage`; `test/sim_coverage_test.dart` pins that exploring covers more scenes and ways on than random runs, with every run ending in a real ending. `docs/simulation/report-branches.md` and `runs-explore-100.csv` hold the result of 300 runs: 363 of 385 scenes (94%) reached, the 22 that no run reached with what blocks each, and the one quest nothing offers.
+
+### Changed
+- The simulator rolls ability checks as the game does (a d20 plus the character's score against the DC, a natural 20 passing and a natural 1 failing, a skill challenge taking rounds), takes the failure scene when a check fails, and lets a sneak that works skip its fight. Before, no run ever took a failure branch, so 70 scenes (18% of the story) were never played. The simulated character's win rate in fights falls from 34% to 31% of attempts.
+
+## [1.232.0+268]
+
+### Added
+- The Edit Mode fight lab can add a companion to a test fight. Under the party switch, "Add a companion" lists all eight companions with their race and profession; any of them, recruited by the story or not, joins the party for the test with the skills of their signature die, and a chip takes them off again. They are put back afterwards like the rest of the test: a companion the story never recruited is gone again even with "Keep what happens" on; one the story had recruited keeps what the fight did to them.
+- Full simulated playthroughs for the balance review: `simulatePlaythroughs` runs the in-app simulator's walk and fight model headless for any list of goals, professions and races, and `test/sim_playthroughs_test.dart` pins that every goal and profession reaches a real ending through chapter 8. `docs/simulation/` holds the report and the per-run table of 100 runs.
+
+### Changed
+- The Journey's read-through prediction follows the real one: the flags each passed scene sets count for the next scene's ways, a way out of a building by a door walks the party out even from that door, and the scenes a way reads through are worked out once per build instead of for every use.
+- The fight lab keeps the companions added to a test within the most the camp can field (the base party and every house's bonus), picks first.
+
+## [1.231.0+267]
+
+### Changed
+- The Journey walks the party only where the story does. A way that keeps the party where it stands (working the table it is at, a roll, a stall, a scuffle in the square) leaves it on its mark: no walk, no road drawn to it. A way that carries it somewhere still walks it there: across a bridge or a street to another district or building, through a door or to a spot of the room, out along the road to another place.
+- The map is closer. The city's plan no longer fits whole in the view: it keeps the party and the places its ways lead to (with some margin, never less than half of the plan), so a scene whose ways all lie close shows just that corner of the city. A scene whose ways cross the city still shows all of it. The camera's zoom on a walking party is 1.5 (was 1.6) on top of that.
+- The party's mark never jumps. The plain scenes the story reads straight through on the way (see Fewer presses of Continue) are passed on the road, so the map now places and walks each way to the scene the story really lands on, not to the first scene it leads to: the district or building, the spot of the room and the glimpse of what comes next all follow where the party will stand after the read-through. Edit Mode, which stops at every scene, keeps the first one.
+- The road already taken (the chapter's earlier scenes below the party, with the way taken out of each) is gone from the Journey. The Map tab keeps showing it.
+
+## [1.230.0+266]
+
+### Fixed
+- Side quest rewards now follow one scale. A turn-in choice pays instead of the quest's base gold, not on top of it, so the clan quests of Chapters 3 to 6 paid far less than the fights of their chapter: the Chapter 5 candle count and hearth-stone paid at most 60 and 70 gold, the Chapter 6 salvage 90, against 80 to 150 for the kill quests beside them, while their XP ran well above (150 to 180 against 110 to 200). Gold and XP now follow the difficulty (about 12 gold and 17 XP per point) and a choice pays about 0.3, 0.8 or 1.5 times the base:
+  - Glass from the Terraces 50 gold and 70 XP (was 45 and 90); Bark Tithe 75 and 105 (was 50 and 120); Candle Count and Hearth-Stone 90 and 130 (was 55 and 150); Salvage Rights 140 and 185 (was 60 and 180). The Reckoning Wall's sale to the Inquisition pays 100, not 150.
+  - Difficulty ratings follow the pay: Vess 2 (was 4), Bark Tithe 6, Candle Count and Hearth-Stone 7, Salvage Rights 11.
+- Only the Chapter 2 harbor chain paid in gear. The four hardest side quests now do: Ossuary Bounty (Bone-Laced Boots), Penitent's Confession (Frostward Cloak), Faces of the Fallen (Tearwalker Boots) and Salvage Rights (Voidsteel Greaves).
+
+## [1.229.0+265]
+
+### Added
+- **Pixel-art banners in the style of Japanese kanji posters.** Twenty 64×128 banners drawn by `tool/gen_banners.py`: a black woven cloth filled edge to edge by two heavy signs stacked like vertical writing, built the way the posters build their lettering: fat slabs with rounded corners and rounded bends (a box on a bar, an E-comb, a square spiral, a gate, a stepped tower, a hand, a torn eye), thin black stencil slits where pieces meet, round discs, eyes (a ring round a dot), and fine concentric lines along the curves. Kept to few colours: the signs are always cream on black, with one accent colour per banner (the clan's own) for its discs, a thin header line and the tail's edge; the tassels and finials are brass.
+  - **The Shroud, in Pieces** (Character tab) lays the six pieces out as banners: each recovered piece in colour with its name, the others a dark silhouette marked "Not yet found", with a count.
+  - **Every clan's main banner** (the Lantern Dominion, the Grey Vigil, the Cinder Compact, the Mire Courts, the Salt Crows, the Ashen Penitents, the Choir, the Pit, the giants, the oni, the Tide-Kin, the Kindly Ones and the Open Hand) in the clan's colour from `factions.json`, beside its standing card; the Open Hand's stays a silhouette until its banner is raised on the Hollow Shore.
+
+### Changed
+- The title's mark is the Void's standard in pixel art, replacing the vector banner: twice the size on a tall screen, once on a medium one, and left out on a short one so the menu stays in view.
+- A sworn clan's boon name in a standing card wraps instead of overflowing on a narrow phone.
+
+## [1.228.0+264]
+
+### Added
+- **Ten hulls, and four flying boats.** The Eel can be rebuilt at the Harbor on another hull, each with its own outline, masts and sails seen from above, its own slots and its own price: Longboat, Cutter, the Sloop she is today, Brigantine, Brig, Corvette, Frigate, Galleon, an elven Twin-hull and a dwarven Ironclad (no sail to paint); and, from chapter 5, the Sky-sloop (twin gasbags, a boiler and a screw), the Cloud-cutter (bat-wing sails and a soul furnace), the Lodestone barge (four glowing lodestones) and the Void carrack (bone wings). A flying boat lets the storms and raiders of a voyage pass beneath her keel, as the Gull's Wing sail does.
+  - The Harbor has a **Hull** section: each hull's picture from above, what it carries, its price and the chapter it is built from. A hull is paid for once; going back to one already built is free. Rebuilding says which parts have no slot on the new hull (they wait in the Harbor's store), keeps her name, looks and crew, and keeps her share of hull. "Try on the ship" shows a hull in the yard before it is built.
+  - **Several painted sails at once**: a hull with several sail slots carries one sail of each power (a second sail of a power already aboard paints over it), each with its sigil on its own mast, and the voyage and the sea battle take all of their powers together.
+  - Hull points, rooms, slots, sail plans and prices are in `ships.json` (new fields: hull name, price, chapter, kind, outline, sail plan, jibs, oars, castles, beak, flying), editable in the data editor.
+
+### Changed
+- **The ships are pixel art.** Every ship seen from above (the sea fight, the camp's boat card, the voyage, the yard) is drawn small and stretched back hard-edged, with a hard drop shadow and a heavier wake, so the fleet reads like the skill effects: flat tones, hard edges, one pixel size. Sea beasts keep their own sprites.
+- The rooms of a ship shorter than the battle's box sit along her own length, so a small hull's tiles are on her deck.
+
+## [1.227.0+263]
+
+### Changed
+- Ships are drawn from above only, as in the sea battle. The Eel at sea (on the voyage, in the camp's boat card, on the ship screen) is the same top-down ship the battle draws, in her paint, cloth, guns and plating, instead of the old side cutaway; the Harbor shows her once, larger, in the yard.
+
+## [1.226.0+262]
+
+### Added
+- Ship customisation, in the Harbor, now a shipwright's yard. Above the parts, the Eel is drawn from above on the open sea, as she would look with what is tried on her.
+  - **Sixty-seven parts** (forty-eight new), at least a dozen in each of the four slots, in *versions* of a family from the plain to the rare: the ballista becomes an iron-bound one and then a siege engine, the chain swivel a bar-shot swivel and a reaper chain gun, the grape swivel a canister swivel and a shrapnel mortar, the fire pots naphtha pots, the carronade a hot-shot battery and then the dragonfire cannon, the harpoon rack a barbed rack and a whaling gun; plus a culverin that carries long. Shields come as plating (steel, blackiron, pavise, bastion, dwarven, the Aegis of the Deep), as bracing that is all hull, and as screens (shuttered gunports, netted rails, runed wards). Utilities are stores and a keel for hull, a wheel, tackle, a gunner's chest and kit, lanterns and a chart table for the turn clock, the captain's quarters and the admiral's standard. The five powers of the painted sail are now painted in more peoples' ways (twelve new sails), so a sail is a choice of version: the one in your own people's medium holds twice as strong.
+  - Each part has a rarity and a version, and the shipwright sells it from its chapter on (a part of a later chapter takes one line, with the chapter it comes in). A new `hullBonus` adds hull to the ship (oak planking, ironwood bracing, ribbed keel plates, oakum stores, a reinforced keel, the Aegis).
+  - **Try before you buy**: each part has "Try on the ship", which shows it on the Eel (in place of her weakest gun when the slots are full) without buying or fitting it.
+  - **Looks**, thirty-five of them, cosmetic only: eight hull paints, eight sail cloths (plain, patchwork, striped, black, moonsilk...), eleven figureheads (a gull, an eel, a siren, a wolf, a skull, a lion, a dragon, and the trophies of the Brinejaw, the pale Leviathan and the Tide-Mother, which are free once the beast is slain) and eight flags. One free default in each; the rest are bought, from their chapter on, and tried on the ship first.
+  - **The parts you carry are drawn on her**, in the yard and in every sea battle: each gun in the gun room as the kind of gun it is (a ballista's bow, a swivel on its post, a carronade that glows when it is loaded hot, pots of fire, a rack of harpoons, a long culverin, the Tide-Mother's beak), grown with its version and tinted by its rarity; the bulwark in its plating (steel, blackiron, bone, scales, shutters, nets, ribs, glowing runes); the utility's gear on deck (barrels, lanterns, a chart table, a cabin roof); and the painted sail's sigil on the canvas (wings, an eye, a flame, a knot, a void spiral) in the colour of the people who painted it.
+
+### Changed
+- The one-sail-per-power rule is now one sail per power *and people*: every power is painted by at least two peoples, and no pair is repeated.
+- Harbor part cards show their rarity and version, and the description of every part.
+
+## [1.225.0+261]
+
+### Changed
+- The fight's effects are sized to what they are. Each effect now has a size of its own (a thud or a scratch is small, a meteor or a quake large) and its power grows or shrinks it, so a plain blow is a small flash and a rare or legendary skill takes the card and more; before, nearly every effect was about as large as the card or larger. A single effect never grows past one and a half cards.
+- A plain Attack face plays by the weapon in hand: a sword slashes (a great blade cuts heavy), a spear thrusts, a dagger scratches, a staff or bare fists thud. The weapon's rarity sets how strongly it plays. Skill faces keep their own effect.
+- The dice in the fight no longer sit on a coloured square: the cube stands on its own, and a kept die keeps its gold ring.
+
+## [1.224.0+260]
+
+### Added
+- Radar charts, so the numbers read as shapes:
+  - The character sheet draws the eight abilities as one shape (Strength at the top, clockwise to Charisma), with each corner's name and value, above the stat tiles.
+  - Choosing a race and a profession shows the shape they make: the race alone as a dashed outline, the race with the profession as the solid one, and what the profession adds (+4 STR, +2 CON) at its corner.
+  - "A Life Before This One" draws what the memories taught you on the summary: your abilities before as a dashed outline, with your memories as the solid one and the gains at their corners.
+  - An Elements section on the sheet shows the elemental damage and resistance of the equipped items in four views you can switch between: Radar (damage and resistance as two shapes), Split (one radar for each), Rose (wedges for damage, an inner ring for resistance) and Rows (a bar per element). With nothing equipped that carries an element, it says so.
+  - The charts shrink to fit a narrow screen and are read aloud as a list.
+
+## [1.223.0+259]
+
+### Changed
+- The character sheet (Race & Profession) reads at a glance. The race and the profession each lead with the first sentence of their lore, set larger, with the rest below at a comfortable size and full contrast; their tag is a chip of its own instead of a prefix, and what they change shows as chips. The starting skills are cards with the skill's icon framed, its name large and its words below. The sheet itself is in sections: level, health and experience as bars, damage and armour as tiles, the eight abilities as a grid of tiles (held, each tells what it does), and the counters as one plain list. The race and profession pickers' descriptions are brighter and larger too.
+- "A Life Before This One" is easier to read. The introduction is no longer faint italics; the scene is set larger; the age dots and numbers are bigger; each answer is a card in the book's own type (not the pixel font), left-aligned, with what it teaches as a clear tag under it.
+
+### Added
+- Fate can choose your story: "Let fate choose" under a memory's answers picks that one at random, and "Choose my whole life at random" on the first memory picks all six and goes to the summary, where any memory can still be reopened and changed. The summary has "Choose again at random" to draw them all anew.
+
+## [1.222.0+258]
+
+### Changed
+- Every skill and spell effect in the fight is now pixel art. All thirty-four styles (slash, heavy slash, claw, pierce, impact, whirl, arrow, volley, bolt, lightning, flame, fireball, meteor, holy fire, frost, splash, poison, smoke, wind, quake, void rift, drain, shadow, radiance, heal, shield, stone shield, mana, shout, stun, weaken, critical hit, miss and a boss's change of phase) play as short strips drawn with hard edges and dithered fades, flown from the caster to the target where they travel. The strips are drawn in four flat tones that the game recolours to the skill's element, so a Fire slash is orange and an Ice one blue from the same strip. A strong or mighty blow adds a pixel shockwave under it, and a mighty one still washes the screen. The old vector effects play only for the instant before a strip is in.
+- The enemy portraits move in pixel art: a flash and a shake when a blow lands (every blow, light or mighty), a lunge at the party member it strikes, with a smear and a puff of dust, and, when it is beaten, a fall in which the portrait dissolves from the feet up into rising pixels (a boss's fall adds a ring of light and takes longer). The card dims as it falls. The art is drawn from each enemy's own portrait, so all fifty-one have the three moves. With reduced motion, or with the effects off or in a quick fight, the portrait stays the still sprite.
+
+### Added
+- `tool/gen_fight_fx.py` draws the effect strips (`assets/visuals/pixel_fx/vfx_*.png`): run it to change them.
+
+## [1.221.0+257]
+
+### Fixed
+- Side quests that did not match their own scenes, from a review of all 27:
+  - The Penitent's Confession (ch5) asked for a kill, but its scene is a confession with no fight, and its turn-in offered absolution for a man the quest had you kill. The quest now asks you to hear the confession, and the turn-in is where you decide: take his blade (he hauls water for the camp, as the camp's later lines say), give him the answer he came for, or take his purse and leave him to the tear. The three outcomes now leave `confession_spared`, `confession_executed` and `confession_robbed`, with a camp line for each.
+  - The Informant's Tip (ch2) named a warden the scene never fought. The warden now steps out of the warehouse with two hired men; the other branch offers "Go after the warden he named" and only that choice starts the quest.
+  - The Ossuary Bounty (ch4) asked for three ghouls where the scene fights two, and the sapper counts two coins now.
+  - A Smuggler's Favor (ch2) appeared out of nowhere. A soot-black smith now asks for iron ore at the end of the harbor master's job.
+  - Grosh, Tobin and Malrik asked for a kill they had no scene for (and Grosh's zealot only appears from Chapter 4). Each now has the fight in their own scene.
+- A quest offered by a choice that also fights now counts that fight. The offer comes after the fight, so a bounty's kills were counted from after it; the kill counts are now kept from before.
+- Twelve kill quests counted every kill in the game, so a rat from the first scene could complete Dockside Debts before it was taken. They now count from the moment they are taken.
+- Six turn-in options had no flag (Tern's Toll, Liora's Watch, the Reckoning Wall, the Ossuary Bounty), so what you chose was forgotten; each now leaves one.
+- The chapter validator reported 14 problems because it held open side quests to the one-start, one-end rule of a linear chain. It now checks the main chain only (a chain running on into the next chapter ends there) and reports none.
+
+## [1.220.0+256]
+
+### Changed
+- The party's walk through a place is slower and smoother. It strolls at a steady pace whatever the street's length (a second and a half for a short way, up to four and a quarter for a long one) instead of a fixed second, and its footprints keep a stride apart. The road up the map keeps its short walk.
+- The city's map follows the walk: it zooms in on the party as it sets off (to one and three fifths of its size), keeps it toward the middle while it strolls, and eases back out as it arrives, never past the plan's edges. With reduced motion, the map holds still as before.
+
+## [1.219.0+255]
+
+### Changed
+- Ship battles are less of a wall. A shield layer that stops a shot no longer cancels it: about a third of the blow (at least 1) still reaches the hull, on either ship, and the log says so. Before, four shots in ten were swallowed whole and a quarter of all rounds saw nothing land on either side.
+- A shield can now be broken on purpose. A shot aimed at the bulwark itself strips a second layer; a heavy weapon (damage 20 or more: the fire pots, the hot-shot carronade) strips two; and a perfect aim slips through the gap, landing on the hull and leaving the layers standing. Piercing shots still ignore the layers, and a sea beast's hide keeps its old rule.
+- The enemy's bar shows the sums: its shield layers and how many shots of the armed weapon it takes to get one through (fewer when aimed at the bulwark), with a "Salvo ready" flag when the guns ready now can break it and land this turn. The room preview shows the chip a stopped shot would cost.
+
+### Balance
+- Against the late Void Barge a captain who ignores the tools now wins one fight in four (3% before); the captain who aims, braces and gives orders wins most of them (53% before, 86% now). The simulator's band for the new rules was widened from +35 to +65 points for that fight, and a new check keeps the plain captain from being walled by the shield again.
+
+## [1.218.0+254]
+
+### Changed
+- Close and far read at a glance in the ship fight. The sea is seen from the masthead, so the farther apart the ships lie the smaller each is drawn (full size close, a little over four fifths at medium, under two thirds at long) and the wider the open water between them; closing in or pulling away glides between the three. The closest range now also gives the ships more of the sea's width.
+
+### Added
+- Station dice on the Eel. Each hand with a die (the player's equipped die, a companion's signature die, as the Hammersmith left them) has it at their station in the ship fight, a small cube on the room's tile that tumbles when the turn opens or the hand moves, and shows only the faces that room can use: the guns, attack and poison; the bulwark, defend; the hold, heal and mana; the helm, stun and weaken. A skill face shows its skill's icon. A room the die has no face for shows a pale blank cube and gives nothing.
+- What a landed face does, while its hand stays at the station and is not busy: at the guns, the Eel's shots hit harder by the face's share (half as much for poison); at the bulwark, the enemy's shots hit softer; at the helm, a weaken face does the same and a stun face costs the enemy's most charged gun a step after it winds; in the hold, a heal face patches the hull and a mana face winds a gun a step when the round ends. The landing depends only on the battle, the turn, the hand and the room, so moving hands about cannot shake out a better roll. Hold a room's tile for what its die landed.
+
+## [1.217.1+253]
+
+### Fixed
+- A die now ends its roll on the face that rolled, standing almost square to you, so the skill icon (or the value) of the face that can trigger is what you read. Before, the cube settled tipped far over with its top and sides as large as the landed face.
+
+## [1.217.0+252]
+
+### Fixed
+- The map no longer moves when a way is picked. The panel under the Journey map keeps one height whether or not a way or a place is chosen, so the map keeps its size and every mark stays where it was.
+- The sky holds still. The game plays turn by turn, so the clouds, fogs and rain no longer drift while the map is watched, and zooming or pinching shows the same clouds at every distance. The sky is the day's, and a new day brings a new one. The weather chip no longer changes on its own either.
+
+### Added
+- Each of the thirty-one dice wears a cube skin of its own, from the dice sheet: the stone it is cut from (bone, riveted iron, ember, sea glass, stormcast, Dwarven stone, black lacquer, ivory and gold, blood-iron, rune crystal, antler and oak, living wood, chalk, sky-glass, reliquary bronze, rust, casino ivory, ice, thunder iron, bone mosaic, candle wax, tear-glass, black iron and more), the colour of its edge, a mark cut into its faces and, for the glowing ones, a light round the cube. A die without a skin reads as bone.
+- A die kept through the reroll has a gold dashed ring and a lock round its cube.
+- Over the burst of a landed face go: a flourish for each rule word it carries (cleave flings arcs to either side, pierce drives a line through, growth lifts a +1, echo sends rings, pain cracks and drips, steady drops an anchor); a tint for its element (embers, droplets, wind arcs, pebbles, forks, ice shards, void arcs, light rays); a turning gold ring and crown for a momentum surge; chains for a curse; and a single shudder for a blank.
+- Pixel animations (`tool/gen_pixel_fx.py` draws them as sprite strips in `assets/visuals/pixel_fx/`; `PixelSprite` and `PixelStripPainter` play them, pixels kept square):
+  - A die's landing is now pixel art: eight bursts by kind of face, eight element tints, six rule-word marks, a surge ring and crown, curse chains and a white glint, each eight frames. The drawn burst remains until the strips are in.
+  - A place found is stamped on the Journey map by a pixel seal that comes down, flings its ink and dissolves, under the place's name.
+  - The camp has a pixel campfire that flickers in its header.
+  - A spoils chest bursts open in its tier's light, one burst each for wooden, iron, silver, gold and void; a tap anywhere on the chest now opens it.
+  - With reduced motion the seal and the chest's burst are skipped and the fire holds one frame.
+- The dice are cubes in the fight. A die tumbles through the air in perspective, with a hop and a shadow, and lands on the face it rolled, which stands front; the other five sides carry the die's other faces (a die of fewer than six faces repeats them), lit by a lamp above and to the left, the far sides hidden. It rests tipped toward you so its top and a side show. A die kept through a reroll stays put.
+- A skill face on a cube holds the skill's own icon, large, on a pale plaque ringed in what the skill does, so the pixel art reads on the dark stone; the cube is a little bigger on the tray.
+- A landed face lets go a burst fitted to what it does: sparks and a shock ring for an attack, a hexagonal ward for a guard, rising crosses for a heal, orbiting blue motes for mana, green bubbles for poison, amber bolts for a stun, a draining purple spiral for a weaken, grey dust for a blank. A skill face or a face worth 8 or more lands bigger, with a white glint.
+- With reduced motion the dice roll at once and no burst plays.
+- The sea beasts are drawn again, from above, in the dark-fantasy art of the Grey Shroud design ("Sea beasts to hunt"), no longer borrowing a ship's look. Old Brinejaw is the Drowned Wyrm, a sea dragon with sunken coils, fin-wings and a fanged head; the Pale Leviathan is the Deep Leviathan, a vast barnacled back with old harpoons in it and one pale eye; the Tide-Mother is the Mother of Wrecks, a kraken among the timbers of the ships it took. A room knocked out darkens its part of the body, and a beast below half its hull shows gashes. The designs' Ash Drake and Bone Tide are not in the game yet.
+- The Tide-Mother's arm has its own icon again for the fight on the dice.
+- Seven new kinds of building for the inside view, each with its own plan: casino (a wheel ringed with card tables, a cashier, private rooms, a vault), barracks (guardroom, bunks round a mess table, armoury, officers), library (stacks, reading tables, archive, scriptorium), prison (guardroom and two rows of barred cells), forge (forge, anvil, quench trough, store), theatre (foyer, benches, pit rail, stage, dressing and props rooms) and baths (changing hall, great pool, hot and cold rooms).
+- Variants by seed: a temple may be a nave and choir, a cross or a round shrine, and an inn may front the street or stand round a yard.
+- A building's name can say what it is: a name with "casino", "barracks", "caserne", "chapel", "gaol", "smithy" and the like (English or French) is laid as that kind, whatever kind the geography gives.
+
+### Changed
+- The quest on the Journey is a small round button beside Read, with its icon, a tick when the goal is met and a dot when it moves on, instead of a full bar above the map. Its name and goal are on its tooltip, and a tap opens the quest, where it can be turned in. The map gains the height the bar took.
+
+## [1.216.0+251]
+
+### Fixed
+- Chapter 2's bosses were walls. In the fight simulator a solo character won the Tanner's Court plague hound 10% of the time per attempt, the smuggler captain 14%, the Fisherman's Row dock overseer 27% and the Tern Row overseer 29%; the two repair-zone bosses gate casting off. All four are about a quarter lighter (plague hound 175 → 130 health, 21 → 16 damage; smuggler captain 180 → 135, 21 → 16; dock overseer 139 → 112, 17 → 14) and now sit near 45–55% per attempt, which takes Chapter 2 from 38% to 63% across the chapter.
+- Kelda's offer is now told: the scene opens on the dwarf holding the wharf gate alone and asking for one more pair of hands, instead of starting after the offer.
+- The woman under the bar is introduced in the opening scene before a choice names her. A cloaked woman now waits at the far well for a character the tear has marked, before the choice to answer her.
+- The Rusty Eel's capacity matches the choice: twenty in comfort, and a hundred only with the stores over the side and a skiff in tow, which is the skiff the storm later asks you to cut loose.
+- "Go find Vane" at the informant now reads "Go after the warden he named", which is who the trap is about.
+- French spacing: non-breaking spaces before `;`, `:`, `!`, `?` and inside « » in the Chapter 1 and 2 strings that had ordinary spaces.
+
+### Added
+- Chapter 2 has its own main quest, "A Hull to Leave In" (get the Rusty Eel, patch her hull, mend her sail), offered on the way into the wharf market, by any of its three doors. The three optional hub quests that were marked Main (burning manifest, captain's gambit, harbor reckoning) are now Side quests.
+
+### Notes
+- Liora's three ability checks can still be retried: she is a recruit, and the refusal says she will be there when you come back.
+
+## [1.215.0+250]
+
+### Added
+- Enemy squads. From chapter 2 on, about half the packs of two or three field a squad: a **Healer** (mends its most wounded friend by an eighth of its health each turn, hits at seventy percent), a **Guard** (while it stands, blows on the others are cut by a quarter unless they Pierce) or a **Striker** (hits a quarter harder on a fifth less health). A pack never gives roles to all its members, never doubles a Healer or a Guard, and never to a boss. The role shows as a chip on the enemy's card with its rules on a long press.
+- Enemies that answer the party. Fifteen enemies now carry a reaction in `enemies.json` (from chapter 2 on; the opening chapter keeps the plain rules): a **counter** enemy (a blow of a fifth of its health in one round provokes it; its next blow lands half again as hard, at whoever struck), a **press** enemy (a round in which everyone played Defend makes it press: its next blow lands three tenths harder) and a **hunt_healer** enemy (it turns its next blow on whoever healed most). A *Provoked* or *Pressing* chip says so before it strikes.
+- The pack fights back harder when it is held rather than slain: a Hold the line fight now asks four of the enemies' turns against a pair and five against more (it was three and four), and they hit a quarter harder (it was a tenth).
+
+### Balance
+- The fight simulator plays the whole clash set (goals, the Writ, squads, answers, parries, reactions) when `clash` is on, and each rule can be left out to see what it does (`clashOff`). Four seeds of 400 random walks each, win rate per fight attempt, plain rules → clash rules: Chapter 1 85.9% → 87.1%, Chapter 2 37.3% → 38.3%, Chapter 3 36.8% → 38.0%, Chapter 4 25.7% → 29.6%, Chapter 5 14.0% → 17.1%, Chapter 6 22.1% → 25.4%, Chapter 7 10.5% → 11.2%, Chapter 8 15.4% → 17.6% (all fights 28.5% → 30.4%). Left out one at a time (before the Hold was made harder), the goals were worth about five points of that, the Hold alone four; parries and reactions about one each; squads, answers and the Writ under one. The model plays the rules as well as they can be played (the best parry, the Healer struck first), so a real party will see less of the gain.
+- `test/clash_balance_test.dart` keeps every chapter's simulated win rate within ten points of the plain rules'.
+
+### Internal
+- `squad.dart` and `enemy_response.dart` hold the pure rules; the fight screen gains a `fight_squad.dart` part. `EncounterModifiers.forcedSquad` pins a pack's roles for tests. The `reaction` field joins the enemies schema.
+
+## [1.214.0+249]
+
+### Added
+- Targeted defence. A Defend face no longer only guards whoever rolled it. When an enemy has an attack coming, the defender's card shows a Parry chip: tap it to set the face on that enemy's blow, tap again to move to the next enemy or back to a plain guard. A parry counts half again as much as the guard, covers whoever the blow was aimed at, and blocks its status. A blow it stops outright is turned aside and answered for half the parry. A parry set on an enemy that does not strike that turn is wasted, and the roller's own guard is not raised.
+- Element reactions. A hit with an element primes the enemy with it for the rest of that round and the next, shown as a chip on its card. A partner element striking the primed enemy springs a reaction and uses the prime up: **Conduct** (Water and Electricity: half again as much damage, and an arc to the other enemies), **Shatter** (Fire and Ice: sixty percent more and the guard broken), **Firestorm** (Fire and Wind: a quarter more, and the blaze catches the others), **Freeze** (Water and Ice: stunned for a turn, a boss shrugs it off), **Sandblast** (Earth and Wind: weakened) and **Eclipse** (Light and Void: double). Spells react as well as dice. With the Dexterity order, putting the bigger hit second now pays.
+
+### Internal
+- `parry.dart` and `element_reaction.dart` hold the pure rules; the fight screen gains a `fight_clash.dart` part.
+
+## [1.213.0+248]
+
+### Added
+- The party acts in Dexterity order. The quickest fighter strikes first, and ties keep the party's own order (you first, then your companions as they joined). A small number on each card shows its place in the round. An Echo copies the strike played before it, so order now matters there too.
+- Loadout by situation. Before a fight you can swap the die you roll for another you own. Each die you could pick is starred when it can hit an element the party knows its enemies are weak to, and a line says which weaknesses are known and which of them this die hits. The swap holds for this fight only.
+- Quick resolve. Against enemies you have already beaten five times or more, with your health above sixty percent, a fight offers to play itself: a roll and a confirm a round, short animations, the same rules as a played fight. It stops and hands the fight back when you tap Stop, when your health falls below forty-five percent, or when a companion is knocked out. Bosses, uniques, hunts, ambushes, lessons, elites and story fights with a defeat branch never offer it.
+
+### Internal
+- `turn_order.dart`, `quick_resolve.dart` and `loadout.dart` hold the pure rules. The fight screen gains a `fight_quick.dart` part. A player's die fields can now change before the first roll.
+
+## [1.212.0+247]
+
+### Added
+- Fights that ask for more than the slaughter. About one fight in four now has a goal, announced on the setup screen before the first die: **Hold the line** (a pack presses you; survive its turns, three against a pair and four against more, and you win whoever still stands, for a third more gold and XP), **Rout** (a pack's sturdiest member is its captain, marked on its card; bring it down and the rest flee, as a Skittish enemy does) and **Subdue** (one fighter who is a person, not a beast: bring them under thirty percent of their health and they yield and pay a ransom of half again their gold, but drop no loot; kill them outright and you get the usual spoils). Bosses, uniques, hunts, ambushes, lessons and story fights with a defeat branch never roll a goal. A battle chip shows the goal, and a hold counts its turns.
+- Faction doctrine. Each faction's fighters now fight by their own habits, announced beside the goal. The Dominion's **Writ**: every third round your skill faces fall silent, and its soldiers favour heavy armour. The Salt Crows' **Short Con**: each hit they land lifts gold, carried by the thief shown on its card; whatever a Crow still carries when the fight ends is missing from the spoils, so kill the thief to get it back, and they would rather run than die. The Ashen Penitents turn frenzied as they bleed, the Choir and the giants wear armour, the Pit's things poison, the Tide-Kin give ground. Twenty-six enemies now carry a faction in enemies.json. A fight against a boss or a unique is never under a doctrine.
+
+### Internal
+- `lib/combat/fight_goal.dart` and `lib/combat/doctrine.dart` hold the pure rules; the fight screen gains a `fight_goals.dart` part. An encounter can carry a `forcedGoal` for a hand-made fight; the story files do not use it yet. The fight tests that rely on the plain slaughter pin it.
+- The in-app playthrough simulator and the Python simulator do not model goals or doctrines yet.
+
+## [1.211.0+246]
+
+### Added
+- Faces for the intrigues. Each stage and outcome of an intrigue can now name the person at its centre. A person's page lists, under "In the intrigues", the stages you have reached that they stand in, and the Clans screen shows the person's name beside a reached stage. The Hooded Lantern and the Dying Lantern Bearer are fully faced; the six intrigues not yet placed in the story name a person where their text already does.
+- Six new people: the paid informant of the wharf, the condemned voidkin of the Spire, the drowned courier, the courier at the landward gate, the frozen pilgrim of Rimewell, and the White Admiral.
+- People that know where you stand. Twenty-five people gain lines that appear only at a given standing with a faction or a friend or foe mark with a clan: the Keyholders when the Salt Crows count you sworn or have put a price on you, Aurel Vane when the Inquisition has your name on a writ, and so on.
+- Second beats for the six quest-givers of 1.204. Once you have settled one of their requests, they send word or come to the next chapter's hub, and what they say follows the way you settled it. Where they are grateful they offer twenty gold; a goodbye is always possible.
+
+### Internal
+- People states may carry politics conditions (`conditions`, the shape politics events use), and an intrigue stage or outcome may carry `npcId`. A content test checks that every named person, faction and clan exists.
+
+## [1.210.0+245]
+
+### Changed
+- Journey: the map stops repainting when nothing moves. The living layer used to re-record every frame at 60 fps while idle; it now keeps its last frame once walks, reveals and jolts have settled, and wakes on the next motion.
+- Roads: a journey that leaves a city or town runs through that city's own land first, so the Salt Coast's and the Vale's weather can reach the party; a boat crossing to the sea keeps the sea's. A test lists the lands whose weather no journey can reach yet (the Vale, the dune sea, the Salt Coast, the terraces) so the list can only shrink.
+- One road rule: scenes that read through on their own now use the same "between two places" rule as the Journey, so a one-way scene into another district of the same city no longer stops for a tap.
+- The race and profession tiles wrap long French names on two lines instead of cutting them.
+- The six side quests of 1.204 retuned after an eighty-run standing probe: the Compact no longer reaches Sworn a chapter early, the Penitents lose less and gain more, the Dominion takes a lighter blow from the scaffold and the salvage, and selling the salvage to the wreck-wrights pleases the Tide-Kin.
+
+### Fixed
+- French typography across all game data: 274 strings in 17 files gained the no-break space before ; : ! ? or inside « », and one golem line stopped gendering the player. A lint over every French string in the data and the story now runs in CI, with an empty allowlist that may only shrink.
+
+### Internal
+- Scene-to-landmark lookups are a map, not a scan. Save fixtures for 1.198 and 1.204 load, round-trip and migrate in tests.
+
+## [1.209.0+244]
+
+### Added
+- The Journey in Edit Mode: a Journey tab beside the Story tab shows the edited scene's map (the room, the streets, the land, the world) with no fog and every place known.
+- The world chart in Edit Mode. A second map button in the header (beside the story's scene graph) opens the chart whole: no fog, every place with its name, every chapter's road in its colour, the party's mark where the edited scene stands; the looks, the calques, the sphere and the weather as in play. In play the chart is as before, under the fog of the uncharted.
+
+## [1.208.0+243]
+
+### Added
+- The sky touches the play. Each day's weather over the party (the same all day, so a fight or a road reads the same whenever it is looked at) changes a fight: rain dampens Fire (−30%) and feeds Water and Electricity (+20%); snow smothers Fire (−25%) and sharpens Ice (+25%); fog damps Fire a little and hides what the enemy is about to do (the party reads its telegraphs as if its Perception were five lower); the dry dust feeds Fire and Wind (+15%) and does less to Water, and the ash and embers feed Fire (+20%) and Wind; dust, ash and snow hide the enemy's intent too. It applies to the party's blows and spells and to the enemy's own moves alike. The fight log and a chip above it say so, and the Journey's weather chip carries the day's tags (Fire −30%). Bad weather makes the road likelier to hold something: snow ×1.4, fog ×1.3, dust ×1.3, rain ×1.25, ash ×1.2, cloud ×1.05.
+- The Layers sheet can keep the weather to the world zoom, for a clear land view; the choice is kept.
+
+### Changed
+- The clouds are banks, not discs: every cell's cover is laid as a patch and the patches blurred into one field, so the banks take the shape of the sky's field, their edges penned as thin wavering ink lines; the fill is lighter, so the land under a cloud stays readable.
+- The fog of the uncharted follows the land: each land a place was read in shows whole, with a soft torn edge along its border, the roads walked show as cleared corridors, and only a place read outside any land (at sea) keeps a small clearing. Before, every place cleared one disc of the same size, so the known world was a circle round the party.
+- When the streets give way to the chart, the fog and the weather fade in over a third of a second instead of popping.
+
+## [1.207.0+242]
+
+### Added
+- The inside of a building, one level in from the streets. The geography has a sixth level, `building`, under a district or a location, with a kind (den, tavern, inn, house, hall, keep, temple, shop, warehouse, cellar, cave, tower) that lays out its rooms: walls, doors front and back, the furniture of the kind (a bar, tables, a hearth, beds, a cage, a counting-room with its strongbox, a gallery's rail, pillars and a dais, pews and an altar, a counter and shelves, crates and casks, rocks, a stair), and named spots (the bar, the tables, the cage, the gallery, the stairs, the door, the back…). A scene can say where in the building it happens (`spot`), and a way where it is taken (`spot` on the choice).
+- The Journey draws the room when the scene is inside: the party at its spot, each way at the spot it is taken from, a way that leaves the building at the door it leaves by (the back door from the back rooms), and the walk between two rooms through the doorway. A look out (pinch in, or −) shows the streets round the building with the ways kept inside; the + button or a pinch out goes back in; a second look out is the land, as before. Coming back in from the land arrives on the streets first.
+- The Blind Beggar is in the geography as a den in the Lower Town, and the story's first scenes (the tables, the room coming down, the fight, the counting-room, the gallery, the way out the back) stand in it at their spots, so the opening no longer sends the party out of town for a choice made at a card table.
+
+## [1.206.0+241]
+
+### Added
+- The sphere wears the chart. Looked at as a sphere, the world map is now the flat chart wrapped round the ball as a texture, at the chart's own level of detail (woods, hills, rivers, roads, the fine names), where before the sphere was painted coarse on every turn. The skin is rendered once per look and detail in the background; until it is there the sphere paints as before. Each point of the surface is lifted by its height, so the ranges stand off the limb.
+- The sphere is lit: from the upper left, the limb darkening away from the light, a soft highlight toward it, a thin pale air round the edge and the limb drawn. Grey on grey, as the chart is.
+- Shaded relief on the chart, flat and on the sphere: the land lit from the north-west, its slopes toward the light paler and those away darker, from the climate's heights with a fine grain on the slopes. Rendered once per chart as a smooth image, so it stays soft at any zoom.
+- A chart can show the whole world with no fog (ChartFog.none), for a chart that has nothing left to find.
+
+## [1.205.0+240]
+
+### Added
+- The world has a climate. From the chart itself (its coasts, ranges, rivers and lakes, each land's biome and its latitude) every point of the world gets a height, a humidity and a warmth: the land rises from the coast inland and up to the ranges' crests, the fens lie low and the deserts flat; the sea, the rivers and the lakes wet the land near them, the windward slopes catch the rain and the lee of a range lies in its shadow; the latitude and the height set the warmth, the frost is colder and the desert hotter, and the season turns over ninety days with each day a little different. Three new calques on the Layers sheet show it: Height (tinted low to high, with contour lines), Humidity (dry ochre to sodden blue) and Warmth (frost blue to noon red), each with a legend.
+- Weather moves over the world map. Clouds ride the wind (westerlies in the temperate bands, easterlies about the equator, turning with the day) with their shadows on the land, rain slants under the heavy ones where the air is wet, snow falls where it is cold, dust blows off the dry lands and ash off the burnt ones, fog settles on wet cold ground. It moves while the map is watched, flat and on the sphere, on its own layer so the chart is not drawn again for every cloud; a switch on the Layers sheet turns it off.
+- The Journey map draws what the sky brings where the party stands (rain, snow, dust, fog, the burning chapters' ash still), as does the story's page, and a chip on the place map names it: what falls, the warmth, where the wind comes from, how high the ground is. Each town is laid out for its climate: a wet land grows more trees and fields, a dry one scrub and no fields, a cold one firs, a frozen one lies under snow.
+
+## [1.204.0+239]
+
+### Added
+- People: a codex of the people met on the road, in the Play tab beside the bestiary. Forty-six records: the Inquisitor-General and the quartermaster who shares his name, Lysa, Renn and Nadira of Tern Row, the Eldest Wickwarden and the Grand Master, the Hesks, Brother Clement, the Keyholder, the chart-keeper, the sign-painter, the High Warden, the Rat Matriarch, the Herald, the elders and clerks of the villages, every shop keeper, and the six new quest-givers. Each entry gives who they are, their faction and place, what they want, and what passed between you, told from the story's own flags; people appear on first meeting, grouped by chapter, with a badge for those newly met.
+- Six side quests with a stake in the clans, each from someone new: Dorran Quill's unpaid scaffold crew at Saltmouth (the Scaffolders against the Salt Ledger), Imeh's spring-glass stall at the Ashen Quarter (the oni against the Scorched Choir), Brannoc Reedtithe's stolen fever-bark at the Drowned Cloister (the Barkbleeders against the Keyholders), Orsabet Vell's count of the taken in the Reliquary Quarter (the Candlebearers against the Reliquary), Ghrem Stonebrow's hearth-stone at Highhearth (the giants against the Quarrymen), and Nkem Tallow's impounded salvage at the White Anchorage (the Brig-Born against the Admiralty). Each ends in a three-way choice that moves two clans' standing, marks a sub-clan, is remembered by the next chapter's hub, and makes the news.
+- Quests can now move standing: a turn-in choice may carry politics, shown under the choice and applied once, as story choices do. A quest may also opt out of the random detour pool.
+- Relics: a fourth rarity above Rare for eight story-bound pieces (the Grey Shroud, the Saint's Reliquary, the Sovereign's Crown, the Harborwatch Lantern, the Hollow Court Seal, the Phoenix Sigil, the Wisp Ember, the Moon Shard). Every Rare item, every artifact, charm, tome, scroll and material now carries a line or two of lore, shown in the inventory and the item sheet with a translated rarity tag; every item remembers where and in which chapter it came to you.
+
+### Fixed
+- The French of the three older people records speaks in « vous » with French spacing, and a test over npcs.json keeps it so.
+
+## [1.203.0+238]
+
+### Added
+- Cities drawn as cities on the Journey. A city, a town or a village of the geography gets a plan of its own, laid out once from its seed: a wall with gates and towers (none for a village), main streets from each gate to the market square, ring streets and lanes between, houses set along every street with the blocks filled in, a church (a chapel in a village), a keep in a city, a mill by the water or a windmill without, fields and a suburb outside the wall, trees in the yards and woods in the country. The water is drawn through it: a river with bridges where the streets cross it, or the shore with its surf. The story's districts stand on the plan as what they are: a gatehouse, the market, a wharf with its piers and boats, a quay with warehouses, a shipyard with a hull on the slip, a keep in its bailey, a temple, a guild hall, an undercroft, a slum of shacks outside a gate, fields, the tear.
+- The party stands where its district is, the ways into the other districts sit on those districts' buildings, the ways out leave at the map's edge where the roads go, and the ways within the district gather round the party. Walks follow the streets.
+
+## [1.202.0+237]
+
+### Changed
+- The world chart drawn in more detail. The sea has shallows along every coast, water lines off the shore when looked at close, and waves on the open water. The lands have a pale shore band, a dotted edge round each land, a stipple of the biome's grain, and denser terrain: woods in clumps with firs on the cold lands, rounded hills shaded on one side, rocks, snow in drifts, lakes with an outline. Rivers run as a thread at the source widening to the mouth, with a light down the middle, streams that feed them and a small delta where they meet the sea; the ranges have a ridge line and shaded, hachured peaks. Villages are four houses and a field, a clan's seat a keep between two towers on its ring wall, a ruin two columns and a fallen lintel, a bridge arched. Every reached place has houses round it, and a wall round the big towns. A compass rose and a scale bar sit on the flat chart.
+- The chart keeps its names and marks near one size on screen as it is zoomed, instead of growing with it; the small names (ranges, villages, notes) and the finest detail show from the land level on.
+- The street map of a place drawn fuller: cased streets with lanes off them, houses set along the streets with pitched roofs and chimneys, towers on the wall, trees in the yards, a cobbled square with a well; a river with banks and ripples, a shore with surf, a quay and boats; a camp with a palisade, its fire and crates; a ruin with columns, an arch and grass.
+
+## [1.201.2+236]
+
+### Fixed
+- Autoplay (Edit Mode's jump to a scene or a chapter) meets road hazards where the game does: with the world's places known, a walk between two districts of one city is no road for it either. It still charged the party a hazard on Saltmouth's gate-to-wharf walk.
+- The ledger scenes at the end of chapter 4 (6001, 6002) stand at the Hollow Court's steps, where the text has them, not in the Black Reliquary: the flight out of the Court was scored as a journey into the frost (a ration, a whiteout, the chart zooming out) in the middle of a chase. The gate guard's ambush in Saltmouth stands at the gate.
+- The French shop keepers address the player as « vous » like every other line in the game, with no word gendering the player and a no-break space before ; : ! ? as in the rest of the data. A test over shops.json keeps it so.
+- The geography is never served half loaded: after a cold start the places could be known before the biomes, and the first road taken in that window rolled with no hazard on it.
+- A hunt, an alignment hunter's ambush and a road's champion keep what their choice carries: the loss branch, a forced condition, no healing, the lesson, the lucky die's reveal. A hunt with a loss branch is no permadeath.
+- A race or profession whose picture the build does not carry (one added in the Data tab) shows the generic mark on the first screen of a new game instead of breaking it; the tiles read the picture from the record rather than guessing its file name.
+
+## [1.201.1+235]
+
+### Changed
+- Journey: the zoom between the streets and the land no longer jumps. A pinch shrinks the streets under the fingers; when let go the chart opens at that very zoom on the party's place and glides out to the land's zoom. The − button does the same from the closest zoom. Coming back, the streets grow in from small instead of snapping. The + and − buttons on the chart and the sphere glide too.
+
+## [1.201.0+234]
+
+### Changed
+- The game has no Story tab any more: the story is followed on the Journey. The reader stays Edit Mode's, and opens over the game from the Journey's end panel for the ending and New Game+. Jumps that went to the Story tab (entering the game, a restart after death, the map's "back to the story") go to the Journey in play.
+- Journey: the "Here / Land / World" chips and the story-so-far strip under the map are gone. A pinch in on the streets, or the − button over them, looks out at the land; zooming in as far as the chart goes on the party's own place, or tapping it, comes back to the streets. The story so far stays a tap away on the journal button by the stats.
+- Journey: once the camp stands, "Back to the camp" and "Travel on" sit under the map in a place (they lived on the Story tab).
+- Camp: "Places you know", "Expeditions from the camp", the bounty board and the boutiques fold shut from their title row, with a count by it; the fold is kept for the session.
+- Camp, the town: each house card says at a glance whether it is Built, Ready, Locked or short of gold, names its price on the Build button, and the line under the town says where the outlined house would go. Ready houses come first in the tray; the purse and how many houses it can raise sit by the Houses/Additions chips. The size code (3×1) is gone.
+- Character: the Titles card folds, shut by default, its header naming the title worn and the count held. The Clans card is gone (the Clans screen, top right, has it all, and now the climb card too).
+- Inventory in Stitched Ink: the equipment slots are a two-column grid of seam-bordered boxes (gold when filled), a tap on a box chooses, its cross takes the piece off; items carry an Equipped tag and a gold border when worn, a seam otherwise.
+- Level up in Stitched Ink: the level, XP road and points to spend in one panel; the stats grouped as Fighting, Body, Mind, and Fortune & presence, each a seam-bordered row with its value in gold and a +1 Point button.
+
+## [1.200.1+233]
+
+### Changed
+- Journey: a choice made opens the scene reached full screen, with a Continue button under it that brings the map back (the Read button still opens the current scene at any time).
+
+### Fixed
+- The death screen scrolls when the last words run long on a short phone (its column overflowed by 75 px in a CI run).
+- The wind-up fight test read the landing line off the two-line log ticker, which later lines could push out before the test looked; it now waits for the next round and reads the full battle log (the one failure of the CI run after v1.200.0).
+
+## [1.200.0+232]
+
+### The world as a sphere
+
+#### Added
+- **The world as a sphere.** The calques sheet on the Journey's map opens
+  with a switch, *The world as a sphere*: the Land and World levels then
+  lay the chart on a globe looked at straight on. A drag turns it, a
+  pinch (or + and −) brings it close, *back to the party* turns it to
+  where the story stands, and a tap picks a reached place on it. Every
+  layer goes through the same projection: coasts, lands and terrain,
+  rivers, the ranges, the roads and the wake at sea, villages, bridges,
+  giants and the clans' seats, the fog with its clearings, the calques
+  and every name; what lies on the far side is hidden, and a land
+  crossing the limb is pressed against it. The choice is kept.
+
+#### Technical
+- `GlobeView` (chart_globe.dart) is the orthographic look: the chart
+  spans 225 degrees of longitude and 140 of latitude, the rest open sea
+  under parallels and meridians. `ChartMapPainter` takes a `globe` and
+  draws through it; the ground is painted afresh while the sphere turns
+  rather than kept as a picture. `chartGlobeProvider` keeps the pick.
+
+## [1.199.0]
+
+### The Journey on one interface, the world under the fog
+
+#### Changed
+- **The Journey without the scene block.** The scene no longer sits over
+  the map: a **Read** button on the breadcrumb row opens it full screen,
+  and the map has the room. Under the map, three chips look at the
+  **place** (the steps, as before), its **land** or the **world**, and a
+  strip reads the story so far in a line and opens its page.
+- **The world chart, zoomable and scrollable any way.** The Land and World
+  levels put the whole chart under a pinch and a drag, with +, −, back to
+  the party, and a layers button. A reached place tapped on the chart
+  tells its blurb under the map. The world map screen shares the chart.
+- **The chart's three geographies, redrawn from the design.** The Ring
+  (world B) is the default: the lands make a broken ring round an inner
+  sea with the Lantern Isles at its heart. The Two Shores (A) and the
+  River & the Frost (C) remain the player's choice. Every landmark has a
+  spot on each, ashore or at sea as the story has it.
+- **Coasts, terrain, roads.** Coasts break into bays, headlands and islets
+  from fixed seeds; each land carries its biome's terrain (snow-capped
+  ridges, woods and lakes, dunes, marsh, cinder cones, glass); rivers
+  bend; the road walked is a cased road in each chapter's colour that
+  bends with the ground, a sea leg a dashed wake.
+- **The fog, uncharted.** Where the story has not gone the chart shows
+  only a dotted coastline and the lands' names, dim; a land clears when a
+  place in it is read, and brings its terrain, villages and roads with it.
+- **The story so far, as a state.** Its first page, Now, reads the state
+  in one go: where the party stands (the lands above it, the ruler, the
+  biome), what is happening now (where it came from and with whom, the
+  chapter's hint, the last choice), the threads open (the main quest, the
+  followed one, every quest in progress with its goal), who is along and
+  how the clans stand, and the echoes that still matter. Scenes, What
+  changed and News follow as before. The Previously… dialog reads the same
+  page.
+
+#### Added
+- **The Ring's world.** Six named ranges (the Rime Teeth, the Scaffold
+  Crags, the Firebacks, the Vigil Ridge, the Alster Downs, the Lantern
+  Cliffs); twenty-four villages and works from the story (Hedgefold and
+  Millbrook in the Vale, Tallow Street, the Veiled Camp, the salt pans,
+  the Wreckers' Road, the slag kilns, the Reckoning Wall, the Dawn Wall,
+  the hot springs, the Reed Gate and the Bell Road, the Rope Stair and the
+  false lamps, the Ossuary Galleries, the milestones, the Ember Run, the
+  Frost Quarry, the Glass Strand, the Lantern Train, the salt marsh, the
+  cliff lamps, the Admiralty yards, Lowtide); five bridges, two stone
+  giants; every clan's seat ringed in its colour with a pennant (the
+  Lantern Throne, the Spire, Anvil Gate, the Heron's Wake, the Brig, the
+  Vigil's Wall, the Exorcists' Gate, Highhearth, Akagiri, the Kindly Hill,
+  Lowtide, the Open Hand's ruined hall); twelve later-quest places and the
+  grey trade and quest roads to them. Each shows once its land is reached.
+- **Calques.** The layers button opens a sheet of calques, one at a time
+  and kept: the clans' zones of influence (each land washed in its clan's
+  colour, stripes where two contest it, a legend), the player's standing
+  (hunted red to sworn gold), the lands in their colours, the road by
+  chapter, and shops and camps. Influence shows only on lands reached, so
+  the calque cannot spoil the road ahead.
+- **Drawn towns.** Each district of geography.json names a glyph (bridge,
+  keep, quay, cellar, gate, market, wharf, yard, temple, void, hall,
+  field, slum), drawn above the way into it on the Journey map; a place
+  names its water, a river through it or a shore beside it, and the map
+  draws it.
+
+#### Technical
+- `lib/data/chart_worlds.dart` is generated from the design canvas's
+  world data (page W, Journey & the map) and checked in as the source of
+  truth: places, lands, rivers, zones with their biome and influence,
+  ranges, features and trade roads per world.
+  `ChartRelief` (chart_relief.dart) works out each geography's coasts,
+  zones, rivers, islets and terrain once; `ChartMapPainter` records the
+  static layers in a picture per look. `storySoFarProvider`
+  (story_state.dart) composes the state. `chartCalqueProvider` keeps the
+  calque. The `world_map_shape_*` names are now The Two Shores, The Ring,
+  The River & the Frost.
+## [1.198.1+230]
+
+### Fixed
+- **Journey map: the city stays on screen.** The map only zooms out to the
+  world chart when the party leaves one location for another (Alster for
+  the Waste, the camp for a village). A step between two districts of the
+  same city (the Blind Beggar to the Stone Bridge, the Landward Gate to
+  the Wharf) is a walk through its streets: the party walks the street on
+  the city's plan, and the plan and its look stay the same from district
+  to district.
+- **The road's rules follow suit.** A walk between districts of one city
+  costs no day or ration and holds no road event. Only a journey between
+  locations does.
+
+## [1.198.0+229]
+
+Three pieces, merged over main's v1.196 (the Throne) and v1.197 (geography).
+
+### Clans in the story
+
+#### Added
+- **Clans in the story.** The scales in the top bar, until now only in Edit
+  Mode, now open the clans in the story too, titled "Clans", with a dot
+  while news from the coast waits unread. It keeps the four tabs, read only:
+  - **Standing:** a card per clan, then the tribes the story has opened, the
+    dead clan once remembered, and the Choir and the Pit. No sliders, no
+    offers, no reset, and a sub-clan's square is not a switch.
+  - **Politics:** the relations table back to chapter 1, but no further than
+    the chapter reached. A cell gives the reason, with nothing to shift. The
+    news from the coast takes the place of Edit Mode's events.
+  - **Evolution:** each clan's standing over the story, and the log.
+  - **Intrigues:** only the plots the story has opened, and only as far as
+    each has gone. The next stage shows locked with its chapter, the
+    premise stays hidden until the reveal, and only the chosen outcome shows.
+
+#### Fixed
+- The relations table fits a 360-px phone. Its cells take the width the
+  screen allows, from 50 to 60 px; before, the sixth clan's column was cut
+  off.
+
+### Shops with a trade, a keeper and a clan
+
+Every shop has a trade, a keeper and a clan.
+
+#### Changed
+- **One trade per shop.** The shelves are re-sliced so no two shops sell
+  the same gear: the Weaponsmith carries blades and spears t1–t5 (tiers 4
+  and 5 were sold nowhere), the Shieldwright is the armour house, the
+  Apothecary sells cures and nothing else, the Tide Cellar what the law
+  forbids, the Hammersmith heavy steel and heavy armour, the Academy every
+  spellbook and the tomes, the Needle House daggers and the quiet books,
+  the Vault one each of the named blades and relics, the Ossuary bone and
+  salt armour, the Last Lantern charms and holy steel, the Chandlery sea
+  gear (the whole Harborwatch set). Potions, charms and tomes may sit on
+  several shelves; gear sits on one. Every die is sold at one shop.
+- **The caravan wanders.** The Wayfarer's Caravan draws six of a
+  twelve-item pool each chapter, always one thing from the chapter ahead,
+  the same draw on every device (`stockPool`, `stockDraw`).
+- **A sign per trade.** Fourteen new shop icons in the item icons' style
+  (an anvil, a shield, a mortar, a cellar door, a needle, a wagon…) in
+  place of the seven chests; the caravan has its own.
+
+#### Added
+- **Keepers.** Each shop names its keeper and what they say, by the
+  standing with the shop's clan: a plain line, a Wary one, a Trusted one
+  and a Sworn one, in both languages. The shop opens on the sign, the
+  keeper and their line.
+- **Every shop has a clan** (but the Bazaar and the caravan, who trade
+  with all): the Compact's forges and shield hall, the Crows' cellars,
+  barrow and Needle House, the Courts' Apothecary, the Dominion's Academy
+  and Chandlery, the Vigil's lantern, the Penitents' Ossuary. The clan
+  pricing of v1.193 now has shops to act on.
+- The Clans screen lists each clan's shops under its standing.
+
+### Race & Profession on one screen
+
+#### Changed
+- **Race & Profession, on one screen.** The ten tall cards give way to two
+  rows of five tiles — a mark, a name and a word (Sturdy, Quick, Bulwark,
+  Caster…) — with the picked one told in full below: its lore, what it
+  changes as green and red chips (zeros left out), and the skill it grants
+  with its icon and its own name (Stoneskin, not Dwarf Stoneskin).
+- **Your character, before you commit.** A preview card adds the two up
+  the way a new game does — HP, damage, armour, gold, the abilities, the
+  two skills — so the numbers are known before the choice is set in stone.
+- **A mark for every people and calling.** Ten pixel icons in the item
+  icons' style: the sewn banner, the painted sigil, the stone-mark, the
+  ash-ink and the tear for the races; sword and shield, staff, daggers,
+  sun-cross and bow for the professions. They show on the picker and on
+  the character sheet (`visualAsset`, `tag`, `tag_fr` on both records).
+
+## [1.197.0+228]
+
+Every scene now happens somewhere. The world has five levels of place
+(continent, country, zone, location and, in the big cities, district),
+and every zone has a land of its own: its biome, fauna, flora, weather
+and hazards. The Journey map shows where you stand, and the road can turn
+against you.
+
+### Added
+- **The world's places** (`geography.json`, 63 places):
+  - **4 continents:** the Old Continent, the Ashen Continent, the Lantern
+    Isles and the Seas.
+  - **9 countries**, each with its ruler where it has one: the Alster
+    Marches, the Waste, the Salt Coast, the Narrow Sea, the Ashen Coast,
+    the Grey Fen, the Frost Reach, the Hollow Cape and the Throne's
+    Demesne.
+  - **12 zones** and **23 locations**.
+  - **15 districts**, in Alster, Saltmouth, the Black Reliquary,
+    Candlehold and the Hollow Shore.
+  - Every scene of the story, every expedition and every enemy has its
+    place. A scene has a `location`, and an enemy lists the `biomes` it
+    lives in.
+- **Ten lands** (`biomes.json`): temperate, desert, arid coast, sea,
+  ashlands, volcanic, sea cliffs, fen, frost and the tear's glass. Each
+  has six animals, six plants, three kinds of weather, two hazards, its
+  colours and a pattern of its own.
+- **Journey map:**
+  - A breadcrumb above the place map shows Continent › Country › Zone ›
+    Place › District.
+  - Under the plan, the land's pattern is painted faintly: dunes, salt
+    flats, waves, ash, terraces, cliffs, reeds, snow, glass or fields.
+  - Tapping a crumb opens **This land** (« Cette contrée »): the place,
+    its zone and land with their fauna, flora, weather and hazards, the
+    country with its ruler, and the continent.
+- **World map:** a landmark's panel shows its breadcrumb and its land.
+- **Codex, Lands** (« Contrées »), after Clans in the Other tab: the
+  continents, countries and zones you have found, with their fauna and
+  flora and the places you reached. Places not yet found show as "…".
+- **Road hazards:** a road through a land with hazards can hold one
+  (a fifth of road events), such as a sandstorm, a whiteout, an ash storm
+  or a racing tide.
+  - **Push on:** everyone loses 10 + 5 × chapter health, never below 1.
+  - **Wait it out:** a day passes and a ration is eaten.
+
+  The Journey map shows the hazard before you set out. The simulator and
+  autoplay push on above half health and wait below.
+- **Local champions:** a champion on the road is one of the land's own
+  creatures when the land has at least two.
+- **Edit Mode:**
+  - The node editor has a Location field.
+  - The Data tab edits `geography.json` and `biomes.json`, a zone's
+    `location` and an enemy's `biomes`.
+
+### Changed
+- **Place names, one per place:**
+  - The Hollow Shore is « la Rive Creuse » on the charts too.
+  - The Ashen Coast is « la Côte de Cendre » everywhere.
+  - On the archipelago chart, the chapter 4 isles are the Grey Fen.
+  - « Au-delà de la déchirure » is written alike in the zone, the quest
+    and chapter 8's title.
+- **French typography:** the chapter titles and landmark blurbs on the
+  world map get their non-breaking spaces, and a few lines no longer
+  assume the player's gender.
+
+## [1.196.0+227]
+
+The game now ends with you on the Lantern Throne. You climb from a House
+to a clan to the Empire, and one faction always wins: the Dominion keeps
+the Throne, one of the five clans takes it, or your own dead clan, the
+Open Hand, comes back. Chapter 8 follows the crowning: you gather the
+force you built and face the last bosses. Chapter 1 is rewritten to the
+new outline, from the casino to the oasis, and chapter 2 moves to
+Saltmouth.
+
+### Added
+- **The climb** (« l'Ascension »), three rungs per faction:
+  1. **House** (« Maison »): befriend one of its sub-clans. You can be
+     friends with Houses of many clans.
+  2. **Clan**: finish its three clan quests. The third makes you its head,
+     and the clan becomes **your claim** (« votre prétention »). You hold
+     one claim at a time: taking a second gives up the first (−15).
+  3. **Throne** (« Trône »): win the war for the Lantern Throne in
+     chapter 7.
+
+  Clans you worked for but did not take can **pledge** to your claim
+  instead and fight for you in chapter 8.
+- **20 House favours**, one for every sub-clan that had no way to befriend
+  it, spread over chapters 2–6. This includes the Open Hand's own House,
+  **the Fishbasket Line** (« la Lignée des Paniers »): the children the
+  Wickwardens smuggled out in fish baskets. You find a cousin who can also
+  draw.
+- **18 clan quests**, three for each of the Dominion, the Grey Vigil, the
+  Cinder Compact, the Mire Courts, the Salt Crows and the Ashen Penitents.
+  The third offers two choices: take the clan, or stand beside it (a
+  pledge). The Open Hand has no quests; its claim is the banner raised on
+  the Hollow Shore.
+- **Chapter 7, "The Lantern Throne"** (« Le Trône de la Lanterne »):
+  - The eve of the war.
+  - **Candlehold**: confirm your claim. Without one, choose a late claim:
+    the Open Hand is always offered; the Dominion needs Known standing; a
+    clan needs a House and Trusted standing.
+  - A way in for each of the seven claims.
+  - **Your rival's last stand**: one of the three claimants of the
+    Dominion's succession, each a new boss: **Aurel Vane** (fire and
+    hexes), **Hesk Morrow** (heavy blows and guard) or **Maud Tallis**
+    (light and lamps).
+  - **The coronation**: seven endings, each with its own consequences for
+    the clans.
+- **Chapter 8, "Beyond the Tear"** (« Au-delà de la déchirure »):
+  - You **muster your Host** (« l'Ost »): the banner (the faction on the
+    Throne), every faction at Trusted or better or that pledged, the Choir
+    or the Pit if you took their sign this life, and your friend Houses.
+  - Each contingent adds its own effects to the last fights, and each
+    House adds a little health and starting block. A typical Host is worth
+    about +10–15 % to the party, a full Host about +30 %.
+  - A council of war and a walk along the lines.
+  - **The Battle of the Hollow Shore** against a new boss, **the
+    Tear-Herald**.
+  - Then the Sovereign beyond the tear. The four endings are now told from
+    the Throne, with an epilogue for each winner.
+- **The Host on screen:**
+  - The Character tab's Clans section shows your climb (House · Clan n/3 ·
+    Throne), or "On the Lantern Throne for …".
+  - A **Your Host** sheet lists who came and why, with each one's effects.
+  - Choice hints name claims, pledges and the Throne.
+- **Seven throne titles**, such as **Lantern-Bearer** (« Porte-Lanterne »).
+- **Edit Mode:** Clans & Politics has a **Throne** tab (rungs, steps,
+  claim, crown, pledge, Host preview, "Muster now"). The node editor has a
+  `politicsIf` field and a `hostFight` switch.
+- **Story data:**
+  - New politics keys: `claim`, `pledge`, `throneWinner` and `muster`.
+  - New conditions: `claim`, `rungAtLeast` and `throneWinner`.
+  - A choice whose `politicsIf` fails is hidden, or shown locked when it
+    has a `lockedText`.
+
+### Changed
+- **Chapter 1, rewritten to the new outline:**
+  - **The casino:** you are at your usual clandestine den when a blast
+    tears the wall away. The Inquisition is in the streets. There are
+    three ways out:
+    - Strip the tables in the rout (alignment −). Each table is one more
+      fight, for gold, with no healing in between.
+    - Fight your way to people in trouble (alignment +). Each person
+      saved is one more fight, with no healing.
+    - Take your stake and leave.
+  - **The first fight:** after your first wound, **your lucky die** rolls
+    loose and strikes your opponent with a spell, and the fight tutorial
+    explains the dice.
+  - **Across the city** to the house, which is being searched.
+  - **The cannonball:** a ball from the flying fleet folds the wall, and
+    Inquisitor-General Aurel Vane drags your sister Lysa out. You can:
+    - **charge** him (very hard; win and she is saved);
+    - **run**, to come back for her later (alignment −);
+    - **kneel and beg** (alignment +).
+
+    The last two, and a lost charge, end in the torture and the escape.
+  - **The trapdoor** in the ruins: the old cloth with the open hands.
+  - **The quay**: one way aboard the flying vessel, by Charisma,
+    Intelligence or Dexterity. A failure costs gold, a bribe or health,
+    and you board anyway.
+  - **The lift-off, the first storm and the crash** in the desert.
+  - **The road to the White Wells oasis**: heat, a stone face in the
+    dunes, and looters.
+- **Chapter 2 moves to Saltmouth** (« Bouche-de-Sel »), the port where the
+  desert meets the sea. You reach it overland from the oasis. The Eel is
+  bought (120 gold) or worked off at the ship-breaker's yard before its
+  repairs.
+- **Chapters:**
+  - Scenes 7400–7799 are chapter 7 and 7800 and later are chapter 8.
+  - The last fights before the Sovereign now use chapter 8's difficulty.
+  - The `the_throne_filled` event is now "The Dominion's succession". It
+    names the Dominion's leader.
+  - `the_last_battle` is now "The Host gathers", in chapter 8.
+- **Boss tuning**, checked with the in-app simulator against the old final
+  boss:
+
+  | Boss | Health | Damage |
+  |---|---|---|
+  | Hesk Morrow | 420 → 390 | 31 → 22 |
+  | Maud Tallis | 385 → 300 | 29 → 23 |
+  | Tear-Herald | 392 → 345 | 31 → 27 |
+  | The Sovereign (now in chapter 8) | — | 31 → 30 |
+
+  - Morrow's damage climbs with rallies and charges, so he lost damage
+    rather than health.
+  - The three claimants now win alike.
+  - The Herald is a little easier than the Sovereign.
+  - With a typical Host, the Sovereign is as hard as before.
+
+### Fixed
+- **No death in story branches:** a story fight with a branch for losing,
+  such as the charge at Vane, never kills under permadeath.
+- **Saves in moved scenes:** a save standing on a removed chapter 1 scene
+  loads at the scene that replaced it.
+- **Journey map:** a place with many scenes gets a taller map, so the
+  marks no longer overlap.
+
 ## [1.195.0+226]
 
 The clans now move with the story. You come from a dead clan, the Open Hand,

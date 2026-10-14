@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/chapter_grid_layout.dart';
+import '../data/factions.dart' show ClanData;
+import '../data/geography.dart' show Geography;
+import '../data/people_codex.dart';
 import '../data/port_helpers.dart';
 import '../data/quest_objectives.dart';
 import '../data/quest_tracking.dart';
@@ -12,8 +15,10 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
+import '../providers/clans_provider.dart' show clanDataProvider;
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart';
 import '../providers/permadeath_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/save_game_provider.dart';
@@ -28,6 +33,8 @@ import '../widgets/player_stats_bar.dart';
 import '../widgets/quest_turn_in.dart';
 import '../widgets/save_slots_sheet.dart';
 import '../widgets/clan_widgets.dart';
+import '../widgets/geography_widgets.dart' show LandsCodex;
+import '../widgets/people_widgets.dart';
 import 'achievements_screen.dart';
 import 'ship_screen.dart';
 import 'camp_screen.dart';
@@ -89,6 +96,19 @@ class PlayScreen extends ConsumerWidget {
     final unseenEnemies = session.unlockedEnemyIds
         .where((id) => !session.seenEnemyIds.contains(id))
         .length;
+    // The people known (v1.204, see people_codex.dart): by the scenes
+    // stood in, the flags held and the shops found.
+    final npcRecords = npcsAsync.value ?? const <String, dynamic>{};
+    final peopleKnown = isEditMode
+        ? npcRecords.keys.toList()
+        : discoveredNpcIds(npcRecords, session,
+            currentChapter: chapterOfNode(playState.currentNodeId),
+            visitedNodeIds: {
+                ...playState.visitedNodeIds,
+                playState.currentNodeId
+              });
+    final unseenPeople =
+        isEditMode ? 0 : unseenNpcCount(peopleKnown, session.seenNpcIds);
 
     final list = ListView(
       padding: const EdgeInsets.all(16),
@@ -336,9 +356,14 @@ class PlayScreen extends ConsumerWidget {
               ),
               const Divider(height: 24),
               _CollapsibleSection(
-                title: tr(ref, 'npcs_section'),
+                title: tr(ref, 'people_section'),
+                badgeCount: unseenPeople,
+                onExpanded: () => ref
+                    .read(playerSessionProvider.notifier)
+                    .markAllSeenInCategory(npcs: true, npcIds: peopleKnown),
                 child: npcsAsync.when(
-                  data: (records) => _NpcList(records: records),
+                  data: (records) =>
+                      _PeopleList(records: records, known: peopleKnown),
                   loading: () =>
                       const Center(child: CircularProgressIndicator()),
                   error: (error, stack) =>
@@ -351,6 +376,13 @@ class PlayScreen extends ConsumerWidget {
               _CollapsibleSection(
                 title: tr(ref, 'patrons_section'),
                 child: const ClansCodex(),
+              ),
+              // The lands reached (v1.197, see geography.dart): their
+              // biomes and the places found in them.
+              const Divider(height: 24),
+              _CollapsibleSection(
+                title: tr(ref, 'geo_lands_section'),
+                child: const LandsCodex(),
               ),
             ],
           ),
@@ -389,31 +421,35 @@ class _TutorialList extends ConsumerWidget {
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         const SizedBox(height: 4),
         for (final topic in TutorialTopic.values)
-          ListTile(
-            key: Key('tutorial_replay_${topic.name}'),
-            contentPadding: EdgeInsets.zero,
-            leading: Icon(topic.icon),
-            title: Text(tr(ref, topic.titleKey)),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  tr(
-                      ref,
-                      settings.hasSeen(topic)
-                          ? 'tut_seen_label'
-                          : 'tut_new_label'),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                      color: settings.hasSeen(topic)
-                          ? theme.colorScheme.onSurfaceVariant
-                          : theme.colorScheme.primary),
-                ),
-                const SizedBox(width: 4),
-                const Icon(Icons.play_arrow_rounded),
-              ],
+          // The reader's tour belongs to Edit Mode (v1.201: the game has
+          // no Story tab).
+          if (topic != TutorialTopic.story ||
+              ref.watch(appModeProvider) == AppMode.edit)
+            ListTile(
+              key: Key('tutorial_replay_${topic.name}'),
+              contentPadding: EdgeInsets.zero,
+              leading: Icon(topic.icon),
+              title: Text(tr(ref, topic.titleKey)),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    tr(
+                        ref,
+                        settings.hasSeen(topic)
+                            ? 'tut_seen_label'
+                            : 'tut_new_label'),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                        color: settings.hasSeen(topic)
+                            ? theme.colorScheme.onSurfaceVariant
+                            : theme.colorScheme.primary),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.play_arrow_rounded),
+                ],
+              ),
+              onTap: () => playTutorial(context, ref, topic),
             ),
-            onTap: () => playTutorial(context, ref, topic),
-          ),
       ],
     );
   }
@@ -864,10 +900,16 @@ class _EnemyList extends ConsumerWidget {
   }
 }
 
-class _NpcList extends ConsumerWidget {
-  const _NpcList({required this.records});
+/// The People codex (v1.204, see people_codex.dart): the people known,
+/// grouped by chapter -- an icon for their kind, their role and place,
+/// their faction as a tag -- then how many are still to meet.
+class _PeopleList extends ConsumerWidget {
+  const _PeopleList({required this.records, required this.known});
 
   final Map<String, dynamic> records;
+
+  /// The ids on show (every record in Edit Mode).
+  final List<String> known;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -876,46 +918,109 @@ class _NpcList extends ConsumerWidget {
     }
     final session = ref.watch(playerSessionProvider);
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
-    final french = ref.watch(appLanguageProvider) == AppLanguage.fr;
-    final chapter = chapterOfNode(ref.watch(storyPlayProvider).currentNodeId);
-    // In play, only the people the story has brought the player to.
-    final keys = [
-      for (final id in records.keys)
-        if (isEditMode ||
-            npcDiscovered(
-                id, records[id] as Map<String, dynamic>, session, chapter))
-          id,
-    ]..sort();
-    if (keys.isEmpty) {
-      return Text(tr(ref, 'npcs_none_met'),
-          style: Theme.of(context).textTheme.bodyMedium);
-    }
+    final language = ref.watch(appLanguageProvider);
+    final french = language == AppLanguage.fr;
+    final geography = ref.watch(geographyProvider);
+    final clanData = ref.watch(clanDataProvider);
+    final theme = Theme.of(context);
+    final muted = theme.colorScheme.onSurfaceVariant;
+    final groups = npcsByChapter(known, records);
+    final unmet = records.length - known.length;
 
     return Column(
-      children: keys.map((npcId) {
-        final npc = records[npcId] as Map<String, dynamic>;
-        final npcName = npc['npcName']?.toString() ?? npcId;
-        final talkedTo = session.talkedToNpcIds.contains(npcId);
-        final description =
-            french && (npc['description_fr']?.toString().isNotEmpty ?? false)
-                ? npc['description_fr'].toString()
-                : npc['description']?.toString() ?? '';
-        return Card(
-          child: ListTile(
-            leading: Icon(talkedTo ? Icons.check_circle : Icons.person_outline),
-            title: Text(npcName),
-            subtitle: Text(description),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => NpcDetailScreen(npcId: npcId, npc: npc),
-                ),
-              );
-            },
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (known.isEmpty)
+          Text(tr(ref, 'npcs_none_met'), style: theme.textTheme.bodyMedium),
+        for (final group in groups.entries) ...[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 8, 4, 4),
+            child: Text(
+              '${tr(ref, 'chapter_label')} ${group.key}',
+              key: Key('people_chapter_${group.key}'),
+              style: theme.textTheme.labelLarge?.copyWith(color: muted),
+            ),
           ),
-        );
-      }).toList(),
+          for (final npcId in group.value)
+            _personTile(
+                context, ref, npcId, records[npcId] as Map<String, dynamic>,
+                session: session,
+                language: language,
+                french: french,
+                geography: geography,
+                clanData: clanData),
+        ],
+        if (!isEditMode && unmet > 0)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(
+              tr(ref, 'people_unmet_count').replaceAll('{n}', '$unmet'),
+              style: theme.textTheme.bodySmall?.copyWith(color: muted),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _personTile(
+    BuildContext context,
+    WidgetRef ref,
+    String npcId,
+    Map<String, dynamic> npc, {
+    required PlayerSession session,
+    required AppLanguage language,
+    required bool french,
+    required Geography geography,
+    required ClanData clanData,
+  }) {
+    final theme = Theme.of(context);
+    final npcName = npc['npcName']?.toString() ?? npcId;
+    final talkedTo = session.talkedToNpcIds.contains(npcId);
+    final fresh = !session.seenNpcIds.contains(npcId);
+    final role = npcText(npc, 'role', french);
+    final place =
+        npcPlaceName(geography, npc['placeId']?.toString() ?? '', language);
+    final line = [
+      if (role.isNotEmpty) role,
+      if (place.isNotEmpty) place,
+    ].join(' · ');
+    final subtitle =
+        line.isNotEmpty ? line : npcText(npc, 'description', french);
+    return Card(
+      child: ListTile(
+        key: Key('person_$npcId'),
+        leading: Icon(npcKindIcon(npc['kind']?.toString()),
+            color: talkedTo ? theme.colorScheme.primary : null),
+        title: Row(
+          children: [
+            Expanded(child: Text(npcName)),
+            NpcFactionTag(
+                data: clanData,
+                factionId: npc['faction']?.toString() ?? '',
+                language: language),
+          ],
+        ),
+        subtitle: Text(subtitle, maxLines: 2, overflow: TextOverflow.ellipsis),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Newly met: a red dot until the section has been opened.
+            if (fresh)
+              Icon(Icons.circle,
+                  key: Key('person_new_$npcId'),
+                  size: 10,
+                  color: theme.colorScheme.error),
+            const Icon(Icons.chevron_right),
+          ],
+        ),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => NpcDetailScreen(npcId: npcId, npc: npc),
+            ),
+          );
+        },
+      ),
     );
   }
 }

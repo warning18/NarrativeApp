@@ -51,6 +51,28 @@ const double wayfarerPerkChance = 0.75;
 const int offerStandingGain = 6;
 const int majorOfferStandingGain = 10;
 
+/// How much likelier the clan of the character's own people is to take the
+/// home seat while their heritage branch still has a skill to offer.
+const double homeHeritageWeight = 3.0;
+
+/// The weight of a clan that has only a fusion or an ascension left to
+/// bring, once its branches are grown.
+const double homeAccordWeight = 1.5;
+
+/// Odds a clan with a fusion or an ascension to offer brings one rather
+/// than a skill of its branches.
+const double accordPickChance = 0.5;
+
+/// Standing a fusion needs with *both* clans (Trusted), and an ascension
+/// with its one (Friend, a step easier since one clan alone is asked); v1.233.
+const StandingTier fusionMinTier = StandingTier.trusted;
+const StandingTier ascensionMinTier = StandingTier.friend;
+
+/// Standing a sub-clan's skill and a secret need with the clan that offers
+/// them (v1.234).
+const StandingTier subclanMinTier = StandingTier.known;
+const StandingTier secretMinTier = StandingTier.known;
+
 /// The weight of each kind of gift a clan may bring, among those it has.
 const Map<GiftKind, int> giftKindWeights = {
   GiftKind.skill: 35,
@@ -198,14 +220,23 @@ class OfferGift {
     required this.kind,
     required this.id,
     this.rarity = SignRarity.common,
+    this.partnerId = '',
   });
 
   final GiftKind kind;
   final String id;
   final SignRarity rarity;
 
-  Map<String, dynamic> toJson() =>
-      {'kind': kind.name, 'id': id, 'rarity': rarity.name};
+  /// A fusion skill's second clan (v1.232): the gift is offered by two
+  /// clans together, and taking it raises both. Empty for any other gift.
+  final String partnerId;
+
+  Map<String, dynamic> toJson() => {
+        'kind': kind.name,
+        'id': id,
+        'rarity': rarity.name,
+        if (partnerId.isNotEmpty) 'partner': partnerId,
+      };
 
   static OfferGift? tryParse(Object? raw) {
     if (raw is! Map) return null;
@@ -219,6 +250,7 @@ class OfferGift {
               .where((r) => r.name == raw['rarity']?.toString())
               .firstOrNull ??
           SignRarity.common,
+      partnerId: raw['partner']?.toString() ?? '',
     );
   }
 
@@ -227,10 +259,11 @@ class OfferGift {
       other is OfferGift &&
       other.kind == kind &&
       other.id == id &&
-      other.rarity == rarity;
+      other.rarity == rarity &&
+      other.partnerId == partnerId;
 
   @override
-  int get hashCode => Object.hash(kind, id, rarity);
+  int get hashCode => Object.hash(kind, id, rarity, partnerId);
 }
 
 /// One suitor: the faction ([wayfarerId] for the Wayfarer), the sub-clan
@@ -467,8 +500,8 @@ bool _leanOffersReputation(int lean, Map<String, dynamic> skill) =>
 /// way, the reputation skills of that side the character's alignment
 /// allows. In the branches' order, no repeats.
 List<String> offerableSkillsFor(String factionId, OfferContext c,
-    {int tierBonus = 0}) {
-  final cap = min(3, skillIndexCapFor(c.tierOf(factionId)) + tierBonus);
+    {int tierBonus = 0, int deepest = 3}) {
+  final cap = min(deepest, skillIndexCapFor(c.tierOf(factionId)) + tierBonus);
   final out = <String>[];
   final faction = c.data.faction(factionId);
   for (final branch in sponsoredBranchesFor(factionId, c)) {
@@ -505,6 +538,120 @@ List<String> offerableSkillsFor(String factionId, OfferContext c,
   return out;
 }
 
+/// A fusion or an ascension one clan can put on the table (v1.232):
+/// [skillId] is the new skill; [partnerId] the second clan of a fusion,
+/// empty for an ascension.
+class AccordOffer {
+  const AccordOffer(this.skillId, [this.partnerId = '']);
+
+  final String skillId;
+  final String partnerId;
+}
+
+/// The fusions and ascensions [factionId] can offer now.
+/// - **Fusion** (`fusionOf`: two skills): both parents known, [factionId]
+///   behind one of them and another open clan behind the other, the
+///   character at [fusionMinTier] with both (the partner is the one they
+///   stand best with). Offered by either clan, the card shows both.
+/// - **Ascension** (`ascendsSkillID`): the skill it raises is known, the
+///   character at [ascensionMinTier] with [factionId], which sponsors it.
+/// In the skills' file order, no repeats.
+List<AccordOffer> accordsFor(String factionId, OfferContext c) =>
+    (_accordCache[c] ??= {})
+        .putIfAbsent(factionId, () => _accordsFor(factionId, c));
+
+/// The cards of each context drawn so far (a context is built per draw and
+/// never changes, so each clan's cards are worked out once).
+final Expando<Map<String, List<AccordOffer>>> _accordCache = Expando();
+
+List<AccordOffer> _accordsFor(String factionId, OfferContext c) {
+  final out = <AccordOffer>[];
+  final tier = c.tierOf(factionId);
+  List<String> sponsors(String skillId) => sponsorsOfSkill(skillId,
+      data: c.data,
+      skillTrees: c.skillTrees,
+      raceId: c.raceId,
+      professionId: c.professionId,
+      skills: c.skills);
+  for (final entry in c.skills.entries) {
+    final skill = entry.value;
+    if (skill is! Map<String, dynamic> ||
+        c.knownSkillIds.contains(entry.key) ||
+        skill['enemyOnly'] == true ||
+        !skillFitsCharacter(skill,
+            raceId: c.raceId, professionId: c.professionId)) {
+      continue;
+    }
+    final parents = [
+      for (final p in (skill['fusionOf'] as List?) ?? const []) p.toString(),
+    ];
+    if (parents.length == 2) {
+      if (!parents.every(c.knownSkillIds.contains) ||
+          !tier.isAtLeast(fusionMinTier)) {
+        continue;
+      }
+      // The clan may stand behind either parent (or both): the partner is
+      // whoever stands behind the other one.
+      final partners = <String>{
+        for (var i = 0; i < 2; i++)
+          if (sponsors(parents[i]).contains(factionId))
+            for (final id in sponsors(parents[1 - i]))
+              if (id != factionId &&
+                  c.data.faction(id) != null &&
+                  c.data.faction(id)!.isClan &&
+                  suitorOpen(c.data.faction(id)!, c) &&
+                  c.tierOf(id).isAtLeast(fusionMinTier))
+                id,
+      }.toList()
+        ..sort((a, b) => c.politics
+            .standingOf(b, c.data)
+            .compareTo(c.politics.standingOf(a, c.data)));
+      if (partners.isNotEmpty) out.add(AccordOffer(entry.key, partners.first));
+      continue;
+    }
+    // A sub-clan's skill (v1.234): its clan offers it, in its voice, once
+    // the sub-clan is the character's friend.
+    final subclan = c.data.subclan(skill['subclanId']?.toString() ?? '');
+    if (subclan != null) {
+      if (subclan.clanId == factionId &&
+          c.politics.markOf(subclan.id) == SubclanMark.friend &&
+          tier.isAtLeast(subclanMinTier) &&
+          _prerequisiteKnown(skill, c)) {
+        out.add(AccordOffer(entry.key));
+      }
+      continue;
+    }
+    // A secret (v1.234): hidden until the story flags are held, then taught
+    // by its clan.
+    final secretFlags = [
+      for (final f in (skill['hiddenFlags'] as List?) ?? const []) f.toString(),
+    ];
+    if (secretFlags.isNotEmpty) {
+      final held = c.flags.toSet();
+      if (skill['hiddenClan']?.toString() == factionId &&
+          secretFlags.every(held.contains) &&
+          tier.isAtLeast(secretMinTier) &&
+          _prerequisiteKnown(skill, c)) {
+        out.add(AccordOffer(entry.key));
+      }
+      continue;
+    }
+    final base = skill['ascendsSkillID']?.toString() ?? '';
+    if (base.isNotEmpty &&
+        c.knownSkillIds.contains(base) &&
+        tier.isAtLeast(ascensionMinTier) &&
+        sponsors(base).contains(factionId)) {
+      out.add(AccordOffer(entry.key));
+    }
+  }
+  return out;
+}
+
+bool _prerequisiteKnown(Map<String, dynamic> skill, OfferContext c) {
+  final required = skill['requiredSkillID']?.toString() ?? '';
+  return required.isEmpty || c.knownSkillIds.contains(required);
+}
+
 /// The factions sponsoring [skillId] for this character: what the skill
 /// screen names under a skill not yet learned ("Offered by..."). A
 /// reputation skill ([skills]' record says so) is the leaning clans'.
@@ -516,13 +663,40 @@ List<String> sponsorsOfSkill(
   required String professionId,
   Map<String, dynamic> skills = const {},
 }) {
+  final skill = skills[skillId];
+  // A sub-clan's skill is its clan's (v1.234); a secret has no sponsor to
+  // show until it is found.
+  if (skill is Map<String, dynamic>) {
+    final sub = data.subclan(skill['subclanId']?.toString() ?? '');
+    if (sub != null) return [sub.clanId];
+    if (skill['hiddenFlags'] is List) return const [];
+  }
+  // A fusion is offered by the clans behind its two parents, an ascension
+  // by the clans behind the skill it raises (v1.232).
+  if (skill is Map<String, dynamic>) {
+    final parents = <String>[
+      ...?(skill['fusionOf'] as List?)?.map((e) => e.toString()),
+      if ((skill['ascendsSkillID']?.toString() ?? '').isNotEmpty)
+        skill['ascendsSkillID'].toString(),
+    ];
+    if (parents.isNotEmpty) {
+      return {
+        for (final parent in parents)
+          ...sponsorsOfSkill(parent,
+              data: data,
+              skillTrees: skillTrees,
+              raceId: raceId,
+              professionId: professionId,
+              skills: skills),
+      }.toList();
+    }
+  }
   final branches =
       skillBranchesFor(skillTrees, raceId: raceId, professionId: professionId);
   final onBranches = {
     for (final b in branches)
       if (b.skillIds.contains(skillId)) b.id,
   };
-  final skill = skills[skillId];
   return [
     for (final f in data.factions.values)
       if (f.sponsors.any(onBranches.contains) ||
@@ -595,10 +769,12 @@ Map<GiftKind, int> availableGiftKinds(String factionId, OfferContext c,
     return {if (hasSign) GiftKind.sign: 1};
   }
   final bonus = better ? 1 : 0;
+  final skillOptions = offerableSkillsFor(factionId, c, tierBonus: bonus);
+  final accords = accordsFor(factionId, c);
   return {
     if (swornBoonDue(factionId, c)) GiftKind.sworn: 1,
-    if (offerableSkillsFor(factionId, c, tierBonus: bonus).isNotEmpty)
-      GiftKind.skill: offerableSkillsFor(factionId, c, tierBonus: bonus).length,
+    if (skillOptions.isNotEmpty || accords.isNotEmpty)
+      GiftKind.skill: skillOptions.length + accords.length,
     if (hasSign) GiftKind.sign: 1,
     if (offerableObjectsFor(factionId, c, tierBonus: bonus).isNotEmpty)
       GiftKind.object: 1,
@@ -616,7 +792,7 @@ bool suitorOpen(Faction faction, OfferContext c) =>
         alignment: c.alignment,
         patronsThisLife: c.patronsThisLife,
         patrons: c.patrons) &&
-    c.tierOf(faction.id).isAtLeast(StandingTier.wary);
+    c.tierOf(faction.id).isAtLeast(StandingTier.resented);
 
 /// Every faction that could come now and has something to give, in the
 /// file's order.
@@ -659,12 +835,12 @@ SignRarity rarityOfSkill(Map<String, dynamic>? skill) =>
     };
 
 /// [item]'s rarity on the signs' scale: Common, Uncommon reads Rare, Rare
-/// reads Epic.
+/// reads Epic, a Relic (v1.204) heroic.
 SignRarity rarityOfItem(Map<String, dynamic>? item) =>
     switch (item?['rarity']?.toString()) {
       'Uncommon' => SignRarity.rare,
       'Rare' => SignRarity.epic,
-      'Epic' || 'Legendary' => SignRarity.heroic,
+      'Relic' || 'Epic' || 'Legendary' => SignRarity.heroic,
       _ => SignRarity.common,
     };
 
@@ -679,6 +855,16 @@ T _weighted<T>(Map<T, num> weights, Random random) {
     if (roll < 0) return e.key;
   }
   return weights.keys.last;
+}
+
+OfferGift _accordGift(AccordOffer accord, OfferContext c, bool better) {
+  final rarity =
+      rarityOfSkill(c.skills[accord.skillId] as Map<String, dynamic>?);
+  return OfferGift(
+      kind: GiftKind.skill,
+      id: accord.skillId,
+      rarity: better ? _better(rarity) : rarity,
+      partnerId: accord.partnerId);
 }
 
 /// The gift [factionId] brings (see [GiftKind]), or null when it has
@@ -707,6 +893,11 @@ OfferGift? drawGift(String factionId, OfferContext c, Random random,
           kind: GiftKind.sworn, id: factionId, rarity: SignRarity.heroic);
     case GiftKind.skill:
       final options = offerableSkillsFor(factionId, c, tierBonus: bonus);
+      final accords = accordsFor(factionId, c);
+      if (accords.isNotEmpty &&
+          (options.isEmpty || random.nextDouble() < accordPickChance)) {
+        return _accordGift(accords[random.nextInt(accords.length)], c, better);
+      }
       final id = options[random.nextInt(options.length)];
       final rarity = rarityOfSkill(c.skills[id] as Map<String, dynamic>?);
       return OfferGift(
@@ -771,23 +962,103 @@ OfferGift? drawWayfarerGift(OfferContext c, Random random) {
       kind: GiftKind.object, id: objects[random.nextInt(objects.length)]);
 }
 
+/// The skills [factionId] can offer from the branches it sponsors for the
+/// character (not the reputation skills a clan's lean adds), and whether
+/// one of those branches is the character's heritage. The home seat reaches
+/// one tier deeper than standing allows, the fourth skill of a branch
+/// still waiting for Sworn.
+({List<String> skills, bool heritage}) _homeSkillsOf(
+    String factionId, OfferContext c) {
+  final deepest = c.tierOf(factionId).isAtLeast(StandingTier.sworn) ? 3 : 2;
+  final offerable =
+      offerableSkillsFor(factionId, c, tierBonus: 1, deepest: deepest);
+  if (offerable.isEmpty) return (skills: const [], heritage: false);
+  final skills = <String>[];
+  var heritage = false;
+  for (final branch in sponsoredBranchesFor(factionId, c)) {
+    for (final id in branch.skillIds) {
+      if (offerable.contains(id) && !skills.contains(id)) {
+        skills.add(id);
+        if (branch.heritage) heritage = true;
+      }
+    }
+  }
+  return (skills: skills, heritage: heritage);
+}
+
+/// The clans that can be the character's home seat now (v1.231): a clan,
+/// open as a suitor, that sponsors a branch the character grows on and has
+/// a skill on it to offer, or (v1.232) a fusion or an ascension. Mapped to
+/// the weight each has in the draw: [homeHeritageWeight] for the clan of
+/// their own people while the heritage branch has a skill left, 1 for the
+/// class's clans, [homeAccordWeight] for one with only a fusion or an
+/// ascension left.
+Map<String, double> homeClansFor(OfferContext c) {
+  final out = <String, double>{};
+  for (final f in c.data.factions.values) {
+    if (!f.isClan || !suitorOpen(f, c)) continue;
+    final home = _homeSkillsOf(f.id, c);
+    if (home.skills.isNotEmpty) {
+      out[f.id] = home.heritage ? homeHeritageWeight : 1.0;
+    } else if (accordsFor(f.id, c).isNotEmpty) {
+      out[f.id] = homeAccordWeight;
+    }
+  }
+  return out;
+}
+
 /// The suitor [factionId] sends: a sub-clan of theirs at random voices a
 /// clan's gift (none for the others), with the gift drawn by [drawGift].
 Suitor? drawSuitor(String factionId, OfferContext c, Random random,
-    {bool better = false}) {
+    {bool better = false, OfferGift? gift}) {
   final faction = c.data.faction(factionId);
   if (faction == null) return null;
-  final gift = drawGift(factionId, c, random, better: better);
+  gift ??= drawGift(factionId, c, random, better: better);
   if (gift == null) return null;
   final voices = faction.isClan ? c.data.subclansOf(factionId) : const [];
   final greetings = max(1, faction.patron.greetings.length);
+  // A sub-clan's skill is voiced by that sub-clan.
+  final giftSkill = c.skills[gift.id];
+  final owner = gift.kind == GiftKind.skill && giftSkill is Map<String, dynamic>
+      ? giftSkill['subclanId']?.toString() ?? ''
+      : '';
   return Suitor(
     factionId: factionId,
-    subclanId: voices.isEmpty ? '' : voices[random.nextInt(voices.length)].id,
+    subclanId: owner.isNotEmpty && voices.any((v) => v.id == owner)
+        ? owner
+        : voices.isEmpty
+            ? ''
+            : voices[random.nextInt(voices.length)].id,
     gift: gift,
     firstMeeting: !c.patronsMet.contains(factionId),
     greetingIndex: random.nextInt(greetings),
   );
+}
+
+/// The home seat (v1.231): a clan that sponsors a branch the character
+/// grows on, drawn at [homeClansFor]'s weights, bringing a skill from that
+/// branch, so every offer has a skill to take while their tree has one
+/// left. Null when no clan has one. A sworn boon due still takes the seat
+/// (it comes once).
+Suitor? drawHomeSuitor(OfferContext c, Random random,
+    {Set<String> exclude = const {}}) {
+  final clans = homeClansFor(c)..removeWhere((id, _) => exclude.contains(id));
+  if (clans.isEmpty) return null;
+  final id = _weighted(clans, random);
+  if (swornBoonDue(id, c)) return drawSuitor(id, c, random);
+  final skills = _homeSkillsOf(id, c).skills;
+  final accords = accordsFor(id, c);
+  if (accords.isNotEmpty &&
+      (skills.isEmpty || random.nextDouble() < accordPickChance)) {
+    return drawSuitor(id, c, random,
+        gift: _accordGift(accords[random.nextInt(accords.length)], c, false));
+  }
+  final skill = skills[random.nextInt(skills.length)];
+  return drawSuitor(id, c, random,
+      gift: OfferGift(
+          kind: GiftKind.skill,
+          id: skill,
+          rarity: rarityOfSkill(c.skills[skill] as Map<String, dynamic>?)));
 }
 
 /// Draws the offer for [ticket]: up to [offerSuitorCount] suitors from
@@ -798,6 +1069,9 @@ Suitor? drawSuitor(String factionId, OfferContext c, Random random,
 /// - **Guaranteed places:** the ticket's faction (a quest's clan, one
 ///   rarity better), and at a chapter's end the Choir or the Pit when the
 ///   alignment leans to them.
+/// - **The home seat:** a clan sponsoring a branch of the character's tree
+///   brings a skill from it ([drawHomeSuitor]), unless a guaranteed place
+///   already does, so growth never depends on luck of the draw.
 /// - **The other places:** one leans to the factions the character stands
 ///   well with ([standingWeightFor]); the rest are drawn evenly (a tribe
 ///   at [tribeOfferWeight]).
@@ -831,6 +1105,16 @@ ClanOffer? drawOffer(OfferTicket ticket, OfferContext c, Random random) {
     if (leaning != null && !taken.contains(leaning)) {
       take(drawSuitor(leaning, c, random));
     }
+  }
+
+  // The home seat: a skill of the character's own tree.
+  final hasHomeSkill = suitors.any((s) =>
+      s.gift.kind == GiftKind.skill &&
+      (s.gift.partnerId.isNotEmpty ||
+          _homeSkillsOf(s.factionId, c).skills.contains(s.gift.id) ||
+          accordsFor(s.factionId, c).any((a) => a.skillId == s.gift.id)));
+  if (!hasHomeSkill && suitors.length < offerSuitorCount) {
+    take(drawHomeSuitor(c, random, exclude: taken));
   }
 
   List<String> pool() => [
@@ -960,8 +1244,18 @@ Map<String, double> suitorPreview(
         ? standingPreview(politics, 'dominion', ownHandBannerCost, data: data)
         : const {};
   }
-  return standingPreview(politics, suitor.factionId, standingGainFor(ticket),
+  final lead = standingPreview(
+      politics, suitor.factionId, standingGainFor(ticket),
       data: data);
+  final partner = suitor.gift.partnerId;
+  if (partner.isEmpty || data.faction(partner) == null) return lead;
+  // A fusion raises its second clan too, by half.
+  final second = standingPreview(politics, partner, standingGainFor(ticket) / 2,
+      data: data);
+  return {
+    for (final id in {...lead.keys, ...second.keys})
+      id: (lead[id] ?? 0) + (second[id] ?? 0),
+  };
 }
 
 /// What taking [suitor] does to the politics: the standing gain with its
@@ -999,6 +1293,13 @@ Map<String, double> suitorPreview(
       politics, suitor.factionId, standingGainFor(ticket), cause,
       data: data, chapter: chapter, day: day);
   var next = standing.state;
+  final partner = suitor.gift.partnerId;
+  if (partner.isNotEmpty && data.faction(partner) != null) {
+    next = applyStandingChange(
+            next, partner, standingGainFor(ticket) / 2, cause,
+            data: data, chapter: chapter, day: day)
+        .state;
+  }
   if (suitor.subclanId.isNotEmpty) {
     next = setSubclanMark(next, suitor.subclanId, SubclanMark.friend, cause,
             data: data, chapter: chapter, day: day)
@@ -1012,9 +1313,12 @@ Map<String, double> suitorPreview(
 /// What [politics] says of [held] titles: every tier title whose tier the
 /// character has reached with its faction (kept once earned), and the
 /// mark titles (`mark:<mark>:<sub-clan>`, "the Marked") held only while
-/// the mark stands; with [flags], the Open Hand's remembrance titles
-/// (v1.195, see remembranceTitlesFor), kept once earned. Returns the
-/// titles held after, and those [gained] and [lost].
+/// the mark stands, and the `while:<tier>` titles (v1.235) held only while
+/// the standing is at that tier or beyond it; with [flags], the Open Hand's remembrance titles
+/// (v1.195, see remembranceTitlesFor), kept once earned; and the
+/// coronation's (`throne:<faction>`, v1.196) once that faction is on the
+/// Throne, kept. Returns the titles held after, and those [gained] and
+/// [lost].
 ({List<String> held, List<String> gained, List<String> lost}) titlesEarned(
   List<String> held,
   PoliticsState politics,
@@ -1041,6 +1345,26 @@ Map<String, double> suitorPreview(
         next.add(title.id);
         gained.add(title.id);
       }
+    } else if (source.startsWith('while:')) {
+      // Held only while the standing lasts (v1.235): a good title while the
+      // tier is reached or better, a bad one while it is reached or worse;
+      // lost again, gained again, with the standing.
+      final tier = standingTierNamed(source.substring('while:'.length));
+      if (tier == null ||
+          title.factionId.isEmpty ||
+          data.faction(title.factionId) == null) {
+        continue;
+      }
+      final now = politics.tierOf(title.factionId, data);
+      final has = tier.index > StandingTier.unknown.index
+          ? now.isAtLeast(tier)
+          : now.index <= tier.index;
+      if (has && !next.contains(title.id)) {
+        next.add(title.id);
+        gained.add(title.id);
+      } else if (!has && next.remove(title.id)) {
+        lost.add(title.id);
+      }
     } else if (source.startsWith('mark:')) {
       final parts = source.split(':');
       if (parts.length != 3) continue;
@@ -1052,6 +1376,15 @@ Map<String, double> suitorPreview(
         gained.add(title.id);
       } else if (!has && next.remove(title.id)) {
         lost.add(title.id);
+      }
+    } else if (source.startsWith('throne:')) {
+      // The coronation's (v1.196, see throne.dart), kept once earned.
+      final winner = source.substring('throne:'.length).trim();
+      if (winner.isNotEmpty &&
+          politics.throneWinner == winner &&
+          !next.contains(title.id)) {
+        next.add(title.id);
+        gained.add(title.id);
       }
     }
   }

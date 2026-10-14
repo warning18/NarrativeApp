@@ -3,7 +3,7 @@ part of '../fight_screen.dart';
 /// The on-screen effects: screen shake, and the effects played for
 /// faces, enemy moves and spells.
 extension _FightEffects on _FightScreenState {
-  bool get _effectsOn => ref.read(combatEffectsEnabledProvider);
+  bool get _effectsOn => ref.read(combatEffectsEnabledProvider) && !_quick;
 
   void _triggerShake() {
     if (!ref.read(trembleEnabledProvider)) return;
@@ -18,6 +18,31 @@ extension _FightEffects on _FightScreenState {
     if (!ref.read(trembleEnabledProvider)) return;
     _shakeController.forward(from: 0);
     HapticFeedback.heavyImpact();
+  }
+
+  /// The weapon [actor] holds, as its family and its rarity (lowercase,
+  /// for [vfxPowerFor]): the equipped one that hits hardest, so a shield
+  /// held beside it does not count. Null with none, a bare-handed blow.
+  (WeaponFamily, String)? _weaponOf(_PartyMember actor) {
+    final items = ref.read(localizedDbProvider(itemsSchema)).value;
+    if (items == null) return null;
+    Map<String, dynamic>? best;
+    var bestDamage = 0;
+    for (final id in actor.equippedItemIds) {
+      final item = items[id];
+      if (item is! Map<String, dynamic> || item['itemType'] != 'Weapon') {
+        continue;
+      }
+      final damage = (item['attackDamage'] as num?)?.toInt() ?? 0;
+      if (damage > bestDamage) {
+        best = item;
+        bestDamage = damage;
+      }
+    }
+    if (best == null) return null;
+    final family = weaponFamilyOf(best['id']?.toString() ?? '',
+        best['itemName']?.toString() ?? '', bestDamage);
+    return (family, best['rarity']?.toString().toLowerCase() ?? 'common');
   }
 
   /// What one party member's die looks like on screen: the face's (or its
@@ -45,9 +70,12 @@ extension _FightEffects on _FightScreenState {
     final skill = face.type == 'Skill'
         ? skills[_effectiveSkillId(face)] as Map<String, dynamic>?
         : null;
-    final style = styleForFace(face.type, skill);
+    final weapon = _weaponOf(actor);
+    final style = styleForFace(face.type, skill, weapon: weapon?.$1);
     final support = isSupportSkill(skill);
-    final rarity = skill?['rarity']?.toString();
+    // A plain strike plays at the weight of the weapon in hand.
+    final rarity =
+        skill == null ? weapon?.$2 : skill['rarity']?.toString().toLowerCase();
     final tier = skill == null ? 0 : actor.skillTiers[_effectiveSkillId(face)];
     double powerFor(int amount, int maxHealth, {bool critical = false}) =>
         vfxPowerFor(
@@ -72,6 +100,7 @@ extension _FightEffects on _FightScreenState {
           text: '-$dealt',
           textKind: result.isCritical ? VfxTextKind.crit : VfxTextKind.damage,
           power: power,
+          accent: vfxAccentOf(skill),
         );
         if (result.isCritical) {
           _vfx.play(
@@ -114,6 +143,7 @@ extension _FightEffects on _FightScreenState {
         text: '+$healing',
         textKind: VfxTextKind.heal,
         power: powerFor(healing, actor.maxHealth),
+        accent: vfxAccentOf(skill),
       );
     }
     if (block > 0) {
@@ -185,6 +215,14 @@ extension _FightEffects on _FightScreenState {
     if (!_effectsOn) return;
     final targetKey = _memberCardKey(target.id);
     final lang = ref.read(appLanguageProvider);
+    // The enemy lunges at whom it strikes, as the blow sets off.
+    final from = globalRectOf(_enemyCardKey(enemy.key));
+    final to = globalRectOf(targetKey);
+    _vfx.cue(_enemyCardKey(enemy.key), PortraitCue.lunge,
+        delayMs: delayMs,
+        dir: from == null || to == null
+            ? const Offset(-1, 0)
+            : to.center - from.center);
     if (dodged) {
       _vfx.play(
         style: VfxStyle.miss,

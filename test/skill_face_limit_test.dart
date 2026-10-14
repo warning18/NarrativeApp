@@ -155,10 +155,16 @@ void main() {
         })));
     await _settle(tester);
 
-    // The third Shield Bash (face 5) is past its limit.
+    // The third Shield Bash (face 5) is past its limit: the square carries a
+    // warning, and the die's panel says it in full once the face is picked.
+    await tester.tap(find.byKey(const Key('face_slot_5')));
+    await _settle(tester);
     expect(find.textContaining('Over its limit'), findsOneWidget);
 
-    // Face 3 (Guard) can't take a third Shield Bash; Stoneskin it can.
+    // Face 3 (Guard) can't take a third Shield Bash; Stoneskin it can. A
+    // double tap on a face chooses its skill.
+    await tester.tap(find.byKey(const Key('face_slot_3')));
+    await tester.pump(const Duration(milliseconds: 60));
     await tester.tap(find.byKey(const Key('face_slot_3')));
     await _settle(tester);
     final bash = tester.widget<ListTile>(
@@ -167,7 +173,22 @@ void main() {
     final stoneskin = tester
         .widget<ListTile>(find.byKey(const Key('pick_skill_dwarf_stoneskin')));
     expect(stoneskin.enabled, isTrue);
+    // Each row says the face before and after, from the fight's own rule.
+    expect(
+        tester
+            .widget<Text>(find.byKey(const Key('pick_change_dwarf_stoneskin')))
+            .data,
+        contains('→'));
+    // A tap lights the row and offers the change; nothing is set until the
+    // button at the foot is pressed.
     await tester.tap(find.byKey(const Key('pick_skill_dwarf_stoneskin')));
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(
+        container
+            .read(playerSessionProvider)
+            .diceSkillAssignments['starter_die']?['3'],
+        isNull);
+    await tester.tap(find.byKey(const Key('face_set_button')));
     await _settle(tester);
     expect(
         container

@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/help_hint.dart';
 
 import '../combat/gear_effects.dart';
 import '../combat/dice_faces.dart';
 import '../combat/spells.dart';
 import '../data/chapter_conditions.dart';
 import '../data/factions.dart';
+import '../data/item_origin_here.dart';
+import '../data/place_traits.dart';
 import '../data/shop_pricing.dart';
+import '../data/shop_stock.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -14,7 +18,9 @@ import '../models/ally_state.dart';
 import '../providers/chapter_loop_provider.dart';
 import '../providers/clans_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/story_providers.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/game_icons.dart';
@@ -26,6 +32,7 @@ import '../widgets/shop_trade_sheets.dart';
 import 'inventory_screen.dart' show requirementSummary;
 import '../widgets/player_stats_bar.dart';
 import '../widgets/moments.dart';
+import '../widgets/empty_state.dart';
 
 enum _ShopSort { nameAsc, priceLow, priceHigh, stockLeft }
 
@@ -65,17 +72,26 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
     // A faction's shop prices by the character's standing with them, and
     // won't trade with someone it hunts (v1.193).
     final clans = ref.watch(clanDataProvider);
-    final faction = clans.faction(shopFactionId(widget.shop));
+    // A shop with no faction of its own prices by the standing with the
+    // faction that holds the place it is in, when the place names one
+    // (v1.242, see place_traits.dart).
+    final geography = ref.watch(geographyProvider);
+    final here = geography.placeOfNode(ref
+        .watch(storyDataProvider)
+        .value
+        ?.nodeFor(ref.watch(storyPlayProvider).currentNodeId));
+    final faction = clans.faction(shopFactionHere(
+        shopFactionId(widget.shop), geography.heldBy(here?.id)));
     final tier = faction == null
         ? null
         : ref.watch(politicsProvider).tierOf(faction.id, clans);
     final refuses = shopRefusesTrade(tier);
     final itemSets = parseItemSets(
         ref.watch(localizedDbProvider(itemSetsSchema)).value ?? {});
-    final stock = (widget.shop['initialStock'] as List?)
-            ?.map((e) => e.toString())
-            .toList() ??
-        const <String>[];
+    // The shelf: the stock, or a wandering shop's draw for the chapter
+    // (v1.197, see shop_stock.dart).
+    final stock = shopStockWithAhead(widget.shop,
+        chapter: chapter, items: itemsAsync.value ?? const {});
     final diceStock = (widget.shop['diceStock'] as List?)
             ?.map((e) => e.toString())
             .toList() ??
@@ -97,6 +113,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
         appBar: AppBar(
           title: Text(widget.shop['shopName']?.toString() ?? widget.shopId),
           actions: [
+            const TourInfoButton(topic: TutorialTopic.shop),
             const GoldBadge(),
             if (forges && !refuses)
               IconButton(
@@ -123,7 +140,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
           data: (items) => diceAsync.when(
             data: (dice) {
               if (stock.isEmpty && diceStock.isEmpty) {
-                return Center(child: Text(tr(ref, 'shop_no_stock')));
+                return InkEmptyState(message: tr(ref, 'shop_no_stock'));
               }
 
               // Potions and scrolls restock each chapter; gear doesn't.
@@ -200,6 +217,11 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          _KeeperStrip(
+                              shopId: widget.shopId,
+                              shop: widget.shop,
+                              tier: tier,
+                              language: lang),
                           if (faction != null && tier != null)
                             _FactionPriceLine(
                                 faction: faction, tier: tier, language: lang),
@@ -417,7 +439,9 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                 .read(playerSessionProvider.notifier)
                                 .buyItem(
                                     widget.shopId, itemId, cost, stockLimit,
-                                    item: item, stockKey: stockKey(itemId));
+                                    item: item,
+                                    stockKey: stockKey(itemId),
+                                    origin: itemOriginHere(ref));
                             if (!context.mounted) return;
                             _coinsOut(context);
                             showImmersiveNotice(
@@ -666,12 +690,12 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
               );
             },
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Center(
-                child: Text('${tr(ref, 'failed_to_load_dice')}: $error')),
+            error: (error, stack) => InkErrorState(
+                message: tr(ref, 'failed_to_load_dice'), detail: error),
           ),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) =>
-              Center(child: Text('${tr(ref, 'failed_to_load_items')}: $error')),
+          error: (error, stack) => InkErrorState(
+              message: tr(ref, 'failed_to_load_items'), detail: error),
         ),
         bottomNavigationBar: SafeArea(
           minimum: const EdgeInsets.fromLTRB(16, 8, 16, 12),
@@ -680,6 +704,60 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
             child: Text(tr(ref, 'continue_button')),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// The shop's sign, its keeper and what they say to this character (by the
+/// standing with the shop's faction, v1.197). Nothing for a shop that
+/// names no keeper.
+class _KeeperStrip extends StatelessWidget {
+  const _KeeperStrip({
+    required this.shopId,
+    required this.shop,
+    required this.tier,
+    required this.language,
+  });
+
+  final String shopId;
+  final Map<String, dynamic> shop;
+  final StandingTier? tier;
+  final AppLanguage language;
+
+  @override
+  Widget build(BuildContext context) {
+    final name = shopKeeperName(shop, language);
+    final line = shopKeeperLine(shop, language, tier: tier);
+    if (name == null && line == null) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    return Padding(
+      key: const ValueKey('shop_keeper_strip'),
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ShopPixelIcon(shopId, size: 44),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (line != null)
+                  Text('“$line”',
+                      key: const ValueKey('shop_keeper_line'),
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(fontStyle: FontStyle.italic)),
+                if (name != null)
+                  Text(name.toUpperCase(),
+                      key: const ValueKey('shop_keeper_name'),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.primary,
+                          letterSpacing: 0.8)),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

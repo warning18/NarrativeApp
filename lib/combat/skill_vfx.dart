@@ -10,6 +10,8 @@
 /// heal glows warm and a Void heal dark from the same `heal` style.
 library;
 
+import 'dart:math';
+
 import 'status_effect.dart';
 
 enum VfxStyle {
@@ -274,6 +276,28 @@ VfxStyle fallbackStyleFor({
   }
 }
 
+/// The extra particles a clan card plays over its own effect (v1.235): two
+/// colors circling and merging for a fusion, a rising pillar and chevrons
+/// for an ascension, a clan sigil with orbiting motes for a sub-clan's
+/// skill, drifting rune fragments and a violet veil for a secret. They ride
+/// on the skill's own style, so a heal still plays on a friend and a blow on
+/// a foe.
+enum VfxAccent { none, fusion, ascension, subclan, secret }
+
+/// The accent of a skills.json record, read off what makes it a clan card.
+VfxAccent vfxAccentOf(Map<String, dynamic>? skill) {
+  if (skill == null) return VfxAccent.none;
+  if (skill['fusionOf'] is List) return VfxAccent.fusion;
+  if ((skill['ascendsSkillID']?.toString() ?? '').isNotEmpty) {
+    return VfxAccent.ascension;
+  }
+  if ((skill['subclanId']?.toString() ?? '').isNotEmpty) {
+    return VfxAccent.subclan;
+  }
+  if (skill['hiddenFlags'] is List) return VfxAccent.secret;
+  return VfxAccent.none;
+}
+
 /// The style of a skills.json record: its `vfx`, else its fallback.
 VfxStyle styleForSkill(Map<String, dynamic>? skill) {
   if (skill == null) return VfxStyle.slash;
@@ -290,12 +314,60 @@ VfxStyle styleForSkill(Map<String, dynamic>? skill) {
   );
 }
 
-/// The style of a rolled die face: a plain strike, a raised shield, a
-/// heal, mana, a miss, or the linked skill's own for a Skill face.
-VfxStyle styleForFace(String faceType, Map<String, dynamic>? linkedSkill) {
+/// What a wielded weapon is, from its record (`id` and `itemName`): the
+/// word in either names its family. An item that is no weapon, or none at
+/// all, is [WeaponFamily.bare].
+enum WeaponFamily { bare, dagger, sword, greatsword, spear, staff }
+
+/// A weapon's family from its [id] and [name] (items.json), with its
+/// [attackDamage] telling a great blade from a short one.
+WeaponFamily weaponFamilyOf(String id, String name, int attackDamage) {
+  final text = '$id $name'.toLowerCase();
+  bool any(List<String> words) => words.any(text.contains);
+  if (any(['spear', 'lance', 'pike', 'glaive', 'halberd', 'trident'])) {
+    return WeaponFamily.spear;
+  }
+  if (any([
+    'dagger',
+    'shiv',
+    'stiletto',
+    'kris',
+    'dirk',
+    'needle',
+    'fang',
+    'tooth',
+    'knuckle'
+  ])) {
+    return WeaponFamily.dagger;
+  }
+  if (any(['staff', 'wand', 'rod', 'scepter', 'conduit'])) {
+    return WeaponFamily.staff;
+  }
+  if (any(['sword', 'blade', 'cutlass', 'sabre', 'claymore', 'zweihander'])) {
+    return attackDamage >= 20 ? WeaponFamily.greatsword : WeaponFamily.sword;
+  }
+  return WeaponFamily.bare;
+}
+
+/// The style of a plain Attack face by the weapon in hand: a fist or a
+/// rap of the staff is a small thud, a dagger a quick scratch, a sword a
+/// slash (a great one a heavy cut), a spear a thrust.
+VfxStyle styleForWeapon(WeaponFamily family) => switch (family) {
+      WeaponFamily.bare || WeaponFamily.staff => VfxStyle.impact,
+      WeaponFamily.dagger => VfxStyle.claw,
+      WeaponFamily.sword => VfxStyle.slash,
+      WeaponFamily.greatsword => VfxStyle.heavySlash,
+      WeaponFamily.spear => VfxStyle.pierce,
+    };
+
+/// The style of a rolled die face: a plain strike (by the [weapon] in
+/// hand, a slash without one), a raised shield, a heal, mana, a miss, or
+/// the linked skill's own for a Skill face.
+VfxStyle styleForFace(String faceType, Map<String, dynamic>? linkedSkill,
+    {WeaponFamily? weapon}) {
   switch (faceType) {
     case 'Attack':
-      return VfxStyle.slash;
+      return weapon == null ? VfxStyle.slash : styleForWeapon(weapon);
     case 'Defend':
       return VfxStyle.shield;
     case 'Heal':
@@ -453,6 +525,49 @@ double vfxPowerOfTier(VfxTier tier) => switch (tier) {
       VfxTier.strong => 1.3,
       VfxTier.mighty => 1.65,
     };
+
+/// How big a style plays beside the others at the same power: a thud or a
+/// scratch is small, a meteor or a quake takes the whole card and more.
+/// Power then grows or shrinks it (see [vfxExtentFor]).
+double vfxGrandeur(VfxStyle style) => switch (style) {
+      VfxStyle.impact => 0.55,
+      VfxStyle.claw || VfxStyle.miss || VfxStyle.arrow => 0.6,
+      VfxStyle.slash => 0.7,
+      VfxStyle.mana => 0.65,
+      VfxStyle.pierce ||
+      VfxStyle.poison ||
+      VfxStyle.stun ||
+      VfxStyle.weaken =>
+        0.7,
+      VfxStyle.heal || VfxStyle.shield => 0.75,
+      VfxStyle.volley ||
+      VfxStyle.bolt ||
+      VfxStyle.splash ||
+      VfxStyle.smoke =>
+        0.8,
+      VfxStyle.whirl || VfxStyle.wind || VfxStyle.drain => 0.85,
+      VfxStyle.stoneShield || VfxStyle.shout => 0.85,
+      VfxStyle.flame ||
+      VfxStyle.frost ||
+      VfxStyle.shadow ||
+      VfxStyle.crit =>
+        0.9,
+      VfxStyle.heavySlash => 0.8,
+      VfxStyle.lightning ||
+      VfxStyle.fireball ||
+      VfxStyle.voidRift ||
+      VfxStyle.radiance =>
+        1.0,
+      VfxStyle.holyFire || VfxStyle.quake => 1.1,
+      VfxStyle.meteor => 0.85,
+      VfxStyle.phase => 1.0,
+    };
+
+/// How much of its target's size an effect covers, from its [style] and
+/// [power]: a plain strike covers about half, a legendary spell more than
+/// the whole card.
+double vfxExtentFor(VfxStyle style, double power) => min(
+    1.5, vfxGrandeur(style) * pow(power.clamp(minVfxPower, maxVfxScale), 1.5));
 
 /// How many more (or fewer) particles a tier throws.
 double vfxCountFactor(VfxTier tier) => switch (tier) {

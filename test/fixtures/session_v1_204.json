@@ -1,0 +1,523 @@
+{
+  "saveVersion": 3,
+  "level": 9,
+  "currentXP": 340,
+  "gold": 412,
+  "alignmentScore": 12,
+  "maxHealth": 190,
+  "currentHealth": 151,
+  "baseDamage": 18,
+  "baseArmor": 6,
+  "luck": 2,
+  "charisma": 3,
+  "strength": 5,
+  "dexterity": 2,
+  "constitution": 4,
+  "intelligence": 1,
+  "wisdom": 2,
+  "perception": 3,
+  "potionCount": 3,
+  "statPoints": 1,
+  "maxSkillSlots": 4,
+  "flags": [
+    "casino_fight_won",
+    "met_lysa",
+    "q_ch1_vess_in_the_dark_accepted",
+    "q_ch2_unpaid_scaffold_accepted",
+    "scaffold_clerk_faced",
+    "scaffold_paid",
+    "q_ch3_glass_from_the_terraces_accepted",
+    "glass_tested",
+    "glass_defended",
+    "found_3200",
+    "q_ch4_bark_tithe_accepted",
+    "q_ch4_the_second_ledger_accepted",
+    "hub_2015_ternrow",
+    "house_keldas_hall",
+    "house_hammersmith"
+  ],
+  "activeQuestIds": [
+    "q_ch4_the_second_ledger",
+    "q_ch4_bark_tithe"
+  ],
+  "completedQuestIds": [
+    "q_first_blood",
+    "q_retrieve_banner",
+    "q_ch1_vess_in_the_dark",
+    "q_ch2_burning_manifest",
+    "q_ch2_captains_gambit",
+    "q_ch2_harbor_reckoning",
+    "q_ch2_unpaid_scaffold",
+    "q_ch3_ashen_oath",
+    "q_ch3_inquisition_ledger",
+    "q_ch3_glass_from_the_terraces"
+  ],
+  "inventoryItemIds": [
+    "sword_t3",
+    "armor_leather",
+    "dagger_t2",
+    "potion_minor",
+    "potion_minor",
+    "potion_major",
+    "spellbook_frost_bind",
+    "void_banner"
+  ],
+  "equippedItemIds": [
+    "sword_t3",
+    "armor_leather"
+  ],
+  "unlockedSkillIds": [
+    "second_wind",
+    "human_resolve",
+    "shadow_step"
+  ],
+  "unlockedShopIds": [
+    "blind_beggar_stall",
+    "black_market_docks",
+    "weaponsmith_forge",
+    "apothecary_row"
+  ],
+  "unlockedQuestIds": [
+    "q_first_blood",
+    "q_retrieve_banner",
+    "q_ch1_vess_in_the_dark",
+    "q_ch2_burning_manifest",
+    "q_ch2_unpaid_scaffold",
+    "q_ch3_glass_from_the_terraces",
+    "q_ch4_the_second_ledger",
+    "q_ch4_bark_tithe"
+  ],
+  "unlockedEnemyIds": [
+    "slum_thug",
+    "harbor_rat",
+    "rat_matriarch",
+    "inquisition_soldier",
+    "cultist_acolyte"
+  ],
+  "diceSkillAssignments": {
+    "iron_die": {
+      "2": "second_wind",
+      "4": "shadow_step"
+    }
+  },
+  "raceId": "human",
+  "professionId": "warrior",
+  "ownedDiceIds": [
+    "starter_die",
+    "iron_die"
+  ],
+  "equippedDiceId": "iron_die",
+  "xpEarnedThisRun": 2140,
+  "shopPurchaseCounts": {
+    "apothecary_row:potion_minor": 2
+  },
+  "characterName": "Aubin Ferrand",
+  "trackedQuestId": "q_ch4_bark_tithe",
+  "masteredBranchId": "",
+  "shopUnlockNodeIds": {
+    "black_market_docks": "2010"
+  },
+  "seenShopIds": [
+    "blind_beggar_stall",
+    "black_market_docks"
+  ],
+  "seenQuestIds": [
+    "q_ch4_the_second_ledger",
+    "q_ch4_bark_tithe"
+  ],
+  "seenEnemyIds": [
+    "slum_thug",
+    "harbor_rat",
+    "rat_matriarch"
+  ],
+  "seenNpcIds": [
+    "lysa",
+    "renn",
+    "aurel_vane"
+  ],
+  "readSceneKeys": [
+    "3001_camp",
+    "4999_camp"
+  ],
+  "seenEchoKeys": [
+    "kelda:3002"
+  ],
+  "provisions": 6,
+  "day": 23,
+  "watch": 2,
+  "clockChapter": 4,
+  "chapterStartDay": 19,
+  "sellswordFights": 1,
+  "alignmentRollsSinceAmbush": 3,
+  "runSeed": 8675309,
+  "diceUpgrades": {},
+  "recruitedAllies": [
+    {
+      "companionId": "kelda",
+      "currentHealth": 1073741824,
+      "equippedItemIds": [
+        "shield_t2"
+      ],
+      "unlockedSkillIds": [
+        "second_wind"
+      ],
+      "skillPoints": 1,
+      "diceSkillAssignments": {
+        "2": "second_wind"
+      },
+      "approval": 64,
+      "giftChapter": 3
+    },
+    {
+      "companionId": "maren",
+      "currentHealth": 71,
+      "equippedItemIds": [],
+      "unlockedSkillIds": [],
+      "skillPoints": 0,
+      "diceSkillAssignments": {},
+      "approval": 52,
+      "giftChapter": 0
+    },
+    {
+      "companionId": "sable",
+      "currentHealth": 1073741824,
+      "equippedItemIds": [],
+      "unlockedSkillIds": [],
+      "skillPoints": 0,
+      "diceSkillAssignments": {},
+      "approval": 38,
+      "giftChapter": 0
+    }
+  ],
+  "activeAllyIds": [
+    "kelda",
+    "maren"
+  ],
+  "lostAllyIds": [],
+  "departedAllyIds": [],
+  "perkRanks": {
+    "heavyHand": 2,
+    "vigor": 1
+  },
+  "heldSigns": [
+    {
+      "signId": "standard_strike_rank_and_file",
+      "rarity": "rare",
+      "level": 2
+    }
+  ],
+  "pendingOffers": [
+    {
+      "source": "level"
+    }
+  ],
+  "clanOffer": null,
+  "heldTitleIds": [
+    "new_moon_watch",
+    "friend_of_the_row"
+  ],
+  "activeTitleId": "new_moon_watch",
+  "swornBoonIds": [],
+  "chapterOffersThrough": 4,
+  "titanBlood": 0,
+  "patronFavour": {
+    "vigil": 1
+  },
+  "signPatronsThisLife": [
+    "vigil"
+  ],
+  "patronsMet": [
+    "vigil",
+    "compact",
+    "crows",
+    "dominion"
+  ],
+  "politics": {
+    "standings": {
+      "dominion": -19.25,
+      "vigil": 11.25,
+      "compact": 18.75,
+      "crows": -1.75,
+      "penitents": -10.25,
+      "mire": 4.0,
+      "oni": 10.0
+    },
+    "marks": {
+      "stitchers": "friend",
+      "keyholders": "friend",
+      "scaffolders": "friend"
+    },
+    "sworn": "",
+    "relations": {},
+    "snapshots": {},
+    "log": [
+      {
+        "chapter": 1,
+        "day": 3,
+        "cause": "story:1210",
+        "faction": "vigil",
+        "deltas": {
+          "dominion": -2.5,
+          "vigil": 5.0,
+          "compact": 1.25,
+          "crows": -2.5,
+          "penitents": 1.25
+        },
+        "after": {
+          "dominion": -12.5,
+          "vigil": 5.0,
+          "compact": 1.25,
+          "crows": -2.5,
+          "penitents": 1.25
+        }
+      },
+      {
+        "chapter": 1,
+        "day": 3,
+        "cause": "story:1210",
+        "faction": "vigil",
+        "subclan": "stitchers",
+        "mark": "friend"
+      },
+      {
+        "chapter": 2,
+        "day": 8,
+        "cause": "story:2015_house_keyholders",
+        "faction": "crows",
+        "deltas": {
+          "dominion": 1.25,
+          "vigil": -2.5,
+          "crows": 5.0
+        },
+        "after": {
+          "dominion": -11.25,
+          "vigil": 2.5,
+          "crows": 2.5
+        }
+      },
+      {
+        "chapter": 2,
+        "day": 8,
+        "cause": "story:2015_house_keyholders",
+        "faction": "crows",
+        "subclan": "keyholders",
+        "mark": "friend"
+      },
+      {
+        "chapter": 2,
+        "day": 11,
+        "cause": "quest:q_ch2_unpaid_scaffold",
+        "faction": "compact",
+        "deltas": {
+          "vigil": 2.5,
+          "compact": 10.0,
+          "mire": 2.5,
+          "penitents": -5.0
+        },
+        "after": {
+          "vigil": 5.0,
+          "compact": 11.25,
+          "mire": 2.5,
+          "penitents": -3.75
+        }
+      },
+      {
+        "chapter": 2,
+        "day": 11,
+        "cause": "quest:q_ch2_unpaid_scaffold",
+        "faction": "dominion",
+        "deltas": {
+          "dominion": -5.0,
+          "crows": -1.25
+        },
+        "after": {
+          "dominion": -16.25,
+          "crows": 1.25
+        }
+      },
+      {
+        "chapter": 2,
+        "day": 11,
+        "cause": "quest:q_ch2_unpaid_scaffold",
+        "faction": "compact",
+        "subclan": "scaffolders",
+        "mark": "friend"
+      },
+      {
+        "chapter": 3,
+        "day": 16,
+        "cause": "quest:q_ch3_glass_from_the_terraces",
+        "faction": "oni",
+        "deltas": {
+          "oni": 10.0
+        },
+        "after": {
+          "oni": 10.0
+        }
+      },
+      {
+        "chapter": 3,
+        "day": 16,
+        "cause": "quest:q_ch3_glass_from_the_terraces",
+        "faction": "penitents",
+        "deltas": {
+          "vigil": -1.25,
+          "penitents": -5.0
+        },
+        "after": {
+          "vigil": 3.75,
+          "penitents": -8.75
+        }
+      },
+      {
+        "chapter": 3,
+        "day": 17,
+        "cause": "offer",
+        "faction": "compact",
+        "deltas": {
+          "vigil": 1.5,
+          "compact": 6.0,
+          "mire": 1.5,
+          "penitents": -3.0
+        },
+        "after": {
+          "vigil": 5.25,
+          "compact": 17.25,
+          "mire": 4.0,
+          "penitents": -11.75
+        }
+      },
+      {
+        "chapter": 4,
+        "day": 21,
+        "cause": "offer",
+        "faction": "vigil",
+        "deltas": {
+          "dominion": -3.0,
+          "vigil": 6.0,
+          "compact": 1.5,
+          "crows": -3.0,
+          "penitents": 1.5
+        },
+        "after": {
+          "dominion": -19.25,
+          "vigil": 11.25,
+          "compact": 18.75,
+          "crows": -1.75,
+          "penitents": -10.25
+        }
+      }
+    ],
+    "relationsLog": [],
+    "applied": [
+      "story:1210:choice0",
+      "story:2015_house_keyholders:choice0",
+      "quest:q_ch2_unpaid_scaffold:turnin0",
+      "quest:q_ch3_glass_from_the_terraces:turnin0"
+    ]
+  },
+  "builtHouseIds": [
+    "keldas_hall",
+    "hammersmith"
+  ],
+  "townOrder": [],
+  "unlockedAchievementIds": [
+    "first_companion",
+    "keldas_hall_built"
+  ],
+  "completedZoneIds": [
+    "z_fishermans_row",
+    "z_tanners_court"
+  ],
+  "shipHull": 40,
+  "shipPartIds": [
+    "ballista",
+    "harpoon_rack"
+  ],
+  "storedShipPartIds": [
+    "fire_pots"
+  ],
+  "currentPortId": "port_ashen_landing",
+  "visitedPortIds": [
+    "port_ashen_landing",
+    "port_smugglers_wharf"
+  ],
+  "bannerPiecesCollected": [],
+  "enemyKillCounts": {
+    "slum_thug": 7,
+    "harbor_rat": 12,
+    "inquisition_soldier": 4,
+    "cultist_acolyte": 2
+  },
+  "questKillBaselines": {
+    "q_ch4_the_second_ledger": {
+      "cultist_acolyte": 2
+    }
+  },
+  "contracts": [
+    {
+      "id": "hunt_street_bandit_4",
+      "kind": "hunt",
+      "targetEnemyId": "street_bandit",
+      "required": 5,
+      "progress": 2,
+      "rewardGold": 40,
+      "rewardEssence": 2
+    }
+  ],
+  "contractsChapter": 4,
+  "contractBoards": 2,
+  "seaBeasts": {
+    "brinejaw": {
+      "seen": true,
+      "clues": 1,
+      "wounds": 0,
+      "encounters": 1,
+      "slain": false
+    }
+  },
+  "bossDefeatCounts": {
+    "rat_matriarch": 1
+  },
+  "grandfatheredQuestIds": [],
+  "talkedToNpcIds": [
+    "lysa",
+    "renn"
+  ],
+  "skillEssence": 7,
+  "skillTiers": {
+    "second_wind": 2
+  },
+  "antidoteCount": 1,
+  "lootPityStreak": 2,
+  "recentLootIds": [
+    "sword_t3",
+    "dagger_t2"
+  ],
+  "mana": 10,
+  "knownSpellIds": [
+    "spell_frost_bind"
+  ],
+  "newGamePlusCycle": 0,
+  "legacyGold": 0,
+  "legacyDiceIds": [],
+  "legacySpellIds": [],
+  "itemOrigins": {
+    "sword_t3": {
+      "placeId": "alster_lower_town",
+      "chapter": 2
+    },
+    "armor_leather": {
+      "placeId": "alster_lower_town",
+      "chapter": 1
+    },
+    "spellbook_frost_bind": {
+      "placeId": "spire_of_judgment",
+      "chapter": 3
+    },
+    "void_banner": {
+      "placeId": "the_waste",
+      "chapter": 1
+    }
+  }
+}

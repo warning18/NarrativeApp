@@ -111,6 +111,7 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
               ? VfxTextKind.crit
               : VfxTextKind.damage,
       power: _skillPower(skill),
+      accent: vfxAccentOf(skill),
     );
   }
 

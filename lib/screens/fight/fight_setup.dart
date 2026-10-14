@@ -22,26 +22,93 @@ extension _FightSetup on _FightScreenState {
     final entries = widget._allEnemyEntries;
     final lang = ref.read(appLanguageProvider);
     final modifiers = widget.modifiers;
-    _isElite = entries.length == 1 &&
+    // A lesson (the story's first fight) is never Elite, rolls no affixes
+    // and no battlefield condition, and ignores the threat.
+    final lesson = modifiers.tutorial;
+    _isElite = !lesson &&
+        entries.length == 1 &&
         (modifiers.forceElite ||
             (isRandomDrawEnemy(entries.first.key) &&
                 modifiers.forcedAffixes.isEmpty &&
                 _random.nextDouble() < _eliteChance));
     final session = ref.read(playerSessionProvider);
-    _threat = modifiers.isTest || modifiers.isZoneBoss
+    _threat = modifiers.isTest || modifiers.isZoneBoss || lesson
         ? 0
         : session.threatIn(ref.read(reachedChapterProvider));
+    _light = _lightHere();
     _condition = modifiers.forcedCondition ??
-        rollBattlefieldCondition(enemyCount: entries.length, random: _random);
+        (lesson
+            ? null
+            : rollBattlefieldCondition(
+                enemyCount: entries.length, random: _random, light: _light));
+    // The day's sky over the party (v1.208): none for a lesson or a test.
+    _sky = lesson || modifiers.isTest
+        ? WeatherEffects.of(null)
+        : WeatherEffects.of(ref.read(skyHereProvider)?.today().kind);
+    _setTheGround(lesson: lesson);
 
-    final affixes = rollEncounterAffixes(
-      enemyIds: [for (final e in entries) e.key],
-      isElite: _isElite,
-      random: _random,
-    );
+    // The doctrine the enemies fight under (v1.212), unless one of them is
+    // a boss or a unique; its affix taste shapes the affix roll below.
+    final factions = [
+      for (final e in entries) e.value['faction']?.toString() ?? '',
+    ];
+    _doctrine = lesson || modifiers.isTest
+        ? null
+        : doctrineForFight(factions: factions, isBoss: [
+            for (final e in entries) isBossEnemy(e.key, e.value),
+          ]);
+    final affixes = lesson
+        ? [for (final _ in entries) <EnemyAffix>[]]
+        : rollEncounterAffixes(
+            enemyIds: [for (final e in entries) e.key],
+            isElite: _isElite,
+            random: _random,
+            tastes: [
+              for (final faction in factions)
+                if (_doctrine != null && faction == _doctrine!.factionId)
+                  _doctrine!.affixes
+                else
+                  const <EnemyAffix>[],
+            ],
+          );
     if (modifiers.forcedAffixes.isNotEmpty) {
       affixes[0] = modifiers.forcedAffixes;
     }
+
+    // What the fight asks besides the slaughter (v1.212): set by the
+    // encounter, else rolled for an ordinary fight.
+    final goalEligible = !lesson &&
+        !modifiers.isTest &&
+        !modifiers.isZoneBoss &&
+        !modifiers.isHunt &&
+        !modifiers.isHunterAmbush &&
+        !modifiers.lossContinues &&
+        !modifiers.luckyDieReveal &&
+        !modifiers.hostFight &&
+        !modifiers.forceElite &&
+        !_isElite &&
+        !entries.any((e) => isBossEnemy(e.key, e.value));
+    _goal = modifiers.forcedGoal ??
+        rollFightGoal(
+          eligible: goalEligible,
+          enemyCount: entries.length,
+          canYield: entries.length == 1 &&
+              canYieldFaction(entries.first.value['faction']?.toString()),
+          random: _random,
+        );
+
+    // The pack's squad (v1.215, see squad.dart): none for a lesson, a test
+    // or a boss.
+    final roles = modifiers.forcedSquad ??
+        (lesson || modifiers.isTest || _chapter < squadFirstChapter
+            ? List<SquadRole?>.filled(entries.length, null)
+            : rollSquadRoles(
+                packSize: entries.length,
+                eligible: [
+                  for (final e in entries) !isBossEnemy(e.key, e.value),
+                ],
+                random: _random,
+              ));
 
     final baseNames = [
       for (final entry in entries)
@@ -67,8 +134,22 @@ extension _FightSetup on _FightScreenState {
           affixes: affixes[i],
           nameOverride: i == 0 ? modifiers.namedEnemyName : null,
           healthMultiplier: i == 0 ? modifiers.healthMultiplier : 1.0,
+          role: roles[i],
         ),
     ];
+    // A Rout's mark is the pack's sturdiest member; a pack of one has no
+    // captain to bring down, so its Rout is the plain slaughter.
+    if (_goal.kind == FightGoalKind.rout) {
+      if (_enemies.length >= 2) {
+        _enemies[captainIndex([for (final e in _enemies) e.maxHealth])]
+            .isCaptain = true;
+      } else {
+        _goal = FightGoal.slay;
+      }
+    }
+    if (_goal.kind == FightGoalKind.subdue && _enemies.length != 1) {
+      _goal = FightGoal.slay;
+    }
   }
 
   _EnemyMember _buildEnemyMember({
@@ -83,6 +164,7 @@ extension _FightSetup on _FightScreenState {
     List<EnemyAffix> affixes = const [],
     String? nameOverride,
     double healthMultiplier = 1.0,
+    SquadRole? role,
   }) {
     final elitePrefixedName =
         _isElite ? '${trFor(lang, 'elite_prefix')} $baseName' : baseName;
@@ -136,6 +218,21 @@ extension _FightSetup on _FightScreenState {
     if (healthMultiplier != 1.0) {
       maxHealth = max(1, (maxHealth * healthMultiplier).round());
     }
+    // A squad's roles (v1.215, see squad.dart).
+    switch (role) {
+      case SquadRole.healer:
+        damage = (damage * healerDamageMultiplier).round();
+      case SquadRole.striker:
+        damage = (damage * strikerDamageMultiplier).round();
+        maxHealth = max(1, (maxHealth * strikerHealthMultiplier).round());
+      case SquadRole.guard:
+      case null:
+        break;
+    }
+    // A hold presses harder: the party need not kill them.
+    if (_goal.kind == FightGoalKind.hold) {
+      damage = (damage * holdDamageMultiplier).round();
+    }
     final moves =
         (raw['skillMoves'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
     return _EnemyMember(
@@ -150,7 +247,13 @@ extension _FightSetup on _FightScreenState {
           moves.any((m) => m['condition']?.toString() == 'OnHitByElement'),
       currentHealth: maxHealth,
       affixes: affixes,
-    )..phases = parseBossPhases(raw);
+      faction: raw['faction']?.toString() ?? '',
+    )
+      ..phases = parseBossPhases(raw)
+      ..role = role
+      ..response = _chapter < squadFirstChapter
+          ? EnemyResponse.none
+          : enemyResponseFromName(raw['reaction']?.toString());
   }
 
   /// Builds [_party] (the player plus every currently-active ally) once
@@ -389,6 +492,18 @@ extension _FightSetup on _FightScreenState {
           _LogKind.info,
         ));
       }
+      if (_sky.effectKey case final key?) {
+        _log.add(_LogEntry(
+          '${trFor(lang, 'weather_${_sky.kind.name}')}: ${trFor(lang, key)}',
+          _LogKind.info,
+        ));
+      }
+      // The ground's first word: an anomaly set for the second round is
+      // announced now (an ambush starts its first round in the enemies' turn
+      // and says it there).
+      if (condition != BattlefieldCondition.ambush) {
+        _groundRoundStart(_log, lang);
+      }
       for (final id in _armedCharmIds) {
         final name =
             (items[id] as Map<String, dynamic>?)?['itemName']?.toString() ?? id;
@@ -406,6 +521,9 @@ extension _FightSetup on _FightScreenState {
       if (banter != null) _log.add(banter);
     });
     _noteTelegraphReads();
+    // The first fight's lucky die: the enemy's opening blow, the die
+    // rolling loose and striking back, then the party's first round.
+    if (widget.modifiers.luckyDieReveal && _openWithLuckyDie(lang)) return;
     if (condition == BattlefieldCondition.ambush) {
       // The enemies strike before the party's first roll; the party round
       // that follows is the opening one, so nothing reads off them yet.
@@ -426,6 +544,20 @@ extension _FightSetup on _FightScreenState {
   /// still running, what its curse took.
   List<_LogEntry> _openSignsForFight(AppLanguage lang) {
     final lines = <_LogEntry>[];
+    // The last battles (v1.196): who of the Host fights beside the party.
+    if (widget.modifiers.hostFight && !_host.isEmpty) {
+      final houses = _host.houses.length;
+      final names = [
+        for (final id in _host.contingents)
+          _hostData.faction(id)?.shortFor(lang) ?? id,
+        if (houses == 1) trFor(lang, 'host_fight_house_one'),
+        if (houses > 1)
+          trFor(lang, 'host_fight_houses').replaceAll('{n}', '$houses'),
+      ];
+      lines.add(_LogEntry(
+          trFor(lang, 'host_fight_log').replaceAll('{names}', names.join(', ')),
+          _LogKind.info));
+    }
     if (_signs.isEmpty) return lines;
     if (_signs.silentVows > 0) {
       lines.add(_LogEntry(trFor(lang, 'sign_log_vow_silent'), _LogKind.info));

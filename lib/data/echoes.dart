@@ -63,6 +63,8 @@ Map<String, StoryChoice> flagSetters(StoryData story) {
   }
   final setters = <String, StoryChoice>{};
   for (final node in story.nodes.values) {
+    // Worked out from the story alone (no geography loaded here), so a
+    // road is a change of landmark (see passThroughChoiceOf's default).
     final readThrough = passThroughChoiceOf(node, const []);
     for (final choice in node.choices) {
       final pressed =

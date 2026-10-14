@@ -66,10 +66,11 @@ void main() {
         container.read(homeTabIndexProvider.notifier).state = tab;
     // What arriving somewhere opens over the game (a new place's card, a
     // chapter's notice) is closed.
-    Future<void> arrive(String id) async {
+    Future<void> arrive(String id, {int walk = 2}) async {
       play.jumpTo(id);
       await _settle(tester);
-      await tester.pump(const Duration(seconds: 2));
+      // The road walked to a place far off takes its time.
+      await tester.pump(Duration(seconds: walk));
       for (var i = 0; i < 3; i++) {
         Navigator.of(tester.element(find.byType(JourneyScreen)))
             .popUntil(isGameRoute);
@@ -86,11 +87,9 @@ void main() {
       }
     }
 
-    final sceneText = find.byKey(const ValueKey('journey_scene_text'));
-    Future<void> doubleTap(Finder finder) async {
-      await tester.tap(finder);
-      await tester.pump(const Duration(milliseconds: 60));
-      await tester.tap(finder);
+    final readButton = find.byKey(const ValueKey('journey_read'));
+    Future<void> read() async {
+      await tester.tap(readButton, warnIfMissed: false);
       await tester.pump(const Duration(milliseconds: 400));
     }
 
@@ -102,7 +101,7 @@ void main() {
     await wait(8);
     final left = int.parse(secondsLeft().replaceAll('s', ''));
     expect(left, lessThanOrEqualTo(started - 7));
-    await doubleTap(sceneText);
+    await read();
     expect(find.byKey(const ValueKey('journey_reading_exit')), findsOneWidget);
     await wait(2);
     await tester.tap(find.byKey(const ValueKey('journey_reading_exit')));
@@ -137,7 +136,7 @@ void main() {
     expect(tester.takeException(), isNull);
 
     // The alley: the same on a plain scene.
-    await arrive('270');
+    await arrive('270', walk: 6);
     await tester.tap(_step(0));
     await tester.pump(const Duration(milliseconds: 500));
     expect(
@@ -146,20 +145,25 @@ void main() {
         _target(tester, 'journey.chart').contains(tester.getCenter(_step(0))),
         isTrue);
 
-    // Go, and a double-tap on the scene while the party walks: the scene
-    // stays put (the map it walks on must stay), and the step is taken.
+    // Go, and Read while the party walks: the map stays put (the party
+    // walks on it), and the step is taken.
     await tester.tap(find.byKey(const ValueKey('journey_go')));
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byKey(const ValueKey('journey_traveller')), findsOneWidget);
-    await doubleTap(sceneText);
+    await read();
     expect(find.byKey(const ValueKey('journey_reading_exit')), findsNothing);
     for (var i = 0; i < 8; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }
     await _settle(tester);
-    expect(container.read(storyPlayProvider).currentNodeId, '280');
+    expect(container.read(storyPlayProvider).currentNodeId, '300');
     expect(container.read(playerSessionProvider).flags,
         contains('companion_hound'));
+    // The scene reached is read full screen; Continue brings the map back.
+    expect(find.byKey(const ValueKey('journey_continue')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('journey_continue')));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
 
     // The story moved on from under a walk (its map gone with it): the
     // step is not taken, and the next scene's steps are free to take.

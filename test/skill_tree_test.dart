@@ -40,14 +40,24 @@ void main() {
 
   group('the trees', () {
     for (final professionId in professions.keys) {
-      test('$professionId: three branches of four, all theirs, once each', () {
+      test(
+          '$professionId: three branches of four, more of a few, all theirs, once each',
+          () {
         final branches = skillBranchesFor(trees,
             raceId: 'human', professionId: professionId);
         final classBranches = branches.where((b) => !b.heritage).toList();
-        expect(classBranches, hasLength(3));
+        // Three core branches of four, and (v1.245) a few more of two to four
+        // for the elements a class grew into.
+        final core = classBranches.where((b) => b.order <= 3).toList();
+        expect(core, hasLength(3));
         final onTree = <String>[];
         for (final branch in classBranches) {
-          expect(branch.skillIds, hasLength(4), reason: branch.id);
+          if (branch.order <= 3) {
+            expect(branch.skillIds, hasLength(4), reason: branch.id);
+          } else {
+            expect(branch.skillIds.length, inInclusiveRange(2, 4),
+                reason: branch.id);
+          }
           for (final id in branch.skillIds) {
             final skill = skills[id] as Map<String, dynamic>?;
             expect(skill, isNotNull, reason: id);
@@ -60,9 +70,17 @@ void main() {
           onTree.addAll(branch.skillIds);
         }
         expect(onTree.toSet(), hasLength(onTree.length));
-        // Every skill of the class grows on its tree.
+        // Every skill of the class grows on its tree, bar the fusions,
+        // ascensions, sub-clan skills and secrets (v1.232, v1.234): the clans put those on the table.
         for (final entry in skills.entries) {
-          if ((entry.value as Map)['restrictedProfessionID'] == professionId) {
+          final skill = entry.value as Map;
+          if (skill['restrictedProfessionID'] == professionId) {
+            if (skill['fusionOf'] != null ||
+                skill['ascendsSkillID'] != null ||
+                skill['subclanId'] != null ||
+                skill['hiddenFlags'] != null) {
+              continue;
+            }
             expect(onTree, contains(entry.key));
           }
         }

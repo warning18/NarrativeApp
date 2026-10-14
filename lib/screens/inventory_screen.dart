@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/help_hint.dart';
 
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -9,12 +10,15 @@ import '../combat/gear_effects.dart';
 import '../models/ally_state.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import '../theme/stitched_ink.dart';
 import '../widgets/compare_dialog.dart';
 import '../widgets/detail_dialog.dart';
+import '../widgets/item_lore.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
   const InventoryScreen({super.key, this.allyId});
@@ -84,6 +88,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
       appBar: AppBar(
         title: Text('${tr(ref, 'inventory_equipment')}$titleSuffix'),
         actions: [
+          const TourInfoButton(topic: TutorialTopic.inventory),
           TutorialTarget(
             id: 'inventory.compare',
             child: IconButton(
@@ -405,34 +410,94 @@ class _InventoryBody extends ConsumerWidget {
     final ownedDiceIds = session.ownedDiceIds.where(dice.containsKey).toList()
       ..sort();
 
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        Text(tr(ref, 'equipment_section'),
-            style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.casino),
-            title: Text(tr(ref, 'dice_label')),
-            subtitle: Text(equippedDie != null
-                ? equippedDiceId!
-                : tr(ref, 'none_equipped')),
-            // An ally's signature die is fixed at recruitment and never
-            // player-swappable, so no edit affordance for that case.
-            trailing: allyId != null
-                ? null
-                : IconButton(
-                    icon: const Icon(Icons.edit_outlined),
-                    tooltip: tr(ref, 'choose_die'),
-                    onPressed: ownedDiceIds.isEmpty
-                        ? null
-                        : () => _pickDice(
-                            context, ref, ownedDiceIds, equippedDiceId),
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    Widget caption(String text) => Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(text.toUpperCase(),
+              style: theme.textTheme.labelSmall
+                  ?.copyWith(color: ink.ash, letterSpacing: 1.2)),
+        );
+
+    // A slot (v1.201, Stitched Ink): what is worn there, in a box; a tap
+    // chooses, the small cross takes it off.
+    Widget slotBox({
+      required String slot,
+      required Widget icon,
+      required String worn,
+      required bool filled,
+      required VoidCallback? onChoose,
+      required VoidCallback? onClear,
+      required String chooseTip,
+      Key? key,
+    }) {
+      return Material(
+        key: key,
+        color: theme.colorScheme.surfaceContainer,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+          side: BorderSide(color: filled ? ink.gold : ink.seam),
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(4),
+          onTap: onChoose,
+          child: Tooltip(
+            message: chooseTip,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 8, 4, 8),
+              child: Row(
+                children: [
+                  SizedBox(width: 28, child: Center(child: icon)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(slot.toUpperCase(),
+                            style: theme.textTheme.labelSmall
+                                ?.copyWith(color: ink.ash)),
+                        Text(worn,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                                color: filled ? null : ink.ash,
+                                fontStyle: filled ? null : FontStyle.italic)),
+                      ],
+                    ),
                   ),
+                  if (onClear != null)
+                    IconButton(
+                      icon: const Icon(Icons.close, size: 16),
+                      tooltip: tr(ref, 'unequip'),
+                      visualDensity: VisualDensity.compact,
+                      onPressed: onClear,
+                    )
+                  else if (onChoose != null)
+                    Icon(Icons.chevron_right, size: 18, color: ink.ash),
+                ],
+              ),
+            ),
           ),
         ),
-        ...equipSlotOptions.map((slot) {
+      );
+    }
+
+    final slotBoxes = [
+      // An ally's signature die is fixed at recruitment and never
+      // player-swappable, so no choosing in that case.
+      slotBox(
+        slot: tr(ref, 'dice_label'),
+        icon: Icon(Icons.casino, size: 20, color: ink.gold),
+        worn: equippedDie != null ? equippedDiceId! : tr(ref, 'none_equipped'),
+        filled: equippedDie != null,
+        chooseTip: tr(ref, 'choose_die'),
+        onChoose: allyId != null || ownedDiceIds.isEmpty
+            ? null
+            : () => _pickDice(context, ref, ownedDiceIds, equippedDiceId),
+        onClear: null,
+      ),
+      for (final slot in equipSlotOptions)
+        () {
           final equippedId = _equippedInSlot(equippedIds, slot);
           final equippedItem = equippedId != null
               ? items[equippedId] as Map<String, dynamic>?
@@ -443,40 +508,51 @@ class _InventoryBody extends ConsumerWidget {
                 (item?['equipSlot']?.toString() ?? '') == slot &&
                 hasFreeCopy(id);
           }).toList();
+          return slotBox(
+            key: Key('slot_$slot'),
+            slot: slot,
+            icon: ItemPixelIcon(
+                equippedId, equippedItem?['itemType']?.toString(),
+                size: 22),
+            worn: equippedItem?['itemName']?.toString() ??
+                tr(ref, 'empty_slot_label'),
+            filled: equippedItem != null,
+            chooseTip: tr(ref, 'choose_item'),
+            onChoose: candidates.isEmpty
+                ? null
+                : () => _pickForSlot(context, ref, slot, candidates, equippedId,
+                    equipFn, canEquip),
+            onClear: equippedId == null ? null : () => unequipFn(equippedId),
+          );
+        }(),
+    ];
 
-          return Card(
-            child: ListTile(
-              leading: ItemPixelIcon(
-                  equippedId, equippedItem?['itemType']?.toString()),
-              title: Text(slot),
-              subtitle: Text(equippedItem?['itemName']?.toString() ??
-                  tr(ref, 'empty_slot_label')),
-              trailing: Wrap(
-                spacing: 4,
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        caption(tr(ref, 'equipment_section')),
+        for (var i = 0; i < slotBoxes.length; i += 2)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (equippedId != null)
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      tooltip: tr(ref, 'unequip'),
-                      onPressed: () => unequipFn(equippedId),
-                    ),
-                  IconButton(
-                    icon: const Icon(Icons.edit_outlined),
-                    tooltip: tr(ref, 'choose_item'),
-                    onPressed: candidates.isEmpty
-                        ? null
-                        : () => _pickForSlot(context, ref, slot, candidates,
-                            equippedId, equipFn, canEquip),
-                  ),
+                  Expanded(child: slotBoxes[i]),
+                  const SizedBox(width: 8),
+                  Expanded(
+                      child: i + 1 < slotBoxes.length
+                          ? slotBoxes[i + 1]
+                          : const SizedBox.shrink()),
                 ],
               ),
             ),
-          );
-        }),
-        const Divider(height: 32),
-        Text(tr(ref, 'all_items'),
-            style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
+          ),
+        Text(tr(ref, 'inventory_slots_hint'),
+            style: theme.textTheme.bodySmall
+                ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
+        const SizedBox(height: 20),
+        caption('${tr(ref, 'all_items')} · ${ownedIds.length}'),
         if (ownedIds.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -500,6 +576,8 @@ class _InventoryBody extends ConsumerWidget {
               itemId: id,
               item: item,
               count: counts[id],
+              originLine: itemOriginLineFor(session.itemOrigins[id],
+                  ref.watch(geographyProvider), ref.watch(appLanguageProvider)),
               itemSet: set,
               setPiecesWorn: set?.piecesWornIn(equippedIds) ?? 0,
               isEquipped: isEquipped,
@@ -643,11 +721,16 @@ class _ItemTile extends StatelessWidget {
     this.itemSet,
     this.setPiecesWorn = 0,
     this.wornBy,
+    this.originLine,
   });
 
   final String itemId;
   final Map<String, dynamic>? item;
   final int? count;
+
+  /// Where the item came from (v1.204, see itemOriginLineFor): a row of
+  /// the detail dialog; null when the pack has no record of it.
+  final String? originLine;
 
   /// Who else wears every copy of this item, when no copy is free for the
   /// character this inventory belongs to.
@@ -747,24 +830,51 @@ class _ItemTile extends StatelessWidget {
         '${t('vs_equipped_suffix')}: ${comparisonItem?['itemName'] ?? comparisonItemId}',
     ];
 
+    final ink = InkColors.of(context);
+    final theme = Theme.of(context);
+    final rarity = item?['rarity']?.toString() ?? '';
+    final rarityLabel = itemRarityLabelFor(language, rarity);
+    final lore = itemLoreOf(item);
     return Card(
+      margin: const EdgeInsets.only(bottom: 6),
       color: selectedForCompare
           ? colorScheme.tertiaryContainer
-          : (isEquipped ? colorScheme.primaryContainer : null),
-      // A border too: the tint alone is faint on some palettes.
-      shape: selectedForCompare || isEquipped
-          ? RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4),
-              side: BorderSide(
-                  color: selectedForCompare
-                      ? colorScheme.tertiary
-                      : colorScheme.primary),
-            )
-          : null,
+          : colorScheme.surfaceContainer,
+      // A seam round every item; gold round the one worn (v1.201).
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+        side: BorderSide(
+            color: selectedForCompare
+                ? colorScheme.tertiary
+                : isEquipped
+                    ? ink.gold
+                    : ink.seam),
+      ),
       child: ListTile(
         leading: ItemPixelIcon(itemId, itemType),
-        title: Text(itemName),
-        subtitle: Text(statsParts.join(' · ')),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(itemName,
+                  style: theme.textTheme.bodyLarge
+                      ?.copyWith(fontFamily: InkFonts.display)),
+            ),
+            // The rarity as a tag (v1.204): a Relic reads gold.
+            if (rarityLabel.isNotEmpty) ...[
+              InkTag(
+                  key: Key('rarity_tag_$itemId'),
+                  label: rarityLabel,
+                  color: itemRarityColor(colorScheme, rarity)),
+              const SizedBox(width: 4),
+            ],
+            if (isEquipped)
+              InkTag(label: t('equipped_prefix'), color: ink.gold)
+            else if (requirementUnmet)
+              InkTag(label: t('stat_requirement_label'), color: ink.ash),
+          ],
+        ),
+        subtitle: Text(statsParts.join(' · '),
+            style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
         trailing: compareMode
             ? null
             : onRead != null
@@ -790,9 +900,14 @@ class _ItemTile extends StatelessWidget {
                   title: itemName,
                   leading: ItemPixelIcon(itemId, itemType, size: 24),
                   closeLabel: t('close_button'),
+                  // Its lore (v1.204), then where it came from.
+                  description: lore.isEmpty ? null : lore,
+                  note: originLine,
                   rows: [
                     MapEntry(
                         t('item_type_label'), itemType ?? t('unknown_label')),
+                    if (rarityLabel.isNotEmpty)
+                      MapEntry(t('item_rarity_label'), rarityLabel),
                     MapEntry(t('cost_label'), '${item?['cost'] ?? 0}'),
                     if (equipSlot != null && equipSlot.isNotEmpty)
                       MapEntry(t('equip_slot_label'), equipSlot),

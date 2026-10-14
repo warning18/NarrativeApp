@@ -3,6 +3,7 @@
 // after unless the party breaks it.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,8 +12,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/combat/battlefield_condition.dart';
+import 'package:narrative_data_app/combat/fight_goal.dart';
 import 'package:narrative_data_app/combat/encounter.dart';
 import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 
@@ -58,6 +61,15 @@ Future<void> _tapWhenEnabled(WidgetTester tester, String label) async {
   await tester.tap(find.text(label));
 }
 
+/// Whether the party's turn is open: Roll Dice there and enabled.
+bool _rollEnabled() {
+  final button = find.ancestor(
+      of: find.text('Roll Dice'),
+      matching: find.byWidgetPredicate((w) => w is ButtonStyleButton));
+  return button.evaluate().isNotEmpty &&
+      (button.evaluate().first.widget as ButtonStyleButton).enabled;
+}
+
 Map<String, dynamic> _enemy(String id) {
   for (final path in [
     'assets/gamedata/enemies.json',
@@ -84,7 +96,9 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+    await tester.pumpWidget(ProviderScope(
+        overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
+        child: const MyApp()));
     await _settle(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
@@ -116,7 +130,8 @@ void main() {
               // Never an ambush, which would shift the wind-up a turn
               // earlier; High Ground only changes Defend blocks.
               modifiers: const EncounterModifiers(
-                  forcedCondition: BattlefieldCondition.highGround),
+                  forcedCondition: BattlefieldCondition.highGround,
+                  forcedGoal: FightGoal.slay),
             )));
     await _settle(tester);
     await tester.tap(find.text('Enter Battle'));
@@ -133,13 +148,17 @@ void main() {
 
     await _tapWhenEnabled(tester, 'Roll Dice');
     await _tapWhenEnabled(tester, 'Confirm');
-    await _pumpUntil(
-        tester,
-        () =>
-            _logShows('comes crashing down') ||
-            _logShows('knocked off balance'));
+    // The ticker under the cards shows only the last two log lines, and
+    // the enemy's turn can write more than that in one frame (the blow,
+    // a status, the next round's lines), so the landing line is read from
+    // the full log once the next round waits on the party.
+    await _pumpUntil(tester, () => _rollEnabled());
+    await tester.tap(find.byIcon(Icons.unfold_more));
+    await tester.pump(const Duration(milliseconds: 600));
     expect(_logShows('comes crashing down') || _logShows('knocked off balance'),
-        isTrue);
+        isTrue,
+        reason: 'the wind-up neither landed nor broke');
+    await tester.tapAt(const Offset(195, 40));
     await tester.pump(const Duration(seconds: 3));
   });
 }

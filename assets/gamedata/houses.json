@@ -1,9 +1,13 @@
 {
   "keldas_hall": {
     "houseID": "keldas_hall",
+    "category": "company",
     "houseName": "Kelda's Hall",
-    "description": "A reinforced forge-hall built to Kelda's own specifications. She's fought under enough collapsing roofs for one lifetime and won't stand watch under another until she's satisfied this one holds.",
-    "buildCost": 150,
+    "description": "A reinforced forge-hall built to Kelda’s own specifications. She’s fought under enough collapsing roofs for one lifetime and won’t stand watch under another until she’s satisfied this one holds.",
+    "buildCost": 100,
+    "materialCost": {
+      "material_timber": 2
+    },
     "partyCapacityBonus": 0,
     "requiredFlags": [],
     "requiredAllyId": "kelda",
@@ -12,9 +16,14 @@
   },
   "barracks_annex": {
     "houseID": "barracks_annex",
+    "category": "company",
     "houseName": "Barracks Annex",
-    "description": "Extra bunks, a second mess table, room enough for one more pair of hands at your back — no one companion's claim on it, just more camp than you started with.",
-    "buildCost": 200,
+    "description": "Extra bunks, a second mess table, room enough for one more pair of hands at your back — no one companion’s claim on it, just more camp than you started with.",
+    "buildCost": 130,
+    "materialCost": {
+      "material_timber": 3,
+      "material_cut_stone": 2
+    },
     "partyCapacityBonus": 1,
     "requiredFlags": [],
     "houseName_fr": "L’Annexe de la caserne",
@@ -22,9 +31,14 @@
   },
   "hammersmith": {
     "houseID": "hammersmith",
+    "category": "workshops",
     "houseName": "Hammersmith",
-    "description": "A proper forge, not a market stall — anvil, bellows, and a hammersmith who only works metal worth the effort. Opens the Forge's finest work to anyone strong and sturdy enough to carry it.",
-    "buildCost": 350,
+    "description": "A proper forge, not a market stall — anvil, bellows, and a hammersmith who only works metal worth the effort. Opens the Forge’s finest work to anyone strong and sturdy enough to carry it.",
+    "buildCost": 230,
+    "materialCost": {
+      "material_iron_ore": 3,
+      "material_slag_glass": 2
+    },
     "partyCapacityBonus": 0,
     "unlocksShopId": "hammersmith_forge",
     "requiredFlags": [
@@ -35,22 +49,32 @@
   },
   "academy": {
     "houseID": "academy",
+    "category": "workshops",
     "houseName": "Academy",
-    "description": "A study built for one purpose: giving whatever's left of your arcane education somewhere real to go. The staves it can now order in aren't for browsing — they're for a mind that's already done the work.",
-    "buildCost": 350,
+    "description": "A study built for one purpose: giving whatever’s left of your arcane education somewhere real to go. The staves it can now order in aren’t for browsing — they’re for a mind that’s already done the work.",
+    "buildCost": 230,
+    "materialCost": {
+      "material_slag_glass": 2,
+      "material_cut_stone": 2
+    },
     "partyCapacityBonus": 0,
     "unlocksShopId": "arcane_academy",
     "requiredFlags": [
       "cinder_row_cleared"
     ],
     "houseName_fr": "L’Académie",
-    "description_fr": "Un cabinet d’étude bâti dans un seul but : offrir un vrai débouché à ce qu’il reste de votre éducation arcanique. Les bâtons qu’on peut désormais y commander ne sont pas faits pour qu’on flâne devant — ils attendent un esprit qui a déjà fait le travail."
+    "description_fr": "Un cabinet d’étude bâti dans un seul but : offrir un vrai débouché à ce qu’il reste de votre éducation arcanique. Les bâtons qu’on peut désormais y commander ne sont pas faits pour qu’on flâne devant — ils attendent un esprit qui a déjà fait le travail."
   },
   "sharpweave_den": {
     "houseID": "sharpweave_den",
+    "category": "workshops",
     "houseName": "The Needle House",
     "description": "A back room with no sign, kept quiet on purpose — the kind of contact only a light-footed, fast-handed sort ever manages to make. Opens a door most people never know is there.",
-    "buildCost": 350,
+    "buildCost": 230,
+    "materialCost": {
+      "material_timber": 2,
+      "material_slag_glass": 2
+    },
     "partyCapacityBonus": 0,
     "unlocksShopId": "sharpweave_den",
     "requiredFlags": [
@@ -61,20 +85,31 @@
   },
   "smugglers_cellar": {
     "houseID": "smugglers_cellar",
-    "houseName": "Smugglers' Cellar",
-    "description": "The Smugglers' Vault goes wherever the Crusade's supply ships go, and it found our cove before the Inquisition did. Give it a dry cellar under the camp's standing wall and it opens its counter here: contraband steel a cut above the harbor forges, and a relic or two nobody admits to owning.",
-    "buildCost": 400,
+    "category": "workshops",
+    "houseName": "Smugglers’ Cellar",
+    "description": "The Smugglers’ Vault goes wherever the Crusade’s supply ships go, and it found our cove before the Inquisition did. Give it a dry cellar under the camp’s standing wall and it opens its counter here: contraband steel a cut above the harbor forges, and a relic or two nobody admits to owning.",
+    "buildCost": 270,
+    "materialCost": {
+      "material_timber": 3,
+      "material_cut_stone": 3
+    },
     "partyCapacityBonus": 0,
     "unlocksShopId": "smugglers_vault",
     "requiredFlags": [],
     "houseName_fr": "La Cave des contrebandiers",
-    "description_fr": "Le Coffre des Contrebandiers va partout où vont les navires de ravitaillement de la Croisade, et il a trouvé notre crique avant l'Inquisition. Donnez-lui une cave au sec sous le mur encore debout du camp, et il y ouvre son comptoir : de l'acier de contrebande d'une autre trempe que celui des forges du port, et une relique ou deux que personne n'avoue posséder."
+    "description_fr": "Le Coffre des Contrebandiers va partout où vont les navires de ravitaillement de la Croisade, et il a trouvé notre crique avant l’Inquisition. Donnez-lui une cave au sec sous le mur encore debout du camp, et il y ouvre son comptoir : de l’acier de contrebande d’une autre trempe que celui des forges du port, et une relique ou deux que personne n’avoue posséder."
   },
   "hearth_hall": {
     "houseID": "hearth_hall",
+    "category": "greatWorks",
     "houseName": "Hearth-Hall",
     "description": "A long hall with one fire that is never let go out, built the dwarven way with the stone-mark cut over the door. The party sleeps under it between crossings and carries a little of its warmth into every fight.",
-    "buildCost": 1500,
+    "buildCost": 1000,
+    "materialCost": {
+      "material_iron_ore": 4,
+      "material_slag_glass": 3,
+      "material_ash_steel": 2
+    },
     "partyCapacityBonus": 0,
     "partyHealthBonus": 3,
     "requiredFlags": [
@@ -85,22 +120,33 @@
   },
   "banner_loft": {
     "houseID": "banner_loft",
+    "category": "greatWorks",
     "houseName": "Banner Loft",
-    "description": "A loft where the camp's banners are sewn and painted, and where every companion's sigil is worked into the cloth the party fights under. Power is worn here, not held: the whole party hits harder for it.",
-    "buildCost": 2500,
+    "description": "A loft where the camp’s banners are sewn and painted, and where every companion’s sigil is worked into the cloth the party fights under. Power is worn here, not held: the whole party hits harder for it.",
+    "buildCost": 1600,
+    "materialCost": {
+      "material_rime_crystal": 4,
+      "material_tear_glass": 3,
+      "material_shroud_thread": 1
+    },
     "partyCapacityBonus": 0,
     "partyDamageBonus": 3,
     "requiredFlags": [
       "ossuary_galleries_cleared"
     ],
     "houseName_fr": "Le Grenier aux bannières",
-    "description_fr": "Un grenier où l’on coud et peint les bannières du camp, et où le sigil de chaque compagnon est travaillé dans la toile sous laquelle combat le groupe. Ici, le pouvoir se porte, il ne se tient pas : tout le groupe en frappe plus fort."
+    "description_fr": "Un grenier où l’on coud et peint les bannières du camp, et où le sigil de chaque compagnon est travaillé dans la toile sous laquelle combat le groupe. Ici, le pouvoir se porte, il ne se tient pas : tout le groupe en frappe plus fort."
   },
   "shroud_shrine": {
     "houseID": "shroud_shrine",
+    "category": "greatWorks",
     "houseName": "Shroud Shrine",
-    "description": "A shrine to hold the Shroud's pieces between the road and the crossing, built from the Dead Heart's stone. Whatever the Shroud has learned of the tear, the party wears a little of it.",
-    "buildCost": 4000,
+    "description": "A shrine to hold the Shroud’s pieces between the road and the crossing, built from the Dead Heart’s stone. Whatever the Shroud has learned of the tear, the party wears a little of it.",
+    "buildCost": 2000,
+    "materialCost": {
+      "material_tear_glass": 4,
+      "material_shroud_thread": 3
+    },
     "partyCapacityBonus": 0,
     "partyHealthBonus": 2,
     "partyDamageBonus": 2,
@@ -112,12 +158,17 @@
   },
   "harbor": {
     "houseID": "harbor",
+    "category": "sea",
     "houseName": "The Harbor",
-    "description": "A stone quay run out from the cove's standing wall, a slipway above the tide line and a shipwright who stayed. Once it stands, the Rusty Eel is refitted here: parts fitted to her slots, her hull made sound between voyages.",
-    "buildCost": 250,
+    "description": "A stone quay run out from the cove’s standing wall, a slipway above the tide line and a shipwright who stayed. Once it stands, the Rusty Eel is refitted here: parts fitted to her slots, her hull made sound between voyages.",
+    "buildCost": 0,
+    "materialCost": {
+      "material_timber": 4,
+      "material_cut_stone": 2
+    },
     "partyCapacityBonus": 0,
     "requiredFlags": [],
     "houseName_fr": "Le Port",
-    "description_fr": "Un quai de pierre lancé depuis le mur encore debout de la crique, une cale de halage au-dessus de la ligne de marée et un charpentier de marine qui est resté. Une fois bâti, c’est ici que le Rusty Eel est radoubé : des pièces montées dans ses emplacements, sa coque remise en état entre deux traversées."
+    "description_fr": "Un quai de pierre lancé depuis le mur encore debout de la crique, une cale de halage au-dessus de la ligne de marée et un charpentier de marine qui est resté. Une fois bâti, c’est ici que le Rusty Eel est radoubé : des pièces montées dans ses emplacements, sa coque remise en état entre deux traversées."
   }
 }

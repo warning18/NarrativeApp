@@ -8,6 +8,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/story_providers.dart';
+import '../widgets/geography_widgets.dart' show GeoLocationField;
 
 class StoryNodeEditorScreen extends ConsumerStatefulWidget {
   const StoryNodeEditorScreen({super.key, required this.node});
@@ -29,6 +30,9 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
   late final TextEditingController _reqCharismaController;
   late final TextEditingController _authoringCommentController;
   late final TextEditingController _politicsOnEnterController;
+
+  /// Where the scene happens (v1.197, see StoryNode.location).
+  late final TextEditingController _locationController;
   late List<_ChoiceEditState> _choices;
   bool _saving = false;
 
@@ -53,6 +57,8 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
         TextEditingController(text: widget.node.authoringComment ?? '');
     _politicsOnEnterController = TextEditingController(
         text: politicsEditorText(widget.node.politicsOnEnter));
+    _locationController =
+        TextEditingController(text: widget.node.location ?? '');
     _choices = widget.node.choices.map((c) => _ChoiceEditState(c)).toList();
   }
 
@@ -67,6 +73,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
     _reqCharismaController.dispose();
     _authoringCommentController.dispose();
     _politicsOnEnterController.dispose();
+    _locationController.dispose();
     for (final choice in _choices) {
       choice.dispose();
     }
@@ -112,6 +119,8 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       noDetour: widget.node.noDetour,
       politicsOnEnter: politicsFromEditorText(
           _politicsOnEnterController.text, widget.node.politicsOnEnter),
+      location: locationFromEditorText(
+          _locationController.text, widget.node.location),
     );
     await saveStoryNode(ref, updated);
     if (!mounted) return;
@@ -200,6 +209,15 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
             ),
           ),
           const SizedBox(height: 12),
+          // Where it happens (v1.197): a place of geography.json.
+          GeoLocationField(
+            controller: _locationController,
+            label: t('node_location_label'),
+            hint: t('node_location_hint'),
+            unknown: t('node_location_unknown'),
+            pick: t('node_location_pick'),
+          ),
+          const SizedBox(height: 12),
           ExpansionTile(
             tilePadding: EdgeInsets.zero,
             title: Text(t('requirements')),
@@ -282,6 +300,15 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
   }
 }
 
+/// The place the editor's field [text] says (v1.197, see
+/// StoryNode.location): emptied, the scene keeps saying nowhere when it
+/// said so ('') and says nothing when it said nothing (null).
+String? locationFromEditorText(String text, String? original) {
+  final id = text.trim();
+  if (id.isNotEmpty) return id;
+  return original == null ? null : '';
+}
+
 /// [politics] as the editor's JSON field shows it: '' for none.
 String politicsEditorText(StoryPolitics? politics) =>
     politics == null ? '' : jsonEncode(politics.toJson());
@@ -294,6 +321,24 @@ StoryPolitics? politicsFromEditorText(String text, StoryPolitics? original) {
     final raw = jsonDecode(text);
     if (raw is! Map) return original;
     return StoryPolitics.tryParse(raw);
+  } on FormatException {
+    return original;
+  }
+}
+
+/// A choice's politics gate as the editor's JSON field shows it (v1.196,
+/// see [StoryChoice.politicsIf]): '' for none.
+String politicsIfEditorText(Map<String, dynamic> gate) =>
+    gate.isEmpty ? '' : jsonEncode(gate);
+
+/// The gate the editor's JSON field [text] says: none when it is empty;
+/// [original] kept, as it was, when it is no JSON object.
+Map<String, dynamic> politicsIfFromEditorText(
+    String text, Map<String, dynamic> original) {
+  if (text.trim().isEmpty) return const {};
+  try {
+    final raw = jsonDecode(text);
+    return raw is Map ? Map<String, dynamic>.from(raw) : original;
   } on FormatException {
     return original;
   }
@@ -383,12 +428,21 @@ class _ChoiceEditState {
             TextEditingController(text: choice.checkDC?.toString() ?? ''),
         failNextId = choice.failNextId,
         loseNextId = choice.loseNextId,
+        failNoteController = TextEditingController(text: choice.failNote ?? ''),
+        failNoteFrController =
+            TextEditingController(text: choice.failNoteFr ?? ''),
+        loseNoteController = TextEditingController(text: choice.loseNote ?? ''),
+        loseNoteFrController =
+            TextEditingController(text: choice.loseNoteFr ?? ''),
         challengeSuccessesNeededController = TextEditingController(
             text: choice.challengeSuccessesNeeded?.toString() ?? ''),
         challengeMaxFailuresController = TextEditingController(
             text: choice.challengeMaxFailures?.toString() ?? ''),
         politicsController =
-            TextEditingController(text: politicsEditorText(choice.politics));
+            TextEditingController(text: politicsEditorText(choice.politics)),
+        politicsIfController = TextEditingController(
+            text: politicsIfEditorText(choice.politicsIf)),
+        hostFight = choice.hostFight;
 
   _ChoiceEditState.blank() : this(const StoryChoice(text: '', nextId: 'EXIT'));
 
@@ -435,11 +489,25 @@ class _ChoiceEditState {
   final TextEditingController checkDCController;
   String? failNextId;
   String? loseNextId;
+
+  /// What the Journey map tells while the party is carried along the fail
+  /// or lose branch (see [StoryChoice.failNote]).
+  final TextEditingController failNoteController;
+  final TextEditingController failNoteFrController;
+  final TextEditingController loseNoteController;
+  final TextEditingController loseNoteFrController;
   final TextEditingController challengeSuccessesNeededController;
   final TextEditingController challengeMaxFailuresController;
 
   /// The choice's politics as JSON (see [StoryChoice.politics]).
   final TextEditingController politicsController;
+
+  /// The choice's politics gate as JSON (v1.196, see
+  /// [StoryChoice.politicsIf]).
+  final TextEditingController politicsIfController;
+
+  /// One of the last battles: the Host fights beside the party (v1.196).
+  bool hostFight;
 
   void dispose() {
     textController.dispose();
@@ -456,6 +524,10 @@ class _ChoiceEditState {
     loseAllyIdController.dispose();
     lockedTextController.dispose();
     lockedTextFrController.dispose();
+    failNoteController.dispose();
+    failNoteFrController.dispose();
+    loseNoteController.dispose();
+    loseNoteFrController.dispose();
     triggerEnemyIdController.dispose();
     triggerEnemyIdsController.dispose();
     unlockShopIdController.dispose();
@@ -464,6 +536,7 @@ class _ChoiceEditState {
     challengeSuccessesNeededController.dispose();
     challengeMaxFailuresController.dispose();
     politicsController.dispose();
+    politicsIfController.dispose();
   }
 
   StoryChoice toChoice() => StoryChoice(
@@ -525,6 +598,18 @@ class _ChoiceEditState {
         checkDC: int.tryParse(checkDCController.text.trim()),
         failNextId: (failNextId?.isEmpty ?? true) ? null : failNextId,
         loseNextId: (loseNextId?.isEmpty ?? true) ? null : loseNextId,
+        failNote: failNoteController.text.trim().isEmpty
+            ? null
+            : failNoteController.text.trim(),
+        failNoteFr: failNoteFrController.text.trim().isEmpty
+            ? null
+            : failNoteFrController.text.trim(),
+        loseNote: loseNoteController.text.trim().isEmpty
+            ? null
+            : loseNoteController.text.trim(),
+        loseNoteFr: loseNoteFrController.text.trim().isEmpty
+            ? null
+            : loseNoteFrController.text.trim(),
         challengeSuccessesNeeded:
             int.tryParse(challengeSuccessesNeededController.text.trim()),
         challengeMaxFailures:
@@ -534,14 +619,25 @@ class _ChoiceEditState {
         chestFloor: _original.chestFloor,
         isHunterAmbush: _original.isHunterAmbush,
         showIfFlags: _original.showIfFlags,
+        politicsIf: politicsIfFromEditorText(
+            politicsIfController.text, _original.politicsIf),
+        hostFight: hostFight,
         mainQuest: _original.mainQuest,
         pays: _original.pays,
         travelPlaceId: _original.travelPlaceId,
         avoidFightOnSuccess: _original.avoidFightOnSuccess,
         forcedCondition: _original.forcedCondition,
+        forcedAnomaly: _original.forcedAnomaly,
+        forcedStage: _original.forcedStage,
+        spot: _original.spot,
         approvalMods: _original.approvalMods,
+        grantMaterials: _original.grantMaterials,
         roadEvent: _original.roadEvent,
         shipBattleId: _original.shipBattleId,
+        landRouteId: _original.landRouteId,
+        noHeal: _original.noHeal,
+        tutorialFight: _original.tutorialFight,
+        luckyDieReveal: _original.luckyDieReveal,
         politics:
             politicsFromEditorText(politicsController.text, _original.politics),
       );
@@ -834,6 +930,21 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   onChanged: (value) =>
                       setState(() => state.loseNextId = value),
                 ),
+                for (final (controller, label) in [
+                  (state.failNoteController, 'fail_note'),
+                  (state.failNoteFrController, 'fail_note_fr'),
+                  (state.loseNoteController, 'lose_note'),
+                  (state.loseNoteFrController, 'lose_note_fr'),
+                ]) ...[
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                      labelText: t(label),
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 8),
                 Row(
                   children: [
@@ -867,6 +978,20 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   controller: state.politicsController,
                   label: t('politics_editor_label'),
                   help: t('politics_editor_help'),
+                ),
+                const SizedBox(height: 8),
+                // The climb (v1.196): the choice's gate, and the last
+                // battles' mark.
+                _PoliticsField(
+                  controller: state.politicsIfController,
+                  label: t('politics_if_editor_label'),
+                  help: t('politics_if_editor_help'),
+                ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(t('host_fight_editor_label')),
+                  value: state.hostFight,
+                  onChanged: (value) => setState(() => state.hostFight = value),
                 ),
               ],
             ),

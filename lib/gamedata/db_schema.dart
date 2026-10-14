@@ -1,5 +1,19 @@
+import '../combat/field_anomaly.dart' show FightStage;
 import '../combat/skill_vfx.dart';
 import '../data/companion_remarks.dart' show remarkTriggerOptions;
+import '../data/land_crossing.dart' show landTerrains;
+import '../data/geography.dart'
+    show
+        BiomePattern,
+        GeoLevel,
+        geoBuildingKinds,
+        geoGlyphs,
+        geoKinds,
+        geoLights,
+        geoMaxDanger,
+        geoPlaceTags;
+import '../data/ship_forms.dart' show HullKind;
+import '../data/ship_looks.dart' show allShipLookPatterns, shipLookCategories;
 import '../data/signs.dart'
     show PatronKind, SignEffectKind, SignSlot, patronIconNames;
 import 'field_schema.dart';
@@ -172,6 +186,15 @@ const List<String> spellScalingOptions = [
 
 const List<String> slotTypeOptions = ['Weapon', 'Shield', 'Utility', 'Sail'];
 
+/// How rare a ship part is, lowest first (ship_parts.json `rarity`).
+const List<String> shipPartRarityOptions = [
+  'common',
+  'uncommon',
+  'rare',
+  'epic',
+  'legendary',
+];
+
 const List<String> questCategoryOptions = ['Main', 'Side', 'Daily', 'Event'];
 
 const List<String> alignmentOptions = ['Good', 'Neutral', 'Evil'];
@@ -214,8 +237,29 @@ const List<String> skillMoveConditionOptions = [
 // for "this skill doesn't inflict a status" — the common case.
 const List<String> statusEffectOptions = ['None', 'Poison', 'Stun', 'Weaken'];
 
-/// Rarity band the spoils chest draws gear from (see loot_box.dart).
-const List<String> rarityOptions = ['Common', 'Uncommon', 'Rare'];
+/// Rarity band the spoils chest draws gear from (see loot_box.dart). A
+/// Relic (v1.204) is a Rare with a story: the Shroud, a saint's bones, a
+/// crown -- drawn with the Rares and read on the signs' scale as heroic.
+const List<String> rarityOptions = ['Common', 'Uncommon', 'Rare', 'Relic'];
+
+/// The icon keys a person's `kind` may take in npcs.json (v1.204, see
+/// npcKindIcon in game_icons.dart and people_codex.dart).
+const List<String> npcKindOptions = [
+  'inquisitor',
+  'soldier',
+  'merchant',
+  'elder',
+  'smuggler',
+  'healer',
+  'scholar',
+  'kin',
+  'sailor',
+  'penitent',
+  'noble',
+  'beast',
+  'child',
+  'keeper',
+];
 
 /// See `UniqueEffect` in lib/combat/gear_effects.dart.
 const List<String> uniqueEffectOptions = [
@@ -247,6 +291,16 @@ final DbSchema itemsSchema = DbSchema(
     FieldSchema(key: 'itemName', label: 'Item Name', type: FieldType.text),
     FieldSchema(
         key: 'itemName_fr', label: 'Item Name (FR)', type: FieldType.text),
+    // Lore (v1.204): a sentence or two in the game's voice, shown in the
+    // inventory's detail dialog and the item sheet.
+    FieldSchema(
+        key: 'description',
+        label: 'Description (lore)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
+        type: FieldType.multilineText),
     FieldSchema(
       key: 'itemType',
       label: 'Item Type',
@@ -457,6 +511,10 @@ final DbSchema itemsSchema = DbSchema(
         key: 'craftMaterials',
         label: 'Forging materials {itemId: count}',
         type: FieldType.json),
+    FieldSchema(
+        key: 'materialTier',
+        label: 'Material tier (1-4, a Material only; see materials.dart)',
+        type: FieldType.integer),
     visualAssetFieldSchema('items'),
   ],
 );
@@ -642,6 +700,32 @@ final DbSchema skillsSchema = DbSchema(
       defaultValue: false,
     ),
     FieldSchema(
+      key: 'fusionOf',
+      label: 'Fusion Of (two skills known; offered by the clans behind them)',
+      type: FieldType.stringList,
+    ),
+    FieldSchema(
+      key: 'subclanId',
+      label:
+          'Sub-clan (offered once it is your friend, by its clan, in its voice)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'hiddenFlags',
+      label: 'Secret: story flags that reveal it (all held)',
+      type: FieldType.stringList,
+    ),
+    FieldSchema(
+      key: 'hiddenClan',
+      label: 'Secret: the clan that teaches it',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'ascendsSkillID',
+      label: 'Ascends Skill (the upgrade a clan offers at Friend standing)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
       key: 'inflictsStatus',
       label: 'Inflicts Status Effect (on hit)',
       type: FieldType.enumeration,
@@ -657,6 +741,107 @@ final DbSchema skillsSchema = DbSchema(
       key: 'statusMagnitude',
       label:
           'Status Magnitude (Poison: damage/round, Weaken: % damage reduction)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'inflictsStatus2',
+      label: 'Second Status Effect (laid beside the first)',
+      type: FieldType.enumeration,
+      enumOptions: statusEffectOptions,
+    ),
+    FieldSchema(
+      key: 'statusDuration2',
+      label: 'Second Status Duration (rounds)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'statusMagnitude2',
+      label: 'Second Status Magnitude',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'statusAll',
+      label: 'Status lands on every enemy standing',
+      type: FieldType.boolean,
+      defaultValue: false,
+    ),
+    FieldSchema(
+      key: 'blockAmount',
+      label: 'Block the skill raises (as a Defend face)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'reflectStatus',
+      label: 'Ward: status laid on an enemy that strikes the block',
+      type: FieldType.enumeration,
+      enumOptions: statusEffectOptions,
+    ),
+    FieldSchema(
+      key: 'reflectDuration',
+      label: 'Ward Status Duration (rounds)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'reflectMagnitude',
+      label: 'Ward Status Magnitude',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'strikes',
+      label: 'Blows struck (damage fields are per blow; 1 = one hit)',
+      type: FieldType.integer,
+      defaultValue: 1,
+    ),
+    FieldSchema(
+      key: 'splashShare',
+      label: 'Share of the damage the other enemies take (0-1)',
+      type: FieldType.decimal,
+      defaultValue: 0.0,
+    ),
+    FieldSchema(
+      key: 'splashTargets',
+      label: 'How many other enemies it reaches (0 = all)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'pierces',
+      label: 'Goes through a raised guard and Armored hide',
+      type: FieldType.boolean,
+      defaultValue: false,
+    ),
+    FieldSchema(
+      key: 'damageFromArmor',
+      label: 'Extra damage per point of the caster\'s armor',
+      type: FieldType.decimal,
+      defaultValue: 0.0,
+    ),
+    FieldSchema(
+      key: 'cleanse',
+      label: 'Cleanses the caster (Poison, or All)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'healAll',
+      label: 'The heal reaches the whole party',
+      type: FieldType.boolean,
+      defaultValue: false,
+    ),
+    FieldSchema(
+      key: 'chargesMomentum',
+      label: 'Fills the momentum (next strike is a sure critical)',
+      type: FieldType.boolean,
+      defaultValue: false,
+    ),
+    FieldSchema(
+      key: 'bonusRolls',
+      label: 'Free rerolls granted next round',
       type: FieldType.integer,
       defaultValue: 0,
     ),
@@ -745,6 +930,11 @@ final DbSchema racesSchema = DbSchema(
     FieldSchema(
         key: 'raceName_fr', label: 'Race Name (FR)', type: FieldType.text),
     FieldSchema(
+        key: 'tag',
+        label: 'Tag (one word on the picker: Sturdy, Quick…)',
+        type: FieldType.text),
+    FieldSchema(key: 'tag_fr', label: 'Tag (FR)', type: FieldType.text),
+    FieldSchema(
         key: 'description',
         label: 'Description',
         type: FieldType.multilineText),
@@ -809,6 +999,11 @@ final DbSchema professionsSchema = DbSchema(
         key: 'professionName_fr',
         label: 'Profession Name (FR)',
         type: FieldType.text),
+    FieldSchema(
+        key: 'tag',
+        label: 'Tag (the role on the picker: Bulwark, Caster…)',
+        type: FieldType.text),
+    FieldSchema(key: 'tag_fr', label: 'Tag (FR)', type: FieldType.text),
     FieldSchema(
         key: 'description',
         label: 'Description',
@@ -974,6 +1169,25 @@ final DbSchema enemiesSchema = DbSchema(
         label: 'Guile (resists Perception telegraphing)',
         type: FieldType.integer,
         defaultValue: 0),
+    // v1.212: the faction whose doctrine (see lib/combat/doctrine.dart) the enemy fights
+    // under; empty for beasts, uniques and the tear's things.
+    FieldSchema(
+      key: 'faction',
+      label: 'Faction (fights under its doctrine)',
+      type: FieldType.reference,
+      referenceSchemaId: 'factions',
+    ),
+    // v1.215: how the enemy answers what the party does (see
+    // lib/combat/enemy_response.dart).
+    FieldSchema(
+      key: 'reaction',
+      label: 'Reaction (answers the party)',
+      type: FieldType.enumeration,
+      enumOptions: ['', 'counter', 'press', 'hunt_healer'],
+      help: 'counter: a heavy blow provokes a harder reply. press: a round '
+          'of Defend faces from everyone makes it press. hunt_healer: it '
+          'turns on whoever heals.',
+    ),
     // v1.162: the party's hits of these elements land ×1.5 / ×½.
     FieldSchema(
       key: 'weakTo',
@@ -1036,6 +1250,16 @@ final DbSchema enemiesSchema = DbSchema(
       label:
           'Boss Phases [{healthThreshold (%), name, nameFr, message, messageFr, damageMultiplier, healPercent, cleanse, addMoves: [skill moves], replaceMoves}]',
       type: FieldType.json,
+    ),
+    FieldSchema(
+      key: 'biomes',
+      label: 'Lives in (biomes)',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'biomes',
+      help: 'The biomes it lives in (biomes.json, v1.197): a champion on a '
+          'road through one of them is drawn from those that live there. '
+          'None for a foe with no home (a boss of one place, a summoned '
+          'thing).',
     ),
     visualAssetFieldSchema('enemies'),
   ],
@@ -1157,13 +1381,100 @@ final DbSchema shipsSchema = DbSchema(
   label: 'Player Ships',
   assetPath: 'assets/gamedata/ships.json',
   primaryKeyField: 'shipID',
-  titleField: 'shipName',
+  titleField: 'hullName',
   visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'shipID', label: 'Ship ID', type: FieldType.text),
     FieldSchema(key: 'shipName', label: 'Ship Name', type: FieldType.text),
     FieldSchema(
         key: 'shipName_fr', label: 'Ship Name (FR)', type: FieldType.text),
+    FieldSchema(
+      key: 'hullName',
+      label: 'Hull Name (the class: Sloop, Brig, Galleon...)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+        key: 'hullName_fr', label: 'Hull Name (FR)', type: FieldType.text),
+    FieldSchema(
+      key: 'hullCost',
+      label: 'Hull Cost (gold to build her on this hull at the Harbor, once)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'unlockChapter',
+      label:
+          'Unlock Chapter (the story chapter from which the shipwright builds it; 0 = always)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'flying',
+      label:
+          'Flying (a flying boat: storms and raiders pass beneath her keel on a voyage)',
+      type: FieldType.boolean,
+      defaultValue: false,
+    ),
+    FieldSchema(
+      key: 'kind',
+      label: 'Kind (how she is drawn from above)',
+      type: FieldType.enumeration,
+      enumOptions: [for (final kind in HullKind.values) kind.name],
+      defaultValue: 'hull',
+    ),
+    FieldSchema(
+      key: 'length',
+      label: 'Length (drawn, of the battle box\'s width)',
+      type: FieldType.decimal,
+      defaultValue: 1.0,
+    ),
+    FieldSchema(
+      key: 'beam',
+      label: 'Beam (drawn, of the battle box\'s width)',
+      type: FieldType.decimal,
+      defaultValue: 0.24,
+    ),
+    FieldSchema(
+      key: 'outline',
+      label:
+          'Outline {u0, a, b, tipw, bowtip}: where she is widest, how full stern and bow are, how wide transom and stem',
+      type: FieldType.json,
+    ),
+    FieldSchema(
+      key: 'sailPlan',
+      label: 'Sail Plan [{kind: square|gaff|lateen, at: 0-1, size}] per mast',
+      type: FieldType.json,
+    ),
+    FieldSchema(
+        key: 'jibs',
+        label: 'Jibs (headsails on the bowsprit)',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'oars',
+        label: 'Oars (a side)',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+      key: 'castles',
+      label:
+          'Castles [[from, to], ...] along the hull: raised stern and bow decks',
+      type: FieldType.json,
+    ),
+    FieldSchema(
+      key: 'beak',
+      label: 'Beak (a long bowsprit and a spritsail, as on a galleon)',
+      type: FieldType.boolean,
+      defaultValue: false,
+    ),
+    FieldSchema(
+        key: 'description',
+        label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
+        type: FieldType.multilineText),
     FieldSchema(
         key: 'baseMaxHull',
         label: 'Base Max Hull',
@@ -1293,6 +1604,38 @@ final DbSchema shipPartsSchema = DbSchema(
       defaultValue: 0,
     ),
     FieldSchema(
+      key: 'hullBonus',
+      label: 'Hull Bonus (hull points this part adds to the ship)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'family',
+      label:
+          'Family (parts that are versions of one another share it; the Harbor groups them and the ship draws the family\'s fitting)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'tier',
+      label: 'Version (1 is the first of its family, higher is a better one)',
+      type: FieldType.integer,
+      defaultValue: 1,
+    ),
+    FieldSchema(
+      key: 'rarity',
+      label: 'Rarity (colours the part in the Harbor)',
+      type: FieldType.enumeration,
+      enumOptions: shipPartRarityOptions,
+      defaultValue: 'common',
+    ),
+    FieldSchema(
+      key: 'unlockChapter',
+      label:
+          'Unlock Chapter (the story chapter from which the shipwright offers it; 0 = always)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
       key: 'tetherRounds',
       label:
           'Tether Rounds (a weapon: rounds a landed hit holds a sea beast on the line)',
@@ -1326,6 +1669,88 @@ final DbSchema shipPartsSchema = DbSchema(
           'Sail Medium (the race whose way it is painted in; matching the character doubles it)',
       type: FieldType.reference,
       referenceSchemaId: 'races',
+    ),
+    FieldSchema(
+        key: 'description',
+        label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
+        type: FieldType.multilineText),
+  ],
+);
+
+final DbSchema shipLooksSchema = DbSchema(
+  id: 'ship_looks',
+  label: 'Ship Looks',
+  assetPath: 'assets/gamedata/ship_looks.json',
+  primaryKeyField: 'lookID',
+  titleField: 'lookName',
+  fields: [
+    FieldSchema(key: 'lookID', label: 'Look ID', type: FieldType.text),
+    FieldSchema(key: 'lookName', label: 'Look Name', type: FieldType.text),
+    FieldSchema(
+        key: 'lookName_fr', label: 'Look Name (FR)', type: FieldType.text),
+    FieldSchema(
+      key: 'category',
+      label: 'Category (what of the ship it dresses)',
+      type: FieldType.enumeration,
+      enumOptions: shipLookCategories,
+    ),
+    FieldSchema(
+        key: 'cost', label: 'Cost', type: FieldType.integer, defaultValue: 0),
+    FieldSchema(
+      key: 'rarity',
+      label: 'Rarity (colours the look in the Harbor)',
+      type: FieldType.enumeration,
+      enumOptions: shipPartRarityOptions,
+      defaultValue: 'common',
+    ),
+    FieldSchema(
+      key: 'unlockChapter',
+      label:
+          'Unlock Chapter (the story chapter from which the shipwright offers it; 0 = always)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'isDefault',
+      label:
+          'Is Default (the look a category wears until another is chosen; free, always owned)',
+      type: FieldType.boolean,
+      defaultValue: false,
+    ),
+    FieldSchema(
+      key: 'trophyOf',
+      label:
+          'Trophy Of (enemy_ships.json beast id: given free once it is slain, hidden until then)',
+      type: FieldType.reference,
+      referenceSchemaId: 'enemy_ships',
+    ),
+    FieldSchema(
+      key: 'color',
+      label:
+          'Color ("#RRGGBB": hull paint = the hull, sail = the cloth, figurehead = the carving, ensign = the cloth; empty = the ship\'s own)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'color2',
+      label:
+          'Color 2 (hull = the deck, sail = the pattern, figurehead = the eye, ensign = the device)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'color3',
+      label: 'Color 3 (hull = the trim, sail = the edge)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'pattern',
+      label:
+          'Pattern (sail: how the cloth is worked; figurehead: what is carved; ensign: the flag\'s shape)',
+      type: FieldType.enumeration,
+      enumOptions: allShipLookPatterns,
     ),
     FieldSchema(
         key: 'description',
@@ -1445,9 +1870,15 @@ final DbSchema questsSchema = DbSchema(
     FieldSchema(
       key: 'turnInChoices',
       label:
-          'Turn-in Choices [{choiceText, choiceText_fr, rewardGold, alignmentChange, flag, approvalMods: {companionId|*: n}, resultText, resultText_fr}]',
+          'Turn-in Choices [{choiceText, choiceText_fr, rewardGold, alignmentChange, flag, approvalMods: {companionId|*: n}, resultText, resultText_fr, politics: {standing: {faction: n}, marks: {subclan: friend|foe}} (applied once at turn-in, v1.204)}]',
       type: FieldType.json,
     ),
+    FieldSchema(
+        key: 'detourEligible',
+        label:
+            'Can be offered by a random detour or expedition (off for a quest with its own giver in a town, v1.204)',
+        type: FieldType.boolean,
+        defaultValue: true),
     visualAssetFieldSchema('quests'),
   ],
 );
@@ -1527,6 +1958,53 @@ final DbSchema shopsSchema = DbSchema(
           'the character\'s standing with them (+40% Hostile ... -25% '
           'Sworn), and it won\'t trade with someone it hunts.',
     ),
+    FieldSchema(
+      key: 'stockPool',
+      label: 'Stock Pool (a wandering shop draws its shelf from these)',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'items',
+    ),
+    FieldSchema(
+        key: 'stockDraw',
+        label: 'Stock Draw — how many of the pool are on the shelf each '
+            'chapter (0: the whole pool)',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(key: 'keeperName', label: 'Keeper', type: FieldType.text),
+    FieldSchema(
+        key: 'keeperName_fr', label: 'Keeper (FR)', type: FieldType.text),
+    FieldSchema(
+        key: 'keeperLine',
+        label: 'Keeper\'s line (Unknown or Known standing, or no faction)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'keeperLine_fr',
+        label: 'Keeper\'s line (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'keeperLineWary',
+        label: 'Keeper\'s line when Wary or Hostile',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'keeperLineWary_fr',
+        label: 'Keeper\'s line when Wary or Hostile (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'keeperLineTrusted',
+        label: 'Keeper\'s line when Trusted',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'keeperLineTrusted_fr',
+        label: 'Keeper\'s line when Trusted (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'keeperLineSworn',
+        label: 'Keeper\'s line when Sworn',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'keeperLineSworn_fr',
+        label: 'Keeper\'s line when Sworn (FR)',
+        type: FieldType.multilineText),
     visualAssetFieldSchema('shops'),
   ],
 );
@@ -1801,6 +2279,14 @@ final DbSchema housesSchema = DbSchema(
   visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'houseID', label: 'House ID', type: FieldType.text),
+    FieldSchema(
+      key: 'category',
+      label: 'Category (the building screen\'s section)',
+      type: FieldType.enumeration,
+      enumOptions: ['sea', 'company', 'workshops', 'greatWorks'],
+      help:
+          'Left empty, it is read from what the house gives (camp_works.dart).',
+    ),
     FieldSchema(key: 'houseName', label: 'House Name', type: FieldType.text),
     FieldSchema(
         key: 'houseName_fr', label: 'House Name (FR)', type: FieldType.text),
@@ -1817,6 +2303,10 @@ final DbSchema housesSchema = DbSchema(
         label: 'Build Cost (Gold)',
         type: FieldType.integer,
         defaultValue: 0),
+    FieldSchema(
+        key: 'materialCost',
+        label: 'Build materials {itemId: count}',
+        type: FieldType.json),
     FieldSchema(
       key: 'partyCapacityBonus',
       label: 'Party Capacity Bonus',
@@ -1897,6 +2387,11 @@ final DbSchema zonesSchema = DbSchema(
       label: 'Reward Gold (on zone completion)',
       type: FieldType.integer,
       defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'rewardMaterials',
+      label: 'Reward materials {itemId: count} (on zone completion)',
+      type: FieldType.json,
     ),
     FieldSchema(
       key: 'rewardItemId',
@@ -2001,6 +2496,14 @@ final DbSchema zonesSchema = DbSchema(
       label: 'Delivery Destination (FR)',
       type: FieldType.text,
     ),
+    FieldSchema(
+      key: 'location',
+      label: 'Location (geography)',
+      type: FieldType.reference,
+      referenceSchemaId: 'geography',
+      help: 'Where the expedition takes place: a place of geography.json '
+          '(v1.197).',
+    ),
     visualAssetFieldSchema('zones'),
   ],
 );
@@ -2060,10 +2563,63 @@ final DbSchema npcsSchema = DbSchema(
         key: 'description_fr',
         label: 'Description (French)',
         type: FieldType.multilineText),
+    // The People codex (v1.204, see people_codex.dart): who they are and
+    // where they are met.
+    FieldSchema(key: 'role', label: 'Role', type: FieldType.text),
+    FieldSchema(key: 'role_fr', label: 'Role (FR)', type: FieldType.text),
+    FieldSchema(
+      key: 'faction',
+      label: 'Faction (a factions.json or subclans.json id, or empty)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'placeId',
+      label: 'Place (a geography.json location or district id)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'kind',
+      label: 'Kind (icon)',
+      type: FieldType.enumeration,
+      enumOptions: npcKindOptions,
+    ),
+    FieldSchema(
+        key: 'want', label: 'What they want', type: FieldType.multilineText),
+    FieldSchema(
+        key: 'want_fr',
+        label: 'What they want (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+      key: 'metNodes',
+      label: 'Met in scenes (node ids: visiting one reveals them)',
+      type: FieldType.stringList,
+    ),
+    FieldSchema(
+      key: 'metFlags',
+      label: 'Met by flags (holding one reveals them)',
+      type: FieldType.stringList,
+    ),
+    FieldSchema(
+      key: 'shopId',
+      label: 'Shop kept (finding it reveals them)',
+      type: FieldType.text,
+    ),
     FieldSchema(
       key: 'requiredFlag',
-      label: 'Required Flag (empty = always discoverable)',
+      label:
+          'Required Flag (legacy records only, with no metNodes/metFlags/shopId: empty = always discoverable)',
       type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'states',
+      label:
+          'What passed between you [{flag, andFlags, unlessFlags, conditions, line, line_fr}], shown in order when held',
+      type: FieldType.json,
+      help: 'flag held, andFlags all held, unlessFlags none held. '
+          'conditions (optional, v1.210): a politicsIf map (standingAtLeast '
+          '{faction: n}, standingAtMost, marks {sub-clan: friend}, claim, '
+          'rungAtLeast...) that must hold too; flag may then be "" (no flag '
+          'needed).',
     ),
     FieldSchema(
       key: 'dialogueLines',
@@ -2489,6 +3045,14 @@ final DbSchema factionsSchema = DbSchema(
           'Effects are written as signs\' effects.',
     ),
     FieldSchema(
+      key: 'host',
+      label: 'Host contingent {effects, line, line_fr}',
+      type: FieldType.json,
+      help: 'What they bring to the last battles when they come with the '
+          'Host (as its banner or an ally, see throne.dart). Effects are '
+          'written as signs\' effects.',
+    ),
+    FieldSchema(
       key: 'unlockFlag',
       label: 'Unlock flag',
       type: FieldType.text,
@@ -2648,18 +3212,21 @@ final DbSchema intriguesSchema = DbSchema(
     ),
     FieldSchema(
       key: 'stages',
-      label: 'Stages [{stage, chapter, text, text_fr}]',
+      label: 'Stages [{stage, chapter, text, text_fr, npcId}]',
       type: FieldType.json,
       help: 'Six: Clue, Hook, Turn, Reveal, Crisis, Choice. The story '
-          'marks the one reached with the flag intrigue_<id>_stage_<n>.',
+          'marks the one reached with the flag intrigue_<id>_stage_<n>. '
+          'npcId (optional, v1.210): the person at that stage, an npcs.json '
+          'id; shown beside the stage once reached and on their page.',
     ),
     FieldSchema(
       key: 'outcomes',
-      label: 'Outcomes [{name, name_fr, effects}]',
+      label: 'Outcomes [{name, name_fr, effects, npcId}]',
       type: FieldType.json,
       help: 'effects: [{"faction": "vigil", "delta": 25}, {"subclan": '
           '"inquisition", "mark": "foe"}, {"note": "...", "note_fr": '
-          '"..."}].',
+          '"..."}]. npcId (optional, v1.210): the person the outcome turns '
+          'on, an npcs.json id.',
     ),
   ],
 );
@@ -2767,6 +3334,277 @@ final DbSchema signsSchema = DbSchema(
   ],
 );
 
+/// The world's places (v1.197, see lib/data/geography.dart): continents,
+/// countries, zones, locations and districts, each under its parent.
+final DbSchema geographySchema = DbSchema(
+  id: 'geography',
+  label: 'Geography',
+  assetPath: 'assets/gamedata/geography.json',
+  primaryKeyField: 'id',
+  titleField: 'name',
+  fields: [
+    FieldSchema(
+      key: 'id',
+      label: 'Place ID',
+      type: FieldType.text,
+      help: 'The record\'s key; a story node\'s `location` names it.',
+    ),
+    FieldSchema(
+      key: 'level',
+      label: 'Level',
+      type: FieldType.enumeration,
+      enumOptions: [for (final level in GeoLevel.values) level.name],
+      help: 'continent, country, zone, location or district: the parent is '
+          'always one level up.',
+    ),
+    FieldSchema(
+      key: 'parent',
+      label: 'Parent',
+      type: FieldType.reference,
+      referenceSchemaId: 'geography',
+      help: 'The place one level up; none for a continent.',
+    ),
+    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(key: 'blurb', label: 'Blurb', type: FieldType.multilineText),
+    FieldSchema(
+        key: 'blurb_fr', label: 'Blurb (FR)', type: FieldType.multilineText),
+    FieldSchema(
+      key: 'biome',
+      label: 'Biome (zones only)',
+      type: FieldType.reference,
+      referenceSchemaId: 'biomes',
+    ),
+    FieldSchema(
+      key: 'ruler',
+      label: 'Ruler (countries only)',
+      type: FieldType.reference,
+      referenceSchemaId: 'factions',
+      help: 'The faction that rules it; none for a free land.',
+    ),
+    FieldSchema(
+      key: 'kind',
+      label: 'Kind (locations only)',
+      type: FieldType.enumeration,
+      enumOptions: ['', ...geoKinds, ...geoBuildingKinds],
+    ),
+    FieldSchema(
+      key: 'water',
+      label: 'Water (locations only): a river through it, or a shore',
+      type: FieldType.enumeration,
+      enumOptions: ['', 'river', 'shore'],
+    ),
+    FieldSchema(
+      key: 'glyph',
+      label: 'Glyph (districts only): drawn on the Journey map',
+      type: FieldType.enumeration,
+      enumOptions: ['', ...geoGlyphs],
+    ),
+    FieldSchema(
+      key: 'stage',
+      label: 'Fight stage (v1.241)',
+      type: FieldType.enumeration,
+      enumOptions: ['', for (final stage in FightStage.values) stage.name],
+      help: 'How a fight here looks and which ground anomalies it can meet. '
+          'Empty: the stage of the land (its zone\'s biome); a place inside '
+          'a building (a prison, a crypt, a cathedral) is a hall. The '
+          'nearest one up the chain applies.',
+    ),
+    FieldSchema(
+      key: 'danger',
+      label: 'Danger (v1.242)',
+      type: FieldType.enumeration,
+      enumOptions: ['', for (var i = 0; i <= geoMaxDanger; i++) '$i'],
+      help: '0 safe, 1 ordinary, up to $geoMaxDanger deadly. The roads to a '
+          'dangerous place hold events more often, and a fight there meets '
+          'a ground anomaly more often. Empty: the place above it says, and '
+          'with none, 1.',
+    ),
+    FieldSchema(
+      key: 'light',
+      label: 'Light (v1.242)',
+      type: FieldType.enumeration,
+      enumOptions: ['', ...geoLights],
+      help: 'The light a fight here is fought in: night and dark make the '
+          'Dark battlefield likelier and dim the backdrop. Empty: the place '
+          'above it says, and with none, the day\'s.',
+    ),
+    FieldSchema(
+      key: 'controller',
+      label: 'Controller (v1.242)',
+      type: FieldType.reference,
+      referenceSchemaId: 'factions',
+      help: 'The faction that holds this place. Its shops here price by '
+          'the standing with it. Empty: the place above it says, and with '
+          'none, the country\'s ruler.',
+    ),
+    FieldSchema(
+      key: 'tags',
+      label: 'Tags (v1.242)',
+      type: FieldType.multiEnum,
+      enumOptions: geoPlaceTags,
+      help: 'What kind of place it is. A holy place favours a spring or '
+          'the light, a haunted one an eclipse, a ruin falling stone. A '
+          'place has its own tags and those of the places above it.',
+    ),
+    FieldSchema(
+      key: 'watches',
+      label: 'Watches to walk here (v1.242)',
+      type: FieldType.integer,
+      defaultValue: 0,
+      help: 'Watches a walk to this place takes (four make a day, each '
+          'costs the road\'s ration). 0: the place above it says, and with '
+          'none, 2.',
+    ),
+    FieldSchema(
+      key: 'landmark',
+      label: 'Landmark',
+      type: FieldType.text,
+      help: 'The world map\'s landmark id that lies here (world_map.dart), '
+          'or empty. A district with several uses Landmarks instead.',
+    ),
+    FieldSchema(
+      key: 'landmarks',
+      label: 'Landmarks',
+      type: FieldType.stringList,
+      help: 'Several landmark ids, one per line.',
+    ),
+  ],
+);
+
+/// The kinds of land a zone can be (v1.197, see lib/data/geography.dart):
+/// what lives and grows there, its weather and hazards, and how the
+/// Journey map paints it.
+final DbSchema biomesSchema = DbSchema(
+  id: 'biomes',
+  label: 'Biomes',
+  assetPath: 'assets/gamedata/biomes.json',
+  primaryKeyField: 'id',
+  titleField: 'name',
+  fields: [
+    FieldSchema(key: 'id', label: 'Biome ID', type: FieldType.text),
+    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(key: 'blurb', label: 'Blurb', type: FieldType.multilineText),
+    FieldSchema(
+        key: 'blurb_fr', label: 'Blurb (FR)', type: FieldType.multilineText),
+    FieldSchema(
+      key: 'fauna',
+      label: 'Fauna [{name, name_fr, note, note_fr}]',
+      type: FieldType.json,
+      help: 'Six, each with a short line.',
+    ),
+    FieldSchema(
+      key: 'flora',
+      label: 'Flora [{name, name_fr, note, note_fr}]',
+      type: FieldType.json,
+      help: 'Six, each with a short line.',
+    ),
+    FieldSchema(
+      key: 'weather',
+      label: 'Weather [{name, name_fr}]',
+      type: FieldType.json,
+      help: 'Three.',
+    ),
+    FieldSchema(
+      key: 'hazards',
+      label: 'Hazards [{id, name, name_fr, text, text_fr, push, push_fr, '
+          'wait, wait_fr}]',
+      type: FieldType.json,
+      help: 'Two. A road through the land may hold one: text is its scene '
+          '(first person), push and wait the two choices.',
+    ),
+    FieldSchema(
+      key: 'palette',
+      label: 'Palette {ground, detail, accent, water}',
+      type: FieldType.json,
+      help: 'Colours as "#RRGGBB", for the Journey map\'s backdrop.',
+    ),
+    FieldSchema(
+      key: 'pattern',
+      label: 'Pattern',
+      type: FieldType.enumeration,
+      enumOptions: [for (final pattern in BiomePattern.values) pattern.id],
+      help: 'What the Journey map paints under a place of this land.',
+    ),
+  ],
+);
+
+/// Land expeditions' routes (land_crossing.dart): a long land route
+/// played like a voyage, an event a day.
+final DbSchema landRoutesSchema = DbSchema(
+  id: 'land_routes',
+  label: 'Land Routes',
+  assetPath: 'assets/gamedata/land_routes.json',
+  primaryKeyField: 'id',
+  titleField: 'name',
+  fields: [
+    FieldSchema(key: 'id', label: 'Route ID', type: FieldType.text),
+    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(
+        key: 'from',
+        label: 'From (a world_roads.dart place id)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'to',
+        label: 'To (a world_roads.dart place id)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'roads',
+        label: 'Roads (world_roads.dart ids, in order)',
+        type: FieldType.stringList),
+    FieldSchema(
+        key: 'days',
+        label: 'Days (an event a day)',
+        type: FieldType.integer,
+        defaultValue: 3),
+    FieldSchema(key: 'biome', label: 'Biome', type: FieldType.text),
+    FieldSchema(
+      key: 'terrain',
+      label: 'Terrain (the side view\'s scene kit)',
+      type: FieldType.enumeration,
+      enumOptions: landTerrains,
+    ),
+    FieldSchema(
+        key: 'chapter',
+        label: 'Chapter (its checks are one harder a chapter after the first)',
+        type: FieldType.integer,
+        defaultValue: 1),
+    FieldSchema(
+      key: 'events',
+      label: 'Events {land event id: draw weight}',
+      type: FieldType.json,
+    ),
+  ],
+);
+
+/// Land expeditions' events (land_crossing.dart): what the party meets on
+/// a crossing, and what each way through costs or gives in health (a
+/// percent of the party's maximum), gold and days.
+final DbSchema landEventsSchema = DbSchema(
+  id: 'land_events',
+  label: 'Land Events',
+  assetPath: 'assets/gamedata/land_events.json',
+  primaryKeyField: 'id',
+  titleField: 'name',
+  fields: [
+    FieldSchema(key: 'id', label: 'Event ID', type: FieldType.text),
+    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(key: 'text', label: 'Text', type: FieldType.multilineText),
+    FieldSchema(
+        key: 'text_fr', label: 'Text (FR)', type: FieldType.multilineText),
+    FieldSchema(
+      key: 'choices',
+      label:
+          'Choices [{id, text, text_fr, check, dc, outcome | success, fail}]',
+      type: FieldType.json,
+      help: 'An outcome is {healthPct, gold, days, note, note_fr}.',
+    ),
+  ],
+);
+
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
   itemSetsSchema,
@@ -2778,6 +3616,7 @@ final List<DbSchema> gameDbSchemas = [
   enemyShipsSchema,
   shipsSchema,
   shipPartsSchema,
+  shipLooksSchema,
   questsSchema,
   shopsSchema,
   gatesSchema,
@@ -2800,4 +3639,8 @@ final List<DbSchema> gameDbSchemas = [
   intriguesSchema,
   signsSchema,
   politicsEventsSchema,
+  geographySchema,
+  biomesSchema,
+  landRoutesSchema,
+  landEventsSchema,
 ];

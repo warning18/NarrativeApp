@@ -36,6 +36,10 @@ void main() {
       }
     }
 
+    // A phone: the tabs are a bar at the bottom (a wide window has a rail).
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     // The main menu's Shroud drifts for ever; still, it lets the test settle.
     tester.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(disableAnimations: true);
@@ -54,14 +58,17 @@ void main() {
     expect(find.byKey(const Key('menu_edit_mode')), findsOneWidget);
     expect(find.byType(NavigationBar), findsNothing);
 
-    // Edit Mode: Story, Play, Generate, Data, and the map in the header.
+    // Edit Mode: Story, Journey, Play, Generate, Data, and the maps in
+    // the header (the scene graph, and the world chart since v1.209).
     await tester.tap(find.byKey(const Key('menu_edit_mode')));
     await pumpABit();
     expect(tester.takeException(), isNull);
     expect(find.byType(NavigationBar), findsOneWidget);
-    expect(find.byType(NavigationDestination), findsNWidgets(4));
+    expect(find.byType(NavigationDestination), findsNWidgets(5));
     expect(find.text('Generate'), findsOneWidget);
+    expect(find.text('Journey'), findsOneWidget);
     expect(find.byTooltip('Story Map'), findsOneWidget);
+    expect(find.byKey(const Key('home_world_map')), findsOneWidget);
 
     // Back to the menu from the header.
     await tester.tap(find.byTooltip('Main menu'));
@@ -76,7 +83,11 @@ void main() {
     expect(tester.takeException(), isNull);
     final bar = find.byType(NavigationBar, skipOffstage: false);
     expect(find.byType(NavigationDestination, skipOffstage: false),
-        findsNWidgets(5));
+        findsNWidgets(4));
+    expect(
+        find.descendant(
+            of: bar, matching: find.text('Story', skipOffstage: false)),
+        findsNothing);
     for (final label in ['Journey', 'Character', 'Camp', 'Other']) {
       expect(
           find.descendant(

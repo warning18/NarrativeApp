@@ -1,15 +1,23 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/factions.dart';
+import '../data/shop_pricing.dart' show shopFactionId;
 import '../data/signs.dart';
+import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/chapter_loop_provider.dart';
 import '../providers/clans_provider.dart';
+import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/signs_provider.dart';
+import '../utils/pixel_icons/game_pixel_icons.dart';
+import 'pixel_banner.dart';
 import 'sign_widgets.dart';
+import 'throne_widgets.dart';
 
 /// The colour of a foe's square, and of the Hunted end of a meter.
 const Color clanFoeColor = Color(0xFFD9544D);
@@ -30,23 +38,76 @@ Color standingTierTextColor(BuildContext context, StandingTier tier) =>
 
 /// A standing from -100 to +100 as a thin bar: dark red at the bottom,
 /// a dark neutral middle, green then gold at the top, and a tick where
-/// [value] stands.
-class StandingMeter extends StatelessWidget {
+/// [value] stands. When the standing changes the tick slides to its new place
+/// (over 600 ms) and the stretch it crossed glows gold for a gain, red for a
+/// loss, and fades; it just jumps with reduced motion.
+class StandingMeter extends StatefulWidget {
   const StandingMeter({super.key, required this.value, this.height = 6});
 
   final double value;
   final double height;
 
+  /// How long the tick takes to slide, and the glow to fade.
+  static const Duration slide = Duration(milliseconds: 600);
+
+  @override
+  State<StandingMeter> createState() => _StandingMeterState();
+}
+
+class _StandingMeterState extends State<StandingMeter>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _t =
+      AnimationController(vsync: this, duration: StandingMeter.slide);
+  late double _from = widget.value;
+
+  /// Where the stretch the last change crossed began.
+  double _glowFrom = 0;
+
+  /// Where the tick is drawn now, on its way from [_from] to the value.
+  double get _shown =>
+      _from + (widget.value - _from) * Curves.easeOutCubic.transform(_t.value);
+
+  @override
+  void didUpdateWidget(StandingMeter old) {
+    super.didUpdateWidget(old);
+    if (old.value == widget.value) return;
+    if (MediaQuery.maybeDisableAnimationsOf(context) ?? false) {
+      _from = widget.value;
+      return;
+    }
+    // Slide on from wherever the tick is now, so a second change mid-slide
+    // does not jump.
+    final here = _t.isAnimating
+        ? _from + (old.value - _from) * Curves.easeOutCubic.transform(_t.value)
+        : old.value;
+    _glowFrom = here;
+    _from = here;
+    _t.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _t.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) => SizedBox(
-        height: height + 6,
-        child: CustomPaint(
-          painter: _StandingMeterPainter(
-            value: value,
-            barHeight: height,
-            tick: Theme.of(context).colorScheme.onSurface,
+        height: widget.height + 6,
+        child: AnimatedBuilder(
+          animation: _t,
+          builder: (context, _) => CustomPaint(
+            key: const ValueKey('standing_meter'),
+            painter: _StandingMeterPainter(
+              value: _t.isAnimating ? _shown : widget.value,
+              barHeight: widget.height,
+              tick: Theme.of(context).colorScheme.onSurface,
+              glowFrom: _t.isAnimating ? _glowFrom : null,
+              glowTo: widget.value,
+              glow: _t.isAnimating ? 1 - _t.value : 0,
+            ),
+            size: Size.infinite,
           ),
-          size: Size.infinite,
         ),
       );
 }
@@ -56,11 +117,24 @@ class _StandingMeterPainter extends CustomPainter {
     required this.value,
     required this.barHeight,
     required this.tick,
+    this.glowFrom,
+    this.glowTo = 0,
+    this.glow = 0,
   });
 
   final double value;
   final double barHeight;
   final Color tick;
+
+  /// The stretch a change crossed, glowing as it fades ([glow] 1 to 0).
+  final double? glowFrom;
+  final double glowTo;
+  final double glow;
+
+  double _x(double v, double width) =>
+      ((v.clamp(minStanding, maxStanding) - minStanding) /
+          (maxStanding - minStanding)) *
+      width;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -83,9 +157,22 @@ class _StandingMeterPainter extends CustomPainter {
           1,
         ]).createShader(bar.outerRect),
     );
-    final x = ((value.clamp(minStanding, maxStanding) - minStanding) /
-            (maxStanding - minStanding)) *
-        size.width;
+    final from = glowFrom;
+    if (from != null && glow > 0) {
+      final a = _x(math.min(from, glowTo), size.width);
+      final b = _x(math.max(from, glowTo), size.width);
+      final colour =
+          glowTo >= from ? const Color(0xFFF2C14E) : const Color(0xFFD9544D);
+      final span =
+          Rect.fromLTRB(a, top - 2, math.max(b, a + 3), top + barHeight + 2);
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(span, const Radius.circular(3)),
+        Paint()
+          ..color = colour.withValues(alpha: 0.75 * glow)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, 3 * glow + 0.5),
+      );
+    }
+    final x = _x(value, size.width);
     canvas.drawRect(
       Rect.fromLTWH((x - 1.5).clamp(0, size.width - 3), 0, 3, size.height),
       Paint()..color = tick,
@@ -94,7 +181,12 @@ class _StandingMeterPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_StandingMeterPainter old) =>
-      old.value != value || old.tick != tick || old.barHeight != barHeight;
+      old.value != value ||
+      old.tick != tick ||
+      old.barHeight != barHeight ||
+      old.glow != glow ||
+      old.glowFrom != glowFrom ||
+      old.glowTo != glowTo;
 }
 
 /// One small square per sub-clan: filled in its colour for a friend, red
@@ -233,72 +325,170 @@ class FactionStandingCard extends ConsumerWidget {
           : null,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                PatronEmblem(patron: faction.patron, size: 30),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(faction.nameFor(lang),
-                      style: theme.textTheme.titleSmall),
-                ),
-                const SizedBox(width: 6),
-                StandingTierLabel(value: value, language: lang),
-              ],
-            ),
-            const SizedBox(height: 4),
-            StandingMeter(value: value),
-            if (subclans.isNotEmpty || sworn) ...[
-              const SizedBox(height: 4),
+        child: _WithBanner(
+          factionId: faction.id,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  PatronEmblem(patron: faction.patron, size: 30),
+                  const SizedBox(width: 8),
                   Expanded(
-                    child: SubclanSquares(
-                      subclans: subclans,
-                      politics: politics,
-                      language: lang,
-                      onTap: editable
-                          ? (s) => notifier.setSubclanMark(
-                              s.id, nextSubclanMark(politics.markOf(s.id)),
-                              data: data, cause: 'edit', chapter: chapter())
-                          : null,
-                    ),
+                    child: Text(faction.nameFor(lang),
+                        style: theme.textTheme.titleSmall),
                   ),
-                  if (sworn)
-                    Tooltip(
-                      message: trFor(lang, 'clans_sworn_marker'),
-                      child: Row(
-                        key: Key('faction_sworn_${faction.id}'),
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.military_tech,
-                              size: 18,
-                              color: standingTierColor(StandingTier.sworn)),
-                          Text(
-                            faction.sworn?.nameFor(lang) ??
-                                trFor(lang, 'standing_tier_sworn'),
-                            style: theme.textTheme.labelSmall?.copyWith(
-                                color: standingTierTextColor(
-                                    context, StandingTier.sworn)),
-                          ),
-                        ],
-                      ),
-                    ),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: StandingTierLabel(value: value, language: lang),
+                  ),
                 ],
               ),
+              const SizedBox(height: 4),
+              StandingMeter(value: value),
+              if (subclans.isNotEmpty || sworn) ...[
+                const SizedBox(height: 4),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: SubclanSquares(
+                        subclans: subclans,
+                        politics: politics,
+                        language: lang,
+                        onTap: editable
+                            ? (s) => notifier.setSubclanMark(
+                                s.id, nextSubclanMark(politics.markOf(s.id)),
+                                data: data, cause: 'edit', chapter: chapter())
+                            : null,
+                      ),
+                    ),
+                    if (sworn)
+                      Flexible(
+                        child: Tooltip(
+                          message: trFor(lang, 'clans_sworn_marker'),
+                          child: Row(
+                            key: Key('faction_sworn_${faction.id}'),
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.military_tech,
+                                  size: 18,
+                                  color: standingTierColor(StandingTier.sworn)),
+                              Flexible(
+                                child: Text(
+                                  faction.sworn?.nameFor(lang) ??
+                                      trFor(lang, 'standing_tier_sworn'),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.labelSmall?.copyWith(
+                                      color: standingTierTextColor(
+                                          context, StandingTier.sworn)),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+              _FactionShops(factionId: faction.id),
+              if (editable)
+                _StandingSlider(
+                  key: Key('faction_slider_${faction.id}'),
+                  value: value,
+                  onSet: (v) => notifier.setStandingForEdit(faction.id, v,
+                      data: data, chapter: chapter()),
+                ),
             ],
-            if (editable)
-              _StandingSlider(
-                key: Key('faction_slider_${faction.id}'),
-                value: value,
-                onSet: (v) => notifier.setStandingForEdit(faction.id, v,
-                    data: data, chapter: chapter()),
-              ),
-          ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+/// A faction's main banner, in pixel art, at the left of its card's [child]
+/// (nothing added for a faction that has none).
+class _WithBanner extends StatelessWidget {
+  const _WithBanner({
+    required this.factionId,
+    required this.child,
+    this.found = true,
+  });
+
+  final String factionId;
+  final Widget child;
+  final bool found;
+
+  @override
+  Widget build(BuildContext context) {
+    final id = clanBannerId(factionId);
+    if (id == null) return child;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: PixelBanner(
+              key: Key('clan_banner_$factionId'),
+              id: id,
+              scale: 1,
+              found: found),
+        ),
+        Expanded(child: child),
+      ],
+    );
+  }
+}
+
+/// The shops a faction runs (shops.json `faction`, v1.197): their signs and
+/// names in a line, so the standing's price reads as somewhere to go.
+class _FactionShops extends ConsumerWidget {
+  const _FactionShops({required this.factionId});
+
+  final String factionId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final shops = ref.watch(localizedDbProvider(shopsSchema)).value ?? const {};
+    final theme = Theme.of(context);
+    final own = [
+      for (final e in shops.entries)
+        if (e.value is Map<String, dynamic> &&
+            shopFactionId(e.value as Map<String, dynamic>) == factionId)
+          e,
+    ];
+    if (own.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      key: Key('faction_shops_$factionId'),
+      padding: const EdgeInsets.only(top: 6),
+      child: Wrap(
+        spacing: 10,
+        runSpacing: 4,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text(tr(ref, 'clans_shops_label'),
+              style: theme.textTheme.labelSmall
+                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          for (final e in own)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ShopPixelIcon(e.key, size: 18),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    (e.value as Map<String, dynamic>)['shopName']?.toString() ??
+                        e.key,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelSmall,
+                  ),
+                ),
+              ],
+            ),
+        ],
       ),
     );
   }
@@ -367,76 +557,99 @@ class LostClanCard extends ConsumerWidget {
     final raised = bannerRaisedIn(flags);
     final notifier = ref.read(playerSessionProvider.notifier);
     final gold = standingTierTextColor(context, StandingTier.sworn);
+    final data = ref.watch(clanDataProvider);
+    final politics = ref.watch(politicsProvider);
     return Card(
       key: Key('lost_clan_card_${faction.id}'),
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                LostClanEmblem(faction: faction, stage: stage),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(lostClanNameFor(faction, stage, lang),
-                      style: theme.textTheme.titleSmall),
-                ),
-                const SizedBox(width: 6),
-                Flexible(
-                  child: Text(
-                    remembranceLabel(stage, lang),
-                    key: Key('lost_clan_stage_${faction.id}'),
-                    textAlign: TextAlign.end,
-                    style: theme.textTheme.labelLarge?.copyWith(
-                        color: stage > 0
-                            ? gold
-                            : theme.colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w700),
-                  ),
-                ),
-              ],
-            ),
-            if (raised)
-              Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: Text(trFor(lang, 'open_hand_banner_raised'),
-                    style: theme.textTheme.labelSmall?.copyWith(color: gold)),
-              ),
-            if (editable) ...[
-              const SizedBox(height: 4),
-              Text(trFor(lang, 'open_hand_edit_hint'),
-                  style: theme.textTheme.labelSmall
-                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-              const SizedBox(height: 4),
-              Wrap(
-                spacing: 4,
-                runSpacing: 4,
+        child: _WithBanner(
+          factionId: faction.id,
+          found: raised,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
                 children: [
-                  for (var n = 0; n <= openHandStages; n++)
-                    ChoiceChip(
-                      key: Key('open_hand_stage_$n'),
-                      label: Text('$n'),
-                      selected: stage == n,
-                      visualDensity: VisualDensity.compact,
-                      onSelected: (_) => notifier.setOpenHandStage(n,
-                          data: ref.read(clanDataProvider)),
+                  LostClanEmblem(faction: faction, stage: stage),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(lostClanNameFor(faction, stage, lang),
+                        style: theme.textTheme.titleSmall),
+                  ),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      remembranceLabel(stage, lang),
+                      key: Key('lost_clan_stage_${faction.id}'),
+                      textAlign: TextAlign.end,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                          color: stage > 0
+                              ? gold
+                              : theme.colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w700),
                     ),
+                  ),
                 ],
               ),
-              SwitchListTile(
-                key: const Key('open_hand_banner_switch'),
-                contentPadding: EdgeInsets.zero,
-                dense: true,
-                title: Text(trFor(lang, 'open_hand_banner_raised')),
-                subtitle: const Text(bannerRaisedFlag),
-                value: raised,
-                onChanged: (on) => notifier.setStoryFlag(bannerRaisedFlag, on,
-                    data: ref.read(clanDataProvider)),
-              ),
+              if (raised)
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Text(trFor(lang, 'open_hand_banner_raised'),
+                      style: theme.textTheme.labelSmall?.copyWith(color: gold)),
+                ),
+              // Its House (v1.196: the Fishbasket Line), the first rung of
+              // its climb; Edit Mode taps its mark round.
+              if (data.subclansOf(faction.id).isNotEmpty) ...[
+                const SizedBox(height: 4),
+                SubclanSquares(
+                  subclans: data.subclansOf(faction.id),
+                  politics: politics,
+                  language: lang,
+                  onTap: editable
+                      ? (s) => notifier.setSubclanMark(
+                          s.id, nextSubclanMark(politics.markOf(s.id)),
+                          data: data,
+                          cause: 'edit',
+                          chapter: ref.read(reachedChapterProvider))
+                      : null,
+                ),
+              ],
+              if (editable) ...[
+                const SizedBox(height: 4),
+                Text(trFor(lang, 'open_hand_edit_hint'),
+                    style: theme.textTheme.labelSmall
+                        ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                const SizedBox(height: 4),
+                Wrap(
+                  spacing: 4,
+                  runSpacing: 4,
+                  children: [
+                    for (var n = 0; n <= openHandStages; n++)
+                      ChoiceChip(
+                        key: Key('open_hand_stage_$n'),
+                        label: Text('$n'),
+                        selected: stage == n,
+                        visualDensity: VisualDensity.compact,
+                        onSelected: (_) => notifier.setOpenHandStage(n,
+                            data: ref.read(clanDataProvider)),
+                      ),
+                  ],
+                ),
+                SwitchListTile(
+                  key: const Key('open_hand_banner_switch'),
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                  title: Text(trFor(lang, 'open_hand_banner_raised')),
+                  subtitle: const Text(bannerRaisedFlag),
+                  value: raised,
+                  onChanged: (on) => notifier.setStoryFlag(bannerRaisedFlag, on,
+                      data: ref.read(clanDataProvider)),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -502,6 +715,8 @@ class ClansSection extends ConsumerWidget {
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         const SizedBox(height: 4),
+        // The climb to the Lantern Throne (v1.196), once begun.
+        const ClimbCard(),
         if (shown.isEmpty)
           Text(tr(ref, 'clans_none'), style: theme.textTheme.bodySmall),
         for (final faction in shown) FactionStandingCard(faction: faction),

@@ -146,6 +146,8 @@ IconData gameDbIcon(String schemaId) {
       return Icons.directions_boat;
     case 'ship_parts':
       return Icons.build;
+    case 'ship_looks':
+      return Icons.palette;
     case 'quests':
       return Icons.assignment;
     case 'shops':
@@ -179,6 +181,27 @@ IconData gameDbIcon(String schemaId) {
 
 const IconData enemyIcon = Icons.pest_control;
 const IconData shopIcon = Icons.storefront;
+
+/// A person's icon in the People codex (v1.204), by their npcs.json
+/// `kind` (see npcKindOptions in db_schema.dart); a plain figure for a
+/// kind the game does not know, or none.
+IconData npcKindIcon(String? kind) => switch (kind?.trim()) {
+      'inquisitor' => Icons.gavel,
+      'soldier' => Icons.shield,
+      'merchant' => Icons.storefront,
+      'elder' => Icons.elderly,
+      'smuggler' => Icons.theater_comedy,
+      'healer' => Icons.healing,
+      'scholar' => Icons.menu_book,
+      'kin' => Icons.family_restroom,
+      'sailor' => Icons.sailing,
+      'penitent' => Icons.volunteer_activism,
+      'noble' => Icons.workspace_premium,
+      'beast' => Icons.pets,
+      'child' => Icons.child_care,
+      'keeper' => Icons.key,
+      _ => Icons.person_outline,
+    };
 const IconData raceIcon = Icons.diversity_3;
 const IconData professionIcon = Icons.work;
 

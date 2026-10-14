@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
-/// Shows a modal dialog with a title, an optional description, and a list
-/// of label/value stat rows — used for the skill/item detail popups.
+/// Shows a modal dialog with a title, an optional description, an
+/// optional muted [note] under it (an item's provenance, v1.204), and a
+/// list of label/value stat rows — used for the skill/item detail popups.
 Future<void> showDetailDialog(
   BuildContext context, {
   required String title,
   String? description,
+  String? note,
   IconData? icon,
   Widget? leading,
   List<MapEntry<String, String>> rows = const [],
@@ -45,6 +47,17 @@ Future<void> showDetailDialog(
                       ),
                 ),
                 const SizedBox(height: 16),
+              ],
+              if (note != null && note.isNotEmpty) ...[
+                Text(
+                  note,
+                  key: const Key('detail_note'),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontStyle: FontStyle.italic,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                ),
+                const SizedBox(height: 12),
               ],
               ...rows.map(
                 (row) => Padding(

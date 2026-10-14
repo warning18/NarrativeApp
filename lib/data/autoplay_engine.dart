@@ -10,14 +10,34 @@ import '../combat/face_smithing.dart';
 import '../models/ally_state.dart'
     show equipmentBonusFor, equipmentScalingBonusFor;
 import '../models/story_node.dart';
+import 'ability_check.dart' show abilityModifierFor;
+import 'autoplay_build.dart';
+import 'camp_state.dart' show harborHouseId;
+import 'harbour.dart' show harbourAwaited;
+import 'journey_rules.dart' show watchesPerDay;
+import 'land_crossing.dart';
+import 'item_origin_here.dart';
+import 'materials.dart' show materialCountsOf;
+import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
+import '../providers/clans_provider.dart' show loadClanData;
+import '../gamedata/db_schema.dart'
+    show housesSchema, landEventsSchema, landRoutesSchema, shopsSchema;
+import '../providers/game_db_providers.dart' show gameDbRepositoryProvider;
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
 import '../providers/story_providers.dart';
 import 'chapter_loop.dart';
 import 'chapter_spine.dart';
-import 'politics_events.dart' show choicePoliticsKey, enterPoliticsKey;
+import 'politics_events.dart'
+    show
+        ChoiceGate,
+        CoastWorld,
+        choicePoliticsGate,
+        choicePoliticsKey,
+        enterPoliticsKey;
 import 'story_repository.dart';
 import 'zone_gating.dart';
+import 'road_hazards.dart' show meetRoadHazard;
 
 /// How an [autoplayToNode] or [autoplayToChapter] run ended.
 enum AutoplayStatus {
@@ -133,11 +153,12 @@ Future<void> _maybeCreateCharacter(
   WidgetRef ref, {
   required Map<String, dynamic> races,
   required Map<String, dynamic> professions,
+  Random? random,
 }) async {
   final session = ref.read(playerSessionProvider);
   if (session.raceId.isNotEmpty && session.professionId.isNotEmpty) return;
   if (races.isEmpty || professions.isEmpty) return;
-  final random = Random();
+  random ??= Random();
   final raceIds = races.keys.toList();
   final professionIds = professions.keys.toList();
   final raceId = raceIds[random.nextInt(raceIds.length)];
@@ -190,6 +211,7 @@ Future<void> _exploreChapterBeforeMainQuest(
       entry.key,
       rewardGold: (zone['rewardGold'] as num?)?.toInt() ?? 0,
       rewardFlag: zone['rewardFlag']?.toString(),
+      rewardMaterials: materialCountsOf(zone, 'rewardMaterials'),
     );
     found.addAll(zoneDiscoveries(zone).map(placeFoundFlag));
   }
@@ -383,6 +405,7 @@ Future<bool> _simulateFight({
         goldGain: goldGain,
         xpGain: xpGain,
         itemsGained: loot,
+        origin: itemOriginHere(ref),
       );
   return true;
 }
@@ -494,6 +517,8 @@ Future<AutoplayResult> autoplayToNode(
       }
     }
 
+    await _crossLand(ref, choice, random);
+
     if (choice.hasEffects) {
       await sessionNotifier.applyChoiceEffects(
         goldMod: choice.goldMod,
@@ -502,8 +527,10 @@ Future<AutoplayResult> autoplayToNode(
         flagsToAdd: choice.flagsToAdd,
         bannerPieceId: choice.grantsBannerPieceId,
         itemId: choice.grantItemId,
+        materials: choice.grantMaterials,
         questIDToProgress: choice.questIDToProgress,
         approvalMods: choice.approvalMods,
+        origin: itemOriginHere(ref),
       );
     }
     await _applyPolitics(ref, story, fromNodeId, choice);
@@ -519,6 +546,9 @@ Future<AutoplayResult> autoplayToNode(
       }
     }
 
+    // A hazard on the road there (v1.197), taken as a player would.
+    await meetRoadHazard(ref, story,
+        fromNodeId: fromNodeId, toNodeId: choice.nextId);
     playNotifier.choose(choice.nextId);
     await _applyEnterPolitics(ref, story, choice.nextId);
     stepsApplied += 1;
@@ -552,6 +582,11 @@ Future<AutoplayResult> autoplayToNode(
 /// it cannot win, so the walk always reaches the chapter unless the story
 /// itself offers no way there. [onAttempt] reports each attempt as it
 /// starts.
+///
+/// Before handing back, the player gets the best build the session allows
+/// (see [planAutoplayBuild]): stat points spent, the best carried gear
+/// worn, the best skills on the die. With a [seed] the whole run is
+/// deterministic (each attempt its own stream); without one it rolls fresh.
 Future<AutoplayResult> autoplayToChapter(
   WidgetRef ref, {
   required StoryData story,
@@ -567,6 +602,9 @@ Future<AutoplayResult> autoplayToChapter(
   int maxSteps = 200,
   int maxCombatRetries = 8,
   int maxAttempts = 10,
+  int? seed,
+  Map<String, dynamic>? shops,
+  Map<String, dynamic>? houses,
   void Function(int attempt)? onAttempt,
 }) async {
   final startChapter =
@@ -604,10 +642,155 @@ Future<AutoplayResult> autoplayToChapter(
       maxSteps: last ? maxSteps * 3 : maxSteps,
       maxCombatRetries: maxCombatRetries,
       forceWins: last,
+      random: seed == null ? Random() : Random(seed * 1009 + attempt),
     );
     if (result.status == AutoplayStatus.reachedTarget) break;
   }
+  if (result.status == AutoplayStatus.reachedTarget) {
+    await applyArrivalTopUp(ref,
+        chapter: targetChapter,
+        items: items,
+        professions: professions,
+        shops: shops ??
+            await ref
+                .read(gameDbRepositoryProvider(shopsSchema))
+                .loadRecords());
+  }
+  await applyAutoplayBuild(ref,
+      items: items, skills: skills, dice: dice, professions: professions);
+  await buildAwaitedHarbour(ref, houses: houses);
   return result._withAttempts(attempts);
+}
+
+/// Builds the camp's harbour when the walk has founded the camp without it
+/// (see harbour.dart): the camp's tour would have the player build it with
+/// the story's grant first thing, and "Play to chapter" hands back a camp
+/// whose Eel can sail. A no-op when it stands, or the pack can't pay for
+/// it. [houses]: houses.json's records, loaded when null.
+Future<void> buildAwaitedHarbour(WidgetRef ref,
+    {Map<String, dynamic>? houses}) async {
+  final session = ref.read(playerSessionProvider);
+  if (!harbourAwaited(
+      flags: session.flags, builtHouseIds: session.builtHouseIds)) {
+    return;
+  }
+  final records = houses ??
+      await ref.read(gameDbRepositoryProvider(housesSchema)).loadRecords();
+  final harbour = records[harborHouseId];
+  if (harbour is! Map<String, dynamic>) return;
+  await ref.read(playerSessionProvider.notifier).buildHouse(
+      harborHouseId, (harbour['buildCost'] as num?)?.toInt() ?? 0,
+      requiredFlags: requiredFlagsOf(harbour),
+      materialCost: materialCountsOf(harbour, 'materialCost'));
+}
+
+/// Brings a character that reached [chapter] up to where a typical run
+/// arrives there ([planArrivalTopUp]): the XP and gold as a won fight's
+/// reward (its levels give their stat points and a full heal), the tier's
+/// gear into the pack. [shops]: shops.json's records.
+Future<void> applyArrivalTopUp(
+  WidgetRef ref, {
+  required int chapter,
+  required Map<String, dynamic> items,
+  required Map<String, dynamic> shops,
+  required Map<String, dynamic> professions,
+}) async {
+  final session = ref.read(playerSessionProvider);
+  final topUp = planArrivalTopUp(session,
+      chapter: chapter, items: items, shops: shops, professions: professions);
+  if (topUp.isEmpty) return;
+  final notifier = ref.read(playerSessionProvider.notifier);
+  await notifier.applyCombatResult(
+    hpAfter: session.currentHealth,
+    xpGain: topUp.xp,
+    goldGain: topUp.gold,
+    itemsGained: topUp.items,
+    items: items,
+  );
+  // The levels' clan offers are the top-up's, not the walk's: a jump to
+  // chapter 8 would otherwise hand back ten offer dialogs in a row. Those
+  // it queued (appended after the walk's own) are dropped; the walk's stay.
+  final after = ref.read(playerSessionProvider);
+  final kept = session.pendingOffers.length;
+  if (after.pendingOffers.length > kept) {
+    await notifier.loadSession(
+        after.copyWith(pendingOffers: after.pendingOffers.sublist(0, kept)));
+  }
+}
+
+/// Applies [planAutoplayBuild]'s build to the live session: the stat
+/// points, then the gear (a score can open it), then the die's faces.
+Future<void> applyAutoplayBuild(
+  WidgetRef ref, {
+  required Map<String, dynamic> items,
+  required Map<String, dynamic> skills,
+  required Map<String, dynamic> dice,
+  required Map<String, dynamic> professions,
+}) async {
+  final notifier = ref.read(playerSessionProvider.notifier);
+  final before = ref.read(playerSessionProvider);
+  if (before.professionId.isEmpty) return;
+  final build = planAutoplayBuild(before,
+      items: items, skills: skills, dice: dice, professions: professions);
+  for (var i = 0; i < build.statPoints; i++) {
+    await notifier.spendStatPoint(stat: build.statToRaise);
+  }
+  for (final entry in build.equip.entries) {
+    await notifier.equipItem(entry.value, slot: entry.key, items: items);
+  }
+  final dieId = before.equippedDiceId;
+  final faces = build.faceAssignments;
+  if (dieId == null || faces == null) return;
+  final current = ref.read(playerSessionProvider).diceSkillAssignments[dieId] ??
+      const <String, String>{};
+  for (final index in current.keys.toList()..sort()) {
+    if (!faces.containsKey(index)) {
+      await notifier.clearDiceFaceSkill(dieId, int.parse(index));
+    }
+  }
+  for (final entry in faces.entries) {
+    if (current[entry.key] != entry.value) {
+      await notifier.assignSkillToDiceFace(
+          dieId, int.parse(entry.key), entry.value);
+    }
+  }
+}
+
+/// How many times a walk sets out on a land route it lost before it is
+/// let through (see [_crossLand]).
+const int _crossingTries = 3;
+
+/// A land route [choice] crosses (see land_crossing.dart), played without
+/// a player: each lost crossing carries the party back to set out again,
+/// up to [_crossingTries] times, after which the walk goes on regardless
+/// (a testing tool is never stopped on the road).
+Future<void> _crossLand(
+    WidgetRef ref, StoryChoice choice, Random random) async {
+  if (!choice.crossesLand) return;
+  final routes =
+      await ref.read(gameDbRepositoryProvider(landRoutesSchema)).loadRecords();
+  final route = landRouteFor(routes, choice.landRouteId!);
+  if (route == null) return;
+  final events = landEventsFrom(
+      await ref.read(gameDbRepositoryProvider(landEventsSchema)).loadRecords());
+  final notifier = ref.read(playerSessionProvider.notifier);
+  final chapter = ref.read(reachedChapterProvider);
+  for (var i = 0; i < _crossingTries; i++) {
+    final session = ref.read(playerSessionProvider);
+    final result = resolveCrossing(route, events,
+        health: session.currentHealth,
+        maxHealth: session.maxHealth,
+        gold: session.gold,
+        modifierFor: (ability) => abilityModifierFor(ability, session),
+        random: random,
+        chapter: chapter);
+    await notifier.applyChoiceEffects(
+        goldMod: result.gold,
+        healAmount: result.health - session.currentHealth,
+        goldIsProfit: false);
+    await notifier.passTime(watchesPerDay * result.days, chapter: chapter);
+    if (result.arrived) return;
+  }
 }
 
 /// One walk of [autoplayToChapter]. With [forceWins], a fight still lost
@@ -627,12 +810,14 @@ Future<AutoplayResult> _playTowardChapter(
   required int maxSteps,
   required int maxCombatRetries,
   required bool forceWins,
+  required Random random,
 }) async {
   var forcedWins = 0;
   final sessionNotifier = ref.read(playerSessionProvider.notifier);
   final playNotifier = ref.read(storyPlayProvider.notifier);
-  final random = Random();
   var stepsApplied = 0;
+  // The clans, for the choices' politics gates (v1.196).
+  final clans = await loadClanData(ref);
 
   StoryChoice pickChoice(List<StoryChoice> pool) {
     if (strategy == AutoplayStrategy.random || pool.length == 1) {
@@ -680,11 +865,25 @@ Future<AutoplayResult> _playTowardChapter(
     // target -- that would strand the player with nothing left to play,
     // exactly what this feature exists to avoid. Only fall back to one if
     // every choice here ends the story.
-    final nonEndingChoices = node.choices.where((c) => !c.isEnding).toList();
-    final candidatePool =
-        nonEndingChoices.isNotEmpty ? nonEndingChoices : node.choices;
-
     final session = ref.read(playerSessionProvider);
+    // A choice behind a politics gate that fails (v1.196) is not taken,
+    // unless nothing else is left.
+    final gateWorld =
+        CoastWorld(data: clans, chapter: ref.read(reachedChapterProvider));
+    final ungated = [
+      for (final c in node.choices)
+        if (choicePoliticsGate(c,
+                politics: session.politics,
+                flags: session.flags,
+                world: gateWorld) ==
+            ChoiceGate.open)
+          c,
+    ];
+    final choices = ungated.isNotEmpty ? ungated : node.choices;
+    final nonEndingChoices = choices.where((c) => !c.isEnding).toList();
+    final candidatePool =
+        nonEndingChoices.isNotEmpty ? nonEndingChoices : choices;
+
     bool meetsRequirements(StoryChoice c) {
       final target = story.nodeFor(c.nextId);
       if (target == null || !target.hasRequirements) return true;
@@ -713,7 +912,8 @@ Future<AutoplayResult> _playTowardChapter(
     }
 
     if (choice.opensCharacterCreation) {
-      await _maybeCreateCharacter(ref, races: races, professions: professions);
+      await _maybeCreateCharacter(ref,
+          races: races, professions: professions, random: random);
       playNotifier.choose(choice.nextId);
       stepsApplied += 1;
       continue;
@@ -766,6 +966,8 @@ Future<AutoplayResult> _playTowardChapter(
       }
     }
 
+    await _crossLand(ref, choice, random);
+
     if (choice.hasEffects) {
       await sessionNotifier.applyChoiceEffects(
         goldMod: choice.goldMod,
@@ -774,8 +976,10 @@ Future<AutoplayResult> _playTowardChapter(
         flagsToAdd: choice.flagsToAdd,
         bannerPieceId: choice.grantsBannerPieceId,
         itemId: choice.grantItemId,
+        materials: choice.grantMaterials,
         questIDToProgress: choice.questIDToProgress,
         approvalMods: choice.approvalMods,
+        origin: itemOriginHere(ref),
       );
     }
     await _applyPolitics(ref, story, currentNodeId, choice);
@@ -791,6 +995,9 @@ Future<AutoplayResult> _playTowardChapter(
       }
     }
 
+    // A hazard on the road there (v1.197), taken as a player would.
+    await meetRoadHazard(ref, story,
+        fromNodeId: currentNodeId, toNodeId: choice.nextId);
     playNotifier.choose(choice.nextId);
     await _applyEnterPolitics(ref, story, choice.nextId);
     stepsApplied += 1;

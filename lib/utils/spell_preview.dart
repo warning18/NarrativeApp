@@ -2,6 +2,7 @@ import '../combat/combat_engine.dart' show elementFieldPrefixes;
 import '../combat/gear_effects.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
+import '../data/shop_stock.dart';
 import '../models/ally_state.dart';
 import '../providers/player_session_provider.dart';
 
@@ -80,9 +81,8 @@ List<String> spellbookShopsFor(
   if (bookIds.isEmpty) return const [];
   return [
     for (final entry in shops.entries)
-      if (((entry.value as Map<String, dynamic>?)?['initialStock'] as List?)
-              ?.any((id) => bookIds.contains(id.toString())) ==
-          true)
+      if (allShopStock(entry.value as Map<String, dynamic>?)
+          .any(bookIds.contains))
         entry.key,
   ];
 }

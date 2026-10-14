@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/dice_faces.dart' show skillDisplayName;
 import '../data/factions.dart';
+import '../data/item_origin_here.dart';
 import '../data/offers.dart';
 import '../data/perks.dart';
 import '../data/signs.dart';
@@ -15,7 +16,9 @@ import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import 'item_stats.dart';
+import 'pixel_banner.dart';
 import 'sign_widgets.dart';
+import 'wind_banner.dart';
 
 /// The Wayfarer's colour and mark: no banner, a walker's.
 const Color wayfarerColor = Color(0xFF8D6E63);
@@ -77,6 +80,25 @@ String suitorGreeting(Suitor suitor, ClanData data, AppLanguage lang) {
     return patron.introFor(lang);
   }
   return patron.greetingFor(lang, suitor.greetingIndex);
+}
+
+/// The tag over a gift: its kind, or "Fusion" / "Ascension" for a skill
+/// that is one (v1.232).
+String _giftTagKey(OfferGift gift, Map<String, dynamic> skills) {
+  if (gift.kind == GiftKind.skill) {
+    final skill = skills[gift.id];
+    if (skill is Map<String, dynamic>) {
+      if (skill['fusionOf'] is List) return 'offer_gift_fusion';
+      if ((skill['subclanId']?.toString() ?? '').isNotEmpty) {
+        return 'offer_gift_subclan';
+      }
+      if (skill['hiddenFlags'] is List) return 'offer_gift_secret';
+      if ((skill['ascendsSkillID']?.toString() ?? '').isNotEmpty) {
+        return 'offer_gift_ascension';
+      }
+    }
+  }
+  return 'offer_gift_${gift.kind.name}';
 }
 
 /// The gift's name in [lang].
@@ -242,7 +264,8 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     if (confirmed != true || !mounted) return;
     setState(() => _busy = true);
     final notifier = ref.read(playerSessionProvider.notifier);
-    await notifier.acceptSuitor(suitor.factionId, tables: tables);
+    await notifier.acceptSuitor(suitor.factionId,
+        tables: tables, origin: itemOriginHere(ref));
     final next = await notifier.ensureOffer(tables);
     if (!mounted) return;
     if (next == null) {
@@ -334,19 +357,69 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                         style: theme.textTheme.labelMedium?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant),
                       ),
-                      const SizedBox(height: 6),
-                      for (final suitor in offer.suitors)
-                        SuitorCard(
-                          key: Key('offer_suitor_${suitor.factionId}'),
-                          suitor: suitor,
-                          ticket: ticket,
-                          tables: widget.tables,
-                          selected: _selected == suitor.factionId,
-                          onTap: _busy
-                              ? null
-                              : () =>
-                                  setState(() => _selected = suitor.factionId),
-                        ),
+                      const SizedBox(height: 10),
+                      // One little flag for each suitor, with what it gives.
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (final suitor in offer.suitors)
+                            Expanded(
+                              child: _OfferFlag(
+                                key: Key('offer_suitor_${suitor.factionId}'),
+                                suitor: suitor,
+                                ticket: ticket,
+                                tables: widget.tables,
+                                selected: _selected == suitor.factionId,
+                                dimmed: _selected != null &&
+                                    _selected != suitor.factionId,
+                                onTap: _busy
+                                    ? null
+                                    : () => setState(
+                                        () => _selected = suitor.factionId),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      // The chosen banner's words, in a zone of one size so
+                      // nothing moves when another banner is picked; a hint
+                      // while none is.
+                      SizedBox(
+                        key: const Key('offer_detail_zone'),
+                        height: 250,
+                        child: selected != null
+                            ? SingleChildScrollView(
+                                child: SuitorCard(
+                                  key: Key(
+                                      'offer_summary_${selected.factionId}'),
+                                  suitor: selected,
+                                  ticket: ticket,
+                                  tables: widget.tables,
+                                ),
+                              )
+                            : Center(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.touch_app_outlined,
+                                        size: 18,
+                                        color:
+                                            theme.colorScheme.onSurfaceVariant),
+                                    const SizedBox(width: 8),
+                                    Flexible(
+                                      child: Text(
+                                        trFor(lang, 'offer_select_hint'),
+                                        key: const Key('offer_select_hint'),
+                                        style: theme.textTheme.bodySmall
+                                            ?.copyWith(
+                                                color: theme.colorScheme
+                                                    .onSurfaceVariant),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                      ),
                     ],
                   ),
                 ),
@@ -380,6 +453,197 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
       ),
     );
   }
+}
+
+/// A suitor as a little flag: their banner (a Wayfarer's plain pennant), the
+/// kind and name of the gift under it, its rarity, and the first standing it
+/// moves. Every banner is the same size, picked or not (v1.267); a tap picks
+/// the flag, and its banner takes the wind. The rest is told in the zone
+/// under the flags.
+class _OfferFlag extends ConsumerWidget {
+  const _OfferFlag({
+    super.key,
+    required this.suitor,
+    required this.ticket,
+    required this.tables,
+    required this.selected,
+    required this.dimmed,
+    required this.onTap,
+  });
+
+  final Suitor suitor;
+  final OfferTicket ticket;
+  final OfferTables tables;
+  final bool selected;
+  final bool dimmed;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final lang = ref.watch(appLanguageProvider);
+    final session = ref.watch(playerSessionProvider);
+    final items = ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
+    final skills =
+        ref.watch(localizedDbProvider(skillsSchema)).value ?? const {};
+    final data = tables.data;
+    final color = _suitorColor(suitor, data);
+    final gift = suitor.gift;
+    final name =
+        giftName(gift, tables: tables, localizedItems: items, lang: lang);
+    final preview = standingPreviewParts(suitor, ticket,
+        politics: session.politics,
+        data: data,
+        lang: lang,
+        flags: session.flags);
+    final bannerId = suitor.isWayfarer ? null : clanBannerId(suitor.factionId);
+    final who = suitorName(suitor, data, lang);
+    const good = Color(0xFF3E9B57);
+
+    // One box for every banner, so none changes size when another is picked
+    // (the picked one only takes the wind).
+    final bannerBox = (pixelBannerSize.width + 2 * WindBanner.room).toDouble();
+    final Widget flag = bannerId == null
+        ? _PlainFlag(color: color, wayfarer: suitor.isWayfarer)
+        : SizedBox(
+            key: Key('offer_banner_${suitor.factionId}'),
+            width: bannerBox,
+            height: pixelBannerSize.height.toDouble(),
+            child: selected
+                ? WindBanner(id: bannerId, scale: 1)
+                : Center(child: PixelBanner(id: bannerId, scale: 1)),
+          );
+
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: '$who: $name',
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 160),
+          opacity: dimmed ? 0.62 : 1,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                        color: selected ? color : Colors.transparent, width: 2),
+                    color: selected ? color.withValues(alpha: 0.12) : null,
+                  ),
+                  child: Center(child: flag),
+                ),
+                const SizedBox(height: 6),
+                _Tag(
+                    text: trFor(lang, _giftTagKey(gift, skills)), color: color),
+                const SizedBox(height: 4),
+                Text(
+                  name,
+                  key: Key('offer_gift_${gift.id}'),
+                  textAlign: TextAlign.center,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleSmall,
+                ),
+                if (gift.kind != GiftKind.perk) ...[
+                  const SizedBox(height: 4),
+                  SignRarityChip(rarity: gift.rarity, language: lang),
+                ],
+                if (preview.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    preview.first.text,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                        color: preview.first.delta >= 0
+                            ? good
+                            : theme.colorScheme.error,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A flag with no banner of its own (the Wayfarer's, or a clan without one):
+/// dark cloth under a rod, a band and a mark in the suitor's colour, and a
+/// swallowtail hem.
+class _PlainFlag extends StatelessWidget {
+  const _PlainFlag({required this.color, required this.wayfarer});
+
+  final Color color;
+  final bool wayfarer;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 88,
+      height: 128,
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          Positioned(
+            top: 10,
+            child: ClipPath(
+              clipper: const _SwallowtailClipper(),
+              child: Container(
+                width: 56,
+                height: 114,
+                color: const Color(0xFF141217),
+                child: Column(
+                  children: [
+                    Container(height: 4, color: color),
+                    const Spacer(),
+                    Icon(wayfarer ? Icons.hiking : Icons.flag,
+                        size: 30, color: const Color(0xFFEFE6D2)),
+                    const SizedBox(height: 14),
+                    const Spacer(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 6,
+            child: Container(
+              width: 76,
+              height: 5,
+              decoration: BoxDecoration(
+                color: const Color(0xFF8A6B2F),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SwallowtailClipper extends CustomClipper<Path> {
+  const _SwallowtailClipper();
+
+  @override
+  Path getClip(Size size) => Path()
+    ..moveTo(0, 0)
+    ..lineTo(size.width, 0)
+    ..lineTo(size.width, size.height)
+    ..lineTo(size.width / 2, size.height - 16)
+    ..lineTo(0, size.height)
+    ..close();
+
+  @override
+  bool shouldReclip(_SwallowtailClipper old) => false;
 }
 
 Color _suitorColor(Suitor suitor, ClanData data) => suitor.isWayfarer
@@ -516,7 +780,7 @@ class SuitorCard extends ConsumerWidget {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       _Tag(
-                        text: trFor(lang, 'offer_gift_${gift.kind.name}'),
+                        text: trFor(lang, _giftTagKey(gift, skills)),
                         color: color,
                       ),
                       Text(
@@ -659,7 +923,24 @@ class _GiftBody extends StatelessWidget {
         );
       case GiftKind.skill:
         final skill = skills[gift.id] as Map<String, dynamic>?;
-        return lines([skill?['description']?.toString() ?? '']);
+        final parents = [
+          for (final p in (skill?['fusionOf'] as List?) ?? const [])
+            skillDisplayName(p.toString(), language: lang),
+        ];
+        final base = skill?['ascendsSkillID']?.toString() ?? '';
+        final partner = tables.data.faction(gift.partnerId)?.shortFor(lang);
+        return lines([
+          if (parents.length == 2)
+            trFor(lang, 'offer_fusion_line')
+                .replaceAll('{a}', parents[0])
+                .replaceAll('{b}', parents[1])
+                .replaceAll('{clan}', partner ?? ''),
+          if (skill?['hiddenFlags'] is List) trFor(lang, 'offer_secret_line'),
+          if (base.isNotEmpty)
+            trFor(lang, 'offer_ascension_line')
+                .replaceAll('{skill}', skillDisplayName(base, language: lang)),
+          skill?['description']?.toString() ?? '',
+        ]);
       case GiftKind.object:
         final item = items[gift.id] as Map<String, dynamic>?;
         final stats = [
@@ -709,40 +990,5 @@ class _GiftBody extends StatelessWidget {
                 .replaceAll('{max}', '${perkInfo[perk]!.maxRank}'),
         ]);
     }
-  }
-}
-
-/// The Character tab's offers: the button to the one due, with how many
-/// wait, or a line saying how offers come.
-class OffersPanel extends ConsumerWidget {
-  const OffersPanel({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final waiting =
-        ref.watch(playerSessionProvider.select((s) => s.pendingOffers.length));
-    final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(tr(ref, 'offers_section'), style: theme.textTheme.titleSmall),
-        const SizedBox(height: 4),
-        if (waiting > 0)
-          FilledButton.tonalIcon(
-            key: const Key('offer_open'),
-            icon: const Icon(Icons.diversity_3),
-            onPressed: () =>
-                showOfferIfWaiting(context, ref, sayWhenNone: true),
-            label: Text(
-              '${tr(ref, 'offer_open_button')} · '
-              '${tr(ref, 'offer_pending').replaceAll('{n}', '$waiting')}',
-            ),
-          )
-        else
-          Text(tr(ref, 'offers_none'),
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-      ],
-    );
   }
 }

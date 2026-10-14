@@ -14,9 +14,13 @@ import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
 import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
 import '../data/contracts.dart';
+import '../data/camp_state.dart' show harborHouseId;
 import '../data/factions.dart';
 import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
+import '../data/harbour.dart';
+import '../data/heard_of.dart' show withMapGoal;
 import '../data/journey_rules.dart';
+import '../data/materials.dart';
 import '../data/offers.dart';
 import '../data/perks.dart';
 import '../data/politics_events.dart';
@@ -24,7 +28,18 @@ import '../data/politics_events.dart' as coast show applyStoryPolitics;
 import '../data/quest_objectives.dart' show killTargetsOf;
 import '../data/signs.dart';
 import '../data/skill_tree.dart' show branchMasteryEssenceCost;
+import '../data/throne.dart'
+    show
+        claimFlag,
+        clanQuestSteps,
+        clanStepFlag,
+        isMusterFlag,
+        onThroneFlag,
+        pledgedFlag,
+        throneWinnerFlag;
 import '../models/ally_state.dart';
+import '../models/item_origin.dart';
+import '../models/story_node.dart' show placeFoundFlag;
 import '../models/story_politics.dart';
 
 const String _playerSessionPrefsKey = 'player_session';
@@ -36,7 +51,7 @@ const String unreadableSessionBackupPrefsKey = 'player_session_unreadable';
 /// The save format's version, written into every save. Bump it with a
 /// migration in [PlayerSession.fromJson] whenever a change to the format
 /// needs one; a save without it is version 1.
-const int playerSessionSaveVersion = 3;
+const int playerSessionSaveVersion = harbourSaveVersion;
 const String _newGameDefaultsAssetPath = 'assets/gamedata/game_config.json';
 const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
 
@@ -67,10 +82,62 @@ int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
           (sum, h) => sum + ((h['partyCapacityBonus'] as num?)?.toInt() ?? 0));
 }
 
+/// The skills a companion starts with: their profession's and race's
+/// standard skill, and every skill one of their signature die's faces links
+/// to, so the die works from their very first fight (see
+/// [PlayerSessionNotifier.recruitAlly]).
+List<String> companionStarterSkillIds({
+  Map<String, dynamic>? race,
+  Map<String, dynamic>? profession,
+  Map<String, dynamic>? companion,
+  Map<String, dynamic> dice = const {},
+}) {
+  final professionSkillId = profession?['standardSkillID']?.toString() ?? '';
+  final raceSkillId = race?['standardSkillID']?.toString() ?? '';
+  // A companion's signature die IS their kit: every skill one of its
+  // faces links to has to resolve from their very first fight, not
+  // fizzle until the player happens to spend ally skill points on that
+  // exact id (Maren shipped with 2 of her 3 skill faces dead that way).
+  final signatureDiceId = companion?['signatureDiceId']?.toString() ?? '';
+  final signatureFaces =
+      ((dice[signatureDiceId] as Map<String, dynamic>?)?['faces'] as List?)
+              ?.cast<Map<String, dynamic>>() ??
+          const [];
+  return <String>{
+    if (professionSkillId.isNotEmpty) professionSkillId,
+    if (raceSkillId.isNotEmpty) raceSkillId,
+    for (final face in signatureFaces)
+      if ((face['linkedSkillID']?.toString() ?? '').isNotEmpty)
+        face['linkedSkillID'].toString(),
+  }.toList();
+}
+
 /// Companions the "Full House" achievement asks for: six of the eight.
 /// Tobin follows only a Good leader and Malrik only an Evil one, so no
 /// single run can recruit everyone.
 const int fullRosterCompanionCount = 6;
+
+/// The intrigues of intrigues.json: "settle them all" needs this many
+/// distinct ones (a test keeps the count in step with the file).
+const int intrigueCount = 8;
+
+/// How many of the six clans must trust the character at once for "A Hand
+/// at Four Doors": a clan's gains cost its rivals half, so all six is out of
+/// reach (QA's search never passed five).
+const int trustedClansForFriend = 4;
+
+/// The six clans a character can swear to (the ones with a Sworn boon).
+const List<String> coastClanIds = [
+  'dominion',
+  'vigil',
+  'compact',
+  'mire',
+  'crows',
+  'penitents',
+];
+
+/// `intrigue_<id>_outcome_<n>`: an intrigue settled (see politics_events).
+final RegExp _intrigueOutcomeFlag = RegExp(r'^intrigue_(.+)_outcome_\d+$');
 
 /// The share of the purse a retreat costs (see [retreatCostFor]); a
 /// potion, when the pack holds one, is dropped too.
@@ -101,13 +168,7 @@ bool canSellItem(Map<String, dynamic>? item) =>
 /// The materials forging [item] takes (items.json `craftMaterials`, item
 /// id to count); empty for anything not forged.
 Map<String, int> craftMaterialsFor(Map<String, dynamic>? item) {
-  final raw = item?['craftMaterials'];
-  if (raw is! Map) return const {};
-  return {
-    for (final e in raw.entries)
-      if (((e.value as num?)?.toInt() ?? 0) > 0)
-        e.key.toString(): (e.value as num).toInt(),
-  };
+  return materialCountsOf(item, 'craftMaterials');
 }
 
 /// The items forged at [shopId] (items.json `craftedAt`), sorted by id.
@@ -186,6 +247,7 @@ class PlayerSession {
     this.seenShopIds = const [],
     this.seenQuestIds = const [],
     this.seenEnemyIds = const [],
+    this.seenNpcIds = const [],
     this.readSceneKeys = const [],
     this.seenEchoKeys = const [],
     this.provisions = provisionsStart,
@@ -222,6 +284,10 @@ class PlayerSession {
     this.shipHull = -1,
     this.shipPartIds = const ['ballista'],
     this.storedShipPartIds = const [],
+    this.shipLooks = const {},
+    this.ownedShipLooks = const [],
+    this.shipHullId = 'rusty_eel',
+    this.ownedHullIds = const ['rusty_eel'],
     this.currentPortId = '',
     this.visitedPortIds = const [],
     this.enemyKillCounts = const {},
@@ -244,6 +310,7 @@ class PlayerSession {
     this.legacyGold = 0,
     this.legacyDiceIds = const [],
     this.legacySpellIds = const [],
+    this.itemOrigins = const {},
   });
 
   final int level;
@@ -357,6 +424,11 @@ class PlayerSession {
   final List<String> seenShopIds;
   final List<String> seenQuestIds;
   final List<String> seenEnemyIds;
+
+  /// The people (npcs.json, v1.204) the player has looked at in the
+  /// Other tab's People section: a person known (see npcDiscovered) and
+  /// not here counts on the section's badge.
+  final List<String> seenNpcIds;
 
   /// The town and camp scenes the player has read in full, as
   /// `<nodeId>#<hash of the text>` (see sceneReadKey): coming back to one
@@ -541,6 +613,21 @@ class PlayerSession {
   /// (v1.185): they wait at the Harbor and go back on for nothing.
   final List<String> storedShipPartIds;
 
+  /// The Eel's looks (ship_looks.json): the id worn in each category
+  /// (`hull`, `sail`, `figurehead`, `ensign`); a category with none wears
+  /// its default. Cosmetic only.
+  final Map<String, String> shipLooks;
+
+  /// Looks bought or won, which stay the player's whichever is worn.
+  final List<String> ownedShipLooks;
+
+  /// The ships.json hull the Eel is built on (v1.228): the sloop she starts
+  /// on, or one the shipwright has rebuilt her on.
+  final String shipHullId;
+
+  /// Hulls built so far: going back to one costs nothing.
+  final List<String> ownedHullIds;
+
   /// ports.json id the boat is moored at; empty means the home port.
   final String currentPortId;
 
@@ -657,6 +744,13 @@ class PlayerSession {
   final List<String> legacyDiceIds;
   final List<String> legacySpellIds;
 
+  /// Where each item first came into the pack (item id -> place and
+  /// chapter, v1.204, see item_origin.dart): recorded by every way an item
+  /// enters the inventory, on the first acquisition only, and read by the
+  /// inventory's detail dialog ("Yours since the Lower Town, chapter 1").
+  /// Cleared with the pack on permadeath.
+  final Map<String, ItemOrigin> itemOrigins;
+
   bool get hasLegacy =>
       legacyGold > 0 || legacyDiceIds.isNotEmpty || legacySpellIds.isNotEmpty;
 
@@ -758,6 +852,7 @@ class PlayerSession {
     List<String>? seenShopIds,
     List<String>? seenQuestIds,
     List<String>? seenEnemyIds,
+    List<String>? seenNpcIds,
     List<String>? readSceneKeys,
     List<String>? seenEchoKeys,
     int? provisions,
@@ -795,6 +890,10 @@ class PlayerSession {
     int? shipHull,
     List<String>? shipPartIds,
     List<String>? storedShipPartIds,
+    Map<String, String>? shipLooks,
+    List<String>? ownedShipLooks,
+    String? shipHullId,
+    List<String>? ownedHullIds,
     String? currentPortId,
     List<String>? visitedPortIds,
     Map<String, int>? enemyKillCounts,
@@ -817,6 +916,7 @@ class PlayerSession {
     int? legacyGold,
     List<String>? legacyDiceIds,
     List<String>? legacySpellIds,
+    Map<String, ItemOrigin>? itemOrigins,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -861,6 +961,7 @@ class PlayerSession {
       seenShopIds: seenShopIds ?? this.seenShopIds,
       seenQuestIds: seenQuestIds ?? this.seenQuestIds,
       seenEnemyIds: seenEnemyIds ?? this.seenEnemyIds,
+      seenNpcIds: seenNpcIds ?? this.seenNpcIds,
       readSceneKeys: readSceneKeys ?? this.readSceneKeys,
       seenEchoKeys: seenEchoKeys ?? this.seenEchoKeys,
       provisions: provisions ?? this.provisions,
@@ -898,6 +999,10 @@ class PlayerSession {
       shipHull: shipHull ?? this.shipHull,
       shipPartIds: shipPartIds ?? this.shipPartIds,
       storedShipPartIds: storedShipPartIds ?? this.storedShipPartIds,
+      shipLooks: shipLooks ?? this.shipLooks,
+      ownedShipLooks: ownedShipLooks ?? this.ownedShipLooks,
+      shipHullId: shipHullId ?? this.shipHullId,
+      ownedHullIds: ownedHullIds ?? this.ownedHullIds,
       currentPortId: currentPortId ?? this.currentPortId,
       visitedPortIds: visitedPortIds ?? this.visitedPortIds,
       bannerPiecesCollected:
@@ -923,6 +1028,7 @@ class PlayerSession {
       legacyGold: legacyGold ?? this.legacyGold,
       legacyDiceIds: legacyDiceIds ?? this.legacyDiceIds,
       legacySpellIds: legacySpellIds ?? this.legacySpellIds,
+      itemOrigins: itemOrigins ?? this.itemOrigins,
     );
   }
 
@@ -970,6 +1076,7 @@ class PlayerSession {
         'seenShopIds': seenShopIds,
         'seenQuestIds': seenQuestIds,
         'seenEnemyIds': seenEnemyIds,
+        'seenNpcIds': seenNpcIds,
         'readSceneKeys': readSceneKeys,
         'seenEchoKeys': seenEchoKeys,
         'provisions': provisions,
@@ -1005,6 +1112,10 @@ class PlayerSession {
         'shipHull': shipHull,
         'shipPartIds': shipPartIds,
         'storedShipPartIds': storedShipPartIds,
+        'shipLooks': shipLooks,
+        'ownedShipLooks': ownedShipLooks,
+        'shipHullId': shipHullId,
+        'ownedHullIds': ownedHullIds,
         'currentPortId': currentPortId,
         'visitedPortIds': visitedPortIds,
         'bannerPiecesCollected': bannerPiecesCollected,
@@ -1030,6 +1141,9 @@ class PlayerSession {
         'legacyGold': legacyGold,
         'legacyDiceIds': legacyDiceIds,
         'legacySpellIds': legacySpellIds,
+        'itemOrigins': {
+          for (final e in itemOrigins.entries) e.key: e.value.toJson(),
+        },
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -1068,6 +1182,7 @@ class PlayerSession {
         ...?(json['flags'] as List?)?.map((e) => e.toString()),
         ...?(json['builtHouseIds'] as List?)
             ?.map((e) => houseFlag(e.toString())),
+        if (legacyHarbourDue(json)) houseFlag(harborHouseId),
       }.toList(),
       activeQuestIds: (json['activeQuestIds'] as List?)
               ?.map((e) => e.toString())
@@ -1077,10 +1192,15 @@ class PlayerSession {
               ?.map((e) => e.toString())
               .toList() ??
           const [],
-      inventoryItemIds: (json['inventoryItemIds'] as List?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          const [],
+      inventoryItemIds: [
+        ...?(json['inventoryItemIds'] as List?)?.map((e) => e.toString()),
+        // A save from before materials gets, once, a rare material of each
+        // tier its story has passed (see legacyMaterialGrant); it is saved
+        // with the new version, so it never gets them again.
+        if (((json['saveVersion'] as num?)?.toInt() ?? 1) <
+            materialsSaveVersion)
+          ...legacyMaterialGrant((json['clockChapter'] as num?)?.toInt() ?? 0),
+      ],
       equippedItemIds: (json['equippedItemIds'] as List?)
               ?.map((e) => e.toString())
               .toList() ??
@@ -1137,6 +1257,9 @@ class PlayerSession {
               const [],
       seenEnemyIds:
           (json['seenEnemyIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      seenNpcIds:
+          (json['seenNpcIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
       readSceneKeys:
           (json['readSceneKeys'] as List?)?.map((e) => e.toString()).toList() ??
@@ -1220,9 +1343,12 @@ class PlayerSession {
               const [],
       // Saves from before the clans stand where every faction starts.
       politics: PoliticsState.fromJson(json['politics']),
-      builtHouseIds:
-          (json['builtHouseIds'] as List?)?.map((e) => e.toString()).toList() ??
-              const [],
+      builtHouseIds: [
+        ...?(json['builtHouseIds'] as List?)?.map((e) => e.toString()),
+        // A save from before the harbour was the player's to build, past
+        // the camp's founding, has it built (see legacyHarbourDue).
+        if (legacyHarbourDue(json)) harborHouseId,
+      ],
       townOrder:
           (json['townOrder'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -1242,6 +1368,18 @@ class PlayerSession {
               ?.map((e) => e.toString())
               .toList() ??
           const [],
+      shipLooks: {
+        for (final entry in ((json['shipLooks'] as Map?) ?? const {}).entries)
+          entry.key.toString(): entry.value.toString(),
+      },
+      ownedShipLooks: (json['ownedShipLooks'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      shipHullId: json['shipHullId']?.toString() ?? 'rusty_eel',
+      ownedHullIds:
+          (json['ownedHullIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const ['rusty_eel'],
       currentPortId: json['currentPortId']?.toString() ?? '',
       visitedPortIds: (json['visitedPortIds'] as List?)
               ?.map((e) => e.toString())
@@ -1322,6 +1460,13 @@ class PlayerSession {
               ?.map((e) => e.toString())
               .toList() ??
           const [],
+      // A save from before v1.204 knows no origins: its items are simply
+      // owned, with no "since" line.
+      itemOrigins: {
+        for (final e in ((json['itemOrigins'] as Map?) ?? const {}).entries)
+          if (ItemOrigin.tryParse(e.value) case final origin?)
+            e.key.toString(): origin,
+      },
     );
   }
 }
@@ -1735,7 +1880,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// [approvalMods]; the reactions are returned, for the story to show.
   /// [goldIsProfit] false: the gold is loot picked up on the road (a
   /// detour's cache, an expedition's find), not a deed a companion who
-  /// dislikes greed would hold against the player.
+  /// dislikes greed would hold against the player. [origin] (where the
+  /// story stands, see itemOriginHere) is remembered for an [itemId] new
+  /// to the pack (see [PlayerSession.itemOrigins]). [materials] (a
+  /// choice's `grantMaterials`) go in the pack too, so many of each.
   Future<List<ApprovalChange>> applyChoiceEffects({
     int goldMod = 0,
     int alignmentMod = 0,
@@ -1744,10 +1892,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? questIDToProgress,
     String? bannerPieceId,
     String? itemId,
+    Map<String, int> materials = const {},
     String? loseAllyId,
     Map<String, int> approvalMods = const {},
     Map<String, dynamic> companions = const {},
     bool goldIsProfit = true,
+    ItemOrigin? origin,
   }) async {
     // Who the story takes is settled by the party as it stands in the
     // scene, before anyone reacts: a companion walking out over this very
@@ -1805,14 +1955,24 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       questKillBaselines: newKillBaselines,
       trackedQuestId: newTracked,
       bannerPiecesCollected: newBannerPieces,
-      inventoryItemIds: itemId == null || itemId.isEmpty
-          ? state.inventoryItemIds
-          : [...state.inventoryItemIds, itemId],
+      inventoryItemIds: [
+        ...state.inventoryItemIds,
+        if (itemId != null && itemId.isNotEmpty) itemId,
+        for (final MapEntry(key: id, value: count) in materials.entries)
+          for (var i = 0; i < count; i++) id,
+      ],
+      itemOrigins: itemId == null || itemId.isEmpty
+          ? state.itemOrigins
+          : withItemOrigins(state.itemOrigins, [itemId], origin),
     );
     if (lostId != null) {
       loseAlly(lostId, persist: false, companions: companions);
     }
     await _persist();
+    // A flag or a piece of the Shroud may be what an achievement asks for.
+    if (flagsToAdd.isNotEmpty || (bannerPieceId ?? '').isNotEmpty) {
+      await checkAchievements();
+    }
     return reactions;
   }
 
@@ -2074,13 +2234,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// - the titles standing earns (see titlesEarned).
   /// The offer is spent; false when there is none or no such suitor.
   Future<bool> acceptSuitor(String factionId,
-      {required OfferTables tables}) async {
+      {required OfferTables tables, ItemOrigin? origin}) async {
     final offer = state.clanOffer;
     final suitor = offer?.suitorOf(factionId);
     if (offer == null || suitor == null || state.pendingOffers.isEmpty) {
       return false;
     }
-    var next = _withGift(state, suitor, tables);
+    var next = _withGift(state, suitor, tables, origin: origin);
     final politics = acceptPolitics(suitor, offer.ticket,
         politics: next.politics,
         data: tables.data,
@@ -2100,7 +2260,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// [session] with [suitor]'s gift applied (see [acceptSuitor]).
   PlayerSession _withGift(
-      PlayerSession session, Suitor suitor, OfferTables tables) {
+      PlayerSession session, Suitor suitor, OfferTables tables,
+      {ItemOrigin? origin}) {
     final gift = suitor.gift;
     switch (gift.kind) {
       case GiftKind.skill:
@@ -2127,7 +2288,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         );
       case GiftKind.object:
         return _withItem(
-            session, gift.id, tables.items[gift.id] as Map<String, dynamic>?);
+            session, gift.id, tables.items[gift.id] as Map<String, dynamic>?,
+            origin: origin);
       case GiftKind.title:
         if (session.heldTitleIds.contains(gift.id)) return session;
         return session.copyWith(
@@ -2159,9 +2321,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// [session] given [itemId] the way a reward is: a potion as charges, a
   /// spellbook read, a tome read on the spot (a Tome of Mastery is one more
-  /// offer), anything else to the pack.
+  /// offer), anything else to the pack, with [origin] remembered for a
+  /// piece new to it (see [PlayerSession.itemOrigins]).
   PlayerSession _withItem(
-      PlayerSession session, String itemId, Map<String, dynamic>? item) {
+      PlayerSession session, String itemId, Map<String, dynamic>? item,
+      {ItemOrigin? origin}) {
     final charges = consumableChargesFor(itemId, item);
     if (charges != null) {
       return session.copyWith(
@@ -2183,8 +2347,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         pendingOffers: [...session.pendingOffers, ...tome.offers],
       );
     }
-    return session
-        .copyWith(inventoryItemIds: [...session.inventoryItemIds, itemId]);
+    return session.copyWith(
+      inventoryItemIds: [...session.inventoryItemIds, itemId],
+      itemOrigins: withItemOrigins(session.itemOrigins, [itemId], origin),
+    );
   }
 
   /// [session] with the titles its politics earn or take away (see
@@ -2347,6 +2513,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         chapter: _politicsChapter(chapter),
         day: state.day,
         chapterDay: max(1, state.day - state.chapterStartDay + 1),
+        signPatrons: state.signPatronsThisLife,
       );
 
   /// Takes [change] into the session: the politics and flags after it,
@@ -2369,13 +2536,19 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       ],
     );
     for (final id in change.titles) {
-      if (next.heldTitleIds.contains(id)) continue;
+      // The coronation's title (v1.196) is worn at once.
+      final crowned = data.titles[id]?.source.startsWith('throne:') ?? false;
+      if (next.heldTitleIds.contains(id)) {
+        if (crowned) next = next.copyWith(activeTitleId: id);
+        continue;
+      }
       next = next.copyWith(
         heldTitleIds: [...next.heldTitleIds, id],
-        activeTitleId:
-            next.activeTitleId.isEmpty && !(data.titles[id]?.negative ?? false)
-                ? id
-                : next.activeTitleId,
+        activeTitleId: crowned ||
+                (next.activeTitleId.isEmpty &&
+                    !(data.titles[id]?.negative ?? false))
+            ? id
+            : next.activeTitleId,
       );
     }
     state = next;
@@ -2418,9 +2591,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     Map<String, PoliticsEvent> events = const {},
     Map<String, dynamic> companions = const {},
     int? chapter,
+    String? cause,
   }) async {
     final change = coast.applyStoryPolitics(politics,
-        cause: 'story:$nodeId',
+        cause: cause ?? 'story:$nodeId',
         key: key,
         politics: state.politics,
         flags: state.flags,
@@ -2428,6 +2602,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
     await _persist();
+    // A standing, an oath or an intrigue's end may be what one asks for.
+    await checkAchievements();
     return change;
   }
 
@@ -2469,6 +2645,73 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     _takeCoastChange(change, data, companions: companions);
     await _persist();
     return change;
+  }
+
+  /// Edit Mode's Throne tab (v1.196, see throne.dart): [politics] (a
+  /// claim, a pledge, the Throne, the muster) applied now, logged as an
+  /// edit, every time it is pressed.
+  Future<CoastChange> applyThroneEdit(
+    StoryPolitics politics, {
+    required ClanData data,
+    Map<String, PoliticsEvent> events = const {},
+    int? chapter,
+  }) async {
+    final change = coast.applyStoryPolitics(politics,
+        cause: 'edit',
+        politics: state.politics,
+        flags: state.flags,
+        world: _coastWorld(data, events, chapter));
+    _takeCoastChange(change, data);
+    await _persist();
+    return change;
+  }
+
+  /// Edit Mode: [factionId]'s clan quest at [steps] (0..3): the flags
+  /// `clan_<id>_step_1` up to it held, those past it dropped.
+  Future<void> setClanStepsForEdit(String factionId, int steps,
+      {required ClanData data}) async {
+    final keep = [
+      for (var n = 1; n <= steps.clamp(0, clanQuestSteps); n++)
+        clanStepFlag(factionId, n),
+    ];
+    final prefix = 'clan_${factionId}_step_';
+    final flags = [
+      for (final f in state.flags)
+        if (!f.startsWith(prefix) || keep.contains(f)) f,
+      for (final f in keep)
+        if (!state.flags.contains(f)) f,
+    ];
+    state = _withTitles(state.copyWith(flags: flags), data);
+    await _persist();
+  }
+
+  /// Edit Mode: the climb undone -- no claim, nobody on the Throne, no
+  /// pledge, no Host -- with the flags they set for each faction
+  /// (`claim_<id>`, `pledged_<id>`, `throne_winner_<id>`, `host_<id>`),
+  /// `on_throne` and the Host's counts. Standing, marks, the clan quest
+  /// steps and the story's own flags stay.
+  Future<void> clearThroneForEdit({required ClanData data}) async {
+    final ids = data.factions.keys;
+    final climb = {
+      for (final id in ids) ...[
+        claimFlag(id),
+        pledgedFlag(id),
+        throneWinnerFlag(id),
+      ],
+      onThroneFlag,
+    };
+    bool climbFlag(String f) => climb.contains(f) || isMusterFlag(f, ids);
+    state = _withTitles(
+        state.copyWith(
+          politics: state.politics.copyWith(
+              claim: '', throneWinner: '', pledged: const [], host: Host.none),
+          flags: [
+            for (final f in state.flags)
+              if (!climbFlag(f)) f,
+          ],
+        ),
+        data);
+    await _persist();
   }
 
   /// The camp has shown the news from the coast: none is waiting.
@@ -2545,13 +2788,47 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final baseline = _bountyBaseline(quest);
     state = state.copyWith(
       activeQuestIds: [...state.activeQuestIds, questId],
+      // A baseline already taken (see [noteQuestOfferedBeforeFight]) stands.
       questKillBaselines: baseline.isEmpty
           ? state.questKillBaselines
-          : {...state.questKillBaselines, questId: baseline},
+          : {
+              ...state.questKillBaselines,
+              questId: state.questKillBaselines[questId] ?? baseline,
+            },
       // With no quest followed yet, the one just taken on is followed.
       trackedQuestId: state.activeQuestIds.contains(state.trackedQuestId)
           ? state.trackedQuestId
           : questId,
+    );
+    await _persist();
+  }
+
+  /// A choice that fights and offers [questId] at once: the offer comes
+  /// after the fight, so the bounty's kill baseline is taken from
+  /// [killsBefore] (the counts before the fight) and the fight's own
+  /// kills count towards it. Nothing is stored for a quest already
+  /// taken or turned in, or one with no `countFromAccept` bounty.
+  Future<void> noteQuestOfferedBeforeFight(
+    String questId,
+    Map<String, int> killsBefore, {
+    required Map<String, dynamic>? quest,
+  }) async {
+    if (quest == null ||
+        state.activeQuestIds.contains(questId) ||
+        state.completedQuestIds.contains(questId) ||
+        state.questKillBaselines.containsKey(questId)) {
+      return;
+    }
+    final baseline = {
+      for (final objective in (quest['objectives'] as List?) ?? const [])
+        if (objective is Map<String, dynamic> &&
+            objective['type'] == 'Kill' &&
+            objective['countFromAccept'] == true)
+          for (final id in killTargetsOf(objective)) id: killsBefore[id] ?? 0,
+    };
+    if (baseline.isEmpty) return;
+    state = state.copyWith(
+      questKillBaselines: {...state.questKillBaselines, questId: baseline},
     );
     await _persist();
   }
@@ -2616,17 +2893,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? grantsBannerPieceId,
     int alignmentMod = 0,
     Map<String, dynamic>? rewardItem,
+    ItemOrigin? origin,
   }) async {
     final newActive =
         state.activeQuestIds.where((id) => id != questId).toList();
     final newCompleted = <String>{...state.completedQuestIds, questId}.toList();
     final newInventory = [...state.inventoryItemIds];
+    var newOrigins = state.itemOrigins;
     var potionsGained = 0;
     var antidotesGained = 0;
     if (rewardItemId != null && rewardItemId.isNotEmpty) {
       final charges = consumableChargesFor(rewardItemId, rewardItem);
       if (charges == null) {
         newInventory.add(rewardItemId);
+        newOrigins = withItemOrigins(newOrigins, [rewardItemId], origin);
       } else {
         potionsGained = charges.potions;
         antidotesGained = charges.antidotes;
@@ -2681,6 +2961,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           state.trackedQuestId == questId ? '' : state.trackedQuestId,
       completedQuestIds: newCompleted,
       inventoryItemIds: newInventory,
+      itemOrigins: newOrigins,
       potionCount: state.potionCount + potionsGained,
       antidoteCount: state.antidoteCount + antidotesGained,
       unlockedQuestIds: newUnlockedQuests,
@@ -2724,6 +3005,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int stockLimit, {
     Map<String, dynamic>? item,
     String? stockKey,
+    ItemOrigin? origin,
   }) async {
     // A restocking consumable is counted per chapter (see stockKeyFor).
     final key = stockKey ?? '$shopId::$itemId';
@@ -2762,6 +3044,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       inventoryItemIds: charges == null
           ? [...state.inventoryItemIds, itemId]
           : state.inventoryItemIds,
+      itemOrigins: charges == null
+          ? withItemOrigins(state.itemOrigins, [itemId], origin)
+          : state.itemOrigins,
       potionCount: state.potionCount + (charges?.potions ?? 0),
       antidoteCount: state.antidoteCount + (charges?.antidotes ?? 0),
       shopPurchaseCounts: {...state.shopPurchaseCounts, key: purchased + 1},
@@ -2822,7 +3107,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// Forges [itemId] from [item]'s recipe: its gold and materials leave
   /// the pack and the piece enters it. Returns false if something is
   /// missing.
-  Future<bool> craftItem(String itemId, Map<String, dynamic>? item) async {
+  Future<bool> craftItem(String itemId, Map<String, dynamic>? item,
+      {ItemOrigin? origin}) async {
     if (!canCraft(item)) return false;
     final remaining = [...state.inventoryItemIds];
     for (final m in craftMaterialsFor(item).entries) {
@@ -2833,6 +3119,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       gold: state.gold - ((item!['craftGold'] as num?)?.toInt() ?? 0),
       inventoryItemIds: [...remaining, itemId],
+      itemOrigins: withItemOrigins(state.itemOrigins, [itemId], origin),
     );
     await _persist();
     return true;
@@ -3019,24 +3306,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (state.recruitedAllies.any((a) => a.companionId == companionId)) return;
     if (state.lostAllyIds.contains(companionId)) return;
     if (state.departedAllyIds.contains(companionId)) return;
-    final professionSkillId = profession?['standardSkillID']?.toString() ?? '';
-    final raceSkillId = race?['standardSkillID']?.toString() ?? '';
-    // A companion's signature die IS their kit: every skill one of its
-    // faces links to has to resolve from their very first fight, not
-    // fizzle until the player happens to spend ally skill points on that
-    // exact id (Maren shipped with 2 of her 3 skill faces dead that way).
-    final signatureDiceId = companion?['signatureDiceId']?.toString() ?? '';
-    final signatureFaces =
-        ((dice[signatureDiceId] as Map<String, dynamic>?)?['faces'] as List?)
-                ?.cast<Map<String, dynamic>>() ??
-            const [];
-    final starterUnlocked = <String>{
-      if (professionSkillId.isNotEmpty) professionSkillId,
-      if (raceSkillId.isNotEmpty) raceSkillId,
-      for (final face in signatureFaces)
-        if ((face['linkedSkillID']?.toString() ?? '').isNotEmpty)
-          face['linkedSkillID'].toString(),
-    }.toList();
+    final starterUnlocked = companionStarterSkillIds(
+      race: race,
+      profession: profession,
+      companion: companion,
+      dice: dice,
+    );
     // A freshly recruited companion joins the fight immediately, up to
     // capacity -- Camp is where the roster is *managed*, not a
     // precondition for a new ally actually helping in combat (and Camp
@@ -3103,18 +3378,37 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// are one atomic action, exactly like [recruitAlly]'s starter-skill
   /// unlock is one action rather than two.
   /// Spends [cost] and marks [houseId] built, unlocking [unlocksShopId] if
-  /// any. A no-op if unaffordable, already built, or any of
-  /// [requiredFlags] (houses.json) is still unset -- the camp's late
-  /// workshops wait on the zones that supply them.
+  /// any. A no-op if unaffordable (gold, or the [materialCost] in the pack,
+  /// see materials.dart), already built, or any of [requiredFlags]
+  /// (houses.json) is still unset -- the camp's late workshops wait on the
+  /// zones that supply them.
+  ///
+  /// A house still locked (see camp_works.dart) is refused too: one whose
+  /// tier comes in a chapter after [chapter] ([fromChapter], the tier's
+  /// first), or whose companion ([requiredAllyId]) is not recruited.
   Future<void> buildHouse(String houseId, int cost,
-      {String? unlocksShopId, List<String> requiredFlags = const []}) async {
+      {String? unlocksShopId,
+      List<String> requiredFlags = const [],
+      Map<String, int> materialCost = const {},
+      int fromChapter = 1,
+      int? chapter,
+      String? requiredAllyId}) async {
     if (state.gold < cost || state.builtHouseIds.contains(houseId)) return;
+    if (chapter != null && chapter < fromChapter) return;
+    if ((requiredAllyId ?? '').isNotEmpty &&
+        !state.recruitedAllies.any((a) => a.companionId == requiredAllyId)) {
+      return;
+    }
     if (requiredFlags.any((flag) => !state.flags.contains(flag))) return;
+    if (missingMaterials(state.inventoryItemIds, materialCost).isNotEmpty) {
+      return;
+    }
     // The story reads the camp's buildings back through a flag per house
     // (see houseFlag).
     final flag = houseFlag(houseId);
     state = state.copyWith(
       gold: state.gold - cost,
+      inventoryItemIds: withoutMaterials(state.inventoryItemIds, materialCost),
       builtHouseIds: [...state.builtHouseIds, houseId],
       flags: state.flags.contains(flag) ? state.flags : [...state.flags, flag],
       townOrder: [...state.townPieces, houseId],
@@ -3152,11 +3446,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? rewardItemId,
     String? rewardDiceId,
     String? rewardFlag,
+    Map<String, int> rewardMaterials = const {},
+    ItemOrigin? origin,
   }) async {
     if (state.completedZoneIds.contains(zoneId)) return;
-    final newInventory = [...state.inventoryItemIds];
+    final newInventory = [
+      ...state.inventoryItemIds,
+      // The zone's materials (zones.json rewardMaterials).
+      for (final e in rewardMaterials.entries)
+        for (var i = 0; i < e.value; i++) e.key,
+    ];
+    var newOrigins = state.itemOrigins;
     if (rewardItemId != null && rewardItemId.isNotEmpty) {
       newInventory.add(rewardItemId);
+      newOrigins = withItemOrigins(newOrigins, [rewardItemId], origin);
     }
     var newOwnedDice = state.ownedDiceIds;
     if (rewardDiceId != null &&
@@ -3173,6 +3476,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       gold: state.gold + rewardGold,
       inventoryItemIds: newInventory,
+      itemOrigins: newOrigins,
       ownedDiceIds: newOwnedDice,
       flags: newFlags,
       completedZoneIds: [...state.completedZoneIds, zoneId],
@@ -3239,6 +3543,56 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state =
         state.copyWith(storedShipPartIds: [...state.storedShipPartIds, partId]);
     await _persist();
+  }
+
+  /// Rebuilds the Eel on the hull [hullId] (see ship_forms.dart), paying
+  /// [cost] unless she has been built on it before; false (and nothing
+  /// changed) if it is her hull already or unaffordable. [toStore] are the
+  /// parts the new hull has no slot for: they wait at the Harbor (see
+  /// [storedShipPartIds]). [hull] is the hull she is rebuilt with, -1 for
+  /// full.
+  Future<bool> rebuildHull(String hullId, int cost,
+      {List<String> toStore = const [], int hull = -1}) async {
+    if (state.shipHullId == hullId) return false;
+    final owned = state.ownedHullIds.contains(hullId);
+    final price = owned ? 0 : cost;
+    if (state.gold < price) return false;
+    state = state.copyWith(
+      gold: state.gold - price,
+      shipHullId: hullId,
+      ownedHullIds:
+          owned ? state.ownedHullIds : [...state.ownedHullIds, hullId],
+      shipPartIds: [
+        for (final id in state.shipPartIds)
+          if (!toStore.contains(id)) id,
+      ],
+      storedShipPartIds: [
+        ...state.storedShipPartIds,
+        for (final id in toStore)
+          if (!state.storedShipPartIds.contains(id)) id,
+      ],
+      shipHull: hull,
+    );
+    await _persist();
+    return true;
+  }
+
+  /// Wears the look [lookId] in its [category], buying it first for [cost]
+  /// when it is not yet owned; false (and nothing changed) if it cannot be
+  /// afforded. A default look is always owned, so [cost] 0 is the caller's
+  /// way to wear one.
+  Future<bool> wearShipLook(String category, String lookId, int cost) async {
+    final owned = state.ownedShipLooks.contains(lookId);
+    final price = owned ? 0 : cost;
+    if (state.gold < price) return false;
+    state = state.copyWith(
+      gold: state.gold - price,
+      shipLooks: {...state.shipLooks, category: lookId},
+      ownedShipLooks:
+          owned ? state.ownedShipLooks : [...state.ownedShipLooks, lookId],
+    );
+    await _persist();
+    return true;
   }
 
   /// Pays [cost] to restore the hull to full; false if unaffordable.
@@ -3458,6 +3812,38 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     check('keldas_hall_built', state.builtHouseIds.contains('keldas_hall'));
     check('first_quest', state.completedQuestIds.isNotEmpty);
     check('first_shop', state.unlockedShopIds.isNotEmpty);
+
+    // The story's milestones: plain functions of the saved flags, banner
+    // pieces, politics and New Game+ cycle.
+    check('on_the_throne', state.flags.contains('on_throne'));
+    check('half_a_banner', state.bannerPiecesCollected.length >= 3);
+    check('whole_cloth', state.flags.contains('banner_whole'));
+    final settled = <String>{
+      for (final flag in state.flags)
+        if (_intrigueOutcomeFlag.firstMatch(flag) case final match?)
+          match.group(1)!,
+    };
+    check('first_thread', settled.isNotEmpty);
+    check('whole_web', settled.length >= intrigueCount);
+    check('time_turned', state.newGamePlusCycle >= 1);
+    final politics = state.politics;
+    check('sworn_to_a_clan', politics.swornFactionId.isNotEmpty);
+    check(
+        'hunted_by_a_clan',
+        coastClanIds.any((id) =>
+            standingTierFor(politics.standings[id] ?? 0) ==
+            StandingTier.hunted));
+    check(
+        'friend_of_four_clans',
+        politics.swornFactionId.isEmpty &&
+            coastClanIds
+                    .where((id) => standingTierFor(politics.standings[id] ?? 0)
+                        .isAtLeast(StandingTier.trusted))
+                    .length >=
+                trustedClansForFriend);
+    check('akagiri_found', state.flags.contains(placeFoundFlag('3200')));
+    check('kindly_hill_found', state.flags.contains(placeFoundFlag('5200')));
+    check('highhearth_found', state.flags.contains(placeFoundFlag('6200')));
 
     if (newly.isNotEmpty) {
       state = state.copyWith(
@@ -3733,12 +4119,26 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// Marks every currently-unlocked shop/quest/enemy id as seen at once —
   /// used when a Play-tab section is expanded, clearing its whole badge.
-  Future<void> markAllSeenInCategory(
-      {bool shops = false, bool quests = false, bool enemies = false}) async {
+  /// Marks every entry of a Play tab section as viewed, clearing its
+  /// badge. The people known are not kept on the session (see
+  /// npcDiscovered: they follow the scenes visited), so [npcs] takes the
+  /// ids on show as [npcIds]; those join [PlayerSession.seenNpcIds].
+  Future<void> markAllSeenInCategory({
+    bool shops = false,
+    bool quests = false,
+    bool enemies = false,
+    bool npcs = false,
+    Iterable<String> npcIds = const [],
+  }) async {
+    final seenNpcs =
+        npcs ? {...state.seenNpcIds, ...npcIds}.toList() : state.seenNpcIds;
     state = state.copyWith(
       seenShopIds: shops ? state.unlockedShopIds : state.seenShopIds,
       seenQuestIds: quests ? state.unlockedQuestIds : state.seenQuestIds,
       seenEnemyIds: enemies ? state.unlockedEnemyIds : state.seenEnemyIds,
+      seenNpcIds: seenNpcs.length == state.seenNpcIds.length
+          ? state.seenNpcIds
+          : seenNpcs,
     );
     await _persist();
   }
@@ -3974,6 +4374,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  /// Marks [landmarkId] as the map's one goal (null clears it), see
+  /// heard_of.dart's withMapGoal: a flag, no save field of its own.
+  Future<void> setMapGoal(String? landmarkId) async {
+    state = state.copyWith(flags: withMapGoal(state.flags, landmarkId));
+    await _persist();
+  }
+
   Future<void> consumePotion() async {
     if (state.potionCount <= 0) return;
     state = state.copyWith(potionCount: state.potionCount - 1);
@@ -4098,6 +4505,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int bossOffers = 0,
     int titanBlood = 0,
     bool pactFight = false,
+    bool keepWounds = false,
+    ItemOrigin? origin,
   }) async {
     final leveled = _applyXp(xpGain);
 
@@ -4139,7 +4548,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final clampedHp = hpAfter < 0
         ? 0
         : (hpAfter > leveled.maxHealth ? leveled.maxHealth : hpAfter);
-    final newHealth = leveled.leveledUp ? leveled.maxHealth : clampedHp;
+    // A level-up refills health, except in a chain with no healing
+    // between its fights (see EncounterModifiers.keepWounds).
+    final newHealth =
+        leveled.leveledUp && !keepWounds ? leveled.maxHealth : clampedHp;
 
     final newAllies = leveled.leveledUp
         ? _healAndGrowAlliesOnLevelUp(leveled.levelsGained)
@@ -4183,6 +4595,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       heldSigns: pactFight ? countDownPacts(state.heldSigns) : null,
       gold: state.gold + goldGain,
       inventoryItemIds: [...state.inventoryItemIds, ...carried],
+      itemOrigins: withItemOrigins(state.itemOrigins, carried, origin),
       potionCount: state.potionCount + potionsGained,
       antidoteCount: state.antidoteCount + antidotesGained,
       xpEarnedThisRun: state.xpEarnedThisRun + xpGain,
@@ -4268,6 +4681,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       currentHealth: state.maxHealth,
       inventoryItemIds: const [],
+      // The pack's provenance goes with the pack.
+      itemOrigins: const {},
       equippedItemIds: const [],
       // The party shares one pack: what the companions wore goes with it.
       recruitedAllies: [

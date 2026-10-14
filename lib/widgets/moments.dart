@@ -5,8 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../combat/skill_vfx.dart' show VfxPalette;
 import '../theme/stitched_ink.dart';
 import 'journey_fx.dart';
+import 'pixel_vfx.dart';
 
 /// The small moments that make an action land, across the game: bursts,
 /// a healing wave, an achievement's toast, a chapter's title card, the
@@ -444,70 +446,105 @@ class _ChapterCardState extends State<ChapterCard>
                     color: Color.alphaBlend(
                         widget.colour.withValues(alpha: 0.22),
                         theme.colorScheme.surface.withValues(alpha: 0.95)),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
+                    child: Stack(
+                      alignment: Alignment.center,
                       children: [
-                        Text(widget.number.toUpperCase(),
-                            style: theme.textTheme.labelLarge?.copyWith(
-                                color: widget.colour, letterSpacing: 3)),
-                        const SizedBox(height: 8),
-                        Opacity(
-                          opacity: ink,
-                          child: Text(
-                            widget.title,
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.headlineMedium
-                                ?.copyWith(fontFamily: InkFonts.display),
+                        // A pixel ring and spark rise from the page as it opens.
+                        Positioned.fill(
+                          child: OverflowBox(
+                            minWidth: 0,
+                            minHeight: 0,
+                            maxWidth: 192,
+                            maxHeight: 192,
+                            child: SizedBox.square(
+                              dimension: 192,
+                              child: PixelMoment(
+                                key: const ValueKey('chapter_card_burst'),
+                                palette: VfxPalette(
+                                    widget.colour.toARGB32(),
+                                    Color.lerp(
+                                            widget.colour, Colors.white, 0.6)!
+                                        .toARGB32()),
+                                duration: const Duration(milliseconds: 1500),
+                                delay: const Duration(milliseconds: 300),
+                                layers: const [
+                                  PixelMomentLayer('vfx_shout',
+                                      span: 0.7, scale: 4),
+                                  PixelMomentLayer('vfx_mana',
+                                      t0: 0.2, span: 0.8, scale: 3),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                        if (widget.note != null) ...[
-                          const SizedBox(height: 10),
-                          Opacity(
-                            opacity: ink,
-                            child: Text(
-                              widget.note!,
-                              textAlign: TextAlign.center,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: widget.colour,
-                                  fontStyle: FontStyle.italic),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(widget.number.toUpperCase(),
+                                style: theme.textTheme.labelLarge?.copyWith(
+                                    color: widget.colour, letterSpacing: 3)),
+                            const SizedBox(height: 8),
+                            Opacity(
+                              opacity: ink,
+                              child: Text(
+                                widget.title,
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.headlineMedium
+                                    ?.copyWith(fontFamily: InkFonts.display),
+                              ),
                             ),
-                          ),
-                        ],
-                        if (widget.news.isNotEmpty) ...[
-                          const SizedBox(height: 16),
-                          Opacity(
-                            opacity: ink,
-                            child: Column(
-                              key: const ValueKey('chapter_card_news'),
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (widget.newsTitle.isNotEmpty)
-                                  Text(
-                                    widget.newsTitle.toUpperCase(),
-                                    textAlign: TextAlign.center,
-                                    style: theme.textTheme.labelSmall?.copyWith(
-                                        color: widget.colour, letterSpacing: 2),
-                                  ),
-                                for (final line in widget.news)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 6),
-                                    // Three lines at most: the journal
-                                    // keeps the whole of it.
-                                    child: Text(
-                                      line,
-                                      textAlign: TextAlign.center,
-                                      maxLines: 3,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: theme.textTheme.bodySmall
-                                          ?.copyWith(
-                                              fontFamily: InkFonts.prose,
-                                              fontStyle: FontStyle.italic),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ],
+                            if (widget.note != null) ...[
+                              const SizedBox(height: 10),
+                              Opacity(
+                                opacity: ink,
+                                child: Text(
+                                  widget.note!,
+                                  textAlign: TextAlign.center,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: widget.colour,
+                                      fontStyle: FontStyle.italic),
+                                ),
+                              ),
+                            ],
+                            if (widget.news.isNotEmpty) ...[
+                              const SizedBox(height: 16),
+                              Opacity(
+                                opacity: ink,
+                                child: Column(
+                                  key: const ValueKey('chapter_card_news'),
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (widget.newsTitle.isNotEmpty)
+                                      Text(
+                                        widget.newsTitle.toUpperCase(),
+                                        textAlign: TextAlign.center,
+                                        style: theme.textTheme.labelSmall
+                                            ?.copyWith(
+                                                color: widget.colour,
+                                                letterSpacing: 2),
+                                      ),
+                                    for (final line in widget.news)
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 6),
+                                        // Three lines at most: the journal
+                                        // keeps the whole of it.
+                                        child: Text(
+                                          line,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: theme.textTheme.bodySmall
+                                              ?.copyWith(
+                                                  fontFamily: InkFonts.prose,
+                                                  fontStyle: FontStyle.italic),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -585,6 +622,7 @@ class WeatherLayer extends StatelessWidget {
     final colour = switch (weather) {
       JourneyWeather.rain => const Color(0xFF8FC3CF),
       JourneyWeather.snow => const Color(0xFFEFF3F6),
+      JourneyWeather.dust => const Color(0xFFC9A46A),
       _ => ink.ash,
     }
         .withValues(alpha: strength);

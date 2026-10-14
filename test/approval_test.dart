@@ -290,7 +290,7 @@ void main() {
           [for (final w in words) w.companionId], ['maren', 'grosh', 'malrik'],
           reason: 'Kelda was moved, but her trust did not turn');
       expect(words[0].line, contains('I stopped counting my penance'));
-      expect(words[1].line, contains("I don't work for promises"));
+      expect(words[1].line, contains('I don’t work for promises'));
       expect(words[2].line, contains('Nothing profitable, either'));
       expect(words[0].speaker, 'Sister Maren');
     });

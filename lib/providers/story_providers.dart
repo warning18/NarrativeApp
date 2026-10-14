@@ -14,10 +14,25 @@ const String _autosaveVisitedPrefsKey = 'autosave_story_visited';
 
 /// Scenes a story update took out, and where a save standing on one picks
 /// up instead: the Court's old road (5001, 5002) became the fourth
-/// chapter's camp and its main quest.
+/// chapter's camp and its main quest; chapter 1's tear in the square and
+/// last stalls (v1.196) give way to the house being searched, the
+/// smuggler's three doors to the lift-off, and Clement's anchor chain to
+/// the storm.
 const Map<String, String> retiredNodeIds = {
   '5001': '4999_camp',
   '5002': '4999_camp',
+  '151': '300',
+  '151_forge': '300',
+  '151_vess': '300',
+  '280': '300',
+  '281': '300',
+  '281_scarred': '300',
+  '896': '960',
+  '897': '960',
+  '898': '960',
+  '899_paid': '960',
+  '965_mercy': '965',
+  '965_vengeance': '965',
 };
 
 /// [nodeId], or the scene that replaced it (see [retiredNodeIds]).

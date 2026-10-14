@@ -1,8 +1,13 @@
+import 'dart:math';
+
 import '../models/story_node.dart';
 import 'battlefield_condition.dart';
 import 'combat_engine.dart' show zoneTierMultiplier;
 import 'enemy_affix.dart';
+import 'field_anomaly.dart';
+import 'fight_goal.dart';
 import 'loot_box.dart';
+import 'squad.dart';
 
 /// Per-encounter overrides a caller hands FightScreen alongside the enemy
 /// records themselves -- a hunt's named quarry with its forced affixes and
@@ -13,6 +18,31 @@ import 'loot_box.dart';
 /// with it, a champion lasts about half again as long as a story fight
 /// (the playthrough simulator, v1.177).
 const double championHealthMultiplier = 1.25;
+
+/// The share of the first enemy's health the lucky die's sign takes when
+/// it rolls loose in the story's first fight (see
+/// [EncounterModifiers.luckyDieReveal]).
+const double luckyDieStrikeShare = 0.4;
+
+/// The most of the player's health the opening blow of the lucky die's
+/// fight can take: a first wound, never a crippling one.
+const double luckyDieBlowShare = 0.2;
+
+/// The enemy's opening blow in the lucky die's fight: its own damage, at
+/// most [luckyDieBlowShare] of the player's health, and never enough to
+/// knock them down.
+int luckyDieOpeningBlow({
+  required int enemyDamage,
+  required int playerHealth,
+  required int playerMaxHealth,
+}) {
+  final cap = max(1, (playerMaxHealth * luckyDieBlowShare).round());
+  return max(0, min(min(enemyDamage, cap), playerHealth - 1));
+}
+
+/// What the lucky die's sign takes off an enemy of [enemyMaxHealth].
+int luckyDieStrike(int enemyMaxHealth) =>
+    max(1, (enemyMaxHealth * luckyDieStrikeShare).round());
 
 class EncounterModifiers {
   const EncounterModifiers({
@@ -29,7 +59,15 @@ class EncounterModifiers {
     this.lossContinues = false,
     this.isTest = false,
     this.forcedCondition,
+    this.forcedAnomaly,
+    this.forcedStage,
     this.forceElite = false,
+    this.keepWounds = false,
+    this.tutorial = false,
+    this.luckyDieReveal = false,
+    this.hostFight = false,
+    this.forcedGoal,
+    this.forcedSquad,
   });
 
   static const EncounterModifiers none = EncounterModifiers();
@@ -83,9 +121,42 @@ class EncounterModifiers {
   /// wrong is an ambush), instead of rolling one.
   final BattlefieldCondition? forcedCondition;
 
+  /// The ground or sky anomaly this fight is set under (v1.241, see
+  /// field_anomaly.dart) instead of rolling one (a test fight rolls none
+  /// unless it is forced one); and the stage the fight is drawn on, instead
+  /// of the place's own.
+  final FieldAnomalyPlan? forcedAnomaly;
+  final FightStage? forcedStage;
+
   /// A lone enemy that is Elite for certain (a road event's champion, see
   /// road_events.dart), instead of rolling for it.
   final bool forceElite;
+
+  /// A link in a no-healing chain (see [StoryChoice.noHeal]): a level-up,
+  /// a potion from the spoils chest or a sign does not mend the party
+  /// after it, and a loss leaves the player's wounds as they are.
+  final bool keepWounds;
+
+  /// A lesson (see [StoryChoice.tutorialFight]): never Elite, no affixes,
+  /// no battlefield condition and no threat.
+  final bool tutorial;
+
+  /// The first fight's lucky die (see [StoryChoice.luckyDieReveal]).
+  final bool luckyDieReveal;
+
+  /// One of the last battles (v1.196, a `hostFight` choice's fight or its
+  /// zone's): the Host the character raised fights beside the party (see
+  /// throne.dart's hostEffects).
+  final bool hostFight;
+
+  /// The goal this fight is set to (v1.212, see fight_goal.dart) instead of
+  /// rolling one; null rolls (or, for a lesson, a boss, a hunt or a test,
+  /// asks for nothing but the slaughter).
+  final FightGoal? forcedGoal;
+
+  /// The squad roles of the pack, in enemy order (null for a plain
+  /// enemy), instead of rolling them (v1.215, see squad.dart).
+  final List<SquadRole?>? forcedSquad;
 
   bool get isDefault =>
       forcedAffixes.isEmpty &&
@@ -101,11 +172,24 @@ class EncounterModifiers {
       !lossContinues &&
       !isTest &&
       forcedCondition == null &&
-      !forceElite;
+      forcedAnomaly == null &&
+      forcedStage == null &&
+      !forceElite &&
+      !keepWounds &&
+      !tutorial &&
+      !luckyDieReveal &&
+      !hostFight &&
+      forcedGoal == null &&
+      forcedSquad == null;
 
   /// The same modifiers stamped with a fight's chapter and/or zone-tier
-  /// multiplier (an expedition applies its zone's to every draw).
-  EncounterModifiers copyWith({int? chapter, double? difficultyMultiplier}) =>
+  /// multiplier (an expedition applies its zone's to every draw), or made
+  /// one of the last battles ([hostFight]).
+  EncounterModifiers copyWith(
+          {int? chapter,
+          double? difficultyMultiplier,
+          bool? hostFight,
+          FightStage? forcedStage}) =>
       EncounterModifiers(
         forcedAffixes: forcedAffixes,
         namedEnemyName: namedEnemyName,
@@ -120,7 +204,15 @@ class EncounterModifiers {
         lossContinues: lossContinues,
         isTest: isTest,
         forcedCondition: forcedCondition,
+        forcedAnomaly: forcedAnomaly,
+        forcedStage: forcedStage ?? this.forcedStage,
         forceElite: forceElite,
+        keepWounds: keepWounds,
+        tutorial: tutorial,
+        luckyDieReveal: luckyDieReveal,
+        hostFight: hostFight ?? this.hostFight,
+        forcedGoal: forcedGoal,
+        forcedSquad: forcedSquad,
       );
 
   /// A zone boss: never below a Gold chest, half again the reward, at the
@@ -139,20 +231,39 @@ class EncounterModifiers {
 
   /// The modifiers a generated story choice carries (see
   /// [StoryChoice.huntName] and friends); [none] for an ordinary choice.
+  /// A choice marked [StoryChoice.hostFight] makes its fight one of the
+  /// last battles.
   factory EncounterModifiers.fromChoice(StoryChoice choice) {
+    final modifiers = EncounterModifiers._ofChoice(choice);
+    return choice.hostFight ? modifiers.copyWith(hostFight: true) : modifiers;
+  }
+
+  factory EncounterModifiers._ofChoice(StoryChoice choice) {
+    // What any choice may carry whatever its fight's kind (v1.201.2): the
+    // loss branch, a forced condition, kept wounds, the lesson and the
+    // lucky die's reveal hold for a road's champion, an ambush and a hunt
+    // too (a hunt with a loss branch is no permadeath).
+    final own = EncounterModifiers(
+      lossContinues: choice.hasLossBranch,
+      forcedCondition: battlefieldConditionFromName(choice.forcedCondition),
+      forcedAnomaly: forcedFieldAnomaly(choice.forcedAnomaly),
+      forcedStage: fightStageFromName(choice.forcedStage),
+      keepWounds: choice.noHeal,
+      tutorial: choice.tutorialFight,
+      luckyDieReveal: choice.luckyDieReveal,
+    );
     if (choice.roadEvent == 'elite') {
       // A road's champion (road_events.dart): an Elite a quarter tougher
       // still, and an ambush when the party failed to slip past it.
-      return EncounterModifiers(
+      return own._asKind(
         forceElite: true,
         chestTierFloor: ChestTier.silver,
         rewardMultiplier: 1.25,
         healthMultiplier: championHealthMultiplier,
-        forcedCondition: battlefieldConditionFromName(choice.forcedCondition),
       );
     }
     if (choice.isHunterAmbush) {
-      return const EncounterModifiers(
+      return own._asKind(
         chestTierFloor: ChestTier.silver,
         rewardMultiplier: 1.25,
         isHunterAmbush: true,
@@ -160,7 +271,7 @@ class EncounterModifiers {
     }
     final huntName = choice.huntName;
     if (huntName != null && huntName.isNotEmpty) {
-      return EncounterModifiers(
+      return own._asKind(
         forcedAffixes: [
           for (final name in choice.huntAffixes)
             if (affixFromName(name) != null) affixFromName(name)!,
@@ -172,11 +283,43 @@ class EncounterModifiers {
         isHunt: true,
       );
     }
-    if (choice.hasLossBranch) {
-      return const EncounterModifiers(lossContinues: true);
-    }
-    final forced = battlefieldConditionFromName(choice.forcedCondition);
-    if (forced != null) return EncounterModifiers(forcedCondition: forced);
-    return none;
+    return own.isDefault ? none : own;
   }
+
+  /// These modifiers made a fight of one kind (a champion, an ambush, a
+  /// hunt), keeping what the choice itself carries.
+  EncounterModifiers _asKind({
+    List<EnemyAffix>? forcedAffixes,
+    String? namedEnemyName,
+    ChestTier? chestTierFloor,
+    double? rewardMultiplier,
+    double? healthMultiplier,
+    bool? isHunt,
+    bool? isHunterAmbush,
+    bool? forceElite,
+  }) =>
+      EncounterModifiers(
+        forcedAffixes: forcedAffixes ?? this.forcedAffixes,
+        namedEnemyName: namedEnemyName ?? this.namedEnemyName,
+        chestTierFloor: chestTierFloor ?? this.chestTierFloor,
+        rewardMultiplier: rewardMultiplier ?? this.rewardMultiplier,
+        healthMultiplier: healthMultiplier ?? this.healthMultiplier,
+        difficultyMultiplier: difficultyMultiplier,
+        chapter: chapter,
+        isHunt: isHunt ?? this.isHunt,
+        isHunterAmbush: isHunterAmbush ?? this.isHunterAmbush,
+        isZoneBoss: isZoneBoss,
+        lossContinues: lossContinues,
+        isTest: isTest,
+        forcedCondition: forcedCondition,
+        forcedAnomaly: forcedAnomaly,
+        forcedStage: forcedStage,
+        forceElite: forceElite ?? this.forceElite,
+        keepWounds: keepWounds,
+        tutorial: tutorial,
+        luckyDieReveal: luckyDieReveal,
+        hostFight: hostFight,
+        forcedGoal: forcedGoal,
+        forcedSquad: forcedSquad,
+      );
 }

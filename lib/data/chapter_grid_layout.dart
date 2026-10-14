@@ -6,10 +6,15 @@ import '../models/story_node.dart';
 /// Which chapter a node id belongs to, by its numeric id prefix — mirrors
 /// the boundaries used throughout the codebase (e.g. the playthrough
 /// simulator's chapter buckets): 0 = prologue, 1 = <2000, 2 = <3000,
-/// 3 = <5000, 4 = <6000, 5 = <7000, 6 = everything else. Non-numeric ids (companion
-/// recruit bridge nodes like "2015_kelda", flag variants like
-/// "6001_seeker") still start with their parent's numeric id, so the
-/// leading-digits match handles them the same way.
+/// 3 = <5000, 4 = <6000, 5 = <7000, 6 = <7400, 7 = <7800 (v1.196: the
+/// Lantern Throne, its camp 7400 and Candlehold's 75xx), 8 = everything
+/// else (Beyond the Tear: the muster and the last battles, 78xx).
+/// Non-numeric ids (companion recruit bridge nodes like "2015_kelda",
+/// flag variants like "6001_seeker") still start with their parent's
+/// numeric id, so the leading-digits match handles them the same way.
+/// A scene's chapter in play reads its place and the spine first (see
+/// chapter_loop.dart's storyChapterOf): the Hollow Shore's 7002 and the
+/// endings keep their numbers wherever the story puts them.
 int chapterOfNode(String nodeId) {
   final match = RegExp(r'^(\d+)').firstMatch(nodeId);
   if (match == null) return 0;
@@ -20,13 +25,18 @@ int chapterOfNode(String nodeId) {
   if (n < 5000) return 3;
   if (n < 6000) return 4;
   if (n < 7000) return 5;
-  return 6;
+  if (n < 7400) return 6;
+  if (n < 7800) return 7;
+  return lastNodeIdChapter;
 }
+
+/// The last chapter [chapterOfNode] reads off an id.
+const int lastNodeIdChapter = 8;
 
 /// Each chapter's own BFS root(s) for column assignment — the same first
 /// main beat(s) `chapter_spine.dart` defines, duplicated narrowly here
 /// (just the ids, not the full spine) so this file has no dependency on
-/// that one's shape.
+/// that one's shape. A chapter with none here starts from its first node.
 const Map<int, Set<String>> _chapterRoots = {
   0: {'0'},
   1: {'100'},
@@ -35,6 +45,8 @@ const Map<int, Set<String>> _chapterRoots = {
   4: {'5003'},
   5: {'6001'},
   6: {'7001'},
+  7: {'7400'},
+  8: {'7800'},
 };
 
 /// A node's position on its chapter's own grid: [column] is how many hops

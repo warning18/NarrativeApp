@@ -1,0 +1,67 @@
+{
+  "crash_to_sleeper": {
+    "id": "crash_to_sleeper",
+    "name": "From the Lark’s wreck to the Sleeper’s Face",
+    "name_fr": "De l’épave de l’Alouette au Visage du dormeur",
+    "from": "crash",
+    "to": "sleeper",
+    "roads": [
+      "crash_sleeper"
+    ],
+    "days": 3,
+    "biome": "desert",
+    "terrain": "desert",
+    "chapter": 1,
+    "events": {
+      "sandstorm": 2,
+      "dry_well": 1,
+      "spring": 1,
+      "mirage": 1,
+      "scavengers": 1,
+      "shade": 1
+    }
+  },
+  "sleeper_to_wells": {
+    "id": "sleeper_to_wells",
+    "name": "From the Sleeper’s Face to the White Wells",
+    "name_fr": "Du Visage du dormeur aux Puits blancs",
+    "from": "sleeper",
+    "to": "wells",
+    "roads": [
+      "sleeper_wells"
+    ],
+    "days": 2,
+    "biome": "desert",
+    "terrain": "desert",
+    "chapter": 1,
+    "events": {
+      "flash_flood": 1,
+      "water_seller": 1,
+      "sandstorm": 1,
+      "mirage": 1,
+      "shade": 1,
+      "scavengers": 1
+    }
+  },
+  "camp_to_quarter": {
+    "id": "camp_to_quarter",
+    "name": "From the cove camp to the Ashen Quarter",
+    "name_fr": "Du camp de la crique au Quartier de cendre",
+    "from": "camp",
+    "to": "quarter",
+    "roads": [
+      "camp_quarter"
+    ],
+    "days": 2,
+    "biome": "ashlands",
+    "terrain": "ruins",
+    "chapter": 3,
+    "events": {
+      "ash_squall": 2,
+      "inquisition_patrol": 1,
+      "burned_shrine": 1,
+      "feral_dogs": 1,
+      "falling_wall": 1
+    }
+  }
+}

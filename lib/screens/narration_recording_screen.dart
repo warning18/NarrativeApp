@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/chapter_grid_layout.dart' show lastNodeIdChapter;
 import '../data/narration_clips.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -30,7 +31,12 @@ typedef _Coverage = ({int recorded, int total});
 class _NarrationRecordingScreenState
     extends ConsumerState<NarrationRecordingScreen> {
   final Set<NarrationCategory> _categories = {...NarrationCategory.values};
-  final Set<int> _chapters = {0, 1, 2, 3, 4, 5, 6};
+  final Set<int> _chapters = {..._allChapters};
+
+  /// Every chapter a scene's id can fall in, the prologue first.
+  static final List<int> _allChapters = [
+    for (var c = 0; c <= lastNodeIdChapter; c++) c,
+  ];
   late final Set<AppLanguage> _languages = {ref.read(appLanguageProvider)};
   bool _variations = true;
   final Set<String> _selected = {};
@@ -179,7 +185,7 @@ class _NarrationRecordingScreenState
                         const SizedBox(height: 8),
                         Text(tr(ref, 'narration_filter_chapter'),
                             style: theme.textTheme.labelLarge),
-                        _chips([0, 1, 2, 3, 4, 5, 6], _chapters, _chapterLabel),
+                        _chips(_allChapters, _chapters, _chapterLabel),
                         const SizedBox(height: 8),
                         Text(tr(ref, 'narration_filter_language'),
                             style: theme.textTheme.labelLarge),

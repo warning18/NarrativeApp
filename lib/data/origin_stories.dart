@@ -5,8 +5,10 @@
 /// three answers. An answer leans the character's alignment (+4 good, -4
 /// evil, 0 neutral), teaches one ability (+1), and leaves a flag
 /// (`origin_<memory>_<answer>`, plus `origin_<memory>` for any answer)
-/// that the story's early scenes answer with an echo: the tavern named for
-/// the blind beggar, old Hesk next door, the loose board over the Bundle.
+/// that the story's early scenes answer with an echo: the den behind the
+/// tavern named for the blind beggar (and his old bone die, the lucky
+/// charm the first fight reveals), old Hesk next door, the loose board over
+/// the trapdoor nobody knew of.
 ///
 /// The second memory depends on the character's race and the fourth on
 /// the profession; later memories open with a line recalling an earlier
@@ -175,14 +177,15 @@ const Map<String, OriginMemory> _markByRace = {
     age: 8,
     titleEn: 'The White Ribbon',
     titleFr: 'Le ruban blanc',
-    sceneEn: 'You were eight. On a feast day, a Crusade priest in a porcelain '
+    sceneEn:
+        'You were eight. On a feast day, an Inquisition priest in a porcelain '
         'mask gave a white ribbon to every slum child who knelt, and your '
         'mother pulled you out of the line. “We have our own,” she said, and '
         'would say no more. That evening, in the alley, a boy with a new '
         'ribbon was beating a painted girl, because the priest had called her '
         'kind unclean.',
     sceneFr:
-        'Vous aviez huit ans. Un jour de fête, un prêtre de la Croisade au '
+        'Vous aviez huit ans. Un jour de fête, un prêtre de l’Inquisition au '
         'masque de porcelaine donna un ruban blanc à chaque enfant des taudis '
         'qui s’agenouillait, et votre mère vous tira hors du rang. « Nous '
         'avons le nôtre », dit-elle, sans rien ajouter. Le soir même, dans la '
@@ -209,12 +212,14 @@ const Map<String, OriginMemory> _markByRace = {
         fr: 'Rentrer demander ce que voulait dire « le nôtre »',
         alignmentMod: 0,
         ability: 'intelligence',
-        outcomeEn: 'Your mother lifted a floorboard and showed you a grey '
-            'bundle in oilcloth, and would not unwrap it. You learned that '
-            'some things are kept without being understood.',
-        outcomeFr: 'Votre mère souleva une latte du plancher et vous montra un '
-            'ballot gris dans une toile huilée, sans vouloir le défaire. Vous '
-            'avez appris qu’on garde certaines choses sans les comprendre.',
+        outcomeEn: 'Your mother knelt and knocked twice on the floor, and it '
+            'sounded hollow. “That,” she said, “is ours,” and would say no '
+            'more. You learned that some things are kept without being '
+            'understood.',
+        outcomeFr: 'Votre mère s’agenouilla et frappa deux fois sur le '
+            'plancher, qui sonna creux. « Cela, dit-elle, c’est à nous », et '
+            'elle n’en dit pas davantage. Vous avez appris qu’on garde '
+            'certaines choses sans les comprendre.',
       ),
       OriginAnswer(
         id: 'evil',
@@ -349,13 +354,13 @@ const Map<String, OriginMemory> _markByRace = {
     titleFr: 'La première encre',
     sceneEn: 'You were eight when your aunt cut your first ink under the skin '
         'of your shoulder and told you to show no one until it scarred. That '
-        'week a Crusade orphan-taker came down the street, checking '
+        'week an Inquisition orphan-taker came down the street, checking '
         'children’s arms. The baby next door had been inked the same night as '
         'you.',
     sceneFr: 'Vous aviez huit ans quand votre tante glissa votre première '
         'encre sous la peau de votre épaule, en vous disant de ne la montrer à '
         'personne avant la cicatrice. Cette semaine-là, un preneur '
-        'd’orphelins de la Croisade descendit la rue en inspectant les bras '
+        'd’orphelins de l’Inquisition descendit la rue en inspectant les bras '
         'des enfants. Le bébé d’à côté avait reçu son encre la même nuit que '
         'vous.',
     answers: [
@@ -500,12 +505,14 @@ const _beggar = OriginMemory(
       fr: 'Lui donner le pain',
       alignmentMod: 4,
       ability: 'luck',
-      outcomeEn: 'He tore it in two and pressed half back into your hands. '
-          '“You’ll come to a bad end,” he said, “but a lucky one.” You learned '
-          'that what you give away has a way of coming back.',
-      outcomeFr: 'Il le rompit en deux et vous en rendit la moitié. « Vous '
-          'finirez mal, dit-il, mais avec de la chance. » Vous avez appris que '
-          'ce qu’on donne a une façon de revenir.',
+      outcomeEn: 'He tore it in two and pressed half back into your hands, '
+          'with a little bone die in it, worn smooth. “You’ll come to a bad '
+          'end,” he said, “but a lucky one.” You learned that what you give '
+          'away has a way of coming back.',
+      outcomeFr: 'Il le rompit en deux et vous en rendit la moitié, avec un '
+          'petit dé d’os dedans, tout usé. « Vous finirez mal, dit-il, mais '
+          'avec de la chance. » Vous avez appris que ce qu’on donne a une '
+          'façon de revenir.',
     ),
     OriginAnswer(
       id: 'neutral',
@@ -513,12 +520,15 @@ const _beggar = OriginMemory(
       fr: 'Vous dégager et continuer votre chemin',
       alignmentMod: 0,
       ability: 'perception',
-      outcomeEn:
-          'His grip was weaker than it looked. You learned to see a hand '
-          'coming before it reached you, and to be gone when it arrived.',
-      outcomeFr: 'Sa prise était plus faible qu’elle n’en avait l’air. Vous '
-          'avez appris à voir venir une main avant qu’elle n’arrive, et à ne '
-          'plus être là quand elle arrive.',
+      outcomeEn: 'His grip was weaker than it looked. Pulling free, you '
+          'knocked over his cup, and a little bone die rolled to your feet; '
+          'you kept it. You learned to see a hand coming before it reached '
+          'you, and to be gone when it arrived.',
+      outcomeFr: 'Sa prise était plus faible qu’elle n’en avait l’air. En '
+          'vous dégageant, vous avez renversé sa sébile, et un petit dé d’os '
+          'a roulé jusqu’à vos pieds ; vous l’avez gardé. Vous avez appris à '
+          'voir venir une main avant qu’elle n’arrive, et à ne plus être là '
+          'quand elle arrive.',
     ),
     OriginAnswer(
       id: 'evil',
@@ -526,12 +536,13 @@ const _beggar = OriginMemory(
       fr: 'Le laisser tenir votre manche pendant que vous videz sa sébile',
       alignmentMod: -4,
       ability: 'dexterity',
-      outcomeEn: 'Four coppers and a button. He never knew. You learned that '
-          'your hands were quicker than a blind man’s ears, and for a day you '
-          'thought it something to be proud of.',
-      outcomeFr: 'Quatre sous et un bouton. Il n’en sut jamais rien. Vous avez '
-          'appris que vos mains étaient plus vives que les oreilles d’un '
-          'aveugle, et pendant un jour, cela vous a semblé une fierté.',
+      outcomeEn: 'Four coppers, a button and a little bone die. He never '
+          'knew. You learned that your hands were quicker than a blind man’s '
+          'ears, and for a day you thought it something to be proud of.',
+      outcomeFr: 'Quatre sous, un bouton et un petit dé d’os. Il n’en sut '
+          'jamais rien. Vous avez appris que vos mains étaient plus vives que '
+          'les oreilles d’un aveugle, et pendant un jour, cela vous a semblé '
+          'une fierté.',
     ),
   ],
 );
@@ -626,12 +637,12 @@ const Map<String, OriginMemory> _callingByProfession = {
     titleFr: 'La flamme qui penche',
     sceneEn: 'You were twelve when you found that a candle flame leaned toward '
         'you if you wanted it to, and the chandler’s apprentice saw you do it. '
-        'That same week, the Crusade’s criers stood in the square, paying '
+        'That same week, the Inquisition’s criers stood in the square, paying '
         'silver for word of “unclean gifts”.',
     sceneFr: 'Vous aviez douze ans quand vous avez découvert qu’une flamme de '
         'chandelle penchait vers vous si vous le vouliez, et l’apprenti du '
         'chandelier vous vit faire. La même semaine, sur la place, les crieurs '
-        'de la Croisade payaient en argent toute dénonciation de « dons '
+        'de l’Inquisition payaient en argent toute dénonciation de « dons '
         'impurs ».',
     recalls: _callingRecalls,
     answers: [
@@ -931,15 +942,18 @@ const _board = OriginMemory(
   titleEn: 'The Loose Board',
   titleFr: 'La latte branlante',
   sceneEn: 'You were sixteen, the winter your parents went out one night and '
-      'did not come home. A week later you found a starving girl in the hovel, '
-      'her hand already under the loose floorboard where they had kept the '
-      'grey bundle. She was younger than you, and the watch was hanging '
-      'thieves that year.',
+      'did not come home, and left you the house and your little sister. A '
+      'week later you found a starving girl in the back room, prying at the '
+      'loose floorboard your mother had forbidden anyone to lift. There was '
+      'nothing under it but packed earth. She was younger than you, and the '
+      'watch was hanging thieves that year.',
   sceneFr: 'Vous aviez seize ans, l’hiver où vos parents sortirent un soir '
-      'pour ne jamais revenir. Une semaine plus tard, vous avez trouvé dans la '
-      'masure une fille affamée, la main déjà sous la latte branlante où ils '
-      'gardaient le ballot gris. Elle était plus jeune que vous, et cette '
-      'année-là, le guet pendait les voleurs.',
+      'pour ne jamais revenir, en vous laissant la maison et votre petite '
+      'sœur. Une semaine plus tard, vous avez trouvé dans la pièce du fond une '
+      'fille affamée qui soulevait la latte branlante que votre mère avait '
+      'interdit à quiconque de toucher. Dessous, il n’y avait que de la terre '
+      'battue. Elle était plus jeune que vous, et cette année-là, le guet '
+      'pendait les voleurs.',
   recalls: [
     OriginRecall(
       flag: 'origin_beggar_good',
@@ -959,10 +973,11 @@ const _board = OriginMemory(
     ),
     OriginRecall(
       flag: 'origin_mark_human_neutral',
-      en: 'Your mother had shown you that bundle once, and never unwrapped it. '
-          'Now there was nobody left to ask.',
-      fr: 'Votre mère vous avait montré ce ballot une fois, sans jamais le '
-          'défaire. Il ne restait plus personne à qui demander.',
+      en: 'Your mother had knocked on that floor once and called what was '
+          'under it yours. Now there was nobody left to ask what she had meant.',
+      fr: 'Votre mère avait frappé une fois sur ce plancher en disant que ce '
+          'qu’il y avait dessous était à vous. Il ne restait plus personne à '
+          'qui demander ce qu’elle avait voulu dire.',
     ),
   ],
   answers: [
@@ -972,26 +987,25 @@ const _board = OriginMemory(
       fr: 'Lui donner le pain et la laisser partir',
       alignmentMod: 4,
       ability: 'charisma',
-      outcomeEn: 'She ran with the bread and left the bundle. You moved it two '
-          'boards over that night, and left it there. You learned that a loaf '
-          'and a kind word can end a fight before it starts.',
-      outcomeFr: 'Elle s’enfuit avec le pain et laissa le ballot. Cette '
-          'nuit-là, vous l’avez déplacé deux lattes plus loin, et il n’en a '
-          'plus bougé. Vous avez appris qu’un pain et un mot doux peuvent '
+      outcomeEn: 'She ran with the bread, and you nailed the board down that '
+          'night. You learned that a loaf and a kind word can end a fight '
+          'before it starts.',
+      outcomeFr: 'Elle s’enfuit avec le pain, et vous avez cloué la latte '
+          'cette nuit-là. Vous avez appris qu’un pain et un mot doux peuvent '
           'finir une bagarre avant qu’elle commence.',
     ),
     OriginAnswer(
       id: 'neutral',
-      en: 'Take the bundle back and show her the door',
-      fr: 'Reprendre le ballot et lui montrer la porte',
+      en: 'Put the board back and show her the door',
+      fr: 'Remettre la latte et lui montrer la porte',
       alignmentMod: 0,
       ability: 'strength',
-      outcomeEn: 'She did not argue with your grip. You moved the bundle two '
-          'boards over that night, and left it there. You learned to hold on '
-          'to what is yours.',
-      outcomeFr: 'Elle ne discuta pas votre poigne. Cette nuit-là, vous avez '
-          'déplacé le ballot deux lattes plus loin, et il n’en a plus bougé. '
-          'Vous avez appris à tenir ce qui est à vous.',
+      outcomeEn: 'She did not argue with your grip, and you nailed the board '
+          'down that night. You learned to hold on to what is yours, even '
+          'when you do not know what it is.',
+      outcomeFr: 'Elle ne discuta pas votre poigne, et vous avez cloué la '
+          'latte cette nuit-là. Vous avez appris à tenir ce qui est à vous, '
+          'même sans savoir ce que c’est.',
     ),
     OriginAnswer(
       id: 'evil',
@@ -999,12 +1013,12 @@ const _board = OriginMemory(
       fr: 'La retenir et appeler le guet',
       alignmentMod: -4,
       ability: 'perception',
-      outcomeEn: 'They came. You did not go to the hanging. You moved the '
-          'bundle two boards over that night, and learned to hear every step '
-          'on the stair.',
+      outcomeEn: 'They came. You did not go to the hanging. You nailed the '
+          'board down that night, and learned to hear every step on the '
+          'stair.',
       outcomeFr: 'Ils vinrent. Vous n’avez pas assisté à la pendaison. Cette '
-          'nuit-là, vous avez déplacé le ballot deux lattes plus loin, et '
-          'appris à entendre chaque pas dans l’escalier.',
+          'nuit-là, vous avez cloué la latte, et appris à entendre chaque pas '
+          'dans l’escalier.',
     ),
   ],
 );

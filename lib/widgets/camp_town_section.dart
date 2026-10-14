@@ -4,13 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/cliff_town.dart';
+import '../data/materials.dart';
 import '../data/zone_gating.dart';
 import '../l10n/app_locale.dart';
+import '../gamedata/db_schema.dart'
+    show companionsSchema, housesSchema, itemsSchema;
 import '../l10n/app_strings.dart';
+import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
+import '../providers/game_db_providers.dart' show localizedDbProvider;
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
+import '../data/camp_works.dart' show WorkState, tierFirstChapter, workTierOf;
+import '../providers/camp_works_provider.dart';
+import 'camp_works_list.dart';
 import 'cliff_town_view.dart';
+import '../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
 import 'immersive_notice.dart';
 import 'moments.dart';
 
@@ -89,13 +98,86 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
     });
   }
 
+  /// What a house gives, in a line: its bonuses and the shop it opens, else
+  /// its description.
+  String _houseDetail(String houseId) {
+    final house = (widget.houses[houseId] ??
+        ref.read(localizedDbProvider(housesSchema)).value?[houseId] ??
+        const <String, dynamic>{}) as Map<String, dynamic>;
+    final capacity = (house['partyCapacityBonus'] as num?)?.toInt() ?? 0;
+    final health = (house['partyHealthBonus'] as num?)?.toInt() ?? 0;
+    final damage = (house['partyDamageBonus'] as num?)?.toInt() ?? 0;
+    final shopId = house['unlocksShopId']?.toString() ?? '';
+    final shopName = shopId.isEmpty
+        ? null
+        : (widget.shops[shopId] as Map<String, dynamic>?)?['shopName']
+                ?.toString() ??
+            shopId;
+    final detail = [
+      if (capacity > 0) '+$capacity ${tr(ref, 'party_capacity_label')}',
+      if (health > 0) '+$health% ${tr(ref, 'party_health_bonus_label')}',
+      if (damage > 0) '+$damage% ${tr(ref, 'party_damage_bonus_label')}',
+      if (shopName != null) '${tr(ref, 'unlocks_shop_prefix')}: $shopName',
+    ];
+    return detail.isNotEmpty
+        ? detail.join(' · ')
+        : house['description']?.toString() ?? '';
+  }
+
+  /// A tap on a piece of the town: its name and what it gives, in a sheet.
+  void _showInfo(String id) {
+    final isAddition = isTownAddition(id);
+    final detail = isAddition
+        ? tr(ref, '${id}_desc')
+        : widget.houses.containsKey(id)
+            ? _houseDetail(id)
+            : '';
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (context) {
+        final theme = Theme.of(context);
+        return SafeArea(
+          child: Padding(
+            key: const Key('town_piece_info'),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(_nameOf(id), style: theme.textTheme.titleMedium),
+                if (detail.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Text(detail, style: theme.textTheme.bodyMedium),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// Each item's name, for the material chips' tooltips.
+  Map<String, String> _itemNames() {
+    final items = ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
+    return {
+      for (final e in items.entries)
+        e.key: (e.value as Map?)?['itemName']?.toString() ?? e.key,
+    };
+  }
+
   Future<void> _buildHouse(String houseId, CliffTown town) async {
     final house = widget.houses[houseId] as Map<String, dynamic>;
     final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
     final notifier = ref.read(playerSessionProvider.notifier);
     await notifier.buildHouse(houseId, cost,
         unlocksShopId: house['unlocksShopId']?.toString() ?? '',
-        requiredFlags: requiredFlagsOf(house));
+        requiredFlags: requiredFlagsOf(house),
+        materialCost: materialCountsOf(house, 'materialCost'),
+        // A house comes with its tier's chapter (camp_works.dart).
+        fromChapter: tierFirstChapter(workTierOf(house)),
+        chapter: ref.read(reachedChapterProvider),
+        requiredAllyId: house['requiredAllyId']?.toString());
     if (!mounted) return;
     // Nothing to tell if it did not go up (the purse or the flags changed
     // under the button).
@@ -196,35 +278,57 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
       required int cost,
       required bool isBuilt,
       String? lockReason,
+      Map<String, int> materials = const {},
       required VoidCallback onBuild,
     }) {
       final isSelected = id == selected;
-      final affordable = session.gold >= cost;
+      // Gold, and the materials a house costs beside it (materials.dart).
+      final missing = missingMaterials(session.inventoryItemIds, materials);
+      final goldEnough = session.gold >= cost;
+      final affordable = goldEnough && missing.isEmpty;
       final canBuild = !isBuilt && lockReason == null && affordable;
+      // What a house needs beside gold, as chips: held or missing.
+      final showMaterials = !isBuilt && materials.isNotEmpty;
+      // The card says at a glance where the house stands (v1.201): built,
+      // ready to go up, short of gold, or locked; then what it gives,
+      // its price, and the one thing to do about it.
+      final (String status, Color statusColour) = isBuilt
+          ? (tr(ref, 'house_built_prefix'), ink.heal)
+          : lockReason != null
+              ? (tr(ref, 'town_locked'), ink.ash)
+              : affordable
+                  ? (tr(ref, 'town_ready'), ink.gold)
+                  : goldEnough
+                      ? (
+                          '${tr(ref, 'town_need')} ${tr(ref, 'town_materials')}',
+                          ink.ember
+                        )
+                      : (
+                          '${tr(ref, 'town_need')} ${cost - session.gold} G',
+                          ink.ember
+                        );
       Widget action;
       if (isBuilt) {
-        action = InkTag(label: tr(ref, 'house_built_prefix'), color: ink.heal);
+        action = Text(tr(ref, 'town_built_note'),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.labelSmall?.copyWith(color: ink.ash));
       } else if (lockReason != null) {
         action = Text(lockReason,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.labelSmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant));
-      } else if (!affordable) {
-        action = Text(
-          '$cost G · ${tr(ref, 'town_need')} ${cost - session.gold}',
-          style: theme.textTheme.labelMedium
-              ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-        );
       } else {
         action = FilledButton(
           key: Key('town_build_$id'),
           onPressed: canBuild ? onBuild : null,
           style: FilledButton.styleFrom(
-            minimumSize: const Size.fromHeight(44),
+            minimumSize: const Size.fromHeight(40),
             padding: const EdgeInsets.symmetric(horizontal: 8),
           ),
-          child: Text('${tr(ref, 'build_button')} · $cost'),
+          child: Text(
+              affordable ? '${tr(ref, 'build_button')} · $cost G' : '$cost G'),
         );
       }
       return GestureDetector(
@@ -247,29 +351,37 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.w500)),
-                  ),
-                  Text('${footprint.width}×${footprint.height}',
-                      style:
-                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
-                ],
+              // The status on its own line, so the name has the whole width
+              // of the card and never breaks inside a word.
+              Align(
+                alignment: Alignment.centerLeft,
+                child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: InkTag(label: status, color: statusColour)),
               ),
+              const SizedBox(height: 4),
+              Text(name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(fontWeight: FontWeight.w500)),
               const SizedBox(height: 4),
               Expanded(
                 child: Text(detail,
-                    maxLines: 3,
+                    maxLines: showMaterials ? 2 : 3,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall
                         ?.copyWith(color: ink.ash, height: 1.3)),
               ),
+              if (showMaterials) ...[
+                const SizedBox(height: 4),
+                _MaterialChips(
+                  key: Key('town_materials_$id'),
+                  cost: materials,
+                  missing: missing,
+                  names: _itemNames(),
+                ),
+              ],
               const SizedBox(height: 6),
               action,
             ],
@@ -291,56 +403,37 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                 onBuild: () => _buildAddition(addition, town),
               ),
           ]
+        : const <Widget>[];
+
+    final orderedCards = _showAdditions
+        ? [
+            for (final a in townAdditions)
+              cards.firstWhere(
+                  (c) => (c.key as Key) == Key('town_card_${a.id}')),
+          ]
+        : const <Widget>[];
+    final works = ref.watch(campWorksProvider);
+    final readyCount = _showAdditions
+        ? townAdditions.length
         : [
-            for (final houseId in _houseIds)
-              () {
-                final house = widget.houses[houseId] as Map<String, dynamic>;
-                final isBuilt = built.contains(houseId);
-                final lock = isBuilt || meetsRequiredFlags(house, session.flags)
-                    ? null
-                    : [
-                        tr(ref, 'requires_zone_prefix'),
-                        lockRequirementName(house, session.flags, widget.zones),
-                      ].whereType<String>().join(': ');
-                final capacity =
-                    (house['partyCapacityBonus'] as num?)?.toInt() ?? 0;
-                final health =
-                    (house['partyHealthBonus'] as num?)?.toInt() ?? 0;
-                final damage =
-                    (house['partyDamageBonus'] as num?)?.toInt() ?? 0;
-                final shopId = house['unlocksShopId']?.toString() ?? '';
-                final shopName = shopId.isEmpty
-                    ? null
-                    : (widget.shops[shopId]
-                                as Map<String, dynamic>?)?['shopName']
-                            ?.toString() ??
-                        shopId;
-                final detail = [
-                  if (capacity > 0)
-                    '+$capacity ${tr(ref, 'party_capacity_label')}',
-                  if (health > 0)
-                    '+$health% ${tr(ref, 'party_health_bonus_label')}',
-                  if (damage > 0)
-                    '+$damage% ${tr(ref, 'party_damage_bonus_label')}',
-                  if (shopName != null)
-                    '${tr(ref, 'unlocks_shop_prefix')}: $shopName',
-                ];
-                return card(
-                  id: houseId,
-                  name: _nameOf(houseId),
-                  detail: detail.isNotEmpty
-                      ? detail.join(' · ')
-                      : house['description']?.toString() ?? '',
-                  footprint: footprintOf(houseId),
-                  cost: (house['buildCost'] as num?)?.toInt() ?? 0,
-                  isBuilt: isBuilt,
-                  lockReason: lock,
-                  onBuild: () => _buildHouse(houseId, town),
-                );
-              }(),
-          ];
+            for (final list in works.values)
+              for (final w in list)
+                if (w.state == WorkState.buildable) w,
+          ].length;
 
     final selectedAvailable = isTownAddition(selected) || buildable(selected);
+    // Where the outlined piece would go, said in words under the town.
+    String? whereLine;
+    if (selectedAvailable) {
+      final spot = town.spotFor(previewFootprint);
+      if (spot != null) {
+        whereLine = spot.$1 == 0
+            ? tr(ref, 'town_goes_quay').replaceAll('{name}', _nameOf(selected))
+            : tr(ref, 'town_goes_level')
+                .replaceAll('{name}', _nameOf(selected))
+                .replaceAll('{level}', '${spot.$1 + 1}');
+      }
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -379,6 +472,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                     highlightIndex: _lastBuilt,
                     harborAction: widget.harborAction,
                     scrollController: _scroll,
+                    onPieceTap: (id) => _showInfo(id),
                   ),
                   // The hour over the town (the world clock).
                   WatchSky(
@@ -393,6 +487,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
           padding: const EdgeInsets.symmetric(vertical: 6),
           child: Text(
             _log ??
+                whereLine ??
                 (town.pieces.isEmpty
                     ? tr(ref, 'town_start')
                     : tr(ref, 'town_tap_to_preview')),
@@ -428,21 +523,106 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                       _selected = null;
                     }),
                   ),
+                  const SizedBox(width: 8),
+                  // The purse and what it can raise now.
+                  Expanded(
+                    child: Text(
+                      '${session.gold} G · '
+                      '${tr(ref, 'town_ready_count').replaceAll('{n}', '$readyCount')}',
+                      key: const Key('town_purse'),
+                      textAlign: TextAlign.end,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                          color: readyCount > 0 ? ink.gold : ink.ash),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
-              SizedBox(
-                height: 172,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: cards.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 10),
-                  itemBuilder: (_, i) => cards[i],
+              if (_showAdditions)
+                SizedBox(
+                  height: 190,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: orderedCards.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 10),
+                    itemBuilder: (_, i) => orderedCards[i],
+                  ),
+                )
+              else
+                CampWorksList(
+                  houses: ref.watch(localizedDbProvider(housesSchema)).value ??
+                      widget.houses,
+                  shops: widget.shops,
+                  zones: widget.zones,
+                  itemNames: _itemNames(),
+                  companionNames: {
+                    for (final e in (ref
+                                .watch(localizedDbProvider(companionsSchema))
+                                .value ??
+                            const <String, dynamic>{})
+                        .entries)
+                      e.key: (e.value as Map?)?['companionName']?.toString() ??
+                          e.key,
+                  },
+                  selectedId: selected,
+                  detailOf: _houseDetail,
+                  onSelect: (id) {
+                    setState(() => _selected = id);
+                    _reveal(town, footprintOf(id));
+                  },
+                  onBuild: (id) => _buildHouse(id, town),
                 ),
-              ),
             ],
           ),
         ),
+      ],
+    );
+  }
+}
+
+/// The materials a house costs beside gold, each as its icon and the count
+/// ("2" held and enough, "1/2" short, in the ember colour when short).
+class _MaterialChips extends StatelessWidget {
+  const _MaterialChips({
+    super.key,
+    required this.cost,
+    required this.missing,
+    required this.names,
+  });
+
+  final Map<String, int> cost;
+  final Map<String, int> missing;
+  final Map<String, String> names;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    return Wrap(
+      spacing: 6,
+      runSpacing: 2,
+      children: [
+        for (final e in cost.entries)
+          Tooltip(
+            message: names[e.key] ?? e.key,
+            child: Row(
+              key: Key('town_material_${e.key}'),
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ItemPixelIcon(e.key, 'Material', size: 18),
+                const SizedBox(width: 2),
+                Text(
+                  missing.containsKey(e.key)
+                      ? '${e.value - missing[e.key]!}/${e.value}'
+                      : '${e.value}',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                      color: missing.containsKey(e.key) ? ink.ember : ink.ash),
+                ),
+              ],
+            ),
+          ),
       ],
     );
   }

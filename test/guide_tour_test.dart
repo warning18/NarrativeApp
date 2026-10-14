@@ -363,9 +363,12 @@ void main() {
       await _wait(tester, 5000);
       expect(find.text('$step / $steps'), findsOneWidget);
       final target = TutorialTopic.journey.steps[step - 1].target;
-      // The scene, the map and the pick are lit on this page; the tab bar
-      // lives in the home shell, not here.
-      if (target != null && target.startsWith('journey.')) {
+      // Read and the pick are lit on this page; the map fills most of it
+      // (v1.199), so the guide only talks about it; the tab bar lives in
+      // the home shell, not here.
+      if (target != null &&
+          target.startsWith('journey.') &&
+          target != 'journey.chart') {
         expect(debugGuideHole, isNotNull, reason: target);
       }
       await tester.tap(find.byKey(const Key('tutorial_next')));

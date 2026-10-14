@@ -15,12 +15,16 @@
 // floor a real, better-equipped player will clear more easily.
 
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/combat/combat_engine.dart';
+import 'package:narrative_data_app/data/story_repository.dart';
+import 'package:narrative_data_app/models/story_node.dart';
+import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
 
 Future<Map<String, dynamic>> _loadJson(String path) async {
   final raw = await rootBundle.loadString(path);
@@ -146,6 +150,112 @@ void main() {
       final rateAtFour = _winRate(enemy, skills, starterFaces, 4);
       final rateAtSeven = _winRate(enemy, skills, starterFaces, 7);
       expect(rateAtSeven, greaterThan(rateAtFour + 0.15));
+    });
+  });
+
+  // The boss curve (v1.280.0, the user's design): each chapter's bosses won
+  // about this share of the time where the story puts them -- after the
+  // chapter's own fights, at the level a run has by then -- easier early,
+  // harder late, about half on average. Measured with the playthrough
+  // simulator (encounter win: an encounter is lost after 3 failed
+  // attempts); docs/simulation/ has the 800-run figures. Seeded, so the
+  // numbers are fixed for given data; the tolerance is for data changes
+  // elsewhere moving them a little. 400 runs (about 20 s): with 200, a new
+  // loot roll anywhere shifted the seeded stream enough to move a boss met
+  // only 64 times by 12 points (v1.281.0).
+  group('the boss curve', () {
+    const targets = {
+      'aurel_vane': (1, 0.75),
+      'void_stalker': (3, 0.65),
+      'hollow_court_inquisitor': (4, 0.55),
+      'bone_warden': (4, 0.55),
+      'void_archon': (5, 0.50),
+      'white_admiral': (6, 0.45),
+      'claimant_vane': (7, 0.40),
+      'claimant_tallis': (7, 0.40),
+      'claimant_morrow': (7, 0.40),
+      'tear_herald': (8, 0.35),
+      'void_sovereign': (8, 0.35),
+    };
+    late Map<String, (int, int)> tally;
+
+    setUpAll(() {
+      Map<String, dynamic> table(String name) =>
+          jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
+              as Map<String, dynamic>;
+      final raw = jsonDecode(File(StoryRepository.assetPath).readAsStringSync())
+          as Map<String, dynamic>;
+      final story = StoryData({
+        for (final e in raw.entries)
+          e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
+      });
+      final tables = {
+        for (final name in [
+          'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
+          'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
+          'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
+          'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
+        ])
+          name: table(name),
+      };
+      final professions = tables['professions']!.keys.toList()..sort();
+      const goals = [
+        SimStrategy.random,
+        SimStrategy.favorGood,
+        SimStrategy.favorEvil,
+        SimStrategy.maximizeGold,
+      ];
+      final runs = simulatePlaythroughs(story,
+          tables: tables,
+          gameConfig: table('game_config'),
+          plan: [
+            for (var i = 0; i < 400; i++)
+              (
+                strategy: goals[i % goals.length],
+                raceId: null,
+                professionId:
+                    professions[(i ~/ goals.length) % professions.length],
+              ),
+          ],
+          seed: 7);
+      tally = {};
+      for (final run in runs) {
+        for (final MapEntry(key: boss, value: (chapter, _))
+            in targets.entries) {
+          final met = run.enemiesByChapter['Chapter $chapter']?[boss];
+          if (met == null) continue;
+          final (fought, lost) = tally[boss] ?? (0, 0);
+          tally[boss] = (fought + met.fought, lost + met.lost);
+        }
+      }
+    });
+
+    for (final MapEntry(key: boss, value: (chapter, target))
+        in targets.entries) {
+      test(
+          '$boss (chapter $chapter) is won about ${(target * 100).round()}% '
+          'of the time', () {
+        final (fought, lost) = tally[boss] ?? (0, 0);
+        expect(fought, greaterThanOrEqualTo(40), reason: 'too few met');
+        final rate = (fought - lost) / fought;
+        expect(rate, closeTo(target, 0.12),
+            reason: 'won ${(rate * 100).toStringAsFixed(1)}% of $fought');
+      });
+    }
+
+    test(
+        'the bosses are won about half the time on average, early ones '
+        'more often than late ones', () {
+      double rate(String boss) {
+        final (fought, lost) = tally[boss]!;
+        return (fought - lost) / fought;
+      }
+
+      final rates = [for (final boss in targets.keys) rate(boss)];
+      final mean = rates.reduce((a, b) => a + b) / rates.length;
+      expect(mean, inInclusiveRange(0.42, 0.58));
+      expect(rate('aurel_vane'), greaterThan(rate('void_archon')));
+      expect(rate('void_archon'), greaterThan(rate('tear_herald')));
     });
   });
 }

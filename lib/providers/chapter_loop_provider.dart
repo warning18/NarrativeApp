@@ -2,8 +2,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/chapter_conditions.dart';
 import '../data/chapter_loop.dart';
+import '../data/politics_events.dart'
+    show ChoiceGate, CoastWorld, choicePoliticsGate;
 import '../gamedata/db_schema.dart';
 import '../models/story_node.dart';
+import 'clans_provider.dart';
 import 'game_db_providers.dart';
 import 'player_session_provider.dart';
 import 'story_providers.dart';
@@ -143,13 +146,23 @@ final companionLeadsProvider = Provider<Map<String, List<String>>>((ref) {
     ...session.lostAllyIds,
     ...session.departedAllyIds,
   ];
+  // A choice behind a politics gate that fails (v1.196) leads nowhere yet.
+  final gateWorld = CoastWorld(
+      data: ref.watch(clanDataProvider),
+      chapter: ref.watch(reachedChapterProvider));
   final leads = <String, List<String>>{};
   for (final place in ref.watch(knownPlacesProvider)) {
     final allies = placeCompanionLeads(place, story, quests,
         flags: session.flags,
         alignmentScore: session.alignmentScore,
         charisma: session.charisma,
-        unavailableAllyIds: unavailable);
+        unavailableAllyIds: unavailable,
+        gateOpen: (c) =>
+            choicePoliticsGate(c,
+                politics: session.politics,
+                flags: session.flags,
+                world: gateWorld) ==
+            ChoiceGate.open);
     if (allies.isNotEmpty) leads[place.id] = allies;
   }
   return leads;

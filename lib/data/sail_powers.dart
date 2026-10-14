@@ -54,6 +54,68 @@ String sailMediumOf(Map<String, dynamic> part) =>
   return null;
 }
 
+/// Every painted sail aboard, one of each power (the first of a power
+/// counts), in the order they were fitted: a bigger hull carries several
+/// sail slots, so several sigils at once.
+List<({String partId, SailPower power, String medium})> installedSails(
+  Map<String, dynamic> parts,
+  List<String> installedPartIds,
+) {
+  final seen = <SailPower>{};
+  final out = <({String partId, SailPower power, String medium})>[];
+  for (final id in installedPartIds) {
+    final part = parts[id] as Map<String, dynamic>?;
+    if (part == null) continue;
+    final power = sailPowerOf(part);
+    if (power == null || !seen.add(power)) continue;
+    out.add((partId: id, power: power, medium: sailMediumOf(part)));
+  }
+  return out;
+}
+
+/// What the painted sails aboard give a sea battle.
+class BattleSails {
+  const BattleSails({
+    this.foresight = false,
+    this.windKnot = false,
+    this.voidPartId,
+    this.voidStrength = 1,
+  });
+
+  /// The enemy's aim is shown.
+  final bool foresight;
+
+  /// A crosswind is a tailwind.
+  final bool windKnot;
+
+  /// The part whose void volley is stronger, and by how much it is
+  /// painted (see [voidVolleyBonus]).
+  final String? voidPartId;
+  final int voidStrength;
+}
+
+/// The battle's share of the sails in [installedPartIds], for a character
+/// of [raceId].
+BattleSails battleSailsOf(
+  Map<String, dynamic> parts,
+  List<String> installedPartIds,
+  String raceId,
+) {
+  var out = const BattleSails();
+  for (final sail in installedSails(parts, installedPartIds)) {
+    final strength = sailStrength(sail.medium, raceId);
+    out = BattleSails(
+      foresight: out.foresight || sail.power == SailPower.foresight,
+      windKnot: out.windKnot || sail.power == SailPower.windknot,
+      voidPartId:
+          sail.power == SailPower.voidmark ? sail.partId : out.voidPartId,
+      voidStrength:
+          sail.power == SailPower.voidmark ? strength : out.voidStrength,
+    );
+  }
+  return out;
+}
+
 /// 2 when the sigil is painted the character's own people's way, else 1.
 int sailStrength(String medium, String raceId) =>
     medium.isNotEmpty && medium == raceId ? 2 : 1;
