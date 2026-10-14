@@ -4924,6 +4924,53 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Chaque effet de compétence, du coup léger au coup dévastateur',
   },
+  'fight_lab_city': {
+    AppLanguage.en: 'City chart (preview)',
+    AppLanguage.fr: 'Plan de ville (aperçu)',
+  },
+  'fight_lab_city_desc': {
+    AppLanguage.en: 'Saltmouth from above: zoom in and out, tap a district',
+    AppLanguage.fr:
+        'Saltmouth vue d\u2019en haut\u00a0: zoomez, touchez un quartier',
+  },
+  'city_chart_title': {
+    AppLanguage.en: 'Saltmouth',
+    AppLanguage.fr: 'Saltmouth'
+  },
+  'city_fog_toggle': {
+    AppLanguage.en: 'Fog over districts not found',
+    AppLanguage.fr: 'Brume sur les quartiers non trouvés',
+  },
+  'city_whole': {
+    AppLanguage.en: 'Whole city',
+    AppLanguage.fr: 'Toute la ville'
+  },
+  'city_unexplored': {
+    AppLanguage.en: 'Not explored yet',
+    AppLanguage.fr: 'Pas encore exploré',
+  },
+  'city_go': {AppLanguage.en: 'Go', AppLanguage.fr: 'Y aller'},
+  'city_walk': {
+    AppLanguage.en: 'Walk here',
+    AppLanguage.fr: 'Y aller à pied',
+  },
+  'city_plan_tooltip': {
+    AppLanguage.en: 'City plan',
+    AppLanguage.fr: 'Plan de la ville',
+  },
+  'city_here': {
+    AppLanguage.en: 'You are here',
+    AppLanguage.fr: 'Vous êtes ici'
+  },
+  'city_zoom_in': {AppLanguage.en: 'Zoom in', AppLanguage.fr: 'Zoomer'},
+  'city_zoom_out': {AppLanguage.en: 'Zoom out', AppLanguage.fr: 'Dézoomer'},
+  'city_ways_one': {AppLanguage.en: '1 way', AppLanguage.fr: '1 chemin'},
+  'city_ways_many': {AppLanguage.en: '{n} ways', AppLanguage.fr: '{n} chemins'},
+  'city_kind_quest': {AppLanguage.en: 'Quest', AppLanguage.fr: 'Quête'},
+  'city_kind_fight': {AppLanguage.en: 'Fight', AppLanguage.fr: 'Combat'},
+  'city_kind_check': {AppLanguage.en: 'Check', AppLanguage.fr: 'Épreuve'},
+  'city_kind_shop': {AppLanguage.en: 'Shop', AppLanguage.fr: 'Boutique'},
+  'city_kind_road': {AppLanguage.en: 'Road', AppLanguage.fr: 'Route'},
   'combat_effects_setting_title': {
     AppLanguage.en: 'Combat effects',
     AppLanguage.fr: 'Effets de combat',

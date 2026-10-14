@@ -1,7 +1,7 @@
 name: narrative_data_app
 description: "An interactive narrative reader with a story map and AI-assisted generation."
 publish_to: 'none'
-version: 1.314.0+350
+version: 1.315.0+351
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -106,6 +106,7 @@ flutter:
     - assets/visuals/ship_cutaways/
     - assets/visuals/sea_beasts/
     - assets/visuals/pixel_fx/
+    - assets/visuals/city/
     - assets/visuals/banners/
     - assets/visuals/throne/
     - assets/visuals/walker/

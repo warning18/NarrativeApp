@@ -30,6 +30,7 @@ import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
 import '../data/camp_state.dart' show canReturnToCampFrom;
 import '../providers/chapter_loop_provider.dart';
+import '../providers/city_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/geography_provider.dart';
 import '../providers/home_tab_provider.dart';
@@ -59,6 +60,7 @@ import '../widgets/pixel_sprite.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/timed_choice_bar.dart';
 import 'journal_screen.dart';
+import 'city_chart_screen.dart';
 import 'full_map_screen.dart';
 import 'story_player_screen.dart'
     show
@@ -240,6 +242,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// the one and draws a new other.
   String? _sceneKey;
   int? _selected;
+
+  /// A way picked on the city plan, to select on the map once its step is built.
+  StoryChoice? _cityPick;
 
   /// The scene a step is being taken from, while the party walks there
   /// and its choice plays out: the map waits on it meanwhile. Kept by
@@ -556,6 +561,26 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         ),
       ),
     ];
+
+    // In a city with a plan: the city plan, a page of its own, from which a
+    // way is picked (it comes back selected on the map) or the party walks
+    // to another district.
+    if (ref.watch(currentCityProvider) != null &&
+        !(ref.read(storyPlayProvider).isInExcursion)) {
+      tools.add(IconButton(
+        key: const ValueKey('journey_city_plan'),
+        icon: const Icon(Icons.map_outlined, size: 20),
+        tooltip: tr(ref, 'city_plan_tooltip'),
+        visualDensity: VisualDensity.compact,
+        onPressed: () async {
+          final picked = await Navigator.of(context).push<StoryChoice>(
+            MaterialPageRoute(builder: (_) => const CityChartScreen()),
+          );
+          if (picked == null || !mounted) return;
+          setState(() => _cityPick = picked);
+        },
+      ));
+    }
 
     if (node == null) {
       return _EndedPanel(
@@ -902,6 +927,11 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     if (_autoPickPending) {
       _autoPickPending = false;
       if (steps.length == 1 && !steps.single.locked) _selected = 0;
+    }
+    if (_cityPick != null) {
+      final i = steps.indexWhere((s) => identical(s.choice, _cityPick));
+      if (i >= 0) _selected = i;
+      _cityPick = null;
     }
     final selected = _selected != null && _selected! < steps.length
         ? steps[_selected!]
