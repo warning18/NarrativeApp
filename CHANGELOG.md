@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.293.0+329]
+
+The home bar's map icon opens the full map.
+
+### Changed
+- **The map icon in the play-mode header opens the full map** (the sphere map of the Journey and the Camp) instead of the old map page. What only the old page had moved onto it: the **look and shape pickers** in the layers sheet, the **chapter chips** that show one chapter's road, **Replay all** in the journeys sheet (the walk of the whole road again), and the map's **tutorial topic**. The old page stays in Edit Mode (`home_world_map`), where its place panel (scenes read, foes met, lands and biome crumbs) is still needed.
+
 ## [1.291.0+327]
 
 The skill choice sheet, places heard of on the full map, and the land crossing in the desert side view.
