@@ -43,3 +43,11 @@ Open the full map instead of `WorldMapPage`, after moving what only the old page
 - **E (same-place choices):** the user asked for the link to the design file to look at; there is no board for E (the Journey already draws those ways without roads), so the question stands: where does it still look like travel when it is not?
 
 G (the building screen) is unblocked: UX builds it as its own PR, after #223 and the home map PR; it needs a version from the manager.
+
+## G status: built locally, waiting for a version and its turn
+
+Branch `ux-g` (local, one commit on `origin/main`) has the building screen: `lib/widgets/camp_works_list.dart` (four sections from `campWorksProvider` with Core's names and blurbs, cards by state, silhouettes with one reason, cost chips, the first missing thing, a sheet with plain-text sources and a Build button), wired into the Town tab's Houses list. The additions tab keeps its strip. EN and FR strings (`works_*`), tests in `camp_town_section_test.dart`.
+
+- **Needs from the manager:** a version number. It opens after #223 and the home-map PR (one open PR at a time).
+- **Touches another session's area:** `test/qa_real_font_cards_test.dart` (QA's). Its "cards fit" case asserted one height for every card of both trays; the houses are now a list of cards by state (a silhouette is shorter than a ready house), so only the additions strip keeps that check. It also preloads the tables the list reads, and scrolls the tab into view before tapping it.
+- `CampTownSection` now reads `campWorksProvider` and the localised houses itself, so locked houses (not discovered yet) show as silhouettes.
