@@ -96,6 +96,8 @@ flutter:
     - assets/gamedata/biomes.json
     - assets/gamedata/land_routes.json
     - assets/gamedata/land_events.json
+    - assets/gamedata/detours.json
+    - assets/gamedata/expedition_steps.json
     - assets/gamedata/city_plans.json
     - assets/visuals/items/
     - assets/visuals/skills/

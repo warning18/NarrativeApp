@@ -2186,6 +2186,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Fusionner ces compétences ? Les deux seront perdues pour cette vie :',
   },
+  'craft_sheet_intro': {
+    AppLanguage.en:
+        'At the Skillwright\'s bench, two skills you know become one. Both are spent.',
+    AppLanguage.fr:
+        'Sur l\'établi de l\'Atelier des techniques, deux compétences connues n\'en font plus qu\'une. Les deux sont perdues.',
+  },
+  'craft_known_tag': {AppLanguage.en: 'Known', AppLanguage.fr: 'Connue'},
+  'craft_missing_tag': {AppLanguage.en: 'Missing', AppLanguage.fr: 'Manquante'},
   'already_crafted_label': {
     AppLanguage.en: 'Already crafted',
     AppLanguage.fr: 'Déjà fusionnée',

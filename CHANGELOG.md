@@ -16,6 +16,26 @@ The level-up offer reads as three ways to grow.
 - **The training offer** (Level Up screen and the pop-up after a fight) is three cards in the clan offer's manner: each path has its pixel icon on a tile in the colour of what it raises most (attack ember, defence and health cool, mind violet, the quick green, the social gold), its name and its line, then each gain as a tile with the big "+n" and where the stat goes ("100 → 120").
 - **A card is picked, then taken** with "Take this training" under the cards, as a clan's gift is, so a path that is for good is never taken by a stray tap. A small offer (a Tome of Insight's point) reads the same.
 
+## [1.324.0+360]
+
+The Skillwright's bench shows what it fuses.
+
+### Changed
+- **Craft a Skill** is a sheet where each recipe is two skills becoming a third, every one drawn with its icon and its real name (no more ids): a skill you know wears a check, one you lack is greyed and locked with "Missing", the recipe you can do stands out in gold with its Merge button, and one already done says so. Merge asks first, shows the same picture and what is spent, and the card flips to "Already crafted" with the sheet left open.
+- **The built Skillwright's card** in the camp's building list has a "Craft a Skill" button.
+- The sheet waits for the recipes to load instead of saying there are none.
+
+## [1.323.0+359]
+
+### Added
+- Detours and expeditions that fit their place (first batch, data only; the engine reads it in Core's coming PR): `assets/gamedata/expedition_steps.json` with six steps each for the three tier-1 expeditions (Fisherman’s Row, Tanner’s Court, the Ossuary Galleries), and `assets/gamedata/detours.json` with the tear shore and frost-city pools (six kinds of six lines). English and French.
+## [1.322.0+358]
+
+A brand's toll reads right.
+
+### Fixed
+- **A negative effect reads with its own sign**: the Marked's toll is "-10% gold from fights", no longer "+-10%". The same holds for every title, sign, boon and pact line.
+
 ## [1.320.0+356]
 
 A level-up is a choice of training, not a pile of points.

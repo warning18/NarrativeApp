@@ -172,6 +172,14 @@ void main() {
       expect(cleanse.scaled(SignRarity.heroic, 5).value, 1);
     });
 
+    test('a negative value reads with its own sign, never "+-"', () {
+      const brand = SignEffect(kind: SignEffectKind.goldPercent, value: -10);
+      expect(signEffectText(brand, AppLanguage.en), '-10% gold from fights.');
+      expect(signEffectText(brand, AppLanguage.fr), isNot(contains('+-')));
+      const boon = SignEffect(kind: SignEffectKind.goldPercent, value: 10);
+      expect(signEffectText(boon, AppLanguage.en), '+10% gold from fights.');
+    });
+
     test('an effect reads from its record', () {
       final guard = SignEffect.tryParse({
         'kind': 'guardStatus',
