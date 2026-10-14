@@ -132,3 +132,9 @@ Next time I will ask the manager for a version here before opening a PR. Request
 
 ## City plan: the user has answered (for the manager)
 The four answers to board 15 are in (see "The city, after the user's answers" above): no hub screen (zoom in and out in the city and the world), fog on districts not yet found, no automatic star, the full city shown first on its own page, and model A in the Map look's palette. The user also said yes to the other hulls' gear (merged as #241). UX can start the painter, zoom and fog as soon as Core has the per-city plan record for Saltmouth; please brief Core (the generator's output for Saltmouth can be its first record) and give UX a version then (1.308.0+344 is free now).
+
+## City chart, step 1 (built, not yet a PR): needs a version
+`lib/widgets/city_chart/` (model, painter, zoom/fog page body), `lib/screens/city_chart_screen.dart` (Saltmouth stub, opened from the fight lab), `assets/visuals/city/saltmouth_stub.json`, `docs/proposals/city-chart.md` (the record's shape, for Core), `test/city_chart_test.dart`. EN and FR strings added next to the fight lab's. **Touches another session's area:** `fight_lab_screen.dart` (one tile and one import), `app_strings.dart` (new keys only). **Please give me a version for it** (1.308.0+344 is the next free). Step 2 (Journey city level opens it with Core's record) waits on Core's record.
+
+## The ronin sprite (the user, 14 Oct)
+The user sent the hero's side-view sprite (Idle-Walking: a ronin, 8 walk frames east and west, 68 x 68). UX puts it in the side-view scenes in place of the placeholder walker (second branch, small PR): **a second version is needed** for it.
