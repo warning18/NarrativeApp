@@ -1,269 +1,235 @@
-# Profession and clan mechanics: one main, three specs (Core, proposal)
+# Clan mechanics, v2: the build is the clans you choose (Core, proposal)
 
-The user's ask: *"propose specific mechanics (using the actual game mechanisms) for each profession/clan. Ideally 1 main that can specialize in 3 different sub specs."* This is a proposal only; nothing is built. Sizes: **S** a day, **M** a PR, **L** two or three PRs, **XL** a wave. **[Q]** marks a question for the user, **[N]** a name or text Narrative writes, **[UX]** a screen UX designs.
+v2 replaces v1. The user's direction:
+- *"Make it more natural. The player adapts his play depending on the combination of cards/banners he earns. Make the main mechanics more different, like in Hades or Slice & Dice, specializing mainly by building his deck and die."*
+- *"Mainly focus on the 8 clans... The subclans can be bonuses earned on special quests, events, discoveries."*
+- *"The more you choose a clan, the more it gains power, conquers cities and territories, and gives you access to rarer skills and rewards."*
 
-## What the game already has (and this builds on)
+Proposal only; nothing is built. Sizes: **S** a day, **M** a PR, **L** two or three PRs, **XL** a wave. **[N]** Narrative writes it, **[UX]** UX designs it.
 
-- **Professions are stat packages today.** professions.json gives bonuses, a standard skill, a caster's mana skill and spells, and a scaling stat. No code checks `== 'warrior'`: a profession only gates skills, dice, spells and offers.
-- **Every profession already has three original skill branches**, and mastering one is called "the specialisation" in `skill_tree.dart` (`masteredBranchId`: all its skills known plus 2,000 essence for +1 tier). Seven later branches (storm, frost, dawn, tides, gale, skyhunter, stoneward) sit beside them.
-- **The fight already has the pieces a class mechanic needs:**
-  - a momentum meter that cashes into a guaranteed crit;
-  - rerolls;
-  - telegraphed enemy intents (`enemy_intent.dart`);
-  - enemy guards and Curse faces on the player's die (`dice_tamper.dart`);
-  - block, dodge, crit and the face keywords (cleave, pierce, growth, echo, pain, steady);
-  - three statuses (poison, stun, weaken);
-  - elements on faces and spells.
-- **Every clan's sworn boon already carries one effect kind that only that clan has:**
+## Why v2
 
-  | Clan | Effect kind | Name |
-  |---|---|---|
-  | Dominion | `writFace` | the Writ |
-  | Vigil | `intentLookahead` | Open Eyes |
-  | Compact | `compactEdge` | the Edge |
-  | Crows | `crowsPrice` | the Price |
-  | Penitents | `emberFace` | the Ember face |
-  | Mire | `poisonExtraTurns` | — |
+Today the clans' gifts don't make them play differently. Every clan's signs cover the same strike, guard, mend, spell and passive slots with similar numbers: the Dominion's, the Mire's and the Compact's read almost alike. A run doesn't change shape with the clans picked. v2 gives each clan **one play mechanic of its own, carried by every gift it gives**, the way each god in Hades has its own status and each face in Slice & Dice is a verb. The build is the die: which clans' gifts sit on its faces.
 
-  Those six are the clan mechanics in embryo.
-- Standing (-100..100, eleven tiers), subclan marks (friend/foe), one sworn clan, titles with effects, signs with 48 effect kinds, and the training paths of v1.320.
+## Summary: the eight clans
 
-So the plan reuses rather than invents:
-- **a profession's three specs are its three original branches**, each with a signature mechanic bent three ways;
-- **a clan's mechanic is its sworn effect kind**, growing with standing, bent by the subclan the player sides with.
+| | Clan | Mechanic (one line) | On the die | Feels like |
+|---|---|---|---|---|
+| 1 | **Dominion** | **Sentence**: your faces stack Sentence on a foe; at 5 its next attack is cancelled | Writ faces: Attack faces that add Sentence | control, denial |
+| 2 | **Vigil** | **Watch**: you see intents ahead, and a Defend face against a foreseen attack **parries** (riposte) | Watch faces: Defend faces that parry what you saw coming | reading the fight |
+| 3 | **Compact** | **Heat**: a face heats each time it is rolled in a fight (+1, to 3); at 3 it breaks guards | Forged faces that grow during the fight | slow build, big finish |
+| 4 | **Mire** | **Rot**: poison that stacks, lasts, and spreads to another foe when its bearer dies | Venom faces that add Rot | attrition, packs melt |
+| 5 | **Crows** | **Price**: gold is a fight resource; hits steal it, and you spend it on rerolls and loaded faces | Loaded faces (pay gold to fix the roll); rerolls that cost coin | gambling, economy |
+| 6 | **Penitents** | **Burden**: take Curses on your own die on purpose; each feeds your other faces; lifting one bursts | Ember faces, plus the Curses you carry | risk, self-harm for power |
+| 7 | **Choir** | **Vow**: before a fight, swear one (no Heal faces, finish in 4 rounds...). Kept, the Choir pays big; broken, you lose alignment | Vow faces that pay out while the vow holds | restraint for reward |
+| 8 | **Pit** | **Debt**: power now, a curse later. Pact faces hit very hard and add debt, which comes due as the pact curses | Pact faces with a debt counter | borrowing, tempo |
 
-## Summary
+These are the eight that dictate play:
+- the six clans proper (dominion, vigil, compact, mire, crows, penitents);
+- the two otherworld powers (choir, pit), whose vows and pacts already exist and become their mechanic.
 
-| Who | Main mechanic (one line) | Spec 1 | Spec 2 | Spec 3 | Size |
-|---|---|---|---|---|---|
-| **Warrior** | **Momentum** also fills when you take a hit or block | Bulwark: cash-out is a reflecting guard | Vanguard: cash-out is a cleaving crit | Warlord: cash-out rallies the party | M |
-| **Mage** | **Resonance**: spells of one element in a row stack +damage | Evocation: at 3 stacks the spell hits every enemy | Tempest: each stack adds stun chance | Aegis: stacks turn into a mana shield | M |
-| **Rogue** | **Exploit**: a foe not attacking this round, or poisoned or stunned, takes +crit | Shadow: first strike of a fight always exploits | Venom: poison always exploits, and lasts longer | Trickster: +1 reroll a round, and a crit steals gold | M |
-| **Cleric** | **Grace**: healing past full health is kept as grace | Judgment: grace adds to your next strike | Devotion: grace mends the party, and revives once | Vigil: grace becomes block for the party | M |
-| **Ranger** | **Quarry**: you mark one foe; it takes +damage and shows its intent a round early | Marksman: the mark pierces, and a multi-shot hits it twice | Trapper: a marked foe's first attack is snared (stun) | Wilds: +1 to road and expedition checks, and discoveries give double | M–L |
-| **Dominion** | **Writ**: cancels N enemy attacks a fight | Inquisition: a cancelled attack weakens the foe | Order: a cancelled attack opens a counter | Admiralty: the Writ calms the sea (voyages) | M |
-| **Vigil** | **Open Eyes**: see intents N rounds ahead | Candlebearers: +damage to the dead and the tear's things | Stitchers: blocking a foreseen attack heals | Last Watch: a foreseen attack gives the party block | M |
-| **Compact** | **Edge**: breaks N enemy guards a fight | Quarrymen: a broken guard stuns | Emberwives: a broken guard takes fire | Anvil-Deaf: one more hone at the smithy | M |
-| **Mire** | **Venom**: poison you inflict lasts N turns longer | Barkbleeders: poison hits harder | Heron's Wake: road and expedition guides (checks, days) | Moss Choir: poison ticks heal you | M |
-| **Crows** | **Price**: each hit steals N gold | Keyholders: chests come one rarity better | Tar-Hands: the hull mends between voyages | Whisper Ledger: see an offer's gifts before you choose | M |
-| **Penitents** | **Ember**: lifts N Curses from your die a fight | Scorched Choir: a lifted Curse heals | Road Exorcists: +damage to the tear's things, cleanses | Ember Sisters: the party heals after each fight | M |
+The four tribes (giants, oni, tidekin, kindly) and the Open Hand are **minor patrons**: their gifts are neutral boons (health, gold, ship, healing) that fit any build, like Hades' Chaos or Hermes.
 
-**Picking a spec.**
-- *Profession:* a "Calling" at **level 5**, three cards like the training offer, one per original branch. It can be changed at the Skillwright for essence.
-- *Clan:* at **Trusted** standing, the clan asks which of its three voices you stand with. Changing sides is possible but costs standing with the voice you leave.
+**Existing pieces each mechanic builds on:**
+- **Dominion:** the Writ face (`writFace`).
+- **Vigil:** Open Eyes (`intentLookahead`) and `parry.dart`.
+- **Compact:** the Edge (`compactEdge`) and the `growth` keyword.
+- **Mire:** `poisonExtraTurns` and the poison status.
+- **Crows:** the Price (`crowsPrice`) and rerolls.
+- **Penitents:** the Ember face (`emberFace`) and the Curses enemies already put on your die (`dice_tamper.dart`).
+- **Choir:** vows.
+- **Pit:** pacts (`PactCurse`).
 
-Details below.
+## How a gift works
 
-## 1. Professions
+- **A gift carries its clan's mechanic into one slot.** The slots exist: strike (Attack faces), guard (Defend), mend (Heal), spell, passive.
+  - A Dominion strike gift adds Sentence to every Attack face; a Mire mend gift makes heals "cleanse and Rot the attacker". **[N]** names.
+  - A slot holds one clan's gift (as a sign slot holds one sign today). Which clan fills Attack, which fills Defend, **is** the build.
+  - A gift can also be a **new skill** for a face, of that clan's mechanic, through the existing skill offers.
+- **Rarity, gated by the clan's power** (below):
+  - **common** from the start;
+  - **rare** once the clan is Rising;
+  - **legendary** once it is Dominant.
+  - A legendary gift changes the rule, not the number. Dominion: Sentence at 5 *executes* a foe under 20%. Mire: Rot spreads to *every* foe.
+- **Choosing.** Offers stay three suitors, three gifts, as today. Each gift shows its mechanic's icon and the slot it takes. **[UX]**
+  - Taking it gives standing (as today) **and clan power**.
+  - Filling a slot another clan holds replaces that gift, and the replaced clan takes it ill (standing -3).
 
-### How the spec works (all five)
+## Combinations: duos and betrayals
 
-- **When:**
-  - At level 5 the level-up brings a **Calling** after the training offer: three cards, one per original branch, with the spec's line and what it does to the main mechanic. **[UX]** reuses the training cards.
-  - Taking one sets `specId` (the branch id). There is no "later", as with training.
-  - Level 5 lands in chapter 2–3, once the player has seen the class play plain.
-- **What it touches besides the mechanic:**
-  - the spec's branch skills come up more in clan offers (offer weight ×2);
-  - the training "calling" leans to the spec's paths;
-  - mastering the spec's branch keeps the +1 tier.
-  - **[Q]** should mastery be *limited* to the spec's branch (cleaner) or stay open to any branch (today's rule)?
-- **Changing:** at the **Skillwright** (v1.319) for essence (e.g. 500). Skills known are kept; only the bend changes. **[Q]** free once, then paid?
-- **The later branches** (storm, frost, dawn, tides, gale, skyhunter, stoneward) stay open to any spec, through offers, as today. **[Q]** or should each become a fourth spec later?
-- **New data:** `specId` on the session; a `spec` block on each original branch in skill_trees.json (`mainBend` key and numbers, `line`, `line_fr` **[N]**).
-- **Autoplay and simulator:** the simulator takes the spec of its build's stat (as it takes training today).
-- **Balance check for all five:** the simulator's win rate per chapter, by profession × spec, against today's baseline. A spec must land within ±5 points of the others of its profession, and the main mechanic must add no more than about +8% to a chapter's win rate.
+**Duos.** When the die holds a gift from each of two clans whose relation is **Wary or better** (relations.json step ≥ 5), their **duo** can come up as a fourth card in an offer: one gift that joins the two mechanics, like Hades' duo boons. Today's relations allow exactly eight clan pairs:
 
-### Warrior: Momentum
-
-- **Mechanic:** the momentum meter (today filled by your own hits and skills, cashed for a guaranteed crit) **also fills when you take a hit or block one**. The warrior is the class that gets stronger by standing in it.
-- **Specs** (what the cash-out does):
-  - **Bulwark:** cashing momentum raises a guard that **reflects** the next attack (`guardRetaliate` at 100% for one hit).
-  - **Vanguard:** the cashed crit gets **cleave** (the face keyword): it hits every enemy.
-  - **Warlord:** cashing momentum gives every companion +25% damage and 5 block for the round (`allyDamagePercent`, `partyStartBlock`, used live).
-- **Example:** two goblins hit the Bulwark for 6 and 4, and the meter is full. Next round the warrior cashes it: a crit, and the next goblin blow comes back at the goblin.
-- **Reuses:** `fight_dice_rules.dart` (momentum), the keywords, the sign effect kinds (applied by the spec instead of a sign).
-- **New:** one momentum source (hits taken) and the three cash-out bends. **[UX]** the meter shows the spec's icon when full.
-- **Size:** M.
-- **Risk:** momentum from taking hits makes long fights snowball. Cap it at one cash-out a round, and simulate the boss fights of chapters 3, 5 and 7.
-
-### Mage: Resonance
-
-- **Mechanic:** casting spells **of the same element in a row** builds resonance: +15% spell damage per stack, up to 3. Another element resets it. It reuses spell elements and `spellDamagePercent`.
-- **Specs:**
-  - **Evocation:** at 3 stacks the next damaging spell **hits every enemy**.
-  - **Tempest:** each stack adds 10% to stun the target (status `stun`, 1 turn); Ice and Electricity spells resonate together.
-  - **Aegis:** stacks can be **spent as a mana shield** of 6 per stack (`mendShield`) instead of damage.
-- **Example:** an Evocation mage casts Ember Wave, then Fireball: two stacks, +30%. Next round a third Fire spell washes over the whole pack.
-- **Reuses:** spells.json elements, mana, the sign effect kinds.
-- **New:** a resonance counter in the fight state and three bends. **[UX]** pips beside the mana bar.
-- **Size:** M.
-- **Risk:** Evocation's area hit against packs, especially in chapter 4+ when packs grow. Simulate pack fights; the area hit may need to be at 70% damage.
-
-### Rogue: Exploit
-
-- **Mechanic:** a foe whose telegraphed intent this round is **not an attack**, or who is **poisoned, stunned or weakened**, is *exposed*: your strikes on it get +25% crit chance. It reuses the enemy intents and statuses.
-- **Specs:**
-  - **Shadow:** your first strike of each fight always exploits, and a crit gives 1 dodge for the next hit.
-  - **Venom:** poison always exposes, and poison you inflict lasts 1 turn longer (the Mire's kind, at 1).
-  - **Trickster:** +1 reroll a round, and a crit lifts a few gold off the foe (the Crows' kind, small).
-- **Example:** a cultist's intent reads "chant" (no attack). The rogue's backstab lands a crit.
-- **Reuses:** `enemy_intent.dart`, statuses, rerolls, `crowsPrice` and `poisonExtraTurns`.
-- **New:** the "exposed" check and three bends. **[UX]** a mark over an exposed foe.
-- **Size:** M.
-- **Risk:** crit stacking with Luck. Cap crit at the current cap, and simulate a Luck-heavy rogue build.
-
-### Cleric: Grace
-
-- **Mechanic:** healing **past full health is not lost but kept as grace** (up to 30% of max health, gone at the end of the fight). Clerics overheal a lot today; this turns the waste into the class's resource.
-- **Specs:**
-  - **Judgment:** grace is spent automatically on your next strike as extra Light damage. It hits harder against foes of the opposite alignment (the alignment hunters, the tear's things).
-  - **Devotion:** grace mends the companion lowest on health at the start of each round, and once per fight a fallen companion rises with it (`secondWind` for the party).
-  - **Vigil:** grace turns into block for the whole party at the start of the enemy's turn (`partyStartBlock`, live).
-- **Example:** a Devotion cleric heals 30 on a 10-HP wound. The spare 20 is grace, and next round it closes a companion's cut.
-- **Reuses:** heal faces, spells, the mend kinds, alignment.
-- **New:** a grace pool and three bends. **[UX]** a white edge on the health bar.
-- **Size:** M.
-- **Risk:** Vigil's party block in long fights. Simulate chapter 5–7 bosses with a full party.
-
-### Ranger: Quarry
-
-- **Mechanic:** at the start of a fight the ranger **marks one foe** (by default the strongest; a tap changes it once). The marked foe takes +15% damage from the party and shows its intent **one round early** (the Vigil's kind, on that foe only). It reuses `hunters_mark`'s idea and intents.
-- **Specs:**
-  - **Marksman:** strikes on the mark get **pierce** (the keyword), and a multi-shot hits the mark twice.
-  - **Trapper:** the mark's first attack each fight is snared: it stuns the mark instead.
-  - **Wilds:** the ranger's mark is **the road**: +1 to every crossing, detour and expedition check, and a discovery step on an expedition gives two materials instead of one. In fights the mark only shows the intent.
-- **Example:** a Trapper marks the ogre. The ogre raises its club, the snare takes it, and it loses the round.
-- **Reuses:** intents, keywords, statuses, the d20 checks (crossings, detours, expedition steps), discovery steps (v1.327).
-- **New:** a quarry slot in the fight state and three bends. **[UX]** a reticle on the mark.
-- **Size:** M, L for Wilds (it touches the road code).
-- **Risk:** Wilds trades fight power for road power. Check it's worth taking with the simulator's crossing and expedition success rates, not the win rate.
-
-## 2. Clans
-
-### How the clan spec works (the six clans)
-
-- **The main mechanic grows with standing.** It's the clan's sworn effect kind, and it works for the clan you stand best with, at Trusted or above:
-  - Trusted gives value 1;
-  - Sworn gives value 2 (the sworn boon itself, as today).
-  - It works for one clan at a time: your **patron**, the highest standing at Trusted+, or your sworn clan when you have one.
-  - **[Q]** one patron at a time (clear, and rivals matter), or every Trusted clan at once (stronger, and the radar fills up)?
-- **The sub-spec is a voice of the clan.** On reaching Trusted, the clan's next offer asks which of three voices you side with, mapped onto subclans.json. It sets that subclan to **friend** (as an offer's voice does today) and records `clanVoice[clan]`.
-  - Changing voice later means a gift from another voice. It marks the old voice **foe**, costs 10 standing with the clan, and can bring the "mark:foe" titles that already exist.
-- **Ties:**
-  - **Standing:** the mechanic's value.
-  - **Offers:** the chosen voice speaks more often (voice weight ×2), and its gifts carry its bend.
-  - **Alignment:** a voice's `lean` nudges alignment when chosen, as gifts do; the Inquisition (lean -1) and Ember Sisters (lean 1) pull.
-  - **Titles:** one title per voice at Sworn, e.g. "Writ of the Inquisition". **[N]**
-- **The radar** (the clan tab and the gift popin, being built):
-  - The clan's stat orientation, computed from its sponsored branches' scaling stats and its signs' `stat` effects.
-  - Its relations to the other clans (relations.json steps).
-  - The chosen voice highlighted.
-  - A small Core helper gives UX both (separate PR, this week).
-- **Clans with more than three subclans:**
-  - The Dominion has 8, the Crows 5, the Penitents 5, the Compact 4 and the Mire 4.
-  - Three are picked below. The others stay what they are today: voices of offers, intrigues and marks, without a bend.
-  - **[Q]** is the pick right?
-- **New data:**
-  - in factions.json, `voices: [subclanId ×3]` and one `bend` record per voice (`kind`, `value`, `line`, `line_fr` **[N]**);
-  - `clanVoice` on the session.
-- **Balance check for all:** the simulator with a patron at Trusted from chapter 3 (as autoplay would get there), per clan × voice: win rate, gold per chapter (Crows), voyage losses (Admiralty, Tar-Hands). Within ±5 points of win rate of each other.
-
-### Dominion: the Writ (`writFace`)
-
-- **Mechanic:** a Writ face cancels N enemy attacks on you each fight (N = 1 Trusted, 2 Sworn).
-- **Voices:**
-  - **Inquisition:** a cancelled attack also **weakens** that foe for 2 turns. Lean -1: taking it pulls alignment down.
-  - **Order of the Vigilant Flame:** a cancelled attack opens a **counter**: your next strike on that foe +50%. Ties to the "Challenged" title the Order already gives.
-  - **Admiralty:** the Writ works at sea. Each voyage's first hostile event is calmed (`voyageCalm`, the Dominion's sworn boon already has it), and the hull takes 20% less from sea fights.
-- **Example:** an Inquisition patron cancels a bandit's swing, and the bandit fights weakened for two turns.
-- **Size:** M.
-- **Risk:** the Writ on bosses. Simulate chapter 5 and 7 bosses at N=2.
-
-### Vigil: Open Eyes (`intentLookahead`)
-
-- **Mechanic:** see each enemy's intent N rounds ahead, and the tear's things can't ambush the party.
-- **Voices:**
-  - **Candlebearers:** +20% damage to the dead and the tear's things (enemy tags), whose intents you now see.
-  - **Stitchers:** blocking an attack you foresaw **heals** for half what it blocked (`guardHeal`).
-  - **Last Watch:** a foreseen attack on a companion gives that companion 8 block (`partyStartBlock`, aimed).
-- **Size:** M.
-- **Risk:** low. Lookahead is information; Stitchers' heal in long fights is the thing to watch.
-
-### Compact: the Edge (`compactEdge`)
-
-- **Mechanic:** breaks N enemy guards outright each fight.
-- **Voices:**
-  - **Quarrymen:** a broken guard **stuns** the foe 1 turn.
-  - **Emberwives:** the blow that breaks a guard deals **Fire** (element), and burns for 2 turns of 3 damage (poison's tick, under a fire name). **[Q]** a burn status is new; or keep it plain Fire damage.
-  - **Anvil-Deaf:** the smithy honours the clan: **one more hone** per face (`maxHones` 3 → 4) and tempering costs a third less.
-- **Size:** M.
-- **Risk:** the Quarrymen stun on bosses. Bosses resist stun every other try.
-
-### Mire: Venom (`poisonExtraTurns`)
-
-- **Mechanic:** poison you inflict lasts N turns longer.
-- **Voices:**
-  - **Barkbleeders:** poison you inflict ticks +2 harder.
-  - **Heron's Wake:** the fen guides. +1 to crossing and expedition checks, and a delivery's deadline gets one spare day.
-  - **Moss Choir:** each poison tick on a foe heals you 1 (`lifesteal` from poison).
-- **Size:** M.
-- **Risk:** poison stacking with Venom rogues (profession + clan). Simulate that pair specifically.
-
-### Crows: the Price (`crowsPrice`)
-
-- **Mechanic:** each hit you land steals N gold (10 hits a fight at most, as today).
-- **Voices:**
-  - **Keyholders:** chests open one rarity better, once per expedition.
-  - **Tar-Hands:** the ship's hull mends 25% between voyages, and fitting a part at a port costs less.
-  - **Whisper Ledger:** you see each suitor's gifts before choosing whom to hear (the offer dialog shows them face up), and an intrigue tells you one more clue.
-- **Size:** M (Whisper Ledger is mostly UX).
-- **Risk:** gold inflation. Check gold per chapter against the shop prices; Crows stays lean −1 (Evil).
-
-### Penitents: the Ember (`emberFace`)
-
-- **Mechanic:** lifts N Curses from your die each fight.
-- **Voices:**
-  - **Scorched Choir:** each lifted Curse heals you 5 (they sing a name for it).
-  - **Road Exorcists:** +20% damage to the tear's things, and a lifted Curse also cleanses a status (`mendCleanse`).
-  - **Ember Sisters:** the party heals 10% after each fight (`afterFightHealPercent`). Lean 1.
-- **Size:** M.
-- **Risk:** low. Curses are rare before chapter 4; Ember Sisters' heal saves potions, so check potion spend.
-
-### The others (tribes, otherworld, the lost clan)
-
-- **Choir** (vows) and **Pit** (pacts) already have their own mechanic, and it is their identity. They have no subclans; nothing changes.
-- **Giants, oni, Tide-Kin and Kindly Ones** have no subclans and come late. **[Q]** give each a main mechanic without voices (S each), or leave them as sign patrons?
-- **The Open Hand** (the lost clan, one subclan, the Fishbasket Line) is the player's own hand. **[Q]** its mechanic could be *choose any one clan voice's bend*, a late-game reward (S).
-
-## 3. How the two meet
-
-- A character has one **spec** (profession) and one **voice** (patron clan), so two bends.
-- The clans' sponsored branches already line up with the specs. The Dominion sponsors Vanguard, Judgment and Evocation; the Mire sponsors Venom and Wilds; the Crows sponsor Shadow, Tempest and Marksman. Each clan is a natural home for some specs, and the offer weights make that the easy road without forcing it.
-- Pairs to simulate on purpose:
-  - Venom rogue + Mire;
-  - Judgment cleric + Inquisition;
-  - Trapper ranger + Quarrymen (two stuns).
-- **[UX]** The character sheet shows both bends in one line each: "Bulwark: momentum reflects", "Inquisition: the Writ weakens".
-
-## 4. Order of work (if the user says go)
-
-| Step | What | Size |
+| Duo | Clans (step today) | What it does |
 |---|---|---|
-| 1 | The Calling at level 5 and `specId`; spec data on the 15 original branches; Skillwright respec | M |
-| 2 | The five main mechanics and their bends, one PR per profession (Warrior and Cleric first: the simplest, and the most played) | 5 × M |
-| 3 | Patron and voice: standing value, the voice choice at Trusted, `clanVoice` | M |
-| 4 | The six clan mechanics and their bends (the effect kinds exist; bends are new) | 6 × S–M |
-| 5 | Simulator: spec and voice in autoplay, the per-spec and per-voice reports | M |
+| Writ of Seizure | Dominion + Crows (6, Trade) | a Sentenced foe pays double to the Price |
+| Watchful Forge | Vigil + Compact (6) | a parry heats the parrying face to 3 |
+| Mire Watch | Vigil + Mire (5) | a foreseen attacker is Rotted before it strikes |
+| Keepers' Penance | Vigil + Penitents (7, Allies) | a parry lifts one of your Curses, which bursts |
+| Smelter's Rot | Compact + Mire (6) | a face at Heat 3 also adds Rot |
+| Loaded Heat | Compact + Crows (5) | paying for a loaded face heats it to 3 at once |
+| Poisoned Purse | Mire + Crows (5) | each Rot tick steals 1 gold |
+| Pawned Sins | Crows + Penitents (5) | sell a carried Curse for gold mid-fight |
 
-Steps 1 and 3 need **[UX]** (the Calling cards, the voice choice inside the offer popin) and **[N]** (15 spec lines, 18 voice lines, 18 titles).
+The Choir and the Pit have no relations. Their duos follow alignment instead:
+- **Usury** (Crows + Pit, alignment ≤ 0): debt can be paid in gold.
+- **Martyr's Vow** (Penitents + Choir, alignment ≥ 0): each Curse carried while a vow holds doubles its pay.
+
+Choir and Pit gifts exclude each other: holding one closes the other's offers.
+
+**Betrayals.** Feuding clans (step ≤ 3) never offer a duo. Holding gifts from both can bring a **betrayal gift** from one of them: legendary-strong, at heavy standing cost with the other, and their relation drops a step. Today's feuds:
+- Dominion with Vigil (3), Mire (3) and Penitents (2);
+- Vigil with Crows (3);
+- Compact with Penitents (3);
+- Mire with Penitents (1).
+
+So the strongest pair on paper, Sentence + Watch (Dominion + Vigil), is a feud: a betrayal path, not a duo. That is where the politics bite.
+
+**Synergies and tensions by design.**
+- **Synergies:** Heat with Rot, Price with Debt, Watch with Burden (Vigil and Penitents are allies).
+- **Tensions:** Vow with Burden (a Penitent build breaks vows), and Choir against Pit.
+- Relations move during play, so a pair's duo can open or close as the story shifts.
+
+## Clan power and territory
+
+### Power
+
+Each clan gets a **power** value (0–100) in `PoliticsState`, beside standing. Standing is how the clan sees *you*; power is how strong *it* is.
+
+| Source | Power |
+|---|---|
+| A gift taken from it | +2 (legendary +4) |
+| A quest done for it (quests carry a faction) | +5 |
+| A zone cleared that it claims | +5 |
+| A subclan boon earned | +5 |
+| A betrayal against it | -10 |
+| Politics events (variants shift standing today; they would shift power too) | ±5 to 15 |
+
+| Tier | Power | Unlocks |
+|---|---|---|
+| Minor | 0–24 | common gifts |
+| Rising | 25–49 | rare gifts; takes its first claim |
+| Dominant | 50–74 | legendary gifts; takes more claims; its house in a town it holds (later hook) |
+| Ascendant | 75+ | its throne claim weighs more at the ch7 decision (throne.dart) |
+
+### Territory
+
+- **The starting map.** `geography.json` already gives 12 places a `controller`:
+  - Dominion: the Spire, Candlehold, its lantern hall, Alster's Black Hold;
+  - Crows: the Wharf, Card Row, Alster's lower town;
+  - Compact: Emberwick;
+  - minor patrons: oni at Akagiri, Kindly Hill, the giants at Highhearth, the Tide-Kin on Tern Row.
+- **Taking places.** `PoliticsState.control` (place id → clan) overrides that map as clans take places.
+  - Each clan gets ordered **claims** in factions.json (the Mire: Kindly Hill, the Drowned Cloister, the Hollow Court).
+  - When a clan's power crosses a tier, it takes its next claim.
+  - The former holder loses the place, their relation drops a step, and a news line says so ("The Mire Courts hold the Drowned Cloister now"). **[N]**
+- **What control does now:** in a held place, its clan's gifts are likelier in offers and its shops charge its standing price. The visuals are a later hook.
+- **The radar** (#264) gains the clan's **power** (a ring or a bar) and the **places it holds** (a count, and the list on the clan tab). **[UX]**
+- **Politics events** (26 in politics_events.json) gain:
+  - a `trigger.power` condition (`{"faction": "dominion", "minPower": 50}`);
+  - `effects.power` and `effects.control`.
+  - The existing events keep working.
+
+## Subclans: bonus boons earned in the world
+
+A subclan is no longer chosen. Each one gives **one bonus boon**:
+- of its clan's mechanic, bending it;
+- stronger than a common gift;
+- outside the slots (a passive).
+
+It drops where the story already meets that subclan. These are proposed sources from the existing zones, intrigues, houses and voyages; **[N]** checks the fit.
+
+| Clan | Subclan | Bonus boon | Drops from |
+|---|---|---|---|
+| Dominion | Inquisition | Sentence also weakens | the *hooded_lantern* intrigue |
+| | Order | at 5 Sentence your next strike +50% | defeating a Challenger (the Order's mark) |
+| | Tribunal | Sentence wins checkpoints (Charisma checks pass) | the *broken_charter* intrigue |
+| | Admiralty | Sentence works in sea fights | z_white_fleet_grave cleared |
+| | Reliquary | Sentence carries over against the same foe kind | a Shroud piece found |
+| | Wickwardens | Writ faces give the party 3 block | Candlehold's lantern hall (story) |
+| | Salt Ledger | each Sentence refunds 2 gold | the *double_ledger* intrigue |
+| | Cantors | Sentence stacks on every foe, at half | the *dying_lantern_bearer* intrigue |
+| Vigil | Candlebearers | +20% damage to the dead | z_ossuary_galleries cleared |
+| | Stitchers | a parry heals half what it stopped | z_shroud_vigil cleared |
+| | Last Watch | a foreseen attack on a companion gives them block | the *unwatched_hour* intrigue |
+| Compact | Quarrymen | Heat 3 stuns | z_frost_quarry cleared |
+| | Scaffolders | faces start at Heat 1 | z_scaffold_yards cleared |
+| | Emberwives | Heat deals Fire | z_ember_run delivered |
+| | Anvil-Deaf | +1 hone at the Smithy | Hammersmith built |
+| Mire | Barkbleeders | Rot ticks +2 | z_fever_bark delivered |
+| | Heron's Wake | +1 to fen crossings and expedition checks | z_changeling_fen cleared |
+| | Returned | once a fight, Rot on you is turned on the foe | the *the_returned* intrigue |
+| | Moss Choir | Rot ticks heal you 1 | z_bell_road escorted |
+| Crows | Keyholders | one chest per expedition opens a rarity better | Smugglers' Cellar built |
+| | Tar-Hands | the hull mends 25% between voyages | Harbor built |
+| | Brig-Born | Price works at sea (boarding steals cargo) | a boarding won at sea |
+| | Whisper Ledger | see each suitor's gifts before choosing | the *admiraltys_silence* intrigue |
+| | Drowned Debt | rerolls cost 1 less gold | z_lantern_docks cleared |
+| Penitents | Scorched Choir | each Curse carried heals 2 a round | z_cinder_row cleared |
+| | Road Exorcists | lifting a Curse cleanses a status | z_exorcists_road cleared |
+| | Reliquary Thieves | once a fight, steal a Curse onto a foe | the *relic_road* intrigue |
+| | Spire-Fallen | with 3 Curses carried, +1 armor per Curse | the Spire (story) |
+| | Ember Sisters | the party heals 10% after each fight | z_glass_strand cleared |
+| Open Hand | Fishbasket Line | choose any one bonus boon already seen | the Open Hand's last stage |
+
+Earning a boon makes its subclan a friend (as today) and adds clan power.
+
+## Professions: the base the clans bend
+
+The v1 profession specs are **dropped**: the clans are the spec. A profession stays what it is today, the **base**:
+- its die (and the dice only it can use);
+- its standard skill;
+- its stats and scaling stat;
+- for casters, mana and spells.
+
+Different bases make the same clan play differently. A mage's Mana faces become Dominion Writs; a warrior's many Attack faces heat faster under the Compact. Skill branches and branch mastery stay as they are, offered by the clans that sponsor them.
+
+## Example runs
+
+1. **Dominion.** A warrior's Attack faces add Sentence, so the ogre loses every third attack. At Dominant, the legendary gift executes foes at 20%.
+2. **Vigil.** A cleric reads two rounds ahead and parries the boss's telegraphed slam, riposting for half.
+3. **Compact.** A ranger's faces heat through a long fight; from round 4 every roll breaks guard. The Quarrymen boon (Frost Quarry) adds stuns.
+4. **Mire.** A rogue Rots one bandit; it dies and the Rot jumps to the next. Packs melt.
+5. **Crows.** A rogue steals 30 gold a fight and spends it on loaded faces at the boss.
+6. **Penitents.** A mage takes two Curses on purpose. Every face hits +20%, and an Ember face lifts one for a 30-point burst.
+7. **Choir.** A cleric swears "no Heal faces" and wins; the Choir pays a legendary-strength boon for the fight and gold after.
+8. **Pit.** A warrior hits double on Pact faces and carries the debt as weaker starts in the next three fights.
+
+Duo run: Compact + Mire with *Smelter's Rot*. Heated faces Rot, and long fights end themselves.
+
+## What's new, sizes, simulator checks
+
+| Piece | New | Reuses | Size | Simulator check |
+|---|---|---|---|---|
+| Gifts carry a clan mechanic | the 8 mechanics in the fight state (Sentence, Watch parry, Heat, Rot, Price spending, Burden, Vow, Debt); a gift's `mechanic` and `rarity` | sign slots, faces, keywords, statuses, writ/edge/ember/price, parry, dice tamper, pacts, vows | L (an M per pair of clans) | win rate per clan build by chapter: within ±5 points of each other, none above today's best by more than 8 |
+| Rarity by clan power | gating in offers.dart | SignRarity, offer draws | S | rarity counts per chapter |
+| Duos and betrayals | 10 duo gifts, 6 betrayal gifts, conditions | relations, offers | M | duo by ch5 in at most 1 run in 4 |
+| Clan power and territory | `power`, `control` in PoliticsState; `claims` in factions.json; tier crossing takes a claim | geography `controller`, politics events, relations | M | power curves per strategy (autoplay backs one clan): none Dominant before ch4 |
+| Subclan boons | 30 boons and their drop hooks | zone rewards, intrigues, houses, voyages | M (data heavy, **[N]**) | boons a typical run finds (target 4–6 by the throne) |
+| Radar: power and holdings | two readings | #264's radar | S | — |
+| Offer UI | mechanic icon, slot, duo card | the offer dialog | M **[UX]** | — |
+| Saves | old signs keep working; power starts from standing | | S | old save fixtures |
+
+## Order of work
+
+1. **Clan power and territory** (state, claims, tier crossings, radar readings). Rarity and duos depend on it.
+2. **The mechanics, two clans per PR**, simplest first:
+   - Mire + Compact (Rot, Heat);
+   - Crows + Penitents (Price, Burden);
+   - Dominion + Vigil (Sentence, Watch);
+   - Choir + Pit (Vow, Debt).
+
+   Each PR turns that clan's signs into gifts of its mechanic, with rarity tiers.
+3. **Duos and betrayals.**
+4. **Subclan boons** with Narrative, zone by zone.
+5. The simulator's per-clan report after each step.
+
+## Later hooks (no design yet)
+
+- **Town influence and clan houses (UX + Core).** A place's holder (`PoliticsState.control`) tints its scenes: the holding clan's banners, pennants and colours. A clan at Dominant may open one **clan house** in a town it holds: a shop of its rarer gifts and objects, at most one per clan, using the camp-house and shop systems.
+- **The chapter 5 and 7 upheavals (Narrative + Core).** Two politics events where the player's choice can turn the tables before the throne: a betrayal taken earlier, or offered on the spot, flips a clan's power and a relation by two steps. They need only the `trigger.power`, `effects.power` and `effects.control` fields above.
 
 ## Open questions for the user
 
-1. Profession spec at **level 5**, a choice of three cards. Or earlier/later, or at branch mastery as today?
-2. Respec at the Skillwright for essence. Free the first time?
-3. Branch mastery only on the spec's branch, or open as today?
-4. The seven later branches: open to all (proposed), or fourth specs later?
-5. One patron clan at a time (proposed), or every Trusted clan's mechanic at once?
-6. The three voices picked for the Dominion (Inquisition, Order, Admiralty), Compact (Quarrymen, Emberwives, Anvil-Deaf), Mire (Barkbleeders, Heron's Wake, Moss Choir), Crows (Keyholders, Tar-Hands, Whisper Ledger) and Penitents (Scorched Choir, Road Exorcists, Ember Sisters): right picks?
-7. A new **burn** status for the Emberwives, or plain Fire damage?
-8. The four tribes and the Open Hand: a mechanic each, or left as they are?
+1. **The eight:** the six clans plus the Choir and the Pit, with the four tribes and the Open Hand as minor patrons. Right?
+2. **One clan per slot** (replacing one costs standing with it), or may two clans share a slot?
+3. **Power decay:** does a neglected clan lose power over time (rivals take its places), or only through events and betrayals?
