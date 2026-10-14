@@ -42,7 +42,8 @@ void main() {
     }
   }
 
-  testWidgets('a level\'s points are a training offer: one tap takes a path',
+  testWidgets(
+      'a level\'s points are a training offer: a card is picked, then taken',
       (tester) async {
     SharedPreferences.setMockInitialValues({});
     tester.view.physicalSize = const Size(420, 1600);
@@ -74,7 +75,11 @@ void main() {
     }
 
     final choice = container.read(playerSessionProvider).trainingOffer.first;
+    // A card is picked first; nothing is spent until it is taken.
     await tester.tap(find.byKey(const Key('training_choice_0')));
+    await settle(tester);
+    expect(container.read(playerSessionProvider).statPoints, 5);
+    await tester.tap(find.byKey(const Key('training_take')));
     await settle(tester);
 
     final after = container.read(playerSessionProvider);
@@ -146,6 +151,9 @@ void main() {
     for (var left = 1; left >= 0; left--) {
       await tester.ensureVisible(find.byKey(const Key('training_choice_0')));
       await tester.tap(find.byKey(const Key('training_choice_0')));
+      await settle(tester);
+      await tester.ensureVisible(find.byKey(const Key('training_take')));
+      await tester.tap(find.byKey(const Key('training_take')));
       await settle(tester);
       expect(container.read(playerSessionProvider).statPoints, left);
     }

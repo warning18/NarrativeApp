@@ -8,6 +8,7 @@ import '../combat/element_reaction.dart';
 import '../combat/enemy_response.dart';
 import '../combat/fight_goal.dart';
 import '../combat/parry.dart';
+import 'character_start.dart' show startingArmor;
 import '../combat/squad.dart';
 import '../combat/gear_effects.dart';
 import '../combat/spells.dart';
@@ -116,7 +117,7 @@ class SimCharacter {
       preferredStat: preferred.isEmpty ? 'wisdom' : preferred,
       maxHealth: max(1, stat('maxHealth', 'bonusMaxHealth')),
       baseDamage: stat('baseDamage', 'bonusBaseDamage'),
-      baseArmor: stat('baseArmor', 'bonusBaseArmor'),
+      baseArmor: startingArmor(stat('baseArmor', 'bonusBaseArmor')),
       strength: stat('strength', 'bonusStrength'),
       dexterity: stat('dexterity', 'bonusDexterity'),
       constitution: stat('constitution', 'bonusConstitution'),
