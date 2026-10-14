@@ -93,8 +93,10 @@ const Color _ironDark = Color(0xFF3F464E);
 const Color _brass = Color(0xFFC9A24A);
 
 void _paintGear(Canvas canvas, double u, double x, double base, double len,
-    ShipForm form, _Palette pal, ShipDress dress, double t, List<double> top) {
-  double rail(double f) => top[(f * len).floor().clamp(0, top.length - 1)];
+    ShipForm form, _Palette pal, ShipDress dress, double t, List<double> top,
+    [List<double>? deck]) {
+  final on = deck ?? top;
+  double rail(double f) => on[(f * len).floor().clamp(0, on.length - 1)];
   _plating(canvas, u, x, base, len, pal, dress.plating, top);
   _guns(canvas, u, x, base, len, dress.mounts, rail, t);
   _deckGear(canvas, u, x, base, len, pal, dress.gear, rail, t);

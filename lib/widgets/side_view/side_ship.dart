@@ -20,6 +20,26 @@ part 'side_gear.dart';
 
 /// A sail's box on the scene's pixel grid and how it is rigged.
 typedef _SailBox = ({Rect rect, SailKind kind});
+typedef _Rig = ({List<_SailBox> sails, List<double> top});
+
+/// A flat rail at row [y] along the whole length (the slab hulls).
+List<double> _slabTop(double len, double y) =>
+    List.filled(len.ceil() + 1, y, growable: false);
+
+/// The ironclad's deck line: the slab, and the casemate's roof over the
+/// middle of her, where the guns and gear stand.
+List<double> _ironDeck(double len, double base) {
+  final n = len.ceil() + 1;
+  return [
+    for (var i = 0; i < n; i++)
+      switch (i / len) {
+        < 0.2 || > 0.82 => base - 4,
+        < 0.28 => base - 4 - 7 * (i / len - 0.2) / 0.08,
+        > 0.74 => base - 11 + 7 * (i / len - 0.74) / 0.08,
+        _ => base - 11,
+      }
+  ];
+}
 
 /// A ship's length in scene pixels: the Rusty Eel's sloop is 36, the others
 /// by their `length`.
@@ -208,12 +228,17 @@ void paintSideShip(
   final pal = _Palette(form, dress);
   final len = sideShipLength(form);
   List<_SailBox> sails = const [];
-  List<double>? top;
+  final List<double> top;
+  List<double>? deck;
   switch (form.kind) {
     case HullKind.twin:
-      _twin(canvas, u, x, base, len, form, pal, t);
+      final r = _twin(canvas, u, x, base, len, form, pal, t);
+      sails = r.sails;
+      top = r.top;
     case HullKind.iron:
       _ironclad(canvas, u, x, base, len, form, pal, t);
+      top = _slabTop(len, base - 4);
+      deck = _ironDeck(len, base);
     case HullKind.gasbag:
       final r = _hullAndRig(canvas, u, x, base, len, form, pal, t, rig: false);
       top = r.top;
@@ -224,16 +249,19 @@ void paintSideShip(
       _batwings(canvas, u, x, base, len, form, pal, t);
     case HullKind.lodestone:
       _lodestone(canvas, u, x, base, len, form, pal, t);
+      top = _slabTop(len, base - 6);
     case HullKind.bone:
-      _bone(canvas, u, x, base, len, form, pal, t);
+      final r = _bone(canvas, u, x, base, len, form, pal, t);
+      sails = r.sails;
+      top = r.top;
     case HullKind.hull:
       final r = _hullAndRig(canvas, u, x, base, len, form, pal, t);
       sails = r.sails;
       top = r.top;
   }
   final worn = dress;
-  if (worn != null && top != null) {
-    _paintGear(canvas, u, x, base, len, form, pal, worn, t, top);
+  if (worn != null) {
+    _paintGear(canvas, u, x, base, len, form, pal, worn, t, top, deck);
   }
   if (worn != null && sails.isNotEmpty && worn.sigils.isNotEmpty) {
     _paintSigils(canvas, u, sails, worn.sigils, t);
@@ -642,7 +670,7 @@ void _oars(Canvas canvas, double u, double x, double base, double len,
 }
 
 /// Two slender hulls under one deck, one behind the other, two lateens.
-void _twin(Canvas canvas, double u, double x, double base, double len,
+_Rig _twin(Canvas canvas, double u, double x, double base, double len,
     ShipForm form, _Palette pal, double t) {
   final far = _Palette(form, null);
   _hull(canvas, u, x + 3, base - 2, len - 4, form, far,
@@ -662,17 +690,23 @@ void _twin(Canvas canvas, double u, double x, double base, double len,
   final p = _profile(form, len, base, freeboard: 4, sheerRise: 1.5, draft: 3);
   _bow(canvas, u, x, base, len, form, pal, p.top.last);
   final mastPaint = Paint()..color = pal.mast;
+  final sails = <_SailBox>[];
   for (final m in form.masts) {
     final mx = (x + len * m.at).floorToDouble();
     final topY = base - 8 - (22 * m.size).roundToDouble();
+    final w = (19 * m.size).roundToDouble();
     sidePixels(canvas, u, mastPaint, mx, topY, 1, base - 7 - topY);
-    _lateenSail(
-        canvas, u, mx, topY + 1, base - 10, (19 * m.size).roundToDouble(), pal);
+    _lateenSail(canvas, u, mx, topY + 1, base - 10, w, pal);
+    sails.add((
+      rect: Rect.fromLTRB(mx - w * 0.75, topY + 1, mx + w * 0.55, base - 10),
+      kind: SailKind.lateen
+    ));
   }
   if (form.masts.isNotEmpty) {
     _pennant(canvas, u, (x + len * form.masts.first.at).floorToDouble(),
         base - 8 - 22 - 1, pal, t);
   }
+  return (sails: sails, top: p.top);
 }
 
 /// An ironclad: a low plated hull, a sloped casemate, two funnels, smoke.
@@ -885,7 +919,7 @@ void _lodestone(Canvas canvas, double u, double x, double base, double len,
 
 /// A void carrack: a bone-pale hull with the dark sail of the void, and
 /// bone wings that beat.
-void _bone(Canvas canvas, double u, double x, double base, double len,
+_Rig _bone(Canvas canvas, double u, double x, double base, double len,
     ShipForm form, _Palette pal, double t) {
   final boneHull = Color.lerp(pal.hull, const Color(0xFFD8D0BC), 0.8)!;
   _hull(canvas, u, x, base, len, form, pal, colour: boneHull);
@@ -913,4 +947,10 @@ void _bone(Canvas canvas, double u, double x, double base, double len,
       _Palette(form, null, clothOverride: const Color(0xFF3B2A5A));
   _squareSail(canvas, u, mx + 1, base - 24, 10, 10, voidCloth, t);
   _pennant(canvas, u, mx, base - 27, pal, t);
+  return (
+    sails: [
+      (rect: Rect.fromLTWH(mx - 4, base - 24, 10, 10), kind: SailKind.square)
+    ],
+    top: p.top
+  );
 }
