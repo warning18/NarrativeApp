@@ -8,6 +8,28 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.292.0+328]
+
+The road from the cove camp to the Ashen Quarter, crossed on chapter 3's
+main quest, and a crash on a chapter's turn fixed.
+
+### Added
+- **A third land crossing:** from the cove camp to the Ashen Quarter, 2
+  days through the burned town, played as chapter 3's main quest sets out
+  (before the story moves on, as a voyage is). Five new events: an ash
+  squall, an Inquisition patrol, a burned shrine, feral dogs and a street
+  that gives way. Their words were read by Narrative (three French fixes,
+  gender-neutral).
+
+### Fixed
+- **A crash on a chapter's turn.** With the story open, a new chapter's
+  clan offer was granted in the very frame the chapter changed, while the
+  quest, badge and chapter-progress readers were rebuilt from the save
+  ("rebuilt multiple times in the same frame"). The offer now waits a
+  moment.
+- The falling street's long way round costs no extra day (its note says
+  half a day).
+
 ## [1.291.0+327]
 
 The skill choice sheet, places heard of on the full map, and the land crossing in the desert side view.

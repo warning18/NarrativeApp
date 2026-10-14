@@ -20,6 +20,8 @@ import '../screens/story_player_screen.dart'
     show roadEventOn, rollRoadEncounter, takeStoryChoice, walkRoadStep;
 import '../data/world_map.dart' show landmarkOfScene;
 import '../screens/full_map_screen.dart' show FullMapScreen;
+import '../screens/land_crossing_screen.dart' show runLandCrossing;
+import '../providers/app_mode_provider.dart';
 import 'immersive_notice.dart';
 import 'ship_widgets.dart';
 
@@ -199,6 +201,13 @@ Future<void> returnToCamp(BuildContext context, WidgetRef ref) async {
 Future<void> setOutOnMainQuest(
     BuildContext context, WidgetRef ref, StoryChoice choice) async {
   var sailed = false;
+  // A long land road on the way (land_crossing.dart) is crossed first, as
+  // a voyage is sailed: lost or turned back from, the party stays.
+  if (choice.crossesLand && ref.read(appModeProvider) != AppMode.edit) {
+    if (!await runLandCrossing(context, ref, choice.landRouteId!)) return;
+    if (!context.mounted) return;
+    sailed = true;
+  }
   if (choice.travels) {
     final story = ref.read(storyDataProvider).value;
     final place = story?.nodeFor(choice.travelPlaceId!);
