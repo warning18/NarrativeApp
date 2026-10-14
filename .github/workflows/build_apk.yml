@@ -9,9 +9,11 @@ on:
 # A branch that gets several follow-up pushes in quick succession (common
 # mid-session) otherwise leaves every earlier run building to completion
 # even though its result is already superseded. Cancel those instead.
+# Only on PRs: on main, every push publishes a release, and cancelling a
+# run there would skip that release when the next merge lands quickly.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Least-privilege default; jobs that need more (the release step in
 # `build`) grant it explicitly on themselves instead of it being ambient
@@ -163,7 +165,9 @@ jobs:
   # as a pass), and on a push to main it publishes the release.
   build:
     needs: [secret-scan, checks, test, apk]
-    if: ${{ always() }}
+    # A run cancelled because a newer push superseded it reports nothing
+    # rather than a failure.
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     permissions:
       # Only the release step (push-to-main only) actually writes anything
@@ -171,7 +175,7 @@ jobs:
       contents: write
     steps:
       - name: Every job passed
-        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped') }}
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'skipped') }}
         run: |
           echo "A job failed or was cancelled: ${{ toJSON(needs) }}"
           exit 1

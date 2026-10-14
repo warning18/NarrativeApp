@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.290.0+326]
+## [1.291.0+327]
 
 The skill choice sheet, places heard of on the full map, and the land crossing in the desert side view.
 
@@ -19,6 +19,63 @@ The skill choice sheet, places heard of on the full map, and the land crossing i
 
 ### Changed
 - The full map's place sheet scrolls when its text is long.
+
+## [1.290.0+326]
+
+The Shroud Shrine within reach.
+
+### Changed
+- **More Shroud thread and tear glass in chapter 5:**
+  - the Dead Heart approach pays 2 Shroud threads (was 1);
+  - the Frost Quarry adds 1 Shroud thread and 2 tear glass;
+  - the Ember Run adds 2 tear glass.
+- **The Shroud Shrine costs 2 000 gold** (was 2 600).
+- The playthrough simulator (held-out seeds 101 and 103, 100 runs each)
+  now builds it in 42 to 43 runs (was 7), in chapter 6 at the median,
+  within its tier's chapters. The Banner Loft, which used to take the
+  thread the shrine needed, goes up in chapter 5 in a quarter to a third
+  of runs (was none). The shrine still waits on the Dead Heart approach
+  being cleared, which about 45% of runs do.
+
+## [1.289.0+325]
+
+The bosses after chapter 1 are a little tougher, so that the playthrough
+simulator, now playing the camp's expeditions, still meets them on the
+user's curve.
+
+### Changed
+- **Ten bosses re-tuned** (health and damage):
+  - Void Stalker 147→168 health, 20→22 damage;
+  - High Inquisitor 165→203, 23→27;
+  - Bone Warden 229→282, 25→29;
+  - Void Archon 235→282, 22→26;
+  - White Admiral 305→336, 28→31;
+  - Claimant Vane 276→317, 29→32;
+  - Claimant Tallis 203→248, 19→22;
+  - Claimant Morrow 375→398, 22→23;
+  - Tear Herald 264→306, 24→27;
+  - Void Sovereign 332→359, 28→30.
+  
+  Tuned on the held-out seeds 101 and 103: every boss is within about 7
+  points of its target (75% in chapter 1 down to 35% in chapter 8), with a
+  mean of 50.5%. Aurel Vane (chapter 1, before the camp) is unchanged.
+
+- **"Play to chapter" hands back a character as strong as a run that played
+  the camp's expeditions.** Its arrival table was regenerated from the
+  800-run check (seeds 11 and 23): chapters 4 to 8 now arrive at levels 8,
+  11, 13, 15 and 16 (were 6, 8, 10, 11 and 12), with gold to match (5 710
+  in chapter 8).
+
+### Simulator
+- **The walk plays the camp's expeditions.** At the camp, once every place
+  is toured, it plays each expedition of the chapters reached, once,
+  before the main quest, as "Play to chapter" does. One cleared may open
+  the next. Its XP, gold and materials made the bosses after chapter 1 won
+  12 to 26 points more often, hence the re-tune.
+- **The camp's works now come as the materials note meant** (24 runs):
+  - the Hammersmith, the Academy and the Needle House in chapter 3;
+  - the Hearth-Hall in half the runs, chapter 4;
+  - the Banner Loft in about half, chapter 6.
 
 ## [1.288.0+324]
 
