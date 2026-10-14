@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.329.0+365]
+
+The clans say what they stand for.
+
+### Added
+- **Each clan, tribe and otherworld power says what it stands for** in a few words ("Law, order, one flame over all"), in English and French, ready for the clan gift popin.
+- **A clan's radar** for the gift popin and the clan tab: what its gifts lean on (might, guard, mending, arcana, fortune) and how it stands with the other clans, as relations are now.
+
 ## [1.324.0+360]
 
 The Skillwright's bench shows what it fuses.
