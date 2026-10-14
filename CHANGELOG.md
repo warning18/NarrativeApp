@@ -17,6 +17,17 @@ The Skillwright's bench shows what it fuses.
 - **The built Skillwright's card** in the camp's building list has a "Craft a Skill" button.
 - The sheet waits for the recipes to load instead of saying there are none.
 
+## [1.323.0+359]
+
+### Added
+- Detours and expeditions that fit their place (first batch, data only; the engine reads it in Core's coming PR): `assets/gamedata/expedition_steps.json` with six steps each for the three tier-1 expeditions (Fisherman’s Row, Tanner’s Court, the Ossuary Galleries), and `assets/gamedata/detours.json` with the tear shore and frost-city pools (six kinds of six lines). English and French.
+## [1.322.0+358]
+
+A brand's toll reads right.
+
+### Fixed
+- **A negative effect reads with its own sign**: the Marked's toll is "-10% gold from fights", no longer "+-10%". The same holds for every title, sign, boon and pact line.
+
 ## [1.320.0+356]
 
 A level-up is a choice of training, not a pile of points.
