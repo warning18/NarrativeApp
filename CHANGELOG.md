@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.290.0+326]
+
+The Shroud Shrine within reach.
+
+### Changed
+- **More Shroud thread and tear glass in chapter 5:**
+  - the Dead Heart approach pays 2 Shroud threads (was 1);
+  - the Frost Quarry adds 1 Shroud thread and 2 tear glass;
+  - the Ember Run adds 2 tear glass.
+- **The Shroud Shrine costs 2 000 gold** (was 2 600).
+- The playthrough simulator (held-out seeds 101 and 103, 100 runs each)
+  now builds it in 42 to 43 runs (was 7), in chapter 6 at the median,
+  within its tier's chapters. The Banner Loft, which used to take the
+  thread the shrine needed, goes up in chapter 5 in a quarter to a third
+  of runs (was none). The shrine still waits on the Dead Heart approach
+  being cleared, which about 45% of runs do.
+
 ## [1.289.0+325]
 
 The bosses after chapter 1 are a little tougher, so that the playthrough

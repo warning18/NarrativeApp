@@ -142,7 +142,7 @@
     "category": "greatWorks",
     "houseName": "Shroud Shrine",
     "description": "A shrine to hold the Shroud’s pieces between the road and the crossing, built from the Dead Heart’s stone. Whatever the Shroud has learned of the tear, the party wears a little of it.",
-    "buildCost": 2600,
+    "buildCost": 2000,
     "materialCost": {
       "material_tear_glass": 4,
       "material_shroud_thread": 3
