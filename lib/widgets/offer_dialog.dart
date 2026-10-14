@@ -15,6 +15,9 @@ import '../providers/offers_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../theme/stitched_ink.dart';
+import 'clan_compass.dart';
+import 'clan_radar_chart.dart';
 import 'item_stats.dart';
 import 'pixel_banner.dart';
 import 'sign_widgets.dart';
@@ -348,6 +351,8 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                   ),
                 ),
               ),
+              // The three banners on top, then the clans' compass, then the
+              // picked banner's words. It scrolls; the button below does not.
               Flexible(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(10, 10, 10, 4),
@@ -356,19 +361,12 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text(
-                          trFor(lang, 'offer_hint'),
-                          style: theme.textTheme.labelMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant),
-                        ),
-                        const SizedBox(height: 10),
-                        // One little flag for each suitor, with what it gives.
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             for (final suitor in offer.suitors)
                               Expanded(
-                                child: _OfferFlag(
+                                child: _OfferBanner(
                                   key: Key('offer_suitor_${suitor.factionId}'),
                                   suitor: suitor,
                                   ticket: ticket,
@@ -385,66 +383,32 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        // The chosen banner's words, in a zone of one size so
-                        // nothing moves when another banner is picked; a hint
-                        // while none is.
-                        SizedBox(
+                        ConstrainedBox(
                           key: const Key('offer_detail_zone'),
-                          height: 250,
-                          child: selected != null
-                              ? SingleChildScrollView(
-                                  child: SuitorCard(
-                                    key: Key(
-                                        'offer_summary_${selected.factionId}'),
-                                    suitor: selected,
-                                    ticket: ticket,
-                                    tables: widget.tables,
-                                  ),
-                                )
-                              : Center(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(Icons.touch_app_outlined,
-                                          size: 18,
-                                          color: theme
-                                              .colorScheme.onSurfaceVariant),
-                                      const SizedBox(width: 8),
-                                      Flexible(
-                                        child: Text(
-                                          trFor(lang, 'offer_select_hint'),
-                                          key: const Key('offer_select_hint'),
-                                          style: theme.textTheme.bodySmall
-                                              ?.copyWith(
-                                                  color: theme.colorScheme
-                                                      .onSurfaceVariant),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                          constraints: const BoxConstraints(minHeight: 280),
+                          child: _OfferHall(
+                            key: selected == null
+                                ? const Key('offer_hall_none')
+                                : Key('offer_summary_${selected.factionId}'),
+                            offer: offer,
+                            suitor: selected,
+                            tables: widget.tables,
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
               ),
+              const Divider(height: 1),
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-                // Side by side when they fit, stacked on a narrow phone.
-                child: OverflowBar(
-                  alignment: MainAxisAlignment.spaceBetween,
-                  overflowAlignment: OverflowBarAlignment.end,
-                  spacing: 8,
-                  children: [
-                    FilledButton(
-                      key: const Key('offer_take_button'),
-                      style: FilledButton.styleFrom(backgroundColor: accent),
-                      onPressed:
-                          selected == null || _busy ? null : () => _take(offer),
-                      child: Text(trFor(lang, 'offer_take_button')),
-                    ),
-                  ],
+                child: FilledButton(
+                  key: const Key('offer_take_button'),
+                  style: FilledButton.styleFrom(backgroundColor: accent),
+                  onPressed:
+                      selected == null || _busy ? null : () => _take(offer),
+                  child: Text(trFor(lang, 'offer_take_button')),
                 ),
               ),
             ],
@@ -455,13 +419,12 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
   }
 }
 
-/// A suitor as a little flag: their banner (a Wayfarer's plain pennant), the
-/// kind and name of the gift under it, its rarity, and the first standing it
-/// moves. Every banner is the same size, picked or not (v1.267); a tap picks
-/// the flag, and its banner takes the wind. The rest is told in the zone
-/// under the flags.
-class _OfferFlag extends ConsumerWidget {
-  const _OfferFlag({
+/// A suitor as a banner, a little smaller than its pixels (three quarters):
+/// the clan's own banner (a Wayfarer's plain pennant) lit in its colour when
+/// picked, and the gift under it by kind and name with the first standing it
+/// moves. A tap picks it; the compass and the words below tell the rest.
+class _OfferBanner extends ConsumerWidget {
+  const _OfferBanner({
     super.key,
     required this.suitor,
     required this.ticket,
@@ -487,6 +450,7 @@ class _OfferFlag extends ConsumerWidget {
     final skills =
         ref.watch(localizedDbProvider(skillsSchema)).value ?? const {};
     final data = tables.data;
+    final faction = data.faction(suitor.factionId);
     final color = _suitorColor(suitor, data);
     final gift = suitor.gift;
     final name =
@@ -503,7 +467,7 @@ class _OfferFlag extends ConsumerWidget {
     // One box for every banner, so none changes size when another is picked
     // (the picked one only takes the wind).
     final bannerBox = (pixelBannerSize.width + 2 * WindBanner.room).toDouble();
-    final Widget flag = bannerId == null
+    final Widget inner = bannerId == null
         ? _PlainFlag(color: color, wayfarer: suitor.isWayfarer)
         : SizedBox(
             key: Key('offer_banner_${suitor.factionId}'),
@@ -513,6 +477,11 @@ class _OfferFlag extends ConsumerWidget {
                 ? WindBanner(id: bannerId, scale: 1)
                 : Center(child: PixelBanner(id: bannerId, scale: 1)),
           );
+    final Widget flag = SizedBox(
+      width: bannerBox * 0.75,
+      height: pixelBannerSize.height * 0.75,
+      child: FittedBox(child: inner),
+    );
 
     return Semantics(
       button: true,
@@ -538,24 +507,28 @@ class _OfferFlag extends ConsumerWidget {
                   ),
                   child: Center(child: flag),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
+                Text(
+                  suitor.isWayfarer ? who : (faction?.shortFor(lang) ?? who),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.labelMedium
+                      ?.copyWith(color: color, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 3),
                 _Tag(
                     text: trFor(lang, _giftTagKey(gift, skills)), color: color),
-                const SizedBox(height: 4),
+                const SizedBox(height: 3),
                 Text(
                   name,
                   key: Key('offer_gift_${gift.id}'),
                   textAlign: TextAlign.center,
-                  maxLines: 3,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.titleSmall,
                 ),
-                if (gift.kind != GiftKind.perk) ...[
-                  const SizedBox(height: 4),
-                  SignRarityChip(rarity: gift.rarity, language: lang),
-                ],
                 if (preview.isNotEmpty) ...[
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 3),
                   Text(
                     preview.first.text,
                     textAlign: TextAlign.center,
@@ -571,6 +544,251 @@ class _OfferFlag extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Under the banners: the clans' compass (the picked clan's lines and what
+/// changes for each clan, the clans on offer ringed), then the picked
+/// suitor's charter (name, where you stand with them, motto, what they stand
+/// for, which way the alignment moves, in a word) and the gift with the
+/// words the clan says. With none picked, the compass and a hint.
+class _OfferHall extends ConsumerWidget {
+  const _OfferHall({
+    super.key,
+    required this.offer,
+    required this.suitor,
+    required this.tables,
+  });
+
+  final ClanOffer offer;
+  final Suitor? suitor;
+  final OfferTables tables;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final lang = ref.watch(appLanguageProvider);
+    final session = ref.watch(playerSessionProvider);
+    final items = ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
+    final skills =
+        ref.watch(localizedDbProvider(skillsSchema)).value ?? const {};
+    final data = tables.data;
+    final politics = session.politics;
+    final clanIds = {for (final c in data.clans) c.patron.id};
+    final suitors = {
+      for (final s in offer.suitors)
+        if (!s.isWayfarer && clanIds.contains(s.factionId)) s.factionId,
+    };
+    final picked = suitor;
+    final onRing = picked != null && clanIds.contains(picked.factionId);
+    final preview = picked == null
+        ? const <String, double>{}
+        : suitorPreview(picked, offer.ticket,
+            politics: politics, data: data, flags: session.flags);
+    const good = Color(0xFF3E9B57);
+    final bad = theme.colorScheme.error;
+    final compass = ClanCompass(
+      clans: data.clans,
+      language: lang,
+      relations: data.relations,
+      stepOf: (a, b) => politics.relationStep(a, b, data),
+      height: 176,
+      focusId: onRing ? picked.factionId : null,
+      ringedIds: suitors,
+      badges: {
+        for (final e in preview.entries)
+          if (clanIds.contains(e.key))
+            e.key: (
+              text: formatStandingDelta(e.value, language: lang),
+              color: e.value >= 0 ? good : bad,
+            ),
+      },
+    );
+    if (picked == null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          compass,
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Icon(Icons.touch_app_outlined,
+                  size: 18, color: theme.colorScheme.onSurfaceVariant),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  trFor(lang, 'offer_select_hint'),
+                  key: const Key('offer_select_hint'),
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+
+    final faction = data.faction(picked.factionId);
+    final color = _suitorColor(picked, data);
+    final gift = picked.gift;
+    final greeting = suitorGreeting(picked, data, lang);
+    final nudge = alignmentNudgeOf(picked, tables);
+    final tier = faction == null || faction.isLost
+        ? null
+        : politics.tierOf(picked.factionId, data);
+    final motto = faction?.mottoFor(lang) ?? '';
+    final standsFor = picked.isWayfarer
+        ? trFor(lang, 'offer_wayfarer_stands')
+        : (faction?.standsForIn(lang) ?? '');
+    final alignKey = nudge > 0
+        ? 'offer_align_good'
+        : nudge < 0
+            ? 'offer_align_evil'
+            : 'offer_align_none';
+    final alignColor = nudge > 0
+        ? good
+        : nudge < 0
+            ? bad
+            : theme.colorScheme.onSurfaceVariant;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        compass,
+        if (preview.isEmpty) ...[
+          const SizedBox(height: 6),
+          Text(trFor(lang, 'offer_no_standing'),
+              key: Key('offer_preview_${picked.factionId}'),
+              textAlign: TextAlign.center,
+              style: theme.textTheme.labelMedium
+                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        ],
+        const SizedBox(height: 12),
+        // The charter, on a band of the clan's colour.
+        Container(
+          padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: color.withValues(alpha: 0.6)),
+            gradient: LinearGradient(colors: [
+              color.withValues(alpha: 0.28),
+              color.withValues(alpha: 0.05),
+            ]),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      suitorName(picked, data, lang),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                          fontFamily: InkFonts.display, color: color),
+                    ),
+                    if (tier != null)
+                      Text(
+                        trFor(lang, standingTierKey(tier)),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                            color: Color(tierColor(tier)),
+                            fontWeight: FontWeight.w600),
+                      ),
+                    if (motto.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text('“$motto”',
+                            style: theme.textTheme.bodySmall
+                                ?.copyWith(fontStyle: FontStyle.italic)),
+                      ),
+                    if (standsFor.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: Text.rich(
+                          TextSpan(children: [
+                            TextSpan(
+                                text: '${trFor(lang, 'offer_stands_for')} · ',
+                                style: TextStyle(
+                                    color: theme.colorScheme.onSurfaceVariant)),
+                            TextSpan(
+                                text: standsFor,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600)),
+                          ]),
+                          key: Key('offer_stands_${picked.factionId}'),
+                          style: theme.textTheme.bodySmall,
+                        ),
+                      ),
+                    const SizedBox(height: 6),
+                    Container(
+                      key: const Key('offer_alignment_word'),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                            color: alignColor.withValues(alpha: 0.7)),
+                        color: alignColor.withValues(alpha: 0.10),
+                      ),
+                      child: Text(
+                        '${trFor(lang, 'alignment_label')} · ${trFor(lang, alignKey)}',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                            color: alignColor, fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // What its gifts lean on (clanRadarProvider), on five axes.
+              if (onRing) ...[
+                const SizedBox(width: 6),
+                ClanRadarChart(
+                    factionId: picked.factionId, color: color, size: 116),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 6,
+          runSpacing: 4,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            _Tag(text: trFor(lang, _giftTagKey(gift, skills)), color: color),
+            Text(
+              giftName(gift, tables: tables, localizedItems: items, lang: lang),
+              style: theme.textTheme.titleSmall,
+            ),
+            if (gift.kind != GiftKind.perk)
+              SignRarityChip(rarity: gift.rarity, language: lang),
+          ],
+        ),
+        const SizedBox(height: 4),
+        _GiftBody(
+          gift: gift,
+          tables: tables,
+          items: items,
+          skills: skills,
+          session: session,
+          lang: lang,
+        ),
+        if (greeting.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Container(
+              padding: const EdgeInsets.only(left: 10),
+              decoration: BoxDecoration(
+                border: Border(left: BorderSide(color: color, width: 3)),
+              ),
+              child: Text(greeting,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                      fontStyle: FontStyle.italic,
+                      color: theme.colorScheme.onSurfaceVariant)),
+            ),
+          ),
+      ],
     );
   }
 }

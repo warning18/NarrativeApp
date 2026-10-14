@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.331.0+367]
+
+The clan offer: banners, a compass, then the picked clan's words.
+
+### Changed
+- **The clan gift popin** keeps the three banners on top (a little smaller than their pixels, each with its gift and the first standing it moves; the picked one lit in its colour and taking the wind). Under them the clans' compass, and under that the explanation of the picked banner: its charter in the clan's colour (name, where you stand with it, motto, what it stands for when the data has the line, and which way the alignment moves, **in a word**: toward Good, toward Evil, no change), then the gift and the words the clan says. "Take this gift" stays at the bottom.
+- **The charter shows a clan's orientation** as a small five-axis radar (might, guard, mending, arcana, fortune: what its signs and sworn boon lean on, the strongest axis at the rim), from Core's `clanRadarProvider`, beside the clan's name, motto and "Stands for" line (Narrative's).
+- **The compass** puts the six clans on a ring where friends sit side by side and blood feuds face each other; the picked clan's lines run to the others (friends solid, foes dashed, coloured by how they stand), each crest wears what changes for it (+6, +1.5, −3), and the clans on offer are ringed in gold.
+- **The Clans screen's Standing tab** opens with the same compass: each crest wears where you stand with the clan, and a tap names its friends and foes.
+
 ## [1.329.0+365]
 
 The clans say what they stand for.
