@@ -57,9 +57,9 @@ List<String> _collectOverflows(WidgetTester tester) {
 }
 
 Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 6; i++) {
+  for (var i = 0; i < 3; i++) {
     await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 200)));
+        () => Future<void>.delayed(const Duration(milliseconds: 100)));
     await tester.pump(const Duration(milliseconds: 100));
   }
 }

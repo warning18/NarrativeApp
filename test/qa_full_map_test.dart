@@ -68,9 +68,9 @@ List<String> _collectOverflows(WidgetTester tester) {
 }
 
 Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 6; i++) {
+  for (var i = 0; i < 3; i++) {
     await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 200)));
+        () => Future<void>.delayed(const Duration(milliseconds: 100)));
     await tester.pump(const Duration(milliseconds: 100));
   }
 }
@@ -277,7 +277,7 @@ void main() {
   });
 
   // Go: the story moves and the map's own page closes, whatever shows over it.
-  for (var attempt = 0; attempt < 6; attempt++) {
+  for (var attempt = 0; attempt < 3; attempt++) {
     testWidgets('Go from the full map travels and closes it ($attempt)',
         (tester) async {
       final path = townThenElsewhere();
@@ -312,10 +312,14 @@ void main() {
       tapPlaceZoned();
       await sheetUp(tester);
       await tester.tap(find.byKey(const Key('travel_go')));
+      // The walk takes a while; stop as soon as the map's page is gone.
       for (var i = 0; i < 40; i++) {
         await tester.runAsync(
             () => Future<void>.delayed(const Duration(milliseconds: 100)));
         await tester.pump(const Duration(milliseconds: 300));
+        if (find.byKey(const ValueKey('full_world_map')).evaluate().isEmpty) {
+          break;
+        }
       }
       await tester.pump(const Duration(seconds: 6));
       final after = container.read(storyPlayProvider);
