@@ -1,0 +1,188 @@
+{
+  "bruiser": {
+    "name": "The Bruiser",
+    "name_fr": "Le Cogneur",
+    "blurb": "You take the blow to give back a worse one.",
+    "blurb_fr": "Vous encaissez le coup pour en rendre un pire.",
+    "icon": "fist",
+    "gains": {
+      "baseDamage": 1,
+      "maxHealth": 20,
+      "strength": 1,
+      "constitution": 1
+    },
+    "professions": [
+      "warrior"
+    ],
+    "races": []
+  },
+  "duelist": {
+    "name": "The Duelist",
+    "name_fr": "Le Duelliste",
+    "blurb": "A step ahead, and the point already there.",
+    "blurb_fr": "Un pas d’avance, et la pointe déjà arrivée.",
+    "icon": "blade",
+    "gains": {
+      "baseDamage": 1,
+      "dexterity": 2,
+      "perception": 1,
+      "luck": 1
+    },
+    "professions": [
+      "rogue",
+      "ranger"
+    ],
+    "races": [
+      "elf"
+    ]
+  },
+  "warden": {
+    "name": "The Warden",
+    "name_fr": "Le Rempart",
+    "blurb": "You stand where the others can’t be reached.",
+    "blurb_fr": "Vous tenez la place d’où l’on ne peut atteindre les autres.",
+    "icon": "shield",
+    "gains": {
+      "baseArmor": 2,
+      "maxHealth": 10,
+      "constitution": 1,
+      "wisdom": 1
+    },
+    "professions": [
+      "warrior",
+      "cleric"
+    ],
+    "races": [
+      "dwarf"
+    ]
+  },
+  "juggernaut": {
+    "name": "The Juggernaut",
+    "name_fr": "Le Colosse",
+    "blurb": "Nothing wears you down; you wear it down.",
+    "blurb_fr": "Rien ne vous use ; c’est vous qui usez le reste.",
+    "icon": "tower",
+    "gains": {
+      "baseArmor": 1,
+      "maxHealth": 30,
+      "constitution": 1
+    },
+    "professions": [
+      "warrior"
+    ],
+    "races": [
+      "dwarf"
+    ]
+  },
+  "arcanist": {
+    "name": "The Arcanist",
+    "name_fr": "L’Arcaniste",
+    "blurb": "The words do the work; you only mind the cost.",
+    "blurb_fr": "Les mots font le travail ; vous ne surveillez que le prix.",
+    "icon": "book",
+    "gains": {
+      "intelligence": 2,
+      "wisdom": 2,
+      "perception": 1
+    },
+    "professions": [
+      "mage"
+    ],
+    "races": [
+      "elf",
+      "voidkin"
+    ]
+  },
+  "zealot": {
+    "name": "The Zealot",
+    "name_fr": "Le Zélote",
+    "blurb": "Faith is a lantern, and you carry it into the dark.",
+    "blurb_fr": "La foi est une lanterne, et vous la portez dans le noir.",
+    "icon": "sun",
+    "gains": {
+      "baseArmor": 1,
+      "maxHealth": 10,
+      "wisdom": 2,
+      "charisma": 1
+    },
+    "professions": [
+      "cleric"
+    ],
+    "races": [
+      "human"
+    ]
+  },
+  "skirmisher": {
+    "name": "The Skirmisher",
+    "name_fr": "L’Escarmoucheur",
+    "blurb": "In, out, and gone before the answer.",
+    "blurb_fr": "Dedans, dehors, et parti avant la réponse.",
+    "icon": "feather",
+    "gains": {
+      "dexterity": 2,
+      "perception": 1,
+      "luck": 1,
+      "maxHealth": 10
+    },
+    "professions": [
+      "rogue",
+      "ranger"
+    ],
+    "races": []
+  },
+  "hunter": {
+    "name": "The Hunter",
+    "name_fr": "Le Chasseur",
+    "blurb": "The long watch, and the one clean shot.",
+    "blurb_fr": "La longue veille, et le seul tir net.",
+    "icon": "bow",
+    "gains": {
+      "baseDamage": 1,
+      "perception": 2,
+      "dexterity": 1,
+      "wisdom": 1
+    },
+    "professions": [
+      "ranger"
+    ],
+    "races": [
+      "elf"
+    ]
+  },
+  "envoy": {
+    "name": "The Envoy",
+    "name_fr": "L’Émissaire",
+    "blurb": "Words first; the blade is for when they fail.",
+    "blurb_fr": "Les mots d’abord ; la lame, pour quand ils échouent.",
+    "icon": "scroll",
+    "gains": {
+      "charisma": 2,
+      "wisdom": 1,
+      "intelligence": 1,
+      "luck": 1
+    },
+    "professions": [],
+    "races": [
+      "human"
+    ]
+  },
+  "brawler": {
+    "name": "The Brawler",
+    "name_fr": "Le Bagarreur",
+    "blurb": "Strength first, and the rest can catch up.",
+    "blurb_fr": "La force d’abord ; le reste suivra.",
+    "icon": "knuckles",
+    "gains": {
+      "strength": 2,
+      "baseDamage": 1,
+      "constitution": 1,
+      "maxHealth": 10
+    },
+    "professions": [
+      "warrior"
+    ],
+    "races": [
+      "orc"
+    ]
+  }
+}

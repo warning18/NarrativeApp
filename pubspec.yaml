@@ -58,6 +58,7 @@ flutter:
     - assets/fonts/Spectral-OFL.txt
     - assets/fonts/IMFellEnglishSC-OFL.txt
     - assets/gamedata/items.json
+    - assets/gamedata/training_paths.json
     - assets/gamedata/item_sets.json
     - assets/gamedata/skills.json
     - assets/gamedata/skill_merges.json

@@ -26,6 +26,7 @@ import '../providers/game_db_providers.dart' show gameDbRepositoryProvider;
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
 import '../providers/story_providers.dart';
+import '../providers/training_provider.dart';
 import 'chapter_loop.dart';
 import 'chapter_spine.dart';
 import 'politics_events.dart'
@@ -719,7 +720,7 @@ Future<void> applyArrivalTopUp(
 }
 
 /// Applies [planAutoplayBuild]'s build to the live session: the stat
-/// points, then the gear (a score can open it), then the die's faces.
+/// points (as training), then the gear (a score can open it), then the die's faces.
 Future<void> applyAutoplayBuild(
   WidgetRef ref, {
   required Map<String, dynamic> items,
@@ -732,8 +733,19 @@ Future<void> applyAutoplayBuild(
   if (before.professionId.isEmpty) return;
   final build = planAutoplayBuild(before,
       items: items, skills: skills, dice: dice, professions: professions);
-  for (var i = 0; i < build.statPoints; i++) {
-    await notifier.spendStatPoint(stat: build.statToRaise);
+  // The points go to training offers (training.dart): the choice that
+  // raises the build's stat, else the calling (the first).
+  if (build.statPoints > 0) {
+    final paths = await ref.read(trainingPathsProvider.future);
+    while (ref.read(playerSessionProvider).statPoints > 0) {
+      final s = ref.read(playerSessionProvider);
+      final offer = await notifier.ensureTraining(paths,
+          random: Random(s.level * 31 + s.statPoints));
+      if (offer.isEmpty) break;
+      final pick =
+          offer.indexWhere((c) => c.gains.containsKey(build.statToRaise));
+      if (!await notifier.takeTraining(pick < 0 ? 0 : pick)) break;
+    }
   }
   for (final entry in build.equip.entries) {
     await notifier.equipItem(entry.value, slot: entry.key, items: items);
