@@ -392,15 +392,29 @@ class ChartClimate {
         _ => 0,
       };
 
+  /// [p] as a longitude and latitude on this chart's globe (the band, or
+  /// the whole sphere, see ChartGeography.lonSpan).
+  (double, double) _lonLat(Offset p) => GlobeView.lonLatOf(p,
+      lonSpan: geography.lonSpan, latSpan: geography.latSpan);
+
+  /// Where the warmth curve ends: the band's edge (70 degrees). The whole
+  /// sphere keeps the same curve, so a story place keeps the warmth it had
+  /// (board 11: latitudes kept), and grows colder past it to the pole.
+  double get _edgeLat => GlobeView.bandLatSpan / 2;
+
   void _warmth() {
     final g = geography;
     for (var j = 0; j < rows; j++) {
       for (var i = 0; i < cols; i++) {
         final k = j * cols + i;
         final p = Offset((i + 0.5) * cell, (j + 0.5) * cell);
-        final (_, lat) = GlobeView.lonLatOf(p);
-        final latNorm = (lat.abs() / (GlobeView.latSpan / 2)).clamp(0.0, 1.0);
+        final (_, lat) = _lonLat(p);
+        final latNorm = (lat.abs() / _edgeLat).clamp(0.0, 1.0);
         var t = 24 - 26 * latNorm * latNorm;
+        // Past the band's edge (the whole sphere only), the ice cap grows
+        // colder still toward the pole.
+        t -= 6 *
+            ((lat.abs() - _edgeLat) / (math.pi / 2 - _edgeLat)).clamp(0.0, 1.0);
         if (_land[k] == 1) {
           t += _biomeWarmth(_biomeOfZone(g, _zone[k]));
           t -= 20 * _elev[k];
@@ -467,7 +481,7 @@ class ChartClimate {
   /// Where the wind blows at [p] at time [t] (days): westerlies in the
   /// temperate bands, easterlies about the equator, with the day's turn.
   (double, double) windAt(Offset p, double t) {
-    final (_, lat) = GlobeView.lonLatOf(p);
+    final (_, lat) = _lonLat(p);
     final band = _tanh((lat.abs() - 0.36) / 0.14);
     final dx = band * 62 + 18 * math.cos(0.31 * t);
     final dy = 24 * 0.23 * math.cos(0.23 * t + lat * 3) +
@@ -477,7 +491,7 @@ class ChartClimate {
 
   /// How far the air at [p] has been carried by time [t].
   Offset _drift(Offset p, double t) {
-    final (_, lat) = GlobeView.lonLatOf(p);
+    final (_, lat) = _lonLat(p);
     final band = _tanh((lat.abs() - 0.36) / 0.14);
     return Offset(band * 62 * t + 18 / 0.31 * math.sin(0.31 * t),
         24 * math.sin(0.23 * t + lat * 3) + 10 * math.sin(0.71 * t));
