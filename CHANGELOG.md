@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.310.0+346]
+
+The ronin walks.
+
+### Changed
+- **The hero in the side-view scenes is the ronin sprite** the user supplied (a samurai vagabond, eight walk frames east and west): she walks at the head of the party over the desert and the ruins while the scene scrolls, and stands with a slow breath when the party waits on a choice. The companions behind her are still the placeholders, drawn a little bigger so they stand as tall as she does. Until her images are loaded the old placeholder stands in.
+
 ## [1.309.0+345]
 
 The story world on the whole sphere.
