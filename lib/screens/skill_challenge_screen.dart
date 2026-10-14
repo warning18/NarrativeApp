@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/d20_roll.dart';
 import '../widgets/help_hint.dart';
 
 import '../data/ability_check.dart';
@@ -46,6 +47,9 @@ class SkillChallengeScreen extends ConsumerStatefulWidget {
 class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
   late final SkillChallengeResult _result;
   int _revealed = 0;
+
+  /// The round the die is tumbling toward: it counts once the die has landed.
+  SkillChallengeRound? _rolling;
   bool _started = false;
   bool _finished = false;
 
@@ -65,9 +69,16 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
   Future<void> _begin() async {
     setState(() => _started = true);
     for (var i = 0; i < _result.rounds.length; i++) {
-      await Future.delayed(const Duration(milliseconds: 550));
+      await Future.delayed(const Duration(milliseconds: 350));
       if (!mounted) return;
-      setState(() => _revealed = i + 1);
+      // The die tumbles and lands; only then does the round count.
+      setState(() => _rolling = _result.rounds[i]);
+      await Future.delayed(d20RollDuration + const Duration(milliseconds: 150));
+      if (!mounted) return;
+      setState(() {
+        _rolling = null;
+        _revealed = i + 1;
+      });
     }
     await Future.delayed(const Duration(milliseconds: 300));
     if (!mounted) return;
@@ -136,9 +147,10 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
                 const SizedBox(height: 12),
                 TutorialTarget(
                   id: 'challenge.die',
-                  child: _D20(
-                    roll: latest?.check.roll,
-                    success: latest?.success,
+                  child: D20Roll(
+                    roll: _rolling?.check.roll ?? latest?.check.roll,
+                    success: _rolling?.success ?? latest?.success,
+                    rollId: _revealed + (_rolling != null ? 1 : 0),
                     // Smaller on a short screen, so the rounds keep room.
                     size: (MediaQuery.sizeOf(context).height * 0.18)
                         .clamp(84.0, 150.0),
@@ -223,110 +235,6 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
       ),
     );
   }
-}
-
-/// The d20: a hexagon face with the latest roll on it, gold for a
-/// success, the error colour for a failure, plain before the first roll.
-class _D20 extends StatelessWidget {
-  const _D20({this.roll, this.success, this.size = 150});
-
-  final int? roll;
-  final bool? success;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final ink = InkColors.of(context);
-    final edge = success == null
-        ? ink.seam
-        : success!
-            ? ink.gold
-            : theme.colorScheme.error;
-    return Center(
-      child: SizedBox(
-        width: size,
-        height: size,
-        child: CustomPaint(
-          painter: _D20Painter(
-              edge: edge,
-              face: theme.colorScheme.surfaceContainer,
-              facet: ink.seam),
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.only(top: size * 0.09),
-              child: Text(
-                roll?.toString() ?? '20',
-                style: theme.textTheme.displaySmall?.copyWith(
-                  fontSize: size * 0.24,
-                  fontFamily: InkFonts.system,
-                  fontWeight: FontWeight.w600,
-                  color: roll == null ? ink.ash : edge,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _D20Painter extends CustomPainter {
-  const _D20Painter(
-      {required this.edge, required this.face, required this.facet});
-
-  final Color edge;
-  final Color face;
-  final Color facet;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width, h = size.height;
-    Offset p(double x, double y) => Offset(x * w / 170, y * h / 170);
-    final hex = Path()
-      ..moveTo(p(85, 6).dx, p(85, 6).dy)
-      ..lineTo(p(158, 48).dx, p(158, 48).dy)
-      ..lineTo(p(158, 122).dx, p(158, 122).dy)
-      ..lineTo(p(85, 164).dx, p(85, 164).dy)
-      ..lineTo(p(12, 122).dx, p(12, 122).dy)
-      ..lineTo(p(12, 48).dx, p(12, 48).dy)
-      ..close();
-    canvas.drawPath(hex, Paint()..color = face);
-    final facetPaint = Paint()
-      ..color = facet
-      ..strokeWidth = 1.5
-      ..style = PaintingStyle.stroke;
-    final tri = Path()
-      ..moveTo(p(85, 34).dx, p(85, 34).dy)
-      ..lineTo(p(134, 112).dx, p(134, 112).dy)
-      ..lineTo(p(36, 112).dx, p(36, 112).dy)
-      ..close();
-    canvas.drawPath(tri, facetPaint);
-    for (final (a, b) in [
-      ((85.0, 6.0), (85.0, 34.0)),
-      ((158.0, 48.0), (134.0, 112.0)),
-      ((12.0, 48.0), (36.0, 112.0)),
-      ((85.0, 164.0), (36.0, 112.0)),
-      ((85.0, 164.0), (134.0, 112.0)),
-      ((158.0, 122.0), (134.0, 112.0)),
-      ((12.0, 122.0), (36.0, 112.0)),
-      ((12.0, 48.0), (85.0, 34.0)),
-      ((158.0, 48.0), (85.0, 34.0)),
-    ]) {
-      canvas.drawLine(p(a.$1, a.$2), p(b.$1, b.$2), facetPaint);
-    }
-    canvas.drawPath(
-        hex,
-        Paint()
-          ..color = edge
-          ..strokeWidth = 3
-          ..style = PaintingStyle.stroke);
-  }
-
-  @override
-  bool shouldRepaint(_D20Painter old) =>
-      old.edge != edge || old.face != face || old.facet != facet;
 }
 
 class _PipRow extends StatelessWidget {

@@ -18,6 +18,7 @@ import '../data/map_charts.dart' show ChartGeography, ChartPalette, chartOf;
 import '../data/road_chart.dart';
 import '../data/narration_tokens.dart';
 import '../data/party_trail.dart';
+import '../data/quest_hints.dart' show mainQuestIdsOf;
 import '../data/road_events.dart';
 import '../data/story_repository.dart';
 import '../data/world_map.dart';
@@ -49,6 +50,7 @@ import '../widgets/calques_sheet.dart';
 import '../widgets/journey_world_map.dart';
 import '../widgets/geography_widgets.dart';
 import '../widgets/journey_fx.dart';
+import '../widgets/journey_glyph.dart';
 import '../widgets/city_plan_painter.dart';
 import '../widgets/journey_place.dart';
 import '../widgets/player_stats_bar.dart';
@@ -111,10 +113,17 @@ class _Step {
     this.chartTarget,
     this.targetLandmark,
     this.route,
+    this.questTie,
   });
 
   final StoryChoice choice;
   final JourneyStepKind kind;
+
+  /// The glyph of its mark (see journey_glyph.dart): what the way is.
+  late final JourneyGlyph glyph = journeyGlyphOf(choice, kind);
+
+  /// Whether the way is tied to a quest, the main one or a side job.
+  final JourneyQuestTie? questTie;
   final JourneySlot slot;
 
   /// The choice's text, or why it is shut while it is.
@@ -669,6 +678,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // story reads straight through are passed on the way, so the party
     // walks to where the last of them is, and the map never jumps.
     final reading = ref.watch(appModeProvider) != AppMode.edit;
+    final mainQuestIds = mainQuestIdsOf(
+        ref.watch(localizedDbProvider(questsSchema)).value ?? const {});
     String endOf(StoryChoice c) => play.isInExcursion || c.isEnding || !reading
         ? c.nextId
         : readThroughEnd(
@@ -763,6 +774,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                 chartHere != null && travels ? geography.of(target) : null,
             targetLandmark: travels ? target.id : null,
             route: route,
+            questTie: journeyQuestTieOf(
+              choice,
+              active: {...session.activeQuestIds},
+              done: {...session.completedQuestIds},
+              mainIds: mainQuestIds,
+            ),
           );
         }(),
     ];
@@ -2135,6 +2152,10 @@ class _JourneyChartState extends State<_JourneyChart>
   bool _arrivalStarted = false;
 
   /// Out of a place and along the world chart to the next (v1.181).
+  /// The marks' glyphs breathing (see journey_glyph.dart): its own small
+  /// clock, so the map itself still rests when nothing moves.
+  late final AnimationController _idleGlyphs =
+      AnimationController(vsync: this, duration: const Duration(seconds: 12));
   late final AnimationController _flight = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 1900),
@@ -2254,6 +2275,7 @@ class _JourneyChartState extends State<_JourneyChart>
     if (animate == _animate) return;
     _animate = animate;
     if (animate) {
+      _idleGlyphs.repeat();
       final from = widget.arriveFrom;
       if (!_arrivalStarted &&
           from != null &&
@@ -2271,6 +2293,7 @@ class _JourneyChartState extends State<_JourneyChart>
       });
       _wake();
     } else {
+      _idleGlyphs.stop();
       _rest();
     }
   }
@@ -2460,6 +2483,7 @@ class _JourneyChartState extends State<_JourneyChart>
     _walk.dispose();
     _arrival.dispose();
     _flight.dispose();
+    _idleGlyphs.dispose();
     _scroll?.dispose();
     super.dispose();
   }
@@ -3166,9 +3190,6 @@ class _JourneyChartState extends State<_JourneyChart>
 
   List<Widget> _stampMark(Offset here, double now, double width) {
     final palette = widget.palette;
-    final appear = ((now - 0.9) / 0.6).clamp(0.0, 1.0);
-    final fade = ((4.2 - now) / 0.6).clamp(0.0, 1.0);
-    final s = Curves.easeOutBack.transform(appear);
     final spread = ((now - 0.95) / 1.1).clamp(0.0, 1.0);
     // The seal that stamps it, in pixel art (v1.216): it comes down, the
     // ink flies and it dissolves, under the name that follows.
@@ -3209,45 +3230,6 @@ class _JourneyChartState extends State<_JourneyChart>
                       palette.mark.withValues(alpha: 0.5),
                       palette.mark.withValues(alpha: 0),
                     ]),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      if (appear > 0)
-        Positioned(
-          left: 0,
-          width: width,
-          // Under the mark, over the road behind: the ways ahead keep
-          // their words.
-          top: here.dy + _hereRadius + 10,
-          child: IgnorePointer(
-            child: Center(
-              child: Opacity(
-                opacity: (appear * 2).clamp(0.0, 1.0) * fade,
-                child: Transform.rotate(
-                  angle: -0.1 + (1 - s) * -0.14,
-                  child: Transform.scale(
-                    scale: 1.6 - 0.6 * s,
-                    child: Container(
-                      key: const ValueKey('journey_stamp'),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: palette.land.withValues(alpha: 0.75),
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: palette.mark, width: 2),
-                      ),
-                      child: Text(
-                        widget.stamp!,
-                        style: TextStyle(
-                          fontFamily: InkFonts.display,
-                          fontSize: 16,
-                          color: palette.mark,
-                        ),
-                      ),
-                    ),
                   ),
                 ),
               ),
@@ -3469,13 +3451,47 @@ class _JourneyChartState extends State<_JourneyChart>
                     ),
                     child: Transform.rotate(
                       angle: shake,
-                      child: Icon(
-                        step.locked ? Icons.lock_outline : _iconFor(step.kind),
-                        size: 20,
-                        color: isSelected ? palette.land : colour,
-                      ),
+                      child: step.locked
+                          ? Icon(Icons.lock_outline,
+                              size: 20,
+                              color: isSelected ? palette.land : colour)
+                          : AnimatedBuilder(
+                              animation: _idleGlyphs,
+                              builder: (context, _) => journeyIdleGlyph(
+                                glyph: step.glyph,
+                                colour: isSelected ? palette.land : colour,
+                                t: _idleGlyphs.value * 12,
+                                phase: i * 0.9,
+                              ),
+                            ),
                     ),
                   ),
+                  // Tied to a quest: a small bookmark on the mark, gold for
+                  // the main quest, the place's ink for a side job.
+                  if (step.questTie != null && !step.locked)
+                    Positioned(
+                      key: ValueKey('journey_quest_badge_$i'),
+                      right: -5,
+                      top: -5,
+                      child: Container(
+                        width: 17,
+                        height: 17,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: step.questTie == JourneyQuestTie.main
+                              ? widget.ink.gold
+                              : palette.place,
+                          border: Border.all(color: palette.land, width: 1.5),
+                        ),
+                        child: Icon(
+                          step.questTie == JourneyQuestTie.main
+                              ? Icons.bookmark
+                              : Icons.bookmark_border,
+                          size: 11,
+                          color: palette.land,
+                        ),
+                      ),
+                    ),
                   // What lies past the step, glimpsed through the fog: the
                   // kinds of its own ways on.
                   if (!step.locked && pop >= 1)

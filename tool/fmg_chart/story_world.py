@@ -108,7 +108,7 @@ for _k in ('hovel', 'beggar', 'alley', 'bridge', 'hold', 'sewers', 'docks', 'cra
 PLACE_ZONE = {  # the zone each place belongs to (geography.json)
     'The Alster Marches': ['hovel', 'beggar', 'alley', 'bridge', 'hold', 'sewers', 'docks'],
     'The Waste': ['crash', 'sleeper', 'wells'],
-    'The Salt Coast': ['upper', 'wharf', 'tern', 'berths'],
+    'The Salt Coast': ['upper', 'wharf', 'tern', 'berths', 'alleys', 'cards'],
     'The Lantern Isles': ['candlehold'],
     'The Cove': ['camp'],
     'The Ash Flats': ['quarter', 'emberwick', 'spire'],
@@ -213,6 +213,50 @@ BOARD_ARCHIPELAGOS = {
 }
 
 
+# Narrative's names (docs/proposals/location-names-narrative.md): the empty lands, the oceans (labels, at board
+# pixels), the archipelagos and their islands (in the order the islands are listed, largest first).
+LAND_NAMES = {
+    'west': ('The Sundown Lands', 'Les Terres du couchant'),
+    'equator': ('The Green Girdle', 'La Ceinture verte'),
+    'south_west': ('The Gaunt Lands', 'Les Terres décharnées'),
+    'north_east': ('The Morning Shore', 'Le Rivage du matin'),
+    'east': ('The Far Dawn', 'L’Aube lointaine'),
+    'polar_north': ('The Long Winter', 'Le Long Hiver'),
+    'polar_south': ('The Last Shelf', 'La Dernière Banquise'),
+}
+OCEANS = [('the Sundown Deep', 'les Abysses du couchant', (225, 385)),
+          ('the Dawn Deep', 'les Abysses de l’aube', (1200, 625)),
+          ('the Rime Sea', 'la Mer du Givre', (1050, 92)),
+          ('the Silent Sea', 'la Mer du silence', (900, 612))]
+ARCHIPELAGO_NAMES = {
+    'far_north_west': ('The Seabird Teeth', 'Les Dents des oiseaux',
+                       [('Skua Rock', 'Le Rocher du skua'), ('The Fulmar', 'Le Fulmar'),
+                        ('Puffin Hold', 'Le Terrier des macareux')]),
+    'north_west': ('The Cold Beacons', 'Les Phares froids',
+                   [('Beacon Cairn', 'Le Cairn-phare'), ('Ice Candle', 'La Bougie de glace'),
+                    ('The Last Wick', 'La Dernière Mèche')]),
+    'west_isles': ('The Sundown Isles', 'Les Îles du couchant', [('Vesper', 'Vêpres'), ('Compline', 'Complies')]),
+    'frost_isle': ('The Hoar Isle', 'L’Île de givre', [('Hoarhold', 'Le Fort de givre')]),
+    'ashen_east': ('The Ember Stone', 'La Pierre de braise', [('Cinder Rock', 'Le Roc de cendre')]),
+    'lantern_east': ('The Lantern Sisters', 'Les Sœurs de la Lanterne',
+                     [('Tinder', 'L’Amadou'), ('Taper', 'Le Cierge'), ('Snuff', 'L’Éteignoir')]),
+    'mid_sea': ('The Stepping Stones', 'Les Pierres du gué',
+                [('First Stone', 'La Première Pierre'), ('Salt Stone', 'La Pierre salée'),
+                 ('Gull’s Rest', 'Le Repos du goéland'), ('Wreckers’ Cay', 'L’Îlot des naufrageurs'),
+                 ('Last Stone', 'La Dernière Pierre')]),
+    'old_north': ('The Giant’s Hand', 'La Main du géant',
+                  [('Thumb Rock', 'Le Rocher du pouce'), ('Index Rock', 'Le Rocher de l’index')]),
+    'north_east': ('The Twin Lights', 'Les Feux jumeaux',
+                   [('First Light', 'La Première Lueur'), ('Second Light', 'La Seconde Lueur')]),
+    'far_east': ('The Last Landfall', 'La Dernière Escale', [('Farewell Isle', 'L’Île des Adieux')]),
+    'south_mid': ('The Quiet Reefs', 'Les Récifs silencieux',
+                  [('Hush Reef', 'Le Récif du silence'), ('Drift Isle', 'L’Île à la dérive'),
+                   ('Ice-Tongue', 'La Langue de glace')]),
+    'south_east': ('The Whalers’ Graves', 'Les Tombes des baleiniers',
+                   [('Harpoon', 'Le Harpon'), ('Tallow Cay', 'L’Îlot du suif'), ('Spout', 'Le Souffleur')]),
+}
+
+
 def remap_design():
     """Moves the story lands to the sphere and adds the rest of the world (see the module's header)."""
     global ARCHIPELAGOS, SEAS
@@ -241,6 +285,9 @@ def remap_design():
     # two coast places a little inland, where the narrower land put them on the shore
     for k, (dx, dy) in {'alley': (0.0, -1.4), 'wharf': (0.0, 1.8)}.items():
         PLACES[k] = (PLACES[k][0] + dx, PLACES[k][1] + dy)
+    # Saltmouth's two later districts (board 15), set among its others in the sphere's own units
+    PLACES['alleys'] = (204.9, 98.6)
+    PLACES['cards'] = (215.4, 99.6)
     for i, (biome, name, fr, seeds) in enumerate(ZONES):
         ZONES[i] = (biome, name, fr, [move(p) for p in seeds])
     for i, (name, fr, line, size, snow, ember) in enumerate(RANGES):
@@ -260,7 +307,8 @@ def remap_design():
         ARCHIPELAGOS[aid] = (x, y, hx * W / 1440.0, hy * H / 720.0, count, seed)
     SEAS = [('the Narrow Sea', 'la Mer Étroite', board([(770, 440)])[0]),
             ('the Open Water', 'la Haute Mer', board([(560, 610)])[0]),
-            ('the Grey Water', 'l’Eau Grise', board([(800, 100)])[0])]
+            ('the Grey Water', 'l’Eau Grise', board([(800, 100)])[0])] + \
+           [(en, fr, board([at])[0]) for en, fr, at in OCEANS]
 
 
 def polar_land(name, rng):
@@ -542,6 +590,29 @@ def write_dart(lands, zones):
     out.append('const Map<String, int> storyEmptyLands = {')
     for name in LAND_ORDER[3:]:
         out.append("  '%s': %d," % (name, LAND_ORDER.index(name)))
+    out.append('};')
+    out.append('')
+    def q(t):
+        return "'%s'" % t.replace("'", "\\'")
+    out.append('/// The empty lands\' names (Narrative\'s), by id: English, French.')
+    out.append('const Map<String, ({String en, String fr})> storyLandNames = {')
+    for k, (en, fr) in LAND_NAMES.items():
+        out.append("  '%s': (en: %s, fr: %s)," % (k, q(en), q(fr)))
+    out.append('};')
+    out.append('')
+    out.append('/// The archipelagos\' names (Narrative\'s), by id: English, French.')
+    out.append('const Map<String, ({String en, String fr})> storyArchipelagoNames = {')
+    for k, (en, fr, _) in ARCHIPELAGO_NAMES.items():
+        out.append("  '%s': (en: %s, fr: %s)," % (k, q(en), q(fr)))
+    out.append('};')
+    out.append('')
+    out.append('/// Each island\'s name (Narrative\'s), by its index in `lands`.')
+    out.append('const Map<int, ({String en, String fr})> storyIslandNames = {')
+    for aid, ix in loops_index.items():
+        names = ARCHIPELAGO_NAMES[aid][2]
+        assert len(names) == len(ix), (aid, len(names), len(ix))
+        for i, (en, fr) in zip(ix, names):
+            out.append("  %d: (en: %s, fr: %s)," % (i, q(en), q(fr)))
     out.append('};')
     out.append('')
     out.append('/// The archipelagos: empty lands for ship content, by id, each the indices of its islands in `lands`.')

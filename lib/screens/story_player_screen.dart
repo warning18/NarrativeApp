@@ -79,6 +79,7 @@ import '../widgets/detail_dialog.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/companion_remark_bubble.dart';
 import '../widgets/approval_notice.dart';
+import '../widgets/ability_roll_dialog.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/narration_recording_dialogs.dart';
 import '../widgets/player_stats_bar.dart';
@@ -1256,9 +1257,9 @@ Future<void> _selectChoice({
       final abilityLabel = tr(ref, '${result.ability}_label');
       final outcomeKey =
           result.success ? 'ability_check_success' : 'ability_check_fail';
-      await showImmersiveNotice(
+      await showAbilityRoll(
         context,
-        icon: result.success ? Icons.check_circle : Icons.cancel,
+        result: result,
         message: '$abilityLabel ${tr(ref, 'check_label')}: '
             '${result.roll} + ${result.modifier} = ${result.total} '
             '${tr(ref, 'vs_dc_label')} ${result.dc} — '
