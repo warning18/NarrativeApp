@@ -1142,7 +1142,7 @@
     "companionID": "kelda",
     "trigger": "choice",
     "choiceKey": "skiff_cut",
-    "note": "The storm: cut the tow-line to the refugees' skiff",
+    "note": "The storm: cut the tow-line to the refugees’ skiff",
     "lines": [
       "There were people in that skiff. I heard them over the storm. I’ll hear them for a while."
     ],
@@ -1155,7 +1155,7 @@
     "companionID": "sable",
     "trigger": "choice",
     "choiceKey": "skiff_cut",
-    "note": "The storm: cut the tow-line to the refugees' skiff",
+    "note": "The storm: cut the tow-line to the refugees’ skiff",
     "lines": [
       "Them or us, and you chose us. I’ll drink to that. I won’t enjoy the drink."
     ],
@@ -1168,7 +1168,7 @@
     "companionID": "liora",
     "trigger": "choice",
     "choiceKey": "skiff_cut",
-    "note": "The storm: cut the tow-line to the refugees' skiff",
+    "note": "The storm: cut the tow-line to the refugees’ skiff",
     "lines": [
       "I had that rope in my sights. I could have held it. You didn’t ask."
     ],
@@ -1181,7 +1181,7 @@
     "companionID": "vess",
     "trigger": "choice",
     "choiceKey": "skiff_cut",
-    "note": "The storm: cut the tow-line to the refugees' skiff",
+    "note": "The storm: cut the tow-line to the refugees’ skiff",
     "lines": [
       "The sea took them the way the dark takes things. Quickly, and without asking whose they were."
     ],
@@ -1337,7 +1337,7 @@
     "companionID": "malrik",
     "trigger": "choice",
     "choiceKey": "court_woken",
-    "note": "The Court's sleepers in the Shroud's twin: wake them first",
+    "note": "The Court’s sleepers in the Shroud’s twin: wake them first",
     "lines": [
       "Waking them cost us a quarter hour we didn’t have. Nothing personal, but I’d have let them sleep. Lucky for them you’re not me."
     ],
@@ -1350,7 +1350,7 @@
     "companionID": "tobin",
     "trigger": "choice",
     "choiceKey": "court_woken",
-    "note": "The Court's sleepers in the Shroud's twin: wake them first",
+    "note": "The Court’s sleepers in the Shroud’s twin: wake them first",
     "lines": [
       "They knew their own names at the end. I’ve sung over worse deaths than that. Not many."
     ],
@@ -1363,7 +1363,7 @@
     "companionID": "maren",
     "trigger": "choice",
     "choiceKey": "court_woken",
-    "note": "The Court's sleepers in the Shroud's twin: wake them first",
+    "note": "The Court’s sleepers in the Shroud’s twin: wake them first",
     "lines": [
       "They died as themselves. That is more than the Inquisition ever gave anyone it wrapped in cloth."
     ],
@@ -1376,7 +1376,7 @@
     "companionID": "malrik",
     "trigger": "choice",
     "choiceKey": "court_never_woke",
-    "note": "The Court's sleepers: cut the Shroud free without waking them",
+    "note": "The Court’s sleepers: cut the Shroud free without waking them",
     "lines": [
       "Efficient. The Court kept them asleep because asleep is cheaper. You’ve learned the ledger."
     ],
@@ -1389,7 +1389,7 @@
     "companionID": "tobin",
     "trigger": "choice",
     "choiceKey": "court_never_woke",
-    "note": "The Court's sleepers: cut the Shroud free without waking them",
+    "note": "The Court’s sleepers: cut the Shroud free without waking them",
     "lines": [
       "Two of those faces had names you knew. I’ll say them tonight, since they didn’t get to."
     ],
@@ -1402,7 +1402,7 @@
     "companionID": "maren",
     "trigger": "choice",
     "choiceKey": "court_never_woke",
-    "note": "The Court's sleepers: cut the Shroud free without waking them",
+    "note": "The Court’s sleepers: cut the Shroud free without waking them",
     "lines": [
       "They never woke. I keep telling myself that is a mercy. I keep not believing it."
     ],
@@ -1415,7 +1415,7 @@
     "companionID": "maren",
     "trigger": "choice",
     "choiceKey": "inquisition_pact",
-    "note": "The Hollow Shore: take the legate's pact",
+    "note": "The Hollow Shore: take the legate’s pact",
     "lines": [
       "A white pole above a white cathedral. I carried that pole once. I swore I never would again, and now I am walking behind it."
     ],
@@ -1428,7 +1428,7 @@
     "companionID": "tobin",
     "trigger": "choice",
     "choiceKey": "inquisition_pact",
-    "note": "The Hollow Shore: take the legate's pact",
+    "note": "The Hollow Shore: take the legate’s pact",
     "lines": [
       "The Ashen Quarter burned under that saint. You took its purse."
     ],
@@ -1441,7 +1441,7 @@
     "companionID": "malrik",
     "trigger": "choice",
     "choiceKey": "inquisition_pact",
-    "note": "The Hollow Shore: take the legate's pact",
+    "note": "The Hollow Shore: take the legate’s pact",
     "lines": [
       "A crown and a purse from the people who burned your city. Nothing personal: best deal on the table."
     ],
@@ -1454,7 +1454,7 @@
     "companionID": "grosh",
     "trigger": "choice",
     "choiceKey": "inquisition_pact",
-    "note": "The Hollow Shore: take the legate's pact",
+    "note": "The Hollow Shore: take the legate’s pact",
     "lines": [
       "Heavy purse. Grosh does not like the rowers. Grosh will watch them."
     ],
@@ -1519,7 +1519,7 @@
     "companionID": "kelda",
     "trigger": "choice",
     "choiceKey": "sovereign_took_companion",
-    "note": "The tear's price: one of the crew",
+    "note": "The tear’s price: one of the crew",
     "lines": [
       "It took one of us, and you held out the hand. I’ve buried soldiers. I’d never seen one sold."
     ],
@@ -1532,7 +1532,7 @@
     "companionID": "sable",
     "trigger": "choice",
     "choiceKey": "sovereign_took_companion",
-    "note": "The tear's price: one of the crew",
+    "note": "The tear’s price: one of the crew",
     "lines": [
       "Everyone has a price. I didn’t think you’d pay yours in people."
     ],
@@ -1545,7 +1545,7 @@
     "companionID": "maren",
     "trigger": "choice",
     "choiceKey": "sovereign_took_companion",
-    "note": "The tear's price: one of the crew",
+    "note": "The tear’s price: one of the crew",
     "lines": [
       "I will say their name every morning. Someone should, now."
     ],
@@ -1558,7 +1558,7 @@
     "companionID": "malrik",
     "trigger": "choice",
     "choiceKey": "sovereign_took_companion",
-    "note": "The tear's price: one of the crew",
+    "note": "The tear’s price: one of the crew",
     "lines": [
       "Nothing personal. That’s what I told myself the first time I sold someone. It stopped working."
     ],
@@ -1571,7 +1571,7 @@
     "companionID": "malrik",
     "trigger": "choice",
     "choiceKey": "legate_given",
-    "note": "The tear's price: the legate",
+    "note": "The tear’s price: the legate",
     "lines": [
       "The legate. Now that’s a price I can respect. He’d have sold us for less."
     ],
@@ -1584,7 +1584,7 @@
     "companionID": "maren",
     "trigger": "choice",
     "choiceKey": "legate_given",
-    "note": "The tear's price: the legate",
+    "note": "The tear’s price: the legate",
     "lines": [
       "He was a bad man. It was still a man you gave to that thing."
     ],
@@ -1597,7 +1597,7 @@
     "companionID": "grosh",
     "trigger": "choice",
     "choiceKey": "legate_given",
-    "note": "The tear's price: the legate",
+    "note": "The tear’s price: the legate",
     "lines": [
       "Good. Nobody liked the legate. Not even the rowers."
     ],
@@ -1610,7 +1610,7 @@
     "companionID": "maren",
     "trigger": "choice",
     "choiceKey": "sovereign_blood",
-    "note": "The tear's price: your own blood",
+    "note": "The tear’s price: your own blood",
     "lines": [
       "Your own blood, and not ours. I will pray over the crossing. Over you first."
     ],
@@ -1623,7 +1623,7 @@
     "companionID": "kelda",
     "trigger": "choice",
     "choiceKey": "sovereign_blood",
-    "note": "The tear's price: your own blood",
+    "note": "The tear’s price: your own blood",
     "lines": [
       "You paid it yourself. That’s the whole of being in charge, and you knew it."
     ],
@@ -1636,7 +1636,7 @@
     "companionID": "grosh",
     "trigger": "choice",
     "choiceKey": "sovereign_blood",
-    "note": "The tear's price: your own blood",
+    "note": "The tear’s price: your own blood",
     "lines": [
       "Grosh would have given Grosh blood. You did not ask. Grosh... remembers that."
     ],
@@ -1649,7 +1649,7 @@
     "companionID": "liora",
     "trigger": "choice",
     "choiceKey": "sovereign_blood",
-    "note": "The tear's price: your own blood",
+    "note": "The tear’s price: your own blood",
     "lines": [
       "I’ll watch your back on the crossing. Closer than usual."
     ],
@@ -1662,7 +1662,7 @@
     "companionID": "kelda",
     "trigger": "choice",
     "choiceKey": "camp_given",
-    "note": "The tear's price: the camp",
+    "note": "The tear’s price: the camp",
     "lines": [
       "I built half those walls. Let the coast burn, you said. I’ll be a while forgiving that."
     ],
@@ -1675,7 +1675,7 @@
     "companionID": "tobin",
     "trigger": "choice",
     "choiceKey": "camp_given",
-    "note": "The tear's price: the camp",
+    "note": "The tear’s price: the camp",
     "lines": [
       "There were candles in that camp. I lit most of them."
     ],
@@ -1688,7 +1688,7 @@
     "companionID": "sable",
     "trigger": "choice",
     "choiceKey": "camp_given",
-    "note": "The tear's price: the camp",
+    "note": "The tear’s price: the camp",
     "lines": [
       "All that coin in timber and rope, gone for a door. At least it’s a big door."
     ],
@@ -1701,7 +1701,7 @@
     "companionID": "vess",
     "trigger": "choice",
     "choiceKey": "camp_given",
-    "note": "The tear's price: the camp",
+    "note": "The tear’s price: the camp",
     "lines": [
       "Places burn. I know. It was the first place that ever let me stay."
     ],
@@ -1714,7 +1714,7 @@
     "companionID": "sable",
     "trigger": "choice",
     "choiceKey": "flagship_burned",
-    "note": "The flagship's sail: burn the flagship",
+    "note": "The flagship’s sail: burn the flagship",
     "lines": [
       "Burn the ship, keep the sail, sell the brass. I’ve taught you well."
     ],
@@ -1727,7 +1727,7 @@
     "companionID": "tobin",
     "trigger": "choice",
     "choiceKey": "flagship_burned",
-    "note": "The flagship's sail: burn the flagship",
+    "note": "The flagship’s sail: burn the flagship",
     "lines": [
       "There were sailors still below. The fire didn’t ask which ones were living."
     ],
@@ -1740,7 +1740,7 @@
     "companionID": "kelda",
     "trigger": "choice",
     "choiceKey": "flagship_burned",
-    "note": "The flagship's sail: burn the flagship",
+    "note": "The flagship’s sail: burn the flagship",
     "lines": [
       "Fastest way to a sail. Not the way I’ll tell it, later."
     ],
@@ -1753,7 +1753,7 @@
     "companionID": "malrik",
     "trigger": "choice",
     "choiceKey": "sail_bought",
-    "note": "The flagship's sail: pay the riggers",
+    "note": "The flagship’s sail: pay the riggers",
     "lines": [
       "A hundred and fifty to riggers, for a job a torch would have done. My heart."
     ],
@@ -1766,7 +1766,7 @@
     "companionID": "tobin",
     "trigger": "choice",
     "choiceKey": "sail_bought",
-    "note": "The flagship's sail: pay the riggers",
+    "note": "The flagship’s sail: pay the riggers",
     "lines": [
       "The Anchorage eats this winter. That’s worth more than the sail."
     ],
@@ -1779,7 +1779,7 @@
     "companionID": "maren",
     "trigger": "choice",
     "choiceKey": "sail_bought",
-    "note": "The flagship's sail: pay the riggers",
+    "note": "The flagship’s sail: pay the riggers",
     "lines": [
       "You paid people for honest work. It seems small. It isn’t."
     ],
@@ -1792,7 +1792,7 @@
     "companionID": "maren",
     "trigger": "choice",
     "choiceKey": "greyhithe_names_read",
-    "note": "Greyhithe's eldest: read her the page",
+    "note": "Greyhithe’s eldest: read her the page",
     "lines": [
       "You read her daughter’s name aloud. That is what a ledger is for, in the end."
     ],
@@ -1805,7 +1805,7 @@
     "companionID": "tobin",
     "trigger": "choice",
     "choiceKey": "greyhithe_names_read",
-    "note": "Greyhithe's eldest: read her the page",
+    "note": "Greyhithe’s eldest: read her the page",
     "lines": [
       "I’ll sing for the daughter tonight, now that I know her name."
     ],
@@ -1818,7 +1818,7 @@
     "companionID": "liora",
     "trigger": "choice",
     "choiceKey": "greyhithe_names_read",
-    "note": "Greyhithe's eldest: read her the page",
+    "note": "Greyhithe’s eldest: read her the page",
     "lines": [
       "She held your hands while you read. I’ve never seen anyone hold on that hard."
     ],
@@ -1831,7 +1831,7 @@
     "companionID": "maren",
     "trigger": "choice",
     "choiceKey": "7200_elder_later#1",
-    "note": "Greyhithe's eldest: tell her the ledger kept no names",
+    "note": "Greyhithe’s eldest: tell her the ledger kept no names",
     "lines": [
       "You lied to spare her. I have told that lie. It never spared anyone for long."
     ],
@@ -1844,7 +1844,7 @@
     "companionID": "malrik",
     "trigger": "choice",
     "choiceKey": "7200_elder_later#1",
-    "note": "Greyhithe's eldest: tell her the ledger kept no names",
+    "note": "Greyhithe’s eldest: tell her the ledger kept no names",
     "lines": [
       "A kind lie. Cheap, too. I’d have charged her for the truth."
     ],
@@ -1857,7 +1857,7 @@
     "companionID": "tobin",
     "trigger": "choice",
     "choiceKey": "7200_elder_later#1",
-    "note": "Greyhithe's eldest: tell her the ledger kept no names",
+    "note": "Greyhithe’s eldest: tell her the ledger kept no names",
     "lines": [
       "She’ll go on waiting now. That’s the price of the lie, and she pays it, not you."
     ],
@@ -1870,7 +1870,7 @@
     "companionID": "grosh",
     "trigger": "choice",
     "choiceKey": "false_lamps_out",
-    "note": "The wreckers' false lamps: pay the headman to put them out",
+    "note": "The wreckers’ false lamps: pay the headman to put them out",
     "lines": [
       "Grosh does not understand paying a man to stop. But the lamps are out. Good."
     ],
@@ -1883,7 +1883,7 @@
     "companionID": "sable",
     "trigger": "choice",
     "choiceKey": "false_lamps_out",
-    "note": "The wreckers' false lamps: pay the headman to put them out",
+    "note": "The wreckers’ false lamps: pay the headman to put them out",
     "lines": [
       "Paying a wrecker to stop wrecking. Charming. Ruinous, but charming."
     ],
@@ -1896,7 +1896,7 @@
     "companionID": "tobin",
     "trigger": "choice",
     "choiceKey": "false_lamps_out",
-    "note": "The wreckers' false lamps: pay the headman to put them out",
+    "note": "The wreckers’ false lamps: pay the headman to put them out",
     "lines": [
       "No more ships on those rocks. I’ll light a candle for the ones already there."
     ],
@@ -1909,7 +1909,7 @@
     "companionID": "liora",
     "trigger": "choice",
     "choiceKey": "false_lamps_out",
-    "note": "The wreckers' false lamps: pay the headman to put them out",
+    "note": "The wreckers’ false lamps: pay the headman to put them out",
     "lines": [
       "I watched the last lamp go out from the headland. Clean dark. Good dark."
     ],
