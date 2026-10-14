@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.303.0+339]
+
+The hulls in side view, with their painted sails.
+
+### Changed
+- **The painted sails' sigils show on the canvas in side view** (voyage, arrival, the shipwright's yard, the fight strip): a flight sail's spread wings, a foresight sail's eye, a hearth sail's flame, a wind-knot sail's crossed loops, a void-mark sail's ring with a spiral turning in it, each in the colour of the people whose medium it is painted in (human gold, elf green, dwarf grey-blue, orc black, voidkin violet). A hull with several sail slots carries several sigils, on the biggest sails first; on a fore-and-aft or lateen sail the sigil sits low toward the mast. They show on the sailing hulls (the others' own sails come later).
+
 ## [1.302.0+338]
 
 The hulls in side view, armed and equipped.

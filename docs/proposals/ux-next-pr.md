@@ -110,3 +110,9 @@ The sea battle shows the two hulls in side view (the Eel dressed and battered, t
 
 ## Deck gear and mounted guns (v1.302.0+338)
 Guns by family, plating and the utility's gear on the Eel's side view (voyage, arrival, Harbor yard, fight strip). Left: painted sail powers (the sigils), and the iron, twin and the other flying hulls' own gear.
+
+## Painted sail powers (v1.303.0+339)
+The sigils on the sails in side view (by power and people's colour). Left: sigils on the twin hull's lateens, the bat-wings and the bone-wing void sail; own gear for the iron, twin and other flying hulls.
+
+## The city hub (board 15, 14 Oct)
+The user picked **model A** (the plan from above, organic) **in the app's own colours** (the Map look's chart palette: night by default, parchment and shroud as the Map look picks) and asked for a **city hub they can come back to** with the full city view. Board 15 shows the hub (the Journey's City level: all six districts with glyphs, counts, the party's mark, a ★ goal and fog over districts not yet found), the zoom in and the way back (the City hub chip and Back; also the Journey's City level and a Camp button), the district maps with pins and the way sheet. Design only; waiting for the user's four answers and a go before building (Core: the plan record per city; Narrative: building names; UX: painter, hub, zoom).

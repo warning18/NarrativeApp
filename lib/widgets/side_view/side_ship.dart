@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../data/sail_powers.dart' show SailPower;
 import '../../data/ship_forms.dart';
 import '../ship_dress.dart';
 import 'side_view.dart';
@@ -16,6 +17,9 @@ part 'side_gear.dart';
 /// twin hull, an ironclad, the four flying boats). What she wears (see
 /// [ShipDress]) colours her: the hull, the trim, the cloth and its pattern,
 /// the ensign, the figurehead.
+
+/// A sail's box on the scene's pixel grid and how it is rigged.
+typedef _SailBox = ({Rect rect, SailKind kind});
 
 /// A ship's length in scene pixels: the Rusty Eel's sloop is 36, the others
 /// by their `length`.
@@ -203,7 +207,7 @@ void paintSideShip(
 }) {
   final pal = _Palette(form, dress);
   final len = sideShipLength(form);
-  List<Rect> sails = const [];
+  List<_SailBox> sails = const [];
   List<double>? top;
   switch (form.kind) {
     case HullKind.twin:
@@ -231,8 +235,12 @@ void paintSideShip(
   if (worn != null && top != null) {
     _paintGear(canvas, u, x, base, len, form, pal, worn, t, top);
   }
+  if (worn != null && sails.isNotEmpty && worn.sigils.isNotEmpty) {
+    _paintSigils(canvas, u, sails, worn.sigils, t);
+  }
   if (condition < 0.8) {
-    _damage(canvas, u, x, base, len, form, pal, t, condition, sails, top);
+    _damage(canvas, u, x, base, len, form, pal, t, condition,
+        [for (final b in sails) b.rect], top);
   }
 }
 
@@ -522,9 +530,9 @@ void _lateenSail(Canvas canvas, double u, double mx, double top, double bottom,
   }
 }
 
-List<Rect> _rig(Canvas canvas, double u, double x, double base, double len,
+List<_SailBox> _rig(Canvas canvas, double u, double x, double base, double len,
     ShipForm form, _Palette pal, double t, List<double> top) {
-  final boxes = <Rect>[];
+  final boxes = <_SailBox>[];
   final s = len / 36;
   final deckY = base - (3 + form.beam * 12).roundToDouble() - 1;
   final mastPaint = Paint()..color = pal.mast;
@@ -550,25 +558,38 @@ List<Rect> _rig(Canvas canvas, double u, double x, double base, double len,
           final hCourse = (12 * s * m.size).roundToDouble();
           final hTop = (7 * s * m.size).roundToDouble();
           _squareSail(canvas, u, mx, deckY - hCourse - 1, w, hCourse, pal, t);
-          boxes.add(Rect.fromLTWH(mx - w / 2, deckY - hCourse - 1, w, hCourse));
+          boxes.add((
+            rect: Rect.fromLTWH(mx - w / 2, deckY - hCourse - 1, w, hCourse),
+            kind: m.kind
+          ));
           _squareSail(canvas, u, mx, deckY - hCourse - hTop - 3, w * 0.74, hTop,
               pal, t);
-          boxes.add(Rect.fromLTWH(
-              mx - w * 0.37, deckY - hCourse - hTop - 3, w * 0.74, hTop));
+          boxes.add((
+            rect: Rect.fromLTWH(
+                mx - w * 0.37, deckY - hCourse - hTop - 3, w * 0.74, hTop),
+            kind: m.kind
+          ));
         } else {
           final h = (14 * s * m.size).roundToDouble();
           _squareSail(canvas, u, mx, topY + 2, w, h, pal, t);
-          boxes.add(Rect.fromLTWH(mx - w / 2, topY + 2, w, h));
+          boxes.add(
+              (rect: Rect.fromLTWH(mx - w / 2, topY + 2, w, h), kind: m.kind));
         }
       case SailKind.gaff:
         final gw = (15 * s * m.size).roundToDouble();
         _gaffSail(canvas, u, mx, topY + 2, deckY - 3, gw, pal);
-        boxes.add(Rect.fromLTRB(mx - gw, topY + 2, mx, deckY - 3));
+        boxes.add((
+          rect: Rect.fromLTRB(mx - gw, topY + 2, mx, deckY - 3),
+          kind: m.kind
+        ));
       case SailKind.lateen:
         final lw = (18 * s * m.size).roundToDouble();
         _lateenSail(canvas, u, mx, topY + 1, deckY - 2, lw, pal);
-        boxes.add(
-            Rect.fromLTRB(mx - lw * 0.6, topY + 1, mx + lw * 0.4, deckY - 2));
+        boxes.add((
+          rect:
+              Rect.fromLTRB(mx - lw * 0.6, topY + 1, mx + lw * 0.4, deckY - 2),
+          kind: m.kind
+        ));
     }
   }
   if (form.masts.isNotEmpty) {
@@ -608,14 +629,14 @@ void _oars(Canvas canvas, double u, double x, double base, double len,
   }
 }
 
-({List<Rect> sails, List<double> top}) _hullAndRig(Canvas canvas, double u,
+({List<_SailBox> sails, List<double> top}) _hullAndRig(Canvas canvas, double u,
     double x, double base, double len, ShipForm form, _Palette pal, double t,
     {bool rig = true}) {
   _hull(canvas, u, x, base, len, form, pal);
   final p = _profile(form, len, base);
   _bow(canvas, u, x, base, len, form, pal, p.top.last);
   final sails =
-      rig ? _rig(canvas, u, x, base, len, form, pal, t, p.top) : <Rect>[];
+      rig ? _rig(canvas, u, x, base, len, form, pal, t, p.top) : <_SailBox>[];
   _oars(canvas, u, x, base, len, form, pal, t, p.top);
   return (sails: sails, top: p.top);
 }

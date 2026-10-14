@@ -9,6 +9,85 @@ part of 'side_ship.dart';
 // on the hull profile the hull painter computed ([top] is each column's
 // rail row).
 
+/// The painted sails' sigils on the canvas, one a sail aboard, on the
+/// biggest sails first (as from above). In the colour of the people whose
+/// medium the sail is painted in.
+void _paintSigils(Canvas canvas, double u, List<_SailBox> sails,
+    List<ShipSigil> sigils, double t) {
+  final bySize = [...sails]..sort((a, b) =>
+      (b.rect.width * b.rect.height).compareTo(a.rect.width * a.rect.height));
+  for (var i = 0; i < math.min(sigils.length, bySize.length); i++) {
+    final box = bySize[i];
+    final r = box.rect;
+    // The fore-and-aft and lateen sails are triangles: the sigil sits low
+    // and toward the mast.
+    final (fx, fy) = switch (box.kind) {
+      SailKind.square => (0.5, 0.48),
+      SailKind.gaff => (0.62, 0.62),
+      SailKind.lateen => (0.55, 0.66),
+    };
+    final size = (math.min(r.width, r.height) * 0.3).clamp(2.5, 6.5);
+    _sigil(canvas, u, r.left + r.width * fx, r.top + r.height * fy, size,
+        sigils[i].power, sigils[i].color, t);
+  }
+}
+
+void _sigil(Canvas canvas, double u, double cx, double cy, double r,
+    SailPower power, Color ink, double t) {
+  final paint = Paint()..color = ink;
+  void dot(double dx, double dy) =>
+      sidePixels(canvas, u, paint, cx + dx, cy + dy, 1, 1);
+  switch (power) {
+    case SailPower.flight:
+      // Two wings, spread, over a dot.
+      for (var k = 0.0; k <= r * 1.3; k++) {
+        dot(-k, -k * 0.7 + 1);
+        dot(k, -k * 0.7 + 1);
+        if (k > 1) {
+          dot(-k, -k * 0.7 + 2);
+          dot(k, -k * 0.7 + 2);
+        }
+      }
+      dot(0, 1);
+      dot(0, 2);
+    case SailPower.foresight:
+      // An eye: the lids, and the pupil.
+      for (var k = -r; k <= r; k++) {
+        final h = (r * 0.55 * math.sqrt(math.max(0, 1 - math.pow(k / r, 2))))
+            .roundToDouble();
+        dot(k, -h);
+        dot(k, h);
+      }
+      sidePixels(canvas, u, paint, cx - 1, cy - 1, 2, 2);
+    case SailPower.hearth:
+      // A flame, a pale core in it.
+      for (var k = -r.toInt(); k <= r.toInt(); k++) {
+        final f = (k + r) / (2 * r);
+        final w = (math.sin(math.pi * math.pow(f, 0.7)) * r * 0.55).round();
+        sidePixels(canvas, u, paint, cx - w, cy + k, 2 * w + 1, 1);
+      }
+      sidePixels(canvas, u, Paint()..color = const Color(0xFFFFE08A), cx,
+          cy + r * 0.3, 1, 2);
+    case SailPower.windknot:
+      // A knot: two crossed loops.
+      for (var a = 0; a < 24; a++) {
+        final ang = a * math.pi / 12;
+        dot(math.cos(ang) * r, math.sin(ang) * r * 0.5);
+        dot(math.cos(ang) * r * 0.5, math.sin(ang) * r);
+      }
+    case SailPower.voidmark:
+      // A ring and a small spiral turning in it.
+      for (var a = 0; a < 28; a++) {
+        final ang = a * math.pi / 14;
+        dot(math.cos(ang) * r, math.sin(ang) * r);
+      }
+      for (var k = 1; k <= 8; k++) {
+        final ang = k * 0.8 + t * 0.6;
+        dot(math.cos(ang) * r * 0.6 * k / 8, math.sin(ang) * r * 0.6 * k / 8);
+      }
+  }
+}
+
 const Color _iron = Color(0xFF6A727C);
 const Color _ironDark = Color(0xFF3F464E);
 const Color _brass = Color(0xFFC9A24A);
