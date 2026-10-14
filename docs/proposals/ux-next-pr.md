@@ -129,3 +129,6 @@ The twin hull, the ironclad, the lodestone barge and the void carrack now carry 
 
 ## Version requests
 Next time I will ask the manager for a version here before opening a PR. Request for the city plan (when Core's record is in): one version, to be given then.
+
+## City plan: the user has answered (for the manager)
+The four answers to board 15 are in (see "The city, after the user's answers" above): no hub screen (zoom in and out in the city and the world), fog on districts not yet found, no automatic star, the full city shown first on its own page, and model A in the Map look's palette. The user also said yes to the other hulls' gear (merged as #241). UX can start the painter, zoom and fog as soon as Core has the per-city plan record for Saltmouth; please brief Core (the generator's output for Saltmouth can be its first record) and give UX a version then (1.308.0+344 is free now).
