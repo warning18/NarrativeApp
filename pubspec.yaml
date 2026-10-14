@@ -1,7 +1,11 @@
 name: narrative_data_app
 description: "An interactive narrative reader with a story map and AI-assisted generation."
 publish_to: 'none'
+<<<<<<< HEAD
 version: 1.309.0+345
+=======
+version: 1.308.0+344
+>>>>>>> origin/claude/core-2
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -95,6 +99,7 @@ flutter:
     - assets/gamedata/biomes.json
     - assets/gamedata/land_routes.json
     - assets/gamedata/land_events.json
+    - assets/gamedata/city_plans.json
     - assets/visuals/items/
     - assets/visuals/skills/
     - assets/visuals/dice/
