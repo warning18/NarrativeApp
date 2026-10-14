@@ -251,6 +251,29 @@
     "landmark": "berths",
     "glyph": "yard"
   },
+  "saltmouth_lantern_alleys": {
+    "level": "district",
+    "light": "night",
+    "parent": "saltmouth",
+    "name": "The Lantern Alleys",
+    "name_fr": "Les Ruelles aux lanternes",
+    "blurb": "The back ways above the wharf, strung with lanterns for the buyers who would rather not be seen buying.",
+    "blurb_fr": "Les ruelles au-dessus du quai, guirlandées de lanternes pour les acheteurs qui préfèrent qu’on ne les voie pas acheter.",
+    "landmark": "",
+    "glyph": "market"
+  },
+  "saltmouth_card_row": {
+    "level": "district",
+    "controller": "crows",
+    "tags": ["market"],
+    "parent": "saltmouth",
+    "name": "Card Row",
+    "name_fr": "La Rangée des cartes",
+    "blurb": "A run of barrels and crates at the head of the wharf where the dockhands play from the evening shift to dawn.",
+    "blurb_fr": "Une enfilade de tonneaux et de caisses en haut du quai, où les dockers jouent de la relève du soir jusqu’à l’aube.",
+    "landmark": "",
+    "glyph": "hall"
+  },
   "the_seas": {
     "level": "continent",
     "parent": "",

@@ -19,9 +19,9 @@ import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
 
 Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 6; i++) {
+  for (var i = 0; i < 3; i++) {
     await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 200)));
+        () => Future<void>.delayed(const Duration(milliseconds: 100)));
     await tester.pump(const Duration(milliseconds: 100));
   }
 }
@@ -40,6 +40,30 @@ bool _picked(WidgetTester tester, int i) =>
         .properties
         .selected ??
     false;
+
+/// A walk over the steps 0..n-1 that takes every ordered pair (a, b), a != b,
+/// as consecutive entries exactly once (an Eulerian circuit of the complete
+/// directed graph, by Hierholzer's algorithm).
+List<int> _everyPair(int n) {
+  final next = List<int>.generate(n, (_) => 0);
+  int target(int a) {
+    var b = next[a]++;
+    if (b >= a) b++;
+    return b;
+  }
+
+  final stack = <int>[0];
+  final circuit = <int>[];
+  while (stack.isNotEmpty) {
+    final a = stack.last;
+    if (next[a] < n - 1) {
+      stack.add(target(a));
+    } else {
+      circuit.add(stack.removeLast());
+    }
+  }
+  return circuit.reversed.toList();
+}
 
 void main() {
   testWidgets('a tap on a step\'s mark picks that step, never a neighbour',
@@ -108,22 +132,20 @@ void main() {
             List.generate(30, _step).takeWhile((f) => f.evaluate().isNotEmpty);
         final n = count.length;
         expect(n, greaterThanOrEqualTo(3), reason: id);
-        // Each mark picks its own step: from nothing picked, and with every
-        // other step picked (and named, its name near the others).
-        for (var i = 0; i < n; i++) {
-          await tapMark(i);
-          expect(_picked(tester, i), isTrue, reason: '$id at $size: $i');
-          for (var j = 0; j < n; j++) {
-            if (j == i) continue;
-            await tapMark(j);
-            expect(_picked(tester, j), isTrue,
-                reason: '$id at $size: $j after $i');
-            expect(_picked(tester, i), isFalse,
-                reason: '$id at $size: $j after $i');
-            await tapMark(i);
-            expect(_picked(tester, i), isTrue,
-                reason: '$id at $size: $i after $j');
-          }
+        // Each mark picks its own step: from nothing picked, and from every
+        // other step picked (and named, its name near the others). One tap
+        // chain walks every ordered pair (a, then b) exactly once.
+        final chain = _everyPair(n);
+        await tapMark(chain.first);
+        expect(_picked(tester, chain.first), isTrue,
+            reason: '$id at $size: ${chain.first}');
+        for (var k = 1; k < chain.length; k++) {
+          final from = chain[k - 1], to = chain[k];
+          await tapMark(to);
+          expect(_picked(tester, to), isTrue,
+              reason: '$id at $size: $to after $from');
+          expect(_picked(tester, from), isFalse,
+              reason: '$id at $size: $to after $from');
         }
         // Picking never takes a step.
         expect(container.read(storyPlayProvider).currentNodeId, id);
