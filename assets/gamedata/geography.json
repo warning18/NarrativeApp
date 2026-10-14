@@ -251,6 +251,29 @@
     "landmark": "berths",
     "glyph": "yard"
   },
+  "saltmouth_lantern_alleys": {
+    "level": "district",
+    "light": "night",
+    "parent": "saltmouth",
+    "name": "The Lantern Alleys",
+    "name_fr": "Les Ruelles aux lanternes",
+    "blurb": "A knot of stepped lanes behind the market, lit all night by the lanterns the Tide-Kin hang for the drowned.",
+    "blurb_fr": "Un nœud de ruelles en escalier derrière le marché, éclairé toute la nuit par les lanternes que les Gens de la Marée suspendent pour leurs noyés.",
+    "landmark": "",
+    "glyph": "market"
+  },
+  "saltmouth_card_row": {
+    "level": "district",
+    "controller": "crows",
+    "tags": ["market"],
+    "parent": "saltmouth",
+    "name": "Card Row",
+    "name_fr": "La Rue des Cartes",
+    "blurb": "A street of gaming houses and money-changers under the arena’s wall, where the Crows keep the tables honest enough.",
+    "blurb_fr": "Une rue de tripots et de changeurs au pied du mur de l’arène, où les Corbeaux gardent les tables à peu près honnêtes.",
+    "landmark": "",
+    "glyph": "hall"
+  },
   "the_seas": {
     "level": "continent",
     "parent": "",
