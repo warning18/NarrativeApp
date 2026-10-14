@@ -26,8 +26,8 @@ const int _wayfarerGreetings = 4;
 
 /// Opens the offer when one is due (see offers.dart): after a level-up's
 /// dialog, after a boss, at a chapter's start, from the Character tab.
-/// The offer is drawn once and kept, so closing the dialog ("Later")
-/// never loses or redraws it. [sayWhenNone]: when nobody can come yet,
+/// The offer is drawn once and kept; it is never left for later (Wave 6):
+/// the dialog closes when a gift is taken. [sayWhenNone]: when nobody can come yet,
 /// say so (the Character tab's button) rather than nothing (after a
 /// fight).
 Future<void> showOfferIfWaiting(BuildContext context, WidgetRef ref,
@@ -46,6 +46,7 @@ Future<void> showOfferIfWaiting(BuildContext context, WidgetRef ref,
   }
   await showDialog<void>(
     context: context,
+    barrierDismissible: false,
     builder: (_) => OfferDialog(tables: tables),
   );
 }
@@ -301,154 +302,153 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
         ? theme.colorScheme.primary
         : _suitorColor(selected, widget.tables.data);
 
-    return Dialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
-      clipBehavior: Clip.antiAlias,
-      // The first offer's tour (the topic Signs had, see tutorial_topics).
-      child: TutorialTrigger(
-        topic: TutorialTopic.signs,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TutorialTarget(
-              id: 'signs.patron',
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-                color: theme.colorScheme.surfaceContainerHighest,
-                child: Row(
-                  children: [
-                    Icon(Icons.diversity_3, color: theme.colorScheme.primary),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            trFor(lang, 'offer_title'),
-                            key: const Key('offer_title'),
-                            style: theme.textTheme.titleMedium
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            waiting > 1
-                                ? '$source · ${trFor(lang, 'offer_pending').replaceAll('{n}', '$waiting')}'
-                                : source,
-                            style: theme.textTheme.labelMedium?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Flexible(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 4),
-                child: TutorialTarget(
-                  id: 'signs.cards',
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+    // An offer is never left for later (Wave 6): a gift is taken to close it.
+    return PopScope(
+      canPop: false,
+      child: Dialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
+        clipBehavior: Clip.antiAlias,
+        // The first offer's tour (the topic Signs had, see tutorial_topics).
+        child: TutorialTrigger(
+          topic: TutorialTopic.signs,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TutorialTarget(
+                id: 'signs.patron',
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  child: Row(
                     children: [
-                      Text(
-                        trFor(lang, 'offer_hint'),
-                        style: theme.textTheme.labelMedium?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant),
-                      ),
-                      const SizedBox(height: 10),
-                      // One little flag for each suitor, with what it gives.
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          for (final suitor in offer.suitors)
-                            Expanded(
-                              child: _OfferFlag(
-                                key: Key('offer_suitor_${suitor.factionId}'),
-                                suitor: suitor,
-                                ticket: ticket,
-                                tables: widget.tables,
-                                selected: _selected == suitor.factionId,
-                                dimmed: _selected != null &&
-                                    _selected != suitor.factionId,
-                                onTap: _busy
-                                    ? null
-                                    : () => setState(
-                                        () => _selected = suitor.factionId),
-                              ),
+                      Icon(Icons.diversity_3, color: theme.colorScheme.primary),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              trFor(lang, 'offer_title'),
+                              key: const Key('offer_title'),
+                              style: theme.textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      // The chosen banner's words, in a zone of one size so
-                      // nothing moves when another banner is picked; a hint
-                      // while none is.
-                      SizedBox(
-                        key: const Key('offer_detail_zone'),
-                        height: 250,
-                        child: selected != null
-                            ? SingleChildScrollView(
-                                child: SuitorCard(
-                                  key: Key(
-                                      'offer_summary_${selected.factionId}'),
-                                  suitor: selected,
-                                  ticket: ticket,
-                                  tables: widget.tables,
-                                ),
-                              )
-                            : Center(
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.touch_app_outlined,
-                                        size: 18,
-                                        color:
-                                            theme.colorScheme.onSurfaceVariant),
-                                    const SizedBox(width: 8),
-                                    Flexible(
-                                      child: Text(
-                                        trFor(lang, 'offer_select_hint'),
-                                        key: const Key('offer_select_hint'),
-                                        style: theme.textTheme.bodySmall
-                                            ?.copyWith(
-                                                color: theme.colorScheme
-                                                    .onSurfaceVariant),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            Text(
+                              waiting > 1
+                                  ? '$source · ${trFor(lang, 'offer_pending').replaceAll('{n}', '$waiting')}'
+                                  : source,
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-              // Side by side when they fit, stacked on a narrow phone.
-              child: OverflowBar(
-                alignment: MainAxisAlignment.spaceBetween,
-                overflowAlignment: OverflowBarAlignment.end,
-                spacing: 8,
-                children: [
-                  TextButton(
-                    onPressed:
-                        _busy ? null : () => Navigator.of(context).maybePop(),
-                    child: Text(trFor(lang, 'offer_later_button')),
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 4),
+                  child: TutorialTarget(
+                    id: 'signs.cards',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          trFor(lang, 'offer_hint'),
+                          style: theme.textTheme.labelMedium?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant),
+                        ),
+                        const SizedBox(height: 10),
+                        // One little flag for each suitor, with what it gives.
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            for (final suitor in offer.suitors)
+                              Expanded(
+                                child: _OfferFlag(
+                                  key: Key('offer_suitor_${suitor.factionId}'),
+                                  suitor: suitor,
+                                  ticket: ticket,
+                                  tables: widget.tables,
+                                  selected: _selected == suitor.factionId,
+                                  dimmed: _selected != null &&
+                                      _selected != suitor.factionId,
+                                  onTap: _busy
+                                      ? null
+                                      : () => setState(
+                                          () => _selected = suitor.factionId),
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        // The chosen banner's words, in a zone of one size so
+                        // nothing moves when another banner is picked; a hint
+                        // while none is.
+                        SizedBox(
+                          key: const Key('offer_detail_zone'),
+                          height: 250,
+                          child: selected != null
+                              ? SingleChildScrollView(
+                                  child: SuitorCard(
+                                    key: Key(
+                                        'offer_summary_${selected.factionId}'),
+                                    suitor: selected,
+                                    ticket: ticket,
+                                    tables: widget.tables,
+                                  ),
+                                )
+                              : Center(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.touch_app_outlined,
+                                          size: 18,
+                                          color: theme
+                                              .colorScheme.onSurfaceVariant),
+                                      const SizedBox(width: 8),
+                                      Flexible(
+                                        child: Text(
+                                          trFor(lang, 'offer_select_hint'),
+                                          key: const Key('offer_select_hint'),
+                                          style: theme.textTheme.bodySmall
+                                              ?.copyWith(
+                                                  color: theme.colorScheme
+                                                      .onSurfaceVariant),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                        ),
+                      ],
+                    ),
                   ),
-                  FilledButton(
-                    key: const Key('offer_take_button'),
-                    style: FilledButton.styleFrom(backgroundColor: accent),
-                    onPressed:
-                        selected == null || _busy ? null : () => _take(offer),
-                    child: Text(trFor(lang, 'offer_take_button')),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+                // Side by side when they fit, stacked on a narrow phone.
+                child: OverflowBar(
+                  alignment: MainAxisAlignment.spaceBetween,
+                  overflowAlignment: OverflowBarAlignment.end,
+                  spacing: 8,
+                  children: [
+                    FilledButton(
+                      key: const Key('offer_take_button'),
+                      style: FilledButton.styleFrom(backgroundColor: accent),
+                      onPressed:
+                          selected == null || _busy ? null : () => _take(offer),
+                      child: Text(trFor(lang, 'offer_take_button')),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

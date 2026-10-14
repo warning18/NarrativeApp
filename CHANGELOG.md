@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.313.0+349]
+
+Quests settle themselves; nothing waits for later.
+
+### Changed
+- **A quest completes on its own** once its objectives are met: its rewards, its companion and the level-up come at once, with no turn-in to tap (a quest settled by a choice still asks how). It happens out of any fight or expedition; a goal reached in a fight completes when the fight is over.
+- **A main quest is taken on as soon as it is offered**: it is never left for later.
+- **A clan offer cannot be put off**: the offer stays until a gift is taken.
+
+### Fixed
+- A notice closing itself no longer closes a dialog opened over it.
+
 ## [1.312.0+348]
 
 Saltmouth's six districts in the story, and the whole sphere named.

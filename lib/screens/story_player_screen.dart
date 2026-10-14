@@ -31,6 +31,7 @@ import '../data/politics_events.dart';
 import '../data/port_helpers.dart';
 import '../data/camp_state.dart';
 import '../data/quest_hints.dart';
+import '../data/quest_tracking.dart' show isMainQuest;
 import '../data/settlements.dart';
 import '../data/story_repository.dart';
 import '../data/turn_in_choices.dart';
@@ -3906,6 +3907,16 @@ Future<void> _showDiscoveryModal(
       message:
           '${trFor(lang, 'quest_accepted_prefix')}: ${quest?['questName']?.toString() ?? questId}',
     );
+  }
+
+  // A main quest is never left for later (Wave 6): taken on at once (here,
+  // or already by the quests that settle themselves, see
+  // quest_autopilot.dart); the dialog then only shows what else was found.
+  if (isPlayMode && isMainQuest(quest)) {
+    if (questEligible) await acceptDiscoveredQuest();
+    if (shopId == null || !context.mounted) return;
+    return _showDiscoveryModal(context, ref, PendingDiscovery(shopId: shopId),
+        shops: shops, quests: quests);
   }
 
   void viewDiscoveredQuest() {
