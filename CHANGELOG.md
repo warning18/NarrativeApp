@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.315.0+351]
+
+The city plan: Saltmouth from above, zoomed, fogged, with its ways on their buildings.
+
+### Added
+- **The city plan page** (board 15, model A): in a city with a plan the Journey has a city-plan button. It opens a page on the whole city, drawn from above in the Map look's colours (the river with its island, the avenues, the squares, the arena, the wall; each district tinted). Pinch or wheel to zoom in and out, or the + and - buttons; a tap on a district zooms to it, its buildings show their names and the scene's ways stand on them as pins (a quest, a fight, a check, a shop, a road); "Whole city" is the way back. The districts the party has not found lie under fog, a dashed outline and a "?"; the party's own district carries its mark.
+- **Free walking from the plan:** a district card offers "Walk here" (no road, no time) for a district found; a way's card offers "Go", which closes the page and selects that way on the Journey's map. No separate hub screen and no automatic goal star.
+- **A preview in the fight lab** ("City chart") on a denser Saltmouth, with a fog toggle.
+
 ## [1.311.0+347]
 
 Every check rolls a d20 on screen; the Journey's marks say what the ways are.
