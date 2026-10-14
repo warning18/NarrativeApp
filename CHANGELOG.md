@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.288.0+324]
+
+The skill choice sheet, places heard of on the full map, and the land crossing in the desert side view.
+
+### Added
+- **The face's skill sheet (board 9):** opened from a die face, it lists each skill with the face now and the face after (`Attack 5 → Attack 8`), the change as a pill (+3, changes kind, full), the skill's limit in its rarity colour, and, after a tap, a bar with **Set on this face**: nothing is set until it is pressed. The numbers are the fight's own rule for a face with a skill on it. The 70% rule is behind the title (hold it).
+- **Places heard of on the full map:** a "?" in a ring where they lie. Tapped, the sheet offers **Set out** (for a village not yet found, the expedition that finds it, sailing the Eel first when needed; always with the warning that the road may hold anything) or says why it cannot yet, and **Mark as goal** (one goal at a time, ringed on the map).
+- **The land crossing in a side view:** the desert crossing wears a scene over its words: a warm sky in dithered bands, a low sun, mesas with the goal coming nearer day by day, three bands of dunes and a path at their own speeds, and the party's placeholder figures walking in place. Heat shimmer in clear weather, a sandstorm on the sandstorm event or a dust sky, rain, snow, ash or fog by the sky. The day and the health bar sit over it. A route whose terrain has no scene yet keeps only that strip. Reduced motion stands still. (`lib/widgets/side_view/`: the scene engine, for the voyage's side view later.)
+
+### Changed
+- The full map's place sheet scrolls when its text is long.
+
 ## [1.287.0+323]
 
 Groundwork: places only heard of, the building screen's data, the skill

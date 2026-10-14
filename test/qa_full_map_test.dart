@@ -160,6 +160,8 @@ void main() {
     await tester.pumpWidget(ProviderScope(
       overrides: [
         travelHistoryProvider.overrideWithValue(historyOf(path)),
+        // Places heard of have their own tests (full_map_screen_test.dart).
+        heardOfPlacesProvider.overrideWithValue(const {}),
         if (fighting) combatActiveProvider.overrideWith((ref) => true),
         if (expedition) expeditionActiveProvider.overrideWith((ref) => true),
       ],

@@ -2647,6 +2647,46 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Choose this face\'s skill',
     AppLanguage.fr: 'Choisir la compétence de cette face',
   },
+  'face_set_button': {
+    AppLanguage.en: 'Set on this face',
+    AppLanguage.fr: 'Mettre sur cette face',
+  },
+  'face_full_pill': {
+    AppLanguage.en: 'full',
+    AppLanguage.fr: 'complet',
+  },
+  'face_change_kind': {
+    AppLanguage.en: 'changes kind',
+    AppLanguage.fr: 'change de nature',
+  },
+  'face_change_same': {
+    AppLanguage.en: 'same',
+    AppLanguage.fr: 'identique',
+  },
+  'face_now_line': {
+    AppLanguage.en: 'Face {n} · now: {face}',
+    AppLanguage.fr: 'Face {n} · actuellement : {face}',
+  },
+  'map_set_out': {
+    AppLanguage.en: 'Set out',
+    AppLanguage.fr: 'Partir',
+  },
+  'map_set_out_expedition': {
+    AppLanguage.en: 'You set out on the expedition that finds it: {zone}.',
+    AppLanguage.fr: 'Vous partez en expédition pour la trouver : {zone}.',
+  },
+  'map_mark_goal': {
+    AppLanguage.en: 'Mark as goal',
+    AppLanguage.fr: 'En faire un objectif',
+  },
+  'map_clear_goal': {
+    AppLanguage.en: 'Clear the goal',
+    AppLanguage.fr: 'Retirer l’objectif',
+  },
+  'map_goal_is': {
+    AppLanguage.en: 'This is your goal.',
+    AppLanguage.fr: 'C’est votre objectif.',
+  },
   'reset_face_button': {
     AppLanguage.en: 'Back to the face\'s own action',
     AppLanguage.fr: 'Revenir à l’action de la face',
