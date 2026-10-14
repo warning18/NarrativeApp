@@ -17,6 +17,37 @@ The city plan: Saltmouth from above, zoomed, fogged, with its ways on their buil
 - **Free walking from the plan:** a district card offers "Walk here" (no road, no time) for a district found; a way's card offers "Go", which closes the page and selects that way on the Journey's map. No separate hub screen and no automatic goal star.
 - **A preview in the fight lab** ("City chart") on a denser Saltmouth, with a fog toggle.
 
+## [1.314.0+350]
+
+The world sphere: the story world on the globe, two pole buttons, a ball of about 250 px.
+
+### Changed
+- **The sphere wears the story world** (board 11): the whole globe, 360° by 180°, with its three story lands, the empty lands, the polar lands and the archipelagos. The flat map keeps the look's own chart (A, B or C); turning from one to the other frames the view afresh.
+- **Two pole buttons** on the map's controls turn the sphere right over the north or the south pole, gliding; a drag still turns it, past the seam as well.
+- **A ball of about 250 px:** on a wide screen the sphere no longer grows with the box (a radius of 125 px at the first zoom; on a phone it was already that), and the sky over it follows.
+- **The ice caps keep their edges:** an edge lying on the chart's border (the seam, the top and the bottom) stays straight, so the caps are no longer torn along the seam and at the pole. Every other coast falls as it always did.
+- **Fixed, QA's order-dependent test:** the sphere's skin render already under way is now the one every caller waits for, so a second render can no longer replace the kept skin.
+
+## [1.313.0+349]
+
+Quests settle themselves; nothing waits for later.
+
+### Changed
+- **A quest completes on its own** once its objectives are met: its rewards, its companion and the level-up come at once, with no turn-in to tap (a quest settled by a choice still asks how). It happens out of any fight or expedition; a goal reached in a fight completes when the fight is over.
+- **A main quest is taken on as soon as it is offered**: it is never left for later.
+- **A clan offer cannot be put off**: the offer stays until a gift is taken.
+
+### Fixed
+- A notice closing itself no longer closes a dialog opened over it.
+
+## [1.312.0+348]
+
+Saltmouth's six districts in the story, and the whole sphere named.
+
+### Changed
+- **Saltmouth's ways stand in their districts** (Narrative's seating, board 15): the hub's scenes are re-tagged into the Landward Gate, Tern Row, the Smugglers' Wharf, the Ship-breaker's Yard, the Lantern Alleys and Card Row, so each district shows its own ways. The Lantern Alleys and Card Row are on the world map, with a spot on every chart and a road from the wharf.
+- **Every place on the whole sphere has a name** (Narrative's, English and French): the seven new lands (the Sundown Lands, the Green Girdle, the Gaunt Lands, the Morning Shore, the Far Dawn, the Long Winter, the Last Shelf), four oceans on the chart, the twelve archipelagos and their twenty-nine islands.
+
 ## [1.311.0+347]
 
 Every check rolls a d20 on screen; the Journey's marks say what the ways are.

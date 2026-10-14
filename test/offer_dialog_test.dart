@@ -3,7 +3,7 @@
 // Compact", their first words, the gift (its kind, name, rarity and what
 // it does) and the standing it would move by the real relations; a
 // suitor taken with a confirm (the gift, the standing and its ripple, the
-// voice a friend), the next offer drawn, "Later" keeping it -- in English
+// voice a friend), the next offer drawn, never left for later -- in English
 // and in French, with the Character tab's titles.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -246,10 +246,12 @@ void main() {
     expect(find.byType(OfferDialog), findsOneWidget);
     expect(tester.takeException(), isNull);
 
-    // "Later" closes it and keeps the offer.
-    await tester.tap(find.text('Later'));
+    // An offer is never left for later (Wave 6): no "Later", and going
+    // back leaves it open, the offer kept.
+    expect(find.text('Later'), findsNothing);
+    await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
-    expect(find.byType(OfferDialog), findsNothing);
+    expect(find.byType(OfferDialog), findsOneWidget);
     session = container.read(playerSessionProvider);
     expect(session.clanOffer, next);
     expect(session.pendingOffers, hasLength(1));
@@ -305,7 +307,10 @@ void main() {
     expect(session.politics.standingLog, isEmpty,
         reason: 'the Wayfarer moves no standing');
     expect(session.heldTitleIds, ['coal_guard', 'the_marked']);
-    await tester.tap(find.text('Plus tard'));
+    // The next offer waits (it is never left for later); the test closes
+    // the dialog itself to read the titles behind it.
+    expect(find.text('Plus tard'), findsNothing);
+    Navigator.of(tester.element(find.byType(OfferDialog))).pop();
     await tester.pumpAndSettle();
 
     // The titles: the one worn, and the brand that counts regardless.

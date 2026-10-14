@@ -1018,6 +1018,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Shroud',
     AppLanguage.fr: 'Linceul',
   },
+  'world_map_pole_north': {
+    AppLanguage.en: 'North pole',
+    AppLanguage.fr: 'Pôle Nord',
+  },
+  'world_map_pole_south': {
+    AppLanguage.en: 'South pole',
+    AppLanguage.fr: 'Pôle Sud',
+  },
   'world_map_zoom_in': {AppLanguage.en: 'Zoom in', AppLanguage.fr: 'Zoomer'},
   'world_map_zoom_out': {
     AppLanguage.en: 'Zoom out',

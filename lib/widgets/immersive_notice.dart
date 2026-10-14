@@ -74,7 +74,14 @@ class _ImmersiveNoticeContentState extends State<_ImmersiveNoticeContent> {
   void initState() {
     super.initState();
     Future.delayed(widget.duration, () {
-      if (mounted) Navigator.of(context).maybePop();
+      if (!mounted) return;
+      // Only its own card goes: a dialog opened over it since stays.
+      final route = ModalRoute.of(context);
+      if (route == null || route.isCurrent) {
+        Navigator.of(context).maybePop();
+      } else if (route.isActive) {
+        Navigator.of(context).removeRoute(route);
+      }
     });
   }
 

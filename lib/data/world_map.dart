@@ -240,7 +240,23 @@ final List<Landmark> worldMapLandmarks = [
         'Where the Waste comes down to the sea: white walls on a headland, a stone giant to its knees in the harbor mouth, and the Inquisition searching every caravan at the gate. Go in with the caravan, or hidden in a salt wagon.',
     blurbFr:
         'Là où la Désolation descend jusqu’à la mer\u00a0: des murs blancs sur un promontoire, un géant de pierre dans l’eau jusqu’aux genoux à l’entrée du port, et l’Inquisition qui fouille chaque caravane à la porte. Entrer avec la caravane, ou sous les sacs d’un chariot de sel.',
-    scenes: ['2001', '2000', '2005', '2020', '2021'],
+    scenes: [
+      '2001',
+      '2000',
+      '2005',
+      '2020',
+      '2021',
+      '2015_dominion_blades',
+      '2015_kelda',
+      '2015_informant',
+      '2015_house_salt_ledger',
+      '2015_bundle',
+      '2015_house_keyholders',
+      '2015_informant_exposed',
+      '2015_informant_trap',
+      '2015_informant_caught',
+      '2015_house_keyholders_turned',
+    ],
     fights: ['harbor_rat', 'inquisition_soldier'],
   ),
   const Landmark(
@@ -252,7 +268,15 @@ final List<Landmark> worldMapLandmarks = [
         'The Tide-Kin quarter of paper boats. Nadira asks for help against Renn, a customs officer charging a toll that exists in no ledger. Talk him down or fight.',
     blurbFr:
         'Le quartier des Gens de la Marée et de leurs bateaux de papier. Nadira demande de l’aide contre Renn, un douanier qui perçoit un péage qui ne figure dans aucun registre. Le raisonner ou se battre.',
-    scenes: ['2015_ternrow', '2015_ternrow_talked', '2015_ternrow_fight'],
+    scenes: [
+      '2015_ternrow',
+      '2015_ternrow_talked',
+      '2015_ternrow_fight',
+      '2015_child_tongue',
+      '2015_survivor',
+      '2015_house_drowned_debt',
+      '2015_drawer',
+    ],
     fights: ['dock_overseer'],
   ),
   const Landmark(
@@ -266,22 +290,10 @@ final List<Landmark> worldMapLandmarks = [
         'Le carrefour du chapitre 2, le quartier du port de Bouche-de-Sel. Un intendant nommé Vane, sans lien avec l’Inquisiteur général, garde la porte des chantiers navals\u00a0; autour de lui, le marché regorge de travail\u00a0: le Bazar, la rue des Apothicaires, des primes, des parties de cartes, un faux informateur, Kelda à la porte, la reconnaissance de dette de Sable, Liora sur le toit, et Vess, qui suit le Balluchon.',
     scenes: [
       '2010', '2010_crane', '2010_liora', '2011', //
-      '2015', '2015_dominion_blades', '2015_apothecary', '2015_bandits',
-      '2015_bazaar', '2015_cards',
-      '2015_cards_won', '2015_cards_lost', '2015_dockside', '2015_hound',
-      '2015_informant', '2015_informant_trap', '2015_informant_exposed',
-      '2015_informant_caught', '2015_kelda', '2015_rats', '2015_sable',
-      '2015_sable_lifted', '2015_sable_caught', '2015_sable_bought',
-      '2015_sable_talk_failed', '2015_liora', '2015_liora_won',
-      '2015_liora_refused', '2015_vess', '2015_drawer', '2015_smuggler',
+      '2015', '2015_bandits', '2015_dockside', '2015_rats', '2015_smuggler',
       '2011_roof_fall', '2030', '2040', '2040_paid', '2050', '2070',
       '2070_cut_failed',
-      '2015_house_drowned_debt', '2015_house_keyholders',
-      '2015_house_keyholders_turned', '2015_house_salt_ledger',
       '2015_route_sold',
-      '2015_survivor',
-      '2015_bundle',
-      '2015_child_tongue',
     ],
     fights: [
       'harbor_rat', 'smuggler_captain', 'plague_hound', 'street_bandit', //
@@ -303,6 +315,47 @@ final List<Landmark> worldMapLandmarks = [
       '2015_dorran',
       '2015_scaffold_clerk',
       '2015_scaffold_clerk_fight',
+      '2015_liora',
+      '2015_hound',
+      '2015_liora_won',
+      '2015_liora_refused',
+    ],
+  ),
+  // Saltmouth's two later districts (board 15): their scenes come with
+  // Narrative's re-tag of the hub's ways (docs/proposals/city-districts.md).
+  const Landmark(
+    id: 'alleys',
+    chapter: 2,
+    nameEn: 'The Lantern Alleys',
+    nameFr: 'Les Ruelles aux lanternes',
+    blurbEn:
+        'The back ways above the wharf, strung with lanterns for the buyers who would rather not be seen buying.',
+    blurbFr:
+        'Les ruelles au-dessus du quai, guirlandées de lanternes pour les acheteurs qui préfèrent qu’on ne les voie pas acheter.',
+    scenes: [
+      '2015_bazaar',
+      '2015_apothecary',
+      '2015_vess',
+    ],
+  ),
+  const Landmark(
+    id: 'cards',
+    chapter: 2,
+    nameEn: 'Card Row',
+    nameFr: 'La Rangée des cartes',
+    blurbEn:
+        'A run of barrels and crates at the head of the wharf where the dockhands play from the evening shift to dawn.',
+    blurbFr:
+        'Une enfilade de tonneaux et de caisses en haut du quai, où les dockers jouent de la relève du soir jusqu’à l’aube.',
+    scenes: [
+      '2015_cards',
+      '2015_cards_won',
+      '2015_sable',
+      '2015_cards_lost',
+      '2015_sable_bought',
+      '2015_sable_lifted',
+      '2015_sable_caught',
+      '2015_sable_talk_failed',
     ],
   ),
   const Landmark(
