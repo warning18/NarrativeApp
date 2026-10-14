@@ -35,6 +35,11 @@ class StartingTotals {
       };
 }
 
+/// A starting character's base armor: what its race and profession add to
+/// the defaults, never below 0. Frail pairs (an Orc Mage: -2 and -2) start
+/// at 0 instead of showing a negative armor that reads as a bug.
+int startingArmor(int sum) => sum < 0 ? 0 : sum;
+
 int presetBonus(Map<String, dynamic>? preset, String key) =>
     (preset?[key] as num?)?.toInt() ?? 0;
 
@@ -50,7 +55,7 @@ StartingTotals startingTotals({
   return StartingTotals(
     maxHealth: sum('maxHealth', 'bonusMaxHealth', 100),
     baseDamage: sum('baseDamage', 'bonusBaseDamage', 10),
-    baseArmor: sum('baseArmor', 'bonusBaseArmor', 0),
+    baseArmor: startingArmor(sum('baseArmor', 'bonusBaseArmor', 0)),
     gold: sum('gold', 'startingGoldBonus', 0),
     luck: sum('luck', 'bonusLuck', 0),
     charisma: sum('charisma', 'bonusCharisma', 0),

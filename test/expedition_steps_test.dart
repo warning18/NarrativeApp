@@ -81,6 +81,11 @@ void main() {
     expect((zones['z_test'] as Map)['expeditionCount'], 3);
     expect((zones['z_other'] as Map)['expeditionCount'], 4);
     expect(deliveryDeadlineOf({'expeditionCount': 4}, count: 9), 11);
+    // A zone's own deadline keeps its spare days over the written road:
+    // Fever Bark's 6 days for 4 stages is 10 for 8 written ones.
+    expect(
+        deliveryDeadlineOf({'expeditionCount': 4, 'deadlineDays': 6}, count: 8),
+        10);
   });
 
   test('the file may wrap its zones with a version', () {
