@@ -35,7 +35,8 @@ import '../widgets/approval_notice.dart' show speakUpAbout;
 import '../widgets/companion_remark_bubble.dart';
 import '../widgets/moments.dart';
 import '../widgets/sea_battlefield.dart';
-import '../widgets/ship_widgets.dart' show HullBar, ShipAtSea, playerShipRecord;
+import '../widgets/ship_widgets.dart' show HullBar, playerShipRecord;
+import '../widgets/side_view/sea_kit.dart';
 import 'ship_battle_panel.dart';
 
 enum _VoyagePhase { event, fight, arrived, failed }
@@ -1136,6 +1137,14 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         : ahead.join(', ');
   }
 
+  /// The sea's weather on a day: a storm is a squall, a windknot sail
+  /// aboard gives a tailwind, else calm.
+  SeaWeather _voyageWeather(SeaEvent event) => event.kind == SeaEventKind.storm
+      ? SeaWeather.squall
+      : _has(SailPower.windknot)
+          ? SeaWeather.tailwind
+          : SeaWeather.calm;
+
   Widget _buildEvent(
     BuildContext context, {
     required bool fr,
@@ -1163,9 +1172,12 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                   if (event.kind == SeaEventKind.storm)
                     const Positioned.fill(
                         child: IgnorePointer(child: StormLayer())),
-                  ShipAtSea(
-                    ship: _player!,
-                    height: 104,
+                  SeaSideScene(
+                    key: const Key('voyage_scene'),
+                    waters: _waters,
+                    weather: _voyageWeather(event),
+                    flying: _flying,
+                    height: 140,
                     beside: Icon(icon, size: 46, color: colour),
                   ),
                 ],

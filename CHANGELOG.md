@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.296.0+332]
+
+The voyage in side view: the sea.
+
+### Changed
+- **A voyage day's picture is a side view** (board 5): the ship small, seen from the side, over a scrolling sea that wears the colours of the waters she sails (the same five records the fight paints: open, shallows, drowned, abyss, ashen), with a sky in dithered bands, what stands on the horizon (islets, a drowned palm islet, broken towers, the ashen cliffs) and what the waters carry (sandbars, kelp, slow rings of void light). A storm day is a squall (rain, higher waves, the flash as before); a windknot sail aboard gives a tailwind; a flying hull hangs above the water with her shadow on it. Reduced motion: a still scene. The ship is one placeholder hull and sail until the fourteen hulls' own side views come.
+
 ## [1.295.0+331]
 
 The ash squall on the road to the Ashen Quarter.
