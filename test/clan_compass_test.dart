@@ -90,10 +90,15 @@ void main() {
       for (final schema in [factionsSchema, subclansSchema, relationsSchema]) {
         await container.read(gameDbProvider(schema).notifier).whenLoaded();
       }
-      await notifier.loadSession(baseSession().copyWith(
-        politics: const PoliticsState(standings: {'vigil': 28, 'compact': -12}),
-      ));
     });
+    await tester.runAsync(() => notifier.loadSession(PlayerSession.fromJson({
+          ...baseSession().toJson(),
+          'raceId': 'human',
+          'professionId': 'warrior',
+        }).copyWith(
+          politics:
+              const PoliticsState(standings: {'vigil': 28, 'compact': -12}),
+        )));
     await tester.pumpWidget(UncontrolledProviderScope(
       container: container,
       child: MaterialApp(

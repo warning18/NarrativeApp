@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.326.0+362]
+
+The clan offer is a hall, a compass and three rows.
+
+### Changed
+- **The clan gift popin** is built as the user chose it from board 16: the picked clan's banner (a little smaller than its pixels) beside its charter in the clan's colour (name, where you stand with it, motto, what it stands for when the data has the line, and which way the alignment moves, **in a word**: toward Good, toward Evil, no change); under it the clans' compass; under that the gift and the words the clan says. The three choices sit at the bottom as ledger rows (crest, clan, gift, the first standing it moves, one line); a tap picks a row and the hall above shows the rest.
+- **The compass** puts the six clans on a ring where friends sit side by side and blood feuds face each other; the picked clan's lines run to the others (friends solid, foes dashed, coloured by how they stand), each crest wears what changes for it (+6, +1.5, −3), and the clans on offer are ringed in gold.
+- **The Clans screen's Standing tab** opens with the same compass: each crest wears where you stand with the clan, and a tap names its friends and foes.
+
 ## [1.323.0+359]
 
 ### Added
