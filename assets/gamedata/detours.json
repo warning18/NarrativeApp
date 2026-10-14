@@ -329,6 +329,498 @@
           "fr": "La lumière est mauvaise : basse, blanche, avec quelque chose en elle qui n’est pas le soleil."
         }
       ]
+    },
+    "ashlands": {
+      "shop": [
+        {
+          "en": "A woman sells scorched crockery from a cart, each piece with a thumbprint of soot she swears is a mark of quality.",
+          "fr": "Une femme vend de la vaisselle roussie depuis une charrette, chaque pièce portant une empreinte de pouce en suie qu’elle jure être une marque de qualité."
+        },
+        {
+          "en": "A candle-seller keeps her wares in a tin box against the ash, and sells them one by one to those who can prove they carry no fire.",
+          "fr": "Une marchande de bougies garde sa marchandise dans une boîte de fer-blanc à l’abri de la cendre, et la vend une à une à ceux qui prouvent n’avoir pas de feu sur eux."
+        },
+        {
+          "en": "A boy hawks slag glass by the handful from a bucket, cut into beads for those who want to remember the day.",
+          "fr": "Un garçon colporte du verre de scorie à pleines poignées dans un seau, taillé en perles pour ceux qui veulent se souvenir du jour."
+        },
+        {
+          "en": "An old smith has set his anvil in a ruined doorway and offers to straighten anything the purge bent.",
+          "fr": "Un vieux forgeron a installé son enclume dans une porte en ruine et propose de redresser tout ce que la purge a tordu."
+        },
+        {
+          "en": "A stall of salvage under a half-fallen awning offers brass, rope and a surprising number of boots, all single.",
+          "fr": "Un étal de récupération sous un auvent à demi tombé propose du laiton, de la corde et un nombre surprenant de bottes, toutes dépareillées."
+        },
+        {
+          "en": "A pedlar with his face wrapped in cloth sells water by the cup and asks no questions, which is most of his stock.",
+          "fr": "Un colporteur au visage enveloppé de tissu vend de l’eau à la tasse et ne pose aucune question, ce qui fait l’essentiel de son fonds."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A figure in a scorched tabard steps into the street with a torch in one hand and a list in the other.",
+          "fr": "Une silhouette en tabard roussi s’avance dans la rue, une torche d’une main, une liste de l’autre.",
+          "mood": "tense"
+        },
+        {
+          "en": "Something stirs under the cinders ahead and pulls itself upright, trailing smoke.",
+          "fr": "Quelque chose remue sous les cendres devant vous et se redresse, traînant de la fumée.",
+          "mood": "tense"
+        },
+        {
+          "en": "An iron sentinel, cold and half-buried, shifts its weight on a leg that is not quite iron any more.",
+          "fr": "Une sentinelle de fer, froide et à demi enterrée, déplace son poids sur une jambe qui n’est plus tout à fait de fer.",
+          "mood": "tense"
+        },
+        {
+          "en": "A purifier’s bell rings once at the end of the street, and every shutter on it closes.",
+          "fr": "Une cloche de purificateur sonne une fois au bout de la rue, et tous les volets se ferment.",
+          "mood": "tense"
+        },
+        {
+          "en": "Embers glow where none should, and the glow moves toward you along the gutter.",
+          "fr": "Des braises rougeoient là où il ne devrait pas y en avoir, et la lueur avance vers vous le long du caniveau.",
+          "mood": "tense"
+        },
+        {
+          "en": "A pair of auxiliaries steps out of a burned arcade in time, their tabards clean in a street where nothing else is.",
+          "fr": "Deux auxiliaires sortent d’une arcade brûlée en cadence, leurs tabards propres dans une rue où rien ne l’est.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "A widow asks, quietly, whether you can find a name that was crossed off a list.",
+          "fr": "Une veuve demande, à voix basse, si vous pouvez retrouver un nom qu’on a rayé d’une liste."
+        },
+        {
+          "en": "A notice on the Reckoning Wall offers coin to anyone who can read a ledger that survived the fire.",
+          "fr": "Un avis sur le Mur du Compte offre de l’argent à qui saura lire un registre qui a survécu à l’incendie."
+        },
+        {
+          "en": "A boy with a bundle of fever-bark asks whether you are going toward the Wall.",
+          "fr": "Un garçon chargé d’un paquet d’écorce de fièvre demande si vous allez vers le Mur."
+        },
+        {
+          "en": "A purged merchant whispers that his strongbox is still under a floor in the old quarter, and the floor is still there.",
+          "fr": "Un marchand purgé murmure que son coffre est toujours sous un plancher du vieux quartier, et que le plancher y est toujours."
+        },
+        {
+          "en": "A priest in scorched robes needs someone to carry a lamp across a burned square, and not to ask why.",
+          "fr": "Un prêtre en robe roussie cherche quelqu’un pour porter une lampe à travers une place brûlée, sans demander pourquoi."
+        },
+        {
+          "en": "A surviving clerk offers to trade what he remembers for what you are carrying.",
+          "fr": "Un greffier rescapé propose d’échanger ce dont il se souvient contre ce que vous portez."
+        }
+      ],
+      "treasure": [
+        {
+          "en": "In the ash of a collapsed counting-house, a tin box is warm to the touch and not quite empty.",
+          "fr": "Dans la cendre d’un comptoir effondré, une boîte de fer-blanc est tiède au toucher et pas tout à fait vide."
+        },
+        {
+          "en": "Under a fallen beam, a boot lies with a single coin pressed into the heel.",
+          "fr": "Sous une poutre tombée, une botte gît avec une unique pièce enfoncée dans le talon."
+        },
+        {
+          "en": "A seam of slag glass runs through a burned wall, clear as a window, if a window had a memory.",
+          "fr": "Une veine de verre de scorie traverse un mur brûlé, claire comme une fenêtre, si une fenêtre avait une mémoire."
+        },
+        {
+          "en": "Half-buried in cinders lies an Inquisition seal-ring, still on its finger-bone.",
+          "fr": "À demi enfouie dans les cendres, une chevalière de sceau de l’Inquisition, toujours à son os de doigt."
+        },
+        {
+          "en": "A cellar door has been left unburned, and behind it stands a cask of good oil the fire passed over.",
+          "fr": "Une porte de cave a été épargnée par le feu, et derrière elle se trouve un tonneau de bonne huile que l’incendie a oublié."
+        },
+        {
+          "en": "On a mantel that stands alone in a ruined room, a lamp has been left, and under the lamp, a small purse.",
+          "fr": "Sur un manteau de cheminée resté seul dans une pièce en ruine, une lampe a été laissée, et sous la lampe, une petite bourse."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A cellar has kept its roof, its bench and a candle stub, and there is room for one more.",
+          "fr": "Une cave a gardé son toit, son banc et un bout de bougie, et il y a de la place pour une personne de plus."
+        },
+        {
+          "en": "A burned chapel’s nave still has one pew whole, facing an altar that is a heap.",
+          "fr": "La nef d’une chapelle brûlée garde un banc entier, face à un autel qui n’est plus qu’un tas."
+        },
+        {
+          "en": "A well-head in a courtyard of ash gives cold water and a ledge to sit on.",
+          "fr": "La margelle d’un puits dans une cour de cendre offre de l’eau froide et un rebord où s’asseoir."
+        },
+        {
+          "en": "A cart with its wheels off has been turned into a shelter, with a blanket and a kettle someone left.",
+          "fr": "Une charrette privée de ses roues a été transformée en abri, avec une couverture et une bouilloire que quelqu’un a laissées."
+        },
+        {
+          "en": "A stair of the Spire keeps a landing out of the wind, and a warder who turns his back on purpose.",
+          "fr": "Un escalier de la Flèche garde un palier à l’abri du vent, et un gardien qui tourne le dos exprès."
+        },
+        {
+          "en": "A smith’s forge has gone out, but the hearth bricks are still warm, and nobody has come to claim the warmth.",
+          "fr": "La forge d’un forgeron s’est éteinte, mais les briques du foyer sont encore tièdes, et personne n’est venu réclamer cette chaleur."
+        }
+      ],
+      "generic": [
+        {
+          "en": "A flurry of ash comes down the street like snow that has forgotten what it was.",
+          "fr": "Une bourrasque de cendre descend la rue comme une neige qui aurait oublié ce qu’elle était."
+        },
+        {
+          "en": "A weathercock hangs by one nail from a burned roof, and turns, with great dignity, in no wind.",
+          "fr": "Un coq de girouette pend à un clou d’un toit brûlé, et tourne, avec grande dignité, sans aucun vent."
+        },
+        {
+          "en": "The Reckoning Wall shows at the end of the street, grey and high, with a thin line of smoke along its top.",
+          "fr": "Le Mur du Compte apparaît au bout de la rue, gris et haut, un mince filet de fumée sur sa crête."
+        },
+        {
+          "en": "Somewhere a bell is struck once, slowly, by a hand in no hurry.",
+          "fr": "Quelque part une cloche est frappée une fois, lentement, par une main qui ne se presse pas."
+        },
+        {
+          "en": "A child’s chalk drawing of a house survives on a wall, untouched, in a street without houses.",
+          "fr": "Un dessin de maison à la craie, œuvre d’un enfant, survit sur un mur, intact, dans une rue sans maisons."
+        },
+        {
+          "en": "The air tastes of old fire, and the dust has a metallic sweetness, like a coin held in the mouth.",
+          "fr": "L’air a un goût de vieux feu, et la poussière une douceur métallique, comme une pièce gardée dans la bouche."
+        }
+      ]
+    },
+    "fen": {
+      "shop": [
+        {
+          "en": "A reed-cutter sells bundles from a flat boat tied to a post, and will not take payment until the bundle has been inspected for faces.",
+          "fr": "Un coupeur de roseaux vend des bottes depuis un bateau plat amarré à un pieu, et n’accepte de paiement qu’après avoir fait inspecter la botte à la recherche de visages."
+        },
+        {
+          "en": "A village woman sets out eels in a trough of fen water, still moving, and names a price in old coin and older favours.",
+          "fr": "Une villageoise dispose des anguilles dans une auge d’eau du marais, encore vivantes, et annonce un prix en vieilles pièces et en plus vieilles faveurs."
+        },
+        {
+          "en": "An old man sells lamp wicks twisted from fen cotton, and swears they burn without smoke, and is only a little untruthful.",
+          "fr": "Un vieil homme vend des mèches de lampe tressées en coton des marais, et jure qu’elles brûlent sans fumée, et ne ment qu’un peu."
+        },
+        {
+          "en": "A stall on the village green offers bell-rope, tallow and a charm against the Court’s lights, all at the same price.",
+          "fr": "Un étal sur la place du village propose de la corde de cloche, du suif et un charme contre les lumières de la Cour, le tout au même prix."
+        },
+        {
+          "en": "A boatman sells passage over a pool he says is shallow, and will not say how he knows.",
+          "fr": "Un batelier vend le passage d’une mare qu’il dit peu profonde, et ne dira pas comment il le sait."
+        },
+        {
+          "en": "A peddler has laid out jars of black water on a plank, each labelled with a village and a year.",
+          "fr": "Un colporteur a disposé sur une planche des bocaux d’eau noire, chacun étiqueté d’un village et d’une année."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A light on the water stops, and the reeds around it stop, and something under the water turns toward you.",
+          "fr": "Une lumière sur l’eau s’arrête, et les roseaux autour d’elle s’arrêtent, et quelque chose sous l’eau se tourne vers vous.",
+          "mood": "tense"
+        },
+        {
+          "en": "A figure wades up out of the pool and does not drip.",
+          "fr": "Une silhouette sort de la mare à gué et ne goutte pas.",
+          "mood": "tense"
+        },
+        {
+          "en": "In the shallows between two reed-beds, a shape that was a person has been standing for some time.",
+          "fr": "Dans les hauts-fonds entre deux roselières, une forme qui fut une personne se tient là depuis un moment.",
+          "mood": "tense"
+        },
+        {
+          "en": "A rider on a white horse appears at the end of the causeway and comes no nearer, and goes no further away.",
+          "fr": "Un cavalier sur un cheval blanc apparaît au bout de la chaussée et ne s’approche pas, et ne s’éloigne pas.",
+          "mood": "tense"
+        },
+        {
+          "en": "The bells of the next village stop mid-stroke. The silence after is not empty.",
+          "fr": "Les cloches du village voisin s’arrêtent en plein coup. Le silence qui suit n’est pas vide.",
+          "mood": "tense"
+        },
+        {
+          "en": "A pair of hollow-eyed novices steps from the cloister gate, hands folded, and bars the road.",
+          "fr": "Deux novices aux yeux creux sortent de la porte du cloître, mains jointes, et barrent la route.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "A mother asks whether you will carry a bell-clapper to a village that has lost its own.",
+          "fr": "Une mère demande si vous voulez porter un battant de cloche à un village qui a perdu le sien."
+        },
+        {
+          "en": "A boatman says a light has followed his boat three nights running, and will pay to have it stopped.",
+          "fr": "Un batelier dit qu’une lumière suit sa barque depuis trois nuits, et paiera pour qu’on l’arrête."
+        },
+        {
+          "en": "A village elder wants someone to count the children, and count again, and say whether the number is the same.",
+          "fr": "Un ancien du village veut quelqu’un pour compter les enfants, recompter, et dire si le nombre est le même."
+        },
+        {
+          "en": "A cloister clerk offers coin for a ledger left on the third landing of a flooded stair.",
+          "fr": "Un greffier du cloître offre de l’argent pour un registre laissé sur le troisième palier d’un escalier inondé."
+        },
+        {
+          "en": "A bell-founder’s apprentice needs a cartload of bronze brought through before the dusk bells.",
+          "fr": "L’apprenti d’un fondeur de cloches a besoin qu’on lui apporte une charretée de bronze avant les cloches du soir."
+        },
+        {
+          "en": "A woman at a ford asks whether you have seen a man in a sexton’s coat, and does not want to hear the answer.",
+          "fr": "Une femme à un gué demande si vous avez vu un homme en manteau de sacristain, et ne veut pas entendre la réponse."
+        }
+      ],
+      "treasure": [
+        {
+          "en": "A reed boat drawn up in the sedge has a purse in its bilge, forgotten or left.",
+          "fr": "Un bateau de roseaux tiré dans les laîches a une bourse dans sa cale, oubliée ou laissée."
+        },
+        {
+          "en": "On a hummock above the pool, a drowned man’s boots are set side by side, and in one a handful of coin.",
+          "fr": "Sur un monticule au-dessus de la mare, les bottes d’un noyé sont posées côte à côte, et dans l’une une poignée de pièces."
+        },
+        {
+          "en": "In the mud of a drained pond, the lid of a small chest shows, rimmed with green.",
+          "fr": "Dans la vase d’un étang asséché, le couvercle d’un petit coffre affleure, bordé de vert."
+        },
+        {
+          "en": "A bell-post stands with its rope cut, and at its foot a tin of coin that the cutters did not take.",
+          "fr": "Un poteau à cloche se dresse, sa corde coupée, et à son pied une boîte de pièces que les coupeurs n’ont pas prise."
+        },
+        {
+          "en": "A fen cottage stands abandoned with the door ajar and, on the table, a loaf, a coin and a note: for whoever needs it.",
+          "fr": "Une chaumière du marais est abandonnée, la porte entrouverte, et sur la table un pain, une pièce et un mot : pour qui en a besoin."
+        },
+        {
+          "en": "Behind a reed screen a stone cairn has been built, and under the topmost stone lies a ring.",
+          "fr": "Derrière un rideau de roseaux, un cairn de pierre a été dressé, et sous la pierre du sommet repose une bague."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A causeway inn has a bench by the fire, a bowl of eel stew and a landlord who says only that the door is barred at dusk.",
+          "fr": "Une auberge de la chaussée offre un banc près du feu, un bol de ragoût d’anguille et un aubergiste qui dit seulement que la porte est barrée au crépuscule."
+        },
+        {
+          "en": "A bell-tower’s lowest room is dry, with a rope that sways, a floor that creaks and a candle.",
+          "fr": "La salle basse d’un clocher est sèche, avec une corde qui se balance, un plancher qui craque et une bougie."
+        },
+        {
+          "en": "A hunter’s hide above the water has straw, a blanket and a view of the pools in the early dark.",
+          "fr": "Un affût de chasseur au-dessus de l’eau a de la paille, une couverture et une vue sur les mares dans la nuit naissante."
+        },
+        {
+          "en": "A village green has a bench under a willow, and from the next house comes the sound of a loom.",
+          "fr": "Une place de village a un banc sous un saule, et de la maison voisine vient le bruit d’un métier à tisser."
+        },
+        {
+          "en": "A boat has been pulled up under a bank of alders, and its canvas makes a roof.",
+          "fr": "Un bateau a été tiré sous un talus d’aulnes, et sa toile fait un toit."
+        },
+        {
+          "en": "A cloister gatehouse is open and empty, with a bench, a window and a lamp that someone trims.",
+          "fr": "La loge d’un cloître est ouverte et vide, avec un banc, une fenêtre et une lampe que quelqu’un mouche."
+        }
+      ],
+      "generic": [
+        {
+          "en": "Mist lies on the pools in sheets, and moves, very slowly, against the wind.",
+          "fr": "La brume s’étend sur les mares en nappes, et se déplace, très lentement, contre le vent."
+        },
+        {
+          "en": "A heron stands in the shallows, perfectly still, and does not look at you, in the way of herons.",
+          "fr": "Un héron se tient dans les hauts-fonds, parfaitement immobile, et ne vous regarde pas, à la manière des hérons."
+        },
+        {
+          "en": "The reeds whisper in a language of consonants, and then fall silent all at once.",
+          "fr": "Les roseaux murmurent dans une langue de consonnes, puis se taisent d’un seul coup."
+        },
+        {
+          "en": "A bell rings far off across the water, and is answered, and answered again.",
+          "fr": "Une cloche sonne au loin sur l’eau, et reçoit réponse, et réponse encore."
+        },
+        {
+          "en": "A line of lights goes along the far bank, slowly, in step, like a procession with no one in it.",
+          "fr": "Une ligne de lumières longe la rive opposée, lentement, au pas, comme une procession où il n’y a personne."
+        },
+        {
+          "en": "The ground gives slightly underfoot, as though the fen were taking your measure.",
+          "fr": "Le sol cède légèrement sous les pieds, comme si le marais prenait votre mesure."
+        }
+      ]
+    },
+    "volcanic": {
+      "shop": [
+        {
+          "en": "A roadside stall in the red hills sells salt in twists of paper, blessed and priced accordingly.",
+          "fr": "Un étal au bord de la route dans les collines rouges vend du sel en papillotes, béni et tarifé en conséquence."
+        },
+        {
+          "en": "An oni peddler lays out bells of every size on a red cloth and rings each one for you, just to be fair.",
+          "fr": "Un colporteur oni étale des cloches de toutes tailles sur un tissu rouge et les fait sonner une à une pour vous, par équité."
+        },
+        {
+          "en": "A hot-spring keeper sells towels, broth and the right to sit in the water, in that order.",
+          "fr": "Un gardien de source chaude vend des serviettes, du bouillon et le droit de s’asseoir dans l’eau, dans cet ordre."
+        },
+        {
+          "en": "A potter has set out a row of red bowls, each fired on the hillside and each slightly warm.",
+          "fr": "Un potier a aligné des bols rouges, chacun cuit sur la colline et chacun encore un peu tiède."
+        },
+        {
+          "en": "A woman with a basket of sulphur eggs calls to the pilgrims, and the pilgrims, mostly, do not stop.",
+          "fr": "Une femme au panier d’œufs soufrés interpelle les pèlerins, et les pèlerins, pour la plupart, ne s’arrêtent pas."
+        },
+        {
+          "en": "An exorcist’s apprentice sells wards at the roadside, three to a string, and is learning the hard way not to haggle.",
+          "fr": "Une apprentie d’exorciste vend des talismans au bord de la route, trois par cordon, et apprend à ses dépens à ne pas marchander."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A bell rings from the hillside, and it is the wrong bell, and it rings again from the other side.",
+          "fr": "Une cloche sonne sur le flanc de la colline, et c’est la mauvaise cloche, et elle sonne de nouveau de l’autre côté.",
+          "mood": "tense"
+        },
+        {
+          "en": "Two figures in ash-grey chant backwards at a bend of the road, and the salt in the bowls beside them has gone black.",
+          "fr": "Deux silhouettes gris cendre psalmodient à l’envers à un coude de la route, et le sel dans les bols à côté d’elles est devenu noir.",
+          "mood": "tense"
+        },
+        {
+          "en": "Something small and red-eyed steps out of a crack in the rock and looks at you as if you owed it money.",
+          "fr": "Quelque chose de petit aux yeux rouges sort d’une fissure du rocher et vous regarde comme si vous lui deviez de l’argent.",
+          "mood": "tense"
+        },
+        {
+          "en": "A figure in an oni mask watches from a rock above the road, and does not hide that it is watching.",
+          "fr": "Une silhouette au masque d’oni observe depuis un rocher au-dessus de la route, et ne cache pas qu’elle observe.",
+          "mood": "tense"
+        },
+        {
+          "en": "Steam jets from a vent, and in the steam, for a moment, a shape stands up.",
+          "fr": "De la vapeur jaillit d’un évent, et dans la vapeur, un instant, une forme se dresse.",
+          "mood": "tense"
+        },
+        {
+          "en": "A hot wind blows down the road, and a smell comes with it: struck flint and old iron.",
+          "fr": "Un vent chaud descend la route, et une odeur l’accompagne : silex frappé et vieux fer.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "An exorcist’s apprentice asks you to carry a bell up the last mile, because her knees will not.",
+          "fr": "Une apprentie d’exorciste vous demande de porter une cloche sur le dernier mille, car ses genoux ne le feront pas."
+        },
+        {
+          "en": "A spring-keeper wants someone to find why the water has gone cold in the third pool.",
+          "fr": "Un gardien de source veut quelqu’un pour trouver pourquoi l’eau est devenue froide dans le troisième bassin."
+        },
+        {
+          "en": "An oni elder asks you to settle a debt, cup for cup, with a man who has gone down the hill.",
+          "fr": "Un ancien oni vous demande de régler une dette, coupe pour coupe, auprès d’un homme descendu de la colline."
+        },
+        {
+          "en": "A pilgrim begs a candle-end to be carried to the shrine at the top of the road.",
+          "fr": "Un pèlerin supplie qu’on porte un bout de bougie au sanctuaire en haut de la route."
+        },
+        {
+          "en": "A potter needs red clay from a vent that has begun to make noises.",
+          "fr": "Un potier a besoin d’argile rouge prise à un évent qui s’est mis à faire du bruit."
+        },
+        {
+          "en": "A warding-post keeper asks whether you have seen who has been taking the salt from the bowls.",
+          "fr": "Un gardien de borne demande si vous avez vu qui prend le sel dans les bols."
+        }
+      ],
+      "treasure": [
+        {
+          "en": "Beneath a warding post, wedged in the roots of a stunted pine, lies a small tin box of pilgrims’ coin.",
+          "fr": "Sous une borne de protection, coincée dans les racines d’un pin rabougri, repose une petite boîte de fer-blanc remplie de pièces de pèlerins."
+        },
+        {
+          "en": "A hot spring has left a crust of pale crystal on the rocks, and in the crust, a coin that someone threw in.",
+          "fr": "Une source chaude a laissé une croûte de cristal pâle sur les rochers, et dans la croûte, une pièce que quelqu’un y a jetée."
+        },
+        {
+          "en": "At a bend of the road a red-clay jar sits unbroken, stoppered with wax, full of something that sloshes.",
+          "fr": "À un tournant de la route, une jarre d’argile rouge, intacte, bouchée à la cire, pleine de quelque chose qui clapote."
+        },
+        {
+          "en": "A dropped bell lies in the road, cracked, its bronze worth more than its voice.",
+          "fr": "Une cloche tombée gît sur la route, fêlée, son bronze valant plus que sa voix."
+        },
+        {
+          "en": "In a crevice above the steaming pool, a hand-wrapped bundle: a pilgrim’s comb, a cup, and a purse.",
+          "fr": "Dans une crevasse au-dessus du bassin fumant, un paquet noué à la main : un peigne de pèlerin, une tasse, et une bourse."
+        },
+        {
+          "en": "A flat stone beside a vent has been set with offerings; the oldest are coins, and the newest is a pair of shoes.",
+          "fr": "Une pierre plate près d’un évent porte des offrandes ; les plus anciennes sont des pièces, la plus récente une paire de souliers."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A hot-spring bathhouse has a bench, a bowl of broth and a rule that no one speaks.",
+          "fr": "Un bain de source chaude offre un banc, un bol de bouillon et une règle : personne ne parle."
+        },
+        {
+          "en": "A roadside shrine has a roof, a floor of beaten earth and a lamp that never goes out.",
+          "fr": "Un sanctuaire de bord de route a un toit, un sol de terre battue et une lampe qui ne s’éteint jamais."
+        },
+        {
+          "en": "A potter’s kiln, banked for the night, throws a steady warmth, and the potter does not mind a stranger sleeping near it.",
+          "fr": "Le four d’un potier, couvert pour la nuit, diffuse une chaleur régulière, et le potier ne voit pas d’inconvénient à ce qu’un étranger dorme près de lui."
+        },
+        {
+          "en": "A pilgrims’ hostel at a crossroads has straw, a pot of tea and a bell on the door that rings by itself, politely.",
+          "fr": "Une hôtellerie de pèlerins à un carrefour a de la paille, une théière et une cloche à la porte qui sonne toute seule, poliment."
+        },
+        {
+          "en": "An overhang of red rock shades a stretch of the road, and on the ledge is a flask, left for whoever comes.",
+          "fr": "Un surplomb de roche rouge ombrage un tronçon de la route, et sur le rebord se trouve une gourde, laissée pour qui passe."
+        },
+        {
+          "en": "A boulder by the path is warm all through, and just the right shape for sitting on.",
+          "fr": "Un rocher au bord du sentier est tiède de part en part, et juste de la bonne forme pour s’y asseoir."
+        }
+      ],
+      "generic": [
+        {
+          "en": "A bell rings somewhere above the road and is not answered.",
+          "fr": "Une cloche sonne quelque part au-dessus de la route et ne reçoit pas de réponse."
+        },
+        {
+          "en": "Red dust rises from the road in the heat and hangs there, like a veil of something being said.",
+          "fr": "La poussière rouge monte de la route dans la chaleur et reste là, comme le voile de quelque chose que l’on dit."
+        },
+        {
+          "en": "A line of pilgrims comes down the hill in single file, each carrying a bowl of salt and nothing else.",
+          "fr": "Une file de pèlerins descend la colline en rang, chacun portant un bol de sel et rien d’autre."
+        },
+        {
+          "en": "The hillside steams in patches, and the steam smells faintly of eggs and iron.",
+          "fr": "La colline fume par endroits, et la vapeur sent faiblement l’œuf et le fer."
+        },
+        {
+          "en": "A warding post leans a little at the road’s edge, with a rusted bell on it and a pinch of salt.",
+          "fr": "Une borne de protection penche un peu au bord de la route, avec une cloche rouillée dessus et une pincée de sel."
+        },
+        {
+          "en": "A hawk hangs on the warm air over the red rock, and does not move for a long time.",
+          "fr": "Un faucon se tient sur l’air chaud au-dessus de la roche rouge, et ne bouge pas pendant longtemps."
+        }
+      ]
     }
   },
   "themes": {}
