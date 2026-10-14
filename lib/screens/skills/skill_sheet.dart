@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../combat/combat_engine.dart';
 import '../../combat/dice_faces.dart';
+import '../../data/skill_craft.dart' show skillCraftOpen;
 import '../../data/skill_tree.dart';
 import '../../gamedata/db_schema.dart';
 import '../../l10n/app_locale.dart';
@@ -240,11 +241,13 @@ class _SkillSheet extends ConsumerWidget {
                     onPressed: () => _compare(context, ref, model, entry),
                     child: Text(tr(ref, 'compare_with')),
                   ),
-                  TextButton(
-                    key: const Key('skill_craft'),
-                    onPressed: () => openCraft(context, ref),
-                    child: Text(tr(ref, 'craft_link')),
-                  ),
+                  if (skillCraftOpen(
+                      ref.read(playerSessionProvider).builtHouseIds))
+                    TextButton(
+                      key: const Key('skill_craft'),
+                      onPressed: () => openCraft(context, ref),
+                      child: Text(tr(ref, 'craft_link')),
+                    ),
                 ],
               ),
             ],

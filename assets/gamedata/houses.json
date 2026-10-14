@@ -47,6 +47,21 @@
     "houseName_fr": "Le Maître-forgeron",
     "description_fr": "Une vraie forge, pas un étal de marché — enclume, soufflet, et un maître-forgeron qui ne travaille que le métal qui en vaut la peine. Ouvre les plus belles pièces de la Forge à quiconque est assez fort et robuste pour les porter."
   },
+  "skillwright": {
+    "houseID": "skillwright",
+    "category": "workshops",
+    "houseName": "The Skillwright",
+    "description": "A long bench under the camp's lamps, chalked with the moves of every fight the party has survived. Two techniques learned here can be worked into one: the only place in the world where a skill is crafted.",
+    "buildCost": 350,
+    "materialCost": {
+      "material_timber": 3,
+      "material_slag_glass": 2
+    },
+    "partyCapacityBonus": 0,
+    "unlocksCraft": true,
+    "houseName_fr": "L’Atelier des techniques",
+    "description_fr": "Un long établi sous les lampes du camp, couvert à la craie des gestes de chaque combat auquel le groupe a survécu. Deux techniques apprises peuvent ici n’en faire qu’une : le seul endroit au monde où l’on forge une compétence."
+  },
   "academy": {
     "houseID": "academy",
     "category": "workshops",
