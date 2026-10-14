@@ -4,11 +4,15 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/camp_works.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/l10n/app_strings.dart';
+import 'package:narrative_data_app/providers/player_session_provider.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -120,5 +124,27 @@ void main() {
         }
       }
     }
+  });
+
+  testWidgets('a locked house is refused: its chapter, its companion',
+      (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    late WidgetRef ref;
+    await tester.pumpWidget(ProviderScope(
+      child: Consumer(builder: (context, r, _) {
+        ref = r;
+        return const SizedBox.shrink();
+      }),
+    ));
+    await tester.runAsync(() async {
+      final notifier = ref.read(playerSessionProvider.notifier);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      await notifier.loadSession(PlayerSession.fromJson({'gold': 100}));
+      await notifier.buildHouse('banner_loft', 0, fromChapter: 5, chapter: 4);
+      await notifier.buildHouse('keldas_hall', 0, requiredAllyId: 'kelda');
+      expect(ref.read(playerSessionProvider).builtHouseIds, isEmpty);
+      await notifier.buildHouse('banner_loft', 0, fromChapter: 5, chapter: 5);
+      expect(ref.read(playerSessionProvider).builtHouseIds, ['banner_loft']);
+    });
   });
 }

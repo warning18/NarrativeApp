@@ -3382,11 +3382,23 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// see materials.dart), already built, or any of [requiredFlags]
   /// (houses.json) is still unset -- the camp's late workshops wait on the
   /// zones that supply them.
+  ///
+  /// A house still locked (see camp_works.dart) is refused too: one whose
+  /// tier comes in a chapter after [chapter] ([fromChapter], the tier's
+  /// first), or whose companion ([requiredAllyId]) is not recruited.
   Future<void> buildHouse(String houseId, int cost,
       {String? unlocksShopId,
       List<String> requiredFlags = const [],
-      Map<String, int> materialCost = const {}}) async {
+      Map<String, int> materialCost = const {},
+      int fromChapter = 1,
+      int? chapter,
+      String? requiredAllyId}) async {
     if (state.gold < cost || state.builtHouseIds.contains(houseId)) return;
+    if (chapter != null && chapter < fromChapter) return;
+    if ((requiredAllyId ?? '').isNotEmpty &&
+        !state.recruitedAllies.any((a) => a.companionId == requiredAllyId)) {
+      return;
+    }
     if (requiredFlags.any((flag) => !state.flags.contains(flag))) return;
     if (missingMaterials(state.inventoryItemIds, materialCost).isNotEmpty) {
       return;
