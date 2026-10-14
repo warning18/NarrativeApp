@@ -13,6 +13,7 @@ import '../combat/sea_beasts.dart' show BeastState;
 import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
 import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
+import '../data/character_start.dart' show startingArmor;
 import '../data/contracts.dart';
 import '../data/camp_state.dart' show harborHouseId;
 import '../data/factions.dart';
@@ -1671,9 +1672,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final baseDamage = ((defaults['baseDamage'] as num?)?.toInt() ?? 10) +
         bonus(race, 'bonusBaseDamage') +
         bonus(profession, 'bonusBaseDamage');
-    final baseArmor = ((defaults['baseArmor'] as num?)?.toInt() ?? 0) +
-        bonus(race, 'bonusBaseArmor') +
-        bonus(profession, 'bonusBaseArmor');
+    final baseArmor = startingArmor(
+        ((defaults['baseArmor'] as num?)?.toInt() ?? 0) +
+            bonus(race, 'bonusBaseArmor') +
+            bonus(profession, 'bonusBaseArmor'));
     final luck = ((defaults['luck'] as num?)?.toInt() ?? 0) +
         bonus(race, 'bonusLuck') +
         bonus(profession, 'bonusLuck');
