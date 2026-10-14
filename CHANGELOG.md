@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.326.0+362]
+## [1.331.0+367]
 
 The clan offer: banners, a compass, then the picked clan's words.
 
