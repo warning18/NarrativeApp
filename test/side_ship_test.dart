@@ -2,6 +2,7 @@
 // in the sea scene, in every weather, flying or not, plain or dressed, and
 // each sits at a sensible length.
 import 'dart:convert';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -85,6 +86,45 @@ void main() {
         ));
         await tester.pump(const Duration(milliseconds: 300));
         expect(tester.takeException(), isNull, reason: '$id with ${gears[i]}');
+      }
+    }
+  });
+
+  testWidgets('the slab, twin and bone hulls wear their guns, gear and sigils',
+      (tester) async {
+    // Painted into a picture, the dressed hull differs from the bare one.
+    Future<List<int>> render(ShipForm form, ShipDress? dress) async {
+      final rec = ui.PictureRecorder();
+      final canvas = Canvas(rec);
+      paintSideShip(canvas, 4, x: 8, base: 60, form: form, dress: dress);
+      final img = await rec.endRecording().toImage(260, 260);
+      final data = await img.toByteData();
+      return data!.buffer.asUint8List().toList();
+    }
+
+    const sigils = [ShipSigil(SailPower.flight, Color(0xFFB8862B))];
+    for (final kind in [
+      HullKind.twin,
+      HullKind.iron,
+      HullKind.lodestone,
+      HullKind.bone,
+    ]) {
+      final id = ships.keys.firstWhere((k) =>
+          ShipForm.fromRecord(k, ships[k] as Map<String, dynamic>).kind ==
+          kind);
+      final form = ShipForm.fromRecord(id, ships[id] as Map<String, dynamic>);
+      final bare = await tester.runAsync(() => render(form, null));
+      final armed = await tester.runAsync(() => render(
+          form,
+          const ShipDress(mounts: [
+            ShipMount(family: 'culverin', tier: 2, rarity: 'common'),
+            ShipMount(family: 'ballista', tier: 1, rarity: 'common'),
+          ], gear: 'stores')));
+      final marked = await tester
+          .runAsync(() => render(form, const ShipDress(sigils: sigils)));
+      expect(armed, isNot(equals(bare)), reason: '$kind guns and gear');
+      if (kind == HullKind.twin || kind == HullKind.bone) {
+        expect(marked, isNot(equals(bare)), reason: '$kind sigil');
       }
     }
   });

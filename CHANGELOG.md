@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.307.0+343]
+
+Every hull in side view carries her own gear.
+
+### Changed
+- **The twin hull, the ironclad, the lodestone barge and the void carrack now wear their fittings in side view** (voyage, arrival, the shipwright's yard, the fight strip): guns by family at their ports and rails, plating, and the utility's deck gear. The ironclad's guns and gear stand on the casemate's roof and the muzzles come out of its ports; the lodestone barge's on its slab. The twin hull's two lateens and the carrack's void sail carry the painted sails' sigils too. A battered one now shows its damage along its real rail.
+
 ## [1.306.0+342]
 
 ### Changed
