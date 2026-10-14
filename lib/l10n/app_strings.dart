@@ -11315,6 +11315,22 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Worn',
     AppLanguage.fr: 'Porté',
   },
+  'title_take_off': {
+    AppLanguage.en: 'Take off',
+    AppLanguage.fr: 'Retirer',
+  },
+  'title_effect_heading': {
+    AppLanguage.en: 'Effect',
+    AppLanguage.fr: 'Effet',
+  },
+  'title_granted_by': {
+    AppLanguage.en: 'Granted by',
+    AppLanguage.fr: 'Accordé par',
+  },
+  'title_no_clan': {
+    AppLanguage.en: 'Earned on the road',
+    AppLanguage.fr: 'Gagné sur la route',
+  },
   'title_bad_note': {
     AppLanguage.en: 'A brand: it counts, worn or not.',
     AppLanguage.fr: 'Une marque\u00a0: elle compte, portée ou non.',

@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.318.0+354]
+## [1.320.0+356]
 
 A level-up is a choice of training, not a pile of points.
 
@@ -17,6 +17,21 @@ A level-up is a choice of training, not a pile of points.
 - **No "decide later"**: the pop-up after a fight closes once the training is taken, and the Level Up screen shows the offer while points wait. Stats are no longer raised one by one.
 - **A Tome of Insight** (one point) brings a small offer: three single gains, each from a likely path.
 - Old saves keep their unspent points; they come back as offers.
+
+## [1.319.0+355]
+
+Skills are crafted at the camp's Skillwright.
+
+### Changed
+- **Craft a Skill is done at the camp, at the new Skillwright** (a workshop: 350 gold, timber and slag glass, from chapter 3). Until it stands, no skill can be crafted, and the craft entries on the skills screen do not show.
+- **The craft lists name the skills** in your language ("Fireball + Shadow Step → Blazing Shadow", "Requires: Second Wind"), never their ids.
+
+## [1.318.0+354]
+
+The title popin names its clan.
+
+### Changed
+- **Reading a title** (hold its chip on the Character tab) opens a sheet instead of a plain dialog: the granting clan's banner beside the title's own badge in the clan's colour, "Granted by" and the clan's name, the effect in a card of its own, then the words it came with, quiet. A title you can choose has Wear or Take off in the sheet; a brand ("the Marked") stays unchoosable and shows in red.
 
 ## [1.317.0+353]
 

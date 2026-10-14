@@ -10451,6 +10451,11 @@
         "fr": "La forge du maître-forgeron était allumée, et l’avait été, me dit-on, chaque jour de mon absence, au motif que le fer n’attend personne."
       },
       {
+        "flag": "house_skillwright",
+        "en": "The Skillwright’s bench had a new scar across it, and the Skillwright a new bruise; two old techniques had been made into one, and neither had gone quietly.",
+        "fr": "L’établi de l’Atelier des techniques portait une entaille neuve, et l’artisan un bleu tout neuf ; deux vieilles techniques n’en faisaient plus qu’une, et aucune ne s’était laissé faire sans bruit."
+      },
+      {
         "flag": "house_academy",
         "en": "Someone had put glass in the Academy’s one window, and there was a lamp behind it at an hour when sensible people sleep.",
         "fr": "Quelqu’un avait posé une vitre à l’unique fenêtre de l’Académie, et une lampe y brûlait à une heure où les gens raisonnables dorment."

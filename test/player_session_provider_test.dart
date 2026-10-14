@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/combat/combat_engine.dart';
 import 'package:narrative_data_app/data/offers.dart';
 import 'package:narrative_data_app/models/ally_state.dart';
+import 'package:narrative_data_app/data/skill_craft.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 
 /// A fresh, level-1 [PlayerSession] fixture with every required field
@@ -660,6 +661,7 @@ void main() {
       final notifier = await notifierWith(baseSession(
         unlockedSkillIds: ['fireball', 'shadow_step'],
         skillTiers: {'fireball': 2},
+        builtHouseIds: [skillwrightHouseId],
       ));
       await notifier.mergeSkills(
         inputSkillIds: ['fireball', 'shadow_step'],
@@ -674,7 +676,9 @@ void main() {
 
     test('is a no-op if either input is not unlocked', () async {
       final notifier = await notifierWith(
-        baseSession(unlockedSkillIds: ['fireball']),
+        baseSession(
+            unlockedSkillIds: ['fireball'],
+            builtHouseIds: [skillwrightHouseId]),
       );
       await notifier.mergeSkills(
         inputSkillIds: ['fireball', 'shadow_step'],
@@ -688,6 +692,7 @@ void main() {
     test('is a no-op if the result is already unlocked', () async {
       final notifier = await notifierWith(baseSession(
         unlockedSkillIds: ['fireball', 'shadow_step', 'blazing_shadow'],
+        builtHouseIds: [skillwrightHouseId],
       ));
       await notifier.mergeSkills(
         inputSkillIds: ['fireball', 'shadow_step'],
@@ -696,6 +701,19 @@ void main() {
       // Nothing consumed -- inputs stay put.
       expect(notifier.state.unlockedSkillIds, contains('fireball'));
       expect(notifier.state.unlockedSkillIds, contains('shadow_step'));
+    });
+
+    test('is a no-op without the camp\'s Skillwright (Wave 7)', () async {
+      final notifier = await notifierWith(
+        baseSession(unlockedSkillIds: ['fireball', 'shadow_step']),
+      );
+      await notifier.mergeSkills(
+        inputSkillIds: ['fireball', 'shadow_step'],
+        resultSkillId: 'blazing_shadow',
+      );
+      expect(
+          notifier.state.unlockedSkillIds, isNot(contains('blazing_shadow')));
+      expect(notifier.state.unlockedSkillIds, contains('fireball'));
     });
   });
 
