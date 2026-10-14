@@ -104,4 +104,59 @@ void main() {
     expect(find.textContaining('need'), findsWidgets);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+      'a house shows what it costs beside gold as chips, short in count',
+      (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    tester.view.physicalSize = const Size(390, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final houses =
+        json.decode(File('assets/gamedata/houses.json').readAsStringSync())
+            as Map<String, dynamic>;
+    await tester.pumpWidget(ProviderScope(
+      child: MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: CampTownSection(
+              houses: houses,
+              shops: const {},
+              zones: const {},
+              achievements: const {},
+            ),
+          ),
+        ),
+      ),
+    ));
+    final container =
+        ProviderScope.containerOf(tester.element(find.byType(CampTownSection)));
+    // Kelda's hall costs 2 timber: one is held.
+    await tester.runAsync(() => container
+        .read(playerSessionProvider.notifier)
+        .loadSession(PlayerSession.fromJson({
+          'gold': 350,
+          'inventoryItemIds': ['material_timber'],
+        })));
+    await tester.pump();
+    final chips = find.descendant(
+        of: find.byKey(const Key('town_materials_keldas_hall')),
+        matching: find.byKey(const Key('town_material_material_timber')));
+    await tester.ensureVisible(chips);
+    expect(chips, findsOneWidget);
+    expect(
+        find.descendant(of: chips, matching: find.text('1/2')), findsOneWidget);
+    expect(find.text('need materials'), findsWidgets);
+
+    // Held in full, the chip is the plain count.
+    await tester.runAsync(() => container
+        .read(playerSessionProvider.notifier)
+        .loadSession(PlayerSession.fromJson({
+          'gold': 350,
+          'inventoryItemIds': ['material_timber', 'material_timber'],
+        })));
+    await tester.pump();
+    expect(
+        find.descendant(of: chips, matching: find.text('2')), findsOneWidget);
+  });
 }

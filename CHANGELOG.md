@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.286.0+322]
+
+Nine pixel icons for the building materials, and chips for them on the camp's build cards.
+
+### Added
+- **Pixel icons for the nine new materials** (timber, cut stone, slag glass, ash-steel, rime crystal, tear glass, Shroud thread, lantern brass, white-fleet oak): 16×16 at 8×, in the iron ore's outline and shading. They replace the borrowed iron-ore icon (`tool/gen_material_icons.py` draws them).
+- **Material chips on the camp's build cards:** what a house costs beside gold, as each material's icon and count (`2` when held, `1/2` in red when short). The card's status tag now says "need materials" and the chips say which.
+
 ## [1.285.0+321]
 
 Land expeditions, the first: the crossing from the wreck of the Lark.
