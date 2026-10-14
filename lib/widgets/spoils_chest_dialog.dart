@@ -8,6 +8,7 @@ import '../l10n/app_strings.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../utils/pixel_icons/pixel_icon.dart';
 import 'item_stats.dart';
+import 'item_detail_view.dart';
 import 'pixel_sprite.dart';
 
 /// What the player chose to do with the spoils before closing the chest:
@@ -555,6 +556,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
       item: item,
       language: widget.language,
       equipped: worn,
+      equippedId: wornId,
       equippedName: worn?['itemName']?.toString() ?? wornId,
       unmetRequirement: isGear(item) && !_canEquipSlot(slot)
           ? _t('loot_cannot_wear_note')

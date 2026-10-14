@@ -156,3 +156,8 @@ The user sent the hero's side-view sprite (Idle-Walking: a ronin, 8 walk frames 
 
 ## City chart on Core's record (built on `claude/eager-pascal-y847vf`, 14 Oct)
 `CityChart.fromRecord` reads Core's `city_plans.json`; `CityChartScreen` shows the story's own city (the party's district, fog from `foundDistrictsProvider`, the scene's ways pinned on their buildings, "Walk here" and "Go"), opened from a new city-plan button on the Journey (`journey_city_plan`) and handing the picked choice back to select it. Tests: `city_chart_test`, `city_chart_live_test`. The PR waits on a free PR slot (two are open) and a version: **suggested 1.312.0+348**. Looks: with Core's record the plan is sparser than the board (194 buildings, no lots); the stub keeps the dense look in the fight lab's preview.
+
+## Wave 7 (the user's playtest, 14 Oct): where each piece stands
+- **D, the clan gift popin: board published, nothing built.** Board 16 on the Design artifact shows three designs (1 the hall, 2 the compass, 3 the ledger of flags), each with the Compact picked and with the Penitents picked. UX builds only after the user picks. Two questions for Narrative/Core on the board: one "stands for" line per clan (EN and FR), and whether alignment shows as a gauge or a word.
+- **Order after D:** A (item detail), C (title popin), B (craft a skill; waits on Core's camp building and localized names), E (level-up sheet; waits on Core's data shape).
+- **Versions wanted** (from `main` at v1.316.0): **A 1.317.0+353**, then **C 1.318.0+354** and **D's build 1.319.0+355** in whatever order they are ready. Please confirm or renumber; I take the number only when the PR is opened.
