@@ -2667,6 +2667,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Face {n} · now: {face}',
     AppLanguage.fr: 'Face {n} · actuellement : {face}',
   },
+  'map_replay_all': {
+    AppLanguage.en: 'Replay all',
+    AppLanguage.fr: 'Tout rejouer',
+  },
   'map_set_out': {
     AppLanguage.en: 'Set out',
     AppLanguage.fr: 'Partir',

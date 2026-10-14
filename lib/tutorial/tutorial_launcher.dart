@@ -11,7 +11,7 @@ import '../screens/inventory_screen.dart';
 import '../screens/journal_screen.dart';
 import '../screens/level_up_screen.dart';
 import '../screens/skills/skills_screen.dart';
-import '../screens/world_map_screen.dart';
+import '../screens/full_map_screen.dart';
 import 'guide_tour.dart';
 import 'tutorial_topics.dart';
 
@@ -20,7 +20,7 @@ import 'tutorial_topics.dart';
 /// thing), else right here, the guide telling it without pointing.
 void playTutorial(BuildContext context, WidgetRef ref, TutorialTopic topic) {
   final Widget? page = switch (topic) {
-    TutorialTopic.map => const WorldMapPage(),
+    TutorialTopic.map => const FullMapScreen(),
     TutorialTopic.skills => const SkillsScreen(),
     TutorialTopic.dice => const DiceLoadoutScreen(),
     TutorialTopic.inventory => const InventoryScreen(),
