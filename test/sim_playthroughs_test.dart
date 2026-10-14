@@ -32,7 +32,7 @@ void main() {
         'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
         'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
         'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-        'biomes', 'quests', 'npcs', 'land_routes', 'land_events',
+        'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
       ])
         name: _table(name),
     };
@@ -122,6 +122,7 @@ void main() {
               for (final a in r.arrivals.entries)
                 '${a.key}': {'level': a.value.level, 'gold': a.value.gold},
             },
+            'housesBuilt': r.housesBuilt,
             'questRecords': [
               for (final q in r.questRecords)
                 {
