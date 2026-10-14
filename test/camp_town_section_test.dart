@@ -253,4 +253,51 @@ void main() {
         findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('the built Skillwright carries the way into the craft',
+      (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    tester.view.physicalSize = const Size(390, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    Map<String, dynamic> table(String name) =>
+        json.decode(File('assets/gamedata/$name.json').readAsStringSync())
+            as Map<String, dynamic>;
+    await tester.pumpWidget(ProviderScope(
+      child: MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: CampTownSection(
+              houses: table('houses'),
+              shops: table('shops'),
+              zones: table('zones'),
+              achievements: const {},
+            ),
+          ),
+        ),
+      ),
+    ));
+    final container =
+        ProviderScope.containerOf(tester.element(find.byType(CampTownSection)));
+    await _loadTables(tester, container);
+    await tester.runAsync(() => container
+        .read(playerSessionProvider.notifier)
+        .loadSession(PlayerSession.fromJson({
+          'builtHouseIds': ['skillwright'],
+          'unlockedSkillIds': ['fireball', 'shadow_step'],
+        })));
+    await tester.pump();
+
+    final craft = find.byKey(const Key('works_craft_skillwright'));
+    await tester.ensureVisible(craft);
+    await tester.pump();
+    await tester.tap(craft);
+    await tester.pump();
+    // The recipes load behind the open bench.
+    await _loadTables(tester, container);
+    await tester.pumpAndSettle();
+    // The bench opens on its recipes, a ready one with its Merge.
+    expect(find.byKey(const Key('merge_blazing_shadow')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }

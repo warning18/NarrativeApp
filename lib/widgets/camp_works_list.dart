@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/camp_works.dart';
 import '../data/materials.dart';
+import '../data/skill_craft.dart' show skillCraftOpen;
 import '../l10n/app_strings.dart';
 import '../providers/camp_works_provider.dart';
+import '../screens/skills/skill_sheet.dart' show openCraft;
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
 
@@ -252,6 +254,16 @@ class CampWorksList extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                     ),
                     child: Text('${tr(ref, 'build_button')} · $cost G'),
+                  ),
+                ],
+                // The Skillwright, once up, is where skills are crafted.
+                if (built && skillCraftOpen([id])) ...[
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    key: Key('works_craft_$id'),
+                    onPressed: () => openCraft(context, ref),
+                    icon: const Icon(Icons.auto_fix_high, size: 18),
+                    label: Text(tr(ref, 'craft_skill_button')),
                   ),
                 ],
               ],
