@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.348.0+384]
+
+The politics hint waits for its setting.
+
+### Fixed
+- **The turn-in dialog's politics hint** ("Vigil +5 · Dominion −5") read its setting before the saved value had loaded, so on the first turn-in after a cold start it could show when the player had turned hints off (or hide when they were on). The dialog now waits for the saved setting first, as the hunters setting does.
+
 ## [1.346.0+382]
 
 ### Changed
