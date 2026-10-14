@@ -3703,6 +3703,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'A moment of insight',
     AppLanguage.fr: 'Un éclair de lucidité',
   },
+  'training_take_button': {
+    AppLanguage.en: 'Take this training',
+    AppLanguage.fr: 'Suivre cet entraînement',
+  },
   'training_taken_label': {
     AppLanguage.en: 'Training',
     AppLanguage.fr: 'Entraînement',

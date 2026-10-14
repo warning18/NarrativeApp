@@ -12,6 +12,21 @@ isn't reconstructable from git history alone.
 
 ### Added
 - Expedition steps for the five escort and delivery expeditions (data; Core's engine plays them): the Salt Road, Fever-Bark for the Wall, the Bell Road, the Ember Run and the Lantern Train, eight to ten stages each, English and French. `assets/gamedata/expedition_steps.json` now holds sixteen written zones.
+## [1.334.0+370]
+
+The level-up offer reads as three ways to grow.
+
+### Changed
+- **The training offer** (Level Up screen and the pop-up after a fight) is three cards in the clan offer's manner: each path has its pixel icon on a tile in the colour of what it raises most (attack ember, defence and health cool, mind violet, the quick green, the social gold), its name and its line, then each gain as a tile with the big "+n" and where the stat goes ("100 → 120").
+- **A card is picked, then taken** with "Take this training" under the cards, as a clan's gift is, so a path that is for good is never taken by a stray tap. A small offer (a Tome of Insight's point) reads the same.
+
+## [1.333.0+369]
+
+No hero starts with negative armour.
+
+### Fixed
+- **A new character's base armour is never below 0.** An Orc Mage started at -4 (the Orc's -2 and the Mage's -2), which read as a bug; the seven frailest race and profession pairs now start at 0, and every other start is unchanged. Companions and the simulator follow the same rule.
+- **A delivery with a written road gets time for all of it**: its deadline keeps the zone's spare days over the written stages (Fever Bark and the Ember Run: 10 days for 8 stages, not 6).
 
 ## [1.332.0+368]
 
