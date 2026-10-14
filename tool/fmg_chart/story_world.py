@@ -108,7 +108,7 @@ for _k in ('hovel', 'beggar', 'alley', 'bridge', 'hold', 'sewers', 'docks', 'cra
 PLACE_ZONE = {  # the zone each place belongs to (geography.json)
     'The Alster Marches': ['hovel', 'beggar', 'alley', 'bridge', 'hold', 'sewers', 'docks'],
     'The Waste': ['crash', 'sleeper', 'wells'],
-    'The Salt Coast': ['upper', 'wharf', 'tern', 'berths'],
+    'The Salt Coast': ['upper', 'wharf', 'tern', 'berths', 'alleys', 'cards'],
     'The Lantern Isles': ['candlehold'],
     'The Cove': ['camp'],
     'The Ash Flats': ['quarter', 'emberwick', 'spire'],
@@ -241,6 +241,9 @@ def remap_design():
     # two coast places a little inland, where the narrower land put them on the shore
     for k, (dx, dy) in {'alley': (0.0, -1.4), 'wharf': (0.0, 1.8)}.items():
         PLACES[k] = (PLACES[k][0] + dx, PLACES[k][1] + dy)
+    # Saltmouth's two later districts (board 15), set among its others in the sphere's own units
+    PLACES['alleys'] = (204.9, 98.6)
+    PLACES['cards'] = (215.4, 99.6)
     for i, (biome, name, fr, seeds) in enumerate(ZONES):
         ZONES[i] = (biome, name, fr, [move(p) for p in seeds])
     for i, (name, fr, line, size, snow, ember) in enumerate(RANGES):

@@ -178,6 +178,8 @@ const List<WorldRoad> worldRoads = [
   WorldRoad('upper_wharf', 'upper', 'wharf', [_tollhouse, _tideWall]),
   WorldRoad('wharf_tern', 'wharf', 'tern', [_ropewalk]),
   WorldRoad('wharf_berths', 'wharf', 'berths', [_breakersStair]),
+  WorldRoad('wharf_alleys', 'wharf', 'alleys', []),
+  WorldRoad('wharf_cards', 'wharf', 'cards', []),
   WorldRoad('berths_storm', 'berths', 'storm', [_lastLight],
       kind: RoadKind.sea),
   WorldRoad('storm_camp', 'storm', 'camp', [_openWater, _landfallRock],

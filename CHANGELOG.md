@@ -8,14 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-<<<<<<< HEAD
 ## [1.309.0+345]
 
 The story world on the whole sphere.
 
 ### Changed
 - **The story world covers the whole globe** (board 11): 360° of longitude by 180° of latitude. The story's three lands are moved in longitude with their latitudes, and so their climates, kept: the Ashen Continent to the west, the Old Continent to the east, the Lantern Isles between. Five empty lands, a polar land under an ice cap over each pole, and twelve archipelagos fill the rest (about 45 % land; every 30° of longitude has land and sea). The globe can turn right over either pole and comes round past the seam; the ice caps are the coldest places on it. The new lands' names are placeholders. The map looks A, B and C keep their band. (The smaller sphere and the pole buttons are UX's, to come.)
-=======
+
 ## [1.308.0+344]
 
 The city plan's data: Saltmouth from above, its six districts, free walking.
@@ -24,7 +23,6 @@ The city plan's data: Saltmouth from above, its six districts, free walking.
 - **Saltmouth's plan** (board 15, `assets/gamedata/city_plans.json`): the shore and harbour, the river split round an island, canals, the wall with its gates and towers, the avenues from the market square to the gates, the squares (market, arena, plaza, quay), the six districts tiling the town and the buildings on their lots. Each of the hub's ways stands on a building of its district, named as Narrative seats it. Laid out by a generator (`lib/data/city_plan_generator.dart`, run with `tool/city_plans/gen_city_plans.dart`); UX paints it.
 - **Two new districts**: the Lantern Alleys and Card Row.
 - **Free walking between districts**: the party walks to any district of the city it is in, with no time and no road; a district walked into is found for good, and the ones not found are fogged. The ways shown are the ones in the party's district. (The screens come with UX's city view.)
->>>>>>> origin/claude/core-2
 
 ## [1.307.0+343]
 

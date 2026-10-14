@@ -305,6 +305,30 @@ final List<Landmark> worldMapLandmarks = [
       '2015_scaffold_clerk_fight',
     ],
   ),
+  // Saltmouth's two later districts (board 15): their scenes come with
+  // Narrative's re-tag of the hub's ways (docs/proposals/city-districts.md).
+  const Landmark(
+    id: 'alleys',
+    chapter: 2,
+    nameEn: 'The Lantern Alleys',
+    nameFr: 'Les Ruelles aux lanternes',
+    blurbEn:
+        'The back ways above the wharf, strung with lanterns for the buyers who would rather not be seen buying.',
+    blurbFr:
+        'Les ruelles au-dessus du quai, guirlandées de lanternes pour les acheteurs qui préfèrent qu’on ne les voie pas acheter.',
+    scenes: [],
+  ),
+  const Landmark(
+    id: 'cards',
+    chapter: 2,
+    nameEn: 'Card Row',
+    nameFr: 'La Rangée des cartes',
+    blurbEn:
+        'A run of barrels and crates at the head of the wharf where the dockhands play from the evening shift to dawn.',
+    blurbFr:
+        'Une enfilade de tonneaux et de caisses en haut du quai, où les dockers jouent de la relève du soir jusqu’à l’aube.',
+    scenes: [],
+  ),
   const Landmark(
     id: 'storm',
     chapter: 2,

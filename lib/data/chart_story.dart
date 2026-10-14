@@ -44,6 +44,8 @@ final ChartGeography chartWorldStory = ChartGeography(
     'greyhithe': Offset(106.652, 36.6667),
     'anchorage': Offset(113.967, 35.8889),
     'candlehold': Offset(117.841, 79.4444),
+    'alleys': Offset(204.9, 98.6),
+    'cards': Offset(215.4, 99.6),
   },
   lands: [
     [
