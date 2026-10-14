@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.318.0+354]
+
+A level-up is a choice of training, not a pile of points.
+
+### Changed
+- **Each level's five stat points buy one of three training paths**, each a bundle toward a playstyle: the Bruiser, the Duelist, the Warden, the Juggernaut, the Arcanist, the Zealot, the Skirmisher, the Hunter, the Envoy and the Brawler. Every path is worth exactly what five points were. The three on offer are one of your calling (your profession or people, likelier the more you have taken it), your habit (the path you take most), and a turn (any other).
+- **No "decide later"**: the pop-up after a fight closes once the training is taken, and the Level Up screen shows the offer while points wait. Stats are no longer raised one by one.
+- **A Tome of Insight** (one point) brings a small offer: three single gains, each from a likely path.
+- Old saves keep their unspent points; they come back as offers.
+
 ## [1.317.0+353]
 
 The item popin reads at a glance.
