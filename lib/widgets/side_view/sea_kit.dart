@@ -342,6 +342,7 @@ SideLayer seaActors({
   SeaMeeting meeting = SeaMeeting.none,
   ShipForm? ship,
   ShipDress? dress,
+  double condition = 1.0,
 }) =>
     SideLayer(0, (canvas, size, scroll, t, u) {
       final rough = weather == SeaWeather.squall;
@@ -351,7 +352,8 @@ SideLayer seaActors({
       final shipX = (w * 0.34 - len / 2 + 18).floorToDouble();
       final bob = math.sin(t * (rough ? 1.8 : 1.1)) * (rough ? 2.2 : 1.0);
       final lift = (flying || form.flying) ? 9.0 : 0.0;
-      final base = 53 - lift + bob.roundToDouble();
+      final sink = sideShipSink(condition);
+      final base = 53 - lift + bob.roundToDouble() + sink;
       if (lift > 0) {
         canvas.drawOval(
             Rect.fromCenter(
@@ -362,7 +364,13 @@ SideLayer seaActors({
       }
       _drawMeeting(canvas, size, u, t, meeting, rough);
       paintSideShip(canvas, u,
-          x: shipX, base: base, form: form, dress: dress, t: t, rough: rough);
+          x: shipX,
+          base: base,
+          form: form,
+          dress: dress,
+          t: t,
+          rough: rough,
+          condition: condition);
       // The wake: foam along the waterline.
       if (lift == 0) {
         final foam = Paint()..color = Colors.white.withValues(alpha: 0.55);
@@ -372,7 +380,7 @@ SideLayer seaActors({
               u,
               foam,
               shipX - 2 - k * 3 + math.sin(t * 2 + k) * 1.5,
-              53 + bob.roundToDouble() + 2,
+              53 + bob.roundToDouble() + 2 + sink,
               3,
               1);
         }
@@ -574,6 +582,7 @@ class SeaSideScene extends StatelessWidget {
     this.moving = true,
     this.ship,
     this.dress,
+    this.condition = 1.0,
     this.beside,
     this.height = 140,
   });
@@ -588,6 +597,10 @@ class SeaSideScene extends StatelessWidget {
   /// when null.
   final ShipForm? ship;
   final ShipDress? dress;
+
+  /// The hull she has left, 0 to 1: below 0.8 she shows it (scorch, a hole,
+  /// patched sails, smoke, fire, lower in the water).
+  final double condition;
   final Widget? beside;
   final double height;
 
@@ -605,7 +618,8 @@ class SeaSideScene extends StatelessWidget {
                 weather: weather,
                 meeting: meeting,
                 ship: ship,
-                dress: dress),
+                dress: dress,
+                condition: condition),
             particles: seaParticles(waters, weather),
             intensity: weather == SeaWeather.squall ? 0.9 : 0.6,
             pace: weather == SeaWeather.tailwind ? 56 : 30,

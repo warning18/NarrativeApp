@@ -39,6 +39,35 @@ void main() {
     expect(sideShipLength(longboat), lessThan(sideShipLength(sloop)));
   });
 
+  test('she sits lower in the water only once she is half gone', () {
+    expect(sideShipSink(1.0), 0);
+    expect(sideShipSink(0.5), 0);
+    expect(sideShipSink(0.3), inInclusiveRange(1, 3));
+    expect(sideShipSink(0.0), 3);
+  });
+
+  testWidgets('every hull paints battered, from scorched to ablaze',
+      (tester) async {
+    for (final id in ships.keys) {
+      final form = ShipForm.fromRecord(id, ships[id] as Map<String, dynamic>);
+      for (final condition in [0.7, 0.45, 0.2, 0.0]) {
+        await tester.pumpWidget(MaterialApp(
+          home: Scaffold(
+            body: SeaSideScene(
+              waters: SeaWaters.open,
+              ship: form,
+              condition: condition,
+            ),
+          ),
+        ));
+        for (var i = 0; i < 2; i++) {
+          await tester.pump(const Duration(milliseconds: 300));
+        }
+        expect(tester.takeException(), isNull, reason: '$id at $condition');
+      }
+    }
+  });
+
   test('every raider of the sea has her own hull, the skiff the fallback', () {
     for (final id in [
       'raider_skiff',

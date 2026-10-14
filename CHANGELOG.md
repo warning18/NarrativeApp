@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.300.0+336]
+
+The hulls in side view, battered.
+
+### Changed
+- **The Eel shows what she has taken** on a voyage day and on arrival, by the hull she has left: below 80%, scorch marks along her side; below 60%, a hole in her planking with splinters round it and patched sails (stitched patches in a darker cloth); below 55%, smoke drifting aft from her deck; below 40%, rips across the sails; below 30%, flames on deck and heavy black smoke; and from half her hull down she sits lower in the water, up to three rows at the last. It works on every hull, the flying boats included (the gasbag, the bat-wings and the bone wings hang as they did, smoking).
+
 ## [1.299.0+335]
 
 The hulls in side view, the Harbor and the raiders.

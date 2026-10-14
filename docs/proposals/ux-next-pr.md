@@ -101,3 +101,6 @@ All 14 hulls drawn in the sea kit from their records (forms, rigs, castles, oars
 
 ## Hulls in the Harbor and the raiders (v1.299.0+335)
 The yard shows the Eel in side view above her plan (with the try-on of hulls, parts and looks); the raiders at sea use the same hull painter. Next, in the manager's order: damage states (smoke, list, patched sails by hull %, in the voyage scene), a side-view strip for the fight (the two real hulls facing each other above the grid; the fight itself stays from above), deck gear and mounted guns, painted sail powers.
+
+## Damage states (v1.300.0+336)
+The Eel's side view shows her hull: scorch, a hole, patched sails, smoke, rips, flames, and lower in the water, by hull %. Next: the fight strip (two real hulls facing each other above the grid; the fight stays from above), deck gear and mounted guns, painted sail powers.
