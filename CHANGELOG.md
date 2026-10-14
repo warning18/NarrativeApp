@@ -8,6 +8,36 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.291.0+327]
+
+The skill choice sheet, places heard of on the full map, and the land crossing in the desert side view.
+
+### Added
+- **The face's skill sheet (board 9):** opened from a die face, it lists each skill with the face now and the face after (`Attack 5 → Attack 8`), the change as a pill (+3, changes kind, full), the skill's limit in its rarity colour, and, after a tap, a bar with **Set on this face**: nothing is set until it is pressed. The numbers are the fight's own rule for a face with a skill on it. The 70% rule is behind the title (hold it).
+- **Places heard of on the full map:** a "?" in a ring where they lie. Tapped, the sheet offers **Set out** (for a village not yet found, the expedition that finds it, sailing the Eel first when needed; always with the warning that the road may hold anything) or says why it cannot yet, and **Mark as goal** (one goal at a time, ringed on the map).
+- **The land crossing in a side view:** the desert crossing wears a scene over its words: a warm sky in dithered bands, a low sun, mesas with the goal coming nearer day by day, three bands of dunes and a path at their own speeds, and the party's placeholder figures walking in place. Heat shimmer in clear weather, a sandstorm on the sandstorm event or a dust sky, rain, snow, ash or fog by the sky. The day and the health bar sit over it. A route whose terrain has no scene yet keeps only that strip. Reduced motion stands still. (`lib/widgets/side_view/`: the scene engine, for the voyage's side view later.)
+- **The ruins in side view:** a route of terrain `ruins` (Core's camp-to-quarter road) is drawn with its own scene: a burnt dusk, a far broken skyline, ruined walls and arches, rubble, a path of grey cobbles, and the quarter's tower with one lit window coming nearer by the day; ash falls by default.
+
+### Changed
+- The full map's place sheet scrolls when its text is long.
+
+## [1.290.0+326]
+
+The Shroud Shrine within reach.
+
+### Changed
+- **More Shroud thread and tear glass in chapter 5:**
+  - the Dead Heart approach pays 2 Shroud threads (was 1);
+  - the Frost Quarry adds 1 Shroud thread and 2 tear glass;
+  - the Ember Run adds 2 tear glass.
+- **The Shroud Shrine costs 2 000 gold** (was 2 600).
+- The playthrough simulator (held-out seeds 101 and 103, 100 runs each)
+  now builds it in 42 to 43 runs (was 7), in chapter 6 at the median,
+  within its tier's chapters. The Banner Loft, which used to take the
+  thread the shrine needed, goes up in chapter 5 in a quarter to a third
+  of runs (was none). The shrine still waits on the Dead Heart approach
+  being cleared, which about 45% of runs do.
+
 ## [1.289.0+325]
 
 The bosses after chapter 1 are a little tougher, so that the playthrough

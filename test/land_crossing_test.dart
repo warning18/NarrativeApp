@@ -180,6 +180,25 @@ void main() {
     }
   });
 
+  test('the second leg, the Sleeper to the White Wells, is drawn and crossed',
+      () {
+    final wells = landRouteFor(routes, 'sleeper_to_wells')!;
+    expect(wells.from, 'sleeper');
+    expect(wells.to, 'wells');
+    var arrived = 0;
+    for (var seed = 0; seed < 500; seed++) {
+      final result = resolveCrossing(wells, events,
+          health: 140,
+          maxHealth: 140,
+          gold: 30,
+          modifierFor: (_) => 1,
+          random: Random(seed));
+      expect(result.events, hasLength(wells.days));
+      if (result.arrived) arrived++;
+    }
+    expect(arrived, greaterThan(475));
+  });
+
   test('every way out of the wreck toward the Sleeper crosses the desert', () {
     final story = _json('assets/Cleaned_Narrative_DAG.json');
     var ways = 0;
@@ -239,8 +258,15 @@ void main() {
             'gold': 50,
           }));
     });
+    // The scene keeps moving, so the screen never settles: a bounded wait.
+    Future<void> settle() async {
+      for (var i = 0; i < 4; i++) {
+        await tester.pump(const Duration(milliseconds: 150));
+      }
+    }
+
     await tester.tap(find.text('go'));
-    await tester.pumpAndSettle();
+    await settle();
     expect(find.text('Day 1 of ${crash.days}'), findsOneWidget);
     expect(find.byKey(const Key('crossing_health')), findsOneWidget);
 
@@ -254,19 +280,45 @@ void main() {
         await tester.tap(choice.first);
         await Future<void>.delayed(const Duration(milliseconds: 100));
       });
-      await tester.pumpAndSettle();
+      await settle();
       if (day < crash.days - 1) {
         await tester.tap(find.byKey(const Key('crossing_next')));
-        await tester.pumpAndSettle();
+        await settle();
       }
     }
     // Far too much health to lose on a three-day road: the last day ends
     // on the far side.
     await tester.tap(find.byKey(const Key('crossing_next')));
-    await tester.pumpAndSettle();
+    await settle();
     expect(find.textContaining('far side'), findsOneWidget);
     await tester.tap(find.byKey(const Key('crossing_done')));
-    await tester.pumpAndSettle();
+    await settle();
     expect(arrived, isTrue);
+  });
+
+  testWidgets('a ruins route is drawn with its own scene kit', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final ruins = LandRoute.fromJson('r', {
+      'name': 'Through the ruins',
+      'from': 'camp',
+      'to': 'quarter',
+      'days': 2,
+      'terrain': 'ruins',
+      'events': {'ash_squall': 1},
+    });
+    await tester.pumpWidget(ProviderScope(
+      child: MaterialApp(
+        home:
+            LandCrossingScreen(route: ruins, events: events, random: Random(1)),
+      ),
+    ));
+    for (var i = 0; i < 4; i++) {
+      await tester.pump(const Duration(milliseconds: 150));
+    }
+    expect(find.byKey(const Key('crossing_scene')), findsOneWidget);
+    // Let the session finish loading before the test ends.
+    await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 200)));
+    expect(tester.takeException(), isNull);
   });
 }
