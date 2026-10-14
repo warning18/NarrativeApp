@@ -2332,6 +2332,11 @@ final DbSchema housesSchema = DbSchema(
       referenceSchemaId: 'shops',
     ),
     FieldSchema(
+      key: 'unlocksCraft',
+      label: 'Unlocks Craft a Skill (the Skillwright)',
+      type: FieldType.boolean,
+    ),
+    FieldSchema(
       key: 'requiredFlags',
       label:
           'Required Flags (all must be set to build; a zone\'s rewardFlag gates on clearing that zone)',
