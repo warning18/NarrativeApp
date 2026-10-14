@@ -94,8 +94,7 @@ void main() {
     final navigator =
         tester.state<NavigatorState>(find.byType(Navigator).first);
     navigator.push(MaterialPageRoute<bool>(
-        builder: (_) =>
-            ExpeditionScreen(zoneId: 'z_test_road', zone: zone)));
+        builder: (_) => ExpeditionScreen(zoneId: 'z_test_road', zone: zone)));
     await _settle(tester);
 
     expect(find.textContaining('A gutting-table line'), findsOneWidget);
