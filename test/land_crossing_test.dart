@@ -300,6 +300,13 @@ void main() {
         await tester.tap(choice.first);
         await Future<void>.delayed(const Duration(milliseconds: 100));
       });
+      // A check's die tumbles under the choices and lands before the
+      // outcome (d20_roll.dart): its tumble, then the sum read.
+      for (var i = 0; i < 4; i++) {
+        await tester.pump(const Duration(milliseconds: 1000));
+      }
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 100)));
       await settle();
       if (day < crash.days - 1) {
         await tester.tap(find.byKey(const Key('crossing_next')));
@@ -398,6 +405,47 @@ void main() {
       await settle();
       return arrived;
     }
+
+    testWidgets('a check is rolled on the die under the choices',
+        (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      await tester.pumpWidget(ProviderScope(
+        child: MaterialApp(
+          home: LandCrossingScreen(
+              route: ambush, events: events, random: Random(1)),
+        ),
+      ));
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 200)));
+      await tester.pump(const Duration(milliseconds: 150));
+      await tester.runAsync(() async {
+        await tester.tap(find.byKey(const Key('crossing_choice_slip')));
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pump(const Duration(milliseconds: 100));
+      // The die tumbles under the choices; the sum waits for it to land.
+      expect(find.byKey(const Key('crossing_roll')), findsOneWidget);
+      expect(find.byKey(const Key('crossing_choice_slip')), findsOneWidget);
+      for (var i = 0; i < 4; i++) {
+        await tester.pump(const Duration(milliseconds: 1000));
+      }
+      for (var i = 0; i < 3; i++) {
+        await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 150)));
+        await tester.pump(const Duration(milliseconds: 150));
+      }
+      // Then the outcome, the die set down beside it with the sum.
+      // (Next on a road that goes on, Done where this day ends it.)
+      expect(
+          find.byKey(const Key('crossing_next')).evaluate().length +
+              find.byKey(const Key('crossing_done')).evaluate().length,
+          1);
+      expect(find.byKey(const Key('crossing_choice_slip')), findsNothing);
+      expect(find.byKey(const Key('crossing_roll')), findsOneWidget);
+      expect(find.textContaining('DC'), findsOneWidget);
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 200)));
+    });
 
     testWidgets('won, the road goes on', (tester) async {
       expect(await fight(tester, true), isTrue);

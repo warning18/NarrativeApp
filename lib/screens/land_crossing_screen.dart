@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ import '../data/climate.dart' show WeatherKind;
 import '../providers/climate_provider.dart' show skyHereProvider;
 import '../widgets/side_view/desert_kit.dart';
 import '../widgets/side_view/ruins_kit.dart';
+import '../widgets/d20_roll.dart';
 import '../widgets/side_view/side_view.dart';
 import 'fight_screen.dart';
 
@@ -115,6 +117,25 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
   String _checkLine = '';
   var _busy = false;
 
+  /// The check being rolled under the choices (Wave 6: the Skill
+  /// Challenge's die, d20_roll.dart, in place of a line of text), kept at
+  /// rest beside its outcome; null for a choice with no check.
+  AbilityCheckResult? _roll;
+  bool _landed = false;
+  Completer<void>? _landing;
+
+  /// How long the sum stays under the landed die before the outcome.
+  static const Duration _rollLinger = Duration(milliseconds: 700);
+
+  void _onLanded() {
+    if (!mounted || _landed) return;
+    setState(() => _landed = true);
+    Future.delayed(_rollLinger, () {
+      final landing = _landing;
+      if (landing != null && !landing.isCompleted) landing.complete();
+    });
+  }
+
   /// The party's health as it set out: a lost crossing carries it back no
   /// better off (see turnBackHealth).
   int? _departureHealth;
@@ -151,6 +172,19 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
           '${result.roll} + ${result.modifier} = ${result.total} '
           '${trFor(lang, 'vs_dc_label')} ${result.dc} — '
           '${trFor(lang, result.success ? 'ability_check_success' : 'ability_check_fail')}';
+      // The die rolls under the choices; the outcome follows once it has
+      // landed and the sum has been read.
+      final landing = Completer<void>();
+      setState(() {
+        _roll = result;
+        _landed = false;
+        _landing = landing;
+        _checkLine = checkLine;
+      });
+      // A die that never tumbles (motion reduced) lands all the same.
+      Future.delayed(d20RollDuration + _rollLinger * 2, _onLanded);
+      await landing.future;
+      if (!mounted) return;
     }
     await _settle(outcome, checkLine);
   }
@@ -227,11 +261,45 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
       _day++;
       _note = '';
       _checkLine = '';
+      _roll = null;
+      _landing = null;
       _phase = _day >= _drawn.length ? _Phase.arrived : _Phase.event;
     });
   }
 
   void _turnBack() => setState(() => _phase = _Phase.turnedBack);
+
+  /// The check's die: tumbling under the choices ([rolling]), its sum
+  /// coming up once it lands; or set down small beside the outcome.
+  Widget _rollView(ThemeData theme, {required bool rolling}) {
+    final roll = _roll!;
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Column(
+        children: [
+          D20Roll(
+            key: const Key('crossing_roll'),
+            roll: roll.roll,
+            success: roll.success,
+            size: rolling ? 120 : 64,
+            rolling: rolling,
+            onLanded: rolling ? _onLanded : null,
+          ),
+          const SizedBox(height: 8),
+          AnimatedOpacity(
+            duration: const Duration(milliseconds: 250),
+            opacity: rolling && !_landed ? 0 : 1,
+            child: Text(
+              _checkLine,
+              key: const Key('crossing_roll_line'),
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -275,6 +343,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                   ].join(' ')),
                 ),
               ),
+            if (_roll != null) _rollView(theme, rolling: true),
             const SizedBox(height: 8),
             TextButton(
               key: const Key('crossing_turn_back'),
@@ -287,10 +356,11 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
         body = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (_checkLine.isNotEmpty)
+            if (_roll == null && _checkLine.isNotEmpty)
               Text(_checkLine, style: theme.textTheme.bodySmall),
             const SizedBox(height: 8),
             Text(_note, style: theme.textTheme.bodyLarge),
+            if (_roll != null) _rollView(theme, rolling: false),
             const SizedBox(height: 16),
             FilledButton(
               key: const Key('crossing_next'),
@@ -309,12 +379,13 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
         body = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (_checkLine.isNotEmpty)
+            if (_roll == null && _checkLine.isNotEmpty)
               Text(_checkLine, style: theme.textTheme.bodySmall),
             if (_note.isNotEmpty) ...[
               const SizedBox(height: 8),
               Text(_note, style: theme.textTheme.bodyLarge),
             ],
+            if (_roll != null) _rollView(theme, rolling: false),
             const SizedBox(height: 16),
             Text(message, style: theme.textTheme.titleMedium),
             const SizedBox(height: 16),
