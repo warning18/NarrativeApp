@@ -197,28 +197,144 @@ void paintSideShip(
   ShipDress? dress,
   double t = 0,
   bool rough = false,
+  double condition = 1.0,
 }) {
   final pal = _Palette(form, dress);
   final len = sideShipLength(form);
+  List<Rect> sails = const [];
+  List<double>? top;
   switch (form.kind) {
     case HullKind.twin:
       _twin(canvas, u, x, base, len, form, pal, t);
     case HullKind.iron:
       _ironclad(canvas, u, x, base, len, form, pal, t);
     case HullKind.gasbag:
-      _hullAndRig(canvas, u, x, base, len, form, pal, t, rig: false);
+      final r = _hullAndRig(canvas, u, x, base, len, form, pal, t, rig: false);
+      top = r.top;
       _gasbag(canvas, u, x, base, len, form, pal, t);
     case HullKind.batwing:
-      _hullAndRig(canvas, u, x, base, len, form, pal, t, rig: false);
+      final r = _hullAndRig(canvas, u, x, base, len, form, pal, t, rig: false);
+      top = r.top;
       _batwings(canvas, u, x, base, len, form, pal, t);
     case HullKind.lodestone:
       _lodestone(canvas, u, x, base, len, form, pal, t);
     case HullKind.bone:
       _bone(canvas, u, x, base, len, form, pal, t);
     case HullKind.hull:
-      _hullAndRig(canvas, u, x, base, len, form, pal, t);
+      final r = _hullAndRig(canvas, u, x, base, len, form, pal, t);
+      sails = r.sails;
+      top = r.top;
+  }
+  if (condition < 0.8) {
+    _damage(canvas, u, x, base, len, form, pal, t, condition, sails, top);
   }
 }
+
+/// How battered she is, by [condition] (the hull she has left, 0 to 1):
+/// scorch marks first, then a hole in the side and patched sails, then
+/// smoke, and at the last flames on deck and rips in the cloth. The sea
+/// kit also sinks her a little lower as she nears the end (see
+/// [sideShipSink]).
+void _damage(
+    Canvas canvas,
+    double u,
+    double x,
+    double base,
+    double len,
+    ShipForm form,
+    _Palette pal,
+    double t,
+    double condition,
+    List<Rect> sails,
+    List<double>? top) {
+  final f = condition.clamp(0.0, 1.0);
+  final rng = math.Random(form.id.hashCode);
+  double hullTop(int col) {
+    final list = top;
+    if (list == null || list.isEmpty) return base - 6;
+    return list[col.clamp(0, list.length - 1)];
+  }
+
+  final soot = Paint()..color = Colors.black.withValues(alpha: 0.55);
+  // Scorch marks along the side.
+  final scorches = f < 0.5 ? 5 : 3;
+  for (var i = 0; i < scorches; i++) {
+    final col = (len * (0.12 + 0.76 * rng.nextDouble())).floor();
+    sidePixels(canvas, u, soot, x + col, hullTop(col) + 1 + rng.nextInt(2),
+        4.0 + rng.nextInt(2), 2 + rng.nextInt(2).toDouble());
+  }
+  // A hole in the side, its splinters round it.
+  if (f < 0.6) {
+    final col = (len * 0.56).floor();
+    final y = hullTop(col) + 2;
+    sidePixels(
+        canvas, u, Paint()..color = const Color(0xFF120A06), x + col, y, 4, 3);
+    final splinter = Paint()..color = pal.trim;
+    sidePixels(canvas, u, splinter, x + col - 1, y - 1, 2, 1);
+    sidePixels(canvas, u, splinter, x + col + 3, y + 2, 2, 1);
+    sidePixels(canvas, u, splinter, x + col + 1, y + 3, 1, 1);
+  }
+  // Patches on the sails, and rips when she is nearly done.
+  if (sails.isNotEmpty) {
+    final patchCol = Color.lerp(pal.cloth, const Color(0xFF8A4A3A), 0.7)!;
+    final stitch = Paint()..color = _shade(pal.cloth, 0.4);
+    final patches = f < 0.6 ? 3 : 1;
+    for (var i = 0; i < patches; i++) {
+      final r = sails[(i + 1) % sails.length];
+      final px = r.left + 2 + rng.nextDouble() * math.max(1.0, r.width - 6);
+      final py = r.top + 2 + rng.nextDouble() * math.max(1.0, r.height - 6);
+      sidePixels(canvas, u, Paint()..color = patchCol, px, py, 4, 4);
+      sidePixels(canvas, u, stitch, px, py, 4, 1);
+      sidePixels(canvas, u, stitch, px, py + 3, 4, 1);
+    }
+    if (f < 0.4) {
+      for (var i = 0; i < math.min(2, sails.length); i++) {
+        final r = sails[i];
+        _line(canvas, u, stitch, r.left + 2, r.top + 2, r.right - 3,
+            r.top + r.height * 0.62);
+      }
+    }
+  }
+  // Smoke drifting aft from the deck.
+  if (f < 0.55) {
+    final heavy = f < 0.3;
+    final colour = heavy ? const Color(0xFF26262C) : const Color(0xFF4A4A52);
+    final puffs = heavy ? 7 : 4;
+    final sx = x + len * 0.44;
+    final sy = hullTop((len * 0.44).floor()) - 1;
+    for (var i = 0; i < puffs; i++) {
+      final age = (t * 0.55 + i / puffs) % 1.0;
+      sidePixels(
+          canvas,
+          u,
+          Paint()..color = colour.withValues(alpha: (1 - age) * 0.9),
+          sx - age * 16 + math.sin(t + i) * 1.2,
+          sy - age * (heavy ? 22 : 15),
+          3 + age * 5,
+          3 + age * 3);
+    }
+  }
+  // Flames on deck in the last stretch.
+  if (f < 0.3) {
+    for (var k = 0; k < 4; k++) {
+      final fx = x + len * (0.34 + 0.07 * k);
+      final fy = hullTop((len * (0.34 + 0.07 * k)).floor());
+      final h = (2 + (2 + 2 * math.sin(t * 9 + k * 1.7)).round()).toDouble();
+      sidePixels(canvas, u, Paint()..color = const Color(0xFFD9442B), fx,
+          fy - h, 2, h);
+      sidePixels(canvas, u, Paint()..color = const Color(0xFFF2992E), fx,
+          fy - h + 1, 2, math.max(1, h - 1));
+      sidePixels(canvas, u, Paint()..color = const Color(0xFFFFE08A), fx,
+          fy - 1, 1, 1);
+    }
+  }
+}
+
+/// How many scene rows she sits lower in the water at [condition]: none
+/// until she is half gone, then up to three.
+double sideShipSink(double condition) => condition >= 0.5
+    ? 0.0
+    : ((0.5 - condition.clamp(0.0, 0.5)) * 6).roundToDouble();
 
 /// The silhouette of a plain hull: the top row and the keel row of each
 /// column, from the sheer, the castles and the fullness of the ends.
@@ -400,8 +516,9 @@ void _lateenSail(Canvas canvas, double u, double mx, double top, double bottom,
   }
 }
 
-void _rig(Canvas canvas, double u, double x, double base, double len,
+List<Rect> _rig(Canvas canvas, double u, double x, double base, double len,
     ShipForm form, _Palette pal, double t, List<double> top) {
+  final boxes = <Rect>[];
   final s = len / 36;
   final deckY = base - (3 + form.beam * 12).roundToDouble() - 1;
   final mastPaint = Paint()..color = pal.mast;
@@ -427,18 +544,25 @@ void _rig(Canvas canvas, double u, double x, double base, double len,
           final hCourse = (12 * s * m.size).roundToDouble();
           final hTop = (7 * s * m.size).roundToDouble();
           _squareSail(canvas, u, mx, deckY - hCourse - 1, w, hCourse, pal, t);
+          boxes.add(Rect.fromLTWH(mx - w / 2, deckY - hCourse - 1, w, hCourse));
           _squareSail(canvas, u, mx, deckY - hCourse - hTop - 3, w * 0.74, hTop,
               pal, t);
+          boxes.add(Rect.fromLTWH(
+              mx - w * 0.37, deckY - hCourse - hTop - 3, w * 0.74, hTop));
         } else {
           final h = (14 * s * m.size).roundToDouble();
           _squareSail(canvas, u, mx, topY + 2, w, h, pal, t);
+          boxes.add(Rect.fromLTWH(mx - w / 2, topY + 2, w, h));
         }
       case SailKind.gaff:
-        _gaffSail(canvas, u, mx, topY + 2, deckY - 3,
-            (15 * s * m.size).roundToDouble(), pal);
+        final gw = (15 * s * m.size).roundToDouble();
+        _gaffSail(canvas, u, mx, topY + 2, deckY - 3, gw, pal);
+        boxes.add(Rect.fromLTRB(mx - gw, topY + 2, mx, deckY - 3));
       case SailKind.lateen:
-        _lateenSail(canvas, u, mx, topY + 1, deckY - 2,
-            (18 * s * m.size).roundToDouble(), pal);
+        final lw = (18 * s * m.size).roundToDouble();
+        _lateenSail(canvas, u, mx, topY + 1, deckY - 2, lw, pal);
+        boxes.add(
+            Rect.fromLTRB(mx - lw * 0.6, topY + 1, mx + lw * 0.4, deckY - 2));
     }
   }
   if (form.masts.isNotEmpty) {
@@ -458,6 +582,7 @@ void _rig(Canvas canvas, double u, double x, double base, double len,
         canvas, u, cloth, [(headX, headY), (headX, tackY), (tackX, tackY)]);
     _line(canvas, u, shade, headX, tackY, tackX, tackY);
   }
+  return boxes;
 }
 
 void _oars(Canvas canvas, double u, double x, double base, double len,
@@ -477,14 +602,16 @@ void _oars(Canvas canvas, double u, double x, double base, double len,
   }
 }
 
-void _hullAndRig(Canvas canvas, double u, double x, double base, double len,
-    ShipForm form, _Palette pal, double t,
+({List<Rect> sails, List<double> top}) _hullAndRig(Canvas canvas, double u,
+    double x, double base, double len, ShipForm form, _Palette pal, double t,
     {bool rig = true}) {
   _hull(canvas, u, x, base, len, form, pal);
   final p = _profile(form, len, base);
   _bow(canvas, u, x, base, len, form, pal, p.top.last);
-  if (rig) _rig(canvas, u, x, base, len, form, pal, t, p.top);
+  final sails =
+      rig ? _rig(canvas, u, x, base, len, form, pal, t, p.top) : <Rect>[];
   _oars(canvas, u, x, base, len, form, pal, t, p.top);
+  return (sails: sails, top: p.top);
 }
 
 /// Two slender hulls under one deck, one behind the other, two lateens.

@@ -1075,6 +1075,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                     meeting: const SeaMeeting(SeaMeetingKind.harbour),
                     ship: ref.watch(shipFormProvider),
                     dress: ref.watch(shipDressProvider),
+                    condition: _hullFraction,
                     height: 130,
                   ),
                 ),
@@ -1146,6 +1147,13 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         : ahead.join(', ');
   }
 
+  /// The hull the Eel has left, 0 to 1, as the picture shows it.
+  double get _hullFraction {
+    final player = _player;
+    if (player == null || player.maxHull <= 0) return 1.0;
+    return (player.hull / player.maxHull).clamp(0.0, 1.0);
+  }
+
   /// The sea's weather on a day: a storm is a squall, a windknot sail
   /// aboard gives a tailwind, else calm.
   SeaWeather _voyageWeather(SeaEvent event) => event.kind == SeaEventKind.storm
@@ -1200,6 +1208,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                     flying: _flying,
                     ship: ref.watch(shipFormProvider),
                     dress: ref.watch(shipDressProvider),
+                    condition: _hullFraction,
                     meeting: _meetingFor(event),
                     height: 140,
                     beside: Icon(icon, size: 34, color: colour),
