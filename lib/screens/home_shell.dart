@@ -35,6 +35,7 @@ import 'settings_screen.dart';
 import 'ship_screen.dart';
 import 'story_graph_screen.dart';
 import 'story_player_screen.dart';
+import 'full_map_screen.dart';
 import 'world_map_screen.dart';
 
 /// The game under the main menu. In play: Story, Journey (the story on a
@@ -363,7 +364,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (_) =>
-                      isEditMode ? const StoryMapPage() : const WorldMapPage(),
+                      isEditMode ? const StoryMapPage() : const FullMapScreen(),
                 ),
               ),
             ),

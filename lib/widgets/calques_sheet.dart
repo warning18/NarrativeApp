@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/map_charts.dart' show MapShape, mapLookShapes;
+import '../data/world_map.dart' show MapLook;
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/map_look_provider.dart';
@@ -30,6 +32,46 @@ Future<void> showCalquesSheet(BuildContext context, WidgetRef ref) {
                 child: Text(trFor(lang, 'journey_calques').toUpperCase(),
                     style: theme.textTheme.labelMedium
                         ?.copyWith(letterSpacing: 1.4, color: ink.gold)),
+              ),
+              // The map's look and the shape of its world (moved here from
+              // the old map page).
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
+                child: SegmentedButton<MapLook>(
+                  key: const Key('world_map_look'),
+                  showSelectedIcon: false,
+                  segments: [
+                    for (final option in MapLook.values)
+                      ButtonSegment(
+                        value: option,
+                        label: Text(
+                            trFor(lang, 'world_map_look_${option.name}'),
+                            key: Key('world_map_look_${option.name}')),
+                      ),
+                  ],
+                  selected: {ref.watch(mapLookProvider)},
+                  onSelectionChanged: (picked) =>
+                      ref.read(mapLookProvider.notifier).choose(picked.first),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+                child: SegmentedButton<MapShape>(
+                  key: const Key('world_map_shape'),
+                  showSelectedIcon: false,
+                  segments: [
+                    for (final option in mapLookShapes)
+                      ButtonSegment(
+                        value: option,
+                        label: Text(
+                            trFor(lang, 'world_map_shape_${option.name}'),
+                            key: Key('world_map_shape_${option.name}')),
+                      ),
+                  ],
+                  selected: {ref.watch(mapShapeProvider)},
+                  onSelectionChanged: (picked) =>
+                      ref.read(mapShapeProvider.notifier).choose(picked.first),
+                ),
               ),
               SwitchListTile(
                 key: const Key('journey_globe'),
