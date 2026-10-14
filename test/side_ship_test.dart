@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/combat/ship_battle.dart';
+import 'package:narrative_data_app/data/sail_powers.dart';
 import 'package:narrative_data_app/data/ship_forms.dart';
 import 'package:narrative_data_app/widgets/sea_battlefield.dart';
 import 'package:narrative_data_app/widgets/ship_dress.dart';
@@ -85,6 +86,51 @@ void main() {
         await tester.pump(const Duration(milliseconds: 300));
         expect(tester.takeException(), isNull, reason: '$id with ${gears[i]}');
       }
+    }
+  });
+
+  testWidgets('every painted sail power paints on every hull, one or four',
+      (tester) async {
+    const colours = [
+      Color(0xFFB8862B),
+      Color(0xFF3F7A5A),
+      Color(0xFF6C7A8C),
+      Color(0xFF2B2830),
+      Color(0xFF7E57C2),
+    ];
+    for (final id in ships.keys) {
+      final form = ShipForm.fromRecord(id, ships[id] as Map<String, dynamic>);
+      for (final count in [1, 4]) {
+        final dress = ShipDress(sigils: [
+          for (var i = 0; i < count; i++)
+            ShipSigil(SailPower.values[i % SailPower.values.length],
+                colours[i % colours.length]),
+        ]);
+        await tester.pumpWidget(MaterialApp(
+          home: Scaffold(
+            body:
+                SeaSideScene(waters: SeaWaters.open, ship: form, dress: dress),
+          ),
+        ));
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(tester.takeException(), isNull, reason: '$id with $count');
+      }
+    }
+    // Each power, alone, on the sloop.
+    final sloop = ShipForm.fromRecord(
+        'rusty_eel', ships['rusty_eel'] as Map<String, dynamic>);
+    for (final power in SailPower.values) {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SeaSideScene(
+            waters: SeaWaters.open,
+            ship: sloop,
+            dress: ShipDress(sigils: [ShipSigil(power, colours[0])]),
+          ),
+        ),
+      ));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(tester.takeException(), isNull, reason: power.name);
     }
   });
 
