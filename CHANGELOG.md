@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.316.0+352]
+## [1.315.0+351]
 
 The city plan: Saltmouth from above, zoomed, fogged, with its ways on their buildings.
 
