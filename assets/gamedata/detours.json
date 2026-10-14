@@ -1,0 +1,335 @@
+{
+  "version": 1,
+  "places": {},
+  "biomes": {
+    "tear": {
+      "shop": [
+        {
+          "en": "A trader has set up between two stranded hulls, selling from a mast laid on its side.",
+          "fr": "Un marchand s’est installé entre deux coques échouées et vend depuis un mât couché sur le flanc."
+        },
+        {
+          "en": "A woman sells lamp oil by the thimble from the shade of a glass-slick dune, and says the price rises with the tide.",
+          "fr": "Une femme vend de l’huile de lampe au dé à coudre à l’ombre d’une dune vitrifiée, et dit que le prix monte avec la marée."
+        },
+        {
+          "en": "A chandler’s hatch stands open a hand’s width, and a voice inside names what it has and what it will not part with.",
+          "fr": "L’écoutille d’un chandelier est entrouverte d’une main, et une voix à l’intérieur énumère ce qu’elle a et ce dont elle ne se sépare pas."
+        },
+        {
+          "en": "Wreck-pickers have spread a sail on the shingle and laid out their finds in rows: brass, rope, a captain’s spyglass with one eye gone.",
+          "fr": "Des pilleurs d’épaves ont étalé une voile sur les galets et rangé leurs trouvailles : du laiton, de la corde, la longue-vue d’un capitaine, un œil en moins."
+        },
+        {
+          "en": "A cart with no horse stands at the road’s edge. A boy at the shafts sells from it in the careful voice of someone told never to leave it.",
+          "fr": "Une charrette sans cheval se tient au bord de la route. Un garçon aux brancards y vend, de la voix prudente de quelqu’un à qui l’on a interdit de la quitter."
+        },
+        {
+          "en": "Someone has hung a lantern from a gibbet and sells by its light, keeping the lantern between you and the sea.",
+          "fr": "Quelqu’un a pendu une lanterne à un gibet et vend à sa lumière, en gardant la lanterne entre vous et la mer."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "The glass underfoot hums a half-note too low, and something at the strand’s edge stops pretending to be driftwood.",
+          "fr": "Le verre sous vos pieds bourdonne un demi-ton trop bas, et quelque chose au bord de la grève cesse de se faire passer pour du bois flotté.",
+          "mood": "tense"
+        },
+        {
+          "en": "A shape in a White Fleet sash stands at the waterline, facing inland, and has not blinked since you saw it.",
+          "fr": "Une silhouette à l’écharpe de la Flotte Blanche se tient à la ligne d’eau, face à la terre, et n’a pas cillé depuis que vous l’avez vue.",
+          "mood": "tense"
+        },
+        {
+          "en": "Footprints cross the glass sand toward you from the sea. None go back.",
+          "fr": "Des empreintes traversent le sable de verre depuis la mer jusqu’à vous. Aucune ne repart.",
+          "mood": "tense"
+        },
+        {
+          "en": "A figure steps out from behind a keel, wearing a face you almost recognise.",
+          "fr": "Une silhouette sort de derrière une quille, avec un visage que vous reconnaissez presque.",
+          "mood": "tense"
+        },
+        {
+          "en": "The hum in the glass stops. Everything near you goes very quiet, and then very close.",
+          "fr": "Le bourdonnement du verre cesse. Tout autour de vous devient très silencieux, puis très proche.",
+          "mood": "tense"
+        },
+        {
+          "en": "Something wet drags itself up from the tideline, wearing a drowned man’s coat.",
+          "fr": "Quelque chose de ruisselant se hisse hors de la ligne de marée, vêtu du manteau d’un noyé.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "A fisher-woman asks, without being asked, whether you have a boat for the high ground.",
+          "fr": "Une pêcheuse demande, sans qu’on lui ait rien demandé, si vous avez une barque pour gagner les hauteurs."
+        },
+        {
+          "en": "A notice nailed to a door offers a sum to anyone who will bring a name back from the shore.",
+          "fr": "Un avis cloué à une porte offre une somme à qui rapportera un nom de la grève."
+        },
+        {
+          "en": "An old sailor in a white sash keeps counting the masts aloud, and is always two short.",
+          "fr": "Un vieux marin à l’écharpe blanche compte les mâts à voix haute, et en trouve toujours deux de moins."
+        },
+        {
+          "en": "A girl with a lantern asks if you are going south; she has something to send to the villages that went up the hill.",
+          "fr": "Une fille à la lanterne demande si vous allez vers le sud ; elle a de quoi envoyer aux villages montés sur la colline."
+        },
+        {
+          "en": "A man at the water’s edge says the tide has taken his brother’s boat and will give it back for a price he cannot pay.",
+          "fr": "Un homme au bord de l’eau dit que la marée a pris la barque de son frère et la rendra contre un prix qu’il ne peut payer."
+        },
+        {
+          "en": "A priest of no church you know wants a courier for a letter nobody on this coast will carry.",
+          "fr": "Un prêtre d’aucune église que vous connaissiez cherche un messager pour une lettre que personne sur cette côte ne veut porter."
+        }
+      ],
+      "treasure": [
+        {
+          "en": "Glass fused around a ship’s bell holds a coin or two, set in it like seeds.",
+          "fr": "Le verre fondu autour d’une cloche de navire retient une pièce ou deux, serties comme des graines."
+        },
+        {
+          "en": "A chest has washed up and been left, its brass bound with glass. The lock has already given.",
+          "fr": "Un coffre a été jeté sur la grève et laissé là, son laiton serti de verre. La serrure a déjà cédé."
+        },
+        {
+          "en": "A lantern still burns in a wreck’s binnacle, its brass worth more than its light.",
+          "fr": "Une lanterne brûle encore dans l’habitacle d’une épave, son laiton vaut plus que sa lumière."
+        },
+        {
+          "en": "The tide has left a necklace of tear-glass in the weed, each bead warm.",
+          "fr": "La marée a laissé un collier de verre de déchirure dans les algues, chaque perle tiède."
+        },
+        {
+          "en": "In the rib of a stranded hull someone has hidden a purse, and has not come back for it.",
+          "fr": "Dans la membrure d’une coque échouée, quelqu’un a caché une bourse et n’est jamais revenu la chercher."
+        },
+        {
+          "en": "A seam in the strand glows faintly; a hand’s depth down lies a small iron box.",
+          "fr": "Une veine de la grève luit faiblement ; à une main de profondeur se trouve une petite boîte de fer."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A hull’s overhang makes a roof against the glare, and the glass sand is cool in its shade.",
+          "fr": "Le surplomb d’une coque fait un toit contre l’éblouissement, et le sable de verre est frais à son ombre."
+        },
+        {
+          "en": "A lantern-keeper lets you sit by her fire, so long as nobody speaks of the Tear.",
+          "fr": "Une gardienne de lanterne vous laisse vous asseoir près de son feu, à condition que personne ne parle de la Déchirure."
+        },
+        {
+          "en": "A chapel made from a ship’s stern has a bench and a lamp, and a priest too tired to ask questions.",
+          "fr": "Une chapelle faite de la poupe d’un navire a un banc et une lampe, et un prêtre trop las pour poser des questions."
+        },
+        {
+          "en": "On the high ground the wind finally drops, and for an hour the strand’s hum is only a memory.",
+          "fr": "Sur les hauteurs, le vent tombe enfin, et pendant une heure le bourdonnement de la grève n’est qu’un souvenir."
+        },
+        {
+          "en": "A fisherman’s hut stands above the tideline. The fire has gone out, but the roof is whole.",
+          "fr": "Une cabane de pêcheur se dresse au-dessus de la ligne de marée. Le feu est éteint, mais le toit est entier."
+        },
+        {
+          "en": "A driftwood bench at the cliff’s edge looks out on a sea doing nothing at all.",
+          "fr": "Un banc de bois flotté au bord de la falaise donne sur une mer qui ne fait rien du tout."
+        }
+      ],
+      "generic": [
+        {
+          "en": "Gulls wheel over the glass strand and do not land on it.",
+          "fr": "Des mouettes tournoient au-dessus de la grève de verre sans s’y poser."
+        },
+        {
+          "en": "A bell rings somewhere out at sea, once, and is not answered.",
+          "fr": "Une cloche sonne quelque part au large, une fois, sans réponse."
+        },
+        {
+          "en": "The shore is quiet but for the hum, which you only notice when it stops.",
+          "fr": "La côte est silencieuse, hormis le bourdonnement, que l’on ne remarque que lorsqu’il s’arrête."
+        },
+        {
+          "en": "Ahead, the Tear lies low on the water like a bruise, and the light around it has gone strange.",
+          "fr": "Devant, la Déchirure repose bas sur l’eau comme un bleu, et la lumière autour d’elle est devenue étrange."
+        },
+        {
+          "en": "A line of villagers goes by on the high road, carrying their lamp oil in pots.",
+          "fr": "Une file de villageois passe sur la route des hauteurs, portant leur huile de lampe dans des pots."
+        },
+        {
+          "en": "A mast stands out of the sand at an angle that suggests it is still sailing.",
+          "fr": "Un mât se dresse hors du sable à un angle qui laisse croire qu’il navigue encore."
+        }
+      ]
+    },
+    "frost": {
+      "shop": [
+        {
+          "en": "A chandler sells hearth-coals in twists of paper, one to a customer, and watches that you do not blow on it.",
+          "fr": "Un chandelier vend des braises de foyer dans des papillotes, une par client, et veille à ce que vous ne soufflez pas dessus."
+        },
+        {
+          "en": "A fur-seller keeps her stall inside a doorway to shelter her goods from the frost, which are mostly frost.",
+          "fr": "Une marchande de fourrures tient son étal dans une embrasure pour abriter sa marchandise du givre, qui est surtout du givre."
+        },
+        {
+          "en": "A woman in three coats sells hot broth by the ladle from a pot she never lets go cold.",
+          "fr": "Une femme en trois manteaux vend du bouillon chaud à la louche dans une marmite qu’elle ne laisse jamais refroidir."
+        },
+        {
+          "en": "A cart of firewood stands guarded by two boys with cudgels and a price chalked on a slate.",
+          "fr": "Une charrette de bois de chauffe est gardée par deux garçons armés de gourdins, un prix à la craie sur une ardoise."
+        },
+        {
+          "en": "Behind a rime-crusted shutter a cobbler lines boots with felt and charges for the felt.",
+          "fr": "Derrière un volet couvert de givre, un cordonnier double des bottes de feutre et fait payer le feutre."
+        },
+        {
+          "en": "A stone-cutter sells chips of white quarry stone on a plank, each with a name begun on it and not finished.",
+          "fr": "Un tailleur de pierre vend des éclats de pierre blanche de la carrière sur une planche, chacun avec un nom commencé et jamais fini."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "The frost on the nearest wall is moving, slowly, toward your boots.",
+          "fr": "Le givre du mur le plus proche avance, lentement, vers vos bottes.",
+          "mood": "tense"
+        },
+        {
+          "en": "A shape steps out of the mist in a coat of hoarfrost and does not seem to feel the cold.",
+          "fr": "Une silhouette sort de la brume dans un manteau de givre et ne semble pas sentir le froid.",
+          "mood": "tense"
+        },
+        {
+          "en": "Something in the street breathes out, and the breath hangs there, white, long after it has gone.",
+          "fr": "Quelque chose dans la rue expire, et le souffle reste là, blanc, longtemps après son départ.",
+          "mood": "tense"
+        },
+        {
+          "en": "A figure in a penitent’s mask blocks the road and does not speak.",
+          "fr": "Une silhouette au masque de pénitent barre la route et ne dit rien.",
+          "mood": "tense"
+        },
+        {
+          "en": "The shadows at the end of the street lie the wrong way, and one of them lies toward you.",
+          "fr": "Les ombres au bout de la rue s’étendent du mauvais côté, et l’une d’elles s’étend vers vous.",
+          "mood": "tense"
+        },
+        {
+          "en": "A hound of no particular colour pads out of the snow and stops at exactly the distance from which it can spring.",
+          "fr": "Un chien d’aucune couleur précise sort de la neige à pas feutrés et s’arrête à la distance exacte d’où il peut bondir.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "A hearth-keeper begs a coal to carry to her family’s cold house, and will pay in what the house still has.",
+          "fr": "Une gardienne de foyer mendie une braise à porter à la maison froide de sa famille, et paiera de ce qu’il reste dans la maison."
+        },
+        {
+          "en": "A pilgrim on the road asks you to carry a candle-end past the Reliquary, because her feet will not.",
+          "fr": "Une pèlerine sur la route vous prie de porter un bout de bougie au-delà du Reliquaire, parce que ses pieds ne le feront pas."
+        },
+        {
+          "en": "A quarryman says his brother went up the cut in autumn, and the cut has gone quiet.",
+          "fr": "Un carrier dit que son frère est monté dans la tranchée à l’automne, et que la tranchée s’est tue."
+        },
+        {
+          "en": "A notice on the Reliquary’s wall offers a bounty on whatever came through the tear and settled in the chapel.",
+          "fr": "Un avis sur le mur du Reliquaire offre une prime pour ce qui a passé par la déchirure et s’est installé dans la chapelle."
+        },
+        {
+          "en": "A child with chilblained hands asks whether you have ever seen a fire that would not go out.",
+          "fr": "Un enfant aux mains gelées demande si vous avez déjà vu un feu qui refuse de s’éteindre."
+        },
+        {
+          "en": "An Inquisition clerk, blue at the lips, wants a courier for a ledger that cannot be left in the cold.",
+          "fr": "Un greffier de l’Inquisition, les lèvres bleues, cherche un messager pour un registre qui ne peut rester au froid."
+        }
+      ],
+      "treasure": [
+        {
+          "en": "Under a drift in a doorway, a purse is frozen to the stone. A knife’s tip frees it.",
+          "fr": "Sous une congère dans une embrasure, une bourse est gelée à la pierre. La pointe d’un couteau la libère."
+        },
+        {
+          "en": "A hearth long cold holds, beneath its ash, a coin and a ring.",
+          "fr": "Un foyer éteint depuis longtemps garde, sous sa cendre, une pièce et une bague."
+        },
+        {
+          "en": "In the lee of a wall someone has cached firewood and, beneath it, a flask of something warming.",
+          "fr": "À l’abri d’un mur, quelqu’un a caché du bois et, dessous, une gourde de quelque chose qui réchauffe."
+        },
+        {
+          "en": "A rime-crusted chest lies where a cart overturned. The frost has done the lock’s work.",
+          "fr": "Un coffre couvert de givre gît là où une charrette a versé. Le gel a fait le travail de la serrure."
+        },
+        {
+          "en": "A glint of tear-glass in the snow, set in a ring of melted white.",
+          "fr": "L’éclat d’un verre de déchirure dans la neige, serti dans un anneau de blanc fondu."
+        },
+        {
+          "en": "A stone with names cut into every face has a small offering of coin at its foot.",
+          "fr": "Une pierre dont chaque face porte des noms gravés a, à ses pieds, une petite offrande de pièces."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A hearth-hall with one fire lit lets anyone sit who feeds it.",
+          "fr": "Une salle de foyer avec un seul feu allumé laisse s’asseoir quiconque l’alimente."
+        },
+        {
+          "en": "A chapel with its roof half gone has a nave floor swept clear of snow and a bench along the wall.",
+          "fr": "Une chapelle au toit à demi effondré a une nef dont le sol est balayé de la neige et un banc le long du mur."
+        },
+        {
+          "en": "A cart-shed with straw to the knees and two good oxen warming it.",
+          "fr": "Une remise à charrettes avec de la paille jusqu’aux genoux et deux bons bœufs qui la réchauffent."
+        },
+        {
+          "en": "Behind a quarry hut’s door, a stove with a little fuel and a long list of who has burnt what.",
+          "fr": "Derrière la porte d’une cabane de carrière, un poêle avec un peu de combustible et une longue liste de qui a brûlé quoi."
+        },
+        {
+          "en": "A stairwell between two houses is out of the wind, and nobody has come in to complain of the company.",
+          "fr": "Une cage d’escalier entre deux maisons est à l’abri du vent, et personne n’est venu se plaindre de la compagnie."
+        },
+        {
+          "en": "A pilgrim’s bench stands at a wayside post, the post’s bell asleep under a cap of frost.",
+          "fr": "Un banc de pèlerin se dresse près d’une borne de la route, la cloche de la borne endormie sous un bonnet de givre."
+        }
+      ],
+      "generic": [
+        {
+          "en": "Your breath hangs before you and does not clear.",
+          "fr": "Votre souffle reste suspendu devant vous et ne se dissipe pas."
+        },
+        {
+          "en": "Frost has taken the weathercock, and it points, stiffly, at nothing.",
+          "fr": "Le givre a pris le coq de girouette, qui désigne, raide, le néant."
+        },
+        {
+          "en": "A dog is asleep on a doorstep, curled round a lantern.",
+          "fr": "Un chien dort sur un seuil, enroulé autour d’une lanterne."
+        },
+        {
+          "en": "The whole street is silent, and then, far off, a bell is struck once and the frost sings.",
+          "fr": "Toute la rue est silencieuse, puis, au loin, une cloche sonne une fois et le givre chante."
+        },
+        {
+          "en": "Smoke rises from only one chimney in the whole street, and everybody is looking at it.",
+          "fr": "De toute la rue, une seule cheminée fume, et tout le monde la regarde."
+        },
+        {
+          "en": "The light is wrong: low, white, with something in it that is not the sun.",
+          "fr": "La lumière est mauvaise : basse, blanche, avec quelque chose en elle qui n’est pas le soleil."
+        }
+      ]
+    }
+  },
+  "themes": {}
+}

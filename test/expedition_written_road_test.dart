@@ -12,7 +12,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
-import 'package:narrative_data_app/providers/combat_settings_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/expedition_screen.dart';
 
@@ -31,6 +30,9 @@ void main() {
             const MethodChannel('flutter_tts'), (call) async => 1);
     // The road, as the Data tab's saved copy of expedition_steps.json.
     SharedPreferences.setMockInitialValues({
+      // No hunter or temptation in the way of the road (the setting loads
+      // from here, over anything set before it has).
+      'alignment_hunters_enabled': false,
       'gamedb_expedition_steps': jsonEncode({
         // A test zone of its own, so the real file's roads never meet it.
         'z_test_road': {
@@ -77,8 +79,6 @@ void main() {
     await tester.runAsync(() => container
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.en));
-    // No hunter or temptation in the way of the road.
-    container.read(alignmentHuntersEnabledProvider.notifier).state = false;
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(PlayerSession.fromJson(const {

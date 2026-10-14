@@ -17,6 +17,10 @@ Detours and expeditions fit where they happen.
 - **An expedition can have its own road**: a zone with written steps walks them in order (events, checks, fights, discoveries of a place on the road, rests), and is as long as they are. Its checks get harder with the chapter, a rest heals, a discovery turns up one of the zone's materials, and each choice can say what came of it.
 - A zone without written steps plays as before.
 
+## [1.323.0+359]
+
+### Added
+- Detours and expeditions that fit their place (first batch, data only; the engine reads it in Core's coming PR): `assets/gamedata/expedition_steps.json` with six steps each for the three tier-1 expeditions (Fisherman’s Row, Tanner’s Court, the Ossuary Galleries), and `assets/gamedata/detours.json` with the tear shore and frost-city pools (six kinds of six lines). English and French.
 ## [1.322.0+358]
 
 A brand's toll reads right.
