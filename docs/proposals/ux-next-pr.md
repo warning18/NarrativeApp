@@ -70,3 +70,8 @@ Branch `ux-g` (local, one commit on `origin/main`) has the building screen: `lib
 - **[#229](https://github.com/warning18/NarrativeApp/pull/229): v1.294.0+330, the building screen (G).** Format, analyze and its tests pass locally; it edits QA's `qa_real_font_cards_test.dart` (listed in the PR).
 - **The ruins scene kit for `camp_to_quarter` is already in `main`** (v1.291.0, #223: `ruins_kit.dart`, chosen by route terrain `ruins`, tested). Nothing more to build for it unless the user wants changes after seeing it. A second PR is not needed for it.
 - Design board 11 (the world sphere) waits on the user's three answers.
+
+## Open PRs (14 Oct, after #229 merged as 1.294.0)
+
+- **[#230](https://github.com/warning18/NarrativeApp/pull/230): v1.295.0+331, the ash squall fills the ruins scene with ash.** Format, analyze and `land_crossing_test` + `side_view_test` pass locally.
+- **For the manager:** the ruins scene kit for `camp_to_quarter` is already in `main` since v1.291.0 (#223, `ruins_kit.dart`, route terrain `ruins`); #230 adds only the ash squall's thick ash. Nothing else is queued for UX except what the user decides: board 11 (the world sphere) waits on their three answers, and the Journey's same-place choices (E) on where it still looks like travel.
