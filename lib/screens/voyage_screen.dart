@@ -32,6 +32,7 @@ import '../providers/signs_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../widgets/ability_roll_dialog.dart';
 import '../widgets/approval_notice.dart' show speakUpAbout;
 import '../widgets/companion_remark_bubble.dart';
 import '../widgets/moments.dart';
@@ -413,9 +414,10 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     return fr && nameFr.isNotEmpty ? nameFr : name;
   }
 
-  /// Rolls [choice]'s check against its DC (see seaChoiceDc) and writes the
-  /// roll in the log.
-  bool _seaCheck(SeaChoice choice) {
+  /// Rolls [choice]'s check against its DC (see seaChoiceDc) on the Skill
+  /// Challenge's die (Wave 6, ability_roll_dialog.dart) and writes the roll
+  /// in the log.
+  Future<bool> _seaCheck(SeaChoice choice) async {
     final lang = ref.read(appLanguageProvider);
     final result = rollAbilityCheck(
       ability: choice.checkAbility!,
@@ -423,11 +425,13 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       session: ref.read(playerSessionProvider),
       random: _random,
     );
-    _log.add('${trFor(lang, '${result.ability}_label')} '
+    final line = '${trFor(lang, '${result.ability}_label')} '
         '${trFor(lang, 'check_label')}: '
         '${result.roll} + ${result.modifier} = ${result.total} '
         '${trFor(lang, 'vs_dc_label')} ${result.dc} — '
-        '${trFor(lang, result.success ? 'ability_check_success' : 'ability_check_fail')}');
+        '${trFor(lang, result.success ? 'ability_check_success' : 'ability_check_fail')}';
+    if (mounted) await showAbilityRoll(context, result: result, message: line);
+    _log.add(line);
     return result.success;
   }
 
@@ -484,7 +488,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         await _loseHull(_stormLoss(event), 'ship_log_storm');
         await _advance();
       case SeaAction.pushThrough:
-        final through = _seaCheck(choice);
+        final through = await _seaCheck(choice);
         if (through) {
           _log.add(_t('ship_log_pushed_through'));
         } else {
@@ -554,7 +558,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         _log.add(_t('ship_log_salvage', n: gold));
         await _advance();
       case SeaAction.board:
-        final boarded = _seaCheck(choice);
+        final boarded = await _seaCheck(choice);
         if (boarded) {
           final gold = (event.gold * boardGoldMultiplier).round();
           await notifier.applyChoiceEffects(goldMod: gold);
@@ -577,7 +581,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         // Sails struck, not a word aboard: the beast may pass beneath and
         // leave the crew a long look at it.
         final id = event.enemyShipId!;
-        if (_seaCheck(choice)) {
+        if (await _seaCheck(choice)) {
           _log.add(_t('ship_log_beast_passed',
               ship: _beastName(
                   id, ref.read(appLanguageProvider) == AppLanguage.fr)));
@@ -603,7 +607,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           await notifier.updateSeaBeast(
               event.enemyShipId!, (b) => b.copyWith(seen: true));
         }
-        if (_seaCheck(choice)) {
+        if (await _seaCheck(choice)) {
           if (beast) {
             // Looking back, the crew sees where it turned away.
             final id = event.enemyShipId!;

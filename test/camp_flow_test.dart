@@ -475,6 +475,13 @@ void main() {
         await tester.tap(choice.first);
         await Future<void>.delayed(const Duration(milliseconds: 100));
       });
+      // A check's die tumbles under the choices and lands before the
+      // outcome (d20_roll.dart): its tumble, then the sum read.
+      for (var i = 0; i < 4; i++) {
+        await tester.pump(const Duration(milliseconds: 1000));
+      }
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 100)));
       await _settle(tester);
       if (find.byKey(const Key('crossing_next')).evaluate().isNotEmpty) {
         await tester.tap(find.byKey(const Key('crossing_next')));
