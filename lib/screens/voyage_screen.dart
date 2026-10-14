@@ -27,6 +27,7 @@ import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/remark_provider.dart';
+import '../providers/ship_dress_provider.dart';
 import '../providers/signs_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
@@ -1072,6 +1073,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                     key: const Key('voyage_harbour'),
                     waters: _waters,
                     meeting: const SeaMeeting(SeaMeetingKind.harbour),
+                    ship: ref.watch(shipFormProvider),
+                    dress: ref.watch(shipDressProvider),
                     height: 130,
                   ),
                 ),
@@ -1195,6 +1198,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                     waters: _waters,
                     weather: _voyageWeather(event),
                     flying: _flying,
+                    ship: ref.watch(shipFormProvider),
+                    dress: ref.watch(shipDressProvider),
                     meeting: _meetingFor(event),
                     height: 140,
                     beside: Icon(icon, size: 34, color: colour),

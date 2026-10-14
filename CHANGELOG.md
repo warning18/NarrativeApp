@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.298.0+334]
+
+The voyage in side view: the Eel's own hull.
+
+### Changed
+- **All fourteen hulls are drawn in side view** at sea, replacing the one placeholder hull. Each is read off its `ships.json` record (the same one the top-down painter uses): the length, how high she sits and how deep (beam), how full her ends are, the stern and bow castles with their lit cabin windows, gun ports on the great ships, the masts and how each is rigged (square sails with a topsail on three-masters, fore-and-aft gaff sails, lateens), the jibs, a bowsprit and the galleon's beak, the longboat's swinging oars. The odd hulls have their own build: the twin hull (two hulls under one deck and a cabin), the ironclad (a plated slab with a ram, a riveted casemate, two funnels streaming smoke), and the four flying boats (the sky-sloop's gasbag, boiler chimney and screw; the cloud-cutter's bat-wing sails and furnace glow; the lodestone barge with lodestones hanging from the keel and spark arcs; the void carrack's bone wings and void sail).
+- **What she wears shows**: the hull paint and trim, the sail cloth with its edge and pattern (stripes, patches, diamonds), the ensign colour and a figurehead at the bow. The arrival scene shows the same ship.
+
 ## [1.297.0+333]
 
 The voyage in side view: what the sea meets, and the port ahead.

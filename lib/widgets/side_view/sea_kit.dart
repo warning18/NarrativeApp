@@ -13,7 +13,10 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../combat/ship_battle.dart' show SeaWeather;
+import '../../data/ship_forms.dart' show ShipForm;
 import '../sea_battlefield.dart' show SeaLook, SeaWaters;
+import '../ship_dress.dart' show ShipDress;
+import 'side_ship.dart';
 import 'side_view.dart';
 
 /// The horizon, in scene rows from the top.
@@ -317,66 +320,64 @@ void _carried(Canvas canvas, Size size, double u, double scroll, double t,
   }
 }
 
-/// The ship, in place, bobbing: one placeholder hull and sail until the
-/// hulls' own side views come. A [flying] hull hangs above the water with
-/// her shadow on it.
+/// The Rusty Eel's own sloop, the hull drawn until the ships table has
+/// loaded (and in a test that gives none).
+final ShipForm _defaultForm = ShipForm.fromRecord('rusty_eel', const {
+  'kind': 'hull',
+  'length': 1.0,
+  'beam': 0.24,
+  'outline': {'u0': 0.5, 'a': 2.2, 'b': 1.7, 'tipw': 0.3, 'bowtip': 0.0},
+  'sailPlan': [
+    {'kind': 'square', 'at': 0.5, 'size': 1.0}
+  ],
+  'jibs': 1,
+});
+
+/// The ship, in place, bobbing: her hull as [ship] says (see side_ship.dart)
+/// in what she wears ([dress]). A flying hull ([flying], or the hull's own
+/// record) hangs above the water with her shadow on it.
 SideLayer seaActors({
   bool flying = false,
   SeaWeather weather = SeaWeather.calm,
   SeaMeeting meeting = SeaMeeting.none,
+  ShipForm? ship,
+  ShipDress? dress,
 }) =>
     SideLayer(0, (canvas, size, scroll, t, u) {
       final rough = weather == SeaWeather.squall;
       final w = size.width / u;
-      final x = (w * 0.34).floorToDouble();
+      final form = ship ?? _defaultForm;
+      final len = sideShipLength(form);
+      final shipX = (w * 0.34 - len / 2 + 18).floorToDouble();
       final bob = math.sin(t * (rough ? 1.8 : 1.1)) * (rough ? 2.2 : 1.0);
-      final lift = flying ? 9.0 : 0.0;
+      final lift = (flying || form.flying) ? 9.0 : 0.0;
       final base = 53 - lift + bob.roundToDouble();
-      if (flying) {
+      if (lift > 0) {
         canvas.drawOval(
             Rect.fromCenter(
-                center: Offset((x + 17) * u, 61 * u),
-                width: 34 * u,
+                center: Offset((shipX + len / 2) * u, 61 * u),
+                width: len * u,
                 height: 3 * u),
             Paint()..color = Colors.black.withValues(alpha: 0.25));
       }
       _drawMeeting(canvas, size, u, t, meeting, rough);
-      final hull = Paint()..color = const Color(0xFF5A3A24);
-      final plank = Paint()..color = const Color(0xFF3F2818);
-      final rim = Paint()..color = const Color(0xFF8A6038);
-      final mast = Paint()..color = const Color(0xFF2E1E12);
-      final sail = Paint()..color = const Color(0xFFE8E0C8);
-      final shade = Paint()..color = const Color(0xFFC9C0A4);
-      // The hull: stern castle, the long deck, the bow rising to the
-      // bowsprit.
-      sidePixels(canvas, u, hull, x, base - 3, 30, 5);
-      sidePixels(canvas, u, hull, x, base - 6, 7, 3);
-      sidePixels(canvas, u, hull, x + 30, base - 2, 3, 3);
-      sidePixels(canvas, u, hull, x + 33, base - 3, 3, 1);
-      sidePixels(canvas, u, plank, x + 1, base - 1, 29, 1);
-      sidePixels(canvas, u, plank, x + 3, base + 1, 25, 1);
-      sidePixels(canvas, u, rim, x, base - 3, 30, 1);
-      sidePixels(canvas, u, rim, x, base - 6, 7, 1);
-      // Mast, a square sail, a jib, a pennant.
-      sidePixels(canvas, u, mast, x + 15, base - 26, 1, 24);
-      sidePixels(canvas, u, sail, x + 9, base - 24, 13, 14);
-      sidePixels(canvas, u, shade, x + 9, base - 11, 13, 2);
-      sidePixels(canvas, u, shade, x + 20, base - 24, 2, 14);
-      sidePixels(canvas, u, mast, x + 8, base - 25, 15, 1);
-      for (var k = 0; k < 20; k++) {
-        sidePixels(canvas, u, sail, x + 17, base - 25 + k, 1 + k * 0.85, 1);
-        sidePixels(canvas, u, shade, x + 17 + k * 0.85, base - 25 + k, 1, 1);
-      }
-      sidePixels(canvas, u, Paint()..color = const Color(0xFFC0392B), x + 16,
-          base - 27, 5, 2);
+      paintSideShip(canvas, u,
+          x: shipX, base: base, form: form, dress: dress, t: t, rough: rough);
       // The wake: foam along the waterline.
-      if (!flying) {
+      if (lift == 0) {
         final foam = Paint()..color = Colors.white.withValues(alpha: 0.55);
         for (var k = 0; k < 6; k++) {
-          sidePixels(canvas, u, foam, x - 2 - k * 3 + math.sin(t * 2 + k) * 1.5,
-              53 + bob.roundToDouble() + 2, 3, 1);
+          sidePixels(
+              canvas,
+              u,
+              foam,
+              shipX - 2 - k * 3 + math.sin(t * 2 + k) * 1.5,
+              53 + bob.roundToDouble() + 2,
+              3,
+              1);
         }
-        sidePixels(canvas, u, foam, x + 31, 55 + bob.roundToDouble(), 4, 1);
+        sidePixels(
+            canvas, u, foam, shipX + len - 3, 55 + bob.roundToDouble(), 4, 1);
       }
     });
 
@@ -593,6 +594,8 @@ class SeaSideScene extends StatelessWidget {
     this.flying = false,
     this.meeting = SeaMeeting.none,
     this.moving = true,
+    this.ship,
+    this.dress,
     this.beside,
     this.height = 140,
   });
@@ -602,6 +605,11 @@ class SeaSideScene extends StatelessWidget {
   final bool flying;
   final SeaMeeting meeting;
   final bool moving;
+
+  /// Her hull and what she wears; the Rusty Eel's sloop in her own wood
+  /// when null.
+  final ShipForm? ship;
+  final ShipDress? dress;
   final Widget? beside;
   final double height;
 
@@ -614,8 +622,12 @@ class SeaSideScene extends StatelessWidget {
           SideViewScene(
             key: const Key('sea_scene'),
             layers: seaLayers(waters: waters, weather: weather),
-            actors:
-                seaActors(flying: flying, weather: weather, meeting: meeting),
+            actors: seaActors(
+                flying: flying,
+                weather: weather,
+                meeting: meeting,
+                ship: ship,
+                dress: dress),
             particles: seaParticles(waters, weather),
             intensity: weather == SeaWeather.squall ? 0.9 : 0.6,
             pace: weather == SeaWeather.tailwind ? 56 : 30,
