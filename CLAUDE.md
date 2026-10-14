@@ -12,7 +12,7 @@ before starting a change.
 | **Core** (game mechanics) | `claude/core` | rules, numbers and state |
 | **UX** (design and UX) | `claude/eager-pascal-y847vf` | how things look, move and read |
 | **Narrative** (story and content) | `claude/narrative` | what the game says: story, quests, characters, dialogue |
-| **QA** (testing) | `claude/qa` | finds what broke: tests, simulator, PR reviews |
+| **QA** (testing) | `claude/qa` | keeps the tests fast and finds what broke: tests, simulator, L3 on request |
 
 The manager is the Claude Code session `session_01SfVpQUmQNXErL5fGsy7HU9`.
 Sessions reach it with the `send_message` tool of the `claude-code-remote`
