@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.333.0+369]
+
+No hero starts with negative armour.
+
+### Fixed
+- **A new character's base armour is never below 0.** An Orc Mage started at -4 (the Orc's -2 and the Mage's -2), which read as a bug; the seven frailest race and profession pairs now start at 0, and every other start is unchanged. Companions and the simulator follow the same rule.
+
 ## [1.329.0+365]
 
 The clans say what they stand for.
