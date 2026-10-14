@@ -63,6 +63,12 @@ void main() {
     ));
     final container = ProviderScope.containerOf(
         tester.element(find.byKey(const Key('open'))));
+    // The session's own first load (from the saved prefs) starts when it is
+    // first read, and must finish before the fixture is loaded, or it lands
+    // after it and resets the points.
+    container.read(playerSessionProvider);
+    await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 100)));
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(PlayerSession.fromJson({'statPoints': 2})));
