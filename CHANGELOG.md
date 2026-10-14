@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.346.0+382]
+
+### Changed
+- Expeditions: five fights written for a single foe (Lantern Docks patrol, Fever-Bark lane, Frost Quarry guards, Ember Run penitents, Shroud's Vigil masks), EN and FR; two choice labels fixed to match their single foe. Text only.
+
 ## [1.345.0+381]
 
 The written expeditions, balanced.
