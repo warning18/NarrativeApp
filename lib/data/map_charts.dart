@@ -1,6 +1,9 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../l10n/app_locale.dart';
+import 'chart_globe.dart' show GlobeView;
 import 'chart_story.dart';
 import 'chart_worlds.dart';
 import 'world_map.dart';
@@ -68,7 +71,24 @@ class ChartGeography {
     this.ranges = const [],
     this.features = const [],
     this.tradeRoads = const [],
+    this.lonSpan = GlobeView.bandLonSpan,
+    this.latSpan = GlobeView.bandLatSpan,
   });
+
+  /// How much of the globe the chart covers, in radians: by default the
+  /// band of 225 by 140 degrees the first charts were drawn on (the rest
+  /// open sea); the story world covers the whole sphere (2 pi by pi, board
+  /// 11). The globe (chart_globe.dart) and the climate read it.
+  final double lonSpan;
+  final double latSpan;
+
+  /// Whether the chart covers the whole sphere, poles and all.
+  bool get wholeSphere => latSpan >= math.pi - 1e-9;
+
+  /// A look at [p] on this chart's globe, at [zoom] (see GlobeView.at),
+  /// with the chart's own span: the whole sphere for the story world.
+  GlobeView globeAt(Offset p, double zoom, Offset centre) =>
+      GlobeView.at(p, zoom, centre, lonSpan: lonSpan, latSpan: latSpan);
 
   /// Each landmark's position, by id.
   final Map<String, Offset> places;
@@ -211,6 +231,8 @@ final ChartGeography chartWorldStoryFull = () {
   final g = chartWorldStory;
   final seen = <String>{};
   return ChartGeography(
+    lonSpan: g.lonSpan,
+    latSpan: g.latSpan,
     places: g.places,
     lands: g.lands,
     rivers: g.rivers,
