@@ -1,6 +1,355 @@
 {
   "version": 1,
-  "places": {},
+  "places": {
+    "saltmouth_landward_gate": {
+      "shop": [
+        {
+          "en": "A salt-wagon driver sells a sack off the back of his cart while the queue is stopped, price whispered, quantity doubted.",
+          "fr": "Un conducteur de chariot de sel vend un sac du fond de sa charrette pendant que la file est arrêtée, prix murmuré, quantité douteuse."
+        },
+        {
+          "en": "A girl threads between the waiting wagons with a tray of flatbread, selling to the people who cannot leave their carts.",
+          "fr": "Une fille se faufile entre les chariots qui attendent avec un plateau de galettes, vendant à ceux qui ne peuvent quitter leur charrette."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A guard peels off from the queue line with his hand on his sword and a look that says your papers were not in order.",
+          "fr": "Un garde quitte la file, la main sur l’épée, avec un regard qui dit que vos papiers n’étaient pas en règle.",
+          "mood": "tense"
+        },
+        {
+          "en": "Two soldiers at the gate step out to meet you, spears level, as the search-line stalls and goes quiet.",
+          "fr": "Deux soldats de la porte s’avancent à votre rencontre, lances à l’horizontale, tandis que la file de fouille s’arrête et se tait.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "A wagon-master in the queue offers coin to anyone who can speak to the gate captain without being searched.",
+          "fr": "Un chef de convoi dans la file offre de l’argent à qui saura parler au capitaine de la porte sans être fouillé."
+        },
+        {
+          "en": "A pilgrim being turned away at the gate presses a letter into your hands and asks you to take it in.",
+          "fr": "Un pèlerin refoulé à la porte vous glisse une lettre dans les mains et vous prie de la porter à l’intérieur."
+        }
+      ],
+      "rest": [
+        {
+          "en": "In the shade of a wagon-wheel, a driver shares his water and says nothing, which is how the queue says welcome.",
+          "fr": "À l’ombre d’une roue de chariot, un conducteur partage son eau sans rien dire, ce qui est la façon dont la file dit bienvenue."
+        },
+        {
+          "en": "A low wall by the gate, worn smooth by a thousand people waiting, has a patch of shade.",
+          "fr": "Un muret près de la porte, poli par mille personnes qui ont attendu, offre un coin d’ombre."
+        }
+      ],
+      "generic": [
+        {
+          "en": "A wagon is stopped, unloaded, searched and loaded again, with an air of ceremony no one involved seems to enjoy.",
+          "fr": "Un chariot est arrêté, déchargé, fouillé et rechargé, avec un air de cérémonie que nul des intéressés ne paraît apprécier."
+        },
+        {
+          "en": "A hawk circles the white walls, the same wall every pass, as if waiting to be asked in.",
+          "fr": "Un faucon tournoie autour des murs blancs, toujours le même pan à chaque passage, comme s’il attendait qu’on l’invite à entrer."
+        },
+        {
+          "en": "The queue moves a wagon-length, then stops, then moves; each move is greeted with a small cheer.",
+          "fr": "La file avance d’une longueur de chariot, puis s’arrête, puis avance ; chaque avancée est saluée d’un petit hourra."
+        }
+      ]
+    },
+    "saltmouth_tern_row": {
+      "shop": [
+        {
+          "en": "A boat-folder sells paper boats by the dozen, each folded for a name you say, and lit for a copper more.",
+          "fr": "Un plieur de bateaux vend des bateaux de papier à la douzaine, chacun plié pour un nom que vous dites, et allumé pour un cuivre de plus."
+        },
+        {
+          "en": "A woman at a window sells tide-tables, written in a tongue between the Tide-Kin’s and the Wharf’s.",
+          "fr": "Une femme à sa fenêtre vend des tables de marées, écrites dans une langue entre celle des Gens de la Marée et celle du Quai."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A customs officer with a ledger and a heavy cudgel steps onto the footbridge and names a toll that exists in no book.",
+          "fr": "Un douanier muni d’un registre et d’un gourdin lourd monte sur la passerelle et annonce un péage qui n’existe dans aucun livre.",
+          "mood": "tense"
+        },
+        {
+          "en": "A figure at the bridge’s far end stands with a lit paper boat in one hand and a knife in the other.",
+          "fr": "Une silhouette au bout de la passerelle se tient là, un bateau de papier allumé d’une main, un couteau de l’autre.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "A Tide-Kin elder asks for help against a toll nobody can find written down.",
+          "fr": "Un ancien des Gens de la Marée demande de l’aide contre un péage que nul ne trouve consigné."
+        },
+        {
+          "en": "A child with a paper boat asks whether you will carry it to the water for a mother who cannot walk that far.",
+          "fr": "Un enfant au bateau de papier demande si vous voulez le porter jusqu’à l’eau pour une mère qui ne peut marcher aussi loin."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A tide-house with a stove and a door that is never barred offers a bowl of rice and a seat by the window.",
+          "fr": "Une maison de marée avec un poêle et une porte jamais barrée offre un bol de riz et une place à la fenêtre."
+        },
+        {
+          "en": "On the footbridge’s middle span a bench looks down on the lit boats drifting out beneath it.",
+          "fr": "Au milieu de la passerelle, un banc domine les bateaux allumés qui dérivent dessous."
+        }
+      ],
+      "generic": [
+        {
+          "en": "Paper boats hang in every window, each lit for someone the sea did not give back.",
+          "fr": "Des bateaux de papier pendent à chaque fenêtre, chacun allumé pour quelqu’un que la mer n’a pas rendu."
+        },
+        {
+          "en": "A bell is struck once on the far bank, and the whole row goes quiet for the length of a breath.",
+          "fr": "Une cloche est frappée une fois sur la rive opposée, et toute la rangée se tait le temps d’un souffle."
+        },
+        {
+          "en": "A tide-woman sings the names of the lost in a low voice, one for each boat that goes out.",
+          "fr": "Une femme de la marée chante à voix basse les noms des disparus, un par bateau qui s’en va."
+        }
+      ]
+    },
+    "saltmouth_wharf": {
+      "shop": [
+        {
+          "en": "A Crow tout sells a quiet route out of the harbour by the half-hour, and a longer one by the hour.",
+          "fr": "Un rabatteur des Corbeaux vend une route discrète hors du port à la demi-heure, et une plus longue à l’heure."
+        },
+        {
+          "en": "A stall by the net-sheds sells pitch, spare cordage and a surprising selection of keys.",
+          "fr": "Un étal près des remises à filets vend de la poix, du cordage de rechange et un choix surprenant de clés."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A smuggler’s lookout drops from a crane arm, knife already out, and says he was never here.",
+          "fr": "Le guetteur d’un contrebandier se laisse tomber d’un bras de grue, couteau déjà sorti, et dit qu’il n’a jamais été là.",
+          "mood": "tense"
+        },
+        {
+          "en": "A plague hound slinks out between two net-sheds, thin, silent and looking for something to bite.",
+          "fr": "Un chien pestiféré se glisse entre deux remises à filets, maigre, silencieux, cherchant quelque chose à mordre.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "The harbor master has pinned another bounty to her door, in a hand that has written a great many.",
+          "fr": "La maîtresse de port a épinglé une nouvelle prime à sa porte, d’une main qui en a écrit beaucoup."
+        },
+        {
+          "en": "A dockhand whispers that a crate fell off a cart last night and somebody will pay for the cart.",
+          "fr": "Un docker murmure qu’une caisse est tombée d’une charrette la nuit dernière et que quelqu’un paiera pour la charrette."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A quiet corner behind the tannery gives onto a barrel and a view of the black water, and nobody has bothered it.",
+          "fr": "Un coin tranquille derrière la tannerie donne sur un tonneau et une vue sur l’eau noire, et personne ne l’a dérangé."
+        },
+        {
+          "en": "A net-shed, empty at this hour, has a hammock slung across it and a lantern turned low.",
+          "fr": "Une remise à filets, vide à cette heure, a un hamac tendu en travers et une lanterne baissée."
+        }
+      ],
+      "generic": [
+        {
+          "en": "Gulls fight over a fish-head on the quay with the bitterness of dockhands.",
+          "fr": "Des mouettes se disputent une tête de poisson sur le quai avec l’aigreur de dockers."
+        },
+        {
+          "en": "A crane swings a crate over the water, and for a moment the crate seems to hang alone.",
+          "fr": "Une grue balance une caisse au-dessus de l’eau, et un instant la caisse semble suspendue toute seule."
+        },
+        {
+          "en": "Lantern light slides on the oily harbour and breaks into small, shifting coins.",
+          "fr": "La lumière des lanternes glisse sur le port huileux et se brise en petites pièces mouvantes."
+        }
+      ]
+    },
+    "saltmouth_yard": {
+      "shop": [
+        {
+          "en": "A salvager sells fittings off a broken hull by the pound, and names the ship each one came off, fondly.",
+          "fr": "Un récupérateur vend les ferrures d’une coque brisée à la livre, et nomme avec tendresse le navire dont chacune provient."
+        },
+        {
+          "en": "A shipwright’s widow sells rope, pitch and a very good opinion of the yard’s foreman, all at cost.",
+          "fr": "La veuve d’un charpentier de marine vend de la corde, de la poix et une très bonne opinion du contremaître du chantier, le tout au prix coûtant."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A hull-hand steps out from behind a keel with a maul across his shoulder and a grievance.",
+          "fr": "Un ouvrier de coque sort de derrière une quille, un maillet sur l’épaule et un grief au cœur.",
+          "mood": "tense"
+        },
+        {
+          "en": "The scaffolding creaks; something drops from the second tier and lands on the shingle in a crouch.",
+          "fr": "L’échafaudage craque ; quelque chose tombe du deuxième étage et atterrit sur les galets, accroupi.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "The foreman asks for a hand with a stuck plank, and a quiet word on the side about the clerk.",
+          "fr": "Le contremaître demande un coup de main pour une planche coincée, et un mot discret en passant à propos du greffier."
+        },
+        {
+          "en": "A salvage crew offers a share of whatever you can find in a hull the tide has just uncovered.",
+          "fr": "Une équipe de récupération offre une part de tout ce que vous trouverez dans une coque que la marée vient de découvrir."
+        }
+      ],
+      "rest": [
+        {
+          "en": "In the lee of a half-stripped hull, a stack of sailcloth makes a bed and a lantern makes a room.",
+          "fr": "À l’abri d’une coque à demi dépouillée, une pile de toile à voile fait un lit et une lanterne fait une pièce."
+        },
+        {
+          "en": "A bench of stacked planks looks out over the shingle and the stone giant’s long shadow.",
+          "fr": "Un banc de planches empilées donne sur les galets et sur la longue ombre du géant de pierre."
+        }
+      ],
+      "generic": [
+        {
+          "en": "A hull groans as it settles, and the whole yard takes a breath.",
+          "fr": "Une coque gémit en se tassant, et tout le chantier retient son souffle."
+        },
+        {
+          "en": "The stone giant’s shadow lies along the shingle like a road no one is on.",
+          "fr": "L’ombre du géant de pierre s’étend sur les galets comme une route où personne ne va."
+        },
+        {
+          "en": "Hammers beat on iron in three different rhythms, and not one of them agrees.",
+          "fr": "Des marteaux frappent le fer sur trois rythmes différents, et aucun ne s’accorde avec les autres."
+        }
+      ]
+    },
+    "saltmouth_lantern_alleys": {
+      "shop": [
+        {
+          "en": "A stall in a doorway sells potions with the labels turned to the wall.",
+          "fr": "Un étal dans une embrasure vend des potions dont les étiquettes sont tournées vers le mur."
+        },
+        {
+          "en": "A man under a green lantern offers ‘charms’ at a whisper, and the charms hum faintly.",
+          "fr": "Un homme sous une lanterne verte propose des ‘charmes’ dans un murmure, et les charmes bourdonnent faiblement."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A cloaked figure has been two alleys behind you since the bazaar, and has decided to stop pretending.",
+          "fr": "Une silhouette encapuchonnée vous suit à deux ruelles depuis le bazar, et a décidé de cesser de faire semblant.",
+          "mood": "tense"
+        },
+        {
+          "en": "A hand shoots out of a doorway and closes on your sleeve, and its owner is smiling.",
+          "fr": "Une main jaillit d’un porche et se referme sur votre manche, et son propriétaire sourit.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "An apothecary asks you to carry a stoppered bottle to an address she will not write down.",
+          "fr": "Une apothicaire vous demande de porter un flacon bouché à une adresse qu’elle refuse d’écrire."
+        },
+        {
+          "en": "A fence offers coin to find out who has been asking after his stock.",
+          "fr": "Un receleur offre de l’argent pour savoir qui s’est renseigné sur son stock."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A tea-house at the alley’s end has a back table and a lamp, and its owner doesn’t look up.",
+          "fr": "Une maison de thé au bout de la ruelle a une table au fond et une lampe, et son propriétaire ne lève pas les yeux."
+        },
+        {
+          "en": "A stairway of worn steps has a landing wide enough for one, hung with a lantern that burns blue.",
+          "fr": "Un escalier de marches usées a un palier juste assez large pour une personne, éclairé d’une lanterne qui brûle en bleu."
+        }
+      ],
+      "generic": [
+        {
+          "en": "Lanterns of every colour hang over the alley, and each lights something different.",
+          "fr": "Des lanternes de toutes les couleurs pendent au-dessus de la ruelle, et chacune éclaire quelque chose de différent."
+        },
+        {
+          "en": "A cat on a roof watches the alley with the air of someone who knows who owes whom.",
+          "fr": "Un chat sur un toit observe la ruelle avec l’air de quelqu’un qui sait qui doit quoi à qui."
+        },
+        {
+          "en": "Someone behind a shutter is counting coins, slowly, and everyone in the alley can hear.",
+          "fr": "Quelqu’un derrière un volet compte des pièces, lentement, et toute la ruelle l’entend."
+        }
+      ]
+    },
+    "saltmouth_card_row": {
+      "shop": [
+        {
+          "en": "A dockhand sells a worn deck of cards that he swears has never lost, and has certainly never won.",
+          "fr": "Un docker vend un jeu de cartes usé qui, jure-t-il, n’a jamais perdu, et n’a certainement jamais gagné."
+        },
+        {
+          "en": "A woman with a bottle sells a mouthful for a coin and a rumour for two.",
+          "fr": "Une femme à la bouteille vend une gorgée pour une pièce et une rumeur pour deux."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A loser at the barrel stands up with the table in one hand and the look of someone who has had enough.",
+          "fr": "Un perdant au tonneau se lève, la table d’une main, avec l’air de quelqu’un qui en a assez.",
+          "mood": "tense"
+        },
+        {
+          "en": "Two dockhands who have just lost everything turn together, slowly, and look at the only stranger in the row.",
+          "fr": "Deux dockers qui viennent de tout perdre se tournent ensemble, lentement, et regardent le seul inconnu de la rangée.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "A rogue at the corner table says she was cheated, and will make it worth your while to find out how.",
+          "fr": "Une voleuse à la table du coin dit qu’on l’a trompée, et saura vous récompenser si vous découvrez comment."
+        },
+        {
+          "en": "A dockhand wants someone to buy back in at the barrel for him, discreetly, with his own money.",
+          "fr": "Un docker veut que quelqu’un rachète sa place au tonneau pour lui, discrètement, avec son propre argent."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A barrel-head table is free for an hour and has a stool, a candle and a view of the games.",
+          "fr": "Une table de fond de tonneau est libre pour une heure et offre un tabouret, une bougie et une vue sur les parties."
+        },
+        {
+          "en": "A crate stacked against a wall makes a seat out of the light, and the dealers don’t mind who sits.",
+          "fr": "Une caisse adossée au mur fait un siège hors de la lumière, et les donneurs se moquent de qui s’assied."
+        }
+      ],
+      "generic": [
+        {
+          "en": "Cards slap a barrel-head, a groan goes up, and the pot changes hands with the ease of long practice.",
+          "fr": "Des cartes claquent sur un fond de tonneau, un gémissement s’élève, et la mise change de mains avec l’aisance d’une longue habitude."
+        },
+        {
+          "en": "A candle gutters in a dock-lantern, and the whole row’s shadows tilt the same way.",
+          "fr": "Une bougie vacille dans une lanterne de quai, et toutes les ombres de la rangée penchent du même côté."
+        },
+        {
+          "en": "Someone is laughing too hard at a joke that was not very good, and everybody knows why.",
+          "fr": "Quelqu’un rit trop fort à une plaisanterie pas très bonne, et tout le monde sait pourquoi."
+        }
+      ]
+    }
+  },
   "biomes": {
     "tear": {
       "shop": [
@@ -819,6 +1168,284 @@
         {
           "en": "A hawk hangs on the warm air over the red rock, and does not move for a long time.",
           "fr": "Un faucon se tient sur l’air chaud au-dessus de la roche rouge, et ne bouge pas pendant longtemps."
+        }
+      ]
+    },
+    "arid_coast": {
+      "shop": [
+        {
+          "en": "A salt-merchant’s wagon has stopped by the road, its owner selling pinches of the cargo to anyone who will pay for the quality.",
+          "fr": "Le chariot d’un marchand de sel s’est arrêté au bord de la route, son propriétaire vendant des pincées de sa cargaison à qui paiera la qualité."
+        },
+        {
+          "en": "A woman with a donkey sells dried fish, olives and a pitcher of lukewarm water, and charges for the shade.",
+          "fr": "Une femme à l’âne vend du poisson séché, des olives et une cruche d’eau tiède, et fait payer l’ombre."
+        },
+        {
+          "en": "A pedlar from the pans sells salt-cured leather boots, stiff as board.",
+          "fr": "Un colporteur des marais salants vend des bottes de cuir salé, raides comme des planches."
+        },
+        {
+          "en": "A roadside hut offers rope, rice and directions, the last being the most expensive.",
+          "fr": "Une cabane au bord de la route propose de la corde, du riz et des indications, ces dernières étant les plus chères."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "Wreckers’ lanterns glimmer on the dunes, and one of them is moving toward you.",
+          "fr": "Des lanternes de naufrageurs scintillent sur les dunes, et l’une d’elles avance vers vous.",
+          "mood": "tense"
+        },
+        {
+          "en": "A rider in salt-crusted leather breaks from the dune’s shadow, hook in hand.",
+          "fr": "Un cavalier en cuir croûté de sel surgit de l’ombre d’une dune, un crochet à la main.",
+          "mood": "tense"
+        },
+        {
+          "en": "A pack of coast dogs trots out of a tamarisk grove, thin and certain of their numbers.",
+          "fr": "Une meute de chiens de la côte sort au trot d’un bosquet de tamaris, maigre et sûre de son nombre.",
+          "mood": "tense"
+        },
+        {
+          "en": "Two figures step out of a wrecked cart, knives held low.",
+          "fr": "Deux silhouettes sortent d’une charrette brisée, couteaux tenus bas.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "A salt-pan overseer asks you to find out who has been stealing sacks from the east drying-floor.",
+          "fr": "Un surveillant des marais salants vous demande de découvrir qui vole des sacs sur l’aire de séchage est."
+        },
+        {
+          "en": "A fisher-woman needs someone to carry a message to her son at the headland.",
+          "fr": "Une pêcheuse a besoin de quelqu’un pour porter un message à son fils au promontoire."
+        },
+        {
+          "en": "A caravan master offers coin to scout the next stretch of coast road for wreckers.",
+          "fr": "Un chef de caravane offre de l’argent pour reconnaître le prochain tronçon de la route côtière à la recherche de naufrageurs."
+        },
+        {
+          "en": "A pilgrim on the road asks you to take a prayer-flag to the Gate.",
+          "fr": "Un pèlerin sur la route vous prie de porter un fanion de prière à la Porte."
+        }
+      ],
+      "treasure": [
+        {
+          "en": "Half-buried in drifted sand, a salt-white chest with a lock that has already surrendered.",
+          "fr": "À demi enfoui dans le sable, un coffre blanc de sel dont la serrure a déjà cédé."
+        },
+        {
+          "en": "A dry well on the road holds, wedged in a crack, a purse that someone hid and never came back for.",
+          "fr": "Un puits sec au bord de la route cache, coincée dans une fissure, une bourse que quelqu’un a dissimulée et n’est jamais revenu chercher."
+        },
+        {
+          "en": "A wrecked cart lies on its side with a spill of coin in the dust under the box.",
+          "fr": "Une charrette brisée gît sur le flanc, avec une traînée de pièces dans la poussière sous la caisse."
+        },
+        {
+          "en": "A crust of salt on the rocks, cracked open, shows the glint of a ring.",
+          "fr": "Une croûte de sel sur les rochers, fendue, laisse voir l’éclat d’une bague."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A tamarisk grove gives patchy shade and a flat stone, and the wind off the sea is cool.",
+          "fr": "Un bosquet de tamaris donne une ombre inégale et une pierre plate, et le vent de la mer est frais."
+        },
+        {
+          "en": "A salt-pan hut is empty for the noon hour, with a bench, a jug and a view of the pans going white.",
+          "fr": "Une cabane des marais salants est vide à l’heure de midi, avec un banc, une cruche et la vue des bassins qui blanchissent."
+        },
+        {
+          "en": "A roadside shrine of whitewashed stone has a bench and a lamp that burns oil, not prayers.",
+          "fr": "Un sanctuaire de bord de route en pierre blanchie a un banc et une lampe qui brûle de l’huile, non des prières."
+        },
+        {
+          "en": "A stone-lined cistern at the road’s edge holds cool water and a ladle on a chain.",
+          "fr": "Une citerne bordée de pierre au bord de la route contient de l’eau fraîche et une louche à une chaîne."
+        }
+      ],
+      "generic": [
+        {
+          "en": "The salt pans lie white and flat in the heat, and the light off them hurts.",
+          "fr": "Les marais salants s’étendent, blancs et plats, dans la chaleur, et la lumière qui en vient fait mal."
+        },
+        {
+          "en": "A gull circles the headland’s brown flank, calling, and gets no answer.",
+          "fr": "Une mouette tournoie autour du flanc brun du promontoire, criant, sans réponse."
+        },
+        {
+          "en": "The sea is a long way off, but the wind has brought its smell.",
+          "fr": "La mer est très loin, mais le vent en a apporté l’odeur."
+        },
+        {
+          "en": "Wagon ruts in the dust run into the heat and are lost.",
+          "fr": "Des ornières de chariot dans la poussière courent vers la chaleur et se perdent."
+        }
+      ]
+    },
+    "sea_cliffs": {
+      "shop": [
+        {
+          "en": "A shingle-trader has spread a sail on the stones and laid out finds from the tide-line: rope, brass, a captain’s cap.",
+          "fr": "Un marchand de galets a étalé une voile sur les pierres et disposé ses trouvailles de la laisse de mer : corde, laiton, la casquette d’un capitaine."
+        },
+        {
+          "en": "A cliff-village woman sells fish-oil lamps, each one trimmed and filled and sworn never to flicker.",
+          "fr": "Une femme du village de falaise vend des lampes à huile de poisson, chacune mouchée, remplie et jurée ne jamais vaciller."
+        },
+        {
+          "en": "A man on the cliff path sells sea-biscuit and bad news in the same breath, at the same price.",
+          "fr": "Un homme sur le chemin de la falaise vend du biscuit de mer et de mauvaises nouvelles dans le même souffle, au même prix."
+        },
+        {
+          "en": "A boy with a barrow hawks kelp, driftwood and a very old rumour about a lighthouse.",
+          "fr": "Un garçon à la brouette colporte du varech, du bois flotté et une très vieille rumeur sur un phare."
+        },
+        {
+          "en": "A wrecker’s wife sells rope and a quiet way round the headland at night.",
+          "fr": "La femme d’un naufrageur vend de la corde et un chemin discret autour du promontoire de nuit."
+        },
+        {
+          "en": "A merchant sets up under a white-washed arch, selling lantern-oil to those who will promise to burn it.",
+          "fr": "Un marchand s’installe sous une arche blanchie à la chaux, vendant de l’huile de lanterne à ceux qui promettent de la brûler."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A rope creaks on the cliff above, and a figure slides down it faster than a person should.",
+          "fr": "Une corde grince sur la falaise au-dessus, et une silhouette y glisse plus vite qu’une personne ne devrait.",
+          "mood": "tense"
+        },
+        {
+          "en": "Something heavy and wet drags itself up from the tideline and stops to listen.",
+          "fr": "Quelque chose de lourd et de ruisselant se hisse hors de la laisse de mer et s’arrête pour écouter.",
+          "mood": "tense"
+        },
+        {
+          "en": "False lamps flicker on the point, and the drowned begin to climb toward them.",
+          "fr": "De fausses lampes vacillent sur la pointe, et les noyés se mettent à grimper vers elles.",
+          "mood": "tense"
+        },
+        {
+          "en": "A Host sentry steps out from behind a rock, hand on his sword, and asks whose side you are on.",
+          "fr": "Une sentinelle de l’Ost sort de derrière un rocher, la main sur l’épée, et demande de quel côté vous êtes.",
+          "mood": "tense"
+        },
+        {
+          "en": "A gull rises screaming from a nest, and behind it a shape stands up in the weed.",
+          "fr": "Une mouette s’élève en hurlant d’un nid, et derrière elle une forme se dresse dans le varech.",
+          "mood": "tense"
+        },
+        {
+          "en": "A pair of wreckers appears between the boulders with lanterns held low and no good words.",
+          "fr": "Deux naufrageurs apparaissent entre les rochers, lanternes tenues bas, sans un bon mot.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "A cove-camp watchman asks for someone to climb the north cliff and see whether the signal fire has been lit.",
+          "fr": "Un guetteur du camp de la crique cherche quelqu’un pour gravir la falaise nord et voir si le feu de signal a été allumé."
+        },
+        {
+          "en": "A weed-cutter’s wife asks that you bring her husband’s boots back from the point, and not his body.",
+          "fr": "La femme d’un coupeur de varech demande que l’on rapporte les bottes de son mari de la pointe, et non son corps."
+        },
+        {
+          "en": "A lamp-keeper at the cliff’s edge wants a flask of oil carried to the next light.",
+          "fr": "Un gardien de lampe au bord de la falaise veut qu’on porte une gourde d’huile au feu suivant."
+        },
+        {
+          "en": "A Host quartermaster needs a message taken, in a voice that does not carry, to the lower gate.",
+          "fr": "Un intendant de l’Ost a besoin qu’on porte un message, d’une voix qui ne porte pas, à la porte basse."
+        },
+        {
+          "en": "A fisherman says his net has caught something he cannot name, and will pay to have it taken away.",
+          "fr": "Un pêcheur dit que son filet a pris quelque chose qu’il ne sait nommer, et paiera pour qu’on l’emporte."
+        },
+        {
+          "en": "A pilot asks whether you will sit with a lamp on the point tonight, and not look at the water.",
+          "fr": "Un pilote demande si vous voulez veiller avec une lampe sur la pointe cette nuit, sans regarder l’eau."
+        }
+      ],
+      "treasure": [
+        {
+          "en": "Between two rocks the tide has left a barrel, rimmed with weed, with a stopper that still holds.",
+          "fr": "Entre deux rochers, la marée a laissé un tonneau bordé de varech, dont le bouchon tient encore."
+        },
+        {
+          "en": "A cleft in the cliff holds a wrapped bundle, left by someone with more reason than time.",
+          "fr": "Une fente dans la falaise cache un paquet enveloppé, laissé par quelqu’un qui avait plus de raisons que de temps."
+        },
+        {
+          "en": "A wreck’s figurehead lies in a cove, its gilded eyes still bright, a purse at its feet.",
+          "fr": "La figure de proue d’une épave gît dans une crique, ses yeux dorés encore brillants, une bourse à ses pieds."
+        },
+        {
+          "en": "A stairway cut into the cliff ends at a chest set in the rock, its lock broken long ago.",
+          "fr": "Un escalier taillé dans la falaise s’achève sur un coffre scellé dans le roc, sa serrure brisée depuis longtemps."
+        },
+        {
+          "en": "On the strand a line of coins runs from the tideline to a rock and stops.",
+          "fr": "Sur la grève, une ligne de pièces court de la laisse de mer à un rocher et s’arrête."
+        },
+        {
+          "en": "Beneath a pile of driftwood, a sealed jar of lamp oil and a small purse.",
+          "fr": "Sous un tas de bois flotté, une jarre scellée d’huile de lampe et une petite bourse."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A sea-cave above the high tide has a dry floor, a heap of sailcloth and a place for a fire.",
+          "fr": "Une grotte marine au-dessus de la marée haute a un sol sec, un tas de toile à voile et un endroit pour un feu."
+        },
+        {
+          "en": "A lamp-keeper’s hut at the cliff top lets a stranger sit, if they touch nothing.",
+          "fr": "La cabane d’un gardien de lampe au sommet de la falaise laisse s’asseoir un étranger, s’il ne touche à rien."
+        },
+        {
+          "en": "A boat is turned over on the shingle and makes a roof, with a lantern under it.",
+          "fr": "Un bateau retourné sur les galets fait un toit, avec une lanterne dessous."
+        },
+        {
+          "en": "A stairway landing is out of the wind, with a bench, a rail to lean on and a view of the grey water.",
+          "fr": "Un palier d’escalier est à l’abri du vent, avec un banc, une rampe où s’appuyer et une vue sur l’eau grise."
+        },
+        {
+          "en": "A cliff chapel, long unroofed, has a dry corner and a candle with a tin cup.",
+          "fr": "Une chapelle de falaise, sans toit depuis longtemps, a un coin sec et une bougie avec un gobelet de fer-blanc."
+        },
+        {
+          "en": "A whitewashed wall holds the day’s last warmth and a bench with a good view of the light.",
+          "fr": "Un mur blanchi à la chaux garde la dernière chaleur du jour et un banc avec une belle vue sur le feu."
+        }
+      ],
+      "generic": [
+        {
+          "en": "Gulls wheel against the cliff and cry in the wind that comes up the face.",
+          "fr": "Des mouettes tournoient contre la falaise et crient dans le vent qui monte le long de la paroi."
+        },
+        {
+          "en": "The tide is out, and the shingle rattles as the waves draw back.",
+          "fr": "La marée est basse, et les galets cliquettent quand les vagues se retirent."
+        },
+        {
+          "en": "A lamp on the point burns steadily, and nobody is sure who lit it.",
+          "fr": "Une lampe sur la pointe brûle régulièrement, et nul ne sait qui l’a allumée."
+        },
+        {
+          "en": "The cliff path winds above the surf like a thread somebody forgot to cut.",
+          "fr": "Le chemin de la falaise serpente au-dessus des vagues comme un fil que l’on a oublié de couper."
+        },
+        {
+          "en": "A long swell comes in from the west, unhurried, and breaks without a sound.",
+          "fr": "Une longue houle arrive de l’ouest, sans hâte, et se brise sans un bruit."
+        },
+        {
+          "en": "Weed hangs from the rock in long dark ribbons, and moves though the air is still.",
+          "fr": "Le varech pend du rocher en longs rubans sombres, et bouge bien que l’air soit immobile."
         }
       ]
     }
