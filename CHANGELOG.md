@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.291.0+327]
+## [1.289.0+325]
 
 The bosses after chapter 1 are a little tougher, so that the playthrough
 simulator, now playing the camp's expeditions, still meets them on the
@@ -30,6 +30,12 @@ user's curve.
   Tuned on the held-out seeds 101 and 103: every boss is within about 7
   points of its target (75% in chapter 1 down to 35% in chapter 8), with a
   mean of 50.5%. Aurel Vane (chapter 1, before the camp) is unchanged.
+
+- **"Play to chapter" hands back a character as strong as a run that played
+  the camp's expeditions.** Its arrival table was regenerated from the
+  800-run check (seeds 11 and 23): chapters 4 to 8 now arrive at levels 8,
+  11, 13, 15 and 16 (were 6, 8, 10, 11 and 12), with gold to match (5 710
+  in chapter 8).
 
 ### Simulator
 - **The walk plays the camp's expeditions.** At the camp, once every place

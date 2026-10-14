@@ -171,16 +171,16 @@ Map<String, String>? _bestFaces(
 /// Where a typical run stands as it reaches each chapter's hub: the
 /// median level and gold of the playthrough simulator's 800-run check
 /// (seeds 11 and 23, its `arrivals`; see docs/simulation/), gold to the
-/// nearest ten. Regenerated at v1.285.0, after the boss curve (v1.280.0),
-/// the materials (v1.281.0) and the harbour (v1.283.0).
+/// nearest ten. Regenerated at v1.289.0, once the walk plays the camp's
+/// expeditions (their XP and gold).
 const Map<int, ({int level, int gold})> typicalArrival = {
-  2: (level: 3, gold: 390),
-  3: (level: 5, gold: 700),
-  4: (level: 6, gold: 1260),
-  5: (level: 8, gold: 1680),
-  6: (level: 10, gold: 2240),
-  7: (level: 11, gold: 2810),
-  8: (level: 12, gold: 3370),
+  2: (level: 3, gold: 380),
+  3: (level: 5, gold: 690),
+  4: (level: 8, gold: 2070),
+  5: (level: 11, gold: 2870),
+  6: (level: 13, gold: 4090),
+  7: (level: 15, gold: 5140),
+  8: (level: 16, gold: 5710),
 };
 
 /// What "Play to chapter" adds on arrival at [chapter] so the character
