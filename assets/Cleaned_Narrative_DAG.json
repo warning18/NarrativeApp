@@ -2332,6 +2332,7 @@
         "text": "Take back what they stole",
         "text_fr": "Reprendre ce qu’ils ont volé",
         "next_id": "1200",
+        "landRouteId": "sleeper_to_wells",
         "triggerEnemyIds": [
           "wreck_scavenger",
           "wreck_scavenger"
@@ -2345,6 +2346,7 @@
         "text": "Slip past them in the dark",
         "text_fr": "Les contourner dans le noir",
         "next_id": "1200",
+        "landRouteId": "sleeper_to_wells",
         "checkAbility": "dexterity",
         "checkDC": 12,
         "avoidFightOnSuccess": true,
@@ -2363,6 +2365,7 @@
         "text": "Go the long way round",
         "text_fr": "Faire le grand détour",
         "next_id": "1200",
+        "landRouteId": "sleeper_to_wells",
         "healAmount": -10,
         "flagsToAdd": [
           "looters_avoided"
@@ -2405,6 +2408,7 @@
         "text": "Fight them off",
         "text_fr": "Les repousser",
         "next_id": "1200",
+        "landRouteId": "sleeper_to_wells",
         "triggerEnemyIds": [
           "wreck_scavenger",
           "wreck_scavenger"
@@ -2419,6 +2423,7 @@
         "text": "Run, and leave them the dark",
         "text_fr": "Fuir, et leur laisser le noir",
         "next_id": "1200",
+        "landRouteId": "sleeper_to_wells",
         "healAmount": -20,
         "flagsToAdd": [
           "looters_avoided"

@@ -8,6 +8,63 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.287.0+323]
+
+Groundwork: places only heard of, the building screen's data, the skill
+choice helper, and the second desert leg.
+
+### Added
+- **Places only heard of.** For each place the full map draws as "?",
+  `heardOfPlacesProvider` says what its sheet offers:
+  - **Set out** straight there, once the place is found and its chapter is
+    open, a road leads there (by sea once the harbour stands), and the camp
+    stands;
+  - **Set out by its expedition**, for a village not found yet: the
+    expedition that finds it (`discoversPlaceIds`), sailed to first when it
+    sets out from another port. A village not found is reached only that
+    way (the user's decision);
+  - **Mark as goal** otherwise, with the reason: the story will take you
+    there, not before the camp, a later chapter, the harbour first, or an
+    expedition to clear first.
+  
+  One map goal at a time, kept as a flag and gone once the place is
+  reached. Narrative wrote the reasons and the warning. The full map's
+  sheet is UX's to come (`setOutToHeardOf`, `mapGoalProvider`).
+- **The building screen's data** (`campWorksProvider`):
+  - the camp's ten houses in four sections (the Sea, the Company, the
+    Workshops, the Great Works), each section with its name and blurb by
+    Narrative;
+  - each house coming with its tier's chapter;
+  - its state (locked, shown, buildable, built) and what it still needs,
+    with where to find it (the expeditions that open it or pay its
+    materials, the shops that stock them).
+  
+  The screen is UX's to come.
+- **The skill choice helper** (`faceSkillChoice`): what a skill on one face
+  of a die would change, worked out the way a fight does. It gives:
+  - the face before and after;
+  - gain or loss;
+  - the rarity limit;
+  - why it can't go there.
+- **The second desert leg:** from the Sleeper's Face to the White Wells
+  (2 days), on every way into the Wells. It brings two new events, a flash
+  flood and a water-seller (whose line is Narrative's). Every route now
+  names its terrain for the side view's scenes.
+
+### Changed
+- **A lost crossing is no longer a free rest.** The party is carried back
+  with what it set out with, at most half its health and at least a
+  quarter (QA found a party that set out low came back at half). Set out
+  again after a lost crossing, a choice's check and fight are not played
+  twice.
+- **A camp house comes with its chapter.** A house can't be built before
+  its tier's chapter, or before its companion joins. The Town card says
+  "Not yet: chapter N".
+
+### Text
+- Narrative's material names and notes ride along (from
+  `claude/narrative`).
+
 ## [1.286.0+322]
 
 Nine pixel icons for the building materials, and chips for them on the camp's build cards.

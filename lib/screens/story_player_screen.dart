@@ -1218,7 +1218,16 @@ Future<void> _selectChoice({
   RemarkKind? shown;
   // A sneak that works (avoidFightOnSuccess) leaves the fight behind.
   var fightAvoided = false;
-  if (choice.hasAbilityCheck) {
+  // Set out again after a lost crossing (see crossingRetryProvider): the
+  // choice's check and fight went the party's way the first time, and
+  // aren't played again; the crossing is.
+  final crossingKey = choice.crossesLand
+      ? '$currentNodeId#${storyChoiceIndex(story, currentNodeId, choice)}'
+      : null;
+  final crossingRetry =
+      crossingKey != null && ref.read(crossingRetryProvider) == crossingKey;
+  if (crossingRetry) fightAvoided = true;
+  if (choice.hasAbilityCheck && !crossingRetry) {
     bool success;
     if (choice.hasSkillChallenge) {
       final challengeResult =
@@ -1401,6 +1410,10 @@ Future<void> _selectChoice({
       ref.read(appModeProvider) != AppMode.edit) {
     if (!context.mounted) return;
     final arrived = await runLandCrossing(context, ref, choice.landRouteId!);
+    ref.read(crossingRetryProvider.notifier).state =
+        arrived || !(choice.triggersCombat || choice.hasAbilityCheck)
+            ? null
+            : crossingKey;
     if (!arrived) return;
   }
 

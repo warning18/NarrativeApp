@@ -5,8 +5,9 @@
 // costs (4 timber and 2 cut stone); the Eel's voyages from the camp are
 // refused while the harbour is awaited and affordable; she sails anyway once
 // the materials are gone, and when the harbour is built or the camp is not
-// founded. Crossing: a party that runs out of health is carried back at
-// half, with the days spent, and the choice is not taken; turning back
+// founded. Crossing: a party that runs out of health is carried back with
+// what it set out with, at most half and at least a quarter (v1.287.0), with
+// the days spent, and the choice is not taken; turning back
 // applies nothing. Saves: 3 to 4 grants the legacy materials once; 4 to 5
 // builds the harbour on load once.
 import 'dart:convert';
@@ -263,7 +264,8 @@ void main() {
       });
       await tester.pumpAndSettle();
       final after = run.ref.read(playerSessionProvider);
-      expect(after.currentHealth, turnBackHealth(100), reason: 'half of 100');
+      expect(after.currentHealth, turnBackHealth(100, departureHealth: 60),
+          reason: 'set out at 60: back at half of 100');
       expect(after.currentHealth, 50);
       // The road took its days (one a day, plus the extra one).
       expect(after.watch != before.watch || after.day > before.day, isTrue,
@@ -275,17 +277,18 @@ void main() {
     });
 
     testWidgets(
-        'a party already below half is lifted to half when carried back',
+        'a party that set out low is carried back at a quarter, not half',
         (tester) async {
-      // A known quirk of "health plays the hull": a spent party that fails
-      // the road wakes at half. Pinned so a change is noticed.
+      // A spent party that fails the road no longer wakes at half (v1.285's free rest, fixed in
+      // v1.287.0): it comes back no better than it set out, but never below
+      // a quarter, so it can set out again. Pinned so a change is noticed.
       final run = await open(tester, oneDay(), blow(-100), health: 5);
       await tester.runAsync(() async {
         await tester.tap(find.byKey(const Key('crossing_choice_take_it')));
         await Future<void>.delayed(const Duration(milliseconds: 100));
       });
       await tester.pumpAndSettle();
-      expect(run.ref.read(playerSessionProvider).currentHealth, 50);
+      expect(run.ref.read(playerSessionProvider).currentHealth, 25);
     });
 
     testWidgets('turning back applies nothing', (tester) async {

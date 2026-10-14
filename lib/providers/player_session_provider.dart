@@ -18,6 +18,7 @@ import '../data/camp_state.dart' show harborHouseId;
 import '../data/factions.dart';
 import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
 import '../data/harbour.dart';
+import '../data/heard_of.dart' show withMapGoal;
 import '../data/journey_rules.dart';
 import '../data/materials.dart';
 import '../data/offers.dart';
@@ -3381,11 +3382,23 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// see materials.dart), already built, or any of [requiredFlags]
   /// (houses.json) is still unset -- the camp's late workshops wait on the
   /// zones that supply them.
+  ///
+  /// A house still locked (see camp_works.dart) is refused too: one whose
+  /// tier comes in a chapter after [chapter] ([fromChapter], the tier's
+  /// first), or whose companion ([requiredAllyId]) is not recruited.
   Future<void> buildHouse(String houseId, int cost,
       {String? unlocksShopId,
       List<String> requiredFlags = const [],
-      Map<String, int> materialCost = const {}}) async {
+      Map<String, int> materialCost = const {},
+      int fromChapter = 1,
+      int? chapter,
+      String? requiredAllyId}) async {
     if (state.gold < cost || state.builtHouseIds.contains(houseId)) return;
+    if (chapter != null && chapter < fromChapter) return;
+    if ((requiredAllyId ?? '').isNotEmpty &&
+        !state.recruitedAllies.any((a) => a.companionId == requiredAllyId)) {
+      return;
+    }
     if (requiredFlags.any((flag) => !state.flags.contains(flag))) return;
     if (missingMaterials(state.inventoryItemIds, materialCost).isNotEmpty) {
       return;
@@ -4358,6 +4371,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       antidoteCount: antidoteCount,
       mana: mana,
     );
+    await _persist();
+  }
+
+  /// Marks [landmarkId] as the map's one goal (null clears it), see
+  /// heard_of.dart's withMapGoal: a flag, no save field of its own.
+  Future<void> setMapGoal(String? landmarkId) async {
+    state = state.copyWith(flags: withMapGoal(state.flags, landmarkId));
     await _persist();
   }
 
