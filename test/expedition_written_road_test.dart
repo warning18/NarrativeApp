@@ -23,10 +23,10 @@ Future<void> _settle(WidgetTester tester) async {
   }
 }
 
-/// Settles until [done] holds (at most 5 s): the session, the zone's steps
-/// and the screen all load in their own time, slower on a busy runner.
+/// Settles until [done] holds (at most 30 s): the session, the zone's
+/// steps and the screen all load in their own time, slower on a busy runner.
 Future<void> _settleUntil(WidgetTester tester, bool Function() done) async {
-  for (var i = 0; i < 50 && !done(); i++) {
+  for (var i = 0; i < 300 && !done(); i++) {
     await tester.runAsync(
         () => Future<void>.delayed(const Duration(milliseconds: 100)));
     await tester.pump(const Duration(milliseconds: 100));

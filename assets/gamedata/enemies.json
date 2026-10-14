@@ -3347,8 +3347,8 @@
   },
   "masked_penitent": {
     "enemyName": "Masked Penitent",
-    "maxHealth": 215,
-    "damage": 21,
+    "maxHealth": 185,
+    "damage": 19,
     "guile": 8,
     "faction": "penitents",
     "reaction": "hunt_healer",

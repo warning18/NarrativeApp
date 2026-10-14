@@ -1934,24 +1934,23 @@
       {
         "id": "hounds_street",
         "type": "fight",
-        "text": "Two hounds of no colour trot out of an alley and stop at the exact distance from which they can spring. Their breath hangs in the air behind them, long after it has left.",
-        "text_fr": "Deux chiens sans couleur sortent au trot d’une ruelle et s’arrêtent à la distance exacte d’où ils peuvent bondir. Leur souffle reste suspendu derrière eux, longtemps après leur passage.",
+        "text": "A hound of no colour trots out of an alley and stops at the exact distance from which it can spring. Its breath hangs in the air behind it, long after it has left.",
+        "text_fr": "Un chien sans couleur sort au trot d’une ruelle et s’arrête à la distance exacte d’où il peut bondir. Son souffle reste suspendu derrière lui, longtemps après son passage.",
         "choices": [
           {
             "id": "fight",
             "text": "Stand and fight",
             "text_fr": "Tenir bon et vous battre",
             "fight": [
-              "void_hound",
               "void_hound"
             ],
             "success": {
-              "note": "They go out like breath on glass. The street is quiet in a way it was not a moment ago.",
-              "note_fr": "Ils s’effacent comme un souffle sur une vitre. La rue est calme comme elle ne l’était pas un instant plus tôt."
+              "note": "It goes out like breath on glass. The street is quiet in a way it was not a moment ago.",
+              "note_fr": "Il s’efface comme un souffle sur une vitre. La rue est calme comme elle ne l’était pas un instant plus tôt."
             },
             "fail": {
-              "note": "You drive them off, and the cold in your arm will not leave for an hour.",
-              "note_fr": "Vous les chassez, et le froid dans votre bras ne part pas avant une heure."
+              "note": "You drive it off, and the cold in your arm will not leave for an hour.",
+              "note_fr": "Vous le chassez, et le froid dans votre bras ne part pas avant une heure."
             }
           },
           {
@@ -1960,12 +1959,12 @@
             "text_fr": "Reculer par la porte la plus proche et la barrer",
             "check": "dexterity",
             "success": {
-              "note": "The hounds sniff the sill, find nothing, and trot on.",
-              "note_fr": "Les chiens flairent le seuil, ne trouvent rien, et poursuivent au trot."
+              "note": "The hound sniffs the sill, finds nothing, and trots on.",
+              "note_fr": "Le chien flaire le seuil, ne trouve rien, et poursuit au trot."
             },
             "fail": {
-              "note": "The door sticks. It opens on a dark room with nothing in it, and the hounds are already at your heels.",
-              "note_fr": "La porte coince. Elle s’ouvre sur une pièce sombre où il n’y a rien, et les chiens sont déjà sur vos talons."
+              "note": "The door sticks. It opens on a dark room with nothing in it, and the hound is already at your heels.",
+              "note_fr": "La porte coince. Elle s’ouvre sur une pièce sombre où il n’y a rien, et le chien est déjà sur vos talons."
             }
           }
         ]
@@ -4480,38 +4479,37 @@
       {
         "id": "hounds_of_the_square",
         "type": "fight",
-        "text": "Two hounds of no colour trot out of the street mouth and stop at exactly the distance from which they can spring. Their breath hangs behind them, white, for a long time.",
-        "text_fr": "Deux chiens sans couleur sortent au trot de l’entrée de la rue et s’arrêtent à la distance exacte d’où ils peuvent bondir. Leur souffle reste suspendu derrière eux, blanc, très longtemps.",
+        "text": "A hound of no colour trots out of the street mouth and stops at exactly the distance from which it can spring. Its breath hangs behind it, white, for a long time.",
+        "text_fr": "Un chien sans couleur sort au trot de l’entrée de la rue et s’arrête à la distance exacte d’où il peut bondir. Son souffle reste suspendu derrière lui, blanc, très longtemps.",
         "choices": [
           {
             "id": "fight",
             "text": "Meet them",
             "text_fr": "Les affronter",
             "fight": [
-              "void_hound",
               "void_hound"
             ],
             "success": {
-              "note": "They go out like breath on glass, one after the other, and the square seems to exhale.",
-              "note_fr": "Ils s’effacent comme un souffle sur une vitre, l’un après l’autre, et la place semble expirer."
+              "note": "It goes out like breath on glass, and the square seems to exhale.",
+              "note_fr": "Il s’efface comme un souffle sur une vitre, et la place semble expirer."
             },
             "fail": {
-              "note": "You win, but the cold of the bites does not leave the arm for the rest of the vigil.",
-              "note_fr": "Vous gagnez, mais le froid des morsures ne quitte pas le bras pour le reste de la veillée."
+              "note": "You win, but the cold of the bite does not leave the arm for the rest of the vigil.",
+              "note_fr": "Vous gagnez, mais le froid de la morsure ne quitte pas le bras pour le reste de la veillée."
             }
           },
           {
             "id": "stand",
-            "text": "Stand perfectly still until they lose interest",
-            "text_fr": "Rester parfaitement immobile jusqu’à ce qu’ils se lassent",
+            "text": "Stand perfectly still until it loses interest",
+            "text_fr": "Rester parfaitement immobile jusqu’à ce qu’il se lasse",
             "check": "constitution",
             "success": {
-              "note": "They sniff, circle, and trot back into the street. You breathe again at last.",
-              "note_fr": "Ils flairent, tournent, et repartent au trot dans la rue. Vous respirez enfin."
+              "note": "It sniffs, circles, and trots back into the street. You breathe again at last.",
+              "note_fr": "Il flaire, tourne, et repart au trot dans la rue. Vous respirez enfin."
             },
             "fail": {
-              "note": "You flinch. They do not.",
-              "note_fr": "Vous tressaillez. Eux non."
+              "note": "You flinch. It does not.",
+              "note_fr": "Vous tressaillez. Lui non."
             }
           }
         ]
@@ -4907,24 +4905,23 @@
       {
         "id": "pilgrims_in_the_waist",
         "type": "fight",
-        "text": "Two pilgrims in wet white sashes are standing in the waist of the second hull, as if at a service. They turn together, slowly, and begin to walk toward you with their hands out.",
-        "text_fr": "Deux pèlerins aux écharpes blanches trempées se tiennent dans la partie centrale de la deuxième coque, comme à un office. Ils se tournent ensemble, lentement, et se mettent à marcher vers vous, les mains tendues.",
+        "text": "A pilgrim in a wet white sash is standing in the waist of the second hull, as if at a service. The pilgrim turns, slowly, and begins to walk toward you with hands out.",
+        "text_fr": "Un pèlerin à l’écharpe blanche trempée se tient dans la partie centrale de la deuxième coque, comme à un office. Il se tourne, lentement, et se met à marcher vers vous, les mains tendues.",
         "choices": [
           {
             "id": "fight",
-            "text": "Meet them on the deck",
-            "text_fr": "Les affronter sur le pont",
+            "text": "Meet the pilgrim on the deck",
+            "text_fr": "Affronter le pèlerin sur le pont",
             "fight": [
-              "drowned_pilgrim",
               "drowned_pilgrim"
             ],
             "success": {
-              "note": "They fold into the planking like cloth into water. The deck is wet where they stood.",
-              "note_fr": "Ils se replient dans le bordé comme un tissu dans l’eau. Le pont est mouillé là où ils se tenaient."
+              "note": "The pilgrim folds into the planking like cloth into water. The deck is wet where the pilgrim stood.",
+              "note_fr": "Le pèlerin se replie dans le bordé comme un tissu dans l’eau. Le pont est mouillé là où il se tenait."
             },
             "fail": {
-              "note": "You hold the deck, and carry the cold of their hands up your arms.",
-              "note_fr": "Vous tenez le pont, et portez le froid de leurs mains jusqu’en haut de vos bras."
+              "note": "You hold the deck, and carry the cold of the pilgrim’s hands up your arms.",
+              "note_fr": "Vous tenez le pont, et portez le froid de ses mains jusqu’en haut de vos bras."
             }
           },
           {
@@ -4933,12 +4930,12 @@
             "text_fr": "Descendre par l’écoutille",
             "check": "dexterity",
             "success": {
-              "note": "They pass over your head, still walking. The hatch cover creaks as they cross it, and then they are gone.",
-              "note_fr": "Ils passent au-dessus de votre tête, marchant toujours. Le panneau grince quand ils le franchissent, puis ils disparaissent."
+              "note": "The pilgrim passes over your head, still walking. The hatch cover creaks as it is crossed, and then the pilgrim is gone.",
+              "note_fr": "Le pèlerin passe au-dessus de votre tête, marchant toujours. Le panneau grince quand il le franchit, puis il disparaît."
             },
             "fail": {
-              "note": "The ladder gives under you. They are on the hatch before you can close it.",
-              "note_fr": "L’échelle cède sous vous. Ils sont sur l’écoutille avant que vous ne puissiez la fermer."
+              "note": "The ladder gives under you. The pilgrim is on the hatch before you can close it.",
+              "note_fr": "L’échelle cède sous vous. Le pèlerin est sur l’écoutille avant que vous ne puissiez la fermer."
             }
           }
         ]
@@ -5112,20 +5109,19 @@
       {
         "id": "reflections_on_deck",
         "type": "fight",
-        "text": "Two figures in white step out from behind the mainmast, and each wears a face that belongs in the glass at its feet and not on its shoulders. They advance in step, side by side.",
-        "text_fr": "Deux silhouettes en blanc sortent de derrière le grand mât, et chacune porte un visage qui appartient au verre à ses pieds et non à ses épaules. Elles avancent au pas, côte à côte.",
+        "text": "A figure in white steps out from behind the mainmast, wearing a face that belongs in the glass at its feet and not on its shoulders. It advances in step with nothing.",
+        "text_fr": "Une silhouette en blanc sort de derrière le grand mât, portant un visage qui appartient au verre à ses pieds et non à ses épaules. Elle avance au pas, au côté de rien.",
         "choices": [
           {
             "id": "fight",
             "text": "Meet them on the planks",
             "text_fr": "Les affronter sur le bordé",
             "fight": [
-              "hollow_reflection",
               "hollow_reflection"
             ],
             "success": {
-              "note": "They break like panes. The glass underfoot shows nothing of either afterwards.",
-              "note_fr": "Elles se brisent comme des vitres. Le verre sous vos pieds ne montre plus rien d’elles ensuite."
+              "note": "It breaks like a pane. The glass underfoot shows nothing of it afterwards.",
+              "note_fr": "Elle se brise comme une vitre. Le verre sous vos pieds ne montre plus rien d’elle ensuite."
             },
             "fail": {
               "note": "You win, but the pieces carry off a little of your own reflection.",
@@ -5134,16 +5130,16 @@
           },
           {
             "id": "mast",
-            "text": "Climb the mast and wait above them",
-            "text_fr": "Grimper au mât et attendre au-dessus d’elles",
+            "text": "Climb the mast and wait above it",
+            "text_fr": "Grimper au mât et attendre au-dessus d’elle",
             "check": "dexterity",
             "success": {
-              "note": "They look up. They cannot climb. After a while they go back to being a pair of figures standing very still.",
-              "note_fr": "Elles lèvent les yeux. Elles ne peuvent pas grimper. Au bout d’un moment, elles redeviennent deux silhouettes très immobiles."
+              "note": "It looks up. It cannot climb. After a while it goes back to being a figure standing very still.",
+              "note_fr": "Elle lève les yeux. Elle ne peut pas grimper. Au bout d’un moment, elle redevient une silhouette très immobile."
             },
             "fail": {
-              "note": "A ratline gives. You come down in a heap, at their feet.",
-              "note_fr": "Une enfléchure cède. Vous retombez en tas, à leurs pieds."
+              "note": "A ratline gives. You come down in a heap, at its feet.",
+              "note_fr": "Une enfléchure cède. Vous retombez en tas, à ses pieds."
             }
           }
         ]

@@ -1017,7 +1017,25 @@ _SimResult _simulate(
             enemies: enemies,
             rewardMaterials: found);
         if (built.node.choices.isEmpty) continue;
-        final choice = built.node.choices.first;
+        // Before a fight, a careful party (one led by its story: good or
+        // evil) takes the way round it, when there is no roll or the roll
+        // is an even chance or better; a party out for gold, or at random,
+        // fights for the spoils.
+        var pick = 0;
+        final careful = strategy == SimStrategy.favorGood ||
+            strategy == SimStrategy.favorEvil;
+        if (careful && built.node.choices.first.triggerEnemyIds.isNotEmpty) {
+          for (final (i, other) in built.node.choices.indexed) {
+            final ab = other.checkAbility;
+            if (i == 0 || other.triggerEnemyIds.isNotEmpty) continue;
+            if (ab == null ||
+                21 + c.abilityBonus(ab) - (other.checkDC ?? 10) >= 10) {
+              pick = i;
+              break;
+            }
+          }
+        }
+        final choice = built.node.choices[pick];
         var failed = false;
         final ability = choice.checkAbility;
         if (ability != null) {
@@ -1031,7 +1049,7 @@ _SimResult _simulate(
           if (!fightAt(foes)) return;
           continue;
         }
-        final hurt = built.outcomeFor(0).hurtOnFail;
+        final hurt = built.outcomeFor(pick).hurtOnFail;
         if (failed) {
           if (hurt > 0) {
             c.currentHealth =
