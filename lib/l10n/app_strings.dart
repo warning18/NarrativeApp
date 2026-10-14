@@ -3687,6 +3687,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Decide later',
     AppLanguage.fr: 'Décider plus tard',
   },
+  'training_choose_title': {
+    AppLanguage.en: 'Choose your training',
+    AppLanguage.fr: 'Choisissez votre entraînement',
+  },
+  'training_small_title': {
+    AppLanguage.en: 'A moment of insight',
+    AppLanguage.fr: 'Un éclair de lucidité',
+  },
+  'training_taken_label': {
+    AppLanguage.en: 'Training',
+    AppLanguage.fr: 'Entraînement',
+  },
   'none_label': {AppLanguage.en: 'None', AppLanguage.fr: 'Aucun'},
   'restriction_label': {
     AppLanguage.en: 'Restriction',

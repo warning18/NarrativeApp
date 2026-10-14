@@ -20,8 +20,6 @@ class LevelUpStats extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(playerSessionProvider);
-    final notifier = ref.read(playerSessionProvider.notifier);
-    final canSpend = session.statPoints > 0;
 
     Widget row(String labelKey, IconData icon, String value, String statKey,
             String descKey) =>
@@ -33,8 +31,8 @@ class LevelUpStats extends ConsumerWidget {
           description: tr(ref, descKey),
           closeLabel: tr(ref, 'close_button'),
           plusLabel: tr(ref, 'plus_one_point'),
-          onSpend:
-              canSpend ? () => notifier.spendStatPoint(stat: statKey) : null,
+          // Points go to a training offer now (training_picker.dart).
+          onSpend: null,
         );
 
     return Column(
@@ -167,16 +165,18 @@ class _StatRow extends StatelessWidget {
                 Text(value,
                     style: theme.textTheme.titleMedium?.copyWith(
                         fontFamily: InkFonts.display, color: ink.gold)),
-                const SizedBox(width: 10),
-                FilledButton(
-                  // The value on the row goes up; no message on top of it.
-                  onPressed: onSpend,
-                  style: FilledButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                if (onSpend != null) ...[
+                  const SizedBox(width: 10),
+                  FilledButton(
+                    // The value on the row goes up; no message on top of it.
+                    onPressed: onSpend,
+                    style: FilledButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                    ),
+                    child: Text(plusLabel),
                   ),
-                  child: Text(plusLabel),
-                ),
+                ],
               ],
             ),
           ),
