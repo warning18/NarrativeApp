@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.338.0+374]
+
+### Added
+- Detour pools that fit their place (data; Core's engine reads them): the ashlands (the Ashen Quarter, Emberwick, the Spire), the fen (Kindly Hill, the Drowned Cloister, the Hollow Court) and the red hills (Akagiri), six kinds of six lines each, English and French. A detour in those places now reads as the place, not as one of four generic moods.
+
 ## [1.336.0+372]
 
 ### Added
