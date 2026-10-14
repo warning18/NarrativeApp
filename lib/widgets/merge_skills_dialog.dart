@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/skill_craft.dart';
+import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
 
@@ -29,53 +31,44 @@ Future<void> showMergeSkillsDialog(
               : SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: merges.entries.map((entry) {
-                      final recipe = entry.value as Map<String, dynamic>;
-                      final inputs = (recipe['inputSkillIDs'] as List?)
-                              ?.map((e) => e.toString())
-                              .toList() ??
-                          const <String>[];
-                      final resultId =
-                          recipe['resultSkillID']?.toString() ?? entry.key;
-                      final alreadyCrafted =
-                          unlockedSkillIds.contains(resultId);
-                      final missing = inputs
-                          .where((id) => !unlockedSkillIds.contains(id))
-                          .toList();
-                      final ready = !alreadyCrafted && missing.isEmpty;
-
-                      return Card(
-                        child: ListTile(
-                          leading: Icon(
-                            alreadyCrafted
-                                ? Icons.check_circle
-                                : (ready
-                                    ? Icons.auto_fix_high
-                                    : Icons.lock_outline),
-                            color: alreadyCrafted ? Colors.green : null,
+                    children: [
+                      for (final recipe in craftRecipesFor(
+                        merges: merges,
+                        unlockedSkillIds: unlockedSkillIds,
+                        language: ref.read(appLanguageProvider),
+                      ))
+                        Card(
+                          child: ListTile(
+                            leading: Icon(
+                              recipe.crafted
+                                  ? Icons.check_circle
+                                  : (recipe.ready
+                                      ? Icons.auto_fix_high
+                                      : Icons.lock_outline),
+                              color: recipe.crafted ? Colors.green : null,
+                            ),
+                            title: Text(
+                                '${recipe.inputs.map((s) => s.name).join(' + ')} → ${recipe.result.name}'),
+                            subtitle: Text(
+                              recipe.crafted
+                                  ? tr(ref, 'already_crafted_label')
+                                  : (recipe.ready
+                                      ? tr(ref, 'merge_consumes_hint')
+                                      : '${tr(ref, 'requires_label')} ${recipe.missing.map((s) => s.name).join(', ')}'),
+                            ),
+                            trailing: recipe.ready
+                                ? FilledButton(
+                                    onPressed: () => _confirmAndMerge(
+                                      dialogContext,
+                                      ref,
+                                      recipe: recipe,
+                                    ),
+                                    child: Text(tr(ref, 'merge_button')),
+                                  )
+                                : null,
                           ),
-                          title: Text('${inputs.join(' + ')} → $resultId'),
-                          subtitle: Text(
-                            alreadyCrafted
-                                ? tr(ref, 'already_crafted_label')
-                                : (ready
-                                    ? tr(ref, 'merge_consumes_hint')
-                                    : '${tr(ref, 'requires_label')} ${missing.join(', ')}'),
-                          ),
-                          trailing: ready
-                              ? FilledButton(
-                                  onPressed: () => _confirmAndMerge(
-                                    dialogContext,
-                                    ref,
-                                    inputs: inputs,
-                                    resultId: resultId,
-                                  ),
-                                  child: Text(tr(ref, 'merge_button')),
-                                )
-                              : null,
                         ),
-                      );
-                    }).toList(),
+                    ],
                   ),
                 ),
         ),
@@ -93,15 +86,14 @@ Future<void> showMergeSkillsDialog(
 Future<void> _confirmAndMerge(
   BuildContext context,
   WidgetRef ref, {
-  required List<String> inputs,
-  required String resultId,
+  required CraftRecipe recipe,
 }) async {
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (confirmContext) => AlertDialog(
       title: Text(tr(ref, 'merge_button')),
       content: Text(
-          '${tr(ref, 'merge_confirm_message')} ${inputs.join(' + ')} → $resultId'),
+          '${tr(ref, 'merge_confirm_message')} ${recipe.inputs.map((s) => s.name).join(' + ')} → ${recipe.result.name}'),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(confirmContext).pop(false),
@@ -116,9 +108,9 @@ Future<void> _confirmAndMerge(
   );
   if (confirmed != true) return;
   await ref.read(playerSessionProvider.notifier).mergeSkills(
-        inputSkillIds: inputs,
-        resultSkillId: resultId,
-      );
+    inputSkillIds: [for (final s in recipe.inputs) s.id],
+    resultSkillId: recipe.result.id,
+  );
   if (!context.mounted) return;
   Navigator.of(context).pop();
 }

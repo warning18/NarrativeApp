@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../combat/dice_faces.dart';
+import '../../data/skill_craft.dart' show skillCraftOpen;
 import '../../l10n/app_locale.dart';
 import '../../l10n/app_strings.dart';
+import '../../providers/player_session_provider.dart';
 import '../../theme/stitched_ink.dart';
 import '../../utils/face_style.dart';
 import '../../utils/pixel_icons/game_pixel_icons.dart';
@@ -136,7 +138,10 @@ class _MySkillsViewState extends ConsumerState<MySkillsView> {
           for (final entry in entries)
             _SkillRow(entry: entry, model: model, allyId: widget.allyId),
         ],
-        if (model.isPlayer) ...[
+        // Crafting is the camp's Skillwright's (Wave 7, skill_craft.dart).
+        if (model.isPlayer &&
+            skillCraftOpen(ref.watch(
+                playerSessionProvider.select((s) => s.builtHouseIds)))) ...[
           const SizedBox(height: 16),
           _CraftCard(onTap: () => openCraft(context, ref)),
         ],

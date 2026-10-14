@@ -27,6 +27,7 @@ import '../data/politics_events.dart';
 import '../data/politics_events.dart' as coast show applyStoryPolitics;
 import '../data/quest_objectives.dart' show killTargetsOf;
 import '../data/signs.dart';
+import '../data/skill_craft.dart' show skillCraftOpen;
 import '../data/skill_tree.dart' show branchMasteryEssenceCost;
 import '../data/throne.dart'
     show
@@ -4208,12 +4209,15 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// recipe: both [inputSkillIds] are consumed (removed from
   /// unlockedSkillIds, along with any tier progress on them) and
   /// [resultSkillId] is unlocked in their place — a real trade-off, not a
-  /// strict upgrade. No-ops unless both inputs are currently unlocked and
-  /// the result isn't already unlocked.
+  /// strict upgrade. No-ops unless the camp's Skillwright stands (see
+  /// skill_craft.dart), both inputs are currently unlocked and the result
+  /// isn't already unlocked.
   Future<void> mergeSkills({
     required List<String> inputSkillIds,
     required String resultSkillId,
   }) async {
+    // Skills are crafted at the camp's Skillwright only (Wave 7).
+    if (!skillCraftOpen(state.builtHouseIds)) return;
     if (state.unlockedSkillIds.contains(resultSkillId)) return;
     for (final id in inputSkillIds) {
       if (!state.unlockedSkillIds.contains(id)) return;
