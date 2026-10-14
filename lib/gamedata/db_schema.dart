@@ -2338,6 +2338,12 @@ final DbSchema housesSchema = DbSchema(
       type: FieldType.stringList,
     ),
     FieldSchema(
+      key: 'unlockedByFlags',
+      label:
+          'Unlocked By Flags (any one set opens it, whatever the required flags)',
+      type: FieldType.stringList,
+    ),
+    FieldSchema(
       key: 'requiredAllyId',
       label: 'Required Ally (the house is shown once they have joined)',
       type: FieldType.reference,
