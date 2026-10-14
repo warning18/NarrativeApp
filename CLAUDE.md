@@ -12,7 +12,7 @@ before starting a change.
 | **Core** (game mechanics) | `claude/core` | rules, numbers and state |
 | **UX** (design and UX) | `claude/eager-pascal-y847vf` | how things look, move and read |
 | **Narrative** (story and content) | `claude/narrative` | what the game says: story, quests, characters, dialogue |
-| **QA** (testing) | `claude/qa` | finds what broke: tests, simulator, PR reviews |
+| **QA** (testing) | `claude/qa` | keeps the tests fast and finds what broke: tests, simulator, L3 on request |
 
 The manager is the Claude Code session `session_01SfVpQUmQNXErL5fGsy7HU9`.
 Sessions reach it with the `send_message` tool of the `claude-code-remote`
@@ -62,9 +62,11 @@ branch `claude/apk-workflow-issue-24c8hx` is retired. Its handoff note is
 
 **QA owns:**
 - new test files named `test/qa_*_test.dart`, and `docs/qa/`
-- GitHub issues labelled `qa`, and reviews on open PRs.
-- QA never edits `lib/` or another session's tests. A failing or wrong test
-  goes to the session that owns the code, as an issue or a PR review.
+- GitHub issues labelled `qa`, and the speed of the test suite.
+- QA never edits `lib/`. QA may make another session's test faster (fewer
+  runs, a shared fixture, a smaller pump) but never weakens what it checks;
+  it lists those files in its PR. A failing or wrong test goes to the
+  session that owns the code, as an issue.
 
 **Shared files.** `lib/screens/*.dart` and `lib/screens/fight/fight_view.dart`,
 `fight_screen.dart`, `fight_cards.dart`, `fight_setup.dart` belong to whoever
@@ -106,14 +108,22 @@ overwrites the first release and the in-app updater never sees it.
 
 ## Pull requests and merging
 
-- One open PR per session at a time.
+- Sessions work in parallel. A session may have up to two open PRs, each
+  on its own branch (for example `claude/core` and `claude/core-2`); one
+  that needs the other's code says so and merges after it.
 - Before opening a PR, merge `origin/main` into your branch and run
   `dart format --output=none --set-exit-if-changed .`, `flutter analyze` and
-  the tests for what you changed.
+  **only the test files for what you changed** (`flutter test test/a_test.dart
+  test/b_test.dart`). Leave the full suite to CI: it runs on four runners
+  in parallel and is much cheaper there. When CI fails, run just the
+  failing file locally.
 - **Don't merge your own PR.** When CI is green, send the manager the PR
-  number. The manager merges PRs one at a time, in order, and renumbers the
-  version if another PR merged first. QA reviews PRs before they merge, at
-  the level the manager sets (below).
+  number. The manager merges green PRs one at a time, as they come, and
+  renumbers the version if another PR merged first.
+- **No review pass.** The user tests releases by hand and sends feedback;
+  nobody reviews a PR's diff before it merges. Keep each PR focused and its
+  description short: what changed, what to test, which files of another
+  session it touches.
 - After your PR merges, restart your branch from the fresh `main` before
   starting the next change.
 - Resolve merge conflicts by keeping both sides' work; never take "ours"
@@ -121,19 +131,20 @@ overwrites the first release and the in-app updater never sees it.
   you didn't write. Resetting your own branch to `main` is fine only when
   everything on it is already merged.
 
-## QA levels
+## QA
 
-CI already runs the format check, `flutter analyze` and the whole test suite
-(including the simulator tests and the `qa_` guards) on every PR. QA doesn't
-run those again. It adds what CI can't see, at one of four levels. The
-manager picks the level when it sends QA a PR. QA may raise it, and says why.
+CI runs the format check, `flutter analyze` and the whole test suite
+(including the simulator tests and the `qa_` guards) on every PR. There is
+no per-PR QA review: the user reviews releases by hand.
 
-| Level | When | What QA does |
-|---|---|---|
-| **L0: CI only** | docs-only or test-only PRs, art/asset-only PRs, text fixes with no new keys | nothing; the manager merges on green CI |
-| **L1: diff review** (default) | a PR within one session's area | reads the diff for bugs, ownership breaches, missing French, a wrong version or changelog; one short review |
-| **L2: feature check** | a PR that touches a shared screen, combat rules, save data or providers, more than one session's area, or over ~800 changed lines | L1, plus runs the affected flow in a widget test or the simulator, checks that old saves still load, and checks the new screens' text in both languages |
-| **L3: full regression** | every 10th release, before a release the user plans to share, after a big refactor, or on request | full 100-run simulator batch compared with the last report, a cross-reference audit of all gamedata, a read-through of every screen changed since the last L3; results go in `docs/qa/` |
-
-An L3 is never done on an ordinary PR. QA keeps the version of the last L3 at
-the top of `docs/qa/README.md`.
+QA's jobs:
+- **Keep the suite fast.** Profile it (`flutter test --reporter json`), cut
+  the slowest tests' cost without weakening what they check, and drop
+  duplicates. Report the suite's time before and after in each PR.
+- **One full regression (L3) on request**, or before a release the user
+  plans to share: the simulator batch compared with the last report, a
+  cross-reference audit of all gamedata, and a read-through of every screen
+  changed since the last L3. Results go in `docs/qa/`, and the version of
+  the last L3 goes at the top of `docs/qa/README.md`.
+- **A `qa_` guard** when the user's feedback finds a bug, so it can't come
+  back.
