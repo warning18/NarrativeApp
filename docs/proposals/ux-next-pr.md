@@ -104,3 +104,6 @@ The yard shows the Eel in side view above her plan (with the try-on of hulls, pa
 
 ## Damage states (v1.300.0+336)
 The Eel's side view shows her hull: scorch, a hole, patched sails, smoke, rips, flames, and lower in the water, by hull %. Next: the fight strip (two real hulls facing each other above the grid; the fight stays from above), deck gear and mounted guns, painted sail powers.
+
+## The fight strip (v1.301.0+337)
+The sea battle shows the two hulls in side view (the Eel dressed and battered, the enemy's own hull or beast, easing apart with the range) above the sea on a tall screen (>= 720 high); the fight stays from above and `ship_battle_panel.dart` got only the strip. Next: deck gear and mounted guns, painted sail powers.
