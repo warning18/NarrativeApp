@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.328.0+364]
+
+### Added
+- Expedition steps for four tier-2 expeditions (data only; Core's engine plays them): Lantern Docks, Cinder Row, the Exorcists’ Road and the Changeling Fen, eight or nine steps each, English and French. `assets/gamedata/expedition_steps.json` now holds seven written zones.
 ## [1.327.0+363]
 
 Detours and expeditions fit where they happen.
