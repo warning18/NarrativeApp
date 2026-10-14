@@ -173,6 +173,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
     await notifier.buildHouse(houseId, cost,
         unlocksShopId: house['unlocksShopId']?.toString() ?? '',
         requiredFlags: requiredFlagsOf(house),
+        unlockedByFlags: unlockedByFlagsOf(house),
         materialCost: materialCountsOf(house, 'materialCost'),
         // A house comes with its tier's chapter (camp_works.dart).
         fromChapter: tierFirstChapter(workTierOf(house)),

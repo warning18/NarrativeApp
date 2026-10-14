@@ -35,6 +35,16 @@ void main() {
       expect(meetsRequiredFlags(zone, const ['a']), isFalse);
       expect(meetsRequiredFlags(zone, const ['b', 'a', 'c']), isTrue);
     });
+
+    test('any one of the unlockedByFlags opens it on its own', () {
+      const shrine = {
+        'requiredFlags': ['a', 'b'],
+        'unlockedByFlags': ['v', 'w'],
+      };
+      expect(missingRequiredFlags(shrine, const ['a']), ['b']);
+      expect(meetsRequiredFlags(shrine, const ['w']), isTrue);
+      expect(missingRequiredFlags(shrine, const ['v']), isEmpty);
+    });
   });
 
   group('zoneTier / zoneIsMain', () {

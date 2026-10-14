@@ -97,6 +97,20 @@ void main() {
     expect(ash.shopIds, isEmpty);
   });
 
+  test('the Shroud Shrine opens on the Dead Heart or on the Shroud\'s Vigil',
+      () {
+    WorkNeed flagNeed(List<String> flags) =>
+        work(works(chapter: 5, flags: flags), 'shroud_shrine').needs.firstWhere(
+            (n) => n.kind == WorkNeedKind.flag,
+            orElse: () => const WorkNeed(kind: WorkNeedKind.gold));
+    final waiting = flagNeed(const []);
+    expect(waiting.id, 'dead_heart_cleared');
+    expect(waiting.zoneIds,
+        containsAll(['z_dead_heart_approach', 'z_shroud_vigil']));
+    expect(flagNeed(const ['dead_heart_cleared']).kind, WorkNeedKind.gold);
+    expect(flagNeed(const ['shroud_vigil_cleared']).kind, WorkNeedKind.gold);
+  });
+
   test('buildable once everything is there, and built once up', () {
     final harbour = work(
         works(inventory: [
@@ -145,6 +159,18 @@ void main() {
       expect(ref.read(playerSessionProvider).builtHouseIds, isEmpty);
       await notifier.buildHouse('banner_loft', 0, fromChapter: 5, chapter: 5);
       expect(ref.read(playerSessionProvider).builtHouseIds, ['banner_loft']);
+      await notifier.buildHouse('shroud_shrine', 0,
+          requiredFlags: ['dead_heart_cleared']);
+      expect(ref.read(playerSessionProvider).builtHouseIds, ['banner_loft']);
+      // The Shroud's Vigil opens it on its own.
+      await notifier.loadSession(PlayerSession.fromJson({
+        'gold': 100,
+        'flags': ['shroud_vigil_cleared'],
+      }));
+      await notifier.buildHouse('shroud_shrine', 0,
+          requiredFlags: ['dead_heart_cleared'],
+          unlockedByFlags: ['shroud_vigil_cleared']);
+      expect(ref.read(playerSessionProvider).builtHouseIds, ['shroud_shrine']);
     });
   });
 }

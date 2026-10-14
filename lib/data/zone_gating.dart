@@ -12,11 +12,31 @@ List<String> requiredFlagsOf(Map<String, dynamic> record) =>
         .toList() ??
     const [];
 
-/// True when every one of [record]'s required flags is in [flags].
-bool meetsRequiredFlags(Map<String, dynamic> record, Iterable<String> flags) {
+/// A record's `unlockedByFlags`: any one of them opens it on its own,
+/// whatever its required flags (the Shroud Shrine opens on the Dead Heart
+/// or on the Shroud's Vigil, which the story can reach first).
+List<String> unlockedByFlagsOf(Map<String, dynamic> record) =>
+    (record['unlockedByFlags'] as List?)
+        ?.map((e) => e.toString())
+        .where((s) => s.isNotEmpty)
+        .toList() ??
+    const [];
+
+/// The required flags of [record] still missing from [flags]: none once
+/// they are all set, or once any one of its `unlockedByFlags` is.
+List<String> missingRequiredFlags(
+    Map<String, dynamic> record, Iterable<String> flags) {
   final have = flags.toSet();
-  return requiredFlagsOf(record).every(have.contains);
+  if (unlockedByFlagsOf(record).any(have.contains)) return const [];
+  return [
+    for (final flag in requiredFlagsOf(record))
+      if (!have.contains(flag)) flag,
+  ];
 }
+
+/// True when [record]'s required flags are met (see missingRequiredFlags).
+bool meetsRequiredFlags(Map<String, dynamic> record, Iterable<String> flags) =>
+    missingRequiredFlags(record, flags).isEmpty;
 
 /// A zone's tier, never below 1 (see zoneTierMultiplier).
 int zoneTier(Map<String, dynamic> zone) =>
@@ -37,9 +57,7 @@ String? lockRequirementName(
   Iterable<String> flags,
   Map<String, dynamic> zones,
 ) {
-  final have = flags.toSet();
-  for (final flag in requiredFlagsOf(record)) {
-    if (have.contains(flag)) continue;
+  for (final flag in missingRequiredFlags(record, flags)) {
     for (final entry in zones.entries) {
       final zone = entry.value;
       if (zone is Map<String, dynamic> &&

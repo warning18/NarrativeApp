@@ -7,7 +7,7 @@ library;
 
 import 'materials.dart';
 import 'shop_stock.dart' show allShopStock;
-import 'zone_gating.dart' show requiredFlagsOf;
+import 'zone_gating.dart' show missingRequiredFlags, unlockedByFlagsOf;
 
 /// The building screen's sections, in the order they are listed.
 enum WorkCategory { sea, company, workshops, greatWorks }
@@ -183,10 +183,12 @@ Map<WorkCategory, List<CampWork>> campWorksOf({
     final materials = materialCountsOf(value, 'materialCost');
     final short = missingMaterials(inventory, materials);
     final needs = [
-      for (final flag in requiredFlagsOf(value))
-        if (!held.contains(flag))
-          WorkNeed(
-              kind: WorkNeedKind.flag, id: flag, zoneIds: zonesSetting(flag)),
+      for (final flag in missingRequiredFlags(value, held))
+        WorkNeed(kind: WorkNeedKind.flag, id: flag, zoneIds: [
+          ...zonesSetting(flag),
+          // Clearing any of these opens it too.
+          for (final other in unlockedByFlagsOf(value)) ...zonesSetting(other),
+        ]),
       if (gold < cost)
         WorkNeed(kind: WorkNeedKind.gold, have: gold, need: cost),
       for (final MapEntry(key: itemId, value: need) in materials.entries)
