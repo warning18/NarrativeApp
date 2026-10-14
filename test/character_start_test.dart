@@ -3,7 +3,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:narrative_data_app/data/character_start.dart';
+import 'package:narrative_data_app/providers/player_session_provider.dart';
 
 Map<String, dynamic> _json(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -24,6 +27,35 @@ void main() {
     expect(t.baseArmor, 6);
     expect(t.gold, 100);
     expect(t.abilities, {'str_abbrev': 6, 'con_abbrev': 6, 'per_abbrev': 1});
+  });
+
+  test('no race and profession start below 0 armour (an Orc Mage: 0, not -4)',
+      () async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    for (final MapEntry(key: raceId, value: race) in races.entries) {
+      if (race is! Map<String, dynamic>) continue;
+      for (final MapEntry(key: professionId, value: profession)
+          in professions.entries) {
+        if (profession is! Map<String, dynamic>) continue;
+        final t = startingTotals(
+            defaults: defaults, race: race, profession: profession);
+        expect(t.baseArmor, greaterThanOrEqualTo(0),
+            reason: '$raceId $professionId');
+      }
+    }
+    // And the game itself starts them there.
+    SharedPreferences.setMockInitialValues(
+        {'gamedb_game_config': jsonEncode(defaults)});
+    final notifier = PlayerSessionNotifier();
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    await notifier.startNewGame(
+        raceId: 'orc',
+        race: races['orc'] as Map<String, dynamic>,
+        professionId: 'mage',
+        profession: professions['mage'] as Map<String, dynamic>);
+    expect(notifier.state.baseArmor, 0);
+    expect(startingArmor(-4), 0);
+    expect(startingArmor(6), 6);
   });
 
   test('a preset lists only what it changes', () {

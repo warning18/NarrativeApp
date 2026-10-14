@@ -1,3 +1,4 @@
+import '../data/character_start.dart' show startingArmor;
 import '../data/approval.dart';
 
 /// A recruited companion's persistent, player-managed state — the ally
@@ -195,9 +196,9 @@ AllyBaseStats deriveAllyBaseStats({
     baseDamage: ((gameConfig['baseDamage'] as num?)?.toInt() ?? 10) +
         bonus(race, 'bonusBaseDamage') +
         bonus(profession, 'bonusBaseDamage'),
-    baseArmor: ((gameConfig['baseArmor'] as num?)?.toInt() ?? 0) +
+    baseArmor: startingArmor(((gameConfig['baseArmor'] as num?)?.toInt() ?? 0) +
         bonus(race, 'bonusBaseArmor') +
-        bonus(profession, 'bonusBaseArmor'),
+        bonus(profession, 'bonusBaseArmor')),
     strength: ((gameConfig['strength'] as num?)?.toInt() ?? 0) +
         bonus(race, 'bonusStrength') +
         bonus(profession, 'bonusStrength'),
