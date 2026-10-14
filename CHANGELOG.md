@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.323.0+359]
+
+### Added
+- Detours and expeditions that fit their place (first batch, data only; the engine reads it in Core's coming PR): `assets/gamedata/expedition_steps.json` with six steps each for the three tier-1 expeditions (Fisherman’s Row, Tanner’s Court, the Ossuary Galleries), and `assets/gamedata/detours.json` with the tear shore and frost-city pools (six kinds of six lines). English and French.
+
 ## [1.319.0+355]
 
 Skills are crafted at the camp's Skillwright.
