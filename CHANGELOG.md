@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.343.0+379]
+## [1.345.0+381]
 
 The written expeditions, balanced.
 
@@ -16,6 +16,11 @@ The written expeditions, balanced.
 - **A written fight follows the rule a drawn pack does**: two or more foes only from the pack tier, at most the chapter's pack size; a heavy foe fights alone. Five steps that set two heavies on the party now set one.
 - **A few of the longest roads' pairs are now one foe** (the Drowned Stair's zealot, the Dead Heart's and the Shroud's hound, the White Fleet's pilgrim and reflection), and the **Masked Penitent** is a little lighter (185 health, 19 damage): they stopped too many parties short of the bosses.
 - The playthrough simulator walks the written roads step by step, as the game does.
+
+## [1.344.0+380]
+
+### Changed
+- A read-through of the new expedition and detour text (data only): repeated phrasings varied, American spelling used throughout, and the English and French kept in step. No lines added or removed.
 
 ## [1.342.0+378]
 

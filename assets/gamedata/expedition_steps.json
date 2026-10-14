@@ -590,7 +590,7 @@
       {
         "id": "chart_price",
         "type": "check",
-        "text": "The chart-seller names a price for the harbour’s back channels. It is too high, and she knows you can see that it is.",
+        "text": "The chart-seller names a price for the harbor’s back channels. It is too high, and she knows you can see that it is.",
         "text_fr": "La marchande de cartes annonce son prix pour les chenaux de service du port. C’est trop cher, et elle sait que vous le voyez.",
         "choices": [
           {
@@ -790,7 +790,7 @@
       {
         "id": "lantern_steps",
         "type": "rest",
-        "text": "A flight of stone steps runs down to the water, a lantern at every landing. Nobody is on them, and the sound of the harbour comes up soft.",
+        "text": "A flight of stone steps runs down to the water, a lantern at every landing. Nobody is on them, and the sound of the harbor comes up soft.",
         "text_fr": "Un escalier de pierre descend vers l’eau, une lanterne à chaque palier. Personne n’y est, et le bruit du port monte, étouffé.",
         "choices": [
           {
@@ -1380,8 +1380,8 @@
               "void_wisp"
             ],
             "success": {
-              "note": "They go out like sparks on wet reed, with a sound like a very small sigh.",
-              "note_fr": "Elles s’éteignent comme des étincelles sur du roseau mouillé, avec un bruit de tout petit soupir."
+              "note": "They go out like sparks on wet reed, with a very small sigh.",
+              "note_fr": "Elles s’éteignent comme des étincelles sur du roseau mouillé, avec un tout petit soupir."
             },
             "fail": {
               "note": "They go out, but not before they have taken a little warmth from you.",
@@ -1705,8 +1705,8 @@
             "text": "Close the reliquary and say a word",
             "text_fr": "Refermer le reliquaire et dire un mot",
             "outcome": {
-              "note": "The lid comes down with a sound like a small door shutting somewhere far below.",
-              "note_fr": "Le couvercle se rabat avec un bruit de petite porte qui se ferme quelque part très loin en bas."
+              "note": "The lid comes down, and somewhere far below a small door seems to shut.",
+              "note_fr": "Le couvercle se rabat, et quelque part très loin en bas une petite porte semble se fermer."
             }
           }
         ]
@@ -1934,7 +1934,7 @@
       {
         "id": "hounds_street",
         "type": "fight",
-        "text": "A hound of no colour trots out of an alley and stops at the exact distance from which it can spring. Its breath hangs in the air behind it, long after it has left.",
+        "text": "A hound of no color trots out of an alley and stops at the exact distance from which it can spring. Its breath hangs in the air behind it, long after it has left.",
         "text_fr": "Un chien sans couleur sort au trot d’une ruelle et s’arrête à la distance exacte d’où il peut bondir. Son souffle reste suspendu derrière lui, longtemps après son passage.",
         "choices": [
           {
@@ -2125,7 +2125,7 @@
             "text": "Cover your eyes and cross the nave",
             "text_fr": "Vous couvrir les yeux et traverser la nef",
             "outcome": {
-              "note": "The light comes through your fingers and paints the floor in colours that should not be warm.",
+              "note": "The light comes through your fingers and paints the floor in colors that should not be warm.",
               "note_fr": "La lumière passe entre vos doigts et peint le sol de couleurs qui ne devraient pas être chaudes."
             }
           }
@@ -2594,7 +2594,7 @@
       {
         "id": "quarry_hound",
         "type": "fight",
-        "text": "A hound of no particular colour paces the upper rim, and as you look it starts down, setting each paw on the ice as if on a stair of its own.",
+        "text": "A hound of no particular color paces the upper rim, and as you look it starts down, setting each paw on the ice as if on a stair of its own.",
         "text_fr": "Un chien d’aucune couleur précise longe le rebord supérieur, et tandis que vous le regardez il se met à descendre, posant chaque patte sur la glace comme sur un escalier à lui.",
         "choices": [
           {
@@ -2900,7 +2900,7 @@
             "text": "Study the mason’s mark",
             "text_fr": "Étudier la marque de tailleur",
             "outcome": {
-              "note": "The same hand cut the harbour wall at Saltmouth, the drivers say, and then lost the contract.",
+              "note": "The same hand cut the harbor wall at Saltmouth, the drivers say, and then lost the contract.",
               "note_fr": "La même main a taillé le môle de Bouche-de-Sel, disent les conducteurs, puis a perdu le contrat."
             }
           }
@@ -4307,8 +4307,8 @@
               "note_fr": "Ils tombent en cadence, même en tombant. La plaque résonne sur la pierre et reste immobile."
             },
             "fail": {
-              "note": "You win, but the yard’s ringing iron stays in your head for a long time.",
-              "note_fr": "Vous gagnez, mais le fer sonnant du chantier reste longtemps dans votre tête."
+              "note": "You win, but the yard’s ringing iron rings on in your head for an hour.",
+              "note_fr": "Vous gagnez, mais le fer sonnant du chantier résonne encore une heure dans votre tête."
             }
           },
           {
@@ -4479,7 +4479,7 @@
       {
         "id": "hounds_of_the_square",
         "type": "fight",
-        "text": "A hound of no colour trots out of the street mouth and stops at exactly the distance from which it can spring. Its breath hangs behind it, white, for a long time.",
+        "text": "A hound of no color trots out of the street mouth and stops at exactly the distance from which it can spring. Its breath hangs behind it, white, for a long time.",
         "text_fr": "Un chien sans couleur sort au trot de l’entrée de la rue et s’arrête à la distance exacte d’où il peut bondir. Son souffle reste suspendu derrière lui, blanc, très longtemps.",
         "choices": [
           {
@@ -5189,7 +5189,7 @@
             "text": "Unroll a chart and study the coast",
             "text_fr": "Dérouler une carte et étudier la côte",
             "outcome": {
-              "note": "The coast on it is not the coast outside. It shows the shore as it was before the tear, with every harbour lit.",
+              "note": "The coast on it is not the coast outside. It shows the shore as it was before the tear, with every harbor lit.",
               "note_fr": "La côte qui y figure n’est pas celle du dehors. Elle montre le rivage tel qu’il était avant la déchirure, chaque port éclairé."
             }
           }
@@ -5224,7 +5224,7 @@
       {
         "id": "flagship_colours",
         "type": "event",
-        "text": "The flagship stands before you with her colours flying and her guns run out. On the quarterdeck, at the rail, a figure in white looks down at you with the stillness of a man who has stood this watch a long time.",
+        "text": "The flagship stands before you with her colors flying and her guns run out. On the quarterdeck, at the rail, a figure in white looks down at you with the stillness of a man who has stood this watch a long time.",
         "text_fr": "Le vaisseau amiral se dresse devant vous, ses couleurs au vent et ses canons sortis. Sur le gaillard d’arrière, à la rambarde, une silhouette en blanc vous regarde d’en haut avec l’immobilité de quelqu’un qui tient cette garde depuis longtemps.",
         "choices": [
           {
@@ -5241,7 +5241,7 @@
             "text": "Call up that the Crusade is over",
             "text_fr": "Crier que la Croisade est finie",
             "outcome": {
-              "note": "The wind drops, and the colours hang. Then it picks up again, harder, and the guns are very still.",
+              "note": "The wind drops, and the colors hang. Then it picks up again, harder, and the guns are very still.",
               "note_fr": "Le vent tombe, et les couleurs pendent. Puis il reprend, plus fort, et les canons sont très calmes."
             }
           },
@@ -5402,8 +5402,8 @@
             "text": "Pry a few fragments from the cobbles",
             "text_fr": "Desceller quelques éclats des pavés",
             "outcome": {
-              "note": "Tear glass, clear and humming. The street does not seem to mind. It seems, if anything, relieved to be less heavy.",
-              "note_fr": "Du verre de déchirure, clair et bourdonnant. La rue n’a pas l’air de s’en soucier. Elle paraît, plutôt, soulagée d’être moins lourde."
+              "note": "Tear glass, clear and humming. The street raises no objection. It seems, if anything, relieved to be less heavy.",
+              "note_fr": "Du verre de déchirure, clair et bourdonnant. La rue n’y fait pas objection. Elle paraît, plutôt, soulagée d’être moins lourde."
             }
           },
           {
@@ -5530,7 +5530,7 @@
       {
         "id": "hounds_of_nothing",
         "type": "fight",
-        "text": "Three hounds of no colour come over a ridge of broken ground at a trot. They do not bark. They have the look of animals who have been sent, and know why.",
+        "text": "Three hounds of no color come over a ridge of broken ground at a trot. They do not bark. They have the look of animals who have been sent, and know why.",
         "text_fr": "Trois chiens sans couleur franchissent au trot une crête de sol brisé. Ils n’aboient pas. Ils ont l’air de bêtes qu’on a envoyées, et qui savent pourquoi.",
         "choices": [
           {
@@ -5565,7 +5565,7 @@
       {
         "id": "lamp_no_one_lit",
         "type": "discovery",
-        "text": "A lamp burns on a post of fused glass, alone, at the edge of a clearing. Nobody lit it. The flame is the colour of brass and gives off a warmth that has no source. The post is wound round with a band of bright metal.",
+        "text": "A lamp burns on a post of fused glass, alone, at the edge of a clearing. Nobody lit it. The flame is the color of brass and gives off a warmth that has no source. The post is wound round with a band of bright metal.",
         "text_fr": "Une lampe brûle sur un poteau de verre fondu, seule, au bord d’une clairière. Personne ne l’a allumée. La flamme est de la couleur du laiton et dégage une chaleur sans source. Le poteau est entouré d’une bande de métal brillant.",
         "place": "The unlit lamp",
         "place_fr": "La lampe que nul n’a allumée",

@@ -120,7 +120,7 @@
     "saltmouth_wharf": {
       "shop": [
         {
-          "en": "A Crow tout sells a quiet route out of the harbour by the half-hour, and a longer one by the hour.",
+          "en": "A Crow tout sells a quiet route out of the harbor by the half-hour, and a longer one by the hour.",
           "fr": "Un rabatteur des Corbeaux vend une route discrète hors du port à la demi-heure, et une plus longue à l’heure."
         },
         {
@@ -170,7 +170,7 @@
           "fr": "Une grue balance une caisse au-dessus de l’eau, et un instant la caisse semble suspendue toute seule."
         },
         {
-          "en": "Lantern light slides on the oily harbour and breaks into small, shifting coins.",
+          "en": "Lantern light slides on the oily harbor and breaks into small, shifting coins.",
           "fr": "La lumière des lanternes glisse sur le port huileux et se brise en petites pièces mouvantes."
         }
       ]
@@ -278,7 +278,7 @@
       ],
       "generic": [
         {
-          "en": "Lanterns of every colour hang over the alley, and each lights something different.",
+          "en": "Lanterns of every color hang over the alley, and each lights something different.",
           "fr": "Des lanternes de toutes les couleurs pendent au-dessus de la ruelle, et chacune éclaire quelque chose de différent."
         },
         {
@@ -442,8 +442,8 @@
           "fr": "Une forge encore tiède en son cœur laisse s’asseoir les étrangers, s’ils apportent leur propre combustible."
         },
         {
-          "en": "A bell-tower’s stair is out of the wind and nobody has come to claim it.",
-          "fr": "L’escalier d’un clocher est à l’abri du vent et personne n’est venu le réclamer."
+          "en": "A bell-tower’s stair keeps a dry landing, and nobody has come to claim it.",
+          "fr": "L’escalier d’un clocher garde un palier sec, et personne n’est venu le réclamer."
         }
       ],
       "generic": [
@@ -550,8 +550,8 @@
           "fr": "Une chapelle latérale avec un banc et une bougie laisse s’asseoir un étranger."
         },
         {
-          "en": "A cloister walk is out of the wind, and nobody there looks up.",
-          "fr": "Une galerie de cloître est à l’abri du vent, et personne n’y lève les yeux."
+          "en": "A cloister walk is sheltered by its arches, and nobody there looks up.",
+          "fr": "Une galerie de cloître est abritée par ses arcades, et personne n’y lève les yeux."
         }
       ],
       "generic": [
@@ -626,7 +626,7 @@
           "fr": "Un marchand sur les marches vend des bougies frappées du sceau de la Première Lanterne, trois par paquet."
         },
         {
-          "en": "A stall by the harbour chain sells passes that are certainly not forgeries.",
+          "en": "A stall by the harbor chain sells passes that are certainly not forgeries.",
           "fr": "Un étal près de la chaîne du port vend des laissez-passer qui ne sont certainement pas des faux."
         }
       ],
@@ -654,7 +654,7 @@
       ],
       "rest": [
         {
-          "en": "A landing on the great stair, out of the wind, has a bench and a view of the harbour.",
+          "en": "A landing on the great stair, out of the wind, has a bench and a view of the harbor.",
           "fr": "Un palier du grand escalier, à l’abri du vent, a un banc et une vue sur le port."
         },
         {
@@ -664,7 +664,7 @@
       ],
       "generic": [
         {
-          "en": "The harbour chain ripples in the swell, and the gulls sit on it in a long line.",
+          "en": "The harbor chain ripples in the swell, and the gulls sit on it in a long line.",
           "fr": "La chaîne du port ondule dans la houle, et les mouettes s’y alignent en une longue file."
         },
         {
@@ -698,8 +698,8 @@
       ],
       "quest": [
         {
-          "en": "A steward asks you to carry a message to a person who is not in the hall.",
-          "fr": "Un intendant vous demande de porter un message à une personne qui n’est pas dans la salle."
+          "en": "A steward has a message for a person who is not in the hall, and no one to take it.",
+          "fr": "Un intendant a un message pour une personne qui n’est pas dans la salle, et personne pour le porter."
         },
         {
           "en": "A lamp-trimmer says the Lantern has flickered, once, and wants to know whether anyone else saw.",
@@ -740,7 +740,7 @@
       ],
       "enemy": [
         {
-          "en": "A drowned sailor in a white sash rises from the harbour wall and stands, dripping, in your path.",
+          "en": "A drowned sailor in a white sash rises from the harbor wall and stands, dripping, in your path.",
           "fr": "Un marin noyé à l’écharpe blanche se dresse du mur du port et se tient, ruisselant, sur votre chemin.",
           "mood": "tense"
         },
@@ -1035,8 +1035,8 @@
           "mood": "tense"
         },
         {
-          "en": "A shape steps out of the mist in a coat of hoarfrost and does not seem to feel the cold.",
-          "fr": "Une silhouette sort de la brume dans un manteau de givre et ne semble pas sentir le froid.",
+          "en": "A shape steps out of the mist in a coat of hoarfrost and walks as if the cold were not there.",
+          "fr": "Une silhouette sort de la brume dans un manteau de givre et marche comme si le froid n’existait pas.",
           "mood": "tense"
         },
         {
@@ -1045,7 +1045,7 @@
           "mood": "tense"
         },
         {
-          "en": "A figure in a penitent’s mask blocks the road and does not speak.",
+          "en": "A penitent in a mask blocks the road and does not speak.",
           "fr": "Une silhouette au masque de pénitent barre la route et ne dit rien.",
           "mood": "tense"
         },
@@ -1055,7 +1055,7 @@
           "mood": "tense"
         },
         {
-          "en": "A hound of no particular colour pads out of the snow and stops at exactly the distance from which it can spring.",
+          "en": "A hound of no particular color pads out of the snow and stops at exactly the distance from which it can spring.",
           "fr": "Un chien d’aucune couleur précise sort de la neige à pas feutrés et s’arrête à la distance exacte d’où il peut bondir.",
           "mood": "tense"
         }
@@ -1066,8 +1066,8 @@
           "fr": "Une gardienne de foyer mendie une braise à porter à la maison froide de sa famille, et paiera de ce qu’il reste dans la maison."
         },
         {
-          "en": "A pilgrim on the road asks you to carry a candle-end past the Reliquary, because her feet will not.",
-          "fr": "Une pèlerine sur la route vous prie de porter un bout de bougie au-delà du Reliquaire, parce que ses pieds ne le feront pas."
+          "en": "A pilgrim on the road begs you to take a candle-end past the Reliquary, because her feet will not.",
+          "fr": "Une pèlerine sur la route vous supplie d’emporter un bout de bougie au-delà du Reliquaire, parce que ses pieds ne le feront pas."
         },
         {
           "en": "A quarryman says his brother went up the cut in autumn, and the cut has gone quiet.",
@@ -1194,7 +1194,7 @@
       ],
       "enemy": [
         {
-          "en": "A figure in a scorched tabard steps into the street with a torch in one hand and a list in the other.",
+          "en": "A purifier in a scorched tabard steps into the street with a torch in one hand and a list in the other.",
           "fr": "Une silhouette en tabard roussi s’avance dans la rue, une torche d’une main, une liste de l’autre.",
           "mood": "tense"
         },
@@ -1294,8 +1294,8 @@
           "fr": "Une charrette privée de ses roues a été transformée en abri, avec une couverture et une bouilloire que quelqu’un a laissées."
         },
         {
-          "en": "A stair of the Spire keeps a landing out of the wind, and a warder who turns his back on purpose.",
-          "fr": "Un escalier de la Flèche garde un palier à l’abri du vent, et un gardien qui tourne le dos exprès."
+          "en": "A stair of the Spire keeps a quiet landing, and a warder who turns his back on purpose.",
+          "fr": "Un escalier de la Flèche garde un palier tranquille, et un gardien qui tourne le dos exprès."
         },
         {
           "en": "A smith’s forge has gone out, but the hearth bricks are still warm, and nobody has come to claim the warmth.",
@@ -1554,8 +1554,8 @@
       ],
       "quest": [
         {
-          "en": "An exorcist’s apprentice asks you to carry a bell up the last mile, because her knees will not.",
-          "fr": "Une apprentie d’exorciste vous demande de porter une cloche sur le dernier mille, car ses genoux ne le feront pas."
+          "en": "An exorcist’s apprentice needs a bell carried up the last mile, because her knees will not.",
+          "fr": "Une apprentie d’exorciste a besoin qu’on porte une cloche sur le dernier mille, car ses genoux ne le feront pas."
         },
         {
           "en": "A spring-keeper wants someone to find why the water has gone cold in the third pool.",
@@ -1574,8 +1574,8 @@
           "fr": "Un potier a besoin d’argile rouge prise à un évent qui s’est mis à faire du bruit."
         },
         {
-          "en": "A warding-post keeper asks whether you have seen who has been taking the salt from the bowls.",
-          "fr": "Un gardien de borne demande si vous avez vu qui prend le sel dans les bols."
+          "en": "A warding-post keeper wants to know who has been taking the salt from the bowls.",
+          "fr": "Un gardien de borne veut savoir qui prend le sel dans les bols."
         }
       ],
       "treasure": [
@@ -1896,8 +1896,8 @@
           "fr": "Un bateau retourné sur les galets fait un toit, avec une lanterne dessous."
         },
         {
-          "en": "A stairway landing is out of the wind, with a bench, a rail to lean on and a view of the grey water.",
-          "fr": "Un palier d’escalier est à l’abri du vent, avec un banc, une rampe où s’appuyer et une vue sur l’eau grise."
+          "en": "A cliff-stair landing is sheltered by the rock, with a bench, a rail to lean on and a view of the grey water.",
+          "fr": "Un palier d’escalier de falaise est abrité par la roche, avec un banc, une rampe où s’appuyer et une vue sur l’eau grise."
         },
         {
           "en": "A cliff chapel, long unroofed, has a dry corner and a candle with a tin cup.",
