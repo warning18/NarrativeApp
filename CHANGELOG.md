@@ -16,6 +16,19 @@ The clans say what they stand for.
 - **Each clan, tribe and otherworld power says what it stands for** in a few words ("Law, order, one flame over all"), in English and French, ready for the clan gift popin.
 - **A clan's radar** for the gift popin and the clan tab: what its gifts lean on (might, guard, mending, arcana, fortune) and how it stands with the other clans, as relations are now.
 
+## [1.328.0+364]
+
+### Added
+- Expedition steps for four tier-2 expeditions (data only; Core's engine plays them): Lantern Docks, Cinder Row, the Exorcists’ Road and the Changeling Fen, eight or nine steps each, English and French. `assets/gamedata/expedition_steps.json` now holds seven written zones.
+## [1.327.0+363]
+
+Detours and expeditions fit where they happen.
+
+### Changed
+- **A detour reads like the place it leaves from**: its lines come from the scene's own district or town, then the land around it, then its biome (the tear shore, the frost), and only then from the four old themes. A tense scene draws tense lines.
+- **An expedition can have its own road**: a zone with written steps walks them in order (events, checks, fights, discoveries of a place on the road, rests), and is as long as they are. Its checks get harder with the chapter, a rest heals, a discovery turns up one of the zone's materials, and each choice can say what came of it.
+- A zone without written steps plays as before.
+
 ## [1.324.0+360]
 
 The Skillwright's bench shows what it fuses.

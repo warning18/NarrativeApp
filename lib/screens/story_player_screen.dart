@@ -36,6 +36,7 @@ import '../data/settlements.dart';
 import '../data/story_repository.dart';
 import '../data/turn_in_choices.dart';
 import '../data/scene_flow.dart';
+import '../data/place_pools.dart';
 import '../data/sub_node_engine.dart';
 import '../data/ui_theme_palettes.dart';
 import '../gamedata/db_schema.dart';
@@ -56,6 +57,7 @@ import '../providers/expedition_active_provider.dart';
 import '../providers/finished_story_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/geography_provider.dart';
+import '../providers/place_pools_provider.dart';
 import '../providers/elevenlabs_tts_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/map_theme_provider.dart';
@@ -1861,8 +1863,9 @@ Future<List<StoryNode>?> rollRoadEncounter(
   final session = ref.read(playerSessionProvider);
   final playNotifier = ref.read(storyPlayProvider.notifier);
   final dice = ref.read(roadRandomProvider);
-  final resolvedTheme = ref.read(mapThemeProvider) ??
-      mapThemeForUiTheme(story.nodeFor(fromNodeId)?.uiTheme);
+  final forcedTheme = ref.read(mapThemeProvider);
+  final fromNode = story.nodeFor(fromNodeId);
+  final resolvedTheme = forcedTheme ?? mapThemeForUiTheme(fromNode?.uiTheme);
   final alignmentEvent = maybeAlignmentEvent(
     alignmentScore: session.alignmentScore,
     activeQuestIds: session.activeQuestIds,
@@ -1886,6 +1889,20 @@ Future<List<StoryNode>?> rollRoadEncounter(
         enemies: enemies, unlockedEnemyIds: const [], chapter: chapter),
   );
   if (familiar != null) return familiar;
+  // The lines of the place the road leaves from (place_pools.dart), unless
+  // a theme is forced (Edit Mode's).
+  final geo = await loadGeography(ref);
+  final pools = await loadPlacePools(ref);
+  final location = fromNode?.location;
+  final flavor = forcedTheme != null
+      ? null
+      : pools.flavorAt(
+          chain: placeChainOf(geo, location),
+          biomeId: placeBiomeOf(geo, location),
+          theme: resolvedTheme,
+          chapter: chapter,
+          mood: fromNode?.mood,
+        );
   return SubNodeEngine.maybeGenerate(
     random: dice(),
     triggerChance:
@@ -1899,6 +1916,7 @@ Future<List<StoryNode>?> rollRoadEncounter(
     unlockedQuestIds: session.unlockedQuestIds,
     completedQuestIds: session.completedQuestIds,
     theme: resolvedTheme,
+    flavor: flavor,
     partySize: 1 + session.activeAllyIds.length,
     alignmentLabel: session.alignmentLabel,
   );
