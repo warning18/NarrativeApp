@@ -2984,6 +2984,13 @@ final DbSchema factionsSchema = DbSchema(
     FieldSchema(key: 'motto', label: 'Motto', type: FieldType.text),
     FieldSchema(key: 'motto_fr', label: 'Motto (FR)', type: FieldType.text),
     FieldSchema(
+        key: 'stands_for',
+        label: 'Stands for',
+        type: FieldType.text,
+        help: 'What the clan wants of the character, in a few words.'),
+    FieldSchema(
+        key: 'stands_for_fr', label: 'Stands for (FR)', type: FieldType.text),
+    FieldSchema(
       key: 'intro',
       label: 'Intro (the first time they come)',
       type: FieldType.multilineText,
