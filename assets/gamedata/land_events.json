@@ -152,12 +152,12 @@
         "fight": "wreck_scavenger",
         "success": {
           "healthPct": 0,
-          "note": "The last of them breaks and runs, and leaves the sledge behind.",
-          "note_fr": "Le dernier cède et s’enfuit, en abandonnant le traîneau."
+          "note": "The last of them breaks and runs, leaving the sledge behind.",
+          "note_fr": "Le dernier lâche pied et s’enfuit, abandonnant le traîneau."
         },
         "fail": {
           "healthPct": -6,
-          "note": "You break off and get clear, with a knife-cut to show for it.",
+          "note": "You break off and get clear, a knife-cut to show for it.",
           "note_fr": "Vous rompez et vous dégagez, avec une entaille de couteau pour tout souvenir."
         }
       },
