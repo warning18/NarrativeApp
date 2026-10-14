@@ -10,9 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:narrative_data_app/gamedata/db_schema.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
-import 'package:narrative_data_app/providers/game_db_providers.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/expedition_screen.dart';
@@ -89,15 +87,6 @@ void main() {
           'maxHealth': 300,
           'currentHealth': 200,
         })));
-    // The road's file and the place lines are loaded before the screen is
-    // pushed: the screen reads the written road once, on its first build,
-    // and a build that comes before those loads have begun (a busy runner)
-    // would keep none for good.
-    await tester.runAsync(() async {
-      for (final schema in [expeditionStepsSchema, detoursSchema]) {
-        await container.read(gameDbProvider(schema).notifier).whenLoaded();
-      }
-    });
     final zone =
         (jsonDecode(File('assets/gamedata/zones.json').readAsStringSync())
                 as Map<String, dynamic>)['z_fishermans_row']
