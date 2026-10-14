@@ -725,19 +725,16 @@
       {
         "id": "patrol_bribe",
         "type": "fight",
-        "text": "A patrol of the Inquisition comes down the dock steps at a walk, lanterns held high, asking each person they pass for a purse and a name.",
-        "text_fr": "Une patrouille de l’Inquisition descend les marches du quai d’un pas tranquille, lanternes levées, demandant à chacun une bourse et un nom.",
+        "text": "A soldier of the Inquisition comes down the dock steps at a walk, lantern held high, asking each person he passes for a purse and a name.",
+        "text_fr": "Un soldat de l’Inquisition descend les marches du quai d’un pas tranquille, lanterne levée, demandant à chaque personne qu’il croise une bourse et un nom.",
         "choices": [
           {
             "id": "fight",
             "text": "Refuse and fight",
             "text_fr": "Refuser et vous battre",
-            "fight": [
-              "inquisition_soldier",
-              "inquisition_soldier"
-            ],
+            "fight": "inquisition_soldier",
             "success": {
-              "note": "They are not a patrol any more. The steps are quiet, for a while.",
+              "note": "He is not a patrol any more. The steps are quiet, for a while.",
               "note_fr": "Ce n’est plus une patrouille. Les marches sont calmes, pour un temps."
             },
             "fail": {
@@ -2493,20 +2490,17 @@
       {
         "id": "penitent_guards",
         "type": "fight",
-        "text": "Two penitents guard a quarry that nobody has worked since the autumn. They stand either side of the stair with their hands folded, and they have stood there so long that frost has grown on their sleeves.",
-        "text_fr": "Deux pénitents gardent une carrière que nul n’a exploitée depuis l’automne. Ils se tiennent de part et d’autre de l’escalier, les mains jointes, depuis si longtemps que le givre a poussé sur leurs manches.",
+        "text": "A penitent guards a quarry that nobody has worked since the autumn. Hands folded, feet planted at the foot of the stair, the penitent has stood there so long that frost has grown on the sleeves.",
+        "text_fr": "Un pénitent garde une carrière que nul n’a exploitée depuis l’automne. Les mains jointes, les pieds plantés au bas de l’escalier, il se tient là depuis si longtemps que le givre a poussé sur ses manches.",
         "choices": [
           {
             "id": "fight",
-            "text": "Cut through them",
-            "text_fr": "Passer à travers eux",
-            "fight": [
-              "inquisition_penitent",
-              "inquisition_penitent"
-            ],
+            "text": "Cut through",
+            "text_fr": "Passer en force",
+            "fight": "inquisition_penitent",
             "success": {
-              "note": "They break like icicles. Behind them the stair goes on, perfectly clear.",
-              "note_fr": "Ils se brisent comme des glaçons. Derrière eux, l’escalier continue, parfaitement dégagé."
+              "note": "The penitent breaks like an icicle. Beyond, the stair goes on, perfectly clear.",
+              "note_fr": "Le pénitent se brise comme un glaçon. Au-delà, l’escalier continue, parfaitement dégagé."
             },
             "fail": {
               "note": "It is a hard, cold business, and you leave a little of yourself on the steps.",
@@ -2519,12 +2513,12 @@
             "text_fr": "Vous faufiler du côté de la carrière",
             "check": "dexterity",
             "success": {
-              "note": "Their eyes are open and they do not move. You are past before you can tell if they saw you.",
-              "note_fr": "Leurs yeux sont ouverts et ils ne bougent pas. Le passage est fait avant que vous sachiez s’ils vous ont vu."
+              "note": "The eyes are open and do not move. You are past before you can tell whether you were seen.",
+              "note_fr": "Les yeux sont ouverts et ne bougent pas. Le passage est fait avant que vous sachiez si l’on vous a vu."
             },
             "fail": {
-              "note": "A pebble rolls. Two folded hands unfold.",
-              "note_fr": "Un caillou roule. Deux mains jointes se défont."
+              "note": "A pebble rolls. Folded hands unfold.",
+              "note_fr": "Un caillou roule. Des mains jointes se défont."
             }
           }
         ]
@@ -3096,17 +3090,14 @@
       {
         "id": "soldiers_lane",
         "type": "fight",
-        "text": "Two soldiers of the Inquisition block a lane, torches in hand, asking each person who passes whether they carry anything that burns.",
-        "text_fr": "Deux soldats de l’Inquisition barrent une ruelle, torches en main, demandant à chaque passant s’il porte quelque chose qui brûle.",
+        "text": "A soldier of the Inquisition blocks a lane, torch in hand, asking each person who passes whether they carry anything that burns.",
+        "text_fr": "Un soldat de l’Inquisition barre une ruelle, torche en main, demandant à chaque passant s’il porte quelque chose qui brûle.",
         "choices": [
           {
             "id": "fight",
             "text": "Fight your way through",
             "text_fr": "Vous frayer un passage",
-            "fight": [
-              "inquisition_soldier",
-              "inquisition_soldier"
-            ],
+            "fight": "inquisition_soldier",
             "success": {
               "note": "The lane is clear, and the chest has not so much as been jostled.",
               "note_fr": "La ruelle est libre, et le coffret n’a même pas été bousculé."
@@ -3118,16 +3109,16 @@
           },
           {
             "id": "hide",
-            "text": "Wait in a doorway until they move on",
-            "text_fr": "Attendre dans un porche qu’ils s’éloignent",
+            "text": "Wait in a doorway until he moves on",
+            "text_fr": "Attendre dans un porche qu’il s’éloigne",
             "check": "dexterity",
             "success": {
-              "note": "They move on, torches bobbing. You count to a hundred before you breathe.",
-              "note_fr": "Ils s’éloignent, torches ballottantes. Vous comptez jusqu’à cent avant de respirer."
+              "note": "He moves on, torch bobbing. You count to a hundred before you breathe.",
+              "note_fr": "Il s’éloigne, torche ballottante. Vous comptez jusqu’à cent avant de respirer."
             },
             "fail": {
-              "note": "One of them looks into your doorway. The look goes on a long time.",
-              "note_fr": "L’un d’eux regarde dans votre porche. Le regard dure longtemps."
+              "note": "He looks into your doorway. The look goes on a long time.",
+              "note_fr": "Il regarde dans votre porche. Le regard dure longtemps."
             }
           }
         ]
@@ -3604,20 +3595,17 @@
       {
         "id": "penitents_want_fire",
         "type": "fight",
-        "text": "Two penitents in hoar-rimed masks step across the road, their hands out, palms up. They do not speak. They want the fire, and they do not look as though they mean to ask twice.",
-        "text_fr": "Deux pénitents aux masques givrés s’avancent en travers de la route, les mains tendues, paumes vers le haut. Ils ne parlent pas. Ils veulent le feu, et ils n’ont pas l’air de vouloir demander deux fois.",
+        "text": "A penitent in a hoar-rimed mask steps across the road, hands out, palms up. It does not speak. It wants the fire, and it does not look as though it means to ask twice.",
+        "text_fr": "Un pénitent au masque givré s’avance en travers de la route, les mains tendues, paumes vers le haut. Il ne parle pas. Il veut le feu, et il n’a pas l’air de vouloir demander deux fois.",
         "choices": [
           {
             "id": "fight",
             "text": "Keep the fire",
             "text_fr": "Garder le feu",
-            "fight": [
-              "inquisition_penitent",
-              "inquisition_penitent"
-            ],
+            "fight": "inquisition_penitent",
             "success": {
-              "note": "They fall, and their masks crack in the cold. The pots have not even stirred.",
-              "note_fr": "Ils tombent, et leurs masques se fendent au froid. Les pots n’ont même pas bougé."
+              "note": "It falls, and the mask cracks in the cold. The pots have not even stirred.",
+              "note_fr": "Il tombe, et le masque se fend au froid. Les pots n’ont même pas bougé."
             },
             "fail": {
               "note": "You keep the fire, but pay for it in the arm that did not hold the pots.",
@@ -3626,11 +3614,11 @@
           },
           {
             "id": "offer",
-            "text": "Offer them a little warmth from the pot",
-            "text_fr": "Leur offrir un peu de chaleur du pot",
+            "text": "Offer it a little warmth from the pot",
+            "text_fr": "Lui offrir un peu de chaleur du pot",
             "outcome": {
-              "note": "They hold their hands over the lid, and when you walk on neither of them follows.",
-              "note_fr": "Ils tendent leurs mains au-dessus du couvercle, et quand vous repartez aucun ne vous suit."
+              "note": "It holds its hands over the lid, and when you walk on it does not follow.",
+              "note_fr": "Il tend les mains au-dessus du couvercle, et quand vous repartez il ne vous suit pas."
             }
           }
         ]
@@ -4584,38 +4572,35 @@
       {
         "id": "masked_pair",
         "type": "fight",
-        "text": "Two figures in penitents’ masks stand in the street mouth with their hands open and their feet apart. They say nothing. They have been waiting for you since before you came.",
-        "text_fr": "Deux silhouettes aux masques de pénitents se tiennent à l’entrée de la rue, mains ouvertes et pieds écartés. Elles ne disent rien. Elles vous attendaient avant votre venue.",
+        "text": "A figure in a penitent’s mask stands in the street mouth with its hands open and its feet apart. It says nothing. It has been waiting for you since before you came.",
+        "text_fr": "Une silhouette au masque de pénitent se tient à l’entrée de la rue, mains ouvertes et pieds écartés. Elle ne dit rien. Elle vous attendait avant votre venue.",
         "choices": [
           {
             "id": "fight",
-            "text": "Go at them",
-            "text_fr": "Foncer sur elles",
-            "fight": [
-              "masked_penitent",
-              "masked_penitent"
-            ],
+            "text": "Go at it",
+            "text_fr": "Foncer sur elle",
+            "fight": "masked_penitent",
             "success": {
-              "note": "The masks break in halves. Behind them, nothing you wish to remember.",
-              "note_fr": "Les masques se brisent en deux. Derrière, rien dont vous souhaitiez garder le souvenir."
+              "note": "The mask breaks in halves. Behind it, nothing you wish to remember.",
+              "note_fr": "Le masque se brise en deux. Derrière, rien dont vous souhaitiez garder le souvenir."
             },
             "fail": {
-              "note": "They fall, in the end, and you stand over them breathing hard.",
-              "note_fr": "Elles tombent, à la fin, et vous restez au-dessus d’elles, à bout de souffle."
+              "note": "It falls, in the end, and you stand over it, short of breath.",
+              "note_fr": "Elle tombe, à la fin, et vous restez au-dessus d’elle, à bout de souffle."
             }
           },
           {
             "id": "speak",
-            "text": "Speak to them",
-            "text_fr": "Leur parler",
+            "text": "Speak to it",
+            "text_fr": "Lui parler",
             "check": "charisma",
             "success": {
-              "note": "You tell them the vigil is over. They lower their hands and are gone, as though they had only waited to hear it.",
-              "note_fr": "Vous leur dites que la veillée est finie. Elles baissent les mains et disparaissent, comme si elles n’avaient attendu que de l’entendre."
+              "note": "You tell it the vigil is over. It lowers its hands and is gone, as though it had only waited to hear it.",
+              "note_fr": "Vous lui dites que la veillée est finie. Elle baisse les mains et disparaît, comme si elle n’avait attendu que de l’entendre."
             },
             "fail": {
-              "note": "Your voice goes out into the square and does not come back. The masks tilt, listening for something else.",
-              "note_fr": "Votre voix s’en va dans la place et ne revient pas. Les masques s’inclinent, à l’écoute d’autre chose."
+              "note": "Your voice goes out into the square and does not come back. The mask tilts, listening for something else.",
+              "note_fr": "Votre voix s’en va dans la place et ne revient pas. Le masque s’incline, à l’écoute d’autre chose."
             }
           }
         ]
