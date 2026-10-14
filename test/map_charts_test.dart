@@ -2,6 +2,7 @@
 // spot on each, inside the chart, on land or at sea as the story has it.
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:narrative_data_app/data/chart_globe.dart';
 import 'package:narrative_data_app/data/map_charts.dart';
 import 'package:narrative_data_app/data/world_map.dart';
 
@@ -39,10 +40,14 @@ void main() {
       });
 
       test('keeps the places apart', () {
+        // Nine units on the band charts; a chart spanning more of the globe
+        // (the story world's whole sphere, board 11) fits more ground in the
+        // same units, so the same few degrees apart are fewer units.
+        final apart = 9 * GlobeView.bandLonSpan / chart.lonSpan;
         for (final a in worldMapLandmarks) {
           for (final b in worldMapLandmarks) {
             if (a.id.compareTo(b.id) >= 0) continue;
-            expect((chart.of(a) - chart.of(b)).distance, greaterThan(9),
+            expect((chart.of(a) - chart.of(b)).distance, greaterThan(apart),
                 reason: '${a.id} and ${b.id}');
           }
         }

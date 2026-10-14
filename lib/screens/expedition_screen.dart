@@ -37,6 +37,7 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/approval_notice.dart';
 import '../widgets/companion_remark_bubble.dart';
+import '../widgets/ability_roll_dialog.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/moments.dart';
 import 'fight_screen.dart';
@@ -379,9 +380,9 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         dc: choice.checkDC ?? 10,
         session: ref.read(playerSessionProvider),
       );
-      await showImmersiveNotice(
+      await showAbilityRoll(
         context,
-        icon: result.success ? Icons.check_circle : Icons.cancel,
+        result: result,
         message: '${trFor(lang, '${result.ability}_label')} '
             '${trFor(lang, 'check_label')}: '
             '${result.roll} + ${result.modifier} = ${result.total} '

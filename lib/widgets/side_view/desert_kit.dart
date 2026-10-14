@@ -1,12 +1,13 @@
 // The desert scene kit (board 6): a warm sky in dithered bands and a low
 // sun, far mesas, three bands of dunes scrolling at their own speeds, a
 // path of packed sand, and the party's placeholder figures walking in place
-// until the user's sprite arrives. The walk's goal comes forward as the days
+// (the hero is the user's ronin, side_sprite.dart). The walk's goal comes forward as the days
 // pass ([progress] 0 to 1).
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import 'side_sprite.dart';
 import 'side_view.dart';
 
 /// The desert's colours.
@@ -84,19 +85,35 @@ List<SideLayer> desertLayers({double progress = 0}) => [
       SideLayer(1.0, _path),
     ];
 
-/// The party, in place on the path.
-SideLayer desertActors({int figures = 3}) => SideLayer(0, (c, s, scroll, t, u) {
-      const colours = [
-        Color(0xFFC0392B),
-        Color(0xFF3E7CB1),
-        Color(0xFF6B8E4E),
-        Color(0xFF8E5BA8),
-      ];
-      for (var i = 0; i < figures; i++) {
-        final x = 18.0 + i * 11;
-        _figure(c, u, x, 66, colours[i % colours.length], t + i * 0.4);
-      }
-    });
+/// The party, in place on the path: the hero (the user's ronin) at its head
+/// and the companions behind, walking while the party [moving] and standing
+/// when it waits on a choice. Until the sprite is loaded the hero is the
+/// placeholder too.
+SideLayer desertActors({int figures = 3, bool moving = true}) {
+  SideSprites.preload();
+  return SideLayer(0, (c, s, scroll, t, u) {
+    const colours = [
+      Color(0xFFC0392B),
+      Color(0xFF3E7CB1),
+      Color(0xFF6B8E4E),
+      Color(0xFF8E5BA8),
+    ];
+    // The companions first, behind: placeholders, a little bigger so they
+    // stand as tall as the ronin until they have sprites of their own.
+    for (var i = 1; i < figures; i++) {
+      final x = 18.0 + (figures - 1 - i) * 13;
+      c.save();
+      c.scale(1.6);
+      _figure(c, u, x / 1.6, 66 / 1.6, colours[i % colours.length],
+          moving ? t + i * 0.4 : 1.3);
+      c.restore();
+    }
+    final hx = 18.0 + (figures - 1) * 13 + 12;
+    if (!SideSprites.paint(c, u, hx, 66, t, moving: moving)) {
+      _figure(c, u, hx - 2, 66, colours[0], moving ? t : 1.3);
+    }
+  });
+}
 
 void _sky(Canvas canvas, Size size, double scroll, double t, double u) {
   // Dithered bands from the top to the horizon.

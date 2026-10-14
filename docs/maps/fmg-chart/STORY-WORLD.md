@@ -1,5 +1,29 @@
 # A story-true world for the chart
 
+## The whole sphere (board 11, v1.30x)
+
+The story world now covers the **whole globe, 360° × 180°**, in the chart's same 256 × 176 units
+(`ChartGeography.lonSpan` / `latSpan` say so; the band charts A, B and C keep their 225° × 140°). It follows board 11's
+layout:
+
+- **The story's three lands moved in longitude, their latitudes kept** (so every story place keeps its climate): the
+  Ashen Continent to 122°W–4°W, the Old Continent to 12°E–134°E, the Lantern Isles to 34°W–8°E. `story_world.py` still
+  holds them as first drawn on the band (`LANDS`, `PLACES`, `ZONES`, `RANGES`, `RIVERS`, `FEATURES`) and remaps every
+  point (`remap_design`, `STORY_LON`).
+- **Seven empty lands**, drawn on the board's flat picture (`EMPTY_LANDS`, `EMPTY_ZONES`, pixels four to a degree): the
+  west land, the equator land (a jungle), the south-west land, the north-east land, the east land, and a **polar land
+  over each pole** (`POLAR`: an ice cap from about 74°N and 68°S). Their zones' names are placeholders for Narrative's.
+- **Twelve archipelagos** (`BOARD_ARCHIPELAGOS`, `storyArchipelagoLands`), none named.
+- Land is about 45 % of the globe; every 30° of longitude holds land and sea.
+- The globe (`chart_globe.dart`): a view on the whole sphere turns right over a pole (`GlobeView.toPole`) and comes
+  round past the seam; `ChartGeography.globeAt` makes a view with the chart's own span. The climate keeps its curve to
+  70° (story places as warm as before) and grows colder on the ice caps (−6 °C more at the pole).
+- The places are a little closer in chart units than on the band (the same degrees, more globe in the same units):
+  `map_charts_test` scales its spacing by the chart's span.
+
+The rest of this page describes the band world it was first drawn as.
+
+
 Since v1.272.0 the game reads it: `lib/data/chart_story.dart` is the travel-history map's chart (`MapShape.story`, kept out of the map-look setting). The world is drawn from what the story says and
 where the globe puts it, with Earth's climate bands. Everything is in `tool/fmg_chart/`:
 
