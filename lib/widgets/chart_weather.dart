@@ -25,6 +25,7 @@ class ChartWeather extends StatefulWidget {
     required this.palette,
     required this.day,
     this.globe,
+    this.sphereMaxScale = double.infinity,
     this.showOf,
   });
 
@@ -37,6 +38,9 @@ class ChartWeather extends StatefulWidget {
 
   /// The chart as a sphere, or flat.
   final GlobeView? globe;
+
+  /// See ChartMapPainter.sphereMaxScale.
+  final double sphereMaxScale;
 
   /// Whether the sky is drawn at all right now (v1.208): the Layers sheet
   /// can keep it to the world zoom.
@@ -77,6 +81,7 @@ class _ChartWeatherState extends State<ChartWeather>
               palette: widget.palette,
               day: widget.day,
               globe: widget.globe,
+              sphereMaxScale: widget.sphereMaxScale,
               showOf: widget.showOf,
             ),
           ),
@@ -93,6 +98,7 @@ class ChartWeatherPainter extends CustomPainter {
     required this.palette,
     required this.day,
     this.globe,
+    this.sphereMaxScale = double.infinity,
     this.showOf,
   });
 
@@ -100,6 +106,7 @@ class ChartWeatherPainter extends CustomPainter {
   final ChartPalette palette;
   final int day;
   final GlobeView? globe;
+  final double sphereMaxScale;
   final bool Function()? showOf;
 
   /// The sky's time: the day's, fixed (see ChartClimate.timeOf).
@@ -110,7 +117,9 @@ class ChartWeatherPainter extends CustomPainter {
     if (showOf?.call() == false) return;
     final climate = ChartClimate.of(geography);
     final t = time;
-    final k = size.width / worldMapWidth;
+    final k = globe == null
+        ? size.width / worldMapWidth
+        : math.min(size.width / worldMapWidth, sphereMaxScale);
     canvas.save();
     canvas.clipRect(Offset.zero & size);
     canvas.scale(k);
