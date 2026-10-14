@@ -21,6 +21,7 @@ import 'package:narrative_data_app/screens/character_screen.dart';
 import 'package:narrative_data_app/screens/race_profession_screen.dart';
 import 'package:narrative_data_app/screens/skills/spells_view.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'package:narrative_data_app/widgets/title_detail_view.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
 
@@ -200,18 +201,26 @@ void main() {
     await tester.tap(find.byKey(const Key('title_the_marked')));
     await tester.pump();
     expect(worn(), 'coal_guard');
-    expect(find.byType(AlertDialog), findsNothing);
+    expect(find.byType(TitleDetailView), findsNothing);
     await tester.longPress(find.byKey(const Key('title_the_marked')));
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.byType(TitleDetailView), findsOneWidget);
     expect(find.text('The Marked'), findsWidgets);
+    expect(find.byKey(const Key('title_toggle')), findsNothing,
+        reason: 'a brand cannot be worn or taken off');
     expect(worn(), 'coal_guard', reason: 'reading it wears nothing');
     await tester.tap(find.text('Close'));
     await tester.pump(const Duration(milliseconds: 300));
+
+    // The worn one reads with "Take off", and the sheet's button does it.
     await tester.longPress(find.byKey(const Key('title_coal_guard')));
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.byType(TitleDetailView), findsOneWidget);
+    expect(find.text('Take off'), findsOneWidget);
     expect(worn(), 'coal_guard');
+    await tester.tap(find.byKey(const Key('title_toggle')));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(worn(), '');
   });
 
   testWidgets('the Mana card opens the skills on their Spells tab',
