@@ -12,6 +12,23 @@ isn't reconstructable from git history alone.
 
 ### Added
 - Expedition steps for four tier-2 expeditions (data only; Core's engine plays them): Lantern Docks, Cinder Row, the Exorcists’ Road and the Changeling Fen, eight or nine steps each, English and French. `assets/gamedata/expedition_steps.json` now holds seven written zones.
+## [1.327.0+363]
+
+Detours and expeditions fit where they happen.
+
+### Changed
+- **A detour reads like the place it leaves from**: its lines come from the scene's own district or town, then the land around it, then its biome (the tear shore, the frost), and only then from the four old themes. A tense scene draws tense lines.
+- **An expedition can have its own road**: a zone with written steps walks them in order (events, checks, fights, discoveries of a place on the road, rests), and is as long as they are. Its checks get harder with the chapter, a rest heals, a discovery turns up one of the zone's materials, and each choice can say what came of it.
+- A zone without written steps plays as before.
+
+## [1.324.0+360]
+
+The Skillwright's bench shows what it fuses.
+
+### Changed
+- **Craft a Skill** is a sheet where each recipe is two skills becoming a third, every one drawn with its icon and its real name (no more ids): a skill you know wears a check, one you lack is greyed and locked with "Missing", the recipe you can do stands out in gold with its Merge button, and one already done says so. Merge asks first, shows the same picture and what is spent, and the card flips to "Already crafted" with the sheet left open.
+- **The built Skillwright's card** in the camp's building list has a "Craft a Skill" button.
+- The sheet waits for the recipes to load instead of saying there are none.
 
 ## [1.323.0+359]
 

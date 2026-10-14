@@ -16,9 +16,11 @@ import '../data/item_origin_here.dart';
 import '../data/chapter_loop.dart';
 import '../data/check_outcomes.dart';
 import '../data/companion_remarks.dart';
+import '../data/expedition_steps.dart';
 import '../data/expedition_kinds.dart';
 import '../data/map_themes.dart';
 import '../data/materials.dart';
+import '../data/place_pools.dart';
 import '../data/sub_node_engine.dart';
 import '../data/zone_gating.dart';
 import '../gamedata/db_schema.dart';
@@ -31,6 +33,7 @@ import '../providers/chapter_loop_provider.dart'
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/geography_provider.dart';
+import '../providers/place_pools_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../tutorial/guide_tour.dart';
@@ -133,10 +136,14 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   /// [_passItsTime]).
   bool _timePassed = false;
 
-  int get _deadline => deliveryDeadlineOf(widget.zone);
+  int get _deadline => deliveryDeadlineOf(widget.zone, count: _expeditionCount);
 
-  int get _expeditionCount =>
-      (widget.zone['expeditionCount'] as num?)?.toInt() ?? 3;
+  /// The zone's written road (expedition_steps.dart), set once the file
+  /// has loaded: walked in order, and the zone's length when it has one.
+  List<WrittenStep>? _written;
+  List<WrittenStep> get _writtenSteps => _written ?? const [];
+
+  int get _expeditionCount => expeditionCountOf(widget.zone, _writtenSteps);
 
   int get _zoneChapter => (widget.zone['chapter'] as num?)?.toInt() ?? 1;
 
@@ -244,6 +251,19 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       unlockedEnemyIds: session.unlockedEnemyIds,
       chapter: zoneChapter,
     );
+    // A zone with a written road walks it, step by step.
+    if (_index < _writtenSteps.length) {
+      final step = buildWrittenStep(
+        _writtenSteps[_index],
+        zoneId: widget.zoneId,
+        chapter: zoneChapter,
+        random: _random,
+        enemies: enemies,
+        rewardMaterials: materialCountsOf(widget.zone, 'rewardMaterials'),
+      );
+      _step = step;
+      return step.node;
+    }
     // An escort or a delivery walks its own stages, not the zone's random
     // events.
     if (_kind != ExpeditionKind.clear) {
@@ -260,9 +280,17 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       _step = step;
       return step.node;
     }
+    // The lines of the zone's own place (place_pools.dart), else its theme's.
+    final geo = ref.read(geographyProvider);
+    final location = widget.zone['location']?.toString();
     return SubNodeEngine.buildNode(
       random: _random,
-      flavor: flavorFor(theme),
+      flavor: ref.read(placePoolsProvider).flavorAt(
+            chain: placeChainOf(geo, location),
+            biomeId: placeBiomeOf(geo, location),
+            theme: theme,
+            chapter: zoneChapter,
+          ),
       shopPool: shopPool,
       enemyPool: enemyPool,
       packPool:
@@ -463,7 +491,10 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       }
       if (!mounted) return;
       if (!await _applyStepOutcome(stepOutcome,
-          failed: checkFailed, fought: true, isStage: step != null)) {
+          failed: checkFailed,
+          checked: choice.hasAbilityCheck,
+          fought: true,
+          isStage: step != null)) {
         return;
       }
       if (isBoss) {
@@ -541,7 +572,10 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     }
     if (!mounted) return;
     if (!await _applyStepOutcome(stepOutcome,
-        failed: checkFailed, fought: false, isStage: step != null)) {
+        failed: checkFailed,
+        checked: choice.hasAbilityCheck,
+        fought: false,
+        isStage: step != null)) {
       return;
     }
     await _advance(
@@ -556,13 +590,21 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   /// the escort.
   Future<bool> _applyStepOutcome(StepOutcome? outcome,
       {required bool failed,
+      required bool checked,
       required bool fought,
       required bool isStage}) async {
-    if (outcome == null || _kind == ExpeditionKind.clear) return true;
+    if (outcome == null) return true;
     final lang = ref.read(appLanguageProvider);
+    // A written step's own words on what happened.
+    final written = outcome.notesFor(
+        failed: failed, checked: checked, french: lang == AppLanguage.fr);
+    if (_kind == ExpeditionKind.clear) {
+      _kindNote = written.isEmpty ? null : written;
+      return true;
+    }
     final notifier = ref.read(playerSessionProvider.notifier);
     final cost = outcome.resolve(failed: failed, fought: fought);
-    final notes = <String>[];
+    final notes = <String>[if (written.isNotEmpty) written];
     if (_kind == ExpeditionKind.escort && cost.cargo != 0) {
       _cargo = (_cargo + cost.cargo).clamp(0, escortCargoFull);
       if (cost.cargo < 0) {
@@ -851,14 +893,20 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     ref.watch(localizedDbProvider(companionsSchema));
     final shops = shopsAsync.value;
     final enemies = enemiesAsync.value;
+    // The zone's written road and the place's lines: empty for good when
+    // their files are missing (see place_pools_provider.dart).
+    final stepsLoading =
+        ref.watch(gameDbProvider(expeditionStepsSchema)).isLoading;
+    final poolsLoading = ref.watch(gameDbProvider(detoursSchema)).isLoading;
 
-    if (shops == null || enemies == null) {
+    if (shops == null || enemies == null || stepsLoading || poolsLoading) {
       return Scaffold(
         appBar: AppBar(title: Text(zoneName)),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
+    _written ??= ref.read(writtenStepsProvider)[widget.zoneId] ?? const [];
     _current ??= _rollEvent(shops: shops, enemies: enemies);
     final lang = ref.watch(appLanguageProvider);
 
