@@ -15,11 +15,14 @@ import '../combat/combat_engine.dart'
 import '../combat/gear_effects.dart';
 import '../combat/spells.dart';
 import '../data/autoplay_engine.dart';
+import '../data/camp_works.dart';
 import '../data/chapter_loop.dart';
 import '../data/chapter_spine.dart';
 import '../data/factions.dart';
 import '../data/perks.dart';
 import '../data/politics_events.dart' show choicePoliticsKey, enterPoliticsKey;
+import '../data/materials.dart';
+import '../data/settlements.dart' show campFoundedFlag;
 import '../data/signs.dart';
 import '../data/sim_combat.dart';
 import '../data/sim_growth.dart';
@@ -197,9 +200,14 @@ class _SimResult {
     this.questRecords = const [],
     this.questsStuck = const {},
     this.arrivals = const {},
+    this.housesBuilt = const {},
   });
 
   final List<_SimStep> steps;
+
+  /// The camp's works the run built: house id -> the chapter it went up in
+  /// (see buildHouses).
+  final Map<String, int> housesBuilt;
 
   /// The character's level and gold when the run first rested at each
   /// chapter's hub (chapter -> (level, gold)), for the balance reports.
@@ -291,12 +299,16 @@ class _SimContext {
     this.npcs = const {},
     this.landRoutes = const {},
     this.landEvents = const {},
+    this.houses = const {},
   });
 
   /// land_routes.json and land_events.json's events: the land crossings
   /// the walk plays (see land_crossing.dart).
   final Map<String, dynamic> landRoutes;
   final Map<String, LandEvent> landEvents;
+
+  /// houses.json: the camp's works the walk builds (see buildHouses).
+  final Map<String, dynamic> houses;
 
   /// quests.json and npcs.json: the quests the walk takes on and hands in.
   final Map<String, dynamic> quests;
@@ -439,6 +451,12 @@ _SimResult _simulate(
   int? lastKnownChapter = furthestChapter;
   int? restedChapter = lastKnownChapter;
   final arrivals = <int, ({int level, int gold})>{};
+  // The camp's works (v1.291): the materials the walk has picked up, the
+  // houses it has built (house -> the chapter it went up in) and the gold
+  // they cost, kept apart from the purse it shops with (see buildHouses).
+  var materials = <String>[];
+  final housesBuilt = <String, int>{};
+  var houseGoldSpent = 0;
   final steps = <_SimStep>[];
   // How the character grows (see sim_growth.dart): the clans' offers, or
   // the old skill points, perks and sign picks.
@@ -494,6 +512,7 @@ _SimResult _simulate(
           questLog?.records.values ?? const <SimQuestRecord>[]),
       questsStuck: questLog?.unmet(flags) ?? const {},
       arrivals: Map.unmodifiable(arrivals),
+      housesBuilt: Map.unmodifiable(housesBuilt),
     );
   }
 
@@ -705,7 +724,9 @@ _SimResult _simulate(
               if (drop is! Map) continue;
               final rate = (drop['dropRate'] as num?)?.toInt() ?? 0;
               if (random.nextInt(100) < rate) {
-                questLog.inventory.add(drop['itemID'].toString());
+                final itemId = drop['itemID'].toString();
+                questLog.inventory.add(itemId);
+                if (materialTierOf(itemId) != null) materials.add(itemId);
               }
             }
           }
@@ -844,6 +865,88 @@ _SimResult _simulate(
     ));
   }
 
+  /// The camp's works, built as a player keen on them would: once the camp
+  /// stands, every house the building screen calls buildable (camp_works.
+  /// dart: its chapter come, its flags held, the gold and materials there),
+  /// cheapest first, as soon as it is; a house short only of commons a
+  /// shop of the chapters reached sells (by sea once the harbour stands,
+  /// which the walk builds first) has them bought first. Measured, not felt: the gold it
+  /// costs comes out of a purse of its own (what the walk has, less what
+  /// the works took), so the walk shops as it did, and the houses' bonuses
+  /// are not played. A companion's house is never built (the walk keeps no
+  /// companions).
+  void buildHouses() {
+    final houses = sim?.houses ?? const <String, dynamic>{};
+    final chapter = lastKnownChapter;
+    if (houses.isEmpty || chapter == null || !flags.contains(campFoundedFlag)) {
+      return;
+    }
+    while (true) {
+      final works = campWorksOf(
+        houses: houses,
+        zones: sim?.zones ?? const {},
+        shops: sim?.shops ?? const {},
+        chapter: chapter,
+        flags: flags,
+        gold: gold - houseGoldSpent,
+        inventory: materials,
+        builtHouseIds: housesBuilt.keys,
+        recruitedAllyIds: const [],
+      );
+      int costOf(String id) =>
+          ((houses[id] as Map?)?['buildCost'] as num?)?.toInt() ?? 0;
+      final ready = [
+        for (final w in works.values.expand((w) => w))
+          if (w.state == WorkState.buildable) w.houseId,
+      ]..sort((a, b) {
+          final byCost = costOf(a).compareTo(costOf(b));
+          return byCost != 0 ? byCost : a.compareTo(b);
+        });
+      if (ready.isEmpty) {
+        // Short only of commons a shop the walk knows sells: bought, when
+        // the works' purse covers them and the house.
+        final items = sim?.items ?? const <String, dynamic>{};
+        String? bought;
+        final waiting = [
+          for (final w in works.values.expand((w) => w))
+            if (w.state == WorkState.shown) w,
+        ]..sort((a, b) => costOf(a.houseId).compareTo(costOf(b.houseId)));
+        for (final w in waiting) {
+          bool open(String shopId) =>
+              (((sim?.shops[shopId] as Map?)?['minChapter'] as num?)?.toInt() ??
+                  1) <=
+              chapter;
+          if (w.needs.any(
+              (n) => n.kind != WorkNeedKind.material || !n.shopIds.any(open))) {
+            continue;
+          }
+          final price = w.needs.fold<int>(
+              0,
+              (sum, n) =>
+                  sum +
+                  (n.need - n.have) *
+                      (((items[n.id] as Map?)?['cost'] as num?)?.toInt() ?? 0));
+          if (gold - houseGoldSpent < costOf(w.houseId) + price) continue;
+          houseGoldSpent += price;
+          for (final n in w.needs) {
+            for (var i = n.have; i < n.need; i++) {
+              materials.add(n.id);
+            }
+          }
+          bought = w.houseId;
+          break;
+        }
+        if (bought == null) return;
+        continue;
+      }
+      final id = ready.first;
+      housesBuilt[id] = chapter;
+      houseGoldSpent += costOf(id);
+      materials = withoutMaterials(materials,
+          materialCountsOf(houses[id] as Map<String, dynamic>, 'materialCost'));
+    }
+  }
+
   /// The expedition [zoneId] launches, played out: each of its events a
   /// fight at [_expeditionFightShare] odds (a pair from the pack pool some
   /// of the time, as SubNodeEngine draws them), then the zone's boss. A
@@ -915,6 +1018,13 @@ _SimResult _simulate(
     final rewardFlag = zone['rewardFlag']?.toString() ?? '';
     if (rewardFlag.isNotEmpty) flags.add(rewardFlag);
     gold += (zone['rewardGold'] as num?)?.toInt() ?? 0;
+    for (final MapEntry(key: id, value: count)
+        in materialCountsOf(zone, 'rewardMaterials').entries) {
+      for (var i = 0; i < count; i++) {
+        materials.add(id);
+      }
+    }
+    buildHouses();
   }
 
   // A new character's starting points (offers, or skill points).
@@ -953,6 +1063,7 @@ _SimResult _simulate(
             reached, () => (level: character!.level, gold: gold));
         growth?.chapterReached(reached);
         settle();
+        buildHouses();
       }
     }
 
@@ -1193,6 +1304,17 @@ _SimResult _simulate(
     if ((choice.unlockQuestId ?? '').isNotEmpty) {
       quests.add(choice.unlockQuestId!);
     }
+    // The materials the scene hands over (the harbour's, at the camp's
+    // founding) go to the camp's works.
+    if (choice.grantsMaterials) {
+      for (final MapEntry(key: id, value: count)
+          in choice.grantMaterials.entries) {
+        for (var i = 0; i < count; i++) {
+          materials.add(id);
+        }
+      }
+      buildHouses();
+    }
     // The player takes the work on offer if the character qualifies, and an
     // item the scene puts in the pack goes in it.
     if (questLog != null) {
@@ -1330,6 +1452,7 @@ _SimContext _simContextOf(
     npcs: table('npcs'),
     landRoutes: table('land_routes'),
     landEvents: landEventsFrom(table('land_events')),
+    houses: table('houses'),
   );
 }
 
@@ -1362,6 +1485,7 @@ typedef SimRunSummary = ({
   Map<String, int> enemiesLost,
   Map<String, Map<String, ({int fought, int lost})>> enemiesByChapter,
   Map<int, ({int level, int gold})> arrivals,
+  Map<String, int> housesBuilt,
   Set<String> visitedNodes,
   List<String> choicesTaken,
   Set<String> questIds,
@@ -1464,6 +1588,7 @@ List<SimRunSummary> simulatePlaythroughs(
       enemiesLost: lost,
       enemiesByChapter: byChapterEnemy,
       arrivals: result.arrivals,
+      housesBuilt: result.housesBuilt,
       visitedNodes: {
         for (final step in result.steps)
           if (!step.nodeId.contains(':')) step.nodeId,
@@ -1902,6 +2027,7 @@ class _PlaythroughSimulatorScreenState
       geography: await loadGeography(ref),
       landRoutes: await load(landRoutesSchema),
       landEvents: landEventsFrom(await load(landEventsSchema)),
+      houses: await load(housesSchema),
     );
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
     final random = Random();
