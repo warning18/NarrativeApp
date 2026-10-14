@@ -450,6 +450,8 @@ void main() {
           .whereType<TopShipPainter>()
           .toList();
       expect(painters.single.look.form!.id, 'brig');
+      // The side view shows her on it too.
+      expect(find.byKey(const Key('yard_side_preview')), findsOneWidget);
       final session = container.read(playerSessionProvider);
       expect(session.shipHullId, 'rusty_eel');
       expect(session.gold, 2000);

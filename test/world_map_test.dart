@@ -16,6 +16,7 @@ import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/map_look_provider.dart';
 import 'package:narrative_data_app/screens/story_graph_screen.dart';
+import 'package:narrative_data_app/screens/full_map_screen.dart';
 import 'package:narrative_data_app/screens/world_map_screen.dart';
 
 Future<void> _settle(WidgetTester tester) async {
@@ -24,6 +25,14 @@ Future<void> _settle(WidgetTester tester) async {
         () => Future<void>.delayed(const Duration(milliseconds: 150)));
     await tester.pump(const Duration(milliseconds: 150));
   }
+}
+
+/// Opens the author's world chart over whatever is showing.
+Future<void> openOldMap(WidgetTester tester) async {
+  tester.state<NavigatorState>(find.byType(Navigator).first).push(
+        MaterialPageRoute<void>(builder: (_) => const WorldMapPage()),
+      );
+  await _settle(tester);
 }
 
 void main() {
@@ -221,8 +230,15 @@ void main() {
     }
 
     expect(find.byTooltip('Story Map'), findsNothing);
+    // The header's map is the full map now; the author's chart, with the
+    // place panel, is reached in Edit Mode (and is looked at here directly).
     await tester.tap(find.byTooltip('Map'));
     await _settle(tester);
+    expect(find.byType(FullMapScreen), findsOneWidget);
+    expect(find.byType(WorldMapPage), findsNothing);
+    tester.state<NavigatorState>(find.byType(Navigator).first).pop();
+    await _settle(tester);
+    await openOldMap(tester);
     expect(find.byType(WorldMapPage), findsOneWidget);
 
     // The story stands at the wharf; its panel says so.
@@ -342,8 +358,7 @@ void main() {
       }
     }
     await _settle(tester);
-    await tester.tap(find.byTooltip('Map'));
-    await _settle(tester);
+    await openOldMap(tester);
 
     // Opening the map records how far the journey had gone.
     await _settle(tester);

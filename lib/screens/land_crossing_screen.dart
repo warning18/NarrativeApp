@@ -57,6 +57,29 @@ Future<bool> runLandCrossing(
 /// the party does; the party's health is what runs out. The layout is a
 /// plain one for now; the side view is UX's (docs/proposals/
 /// land-expeditions.md).
+/// An event that is a storm over the scene: the sandstorm in the desert and
+/// the ash squall among the ruins fill the scene with their dust or ash.
+bool crossingIsStorm(String? eventId) =>
+    eventId == 'sandstorm' || eventId == 'ash_squall';
+
+/// The particles over a crossing's scene: a storm's own, else the sky's, else
+/// the terrain's (heat shimmer in the desert, ash among the ruins).
+SideParticles crossingParticles({
+  required String terrain,
+  required bool storm,
+  WeatherKind? sky,
+}) {
+  if (storm) return terrain == 'ruins' ? SideParticles.ash : SideParticles.dust;
+  return switch (sky) {
+    WeatherKind.dust => SideParticles.dust,
+    WeatherKind.rain => SideParticles.rain,
+    WeatherKind.snow => SideParticles.snow,
+    WeatherKind.ash => SideParticles.ash,
+    WeatherKind.fog => SideParticles.fog,
+    _ => terrain == 'ruins' ? SideParticles.ash : SideParticles.shimmer,
+  };
+}
+
 class LandCrossingScreen extends ConsumerStatefulWidget {
   const LandCrossingScreen({
     super.key,
@@ -269,18 +292,10 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
             ? 0.0
             : ((_day + (_phase == _Phase.result ? 1 : 0)) / _drawn.length)
                 .clamp(0.0, 1.0);
-    final storm = _phase == _Phase.event && event?.id == 'sandstorm';
+    final storm = _phase == _Phase.event && crossingIsStorm(event?.id);
     final sky = ref.watch(skyHereProvider)?.today().kind;
-    final particles = storm
-        ? SideParticles.dust
-        : switch (sky) {
-            WeatherKind.dust => SideParticles.dust,
-            WeatherKind.rain => SideParticles.rain,
-            WeatherKind.snow => SideParticles.snow,
-            WeatherKind.ash => SideParticles.ash,
-            WeatherKind.fog => SideParticles.fog,
-            _ => ruins ? SideParticles.ash : SideParticles.shimmer,
-          };
+    final particles =
+        crossingParticles(terrain: terrain, storm: storm, sky: sky);
     final hud = Padding(
       padding: const EdgeInsets.all(8),
       child: Row(

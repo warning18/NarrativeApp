@@ -119,6 +119,8 @@ void main() {
 
     // The sea between the ships: the weather, the range, the enemy's habit.
     expect(find.byKey(const Key('ship_sea_strip')), findsOneWidget);
+    // On a tall screen the two hulls face each other from the side above it.
+    expect(find.byKey(const Key('ship_duel_strip')), findsOneWidget);
     expect(find.byKey(const Key('ship_range_bar')), findsOneWidget);
     expect(find.byKey(const Key('ship_enemy_habit')), findsOneWidget);
     expect(find.text('Medium range'), findsOneWidget);

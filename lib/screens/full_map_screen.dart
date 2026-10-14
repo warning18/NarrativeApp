@@ -17,7 +17,10 @@ import '../providers/map_look_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/travel_history_provider.dart';
 import '../theme/stitched_ink.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../widgets/calques_sheet.dart';
+import '../widgets/help_hint.dart' show TourInfoButton;
 import '../widgets/camp_travel.dart' show travelToPlace;
 import '../widgets/chart_map_painter.dart' show ChartFog;
 import '../widgets/journey_world_map.dart';
@@ -75,6 +78,12 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
   /// The place the chart is turned to and marked: the one asked for, then
   /// the end of a journey picked from the list.
   Landmark? _focus;
+
+  /// One chapter picked out on the chart (0: all), and the replay of the
+  /// road walked (a new token starts it).
+  int _chapterFilter = 0;
+  int _replayToken = 0;
+  List<Landmark>? _replayLegs;
 
   @override
   void initState() {
@@ -300,47 +309,142 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
           MapLook.parchment => mapChapter(n).light,
           MapLook.shroud => const Color(0xFFA3A3AA),
         };
-    return Scaffold(
-      appBar: AppBar(title: Text(tr(ref, 'map_full_title'))),
-      body: SafeArea(
-        child: Column(
+    // The chapters reached, for the chips: each picks that chapter's places
+    // and roads out, and turns the chart to its first place.
+    final reachedLandmarks = [
+      for (final l in worldMapLandmarks)
+        if (worldDiscovered.contains(l.id)) l,
+    ];
+    final chaptersReached =
+        {for (final l in reachedLandmarks) l.chapter}.toList()..sort();
+    return TutorialTrigger(
+      topic: TutorialTopic.map,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(tr(ref, 'map_full_title')),
+          actions: const [TourInfoButton(topic: TutorialTopic.map)],
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: TutorialTarget(
+                  id: 'map.chart',
+                  child: JourneyWorldMap(
+                    key: const ValueKey('full_world_map'),
+                    level: JourneyMapLevel.world,
+                    palette: palette,
+                    here: standing,
+                    discovered: worldDiscovered,
+                    legs: roadLegs(journeyOf(play.history, play.currentNodeId),
+                        worldDiscovered),
+                    ahead: nextPlace,
+                    shopPlaces: _shops,
+                    campPlaces: _camps,
+                    chapterColor: chapterColor,
+                    onLayers: () => showCalquesSheet(context, ref),
+                    onSelect: _placeSheet,
+                    focus: _focus,
+                    heardOf: editing
+                        ? const {}
+                        : ref.watch(heardOfPlacesProvider).keys.toSet(),
+                    goalId: ref.watch(mapGoalProvider),
+                    chapterFilter: _chapterFilter,
+                    replayLegs: _replayLegs,
+                    replayToken: _replayToken,
+                    fog: editing ? ChartFog.none : ChartFog.uncharted,
+                  ),
+                ),
+              ),
+              if (chaptersReached.length > 1)
+                TutorialTarget(
+                  id: 'map.chapters',
+                  child: _ChapterChips(
+                    chapters: chaptersReached,
+                    selected: _chapterFilter,
+                    colourOf: chapterColor,
+                    onPick: (n) => setState(() {
+                      _chapterFilter = n;
+                      if (n != 0) {
+                        _focus =
+                            reachedLandmarks.firstWhere((l) => l.chapter == n);
+                      }
+                    }),
+                  ),
+                ),
+              TutorialTarget(
+                id: 'map.controls',
+                child: _MapToolbar(
+                  onLegend: () => showMapLegendSheet(context, ref,
+                      palette: palette, chapterColor: chapterColor),
+                  onStory: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const JournalScreen()),
+                  ),
+                  onJourneys: () async {
+                    final journey = journeyOf(play.history, play.currentNodeId);
+                    final pick = await showMapJourneysSheet(context, ref,
+                        journey: journey, chapterColor: chapterColor);
+                    if (pick == null || !mounted) return;
+                    setState(() {
+                      if (pick.replay) {
+                        _replayLegs = journey;
+                        _replayToken++;
+                      } else {
+                        _focus = pick.to;
+                      }
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The chapters reached as chips, "All" first: one picked out on the chart.
+class _ChapterChips extends ConsumerWidget {
+  const _ChapterChips({
+    required this.chapters,
+    required this.selected,
+    required this.colourOf,
+    required this.onPick,
+  });
+
+  final List<int> chapters;
+  final int selected;
+  final Color Function(int chapter) colourOf;
+  final ValueChanged<int> onPick;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ink = InkColors.of(context);
+    return Material(
+      color: Theme.of(context).colorScheme.surface,
+      child: SingleChildScrollView(
+        key: const Key('map_chapter_chips'),
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        child: Row(
           children: [
-            Expanded(
-              child: JourneyWorldMap(
-                key: const ValueKey('full_world_map'),
-                level: JourneyMapLevel.world,
-                palette: palette,
-                here: standing,
-                discovered: worldDiscovered,
-                legs: roadLegs(journeyOf(play.history, play.currentNodeId),
-                    worldDiscovered),
-                ahead: nextPlace,
-                shopPlaces: _shops,
-                campPlaces: _camps,
-                chapterColor: chapterColor,
-                onLayers: () => showCalquesSheet(context, ref),
-                onSelect: _placeSheet,
-                focus: _focus,
-                heardOf: editing
-                    ? const {}
-                    : ref.watch(heardOfPlacesProvider).keys.toSet(),
-                goalId: ref.watch(mapGoalProvider),
-                fog: editing ? ChartFog.none : ChartFog.uncharted,
+            for (final n in [0, ...chapters])
+              Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: ChoiceChip(
+                  key: Key('world_map_chip_$n'),
+                  visualDensity: VisualDensity.compact,
+                  selected: selected == n,
+                  selectedColor:
+                      (n == 0 ? ink.gold : colourOf(n)).withValues(alpha: 0.35),
+                  side: BorderSide(color: n == 0 ? ink.gold : colourOf(n)),
+                  label: Text(n == 0
+                      ? tr(ref, 'world_map_all')
+                      : '${tr(ref, 'world_map_chapter_short')} $n'),
+                  onSelected: (_) => onPick(n),
+                ),
               ),
-            ),
-            _MapToolbar(
-              onLegend: () => showMapLegendSheet(context, ref,
-                  palette: palette, chapterColor: chapterColor),
-              onStory: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const JournalScreen()),
-              ),
-              onJourneys: () async {
-                final to = await showMapJourneysSheet(context, ref,
-                    journey: journeyOf(play.history, play.currentNodeId),
-                    chapterColor: chapterColor);
-                if (to != null && mounted) setState(() => _focus = to);
-              },
-            ),
           ],
         ),
       ),
