@@ -42,4 +42,37 @@ void main() {
       });
     }
   }
+
+  const meetings = [
+    SeaMeeting.none,
+    SeaMeeting(SeaMeetingKind.raider, id: 'raider_skiff'),
+    SeaMeeting(SeaMeetingKind.raider, id: 'corsair_brig'),
+    SeaMeeting(SeaMeetingKind.raider, id: 'inquisition_cutter'),
+    SeaMeeting(SeaMeetingKind.raider, id: 'void_barge'),
+    SeaMeeting(SeaMeetingKind.derelict),
+    SeaMeeting(SeaMeetingKind.sighting),
+    SeaMeeting(SeaMeetingKind.beast, id: 'brinejaw'),
+    SeaMeeting(SeaMeetingKind.beast, id: 'pale_leviathan'),
+    SeaMeeting(SeaMeetingKind.beast, id: 'tide_kraken'),
+    SeaMeeting(SeaMeetingKind.beast),
+    SeaMeeting(SeaMeetingKind.harbour),
+  ];
+  for (final meeting in meetings) {
+    testWidgets('the sea meets ${meeting.kind.name} ${meeting.id ?? ''}',
+        (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SeaSideScene(
+            waters: SeaWaters.open,
+            meeting: meeting,
+            moving: meeting.kind != SeaMeetingKind.harbour,
+          ),
+        ),
+      ));
+      for (var i = 0; i < 3; i++) {
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+      expect(tester.takeException(), isNull);
+    });
+  }
 }

@@ -1068,6 +1068,12 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                   lines: [portNameFor(widget.toPort, fr)],
                   buttonLabel: trFor(lang, 'go_ashore_button'),
                   result: true,
+                  picture: SeaSideScene(
+                    key: const Key('voyage_harbour'),
+                    waters: _waters,
+                    meeting: const SeaMeeting(SeaMeetingKind.harbour),
+                    height: 130,
+                  ),
                 ),
               _VoyagePhase.failed => _buildSummary(
                   context,
@@ -1145,6 +1151,18 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           ? SeaWeather.tailwind
           : SeaWeather.calm;
 
+  /// What the day meets, drawn beside the Eel.
+  SeaMeeting _meetingFor(SeaEvent event) => switch (event.kind) {
+        SeaEventKind.raider =>
+          SeaMeeting(SeaMeetingKind.raider, id: event.enemyShipId),
+        SeaEventKind.beast ||
+        SeaEventKind.hunt =>
+          SeaMeeting(SeaMeetingKind.beast, id: event.enemyShipId),
+        SeaEventKind.derelict => const SeaMeeting(SeaMeetingKind.derelict),
+        SeaEventKind.sighting => const SeaMeeting(SeaMeetingKind.sighting),
+        _ => SeaMeeting.none,
+      };
+
   Widget _buildEvent(
     BuildContext context, {
     required bool fr,
@@ -1177,8 +1195,9 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                     waters: _waters,
                     weather: _voyageWeather(event),
                     flying: _flying,
+                    meeting: _meetingFor(event),
                     height: 140,
-                    beside: Icon(icon, size: 46, color: colour),
+                    beside: Icon(icon, size: 34, color: colour),
                   ),
                 ],
               ),
@@ -1622,11 +1641,15 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     required List<String> lines,
     required String buttonLabel,
     required bool result,
+    Widget? picture,
   }) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(icon, size: 56, color: Theme.of(context).colorScheme.primary),
+        if (picture != null)
+          ClipRect(child: picture)
+        else
+          Icon(icon, size: 56, color: Theme.of(context).colorScheme.primary),
         const SizedBox(height: 16),
         Text(title,
             style: Theme.of(context).textTheme.headlineSmall,

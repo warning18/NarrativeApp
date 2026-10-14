@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.297.0+333]
+
+The voyage in side view: what the sea meets, and the port ahead.
+
+### Changed
+- **A voyage day shows what the Eel meets** beside her: a raider under sail (a skiff, a two-masted corsair brig, the Inquisition's pale cutter, the void barge with its violet glow), a derelict heeled over with her mast snapped, a light on the horizon with a shadow slipping under the keel (sighting), and the sea beasts (the brinejaw's fin, the pale leviathan's long back, the tide kraken's arms). A quiet day has gulls. The day's icon moves to the corner of the picture.
+- **Arriving shows the port** instead of an anchor icon: a stone quay, houses with lit windows and a tower with its lantern, over the sea of the waters just crossed.
+
 ## [1.296.0+332]
 
 The voyage in side view: the sea.
