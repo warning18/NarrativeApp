@@ -89,3 +89,6 @@ Branch `ux-g` (local, one commit on `origin/main`) has the building screen: `lib
 ## E, the city view (board 13, 14 Oct)
 
 Proposed to the user, waiting for their pick: the Journey's levels at a city become **city view** (the plan with its districts) → **district** (its own ring of 3 to 6 ways, with its ambiance), with the high view (Land, World) unchanged. First city: Saltmouth, six districts (the four it has: Landward Gate, Tern Row, Smugglers' Wharf, Ship-breaker's Yard; two proposed: the Lantern Alleys and Card Row); the hub's 23 ways are seated 6 + 5 + 3 + 5 + 1 + 3 by what they are about. Asks (if the user picks it): **Narrative** names, ambiance lines and re-tagging of the destination scenes' `location`; **Core** two `geography.json` records, the plan's spot for them, "show the party's district's ways", free walking between districts; **UX** the city view and the district ring. Nothing built; the earlier stacks idea (board 12) is dropped by the user.
+
+## PR #232 (v1.297.0+333): voyage encounters and the port ahead
+Raiders, derelict, sighting and sea beasts drawn beside the Eel; arrival shows a harbour scene. Hulls' side views still out until the user decides who draws them. Green CI: please merge.
