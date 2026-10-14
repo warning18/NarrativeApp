@@ -2,7 +2,7 @@
   "human": {
     "raceID": "human",
     "raceName": "Human",
-    "description": "Adaptable and resourceful, humans favor coin and connections over raw power. Their power is sewn: a human's strength lives in the banner or standard they carry, and a human without one is a pair of empty hands.",
+    "description": "Adaptable and resourceful, humans favor coin and connections over raw power. Their power is sewn: a human’s strength lives in the banner or standard they carry, and a human without one is a pair of empty hands.",
     "bonusMaxHealth": 0,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 0,
@@ -27,7 +27,7 @@
   "elf": {
     "raceID": "elf",
     "raceName": "Elf",
-    "description": "Quick and attuned to the world's currents, at the cost of a frailer frame. The painted folk: an elf's power is a sigil painted on skin or bark, renewed by hand, and only as strong as its last coat.",
+    "description": "Quick and attuned to the world’s currents, at the cost of a frailer frame. The painted folk: an elf’s power is a sigil painted on skin or bark, renewed by hand, and only as strong as its last coat.",
     "bonusMaxHealth": -10,
     "bonusBaseDamage": 3,
     "bonusBaseArmor": 0,
@@ -52,7 +52,7 @@
   "dwarf": {
     "raceID": "dwarf",
     "raceName": "Dwarf",
-    "description": "Stout and stubborn, built to shrug off blows that would fell others. The stone-marked: a dwarf's power is a mark cut into steel, stone or a buckle, and it does not wash off.",
+    "description": "Stout and stubborn, built to shrug off blows that would fell others. The stone-marked: a dwarf’s power is a mark cut into steel, stone or a buckle, and it does not wash off.",
     "bonusMaxHealth": 20,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 3,
@@ -77,7 +77,7 @@
   "orc": {
     "raceID": "orc",
     "raceName": "Orc",
-    "description": "Brutal strength wins fights fast, but leaves little room for finesse. The inked: an orc's power sits under the scar tissue, in ash-ink, where no one can confiscate it.",
+    "description": "Brutal strength wins fights fast, but leaves little room for finesse. The inked: an orc’s power sits under the scar tissue, in ash-ink, where no one can confiscate it.",
     "bonusMaxHealth": 10,
     "bonusBaseDamage": 4,
     "bonusBaseArmor": -2,
@@ -102,7 +102,7 @@
   "voidkin": {
     "raceID": "voidkin",
     "raceName": "Voidkin",
-    "description": "Touched by the Shroud, they hit devastatingly hard but break easily. The tear-marked: a voidkin's power was never sewn, painted, cut or inked; the tear left it, and no door in the world is glad to see it.",
+    "description": "Touched by the Shroud, they hit devastatingly hard but break easily. The tear-marked: a voidkin’s power was never sewn, painted, cut or inked; the tear left it, and no door in the world is glad to see it.",
     "bonusMaxHealth": -15,
     "bonusBaseDamage": 6,
     "bonusBaseArmor": -1,

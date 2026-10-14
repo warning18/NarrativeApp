@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.288.0+324]
+
+One apostrophe for the whole game's descriptions.
+
+### Changed
+- **Descriptions in the game data use the curly apostrophe.** 341 texts in
+  `companion_remarks`, `enemies`, `enemy_ships`, `houses`, `item_sets`,
+  `items`, `ports`, `races`, `ship_parts`, `shops`, `skill_trees`, `skills`,
+  `spells` and `zones` had a straight apostrophe in the middle of a word
+  ("Kelda's", "l'esquive"); they now read like the story's own text, in
+  English and French. Names (`itemName`, `shopName` and the like) and ids are
+  left alone for a later pass, so nothing a test or a save matches on
+  changes. The jungle biome text from #207 was read and needs no change.
+  Text only; no ids, numbers or flags changed.
 ## [1.287.0+323]
 
 Groundwork: places only heard of, the building screen's data, the skill

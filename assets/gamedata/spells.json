@@ -4,7 +4,7 @@
     "spellName": "Arcane Bolt",
     "spellName_fr": "Trait arcanique",
     "description": "A bolt of raw force hurled at one enemy: your own damage plus a surge, times 1.6. Grows with Intelligence.",
-    "description_fr": "Un trait de force brute lancé sur un ennemi : vos propres dégâts plus une décharge, fois 1,6. Croît avec l'Intelligence.",
+    "description_fr": "Un trait de force brute lancé sur un ennemi : vos propres dégâts plus une décharge, fois 1,6. Croît avec l’Intelligence.",
     "professionID": "mage",
     "manaCost": 2,
     "effect": "Damage",
@@ -25,7 +25,7 @@
     "spellName": "Frost Bind",
     "spellName_fr": "Entrave de givre",
     "description": "Ice locks one enemy in place: a full hit and a one-turn Stun.",
-    "description_fr": "La glace fige un ennemi : un coup complet et un Étourdissement d'un tour.",
+    "description_fr": "La glace fige un ennemi : un coup complet et un Étourdissement d’un tour.",
     "professionID": "mage",
     "manaCost": 3,
     "effect": "Damage",
@@ -46,7 +46,7 @@
     "spellName": "Ember Wave",
     "spellName_fr": "Vague de braises",
     "description": "A sheet of fire that burns every enemy at once for a little more than a hit each.",
-    "description_fr": "Une nappe de feu qui brûle tous les ennemis à la fois, un peu plus qu'un coup chacun.",
+    "description_fr": "Une nappe de feu qui brûle tous les ennemis à la fois, un peu plus qu’un coup chacun.",
     "professionID": "mage",
     "manaCost": 4,
     "effect": "Damage",
@@ -122,7 +122,7 @@
     "statusDuration": 0,
     "statusMagnitude": 0,
     "battleMessage": "The ground glows and the party breathes easier.",
-    "battleMessage_fr": "Le sol s'illumine et le groupe respire mieux.",
+    "battleMessage_fr": "Le sol s’illumine et le groupe respire mieux.",
     "vfx": "heal"
   },
   "spell_smite_the_wicked": {
@@ -143,7 +143,7 @@
     "statusDuration": 0,
     "statusMagnitude": 0,
     "battleMessage": "Light falls like a hammer.",
-    "battleMessage_fr": "La lumière s'abat comme un marteau.",
+    "battleMessage_fr": "La lumière s’abat comme un marteau.",
     "vfx": "holy_fire"
   },
   "spell_purge": {
@@ -151,7 +151,7 @@
     "spellName": "Purge",
     "spellName_fr": "Purge",
     "description": "Cleanses every Poison, Stun and Weaken off one party member.",
-    "description_fr": "Dissipe tout Poison, Étourdissement et Affaiblissement d'un membre du groupe.",
+    "description_fr": "Dissipe tout Poison, Étourdissement et Affaiblissement d’un membre du groupe.",
     "professionID": "cleric",
     "manaCost": 2,
     "effect": "Cleanse",
@@ -164,7 +164,7 @@
     "statusDuration": 0,
     "statusMagnitude": 0,
     "battleMessage": "Clean water washes the affliction away.",
-    "battleMessage_fr": "Une eau pure emporte l'affliction.",
+    "battleMessage_fr": "Une eau pure emporte l’affliction.",
     "vfx": "splash"
   },
   "spell_venom_hex": {
@@ -185,7 +185,7 @@
     "statusDuration": 3,
     "statusMagnitude": 6,
     "battleMessage": "Green veins spread from the mark.",
-    "battleMessage_fr": "Des veines vertes s'étendent depuis la marque.",
+    "battleMessage_fr": "Des veines vertes s’étendent depuis la marque.",
     "vfx": "poison"
   },
   "spell_hunters_mark": {
@@ -255,7 +255,7 @@
     "spellID": "spell_sundering_roar",
     "spellName": "Sundering Roar",
     "spellName_fr": "Rugissement fracassant",
-    "description": "A roar that splits the enemy's nerve: every enemy is Weakened for two turns and strikes 15% softer.",
+    "description": "A roar that splits the enemy’s nerve: every enemy is Weakened for two turns and strikes 15% softer.",
     "description_fr": "Un rugissement qui fend le courage adverse : chaque ennemi est Affaibli pendant deux tours et frappe 15 % moins fort.",
     "professionID": "warrior",
     "manaCost": 3,
@@ -339,7 +339,7 @@
     "spellID": "spell_snare_shot",
     "spellName": "Snare Shot",
     "spellName_fr": "Tir entravant",
-    "description": "An arrow trailing a weighted cord wraps one enemy's legs: a light hit and a one-turn Stun.",
+    "description": "An arrow trailing a weighted cord wraps one enemy’s legs: a light hit and a one-turn Stun.",
     "description_fr": "Une flèche traînant une cordelette lestée enserre les jambes d’un ennemi : un coup léger et un Étourdissement d’un tour.",
     "professionID": "ranger",
     "manaCost": 3,

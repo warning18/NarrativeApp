@@ -9,7 +9,7 @@
         "armor": 2,
         "dodgeChance": 5,
         "description": "Two pieces: +2 armor and +5% dodge — the watch learned to keep its feet on wet stone.",
-        "descriptionFr": "Deux pièces : +2 armure et +5 % d'esquive — la garde a appris à tenir debout sur la pierre mouillée."
+        "descriptionFr": "Deux pièces : +2 armure et +5 % d’esquive — la garde a appris à tenir debout sur la pierre mouillée."
       },
       {
         "pieces": 3,
@@ -37,7 +37,7 @@
         "attackDamage": 8,
         "lifestealPercent": 10,
         "description": "Three pieces: +8 attack and every hit heals you for a tenth of its damage — the Court never fought fair.",
-        "descriptionFr": "Trois pièces : +8 attaque et chaque coup vous soigne d'un dixième de ses dégâts — la Cour n'a jamais combattu loyalement."
+        "descriptionFr": "Trois pièces : +8 attaque et chaque coup vous soigne d’un dixième de ses dégâts — la Cour n’a jamais combattu loyalement."
       }
     ]
   }
