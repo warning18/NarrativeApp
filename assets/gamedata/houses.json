@@ -153,6 +153,9 @@
     "requiredFlags": [
       "dead_heart_cleared"
     ],
+    "unlockedByFlags": [
+      "shroud_vigil_cleared"
+    ],
     "houseName_fr": "Le Sanctuaire du Linceul",
     "description_fr": "Un sanctuaire pour abriter les fragments du Linceul entre la route et la traversée, bâti avec la pierre du Cœur Mort. Quoi que le Linceul ait appris de la déchirure, le groupe en porte un peu."
   },
