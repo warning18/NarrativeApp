@@ -16,7 +16,7 @@ A detour is placed by one signal only, the scene's `ui_theme`. In the story's 42
 
 | Place (geography id) | Biome | Scenes | Detour theme today | What the player reads | Why it is wrong |
 |---|---|---|---|---|---|
-| `white_wells`, `sleepers_face`, `lark_wreck` | desert | 14 | ashen (salt for 1) | "A stall has been set up in a doorway…", "Footsteps close in fast from behind", "lantern light spills from a half-hidden storefront tucked between the ruins" | **Worst.** A desert oasis and a buried face get streets, doors, alleys and shopfronts. No sand, heat, wind, salt-caravans, scavengers, water, no sky. |
+| `white_wells`, `sleepers_face`, `lark_wreck` | desert | 14 | ashen (salt for 1) | would read "A stall has been set up in a doorway…" | Chapter 1 (the flight): `firstDetourChapter` is 2, so **no detour rolls here today**. Only matters if a later chapter returns to the desert (the epilogue visits `lark_wreck`). A desert pool is low priority, but cheap. |
 | `rimewell`, `highhearth`, `reliquary_quarter`, `dead_heart` | frost | 75 | hollow (rimewell, highhearth) / ashen (the Reliquary) | catacomb and ash-drift lines: "Something has been sleeping in the ash-drift under the eaves" | The frost the tear sends down is the whole mood of ch.5: cold hearths, rime, giants, quarry stone, tear light. The detours are stone-crypt or ash, not frost. |
 | `white_anchorage`, `greyhithe`, `hollow_shore`, `hollow_shore_battlefield`, `beyond_the_tear`, `white_fleet_grave` | tear | 68 | salt (anchorage, grave) / ashen (the rest) | harbour-market lines ("a cart of salvage… selling the district back to itself") | The glass strand, the White Fleet's wreck-field, the invasion and the tear itself get a market and a gutter. No glass, wrecks, tear-things, lantern light, the widening Tear. |
 | `drowned_cloister`, `kindly_hill`, `hollow_court` | fen | 51 | hollow | crypt and sewer lines | Closest fit of the lot, but the fen is reeds, black pools, bells, the Court's lights and a rider every seventh year. Nothing of water, reeds, villages, bells. |
@@ -27,7 +27,7 @@ A detour is placed by one signal only, the scene's `ui_theme`. In the story's 42
 | Saltmouth districts (`saltmouth_*`, 6) | arid coast | 59 | salt, or ashen at the gate | the same harbour lines in all six | Six places with six identities (a gate with a queue of wagons, paper-boat Tern Row, card barrels, lantern alleys, a ship-breaker's yard, a smugglers' wharf) read as one. |
 | `alster_*` (5 districts, the ch.1 city) | temperate | 33 | ashen | n/a: chapter 1 never detours | Not a problem now. Only worth a pool if a later chapter ever returns there. |
 
-**Worst mismatches first:** (1) the desert; (2) the tear shore and Hollow Cape; (3) frost city; (4) the Ashen Quarter read as a crypt; (5) Saltmouth's six districts identical; (6) the fen being "close but generic"; (7) Akagiri and Candlehold.
+**Worst mismatches first, among places that really roll detours (scene ids 2xxx and up; the 1xxx scenes of the flight, i.e. the desert and Alster, never do):** (1) the tear shore and Hollow Cape, 7xxx, 68 scenes; (2) the frost city, 6xxx, 75 scenes; (3) the Ashen Quarter read as a crypt, 3xxx; (4) Saltmouth's six districts identical, 2xxx, 59 scenes; (5) the fen being "close but generic", 5xxx; (6) Akagiri and Candlehold; (7) the desert, only if a later chapter returns there.
 
 **Expeditions are no better.** Each of the 20 zones has one flavor text, a midpoint text and a boss text of its own, and the steps between are the same 72 lines of one of four themes:
 
@@ -142,7 +142,7 @@ Each stage replaces the generic scene with one tied to the road; `{cargo}` and `
 
 **Narrative (text; EN + FR; all new files are mine):**
 
-- `assets/gamedata/detours.json`: 11 biome pools × 6 kinds × 6 lines (396 lines), 20 place pools × 6 kinds × 3 lines (360), and the four existing theme pools moved over unchanged (288 lines). Written in four small PRs by priority: **(a)** desert and tear (the two worst), **(b)** frost and the Ashen Quarter, **(c)** the six Saltmouth districts, **(d)** fen, Akagiri, Candlehold, the camp and cliffs.
+- `assets/gamedata/detours.json`: 11 biome pools × 6 kinds × 6 lines (396 lines), 20 place pools × 6 kinds × 3 lines (360), and the four existing theme pools moved over unchanged (288 lines). Written in four small PRs by priority: **(a)** tear and frost (the two worst that roll), **(b)** frost and the Ashen Quarter, **(c)** the six Saltmouth districts, **(d)** fen, Akagiri, Candlehold, the camp and cliffs.
 - `assets/gamedata/expedition_steps.json`: the 20 outlines above as steps: each a `{id, type, text, text_fr, choices[]}` in the `land_events.json` shape (`check`, `dc` left to Core, `success` / `fail` / `outcome` notes, fight ids), 8 to 15 per zone, about **190 steps** in all. Written in tier order: the three tier-1 zones first (they teach the format), then the five escort / delivery, then the clear tier 2, then tier 3.
 - Names for each discovered place on the road (EN/FR), about 40; a short extra boss midpoint line where a zone's step 5 has changed the story.
 - The wording for the two things the engine needs a label for (a "step N of M" label already exists).
@@ -163,4 +163,4 @@ Each stage replaces the generic scene with one tied to the road; `{cargo}` and `
 3. **Format of a step:** is the `land_events.json` choice shape (`check`, `dc`, `success`, `fail`, `outcome`, `fight`) what `ExpeditionScreen` can play? If not, name the fields it can.
 4. **Lengths:** are 5-6 / 8-10 / 12-15 acceptable, or should the first PR try one tier only?
 
-When you have answered, I start with the tier-1 steps and the desert and tear pools.
+When you have answered, I start with the tier-1 steps and the tear and frost pools.

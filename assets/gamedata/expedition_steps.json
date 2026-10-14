@@ -1,0 +1,565 @@
+{
+  "version": 1,
+  "zones": {
+    "z_fishermans_row": {
+      "steps": [
+        {
+          "id": "gutting_line",
+          "type": "event",
+          "text": "Along the gutting tables a line of women works without looking up. A stranger asking after pitch is just a stranger asking after pitch; nobody wants to know why.",
+          "text_fr": "Le long des tables d’éviscération, une file de femmes travaille sans lever les yeux. Un inconnu qui demande de la poix n’est qu’un inconnu qui demande de la poix ; personne ne veut savoir pourquoi.",
+          "choices": [
+            {
+              "id": "ask",
+              "text": "Ask the nearest gutter about pitch",
+              "text_fr": "Demander de la poix à l’éviscératrice la plus proche",
+              "outcome": {
+                "note": "She points her knife at a shed without breaking her rhythm.",
+                "note_fr": "Elle désigne une remise du bout de son couteau, sans rompre son rythme."
+              }
+            },
+            {
+              "id": "buy",
+              "text": "Work down the line, buying fish you do not want",
+              "text_fr": "Remonter la file en achetant du poisson dont vous n’avez pas besoin",
+              "outcome": {
+                "note": "By the sixth table you are known as the stranger who pays, which opens more doors than any question.",
+                "note_fr": "À la sixième table, on vous connaît comme l’inconnu qui paie, ce qui ouvre plus de portes que n’importe quelle question."
+              }
+            }
+          ]
+        },
+        {
+          "id": "padlock",
+          "type": "check",
+          "text": "The net-sheds look alike until you notice which ones are never opened at the tide. One has a new padlock on old rope.",
+          "text_fr": "Les remises à filets se ressemblent toutes, jusqu’à ce qu’on remarque lesquelles ne s’ouvrent jamais à marée. L’une porte un cadenas neuf sur une vieille corde.",
+          "choices": [
+            {
+              "id": "look",
+              "text": "Study the shed before touching it",
+              "text_fr": "Étudier la remise avant d’y toucher",
+              "check": "perception",
+              "success": {
+                "note": "Behind the padlock: tar, canvas, and more rope than a shed this size should hold.",
+                "note_fr": "Derrière le cadenas : de la poix, de la toile, et plus de corde que n’en devrait contenir une remise de cette taille."
+              },
+              "fail": {
+                "note": "You count the wrong shed twice and are noticed counting.",
+                "note_fr": "Vous comptez deux fois la mauvaise remise et l’on vous remarque en train de compter."
+              }
+            },
+            {
+              "id": "pass",
+              "text": "Walk on and try the next shed",
+              "text_fr": "Passer votre chemin et essayer la remise suivante",
+              "outcome": {
+                "note": "The next one is full of nets and nothing else, which is what it says on the door.",
+                "note_fr": "La suivante ne contient que des filets et rien d’autre, ce qu’annonce sa porte."
+              }
+            }
+          ]
+        },
+        {
+          "id": "net_loft",
+          "type": "fight",
+          "text": "The net-loft is full of rats, and the rats have decided the loft is theirs. The nets move on their own.",
+          "text_fr": "Le grenier à filets est plein de rats, et les rats ont décidé qu’il leur appartenait. Les filets bougent tout seuls.",
+          "choices": [
+            {
+              "id": "fight",
+              "text": "Clear the loft",
+              "text_fr": "Nettoyer le grenier",
+              "fight": [
+                "harbor_rat",
+                "harbor_rat"
+              ],
+              "success": {
+                "note": "The last rat goes down the trapdoor in a great hurry.",
+                "note_fr": "Le dernier rat se jette dans la trappe, très pressé."
+              },
+              "fail": {
+                "note": "You leave the loft the way the rats would have: fast and scratched.",
+                "note_fr": "Vous quittez le grenier comme l’auraient fait les rats : vite, avec des griffures en prime."
+              }
+            },
+            {
+              "id": "smoke",
+              "text": "Smoke them out with a tar-rope smudge",
+              "text_fr": "Les enfumer avec un brandon de corde goudronnée",
+              "outcome": {
+                "note": "They come out coughing and leave you the loft, and the loft smells of tar for a week.",
+                "note_fr": "Ils sortent en toussant et vous laissent le grenier, qui sent la poix pendant une semaine."
+              }
+            }
+          ]
+        },
+        {
+          "id": "tarred_locker",
+          "type": "discovery",
+          "text": "A floorboard gives too easily. Beneath it is a tarred locker with the lid still dry: planks, cut and numbered for some boat that never got them.",
+          "text_fr": "Une planche cède trop facilement. Dessous se trouve un coffre goudronné au couvercle encore sec : des planches, taillées et numérotées pour un bateau qui ne les a jamais eues.",
+          "place": "The tarred locker",
+          "place_fr": "Le coffre goudronné",
+          "material": "material_timber",
+          "choices": [
+            {
+              "id": "take",
+              "text": "Take the planks",
+              "text_fr": "Prendre les planches",
+              "outcome": {
+                "note": "Numbered for a hull that was never built. They will do for yours.",
+                "note_fr": "Numérotées pour une coque qui n’a jamais été bâtie. Elles feront l’affaire pour la vôtre."
+              }
+            },
+            {
+              "id": "leave",
+              "text": "Leave them where they lie",
+              "text_fr": "Les laisser où elles sont",
+              "outcome": {
+                "note": "Somebody planned this locker with care. You close the board on it and wonder who.",
+                "note_fr": "Quelqu’un a bien préparé ce coffre. Vous refermez la planche dessus en vous demandant qui."
+              }
+            }
+          ]
+        },
+        {
+          "id": "gangway_boy",
+          "type": "event",
+          "text": "On the gangway a boy sits with the overseer’s ledger on his knees, writing down whatever leaves the wharf. He has not yet written you.",
+          "text_fr": "Sur la passerelle, un garçon est assis, le registre du surveillant sur les genoux, et note tout ce qui quitte le quai. Il ne vous a pas encore noté.",
+          "choices": [
+            {
+              "id": "talk",
+              "text": "Talk him round",
+              "text_fr": "Le persuader",
+              "check": "charisma",
+              "success": {
+                "note": "He finds that the page has a smudge exactly where your load would have been.",
+                "note_fr": "Il constate que la page présente une tache précisément là où se serait trouvée votre cargaison."
+              },
+              "fail": {
+                "note": "He writes down your name, slowly, so you can watch him do it.",
+                "note_fr": "Il inscrit votre nom, lentement, pour que vous le voyiez faire."
+              }
+            },
+            {
+              "id": "hide",
+              "text": "Slip the load under a basket of fish",
+              "text_fr": "Glisser la cargaison sous un panier de poissons",
+              "check": "dexterity",
+              "success": {
+                "note": "A gull sits on the basket for you. Nobody looks under a gull.",
+                "note_fr": "Une mouette se perche sur le panier pour vous. Personne ne regarde sous une mouette."
+              },
+              "fail": {
+                "note": "The basket tips. Fish, and a good deal else, go over the gangway.",
+                "note_fr": "Le panier bascule. Des poissons, et bien d’autres choses, passent par-dessus la passerelle."
+              }
+            },
+            {
+              "id": "wait",
+              "text": "Wait for the boy to be called away",
+              "text_fr": "Attendre qu’on l’appelle ailleurs",
+              "outcome": {
+                "note": "The tide turns, the boy is called, and the ledger stays open to a page you did not need to see.",
+                "note_fr": "La marée tourne, on appelle le garçon, et le registre reste ouvert à une page que vous n’aviez pas besoin de voir."
+              }
+            }
+          ]
+        },
+        {
+          "id": "smokehouse",
+          "type": "rest",
+          "text": "The smokehouse is the only dry, warm place on the row. The smoker lets anyone sit who does not touch the hanging fish.",
+          "text_fr": "Le fumoir est le seul endroit sec et chaud de l’allée. Le fumeur laisse s’asseoir quiconque ne touche pas aux poissons suspendus.",
+          "choices": [
+            {
+              "id": "sit",
+              "text": "Sit and rest",
+              "text_fr": "Vous asseoir et vous reposer"
+            },
+            {
+              "id": "help",
+              "text": "Help turn the fish",
+              "text_fr": "Aider à retourner le poisson",
+              "outcome": {
+                "note": "You leave smelling of smoke and with a fillet wrapped in paper in your pocket.",
+                "note_fr": "Vous repartez en sentant la fumée, un filet enveloppé de papier dans la poche."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "z_tanners_court": {
+      "steps": [
+        {
+          "id": "the_smell",
+          "type": "event",
+          "text": "The court’s gate stands open, and the smell stands in it: lime, salt, and a sweetness under both that you decide not to follow.",
+          "text_fr": "La porte de la cour est ouverte, et l’odeur s’y tient : chaux, sel, et une douceur sous les deux que vous décidez de ne pas suivre.",
+          "choices": [
+            {
+              "id": "cloth",
+              "text": "Wet a cloth and tie it over your face",
+              "text_fr": "Mouiller un chiffon et vous en couvrir le visage",
+              "outcome": {
+                "note": "The smell becomes bearable, and the tanners’ laughter at your cloth does not.",
+                "note_fr": "L’odeur devient supportable ; les rires des tanneurs devant votre chiffon, non."
+              }
+            },
+            {
+              "id": "master",
+              "text": "Ask for the master tanner",
+              "text_fr": "Demander le maître tanneur",
+              "outcome": {
+                "note": "A boy shrugs and points at a vat. The master, it seems, is in the vat, or near it.",
+                "note_fr": "Un garçon hausse les épaules et désigne une cuve. Le maître, semble-t-il, est dans la cuve, ou près d’elle."
+              }
+            }
+          ]
+        },
+        {
+          "id": "pit_rim",
+          "type": "check",
+          "text": "The lime pits are crossed by a single plank walk. The air over them stings the eyes, and the tallies chalked on the wall say how many hides each pit holds.",
+          "text_fr": "Les fosses à chaux sont franchies par une seule passerelle de planches. L’air qui les couvre pique les yeux, et les comptes à la craie sur le mur disent combien de peaux contient chaque fosse.",
+          "choices": [
+            {
+              "id": "walk",
+              "text": "Cross the rim without a cloth",
+              "text_fr": "Traverser le bord sans chiffon",
+              "check": "constitution",
+              "success": {
+                "note": "Your eyes stream, but you read the tallies, and one pit is marked for nothing.",
+                "note_fr": "Les yeux vous coulent, mais vous lisez les comptes, et une fosse n’est marquée pour rien."
+              },
+              "fail": {
+                "note": "You come off the rim coughing, white to the knees.",
+                "note_fr": "Vous quittez le bord en toussant, la chaux jusqu’aux genoux."
+              }
+            },
+            {
+              "id": "rag",
+              "text": "Wet a rag first and take your time",
+              "text_fr": "Mouiller un chiffon d’abord et prendre votre temps",
+              "outcome": {
+                "note": "It costs a quarter of an hour and your temper, but your lungs stay your own.",
+                "note_fr": "Cela coûte un quart d’heure et votre patience, mais vos poumons restent les vôtres."
+              }
+            }
+          ]
+        },
+        {
+          "id": "hide_thieves",
+          "type": "fight",
+          "text": "Two men are stretching a stolen coat over a frame to dry, and are not pleased to be seen doing it.",
+          "text_fr": "Deux hommes tendent un manteau volé sur un cadre pour le faire sécher, et ne sont pas ravis d’être vus à cette besogne.",
+          "choices": [
+            {
+              "id": "fight",
+              "text": "Put them down",
+              "text_fr": "Les mettre à terre",
+              "fight": [
+                "street_bandit",
+                "street_bandit"
+              ],
+              "success": {
+                "note": "They leave the coat on its frame and the court a good deal quicker than they came.",
+                "note_fr": "Ils laissent le manteau sur son cadre et quittent la cour bien plus vite qu’ils n’y sont venus."
+              },
+              "fail": {
+                "note": "You win, in the end, and carry the court’s lime on your back for the rest of the day.",
+                "note_fr": "Vous gagnez, à la fin, et portez la chaux de la cour sur le dos le reste de la journée."
+              }
+            },
+            {
+              "id": "bargain",
+              "text": "Offer to forget the coat",
+              "text_fr": "Proposer d’oublier le manteau",
+              "outcome": {
+                "note": "They agree faster than they should have, and one of them pays you not to remember his face.",
+                "note_fr": "Ils acceptent plus vite qu’ils ne l’auraient dû, et l’un d’eux vous paie pour ne pas retenir son visage."
+              }
+            }
+          ]
+        },
+        {
+          "id": "drying_loft",
+          "type": "discovery",
+          "text": "The drying-loft’s rafters carry hide in rows. In a corner, squared stones sit stacked as ballast, heavy and old: the loft stood here when the court was a quarry.",
+          "text_fr": "Les chevrons du séchoir portent des peaux en rangées. Dans un coin, des pierres équarries sont empilées en lest, lourdes et anciennes : le séchoir se dressait là quand la cour était une carrière.",
+          "place": "The drying-loft",
+          "place_fr": "Le séchoir",
+          "material": "material_cut_stone",
+          "choices": [
+            {
+              "id": "take",
+              "text": "Take what stone you can carry",
+              "text_fr": "Prendre toute la pierre que vous pouvez porter",
+              "outcome": {
+                "note": "Cut stone for a hull’s ballast, and nobody has used it in years.",
+                "note_fr": "De la pierre taillée pour lester une coque, et personne ne s’en sert depuis des années."
+              }
+            },
+            {
+              "id": "leave",
+              "text": "Look instead at the hides",
+              "text_fr": "Regarder plutôt les peaux",
+              "outcome": {
+                "note": "One rack holds hide as tough as sailcloth, set aside by a hand that knew exactly what it was.",
+                "note_fr": "Un râtelier porte une peau aussi résistante que de la toile à voile, mise de côté par une main qui savait ce qu’elle faisait."
+              }
+            }
+          ]
+        },
+        {
+          "id": "the_grate",
+          "type": "event",
+          "text": "A grate in the court’s floor has a bowl set beside it. Nobody washes the bowl. The scraps in it are fresh.",
+          "text_fr": "Une grille dans le sol de la cour a un bol posé à côté. Personne ne lave le bol. Les restes qu’il contient sont frais.",
+          "choices": [
+            {
+              "id": "look",
+              "text": "Kneel and look down the grate",
+              "text_fr": "Vous agenouiller et regarder dans la grille",
+              "check": "wisdom",
+              "success": {
+                "note": "Two eyes look up at you, unhurried, and you stand again without making a sound.",
+                "note_fr": "Deux yeux vous regardent d’en bas, sans hâte, et vous vous relevez sans un bruit."
+              },
+              "fail": {
+                "note": "You see nothing, but it sees you, and the bowl is set a little nearer the grate afterwards.",
+                "note_fr": "Vous ne voyez rien, mais cela vous voit, et le bol est ensuite placé un peu plus près de la grille."
+              }
+            },
+            {
+              "id": "ask",
+              "text": "Ask a tanner what the bowl is for",
+              "text_fr": "Demander à un tanneur à quoi sert le bol",
+              "outcome": {
+                "note": "He says it is for the cat. There is no cat.",
+                "note_fr": "Il répond que c’est pour le chat. Il n’y a pas de chat."
+              }
+            },
+            {
+              "id": "leave",
+              "text": "Leave the bowl alone",
+              "text_fr": "Laisser le bol tranquille",
+              "outcome": {
+                "note": "Wisest. You walk the long way round the grate.",
+                "note_fr": "Le plus sage. Vous contournez la grille largement."
+              }
+            }
+          ]
+        },
+        {
+          "id": "lee_bench",
+          "type": "rest",
+          "text": "Behind the salt-store a bench stands where the wind carries the smell the other way. A tanner’s widow sells stew from a pot beside it.",
+          "text_fr": "Derrière la réserve de sel, un banc se tient là où le vent emporte l’odeur dans l’autre sens. La veuve d’un tanneur vend du ragoût dans une marmite à côté.",
+          "choices": [
+            {
+              "id": "sit",
+              "text": "Sit and rest",
+              "text_fr": "Vous asseoir et vous reposer"
+            },
+            {
+              "id": "stew",
+              "text": "Buy a bowl of the stew, and do not ask",
+              "text_fr": "Acheter un bol de ragoût, sans poser de question",
+              "outcome": {
+                "note": "It is the best meal you have had on the row. You do not ask.",
+                "note_fr": "C’est le meilleur repas que vous ayez fait dans l’allée. Vous ne demandez rien."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "z_ossuary_galleries": {
+      "steps": [
+        {
+          "id": "first_gallery",
+          "type": "event",
+          "text": "The first gallery is bone to the ceiling, shelf on shelf, and the black water stands at the second. Every skull has a tag tied through the jaw.",
+          "text_fr": "La première galerie est faite d’os jusqu’au plafond, étagère sur étagère, et l’eau noire arrive à la deuxième. Chaque crâne porte une étiquette nouée à la mâchoire.",
+          "choices": [
+            {
+              "id": "read",
+              "text": "Read the tags",
+              "text_fr": "Lire les étiquettes",
+              "outcome": {
+                "note": "They are not names. They are sums: what each one owed the Court when it died.",
+                "note_fr": "Ce ne sont pas des noms. Ce sont des sommes : ce que chacun devait à la Cour à sa mort."
+              }
+            },
+            {
+              "id": "wade",
+              "text": "Wade down the middle and touch nothing",
+              "text_fr": "Avancer au milieu, dans l’eau, sans rien toucher",
+              "outcome": {
+                "note": "The water is colder than it has any right to be, and it remembers each step you take.",
+                "note_fr": "L’eau est plus froide qu’elle n’en a le droit, et elle se souvient de chacun de vos pas."
+              }
+            }
+          ]
+        },
+        {
+          "id": "dry_shelves",
+          "type": "check",
+          "text": "The bones have been moved since the last flood. Stacks that should stand under water stand dry, as if somebody had been shelving.",
+          "text_fr": "Les os ont été déplacés depuis la dernière crue. Des piles qui devraient être sous l’eau sont à sec, comme si quelqu’un les avait rangées.",
+          "choices": [
+            {
+              "id": "follow",
+              "text": "Follow the dry shelves",
+              "text_fr": "Suivre les étagères sèches",
+              "check": "wisdom",
+              "success": {
+                "note": "They run straight to a door someone wanted you to miss.",
+                "note_fr": "Elles mènent tout droit à une porte que l’on voulait vous faire manquer."
+              },
+              "fail": {
+                "note": "They lead you in a circle, and you come back to your own wet footprints.",
+                "note_fr": "Elles vous font tourner en rond, et vous retrouvez vos propres empreintes mouillées."
+              }
+            },
+            {
+              "id": "water",
+              "text": "Keep to the water and trust the floor",
+              "text_fr": "Rester dans l’eau et vous fier au sol",
+              "outcome": {
+                "note": "The floor holds. The shelves, you notice, are no longer in sight.",
+                "note_fr": "Le sol tient. Les étagères, constatez-vous, ne sont plus en vue."
+              }
+            }
+          ]
+        },
+        {
+          "id": "second_shelf",
+          "type": "fight",
+          "text": "Something has been feeding on the second shelf, and the second shelf has just noticed you.",
+          "text_fr": "Quelque chose se nourrit sur la deuxième étagère, et la deuxième étagère vient de vous remarquer.",
+          "choices": [
+            {
+              "id": "fight",
+              "text": "Meet it on the shelf",
+              "text_fr": "L’affronter sur l’étagère",
+              "fight": "catacomb_ghoul",
+              "success": {
+                "note": "It goes down into the water with a sound like a dropped sack.",
+                "note_fr": "Il sombre dans l’eau avec un bruit de sac qu’on laisse tomber."
+              },
+              "fail": {
+                "note": "You drive it off, and carry the bite of the second shelf with you.",
+                "note_fr": "Vous le chassez, et gardez avec vous la morsure de la deuxième étagère."
+              }
+            },
+            {
+              "id": "lamp",
+              "text": "Turn the lamp low and back away",
+              "text_fr": "Baisser la lampe et reculer",
+              "check": "dexterity",
+              "success": {
+                "note": "It loses you in the dark and goes back to its meal.",
+                "note_fr": "Il vous perd dans le noir et retourne à son repas."
+              },
+              "fail": {
+                "note": "The lamp gutters, and the dark is not as empty as you had hoped.",
+                "note_fr": "La lampe vacille, et le noir n’est pas aussi vide que vous l’espériez."
+              }
+            }
+          ]
+        },
+        {
+          "id": "ledger_niche",
+          "type": "discovery",
+          "text": "A niche has been cut at head height and lined with lead. Inside lies a Court ledger sealed in wax, held shut by a clasp of grey metal.",
+          "text_fr": "Une niche a été creusée à hauteur de tête et doublée de plomb. Dedans repose un registre de la Cour scellé à la cire, fermé par un fermoir de métal gris.",
+          "place": "The ledger niche",
+          "place_fr": "La niche du registre",
+          "material": "material_ash_steel",
+          "choices": [
+            {
+              "id": "clasp",
+              "text": "Cut the clasp and take it",
+              "text_fr": "Couper le fermoir et le prendre",
+              "outcome": {
+                "note": "Ash steel, good enough to forge again. The ledger you leave sealed.",
+                "note_fr": "De l’acier de cendre, bon à forger de nouveau. Le registre, vous le laissez scellé."
+              }
+            },
+            {
+              "id": "open",
+              "text": "Break the seal and read",
+              "text_fr": "Briser le sceau et lire",
+              "outcome": {
+                "note": "A column of names and sums, and at the bottom a hand you will see again.",
+                "note_fr": "Une colonne de noms et de sommes, et en bas une main que vous reverrez."
+              }
+            }
+          ]
+        },
+        {
+          "id": "chalk_tallies",
+          "type": "event",
+          "text": "Tallies are chalked on the arch above the next gallery: bones counted, then crossed out in newer chalk. The last tally is dated today.",
+          "text_fr": "Des comptes sont tracés à la craie sur l’arche de la galerie suivante : des os comptés, puis barrés d’une craie plus récente. Le dernier compte porte la date d’aujourd’hui.",
+          "choices": [
+            {
+              "id": "mark",
+              "text": "Add a tally of your own",
+              "text_fr": "Ajouter un compte de votre main",
+              "outcome": {
+                "note": "The chalk is warm. You wonder, too late, who else is counting.",
+                "note_fr": "La craie est tiède. Vous vous demandez, trop tard, qui d’autre compte."
+              }
+            },
+            {
+              "id": "rub",
+              "text": "Rub the last tally out",
+              "text_fr": "Effacer le dernier compte",
+              "outcome": {
+                "note": "Whoever kept it will know, and will not be pleased, and so will whoever keeps the next.",
+                "note_fr": "Celui qui le tenait le saura, et n’en sera pas content, et le suivant non plus."
+              }
+            },
+            {
+              "id": "pass",
+              "text": "Pass beneath it without looking",
+              "text_fr": "Passer dessous sans regarder",
+              "outcome": {
+                "note": "You do not look. The back of your neck does.",
+                "note_fr": "Vous ne regardez pas. Votre nuque, si."
+              }
+            }
+          ]
+        },
+        {
+          "id": "dry_shelf",
+          "type": "rest",
+          "text": "Further in, a shelf stands clear of the water with a half-burned candle end on it, and a place to sit that someone has swept.",
+          "text_fr": "Plus loin, une étagère se dresse hors de l’eau avec un bout de bougie à demi consumé, et une place pour s’asseoir que quelqu’un a balayée.",
+          "choices": [
+            {
+              "id": "sit",
+              "text": "Sit and rest",
+              "text_fr": "Vous asseoir et vous reposer"
+            },
+            {
+              "id": "candle",
+              "text": "Light the candle end and keep it",
+              "text_fr": "Allumer le bout de bougie et le garder",
+              "outcome": {
+                "note": "Whoever swept the place left you the light. You take it as a courtesy and do not ask why.",
+                "note_fr": "Celui qui a balayé l’endroit vous a laissé la lumière. Vous la prenez comme une politesse et ne demandez pas pourquoi."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
