@@ -3,6 +3,7 @@
 // step.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -104,7 +105,11 @@ void main() {
     final navigator =
         tester.state<NavigatorState>(find.byType(Navigator).first);
     navigator.push(MaterialPageRoute<bool>(
-        builder: (_) => ExpeditionScreen(zoneId: 'z_test_road', zone: zone)));
+        // Seed 2's first draw (0.0008) would bring a temptation, were the
+        // hunters setting not honoured: the road's first step must show
+        // all the same (the screen waits for the saved setting).
+        builder: (_) => ExpeditionScreen(
+            zoneId: 'z_test_road', zone: zone, random: Random(2))));
     await _settleUntil(
         tester,
         () =>
