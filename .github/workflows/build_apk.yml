@@ -71,8 +71,10 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
-  # The suite, split by file across four runners (flutter test's own
-  # sharding). One runner took about 17 minutes for the whole suite.
+  # The suite, split by file across four runners. One runner took about 17
+  # minutes for the whole suite. Whole files, not flutter test's own
+  # --total-shards (which splits a file's tests across runners and breaks
+  # the few tests that lean on a sibling run earlier in the same file).
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -93,7 +95,10 @@ jobs:
         run: flutter pub get
 
       - name: Run tests (shard ${{ matrix.shard }} of 4)
-        run: flutter test --total-shards=4 --shard-index=${{ matrix.shard }}
+        run: |
+          files=$(find test -name '*_test.dart' | sort | awk -v n=4 -v i=${{ matrix.shard }} '(NR - 1) % n == i')
+          echo "$(echo "$files" | wc -l) test files in this shard"
+          flutter test $files
 
   # The release APK, built beside the tests rather than after them.
   apk:
