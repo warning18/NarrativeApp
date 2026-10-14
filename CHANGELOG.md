@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.306.0+342]
+
+### Changed
+- Wording of the desert scavengers' fight: their success and fail notes, and the three fight-result lines shown after a crossing fight (EN and FR). Text only, no keys or numbers.
+
 ## [1.305.0+341]
 
 The desert scavengers are a real fight.
