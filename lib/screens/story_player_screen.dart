@@ -1406,6 +1406,7 @@ Future<void> _selectChoice({
   // the story on; lost or turned back from, the party is where it set out
   // and the choice is not taken. Edit Mode walks past it.
   if (choice.crossesLand &&
+      !travelled &&
       !isExcursion &&
       ref.read(appModeProvider) != AppMode.edit) {
     if (!context.mounted) return;

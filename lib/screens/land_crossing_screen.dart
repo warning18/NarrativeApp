@@ -29,10 +29,8 @@ final crossingRetryProvider = StateProvider<String?>((ref) => null);
 /// crossing at all (true: the walk goes on as before).
 Future<bool> runLandCrossing(
     BuildContext context, WidgetRef ref, String routeId) async {
-  final routes =
-      await ref.read(gameDbRepositoryProvider(landRoutesSchema)).loadRecords();
-  final events =
-      await ref.read(gameDbRepositoryProvider(landEventsSchema)).loadRecords();
+  final routes = await loadedGameDb(ref, landRoutesSchema);
+  final events = await loadedGameDb(ref, landEventsSchema);
   final route = landRouteFor(routes, routeId);
   if (route == null) return true;
   if (!context.mounted) return false;
