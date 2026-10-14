@@ -88,6 +88,20 @@ class ExpeditionScreen extends ConsumerStatefulWidget {
 
 class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   late final Random _random = widget.random ?? Random();
+
+  /// The hunters setting (alignmentHuntersEnabledProvider) has its saved
+  /// value: the first draw waits for it, so a party that turned the
+  /// hunters off never meets one on the first step after a cold start.
+  bool _settingsLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(alignmentHuntersEnabledProvider.notifier).loaded.then((_) {
+      if (mounted) setState(() => _settingsLoaded = true);
+    });
+  }
+
   int _index = 0;
   StoryNode? _current;
   _ExpeditionPhase _phase = _ExpeditionPhase.event;
@@ -899,7 +913,11 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         ref.watch(gameDbProvider(expeditionStepsSchema)).isLoading;
     final poolsLoading = ref.watch(gameDbProvider(detoursSchema)).isLoading;
 
-    if (shops == null || enemies == null || stepsLoading || poolsLoading) {
+    if (shops == null ||
+        enemies == null ||
+        stepsLoading ||
+        poolsLoading ||
+        !_settingsLoaded) {
       return Scaffold(
         appBar: AppBar(title: Text(zoneName)),
         body: const Center(child: CircularProgressIndicator()),

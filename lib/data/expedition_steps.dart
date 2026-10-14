@@ -209,6 +209,26 @@ String? discoveryMaterialFor(
   return ids[random.nextInt(ids.length)];
 }
 
+/// The foes a written fight of [ids] meets, by the rule a drawn pack
+/// follows (SubNodeEngine.filterPackPool, maxPackSizeFor): two or more only
+/// from the pack tier (`packEligible`), at most the chapter's pack size; a
+/// heavy fights alone. Foes [enemies] doesn't know are dropped.
+List<String> writtenFoes(
+  List<String> ids, {
+  required Map<String, dynamic> enemies,
+  required int chapter,
+}) {
+  final known = [
+    for (final id in ids)
+      if (enemies.isEmpty || enemies.containsKey(id)) id,
+  ];
+  if (known.length < 2 || enemies.isEmpty) return known;
+  bool pack(String id) =>
+      (enemies[id] as Map?)?['packEligible'] as bool? ?? false;
+  if (!known.every(pack)) return [known.firstWhere((id) => !pack(id))];
+  return known.take(SubNodeEngine.maxPackSizeFor(chapter)).toList();
+}
+
 /// [step] as the expedition plays it: a node with its choices, and what
 /// each choice costs the road (its notes, and for an escort or a delivery
 /// its load and days). Foes [enemies] doesn't know are dropped.
@@ -237,10 +257,7 @@ ExpeditionStep buildWrittenStep(
   final nodes = <StoryChoice>[];
   final outcomes = <StepOutcome>[];
   for (final (i, choice) in choices.indexed) {
-    final foes = [
-      for (final id in choice.fight)
-        if (enemies.isEmpty || enemies.containsKey(id)) id,
-    ];
+    final foes = writtenFoes(choice.fight, enemies: enemies, chapter: chapter);
     final first = i == 0;
     final gold = (choice.outcome?.gold ?? 0) + (choice.success?.gold ?? 0);
     nodes.add(StoryChoice(

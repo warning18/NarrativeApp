@@ -3,6 +3,7 @@
 // step.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,10 +24,10 @@ Future<void> _settle(WidgetTester tester) async {
   }
 }
 
-/// Settles until [done] holds (at most 5 s): the session, the zone's steps
-/// and the screen all load in their own time, slower on a busy runner.
+/// Settles until [done] holds (at most 30 s): the session, the zone's
+/// steps and the screen all load in their own time, slower on a busy runner.
 Future<void> _settleUntil(WidgetTester tester, bool Function() done) async {
-  for (var i = 0; i < 50 && !done(); i++) {
+  for (var i = 0; i < 300 && !done(); i++) {
     await tester.runAsync(
         () => Future<void>.delayed(const Duration(milliseconds: 100)));
     await tester.pump(const Duration(milliseconds: 100));
@@ -104,7 +105,11 @@ void main() {
     final navigator =
         tester.state<NavigatorState>(find.byType(Navigator).first);
     navigator.push(MaterialPageRoute<bool>(
-        builder: (_) => ExpeditionScreen(zoneId: 'z_test_road', zone: zone)));
+        // Seed 2's first draw (0.0008) would bring a temptation, were the
+        // hunters setting not honoured: the road's first step must show
+        // all the same (the screen waits for the saved setting).
+        builder: (_) => ExpeditionScreen(
+            zoneId: 'z_test_road', zone: zone, random: Random(2))));
     await _settleUntil(
         tester,
         () =>
