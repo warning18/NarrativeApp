@@ -20,6 +20,7 @@ import '../providers/offers_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
 import '../providers/signs_provider.dart';
+import '../widgets/clan_compass_card.dart';
 import '../widgets/clan_widgets.dart';
 import '../widgets/throne_widgets.dart';
 import '../widgets/coast_news.dart';
@@ -147,6 +148,7 @@ class _StandingTab extends ConsumerWidget {
         Text(tr(ref, 'clans_edit_hint'),
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        const ClanCompassCard(),
         for (final faction in data.clans)
           FactionStandingCard(faction: faction, editable: true),
         if (data.tribes.isNotEmpty) ...[
@@ -235,6 +237,7 @@ class _PlayStanding extends ConsumerWidget {
         // The climb (v1.201: here, now the Character tab's Clans card is
         // gone).
         const ClimbCard(),
+        const ClanCompassCard(),
         for (final faction in data.clans) FactionStandingCard(faction: faction),
         if (tribes.isNotEmpty) ...[
           _sectionLabel(context, tr(ref, 'clans_tribes_label')),
