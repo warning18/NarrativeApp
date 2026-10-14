@@ -1,7 +1,7 @@
 # Level-up offers: training by playstyle (Wave 7, item 1)
 
-Core's design, for UX (the sheet) and Narrative (names, flavour). Nothing
-built yet.
+Core's design, for UX (the sheet) and Narrative (names, flavour). Built:
+`lib/data/training.dart`, `lib/screens/training_picker.dart`.
 
 ## What changes
 
@@ -71,16 +71,19 @@ redraws them.
 
 ## The session
 
-- `pendingTraining` (int): training offers due, one per level gained
-  (replaces `statPoints`).
-- `trainingOffer` (list of 3 path ids, or empty): the offer on the table.
-- `trainingTaken` (map path id → times): what the character has taken, for the
-  draw's "habit" and for the character sheet ("Bruiser ×3, Warden ×1").
-- `takeTraining(pathId)`: applies the gains, counts it, draws the next offer if
-  more are due.
-- **Old saves**: unspent `statPoints` become offers: every 5 points one offer
-  due; a remainder (1 to 4 points, from a Tome of Insight) becomes one small
-  offer (below).
+`statPoints` stays the currency: a level still brings 5, a full offer costs
+5, a small offer 1. So old saves need no conversion: their unspent points
+simply come back as offers.
+
+- `trainingOffer` (list of 3 choices, or empty): the offer on the table, each
+  choice its path id, gains and points. Kept in the save, so closing the app
+  never redraws it; one of the wrong size (points gained or spent since) is
+  drawn anew.
+- `trainingTaken` (map path id → times): the full offers taken, for the
+  draw's "habit" and the character sheet.
+- `ensureTraining(paths)`: the offer on the table, drawn if needed.
+- `takeTraining(index)`: applies the gains (max health heals as much),
+  spends the points, counts the path.
 
 ## Tome of Insight (today: 1 free stat point)
 
@@ -90,9 +93,9 @@ one point instead of five.
 
 ## Autoplay and the simulator
 
-They take the first path of each offer (the calling), so builds follow the
-profession, as their stat-raising does today (`autoplay_build.dart`); the balance
-tests stay in reach.
+They take the choice that raises the build's stat (`autoplay_build.dart`'s
+`statToRaise`), else the first (the calling), so builds follow the
+profession as before.
 
 ## For UX
 

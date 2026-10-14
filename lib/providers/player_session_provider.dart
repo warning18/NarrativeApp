@@ -28,6 +28,7 @@ import '../data/politics_events.dart' as coast show applyStoryPolitics;
 import '../data/quest_objectives.dart' show killTargetsOf;
 import '../data/signs.dart';
 import '../data/skill_tree.dart' show branchMasteryEssenceCost;
+import '../data/training.dart';
 import '../data/throne.dart'
     show
         claimFlag,
@@ -267,6 +268,8 @@ class PlayerSession {
     this.heldSigns = const [],
     this.pendingOffers = const [],
     this.clanOffer,
+    this.trainingOffer = const [],
+    this.trainingTaken = const {},
     this.heldTitleIds = const [],
     this.activeTitleId = '',
     this.swornBoonIds = const [],
@@ -532,6 +535,13 @@ class PlayerSession {
   /// suitor is taken, so reopening it never redraws it.
   final List<OfferTicket> pendingOffers;
   final ClanOffer? clanOffer;
+
+  /// Training (Wave 7, see training.dart): the choices on the table for the
+  /// unspent [statPoints] (a full offer while five are there, a small one
+  /// below), drawn once and kept until one is taken; empty when none is
+  /// drawn. And the paths taken, with how many times.
+  final List<TrainingChoice> trainingOffer;
+  final Map<String, int> trainingTaken;
 
   /// Titles held (titles.json): from offers, from the tiers reached with a
   /// faction, and "the Marked" while the Inquisition is a foe; the one
@@ -873,6 +883,8 @@ class PlayerSession {
     List<OfferTicket>? pendingOffers,
     ClanOffer? clanOffer,
     bool clearClanOffer = false,
+    List<TrainingChoice>? trainingOffer,
+    Map<String, int>? trainingTaken,
     List<String>? heldTitleIds,
     String? activeTitleId,
     List<String>? swornBoonIds,
@@ -982,6 +994,8 @@ class PlayerSession {
       heldSigns: heldSigns ?? this.heldSigns,
       pendingOffers: pendingOffers ?? this.pendingOffers,
       clanOffer: clearClanOffer ? null : clanOffer ?? this.clanOffer,
+      trainingOffer: trainingOffer ?? this.trainingOffer,
+      trainingTaken: trainingTaken ?? this.trainingTaken,
       heldTitleIds: heldTitleIds ?? this.heldTitleIds,
       activeTitleId: activeTitleId ?? this.activeTitleId,
       swornBoonIds: swornBoonIds ?? this.swornBoonIds,
@@ -1096,6 +1110,8 @@ class PlayerSession {
         'heldSigns': [for (final h in heldSigns) h.toJson()],
         'pendingOffers': [for (final t in pendingOffers) t.toJson()],
         'clanOffer': clanOffer?.toJson(),
+        'trainingOffer': [for (final c in trainingOffer) c.toJson()],
+        'trainingTaken': trainingTaken,
         'heldTitleIds': heldTitleIds,
         'activeTitleId': activeTitleId,
         'swornBoonIds': swornBoonIds,
@@ -1316,6 +1332,15 @@ class PlayerSession {
               signPicks: (json['pendingSignPicks'] as num?)?.toInt() ?? 0,
             ),
       clanOffer: ClanOffer.tryParse(json['clanOffer']),
+      trainingOffer: [
+        for (final c in (json['trainingOffer'] as List? ?? const []))
+          if (c is Map) TrainingChoice.fromJson(c),
+      ],
+      trainingTaken: {
+        for (final MapEntry(:key, :value)
+            in ((json['trainingTaken'] as Map?) ?? const {}).entries)
+          if (value is num) key.toString(): value.toInt(),
+      },
       heldTitleIds:
           (json['heldTitleIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -2195,6 +2220,82 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         ...state.pendingOffers,
         OfferTicket(source: OfferSource.chapter, detail: '$chapter'),
       ],
+    );
+    await _persist();
+    return true;
+  }
+
+  /// The training offer on the table for the unspent stat points (Wave 7,
+  /// see drawTraining): drawn once from [paths] and kept until a choice is
+  /// taken; a full offer while five points are there, a small one below.
+  /// Empty when no point is unspent.
+  Future<List<TrainingChoice>> ensureTraining(Map<String, TrainingPath> paths,
+      {Random? random}) async {
+    if (!trainingDue(state.statPoints)) return const [];
+    final waiting = state.trainingOffer;
+    final full = state.statPoints >= trainingFullPoints;
+    // A table of the wrong size (points spent or gained since) is drawn anew.
+    if (waiting.isNotEmpty && waiting.first.small == !full) return waiting;
+    final offer = drawTraining(
+      paths: paths,
+      points: state.statPoints,
+      random: random ?? Random(),
+      professionId: state.professionId,
+      raceId: state.raceId,
+      taken: state.trainingTaken,
+      stats: _trainingStatsOf(state),
+    );
+    state = state.copyWith(trainingOffer: offer);
+    await _persist();
+    return offer;
+  }
+
+  static Map<String, int> _trainingStatsOf(PlayerSession s) => {
+        'baseDamage': s.baseDamage,
+        'baseArmor': s.baseArmor,
+        'maxHealth': s.maxHealth,
+        'strength': s.strength,
+        'dexterity': s.dexterity,
+        'constitution': s.constitution,
+        'intelligence': s.intelligence,
+        'wisdom': s.wisdom,
+        'perception': s.perception,
+        'luck': s.luck,
+        'charisma': s.charisma,
+      };
+
+  /// Takes the choice at [index] of the training offer on the table: its
+  /// gains (max health heals as much), its points spent, its path counted.
+  /// The offer is spent (the next is drawn by [ensureTraining]); false when
+  /// there is none, no such choice, or too few points.
+  Future<bool> takeTraining(int index) async {
+    final offer = state.trainingOffer;
+    if (index < 0 || index >= offer.length) return false;
+    final choice = offer[index];
+    if (state.statPoints < choice.points) return false;
+    int gain(String stat) => choice.gains[stat] ?? 0;
+    final s = state;
+    state = s.copyWith(
+      statPoints: s.statPoints - choice.points,
+      baseDamage: s.baseDamage + gain('baseDamage'),
+      baseArmor: s.baseArmor + gain('baseArmor'),
+      maxHealth: s.maxHealth + gain('maxHealth'),
+      currentHealth: s.currentHealth + gain('maxHealth'),
+      strength: s.strength + gain('strength'),
+      dexterity: s.dexterity + gain('dexterity'),
+      constitution: s.constitution + gain('constitution'),
+      intelligence: s.intelligence + gain('intelligence'),
+      wisdom: s.wisdom + gain('wisdom'),
+      perception: s.perception + gain('perception'),
+      luck: s.luck + gain('luck'),
+      charisma: s.charisma + gain('charisma'),
+      trainingOffer: const [],
+      trainingTaken: choice.small
+          ? s.trainingTaken
+          : {
+              ...s.trainingTaken,
+              choice.pathId: (s.trainingTaken[choice.pathId] ?? 0) + 1,
+            },
     );
     await _persist();
     return true;
