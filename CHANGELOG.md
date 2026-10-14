@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.308.0+344]
+
+The city plan's data: Saltmouth from above, its six districts, free walking.
+
+### Added
+- **Saltmouth's plan** (board 15, `assets/gamedata/city_plans.json`): the shore and harbour, the river split round an island, canals, the wall with its gates and towers, the avenues from the market square to the gates, the squares (market, arena, plaza, quay), the six districts tiling the town and the buildings on their lots. Each of the hub's ways stands on a building of its district, named as Narrative seats it. Laid out by a generator (`lib/data/city_plan_generator.dart`, run with `tool/city_plans/gen_city_plans.dart`); UX paints it.
+- **Two new districts**: the Lantern Alleys and Card Row.
+- **Free walking between districts**: the party walks to any district of the city it is in, with no time and no road; a district walked into is found for good, and the ones not found are fogged. The ways shown are the ones in the party's district. (The screens come with UX's city view.)
+
 ## [1.307.0+343]
 
 Every hull in side view carries her own gear.
