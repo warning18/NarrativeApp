@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.335.0+371]
+
+### Added
+- Expedition steps for the five escort and delivery expeditions (data; Core's engine plays them): the Salt Road, Fever-Bark for the Wall, the Bell Road, the Ember Run and the Lantern Train, eight to ten stages each, English and French. `assets/gamedata/expedition_steps.json` now holds sixteen written zones.
 ## [1.334.0+370]
 
 The level-up offer reads as three ways to grow.

@@ -2723,5 +2723,1327 @@
         ]
       }
     ]
+  },
+  "z_salt_road": {
+    "steps": [
+      {
+        "id": "four_wagons",
+        "type": "event",
+        "text": "Old Maudry stands at the pans with four wagons loaded and a tally-stick in her fist. She pays by the sack that arrives, and she counts each one onto the cart herself.",
+        "text_fr": "La vieille Maudry se tient aux marais salants devant quatre chariots chargés, un bâton de compte au poing. Elle paie au sac qui arrive, et elle compte elle-même chacun d’eux sur la charrette.",
+        "choices": [
+          {
+            "id": "count",
+            "text": "Count the sacks with her",
+            "text_fr": "Compter les sacs avec elle",
+            "outcome": {
+              "note": "She grunts. The count is right, and she looks a little disappointed to have no quarrel with it.",
+              "note_fr": "Elle grogne. Le compte est juste, et elle paraît un peu déçue de n’avoir rien à y redire."
+            }
+          },
+          {
+            "id": "drivers",
+            "text": "Look over the drivers",
+            "text_fr": "Passer les conducteurs en revue",
+            "outcome": {
+              "note": "Four drivers, three mules each, and not a man among them who wants to be on the coast road tonight.",
+              "note_fr": "Quatre conducteurs, trois mules chacun, et pas un seul qui veuille être sur la route côtière ce soir."
+            }
+          }
+        ]
+      },
+      {
+        "id": "pan_driver",
+        "type": "check",
+        "text": "One driver will not leave the pans. He sits on the lead wagon’s shaft with his arms crossed. The Wreckers took his brother’s cart last month, and he has made up his mind.",
+        "text_fr": "Un conducteur refuse de quitter les marais. Il est assis sur le timon du premier chariot, les bras croisés. Les Naufrageurs ont pris la charrette de son frère le mois dernier, et il a pris sa décision.",
+        "choices": [
+          {
+            "id": "persuade",
+            "text": "Persuade him to drive",
+            "text_fr": "Le convaincre de conduire",
+            "check": "charisma",
+            "success": {
+              "note": "He looks at the road, at the wagons, at you. Then he picks up the reins.",
+              "note_fr": "Il regarde la route, les chariots, vous. Puis il prend les rênes."
+            },
+            "fail": {
+              "note": "He stays where he is, and Maudry has to find another driver, which costs the afternoon.",
+              "note_fr": "Il reste où il est, et Maudry doit trouver un autre conducteur, ce qui coûte l’après-midi."
+            }
+          },
+          {
+            "id": "drive_self",
+            "text": "Take the reins yourself",
+            "text_fr": "Prendre les rênes vous-même",
+            "outcome": {
+              "note": "You know how, more or less. The mules know it better, and tell you so.",
+              "note_fr": "Vous savez faire, plus ou moins. Les mules le savent mieux, et vous le font sentir."
+            }
+          }
+        ]
+      },
+      {
+        "id": "coast_road_wreckers",
+        "type": "fight",
+        "text": "On the coast road two men step out of the dunes with hooks and torches, and one of them says, civilly, that the road has a toll.",
+        "text_fr": "Sur la route côtière, deux hommes sortent des dunes avec des crochets et des torches, et l’un d’eux dit, poliment, que la route a un péage.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Hold the line at the wagons",
+            "text_fr": "Tenir la ligne aux chariots",
+            "fight": [
+              "street_bandit",
+              "street_bandit"
+            ],
+            "success": {
+              "note": "They run for the dunes. Behind you the mules have not even stopped.",
+              "note_fr": "Ils s’enfuient vers les dunes. Derrière vous, les mules ne se sont même pas arrêtées."
+            },
+            "fail": {
+              "note": "You drive them off, and the lead wagon takes a scorch along its side.",
+              "note_fr": "Vous les chassez, et le premier chariot garde une brûlure le long de son flanc."
+            }
+          },
+          {
+            "id": "whip",
+            "text": "Whip the mules to a gallop",
+            "text_fr": "Lancer les mules au galop",
+            "check": "dexterity",
+            "success": {
+              "note": "The wagons go through in a cloud of salt, and the Wreckers are left coughing.",
+              "note_fr": "Les chariots passent dans un nuage de sel, et les Naufrageurs restent là, toussant."
+            },
+            "fail": {
+              "note": "A sack goes over the side. Another follows. The Wreckers will make something of both.",
+              "note_fr": "Un sac passe par-dessus bord. Un autre suit. Les Naufrageurs en feront quelque chose."
+            }
+          }
+        ]
+      },
+      {
+        "id": "salt_crust",
+        "type": "event",
+        "text": "Where the road crosses the flats, the salt is a crust over mud. The third wagon’s wheel goes through it with a sound like a plate breaking.",
+        "text_fr": "Là où la route traverse les plaines, le sel n’est qu’une croûte sur la boue. La roue du troisième chariot la traverse avec un bruit d’assiette qui se brise.",
+        "choices": [
+          {
+            "id": "unload",
+            "text": "Unload half the sacks to lighten it",
+            "text_fr": "Décharger la moitié des sacs pour l’alléger",
+            "outcome": {
+              "note": "It costs time, and the half you set down sits white on the grey mud like bones.",
+              "note_fr": "Cela coûte du temps, et la moitié que vous posez blanchit sur la boue grise comme des os."
+            }
+          },
+          {
+            "id": "plank",
+            "text": "Lay planks under the wheel",
+            "text_fr": "Poser des planches sous la roue",
+            "outcome": {
+              "note": "The plank holds, the mud sucks, the wheel comes up with a long sound of release.",
+              "note_fr": "La planche tient, la boue aspire, la roue remonte avec un long bruit de délivrance."
+            }
+          }
+        ]
+      },
+      {
+        "id": "haul_clear",
+        "type": "check",
+        "text": "The wagon is still down to the axle. Four drivers and a heap of rope will not get it out by themselves. The mules are sweating and watching you.",
+        "text_fr": "Le chariot est toujours enfoncé jusqu’à l’essieu. Quatre conducteurs et un tas de cordes ne le sortiront pas seuls. Les mules sont en sueur et vous regardent.",
+        "choices": [
+          {
+            "id": "haul",
+            "text": "Put your back into the haul",
+            "text_fr": "Y mettre votre dos",
+            "check": "strength",
+            "success": {
+              "note": "It comes up with a sucking cry and rolls onto firm ground. The drivers cheer, very quietly.",
+              "note_fr": "Il remonte avec un cri d’aspiration et roule sur le sol ferme. Les conducteurs applaudissent, très bas."
+            },
+            "fail": {
+              "note": "It comes up an hour later, and not before your back has had something to say about it.",
+              "note_fr": "Il remonte une heure plus tard, et non sans que votre dos ait eu son mot à dire."
+            }
+          },
+          {
+            "id": "mules",
+            "text": "Harness a second team",
+            "text_fr": "Atteler une seconde équipe",
+            "outcome": {
+              "note": "Slower, and the mules complain, but nothing in you is torn.",
+              "note_fr": "C’est plus lent, et les mules se plaignent, mais rien en vous n’est déchiré."
+            }
+          }
+        ]
+      },
+      {
+        "id": "drying_hut",
+        "type": "discovery",
+        "text": "A drying-hut stands off the road, roof gone, walls of squared stone. The stones are old, cut for a larger building, and one has a mason’s mark on its face.",
+        "text_fr": "Une cabane de séchage se tient à l’écart de la route, sans toit, les murs en pierre équarrie. Les pierres sont anciennes, taillées pour un bâtiment plus grand, et l’une porte une marque de tailleur de pierre.",
+        "place": "The drying-hut",
+        "place_fr": "La cabane de séchage",
+        "material": "material_cut_stone",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Pry a few stones loose for ballast",
+            "text_fr": "Desceller quelques pierres comme lest",
+            "outcome": {
+              "note": "Good cut stone. A wagon rides steadier on it, and you will not miss the hut.",
+              "note_fr": "De la bonne pierre taillée. Un chariot roule plus droit dessus, et la cabane ne vous manquera pas."
+            }
+          },
+          {
+            "id": "mark",
+            "text": "Study the mason’s mark",
+            "text_fr": "Étudier la marque de tailleur",
+            "outcome": {
+              "note": "The same hand cut the harbour wall at Saltmouth, the drivers say, and then lost the contract.",
+              "note_fr": "La même main a taillé le môle de Bouche-de-Sel, disent les conducteurs, puis a perdu le contrat."
+            }
+          }
+        ]
+      },
+      {
+        "id": "dune_hound",
+        "type": "fight",
+        "text": "A plague hound pads along the crest of the nearest dune, level with the wagons, and does not seem to be going anywhere in particular.",
+        "text_fr": "Un chien pestiféré longe la crête de la dune la plus proche, à hauteur des chariots, et ne semble aller nulle part en particulier.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Meet it on the dune",
+            "text_fr": "L’affronter sur la dune",
+            "fight": "plague_hound",
+            "success": {
+              "note": "It goes down the slope in a slide of salt and does not climb back.",
+              "note_fr": "Il dévale la pente dans un glissement de sel et ne remonte pas."
+            },
+            "fail": {
+              "note": "You win, and the mules will not look at you for the next mile.",
+              "note_fr": "Vous gagnez, et les mules refusent de vous regarder sur le mille suivant."
+            }
+          },
+          {
+            "id": "sacks",
+            "text": "Throw it a torn sack of meat",
+            "text_fr": "Lui jeter un sac de viande éventré",
+            "outcome": {
+              "note": "It takes the sack and goes. You will have to account for the sack to Maudry.",
+              "note_fr": "Il prend le sac et s’en va. Il faudra rendre compte du sac à Maudry."
+            }
+          }
+        ]
+      },
+      {
+        "id": "inland_toll",
+        "type": "event",
+        "text": "At the inland market’s gate a clerk in a salt-stained coat names a toll, a fee for the wagons, a second for the mules, and a third for the weight of the road.",
+        "text_fr": "À la porte du marché de l’intérieur, un commis en manteau taché de sel annonce un péage, un droit pour les chariots, un second pour les mules, un troisième pour le poids de la route.",
+        "choices": [
+          {
+            "id": "argue",
+            "text": "Argue the third fee away",
+            "text_fr": "Faire annuler le troisième droit",
+            "check": "charisma",
+            "success": {
+              "note": "He crosses it out with a flourish, as if he had meant to all along.",
+              "note_fr": "Il le raye d’un geste ample, comme s’il en avait eu l’intention depuis le début."
+            },
+            "fail": {
+              "note": "He adds a fourth, for the argument.",
+              "note_fr": "Il en ajoute un quatrième, pour la discussion."
+            }
+          },
+          {
+            "id": "pay",
+            "text": "Pay the three fees and go on",
+            "text_fr": "Payer les trois droits et poursuivre",
+            "outcome": {
+              "note": "Maudry will grumble. The market is open, and the salt will sell by dusk.",
+              "note_fr": "Maudry grognera. Le marché est ouvert, et le sel sera vendu avant la nuit."
+            }
+          }
+        ]
+      },
+      {
+        "id": "last_well",
+        "type": "rest",
+        "text": "A well stands by the road a mile short of the market, with a trough for mules and a bench in the shade of a salt-white wall. The drivers water the animals and sit.",
+        "text_fr": "Un puits se tient au bord de la route à un mille du marché, avec un abreuvoir pour les mules et un banc à l’ombre d’un mur blanc de sel. Les conducteurs abreuvent les bêtes et s’asseyent.",
+        "choices": [
+          {
+            "id": "sit",
+            "text": "Sit and rest",
+            "text_fr": "Vous asseoir et vous reposer"
+          },
+          {
+            "id": "drink",
+            "text": "Drink with the drivers",
+            "text_fr": "Boire avec les conducteurs",
+            "outcome": {
+              "note": "They tell you what the Wreckers cost them this season. You do not need to be told twice who Brine Jack is.",
+              "note_fr": "Ils vous disent ce que les Naufrageurs leur ont coûté cette saison. Nul besoin de vous redire qui est Brine Jack."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "z_fever_bark": {
+    "steps": [
+      {
+        "id": "chest_and_boy",
+        "type": "event",
+        "text": "At the landing the apothecary shows you a chest of fever-bark no bigger than a bread-bin. A boy stands by it, out of breath, who ran the whole way to ask for it.",
+        "text_fr": "Au débarcadère, l’apothicaire vous montre un coffret d’écorce de fièvre à peine plus grand qu’une huche à pain. Un garçon se tient à côté, hors d’haleine, qui a couru tout le chemin pour le demander.",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Take the chest and set out",
+            "text_fr": "Prendre le coffret et partir",
+            "outcome": {
+              "note": "It is lighter than you expected, and every ounce of it is somebody’s week.",
+              "note_fr": "Il est plus léger que vous ne pensiez, et chaque once est la semaine de quelqu’un."
+            }
+          },
+          {
+            "id": "ask",
+            "text": "Ask the boy how bad it is",
+            "text_fr": "Demander au garçon à quel point c’est grave",
+            "outcome": {
+              "note": "Six days, he says. After that it will not matter. He says it without crying, which is worse.",
+              "note_fr": "Six jours, dit-il. Après cela, ça n’aura plus d’importance. Il le dit sans pleurer, ce qui est pire."
+            }
+          }
+        ]
+      },
+      {
+        "id": "burned_arcade",
+        "type": "check",
+        "text": "The quickest way is through a burned arcade, its pillars charred, its roof half down, its floor a drift of ash and fallen beams. Every minute counts.",
+        "text_fr": "Le chemin le plus court passe par une arcade brûlée, piliers carbonisés, toit à demi effondré, sol couvert de cendre et de poutres tombées. Chaque minute compte.",
+        "choices": [
+          {
+            "id": "run",
+            "text": "Run the arcade",
+            "text_fr": "Courir à travers l’arcade",
+            "check": "dexterity",
+            "success": {
+              "note": "You clear it in a long stride, the chest held tight against you.",
+              "note_fr": "Vous la franchissez d’une longue foulée, le coffret serré contre vous."
+            },
+            "fail": {
+              "note": "A beam turns under your foot and costs you a quarter of an hour.",
+              "note_fr": "Une poutre tourne sous votre pied et vous coûte un quart d’heure."
+            }
+          },
+          {
+            "id": "round",
+            "text": "Take the long way round",
+            "text_fr": "Faire le grand tour",
+            "outcome": {
+              "note": "Safe, and slow. The boy does not complain, but he counts.",
+              "note_fr": "Sûr, et lent. Le garçon ne se plaint pas, mais il compte."
+            }
+          }
+        ]
+      },
+      {
+        "id": "names_list",
+        "type": "event",
+        "text": "At a street corner a purge-post has been set up: a table, a clerk, and a list of names pinned to a board. The clerk looks at the chest and then at you.",
+        "text_fr": "À un coin de rue, un poste de purge a été dressé : une table, un commis, et une liste de noms épinglée à un panneau. Le commis regarde le coffret, puis vous.",
+        "choices": [
+          {
+            "id": "bluff",
+            "text": "Say it is a priest’s relic box",
+            "text_fr": "Dire que c’est une boîte de reliques de prêtre",
+            "check": "charisma",
+            "success": {
+              "note": "He crosses himself and waves you through without opening it.",
+              "note_fr": "Il se signe et vous fait signe de passer sans l’ouvrir."
+            },
+            "fail": {
+              "note": "He asks to see the relic. You do not have one.",
+              "note_fr": "Il demande à voir la relique. Vous n’en avez pas."
+            }
+          },
+          {
+            "id": "pay",
+            "text": "Offer him a coin for the trouble",
+            "text_fr": "Lui offrir une pièce pour sa peine",
+            "outcome": {
+              "note": "The coin disappears faster than the clerk’s expression changes.",
+              "note_fr": "La pièce disparaît plus vite que l’expression du commis ne change."
+            }
+          },
+          {
+            "id": "round",
+            "text": "Go round by the back lanes",
+            "text_fr": "Contourner par les ruelles",
+            "outcome": {
+              "note": "The lanes are narrow and full of the smell of smoke. You lose an hour and nobody sees you.",
+              "note_fr": "Les ruelles sont étroites et pleines d’odeur de fumée. Vous perdez une heure et personne ne vous voit."
+            }
+          }
+        ]
+      },
+      {
+        "id": "soldiers_lane",
+        "type": "fight",
+        "text": "Two soldiers of the Inquisition block a lane, torches in hand, asking each person who passes whether they carry anything that burns.",
+        "text_fr": "Deux soldats de l’Inquisition barrent une ruelle, torches en main, demandant à chaque passant s’il porte quelque chose qui brûle.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Fight your way through",
+            "text_fr": "Vous frayer un passage",
+            "fight": [
+              "inquisition_soldier",
+              "inquisition_soldier"
+            ],
+            "success": {
+              "note": "The lane is clear, and the chest has not so much as been jostled.",
+              "note_fr": "La ruelle est libre, et le coffret n’a même pas été bousculé."
+            },
+            "fail": {
+              "note": "You get through, bruised, and the chest has taken more knocks than you like.",
+              "note_fr": "Vous passez, avec quelques bleus, et le coffret a pris plus de coups que vous ne le voudriez."
+            }
+          },
+          {
+            "id": "hide",
+            "text": "Wait in a doorway until they move on",
+            "text_fr": "Attendre dans un porche qu’ils s’éloignent",
+            "check": "dexterity",
+            "success": {
+              "note": "They move on, torches bobbing. You count to a hundred before you breathe.",
+              "note_fr": "Ils s’éloignent, torches ballottantes. Vous comptez jusqu’à cent avant de respirer."
+            },
+            "fail": {
+              "note": "One of them looks into your doorway. The look goes on a long time.",
+              "note_fr": "L’un d’eux regarde dans votre porche. Le regard dure longtemps."
+            }
+          }
+        ]
+      },
+      {
+        "id": "gutted_pharmacy",
+        "type": "discovery",
+        "text": "A pharmacy stands gutted, shelves charred, windows blown out. In the back, on a stone counter that the fire could not eat, lies a seam of melted glass from a hundred broken bottles.",
+        "text_fr": "Une pharmacie est éventrée, les étagères carbonisées, les fenêtres soufflées. À l’arrière, sur un comptoir de pierre que le feu n’a pu manger, repose une veine de verre fondu de cent flacons brisés.",
+        "place": "The gutted pharmacy",
+        "place_fr": "La pharmacie éventrée",
+        "material": "material_slag_glass",
+        "choices": [
+          {
+            "id": "chip",
+            "text": "Chip the glass loose",
+            "text_fr": "Détacher le verre à coups de pic",
+            "outcome": {
+              "note": "Slag glass, still faintly sweet-smelling. It will sell, or it will forge.",
+              "note_fr": "Du verre de scorie, encore vaguement parfumé. Il se vendra, ou il se forgera."
+            }
+          },
+          {
+            "id": "search",
+            "text": "Search the shelves for anything unburned",
+            "text_fr": "Fouiller les étagères pour trouver quelque chose d’intact",
+            "outcome": {
+              "note": "A single jar of dried leaf, sealed in wax. You pocket it. The boy would approve.",
+              "note_fr": "Un seul bocal de feuilles séchées, scellé à la cire. Vous l’empochez. Le garçon approuverait."
+            }
+          }
+        ]
+      },
+      {
+        "id": "smoke_over_shacks",
+        "type": "event",
+        "text": "Smoke stands over the shacks under the Reckoning Wall, a flat grey roof of it. The boy, who has been silent for an hour, says: how long.",
+        "text_fr": "La fumée plane sur les cabanes sous le Mur du Compte, un toit gris et plat. Le garçon, silencieux depuis une heure, demande : combien de temps.",
+        "choices": [
+          {
+            "id": "honest",
+            "text": "Tell him the truth: nearly there",
+            "text_fr": "Lui dire la vérité : presque arrivés",
+            "outcome": {
+              "note": "He nods and holds on to the chest’s strap with both hands, as though the chest were running too.",
+              "note_fr": "Il hoche la tête et tient la sangle du coffret à deux mains, comme si le coffret courait lui aussi."
+            }
+          },
+          {
+            "id": "comfort",
+            "text": "Tell him it will be in time",
+            "text_fr": "Lui dire que ce sera à temps",
+            "outcome": {
+              "note": "He knows you do not know. He thanks you all the same.",
+              "note_fr": "Il sait que vous l’ignorez. Il vous remercie quand même."
+            }
+          }
+        ]
+      },
+      {
+        "id": "lane_of_shacks",
+        "type": "check",
+        "text": "The shacks crowd each other under the Wall, a maze of tin and canvas and rope. The sick are in the middle somewhere, and no lane goes there in a straight line.",
+        "text_fr": "Les cabanes se pressent sous le Mur, un labyrinthe de tôle, de toile et de cordes. Les malades sont quelque part au milieu, et aucune ruelle n’y mène droit.",
+        "choices": [
+          {
+            "id": "find",
+            "text": "Find the way by sound and smell",
+            "text_fr": "Trouver le chemin au bruit et à l’odeur",
+            "check": "perception",
+            "success": {
+              "note": "A cough, a shifted blanket, a pot on the boil. You thread through the maze as though you knew it.",
+              "note_fr": "Une toux, une couverture remuée, une marmite qui bout. Vous traversez le labyrinthe comme si vous le connaissiez."
+            },
+            "fail": {
+              "note": "You turn the wrong way twice, and the boy’s breath gets short beside you.",
+              "note_fr": "Vous prenez deux fois le mauvais tournant, et le souffle du garçon devient court à côté de vous."
+            }
+          },
+          {
+            "id": "follow",
+            "text": "Let the boy lead",
+            "text_fr": "Laisser le garçon vous guider",
+            "outcome": {
+              "note": "He knows every rope. He is also the one who will have to remember this run.",
+              "note_fr": "Il connaît chaque corde. C’est aussi lui qui devra se souvenir de cette course."
+            }
+          }
+        ]
+      },
+      {
+        "id": "burned_chapel_step",
+        "type": "rest",
+        "text": "A burned chapel’s step sits at the edge of the shacks, a lamp trimmed on it by some nameless hand. The boy sits, small and absolutely still.",
+        "text_fr": "La marche d’une chapelle brûlée se trouve au bord des cabanes, une lampe mouchée dessus par une main anonyme. Le garçon s’assied, petit et absolument immobile.",
+        "choices": [
+          {
+            "id": "sit",
+            "text": "Sit with him and rest",
+            "text_fr": "Vous asseoir avec lui et vous reposer"
+          },
+          {
+            "id": "lamp",
+            "text": "Trim the lamp for whoever comes next",
+            "text_fr": "Moucher la lampe pour le suivant",
+            "outcome": {
+              "note": "A small thing. The step looks a little less like a ruin afterwards.",
+              "note_fr": "Peu de chose. La marche ressemble un peu moins à une ruine après cela."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "z_bell_road": {
+    "steps": [
+      {
+        "id": "three_bells",
+        "type": "event",
+        "text": "Three new bells lie under straw on the wagons, wrapped in sacking, each as big as a cauldron. The foundry-man pats the largest and says: they have not been struck yet. Mind they are not.",
+        "text_fr": "Trois cloches neuves reposent sous la paille sur les chariots, enveloppées de toile, chacune grosse comme un chaudron. Le fondeur tapote la plus grande et dit : elles n’ont pas encore été frappées. Veillez à ce qu’elles ne le soient pas.",
+        "choices": [
+          {
+            "id": "wrap",
+            "text": "Check the sacking is tight on all three",
+            "text_fr": "Vérifier que la toile est bien serrée sur les trois",
+            "outcome": {
+              "note": "Tight. A bell struck on the road would ring all the way to the Court, and you are glad of the sacking.",
+              "note_fr": "Serrée. Une cloche frappée sur la route sonnerait jusqu’à la Cour, et la toile est la bienvenue."
+            }
+          },
+          {
+            "id": "ask",
+            "text": "Ask the foundry-man what each is for",
+            "text_fr": "Demander au fondeur à quoi sert chacune",
+            "outcome": {
+              "note": "One for the ford village, one for the reed village, and one for the village that has no bell left to ring.",
+              "note_fr": "Une pour le village du gué, une pour celui des roseaux, et une pour le village qui n’a plus de cloche à sonner."
+            }
+          }
+        ]
+      },
+      {
+        "id": "first_night_lights",
+        "type": "check",
+        "text": "On the first night the fen’s lights come out over the pools and drift along beside the wagons, keeping pace like a patient escort.",
+        "text_fr": "La première nuit, les lumières du marais sortent au-dessus des mares et dérivent le long des chariots, tenant le pas comme une escorte patiente.",
+        "choices": [
+          {
+            "id": "watch",
+            "text": "Watch which of them are lanterns",
+            "text_fr": "Observer lesquelles sont des lanternes",
+            "check": "wisdom",
+            "success": {
+              "note": "Two are carried by men on the far bank, and the rest are not carried by anyone. You warn the drivers off the right side of the road.",
+              "note_fr": "Deux sont portées par des hommes sur la rive opposée, et les autres ne sont portées par personne. Vous écartez les conducteurs du côté droit de la route."
+            },
+            "fail": {
+              "note": "You warn the drivers off the wrong side. The lights, politely, change sides with you.",
+              "note_fr": "Vous écartez les conducteurs du mauvais côté. Les lumières, poliment, changent de côté avec vous."
+            }
+          },
+          {
+            "id": "sing",
+            "text": "Have the drivers sing to keep the lights at a distance",
+            "text_fr": "Faire chanter les conducteurs pour tenir les lumières à distance",
+            "outcome": {
+              "note": "The singing is dreadful. The lights stay well back, perhaps from respect for the tune.",
+              "note_fr": "Le chant est affreux. Les lumières restent loin, peut-être par respect pour la mélodie."
+            }
+          }
+        ]
+      },
+      {
+        "id": "wisps_at_ford",
+        "type": "fight",
+        "text": "Two lights leave the rest and cross the ford toward the second wagon, trailing something that is not smoke. The mules begin to scream.",
+        "text_fr": "Deux lumières quittent les autres et traversent le gué vers le deuxième chariot, traînant quelque chose qui n’est pas de la fumée. Les mules se mettent à hurler.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Meet them at the ford",
+            "text_fr": "Les affronter au gué",
+            "fight": [
+              "void_wisp",
+              "void_wisp"
+            ],
+            "success": {
+              "note": "They go out on the water like sparks. The mules stop screaming, one by one.",
+              "note_fr": "Elles s’éteignent sur l’eau comme des étincelles. Les mules cessent de hurler, une à une."
+            },
+            "fail": {
+              "note": "You put them out, but the second wagon takes a fright and a wheel.",
+              "note_fr": "Vous les éteignez, mais le deuxième chariot prend peur, et perd une roue."
+            }
+          },
+          {
+            "id": "cover",
+            "text": "Cover the bells and keep the wagons moving",
+            "text_fr": "Couvrir les cloches et faire avancer les chariots",
+            "outcome": {
+              "note": "The lights follow for a mile and then lose heart.",
+              "note_fr": "Les lumières suivent sur un mille puis perdent courage."
+            }
+          }
+        ]
+      },
+      {
+        "id": "late_bell",
+        "type": "event",
+        "text": "A village stands silent beside the road with its bell-tower empty. The people there are quiet and wary: they rang too late, they say, and the Court’s servants cut the bell down in the night.",
+        "text_fr": "Un village se dresse, silencieux, au bord de la route, son clocher vide. Les habitants sont calmes et méfiants : ils ont sonné trop tard, disent-ils, et les serviteurs de la Cour ont abattu la cloche dans la nuit.",
+        "choices": [
+          {
+            "id": "offer",
+            "text": "Offer them the third bell",
+            "text_fr": "Leur offrir la troisième cloche",
+            "outcome": {
+              "note": "The village elder looks at the straw and the sacking for a long moment, and shakes his head. It is not theirs. He will not take what is not theirs.",
+              "note_fr": "L’ancien du village regarde longuement la paille et la toile, et secoue la tête. Elle n’est pas à eux. Il ne prendra pas ce qui n’est pas à lui."
+            }
+          },
+          {
+            "id": "sit",
+            "text": "Sit with them a while",
+            "text_fr": "Vous asseoir avec eux un moment",
+            "outcome": {
+              "note": "They tell you which night it was. They say it was the quietest night they ever had, and that they did not sleep.",
+              "note_fr": "Ils vous disent quelle nuit c’était. Ils disent que ce fut la nuit la plus calme qu’ils aient connue, et qu’ils n’ont pas dormi."
+            }
+          }
+        ]
+      },
+      {
+        "id": "plank_ford_bridge",
+        "type": "check",
+        "text": "A plank bridge crosses a black pool, wide enough for one wagon at a time. The heaviest wagon, the one with the largest bell, is next.",
+        "text_fr": "Une passerelle de planches franchit une mare noire, assez large pour un seul chariot à la fois. Le chariot le plus lourd, celui de la plus grande cloche, est le suivant.",
+        "choices": [
+          {
+            "id": "guide",
+            "text": "Walk ahead and guide the wheels",
+            "text_fr": "Marcher devant et guider les roues",
+            "check": "dexterity",
+            "success": {
+              "note": "A hand’s breadth either side, and it crosses without a groan.",
+              "note_fr": "À une main de chaque côté, et il passe sans un grincement."
+            },
+            "fail": {
+              "note": "A plank shifts. The wagon lurches, and the bell inside rings once, very quietly, against its sacking.",
+              "note_fr": "Une planche bouge. Le chariot tangue, et la cloche à l’intérieur sonne une fois, très doucement, contre sa toile."
+            }
+          },
+          {
+            "id": "unload",
+            "text": "Unload the big bell and carry it across",
+            "text_fr": "Décharger la grande cloche et la porter de l’autre côté",
+            "outcome": {
+              "note": "It takes six of you and an hour, but the bridge is not asked to bear it.",
+              "note_fr": "Il faut six personnes et une heure, mais la passerelle n’a pas à la porter."
+            }
+          }
+        ]
+      },
+      {
+        "id": "cut_rope",
+        "type": "discovery",
+        "text": "A bell-post stands by the road with its rope cut and its bell gone. At the post’s foot, half in the grass, lies a clapper of dark metal that the cutters did not trouble to take.",
+        "text_fr": "Un poteau à cloche se dresse au bord de la route, sa corde coupée et sa cloche disparue. Au pied du poteau, à demi dans l’herbe, gît un battant de métal sombre que les coupeurs n’ont pas pris la peine d’emporter.",
+        "place": "The cut bell-post",
+        "place_fr": "Le poteau à cloche coupé",
+        "material": "material_slag_glass",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Take the clapper",
+            "text_fr": "Prendre le battant",
+            "outcome": {
+              "note": "Slag glass at the core, ash steel on the outside. It will not ring again, but it will forge.",
+              "note_fr": "Du verre de scorie au cœur, de l’acier de cendre au dehors. Il ne sonnera plus, mais il se forgera."
+            }
+          },
+          {
+            "id": "hang",
+            "text": "Hang it back on the post",
+            "text_fr": "Le raccrocher au poteau",
+            "outcome": {
+              "note": "It swings once and is still. There is no bell to strike. The post stands a little straighter.",
+              "note_fr": "Il se balance une fois et s’immobilise. Il n’y a pas de cloche à frapper. Le poteau se tient un peu plus droit."
+            }
+          }
+        ]
+      },
+      {
+        "id": "ghoul_in_reeds",
+        "type": "fight",
+        "text": "In the reeds beside the road, something that was a person has been wading. It turns its head toward the wagons as they pass and starts, slowly, to follow.",
+        "text_fr": "Dans les roseaux au bord de la route, quelque chose qui fut une personne patauge. Cela tourne la tête vers les chariots à leur passage et se met, lentement, à les suivre.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Cut it off from the wagons",
+            "text_fr": "Lui couper la route des chariots",
+            "fight": "catacomb_ghoul",
+            "success": {
+              "note": "It goes down in the reeds. The wagons never slow.",
+              "note_fr": "Il s’effondre dans les roseaux. Les chariots ne ralentissent jamais."
+            },
+            "fail": {
+              "note": "You win, but the thing has laid a hand on the last wagon before it falls.",
+              "note_fr": "Vous gagnez, mais la chose a posé la main sur le dernier chariot avant de tomber."
+            }
+          },
+          {
+            "id": "outpace",
+            "text": "Quicken the pace and leave it behind",
+            "text_fr": "Presser l’allure et le distancer",
+            "outcome": {
+              "note": "It follows at a wade, then at a stand, then not at all.",
+              "note_fr": "Il suit en pataugeant, puis à l’arrêt, puis plus du tout."
+            }
+          }
+        ]
+      },
+      {
+        "id": "bell_tongues",
+        "type": "event",
+        "text": "On the road ahead, scattered in the dust, lie bell-tongues: dozens of them, iron, new-forged and laid in a line across the track as if by a hand that counts.",
+        "text_fr": "Sur la route devant vous, éparpillés dans la poussière, gisent des battants de cloche : des dizaines, de fer, forgés de neuf et alignés en travers du chemin comme par une main qui compte.",
+        "choices": [
+          {
+            "id": "gather",
+            "text": "Gather them up",
+            "text_fr": "Les ramasser",
+            "outcome": {
+              "note": "They are cold and clink like keys. You feel, for a moment, that somebody is counting how many you took.",
+              "note_fr": "Ils sont froids et tintent comme des clés. Vous avez un instant le sentiment que quelqu’un compte combien vous en avez pris."
+            }
+          },
+          {
+            "id": "step",
+            "text": "Step over them and signal the drivers",
+            "text_fr": "Les enjamber et faire signe aux conducteurs",
+            "outcome": {
+              "note": "The wheels bump over them in a long iron chatter. The mules hate it.",
+              "note_fr": "Les roues cahotent dessus en un long caquetage de fer. Les mules détestent cela."
+            }
+          },
+          {
+            "id": "scout",
+            "text": "Go ahead alone and see who laid them",
+            "text_fr": "Aller seul en avant voir qui les a posés",
+            "check": "perception",
+            "success": {
+              "note": "A tall shape with a sexton’s coat, a long way ahead, watching the road. It does not see you.",
+              "note_fr": "Une haute silhouette en manteau de sacristain, loin devant, qui guette la route. Elle ne vous voit pas."
+            },
+            "fail": {
+              "note": "The road ahead is empty, and you turn back with the sense of having been seen.",
+              "note_fr": "La route devant est vide, et vous revenez avec le sentiment d’avoir été vu."
+            }
+          }
+        ]
+      },
+      {
+        "id": "village_dusk",
+        "type": "rest",
+        "text": "The first of the villages sits in the evening light, and as the wagons come in its bell begins to ring, once, for the others to hear. The drivers take off their hats.",
+        "text_fr": "Le premier des villages repose dans la lumière du soir, et tandis que les chariots entrent sa cloche se met à sonner, une fois, pour que les autres l’entendent. Les conducteurs ôtent leurs chapeaux.",
+        "choices": [
+          {
+            "id": "sit",
+            "text": "Sit and rest",
+            "text_fr": "Vous asseoir et vous reposer"
+          },
+          {
+            "id": "hear",
+            "text": "Stand and hear the bell out",
+            "text_fr": "Rester debout et écouter la cloche jusqu’au bout",
+            "outcome": {
+              "note": "When it stops, the whole fen is quiet in a different way. You think you can feel the lights drawing back.",
+              "note_fr": "Quand elle s’arrête, tout le marais est silencieux d’une autre façon. Vous croyez sentir les lumières se retirer."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "z_ember_run": {
+    "steps": [
+      {
+        "id": "last_coal",
+        "type": "event",
+        "text": "In the last forge of Rimewell the smith opens an iron pot and shows you the coal: a red-gold thing the size of an egg, glowing in its bed of ash. It was lit before the frost, she says. Keep it lit.",
+        "text_fr": "Dans la dernière forge de Puits-de-Givre, la forgeronne ouvre un pot de fer et vous montre la braise : une chose rouge et or de la taille d’un œuf, rougeoyante dans son lit de cendre. Elle a été allumée avant le gel, dit-elle. Gardez-la allumée.",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Take the pots and set out",
+            "text_fr": "Prendre les pots et partir",
+            "outcome": {
+              "note": "They are warm through the iron. In this city, that is a rare and strange feeling.",
+              "note_fr": "Ils sont tièdes à travers le fer. Dans cette ville, c’est un sentiment rare et étrange."
+            }
+          },
+          {
+            "id": "ask",
+            "text": "Ask her how long it will last",
+            "text_fr": "Lui demander combien de temps elle durera",
+            "outcome": {
+              "note": "Six days if you feed it and shelter it. Four if you forget. None if you drop the pot.",
+              "note_fr": "Six jours si vous la nourrissez et l’abritez. Quatre si vous l’oubliez. Aucun si vous lâchez le pot."
+            }
+          }
+        ]
+      },
+      {
+        "id": "first_mile_frost",
+        "type": "check",
+        "text": "The first mile out is frost on stone, and the wind comes straight down off the Reliquary. The pots are warm, but your hands are not.",
+        "text_fr": "Le premier mille est du givre sur la pierre, et le vent descend droit du Reliquaire. Les pots sont tièdes, mais vos mains ne le sont pas.",
+        "choices": [
+          {
+            "id": "push",
+            "text": "Walk through it hard",
+            "text_fr": "Marcher d’un pas dur",
+            "check": "constitution",
+            "success": {
+              "note": "You come to the end of the mile with your fingers on fire and the pots as warm as when you started.",
+              "note_fr": "Vous arrivez au bout du mille, les doigts en feu et les pots aussi chauds qu’au départ."
+            },
+            "fail": {
+              "note": "You lose the feeling in your hands, and the pots lose a little of theirs.",
+              "note_fr": "Vous perdez la sensation dans les mains, et les pots un peu de la leur."
+            }
+          },
+          {
+            "id": "pace",
+            "text": "Walk slowly, warming each pot against your chest in turn",
+            "text_fr": "Marcher lentement, en réchauffant chaque pot contre votre poitrine",
+            "outcome": {
+              "note": "It is slow. Neither of you is cold at the end of it.",
+              "note_fr": "C’est lent. Ni vous ni eux n’avez froid à la fin."
+            }
+          }
+        ]
+      },
+      {
+        "id": "cold_street",
+        "type": "event",
+        "text": "In the first street of the old city every hearth is out. Behind each window a house sits with its stove cold and its people in their coats. They look at the pots with an expression you hope never to see again.",
+        "text_fr": "Dans la première rue de la vieille ville, tous les foyers sont éteints. Derrière chaque fenêtre, une maison au poêle froid et aux habitants emmitouflés. Ils regardent les pots avec une expression que vous espérez ne plus jamais voir.",
+        "choices": [
+          {
+            "id": "share",
+            "text": "Give a family one live coal from the pot",
+            "text_fr": "Donner à une famille une braise du pot",
+            "outcome": {
+              "note": "They take it as if it were a child. Inside, the stove kindles. You walk on a little lighter.",
+              "note_fr": "Ils la prennent comme un enfant. Dedans, le poêle s’allume. Vous repartez, le pas un peu plus léger."
+            }
+          },
+          {
+            "id": "walk",
+            "text": "Walk on, eyes forward",
+            "text_fr": "Poursuivre, les yeux droits",
+            "outcome": {
+              "note": "You do not look at the windows. You are very conscious of every one.",
+              "note_fr": "Vous ne regardez pas les fenêtres. Vous avez conscience de chacune."
+            }
+          }
+        ]
+      },
+      {
+        "id": "penitents_want_fire",
+        "type": "fight",
+        "text": "Two penitents in hoar-rimed masks step across the road, their hands out, palms up. They do not speak. They want the fire, and they do not look as though they mean to ask twice.",
+        "text_fr": "Deux pénitents aux masques givrés s’avancent en travers de la route, les mains tendues, paumes vers le haut. Ils ne parlent pas. Ils veulent le feu, et ils n’ont pas l’air de vouloir demander deux fois.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Keep the fire",
+            "text_fr": "Garder le feu",
+            "fight": [
+              "inquisition_penitent",
+              "inquisition_penitent"
+            ],
+            "success": {
+              "note": "They fall, and their masks crack in the cold. The pots have not even stirred.",
+              "note_fr": "Ils tombent, et leurs masques se fendent au froid. Les pots n’ont même pas bougé."
+            },
+            "fail": {
+              "note": "You keep the fire, but pay for it in the arm that did not hold the pots.",
+              "note_fr": "Vous gardez le feu, mais le payez dans le bras qui ne tenait pas les pots."
+            }
+          },
+          {
+            "id": "offer",
+            "text": "Offer them a little warmth from the pot",
+            "text_fr": "Leur offrir un peu de chaleur du pot",
+            "outcome": {
+              "note": "They hold their hands over the lid, and when you walk on neither of them follows.",
+              "note_fr": "Ils tendent leurs mains au-dessus du couvercle, et quand vous repartez aucun ne vous suit."
+            }
+          }
+        ]
+      },
+      {
+        "id": "sealed_bakery",
+        "type": "discovery",
+        "text": "A bakery is shuttered tight, its oven bricked in against the frost. Through a crack in the shutter you see dry flour, a rack of tins, and on the brick floor a heap of pale crystals that has grown there like salt.",
+        "text_fr": "Une boulangerie est fermée à clé, son four muré contre le gel. Par une fente du volet vous voyez de la farine sèche, un rayon de moules, et sur le sol de brique un tas de cristaux pâles poussés là comme du sel.",
+        "place": "The sealed bakery",
+        "place_fr": "La boulangerie close",
+        "material": "material_rime_crystal",
+        "choices": [
+          {
+            "id": "break",
+            "text": "Break the shutter and take the crystals",
+            "text_fr": "Briser le volet et prendre les cristaux",
+            "outcome": {
+              "note": "Rime crystal, cold enough to ache. The oven is warm inside, and the smell of bread is still in the bricks.",
+              "note_fr": "Du cristal de givre, froid à en faire mal. Le four est tiède à l’intérieur, et l’odeur du pain est encore dans les briques."
+            }
+          },
+          {
+            "id": "rest_oven",
+            "text": "Stand a moment at the oven’s mouth",
+            "text_fr": "Rester un instant à la bouche du four",
+            "outcome": {
+              "note": "It gives off a faint warmth that comes from nowhere. You give it back some of your own, for company.",
+              "note_fr": "Il dégage une faible chaleur venue de nulle part. Vous lui rendez un peu de la vôtre, pour lui tenir compagnie."
+            }
+          }
+        ]
+      },
+      {
+        "id": "crosswind",
+        "type": "check",
+        "text": "At the crossroads the wind swings round and comes straight at the pots. The embers brighten, gutter, brighten. One more gust and the coal could go out.",
+        "text_fr": "Au carrefour, le vent tourne et vient droit sur les pots. Les braises s’avivent, vacillent, s’avivent. Une rafale de plus et la braise pourrait s’éteindre.",
+        "choices": [
+          {
+            "id": "shield",
+            "text": "Shield the pots and feed the coal",
+            "text_fr": "Abriter les pots et nourrir la braise",
+            "check": "wisdom",
+            "success": {
+              "note": "A shaving of dry wood, a breath, a hollow of your hands. It takes, and holds.",
+              "note_fr": "Un copeau de bois sec, un souffle, un creux de vos mains. Elle prend, et tient."
+            },
+            "fail": {
+              "note": "You feed it too soon and too much. It smokes, then chokes, then barely lives.",
+              "note_fr": "Vous la nourrissez trop tôt et trop. Elle fume, puis s’étouffe, puis survit à peine."
+            }
+          },
+          {
+            "id": "wait",
+            "text": "Wait out the gust in a doorway",
+            "text_fr": "Attendre la rafale dans un porche",
+            "outcome": {
+              "note": "The gust passes. The pots keep their warmth. You lose a quarter of an hour.",
+              "note_fr": "La rafale passe. Les pots gardent leur chaleur. Vous perdez un quart d’heure."
+            }
+          }
+        ]
+      },
+      {
+        "id": "child_warm_hands",
+        "type": "event",
+        "text": "A child sits on a doorstep with her hands tucked under her arms. She sees the pots and says only: is that it? Is that the fire?",
+        "text_fr": "Une enfant est assise sur un seuil, les mains glissées sous les bras. Elle voit les pots et dit seulement : c’est ça ? C’est ça, le feu ?",
+        "choices": [
+          {
+            "id": "show",
+            "text": "Open a lid and let her see",
+            "text_fr": "Soulever un couvercle et la laisser regarder",
+            "outcome": {
+              "note": "She looks at the coal for a long time. Then she puts her hands out, not touching, just near.",
+              "note_fr": "Elle regarde longuement la braise. Puis elle tend les mains, sans toucher, tout près."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Tell her it is for everyone, and go on",
+            "text_fr": "Lui dire que c’est pour tout le monde, et poursuivre",
+            "outcome": {
+              "note": "She nods. She is old enough to know the difference between a promise and a hope.",
+              "note_fr": "Elle hoche la tête. Elle est assez grande pour savoir la différence entre une promesse et un espoir."
+            }
+          }
+        ]
+      },
+      {
+        "id": "lee_doorway",
+        "type": "rest",
+        "text": "A doorway on the lee side of a tall house gives the pots shelter, and a step of dry stone gives you a seat. The coal in its pot ticks, quietly, as it cools and warms.",
+        "text_fr": "Un porche à l’abri d’une haute maison protège les pots, et une marche de pierre sèche vous offre un siège. La braise dans son pot tinte doucement tandis qu’elle refroidit et se réchauffe.",
+        "choices": [
+          {
+            "id": "sit",
+            "text": "Sit and rest",
+            "text_fr": "Vous asseoir et vous reposer"
+          },
+          {
+            "id": "feed",
+            "text": "Feed the coal a little and listen to it",
+            "text_fr": "Nourrir un peu la braise et l’écouter",
+            "outcome": {
+              "note": "It brightens with each breath. You feel, absurdly, that it is glad of the company.",
+              "note_fr": "Elle s’avive à chaque souffle. Vous avez le sentiment, absurde, qu’elle est contente de la compagnie."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "z_lantern_train": {
+    "steps": [
+      {
+        "id": "barns_of_oil",
+        "type": "event",
+        "text": "The shore villages have gone up the hill and left their barns behind. In each barn stands grain, and a row of casks of lamp oil, and the elders’ chalk-mark on the door: take what you can, leave the rest to the Tear.",
+        "text_fr": "Les villages de la côte sont montés sur la colline et ont laissé leurs granges derrière eux. Dans chacune se trouvent du grain, une rangée de tonneaux d’huile de lampe, et la marque à la craie des anciens sur la porte : prenez ce que vous pouvez, laissez le reste à la Déchirure.",
+        "choices": [
+          {
+            "id": "load",
+            "text": "Start loading the wagons",
+            "text_fr": "Commencer à charger les chariots",
+            "outcome": {
+              "note": "Six wagons and more barns than you can empty. You choose oil over grain; lanterns over bread.",
+              "note_fr": "Six chariots et plus de granges que vous ne pouvez en vider. Vous choisissez l’huile plutôt que le grain ; les lanternes plutôt que le pain."
+            }
+          },
+          {
+            "id": "count",
+            "text": "Count how many barns you can reach",
+            "text_fr": "Compter combien de granges vous pouvez atteindre",
+            "outcome": {
+              "note": "Eleven. You will empty seven, and the others will have to be a sacrifice.",
+              "note_fr": "Onze. Vous en viderez sept, et les autres devront être un sacrifice."
+            }
+          }
+        ]
+      },
+      {
+        "id": "farmer_in_barn",
+        "type": "check",
+        "text": "One farmer has not gone up the hill. He sits in his barn doorway with a pitchfork across his knees and says that he was born here and the Tear can come and tell him to leave.",
+        "text_fr": "Un fermier n’est pas monté sur la colline. Il est assis sur le seuil de sa grange, une fourche en travers des genoux, et dit qu’il est né ici et que la Déchirure n’a qu’à venir le lui dire elle-même.",
+        "choices": [
+          {
+            "id": "persuade",
+            "text": "Persuade him to come",
+            "text_fr": "Le convaincre de venir",
+            "check": "charisma",
+            "success": {
+              "note": "He looks at the sky, which is a color skies should not be, and gets up slowly. He brings the pitchfork.",
+              "note_fr": "Il regarde le ciel, qui est d’une couleur qu’un ciel ne devrait pas avoir, et se lève lentement. Il emporte la fourche."
+            },
+            "fail": {
+              "note": "He does not move. You load his oil anyway, and he watches you do it without a word.",
+              "note_fr": "Il ne bouge pas. Vous chargez son huile quand même, et il vous regarde faire sans un mot."
+            }
+          },
+          {
+            "id": "leave",
+            "text": "Leave him his choice",
+            "text_fr": "Lui laisser son choix",
+            "outcome": {
+              "note": "You leave a lantern on his doorstep. He will not light it, you think, until he must.",
+              "note_fr": "Vous laissez une lanterne sur son seuil. Il ne l’allumera pas, pensez-vous, avant d’y être contraint."
+            }
+          }
+        ]
+      },
+      {
+        "id": "reflection_on_road",
+        "type": "fight",
+        "text": "A figure stands in the road ahead, upright, in step with nothing, and its face in the puddle at its feet is not the face it wears. The mules stop, all at once.",
+        "text_fr": "Une silhouette se tient sur la route devant vous, droite, au pas de rien, et son visage dans la flaque à ses pieds n’est pas celui qu’elle porte. Les mules s’arrêtent, d’un seul coup.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Clear the road",
+            "text_fr": "Dégager la route",
+            "fight": "hollow_reflection",
+            "success": {
+              "note": "It breaks like glass. The puddle holds no face at all afterwards.",
+              "note_fr": "Elle se brise comme du verre. La flaque ne montre plus aucun visage."
+            },
+            "fail": {
+              "note": "You break it, and it takes a little of your own reflection with it.",
+              "note_fr": "Vous la brisez, et elle emporte un peu de votre propre reflet."
+            }
+          },
+          {
+            "id": "round",
+            "text": "Drive the wagons round through the field",
+            "text_fr": "Faire contourner les chariots par le champ",
+            "check": "dexterity",
+            "success": {
+              "note": "The wagons creak through the wet grass. The figure turns its head, slowly, to follow.",
+              "note_fr": "Les chariots grincent dans l’herbe mouillée. La silhouette tourne la tête, lentement, pour suivre."
+            },
+            "fail": {
+              "note": "A wheel finds a ditch. The figure takes a step toward you, and then another.",
+              "note_fr": "Une roue trouve un fossé. La silhouette fait un pas vers vous, puis un autre."
+            }
+          }
+        ]
+      },
+      {
+        "id": "leaking_cask",
+        "type": "event",
+        "text": "A cask on the third wagon has sprung a seam, and lamp oil runs along the boards in a slow, shining line. If the train stops to mend it the Tear will have more time to close. If it does not, the oil will be gone by dusk.",
+        "text_fr": "Un tonneau du troisième chariot a lâché une couture, et l’huile de lampe court sur les planches en une ligne lente et brillante. Si le convoi s’arrête pour le réparer, la Déchirure aura plus de temps pour se refermer. S’il ne s’arrête pas, l’huile sera perdue avant la nuit.",
+        "choices": [
+          {
+            "id": "mend",
+            "text": "Stop and mend the seam",
+            "text_fr": "S’arrêter et réparer la couture",
+            "outcome": {
+              "note": "A rag, a strip of tar, a hand pressed on it for a long five minutes. It holds.",
+              "note_fr": "Un chiffon, une bande de poix, une main appuyée dessus pendant de longues cinq minutes. Cela tient."
+            }
+          },
+          {
+            "id": "decant",
+            "text": "Decant it into the empty skins as you go",
+            "text_fr": "La transvaser dans des outres vides en marchant",
+            "outcome": {
+              "note": "It is slow and messy and you smell of lamp oil for a week. Nothing is lost.",
+              "note_fr": "C’est lent et salissant et vous sentez l’huile de lampe pendant une semaine. Rien n’est perdu."
+            }
+          }
+        ]
+      },
+      {
+        "id": "washed_ford",
+        "type": "check",
+        "text": "The shore road meets a ford the last rains have washed out. The water is knee-deep and brown, and the bank beyond is steeper than the wagons have yet climbed.",
+        "text_fr": "La route de la côte rencontre un gué que les dernières pluies ont emporté. L’eau arrive au genou, brune, et la rive d’en face est plus raide que tout ce que les chariots ont encore gravi.",
+        "choices": [
+          {
+            "id": "lead",
+            "text": "Lead the first wagon across yourself",
+            "text_fr": "Conduire vous-même le premier chariot de l’autre côté",
+            "check": "dexterity",
+            "success": {
+              "note": "The wheels bite on the far bank, the mules heave, and the first wagon is up. The rest follow the track you made.",
+              "note_fr": "Les roues mordent la rive d’en face, les mules tirent, et le premier chariot monte. Les autres suivent la piste que vous avez tracée."
+            },
+            "fail": {
+              "note": "The first wagon slides back, and the lead mule goes down. It costs an hour to get her up.",
+              "note_fr": "Le premier chariot glisse en arrière, et la mule de tête tombe. Il faut une heure pour la relever."
+            }
+          },
+          {
+            "id": "rope",
+            "text": "Rig a hawser from bank to bank",
+            "text_fr": "Tendre un câble d’une rive à l’autre",
+            "outcome": {
+              "note": "It takes the afternoon. Not a cask is lost, and the mules cross as if on rails.",
+              "note_fr": "Cela prend l’après-midi. Pas un tonneau n’est perdu, et les mules passent comme sur des rails."
+            }
+          }
+        ]
+      },
+      {
+        "id": "sealed_oil_cellar",
+        "type": "discovery",
+        "text": "A barn off the road has a trapdoor in its floor, bolted from outside. Behind it lies a cool cellar full of casks sealed with brass, never opened, with a cache of loose brass bands at the bottom.",
+        "text_fr": "Une grange à l’écart de la route a une trappe dans son sol, verrouillée de l’extérieur. Derrière, une cave fraîche pleine de tonneaux scellés de laiton, jamais ouverts, avec au fond une réserve de cercles de laiton détachés.",
+        "place": "The sealed oil-cellar",
+        "place_fr": "La cave à huile scellée",
+        "material": "material_lantern_brass",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Take the oil and the brass bands",
+            "text_fr": "Prendre l’huile et les cercles de laiton",
+            "outcome": {
+              "note": "Lantern brass, bright and heavy. Someone saved this against exactly this day.",
+              "note_fr": "Du laiton de lanterne, brillant et lourd. Quelqu’un a mis cela de côté pour ce jour précis."
+            }
+          },
+          {
+            "id": "reseal",
+            "text": "Take only the oil and bolt the trap",
+            "text_fr": "Ne prendre que l’huile et reverrouiller la trappe",
+            "outcome": {
+              "note": "The brass stays for whoever comes back. The trap clicks shut like a word kept.",
+              "note_fr": "Le laiton reste pour ceux qui reviendront. La trappe se referme comme une parole tenue."
+            }
+          }
+        ]
+      },
+      {
+        "id": "pilgrims_on_the_road",
+        "type": "fight",
+        "text": "Two pilgrims in wet white sashes walk up out of a ditch and fall in beside the third wagon, matching its pace. They do not seem to see you. They do seem to see the oil.",
+        "text_fr": "Deux pèlerins aux écharpes blanches trempées sortent d’un fossé et se placent à côté du troisième chariot, réglant leur pas sur le sien. Ils ne paraissent pas vous voir. Ils paraissent voir l’huile.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Drive them off the wagon",
+            "text_fr": "Les chasser du chariot",
+            "fight": [
+              "drowned_pilgrim",
+              "drowned_pilgrim"
+            ],
+            "success": {
+              "note": "They fold into the ditch they came from and are not seen again.",
+              "note_fr": "Ils se replient dans le fossé d’où ils venaient et ne sont plus revus."
+            },
+            "fail": {
+              "note": "You drive them off, and the third wagon’s paint will be wet and cold for the rest of the day.",
+              "note_fr": "Vous les chassez, et la peinture du troisième chariot restera humide et froide toute la journée."
+            }
+          },
+          {
+            "id": "lantern",
+            "text": "Light a lantern and hold it between them and the oil",
+            "text_fr": "Allumer une lanterne et la tenir entre eux et l’huile",
+            "outcome": {
+              "note": "They stop. The light is steady, and they do not like steadiness. They fall back into the dark.",
+              "note_fr": "Ils s’arrêtent. La lumière est stable, et ils n’aiment pas la stabilité. Ils retombent dans l’ombre."
+            }
+          }
+        ]
+      },
+      {
+        "id": "tear_corner_of_eye",
+        "type": "event",
+        "text": "The Tear is always at the corner of the eye now, a smear of wrong light low on the horizon. The drivers have stopped looking at it. Two of them have started to hum.",
+        "text_fr": "La Déchirure est toujours au coin de l’œil maintenant, une traînée de mauvaise lumière basse sur l’horizon. Les conducteurs ont cessé de la regarder. Deux d’entre eux se sont mis à fredonner.",
+        "choices": [
+          {
+            "id": "hum",
+            "text": "Join in the humming to keep them steady",
+            "text_fr": "Fredonner avec eux pour les garder calmes",
+            "outcome": {
+              "note": "It is a little tune that has no beginning. It does the work of a rope.",
+              "note_fr": "C’est un petit air sans début. Il fait le travail d’une corde."
+            }
+          },
+          {
+            "id": "look",
+            "text": "Look straight at the Tear for a count of ten",
+            "text_fr": "Regarder la Déchirure en face pendant dix secondes",
+            "check": "wisdom",
+            "success": {
+              "note": "It is only light. It is only a very large amount of wrong light, and you can walk under it.",
+              "note_fr": "Ce n’est que de la lumière. Ce n’est qu’une très grande quantité de mauvaise lumière, et l’on peut marcher dessous."
+            },
+            "fail": {
+              "note": "It looks back, in the way a hole looks back. You look away before the count of ten and do not tell anyone.",
+              "note_fr": "Elle vous rend votre regard, de la façon dont un trou vous le rend. Vous détournez les yeux avant dix et vous ne le dites à personne."
+            }
+          }
+        ]
+      },
+      {
+        "id": "something_counting",
+        "type": "check",
+        "text": "On the last stretch you begin to notice a small and regular sound behind the wagons: a tapping, evenly spaced, as if somebody walked along the track counting something off against a stick.",
+        "text_fr": "Sur le dernier tronçon, vous remarquez un petit bruit régulier derrière les chariots : un tapotement, à intervalles égaux, comme si quelqu’un marchait sur la piste en comptant quelque chose contre un bâton.",
+        "choices": [
+          {
+            "id": "listen",
+            "text": "Stop and listen for the source",
+            "text_fr": "Vous arrêter pour chercher la source",
+            "check": "wisdom",
+            "success": {
+              "note": "It is behind and above, on the rise: a green-glass crook on stone, once per wagon. Something is counting you.",
+              "note_fr": "Il vient de derrière et d’en haut, sur la crête : une crosse de verre vert sur la pierre, une fois par chariot. Quelque chose vous compte."
+            },
+            "fail": {
+              "note": "The tapping stops when you stop. It begins again, a little nearer, when you go on.",
+              "note_fr": "Le tapotement cesse quand vous vous arrêtez. Il reprend, un peu plus près, quand vous poursuivez."
+            }
+          },
+          {
+            "id": "hurry",
+            "text": "Say nothing and quicken the pace",
+            "text_fr": "Ne rien dire et presser l’allure",
+            "outcome": {
+              "note": "The wagons speed. The tapping keeps perfect time with the new pace.",
+              "note_fr": "Les chariots accélèrent. Le tapotement garde un temps parfait avec la nouvelle allure."
+            }
+          }
+        ]
+      },
+      {
+        "id": "high_ground_lanterns",
+        "type": "rest",
+        "text": "On the high ground the villagers have lit what lanterns they have, a long loose string of them along the ridge. The first wagon comes in under them, and somebody, quietly, begins to cry.",
+        "text_fr": "Sur les hauteurs, les villageois ont allumé les lanternes qu’ils avaient, une longue guirlande lâche le long de la crête. Le premier chariot arrive sous elles, et quelqu’un, doucement, se met à pleurer.",
+        "choices": [
+          {
+            "id": "sit",
+            "text": "Sit and rest",
+            "text_fr": "Vous asseoir et vous reposer"
+          },
+          {
+            "id": "light",
+            "text": "Light the first of the new lanterns yourself",
+            "text_fr": "Allumer vous-même la première des nouvelles lanternes",
+            "outcome": {
+              "note": "The flame stands straight, and the string of lights is a little longer than it was.",
+              "note_fr": "La flamme se tient droite, et la guirlande de lumières est un peu plus longue qu’avant."
+            }
+          }
+        ]
+      }
+    ]
   }
 }
