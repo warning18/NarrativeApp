@@ -108,8 +108,9 @@ overwrites the first release and the in-app updater never sees it.
 
 ## Pull requests and merging
 
-- One open PR per session at a time.
-- Sessions work in parallel, each on its own PR.
+- Sessions work in parallel. A session may have up to two open PRs, each
+  on its own branch (for example `claude/core` and `claude/core-2`); one
+  that needs the other's code says so and merges after it.
 - Before opening a PR, merge `origin/main` into your branch and run
   `dart format --output=none --set-exit-if-changed .`, `flutter analyze` and
   **only the test files for what you changed** (`flutter test test/a_test.dart
