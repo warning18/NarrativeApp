@@ -8,6 +8,40 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.291.0+327]
+
+The bosses after chapter 1 are a little tougher, so that the playthrough
+simulator, now playing the camp's expeditions, still meets them on the
+user's curve.
+
+### Changed
+- **Ten bosses re-tuned** (health and damage):
+  - Void Stalker 147→168 health, 20→22 damage;
+  - High Inquisitor 165→203, 23→27;
+  - Bone Warden 229→282, 25→29;
+  - Void Archon 235→282, 22→26;
+  - White Admiral 305→336, 28→31;
+  - Claimant Vane 276→317, 29→32;
+  - Claimant Tallis 203→248, 19→22;
+  - Claimant Morrow 375→398, 22→23;
+  - Tear Herald 264→306, 24→27;
+  - Void Sovereign 332→359, 28→30.
+  
+  Tuned on the held-out seeds 101 and 103: every boss is within about 7
+  points of its target (75% in chapter 1 down to 35% in chapter 8), with a
+  mean of 50.5%. Aurel Vane (chapter 1, before the camp) is unchanged.
+
+### Simulator
+- **The walk plays the camp's expeditions.** At the camp, once every place
+  is toured, it plays each expedition of the chapters reached, once,
+  before the main quest, as "Play to chapter" does. One cleared may open
+  the next. Its XP, gold and materials made the bosses after chapter 1 won
+  12 to 26 points more often, hence the re-tune.
+- **The camp's works now come as the materials note meant** (24 runs):
+  - the Hammersmith, the Academy and the Needle House in chapter 3;
+  - the Hearth-Hall in half the runs, chapter 4;
+  - the Banner Loft in about half, chapter 6.
+
 ## [1.287.0+323]
 
 Groundwork: places only heard of, the building screen's data, the skill
