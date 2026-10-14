@@ -2,6 +2,8 @@
 
 Every named place in the data, with its English and French name, or **MISSING**. From `assets/gamedata/geography.json` (with the city PR #244's two districts), the story world's chart (`lib/data/chart_story.dart`, the whole sphere of PR #245: its lands, zones, seas, archipelagos and islands). Charts A, B and C (the map looks) carry their own labels and are not listed. Narrative names the missing ones.
 
+**Named since** (v1.312.0): Narrative named everything below marked MISSING (`docs/proposals/location-names-narrative.md` on claude/narrative). The names are in `lib/data/chart_story.dart`, generated from `tool/fmg_chart/story_world.py`: `storyLandNames`, `storyArchipelagoNames`, `storyIslandNames`, and the four oceans as sea labels. The 13 chart regions keep their names. The tables below are the audit as it stood.
+
 **To name** (all from the whole sphere):
 - **seven lands:** the west, equator, south-west, north-east and east lands, and the two polar lands;
 - **twelve archipelagos and their 29 islands**;

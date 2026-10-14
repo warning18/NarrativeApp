@@ -899,6 +899,13 @@ final ChartGeography chartWorldStory = ChartGeography(
     ChartLabel('the Open Water', 'la Haute Mer', 99.5556, 149.111, 1,
         sea: true),
     ChartLabel('the Grey Water', 'l’Eau Grise', 142.222, 24.4444, 1, sea: true),
+    ChartLabel('the Sundown Deep', 'les Abysses du couchant', 40, 94.1111, 1,
+        sea: true),
+    ChartLabel('the Dawn Deep', 'les Abysses de l’aube', 213.333, 152.778, 1,
+        sea: true),
+    ChartLabel('the Rime Sea', 'la Mer du Givre', 186.667, 22.4889, 1,
+        sea: true),
+    ChartLabel('the Silent Sea', 'la Mer du silence', 160, 149.6, 1, sea: true),
   ],
   zones: [
     ChartZone('temperate', 'The Alster Marches', 'Les Marches d’Alster',
@@ -1460,6 +1467,66 @@ const Map<String, int> storyEmptyLands = {
   'east': 7,
   'polar_north': 8,
   'polar_south': 9,
+};
+
+/// The empty lands' names (Narrative's), by id: English, French.
+const Map<String, ({String en, String fr})> storyLandNames = {
+  'west': (en: 'The Sundown Lands', fr: 'Les Terres du couchant'),
+  'equator': (en: 'The Green Girdle', fr: 'La Ceinture verte'),
+  'south_west': (en: 'The Gaunt Lands', fr: 'Les Terres décharnées'),
+  'north_east': (en: 'The Morning Shore', fr: 'Le Rivage du matin'),
+  'east': (en: 'The Far Dawn', fr: 'L’Aube lointaine'),
+  'polar_north': (en: 'The Long Winter', fr: 'Le Long Hiver'),
+  'polar_south': (en: 'The Last Shelf', fr: 'La Dernière Banquise'),
+};
+
+/// The archipelagos' names (Narrative's), by id: English, French.
+const Map<String, ({String en, String fr})> storyArchipelagoNames = {
+  'far_north_west': (en: 'The Seabird Teeth', fr: 'Les Dents des oiseaux'),
+  'north_west': (en: 'The Cold Beacons', fr: 'Les Phares froids'),
+  'west_isles': (en: 'The Sundown Isles', fr: 'Les Îles du couchant'),
+  'frost_isle': (en: 'The Hoar Isle', fr: 'L’Île de givre'),
+  'ashen_east': (en: 'The Ember Stone', fr: 'La Pierre de braise'),
+  'lantern_east': (en: 'The Lantern Sisters', fr: 'Les Sœurs de la Lanterne'),
+  'mid_sea': (en: 'The Stepping Stones', fr: 'Les Pierres du gué'),
+  'old_north': (en: 'The Giant’s Hand', fr: 'La Main du géant'),
+  'north_east': (en: 'The Twin Lights', fr: 'Les Feux jumeaux'),
+  'far_east': (en: 'The Last Landfall', fr: 'La Dernière Escale'),
+  'south_mid': (en: 'The Quiet Reefs', fr: 'Les Récifs silencieux'),
+  'south_east': (en: 'The Whalers’ Graves', fr: 'Les Tombes des baleiniers'),
+};
+
+/// Each island's name (Narrative's), by its index in `lands`.
+const Map<int, ({String en, String fr})> storyIslandNames = {
+  10: (en: 'Skua Rock', fr: 'Le Rocher du skua'),
+  11: (en: 'The Fulmar', fr: 'Le Fulmar'),
+  12: (en: 'Puffin Hold', fr: 'Le Terrier des macareux'),
+  13: (en: 'Beacon Cairn', fr: 'Le Cairn-phare'),
+  14: (en: 'Ice Candle', fr: 'La Bougie de glace'),
+  15: (en: 'The Last Wick', fr: 'La Dernière Mèche'),
+  16: (en: 'Vesper', fr: 'Vêpres'),
+  17: (en: 'Compline', fr: 'Complies'),
+  18: (en: 'Hoarhold', fr: 'Le Fort de givre'),
+  19: (en: 'Cinder Rock', fr: 'Le Roc de cendre'),
+  20: (en: 'Tinder', fr: 'L’Amadou'),
+  21: (en: 'Taper', fr: 'Le Cierge'),
+  22: (en: 'Snuff', fr: 'L’Éteignoir'),
+  23: (en: 'First Stone', fr: 'La Première Pierre'),
+  24: (en: 'Salt Stone', fr: 'La Pierre salée'),
+  25: (en: 'Gull’s Rest', fr: 'Le Repos du goéland'),
+  26: (en: 'Wreckers’ Cay', fr: 'L’Îlot des naufrageurs'),
+  27: (en: 'Last Stone', fr: 'La Dernière Pierre'),
+  28: (en: 'Thumb Rock', fr: 'Le Rocher du pouce'),
+  29: (en: 'Index Rock', fr: 'Le Rocher de l’index'),
+  30: (en: 'First Light', fr: 'La Première Lueur'),
+  31: (en: 'Second Light', fr: 'La Seconde Lueur'),
+  32: (en: 'Farewell Isle', fr: 'L’Île des Adieux'),
+  33: (en: 'Hush Reef', fr: 'Le Récif du silence'),
+  34: (en: 'Drift Isle', fr: 'L’Île à la dérive'),
+  35: (en: 'Ice-Tongue', fr: 'La Langue de glace'),
+  36: (en: 'Harpoon', fr: 'Le Harpon'),
+  37: (en: 'Tallow Cay', fr: 'L’Îlot du suif'),
+  38: (en: 'Spout', fr: 'Le Souffleur'),
 };
 
 /// The archipelagos: empty lands for ship content, by id, each the indices of its islands in `lands`.
