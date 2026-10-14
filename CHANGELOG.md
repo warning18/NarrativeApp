@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.304.0+340]
+
+The Shroud Shrine opens on the Shroud's Vigil too.
+
+### Changed
+- **Clearing the Shroud's Vigil unlocks the Shroud Shrine** at the camp, as clearing the Dead Heart's approach already did. The story can send the party into the Vigil without the Dead Heart expedition, and the shrine no longer waits on that one. The building screen lists both expeditions under what it still needs. Houses (and anything else gated by flags) gain an `unlockedByFlags` field: any one of those flags opens it, whatever its required flags.
+
 ## [1.302.0+338]
 
 The hulls in side view, armed and equipped.

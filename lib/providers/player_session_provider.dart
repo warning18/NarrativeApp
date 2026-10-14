@@ -3381,7 +3381,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// any. A no-op if unaffordable (gold, or the [materialCost] in the pack,
   /// see materials.dart), already built, or any of [requiredFlags]
   /// (houses.json) is still unset -- the camp's late workshops wait on the
-  /// zones that supply them.
+  /// zones that supply them -- unless one of [unlockedByFlags] is set.
   ///
   /// A house still locked (see camp_works.dart) is refused too: one whose
   /// tier comes in a chapter after [chapter] ([fromChapter], the tier's
@@ -3389,6 +3389,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> buildHouse(String houseId, int cost,
       {String? unlocksShopId,
       List<String> requiredFlags = const [],
+      List<String> unlockedByFlags = const [],
       Map<String, int> materialCost = const {},
       int fromChapter = 1,
       int? chapter,
@@ -3399,7 +3400,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         !state.recruitedAllies.any((a) => a.companionId == requiredAllyId)) {
       return;
     }
-    if (requiredFlags.any((flag) => !state.flags.contains(flag))) return;
+    if (!unlockedByFlags.any(state.flags.contains) &&
+        requiredFlags.any((flag) => !state.flags.contains(flag))) {
+      return;
+    }
     if (missingMaterials(state.inventoryItemIds, materialCost).isNotEmpty) {
       return;
     }
