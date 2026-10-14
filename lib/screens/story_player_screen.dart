@@ -256,6 +256,10 @@ class _StoryView extends ConsumerWidget {
     // so; the Character tab's badge keeps the offer.
     ref.listen<int>(reachedChapterProvider, (previous, next) async {
       if (previous == null || next <= previous) return;
+      // Out of the frame that moved the chapter: the offer writes the
+      // session, which the providers being rebuilt now read.
+      await Future<void>.delayed(Duration.zero);
+      if (!context.mounted) return;
       final offered = await ref
           .read(playerSessionProvider.notifier)
           .grantChapterOffer(next);
@@ -1406,6 +1410,7 @@ Future<void> _selectChoice({
   // the story on; lost or turned back from, the party is where it set out
   // and the choice is not taken. Edit Mode walks past it.
   if (choice.crossesLand &&
+      !travelled &&
       !isExcursion &&
       ref.read(appModeProvider) != AppMode.edit) {
     if (!context.mounted) return;

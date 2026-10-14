@@ -1,8 +1,10 @@
-// QA: the fight's anomaly chip must fit a phone. Its label is the
-// anomaly's name plus " · N rounds left" (or " · soon"), and the French
-// ones are long; an unwrapped label overflowed on a 420 px window
-// (ship_boarding_retreat_test, 1-2% of runs, fixed in 1.259.0). This forces
-// every ground anomaly, in both languages, onto a 360 px-wide fight.
+// QA: shared body of the anomaly chip guard (qa_anomaly_chip_en_test.dart
+// and qa_anomaly_chip_fr_test.dart): one language per file so the two halves
+// run on different CI shards. The chip's label is the anomaly's name plus
+// " · N rounds left" (or " · soon"), and the French ones are long; an
+// unwrapped label overflowed on a 420 px window (ship_boarding_retreat_test,
+// 1-2% of runs, fixed in 1.259.0). This forces every ground anomaly onto a
+// 360 px-wide fight.
 import 'dart:convert';
 import 'dart:io';
 
@@ -23,15 +25,15 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 
 Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
+  for (var i = 0; i < 2; i++) {
     await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 150)));
+        () => Future<void>.delayed(const Duration(milliseconds: 100)));
     await tester.pump(const Duration(milliseconds: 100));
   }
 }
 
-void main() {
-  testWidgets('every anomaly chip fits a 360 px fight, in both languages',
+void anomalyChipTest(AppLanguage language) {
+  testWidgets('every anomaly chip fits a 360 px fight (${language.name})',
       (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
@@ -81,7 +83,7 @@ void main() {
 
     expect(fieldAnomalies.length, greaterThan(20));
     final overflows = <String>[];
-    for (final language in AppLanguage.values) {
+    {
       await tester.runAsync(() =>
           container.read(appLanguageProvider.notifier).setLanguage(language));
       for (final anomaly in fieldAnomalies) {

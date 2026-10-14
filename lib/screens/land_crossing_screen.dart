@@ -27,6 +27,11 @@ import '../widgets/side_view/side_view.dart';
 /// twice. Held for the session only; leaving the app forgets it.
 final crossingRetryProvider = StateProvider<String?>((ref) => null);
 
+/// The random stream a crossing draws and rolls with: a fresh one each
+/// time in play; a test overrides it with a seeded one so a crossing
+/// played through the app goes the same way every run.
+final landCrossingRandomProvider = Provider<Random?>((ref) => null);
+
 /// Plays the land route [routeId] (land_routes.json) on its own screen,
 /// the way a voyage plays on the voyage screen: true once the party is on
 /// the far side. False when the road beat it, or it turned back: it is
@@ -34,16 +39,16 @@ final crossingRetryProvider = StateProvider<String?>((ref) => null);
 /// crossing at all (true: the walk goes on as before).
 Future<bool> runLandCrossing(
     BuildContext context, WidgetRef ref, String routeId) async {
-  final routes =
-      await ref.read(gameDbRepositoryProvider(landRoutesSchema)).loadRecords();
-  final events =
-      await ref.read(gameDbRepositoryProvider(landEventsSchema)).loadRecords();
+  final routes = await loadedGameDb(ref, landRoutesSchema);
+  final events = await loadedGameDb(ref, landEventsSchema);
   final route = landRouteFor(routes, routeId);
   if (route == null) return true;
   if (!context.mounted) return false;
   final arrived = await Navigator.of(context).push<bool>(MaterialPageRoute(
-    builder: (_) =>
-        LandCrossingScreen(route: route, events: landEventsFrom(events)),
+    builder: (_) => LandCrossingScreen(
+        route: route,
+        events: landEventsFrom(events),
+        random: ref.read(landCrossingRandomProvider)),
   ));
   return arrived == true;
 }

@@ -35,6 +35,8 @@ void main() {
       expect(route.nameFr, isNotEmpty, reason: id);
       expect(route.roads, isNotEmpty, reason: id);
       expect(landTerrains, contains(route.terrain), reason: id);
+      expect(_json('assets/gamedata/biomes.json').keys, contains(route.biome),
+          reason: id);
       for (final road in route.roads) {
         expect(roads.containsKey(road), isTrue, reason: '$id: $road');
       }
@@ -155,6 +157,15 @@ void main() {
       if (result.arrived) arrived++;
     }
     expect(arrived, greaterThan(475));
+  });
+
+  test('chapter 3\'s main quest crosses the road from the camp to the Quarter',
+      () {
+    final story = _json('assets/Cleaned_Narrative_DAG.json');
+    final quest = StoryChoice.fromJson(Map<String, dynamic>.from(
+        (story['3001_camp']['choices'] as List).first as Map));
+    expect(quest.mainQuest, isTrue);
+    expect(quest.landRouteId, 'camp_to_quarter');
   });
 
   test('every way from the Sleeper into the White Wells crosses the second leg',
