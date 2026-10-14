@@ -81,9 +81,15 @@ void main() {
     expect(skin, isNotNull);
     expect(skin!.width, 256 * 3);
     await _pump(tester, painter, const Size(300, 300));
+    // That paint starts its own background render of the skin (prepareSkin
+    // does not share one in progress); let it land, or it replaces the kept
+    // skin below.
+    await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 500)));
+    final kept = await tester.runAsync(painter.prepareSkin);
     // Kept: the same skin again for the same look and detail.
     final again = await tester.runAsync(painter.prepareSkin);
-    expect(identical(skin, again), isTrue);
+    expect(identical(kept, again), isTrue);
     // Closer in, a finer skin.
     final close =
         GlobeView.at(const Offset(100, 70), 5, const Offset(150, 150));

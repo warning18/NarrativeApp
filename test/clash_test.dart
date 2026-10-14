@@ -24,9 +24,9 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 
 Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 6; i++) {
+  for (var i = 0; i < 3; i++) {
     await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 200)));
+        () => Future<void>.delayed(const Duration(milliseconds: 100)));
     await tester.pump(const Duration(milliseconds: 100));
   }
 }
