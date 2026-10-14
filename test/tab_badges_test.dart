@@ -175,6 +175,7 @@ void main() {
                 'barracks_annex',
                 'harbor',
                 'smugglers_cellar',
+                'skillwright',
               ],
               'enemyKillCounts': {'slum_thug': 1},
             })));
