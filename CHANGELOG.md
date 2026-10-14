@@ -8,12 +8,24 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.306.0+342]
+## [1.307.0+343]
 
 Every hull in side view carries her own gear.
 
 ### Changed
 - **The twin hull, the ironclad, the lodestone barge and the void carrack now wear their fittings in side view** (voyage, arrival, the shipwright's yard, the fight strip): guns by family at their ports and rails, plating, and the utility's deck gear. The ironclad's guns and gear stand on the casemate's roof and the muzzles come out of its ports; the lodestone barge's on its slab. The twin hull's two lateens and the carrack's void sail carry the painted sails' sigils too. A battered one now shows its damage along its real rail.
+
+## [1.306.0+342]
+
+### Changed
+- Wording of the desert scavengers' fight: their success and fail notes, and the three fight-result lines shown after a crossing fight (EN and FR). Text only, no keys or numbers.
+
+## [1.305.0+341]
+
+The desert scavengers are a real fight.
+
+### Changed
+- **"Go at them" against the scavengers on a land crossing is fought on the battle screen** (a Wreck Scavenger), with the party's own health, rewards and loot. Won, the road goes on and the sledge is left behind; broken off, the party gets clear with a cut; lost, the crossing is lost and the party is carried back wounded, as when its health runs out. The choice reads "(fight)". "Play to chapter" and the simulator never stop for the battle screen: they slip away or pay, as they mostly did. A crossing's choice can name any enemy with a `fight` field.
 
 ## [1.304.0+340]
 
