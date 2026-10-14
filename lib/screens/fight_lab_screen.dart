@@ -27,6 +27,7 @@ import '../widgets/sea_battlefield.dart';
 import '../widgets/ship_widgets.dart';
 import 'fight_screen.dart';
 import 'ship_battle_panel.dart';
+import 'city_chart_screen.dart';
 import 'vfx_gallery_screen.dart';
 import 'voyage_screen.dart';
 
@@ -442,6 +443,18 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const VfxGalleryScreen()),
+            ),
+          ),
+          ListTile(
+            key: const Key('fight_lab_city'),
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.location_city),
+            title: Text(tr(ref, 'fight_lab_city')),
+            subtitle: Text(tr(ref, 'fight_lab_city_desc')),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (_) => const CityChartScreen(preview: true)),
             ),
           ),
           SwitchListTile(

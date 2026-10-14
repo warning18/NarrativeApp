@@ -127,6 +127,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
       vsync: this, duration: const Duration(milliseconds: 320));
   Animation<Matrix4>? _glideView;
   Animation<double>? _glideRadius;
+  (Animation<double>, Animation<double>)? _glideTurn;
 
   /// Where a running glide is headed, else the view as it stands: what
   /// the next zoom or recentre builds on, so quick taps compose.
@@ -138,6 +139,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   void _animateTo(Matrix4 target) {
     _glide.stop();
     _glideRadius = null;
+    _glideTurn = null;
     _goalView = target;
     _glideView = Matrix4Tween(begin: _view.value.clone(), end: target)
         .animate(CurvedAnimation(parent: _glide, curve: Curves.easeOutCubic));
@@ -149,8 +151,32 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     if (g == null) return;
     _glide.stop();
     _glideView = null;
+    _glideTurn = null;
     _glideRadius = Tween<double>(begin: g.radius, end: target)
         .animate(CurvedAnimation(parent: _glide, curve: Curves.easeOutCubic));
+    _glide.forward(from: 0);
+  }
+
+  void _poleTurn(ChartGeography geo, {required bool north}) {
+    final g = _globe;
+    if (g == null) return;
+    _animateTurn(g.toPole(north: north));
+  }
+
+  /// Turns the sphere to [target]'s longitude and latitude, gliding (the
+  /// pole buttons).
+  void _animateTurn(GlobeView target) {
+    final g = _globe;
+    if (g == null) return;
+    _glide.stop();
+    _glideView = null;
+    _glideRadius = null;
+    CurvedAnimation curve() =>
+        CurvedAnimation(parent: _glide, curve: Curves.easeInOutCubic);
+    _glideTurn = (
+      Tween<double>(begin: g.lon0, end: target.lon0).animate(curve()),
+      Tween<double>(begin: g.lat0, end: target.lat0).animate(curve()),
+    );
     _glide.forward(from: 0);
   }
 
@@ -164,6 +190,11 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
       final g = _globe;
       if (radius != null && g != null) {
         setState(() => _globe = g.copyWith(radius: radius.value));
+      }
+      final turn = _glideTurn;
+      if (turn != null && g != null) {
+        setState(() =>
+            _globe = g.copyWith(lon0: turn.$1.value, lat0: turn.$2.value));
       }
     });
   }
@@ -183,6 +214,21 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   static const double _landZoom = JourneyWorldMapZoom.land;
   static const double _maxZoom = JourneyWorldMapZoom.max;
 
+  /// The chart the map draws: the flat map keeps the look's own chart
+  /// (A, B or C, a band of the globe); the sphere wears the story world,
+  /// which covers the whole of it, poles and all (board 11).
+  ChartGeography _geoOf(bool sphere) =>
+      sphere ? chartOf(MapShape.story) : chartOf(ref.read(mapShapeProvider));
+
+  /// The widest the sphere's canvas is taken to be: on a wider box the
+  /// sphere stays this size (a ball of about 250 px at the first zoom)
+  /// instead of growing with the screen.
+  static const double sphereMaxWidth = 400;
+
+  /// Chart units to canvas pixels for the sphere in [box].
+  double _sphereK(Size box) =>
+      math.min(box.width, sphereMaxWidth) / worldMapWidth;
+
   /// How close a place asked for is framed.
   static const double _focusZoom = 2.4;
 
@@ -194,7 +240,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
         legs != null &&
         legs.length >= 2 &&
         !MediaQuery.of(context).disableAnimations) {
-      final geo = chartOf(ref.read(mapShapeProvider));
+      final geo = _geoOf(ref.read(chartGlobeProvider));
       _walkPath = [for (final l in legs) ChartMapPainter.spotOn(geo, l)];
       final perLeg = math.min(300, 9000 ~/ (legs.length - 1));
       _walk.duration = Duration(milliseconds: perLeg * (legs.length - 1));
@@ -250,11 +296,13 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   }
 
   void _frameFor(Size box) {
-    final geo = chartOf(ref.read(mapShapeProvider));
+    final geo = _geoOf(ref.read(chartGlobeProvider));
     final here = widget.here;
     final focus = widget.focus;
-    final on =
-        '${widget.level.name}:${here?.id}:${focus?.id}:${box.width.round()}';
+    // The sphere and the flat chart are different charts (the sphere wears
+    // the story world): turning from one to the other frames afresh.
+    final on = '${widget.level.name}:${here?.id}:${focus?.id}:'
+        '${box.width.round()}:${ref.read(chartGlobeProvider)}';
     if (_framed == widget.level && _framedOn == on) return;
     _framed = widget.level;
     _framedOn = on;
@@ -266,7 +314,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
       // Only the view shown glides; the other waits at the land's zoom.
       final sphere = ref.read(chartGlobeProvider);
       _look(geo.of(here), sphere ? _landZoom : from, box);
-      _globe = GlobeView.at(geo.of(here), sphere ? from : _landZoom, centre);
+      _globe = geo.globeAt(geo.of(here), sphere ? from : _landZoom, centre);
       if (from != _landZoom) {
         final at = _onMap(geo.of(here));
         final target = _matrix(_landZoom, box.width / 2 - at.dx * _landZoom,
@@ -284,10 +332,10 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
       // Opened on a place asked for: framed close on it, and marked.
       _selectedId = focus.id;
       _look(geo.of(focus), _focusZoom, box);
-      _globe = GlobeView.at(geo.of(focus), _focusZoom, centre);
+      _globe = geo.globeAt(geo.of(focus), _focusZoom, centre);
     } else {
       _view.value = Matrix4.identity();
-      _globe = GlobeView.at(
+      _globe = geo.globeAt(
           here == null
               ? const Offset(worldMapWidth / 2, worldMapHeight / 2)
               : geo.of(here),
@@ -298,8 +346,8 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
 
   /// The globe's centre in the chart's units: the middle of the box.
   Offset _globeCentre(Size box) {
-    final k = box.width / worldMapWidth;
-    return Offset(worldMapWidth / 2, box.height / k / 2);
+    final k = _sphereK(box);
+    return Offset(box.width / k / 2, box.height / k / 2);
   }
 
   /// A pinch or drag on the sphere: it turns, or comes closer.
@@ -311,7 +359,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   void _onGlobeScaleUpdate(ScaleUpdateDetails d, Size box) {
     final g = _globe;
     if (g == null) return;
-    final k = box.width / worldMapWidth;
+    final k = _sphereK(box);
     var next = g;
     if (d.pointerCount > 1) {
       next = next.copyWith(
@@ -338,10 +386,10 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   void _globeTap(Offset position, Size box) {
     final g = _globe;
     if (g == null) return;
-    final k = box.width / worldMapWidth;
+    final k = _sphereK(box);
     final chart = g.chartAt(position / k);
     if (chart == null) return;
-    final geo = chartOf(ref.read(mapShapeProvider));
+    final geo = _geoOf(ref.read(chartGlobeProvider));
     Landmark? nearest;
     var best = 12.0 * 12.0 / (g.zoom * g.zoom);
     for (final landmark in worldMapLandmarks) {
@@ -368,7 +416,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   bool _hereShown(Size box) {
     final here = widget.here;
     if (here == null) return false;
-    final geo = chartOf(ref.read(mapShapeProvider));
+    final geo = _geoOf(ref.read(chartGlobeProvider));
     final at = MatrixUtils.transformPoint(_settled, _onMap(geo.of(here)));
     return at.dx >= 0 &&
         at.dy >= 0 &&
@@ -399,7 +447,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   }
 
   void _tapAt(Offset position) {
-    final geo = chartOf(ref.read(mapShapeProvider));
+    final geo = _geoOf(ref.read(chartGlobeProvider));
     final k = _size.width / worldMapWidth;
     final at = Offset(position.dx / k, position.dy / k);
     // The tap is on the chart itself (the GestureDetector wraps it).
@@ -431,7 +479,8 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   @override
   Widget build(BuildContext context) {
     final language = ref.watch(appLanguageProvider);
-    final geo = chartOf(ref.watch(mapShapeProvider));
+    final sphere = ref.watch(chartGlobeProvider);
+    final geo = _geoOf(sphere);
     final calque = ref.watch(chartCalqueProvider);
     final factions = ref.watch(factionsProvider);
     final politics = ref.watch(politicsProvider);
@@ -444,7 +493,6 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     };
     final reduceMotion = MediaQuery.of(context).disableAnimations;
     final theme = Theme.of(context);
-    final sphere = ref.watch(chartGlobeProvider);
     // The weather over the chart (v1.204), on its own layer.
     final weatherOn = ref.watch(chartWeatherProvider);
     final weatherWorldOnly = ref.watch(chartWeatherWorldOnlyProvider);
@@ -484,6 +532,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
             heardOf: widget.heardOf,
             goalId: widget.goalId,
             globe: globe,
+            sphereMaxScale: sphereMaxWidth / worldMapWidth,
             zoomOf: () => globe?.zoom ?? _scale,
             fogOf: () => _reveal.value,
             view: _repaint,
@@ -517,6 +566,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                   palette: widget.palette,
                   day: day,
                   globe: globeView,
+                  sphereMaxScale: sphereMaxWidth / worldMapWidth,
                   showOf: () =>
                       !weatherWorldOnly ||
                       (globeView?.zoom ?? 1) < JourneyWorldMapZoom.land,
@@ -624,7 +674,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                   if (here == null) return;
                   // Glides back to the party (v1.201.1).
                   if (sphere) {
-                    setState(() => _globe = GlobeView.at(
+                    setState(() => _globe = geo.globeAt(
                         geo.of(here),
                         math.max(_globe?.zoom ?? 1, _landZoom),
                         _globeCentre(boxSize)));
@@ -634,6 +684,22 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                   }
                 }),
                 const SizedBox(height: 6),
+                // The poles (board 11): the sphere turns right over either,
+                // and the view comes round past the seam.
+                if (sphere && geo.wholeSphere) ...[
+                  button(
+                      'journey_pole_north',
+                      Icons.keyboard_double_arrow_up,
+                      tr(ref, 'world_map_pole_north'),
+                      () => _poleTurn(geo, north: true)),
+                  const SizedBox(height: 6),
+                  button(
+                      'journey_pole_south',
+                      Icons.keyboard_double_arrow_down,
+                      tr(ref, 'world_map_pole_south'),
+                      () => _poleTurn(geo, north: false)),
+                  const SizedBox(height: 6),
+                ],
                 button(
                     'journey_zoom_in',
                     Icons.add,

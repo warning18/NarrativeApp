@@ -106,6 +106,7 @@ flutter:
     - assets/visuals/ship_cutaways/
     - assets/visuals/sea_beasts/
     - assets/visuals/pixel_fx/
+    - assets/visuals/city/
     - assets/visuals/banners/
     - assets/visuals/throne/
     - assets/visuals/walker/

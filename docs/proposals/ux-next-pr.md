@@ -129,3 +129,30 @@ The twin hull, the ironclad, the lodestone barge and the void carrack now carry 
 
 ## Version requests
 Next time I will ask the manager for a version here before opening a PR. Request for the city plan (when Core's record is in): one version, to be given then.
+
+## The world sphere (board 11), built on `claude/eager-pascal-y847vf-4` (14 Oct)
+- **The sphere wears the story world** (`chartOf(MapShape.story)`, the whole globe, via `geo.globeAt`); the flat map keeps the look's own chart (A, B or C). Turning between the two frames afresh.
+- **Two pole buttons** (`journey_pole_north`, `journey_pole_south`) glide the sphere right over either pole (`GlobeView.toPole`); a drag still turns it past the seam.
+- **A 250 px ball:** on a wide box the sphere no longer grows with the screen (`sphereMaxWidth` 400 → a radius of 125 px at the first zoom; on a phone it was already that). Both painters take `sphereMaxScale`.
+- **Painter fix:** `fractalLine` keeps an edge lying on the chart's border (the seam and the top and bottom edges) straight, so the ice caps are no longer torn along the seam and the pole (every other coast falls as before: the random draw is still taken).
+- **QA's `prepareSkin` race:** a render of the skin already under way is now the one every caller waits for (`_skinsPending` holds the future), so a background render can no longer replace the kept skin; `chart_sphere_test` no longer depends on order.
+- Seen, not fixed (data, not painter): at the pole the caps still read as dark ground in the night look; a lighter cap colour is a Core/palette call.
+- **Needs a version** (suggested 1.313.0+349) and a free PR slot (two are open: #246, #247).
+
+## City plan: the user has answered (for the manager)
+The four answers to board 15 are in (see "The city, after the user's answers" above): no hub screen (zoom in and out in the city and the world), fog on districts not yet found, no automatic star, the full city shown first on its own page, and model A in the Map look's palette. The user also said yes to the other hulls' gear (merged as #241). UX can start the painter, zoom and fog as soon as Core has the per-city plan record for Saltmouth; please brief Core (the generator's output for Saltmouth can be its first record) and give UX a version then (1.308.0+344 is free now).
+
+## City chart, step 1 (built, not yet a PR): needs a version
+`lib/widgets/city_chart/` (model, painter, zoom/fog page body), `lib/screens/city_chart_screen.dart` (Saltmouth stub, opened from the fight lab), `assets/visuals/city/saltmouth_stub.json`, `docs/proposals/city-chart.md` (the record's shape, for Core), `test/city_chart_test.dart`. EN and FR strings added next to the fight lab's. **Touches another session's area:** `fight_lab_screen.dart` (one tile and one import), `app_strings.dart` (new keys only). **Please give me a version for it** (1.308.0+344 is the next free). Step 2 (Journey city level opens it with Core's record) waits on Core's record.
+
+## The ronin sprite (the user, 14 Oct)
+The user sent the hero's side-view sprite (Idle-Walking: a ronin, 8 walk frames east and west, 68 x 68). UX puts it in the side-view scenes in place of the placeholder walker (second branch, small PR): **a second version is needed** for it.
+
+## Versions wanted, and a note on Core's Saltmouth record (14 Oct, UX → manager)
+- **Two PRs are ready, each waiting for a version** (Core's 1.308.0 is taken): the city chart, step 1 (branch `claude/eager-pascal-y847vf`, stub plan, preview in the fight lab) and the ronin sprite (branch `claude/eager-pascal-y847vf-2`, small). Suggested: **city chart 1.309.0+345, ronin 1.310.0+346**, in whatever order you merge them; I renumber on your word.
+- **Core's plan is much sparser than the board the user chose.** `assets/gamedata/city_plans.json` on `claude/core-2` has 194 buildings and no house lots, strokes for water and avenues, an arena that is a square, no canal network. The board (model A) had about 1,500 lots cut into crooked blocks, an island with two arms, canals, an avenue star, an arena, and a plan that fits its wall. Drawn from Core's record the city will look like a sparse starburst, not like the picture the user liked. **Ask for Core:** add `lots` (polygons per district, from the same Voronoi blocks) and let water be polygons (or keep strokes and add the island arms); UX's stub, `assets/visuals/city/saltmouth_stub.json` on `claude/eager-pascal-y847vf`, shows the density and the shape of the record the board was drawn from (`docs/proposals/city-chart.md`); Core can take that file as Saltmouth's record outright if easier. Say which; UX reads either.
+- **Narrative's districts and building names** (`city-districts.md`, 26 ways seated 6+5+5+4+3+3) are what the chart's cards and names will show once the record carries `names`; the stub has the old 23-way seating and English only.
+- Next for UX, once Core's record is on `main`: a reader for it next to the stub's, the Journey's city level opening the chart (party district, found districts as fog, the way card's "Go" taking the way), then free walking between districts.
+
+## City chart on Core's record (built on `claude/eager-pascal-y847vf`, 14 Oct)
+`CityChart.fromRecord` reads Core's `city_plans.json`; `CityChartScreen` shows the story's own city (the party's district, fog from `foundDistrictsProvider`, the scene's ways pinned on their buildings, "Walk here" and "Go"), opened from a new city-plan button on the Journey (`journey_city_plan`) and handing the picked choice back to select it. Tests: `city_chart_test`, `city_chart_live_test`. The PR waits on a free PR slot (two are open) and a version: **suggested 1.312.0+348**. Looks: with Core's record the plan is sparser than the board (194 buildings, no lots); the stub keeps the dense look in the fight lab's preview.

@@ -15,6 +15,7 @@ import '../providers/clans_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
+import '../providers/expedition_active_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
 import '../providers/story_providers.dart';
@@ -22,7 +23,6 @@ import '../providers/tab_badges_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/moments.dart';
-import '../widgets/immersive_notice.dart';
 import '../widgets/throne_widgets.dart' show showHostSheet;
 import 'ai_generator_screen.dart';
 import 'camp_screen.dart';
@@ -31,6 +31,7 @@ import 'clans_politics_screen.dart';
 import 'game_data_home_screen.dart';
 import 'journey_screen.dart';
 import 'play_screen.dart';
+import 'quest_autopilot.dart';
 import 'settings_screen.dart';
 import 'ship_screen.dart';
 import 'story_graph_screen.dart';
@@ -75,9 +76,6 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   /// goes back to it.
   int _storyTab = 0;
 
-  /// Goals reached during a fight, announced once it is over.
-  final List<String> _pendingReadyQuestIds = [];
-
   /// "Your Host" after the story mustered it (see
   /// hostMusteredNoticeProvider), once.
   void _showMusteredHost() {
@@ -87,21 +85,17 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     });
   }
 
-  void _announceReady(List<String> questIds) {
-    final quests =
-        ref.read(localizedDbProvider(questsSchema)).value ?? const {};
-    final lang = ref.read(appLanguageProvider);
-    final names = [
-      for (final id in questIds)
-        (quests[id] as Map<String, dynamic>?)?['questName']?.toString() ?? id,
-    ];
-    if (names.isEmpty || !mounted) return;
-    showImmersiveNotice(
-      context,
-      icon: Icons.flag_circle_outlined,
-      message: trFor(lang, 'quest_ready_notice')
-          .replaceAll('{quest}', names.join(', ')),
-    );
+  /// The quests that settle themselves (see quest_autopilot.dart), out of
+  /// any fight or expedition (their end changes the party's state again,
+  /// and the quests settle then). The dialogs open over whatever screen of
+  /// the story is on top.
+  void _settleQuests() {
+    if (!mounted ||
+        ref.read(combatActiveProvider) ||
+        ref.read(expeditionActiveProvider)) {
+      return;
+    }
+    settleQuests(context, ref);
   }
 
   @override
@@ -111,25 +105,17 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     ref.listen<AppMode>(appModeProvider, (previous, next) {
       ref.read(homeTabIndexProvider.notifier).state = storyTabIndex(next);
     });
-    // A quest in progress whose goal is reached says so once, in play;
-    // during a fight it waits for the fight to end.
-    ref.listen<QuestReadiness>(questReadinessProvider, (previous, next) {
-      if (previous == null || ref.read(appModeProvider) == AppMode.edit) {
-        return;
-      }
-      final reached = QuestReadiness.newlyReady(previous, next);
-      if (reached.isEmpty) return;
-      if (ref.read(combatActiveProvider)) {
-        _pendingReadyQuestIds.addAll(reached);
-      } else {
-        _announceReady(reached);
-      }
+    // Main quests are taken on, and quests whose objectives are met
+    // complete, on their own (Wave 6, see quest_autopilot.dart): whenever
+    // the party's state changes in play, out of any fight.
+    ref.listen(playerSessionProvider, (previous, next) {
+      if (previous == null || ref.read(combatActiveProvider)) return;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _settleQuests());
     });
     ref.listen<bool>(combatActiveProvider, (previous, next) {
-      if (previous == true && !next && _pendingReadyQuestIds.isNotEmpty) {
-        final ids = [..._pendingReadyQuestIds];
-        _pendingReadyQuestIds.clear();
-        _announceReady(ids);
+      // A goal reached in the fight completes once it is over.
+      if (previous == true && !next) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => _settleQuests());
       }
       if (previous == true && !next && ref.read(hostMusteredNoticeProvider)) {
         _showMusteredHost();
