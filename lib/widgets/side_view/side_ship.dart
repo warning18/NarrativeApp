@@ -19,6 +19,95 @@ import 'side_view.dart';
 /// by their `length`.
 double sideShipLength(ShipForm form) => (36 * form.length).roundToDouble();
 
+/// A raider of the sea (an enemy_ships.json id) as the side view draws her:
+/// the hull and rig she sails and what she wears. [glow] is a halo (the
+/// void barge's).
+class SideEnemy {
+  const SideEnemy(this.form, this.dress, {this.glow});
+  final ShipForm form;
+  final ShipDress dress;
+  final Color? glow;
+}
+
+ShipForm _enemyForm(String id, Map<String, dynamic> record) =>
+    ShipForm.fromRecord(id, record);
+
+final Map<String, SideEnemy> _enemies = {
+  'raider_skiff': SideEnemy(
+    _enemyForm('raider_skiff', const {
+      'kind': 'hull',
+      'length': 0.78,
+      'beam': 0.17,
+      'outline': {'u0': 0.5, 'a': 1.5, 'b': 1.4, 'tipw': 0.0, 'bowtip': 0.0},
+      'sailPlan': [
+        {'kind': 'square', 'at': 0.5, 'size': 0.8}
+      ],
+      'oars': 6,
+    }),
+    const ShipDress(
+        hull: Color(0xFF4A3426),
+        trim: Color(0xFF7A5A3A),
+        cloth: Color(0xFF6B5A48),
+        ensignColor: Color(0xFF1B1B1B)),
+  ),
+  'corsair_brig': SideEnemy(
+    _enemyForm('corsair_brig', const {
+      'kind': 'hull',
+      'length': 1.0,
+      'beam': 0.27,
+      'outline': {'u0': 0.52, 'a': 3.0, 'b': 2.0, 'tipw': 0.46, 'bowtip': 0.12},
+      'sailPlan': [
+        {'kind': 'square', 'at': 0.36, 'size': 1.05},
+        {'kind': 'square', 'at': 0.64, 'size': 1.1}
+      ],
+      'jibs': 1,
+    }),
+    const ShipDress(
+        hull: Color(0xFF2C2A30),
+        trim: Color(0xFF5A5A66),
+        cloth: Color(0xFF3A3944),
+        ensignColor: Color(0xFFB8322A)),
+  ),
+  'inquisition_cutter': SideEnemy(
+    _enemyForm('inquisition_cutter', const {
+      'kind': 'hull',
+      'length': 0.86,
+      'beam': 0.19,
+      'outline': {'u0': 0.4, 'a': 2.2, 'b': 1.15, 'tipw': 0.22, 'bowtip': 0.0},
+      'sailPlan': [
+        {'kind': 'gaff', 'at': 0.5, 'size': 1.0}
+      ],
+      'jibs': 2,
+    }),
+    const ShipDress(
+        hull: Color(0xFF3A3F4A),
+        trim: Color(0xFFC9B26A),
+        cloth: Color(0xFFD8D4C8),
+        ensignColor: Color(0xFFE4E2DC)),
+  ),
+  'void_barge': SideEnemy(
+    _enemyForm('void_barge', const {
+      'kind': 'hull',
+      'length': 0.96,
+      'beam': 0.3,
+      'outline': {'u0': 0.5, 'a': 3.0, 'b': 1.4, 'tipw': 0.5, 'bowtip': 0.0},
+      'sailPlan': [
+        {'kind': 'lateen', 'at': 0.5, 'size': 1.0}
+      ],
+    }),
+    const ShipDress(
+        hull: Color(0xFF1B1530),
+        trim: Color(0xFF7A55C8),
+        cloth: Color(0xFF3A2A66),
+        ensignColor: Color(0xFF9A6BFF)),
+    glow: Color(0xFF9A6BFF),
+  ),
+};
+
+/// The raider [id] as the side view draws her (the skiff's when [id] is
+/// unknown).
+SideEnemy sideEnemyOf(String? id) => _enemies[id] ?? _enemies['raider_skiff']!;
+
 const Color _woodHull = Color(0xFF5A3A24);
 const Color _woodTrim = Color(0xFF8A6038);
 const Color _clothDefault = Color(0xFFE8E0C8);

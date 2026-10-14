@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.299.0+335]
+
+The hulls in side view, the Harbor and the raiders.
+
+### Changed
+- **The shipwright's yard shows her from the side too**: above the plan from above, the Eel in side view on the open sea, on the hull being tried and in the paint, cloth, figurehead and flag being tried, as at sea.
+- **The raiders at sea are drawn with their own hulls** (the same side painter as the Eel's), bow to the left so they face her: the raider skiff (a small oared hull with a patched sail), the corsair brig (two masts of dark cloth), the Inquisition cutter (pale gaff sail and two jibs) and the void barge (a violet lateen under a halo). The old simple raider is gone.
+
 ## [1.298.0+334]
 
 The voyage in side view: the Eel's own hull.

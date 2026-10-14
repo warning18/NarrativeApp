@@ -398,14 +398,25 @@ void _drawMeeting(Canvas canvas, Size size, double u, double t,
         sidePixels(canvas, u, gull, gx + 5, gy, 2, 1);
       }
     case SeaMeetingKind.raider:
-      final (masts, sail, hull, glow) = switch (meeting.id) {
-        'corsair_brig' => (2, 0xFF2B2A33, 0xFF2C2A30, false),
-        'inquisition_cutter' => (1, 0xFFD8D4C8, 0xFF3A3F4A, false),
-        'void_barge' => (1, 0xFF3A2A66, 0xFF1B1530, true),
-        _ => (1, 0xFF3B2F2A, 0xFF4A3426, false),
-      };
-      _enemyShip(canvas, u, (w * 0.64).floorToDouble(), 53 + bob, masts,
-          Color(sail), Color(hull), glow, t);
+      // The raider's own hull, bow to the left so she faces the Eel.
+      final enemy = sideEnemyOf(meeting.id);
+      final len = sideShipLength(enemy.form);
+      final cx = (w * 0.76).floorToDouble();
+      if (enemy.glow != null) {
+        canvas.drawCircle(Offset(cx * u, (50 + bob) * u), 24 * u,
+            Paint()..color = enemy.glow!.withValues(alpha: 0.12));
+      }
+      canvas.save();
+      canvas.translate(2 * cx * u, 0);
+      canvas.scale(-1, 1);
+      paintSideShip(canvas, u,
+          x: cx - len / 2,
+          base: 53 + bob,
+          form: enemy.form,
+          dress: enemy.dress,
+          t: t,
+          rough: rough);
+      canvas.restore();
     case SeaMeetingKind.derelict:
       _derelict(canvas, u, (w * 0.66).floorToDouble(), 54 + bob);
     case SeaMeetingKind.sighting:
@@ -415,39 +426,6 @@ void _drawMeeting(Canvas canvas, Size size, double u, double t,
     case SeaMeetingKind.harbour:
       _harbour(canvas, u, w, t);
   }
-}
-
-/// A raider, bow to the left, so she faces the Eel.
-void _enemyShip(Canvas canvas, double u, double x, double base, int masts,
-    Color sail, Color hullColour, bool glow, double t) {
-  final hull = Paint()..color = hullColour;
-  final plank = Paint()..color = Color.lerp(hullColour, Colors.black, 0.4)!;
-  final rim = Paint()..color = Color.lerp(hullColour, Colors.white, 0.3)!;
-  final mast = Paint()..color = const Color(0xFF1E1812);
-  final cloth = Paint()..color = sail;
-  final shade = Paint()..color = Color.lerp(sail, Colors.black, 0.25)!;
-  if (glow) {
-    canvas.drawCircle(Offset((x + 14) * u, (base - 6) * u), 20 * u,
-        Paint()..color = const Color(0xFF9A6BFF).withValues(alpha: 0.12));
-  }
-  sidePixels(canvas, u, hull, x, base - 3, 30, 5);
-  sidePixels(canvas, u, hull, x - 3, base - 2, 3, 3);
-  sidePixels(canvas, u, hull, x - 5, base - 3, 2, 1);
-  sidePixels(canvas, u, hull, x + 22, base - 6, 8, 3);
-  sidePixels(canvas, u, plank, x + 1, base - 1, 29, 1);
-  sidePixels(canvas, u, rim, x, base - 3, 30, 1);
-  for (var m = 0; m < masts; m++) {
-    final mx = x + (masts == 1 ? 13 : 8 + m * 11);
-    final h = masts == 1 ? 24.0 : (m == 0 ? 22.0 : 26.0);
-    sidePixels(canvas, u, mast, mx, base - h - 2, 1, h);
-    sidePixels(canvas, u, cloth, mx - 5, base - h, 11, h - 11);
-    sidePixels(canvas, u, shade, mx - 5, base - 14, 11, 2);
-    sidePixels(canvas, u, Paint()..color = const Color(0xFFC0392B), mx,
-        base - h - 4, 5, 2);
-  }
-  final foam = Paint()..color = Colors.white.withValues(alpha: 0.5);
-  sidePixels(canvas, u, foam, x - 7, base + 2, 5, 1);
-  sidePixels(canvas, u, foam, x + 31, base + 2, 4, 1);
 }
 
 /// A derelict: the hull heeled over, the mast snapped, a rag of sail.
