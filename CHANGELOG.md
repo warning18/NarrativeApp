@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.344.0+380]
+
+### Changed
+- A read-through of the new expedition and detour text (data only): repeated phrasings varied, American spelling used throughout, and the English and French kept in step. No lines added or removed.
+
 ## [1.342.0+378]
 
 ### Added
