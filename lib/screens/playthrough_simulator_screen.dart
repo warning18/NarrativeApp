@@ -43,6 +43,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/geography_provider.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/home_tab_provider.dart';
+import '../providers/place_pools_provider.dart';
 import '../providers/settings_providers.dart';
 import '../providers/story_providers.dart';
 import '../utils/game_icons.dart';
@@ -1971,8 +1972,7 @@ class _PlaythroughSimulatorScreenState
     final professions = await ref
         .read(gameDbRepositoryProvider(professionsSchema))
         .loadRecords();
-    final zones =
-        await ref.read(gameDbRepositoryProvider(zonesSchema)).loadRecords();
+    final zones = await loadZonesWithWrittenCounts(ref);
 
     final result = await autoplayToChapter(
       ref,
@@ -2040,7 +2040,7 @@ class _PlaythroughSimulatorScreenState
       spells: parseSpells(await load(spellsSchema)),
       gameConfig: await ref.read(gameConfigProvider.future),
       itemSets: parseItemSets(await load(itemSetsSchema)),
-      zones: await load(zonesSchema),
+      zones: await loadZonesWithWrittenCounts(ref),
       patrons: parsePatrons(await load(factionsSchema)),
       signs: parseSigns(await load(signsSchema)),
       clans: ClanData.fromTables(
