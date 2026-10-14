@@ -16,6 +16,10 @@ The level-up offer reads as three ways to grow.
 - **The training offer** (Level Up screen and the pop-up after a fight) is three cards in the clan offer's manner: each path has its pixel icon on a tile in the colour of what it raises most (attack ember, defence and health cool, mind violet, the quick green, the social gold), its name and its line, then each gain as a tile with the big "+n" and where the stat goes ("100 → 120").
 - **A card is picked, then taken** with "Take this training" under the cards, as a clan's gift is, so a path that is for good is never taken by a stray tap. A small offer (a Tome of Insight's point) reads the same.
 
+## [1.332.0+368]
+
+### Added
+- Expedition steps for four more tier-2 expeditions (data; Core's engine plays them): the Drowned Stair, the Dead Heart Approach, the Glass Strand and the Frost Quarry, nine steps each, English and French. `assets/gamedata/expedition_steps.json` now holds eleven written zones.
 ## [1.331.0+367]
 
 The clan offer: banners, a compass, then the picked clan's words.
