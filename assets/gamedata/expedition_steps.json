@@ -4472,8 +4472,8 @@
         "choices": [
           {
             "id": "fight",
-            "text": "Meet them",
-            "text_fr": "Les affronter",
+            "text": "Meet it",
+            "text_fr": "L’affronter",
             "fight": [
               "void_hound"
             ],
@@ -5099,8 +5099,8 @@
         "choices": [
           {
             "id": "fight",
-            "text": "Meet them on the planks",
-            "text_fr": "Les affronter sur le bordé",
+            "text": "Meet it on the planks",
+            "text_fr": "L’affronter sur le bordé",
             "fight": [
               "hollow_reflection"
             ],
