@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.316.0+352]
+
+Checks on the road and at sea, rolled on the die.
+
+### Changed
+- **A check on a land crossing is rolled on the Skill Challenge's die** under the event's choices: the d20 tumbles, lands, the sum against the DC comes up, and the outcome follows with the die set down beside it, in place of the line of text on top.
+- **A check at sea** is rolled on the same die over the sea, then written in the ship's log as before.
+
 ## [1.312.0+348]
 
 Saltmouth's six districts in the story, and the whole sphere named.
