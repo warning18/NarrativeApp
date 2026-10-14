@@ -1,6 +1,6 @@
-// Offers (v1.194) on a 360-px phone: the offer dialog -- the hall of the
-// picked suitor (banner, charter, the clans' compass, the gift) over three
-// ledger rows, each with their colour, "The Emberwives of the Cinder
+// Offers (v1.194) on a 360-px phone: the offer dialog -- three banners on
+// top, the clans' compass, then the picked suitor's words (charter, gift),
+// each with their colour, "The Emberwives of the Cinder
 // Compact", their first words, the gift (its kind, name, rarity and what
 // it does) and the standing it would move by the real relations; a
 // suitor taken with a confirm (the gift, the standing and its ripple, the
@@ -198,8 +198,8 @@ void main() {
     expect(find.byType(OfferDialog), findsOneWidget);
     expect(find.text('The clans come to you'), findsOneWidget);
     expect(find.textContaining('2 waiting'), findsOneWidget);
-    // Three ledger rows, each with what it gives and nothing more: the
-    // gift's kind and name, the first standing it moves, the clan's line.
+    // Three banners on top, each with what it gives and nothing more: the
+    // gift's kind and name and the first standing it moves.
     for (final id in ['compact', 'penitents', 'wayfarer']) {
       expect(find.byKey(Key('offer_suitor_$id')), findsOneWidget);
     }
@@ -211,8 +211,8 @@ void main() {
     expect(find.text('Keen Eye'), findsOneWidget);
     expect(find.text('+6\u00a0Compact'), findsOneWidget);
     expect(find.text('+6\u00a0Penitents'), findsOneWidget);
-    // The rest is the hall's, once a row is picked: before, only a hint and
-    // the clans' compass.
+    // The rest is told under the compass, once a banner is picked: before,
+    // only the compass and a hint.
     expect(find.text('The Emberwives of the Cinder Compact'), findsNothing);
     expect(find.textContaining('broke every hammer in the Row'), findsNothing);
     expect(find.byKey(const Key('offer_select_hint')), findsOneWidget);
@@ -222,7 +222,7 @@ void main() {
             .widget<FilledButton>(find.byKey(const Key('offer_take_button')))
             .onPressed,
         isNull,
-        reason: 'nothing is taken before a row is picked');
+        reason: 'nothing is taken before a banner is picked');
     final zone = tester.getSize(find.byKey(const Key('offer_detail_zone')));
 
     await tester.tap(find.byKey(const Key('offer_suitor_compact')));
@@ -231,8 +231,10 @@ void main() {
     expect(find.textContaining('broke every hammer in the Row'), findsOneWidget,
         reason: 'the Compact\'s intro, the first time');
     expect(tester.getSize(find.byKey(const Key('offer_banner_compact'))),
+        const Size(88, 128));
+    expect(tester.getSize(find.byKey(const Key('offer_banner_penitents'))),
         const Size(88, 128),
-        reason: 'one banner, at its own size');
+        reason: 'every banner is one size, picked or not');
     // The politics of the pick, by the relations as they stand, on the
     // crests: +6 for the Compact, +1.5 for its friends, -3 for its foe.
     Finder badge(String id, String text) => find.descendant(
@@ -399,7 +401,8 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('a tall phone shows the whole hall', (tester) async {
+  testWidgets('a tall phone shows the banners, compass and words together',
+      (tester) async {
     await _open(tester, french: false, size: const Size(412, 900));
     await tester.tap(find.byKey(const Key('offer_suitor_compact')));
     await _settle(tester);

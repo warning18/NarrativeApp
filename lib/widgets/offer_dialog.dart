@@ -350,53 +350,56 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                   ),
                 ),
               ),
-              // The hall: the picked clan's banner, charter and gift, with
-              // the clans' compass between them. It scrolls; the three
-              // choices and the button below it do not.
+              // The three banners on top, then the clans' compass, then the
+              // picked banner's words. It scrolls; the button below does not.
               Flexible(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 4),
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 4),
                   child: TutorialTarget(
                     id: 'signs.cards',
-                    child: ConstrainedBox(
-                      key: const Key('offer_detail_zone'),
-                      constraints: const BoxConstraints(minHeight: 300),
-                      child: _OfferHall(
-                        key: selected == null
-                            ? const Key('offer_hall_none')
-                            : Key('offer_summary_${selected.factionId}'),
-                        offer: offer,
-                        suitor: selected,
-                        tables: widget.tables,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            for (final suitor in offer.suitors)
+                              Expanded(
+                                child: _OfferBanner(
+                                  key: Key('offer_suitor_${suitor.factionId}'),
+                                  suitor: suitor,
+                                  ticket: ticket,
+                                  tables: widget.tables,
+                                  selected: _selected == suitor.factionId,
+                                  dimmed: _selected != null &&
+                                      _selected != suitor.factionId,
+                                  onTap: _busy
+                                      ? null
+                                      : () => setState(
+                                          () => _selected = suitor.factionId),
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        ConstrainedBox(
+                          key: const Key('offer_detail_zone'),
+                          constraints: const BoxConstraints(minHeight: 280),
+                          child: _OfferHall(
+                            key: selected == null
+                                ? const Key('offer_hall_none')
+                                : Key('offer_summary_${selected.factionId}'),
+                            offer: offer,
+                            suitor: selected,
+                            tables: widget.tables,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
               const Divider(height: 1),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 8, 10, 0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    for (final suitor in offer.suitors)
-                      _OfferRow(
-                        key: Key('offer_suitor_${suitor.factionId}'),
-                        suitor: suitor,
-                        ticket: ticket,
-                        tables: widget.tables,
-                        selected: _selected == suitor.factionId,
-                        dimmed:
-                            _selected != null && _selected != suitor.factionId,
-                        onTap: _busy
-                            ? null
-                            : () =>
-                                setState(() => _selected = suitor.factionId),
-                      ),
-                  ],
-                ),
-              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
                 child: FilledButton(
@@ -415,12 +418,12 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
   }
 }
 
-/// A suitor as one row of the ledger, kept to a glance: the clan's crest on
-/// its colour, its name, what the gift is and the first standing it moves,
-/// and the one line the clan stands for. A tap picks it, and the hall above
-/// tells the rest.
-class _OfferRow extends ConsumerWidget {
-  const _OfferRow({
+/// A suitor as a banner, a little smaller than its pixels (three quarters):
+/// the clan's own banner (a Wayfarer's plain pennant) lit in its colour when
+/// picked, and the gift under it by kind and name with the first standing it
+/// moves. A tap picks it; the compass and the words below tell the rest.
+class _OfferBanner extends ConsumerWidget {
+  const _OfferBanner({
     super.key,
     required this.suitor,
     required this.ticket,
@@ -456,148 +459,86 @@ class _OfferRow extends ConsumerWidget {
         data: data,
         lang: lang,
         flags: session.flags);
-    final who = suitorName(suitor, data, lang);
     final bannerId = suitor.isWayfarer ? null : clanBannerId(suitor.factionId);
-    final line = suitor.isWayfarer
-        ? trFor(lang, 'offer_wayfarer_stands')
-        : (faction?.standsForFor(lang) ?? '');
+    final who = suitorName(suitor, data, lang);
     const good = Color(0xFF3E9B57);
-    final crest = Container(
-      width: 36,
-      height: 36,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: const Color(0xFF141217),
-        border: Border.all(color: color, width: 2),
-      ),
-      child: ClipOval(
-        child: bannerId == null
-            ? Icon(suitor.isWayfarer ? Icons.hiking : Icons.flag,
-                size: 22, color: color)
-            : Align(
-                alignment: Alignment.topCenter,
-                heightFactor: 0.5,
-                child: Image.asset(
-                  'assets/visuals/banners/$bannerId.png',
-                  width: 36,
-                  height: 72,
-                  fit: BoxFit.fill,
-                  filterQuality: FilterQuality.none,
-                  isAntiAlias: false,
-                  gaplessPlayback: true,
-                  errorBuilder: (_, __, ___) =>
-                      const SizedBox(width: 36, height: 36),
-                ),
-              ),
-      ),
+
+    // One box for every banner, so none changes size when another is picked
+    // (the picked one only takes the wind).
+    final bannerBox = (pixelBannerSize.width + 2 * WindBanner.room).toDouble();
+    final Widget inner = bannerId == null
+        ? _PlainFlag(color: color, wayfarer: suitor.isWayfarer)
+        : SizedBox(
+            key: Key('offer_banner_${suitor.factionId}'),
+            width: bannerBox,
+            height: pixelBannerSize.height.toDouble(),
+            child: selected
+                ? WindBanner(id: bannerId, scale: 1)
+                : Center(child: PixelBanner(id: bannerId, scale: 1)),
+          );
+    final Widget flag = SizedBox(
+      width: bannerBox * 0.75,
+      height: pixelBannerSize.height * 0.75,
+      child: FittedBox(child: inner),
     );
+
     return Semantics(
       button: true,
       selected: selected,
       label: '$who: $name',
-      child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 160),
-        opacity: dimmed ? 0.7 : 1,
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 6),
-          child: Material(
-            color: selected
-                ? color.withValues(alpha: 0.12)
-                : theme.colorScheme.surfaceContainerLow,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6),
-              side: BorderSide(
-                  color: selected ? color : theme.colorScheme.outlineVariant,
-                  width: selected ? 2 : 1),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: InkWell(
-              onTap: onTap,
-              child: IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Container(width: 5, color: color),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 7, 8, 7),
-                      child: crest,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 5, 8, 5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    suitor.isWayfarer
-                                        ? who
-                                        : (faction?.shortFor(lang) ?? who),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: theme.textTheme.titleSmall
-                                        ?.copyWith(color: color),
-                                  ),
-                                ),
-                                if (preview.isNotEmpty)
-                                  Text(
-                                    preview.first.text,
-                                    style: theme.textTheme.labelMedium
-                                        ?.copyWith(
-                                            color: preview.first.delta >= 0
-                                                ? good
-                                                : theme.colorScheme.error,
-                                            fontWeight: FontWeight.w600),
-                                  ),
-                              ],
-                            ),
-                            const SizedBox(height: 2),
-                            Row(
-                              children: [
-                                _Tag(
-                                    text:
-                                        trFor(lang, _giftTagKey(gift, skills)),
-                                    color: color),
-                                const SizedBox(width: 6),
-                                Expanded(
-                                  child: Text(
-                                    name,
-                                    key: Key('offer_gift_${gift.id}'),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            if (line.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 2),
-                                child: Text(
-                                  line,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                      fontStyle: FontStyle.italic,
-                                      color:
-                                          theme.colorScheme.onSurfaceVariant),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 6),
-                      child: Icon(Icons.chevron_right,
-                          size: 20, color: theme.colorScheme.onSurfaceVariant),
-                    ),
-                  ],
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 160),
+          opacity: dimmed ? 0.62 : 1,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                        color: selected ? color : Colors.transparent, width: 2),
+                    color: selected ? color.withValues(alpha: 0.12) : null,
+                  ),
+                  child: Center(child: flag),
                 ),
-              ),
+                const SizedBox(height: 4),
+                Text(
+                  suitor.isWayfarer ? who : (faction?.shortFor(lang) ?? who),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.labelMedium
+                      ?.copyWith(color: color, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 3),
+                _Tag(
+                    text: trFor(lang, _giftTagKey(gift, skills)), color: color),
+                const SizedBox(height: 3),
+                Text(
+                  name,
+                  key: Key('offer_gift_${gift.id}'),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleSmall,
+                ),
+                if (preview.isNotEmpty) ...[
+                  const SizedBox(height: 3),
+                  Text(
+                    preview.first.text,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                        color: preview.first.delta >= 0
+                            ? good
+                            : theme.colorScheme.error,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ],
             ),
           ),
         ),
@@ -606,10 +547,11 @@ class _OfferRow extends ConsumerWidget {
   }
 }
 
-/// The hall: the picked suitor's banner beside their charter (name, where
-/// you stand with them, motto, what they stand for, which way the alignment
-/// moves, in a word), the clans' compass, and the gift with the words the
-/// clan says. With none picked, the compass alone, the clans on offer ringed.
+/// Under the banners: the clans' compass (the picked clan's lines and what
+/// changes for each clan, the clans on offer ringed), then the picked
+/// suitor's charter (name, where you stand with them, motto, what they stand
+/// for, which way the alignment moves, in a word) and the gift with the
+/// words the clan says. With none picked, the compass and a hint.
 class _OfferHall extends ConsumerWidget {
   const _OfferHall({
     super.key,
@@ -666,6 +608,8 @@ class _OfferHall extends ConsumerWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          compass,
+          const SizedBox(height: 10),
           Row(
             children: [
               Icon(Icons.touch_app_outlined,
@@ -681,8 +625,6 @@ class _OfferHall extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          compass,
         ],
       );
     }
@@ -690,7 +632,6 @@ class _OfferHall extends ConsumerWidget {
     final faction = data.faction(picked.factionId);
     final color = _suitorColor(picked, data);
     final gift = picked.gift;
-    final bannerId = picked.isWayfarer ? null : clanBannerId(picked.factionId);
     final greeting = suitorGreeting(picked, data, lang);
     final nudge = alignmentNudgeOf(picked, tables);
     final tier = faction == null || faction.isLost
@@ -702,23 +643,6 @@ class _OfferHall extends ConsumerWidget {
     final standsFor = picked.isWayfarer
         ? trFor(lang, 'offer_wayfarer_stands')
         : (ownStands == motto ? '' : ownStands);
-    final bannerBox = (pixelBannerSize.width + 2 * WindBanner.room).toDouble();
-    // The banner a little smaller than its pixels (three quarters): the
-    // hall's room goes to the compass and the gift.
-    final Widget flag = SizedBox(
-      width: bannerBox * 0.75,
-      height: pixelBannerSize.height * 0.75,
-      child: FittedBox(
-        child: bannerId == null
-            ? _PlainFlag(color: color, wayfarer: picked.isWayfarer)
-            : SizedBox(
-                key: Key('offer_banner_${picked.factionId}'),
-                width: bannerBox,
-                height: pixelBannerSize.height.toDouble(),
-                child: WindBanner(id: bannerId, scale: 1),
-              ),
-      ),
-    );
     final alignKey = nudge > 0
         ? 'offer_align_good'
         : nudge < 0
@@ -733,83 +657,6 @@ class _OfferHall extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                color: color.withValues(alpha: 0.12),
-                border: Border.all(color: color.withValues(alpha: 0.6)),
-              ),
-              child: flag,
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    suitorName(picked, data, lang),
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontFamily: InkFonts.display, color: color),
-                  ),
-                  if (tier != null)
-                    Text(
-                      trFor(lang, standingTierKey(tier)),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                          color: Color(tierColor(tier)),
-                          fontWeight: FontWeight.w600),
-                    ),
-                  if (motto.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text('“$motto”',
-                          style: theme.textTheme.bodySmall
-                              ?.copyWith(fontStyle: FontStyle.italic)),
-                    ),
-                  if (standsFor.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6),
-                      child: Text.rich(
-                        TextSpan(children: [
-                          TextSpan(
-                              text: '${trFor(lang, 'offer_stands_for')} · ',
-                              style: TextStyle(
-                                  color: theme.colorScheme.onSurfaceVariant)),
-                          TextSpan(
-                              text: standsFor,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w600)),
-                        ]),
-                        key: Key('offer_stands_${picked.factionId}'),
-                        style: theme.textTheme.bodySmall,
-                      ),
-                    ),
-                  const SizedBox(height: 6),
-                  Container(
-                    key: const Key('offer_alignment_word'),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border:
-                          Border.all(color: alignColor.withValues(alpha: 0.7)),
-                      color: alignColor.withValues(alpha: 0.10),
-                    ),
-                    child: Text(
-                      '${trFor(lang, 'alignment_label')} · ${trFor(lang, alignKey)}',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                          color: alignColor, fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
         compass,
         if (preview.isEmpty) ...[
           const SizedBox(height: 6),
@@ -819,6 +666,75 @@ class _OfferHall extends ConsumerWidget {
               style: theme.textTheme.labelMedium
                   ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         ],
+        const SizedBox(height: 12),
+        // The charter, on a band of the clan's colour.
+        Container(
+          padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: color.withValues(alpha: 0.6)),
+            gradient: LinearGradient(colors: [
+              color.withValues(alpha: 0.28),
+              color.withValues(alpha: 0.05),
+            ]),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                suitorName(picked, data, lang),
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontFamily: InkFonts.display, color: color),
+              ),
+              if (tier != null)
+                Text(
+                  trFor(lang, standingTierKey(tier)),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                      color: Color(tierColor(tier)),
+                      fontWeight: FontWeight.w600),
+                ),
+              if (motto.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text('“$motto”',
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(fontStyle: FontStyle.italic)),
+                ),
+              if (standsFor.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Text.rich(
+                    TextSpan(children: [
+                      TextSpan(
+                          text: '${trFor(lang, 'offer_stands_for')} · ',
+                          style: TextStyle(
+                              color: theme.colorScheme.onSurfaceVariant)),
+                      TextSpan(
+                          text: standsFor,
+                          style: const TextStyle(fontWeight: FontWeight.w600)),
+                    ]),
+                    key: Key('offer_stands_${picked.factionId}'),
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ),
+              const SizedBox(height: 6),
+              Container(
+                key: const Key('offer_alignment_word'),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: alignColor.withValues(alpha: 0.7)),
+                  color: alignColor.withValues(alpha: 0.10),
+                ),
+                child: Text(
+                  '${trFor(lang, 'alignment_label')} · ${trFor(lang, alignKey)}',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                      color: alignColor, fontWeight: FontWeight.w700),
+                ),
+              ),
+            ],
+          ),
+        ),
         const SizedBox(height: 12),
         Wrap(
           spacing: 6,
