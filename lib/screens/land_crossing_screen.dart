@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../data/ability_check.dart';
 import '../data/journey_rules.dart' show watchesPerDay;
@@ -14,6 +15,12 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+
+/// The story choice (`'<node>#<choice index>'`) whose crossing was just
+/// lost or turned back from, after its check and fight went the party's
+/// way: taken again, it sets out at once, with no check or fight played
+/// twice. Held for the session only; leaving the app forgets it.
+final crossingRetryProvider = StateProvider<String?>((ref) => null);
 
 /// Plays the land route [routeId] (land_routes.json) on its own screen,
 /// the way a voyage plays on the voyage screen: true once the party is on
@@ -71,6 +78,10 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
   String _checkLine = '';
   var _busy = false;
 
+  /// The party's health as it set out: a lost crossing carries it back no
+  /// better off (see turnBackHealth).
+  int? _departureHealth;
+
   int get _chapter => ref.read(reachedChapterProvider);
 
   LandEvent? get _event =>
@@ -79,6 +90,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
   @override
   void initState() {
     super.initState();
+    _departureHealth = ref.read(playerSessionProvider).currentHealth;
     if (_drawn.isEmpty) _phase = _Phase.arrived;
   }
 
@@ -108,8 +120,10 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
         health: session.currentHealth,
         maxHealth: session.maxHealth,
         change: outcome.healthChange(session.maxHealth));
-    final target =
-        step.failed ? turnBackHealth(session.maxHealth) : step.health;
+    final target = step.failed
+        ? turnBackHealth(session.maxHealth,
+            departureHealth: _departureHealth ?? session.currentHealth)
+        : step.health;
     await notifier.applyChoiceEffects(
       goldMod: outcome.gold,
       healAmount: target - session.currentHealth,

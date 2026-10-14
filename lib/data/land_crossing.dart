@@ -139,6 +139,7 @@ class LandRoute {
     this.roads = const [],
     required this.days,
     this.biome = '',
+    this.terrain = '',
     this.chapter = 1,
     this.events = const {},
   });
@@ -152,6 +153,7 @@ class LandRoute {
         roads: [...?(json['roads'] as List?)?.map((e) => e.toString())],
         days: (json['days'] as num?)?.toInt() ?? 1,
         biome: json['biome']?.toString() ?? '',
+        terrain: json['terrain']?.toString() ?? '',
         chapter: (json['chapter'] as num?)?.toInt() ?? 1,
         events: {
           for (final MapEntry(:key, :value)
@@ -168,11 +170,24 @@ class LandRoute {
   final List<String> roads;
   final int days;
   final String biome;
+
+  /// The scene kit the side view draws it with (one of [landTerrains]).
+  final String terrain;
   final int chapter;
   final Map<String, int> events;
 
   String nameFor(bool fr) => fr && nameFr.isNotEmpty ? nameFr : name;
 }
+
+/// The side view's scene kits: what a route's `terrain` may be.
+const List<String> landTerrains = [
+  'desert',
+  'mountain',
+  'forest',
+  'marsh',
+  'snow',
+  'ruins',
+];
 
 /// [routes]' record [id] (land_routes.json), or null.
 LandRoute? landRouteFor(Map<String, dynamic> routes, String id) {
@@ -219,13 +234,24 @@ List<String> drawCrossing(LandRoute route, Iterable<String> known,
 /// chapter after the first.
 int landCheckDc(int dc, int chapter) => dc + max(0, chapter - 1);
 
-/// The share of the party's health it is carried back with when a
-/// crossing fails: wounded, but able to set out again.
+/// The most of the party's health it is carried back with when a
+/// crossing fails: wounded, never better off than when it set out.
 const double turnBackHealthShare = 0.5;
 
-/// The health a party of [maxHealth] is carried back with.
-int turnBackHealth(int maxHealth) =>
-    max(1, (maxHealth * turnBackHealthShare).round());
+/// The least it is carried back with, whatever it set out with: enough to
+/// set out again and, as the simulator measures it (nearly every party
+/// crosses from a fifth of its health), not to be stuck at the start.
+const double turnBackHealthFloor = 0.25;
+
+/// The health a party of [maxHealth] that set out with [departureHealth]
+/// is carried back with: what it set out with, at most half, at least a
+/// quarter (v1.287.0: a failed crossing was a free rest for a party that
+/// set out below half).
+int turnBackHealth(int maxHealth, {required int departureHealth}) {
+  final most = (maxHealth * turnBackHealthShare).round();
+  final least = max(1, (maxHealth * turnBackHealthFloor).round());
+  return max(least, min(departureHealth, most));
+}
 
 /// Where a crossing's step leaves the party: its [health] after [change],
 /// or [failed] when that runs it out (the crossing is lost).
@@ -347,7 +373,7 @@ CrossingResult resolveCrossing(
     if (step.failed) {
       return CrossingResult(
           arrived: false,
-          health: turnBackHealth(maxHealth),
+          health: turnBackHealth(maxHealth, departureHealth: health),
           gold: coin,
           days: days,
           events: met);

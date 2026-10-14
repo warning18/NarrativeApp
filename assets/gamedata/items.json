@@ -4255,7 +4255,7 @@
     "alignedArmorBonus": 0,
     "itemName_fr": "Bois d’œuvre",
     "description": "Seasoned planks from Saltmouth’s yards and the wrecks along the coast. Every hall in the camp starts as a stack of these.",
-    "description_fr": "Des planches séchées des chantiers de Bouche-de-Sel et des épaves de la côte. Chaque halle du camp commence par une pile de celles-ci.",
+    "description_fr": "Des planches séchées des chantiers de Bouche-de-Sel et des épaves de la côte. Chaque halle du camp commence par une pile de ces planches.",
     "materialTier": 1
   },
   "material_cut_stone": {
@@ -4315,7 +4315,7 @@
     "alignedArmorBonus": 0,
     "itemName_fr": "Verre de scorie",
     "description": "Black glass from the Slag Kilns, sharp as a promise. The Ashen Quarter’s builders set it in mortar to keep the ash out.",
-    "description_fr": "Du verre noir des Fours à scorie, tranchant comme une promesse. Les bâtisseurs du Quartier de Cendre le scellent au mortier pour tenir la cendre dehors.",
+    "description_fr": "Du verre noir des Fours à scorie, tranchant comme une promesse. Les bâtisseurs du Quartier des Cendres le scellent au mortier pour tenir la cendre dehors.",
     "materialTier": 2
   },
   "material_ash_steel": {
@@ -4344,8 +4344,8 @@
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "itemName_fr": "Lingot d’acier de cendre",
-    "description": "Steel folded in ash-fire at Anvil Gate, rarer than gold and never sold over a counter. A hall built on it does not fall.",
-    "description_fr": "De l’acier replié au feu de cendre à la Porte de l’Enclume, plus rare que l’or et jamais vendu au comptoir. Une halle bâtie dessus ne tombe pas.",
+    "description": "Steel folded in ash-fire by the Anvil-Deaf of Cinder Row, rarer than gold and never sold over a counter. A hall built on it does not fall.",
+    "description_fr": "De l’acier replié au feu de cendre par les Sourds de l’Enclume de la Rue des Braises, plus rare que l’or et jamais vendu au comptoir. Une halle bâtie dessus ne tombe pas.",
     "materialTier": 2
   },
   "material_rime_crystal": {
@@ -4405,7 +4405,7 @@
     "alignedArmorBonus": 0,
     "itemName_fr": "Verre de déchirure",
     "description": "Glass the tear leaves on the Hollow Shore, warm to the touch. The Vigil will not handle it; builders will, for a price.",
-    "description_fr": "Le verre que la déchirure laisse sur la Rive Creuse, tiède au toucher. La Vigile refuse d’y toucher ; les bâtisseurs, eux, le font, contre un prix.",
+    "description_fr": "Le verre que la déchirure laisse sur la Rive Creuse, tiède au toucher. La Veille refuse d’y toucher ; les bâtisseurs, eux, le font, contre un prix.",
     "materialTier": 3
   },
   "material_shroud_thread": {
@@ -4465,7 +4465,7 @@
     "alignedArmorBonus": 0,
     "itemName_fr": "Laiton de la Lanterne",
     "description": "Brass from Candlehold’s lamp-works, bright even in the dark. The Lantern Throne’s halls are fitted with it.",
-    "description_fr": "Du laiton des ateliers de lampes de Fort-Chandelle, brillant même dans le noir. Les halles du Trône de la Lanterne en sont garnies.",
+    "description_fr": "Du laiton des ateliers de lampes de Candlehold, brillant même dans le noir. Les halles du Trône de la Lanterne en sont garnies.",
     "materialTier": 4
   },
   "material_white_fleet_oak": {

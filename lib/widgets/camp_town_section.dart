@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/camp_works.dart' show tierFirstChapter, workTierOf;
 import '../data/cliff_town.dart';
 import '../data/materials.dart';
 import '../data/zone_gating.dart';
 import '../l10n/app_locale.dart';
 import '../gamedata/db_schema.dart' show itemsSchema;
 import '../l10n/app_strings.dart';
+import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/game_db_providers.dart' show localizedDbProvider;
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
@@ -166,7 +168,11 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
     await notifier.buildHouse(houseId, cost,
         unlocksShopId: house['unlocksShopId']?.toString() ?? '',
         requiredFlags: requiredFlagsOf(house),
-        materialCost: materialCountsOf(house, 'materialCost'));
+        materialCost: materialCountsOf(house, 'materialCost'),
+        // A house comes with its tier's chapter (camp_works.dart).
+        fromChapter: tierFirstChapter(workTierOf(house)),
+        chapter: ref.read(reachedChapterProvider),
+        requiredAllyId: house['requiredAllyId']?.toString());
     if (!mounted) return;
     // Nothing to tell if it did not go up (the purse or the flags changed
     // under the button).
@@ -230,6 +236,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(playerSessionProvider);
+    final reached = ref.watch(reachedChapterProvider);
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final town = CliffTown.build(session.townPieces);
@@ -397,12 +404,19 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
               () {
                 final house = widget.houses[houseId] as Map<String, dynamic>;
                 final isBuilt = built.contains(houseId);
-                final lock = isBuilt || meetsRequiredFlags(house, session.flags)
+                final comesIn = tierFirstChapter(workTierOf(house));
+                final lock = isBuilt
                     ? null
-                    : [
-                        tr(ref, 'requires_zone_prefix'),
-                        lockRequirementName(house, session.flags, widget.zones),
-                      ].whereType<String>().join(': ');
+                    : reached < comesIn
+                        ? tr(ref, 'heard_reason_laterChapter')
+                            .replaceAll('{n}', '$comesIn')
+                        : meetsRequiredFlags(house, session.flags)
+                            ? null
+                            : [
+                                tr(ref, 'requires_zone_prefix'),
+                                lockRequirementName(
+                                    house, session.flags, widget.zones),
+                              ].whereType<String>().join(': ');
                 return card(
                   id: houseId,
                   name: _nameOf(houseId),
@@ -422,7 +436,10 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
       if (isTownAddition(id)) return 0;
       if (built.contains(id)) return 3;
       final house = widget.houses[id] as Map<String, dynamic>;
-      if (!meetsRequiredFlags(house, session.flags)) return 2;
+      if (!meetsRequiredFlags(house, session.flags) ||
+          reached < tierFirstChapter(workTierOf(house))) {
+        return 2;
+      }
       final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
       final materials = materialCountsOf(house, 'materialCost');
       return session.gold >= cost &&

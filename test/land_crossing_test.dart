@@ -34,6 +34,7 @@ void main() {
       expect(route.days, greaterThan(0), reason: id);
       expect(route.nameFr, isNotEmpty, reason: id);
       expect(route.roads, isNotEmpty, reason: id);
+      expect(landTerrains, contains(route.terrain), reason: id);
       for (final road in route.roads) {
         expect(roads.containsKey(road), isTrue, reason: '$id: $road');
       }
@@ -86,8 +87,11 @@ void main() {
         (health: 100, failed: false));
     expect(
         afterLandStep(health: 10, maxHealth: 100, change: -10).failed, isTrue);
-    expect(turnBackHealth(140), 70);
-    expect(turnBackHealth(1), 1);
+    // At most half, never better off than at departure, at least a quarter.
+    expect(turnBackHealth(140, departureHealth: 140), 70);
+    expect(turnBackHealth(140, departureHealth: 50), 50);
+    expect(turnBackHealth(140, departureHealth: 10), 35);
+    expect(turnBackHealth(1, departureHealth: 1), 1);
     expect(landCheckDc(10, 1), 10);
     expect(landCheckDc(10, 4), 13);
   });
@@ -129,7 +133,40 @@ void main() {
         gold: 0,
         modifierFor: (_) => 0,
         random: Random(1));
-    if (!spent.arrived) expect(spent.health, turnBackHealth(140));
+    if (!spent.arrived) {
+      expect(spent.health, turnBackHealth(140, departureHealth: 1));
+    }
+  });
+
+  test('the second leg, the Sleeper to the White Wells, is drawn and crossed',
+      () {
+    final wells = landRouteFor(routes, 'sleeper_to_wells')!;
+    expect(wells.from, 'sleeper');
+    expect(wells.to, 'wells');
+    var arrived = 0;
+    for (var seed = 0; seed < 500; seed++) {
+      final result = resolveCrossing(wells, events,
+          health: 140,
+          maxHealth: 140,
+          gold: 30,
+          modifierFor: (_) => 1,
+          random: Random(seed));
+      expect(result.events, hasLength(wells.days));
+      if (result.arrived) arrived++;
+    }
+    expect(arrived, greaterThan(475));
+  });
+
+  test('every way from the Sleeper into the White Wells crosses the second leg',
+      () {
+    final story = _json('assets/Cleaned_Narrative_DAG.json');
+    for (final nodeId in ['1140', '1140_spotted']) {
+      for (final raw in (story[nodeId]['choices'] as List)) {
+        final choice = StoryChoice.fromJson(Map<String, dynamic>.from(raw));
+        if (choice.nextId != '1200') continue;
+        expect(choice.landRouteId, 'sleeper_to_wells', reason: nodeId);
+      }
+    }
   });
 
   test('every way out of the wreck toward the Sleeper crosses the desert', () {

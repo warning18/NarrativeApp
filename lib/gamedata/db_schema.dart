@@ -1,6 +1,7 @@
 import '../combat/field_anomaly.dart' show FightStage;
 import '../combat/skill_vfx.dart';
 import '../data/companion_remarks.dart' show remarkTriggerOptions;
+import '../data/land_crossing.dart' show landTerrains;
 import '../data/geography.dart'
     show
         BiomePattern,
@@ -2278,6 +2279,14 @@ final DbSchema housesSchema = DbSchema(
   visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'houseID', label: 'House ID', type: FieldType.text),
+    FieldSchema(
+      key: 'category',
+      label: 'Category (the building screen\'s section)',
+      type: FieldType.enumeration,
+      enumOptions: ['sea', 'company', 'workshops', 'greatWorks'],
+      help:
+          'Left empty, it is read from what the house gives (camp_works.dart).',
+    ),
     FieldSchema(key: 'houseName', label: 'House Name', type: FieldType.text),
     FieldSchema(
         key: 'houseName_fr', label: 'House Name (FR)', type: FieldType.text),
@@ -3551,6 +3560,12 @@ final DbSchema landRoutesSchema = DbSchema(
         type: FieldType.integer,
         defaultValue: 3),
     FieldSchema(key: 'biome', label: 'Biome', type: FieldType.text),
+    FieldSchema(
+      key: 'terrain',
+      label: 'Terrain (the side view\'s scene kit)',
+      type: FieldType.enumeration,
+      enumOptions: landTerrains,
+    ),
     FieldSchema(
         key: 'chapter',
         label: 'Chapter (its checks are one harder a chapter after the first)',
