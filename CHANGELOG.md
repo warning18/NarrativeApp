@@ -16,6 +16,16 @@ Saltmouth's six districts in the story, and the whole sphere named.
 - **Saltmouth's ways stand in their districts** (Narrative's seating, board 15): the hub's scenes are re-tagged into the Landward Gate, Tern Row, the Smugglers' Wharf, the Ship-breaker's Yard, the Lantern Alleys and Card Row, so each district shows its own ways. The Lantern Alleys and Card Row are on the world map, with a spot on every chart and a road from the wharf.
 - **Every place on the whole sphere has a name** (Narrative's, English and French): the seven new lands (the Sundown Lands, the Green Girdle, the Gaunt Lands, the Morning Shore, the Far Dawn, the Long Winter, the Last Shelf), four oceans on the chart, the twelve archipelagos and their twenty-nine islands.
 
+## [1.311.0+347]
+
+Every check rolls a d20 on screen; the Journey's marks say what the ways are.
+
+### Changed
+- **A d20 tumbles and lands on every check's roll,** drawn without a panel behind it: its number flickers while it turns in perspective, then the roll settles, the edge turns gold for a success or red for a failure and a ring flashes out of it (a failure shudders). The Skill Challenge waits for each round's die to land before the round counts; a single ability check, in the story and on the expeditions, is rolled the same way and then tells its sum. One reusable widget (`D20Roll`), for the crossings and the voyage to use next.
+- **The Journey's marks look like what the ways are:** a fight with a beast, a guard, a ghost or an archer each have their own mark, a check has one for each ability, a shop is a forge, an apothecary, an arcane bazaar or a chandler, an expedition a cave, ruins, a wood, the shore or the desert. Each mark moves a little when nothing else does (a flag sways, a flame flickers, a boat bobs, a blade glints).
+- **A quest badge on a mark:** a gold bookmark when the way is the main quest's, a plain one for a side job; shown on a way that offers a quest not taken yet or carries one under way forward.
+- **The place's name no longer stamps itself, in yellow, over the map** when the party arrives somewhere new (the seal and the ink still do; the name is in the corner).
+
 ## [1.310.0+346]
 
 The ronin walks.
