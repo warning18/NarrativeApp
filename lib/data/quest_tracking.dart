@@ -64,6 +64,45 @@ QuestGoal questGoalFor(
   );
 }
 
+/// Whether [quest] is one of the story's main quests (`category` Main):
+/// taken on as soon as it is offered, never left for later (Wave 6).
+bool isMainQuest(Map<String, dynamic>? quest) =>
+    quest?['category']?.toString().toLowerCase() == 'main';
+
+/// The main quests offered and not taken on yet whose requirements the
+/// party meets: taken on at once.
+List<String> mainQuestsToTake(
+    Map<String, dynamic> quests, PlayerSession session) {
+  return [
+    for (final id in session.unlockedQuestIds)
+      if (quests[id] case final Map<String, dynamic> quest
+          when isMainQuest(quest) &&
+              !session.activeQuestIds.contains(id) &&
+              !session.completedQuestIds.contains(id) &&
+              session.meetsRequirements(
+                  reqGold: (quest['requiredGold'] as num?)?.toInt() ?? 0,
+                  reqFlags: [
+                    for (final f
+                        in (quest['requiredFlags'] as List?) ?? const [])
+                      f.toString()
+                  ]))
+        id,
+  ];
+}
+
+/// The active quests whose objectives are all met: completed on their own,
+/// with no step of the player's (Wave 6), in the order they were taken.
+List<String> questsReadyToComplete(
+    Map<String, dynamic> quests, PlayerSession session) {
+  return [
+    for (final id in session.activeQuestIds)
+      if (quests[id] case final Map<String, dynamic> quest
+          when !session.completedQuestIds.contains(id) &&
+              questGoalFor(id, quest, session).ready)
+        id,
+  ];
+}
+
 /// Whether the player has come across [questId]: offered, taken on or
 /// done. A play-mode quest list shows nothing else.
 bool questDiscovered(String questId, PlayerSession session) =>

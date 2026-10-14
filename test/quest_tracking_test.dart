@@ -47,6 +47,43 @@ Future<void> _closeDialogs(WidgetTester tester) async {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  group('quests the party need not act on (Wave 6)', () {
+    const quests = <String, dynamic>{
+      'bounty': _bounty,
+      'main': {'questName': 'The chapter', 'category': 'Main'},
+      'locked_main': {
+        'questName': 'Later chapter',
+        'category': 'Main',
+        'requiredFlags': ['camp_founded'],
+      },
+      'side': {'questName': 'An errand', 'category': 'Side'},
+    };
+    test('a main quest offered is taken on, a side quest waits', () {
+      final offered = baseSession()
+          .copyWith(unlockedQuestIds: const ['main', 'locked_main', 'side']);
+      expect(mainQuestsToTake(quests, offered), ['main']);
+      expect(
+          mainQuestsToTake(
+              quests, offered.copyWith(flags: const ['camp_founded'])),
+          ['main', 'locked_main']);
+      expect(
+          mainQuestsToTake(
+              quests, offered.copyWith(activeQuestIds: const ['main'])),
+          isEmpty);
+    });
+    test('a quest whose objectives are met completes', () {
+      final active =
+          baseSession().copyWith(activeQuestIds: const ['bounty', 'side']);
+      // A quest with no objectives is done at once; the bounty waits on
+      // its ghouls.
+      expect(questsReadyToComplete(quests, active), ['side']);
+      expect(
+          questsReadyToComplete(quests,
+              active.copyWith(enemyKillCounts: const {'catacomb_ghoul': 3})),
+          ['bounty', 'side']);
+    });
+  });
+
   group('the followed quest', () {
     test('is the tracked quest while active, else the latest taken on', () {
       expect(followedQuestIdOf(baseSession()), isNull);
@@ -177,7 +214,7 @@ void main() {
   });
 
   testWidgets(
-      'the story shows the followed goal; turning it in from there pays out',
+      'the story shows the followed goal; reached, it completes and pays out',
       (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
@@ -221,23 +258,15 @@ void main() {
     await tester.tapAt(const Offset(10, 10));
     await _settle(tester);
 
-    // One more ghoul: the goal is reached and can be turned in here.
+    // One more ghoul: the goal is reached and the quest completes on its
+    // own (Wave 6), with no turn-in to tap.
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(container
             .read(playerSessionProvider)
             .copyWith(enemyKillCounts: const {'catacomb_ghoul': 2})));
     await _settle(tester);
-    expect(find.byKey(const Key('quest_tracker_ready')), findsOneWidget);
-    // It is announced once, then the notice goes by itself.
-    expect(find.textContaining('Goal reached: The Ossuary Bounty'),
-        findsOneWidget);
-    await tester.pump(const Duration(seconds: 3));
-    await _settle(tester);
-    await tester.tap(tracker);
-    await _settle(tester);
-    await tester.tap(find.text('Turn in'));
-    await _settle(tester);
+    expect(find.text('Turn in'), findsNothing);
     // The bounty asks how it's settled (v1.163): take the sapper's coins.
     expect(find.text('How do you settle it?'), findsOneWidget);
     expect(container.read(playerSessionProvider).completedQuestIds,

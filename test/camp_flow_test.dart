@@ -230,10 +230,11 @@ void main() {
     expect(
         container.read(playerSessionProvider).flags, contains(campFoundedFlag));
     expect(_tab('Journey'), findsNothing);
-    // Founding the camp gives the chapter's quest.
-    expect(find.text('The High Warden’s Fall'), findsOneWidget);
-    await tester.tap(find.text('Accept'));
-    await _settle(tester);
+    // Founding the camp gives the chapter's quest, taken on at once: a
+    // main quest is never left for later (Wave 6).
+    expect(find.text('Accept'), findsNothing);
+    expect(container.read(playerSessionProvider).activeQuestIds,
+        contains('q_ch3_the_high_wardens_fall'));
     await _waitOutNotices(tester);
     expect(find.text('Back at the fire'), findsOneWidget);
     expect(find.byKey(const Key('chapter_card')), findsOneWidget);

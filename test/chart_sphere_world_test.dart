@@ -67,6 +67,28 @@ void main() {
     }
   });
 
+  test('every new land, archipelago, island and ocean has its names', () {
+    expect(storyLandNames.keys.toSet(), storyEmptyLands.keys.toSet());
+    expect(
+        storyArchipelagoNames.keys.toSet(), storyArchipelagoLands.keys.toSet());
+    final islands = {for (final ix in storyArchipelagoLands.values) ...ix};
+    expect(storyIslandNames.keys.toSet(), islands);
+    for (final n in [
+      ...storyLandNames.values,
+      ...storyArchipelagoNames.values,
+      ...storyIslandNames.values,
+    ]) {
+      expect(n.en, isNotEmpty);
+      expect(n.fr, isNotEmpty);
+    }
+    final seas = chart.labels.where((l) => l.sea).toList();
+    expect(seas.map((l) => l.en), contains('the Silent Sea'));
+    expect(seas, hasLength(7));
+    for (final l in seas) {
+      expect(onLand(Offset(l.x, l.y)), isFalse, reason: l.en);
+    }
+  });
+
   test('every 30 degrees of longitude holds land and sea; about a third land',
       () {
     var land = 0.0, all = 0.0;
