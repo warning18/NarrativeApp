@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.318.0+354]
+
+The title popin names its clan.
+
+### Changed
+- **Reading a title** (hold its chip on the Character tab) opens a sheet instead of a plain dialog: the granting clan's banner beside the title's own badge in the clan's colour, "Granted by" and the clan's name, the effect in a card of its own, then the words it came with, quiet. A title you can choose has Wear or Take off in the sheet; a brand ("the Marked") stays unchoosable and shows in red.
+
 ## [1.317.0+353]
 
 The item popin reads at a glance.
