@@ -15,6 +15,11 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../data/climate.dart' show WeatherKind;
+import '../providers/climate_provider.dart' show skyHereProvider;
+import '../widgets/side_view/desert_kit.dart';
+import '../widgets/side_view/ruins_kit.dart';
+import '../widgets/side_view/side_view.dart';
 
 /// The story choice (`'<node>#<choice index>'`) whose crossing was just
 /// lost or turned back from, after its check and fight went the party's
@@ -247,6 +252,80 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
         );
     }
 
+    // The scene over the words (board 6), by the route's terrain: the
+    // desert kit while it crosses a desert, the ruins kit among ruins; a
+    // terrain with no kit yet keeps only the strip of day and health.
+    final terrain = widget.route.terrain;
+    final scene = terrain == 'desert' || terrain == 'ruins';
+    final ruins = terrain == 'ruins';
+    final progress = _phase == _Phase.arrived
+        ? 1.0
+        : _drawn.isEmpty
+            ? 0.0
+            : ((_day + (_phase == _Phase.result ? 1 : 0)) / _drawn.length)
+                .clamp(0.0, 1.0);
+    final storm = _phase == _Phase.event && event?.id == 'sandstorm';
+    final sky = ref.watch(skyHereProvider)?.today().kind;
+    final particles = storm
+        ? SideParticles.dust
+        : switch (sky) {
+            WeatherKind.dust => SideParticles.dust,
+            WeatherKind.rain => SideParticles.rain,
+            WeatherKind.snow => SideParticles.snow,
+            WeatherKind.ash => SideParticles.ash,
+            WeatherKind.fog => SideParticles.fog,
+            _ => ruins ? SideParticles.ash : SideParticles.shimmer,
+          };
+    final hud = Padding(
+      padding: const EdgeInsets.all(8),
+      child: Row(
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Text(
+                tr(ref, 'crossing_day')
+                    .replaceAll('{n}', '${min(_day + 1, _drawn.length)}')
+                    .replaceAll('{m}', '${_drawn.length}'),
+                style:
+                    theme.textTheme.labelLarge?.copyWith(color: Colors.white),
+              ),
+            ),
+          ),
+          const Spacer(),
+          TutorialTarget(
+            id: 'crossing.health',
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.55),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.favorite, size: 16, color: Colors.white),
+                  const SizedBox(width: 6),
+                  SizedBox(
+                    width: 96,
+                    child: LinearProgressIndicator(
+                        key: const Key('crossing_health'), value: health),
+                  ),
+                  const SizedBox(width: 6),
+                  Text('${session.currentHealth}/${session.maxHealth}',
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: Colors.white)),
+                ]),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
     return PopScope(
       // The crossing is played in one sitting: its end is the way out.
       canPop: done,
@@ -257,31 +336,32 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
             automaticallyImplyLeading: false,
             title: Text(widget.route.nameFor(fr)),
           ),
-          body: ListView(
-            padding: const EdgeInsets.all(16),
+          body: Column(
             children: [
-              Text(
-                tr(ref, 'crossing_day')
-                    .replaceAll('{n}', '${min(_day + 1, _drawn.length)}')
-                    .replaceAll('{m}', '${_drawn.length}'),
-                style: theme.textTheme.labelLarge,
+              if (scene)
+                Stack(
+                  children: [
+                    SideViewScene(
+                      key: const Key('crossing_scene'),
+                      layers: ruins
+                          ? ruinsLayers(progress: progress)
+                          : desertLayers(progress: progress),
+                      actors: desertActors(),
+                      particles: particles,
+                      intensity: storm ? 1 : 0.6,
+                      moving: _phase == _Phase.result,
+                    ),
+                    Positioned(left: 0, right: 0, top: 0, child: hud),
+                  ],
+                )
+              else
+                hud,
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.all(16),
+                  children: [body],
+                ),
               ),
-              const SizedBox(height: 8),
-              TutorialTarget(
-                id: 'crossing.health',
-                child: Row(children: [
-                  const Icon(Icons.favorite, size: 18),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: LinearProgressIndicator(
-                        key: const Key('crossing_health'), value: health),
-                  ),
-                  const SizedBox(width: 8),
-                  Text('${session.currentHealth}/${session.maxHealth}'),
-                ]),
-              ),
-              const SizedBox(height: 16),
-              body,
             ],
           ),
         ),
