@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.309.0+345]
+
+The story world on the whole sphere.
+
+### Changed
+- **The story world covers the whole globe** (board 11): 360° of longitude by 180° of latitude. The story's three lands are moved in longitude with their latitudes, and so their climates, kept: the Ashen Continent to the west, the Old Continent to the east, the Lantern Isles between. Five empty lands, a polar land under an ice cap over each pole, and twelve archipelagos fill the rest (about 45 % land; every 30° of longitude has land and sea). The globe can turn right over either pole and comes round past the seam; the ice caps are the coldest places on it. The new lands' names are placeholders. The map looks A, B and C keep their band. (The smaller sphere and the pole buttons are UX's, to come.)
+
 ## [1.308.0+344]
 
 The city plan's data: Saltmouth from above, its six districts, free walking.
