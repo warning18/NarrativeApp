@@ -302,5 +302,207 @@
         }
       }
     ]
+  },
+  "ash_squall": {
+    "id": "ash_squall",
+    "name": "Ash squall",
+    "name_fr": "Bourrasque de cendre",
+    "text": "The wind turns off the flats and brings the burned town with it: grey, warm, and in the mouth.",
+    "text_fr": "Le vent quitte les plaines et apporte la ville brûlée avec lui : grise, tiède, et dans la bouche.",
+    "choices": [
+      {
+        "id": "push",
+        "text": "Wrap your face and walk on",
+        "text_fr": "Vous couvrir le visage et avancer",
+        "check": "constitution",
+        "dc": 10,
+        "success": {
+          "healthPct": -5,
+          "note": "You come out of it coughing, but on the road.",
+          "note_fr": "Vous en sortez en toussant, mais sur la route."
+        },
+        "fail": {
+          "healthPct": -15,
+          "note": "It fills your lungs for an hour you will remember.",
+          "note_fr": "Elle vous remplit les poumons pendant une heure dont vous vous souviendrez."
+        }
+      },
+      {
+        "id": "cellar",
+        "text": "Shelter in a cellar until it passes",
+        "text_fr": "Vous abriter dans une cave jusqu’à ce qu’elle passe",
+        "outcome": {
+          "healthPct": -3,
+          "days": 1,
+          "note": "The cellar was someone’s. You lose the afternoon.",
+          "note_fr": "La cave était à quelqu’un. Vous perdez l’après-midi."
+        }
+      }
+    ]
+  },
+  "inquisition_patrol": {
+    "id": "inquisition_patrol",
+    "name": "A patrol",
+    "name_fr": "Une patrouille",
+    "text": "Four grey cloaks on the road ahead, walking slowly, the way people walk who expect everyone else to stop.",
+    "text_fr": "Quatre manteaux gris sur la route, qui marchent lentement, comme marchent ceux qui s’attendent à ce que tous les autres s’arrêtent.",
+    "choices": [
+      {
+        "id": "hide",
+        "text": "Get off the road and wait",
+        "text_fr": "Quitter la route et attendre",
+        "check": "dexterity",
+        "dc": 11,
+        "success": {
+          "healthPct": 0,
+          "note": "They pass close enough to smell the incense.",
+          "note_fr": "Ils passent assez près pour que vous sentiez l’encens."
+        },
+        "fail": {
+          "healthPct": -14,
+          "note": "One of them looks down. The rest is quick and bad.",
+          "note_fr": "L’un d’eux baisse les yeux. La suite est rapide et mauvaise."
+        }
+      },
+      {
+        "id": "bluff",
+        "text": "Walk up and give them a pilgrim’s name",
+        "text_fr": "Aller à leur rencontre et donner un nom de pèlerin",
+        "check": "charisma",
+        "dc": 12,
+        "success": {
+          "healthPct": 0,
+          "note": "They bless you, which is worse, and let you by.",
+          "note_fr": "Ils vous bénissent, ce qui est pire, et vous laissent passer."
+        },
+        "fail": {
+          "healthPct": -10,
+          "gold": -10,
+          "note": "They search you and keep what they like.",
+          "note_fr": "Ils vous fouillent et gardent ce qui leur plaît."
+        }
+      },
+      {
+        "id": "pay",
+        "text": "Pay the road toll they invent",
+        "text_fr": "Payer le péage qu’ils inventent",
+        "outcome": {
+          "healthPct": 0,
+          "gold": -15,
+          "note": "It is a very holy toll.",
+          "note_fr": "C’est un péage très saint."
+        }
+      }
+    ]
+  },
+  "burned_shrine": {
+    "id": "burned_shrine",
+    "name": "A burned shrine",
+    "name_fr": "Un sanctuaire brûlé",
+    "text": "A wayside shrine with its roof gone. Someone has left bread on the altar since the fire.",
+    "text_fr": "Un sanctuaire de bord de route au toit effondré. Quelqu’un a laissé du pain sur l’autel depuis l’incendie.",
+    "choices": [
+      {
+        "id": "rest",
+        "text": "Rest inside its walls",
+        "text_fr": "Vous reposer entre ses murs",
+        "outcome": {
+          "healthPct": 10,
+          "note": "For an hour nothing on the coast knows where you are.",
+          "note_fr": "Pendant une heure, rien sur la côte ne sait où vous êtes."
+        }
+      },
+      {
+        "id": "search",
+        "text": "Search the ashes",
+        "text_fr": "Fouiller les cendres",
+        "check": "wisdom",
+        "dc": 11,
+        "success": {
+          "healthPct": 0,
+          "gold": 20,
+          "note": "Under the altar, a tin of coins nobody came back for.",
+          "note_fr": "Sous l’autel, une boîte de pièces que personne n’est revenu chercher."
+        },
+        "fail": {
+          "healthPct": -6,
+          "note": "A beam comes down where you were kneeling.",
+          "note_fr": "Une poutre tombe là où vous étiez agenouillé."
+        }
+      }
+    ]
+  },
+  "feral_dogs": {
+    "id": "feral_dogs",
+    "name": "Dogs",
+    "name_fr": "Des chiens",
+    "text": "Dogs that used to belong to the town, and remember it, and blame you.",
+    "text_fr": "Des chiens qui appartenaient à la ville, qui s’en souviennent, et qui vous en veulent.",
+    "choices": [
+      {
+        "id": "stand",
+        "text": "Stand your ground and drive them off",
+        "text_fr": "Tenir bon et les chasser",
+        "check": "strength",
+        "dc": 11,
+        "success": {
+          "healthPct": -4,
+          "note": "They break and scatter into the ruins.",
+          "note_fr": "Ils cèdent et se dispersent dans les ruines."
+        },
+        "fail": {
+          "healthPct": -14,
+          "note": "They go, eventually, and not all of them empty-mouthed.",
+          "note_fr": "Ils finissent par partir, et pas tous la gueule vide."
+        }
+      },
+      {
+        "id": "climb",
+        "text": "Climb a wall and wait them out",
+        "text_fr": "Grimper sur un mur et attendre qu’ils se lassent",
+        "outcome": {
+          "healthPct": -3,
+          "note": "They lose interest before you lose your grip.",
+          "note_fr": "Ils se lassent avant que vous ne lâchiez prise."
+        }
+      }
+    ]
+  },
+  "falling_wall": {
+    "id": "falling_wall",
+    "name": "A street that gives way",
+    "name_fr": "Une rue qui cède",
+    "text": "The only way through is a lane of leaning walls, still warm, still settling.",
+    "text_fr": "Le seul passage est une ruelle de murs penchés, encore tièdes, qui se tassent encore.",
+    "choices": [
+      {
+        "id": "run",
+        "text": "Run it",
+        "text_fr": "La traverser en courant",
+        "check": "dexterity",
+        "dc": 10,
+        "success": {
+          "healthPct": 0,
+          "note": "Behind you, the lane folds in on itself.",
+          "note_fr": "Derrière vous, la ruelle se replie sur elle-même."
+        },
+        "fail": {
+          "healthPct": -16,
+          "note": "A wall comes down on your shoulder.",
+          "note_fr": "Un mur s’effondre sur votre épaule."
+        }
+      },
+      {
+        "id": "around",
+        "text": "Go the long way round",
+        "text_fr": "Faire le grand tour",
+        "outcome": {
+          "healthPct": -4,
+          "days": 1,
+          "note": "Half a day of rubble, but whole.",
+          "note_fr": "Une demi-journée de gravats, mais entier."
+        }
+      }
+    ]
   }
 }

@@ -35,6 +35,8 @@ void main() {
       expect(route.nameFr, isNotEmpty, reason: id);
       expect(route.roads, isNotEmpty, reason: id);
       expect(landTerrains, contains(route.terrain), reason: id);
+      expect(_json('assets/gamedata/biomes.json').keys, contains(route.biome),
+          reason: id);
       for (final road in route.roads) {
         expect(roads.containsKey(road), isTrue, reason: '$id: $road');
       }
