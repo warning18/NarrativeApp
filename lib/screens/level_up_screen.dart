@@ -1,6 +1,6 @@
 // Level up, in Stitched Ink (v1.201): the level and its road to the next
-// in a panel, the points to spend in gold, and the stats in their four
-// groups, each a seam-bordered row with its value and a "+1 Point".
+// in a panel, the points to spend in gold, the training offer they buy
+// (Wave 7), and the stats in their four groups.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/help_hint.dart';
@@ -11,6 +11,7 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/level_up_stats.dart';
+import 'training_picker.dart';
 
 class LevelUpScreen extends ConsumerWidget {
   const LevelUpScreen({super.key});
@@ -99,6 +100,8 @@ class LevelUpScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 18),
+            const TrainingPicker(),
+            const SizedBox(height: 12),
             const LevelUpStats(tutorialTargets: true),
           ],
         ),
