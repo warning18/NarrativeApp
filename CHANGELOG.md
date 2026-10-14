@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.294.0+330]
+
+The building screen: four sections, what is missing, where to find it.
+
+### Changed
+- **The Town tab's houses are a list in four sections** (the Sea, the Company, the Workshops, the Great Works, with Narrative's names and one-line blurbs, each with how many of its houses stand), read from `campWorksProvider`. A card says where a house stands: **Built**, **Ready** (with Build), **Missing** (its cost as icon chips, the count in red while short, and the first thing missing), or a **silhouette** for a house that has not come yet, with one reason ("Chapter 5", "When Kelda joins") and no word of what it gives. No section folds.
+- **A tap on a card opens a sheet** that says everything the card says, with where each missing thing comes from, in plain text: the expeditions that pay a material or set a flag, the shops that stock it ("No shop sells it" for a rare), and what is left of the gold. Build is on the sheet too, grey until the house can go up. The cliff town still outlines where the selected house would go.
+- The additions tab keeps its strip of cards.
+
 ## [1.293.0+329]
 
 The home bar's map icon opens the full map.
