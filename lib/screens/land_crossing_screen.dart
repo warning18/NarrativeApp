@@ -10,7 +10,10 @@ import '../data/land_crossing.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/aftermath_provider.dart'
+    show lastFightOutcomeProvider, lastFightRetreatedProvider;
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
+import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
@@ -20,6 +23,7 @@ import '../providers/climate_provider.dart' show skyHereProvider;
 import '../widgets/side_view/desert_kit.dart';
 import '../widgets/side_view/ruins_kit.dart';
 import '../widgets/side_view/side_view.dart';
+import 'fight_screen.dart';
 
 /// The story choice (`'<node>#<choice index>'`) whose crossing was just
 /// lost or turned back from, after its check and fight went the party's
@@ -130,8 +134,8 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
   Future<void> _choose(LandChoice choice) async {
     if (_busy) return;
     setState(() => _busy = true);
+    if (choice.isFight) return _fight(choice);
     final lang = ref.read(appLanguageProvider);
-    final notifier = ref.read(playerSessionProvider.notifier);
     var outcome = choice.outcome;
     var checkLine = '';
     if (choice.hasCheck) {
@@ -148,11 +152,54 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
           '${trFor(lang, 'vs_dc_label')} ${result.dc} — '
           '${trFor(lang, result.success ? 'ability_check_success' : 'ability_check_fail')}';
     }
+    await _settle(outcome, checkLine);
+  }
+
+  /// A fight on the road (the scavengers, v1.305.0): played on the battle
+  /// screen, with the party's own health, rewards and loot. Won, the
+  /// choice's success follows; broken off, its fail; lost, the crossing
+  /// is lost and the party carried back (see turnBackHealth).
+  Future<void> _fight(LandChoice choice) async {
+    final lang = ref.read(appLanguageProvider);
+    final enemies = await loadedGameDb(ref, enemiesSchema);
+    final enemy = enemies[choice.fightEnemyId] as Map<String, dynamic>?;
+    if (!mounted) return;
+    if (enemy == null) return _settle(choice.fail, '');
+    ref.read(combatActiveProvider.notifier).state = true;
+    final won = await Navigator.of(context).push<bool>(MaterialPageRoute(
+        builder: (_) =>
+            FightScreen(enemyId: choice.fightEnemyId!, enemy: enemy)));
+    ref.read(combatActiveProvider.notifier).state = false;
+    final retreated = ref.read(lastFightRetreatedProvider);
+    ref.read(lastFightRetreatedProvider.notifier).state = false;
+    // The road tells the fight itself: no aftermath for the next scene.
+    ref.read(lastFightOutcomeProvider.notifier).state = null;
+    if (!mounted) return;
+    if (won == true) {
+      return _settle(choice.success, trFor(lang, 'crossing_fight_won'));
+    }
+    if (retreated) {
+      return _settle(choice.fail, trFor(lang, 'crossing_fight_fled'));
+    }
+    // A permadeath loss: the run is over, there is no road to go on.
+    if (won == null) return Navigator.of(context).pop(false);
+    await _settle(const LandOutcome(), trFor(lang, 'crossing_fight_lost'),
+        lost: true);
+  }
+
+  /// [outcome] on the party, told by [line] (the check or the fight) and
+  /// the outcome's note, and a day gone; [lost] (a fight lost) or health
+  /// run out loses the crossing.
+  Future<void> _settle(LandOutcome outcome, String line,
+      {bool lost = false}) async {
+    final lang = ref.read(appLanguageProvider);
+    final notifier = ref.read(playerSessionProvider.notifier);
     final session = ref.read(playerSessionProvider);
-    final step = afterLandStep(
+    final change = afterLandStep(
         health: session.currentHealth,
         maxHealth: session.maxHealth,
         change: outcome.healthChange(session.maxHealth));
+    final step = lost ? (health: 0, failed: true) : change;
     final target = step.failed
         ? turnBackHealth(session.maxHealth,
             departureHealth: _departureHealth ?? session.currentHealth)
@@ -170,7 +217,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     setState(() {
       _busy = false;
       _note = outcome.noteFor(lang == AppLanguage.fr);
-      _checkLine = checkLine;
+      _checkLine = line;
       _phase = step.failed ? _Phase.failed : _Phase.result;
     });
   }
@@ -222,6 +269,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                     if (choice.hasCheck)
                       '(${tr(ref, '${choice.check}_label')} '
                           '${landCheckDc(choice.dc, _chapter)})',
+                    if (choice.isFight) tr(ref, 'crossing_fight_tag'),
                     if (choice.goldCost > 0)
                       '(${choice.goldCost} ${tr(ref, 'gold_label')})',
                   ].join(' ')),

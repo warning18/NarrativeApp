@@ -44,8 +44,10 @@ class LandOutcome {
   int healthChange(int maxHealth) => (maxHealth * healthPct / 100).round();
 }
 
-/// One way through a crossing's event: a sure [outcome], or an ability
-/// [check] against [dc] (see [landCheckDc]) with a [success] and a [fail].
+/// One way through a crossing's event: a sure [outcome], an ability
+/// [check] against [dc] (see [landCheckDc]) with a [success] and a [fail],
+/// or a [fightEnemyId] fought on the battle screen: won, its [success];
+/// broken off, its [fail]; lost, the crossing is lost.
 class LandChoice {
   const LandChoice({
     required this.id,
@@ -56,6 +58,7 @@ class LandChoice {
     this.outcome = const LandOutcome(),
     this.success = const LandOutcome(),
     this.fail = const LandOutcome(),
+    this.fightEnemyId,
   });
 
   factory LandChoice.fromJson(Map json) => LandChoice(
@@ -69,6 +72,9 @@ class LandChoice {
         outcome: LandOutcome.fromJson(json['outcome']),
         success: LandOutcome.fromJson(json['success']),
         fail: LandOutcome.fromJson(json['fail']),
+        fightEnemyId: (json['fight']?.toString() ?? '').isEmpty
+            ? null
+            : json['fight'].toString(),
       );
 
   final String id;
@@ -83,13 +89,19 @@ class LandChoice {
   final LandOutcome success;
   final LandOutcome fail;
 
+  /// The enemy (enemies.json) the choice is a fight with, or null.
+  final String? fightEnemyId;
+
   bool get hasCheck => check != null;
+
+  bool get isFight => fightEnemyId != null;
 
   String textFor(bool fr) => fr && textFr.isNotEmpty ? textFr : text;
 
   /// The gold the choice asks for up front (a purse thrown to raiders):
   /// not made on credit.
-  int get goldCost => !hasCheck && outcome.gold < 0 ? -outcome.gold : 0;
+  int get goldCost =>
+      !hasCheck && !isFight && outcome.gold < 0 ? -outcome.gold : 0;
 }
 
 /// One event on a crossing (land_events.json).
@@ -265,8 +277,9 @@ int turnBackHealth(int maxHealth, {required int departureHealth}) {
 /// The choice a headless walk takes ("Play to chapter", the playthrough
 /// simulator): the most health expected, a check counted at its chance
 /// (see ability_check.dart's checkChance), gold breaking ties; a choice
-/// that costs gold the purse lacks is never taken. [modifierFor] gives the
-/// party's bonus for an ability.
+/// that costs gold the purse lacks is never taken, nor a fight (a walk
+/// with no player does not stop for the battle screen) while there is
+/// another way. [modifierFor] gives the party's bonus for an ability.
 LandChoice pickLandChoice(
   LandEvent event, {
   required int Function(String ability) modifierFor,
@@ -279,6 +292,8 @@ LandChoice pickLandChoice(
   }
 
   (double, double) valueOf(LandChoice c) {
+    // Only ever weighed when nothing else is open: counted as broken off.
+    if (c.isFight) return (c.fail.healthPct.toDouble(), c.fail.gold.toDouble());
     if (!c.hasCheck) {
       return (c.outcome.healthPct.toDouble(), c.outcome.gold.toDouble());
     }
@@ -291,7 +306,7 @@ LandChoice pickLandChoice(
 
   final open = [
     for (final c in event.choices)
-      if (c.goldCost <= gold) c
+      if (c.goldCost <= gold && !c.isFight) c
   ];
   final options = open.isEmpty ? event.choices : open;
   var best = options.first;
@@ -358,12 +373,14 @@ CrossingResult resolveCrossing(
     if (event.choices.isEmpty) continue;
     final choice = pickLandChoice(event,
         modifierFor: modifierFor, gold: gold + coin, chapter: inChapter);
-    final outcome = !choice.hasCheck
-        ? choice.outcome
-        : random.nextInt(20) + 1 + modifierFor(choice.check!) >=
-                landCheckDc(choice.dc, inChapter)
-            ? choice.success
-            : choice.fail;
+    final outcome = choice.isFight
+        ? choice.fail
+        : !choice.hasCheck
+            ? choice.outcome
+            : random.nextInt(20) + 1 + modifierFor(choice.check!) >=
+                    landCheckDc(choice.dc, inChapter)
+                ? choice.success
+                : choice.fail;
     coin += outcome.gold;
     days += outcome.days;
     final step = afterLandStep(

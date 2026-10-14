@@ -149,18 +149,16 @@
         "id": "fight",
         "text": "Go at them",
         "text_fr": "Leur tomber dessus",
-        "check": "strength",
-        "dc": 11,
+        "fight": "wreck_scavenger",
         "success": {
-          "healthPct": -8,
-          "gold": 15,
-          "note": "They break and run, and leave a purse behind.",
-          "note_fr": "Ils cèdent et s’enfuient, en laissant une bourse."
+          "healthPct": 0,
+          "note": "The last of them breaks and runs, and leaves the sledge behind.",
+          "note_fr": "Le dernier cède et s’enfuit, en abandonnant le traîneau."
         },
         "fail": {
-          "healthPct": -20,
-          "note": "You drive them off, and bleed for it.",
-          "note_fr": "Vous les chassez, et vous en saignez."
+          "healthPct": -6,
+          "note": "You break off and get clear, with a knife-cut to show for it.",
+          "note_fr": "Vous rompez et vous dégagez, avec une entaille de couteau pour tout souvenir."
         }
       },
       {

@@ -16,7 +16,9 @@ import 'package:narrative_data_app/data/land_crossing.dart';
 import 'package:narrative_data_app/data/scene_flow.dart';
 import 'package:narrative_data_app/data/world_roads.dart';
 import 'package:narrative_data_app/models/story_node.dart';
+import 'package:narrative_data_app/providers/aftermath_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
+import 'package:narrative_data_app/screens/fight_screen.dart';
 import 'package:narrative_data_app/data/climate.dart' show WeatherKind;
 import 'package:narrative_data_app/screens/land_crossing_screen.dart';
 import 'package:narrative_data_app/widgets/side_view/side_view.dart';
@@ -60,7 +62,13 @@ void main() {
       for (final choice in event.choices) {
         final where = '${event.id}.${choice.id}';
         expect(choice.textFr, isNotEmpty, reason: where);
-        if (choice.hasCheck) {
+        if (choice.isFight) {
+          expect(_json('assets/gamedata/enemies.json'),
+              contains(choice.fightEnemyId),
+              reason: where);
+          expect(choice.success.noteFr, isNotEmpty, reason: where);
+          expect(choice.fail.noteFr, isNotEmpty, reason: where);
+        } else if (choice.hasCheck) {
           expect(abilityScoreKeys, contains(choice.check), reason: where);
           expect(choice.dc, greaterThan(0), reason: where);
           expect(choice.success.noteFr, isNotEmpty, reason: where);
@@ -112,7 +120,17 @@ void main() {
         'pay');
     expect(
         pickLandChoice(scavengers, modifierFor: none, gold: 0, chapter: 1).id,
-        isNot('pay'));
+        'slip');
+    // The scavengers are a real fight (v1.305.0): a walk with no player
+    // never stops for the battle screen.
+    expect(scavengers.choices.first.fightEnemyId, 'wreck_scavenger');
+    for (var gold = 0; gold < 50; gold += 10) {
+      expect(
+          pickLandChoice(scavengers,
+                  modifierFor: (_) => 10, gold: gold, chapter: 1)
+              .isFight,
+          isFalse);
+    }
   });
 
   test(
@@ -296,6 +314,102 @@ void main() {
     await tester.tap(find.byKey(const Key('crossing_done')));
     await settle();
     expect(arrived, isTrue);
+  });
+
+  group('the scavengers are fought on the battle screen', () {
+    final ambush = LandRoute.fromJson('ambush', {
+      'name': 'Ambush',
+      'from': 'crash',
+      'to': 'sleeper',
+      'days': 1,
+      'terrain': 'desert',
+      'events': {'scavengers': 1},
+    });
+
+    Future<bool?> fight(WidgetTester tester, bool? won,
+        {bool retreat = false}) async {
+      SharedPreferences.setMockInitialValues({});
+      late WidgetRef ref;
+      bool? arrived;
+      await tester.pumpWidget(ProviderScope(
+        child: MaterialApp(
+          home: Consumer(builder: (context, r, _) {
+            ref = r;
+            return Scaffold(
+              body: Builder(
+                builder: (context) => TextButton(
+                  onPressed: () async {
+                    arrived = await Navigator.of(context).push<bool>(
+                        MaterialPageRoute(
+                            builder: (_) => LandCrossingScreen(
+                                route: ambush,
+                                events: events,
+                                random: Random(1))));
+                  },
+                  child: const Text('go'),
+                ),
+              ),
+            );
+          }),
+        ),
+      ));
+      await tester.runAsync(() async {
+        ref.read(playerSessionProvider.notifier);
+        await Future<void>.delayed(const Duration(milliseconds: 200));
+        await ref
+            .read(playerSessionProvider.notifier)
+            .loadSession(PlayerSession.fromJson({
+              'raceId': 'human',
+              'professionId': 'warrior',
+              'maxHealth': 100,
+              'currentHealth': 80,
+              'gold': 50,
+            }));
+      });
+      Future<void> settle() async {
+        for (var i = 0; i < 4; i++) {
+          await tester.pump(const Duration(milliseconds: 150));
+        }
+      }
+
+      await tester.tap(find.text('go'));
+      await settle();
+      expect(find.textContaining('(fight)'), findsOneWidget);
+      await tester.runAsync(() async {
+        await tester.tap(find.byKey(const Key('crossing_choice_fight')));
+        await Future<void>.delayed(const Duration(milliseconds: 300));
+      });
+      await settle();
+      expect(find.byType(FightScreen), findsOneWidget);
+      // The fight's own end, as FightScreen leaves it.
+      if (retreat) ref.read(lastFightRetreatedProvider.notifier).state = true;
+      Navigator.of(tester.element(find.byType(FightScreen))).pop(won);
+      await settle();
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 200)));
+      await settle();
+      if (won == null && !retreat) return arrived;
+      expect(ref.read(lastFightRetreatedProvider), isFalse);
+      if (find.byKey(const Key('crossing_next')).evaluate().isNotEmpty) {
+        await tester.tap(find.byKey(const Key('crossing_next')));
+        await settle();
+      }
+      await tester.tap(find.byKey(const Key('crossing_done')));
+      await settle();
+      return arrived;
+    }
+
+    testWidgets('won, the road goes on', (tester) async {
+      expect(await fight(tester, true), isTrue);
+    });
+
+    testWidgets('broken off, the road goes on, cut', (tester) async {
+      expect(await fight(tester, null, retreat: true), isTrue);
+    });
+
+    testWidgets('lost, the party is carried back', (tester) async {
+      expect(await fight(tester, false), isFalse);
+    });
   });
 
   testWidgets('a ruins route is drawn with its own scene kit', (tester) async {

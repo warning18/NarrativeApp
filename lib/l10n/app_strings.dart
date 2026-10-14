@@ -2984,6 +2984,22 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Vous rebroussez chemin jusqu’à votre point de départ, {n} jours perdus.',
   },
+  'crossing_fight_tag': {
+    AppLanguage.en: '(fight)',
+    AppLanguage.fr: '(combat)',
+  },
+  'crossing_fight_won': {
+    AppLanguage.en: 'The fight is won.',
+    AppLanguage.fr: 'Le combat est gagné.',
+  },
+  'crossing_fight_fled': {
+    AppLanguage.en: 'You broke off the fight.',
+    AppLanguage.fr: 'Vous avez rompu le combat.',
+  },
+  'crossing_fight_lost': {
+    AppLanguage.en: 'The fight is lost.',
+    AppLanguage.fr: 'Le combat est perdu.',
+  },
   // The full map's places only heard of (heard_of.dart).
   'heard_reason_storyOnly': {
     AppLanguage.en: 'The story will take you there.',
