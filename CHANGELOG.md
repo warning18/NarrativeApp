@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.321.0+357]
+
+The Skillwright's bench shows what it fuses.
+
+### Changed
+- **Craft a Skill** is a sheet where each recipe is two skills becoming a third, every one drawn with its icon and its real name (no more ids): a skill you know wears a check, one you lack is greyed and locked with "Missing", the recipe you can do stands out in gold with its Merge button, and one already done says so. Merge asks first, shows the same picture and what is spent, and the card flips to "Already crafted" with the sheet left open.
+- **The built Skillwright's card** in the camp's building list has a "Craft a Skill" button.
+- The sheet waits for the recipes to load instead of saying there are none.
+
 ## [1.320.0+356]
 
 A level-up is a choice of training, not a pile of points.
