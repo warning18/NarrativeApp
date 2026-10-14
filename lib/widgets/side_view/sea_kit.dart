@@ -632,3 +632,147 @@ class SeaSideScene extends StatelessWidget {
     );
   }
 }
+
+/// The fight's own strip (v1.301): the two real hulls facing each other in
+/// side view above the battlefield. The Eel's is on the left in what she
+/// wears and as battered as she is; the enemy's is on the right, a raider
+/// with her own hull (see [sideEnemyOf]) or a sea beast, bow toward the
+/// Eel, as battered as she is. [range] is how far apart they lie: 0 close,
+/// 0.5 medium, 1 long; the gap eases as it changes.
+class SeaDuelScene extends StatelessWidget {
+  const SeaDuelScene({
+    super.key,
+    required this.waters,
+    this.weather = SeaWeather.calm,
+    this.ship,
+    this.dress,
+    this.condition = 1.0,
+    this.enemyId,
+    this.enemyCondition = 1.0,
+    this.enemyIsBeast = false,
+    this.range = 0.5,
+    this.height = 96,
+  });
+
+  final SeaWaters waters;
+  final SeaWeather weather;
+  final ShipForm? ship;
+  final ShipDress? dress;
+  final double condition;
+  final String? enemyId;
+  final double enemyCondition;
+  final bool enemyIsBeast;
+  final double range;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: range, end: range),
+      duration: const Duration(milliseconds: 700),
+      curve: Curves.easeInOut,
+      builder: (context, r, _) => ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: SideViewScene(
+          key: const Key('duel_scene'),
+          layers: seaLayers(waters: waters, weather: weather),
+          actors: _duelActors(
+            ship: ship,
+            dress: dress,
+            condition: condition,
+            enemyId: enemyId,
+            enemyCondition: enemyCondition,
+            enemyIsBeast: enemyIsBeast,
+            range: r,
+            weather: weather,
+          ),
+          particles: seaParticles(waters, weather),
+          intensity: weather == SeaWeather.squall ? 0.9 : 0.5,
+          pace: 18,
+          height: height,
+        ),
+      ),
+    );
+  }
+}
+
+SideLayer _duelActors({
+  ShipForm? ship,
+  ShipDress? dress,
+  required double condition,
+  String? enemyId,
+  required double enemyCondition,
+  required bool enemyIsBeast,
+  required double range,
+  required SeaWeather weather,
+}) =>
+    SideLayer(0, (canvas, size, scroll, t, u) {
+      final rough = weather == SeaWeather.squall;
+      final w = size.width / u;
+      final form = ship ?? _defaultForm;
+      final len = sideShipLength(form);
+      // Centre to centre: nearly bow to bow when close, far apart at long.
+      final half = w * (0.12 + 0.18 * range);
+      final eelCx = (w * 0.5 - half).floorToDouble();
+      final enemyCx = (w * 0.5 + half).floorToDouble();
+      final amp = rough ? 2.0 : 1.0;
+      final eelBob = math.sin(t * (rough ? 1.8 : 1.1)) * amp;
+      final foeBob = math.sin(t * (rough ? 1.7 : 1.2) + 2.1) * amp;
+      final lift = form.flying ? 9.0 : 0.0;
+      final eelBase =
+          53 - lift + eelBob.roundToDouble() + sideShipSink(condition);
+      if (lift > 0) {
+        canvas.drawOval(
+            Rect.fromCenter(
+                center: Offset(eelCx * u, 61 * u),
+                width: len * u,
+                height: 3 * u),
+            Paint()..color = Colors.black.withValues(alpha: 0.25));
+      }
+      paintSideShip(canvas, u,
+          x: eelCx - len / 2,
+          base: eelBase,
+          form: form,
+          dress: dress,
+          t: t,
+          rough: rough,
+          condition: condition);
+      if (enemyIsBeast) {
+        _beast(
+            canvas, u, enemyCx - 20, 55 + foeBob.roundToDouble(), enemyId, t);
+      } else {
+        final enemy = sideEnemyOf(enemyId);
+        final elen = sideShipLength(enemy.form);
+        final base = 53 + foeBob.roundToDouble() + sideShipSink(enemyCondition);
+        if (enemy.glow != null) {
+          canvas.drawCircle(Offset(enemyCx * u, (50 + foeBob) * u), 24 * u,
+              Paint()..color = enemy.glow!.withValues(alpha: 0.12));
+        }
+        canvas.save();
+        canvas.translate(2 * enemyCx * u, 0);
+        canvas.scale(-1, 1);
+        paintSideShip(canvas, u,
+            x: enemyCx - elen / 2,
+            base: base,
+            form: enemy.form,
+            dress: enemy.dress,
+            t: t,
+            rough: rough,
+            condition: enemyCondition);
+        canvas.restore();
+      }
+      // The foam at each waterline.
+      final foam = Paint()..color = Colors.white.withValues(alpha: 0.5);
+      for (final cx in [eelCx, enemyCx]) {
+        for (var k = 0; k < 4; k++) {
+          sidePixels(
+              canvas,
+              u,
+              foam,
+              cx - len / 2 - 2 - k * 3 + math.sin(t * 2 + k) * 1.2,
+              55 + eelBob.roundToDouble(),
+              3,
+              1);
+        }
+      }
+    });

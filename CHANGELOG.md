@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.301.0+337]
+
+The hulls in side view, in the fight.
+
+### Changed
+- **A sea battle shows the two hulls from the side**, on a tall screen, in a strip between the enemy's bar and the sea: the Eel on the left in what she wears and as battered as she is (scorch, a hole, patched sails, smoke, flames, lower in the water), the enemy on the right with her own hull (the raider skiff, the corsair brig, the Inquisition cutter, the void barge) or as the sea beast it is (the Brinejaw's fin, the Pale Leviathan's back, the Tide-Mother's arms), bow toward the Eel and as battered as she is. The two ease apart or together as the range changes (close, medium, long), on the waters and in the weather of the fight. On a short screen the strip is left out and the sea keeps its room; the fight itself is still from above.
+
 ## [1.300.0+336]
 
 The hulls in side view, battered.
