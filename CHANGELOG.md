@@ -14,6 +14,7 @@ No hero starts with negative armour.
 
 ### Fixed
 - **A new character's base armour is never below 0.** An Orc Mage started at -4 (the Orc's -2 and the Mage's -2), which read as a bug; the seven frailest race and profession pairs now start at 0, and every other start is unchanged. Companions and the simulator follow the same rule.
+- **A delivery with a written road gets time for all of it**: its deadline keeps the zone's spare days over the written stages (Fever Bark and the Ember Run: 10 days for 8 stages, not 6).
 
 ## [1.332.0+368]
 

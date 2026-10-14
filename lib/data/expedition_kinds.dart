@@ -42,13 +42,17 @@ int escortPayFor(int rewardGold, int cargo) =>
 /// Whether enough of the load arrived for the zone's item.
 bool escortKeepsItem(int cargo) => cargo >= escortItemCargo;
 
-/// A delivery's deadline in days: the zone's `deadlineDays`, else two
-/// spare days over its stages (in the simulator, a careful party is on
-/// time about 85% of the time with two, 45% with one).
-/// A zone with written steps passes their [count] (expedition_steps.dart).
-int deliveryDeadlineOf(Map<String, dynamic> zone, {int? count}) =>
-    (zone['deadlineDays'] as num?)?.toInt() ??
-    (count ?? (zone['expeditionCount'] as num?)?.toInt() ?? 3) + 2;
+/// A delivery's deadline in days: its stages plus the zone's spare days,
+/// `deadlineDays` over its `expeditionCount` (two by default: in the
+/// simulator, a careful party is on time about 85% of the time with two,
+/// 45% with one). A zone with written steps passes their [count]
+/// (expedition_steps.dart), and keeps the same spare days over them.
+int deliveryDeadlineOf(Map<String, dynamic> zone, {int? count}) {
+  final stages = (zone['expeditionCount'] as num?)?.toInt() ?? 3;
+  final spare =
+      ((zone['deadlineDays'] as num?)?.toInt() ?? stages + 2) - stages;
+  return (count ?? stages) + spare;
+}
 
 /// Whether a parcel [daysUsed] days on the road beat its [deadline].
 bool deliveryOnTime({required int daysUsed, required int deadline}) =>
