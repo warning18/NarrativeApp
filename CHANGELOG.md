@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.332.0+368]
+
+### Added
+- Expedition steps for four more tier-2 expeditions (data; Core's engine plays them): the Drowned Stair, the Dead Heart Approach, the Glass Strand and the Frost Quarry, nine steps each, English and French. `assets/gamedata/expedition_steps.json` now holds eleven written zones.
 ## [1.331.0+367]
 
 The clan offer: banners, a compass, then the picked clan's words.
