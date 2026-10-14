@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.325.0+361]
+## [1.330.0+366]
 
 The level-up offer reads as three ways to grow.
 
