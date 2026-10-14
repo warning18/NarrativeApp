@@ -1773,12 +1773,18 @@ String _statName(String stat, AppLanguage language) {
   return label == key ? stat : label;
 }
 
+/// [text] with its `{v}` filled by [value]: a `+{v}` takes the value's own
+/// sign, so a brand's -10 reads "-10% gold", never "+-10%".
+String fillSignedValue(String text, num value) => text
+    .replaceAll('+{v}', value < 0 ? '$value' : '+$value')
+    .replaceAll('{v}', '$value');
+
 /// One effect as the player reads it, with its (already scaled) numbers.
 String signEffectText(SignEffect effect, AppLanguage language) {
   final status = effect.inflicted;
   final keyword = effect.keyword;
-  return trFor(language, signEffectKey(effect.kind))
-      .replaceAll('{v}', '${effect.value}')
+  return fillSignedValue(
+          trFor(language, signEffectKey(effect.kind)), effect.value)
       .replaceAll('{c}', '${effect.chance}')
       .replaceAll('{e}', _elementName(effect.element, language))
       .replaceAll('{s}', status == null ? '' : _statusText(status, language))
@@ -1801,6 +1807,5 @@ List<String> signEffectLines(
 
 /// A pact's curse as the player reads it, for [fights] more fights.
 String pactCurseText(SignPact pact, AppLanguage language, {int? fights}) =>
-    trFor(language, pactCurseKey(pact.curse))
-        .replaceAll('{v}', '${pact.value}')
+    fillSignedValue(trFor(language, pactCurseKey(pact.curse)), pact.value)
         .replaceAll('{n}', '${fights ?? pact.fights}');
