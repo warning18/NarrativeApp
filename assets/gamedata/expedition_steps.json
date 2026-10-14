@@ -4045,5 +4045,1707 @@
         ]
       }
     ]
+  },
+  "z_scaffold_yards": {
+    "steps": [
+      {
+        "id": "yard_gate",
+        "type": "event",
+        "text": "The yard gate hangs open on one hinge. Beyond it, scaffolding climbs in tiers over cold forges, and a wages board still hangs by the door with its chalk columns half-rubbed out.",
+        "text_fr": "La grille du chantier pend, ouverte, sur un seul gond. Au-delà, des échafaudages s’élèvent en étages au-dessus de forges froides, et un tableau des salaires est toujours accroché près de la porte, ses colonnes de craie à demi effacées.",
+        "choices": [
+          {
+            "id": "board",
+            "text": "Read the wages board",
+            "text_fr": "Lire le tableau des salaires",
+            "outcome": {
+              "note": "Forty names, forty sums, and the last column of every row says the same: owed.",
+              "note_fr": "Quarante noms, quarante sommes, et la dernière colonne de chaque ligne dit la même chose : dû."
+            }
+          },
+          {
+            "id": "walk",
+            "text": "Walk in under the first tier",
+            "text_fr": "Entrer sous le premier étage",
+            "outcome": {
+              "note": "The iron overhead ticks as it cools, though nothing has been lit here in a year.",
+              "note_fr": "Le fer au-dessus de vous tinte en refroidissant, bien que rien n’ait été allumé ici depuis un an."
+            }
+          }
+        ]
+      },
+      {
+        "id": "fresh_scorch",
+        "type": "check",
+        "text": "A beam on the second tier is scorched black, and the scorch is fresh. Nothing in the yard has burned since the last fire went out.",
+        "text_fr": "Une poutre du deuxième étage est noircie par le feu, et la brûlure est récente. Rien dans le chantier n’a brûlé depuis l’extinction du dernier foyer.",
+        "choices": [
+          {
+            "id": "study",
+            "text": "Study the scorch",
+            "text_fr": "Étudier la brûlure",
+            "check": "perception",
+            "success": {
+              "note": "It has a pattern: a long smear along the beam, as though something broad and hot had dragged itself past, a few hours ago.",
+              "note_fr": "Elle dessine un motif : une longue traînée le long de la poutre, comme si quelque chose de large et de brûlant s’y était traîné, il y a quelques heures."
+            },
+            "fail": {
+              "note": "It is soot and char to you. Somewhere above, a plate rattles on a rack, and you do not know why.",
+              "note_fr": "Pour vous, c’est de la suie et du charbon. Quelque part au-dessus, une plaque s’agite sur son rayon, et vous ne savez pas pourquoi."
+            }
+          },
+          {
+            "id": "ignore",
+            "text": "Leave it and go on",
+            "text_fr": "Passer votre chemin",
+            "outcome": {
+              "note": "You file it with the other things in this yard that it is better not to understand.",
+              "note_fr": "Vous le rangez avec les autres choses de ce chantier qu’il vaut mieux ne pas comprendre."
+            }
+          }
+        ]
+      },
+      {
+        "id": "idle_golem",
+        "type": "fight",
+        "text": "An iron golem stands at its anvil with the hammer raised, as if the master’s hand had left only a moment ago. It turns its head when your boot hits the plank.",
+        "text_fr": "Un golem de fer se tient à son enclume, le marteau levé, comme si la main du maître venait de le quitter. Il tourne la tête quand votre botte frappe la planche.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Break it at its anvil",
+            "text_fr": "Le briser à son enclume",
+            "fight": "iron_golem",
+            "success": {
+              "note": "It comes apart in a long clatter of plates. The anvil rings once, like a bell for the dead.",
+              "note_fr": "Il se disloque dans un long fracas de plaques. L’enclume sonne une fois, comme une cloche pour les morts."
+            },
+            "fail": {
+              "note": "You bring it down, and your arm hums with the hammer’s last swing for an hour.",
+              "note_fr": "Vous l’abattez, et votre bras bourdonne une heure du dernier coup de son marteau."
+            }
+          },
+          {
+            "id": "slip",
+            "text": "Slip past along the scaffold rail",
+            "text_fr": "Vous glisser le long de la rambarde de l’échafaudage",
+            "check": "dexterity",
+            "success": {
+              "note": "It tracks you with its head the whole way and never lowers the hammer.",
+              "note_fr": "Il vous suit de la tête tout du long et ne baisse jamais le marteau."
+            },
+            "fail": {
+              "note": "A board creaks. The hammer comes down on the place you were standing a heartbeat before.",
+              "note_fr": "Une planche craque. Le marteau s’abat à l’endroit où vous vous teniez un battement plus tôt."
+            }
+          }
+        ]
+      },
+      {
+        "id": "master_mark_rack",
+        "type": "discovery",
+        "text": "A toolrack stands along the wall with each tool in its outline, chalked on the wood. Only one hook is empty, but a bar of raw iron lies beneath it, stamped with a master’s mark.",
+        "text_fr": "Un râtelier à outils longe le mur, chaque outil dans son contour à la craie sur le bois. Un seul crochet est vide, mais une barre de fer brut gît dessous, frappée de la marque d’un maître.",
+        "place": "The master’s toolrack",
+        "place_fr": "Le râtelier du maître",
+        "material": "material_iron_ore",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Take the iron bar",
+            "text_fr": "Prendre la barre de fer",
+            "outcome": {
+              "note": "Iron ore, rough-smelted, with a bright core. The master’s mark is the sort of thing that sells itself.",
+              "note_fr": "Du minerai de fer, grossièrement fondu, au cœur brillant. La marque du maître est de celles qui se vendent toutes seules."
+            }
+          },
+          {
+            "id": "hook",
+            "text": "Hang a tool on the empty hook",
+            "text_fr": "Accrocher un outil au crochet vide",
+            "outcome": {
+              "note": "It does not fit the outline. The chalk looks up at it, patient, as though it had been waiting for the right one.",
+              "note_fr": "Il ne correspond pas au contour. La craie le regarde, patiente, comme si elle attendait le bon."
+            }
+          }
+        ]
+      },
+      {
+        "id": "foreman_grave",
+        "type": "event",
+        "text": "In a corner of the yard, a mound of rubble is topped with a pair of tongs set upright, the handles crossed. Somebody has scratched a name on the nearest plate: the foreman, who stayed after the others went.",
+        "text_fr": "Dans un coin du chantier, un tas de gravats est surmonté d’une paire de tenailles dressées, les manches croisés. Quelqu’un a gravé un nom sur la plaque la plus proche : le contremaître, qui est resté après le départ des autres.",
+        "choices": [
+          {
+            "id": "salute",
+            "text": "Lay a hand on the tongs",
+            "text_fr": "Poser la main sur les tenailles",
+            "outcome": {
+              "note": "The iron is warm. It is the only warm thing in the yard, and you take your hand away carefully.",
+              "note_fr": "Le fer est tiède. C’est la seule chose tiède du chantier, et vous retirez la main avec précaution."
+            }
+          },
+          {
+            "id": "read",
+            "text": "Read the name on the plate",
+            "text_fr": "Lire le nom sur la plaque",
+            "outcome": {
+              "note": "A short name, cut deep. Beneath it, in smaller letters: still owed.",
+              "note_fr": "Un nom court, gravé profond. Dessous, en lettres plus petites : toujours dû."
+            }
+          }
+        ]
+      },
+      {
+        "id": "yard_acolytes",
+        "type": "fight",
+        "text": "Two figures in ash-grey robes are chanting in the lee of a forge, kneeling before a cold hearth, and they have chalked a ring on the floor. They do not look up.",
+        "text_fr": "Deux silhouettes en robe gris cendre psalmodient à l’abri d’une forge, agenouillées devant un foyer froid, et elles ont tracé un cercle à la craie sur le sol. Elles ne lèvent pas les yeux.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Break up the ring",
+            "text_fr": "Rompre le cercle",
+            "fight": [
+              "cultist_acolyte",
+              "cultist_acolyte"
+            ],
+            "success": {
+              "note": "The chalk scuffs under their boots as they fall. The hearth stays cold.",
+              "note_fr": "La craie s’efface sous leurs bottes quand ils tombent. Le foyer reste froid."
+            },
+            "fail": {
+              "note": "You break the ring, and the last words of the chant find a place in your head.",
+              "note_fr": "Vous rompez le cercle, et les dernières paroles du chant trouvent leur place dans votre tête."
+            }
+          },
+          {
+            "id": "wait",
+            "text": "Wait until the chant ends",
+            "text_fr": "Attendre la fin du chant",
+            "outcome": {
+              "note": "It does not end. You leave them to it, kneeling, and the hearth watching.",
+              "note_fr": "Il ne finit pas. Vous les laissez à leur affaire, agenouillés, sous le regard du foyer."
+            }
+          }
+        ]
+      },
+      {
+        "id": "swaying_scaffold",
+        "type": "check",
+        "text": "The only way to the upper yard is a scaffold stair that sways with every step. Half the lashings have rotted, and the iron plate stacked on its landings is held in place by habit.",
+        "text_fr": "Le seul chemin vers la cour haute est un escalier d’échafaudage qui oscille à chaque pas. La moitié des ligatures a pourri, et les plaques de fer entassées sur ses paliers ne tiennent que par habitude.",
+        "choices": [
+          {
+            "id": "climb",
+            "text": "Climb it quickly",
+            "text_fr": "La gravir vite",
+            "check": "dexterity",
+            "success": {
+              "note": "A step, a pause, a step. You top out with the scaffold still standing, which is more than it expected.",
+              "note_fr": "Un pas, une pause, un pas. Vous arrivez en haut avec l’échafaudage encore debout, ce qui est plus qu’il n’espérait."
+            },
+            "fail": {
+              "note": "A lashing gives. A plate slides, rings on the rail, and your leg takes the ringing.",
+              "note_fr": "Une ligature cède. Une plaque glisse, résonne sur la rampe, et votre jambe prend le coup."
+            }
+          },
+          {
+            "id": "shore",
+            "text": "Shore up the worst landing first",
+            "text_fr": "Étayer d’abord le pire palier",
+            "outcome": {
+              "note": "A beam, a wedge, half an hour. Not graceful, but the stair feels steadier under you afterwards.",
+              "note_fr": "Une poutre, un coin, une demi-heure. Pas élégant, mais l’escalier tient mieux sous vos pas ensuite."
+            }
+          }
+        ]
+      },
+      {
+        "id": "cooling_trough",
+        "type": "discovery",
+        "text": "A stone cooling-trough stands under the great hammer, its water long drained. In the silt at the bottom, a seam of dark glass has formed, ripple on ripple, from decades of quenching.",
+        "text_fr": "Un bac de refroidissement en pierre se tient sous le grand marteau, son eau vidée depuis longtemps. Dans le limon du fond, une veine de verre sombre s’est formée, ride sur ride, de décennies de trempe.",
+        "place": "The cooling-trough",
+        "place_fr": "Le bac de refroidissement",
+        "material": "material_slag_glass",
+        "choices": [
+          {
+            "id": "chip",
+            "text": "Chip the glass free",
+            "text_fr": "Détacher le verre à coups de pic",
+            "outcome": {
+              "note": "Slag glass, layered like pages. It cuts clean and forges true.",
+              "note_fr": "Du verre de scorie, stratifié comme des pages. Il coupe net et se forge droit."
+            }
+          },
+          {
+            "id": "look",
+            "text": "Look into the empty trough",
+            "text_fr": "Regarder dans le bac vide",
+            "outcome": {
+              "note": "Your reflection in the glass is not quite where you stand. You move, and it does not follow for a moment.",
+              "note_fr": "Votre reflet dans le verre n’est pas tout à fait là où vous êtes. Vous bougez, et il ne suit pas tout de suite."
+            }
+          }
+        ]
+      },
+      {
+        "id": "auxiliary_patrol_yard",
+        "type": "fight",
+        "text": "Two auxiliaries of the Inquisition cross the upper yard in step, checking each forge with a hand on the stone. They have come for the abandoned plate, and one of them has already lifted a piece.",
+        "text_fr": "Deux auxiliaires de l’Inquisition traversent la cour haute au pas, vérifiant chaque forge d’une main posée sur la pierre. Ils sont venus pour les plaques abandonnées, et l’un d’eux en a déjà soulevé une.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Take the plate back",
+            "text_fr": "Reprendre la plaque",
+            "fight": [
+              "inquisition_auxiliary",
+              "inquisition_auxiliary"
+            ],
+            "success": {
+              "note": "They fall in step even in falling. The plate rings on the stone and lies still.",
+              "note_fr": "Ils tombent en cadence, même en tombant. La plaque résonne sur la pierre et reste immobile."
+            },
+            "fail": {
+              "note": "You win, but the yard’s ringing iron stays in your head for a long time.",
+              "note_fr": "Vous gagnez, mais le fer sonnant du chantier reste longtemps dans votre tête."
+            }
+          },
+          {
+            "id": "hide",
+            "text": "Wait behind a stack of plate until they go",
+            "text_fr": "Attendre derrière une pile de plaques qu’ils s’en aillent",
+            "check": "dexterity",
+            "success": {
+              "note": "They take their one plate and go. The yard is a little emptier.",
+              "note_fr": "Ils prennent leur plaque et s’en vont. Le chantier est un peu plus vide."
+            },
+            "fail": {
+              "note": "The stack shifts. A plate falls. They both stop.",
+              "note_fr": "La pile bouge. Une plaque tombe. Tous deux s’arrêtent."
+            }
+          }
+        ]
+      },
+      {
+        "id": "unpaid_plate",
+        "type": "event",
+        "text": "On a trestle at the top of the yard, the ironworkers’ last plate stands finished, polished, and stamped with the maker’s name. It is the plate they were never paid for. Nobody has touched it in a year.",
+        "text_fr": "Sur un tréteau tout en haut du chantier, la dernière plaque des forgerons se dresse, achevée, polie, frappée du nom de son fabricant. C’est la plaque pour laquelle ils n’ont jamais été payés. Personne n’y a touché depuis un an.",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Take the plate",
+            "text_fr": "Prendre la plaque",
+            "outcome": {
+              "note": "It is heavier than iron should be, and perfectly balanced. You feel you have taken a debt, not a prize.",
+              "note_fr": "Elle est plus lourde que le fer ne devrait l’être, et parfaitement équilibrée. Vous avez le sentiment d’avoir pris une dette, non un prix."
+            }
+          },
+          {
+            "id": "pay",
+            "text": "Leave a coin on the trestle for the makers",
+            "text_fr": "Laisser une pièce sur le tréteau pour les fabricants",
+            "outcome": {
+              "note": "The coin sits there on the wood. It will not pay the wages. It is not nothing.",
+              "note_fr": "La pièce reste là sur le bois. Elle ne paiera pas les salaires. Ce n’est pas rien."
+            }
+          },
+          {
+            "id": "leave",
+            "text": "Leave the plate where it stands",
+            "text_fr": "Laisser la plaque où elle est",
+            "outcome": {
+              "note": "It belongs to the people who made it. You leave it for them, though they are not coming.",
+              "note_fr": "Elle appartient à ceux qui l’ont faite. Vous la leur laissez, bien qu’ils ne reviendront pas."
+            }
+          }
+        ]
+      },
+      {
+        "id": "banked_ember",
+        "type": "rest",
+        "text": "Behind the great forge, in a cold alcove, a banked ember glows in its bed of ash, the last of the yard’s fire. There is a stool beside it, and the stone around it is dry.",
+        "text_fr": "Derrière la grande forge, dans une alcôve froide, une braise couvée rougeoie dans son lit de cendre, le dernier feu du chantier. Il y a un tabouret à côté, et la pierre autour est sèche.",
+        "choices": [
+          {
+            "id": "sit",
+            "text": "Sit and rest",
+            "text_fr": "Vous asseoir et vous reposer"
+          },
+          {
+            "id": "feed",
+            "text": "Feed the ember a splinter of wood",
+            "text_fr": "Nourrir la braise d’un éclat de bois",
+            "outcome": {
+              "note": "It takes the splinter with a small pleased flare. For a moment the whole yard looks lit.",
+              "note_fr": "Elle prend l’éclat dans une petite flambée satisfaite. Un instant, tout le chantier paraît éclairé."
+            }
+          }
+        ]
+      },
+      {
+        "id": "shape_in_shadows",
+        "type": "event",
+        "text": "Between the poles of the highest tier the shadows lie thick, though the sun is high. One of them moves against the light, folding itself small, and goes still when you look at it.",
+        "text_fr": "Entre les poteaux de l’étage le plus haut, les ombres sont épaisses, bien que le soleil soit haut. L’une d’elles bouge à contre-jour, se replie sur elle-même, et s’immobilise quand vous la regardez.",
+        "choices": [
+          {
+            "id": "stare",
+            "text": "Stare it down",
+            "text_fr": "La fixer jusqu’à la faire céder",
+            "check": "wisdom",
+            "success": {
+              "note": "It does not move. It knows it has been seen, and it lets you have the moment.",
+              "note_fr": "Elle ne bouge pas. Elle sait qu’elle a été vue, et vous laisse l’instant."
+            },
+            "fail": {
+              "note": "You look away first. When you look back, it has moved nearer, and the sun is lower.",
+              "note_fr": "Vous détournez les yeux la première fois. Quand vous revenez, elle s’est rapprochée, et le soleil est plus bas."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Walk on and do not turn round",
+            "text_fr": "Poursuivre sans vous retourner",
+            "outcome": {
+              "note": "It follows between the scaffold poles, a shade behind you, the whole way to the last plate.",
+              "note_fr": "Elle vous suit entre les poteaux de l’échafaudage, un ton derrière vous, jusqu’à la dernière plaque."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "z_shroud_vigil": {
+    "steps": [
+      {
+        "id": "square_in_view",
+        "type": "event",
+        "text": "The square at the city’s dead heart opens at the end of the street. In its middle the tear hangs in the open air, as large as a house, and the paving around it is dark, wet and entirely silent.",
+        "text_fr": "La place au cœur mort de la ville s’ouvre au bout de la rue. En son milieu, la déchirure pend en plein air, grande comme une maison, et le pavé autour d’elle est sombre, humide et entièrement silencieux.",
+        "choices": [
+          {
+            "id": "look",
+            "text": "Stand and look at it",
+            "text_fr": "Rester là et la regarder",
+            "outcome": {
+              "note": "It does not move. It does not need to. The light around it bends in the wrong direction.",
+              "note_fr": "Elle ne bouge pas. Elle n’en a pas besoin. La lumière autour d’elle se courbe dans la mauvaise direction."
+            }
+          },
+          {
+            "id": "edge",
+            "text": "Keep to the edge of the square",
+            "text_fr": "Longer le bord de la place",
+            "outcome": {
+              "note": "The paving is slick with something that is not water. You take care with each step.",
+              "note_fr": "Le pavé est glissant d’une chose qui n’est pas de l’eau. Vous veillez à chaque pas."
+            }
+          }
+        ]
+      },
+      {
+        "id": "shadow_source",
+        "type": "check",
+        "text": "The shadows in the square lie in several directions at once. Three of them point away from the tear, two toward it, and one toward you.",
+        "text_fr": "Les ombres de la place s’étendent dans plusieurs directions à la fois. Trois s’éloignent de la déchirure, deux vont vers elle, une vers vous.",
+        "choices": [
+          {
+            "id": "trace",
+            "text": "Trace the shadows to their sources",
+            "text_fr": "Remonter les ombres jusqu’à leurs sources",
+            "check": "wisdom",
+            "success": {
+              "note": "They fall from things that are not there: a lamp-post that has gone, a wall, a woman with a basket. The square is remembering.",
+              "note_fr": "Elles tombent de choses qui ne sont plus là : un réverbère disparu, un mur, une femme au panier. La place se souvient."
+            },
+            "fail": {
+              "note": "You follow the one that points at you, and find yourself standing in it, far from where you started.",
+              "note_fr": "Vous suivez celle qui vous désigne, et vous vous retrouvez dedans, loin de votre point de départ."
+            }
+          },
+          {
+            "id": "avoid",
+            "text": "Keep out of every shadow",
+            "text_fr": "Rester hors de toutes les ombres",
+            "outcome": {
+              "note": "It is a clumsy dance across the paving. Nobody sees it, and you would rather nobody had.",
+              "note_fr": "C’est une danse maladroite sur le pavé. Personne ne la voit, et vous préféreriez que personne ne l’ait vue."
+            }
+          }
+        ]
+      },
+      {
+        "id": "hounds_of_the_square",
+        "type": "fight",
+        "text": "Two hounds of no colour trot out of the street mouth and stop at exactly the distance from which they can spring. Their breath hangs behind them, white, for a long time.",
+        "text_fr": "Deux chiens sans couleur sortent au trot de l’entrée de la rue et s’arrêtent à la distance exacte d’où ils peuvent bondir. Leur souffle reste suspendu derrière eux, blanc, très longtemps.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Meet them",
+            "text_fr": "Les affronter",
+            "fight": [
+              "void_hound",
+              "void_hound"
+            ],
+            "success": {
+              "note": "They go out like breath on glass, one after the other, and the square seems to exhale.",
+              "note_fr": "Ils s’effacent comme un souffle sur une vitre, l’un après l’autre, et la place semble expirer."
+            },
+            "fail": {
+              "note": "You win, but the cold of the bites does not leave the arm for the rest of the vigil.",
+              "note_fr": "Vous gagnez, mais le froid des morsures ne quitte pas le bras pour le reste de la veillée."
+            }
+          },
+          {
+            "id": "stand",
+            "text": "Stand perfectly still until they lose interest",
+            "text_fr": "Rester parfaitement immobile jusqu’à ce qu’ils se lassent",
+            "check": "constitution",
+            "success": {
+              "note": "They sniff, circle, and trot back into the street. You breathe again at last.",
+              "note_fr": "Ils flairent, tournent, et repartent au trot dans la rue. Vous respirez enfin."
+            },
+            "fail": {
+              "note": "You flinch. They do not.",
+              "note_fr": "Vous tressaillez. Eux non."
+            }
+          }
+        ]
+      },
+      {
+        "id": "edge_reliquary",
+        "type": "discovery",
+        "text": "A reliquary stands at the square’s edge, its doors blown open, its glass shattered. The relics are gone. In the empty niche, a coil of grey thread has caught on a splinter, fine as spider-silk and humming faintly.",
+        "text_fr": "Un reliquaire se tient au bord de la place, ses portes arrachées, sa vitre brisée. Les reliques ont disparu. Dans la niche vide, un écheveau de fil gris s’est pris à une écharde, fin comme de la soie d’araignée, bourdonnant faiblement.",
+        "place": "The broken reliquary",
+        "place_fr": "Le reliquaire brisé",
+        "material": "material_shroud_thread",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Wind the thread onto a stick",
+            "text_fr": "Enrouler le fil sur un bâton",
+            "outcome": {
+              "note": "Shroud thread, cold and unnaturally strong. It does not tangle. It seems to know where it is going.",
+              "note_fr": "Du fil de linceul, froid et d’une force anormale. Il ne s’emmêle pas. Il semble savoir où il va."
+            }
+          },
+          {
+            "id": "leave",
+            "text": "Leave it humming",
+            "text_fr": "Le laisser bourdonner",
+            "outcome": {
+              "note": "The hum stops when you step back. It starts again when you do not, as though it had been keeping you company.",
+              "note_fr": "Le bourdonnement cesse quand vous reculez. Il reprend quand vous ne bougez plus, comme s’il vous tenait compagnie."
+            }
+          }
+        ]
+      },
+      {
+        "id": "empty_chair",
+        "type": "event",
+        "text": "At the square’s edge stands a chair of black wood, an Inquisitor’s, set on a dais of the city’s own paving. It is empty. The seat is still warm to the hand, and the arms bear the print of fingers.",
+        "text_fr": "Au bord de la place se dresse une chaise de bois noir, celle d’un Inquisiteur, posée sur une estrade du pavé même de la ville. Elle est vide. Le siège est encore tiède sous la main, et les accoudoirs portent l’empreinte de doigts.",
+        "choices": [
+          {
+            "id": "sit",
+            "text": "Sit in the chair",
+            "text_fr": "Vous asseoir sur la chaise",
+            "outcome": {
+              "note": "The square comes into focus as a whole. You can see the tear, and everything it has put wrong, and you stand up at once.",
+              "note_fr": "La place se met au point comme un tout. Vous voyez la déchirure, et tout ce qu’elle a faussé, et vous vous levez aussitôt."
+            }
+          },
+          {
+            "id": "print",
+            "text": "Set your hand in the print on the arm",
+            "text_fr": "Poser la main dans l’empreinte de l’accoudoir",
+            "outcome": {
+              "note": "It fits too well. The hand that left it was a good deal like yours.",
+              "note_fr": "Elle s’y ajuste trop bien. La main qui l’a laissée vous ressemblait beaucoup."
+            }
+          },
+          {
+            "id": "leave",
+            "text": "Leave it as it is",
+            "text_fr": "La laisser telle quelle",
+            "outcome": {
+              "note": "The chair watches you go. That is what chairs like this are for.",
+              "note_fr": "La chaise vous regarde partir. C’est à cela que servent les chaises de cette sorte."
+            }
+          }
+        ]
+      },
+      {
+        "id": "masked_pair",
+        "type": "fight",
+        "text": "Two figures in penitents’ masks stand in the street mouth with their hands open and their feet apart. They say nothing. They have been waiting for you since before you came.",
+        "text_fr": "Deux silhouettes aux masques de pénitents se tiennent à l’entrée de la rue, mains ouvertes et pieds écartés. Elles ne disent rien. Elles vous attendaient avant votre venue.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Go at them",
+            "text_fr": "Foncer sur elles",
+            "fight": [
+              "masked_penitent",
+              "masked_penitent"
+            ],
+            "success": {
+              "note": "The masks break in halves. Behind them, nothing you wish to remember.",
+              "note_fr": "Les masques se brisent en deux. Derrière, rien dont vous souhaitiez garder le souvenir."
+            },
+            "fail": {
+              "note": "They fall, in the end, and you stand over them breathing hard.",
+              "note_fr": "Elles tombent, à la fin, et vous restez au-dessus d’elles, à bout de souffle."
+            }
+          },
+          {
+            "id": "speak",
+            "text": "Speak to them",
+            "text_fr": "Leur parler",
+            "check": "charisma",
+            "success": {
+              "note": "You tell them the vigil is over. They lower their hands and are gone, as though they had only waited to hear it.",
+              "note_fr": "Vous leur dites que la veillée est finie. Elles baissent les mains et disparaissent, comme si elles n’avaient attendu que de l’entendre."
+            },
+            "fail": {
+              "note": "Your voice goes out into the square and does not come back. The masks tilt, listening for something else.",
+              "note_fr": "Votre voix s’en va dans la place et ne revient pas. Les masques s’inclinent, à l’écoute d’autre chose."
+            }
+          }
+        ]
+      },
+      {
+        "id": "long_cold_breath",
+        "type": "check",
+        "text": "The air in the square is thin and extremely cold. Each breath has to be drawn on purpose, and the mind begins to count them, and to lose count.",
+        "text_fr": "L’air de la place est mince et extrêmement froid. Chaque inspiration doit être tirée exprès, et l’esprit se met à les compter, puis à perdre le compte.",
+        "choices": [
+          {
+            "id": "breathe",
+            "text": "Breathe slowly and count aloud",
+            "text_fr": "Respirer lentement et compter à voix haute",
+            "check": "constitution",
+            "success": {
+              "note": "The count holds. At fifty you are steady, and the square seems less sure of you.",
+              "note_fr": "Le compte tient. À cinquante vous êtes stable, et la place paraît moins sûre de vous."
+            },
+            "fail": {
+              "note": "You lose the count at thirty and begin again, and again. Time passes oddly.",
+              "note_fr": "Vous perdez le compte à trente et recommencez, et recommencez. Le temps passe étrangement."
+            }
+          },
+          {
+            "id": "cloth",
+            "text": "Tie a cloth over your mouth and nose",
+            "text_fr": "Vous nouer un linge sur la bouche et le nez",
+            "outcome": {
+              "note": "It takes the edge off the cold. The cloth is stiff with frost before you reach the next corner.",
+              "note_fr": "Cela émousse le froid. Le linge est raide de givre avant le coin suivant."
+            }
+          }
+        ]
+      },
+      {
+        "id": "name_in_the_wind",
+        "type": "event",
+        "text": "A wind crosses the square that is not a wind: it comes from no direction, and it speaks names. Yours is among them, very quietly, between two others you do not know.",
+        "text_fr": "Un vent traverse la place qui n’est pas un vent : il ne vient d’aucune direction, et il dit des noms. Le vôtre est parmi eux, très bas, entre deux autres que vous ne connaissez pas.",
+        "choices": [
+          {
+            "id": "answer",
+            "text": "Answer it",
+            "text_fr": "Lui répondre",
+            "outcome": {
+              "note": "The wind pauses, as if to be sure. Then it goes on to the next name. You are glad you answered, and not sure why.",
+              "note_fr": "Le vent s’arrête, comme pour s’assurer. Puis il passe au nom suivant. Vous avez bien fait de répondre, sans savoir pourquoi."
+            }
+          },
+          {
+            "id": "silent",
+            "text": "Keep silent until it passes",
+            "text_fr": "Garder le silence jusqu’à ce qu’il passe",
+            "outcome": {
+              "note": "It passes. Your name goes with it, a little more worn than it was.",
+              "note_fr": "Il passe. Votre nom s’en va avec lui, un peu plus usé qu’avant."
+            }
+          },
+          {
+            "id": "cover",
+            "text": "Cover your ears",
+            "text_fr": "Vous couvrir les oreilles",
+            "outcome": {
+              "note": "The wind goes through your hands as though they were mist.",
+              "note_fr": "Le vent passe à travers vos mains comme si elles étaient de la brume."
+            }
+          }
+        ]
+      },
+      {
+        "id": "manifestation",
+        "type": "fight",
+        "text": "Something unclenches from the air near the tear and comes down into the square. It has the outline of a person and none of the details, and it moves as though the square were a stage.",
+        "text_fr": "Quelque chose se détache de l’air près de la déchirure et descend dans la place. Il a le contour d’une personne et aucun de ses détails, et il se déplace comme si la place était une scène.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Meet it",
+            "text_fr": "L’affronter",
+            "fight": "void_manifestation",
+            "success": {
+              "note": "It comes apart into plain air. The tear gives a slow pulse, as though noting the loss.",
+              "note_fr": "Il se dissout en air ordinaire. La déchirure émet une lente pulsation, comme pour prendre acte de la perte."
+            },
+            "fail": {
+              "note": "You drive it off, and the place it stood is colder than the rest of the square.",
+              "note_fr": "Vous le chassez, et l’endroit où il se tenait est plus froid que le reste de la place."
+            }
+          },
+          {
+            "id": "hide",
+            "text": "Slip behind a fallen column",
+            "text_fr": "Vous glisser derrière une colonne tombée",
+            "check": "dexterity",
+            "success": {
+              "note": "It circles the square twice and does not find you. It looks, for a moment, almost embarrassed.",
+              "note_fr": "Il fait deux fois le tour de la place sans vous trouver. Il paraît, un instant, presque gêné."
+            },
+            "fail": {
+              "note": "The column shifts. It looks round, and its absence of eyes lands exactly on you.",
+              "note_fr": "La colonne bouge. Il se retourne, et son absence d’yeux se pose exactement sur vous."
+            }
+          }
+        ]
+      },
+      {
+        "id": "lantern_in_shroud",
+        "type": "discovery",
+        "text": "In a gap in the square’s paving a lantern still burns, quite alone, set on a heap of tear-stuff that has crept up around it. It has not gone out, and the glass of the lantern is clear.",
+        "text_fr": "Dans une brèche du pavé de la place, une lanterne brûle encore, toute seule, posée sur un tas de matière de déchirure qui a rampé autour d’elle. Elle ne s’est pas éteinte, et le verre de la lanterne est clair.",
+        "place": "The lantern in the shroud",
+        "place_fr": "La lanterne dans le linceul",
+        "material": "material_tear_glass",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Take the lantern and the glass beneath it",
+            "text_fr": "Prendre la lanterne et le verre en dessous",
+            "outcome": {
+              "note": "Tear glass, humming, warm at the heart. The lantern burns on in your hand, steadily, as though nothing had changed.",
+              "note_fr": "Du verre de déchirure, bourdonnant, tiède au cœur. La lanterne brûle dans votre main, régulièrement, comme si rien n’avait changé."
+            }
+          },
+          {
+            "id": "leave",
+            "text": "Leave the lantern where it is",
+            "text_fr": "Laisser la lanterne où elle est",
+            "outcome": {
+              "note": "Somebody set it there on purpose. You leave it for them, and for the square.",
+              "note_fr": "Quelqu’un l’a posée là exprès. Vous la laissez pour cette personne, et pour la place."
+            }
+          }
+        ]
+      },
+      {
+        "id": "last_chapel_corner",
+        "type": "rest",
+        "text": "In the last intact chapel on the square, a corner under the choir loft has stayed dry and warm. There are candle-ends on the sill, a bench, a threadbare cushion, and the faint smell of old incense.",
+        "text_fr": "Dans la dernière chapelle intacte de la place, un coin sous la tribune est resté sec et tiède. Il y a des bouts de bougie sur l’appui, un banc, un coussin élimé, et l’odeur ténue d’un vieil encens.",
+        "choices": [
+          {
+            "id": "sit",
+            "text": "Sit and rest",
+            "text_fr": "Vous asseoir et vous reposer"
+          },
+          {
+            "id": "light",
+            "text": "Light the candle ends, all of them",
+            "text_fr": "Allumer les bouts de bougie, tous",
+            "outcome": {
+              "note": "Six small flames stand straight in the draught. The tear outside seems, for a minute, further away.",
+              "note_fr": "Six petites flammes se tiennent droites dans le courant d’air. La déchirure, dehors, paraît un instant plus lointaine."
+            }
+          }
+        ]
+      },
+      {
+        "id": "shape_of_an_office",
+        "type": "event",
+        "text": "Across the square stands a figure in a long coat, and even from here you can see the shape of an office under what the tear has made of him: the stoop of a man who signed a great many papers, the hands folded like a clerk’s.",
+        "text_fr": "De l’autre côté de la place se tient une silhouette en long manteau, et même d’ici on voit la forme d’une charge sous ce que la déchirure a fait de lui : le dos voûté de quelqu’un qui a signé beaucoup de papiers, les mains jointes comme celles d’un greffier.",
+        "choices": [
+          {
+            "id": "hail",
+            "text": "Call out to him",
+            "text_fr": "L’appeler",
+            "outcome": {
+              "note": "He lifts his head at the sound. He does not answer. He turns his hands over, palm up, and waits.",
+              "note_fr": "Il lève la tête au bruit. Il ne répond pas. Il retourne les mains, paumes en l’air, et attend."
+            }
+          },
+          {
+            "id": "study",
+            "text": "Study him a moment longer",
+            "text_fr": "L’étudier un instant de plus",
+            "check": "perception",
+            "success": {
+              "note": "A crown of glass shards turns slowly above his head. The shards do not reflect the square. They reflect somewhere else.",
+              "note_fr": "Une couronne d’éclats de verre tourne lentement au-dessus de sa tête. Les éclats ne reflètent pas la place. Ils reflètent un autre lieu."
+            },
+            "fail": {
+              "note": "He is a long way off. You see only that he is waiting, and that he has been waiting longer than you can guess.",
+              "note_fr": "Il est très loin. Vous voyez seulement qu’il attend, et qu’il attend depuis plus longtemps que vous ne sauriez le deviner."
+            }
+          },
+          {
+            "id": "walk",
+            "text": "Cross the square toward him",
+            "text_fr": "Traverser la place vers lui",
+            "outcome": {
+              "note": "Each step across the paving takes longer than the last. The tear watches, at a distance, with great patience.",
+              "note_fr": "Chaque pas sur le pavé prend plus de temps que le précédent. La déchirure observe, à distance, avec une grande patience."
+            }
+          }
+        ]
+      },
+      {
+        "id": "hold_his_gaze",
+        "type": "check",
+        "text": "Close now, you see his face, or where it was, and it is turned toward you with the whole of its attention. He knows your family’s name. He is about to use it.",
+        "text_fr": "De près maintenant, vous voyez son visage, ou ce qu’il en reste, et il est tourné vers vous de toute son attention. Il connaît le nom de votre famille. Il s’apprête à s’en servir.",
+        "choices": [
+          {
+            "id": "hold",
+            "text": "Hold his gaze",
+            "text_fr": "Soutenir son regard",
+            "check": "charisma",
+            "success": {
+              "note": "He does not look away first, and neither do you. When he speaks, the name is only a name.",
+              "note_fr": "Il ne détourne pas les yeux le premier, et vous non plus. Quand il parle, le nom n’est qu’un nom."
+            },
+            "fail": {
+              "note": "You look away before he speaks. The name, when it comes, finds you with your guard down.",
+              "note_fr": "Vous détournez les yeux avant qu’il ne parle. Le nom, quand il vient, vous trouve la garde baissée."
+            }
+          },
+          {
+            "id": "answer",
+            "text": "Give your name before he gives it",
+            "text_fr": "Donner votre nom avant qu’il ne donne le sien",
+            "outcome": {
+              "note": "He inclines his head, courteously, as one does to an equal. It is the worst thing he could have done.",
+              "note_fr": "Il incline la tête, courtoisement, comme on le fait pour un égal. C’est la pire chose qu’il pouvait faire."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "z_white_fleet_grave": {
+    "steps": [
+      {
+        "id": "forty_hulls",
+        "type": "event",
+        "text": "Off the point the White Fleet lies where the tear put it: forty hulls on a floor of glass, masts standing, sails furled, as though the whole fleet had put in for the night and never woken.",
+        "text_fr": "Au large de la pointe repose la Flotte Blanche, là où la déchirure l’a posée : quarante coques sur un sol de verre, mâts dressés, voiles ferlées, comme si toute la flotte avait relâché pour la nuit et ne s’était jamais réveillée.",
+        "choices": [
+          {
+            "id": "look",
+            "text": "Stand at the first hull and look along the line",
+            "text_fr": "Vous placer devant la première coque et regarder la file",
+            "outcome": {
+              "note": "They go on a long way. Each has a lantern at the stern, and none has been lit in a year.",
+              "note_fr": "Elles s’étendent très loin. Chacune a une lanterne à la poupe, et aucune n’a été allumée depuis un an."
+            }
+          },
+          {
+            "id": "count",
+            "text": "Count the masts",
+            "text_fr": "Compter les mâts",
+            "outcome": {
+              "note": "Forty, and a forty-first at the far end, taller than the rest, with a flag you can still read.",
+              "note_fr": "Quarante, et un quarante et unième au fond, plus haut que les autres, avec un pavillon que l’on peut encore lire."
+            }
+          }
+        ]
+      },
+      {
+        "id": "glass_gangway",
+        "type": "check",
+        "text": "A gangway of glass joins the first hull to the second, thin as a wire and smooth as ice. The water beneath is not water. It is more glass, going down.",
+        "text_fr": "Une passerelle de verre relie la première coque à la deuxième, fine comme un fil et lisse comme de la glace. Ce qu’il y a dessous n’est pas de l’eau. C’est du verre encore, qui descend.",
+        "choices": [
+          {
+            "id": "cross",
+            "text": "Cross it step by step",
+            "text_fr": "La traverser pas à pas",
+            "check": "dexterity",
+            "success": {
+              "note": "You reach the second hull with your heart in your mouth and the gangway humming with relief.",
+              "note_fr": "Vous atteignez la deuxième coque le cœur dans la gorge et la passerelle bourdonnant de soulagement."
+            },
+            "fail": {
+              "note": "A foot slides. You catch the rail, and the glass cuts a thin line across the palm.",
+              "note_fr": "Un pied glisse. Vous attrapez la rambarde, et le verre trace une fine ligne dans votre paume."
+            }
+          },
+          {
+            "id": "rope",
+            "text": "Rig a line along the rail and cross on it",
+            "text_fr": "Tendre une corde le long de la rambarde et passer par là",
+            "outcome": {
+              "note": "A slower crossing, and a safer. The rope bites the glass and holds.",
+              "note_fr": "Une traversée plus lente, et plus sûre. La corde mord le verre et tient."
+            }
+          }
+        ]
+      },
+      {
+        "id": "pilgrims_in_the_waist",
+        "type": "fight",
+        "text": "Two pilgrims in wet white sashes are standing in the waist of the second hull, as if at a service. They turn together, slowly, and begin to walk toward you with their hands out.",
+        "text_fr": "Deux pèlerins aux écharpes blanches trempées se tiennent dans la partie centrale de la deuxième coque, comme à un office. Ils se tournent ensemble, lentement, et se mettent à marcher vers vous, les mains tendues.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Meet them on the deck",
+            "text_fr": "Les affronter sur le pont",
+            "fight": [
+              "drowned_pilgrim",
+              "drowned_pilgrim"
+            ],
+            "success": {
+              "note": "They fold into the planking like cloth into water. The deck is wet where they stood.",
+              "note_fr": "Ils se replient dans le bordé comme un tissu dans l’eau. Le pont est mouillé là où ils se tenaient."
+            },
+            "fail": {
+              "note": "You hold the deck, and carry the cold of their hands up your arms.",
+              "note_fr": "Vous tenez le pont, et portez le froid de leurs mains jusqu’en haut de vos bras."
+            }
+          },
+          {
+            "id": "hatch",
+            "text": "Slip below by the hatch",
+            "text_fr": "Descendre par l’écoutille",
+            "check": "dexterity",
+            "success": {
+              "note": "They pass over your head, still walking. The hatch cover creaks as they cross it, and then they are gone.",
+              "note_fr": "Ils passent au-dessus de votre tête, marchant toujours. Le panneau grince quand ils le franchissent, puis ils disparaissent."
+            },
+            "fail": {
+              "note": "The ladder gives under you. They are on the hatch before you can close it.",
+              "note_fr": "L’échelle cède sous vous. Ils sont sur l’écoutille avant que vous ne puissiez la fermer."
+            }
+          }
+        ]
+      },
+      {
+        "id": "captains_cabin",
+        "type": "discovery",
+        "text": "A captain’s cabin is open to the weather. The log still lies on the table with the last entry unfinished. Beside it, a small cask of dark, close-grained oak has been set down with some care.",
+        "text_fr": "La cabine d’un capitaine est ouverte aux intempéries. Le journal de bord est resté sur la table avec la dernière entrée inachevée. À côté, un petit tonneau d’un chêne sombre à grain serré a été posé avec soin.",
+        "place": "The captain’s cabin",
+        "place_fr": "La cabine du capitaine",
+        "material": "material_white_fleet_oak",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Take the cask",
+            "text_fr": "Prendre le tonneau",
+            "outcome": {
+              "note": "White Fleet oak, hard as horn and old as the Crusade. The ship it came from will not miss it.",
+              "note_fr": "Du chêne de la Flotte Blanche, dur comme la corne et vieux comme la Croisade. Le navire dont il vient ne le regrettera pas."
+            }
+          },
+          {
+            "id": "log",
+            "text": "Read the log’s last page",
+            "text_fr": "Lire la dernière page du journal",
+            "outcome": {
+              "note": "The last entry says only: the lights are very beautiful tonight. The rest is a smear.",
+              "note_fr": "La dernière entrée dit seulement : les lumières sont très belles ce soir. Le reste n’est qu’une tache."
+            }
+          }
+        ]
+      },
+      {
+        "id": "signal_flag",
+        "type": "event",
+        "text": "On the third hull a signal flag is still hoisted, snapping in a wind that no one else feels. It reads, in the old code: HOLD STATION. AWAIT ORDERS.",
+        "text_fr": "Sur la troisième coque, un pavillon de signalisation est toujours hissé, claquant dans un vent que personne d’autre ne sent. Il dit, dans l’ancien code : TENEZ VOS POSTES. ATTENDEZ LES ORDRES.",
+        "choices": [
+          {
+            "id": "strike",
+            "text": "Strike the flag",
+            "text_fr": "Amener le pavillon",
+            "outcome": {
+              "note": "It comes down with a soft rustle. Somewhere in the fleet, a bell rings once, as if an order had at last been received.",
+              "note_fr": "Il descend avec un doux bruissement. Quelque part dans la flotte, une cloche sonne une fois, comme si un ordre était enfin arrivé."
+            }
+          },
+          {
+            "id": "answer",
+            "text": "Run up the reply: ORDERS UNDERSTOOD",
+            "text_fr": "Hisser la réponse : ORDRES REÇUS",
+            "outcome": {
+              "note": "The flag unfolds. For a moment the whole fleet seems to settle, like men who have been told they may stand easy.",
+              "note_fr": "Le pavillon se déploie. Un instant, toute la flotte semble se tasser, comme des hommes à qui l’on a dit de rompre les rangs."
+            }
+          },
+          {
+            "id": "leave",
+            "text": "Leave it flying",
+            "text_fr": "Le laisser flotter",
+            "outcome": {
+              "note": "It flies on. You are one more person who did not tell the fleet its watch was over.",
+              "note_fr": "Il flotte toujours. Vous êtes une personne de plus qui n’a pas dit à la flotte que sa garde était finie."
+            }
+          }
+        ]
+      },
+      {
+        "id": "hulk_knight",
+        "type": "fight",
+        "text": "A knight in White Fleet armour stands at the head of the stair, helm closed, one gauntlet resting on the pommel of his sword. He does not seem to be quite finished. At the edges he is not there at all.",
+        "text_fr": "Un chevalier en armure de la Flotte Blanche se tient en haut de l’escalier, heaume fermé, un gantelet posé sur le pommeau de son épée. Il ne semble pas tout à fait fini. À ses bords, il n’est pas là du tout.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Cross blades with him",
+            "text_fr": "Croiser le fer avec lui",
+            "fight": "unmade_knight",
+            "success": {
+              "note": "The armour falls in pieces on the deck, empty. The sword is still in the hand.",
+              "note_fr": "L’armure tombe en morceaux sur le pont, vide. L’épée est toujours dans la main."
+            },
+            "fail": {
+              "note": "You bring him down, and the cold of his blade follows you into the next hull.",
+              "note_fr": "Vous l’abattez, et le froid de sa lame vous suit dans la coque suivante."
+            }
+          },
+          {
+            "id": "bow",
+            "text": "Bow to him and wait",
+            "text_fr": "Le saluer et attendre",
+            "check": "charisma",
+            "success": {
+              "note": "He inclines his helm in return and steps aside, as to a fellow officer.",
+              "note_fr": "Il incline son heaume en retour et s’écarte, comme devant un officier."
+            },
+            "fail": {
+              "note": "He does not return the bow. His hand tightens on the pommel.",
+              "note_fr": "Il ne rend pas le salut. Sa main se resserre sur le pommeau."
+            }
+          }
+        ]
+      },
+      {
+        "id": "bell_below_deck",
+        "type": "check",
+        "text": "From below decks, a ship’s bell rings the hour, though the hour is wrong and the bell is stopped. It has the sound of something striking from far under the water.",
+        "text_fr": "D’en bas, une cloche de bord sonne l’heure, bien que l’heure soit fausse et la cloche arrêtée. Elle a le son de quelque chose qui frappe de très loin sous l’eau.",
+        "choices": [
+          {
+            "id": "listen",
+            "text": "Listen for the real ship’s bell",
+            "text_fr": "Écouter la vraie cloche du navire",
+            "check": "wisdom",
+            "success": {
+              "note": "It is on the flagship, still a long way off. It rings the hour correctly. The rest were echoes.",
+              "note_fr": "Elle est sur le vaisseau amiral, encore très loin. Elle sonne correctement l’heure. Les autres n’étaient que des échos."
+            },
+            "fail": {
+              "note": "You follow the wrong bell down into a hold, and have to find your way back up in the dark.",
+              "note_fr": "Vous suivez la mauvaise cloche jusque dans une cale, et devez retrouver votre chemin dans le noir."
+            }
+          },
+          {
+            "id": "muffle",
+            "text": "Wrap a cloth round your ears and go on",
+            "text_fr": "Vous envelopper les oreilles d’un linge et poursuivre",
+            "outcome": {
+              "note": "The bell goes dull and distant. It does not stop. It has gone from being heard to being felt.",
+              "note_fr": "La cloche devient sourde et lointaine. Elle ne s’arrête pas. Elle est passée d’entendue à ressentie."
+            }
+          }
+        ]
+      },
+      {
+        "id": "muster",
+        "type": "event",
+        "text": "On the deck of the fifth hull a crew stands in rows, mustered and silent, eyes front. They are not alive. They are not dead. They have been told to wait, and are doing it.",
+        "text_fr": "Sur le pont de la cinquième coque, un équipage se tient en rangs, rassemblé et silencieux, les yeux droit devant. Ils ne sont pas vivants. Ils ne sont pas morts. On leur a dit d’attendre, et ils le font.",
+        "choices": [
+          {
+            "id": "walk",
+            "text": "Walk down the rows",
+            "text_fr": "Parcourir les rangs",
+            "outcome": {
+              "note": "Not one of them looks at you. Each has the same look: not fear, but patience.",
+              "note_fr": "Pas un ne vous regarde. Tous ont le même air : pas de la peur, de la patience."
+            }
+          },
+          {
+            "id": "dismiss",
+            "text": "Give the order: stand down",
+            "text_fr": "Donner l’ordre : rompez",
+            "outcome": {
+              "note": "Nothing happens, for a long moment. Then a single sailor lowers his eyes. It is enough to make the rest of the line look uncertain.",
+              "note_fr": "Rien ne se passe, un long moment. Puis un seul marin baisse les yeux. Cela suffit à rendre incertaine le reste de la ligne."
+            }
+          },
+          {
+            "id": "pass",
+            "text": "Go past them without a word",
+            "text_fr": "Passer devant eux sans un mot",
+            "outcome": {
+              "note": "The line does not turn its heads. It makes a sound in its throat as you pass, like a breath being let out.",
+              "note_fr": "La ligne ne tourne pas la tête. Elle émet un son de gorge à votre passage, comme un souffle que l’on relâche."
+            }
+          }
+        ]
+      },
+      {
+        "id": "reflections_on_deck",
+        "type": "fight",
+        "text": "Two figures in white step out from behind the mainmast, and each wears a face that belongs in the glass at its feet and not on its shoulders. They advance in step, side by side.",
+        "text_fr": "Deux silhouettes en blanc sortent de derrière le grand mât, et chacune porte un visage qui appartient au verre à ses pieds et non à ses épaules. Elles avancent au pas, côte à côte.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Meet them on the planks",
+            "text_fr": "Les affronter sur le bordé",
+            "fight": [
+              "hollow_reflection",
+              "hollow_reflection"
+            ],
+            "success": {
+              "note": "They break like panes. The glass underfoot shows nothing of either afterwards.",
+              "note_fr": "Elles se brisent comme des vitres. Le verre sous vos pieds ne montre plus rien d’elles ensuite."
+            },
+            "fail": {
+              "note": "You win, but the pieces carry off a little of your own reflection.",
+              "note_fr": "Vous gagnez, mais les morceaux emportent un peu de votre propre reflet."
+            }
+          },
+          {
+            "id": "mast",
+            "text": "Climb the mast and wait above them",
+            "text_fr": "Grimper au mât et attendre au-dessus d’elles",
+            "check": "dexterity",
+            "success": {
+              "note": "They look up. They cannot climb. After a while they go back to being a pair of figures standing very still.",
+              "note_fr": "Elles lèvent les yeux. Elles ne peuvent pas grimper. Au bout d’un moment, elles redeviennent deux silhouettes très immobiles."
+            },
+            "fail": {
+              "note": "A ratline gives. You come down in a heap, at their feet.",
+              "note_fr": "Une enfléchure cède. Vous retombez en tas, à leurs pieds."
+            }
+          }
+        ]
+      },
+      {
+        "id": "binnacle_lantern",
+        "type": "discovery",
+        "text": "In the binnacle of the sixth hull a brass lantern still burns, its flame the pale yellow of lamps that are not fed. It has no oil and no wick. The brass of its frame is bright as new.",
+        "text_fr": "Dans l’habitacle de la sixième coque, une lanterne de laiton brûle encore, sa flamme du jaune pâle des lampes que l’on ne nourrit pas. Elle n’a ni huile ni mèche. Le laiton de sa monture est brillant comme neuf.",
+        "place": "The binnacle lantern",
+        "place_fr": "La lanterne de l’habitacle",
+        "material": "material_lantern_brass",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Take the lantern",
+            "text_fr": "Prendre la lanterne",
+            "outcome": {
+              "note": "Lantern brass, warm and humming. It goes on burning in your hand as though you were its keeper.",
+              "note_fr": "Du laiton de lanterne, tiède et bourdonnant. Elle continue de brûler dans votre main comme si vous étiez son gardien."
+            }
+          },
+          {
+            "id": "trim",
+            "text": "Trim the flame",
+            "text_fr": "Moucher la flamme",
+            "outcome": {
+              "note": "It takes the trim willingly and burns straighter. You leave it in its binnacle, where it was kept.",
+              "note_fr": "Elle accepte volontiers la taille et brûle plus droit. Vous la laissez dans son habitacle, où on la gardait."
+            }
+          }
+        ]
+      },
+      {
+        "id": "chart_room",
+        "type": "rest",
+        "text": "A chart-room on the seventh hull is still tidy, the table clear, the charts rolled in their racks. A candle stands in a holder bolted to the table. The room is quiet and entirely dry.",
+        "text_fr": "Une salle des cartes sur la septième coque est encore en ordre, la table dégagée, les cartes roulées dans leurs casiers. Une bougie se tient dans un support boulonné à la table. La pièce est calme et parfaitement sèche.",
+        "choices": [
+          {
+            "id": "sit",
+            "text": "Sit and rest",
+            "text_fr": "Vous asseoir et vous reposer"
+          },
+          {
+            "id": "chart",
+            "text": "Unroll a chart and study the coast",
+            "text_fr": "Dérouler une carte et étudier la côte",
+            "outcome": {
+              "note": "The coast on it is not the coast outside. It shows the shore as it was before the tear, with every harbour lit.",
+              "note_fr": "La côte qui y figure n’est pas celle du dehors. Elle montre le rivage tel qu’il était avant la déchirure, chaque port éclairé."
+            }
+          }
+        ]
+      },
+      {
+        "id": "mainsail",
+        "type": "event",
+        "text": "The flagship’s mainsail hangs from its yard, vast and pale, patched and re-patched with the sailmakers’ small neat stitches. The fifth piece of the Shroud, they said. Up close, it is a sail.",
+        "text_fr": "La grand-voile du vaisseau amiral pend de sa vergue, vaste et pâle, rapiécée et rapiécée encore des petits points soignés des voiliers. La cinquième pièce du Linceul, disait-on. De près, c’est une voile.",
+        "choices": [
+          {
+            "id": "touch",
+            "text": "Lay a hand on the cloth",
+            "text_fr": "Poser la main sur la toile",
+            "outcome": {
+              "note": "It is warm and slightly damp, like a sleeper’s brow. Something stirs in it, very faintly, and lies still.",
+              "note_fr": "Elle est tiède et un peu humide, comme un front de dormeur. Quelque chose y remue, très faiblement, puis se calme."
+            }
+          },
+          {
+            "id": "count",
+            "text": "Count the patches",
+            "text_fr": "Compter les pièces",
+            "outcome": {
+              "note": "Seventy-one. Each in a different thread. Whoever kept this sail loved it very much.",
+              "note_fr": "Soixante et onze. Chacune d’un fil différent. Celui qui entretenait cette voile l’aimait beaucoup."
+            }
+          }
+        ]
+      },
+      {
+        "id": "flagship_colours",
+        "type": "event",
+        "text": "The flagship stands before you with her colours flying and her guns run out. On the quarterdeck, at the rail, a figure in white looks down at you with the stillness of a man who has stood this watch a long time.",
+        "text_fr": "Le vaisseau amiral se dresse devant vous, ses couleurs au vent et ses canons sortis. Sur le gaillard d’arrière, à la rambarde, une silhouette en blanc vous regarde d’en haut avec l’immobilité de quelqu’un qui tient cette garde depuis longtemps.",
+        "choices": [
+          {
+            "id": "salute",
+            "text": "Salute the quarterdeck",
+            "text_fr": "Saluer le gaillard d’arrière",
+            "outcome": {
+              "note": "The figure raises one hand, gravely, in return. It is exactly the salute of a man who still believes he is in command.",
+              "note_fr": "La silhouette lève une main, gravement, en retour. C’est exactement le salut de quelqu’un qui se croit encore en charge."
+            }
+          },
+          {
+            "id": "hail",
+            "text": "Call up that the Crusade is over",
+            "text_fr": "Crier que la Croisade est finie",
+            "outcome": {
+              "note": "The wind drops, and the colours hang. Then it picks up again, harder, and the guns are very still.",
+              "note_fr": "Le vent tombe, et les couleurs pendent. Puis il reprend, plus fort, et les canons sont très calmes."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Board her without a word",
+            "text_fr": "Monter à bord sans un mot",
+            "outcome": {
+              "note": "The gangway is lowered for you by no one that you can see.",
+              "note_fr": "La passerelle est abaissée pour vous par quelqu’un que vous ne voyez pas."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "z_beyond_the_tear": {
+    "steps": [
+      {
+        "id": "far_side",
+        "type": "event",
+        "text": "The far side of the tear has no sky, and no ground that stays where it is left. The Rusty Eel hangs in the middle of it like a lamp, and everything she is, the planks, the rigging, the smell of tar, remembers what a world is supposed to be.",
+        "text_fr": "L’autre côté de la déchirure n’a pas de ciel, et pas de sol qui reste là où on le laisse. Le Rusty Eel flotte au milieu comme une lampe, et tout ce qu’il est, les planches, le gréement, l’odeur de goudron, se souvient de ce que doit être un monde.",
+        "choices": [
+          {
+            "id": "look",
+            "text": "Look out over the rail",
+            "text_fr": "Regarder par-dessus la rambarde",
+            "outcome": {
+              "note": "There is nothing to see, and it is very large. The Eel creaks, like a house settling.",
+              "note_fr": "Il n’y a rien à voir, et c’est très vaste. L’Eel craque, comme une maison qui se tasse."
+            }
+          },
+          {
+            "id": "hold",
+            "text": "Put a hand on the mast",
+            "text_fr": "Poser la main sur le mât",
+            "outcome": {
+              "note": "It is warm. It is the only warm thing in sight, and it knows you.",
+              "note_fr": "Il est tiède. C’est la seule chose tiède en vue, et il vous connaît."
+            }
+          }
+        ]
+      },
+      {
+        "id": "eel_remembers",
+        "type": "check",
+        "text": "The Eel is the only thing here that remembers what a world looks like. She tugs at her keel as you set out, a small, steady pull toward where the shore ought to be.",
+        "text_fr": "L’Eel est la seule chose ici qui se souvienne de ce à quoi ressemble un monde. Elle tire sur sa quille quand vous partez, une petite traction régulière vers l’endroit où devrait être la rive.",
+        "choices": [
+          {
+            "id": "feel",
+            "text": "Feel which way she pulls",
+            "text_fr": "Sentir de quel côté elle tire",
+            "check": "wisdom",
+            "success": {
+              "note": "The pull is steady, and you follow it. The ground firms beneath you wherever the Eel’s memory touches it.",
+              "note_fr": "La traction est régulière, et vous la suivez. Le sol se raffermit sous vous partout où le souvenir de l’Eel le touche."
+            },
+            "fail": {
+              "note": "You mistake your own wish for her pull. The ground slides and sets you back where you started.",
+              "note_fr": "Vous prenez votre propre désir pour sa traction. Le sol glisse et vous remet là où vous aviez commencé."
+            }
+          },
+          {
+            "id": "rope",
+            "text": "Tie a line to the Eel and pay it out as you go",
+            "text_fr": "Attacher une corde à l’Eel et la dérouler en avançant",
+            "outcome": {
+              "note": "The line goes taut behind you like a thread through a maze. It is the only straight thing for a very long way.",
+              "note_fr": "La corde se tend derrière vous comme un fil dans un labyrinthe. C’est la seule chose droite sur une très longue distance."
+            }
+          }
+        ]
+      },
+      {
+        "id": "first_reflection",
+        "type": "fight",
+        "text": "A figure walks toward you across the broken ground, in step with nothing, and its face is a face you have seen in a mirror. It stops when you stop.",
+        "text_fr": "Une silhouette marche vers vous à travers le sol brisé, au pas de rien, et son visage est un visage que vous avez vu dans un miroir. Elle s’arrête quand vous vous arrêtez.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Break it",
+            "text_fr": "La briser",
+            "fight": "hollow_reflection",
+            "success": {
+              "note": "It shatters, and every piece shows a different sky.",
+              "note_fr": "Elle vole en éclats, et chaque morceau montre un ciel différent."
+            },
+            "fail": {
+              "note": "You break it, and keep a little of its cold in your chest for a long while.",
+              "note_fr": "Vous la brisez, et gardez un peu de son froid dans la poitrine longtemps."
+            }
+          },
+          {
+            "id": "pass",
+            "text": "Walk straight through it",
+            "text_fr": "Passer droit à travers elle",
+            "check": "wisdom",
+            "success": {
+              "note": "It parts like smoke. You feel it cross you, cold, and you do not stop.",
+              "note_fr": "Elle s’écarte comme de la fumée. Vous la sentez vous traverser, froide, et vous ne vous arrêtez pas."
+            },
+            "fail": {
+              "note": "It does not part. You stagger, and it follows a pace behind, looking at you with your own eyes.",
+              "note_fr": "Elle ne s’écarte pas. Vous chancelez, et elle suit à un pas, vous regardant de vos propres yeux."
+            }
+          }
+        ]
+      },
+      {
+        "id": "faces_walking",
+        "type": "event",
+        "text": "The faces of everyone the invasion took walk the broken ground, in no direction, in no hurry. Some are calm. Some look at you, and look away. Some are people you knew.",
+        "text_fr": "Les visages de tous ceux que l’invasion a emportés parcourent le sol brisé, sans direction, sans hâte. Certains sont calmes. Certains vous regardent, puis détournent les yeux. Certains sont des gens que vous connaissiez.",
+        "choices": [
+          {
+            "id": "name",
+            "text": "Say the name of one you knew",
+            "text_fr": "Dire le nom de l’une de celles que vous connaissiez",
+            "outcome": {
+              "note": "She turns her head, a little, and for a moment is entirely herself. Then the ground moves, and she is gone.",
+              "note_fr": "Elle tourne un peu la tête, et pendant un instant est tout à fait elle-même. Puis le sol bouge, et elle disparaît."
+            }
+          },
+          {
+            "id": "walk",
+            "text": "Walk among them without speaking",
+            "text_fr": "Marcher parmi elles sans parler",
+            "outcome": {
+              "note": "They part for you, courteously. You feel them close behind you like water.",
+              "note_fr": "Elles s’écartent devant vous, avec courtoisie. Vous les sentez se refermer derrière vous comme de l’eau."
+            }
+          },
+          {
+            "id": "close",
+            "text": "Close your eyes and keep walking",
+            "text_fr": "Fermer les yeux et continuer",
+            "outcome": {
+              "note": "You hear them, all the same. It is a sound of footsteps on nothing, and of many people trying not to be lost.",
+              "note_fr": "Vous les entendez quand même. C’est un bruit de pas sur rien, et de beaucoup de gens qui essaient de ne pas être perdus."
+            }
+          }
+        ]
+      },
+      {
+        "id": "remembered_street",
+        "type": "discovery",
+        "text": "A street stands where nothing should: three houses, a lamp-post, a gutter, all perfectly detailed. They remember a name. Yours, you suspect, or one very like it. The cobbles are set with fragments of clear glass.",
+        "text_fr": "Une rue se dresse là où il ne devrait rien y avoir : trois maisons, un réverbère, un caniveau, tous parfaitement détaillés. Ils se souviennent d’un nom. Le vôtre, soupçonnez-vous, ou un tout proche. Les pavés sont sertis d’éclats de verre clair.",
+        "place": "The remembered street",
+        "place_fr": "La rue de mémoire",
+        "material": "material_tear_glass",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Pry a few fragments from the cobbles",
+            "text_fr": "Desceller quelques éclats des pavés",
+            "outcome": {
+              "note": "Tear glass, clear and humming. The street does not seem to mind. It seems, if anything, relieved to be less heavy.",
+              "note_fr": "Du verre de déchirure, clair et bourdonnant. La rue n’a pas l’air de s’en soucier. Elle paraît, plutôt, soulagée d’être moins lourde."
+            }
+          },
+          {
+            "id": "door",
+            "text": "Try the door of the nearest house",
+            "text_fr": "Essayer la porte de la maison la plus proche",
+            "outcome": {
+              "note": "It opens onto a room with a table, a lamp and a chair pulled out for someone. You close it again, gently.",
+              "note_fr": "Elle s’ouvre sur une pièce avec une table, une lampe et une chaise tirée pour quelqu’un. Vous la refermez, doucement."
+            }
+          }
+        ]
+      },
+      {
+        "id": "two_knights",
+        "type": "fight",
+        "text": "Two knights in the armour of the old Crusade come out of the nothing, helms closed, swords drawn. Neither is entirely there. Both are much too steady on their feet.",
+        "text_fr": "Deux chevaliers en armure de l’ancienne Croisade sortent du néant, heaumes fermés, épées tirées. Aucun n’est tout à fait là. Tous deux sont beaucoup trop assurés sur leurs jambes.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Meet them",
+            "text_fr": "Les affronter",
+            "fight": [
+              "unmade_knight",
+              "unmade_knight"
+            ],
+            "success": {
+              "note": "They come apart in plates, and the plates fall without sound. The swords lie where they dropped.",
+              "note_fr": "Ils se disloquent en plaques, et les plaques tombent sans bruit. Les épées gisent là où elles sont tombées."
+            },
+            "fail": {
+              "note": "You beat them back, and their cold follows you through the next stretch of ground.",
+              "note_fr": "Vous les repoussez, et leur froid vous suit à travers le tronçon de sol suivant."
+            }
+          },
+          {
+            "id": "round",
+            "text": "Go round them across the broken ground",
+            "text_fr": "Les contourner par le sol brisé",
+            "check": "dexterity",
+            "success": {
+              "note": "They turn their helms to follow, slowly, and lose you in a fold of the ground.",
+              "note_fr": "Ils tournent leurs heaumes pour vous suivre, lentement, et vous perdent dans un pli du sol."
+            },
+            "fail": {
+              "note": "The ground drops a hand’s breadth. They are on you before you recover.",
+              "note_fr": "Le sol s’affaisse d’une main. Ils sont sur vous avant que vous ne vous releviez."
+            }
+          }
+        ]
+      },
+      {
+        "id": "weight_of_air",
+        "type": "check",
+        "text": "The air here has weight, and it increases. Each breath is a heavier thing than the last, and the lantern flame leans slowly, as though against a great hand.",
+        "text_fr": "L’air ici a du poids, et il augmente. Chaque souffle est une chose plus lourde que la précédente, et la flamme de la lanterne se penche lentement, comme contre une grande main.",
+        "choices": [
+          {
+            "id": "endure",
+            "text": "Push on against the weight",
+            "text_fr": "Avancer contre le poids",
+            "check": "constitution",
+            "success": {
+              "note": "The weight holds you back, and you hold it. At the crest, it eases, as though it had tested you and found you sound.",
+              "note_fr": "Le poids vous retient, et vous le retenez. À la crête, il cède, comme s’il vous avait éprouvé et trouvé solide."
+            },
+            "fail": {
+              "note": "It brings you down to your knees. When it lifts, you feel as if you had walked a day.",
+              "note_fr": "Il vous met à genoux. Quand il se lève, vous avez l’impression d’avoir marché une journée."
+            }
+          },
+          {
+            "id": "slow",
+            "text": "Slow to a crawl and breathe by the lantern",
+            "text_fr": "Ralentir à un pas d’escargot et respirer à la lueur de la lanterne",
+            "outcome": {
+              "note": "It is humiliating, and it works. The flame stands up again, a little at a time.",
+              "note_fr": "C’est humiliant, et ça marche. La flamme se redresse, peu à peu."
+            }
+          }
+        ]
+      },
+      {
+        "id": "companion_voice",
+        "type": "event",
+        "text": "A voice calls from somewhere ahead. It is a companion’s voice, unmistakable: the laugh in it, the habit of saying your name a half-beat early. It says: this way. It is much too cheerful.",
+        "text_fr": "Une voix appelle de quelque part devant. C’est la voix d’un compagnon, indubitable : le rire dedans, l’habitude de dire votre nom une demi-seconde trop tôt. Elle dit : par ici. Elle est beaucoup trop gaie.",
+        "choices": [
+          {
+            "id": "answer",
+            "text": "Answer, and listen for the reply",
+            "text_fr": "Répondre, et écouter la réponse",
+            "check": "wisdom",
+            "success": {
+              "note": "The reply comes from the wrong place, and a half-beat late. You step back from the sound, and it laughs, very kindly.",
+              "note_fr": "La réponse vient du mauvais endroit, et une demi-seconde trop tard. Vous reculez devant le son, et il rit, très gentiment."
+            },
+            "fail": {
+              "note": "You answer, and the voice moves. For a long minute you follow it, and the Eel’s pull grows faint.",
+              "note_fr": "Vous répondez, et la voix se déplace. Pendant une longue minute vous la suivez, et la traction de l’Eel faiblit."
+            }
+          },
+          {
+            "id": "ignore",
+            "text": "Do not answer",
+            "text_fr": "Ne pas répondre",
+            "outcome": {
+              "note": "The voice calls twice more, and then, in a very different tone, says your name and nothing else.",
+              "note_fr": "La voix appelle deux fois encore, puis, d’un ton très différent, dit votre nom et rien d’autre."
+            }
+          },
+          {
+            "id": "call",
+            "text": "Call back the true name of the companion it imitates",
+            "text_fr": "Rappeler le vrai nom du compagnon qu’elle imite",
+            "outcome": {
+              "note": "The voice stops. After a silence, something sounds almost like an apology.",
+              "note_fr": "La voix s’arrête. Après un silence, quelque chose ressemble presque à des excuses."
+            }
+          }
+        ]
+      },
+      {
+        "id": "hounds_of_nothing",
+        "type": "fight",
+        "text": "Three hounds of no colour come over a ridge of broken ground at a trot. They do not bark. They have the look of animals who have been sent, and know why.",
+        "text_fr": "Trois chiens sans couleur franchissent au trot une crête de sol brisé. Ils n’aboient pas. Ils ont l’air de bêtes qu’on a envoyées, et qui savent pourquoi.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Hold the ridge",
+            "text_fr": "Tenir la crête",
+            "fight": [
+              "void_hound",
+              "void_hound",
+              "void_hound"
+            ],
+            "success": {
+              "note": "They fall one by one, and the last lies down as if tired. The ridge is quiet.",
+              "note_fr": "Ils tombent un à un, et le dernier se couche comme fatigué. La crête est calme."
+            },
+            "fail": {
+              "note": "You hold the ridge and carry three cold marks down it.",
+              "note_fr": "Vous tenez la crête et en descendez avec trois marques froides."
+            }
+          },
+          {
+            "id": "lantern",
+            "text": "Raise the lantern high and walk toward them",
+            "text_fr": "Lever la lanterne haut et marcher vers eux",
+            "outcome": {
+              "note": "They stop. The steady light is something they were not told about. They lie down, one by one, at the edge of its glow.",
+              "note_fr": "Ils s’arrêtent. La lumière stable est une chose dont on ne leur a pas parlé. Ils se couchent, un à un, au bord de sa lueur."
+            }
+          }
+        ]
+      },
+      {
+        "id": "lamp_no_one_lit",
+        "type": "discovery",
+        "text": "A lamp burns on a post of fused glass, alone, at the edge of a clearing. Nobody lit it. The flame is the colour of brass and gives off a warmth that has no source. The post is wound round with a band of bright metal.",
+        "text_fr": "Une lampe brûle sur un poteau de verre fondu, seule, au bord d’une clairière. Personne ne l’a allumée. La flamme est de la couleur du laiton et dégage une chaleur sans source. Le poteau est entouré d’une bande de métal brillant.",
+        "place": "The unlit lamp",
+        "place_fr": "La lampe que nul n’a allumée",
+        "material": "material_lantern_brass",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Unwind the band of metal",
+            "text_fr": "Dérouler la bande de métal",
+            "outcome": {
+              "note": "Lantern brass, bright as the day it was cast. The lamp burns on without it, undiminished, as if it had never needed it.",
+              "note_fr": "Du laiton de lanterne, brillant comme au jour de sa fonte. La lampe brûle sans lui, intacte, comme si elle n’en avait jamais eu besoin."
+            }
+          },
+          {
+            "id": "warm",
+            "text": "Warm your hands at the flame",
+            "text_fr": "Vous réchauffer les mains à la flamme",
+            "outcome": {
+              "note": "The warmth is real. It does not reach the bone, but it is the first warmth that has been real in a long time.",
+              "note_fr": "La chaleur est réelle. Elle n’atteint pas l’os, mais c’est la première chaleur réelle depuis longtemps."
+            }
+          }
+        ]
+      },
+      {
+        "id": "held_breath",
+        "type": "rest",
+        "text": "In a fold of the ground out of every wind, there is a place where the weight of the air eases: a hollow the shape of a held breath. You can sit there. It asks nothing.",
+        "text_fr": "Dans un pli du sol à l’abri de tous les vents, il y a un endroit où le poids de l’air se relâche : un creux en forme de souffle retenu. On peut s’y asseoir. Il ne demande rien.",
+        "choices": [
+          {
+            "id": "sit",
+            "text": "Sit and rest",
+            "text_fr": "Vous asseoir et vous reposer"
+          },
+          {
+            "id": "breathe",
+            "text": "Let out the breath you have been holding",
+            "text_fr": "Relâcher le souffle que vous reteniez",
+            "outcome": {
+              "note": "The hollow lets go of its own, in answer. The ground seems for a moment to soften.",
+              "note_fr": "Le creux relâche le sien, en réponse. Le sol paraît s’adoucir un instant."
+            }
+          }
+        ]
+      },
+      {
+        "id": "manifestation_far",
+        "type": "fight",
+        "text": "From the air above the clearing a shape unclenches and comes down. It has no features, only an outline, and an air of taking its time. Behind it, the dark is not quite the same dark.",
+        "text_fr": "De l’air au-dessus de la clairière, une forme se détache et descend. Elle n’a pas de traits, seulement un contour, et un air de prendre son temps. Derrière elle, le noir n’est pas tout à fait le même noir.",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Meet it",
+            "text_fr": "L’affronter",
+            "fight": "void_manifestation",
+            "success": {
+              "note": "It comes apart into plain air, and the dark behind it flickers, once, as if registering an absence.",
+              "note_fr": "Il se dissout en air ordinaire, et le noir derrière lui vacille, une fois, comme pour enregistrer une absence."
+            },
+            "fail": {
+              "note": "You drive it off. The place it stood stays cold for a long time.",
+              "note_fr": "Vous le chassez. L’endroit où il se tenait reste froid longtemps."
+            }
+          },
+          {
+            "id": "dodge",
+            "text": "Duck under its reach and run",
+            "text_fr": "Vous baisser sous sa portée et courir",
+            "check": "dexterity",
+            "success": {
+              "note": "It reaches, and finds air. You are a long way off by the time it turns.",
+              "note_fr": "Il tend le bras, et ne trouve que de l’air. Vous êtes très loin quand il se retourne."
+            },
+            "fail": {
+              "note": "It catches your shoulder with a cold that goes straight to the bone.",
+              "note_fr": "Il vous prend l’épaule d’un froid qui va droit à l’os."
+            }
+          }
+        ]
+      },
+      {
+        "id": "throne_far_off",
+        "type": "event",
+        "text": "Over the last ridge, very far off, a throne stands in the nothing, huge, indistinct, crowned in splinters of light. You cannot say how far away it is. The distance does not seem to apply.",
+        "text_fr": "Par-dessus la dernière crête, très loin, un trône se dresse dans le néant, immense, indistinct, couronné d’éclats de lumière. Vous ne sauriez dire à quelle distance il est. La distance ne semble pas s’appliquer.",
+        "choices": [
+          {
+            "id": "look",
+            "text": "Look at it for as long as you can bear",
+            "text_fr": "Le regarder aussi longtemps que vous le pouvez",
+            "outcome": {
+              "note": "It does not look back. It does not need to. It has already seen all it means to see of you.",
+              "note_fr": "Il ne vous regarde pas. Il n’en a pas besoin. Il a déjà vu tout ce qu’il voulait voir de vous."
+            }
+          },
+          {
+            "id": "turn",
+            "text": "Turn and look back at the Eel",
+            "text_fr": "Vous retourner et regarder l’Eel",
+            "outcome": {
+              "note": "She is a small lit shape in the dark, impossibly far. You raise a hand to her. The lantern at her bow flares, once.",
+              "note_fr": "Elle est une petite forme éclairée dans le noir, impossiblement loin. Vous levez la main vers elle. La lanterne de son étrave jaillit, une fois."
+            }
+          }
+        ]
+      },
+      {
+        "id": "name_known",
+        "type": "check",
+        "text": "A voice speaks in the nothing, level, without hurry. It says your family’s name, as one might say the name of a debt. It knew it a long time before you did.",
+        "text_fr": "Une voix parle dans le néant, égale, sans hâte. Elle dit le nom de votre famille, comme on dirait le nom d’une dette. Elle le connaissait bien avant vous.",
+        "choices": [
+          {
+            "id": "answer",
+            "text": "Answer it with your own name",
+            "text_fr": "Lui répondre de votre propre nom",
+            "check": "charisma",
+            "success": {
+              "note": "The voice pauses. For a moment the nothing seems to lean in to listen. You hold your ground.",
+              "note_fr": "La voix marque une pause. Un instant le néant semble se pencher pour écouter. Vous tenez bon."
+            },
+            "fail": {
+              "note": "Your voice is smaller than the dark. The name goes on being said, unhurried.",
+              "note_fr": "Votre voix est plus petite que l’obscurité. Le nom continue d’être dit, sans hâte."
+            }
+          },
+          {
+            "id": "silent",
+            "text": "Say nothing, and keep the Eel’s line in your hand",
+            "text_fr": "Ne rien dire, et garder la corde de l’Eel en main",
+            "outcome": {
+              "note": "The line is warm. The voice says the name once more, as one tries a door that has been tried before.",
+              "note_fr": "La corde est tiède. La voix dit le nom une fois de plus, comme on essaie une porte déjà essayée."
+            }
+          }
+        ]
+      },
+      {
+        "id": "last_stair",
+        "type": "event",
+        "text": "At the foot of the throne, the ground becomes a stair: broken steps, shards of the tear, rising to a seat you cannot see. There is no one on the stair. The lamp at your belt burns steady, and the stair, one by one, takes your weight.",
+        "text_fr": "Au pied du trône, le sol devient un escalier : des marches brisées, des éclats de la déchirure, qui montent vers un siège que vous ne voyez pas. Il n’y a personne sur l’escalier. La lampe à votre ceinture brûle, stable, et l’escalier, une marche après l’autre, prend votre poids.",
+        "choices": [
+          {
+            "id": "climb",
+            "text": "Climb",
+            "text_fr": "Monter",
+            "outcome": {
+              "note": "Each step is a little higher than the last, and a little further from the Eel. You count them, so as not to count anything else.",
+              "note_fr": "Chaque marche est un peu plus haute que la précédente, et un peu plus loin de l’Eel. Vous les comptez, pour ne rien compter d’autre."
+            }
+          },
+          {
+            "id": "pause",
+            "text": "Stop at the first step and say what you came to say",
+            "text_fr": "S’arrêter à la première marche et dire ce que vous aviez à dire",
+            "outcome": {
+              "note": "The words go up the stair and come back down the other way. Nothing answers. The stair waits, which is its own sort of answer.",
+              "note_fr": "Les mots montent l’escalier et redescendent dans l’autre sens. Rien ne répond. L’escalier attend, ce qui est sa façon de répondre."
+            }
+          },
+          {
+            "id": "lamp",
+            "text": "Set the lantern on the lowest step",
+            "text_fr": "Poser la lanterne sur la première marche",
+            "outcome": {
+              "note": "It burns, small and bright, on the first stair. Whatever happens, there will be one light here.",
+              "note_fr": "Elle brûle, petite et brillante, sur la première marche. Quoi qu’il arrive, il y aura une lumière ici."
+            }
+          }
+        ]
+      }
+    ]
   }
 }

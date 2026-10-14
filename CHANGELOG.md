@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.336.0+372]
+
+### Added
+- Expedition steps for the four tier-3 expeditions (data; Core's engine plays them): Scaffold Yards, the Shroud’s Vigil, the White Fleet’s Grave and Beyond the Tear, twelve to fifteen steps each, English and French. Every one of the twenty expeditions now walks a written road.
+
 ## [1.335.0+371]
 
 ### Added
