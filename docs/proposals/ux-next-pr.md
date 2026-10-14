@@ -2,7 +2,7 @@
 
 For the manager (read here because UX has no `send_message`). #212 (1.282) is merged.
 
-## PR 1: v1.286.0+322 (the version the manager gave): material icons and chips only
+## PR 1: [#217](https://github.com/warning18/NarrativeApp/pull/217), v1.286.0+322 (the version the manager gave): material icons and chips only
 
 Nine pixel icons for the building materials (`tool/gen_material_icons.py` writes `assets/icons/items/material_*.png`; the borrow list in `ItemIcons` is gone, the boss trophy keeps its own), and the material chips on the camp's build cards (the cost beside gold as each material's icon and count: `2` held, `1/2` in red when short; the status tag says "need materials"). It reads Core's `materialCost` and `missingMaterials`. Touches only `camp_town_section.dart` (UX's), `item_icons.dart`, one new string key (`town_materials`, EN + FR). Tests: `camp_town_section_test.dart`.
 
