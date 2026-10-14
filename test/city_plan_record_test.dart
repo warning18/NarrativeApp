@@ -5,7 +5,6 @@
 // and walking between districts is free.
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui' show Offset;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,8 +51,7 @@ void main() {
     }
   });
 
-  test('every district has its shape, its label and its entry inside it',
-      () {
+  test('every district has its shape, its label and its entry inside it', () {
     expect(salt.districts.keys.toSet(), {for (final d in districts) d.id});
     for (final d in salt.districts.values) {
       expect(d.shape.length, greaterThanOrEqualTo(3), reason: d.id);
@@ -179,8 +177,8 @@ void main() {
     expect(ref.read(currentCityProvider), 'saltmouth');
     expect(ref.read(partyDistrictProvider), 'saltmouth_wharf');
     final gold = ref.read(playerSessionProvider).gold;
-    await tester.runAsync(
-        () => walkToDistrict(ref, 'saltmouth_lantern_alleys'));
+    await tester
+        .runAsync(() => walkToDistrict(ref, 'saltmouth_lantern_alleys'));
     await tester.pump();
     expect(ref.read(partyDistrictProvider), 'saltmouth_lantern_alleys');
     expect(ref.read(foundDistrictsProvider),
@@ -188,8 +186,8 @@ void main() {
     expect(ref.read(playerSessionProvider).gold, gold);
     expect(
         ref.read(partyDistrictWaysProvider),
-        waysInDistrict(geo, story, story.nodeFor('2015')!,
-            'saltmouth_lantern_alleys'));
+        waysInDistrict(
+            geo, story, story.nodeFor('2015')!, 'saltmouth_lantern_alleys'));
     // Another city's district: no walk.
     await tester.runAsync(() => walkToDistrict(ref, 'alster_lower_town'));
     expect(ref.read(partyDistrictProvider), 'saltmouth_lantern_alleys');
