@@ -92,3 +92,6 @@ Proposed to the user, waiting for their pick: the Journey's levels at a city bec
 
 ## PR #232 (v1.297.0+333): voyage encounters and the port ahead
 Raiders, derelict, sighting and sea beasts drawn beside the Eel; arrival shows a harbour scene. Hulls' side views still out until the user decides who draws them. Green CI: please merge.
+
+## City models (board 14, 14 Oct)
+The user asked for the city drawn like a medieval city (streets, lanes, buildings) with a zoom into each district, **top-down only**. Board 14 shows two top-down models over the same generated Saltmouth plan: **A** a cartographer's parchment plan, **B** the same plan in pixel art on the dark map card. Tapping a district zooms to its map, where each way is a pin on its own building. Waiting for the user's pick (A or B, the level of detail, pinch-zoom or tap-to-zoom only). Design only; nothing built. If picked: Core a per-city plan record (wall, shore, avenues, squares, district shapes, one anchor per way), Narrative the building names, UX the painter and the zoom.
