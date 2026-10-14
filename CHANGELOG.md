@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.295.0+331]
+
+The ash squall on the road to the Ashen Quarter.
+
+### Changed
+- **The ash squall fills the ruins scene with ash**, as the sandstorm fills the desert one with dust: on the camp-to-quarter road, when the day's event is the ash squall, the ash falls thick over the scene. Without a storm the ash still falls lightly (the ruins scene itself came in 1.291.0, for terrain `ruins`).
+
 ## [1.294.0+330]
 
 The building screen: four sections, what is missing, where to find it.
