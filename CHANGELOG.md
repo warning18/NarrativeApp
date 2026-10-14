@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.342.0+378]
+
+### Added
+- Detour pools for places that need their own voice (data; Core's engine reads them): the cove camp, Rimewell, Highhearth, the Black Reliquary, Wrack’s End, the gates and the Lantern Hall of Candlehold, the White Anchorage and Greyhithe, English and French. `assets/gamedata/detours.json` now holds fifteen places.
+
 ## [1.340.0+376]
 
 ### Added

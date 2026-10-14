@@ -348,6 +348,492 @@
           "fr": "Quelqu’un rit trop fort à une plaisanterie pas très bonne, et tout le monde sait pourquoi."
         }
       ]
+    },
+    "cove_camp": {
+      "shop": [
+        {
+          "en": "A survivor has set up a bench by the palisade gate selling what the camp can spare: rope, tallow, mended boots.",
+          "fr": "Un rescapé a installé un banc près de la porte de la palissade et vend ce que le camp peut céder : de la corde, du suif, des bottes ravaudées."
+        },
+        {
+          "en": "The sail-loft’s door is open, and a woman inside trades patches for stories.",
+          "fr": "La porte de la voilerie est ouverte, et une femme à l’intérieur échange des pièces contre des histoires."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "Something moves on the shingle beyond the palisade, low and fast, and the watch-bell begins to ring.",
+          "fr": "Quelque chose bouge sur les galets au-delà de la palissade, bas et vite, et la cloche de garde se met à sonner.",
+          "mood": "tense"
+        },
+        {
+          "en": "A figure in a Host cloak crosses the camp’s gate without the password, and stops when challenged.",
+          "fr": "Une silhouette en manteau de l’Ost franchit la porte du camp sans le mot de passe, et s’arrête quand on l’interpelle.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "The camp’s quartermaster has a list pinned to the palisade, and your name is not on it yet.",
+          "fr": "L’intendant du camp a épinglé une liste à la palissade, et votre nom n’y figure pas encore."
+        },
+        {
+          "en": "A child from the sail-loft asks whether you will find a lost needle, and will not say why it matters.",
+          "fr": "Un enfant de la voilerie demande si vous voulez retrouver une aiguille perdue, et ne dit pas pourquoi cela compte."
+        }
+      ],
+      "rest": [
+        {
+          "en": "The camp’s long fire has a bench, a pot and a place for one more.",
+          "fr": "Le long feu du camp a un banc, une marmite et une place pour une personne de plus."
+        },
+        {
+          "en": "The sail-loft’s upper floor is warm, and smells of tar and sleep.",
+          "fr": "L’étage de la voilerie est tiède, et sent la poix et le sommeil."
+        }
+      ],
+      "generic": [
+        {
+          "en": "The watch-bell is struck once, the usual way, to say that all is well.",
+          "fr": "La cloche de garde est frappée une fois, comme d’habitude, pour dire que tout va bien."
+        },
+        {
+          "en": "Someone is mending a sail by the fire, humming something that is not quite a hymn.",
+          "fr": "Quelqu’un ravaude une voile près du feu en fredonnant quelque chose qui n’est pas tout à fait un hymne."
+        }
+      ]
+    },
+    "rimewell": {
+      "shop": [
+        {
+          "en": "A stall by Rimewell’s gate sells coal by the lump, one to a customer, and watches that you do not breathe on it.",
+          "fr": "Un étal près de la porte de Puits-de-Givre vend du charbon au morceau, un par client, et veille à ce que vous ne souffliez pas dessus."
+        },
+        {
+          "en": "A woman sells felt boots from the shelter of a dead chimney.",
+          "fr": "Une femme vend des bottes de feutre à l’abri d’une cheminée morte."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A bailiff in a coat of hoarfrost steps out of the toll-house, ledger open.",
+          "fr": "Un huissier en manteau de givre sort de la maison du péage, son registre ouvert.",
+          "mood": "tense"
+        },
+        {
+          "en": "A hound of the cold paces along the wall of the last forge.",
+          "fr": "Un chien du froid longe le mur de la dernière forge.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "The smith asks for someone to carry a lit coal across the city, and not to ask how long it will last.",
+          "fr": "La forgeronne cherche quelqu’un pour porter une braise allumée à travers la ville, sans demander combien de temps elle durera."
+        },
+        {
+          "en": "A child asks whether it is true that there is a place where fire still takes.",
+          "fr": "Un enfant demande s’il est vrai qu’il existe un endroit où le feu prend encore."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A forge still warm at its heart lets strangers sit, if they bring their own fuel.",
+          "fr": "Une forge encore tiède en son cœur laisse s’asseoir les étrangers, s’ils apportent leur propre combustible."
+        },
+        {
+          "en": "A bell-tower’s stair is out of the wind and nobody has come to claim it.",
+          "fr": "L’escalier d’un clocher est à l’abri du vent et personne n’est venu le réclamer."
+        }
+      ],
+      "generic": [
+        {
+          "en": "Not a single chimney smokes in Rimewell, and the whole town breathes in white.",
+          "fr": "Pas une cheminée ne fume à Puits-de-Givre, et toute la ville respire en blanc."
+        },
+        {
+          "en": "Frost grows on the inside of the windows as well as the outside.",
+          "fr": "Le givre pousse à l’intérieur des vitres comme à l’extérieur."
+        }
+      ]
+    },
+    "highhearth": {
+      "shop": [
+        {
+          "en": "A giant’s apprentice sells chisels, each worn to the shape of one particular hand.",
+          "fr": "L’apprenti d’un géant vend des ciseaux, chacun usé à la forme d’une main précise."
+        },
+        {
+          "en": "A mason sells quarry-dust by the sack, for mortar, for luck, and for something he does not name.",
+          "fr": "Un maçon vend de la poussière de carrière au sac, pour le mortier, pour la chance, et pour quelque chose qu’il ne nomme pas."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A frost-kept shape stands very still in the quarry road, and has stood there for a long time.",
+          "fr": "Une forme prise par le givre se tient très immobile sur la route de la carrière, et s’y tient depuis longtemps.",
+          "mood": "tense"
+        },
+        {
+          "en": "The quarry’s guard, a penitent, steps down from the cut with her hands folded and her feet apart.",
+          "fr": "La gardienne de la carrière, une pénitente, descend de la tranchée, les mains jointes et les pieds écartés.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "A giant asks you to carry a message that must be cut once and not spoken.",
+          "fr": "Un géant vous demande de porter un message qui doit être gravé une fois et non prononcé."
+        },
+        {
+          "en": "A quarryman says the cut has gone quiet, and wants to know whether it is the cold or something else.",
+          "fr": "Un carrier dit que la tranchée s’est tue, et veut savoir si c’est le froid ou autre chose."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A giant’s doorstep is wide enough for a party and warm from the stone beneath it.",
+          "fr": "Le seuil d’un géant est assez large pour une troupe et tiède de la pierre en dessous."
+        },
+        {
+          "en": "A quarrymen’s hut has a stove, a bench and a list of who has burnt what.",
+          "fr": "Une cabane de carriers a un poêle, un banc et une liste de qui a brûlé quoi."
+        }
+      ],
+      "generic": [
+        {
+          "en": "A chisel rings on stone high above, once, and then silence.",
+          "fr": "Un ciseau tinte sur la pierre très haut, une fois, puis le silence."
+        },
+        {
+          "en": "The giants walk slowly between the houses, and the street makes room without being asked.",
+          "fr": "Les géants marchent lentement entre les maisons, et la rue leur fait place sans qu’on le demande."
+        }
+      ]
+    },
+    "black_reliquary": {
+      "shop": [
+        {
+          "en": "A relic-seller trades in ‘bones of saints’ that are mostly chicken, and swears they are blessed.",
+          "fr": "Un marchand de reliques vend des ‘os de saints’ qui sont surtout du poulet, et jure qu’ils sont bénis."
+        },
+        {
+          "en": "A candle-maker sells wax stamped with the Reliquary’s seal, and will not say what is in the wax.",
+          "fr": "Un cirier vend de la cire frappée du sceau du Reliquaire, et ne dit pas ce qu’il y a dans la cire."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A reliquary guard steps out of a side chapel, hand on a censer that smells of old iron.",
+          "fr": "Un garde du Reliquaire sort d’une chapelle latérale, la main sur un encensoir qui sent le vieux fer.",
+          "mood": "tense"
+        },
+        {
+          "en": "Two penitents in masks rise from their prayers, slowly, together.",
+          "fr": "Deux pénitents masqués se relèvent de leurs prières, lentement, ensemble.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "A clerk of the Reliquary wants a ledger delivered to the next ward, before the bells.",
+          "fr": "Un greffier du Reliquaire veut qu’un registre soit livré au quartier voisin, avant les cloches."
+        },
+        {
+          "en": "A pilgrim asks you to find the chapel where her mother was last seen.",
+          "fr": "Une pèlerine vous demande de retrouver la chapelle où sa mère a été vue pour la dernière fois."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A side-chapel with a bench and a candle lets a stranger sit.",
+          "fr": "Une chapelle latérale avec un banc et une bougie laisse s’asseoir un étranger."
+        },
+        {
+          "en": "A cloister walk is out of the wind, and nobody there looks up.",
+          "fr": "Une galerie de cloître est à l’abri du vent, et personne n’y lève les yeux."
+        }
+      ],
+      "generic": [
+        {
+          "en": "Incense hangs in the corridors like a held breath.",
+          "fr": "L’encens flotte dans les couloirs comme un souffle retenu."
+        },
+        {
+          "en": "A bell tolls the hour, and every door along the street closes at once.",
+          "fr": "Une cloche sonne l’heure, et toutes les portes de la rue se ferment à la fois."
+        }
+      ]
+    },
+    "wracks_end": {
+      "shop": [
+        {
+          "en": "A wrecker’s widow sells fish-oil lamps and swears each burns true, which is more than she says for her late husband.",
+          "fr": "La veuve d’un naufrageur vend des lampes à huile de poisson et jure que chacune brûle droit, ce qu’elle ne dit pas de feu son mari."
+        },
+        {
+          "en": "A hull-house door opens on shelves of salvage: brass, rope, a ship’s clock stopped at three.",
+          "fr": "La porte d’une maison-coque s’ouvre sur des étagères de récupération : du laiton, de la corde, une horloge de navire arrêtée à trois heures."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A false lamp flares on the point, and a figure in oilskins steps from the fog, hook in hand.",
+          "fr": "Une fausse lampe flambe sur la pointe, et une silhouette en ciré sort de la brume, un crochet à la main.",
+          "mood": "tense"
+        },
+        {
+          "en": "The drowned climb the cliff stair in a slow line, toward the lamps.",
+          "fr": "Les noyés montent l’escalier de la falaise en une lente file, vers les lampes.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "A weed-cutter asks whether you will put out a lamp on the point that nobody lit.",
+          "fr": "Un coupeur de varech demande si vous voulez éteindre une lampe sur la pointe que personne n’a allumée."
+        },
+        {
+          "en": "A pilot wants someone to walk the cliff at night and say which lamps are false.",
+          "fr": "Un pilote veut quelqu’un pour parcourir la falaise de nuit et dire quelles lampes sont fausses."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A hull-house with its prow for a roof has a stove and a hammock.",
+          "fr": "Une maison-coque dont la proue fait le toit a un poêle et un hamac."
+        },
+        {
+          "en": "The lamp-keepers’ bench is warm from the lamp, and nobody minds who sits.",
+          "fr": "Le banc des gardiens de lampe est tiède de la lampe, et personne ne se soucie de qui s’assied."
+        }
+      ],
+      "generic": [
+        {
+          "en": "Fish-oil lamps burn in every window, and none of them quite agrees on where the shore is.",
+          "fr": "Des lampes à huile de poisson brûlent à chaque fenêtre, et aucune ne s’accorde tout à fait sur l’endroit où est le rivage."
+        },
+        {
+          "en": "A bell buoy rings somewhere in the fog, out of tune.",
+          "fr": "Une bouée à cloche sonne quelque part dans la brume, désaccordée."
+        }
+      ]
+    },
+    "candlehold_gates": {
+      "shop": [
+        {
+          "en": "A vendor on the steps sells candles stamped with the First Lantern’s seal, three to a bundle.",
+          "fr": "Un marchand sur les marches vend des bougies frappées du sceau de la Première Lanterne, trois par paquet."
+        },
+        {
+          "en": "A stall by the harbour chain sells passes that are certainly not forgeries.",
+          "fr": "Un étal près de la chaîne du port vend des laissez-passer qui ne sont certainement pas des faux."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A gate-warden steps from the Anvil Gate with a halberd and an order to check your banner.",
+          "fr": "Un gardien de porte sort de la Porte de l’Enclume avec une hallebarde et l’ordre de vérifier votre bannière.",
+          "mood": "tense"
+        },
+        {
+          "en": "Two lamp-guards descend the steps, torches high, asking questions they already know the answers to.",
+          "fr": "Deux gardes de lampe descendent les marches, torches levées, posant des questions dont ils connaissent déjà les réponses.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "A banner-clerk offers coin to carry a sealed letter through the Reed Gate unopened.",
+          "fr": "Un greffier des bannières offre de l’argent pour porter une lettre scellée par la Porte des Roseaux sans l’ouvrir."
+        },
+        {
+          "en": "A petitioner begs you to carry her case to someone who might listen.",
+          "fr": "Une solliciteuse vous supplie de porter sa cause à quelqu’un qui pourrait écouter."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A landing on the great stair, out of the wind, has a bench and a view of the harbour.",
+          "fr": "Un palier du grand escalier, à l’abri du vent, a un banc et une vue sur le port."
+        },
+        {
+          "en": "A gate-house stair has a dry step and a guard who looks the other way.",
+          "fr": "L’escalier d’une loge de porte a une marche sèche et un garde qui regarde ailleurs."
+        }
+      ],
+      "generic": [
+        {
+          "en": "The harbour chain ripples in the swell, and the gulls sit on it in a long line.",
+          "fr": "La chaîne du port ondule dans la houle, et les mouettes s’y alignent en une longue file."
+        },
+        {
+          "en": "The First Lantern burns above, and every step of the stair is lit by it, white.",
+          "fr": "La Première Lanterne brûle au-dessus, et chaque marche de l’escalier est éclairée par elle, en blanc."
+        }
+      ]
+    },
+    "candlehold_lantern_hall": {
+      "shop": [
+        {
+          "en": "A lamp-seller in the vestibule sells wicks and wishes, in that order, at the same price.",
+          "fr": "Un marchand de lampes dans le vestibule vend des mèches et des vœux, dans cet ordre, au même prix."
+        },
+        {
+          "en": "An attendant in a white tabard sells nothing, but accepts offerings.",
+          "fr": "Un serviteur en tabard blanc ne vend rien, mais accepte les offrandes."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A hall-guard in white steps down from the dais, spear level, and does not say your name.",
+          "fr": "Un garde de la salle, en blanc, descend de l’estrade, lance à l’horizontale, et ne prononce pas votre nom.",
+          "mood": "tense"
+        },
+        {
+          "en": "A shadow crosses the First Lantern’s light, and something follows it.",
+          "fr": "Une ombre traverse la lumière de la Première Lanterne, et quelque chose la suit.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "A steward asks you to carry a message to a person who is not in the hall.",
+          "fr": "Un intendant vous demande de porter un message à une personne qui n’est pas dans la salle."
+        },
+        {
+          "en": "A lamp-trimmer says the Lantern has flickered, once, and wants to know whether anyone else saw.",
+          "fr": "Un moucheur de lampes dit que la Lanterne a vacillé, une fois, et veut savoir si quelqu’un d’autre l’a vu."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A bench in the nave of the hall faces the Lantern and asks nothing.",
+          "fr": "Un banc dans la nef de la salle fait face à la Lanterne et ne demande rien."
+        },
+        {
+          "en": "A side-chapel off the nave is dry and quiet, and swept by someone who does not wish to be thanked.",
+          "fr": "Une chapelle latérale hors de la nef est sèche et calme, et balayée par quelqu’un qui ne souhaite pas être remercié."
+        }
+      ],
+      "generic": [
+        {
+          "en": "The First Lantern burns steady and white, and the hall is full of the sound of a very large flame.",
+          "fr": "La Première Lanterne brûle, stable et blanche, et la salle est pleine du bruit d’une très grande flamme."
+        },
+        {
+          "en": "Footsteps cross the hall and the echo comes back a moment before the footfall.",
+          "fr": "Des pas traversent la salle et l’écho revient un instant avant le pas."
+        }
+      ]
+    },
+    "white_anchorage": {
+      "shop": [
+        {
+          "en": "A sailmaker sells canvas patches cut from the White Fleet’s old sails, each stamped with a ship’s name.",
+          "fr": "Un voilier vend des pièces de toile coupées dans les vieilles voiles de la Flotte Blanche, chacune estampillée d’un nom de navire."
+        },
+        {
+          "en": "A trader behind a wall of anchors sells chain, shackles and a rumour of where the fleet went.",
+          "fr": "Un marchand derrière un mur d’ancres vend de la chaîne, des manilles et une rumeur sur la destination de la flotte."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A drowned sailor in a white sash rises from the harbour wall and stands, dripping, in your path.",
+          "fr": "Un marin noyé à l’écharpe blanche se dresse du mur du port et se tient, ruisselant, sur votre chemin.",
+          "mood": "tense"
+        },
+        {
+          "en": "Two crusaders at the anchor-gate move to bar the road, a hand each on a sword not drawn in years.",
+          "fr": "Deux croisés à la porte des ancres s’avancent pour barrer la route, une main chacun sur une épée que l’on n’a pas tirée depuis des années.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "The chapel’s priest asks you to find the flagship’s bell, which went missing the night of the tear.",
+          "fr": "Le prêtre de la chapelle vous demande de retrouver la cloche du vaisseau amiral, disparue la nuit de la déchirure."
+        },
+        {
+          "en": "A widow asks that you tell her husband’s name to the first lantern you pass.",
+          "fr": "Une veuve vous demande de dire le nom de son mari à la première lanterne que vous croiserez."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A hull-roofed house offers a hearth and a bunk, free, to anyone of the Crusade’s blood.",
+          "fr": "Une maison au toit de coque offre un foyer et une couchette, gratuitement, à quiconque est du sang de la Croisade."
+        },
+        {
+          "en": "An old anchor lies on the quay with a flat side worn smooth by sitting.",
+          "fr": "Une vieille ancre gît sur le quai, un côté plat poli par ceux qui s’y sont assis."
+        }
+      ],
+      "generic": [
+        {
+          "en": "The anchor-wall rings faintly in the tide, like a distant choir.",
+          "fr": "Le mur d’ancres résonne faiblement dans la marée, comme un chœur lointain."
+        },
+        {
+          "en": "Sails stretched as roofs ripple in the wind, and under each is a home.",
+          "fr": "Des voiles tendues en guise de toits ondulent au vent, et sous chacune se trouve un foyer."
+        }
+      ]
+    },
+    "greyhithe": {
+      "shop": [
+        {
+          "en": "A woman sells grain by the measure and lamp oil by the thimble, both rationed by a clerk who is glad of the job.",
+          "fr": "Une femme vend du grain à la mesure et de l’huile de lampe au dé à coudre, les deux rationnés par un commis content de sa charge."
+        },
+        {
+          "en": "A boy sells oiled lanterns, each guaranteed to burn through the night, or the money back, if he can find you.",
+          "fr": "Un garçon vend des lanternes huilées, chacune garantie de brûler toute la nuit, ou remboursée, s’il parvient à vous retrouver."
+        }
+      ],
+      "enemy": [
+        {
+          "en": "A flock of shapes stands very still on the path above the village, and one of them turns its head.",
+          "fr": "Un troupeau de formes se tient très immobile sur le sentier au-dessus du village, et l’une d’elles tourne la tête.",
+          "mood": "tense"
+        },
+        {
+          "en": "A green-glass shape with a crook of fused sand steps down from the rise, counting.",
+          "fr": "Une forme de verre vert, une crosse de sable fondu à la main, descend de la crête en comptant.",
+          "mood": "tense"
+        }
+      ],
+      "quest": [
+        {
+          "en": "An elder asks you to count the wagons that have gone up the hill, and to count them again.",
+          "fr": "Un ancien vous demande de compter les chariots montés sur la colline, et de les recompter."
+        },
+        {
+          "en": "A farmer wants someone to see whether his barn is still standing.",
+          "fr": "Un fermier veut que quelqu’un aille voir si sa grange tient toujours."
+        }
+      ],
+      "rest": [
+        {
+          "en": "A barn on the high ground has hay, a lantern and a roof that holds.",
+          "fr": "Une grange sur les hauteurs a du foin, une lanterne et un toit qui tient."
+        },
+        {
+          "en": "A village well gives cold water and a ledge, and from here the Tear is a long way off.",
+          "fr": "Le puits d’un village donne de l’eau froide et un rebord, et d’ici la Déchirure paraît très loin."
+        }
+      ],
+      "generic": [
+        {
+          "en": "The villages have gone up the hill, and the shore road is empty but for the wind.",
+          "fr": "Les villages sont montés sur la colline, et la route de la côte est vide, hormis le vent."
+        },
+        {
+          "en": "A lantern left on a gatepost burns on, steady, for no one.",
+          "fr": "Une lanterne laissée sur un poteau de portail brûle toujours, stable, pour personne."
+        }
+      ]
     }
   },
   "biomes": {
