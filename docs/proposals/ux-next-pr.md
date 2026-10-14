@@ -64,3 +64,9 @@ Branch `ux-g` (local, one commit on `origin/main`) has the building screen: `lib
 - **[#228](https://github.com/warning18/NarrativeApp/pull/228): v1.293.0+329, the map icon opens the full map.** Format, analyze and the six map test files pass locally. It merges after Core's 1.292 (renumber if it goes first). The ruins kit for `camp_to_quarter` was already in #223.
 - Next, built locally on `ux-g`: the building screen (G). It needs a version.
 - Design board 11 (the world sphere: smaller, two poles, the whole sphere filled, climate by latitude) is on the design artifact; it asks Core for a whole-sphere chart if the user picks it.
+
+## Open PRs (14 Oct, after #228 merged as 1.293.0)
+
+- **[#229](https://github.com/warning18/NarrativeApp/pull/229): v1.294.0+330, the building screen (G).** Format, analyze and its tests pass locally; it edits QA's `qa_real_font_cards_test.dart` (listed in the PR).
+- **The ruins scene kit for `camp_to_quarter` is already in `main`** (v1.291.0, #223: `ruins_kit.dart`, chosen by route terrain `ruins`, tested). Nothing more to build for it unless the user wants changes after seeing it. A second PR is not needed for it.
+- Design board 11 (the world sphere) waits on the user's three answers.
