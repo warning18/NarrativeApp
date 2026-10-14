@@ -18,6 +18,7 @@ import '../tutorial/tutorial_topics.dart';
 import '../data/climate.dart' show WeatherKind;
 import '../providers/climate_provider.dart' show skyHereProvider;
 import '../widgets/side_view/desert_kit.dart';
+import '../widgets/side_view/ruins_kit.dart';
 import '../widgets/side_view/side_view.dart';
 
 /// The story choice (`'<node>#<choice index>'`) whose crossing was just
@@ -252,9 +253,11 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     }
 
     // The scene over the words (board 6), by the route's terrain: the
-    // desert kit while it crosses a desert; a terrain with no kit yet keeps
-    // only the strip of day and health.
-    final scene = widget.route.terrain == 'desert';
+    // desert kit while it crosses a desert, the ruins kit among ruins; a
+    // terrain with no kit yet keeps only the strip of day and health.
+    final terrain = widget.route.terrain;
+    final scene = terrain == 'desert' || terrain == 'ruins';
+    final ruins = terrain == 'ruins';
     final progress = _phase == _Phase.arrived
         ? 1.0
         : _drawn.isEmpty
@@ -271,7 +274,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
             WeatherKind.snow => SideParticles.snow,
             WeatherKind.ash => SideParticles.ash,
             WeatherKind.fog => SideParticles.fog,
-            _ => SideParticles.shimmer,
+            _ => ruins ? SideParticles.ash : SideParticles.shimmer,
           };
     final hud = Padding(
       padding: const EdgeInsets.all(8),
@@ -340,7 +343,9 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                   children: [
                     SideViewScene(
                       key: const Key('crossing_scene'),
-                      layers: desertLayers(progress: progress),
+                      layers: ruins
+                          ? ruinsLayers(progress: progress)
+                          : desertLayers(progress: progress),
                       actors: desertActors(),
                       particles: particles,
                       intensity: storm ? 1 : 0.6,

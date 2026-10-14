@@ -284,4 +284,30 @@ void main() {
     await settle();
     expect(arrived, isTrue);
   });
+
+  testWidgets('a ruins route is drawn with its own scene kit', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final ruins = LandRoute.fromJson('r', {
+      'name': 'Through the ruins',
+      'from': 'camp',
+      'to': 'quarter',
+      'days': 2,
+      'terrain': 'ruins',
+      'events': {'ash_squall': 1},
+    });
+    await tester.pumpWidget(ProviderScope(
+      child: MaterialApp(
+        home:
+            LandCrossingScreen(route: ruins, events: events, random: Random(1)),
+      ),
+    ));
+    for (var i = 0; i < 4; i++) {
+      await tester.pump(const Duration(milliseconds: 150));
+    }
+    expect(find.byKey(const Key('crossing_scene')), findsOneWidget);
+    // Let the session finish loading before the test ends.
+    await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 200)));
+    expect(tester.takeException(), isNull);
+  });
 }
