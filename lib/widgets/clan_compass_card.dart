@@ -11,6 +11,7 @@ import '../providers/clans_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'clan_compass.dart';
+import 'clan_radar_chart.dart';
 
 class ClanCompassCard extends ConsumerStatefulWidget {
   const ClanCompassCard({super.key});
@@ -78,37 +79,66 @@ class _ClanCompassCardState extends ConsumerState<ClanCompassCard> {
           ),
           if (focus != null) ...[
             const SizedBox(height: 8),
-            Text(focus.nameFor(lang),
-                key: const Key('clans_compass_focus'),
-                style: theme.textTheme.titleSmall
-                    ?.copyWith(color: Color(focus.color | 0xFF000000))),
-            Text(
-                trFor(lang,
-                    standingTierKey(politics.tierOf(focus.patron.id, data))),
-                style: theme.textTheme.labelSmall?.copyWith(
-                    color: Color(
-                        tierColor(politics.tierOf(focus.patron.id, data)) |
-                            0xFF000000))),
-            if (friends.isNotEmpty)
-              Text.rich(
-                TextSpan(children: [
-                  TextSpan(
-                      text: '${tr(ref, 'clans_compass_friends')} · ',
-                      style: TextStyle(color: ink.heal)),
-                  TextSpan(text: names(friends)),
-                ]),
-                style: theme.textTheme.bodySmall,
-              ),
-            if (foes.isNotEmpty)
-              Text.rich(
-                TextSpan(children: [
-                  TextSpan(
-                      text: '${tr(ref, 'clans_compass_foes')} · ',
-                      style: TextStyle(color: ink.blood)),
-                  TextSpan(text: names(foes)),
-                ]),
-                style: theme.textTheme.bodySmall,
-              ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(focus.nameFor(lang),
+                          key: const Key('clans_compass_focus'),
+                          style: theme.textTheme.titleSmall?.copyWith(
+                              color: Color(focus.color | 0xFF000000))),
+                      Text(
+                          trFor(
+                              lang,
+                              standingTierKey(
+                                  politics.tierOf(focus.patron.id, data))),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                              color: Color(tierColor(
+                                      politics.tierOf(focus.patron.id, data)) |
+                                  0xFF000000))),
+                      if (focus.standsForIn(lang).isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(focus.standsForIn(lang),
+                              style: theme.textTheme.bodySmall
+                                  ?.copyWith(fontStyle: FontStyle.italic)),
+                        ),
+                      if (friends.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text.rich(
+                            TextSpan(children: [
+                              TextSpan(
+                                  text:
+                                      '${tr(ref, 'clans_compass_friends')} · ',
+                                  style: TextStyle(color: ink.heal)),
+                              TextSpan(text: names(friends)),
+                            ]),
+                            style: theme.textTheme.bodySmall,
+                          ),
+                        ),
+                      if (foes.isNotEmpty)
+                        Text.rich(
+                          TextSpan(children: [
+                            TextSpan(
+                                text: '${tr(ref, 'clans_compass_foes')} · ',
+                                style: TextStyle(color: ink.blood)),
+                            TextSpan(text: names(foes)),
+                          ]),
+                          style: theme.textTheme.bodySmall,
+                        ),
+                    ],
+                  ),
+                ),
+                ClanRadarChart(
+                    factionId: focus.patron.id,
+                    color: Color(focus.color | 0xFF000000),
+                    size: 116),
+              ],
+            ),
           ],
         ],
       ),

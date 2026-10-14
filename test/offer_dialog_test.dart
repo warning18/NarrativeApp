@@ -245,6 +245,15 @@ void main() {
     expect(badge('penitents', '−3'), findsOneWidget);
     expect(find.text('Alignment · no change'), findsOneWidget,
         reason: 'the alignment as a word');
+    expect(find.byKey(const Key('clan_radar_compact')), findsOneWidget,
+        reason: 'the clan\'s orientation, five axes');
+    expect(
+        tester
+            .widget<Text>(find.byKey(const Key('offer_stands_compact')))
+            .textSpan!
+            .toPlainText(),
+        contains('Craft, restraint, blades by invitation'),
+        reason: 'what it stands for (Narrative\'s line)');
     expect(find.byKey(const Key('offer_select_hint')), findsNothing);
     expect(tester.getSize(find.byKey(const Key('offer_detail_zone'))).width,
         zone.width);

@@ -355,8 +355,8 @@ class Faction {
   final String motto;
   final String mottoFr;
 
-  /// What it wants of you, in a line (`stands_for`, Narrative's): the clan
-  /// offer's one-line orientation. Empty until the data has it.
+  /// What it wants of the character, in a few words ("Law, order, one
+  /// flame over all"): factions.json `stands_for`, Narrative's.
   final String standsFor;
   final String standsForFr;
 
@@ -408,13 +408,8 @@ class Faction {
   }
 
   String mottoFor(AppLanguage language) => _pick(language, motto, mottoFr);
-
-  /// The line on what it stands for; its motto while the data has none.
-  String standsForFor(AppLanguage language) {
-    final own = _pick(language, standsFor, standsForFr);
-    return own.isNotEmpty ? own : mottoFor(language);
-  }
-
+  String standsForIn(AppLanguage language) =>
+      _pick(language, standsFor, standsForFr);
   String introFor(AppLanguage language) => patron.introFor(language);
   List<String> greetingsFor(AppLanguage language) =>
       patron.greetingsFor(language);

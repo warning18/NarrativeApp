@@ -2186,6 +2186,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Fusionner ces compétences ? Les deux seront perdues pour cette vie :',
   },
+  'craft_sheet_intro': {
+    AppLanguage.en:
+        'At the Skillwright\'s bench, two skills you know become one. Both are spent.',
+    AppLanguage.fr:
+        'Sur l\'établi de l\'Atelier des techniques, deux compétences connues n\'en font plus qu\'une. Les deux sont perdues.',
+  },
+  'craft_known_tag': {AppLanguage.en: 'Known', AppLanguage.fr: 'Connue'},
+  'craft_missing_tag': {AppLanguage.en: 'Missing', AppLanguage.fr: 'Manquante'},
   'already_crafted_label': {
     AppLanguage.en: 'Already crafted',
     AppLanguage.fr: 'Déjà fusionnée',
@@ -11102,6 +11110,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'clans_compass_friends': {AppLanguage.en: 'Friends', AppLanguage.fr: 'Amis'},
   'clans_compass_foes': {AppLanguage.en: 'Foes', AppLanguage.fr: 'Ennemis'},
+  'radar_axis_might': {AppLanguage.en: 'Might', AppLanguage.fr: 'Force'},
+  'radar_axis_guard': {AppLanguage.en: 'Guard', AppLanguage.fr: 'Garde'},
+  'radar_axis_mending': {AppLanguage.en: 'Mending', AppLanguage.fr: 'Soin'},
+  'radar_axis_arcana': {AppLanguage.en: 'Arcana', AppLanguage.fr: 'Arcane'},
+  'radar_axis_fortune': {AppLanguage.en: 'Fortune', AppLanguage.fr: 'Fortune'},
   'offer_stands_for': {AppLanguage.en: 'Stands for', AppLanguage.fr: 'Défend'},
   'offer_wayfarer_stands': {
     AppLanguage.en: 'No clan, no debt',

@@ -87,7 +87,12 @@ void main() {
     await tester.runAsync(
         () => Future<void>.delayed(const Duration(milliseconds: 200)));
     await tester.runAsync(() async {
-      for (final schema in [factionsSchema, subclansSchema, relationsSchema]) {
+      for (final schema in [
+        factionsSchema,
+        subclansSchema,
+        relationsSchema,
+        signsSchema,
+      ]) {
         await container.read(gameDbProvider(schema).notifier).whenLoaded();
       }
     });
@@ -170,6 +175,7 @@ void main() {
     await tester.pump();
     expect(find.byKey(const Key('clans_compass_focus')), findsOneWidget);
     expect(find.textContaining('Friends'), findsWidgets);
+    expect(find.byKey(const Key('clan_radar_vigil')), findsOneWidget);
     await _shot(tester, 'clan_compass_card');
     // The same crest again lets go.
     await tester.tap(find.byKey(const Key('compass_vigil')));

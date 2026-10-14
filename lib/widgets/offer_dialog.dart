@@ -17,6 +17,7 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../theme/stitched_ink.dart';
 import 'clan_compass.dart';
+import 'clan_radar_chart.dart';
 import 'item_stats.dart';
 import 'pixel_banner.dart';
 import 'sign_widgets.dart';
@@ -638,11 +639,9 @@ class _OfferHall extends ConsumerWidget {
         ? null
         : politics.tierOf(picked.factionId, data);
     final motto = faction?.mottoFor(lang) ?? '';
-    // The clan's own line, not its motto said twice.
-    final ownStands = faction?.standsForFor(lang) ?? '';
     final standsFor = picked.isWayfarer
         ? trFor(lang, 'offer_wayfarer_stands')
-        : (ownStands == motto ? '' : ownStands);
+        : (faction?.standsForIn(lang) ?? '');
     final alignKey = nudge > 0
         ? 'offer_align_good'
         : nudge < 0
@@ -678,60 +677,76 @@ class _OfferHall extends ConsumerWidget {
               color.withValues(alpha: 0.05),
             ]),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                suitorName(picked, data, lang),
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontFamily: InkFonts.display, color: color),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      suitorName(picked, data, lang),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                          fontFamily: InkFonts.display, color: color),
+                    ),
+                    if (tier != null)
+                      Text(
+                        trFor(lang, standingTierKey(tier)),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                            color: Color(tierColor(tier)),
+                            fontWeight: FontWeight.w600),
+                      ),
+                    if (motto.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text('“$motto”',
+                            style: theme.textTheme.bodySmall
+                                ?.copyWith(fontStyle: FontStyle.italic)),
+                      ),
+                    if (standsFor.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: Text.rich(
+                          TextSpan(children: [
+                            TextSpan(
+                                text: '${trFor(lang, 'offer_stands_for')} · ',
+                                style: TextStyle(
+                                    color: theme.colorScheme.onSurfaceVariant)),
+                            TextSpan(
+                                text: standsFor,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600)),
+                          ]),
+                          key: Key('offer_stands_${picked.factionId}'),
+                          style: theme.textTheme.bodySmall,
+                        ),
+                      ),
+                    const SizedBox(height: 6),
+                    Container(
+                      key: const Key('offer_alignment_word'),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                            color: alignColor.withValues(alpha: 0.7)),
+                        color: alignColor.withValues(alpha: 0.10),
+                      ),
+                      child: Text(
+                        '${trFor(lang, 'alignment_label')} · ${trFor(lang, alignKey)}',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                            color: alignColor, fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              if (tier != null)
-                Text(
-                  trFor(lang, standingTierKey(tier)),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                      color: Color(tierColor(tier)),
-                      fontWeight: FontWeight.w600),
-                ),
-              if (motto.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text('“$motto”',
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(fontStyle: FontStyle.italic)),
-                ),
-              if (standsFor.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: Text.rich(
-                    TextSpan(children: [
-                      TextSpan(
-                          text: '${trFor(lang, 'offer_stands_for')} · ',
-                          style: TextStyle(
-                              color: theme.colorScheme.onSurfaceVariant)),
-                      TextSpan(
-                          text: standsFor,
-                          style: const TextStyle(fontWeight: FontWeight.w600)),
-                    ]),
-                    key: Key('offer_stands_${picked.factionId}'),
-                    style: theme.textTheme.bodySmall,
-                  ),
-                ),
-              const SizedBox(height: 6),
-              Container(
-                key: const Key('offer_alignment_word'),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: alignColor.withValues(alpha: 0.7)),
-                  color: alignColor.withValues(alpha: 0.10),
-                ),
-                child: Text(
-                  '${trFor(lang, 'alignment_label')} · ${trFor(lang, alignKey)}',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                      color: alignColor, fontWeight: FontWeight.w700),
-                ),
-              ),
+              // What its gifts lean on (clanRadarProvider), on five axes.
+              if (onRing) ...[
+                const SizedBox(width: 6),
+                ClanRadarChart(
+                    factionId: picked.factionId, color: color, size: 116),
+              ],
             ],
           ),
         ),

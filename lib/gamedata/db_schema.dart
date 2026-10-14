@@ -2984,6 +2984,13 @@ final DbSchema factionsSchema = DbSchema(
     FieldSchema(key: 'motto', label: 'Motto', type: FieldType.text),
     FieldSchema(key: 'motto_fr', label: 'Motto (FR)', type: FieldType.text),
     FieldSchema(
+        key: 'stands_for',
+        label: 'Stands for',
+        type: FieldType.text,
+        help: 'What the clan wants of the character, in a few words.'),
+    FieldSchema(
+        key: 'stands_for_fr', label: 'Stands for (FR)', type: FieldType.text),
+    FieldSchema(
       key: 'intro',
       label: 'Intro (the first time they come)',
       type: FieldType.multilineText,
@@ -3614,6 +3621,29 @@ final DbSchema landEventsSchema = DbSchema(
       help: 'An outcome is {healthPct, gold, days, note, note_fr}.',
     ),
   ],
+);
+
+/// Detour and expedition lines by place, biome and theme
+/// (place_pools.dart). Narrative's file, and optional: missing, it loads
+/// empty and every line comes from map_themes.dart. Not one of
+/// [gameDbSchemas]: its top level is pools, not records.
+final DbSchema detoursSchema = DbSchema(
+  id: 'detours',
+  label: 'Detours',
+  assetPath: 'assets/gamedata/detours.json',
+  primaryKeyField: 'id',
+  fields: [],
+);
+
+/// Each zone's written road (expedition_steps.dart): `{"steps": [...]}` by
+/// zone id. Narrative's file, and optional: a zone it leaves out keeps
+/// its drawn events. Not one of [gameDbSchemas] until the file exists.
+final DbSchema expeditionStepsSchema = DbSchema(
+  id: 'expedition_steps',
+  label: 'Expedition Steps',
+  assetPath: 'assets/gamedata/expedition_steps.json',
+  primaryKeyField: 'id',
+  fields: [],
 );
 
 final List<DbSchema> gameDbSchemas = [
