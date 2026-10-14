@@ -3218,66 +3218,171 @@
       }
     ],
     "anchors": {
-      "2000": "saltmouth_b001",
-      "2001": "saltmouth_b000",
-      "2005": "saltmouth_b006",
-      "2020": "saltmouth_b013",
-      "2021": "saltmouth_b007",
-      "2010": "saltmouth_b141",
-      "2011": "saltmouth_b140",
-      "2015": "saltmouth_b150",
-      "2015_house_drowned_debt": "saltmouth_b156",
-      "2015_house_keyholders": "saltmouth_b143",
-      "2015_house_keyholders_turned": "saltmouth_b163",
-      "2015_house_salt_ledger": "saltmouth_b149",
-      "2015_bazaar": "saltmouth_b158",
-      "2015_apothecary": "saltmouth_b157",
-      "2015_dockside": "saltmouth_b171",
-      "2015_smuggler": "saltmouth_b165",
-      "2015_hound": "saltmouth_b167",
-      "2015_rats": "saltmouth_b168",
-      "2015_informant_caught": "saltmouth_b147",
-      "2015_kelda": "saltmouth_b169",
-      "2015_sable": "saltmouth_b145",
-      "2030": "saltmouth_b152",
-      "2040": "saltmouth_b154",
-      "2050": "saltmouth_b159",
-      "2070": "saltmouth_b148",
-      "2010_crane": "saltmouth_b161",
-      "2015_informant": "saltmouth_b160",
-      "2015_informant_trap": "saltmouth_b146",
-      "2015_informant_exposed": "saltmouth_b142",
-      "2010_liora": "saltmouth_b166",
-      "2015_cards": "saltmouth_b174",
-      "2015_cards_won": "saltmouth_b151",
-      "2015_cards_lost": "saltmouth_b170",
-      "2015_bandits": "saltmouth_b178",
-      "2015_sable_lifted": "saltmouth_b164",
-      "2015_sable_caught": "saltmouth_b155",
-      "2015_sable_bought": "saltmouth_b144",
-      "2015_sable_talk_failed": "saltmouth_b173",
-      "2015_liora": "saltmouth_b177",
-      "2015_liora_won": "saltmouth_b162",
-      "2015_liora_refused": "saltmouth_b175",
-      "2015_vess": "saltmouth_b153",
-      "2040_paid": "saltmouth_b179",
-      "2070_cut_failed": "saltmouth_b172",
-      "2011_roof_fall": "saltmouth_b180",
-      "2015_drawer": "saltmouth_b176",
-      "2015_route_sold": "saltmouth_b141",
-      "2015_survivor": "saltmouth_b140",
-      "2015_bundle": "saltmouth_b150",
-      "2015_child_tongue": "saltmouth_b156",
-      "2015_dominion_blades": "saltmouth_b143",
-      "2900": "saltmouth_b188",
-      "2900_boat_fixed": "saltmouth_b189",
-      "2015_dorran": "saltmouth_b190",
-      "2015_scaffold_clerk": "saltmouth_b191",
-      "2015_scaffold_clerk_fight": "saltmouth_b184",
+      "2015_dominion_blades": "saltmouth_b001",
+      "2015_kelda": "saltmouth_b000",
+      "2015_informant": "saltmouth_b006",
+      "2015_house_salt_ledger": "saltmouth_b013",
+      "2015_bundle": "saltmouth_b007",
+      "2015_house_keyholders": "saltmouth_b011",
+      "2000": "saltmouth_b005",
+      "2001": "saltmouth_b003",
+      "2005": "saltmouth_b004",
+      "2020": "saltmouth_b015",
+      "2021": "saltmouth_b010",
+      "2015_smuggler": "saltmouth_b141",
+      "2015_dockside": "saltmouth_b140",
+      "2015_bandits": "saltmouth_b150",
+      "2015_route_sold": "saltmouth_b156",
+      "2015_rats": "saltmouth_b143",
+      "2010": "saltmouth_b163",
+      "2011": "saltmouth_b149",
+      "2015": "saltmouth_b158",
+      "2030": "saltmouth_b157",
+      "2040": "saltmouth_b171",
+      "2050": "saltmouth_b165",
+      "2070": "saltmouth_b167",
+      "2010_crane": "saltmouth_b168",
+      "2010_liora": "saltmouth_b147",
+      "2040_paid": "saltmouth_b169",
+      "2070_cut_failed": "saltmouth_b145",
+      "2011_roof_fall": "saltmouth_b152",
       "2015_ternrow": "saltmouth_b091",
-      "2015_ternrow_fight": "saltmouth_b090",
-      "2015_ternrow_talked": "saltmouth_b092"
+      "2015_child_tongue": "saltmouth_b090",
+      "2015_survivor": "saltmouth_b092",
+      "2015_house_drowned_debt": "saltmouth_b097",
+      "2015_drawer": "saltmouth_b108",
+      "2015_ternrow_fight": "saltmouth_b102",
+      "2015_ternrow_talked": "saltmouth_b125",
+      "2015_bazaar": "saltmouth_b019",
+      "2015_apothecary": "saltmouth_b018",
+      "2015_vess": "saltmouth_b048",
+      "2015_dorran": "saltmouth_b188",
+      "2015_scaffold_clerk": "saltmouth_b189",
+      "2015_liora": "saltmouth_b190",
+      "2015_hound": "saltmouth_b191",
+      "2900": "saltmouth_b184",
+      "2900_boat_fixed": "saltmouth_b186",
+      "2015_cards": "saltmouth_b053",
+      "2015_cards_won": "saltmouth_b054",
+      "2015_sable": "saltmouth_b059",
+      "2015_informant_exposed": "saltmouth_b006",
+      "2015_informant_trap": "saltmouth_b006",
+      "2015_informant_caught": "saltmouth_b006",
+      "2015_house_keyholders_turned": "saltmouth_b011",
+      "2015_scaffold_clerk_fight": "saltmouth_b189",
+      "2015_liora_won": "saltmouth_b190",
+      "2015_liora_refused": "saltmouth_b190",
+      "2015_cards_lost": "saltmouth_b053",
+      "2015_sable_bought": "saltmouth_b059",
+      "2015_sable_lifted": "saltmouth_b059",
+      "2015_sable_caught": "saltmouth_b059",
+      "2015_sable_talk_failed": "saltmouth_b059"
     },
-    "names": {}
+    "names": {
+      "saltmouth_b001": {
+        "en": "The customs steps",
+        "fr": "Les marches de la douane"
+      },
+      "saltmouth_b000": {
+        "en": "The barrel barricade",
+        "fr": "La barricade de tonneaux"
+      },
+      "saltmouth_b006": {
+        "en": "The queue at the gate",
+        "fr": "La file de la porte"
+      },
+      "saltmouth_b013": {
+        "en": "The tithe-clerk’s scales",
+        "fr": "Les balances du clerc de la dîme"
+      },
+      "saltmouth_b007": {
+        "en": "The water-barrels",
+        "fr": "Les tonneaux d’eau"
+      },
+      "saltmouth_b011": {
+        "en": "The unopened door",
+        "fr": "La porte jamais ouverte"
+      },
+      "saltmouth_b091": {
+        "en": "The paper-boat footbridge",
+        "fr": "La passerelle aux bateaux de papier"
+      },
+      "saltmouth_b090": {
+        "en": "The end of Fisherman’s Row",
+        "fr": "Le bout de la rue des Pêcheurs"
+      },
+      "saltmouth_b092": {
+        "en": "The White Fleet bench",
+        "fr": "Le banc de la Flotte blanche"
+      },
+      "saltmouth_b097": {
+        "en": "The debtor’s bollard",
+        "fr": "La bitte d’amarrage du débiteur"
+      },
+      "saltmouth_b108": {
+        "en": "The sign-painter’s door",
+        "fr": "La porte du peintre d’enseignes"
+      },
+      "saltmouth_b141": {
+        "en": "The captain’s moorings",
+        "fr": "L’amarrage du capitaine"
+      },
+      "saltmouth_b140": {
+        "en": "The harbor master’s office",
+        "fr": "Le bureau du maître de port"
+      },
+      "saltmouth_b150": {
+        "en": "The bounty door",
+        "fr": "La porte des primes"
+      },
+      "saltmouth_b156": {
+        "en": "The Crow tout’s corner",
+        "fr": "Le coin du rabatteur des Corbeaux"
+      },
+      "saltmouth_b143": {
+        "en": "The spoiled-cargo crate",
+        "fr": "La caisse de cargaison avariée"
+      },
+      "saltmouth_b188": {
+        "en": "The foreman’s scaffold",
+        "fr": "L’échafaudage du contremaître"
+      },
+      "saltmouth_b189": {
+        "en": "The pay strongbox",
+        "fr": "Le coffre de la paie"
+      },
+      "saltmouth_b190": {
+        "en": "The collapsed rooftop",
+        "fr": "Le toit effondré"
+      },
+      "saltmouth_b191": {
+        "en": "The rotting hulk",
+        "fr": "La carcasse pourrie"
+      },
+      "saltmouth_b019": {
+        "en": "The Arcane Bazaar",
+        "fr": "Le Bazar arcanique"
+      },
+      "saltmouth_b018": {
+        "en": "Apothecary Row",
+        "fr": "La rue des Apothicaires"
+      },
+      "saltmouth_b048": {
+        "en": "The shadowed turning",
+        "fr": "Le tournant dans l’ombre"
+      },
+      "saltmouth_b053": {
+        "en": "The card barrel",
+        "fr": "Le tonneau de jeu"
+      },
+      "saltmouth_b054": {
+        "en": "The winner’s seat",
+        "fr": "La place du gagnant"
+      },
+      "saltmouth_b059": {
+        "en": "The corner table",
+        "fr": "La table du coin"
+      }
+    }
   }
 }

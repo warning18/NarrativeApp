@@ -100,6 +100,28 @@ void main() {
     expect(salt.buildingOfWay('2016', 'saltmouth_card_row')!.id, moved.id);
   });
 
+  test('Narrative\'s seating: each way on a named building of its district',
+      () {
+    final seated = {
+      '2015_bazaar': 'saltmouth_lantern_alleys',
+      '2015_cards': 'saltmouth_card_row',
+      '2015_kelda': 'saltmouth_landward_gate',
+      '2015_survivor': 'saltmouth_tern_row',
+      '2015_hound': 'saltmouth_yard',
+      '2015_smuggler': 'saltmouth_wharf',
+    };
+    for (final MapEntry(key: scene, value: district) in seated.entries) {
+      final b = salt.buildingOfWay(scene, district)!;
+      expect(b.id, salt.anchors[scene], reason: scene);
+      expect(salt.nameOf(b.id, french: false), isNotEmpty, reason: scene);
+      expect(salt.nameOf(b.id, french: true), isNotEmpty, reason: scene);
+    }
+    expect(salt.nameOf(salt.anchors['2015_bazaar']!, french: false),
+        'The Arcane Bazaar');
+    // A way's follow-up stands at its building.
+    expect(salt.anchors['2015_sable_caught'], salt.anchors['2015_sable']);
+  });
+
   test('a walk between two districts follows the streets', () {
     final from = salt.anchorOf('saltmouth_landward_gate');
     final to = salt.anchorOf('saltmouth_wharf');

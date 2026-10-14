@@ -67,6 +67,10 @@ last point is not repeated). The painter scales the square to the screen.
   into another district, its pin moves there without a new record.
 - **names**: Narrative's (English and French), for buildings that carry a way
   or a landmark; a building without a name shows its way's own name.
+- Saltmouth's record already seats the hub's 26 ways as Narrative placed them
+  (`docs/proposals/city-districts.md` on claude/narrative), with their building
+  names; `tool/city_plans/gen_city_plans.dart` holds that seating until the
+  story's scenes carry those districts as their `location`.
 
 ## What Core gives the screens besides the record
 
@@ -84,8 +88,11 @@ In `lib/data/city_districts.dart` and `lib/providers/city_provider.dart`:
   one the party stands in, or one walked into, which a flag
   `district_found:<id>` keeps for good). The rest are fogged.
 - geography.json: two new districts of Saltmouth, **The Lantern Alleys**
-  (`saltmouth_lantern_alleys`) and **Card Row** (`saltmouth_card_row`).
-  Their names and blurbs are placeholders until Narrative words them.
+  (`saltmouth_lantern_alleys`) and **Card Row** (`saltmouth_card_row`), in
+  Narrative's words. Their world-map landmarks (`alleys`, `cards`) come in a
+  follow-up PR once this one and the whole-sphere chart are in (each needs a spot
+  on every chart); then Narrative's PR re-tags the scenes and moves them into the
+  landmarks' lists together.
 
 ## Open to UX
 

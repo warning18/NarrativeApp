@@ -257,8 +257,8 @@
     "parent": "saltmouth",
     "name": "The Lantern Alleys",
     "name_fr": "Les Ruelles aux lanternes",
-    "blurb": "A knot of stepped lanes behind the market, lit all night by the lanterns the Tide-Kin hang for the drowned.",
-    "blurb_fr": "Un nœud de ruelles en escalier derrière le marché, éclairé toute la nuit par les lanternes que les Gens de la Marée suspendent pour leurs noyés.",
+    "blurb": "The back ways above the wharf, strung with lanterns for the buyers who would rather not be seen buying.",
+    "blurb_fr": "Les ruelles au-dessus du quai, guirlandées de lanternes pour les acheteurs qui préfèrent qu’on ne les voie pas acheter.",
     "landmark": "",
     "glyph": "market"
   },
@@ -268,9 +268,9 @@
     "tags": ["market"],
     "parent": "saltmouth",
     "name": "Card Row",
-    "name_fr": "La Rue des Cartes",
-    "blurb": "A street of gaming houses and money-changers under the arena’s wall, where the Crows keep the tables honest enough.",
-    "blurb_fr": "Une rue de tripots et de changeurs au pied du mur de l’arène, où les Corbeaux gardent les tables à peu près honnêtes.",
+    "name_fr": "La Rangée des cartes",
+    "blurb": "A run of barrels and crates at the head of the wharf where the dockhands play from the evening shift to dawn.",
+    "blurb_fr": "Une enfilade de tonneaux et de caisses en haut du quai, où les dockers jouent de la relève du soir jusqu’à l’aube.",
     "landmark": "",
     "glyph": "hall"
   },

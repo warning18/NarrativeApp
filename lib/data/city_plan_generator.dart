@@ -40,6 +40,7 @@ class CityPlanSpec {
     required this.seed,
     required this.districts,
     required this.scenesByDistrict,
+    this.followUps = const {},
     this.shoreY = 760,
     this.riverX = 400,
     this.centre = const P(560, 420),
@@ -53,6 +54,10 @@ class CityPlanSpec {
   /// The scenes set in each district (their ids), in story order: each
   /// gets the anchor of a building in its district.
   final Map<String, List<String>> scenesByDistrict;
+
+  /// Scenes that stand at another's building (a way's follow-up, which
+  /// returns to the hub from the same spot), by the scene they follow.
+  final Map<String, String> followUps;
 
   /// Where the shore lies (the sea below it), and where the river comes in
   /// from the north.
@@ -338,10 +343,18 @@ class _CityGen {
     for (final MapEntry(key: district, value: scenes)
         in spec.scenesByDistrict.entries) {
       final order = anchorOrder(buildings, districts, district);
-      for (final (i, scene) in scenes.indexed) {
+      final own = [
+        for (final s in scenes)
+          if (!spec.followUps.containsKey(s)) s
+      ];
+      for (final (i, scene) in own.indexed) {
         if (order.isEmpty) break;
         anchors[scene] = order[i % order.length];
       }
+    }
+    for (final MapEntry(key: scene, value: lead) in spec.followUps.entries) {
+      final at = anchors[lead];
+      if (at != null) anchors[scene] = at;
     }
 
     return {
