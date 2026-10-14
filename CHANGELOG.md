@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.342.0+378]
+
+### Added
+- Detour pools for places that need their own voice (data; Core's engine reads them): the cove camp, Rimewell, Highhearth, the Black Reliquary, Wrack’s End, the gates and the Lantern Hall of Candlehold, the White Anchorage and Greyhithe, English and French. `assets/gamedata/detours.json` now holds fifteen places.
+
+## [1.340.0+376]
+
+### Added
+- More detour pools that fit their place (data; Core's engine reads them): the six Saltmouth districts (the Landward Gate, Tern Row, Smugglers’ Wharf, the Ship-breaker’s Yard, the Lantern Alleys, Card Row), the arid coast and the sea cliffs (the cove camp, Wrack’s End, Candlehold), English and French. `assets/gamedata/detours.json` now holds seven biomes and six places.
+
+## [1.338.0+374]
+
+### Added
+- Detour pools that fit their place (data; Core's engine reads them): the ashlands (the Ashen Quarter, Emberwick, the Spire), the fen (Kindly Hill, the Drowned Cloister, the Hollow Court) and the red hills (Akagiri), six kinds of six lines each, English and French. A detour in those places now reads as the place, not as one of four generic moods.
+
 ## [1.336.0+372]
 
 ### Added
