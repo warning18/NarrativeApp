@@ -80,3 +80,8 @@ Branch `ux-g` (local, one commit on `origin/main`) has the building screen: `lib
 
 - **Board 11 (the world sphere):** two poles (north and south): yes. **No heat view**: the sphere keeps its own look; climate by latitude is only the rule behind the world's generation. The story lands move (Ashen Continent west, Old Continent east, Lantern Isles between, latitudes kept): yes. If built, Core generates a whole-sphere chart (360° x 180°, ten lands, 12 archipelagos, a polar land at each pole) from the layout on the board; UX takes the smaller sphere (250 px) and the two pole buttons. Not started: it waits on Core's chart.
 - **Board 12 (E, the Journey in a busy place):** drawn on the design artifact, waiting for the user's pick (stacks by kind with a sheet per stack, or six named marks and "More ways"; threshold of 8 ways). Real numbers: Smugglers' Wharf shows 23 ways at once, the Ashen Quarter 18, the Ossuary and the Reliquary Quarter 13.
+
+## Open PRs (14 Oct, after #230 merged as 1.295.0): Wave 4
+
+- **[#231](https://github.com/warning18/NarrativeApp/pull/231): v1.296.0+332, the voyage in side view, step 1: the sea** (`sea_kit.dart`: sea by waters and weather, placeholder ship, flying hull; the hulls' own side views left for later). Tests pass locally.
+- **E changed course (the user, 14 Oct):** not stacks. Split the map in two, a **high view** and a **city view with districts** (each its own ambiance), and adapt the same-place ways (quests) and the districts to match. UX is drawing a first city view on the design artifact (board 13) and will wait for the user's pick; the story's ways would be placed in districts by Narrative/Core, which is a later piece.
