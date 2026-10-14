@@ -158,7 +158,7 @@ void main() {
       expect(itemOriginLineFor(null, geography, AppLanguage.en), isNull);
     });
 
-    testWidgets('the inventory dialog shows lore, rarity and provenance',
+    testWidgets('the inventory sheet shows lore, rarity and provenance',
         (tester) async {
       SharedPreferences.setMockInitialValues({
         'app_language': 'en',
@@ -207,11 +207,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('A finger-bone the Reliquary swore it had burned.'),
           findsOneWidget);
-      expect(find.byKey(const Key('detail_note')), findsOneWidget);
+      expect(find.byKey(const Key('item_origin')), findsOneWidget);
       expect(
           find.text('Yours since the Lower Town, chapter 1'), findsOneWidget);
-      expect(find.text('Rarity'), findsOneWidget);
-      expect(find.text('Relic'), findsNWidgets(2), reason: 'tag and row');
+      expect(find.text('Relic'), findsNWidgets(2), reason: 'tile and sheet');
       expect(tester.takeException(), isNull);
     });
   });
