@@ -19,3 +19,17 @@ The board draws the camp's Town tab as four sections (the Sea, the Company, the 
 3. **Where a missing thing comes from, on the sheet:** plain text (the expeditions and shops by name), or links (an expedition name opens the camp's expedition list, a shop name opens its page)? Links are more work and more to keep right when a zone or shop changes.
 
 My recommendation: silhouettes, fold finished sections, plain text first (links later if wanted).
+
+## E, the Journey's same-place choices: what I found before building
+
+I looked at the Journey as it is on `main` (v1.286), at "Your family's house" (scene 300: three choices, all leading to scene 400, the same place). The three ways are drawn as three signpost marks around the party, **with no road and no walk** (since v1.224 a way that keeps the party where it stands has none), over the town's plan. So "the Journey draws them as if you had to travel" is already not true for those; what remains is **crowding when a place has many same-place ways** and no town plan to spread them on. In the story data, 103 of 426 scenes at a landmark have 3 or more same-place choices; the big ones are the towns' hubs (31, 28, 25, 21, 19 same-place ways), which use the town plan and "Enter the town".
+
+Two small things I could build, as its own PR:
+- **Group the ways that lead to the same scene** (as scene 300's three do, three ways to scene 400) into one mark with a count, expanding on tap into its ways; or
+- **Collapse same-place ways past 5 into a "Here" mark** that expands on tap (the ring stays readable).
+
+I would rather not build either without the user saying which crowding they mean. Question for the user: **where does the Journey still look like travel when it is not?** A screenshot or the scene's name is enough.
+
+## Instead, UX work that needs nobody (if the manager agrees): the home bar's map icon
+
+Open the full map instead of `WorldMapPage`, after moving what only the old page has: the look and shape pickers (into the layers sheet), the chapter chips, the replay of the walked road (board 8's "Replay all"), its tutorial topic. UX-only, independent of Core's 1.287.
