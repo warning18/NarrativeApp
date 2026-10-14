@@ -125,17 +125,29 @@ Future<void> showMapLegendSheet(
   );
 }
 
+/// What the journeys sheet asks for: the chart turned to [to], or the
+/// whole road walked again ([replay]).
+class MapJourneysPick {
+  const MapJourneysPick.to(Landmark this.to) : replay = false;
+  const MapJourneysPick.replay()
+      : to = null,
+        replay = true;
+
+  final Landmark? to;
+  final bool replay;
+}
+
 /// The roads walked, by chapter, latest first: [journey] is the places in
 /// the order they were reached (see journeyOf). A tap on a stretch closes the
-/// sheet and returns the place it ends at.
-Future<Landmark?> showMapJourneysSheet(
+/// sheet and returns the place it ends at; "Replay all" walks the road again.
+Future<MapJourneysPick?> showMapJourneysSheet(
   BuildContext context,
   WidgetRef ref, {
   required List<Landmark> journey,
   required Color Function(int chapter) chapterColor,
 }) {
   final language = ref.read(appLanguageProvider);
-  return showModalBottomSheet<Landmark>(
+  return showModalBottomSheet<MapJourneysPick>(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
@@ -160,6 +172,17 @@ Future<Landmark?> showMapJourneysSheet(
               Text(tr(ref, 'map_journeys_title').toUpperCase(),
                   style: theme.textTheme.labelMedium
                       ?.copyWith(letterSpacing: 1.4, color: ink.gold)),
+              if (legs.isNotEmpty && !MediaQuery.of(context).disableAnimations)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                    key: const Key('map_replay'),
+                    onPressed: () =>
+                        Navigator.of(sheet).pop(const MapJourneysPick.replay()),
+                    icon: const Icon(Icons.directions_walk, size: 18),
+                    label: Text(tr(ref, 'map_replay_all')),
+                  ),
+                ),
               if (legs.isEmpty)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -199,7 +222,8 @@ Future<Landmark?> showMapJourneysSheet(
                                 : 'map_journey_foot'),
                         style: theme.textTheme.labelSmall
                             ?.copyWith(color: ink.ash)),
-                    onTap: () => Navigator.of(sheet).pop(leg.$2),
+                    onTap: () =>
+                        Navigator.of(sheet).pop(MapJourneysPick.to(leg.$2)),
                   ),
               ],
               Align(
