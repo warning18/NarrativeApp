@@ -47,6 +47,9 @@ class JourneyWorldMap extends ConsumerStatefulWidget {
     this.focus,
     this.heardOf = const {},
     this.goalId,
+    this.chapterFilter = 0,
+    this.replayLegs,
+    this.replayToken = 0,
     this.fog = ChartFog.uncharted,
   });
 
@@ -58,6 +61,15 @@ class JourneyWorldMap extends ConsumerStatefulWidget {
   /// sheet), and the one marked as the goal.
   final Set<String> heardOf;
   final String? goalId;
+
+  /// One chapter picked out (0: all): its places and roads in full, the
+  /// rest dimmed (the chapter chips of the full map).
+  final int chapterFilter;
+
+  /// The places to walk again (the journey so far) when [replayToken]
+  /// changes: the traveller crosses the chart along the road they took.
+  final List<Landmark>? replayLegs;
+  final int replayToken;
 
   /// A place the world level opens on, marked, instead of the party's
   /// (the full map opened from the camp's "On the map").
@@ -102,7 +114,12 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   late final AnimationController _reveal = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 420))
     ..forward();
-  late final Listenable _repaint = Listenable.merge([_view, _reveal]);
+
+  /// The traveller walking the journey again (the replay).
+  late final AnimationController _walk = AnimationController(vsync: this);
+  List<(double, double)> _walkPath = const [];
+  bool _walking = false;
+  late final Listenable _repaint = Listenable.merge([_view, _reveal, _walk]);
 
   /// Glides the chart (or the sphere) from one zoom to another, so a
   /// button or a change of level never jumps (v1.201.1).
@@ -152,7 +169,6 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   }
 
   final ValueNotifier<int> _frame = ValueNotifier(0);
-  static const _still = AlwaysStoppedAnimation<double>(0);
   JourneyMapLevel? _framed;
   String? _framedOn;
   String? _selectedId;
@@ -171,7 +187,27 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   static const double _focusZoom = 2.4;
 
   @override
+  void didUpdateWidget(JourneyWorldMap old) {
+    super.didUpdateWidget(old);
+    final legs = widget.replayLegs;
+    if (widget.replayToken != old.replayToken &&
+        legs != null &&
+        legs.length >= 2 &&
+        !MediaQuery.of(context).disableAnimations) {
+      final geo = chartOf(ref.read(mapShapeProvider));
+      _walkPath = [for (final l in legs) ChartMapPainter.spotOn(geo, l)];
+      final perLeg = math.min(300, 9000 ~/ (legs.length - 1));
+      _walk.duration = Duration(milliseconds: perLeg * (legs.length - 1));
+      setState(() => _walking = true);
+      _walk.forward(from: 0).whenComplete(() {
+        if (mounted) setState(() => _walking = false);
+      });
+    }
+  }
+
+  @override
   void dispose() {
+    _walk.dispose();
     _glide.dispose();
     _view.dispose();
     _frame.dispose();
@@ -422,7 +458,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
       _frameFor(boxSize);
       ChartMapPainter painter(GlobeView? globe) => ChartMapPainter(
             frame: _frame,
-            walk: _still,
+            walk: _walk,
             geography: geo,
             palette: widget.palette,
             language: language,
@@ -431,9 +467,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
             ahead: widget.ahead,
             selectedId: _selectedId ?? '',
             here: widget.here,
-            walking: false,
-            walkPath: const [],
-            chapterFilter: 0,
+            walking: _walking,
+            walkPath: _walkPath,
+            chapterFilter: widget.chapterFilter,
             reduceMotion: true,
             chapterColor:
                 calque == ChartCalque.chapters || calque == ChartCalque.none

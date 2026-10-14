@@ -84,7 +84,7 @@ void main() {
     expect(find.byKey(const Key('route_day_0')), findsOneWidget);
     expect(find.byKey(const Key('route_day_1')), findsOneWidget);
     expect(find.text('today'), findsOneWidget);
-    expect(find.byKey(const Key('ship_at_sea')), findsOneWidget);
+    expect(find.byKey(const Key('voyage_scene')), findsOneWidget);
     expect(find.byKey(const Key('hull_bar')), findsOneWidget);
 
     // Stakes: salvage is safe and says how much; boarding gives its check,

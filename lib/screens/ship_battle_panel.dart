@@ -25,6 +25,7 @@ import '../providers/tutorial_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../widgets/ship_cutaway.dart';
 import '../widgets/sea_battlefield.dart';
+import '../widgets/side_view/sea_kit.dart' show SeaDuelScene;
 import '../utils/face_style.dart';
 import '../widgets/die_skins.dart';
 import '../widgets/ship_fx.dart';
@@ -71,6 +72,10 @@ double seaZoomFor(ShipRange range) => switch (range) {
       ShipRange.medium => 0.82,
       ShipRange.long => 0.64,
     };
+
+/// Below this height the fight leaves out the strip of the two hulls from
+/// the side, so the sea keeps the room it needs to be tapped.
+const double duelStripMinHeight = 720;
 
 /// The room-by-room ship battle (see ship_battle.dart and
 /// ship_combat.dart), seen from above (see sea_battlefield.dart): two
@@ -1357,7 +1362,18 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
             }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [bar, Expanded(child: sea), dock],
+              children: [
+                bar,
+                // A tall screen has room for the two hulls from the side,
+                // facing each other as the range says.
+                if (constraints.maxHeight >= duelStripMinHeight)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 6),
+                    child: _buildDuelStrip(),
+                  ),
+                Expanded(child: sea),
+                dock,
+              ],
             );
           }),
         ),
@@ -2126,6 +2142,37 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
           ],
         ),
       ],
+    );
+  }
+
+  /// The two hulls in side view above the sea (see [SeaDuelScene]): the
+  /// Eel as she is dressed and as battered as she is, the enemy as hers is.
+  Widget _buildDuelStrip() {
+    final weather = widget.rules.weather ? _battle.weather : SeaWeather.calm;
+    final player = _battle.player;
+    final enemy = _battle.enemy;
+    return SizedBox(
+      key: const Key('ship_duel_strip'),
+      height: 96,
+      child: SeaDuelScene(
+        waters: widget.waters,
+        weather: weather,
+        ship: ref.watch(shipFormProvider),
+        dress: ref.watch(shipDressProvider),
+        condition: player.maxHull <= 0
+            ? 1.0
+            : (player.hull / player.maxHull).clamp(0.0, 1.0),
+        enemyId: widget.enemyShipId,
+        enemyCondition: enemy.maxHull <= 0
+            ? 1.0
+            : (enemy.hull / enemy.maxHull).clamp(0.0, 1.0),
+        enemyIsBeast: widget.beast != null,
+        range: switch (_battle.range) {
+          ShipRange.close => 0.0,
+          ShipRange.medium => 0.5,
+          ShipRange.long => 1.0,
+        },
+      ),
     );
   }
 

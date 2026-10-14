@@ -2667,6 +2667,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Face {n} · now: {face}',
     AppLanguage.fr: 'Face {n} · actuellement : {face}',
   },
+  'map_replay_all': {
+    AppLanguage.en: 'Replay all',
+    AppLanguage.fr: 'Tout rejouer',
+  },
   'map_set_out': {
     AppLanguage.en: 'Set out',
     AppLanguage.fr: 'Partir',
@@ -3045,6 +3049,46 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'What is built to outlast you: the hearth, the banner, the shrine.',
     AppLanguage.fr:
         'Ce qu’on bâtit pour vous survivre : le foyer, la bannière, le sanctuaire.',
+  },
+  // The building screen's cards and sheet (camp_works_list.dart).
+  'works_tag_missing': {AppLanguage.en: 'Missing', AppLanguage.fr: 'Manque'},
+  'works_need_chapter': {
+    AppLanguage.en: 'Chapter {n}',
+    AppLanguage.fr: 'Chapitre {n}',
+  },
+  'works_need_ally': {
+    AppLanguage.en: 'When {name} joins',
+    AppLanguage.fr: 'Quand {name} nous rejoint',
+  },
+  'works_need_flag': {
+    AppLanguage.en: 'Clear {zones}',
+    AppLanguage.fr: 'Terminer {zones}',
+  },
+  'works_need_flag_other': {
+    AppLanguage.en: 'Something is still to be done',
+    AppLanguage.fr: 'Il reste quelque chose à faire',
+  },
+  'works_need_gold': {
+    AppLanguage.en: 'Gold {have}/{need}',
+    AppLanguage.fr: 'Or {have}/{need}',
+  },
+  'works_need_item': {
+    AppLanguage.en: '{item} {have}/{need}',
+    AppLanguage.fr: '{item} {have}/{need}',
+  },
+  'works_sheet_needs': {AppLanguage.en: 'Needs', AppLanguage.fr: 'Il faut'},
+  'works_sheet_expeditions': {
+    AppLanguage.en: 'Expeditions',
+    AppLanguage.fr: 'Expéditions',
+  },
+  'works_sheet_shops': {AppLanguage.en: 'Shops', AppLanguage.fr: 'Boutiques'},
+  'works_sheet_no_shop': {
+    AppLanguage.en: 'No shop sells it.',
+    AppLanguage.fr: 'Aucune boutique ne le vend.',
+  },
+  'works_sheet_gold_more': {
+    AppLanguage.en: '{n} G more.',
+    AppLanguage.fr: 'Encore {n} G.',
   },
   'harbour_needed_to_sail': {
     AppLanguage.en:

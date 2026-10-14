@@ -12,6 +12,7 @@ import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
 import 'sea_battlefield.dart';
 import 'ship_dress.dart';
+import 'side_view/sea_kit.dart' show SeaSideScene;
 
 /// How a rarity is told apart on a card: common grey to legendary amber.
 Color rarityColor(String rarity) => switch (rarity) {
@@ -26,6 +27,30 @@ Color rarityColor(String rarity) => switch (rarity) {
 String romanVersion(int n) {
   const numerals = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
   return n >= 1 && n < numerals.length ? numerals[n] : '$n';
+}
+
+/// The Eel from the side on the open sea, in [dress] on [form] (see
+/// side_ship.dart): the elevation to the plan below it.
+class ShipYardSideView extends StatelessWidget {
+  const ShipYardSideView({
+    super.key,
+    required this.dress,
+    this.form,
+    this.height = 124,
+  });
+
+  final ShipDress dress;
+  final ShipForm? form;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) => SeaSideScene(
+        key: const Key('yard_side_preview'),
+        waters: SeaWaters.open,
+        ship: form,
+        dress: dress,
+        height: height,
+      );
 }
 
 /// The Eel from above on the open sea, in [dress], gently afloat (still

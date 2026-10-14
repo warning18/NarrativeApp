@@ -9,10 +9,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/map_charts.dart' show ChartPalette;
 import 'package:narrative_data_app/data/heard_of.dart';
+import 'package:narrative_data_app/data/map_charts.dart' show MapShape;
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/data/travel_history.dart';
 import 'package:narrative_data_app/data/world_map.dart';
 import 'package:narrative_data_app/providers/combat_active_provider.dart';
+import 'package:narrative_data_app/providers/map_look_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/providers/travel_history_provider.dart';
@@ -206,6 +208,75 @@ void main() {
     final map = tester
         .widget<JourneyWorldMap>(find.byKey(const ValueKey('full_world_map')));
     expect(map.focus, isNotNull);
+  });
+
+  testWidgets('the chapters reached are chips, one picks that chapter out',
+      (tester) async {
+    await open(tester, withTarget);
+    final container =
+        ProviderScope.containerOf(tester.element(find.byType(FullMapScreen)));
+    final play = container.read(storyPlayProvider.notifier);
+    for (final id in const ['965', '1100', '1120', '2001', '2005']) {
+      play.jumpTo(id);
+    }
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byKey(const Key('world_map_chip_0')), findsOneWidget);
+    final chip = find.byKey(const Key('world_map_chip_2'));
+    expect(chip, findsOneWidget);
+    await tester.tap(chip);
+    await tester.pump(const Duration(milliseconds: 300));
+    final map = tester
+        .widget<JourneyWorldMap>(find.byKey(const ValueKey('full_world_map')));
+    expect(map.chapterFilter, 2);
+    expect(map.focus?.chapter, 2);
+    await tester.tap(find.byKey(const Key('world_map_chip_0')));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(
+        tester
+            .widget<JourneyWorldMap>(
+                find.byKey(const ValueKey('full_world_map')))
+            .chapterFilter,
+        0);
+  });
+
+  testWidgets('the layers sheet holds the map look and the shape of its world',
+      (tester) async {
+    await open(tester, withTarget);
+    await tester.tap(find.byKey(const Key('journey_layers')));
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pump(const Duration(milliseconds: 400));
+    final container =
+        ProviderScope.containerOf(tester.element(find.byType(FullMapScreen)));
+    await tester.tap(find.byKey(const Key('world_map_look_parchment')));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(container.read(mapLookProvider), MapLook.parchment);
+    await tester.tap(find.byKey(const Key('world_map_shape_delta')));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(container.read(mapShapeProvider), MapShape.delta);
+  });
+
+  testWidgets('"Replay all" in the journeys sheet walks the road again',
+      (tester) async {
+    await open(tester, withTarget);
+    final container =
+        ProviderScope.containerOf(tester.element(find.byType(FullMapScreen)));
+    final play = container.read(storyPlayProvider.notifier);
+    for (final id in const ['965', '1100', '1120']) {
+      play.jumpTo(id);
+    }
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(const Key('map_journeys')));
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.tap(find.byKey(const Key('map_replay')));
+    await tester.pump(const Duration(milliseconds: 400));
+    final map = tester
+        .widget<JourneyWorldMap>(find.byKey(const ValueKey('full_world_map')));
+    expect(map.replayToken, 1);
+    expect(map.replayLegs, isNotNull);
+    // Let the walk run out.
+    await tester.pump(const Duration(seconds: 12));
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('the Journey chart offers the full map from its controls',

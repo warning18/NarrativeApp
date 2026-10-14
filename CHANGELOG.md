@@ -8,6 +8,81 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.302.0+338]
+
+The hulls in side view, armed and equipped.
+
+### Changed
+- **What is fitted aboard her shows in side view** (voyage, arrival, the shipwright's yard, the fight strip): **the guns**, each family its own: cannon muzzles out of the gun ports (stubby for the carronade and the grape, long for the culverin, chain-shot at the chain gun's mouth, a glowing tip on the carronade, brass on the better ones), a ballista on a post at the rail, flickering clay fire-pots, a harpoon gun at the bow, the bone horn of the trophy beak; **the plating on her side**: riveted iron plates covering more of her at each version, timbers crossed over the planking for bracing, round shields hung along the rail for the screens, the pale spined scales of the trophy plating; **the gear on deck** for her utility: crates for stores, signal flags for orders, a glowing lantern at the stern for the helm, a pyramid of shot and a rammer for gunnery, roped barrels for the hold, a banner on a tall pole for command, crossed tusks for the trophy hull. They show on the sailing hulls and the sky-sloop and the cloud-cutter, which carry guns on the same side.
+
+## [1.301.0+337]
+
+The hulls in side view, in the fight.
+
+### Changed
+- **A sea battle shows the two hulls from the side**, on a tall screen, in a strip between the enemy's bar and the sea: the Eel on the left in what she wears and as battered as she is (scorch, a hole, patched sails, smoke, flames, lower in the water), the enemy on the right with her own hull (the raider skiff, the corsair brig, the Inquisition cutter, the void barge) or as the sea beast it is (the Brinejaw's fin, the Pale Leviathan's back, the Tide-Mother's arms), bow toward the Eel and as battered as she is. The two ease apart or together as the range changes (close, medium, long), on the waters and in the weather of the fight. On a short screen the strip is left out and the sea keeps its room; the fight itself is still from above.
+
+## [1.300.0+336]
+
+The hulls in side view, battered.
+
+### Changed
+- **The Eel shows what she has taken** on a voyage day and on arrival, by the hull she has left: below 80%, scorch marks along her side; below 60%, a hole in her planking with splinters round it and patched sails (stitched patches in a darker cloth); below 55%, smoke drifting aft from her deck; below 40%, rips across the sails; below 30%, flames on deck and heavy black smoke; and from half her hull down she sits lower in the water, up to three rows at the last. It works on every hull, the flying boats included (the gasbag, the bat-wings and the bone wings hang as they did, smoking).
+
+## [1.299.0+335]
+
+The hulls in side view, the Harbor and the raiders.
+
+### Changed
+- **The shipwright's yard shows her from the side too**: above the plan from above, the Eel in side view on the open sea, on the hull being tried and in the paint, cloth, figurehead and flag being tried, as at sea.
+- **The raiders at sea are drawn with their own hulls** (the same side painter as the Eel's), bow to the left so they face her: the raider skiff (a small oared hull with a patched sail), the corsair brig (two masts of dark cloth), the Inquisition cutter (pale gaff sail and two jibs) and the void barge (a violet lateen under a halo). The old simple raider is gone.
+
+## [1.298.0+334]
+
+The voyage in side view: the Eel's own hull.
+
+### Changed
+- **All fourteen hulls are drawn in side view** at sea, replacing the one placeholder hull. Each is read off its `ships.json` record (the same one the top-down painter uses): the length, how high she sits and how deep (beam), how full her ends are, the stern and bow castles with their lit cabin windows, gun ports on the great ships, the masts and how each is rigged (square sails with a topsail on three-masters, fore-and-aft gaff sails, lateens), the jibs, a bowsprit and the galleon's beak, the longboat's swinging oars. The odd hulls have their own build: the twin hull (two hulls under one deck and a cabin), the ironclad (a plated slab with a ram, a riveted casemate, two funnels streaming smoke), and the four flying boats (the sky-sloop's gasbag, boiler chimney and screw; the cloud-cutter's bat-wing sails and furnace glow; the lodestone barge with lodestones hanging from the keel and spark arcs; the void carrack's bone wings and void sail).
+- **What she wears shows**: the hull paint and trim, the sail cloth with its edge and pattern (stripes, patches, diamonds), the ensign colour and a figurehead at the bow. The arrival scene shows the same ship.
+
+## [1.297.0+333]
+
+The voyage in side view: what the sea meets, and the port ahead.
+
+### Changed
+- **A voyage day shows what the Eel meets** beside her: a raider under sail (a skiff, a two-masted corsair brig, the Inquisition's pale cutter, the void barge with its violet glow), a derelict heeled over with her mast snapped, a light on the horizon with a shadow slipping under the keel (sighting), and the sea beasts (the brinejaw's fin, the pale leviathan's long back, the tide kraken's arms). A quiet day has gulls. The day's icon moves to the corner of the picture.
+- **Arriving shows the port** instead of an anchor icon: a stone quay, houses with lit windows and a tower with its lantern, over the sea of the waters just crossed.
+
+## [1.296.0+332]
+
+The voyage in side view: the sea.
+
+### Changed
+- **A voyage day's picture is a side view** (board 5): the ship small, seen from the side, over a scrolling sea that wears the colours of the waters she sails (the same five records the fight paints: open, shallows, drowned, abyss, ashen), with a sky in dithered bands, what stands on the horizon (islets, a drowned palm islet, broken towers, the ashen cliffs) and what the waters carry (sandbars, kelp, slow rings of void light). A storm day is a squall (rain, higher waves, the flash as before); a windknot sail aboard gives a tailwind; a flying hull hangs above the water with her shadow on it. Reduced motion: a still scene. The ship is one placeholder hull and sail until the fourteen hulls' own side views come.
+
+## [1.295.0+331]
+
+The ash squall on the road to the Ashen Quarter.
+
+### Changed
+- **The ash squall fills the ruins scene with ash**, as the sandstorm fills the desert one with dust: on the camp-to-quarter road, when the day's event is the ash squall, the ash falls thick over the scene. Without a storm the ash still falls lightly (the ruins scene itself came in 1.291.0, for terrain `ruins`).
+
+## [1.294.0+330]
+
+The building screen: four sections, what is missing, where to find it.
+
+### Changed
+- **The Town tab's houses are a list in four sections** (the Sea, the Company, the Workshops, the Great Works, with Narrative's names and one-line blurbs, each with how many of its houses stand), read from `campWorksProvider`. A card says where a house stands: **Built**, **Ready** (with Build), **Missing** (its cost as icon chips, the count in red while short, and the first thing missing), or a **silhouette** for a house that has not come yet, with one reason ("Chapter 5", "When Kelda joins") and no word of what it gives. No section folds.
+- **A tap on a card opens a sheet** that says everything the card says, with where each missing thing comes from, in plain text: the expeditions that pay a material or set a flag, the shops that stock it ("No shop sells it" for a rare), and what is left of the gold. Build is on the sheet too, grey until the house can go up. The cliff town still outlines where the selected house would go.
+- The additions tab keeps its strip of cards.
+
+## [1.293.0+329]
+
+The home bar's map icon opens the full map.
+
+### Changed
+- **The map icon in the play-mode header opens the full map** (the sphere map of the Journey and the Camp) instead of the old map page. What only the old page had moved onto it: the **look and shape pickers** in the layers sheet, the **chapter chips** that show one chapter's road, **Replay all** in the journeys sheet (the walk of the whole road again), and the map's **tutorial topic**. The old page stays in Edit Mode (`home_world_map`), where its place panel (scenes read, foes met, lands and biome crumbs) is still needed.
+
 ## [1.292.0+328]
 
 The road from the cove camp to the Ashen Quarter, crossed on chapter 3's

@@ -17,7 +17,9 @@ import 'package:narrative_data_app/data/scene_flow.dart';
 import 'package:narrative_data_app/data/world_roads.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
+import 'package:narrative_data_app/data/climate.dart' show WeatherKind;
 import 'package:narrative_data_app/screens/land_crossing_screen.dart';
+import 'package:narrative_data_app/widgets/side_view/side_view.dart';
 
 Map<String, dynamic> _json(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
@@ -320,5 +322,25 @@ void main() {
     await tester.runAsync(
         () => Future<void>.delayed(const Duration(milliseconds: 200)));
     expect(tester.takeException(), isNull);
+  });
+
+  test('storms and the terrain choose the particles over the scene', () {
+    expect(crossingIsStorm('sandstorm'), isTrue);
+    expect(crossingIsStorm('ash_squall'), isTrue);
+    expect(crossingIsStorm('feral_dogs'), isFalse);
+    expect(crossingIsStorm(null), isFalse);
+    // A storm brings its own: dust in the desert, ash among the ruins.
+    expect(
+        crossingParticles(terrain: 'desert', storm: true), SideParticles.dust);
+    expect(crossingParticles(terrain: 'ruins', storm: true), SideParticles.ash);
+    // Else the sky's, else the terrain's.
+    expect(
+        crossingParticles(
+            terrain: 'ruins', storm: false, sky: WeatherKind.rain),
+        SideParticles.rain);
+    expect(crossingParticles(terrain: 'desert', storm: false),
+        SideParticles.shimmer);
+    expect(
+        crossingParticles(terrain: 'ruins', storm: false), SideParticles.ash);
   });
 }

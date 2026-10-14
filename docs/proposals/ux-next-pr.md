@@ -58,3 +58,55 @@ Branch `ux-g` (local, one commit on `origin/main`) has the building screen: `lib
 - **Second PR, the map icon, v1.292.0+328** (ready locally on `ux-home-map`, needs #223's code, so it merges after it). **I need a branch name for it** (Core's second is `claude/core-2`; I would use `claude/eager-pascal-2`). I will not push it until you say.
 - **Third, the building screen (G),** built on `ux-g` (one commit): it needs **a version** (1.293.0+329?) and a third branch, so it opens when one of the two is merged.
 - G edits QA's `test/qa_real_font_cards_test.dart` (the houses tray is a list of cards by state, not a strip of equal cards; the preload list gains the tables the list reads). Listed in G's PR.
+
+## Open PRs (14 Oct, after #223 merged as 1.291.0)
+
+- **[#228](https://github.com/warning18/NarrativeApp/pull/228): v1.293.0+329, the map icon opens the full map.** Format, analyze and the six map test files pass locally. It merges after Core's 1.292 (renumber if it goes first). The ruins kit for `camp_to_quarter` was already in #223.
+- Next, built locally on `ux-g`: the building screen (G). It needs a version.
+- Design board 11 (the world sphere: smaller, two poles, the whole sphere filled, climate by latitude) is on the design artifact; it asks Core for a whole-sphere chart if the user picks it.
+
+## Open PRs (14 Oct, after #228 merged as 1.293.0)
+
+- **[#229](https://github.com/warning18/NarrativeApp/pull/229): v1.294.0+330, the building screen (G).** Format, analyze and its tests pass locally; it edits QA's `qa_real_font_cards_test.dart` (listed in the PR).
+- **The ruins scene kit for `camp_to_quarter` is already in `main`** (v1.291.0, #223: `ruins_kit.dart`, chosen by route terrain `ruins`, tested). Nothing more to build for it unless the user wants changes after seeing it. A second PR is not needed for it.
+- Design board 11 (the world sphere) waits on the user's three answers.
+
+## Open PRs (14 Oct, after #229 merged as 1.294.0)
+
+- **[#230](https://github.com/warning18/NarrativeApp/pull/230): v1.295.0+331, the ash squall fills the ruins scene with ash.** Format, analyze and `land_crossing_test` + `side_view_test` pass locally.
+- **For the manager:** the ruins scene kit for `camp_to_quarter` is already in `main` since v1.291.0 (#223, `ruins_kit.dart`, route terrain `ruins`); #230 adds only the ash squall's thick ash. Nothing else is queued for UX except what the user decides: board 11 (the world sphere) waits on their three answers, and the Journey's same-place choices (E) on where it still looks like travel.
+
+## The user's answers, 14 Oct (boards 11 and 12)
+
+- **Board 11 (the world sphere):** two poles (north and south): yes. **No heat view**: the sphere keeps its own look; climate by latitude is only the rule behind the world's generation. The story lands move (Ashen Continent west, Old Continent east, Lantern Isles between, latitudes kept): yes. If built, Core generates a whole-sphere chart (360° x 180°, ten lands, 12 archipelagos, a polar land at each pole) from the layout on the board; UX takes the smaller sphere (250 px) and the two pole buttons. Not started: it waits on Core's chart.
+- **Board 12 (E, the Journey in a busy place):** drawn on the design artifact, waiting for the user's pick (stacks by kind with a sheet per stack, or six named marks and "More ways"; threshold of 8 ways). Real numbers: Smugglers' Wharf shows 23 ways at once, the Ashen Quarter 18, the Ossuary and the Reliquary Quarter 13.
+
+## Open PRs (14 Oct, after #230 merged as 1.295.0): Wave 4
+
+- **[#231](https://github.com/warning18/NarrativeApp/pull/231): v1.296.0+332, the voyage in side view, step 1: the sea** (`sea_kit.dart`: sea by waters and weather, placeholder ship, flying hull; the hulls' own side views left for later). Tests pass locally.
+- **E changed course (the user, 14 Oct):** not stacks. Split the map in two, a **high view** and a **city view with districts** (each its own ambiance), and adapt the same-place ways (quests) and the districts to match. UX is drawing a first city view on the design artifact (board 13) and will wait for the user's pick; the story's ways would be placed in districts by Narrative/Core, which is a later piece.
+
+## E, the city view (board 13, 14 Oct)
+
+Proposed to the user, waiting for their pick: the Journey's levels at a city become **city view** (the plan with its districts) → **district** (its own ring of 3 to 6 ways, with its ambiance), with the high view (Land, World) unchanged. First city: Saltmouth, six districts (the four it has: Landward Gate, Tern Row, Smugglers' Wharf, Ship-breaker's Yard; two proposed: the Lantern Alleys and Card Row); the hub's 23 ways are seated 6 + 5 + 3 + 5 + 1 + 3 by what they are about. Asks (if the user picks it): **Narrative** names, ambiance lines and re-tagging of the destination scenes' `location`; **Core** two `geography.json` records, the plan's spot for them, "show the party's district's ways", free walking between districts; **UX** the city view and the district ring. Nothing built; the earlier stacks idea (board 12) is dropped by the user.
+
+## PR #232 (v1.297.0+333): voyage encounters and the port ahead
+Raiders, derelict, sighting and sea beasts drawn beside the Eel; arrival shows a harbour scene. Hulls' side views still out until the user decides who draws them. Green CI: please merge.
+
+## City models (board 14, 14 Oct; v2 organic)
+The user asked for the city drawn like a real old city (Paris, Venice, Rome: crooked blocks, a river with an island and bridges, canals, a star of avenues, an arena) with a zoom into each district, **top-down only**; v2 of the board is organic, not a grid. Board 14 shows two top-down models over the same generated Saltmouth plan: **A** a cartographer's parchment plan, **B** the same plan in pixel art on the dark map card. Tapping a district zooms to its map, where each way is a pin on its own building. Waiting for the user's pick (A or B, the level of detail, pinch-zoom or tap-to-zoom only). Design only; nothing built. If picked: Core a per-city plan record (wall, shore, avenues, squares, district shapes, one anchor per way), Narrative the building names, UX the painter and the zoom.
+
+## Hulls in side view (v1.298.0+334)
+All 14 hulls drawn in the sea kit from their records (forms, rigs, castles, oars, twin, ironclad, the four flying boats), dressed with the worn looks. Parts still to do if wanted: the painted sail powers (one of each) on the side view, mounted guns and utility gear on deck, damage/repair states, the hulls in the fight and Harbor side views.
+
+## Hulls in the Harbor and the raiders (v1.299.0+335)
+The yard shows the Eel in side view above her plan (with the try-on of hulls, parts and looks); the raiders at sea use the same hull painter. Next, in the manager's order: damage states (smoke, list, patched sails by hull %, in the voyage scene), a side-view strip for the fight (the two real hulls facing each other above the grid; the fight itself stays from above), deck gear and mounted guns, painted sail powers.
+
+## Damage states (v1.300.0+336)
+The Eel's side view shows her hull: scorch, a hole, patched sails, smoke, rips, flames, and lower in the water, by hull %. Next: the fight strip (two real hulls facing each other above the grid; the fight stays from above), deck gear and mounted guns, painted sail powers.
+
+## The fight strip (v1.301.0+337)
+The sea battle shows the two hulls in side view (the Eel dressed and battered, the enemy's own hull or beast, easing apart with the range) above the sea on a tall screen (>= 720 high); the fight stays from above and `ship_battle_panel.dart` got only the strip. Next: deck gear and mounted guns, painted sail powers.
+
+## Deck gear and mounted guns (v1.302.0+338)
+Guns by family, plating and the utility's gear on the Eel's side view (voyage, arrival, Harbor yard, fight strip). Left: painted sail powers (the sigils), and the iron, twin and the other flying hulls' own gear.

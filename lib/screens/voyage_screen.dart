@@ -27,6 +27,7 @@ import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/remark_provider.dart';
+import '../providers/ship_dress_provider.dart';
 import '../providers/signs_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
@@ -35,7 +36,8 @@ import '../widgets/approval_notice.dart' show speakUpAbout;
 import '../widgets/companion_remark_bubble.dart';
 import '../widgets/moments.dart';
 import '../widgets/sea_battlefield.dart';
-import '../widgets/ship_widgets.dart' show HullBar, ShipAtSea, playerShipRecord;
+import '../widgets/ship_widgets.dart' show HullBar, playerShipRecord;
+import '../widgets/side_view/sea_kit.dart';
 import 'ship_battle_panel.dart';
 
 enum _VoyagePhase { event, fight, arrived, failed }
@@ -1067,6 +1069,15 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                   lines: [portNameFor(widget.toPort, fr)],
                   buttonLabel: trFor(lang, 'go_ashore_button'),
                   result: true,
+                  picture: SeaSideScene(
+                    key: const Key('voyage_harbour'),
+                    waters: _waters,
+                    meeting: const SeaMeeting(SeaMeetingKind.harbour),
+                    ship: ref.watch(shipFormProvider),
+                    dress: ref.watch(shipDressProvider),
+                    condition: _hullFraction,
+                    height: 130,
+                  ),
                 ),
               _VoyagePhase.failed => _buildSummary(
                   context,
@@ -1136,6 +1147,33 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         : ahead.join(', ');
   }
 
+  /// The hull the Eel has left, 0 to 1, as the picture shows it.
+  double get _hullFraction {
+    final player = _player;
+    if (player == null || player.maxHull <= 0) return 1.0;
+    return (player.hull / player.maxHull).clamp(0.0, 1.0);
+  }
+
+  /// The sea's weather on a day: a storm is a squall, a windknot sail
+  /// aboard gives a tailwind, else calm.
+  SeaWeather _voyageWeather(SeaEvent event) => event.kind == SeaEventKind.storm
+      ? SeaWeather.squall
+      : _has(SailPower.windknot)
+          ? SeaWeather.tailwind
+          : SeaWeather.calm;
+
+  /// What the day meets, drawn beside the Eel.
+  SeaMeeting _meetingFor(SeaEvent event) => switch (event.kind) {
+        SeaEventKind.raider =>
+          SeaMeeting(SeaMeetingKind.raider, id: event.enemyShipId),
+        SeaEventKind.beast ||
+        SeaEventKind.hunt =>
+          SeaMeeting(SeaMeetingKind.beast, id: event.enemyShipId),
+        SeaEventKind.derelict => const SeaMeeting(SeaMeetingKind.derelict),
+        SeaEventKind.sighting => const SeaMeeting(SeaMeetingKind.sighting),
+        _ => SeaMeeting.none,
+      };
+
   Widget _buildEvent(
     BuildContext context, {
     required bool fr,
@@ -1163,10 +1201,17 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                   if (event.kind == SeaEventKind.storm)
                     const Positioned.fill(
                         child: IgnorePointer(child: StormLayer())),
-                  ShipAtSea(
-                    ship: _player!,
-                    height: 104,
-                    beside: Icon(icon, size: 46, color: colour),
+                  SeaSideScene(
+                    key: const Key('voyage_scene'),
+                    waters: _waters,
+                    weather: _voyageWeather(event),
+                    flying: _flying,
+                    ship: ref.watch(shipFormProvider),
+                    dress: ref.watch(shipDressProvider),
+                    condition: _hullFraction,
+                    meeting: _meetingFor(event),
+                    height: 140,
+                    beside: Icon(icon, size: 34, color: colour),
                   ),
                 ],
               ),
@@ -1610,11 +1655,15 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     required List<String> lines,
     required String buttonLabel,
     required bool result,
+    Widget? picture,
   }) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(icon, size: 56, color: Theme.of(context).colorScheme.primary),
+        if (picture != null)
+          ClipRect(child: picture)
+        else
+          Icon(icon, size: 56, color: Theme.of(context).colorScheme.primary),
         const SizedBox(height: 16),
         Text(title,
             style: Theme.of(context).textTheme.headlineSmall,
