@@ -116,3 +116,13 @@ The sigils on the sails in side view (by power and people's colour). Left: sigil
 
 ## The city hub (board 15, 14 Oct)
 The user picked **model A** (the plan from above, organic) **in the app's own colours** (the Map look's chart palette: night by default, parchment and shroud as the Map look picks) and asked for a **city hub they can come back to** with the full city view. Board 15 shows the hub (the Journey's City level: all six districts with glyphs, counts, the party's mark, a ★ goal and fog over districts not yet found), the zoom in and the way back (the City hub chip and Back; also the Journey's City level and a Camp button), the district maps with pins and the way sheet. Design only; waiting for the user's four answers and a go before building (Core: the plan record per city; Narrative: building names; UX: painter, hub, zoom).
+
+## Hulls: own gear for the other hulls (v1.306.0+342)
+The twin hull, the ironclad, the lodestone barge and the void carrack now carry guns, plating, deck gear and (twin, carrack) sigils in side view. Version 1.305.0 is Core's #240, so this takes 1.306.0; renumber if needed.
+
+## The city, after the user's answers (board 15, 14 Oct)
+- **No hub screen.** The city plan itself is the page: it opens on the whole city and zooms in and out freely (pinch and wheel), and the world map gets the same zoom. Tapping a district zooms to it.
+- **Fog:** districts the party has not found are fogged (dashed outline, a "?").
+- **No automatic star:** the user asked why; it was only the goal mark of the full map. Dropped. Only the goal the player sets stays.
+- **"Show all up in a dedicated page before anything":** the city opens first on a dedicated full-city page, then the district.
+- Model A, in the Map look's chart palette. Not started in the app: it needs Core's per-city plan record (wall, shore, river, avenues, squares, district shapes, one anchor per way) and Narrative's building names. UX takes the painter, the zoom and the fog. The generator (a Voronoi plan with lots, a river and island, canals, an avenue star, a ring) is in UX's scratch; Core can take its output for Saltmouth as the first record.
