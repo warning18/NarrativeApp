@@ -220,7 +220,8 @@ void main() {
       // city: a walk through its streets, read through.
       final story = StoryData({
         gate.id: gate,
-        '2015_dockside': _node('2015_dockside', const [], {'location': 'wharf'}),
+        '2015_dockside':
+            _node('2015_dockside', const [], {'location': 'wharf'}),
       });
       final oneCity = Geography.parse(geography: {
         'old': {'level': 'continent', 'parent': '', 'name': 'Old'},

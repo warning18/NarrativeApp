@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.312.0+348]
+
+Saltmouth's six districts in the story, and the whole sphere named.
+
+### Changed
+- **Saltmouth's ways stand in their districts** (Narrative's seating, board 15): the hub's scenes are re-tagged into the Landward Gate, Tern Row, the Smugglers' Wharf, the Ship-breaker's Yard, the Lantern Alleys and Card Row, so each district shows its own ways. The Lantern Alleys and Card Row are on the world map, with a spot on every chart and a road from the wharf.
+- **Every place on the whole sphere has a name** (Narrative's, English and French): the seven new lands (the Sundown Lands, the Green Girdle, the Gaunt Lands, the Morning Shore, the Far Dawn, the Long Winter, the Last Shelf), four oceans on the chart, the twelve archipelagos and their twenty-nine islands.
+
 ## [1.310.0+346]
 
 The ronin walks.

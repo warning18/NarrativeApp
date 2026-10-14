@@ -108,6 +108,10 @@ const _ropewalk = RoadStop('ropewalk', 'The Ropewalk', 'La corderie');
 const _breakersStair = RoadStop(
     'breakers_stair', 'The Breakers’ Stair', 'L’escalier des démolisseurs');
 const _lastLight = RoadStop('last_light', 'The Last Light', 'Le dernier feu');
+const _lanternStair =
+    RoadStop('lantern_stair', 'The Lantern Stair', 'L’escalier aux lanternes');
+const _barrelRun =
+    RoadStop('barrel_run', 'The Barrel Run', 'L’enfilade des tonneaux');
 const _openWater = RoadStop('open_water', 'The Open Water', 'Le large');
 const _landfallRock =
     RoadStop('landfall_rock', 'Landfall Rock', 'Le rocher de l’arrivée');
@@ -178,8 +182,8 @@ const List<WorldRoad> worldRoads = [
   WorldRoad('upper_wharf', 'upper', 'wharf', [_tollhouse, _tideWall]),
   WorldRoad('wharf_tern', 'wharf', 'tern', [_ropewalk]),
   WorldRoad('wharf_berths', 'wharf', 'berths', [_breakersStair]),
-  WorldRoad('wharf_alleys', 'wharf', 'alleys', []),
-  WorldRoad('wharf_cards', 'wharf', 'cards', []),
+  WorldRoad('wharf_alleys', 'wharf', 'alleys', [_lanternStair]),
+  WorldRoad('wharf_cards', 'wharf', 'cards', [_barrelRun]),
   WorldRoad('berths_storm', 'berths', 'storm', [_lastLight],
       kind: RoadKind.sea),
   WorldRoad('storm_camp', 'storm', 'camp', [_openWater, _landfallRock],
