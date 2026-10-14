@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.327.0+363]
+
+Detours and expeditions fit where they happen.
+
+### Changed
+- **A detour reads like the place it leaves from**: its lines come from the scene's own district or town, then the land around it, then its biome (the tear shore, the frost), and only then from the four old themes. A tense scene draws tense lines.
+- **An expedition can have its own road**: a zone with written steps walks them in order (events, checks, fights, discoveries of a place on the road, rests), and is as long as they are. Its checks get harder with the chapter, a rest heals, a discovery turns up one of the zone's materials, and each choice can say what came of it.
+- A zone without written steps plays as before.
+
 ## [1.322.0+358]
 
 A brand's toll reads right.
