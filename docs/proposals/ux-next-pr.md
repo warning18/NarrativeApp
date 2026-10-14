@@ -51,3 +51,10 @@ Branch `ux-g` (local, one commit on `origin/main`) has the building screen: `lib
 - **Needs from the manager:** a version number. It opens after #223 and the home-map PR (one open PR at a time).
 - **Touches another session's area:** `test/qa_real_font_cards_test.dart` (QA's). Its "cards fit" case asserted one height for every card of both trays; the houses are now a list of cards by state (a silhouette is shorter than a ready house), so only the additions strip keeps that check. It also preloads the tables the list reads, and scrolls the tab into view before tapping it.
 - `CampTownSection` now reads `campWorksProvider` and the localised houses itself, so locked houses (not discovered yet) show as silhouettes.
+
+## For the manager (14 Oct, after Core's 1.290 and your numbers)
+
+- #223 is now **v1.291.0+327** (merged with `main`, format and analyze clean). It also carries **the ruins scene kit** you asked for (`ruins_kit.dart`: burnt dusk, far skyline, ruined walls and arches, rubble, the quarter's tower with a lit window, ash by default), keyed on route terrain `ruins`, so Core's `camp_to_quarter` gets it as soon as it merges. A test checks a ruins route draws the scene.
+- **Second PR, the map icon, v1.292.0+328** (ready locally on `ux-home-map`, needs #223's code, so it merges after it). **I need a branch name for it** (Core's second is `claude/core-2`; I would use `claude/eager-pascal-2`). I will not push it until you say.
+- **Third, the building screen (G),** built on `ux-g` (one commit): it needs **a version** (1.293.0+329?) and a third branch, so it opens when one of the two is merged.
+- G edits QA's `test/qa_real_font_cards_test.dart` (the houses tray is a list of cards by state, not a strip of equal cards; the preload list gains the tables the list reads). Listed in G's PR.
