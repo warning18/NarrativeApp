@@ -19,6 +19,7 @@ import '../data/camp_works.dart';
 import '../data/chapter_loop.dart';
 import '../data/chapter_spine.dart';
 import '../data/factions.dart';
+import '../data/expedition_steps.dart';
 import '../data/perks.dart';
 import '../data/politics_events.dart' show choicePoliticsKey, enterPoliticsKey;
 import '../data/materials.dart';
@@ -302,7 +303,12 @@ class _SimContext {
     this.landRoutes = const {},
     this.landEvents = const {},
     this.houses = const {},
+    this.writtenSteps = const {},
   });
+
+  /// expedition_steps.json: each zone's written road (see
+  /// expedition_steps.dart), walked step by step instead of drawn events.
+  final Map<String, List<WrittenStep>> writtenSteps;
 
   /// land_routes.json and land_events.json's events: the land crossings
   /// the walk plays (see land_crossing.dart).
@@ -996,7 +1002,58 @@ _SimResult _simulate(
       return won;
     }
 
-    if (c != null) {
+    final written = sim?.writtenSteps[zoneId] ?? const <WrittenStep>[];
+    if (c != null && written.isNotEmpty) {
+      // A written road, step by step, its first way through each (as the
+      // screen plays it): a roll that passes gets past the step's foes;
+      // a fight gives nothing else; otherwise the choice's gold, healing
+      // and materials, and a failed roll's hurt.
+      final found = materialCountsOf(zone, 'rewardMaterials');
+      for (final w in written) {
+        final built = buildWrittenStep(w,
+            zoneId: zoneId,
+            chapter: zoneChapter,
+            random: random,
+            enemies: enemies,
+            rewardMaterials: found);
+        if (built.node.choices.isEmpty) continue;
+        final choice = built.node.choices.first;
+        var failed = false;
+        final ability = choice.checkAbility;
+        if (ability != null) {
+          failed = 1 + random.nextInt(20) + c.abilityBonus(ability) <
+              (choice.checkDC ?? 10);
+        }
+        final foes = choice.avoidFightOnSuccess && !failed
+            ? const <String>[]
+            : choice.triggerEnemyIds;
+        if (foes.isNotEmpty) {
+          if (!fightAt(foes)) return;
+          continue;
+        }
+        final hurt = built.outcomeFor(0).hurtOnFail;
+        if (failed) {
+          if (hurt > 0) {
+            c.currentHealth =
+                max(1, c.currentHealth - (c.maxHealth * hurt / 100).round());
+          }
+          continue;
+        }
+        gold += choice.goldMod;
+        if (choice.healAmount > 0) {
+          c.currentHealth =
+              min(c.maxHealth, c.currentHealth + choice.healAmount);
+        }
+        for (final MapEntry(key: id, value: n)
+            in choice.grantMaterials.entries) {
+          for (var i = 0; i < n; i++) {
+            materials.add(id);
+          }
+        }
+      }
+      final bossId = zone['bossEnemyId']?.toString() ?? '';
+      if (enemies[bossId] is Map && !fightAt([bossId])) return;
+    } else if (c != null) {
       final pool = SubNodeEngine.filterEnemyPool(
           enemies: enemies, unlockedEnemyIds: const [], chapter: zoneChapter);
       final packPool =
@@ -1450,6 +1507,7 @@ _SimContext _simContextOf(
   Set<String> clashOff = const {},
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
+  final written = writtenStepsFrom(table('expedition_steps'));
   return _SimContext(
     dice: table('dice'),
     skills: table('skills'),
@@ -1460,7 +1518,8 @@ _SimContext _simContextOf(
     spells: parseSpells(table('spells')),
     gameConfig: gameConfig,
     itemSets: parseItemSets(table('item_sets')),
-    zones: table('zones'),
+    zones: zonesWithWrittenCounts(table('zones'), written),
+    writtenSteps: written,
     patrons: parsePatrons(table('factions')),
     signs: parseSigns(table('signs')),
     clans: ClanData.fromTables(
@@ -2054,6 +2113,7 @@ class _PlaythroughSimulatorScreenState
       landRoutes: await load(landRoutesSchema),
       landEvents: landEventsFrom(await load(landEventsSchema)),
       houses: await load(housesSchema),
+      writtenSteps: await loadWrittenSteps(ref),
     );
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
     final random = Random();

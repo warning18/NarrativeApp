@@ -1647,38 +1647,37 @@
       {
         "id": "zealots_landing",
         "type": "fight",
-        "text": "On a dry landing two of the Court’s zealots kneel in the candlelight, facing the wall. They stand when your boot touches the stone.",
-        "text_fr": "Sur un palier sec, deux zélotes de la Cour sont agenouillés à la lueur des bougies, face au mur. Ils se lèvent quand votre botte touche la pierre.",
+        "text": "On a dry landing one of the Court’s zealots kneels in the candlelight, facing the wall. The zealot stands when your boot touches the stone.",
+        "text_fr": "Sur un palier sec, un zélote de la Cour est agenouillé à la lueur des bougies, face au mur. Il se lève quand votre botte touche la pierre.",
         "choices": [
           {
             "id": "fight",
-            "text": "Meet them on the landing",
-            "text_fr": "Les affronter sur le palier",
+            "text": "Meet the zealot on the landing",
+            "text_fr": "Affronter le zélote sur le palier",
             "fight": [
-              "hollow_court_zealot",
               "hollow_court_zealot"
             ],
             "success": {
-              "note": "They go down still facing you. The wall behind them is covered in tallies.",
-              "note_fr": "Ils tombent sans cesser de vous faire face. Le mur derrière eux est couvert de comptes."
+              "note": "The zealot goes down still facing you. The wall behind is covered in tallies.",
+              "note_fr": "Le zélote tombe sans cesser de vous faire face. Le mur derrière est couvert de comptes."
             },
             "fail": {
-              "note": "You drive them back, and descend on legs that are not quite your own.",
-              "note_fr": "Vous les repoussez, et descendez sur des jambes qui ne sont pas tout à fait les vôtres."
+              "note": "You drive the zealot back, and descend on legs that are not quite your own.",
+              "note_fr": "Vous repoussez le zélote, et descendez sur des jambes qui ne sont pas tout à fait les vôtres."
             }
           },
           {
             "id": "wait",
-            "text": "Wait in the dark for them to kneel again",
-            "text_fr": "Attendre dans l’ombre qu’ils se remettent à genoux",
+            "text": "Wait in the dark for the zealot to kneel again",
+            "text_fr": "Attendre dans l’ombre que le zélote se remette à genoux",
             "check": "dexterity",
             "success": {
-              "note": "They do, after a while, and you slip past on the outer rim.",
-              "note_fr": "Ils le font, au bout d’un moment, et vous passez par le bord extérieur."
+              "note": "The zealot does, after a while, and you slip past on the outer rim.",
+              "note_fr": "Le zélote s’y remet, au bout d’un moment, et vous passez par le bord extérieur."
             },
             "fail": {
-              "note": "You wait too long. One of them looks round.",
-              "note_fr": "Vous attendez trop. L’un d’eux se retourne."
+              "note": "You wait too long. The zealot looks round.",
+              "note_fr": "Vous attendez trop. Le zélote se retourne."
             }
           }
         ]

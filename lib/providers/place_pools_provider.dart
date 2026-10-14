@@ -24,6 +24,18 @@ final writtenStepsProvider = Provider<Map<String, List<WrittenStep>>>((ref) {
   return raw == null ? const {} : writtenStepsFrom(raw);
 });
 
+/// expedition_steps.json's roads by zone, for the simulator; none when
+/// the file is missing.
+Future<Map<String, List<WrittenStep>>> loadWrittenSteps(WidgetRef ref) async {
+  try {
+    return writtenStepsFrom(await ref
+        .read(gameDbRepositoryProvider(expeditionStepsSchema))
+        .loadRecords());
+  } catch (_) {
+    return const {};
+  }
+}
+
 /// zones.json as the simulator reads it: each zone with a written road
 /// (expedition_steps.json) as long as its steps.
 Future<Map<String, dynamic>> loadZonesWithWrittenCounts(WidgetRef ref) async {
