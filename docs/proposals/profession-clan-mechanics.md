@@ -1,4 +1,9 @@
-# Clan mechanics, v2: the build is the clans you choose (Core, proposal)
+# Clan mechanics, v2.1: the build is the clans you choose (Core, proposal)
+
+**v2.1, from the user's answers:**
+1. **Six main clans, six mechanics.** The Choir and the Pit become minor patrons, with the four tribes. **The Open Hand, the player's own clan, starts minor and can be raised into a seventh main clan** (below).
+2. **Slots:** explained below, with a recommendation. The user's call is still open.
+3. **A neglected clan loses power, or becomes the player's nemesis** (below).
 
 v2 replaces v1. The user's direction:
 - *"Make it more natural. The player adapts his play depending on the combination of cards/banners he earns. Make the main mechanics more different, like in Hades or Slice & Dice, specializing mainly by building his deck and die."*
@@ -11,7 +16,7 @@ Proposal only; nothing is built. Sizes: **S** a day, **M** a PR, **L** two or th
 
 Today the clans' gifts don't make them play differently. Every clan's signs cover the same strike, guard, mend, spell and passive slots with similar numbers: the Dominion's, the Mire's and the Compact's read almost alike. A run doesn't change shape with the clans picked. v2 gives each clan **one play mechanic of its own, carried by every gift it gives**, the way each god in Hades has its own status and each face in Slice & Dice is a verb. The build is the die: which clans' gifts sit on its faces.
 
-## Summary: the eight clans
+## Summary: the six main clans (and the seventh you can raise)
 
 | | Clan | Mechanic (one line) | On the die | Feels like |
 |---|---|---|---|---|
@@ -21,14 +26,21 @@ Today the clans' gifts don't make them play differently. Every clan's signs cove
 | 4 | **Mire** | **Rot**: poison that stacks, lasts, and spreads to another foe when its bearer dies | Venom faces that add Rot | attrition, packs melt |
 | 5 | **Crows** | **Price**: gold is a fight resource; hits steal it, and you spend it on rerolls and loaded faces | Loaded faces (pay gold to fix the roll); rerolls that cost coin | gambling, economy |
 | 6 | **Penitents** | **Burden**: take Curses on your own die on purpose; each feeds your other faces; lifting one bursts | Ember faces, plus the Curses you carry | risk, self-harm for power |
-| 7 | **Choir** | **Vow**: before a fight, swear one (no Heal faces, finish in 4 rounds...). Kept, the Choir pays big; broken, you lose alignment | Vow faces that pay out while the vow holds | restraint for reward |
-| 8 | **Pit** | **Debt**: power now, a curse later. Pact faces hit very hard and add debt, which comes due as the pact curses | Pact faces with a debt counter | borrowing, tempo |
+| 7 | **Open Hand** (your own) | **Echo**: its faces copy the mechanic of another clan's gift on your die, one step weaker; at its peak, two | Echo faces | the build that takes from everyone |
 
-These are the eight that dictate play:
-- the six clans proper (dominion, vigil, compact, mire, crows, penitents);
-- the two otherworld powers (choir, pit), whose vows and pacts already exist and become their mechanic.
+The six clans proper (dominion, vigil, compact, mire, crows, penitents) dictate play.
 
-The four tribes (giants, oni, tidekin, kindly) and the Open Hand are **minor patrons**: their gifts are neutral boons (health, gold, ship, healing) that fit any build, like Hades' Chaos or Hermes.
+**Minor patrons:** the Choir and the Pit, and the four tribes (giants, oni, tidekin, kindly).
+- Their gifts are neutral boons, like Hades' Chaos or Hermes, that fit any build.
+- They take no slot, are never Dominant, and own no territory.
+- The Choir's vows and the Pit's pacts stay as they are today, as their boons.
+
+**The Open Hand is your own clan.** It is the lost clan the story lets you remember (`open_hand_1…`, five stages today).
+- It starts as a minor patron.
+- Raising it is a long quest: its stages, the Fishbasket Line, its last stage.
+- Once raised, it becomes a **seventh main clan**: it gets power, can take places, and opens its own mechanic, **Echo** (its faces copy another clan's mechanic on your die).
+- It's the only clan that can never be your nemesis: it is you.
+- Its rise is a natural hook for the ch5/ch7 upheavals.
 
 **Existing pieces each mechanic builds on:**
 - **Dominion:** the Writ face (`writFace`).
@@ -37,8 +49,7 @@ The four tribes (giants, oni, tidekin, kindly) and the Open Hand are **minor pat
 - **Mire:** `poisonExtraTurns` and the poison status.
 - **Crows:** the Price (`crowsPrice`) and rerolls.
 - **Penitents:** the Ember face (`emberFace`) and the Curses enemies already put on your die (`dice_tamper.dart`).
-- **Choir:** vows.
-- **Pit:** pacts (`PactCurse`).
+- **Open Hand:** its stages (`openHandStageFrom`) and the Fishbasket Line's "choose any boon".
 
 ## How a gift works
 
@@ -70,11 +81,7 @@ The four tribes (giants, oni, tidekin, kindly) and the Open Hand are **minor pat
 | Poisoned Purse | Mire + Crows (5) | each Rot tick steals 1 gold |
 | Pawned Sins | Crows + Penitents (5) | sell a carried Curse for gold mid-fight |
 
-The Choir and the Pit have no relations. Their duos follow alignment instead:
-- **Usury** (Crows + Pit, alignment ≤ 0): debt can be paid in gold.
-- **Martyr's Vow** (Penitents + Choir, alignment ≥ 0): each Curse carried while a vow holds doubles its pay.
-
-Choir and Pit gifts exclude each other: holding one closes the other's offers.
+The Open Hand, once raised, has no feuds: it duos with any clan whose gift its Echo copies.
 
 **Betrayals.** Feuding clans (step ≤ 3) never offer a duo. Holding gifts from both can bring a **betrayal gift** from one of them: legendary-strong, at heavy standing cost with the other, and their relation drops a step. Today's feuds:
 - Dominion with Vigil (3), Mire (3) and Penitents (2);
@@ -85,8 +92,8 @@ Choir and Pit gifts exclude each other: holding one closes the other's offers.
 So the strongest pair on paper, Sentence + Watch (Dominion + Vigil), is a feud: a betrayal path, not a duo. That is where the politics bite.
 
 **Synergies and tensions by design.**
-- **Synergies:** Heat with Rot, Price with Debt, Watch with Burden (Vigil and Penitents are allies).
-- **Tensions:** Vow with Burden (a Penitent build breaks vows), and Choir against Pit.
+- **Synergies:** Heat with Rot, Price with Sentence (Dominion and Crows trade), Watch with Burden (Vigil and Penitents are allies).
+- **Tensions:** the feuds below, and slots (two clans that both want Attack).
 - Relations move during play, so a pair's duo can open or close as the story shifts.
 
 ## Clan power and territory
@@ -128,6 +135,24 @@ Each clan gets a **power** value (0–100) in `PoliticsState`, beside standing. 
   - a `trigger.power` condition (`{"faction": "dominion", "minPower": 50}`);
   - `effects.power` and `effects.control`.
   - The existing events keep working.
+
+## Neglect and the nemesis
+
+A clan the player keeps turning away from does not just fade.
+
+- **Neglect.** Each chapter in which the player takes no gift and does no quest for a main clan costs it 5 power. Rivals then take its places as their tiers rise. That is a clan losing power.
+- **Nemesis.** A clan becomes the player's nemesis when:
+  - the player's standing with it falls to **Hostile** (−26 or lower), by refusing it, betraying it or serving its feuds;
+  - it is still **Rising or stronger** (power 25+).
+
+  There is at most one nemesis, the strongest such clan. A nemesis:
+  - **hunts the party.** Its ambushes come on roads, detours and expeditions, through the alignment hunters' system (`buildHunterAmbushNode`). Its foes carry its own mechanic against you: Sentence on your attacks, Rot on your party, your gold stolen.
+  - **contests your places.** It moves against the clans you back.
+  - **offers nothing.** No gifts while it is your nemesis.
+- **Ending it.**
+  - **Reconcile:** raise standing back above Wary, through a costly quest or gift it asks for.
+  - **Break it:** a nemesis quest, its champion as a boss, which drops its power by a tier and ends the hunt. That is a **[N]** story beat per clan, six of them.
+- **The radar** shows a nemesis in red. **[UX]**
 
 ## Subclans: bonus boons earned in the world
 
@@ -191,8 +216,7 @@ Different bases make the same clan play differently. A mage's Mana faces become 
 4. **Mire.** A rogue Rots one bandit; it dies and the Rot jumps to the next. Packs melt.
 5. **Crows.** A rogue steals 30 gold a fight and spends it on loaded faces at the boss.
 6. **Penitents.** A mage takes two Curses on purpose. Every face hits +20%, and an Ember face lifts one for a 30-point burst.
-7. **Choir.** A cleric swears "no Heal faces" and wins; the Choir pays a legendary-strength boon for the fight and gold after.
-8. **Pit.** A warrior hits double on Pact faces and carries the debt as weaker starts in the next three fights.
+7. **Open Hand (raised).** A ranger with Mire on Attack and Compact on Defend takes the Open Hand's Echo on Heal: heals now add Rot, and at its peak heat too.
 
 Duo run: Compact + Mire with *Smelter's Rot*. Heated faces Rot, and long fights end themselves.
 
@@ -200,10 +224,10 @@ Duo run: Compact + Mire with *Smelter's Rot*. Heated faces Rot, and long fights 
 
 | Piece | New | Reuses | Size | Simulator check |
 |---|---|---|---|---|
-| Gifts carry a clan mechanic | the 8 mechanics in the fight state (Sentence, Watch parry, Heat, Rot, Price spending, Burden, Vow, Debt); a gift's `mechanic` and `rarity` | sign slots, faces, keywords, statuses, writ/edge/ember/price, parry, dice tamper, pacts, vows | L (an M per pair of clans) | win rate per clan build by chapter: within ±5 points of each other, none above today's best by more than 8 |
+| Gifts carry a clan mechanic | the 6 mechanics in the fight state (Sentence, Watch parry, Heat, Rot, Price spending, Burden), then Echo; a gift's `mechanic` and `rarity` | sign slots, faces, keywords, statuses, writ/edge/ember/price, parry, dice tamper, pacts, vows | L (an M per pair of clans) | win rate per clan build by chapter: within ±5 points of each other, none above today's best by more than 8 |
 | Rarity by clan power | gating in offers.dart | SignRarity, offer draws | S | rarity counts per chapter |
-| Duos and betrayals | 10 duo gifts, 6 betrayal gifts, conditions | relations, offers | M | duo by ch5 in at most 1 run in 4 |
-| Clan power and territory | `power`, `control` in PoliticsState; `claims` in factions.json; tier crossing takes a claim | geography `controller`, politics events, relations | M | power curves per strategy (autoplay backs one clan): none Dominant before ch4 |
+| Duos and betrayals | 8 duo gifts, 6 betrayal gifts, conditions | relations, offers | M | duo by ch5 in at most 1 run in 4 |
+| Clan power, territory and the nemesis | `power`, `control`, `nemesis` in PoliticsState; `claims` in factions.json; tier crossing takes a claim; neglect decay; nemesis ambushes through the hunters' system | geography `controller`, politics events, relations | M | power curves per strategy (autoplay backs one clan): none Dominant before ch4 |
 | Subclan boons | 30 boons and their drop hooks | zone rewards, intrigues, houses, voyages | M (data heavy, **[N]**) | boons a typical run finds (target 4–6 by the throne) |
 | Radar: power and holdings | two readings | #264's radar | S | — |
 | Offer UI | mechanic icon, slot, duo card | the offer dialog | M **[UX]** | — |
@@ -216,7 +240,7 @@ Duo run: Compact + Mire with *Smelter's Rot*. Heated faces Rot, and long fights 
    - Mire + Compact (Rot, Heat);
    - Crows + Penitents (Price, Burden);
    - Dominion + Vigil (Sentence, Watch);
-   - Choir + Pit (Vow, Debt).
+   - the Open Hand's Echo, once its stages are in place.
 
    Each PR turns that clan's signs into gifts of its mechanic, with rarity tiers.
 3. **Duos and betrayals.**
@@ -230,6 +254,8 @@ Duo run: Compact + Mire with *Smelter's Rot*. Heated faces Rot, and long fights 
 
 ## Open questions for the user
 
-1. **The eight:** the six clans plus the Choir and the Pit, with the four tribes and the Open Hand as minor patrons. Right?
-2. **One clan per slot** (replacing one costs standing with it), or may two clans share a slot?
-3. **Power decay:** does a neglected clan lose power over time (rivals take its places), or only through events and betrayals?
+1. ~~The eight~~: answered. Six main clans, minor patrons, and the Open Hand raised into a seventh.
+2. **Slots, explained.** Your die's faces come in kinds: **Attack** faces, **Defend** faces, **Heal** faces, plus **spells** and **passives** (always on). A gift today attaches to one kind, as a sign does (`strike`, `guard`, `mend`, `spell`, `passive`). So a Dominion gift on Attack makes every Attack face add Sentence. The question: can each kind hold one clan only (the Dominion owns Attack, the Mire owns Defend…), or can two clans share a kind (Attack faces adding both Sentence and Rot)?
+   - **Recommended: one clan per kind.** That gives four or five clans at most on a die, so the build reads at a glance. Choosing who fills Attack and who fills Defend *is* the strategy. It's also what makes the duos meaningful: a duo is the only way two mechanics meet on the same face.
+3. ~~Power decay~~: answered. Neglect costs power; hostility plus power makes a nemesis.
+4. **New:** should the Choir and the Pit keep their vows and pacts as the minor boons they are today (proposed), or lose them to keep the minor patrons all alike?
