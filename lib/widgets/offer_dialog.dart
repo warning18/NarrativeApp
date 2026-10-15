@@ -127,6 +127,8 @@ String giftName(
     case GiftKind.perk:
       final perk = perkFromName(gift.id);
       return perk == null ? gift.id : trFor(lang, perkNameKey(perk));
+    case GiftKind.spec:
+      return tables.specs[gift.id]?.nameFor(lang == AppLanguage.fr) ?? gift.id;
   }
 }
 
@@ -155,6 +157,8 @@ String? offerGiftLabel(
   if (tables.skills.containsKey(id)) {
     return skillDisplayName(id, language: lang);
   }
+  final spec = tables.specs[id];
+  if (spec != null) return spec.nameFor(lang == AppLanguage.fr);
   return null;
 }
 
@@ -1194,6 +1198,19 @@ class _GiftBody extends StatelessWidget {
               Text(boon.lineFor(lang),
                   style: muted?.copyWith(fontStyle: FontStyle.italic)),
             Text(trFor(lang, 'offer_sworn_note'), style: muted),
+          ],
+        );
+      case GiftKind.spec:
+        final spec = tables.specs[gift.id];
+        if (spec == null) return const SizedBox.shrink();
+        final fr = lang == AppLanguage.fr;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            lines([spec.giftFor(fr)]),
+            if (spec.voiceFor(fr).isNotEmpty)
+              Text(spec.voiceFor(fr),
+                  style: muted?.copyWith(fontStyle: FontStyle.italic)),
           ],
         );
       case GiftKind.perk:
