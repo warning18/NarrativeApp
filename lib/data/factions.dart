@@ -1840,6 +1840,14 @@ StandingResult _commit(
   );
 }
 
+/// [state] with [entry] logged (a line that moves no standing: the
+/// patron's gifts, see patron_stats.dart).
+PoliticsState withStandingLogEntry(
+        PoliticsState state, StandingLogEntry entry) =>
+    state.copyWith(
+        standingLog:
+            _appendCapped(state.standingLog, entry, maxStandingLogEntries));
+
 List<T> _appendCapped<T>(List<T> list, T entry, int cap) {
   final next = [...list, entry];
   return next.length <= cap ? next : next.sublist(next.length - cap);

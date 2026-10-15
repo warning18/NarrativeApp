@@ -6,18 +6,23 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/factions.dart';
 import 'package:narrative_data_app/data/patron_stats.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
+import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+
+import 'player_session_provider_test.dart' show baseSession;
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
         as Map<String, dynamic>;
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   final data = ClanData.fromTables(
     factions: _table('factions'),
     subclans: _table('subclans'),
@@ -39,25 +44,49 @@ void main() {
   });
 
   test('the patron: the sworn clan, else the best at Friendly', () {
-    expect(statPatron(at({'mire': 10}), data), '');
-    expect(statPatron(at({'mire': 15, 'crows': 20}), data), 'crows');
-    expect(statPatron(at({'dominion': 70}), data), 'dominion');
+    expect(statPatron(at({'mire': 10})), '');
+    expect(statPatron(at({'mire': 15, 'crows': 20})), 'crows');
+    expect(statPatron(at({'dominion': 70})), 'dominion');
   });
 
   test('what a level gives', () {
-    expect(patronLevelGains(at({'mire': 15}), data).stats, {'dexterity': 1});
-    expect(patronLevelGains(at({'mire': 30}), data).stats,
-        {'dexterity': 1, 'luck': 1});
-    final sworn = patronLevelGains(at({'vigil': 70}), data);
-    expect(sworn.stats, {'constitution': 1, 'perception': 1});
+    expect(patronLevelGains(at({'mire': 15})).stats, {'dexterity': 1});
+    // Trusted: the first stat and the second in turn.
+    expect(
+        patronLevelGains(at({'mire': 30}), level: 3).stats, {'dexterity': 1});
+    expect(patronLevelGains(at({'mire': 30}), level: 4).stats, {'luck': 1});
+    final sworn = patronLevelGains(at({'vigil': 70}), level: 2);
+    expect(sworn.stats, {'perception': 1});
     expect(sworn.maxHealth, swornPatronHealth);
-    expect(patronLevelGains(PoliticsState.empty, data).stats, isEmpty);
+    expect(patronLevelGains(PoliticsState.empty).stats, isEmpty);
     // The Open Hand: +1 to the strongest.
     expect(
-        patronLevelGains(PoliticsState.empty, data,
+        patronLevelGains(PoliticsState.empty,
                 stats: {'strength': 4, 'wisdom': 9}, openHand: true)
             .stats,
         {'wisdom': 1});
+  });
+
+  test('two levels reached Trusted with the Dominion: +1 Charisma, +1 Strength',
+      () async {
+    SharedPreferences.setMockInitialValues({});
+    final notifier = PlayerSessionNotifier();
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    final start = baseSession();
+    await notifier.loadSession(
+        start.copyWith(level: 1, currentXP: 0, politics: at({'dominion': 40})));
+    final before = notifier.state;
+    final leveled = await notifier.applyCombatResult(
+        hpAfter: before.currentHealth, xpGain: 300);
+    expect(leveled, isTrue);
+    final after = notifier.state;
+    expect(after.strength, before.strength + 1);
+    expect(after.charisma, before.charisma + 1);
+    expect(after.constitution, before.constitution);
+    final line = after.politics.standingLog.last;
+    expect(line.cause, 'patron:dominion');
+    expect(line.note, contains('Strength'));
+    expect(line.noteFr, contains('Force'));
   });
 
   test('in the simulator, by patron', () {

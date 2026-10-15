@@ -730,9 +730,7 @@ _SimResult _simulate(
       housesBuilt: Map.unmodifiable(housesBuilt),
       roads: List.unmodifiable(roads),
       specs: List.unmodifiable(character?.specIds ?? const <String>[]),
-      patron: growth == null
-          ? ''
-          : statPatron(growth.politics, growth.tables.clans),
+      patron: growth == null ? '' : statPatron(growth.politics),
       transcript: transcribe
           ? [
               for (final (i, step) in steps.indexed) ...[

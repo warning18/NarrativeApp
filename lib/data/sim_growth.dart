@@ -238,7 +238,7 @@ class SimGrowth {
     } else {
       for (var i = before; i < after; i++) {
         pending.add(const OfferTicket(source: OfferSource.level));
-        if (passives) _patronGains();
+        if (passives) _patronGains(i + 1);
       }
     }
   }
@@ -248,9 +248,9 @@ class SimGrowth {
   bool passives = true;
 
   /// One level's patron gains (patron_stats.dart) on the character.
-  void _patronGains() {
+  void _patronGains(int level) {
     final c = character;
-    final gains = patronLevelGains(politics, tables.clans);
+    final gains = patronLevelGains(politics, level: level);
     for (final MapEntry(:key, :value) in gains.stats.entries) {
       switch (key) {
         case 'strength':

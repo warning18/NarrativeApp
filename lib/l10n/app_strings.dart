@@ -11092,6 +11092,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Boss beaten',
     AppLanguage.fr: 'Boss vaincu',
   },
+  'standing_cause_patron': {
+    AppLanguage.en: 'Patron’s favour',
+    AppLanguage.fr: 'Faveur du patron',
+  },
+  'patron_max_health': {
+    AppLanguage.en: '+{n} max health',
+    AppLanguage.fr: '+{n} vie max',
+  },
   'standing_cause_level': {
     AppLanguage.en: 'Level up',
     AppLanguage.fr: 'Niveau gagné',
