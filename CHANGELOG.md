@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.397.0+433]
+
+In a place a clan holds, its people join long fights.
+
+- **Reinforcements.** From round 8, in a place a clan holds:
+  - if you stand Friend or better with it, its people fight beside you, and each foe loses 5% of its health a round;
+  - if it hunts you or is your nemesis, its people fall on you, and each of you loses 5% a round.
+- They never join a boss's fight and never strike the finishing blow. The fight log says when they come.
+- **Balance:** a gentle edge, as asked. In every fight, allies are worth up to +2.9 points and foes cost up to −2.6. Report: docs/simulation/reinforcements.md.
+
 ## [1.394.0+430]
 
 When your clan's seat is attacked, it asks for your help, and if it falls, you choose what becomes of you.

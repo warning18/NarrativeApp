@@ -686,6 +686,7 @@ SimFightOutcome simulateSimFight({
   Set<String> clashOff = const {},
   num Function(String clanId)? clanStanding,
   ContextRule? context,
+  Reinforcement reinforcement = Reinforcement.none,
 }) {
   final c = character;
   // Which of the clash rules are in play.
@@ -1881,6 +1882,19 @@ SimFightOutcome simulateSimFight({
           e.health = afterTick(e.health, ctx.tick(e.maxHealth, rounds));
         }
       }
+    }
+    // The holder's people join in (context_rules.dart's reinforcements).
+    final anyBoss = bossFlags.any((b) => b);
+    if (reinforcement == Reinforcement.allies) {
+      for (final e in ens) {
+        if (e.isAlive) {
+          e.health = afterTick(
+              e.health, allyStrike(e.maxHealth, rounds, bossFight: anyBoss));
+        }
+      }
+    } else if (reinforcement == Reinforcement.foes) {
+      c.currentHealth = afterTick(
+          c.currentHealth, foeStrike(c.maxHealth, rounds, bossFight: anyBoss));
     }
     // The dead crumble (foe_kind.dart).
     if (on('kinds')) {
