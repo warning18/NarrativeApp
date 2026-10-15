@@ -7479,6 +7479,26 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'breaks and flees the fight!',
     AppLanguage.fr: 'panique et fuit le combat !',
   },
+  // The fight-length rules (fight_length.dart).
+  'execute_log': {
+    AppLanguage.en: '{name} is struck down where it staggers.',
+    AppLanguage.fr: '{name} est abattu là où il chancelle.',
+  },
+  'pack_breaks_log': {
+    AppLanguage.en: 'Their leader is down, and the pack breaks.',
+    AppLanguage.fr: 'Leur chef est à terre, et la meute se disperse.',
+  },
+  'tide_turns_log': {
+    AppLanguage.en:
+        'The tide of the fight turns: your blows land {party}% harder, theirs {enemies}%.',
+    AppLanguage.fr:
+        'Le combat bascule\u00a0: vos coups portent {party}\u00a0% plus fort, les leurs {enemies}\u00a0%.',
+  },
+  'tide_rises_log': {
+    AppLanguage.en: 'The tide rises: yours +{party}%, theirs +{enemies}%.',
+    AppLanguage.fr:
+        'La marée monte\u00a0: les vôtres +{party}\u00a0%, les leurs +{enemies}\u00a0%.',
+  },
   'holds_back_suffix': {
     AppLanguage.en: "can't reach you in the press and holds back.",
     AppLanguage.fr: 'ne peut vous atteindre dans la cohue et reste en retrait.',
