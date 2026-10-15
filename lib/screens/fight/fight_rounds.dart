@@ -245,7 +245,9 @@ extension _FightRounds on _FightScreenState {
       // cleric's Watchfire doesn't tire, it burns (profession_cores.dart).
       final watchfire =
           actor.isPlayer && _core.core == ProfessionCore.watchfire;
-      if (!watchfire) healing = _length.fatigued(actor.id, healing);
+      healing = watchfire
+          ? _length.rule.heal(healing, _roundsStarted)
+          : _length.fatigued(actor.id, healing, round: _roundsStarted);
       if (watchfire && healing > 0) {
         _watchfireOnHeal(actor, healing, newEntries, lang);
       }
@@ -696,6 +698,9 @@ extension _FightRounds on _FightScreenState {
                   '{enemies}', '${(tideEnemyStep * tide * 100).round()}'),
           _LogKind.info));
     }
+    // The place's rule (context_rules.dart): its omen, its rise, its toll,
+    // the watch.
+    final watch = _contextRoundStart(newEntries, lang);
     // The ranger sees the next face of the Trail.
     _noteTrailAhead(newEntries, lang);
     if (_silenced) {
@@ -815,8 +820,12 @@ extension _FightRounds on _FightScreenState {
       _finishFight(won: false);
       return;
     }
-    if (sellswordWon || fireWon) {
+    if (sellswordWon || fireWon || watch == true) {
       _finishFight(won: true);
+      return;
+    }
+    if (watch == false) {
+      _brokenUp();
       return;
     }
 
@@ -921,8 +930,12 @@ extension _FightRounds on _FightScreenState {
       List<_LogEntry> entries, AppLanguage lang,
       {bool pierce = false, bool edge = false}) {
     if (damage <= 0) return damage;
-    // The Tide grows the party's blows from its round on.
-    damage = tideDamage(damage, _roundsStarted, byParty: true);
+    // The Tide grows the party's blows from its round on, and the place's
+    // rule with it (context_rules.dart).
+    damage = _length.rule.blow(damage, _roundsStarted,
+        byParty: true,
+        element: element,
+        bossFight: _enemies.any((e) => isBossEnemy(e.enemyId, e.data)));
     final multiplier = elementMultiplierFor(enemy.data, element);
     var landed = damageAfterElement(damage, enemy.data, element);
     if (multiplier != 1.0) {

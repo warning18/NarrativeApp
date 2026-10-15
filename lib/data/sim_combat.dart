@@ -4,6 +4,7 @@ import '../combat/combat_engine.dart';
 import '../combat/dice_faces.dart';
 import '../combat/dice_tamper.dart';
 import '../combat/doctrine.dart';
+import '../combat/context_rules.dart';
 import '../combat/element_reaction.dart';
 import '../combat/enemy_response.dart';
 import '../combat/fight_goal.dart';
@@ -683,10 +684,15 @@ SimFightOutcome simulateSimFight({
   bool clash = true,
   Set<String> clashOff = const {},
   num Function(String clanId)? clanStanding,
+  ContextRule? context,
 }) {
   final c = character;
   // Which of the clash rules are in play.
   bool on(String rule) => clash && !clashOff.contains(rule);
+  // The fight's context rule (context_rules.dart): the place's or the
+  // foe's, the Tide where none applies; none with the Tide's family off.
+  final ctx = on('tide') ? (context ?? ContextRule.tide) : null;
+  var ctxRound = 0;
   final s = signs;
   final gear = s.over(perks.over(c.gearEffects(items, itemSets)));
   // The Sworn boons: blows the Writ still cancels, guards the Compact
@@ -701,6 +707,7 @@ SimFightOutcome simulateSimFight({
   // and whether the pack has broken.
   var healsGiven = 0;
   int healed(int amount) {
+    amount = ctx?.heal(amount, ctxRound) ?? amount;
     if (!on('fatigue') || amount <= 0) return amount;
     return fatiguedHeal(amount, healsGiven++);
   }
@@ -1015,6 +1022,7 @@ SimFightOutcome simulateSimFight({
   while (rounds < maxRounds) {
     rounds++;
     specRound = rounds;
+    ctxRound = rounds;
     for (final e in ens) {
       e.damageThisRound = 0;
       e.topHit = 0;
@@ -1035,7 +1043,9 @@ SimFightOutcome simulateSimFight({
     if (c.currentHealth < 0.4 * c.maxHealth && c.potions > 0) {
       c.potions--;
       potionsUsed++;
-      final drink = _potionHeal + s.potionBonus + perks.potionBonus;
+      final drink = ctx?.heal(
+              _potionHeal + s.potionBonus + perks.potionBonus, rounds + 1) ??
+          _potionHeal + s.potionBonus + perks.potionBonus;
       // The Brimming Draught: what spills past full feeds the fire.
       if (has(Spec.brimmingDraught)) {
         fire = fireAfterHeal(
@@ -1085,7 +1095,12 @@ SimFightOutcome simulateSimFight({
       react: on('reaction'),
       round: rounds,
       healed: core == ProfessionCore.watchfire ? null : healed,
-      tide: on('tide'),
+      partyBlow: ctx == null
+          ? null
+          : (raw, element) => ctx.blow(raw, rounds,
+              byParty: true,
+              element: element,
+              bossFight: bossFlags.any((b) => b)),
       ashWell: core == ProfessionCore.ashWell,
       fullWellMultiplier: has(Spec.burdenBearer) ? mods.burdenMultiplier : 1,
       fullWellHealShare: has(Spec.burdenBearer) ? mods.burdenHealShare : 0,
@@ -1291,7 +1306,12 @@ SimFightOutcome simulateSimFight({
       final pain = face.hasKeyword(FaceKeyword.pain) && result.damageDealt > 0;
       var dealt =
           pain ? result.damageDealt * painDamageMultiplier : result.damageDealt;
-      if (on('tide')) dealt = tideDamage(dealt, rounds, byParty: true);
+      if (ctx != null) {
+        dealt = ctx.blow(dealt, rounds,
+            byParty: true,
+            element: element,
+            bossFight: bossFlags.any((b) => b));
+      }
       if (pain) {
         final cost = painCost(
           maxHealth: c.maxHealth,
@@ -1425,8 +1445,9 @@ SimFightOutcome simulateSimFight({
           mods.noHealFaces && has(Spec.briarGuard) && face.type == 'Heal'
               ? 0
               : result.healingDone;
-      final heal =
-          core == ProfessionCore.watchfire ? faceHeal : healed(faceHeal);
+      final heal = core == ProfessionCore.watchfire
+          ? ctx?.heal(faceHeal, rounds) ?? faceHeal
+          : healed(faceHeal);
       if (core == ProfessionCore.watchfire && heal > 0) {
         // Every heal from the die burns (under the Beacon, every enemy);
         // the part past full feeds the fire.
@@ -1734,11 +1755,12 @@ SimFightOutcome simulateSimFight({
         e.provoked = false;
         e.pressing = false;
       }
-      if (on('tide')) {
-        moveDamage = tideDamage(
+      if (ctx != null) {
+        moveDamage = ctx.blow(
           moveDamage,
           rounds,
           byParty: false,
+          element: move.element,
           bossFight: bossFlags.any((b) => b),
         );
       }
@@ -1843,6 +1865,16 @@ SimFightOutcome simulateSimFight({
         fireLingered = false;
       }
     }
+    // The rising ground takes from both sides (context_rules.dart).
+    if (ctx != null) {
+      c.currentHealth =
+          afterTick(c.currentHealth, ctx.tick(c.maxHealth, rounds));
+      for (final e in ens) {
+        if (e.isAlive) {
+          e.health = afterTick(e.health, ctx.tick(e.maxHealth, rounds));
+        }
+      }
+    }
     // The Long Vigil mends above half health.
     if (has(Spec.longVigil) && !c.isKnockedOut) {
       c.currentHealth += mods.vigilMend(c.currentHealth, c.maxHealth);
@@ -1885,7 +1917,7 @@ int _castSpellIfWorth(
   bool react = true,
   int round = 0,
   int Function(int)? healed,
-  bool tide = false,
+  int Function(int raw, String element)? partyBlow,
   bool ashWell = false,
   double fullWellMultiplier = 1,
   double fullWellHealShare = 0,
@@ -1967,7 +1999,7 @@ int _castSpellIfWorth(
   final fullWell = c.mana >= c.maxMana ? fullWellMultiplier : 1.0;
   for (final spell in damageSpells) {
     final raw = (amountOf(spell) * fullWell).round();
-    final amount = tide ? tideDamage(raw, round, byParty: true) : raw;
+    final amount = partyBlow?.call(raw, spell.element) ?? raw;
     final killable = living.where((e) => e.health <= amount).toList();
     final List<_SimEnemy> targets;
     if (spell.target == SpellTarget.allEnemies) {

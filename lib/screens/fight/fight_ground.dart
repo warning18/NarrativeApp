@@ -39,6 +39,9 @@ extension _FightGround on _FightScreenState {
     final modifiers = widget.modifiers;
     _stage = _stageHere();
     if (lesson) return;
+    // The fight's context rule (context_rules.dart): a test fight keeps
+    // the Tide alone.
+    if (!modifiers.isTest) _length.rule = _contextRuleHere();
     final forced = modifiers.forcedAnomaly;
     if (forced != null) {
       _anomaly = forced;
@@ -56,6 +59,84 @@ extension _FightGround on _FightScreenState {
       chanceFactor: dangerAnomalyFactor(geography.dangerOf(placeId)),
       tags: geography.tagsOf(placeId),
     );
+  }
+
+  /// The rule this fight plays by its place and foe: the watch in a city,
+  /// a holy place's ground, the stage's own, the Tide where none applies or
+  /// a boss is fought.
+  ContextRule _contextRuleHere() {
+    final geography = ref.read(geographyProvider);
+    final placeId = _placeIdHere();
+    return contextRuleFor(
+      stage: _stage,
+      bossFight: widget.modifiers.isZoneBoss ||
+          widget._allEnemyEntries.any((e) =>
+              isBossEnemy(e.key, e.value) || zoneBossEnemyIds.contains(e.key)),
+      city: guardedPlaceKinds.contains(geography.place(placeId)?.kind),
+      holy: geography.tagsOf(placeId).contains('holy'),
+    );
+  }
+
+  /// The context rule as a round starts (context_rules.dart): its omen the
+  /// round before it rises, its level as it rises, the ground's toll on
+  /// both sides; in a boss's fight, the boss enraged as the Tide turns.
+  /// Returns the watch's verdict when it breaks the fight up: true for the
+  /// party ahead (the enemies scatter), false for both walking away; null
+  /// while the fight goes on.
+  bool? _contextRoundStart(List<_LogEntry> entries, AppLanguage lang) {
+    final rule = _length.rule;
+    final round = _roundsStarted;
+    if (round == tideStartRound &&
+        _enemies.any((e) => e.isAlive && isBossEnemy(e.enemyId, e.data))) {
+      entries.add(_LogEntry(trFor(lang, 'boss_enraged_log'), _LogKind.info));
+    }
+    final stem = rule.logStem;
+    if (stem == null) return null;
+    final start =
+        rule == ContextRule.risingWater ? waterStartRound : risingStartRound;
+    if (round == start - 1) {
+      entries
+          .add(_LogEntry(trFor(lang, 'context_${stem}_omen'), _LogKind.info));
+    }
+    if (rule.guardsCome(round)) {
+      int sum(Iterable<int> values) => values.fold(0, (a, b) => a + b);
+      final ahead = partyAheadOnHealth(
+        partyHealth: sum(_party.map((m) => max(0, m.currentHealth))),
+        partyMax: sum(_party.map((m) => m.maxHealth)),
+        enemyHealth:
+            sum(_enemies.where((e) => e.isAlive).map((e) => e.currentHealth)),
+        enemyMax: sum(_enemies.map((e) => e.maxHealth)),
+      );
+      entries.add(_LogEntry(
+          trFor(lang, ahead ? 'context_guards_won_log' : 'context_guards_log'),
+          _LogKind.info));
+      if (ahead) {
+        for (final e in _enemies.where((e) => e.isAlive)) {
+          e.fled = true;
+          e.currentHealth = 0;
+        }
+      }
+      return ahead;
+    }
+    final level = rule.levelAt(round);
+    final rising = rule == ContextRule.risingWater
+        ? level > 0 && level <= waterMaxLevel && round < start + waterMaxLevel
+        : level > 0;
+    if (!rising) return null;
+    entries.add(_LogEntry(
+        trFor(lang, 'context_${stem}_log').replaceAll('{n}', '$level'),
+        _LogKind.info));
+    // The mist's and the heat's toll, on both sides: it never finishes.
+    final party = _party.where((m) => !m.isKnockedOut);
+    for (final member in party) {
+      member.currentHealth =
+          afterTick(member.currentHealth, rule.tick(member.maxHealth, round));
+    }
+    for (final enemy in _enemies.where((e) => e.isAlive)) {
+      enemy.currentHealth =
+          afterTick(enemy.currentHealth, rule.tick(enemy.maxHealth, round));
+    }
+    return null;
   }
 
   /// The anomaly's phase in the round now under way.
