@@ -8,6 +8,38 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.380.0+416]
+
+Where you fight now changes how the fight goes (v5.2, step 4).
+
+- **One rule from the place, on top of the Tide.** From round 6 (the omen comes the round before):
+  - **Marshes:** a mist eats at both sides, a little more each round.
+  - **Deserts:** the heat wears both sides down, and wounds close slower.
+  - **Shores, cliffs and halls:** the water rises or the ceiling gives. From round 8 every blow lands harder, the party's most, and heals rise with it, up to +30%.
+  - **Holy places:** healing fades and Light strikes harder.
+  - **Cities and towns:** the watch breaks the fight up. Ahead on health, your foes scatter and you win; behind, both sides walk away, with nothing won and nothing lost.
+  - **Everywhere else:** the Tide alone, as before.
+- **Bosses:** a boss's fight keeps the Tide. The log now says when the boss grows enraged.
+- **The fight log** names each rule as it rises.
+- **Balance:** every profession fights 7 to 14 rounds and wins at least 55% under every rule. The marsh and the desert favour a healer. Report: docs/simulation/context-rules.md.
+
+## [1.379.0+415]
+
+The hunters speak for their clans.
+
+### Changed
+- **Battle cries for the Dominion, the Crows and the Penitents.** The six fighters Core reused as rival hunters (Inquisition Soldier and High Warden, Smuggler Captain, Brine Jack, Inquisition Penitent, Masked Penitent) now have a cry of their own, as the Vigil's, the Compact's and the Mire's do.
+- **The ambush line.** "{name} is waiting on the road ahead" / "{name} vous attend sur la route", in place of "bars the road". Wording only.
+
+## [1.377.0+413]
+
+Sworn to a clan, its rivals send hunters after you (v5.2, step 3b).
+
+- **Rival hunters on the roads.** While you are sworn to a clan, each of its rivals you stand Hostile with may ambush you on a road at rest (4% a road), and each that hunts you more often (8%), up to 15%. They share the alignment hunters' breather and their settings switch, so a road never holds two ambushes.
+- **Six new fighters**, a line fighter and a captain for the Grey Vigil, the Cinder Compact and the Mire Courts, in Narrative's words, each with a battle cry: Halvard and Ysel, Brodin Stonehand and Tove the Unheard, Sedge and Wen. They are met only as hunters. The Dominion, the Crows and the Penitents send fighters already on the roads.
+- **The ambush says who sent them and why:** "your oath to the Lantern Dominion is not forgiven".
+- **In the simulator:** about one rival hunter a run, in half the runs, beside about two alignment hunters. Report: docs/simulation/specialisations.md.
+
 ## [1.373.0+409]
 
 The clans with a weaker tie to your profession now offer a smaller twist of their own (v5.2, step 3c).

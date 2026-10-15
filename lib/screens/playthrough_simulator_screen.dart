@@ -12,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../combat/combat_engine.dart'
     show chapterRewardMultiplier, isBossEnemy, scaledReward, zoneBossEnemyIds;
+import '../combat/context_rules.dart' show ContextRule;
 import '../combat/gear_effects.dart';
 import '../combat/spec_variants.dart' show SpecVariantInfo, specVariantsFrom;
 import '../combat/specialisations.dart' show SpecInfo, specInfosFrom;
@@ -19,7 +20,7 @@ import '../combat/spells.dart';
 import '../data/autoplay_engine.dart';
 import '../data/camp_works.dart';
 import '../data/chapter_loop.dart';
-import '../combat/context_rules.dart' show ContextRule;
+import '../data/rival_hunters.dart' show maybeRivalHunter;
 import '../data/alignment_events.dart'
     show hunterCooldownRolls, isHunterAmbushChain, maybeAlignmentEvent;
 import '../data/camp_state.dart' show landingPortIdFor;
@@ -615,10 +616,26 @@ _SimResult _simulate(
         random: side,
         rollsSinceAmbush: rollsSinceAmbush,
       );
-      final ambush = event != null && isHunterAmbushChain(event);
+      // Sworn, the rivals' hunters (v5.2 step 3b) share the road.
+      final rival = event == null && growth != null
+          ? maybeRivalHunter(
+              politics: growth.politics,
+              data: growth.tables.clans,
+              enemies: enemies,
+              chapter: chapter,
+              random: side,
+              cooledDown: rollsSinceAmbush >= hunterCooldownRolls,
+            )
+          : null;
+      final ambush =
+          (event != null && isHunterAmbushChain(event)) || rival != null;
       rollsSinceAmbush =
           ambush ? 0 : min(hunterCooldownRolls, rollsSinceAmbush + 1);
-      if (event != null) hunter = ambush ? 'hunter' : 'temptation';
+      if (rival != null) {
+        hunter = 'rival_hunter';
+      } else if (event != null) {
+        hunter = ambush ? 'hunter' : 'temptation';
+      }
     }
     var familiar = '';
     final turn = planRoad(
