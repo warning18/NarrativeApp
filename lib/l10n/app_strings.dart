@@ -7617,6 +7617,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The storm collects its toll: {n} HP back.',
     AppLanguage.fr: 'L’orage perçoit son péage : {n} PV repris.',
   },
+  'spec_halved_log': {
+    AppLanguage.en:
+        '{clan}, turned against you: {spec} plays only every other round.',
+    AppLanguage.fr:
+        '{clan} : en froid avec vous, {spec} ne joue qu’un tour sur deux.',
+  },
+  'spec_asleep_log': {
+    AppLanguage.en: '{clan}, hunting you: {spec} sleeps.',
+    AppLanguage.fr: '{clan} : la traque est ouverte, {spec} sommeille.',
+  },
   'spec_tribunal_log': {
     AppLanguage.en:
         'The Tribunal hears the case once: the Well refills by a third.',
@@ -11077,6 +11087,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'standing_cause_edit': {
     AppLanguage.en: 'Edit Mode',
     AppLanguage.fr: 'Mode édition',
+  },
+  'standing_cause_loyalty': {
+    AppLanguage.en: 'Loyalty’s price',
+    AppLanguage.fr: 'Le prix de la loyauté',
   },
   'standing_cause_sworn_cap': {
     AppLanguage.en: 'The banner’s limit',

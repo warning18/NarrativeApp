@@ -681,6 +681,7 @@ SimFightOutcome simulateSimFight({
   PerkEffects perks = PerkEffects.none,
   bool clash = true,
   Set<String> clashOff = const {},
+  num Function(String clanId)? clanStanding,
 }) {
   final c = character;
   // Which of the clash rules are in play.
@@ -718,11 +719,19 @@ SimFightOutcome simulateSimFight({
   if (core == ProfessionCore.ashWell) c.mana = 0;
   // The specialisations on the core (specialisations.dart), and what they
   // keep over the fight: the Ledger Knife's chain.
+  // A clan grown cold quiets them (specsByStanding): those it halves play
+  // the odd rounds only.
+  final held = clanStanding == null
+      ? (ids: c.specIds, halved: const <Spec>{})
+      : specsByStanding(c.specIds, clanStanding);
   final specs =
-      clashOff.contains('specs') ? <Spec>{} : specsFor(c.specIds, core);
-  bool has(Spec spec) => specs.contains(spec);
+      clashOff.contains('specs') ? <Spec>{} : specsFor(held.ids, core);
+  var specRound = 0;
+  bool has(Spec spec) =>
+      specs.contains(spec) &&
+      (!held.halved.contains(spec) || halvedPlaysIn(specRound));
   // Their variants, upgrades and ranks (spec_variants.dart).
-  final mods = specs.isEmpty ? SpecMods.none : SpecMods(c.specIds);
+  final mods = specs.isEmpty ? SpecMods.none : SpecMods(held.ids);
   var ledgerChain = 0.0;
   var wellRefilled = false;
   var fireLingered = false;
@@ -995,6 +1004,7 @@ SimFightOutcome simulateSimFight({
 
   while (rounds < maxRounds) {
     rounds++;
+    specRound = rounds;
     for (final e in ens) {
       e.damageThisRound = 0;
       e.topHit = 0;

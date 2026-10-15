@@ -2239,9 +2239,18 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// The offer a new [chapter] brings, once: from chapter 2 (the first
   /// chapter's end), and never twice for the same chapter (see
   /// [PlayerSession.chapterOffersThrough]). The Choir or the Pit come with
-  /// it when the alignment leans. Returns whether one was granted.
-  Future<bool> grantChapterOffer(int chapter) async {
+  /// it when the alignment leans. With the clans' [data], the chapter's
+  /// price of loyalty comes with it too (applyLoyaltyDrift: the patron's
+  /// rivals cool). Returns whether one was granted.
+  Future<bool> grantChapterOffer(int chapter, {ClanData? data}) async {
     if (chapter < 2 || chapter <= state.chapterOffersThrough) return false;
+    final drift = data == null
+        ? null
+        : applyLoyaltyDrift(state.politics,
+            data: data, chapter: chapter, day: state.day);
+    if (drift != null && drift.changed) {
+      state = _withTitles(state.copyWith(politics: drift.state), data!);
+    }
     state = state.copyWith(
       chapterOffersThrough: chapter,
       pendingOffers: [

@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.371.0+407]
+
+Loyalty has a price (v5.2, step 3): the clans remember who you stand with.
+
+- **A clan grown cold quiets what it gave you.** Resented or Hostile with a clan, its specialisation plays only every other round, and its sub-clans' gifts and rank II go quiet. Hunted by it, the specialisation sleeps until you win the clan back. The fight log says so as the fight begins.
+- **Your patron's favour cools its rivals, each chapter.** Trusted with a clan, its rivals lose 2 standing at each new chapter. Sworn to it, they lose 4, the clans in tension with it lose 2, and its allies gain 1. Shown in the clan log as "Loyalty's price".
+- **No fight penalty:** loyalty costs shops, offers and gifts from the other side of the map, never your strength. A Dominion loyalist ends a run Hunted by three clans; a Crows loyalist by one. Report: docs/simulation/specialisations.md.
 ## [1.368.0+404]
 
 The fight screen shows the new fight-length rules and the professions' cores.
