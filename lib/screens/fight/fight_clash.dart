@@ -94,8 +94,10 @@ extension _FightClash on _FightScreenState {
 
   /// An element hit of [landed] on [target]: it springs a reaction when a
   /// partner element primed the enemy in time, and otherwise primes it.
+  /// [times]: the Double Kindling's Fire spell counts its reaction twice.
   void _reactOnHit(_EnemyMember target, String element, int landed,
-      List<_LogEntry> entries, AppLanguage lang) {
+      List<_LogEntry> entries, AppLanguage lang,
+      {int times = 1}) {
     if (element == 'None' || landed <= 0 || !target.isAlive) return;
     final sprung = reactionOn(target.elementMarks, element, _roundsStarted);
     if (sprung == null) {
@@ -105,7 +107,7 @@ extension _FightClash on _FightScreenState {
     target.elementMarks.remove(sprung.primer);
     final reaction = sprung.reaction;
     final name = trFor(lang, reactionLabelKey(reaction));
-    final bonus = reactionBonus(reaction, landed);
+    final bonus = reactionBonus(reaction, landed) * times;
     if (bonus > 0) {
       target.currentHealth = max(0, target.currentHealth - bonus);
       _bestHitThisRound = max(_bestHitThisRound, landed + bonus);
