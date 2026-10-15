@@ -15,6 +15,16 @@ The politics hint waits for its setting.
 ### Fixed
 - **The turn-in dialog's politics hint** ("Vigil +5 · Dominion −5") read its setting before the saved value had loaded, so on the first turn-in after a cold start it could show when the player had turned hints off (or hide when they were on). The dialog now waits for the saved setting first, as the hunters setting does.
 
+## [1.347.0+383]
+
+Settings honoured from the first moment; the ways round a fight have their price.
+
+### Fixed
+- **A setting is honoured from the first road after a start**: with the hunters turned off, no temptation or hunter on the first detour after opening the game; the spoils chest opens itself on the first fight if that is the choice.
+
+### Changed
+- **The ways round a fight that cost something by their words now do**: the patrol's toll is 20 gold (shut if the purse can't pay), throwing the hound a salt sack or burning the lantern oil costs a tenth of the load, giving away the coal's warmth or outpacing the reed ghoul costs a day; the thieves' bargain pays 5 gold. The other ways round stay free, but leave the fight's spoils behind.
+
 ## [1.346.0+382]
 
 ### Changed
