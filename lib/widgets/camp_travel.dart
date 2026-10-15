@@ -17,7 +17,7 @@ import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../screens/story_player_screen.dart'
-    show roadEventOn, rollRoadEncounter, takeStoryChoice, walkRoadStep;
+    show roadEventOn, startRoadEncounter, takeStoryChoice, walkRoadStep;
 import '../data/world_map.dart' show landmarkOfScene;
 import '../screens/full_map_screen.dart' show FullMapScreen;
 import '../screens/land_crossing_screen.dart' show runLandCrossing;
@@ -104,7 +104,8 @@ Future<bool> sailParty(
 /// camp's shore): the voyage or the walk, then the story moves there. A
 /// walk between places is [walkWatches] of the day and a ration, and may
 /// meet something on the road first (a road event, a detour or a raid,
-/// see [rollRoadEncounter]), which the story plays before arriving.
+/// see [startRoadEncounter], by the same rules as the story's roads),
+/// which the story plays before arriving.
 /// [origin] is the road's name on a detour's card.
 Future<void> travelTo(
   BuildContext context,
@@ -123,9 +124,9 @@ Future<void> travelTo(
     // GeoPlace.watches).
     final story = await ref.read(storyDataProvider.future);
     final world = await loadGeography(ref);
-    await walkRoadStep(ref,
-        watches: world.watchesToNode(story.nodeFor(targetNodeId),
-            fallback: walkWatches));
+    final watches =
+        world.watchesToNode(story.nodeFor(targetNodeId), fallback: walkWatches);
+    await walkRoadStep(ref, watches: watches);
     if (!context.mounted) return;
     // A road event on the way (see road_events.dart), else what the road
     // may hold.
@@ -135,18 +136,20 @@ Future<void> travelTo(
         toNodeId: targetNodeId,
         historyLength: from.history.length);
     if (!context.mounted) return;
+    final started = await startRoadEncounter(ref, story,
+        fromNodeId: from.currentNodeId,
+        toNodeId: targetNodeId,
+        historyLength: from.history.length,
+        travels: true,
+        watches: watches,
+        taken: event != null,
+        origin: origin);
+    if (!context.mounted) return;
     if (event != null) {
       play.startExcursion(event, targetNodeId, origin: origin);
       return;
     }
-    final chain = await rollRoadEncounter(ref,
-        chapter: ref.read(reachedChapterProvider),
-        fromNodeId: ref.read(storyPlayProvider).currentNodeId);
-    if (!context.mounted) return;
-    if (chain != null && chain.isNotEmpty) {
-      play.startExcursion(chain, targetNodeId, origin: origin);
-      return;
-    }
+    if (started) return;
     showImmersiveNotice(context, icon: Icons.hiking, message: walkNotice);
     play.choose(targetNodeId);
     return;

@@ -12,13 +12,14 @@ import 'hunt_names.dart';
 import 'map_themes.dart';
 
 /// Generates short chains of procedural "excursion" nodes inserted between
-/// the fixed main story beats — a shop visit, an enemy encounter, a quest
-/// pickup, a small treasure find, a moment of rest, or a bit of ambient
-/// flavor. If a quest pickup is rolled, the chain is lengthened to 4-7
-/// nodes to represent that quest's own mini-arc; otherwise it's a short
-/// 1-3 node detour. The wording of these excursions comes from [theme]
-/// (see map_themes.dart) — the main story beats themselves never change,
-/// only the flavor of what happens between them.
+/// two scenes — a shop visit, an enemy encounter, a quest pickup, a small
+/// treasure find, a moment of rest, or a bit of ambient flavor: a detour
+/// where no written scene fits the road (see detour_scenes.dart and
+/// detour_pacing.dart, which decide when one comes). If a quest pickup is
+/// rolled, the chain is 3-4 nodes, the quest's own mini-arc; otherwise
+/// it's 1-2 (a hunt after a pack fight adds two). The wording comes from
+/// the place's pools (place_pools.dart), else [theme] (map_themes.dart) —
+/// the story's own scenes never change, only what happens between them.
 class SubNodeEngine {
   static int _counter = 0;
 
@@ -477,7 +478,7 @@ class SubNodeEngine {
     final id = 'gen_$_counter';
 
     if (questId != null) {
-      final idx = _freshIndex('quest', flavor.quest.length, random);
+      final idx = _freshIndex('quest', flavor.quest, random);
       final quest = quests[questId] as Map<String, dynamic>?;
       final questName = quest?['questName']?.toString() ?? '';
       final objective = _firstObjective(quest);
@@ -504,7 +505,7 @@ class SubNodeEngine {
     final roll = random.nextDouble();
     if (shopPool.isNotEmpty && roll < 0.25) {
       final shopId = shopPool[random.nextInt(shopPool.length)];
-      final idx = _freshIndex('shop', flavor.shop.length, random);
+      final idx = _freshIndex('shop', flavor.shop, random);
       final shopName =
           (shops[shopId] as Map<String, dynamic>?)?['shopName']?.toString() ??
               '';
@@ -524,7 +525,7 @@ class SubNodeEngine {
       );
     }
     if (enemyPool.isNotEmpty && roll < 0.5) {
-      final idx = _freshIndex('enemy', flavor.enemy.length, random);
+      final idx = _freshIndex('enemy', flavor.enemy, random);
       // A pack fight never draws a solo-only enemy (the tuned bosses and
       // uniques -- see soloOnlyEnemyIds) -- those stay solo encounters
       // exclusively, drawn only through the plain single-enemy path below.
@@ -546,7 +547,7 @@ class SubNodeEngine {
     if (roll < 0.65) {
       final goldFound = treasureGoldFor(chapter, 5 + random.nextInt(16));
       final dugUp = (goldFound * digDeeperMultiplier).round();
-      final idx = _freshIndex('treasure', flavor.treasure.length, random);
+      final idx = _freshIndex('treasure', flavor.treasure, random);
       return StoryNode(
         id: id,
         description: flavor.treasure[idx],
@@ -572,7 +573,7 @@ class SubNodeEngine {
       );
     }
     if (roll < 0.8) {
-      final idx = _freshIndex('rest', flavor.rest.length, random);
+      final idx = _freshIndex('rest', flavor.rest, random);
       final scavenged = treasureGoldFor(chapter, 8 + random.nextInt(9));
       return StoryNode(
         id: id,
@@ -596,7 +597,7 @@ class SubNodeEngine {
         ],
       );
     }
-    final idx = _freshIndex('generic', flavor.generic.length, random);
+    final idx = _freshIndex('generic', flavor.generic, random);
     return StoryNode(
       id: id,
       description: flavor.generic[idx],
@@ -609,9 +610,10 @@ class SubNodeEngine {
 
   /// A random fight's node. The text is the drawn enemy's own encounter
   /// line (how it shows up and why it attacks; its pack line when it leads
-  /// several), so a rat is never announced as "a figure with a blade";
-  /// the theme's generic line is only the fallback for an enemy with no
-  /// lines. The button names who is fought. [idx] is the theme line
+  /// several), so a rat is never announced as "a figure with a blade",
+  /// after the place's own line when the place has some (see
+  /// ExcursionFlavor.enemyOfPlace); the theme's generic line is only the
+  /// fallback for an enemy with no lines. The button names who is fought. [idx] is the theme line
   /// already drawn, reused to pick the enemy's line so the detour draws
   /// no extra randomness.
   static StoryNode _fightNode(
@@ -629,8 +631,16 @@ class SubNodeEngine {
         : fightLabelFor(ids, enemies);
     return StoryNode(
       id: id,
-      description: line?.en ?? flavor.enemy[idx],
-      descriptionFr: line?.fr ?? flavor.enemyFr[idx],
+      description: line == null
+          ? flavor.enemy[idx]
+          : flavor.enemyOfPlace
+              ? '${flavor.enemy[idx]} ${line.en}'
+              : line.en,
+      descriptionFr: line == null
+          ? flavor.enemyFr[idx]
+          : flavor.enemyOfPlace
+              ? '${flavor.enemyFr[idx]} ${line.fr}'
+              : line.fr,
       choices: [
         StoryChoice(
           text: label.en,
@@ -671,30 +681,49 @@ class SubNodeEngine {
   /// A roadside rest heals 20, and 10 more per chapter after the first.
   static int restHealFor(int chapter) => 20 + 10 * (max(1, chapter) - 1);
 
-  /// Recently shown flavor lines, per category, so the same line doesn't
-  /// come round twice in a few detours.
-  static final Map<String, List<int>> _recentFlavor = {};
+  /// The flavor lines shown, per category, the latest last, so a line
+  /// doesn't come round again before the rest of its pool has.
+  static final Map<String, List<String>> _recentFlavor = {};
 
   /// Forgets the recent lines (see [_freshIndex]), for tests that compare
   /// texts as well as the chain.
   @visibleForTesting
   static void resetFlavorMemory() => _recentFlavor.clear();
-  static const int _flavorMemory = 5;
 
-  /// A line index in [0, length) not among the last few shown for
-  /// [category] -- a few rerolls at most, then whatever came up.
-  static int _freshIndex(String category, int length, Random random) {
+  /// Lines remembered per category: more than any pool holds.
+  static const int _flavorMemory = 64;
+
+  /// A line index of [lines] not shown yet for [category], or once every
+  /// line of the pool has been, the one shown longest ago. The memory is
+  /// of the lines themselves, so it covers the whole pool, whichever pool
+  /// (a place's, a biome's, a theme's) answers.
+  static int _freshIndex(String category, List<String> lines, Random random) {
+    final length = lines.length;
     if (length <= 0) return 0;
     final recent = _recentFlavor.putIfAbsent(category, () => []);
     // One draw, always: a line seen lately steps on to the next fresh one
     // rather than rerolling, so the draws after it (the rest of the chain)
     // don't shift with what earlier detours happened to show.
     var idx = random.nextInt(length);
-    for (var step = 0; step < length && recent.contains(idx); step++) {
+    var step = 0;
+    for (; step < length && recent.contains(lines[idx]); step++) {
       idx = (idx + 1) % length;
     }
-    recent.add(idx);
-    while (recent.length > min(_flavorMemory, length - 1)) {
+    if (step == length) {
+      // Every line shown: the one shown longest ago.
+      var oldest = recent.length;
+      for (var i = 0; i < length; i++) {
+        final at = recent.indexOf(lines[i]);
+        if (at < oldest) {
+          oldest = at;
+          idx = i;
+        }
+      }
+    }
+    recent
+      ..remove(lines[idx])
+      ..add(lines[idx]);
+    while (recent.length > _flavorMemory) {
       recent.removeAt(0);
     }
     return idx;
