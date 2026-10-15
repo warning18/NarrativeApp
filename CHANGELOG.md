@@ -8,6 +8,25 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.385.0+421]
+
+Your clan now shapes your stats as you level up (v5.2, step 5).
+
+- **The patron's favour.** Each level, the clan you stand best with (Friendly or better, or the one you're sworn to) adds a stat point:
+  - **Friendly:** to its first stat.
+  - **Trusted:** to its first and its second in turn.
+  - **Sworn:** the same, and +2 max health.
+- **The clans' stats:**
+  - Dominion: Strength, Charisma
+  - Vigil: Constitution, Perception
+  - Compact: Constitution, Strength
+  - Mire: Dexterity, Luck
+  - Crows: Strength, Dexterity
+  - Penitents: Wisdom, Intelligence
+- **The Open Hand,** once raised, adds +1 to your strongest stat.
+- **In the clan log:** each level-up says what your patron gave.
+- **Balance:** about +2.6 points of fights won overall, and the bosses keep their curve. Report: docs/simulation/patron-stats.md.
+
 ## [1.380.0+416]
 
 Where you fight now changes how the fight goes (v5.2, step 4).
