@@ -8,6 +8,12 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.392.0+428]
+
+### Changed
+- `factions.json`: every faction carries `gender_fr` (m, f, mp, fp) and `nameTo_fr` ("au Dominion de la Lanterne"), so the French territory news lines agree with the clan.
+- `docs/proposals/territory-texts.md`: the blurb for the Mire's hidden seat, `mire_court`, for Core's next PR.
+
 ## [1.391.0+427]
 
 Clans now have power, and the map changes hands.
