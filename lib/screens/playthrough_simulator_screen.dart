@@ -20,6 +20,7 @@ import '../combat/spells.dart';
 import '../data/autoplay_engine.dart';
 import '../data/camp_works.dart';
 import '../data/chapter_loop.dart';
+import '../data/patron_stats.dart' show statPatron;
 import '../data/rival_hunters.dart' show maybeRivalHunter;
 import '../data/alignment_events.dart'
     show hunterCooldownRolls, isHunterAmbushChain, maybeAlignmentEvent;
@@ -220,11 +221,16 @@ class _SimResult {
     this.roads = const [],
     this.transcript = const [],
     this.specs = const [],
+    this.patron = '',
   });
 
   /// The specialisations the character held at the end, in the order
   /// taken (specialisations.dart).
   final List<String> specs;
+
+  /// The clan whose passive stats the run ended with (patron_stats.dart);
+  /// '' for none.
+  final String patron;
 
   final List<_SimStep> steps;
 
@@ -533,14 +539,14 @@ _SimResult _simulate(
   // the old skill points, perks and sign picks.
   final growth = character == null || sim == null
       ? null
-      : SimGrowth(
+      : (SimGrowth(
           mode: sim.progression,
           tables: sim.growthTables,
           character: character,
           startingSkillPoints: (sim.professions[character.professionId]
                   as Map<String, dynamic>?)?['startingSkillPoints'] as int? ??
               0,
-        );
+        )..passives = !sim.clashOff.contains('passives'));
   // The open chapters' loop: the camp the story stands at, the places
   // already toured from it, and the place being toured now (with how many
   // things are left to do there).
@@ -730,6 +736,7 @@ _SimResult _simulate(
       housesBuilt: Map.unmodifiable(housesBuilt),
       roads: List.unmodifiable(roads),
       specs: List.unmodifiable(character?.specIds ?? const <String>[]),
+      patron: growth == null ? '' : statPatron(growth.politics),
       transcript: transcribe
           ? [
               for (final (i, step) in steps.indexed) ...[
@@ -1892,6 +1899,7 @@ typedef SimRunSummary = ({
   List<SimRoad> roads,
   List<String> transcript,
   List<String> specs,
+  String patron,
 });
 
 /// Full playthroughs, one per entry of [plan] (a strategy and, optionally,
@@ -2009,6 +2017,7 @@ List<SimRunSummary> simulatePlaythroughs(
       roads: result.roads,
       transcript: result.transcript,
       specs: result.specs,
+      patron: result.patron,
     ));
   }
   return out;
