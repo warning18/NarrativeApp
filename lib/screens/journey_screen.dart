@@ -282,6 +282,14 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   JourneyMapLevel _level = JourneyMapLevel.place;
   Landmark? _lookedAt;
 
+  /// The whole town in view instead of the district (v1.350): the rung
+  /// between the district and the world, for a place with a city plan.
+  bool _townView = false;
+
+  /// Whether the place the map shows has a city plan to look at whole
+  /// (set while building).
+  bool _canTown = false;
+
   /// The scale of a pinch on the place's map (see _lookOut): the streets
   /// shrink under the fingers, and the chart opens where they were left.
   double _pinch = 1;
@@ -317,7 +325,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _arrive.forward(from: 0);
       return;
     }
+    // From a district, the whole town comes first; the world after it.
+    if (_canTown && !_townView) {
+      setState(() {
+        _townView = true;
+        _pinch = 1;
+        _pinching = false;
+      });
+      return;
+    }
     setState(() {
+      _townView = false;
       _enterZoom = (JourneyWorldMapZoom.max * from)
           .clamp(JourneyWorldMapZoom.land, JourneyWorldMapZoom.max);
       _level = JourneyMapLevel.land;
@@ -327,10 +345,45 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     });
   }
 
+  /// A tab of the level strip (v1.350): the district, the whole town, or
+  /// the world, in one tap.
+  void _goLevel(_LevelTab tab) {
+    switch (tab) {
+      case _LevelTab.district:
+        if (_level != JourneyMapLevel.place) {
+          _arriveAtStreets(town: false);
+        } else if (_townView) {
+          setState(() => _townView = false);
+        }
+      case _LevelTab.town:
+        if (_level != JourneyMapLevel.place) {
+          _arriveAtStreets();
+        } else if (_canTown && !_townView) {
+          setState(() => _townView = true);
+        }
+      case _LevelTab.world:
+        if (_level == JourneyMapLevel.place) {
+          setState(() {
+            _townView = false;
+            _enterZoom = null;
+            _level = JourneyMapLevel.world;
+            _lookedAt = null;
+            _pinch = 1;
+            _pinching = false;
+          });
+        } else if (_level == JourneyMapLevel.land) {
+          setState(() => _level = JourneyMapLevel.world);
+        }
+    }
+  }
+
   /// Back to the streets from the chart: they grow in from small. A
   /// scene inside a building shows the streets round it first.
-  void _arriveAtStreets() {
+  void _arriveAtStreets({bool town = true}) {
     setState(() {
+      // Down from the world the town is met first (the ladder runs both
+      // ways); a tab asks for the district itself.
+      _townView = town && _canTown;
       _level = JourneyMapLevel.place;
       _lookedAt = null;
       _outside = _sceneInside;
@@ -967,6 +1020,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   ),
             ],
           );
+    // A city plan to look at whole (not from inside a room).
+    _canTown = placeView?.plan != null && placeView?.room == null;
+    if (!_canTown) _townView = false;
+    final townView = _townView && _canTown;
 
     // Where the party stands on the world (v1.245): a scene the story
     // carried it to without a walk (a fight lost, a roll failed, the travel
@@ -1071,6 +1128,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           MaterialPageRoute(builder: (_) => const FullMapScreen()),
         ),
         fog: editing ? ChartFog.none : ChartFog.uncharted,
+        bottomInset: 40,
       ),
     );
 
@@ -1185,6 +1243,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                           weather: journeyWeatherOf(sky?.kind, chapter),
                           place: placeView,
                           arriveFrom: _arriveFrom,
+                          townView: townView,
                         ),
                       ),
                     ),
@@ -1215,6 +1274,19 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                         tip: tr(ref, 'journey_go_inside'),
                         palette: palette,
                         onTap: _busy ? null : _goInside,
+                      ),
+                    ),
+                  if (townView)
+                    Positioned(
+                      right: 8,
+                      bottom: 48,
+                      child: _MapButton(
+                        key: const Key('journey_town_zoom_in'),
+                        icon: Icons.add,
+                        tip: tr(ref, 'journey_tab_district'),
+                        palette: palette,
+                        onTap:
+                            _busy ? null : () => _goLevel(_LevelTab.district),
                       ),
                     ),
                   Positioned(
@@ -1303,34 +1375,60 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                               ),
                             const SizedBox(height: 2),
                             Expanded(
-                              child: _level == JourneyMapLevel.place || ended
-                                  ? Stack(
-                                      children: [
-                                        Positioned.fill(child: map),
-                                        if (_transit != null &&
-                                            placeView != null &&
-                                            !ended)
-                                          Positioned.fill(
-                                            child: _PartyTransit(
-                                              key: ValueKey(
-                                                  'journey_transit_$sceneKey'),
-                                              transit: _transit!,
-                                              geography: placeView.geography,
-                                              marks: placeView.marks,
-                                              palette: palette,
-                                              passText:
-                                                  tr(ref, 'journey_pass_stop'),
-                                              onDone: () {
-                                                if (mounted) {
-                                                  setState(
-                                                      () => _transit = null);
-                                                }
-                                              },
-                                            ),
-                                          ),
-                                      ],
-                                    )
-                                  : worldMap,
+                              child: Stack(
+                                children: [
+                                  Positioned.fill(
+                                    child: _level == JourneyMapLevel.place ||
+                                            ended
+                                        ? Stack(
+                                            children: [
+                                              Positioned.fill(child: map),
+                                              if (_transit != null &&
+                                                  placeView != null &&
+                                                  !ended)
+                                                Positioned.fill(
+                                                  child: _PartyTransit(
+                                                    key: ValueKey(
+                                                        'journey_transit_$sceneKey'),
+                                                    transit: _transit!,
+                                                    geography:
+                                                        placeView.geography,
+                                                    marks: placeView.marks,
+                                                    palette: palette,
+                                                    passText: tr(ref,
+                                                        'journey_pass_stop'),
+                                                    onDone: () {
+                                                      if (mounted) {
+                                                        setState(() =>
+                                                            _transit = null);
+                                                      }
+                                                    },
+                                                  ),
+                                                ),
+                                            ],
+                                          )
+                                        : worldMap,
+                                  ),
+                                  if (!ended && _transit == null)
+                                    Positioned(
+                                      left: 8,
+                                      bottom: 44,
+                                      child: _LevelTabs(
+                                        selected:
+                                            _level != JourneyMapLevel.place
+                                                ? _LevelTab.world
+                                                : townView
+                                                    ? _LevelTab.town
+                                                    : _LevelTab.district,
+                                        townEnabled: _canTown ||
+                                            _level != JourneyMapLevel.place,
+                                        busy: _busy,
+                                        palette: palette,
+                                        onPick: _goLevel,
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ),
                             // Under the map (v1.201): once the camp
                             // stands, the way back to it from a place, and
@@ -2085,7 +2183,12 @@ class _JourneyChart extends StatefulWidget {
     this.weather = JourneyWeather.none,
     this.place,
     this.arriveFrom,
+    this.townView = false,
   });
+
+  /// The whole town in view (v1.350: the step between a district and the
+  /// world) instead of the district's close-up; the frame glides between.
+  final bool townView;
 
   /// The district (or room spot) the party comes from when the story set it
   /// down here along no walk: its mark travels the plan from there.
@@ -2180,6 +2283,14 @@ class _JourneyChartState extends State<_JourneyChart>
     value: 1,
   );
   bool _arrivalStarted = false;
+
+  /// How much of the town is in view: 0 the district's close-up, 1 the
+  /// whole plan (see [_JourneyChart.townView]).
+  late final AnimationController _town = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 320),
+    value: widget.townView ? 1 : 0,
+  );
 
   /// Out of a place and along the world chart to the next (v1.181).
   /// The marks' glyphs breathing (see journey_glyph.dart): its own small
@@ -2285,6 +2396,7 @@ class _JourneyChartState extends State<_JourneyChart>
   @override
   void initState() {
     super.initState();
+    _town.addListener(() => setState(() {}));
     _walk.addListener(_onWalk);
     _walk.addStatusListener((status) {
       if (status == AnimationStatus.completed && _walking != null) {
@@ -2367,6 +2479,14 @@ class _JourneyChartState extends State<_JourneyChart>
   @override
   void didUpdateWidget(covariant _JourneyChart old) {
     super.didUpdateWidget(old);
+    if (old.townView != widget.townView) {
+      final to = widget.townView ? 1.0 : 0.0;
+      if (MediaQuery.of(context).disableAnimations) {
+        _town.value = to;
+      } else {
+        _town.animateTo(to, curve: Curves.easeInOut);
+      }
+    }
     if (old.unroll != widget.unroll) {
       _unrollAt = _clock.value;
       _lastEvent = _clock.value;
@@ -2512,6 +2632,7 @@ class _JourneyChartState extends State<_JourneyChart>
     _phase.dispose();
     _walk.dispose();
     _arrival.dispose();
+    _town.dispose();
     _flight.dispose();
     _idleGlyphs.dispose();
     _scroll?.dispose();
@@ -2559,12 +2680,15 @@ class _JourneyChartState extends State<_JourneyChart>
               // Close up (v1.224): the map keeps in view the party and the
               // places its ways lead to, not the whole city.
               final districtOf = widget.place!.districtOfStep;
-              final frame = journeyFocusFrame(plan.frame, [
+              final focus = journeyFocusFrame(plan.frame, [
                 plan.anchorOf(widget.place!.hereDistrict),
                 for (var i = 0; i < steps.length; i++)
                   if (steps[i].moves && districtOf[i] != null)
                     plan.anchorOf(districtOf[i]!),
               ]);
+              final frame = _town.value == 0
+                  ? focus
+                  : Rect.lerp(focus, plan.frame, _town.value) ?? focus;
               const side = 22.0, top = 26.0, foot = 74.0;
               final s = math.min((width - 2 * side) / frame.width,
                   (present - top - foot) / frame.height);
@@ -2580,6 +2704,8 @@ class _JourneyChartState extends State<_JourneyChart>
               final obstacles = [
                 Rect.fromLTWH(0, 0, math.min(width * 0.5, 190) + 16, 84),
                 Rect.fromLTWH(width - 64, present - 64, 64, 64),
+                // The level tabs along the foot (v1.350).
+                Rect.fromLTWH(0, present - 84, 222, 44),
               ];
               final area = Rect.fromLTWH(0, 0, width, present).deflate(28);
               final taken = <Offset>[];
@@ -2749,6 +2875,8 @@ class _JourneyChartState extends State<_JourneyChart>
                     Rect.fromCircle(center: here, radius: _hereRadius),
                     // The "You are here" badge in the corner.
                     Rect.fromLTWH(8, 8, math.min(width * 0.5, 190), 56),
+                    // The level tabs along the foot (v1.350).
+                    Rect.fromLTWH(0, present - 84, 222, 44),
                   ],
                   keep: widget.selected,
                   keepAll: _anchors != null,
@@ -4043,4 +4171,78 @@ void openStoryReader(BuildContext context, WidgetRef ref) {
       body: const StoryPlayerScreen(),
     ),
   ));
+}
+
+/// The Journey map's levels as tabs (v1.350).
+enum _LevelTab { district, town, world }
+
+/// Three small tab buttons on the map: the district, the whole town, the
+/// world. The one looked at is lit; the town is dimmed where the place has
+/// no city plan.
+class _LevelTabs extends ConsumerWidget {
+  const _LevelTabs({
+    required this.selected,
+    required this.townEnabled,
+    required this.busy,
+    required this.palette,
+    required this.onPick,
+  });
+
+  final _LevelTab selected;
+  final bool townEnabled;
+  final bool busy;
+  final ChartPalette palette;
+  final ValueChanged<_LevelTab> onPick;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    Widget tab(_LevelTab t, String label, {bool enabled = true}) {
+      final on = t == selected;
+      final colour = on
+          ? palette.mark
+          : enabled
+              ? palette.place
+              : palette.label.withValues(alpha: 0.5);
+      return InkWell(
+        key: Key('journey_tab_${t.name}'),
+        onTap: enabled && !busy && !on ? () => onPick(t) : null,
+        child: Container(
+          height: 28,
+          padding: const EdgeInsets.symmetric(horizontal: 9),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: on ? palette.mark.withValues(alpha: 0.18) : null,
+            border: Border(
+              bottom: BorderSide(
+                  color: on ? palette.mark : Colors.transparent, width: 2),
+            ),
+          ),
+          child: Text(label,
+              style: TextStyle(
+                  fontFamily: InkFonts.system,
+                  fontSize: 12,
+                  height: 1,
+                  color: colour)),
+        ),
+      );
+    }
+
+    return Material(
+      color: palette.land.withValues(alpha: 0.92),
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: palette.coast, width: 2),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Row(
+        key: const Key('journey_level_tabs'),
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          tab(_LevelTab.district, tr(ref, 'journey_tab_district')),
+          tab(_LevelTab.town, tr(ref, 'journey_tab_town'),
+              enabled: townEnabled),
+          tab(_LevelTab.world, tr(ref, 'journey_tab_world')),
+        ],
+      ),
+    );
+  }
 }

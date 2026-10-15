@@ -63,6 +63,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Go back inside',
     AppLanguage.fr: 'Rentrer',
   },
+  'journey_tab_district': {
+    AppLanguage.en: 'District',
+    AppLanguage.fr: 'Quartier',
+  },
+  'journey_tab_town': {AppLanguage.en: 'Town', AppLanguage.fr: 'Ville'},
+  'journey_tab_world': {AppLanguage.en: 'World', AppLanguage.fr: 'Monde'},
   'journey_look_out': {
     AppLanguage.en: 'Look out at the land',
     AppLanguage.fr: 'Regarder le pays',

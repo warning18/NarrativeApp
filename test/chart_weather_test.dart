@@ -326,6 +326,12 @@ void main() {
     // is turned off, and the choice is kept.
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
     await _settle(tester);
+    // A city looked out from shows the whole town first (v1.350), then the
+    // land.
+    if (find.byKey(const Key('journey_town_zoom_in')).evaluate().isNotEmpty) {
+      await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
+      await _settle(tester);
+    }
     expect(find.byType(JourneyWorldMap), findsOneWidget);
     expect(find.byType(ChartWeather), findsOneWidget);
     await tester.tap(find.byKey(const Key('journey_layers')));

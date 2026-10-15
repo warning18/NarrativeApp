@@ -121,7 +121,23 @@ void main() {
     await tester.pageBack();
     await _settle(tester);
 
-    // The − button on the streets looks out at the land under the fog
+    // The − button on a district looks out at the whole town first
+    // (v1.350), with its three level tabs; the world comes next.
+    expect(find.byKey(const Key('journey_level_tabs')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('journey_town_zoom_in')), findsOneWidget);
+    expect(find.byType(JourneyWorldMap), findsNothing);
+    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    // The + under it comes back to the district; the Town tab goes out.
+    await tester.tap(find.byKey(const Key('journey_town_zoom_in')));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('journey_town_zoom_in')), findsNothing);
+    await tester.tap(find.byKey(const Key('journey_tab_town')));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('journey_town_zoom_in')), findsOneWidget);
+
+    // The − button on the whole town looks out at the land under the fog
     // (v1.201: the levels are zoomed between); the steps wait behind.
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
     await tester.pump();
@@ -163,6 +179,17 @@ void main() {
     expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
     await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byType(JourneyWorldMap), findsOneWidget);
+
+    // The tabs from the land: the District tab goes straight to the
+    // streets, the World tab back out to the whole sphere.
+    await tester.tap(find.byKey(const Key('journey_tab_district')));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byType(JourneyWorldMap), findsNothing);
+    expect(find.byKey(const Key('journey_town_zoom_in')), findsNothing);
+    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('journey_tab_world')));
+    await tester.pump(const Duration(milliseconds: 400));
     expect(find.byType(JourneyWorldMap), findsOneWidget);
 
     // The calques: the clans' influence over the lands, with its legend;
