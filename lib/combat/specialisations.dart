@@ -55,7 +55,8 @@ import 'combat_engine.dart';
 import 'profession_cores.dart';
 import 'status_effect.dart';
 
-/// The fifteen specialisations.
+/// The fifteen main specialisations, then the eight weak links' (step 3c,
+/// [weakLinkSpecs]).
 enum Spec {
   berserker,
   briarGuard,
@@ -72,7 +73,32 @@ enum Spec {
   corsairsEye,
   trapwright,
   fenGuide,
+  standfast,
+  burningPenance,
+  brimmingDraught,
+  doubleKindling,
+  lingeringHex,
+  stitchThrust,
+  pitchHand,
+  secondBroadside,
 }
+
+/// The weak links' gifts (step 3c): a clan only weakly tied to a
+/// profession offers one, half as often as a main clan its specialisation,
+/// rare, and never with sub-clan gifts or a rank II.
+const Set<Spec> weakLinkSpecs = {
+  Spec.standfast,
+  Spec.burningPenance,
+  Spec.brimmingDraught,
+  Spec.doubleKindling,
+  Spec.lingeringHex,
+  Spec.stitchThrust,
+  Spec.pitchHand,
+  Spec.secondBroadside,
+};
+
+/// Whether [spec] is one of the fifteen main specialisations.
+bool isMainSpec(Spec spec) => !weakLinkSpecs.contains(spec);
 
 /// A specialisation's id in specialisations.json and in a save.
 String specId(Spec spec) => switch (spec) {
@@ -91,6 +117,14 @@ String specId(Spec spec) => switch (spec) {
       Spec.corsairsEye => 'corsairs_eye',
       Spec.trapwright => 'trapwright',
       Spec.fenGuide => 'fen_guide',
+      Spec.standfast => 'standfast',
+      Spec.burningPenance => 'burning_penance',
+      Spec.brimmingDraught => 'brimming_draught',
+      Spec.doubleKindling => 'double_kindling',
+      Spec.lingeringHex => 'lingering_hex',
+      Spec.stitchThrust => 'stitch_thrust',
+      Spec.pitchHand => 'pitch_hand',
+      Spec.secondBroadside => 'second_broadside',
     };
 
 /// The specialisation of id [id], or null.
@@ -101,23 +135,31 @@ Spec? specNamed(String? id) =>
 ProfessionCore coreOfSpec(Spec spec) => switch (spec) {
       Spec.berserker ||
       Spec.briarGuard ||
-      Spec.lanternVanguard =>
+      Spec.lanternVanguard ||
+      Spec.standfast ||
+      Spec.burningPenance =>
         ProfessionCore.fury,
       Spec.longVigil ||
       Spec.ashenHand ||
-      Spec.beacon =>
+      Spec.beacon ||
+      Spec.brimmingDraught =>
         ProfessionCore.watchfire,
       Spec.censerMage ||
       Spec.burdenBearer ||
-      Spec.tempestToll =>
+      Spec.tempestToll ||
+      Spec.doubleKindling ||
+      Spec.lingeringHex =>
         ProfessionCore.ashWell,
       Spec.feverBlade ||
       Spec.ledgerKnife ||
-      Spec.relicbreaker =>
+      Spec.relicbreaker ||
+      Spec.stitchThrust ||
+      Spec.pitchHand =>
         ProfessionCore.flurry,
       Spec.corsairsEye ||
       Spec.trapwright ||
-      Spec.fenGuide =>
+      Spec.fenGuide ||
+      Spec.secondBroadside =>
         ProfessionCore.trail,
     };
 
@@ -129,11 +171,27 @@ String clanOfSpec(Spec spec) => switch (spec) {
       Spec.ledgerKnife ||
       Spec.corsairsEye =>
         'crows',
-      Spec.briarGuard || Spec.trapwright => 'compact',
-      Spec.lanternVanguard || Spec.beacon || Spec.censerMage => 'dominion',
-      Spec.longVigil => 'vigil',
-      Spec.ashenHand || Spec.burdenBearer || Spec.relicbreaker => 'penitents',
-      Spec.feverBlade || Spec.fenGuide => 'mire',
+      Spec.briarGuard ||
+      Spec.trapwright ||
+      Spec.doubleKindling ||
+      Spec.pitchHand =>
+        'compact',
+      Spec.lanternVanguard ||
+      Spec.beacon ||
+      Spec.censerMage ||
+      Spec.secondBroadside =>
+        'dominion',
+      Spec.longVigil || Spec.standfast || Spec.stitchThrust => 'vigil',
+      Spec.ashenHand ||
+      Spec.burdenBearer ||
+      Spec.relicbreaker ||
+      Spec.burningPenance =>
+        'penitents',
+      Spec.feverBlade ||
+      Spec.fenGuide ||
+      Spec.brimmingDraught ||
+      Spec.lingeringHex =>
+        'mire',
     };
 
 /// How a held specialisation plays with its clan's standing (v5.2 step 3,
@@ -357,6 +415,50 @@ StatusEffect fenPoison(int strike, {double share = fenPoisonShare}) =>
         type: StatusEffectType.poison,
         remainingTurns: fenPoisonTurns,
         magnitude: max(1, (strike * share).round()));
+
+// --- The weak links (step 3c) -----------------------------------------------
+//
+// - Standfast (Vigil, warrior): a Defend face adds 1 Fury.
+// - Burning Penance (Penitents, warrior): a Mana face adds 1 Fury.
+// - Brimming Draught (Mire, cleric): a potion's healing past full feeds the
+//   Watchfire.
+// - Double Kindling (Compact, mage): a Fire spell's reaction counts twice.
+// - Lingering Hex (Mire, mage): a spell's status lasts
+//   [lingeringHexTurns] more.
+// - Stitch-Thrust (Vigil, rogue): healing past full strikes the foe for
+//   [stitchThrustShare] of it.
+// - Pitch Hand (Compact, rogue): Flurry's second hit slows its target
+//   ([pitchSlow]).
+// - Second Broadside (Dominion, ranger): once a fight, a face drawn that
+//   would not strike goes back, and the Trail draws again.
+
+/// The turns the Lingering Hex adds to a spell's status.
+const int lingeringHexTurns = 1;
+
+/// [status] as a Lingering Hex leaves it: [lingeringHexTurns] longer.
+StatusEffect lingered(StatusEffect status) => StatusEffect(
+    type: status.type,
+    remainingTurns: status.remainingTurns + lingeringHexTurns,
+    magnitude: status.magnitude);
+
+/// The share of healing past full the Stitch-Thrust sends at the foe.
+const double stitchThrustShare = 1.0;
+
+/// What healing [healing] at [currentHealth] of [maxHealth] spills past
+/// full (0 when it doesn't).
+int overheal(int healing, int currentHealth, int maxHealth) =>
+    max(0, currentHealth + healing - maxHealth);
+
+/// What a Stitch-Thrust strikes for, from [over] spilled past full.
+int stitchThrust(int over) =>
+    over <= 0 ? 0 : max(1, (over * stitchThrustShare).round());
+
+/// The Pitch Hand's slowing: a short, light Weaken.
+const StatusEffect pitchSlow = StatusEffect(
+    type: StatusEffectType.weaken, remainingTurns: 1, magnitude: 15);
+
+/// Whether a face of [type] strikes (the Second Broadside keeps those).
+bool faceStrikes(String type) => type == 'Attack' || type == 'Skill';
 
 // --- The words -------------------------------------------------------------
 

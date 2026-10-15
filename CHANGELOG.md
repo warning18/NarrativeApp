@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.373.0+409]
+
+The clans with a weaker tie to your profession now offer a smaller twist of their own (v5.2, step 3c).
+
+- **Eight new gifts**, one for each clan only weakly tied to a profession, in Narrative's words:
+  - **Warrior:** Standfast (Vigil): a Defend face adds 1 Fury. Burning Penance (Penitents): a Mana face adds 1 Fury.
+  - **Cleric:** Brimming Draught (Mire): a potion's healing past full feeds the Watchfire.
+  - **Mage:** Double Kindling (Compact): a Fire spell's reaction counts twice. Lingering Hex (Mire): a spell's status lasts a turn longer.
+  - **Rogue:** Stitch-Thrust (Vigil): healing past full strikes the foe. Pitch Hand (Compact): Flurry's second hit slows its target.
+  - **Ranger:** Second Broadside (Dominion): once a fight, a face that would not strike goes back, and the Trail draws again.
+- **How they come:** from Friend, half as often as a main clan's specialisation, as rare gifts, and with no sub-clan variants or rank II.
+- **Balance:** each is worth about half a main specialisation where the simulator can see it. Report: docs/simulation/specialisations.md.
+
 ## [1.371.0+407]
 
 Loyalty has a price (v5.2, step 3): the clans remember who you stand with.

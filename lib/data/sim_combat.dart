@@ -574,6 +574,7 @@ class _SimEnemy {
     int round, {
     bool pierce = false,
     bool react = true,
+    int reactionTimes = 1,
   }) {
     var landed = takeHit(damage, element, pierce: pierce);
     if (landed > 0 &&
@@ -595,7 +596,7 @@ class _SimEnemy {
       } else {
         marks.remove(sprung.primer);
         final reaction = sprung.reaction;
-        final bonus = reactionBonus(reaction, landed);
+        final bonus = reactionBonus(reaction, landed) * reactionTimes;
         if (bonus > 0) {
           health = max(0, health - bonus);
           dealt += bonus;
@@ -737,6 +738,7 @@ SimFightOutcome simulateSimFight({
   var fireLingered = false;
   var specGold = 0;
   final specFed = <_SimEnemy>{};
+  var broadsideUsed = false;
   // The fire's burns are Light under the Beacon, and the Road Exorcists'.
   bool burnsLight() =>
       has(Spec.beacon) || (has(Spec.ashenHand) && mods.ashenLight);
@@ -958,6 +960,14 @@ SimFightOutcome simulateSimFight({
     return null;
   }
 
+  // The Stitch-Thrust: healing past full strikes the foe.
+  void overhealed(int healing) {
+    if (!has(Spec.stitchThrust)) return;
+    final hit = stitchThrust(overheal(healing, c.currentHealth, c.maxHealth));
+    final target = firstLiving();
+    if (hit > 0 && target != null) target.health = max(0, target.health - hit);
+  }
+
   SimFightOutcome finish(bool won) {
     // The Ash Well: what is left of it after a win heals.
     if (core == ProfessionCore.ashWell && won) {
@@ -1025,10 +1035,19 @@ SimFightOutcome simulateSimFight({
     if (c.currentHealth < 0.4 * c.maxHealth && c.potions > 0) {
       c.potions--;
       potionsUsed++;
-      c.currentHealth = min(
-        c.maxHealth,
-        c.currentHealth + _potionHeal + s.potionBonus + perks.potionBonus,
-      );
+      final drink = _potionHeal + s.potionBonus + perks.potionBonus;
+      // The Brimming Draught: what spills past full feeds the fire.
+      if (has(Spec.brimmingDraught)) {
+        fire = fireAfterHeal(
+          fire: fire,
+          healing: drink,
+          currentHealth: c.currentHealth,
+          maxHealth: c.maxHealth,
+          beacon: has(Spec.beacon),
+        );
+      }
+      overhealed(drink);
+      c.currentHealth = min(c.maxHealth, c.currentHealth + drink);
     }
 
     // The enemies' coming blows are rolled ahead (telegraphed), so a
@@ -1072,6 +1091,8 @@ SimFightOutcome simulateSimFight({
       fullWellHealShare: has(Spec.burdenBearer) ? mods.burdenHealShare : 0,
       spellLifeShare: has(Spec.tempestToll) ? mods.tempestShare : 0,
       spellDiscount: has(Spec.tempestToll) ? mods.spellDiscount : 0,
+      fireReactionTimes: has(Spec.doubleKindling) ? 2 : 1,
+      lingeringHex: has(Spec.lingeringHex),
       onSpellHit: has(Spec.tempestToll) && mods.spellsSteal
           ? () => specGold += ledgerStealGold
           : null,
@@ -1090,6 +1111,7 @@ SimFightOutcome simulateSimFight({
       DiceFaceResult face;
       var verdict = false, firstOfRun = false;
       var rolls = 0;
+      var redraw = false;
       do {
         rolls++;
         if (trail != null) {
@@ -1100,7 +1122,15 @@ SimFightOutcome simulateSimFight({
         } else {
           face = rollDie(c.diceFaces, random);
         }
-      } while (face.type == 'Empty' && rolls < _maxRolls);
+        // The Second Broadside: once a fight, a face that would not strike
+        // goes back, and the Trail draws again.
+        redraw = trail != null &&
+            has(Spec.secondBroadside) &&
+            !broadsideUsed &&
+            face.type != 'Empty' &&
+            !faceStrikes(face.type);
+        if (redraw) broadsideUsed = true;
+      } while ((face.type == 'Empty' || redraw) && rolls < _maxRolls);
       face = applyFaceAssignment(
         face,
         c.diceFaces[face.faceIndex],
@@ -1181,8 +1211,11 @@ SimFightOutcome simulateSimFight({
       // The cores on the face (profession_cores.dart), and their
       // specialisations (specialisations.dart).
       var crits = 0;
+      var pitched = false;
       if (core == ProfessionCore.flurry && result.damageDealt > 0) {
         final second = rollFace();
+        // The Pitch Hand: the second hit slows its target.
+        pitched = has(Spec.pitchHand) && second.damageDealt > 0;
         int hit(PlayerActionResult r) {
           if (!r.isCritical) {
             if (has(Spec.ledgerKnife)) ledgerChain += mods.ledgerStep;
@@ -1216,6 +1249,14 @@ SimFightOutcome simulateSimFight({
         } else {
           fury++;
         }
+      }
+      // The weak links' Fury: the Vigil's Defend face, the Penitents' Mana
+      // face.
+      if (core == ProfessionCore.fury &&
+          fury < furyMax &&
+          ((has(Spec.standfast) && face.type == 'Defend') ||
+              (has(Spec.burningPenance) && face.type == 'Mana'))) {
+        fury++;
       }
       // The Lantern Vanguard's heavy blow is Fire and Pierces; the
       // Corsair's Verdict counts double and Pierces.
@@ -1287,6 +1328,10 @@ SimFightOutcome simulateSimFight({
             : target.takeHit(dealt, element, pierce: pierce);
         if (landed > 0) crowsHits++;
         if (!clash) target.health = max(0, target.health - landed);
+        if (pitched && target.isAlive) {
+          target.statusEffects =
+              applyStatusEffect(target.statusEffects, pitchSlow);
+        }
         // Against an Evil foe the Vanguard's heavy blow heals; the
         // Inquisition's weakens.
         if (heavy && has(Spec.lanternVanguard)) {
@@ -1414,6 +1459,7 @@ SimFightOutcome simulateSimFight({
           beacon: has(Spec.beacon),
         );
       }
+      overhealed(heal);
       c.currentHealth = min(c.maxHealth, c.currentHealth + heal);
       // A Defend face meets the strongest blow coming at it as a parry,
       // worth half again as much, instead of guarding the first to strike.
@@ -1845,6 +1891,8 @@ int _castSpellIfWorth(
   double fullWellHealShare = 0,
   double spellLifeShare = 0,
   int spellDiscount = 0,
+  int fireReactionTimes = 1,
+  bool lingeringHex = false,
   void Function()? onSpellHit,
 }) {
   final living = ens.where((e) => e.isAlive).toList();
@@ -1937,11 +1985,15 @@ int _castSpellIfWorth(
         c.mana - costOf(spell) < reserve) {
       continue;
     }
-    final status = spellStatusFor(spell, level: c.level);
+    final rawStatus = spellStatusFor(spell, level: c.level);
+    final status =
+        rawStatus != null && lingeringHex ? lingered(rawStatus) : rawStatus;
     for (final e in targets) {
       final before = e.health;
       if (clash) {
-        e.landHit(amount, spell.element, round, react: react);
+        e.landHit(amount, spell.element, round,
+            react: react,
+            reactionTimes: spell.element == 'Fire' ? fireReactionTimes : 1);
       } else {
         e.health = max(0, e.health - e.takeHit(amount, spell.element));
       }
@@ -1988,8 +2040,9 @@ int _castSpellIfWorth(
   for (final spell in affordable.where(
     (s) => s.effect == SpellEffectKind.status,
   )) {
-    final status = spellStatusFor(spell, level: c.level);
-    if (status == null) continue;
+    final rawStatus = spellStatusFor(spell, level: c.level);
+    if (rawStatus == null) continue;
+    final status = lingeringHex ? lingered(rawStatus) : rawStatus;
     final candidates = living
         .where(
           (e) =>
