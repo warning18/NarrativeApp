@@ -17,6 +17,29 @@ The clan offer's popup is one block: the ring on top, and under it the clan card
 - **The clan's words sit behind its name.** A tap on the name (the small "i" beside it, lit the first time you meet a clan) opens its charter: the motto, what it stands for and what it says to you. They no longer take room in the popup.
 - The alignment word ("Alignment · toward Good") stays in the block, under the gift.
 
+## [1.380.0+416]
+
+Where you fight now changes how the fight goes (v5.2, step 4).
+
+- **One rule from the place, on top of the Tide.** From round 6 (the omen comes the round before):
+  - **Marshes:** a mist eats at both sides, a little more each round.
+  - **Deserts:** the heat wears both sides down, and wounds close slower.
+  - **Shores, cliffs and halls:** the water rises or the ceiling gives. From round 8 every blow lands harder, the party's most, and heals rise with it, up to +30%.
+  - **Holy places:** healing fades and Light strikes harder.
+  - **Cities and towns:** the watch breaks the fight up. Ahead on health, your foes scatter and you win; behind, both sides walk away, with nothing won and nothing lost.
+  - **Everywhere else:** the Tide alone, as before.
+- **Bosses:** a boss's fight keeps the Tide. The log now says when the boss grows enraged.
+- **The fight log** names each rule as it rises.
+- **Balance:** every profession fights 7 to 14 rounds and wins at least 55% under every rule. The marsh and the desert favour a healer. Report: docs/simulation/context-rules.md.
+
+## [1.379.0+415]
+
+The hunters speak for their clans.
+
+### Changed
+- **Battle cries for the Dominion, the Crows and the Penitents.** The six fighters Core reused as rival hunters (Inquisition Soldier and High Warden, Smuggler Captain, Brine Jack, Inquisition Penitent, Masked Penitent) now have a cry of their own, as the Vigil's, the Compact's and the Mire's do.
+- **The ambush line.** "{name} is waiting on the road ahead" / "{name} vous attend sur la route", in place of "bars the road". Wording only.
+
 ## [1.377.0+413]
 
 Sworn to a clan, its rivals send hunters after you (v5.2, step 3b).

@@ -511,7 +511,9 @@
       "sea_cliffs",
       "tear"
     ],
-    "hunterClan": "dominion"
+    "hunterClan": "dominion",
+    "battleCry": "“One flame, one law. You swore to another light.”",
+    "battleCry_fr": "« Une flamme, une loi. Vous avez juré à une autre lumière. »"
   },
   "void_wisp": {
     "enemyName": "Grey Candle",
@@ -676,7 +678,9 @@
       "arid_coast",
       "sea"
     ],
-    "hunterClan": "crows"
+    "hunterClan": "crows",
+    "battleCry": "“Every door has a price. Yours has come due.”",
+    "battleCry_fr": "« Chaque porte a son prix. Le vôtre est échu. »"
   },
   "plague_hound": {
     "enemyName": "Plague Hound",
@@ -1045,7 +1049,9 @@
     "description_fr": "Le Haut Gardien de l’Inquisition, commandant de l’avant-garde de la Croisade, qui porte un fragment du Linceul cousu à même le dos.",
     "enemyName_fr": "Haut Gardien de l’Inquisition",
     "biomes": [],
-    "hunterClan": "dominion"
+    "hunterClan": "dominion",
+    "battleCry": "“The Lantern remembers every oath. Yours is on the list.”",
+    "battleCry_fr": "« La Lanterne se souvient de chaque serment. Le vôtre est sur la liste. »"
   },
   "kroll_the_branded": {
     "enemyName": "Inquisitor Clement",
@@ -2345,7 +2351,9 @@
     "biomes": [
       "frost"
     ],
-    "hunterClan": "penitents"
+    "hunterClan": "penitents",
+    "battleCry": "“I carry what I burned. You will carry what you swore.”",
+    "battleCry_fr": "« Je porte ce que j’ai brûlé. Vous porterez ce que vous avez juré. »"
   },
   "void_archon": {
     "enemyName": "Void Archon",
@@ -3411,7 +3419,9 @@
     "description_fr": "Un pénitent au masque de porcelaine qui ne cesse de vous fixer.",
     "enemyName_fr": "Pénitente masquée",
     "biomes": [],
-    "hunterClan": "penitents"
+    "hunterClan": "penitents",
+    "battleCry": "The porcelain mask tilts, and says, in a voice that is not its own: “You swore.”",
+    "battleCry_fr": "Le masque de porcelaine s’incline et dit, d’une voix qui n’est pas la sienne : « Vous avez juré. »"
   },
   "white_soldier": {
     "enemyName": "White Soldier",
@@ -4294,7 +4304,9 @@
       "Jack la Saumure plante la perche de sa lanterne sur la route et regarde les chariots comme une mouette regarde un étal de vidage."
     ],
     "biomes": [],
-    "hunterClan": "crows"
+    "hunterClan": "crows",
+    "battleCry": "“You sold us to the other side. Let’s see what the tide pays.”",
+    "battleCry_fr": "« Vous nous avez vendus à l’autre camp. Voyons ce que la marée en donne. »"
   },
   "purifier_vell": {
     "enemyName": "Purifier Vell",
