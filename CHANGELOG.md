@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.350.0+386]
+
+The map reads on a phone, zooming out lands on the sphere, and the camp's buildings have tabs and filters.
+
+### Changed
+- **The map is readable.**
+  - Place names are never under 12 px on screen, with a dark halo; a crowded chart drops the names with no clear spot (the party's place, the picked one and the goal always stay) and shows them as it opens.
+  - Region and land names are larger and brighter; names stay on the ball on the sphere.
+  - Roads are thicker, coasts and land borders stronger, the land lighter against the sea (night and shroud looks), the party's place has a glow and a dark-rimmed ring.
+- **The sphere is the default, and fills a phone.** Zooming out from the Journey lands on the sphere; its ball fills the box's short side (it was a 250 px ball). The flat chart stays a choice in Layers.
+- **A zoom ladder.** The + and − buttons stop on the world, the land, the district and the closest, so a district chart has its rung ready.
+- **Camp buildings: tabs and filters.** Houses and Additions are tabs (with counts); filters keep what is ready, what the gold and the pack can pay for, what stands, and (for houses) a category. An empty result offers a way back. Each card carries a "built / limit" slot (Core's `WorkLimit`).
+
 ## [1.349.0+385]
 
 The camp's town has limits; the towns have their districts.
