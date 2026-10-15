@@ -1866,6 +1866,9 @@ Future<List<StoryNode>?> rollRoadEncounter(
   final forcedTheme = ref.read(mapThemeProvider);
   final fromNode = story.nodeFor(fromNodeId);
   final resolvedTheme = forcedTheme ?? mapThemeForUiTheme(fromNode?.uiTheme);
+  // The hunters setting's saved value, not its default: a party that turned
+  // them off meets none on the first road after a cold start.
+  await ref.read(alignmentHuntersEnabledProvider.notifier).loaded;
   final alignmentEvent = maybeAlignmentEvent(
     alignmentScore: session.alignmentScore,
     activeQuestIds: session.activeQuestIds,
