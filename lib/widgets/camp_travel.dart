@@ -156,7 +156,17 @@ Future<void> travelTo(
   }
   final arrived =
       await sailParty(context, ref, destinationPortId: destinationPortId);
-  if (!arrived) return;
+  if (!arrived || !context.mounted) return;
+  // The landing rolls as a road arriving there would (v1.361).
+  final story = await ref.read(storyDataProvider.future);
+  final from = ref.read(storyPlayProvider);
+  final started = await startRoadEncounter(ref, story,
+      fromNodeId: from.currentNodeId,
+      toNodeId: targetNodeId,
+      historyLength: from.history.length,
+      travels: true,
+      origin: origin);
+  if (started) return;
   play.choose(targetNodeId);
 }
 

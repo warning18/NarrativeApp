@@ -1608,6 +1608,16 @@ Future<void> _selectChoice({
   // Landed where the choice goes: the voyage was the way there, with its
   // days and its sea, and no road after it.
   if (travelled) {
+    // The landing rolls as a road arriving there would (v1.361): what
+    // waits off the quay, the chapter's landmark among it.
+    final started = await startRoadEncounter(ref, story,
+        fromNodeId: currentNodeId,
+        toNodeId: choice.nextId,
+        historyLength: ref.read(storyPlayProvider).history.length,
+        travels: true,
+        origin: choice.text,
+        originFr: choice.textFr);
+    if (!context.mounted || started) return;
     await _arriveAt(ref, story, choice.nextId);
     return;
   }
@@ -1922,7 +1932,15 @@ Future<bool> startRoadEncounter(
   // setting's saved value, not its default: a party that turned them off
   // meets none on the first road after a cold start.
   List<StoryNode>? alignmentEvent;
-  if (!taken && road.atRest && chapter >= SubNodeEngine.firstDetourChapter) {
+  final landmarkDue = landmarkDueOn(
+      pacing: session.detourPacing,
+      road: road,
+      scenes: scenes,
+      flags: session.flags.toSet());
+  if (!taken &&
+      !landmarkDue &&
+      road.atRest &&
+      chapter >= SubNodeEngine.firstDetourChapter) {
     await ref.read(alignmentHuntersEnabledProvider.notifier).loaded;
     alignmentEvent = maybeAlignmentEvent(
       alignmentScore: session.alignmentScore,
