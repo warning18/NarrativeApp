@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.373.0+409]
+
+The clans with a weaker tie to your profession now offer a smaller twist of their own (v5.2, step 3c).
+
+- **Eight new gifts**, one for each clan only weakly tied to a profession, in Narrative's words:
+  - **Warrior:** Standfast (Vigil): a Defend face adds 1 Fury. Burning Penance (Penitents): a Mana face adds 1 Fury.
+  - **Cleric:** Brimming Draught (Mire): a potion's healing past full feeds the Watchfire.
+  - **Mage:** Double Kindling (Compact): a Fire spell's reaction counts twice. Lingering Hex (Mire): a spell's status lasts a turn longer.
+  - **Rogue:** Stitch-Thrust (Vigil): healing past full strikes the foe. Pitch Hand (Compact): Flurry's second hit slows its target.
+  - **Ranger:** Second Broadside (Dominion): once a fight, a face that would not strike goes back, and the Trail draws again.
+- **How they come:** from Friend, half as often as a main clan's specialisation, as rare gifts, and with no sub-clan variants or rank II.
+- **Balance:** each is worth about half a main specialisation where the simulator can see it. Report: docs/simulation/specialisations.md.
+
 ## [1.371.0+407]
 
 Loyalty has a price (v5.2, step 3): the clans remember who you stand with.
@@ -15,6 +28,14 @@ Loyalty has a price (v5.2, step 3): the clans remember who you stand with.
 - **A clan grown cold quiets what it gave you.** Resented or Hostile with a clan, its specialisation plays only every other round, and its sub-clans' gifts and rank II go quiet. Hunted by it, the specialisation sleeps until you win the clan back. The fight log says so as the fight begins.
 - **Your patron's favour cools its rivals, each chapter.** Trusted with a clan, its rivals lose 2 standing at each new chapter. Sworn to it, they lose 4, the clans in tension with it lose 2, and its allies gain 1. Shown in the clan log as "Loyalty's price".
 - **No fight penalty:** loyalty costs shops, offers and gifts from the other side of the map, never your strength. A Dominion loyalist ends a run Hunted by three clans; a Crows loyalist by one. Report: docs/simulation/specialisations.md.
+## [1.368.0+404]
+
+The fight screen shows the new fight-length rules and the professions' cores.
+
+### Added
+- **Fight-length marks.** A "Tide ×N" mark next to the round count once the Tide rises (and "Tide in N" in the three rounds before); a tick at 10% on non-boss foes' health bars (the execute line); a "Wavering" mark on non-boss foes under 25%; the heal number on the preview line dims once healing fatigue sets in.
+- **Profession cores on the hero's card.** The warrior's Fury as five notches ("Heavy blow next" when full); the cleric's Watchfire as a flame under the health bar with its worth; the mage's Ash Well starting "empty" on the mana meter; "×2" on the rogue's Flurry face; the ranger's next Trail face beside the die.
+- Each mark has a tooltip that explains the rule (English and French).
 
 ## [1.367.0+403]
 

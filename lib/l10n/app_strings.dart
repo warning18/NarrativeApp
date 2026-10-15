@@ -7658,6 +7658,82 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'La marée monte\u00a0: les vôtres +{party}\u00a0%, les leurs +{enemies}\u00a0%.',
   },
+  // The fight screen's marks for those rules (v1.368).
+  'tide_mark': {AppLanguage.en: 'Tide ×{n}', AppLanguage.fr: 'Marée ×{n}'},
+  'tide_soon_mark': {
+    AppLanguage.en: 'Tide in {n}',
+    AppLanguage.fr: 'Marée dans {n}',
+  },
+  'tide_mark_tip': {
+    AppLanguage.en:
+        'The tide of the fight: your blows +{party}%, theirs +{enemies}%, and more each round.',
+    AppLanguage.fr:
+        'La marée du combat\u00a0: vos coups +{party}\u00a0%, les leurs +{enemies}\u00a0%, et davantage à chaque manche.',
+  },
+  'tide_soon_tip': {
+    AppLanguage.en:
+        'From round {round} the tide rises: your blows grow {party}% a round, theirs {enemies}%.',
+    AppLanguage.fr:
+        'À partir de la manche {round}, la marée monte\u00a0: vos coups gagnent {party}\u00a0% par manche, les leurs {enemies}\u00a0%.',
+  },
+  'execute_tick_tip': {
+    AppLanguage.en: 'Struck below this line, it falls.',
+    AppLanguage.fr: 'Frappé sous ce trait, il tombe.',
+  },
+  'wavering_label': {AppLanguage.en: 'Wavering', AppLanguage.fr: 'Hésitant'},
+  'wavering_tip': {
+    AppLanguage.en: 'Under a quarter of its health: it may flee each round.',
+    AppLanguage.fr:
+        'Sous le quart de sa santé\u00a0: il peut fuir à chaque manche.',
+  },
+  'heal_fatigue_tip': {
+    AppLanguage.en: 'Healing fatigue: this heal gives {pct}% of its worth.',
+    AppLanguage.fr:
+        'Fatigue des soins\u00a0: ce soin ne donne que {pct}\u00a0% de sa valeur.',
+  },
+  'fury_label': {AppLanguage.en: 'Fury', AppLanguage.fr: 'Fureur'},
+  'fury_tip': {
+    AppLanguage.en:
+        'Each hit you land, and each blow that reaches you, adds 1. At 5 the next damaging face is a heavy blow ×2.5.',
+    AppLanguage.fr:
+        'Chaque coup porté, et chaque coup reçu, en ajoute 1. À 5, la prochaine face offensive est un coup lourd ×2,5.',
+  },
+  'fury_ready_label': {
+    AppLanguage.en: 'Heavy blow next',
+    AppLanguage.fr: 'Coup lourd au prochain',
+  },
+  'watchfire_label': {
+    AppLanguage.en: 'Watchfire',
+    AppLanguage.fr: 'Feu de veille'
+  },
+  'watchfire_tip': {
+    AppLanguage.en:
+        'Healing past full feeds a fire that takes blows first; what is left at the round\u2019s turn burns the enemy for ×2.',
+    AppLanguage.fr:
+        'Les soins au-delà du plein nourrissent un feu qui encaisse les coups d\u2019abord\u00a0; ce qu\u2019il en reste à la fin de la manche brûle l\u2019ennemi ×2.',
+  },
+  'ash_well_label': {
+    AppLanguage.en: 'Ash Well',
+    AppLanguage.fr: 'Puits de cendres',
+  },
+  'ash_well_tip': {
+    AppLanguage.en:
+        'Starts each fight empty. Mana from the die comes ×2 and spells cost 1 less; what is left after a win heals you.',
+    AppLanguage.fr:
+        'Vide au début de chaque combat. Le mana du dé vient ×2 et les sorts coûtent 1 de moins\u00a0; ce qu\u2019il reste après une victoire vous soigne.',
+  },
+  'ash_well_empty': {AppLanguage.en: 'empty', AppLanguage.fr: 'vide'},
+  'trail_next_label': {AppLanguage.en: 'Next', AppLanguage.fr: 'Ensuite'},
+  'trail_next_tip': {
+    AppLanguage.en: 'The Trail: the face the die deals next.',
+    AppLanguage.fr: 'La Piste\u00a0: la face que le dé donnera ensuite.',
+  },
+  'flurry_tag_tip': {
+    AppLanguage.en:
+        'Flurry: two strikes at 55% each, each with its own critical.',
+    AppLanguage.fr:
+        'Rafale\u00a0: deux coups à 55\u00a0% chacun, chacun avec son critique.',
+  },
   'holds_back_suffix': {
     AppLanguage.en: "can't reach you in the press and holds back.",
     AppLanguage.fr: 'ne peut vous atteindre dans la cohue et reste en retrait.',
