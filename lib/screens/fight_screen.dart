@@ -56,6 +56,7 @@ import '../tutorial/tutorial_topics.dart';
 import '../widgets/combat_vfx.dart';
 import '../widgets/die_3d.dart';
 import '../widgets/fight_markers.dart';
+import '../widgets/mercy_dialog.dart';
 import '../widgets/die_skins.dart';
 import '../widgets/item_stats.dart';
 import '../data/approval.dart';
