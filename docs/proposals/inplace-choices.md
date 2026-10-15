@@ -1,4 +1,4 @@
-# Choices that keep you in place: four designs
+# Choices that keep you in place: four designs, then two additions
 
 Mockups only, nothing built. The brief is `docs/proposals/inplace-choices-brief.md` on the manager's branch (`ccr-76229db7-131ulj`), with the user's three screenshots. The problem in one line: on the Journey map every choice is a pin, and 62% of choices don't move the player, so the labels pile on the marker and on each other.
 
@@ -44,15 +44,19 @@ When the step's choices are `here` choices, the map dims and a panel slides up: 
 - **Against:** it covers most of the screen, so a 5-choice scene scrolls inside the panel. It hides the map exactly when the player may want to see where "Run" goes. Two kinds of step now look different, so the rule for which one you get has to be exact (every choice `here` → panel, otherwise → list?).
 - **Build:** a bottom sheet (like the reward card), a `SceneVignette` that needs the foe's picture (icon today), and the "line the scene ends on", which is the last sentence of the node's text or a new `prompt` field from Narrative.
 
-## 3. Ring around the marker
+## 3. Rings by list, with a chip
 
 ![](images/inplace-3-ring-bridge.png) ![](images/inplace-3-ring-house.png)
 
-The `here` choices are 2 to 4 small action icons on a ring around "You are here", each with a number. The list under the map has the same numbers, so the labels never sit on the map. A plain `go` choice stays a pin with its path.
+Revised after the user's note: **one ring for each list, and a chip that opens the list.** The `here` choices are grouped by kind (Core's action: fight, pay, talk or decide, check), and each group is its own ring around "You are here", with a chip on the ring ("Fight · 1", "Pay · 1") and the same chip under the map. A ring holds up to 5 icons and a "+N" icon for the rest; tapping a chip, on the ring or under the map, opens that list (a sheet of cards, as in design 1) and lights its ring. A plain `go` choice stays a pin with its path. A scene with 2 or 3 choices shows 2 small rings and its lists stacked under the map (above); a **town hub with many choices has several rings**:
 
-- **For:** it keeps the choices *on* the map, the closest to what the game does today, and shows at a glance that these are things you do here.
-- **Against:** icons alone mean nothing the first time, so the list is not optional, and the ring has to be learnt. More than 4 choices don't fit a ring (the brief says 2 to 4; Core's data has scenes with 5 or more). On the District zoom the ring covers the building under the marker. The icon set must be good enough to tell *fight* from *attempt* from *decide* at 38 px.
-- **Build:** a ring layer on the marker, the same list as design 1 (so this is design 1 plus a ring), and a rule for more than 4 (fall back to the plain list).
+![](images/inplace-3-ring-town.png) ![](images/inplace-3-ring-town-open.png)
+
+The example is a real hub, Smugglers' Wharf (node 2015 of the story, 31 choices). By Core's `choiceShape`: 14 are `here` (4 fights, 7 talks and decisions, 2 checks, 1 payment), shown as three rings (Fight · 4, Talk & decide · 7, Checks & pay · 3), and 17 are plain `go` choices, shown as pins at their places with a count (The Landward Gate 5, Tern Row 5, The Lantern Alleys 3, Card Row 2, The Ship-breaker's Yard 2) and one "Ways · 17" chip. The second screen has the "Talk & decide" chip open: its ring is lit, the others dimmed, and the sheet lists its cards (the first card's icon is lit on the ring).
+
+- **For:** the map stays the place where things are. Each ring is one short, learnable list, so a hub never needs more than 3 or 4 rings. The chip, not the icon, is what you read, so the icons need not carry meaning alone.
+- **Against:** a hub whose choices are all one kind overflows its ring: the Reliquary Quarter (node 6010) has 28 choices, 23 of them `decide`, so one ring says "+18" and its list is long. That hub needs a second way to group (by who you talk to, which means a speaker or place field on the choice, from Narrative) or a search in the sheet. The rings sit on top of the buildings around the marker.
+- **Build:** design 1's list (as the sheet), a ring layer on the marker (one ring per non-empty group, chips at the top of each ring, stacked), a "Ways" chip for the `go` pins, and the grouping rule (Core's action, with fight, talk and decide, checks and pay as the four lists).
 
 ## 4. Stage mode
 
@@ -70,19 +74,38 @@ The map dims and zooms to the District; your sprite and the other character face
 |---|---|---|---|---|
 | Fixes the overlap | yes | yes | yes | yes |
 | Keeps the map in view | yes | dimmed | yes | dimmed |
-| Many choices (5+) | yes | scrolls | needs the list | scrolls |
+| Many choices (5+) | yes | scrolls | several rings, one chip each | scrolls |
 | French and 320 px | yes | yes | yes | tight in bubbles |
 | New art | none | a vignette | icon set | a sprite per foe and NPC |
 | Cost | small | medium | medium | large |
 
+## 5. Main story: a scene view, like the explorations
+
+![](images/inplace-5-scene-bridge.png) ![](images/inplace-5-scene-house.png)
+
+Added at the user's request: for the main story, **the scene view the explorations have**. The land crossing and the detours already play on a screen with a side-view scene on top (`SideViewScene`, the walker in front of a kit), the text under it and the choices as buttons (`LandCrossingScreen`). The story's steps get the same screen: a **side-view scene** of the place with you facing the one you speak to (the toll keeper at the Stone Bridge; Aurel Vane in the ruin of the house), a small header with the place and your health and gold, the **node's text** (four lines, "Read" for all of it), and the **choices as buttons**: action icon, text, tag (a cost, `Fight`, an alignment shift), and a "→ destination" line when the aftermath moves you. "Back to the map" returns to the Journey map.
+
+This is how a step that is a *scene* reads; a *hub* (Smugglers' Wharf) is still the map, with design 3's rings. The map is where you go; the scene is what is said and done where you are.
+
+- **Needs art:** a kit per `ui_theme`. The story's 426 nodes use 14 themes (docks 131 nodes, cathedral 94, slums 52, catacombs 48, desert 10, torture chamber 6, sewers 5, hovel 4, gate 4, bridge 3, market 1, and the prologue, the origin endings and the epilogues). Ten kits cover the story's play; the desert one exists. The mockups draw two (bridge, ruined street) in the app's pixel look. A scene also needs a facing sprite for who you speak to; foes have front icons only, so until a sprite exists the scene can show the portrait icon instead.
+- **Needs from Core and Narrative:** a "who you face" per node (an enemy or NPC id; many nodes are narrator-only and show just the scene) and, for the weather and time, what the Journey map already has.
+- **Build:** a `StoryScene` screen on `LandCrossingScreen`'s layout, kits per theme on the existing side-view engine, the choice buttons from design 1's card. It replaces the Journey map for the nodes that are scenes (every node with a `ui_theme` kit and no hub), and the map's list and rings stay for the hubs.
+
 ## Recommendation
 
-Build **1 now**: it fixes the problem alone, for every screen, and its list is the backbone of the others (3 is 1 plus a ring; 4's bubbles are 1's cards re-dressed). Then, if the user likes the feel of 4, grow it as a **scene layer** for the set pieces only (a fight at the bridge, the house), where a facing sprite is worth drawing, with the list as the fallback for every scene that has no sprite yet. 2 and 3 are less worth building: 2 hides the map when the map matters and 3 can't hold more than 4.
+Two layers, one set of cards:
+
+1. **The choice card** (design 1's: icon, text, tag, "→ destination") is the common part everywhere: in the scene view's buttons, in a list under the map, in a ring's sheet.
+2. **The main story's steps play as scene views** (5), like the explorations.
+3. **Hubs and towns stay on the map**, with design 3's rings by list and a chip each, and pins only for plain `go` choices.
+4. Designs 2 (panel) and 4 (stage) are what 5 grows into if the scene should be more theatrical: 4 is a scene view whose choices are bubbles over the sprites. If the user likes 5, 2 and 4 need not be built.
+
+Build 1's card and the map's pins filter first (it fixes the overlap alone, in a few days), then the rings, then the story scene kits one theme at a time (docks and slums first: they hold 183 of the 426 nodes).
 
 ## What I need
 
 - **Core:** per choice, its tag data (cost, alignment shift, the aftermath's destination name) next to `choiceShape`'s move, action and `here`; the price of a toll-style choice comes from the next scene's `reqGold`, so `choiceShape` or a sibling should expose it.
-- **Narrative:** for design 2 and 4, a short `prompt` line for each choice node (today the last sentence of the text is quoted), and a "who you face" per node (an enemy or NPC id).
+- **Narrative:** for the scene view and designs 2 and 4, a "who you face" per node (an enemy or NPC id), and a short `prompt` line for each choice node (today the last sentence of the text is quoted). For hubs with many choices of one kind (the Reliquary Quarter), a way to group them beyond the action (who they are about).
 - **User:** which design to build, and whether the list may sit under the map on a phone where the map takes the top half.
 
-The files for the mockups: `docs/proposals/images/inplace-{1-list,2-panel,3-ring,4-stage}-{bridge,house}.png` and `inplace-overview.png`.
+The files for the mockups: `docs/proposals/images/inplace-{1-list,2-panel,3-ring,4-stage,5-scene}-{bridge,house}.png`, `inplace-3-ring-town.png`, `inplace-3-ring-town-open.png` and `inplace-overview.png`.
