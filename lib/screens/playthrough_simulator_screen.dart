@@ -13,6 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import '../combat/combat_engine.dart'
     show chapterRewardMultiplier, isBossEnemy, scaledReward, zoneBossEnemyIds;
 import '../combat/gear_effects.dart';
+import '../combat/specialisations.dart' show SpecInfo, specInfosFrom;
 import '../combat/spells.dart';
 import '../data/autoplay_engine.dart';
 import '../data/camp_works.dart';
@@ -215,7 +216,12 @@ class _SimResult {
     this.housesBuilt = const {},
     this.roads = const [],
     this.transcript = const [],
+    this.specs = const [],
   });
+
+  /// The specialisations the character held at the end, in the order
+  /// taken (specialisations.dart).
+  final List<String> specs;
 
   final List<_SimStep> steps;
 
@@ -327,7 +333,17 @@ class _SimContext {
     this.writtenSteps = const {},
     this.detourScenes = const {},
     this.ports = const {},
+    this.startSpecs = const [],
+    this.specs = const {},
   });
+
+  /// specialisations.json parsed: what the clans offer (specialisations.dart).
+  final Map<String, SpecInfo> specs;
+
+  /// Specialisations the character holds from the start (to measure each
+  /// one, see specialisations_test.dart); those of another profession
+  /// play nothing.
+  final List<String> startSpecs;
 
   /// detour_scenes.json: the detours' written scenes (detour_scenes.dart).
   final Map<String, DetourScene> detourScenes;
@@ -400,6 +416,7 @@ class _SimContext {
         patrons: patrons,
         signs: signs,
         clans: clans,
+        specs: specs,
       );
 }
 
@@ -479,7 +496,7 @@ _SimResult _simulate(
       gameConfig: sim.gameConfig,
       dice: sim.dice,
       spells: sim.spells,
-    );
+    )..specIds = [...sim.startSpecs];
   }
 
   var currentId = StoryRepository.startNodeId;
@@ -676,6 +693,7 @@ _SimResult _simulate(
       arrivals: Map.unmodifiable(arrivals),
       housesBuilt: Map.unmodifiable(housesBuilt),
       roads: List.unmodifiable(roads),
+      specs: List.unmodifiable(character?.specIds ?? const <String>[]),
       transcript: transcribe
           ? [
               for (final (i, step) in steps.indexed) ...[
@@ -1725,6 +1743,7 @@ _SimContext _simContextOf(
   SimProgression progression = SimProgression.offers,
   bool clash = true,
   Set<String> clashOff = const {},
+  List<String> startSpecs = const [],
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
   final written = writtenStepsFrom(table('expedition_steps'));
@@ -1761,6 +1780,8 @@ _SimContext _simContextOf(
     houses: table('houses'),
     detourScenes: detourScenesFrom(table('detour_scenes')),
     ports: table('ports'),
+    startSpecs: startSpecs,
+    specs: specInfosFrom(table('specialisations')),
   );
 }
 
@@ -1824,6 +1845,7 @@ typedef SimRunSummary = ({
   Map<String, List<String>> questsStuck,
   List<SimRoad> roads,
   List<String> transcript,
+  List<String> specs,
 });
 
 /// Full playthroughs, one per entry of [plan] (a strategy and, optionally,
@@ -1842,8 +1864,10 @@ List<SimRunSummary> simulatePlaythroughs(
   SimCoverage? coverage,
   Set<String> clashOff = const {},
   bool transcripts = false,
+  List<String> startSpecs = const [],
 }) {
-  final sim = _simContextOf(tables, gameConfig, clashOff: clashOff);
+  final sim = _simContextOf(tables, gameConfig,
+      clashOff: clashOff, startSpecs: startSpecs);
   final enemies = tables['enemies'] ?? const {};
   final out = <SimRunSummary>[];
   for (var i = 0; i < plan.length; i++) {
@@ -1937,6 +1961,7 @@ List<SimRunSummary> simulatePlaythroughs(
       questsStuck: result.questsStuck,
       roads: result.roads,
       transcript: result.transcript,
+      specs: result.specs,
     ));
   }
   return out;
