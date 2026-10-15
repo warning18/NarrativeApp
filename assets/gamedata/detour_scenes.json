@@ -1976,5 +1976,551 @@
         ]
       }
     ]
+  },
+  "beam_by_the_gate": {
+    "title": "The Beam by the Gate",
+    "title_fr": "La poutre de la porte",
+    "rumour": "a fallen beam where people sit and wait",
+    "rumour_fr": "une poutre tombée où des gens s’assoient et attendent",
+    "where": {
+      "place": "ashen_quarter_gate"
+    },
+    "minChapter": 3,
+    "maxChapter": 5,
+    "tags": [
+      "city"
+    ],
+    "beats": [
+      {
+        "id": "beam",
+        "type": "event",
+        "text": "On the fallen beam by the Quarter Gate a row of people sit with their bundles on their knees, watching the road from the camp. One of them stands as you come through and asks, quietly, whether you are the one they were told to wait for.",
+        "text_fr": "Sur la poutre tombée près de la Porte du Quartier, une rangée de gens est assise, leurs ballots sur les genoux, à guetter la route du camp. L’un d’eux se lève à votre passage et demande, à voix basse, si c’est vous qu’on leur a dit d’attendre.",
+        "place": "The Quarter Gate",
+        "place_fr": "La Porte du Quartier",
+        "choices": [
+          {
+            "id": "who",
+            "text": "Ask who told them",
+            "text_fr": "Demander qui le leur a dit",
+            "outcome": {
+              "note": "A woman at the end of the beam. She is not here now, they say, but she was sure someone would come, and that you would know what to do.",
+              "note_fr": "Une femme au bout de la poutre. Elle n’est pas là maintenant, disent-ils, mais elle était sûre que quelqu’un viendrait, et que vous sauriez quoi faire."
+            }
+          },
+          {
+            "id": "share",
+            "text": "Share what you can spare",
+            "text_fr": "Partager ce que vous pouvez céder",
+            "outcome": {
+              "note": "It is not much. They take it as if it were a great deal, which is its own kind of burden.",
+              "note_fr": "Ce n’est pas grand-chose. Ils le prennent comme si c’était beaucoup, ce qui est un fardeau à sa façon."
+            }
+          },
+          {
+            "id": "pass",
+            "text": "Say you are not the one and go in",
+            "text_fr": "Dire que ce n’est pas vous et entrer",
+            "outcome": {
+              "note": "They nod, and sit down again, and the beam takes their weight. Someone, at the end, laughs once.",
+              "note_fr": "Ils hochent la tête, et se rassoient, et la poutre reprend leur poids. Quelqu’un, au bout, rit une seule fois."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "runner_counts_twice": {
+    "title": "The Runner Who Counts Twice",
+    "title_fr": "Le coursier qui compte deux fois",
+    "rumour": "a runner at the Ash-Market, quick with figures",
+    "rumour_fr": "un coursier au Marché des Cendres, prompt avec les chiffres",
+    "where": {
+      "place": "ashen_quarter_ash_market"
+    },
+    "minChapter": 3,
+    "maxChapter": 5,
+    "tags": [
+      "city"
+    ],
+    "beats": [
+      {
+        "id": "runner",
+        "type": "check",
+        "text": "At the Ash-Market, a refugee’s runner takes your coin for a parcel and gives you change that is a shade too neat. He is watching your face, not your hands.",
+        "text_fr": "Au Marché des Cendres, le coursier d’un réfugié prend votre pièce pour un colis et vous rend une monnaie un peu trop nette. Il surveille votre visage, pas vos mains.",
+        "place": "The Ash-Market",
+        "place_fr": "Le Marché des Cendres",
+        "choices": [
+          {
+            "id": "count",
+            "text": "Count the change again",
+            "text_fr": "Recompter la monnaie",
+            "check": "wisdom",
+            "success": {
+              "note": "Two short. You say so, flatly, and he produces the missing coins from a sleeve with the air of a man who has been caught at nothing.",
+              "note_fr": "Il en manque deux. Vous le dites, sans détour, et il sort les pièces manquantes de sa manche avec l’air de quelqu’un qu’on a pris à ne rien faire."
+            },
+            "fail": {
+              "note": "It looks right. You walk off a coin lighter and learn it only at the next stall.",
+              "note_fr": "Cela semble juste. Vous vous éloignez d’une pièce de moins et ne l’apprenez qu’à l’étal suivant."
+            }
+          },
+          {
+            "id": "let",
+            "text": "Let it go",
+            "text_fr": "Laisser passer",
+            "outcome": {
+              "note": "A coin is a small price for the crowd’s good humour. The runner gives you a nod that is almost respect.",
+              "note_fr": "Une pièce est un petit prix pour la bonne humeur de la foule. Le coursier vous adresse un signe qui ressemble presque à du respect."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "name_not_yet_cut": {
+    "title": "A Name Not Yet Cut",
+    "title_fr": "Un nom pas encore gravé",
+    "rumour": "someone at the Wall of Names with a chisel and no name",
+    "rumour_fr": "quelqu’un au Mur des Noms avec un ciseau et sans nom",
+    "where": {
+      "place": "ashen_quarter_wall_of_names"
+    },
+    "minChapter": 3,
+    "maxChapter": 5,
+    "tags": [
+      "city"
+    ],
+    "beats": [
+      {
+        "id": "wall",
+        "type": "event",
+        "text": "At the Wall of Names a boy holds a chisel and stares at a blank stretch of stone. He tells you, without looking round, that he does not know how to spell his mother’s name.",
+        "text_fr": "Au Mur des Noms, un garçon tient un ciseau et fixe un pan de pierre vierge. Il vous dit, sans se retourner, qu’il ne sait pas écrire le nom de sa mère.",
+        "place": "The Wall of Names",
+        "place_fr": "Le Mur des Noms",
+        "choices": [
+          {
+            "id": "spell",
+            "text": "Spell it out for him, letter by letter",
+            "text_fr": "Le lui épeler, lettre après lettre",
+            "outcome": {
+              "note": "He cuts it slowly. When he is done, the chisel shakes in his hand, and the name stands in the wall among the others.",
+              "note_fr": "Il le grave lentement. Quand il a fini, le ciseau tremble dans sa main, et le nom tient dans le mur parmi les autres."
+            }
+          },
+          {
+            "id": "cut",
+            "text": "Offer to cut it for him",
+            "text_fr": "Proposer de le graver pour lui",
+            "outcome": {
+              "note": "He hands you the chisel and turns his face to the stones. The line comes out straight, and you do not speak of it afterwards.",
+              "note_fr": "Il vous tend le ciseau et tourne le visage vers les pierres. Le trait sort droit, et vous n’en parlerez pas ensuite."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Leave him to it",
+            "text_fr": "Le laisser faire",
+            "outcome": {
+              "note": "The chisel starts again behind you, uneven, patient.",
+              "note_fr": "Le ciseau reprend derrière vous, inégal, patient."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "the_first_coal": {
+    "title": "The First Coal",
+    "title_fr": "Le premier charbon",
+    "rumour": "a forge street, cold, waiting for fire",
+    "rumour_fr": "une rue de forges, froide, qui attend le feu",
+    "where": {
+      "place": "ashen_quarter_cinder_row"
+    },
+    "minChapter": 3,
+    "maxChapter": 5,
+    "tags": [
+      "city"
+    ],
+    "beats": [
+      {
+        "id": "coal",
+        "type": "event",
+        "text": "Cinder Row is cold. Every forge has its hammer on its hook and its bellows at rest, and a smith sits on an anvil with her hands between her knees, looking at the empty hearth as at a sleeping animal.",
+        "text_fr": "La Rue des Braises est froide. Chaque forge a son marteau à son crochet et son soufflet au repos, et une forgeronne est assise sur une enclume, les mains entre les genoux, regardant le foyer vide comme une bête endormie.",
+        "place": "Cinder Row",
+        "place_fr": "La Rue des Braises",
+        "choices": [
+          {
+            "id": "strike",
+            "text": "Strike the anvil once with a hammer",
+            "text_fr": "Frapper l’enclume une fois avec un marteau",
+            "outcome": {
+              "note": "It rings down the whole street, clean and long. Doors open, a little. Somebody calls out a question, and nobody answers it.",
+              "note_fr": "Elle sonne dans toute la rue, claire et longue. Des portes s’entrouvrent. Quelqu’un lance une question, et personne n’y répond."
+            }
+          },
+          {
+            "id": "sit",
+            "text": "Sit by the smith for a while",
+            "text_fr": "Vous asseoir un moment près de la forgeronne",
+            "outcome": {
+              "note": "She says the Emberwives are coming with the first coal. She has said it every day for a month. Today she says it as if it might be true.",
+              "note_fr": "Elle dit que les Charbonnières arrivent avec le premier charbon. Elle le dit chaque jour depuis un mois. Aujourd’hui elle le dit comme si c’était peut-être vrai."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Walk on",
+            "text_fr": "Poursuivre votre chemin"
+          }
+        ]
+      }
+    ]
+  },
+  "sentence_on_the_stair": {
+    "title": "Sentence on the Stair",
+    "title_fr": "La sentence sur l’escalier",
+    "rumour": "the Tribunal coming down the stair to pass sentence",
+    "rumour_fr": "le Tribunal qui descend l’escalier pour prononcer sa sentence",
+    "where": {
+      "place": "ashen_quarter_spire_stair"
+    },
+    "minChapter": 3,
+    "maxChapter": 5,
+    "tags": [
+      "city"
+    ],
+    "beats": [
+      {
+        "id": "tribunal",
+        "type": "event",
+        "text": "At the foot of the Spire’s stair a clerk of the Tribunal reads a sentence in a flat voice to a man who has already stopped listening. The crowd is small and holds its breath in the same places.",
+        "text_fr": "Au pied de l’escalier de la Flèche, un greffier du Tribunal lit une sentence d’une voix plate à un homme qui a cessé d’écouter. La foule est maigre et retient son souffle aux mêmes endroits.",
+        "place": "The Spire Stair",
+        "place_fr": "L’Escalier de la Flèche",
+        "choices": [
+          {
+            "id": "speak",
+            "text": "Speak for him",
+            "text_fr": "Prendre sa défense",
+            "check": "charisma",
+            "success": {
+              "note": "The clerk stops, and looks at his seal, and at you. The sentence is reduced by a margin that matters to the man and means nothing to the Tribunal.",
+              "note_fr": "Le greffier s’arrête, regarde son sceau, puis vous. La sentence est réduite d’une marge qui compte pour l’homme et ne signifie rien pour le Tribunal."
+            },
+            "fail": {
+              "note": "The clerk reads on. The man, once, turns his head toward you. That is all you get from him.",
+              "note_fr": "Le greffier poursuit sa lecture. L’homme, une fois, tourne la tête vers vous. C’est tout ce que vous obtenez de lui."
+            }
+          },
+          {
+            "id": "watch",
+            "text": "Watch to the end",
+            "text_fr": "Regarder jusqu’au bout",
+            "outcome": {
+              "note": "It is quick, and procedural, and that is the worst of it. The clerk rolls up his scroll and wipes his hands on his sleeves.",
+              "note_fr": "C’est rapide, et réglementaire, et c’est le pire. Le greffier roule son parchemin et s’essuie les mains sur ses manches."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "stair_that_leads_nowhere": {
+    "title": "The Stair That Leads Nowhere",
+    "title_fr": "L’escalier qui ne mène nulle part",
+    "rumour": "a stair, a broken span and a warden who still stands guard",
+    "rumour_fr": "un escalier, une arche brisée et un gardien qui monte encore la garde",
+    "where": {
+      "place": "drowned_cloister_stair"
+    },
+    "minChapter": 4,
+    "maxChapter": 6,
+    "tags": [
+      "city"
+    ],
+    "beats": [
+      {
+        "id": "warden",
+        "type": "event",
+        "text": "The steps from the catacombs end at a broken span over black water. A warden in a rusted helm stands on the last intact stone, facing the gap, as if the stair had somewhere to go.",
+        "text_fr": "Les marches des catacombes s’achèvent sur une arche brisée au-dessus de l’eau noire. Un gardien au heaume rouillé se tient sur la dernière pierre intacte, face au vide, comme si l’escalier menait quelque part.",
+        "place": "The broken span",
+        "place_fr": "L’arche brisée",
+        "choices": [
+          {
+            "id": "ask",
+            "text": "Ask what he guards",
+            "text_fr": "Demander ce qu’il garde",
+            "outcome": {
+              "note": "The stair, he says. And what is at the bottom of it? A door, he says. And what is behind the door? He does not know. That is why he is guarding it.",
+              "note_fr": "L’escalier, dit-il. Et qu’y a-t-il en bas ? Une porte, dit-il. Et derrière la porte ? Il ne sait pas. C’est pour cela qu’il la garde."
+            }
+          },
+          {
+            "id": "fight",
+            "text": "Move him off the stone",
+            "text_fr": "L’écarter de la pierre",
+            "fight": "bone_sexton",
+            "success": {
+              "note": "The helm rings on the step and rolls into the water without a splash. The span is yours to look at.",
+              "note_fr": "Le heaume tinte sur la marche et roule dans l’eau sans éclaboussure. L’arche est à vous pour la regarder."
+            },
+            "fail": {
+              "note": "He goes down, and you with him a little, and the black water takes some of the warmth out of you.",
+              "note_fr": "Il tombe, et vous un peu avec lui, et l’eau noire emporte une partie de votre chaleur."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "skiff_between_candles": {
+    "title": "The Skiff Between the Candles",
+    "title_fr": "La barque entre les cierges",
+    "rumour": "a skiff poled between the sick, and a pole going spare",
+    "rumour_fr": "une barque poussée entre les malades, et une perche qui se libère",
+    "where": {
+      "place": "drowned_cloister_nave"
+    },
+    "minChapter": 4,
+    "maxChapter": 6,
+    "tags": [
+      "city"
+    ],
+    "beats": [
+      {
+        "id": "skiff",
+        "type": "check",
+        "text": "In the Flooded Nave a boatwoman poles her skiff between the ledges where the sick are laid, and her arm is shaking. She offers you the pole without a word.",
+        "text_fr": "Dans la Nef Inondée, une batelière pousse sa barque entre les corniches où les malades sont couchés, et son bras tremble. Elle vous tend la perche sans un mot.",
+        "place": "The nave",
+        "place_fr": "La nef",
+        "choices": [
+          {
+            "id": "pole",
+            "text": "Take the pole and carry on",
+            "text_fr": "Prendre la perche et continuer",
+            "check": "dexterity",
+            "success": {
+              "note": "The skiff glides. You bring a cup to each ledge in turn, and no one is jolted. The boatwoman sleeps against the thwart.",
+              "note_fr": "La barque glisse. Vous portez une tasse à chaque corniche, l’une après l’autre, sans secouer personne. La batelière dort contre la banquette."
+            },
+            "fail": {
+              "note": "The pole sticks in the mud and the skiff turns half round. No harm done, but a voice from a ledge says, quite kindly, that it is all right.",
+              "note_fr": "La perche se plante dans la vase et la barque tourne à demi. Pas de mal, mais une voix, depuis une corniche, dit assez gentiment que ce n’est rien."
+            }
+          },
+          {
+            "id": "decline",
+            "text": "Decline politely",
+            "text_fr": "Décliner poliment",
+            "outcome": {
+              "note": "She nods, and goes on, and her arm shakes. You stand a while and watch the candles, and the water takes them in twos.",
+              "note_fr": "Elle hoche la tête et continue, son bras tremble. Vous restez un moment à regarder les cierges, et l’eau les reprend deux par deux."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "goods_between_the_jaws": {
+    "title": "Goods Between the Jaws",
+    "title_fr": "Des marchandises entre les mâchoires",
+    "rumour": "a stall of skulls with a coin-slot",
+    "rumour_fr": "un étal de crânes avec une fente pour les pièces",
+    "where": {
+      "place": "drowned_cloister_ossuary"
+    },
+    "minChapter": 4,
+    "maxChapter": 6,
+    "tags": [
+      "city"
+    ],
+    "beats": [
+      {
+        "id": "stall",
+        "type": "event",
+        "text": "On a shelf of skulls at the Ossuary Stalls, each jaw holds a small item: a key, a thimble, a twist of dried herb, a ring. A hand-lettered card says: take, and leave what you will. Behind it, a pair of eyes in the dark.",
+        "text_fr": "Sur un rayon de crânes aux Étals de l’Ossuaire, chaque mâchoire tient un petit objet : une clef, un dé à coudre, un brin d’herbe séchée, une bague. Une carte écrite à la main dit : prenez, et laissez ce que vous voudrez. Derrière, deux yeux dans l’ombre.",
+        "place": "The Ossuary Stalls",
+        "place_fr": "Les Étals de l’Ossuaire",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Take the ring and leave a coin",
+            "text_fr": "Prendre la bague et laisser une pièce",
+            "outcome": {
+              "note": "The eyes close, once, in thanks. The jaw closes on your coin with a small bony click.",
+              "note_fr": "Les yeux se ferment, une fois, en remerciement. La mâchoire se referme sur votre pièce avec un petit claquement d’os."
+            }
+          },
+          {
+            "id": "herb",
+            "text": "Take the herb and leave a story",
+            "text_fr": "Prendre l’herbe et laisser une histoire",
+            "outcome": {
+              "note": "You tell it in four sentences. The eyes listen, and when you are done the herb is wrapped in a scrap of paper and pressed into your hand.",
+              "note_fr": "Vous la racontez en quatre phrases. Les yeux écoutent, et quand vous avez fini l’herbe est enveloppée dans un bout de papier et glissée dans votre main."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Leave everything where it is",
+            "text_fr": "Tout laisser où c’est",
+            "outcome": {
+              "note": "The card is still saying take as you go. It will go on saying it.",
+              "note_fr": "La carte dit toujours prenez quand vous partez. Elle continuera de le dire."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "old_watch_on_the_water": {
+    "title": "The Old Watch on the Water",
+    "title_fr": "L’ancienne garde sur l’eau",
+    "rumour": "the last company keeping the old watch on the pier",
+    "rumour_fr": "la dernière compagnie qui monte l’ancienne garde sur la jetée",
+    "where": {
+      "place": "white_anchorage_quay"
+    },
+    "minChapter": 6,
+    "maxChapter": 7,
+    "tags": [
+      "city"
+    ],
+    "beats": [
+      {
+        "id": "watch",
+        "type": "event",
+        "text": "At the end of the long pier, a company of eleven keeps the old watch: backs to the land, faces to the water, calling the hours by bell in the order the Fleet once did. The twelfth place is left empty. One of them nods to it, and then to you.",
+        "text_fr": "Au bout de la longue jetée, une compagnie de onze monte l’ancienne garde : dos à la terre, face à l’eau, appelant les heures à la cloche dans l’ordre où la Flotte le faisait. La douzième place est laissée vide. L’un d’eux la désigne d’un signe, puis vous.",
+        "place": "The long pier",
+        "place_fr": "La longue jetée",
+        "choices": [
+          {
+            "id": "stand",
+            "text": "Stand the watch for an hour",
+            "text_fr": "Monter la garde une heure",
+            "outcome": {
+              "note": "The hours go by in order. When the relief bell sounds, none of them speaks, and the empty place seems fuller than it was.",
+              "note_fr": "Les heures passent dans l’ordre. Quand la cloche de relève sonne, nul ne parle, et la place vide semble plus pleine qu’avant."
+            }
+          },
+          {
+            "id": "ask",
+            "text": "Ask who the twelfth was",
+            "text_fr": "Demander qui était le douzième",
+            "outcome": {
+              "note": "The captain. He took the last boat out, to see what the Fleet had found. They have kept his place since.",
+              "note_fr": "Le capitaine. Il a pris le dernier bateau pour voir ce que la Flotte avait trouvé. Ils gardent sa place depuis."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Nod and walk back",
+            "text_fr": "Hocher la tête et revenir"
+          }
+        ]
+      }
+    ]
+  },
+  "impound_tally": {
+    "title": "The Impound Tally",
+    "title_fr": "Le compte de la fourrière",
+    "rumour": "a clerk at the impound counting hulls twice",
+    "rumour_fr": "un commis à la fourrière qui compte les coques deux fois",
+    "where": {
+      "place": "white_anchorage_hulls"
+    },
+    "minChapter": 6,
+    "maxChapter": 7,
+    "tags": [
+      "city"
+    ],
+    "beats": [
+      {
+        "id": "impound",
+        "type": "check",
+        "text": "In the Hull Town the impound clerk counts a row of hauled-up boats twice, and each time reaches a different number. A man in a Vault coat is standing beside him, saying nothing in a way that costs money.",
+        "text_fr": "À la Ville des Coques, le commis de la fourrière compte deux fois une rangée de bateaux tirés au sec, et chaque fois trouve un nombre différent. Un homme au manteau du Coffre se tient à côté de lui et se tait d’une façon qui coûte cher.",
+        "place": "The impound",
+        "place_fr": "La fourrière",
+        "choices": [
+          {
+            "id": "count",
+            "text": "Count the boats yourself",
+            "text_fr": "Compter les bateaux vous-même",
+            "check": "perception",
+            "success": {
+              "note": "Eleven. And one of them has a name on its stern that was not there yesterday, in paint still tacky. You mention it to nobody, and the Vault man sees you not mentioning it.",
+              "note_fr": "Onze. Et l’un porte à l’arrière un nom qui n’y était pas hier, d’une peinture encore collante. Vous n’en parlez à personne, et l’homme du Coffre vous voit ne pas en parler."
+            },
+            "fail": {
+              "note": "Nine, ten, eleven, twelve. You give up and agree with the clerk, who is relieved.",
+              "note_fr": "Neuf, dix, onze, douze. Vous renoncez et donnez raison au commis, qui est soulagé."
+            }
+          },
+          {
+            "id": "ask",
+            "text": "Ask what the Vault wants with a boat",
+            "text_fr": "Demander ce que le Coffre veut d’un bateau",
+            "outcome": {
+              "note": "Nothing, says the man in the coat. Only that nobody else should have it.",
+              "note_fr": "Rien, dit l’homme au manteau. Seulement que personne d’autre ne l’ait."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "admirals_table": {
+    "title": "The Admiral’s Table",
+    "title_fr": "La table de l’Amiral",
+    "rumour": "a chapel altar that was a chart table",
+    "rumour_fr": "l’autel d’une chapelle qui fut une table à cartes",
+    "where": {
+      "place": "white_anchorage_chapel"
+    },
+    "minChapter": 6,
+    "maxChapter": 7,
+    "tags": [
+      "city"
+    ],
+    "beats": [
+      {
+        "id": "altar",
+        "type": "event",
+        "text": "In the Stern Chapel the altar is the Admiral’s chart table, its edge still scored with dividers. Under it, in a locker, a log lies open at the last page, and the Order’s chaplain keeps the place with a pewter cup.",
+        "text_fr": "Dans la Chapelle de Poupe, l’autel est la table à cartes de l’Amiral, son bord encore rayé par les compas. Dessous, dans un coffre, un journal est ouvert à la dernière page, et l’aumônier de l’Ordre tient la place avec un gobelet d’étain.",
+        "place": "The chart-table altar",
+        "place_fr": "L’autel-table à cartes",
+        "choices": [
+          {
+            "id": "read",
+            "text": "Ask to read the last page",
+            "text_fr": "Demander à lire la dernière page",
+            "outcome": {
+              "note": "The chaplain lifts the cup. The last entry is a bearing and a time, and the word: forgive. Nothing after.",
+              "note_fr": "L’aumônier soulève le gobelet. La dernière écriture est un cap et une heure, et le mot : pardonnez. Rien après."
+            }
+          },
+          {
+            "id": "count",
+            "text": "Ask to see the Order’s count of its dead",
+            "text_fr": "Demander à voir le compte des morts de l’Ordre",
+            "outcome": {
+              "note": "A long, careful list in two hands, one steady and one not. The chaplain does not say which is his.",
+              "note_fr": "Une longue liste soignée, de deux mains, l’une ferme et l’autre non. L’aumônier ne dit pas laquelle est la sienne."
+            }
+          }
+        ]
+      }
+    ]
   }
 }
