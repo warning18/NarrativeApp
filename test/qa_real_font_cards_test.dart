@@ -217,20 +217,14 @@ void main() {
               (w.key as ValueKey<String>).value.startsWith('town_card_'));
           final n = cards.evaluate().length;
           expect(n, greaterThan(0), reason: tab);
-          final heights = <double>{};
           for (var i = 0; i < n; i++) {
             final card = cards.at(i);
             await tester.ensureVisible(card);
             await tester.pump();
-            heights.add(tester.getSize(card).height);
           }
-          // The additions are a strip of equal cards; the houses are a
-          // list of cards by state (a silhouette is shorter than a ready
-          // house), so only the strip keeps one height.
-          if (tab == 'town_tab_additions') {
-            expect(heights.length, 1,
-                reason: '$tab: cards differ in height $heights ($label)');
-          }
+          // The additions are a vertical list now (v1.350), like the
+          // houses: cards differ in height with what they say, so only
+          // the overflow check below holds.
         }
         expect(overflows, isEmpty, reason: overflows.toSet().join('\n'));
       });
