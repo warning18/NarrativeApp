@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.353.0+389]
+
+Detours find something to pick up, wherever they are.
+
+### Changed
+- **Treasure in every place.** Every place pool of `detours.json` now has treasure lines, three each (five at the Cove camp), so a find in a city district no longer reads like a desert or a cliff.
+- **A deeper Cove camp.** The camp's pool gains 16 lines across its shop, quest, rest and generic kinds, some for later chapters, so the same six lines do not come round as often.
+- **Corneilles, not Corbeaux.** The French name of the Salt Crows is corrected where two lines still said Corbeaux; two French district blurbs name the Dernière Veille and the Corneilles correctly.
+
 ## [1.349.0+385]
 
 The camp's town has limits; the towns have their districts.
