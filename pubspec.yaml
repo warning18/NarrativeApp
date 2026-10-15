@@ -1,7 +1,7 @@
 name: narrative_data_app
 description: "An interactive narrative reader with a story map and AI-assisted generation."
 publish_to: 'none'
-version: 1.356.0+392
+version: 1.357.0+393
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
