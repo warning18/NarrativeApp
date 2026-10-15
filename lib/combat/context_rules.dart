@@ -79,22 +79,22 @@ extension ContextRuleEffects on ContextRule {
   /// [damage] of [element], struck in [round] by the party ([byParty]) or
   /// an enemy ([bossFight]: a boss is in the fight).
   int blow(int damage, int round,
-      {required bool byParty,
-      String element = 'None',
-      bool bossFight = false}) {
+      {required bool byParty, String element = 'None', bool bossFight = false}) {
     if (damage <= 0) return damage;
+    // The Tide rises under every rule; the place adds its own.
+    final tided =
+        tideDamage(damage, round, byParty: byParty, bossFight: bossFight);
     final level = risingLevel(round);
     return switch (this) {
-      ContextRule.tide =>
-        tideDamage(damage, round, byParty: byParty, bossFight: bossFight),
       ContextRule.bossEnrage => !byParty && round >= enrageRound
-          ? (damage * enrageMultiplier).round()
-          : damage,
-      ContextRule.risingWater => (damage * (1 + waterBlowStep * level)).round(),
+          ? (tided * enrageMultiplier).round()
+          : tided,
+      ContextRule.risingWater =>
+        (tided * (1 + waterBlowStep * level)).round(),
       ContextRule.sanctified => element == 'Light'
-          ? (damage * (1 + sanctifiedLightStep * level)).round()
-          : damage,
-      _ => damage,
+          ? (tided * (1 + sanctifiedLightStep * level)).round()
+          : tided,
+      _ => tided,
     };
   }
 

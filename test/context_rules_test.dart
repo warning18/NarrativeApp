@@ -50,10 +50,12 @@ void main() {
         120);
     expect(ContextRule.sanctified.blow(100, 7, byParty: true), 100);
     expect(ContextRule.sanctified.heal(100, 8), 70);
-    // Enrage: a boss's blows from round 10.
-    expect(ContextRule.bossEnrage.blow(100, 9, byParty: false), 100);
-    expect(ContextRule.bossEnrage.blow(100, 10, byParty: false), 150);
-    expect(ContextRule.bossEnrage.blow(100, 12, byParty: true), 100);
+    // The Tide rises under every rule (from round 8).
+    expect(ContextRule.marshMist.blow(100, 9, byParty: true), 140);
+    expect(ContextRule.tide.blow(100, 9, byParty: false), 120);
+    // Enrage: a boss's blows from round 10, on top of the Tide.
+    expect(ContextRule.bossEnrage.blow(100, 9, byParty: false), 120);
+    expect(ContextRule.bossEnrage.blow(100, 10, byParty: false), 195);
     // The watch.
     expect(ContextRule.townGuards.guardsCome(5), isFalse);
     expect(ContextRule.townGuards.guardsCome(6), isTrue);
