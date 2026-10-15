@@ -7639,6 +7639,60 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Seconde bordée\u00a0: la face retourne au fond de la série, et vous tirez de nouveau.',
   },
+  // Mercy for a rival's hunter (v1.387, hunter_mercy.dart). Placeholder
+  // words, for Narrative.
+  'mercy_title': {
+    AppLanguage.en: '{name} drops the weapon.',
+    AppLanguage.fr: '{name} lâche son arme.',
+  },
+  'mercy_body': {
+    AppLanguage.en:
+        'The blade is down, and the choice is yours: show mercy, and see what comes of it, or finish it and take the spoils.',
+    AppLanguage.fr:
+        'L’arme est à terre, et le choix est à vous\u00a0: faire grâce, et voir ce qui en naîtra\u00a0; ou achever, et prendre le butin.',
+  },
+  'mercy_read_good': {
+    AppLanguage.en:
+        'A glance is enough (Perception): a heart that holds to what is good',
+    AppLanguage.fr:
+        'Un regard suffit (Perception)\u00a0: un cœur qui tient au bien',
+  },
+  'mercy_read_neutral': {
+    AppLanguage.en:
+        'A glance is enough (Perception): a heart that leans neither way',
+    AppLanguage.fr:
+        'Un regard suffit (Perception)\u00a0: un cœur qui ne penche d’aucun côté',
+  },
+  'mercy_read_evil': {
+    AppLanguage.en:
+        'A glance is enough (Perception): a heart with little good left in it',
+    AppLanguage.fr:
+        'Un regard suffit (Perception)\u00a0: un cœur où il reste peu de bien',
+  },
+  'mercy_read_close': {
+    AppLanguage.en: ', and not far from your own.',
+    AppLanguage.fr: ', pas si loin du vôtre.',
+  },
+  'mercy_read_far': {
+    AppLanguage.en: ', and far from your own.',
+    AppLanguage.fr: ', loin du vôtre.',
+  },
+  'mercy_spare_button': {
+    AppLanguage.en: 'Show mercy',
+    AppLanguage.fr: 'Faire grâce',
+  },
+  'mercy_finish_button': {
+    AppLanguage.en: 'Finish it',
+    AppLanguage.fr: 'Achever',
+  },
+  'mercy_spared_log': {
+    AppLanguage.en: '{name} looks at you a long moment, then goes.',
+    AppLanguage.fr: '{name} vous regarde un long moment, puis s’en va.',
+  },
+  'mercy_finished_log': {
+    AppLanguage.en: 'It is quick. {name} will hunt no one again.',
+    AppLanguage.fr: 'C’est vite fait. {name} ne traquera plus personne.',
+  },
   'spec_tribunal_log': {
     AppLanguage.en:
         'The Tribunal hears the case once: the Well refills by a third.',
@@ -7669,12 +7723,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: '{name} s’effrite ({n}).',
   },
   'boss_enraged_log': {
-    AppLanguage.en: 'The tide turns, and the boss grows enraged.',
-    AppLanguage.fr: 'La marée tourne, et le boss entre en rage.',
+    AppLanguage.en: 'Something snaps: the boss fights like a cornered thing.',
+    AppLanguage.fr:
+        'Quelque chose cède\u00a0: le boss se bat comme une bête acculée.',
   },
   'context_mist_omen': {
-    AppLanguage.en: 'A green haze rises from the reeds.',
-    AppLanguage.fr: 'Une brume verte monte des roseaux.',
+    AppLanguage.en:
+        'A green haze lifts from the reeds, and the air tastes of rot.',
+    AppLanguage.fr:
+        'Une brume verte se lève des roseaux, et l’air a un goût de pourriture.',
   },
   'context_mist_log': {
     AppLanguage.en: 'The marsh mist thickens ({n}): it eats at both sides.',
@@ -7682,8 +7739,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'La brume du marais s’épaissit ({n})\u00a0: elle ronge les deux camps.',
   },
   'context_heat_omen': {
-    AppLanguage.en: 'The air begins to shimmer with heat.',
-    AppLanguage.fr: 'L’air commence à trembler de chaleur.',
+    AppLanguage.en:
+        'The air begins to shimmer, and the ground gives back the heat.',
+    AppLanguage.fr: 'L’air se met à trembler, et le sol rend la chaleur.',
   },
   'context_heat_log': {
     AppLanguage.en:
@@ -7692,9 +7750,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'La chaleur monte ({n})\u00a0: elle use les deux camps, et les plaies se ferment moins bien.',
   },
   'context_water_omen': {
-    AppLanguage.en: 'Water seeps in around your feet; dust sifts from above.',
+    AppLanguage.en:
+        'Water seeps in round your feet; dust sifts down from the vault.',
     AppLanguage.fr:
-        'L’eau s’infiltre à vos pieds\u00a0; la poussière tombe d’en haut.',
+        'L’eau s’infiltre autour de vos pieds\u00a0; la poussière tombe de la voûte.',
   },
   'context_water_log': {
     AppLanguage.en:
@@ -7703,8 +7762,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Le sol cède ({n})\u00a0: chaque coup porte plus fort, les vôtres surtout.',
   },
   'context_holy_omen': {
-    AppLanguage.en: 'The candles of this place begin to gutter.',
-    AppLanguage.fr: 'Les cierges de ce lieu se mettent à vaciller.',
+    AppLanguage.en: 'The candles of this place gutter, though no wind moves.',
+    AppLanguage.fr:
+        'Les cierges de ce lieu vacillent, bien que nul vent ne souffle.',
   },
   'context_holy_log': {
     AppLanguage.en:
@@ -7713,8 +7773,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Le sol sacré s’éveille ({n})\u00a0: les soins faiblissent, et la Lumière frappe plus fort.',
   },
   'context_guards_omen': {
-    AppLanguage.en: 'A whistle sounds down the street: the watch is coming.',
-    AppLanguage.fr: 'Un sifflet retentit dans la rue\u00a0: le guet arrive.',
+    AppLanguage.en:
+        'A whistle down the street, then boots: the watch is coming.',
+    AppLanguage.fr:
+        'Un sifflet dans la rue, puis des bottes\u00a0: le guet arrive.',
   },
   'context_guards_log': {
     AppLanguage.en:
@@ -11181,6 +11243,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'standing_cause_loyalty': {
     AppLanguage.en: 'Loyalty’s price',
     AppLanguage.fr: 'Le prix de la loyauté',
+  },
+  'standing_cause_mercy': {
+    AppLanguage.en: 'Mercy for a hunter',
+    AppLanguage.fr: 'Clémence envers un chasseur',
+  },
+  'standing_cause_no_mercy': {
+    AppLanguage.en: 'No mercy for a hunter',
+    AppLanguage.fr: 'Pas de clémence envers un chasseur',
   },
   'standing_cause_sworn_cap': {
     AppLanguage.en: 'The banner’s limit',

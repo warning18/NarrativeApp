@@ -520,6 +520,7 @@
     "hunterClan": "dominion",
     "battleCry": "“One flame, one law. You swore to another light.”",
     "battleCry_fr": "« Une flamme, une loi. Vous avez juré à une autre lumière. »",
+    "alignment": 10,
     "kind": "person"
   },
   "void_wisp": {
@@ -689,6 +690,7 @@
     "hunterClan": "crows",
     "battleCry": "“Every door has a price. Yours has come due.”",
     "battleCry_fr": "« Chaque porte a son prix. Le vôtre est échu. »",
+    "alignment": -25,
     "kind": "person"
   },
   "plague_hound": {
@@ -1064,6 +1066,7 @@
     "hunterClan": "dominion",
     "battleCry": "“The Lantern remembers every oath. Yours is on the list.”",
     "battleCry_fr": "« La Lanterne se souvient de chaque serment. Le vôtre est sur la liste. »",
+    "alignment": -10,
     "kind": "person"
   },
   "kroll_the_branded": {
@@ -2381,6 +2384,7 @@
     "hunterClan": "penitents",
     "battleCry": "“I carry what I burned. You will carry what you swore.”",
     "battleCry_fr": "« Je porte ce que j’ai brûlé. Vous porterez ce que vous avez juré. »",
+    "alignment": 15,
     "kind": "person"
   },
   "void_archon": {
@@ -3462,6 +3466,7 @@
     "hunterClan": "penitents",
     "battleCry": "The porcelain mask tilts, and says, in a voice that is not its own: “You swore.”",
     "battleCry_fr": "Le masque de porcelaine s’incline et dit, d’une voix qui n’est pas la sienne : « Vous avez juré. »",
+    "alignment": 15,
     "kind": "person"
   },
   "white_soldier": {
@@ -4357,6 +4362,7 @@
     "hunterClan": "crows",
     "battleCry": "“You sold us to the other side. Let’s see what the tide pays.”",
     "battleCry_fr": "« Vous nous avez vendus à l’autre camp. Voyons ce que la marée en donne. »",
+    "alignment": -30,
     "kind": "person"
   },
   "purifier_vell": {
@@ -5653,6 +5659,7 @@
     "enemyName_fr": "Halvard, lancier de la Dernière Veille",
     "biomes": [],
     "hunterOnly": true,
+    "alignment": 30,
     "kind": "person"
   },
   "vigil_candlebearer_ysel": {
@@ -5712,6 +5719,7 @@
     "enemyName_fr": "Ysel, Porte-Chandelle",
     "biomes": [],
     "hunterOnly": true,
+    "alignment": 25,
     "kind": "person"
   },
   "compact_quarryman_brodin": {
@@ -5775,6 +5783,7 @@
     "enemyName_fr": "Brodin Main-de-Pierre, carrier",
     "biomes": [],
     "hunterOnly": true,
+    "alignment": 10,
     "kind": "person"
   },
   "compact_anvil_deaf_tove": {
@@ -5838,6 +5847,7 @@
     "enemyName_fr": "Tove la Sourde, de l’Enclume",
     "biomes": [],
     "hunterOnly": true,
+    "alignment": 0,
     "kind": "person"
   },
   "mire_returned_sedge": {
@@ -5897,6 +5907,7 @@
     "enemyName_fr": "Sedge, un Rendu",
     "biomes": [],
     "hunterOnly": true,
+    "alignment": -10,
     "kind": "person"
   },
   "mire_herons_wake_wen": {
@@ -5956,6 +5967,7 @@
     "enemyName_fr": "Wen, guide du Sillage du Héron",
     "biomes": [],
     "hunterOnly": true,
+    "alignment": -25,
     "kind": "person"
   }
 }

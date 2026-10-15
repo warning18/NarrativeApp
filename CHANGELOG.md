@@ -8,6 +8,38 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.389.0+425]
+
+What a foe is now matters in a fight.
+
+- **Every foe has a kind:** a person, a beast, the undead, the void, a construct, a demon, an angel or a giant (Narrative's list).
+- **Beasts tire.** From round 6, a beast's blows land 5% softer each round, down to half. The log says when it starts tiring.
+- **The dead crumble.** From round 6, an undead foe loses a little of itself each round (3% of its health). It never finishes them; the execute does.
+- **Only people and beasts break.** Morale no longer makes the dead, the void, constructs, demons, angels or giants flee.
+- **Bosses are untouched** by the tiring and the crumbling.
+- **An evil foe is told by its kind.** The Lantern Vanguard's heal now counts the void, the undead and demons, no longer anyone weak to Light: the Turned, the cultists and the zealots are living people.
+- **Balance:** −0.7 to +1.3 points per profession, and fights don't get longer. Report: docs/simulation/foe-kinds.md.
+
+## [1.388.0+424]
+
+Mercy and the omens, in their own words.
+
+### Changed
+- **Mercy for a rival's hunter.** The yield, the choice (Show mercy / Finish it), the read of their heart by Perception, the thanks and the betrayal ambush are reworded in English and French, with no gendered pronoun for a hunter who may be a woman or a man; the two standing causes ("Mercy for a hunter", "No mercy for a hunter") likewise.
+- **Hunters' alignments.** Five adjusted to fit their characters: Ysel +25, the Inquisition Soldier +10, the High Warden -10, the Smuggler Captain -25, the Inquisition Penitent +15. The others stand.
+- **The omens of a place.** The mist, heat, rising water, holy ground and town watch omens, and the boss's enrage, reworded. Wording only.
+
+## [1.387.0+423]
+
+You can spare a rival's hunter, at a risk.
+
+- **Mercy.** A rival clan's hunter you beat yields: spare them, or finish it.
+  - **Spared:** you keep the fight's experience, but no gold or loot, and the hunter's clan thinks a little better of you (+3).
+  - **Finished:** the spoils are yours, and the clan holds it against you (−2).
+- **The back-stab.** A hunter you spare may come back a few roads later and strike first. The further their alignment from yours, the likelier: 10% when alike, up to 60% when far apart. A hunter who betrays you is never spared twice.
+- **Reading them.** With Perception 5 or more, the choice tells you which way the hunter leans, and whether that is close to you.
+- **In the simulator:** a run that spares when the odds are under 25% spares about half its hunters, and about one in seven of those comes back.
+
 ## [1.385.0+421]
 
 Your clan now shapes your stats as you level up (v5.2, step 5).

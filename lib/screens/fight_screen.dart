@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/battlefield_condition.dart';
 import '../combat/field_anomaly.dart';
+import '../data/hunter_mercy.dart';
 import '../data/place_traits.dart';
 import '../data/climate.dart' show WeatherKind;
 import '../providers/fight_random_provider.dart';
