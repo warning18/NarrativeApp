@@ -31,13 +31,12 @@ Morale ("never undead, constructs or bosses") would also read it.
 
 ## Narrative's review
 
-Checked against each enemy's `description` and `weakTo` in `enemies.json`. All rows are confirmed except **four moved** and the question marks resolved; the table above is the corrected one.
+Checked against each enemy's `description` and `weakTo` in `enemies.json`. All rows are confirmed except **three moved** (and the question marks resolved); the table above is the corrected one.
 
 **Moved**
 - **white_soldier: undead → person.** "Porcelain-masked, faceless, sent when the Church wants something taken": living soldiers of the Church, and weak to Fire, not Light. They do not crumble.
 - **horn_taker: demon → person.** He is the Spire's senior exorcist, who *collects* horns; weak to the Void, like the Choir's angels, not to Light. He is the hunter, not the hunted.
 - **The eight *_turned companions: void → person.** They are the party's own people, turned by the legate's pact. As persons they can break and flee under morale, and **sparing one is the right ending to such a fight**, which the story wants. (They carry `weakTo: Light` because the pact marks them; that is data, not their kind.)
-- **hollow_reflection** stays **void** (Core had it there); listed only to say it was checked.
 
 **Resolved questions**
 1. **The White Soldiers and the White Admiral:** the Soldiers are living (person). The Admiral is dead: he "went down the way his fleet had, all at once, still giving orders", and stands on his quarterdeck a year after the tear took the fleet. **Undead.** He is a boss, so morale never applies, and the crumble would be his armour coming apart.
