@@ -19,6 +19,7 @@ import '../data/contracts.dart';
 import '../data/detour_pacing.dart' show DetourPacing;
 import '../data/camp_state.dart' show harborHouseId;
 import '../data/factions.dart';
+import '../data/hunter_mercy.dart';
 import '../data/patron_stats.dart';
 import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
 import '../data/harbour.dart';
@@ -2880,6 +2881,55 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     ];
     state = _withTitles(state.copyWith(flags: flags), data);
     await _persist();
+  }
+
+  /// A road at rest passes for the betrayals on their way (hunter_mercy.dart):
+  /// each is a road nearer. Returns the hunter whose betrayal is due (it is
+  /// a betrayer from now on), or null.
+  Future<String?> tickBetrayals() async {
+    final coming = pendingBetrayals(state.flags);
+    if (coming.isEmpty) return null;
+    String? due;
+    final flags = [
+      for (final f in state.flags)
+        if (!f.startsWith('betrayal_')) f,
+    ];
+    for (final MapEntry(key: enemyId, value: roads) in coming.entries) {
+      if (roads <= 1 && due == null) {
+        due = enemyId;
+        flags.add(betrayerFlag(enemyId));
+      } else {
+        flags.add(betrayalFlag(enemyId, max(1, roads - 1)));
+      }
+    }
+    state = state.copyWith(flags: flags);
+    await _persist();
+    return due;
+  }
+
+  /// A rival hunter beaten (hunter_mercy.dart): [spared] or finished, with
+  /// [hunterClan]'s standing moved for it ([data]), and, spared, the
+  /// betrayal rolled with [random] against the hunter's [alignment].
+  /// Returns whether a betrayal is on its way.
+  Future<bool> settleHunter(
+    String enemyId, {
+    required String hunterClan,
+    required int alignment,
+    required bool spared,
+    required ClanData data,
+    required Random random,
+  }) async {
+    await changeStanding(hunterClan, spared ? spareStanding : finishStanding,
+        data: data, cause: spared ? 'mercy' : 'no_mercy');
+    if (!spared) return false;
+    final betrays =
+        random.nextDouble() < betrayalChance(alignment, state.alignmentScore);
+    final flag = betrays
+        ? betrayalFlag(enemyId, betrayalRoads(random))
+        : sparedFlag(enemyId);
+    state = state.copyWith(flags: [...state.flags, flag]);
+    await _persist();
+    return betrays;
   }
 
   /// Edit Mode: story flag [flag] held or not ([held]); the titles it

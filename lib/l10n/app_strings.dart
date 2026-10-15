@@ -7639,6 +7639,57 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Seconde bordée\u00a0: la face retourne au fond de la série, et vous tirez de nouveau.',
   },
+  // Mercy for a rival's hunter (v1.387, hunter_mercy.dart). Placeholder
+  // words, for Narrative.
+  'mercy_title': {
+    AppLanguage.en: '{name} yields.',
+    AppLanguage.fr: '{name} se rend.',
+  },
+  'mercy_body': {
+    AppLanguage.en:
+        'Spare them, and they keep their purse; finish it, and the spoils are yours.',
+    AppLanguage.fr:
+        'Épargnez-les, et ils gardent leur bourse\u00a0; achevez, et le butin est à vous.',
+  },
+  'mercy_read_good': {
+    AppLanguage.en: 'You read them (Perception): they hold to what is good',
+    AppLanguage.fr:
+        'Vous les percez à jour (Perception)\u00a0: ils tiennent au bien',
+  },
+  'mercy_read_neutral': {
+    AppLanguage.en: 'You read them (Perception): they lean neither way',
+    AppLanguage.fr:
+        'Vous les percez à jour (Perception)\u00a0: ils ne penchent d’aucun côté',
+  },
+  'mercy_read_evil': {
+    AppLanguage.en: 'You read them (Perception): there is little good in them',
+    AppLanguage.fr:
+        'Vous les percez à jour (Perception)\u00a0: il y a peu de bien en eux',
+  },
+  'mercy_read_close': {
+    AppLanguage.en: ', not far from you.',
+    AppLanguage.fr: ', pas si loin de vous.',
+  },
+  'mercy_read_far': {
+    AppLanguage.en: ', far from you.',
+    AppLanguage.fr: ', loin de vous.',
+  },
+  'mercy_spare_button': {
+    AppLanguage.en: 'Spare them',
+    AppLanguage.fr: 'Épargner',
+  },
+  'mercy_finish_button': {
+    AppLanguage.en: 'Finish it',
+    AppLanguage.fr: 'Achever',
+  },
+  'mercy_spared_log': {
+    AppLanguage.en: '{name} nods once, and goes.',
+    AppLanguage.fr: '{name} hoche la tête une fois, et s’en va.',
+  },
+  'mercy_finished_log': {
+    AppLanguage.en: 'You finish it. {name} will hunt no one again.',
+    AppLanguage.fr: 'Vous achevez. {name} ne traquera plus personne.',
+  },
   'spec_tribunal_log': {
     AppLanguage.en:
         'The Tribunal hears the case once: the Well refills by a third.',
@@ -11172,6 +11223,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'standing_cause_loyalty': {
     AppLanguage.en: 'Loyalty’s price',
     AppLanguage.fr: 'Le prix de la loyauté',
+  },
+  'standing_cause_mercy': {
+    AppLanguage.en: 'A hunter spared',
+    AppLanguage.fr: 'Un chasseur épargné',
+  },
+  'standing_cause_no_mercy': {
+    AppLanguage.en: 'A hunter finished',
+    AppLanguage.fr: 'Un chasseur achevé',
   },
   'standing_cause_sworn_cap': {
     AppLanguage.en: 'The banner’s limit',

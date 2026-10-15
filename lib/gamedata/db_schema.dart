@@ -1233,6 +1233,12 @@ final DbSchema enemiesSchema = DbSchema(
         label: 'Battle Cry (a hunter\'s)',
         type: FieldType.text),
     FieldSchema(
+        key: 'alignment',
+        label:
+            'Alignment (a rival hunter\'s, -100 evil to 100 good: sets the betrayal chance when spared)',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
         key: 'battleCry_fr', label: 'Battle Cry (FR)', type: FieldType.text),
     FieldSchema(
         key: 'xpReward',
