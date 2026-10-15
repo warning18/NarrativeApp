@@ -218,6 +218,8 @@ extension _FightRounds on _FightScreenState {
       if (_condition == BattlefieldCondition.shrine && healing > 0) {
         healing = (healing * shrineHealMultiplier).round();
       }
+      // Each heal a member gives this fight heals a little less.
+      healing = _length.fatigued(actor.id, healing);
       final kind = result.damageDealt > 0
           ? _LogKind.playerDamage
           : healing > 0
@@ -535,6 +537,7 @@ extension _FightRounds on _FightScreenState {
     }
 
     _noteGoalProgress(newEntries, lang);
+    _noteFightLength(newEntries, lang);
     _noteSkittishFlights(newEntries, lang);
 
     _update(() {
@@ -617,6 +620,16 @@ extension _FightRounds on _FightScreenState {
     _feedSignKills(newEntries, lang);
     // The ground's anomaly: its omen, its break, its tick, its end.
     _groundRoundStart(newEntries, lang);
+    // The Tide, risen this round (fight_length.dart).
+    final tide = tideLevel(_roundsStarted);
+    if (tide > 0) {
+      newEntries.add(_LogEntry(
+          trFor(lang, tide == 1 ? 'tide_turns_log' : 'tide_rises_log')
+              .replaceAll('{party}', '${(tidePartyStep * tide * 100).round()}')
+              .replaceAll(
+                  '{enemies}', '${(tideEnemyStep * tide * 100).round()}'),
+          _LogKind.info));
+    }
     if (_silenced) {
       newEntries.add(_LogEntry(
           trFor(lang, writ ? 'writ_log' : 'silence_round_note'),
@@ -837,6 +850,8 @@ extension _FightRounds on _FightScreenState {
       List<_LogEntry> entries, AppLanguage lang,
       {bool pierce = false, bool edge = false}) {
     if (damage <= 0) return damage;
+    // The Tide grows the party's blows from its round on.
+    damage = tideDamage(damage, _roundsStarted, byParty: true);
     final multiplier = elementMultiplierFor(enemy.data, element);
     var landed = damageAfterElement(damage, enemy.data, element);
     if (multiplier != 1.0) {

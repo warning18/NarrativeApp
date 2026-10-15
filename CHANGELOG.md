@@ -17,6 +17,24 @@ Detours find something to pick up, wherever they are.
 - **A deeper Cove camp.** The camp's pool gains 16 lines across its shop, quest, rest and generic kinds, some for later chapters, so the same six lines do not come round as often.
 - **Corneilles, not Corbeaux.** The French name of the Salt Crows is corrected where two lines still said Corbeaux; two French district blurbs name the Dernière Veille and the Corneilles correctly.
 
+## [1.351.0+387]
+
+Shorter fights: the default fight-length rules and the Tide (v5.2 step 1, docs/simulation/fight-length.md).
+
+### Changed
+- **Healing fatigue.** Each heal a member gives in a fight (face, skill or spell) heals 5% less than the one before, never under 30%.
+- **Execute.** A foe struck this round and left under 10% of its health falls. Never a boss.
+- **Morale.** A hurt foe (under 25%) flees at 50% each round. A fled foe pays part of its spoils, as a Skittish one does.
+- **The pack breaks.** When a pack's leader (its biggest) falls, each other foe flees at 70%. Neither morale nor the pack break plays in a boss's fight.
+- **The Tide.** From round 8, the party's blows grow 20% a round and the enemies' 10%, adding up; 18% for a boss's side. The fight log says when it turns and how far it has risen.
+- **Measured (200 simulated runs):**
+  - fights average 10.1 rounds instead of 16.5, at the same win rate (53.4% against 54.0%);
+  - the cleric's fights fall from 37 rounds to 13.5;
+  - the boss curve holds.
+
+### Added
+- The simulator's run summary counts the rounds fought (`roundsFought`). `simulatePlaythroughs` takes `clashOff`, so each rule can be left out to measure it (`fatigue`, `execute`, `morale`, `packBreak`, `tide`).
+
 ## [1.349.0+385]
 
 The camp's town has limits; the towns have their districts.

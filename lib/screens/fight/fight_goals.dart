@@ -37,6 +37,61 @@ extension _FightGoals on _FightScreenState {
     }
   }
 
+  /// The fight-length rules after the party's blows (fight_length.dart):
+  /// a foe struck under the execute line falls; a pack whose leader fell
+  /// breaks; a hurt foe that isn't a boss may flee. A Rout already routs
+  /// on its captain, so the pack break leaves it be.
+  void _noteFightLength(List<_LogEntry> entries, AppLanguage lang) {
+    bool boss(_EnemyMember e) => isBossEnemy(e.enemyId, e.data);
+    for (final enemy in _enemies) {
+      if (!enemy.isAlive || enemy.damageThisRound <= 0) continue;
+      if (!executes(
+          health: enemy.currentHealth,
+          maxHealth: enemy.maxHealth,
+          boss: boss(enemy))) {
+        continue;
+      }
+      enemy.currentHealth = 0;
+      entries.add(_LogEntry(
+          trFor(lang, 'execute_log').replaceAll('{name}', enemy.displayName),
+          _LogKind.playerDamage));
+    }
+    void flee(_EnemyMember e) {
+      e.fled = true;
+      e.currentHealth = 0;
+      entries.add(_LogEntry(
+          '${e.displayName} ${trFor(lang, 'flees_suffix')}', _LogKind.info));
+    }
+
+    // A boss's escort stands by its boss: no flight in a boss's fight.
+    if (_enemies.any(boss)) return;
+    if (_goal.kind != FightGoalKind.rout && !_length.packBroken) {
+      _length.leaderKey ??= () {
+        final i = packLeaderIndex([for (final e in _enemies) e.maxHealth],
+            [for (final e in _enemies) !boss(e)]);
+        return i == null ? '' : _enemies[i].key;
+      }();
+      final leader = _enemyByKey(_length.leaderKey!);
+      if (leader != null && !leader.isAlive) {
+        _length.packBroken = true;
+        final rest = _enemies.where((e) => e.isAlive && !boss(e)).toList();
+        if (rest.isNotEmpty) {
+          entries.add(_LogEntry(trFor(lang, 'pack_breaks_log'), _LogKind.info));
+          for (final e in rest) {
+            if (_random.nextDouble() < packBreakChance) flee(e);
+          }
+        }
+      }
+    }
+    for (final enemy in _enemies) {
+      if (!enemy.isAlive || enemy.yielded || boss(enemy)) continue;
+      if (!wavers(health: enemy.currentHealth, maxHealth: enemy.maxHealth)) {
+        continue;
+      }
+      if (_random.nextDouble() < moraleFleeChance) flee(enemy);
+    }
+  }
+
   /// True once a hold has been held: called when the enemies' turn is
   /// over, with the fight still going.
   bool get _holdHeld =>
