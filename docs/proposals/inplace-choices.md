@@ -91,6 +91,38 @@ This is how a step that is a *scene* reads; a *hub* (Smugglers' Wharf) is still 
 - **Needs from Core and Narrative:** a "who you face" per node (an enemy or NPC id; many nodes are narrator-only and show just the scene) and, for the weather and time, what the Journey map already has.
 - **Build:** a `StoryScene` screen on `LandCrossingScreen`'s layout, kits per theme on the existing side-view engine, the choice buttons from design 1's card. It replaces the Journey map for the nodes that are scenes (every node with a `ui_theme` kit and no hub), and the map's list and rings stay for the hubs.
 
+## Between the choice and the next options
+
+Today, after a choice the screen jumps straight to the next scene's options and the party seems to teleport. In every design the choice now has a **transition**, shown here as a strip of four frames for each of the two cases. Both cases use real nodes: "Pay the toll" (node 260, acted out here, ends in node 261) and "Run, and come back for her later" (node 400, moves you to the Black Hold, node 800 and its three options).
+
+**Acted out here ("Pay the toll").** A short beat at the marker, then the new options:
+1. **Tap.** The card (or chip, bubble, button) is picked; the others dim.
+2. **The beat.** The marker pulses (three rings), the action's icon floats up with its effect ("−30 gold"), and a line of text says what you did ("You count out thirty gold."). The choices are disabled and dimmed. About 600 ms.
+3. **What happened.** The result line of the next node (here node 261's: "The man in the booth counted my coin twice...") while the choice area shows a skeleton, so nothing jumps.
+4. **New options.** The new choices fade in (the app's 180 ms fade). Here the only one, "Cross the bridge", is a plain `go`, so it is also a pin on the map.
+
+**A choice that moves you ("Run").** The party travels, the camera follows, then the new options:
+1. **Tap.** The choice shows its road on the map (dashed, to the place's pin).
+2. **The road.** The marker travels along the road leaving a trail, the camera pans to keep it centred. A short line of text. About 120 px/s on the District map, 0.7 s to 1.6 s whatever the distance.
+3. **Arrival.** The place is named (the "You are here" card changes, the breadcrumb follows) and the text of the new node shows while its choices load.
+4. **New options.** The new place's choices appear, grouped as the design groups them.
+
+What differs by design (the strips below show each):
+
+- **1 · List:** the list dims and shows a skeleton while the map plays the beat or the trip; the new cards fade in under the new place.
+- **2 · Panel:** the panel slides down to a handle while the map plays, and slides up again with the new vignette and buttons.
+- **3 · Rings:** the rings fold into the marker for the beat or the trip, and the new rings open around the marker at the new place (or, when the only choice left is a `go`, no ring: a pin and a "Ways · 1" chip).
+- **4 · Stage:** the chosen bubble swells and the others fade; you act (step up and hold out the coin; or turn and run with the ground scrolling), the other answers in a speech bubble, and the new scene slides in with the place's name before its bubbles.
+- **5 · Scene view:** the pressed button stays lit and the others dim; the scene plays the beat (the hero moves, a glint) or the run (the hero turns and runs, motion lines), then the next scene replaces it with the place's name over it and its text and buttons follow.
+
+Rules for all five: the choices are disabled from the tap until the new options show; a tap anywhere skips to the new options; with reduced motion the beat and the trip are a cross-fade (no travel, no pan) and the text line stays; a fight or a check plays its own screen first (the transition resumes after it).
+
+![](images/inplace-transition-1-list.png)
+![](images/inplace-transition-2-panel.png)
+![](images/inplace-transition-3-ring.png)
+![](images/inplace-transition-4-stage.png)
+![](images/inplace-transition-5-scene.png)
+
 ## Recommendation
 
 Two layers, one set of cards:
@@ -99,6 +131,8 @@ Two layers, one set of cards:
 2. **The main story's steps play as scene views** (5), like the explorations.
 3. **Hubs and towns stay on the map**, with design 3's rings by list and a chip each, and pins only for plain `go` choices.
 4. Designs 2 (panel) and 4 (stage) are what 5 grows into if the scene should be more theatrical: 4 is a scene view whose choices are bubbles over the sprites. If the user likes 5, 2 and 4 need not be built.
+
+The transition is built with the display that is chosen (the same beat and the same trip, drawn by the display).
 
 Build 1's card and the map's pins filter first (it fixes the overlap alone, in a few days), then the rings, then the story scene kits one theme at a time (docks and slums first: they hold 183 of the 426 nodes).
 
