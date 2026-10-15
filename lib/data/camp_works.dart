@@ -40,6 +40,18 @@ class WorkNeed {
   final List<String> shopIds;
 }
 
+/// How many of a work stand and how many the town may hold ([limit]
+/// null: no limit), for the building screen to show ("1 of 1").
+class WorkLimit {
+  const WorkLimit({required this.built, this.limit});
+
+  final int built;
+  final int? limit;
+
+  /// No more of it may go up.
+  bool get atLimit => limit != null && built >= limit!;
+}
+
 /// One house as the building screen lists it.
 class CampWork {
   const CampWork({
@@ -63,6 +75,11 @@ class CampWork {
 
   /// What it still needs: empty once buildable or built.
   final List<WorkNeed> needs;
+
+  /// A house is unique: one per town (the harbour, the workshops, the
+  /// great works, the clan houses to come).
+  WorkLimit get limit =>
+      WorkLimit(built: state == WorkState.built ? 1 : 0, limit: 1);
 }
 
 /// [house]'s category: its `category` field, else read from what it gives

@@ -378,6 +378,63 @@
     "blurb_fr": "Ce que l’Inquisition a laissé d’une ville au pied de la Flèche après l’avoir brûlée elle-même : de la cendre, des réfugiés, un mur de noms, et du travail pour des mains solides.",
     "landmark": "quarter"
   },
+  "ashen_quarter_gate": {
+    "level": "district",
+    "tags": ["ruin"],
+    "parent": "ashen_quarter",
+    "name": "The Quarter Gate",
+    "name_fr": "La Porte du Quartier",
+    "blurb": "A gap in the burnt wall where the road from the camp comes in, and a fallen beam where those who want something sit and wait.",
+    "blurb_fr": "Une brèche dans le mur brûlé par où entre la route du camp, et une poutre tombée où s’assoient ceux qui attendent quelque chose.",
+    "landmark": "",
+    "glyph": "gate"
+  },
+  "ashen_quarter_ash_market": {
+    "level": "district",
+    "tags": ["market", "ruin"],
+    "parent": "ashen_quarter",
+    "name": "The Ash-Market",
+    "name_fr": "Le Marché des Cendres",
+    "blurb": "Stalls of planks on barrels where the ash lies thinnest, the refugees’ runners, a shrine with one relic, and the Choir’s fire at the far end.",
+    "blurb_fr": "Des étals de planches sur des tonneaux là où la cendre est la plus mince, les coursiers des réfugiés, un sanctuaire à une seule relique, et le feu du Chœur tout au bout.",
+    "landmark": "",
+    "glyph": "market"
+  },
+  "ashen_quarter_wall_of_names": {
+    "level": "district",
+    "tags": ["ruin"],
+    "parent": "ashen_quarter",
+    "name": "The Wall of Names",
+    "name_fr": "Le Mur des Noms",
+    "blurb": "The scorched stretch of wall the refugees cut their dead into, and the rubble beyond it where the Last Watch keeps six spears against the Spire’s grounds.",
+    "blurb_fr": "Le pan de mur roussi où les réfugiés gravent leurs morts, et les décombres au-delà, où la Dernière Garde tient six lances face aux terres de la Flèche.",
+    "landmark": "",
+    "glyph": "field"
+  },
+  "ashen_quarter_cinder_row": {
+    "level": "district",
+    "controller": "compact",
+    "tags": ["ruin"],
+    "parent": "ashen_quarter",
+    "name": "Cinder Row",
+    "name_fr": "La Rue des Braises",
+    "blurb": "The Compact’s forge street, cold since the Emberwives starved the Tribunal’s forges, waiting for its first coal.",
+    "blurb_fr": "La rue des forges du Pacte, froide depuis que les Charbonnières ont affamé les forges du Tribunal, en attendant son premier charbon.",
+    "landmark": "",
+    "glyph": "yard"
+  },
+  "ashen_quarter_spire_stair": {
+    "level": "district",
+    "controller": "dominion",
+    "tags": ["holy"],
+    "parent": "ashen_quarter",
+    "name": "The Spire Stair",
+    "name_fr": "L’Escalier de la Flèche",
+    "blurb": "The foot of the Spire’s stair, where the Tribunal still comes down to sentence, and the archive cellar of what the Spire threw out in a hurry.",
+    "blurb_fr": "Le pied de l’escalier de la Flèche, où le Tribunal descend encore condamner, et la cave d’archives de ce que la Flèche a jeté dans sa hâte.",
+    "landmark": "",
+    "glyph": "temple"
+  },
   "emberwick": {
     "level": "location",
     "controller": "compact",
@@ -495,6 +552,39 @@
     "blurb_fr": "Des arches voûtées dans l’eau noire jusqu’aux genoux, à mi-hauteur de l’escalier de la Cour, où déserteurs et réfugiés gardent des chandelles allumées au-dessus de la ligne de marée.",
     "landmark": "cloister",
     "water": "river"
+  },
+  "drowned_cloister_stair": {
+    "level": "district",
+    "tags": ["holy"],
+    "parent": "drowned_cloister",
+    "name": "The Drowned Stair",
+    "name_fr": "L’Escalier Noyé",
+    "blurb": "The steps down from the catacombs, a broken span over black water, and the Warden that still holds a stair that leads nowhere.",
+    "blurb_fr": "Les marches qui descendent des catacombes, une arche brisée au-dessus de l’eau noire, et le Gardien qui tient encore un escalier qui ne mène plus nulle part.",
+    "landmark": "",
+    "glyph": "cellar"
+  },
+  "drowned_cloister_nave": {
+    "level": "district",
+    "tags": ["holy"],
+    "parent": "drowned_cloister",
+    "name": "The Flooded Nave",
+    "name_fr": "La Nef Inondée",
+    "blurb": "Vaulted arches knee-deep in black water, candles on every ledge, the sick laid out on the driest one and a skiff poled between them.",
+    "blurb_fr": "Des voûtes dans l’eau noire jusqu’aux genoux, des cierges sur chaque corniche, les malades couchés sur la plus sèche et une barque poussée entre elles.",
+    "landmark": "",
+    "glyph": "temple"
+  },
+  "drowned_cloister_ossuary": {
+    "level": "district",
+    "tags": ["market"],
+    "parent": "drowned_cloister",
+    "name": "The Ossuary Stalls",
+    "name_fr": "Les Étals de l’Ossuaire",
+    "blurb": "Shelves of skulls with goods between the jaws, the Court’s deserters, the Crows’ dry cells behind drowned doors, and guides who know the fen.",
+    "blurb_fr": "Des rayons de crânes avec les marchandises entre les mâchoires, les déserteurs de la Cour, les cellules sèches des Corbeaux derrière des portes noyées, et des guides qui connaissent le marais.",
+    "landmark": "",
+    "glyph": "market"
   },
   "hollow_court": {
     "level": "location",
@@ -623,6 +713,39 @@
     "blurb_fr": "Une ville bâtie avec la Flotte Blanche par les croisés qui s’y sont échoués : des coques coiffées de leurs propres voiles, une chapelle faite de la poupe d’un vaisseau amiral, un mur de port fait d’ancres.",
     "landmark": "anchorage",
     "water": "shore"
+  },
+  "white_anchorage_quay": {
+    "level": "district",
+    "tags": ["sea"],
+    "parent": "white_anchorage",
+    "name": "The Anchor Quay",
+    "name_fr": "Le Quai des Ancres",
+    "blurb": "The harbor wall built of the White Fleet’s anchors, the long pier, and the last company still keeping the old watch over the water.",
+    "blurb_fr": "Le mur du port bâti avec les ancres de la Flotte Blanche, la longue jetée, et la dernière compagnie qui monte encore l’ancienne garde sur l’eau.",
+    "landmark": "",
+    "glyph": "quay"
+  },
+  "white_anchorage_hulls": {
+    "level": "district",
+    "tags": ["market"],
+    "parent": "white_anchorage",
+    "name": "The Hull Town",
+    "name_fr": "La Ville des Coques",
+    "blurb": "Hulls hauled up the sand and roofed with their own sails: the wreck-wrights’ chandlery, the impound, the sick, and a Vault that follows the Crusade’s ships.",
+    "blurb_fr": "Des coques tirées sur le sable et couvertes de leurs propres voiles : la chandellerie des naufrageurs, la fourrière, les malades, et un Coffre qui suit les navires de la Croisade.",
+    "landmark": "",
+    "glyph": "wharf"
+  },
+  "white_anchorage_chapel": {
+    "level": "district",
+    "tags": ["holy"],
+    "parent": "white_anchorage",
+    "name": "The Stern Chapel",
+    "name_fr": "La Chapelle de Poupe",
+    "blurb": "The flagship’s stern made a chapel, its log under the altar that was the Admiral’s chart table, where the Order counts its dead.",
+    "blurb_fr": "La poupe du vaisseau amiral devenue chapelle, son journal sous l’autel qui fut la table à cartes de l’Amiral, où l’Ordre compte ses morts.",
+    "landmark": "",
+    "glyph": "temple"
   },
   "greyhithe": {
     "level": "location",
