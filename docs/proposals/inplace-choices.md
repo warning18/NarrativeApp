@@ -14,11 +14,11 @@ Two scenes, English, phone size (411 × 890), in the app's own look (Stitched In
 | **Refuse and fight** | stays, fight with the slum thug | |
 | **Charge him** | | stays, fight with Aurel Vane |
 | **Kneel and beg him to spare her** | | stays, alignment +2 |
-| **Run, and come back for her later** | | leaves, → The Black Hold, alignment −2 |
+| **Run, and come back for her later** | | walks on, → The Black Hold, alignment −2 (drawn as the moving one) |
 
-So the bridge has no moving choice at all (the map has no pin), and the house has exactly one (a pin at The Black Hold, with its path).
+So the bridge has no moving choice at all (the map has no pin), and the house is drawn with exactly one (a pin at The Black Hold, with its path).
 
-**Assumption to confirm with Core.** In the data, "Kneel" and "Run" both go to node 800 (the Black Hold). I drew Kneel as *in place* because the user named it among the choices that don't move you; Run is the walk. If `choice_shape.dart` calls both moving, the house shows one pin with two cards pointing at it, and nothing else changes.
+**Core's rule (#315, `choice_shape.dart`).** It gives each choice a `move` (stay, walk, travel) and an `action`, and a `here` flag: acted out where you stand, which is everything but `go`. By it, Kneel and Run count as *here* (a decision with an alignment change, node 800 follows), so at the house **no choice would be a pin**. The mockups still draw Run as the one moving choice, with a pin at The Black Hold, so each design also shows how a moving choice looks (a pin, or an edge arrow in design 4). Under Core's rule that pin and arrow are simply absent and the rest is unchanged.
 
 **Tags.** Each choice carries one tag: a cost (`−30 gold`), a kind (`Fight`), an alignment shift (`Good +2`) or a destination (`→ The Black Hold`). They come from what the choice already has (`lockedText` and gold cost, `triggerEnemyId`, `alignmentMod`, `next_id`'s location). Action icons follow Core's action list: fight, pay, talk, sneak, attempt, evade, go, decide.
 
@@ -81,7 +81,7 @@ Build **1 now**: it fixes the problem alone, for every screen, and its list is t
 
 ## What I need
 
-- **Core:** `choice_shape.dart` (move, action) and, per choice, its tag data (cost, alignment shift, destination name). For the in-place choices, whether Kneel (node 800) counts as moving.
+- **Core:** per choice, its tag data (cost, alignment shift, destination name) next to `choiceShape`'s move and action; and whether a `here` choice that walks on afterwards (Run) should show its destination tag in the list (the mockups do).
 - **Narrative:** for design 2 and 4, a short `prompt` line for each choice node (today the last sentence of the text is quoted), and a "who you face" per node (an enemy or NPC id).
 - **User:** which design to build, and whether the list may sit under the map on a phone where the map takes the top half.
 
