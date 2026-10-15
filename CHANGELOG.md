@@ -18,6 +18,18 @@ Groundwork for the journey map; nothing changes on screen yet.
   - whether it is acted out where you stand. A fight, a payment or a decision happens where you are, even when its aftermath takes you elsewhere.
 - **For the journey map:** of the story's 1,061 choices, 80% are acted out where you stand. Only 213 are ways somewhere, so the map can draw pins for those and list the rest as actions at "You are here".
 
+## [1.389.0+425]
+
+What a foe is now matters in a fight.
+
+- **Every foe has a kind:** a person, a beast, the undead, the void, a construct, a demon, an angel or a giant (Narrative's list).
+- **Beasts tire.** From round 6, a beast's blows land 5% softer each round, down to half. The log says when it starts tiring.
+- **The dead crumble.** From round 6, an undead foe loses a little of itself each round (3% of its health). It never finishes them; the execute does.
+- **Only people and beasts break.** Morale no longer makes the dead, the void, constructs, demons, angels or giants flee.
+- **Bosses are untouched** by the tiring and the crumbling.
+- **An evil foe is told by its kind.** The Lantern Vanguard's heal now counts the void, the undead and demons, no longer anyone weak to Light: the Turned, the cultists and the zealots are living people.
+- **Balance:** −0.7 to +1.3 points per profession, and fights don't get longer. Report: docs/simulation/foe-kinds.md.
+
 ## [1.388.0+424]
 
 Mercy and the omens, in their own words.

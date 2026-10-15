@@ -6,6 +6,7 @@ import '../combat/dice_tamper.dart';
 import '../combat/doctrine.dart';
 import '../combat/context_rules.dart';
 import '../combat/element_reaction.dart';
+import '../combat/foe_kind.dart';
 import '../combat/enemy_response.dart';
 import '../combat/fight_goal.dart';
 import '../combat/fight_length.dart';
@@ -1575,6 +1576,8 @@ SimFightOutcome simulateSimFight({
       for (final e in ens) {
         if (e.isAlive &&
             !boss(e) &&
+            // Only people and beasts break (foe_kind.dart).
+            (!on('kinds') || canWaver(e.data)) &&
             wavers(health: e.health, maxHealth: e.maxHealth) &&
             random.nextDouble() < moraleFleeChance) {
           e.health = 0;
@@ -1764,6 +1767,10 @@ SimFightOutcome simulateSimFight({
           bossFight: bossFlags.any((b) => b),
         );
       }
+      // A beast tires (foe_kind.dart).
+      if (on('kinds')) {
+        moveDamage = foeBlow(moveDamage, e.data, rounds, boss: boss(e));
+      }
       final parry = on('parry') ? e.parryBlock : 0;
       // The Briar Guard can't dodge (the draw is made all the same).
       final dodged = random.nextDouble() * 100 <
@@ -1872,6 +1879,15 @@ SimFightOutcome simulateSimFight({
       for (final e in ens) {
         if (e.isAlive) {
           e.health = afterTick(e.health, ctx.tick(e.maxHealth, rounds));
+        }
+      }
+    }
+    // The dead crumble (foe_kind.dart).
+    if (on('kinds')) {
+      for (final e in ens) {
+        if (e.isAlive) {
+          e.health = afterTick(
+              e.health, crumble(e.data, e.maxHealth, rounds, boss: boss(e)));
         }
       }
     }

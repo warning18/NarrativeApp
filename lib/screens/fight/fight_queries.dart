@@ -171,9 +171,14 @@ extension _FightQueries on _FightScreenState {
     if (answer != 1.0) damage = (damage * answer).round();
     // A pact's curse, while it runs (see signs.dart); then the Tide and
     // the place's rule (context_rules.dart).
-    return _length.rule.blow(_signs.enemyDamage(damage), _roundsStarted,
-        byParty: false,
-        bossFight: _enemies.any((e) => isBossEnemy(e.enemyId, e.data)));
+    // A beast tires (foe_kind.dart).
+    return foeBlow(
+        _length.rule.blow(_signs.enemyDamage(damage), _roundsStarted,
+            byParty: false,
+            bossFight: _enemies.any((e) => isBossEnemy(e.enemyId, e.data))),
+        enemy.data,
+        _roundsStarted,
+        boss: isBossEnemy(enemy.enemyId, enemy.data));
   }
 
   /// How much of a hit of [element] [target]'s armor soaks: base armor,
