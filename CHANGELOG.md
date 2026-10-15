@@ -15,6 +15,29 @@ The gifts say what they do.
 ### Changed
 - **Specialisation gift texts.** The Lantern Vanguard's heavy blow now heals against "a foe weak to Light (the void, the dead, demons)", the way the game treats it, instead of an "Evil" foe no enemy carries; the Relicbreaker's text says plainly that its three mana are spent on the sure critical; the Beacon burns "with Light". English and French. Wording only.
 
+## [1.363.0+399]
+
+More places to wander off to.
+
+### Added
+- **Batch 2 of detour scenes.** 28 new scenes in `detour_scenes.json`, in English and French: echoes for each chapter's lands (the salt pans, the ash road, the lantern-floaters of the fen, the frost-sick queue, the Mirror Shoal, the lamplighters of Candlehold), a few scenes that open only after a story beat (a forgiven candle, the archivist's blank page, a Mire courtesy, a giant's hearth-stone cart), and thirteen short stops, so the higher rate of detours does not repeat. Chapters 4 and 7 first.
+
+## [1.362.0+398]
+
+The march on Candlehold may hold a detour.
+
+### Changed
+- **Chapter 7's gates.** The arrival at Candlehold's gates (`7500`) no longer forbids a detour, so the way to the Throne can hold one, and the chapter's landmark, The Banner on the Hill. The scene is tense and stays tense; only the ban is lifted.
+
+## [1.361.0+397]
+
+More detours, spread across the whole story (the user: "a bit more, 7 to 10").
+
+- **Landings roll.** Arriving somewhere by sea can now hold a detour, as a road arriving there would. The sailed chapters (4 to 7) get their share, and the march to Candlehold can hold chapter 7's landmark once Narrative lifts its set piece.
+- **The chapter's landmark comes before a hunter** on the road where it is due (a road event still comes first).
+- **The odds start lower:** 8% a road, plus 6% for each quiet road, up to 45%. Since more roads now roll, a run meets about 9 detours (median 9, 6 to 15): 1.4 to 2.1 in each of chapters 2 to 6, one in chapter 7. In v1.356 it was 6.8, with chapters 4 and 5 at 0.9.
+- No detour comes right after another, and none between two scenes of the same place, as before. Report: docs/simulation/detours.md.
+
 ## [1.360.0+396]
 
 The clans specialise your profession (v5.2, step 2a): each profession's core can now be bent three ways, one per main clan.

@@ -20,13 +20,13 @@ import '../data/camp_works.dart';
 import '../data/chapter_loop.dart';
 import '../data/alignment_events.dart'
     show hunterCooldownRolls, isHunterAmbushChain, maybeAlignmentEvent;
+import '../data/camp_state.dart' show landingPortIdFor;
 import '../data/chapter_spine.dart';
 import '../data/detour_pacing.dart';
 import '../data/detour_scenes.dart';
 import '../data/journey_rules.dart' show walkWatches;
 import '../data/recurring_encounters.dart'
     show markerFor, recurringBeatsOpen, recurringChance;
-import '../data/camp_state.dart' show landingPortIdFor;
 import '../data/factions.dart';
 import '../data/expedition_steps.dart';
 import '../data/perks.dart';
@@ -586,7 +586,15 @@ _SimResult _simulate(
         historyLength: steps.length,
         salt: detourSalt + 7919);
     var hunter = '';
-    if (!taken && road.atRest && chapter >= SubNodeEngine.firstDetourChapter) {
+    final landmarkDue = landmarkDueOn(
+        pacing: pacing,
+        road: road,
+        scenes: sim?.detourScenes ?? const {},
+        flags: flags);
+    if (!taken &&
+        !landmarkDue &&
+        road.atRest &&
+        chapter >= SubNodeEngine.firstDetourChapter) {
       final event = maybeAlignmentEvent(
         alignmentScore: alignment,
         activeQuestIds: const [],
@@ -1410,11 +1418,9 @@ _SimResult _simulate(
           choiceText: french ? 'Aller à : $name' : 'Go to $name',
         ));
         final arrival = arrivalNodeFor(next, visited);
-        // On foot, a road (D2: the camp's trips roll as the story's do);
-        // by sea, a voyage with nothing on the road.
-        if (landingPortIdFor(next.settlement, sim?.ports ?? const {}) == null) {
-          roadTurn(currentId, arrival, travels: true);
-        }
+        // A road (D2: the camp's trips roll as the story's do); by sea, its
+        // landing does (v1.361).
+        roadTurn(currentId, arrival, travels: true);
         currentId = arrival;
         visited.add(currentId);
         continue;
@@ -1456,11 +1462,10 @@ _SimResult _simulate(
           choiceText: french ? 'Retour au camp' : 'Back to the camp',
         ));
         tourPlaceId = null;
-        if (landingPortIdFor(node.settlement, sim?.ports ?? const {}) == null) {
-          roadTurn(currentId, campId!, travels: true);
-        }
         // A tour only ever starts from a camp.
-        currentId = campId!;
+        final camp = campId!;
+        roadTurn(currentId, camp, travels: true);
+        currentId = camp;
         visited.add(currentId);
         continue;
       }
@@ -1654,7 +1659,13 @@ _SimResult _simulate(
     }
     // What waits on the road there (v1.197).
     if (!choice.isEnding) {
-      final event = roadHazard(currentId, choice.nextId, step);
+      // A choice that sails there (its place has a landing of its own) has
+      // no road and no road event, only its landing.
+      final sails = choice.travels &&
+          landingPortIdFor(story.nodeFor(choice.travelPlaceId!)?.settlement,
+                  sim?.ports ?? const {}) !=
+              null;
+      final event = !sails && roadHazard(currentId, choice.nextId, step);
       if (!choice.opensCharacterCreation) {
         roadTurn(currentId, choice.nextId,
             travels: choice.travels, taken: event);
