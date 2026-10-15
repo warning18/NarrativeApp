@@ -11244,6 +11244,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Loyalty’s price',
     AppLanguage.fr: 'Le prix de la loyauté',
   },
+  'standing_cause_territory': {
+    AppLanguage.en: 'Territory',
+    AppLanguage.fr: 'Territoire',
+  },
   'standing_cause_mercy': {
     AppLanguage.en: 'Mercy for a hunter',
     AppLanguage.fr: 'Clémence envers un chasseur',
