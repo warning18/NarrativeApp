@@ -206,6 +206,10 @@ Proposal only; nothing is built. **[N]** marks Narrative's part, **[UX]** UX's.
   | Order | **Knight of the Flame** | warrior | The Verdict strikes with Fire and Pierce |
   | Inquisition | **Inquisitor** | mage | You see the next face of the deck; the Verdict weakens |
   | Tribunal | **Magistrate** | any | Once a fight, send the face you drew to the bottom of the run and draw again |
+- **Alternative, not the default: Judgment.** Every third round is a Judgment: the face you roll counts double (damage, block, healing). The other two rounds, your strikes deal 15% less.
+  - Measured: 63.5%, 15.3 rounds; with the Tide, 64.8% / 10.9.
+  - It fits the Dominion's law, and it mirrors the Writ that silences skill faces every third round.
+  - If chosen, its gifts are Knight of the Flame (a Judgment strike is Fire and Pierces), Inquisitor (a Judgment strike weakens) and Magistrate (call the Judgment a round early).
 
 ### Compact: Thornplate
 - **Rule.** Half of every blow your block, parry and armour stop goes back to the striker; you can't dodge.
