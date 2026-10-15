@@ -10,7 +10,7 @@ What stays as already validated:
 - today's offers;
 - a die you build freely;
 - the passive stat points per level;
-- the subclan cards, recast here as **twists on the clan's rule**.
+- the subclan cards, recast here as **twists on the clan's rule**. They are clan offers: they accumulate like today's picks, and you never wear or swap them.
 
 This is a proposal only; nothing is built. **[N]** marks Narrative's part (names and lines), **[UX]** UX's (how it shows).
 
@@ -49,8 +49,34 @@ This is a proposal only; nothing is built. **[N]** marks Narrative's part (names
   | Mire | Dexterity, Luck | |
   | Crows | Strength, Dexterity | |
   | Penitents | Wisdom, Intelligence | Wisdom feeds the Mana face's bonus |
-- **Cards** come from Trusted, from the subclans you are friends with (the v3 table of how each subclan becomes your friend still holds). Each card **twists the patron's rule**. You wear one card, or two at Sworn, and change them at the camp.
-- **A nemesis** loses its rule and its cards for you (see below).
+- **A nemesis** loses its rule for you, and its subclans stop offering cards (see below).
+
+### Cards are clan offers, and they stack
+
+The user's direction: *"You don't wear cards, they accumulate like today (cards are basically clans offer)."*
+
+- **Where they come from.** Once you're **Trusted** with a main clan, its subclans that are your friends add their cards to that clan's offers. The v3 table of how each subclan becomes your friend still holds. A card comes up as one of the three suitors, beside today's skills, signs, objects and titles, as a gift of a new kind, `card`.
+- **They stay.** A card you pick stays for the rest of the run, like every pick today. There are no slots, no wearing and no swapping at the camp.
+- **They only work under their rule.** A card twists one clan's rule. It works while that clan is your patron. If you change patron at the camp, the card is kept but sleeps until that rule is yours again. So switching patron costs you your cards' effects, and staying loyal pays.
+
+**How stacking stays in check, with no slots:**
+1. **Each card twists a different part of its rule.** One changes the trigger, one the payoff, one the cost (for the Crows: the bleed changes the cost, the Corsair the payoff, the Ledger Knife the low-health edge). Three cards of one clan combine into a build; they don't multiply the same number.
+2. **The rule's own caps stay:**
+   - the Long Watch holds at most half your max health;
+   - the Rot adds 5% per strike;
+   - a Pain strike never takes the last point;
+   - the deck has six faces.
+
+   No card lifts a cap.
+3. **One copy each.** A card is offered once. Picking it again when it comes back (Sworn only) raises it to rank II, which is +50% to its number and the most a card can go. There are no duplicates.
+4. **Rarity sets how often a card comes up**, as for skills today:
+   - a subclan's first card is **uncommon**, offered from Trusted;
+   - its second is **rare**, from Sworn;
+   - the Dark Knight, the Paladin and the Open Hand's picks are **epic**.
+
+   At most one of an offer's three suitors is a card.
+5. **Diminishing returns, where two cards touch the same number** (two cards that both heal on a kill, from a clan's own card and a minor patron's): the second adds half.
+6. **Size of the pool.** About 3 cards per clan for your profession, 6 with the Sworn ones. A run that stays with one clan collects most of them by the late chapters. A run that changes patron collects few that work at once.
 
 ## The six rules
 
@@ -183,13 +209,13 @@ This is a proposal only; nothing is built. **[N]** marks Narrative's part (names
 
 ## The minor patrons, and the Open Hand
 
-- **The Pit: Clause in Blood.** A spell you can't afford is paid in health: 5% of your max health per missing mana, while you're above half. It is measured at 54.2% (+0), with only 5 health paid per fight: the autoplay's heroes know few spells. Its card is **Dark Knight** (warrior): a spell paid in blood also heals you for a share of its damage.
-- **The Choir: The Vow.** No potions in a fight; heals heal 50% more; once a fight, a killing blow leaves you at 1 health. It is measured at 55.9% (+1). Its card is **Paladin** (warrior or cleric): the first time the Vow saves you, it also lifts every affliction.
+- **The Pit: Clause in Blood.** A spell you can't afford is paid in health: 5% of your max health per missing mana, while you're above half. It is measured at 54.2% (+0), with only 5 health paid per fight: the autoplay's heroes know few spells. Its card, offered once its pact is held, is **Dark Knight** (warrior): a spell paid in blood also heals you for a share of its damage.
+- **The Choir: The Vow.** No potions in a fight; heals heal 50% more; once a fight, a killing blow leaves you at 1 health. It is measured at 55.9% (+1). Its card, offered once its vow is held, is **Paladin** (warrior or cleric): the first time the Vow saves you, it also lifts every affliction.
 - The minor patrons' vows and pacts stay as they are, aside. A minor patron can be your patron only once you hold its vow or pact.
 - **The Open Hand: Your Own Hand.** Once a round, reroll the die: the reroll of Slice & Dice.
   - It is measured at 59.5% (+5). Rerolling away Defend, Heal and Mana faces while above 60% health shifts the rolls from 20% Defend to 13%, and from 38% Skill to 45%.
   - It is raised by the banner, as the story tells it. Once raised, it can be your patron like a main clan: its passive is +1 to your strongest stat.
-  - Its cards are any subclan card you have already been offered: your own hand.
+  - Its offers can bring back any subclan card you were offered and didn't take: your own hand. The card works under its own clan's rule, so it is useful when you return to that patron.
 
 ## Measured: each rule against today's game
 
@@ -241,9 +267,9 @@ To rerun the measurement, apply the patch in the Core session's scratchpad (`v4_
 
 How the kept parts tie in:
 - Your **patron** gives the rule and the passive stats.
-- Cards need **Trusted**.
-- A clan that becomes your **nemesis** loses its rule, its passive and its cards for you until you reconcile, and can't be your patron.
-- Taking a clan's offers and cards raises its **power**.
+- Card offers need **Trusted**.
+- A clan that becomes your **nemesis** loses its rule and its passive for you until you reconcile, and can't be your patron. Its subclans stop offering cards, and the cards you already hold from it sleep.
+- Taking a clan's offers, its cards included, raises its **power**.
 - **Alignment** stays separate; clans only nudge it, as gifts do now.
 
 ### Clan power and territory
@@ -315,7 +341,7 @@ A clan the player keeps turning away from does not just fade.
    - mana at the fight's start.
    - Plus a committed per-rule simulator report.
 2. **The patron's passive stats per level.**
-3. **Cards** as rule twists. The first 18 are the ones above; **[N]** writes their names and lines, **[UX]** designs the card and the deck.
+3. **Cards** as rule twists. The first 18 are the ones above; **[N]** writes their names and lines, **[UX]** designs the card as an offer, and a list of the cards held (asleep or awake) on the clan screen.
 4. Power, territory and the nemesis, afterwards.
 
 ## Open questions for the user
