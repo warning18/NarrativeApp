@@ -306,24 +306,25 @@ void main() {
         tester.getTopLeft(find.byKey(const Key('offer_gift_block_compact'))).dx,
         lessThan(
             tester.getTopLeft(find.byKey(const Key('clan_radar_compact'))).dx));
-    // The clan's words are behind a tap on its name, not in the popup.
-    expect(find.textContaining('broke every hammer in the Row'), findsNothing);
-    expect(find.byKey(const Key('offer_stands_compact')), findsNothing);
+    // The clan's words are behind the (i) button, not in the popup: it opens
+    // the same card a long press shows, with what the clan says to you.
+    expect(find.byKey(const Key('clan_details_compact')), findsNothing);
     await tester.ensureVisible(find.byKey(const Key('offer_charter_open')));
     await tester.tap(find.byKey(const Key('offer_charter_open')));
     await _settle(tester);
-    expect(find.textContaining('broke every hammer in the Row'), findsOneWidget,
-        reason: 'the Compact\'s intro, the first time');
+    expect(find.byKey(const Key('clan_details_compact')), findsOneWidget);
+    expect(find.byKey(const Key('clan_peek_greeting_compact')), findsOneWidget,
+        reason: 'the Compact\'s first words, the first time');
     expect(
         tester
-            .widget<Text>(find.byKey(const Key('offer_stands_compact')))
+            .widget<Text>(find.byKey(const Key('clan_peek_stands_compact')))
             .textSpan!
             .toPlainText(),
         contains('Craft, restraint, blades by invitation'),
         reason: 'what it stands for (Narrative\'s line)');
     await tester.tapAt(const Offset(10, 10));
     await _settle(tester);
-    expect(find.byKey(const Key('offer_charter_compact')), findsNothing);
+    expect(find.byKey(const Key('clan_details_compact')), findsNothing);
     expect(tester.getSize(find.byKey(const Key('offer_banner_compact'))),
         const Size(88, 128));
     expect(tester.getSize(find.byKey(const Key('offer_banner_penitents'))),

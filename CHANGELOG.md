@@ -14,7 +14,7 @@ The clan offer's popup is one block: the ring on top, and under it the clan card
 
 ### Changed
 - **The gift moves into the clan card.** The separate gift box is gone. Under the relations ring, one bordered block in the clan's colour: its name and your standing with it on the first line, what this banner gives (the gift's icon, name, kind, rarity and effect) on the left, the clan's radar on the right. "Take this gift" stays at the bottom.
-- **The clan's words sit behind its name.** A tap on the name (the small "i" beside it, lit the first time you meet a clan) opens its charter: the motto, what it stands for and what it says to you. They no longer take room in the popup.
+- **The clan's words sit behind an (i).** The button beside the clan's name opens its card (the same one a long press shows), with what the clan says to you; the first time you meet a clan the button is lit. The words no longer take room in the popup.
 - The alignment word ("Alignment · toward Good") stays in the block, under the gift.
 - **Hold a banner for the clan's details.** A long press on a banner in the offer, on a crest of the ring, or on a standard in the Throne room opens its card: where it leans (alignment, the five axes of its gifts), what it stands for, its sub-clans, its motto and a short recap of its story. Letting go, or a tap outside, closes it.
 

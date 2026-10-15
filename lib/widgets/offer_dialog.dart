@@ -656,10 +656,6 @@ class _OfferHall extends ConsumerWidget {
     final tier = faction == null || faction.isLost
         ? null
         : politics.tierOf(picked.factionId, data);
-    final motto = faction?.mottoFor(lang) ?? '';
-    final standsFor = picked.isWayfarer
-        ? trFor(lang, 'offer_wayfarer_stands')
-        : (faction?.standsForIn(lang) ?? '');
     final alignKey = nudge > 0
         ? 'offer_align_good'
         : nudge < 0
@@ -708,42 +704,32 @@ class _OfferHall extends ConsumerWidget {
               Row(
                 children: [
                   Expanded(
-                    child: InkWell(
-                      key: const Key('offer_charter_open'),
-                      borderRadius: BorderRadius.circular(4),
-                      onTap: () => _showCharter(
-                        context,
-                        lang: lang,
-                        color: color,
-                        name: suitorName(picked, data, lang),
-                        tier: tier,
-                        motto: motto,
-                        standsFor: standsFor,
-                        greeting: greeting,
-                        factionId: picked.factionId,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2),
-                        child: Row(
-                          children: [
-                            Flexible(
-                              child: Text(
-                                suitorName(picked, data, lang),
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                    fontFamily: InkFonts.display, color: color),
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Icon(Icons.info_outline,
-                                size: 16,
-                                color: picked.firstMeeting
-                                    ? theme.colorScheme.primary
-                                    : theme.colorScheme.onSurfaceVariant),
-                          ],
-                        ),
-                      ),
+                    child: Text(
+                      suitorName(picked, data, lang),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                          fontFamily: InkFonts.display, color: color),
                     ),
                   ),
+                  // The same card a long press on the banner shows.
+                  if (onRing)
+                    IconButton(
+                      key: const Key('offer_charter_open'),
+                      tooltip: trFor(lang, 'clan_peek_orientation'),
+                      visualDensity: VisualDensity.compact,
+                      padding: EdgeInsets.zero,
+                      constraints:
+                          const BoxConstraints(minWidth: 32, minHeight: 32),
+                      icon: Icon(Icons.info_outline,
+                          size: 20,
+                          color: picked.firstMeeting
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.onSurfaceVariant),
+                      onPressed: () => showClanDetails(
+                        context,
+                        factionId: picked.factionId,
+                        greeting: greeting,
+                      ),
+                    ),
                   if (tier != null) ...[
                     const SizedBox(width: 6),
                     Container(
@@ -855,80 +841,6 @@ class _OfferHall extends ConsumerWidget {
           ),
         ),
       ],
-    );
-  }
-
-  /// The clan's charter, behind a tap on its name: its motto, what it
-  /// stands for, and the words it says to the party.
-  void _showCharter(
-    BuildContext context, {
-    required AppLanguage lang,
-    required Color color,
-    required String name,
-    required StandingTier? tier,
-    required String motto,
-    required String standsFor,
-    required String greeting,
-    required String factionId,
-  }) {
-    final theme = Theme.of(context);
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (sheet) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: Column(
-            key: Key('offer_charter_$factionId'),
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(name,
-                  style: theme.textTheme.titleMedium
-                      ?.copyWith(fontFamily: InkFonts.display, color: color)),
-              if (motto.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: Text('“$motto”',
-                      style: theme.textTheme.bodyMedium
-                          ?.copyWith(fontStyle: FontStyle.italic)),
-                ),
-              if (standsFor.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text.rich(
-                    TextSpan(children: [
-                      TextSpan(
-                          text: '${trFor(lang, 'offer_stands_for')} · ',
-                          style: TextStyle(
-                              color: theme.colorScheme.onSurfaceVariant)),
-                      TextSpan(
-                          text: standsFor,
-                          style: const TextStyle(fontWeight: FontWeight.w600)),
-                    ]),
-                    key: Key('offer_stands_$factionId'),
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                ),
-              if (greeting.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 10),
-                    decoration: BoxDecoration(
-                      border: Border(left: BorderSide(color: color, width: 3)),
-                    ),
-                    child: Text(greeting,
-                        key: Key('offer_greeting_$factionId'),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                            fontStyle: FontStyle.italic,
-                            color: theme.colorScheme.onSurfaceVariant)),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

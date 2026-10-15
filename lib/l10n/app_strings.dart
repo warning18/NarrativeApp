@@ -392,6 +392,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Their story',
     AppLanguage.fr: 'Leur histoire',
   },
+  'clan_peek_says': {
+    AppLanguage.en: 'What they say to you',
+    AppLanguage.fr: 'Ce qu\u2019ils vous disent',
+  },
+  'clan_peek_tap_close': {
+    AppLanguage.en: 'Tap to close',
+    AppLanguage.fr: 'Touchez pour fermer',
+  },
   'clan_peek_release': {
     AppLanguage.en: 'Let go to close',
     AppLanguage.fr: 'Relâchez pour fermer',

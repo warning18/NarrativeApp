@@ -109,9 +109,14 @@ class ClanPeekLayer extends StatelessWidget {
 /// stands, the motto, what the clan stands for, the way it leans (alignment
 /// and the five axes of its gifts), its sub-clans, and its story.
 class ClanDetailsCard extends ConsumerWidget {
-  const ClanDetailsCard({super.key, required this.factionId});
+  const ClanDetailsCard(
+      {super.key, required this.factionId, this.greeting = ''});
 
   final String factionId;
+
+  /// What the clan says to the party (the offer's (i) adds it, the first
+  /// time it is met); none on a long press.
+  final String greeting;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -276,9 +281,28 @@ class ClanDetailsCard extends ConsumerWidget {
                   style: theme.textTheme.bodySmall
                       ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
             ],
+            if (greeting.isNotEmpty) ...[
+              heading('clan_peek_says'),
+              Container(
+                padding: const EdgeInsets.only(left: 10),
+                decoration: BoxDecoration(
+                  border: Border(left: BorderSide(color: color, width: 3)),
+                ),
+                child: Text(greeting,
+                    key: Key('clan_peek_greeting_$factionId'),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                        fontStyle: FontStyle.italic,
+                        color: theme.colorScheme.onSurfaceVariant)),
+              ),
+            ],
             const SizedBox(height: 10),
             Center(
-              child: Text(tr(ref, 'clan_peek_release'),
+              child: Text(
+                  tr(
+                      ref,
+                      greeting.isEmpty
+                          ? 'clan_peek_release'
+                          : 'clan_peek_tap_close'),
                   style: theme.textTheme.labelSmall
                       ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
             ),
@@ -288,3 +312,24 @@ class ClanDetailsCard extends ConsumerWidget {
     );
   }
 }
+
+/// The same card from a button (the offer's (i)): a dialog a tap closes,
+/// with what the clan says to the party when [greeting] is given.
+Future<void> showClanDetails(BuildContext context,
+        {required String factionId, String greeting = ''}) =>
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => Navigator.of(dialogContext).pop(),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 380),
+              child: ClanDetailsCard(factionId: factionId, greeting: greeting),
+            ),
+          ),
+        ),
+      ),
+    );
