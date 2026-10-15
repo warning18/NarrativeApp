@@ -141,3 +141,10 @@ RUNS=runs50.json ROADS_OUT=roads50.json flutter test narrative_roads_scratch_tes
 python3 stats.py ; python3 analyze3.py
 ```
 The scratch tests are in `tools/` as `.dart.txt`; copy them to the repository root (not `test/`) and rename. Same seed, same figures.
+
+## 8. Decided (the user's answers on the audit)
+
+- **D1: no.** No detour between two scenes of the same place. (Core: a rule in the detour engine; a city scene is the exception, section 5.5 of the Wave 11 proposal.)
+- **D2: yes.** Chapter 4 gets detours. **What the DAG can and cannot do:** chapter 4's spine runs `4999_camp` (the cove camp) to `5003`, `5004`, `5004_altar`, `5005` inside the Hollow Court (one location). The only place-changing step is the sail `4999_camp` to `5003`: a voyage (`travelPlaceId`), into a set piece (`noDetour`, tense), which a detour should not touch. So **no chapter-4 beat of the spine can honestly be lifted**. The chapter's roads are the camp's trips to its three hubs, `5010` (the Drowned Cloister), `5100` (Wrack's End) and `5200` (Kindly Hill), and the hubs are not spine beats, so nothing rolls when leaving them. The hubs are calm and carry no `noDetour` (`5100` neutral, `5200` wondrous, `5010` action but without a set piece). **For Core:** let a choice that travels from or between these hubs roll a detour for chapter 4 (or add them to the chapter's spine).
+- **D8: no detours in chapter 8.** Core enforces it as a chapter rule; I set no `noDetour` there.
+

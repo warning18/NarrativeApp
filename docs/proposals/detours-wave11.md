@@ -365,3 +365,10 @@ A scene in a **city** (the Saltmouth districts, Candlehold) happens inside the c
 5. **City scenes: yes.** Short (one or two beats), no road and no ration. **Start with Saltmouth’s six districts.**
 
 **Next:** the first batch of scenes as data in `assets/gamedata/detour_scenes.json` (six landmarks, one scene per biome plus a few one-beat stops, the six Saltmouth districts), in its own PR with no version bump. It merges with or after Core’s detour engine, and Core reviews the schema first. Core’s detour numbers are in (section 1.5). Alongside the scenes, **a pool top-up** (Narrative, small data PR): at least 6 lines per kind in every place pool, `treasure` lines in every place pool, the Cove camp’s pool by chapter.
+
+## Decided on the audit (the user's answers on #285)
+
+- **No detour between two scenes of one place** (D1): the rule of section 2.1, now decided. City scenes (section 5.5) are the exception.
+- **Chapter 4 gets detours** (D2). Its spine has no honest place-changing beat (see the audit, section 8): the roads are the camp's trips to the hubs `5010`, `5100` and `5200`, which should roll. Core's part.
+- **No detours in chapter 8** (D8): a chapter rule in the engine. The landmark list of section 4.1 already had none for it.
+
