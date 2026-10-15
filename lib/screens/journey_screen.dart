@@ -2875,8 +2875,6 @@ class _JourneyChartState extends State<_JourneyChart>
                     Rect.fromCircle(center: here, radius: _hereRadius),
                     // The "You are here" badge in the corner.
                     Rect.fromLTWH(8, 8, math.min(width * 0.5, 190), 56),
-                    // The level tabs along the foot (v1.350).
-                    Rect.fromLTWH(0, present - 84, 222, 44),
                   ],
                   keep: widget.selected,
                   keepAll: _anchors != null,
