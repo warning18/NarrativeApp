@@ -1,5 +1,5 @@
 // The fight screen's marks for the fight-length rules and the warrior's core
-// (v1.361): Fury as five notches on the hero, the execute line on a foe's
+// (v1.367): Fury as five notches on the hero, the execute line on a foe's
 // health bar, the Tide's mark; and the pieces on their own.
 
 import 'package:flutter/material.dart';

@@ -1,5 +1,5 @@
 // The fight screen's marks for the fight-length rules and the professions'
-// cores (v1.361; fight_length.dart, profession_cores.dart): small, readable
+// cores (v1.367; fight_length.dart, profession_cores.dart): small, readable
 // pieces the fight cards place where each rule acts.
 import 'package:flutter/material.dart';
 

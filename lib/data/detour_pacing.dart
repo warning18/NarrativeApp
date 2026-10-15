@@ -21,6 +21,8 @@
 //   [detourDeadlineFactor].
 // - No two in a row: after a detour, a hunter or a familiar face, the next
 //   [detourCooldownRoads] roads at rest hold none of them.
+// - A voyage's landing rolls as a road arriving there would (v1.361): the
+//   sailed chapters (4 to 7) get their share.
 // - The landmark: each chapter's memorable scene (tagged `landmark`) is
 //   met once, wherever the party walks: on the chapter's first road at
 //   rest that nothing else holds ([landmarkDueRoad]), cooldown or not.
@@ -45,9 +47,9 @@ const int lastDetourChapter = 7;
 
 /// What a road at rest rolls with no quiet road behind it, what each quiet
 /// road adds, and the most it reaches.
-const double detourBaseChance = 0.2;
-const double detourPityStep = 0.1;
-const double detourPityCap = 0.6;
+const double detourBaseChance = 0.08;
+const double detourPityStep = 0.06;
+const double detourPityCap = 0.45;
 
 /// Roads at rest after a detour, a hunter or a familiar face that hold
 /// none of them.
@@ -320,6 +322,22 @@ DetourScene? landmarkOf(
         scene,
   ]..sort((a, b) => a.id.compareTo(b.id));
   return open.isEmpty ? null : open.first;
+}
+
+/// Whether the chapter's landmark is due on [road] (see [planRoad]): it
+/// then comes before a hunter (a road event still holds the road), so a
+/// chapter with one road at rest (the march to Candlehold) meets it.
+bool landmarkDueOn({
+  required DetourPacing pacing,
+  required DetourRoad road,
+  required Map<String, DetourScene> scenes,
+  required Set<String> flags,
+}) {
+  if (!road.atRest || !road.detoursOpen) return false;
+  final p = pacing.inChapter(road.chapter);
+  return p.roads + 1 >= landmarkDueRoad &&
+      landmarkOf(scenes, chapter: road.chapter, flags: flags, met: p.met) !=
+          null;
 }
 
 /// What [road] holds, for a party at [pacing] holding [flags], in the
