@@ -15,6 +15,13 @@ More places to wander off to.
 ### Added
 - **Batch 2 of detour scenes.** 28 new scenes in `detour_scenes.json`, in English and French: echoes for each chapter's lands (the salt pans, the ash road, the lantern-floaters of the fen, the frost-sick queue, the Mirror Shoal, the lamplighters of Candlehold), a few scenes that open only after a story beat (a forgiven candle, the archivist's blank page, a Mire courtesy, a giant's hearth-stone cart), and thirteen short stops, so the higher rate of detours does not repeat. Chapters 4 and 7 first.
 
+## [1.362.0+398]
+
+The march on Candlehold may hold a detour.
+
+### Changed
+- **Chapter 7's gates.** The arrival at Candlehold's gates (`7500`) no longer forbids a detour, so the way to the Throne can hold one, and the chapter's landmark, The Banner on the Hill. The scene is tense and stays tense; only the ban is lifted.
+
 ## [1.361.0+397]
 
 More detours, spread across the whole story (the user: "a bit more, 7 to 10").
