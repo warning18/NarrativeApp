@@ -27,6 +27,7 @@
 // simulator play them.
 import 'dart:math';
 
+import '../combat/context_rules.dart' show Reinforcement;
 import '../l10n/app_locale.dart';
 import 'factions.dart';
 import 'geography.dart';
@@ -191,7 +192,11 @@ PoliticsState givePlace(
   if (place == null || to.isEmpty) return state;
   final from = _ownHolder(place, state);
   if (from == to) return state;
-  var next = state.copyWith(control: {...state.control, placeId: to});
+  var next = state.copyWith(
+    control: {...state.control, placeId: to},
+    // A crisis over this place is over (clan_crisis.dart).
+    crisis: state.crisis['place'] == placeId ? const {} : null,
+  );
   changes?.add(
       TerritoryChange(placeId: placeId, from: from, to: to, cause: cause));
   if (from.isNotEmpty) {
@@ -246,7 +251,8 @@ PoliticsState givePlace(
       placesOf(from, geography, next).isEmpty &&
       !fallen.contains(from)) {
     fallen.add(from);
-    next = next.copyWith(power: {...next.power, from: 0});
+    next = next.copyWith(
+        power: {...next.power, from: 0}, fellTo: {...next.fellTo, from: to});
     String fell(AppLanguage language) => fallenNews(language,
         clan: data.faction(from),
         winner: data.faction(to),
@@ -279,6 +285,7 @@ PoliticsState givePlace(
   required Geography geography,
   required int chapter,
   int day = 0,
+  String protect = '',
 }) {
   var next = state;
   // Holdings and neglect.
@@ -310,6 +317,23 @@ PoliticsState givePlace(
 
   bool free(String id) => !moved.contains(id);
 
+  // [protect]'s seat or last place (your main clan's, clan_crisis.dart)
+  // is not taken at once: the crisis waits for you, one at a time.
+  bool crisisFirst(String placeId, String holder, String taker) {
+    if (protect.isEmpty || holder != protect || next.crisis.isNotEmpty) {
+      return false;
+    }
+    final places = placesOf(protect, geography, next);
+    final seat = data.faction(protect)?.seat ?? '';
+    if (placeId != seat && places.length > 1) return false;
+    next = next.copyWith(
+        crisis: {'clan': protect, 'attacker': taker, 'place': placeId});
+    moved
+      ..add(protect)
+      ..add(taker);
+    return true;
+  }
+
   // Claims: a clan risen above where it started reaches for its next one.
   for (final id in clans) {
     if (!free(id)) continue;
@@ -329,6 +353,7 @@ PoliticsState givePlace(
               powerOf(next, holder, data) >= powerOf(next, id, data))) {
         continue;
       }
+      if (crisisFirst(placeId, holder, id)) break;
       next = givePlace(next, placeId, id,
           cause: 'claim',
           data: data,
@@ -375,6 +400,7 @@ PoliticsState givePlace(
         ...theirs.where((p) => !claims.contains(p) && p != seat),
         ...theirs.where((p) => p == seat),
       ];
+      if (crisisFirst(ordered.first, other, id)) break;
       next = givePlace(next, ordered.first, id,
           cause: 'war',
           data: data,
@@ -476,4 +502,23 @@ String fallenNews(
               '$taker ${_agree(winner, 'tient', 'tiennent')} $seat.'
           : '$seat est ${_to(winner)}. $name '
               '${_agree(clan, 'n’a', 'n’ont')} plus un pouce de terrain.');
+}
+
+/// Who joins a fight at [placeId] (context_rules.dart's reinforcements):
+/// the holder's people on the character's side when they stand Friend or
+/// better with it, against them when it hunts them or is their nemesis;
+/// none where no clan holds the place, or stands between.
+Reinforcement reinforcementAt(
+    String? placeId, Geography geography, PoliticsState state, ClanData data) {
+  final holder = holderOf(placeId, geography, state);
+  if (holder.isEmpty || data.faction(holder) == null) {
+    return Reinforcement.none;
+  }
+  final tier = state.tierOf(holder, data);
+  if (holder == state.nemesis || tier == StandingTier.hunted) {
+    return Reinforcement.foes;
+  }
+  return tier.isAtLeast(StandingTier.friend)
+      ? Reinforcement.allies
+      : Reinforcement.none;
 }

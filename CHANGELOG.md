@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.395.0+431]
+## [1.398.0+434]
 
 The clan offer's popup is one block: the ring on top, and under it the clan card with the gift in it.
 
@@ -17,6 +17,30 @@ The clan offer's popup is one block: the ring on top, and under it the clan card
 - **The clan's words sit behind an (i).** The button beside the clan's name opens its card (the same one a long press shows), with what the clan says to you; the first time you meet a clan the button is lit. The words no longer take room in the popup.
 - The alignment word ("Alignment · toward Good") stays in the block, under the gift.
 - **Hold a banner for the clan's details.** A long press on a banner in the offer, on a crest of the ring, or on a standard in the Throne room opens its card: where it leans (alignment, the five axes of its gifts), what it stands for, its sub-clans, its motto and a short recap of its story. Letting go, or a tap outside, closes it.
+
+## [1.397.0+433]
+
+In a place a clan holds, its people join long fights.
+
+- **Reinforcements.** From round 8, in a place a clan holds:
+  - if you stand Friend or better with it, its people fight beside you, and each foe loses 5% of its health a round;
+  - if it hunts you or is your nemesis, its people fall on you, and each of you loses 5% a round.
+- They never join a boss's fight and never strike the finishing blow. The fight log says when they come.
+- **Balance:** a gentle edge, as asked. In every fight, allies are worth up to +2.9 points and foes cost up to −2.6. Report: docs/simulation/reinforcements.md.
+
+## [1.394.0+430]
+
+When your clan's seat is attacked, it asks for your help, and if it falls, you choose what becomes of you.
+
+- **The crisis.** When another clan is about to take the seat (or last place) of your clan (sworn, or your patron), a rider finds you on the road first.
+  - **Defend it:** a fight with the attacker's hunter. Won, the seat holds and your clan grows stronger. Lost, you can still pay or refuse.
+  - **Pay:** 40 gold a chapter. The attacker takes a lesser place instead.
+  - **Refuse:** the seat falls, and your clan thinks less of you.
+- **The fall.** When your clan has no place left, you choose:
+  - **Bend the knee to the winner:** your standing moves to it (sworn if you were sworn), and it takes a fifth of your gold.
+  - **Stay of the fallen clan:** no new oath and no patron's stats, its gifts kept, and the winner hunts you as your nemesis, until you raise a banner of your own. Then the fallen clan joins your Host.
+- **The Mire has a seat:** the Mire's Court, a dry room in the middle of the Drowned Cloister.
+- Narrative's words throughout, in English and French.
 
 ## [1.393.0+429]
 

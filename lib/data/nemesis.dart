@@ -62,6 +62,15 @@ PoliticsState updateNemesis(
   int chapter = 0,
   int day = 0,
 }) {
+  // Of a fallen clan (clan_crisis.dart): its winner hunts you, whatever
+  // its power.
+  final forced = state.fallenWinner;
+  if (forced.isNotEmpty) {
+    return state.nemesis == forced
+        ? state
+        : _told(state.copyWith(nemesis: forced), 'nemesis:$forced',
+            nemesisRiseNews(data.faction(forced)), chapter, day);
+  }
   var next = state;
   final held = state.nemesis;
   if (held.isNotEmpty) {

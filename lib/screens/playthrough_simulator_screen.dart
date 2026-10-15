@@ -12,7 +12,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../combat/combat_engine.dart'
     show chapterRewardMultiplier, isBossEnemy, scaledReward, zoneBossEnemyIds;
-import '../combat/context_rules.dart' show ContextRule;
+import '../combat/context_rules.dart' show ContextRule, Reinforcement;
 import '../combat/gear_effects.dart';
 import '../combat/spec_variants.dart' show SpecVariantInfo, specVariantsFrom;
 import '../combat/specialisations.dart' show SpecInfo, specInfosFrom;
@@ -364,6 +364,7 @@ class _SimContext {
     this.ports = const {},
     this.startSpecs = const [],
     this.context,
+    this.reinforcement = Reinforcement.none,
     this.specs = const {},
     this.specVariants = const {},
   });
@@ -381,6 +382,10 @@ class _SimContext {
   /// A context rule every fight plays (context_rules.dart), to measure
   /// each one; null: the Tide (no fight's place is known here).
   final ContextRule? context;
+
+  /// Reinforcements in every fight (context_rules.dart), to measure them;
+  /// none: no fight's place is known here.
+  final Reinforcement reinforcement;
 
   /// detour_scenes.json: the detours' written scenes (detour_scenes.dart).
   final Map<String, DetourScene> detourScenes;
@@ -1012,6 +1017,7 @@ _SimResult _simulate(
         clash: sim.clash,
         clashOff: sim.clashOff,
         context: sim.context,
+        reinforcement: sim.reinforcement,
         clanStanding: growth == null
             ? null
             : (id) => growth.politics.standingOf(id, growth.tables.clans),
@@ -1863,6 +1869,7 @@ _SimContext _simContextOf(
   Set<String> clashOff = const {},
   List<String> startSpecs = const [],
   ContextRule? context,
+  Reinforcement reinforcement = Reinforcement.none,
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
   final written = writtenStepsFrom(table('expedition_steps'));
@@ -1901,6 +1908,7 @@ _SimContext _simContextOf(
     ports: table('ports'),
     startSpecs: startSpecs,
     context: context,
+    reinforcement: reinforcement,
     specs: specInfosFrom(table('specialisations')),
     specVariants: specVariantsFrom(table('spec_variants')),
   );
@@ -1996,9 +2004,13 @@ List<SimRunSummary> simulatePlaythroughs(
   bool transcripts = false,
   List<String> startSpecs = const [],
   ContextRule? context,
+  Reinforcement reinforcement = Reinforcement.none,
 }) {
   final sim = _simContextOf(tables, gameConfig,
-      clashOff: clashOff, startSpecs: startSpecs, context: context);
+      clashOff: clashOff,
+      startSpecs: startSpecs,
+      context: context,
+      reinforcement: reinforcement);
   final enemies = tables['enemies'] ?? const {};
   final out = <SimRunSummary>[];
   for (var i = 0; i < plan.length; i++) {

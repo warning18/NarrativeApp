@@ -1,6 +1,7 @@
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
+import 'clan_crisis.dart';
 import 'clan_power.dart';
 import 'factions.dart';
 import 'geography.dart';
@@ -605,6 +606,17 @@ class _Coast {
           politics = addPower(politics, e.key, questPower, data, helped: true);
         }
       }
+    }
+    // The crisis and the fall (clan_crisis.dart).
+    if (p.settleCrisis.isNotEmpty) {
+      politics = settleCrisis(politics, p.settleCrisis);
+    }
+    if (p.bendKnee.isNotEmpty) {
+      politics = bendTheKnee(politics, p.bendKnee, data,
+          chapter: world.chapter, day: world.day);
+    }
+    if (p.stayFallen.isNotEmpty) {
+      politics = stayOfFallen(politics, p.stayFallen);
     }
     for (final e in p.control.entries) {
       final geography = world.geography;
