@@ -77,10 +77,12 @@ List<String> hunterPoolFor({
   return pool;
 }
 
-/// True for an enemy that only ever appears as an alignment hunter, so the
-/// ordinary excursion/expedition pools leave it out.
+/// True for an enemy that only ever appears as a hunter (an alignment
+/// hunter, or a rival clan's `hunterOnly` one, see rival_hunters.dart), so
+/// the ordinary excursion/expedition pools leave it out.
 bool isHunterEnemy(Map<String, dynamic>? enemy) =>
-    (enemy?['hunterAlignment']?.toString() ?? '').isNotEmpty;
+    (enemy?['hunterAlignment']?.toString() ?? '').isNotEmpty ||
+    enemy?['hunterOnly'] == true;
 
 /// Whether [chain] (an alignment event, see [maybeAlignmentEvent]) is a
 /// hunter's ambush rather than a temptation.
