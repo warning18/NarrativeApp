@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.352.0+388]
+## [1.354.0+390]
 
 The professions' cores (v5.2 step 1, second half; docs/simulation/profession-cores.md). The hero plays their profession's core; companions keep their dice as they are.
 
