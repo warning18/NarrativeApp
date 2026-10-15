@@ -34,6 +34,7 @@ import '../combat/turn_order.dart';
 import '../combat/enemy_affix.dart';
 import '../combat/fight_goal.dart';
 import '../combat/fight_length.dart';
+import '../combat/profession_cores.dart';
 import '../combat/gear_effects.dart';
 import '../combat/loot_box.dart';
 import '../combat/spells.dart';
@@ -374,6 +375,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   /// The fight-length rules' tallies (see fight_length.dart).
   final _FightLength _length = _FightLength();
+
+  /// The hero's profession core and its state (see profession_cores.dart).
+  late final _HeroCore _core =
+      _HeroCore(coreOfProfession(ref.read(playerSessionProvider).professionId));
 
   /// The member whose kept Defend face draws the enemies' attacks this
   /// round (see _confirmRoll): null outside a party fight or when nobody
