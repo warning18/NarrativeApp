@@ -125,11 +125,12 @@ extension _FightCards on _FightScreenState {
                     child: Icon(Icons.gps_fixed,
                         size: 14, color: colorScheme.error),
                   ),
-                _buildDieSlot(face, accent),
+                _buildCoreDieSlot(member, face, accent),
               ],
             ),
             const SizedBox(height: 5),
             _buildHpBar(member.currentHealth, member.maxHealth),
+            ..._coreMarks(member),
             const SizedBox(height: 4),
             Wrap(
               spacing: 4,
@@ -163,6 +164,110 @@ extension _FightCards on _FightScreenState {
       amount: _lastDamageTaken,
       fade: true,
     );
+  }
+
+  /// The hero's profession core made readable (profession_cores.dart): the
+  /// warrior's Fury as five notches, the cleric's Watchfire as a flame under
+  /// the health bar. (The mage's Ash Well sits on the mana meter, the
+  /// rogue's Flurry on the die, the ranger's Trail beside it.)
+  List<Widget> _coreMarks(_PartyMember member) {
+    if (!member.isPlayer || member.isKnockedOut) return const [];
+    switch (_core.core) {
+      case ProfessionCore.fury:
+        return [
+          const SizedBox(height: 4),
+          FuryGauge(
+            value: _core.fury,
+            max: furyMax,
+            label: tr(ref, 'fury_label'),
+            readyLabel: tr(ref, 'fury_ready_label'),
+            tooltip: tr(ref, 'fury_tip'),
+          ),
+        ];
+      case ProfessionCore.watchfire:
+        return [
+          const SizedBox(height: 4),
+          WatchfireMark(
+            fire: _core.fire,
+            cap: (member.maxHealth * watchfireCapShare).round(),
+            label: tr(ref, 'watchfire_label'),
+            tooltip: tr(ref, 'watchfire_tip'),
+          ),
+        ];
+      case ProfessionCore.ashWell:
+      case ProfessionCore.flurry:
+      case ProfessionCore.trail:
+      case ProfessionCore.none:
+        return const [];
+    }
+  }
+
+  /// The die slot of a party member, with what the hero's core adds to it:
+  /// a "×2" on a Flurry's damaging face; beside it, the face the Trail deals
+  /// next.
+  Widget _buildCoreDieSlot(
+      _PartyMember member, DiceFaceResult? face, Color accent) {
+    final slot = _buildDieSlot(face, accent);
+    if (!member.isPlayer || member.isKnockedOut) return slot;
+    if (_core.core == ProfessionCore.flurry &&
+        face != null &&
+        !_rolling &&
+        _faceKindOf(face) == FaceKind.attack) {
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          slot,
+          Positioned(
+            right: -4,
+            bottom: -5,
+            child: DieBadge(text: '×2', tooltip: tr(ref, 'flurry_tag_tip')),
+          ),
+        ],
+      );
+    }
+    final ahead = _core.aheadIndex;
+    if (_core.core == ProfessionCore.trail &&
+        ahead != null &&
+        ahead < member.dieFaces.length) {
+      final next = faceFromJson(member.dieFaces[ahead], ahead);
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Tooltip(
+            message: tr(ref, 'trail_next_tip'),
+            child: Opacity(
+              key: const Key('trail_next_face'),
+              opacity: 0.7,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 22,
+                    height: 22,
+                    margin: const EdgeInsets.only(right: 4),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: _faceKindOf(next).color.withValues(alpha: 0.18),
+                      border: Border.all(
+                          color: accent.withValues(alpha: 0.6),
+                          style: BorderStyle.solid),
+                    ),
+                    child: Center(child: _buildFaceGlyph(next, size: 14)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 4),
+                    child: Text(tr(ref, 'trail_next_label'),
+                        style: const TextStyle(fontSize: 8, height: 1)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          slot,
+        ],
+      );
+    }
+    return slot;
   }
 
   /// The small square next to a party member's name holding the face they
@@ -254,7 +359,7 @@ extension _FightCards on _FightScreenState {
   /// [_previewRoll]) the slice about to go is painted [_previewColor] and
   /// the numbers read "now → after / max".
   Widget _buildHpBar(int current, int maxValue,
-      {double height = 14, int pending = 0}) {
+      {double height = 14, int pending = 0, bool executeLine = false}) {
     final rawRatio = maxValue <= 0 ? 0.0 : current / maxValue;
     final ratio = rawRatio.clamp(0.0, 1.0);
     final after = max(0, current - pending);
@@ -305,6 +410,17 @@ extension _FightCards on _FightScreenState {
                           ),
                         ),
                       ),
+                    ),
+                  // Where a struck foe falls (fight_length.dart's execute).
+                  if (executeLine)
+                    Positioned(
+                      key: const Key('execute_tick'),
+                      left: constraints.maxWidth * executeShare - 0.75,
+                      width: 1.5,
+                      top: 0,
+                      bottom: 0,
+                      child: ColoredBox(
+                          color: Colors.white.withValues(alpha: 0.85)),
                     ),
                 ],
               ),
@@ -499,8 +615,15 @@ extension _FightCards on _FightScreenState {
                 ],
               ),
               const SizedBox(height: 5),
-              _buildHpBar(enemy.currentHealth, enemy.maxHealth,
-                  pending: enemy.isAlive ? pending : 0),
+              Tooltip(
+                message: isBossEnemy(enemy.enemyId, enemy.data)
+                    ? ''
+                    : tr(ref, 'execute_tick_tip'),
+                child: _buildHpBar(enemy.currentHealth, enemy.maxHealth,
+                    pending: enemy.isAlive ? pending : 0,
+                    executeLine: enemy.isAlive &&
+                        !isBossEnemy(enemy.enemyId, enemy.data)),
+              ),
               const SizedBox(height: 4),
               Wrap(
                 spacing: 4,
@@ -535,6 +658,16 @@ extension _FightCards on _FightScreenState {
                   if (enemy.isAlive && enemy.staggered)
                     _stateChip(Icons.sync_problem, tr(ref, 'staggered_label'),
                         Colors.teal),
+                  // Hurt, and no boss to stand by it: it may flee.
+                  if (enemy.isAlive &&
+                      !enemy.yielded &&
+                      !_enemies.any((e) => isBossEnemy(e.enemyId, e.data)) &&
+                      wavers(
+                          health: enemy.currentHealth,
+                          maxHealth: enemy.maxHealth))
+                    _stateChip(Icons.directions_run, tr(ref, 'wavering_label'),
+                        Colors.amber.shade800,
+                        tooltip: tr(ref, 'wavering_tip')),
                   if (enemy.isAlive && enemy.rallyStacks > 0)
                     _stateChip(
                         Icons.campaign,

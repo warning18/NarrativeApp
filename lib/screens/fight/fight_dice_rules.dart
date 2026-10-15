@@ -736,6 +736,8 @@ extension _FightDiceRules on _FightScreenState {
     final ahead = _core
         .deckFor(faces.length, _random)
         .peekAhead(_core.has(Spec.fenGuide) ? _core.mods.trailSight : 1);
+    // The fight screen's "next face" tile shows the first of them.
+    if (ahead.isNotEmpty) _core.aheadIndex = ahead.first;
     String nameOf(int index) {
       final assigned = hero.first.diceSkillAssignments['$index'];
       return assigned != null && assigned.isNotEmpty
