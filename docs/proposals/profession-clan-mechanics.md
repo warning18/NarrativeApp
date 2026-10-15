@@ -1,161 +1,112 @@
-# Clan rules, v4.2: one signature rule per clan, short fights, more skills in play (Core, proposal)
+# Professions and clans, v5: the profession plays, the clans specialise it (Core, proposal)
 
-**v4.2** gives the Vigil a new rule. Your feedback on v4: *"Great, the only one that should be updated again is the Vigil. Can't you find a better mechanic? Like healing yourself, and healing over max life does damage, or something similar."*
+v5 reorganises v4.2 around your clarification:
 
-- **Accepted, as v4 wrote them:**
-  - Dominion: the Writ of Order;
-  - Compact: Thornplate;
-  - Mire: the Rot;
-  - Crows: Blood Price;
-  - Penitents: the Ash Well;
-  - the Pit, Choir and Open Hand rules.
+> *"Professions define your gameplay, and each is linked more or less to clans, who allow you to specialize through their offers. So gameplay orientation is linked to professions but can be built differently upon becoming friendlier to a clan."*
 
-  The alternative swaps are dropped. v4.1 had moved the deck to the Vigil and given Dominion "Judgment"; that is undone.
-- **New:** the Vigil's **Watchfire** (healing past full burns the enemy), with its three subclan gifts.
-- **Kept from v4.1, from your later messages:**
-  - **"Cards are clan offers":** the word "card" is gone. A subclan's twist is one more gift in its clan's offers.
-  - **"No too long fights":** the Tide.
-  - **"Skill diversity":** six proposals.
-- **Still open with you:**
-  - whether a rule turns on from Friendly or only from Trusted;
-  - whether a rule is a sidegrade or a reward.
-
-  This document doesn't decide them.
+- **The profession owns the core mechanic.** Each of the five professions gets one solo signature mechanic on its die faces and resources. The mechanics come from the material you already validated:
+  - Blood Price, the Watchfire, the Ash Well, the Rot and the deck become professions' cores;
+  - Thornplate becomes a warrior specialisation.
+- **Clans specialise it.** As you grow closer to a clan, its offers bring gifts that bend your profession's mechanic in that clan's direction: warrior → holy warrior, berserker, thorn-wall. They come through today's offer system and accumulate. There is nothing to wear and no rule to switch on or off.
+- **"More or less linked."** Each profession has three **natural clans**, taken from the factions' existing `sponsors` (the skill branches each clan already backs). These offer its gifts more often and give the strongest twists. The other clans are weaker links.
+- **Kept:**
+  - the passive stats per clan level;
+  - subclan gifts as clan offers;
+  - the Tide and the skill-verb proposals (still open questions);
+  - power, territory and the nemesis;
+  - the Pit, the Choir and the Open Hand as minor directions.
 
 Proposal only; nothing is built. **[N]** marks Narrative's part, **[UX]** UX's.
 
 ## At a glance
 
-| Clan | Signature rule | What changes | Risk / reward | Win / rounds (today: 54.5% / 16.6) | With the Tide (alone: 54.5% / 11.2) |
+| Profession | Core mechanic | Specialisation 1 | Specialisation 2 | Specialisation 3 | Minor direction |
 |---|---|---|---|---|---|
-| **Dominion** | **The Writ of Order** (the die as a deck) | Each face comes up once before any comes twice; the sixth face of a run, the Verdict, counts half again | No luck, your weakest face is certain / you know what's left | 64.6% / 14.3 | 65.2% / 10.7 |
-| **Vigil** | **The Watchfire** | While above half health, you heal 2% of max health each round. Healing past full feeds a Watchfire (up to half your max health) that takes blows first; what's left at the round's end **burns the enemy for double** | Below half health the fire goes out / staying high turns every heal into damage | 63.1% / 17.2 | 62.5% / 11.6 |
-| **Compact** | **Thornplate** | Half of every blow your block and armour stop goes back; you can't dodge | Poison and spells pass the plate / defence becomes damage | 53.9% / 12.0 | 50.5% / 10.0 |
-| **Mire** | **The Rot** | Strikes deal 20% less; each one that lands adds a lasting, stacking poison (5% of the full strike, every turn) | Little burst / every hit keeps working | 60.1% / 14.6 | 53.4% / 11.3 |
-| **Crows** | **Blood Price** (the berserk) | Every Attack face is a Pain strike: double damage, 8% of your max health; below half health, strikes deal 25% more | You can bleed out / the heaviest blows | 62.9% / 11.8 | 65.4% / 9.2 |
-| **Penitents** | **The Ash Well** | Each fight starts with 0 mana; Mana faces give double; spells cost 1 less; mana left after a win heals you | A die without Mana faces does nothing / big spell rounds, healing after | 55.4% / 17.2 | not run |
-| *Pit* | *Clause in Blood* | A spell you can't afford is paid in health, 5% of max per missing mana, while above half | Life for power | 54.2% / 16.4 | not run |
-| *Choir* | *The Vow* | No potions in a fight; heals heal 50% more; once a fight, a killing blow leaves you at 1 | No safety net / the Vow holds you once | 55.9% / 17.1 | not run |
-| *Open Hand* | *Your Own Hand* | Once a round, reroll the die | — | 59.5% / 15.7 | 59.9% / 10.9 |
+| **Warrior** | **Blood Price**: Attack faces are Pain strikes (double damage, 8% of your max health); stronger below half health | **Berserker** (Crows): +50% below half, a kill heals 10% | **Thorn-wall** (Compact): half of what your guard and armour stop goes back; no dodge | **Holy warrior** (Dominion): Pain strikes are Fire and Pierce; against Evil they cost nothing | **Dark knight** (Pit): spells paid in blood |
+| **Cleric** | **The Watchfire**: self-healing above half; healing past full burns the enemy for double | **Radiance** (Vigil): every heal also burns the enemy for its amount | **Ember Sister** (Penitents): the fire turns into mana, and cleanses | **Lantern Cantor** (Dominion): the fire holds your whole max health and burns every enemy | **Paladin** (Choir): the Vow |
+| **Mage** | **The Ash Well**: mana from Mana faces only, starting at 0; Mana faces give double; spells cost 1 less; mana left heals | **Inquisitor** (Dominion): mana past full burns the enemy | **Ash Chorister** (Penitents): a spell from a full Well hits +50% | **Storm Arcanist** (Crows): spells steal life; Teleport Strike | **Blood mage** (Pit): Clause in Blood |
+| **Rogue** | **The Rot**: strikes deal 20% less, but each one that lands adds a lasting, stacking poison | **Fever Blade** (Mire): stronger rot that passes on when its bearer falls | **Tar Bleeder** (Crows): Pain strikes whose cost is paid as rot on the enemy | **Relic Thief** (Penitents): each rot tick feeds you mana | — |
+| **Ranger** | **The Trail** (the die as a deck): each face comes up once before any repeats; you see the next face; the sixth, the Verdict, counts half again | **Trapwright** (Compact): the Verdict is a trap that stuns | **Fen Guide** (Mire): first draws poison | **Corsair Marksman** (Crows): the Verdict doubles and Pierces | — |
 
-**How the three healing rules stay apart:**
-- The **Vigil** heals itself all fight and turns *health* past full into damage.
-- The **Choir** heals harder but gives up potions, and its surplus does nothing.
-- The **Penitents** turn *mana* left after a win into healing.
-- v4.1 had made the Ash Well and the Vow turn their surplus into damage too. That is dropped, so surplus becoming damage stays the Vigil's own.
+## Why each mechanic fits its profession
 
-## Vigil: the Watchfire
+| Profession | Mechanic | Why it fits |
+|---|---|---|
+| Warrior | Blood Price | Heavy blows paid in your own health: the warrior is the one who stands in front, and the berserk style you described. Warriors are the weakest profession today (37% of fights won), and this is the mechanic that lifts them most. |
+| Cleric | The Watchfire | Healing is what clerics do, and overheal becomes their damage: your idea for the Vigil, now the cleric's own, while the Vigil becomes a cleric clan. |
+| Mage | The Ash Well | Mana from the die alone, your Slice & Dice example. The mage already lives on Mana faces and Channel. |
+| Rogue | The Rot | Poison and patience: the Venom branch and Poison Blade are rogue skills. The many quick hits suit the rogue's dice. |
+| Ranger | The Trail | A hunter reads what comes: the die becomes a trail you can see one step ahead, for aimed shots and traps set in advance. Before v5, Dominion held it as the Writ of Order. |
 
-**The rule:**
-- **Self-healing.** At the start of each round, while you are at half health or more, you heal 2% of your max health.
-- **The Watchfire.** Healing past full health (the round's heal, a Heal face, a heal skill) feeds the Watchfire, up to half your max health. It is shown as a flame over your health bar **[UX]**.
-- **It guards, then it burns.** The enemies' blows that round hit the Watchfire first. What is left of it at the end of the round **burns the enemy in front of you for double**, and the fire starts again from nothing.
-- **The risk.** Below half health the self-healing stops, and the fire goes out with it. You must stay high to keep it.
+## Measured: each profession's core and one specialisation
 
-**Why you build differently:**
-- Heal faces and heal skills become attack faces, as long as you're near full.
-- You want to stay above half, so Defend faces and Constitution (more max health, more fire) matter. That fits the Vigil's Constitution and Perception leaning.
-- Big burst matters less: the fire works every round.
+**Setup:**
+- 200 seeded runs per line, 40 per profession, random strategy. Each profession plays only its own mechanic.
+- The mechanic was added through a temporary patch of the fight simulator, kept in the Core session's scratchpad as `v5_prof_sim.patch` and never committed.
+- The autoplay doesn't rebuild its die for a mechanic, so the numbers show a player who doesn't adapt.
 
-**Measured** (200 runs, the same setup as the others):
-
-| Version | Win | Rounds | Note |
-|---|---|---|---|
-| **The Watchfire: 2% while above half, burns double** | **63.1% (+8.6)** | **17.2** | **with the Tide: 62.5% / 11.6** |
-| Overheal burns, no self-healing (the first version) | 55.1% | 17.0 | the fire hardly lights: about 4 damage per fight |
-| Self-healing 5% every round, no burn | 88.3% | 18.6 | far too strong: health also carries between fights |
-| 3% while above half, burns double | 69.9% | 16.9 | too strong |
-| 3% while above half, burns double, strikes −20% | 59.1% | 19.5 | fights too long |
-
-- **Which version:** the 2% one keeps the win rate near the other accepted rules (Writ of Order +10, Blood Price +8) and adds under a round per fight.
-- **Why the fire is a buffer before it is damage:** the Watchfire burns 34 damage per fight and soaks 13 of the enemies' blows, and that leaves the round's own self-healing as the larger part of the rule. Making the burn the larger part is what the gifts below do.
-- **Suggested:** keep 2%, and if loyalty is to be a sidegrade (open question), burn half again rather than double.
-
-**Subclan gifts (twists on the rule):**
-
-| Subclan | Gift | For | Twist |
-|---|---|---|---|
-| Last Watch | **Wall Veteran** | warrior | Defend faces feed the Watchfire too: half their block goes in as healing, so a guard at full health becomes fire |
-| Candlebearers | **Ossuary Warden** | cleric | The Watchfire holds up to your full max health (not half), and its burn is Light |
-| Stitchers | **Stitcher** | rogue | The Watchfire doesn't burn at the round's end: your next strike carries it instead, all at once |
-
-## Short fights: the Tide
-
-**Today:**
-- Average 16.6 rounds per fight: 7.3 in chapter 1, 18.7 in chapter 5, **30.3** in chapter 7, 18.1 for bosses.
-- One fight in seven lasts more than 25 rounds.
-
-**The Tide, one rule for every fight:**
-- From round 8, the tide rises each round: **your blows +20%, the enemies' +10%**, adding up. At round 10 you hit +60% and they hit +30%.
-- The fight screen shows it beside the round count **[UX]**.
-
-| | Today | With the Tide | Tide at +20% for both | Enemies −25% health from chapter 4 instead |
+| Profession | Today: win / rounds | Core: win / rounds | Specialisation measured: win / rounds | With the Tide: today → core → specialisation |
 |---|---|---|---|---|
-| Win | 54.5% | **54.5%** | 46.8% | 62.9% |
-| Rounds per fight | 16.6 | **11.2** | 10.4 | 14.7 |
-| Fights over 25 rounds | 14.5% | **1.1%** | 0% | 11.2% |
-| Chapter 7 / bosses | 30.3 / 18.1 | **16.6 / 12.1** | 13.9 / 11.0 | 28.6 / 15.8 |
-| Win by profession (cl / ma / ra / ro / wa) | 74 / 63 / 54 / 49 / 37 | **52 / 62 / 60 / 57 / 42** | 35 / 61 / … | 83 / 73 / 64 / 57 / 43 |
+| Warrior | 37.0% / 14.2 | **Blood Price 48.5% / 8.9** | Berserker 56.5% / 9.1 (Thorn-wall in place of the core: 43.1% / 11.2) | 41.7% → 56.3% → 63.4%, about 8.4 rounds |
+| Cleric | 73.7% / **38.8** | **Watchfire 77.1% / 39.1** | Radiance 81.5% / 33.8 | 52.0% → 55.5% → 55.4%, about 16.5 rounds |
+| Mage | 63.0% / 8.3 | **Ash Well 65.8% / 8.2** | Inquisitor 66.0% / 8.1 | 62.1% → 62.1% → 63.7%, about 7.8 rounds |
+| Rogue | 48.7% / 13.1 | **Rot 52.8% / 13.0** | Fever Blade (rot at 10%) 62.1% / 12.0 | 57.2% → 56.8% → 61.1%, about 10.5 rounds |
+| Ranger | 53.8% / 13.5 | **Trail 63.8% / 12.5** | Corsair (Verdict ×2) 71.0% / 12.2 | 59.8% → 68.1% → 72.6%, about 10.1 rounds |
 
-- **The Tide keeps the win rate, cuts long fights to 1 in 100, and narrows the gap between professions.** Clerics win by outlasting today; with the Tide the spread drops from 37 points to 20.
-- **Every accepted rule stays short under the Tide:** 9.2 to 11.6 rounds.
-- **Target:** an average of 10 to 12 rounds, bosses at 12 or fewer, and no fight past 20 but a rare boss.
+What the numbers show:
+- **The cores narrow the gap between professions.** Today's spread is 37 points (warrior 37%, cleric 74%). With the cores it is 29 points; with the cores and the Tide, 12 points (55–68%).
+- **The long fights are a cleric problem.** Clerics average **38.8 rounds** against 8 to 14 for everyone else: they outlast, and their damage is low. No healing rule fixes it. Even every heal burning for its full amount (Radiance) only brings them to 33.8. **The Tide does: 17 rounds.** A cleric's damage skills with a verb (Smite double against Evil, below) are the second lever.
+- **The Trail is the strongest core (+10 for rangers).** **Suggested:** a Verdict of ×1.25, or the deck with no Verdict (58.8% overall in v4).
+- **The mage's Ash Well barely moves (+3):** the autoplay keeps one Mana face. A mage who builds two is the case the mechanic is for. Estimate: +5.
+- **The specialisations add 0 to 9 points over their core,** and most of them shorten fights. That is the room a clan's gifts add up to.
 
-## More skills in play
+## Clans by profession: the affinity table
 
-**Today:**
-- 92 skills come up, but they spread like **only 17 equally used skills**. The top 10 take 62% of rolls.
-- **39 skills come up under 0.2% of the time**, among them Execute, Meteor, Fireball, Power Strike, Whirlwind, Multi-Shot, Shield Bash, Poison Blade, Iron Will and Second Chance.
-- Prayer alone is **18.2%** of skill rolls; Entropy Touch 7.3%, Celestial Ward 5.9%, Channel 5.1%, Backstab 5.1%.
+Natural links (●●) come from what each clan already sponsors in factions.json:
+- Dominion: warrior Vanguard, cleric Judgment, mage Evocation;
+- Vigil: warrior Warlord, cleric Vigil;
+- Compact: warrior Bulwark, ranger Trapper;
+- Mire: rogue Venom, ranger Wilds;
+- Crows: rogue Shadow, mage Tempest, ranger Marksman;
+- Penitents: cleric Devotion, rogue Trickster, mage Aegis.
 
-**Why:**
-1. Prayer and Channel sit on a **fixed** face of the starting die.
-2. Most damage skills differ only by their numbers, so the biggest number wins.
-3. The epic skills reach few runs, and late.
-4. There are only three statuses.
+Where a profession has more than three, the three listed first are its main specialisations. A weak link (●) still offers a twist, less often.
 
-**The proposals:**
-1. **Free the mana face.** It stays fixed only until the die holds a second source of mana, then takes any skill. In the runs where mana works differently, Prayer falls from 18% to 8–9% and the spread widens from 17 to 25 equally used skills.
-2. **One verb per skill,** from existing keywords and conditions:
+| | Dominion | Vigil | Compact | Mire | Crows | Penitents |
+|---|---|---|---|---|---|---|
+| **Warrior** | ●● Holy warrior | ● Wall Veteran | ●● Thorn-wall | ○ | ●● Berserker | ● Ash Penitent |
+| **Cleric** | ●● Lantern Cantor | ●● Radiance | ○ | ● Moss Singer | ○ | ●● Ember Sister |
+| **Mage** | ●● Inquisitor | ○ | ● Ember Adept | ● Hex-Weaver | ●● Storm Arcanist | ●● Ash Chorister |
+| **Rogue** | ○ | ● Stitcher | ○ | ●● Fever Blade | ●● Tar Bleeder | ●● Relic Thief |
+| **Ranger** | ● Admiralty Gunner | ○ | ●● Trapwright | ●● Fen Guide | ●● Corsair Marksman | ○ |
 
-   | Skill | Its verb |
-   |---|---|
-   | Power Strike | Steady |
-   | Execute | Double under 30% enemy health |
-   | Whirlwind | Cleave |
-   | Fireball | Half its damage to the others |
-   | Meteor | Lands next round, on every enemy, for double |
-   | Multi-Shot | Three hits of 40%, each counting as a hit |
-   | Backstab | Double against a stunned or weakened enemy |
-   | Aimed Shot | Pierce |
-   | Hammer Blow | Growth |
-   | Poison Blade | Its poison stacks |
-   | Iron Will | Block equal to its heal |
-   | Second Chance | Double below a quarter health |
-   | Smite | Double against Evil |
+Notes on the table:
+- **Warrior and Crows.** The Crows don't sponsor a warrior branch today. The berserker comes from your own example, and the Crows already lend low-health damage and lifesteal signs. Vigil's Warlord sponsorship makes it the weaker warrior link.
+- **What the links change:**
+  - **●●** offers the profession's gifts at the full rate, and its gifts can rise to rank II at Sworn.
+  - **●** offers them at half the rate, rank I only.
+  - **○** offers no twist for that profession: only today's gifts and the passive stats.
 
-   Narrative rewords the skill texts **[N]**.
-3. **Each rule lifts different skills,** and a clan's skill gifts lean on them:
+## How a specialisation arrives: the clan's offers
 
-   | Rule | Skills it makes the best picks |
-   |---|---|
-   | Writ of Order | a die with no weak face; Steady |
-   | Watchfire | heal skills (Iron Will, Second Chance, Mending Touch, Prayer) and Defend skills |
-   | Thornplate | Bulwark Stance, Iron Stance, Stoneskin, Shield Bash |
-   | Rot | Multi-Shot, Poison Blade, Entropy Touch |
-   | Blood Price | Berserk Rage, Bloodlust, Reaping Whirl, lifesteal |
-   | Ash Well | Channel, Mana Shield, spells |
-4. **The fresh face** (optional): the first time each face comes up in a fight it counts more. Measured at +50%: 64.1% without the Tide, 63.4% / 10.7 rounds with it. **Suggested at +25%.**
-5. **An epic skill within reach:** from chapter 4, each chapter's first clan offer includes one epic skill of your branches.
-6. **Track it:** the simulator report gains the spread of skills in play. Target: 25 or more.
+- **Subclan gifts are clan offers.** From **Trusted** with a clan, its subclans that are your friends (v3's table) add their gifts to that clan's offers, filtered by **your profession**. You pick one like any gift, and it stays for the run.
+- **Specialisations stack.** A warrior can be Crows-Berserker and Compact-Thorn-wall at once: Pain strikes that heal on a kill and plating that bites back. Mixing is a build, not a mistake.
+- **Stacking stays in check without slots:**
+  1. Each gift twists a different part of the mechanic (its trigger, its payoff, or its cost).
+  2. The mechanic's caps stay, and no gift lifts them:
+     - Pain never takes the last point;
+     - the Rot adds at most 10% per strike;
+     - the Watchfire holds at most half your max health (the Lantern Cantor, by design, holds your whole max health);
+     - the deck has six faces.
+  3. One of each: a gift you hold that comes back at Sworn rises to rank II (+50%), and no further.
+  4. **Rarity:**
+     - a subclan's first gift is uncommon, from Trusted;
+     - its second is rare, from Sworn;
+     - the minor directions' gifts are epic.
 
-## How a rule works in play
-
-- **Your patron's rule is yours.** Your patron is the main clan you stand best with, chosen at the camp among those that qualify, or none. When a rule turns on (from Friendly or only from Trusted) is open with you.
-- **Passive stat points per level, unchanged:**
-  - +1 to the patron's first stat at Friendly;
-  - +1 to its second stat as well at Trusted;
-  - +5 max health at Sworn.
+     At most one of an offer's three suitors is a subclan gift.
+  5. When two gifts touch the same number, the second adds half.
+- **Passive stat points per level, unchanged:** they come from the clan you stand best with (Friendly +1 to its first stat, Trusted +1 to its second, Sworn +5 max health).
 
   | Clan | Stats |
   |---|---|
@@ -165,174 +116,151 @@ Proposal only; nothing is built. **[N]** marks Narrative's part, **[UX]** UX's.
   | Mire | Dexterity, Luck |
   | Crows | Strength, Dexterity |
   | Penitents | Wisdom, Intelligence |
-- **A nemesis** loses its rule for you.
 
-### Subclan gifts: the clan's offers, nothing more
+  So a clan pulls your stats as well as your mechanic.
+- **A nemesis** stops offering. The gifts you hold from it sleep until you reconcile.
 
-- From **Trusted**, a clan's offers can also bring its subclans' gifts, from the subclans that are your friends (v3's table still holds). You pick one like any gift, and **it stays for the run.**
-- What makes it different is only what it does: it twists the clan's rule. So it works while that clan is your patron, and sleeps otherwise.
+## The five professions in detail
 
-**How stacking stays in check, with no slots:**
-1. Each gift twists a different part of the rule (trigger, payoff, cost).
-2. The rule's caps stay, and no gift lifts one:
-   - the Watchfire holds at most half your max health;
-   - the Rot adds 5% per strike;
-   - Pain never takes the last point;
-   - the deck has six faces.
+### Warrior: Blood Price
+- **Core.** Every Attack face is a Pain strike: it hits for double and costs 8% of your max health (never the last point). Below half health, your strikes deal 25% more.
+  - **Suggested:** Pain at ×1.75 under the core, if a sidegrade is wanted.
+- **Main specialisations:**
 
-   The Ossuary Warden is the one gift that names a new cap for its rule, and it does so on purpose.
-3. One of each: a gift you hold that comes back at Sworn rises to rank II (+50% to its number), and no further.
-4. Rarity:
-   - a subclan's first gift is uncommon, from Trusted;
-   - its second is rare, from Sworn;
-   - the minor patrons' and the Open Hand's are epic.
+  | Clan (subclan) | Specialisation | Twists |
+  |---|---|---|
+  | **Crows** (Brig-Born, Tar-Hands) | **Berserker** | Below half health, strikes deal 50% more (not 25%); a kill heals 10% of your max health |
+  | **Compact** (Quarrymen, Anvil-Deaf) | **Thorn-wall** | Half of every blow your block, parry and armour stop goes back (Thornplate); you can't dodge. Stonebreaker, the rank II gift: a blow sent back breaks the striker's guard |
+  | **Dominion** (Order) | **Holy warrior** | Knight of the Flame: Pain strikes are Fire and Pierce. Lantern Oath: a Pain strike against an Evil foe costs nothing |
 
-   At most one of an offer's three suitors is a subclan gift.
-5. When two gifts touch the same number, the second adds half.
+- **Weaker links:**
+  - Vigil, Wall Veteran: a Defend face pays back the last Pain cost.
+  - Penitents, Ash Penitent: Pain costs mana first, health only when the well is dry.
+- **Minor direction:** the Pit, **Dark knight**: spells can be paid in blood, and blood-paid spells heal you for a share.
 
-## The other rules (as accepted in v4)
+### Cleric: the Watchfire
+- **Core.**
+  - At the start of each round, while at half health or more, you heal 2% of your max health.
+  - Healing past full feeds the Watchfire, up to half your max health.
+  - Enemy blows hit it first. What's left at the round's end burns the enemy for double.
+- **Main specialisations:**
 
-### Dominion: the Writ of Order
-- **Rule.** Each roll takes a face that hasn't come up yet in this run of six; when all six have come up, the deck is shuffled again. The sixth face of a run, the **Verdict**, counts half again.
-- **Why you build differently.** A weak face is certain to come up, so you leave none on the die. You plan around what's left and where the Verdict falls.
-- **Measured.**
-  - 64.6% (+10), 14.3 rounds; with the Tide, 65.2% / 10.7.
-  - The deck alone wins 58.8%. Much of the gain is the even odds: skill faces rise from 38% to 49% of rolls.
-  - **Suggested:** Verdict at ×1.25.
-- **Subclan gifts:**
+  | Clan (subclan) | Specialisation | Twists |
+  |---|---|---|
+  | **Vigil** (Candlebearers) | **Radiance** | Every heal also burns the enemy for its amount (measured: 81.5%, 33.8 rounds) |
+  | **Penitents** (Ember Sisters) | **Ember Sister** | When the fire burns, it also gives 1 mana and cleanses one affliction |
+  | **Dominion** (Cantors) | **Lantern Cantor** | The fire holds up to your whole max health, and its burn reaches every enemy (Light) |
 
-  | Subclan | Gift | For | Twist |
-  |---|---|---|---|
-  | Order | **Knight of the Flame** | warrior | The Verdict strikes with Fire and Pierce |
-  | Inquisition | **Inquisitor** | mage | You see the next face of the deck; the Verdict weakens |
-  | Tribunal | **Magistrate** | any | Once a fight, send the face you drew to the bottom of the run and draw again |
-- **Alternative, not the default: Judgment.** Every third round is a Judgment: the face you roll counts double (damage, block, healing). The other two rounds, your strikes deal 15% less.
-  - Measured: 63.5%, 15.3 rounds; with the Tide, 64.8% / 10.9.
-  - It fits the Dominion's law, and it mirrors the Writ that silences skill faces every third round.
-  - If chosen, its gifts are Knight of the Flame (a Judgment strike is Fire and Pierces), Inquisitor (a Judgment strike weakens) and Magistrate (call the Judgment a round early).
+- **Weaker link:** Mire, Moss Singer: potions overheal into the fire.
+- **Minor direction:** the Choir, **Paladin**: no potions; heals +50%; once a fight, a killing blow leaves you at 1.
 
-### Compact: Thornplate
-- **Rule.** Half of every blow your block, parry and armour stop goes back to the striker; you can't dodge.
-- **Measured.**
-  - 53.9% (−1), 12.0 rounds, thorns 29% of your damage.
-  - With the Tide: 50.5% / 10.0.
-  - Sending back the whole blow: 61.4%.
-- **Subclan gifts:**
-
-  | Subclan | Gift | For | Twist |
-  |---|---|---|---|
-  | Quarrymen | **Stonebreaker** | warrior | A blow sent back breaks the striker's guard |
-  | Scaffolders | **Trapwright** | ranger | The first blow sent back each fight stuns |
-  | Emberwives | **Ember Adept** | mage | Blows sent back are Fire |
-
-### Mire: the Rot
-- **Rule.** Strikes deal 20% less; each one that lands adds a lasting, stacking poison (5% of the full strike, every turn).
-- **Measured.**
-  - 60.1% (+6), 14.6 rounds, rot 26% of your damage.
-  - With the Tide: 53.4% / 11.3.
-- **Subclan gifts:**
-
-  | Subclan | Gift | For | Twist |
-  |---|---|---|---|
-  | Barkbleeders | **Fever Blade** | rogue | A falling enemy's rot passes to the next |
-  | Heron's Wake | **Fen Guide** | ranger | A rotting enemy hits 15% softer |
-  | Moss Choir | **Moss Singer** | cleric | Each rot tick heals you a fifth of it |
-
-### Crows: Blood Price (the berserk)
-- **Rule.** Every Attack face is a Pain strike: it hits for double and costs 8% of your max health (never the last point). Below half health, strikes deal 25% more.
-- **Measured.**
-  - 62.9% (+8), 11.8 rounds, 119 health paid per fight.
-  - With the Tide: 65.4% / 9.2.
-  - **Suggested:** Pain at ×1.75.
-- **Subclan gifts:**
-
-  | Subclan | Gift | For | Twist |
-  |---|---|---|---|
-  | Tar-Hands | **Tar Bleeder** | rogue | The life cost becomes a bleed on the enemy, and you pay half |
-  | Brig-Born | **Corsair** | ranger | A kill heals 10% of your max health |
-  | Whisper Ledger | **Ledger Knife** | rogue | A Pain strike steals gold; below a quarter health, strikes Pierce |
-
-### Penitents: the Ash Well
-- **Rule.**
+### Mage: the Ash Well
+- **Core.**
   - Each fight starts with 0 mana.
-  - Mana faces give double.
+  - Mana faces (and mana skills) give double.
   - Spells cost 1 less.
-  - Mana left after a win heals you 2% of max health per point.
+  - Mana left after a win heals you 2% per point.
 
-  Today mana already comes back mid-fight only through Mana faces and mana skills, as in your example. The Well adds the empty start.
-- **Measured.** 55.4% (+1), 17.2 rounds. The autoplay keeps one Mana face; with two, an estimated +3 to +6 for casters.
-- **Subclan gifts:**
+  Mana already comes back mid-fight only through the die, as in your example; the Well adds the empty start.
+- **Main specialisations:**
 
-  | Subclan | Gift | For | Twist |
-  |---|---|---|---|
-  | Ember Sisters | **Ember Sister** | cleric | Mana past full becomes block |
-  | Spire-Fallen | **Penitent Knight**, the holy warrior | warrior | Attack faces also give 1 mana; mana left after a win heals double |
-  | Scorched Choir | **Ash Chorister** | mage | A spell cast from a full Well hits 50% harder |
+  | Clan (subclan) | Specialisation | Twists |
+  |---|---|---|
+  | **Dominion** (Inquisition) | **Inquisitor** | Mana past full burns the enemy, for half your strike per point (measured: 66.0%) |
+  | **Penitents** (Scorched Choir) | **Ash Chorister** | A spell cast from a full Well hits 50% harder |
+  | **Crows** (Keyholders) | **Storm Arcanist** | Spells steal 10% of their damage as health; Teleport Strike joins your offers |
 
-### The minor patrons, and the Open Hand
-- **The Pit: Clause in Blood.** A spell you can't afford is paid in health while above half. 54.2%. Its gift, once its pact is held: **Dark Knight** (warrior), whose blood-paid spells heal for a share of their damage.
-- **The Choir: The Vow.** No potions in a fight; heals heal 50% more; once a fight, a killing blow leaves you at 1. 55.9%. Its gift, once its vow is held: **Paladin**, so that when the Vow saves you, it lifts every affliction.
-- **The Open Hand: Your Own Hand.** Once a round, reroll the die. 59.5%; with the Tide, 59.9% / 10.9.
-  - It is raised by the banner.
-  - Its passive is +1 to your strongest stat.
-  - Its offers can bring back any subclan gift you passed on.
+- **Weaker links:**
+  - Compact, Ember Adept: your Fire spells set off reactions twice.
+  - Mire, Hex-Weaver: your spells' statuses last a turn longer.
+- **Minor direction:** the Pit, **Blood mage** (Clause in Blood): a spell you can't afford is paid in health, 5% of your max per missing mana, while above half.
 
-## Who each rule suits
+### Rogue: the Rot
+- **Core.** Your strikes deal 20% less. Each strike that lands adds a lasting poison (5% of the full strike, every turn, all fight), stacking.
+- **Main specialisations:**
 
-How each rule moves the win rate for each profession and race against today's game, without the Tide (200 runs). Today's rates:
-- by profession: cleric 74, mage 63, ranger 54, rogue 49, warrior 37;
-- by race: elf 51, human 50, voidkin 58, dwarf 58, orc 52.
+  | Clan (subclan) | Specialisation | Twists |
+  |---|---|---|
+  | **Mire** (Barkbleeders) | **Fever Blade** | The rot adds 10% per strike (measured: 62.1%, 12.0 rounds); when a rotting enemy falls, its rot passes to the next |
+  | **Crows** (Tar-Hands) | **Tar Bleeder** | Attack faces become Pain strikes, but the cost goes onto the enemy as rot, and you pay half |
+  | **Penitents** (Reliquary Thieves) | **Relic Thief** | Each rot tick gives you 1 mana, at most 3 a round |
 
-| Rule | Suits best | Suits least |
-|---|---|---|
-| Writ of Order | rogue +16, cleric +13; elf +13, dwarf and orc +12 | mage +5; voidkin +7 |
-| Watchfire | ranger +12, rogue +11, warrior +9; dwarf +15 | cleric +3; elf, human and voidkin +6 |
-| Thornplate | cleric +15, warrior +6; orc +4 | ranger −14, rogue −6 (no dodge); voidkin −5, human −2 |
-| Rot | cleric +17, ranger +7, warrior +6; elf +10 | mage −2; voidkin +1 |
-| Blood Price | cleric +14, warrior +12; orc +12, elf +11 | mage +5; dwarf +6, human +7 |
-| Ash Well | small for all with the autoplay's single Mana face: cleric +2, mage +3 | rogue, warrior ±0 |
-| Clause in Blood | ±1 for all (few spells known) | — |
-| The Vow | rogue +5, warrior +3; human +5 | cleric, mage ±0 |
-| Your Own Hand | rogue +8, warrior +6, ranger +5; elf and voidkin +6 | cleric +3, mage +4 |
+- **Weaker link:** Vigil, Stitcher: healing past full becomes rot on the enemy.
 
-- **Clerics gain under most rules:** their long, sustained fights let a rule's effect add up.
-- **Warriors**, the weakest profession today, gain most under Blood Price (+12) and the Watchfire (+9).
-- **Thornplate costs the dodging professions** (ranger, rogue).
+### Ranger: the Trail
+- **Core.**
+  - Each roll takes a face that hasn't come up yet in this run of six, and you **see the next face**.
+  - When all six have come up, the deck is shuffled again.
+  - The sixth face of a run, the **Verdict**, counts half again.
+- **Main specialisations:**
 
-## Measured: the full table
+  | Clan (subclan) | Specialisation | Twists |
+  |---|---|---|
+  | **Crows** (Brig-Born) | **Corsair Marksman** | The Verdict counts double and Pierces (measured: 71.0%) |
+  | **Compact** (Scaffolders) | **Trapwright** | The Verdict also stuns its target |
+  | **Mire** (Heron's Wake) | **Fen Guide** | The first face of each run poisons its target |
 
-**Setup:**
-- 200 seeded runs per line, 40 per profession, random strategy.
-- Rules and the Tide were added through a temporary patch of the fight simulator, kept in the Core session's scratchpad as `v4_rule_sim.patch` and never committed.
-- The autoplay doesn't rebuild its die for a rule, so each line shows a player who doesn't adapt.
+- **Weaker link:** Dominion, Admiralty Gunner: once a fight, send the face you drew to the bottom of the run and draw again.
 
-| Line | Win | Rounds | Win by profession (cl / ma / ra / ro / wa) |
-|---|---|---|---|
-| Today | 54.5% | 16.6 | 74 / 63 / 54 / 49 / 37 |
-| Tide | 54.5% | 11.2 | 52 / 62 / 60 / 57 / 42 |
-| Writ of Order (Verdict ×1.5) | 64.6% | 14.3 | 87 / 68 / 64 / 65 / 46 |
-| Watchfire | 63.1% | 17.2 | 77 / 69 / 66 / 60 / 46 |
-| Thornplate | 53.9% | 12.0 | 88 / 64 / 40 / 42 / 43 |
-| Rot 5% | 60.1% | 14.6 | 91 / 61 / 60 / 53 / 43 |
-| Blood Price | 62.9% | 11.8 | 88 / 68 / 61 / 56 / 49 |
-| Ash Well | 55.4% | 17.2 | 76 / 66 / 55 / 49 / 37 |
-| Clause in Blood | 54.2% | 16.4 | 74 / 62 / 54 / 49 / 37 |
-| The Vow | 55.9% | 17.1 | 74 / 62 / 54 / 54 / 40 |
-| Your Own Hand | 59.5% | 15.7 | 77 / 67 / 59 / 57 / 43 |
-| Tide + Writ of Order | 65.2% | 10.7 | 70 / 66 / 68 / 68 / 56 |
-| Tide + Watchfire | 62.5% | 11.6 | 56 / 67 / 71 / 67 / 53 |
-| Tide + Thornplate | 50.5% | 10.0 | 55 / 65 / 43 / 44 / 46 |
-| Tide + Rot | 53.4% | 11.3 | 51 / 62 / 57 / 57 / 40 |
-| Tide + Blood Price | 65.4% | 9.2 | 73 / 67 / 67 / 65 / 56 |
-| Tide + Your Own Hand | 59.9% | 10.9 | 58 / 67 / 66 / 61 / 48 |
+## The Open Hand
+
+- **It is raised by the banner.**
+- **Its passive** is +1 to your strongest stat.
+- **Its offers can bring back** any subclan gift you passed on, for your profession, whatever clan it came from.
+- **Its own gift** is **Your Own Hand**: once a round, reroll the die. It is measured at +5 overall. Under the ranger's Trail, it draws the next face instead.
+
+## Short fights: the Tide
+
+Unchanged from v4.2, and still an open question for you:
+- From round 8, your blows gain +20% a round and the enemies' +10%, adding up.
+- Measured over all professions: the same win rate (54.5%); 16.6 → 11.2 rounds per fight; fights over 25 rounds from 14.5% to 1.1%; chapter 7 from 30.3 → 16.6 rounds.
+- v5 adds the detail that matters: **it is mostly the cleric's fights it shortens** (38.8 → 17.2 rounds). Everyone else's are 8 to 14 rounds today.
+
+## More skills in play
+
+Unchanged from v4.2, and still open:
+- **Today:** 92 skills come up, but they spread like only 17 equally used skills. Prayer alone is 18% of skill rolls (a fixed face). 39 skills are under 0.2%: Execute, Meteor, Fireball, Shield Bash, Multi-Shot and more.
+- **Proposals:**
+  1. Free the mana face once the die has a second mana source.
+  2. One verb per damage skill:
+
+     | Skill | Its verb |
+     |---|---|
+     | Execute | Double under 30% |
+     | Meteor | Delayed, every enemy, double |
+     | Multi-Shot | Three hits of 40% |
+     | Smite | Double against Evil |
+     | Backstab | Double against a stunned or weakened enemy |
+     | Whirlwind | Cleave |
+     | Power Strike | Steady |
+     | Aimed Shot | Pierce |
+     | Hammer Blow | Growth |
+     | Poison Blade | Stacks |
+     | Iron Will | Block equal to its heal |
+     | Second Chance | Double below a quarter health |
+     | Fireball | Splash |
+
+  3. The core mechanics now lift different skills per profession:
+
+     | Profession | Skills its mechanic lifts |
+     |---|---|
+     | Warrior | Berserk Rage, Reaping Whirl, lifesteal |
+     | Cleric | heal skills |
+     | Mage | Channel, Mana Shield |
+     | Rogue | Multi-Shot, Poison Blade |
+     | Ranger | Steady faces, Aimed Shot |
+
+  4. The fresh face, optional, at +25%.
+  5. An epic skill offered from chapter 4.
+  6. Track the spread of skills in play in the simulator report, target 25.
 
 ## Kept from v2.1 and v3
 
 How the kept parts tie in:
-- Your **patron** gives the rule and the passive stats.
-- Subclan gifts come in the clan's offers from Trusted.
-- A **nemesis** loses its rule and passive for you until you reconcile, can't be your patron, and its subclans' gifts stop coming. The ones you hold sleep.
-- Taking a clan's gifts raises its **power**.
+- **Passive stats** come from your best-standing clan.
+- **Specialisation gifts** come in clans' offers from Trusted.
+- **A nemesis** stops its offers; the gifts you hold from it sleep.
+- **Taking a clan's gifts raises its power**, so a specialisation shapes the map too.
 - **Alignment** stays separate.
 
 ### Clan power and territory
@@ -395,17 +323,24 @@ A clan the player keeps turning away from does not just fade.
 
 ## Order of work (once the user validates)
 
-1. **The Tide**, alone first, measured on its own.
-2. **Free the mana face, and one verb per skill** (Narrative rewords the texts **[N]**). The simulator report tracks the spread of skills in play.
-3. **The six rules**, the patron choice at the camp, and a committed per-rule simulator report.
-4. **The patron's passive stats per level.**
-5. **Subclan gifts** in the clans' offers: the first 18 above, named by **[N]**.
+1. **The Tide**, alone first.
+2. **The five core mechanics**, one per profession, with a committed per-profession simulator report.
+3. **Free the mana face, and the skill verbs** (texts by **[N]**).
+4. **Specialisation gifts** in the clans' offers: the 15 main ones first, then the weaker links, named by **[N]**. **[UX]**: how a gift shows the mechanic it bends.
+5. **The passive stats per level.**
 6. Power, territory and the nemesis, afterwards.
 
 ## Open questions for the user
 
-1. **The Watchfire:** does it play the way you meant?
-2. **When a rule turns on:** from Friendly, or only from Trusted? (Open.)
-3. **Sidegrade or reward?** At the measured numbers, a rule wins up to +10 over today. (Open.)
-4. **The Tide:** from round 8, you +20% and enemies +10% per round. Is that the right feel?
-5. **Skills:** free the mana face, and one verb per damage skill (the 13 above first)?
+1. **The mapping:**
+   - warrior Blood Price;
+   - cleric Watchfire;
+   - mage Ash Well;
+   - rogue Rot;
+   - ranger Trail.
+
+   Swap any?
+2. **The three main specialisations** per profession, and the affinity table: do the natural clans match how you see them?
+3. **Weak links:** half the rate and rank I only, or no offers at all?
+4. **The Tide**, and the **skill proposals**: still open from v4.1.
+5. **Strength:** a specialisation adds 0 to 9 points over its core. Is that the right size for loyalty to a clan?
