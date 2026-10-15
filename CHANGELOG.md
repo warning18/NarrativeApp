@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.367.0+403]
+## [1.368.0+404]
 
 The fight screen shows the new fight-length rules and the professions' cores.
 
@@ -16,6 +16,13 @@ The fight screen shows the new fight-length rules and the professions' cores.
 - **Fight-length marks.** A "Tide ×N" mark next to the round count once the Tide rises (and "Tide in N" in the three rounds before); a tick at 10% on non-boss foes' health bars (the execute line); a "Wavering" mark on non-boss foes under 25%; the heal number on the preview line dims once healing fatigue sets in.
 - **Profession cores on the hero's card.** The warrior's Fury as five notches ("Heavy blow next" when full); the cleric's Watchfire as a flame under the health bar with its worth; the mage's Ash Well starting "empty" on the mana meter; "×2" on the rogue's Flurry face; the ranger's next Trail face beside the die.
 - Each mark has a tooltip that explains the rule (English and French).
+
+## [1.367.0+403]
+
+Rank II sounds like its clan.
+
+### Changed
+- **Rank II lines.** The fifteen rank-II gifts no longer share one generic line: each says, in its clan's voice, what grows by half again (the Berserker's Pain strikes, the Beacon's fire, the Fen Guide's poison, and so on). English and French. Wording only.
 
 ## [1.366.0+402]
 

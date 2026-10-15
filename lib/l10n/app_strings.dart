@@ -7636,7 +7636,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'La marée monte\u00a0: les vôtres +{party}\u00a0%, les leurs +{enemies}\u00a0%.',
   },
-  // The fight screen's marks for those rules (v1.367).
+  // The fight screen's marks for those rules (v1.368).
   'tide_mark': {AppLanguage.en: 'Tide ×{n}', AppLanguage.fr: 'Marée ×{n}'},
   'tide_soon_mark': {
     AppLanguage.en: 'Tide in {n}',
