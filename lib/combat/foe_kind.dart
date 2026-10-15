@@ -7,6 +7,9 @@
 // - The dead crumble: from [foeRuleStartRound], an undead foe loses
 //   [undeadCrumbleShare] of its max health each round (never finishing it:
 //   the execute does).
+// Neither touches a boss, as the execute and morale don't: its fight is
+// its own (the Bone Warden and the White Admiral crumbling won them 74%
+// and 70% against their 55% and 45%).
 // - Morale (fight_length.dart) moves only people and beasts: the dead, the
 //   void, constructs, demons, angels and giants hold.
 // - An Evil foe ([isEvilFoe]: the Lantern Vanguard's heal) is the void,
@@ -58,13 +61,15 @@ double beastTireFactor(int round) => round < foeRuleStartRound
     : max(beastTireFloor, 1 - beastTireStep * (round - foeRuleStartRound + 1));
 
 /// [damage] struck by [enemy] in [round]: softer for a tiring beast.
-int foeBlow(int damage, Map<String, dynamic>? enemy, int round) =>
-    damage <= 0 || foeKindOf(enemy) != FoeKind.beast
+int foeBlow(int damage, Map<String, dynamic>? enemy, int round,
+        {bool boss = false}) =>
+    damage <= 0 || boss || foeKindOf(enemy) != FoeKind.beast
         ? damage
         : (damage * beastTireFactor(round)).round();
 
 /// What [enemy] of [maxHealth] crumbles away in [round] (the dead only).
-int crumble(Map<String, dynamic>? enemy, int maxHealth, int round) =>
-    foeKindOf(enemy) != FoeKind.undead || round < foeRuleStartRound
+int crumble(Map<String, dynamic>? enemy, int maxHealth, int round,
+        {bool boss = false}) =>
+    boss || foeKindOf(enemy) != FoeKind.undead || round < foeRuleStartRound
         ? 0
         : max(1, (maxHealth * undeadCrumbleShare).round());

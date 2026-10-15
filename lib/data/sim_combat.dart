@@ -1768,7 +1768,9 @@ SimFightOutcome simulateSimFight({
         );
       }
       // A beast tires (foe_kind.dart).
-      if (on('kinds')) moveDamage = foeBlow(moveDamage, e.data, rounds);
+      if (on('kinds')) {
+        moveDamage = foeBlow(moveDamage, e.data, rounds, boss: boss(e));
+      }
       final parry = on('parry') ? e.parryBlock : 0;
       // The Briar Guard can't dodge (the draw is made all the same).
       final dodged = random.nextDouble() * 100 <
@@ -1884,7 +1886,8 @@ SimFightOutcome simulateSimFight({
     if (on('kinds')) {
       for (final e in ens) {
         if (e.isAlive) {
-          e.health = afterTick(e.health, crumble(e.data, e.maxHealth, rounds));
+          e.health = afterTick(
+              e.health, crumble(e.data, e.maxHealth, rounds, boss: boss(e)));
         }
       }
     }

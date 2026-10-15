@@ -7659,6 +7659,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'La marée monte\u00a0: les vôtres +{party}\u00a0%, les leurs +{enemies}\u00a0%.',
   },
   // The place's rule over a fight (v5.2 step 4, context_rules.dart).
+  // What the foe is (foe_kind.dart). Placeholder words, for Narrative.
+  'foe_tiring_log': {
+    AppLanguage.en: '{name} is tiring: its blows land softer.',
+    AppLanguage.fr: '{name} se fatigue\u00a0: ses coups portent moins.',
+  },
+  'foe_crumbles_log': {
+    AppLanguage.en: '{name} crumbles ({n}).',
+    AppLanguage.fr: '{name} s’effrite ({n}).',
+  },
   'boss_enraged_log': {
     AppLanguage.en: 'The tide turns, and the boss grows enraged.',
     AppLanguage.fr: 'La marée tourne, et le boss entre en rage.',
