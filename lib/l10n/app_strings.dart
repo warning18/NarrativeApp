@@ -7617,6 +7617,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The storm collects its toll: {n} HP back.',
     AppLanguage.fr: 'L’orage perçoit son péage : {n} PV repris.',
   },
+  'spec_tribunal_log': {
+    AppLanguage.en:
+        'The Tribunal hears the case once: the Well refills by a third.',
+    AppLanguage.fr:
+        'Le Tribunal entend l’affaire une fois : le Puits se remplit d’un tiers.',
+  },
   'spec_briar_log': {
     AppLanguage.en: 'The briar bites back: {name} takes {n}.',
     AppLanguage.fr: 'La ronce rend le coup : {name} subit {n}.',

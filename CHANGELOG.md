@@ -17,6 +17,35 @@ The fight screen shows the new fight-length rules and the professions' cores.
 - **Profession cores on the hero's card.** The warrior's Fury as five notches ("Heavy blow next" when full); the cleric's Watchfire as a flame under the health bar with its worth; the mage's Ash Well starting "empty" on the mana meter; "×2" on the rogue's Flurry face; the ranger's next Trail face beside the die.
 - Each mark has a tooltip that explains the rule (English and French).
 
+## [1.366.0+402]
+
+The clans' sub-clans bend your specialisation, and the clan raises it to rank II (v5.2, step 2b).
+
+- **Thirty sub-clan gifts.** Once you hold a specialisation and are Trusted by its clan, each of the clan's two sub-clans offers its own twist (a rare gift, in the sub-clan's voice): a *variant* changes how it works (the Tar-Hands' Pain strikes bleed the foe, the Last Watch's Defend feeds the fire, the Drowned Debt's kill deals a new run of the Trail...), an *upgrade* raises its number.
+- **Rank II.** Sworn to the clan, it offers rank II of its specialisation (heroic): half again its number.
+- **Everywhere they show:** in the clan offers with the specialisation they bend, in the fight log, in the spoils (the Whisper Ledger's stolen gold) and on the ship (the Brig-Born's Broadside, +15% to the guns).
+- **Balance:** each measured against its specialisation alone in 60 simulated runs; the strongest, One Witness, Once (the Tribunal), now refills a third of the Well from the fourth round. The boss curve holds. Report: docs/simulation/specialisations.md.
+## [1.365.0+401]
+
+The gifts say what they do.
+
+### Changed
+- **Specialisation gift texts.** The Lantern Vanguard's heavy blow now heals against "a foe weak to Light (the void, the dead, demons)", the way the game treats it, instead of an "Evil" foe no enemy carries; the Relicbreaker's text says plainly that its three mana are spent on the sure critical; the Beacon burns "with Light". English and French. Wording only.
+
+## [1.363.0+399]
+
+More places to wander off to.
+
+### Added
+- **Batch 2 of detour scenes.** 28 new scenes in `detour_scenes.json`, in English and French: echoes for each chapter's lands (the salt pans, the ash road, the lantern-floaters of the fen, the frost-sick queue, the Mirror Shoal, the lamplighters of Candlehold), a few scenes that open only after a story beat (a forgiven candle, the archivist's blank page, a Mire courtesy, a giant's hearth-stone cart), and thirteen short stops, so the higher rate of detours does not repeat. Chapters 4 and 7 first.
+
+## [1.362.0+398]
+
+The march on Candlehold may hold a detour.
+
+### Changed
+- **Chapter 7's gates.** The arrival at Candlehold's gates (`7500`) no longer forbids a detour, so the way to the Throne can hold one, and the chapter's landmark, The Banner on the Hill. The scene is tense and stays tense; only the ban is lifted.
+
 ## [1.361.0+397]
 
 More detours, spread across the whole story (the user: "a bit more, 7 to 10").
