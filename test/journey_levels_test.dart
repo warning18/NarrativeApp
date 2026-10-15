@@ -32,7 +32,9 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
-    SharedPreferences.setMockInitialValues({});
+    // The flat chart first: the sphere is the default now (v1.350), and the
+    // test turns it on from the Layers sheet further down.
+    SharedPreferences.setMockInitialValues({chartGlobePrefsKey: false});
     tester.view.physicalSize = const Size(400, 860);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -135,6 +137,9 @@ void main() {
         .transformationController!
         .value
         .getMaxScaleOnAxis();
+    // The saved look loads a frame after the chart opens: the glide starts
+    // from there.
+    await tester.pump(const Duration(milliseconds: 20));
     final early = chartScale();
     expect(early, greaterThan(JourneyWorldMapZoom.land + 1));
     await tester.pump(const Duration(milliseconds: 150));
