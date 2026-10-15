@@ -3075,6 +3075,20 @@ final DbSchema factionsSchema = DbSchema(
           'has fallen.',
     ),
     FieldSchema(
+      key: 'gender_fr',
+      label: 'French gender and number',
+      type: FieldType.enumeration,
+      enumOptions: ['m', 'f', 'mp', 'fp'],
+      help: 'For the French words that agree with the name ("est tombée", '
+          '"tiennent").',
+    ),
+    FieldSchema(
+      key: 'nameTo_fr',
+      label: 'French name after "à"',
+      type: FieldType.text,
+      help: '"au Dominion de la Lanterne", "aux Corneilles de Sel".',
+    ),
+    FieldSchema(
       key: 'claims',
       label: 'Claims, in order',
       type: FieldType.referenceList,

@@ -18,6 +18,8 @@ import '../models/story_node.dart';
 const double hunterBaseChance = 0.06;
 const double hunterChancePerAlignmentPoint = 0.0015;
 const double hunterChanceCap = 0.15;
+const double neutralHunterChance = 0.02;
+const double neutralHunterChancePerPoint = 0.002;
 const double temptationChance = 0.10;
 
 /// Rolls after an ambush before the next one can come: the hunted get a
@@ -51,12 +53,30 @@ String? huntedSideFor({
 }
 
 /// Odds a hunter ambushes this transition -- rises with how far the score
-/// sits past the threshold, capped.
+/// sits past the threshold, capped. Under it (v5.2 step 6, the user: "a
+/// neutral player should be hunted lightly by both"), [neutralHunterChance]
+/// and [neutralHunterChancePerPoint] a point, meeting the curve at the
+/// threshold.
 double hunterChanceFor(int alignmentScore) {
-  final past = max(0, alignmentScore.abs() - alignmentThreshold);
+  final lean = alignmentScore.abs();
+  if (lean < alignmentThreshold) {
+    return neutralHunterChance + lean * neutralHunterChancePerPoint;
+  }
+  final past = lean - alignmentThreshold;
   return min(
       hunterChanceCap, hunterBaseChance + past * hunterChancePerAlignmentPoint);
 }
+
+/// The side that hunts a Neutral character of [alignmentScore] this time:
+/// drawn by the lean ('Good' hunters come for the character leaning
+/// Good), even at 0.
+String neutralHuntedSide(int alignmentScore, Random random) =>
+    random.nextInt(2 * alignmentThreshold + 1) -
+                alignmentThreshold +
+                alignmentScore >=
+            0
+        ? 'Good'
+        : 'Evil';
 
 /// Every hunter enemy id in [enemies] that hunts [side] and fits
 /// [chapter]: tier-1 hunters through chapter 2, either tier from chapter
@@ -72,6 +92,7 @@ List<String> hunterPoolFor({
     if (enemy['hunterAlignment']?.toString() != side) continue;
     final tier = (enemy['hunterTier'] as num?)?.toInt() ?? 1;
     if (chapter <= 2 && tier > 1) continue;
+    if (((enemy['minChapter'] as num?)?.toInt() ?? 1) > chapter) continue;
     pool.add(entry.key);
   }
   return pool;
@@ -79,10 +100,13 @@ List<String> hunterPoolFor({
 
 /// True for an enemy that only ever appears as a hunter (an alignment
 /// hunter, or a rival clan's `hunterOnly` one, see rival_hunters.dart), so
-/// the ordinary excursion/expedition pools leave it out.
+/// the ordinary excursion/expedition pools leave it out. An alignment
+/// hunter met on the roads anyway (the cultists, the zealots: `hunterOnly`
+/// false) stays in them.
 bool isHunterEnemy(Map<String, dynamic>? enemy) =>
-    (enemy?['hunterAlignment']?.toString() ?? '').isNotEmpty ||
-    enemy?['hunterOnly'] == true;
+    enemy?['hunterOnly'] == true ||
+    ((enemy?['hunterAlignment']?.toString() ?? '').isNotEmpty &&
+        enemy?['hunterOnly'] != false);
 
 /// Whether [chain] (an alignment event, see [maybeAlignmentEvent]) is a
 /// hunter's ambush rather than a temptation.
@@ -200,28 +224,130 @@ const String _temptationReasonFr =
     "Courtisé : le Chœur et la Fosse veulent tous deux ceux qui n'ont pas "
     'encore choisi leur camp. Votre réponse déplace votre alignement.';
 
+/// Narrative's lines for the orders and forces that hunt by alignment
+/// (docs/proposals/territory-texts.md 5c), the angels and the demons
+/// keeping their own: `{name}` the fighter, `{cry}` its battle cry.
+const String _orderHuntsEvilEn =
+    '{name} was waiting where the road bends. You have left too many dead '
+    'behind you for the light to ignore, and this one has come to settle '
+    'it. {cry}';
+const String _orderHuntsEvilFr =
+    '{name} attendait au tournant. Vous avez laissé trop de morts derrière '
+    'vous pour que la lumière l’ignore, et ce chasseur est venu régler le '
+    'compte. {cry}';
+const String _forceHuntsGoodEn =
+    '{name} steps out of the dark where the road bends. You have kept your '
+    'hands clean, and the dark has noticed. {cry}';
+const String _forceHuntsGoodFr =
+    '{name} sort de l’ombre au tournant. Vous avez gardé les mains propres, '
+    'et l’ombre l’a remarqué. {cry}';
+const String _goodHuntsNeutralEn =
+    '{name} blocks the road. “You have not chosen,” {name} says, “and both '
+    'sides have noticed. I am only the first to say it.” {cry}';
+const String _goodHuntsNeutralFr =
+    '{name} barre la route. « Vous n’avez pas choisi, dit {name}, et les '
+    'deux camps l’ont remarqué. Je ne suis que le premier à vous le dire. » '
+    '{cry}';
+const String _evilHuntsNeutralEn =
+    '{name} is sitting in the road as though it had been there for years. '
+    '“You have not chosen. We do not mind. Chosen ones are so much less '
+    'amusing.” {cry}';
+const String _evilHuntsNeutralFr =
+    '{name} se tient au milieu de la route, comme depuis des années. « Vous '
+    'n’avez pas choisi. Cela nous est égal. Les élus sont tellement moins '
+    'amusants. » {cry}';
+
+const String _orderHuntReasonEn =
+    'Hunted: the good orders send their own after those whose deeds lean '
+    'to Evil. The further you lean, the more often they come.';
+const String _orderHuntReasonFr =
+    'Traqué : les ordres du Bien envoient les leurs contre ceux dont les '
+    'actes penchent vers le Mal. Plus vous penchez, plus ils viennent '
+    'souvent.';
+const String _forceHuntReasonEn =
+    'Hunted: the dark sends its own after those whose deeds lean to Good. '
+    'The further you lean, the more often they come.';
+const String _forceHuntReasonFr =
+    'Traqué : l’ombre envoie les siens contre ceux dont les actes penchent '
+    'vers le Bien. Plus vous penchez, plus ils viennent souvent.';
+
+const String _neutralHuntReasonEn =
+    'Hunted: you have not chosen a side, and both sides have noticed. They '
+    'come now and then; lean one way, and the other side comes more often.';
+const String _neutralHuntReasonFr =
+    'Traqué : vous n’avez pas choisi de camp, et les deux l’ont remarqué. '
+    'Ils viennent de temps à autre ; penchez d’un côté, et l’autre viendra '
+    'plus souvent.';
+
 /// A one-node ambush chain for a hunter of [side] ('Good' hunters are
-/// demons; 'Evil' hunters are angels), or null if [enemies] holds no such
-/// hunter for [chapter].
+/// demons and the evil forces; 'Evil' hunters are angels and the good
+/// orders), or null if [enemies] holds no such hunter for [chapter].
+/// [neutral]: the character has not chosen (hunted lightly by both).
 StoryNode? buildHunterAmbushNode({
   required Map<String, dynamic> enemies,
   required String side,
   required int chapter,
   required Random random,
+  bool neutral = false,
 }) {
   final pool = hunterPoolFor(enemies: enemies, side: side, chapter: chapter);
   if (pool.isEmpty) return null;
   final enemyId = pool[random.nextInt(pool.length)];
+  final enemy = enemies[enemyId] as Map<String, dynamic>? ?? const {};
   final isAngel = side == 'Evil';
-  final en = isAngel ? _angelAmbushEn : _demonAmbushEn;
-  final fr = isAngel ? _angelAmbushFr : _demonAmbushFr;
-  final idx = random.nextInt(en.length);
+  // The angels and the demons (or a hunter of no written kind) keep their
+  // own lines; the orders and forces take Narrative's.
+  final kind = enemy['kind']?.toString() ?? '';
+  final otherworldly = kind.isEmpty || kind == 'angel' || kind == 'demon';
+  final String description;
+  final String descriptionFr;
+  if (!neutral && otherworldly) {
+    final en = isAngel ? _angelAmbushEn : _demonAmbushEn;
+    final fr = isAngel ? _angelAmbushFr : _demonAmbushFr;
+    final idx = random.nextInt(en.length);
+    description = en[idx];
+    descriptionFr = fr[idx];
+  } else {
+    String text(String key) => enemy[key]?.toString() ?? '';
+    final nameFr =
+        text('enemyName_fr').isEmpty ? text('enemyName') : text('enemyName_fr');
+    final cryFr =
+        text('battleCry_fr').isEmpty ? text('battleCry') : text('battleCry_fr');
+    String fill(String line, String name, String cry) =>
+        line.replaceAll('{name}', name).replaceAll('{cry}', cry).trim();
+    // The side that hunts: the good orders hunt the Evil ('Evil' side).
+    final good = isAngel;
+    description = fill(
+        neutral
+            ? (good ? _goodHuntsNeutralEn : _evilHuntsNeutralEn)
+            : (good ? _orderHuntsEvilEn : _forceHuntsGoodEn),
+        text('enemyName'),
+        text('battleCry'));
+    descriptionFr = fill(
+        neutral
+            ? (good ? _goodHuntsNeutralFr : _evilHuntsNeutralFr)
+            : (good ? _orderHuntsEvilFr : _forceHuntsGoodFr),
+        nameFr,
+        cryFr);
+  }
   return StoryNode(
     id: 'hunter_${enemyId}_${random.nextInt(1 << 30)}',
-    description: en[idx],
-    descriptionFr: fr[idx],
-    contextNote: isAngel ? _angelHuntReasonEn : _demonHuntReasonEn,
-    contextNoteFr: isAngel ? _angelHuntReasonFr : _demonHuntReasonFr,
+    description: description,
+    descriptionFr: descriptionFr,
+    contextNote: neutral
+        ? _neutralHuntReasonEn
+        : otherworldly
+            ? (isAngel ? _angelHuntReasonEn : _demonHuntReasonEn)
+            : isAngel
+                ? _orderHuntReasonEn
+                : _forceHuntReasonEn,
+    contextNoteFr: neutral
+        ? _neutralHuntReasonFr
+        : otherworldly
+            ? (isAngel ? _angelHuntReasonFr : _demonHuntReasonFr)
+            : isAngel
+                ? _orderHuntReasonFr
+                : _forceHuntReasonFr,
     choices: [
       StoryChoice(
         text: 'Stand and fight',
@@ -443,6 +569,17 @@ List<StoryNode>? maybeAlignmentEvent({
     final node = buildHunterAmbushNode(
         enemies: enemies, side: side, chapter: chapter, random: random);
     return node == null ? null : [node];
+  }
+  // Neutral: hunted lightly by both sides, then courted.
+  if (rollsSinceAmbush >= hunterCooldownRolls &&
+      random.nextDouble() < hunterChanceFor(alignmentScore)) {
+    final node = buildHunterAmbushNode(
+        enemies: enemies,
+        side: neutralHuntedSide(alignmentScore, random),
+        chapter: chapter,
+        random: random,
+        neutral: true);
+    if (node != null) return [node];
   }
   if (random.nextDouble() >= temptationChance) return null;
   final node = buildTemptationNode(

@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.393.0+429]
+
+A clan can make you its nemesis, and good and evil hunt everyone.
+
+- **The nemesis.** The strongest clan (power 25 or more) you stand Hostile or Hunted with becomes your nemesis at a new chapter, and the news says so. It lets go only when you are back to Wary.
+  - **It hunts you, sworn or not:** its fighters come on the roads at the Hunted odds, under the same cap, cooldown, mercy and betrayal as the other hunters.
+  - **At war it moves first,** and goes after your patron clan's places from Hostile.
+  - Its quest, coming later, will break it: a tier of power lost, and two chapters before it can return.
+- **A neutral character is hunted too, lightly, by both sides:** 2% a road, rising to 6% at the edge of neutral. Before, a neutral character met no hunter at all.
+- **New hunters (Narrative's six):**
+  - the good orders hunt an Evil character: Ysel the candle-bearer, Halvard the spearman and the masked penitent;
+  - the evil forces hunt a Good character: the cultist acolyte, the Hollow Court zealot and the void hound.
+
+  Each comes with its battle cry and its own ambush lines, and the angels and demons keep theirs. The six are still met as ordinary foes too. A hunter now waits for its chapter.
+- **The territory news in French** now uses Narrative's own wording, agreeing with each clan ("La Veille Grise est tombée", "Les Corneilles de Sel tiennent…").
+- **Simulator:** 3 to 4 hunters a run at every alignment, out of about 60 roads; neutral characters meet about one alignment hunter a run. The Dominion is the nemesis in most runs (the story turns it against you). Report: docs/simulation/nemesis-hunters.md.
+
 ## [1.392.0+428]
 
 ### Changed

@@ -30,6 +30,7 @@ import 'dart:math';
 import '../l10n/app_locale.dart';
 import 'factions.dart';
 import 'geography.dart';
+import 'patron_stats.dart' show statPatron;
 
 const int maxPower = 100;
 
@@ -56,6 +57,10 @@ const int warStep = 2;
 
 /// How much stronger a clan at war must be to take a place.
 const int warLead = 15;
+
+/// The relation step from which the nemesis fights your patron over
+/// places (3: Hostile).
+const int nemesisWarStep = 3;
 
 PowerTier powerTierFor(int power) => power >= ascendantPower
     ? PowerTier.ascendant
@@ -339,12 +344,25 @@ PoliticsState givePlace(
   }
 
   // Wars: the stronger takes a place, its claims first, the seat last.
-  for (final id in clans) {
+  // The nemesis (nemesis.dart) goes first, and wars on your patron from
+  // Hostile ([nemesisWarStep]).
+  final nemesis = next.nemesis;
+  final patron = statPatron(next);
+  final warring = [
+    if (clans.contains(nemesis)) nemesis,
+    for (final id in clans)
+      if (id != nemesis) id,
+  ];
+  for (final id in warring) {
     if (!free(id)) continue;
-    for (final other in clans) {
+    for (final other in [
+      if (id == nemesis && clans.contains(patron)) patron,
+      ...clans,
+    ]) {
       if (other == id || !free(other)) continue;
       final step = next.relationStep(id, other, data);
-      if (step == null || step > warStep) continue;
+      final limit = id == nemesis && other == patron ? nemesisWarStep : warStep;
+      if (step == null || step > limit) continue;
       if (powerOf(next, id, data) - powerOf(next, other, data) < warLead) {
         continue;
       }
@@ -377,9 +395,22 @@ PoliticsState givePlace(
 
 String _name(Faction? f, AppLanguage language) => f?.nameFor(language) ?? '';
 
-/// "du Dominion de la Lanterne": the French lines speak of a clan through
-/// its `nameOf`, so no article or agreement goes wrong.
+/// "du Dominion de la Lanterne" (its `nameOf_fr`).
 String _of(Faction? f, AppLanguage language) => f?.nameOfFor(language) ?? '';
+
+/// "au Dominion de la Lanterne" (its `nameTo_fr`), else "à" and the name.
+String _to(Faction? f) {
+  final to = f?.nameToFr ?? '';
+  return to.isNotEmpty ? to : 'à ${_name(f, AppLanguage.fr)}';
+}
+
+/// [one] or [many], as the French name of [f] is singular or plural.
+String _agree(Faction? f, String one, String many) =>
+    (f?.pluralFr ?? false) ? many : one;
+
+/// "tombé", "tombée", "tombés", "tombées", agreeing with [f].
+String _fallen(Faction? f) =>
+    'tombé${(f?.feminineFr ?? false) ? 'e' : ''}${(f?.pluralFr ?? false) ? 's' : ''}';
 
 /// The news of a place changing hands: taken by [to] (from no one, from
 /// another clan [fromClan] in a [war], or from a minor holder), in
@@ -403,26 +434,26 @@ String territoryNews(
             : '$loser lost $place to $winner, and neither side is pretending '
                 'it was an accident.')
         : (variant == 0
-            ? 'Guerre\u00a0: $place est aux mains ${_of(to, language)}, au '
-                'détriment ${_of(from, language)}.'
-            : '$place n’est plus aux mains ${_of(from, language)} mais '
+            ? 'Guerre\u00a0: $winner ${_agree(to, 'a', 'ont')} pris $place '
+                '${_to(from)}.'
+            : '$loser ${_agree(from, 'a', 'ont')} perdu $place au profit '
                 '${_of(to, language)}, et personne ne fait semblant d’y voir '
                 'un accident.');
   }
   if (from != null && !fromClan) {
     return en
         ? '$place has new masters. $winner did not ask.'
-        : '$place a de nouveaux maîtres\u00a0: les gens ${_of(to, language)} '
-            'n’ont rien demandé à personne.';
+        : '$place a de nouveaux maîtres. $winner '
+            '${_agree(to, 'n’a', 'n’ont')} rien demandé à personne.';
   }
   return en
       ? (variant == 0
           ? '$winner hold $place now.'
           : 'The banners over $place have changed: it is $winner’s now.')
       : (variant == 0
-          ? '$place est désormais aux mains ${_of(to, language)}.'
-          : 'Les bannières ont changé sur $place\u00a0: ce sont celles '
-              '${_of(to, language)} désormais.');
+          ? '$winner ${_agree(to, 'tient', 'tiennent')} $place désormais.'
+          : 'Les bannières ont changé sur $place\u00a0: c’est ${_to(to)} '
+              'désormais.');
 }
 
 /// The news of [clan] falling: [winner] took its last place, [seat].
@@ -441,8 +472,8 @@ String fallenNews(
           ? '$name has fallen: $taker holds $seat.'
           : '$seat is $taker’s. $name has no place left to stand.')
       : (variant == 0
-          ? 'Chute ${_of(clan, language)}\u00a0: $seat est aux mains '
-              '${_of(winner, language)}.'
-          : '$seat est aux mains ${_of(winner, language)}. Il ne reste plus '
-              'un pouce de terrain aux gens ${_of(clan, language)}.');
+          ? '$name ${_agree(clan, 'est', 'sont')} ${_fallen(clan)}\u00a0: '
+              '$taker ${_agree(winner, 'tient', 'tiennent')} $seat.'
+          : '$seat est ${_to(winner)}. $name '
+              '${_agree(clan, 'n’a', 'n’ont')} plus un pouce de terrain.');
 }
