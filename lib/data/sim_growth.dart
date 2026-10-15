@@ -8,6 +8,7 @@ import '../models/story_node.dart';
 import 'factions.dart';
 import 'offers.dart';
 import 'perks.dart';
+import 'patron_stats.dart';
 import 'politics_events.dart';
 import 'politics_events.dart' as coast show applyStoryPolitics;
 import 'signs.dart';
@@ -237,8 +238,41 @@ class SimGrowth {
     } else {
       for (var i = before; i < after; i++) {
         pending.add(const OfferTicket(source: OfferSource.level));
+        if (passives) _patronGains(i + 1);
       }
     }
+  }
+
+  /// Whether the patron's passive stats are given (patron_stats.dart);
+  /// off, to measure them.
+  bool passives = true;
+
+  /// One level's patron gains (patron_stats.dart) on the character.
+  void _patronGains(int level) {
+    final c = character;
+    final gains = patronLevelGains(politics, level: level);
+    for (final MapEntry(:key, :value) in gains.stats.entries) {
+      switch (key) {
+        case 'strength':
+          c.strength += value;
+        case 'dexterity':
+          c.dexterity += value;
+        case 'constitution':
+          c.constitution += value;
+        case 'intelligence':
+          c.intelligence += value;
+        case 'wisdom':
+          c.wisdom += value;
+        case 'charisma':
+          c.charisma += value;
+        case 'luck':
+          c.luck += value;
+        case 'perception':
+          c.perception += value;
+      }
+    }
+    c.maxHealth += gains.maxHealth;
+    c.currentHealth += gains.maxHealth;
   }
 
   /// A boss beaten: a sign (legacy), an offer (offers).

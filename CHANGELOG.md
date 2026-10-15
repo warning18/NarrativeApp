@@ -8,6 +8,45 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.388.0+424]
+
+Mercy and the omens, in their own words.
+
+### Changed
+- **Mercy for a rival's hunter.** The yield, the choice (Show mercy / Finish it), the read of their heart by Perception, the thanks and the betrayal ambush are reworded in English and French, with no gendered pronoun for a hunter who may be a woman or a man; the two standing causes ("Mercy for a hunter", "No mercy for a hunter") likewise.
+- **Hunters' alignments.** Five adjusted to fit their characters: Ysel +25, the Inquisition Soldier +10, the High Warden -10, the Smuggler Captain -25, the Inquisition Penitent +15. The others stand.
+- **The omens of a place.** The mist, heat, rising water, holy ground and town watch omens, and the boss's enrage, reworded. Wording only.
+
+## [1.387.0+423]
+
+You can spare a rival's hunter, at a risk.
+
+- **Mercy.** A rival clan's hunter you beat yields: spare them, or finish it.
+  - **Spared:** you keep the fight's experience, but no gold or loot, and the hunter's clan thinks a little better of you (+3).
+  - **Finished:** the spoils are yours, and the clan holds it against you (−2).
+- **The back-stab.** A hunter you spare may come back a few roads later and strike first. The further their alignment from yours, the likelier: 10% when alike, up to 60% when far apart. A hunter who betrays you is never spared twice.
+- **Reading them.** With Perception 5 or more, the choice tells you which way the hunter leans, and whether that is close to you.
+- **In the simulator:** a run that spares when the odds are under 25% spares about half its hunters, and about one in seven of those comes back.
+
+## [1.385.0+421]
+
+Your clan now shapes your stats as you level up (v5.2, step 5).
+
+- **The patron's favour.** Each level, the clan you stand best with (Friendly or better, or the one you're sworn to) adds a stat point:
+  - **Friendly:** to its first stat.
+  - **Trusted:** to its first and its second in turn.
+  - **Sworn:** the same, and +2 max health.
+- **The clans' stats:**
+  - Dominion: Strength, Charisma
+  - Vigil: Constitution, Perception
+  - Compact: Constitution, Strength
+  - Mire: Dexterity, Luck
+  - Crows: Strength, Dexterity
+  - Penitents: Wisdom, Intelligence
+- **The Open Hand,** once raised, adds +1 to your strongest stat.
+- **In the clan log:** each level-up says what your patron gave.
+- **Balance:** about +2.6 points of fights won overall, and the bosses keep their curve. Report: docs/simulation/patron-stats.md.
+
 ## [1.380.0+416]
 
 Where you fight now changes how the fight goes (v5.2, step 4).

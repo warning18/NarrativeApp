@@ -59,6 +59,10 @@ extension _FightRewards on _FightScreenState {
       // are summed across all of them, not just the one FightScreen was
       // originally constructed with.
       final defeated = _enemies.where((e) => !e.isAlive).toList();
+      // A rival's hunter beaten yields: spared or finished
+      // (hunter_mercy.dart). Spared, it keeps its gold and its loot.
+      final spared = await _settleHunter(defeated);
+      if (!mounted) return;
       var goldGain = 0;
       var xpGain = 0;
       // The last fall feeds a kill-heal sign before the health is saved.
@@ -199,7 +203,15 @@ extension _FightRewards on _FightScreenState {
         recentLootIds: session.recentLootIds,
         signatureItemIds: signatureIds,
       );
-      final chest = rollLootBox(lootContext, items, _random);
+      final chest = spared
+          ? const LootBoxResult(
+              tier: ChestTier.wooden,
+              roll: 0,
+              modifiers: [],
+              gold: 0,
+              itemIds: [],
+              extraSlot: false)
+          : rollLootBox(lootContext, items, _random);
       loot.addAll(chest.itemIds);
       goldGain += chest.gold;
       // Plunderer and Quick Study (level-up perks) add their share, and so
@@ -208,6 +220,10 @@ extension _FightRewards on _FightScreenState {
       // The Crow's Price: the gold stolen on the player's hits.
       final stolen = _signs.crowsGold(_crowsHits) + _core.gold;
       goldGain += stolen;
+      if (spared) {
+        goldGain = stolen;
+        loot.clear();
+      }
       // The Short Con (see doctrine.dart): whatever a thief still carries,
       // having fled or outlasted the fight, is missing from the spoils.
       final escaped = plunderLoss(goldGain: goldGain, escapedStashes: [
@@ -229,27 +245,29 @@ extension _FightRewards on _FightScreenState {
       // The saved auto-open choice, even on the first chest after a start.
       await ref.read(chestAutoOpenProvider.notifier).loaded;
       if (!mounted) return;
-      final spoils = await showSpoilsChestDialog(
-        context,
-        result: chest,
-        items: items,
-        autoOpen: ref.read(chestAutoOpenProvider),
-        language: lang,
-        equippedItemIds: session.equippedItemIds,
-        canEquip: (itemId) {
-          final item = items[itemId] as Map<String, dynamic>?;
-          return meetsItemStatRequirement(
-                item,
-                strength: session.strength,
-                dexterity: session.dexterity,
-                constitution: session.constitution,
-                intelligence: session.intelligence,
-              ) &&
-              meetsItemAlignment(item, session.alignmentLabel);
-        },
-        currentHealth: player.currentHealth,
-        maxHealth: player.maxHealth,
-      );
+      final spoils = spared
+          ? SpoilsChoices.none
+          : await showSpoilsChestDialog(
+              context,
+              result: chest,
+              items: items,
+              autoOpen: ref.read(chestAutoOpenProvider),
+              language: lang,
+              equippedItemIds: session.equippedItemIds,
+              canEquip: (itemId) {
+                final item = items[itemId] as Map<String, dynamic>?;
+                return meetsItemStatRequirement(
+                      item,
+                      strength: session.strength,
+                      dexterity: session.dexterity,
+                      constitution: session.constitution,
+                      intelligence: session.intelligence,
+                    ) &&
+                    meetsItemAlignment(item, session.alignmentLabel);
+              },
+              currentHealth: player.currentHealth,
+              maxHealth: player.maxHealth,
+            );
       if (!mounted) return;
 
       // A potion drunk from the chest heals before the health is saved;
@@ -510,6 +528,69 @@ extension _FightRewards on _FightScreenState {
       _settled = true;
     });
     Navigator.of(context).pop();
+  }
+
+  /// A rival's hunter among [defeated] (hunter_mercy.dart): it yields, and
+  /// the party spares it or finishes it (never a betrayer twice, never in
+  /// a test fight). Settles its clan's standing and, spared, the betrayal.
+  /// Returns whether it was spared.
+  Future<bool> _settleHunter(List<_EnemyMember> defeated) async {
+    if (widget.modifiers.isTest) return false;
+    final hunter = defeated
+        .where((e) =>
+            !e.fled && (e.data['hunterClan']?.toString() ?? '').isNotEmpty)
+        .firstOrNull;
+    if (hunter == null) return false;
+    final lang = ref.read(appLanguageProvider);
+    final session = ref.read(playerSessionProvider);
+    final alignment = hunterAlignmentOf(hunter.data);
+    var spared = false;
+    if (sparable(hunter.enemyId, session.flags)) {
+      final read = _bestPartyPerception() >= readAlignmentPerception
+          ? readHunter(alignment, session.alignmentScore)
+          : null;
+      spared = await showDialog<bool>(
+            context: context,
+            barrierDismissible: false,
+            builder: (dialogContext) => AlertDialog(
+              title: Text(trFor(lang, 'mercy_title')
+                  .replaceAll('{name}', hunter.displayName)),
+              content: Text([
+                trFor(lang, 'mercy_body'),
+                if (read != null)
+                  trFor(lang, 'mercy_read_${read.side}') +
+                      trFor(lang,
+                          read.close ? 'mercy_read_close' : 'mercy_read_far'),
+              ].join('\n\n')),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext, false),
+                  child: Text(trFor(lang, 'mercy_finish_button')),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.pop(dialogContext, true),
+                  child: Text(trFor(lang, 'mercy_spare_button')),
+                ),
+              ],
+            ),
+          ) ??
+          false;
+      if (!mounted) return false;
+    }
+    await ref.read(playerSessionProvider.notifier).settleHunter(
+          hunter.enemyId,
+          hunterClan: hunter.data['hunterClan'].toString(),
+          alignment: alignment,
+          spared: spared,
+          data: ref.read(clanDataProvider),
+          random: _random,
+        );
+    if (!mounted) return spared;
+    _update(() => _log.add(_LogEntry(
+        trFor(lang, spared ? 'mercy_spared_log' : 'mercy_finished_log')
+            .replaceAll('{name}', hunter.displayName),
+        _LogKind.info)));
+    return spared;
   }
 
   /// The end-of-fight button: back to the story on a win, retreat (or the

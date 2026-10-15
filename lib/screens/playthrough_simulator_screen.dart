@@ -20,6 +20,8 @@ import '../combat/spells.dart';
 import '../data/autoplay_engine.dart';
 import '../data/camp_works.dart';
 import '../data/chapter_loop.dart';
+import '../data/hunter_mercy.dart';
+import '../data/patron_stats.dart' show statPatron;
 import '../data/rival_hunters.dart' show maybeRivalHunter;
 import '../data/alignment_events.dart'
     show hunterCooldownRolls, isHunterAmbushChain, maybeAlignmentEvent;
@@ -220,11 +222,21 @@ class _SimResult {
     this.roads = const [],
     this.transcript = const [],
     this.specs = const [],
+    this.patron = '',
+    this.mercy = (spared: 0, finished: 0, betrayed: 0),
   });
 
   /// The specialisations the character held at the end, in the order
   /// taken (specialisations.dart).
   final List<String> specs;
+
+  /// The clan whose passive stats the run ended with (patron_stats.dart);
+  /// '' for none.
+  final String patron;
+
+  /// The rivals' hunters spared, finished, and come back to betray
+  /// (hunter_mercy.dart).
+  final ({int spared, int finished, int betrayed}) mercy;
 
   final List<_SimStep> steps;
 
@@ -533,14 +545,14 @@ _SimResult _simulate(
   // the old skill points, perks and sign picks.
   final growth = character == null || sim == null
       ? null
-      : SimGrowth(
+      : (SimGrowth(
           mode: sim.progression,
           tables: sim.growthTables,
           character: character,
           startingSkillPoints: (sim.professions[character.professionId]
                   as Map<String, dynamic>?)?['startingSkillPoints'] as int? ??
               0,
-        );
+        )..passives = !sim.clashOff.contains('passives'));
   // The open chapters' loop: the camp the story stands at, the places
   // already toured from it, and the place being toured now (with how many
   // things are left to do there).
@@ -559,6 +571,11 @@ _SimResult _simulate(
   // the walk's, so the rest of the run draws as it did.
   var pacing = const DetourPacing();
   var rollsSinceAmbush = hunterCooldownRolls;
+  // Mercy for the rivals' hunters (hunter_mercy.dart): the flags it keeps,
+  // and what came of it. The walk spares a hunter whose betrayal is under
+  // [_simSpareUnder].
+  final mercyFlags = <String>[];
+  var spared = 0, finished = 0, betrayed = 0;
   final metOnRoads = <String>{};
   final roads = <SimRoad>[];
   // The transcript's notes (party, standing, flags), by the step they
@@ -607,17 +624,33 @@ _SimResult _simulate(
         !landmarkDue &&
         road.atRest &&
         chapter >= SubNodeEngine.firstDetourChapter) {
-      final event = maybeAlignmentEvent(
-        alignmentScore: alignment,
-        activeQuestIds: const [],
-        completedQuestIds: const [],
-        enemies: enemies,
-        chapter: chapter,
-        random: side,
-        rollsSinceAmbush: rollsSinceAmbush,
-      );
+      // A betrayal due comes first.
+      final coming = pendingBetrayals(mercyFlags);
+      String? betrayer;
+      if (coming.isNotEmpty) {
+        mercyFlags.removeWhere((f) => f.startsWith('betrayal_'));
+        for (final MapEntry(key: id, value: roads) in coming.entries) {
+          if (roads <= 1 && betrayer == null) {
+            betrayer = id;
+            mercyFlags.add(betrayerFlag(id));
+          } else {
+            mercyFlags.add(betrayalFlag(id, max(1, roads - 1)));
+          }
+        }
+      }
+      final event = betrayer != null
+          ? null
+          : maybeAlignmentEvent(
+              alignmentScore: alignment,
+              activeQuestIds: const [],
+              completedQuestIds: const [],
+              enemies: enemies,
+              chapter: chapter,
+              random: side,
+              rollsSinceAmbush: rollsSinceAmbush,
+            );
       // Sworn, the rivals' hunters (v5.2 step 3b) share the road.
-      final rival = event == null && growth != null
+      final rival = event == null && betrayer == null && growth != null
           ? maybeRivalHunter(
               politics: growth.politics,
               data: growth.tables.clans,
@@ -625,14 +658,32 @@ _SimResult _simulate(
               chapter: chapter,
               random: side,
               cooledDown: rollsSinceAmbush >= hunterCooldownRolls,
+              flags: mercyFlags,
             )
           : null;
-      final ambush =
-          (event != null && isHunterAmbushChain(event)) || rival != null;
+      final ambush = (event != null && isHunterAmbushChain(event)) ||
+          rival != null ||
+          betrayer != null;
       rollsSinceAmbush =
           ambush ? 0 : min(hunterCooldownRolls, rollsSinceAmbush + 1);
-      if (rival != null) {
+      if (betrayer != null) {
+        hunter = 'betrayal';
+        betrayed++;
+      } else if (rival != null) {
         hunter = 'rival_hunter';
+        // Beaten (the walk doesn't fight a road's hunter), it is spared
+        // when its betrayal is unlikely.
+        final id = rival.first.choices.first.triggerEnemyId ?? '';
+        final chance = betrayalChance(
+            hunterAlignmentOf(enemies[id] as Map<String, dynamic>?), alignment);
+        if (chance < _simSpareUnder) {
+          spared++;
+          mercyFlags.add(side.nextDouble() < chance
+              ? betrayalFlag(id, betrayalRoads(side))
+              : sparedFlag(id));
+        } else {
+          finished++;
+        }
       } else if (event != null) {
         hunter = ambush ? 'hunter' : 'temptation';
       }
@@ -730,6 +781,8 @@ _SimResult _simulate(
       housesBuilt: Map.unmodifiable(housesBuilt),
       roads: List.unmodifiable(roads),
       specs: List.unmodifiable(character?.specIds ?? const <String>[]),
+      patron: growth == null ? '' : statPatron(growth.politics),
+      mercy: (spared: spared, finished: finished, betrayed: betrayed),
       transcript: transcribe
           ? [
               for (final (i, step) in steps.indexed) ...[
@@ -1850,6 +1903,10 @@ typedef SimRoad = ({
 });
 
 /// What one simulated playthrough came to (see [simulatePlaythroughs]).
+/// The walk spares a rival's hunter when its betrayal is under this
+/// (hunter_mercy.dart).
+const double _simSpareUnder = 0.25;
+
 typedef SimRunSummary = ({
   SimStrategy strategy,
   String raceId,
@@ -1892,6 +1949,8 @@ typedef SimRunSummary = ({
   List<SimRoad> roads,
   List<String> transcript,
   List<String> specs,
+  String patron,
+  ({int spared, int finished, int betrayed}) mercy,
 });
 
 /// Full playthroughs, one per entry of [plan] (a strategy and, optionally,
@@ -2009,6 +2068,8 @@ List<SimRunSummary> simulatePlaythroughs(
       roads: result.roads,
       transcript: result.transcript,
       specs: result.specs,
+      patron: result.patron,
+      mercy: result.mercy,
     ));
   }
   return out;

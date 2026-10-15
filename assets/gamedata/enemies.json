@@ -513,7 +513,8 @@
     ],
     "hunterClan": "dominion",
     "battleCry": "“One flame, one law. You swore to another light.”",
-    "battleCry_fr": "« Une flamme, une loi. Vous avez juré à une autre lumière. »"
+    "battleCry_fr": "« Une flamme, une loi. Vous avez juré à une autre lumière. »",
+    "alignment": 10
   },
   "void_wisp": {
     "enemyName": "Grey Candle",
@@ -680,7 +681,8 @@
     ],
     "hunterClan": "crows",
     "battleCry": "“Every door has a price. Yours has come due.”",
-    "battleCry_fr": "« Chaque porte a son prix. Le vôtre est échu. »"
+    "battleCry_fr": "« Chaque porte a son prix. Le vôtre est échu. »",
+    "alignment": -25
   },
   "plague_hound": {
     "enemyName": "Plague Hound",
@@ -1051,7 +1053,8 @@
     "biomes": [],
     "hunterClan": "dominion",
     "battleCry": "“The Lantern remembers every oath. Yours is on the list.”",
-    "battleCry_fr": "« La Lanterne se souvient de chaque serment. Le vôtre est sur la liste. »"
+    "battleCry_fr": "« La Lanterne se souvient de chaque serment. Le vôtre est sur la liste. »",
+    "alignment": -10
   },
   "kroll_the_branded": {
     "enemyName": "Inquisitor Clement",
@@ -2353,7 +2356,8 @@
     ],
     "hunterClan": "penitents",
     "battleCry": "“I carry what I burned. You will carry what you swore.”",
-    "battleCry_fr": "« Je porte ce que j’ai brûlé. Vous porterez ce que vous avez juré. »"
+    "battleCry_fr": "« Je porte ce que j’ai brûlé. Vous porterez ce que vous avez juré. »",
+    "alignment": 15
   },
   "void_archon": {
     "enemyName": "Void Archon",
@@ -3421,7 +3425,8 @@
     "biomes": [],
     "hunterClan": "penitents",
     "battleCry": "The porcelain mask tilts, and says, in a voice that is not its own: “You swore.”",
-    "battleCry_fr": "Le masque de porcelaine s’incline et dit, d’une voix qui n’est pas la sienne : « Vous avez juré. »"
+    "battleCry_fr": "Le masque de porcelaine s’incline et dit, d’une voix qui n’est pas la sienne : « Vous avez juré. »",
+    "alignment": 15
   },
   "white_soldier": {
     "enemyName": "White Soldier",
@@ -4306,7 +4311,8 @@
     "biomes": [],
     "hunterClan": "crows",
     "battleCry": "“You sold us to the other side. Let’s see what the tide pays.”",
-    "battleCry_fr": "« Vous nous avez vendus à l’autre camp. Voyons ce que la marée en donne. »"
+    "battleCry_fr": "« Vous nous avez vendus à l’autre camp. Voyons ce que la marée en donne. »",
+    "alignment": -30
   },
   "purifier_vell": {
     "enemyName": "Purifier Vell",
@@ -5587,7 +5593,8 @@
     "description_fr": "Un lancier de la Dernière Veille qui a tenu le mur à chaque nouvelle lune, et qui en est descendu parce que quelqu’un a juré à la Veille puis s’en est allé.",
     "enemyName_fr": "Halvard, lancier de la Dernière Veille",
     "biomes": [],
-    "hunterOnly": true
+    "hunterOnly": true,
+    "alignment": 30
   },
   "vigil_candlebearer_ysel": {
     "enemyName": "Ysel, Candlebearer",
@@ -5645,7 +5652,8 @@
     "description_fr": "Une Porte-Chandelle qui parcourt les galeries en comptant les morts pour qu’aucun ne parte sans qu’on le remarque, et qui a inscrit votre nom sur une liste de choses qu’elle compte mener jusqu’au bout.",
     "enemyName_fr": "Ysel, Porte-Chandelle",
     "biomes": [],
-    "hunterOnly": true
+    "hunterOnly": true,
+    "alignment": 25
   },
   "compact_quarryman_brodin": {
     "enemyName": "Brodin Stonehand, Quarryman",
@@ -5707,7 +5715,8 @@
     "description_fr": "Un carrier de la Carrière de Givre, lent à parler et plus lent à oublier, qui porte le marteau du Pacte quand le Pacte n’a plus de mots.",
     "enemyName_fr": "Brodin Main-de-Pierre, carrier",
     "biomes": [],
-    "hunterOnly": true
+    "hunterOnly": true,
+    "alignment": 10
   },
   "compact_anvil_deaf_tove": {
     "enemyName": "Tove the Unheard, of the Anvil-Deaf",
@@ -5769,7 +5778,8 @@
     "description_fr": "Une vieille forgeronne assourdie à l’enclume, qui parle par signes, chasse en silence, et n’a pas besoin de vous entendre fuir.",
     "enemyName_fr": "Tove la Sourde, de l’Enclume",
     "biomes": [],
-    "hunterOnly": true
+    "hunterOnly": true,
+    "alignment": 0
   },
   "mire_returned_sedge": {
     "enemyName": "Sedge of the Returned",
@@ -5827,7 +5837,8 @@
     "description_fr": "L’un des enfants que le marais a rendus, un masque de roseau porté toute l’année, toujours parfaitement poli et jamais pressé.",
     "enemyName_fr": "Sedge, un Rendu",
     "biomes": [],
-    "hunterOnly": true
+    "hunterOnly": true,
+    "alignment": -10
   },
   "mire_herons_wake_wen": {
     "enemyName": "Wen, Guide of the Heron’s Wake",
@@ -5885,6 +5896,7 @@
     "description_fr": "Une guide du marais qui emmène les imprudents et ramène quelqu’un d’autre, et qui a été priée, avec courtoisie, de vous emmener.",
     "enemyName_fr": "Wen, guide du Sillage du Héron",
     "biomes": [],
-    "hunterOnly": true
+    "hunterOnly": true,
+    "alignment": -25
   }
 }
