@@ -308,10 +308,13 @@ A scene in a **city** (the Saltmouth districts, Candlehold) happens inside the c
 4. **Narrative:** the second batch (echoes per chapter, gated scenes), then an audit pass on repetition.
 5. **QA:** a `qa_` guard for “no two detours in a row” and “each chapter fires its landmark”.
 
-## Open questions for the user
+## Decided (the user’s answers)
 
-1. **Opt-in or ambush?** Should a rumoured detour *always* be opt-in (you can leave it), with only unknown ones arriving by surprise? (I suggest yes.)
-2. **How long?** Are 2–4 beats the right length, or should some scenes be one beat (a single stop) so the road does not get slow?
-3. **Time cost:** should a detour cost time (1 watch) and rations, or stay free as it is today?
-4. **A landmark each chapter:** are six authored scenes (one per chapter, 2 to 7) the right size for the first batch, or do you want more?
-5. **City scenes:** should city districts get their own scenes (the six Saltmouth ones above), or are detours a road thing only?
+1. **Opt-in: yes.** A rumoured detour is always optional (*Take it / Leave it*). An unknown one can still arrive as a surprise, and you can back out at its first beat.
+2. **Length: a mix.** Some **single-beat stops** alongside the 2–4 beat scenes, so roads don’t slow down. **Proposed share: about 30% one-beat** (stops: a well, a shrine, a stall, a view), **45% two-beat**, **25% three- or four-beat**; every landmark is three or four. Core can tune the draw.
+3. **Cost: yes.** One watch when the scene has a fight or a check, nothing for a simple stop (a one-beat event or discovery). A camp-out beat may spend a ration and give more back. **The cost shows before you choose** (section 3.3).
+4. **One landmark per chapter: yes.** Six for the first batch (chapters 2 to 7).
+5. **City scenes: yes.** Short (one or two beats), no road and no ration. **Start with Saltmouth’s six districts.**
+
+**Next:** the first batch of scenes as data in `assets/gamedata/detour_scenes.json` (six landmarks, one scene per biome plus a few one-beat stops, the six Saltmouth districts), in its own PR with no version bump. It merges with or after Core’s detour engine, and Core reviews the schema first. Core’s detour numbers (section 1.5) are still to come.
+
