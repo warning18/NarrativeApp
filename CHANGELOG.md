@@ -19,7 +19,7 @@ A clan can make you its nemesis, and good and evil hunt everyone.
 - **A neutral character is hunted too, lightly, by both sides:** 2% a road, rising to 6% at the edge of neutral. Before, a neutral character met no hunter at all.
 - **New hunters (Narrative's six):**
   - the good orders hunt an Evil character: Ysel the candle-bearer, Halvard the spearman and the masked penitent;
-  - the evil forces hunt a Good character: the cultist acolyte, the Hollow Court zealot and the void stalker.
+  - the evil forces hunt a Good character: the cultist acolyte, the Hollow Court zealot and the void hound.
 
   Each comes with its battle cry and its own ambush lines, and the angels and demons keep theirs. The six are still met as ordinary foes too. A hunter now waits for its chapter.
 - **The territory news in French** now uses Narrative's own wording, agreeing with each clan ("La Veille Grise est tombée", "Les Corneilles de Sel tiennent…").

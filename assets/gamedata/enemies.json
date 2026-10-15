@@ -443,7 +443,7 @@
     "hunterOnly": false,
     "alignment": -30,
     "battleCry": "“The tear is kind. It sent me to carry you home.”",
-    "battleCry_fr": "« Le déchirement est bon. Il m’envoie vous ramener chez vous. »"
+    "battleCry_fr": "« Le déchirement est bon. Il m’envoie vous ramener chez vous. »"
   },
   "inquisition_soldier": {
     "enemyName": "Inquisition Soldier",
@@ -897,10 +897,6 @@
       {
         "itemID": "bloodthorn_blade",
         "dropRate": 25
-      },
-      {
-        "itemID": "dawnward_shield",
-        "dropRate": 8
       }
     ],
     "skillMoves": [
@@ -940,8 +936,8 @@
     ],
     "minChapter": 3,
     "packEligible": false,
-    "hunterAlignment": "Good",
-    "hunterTier": 1,
+    "hunterAlignment": "",
+    "hunterTier": 0,
     "phases": [
       {
         "healthThreshold": 50,
@@ -986,11 +982,7 @@
     "biomes": [
       "ashlands"
     ],
-    "kind": "void",
-    "hunterOnly": false,
-    "alignment": -35,
-    "battleCry": "(no words; a sound like a door opening in a wall)",
-    "battleCry_fr": "(aucun mot ; un bruit de porte qui s’ouvre dans un mur)"
+    "kind": "void"
   },
   "inquisition_high_warden": {
     "enemyName": "Inquisition High Warden",
@@ -1239,7 +1231,7 @@
     "hunterOnly": false,
     "alignment": -25,
     "battleCry": "“Light, and law, and the hollow. You are on the wrong side of the third.”",
-    "battleCry_fr": "« La lumière, la loi, le vide. Vous êtes du mauvais côté du troisième. »"
+    "battleCry_fr": "« La lumière, la loi, le vide. Vous êtes du mauvais côté du troisième. »"
   },
   "void_manifestation": {
     "enemyName": "Void Manifestation",
@@ -2173,6 +2165,10 @@
       {
         "itemID": "material_rime_crystal",
         "dropRate": 12
+      },
+      {
+        "itemID": "dawnward_shield",
+        "dropRate": 8
       }
     ],
     "skillMoves": [
@@ -2201,8 +2197,8 @@
     ],
     "minChapter": 5,
     "packEligible": true,
-    "hunterAlignment": "",
-    "hunterTier": 0,
+    "hunterAlignment": "Good",
+    "hunterTier": 2,
     "description": "A hound of the tear’s making, all smoke and teeth, that hunts by the scent of the Shroud.",
     "description_fr": "Un chien né de la déchirure, tout de fumée et de crocs, qui chasse à l’odeur du Linceul.",
     "encounterText": [
@@ -2220,7 +2216,11 @@
       "frost",
       "tear"
     ],
-    "kind": "void"
+    "kind": "void",
+    "hunterOnly": false,
+    "alignment": -35,
+    "battleCry": "(no words; a sound like a door opening in a wall)",
+    "battleCry_fr": "(aucun mot ; un bruit de porte qui s’ouvre dans un mur)"
   },
   "tear_spawn": {
     "enemyName": "The Unstitched",

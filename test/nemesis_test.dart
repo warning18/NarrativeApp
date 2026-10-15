@@ -163,7 +163,7 @@ void main() {
       for (final id in [
         'cultist_acolyte',
         'hollow_court_zealot',
-        'void_stalker'
+        'void_hound'
       ]) {
         final enemy = enemies[id] as Map<String, dynamic>;
         expect(enemy['hunterAlignment'], 'Good', reason: id);
@@ -183,9 +183,9 @@ void main() {
       expect(hunterPoolFor(enemies: enemies, side: 'Good', chapter: 2),
           isNot(contains('cultist_acolyte')));
       expect(
-          hunterPoolFor(enemies: enemies, side: 'Good', chapter: 4),
+          hunterPoolFor(enemies: enemies, side: 'Good', chapter: 5),
           containsAll(
-              ['cultist_acolyte', 'void_stalker', 'hollow_court_zealot']));
+              ['cultist_acolyte', 'void_hound', 'hollow_court_zealot']));
       expect(hunterPoolFor(enemies: enemies, side: 'Evil', chapter: 5),
           containsAll(['vigil_spearman_halvard', 'masked_penitent']));
     });

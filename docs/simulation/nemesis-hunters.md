@@ -15,7 +15,7 @@ The rules are in `lib/data/nemesis.dart`, `lib/data/rival_hunters.dart` and `lib
   - **At ±20 and past:** unchanged (6%, +0.15% a point, up to 15%).
 - **Who hunts.**
   - The good orders hunt an Evil character: the Vigil's candle-bearer Ysel, the spearman Halvard (in place of the Inquisition soldier) and the masked penitent, with their battle cries.
-  - The evil forces hunt a Good character: the cultist acolyte, the Hollow Court zealot and the void stalker, at alignment −25 to −35 so a high Perception reads them Evil.
+  - The evil forces hunt a Good character: the cultist acolyte, the Hollow Court zealot and the void hound (from chapter 5; the void stalker is the Scaffold Yards' boss, so it stays one), at alignment −25 to −35 so a high Perception reads them Evil.
   - The angels and the demons keep their own lines; the six take Narrative's.
   - The six are still met as ordinary foes on the roads (`hunterOnly: false`).
   - Hunters now wait for their own `minChapter`.
