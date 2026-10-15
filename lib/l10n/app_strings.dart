@@ -3973,6 +3973,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'town_materials': {AppLanguage.en: 'materials', AppLanguage.fr: 'matériaux'},
   'town_ready': {AppLanguage.en: 'Ready', AppLanguage.fr: 'Prêt'},
   'town_locked': {AppLanguage.en: 'Locked', AppLanguage.fr: 'Verrouillé'},
+  'town_limit_reached': {
+    AppLanguage.en: 'Limit reached: {built} of {limit}',
+    AppLanguage.fr: 'Limite atteinte : {built} sur {limit}',
+  },
   'town_built_note': {
     AppLanguage.en: 'Standing on the cliff.',
     AppLanguage.fr: 'Debout sur la falaise.',
