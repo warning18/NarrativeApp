@@ -12,6 +12,7 @@ import '../combat/specialisations.dart'
         specsOfferedBy,
         tempestSkillId,
         weakLinkSpecs;
+import 'clan_power.dart';
 import 'factions.dart';
 import 'perks.dart';
 import 'signs.dart';
@@ -1413,6 +1414,10 @@ Map<String, double> suitorPreview(
             data: data, chapter: chapter, day: day)
         .state;
   }
+  // Its power grows with the gifts taken (clan_power.dart).
+  next = addPower(
+      next, suitor.factionId, giftPowerFor(suitor.gift.rarity.name), data,
+      helped: true);
   return (politics: next, standing: standing, alignment: leanOf(suitor, data));
 }
 

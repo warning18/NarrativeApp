@@ -48,6 +48,8 @@ class StoryPolitics {
     this.pledges = const [],
     this.throneWinner = '',
     this.muster = false,
+    this.power = const {},
+    this.control = const {},
     this.extra = const {},
   });
 
@@ -95,6 +97,12 @@ class StoryPolitics {
   /// The Host musters now.
   final bool muster;
 
+  /// Power moved with each clan (clan_power.dart).
+  final Map<String, int> power;
+
+  /// Places given to a clan (place id -> clan, clan_power.dart).
+  final Map<String, String> control;
+
   /// Keys this version does not read, kept as written.
   final Map<String, dynamic> extra;
 
@@ -114,6 +122,8 @@ class StoryPolitics {
     'pledge',
     'throneWinner',
     'muster',
+    'power',
+    'control',
   };
 
   /// The first intrigue step, if any (most politics carry one).
@@ -135,7 +145,9 @@ class StoryPolitics {
       claim.isEmpty &&
       pledges.isEmpty &&
       throneWinner.isEmpty &&
-      !muster;
+      !muster &&
+      power.isEmpty &&
+      control.isEmpty;
 
   /// Whether a choice's hint has anything to say (standing, marks, a
   /// claim, a pledge or the Throne).
@@ -215,6 +227,16 @@ class StoryPolitics {
       pledges: _strings(json['pledge']),
       throneWinner: _text(json['throneWinner']),
       muster: json['muster'] == true,
+      power: {
+        if (json['power'] is Map)
+          for (final e in (json['power'] as Map).entries)
+            if (_int(e.value) != 0) e.key.toString(): _int(e.value),
+      },
+      control: {
+        if (json['control'] is Map)
+          for (final e in (json['control'] as Map).entries)
+            if (_text(e.value).isNotEmpty) e.key.toString(): _text(e.value),
+      },
       extra: {
         for (final e in json.entries)
           if (!_known.contains(e.key)) e.key: e.value,
@@ -244,6 +266,8 @@ class StoryPolitics {
         if (pledges.length > 1) 'pledge': List<String>.of(pledges),
         if (throneWinner.isNotEmpty) 'throneWinner': throneWinner,
         if (muster) 'muster': true,
+        if (power.isNotEmpty) 'power': Map<String, int>.of(power),
+        if (control.isNotEmpty) 'control': Map<String, String>.of(control),
         ...extra,
       };
 }

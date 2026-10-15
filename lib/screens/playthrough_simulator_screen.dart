@@ -46,6 +46,7 @@ import '../data/story_graph_integrity.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
 import '../data/zone_gating.dart' show meetsRequiredFlags, zoneIsMain;
+import '../data/clan_power.dart' show TerritoryChange;
 import '../data/geography.dart';
 import '../data/land_crossing.dart';
 import '../data/road_events.dart';
@@ -224,6 +225,8 @@ class _SimResult {
     this.specs = const [],
     this.patron = '',
     this.mercy = (spared: 0, finished: 0, betrayed: 0),
+    this.territory = const [],
+    this.politics = PoliticsState.empty,
   });
 
   /// The specialisations the character held at the end, in the order
@@ -237,6 +240,13 @@ class _SimResult {
   /// The rivals' hunters spared, finished, and come back to betray
   /// (hunter_mercy.dart).
   final ({int spared, int finished, int betrayed}) mercy;
+
+  /// The places that changed hands at the chapters' turns
+  /// (clan_power.dart).
+  final List<TerritoryChange> territory;
+
+  /// The clans as the run left them: standing, power, places.
+  final PoliticsState politics;
 
   final List<_SimStep> steps;
 
@@ -783,6 +793,8 @@ _SimResult _simulate(
       specs: List.unmodifiable(character?.specIds ?? const <String>[]),
       patron: growth == null ? '' : statPatron(growth.politics),
       mercy: (spared: spared, finished: finished, betrayed: betrayed),
+      territory: List.unmodifiable(growth?.territoryChanges ?? const []),
+      politics: growth?.politics ?? PoliticsState.empty,
       transcript: transcribe
           ? [
               for (final (i, step) in steps.indexed) ...[
@@ -1424,7 +1436,7 @@ _SimResult _simulate(
       if (reached != null) {
         arrivals.putIfAbsent(
             reached, () => (level: character!.level, gold: gold));
-        growth?.chapterReached(reached);
+        growth?.chapterReached(reached, geography: sim?.geography);
         settle();
         buildHouses();
         if (transcribe) {
@@ -1951,6 +1963,8 @@ typedef SimRunSummary = ({
   List<String> specs,
   String patron,
   ({int spared, int finished, int betrayed}) mercy,
+  List<TerritoryChange> territory,
+  PoliticsState politics,
 });
 
 /// Full playthroughs, one per entry of [plan] (a strategy and, optionally,
@@ -2070,6 +2084,8 @@ List<SimRunSummary> simulatePlaythroughs(
       specs: result.specs,
       patron: result.patron,
       mercy: result.mercy,
+      territory: result.territory,
+      politics: result.politics,
     ));
   }
   return out;
