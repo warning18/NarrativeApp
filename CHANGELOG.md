@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.372.0+408]
+
+Rank II sounds like its clan.
+
+### Changed
+- **Rank II lines.** The fifteen rank-II gifts no longer share one generic line: each says, in its clan's voice, what grows by half again (the Berserker's Pain strikes, the Beacon's fire, the Fen Guide's poison, and so on). English and French. Wording only.
+
 ## [1.366.0+402]
 
 The clans' sub-clans bend your specialisation, and the clan raises it to rank II (v5.2, step 2b).
