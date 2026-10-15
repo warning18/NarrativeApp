@@ -55,6 +55,8 @@ import 'combat_engine.dart';
 import 'profession_cores.dart';
 import 'status_effect.dart';
 
+export 'foe_kind.dart' show isEvilFoe;
+
 /// The fifteen main specialisations, then the eight weak links' (step 3c,
 /// [weakLinkSpecs]).
 enum Spec {
@@ -286,10 +288,8 @@ const double vanguardHeavyMultiplier = 2.85;
 /// The heavy blow's element under the Lantern Vanguard.
 const String vanguardElement = 'Fire';
 
-/// Whether [enemy] (an enemies.json record) is an Evil foe: one weak to
-/// Light (the void, the dead, demons; enemies.json has no alignment).
-bool isEvilFoe(Map<String, dynamic>? enemy) =>
-    (enemy?['weakTo'] as List?)?.contains('Light') ?? false;
+// An Evil foe (the Vanguard's heal) is told by its kind: foe_kind.dart's
+// isEvilFoe.
 
 // --- Cleric ----------------------------------------------------------------
 
