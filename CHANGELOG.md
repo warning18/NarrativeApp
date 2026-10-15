@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.362.0+398]
+
+The march on Candlehold may hold a detour.
+
+### Changed
+- **Chapter 7's gates.** The arrival at Candlehold's gates (`7500`) no longer forbids a detour, so the way to the Throne can hold one, and the chapter's landmark, The Banner on the Hill. The scene is tense and stays tense; only the ban is lifted.
+
 ## [1.357.0+393]
 
 The new districts have their own voices.

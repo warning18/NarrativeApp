@@ -18829,8 +18829,7 @@
       "landingPortId": "port_candlehold",
       "blurb": "The Dominion’s capital on the First Lantern’s cliff, and the Lantern Throne at the top of it.",
       "blurb_fr": "La capitale du Dominion sur la falaise de la Première Lanterne, et le Trône de la Lanterne tout en haut."
-    },
-    "noDetour": true
+    }
   },
   "7510_dominion": {
     "id": "7510_dominion",
