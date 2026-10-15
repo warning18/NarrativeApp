@@ -23,6 +23,8 @@ import 'clan_compass.dart';
 import 'clan_radar_chart.dart';
 import 'item_stats.dart';
 import 'pixel_banner.dart';
+import 'reward_card.dart';
+import 'reward_cards.dart';
 import 'sign_widgets.dart';
 import 'wind_banner.dart';
 
@@ -277,6 +279,29 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     final notifier = ref.read(playerSessionProvider.notifier);
     await notifier.acceptSuitor(suitor.factionId,
         tables: tables, origin: itemOriginHere(ref));
+    // The gift, as the reward card tells it, before the next offer.
+    if (mounted) {
+      final skills =
+          ref.read(localizedDbProvider(skillsSchema)).value ?? const {};
+      final clanColour = _suitorColor(suitor, tables.data);
+      await showRewardCard(
+        context,
+        clanGiftCard(
+          lang: lang,
+          clanName: suitorName(suitor, tables.data, lang),
+          clanColour: clanColour,
+          gift: RewardLine(
+            key: Key('reward_gift_${suitor.gift.id}'),
+            icon: _giftGlyph(suitor.gift, clanColour),
+            accent: clanColour,
+            title: name,
+            sub: trFor(lang, _giftTagKey(suitor.gift, skills)),
+            value: trFor(lang, 'reward_new'),
+          ),
+          standing: [for (final p in preview) p.text],
+        ),
+      );
+    }
     final next = await notifier.ensureOffer(tables);
     if (!mounted) return;
     if (next == null) {
@@ -932,23 +957,6 @@ class _GiftIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final IconData fallback = switch (gift.kind) {
-      GiftKind.skill => Icons.auto_fix_high,
-      GiftKind.object => Icons.inventory_2_outlined,
-      GiftKind.sign => Icons.auto_awesome,
-      GiftKind.title => Icons.military_tech_outlined,
-      GiftKind.sworn => Icons.gavel,
-      GiftKind.spec => Icons.alt_route,
-      GiftKind.perk => Icons.star_outline,
-    };
-    final mark = Icon(fallback, size: 24, color: color);
-    final Widget glyph = switch (gift.kind) {
-      GiftKind.object =>
-        PixelIcon(ItemIcons.pathFor(gift.id), size: 32, fallback: mark),
-      GiftKind.skill =>
-        PixelIcon(SkillIcons.pathFor(gift.id), size: 32, fallback: mark),
-      _ => mark,
-    };
     return Container(
       key: Key('offer_gift_icon_${gift.id}'),
       width: 42,
@@ -959,9 +967,31 @@ class _GiftIcon extends StatelessWidget {
         color: color.withValues(alpha: 0.14),
         border: Border.all(color: color.withValues(alpha: 0.6)),
       ),
-      child: glyph,
+      child: _giftGlyph(gift, color),
     );
   }
+}
+
+/// The picture inside a gift's tile: an object's or a skill's own, else a
+/// mark for its kind.
+Widget _giftGlyph(OfferGift gift, Color color) {
+  final IconData fallback = switch (gift.kind) {
+    GiftKind.skill => Icons.auto_fix_high,
+    GiftKind.object => Icons.inventory_2_outlined,
+    GiftKind.sign => Icons.auto_awesome,
+    GiftKind.title => Icons.military_tech_outlined,
+    GiftKind.sworn => Icons.gavel,
+    GiftKind.spec => Icons.alt_route,
+    GiftKind.perk => Icons.star_outline,
+  };
+  final mark = Icon(fallback, size: 24, color: color);
+  return switch (gift.kind) {
+    GiftKind.object =>
+      PixelIcon(ItemIcons.pathFor(gift.id), size: 32, fallback: mark),
+    GiftKind.skill =>
+      PixelIcon(SkillIcons.pathFor(gift.id), size: 32, fallback: mark),
+    _ => mark,
+  };
 }
 
 /// A flag with no banner of its own (the Wayfarer's, or a clan without one):

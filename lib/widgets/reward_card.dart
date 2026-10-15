@@ -151,7 +151,6 @@ class _RewardCardState extends State<RewardCard>
     return Material(
       key: const Key('reward_card'),
       color: theme.colorScheme.surface,
-      borderRadius: BorderRadius.circular(14),
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14),
