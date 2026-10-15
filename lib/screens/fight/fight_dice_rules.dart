@@ -43,9 +43,13 @@ extension _FightDiceRules on _FightScreenState {
   DiceFaceResult _signedFace(_PartyMember actor, DiceFaceResult face) {
     if (!actor.isPlayer || face.type != 'Attack') return face;
     var signed = face;
+    // The Berserker's Attack faces are Pain strikes (specialisations.dart).
+    if (_core.has(Spec.berserker)) {
+      signed = signed.withKeywords({...signed.keywords, FaceKeyword.pain});
+    }
     if (_signs.strikeKeywords.isNotEmpty) {
       signed =
-          signed.withKeywords({...face.keywords, ..._signs.strikeKeywords});
+          signed.withKeywords({...signed.keywords, ..._signs.strikeKeywords});
     }
     if (_signs.strikeElement.isNotEmpty && face.element == 'None') {
       signed = signed.withElement(_signs.strikeElement);
@@ -192,6 +196,15 @@ extension _FightDiceRules on _FightScreenState {
             firstRound: _roundsStarted <= 1,
           ));
     }
+    // The Relicbreaker's mana makes a sure critical of the player's strike;
+    // the Ledger Knife's misses raise the chance.
+    final strike = played.type == 'Attack' || played.type == 'Skill';
+    final sureCrit = rollCritical &&
+        actor.isPlayer &&
+        strike &&
+        _core.has(Spec.relicbreaker) &&
+        _mana >= relicSureCritMana;
+    if (sureCrit) _mana -= relicSureCritMana;
     final result = resolvePlayerFace(
       played,
       _skillsForFace(actor, played, skills),
@@ -205,9 +218,11 @@ extension _FightDiceRules on _FightScreenState {
               (actor.isPlayer && _luckyCoinArmed ? _luckyCoinLuckBonus : 0)
           : 0,
       random: rollCritical ? _random : null,
-      forceCritical: surge,
+      forceCritical: surge || sureCrit,
       alignmentLabel: _alignmentLabel,
-      critChanceBonus: rollCritical ? actor.gear.critChance : 0,
+      critChanceBonus: rollCritical
+          ? actor.gear.critChance + (actor.isPlayer ? _core.ledgerChain : 0)
+          : 0,
       armor: actor.armor,
     );
     if (!played.hasKeyword(FaceKeyword.pain) || result.damageDealt <= 0) {
@@ -703,7 +718,10 @@ extension _FightDiceRules on _FightScreenState {
 
   /// The ranger's Trail: the next face of the die drawn as a deck.
   DiceFaceResult _trailFace(List<Map<String, dynamic>> faces) {
-    final index = _core.deckFor(faces.length, _random).draw();
+    final deck = _core.deckFor(faces.length, _random);
+    final index = deck.draw();
+    _core.firstOfRun = deck.drewFirst;
+    _core.verdict = deck.drewVerdict;
     return faceFromJson(faces[index], index);
   }
 
@@ -737,6 +755,10 @@ extension _FightDiceRules on _FightScreenState {
     List<_LogEntry> entries,
   ) {
     final heroes = _actingParty.where((m) => m.isPlayer);
+    _core
+      ..heavy = false
+      ..crits = 0
+      ..piercing = false;
     if (heroes.isEmpty) return;
     final hero = heroes.first;
     final face = played[hero.id];
@@ -747,16 +769,40 @@ extension _FightDiceRules on _FightScreenState {
         if (result.damageDealt <= 0) return;
         final second = _resolveFor(hero, face, skills, items, lang,
             surge: false, rollCritical: true);
+        // Each hit's critical: the Ledger Knife's chain, the Relicbreaker's
+        // mana (specialisations.dart).
+        int hit(PlayerActionResult r) {
+          if (!r.isCritical) {
+            if (_core.has(Spec.ledgerKnife)) {
+              _core.ledgerChain += ledgerChainStep;
+            }
+            return r.damageDealt;
+          }
+          _core.crits++;
+          if (!_core.has(Spec.ledgerKnife)) return r.damageDealt;
+          _core.ledgerChain = 0;
+          return ledgerCritical(r.damageDealt);
+        }
+
         result = coreResult(result,
-            damage: flurryDamage(result.damageDealt, second.damageDealt));
+            damage: flurryDamage(hit(result), hit(second)),
+            mana: result.manaGained +
+                (_core.has(Spec.relicbreaker) ? _core.crits : 0));
         entries
             .add(_LogEntry(trFor(lang, 'flurry_log'), _LogKind.playerDamage));
       case ProfessionCore.fury:
         if (result.damageDealt <= 0) return;
         if (_core.fury >= furyMax) {
           result = coreResult(result,
-              damage: (result.damageDealt * furyHeavyMultiplier).round());
+              damage: (result.damageDealt *
+                      (_core.has(Spec.lanternVanguard)
+                          ? vanguardHeavyMultiplier
+                          : furyHeavyMultiplier))
+                  .round());
           _core.fury = 0;
+          _core.heavy = true;
+          // The Lantern Vanguard's heavy blow is Fire and Pierces.
+          _core.piercing = _core.has(Spec.lanternVanguard);
           entries.add(
               _LogEntry(trFor(lang, 'fury_heavy_log'), _LogKind.playerDamage));
         } else {
@@ -766,12 +812,68 @@ extension _FightDiceRules on _FightScreenState {
         if (result.manaGained <= 0) return;
         result =
             coreResult(result, mana: result.manaGained * ashWellManaMultiplier);
-      case ProfessionCore.watchfire:
       case ProfessionCore.trail:
+        // Corsair's Eye: the Verdict counts double and Pierces.
+        if (!_core.verdict ||
+            !_core.has(Spec.corsairsEye) ||
+            result.damageDealt <= 0) {
+          return;
+        }
+        result = coreResult(result,
+            damage: (result.damageDealt * verdictMultiplier).round());
+        _core.piercing = true;
+        entries.add(
+            _LogEntry(trFor(lang, 'spec_verdict_log'), _LogKind.playerDamage));
+      case ProfessionCore.watchfire:
       case ProfessionCore.none:
         return;
     }
     results[hero.id] = result;
+  }
+
+  /// The specialisations on the hero's strike that landed [landed] on
+  /// [target] (specialisations.dart): the Vanguard's heal against an Evil
+  /// foe, the Fever Blade's Rot, the Trapwright's stun, the Fen Guide's
+  /// poison.
+  void _applySpecsOnHit(_PartyMember hero, _EnemyMember target, int landed,
+      List<_LogEntry> entries, AppLanguage lang) {
+    if (landed <= 0) return;
+    if (_core.heavy &&
+        _core.has(Spec.lanternVanguard) &&
+        isEvilFoe(target.data)) {
+      final heal = (landed * vanguardEvilHealShare).round();
+      if (heal > 0) {
+        hero.currentHealth = min(hero.maxHealth, hero.currentHealth + heal);
+        entries.add(_LogEntry(
+            trFor(lang, 'spec_vanguard_heal_log').replaceAll('{n}', '$heal'),
+            _LogKind.playerHeal));
+      }
+    }
+    if (!target.isAlive) return;
+    if (_core.has(Spec.feverBlade) && _core.crits > 0) {
+      for (var i = 0; i < _core.crits; i++) {
+        target.statusEffects =
+            withRot(target.statusEffects, (landed / 2).round());
+      }
+      entries.add(_LogEntry(
+          trFor(lang, 'spec_rot_log')
+              .replaceAll('{name}', target.displayName)
+              .replaceAll('{n}', '${poisonDamageFor(target.statusEffects)}'),
+          _LogKind.info));
+    }
+    if (_core.verdict && _core.has(Spec.trapwright)) {
+      target.statusEffects = applyStatusEffect(target.statusEffects, trapStun);
+      entries.add(_LogEntry(
+          _statusInflictedMessage(trapStun, target.displayName, lang),
+          _LogKind.info));
+    }
+    if (_core.firstOfRun && _core.has(Spec.fenGuide)) {
+      final poison = fenPoison((landed / 2).round());
+      target.statusEffects = applyStatusEffect(target.statusEffects, poison);
+      entries.add(_LogEntry(
+          _statusInflictedMessage(poison, target.displayName, lang),
+          _LogKind.info));
+    }
   }
 
   /// One more Fury for the warrior, said when it is full.
@@ -787,40 +889,116 @@ extension _FightDiceRules on _FightScreenState {
   /// cleric faces, and what heals past full feeds the Watchfire.
   void _watchfireOnHeal(_PartyMember actor, int healing,
       List<_LogEntry> entries, AppLanguage lang) {
-    _core.fire = watchfireAfterHeal(
+    _core.fire = fireAfterHeal(
         fire: _core.fire,
         healing: healing,
         currentHealth: actor.currentHealth,
-        maxHealth: actor.maxHealth);
+        maxHealth: actor.maxHealth,
+        beacon: _core.has(Spec.beacon));
     final key = _selectedTargets[actor.id];
     final picked = key == null ? null : _enemyByKey(key);
-    final target =
+    final first =
         picked != null && picked.isAlive ? picked : _firstLivingEnemy();
-    if (target == null) return;
-    final burn = (healing * watchfireHealBurnShare).round();
-    target.currentHealth = max(0, target.currentHealth - burn);
-    target.damageThisRound += burn;
-    entries.add(_LogEntry(
-        trFor(lang, 'watchfire_burn_log')
-            .replaceAll('{name}', target.displayName)
-            .replaceAll('{n}', '$burn'),
-        _LogKind.playerDamage));
+    // Under the Beacon the burn strikes every enemy (specialisations.dart).
+    final targets = _core.has(Spec.beacon)
+        ? _enemies.where((e) => e.isAlive).toList()
+        : [if (first != null) first];
+    if (targets.isEmpty) return;
+    final raw = (healing *
+            watchfireHealBurnShare *
+            (_core.has(Spec.beacon) ? beaconBurnMultiplier : 1))
+        .round();
+    for (final target in targets) {
+      // The Beacon's burn is Light (specialisations.dart).
+      final burn = _core.has(Spec.beacon)
+          ? _landHitOnEnemy(target, raw, beaconElement, entries, lang,
+              pierce: true)
+          : raw;
+      target.currentHealth = max(0, target.currentHealth - burn);
+      target.damageThisRound += burn;
+      entries.add(_LogEntry(
+          trFor(lang, 'watchfire_burn_log')
+              .replaceAll('{name}', target.displayName)
+              .replaceAll('{n}', '$burn'),
+          _LogKind.playerDamage));
+    }
+    _ashenHand(raw, entries, lang);
+  }
+
+  /// The Ashen Hand: a burn of the fire ([burned]) gives a mana, mends the
+  /// cleric a share of it and lifts an affliction (specialisations.dart).
+  void _ashenHand(int burned, List<_LogEntry> entries, AppLanguage lang) {
+    if (!_core.has(Spec.ashenHand)) return;
+    _mana = min(_maxMana, _mana + ashenManaPerBurn);
+    final hero = _party.where((m) => m.isPlayer);
+    if (hero.isNotEmpty) {
+      final h = hero.first;
+      h.currentHealth =
+          min(h.maxHealth, h.currentHealth + (burned * ashenMendShare).round());
+      if (h.statusEffects.isNotEmpty) {
+        h.statusEffects = h.statusEffects.skip(1).toList();
+      }
+    }
+    entries.add(_LogEntry(trFor(lang, 'spec_ashen_log'), _LogKind.mana));
   }
 
   /// What is left of the Watchfire burns the first enemy standing. Returns
   /// true when that ends the fight.
   bool _burnWatchfire(List<_LogEntry> entries, AppLanguage lang) {
+    _longVigil(entries, lang);
     if (_core.fire <= 0) return false;
-    final target = _firstLivingEnemy();
-    final burn = watchfireBurn(_core.fire);
+    final first = _firstLivingEnemy();
+    final targets = _core.has(Spec.beacon)
+        ? _enemies.where((e) => e.isAlive).toList()
+        : [if (first != null) first];
+    final raw = (watchfireBurn(_core.fire) *
+            (_core.has(Spec.beacon) ? beaconBurnMultiplier : 1))
+        .round();
     _core.fire = 0;
-    if (target == null) return false;
+    if (targets.isEmpty) return false;
+    for (final target in targets) {
+      final burn = _core.has(Spec.beacon)
+          ? _landHitOnEnemy(target, raw, beaconElement, entries, lang,
+              pierce: true)
+          : raw;
+      target.currentHealth = max(0, target.currentHealth - burn);
+      entries.add(_LogEntry(
+          trFor(lang, 'watchfire_round_log')
+              .replaceAll('{name}', target.displayName)
+              .replaceAll('{n}', '$burn'),
+          _LogKind.playerDamage));
+    }
+    _ashenHand(raw, entries, lang);
+    return _enemies.every((e) => !e.isAlive);
+  }
+
+  /// The Censer Mage: [overflow] mana past full burns the first enemy
+  /// standing, the mage's strike per point (specialisations.dart).
+  void _censerBurn(int overflow, List<_LogEntry> entries, AppLanguage lang) {
+    if (overflow <= 0 || !_core.has(Spec.censerMage)) return;
+    final hero = _party.where((m) => m.isPlayer && !m.isKnockedOut);
+    final target = _firstLivingEnemy();
+    if (hero.isEmpty || target == null) return;
+    final burn = censerBurn(overflow, hero.first.baseDamage);
     target.currentHealth = max(0, target.currentHealth - burn);
     entries.add(_LogEntry(
-        trFor(lang, 'watchfire_round_log')
+        trFor(lang, 'spec_censer_log')
             .replaceAll('{name}', target.displayName)
             .replaceAll('{n}', '$burn'),
         _LogKind.playerDamage));
-    return _enemies.every((e) => !e.isAlive);
+  }
+
+  /// The Long Vigil mends the cleric above half health as the round turns
+  /// (specialisations.dart).
+  void _longVigil(List<_LogEntry> entries, AppLanguage lang) {
+    if (!_core.has(Spec.longVigil)) return;
+    final hero = _party.where((m) => m.isPlayer && !m.isKnockedOut);
+    if (hero.isEmpty) return;
+    final mend = longVigilMend(hero.first.currentHealth, hero.first.maxHealth);
+    if (mend <= 0) return;
+    hero.first.currentHealth += mend;
+    entries.add(_LogEntry(
+        trFor(lang, 'spec_vigil_log').replaceAll('{n}', '$mend'),
+        _LogKind.playerHeal));
   }
 }

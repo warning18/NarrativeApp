@@ -465,9 +465,13 @@ class _FightLength {
 /// The hero's profession core over a fight (profession_cores.dart): Fury
 /// built up, the Watchfire's fire, the Trail's deck.
 class _HeroCore {
-  _HeroCore(this.core);
+  _HeroCore(this.core, {this.specs = const {}});
 
   final ProfessionCore core;
+
+  /// The specialisations on the core (specialisations.dart).
+  final Set<Spec> specs;
+  bool has(Spec spec) => specs.contains(spec);
   int fury = 0;
   int fire = 0;
 
@@ -476,6 +480,18 @@ class _HeroCore {
   /// deck early).
   int? aheadIndex;
   TrailDeck? _deck;
+
+  /// The Ledger Knife's chain: critical chance the misses have built.
+  double ledgerChain = 0;
+
+  /// This round's strike: a heavy blow, its critical hits, whether it
+  /// Pierces, and where in the Trail's run its face came (the first, the
+  /// Verdict).
+  bool heavy = false;
+  int crits = 0;
+  bool piercing = false;
+  bool firstOfRun = false;
+  bool verdict = false;
 
   /// The Trail's deck for a die of [faceCount] faces (dealt anew if the
   /// die changed).

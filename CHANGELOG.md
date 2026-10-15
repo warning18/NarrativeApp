@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.359.0+395]
+## [1.361.0+397]
 
 The fight screen shows the new fight-length rules and the professions' cores.
 
@@ -16,6 +16,20 @@ The fight screen shows the new fight-length rules and the professions' cores.
 - **Fight-length marks.** A "Tide ×N" mark next to the round count once the Tide rises (and "Tide in N" in the three rounds before); a tick at 10% on non-boss foes' health bars (the execute line); a "Wavering" mark on non-boss foes under 25%; the heal number on the preview line dims once healing fatigue sets in.
 - **Profession cores on the hero's card.** The warrior's Fury as five notches ("Heavy blow next" when full); the cleric's Watchfire as a flame under the health bar with its worth; the mage's Ash Well starting "empty" on the mana meter; "×2" on the rogue's Flurry face; the ranger's next Trail face beside the die.
 - Each mark has a tooltip that explains the rule (English and French).
+
+## [1.360.0+396]
+
+The clans specialise your profession (v5.2, step 2a): each profession's core can now be bent three ways, one per main clan.
+
+- **Fifteen specialisations**, three for each profession, offered by the profession's main clans once you are their Friend. Each comes once and stays for the run, and they stack.
+  - **Warrior:** Berserker (Crows), Briar Guard (Compact), Lantern Vanguard (Dominion).
+  - **Cleric:** Long Vigil (Vigil), Ashen Hand (Penitents), Beacon (Dominion).
+  - **Mage:** Censer Mage (Dominion), Burden-Bearer (Penitents), Tempest Toll (Crows).
+  - **Rogue:** Fever Blade (Mire), Ledger Knife (Crows), Relicbreaker (Penitents).
+  - **Ranger:** Corsair's Eye (Crows), Trapwright (Compact), Fen Guide (Mire).
+- **In the clan offers:** a specialisation shows as its own gift, with its text and the clan's voice. The Crows also offer Teleport Strike to a Tempest Toll.
+- **In the fight:** each one plays its rule in the fight log (the Verdict, the Rot, the briar biting back, the fire giving back...).
+- **Balance:** each was measured against its profession's core in 200 simulated runs. Most add 3 to 6 points of fights won. Report: docs/simulation/specialisations.md.
 
 ## [1.358.0+394]
 
