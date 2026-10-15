@@ -10,6 +10,7 @@ import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/clan_power.dart';
+import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/data/factions.dart';
 import 'package:narrative_data_app/data/geography.dart';
 import 'package:narrative_data_app/data/politics_events.dart';
@@ -205,6 +206,34 @@ void main() {
     final world = CoastWorld(data: data);
     expect(conditions.holds(world, const [], PoliticsState.empty), isFalse);
     expect(conditions.holds(world, const [], change.politics), isTrue);
+  });
+
+  test('the French news agrees with each clan (Narrative\'s gender_fr)', () {
+    String fell(String clan, int variant) => fallenNews(AppLanguage.fr,
+        clan: data.faction(clan),
+        winner: data.faction('dominion'),
+        seat: 'Rimewell',
+        variant: variant);
+    expect(fell('vigil', 0), startsWith('La Veille Grise est tombée\u00a0:'));
+    expect(fell('crows', 0), startsWith('Les Corneilles de Sel sont tombées'));
+    expect(fell('penitents', 0), contains('sont tombés\u00a0'));
+    expect(fell('compact', 0), contains('est tombé\u00a0'));
+    expect(fell('crows', 1), contains('Rimewell est au Dominion'));
+    expect(fell('crows', 1), contains('n’ont plus'));
+    final war = territoryNews(AppLanguage.fr,
+        place: 'le Quai Haut',
+        to: data.faction('crows'),
+        from: data.faction('vigil'),
+        fromClan: true,
+        war: true);
+    expect(
+        war,
+        'Guerre\u00a0: Les Corneilles de Sel ont pris le Quai Haut '
+        'à la Veille Grise.');
+    expect(
+        territoryNews(AppLanguage.fr,
+            place: 'Rimewell', to: data.faction('vigil'), from: null),
+        'La Veille Grise tient Rimewell désormais.');
   });
 
   test('power, places and the fallen are saved', () {

@@ -227,6 +227,7 @@ class _SimResult {
     this.mercy = (spared: 0, finished: 0, betrayed: 0),
     this.territory = const [],
     this.politics = PoliticsState.empty,
+    this.nemeses = const {},
   });
 
   /// The specialisations the character held at the end, in the order
@@ -247,6 +248,9 @@ class _SimResult {
 
   /// The clans as the run left them: standing, power, places.
   final PoliticsState politics;
+
+  /// Every clan that was the character's nemesis at a chapter's turn.
+  final Set<String> nemeses;
 
   final List<_SimStep> steps;
 
@@ -680,7 +684,12 @@ _SimResult _simulate(
         hunter = 'betrayal';
         betrayed++;
       } else if (rival != null) {
-        hunter = 'rival_hunter';
+        final hunterId = rival.first.choices.first.triggerEnemyId ?? '';
+        final clan =
+            (enemies[hunterId] as Map<String, dynamic>?)?['hunterClan'];
+        hunter = clan != null && clan == growth?.politics.nemesis
+            ? 'nemesis_hunter'
+            : 'rival_hunter';
         // Beaten (the walk doesn't fight a road's hunter), it is spared
         // when its betrayal is unlikely.
         final id = rival.first.choices.first.triggerEnemyId ?? '';
@@ -795,6 +804,7 @@ _SimResult _simulate(
       mercy: (spared: spared, finished: finished, betrayed: betrayed),
       territory: List.unmodifiable(growth?.territoryChanges ?? const []),
       politics: growth?.politics ?? PoliticsState.empty,
+      nemeses: Set.unmodifiable(growth?.nemeses ?? const <String>{}),
       transcript: transcribe
           ? [
               for (final (i, step) in steps.indexed) ...[
@@ -1965,6 +1975,7 @@ typedef SimRunSummary = ({
   ({int spared, int finished, int betrayed}) mercy,
   List<TerritoryChange> territory,
   PoliticsState politics,
+  Set<String> nemeses,
 });
 
 /// Full playthroughs, one per entry of [plan] (a strategy and, optionally,
@@ -2086,6 +2097,7 @@ List<SimRunSummary> simulatePlaythroughs(
       mercy: result.mercy,
       territory: result.territory,
       politics: result.politics,
+      nemeses: result.nemeses,
     ));
   }
   return out;

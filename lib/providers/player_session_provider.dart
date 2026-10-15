@@ -16,6 +16,7 @@ import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
 import '../data/character_start.dart' show startingArmor;
 import '../data/clan_power.dart' show territoryTurn;
+import '../data/nemesis.dart' show updateNemesis;
 import '../data/contracts.dart';
 import '../data/detour_pacing.dart' show DetourPacing;
 import '../data/camp_state.dart' show harborHouseId;
@@ -2259,13 +2260,15 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       state = _withTitles(state.copyWith(politics: drift.state), data!);
     }
     if (data != null && geography != null) {
+      final turned = territoryTurn(state.politics,
+              data: data,
+              geography: geography,
+              chapter: chapter,
+              day: state.day)
+          .state;
       state = state.copyWith(
-          politics: territoryTurn(state.politics,
-                  data: data,
-                  geography: geography,
-                  chapter: chapter,
-                  day: state.day)
-              .state);
+          politics:
+              updateNemesis(turned, data, chapter: chapter, day: state.day));
     }
     state = state.copyWith(
       chapterOffersThrough: chapter,

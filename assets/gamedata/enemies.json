@@ -421,8 +421,8 @@
     ],
     "minChapter": 3,
     "packEligible": true,
-    "hunterAlignment": "",
-    "hunterTier": 0,
+    "hunterAlignment": "Good",
+    "hunterTier": 1,
     "description": "A novice of the void cults, who prays to the tear and believes the Shroud belongs to it.",
     "description_fr": "Un novice des cultes du vide, qui prie la déchirure et croit que le Linceul lui appartient.",
     "encounterText": [
@@ -439,7 +439,11 @@
     "biomes": [
       "ashlands"
     ],
-    "kind": "person"
+    "kind": "person",
+    "hunterOnly": false,
+    "alignment": -30,
+    "battleCry": "“The tear is kind. It sent me to carry you home.”",
+    "battleCry_fr": "« Le déchirement est bon. Il m’envoie vous ramener chez vous. »"
   },
   "inquisition_soldier": {
     "enemyName": "Inquisition Soldier",
@@ -932,8 +936,8 @@
     ],
     "minChapter": 3,
     "packEligible": false,
-    "hunterAlignment": "",
-    "hunterTier": 0,
+    "hunterAlignment": "Good",
+    "hunterTier": 1,
     "phases": [
       {
         "healthThreshold": 50,
@@ -978,7 +982,11 @@
     "biomes": [
       "ashlands"
     ],
-    "kind": "void"
+    "kind": "void",
+    "hunterOnly": false,
+    "alignment": -35,
+    "battleCry": "(no words; a sound like a door opening in a wall)",
+    "battleCry_fr": "(aucun mot ; un bruit de porte qui s’ouvre dans un mur)"
   },
   "inquisition_high_warden": {
     "enemyName": "Inquisition High Warden",
@@ -1185,8 +1193,8 @@
     ],
     "minChapter": 4,
     "packEligible": false,
-    "hunterAlignment": "",
-    "hunterTier": 0,
+    "hunterAlignment": "Good",
+    "hunterTier": 2,
     "phases": [
       {
         "healthThreshold": 35,
@@ -1219,7 +1227,11 @@
     "biomes": [
       "fen"
     ],
-    "kind": "person"
+    "kind": "person",
+    "hunterOnly": false,
+    "alignment": -25,
+    "battleCry": "“Light, and law, and the hollow. You are on the wrong side of the third.”",
+    "battleCry_fr": "« La lumière, la loi, le vide. Vous êtes du mauvais côté du troisième. »"
   },
   "void_manifestation": {
     "enemyName": "Void Manifestation",
@@ -3443,7 +3455,7 @@
     ],
     "minChapter": 5,
     "packEligible": false,
-    "hunterAlignment": "",
+    "hunterAlignment": "Evil",
     "hunterTier": 1,
     "phases": [
       {
@@ -3466,8 +3478,9 @@
     "hunterClan": "penitents",
     "battleCry": "The porcelain mask tilts, and says, in a voice that is not its own: “You swore.”",
     "battleCry_fr": "Le masque de porcelaine s’incline et dit, d’une voix qui n’est pas la sienne : « Vous avez juré. »",
-    "alignment": 15,
-    "kind": "person"
+    "alignment": 20,
+    "kind": "person",
+    "hunterOnly": false
   },
   "white_soldier": {
     "enemyName": "White Soldier",
@@ -5649,7 +5662,7 @@
     ],
     "minChapter": 2,
     "packEligible": false,
-    "hunterAlignment": "",
+    "hunterAlignment": "Evil",
     "hunterTier": 1,
     "hunterClan": "vigil",
     "battleCry": "“The watch does not look away. Neither will I.”",
@@ -5709,7 +5722,7 @@
     ],
     "minChapter": 3,
     "packEligible": false,
-    "hunterAlignment": "",
+    "hunterAlignment": "Evil",
     "hunterTier": 2,
     "hunterClan": "vigil",
     "battleCry": "“I have counted you. You are one short of whole.”",

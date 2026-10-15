@@ -8,6 +8,7 @@ import '../models/story_node.dart';
 import 'clan_power.dart';
 import 'factions.dart';
 import 'geography.dart';
+import 'nemesis.dart' show updateNemesis;
 import 'offers.dart';
 import 'perks.dart';
 import 'patron_stats.dart';
@@ -136,6 +137,9 @@ class SimGrowth {
 
   /// The places that changed hands at the chapters' turns.
   final List<TerritoryChange> territoryChanges = [];
+
+  /// Every clan that was the character's nemesis at a chapter's turn.
+  final Set<String> nemeses = {};
   PoliticsState politics = PoliticsState.empty;
   List<String> titles = const [];
   String activeTitle = '';
@@ -306,8 +310,9 @@ class SimGrowth {
     if (geography != null) {
       final turn = territoryTurn(politics,
           data: tables.clans, geography: geography, chapter: chapter);
-      politics = turn.state;
+      politics = updateNemesis(turn.state, tables.clans, chapter: chapter);
       territoryChanges.addAll(turn.changes);
+      if (politics.nemesis.isNotEmpty) nemeses.add(politics.nemesis);
     }
     pending.add(OfferTicket(source: OfferSource.chapter, detail: '$chapter'));
   }
