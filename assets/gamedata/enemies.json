@@ -2345,7 +2345,7 @@
   },
   "void_archon": {
     "enemyName": "Void Archon",
-    "maxHealth": 282,
+    "maxHealth": 330,
     "damage": 26,
     "guile": 10,
     "faction": "",
@@ -3411,7 +3411,7 @@
   "white_soldier": {
     "enemyName": "White Soldier",
     "maxHealth": 80,
-    "damage": 19,
+    "damage": 21,
     "guile": 1,
     "faction": "dominion",
     "reaction": "press",
@@ -4724,7 +4724,7 @@
   "claimant_vane": {
     "enemyName": "Aurel Vane, Inquisitor-General",
     "enemyName_fr": "Aurel Vane, Inquisiteur général",
-    "maxHealth": 317,
+    "maxHealth": 370,
     "damage": 32,
     "guile": 12,
     "faction": "dominion",
@@ -4860,7 +4860,7 @@
   "claimant_morrow": {
     "enemyName": "Hesk Morrow, Grand Master",
     "enemyName_fr": "Hesk Morrow, Grand Maître",
-    "maxHealth": 398,
+    "maxHealth": 560,
     "damage": 23,
     "guile": 9,
     "faction": "",
@@ -4996,7 +4996,7 @@
   "claimant_tallis": {
     "enemyName": "Maud Tallis, Eldest Wickwarden",
     "enemyName_fr": "Maud Tallis, Aînée des Garde-Mèches",
-    "maxHealth": 248,
+    "maxHealth": 380,
     "damage": 22,
     "guile": 11,
     "faction": "",

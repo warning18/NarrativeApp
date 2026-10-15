@@ -438,3 +438,41 @@ class _EnemyMember {
 
   bool get isAlive => currentHealth > 0;
 }
+
+/// What the fight-length rules (fight_length.dart) keep count of over a
+/// fight: each member's heals so far (healing fatigue), and the pack's
+/// leader and whether the pack has broken.
+class _FightLength {
+  final Map<String, int> _heals = {};
+
+  /// The pack's leader (an enemy key), once worked out; '' for none.
+  String? leaderKey;
+  bool packBroken = false;
+
+  /// [amount] as [memberId]'s next heal heals it, counted.
+  int fatigued(String memberId, int amount) {
+    if (amount <= 0) return amount;
+    final before = _heals[memberId] ?? 0;
+    _heals[memberId] = before + 1;
+    return fatiguedHeal(amount, before);
+  }
+}
+
+/// The hero's profession core over a fight (profession_cores.dart): Fury
+/// built up, the Watchfire's fire, the Trail's deck.
+class _HeroCore {
+  _HeroCore(this.core);
+
+  final ProfessionCore core;
+  int fury = 0;
+  int fire = 0;
+  TrailDeck? _deck;
+
+  /// The Trail's deck for a die of [faceCount] faces (dealt anew if the
+  /// die changed).
+  TrailDeck deckFor(int faceCount, Random random) {
+    final deck = _deck;
+    if (deck != null && deck.faceCount == faceCount) return deck;
+    return _deck = TrailDeck(faceCount, random);
+  }
+}

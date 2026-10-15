@@ -303,6 +303,8 @@ extension _FightSetup on _FightScreenState {
       _maxMana += _signs.maxMana;
       if (full) _mana = _maxMana;
     }
+    // The mage's Ash Well starts every fight empty (profession_cores.dart).
+    if (_core.core == ProfessionCore.ashWell) _mana = 0;
     _maxRollsThisFight = _maxRolls + _perks.extraRolls;
     _alignmentLabel = session.alignmentLabel;
     _partyBonus = partyBonusFor(

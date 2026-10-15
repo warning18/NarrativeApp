@@ -7,6 +7,8 @@ import '../combat/doctrine.dart';
 import '../combat/element_reaction.dart';
 import '../combat/enemy_response.dart';
 import '../combat/fight_goal.dart';
+import '../combat/fight_length.dart';
+import '../combat/profession_cores.dart';
 import '../combat/parry.dart';
 import 'character_start.dart' show startingArmor;
 import '../combat/squad.dart';
@@ -217,6 +219,10 @@ class SimCharacter {
   // Run-wide tallies.
   int fightsWon = 0;
   int fightsLost = 0;
+
+  /// Rounds fought over every fight, won or lost (what fight length is
+  /// measured by, see fight_length.dart).
+  int roundsFought = 0;
   int potionsUsed = 0;
   int manaGained = 0;
   final Map<String, int> spellsCast = {};
@@ -231,14 +237,19 @@ class SimCharacter {
 
   /// What the worn sets and unique items add up to (see gear_effects.dart).
   GearEffects gearEffects(
-          Map<String, dynamic> items, Map<String, ItemSet> itemSets) =>
+    Map<String, dynamic> items,
+    Map<String, ItemSet> itemSets,
+  ) =>
       gearEffectsFor(equippedItemIds, items, itemSets);
 
   /// The total a face or spell of [element] hits with -- the same sum the
   /// fight screen and the character screen use ([itemSets] adds a worn
   /// set's flat attack).
-  int casterDamage(Map<String, dynamic> items, String element,
-      {Map<String, ItemSet> itemSets = const {}}) {
+  int casterDamage(
+    Map<String, dynamic> items,
+    String element, {
+    Map<String, ItemSet> itemSets = const {},
+  }) {
     final scaling = equipmentScalingBonusFor(
       equippedItemIds,
       items,
@@ -258,8 +269,10 @@ class SimCharacter {
         elemental;
   }
 
-  int armor(Map<String, dynamic> items,
-      {Map<String, ItemSet> itemSets = const {}}) {
+  int armor(
+    Map<String, dynamic> items, {
+    Map<String, ItemSet> itemSets = const {},
+  }) {
     final scaling = equipmentScalingBonusFor(
       equippedItemIds,
       items,
@@ -361,9 +374,11 @@ class SimCharacter {
       if (spell == null ||
           purse < costOf(entry.value) ||
           knownSpells.any((s) => s.id == spell.id) ||
-          !canLearnSpell(spell,
-              professionId: professionId,
-              knownSpellIds: [for (final s in knownSpells) s.id])) {
+          !canLearnSpell(
+            spell,
+            professionId: professionId,
+            knownSpellIds: [for (final s in knownSpells) s.id],
+          )) {
         continue;
       }
       purse -= costOf(entry.value);
@@ -396,11 +411,13 @@ class SimCharacter {
       final slot = item['equipSlot']?.toString() ?? '';
       if (slot.isEmpty || purse < costOf(item)) continue;
       if (scoreOf(entry.key) <= scoreOf(equippedBySlot[slot])) continue;
-      if (!meetsItemStatRequirement(item,
-          strength: strength,
-          dexterity: dexterity,
-          constitution: constitution,
-          intelligence: intelligence)) {
+      if (!meetsItemStatRequirement(
+        item,
+        strength: strength,
+        dexterity: dexterity,
+        constitution: constitution,
+        intelligence: intelligence,
+      )) {
         continue;
       }
       final best = bySlot[slot];
@@ -545,14 +562,20 @@ class _SimEnemy {
   /// guard's cover, the health it costs, the hardest hit this round and an
   /// element reaction. Returns the damage dealt, a reaction's bonus
   /// included.
-  int landHit(int damage, String element, int round,
-      {bool pierce = false, bool react = true}) {
+  int landHit(
+    int damage,
+    String element,
+    int round, {
+    bool pierce = false,
+    bool react = true,
+  }) {
     var landed = takeHit(damage, element, pierce: pierce);
     if (landed > 0 &&
         !pierce &&
         role != SquadRole.guard &&
-        pack.any((o) =>
-            !identical(o, this) && o.isAlive && o.role == SquadRole.guard)) {
+        pack.any(
+          (o) => !identical(o, this) && o.isAlive && o.role == SquadRole.guard,
+        )) {
       final cut = (landed * guardCoverShare).round();
       landed -= cut;
       damageThisRound -= cut;
@@ -577,17 +600,22 @@ class _SimEnemy {
           case ElementReaction.freeze:
             if (!isBossEnemy(id, data) && phases.isEmpty) {
               statusEffects = applyStatusEffect(
-                  statusEffects,
-                  const StatusEffect(
-                      type: StatusEffectType.stun, remainingTurns: 1));
+                statusEffects,
+                const StatusEffect(
+                  type: StatusEffectType.stun,
+                  remainingTurns: 1,
+                ),
+              );
             }
           case ElementReaction.sandblast:
             statusEffects = applyStatusEffect(
-                statusEffects,
-                const StatusEffect(
-                    type: StatusEffectType.weaken,
-                    remainingTurns: weakenTurns,
-                    magnitude: sandblastWeakenPercent));
+              statusEffects,
+              const StatusEffect(
+                type: StatusEffectType.weaken,
+                remainingTurns: weakenTurns,
+                magnitude: sandblastWeakenPercent,
+              ),
+            );
           case ElementReaction.conduct:
           case ElementReaction.firestorm:
           case ElementReaction.eclipse:
@@ -597,8 +625,10 @@ class _SimEnemy {
         if (spread > 0) {
           for (final other in pack) {
             if (identical(other, this) || !other.isAlive) continue;
-            other.health =
-                max(0, other.health - max(1, (landed * spread).round()));
+            other.health = max(
+              0,
+              other.health - max(1, (landed * spread).round()),
+            );
           }
         }
       }
@@ -659,6 +689,27 @@ SimFightOutcome simulateSimFight({
   final lending = !s.isEmpty || perks.maxMana > 0;
   var secondWindAvailable = gear.secondWind;
   var phasesEntered = 0;
+  // The fight-length rules (fight_length.dart): the hero's heals so far,
+  // and whether the pack has broken.
+  var healsGiven = 0;
+  int healed(int amount) {
+    if (!on('fatigue') || amount <= 0) return amount;
+    return fatiguedHeal(amount, healsGiven++);
+  }
+
+  var packBroken = false;
+
+  // The hero's core (profession_cores.dart): Fury built up, the
+  // Watchfire's fire, the Trail's deck; the Ash Well starts empty.
+  final core = clashOff.contains('cores')
+      ? ProfessionCore.none
+      : coreOfProfession(c.professionId);
+  var fury = 0;
+  var fire = 0;
+  final trail = core == ProfessionCore.trail && c.diceFaces.isNotEmpty
+      ? TrailDeck(c.diceFaces.length, random)
+      : null;
+  if (core == ProfessionCore.ashWell) c.mana = 0;
   // The signs' lend for the fight: its stats, a higher max health (full
   // stays full, a running pact may take a share off the top) and mana.
   final baseMaxHealth = c.maxHealth;
@@ -675,11 +726,13 @@ SimFightOutcome simulateSimFight({
     lendStats(1);
     c.maxHealth = s.maxHealthFor(baseMaxHealth);
     c.currentHealth = s.afterStartCurse(
-        SignEffects.healthEntering(
-            current: c.currentHealth,
-            base: baseMaxHealth,
-            fightMax: c.maxHealth),
-        c.maxHealth);
+      SignEffects.healthEntering(
+        current: c.currentHealth,
+        base: baseMaxHealth,
+        fightMax: c.maxHealth,
+      ),
+      c.maxHealth,
+    );
     final full = c.mana >= c.maxMana;
     c.signMaxMana = s.maxMana + perks.maxMana;
     if (full) c.mana = c.maxMana;
@@ -729,14 +782,19 @@ SimFightOutcome simulateSimFight({
       () {
         final entry = enemies[i];
         var health = max(
-            1,
-            (scaledMaxHealth((entry.value['maxHealth'] as num?)?.toInt() ?? 1,
-                        c.level) *
-                    curveFor(entry).health *
-                    packMultiplier)
-                .round());
+          1,
+          (scaledMaxHealth(
+                    (entry.value['maxHealth'] as num?)?.toInt() ?? 1,
+                    c.level,
+                  ) *
+                  curveFor(entry).health *
+                  packMultiplier)
+              .round(),
+        );
         var damage = (scaledDamage(
-                    (entry.value['damage'] as num?)?.toInt() ?? 0, c.level) *
+                  (entry.value['damage'] as num?)?.toInt() ?? 0,
+                  c.level,
+                ) *
                 curveFor(entry).damage *
                 packMultiplier)
             .round();
@@ -828,8 +886,10 @@ SimFightOutcome simulateSimFight({
   void rollStatuses(List<SignStatusChance> chances, _SimEnemy e) {
     for (final chance in chances) {
       if (!e.isAlive || !chance.rolls(random)) continue;
-      e.statusEffects =
-          applyStatusEffect(e.statusEffects, s.playerInflicted(chance.status));
+      e.statusEffects = applyStatusEffect(
+        e.statusEffects,
+        s.playerInflicted(chance.status),
+      );
     }
   }
 
@@ -841,6 +901,14 @@ SimFightOutcome simulateSimFight({
   }
 
   SimFightOutcome finish(bool won) {
+    // The Ash Well: what is left of it after a win heals.
+    if (core == ProfessionCore.ashWell && won) {
+      c.currentHealth = min(
+        c.maxHealth,
+        c.currentHealth + ashWellHeal(c.mana, c.maxHealth),
+      );
+      c.mana = 0;
+    }
     if (lending) {
       lendStats(-1);
       final fightMax = c.maxHealth;
@@ -851,6 +919,7 @@ SimFightOutcome simulateSimFight({
       c.currentHealth = min(baseMaxHealth, won ? healed : c.currentHealth);
       c.mana = min(c.mana, c.maxMana);
     }
+    c.roundsFought += rounds;
     if (won) {
       c.fightsWon++;
     } else {
@@ -897,8 +966,10 @@ SimFightOutcome simulateSimFight({
     if (c.currentHealth < 0.4 * c.maxHealth && c.potions > 0) {
       c.potions--;
       potionsUsed++;
-      c.currentHealth = min(c.maxHealth,
-          c.currentHealth + _potionHeal + s.potionBonus + perks.potionBonus);
+      c.currentHealth = min(
+        c.maxHealth,
+        c.currentHealth + _potionHeal + s.potionBonus + perks.potionBonus,
+      );
     }
 
     // The enemies' coming blows are rolled ahead (telegraphed), so a
@@ -924,12 +995,21 @@ SimFightOutcome simulateSimFight({
         );
       }
     }
-    var block = _castSpellIfWorth(c, ens, items, random, casts,
-        itemSets: itemSets,
-        signs: s,
-        clash: clash,
-        react: on('reaction'),
-        round: rounds);
+    var block = _castSpellIfWorth(
+      c,
+      ens,
+      items,
+      random,
+      casts,
+      itemSets: itemSets,
+      signs: s,
+      clash: clash,
+      react: on('reaction'),
+      round: rounds,
+      healed: core == ProfessionCore.watchfire ? null : healed,
+      tide: on('tide'),
+      ashWell: core == ProfessionCore.ashWell,
+    );
     // A sign's block for the whole party as the fight opens.
     if (rounds == 1) block += s.partyStartBlock;
     // The round's best hit, what a Mirror sends back: the spell's so far
@@ -945,10 +1025,18 @@ SimFightOutcome simulateSimFight({
       var rolls = 0;
       do {
         rolls++;
-        face = rollDie(c.diceFaces, random);
+        if (trail != null) {
+          final index = trail.draw();
+          face = faceFromJson(c.diceFaces[index], index);
+        } else {
+          face = rollDie(c.diceFaces, random);
+        }
       } while (face.type == 'Empty' && rolls < _maxRolls);
-      face = applyFaceAssignment(face, c.diceFaces[face.faceIndex],
-          c.diceSkillAssignments[face.faceIndex.toString()]);
+      face = applyFaceAssignment(
+        face,
+        c.diceFaces[face.faceIndex],
+        c.diceSkillAssignments[face.faceIndex.toString()],
+      );
       // The Writ (v1.212): every third round the skill faces fall silent.
       if (doctrine?.rule == DoctrineRule.writ &&
           writSilencesRound(rounds) &&
@@ -987,33 +1075,65 @@ SimFightOutcome simulateSimFight({
       }
       var damageBase = c.casterDamage(items, element, itemSets: itemSets);
       if (attack || face.type == 'Skill') {
-        damageBase = s.strikeBase(damageBase, face.value,
+        damageBase = s.strikeBase(
+          damageBase,
+          face.value,
+          attackFace: attack,
+          percent: s.strikePercentFor(
             attackFace: attack,
-            percent: s.strikePercentFor(
-              attackFace: attack,
-              currentHealth: c.currentHealth,
-              maxHealth: c.maxHealth,
-              firstRound: rounds == 1,
-            ));
+            currentHealth: c.currentHealth,
+            maxHealth: c.maxHealth,
+            firstRound: rounds == 1,
+          ),
+        );
       }
-      final result = resolvePlayerFace(
-        face,
-        availableSkills,
-        damageBase,
-        activeEffects: c.statusEffects,
-        wisdomHealBonus: c.wisdom ~/ 2,
-        wisdomManaBonus: wisdomManaBonusFor(c.wisdom),
-        luck: c.luck,
-        random: random,
-        critChanceBonus: gear.critChance,
-      );
+      PlayerActionResult rollFace() => resolvePlayerFace(
+            face,
+            availableSkills,
+            damageBase,
+            activeEffects: c.statusEffects,
+            wisdomHealBonus: c.wisdom ~/ 2,
+            wisdomManaBonus: wisdomManaBonusFor(c.wisdom),
+            luck: c.luck,
+            random: random,
+            critChanceBonus: gear.critChance,
+          );
+      var result = rollFace();
+      // The cores on the face (profession_cores.dart).
+      if (core == ProfessionCore.flurry && result.damageDealt > 0) {
+        final second = rollFace();
+        result = coreResult(
+          result,
+          damage: flurryDamage(result.damageDealt, second.damageDealt),
+        );
+      }
+      if (core == ProfessionCore.fury && result.damageDealt > 0) {
+        if (fury >= furyMax) {
+          result = coreResult(
+            result,
+            damage: (result.damageDealt * furyHeavyMultiplier).round(),
+          );
+          fury = 0;
+        } else {
+          fury++;
+        }
+      }
+      if (core == ProfessionCore.ashWell && result.manaGained > 0) {
+        result = coreResult(
+          result,
+          mana: result.manaGained * ashWellManaMultiplier,
+        );
+      }
       // Pain: the strike hits for double and costs its roller.
       final pain = face.hasKeyword(FaceKeyword.pain) && result.damageDealt > 0;
-      final dealt =
+      var dealt =
           pain ? result.damageDealt * painDamageMultiplier : result.damageDealt;
+      if (on('tide')) dealt = tideDamage(dealt, rounds, byParty: true);
       if (pain) {
-        c.currentHealth -=
-            painCost(maxHealth: c.maxHealth, currentHealth: c.currentHealth);
+        c.currentHealth -= painCost(
+          maxHealth: c.maxHealth,
+          currentHealth: c.currentHealth,
+        );
       }
       final target = on('squad') ? _focusTarget(ens) : firstLiving();
       // The Compact edge breaks a raised guard outright, while it lasts.
@@ -1028,8 +1148,13 @@ SimFightOutcome simulateSimFight({
       if (target != null && dealt > 0) {
         final pierce = face.hasKeyword(FaceKeyword.pierce);
         final landed = clash
-            ? target.landHit(dealt, element, rounds,
-                pierce: pierce, react: on('reaction'))
+            ? target.landHit(
+                dealt,
+                element,
+                rounds,
+                pierce: pierce,
+                react: on('reaction'),
+              )
             : target.takeHit(dealt, element, pierce: pierce);
         if (landed > 0) crowsHits++;
         if (!clash) target.health = max(0, target.health - landed);
@@ -1052,8 +1177,10 @@ SimFightOutcome simulateSimFight({
             if (clash) {
               other.landHit(splash, element, rounds, react: on('reaction'));
             } else {
-              other.health =
-                  max(0, other.health - other.takeHit(splash, element));
+              other.health = max(
+                0,
+                other.health - other.takeHit(splash, element),
+              );
             }
           }
         }
@@ -1062,20 +1189,43 @@ SimFightOutcome simulateSimFight({
       final inflicted = result.inflictedStatus;
       if (target != null && inflicted != null && target.isAlive) {
         target.statusEffects = applyStatusEffect(
-            target.statusEffects, s.playerInflicted(inflicted));
+          target.statusEffects,
+          s.playerInflicted(inflicted),
+        );
       }
       // A mend sign turns healing past full into block, and lifts
       // afflictions.
       if (face.type == 'Heal' && result.healingDone > 0) {
         block += s.shieldFromOverheal(
-            healing: result.healingDone,
-            currentHealth: c.currentHealth,
-            maxHealth: c.maxHealth);
+          healing: result.healingDone,
+          currentHealth: c.currentHealth,
+          maxHealth: c.maxHealth,
+        );
         if (s.mendCleanse > 0) {
           c.statusEffects = c.statusEffects.skip(s.mendCleanse).toList();
         }
       }
-      c.currentHealth = min(c.maxHealth, c.currentHealth + result.healingDone);
+      // The Watchfire's heals from the die don't tire: they are its fire.
+      final heal = core == ProfessionCore.watchfire
+          ? result.healingDone
+          : healed(result.healingDone);
+      if (core == ProfessionCore.watchfire && heal > 0) {
+        // Every heal from the die burns; the part past full feeds the fire.
+        final burnTarget = firstLiving();
+        if (burnTarget != null) {
+          burnTarget.health = max(
+            0,
+            burnTarget.health - (heal * watchfireHealBurnShare).round(),
+          );
+        }
+        fire = watchfireAfterHeal(
+          fire: fire,
+          healing: heal,
+          currentHealth: c.currentHealth,
+          maxHealth: c.maxHealth,
+        );
+      }
+      c.currentHealth = min(c.maxHealth, c.currentHealth + heal);
       // A Defend face meets the strongest blow coming at it as a parry,
       // worth half again as much, instead of guarding the first to strike.
       var parried = false;
@@ -1109,6 +1259,51 @@ SimFightOutcome simulateSimFight({
       }
       c.statusEffects = tickStatusEffects(c.statusEffects);
     }
+    // The fight-length rules after the hero's blows (fight_length.dart):
+    // the execute line, the pack's leader, a hurt foe's nerve.
+    if (on('execute')) {
+      for (final e in ens) {
+        if (e.isAlive &&
+            e.damageThisRound > 0 &&
+            executes(
+              health: e.health,
+              maxHealth: e.maxHealth,
+              boss: isBossEnemy(e.id, e.data),
+            )) {
+          e.health = 0;
+        }
+      }
+    }
+    bool boss(_SimEnemy e) => isBossEnemy(e.id, e.data);
+    // A boss's escort stands by its boss: no flight in a boss's fight.
+    final bossFight = bossFlags.any((b) => b);
+    if (on('packBreak') &&
+        !bossFight &&
+        !packBroken &&
+        goal.kind != FightGoalKind.rout) {
+      final lead = packLeaderIndex(
+        [for (final e in ens) e.maxHealth],
+        [for (final e in ens) !boss(e)],
+      );
+      if (lead != null && !ens[lead].isAlive) {
+        packBroken = true;
+        for (final e in ens) {
+          if (e.isAlive && !boss(e) && random.nextDouble() < packBreakChance) {
+            e.health = 0;
+          }
+        }
+      }
+    }
+    if (on('morale') && !bossFight) {
+      for (final e in ens) {
+        if (e.isAlive &&
+            !boss(e) &&
+            wavers(health: e.health, maxHealth: e.maxHealth) &&
+            random.nextDouble() < moraleFleeChance) {
+          e.health = 0;
+        }
+      }
+    }
     advancePhases();
     feedKills();
     if (allDead()) return finish(true);
@@ -1124,7 +1319,9 @@ SimFightOutcome simulateSimFight({
             }
           case EnemyResponse.press:
             if (provokesPress(
-                defenders: playedDefend ? 1 : 0, acting: acted ? 1 : 0)) {
+              defenders: playedDefend ? 1 : 0,
+              acting: acted ? 1 : 0,
+            )) {
               e.pressing = true;
             }
           // Turning on the healer needs a party to turn from.
@@ -1167,8 +1364,10 @@ SimFightOutcome simulateSimFight({
         );
         if (index == null) continue;
         final friend = ens[index];
-        friend.health = min(friend.maxHealth,
-            friend.health + squadHealAmount(friend.maxHealth));
+        friend.health = min(
+          friend.maxHealth,
+          friend.health + squadHealAmount(friend.maxHealth),
+        );
       }
     }
     for (final e in ens) {
@@ -1210,10 +1409,14 @@ SimFightOutcome simulateSimFight({
         switch (move.intent) {
           case EnemyIntent.heal:
             e.health = min(
-                e.maxHealth,
-                e.health +
-                    scaledEnemyHeal(move.healAmount,
-                        maxHealth: e.maxHealth, baseMaxHealth: baseMax));
+              e.maxHealth,
+              e.health +
+                  scaledEnemyHeal(
+                    move.healAmount,
+                    maxHealth: e.maxHealth,
+                    baseMaxHealth: baseMax,
+                  ),
+            );
           case EnemyIntent.guard:
             e.guard = move.guardAmount;
           case EnemyIntent.charge:
@@ -1242,24 +1445,41 @@ SimFightOutcome simulateSimFight({
       }
       if (move.healAmount > 0) {
         e.health = min(
-            e.maxHealth,
-            e.health +
-                scaledEnemyHeal(move.healAmount,
-                    maxHealth: e.maxHealth, baseMaxHealth: baseMax));
+          e.maxHealth,
+          e.health +
+              scaledEnemyHeal(
+                move.healAmount,
+                maxHealth: e.maxHealth,
+                baseMaxHealth: baseMax,
+              ),
+        );
       }
       // A Mirror sends back the round's best hit, as on the fight screen;
       // a pact's curse makes every blow harder while it runs.
-      var moveDamage = s.enemyDamage(applyWeaken(
+      var moveDamage = s.enemyDamage(
+        applyWeaken(
           move.tamper == DiceTamper.mirror
               ? mirrorDamage(bestPartyHit: bestHit, enemyDamage: e.damage)
               : move.damage,
-          e.statusEffects));
+          e.statusEffects,
+        ),
+      );
       if (on('response')) {
         final answer = responseDamageMultiplier(
-            provoked: e.provoked, pressing: e.pressing);
+          provoked: e.provoked,
+          pressing: e.pressing,
+        );
         if (answer != 1.0) moveDamage = (moveDamage * answer).round();
         e.provoked = false;
         e.pressing = false;
+      }
+      if (on('tide')) {
+        moveDamage = tideDamage(
+          moveDamage,
+          rounds,
+          byParty: false,
+          bossFight: bossFlags.any((b) => b),
+        );
       }
       final parry = on('parry') ? e.parryBlock : 0;
       final dodged = random.nextDouble() * 100 <
@@ -1273,13 +1493,21 @@ SimFightOutcome simulateSimFight({
                   block -
                   c.armor(items, itemSets: itemSets) -
                   s.armor -
-                  c.elementalResist(items, move.element));
+                  c.elementalResist(items, move.element),
+            );
       if (taken >= c.currentHealth &&
           c.currentHealth > 0 &&
           secondWindAvailable) {
         secondWindAvailable = false;
         taken = c.currentHealth - 1;
       }
+      // The Watchfire takes the blow first.
+      if (fire > 0 && taken > 0) {
+        final soaked = min(fire, taken);
+        fire -= soaked;
+        taken -= soaked;
+      }
+      if (core == ProfessionCore.fury && taken > 0) fury++;
       // A guard sign bites back while the Defend face's block holds.
       final retaliation =
           guardArmed && !dodged && block > 0 ? s.guardRetaliate : 0;
@@ -1298,7 +1526,9 @@ SimFightOutcome simulateSimFight({
       final inflicted = move.inflictedStatus;
       if (!dodged && inflicted != null && !c.isKnockedOut) {
         c.statusEffects = applyStatusEffect(
-            c.statusEffects, applyWisdomResistance(inflicted, c.wisdom));
+          c.statusEffects,
+          applyWisdomResistance(inflicted, c.wisdom),
+        );
       }
       e.statusEffects = tickStatusEffects(e.statusEffects);
       if (guardArmed && e.isAlive) {
@@ -1309,6 +1539,15 @@ SimFightOutcome simulateSimFight({
         rollStatuses(s.guardStatuses, e);
       }
       if (c.isKnockedOut) return finish(false);
+    }
+    // What is left of the Watchfire burns at the round's end.
+    if (fire > 0) {
+      final burnTarget = firstLiving();
+      if (burnTarget != null) {
+        burnTarget.health = max(0, burnTarget.health - watchfireBurn(fire));
+        phasesEntered += burnTarget.advancePhases();
+      }
+      fire = 0;
     }
     feedKills();
     for (final e in ens) {
@@ -1338,11 +1577,16 @@ int _castSpellIfWorth(
   bool clash = false,
   bool react = true,
   int round = 0,
+  int Function(int)? healed,
+  bool tide = false,
+  bool ashWell = false,
 }) {
   final living = ens.where((e) => e.isAlive).toList();
   if (c.knownSpells.isEmpty || living.isEmpty || c.mana <= 0) return 0;
 
-  int costOf(SpellSpec spell) => signs.spellCost(spell.manaCost);
+  int costOf(SpellSpec spell) => ashWell
+      ? ashWellSpellCost(signs.spellCost(spell.manaCost))
+      : signs.spellCost(spell.manaCost);
   int amountOf(SpellSpec spell) {
     final amount = spellAmountFor(
       spell,
@@ -1372,8 +1616,11 @@ int _castSpellIfWorth(
         .toList()
       ..sort((a, b) => amountOf(b).compareTo(amountOf(a)));
     if (heals.isNotEmpty) {
-      c.currentHealth =
-          min(c.maxHealth, c.currentHealth + amountOf(heals.first));
+      final amount = amountOf(heals.first);
+      c.currentHealth = min(
+        c.maxHealth,
+        c.currentHealth + (healed?.call(amount) ?? amount),
+      );
       cast(heals.first);
       return 0;
     }
@@ -1400,7 +1647,9 @@ int _castSpellIfWorth(
       .toList()
     ..sort((a, b) => amountOf(b).compareTo(amountOf(a)));
   for (final spell in damageSpells) {
-    final amount = amountOf(spell);
+    final amount = tide
+        ? tideDamage(amountOf(spell), round, byParty: true)
+        : amountOf(spell);
     final killable = living.where((e) => e.health <= amount).toList();
     final List<_SimEnemy> targets;
     if (spell.target == SpellTarget.allEnemies) {
@@ -1410,7 +1659,7 @@ int _castSpellIfWorth(
       targets = [
         killable.isNotEmpty
             ? killable.reduce((a, b) => a.damage >= b.damage ? a : b)
-            : living.reduce((a, b) => a.damage >= b.damage ? a : b)
+            : living.reduce((a, b) => a.damage >= b.damage ? a : b),
       ];
     }
     if (killable.isEmpty &&
@@ -1427,8 +1676,10 @@ int _castSpellIfWorth(
       }
       if (spell.element != 'None') e.elementsHit.add(spell.element);
       if (status != null && e.isAlive) {
-        e.statusEffects =
-            applyStatusEffect(e.statusEffects, signs.playerInflicted(status));
+        e.statusEffects = applyStatusEffect(
+          e.statusEffects,
+          signs.playerInflicted(status),
+        );
       }
       // A spell sign's status, on every enemy the spell reaches.
       for (final chance in signs.spellStatuses) {
@@ -1454,22 +1705,28 @@ int _castSpellIfWorth(
     }
   }
 
-  for (final spell
-      in affordable.where((s) => s.effect == SpellEffectKind.status)) {
+  for (final spell in affordable.where(
+    (s) => s.effect == SpellEffectKind.status,
+  )) {
     final status = spellStatusFor(spell, level: c.level);
     if (status == null) continue;
     final candidates = living
-        .where((e) =>
-            e.health > 2 * c.casterDamage(items, 'None', itemSets: itemSets) &&
-            !e.statusEffects.any((x) => x.type == status.type))
+        .where(
+          (e) =>
+              e.health >
+                  2 * c.casterDamage(items, 'None', itemSets: itemSets) &&
+              !e.statusEffects.any((x) => x.type == status.type),
+        )
         .toList();
     if (candidates.isEmpty) continue;
     final target = candidates.reduce((a, b) => a.health >= b.health ? a : b);
     target.statusEffects = applyStatusEffect(target.statusEffects, status);
     for (final chance in signs.spellStatuses) {
       if (chance.rolls(random)) {
-        target.statusEffects =
-            applyStatusEffect(target.statusEffects, chance.status);
+        target.statusEffects = applyStatusEffect(
+          target.statusEffects,
+          chance.status,
+        );
       }
     }
     cast(spell);
