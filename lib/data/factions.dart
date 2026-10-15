@@ -339,9 +339,38 @@ class Faction {
     this.objects = const [],
     this.sworn,
     this.host,
+    this.startPower = 0,
+    this.seat = '',
+    this.claims = const [],
+    this.genderFr = 'm',
+    this.nameToFr = '',
   });
 
   final Patron patron;
+
+  /// Where its power starts (factions.json `power`, clan_power.dart); 0
+  /// for a faction with none.
+  final int startPower;
+
+  /// Its seat (a place id), the last place it gives up; '' for none.
+  final String seat;
+
+  /// The places it reaches for as its power grows, in order.
+  final List<String> claims;
+
+  /// The French name's gender and number ('m', 'f', 'mp', 'fp'), for the
+  /// words that agree with it ("est tombée", "tiennent").
+  final String genderFr;
+
+  /// "au Dominion de la Lanterne": the French name after "à"; '' when the
+  /// data has none.
+  final String nameToFr;
+
+  /// Whether the French name is plural (`genderFr` 'mp' or 'fp').
+  bool get pluralFr => genderFr.endsWith('p');
+
+  /// Whether the French name is feminine.
+  bool get feminineFr => genderFr.startsWith('f');
 
   /// The name after a sub-clan's: "of the Grey Vigil", « de la Veille
   /// Grise » (see [nameOfFor]).
@@ -436,6 +465,14 @@ class Faction {
         ],
         sworn: SwornBoon.tryParse(json['sworn']),
         host: HostContingent.tryParse(json['host']),
+        startPower: _int(json['power']).clamp(0, 100),
+        seat: _text(json['seat']).trim(),
+        claims: _strings(json['claims']),
+        genderFr: switch (_text(json['gender_fr']).trim()) {
+          final g when const {'m', 'f', 'mp', 'fp'}.contains(g) => g,
+          _ => 'm',
+        },
+        nameToFr: _text(json['nameTo_fr']).trim(),
       );
 }
 
@@ -1452,9 +1489,39 @@ class PoliticsState {
     this.throneWinner = '',
     this.pledged = const [],
     this.host = Host.none,
+    this.power = const {},
+    this.control = const {},
+    this.helped = const [],
+    this.fallen = const [],
+    this.nemesis = '',
+    this.nemesisCooldown = const {},
   });
 
   static const PoliticsState empty = PoliticsState();
+
+  /// Each main clan's power (0..100, clan_power.dart) once it has moved;
+  /// a clan not here stands at its `startPower`.
+  final Map<String, int> power;
+
+  /// The places that changed hands (place id -> clan), over the holders
+  /// geography.json writes (see holderOf in clan_power.dart).
+  final Map<String, String> control;
+
+  /// The main clans the character did something for this chapter (a gift
+  /// taken, a quest, a fight in their lands): spared the chapter's neglect.
+  final List<String> helped;
+
+  /// The clans that lost their last place (clan_power.dart), until one
+  /// takes a place again.
+  final List<String> fallen;
+
+  /// The clan that has made the character its nemesis (nemesis.dart), ''
+  /// for none.
+  final String nemesis;
+
+  /// Clans whose nemesis was broken: the chapter from which each may
+  /// become one again.
+  final Map<String, int> nemesisCooldown;
 
   final Map<String, double> standings;
   final Map<String, SubclanMark> marks;
@@ -1555,6 +1622,12 @@ class PoliticsState {
     String? throneWinner,
     List<String>? pledged,
     Host? host,
+    Map<String, int>? power,
+    Map<String, String>? control,
+    List<String>? helped,
+    List<String>? fallen,
+    String? nemesis,
+    Map<String, int>? nemesisCooldown,
   }) =>
       PoliticsState(
         standings: standings ?? this.standings,
@@ -1571,6 +1644,12 @@ class PoliticsState {
         throneWinner: throneWinner ?? this.throneWinner,
         pledged: pledged ?? this.pledged,
         host: host ?? this.host,
+        power: power ?? this.power,
+        control: control ?? this.control,
+        helped: helped ?? this.helped,
+        fallen: fallen ?? this.fallen,
+        nemesis: nemesis ?? this.nemesis,
+        nemesisCooldown: nemesisCooldown ?? this.nemesisCooldown,
       );
 
   Map<String, dynamic> toJson() => {
@@ -1593,6 +1672,12 @@ class PoliticsState {
         if (throneWinner.isNotEmpty) 'throne': throneWinner,
         if (pledged.isNotEmpty) 'pledged': pledged,
         if (host.mustered) 'host': host.toJson(),
+        if (power.isNotEmpty) 'power': power,
+        if (control.isNotEmpty) 'control': control,
+        if (helped.isNotEmpty) 'helped': helped,
+        if (fallen.isNotEmpty) 'fallen': fallen,
+        if (nemesis.isNotEmpty) 'nemesis': nemesis,
+        if (nemesisCooldown.isNotEmpty) 'nemesisCooldown': nemesisCooldown,
       };
 
   /// [raw] read; [empty] for a save from before clans (or anything
@@ -1648,6 +1733,17 @@ class PoliticsState {
       throneWinner: _text(json['throne']).trim(),
       pledged: _strings(json['pledged']).toSet().toList(),
       host: Host.fromJson(json['host']),
+      power: _ints(json['power']),
+      control: {
+        if (json['control'] is Map)
+          for (final e in (json['control'] as Map).entries)
+            if (_text(e.value).trim().isNotEmpty)
+              e.key.toString(): _text(e.value).trim(),
+      },
+      helped: _strings(json['helped']).toSet().toList(),
+      fallen: _strings(json['fallen']).toSet().toList(),
+      nemesis: _text(json['nemesis']).trim(),
+      nemesisCooldown: _ints(json['nemesisCooldown']),
     );
   }
 }

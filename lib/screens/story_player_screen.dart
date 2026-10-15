@@ -10,6 +10,7 @@ import '../combat/combat_engine.dart' show newGamePlusStep;
 import '../combat/encounter.dart';
 import '../data/ability_check.dart';
 import '../data/alignment_events.dart';
+import '../data/hunter_mercy.dart';
 import '../data/rival_hunters.dart';
 import '../data/approval.dart';
 import '../data/ally_acknowledgments.dart';
@@ -268,7 +269,9 @@ class _StoryView extends ConsumerWidget {
       if (!context.mounted) return;
       final offered = await ref
           .read(playerSessionProvider.notifier)
-          .grantChapterOffer(next, data: ref.read(clanDataProvider));
+          .grantChapterOffer(next,
+              data: ref.read(clanDataProvider),
+              geography: ref.read(geographyProvider));
       // The coast moved while the party was away (v1.195): the events the
       // new chapter brings, told on its card. (Gone from the screen, the
       // next day's tick fires them, see HomeShell.)
@@ -1943,7 +1946,13 @@ Future<bool> startRoadEncounter(
       road.atRest &&
       chapter >= SubNodeEngine.firstDetourChapter) {
     await ref.read(alignmentHuntersEnabledProvider.notifier).loaded;
-    alignmentEvent = maybeAlignmentEvent(
+    // A hunter spared and set on betrayal comes first, when its road is
+    // due (hunter_mercy.dart): it strikes from behind.
+    final betrayer = await sessionNotifier.tickBetrayals();
+    if (betrayer != null) {
+      alignmentEvent = [betrayalAmbushNode(betrayer, enemies, dice())];
+    }
+    alignmentEvent ??= maybeAlignmentEvent(
       alignmentScore: session.alignmentScore,
       activeQuestIds: session.activeQuestIds,
       completedQuestIds: session.completedQuestIds,
@@ -1963,6 +1972,7 @@ Future<bool> startRoadEncounter(
       random: dice(),
       enabled: ref.read(alignmentHuntersEnabledProvider),
       cooledDown: session.alignmentRollsSinceAmbush >= hunterCooldownRolls,
+      flags: session.flags,
     );
     await sessionNotifier.noteAlignmentRoll(
         ambushed:
