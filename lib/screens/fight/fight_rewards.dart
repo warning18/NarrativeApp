@@ -487,6 +487,31 @@ extension _FightRewards on _FightScreenState {
     Navigator.of(context).pop();
   }
 
+  /// The watch broke the fight up with the party behind (context_rules.dart):
+  /// both sides walk away, as from a retreat but at no cost. Nothing is won
+  /// and no loss is recorded.
+  Future<void> _brokenUp() async {
+    if (_leaving || _over) return;
+    _leaving = true;
+    final notifier = ref.read(playerSessionProvider.notifier);
+    final player = _party.firstWhere((m) => m.isPlayer);
+    await notifier.applyRetreat(
+        hpAfter: player.currentHealth, goldLost: 0, manaAfter: _mana);
+    for (final member in _party) {
+      if (member.isPlayer) continue;
+      await notifier.applyAllyCombatResult(member.id,
+          hpAfter: max(1, member.currentHealth));
+    }
+    ref.read(lastFightOutcomeProvider.notifier).state = null;
+    ref.read(lastFightRetreatedProvider.notifier).state = true;
+    if (!mounted) return;
+    _update(() {
+      _over = true;
+      _settled = true;
+    });
+    Navigator.of(context).pop();
+  }
+
   /// The end-of-fight button: back to the story on a win, retreat (or the
   /// permadeath flow) on a loss.
   Widget _buildReturnButton() {
