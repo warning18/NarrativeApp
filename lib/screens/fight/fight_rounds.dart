@@ -33,7 +33,11 @@ extension _FightRounds on _FightScreenState {
       // The die as smithed at the Hammersmith (see _ensurePartyBuilt).
       final faces = actor.dieFaces;
       if (faces.isEmpty) continue;
-      rolled[actor.id] = _landedFace(actor, rollDie(faces, _random));
+      // The ranger's Trail draws the die as a deck (profession_cores.dart).
+      final face = actor.isPlayer && _core.core == ProfessionCore.trail
+          ? _trailFace(faces)
+          : rollDie(faces, _random);
+      rolled[actor.id] = _landedFace(actor, face);
     }
     if (rolled.isEmpty) return;
 
@@ -192,6 +196,7 @@ extension _FightRounds on _FightScreenState {
       results[actor.id] = _resolveFor(actor, face, skills, items, lang,
           surge: isStrike && actor.id == surgeTo, rollCritical: true);
     }
+    _applyHeroCore(played, results, skills, items, lang, newEntries);
     final combos = partyCombosFor([for (final r in results.values) _roleOf(r)]);
     for (final actor in _actingParty) {
       final face = played[actor.id];
@@ -218,8 +223,14 @@ extension _FightRounds on _FightScreenState {
       if (_condition == BattlefieldCondition.shrine && healing > 0) {
         healing = (healing * shrineHealMultiplier).round();
       }
-      // Each heal a member gives this fight heals a little less.
-      healing = _length.fatigued(actor.id, healing);
+      // Each heal a member gives this fight heals a little less; the
+      // cleric's Watchfire doesn't tire, it burns (profession_cores.dart).
+      final watchfire =
+          actor.isPlayer && _core.core == ProfessionCore.watchfire;
+      if (!watchfire) healing = _length.fatigued(actor.id, healing);
+      if (watchfire && healing > 0) {
+        _watchfireOnHeal(actor, healing, newEntries, lang);
+      }
       final kind = result.damageDealt > 0
           ? _LogKind.playerDamage
           : healing > 0
@@ -630,6 +641,8 @@ extension _FightRounds on _FightScreenState {
                   '{enemies}', '${(tideEnemyStep * tide * 100).round()}'),
           _LogKind.info));
     }
+    // The ranger sees the next face of the Trail.
+    _noteTrailAhead(newEntries, lang);
     if (_silenced) {
       newEntries.add(_LogEntry(
           trFor(lang, writ ? 'writ_log' : 'silence_round_note'),
@@ -716,6 +729,9 @@ extension _FightRounds on _FightScreenState {
     }
 
     final sellswordWon = !playerDied && _sellswordStrikes(newEntries, lang);
+    // What is left of the Watchfire burns as the round turns.
+    final fireWon =
+        !playerDied && !sellswordWon && _burnWatchfire(newEntries, lang);
 
     _update(() {
       _log.addAll(newEntries);
@@ -744,7 +760,7 @@ extension _FightRounds on _FightScreenState {
       _finishFight(won: false);
       return;
     }
-    if (sellswordWon) {
+    if (sellswordWon || fireWon) {
       _finishFight(won: true);
       return;
     }
@@ -1252,6 +1268,12 @@ extension _FightRounds on _FightScreenState {
               parry: parry,
               block: target.block,
               mitigation: mitigation);
+      // The Watchfire takes the blow first.
+      if (target.isPlayer && _core.fire > 0 && damageTaken > 0) {
+        final soaked = min(_core.fire, damageTaken);
+        _core.fire -= soaked;
+        damageTaken -= soaked;
+      }
       final parriedOutright = !wasDodged && parryStopsBlow(moveDamage, parry);
       // A Warding Knot swallows the first real hit on the player outright.
       var warded = false;
@@ -1312,6 +1334,12 @@ extension _FightRounds on _FightScreenState {
         }
         _lastDamageTaken = damageTaken;
         _lastDamagedMemberId = target.id;
+        // A blow that got through feeds the warrior's Fury.
+        if (damageTaken > 0 &&
+            target.isPlayer &&
+            _core.core == ProfessionCore.fury) {
+          _addFury(_log, lang);
+        }
         if (damageTaken > 0) _momentum = momentumAfterHit(_momentum);
         if (damageTaken > 0) _plunderFrom(enemy, lang);
         if (wasDodged) {

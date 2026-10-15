@@ -7498,6 +7498,32 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Le combat bascule\u00a0: vos coups portent {party}\u00a0% plus fort, les leurs {enemies}\u00a0%.',
   },
+  // The professions' cores (profession_cores.dart).
+  'fury_full_log': {
+    AppLanguage.en: 'Your fury is full: the next blow lands heavy.',
+    AppLanguage.fr:
+        'Votre fureur est à son comble\u00a0: le prochain coup portera lourd.',
+  },
+  'fury_heavy_log': {
+    AppLanguage.en: 'Fury breaks loose: a heavy blow!',
+    AppLanguage.fr: 'La fureur se déchaîne\u00a0: un coup lourd\u00a0!',
+  },
+  'flurry_log': {
+    AppLanguage.en: 'A flurry: two quick strikes.',
+    AppLanguage.fr: 'Une rafale\u00a0: deux coups rapides.',
+  },
+  'watchfire_burn_log': {
+    AppLanguage.en: 'The Watchfire burns {name} for {n}.',
+    AppLanguage.fr: 'Le Feu de veille brûle {name} de {n}.',
+  },
+  'watchfire_round_log': {
+    AppLanguage.en: 'What is left of the Watchfire burns {name} for {n}.',
+    AppLanguage.fr: 'Ce qui reste du Feu de veille brûle {name} de {n}.',
+  },
+  'trail_ahead_log': {
+    AppLanguage.en: 'On the trail ahead: {face}.',
+    AppLanguage.fr: 'Sur la piste, à venir\u00a0: {face}.',
+  },
   'tide_rises_log': {
     AppLanguage.en: 'The tide rises: yours +{party}%, theirs +{enemies}%.',
     AppLanguage.fr:
