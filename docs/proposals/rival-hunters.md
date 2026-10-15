@@ -1,6 +1,6 @@
 # Rival hunters: Vigil, Compact and Mire (Narrative, note for Core's step 3b)
 
-For the rival hunters on the roads at Sworn (v5.2 step 3b): the Vigil, the Compact and the Mire have no named fighters in `enemies.json`. Two each: a **line fighter** and a **captain**. Names, a one-line description (the style of `description`) and a short battle cry, EN and FR. The numbers, tiers and the loot are Core's. French is *vous*-free (the cries are the fighter's own, said to the party). Names avoid every existing fighter and character of `enemies.json` and `npcs.json`.
+For the rival hunters on the roads at Sworn (v5.2 step 3b): the Vigil, the Compact and the Mire have no named fighters in `enemies.json`. Two each: a **line fighter** and a **captain**. Names, a one-line description (the style of `description`) and a short battle cry, EN and FR. The numbers, tiers and the loot are Core's. The cries are the fighter's own, said to the party (FR uses *vous*, with no gendered agreement for the player). Names avoid every existing fighter and character of `enemies.json` and `npcs.json`.
 
 Suggested ids in brackets. `faction` is the clan's id.
 
