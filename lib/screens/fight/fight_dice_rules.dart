@@ -698,4 +698,128 @@ extension _FightDiceRules on _FightScreenState {
     if (opposite == null) return null;
     return _landedFace(actor, faceFromJson(faces[opposite], opposite));
   }
+
+  // --- The hero's profession core (profession_cores.dart) -----------------
+
+  /// The ranger's Trail: the next face of the die drawn as a deck.
+  DiceFaceResult _trailFace(List<Map<String, dynamic>> faces) {
+    final index = _core.deckFor(faces.length, _random).draw();
+    return faceFromJson(faces[index], index);
+  }
+
+  /// The ranger sees the face the Trail deals next.
+  void _noteTrailAhead(List<_LogEntry> entries, AppLanguage lang) {
+    if (_core.core != ProfessionCore.trail) return;
+    final hero = _party.where((m) => m.isPlayer && !m.isKnockedOut);
+    final faces =
+        hero.isEmpty ? const <Map<String, dynamic>>[] : hero.first.dieFaces;
+    if (faces.isEmpty) return;
+    final index = _core.deckFor(faces.length, _random).peek();
+    final assigned = hero.first.diceSkillAssignments['$index'];
+    final name = assigned != null && assigned.isNotEmpty
+        ? skillDisplayName(assigned, language: lang)
+        : faces[index]['faceName']?.toString() ?? '';
+    if (name.isEmpty) return;
+    entries.add(_LogEntry(
+        trFor(lang, 'trail_ahead_log').replaceAll('{face}', name),
+        _LogKind.info));
+  }
+
+  /// The hero's core on the round's results: Flurry's second strike, Fury's
+  /// heavy blow, the Ash Well's doubled mana.
+  void _applyHeroCore(
+    Map<String, DiceFaceResult> played,
+    Map<String, PlayerActionResult> results,
+    Map<String, dynamic> skills,
+    Map<String, dynamic> items,
+    AppLanguage lang,
+    List<_LogEntry> entries,
+  ) {
+    final heroes = _actingParty.where((m) => m.isPlayer);
+    if (heroes.isEmpty) return;
+    final hero = heroes.first;
+    final face = played[hero.id];
+    var result = results[hero.id];
+    if (face == null || result == null) return;
+    switch (_core.core) {
+      case ProfessionCore.flurry:
+        if (result.damageDealt <= 0) return;
+        final second = _resolveFor(hero, face, skills, items, lang,
+            surge: false, rollCritical: true);
+        result = coreResult(result,
+            damage: flurryDamage(result.damageDealt, second.damageDealt));
+        entries
+            .add(_LogEntry(trFor(lang, 'flurry_log'), _LogKind.playerDamage));
+      case ProfessionCore.fury:
+        if (result.damageDealt <= 0) return;
+        if (_core.fury >= furyMax) {
+          result = coreResult(result,
+              damage: (result.damageDealt * furyHeavyMultiplier).round());
+          _core.fury = 0;
+          entries.add(
+              _LogEntry(trFor(lang, 'fury_heavy_log'), _LogKind.playerDamage));
+        } else {
+          _addFury(entries, lang);
+        }
+      case ProfessionCore.ashWell:
+        if (result.manaGained <= 0) return;
+        result =
+            coreResult(result, mana: result.manaGained * ashWellManaMultiplier);
+      case ProfessionCore.watchfire:
+      case ProfessionCore.trail:
+      case ProfessionCore.none:
+        return;
+    }
+    results[hero.id] = result;
+  }
+
+  /// One more Fury for the warrior, said when it is full.
+  void _addFury(List<_LogEntry> entries, AppLanguage lang) {
+    if (_core.fury >= furyMax) return;
+    _core.fury++;
+    if (_core.fury == furyMax) {
+      entries.add(_LogEntry(trFor(lang, 'fury_full_log'), _LogKind.info));
+    }
+  }
+
+  /// The cleric's heal of [healing] from the die: it burns the enemy the
+  /// cleric faces, and what heals past full feeds the Watchfire.
+  void _watchfireOnHeal(_PartyMember actor, int healing,
+      List<_LogEntry> entries, AppLanguage lang) {
+    _core.fire = watchfireAfterHeal(
+        fire: _core.fire,
+        healing: healing,
+        currentHealth: actor.currentHealth,
+        maxHealth: actor.maxHealth);
+    final key = _selectedTargets[actor.id];
+    final picked = key == null ? null : _enemyByKey(key);
+    final target =
+        picked != null && picked.isAlive ? picked : _firstLivingEnemy();
+    if (target == null) return;
+    final burn = (healing * watchfireHealBurnShare).round();
+    target.currentHealth = max(0, target.currentHealth - burn);
+    target.damageThisRound += burn;
+    entries.add(_LogEntry(
+        trFor(lang, 'watchfire_burn_log')
+            .replaceAll('{name}', target.displayName)
+            .replaceAll('{n}', '$burn'),
+        _LogKind.playerDamage));
+  }
+
+  /// What is left of the Watchfire burns the first enemy standing. Returns
+  /// true when that ends the fight.
+  bool _burnWatchfire(List<_LogEntry> entries, AppLanguage lang) {
+    if (_core.fire <= 0) return false;
+    final target = _firstLivingEnemy();
+    final burn = watchfireBurn(_core.fire);
+    _core.fire = 0;
+    if (target == null) return false;
+    target.currentHealth = max(0, target.currentHealth - burn);
+    entries.add(_LogEntry(
+        trFor(lang, 'watchfire_round_log')
+            .replaceAll('{name}', target.displayName)
+            .replaceAll('{n}', '$burn'),
+        _LogKind.playerDamage));
+    return _enemies.every((e) => !e.isAlive);
+  }
 }

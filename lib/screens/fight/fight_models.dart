@@ -457,3 +457,22 @@ class _FightLength {
     return fatiguedHeal(amount, before);
   }
 }
+
+/// The hero's profession core over a fight (profession_cores.dart): Fury
+/// built up, the Watchfire's fire, the Trail's deck.
+class _HeroCore {
+  _HeroCore(this.core);
+
+  final ProfessionCore core;
+  int fury = 0;
+  int fire = 0;
+  TrailDeck? _deck;
+
+  /// The Trail's deck for a die of [faceCount] faces (dealt anew if the
+  /// die changed).
+  TrailDeck deckFor(int faceCount, Random random) {
+    final deck = _deck;
+    if (deck != null && deck.faceCount == faceCount) return deck;
+    return _deck = TrailDeck(faceCount, random);
+  }
+}

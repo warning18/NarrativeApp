@@ -46,6 +46,14 @@ extension _FightRewards on _FightScreenState {
 
     final notifier = ref.read(playerSessionProvider.notifier);
     final player = _party.firstWhere((m) => m.isPlayer);
+    // The mage's Ash Well: what is left of it after a win heals, and the
+    // well is empty for the next fight (profession_cores.dart).
+    if (won && _core.core == ProfessionCore.ashWell && _mana > 0) {
+      player.currentHealth = min(player.maxHealth,
+          player.currentHealth + ashWellHeal(_mana, player.maxHealth));
+      _mana = 0;
+      notifier.setMana(0);
+    }
     if (won) {
       // Every enemy that died (or fled) in this fight -- a pack's rewards
       // are summed across all of them, not just the one FightScreen was
