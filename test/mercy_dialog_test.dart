@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/factions.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
+import 'package:narrative_data_app/l10n/app_strings.dart';
 import 'package:narrative_data_app/providers/clans_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
@@ -113,7 +114,10 @@ void main() {
     final answer = <bool>[];
     await open(tester, answer);
     expect(find.byKey(const Key('mercy_dialog')), findsOneWidget);
-    expect(find.text('Halvard yields.'), findsOneWidget);
+    expect(
+        find.text(trFor(AppLanguage.en, 'mercy_title')
+            .replaceAll('{name}', 'Halvard')),
+        findsOneWidget);
     expect(find.textContaining('+3'), findsOneWidget);
     expect(find.textContaining('\u22122'), findsOneWidget);
     // No Perception, no read.
