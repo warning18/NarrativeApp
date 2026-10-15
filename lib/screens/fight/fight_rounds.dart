@@ -64,6 +64,12 @@ extension _FightRounds on _FightScreenState {
       _currentFaces
         ..clear()
         ..addAll(rolled);
+      if (_core.broadsideFired) {
+        _core.broadsideFired = false;
+        _log.add(_LogEntry(
+            trFor(ref.read(appLanguageProvider), 'spec_broadside_log'),
+            _LogKind.info));
+      }
       // A Steady face that just landed stays put (see face_keywords.dart).
       _noteSteadyFaces(
           rolled.keys.where((id) => !_lockedActorIds.contains(id)).toList());
@@ -225,7 +231,13 @@ extension _FightRounds on _FightScreenState {
         _momentum = 0;
         _surgeActorId = null;
       }
-      var healing = result.healingDone;
+      // The Anvil-Deaf's wall takes no Heal faces (spec_variants.dart).
+      var healing = actor.isPlayer &&
+              face.type == 'Heal' &&
+              _core.has(Spec.briarGuard) &&
+              _core.mods.noHealFaces
+          ? 0
+          : result.healingDone;
       if (_condition == BattlefieldCondition.shrine && healing > 0) {
         healing = (healing * shrineHealMultiplier).round();
       }
@@ -233,7 +245,9 @@ extension _FightRounds on _FightScreenState {
       // cleric's Watchfire doesn't tire, it burns (profession_cores.dart).
       final watchfire =
           actor.isPlayer && _core.core == ProfessionCore.watchfire;
-      if (!watchfire) healing = _length.fatigued(actor.id, healing);
+      healing = watchfire
+          ? _length.rule.heal(healing, _roundsStarted)
+          : _length.fatigued(actor.id, healing, round: _roundsStarted);
       if (watchfire && healing > 0) {
         _watchfireOnHeal(actor, healing, newEntries, lang);
       }
@@ -258,6 +272,11 @@ extension _FightRounds on _FightScreenState {
               currentHealth: actor.currentHealth,
               maxHealth: actor.maxHealth)
           : 0;
+      // The Stitch-Thrust: healing past full strikes the foe (step 3c).
+      if (actor.isPlayer && healing > 0) {
+        _stitchThrust(overheal(healing, actor.currentHealth, actor.maxHealth),
+            newEntries, lang);
+      }
       actor.currentHealth = min(actor.maxHealth, actor.currentHealth + healing);
       if (!extras.isNone) {
         bonusRollsNext +=
@@ -291,6 +310,23 @@ extension _FightRounds on _FightScreenState {
       actor.block = (parryEnemy != null ? 0 : block) +
           (_spellBlock[actor.id] ?? 0) +
           signShield;
+      // The weak links' Fury (step 3c): the Vigil's Defend face, the
+      // Penitents' Mana face.
+      if (actor.isPlayer &&
+          _core.core == ProfessionCore.fury &&
+          ((face.type == 'Defend' && _core.has(Spec.standfast)) ||
+              (face.type == 'Mana' && _core.has(Spec.burningPenance)))) {
+        _addFury(newEntries, lang);
+      }
+      // The Last Watch: a Defend face feeds the fire.
+      if (actor.isPlayer &&
+          face.type == 'Defend' &&
+          block > 0 &&
+          _core.has(Spec.longVigil) &&
+          _core.mods.defendFeedsFire) {
+        _core.fire = min(
+            (actor.maxHealth * watchfireCapShare).round(), _core.fire + block);
+      }
       // A ward (Glacial Ward, Thornwall) wounds whoever strikes it.
       actor.reflect = result.blockAmount > 0 ? extras.reflect : null;
       if (parryEnemy != null) {
@@ -481,9 +517,15 @@ extension _FightRounds on _FightScreenState {
             maxHealth: actor.maxHealth, currentHealth: actor.currentHealth);
         if (cost > 0) {
           actor.currentHealth -= cost;
-          // The Berserker's life paid feeds Fury (specialisations.dart).
+          // The Berserker's life paid feeds Fury (specialisations.dart);
+          // the Tar-Hands bleed it into the foe.
           if (actor.isPlayer && _core.has(Spec.berserker)) {
-            _addFury(newEntries, lang);
+            for (var i = 0; i < _core.mods.painFury; i++) {
+              _addFury(newEntries, lang);
+            }
+            if (_core.mods.painBleeds && target != null && target.isAlive) {
+              target.currentHealth = max(0, target.currentHealth - cost);
+            }
           }
           _fx(VfxStyle.drain, _memberCardKey(actor.id),
               delayMs: fxDelay + 250,
@@ -656,6 +698,9 @@ extension _FightRounds on _FightScreenState {
                   '{enemies}', '${(tideEnemyStep * tide * 100).round()}'),
           _LogKind.info));
     }
+    // The place's rule (context_rules.dart): its omen, its rise, its toll,
+    // the watch.
+    final watch = _contextRoundStart(newEntries, lang);
     // The ranger sees the next face of the Trail.
     _noteTrailAhead(newEntries, lang);
     if (_silenced) {
@@ -775,8 +820,12 @@ extension _FightRounds on _FightScreenState {
       _finishFight(won: false);
       return;
     }
-    if (sellswordWon || fireWon) {
+    if (sellswordWon || fireWon || watch == true) {
       _finishFight(won: true);
+      return;
+    }
+    if (watch == false) {
+      _brokenUp();
       return;
     }
 
@@ -881,8 +930,12 @@ extension _FightRounds on _FightScreenState {
       List<_LogEntry> entries, AppLanguage lang,
       {bool pierce = false, bool edge = false}) {
     if (damage <= 0) return damage;
-    // The Tide grows the party's blows from its round on.
-    damage = tideDamage(damage, _roundsStarted, byParty: true);
+    // The Tide grows the party's blows from its round on, and the place's
+    // rule with it (context_rules.dart).
+    damage = _length.rule.blow(damage, _roundsStarted,
+        byParty: true,
+        element: element,
+        bossFight: _enemies.any((e) => isBossEnemy(e.enemyId, e.data)));
     final multiplier = elementMultiplierFor(enemy.data, element);
     var landed = damageAfterElement(damage, enemy.data, element);
     if (multiplier != 1.0) {
@@ -1164,6 +1217,16 @@ extension _FightRounds on _FightScreenState {
             delayMs: fxDelay, text: '-$poison', textKind: VfxTextKind.damage);
         _update(() {
           enemy.currentHealth = max(0, enemy.currentHealth - poison);
+          // The Moss Choir: the Rot heals the rogue a share of it.
+          if (_core.has(Spec.feverBlade) && _core.mods.rotHealShare > 0) {
+            final hero = _party.where((m) => m.isPlayer && !m.isKnockedOut);
+            if (hero.isNotEmpty) {
+              hero.first.currentHealth = min(
+                  hero.first.maxHealth,
+                  hero.first.currentHealth +
+                      (poison * _core.mods.rotHealShare).round());
+            }
+          }
           _log.add(_LogEntry(
             '${enemy.displayName} ${trFor(lang, 'takes_damage_word')} '
             '$poison ${trFor(lang, 'damage_word')} ${trFor(lang, 'from_poison_suffix')}.',
@@ -1289,7 +1352,7 @@ extension _FightRounds on _FightScreenState {
       // it goes back (specialisations.dart).
       final stopped = wasDodged ? 0 : moveDamage - damageTaken;
       final briar = target.isPlayer && _core.has(Spec.briarGuard) && stopped > 0
-          ? briarReflect(stopped)
+          ? _core.mods.briarBack(stopped)
           : 0;
       // The Watchfire takes the blow first.
       if (target.isPlayer && _core.fire > 0 && damageTaken > 0) {
@@ -1366,6 +1429,8 @@ extension _FightRounds on _FightScreenState {
         if (briar > 0) {
           _addFury(_log, lang);
           enemy.currentHealth = max(0, enemy.currentHealth - briar);
+          // The Quarrymen: a blow sent back breaks the guard.
+          if (_core.mods.briarBreaksGuard) enemy.guard = 0;
           _log.add(_LogEntry(
               trFor(lang, 'spec_briar_log')
                   .replaceAll('{name}', enemy.displayName)
@@ -1633,6 +1698,7 @@ extension _FightRounds on _FightScreenState {
   /// A kill-heal sign feeding on each enemy fallen since the last look
   /// (one that fled doesn't count): the player recovers its health.
   void _feedSignKills(List<_LogEntry> entries, AppLanguage lang) {
+    _feedSpecKills(entries, lang);
     if (_signs.killHeal <= 0) return;
     final player = _party.firstWhere((m) => m.isPlayer);
     for (final enemy in _enemies) {

@@ -24,8 +24,8 @@
     "faction": "dominion",
     "name": "Lantern Vanguard",
     "name_fr": "Avant-garde de la Lanterne",
-    "gift": "Your heavy blow strikes harder, is Fire and Pierces. Against an Evil foe it also heals you.",
-    "gift_fr": "Votre coup lourd frappe plus fort, est de Feu et Perce. Contre un ennemi Mauvais, il vous soigne aussi.",
+    "gift": "Your heavy blow strikes harder, burns with Fire and Pierces. Against a foe weak to Light (the void, the dead, demons) it also heals you.",
+    "gift_fr": "Votre coup lourd frappe plus fort, brûle de Feu et Perce. Contre un ennemi sensible à la Lumière (le Néant, les morts, les démons), il vous soigne aussi.",
     "voice": "One flame goes first. The rest of us follow its light.",
     "voice_fr": "Une flamme passe la première. Nous suivons sa lumière."
   },
@@ -54,8 +54,8 @@
     "faction": "dominion",
     "name": "Beacon",
     "name_fr": "Phare",
-    "gift": "The fire may hold all your health, and it burns every enemy at once, harder, in Light.",
-    "gift_fr": "Le feu peut contenir toute votre vie, et il brûle tous les ennemis à la fois, plus fort, en Lumière.",
+    "gift": "The fire may hold all your health, and it burns every enemy at once, harder, with Light.",
+    "gift_fr": "Le feu peut contenir toute votre vie, et il brûle tous les ennemis à la fois, plus fort, avec la Lumière.",
     "voice": "A lantern lights one door. A beacon lights the coast.",
     "voice_fr": "Une lanterne éclaire une porte. Un phare éclaire la côte."
   },
@@ -114,8 +114,8 @@
     "faction": "penitents",
     "name": "Relicbreaker",
     "name_fr": "Brise-relique",
-    "gift": "Each critical hit gives you 1 mana. At 3, your next strike is sure to be critical, and spends it.",
-    "gift_fr": "Chaque coup critique vous donne 1 de mana. À 3, votre prochaine frappe est forcément critique, et le dépense.",
+    "gift": "Each critical hit gives you 1 mana. At 3 mana, your next strike is sure to be critical, and the mana is spent.",
+    "gift_fr": "Chaque coup critique vous donne 1 de mana. À 3 de mana, votre prochaine frappe est forcément critique, et ce mana est dépensé.",
     "voice": "We do not keep the relic. We keep what falls out when it breaks.",
     "voice_fr": "Nous ne gardons pas la relique. Nous gardons ce qui tombe quand elle se brise."
   },
@@ -148,5 +148,93 @@
     "gift_fr": "La première face de chaque série empoisonne sa cible.",
     "voice": "Follow me, and step where I step. The fen will do the rest.",
     "voice_fr": "Suivez-moi, et posez le pied où je pose le mien. Le marais fera le reste."
+  },
+  "standfast": {
+    "profession": "warrior",
+    "faction": "vigil",
+    "link": "weak",
+    "name": "Standfast",
+    "name_fr": "Pied ferme",
+    "gift": "A Defend face adds 1 Fury.",
+    "voice": "We do not look away. We also do not give ground.",
+    "gift_fr": "Une face de Défense ajoute 1 de Fureur.",
+    "voice_fr": "Nous ne détournons pas le regard. Nous ne cédons pas non plus le terrain."
+  },
+  "burning_penance": {
+    "profession": "warrior",
+    "faction": "penitents",
+    "link": "weak",
+    "name": "Burning Penance",
+    "name_fr": "Pénitence ardente",
+    "gift": "A Mana face adds 1 Fury.",
+    "voice": "What we carry has to go somewhere. Let it go into the blow.",
+    "gift_fr": "Une face de Mana ajoute 1 de Fureur.",
+    "voice_fr": "Ce que nous portons doit aller quelque part. Qu’il aille dans le coup."
+  },
+  "brimming_draught": {
+    "profession": "cleric",
+    "faction": "mire",
+    "link": "weak",
+    "name": "Brimming Draught",
+    "name_fr": "Philtre débordant",
+    "gift": "Healing from potions past full goes into the Watchfire.",
+    "voice": "A cup is full when it is full. After that it is a gift.",
+    "gift_fr": "Les soins des potions au-delà du plein vont dans le Feu de guet.",
+    "voice_fr": "Une coupe est pleine quand elle est pleine. Après, c’est un don."
+  },
+  "double_kindling": {
+    "profession": "mage",
+    "faction": "compact",
+    "link": "weak",
+    "name": "Double Kindling",
+    "name_fr": "Double allumage",
+    "gift": "Your Fire spells set off their reactions twice.",
+    "voice": "One spark is a mistake. Two is a forge.",
+    "gift_fr": "Vos sorts de Feu déclenchent deux fois leurs réactions.",
+    "voice_fr": "Une étincelle est une erreur. Deux font une forge."
+  },
+  "lingering_hex": {
+    "profession": "mage",
+    "faction": "mire",
+    "link": "weak",
+    "name": "Lingering Hex",
+    "name_fr": "Maléfice tenace",
+    "gift": "The statuses your spells leave last one turn longer.",
+    "voice": "The fen takes patiently. So do we.",
+    "gift_fr": "Les états que laissent vos sorts durent un tour de plus.",
+    "voice_fr": "Le marais prend patiemment. Nous aussi."
+  },
+  "stitch_thrust": {
+    "profession": "rogue",
+    "faction": "vigil",
+    "link": "weak",
+    "name": "Stitch-Thrust",
+    "name_fr": "Point de couture",
+    "gift": "Healing past full becomes a hit on the foe.",
+    "voice": "We sew what is open. What is left over, we send back.",
+    "gift_fr": "Un soin au-delà du plein devient un coup porté à l’ennemi.",
+    "voice_fr": "Nous cousons ce qui est ouvert. Ce qui reste, nous le renvoyons."
+  },
+  "pitch_hand": {
+    "profession": "rogue",
+    "faction": "compact",
+    "link": "weak",
+    "name": "Pitch Hand",
+    "name_fr": "Main de poix",
+    "gift": "The second hit of each strike slows the foe.",
+    "voice": "Tar on the second blade. It does not stay on the first.",
+    "gift_fr": "Le second coup de chaque frappe ralentit l’ennemi.",
+    "voice_fr": "De la poix sur la seconde lame. Elle ne reste pas sur la première."
+  },
+  "second_broadside": {
+    "profession": "ranger",
+    "faction": "dominion",
+    "link": "weak",
+    "name": "Second Broadside",
+    "name_fr": "Seconde bordée",
+    "gift": "Once a fight, a face that would not strike goes back to the bottom of the run, and you draw again.",
+    "voice": "The first volley is the drill. The second is the order.",
+    "gift_fr": "Une fois par combat, une face qui ne frapperait pas retourne au fond de la série, et vous tirez de nouveau.",
+    "voice_fr": "La première salve est l’exercice. La seconde, l’ordre."
   }
 }

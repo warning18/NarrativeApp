@@ -3,8 +3,15 @@ import 'dart:math';
 import '../combat/dice_faces.dart' show SkillRarity, skillRarity;
 import '../combat/spells.dart'
     show SpellSpec, canLearnSpell, spellbookSpellIdFor;
+import '../combat/spec_variants.dart' show SpecVariantInfo, SpecVariantKind;
 import '../combat/specialisations.dart'
-    show SpecInfo, specsOfferedBy, tempestSkillId;
+    show
+        SpecInfo,
+        specId,
+        specNamed,
+        specsOfferedBy,
+        tempestSkillId,
+        weakLinkSpecs;
 import 'factions.dart';
 import 'perks.dart';
 import 'signs.dart';
@@ -74,8 +81,11 @@ const StandingTier ascensionMinTier = StandingTier.friend;
 /// them (v1.234).
 const StandingTier subclanMinTier = StandingTier.known;
 
-/// Standing a main clan's specialisation needs (v5.2: Friend, 19+).
+/// Standing a main clan's specialisation needs (v5.2: Friend, 19+), its
+/// sub-clans' variants and upgrades (Trusted) and its rank II (Sworn).
 const StandingTier specMinTier = StandingTier.friend;
+const StandingTier specVariantMinTier = StandingTier.trusted;
+const StandingTier specRankMinTier = StandingTier.sworn;
 const StandingTier secretMinTier = StandingTier.known;
 
 /// The weight of each kind of gift a clan may bring, among those it has.
@@ -403,7 +413,11 @@ class OfferTables {
     this.items = const {},
     this.spells = const {},
     this.specs = const {},
+    this.specVariants = const {},
   });
+
+  /// spec_variants.json parsed (spec_variants.dart).
+  final Map<String, SpecVariantInfo> specVariants;
 
   final ClanData data;
   final Map<String, SignDef> signs;
@@ -445,7 +459,11 @@ class OfferContext {
     this.luck = 0,
     this.specs = const {},
     this.heldSpecIds = const [],
+    this.specVariants = const {},
   });
+
+  /// spec_variants.json parsed: the sub-clans' variants and the ranks II.
+  final Map<String, SpecVariantInfo> specVariants;
 
   /// specialisations.json parsed, and the specialisations held.
   final Map<String, SpecInfo> specs;
@@ -782,14 +800,37 @@ List<String> offerableTitlesFor(String factionId, OfferContext c) => [
 /// The specialisations [factionId] can offer now: its own for the
 /// character's profession (specialisations.json), not held, once standing
 /// has reached [specMinTier].
-List<String> offerableSpecsFor(String factionId, OfferContext c) =>
-    c.tierOf(factionId).isAtLeast(specMinTier)
-        ? [
-            for (final info in specsOfferedBy(c.specs,
-                factionId: factionId, professionId: c.professionId))
-              if (!c.heldSpecIds.contains(info.id)) info.id,
-          ]
-        : const [];
+/// From Trusted, the variants and upgrades of the specialisations of
+/// theirs the character holds, and from Sworn their rank II
+/// (spec_variants.json); none held twice.
+List<String> offerableSpecsFor(String factionId, OfferContext c) {
+  final tier = c.tierOf(factionId);
+  if (!tier.isAtLeast(specMinTier)) return const [];
+  final mine = specsOfferedBy(c.specs,
+      factionId: factionId, professionId: c.professionId);
+  final ids = [
+    for (final info in mine)
+      if (!c.heldSpecIds.contains(info.id)) info.id,
+  ];
+  final held = {
+    for (final info in mine)
+      if (c.heldSpecIds.contains(info.id)) specId(info.spec),
+  };
+  final variants = c.specVariants.values.toList()
+    ..sort((a, b) => a.id.compareTo(b.id));
+  for (final v in variants) {
+    if (!held.contains(specId(v.spec)) || c.heldSpecIds.contains(v.id)) {
+      continue;
+    }
+    final need =
+        v.kind == SpecVariantKind.rank ? specRankMinTier : specVariantMinTier;
+    if (tier.isAtLeast(need)) ids.add(v.id);
+  }
+  return ids;
+}
+
+/// Whether gift [id] is a weak link's (step 3c, [weakLinkSpecs]).
+bool _isWeakLinkGift(String id) => weakLinkSpecs.contains(specNamed(id));
 
 /// Whether [factionId] brings its Sworn boon: it is the faction sworn to,
 /// it has one, and it was never taken.
@@ -925,8 +966,16 @@ OfferGift? drawGift(String factionId, OfferContext c, Random random,
   if (kinds.containsKey(GiftKind.sworn)) {
     kind = GiftKind.sworn;
   } else {
-    kind = _weighted(
-        {for (final k in kinds.keys) k: giftKindWeights[k] ?? 1}, random);
+    // A weak link's gift comes half as often as a main clan's
+    // specialisation (step 3c).
+    final weakOnly = kinds.containsKey(GiftKind.spec) &&
+        offerableSpecsFor(factionId, c).every(_isWeakLinkGift);
+    kind = _weighted({
+      for (final k in kinds.keys)
+        k: k == GiftKind.spec && weakOnly
+            ? max(1, giftKindWeights[k]! ~/ 2)
+            : giftKindWeights[k] ?? 1,
+    }, random);
   }
   switch (kind) {
     case GiftKind.sworn:
@@ -985,10 +1034,19 @@ OfferGift? drawGift(String factionId, OfferContext c, Random random,
       return OfferGift(kind: GiftKind.sign, id: sign.id, rarity: rarity);
     case GiftKind.spec:
       final options = offerableSpecsFor(factionId, c);
+      final id = options[random.nextInt(options.length)];
+      // A main specialisation is epic, a weak link's gift and a
+      // sub-clan's variant rare, a rank II heroic.
+      final rarity = switch (c.specVariants[id]?.kind) {
+        null when _isWeakLinkGift(id) => SignRarity.rare,
+        null => SignRarity.epic,
+        SpecVariantKind.rank => SignRarity.heroic,
+        _ => SignRarity.rare,
+      };
       return OfferGift(
           kind: GiftKind.spec,
-          id: options[random.nextInt(options.length)],
-          rarity: better ? SignRarity.heroic : SignRarity.epic);
+          id: id,
+          rarity: better ? _better(rarity) : rarity);
     case GiftKind.perk:
       return null;
   }
@@ -1064,11 +1122,14 @@ Suitor? drawSuitor(String factionId, OfferContext c, Random random,
   if (gift == null) return null;
   final voices = faction.isClan ? c.data.subclansOf(factionId) : const [];
   final greetings = max(1, faction.patron.greetings.length);
-  // A sub-clan's skill is voiced by that sub-clan.
+  // A sub-clan's skill, or its variant of a specialisation, is voiced by
+  // that sub-clan.
   final giftSkill = c.skills[gift.id];
   final owner = gift.kind == GiftKind.skill && giftSkill is Map<String, dynamic>
       ? giftSkill['subclanId']?.toString() ?? ''
-      : '';
+      : gift.kind == GiftKind.spec
+          ? c.specVariants[gift.id]?.subclanId ?? ''
+          : '';
   return Suitor(
     factionId: factionId,
     subclanId: owner.isNotEmpty && voices.any((v) => v.id == owner)

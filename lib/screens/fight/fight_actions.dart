@@ -8,13 +8,29 @@ extension _FightActions on _FightScreenState {
     final player = _party.firstWhere((m) => m.isPlayer);
     ref.read(playerSessionProvider.notifier).consumePotion();
     final lang = ref.read(appLanguageProvider);
-    final heal = _condition == BattlefieldCondition.shrine
-        ? ((_potionHealAmount + _potionBonus) * shrineHealMultiplier).round()
-        : _potionHealAmount + _potionBonus;
+    final heal = _length.rule.heal(
+        _condition == BattlefieldCondition.shrine
+            ? ((_potionHealAmount + _potionBonus) * shrineHealMultiplier)
+                .round()
+            : _potionHealAmount + _potionBonus,
+        _roundsStarted);
     _potionUsed = true;
     _fx(VfxStyle.heal, _memberCardKey(player.id),
         text: '+$heal', textKind: VfxTextKind.heal);
     _update(() {
+      final spilled = <_LogEntry>[];
+      // The weak links (step 3c): the Brimming Draught's spill feeds the
+      // fire, the Stitch-Thrust's strikes the foe.
+      if (_core.has(Spec.brimmingDraught)) {
+        _core.fire = fireAfterHeal(
+            fire: _core.fire,
+            healing: heal,
+            currentHealth: player.currentHealth,
+            maxHealth: player.maxHealth,
+            beacon: _core.has(Spec.beacon));
+      }
+      _stitchThrust(overheal(heal, player.currentHealth, player.maxHealth),
+          spilled, lang);
       player.currentHealth = min(player.maxHealth, player.currentHealth + heal);
       _log.add(
         _LogEntry(
@@ -22,6 +38,7 @@ extension _FightActions on _FightScreenState {
           _LogKind.playerHeal,
         ),
       );
+      _log.addAll(spilled);
     });
   }
 
@@ -92,9 +109,12 @@ extension _FightActions on _FightScreenState {
 
   /// What [spell] costs the player now: its mana, less a spell sign's
   /// saving (never under 1).
-  int _spellCost(SpellSpec spell) => _core.core == ProfessionCore.ashWell
-      ? ashWellSpellCost(_signs.spellCost(spell.manaCost))
-      : _signs.spellCost(spell.manaCost);
+  int _spellCost(SpellSpec spell) => max(
+      1,
+      (_core.core == ProfessionCore.ashWell
+              ? ashWellSpellCost(_signs.spellCost(spell.manaCost))
+              : _signs.spellCost(spell.manaCost)) -
+          (_core.has(Spec.tempestToll) ? _core.mods.spellDiscount : 0));
 
   /// What a potion heals on top of its own: a perk's and a sign's.
   int get _potionBonus => _perks.potionBonus + _signs.potionBonus;
@@ -125,9 +145,13 @@ extension _FightActions on _FightScreenState {
         _core.has(Spec.burdenBearer) &&
         _mana >= _maxMana;
     final amount = fullWell
-        ? (_spellAmountNow(spell, items) * burdenFullWellMultiplier).round()
+        ? (_spellAmountNow(spell, items) * _core.mods.burdenMultiplier).round()
         : _spellAmountNow(spell, items);
-    final status = spellStatusFor(spell, level: _playerLevel);
+    // The Lingering Hex: the spell's status lasts longer (step 3c).
+    final rawStatus = spellStatusFor(spell, level: _playerLevel);
+    final status = rawStatus != null && _core.has(Spec.lingeringHex)
+        ? lingered(rawStatus)
+        : rawStatus;
 
     final enemyTargets = <_EnemyMember>[];
     final memberTargets = <_PartyMember>[];
@@ -197,8 +221,18 @@ extension _FightActions on _FightScreenState {
         final wasAlive = enemy.isAlive;
         enemy.currentHealth = max(0, enemy.currentHealth - damage);
         // The Tempest Toll: the spell takes back a share as health.
-        if (_core.has(Spec.tempestToll) && damage > 0) {
-          final toll = (damage * tempestLifeShare).round();
+        // (and the Spire-Fallen's full-Well spell; the Whisper Ledger
+        // steals a few coins).
+        final share =
+            (_core.has(Spec.tempestToll) ? _core.mods.tempestShare : 0) +
+                (fullWell ? _core.mods.burdenHealShare : 0);
+        if (_core.has(Spec.tempestToll) &&
+            _core.mods.spellsSteal &&
+            damage > 0) {
+          _core.gold += ledgerStealGold;
+        }
+        if (share > 0 && damage > 0) {
+          final toll = (damage * share).round();
           if (toll > 0) {
             player.currentHealth =
                 min(player.maxHealth, player.currentHealth + toll);
@@ -215,7 +249,11 @@ extension _FightActions on _FightScreenState {
           _lastEnemyDamageTaken = damage;
           if (spell.element != 'None') {
             enemy.elementsHitThisRound.add(spell.element);
-            _reactOnHit(enemy, spell.element, damage, entries, lang);
+            // The Double Kindling: a Fire spell's reaction twice (3c).
+            _reactOnHit(enemy, spell.element, damage, entries, lang,
+                times: spell.element == 'Fire' && _core.has(Spec.doubleKindling)
+                    ? 2
+                    : 1);
           }
         }
         if (wasAlive && !enemy.isAlive) _lastKillWasCritical = false;
@@ -250,7 +288,10 @@ extension _FightActions on _FightScreenState {
           // Healing fatigue counts the caster's spells as its heals (not
           // the cleric's: the Watchfire doesn't tire).
           if (_core.core != ProfessionCore.watchfire) {
-            healing = _length.fatigued(player.id, healing);
+            healing =
+                _length.fatigued(player.id, healing, round: _roundsStarted);
+          } else {
+            healing = _length.rule.heal(healing, _roundsStarted);
           }
           _fx(spellStyle, memberKey,
               element: spell.element,

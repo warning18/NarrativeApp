@@ -1219,6 +1219,22 @@ final DbSchema enemiesSchema = DbSchema(
         type: FieldType.integer,
         defaultValue: 0),
     FieldSchema(
+        key: 'hunterClan',
+        label:
+            'Hunts for clan (a rival of the clan you swore to sends it, see rival_hunters.dart; empty = none)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'hunterOnly',
+        label: 'Hunter only (never an ordinary random draw)',
+        type: FieldType.boolean,
+        defaultValue: false),
+    FieldSchema(
+        key: 'battleCry',
+        label: 'Battle Cry (a hunter\'s)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'battleCry_fr', label: 'Battle Cry (FR)', type: FieldType.text),
+    FieldSchema(
         key: 'xpReward',
         label: 'XP Reward',
         type: FieldType.integer,
@@ -3664,6 +3680,16 @@ final DbSchema specialisationsSchema = DbSchema(
   id: 'specialisations',
   label: 'Specialisations',
   assetPath: 'assets/gamedata/specialisations.json',
+  primaryKeyField: 'id',
+  fields: [],
+);
+
+/// The sub-clans' variants and upgrades of the specialisations, and their
+/// rank II (spec_variants.dart). Not one of [gameDbSchemas].
+final DbSchema specVariantsSchema = DbSchema(
+  id: 'spec_variants',
+  label: 'Specialisation Variants',
+  assetPath: 'assets/gamedata/spec_variants.json',
   primaryKeyField: 'id',
   fields: [],
 );

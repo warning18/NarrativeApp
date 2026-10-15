@@ -33,8 +33,10 @@ import '../combat/quick_resolve.dart';
 import '../combat/turn_order.dart';
 import '../combat/enemy_affix.dart';
 import '../combat/fight_goal.dart';
+import '../combat/context_rules.dart';
 import '../combat/fight_length.dart';
 import '../combat/profession_cores.dart';
+import '../combat/spec_variants.dart';
 import '../combat/specialisations.dart';
 import '../combat/gear_effects.dart';
 import '../combat/loot_box.dart';
@@ -52,6 +54,7 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/combat_vfx.dart';
 import '../widgets/die_3d.dart';
+import '../widgets/fight_markers.dart';
 import '../widgets/die_skins.dart';
 import '../widgets/item_stats.dart';
 import '../data/approval.dart';
@@ -68,6 +71,8 @@ import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
 import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
+import '../providers/clans_provider.dart';
+import '../providers/offers_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
@@ -381,7 +386,15 @@ class _FightScreenState extends ConsumerState<FightScreen>
   late final _HeroCore _core = () {
     final session = ref.read(playerSessionProvider);
     final core = coreOfProfession(session.professionId);
-    return _HeroCore(core, specs: specsFor(session.specIds, core));
+    final clans = ref.read(clanDataProvider);
+    final held = specsByStanding(
+        session.specIds, (id) => session.politics.standingOf(id, clans));
+    final specs = specsFor(held.ids, core);
+    return _HeroCore(core,
+        specs: specs,
+        halved: held.halved,
+        roundOf: () => _roundsStarted,
+        mods: specs.isEmpty ? SpecMods.none : SpecMods(held.ids));
   }();
 
   /// The member whose kept Defend face draws the enemies' attacks this

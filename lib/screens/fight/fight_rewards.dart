@@ -206,7 +206,7 @@ extension _FightRewards on _FightScreenState {
       // do the signs (a pact's curse takes some gold back while it runs).
       goldGain = _signs.scaleGold(_perks.scaleGold(goldGain));
       // The Crow's Price: the gold stolen on the player's hits.
-      final stolen = _signs.crowsGold(_crowsHits);
+      final stolen = _signs.crowsGold(_crowsHits) + _core.gold;
       goldGain += stolen;
       // The Short Con (see doctrine.dart): whatever a thief still carries,
       // having fled or outlasted the fight, is missing from the spoils.
@@ -477,6 +477,31 @@ extension _FightRewards on _FightScreenState {
           hpAfter: max(1, member.currentHealth));
     }
     // No aftermath is written for a fight left unfinished.
+    ref.read(lastFightOutcomeProvider.notifier).state = null;
+    ref.read(lastFightRetreatedProvider.notifier).state = true;
+    if (!mounted) return;
+    _update(() {
+      _over = true;
+      _settled = true;
+    });
+    Navigator.of(context).pop();
+  }
+
+  /// The watch broke the fight up with the party behind (context_rules.dart):
+  /// both sides walk away, as from a retreat but at no cost. Nothing is won
+  /// and no loss is recorded.
+  Future<void> _brokenUp() async {
+    if (_leaving || _over) return;
+    _leaving = true;
+    final notifier = ref.read(playerSessionProvider.notifier);
+    final player = _party.firstWhere((m) => m.isPlayer);
+    await notifier.applyRetreat(
+        hpAfter: player.currentHealth, goldLost: 0, manaAfter: _mana);
+    for (final member in _party) {
+      if (member.isPlayer) continue;
+      await notifier.applyAllyCombatResult(member.id,
+          hpAfter: max(1, member.currentHealth));
+    }
     ref.read(lastFightOutcomeProvider.notifier).state = null;
     ref.read(lastFightRetreatedProvider.notifier).state = true;
     if (!mounted) return;

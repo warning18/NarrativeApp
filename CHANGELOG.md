@@ -8,6 +8,106 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.381.0+417]
+
+The clan offer's popup is one block: the ring on top, and under it the clan card with the gift in it.
+
+### Changed
+- **The gift moves into the clan card.** The separate gift box is gone. Under the relations ring, one bordered block in the clan's colour: its name and your standing with it on the first line, what this banner gives (the gift's icon, name, kind, rarity and effect) on the left, the clan's radar on the right. "Take this gift" stays at the bottom.
+- **The clan's words sit behind an (i).** The button beside the clan's name opens its card (the same one a long press shows), with what the clan says to you; the first time you meet a clan the button is lit. The words no longer take room in the popup.
+- The alignment word ("Alignment · toward Good") stays in the block, under the gift.
+- **Hold a banner for the clan's details.** A long press on a banner in the offer, on a crest of the ring, or on a standard in the Throne room opens its card: where it leans (alignment, the five axes of its gifts), what it stands for, its sub-clans, its motto and a short recap of its story. Letting go, or a tap outside, closes it.
+
+## [1.380.0+416]
+
+Where you fight now changes how the fight goes (v5.2, step 4).
+
+- **One rule from the place, on top of the Tide.** From round 6 (the omen comes the round before):
+  - **Marshes:** a mist eats at both sides, a little more each round.
+  - **Deserts:** the heat wears both sides down, and wounds close slower.
+  - **Shores, cliffs and halls:** the water rises or the ceiling gives. From round 8 every blow lands harder, the party's most, and heals rise with it, up to +30%.
+  - **Holy places:** healing fades and Light strikes harder.
+  - **Cities and towns:** the watch breaks the fight up. Ahead on health, your foes scatter and you win; behind, both sides walk away, with nothing won and nothing lost.
+  - **Everywhere else:** the Tide alone, as before.
+- **Bosses:** a boss's fight keeps the Tide. The log now says when the boss grows enraged.
+- **The fight log** names each rule as it rises.
+- **Balance:** every profession fights 7 to 14 rounds and wins at least 55% under every rule. The marsh and the desert favour a healer. Report: docs/simulation/context-rules.md.
+
+## [1.379.0+415]
+
+The hunters speak for their clans.
+
+### Changed
+- **Battle cries for the Dominion, the Crows and the Penitents.** The six fighters Core reused as rival hunters (Inquisition Soldier and High Warden, Smuggler Captain, Brine Jack, Inquisition Penitent, Masked Penitent) now have a cry of their own, as the Vigil's, the Compact's and the Mire's do.
+- **The ambush line.** "{name} is waiting on the road ahead" / "{name} vous attend sur la route", in place of "bars the road". Wording only.
+
+## [1.377.0+413]
+
+Sworn to a clan, its rivals send hunters after you (v5.2, step 3b).
+
+- **Rival hunters on the roads.** While you are sworn to a clan, each of its rivals you stand Hostile with may ambush you on a road at rest (4% a road), and each that hunts you more often (8%), up to 15%. They share the alignment hunters' breather and their settings switch, so a road never holds two ambushes.
+- **Six new fighters**, a line fighter and a captain for the Grey Vigil, the Cinder Compact and the Mire Courts, in Narrative's words, each with a battle cry: Halvard and Ysel, Brodin Stonehand and Tove the Unheard, Sedge and Wen. They are met only as hunters. The Dominion, the Crows and the Penitents send fighters already on the roads.
+- **The ambush says who sent them and why:** "your oath to the Lantern Dominion is not forgiven".
+- **In the simulator:** about one rival hunter a run, in half the runs, beside about two alignment hunters. Report: docs/simulation/specialisations.md.
+
+## [1.373.0+409]
+
+The clans with a weaker tie to your profession now offer a smaller twist of their own (v5.2, step 3c).
+
+- **Eight new gifts**, one for each clan only weakly tied to a profession, in Narrative's words:
+  - **Warrior:** Standfast (Vigil): a Defend face adds 1 Fury. Burning Penance (Penitents): a Mana face adds 1 Fury.
+  - **Cleric:** Brimming Draught (Mire): a potion's healing past full feeds the Watchfire.
+  - **Mage:** Double Kindling (Compact): a Fire spell's reaction counts twice. Lingering Hex (Mire): a spell's status lasts a turn longer.
+  - **Rogue:** Stitch-Thrust (Vigil): healing past full strikes the foe. Pitch Hand (Compact): Flurry's second hit slows its target.
+  - **Ranger:** Second Broadside (Dominion): once a fight, a face that would not strike goes back, and the Trail draws again.
+- **How they come:** from Friend, half as often as a main clan's specialisation, as rare gifts, and with no sub-clan variants or rank II.
+- **Balance:** each is worth about half a main specialisation where the simulator can see it. Report: docs/simulation/specialisations.md.
+
+## [1.371.0+407]
+
+Loyalty has a price (v5.2, step 3): the clans remember who you stand with.
+
+- **A clan grown cold quiets what it gave you.** Resented or Hostile with a clan, its specialisation plays only every other round, and its sub-clans' gifts and rank II go quiet. Hunted by it, the specialisation sleeps until you win the clan back. The fight log says so as the fight begins.
+- **Your patron's favour cools its rivals, each chapter.** Trusted with a clan, its rivals lose 2 standing at each new chapter. Sworn to it, they lose 4, the clans in tension with it lose 2, and its allies gain 1. Shown in the clan log as "Loyalty's price".
+- **No fight penalty:** loyalty costs shops, offers and gifts from the other side of the map, never your strength. A Dominion loyalist ends a run Hunted by three clans; a Crows loyalist by one. Report: docs/simulation/specialisations.md.
+## [1.368.0+404]
+
+The fight screen shows the new fight-length rules and the professions' cores.
+
+### Added
+- **Fight-length marks.** A "Tide ×N" mark next to the round count once the Tide rises (and "Tide in N" in the three rounds before); a tick at 10% on non-boss foes' health bars (the execute line); a "Wavering" mark on non-boss foes under 25%; the heal number on the preview line dims once healing fatigue sets in.
+- **Profession cores on the hero's card.** The warrior's Fury as five notches ("Heavy blow next" when full); the cleric's Watchfire as a flame under the health bar with its worth; the mage's Ash Well starting "empty" on the mana meter; "×2" on the rogue's Flurry face; the ranger's next Trail face beside the die.
+- Each mark has a tooltip that explains the rule (English and French).
+
+## [1.367.0+403]
+
+Rank II sounds like its clan.
+
+### Changed
+- **Rank II lines.** The fifteen rank-II gifts no longer share one generic line: each says, in its clan's voice, what grows by half again (the Berserker's Pain strikes, the Beacon's fire, the Fen Guide's poison, and so on). English and French. Wording only.
+
+## [1.366.0+402]
+
+The clans' sub-clans bend your specialisation, and the clan raises it to rank II (v5.2, step 2b).
+
+- **Thirty sub-clan gifts.** Once you hold a specialisation and are Trusted by its clan, each of the clan's two sub-clans offers its own twist (a rare gift, in the sub-clan's voice): a *variant* changes how it works (the Tar-Hands' Pain strikes bleed the foe, the Last Watch's Defend feeds the fire, the Drowned Debt's kill deals a new run of the Trail...), an *upgrade* raises its number.
+- **Rank II.** Sworn to the clan, it offers rank II of its specialisation (heroic): half again its number.
+- **Everywhere they show:** in the clan offers with the specialisation they bend, in the fight log, in the spoils (the Whisper Ledger's stolen gold) and on the ship (the Brig-Born's Broadside, +15% to the guns).
+- **Balance:** each measured against its specialisation alone in 60 simulated runs; the strongest, One Witness, Once (the Tribunal), now refills a third of the Well from the fourth round. The boss curve holds. Report: docs/simulation/specialisations.md.
+## [1.365.0+401]
+
+The gifts say what they do.
+
+### Changed
+- **Specialisation gift texts.** The Lantern Vanguard's heavy blow now heals against "a foe weak to Light (the void, the dead, demons)", the way the game treats it, instead of an "Evil" foe no enemy carries; the Relicbreaker's text says plainly that its three mana are spent on the sure critical; the Beacon burns "with Light". English and French. Wording only.
+
+## [1.363.0+399]
+
+More places to wander off to.
+
+### Added
+- **Batch 2 of detour scenes.** 28 new scenes in `detour_scenes.json`, in English and French: echoes for each chapter's lands (the salt pans, the ash road, the lantern-floaters of the fen, the frost-sick queue, the Mirror Shoal, the lamplighters of Candlehold), a few scenes that open only after a story beat (a forgiven candle, the archivist's blank page, a Mire courtesy, a giant's hearth-stone cart), and thirteen short stops, so the higher rate of detours does not repeat. Chapters 4 and 7 first.
+
 ## [1.362.0+398]
 
 The march on Candlehold may hold a detour.

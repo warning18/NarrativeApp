@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/dice_faces.dart' show skillDisplayName;
+import '../combat/specialisations.dart' show specId;
 import '../data/factions.dart';
 import '../data/item_origin_here.dart';
 import '../data/offers.dart';
@@ -20,6 +21,7 @@ import '../utils/pixel_icons/item_icons.dart';
 import '../utils/pixel_icons/pixel_icon.dart';
 import '../utils/pixel_icons/skill_icons.dart';
 import 'clan_compass.dart';
+import 'clan_peek.dart';
 import 'clan_radar_chart.dart';
 import 'item_stats.dart';
 import 'pixel_banner.dart';
@@ -133,7 +135,9 @@ String giftName(
       final perk = perkFromName(gift.id);
       return perk == null ? gift.id : trFor(lang, perkNameKey(perk));
     case GiftKind.spec:
-      return tables.specs[gift.id]?.nameFor(lang == AppLanguage.fr) ?? gift.id;
+      return tables.specs[gift.id]?.nameFor(lang == AppLanguage.fr) ??
+          tables.specVariants[gift.id]?.nameFor(lang == AppLanguage.fr) ??
+          gift.id;
   }
 }
 
@@ -164,6 +168,8 @@ String? offerGiftLabel(
   }
   final spec = tables.specs[id];
   if (spec != null) return spec.nameFor(lang == AppLanguage.fr);
+  final variant = tables.specVariants[id];
+  if (variant != null) return variant.nameFor(lang == AppLanguage.fr);
   return null;
 }
 
@@ -515,63 +521,68 @@ class _OfferBanner extends ConsumerWidget {
       child: FittedBox(child: inner),
     );
 
-    return Semantics(
-      button: true,
-      selected: selected,
-      label: '$who: $name',
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: AnimatedOpacity(
-          duration: const Duration(milliseconds: 160),
-          opacity: dimmed ? 0.62 : 1,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(
-                        color: selected ? color : Colors.transparent, width: 2),
-                    color: selected ? color.withValues(alpha: 0.12) : null,
+    return ClanPeek(
+      factionId: suitor.isWayfarer ? null : suitor.factionId,
+      child: Semantics(
+        button: true,
+        selected: selected,
+        label: '$who: $name',
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 160),
+            opacity: dimmed ? 0.62 : 1,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                          color: selected ? color : Colors.transparent,
+                          width: 2),
+                      color: selected ? color.withValues(alpha: 0.12) : null,
+                    ),
+                    child: Center(child: flag),
                   ),
-                  child: Center(child: flag),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  suitor.isWayfarer ? who : (faction?.shortFor(lang) ?? who),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelMedium
-                      ?.copyWith(color: color, fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 3),
-                _Tag(
-                    text: trFor(lang, _giftTagKey(gift, skills)), color: color),
-                const SizedBox(height: 3),
-                Text(
-                  name,
-                  key: Key('offer_gift_${gift.id}'),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleSmall,
-                ),
-                if (preview.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    suitor.isWayfarer ? who : (faction?.shortFor(lang) ?? who),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelMedium
+                        ?.copyWith(color: color, fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(height: 3),
+                  _Tag(
+                      text: trFor(lang, _giftTagKey(gift, skills)),
+                      color: color),
                   const SizedBox(height: 3),
                   Text(
-                    preview.first.text,
+                    name,
+                    key: Key('offer_gift_${gift.id}'),
                     textAlign: TextAlign.center,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                        color: preview.first.delta >= 0
-                            ? good
-                            : theme.colorScheme.error,
-                        fontWeight: FontWeight.w600),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleSmall,
                   ),
+                  if (preview.isNotEmpty) ...[
+                    const SizedBox(height: 3),
+                    Text(
+                      preview.first.text,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                          color: preview.first.delta >= 0
+                              ? good
+                              : theme.colorScheme.error,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ),
@@ -670,10 +681,6 @@ class _OfferHall extends ConsumerWidget {
     final tier = faction == null || faction.isLost
         ? null
         : politics.tierOf(picked.factionId, data);
-    final motto = faction?.mottoFor(lang) ?? '';
-    final standsFor = picked.isWayfarer
-        ? trFor(lang, 'offer_wayfarer_stands')
-        : (faction?.standsForIn(lang) ?? '');
     final alignKey = nudge > 0
         ? 'offer_align_good'
         : nudge < 0
@@ -722,42 +729,32 @@ class _OfferHall extends ConsumerWidget {
               Row(
                 children: [
                   Expanded(
-                    child: InkWell(
-                      key: const Key('offer_charter_open'),
-                      borderRadius: BorderRadius.circular(4),
-                      onTap: () => _showCharter(
-                        context,
-                        lang: lang,
-                        color: color,
-                        name: suitorName(picked, data, lang),
-                        tier: tier,
-                        motto: motto,
-                        standsFor: standsFor,
-                        greeting: greeting,
-                        factionId: picked.factionId,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2),
-                        child: Row(
-                          children: [
-                            Flexible(
-                              child: Text(
-                                suitorName(picked, data, lang),
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                    fontFamily: InkFonts.display, color: color),
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Icon(Icons.info_outline,
-                                size: 16,
-                                color: picked.firstMeeting
-                                    ? theme.colorScheme.primary
-                                    : theme.colorScheme.onSurfaceVariant),
-                          ],
-                        ),
-                      ),
+                    child: Text(
+                      suitorName(picked, data, lang),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                          fontFamily: InkFonts.display, color: color),
                     ),
                   ),
+                  // The same card a long press on the banner shows.
+                  if (onRing)
+                    IconButton(
+                      key: const Key('offer_charter_open'),
+                      tooltip: trFor(lang, 'clan_peek_orientation'),
+                      visualDensity: VisualDensity.compact,
+                      padding: EdgeInsets.zero,
+                      constraints:
+                          const BoxConstraints(minWidth: 32, minHeight: 32),
+                      icon: Icon(Icons.info_outline,
+                          size: 20,
+                          color: picked.firstMeeting
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.onSurfaceVariant),
+                      onPressed: () => showClanDetails(
+                        context,
+                        factionId: picked.factionId,
+                        greeting: greeting,
+                      ),
+                    ),
                   if (tier != null) ...[
                     const SizedBox(width: 6),
                     Container(
@@ -869,80 +866,6 @@ class _OfferHall extends ConsumerWidget {
           ),
         ),
       ],
-    );
-  }
-
-  /// The clan's charter, behind a tap on its name: its motto, what it
-  /// stands for, and the words it says to the party.
-  void _showCharter(
-    BuildContext context, {
-    required AppLanguage lang,
-    required Color color,
-    required String name,
-    required StandingTier? tier,
-    required String motto,
-    required String standsFor,
-    required String greeting,
-    required String factionId,
-  }) {
-    final theme = Theme.of(context);
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (sheet) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: Column(
-            key: Key('offer_charter_$factionId'),
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(name,
-                  style: theme.textTheme.titleMedium
-                      ?.copyWith(fontFamily: InkFonts.display, color: color)),
-              if (motto.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: Text('“$motto”',
-                      style: theme.textTheme.bodyMedium
-                          ?.copyWith(fontStyle: FontStyle.italic)),
-                ),
-              if (standsFor.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text.rich(
-                    TextSpan(children: [
-                      TextSpan(
-                          text: '${trFor(lang, 'offer_stands_for')} · ',
-                          style: TextStyle(
-                              color: theme.colorScheme.onSurfaceVariant)),
-                      TextSpan(
-                          text: standsFor,
-                          style: const TextStyle(fontWeight: FontWeight.w600)),
-                    ]),
-                    key: Key('offer_stands_$factionId'),
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                ),
-              if (greeting.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 10),
-                    decoration: BoxDecoration(
-                      border: Border(left: BorderSide(color: color, width: 3)),
-                    ),
-                    child: Text(greeting,
-                        key: Key('offer_greeting_$factionId'),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                            fontStyle: FontStyle.italic,
-                            color: theme.colorScheme.onSurfaceVariant)),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
@@ -1398,16 +1321,22 @@ class _GiftBody extends StatelessWidget {
           ],
         );
       case GiftKind.spec:
-        final spec = tables.specs[gift.id];
-        if (spec == null) return const SizedBox.shrink();
         final fr = lang == AppLanguage.fr;
+        final spec = tables.specs[gift.id];
+        final variant = tables.specVariants[gift.id];
+        final text = spec?.giftFor(fr) ?? variant?.textFor(fr);
+        final voice = spec?.voiceFor(fr) ?? variant?.voiceFor(fr) ?? '';
+        if (text == null) return const SizedBox.shrink();
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            lines([spec.giftFor(fr)]),
-            if (spec.voiceFor(fr).isNotEmpty)
-              Text(spec.voiceFor(fr),
-                  style: muted?.copyWith(fontStyle: FontStyle.italic)),
+            // A variant says which specialisation it bends.
+            if (variant != null)
+              Text(tables.specs[specId(variant.spec)]?.nameFor(fr) ?? '',
+                  style: muted),
+            lines([text]),
+            if (voice.isNotEmpty)
+              Text(voice, style: muted?.copyWith(fontStyle: FontStyle.italic)),
           ],
         );
       case GiftKind.perk:

@@ -1,7 +1,7 @@
 name: narrative_data_app
 description: "An interactive narrative reader with a story map and AI-assisted generation."
 publish_to: 'none'
-version: 1.362.0+398
+version: 1.381.0+417
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -14,7 +14,7 @@ dependencies:
   google_generative_ai: ^0.4.0
   http: ^1.2.0
   graphview: ^1.2.0
-  shared_preferences: ^2.3.0
+  shared_preferences: ^2.5.6
   path_provider: ^2.1.6
   open_filex: ^4.7.0
   flutter_tts: ^4.2.5
@@ -99,6 +99,7 @@ flutter:
     - assets/gamedata/detours.json
     - assets/gamedata/detour_scenes.json
     - assets/gamedata/specialisations.json
+    - assets/gamedata/spec_variants.json
     - assets/gamedata/expedition_steps.json
     - assets/gamedata/city_plans.json
     - assets/visuals/items/

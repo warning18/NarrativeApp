@@ -384,6 +384,26 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Sur cette route\u00a0: {hazard}. Forcer le passage, ou attendre.',
   },
+  'clan_peek_orientation': {
+    AppLanguage.en: 'Orientation',
+    AppLanguage.fr: 'Orientation',
+  },
+  'clan_peek_backstory': {
+    AppLanguage.en: 'Their story',
+    AppLanguage.fr: 'Leur histoire',
+  },
+  'clan_peek_says': {
+    AppLanguage.en: 'What they say to you',
+    AppLanguage.fr: 'Ce qu\u2019ils vous disent',
+  },
+  'clan_peek_tap_close': {
+    AppLanguage.en: 'Tap to close',
+    AppLanguage.fr: 'Touchez pour fermer',
+  },
+  'clan_peek_release': {
+    AppLanguage.en: 'Let go to close',
+    AppLanguage.fr: 'Relâchez pour fermer',
+  },
   'geo_this_land': {
     AppLanguage.en: 'This land',
     AppLanguage.fr: 'Cette contrée',
@@ -7659,6 +7679,34 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The storm collects its toll: {n} HP back.',
     AppLanguage.fr: 'L’orage perçoit son péage : {n} PV repris.',
   },
+  'spec_halved_log': {
+    AppLanguage.en:
+        '{clan}, turned against you: {spec} plays only every other round.',
+    AppLanguage.fr:
+        '{clan} : en froid avec vous, {spec} ne joue qu’un tour sur deux.',
+  },
+  'spec_asleep_log': {
+    AppLanguage.en: '{clan}, hunting you: {spec} sleeps.',
+    AppLanguage.fr: '{clan} : la traque est ouverte, {spec} sommeille.',
+  },
+  'spec_stitch_log': {
+    AppLanguage.en:
+        'Stitch-Thrust: what heals past full strikes {name} for {n}.',
+    AppLanguage.fr:
+        'Point de couture\u00a0: le soin en trop frappe {name} pour {n}.',
+  },
+  'spec_broadside_log': {
+    AppLanguage.en:
+        'Second Broadside: the face goes back to the bottom of the run, and you draw again.',
+    AppLanguage.fr:
+        'Seconde bordée\u00a0: la face retourne au fond de la série, et vous tirez de nouveau.',
+  },
+  'spec_tribunal_log': {
+    AppLanguage.en:
+        'The Tribunal hears the case once: the Well refills by a third.',
+    AppLanguage.fr:
+        'Le Tribunal entend l’affaire une fois : le Puits se remplit d’un tiers.',
+  },
   'spec_briar_log': {
     AppLanguage.en: 'The briar bites back: {name} takes {n}.',
     AppLanguage.fr: 'La ronce rend le coup : {name} subit {n}.',
@@ -7671,6 +7719,143 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The tide rises: yours +{party}%, theirs +{enemies}%.',
     AppLanguage.fr:
         'La marée monte\u00a0: les vôtres +{party}\u00a0%, les leurs +{enemies}\u00a0%.',
+  },
+  // The place's rule over a fight (v5.2 step 4, context_rules.dart).
+  'boss_enraged_log': {
+    AppLanguage.en: 'The tide turns, and the boss grows enraged.',
+    AppLanguage.fr: 'La marée tourne, et le boss entre en rage.',
+  },
+  'context_mist_omen': {
+    AppLanguage.en: 'A green haze rises from the reeds.',
+    AppLanguage.fr: 'Une brume verte monte des roseaux.',
+  },
+  'context_mist_log': {
+    AppLanguage.en: 'The marsh mist thickens ({n}): it eats at both sides.',
+    AppLanguage.fr:
+        'La brume du marais s’épaissit ({n})\u00a0: elle ronge les deux camps.',
+  },
+  'context_heat_omen': {
+    AppLanguage.en: 'The air begins to shimmer with heat.',
+    AppLanguage.fr: 'L’air commence à trembler de chaleur.',
+  },
+  'context_heat_log': {
+    AppLanguage.en:
+        'The heat climbs ({n}): it wears both sides down, and wounds close slower.',
+    AppLanguage.fr:
+        'La chaleur monte ({n})\u00a0: elle use les deux camps, et les plaies se ferment moins bien.',
+  },
+  'context_water_omen': {
+    AppLanguage.en: 'Water seeps in around your feet; dust sifts from above.',
+    AppLanguage.fr:
+        'L’eau s’infiltre à vos pieds\u00a0; la poussière tombe d’en haut.',
+  },
+  'context_water_log': {
+    AppLanguage.en:
+        'The ground gives way ({n}): every blow lands harder, yours most.',
+    AppLanguage.fr:
+        'Le sol cède ({n})\u00a0: chaque coup porte plus fort, les vôtres surtout.',
+  },
+  'context_holy_omen': {
+    AppLanguage.en: 'The candles of this place begin to gutter.',
+    AppLanguage.fr: 'Les cierges de ce lieu se mettent à vaciller.',
+  },
+  'context_holy_log': {
+    AppLanguage.en:
+        'The holy ground stirs ({n}): healing fades, and Light strikes harder.',
+    AppLanguage.fr:
+        'Le sol sacré s’éveille ({n})\u00a0: les soins faiblissent, et la Lumière frappe plus fort.',
+  },
+  'context_guards_omen': {
+    AppLanguage.en: 'A whistle sounds down the street: the watch is coming.',
+    AppLanguage.fr: 'Un sifflet retentit dans la rue\u00a0: le guet arrive.',
+  },
+  'context_guards_log': {
+    AppLanguage.en:
+        'The watch breaks the fight up. Both sides walk away; nothing is won.',
+    AppLanguage.fr:
+        'Le guet sépare les combattants. Chacun s’en va\u00a0; rien n’est gagné.',
+  },
+  'context_guards_won_log': {
+    AppLanguage.en:
+        'The watch breaks the fight up, and your foes, the worse for it, scatter.',
+    AppLanguage.fr:
+        'Le guet sépare les combattants, et vos ennemis, les plus mal en point, se dispersent.',
+  },
+  // The fight screen's marks for those rules (v1.368).
+  'tide_mark': {AppLanguage.en: 'Tide ×{n}', AppLanguage.fr: 'Marée ×{n}'},
+  'tide_soon_mark': {
+    AppLanguage.en: 'Tide in {n}',
+    AppLanguage.fr: 'Marée dans {n}',
+  },
+  'tide_mark_tip': {
+    AppLanguage.en:
+        'The tide of the fight: your blows +{party}%, theirs +{enemies}%, and more each round.',
+    AppLanguage.fr:
+        'La marée du combat\u00a0: vos coups +{party}\u00a0%, les leurs +{enemies}\u00a0%, et davantage à chaque manche.',
+  },
+  'tide_soon_tip': {
+    AppLanguage.en:
+        'From round {round} the tide rises: your blows grow {party}% a round, theirs {enemies}%.',
+    AppLanguage.fr:
+        'À partir de la manche {round}, la marée monte\u00a0: vos coups gagnent {party}\u00a0% par manche, les leurs {enemies}\u00a0%.',
+  },
+  'execute_tick_tip': {
+    AppLanguage.en: 'Struck below this line, it falls.',
+    AppLanguage.fr: 'Frappé sous ce trait, il tombe.',
+  },
+  'wavering_label': {AppLanguage.en: 'Wavering', AppLanguage.fr: 'Hésitant'},
+  'wavering_tip': {
+    AppLanguage.en: 'Under a quarter of its health: it may flee each round.',
+    AppLanguage.fr:
+        'Sous le quart de sa santé\u00a0: il peut fuir à chaque manche.',
+  },
+  'heal_fatigue_tip': {
+    AppLanguage.en: 'Healing fatigue: this heal gives {pct}% of its worth.',
+    AppLanguage.fr:
+        'Fatigue des soins\u00a0: ce soin ne donne que {pct}\u00a0% de sa valeur.',
+  },
+  'fury_label': {AppLanguage.en: 'Fury', AppLanguage.fr: 'Fureur'},
+  'fury_tip': {
+    AppLanguage.en:
+        'Each hit you land, and each blow that reaches you, adds 1. At 5 the next damaging face is a heavy blow ×2.5.',
+    AppLanguage.fr:
+        'Chaque coup porté, et chaque coup reçu, en ajoute 1. À 5, la prochaine face offensive est un coup lourd ×2,5.',
+  },
+  'fury_ready_label': {
+    AppLanguage.en: 'Heavy blow next',
+    AppLanguage.fr: 'Coup lourd au prochain',
+  },
+  'watchfire_label': {
+    AppLanguage.en: 'Watchfire',
+    AppLanguage.fr: 'Feu de veille'
+  },
+  'watchfire_tip': {
+    AppLanguage.en:
+        'Healing past full feeds a fire that takes blows first; what is left at the round\u2019s turn burns the enemy for ×2.',
+    AppLanguage.fr:
+        'Les soins au-delà du plein nourrissent un feu qui encaisse les coups d\u2019abord\u00a0; ce qu\u2019il en reste à la fin de la manche brûle l\u2019ennemi ×2.',
+  },
+  'ash_well_label': {
+    AppLanguage.en: 'Ash Well',
+    AppLanguage.fr: 'Puits de cendres',
+  },
+  'ash_well_tip': {
+    AppLanguage.en:
+        'Starts each fight empty. Mana from the die comes ×2 and spells cost 1 less; what is left after a win heals you.',
+    AppLanguage.fr:
+        'Vide au début de chaque combat. Le mana du dé vient ×2 et les sorts coûtent 1 de moins\u00a0; ce qu\u2019il reste après une victoire vous soigne.',
+  },
+  'ash_well_empty': {AppLanguage.en: 'empty', AppLanguage.fr: 'vide'},
+  'trail_next_label': {AppLanguage.en: 'Next', AppLanguage.fr: 'Ensuite'},
+  'trail_next_tip': {
+    AppLanguage.en: 'The Trail: the face the die deals next.',
+    AppLanguage.fr: 'La Piste\u00a0: la face que le dé donnera ensuite.',
+  },
+  'flurry_tag_tip': {
+    AppLanguage.en:
+        'Flurry: two strikes at 55% each, each with its own critical.',
+    AppLanguage.fr:
+        'Rafale\u00a0: deux coups à 55\u00a0% chacun, chacun avec son critique.',
   },
   'holds_back_suffix': {
     AppLanguage.en: "can't reach you in the press and holds back.",
@@ -11037,6 +11222,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'standing_cause_edit': {
     AppLanguage.en: 'Edit Mode',
     AppLanguage.fr: 'Mode édition',
+  },
+  'standing_cause_loyalty': {
+    AppLanguage.en: 'Loyalty’s price',
+    AppLanguage.fr: 'Le prix de la loyauté',
   },
   'standing_cause_sworn_cap': {
     AppLanguage.en: 'The banner’s limit',

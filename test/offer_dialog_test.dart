@@ -24,6 +24,7 @@ import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/providers/game_db_providers.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'package:narrative_data_app/widgets/clan_peek.dart';
 import 'package:narrative_data_app/widgets/offer_dialog.dart';
 import 'package:narrative_data_app/widgets/title_widgets.dart';
 
@@ -129,6 +130,7 @@ Future<ProviderContainer> _open(WidgetTester tester,
       itemsSchema,
       spellsSchema,
       specialisationsSchema,
+      specVariantsSchema,
     ]) {
       await container.read(gameDbProvider(schema).notifier).whenLoaded();
     }
@@ -192,6 +194,69 @@ void main() {
     if (Platform.environment['UX_SHOTS'] != null) await _loadFonts();
   });
 
+  testWidgets(
+      'a long press on a banner or a crest shows the clan\u2019s details',
+      (tester) async {
+    await _open(tester, french: false);
+    // The banner row: held, the card shows the clan; let go, it is gone.
+    final hold = await tester.startGesture(
+        tester.getCenter(find.byKey(const Key('offer_banner_compact'))));
+    await tester.pump(const Duration(milliseconds: 700));
+    expect(find.byKey(const Key('clan_details_compact')), findsOneWidget);
+    expect(find.byKey(const Key('clan_peek_alignment')), findsOneWidget);
+    expect(find.byKey(const Key('clan_peek_subclans')), findsOneWidget);
+    expect(find.byKey(const Key('clan_peek_intro_compact')), findsOneWidget);
+    expect(
+        tester
+            .widget<Text>(find.byKey(const Key('clan_peek_stands_compact')))
+            .textSpan!
+            .toPlainText(),
+        contains('Craft, restraint, blades by invitation'));
+    expect(find.byKey(const Key('clan_radar_compact')), findsOneWidget);
+    await _shot(tester, 'clan_details');
+    await hold.up();
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.byKey(const Key('clan_details_compact')), findsNothing);
+    // The long press did not pick the banner.
+    expect(find.byKey(const Key('offer_select_hint')), findsOneWidget);
+
+    // A crest on the ring does the same, for any clan.
+    final crest = await tester
+        .startGesture(tester.getCenter(find.byKey(const Key('compass_mire'))));
+    await tester.pump(const Duration(milliseconds: 700));
+    expect(find.byKey(const Key('clan_details_mire')), findsOneWidget);
+    await crest.up();
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.byKey(const Key('clan_details_mire')), findsNothing);
+
+    // The Wayfarer is no clan: nothing opens.
+    final flag = await tester.startGesture(
+        tester.getCenter(find.byKey(const Key('offer_suitor_wayfarer'))));
+    await tester.pump(const Duration(milliseconds: 700));
+    expect(find.byType(ClanDetailsCard), findsNothing);
+    await flag.up();
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a tap outside closes the clan\u2019s details', (tester) async {
+    await _open(tester, french: false);
+    final hold = await tester.startGesture(
+        tester.getCenter(find.byKey(const Key('offer_banner_penitents'))));
+    await tester.pump(const Duration(milliseconds: 700));
+    expect(find.byKey(const Key('clan_details_penitents')), findsOneWidget);
+    await hold.up();
+    await tester.pump(const Duration(milliseconds: 100));
+    // Held through a tap elsewhere: the layer's barrier closes it.
+    final again = await tester.startGesture(
+        tester.getCenter(find.byKey(const Key('offer_banner_penitents'))));
+    await tester.pump(const Duration(milliseconds: 700));
+    expect(find.byKey(const Key('clan_details_penitents')), findsOneWidget);
+    await tester.tapAt(const Offset(4, 4));
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.byKey(const Key('clan_details_penitents')), findsNothing);
+    await again.up();
+  });
+
   testWidgets('three suitors stacked at 360 px; one taken, the next kept',
       (tester) async {
     final container = await _open(tester, french: false);
@@ -241,24 +306,25 @@ void main() {
         tester.getTopLeft(find.byKey(const Key('offer_gift_block_compact'))).dx,
         lessThan(
             tester.getTopLeft(find.byKey(const Key('clan_radar_compact'))).dx));
-    // The clan's words are behind a tap on its name, not in the popup.
-    expect(find.textContaining('broke every hammer in the Row'), findsNothing);
-    expect(find.byKey(const Key('offer_stands_compact')), findsNothing);
+    // The clan's words are behind the (i) button, not in the popup: it opens
+    // the same card a long press shows, with what the clan says to you.
+    expect(find.byKey(const Key('clan_details_compact')), findsNothing);
     await tester.ensureVisible(find.byKey(const Key('offer_charter_open')));
     await tester.tap(find.byKey(const Key('offer_charter_open')));
     await _settle(tester);
-    expect(find.textContaining('broke every hammer in the Row'), findsOneWidget,
-        reason: 'the Compact\'s intro, the first time');
+    expect(find.byKey(const Key('clan_details_compact')), findsOneWidget);
+    expect(find.byKey(const Key('clan_peek_greeting_compact')), findsOneWidget,
+        reason: 'the Compact\'s first words, the first time');
     expect(
         tester
-            .widget<Text>(find.byKey(const Key('offer_stands_compact')))
+            .widget<Text>(find.byKey(const Key('clan_peek_stands_compact')))
             .textSpan!
             .toPlainText(),
         contains('Craft, restraint, blades by invitation'),
         reason: 'what it stands for (Narrative\'s line)');
     await tester.tapAt(const Offset(10, 10));
     await _settle(tester);
-    expect(find.byKey(const Key('offer_charter_compact')), findsNothing);
+    expect(find.byKey(const Key('clan_details_compact')), findsNothing);
     expect(tester.getSize(find.byKey(const Key('offer_banner_compact'))),
         const Size(88, 128));
     expect(tester.getSize(find.byKey(const Key('offer_banner_penitents'))),

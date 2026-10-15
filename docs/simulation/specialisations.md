@@ -1,4 +1,4 @@
-# The main clans' specialisations (v5.2, step 2a)
+# The clans' specialisations (v5.2, steps 2a to 3c)
 
 The design is in `docs/proposals/profession-clan-mechanics.md`; the words are Narrative's (`docs/proposals/specialisation-texts.md`).
 - Each profession's core (`lib/combat/profession_cores.dart`) is bent by its three main clans.
@@ -75,8 +75,95 @@ The design is in `docs/proposals/profession-clan-mechanics.md`; the words are Na
 | Lantern Vanguard | adds "strikes harder" |
 | Beacon | adds "harder" |
 
-## Not in this step (2b)
+## Step 2b: the sub-clans' variants and upgrades, and rank II
 
-- The thirty sub-clan variants and upgrades, from Trusted, on a specialisation held.
-- Rank II at Sworn.
-- The weak links' twists.
+- A specialisation held, each of its two sub-clans offers its gift from **Trusted** (rare). A *variant* changes how the specialisation works; an *upgrade* raises its number. The sub-clan voices it.
+- At **Sworn** the main clan offers **rank II** (heroic): half again the specialisation's number, or the specific bump below.
+- The words are in `assets/gamedata/spec_variants.json` (Narrative's §3 of `specialisation-texts.md`); the numbers in `SpecMods` (`lib/combat/spec_variants.dart`). The live fight and the simulator play the same rules.
+- **Measured:** `VARIANTS_RUNS=60 flutter test test/spec_variants_test.dart`, each gift with its specialisation set against the specialisation alone. `VARIANTS_ONLY=id,id` limits it. At 60 runs a line is ±3–4.
+
+| Read | Gifts (over the specialisation alone) |
+|---|---|
+| In or near +3 to +6 | Berserker II +4.7, Boarding Heart +6.7, Bleeding Hull +6.5, Hand-Signed Wall +5.9, Briar Guard II +6.6, Counted Breath +3.9, Spear at the Wall +3.1, Long Vigil II +3.2, Debt Forgiven +6.2, Warm Hands +3.0, Trapwright II +3.8, Name on the List +2.5, Wading Step +2.6, One Witness, Once +5.2 (was +13.2 refilling the whole Well from round 2) |
+| Small or within the noise | Lantern Vanguard II, Fallen Knight’s Fire, Ashen Hand II, Honest Fire, Beacon II, Bell-Voiced, Keep the Light, Censer Mage II, The Accusing Smoke, Tempest Toll II, Tapped Sap, Fever Blade II, A Song Sung Over It, Ledger Knife II, Twice the Spoil, Corsair's Eye II, Relicbreaker II, Paid in the Deep, Take It Down, Fen Guide II, Burden-Bearer II, The Name Sung, Broken Sword, Open Hand (−2 to +2) |
+| Not seen by fights won | A Letter Opened, Entered in Full (gold), Broadside (the ship's guns), Seen From the Other Side (two faces ahead), Cut Stone, Stone Trap (guard breaks, rare in the simulator), One More Bed, One Door (the Ash Well already brings most spells to 1 mana) |
+
+**Why so many read small:** the mage's and cleric's gifts build on rules the autoplay seldom reaches (a full Well, an overflow, mana spent), as in 2a. Rank II on a specialisation worth +3 to +5 adds half of that, which is inside the noise at 60 runs. None of them makes fights longer; the boss curve (boss_balance_test) holds.
+
+### Changes to Narrative's texts (2b)
+
+| Gift | Change |
+|---|---|
+| One Witness, Once (Tribunal) | "Once per fight, from the fourth round, an empty Well refills by a third." (the doc's "refill the Well in full" won +13) |
+| Fallen Knight’s Fire (Order) | "heals you more of its damage" |
+| One Door (Keyholders) | "Your spells cost 1 less again." (the main Tempest Toll already offers Teleport Strike) |
+| The fifteen rank IIs | a generic line, "Rank II: the specialisation grows by half again." Narrative may write each one |
+
+## Step 3: the price of loyalty
+
+**A held specialisation follows its clan's standing** (`specsByStanding`, `lib/combat/specialisations.dart`):
+- **Wary or Unfriendly:** it plays as given.
+- **Resented or Hostile:** it plays every other round (the odd ones), and its sub-clan gifts and rank II go quiet.
+- **Hunted:** it sleeps, gifts and all, until the clan is won back.
+- The fight log says so as the fight begins. The simulator plays the same rule.
+
+**Each new chapter, the patron's favour cools its rivals** (`applyLoyaltyDrift`, `lib/data/factions.dart`):
+- The patron is the sworn clan, or else the clan stood highest with at Trusted or above.
+- **Trusted:** its rivals (relation steps 1–3) lose 2.
+- **Sworn:** its rivals lose 4, its tense neighbours (step 4) lose 2, and its allies (steps 6–7) gain 1.
+- It comes with the chapter's offer, once a chapter, with no ripple. It is logged as "Loyalty's price · <patron>".
+- There is no combat penalty: the cost is the shops, the offers, and the specialisations above.
+
+**What a loyal run's rivals end at** (Trusted in chapter 3, Sworn in chapter 5, eight chapters; `LOYALTY_REPORT=1 flutter test test/loyalty_test.dart`). The drift adds −20 to each rival by the end, on top of the ripple and the swearing's cost.
+
+| Patron | Hunted by the end | The others |
+|---|---|---|
+| Dominion | Vigil −80, Mire −80, Penitents −80 | Compact −8 (Wary), Crows +24 (Friend) |
+| Penitents | Dominion −85, Compact −75, Mire −75 | Vigil +22, Crows 0 |
+| Vigil | Dominion −85, Crows −75 | Compact +22, Penitents +22, Mire 0 |
+| Mire | Dominion −85, Penitents −75 | Compact +22, Vigil 0, Crows 0 |
+| Compact | Penitents −75 | Dominion −18 (Unfriendly), Vigil +22, Mire +22, Crows 0 |
+| Crows | Vigil −75 | Dominion +12, Compact 0, Mire 0, Penitents 0 |
+
+The relations map makes the patron a choice of enemies too: a Dominion loyalist closes three clans, a Crows loyalist one.
+
+## Step 3c: the weak links' gifts
+
+A clan only weakly tied to a profession (● in the proposal's affinity table) offers one smaller twist:
+- from **Friend**, like a main specialisation;
+- **half as often** (the gift kind's weight halved when it is all a clan has);
+- **rare**;
+- with no sub-clan gifts and no rank II.
+
+The words are Narrative's (`docs/proposals/specialisation-texts-2.md` §1). The rules are in `lib/combat/specialisations.dart`, and the live fight and the simulator play them alike.
+
+| Gift | Clan, profession | Rule | Won over the core (60 runs) |
+|---|---|---|---|
+| Standfast | Vigil, warrior | A Defend face adds 1 Fury | +2.3 |
+| Burning Penance | Penitents, warrior | A Mana face adds 1 Fury | 0 (the autoplay's warrior die has no Mana face) |
+| Brimming Draught | Mire, cleric | A potion's healing past full feeds the Watchfire | 0 (the autoplay drinks below 40% health) |
+| Double Kindling | Compact, mage | A Fire spell's reaction counts twice | 0 (the autoplay's spells seldom meet another element) |
+| Lingering Hex | Mire, mage | A spell's status lasts 1 turn more | 0 (the autoplay seldom casts a status spell) |
+| Stitch-Thrust | Vigil, rogue | Healing past full strikes the first foe for as much | −1.0 (noise: a rogue seldom heals past full) |
+| Pitch Hand | Compact, rogue | Flurry's second hit slows its target (Weaken 15%, 1 turn) | +1.6 (+6.4 with the Vanguard's 25%, 2-turn Weaken, so lightened) |
+| Second Broadside | Dominion, ranger | Once a fight, a drawn face that would not strike goes back, and the Trail draws again | +1.7 |
+
+**Target:** about half a main specialisation (+1 to +3). The four that read 0 are real for a player who builds for them: a warrior with a Mana die, a cleric drinking at full, a mage mixing elements or casting hexes.
+
+**Changed from Narrative's text:** Second Broadside plays itself, with no button: "Once a fight, a face that would not strike goes back to the bottom of the run, and you draw again."
+
+## Step 3b: the rivals' hunters
+
+Sworn to a clan, its rivals may send hunters onto the roads (`lib/data/rival_hunters.dart`):
+- **4%** a road at rest for each rival you stand Hostile with, **8%** for each that hunts you, up to **15%** (the alignment hunters' cap).
+- They share the alignment hunters' cooldown (5 roads) and their settings toggle, so a road holds one ambush at most.
+- **The fighters:** each clan has a line fighter (tier 1, from chapter 2) and a captain (tier 2, from chapter 3), in `enemies.json` (`hunterClan`, `hunterTier`).
+  - **Vigil, Compact, Mire:** Narrative's six (`docs/proposals/rival-hunters.md`), with their battle cries. They are hunters only (`hunterOnly`), never an ordinary draw.
+  - **Dominion, Crows, Penitents:** fighters already on the roads (the Inquisition Soldier and High Warden; the Smuggler Captain and Brine Jack; the Masked and Inquisition Penitents). They have no cry yet, so they use a generic line.
+- **The ambush:** "{name} bars the road. {cry}", with the reason "{clan}: your oath to {sworn} is not forgiven." Narrative may reword it (the words are in `rival_hunters.dart`).
+- **In the simulator** (`RIVALS_RUNS=100 flutter test test/rival_hunters_test.dart`, four strategies): 0.96 rival hunters a run, in 55 of 100 runs, beside 1.83 alignment hunters a run.
+- **Not in this step:** sparing or talking a hunter down (Narrative's suggestion for the Vigil and Compact hunters). They fight.
+
+## Not yet
+
+- Sparing or talking down a rival's hunter (Narrative's suggestion for the Vigil and Compact hunters).

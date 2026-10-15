@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/spec_variants.dart' show specGunPercent;
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/contracts.dart';
@@ -97,7 +98,8 @@ Future<bool?> runStoryShipBattle(
               voidVolleyPartId: sails.voidPartId,
               voidVolleyBonus: voidVolleyBonus(sails.voidStrength),
               hullPercent: signs.shipHullPercent,
-              gunPercent: signs.shipGunPercent,
+              gunPercent:
+                  signs.shipGunPercent + specGunPercent(session.specIds),
             ),
             enemy: buildEnemyShip(data),
             shipName: trFor(lang, 'boat_title'),

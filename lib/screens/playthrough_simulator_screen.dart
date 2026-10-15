@@ -12,12 +12,15 @@ import 'package:path_provider/path_provider.dart';
 
 import '../combat/combat_engine.dart'
     show chapterRewardMultiplier, isBossEnemy, scaledReward, zoneBossEnemyIds;
+import '../combat/context_rules.dart' show ContextRule;
 import '../combat/gear_effects.dart';
+import '../combat/spec_variants.dart' show SpecVariantInfo, specVariantsFrom;
 import '../combat/specialisations.dart' show SpecInfo, specInfosFrom;
 import '../combat/spells.dart';
 import '../data/autoplay_engine.dart';
 import '../data/camp_works.dart';
 import '../data/chapter_loop.dart';
+import '../data/rival_hunters.dart' show maybeRivalHunter;
 import '../data/alignment_events.dart'
     show hunterCooldownRolls, isHunterAmbushChain, maybeAlignmentEvent;
 import '../data/camp_state.dart' show landingPortIdFor;
@@ -334,16 +337,24 @@ class _SimContext {
     this.detourScenes = const {},
     this.ports = const {},
     this.startSpecs = const [],
+    this.context,
     this.specs = const {},
+    this.specVariants = const {},
   });
 
-  /// specialisations.json parsed: what the clans offer (specialisations.dart).
+  /// specialisations.json parsed: what the clans offer (specialisations.dart);
+  /// and spec_variants.json, their sub-clans' variants and ranks II.
   final Map<String, SpecInfo> specs;
+  final Map<String, SpecVariantInfo> specVariants;
 
   /// Specialisations the character holds from the start (to measure each
   /// one, see specialisations_test.dart); those of another profession
   /// play nothing.
   final List<String> startSpecs;
+
+  /// A context rule every fight plays (context_rules.dart), to measure
+  /// each one; null: the Tide (no fight's place is known here).
+  final ContextRule? context;
 
   /// detour_scenes.json: the detours' written scenes (detour_scenes.dart).
   final Map<String, DetourScene> detourScenes;
@@ -417,6 +428,7 @@ class _SimContext {
         signs: signs,
         clans: clans,
         specs: specs,
+        specVariants: specVariants,
       );
 }
 
@@ -604,10 +616,26 @@ _SimResult _simulate(
         random: side,
         rollsSinceAmbush: rollsSinceAmbush,
       );
-      final ambush = event != null && isHunterAmbushChain(event);
+      // Sworn, the rivals' hunters (v5.2 step 3b) share the road.
+      final rival = event == null && growth != null
+          ? maybeRivalHunter(
+              politics: growth.politics,
+              data: growth.tables.clans,
+              enemies: enemies,
+              chapter: chapter,
+              random: side,
+              cooledDown: rollsSinceAmbush >= hunterCooldownRolls,
+            )
+          : null;
+      final ambush =
+          (event != null && isHunterAmbushChain(event)) || rival != null;
       rollsSinceAmbush =
           ambush ? 0 : min(hunterCooldownRolls, rollsSinceAmbush + 1);
-      if (event != null) hunter = ambush ? 'hunter' : 'temptation';
+      if (rival != null) {
+        hunter = 'rival_hunter';
+      } else if (event != null) {
+        hunter = ambush ? 'hunter' : 'temptation';
+      }
     }
     var familiar = '';
     final turn = planRoad(
@@ -908,6 +936,10 @@ _SimResult _simulate(
         perks: perks,
         clash: sim.clash,
         clashOff: sim.clashOff,
+        context: sim.context,
+        clanStanding: growth == null
+            ? null
+            : (id) => growth.politics.standingOf(id, growth.tables.clans),
       );
       // Every pact runs one fight on, won or lost.
       c.heldSigns = countDownPacts(c.heldSigns);
@@ -1755,6 +1787,7 @@ _SimContext _simContextOf(
   bool clash = true,
   Set<String> clashOff = const {},
   List<String> startSpecs = const [],
+  ContextRule? context,
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
   final written = writtenStepsFrom(table('expedition_steps'));
@@ -1792,7 +1825,9 @@ _SimContext _simContextOf(
     detourScenes: detourScenesFrom(table('detour_scenes')),
     ports: table('ports'),
     startSpecs: startSpecs,
+    context: context,
     specs: specInfosFrom(table('specialisations')),
+    specVariants: specVariantsFrom(table('spec_variants')),
   );
 }
 
@@ -1876,9 +1911,10 @@ List<SimRunSummary> simulatePlaythroughs(
   Set<String> clashOff = const {},
   bool transcripts = false,
   List<String> startSpecs = const [],
+  ContextRule? context,
 }) {
   final sim = _simContextOf(tables, gameConfig,
-      clashOff: clashOff, startSpecs: startSpecs);
+      clashOff: clashOff, startSpecs: startSpecs, context: context);
   final enemies = tables['enemies'] ?? const {};
   final out = <SimRunSummary>[];
   for (var i = 0; i < plan.length; i++) {
