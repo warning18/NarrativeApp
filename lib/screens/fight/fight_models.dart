@@ -493,6 +493,14 @@ class _HeroCore {
   int gold = 0;
   final Set<String> fallen = {};
   bool wellRefilled = false;
+
+  /// The Second Broadside's redraw: spent this fight, and just now (to be
+  /// told in the log).
+  bool broadsideUsed = false;
+  bool broadsideFired = false;
+
+  /// The Pitch Hand: this strike's second hit landed, and slows.
+  bool pitched = false;
   bool fireLingered = false;
   int fury = 0;
   int fire = 0;

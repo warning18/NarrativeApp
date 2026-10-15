@@ -10,6 +10,7 @@ import '../combat/combat_engine.dart' show newGamePlusStep;
 import '../combat/encounter.dart';
 import '../data/ability_check.dart';
 import '../data/alignment_events.dart';
+import '../data/rival_hunters.dart';
 import '../data/approval.dart';
 import '../data/ally_acknowledgments.dart';
 import '../data/chapter_conditions.dart';
@@ -1951,6 +1952,17 @@ Future<bool> startRoadEncounter(
       random: dice(),
       enabled: ref.read(alignmentHuntersEnabledProvider),
       rollsSinceAmbush: session.alignmentRollsSinceAmbush,
+    );
+    // Sworn, the rivals' hunters (v5.2 step 3b) share the road and its
+    // cooldown.
+    alignmentEvent ??= maybeRivalHunter(
+      politics: session.politics,
+      data: ref.read(clanDataProvider),
+      enemies: enemies,
+      chapter: chapter,
+      random: dice(),
+      enabled: ref.read(alignmentHuntersEnabledProvider),
+      cooledDown: session.alignmentRollsSinceAmbush >= hunterCooldownRolls,
     );
     await sessionNotifier.noteAlignmentRoll(
         ambushed:

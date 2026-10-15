@@ -491,7 +491,7 @@
     "minChapter": 2,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0,
+    "hunterTier": 1,
     "description": "A soldier of the Inquisition’s own companies: drilled, armoured, and paid by the heresy found.",
     "description_fr": "Un soldat des compagnies de l’Inquisition : entraîné, cuirassé, et payé à l’hérésie trouvée.",
     "encounterText": [
@@ -510,7 +510,8 @@
       "volcanic",
       "sea_cliffs",
       "tear"
-    ]
+    ],
+    "hunterClan": "dominion"
   },
   "void_wisp": {
     "enemyName": "Grey Candle",
@@ -633,7 +634,7 @@
     "minChapter": 2,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0,
+    "hunterTier": 1,
     "phases": [
       {
         "healthThreshold": 50,
@@ -674,7 +675,8 @@
     "biomes": [
       "arid_coast",
       "sea"
-    ]
+    ],
+    "hunterClan": "crows"
   },
   "plague_hound": {
     "enemyName": "Plague Hound",
@@ -1012,7 +1014,7 @@
     "minChapter": 3,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0,
+    "hunterTier": 2,
     "phases": [
       {
         "healthThreshold": 50,
@@ -1042,7 +1044,8 @@
     "description": "The Inquisition’s High Warden, commander of the Crusade’s vanguard, who wears a piece of the Shroud stitched to his own back.",
     "description_fr": "Le Haut Gardien de l’Inquisition, commandant de l’avant-garde de la Croisade, qui porte un fragment du Linceul cousu à même le dos.",
     "enemyName_fr": "Haut Gardien de l’Inquisition",
-    "biomes": []
+    "biomes": [],
+    "hunterClan": "dominion"
   },
   "kroll_the_branded": {
     "enemyName": "Inquisitor Clement",
@@ -2301,7 +2304,7 @@
     "minChapter": 5,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0,
+    "hunterTier": 2,
     "phases": [
       {
         "healthThreshold": 40,
@@ -2341,7 +2344,8 @@
     "enemyName_fr": "Pénitent de l’Inquisition",
     "biomes": [
       "frost"
-    ]
+    ],
+    "hunterClan": "penitents"
   },
   "void_archon": {
     "enemyName": "Void Archon",
@@ -3388,7 +3392,7 @@
     "minChapter": 5,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0,
+    "hunterTier": 1,
     "phases": [
       {
         "healthThreshold": 40,
@@ -3406,7 +3410,8 @@
     "description": "A penitent in a porcelain mask who will not stop staring at you.",
     "description_fr": "Un pénitent au masque de porcelaine qui ne cesse de vous fixer.",
     "enemyName_fr": "Pénitente masquée",
-    "biomes": []
+    "biomes": [],
+    "hunterClan": "penitents"
   },
   "white_soldier": {
     "enemyName": "White Soldier",
@@ -4253,7 +4258,7 @@
     "minChapter": 2,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0,
+    "hunterTier": 2,
     "phases": [
       {
         "healthThreshold": 50,
@@ -4288,7 +4293,8 @@
     "encounterText_fr": [
       "Jack la Saumure plante la perche de sa lanterne sur la route et regarde les chariots comme une mouette regarde un étal de vidage."
     ],
-    "biomes": []
+    "biomes": [],
+    "hunterClan": "crows"
   },
   "purifier_vell": {
     "enemyName": "Purifier Vell",
@@ -5508,5 +5514,365 @@
     "description_fr": "L’Inquisiteur général du Dominion de la Lanterne : vêtu de blanc, la voix douce, une lanterne voilée de noir au col. Il se bat d’une seule main, parce que l’autre tient votre sœur.",
     "enemyName_fr": "Aurel Vane, Inquisiteur général",
     "biomes": []
+  },
+  "vigil_spearman_halvard": {
+    "enemyName": "Halvard, Spearman of the Last Watch",
+    "maxHealth": 150,
+    "damage": 17,
+    "guile": 2,
+    "faction": "vigil",
+    "reaction": "press",
+    "weakTo": [
+      "Void"
+    ],
+    "resists": [
+      "Light"
+    ],
+    "xpReward": 46,
+    "goldReward": 30,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 25
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 15
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "warrior_shield_bash",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 2,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 1,
+    "hunterClan": "vigil",
+    "battleCry": "“The watch does not look away. Neither will I.”",
+    "battleCry_fr": "« La veille ne détourne pas les yeux. Moi non plus. »",
+    "description": "A Last Watch spearman who stood the wall at every new moon, and has come down from it because someone swore to the Vigil and walked away.",
+    "description_fr": "Un lancier de la Dernière Veille qui a tenu le mur à chaque nouvelle lune, et qui en est descendu parce que quelqu’un a juré à la Veille puis s’en est allé.",
+    "enemyName_fr": "Halvard, lancier de la Dernière Veille",
+    "biomes": [],
+    "hunterOnly": true
+  },
+  "vigil_candlebearer_ysel": {
+    "enemyName": "Ysel, Candlebearer",
+    "maxHealth": 175,
+    "damage": 19,
+    "guile": 6,
+    "faction": "vigil",
+    "reaction": "hunt_healer",
+    "weakTo": [
+      "Void"
+    ],
+    "resists": [
+      "Light"
+    ],
+    "xpReward": 100,
+    "goldReward": 70,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "Light",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "bind_wounds",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 50,
+        "healthThreshold": 40,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 3,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 2,
+    "hunterClan": "vigil",
+    "battleCry": "“I have counted you. You are one short of whole.”",
+    "battleCry_fr": "« Je vous ai comptés. Il vous manque un. »",
+    "description": "A Candlebearer who walks the galleries counting the dead so that none leaves unnoticed, and who has put your name on a list of things she means to see to the end.",
+    "description_fr": "Une Porte-Chandelle qui parcourt les galeries en comptant les morts pour qu’aucun ne parte sans qu’on le remarque, et qui a inscrit votre nom sur une liste de choses qu’elle compte mener jusqu’au bout.",
+    "enemyName_fr": "Ysel, Porte-Chandelle",
+    "biomes": [],
+    "hunterOnly": true
+  },
+  "compact_quarryman_brodin": {
+    "enemyName": "Brodin Stonehand, Quarryman",
+    "maxHealth": 165,
+    "damage": 17,
+    "guile": 1,
+    "faction": "compact",
+    "reaction": "",
+    "weakTo": [
+      "Water"
+    ],
+    "resists": [
+      "Earth"
+    ],
+    "xpReward": 46,
+    "goldReward": 33,
+    "lootTable": [
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 25
+      },
+      {
+        "itemID": "potion_minor",
+        "dropRate": 20
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "guard_break",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 2,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 1,
+    "hunterClan": "compact",
+    "battleCry": "“Cut once. Cut true. Cut for the Charter.”",
+    "battleCry_fr": "« Une seule coupe. Une coupe juste. Pour la Charte. »",
+    "description": "A Frost Quarry hand, slow to speak and slower to forget, who carries the Compact’s hammer when the Compact has no more words.",
+    "description_fr": "Un carrier de la Carrière de Givre, lent à parler et plus lent à oublier, qui porte le marteau du Pacte quand le Pacte n’a plus de mots.",
+    "enemyName_fr": "Brodin Main-de-Pierre, carrier",
+    "biomes": [],
+    "hunterOnly": true
+  },
+  "compact_anvil_deaf_tove": {
+    "enemyName": "Tove the Unheard, of the Anvil-Deaf",
+    "maxHealth": 185,
+    "damage": 19,
+    "guile": 5,
+    "faction": "compact",
+    "reaction": "counter",
+    "weakTo": [
+      "Water"
+    ],
+    "resists": [
+      "Fire"
+    ],
+    "xpReward": 100,
+    "goldReward": 75,
+    "lootTable": [
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 30
+      },
+      {
+        "itemID": "potion_minor",
+        "dropRate": 25
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "guard_break",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "molten_backlash",
+        "condition": "Chance",
+        "requiredElement": "Fire",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 3,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 2,
+    "hunterClan": "compact",
+    "battleCry": "“Her hands say: you broke the table’s rule.”",
+    "battleCry_fr": "« Ses mains disent : vous avez rompu la règle de la table. »",
+    "description": "An old smith deafened at the anvil, who speaks in hand-signs, hunts in silence, and does not need to hear you run.",
+    "description_fr": "Une vieille forgeronne assourdie à l’enclume, qui parle par signes, chasse en silence, et n’a pas besoin de vous entendre fuir.",
+    "enemyName_fr": "Tove la Sourde, de l’Enclume",
+    "biomes": [],
+    "hunterOnly": true
+  },
+  "mire_returned_sedge": {
+    "enemyName": "Sedge of the Returned",
+    "maxHealth": 140,
+    "damage": 16,
+    "guile": 4,
+    "faction": "mire",
+    "reaction": "counter",
+    "weakTo": [
+      "Fire"
+    ],
+    "resists": [
+      "Water"
+    ],
+    "xpReward": 46,
+    "goldReward": 30,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 25
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "plague_bite",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "shadow_step",
+        "condition": "Chance",
+        "requiredElement": "Wind",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 2,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 1,
+    "hunterClan": "mire",
+    "battleCry": "“Forgive me. This will not take long.”",
+    "battleCry_fr": "« Pardonnez-moi. Cela ne sera pas long. »",
+    "description": "One of the children the fen gave back, in a reed mask worn all year, who is always perfectly polite and has never once been in a hurry.",
+    "description_fr": "L’un des enfants que le marais a rendus, un masque de roseau porté toute l’année, toujours parfaitement poli et jamais pressé.",
+    "enemyName_fr": "Sedge, un Rendu",
+    "biomes": [],
+    "hunterOnly": true
+  },
+  "mire_herons_wake_wen": {
+    "enemyName": "Wen, Guide of the Heron’s Wake",
+    "maxHealth": 170,
+    "damage": 18,
+    "guile": 7,
+    "faction": "mire",
+    "reaction": "press",
+    "weakTo": [
+      "Fire"
+    ],
+    "resists": [
+      "Water"
+    ],
+    "xpReward": 100,
+    "goldReward": 72,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "venomous_ambush",
+        "condition": "Chance",
+        "requiredElement": "Earth",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "frigid_grip",
+        "condition": "Chance",
+        "requiredElement": "Ice",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 3,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 2,
+    "hunterClan": "mire",
+    "battleCry": "“Step where I step. No? Then step where the water steps.”",
+    "battleCry_fr": "« Posez le pied où je pose le mien. Non ? Alors posez-le où l’eau se pose. »",
+    "description": "A fen guide who takes the unwary in and brings back someone else, and has been asked, courteously, to take you in.",
+    "description_fr": "Une guide du marais qui emmène les imprudents et ramène quelqu’un d’autre, et qui a été priée, avec courtoisie, de vous emmener.",
+    "enemyName_fr": "Wen, guide du Sillage du Héron",
+    "biomes": [],
+    "hunterOnly": true
   }
 }

@@ -1,4 +1,4 @@
-# The main clans' specialisations (v5.2, steps 2a, 2b and 3)
+# The clans' specialisations (v5.2, steps 2a to 3c)
 
 The design is in `docs/proposals/profession-clan-mechanics.md`; the words are Narrative's (`docs/proposals/specialisation-texts.md`).
 - Each profession's core (`lib/combat/profession_cores.dart`) is bent by its three main clans.
@@ -127,7 +127,43 @@ The design is in `docs/proposals/profession-clan-mechanics.md`; the words are Na
 
 The relations map makes the patron a choice of enemies too: a Dominion loyalist closes three clans, a Crows loyalist one.
 
+## Step 3c: the weak links' gifts
+
+A clan only weakly tied to a profession (● in the proposal's affinity table) offers one smaller twist:
+- from **Friend**, like a main specialisation;
+- **half as often** (the gift kind's weight halved when it is all a clan has);
+- **rare**;
+- with no sub-clan gifts and no rank II.
+
+The words are Narrative's (`docs/proposals/specialisation-texts-2.md` §1). The rules are in `lib/combat/specialisations.dart`, and the live fight and the simulator play them alike.
+
+| Gift | Clan, profession | Rule | Won over the core (60 runs) |
+|---|---|---|---|
+| Standfast | Vigil, warrior | A Defend face adds 1 Fury | +2.3 |
+| Burning Penance | Penitents, warrior | A Mana face adds 1 Fury | 0 (the autoplay's warrior die has no Mana face) |
+| Brimming Draught | Mire, cleric | A potion's healing past full feeds the Watchfire | 0 (the autoplay drinks below 40% health) |
+| Double Kindling | Compact, mage | A Fire spell's reaction counts twice | 0 (the autoplay's spells seldom meet another element) |
+| Lingering Hex | Mire, mage | A spell's status lasts 1 turn more | 0 (the autoplay seldom casts a status spell) |
+| Stitch-Thrust | Vigil, rogue | Healing past full strikes the first foe for as much | −1.0 (noise: a rogue seldom heals past full) |
+| Pitch Hand | Compact, rogue | Flurry's second hit slows its target (Weaken 15%, 1 turn) | +1.6 (+6.4 with the Vanguard's 25%, 2-turn Weaken, so lightened) |
+| Second Broadside | Dominion, ranger | Once a fight, a drawn face that would not strike goes back, and the Trail draws again | +1.7 |
+
+**Target:** about half a main specialisation (+1 to +3). The four that read 0 are real for a player who builds for them: a warrior with a Mana die, a cleric drinking at full, a mage mixing elements or casting hexes.
+
+**Changed from Narrative's text:** Second Broadside plays itself, with no button: "Once a fight, a face that would not strike goes back to the bottom of the run, and you draw again."
+
+## Step 3b: the rivals' hunters
+
+Sworn to a clan, its rivals may send hunters onto the roads (`lib/data/rival_hunters.dart`):
+- **4%** a road at rest for each rival you stand Hostile with, **8%** for each that hunts you, up to **15%** (the alignment hunters' cap).
+- They share the alignment hunters' cooldown (5 roads) and their settings toggle, so a road holds one ambush at most.
+- **The fighters:** each clan has a line fighter (tier 1, from chapter 2) and a captain (tier 2, from chapter 3), in `enemies.json` (`hunterClan`, `hunterTier`).
+  - **Vigil, Compact, Mire:** Narrative's six (`docs/proposals/rival-hunters.md`), with their battle cries. They are hunters only (`hunterOnly`), never an ordinary draw.
+  - **Dominion, Crows, Penitents:** fighters already on the roads (the Inquisition Soldier and High Warden; the Smuggler Captain and Brine Jack; the Masked and Inquisition Penitents). They have no cry yet, so they use a generic line.
+- **The ambush:** "{name} bars the road. {cry}", with the reason "{clan}: your oath to {sworn} is not forgiven." Narrative may reword it (the words are in `rival_hunters.dart`).
+- **In the simulator** (`RIVALS_RUNS=100 flutter test test/rival_hunters_test.dart`, four strategies): 0.96 rival hunters a run, in 55 of 100 runs, beside 1.83 alignment hunters a run.
+- **Not in this step:** sparing or talking a hunter down (Narrative's suggestion for the Vigil and Compact hunters). They fight.
+
 ## Not yet
 
-- The rivals' hunters on the roads, once Narrative has named fighters for the Vigil, the Compact and the Mire (step 3b).
-- The eight weak-link gifts (step 3c).
+- Sparing or talking down a rival's hunter (Narrative's suggestion for the Vigil and Compact hunters).

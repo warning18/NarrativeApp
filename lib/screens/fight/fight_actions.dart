@@ -15,6 +15,19 @@ extension _FightActions on _FightScreenState {
     _fx(VfxStyle.heal, _memberCardKey(player.id),
         text: '+$heal', textKind: VfxTextKind.heal);
     _update(() {
+      final spilled = <_LogEntry>[];
+      // The weak links (step 3c): the Brimming Draught's spill feeds the
+      // fire, the Stitch-Thrust's strikes the foe.
+      if (_core.has(Spec.brimmingDraught)) {
+        _core.fire = fireAfterHeal(
+            fire: _core.fire,
+            healing: heal,
+            currentHealth: player.currentHealth,
+            maxHealth: player.maxHealth,
+            beacon: _core.has(Spec.beacon));
+      }
+      _stitchThrust(overheal(heal, player.currentHealth, player.maxHealth),
+          spilled, lang);
       player.currentHealth = min(player.maxHealth, player.currentHealth + heal);
       _log.add(
         _LogEntry(
@@ -22,6 +35,7 @@ extension _FightActions on _FightScreenState {
           _LogKind.playerHeal,
         ),
       );
+      _log.addAll(spilled);
     });
   }
 
@@ -130,7 +144,11 @@ extension _FightActions on _FightScreenState {
     final amount = fullWell
         ? (_spellAmountNow(spell, items) * _core.mods.burdenMultiplier).round()
         : _spellAmountNow(spell, items);
-    final status = spellStatusFor(spell, level: _playerLevel);
+    // The Lingering Hex: the spell's status lasts longer (step 3c).
+    final rawStatus = spellStatusFor(spell, level: _playerLevel);
+    final status = rawStatus != null && _core.has(Spec.lingeringHex)
+        ? lingered(rawStatus)
+        : rawStatus;
 
     final enemyTargets = <_EnemyMember>[];
     final memberTargets = <_PartyMember>[];
@@ -228,7 +246,11 @@ extension _FightActions on _FightScreenState {
           _lastEnemyDamageTaken = damage;
           if (spell.element != 'None') {
             enemy.elementsHitThisRound.add(spell.element);
-            _reactOnHit(enemy, spell.element, damage, entries, lang);
+            // The Double Kindling: a Fire spell's reaction twice (3c).
+            _reactOnHit(enemy, spell.element, damage, entries, lang,
+                times: spell.element == 'Fire' && _core.has(Spec.doubleKindling)
+                    ? 2
+                    : 1);
           }
         }
         if (wasAlive && !enemy.isAlive) _lastKillWasCritical = false;

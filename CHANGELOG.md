@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.374.0+410]
+## [1.381.0+417]
 
 The clan offer's popup is one block: the ring on top, and under it the clan card with the gift in it.
 
@@ -16,6 +16,28 @@ The clan offer's popup is one block: the ring on top, and under it the clan card
 - **The gift moves into the clan card.** The separate gift box is gone. Under the relations ring, one bordered block in the clan's colour: its name and your standing with it on the first line, what this banner gives (the gift's icon, name, kind, rarity and effect) on the left, the clan's radar on the right. "Take this gift" stays at the bottom.
 - **The clan's words sit behind its name.** A tap on the name (the small "i" beside it, lit the first time you meet a clan) opens its charter: the motto, what it stands for and what it says to you. They no longer take room in the popup.
 - The alignment word ("Alignment · toward Good") stays in the block, under the gift.
+
+## [1.377.0+413]
+
+Sworn to a clan, its rivals send hunters after you (v5.2, step 3b).
+
+- **Rival hunters on the roads.** While you are sworn to a clan, each of its rivals you stand Hostile with may ambush you on a road at rest (4% a road), and each that hunts you more often (8%), up to 15%. They share the alignment hunters' breather and their settings switch, so a road never holds two ambushes.
+- **Six new fighters**, a line fighter and a captain for the Grey Vigil, the Cinder Compact and the Mire Courts, in Narrative's words, each with a battle cry: Halvard and Ysel, Brodin Stonehand and Tove the Unheard, Sedge and Wen. They are met only as hunters. The Dominion, the Crows and the Penitents send fighters already on the roads.
+- **The ambush says who sent them and why:** "your oath to the Lantern Dominion is not forgiven".
+- **In the simulator:** about one rival hunter a run, in half the runs, beside about two alignment hunters. Report: docs/simulation/specialisations.md.
+
+## [1.373.0+409]
+
+The clans with a weaker tie to your profession now offer a smaller twist of their own (v5.2, step 3c).
+
+- **Eight new gifts**, one for each clan only weakly tied to a profession, in Narrative's words:
+  - **Warrior:** Standfast (Vigil): a Defend face adds 1 Fury. Burning Penance (Penitents): a Mana face adds 1 Fury.
+  - **Cleric:** Brimming Draught (Mire): a potion's healing past full feeds the Watchfire.
+  - **Mage:** Double Kindling (Compact): a Fire spell's reaction counts twice. Lingering Hex (Mire): a spell's status lasts a turn longer.
+  - **Rogue:** Stitch-Thrust (Vigil): healing past full strikes the foe. Pitch Hand (Compact): Flurry's second hit slows its target.
+  - **Ranger:** Second Broadside (Dominion): once a fight, a face that would not strike goes back, and the Trail draws again.
+- **How they come:** from Friend, half as often as a main clan's specialisation, as rare gifts, and with no sub-clan variants or rank II.
+- **Balance:** each is worth about half a main specialisation where the simulator can see it. Report: docs/simulation/specialisations.md.
 
 ## [1.371.0+407]
 

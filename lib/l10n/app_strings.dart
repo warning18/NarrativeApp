@@ -7627,6 +7627,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{clan}, hunting you: {spec} sleeps.',
     AppLanguage.fr: '{clan} : la traque est ouverte, {spec} sommeille.',
   },
+  'spec_stitch_log': {
+    AppLanguage.en:
+        'Stitch-Thrust: what heals past full strikes {name} for {n}.',
+    AppLanguage.fr:
+        'Point de couture\u00a0: le soin en trop frappe {name} pour {n}.',
+  },
+  'spec_broadside_log': {
+    AppLanguage.en:
+        'Second Broadside: the face goes back to the bottom of the run, and you draw again.',
+    AppLanguage.fr:
+        'Seconde bordée\u00a0: la face retourne au fond de la série, et vous tirez de nouveau.',
+  },
   'spec_tribunal_log': {
     AppLanguage.en:
         'The Tribunal hears the case once: the Well refills by a third.',

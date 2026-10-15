@@ -64,6 +64,12 @@ extension _FightRounds on _FightScreenState {
       _currentFaces
         ..clear()
         ..addAll(rolled);
+      if (_core.broadsideFired) {
+        _core.broadsideFired = false;
+        _log.add(_LogEntry(
+            trFor(ref.read(appLanguageProvider), 'spec_broadside_log'),
+            _LogKind.info));
+      }
       // A Steady face that just landed stays put (see face_keywords.dart).
       _noteSteadyFaces(
           rolled.keys.where((id) => !_lockedActorIds.contains(id)).toList());
@@ -264,6 +270,11 @@ extension _FightRounds on _FightScreenState {
               currentHealth: actor.currentHealth,
               maxHealth: actor.maxHealth)
           : 0;
+      // The Stitch-Thrust: healing past full strikes the foe (step 3c).
+      if (actor.isPlayer && healing > 0) {
+        _stitchThrust(overheal(healing, actor.currentHealth, actor.maxHealth),
+            newEntries, lang);
+      }
       actor.currentHealth = min(actor.maxHealth, actor.currentHealth + healing);
       if (!extras.isNone) {
         bonusRollsNext +=
@@ -297,6 +308,14 @@ extension _FightRounds on _FightScreenState {
       actor.block = (parryEnemy != null ? 0 : block) +
           (_spellBlock[actor.id] ?? 0) +
           signShield;
+      // The weak links' Fury (step 3c): the Vigil's Defend face, the
+      // Penitents' Mana face.
+      if (actor.isPlayer &&
+          _core.core == ProfessionCore.fury &&
+          ((face.type == 'Defend' && _core.has(Spec.standfast)) ||
+              (face.type == 'Mana' && _core.has(Spec.burningPenance)))) {
+        _addFury(newEntries, lang);
+      }
       // The Last Watch: a Defend face feeds the fire.
       if (actor.isPlayer &&
           face.type == 'Defend' &&
