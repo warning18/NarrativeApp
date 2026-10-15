@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/providers/city_provider.dart'
+    show cityPlanRecordsProvider;
 import 'package:narrative_data_app/data/chart_globe.dart';
 import 'package:narrative_data_app/data/city_plan.dart';
 import 'package:narrative_data_app/data/climate.dart';
@@ -289,7 +291,15 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+    await tester.pumpWidget(
+      ProviderScope(
+          // These test the streets' marks: the generated plan, not the stored
+          // city chart (board 15, v1.355).
+          overrides: [
+            cityPlanRecordsProvider.overrideWith((ref) async => const {})
+          ],
+          child: const MyApp()),
+    );
     await _settle(tester);
     await tester.tap(find.byKey(const Key('menu_edit_mode')));
     await _settle(tester);
@@ -326,6 +336,12 @@ void main() {
     // is turned off, and the choice is kept.
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
     await _settle(tester);
+    // A city looked out from shows the whole town first (v1.350), then the
+    // land.
+    if (find.byKey(const Key('journey_town_zoom_in')).evaluate().isNotEmpty) {
+      await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
+      await _settle(tester);
+    }
     expect(find.byType(JourneyWorldMap), findsOneWidget);
     expect(find.byType(ChartWeather), findsOneWidget);
     await tester.tap(find.byKey(const Key('journey_layers')));

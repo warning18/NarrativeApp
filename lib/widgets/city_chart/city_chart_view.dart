@@ -64,7 +64,38 @@ class CityChartView extends StatefulWidget {
     this.onWay,
     this.onWalk,
     this.animate = true,
+    this.focus,
+    this.focusToken = 0,
+    this.onFocus,
+    this.onPick,
+    this.onPickFog,
+    this.controls = true,
+    this.cards = true,
+    this.numbers = const {},
   });
+
+  /// A number on each pin by way id (the host's list rows carry the same).
+  final Map<String, int> numbers;
+
+  /// A district to open on (and to frame again whenever [focus] or
+  /// [focusToken] changes); null shows the whole city. The Journey hosts the
+  /// chart this way: its District and Town levels set it.
+  final String? focus;
+  final int focusToken;
+
+  /// Told when the district in view changes (null: the whole city), by a
+  /// tap, a pinch or the host.
+  final void Function(String? districtId)? onFocus;
+
+  /// Told when a way's pin is tapped (a host with its own sheet), and when
+  /// a district not yet found is.
+  final void Function(CityChartWay way)? onPick;
+  final void Function(CityChartDistrict district)? onPickFog;
+
+  /// The "Whole city" chip and the zoom buttons, and the card at the foot:
+  /// off when a host has its own.
+  final bool controls;
+  final bool cards;
 
   final CityChart chart;
   final MapLook look;
@@ -117,6 +148,25 @@ class _CityChartViewState extends State<CityChartView>
   String? _focus;
   CityChartWay? _pickedWay;
   CityChartDistrict? _pickedFog;
+  String? _reportedFocus;
+
+  @override
+  void didUpdateWidget(covariant CityChartView old) {
+    super.didUpdateWidget(old);
+    if (old.focus != widget.focus || old.focusToken != widget.focusToken) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || !_placed) return;
+        final d = widget.focus == null
+            ? null
+            : widget.chart.districtById(widget.focus!);
+        if (d == null) {
+          _showWhole();
+        } else {
+          _showDistrict(d);
+        }
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -152,6 +202,19 @@ class _CityChartViewState extends State<CityChartView>
       _scale = _fitted;
       _offset = Offset((size.width - b.width * _fitted) / 2,
           (size.height - b.height * _fitted) / 2);
+      final d = widget.focus == null
+          ? null
+          : widget.chart.districtById(widget.focus!);
+      if (d != null) {
+        final box = d.box;
+        final scale =
+            math.min(size.width / box.width, size.height / box.height);
+        _scale = scale.clamp(_minScale, _maxScale);
+        _offset = _clamped(
+            Offset(size.width / 2, size.height * 0.5) - box.center * _scale,
+            _scale);
+        _focus = d.id;
+      }
     }
   }
 
@@ -234,6 +297,7 @@ class _CityChartViewState extends State<CityChartView>
         goalWayId: widget.goalWayId,
         selectedWayId: _pickedWay?.id,
         focusDistrict: _focus,
+        numbers: widget.numbers,
         pulse: pulse,
       );
 
@@ -253,6 +317,7 @@ class _CityChartViewState extends State<CityChartView>
             _pickedWay = w;
             _pickedFog = null;
           });
+          widget.onPick?.call(w);
           return;
         }
       }
@@ -284,6 +349,7 @@ class _CityChartViewState extends State<CityChartView>
         _pickedFog = hit;
         _pickedWay = null;
       });
+      widget.onPickFog?.call(hit);
       return;
     }
     if (_focus == hit.id) {
@@ -301,6 +367,13 @@ class _CityChartViewState extends State<CityChartView>
       _fit(Size(box.maxWidth, box.maxHeight));
       final focus = _focus == null ? null : widget.chart.districtById(_focus!);
       final zoomed = _scale / _fitted > 1.05;
+      if (_focus != _reportedFocus) {
+        _reportedFocus = _focus;
+        final now = _focus;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) widget.onFocus?.call(now);
+        });
+      }
       return Stack(children: [
         Positioned.fill(
           child: Listener(
@@ -353,46 +426,49 @@ class _CityChartViewState extends State<CityChartView>
           ),
         ),
         // The way back to the whole city, and the zoom buttons.
-        Positioned(
-          left: 12,
-          top: 12,
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 200),
-            opacity: zoomed ? 1 : 0,
-            child: IgnorePointer(
-              ignoring: !zoomed,
-              child: _chip(
-                key: const Key('city_chart_whole'),
-                palette: palette,
-                icon: Icons.zoom_out_map,
-                label: text.wholeCity,
-                onTap: _showWhole,
+        if (widget.controls)
+          Positioned(
+            left: 12,
+            top: 12,
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 200),
+              opacity: zoomed ? 1 : 0,
+              child: IgnorePointer(
+                ignoring: !zoomed,
+                child: _chip(
+                  key: const Key('city_chart_whole'),
+                  palette: palette,
+                  icon: Icons.zoom_out_map,
+                  label: text.wholeCity,
+                  onTap: _showWhole,
+                ),
               ),
             ),
           ),
-        ),
-        Positioned(
-          right: 12,
-          top: 12,
-          child: Column(children: [
-            _round(
-              key: const Key('city_chart_zoom_in'),
-              palette: palette,
-              icon: Icons.add,
-              tooltip: text.zoomIn,
-              onTap: () => _zoomAbout(_size.center(Offset.zero), 1.6),
-            ),
-            const SizedBox(height: 8),
-            _round(
-              key: const Key('city_chart_zoom_out'),
-              palette: palette,
-              icon: Icons.remove,
-              tooltip: text.zoomOut,
-              onTap: () => _zoomAbout(_size.center(Offset.zero), 0.625),
-            ),
-          ]),
-        ),
-        if (_pickedWay != null || _pickedFog != null || focus != null)
+        if (widget.controls)
+          Positioned(
+            right: 12,
+            top: 12,
+            child: Column(children: [
+              _round(
+                key: const Key('city_chart_zoom_in'),
+                palette: palette,
+                icon: Icons.add,
+                tooltip: text.zoomIn,
+                onTap: () => _zoomAbout(_size.center(Offset.zero), 1.6),
+              ),
+              const SizedBox(height: 8),
+              _round(
+                key: const Key('city_chart_zoom_out'),
+                palette: palette,
+                icon: Icons.remove,
+                tooltip: text.zoomOut,
+                onTap: () => _zoomAbout(_size.center(Offset.zero), 0.625),
+              ),
+            ]),
+          ),
+        if (widget.cards &&
+            (_pickedWay != null || _pickedFog != null || focus != null))
           Positioned(
             left: 12,
             right: 12,
