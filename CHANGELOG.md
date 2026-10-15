@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.391.0+427]
+
+Clans now have power, and the map changes hands.
+
+- **Power.** Each clan has a strength from 0 to 100: the Dominion starts at 60, the Crows 45, the Compact 40, the Vigil 30, the Penitents and the Mire 25.
+  - Rises: taking a clan's gift (+2, +4 for a heroic one), doing a quest for it (+5), and each place it holds (+1 a chapter).
+  - Falls: a chapter in which you did nothing for a clan (−5), never more than 20 under its start.
+- **Places change hands at each new chapter**, at most one per clan:
+  - a clan that has grown a tier stronger takes the next place it claims (Narrative's lists);
+  - two clans at war fight over places, and the much stronger takes one, the seat last.
+
+  A news line tells it, and the clan log notes it.
+- **A clan can fall.** One that loses its last place falls, its power to 0, until it grows back and takes a place again.
+- **Shops follow the new holder.** A town that changes hands prices by your standing with the clan that holds it now.
+- **Story beats can move power and places** (`power` and `control` in a choice's or an event's politics, and a `powerAtLeast`/`powerAtMost` condition).
+- **Simulator:** about 3 to 4 places change hands per run, and the clan you back ends 25 to 50 points stronger. Report: docs/simulation/clan-power.md.
+
 ## [1.390.0+426]
 
 Groundwork for the journey map; nothing changes on screen yet.

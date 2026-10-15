@@ -15,6 +15,7 @@ import '../data/cliff_town.dart' show townAdditionLimitOf;
 import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
 import '../data/character_start.dart' show startingArmor;
+import '../data/clan_power.dart' show territoryTurn;
 import '../data/contracts.dart';
 import '../data/detour_pacing.dart' show DetourPacing;
 import '../data/camp_state.dart' show harborHouseId;
@@ -22,6 +23,7 @@ import '../data/factions.dart';
 import '../data/hunter_mercy.dart';
 import '../data/patron_stats.dart';
 import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
+import '../data/geography.dart' show Geography;
 import '../data/harbour.dart';
 import '../data/heard_of.dart' show withMapGoal;
 import '../data/journey_rules.dart';
@@ -2243,8 +2245,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// [PlayerSession.chapterOffersThrough]). The Choir or the Pit come with
   /// it when the alignment leans. With the clans' [data], the chapter's
   /// price of loyalty comes with it too (applyLoyaltyDrift: the patron's
-  /// rivals cool). Returns whether one was granted.
-  Future<bool> grantChapterOffer(int chapter, {ClanData? data}) async {
+  /// rivals cool). With the world's [geography] too, the clans' power and
+  /// places turn (territoryTurn, clan_power.dart). Returns whether one was
+  /// granted.
+  Future<bool> grantChapterOffer(int chapter,
+      {ClanData? data, Geography? geography}) async {
     if (chapter < 2 || chapter <= state.chapterOffersThrough) return false;
     final drift = data == null
         ? null
@@ -2252,6 +2257,15 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
             data: data, chapter: chapter, day: state.day);
     if (drift != null && drift.changed) {
       state = _withTitles(state.copyWith(politics: drift.state), data!);
+    }
+    if (data != null && geography != null) {
+      state = state.copyWith(
+          politics: territoryTurn(state.politics,
+                  data: data,
+                  geography: geography,
+                  chapter: chapter,
+                  day: state.day)
+              .state);
     }
     state = state.copyWith(
       chapterOffersThrough: chapter,
@@ -2649,7 +2663,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// The world the politics rules read now: [data], [events], the chapter
   /// (see [_politicsChapter]) and the story's day.
   CoastWorld _coastWorld(
-          ClanData data, Map<String, PoliticsEvent> events, int? chapter) =>
+          ClanData data, Map<String, PoliticsEvent> events, int? chapter,
+          [Geography? geography]) =>
       CoastWorld(
         data: data,
         events: events,
@@ -2657,6 +2672,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         day: state.day,
         chapterDay: max(1, state.day - state.chapterStartDay + 1),
         signPatrons: state.signPatronsThisLife,
+        geography: geography,
       );
 
   /// Takes [change] into the session: the politics and flags after it,
@@ -2730,6 +2746,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     StoryPolitics politics, {
     required String nodeId,
     required ClanData data,
+    Geography? geography,
     String key = '',
     Map<String, PoliticsEvent> events = const {},
     Map<String, dynamic> companions = const {},
@@ -2741,7 +2758,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         key: key,
         politics: state.politics,
         flags: state.flags,
-        world: _coastWorld(data, events, chapter));
+        world: _coastWorld(data, events, chapter, geography));
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
     await _persist();
@@ -2756,6 +2773,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// "News from the coast".
   Future<CoastChange> runPoliticsEvents({
     required ClanData data,
+    Geography? geography,
     required Map<String, PoliticsEvent> events,
     Map<String, dynamic> companions = const {},
     int? chapter,
@@ -2763,7 +2781,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final change = runDueEvents(
         politics: state.politics,
         flags: state.flags,
-        world: _coastWorld(data, events, chapter));
+        world: _coastWorld(data, events, chapter, geography));
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
     await _persist();
@@ -2775,6 +2793,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<CoastChange> firePoliticsEvent(
     String eventId, {
     required ClanData data,
+    Geography? geography,
     required Map<String, PoliticsEvent> events,
     Map<String, dynamic> companions = const {},
     int? chapter,
@@ -2782,7 +2801,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final change = fireEvent(eventId,
         politics: state.politics,
         flags: state.flags,
-        world: _coastWorld(data, events, chapter),
+        world: _coastWorld(data, events, chapter, geography),
         force: true);
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);

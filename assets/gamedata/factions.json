@@ -32,6 +32,13 @@
     "icon": "church",
     "lean": 0,
     "startStanding": -10,
+    "power": 60,
+    "seat": "candlehold",
+    "claims": [
+      "saltmouth_landward_gate",
+      "reliquary_quarter",
+      "white_anchorage_chapel"
+    ],
     "subclans": [
       "inquisition",
       "order",
@@ -142,6 +149,13 @@
     "icon": "visibility",
     "lean": 1,
     "startStanding": 0,
+    "power": 30,
+    "seat": "rimewell",
+    "claims": [
+      "rimewell",
+      "ashen_quarter_gate",
+      "hollow_shore_battlefield"
+    ],
     "subclans": [
       "candlebearers",
       "stitchers",
@@ -238,6 +252,12 @@
     "icon": "hardware",
     "lean": 0,
     "startStanding": 0,
+    "power": 40,
+    "seat": "emberwick",
+    "claims": [
+      "ashen_quarter_ash_market",
+      "saltmouth_yard"
+    ],
     "subclans": [
       "quarrymen",
       "scaffolders",
@@ -342,6 +362,12 @@
     "icon": "eco",
     "lean": 0,
     "startStanding": 0,
+    "power": 25,
+    "claims": [
+      "kindly_hill",
+      "drowned_cloister_nave",
+      "drowned_cloister_ossuary"
+    ],
     "subclans": [
       "barkbleeders",
       "herons_wake",
@@ -447,6 +473,13 @@
     "icon": "anchor",
     "lean": -1,
     "startStanding": 0,
+    "power": 45,
+    "seat": "saltmouth_wharf",
+    "claims": [
+      "saltmouth_lantern_alleys",
+      "alster_high_quay",
+      "wracks_end"
+    ],
     "subclans": [
       "keyholders",
       "tar_hands",
@@ -553,6 +586,13 @@
     "icon": "whatshot",
     "lean": 1,
     "startStanding": 0,
+    "power": 25,
+    "seat": "ashen_quarter_wall_of_names",
+    "claims": [
+      "ashen_quarter_wall_of_names",
+      "white_anchorage_chapel",
+      "greyhithe"
+    ],
     "subclans": [
       "scorched_choir",
       "road_exorcists",
@@ -774,6 +814,8 @@
     "icon": "fitness_center",
     "lean": 0,
     "startStanding": 0,
+    "power": 20,
+    "seat": "highhearth",
     "subclans": [],
     "sponsors": [],
     "objects": [],
@@ -829,6 +871,8 @@
     "icon": "local_fire_department",
     "lean": 0,
     "startStanding": 0,
+    "power": 15,
+    "seat": "akagiri",
     "subclans": [],
     "sponsors": [],
     "objects": [],
@@ -884,6 +928,8 @@
     "icon": "sailing",
     "lean": 0,
     "startStanding": 0,
+    "power": 15,
+    "seat": "saltmouth_tern_row",
     "subclans": [],
     "sponsors": [],
     "objects": [],
@@ -939,6 +985,8 @@
     "icon": "spa",
     "lean": 0,
     "startStanding": 0,
+    "power": 10,
+    "seat": "kindly_hill",
     "subclans": [],
     "sponsors": [],
     "objects": [],

@@ -10,6 +10,7 @@ import '../models/story_node.dart';
 import 'chapter_loop_provider.dart';
 import 'clans_provider.dart';
 import 'game_db_providers.dart';
+import 'geography_provider.dart';
 import 'player_session_provider.dart';
 import 'story_providers.dart';
 
@@ -77,6 +78,7 @@ Future<CoastChange> applyStoryPoliticsNow(
             key: key,
             cause: cause,
             data: data,
+            geography: ref.read(geographyProvider),
             events: events,
             companions: companions,
             chapter: ref.read(reachedChapterProvider),
@@ -125,6 +127,7 @@ Future<List<CoastNews>> runCoastEvents(WidgetRef ref, {int? chapter}) async {
   final int clock = ref.read(playerSessionProvider).clockChapter;
   final change = await notifier.runPoliticsEvents(
     data: data,
+    geography: ref.read(geographyProvider),
     events: events,
     companions: companions,
     chapter: max(1, max(reached, clock)),
@@ -141,6 +144,7 @@ Future<CoastChange> fireCoastEventNow(WidgetRef ref, String eventId) async {
   return ref.read(playerSessionProvider.notifier).firePoliticsEvent(
         eventId,
         data: data,
+        geography: ref.read(geographyProvider),
         events: events,
         companions: companions,
         chapter: ref.read(reachedChapterProvider),

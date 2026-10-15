@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/clan_power.dart' show holderOf;
 import '../data/geography.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -799,7 +800,7 @@ class _PlaceTraits extends ConsumerWidget {
     final ink = InkColors.of(context);
     final danger = geo.dangerOf(placeId);
     final light = geo.lightOf(placeId);
-    final holder = geo.heldBy(placeId);
+    final holder = holderOf(placeId, geo, ref.watch(politicsProvider));
     final tags = geo.tagsOf(placeId);
     final watches = geo.watchesTo(placeId, fallback: 0);
     Widget chip(IconData icon, String text, {Color? colour}) => Container(
