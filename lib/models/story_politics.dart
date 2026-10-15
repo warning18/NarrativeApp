@@ -50,6 +50,9 @@ class StoryPolitics {
     this.muster = false,
     this.power = const {},
     this.control = const {},
+    this.settleCrisis = '',
+    this.bendKnee = '',
+    this.stayFallen = '',
     this.extra = const {},
   });
 
@@ -103,6 +106,16 @@ class StoryPolitics {
   /// Places given to a clan (place id -> clan, clan_power.dart).
   final Map<String, String> control;
 
+  /// Your clan's crisis settled (clan_crisis.dart): 'held', 'paid' or
+  /// 'refused'; '' for none.
+  final String settleCrisis;
+
+  /// Your fallen clan left: sworn to this clan, the winner, instead.
+  final String bendKnee;
+
+  /// Your fallen clan kept: of it, clanless, until a banner of your own.
+  final String stayFallen;
+
   /// Keys this version does not read, kept as written.
   final Map<String, dynamic> extra;
 
@@ -124,6 +137,9 @@ class StoryPolitics {
     'muster',
     'power',
     'control',
+    'settleCrisis',
+    'bendKnee',
+    'stayFallen',
   };
 
   /// The first intrigue step, if any (most politics carry one).
@@ -147,7 +163,10 @@ class StoryPolitics {
       throneWinner.isEmpty &&
       !muster &&
       power.isEmpty &&
-      control.isEmpty;
+      control.isEmpty &&
+      settleCrisis.isEmpty &&
+      bendKnee.isEmpty &&
+      stayFallen.isEmpty;
 
   /// Whether a choice's hint has anything to say (standing, marks, a
   /// claim, a pledge or the Throne).
@@ -237,6 +256,9 @@ class StoryPolitics {
           for (final e in (json['control'] as Map).entries)
             if (_text(e.value).isNotEmpty) e.key.toString(): _text(e.value),
       },
+      settleCrisis: _text(json['settleCrisis']),
+      bendKnee: _text(json['bendKnee']),
+      stayFallen: _text(json['stayFallen']),
       extra: {
         for (final e in json.entries)
           if (!_known.contains(e.key)) e.key: e.value,
@@ -268,6 +290,9 @@ class StoryPolitics {
         if (muster) 'muster': true,
         if (power.isNotEmpty) 'power': Map<String, int>.of(power),
         if (control.isNotEmpty) 'control': Map<String, String>.of(control),
+        if (settleCrisis.isNotEmpty) 'settleCrisis': settleCrisis,
+        if (bendKnee.isNotEmpty) 'bendKnee': bendKnee,
+        if (stayFallen.isNotEmpty) 'stayFallen': stayFallen,
         ...extra,
       };
 }

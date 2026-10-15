@@ -15,6 +15,7 @@ import '../data/cliff_town.dart' show townAdditionLimitOf;
 import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
 import '../data/character_start.dart' show startingArmor;
+import '../data/clan_crisis.dart' show mainClanOf, settleFallenLoyalty;
 import '../data/clan_power.dart' show territoryTurn;
 import '../data/nemesis.dart' show updateNemesis;
 import '../data/contracts.dart';
@@ -2260,11 +2261,16 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       state = _withTitles(state.copyWith(politics: drift.state), data!);
     }
     if (data != null && geography != null) {
-      final turned = territoryTurn(state.politics,
+      // Your clan's seat waits for you (clan_crisis.dart); the fallen
+      // clan you stayed of lets go once a banner of your own is raised.
+      final turned = territoryTurn(
+              settleFallenLoyalty(state.politics,
+                  bannerRaised: bannerRaisedIn(state.flags)),
               data: data,
               geography: geography,
               chapter: chapter,
-              day: state.day)
+              day: state.day,
+              protect: mainClanOf(state.politics))
           .state;
       state = state.copyWith(
           politics:

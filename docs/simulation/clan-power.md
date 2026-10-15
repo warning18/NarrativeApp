@@ -57,3 +57,21 @@ Each power column is the clan's average power at the run's end, grouped by the c
   - the Dominion takes the Landward Gate (56);
   - the Vigil takes Rimewell (52);
   - the Penitents take the Wall of Names (36).
+
+## PR 2b: the crisis and the fall (v1.394)
+
+The rules are in `lib/data/clan_crisis.dart`, with Narrative's words from `territory-texts.md` 3 and 4.
+
+- **The crisis.** At a chapter's turn, a change that would take your main clan's seat, or its last place, waits. Your main clan is the one you are sworn to, else your patron. A scene comes on the next road at rest, before any hunter:
+  - **Defend:** a fight with the attacker's hunter.
+    - Won: the seat holds, the attacker loses 10 power, your clan gains 5 power and 5 standing.
+    - Lost: you are still at the scene, and may pay or refuse.
+  - **Pay:** 40 gold a chapter, offered only when you have it. The attacker takes a lesser place of your clan instead, if it has one.
+  - **Refuse:** −10 standing, and the seat falls.
+
+  Only one crisis waits at a time.
+- **The fall.** When your main clan is left with no place, a scene asks you to choose:
+  - **Bend the knee:** your standing with the fallen clan moves to the winner, so you are sworn to it if you were Sworn. The fallen clan drops to Resented, and the winner takes a fifth of your gold.
+  - **Stay of the fallen clan:** no new oath, no patron's stats, and the clan's gifts kept. The winner is your nemesis, whatever its power. Raising your own banner (the Open Hand's `banner_raised`) ends it, and the fallen clan pledges to your Host; so does the clan rising again.
+- **The Mire's seat** is the Mire's Court, a district of the Drowned Cloister with Narrative's name and blurb. The Mire now holds it from the start.
+- **The simulator** plays no crisis: with no one to ask, seats fall as before.

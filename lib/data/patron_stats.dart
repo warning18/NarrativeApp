@@ -40,6 +40,8 @@ const int swornPatronHealth = 2;
 /// none. A clan never moved with stands at its start, under Friendly, so
 /// the standings kept are enough.
 String statPatron(PoliticsState state) {
+  // Of a fallen clan (clan_crisis.dart): no patron's stats.
+  if (state.fallenOf.isNotEmpty) return '';
   if (state.swornFactionId.isNotEmpty &&
       patronStatsOf.containsKey(state.swornFactionId)) {
     return state.swornFactionId;

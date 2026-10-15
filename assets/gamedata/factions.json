@@ -363,6 +363,7 @@
     "lean": 0,
     "startStanding": 0,
     "power": 25,
+    "seat": "mire_court",
     "claims": [
       "kindly_hill",
       "drowned_cloister_nave",

@@ -586,6 +586,17 @@
     "landmark": "",
     "glyph": "market"
   },
+  "mire_court": {
+    "level": "district",
+    "parent": "drowned_cloister",
+    "name": "The Mire's Court",
+    "name_fr": "La Cour du Marais",
+    "blurb": "A dry room in the middle of the wet, where the water has been asked to wait outside. Chairs are set for people who have not yet arrived, and every one of them has been told your name.",
+    "blurb_fr": "Une salle sèche au cœur de l’humide, où l’on a demandé à l’eau d’attendre dehors. Des sièges sont dressés pour des gens qui ne sont pas encore arrivés, et on leur a dit votre nom à tous.",
+    "landmark": "",
+    "glyph": "hall",
+    "controller": "mire"
+  },
   "hollow_court": {
     "level": "location",
     "danger": 3,

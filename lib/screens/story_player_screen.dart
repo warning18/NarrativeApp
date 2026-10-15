@@ -9,6 +9,7 @@ import '../combat/combat_aftermath.dart';
 import '../combat/combat_engine.dart' show newGamePlusStep;
 import '../combat/encounter.dart';
 import '../data/ability_check.dart';
+import '../data/clan_crisis.dart' show clanCrisisRoadEvent, isClanCrisisNode;
 import '../data/alignment_events.dart';
 import '../data/hunter_mercy.dart';
 import '../data/rival_hunters.dart';
@@ -1514,6 +1515,12 @@ Future<void> _selectChoice({
       await applyStoryPoliticsNow(ref, choice.politics!,
           nodeId: currentNodeId, key: choicePoliticsKey(currentNodeId, index));
     }
+  } else if (choice.hasPolitics &&
+      isExcursion &&
+      isClanCrisisNode(detourNodeId)) {
+    // Your clan's crisis or fall, met on the road (clan_crisis.dart).
+    await applyStoryPoliticsNow(ref, choice.politics!,
+        nodeId: detourNodeId!, key: '');
   }
   if (choice.hasUnlocks) {
     final enemyIds = resolvedEnemyIds.toSet();
@@ -1952,6 +1959,15 @@ Future<bool> startRoadEncounter(
     if (betrayer != null) {
       alignmentEvent = [betrayalAmbushNode(betrayer, enemies, dice())];
     }
+    // Your clan's seat threatened, or fallen (clan_crisis.dart): before
+    // any hunter.
+    alignmentEvent ??= clanCrisisRoadEvent(session.politics,
+        data: ref.read(clanDataProvider),
+        geography: geo,
+        enemies: enemies,
+        chapter: chapter,
+        gold: session.gold,
+        random: dice());
     alignmentEvent ??= maybeAlignmentEvent(
       alignmentScore: session.alignmentScore,
       activeQuestIds: session.activeQuestIds,

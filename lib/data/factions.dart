@@ -1159,6 +1159,13 @@ Map<String, double> _doubles(Object? raw) => {
           if (e.value is num) e.key.toString(): (e.value as num).toDouble(),
     };
 
+Map<String, String> _texts(Object? raw) => {
+      if (raw is Map)
+        for (final e in raw.entries)
+          if (_text(e.value).trim().isNotEmpty)
+            e.key.toString(): _text(e.value).trim(),
+    };
+
 Map<String, int> _ints(Object? raw) => {
       if (raw is Map)
         for (final e in raw.entries)
@@ -1495,6 +1502,10 @@ class PoliticsState {
     this.fallen = const [],
     this.nemesis = '',
     this.nemesisCooldown = const {},
+    this.crisis = const {},
+    this.fellTo = const {},
+    this.fallenOf = '',
+    this.fallenWinner = '',
   });
 
   static const PoliticsState empty = PoliticsState();
@@ -1522,6 +1533,20 @@ class PoliticsState {
   /// Clans whose nemesis was broken: the chapter from which each may
   /// become one again.
   final Map<String, int> nemesisCooldown;
+
+  /// Your clan's seat threatened (clan_crisis.dart): `clan`, `attacker`,
+  /// `place`; empty for none.
+  final Map<String, String> crisis;
+
+  /// Each fallen clan's last place taker (clan -> clan).
+  final Map<String, String> fellTo;
+
+  /// The fallen clan the character stayed of (clan_crisis.dart): no oath,
+  /// no patron, until a banner of their own; '' for none.
+  final String fallenOf;
+
+  /// Who took it: the character's nemesis while [fallenOf] lasts.
+  final String fallenWinner;
 
   final Map<String, double> standings;
   final Map<String, SubclanMark> marks;
@@ -1628,6 +1653,10 @@ class PoliticsState {
     List<String>? fallen,
     String? nemesis,
     Map<String, int>? nemesisCooldown,
+    Map<String, String>? crisis,
+    Map<String, String>? fellTo,
+    String? fallenOf,
+    String? fallenWinner,
   }) =>
       PoliticsState(
         standings: standings ?? this.standings,
@@ -1650,6 +1679,10 @@ class PoliticsState {
         fallen: fallen ?? this.fallen,
         nemesis: nemesis ?? this.nemesis,
         nemesisCooldown: nemesisCooldown ?? this.nemesisCooldown,
+        crisis: crisis ?? this.crisis,
+        fellTo: fellTo ?? this.fellTo,
+        fallenOf: fallenOf ?? this.fallenOf,
+        fallenWinner: fallenWinner ?? this.fallenWinner,
       );
 
   Map<String, dynamic> toJson() => {
@@ -1678,6 +1711,10 @@ class PoliticsState {
         if (fallen.isNotEmpty) 'fallen': fallen,
         if (nemesis.isNotEmpty) 'nemesis': nemesis,
         if (nemesisCooldown.isNotEmpty) 'nemesisCooldown': nemesisCooldown,
+        if (crisis.isNotEmpty) 'crisis': crisis,
+        if (fellTo.isNotEmpty) 'fellTo': fellTo,
+        if (fallenOf.isNotEmpty) 'fallenOf': fallenOf,
+        if (fallenWinner.isNotEmpty) 'fallenWinner': fallenWinner,
       };
 
   /// [raw] read; [empty] for a save from before clans (or anything
@@ -1744,6 +1781,10 @@ class PoliticsState {
       fallen: _strings(json['fallen']).toSet().toList(),
       nemesis: _text(json['nemesis']).trim(),
       nemesisCooldown: _ints(json['nemesisCooldown']),
+      crisis: _texts(json['crisis']),
+      fellTo: _texts(json['fellTo']),
+      fallenOf: _text(json['fallenOf']).trim(),
+      fallenWinner: _text(json['fallenWinner']).trim(),
     );
   }
 }
@@ -1852,7 +1893,9 @@ bool canBeSworn(String factionId, ClanData data) =>
     released = current;
     current = '';
   }
-  if (current.isEmpty) {
+  // Of a fallen clan (clan_crisis.dart), no new oath until a banner of
+  // one's own.
+  if (current.isEmpty && state.fallenOf.isEmpty) {
     final candidates = [
       for (final e in values.entries)
         if (canBeSworn(e.key, data) && _swornLevel(e.value)) e.key,
