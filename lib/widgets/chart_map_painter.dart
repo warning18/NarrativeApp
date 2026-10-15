@@ -82,6 +82,7 @@ class ChartMapPainter extends CustomPainter {
     this.detail = true,
     this.globe,
     this.sphereMaxScale = double.infinity,
+    this.sphereScale,
     this.zoomOf,
     this.fogOf,
     Listenable? view,
@@ -138,6 +139,10 @@ class ChartMapPainter extends CustomPainter {
   /// ball stays the size it has at that scale (about 250 px across).
   final double sphereMaxScale;
 
+  /// The exact chart units to canvas pixels the sphere is drawn at (v1.350:
+  /// the ball fills a phone's width); null keeps [sphereMaxScale]'s rule.
+  final double? sphereScale;
+
   /// How close the chart is looked at (1 = the whole of it in the box):
   /// the names keep a readable size and the small detail shows as the
   /// chart comes closer (v1.202). Null reads as 1.
@@ -160,6 +165,47 @@ class ChartMapPainter extends CustomPainter {
   double get _t => math.pow(_zoom, -0.8).toDouble();
   double get _m => math.pow(_zoom, -0.65).toDouble();
   double get _w => math.pow(_zoom, -0.45).toDouble();
+
+  /// Chart units to canvas pixels as drawn (set at each paint): the names
+  /// never go below [minPlacePx] / [minRegionPx] on screen, whatever the
+  /// box, so a phone's map stays readable (v1.350).
+  double _k = 1;
+  static const double minPlacePx = 12.5;
+  static const double minRegionPx = 10;
+
+  /// A font size in chart units: [base] shrinking with the zoom as the
+  /// names always have, but never under [minPx] on screen.
+  double _font(double base, double minPx) =>
+      math.max(base * _t, minPx / (_k * _zoom));
+
+  /// [v] kept within [lo]..[hi]; [lo] when the range is empty (a name
+  /// wider than the canvas), where num.clamp would throw.
+  static double _within(double v, double lo, double hi) =>
+      hi < lo ? lo : v.clamp(lo, hi).toDouble();
+
+  /// Text with a dark halo (a stroked copy under the fill): readable over
+  /// land, sea, roads and the fog's edge alike.
+  void _haloText(Canvas canvas, String text, TextStyle style, Offset at,
+      {Color? halo, double? width}) {
+    final line = width ?? 2.4 / (_k * _zoom);
+    final back = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: style.copyWith(
+          color: null,
+          shadows: const [],
+          foreground: Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeJoin = StrokeJoin.round
+            ..strokeWidth = line
+            ..color = (halo ?? palette.land).withValues(alpha: 0.92),
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    back.paint(canvas, at);
+    _layout(text, style.copyWith(shadows: const [])).paint(canvas, at);
+  }
 
   /// The canvas in the chart's units: the chart itself when flat, the
   /// whole box round the sphere.
@@ -246,11 +292,11 @@ class ChartMapPainter extends CustomPainter {
       canvas.drawPath(
           path,
           Paint()
-            ..color = const Color(0xFF5E5546)
+            ..color = const Color(0xFF7A6E58)
             ..style = PaintingStyle.stroke
             ..strokeCap = StrokeCap.round
             ..strokeJoin = StrokeJoin.round
-            ..strokeWidth = width * 2);
+            ..strokeWidth = width * 2.1);
     }
     _dashedPath(
         canvas,
@@ -931,7 +977,7 @@ class ChartMapPainter extends CustomPainter {
       ..color = palette.coast
       ..style = PaintingStyle.stroke
       ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = 0.9;
+      ..strokeWidth = 1.3;
     final landClip = Path();
     for (final coast in allCoasts) {
       final path = _poly(coast);
@@ -960,18 +1006,18 @@ class ChartMapPainter extends CustomPainter {
     }
     // The lands' biomes, laid thin over the land (deeper on the lands
     // calque), each land's edge dotted (v1.202).
-    final wash = calque == ChartCalque.lands ? 0.26 : 0.11;
+    final wash = calque == ChartCalque.lands ? 0.3 : 0.2;
     for (var i = 0; i < geography.zones.length; i++) {
       final colours = chartBiome(geography.zones[i].biome);
       canvas.drawPath(_poly(relief.zones[i]),
           Paint()..color = colours.ground.withValues(alpha: wash));
     }
     final border = Paint()
-      ..color = palette.coast.withValues(alpha: 0.55)
+      ..color = palette.coast.withValues(alpha: 0.9)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.35;
+      ..strokeWidth = 0.7;
     for (var i = 0; i < geography.zones.length; i++) {
-      _dashedPath(canvas, _poly(relief.zones[i]), border, dash: 0.9, gap: 1.3);
+      _dashedPath(canvas, _poly(relief.zones[i]), border, dash: 2.2, gap: 1.6);
     }
     // The ground's grain (v1.202): a stipple of each biome's accent.
     if (detail && lod >= 1) {
@@ -1560,37 +1606,48 @@ class ChartMapPainter extends CustomPainter {
               p.dx - 2.5 * m, p.dy - 12.5 * m, p.dx + 2.5 * m, p.dy + 0.5);
         }(),
     ];
+    // On the sphere a name stays on the ball, not over its limb.
+    final ball = globe;
+    bool onBall(Rect r) =>
+        ball == null ||
+        [r.topLeft, r.topRight, r.bottomLeft, r.bottomRight]
+            .every((c) => (c - ball.centre).distance <= ball.radius * 0.97);
     bool fits(Rect r) =>
         bounds.contains(r.topLeft) &&
         bounds.contains(r.bottomRight) &&
+        onBall(r) &&
         !taken.any((t) => t.overlaps(r));
 
-    // Where the story is gets the first pick, then the chosen place, then
-    // the rest in story order.
+    // Where the story is gets the first pick, then the chosen place and the
+    // goal, then the big places, then the rest in story order. A name with
+    // no clear spot is left off (the first four never are): a crowded chart
+    // shows fewer names, each one readable, and the rest come as it opens.
+    int rank(Landmark l) => l.id == standing?.id
+        ? 0
+        : l.id == selectedId
+            ? 1
+            : l.id == goalId
+                ? 2
+                : l.big
+                    ? 3
+                    : 4;
     final order = [
-      ...reached.where((l) => l.id == standing?.id),
-      ...reached.where((l) => l.id == selectedId && l.id != standing?.id),
-      ...reached.where((l) => l.id != standing?.id && l.id != selectedId),
-    ];
-    for (final l in order) {
+      for (final (i, l) in reached.indexed) (rank(l), i, l),
+    ]..sort((a, b) => a.$1 != b.$1 ? a.$1 - b.$1 : a.$2 - b.$2);
+    for (final (rk, _, l) in order) {
       if (!_vis(geography.of(l))) continue;
       final p = _at(geography.of(l));
       final isHere = l.id == standing?.id;
       final opacity = _active(l) ? 1.0 : 0.35;
-      final painter = _layout(
-        l.name(language),
-        TextStyle(
-          fontFamily: InkFonts.prose,
-          fontSize: 6 * t,
-          fontWeight: isHere ? FontWeight.w600 : FontWeight.w400,
-          color: (isHere ? palette.mark : palette.place)
-              .withValues(alpha: opacity),
-          shadows: [
-            Shadow(color: palette.land, blurRadius: 2 * t),
-            Shadow(color: palette.land, blurRadius: 0.6 * t),
-          ],
-        ),
+      final style = TextStyle(
+        fontFamily: InkFonts.prose,
+        fontSize: _font(6, minPlacePx),
+        fontWeight: isHere || rk <= 2 ? FontWeight.w600 : FontWeight.w500,
+        color:
+            (isHere ? palette.mark : palette.place).withValues(alpha: opacity),
       );
+      final text = l.name(language);
+      final painter = _layout(text, style);
       final w = painter.width, h = painter.height;
       final off = 5.5 * m, up = 4.5 * m;
       final right = Offset(p.dx + off, p.dy - h / 2);
@@ -1599,7 +1656,7 @@ class ChartMapPainter extends CustomPainter {
       final below = Offset(p.dx - w / 2, p.dy + up);
       // Above and below slide along to stay inside the chart.
       Offset inside(Offset at) =>
-          Offset(at.dx.clamp(bounds.left, bounds.right - w).toDouble(), at.dy);
+          Offset(_within(at.dx, bounds.left, bounds.right - w), at.dy);
       final tries = geography.labelsLeft(l)
           ? [left, right, inside(above), inside(below)]
           : [right, left, inside(above), inside(below)];
@@ -1610,7 +1667,10 @@ class ChartMapPainter extends CustomPainter {
           break;
         }
       }
-      // Nowhere clear: the spot inside the chart that overlaps least.
+      // Nowhere clear: the places the story stands at, picked or aimed for
+      // take the spot inside the chart that overlaps least; the rest wait
+      // for a closer look.
+      if (spot == null && rk > 2) continue;
       if (spot == null) {
         var least = double.infinity;
         for (final at in tries) {
@@ -1630,8 +1690,8 @@ class ChartMapPainter extends CustomPainter {
         }
       }
       spot ??= right;
-      taken.add(spot & Size(w, h));
-      painter.paint(canvas, spot);
+      taken.add((spot & Size(w, h)).inflate(0.8 * m));
+      _haloText(canvas, text, style, spot);
     }
 
     // Region names: named once reached, "uncharted" before, and only
@@ -1639,38 +1699,37 @@ class ChartMapPainter extends CustomPainter {
     final highest = reached.fold(0, (m, l) => l.chapter > m ? l.chapter : m);
     for (final label in geography.labels) {
       final named = label.chapter <= highest;
-      final painter = _layout(
-        named
-            ? label.text(language)
-            : (language == AppLanguage.fr ? 'INEXPLORÉ' : 'UNCHARTED'),
-        !named
-            ? TextStyle(
-                fontFamily: InkFonts.system,
-                fontSize: 5 * t,
-                letterSpacing: 1 * t,
-                color: palette.label.withValues(alpha: 0.7),
-              )
-            : label.sea
-                ? TextStyle(
-                    fontFamily: InkFonts.prose,
-                    fontStyle: FontStyle.italic,
-                    fontSize: 7 * t,
-                    color: palette.label,
-                  )
-                : TextStyle(
-                    fontFamily: InkFonts.display,
-                    fontSize: 8 * t,
-                    letterSpacing: 1.5 * t,
-                    color: palette.label,
-                  ),
-      );
+      final text = named
+          ? label.text(language)
+          : (language == AppLanguage.fr ? 'INEXPLORÉ' : 'UNCHARTED');
+      final style = !named
+          ? TextStyle(
+              fontFamily: InkFonts.system,
+              fontSize: _font(5, 8.5),
+              letterSpacing: 1 * t,
+              color: palette.label.withValues(alpha: 0.75),
+            )
+          : label.sea
+              ? TextStyle(
+                  fontFamily: InkFonts.prose,
+                  fontStyle: FontStyle.italic,
+                  fontSize: _font(7, 12),
+                  color: palette.label,
+                )
+              : TextStyle(
+                  fontFamily: InkFonts.display,
+                  fontSize: _font(8, 12.5),
+                  letterSpacing: 1.5 * t,
+                  color: palette.label,
+                );
+      final painter = _layout(text, style);
       final size = Size(painter.width, painter.height);
       if (!_vis(Offset(label.x, label.y))) continue;
       final labelAt = _at(Offset(label.x, label.y));
       // Kept inside the chart, then nudged about until clear.
       final base = Offset(
-        labelAt.dx.clamp(bounds.left, bounds.right - size.width),
-        labelAt.dy.clamp(bounds.top, bounds.bottom - size.height),
+        _within(labelAt.dx, bounds.left, bounds.right - size.width),
+        _within(labelAt.dy, bounds.top, bounds.bottom - size.height),
       );
       for (final nudge in const [
         Offset.zero, Offset(0, -8), Offset(0, 8), Offset(-16, 0), //
@@ -1680,7 +1739,7 @@ class ChartMapPainter extends CustomPainter {
         final rect = at & size;
         if (fits(rect)) {
           taken.add(rect);
-          painter.paint(canvas, at);
+          _haloText(canvas, text, style, at, width: 1.8 / (_k * _zoom));
           break;
         }
       }
@@ -1691,23 +1750,22 @@ class ChartMapPainter extends CustomPainter {
     for (var i = 0; i < geography.zones.length; i++) {
       final zone = geography.zones[i];
       final named = reachedZones.contains(i);
-      final painter = _layout(
-        zone.name(language).toUpperCase(),
-        TextStyle(
-          fontFamily: InkFonts.system,
-          fontSize: 5 * t,
-          letterSpacing: 1.2 * t,
-          color: palette.label.withValues(alpha: named ? 0.95 : 0.5),
-        ),
+      final text = zone.name(language).toUpperCase();
+      final style = TextStyle(
+        fontFamily: InkFonts.system,
+        fontSize: _font(5, minRegionPx),
+        letterSpacing: 1.2 * t,
+        color: palette.label.withValues(alpha: named ? 1 : 0.6),
       );
+      final painter = _layout(text, style);
       final size = Size(painter.width, painter.height);
       if (!_vis(zone.labelAt)) continue;
       final zoneAt = _at(zone.labelAt);
       final base = Offset(
-        (zoneAt.dx - size.width / 2)
-            .clamp(bounds.left, bounds.right - size.width),
-        (zoneAt.dy - size.height / 2)
-            .clamp(bounds.top, bounds.bottom - size.height),
+        _within(
+            zoneAt.dx - size.width / 2, bounds.left, bounds.right - size.width),
+        _within(zoneAt.dy - size.height / 2, bounds.top,
+            bounds.bottom - size.height),
       );
       for (final nudge in const [
         Offset.zero, Offset(0, -7), Offset(0, 7), Offset(-12, 0),
@@ -1716,7 +1774,8 @@ class ChartMapPainter extends CustomPainter {
         final rect = (base + nudge) & size;
         if (fits(rect)) {
           taken.add(rect);
-          painter.paint(canvas, base + nudge);
+          _haloText(canvas, text, style, base + nudge,
+              width: 1.8 / (_k * _zoom));
           break;
         }
       }
@@ -1784,8 +1843,8 @@ class ChartMapPainter extends CustomPainter {
       for (final (text, style) in lines) {
         final painter = _layout(text, style);
         final at = Offset(
-            (featureAt.dx - painter.width / 2)
-                .clamp(bounds.left, bounds.right - painter.width),
+            _within(featureAt.dx - painter.width / 2, bounds.left,
+                bounds.right - painter.width),
             y);
         final rect = at & Size(painter.width, painter.height);
         if (!fits(rect)) break;
@@ -1803,7 +1862,8 @@ class ChartMapPainter extends CustomPainter {
     canvas.clipRect(Offset.zero & size);
     final k = globe == null
         ? size.width / worldMapWidth
-        : math.min(size.width / worldMapWidth, sphereMaxScale);
+        : sphereScale ?? math.min(size.width / worldMapWidth, sphereMaxScale);
+    _k = k;
     canvas.scale(k);
     final whole = globe == null
         ? const Rect.fromLTWH(0, 0, worldMapWidth * 1.0, worldMapHeight * 1.0)
@@ -1959,8 +2019,8 @@ class ChartMapPainter extends CustomPainter {
         }
         final seed = chartSeed('${a.dx},${a.dy}-${b.dx},${b.dy}');
         final path = _line(windingRoad(a, b, seed: seed, amp: 0.12));
-        _road(canvas, path, palette.label.withValues(alpha: 0.9),
-            width: 0.7 * w, cased: true, dash: 3 * w, gap: 2.2 * w);
+        _road(canvas, path, palette.label.withValues(alpha: 0.95),
+            width: 0.85 * w, cased: true, dash: 3.4 * w, gap: 2.4 * w);
       }
     }
 
@@ -2093,11 +2153,11 @@ class ChartMapPainter extends CustomPainter {
               : chapterColor(b.chapter))
           .withValues(alpha: on ? 0.95 : 0.3);
       _road(canvas, path, colour,
-          width: 0.9 * w,
+          width: 1.5 * w,
           cased: !seaLeg,
           phase: -f * 1.3 * w,
-          dash: (seaLeg ? 2.4 : 3) * w,
-          gap: (seaLeg ? 1.8 : 2.2) * w);
+          dash: (seaLeg ? 3.2 : 4) * w,
+          gap: (seaLeg ? 2.2 : 2.6) * w);
     }
 
     // The places and their names.
@@ -2130,13 +2190,24 @@ class ChartMapPainter extends CustomPainter {
               ..strokeWidth = 0.4 * m);
       }
       if (isHere) {
+        // The party's place: a glow, a gold ring and a dark rim under it
+        // so it reads on any ground.
+        canvas.drawCircle(
+            p, 9 * m, Paint()..color = palette.mark.withValues(alpha: 0.2));
         canvas.drawCircle(
             p,
-            4.6 * m,
+            5.4 * m,
+            Paint()
+              ..color = const Color(0xFF17151B).withValues(alpha: 0.85)
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 3 * m);
+        canvas.drawCircle(
+            p,
+            5.4 * m,
             Paint()
               ..color = palette.mark
               ..style = PaintingStyle.stroke
-              ..strokeWidth = 1.4 * m);
+              ..strokeWidth = 1.7 * m);
       }
       if (l.id == selectedId && (reduceMotion || f % 4 < 3)) {
         canvas.drawCircle(

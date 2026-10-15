@@ -63,6 +63,32 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Go back inside',
     AppLanguage.fr: 'Rentrer',
   },
+  'journey_city_ways_one': {
+    AppLanguage.en: '1 way here · tap a pin or a row',
+    AppLanguage.fr: '1 chemin ici · touchez une épingle ou une ligne',
+  },
+  'journey_city_ways_many': {
+    AppLanguage.en: '{n} ways here · tap a pin or a row',
+    AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
+  },
+  'journey_city_walk_on': {
+    AppLanguage.en: 'Walk on',
+    AppLanguage.fr: 'Aller à'
+  },
+  'journey_city_districts': {
+    AppLanguage.en: 'The districts · tap one to go in',
+    AppLanguage.fr: 'Les quartiers · touchez-en un pour y entrer',
+  },
+  'journey_city_not_now': {
+    AppLanguage.en: 'Not now',
+    AppLanguage.fr: 'Pas maintenant',
+  },
+  'journey_tab_district': {
+    AppLanguage.en: 'District',
+    AppLanguage.fr: 'Quartier',
+  },
+  'journey_tab_town': {AppLanguage.en: 'Town', AppLanguage.fr: 'Ville'},
+  'journey_tab_world': {AppLanguage.en: 'World', AppLanguage.fr: 'Monde'},
   'journey_look_out': {
     AppLanguage.en: 'Look out at the land',
     AppLanguage.fr: 'Regarder le pays',
@@ -3981,6 +4007,38 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'town_materials': {AppLanguage.en: 'materials', AppLanguage.fr: 'matériaux'},
   'town_ready': {AppLanguage.en: 'Ready', AppLanguage.fr: 'Prêt'},
   'town_locked': {AppLanguage.en: 'Locked', AppLanguage.fr: 'Verrouillé'},
+  'town_limit_short': {AppLanguage.en: 'Limit', AppLanguage.fr: 'Limite'},
+  'town_slot_hint': {
+    AppLanguage.en: 'Built / limit',
+    AppLanguage.fr: 'Bâtis / limite',
+  },
+  'town_filter_ready': {AppLanguage.en: 'Ready', AppLanguage.fr: 'Prêts'},
+  'town_filter_affordable': {
+    AppLanguage.en: 'Can afford',
+    AppLanguage.fr: 'Abordables',
+  },
+  'town_filter_built': {AppLanguage.en: 'Built', AppLanguage.fr: 'Bâtis'},
+  'town_filter_empty': {
+    AppLanguage.en: 'Nothing matches these filters.',
+    AppLanguage.fr: 'Rien ne correspond à ces filtres.',
+  },
+  'town_filter_clear': {
+    AppLanguage.en: 'Show everything',
+    AppLanguage.fr: 'Tout afficher',
+  },
+  'works_chip_sea': {AppLanguage.en: 'Sea', AppLanguage.fr: 'Mer'},
+  'works_chip_company': {
+    AppLanguage.en: 'Company',
+    AppLanguage.fr: 'Compagnie',
+  },
+  'works_chip_workshops': {
+    AppLanguage.en: 'Workshops',
+    AppLanguage.fr: 'Ateliers',
+  },
+  'works_chip_greatWorks': {
+    AppLanguage.en: 'Great works',
+    AppLanguage.fr: 'Grands ouvrages',
+  },
   'town_limit_reached': {
     AppLanguage.en: 'Limit reached: {built} of {limit}',
     AppLanguage.fr: 'Limite atteinte : {built} sur {limit}',

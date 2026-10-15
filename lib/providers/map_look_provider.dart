@@ -101,10 +101,11 @@ final chartCalqueProvider =
 
 const String chartGlobePrefsKey = 'world_map_globe';
 
-/// Whether the Journey's world map is looked at as a sphere (v1.200);
-/// flat until the player asks, and the pick is kept.
+/// Whether the Journey's world map is looked at as a sphere (v1.200): the
+/// sphere until the player asks for the flat chart (v1.350: zooming out
+/// from the Journey lands on it), and the pick is kept.
 class ChartGlobeNotifier extends StateNotifier<bool> {
-  ChartGlobeNotifier() : super(false) {
+  ChartGlobeNotifier() : super(true) {
     _load();
   }
 

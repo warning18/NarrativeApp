@@ -9,6 +9,7 @@ import '../providers/camp_works_provider.dart';
 import '../screens/skills/skill_sheet.dart' show openCraft;
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
+import 'camp_build_tray.dart' show SlotChip, slotText;
 
 /// The building screen's list of houses (docs/proposals/building-screen.md):
 /// four sections read from [campWorksProvider], each house a card by state
@@ -28,8 +29,12 @@ class CampWorksList extends ConsumerWidget {
     required this.detailOf,
     required this.onSelect,
     required this.onBuild,
+    this.works,
     this.busy = false,
   });
+
+  /// The works to list (the tray's filtered ones); null lists them all.
+  final Map<WorkCategory, List<CampWork>>? works;
 
   /// The localised houses, every one (the locked included).
   final Map<String, dynamic> houses;
@@ -88,7 +93,8 @@ class CampWorksList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final works = ref.watch(campWorksProvider);
+    final Map<WorkCategory, List<CampWork>> works =
+        this.works ?? ref.watch(campWorksProvider);
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     return Column(
@@ -187,6 +193,11 @@ class CampWorksList extends ConsumerWidget {
                               fontWeight: FontWeight.w500,
                               color: locked ? ink.ash : null)),
                     ),
+                    if (slotText(work.limit.built, work.limit.limit)
+                        case final slot?) ...[
+                      const SizedBox(width: 8),
+                      SlotChip(key: Key('town_slot_$id'), text: slot),
+                    ],
                     const SizedBox(width: 8),
                     Flexible(
                       child: FittedBox(

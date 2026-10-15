@@ -123,7 +123,9 @@ void main() {
     expect(session.gold, 0);
     // No gold left: nothing more can go up, and the cards say what is
     // missing.
-    expect(find.byKey(const Key('town_build_add_floor')), findsNothing);
+    final floor = find.byKey(const Key('town_build_add_floor'));
+    await tester.ensureVisible(floor);
+    expect(tester.widget<FilledButton>(floor).onPressed, isNull);
     expect(find.textContaining('need'), findsWidgets);
     expect(tester.takeException(), isNull);
   });

@@ -15,11 +15,11 @@ import '../providers/game_db_providers.dart' show localizedDbProvider;
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
-import '../data/camp_works.dart' show WorkState, tierFirstChapter, workTierOf;
-import '../providers/camp_works_provider.dart';
+import '../data/camp_works.dart'
+    show WorkCategory, tierFirstChapter, workTierOf;
+import 'camp_build_tray.dart';
 import 'camp_works_list.dart';
 import 'cliff_town_view.dart';
-import '../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
 import 'immersive_notice.dart';
 import 'moments.dart';
 
@@ -51,6 +51,8 @@ class CampTownSection extends ConsumerStatefulWidget {
 class _CampTownSectionState extends ConsumerState<CampTownSection> {
   final _scroll = ScrollController();
   bool _showAdditions = false;
+  BuildFilter? _filter;
+  WorkCategory? _category;
   String? _selected;
   String? _log;
   int? _lastBuilt;
@@ -213,17 +215,6 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
     );
   }
 
-  /// Why town addition [id] can't go up any more ("Limit reached: 1 of
-  /// 1"), or null while there is room for another (townAdditionLimit).
-  String? _limitReason(String id, PlayerSession session) {
-    final limit = townAdditionLimitOf(id,
-        pieces: session.townPieces, houseCount: session.builtHouseIds.length);
-    if (!limit.atLimit) return null;
-    return tr(ref, 'town_limit_reached')
-        .replaceAll('{built}', '${limit.built}')
-        .replaceAll('{limit}', '${limit.limit}');
-  }
-
   Future<void> _buildAddition(TownAddition addition, CliffTown town) async {
     final before = ref.read(playerSessionProvider).townPieces.length;
     await ref
@@ -281,158 +272,6 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
 
     final screenHeight = MediaQuery.sizeOf(context).height;
     final townHeight = (screenHeight * 0.42).clamp(260.0, 420.0);
-
-    Widget card({
-      required String id,
-      required String name,
-      required String detail,
-      required TownFootprint footprint,
-      required int cost,
-      required bool isBuilt,
-      String? lockReason,
-      Map<String, int> materials = const {},
-      required VoidCallback onBuild,
-    }) {
-      final isSelected = id == selected;
-      // Gold, and the materials a house costs beside it (materials.dart).
-      final missing = missingMaterials(session.inventoryItemIds, materials);
-      final goldEnough = session.gold >= cost;
-      final affordable = goldEnough && missing.isEmpty;
-      final canBuild = !isBuilt && lockReason == null && affordable;
-      // What a house needs beside gold, as chips: held or missing.
-      final showMaterials = !isBuilt && materials.isNotEmpty;
-      // The card says at a glance where the house stands (v1.201): built,
-      // ready to go up, short of gold, or locked; then what it gives,
-      // its price, and the one thing to do about it.
-      final (String status, Color statusColour) = isBuilt
-          ? (tr(ref, 'house_built_prefix'), ink.heal)
-          : lockReason != null
-              ? (tr(ref, 'town_locked'), ink.ash)
-              : affordable
-                  ? (tr(ref, 'town_ready'), ink.gold)
-                  : goldEnough
-                      ? (
-                          '${tr(ref, 'town_need')} ${tr(ref, 'town_materials')}',
-                          ink.ember
-                        )
-                      : (
-                          '${tr(ref, 'town_need')} ${cost - session.gold} G',
-                          ink.ember
-                        );
-      Widget action;
-      if (isBuilt) {
-        action = Text(tr(ref, 'town_built_note'),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.labelSmall?.copyWith(color: ink.ash));
-      } else if (lockReason != null) {
-        action = Text(lockReason,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.labelSmall
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant));
-      } else {
-        action = FilledButton(
-          key: Key('town_build_$id'),
-          onPressed: canBuild ? onBuild : null,
-          style: FilledButton.styleFrom(
-            minimumSize: const Size.fromHeight(40),
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-          ),
-          child: Text(
-              affordable ? '${tr(ref, 'build_button')} · $cost G' : '$cost G'),
-        );
-      }
-      return GestureDetector(
-        key: Key('town_card_$id'),
-        onTap: () {
-          setState(() => _selected = id);
-          if (!isBuilt) _reveal(town, footprint);
-        },
-        child: Container(
-          width: 156,
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainer,
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(
-                color: isSelected && !isBuilt
-                    ? theme.colorScheme.primary
-                    : ink.seam),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // The status on its own line, so the name has the whole width
-              // of the card and never breaks inside a word.
-              Align(
-                alignment: Alignment.centerLeft,
-                child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: InkTag(label: status, color: statusColour)),
-              ),
-              const SizedBox(height: 4),
-              Text(name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium
-                      ?.copyWith(fontWeight: FontWeight.w500)),
-              const SizedBox(height: 4),
-              Expanded(
-                child: Text(detail,
-                    maxLines: showMaterials ? 2 : 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(color: ink.ash, height: 1.3)),
-              ),
-              if (showMaterials) ...[
-                const SizedBox(height: 4),
-                _MaterialChips(
-                  key: Key('town_materials_$id'),
-                  cost: materials,
-                  missing: missing,
-                  names: _itemNames(),
-                ),
-              ],
-              const SizedBox(height: 6),
-              action,
-            ],
-          ),
-        ),
-      );
-    }
-
-    final cards = _showAdditions
-        ? [
-            for (final addition in townAdditions)
-              card(
-                id: addition.id,
-                name: tr(ref, '${addition.id}_name'),
-                detail: tr(ref, '${addition.id}_desc'),
-                footprint: addition.footprint,
-                cost: addition.cost,
-                isBuilt: false,
-                lockReason: _limitReason(addition.id, session),
-                onBuild: () => _buildAddition(addition, town),
-              ),
-          ]
-        : const <Widget>[];
-
-    final orderedCards = _showAdditions
-        ? [
-            for (final a in townAdditions)
-              cards.firstWhere(
-                  (c) => (c.key as Key) == Key('town_card_${a.id}')),
-          ]
-        : const <Widget>[];
-    final works = ref.watch(campWorksProvider);
-    final readyCount = _showAdditions
-        ? townAdditions.where((a) => _limitReason(a.id, session) == null).length
-        : [
-            for (final list in works.values)
-              for (final w in list)
-                if (w.state == WorkState.buildable) w,
-          ].length;
 
     final selectedAvailable = isTownAddition(selected) || buildable(selected);
     // Where the outlined piece would go, said in words under the town.
@@ -512,130 +351,60 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
         ),
         TutorialTarget(
           id: 'camp.tray',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  ChoiceChip(
-                    key: const Key('town_tab_houses'),
-                    label: Text(tr(ref, 'houses_section')),
-                    selected: !_showAdditions,
-                    onSelected: (_) => setState(() {
-                      _showAdditions = false;
-                      _selected = null;
-                    }),
-                  ),
-                  const SizedBox(width: 8),
-                  ChoiceChip(
-                    key: const Key('town_tab_additions'),
-                    label: Text(tr(ref, 'town_additions_tab')),
-                    selected: _showAdditions,
-                    onSelected: (_) => setState(() {
-                      _showAdditions = true;
-                      _selected = null;
-                    }),
-                  ),
-                  const SizedBox(width: 8),
-                  // The purse and what it can raise now.
-                  Expanded(
-                    child: Text(
-                      '${session.gold} G · '
-                      '${tr(ref, 'town_ready_count').replaceAll('{n}', '$readyCount')}',
-                      key: const Key('town_purse'),
-                      textAlign: TextAlign.end,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                          color: readyCount > 0 ? ink.gold : ink.ash),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              if (_showAdditions)
-                SizedBox(
-                  height: 190,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: orderedCards.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 10),
-                    itemBuilder: (_, i) => orderedCards[i],
-                  ),
-                )
-              else
-                CampWorksList(
-                  houses: ref.watch(localizedDbProvider(housesSchema)).value ??
-                      widget.houses,
-                  shops: widget.shops,
-                  zones: widget.zones,
-                  itemNames: _itemNames(),
-                  companionNames: {
-                    for (final e in (ref
-                                .watch(localizedDbProvider(companionsSchema))
-                                .value ??
-                            const <String, dynamic>{})
-                        .entries)
-                      e.key: (e.value as Map?)?['companionName']?.toString() ??
-                          e.key,
-                  },
-                  selectedId: selected,
-                  detailOf: _houseDetail,
-                  onSelect: (id) {
-                    setState(() => _selected = id);
-                    _reveal(town, footprintOf(id));
-                  },
-                  onBuild: (id) => _buildHouse(id, town),
+          child: CampBuildTray(
+            showAdditions: _showAdditions,
+            onShowAdditions: (additions) => setState(() {
+              _showAdditions = additions;
+              _selected = null;
+            }),
+            filter: _filter,
+            onFilter: (f) => setState(() => _filter = f),
+            category: _category,
+            onCategory: (c) => setState(() => _category = c),
+            gold: session.gold,
+            selectedId: selected,
+            additions: [
+              for (final addition in townAdditions)
+                AdditionStatus(
+                  addition: addition,
+                  gold: session.gold,
+                  built: townPieceCount(session.townPieces, addition.id),
+                  limit: townAdditionLimit(addition.id,
+                      houseCount: session.builtHouseIds.length),
                 ),
             ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// The materials a house costs beside gold, each as its icon and the count
-/// ("2" held and enough, "1/2" short, in the ember colour when short).
-class _MaterialChips extends StatelessWidget {
-  const _MaterialChips({
-    super.key,
-    required this.cost,
-    required this.missing,
-    required this.names,
-  });
-
-  final Map<String, int> cost;
-  final Map<String, int> missing;
-  final Map<String, String> names;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final ink = InkColors.of(context);
-    return Wrap(
-      spacing: 6,
-      runSpacing: 2,
-      children: [
-        for (final e in cost.entries)
-          Tooltip(
-            message: names[e.key] ?? e.key,
-            child: Row(
-              key: Key('town_material_${e.key}'),
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ItemPixelIcon(e.key, 'Material', size: 18),
-                const SizedBox(width: 2),
-                Text(
-                  missing.containsKey(e.key)
-                      ? '${e.value - missing[e.key]!}/${e.value}'
-                      : '${e.value}',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                      color: missing.containsKey(e.key) ? ink.ember : ink.ash),
-                ),
-              ],
+            onSelectAddition: (id) {
+              setState(() => _selected = id);
+              _reveal(town, footprintOf(id));
+            },
+            onBuildAddition: (id) => _buildAddition(
+                townAdditions.firstWhere((a) => a.id == id), town),
+            houseList: (works) => CampWorksList(
+              works: works,
+              houses: ref.watch(localizedDbProvider(housesSchema)).value ??
+                  widget.houses,
+              shops: widget.shops,
+              zones: widget.zones,
+              itemNames: _itemNames(),
+              companionNames: {
+                for (final e in (ref
+                            .watch(localizedDbProvider(companionsSchema))
+                            .value ??
+                        const <String, dynamic>{})
+                    .entries)
+                  e.key:
+                      (e.value as Map?)?['companionName']?.toString() ?? e.key,
+              },
+              selectedId: selected,
+              detailOf: _houseDetail,
+              onSelect: (id) {
+                setState(() => _selected = id);
+                _reveal(town, footprintOf(id));
+              },
+              onBuild: (id) => _buildHouse(id, town),
             ),
           ),
+        ),
       ],
     );
   }
