@@ -11,7 +11,7 @@ This is the engine side of docs/proposals/detours-wave11.md (section 6 [C]), wit
 |---|---|
 | **A change of place** (D1) | A walk from one place to another, or between two districts of one city, rolls. A move between two scenes of the same place (location and district) holds nothing: no detour, no hunter, no familiar face. |
 | **Any scene, not only the spine** | The chapter is the one the party has reached, wherever the road starts: a spine beat, a town's scene or the camp. Before, only roads leaving one of the ~44 spine beats rolled. |
-| **Chapter 4** (D2) | The camp's trips roll as the story's roads do, and so do the Drowned Cloister's districts. Chapter 4 now gets 0.87 detours a run, against none before. |
+| **Chapter 4** (D2) | The camp's trips roll as the story's roads do, and so do the Drowned Cloister's districts. Its three places all land at the Drowned Stair: from the cove camp the trip is a voyage, but between the three it is a walk, and rolls. Chapter 4 now gets 0.90 detours a run in the simulator, against none before (the walk sails each place from the camp, so a player who walks between them meets more). |
 | **No detours in the last chapter** (D8) | Detours run from chapter 2 to `lastDetourChapter` (7). Hunters and familiar faces still come in chapter 8. |
 | **Set pieces** | A road into or out of a `noDetour` scene holds nothing and owes nothing. Before, set pieces were 83% of owed detours. |
 | **A crisis** (both scenes tense) | Holds nothing, but what it rolls is owed. It is paid on the next road at rest of the same chapter, after the cooldown, and lapses when the chapter ends. Before, 87% were paid a chapter or more later. |
@@ -67,18 +67,18 @@ The run prints this table, the scenes met and the transcript of run 0.
 
 | Chapter | Roads (any) | Detours a run | Runs with one | Written / drawn | Landmark met | Familiar faces | Hunters & temptations | Road events |
 |---|---|---|---|---|---|---|---|---|
-| 2 | 11.8 | 1.70 | 100% | 323 / 17 | 100% | 10.1% | 7.4% | 0.4% |
-| 3 | 13.6 | 1.99 | 100% | 348 / 50 | 100% | 16.2% | 8.0% | 3.5% |
-| 4 | 3.9 | 0.87 | 83% | 165 / 9 | 83% | 7.8% | 4.6% | 0.0% |
-| 5 | 4.0 | 0.91 | 91% | 182 / 0 | 91% | 0.0% | 3.3% | 15.1% |
-| 6 | 6.1 | 1.22 | 100% | 227 / 17 | 100% | 14.7% | 7.3% | 8.8% |
+| 2 | 12.1 | 1.79 | 100% | 341 / 17 | 100% | 10.3% | 6.5% | 0.8% |
+| 3 | 13.7 | 1.95 | 100% | 389 / 1 | 100% | 16.9% | 7.7% | 4.0% |
+| 4 | 4.0 | 0.90 | 84% | 180 / 0 | 84% | 6.0% | 4.3% | 0.0% |
+| 5 | 4.0 | 0.90 | 90% | 179 / 0 | 90% | 0.0% | 3.4% | 13.8% |
+| 6 | 6.1 | 1.25 | 100% | 248 / 1 | 100% | 11.9% | 7.3% | 10.4% |
 | 7 | 3.0 | 0 | 0% | – | 0% | – | – | – |
 | 8 | 3.0 | 0 | 0% | – | – | – | – | – |
 
-- **Per run:** 6.69 detours on average (median 7, max 12), against 3.43 before. Most of the rise is chapters 2 and 3, where the hub's errands cross a city's districts. Chapter 4 went from 0 to 0.87.
-- **Familiar faces:** 8.5% of all roads, against 32.6% of free roads before. They now share the cooldown with detours.
+- **Per run:** 6.78 detours on average (median 7, max 12), against 3.43 before. 36 scenes (#281 and #286): only 20 detours of 1,356 fell back to today's chain. Most of the rise is chapters 2 and 3, where the hub's errands cross a city's districts. Chapter 4 went from 0 to 0.90.
+- **Familiar faces:** 8.3% of all roads, against 32.6% of free roads before. They now share the cooldown with detours.
 - **No two in a row:** the test checks every road of every run.
-- **Chapter 4:** runs with no detour are the ones that never walked the Drowned Cloister's districts. Its other places are reached by sea.
+- **Chapter 4:** runs with no detour are the ones that never walked the Drowned Cloister's districts.
 
 ### Chapter 7 has no road at rest
 
