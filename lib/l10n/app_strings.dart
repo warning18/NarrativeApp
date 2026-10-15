@@ -63,6 +63,26 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Go back inside',
     AppLanguage.fr: 'Rentrer',
   },
+  'journey_city_ways_one': {
+    AppLanguage.en: '1 way here · tap a pin or a row',
+    AppLanguage.fr: '1 chemin ici · touchez une épingle ou une ligne',
+  },
+  'journey_city_ways_many': {
+    AppLanguage.en: '{n} ways here · tap a pin or a row',
+    AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
+  },
+  'journey_city_walk_on': {
+    AppLanguage.en: 'Walk on',
+    AppLanguage.fr: 'Aller à'
+  },
+  'journey_city_districts': {
+    AppLanguage.en: 'The districts · tap one to go in',
+    AppLanguage.fr: 'Les quartiers · touchez-en un pour y entrer',
+  },
+  'journey_city_not_now': {
+    AppLanguage.en: 'Not now',
+    AppLanguage.fr: 'Pas maintenant',
+  },
   'journey_tab_district': {
     AppLanguage.en: 'District',
     AppLanguage.fr: 'Quartier',

@@ -54,6 +54,7 @@ import '../widgets/journey_fx.dart';
 import '../widgets/journey_glyph.dart';
 import '../widgets/city_chart/city_chart.dart';
 import '../widgets/city_chart/city_chart_painter.dart';
+import '../widgets/city_chart/city_chart_view.dart';
 import '../widgets/city_plan_painter.dart';
 import '../widgets/journey_place.dart';
 import '../widgets/player_stats_bar.dart';
@@ -305,6 +306,78 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   CityChart? _cityChart;
   String _cityChartKey = '';
 
+  /// The district the map is framed on in a city drawn as board 15's chart
+  /// (null: the party's own), and a count that asks the chart to frame it
+  /// again.
+  String? _cityFocus;
+  int _cityFocusToken = 0;
+
+  CityChartText _cityText() => CityChartText(
+        wholeCity: tr(ref, 'city_whole'),
+        unexplored: tr(ref, 'city_unexplored'),
+        go: tr(ref, 'city_go'),
+        walk: tr(ref, 'city_walk'),
+        here: tr(ref, 'city_here'),
+        zoomIn: tr(ref, 'city_zoom_in'),
+        zoomOut: tr(ref, 'city_zoom_out'),
+        waysOne: tr(ref, 'city_ways_one'),
+        waysMany: tr(ref, 'city_ways_many'),
+        kinds: {
+          CityWayKind.quest: tr(ref, 'city_kind_quest'),
+          CityWayKind.fight: tr(ref, 'city_kind_fight'),
+          CityWayKind.check: tr(ref, 'city_kind_check'),
+          CityWayKind.shop: tr(ref, 'city_kind_shop'),
+          CityWayKind.road: tr(ref, 'city_kind_road'),
+        },
+      );
+
+  /// The town in view or the district (the chart frames it again).
+  void _setTown(bool town, {bool resetFocus = false}) {
+    setState(() {
+      _townView = town;
+      _cityFocusToken++;
+      if (resetFocus) _cityFocus = null;
+    });
+  }
+
+  /// A way's sheet (board 15): what it is and Go; the pin and the row open
+  /// the same.
+  void _openWay(int i, List<_Step> steps, bool french) {
+    setState(() => _selected = i);
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheet) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _StepDetail(
+                step: steps[i],
+                busy: _busy,
+                french: french,
+                isExcursion: false,
+                onGo: steps[i].locked
+                    ? null
+                    : () {
+                        Navigator.of(sheet).pop();
+                        _take(i, steps[i]);
+                      },
+              ),
+              TextButton(
+                key: const ValueKey('journey_city_not_now'),
+                onPressed: () => Navigator.of(sheet).pop(),
+                child: Text(tr(ref, 'journey_city_not_now')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   /// The scale of a pinch on the place's map (see _lookOut): the streets
   /// shrink under the fingers, and the chart opens where they were left.
   double _pinch = 1;
@@ -342,8 +415,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     }
     // From a district, the whole town comes first; the world after it.
     if (_canTown && !_townView) {
+      _setTown(true);
       setState(() {
-        _townView = true;
         _pinch = 1;
         _pinching = false;
       });
@@ -368,13 +441,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         if (_level != JourneyMapLevel.place) {
           _arriveAtStreets(town: false);
         } else if (_townView) {
-          setState(() => _townView = false);
+          _setTown(false, resetFocus: true);
+        } else {
+          // Already on a district: frame the party's own again.
+          setState(() => _cityFocus = null);
+          _setTown(false);
         }
       case _LevelTab.town:
         if (_level != JourneyMapLevel.place) {
           _arriveAtStreets();
         } else if (_canTown && !_townView) {
-          setState(() => _townView = true);
+          _setTown(true);
         }
       case _LevelTab.world:
         if (_level == JourneyMapLevel.place) {
@@ -399,6 +476,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       // Down from the world the town is met first (the ladder runs both
       // ways); a tab asks for the district itself.
       _townView = town && _canTown;
+      _cityFocusToken++;
+      if (!town) _cityFocus = null;
       _level = JourneyMapLevel.place;
       _lookedAt = null;
       _outside = _sceneInside;
@@ -925,13 +1004,33 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // The city's stored plan (Core's city_plans.json, board 15): the plan
     // the ways are laid on and the chart drawn under them.
     PlacePlan? cityPlan = plan;
+    final cityDistrictOf = <int, String>{};
+    final hereDistrictOf = ref.watch(partyDistrictProvider);
     CityChart? cityChart;
     Set<String>? foundDistricts;
     if (plan != null && hereLocation != null) {
       final record = ref.watch(cityPlanRecordsProvider).value?[hereLocation.id];
       if (record != null) {
         cityPlan = record;
-        final key = '${hereLocation.id}|$french';
+        // Each way is pinned in its district; one that leaves the city
+        // stands where the party does.
+        final ownDistrict = record.districts.containsKey(hereDistrictOf)
+            ? hereDistrictOf
+            : null;
+        for (var i = 0; i < rawSteps.length; i++) {
+          final d = districtOfStep[i];
+          final pinned = d != null && record.districts.containsKey(d)
+              ? d
+              : ownDistrict ?? record.districts.keys.first;
+          cityDistrictOf[i] = pinned;
+        }
+        final key = [
+          hereLocation.id,
+          french,
+          play.currentNodeId,
+          for (final e in cityDistrictOf.entries)
+            '${e.key}:${e.value}:${rawSteps[e.key].choice.nextId}',
+        ].join('|');
         if (key != _cityChartKey || _cityChart == null) {
           _cityChartKey = key;
           _cityChart = CityChart.fromRecord(
@@ -940,7 +1039,16 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
               for (final d in world.childrenOf(hereLocation.id))
                 if (d.level == GeoLevel.district) d.id: d.nameFor(french),
             },
-            ways: const [],
+            ways: [
+              for (final e in cityDistrictOf.entries)
+                CityWayInput(
+                  id: '${e.key}',
+                  districtId: e.value,
+                  kind: _cityWayKindOf(rawSteps[e.key].kind),
+                  name: rawSteps[e.key].label,
+                  sceneId: rawSteps[e.key].choice.nextId,
+                ),
+            ],
             french: french,
             name: hereLocation.nameFor(french),
           );
@@ -1068,6 +1176,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     _canTown = placeView?.plan != null && placeView?.room == null;
     if (!_canTown) _townView = false;
     final townView = _townView && _canTown;
+    // A city with Core's stored plan is drawn as board 15's district view
+    // (not in a detour, nor from inside a room).
+    final hostedCity =
+        cityChart != null && placeView?.room == null && !play.isInExcursion;
 
     // Where the party stands on the world (v1.245): a scene the story
     // carried it to without a walk (a fight lost, a roll failed, the travel
@@ -1181,6 +1293,90 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final travelsOn = travelsFromHere &&
         ref.watch(knownPlacesProvider).any((p) => p.id != node.id);
 
+    final levelTabs = _LevelTabs(
+      selected: _level != JourneyMapLevel.place
+          ? _LevelTab.world
+          : townView
+              ? _LevelTab.town
+              : _LevelTab.district,
+      townEnabled: _canTown || _level != JourneyMapLevel.place,
+      busy: _busy,
+      palette: palette,
+      onPick: _goLevel,
+    );
+    final cityView = hostedCity && !ended
+        ? _CityDistrictView(
+            chart: cityChart,
+            look: look,
+            explored: ref.watch(foundDistrictsProvider),
+            hereDistrict: ref.watch(partyDistrictProvider),
+            focus: townView
+                ? null
+                : _cityFocus ?? ref.watch(partyDistrictProvider),
+            focusToken: _cityFocusToken,
+            steps: steps,
+            districtOf: cityDistrictOf,
+            palette: palette,
+            text: _cityText(),
+            onFocus: (d) {
+              if (d == null) {
+                if (!_townView) _setTown(true);
+              } else if (_townView || _cityFocus != d) {
+                setState(() {
+                  _townView = false;
+                  _cityFocus = d;
+                });
+              }
+            },
+            onOpen: (i) => _openWay(i, steps, french),
+            onWalk: (d) {
+              setState(() => _cityFocus = d);
+              walkToDistrict(ref, d);
+              _setTown(false);
+            },
+            overlays: [
+              Positioned(
+                left: 8,
+                right: 56,
+                bottom: 8,
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: IgnorePointer(
+                    ignoring: MediaQuery.sizeOf(context).width >= 340,
+                    child: WeatherChip(
+                        palette: palette,
+                        compact: MediaQuery.sizeOf(context).width < 340),
+                  ),
+                ),
+              ),
+              if (townView)
+                Positioned(
+                  right: 8,
+                  bottom: 48,
+                  child: _MapButton(
+                    key: const Key('journey_town_zoom_in'),
+                    icon: Icons.add,
+                    tip: tr(ref, 'journey_tab_district'),
+                    palette: palette,
+                    onTap: _busy ? null : () => _goLevel(_LevelTab.district),
+                  ),
+                ),
+              Positioned(
+                right: 8,
+                bottom: 8,
+                child: _MapButton(
+                  key: const Key('journey_place_zoom_out'),
+                  icon: Icons.remove,
+                  tip: tr(ref, 'journey_look_out'),
+                  palette: palette,
+                  onTap: _busy ? null : () => _lookOut(),
+                ),
+              ),
+            ],
+            tabs: levelTabs,
+          )
+        : null;
+
     final map = ended
         ? _EndedPanel(
             title: tr(ref, 'the_end'),
@@ -1216,141 +1412,147 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   ],
                 );
               },
-              child: Stack(
-                fit: StackFit.passthrough,
-                children: [
-                  // A pinch in on the streets looks out at the land
-                  // (v1.201: the levels are zoomed between).
-                  GestureDetector(
-                    onScaleStart: (_) => _pinch = 1,
-                    onScaleUpdate: (d) {
-                      if (d.pointerCount > 1 && !_busy) {
-                        setState(() {
-                          _pinching = true;
-                          _pinch = d.scale.clamp(
-                              0.35, _sceneInside && _outside ? 1.6 : 1.0);
-                        });
-                      }
-                    },
-                    onScaleEnd: (_) {
-                      if (_pinching && _pinch < 0.8) {
-                        _lookOut(from: _pinch);
-                      } else if (_pinching &&
-                          _pinch > 1.2 &&
-                          _sceneInside &&
-                          _outside) {
-                        _goInside();
-                      } else if (_pinching) {
-                        setState(() {
-                          _pinch = 1;
-                          _pinching = false;
-                        });
-                      }
-                    },
-                    child: AnimatedBuilder(
-                      animation: _arrive,
-                      builder: (context, child) {
-                        final scale = _pinching
-                            ? _pinch
-                            : Tween<double>(begin: 0.55, end: 1.0).transform(
-                                Curves.easeOutCubic.transform(_arrive.value));
-                        return Transform.scale(
-                          scale: scale,
-                          alignment: Alignment.center,
-                          child: child,
-                        );
-                      },
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 280),
-                        child: _JourneyChart(
-                          key: _chartKey,
-                          // Looking out at the streets from inside, the
-                          // ways stay in the room.
-                          steps: _sceneInside && _outside ? const [] : steps,
-                          selected: _sceneInside && _outside ? null : _selected,
-                          hereName: hereName,
-                          youAreHere: tr(ref, 'journey_you_are_here'),
-                          leadsTo: tr(ref, 'journey_leads_to'),
-                          palette: palette,
-                          ink: look == MapLook.parchment
-                              ? InkColors.light
-                              : InkColors.dark,
-                          greyed: look == MapLook.shroud,
-                          terrainShift: _terrainShift,
-                          terrainSeed:
-                              7 + chapterOfNode(play.currentNodeId) * 13,
-                          onTap: _tap,
-                          stamp: _stamp,
-                          burn: _burn,
-                          unroll: _unroll,
-                          weather: journeyWeatherOf(sky?.kind, chapter),
-                          place: placeView,
-                          arriveFrom: _arriveFrom,
-                          townView: townView,
+              child: cityView ??
+                  Stack(
+                    fit: StackFit.passthrough,
+                    children: [
+                      // A pinch in on the streets looks out at the land
+                      // (v1.201: the levels are zoomed between).
+                      GestureDetector(
+                        onScaleStart: (_) => _pinch = 1,
+                        onScaleUpdate: (d) {
+                          if (d.pointerCount > 1 && !_busy) {
+                            setState(() {
+                              _pinching = true;
+                              _pinch = d.scale.clamp(
+                                  0.35, _sceneInside && _outside ? 1.6 : 1.0);
+                            });
+                          }
+                        },
+                        onScaleEnd: (_) {
+                          if (_pinching && _pinch < 0.8) {
+                            _lookOut(from: _pinch);
+                          } else if (_pinching &&
+                              _pinch > 1.2 &&
+                              _sceneInside &&
+                              _outside) {
+                            _goInside();
+                          } else if (_pinching) {
+                            setState(() {
+                              _pinch = 1;
+                              _pinching = false;
+                            });
+                          }
+                        },
+                        child: AnimatedBuilder(
+                          animation: _arrive,
+                          builder: (context, child) {
+                            final scale = _pinching
+                                ? _pinch
+                                : Tween<double>(begin: 0.55, end: 1.0)
+                                    .transform(Curves.easeOutCubic
+                                        .transform(_arrive.value));
+                            return Transform.scale(
+                              scale: scale,
+                              alignment: Alignment.center,
+                              child: child,
+                            );
+                          },
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 280),
+                            child: _JourneyChart(
+                              key: _chartKey,
+                              // Looking out at the streets from inside, the
+                              // ways stay in the room.
+                              steps:
+                                  _sceneInside && _outside ? const [] : steps,
+                              selected:
+                                  _sceneInside && _outside ? null : _selected,
+                              hereName: hereName,
+                              youAreHere: tr(ref, 'journey_you_are_here'),
+                              leadsTo: tr(ref, 'journey_leads_to'),
+                              palette: palette,
+                              ink: look == MapLook.parchment
+                                  ? InkColors.light
+                                  : InkColors.dark,
+                              greyed: look == MapLook.shroud,
+                              terrainShift: _terrainShift,
+                              terrainSeed:
+                                  7 + chapterOfNode(play.currentNodeId) * 13,
+                              onTap: _tap,
+                              stamp: _stamp,
+                              burn: _burn,
+                              unroll: _unroll,
+                              weather: journeyWeatherOf(sky?.kind, chapter),
+                              place: placeView,
+                              arriveFrom: _arriveFrom,
+                              townView: townView,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  // The sky over the party (v1.204).
-                  // Clear of the zoom buttons: a long line wraps, it is not
-                  // cut off under them.
-                  Positioned(
-                    left: 8,
-                    right: 56,
-                    bottom: 8,
-                    child: Align(
-                      alignment: Alignment.bottomLeft,
-                      // A narrow screen (320 px) has no room for the line
-                      // beside the zoom buttons: the icon, the line on a tap.
-                      child: IgnorePointer(
-                        // The full line is only to read: a mark under it takes
-                        // the tap (the icon alone, on a narrow screen, is a
-                        // button).
-                        ignoring: MediaQuery.sizeOf(context).width >= 340,
-                        child: WeatherChip(
+                      // The sky over the party (v1.204).
+                      // Clear of the zoom buttons: a long line wraps, it is not
+                      // cut off under them.
+                      Positioned(
+                        left: 8,
+                        right: 56,
+                        bottom: 8,
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          // A narrow screen (320 px) has no room for the line
+                          // beside the zoom buttons: the icon, the line on a tap.
+                          child: IgnorePointer(
+                            // The full line is only to read: a mark under it takes
+                            // the tap (the icon alone, on a narrow screen, is a
+                            // button).
+                            ignoring: MediaQuery.sizeOf(context).width >= 340,
+                            child: WeatherChip(
+                                palette: palette,
+                                compact:
+                                    MediaQuery.sizeOf(context).width < 340),
+                          ),
+                        ),
+                      ),
+                      if (_sceneInside && _outside)
+                        Positioned(
+                          right: 8,
+                          bottom: 56,
+                          child: _MapButton(
+                            key: const Key('journey_go_inside'),
+                            icon: Icons.add,
+                            tip: tr(ref, 'journey_go_inside'),
                             palette: palette,
-                            compact: MediaQuery.sizeOf(context).width < 340),
+                            onTap: _busy ? null : _goInside,
+                          ),
+                        ),
+                      if (townView)
+                        Positioned(
+                          right: 8,
+                          bottom: 48,
+                          child: _MapButton(
+                            key: const Key('journey_town_zoom_in'),
+                            icon: Icons.add,
+                            tip: tr(ref, 'journey_tab_district'),
+                            palette: palette,
+                            onTap: _busy
+                                ? null
+                                : () => _goLevel(_LevelTab.district),
+                          ),
+                        ),
+                      Positioned(
+                        right: 8,
+                        bottom: 8,
+                        child: _MapButton(
+                          key: const Key('journey_place_zoom_out'),
+                          icon: Icons.remove,
+                          tip: tr(ref, 'journey_look_out'),
+                          palette: palette,
+                          onTap: _busy ? null : () => _lookOut(),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                  if (_sceneInside && _outside)
-                    Positioned(
-                      right: 8,
-                      bottom: 56,
-                      child: _MapButton(
-                        key: const Key('journey_go_inside'),
-                        icon: Icons.add,
-                        tip: tr(ref, 'journey_go_inside'),
-                        palette: palette,
-                        onTap: _busy ? null : _goInside,
-                      ),
-                    ),
-                  if (townView)
-                    Positioned(
-                      right: 8,
-                      bottom: 48,
-                      child: _MapButton(
-                        key: const Key('journey_town_zoom_in'),
-                        icon: Icons.add,
-                        tip: tr(ref, 'journey_tab_district'),
-                        palette: palette,
-                        onTap:
-                            _busy ? null : () => _goLevel(_LevelTab.district),
-                      ),
-                    ),
-                  Positioned(
-                    right: 8,
-                    bottom: 8,
-                    child: _MapButton(
-                      key: const Key('journey_place_zoom_out'),
-                      icon: Icons.remove,
-                      tip: tr(ref, 'journey_look_out'),
-                      palette: palette,
-                      onTap: _busy ? null : () => _lookOut(),
-                    ),
-                  ),
-                ],
-              ),
             ),
           );
 
@@ -1462,24 +1664,14 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   // The level tabs under the map (v1.350), not
                                   // over it: a mark scrolled to the foot would
                                   // sit under them.
-                                  if (!ended)
+                                  if (!ended &&
+                                      !(cityView != null &&
+                                          _level == JourneyMapLevel.place))
                                     Padding(
                                       padding: const EdgeInsets.only(top: 6),
                                       child: Align(
                                         alignment: Alignment.centerLeft,
-                                        child: _LevelTabs(
-                                          selected:
-                                              _level != JourneyMapLevel.place
-                                                  ? _LevelTab.world
-                                                  : townView
-                                                      ? _LevelTab.town
-                                                      : _LevelTab.district,
-                                          townEnabled: _canTown ||
-                                              _level != JourneyMapLevel.place,
-                                          busy: _busy,
-                                          palette: palette,
-                                          onPick: _goLevel,
-                                        ),
+                                        child: levelTabs,
                                       ),
                                     ),
                                 ],
@@ -1533,41 +1725,47 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                               if (index >= 0) _take(index, steps[index]);
                             },
                           ),
-                        const SizedBox(height: 10),
-                        TutorialTarget(
-                          id: 'journey.pick',
-                          // A fixed height (v1.210): a way picked, or a
-                          // place looked at, fills the panel without
-                          // changing the map's height, so no mark moves.
-                          child: SizedBox(
-                            height: math.min(
-                                124.0, math.max(104.0, area.maxHeight * 0.26)),
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints(
-                                    maxHeight: math.min(
-                                        124.0,
-                                        math.max(
-                                            104.0, area.maxHeight * 0.26))),
-                                child: _level == JourneyMapLevel.place
-                                    ? _StepDetail(
-                                        step: selected,
-                                        busy: _busy,
-                                        french: french,
-                                        isExcursion: play.isInExcursion,
-                                        onGo: selected == null
-                                            ? null
-                                            : () => _take(_selected!, selected),
-                                      )
-                                    : _LookedAtPanel(
-                                        landmark: _lookedAt,
-                                        language: language,
-                                      ),
+                        // The ways are rows under the map in a city drawn
+                        // as board 15's chart: no panel under them.
+                        if (!(cityView != null &&
+                            _level == JourneyMapLevel.place)) ...[
+                          const SizedBox(height: 10),
+                          TutorialTarget(
+                            id: 'journey.pick',
+                            // A fixed height (v1.210): a way picked, or a
+                            // place looked at, fills the panel without
+                            // changing the map's height, so no mark moves.
+                            child: SizedBox(
+                              height: math.min(124.0,
+                                  math.max(104.0, area.maxHeight * 0.26)),
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                      maxHeight: math.min(
+                                          124.0,
+                                          math.max(
+                                              104.0, area.maxHeight * 0.26))),
+                                  child: _level == JourneyMapLevel.place
+                                      ? _StepDetail(
+                                          step: selected,
+                                          busy: _busy,
+                                          french: french,
+                                          isExcursion: play.isInExcursion,
+                                          onGo: selected == null
+                                              ? null
+                                              : () =>
+                                                  _take(_selected!, selected),
+                                        )
+                                      : _LookedAtPanel(
+                                          landmark: _lookedAt,
+                                          language: language,
+                                        ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                        ],
                       ],
                     ],
                   );
@@ -4322,6 +4520,291 @@ class _LevelTabs extends ConsumerWidget {
           tab(_LevelTab.world, tr(ref, 'journey_tab_world')),
         ],
       ),
+    );
+  }
+}
+
+CityWayKind _cityWayKindOf(JourneyStepKind kind) => switch (kind) {
+      JourneyStepKind.fight => CityWayKind.fight,
+      JourneyStepKind.check || JourneyStepKind.challenge => CityWayKind.check,
+      JourneyStepKind.shop => CityWayKind.shop,
+      JourneyStepKind.quest || JourneyStepKind.mainQuest => CityWayKind.quest,
+      _ => CityWayKind.road,
+    };
+
+/// The district of a city, as board 15 draws it (v1.355): the chart framed
+/// on the district with a pin on the building of each way (numbered), and
+/// under it the ways as numbered rows and "Walk on" chips to the other
+/// districts; zoomed out, the whole town with its districts as rows. A pin
+/// or a row opens the way's sheet.
+class _CityDistrictView extends ConsumerWidget {
+  const _CityDistrictView({
+    required this.chart,
+    required this.look,
+    required this.explored,
+    required this.hereDistrict,
+    required this.focus,
+    required this.focusToken,
+    required this.steps,
+    required this.districtOf,
+    required this.palette,
+    required this.text,
+    required this.onFocus,
+    required this.onOpen,
+    required this.onWalk,
+    required this.overlays,
+    required this.tabs,
+  });
+
+  final CityChart chart;
+  final MapLook look;
+  final Set<String>? explored;
+  final String? hereDistrict;
+
+  /// The district in view; null the whole town.
+  final String? focus;
+  final int focusToken;
+  final List<_Step> steps;
+
+  /// The district each step's pin stands in (a step that leaves the city
+  /// stands where the party does).
+  final Map<int, String> districtOf;
+  final ChartPalette palette;
+  final CityChartText text;
+  final void Function(String? districtId) onFocus;
+  final void Function(int step) onOpen;
+  final void Function(String districtId) onWalk;
+  final List<Widget> overlays;
+  final Widget tabs;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    // The rows sit on the page, not on the chart: the page's own colours.
+    final ink = InkColors.of(context);
+    final pagePalette = ChartPalette.of(theme.brightness == Brightness.dark
+        ? MapLook.night
+        : MapLook.parchment);
+    // Each way's number: its place among its district's ways.
+    final numbers = <String, int>{};
+    final byDistrict = <String, List<int>>{};
+    for (var i = 0; i < steps.length; i++) {
+      final d = districtOf[i];
+      if (d == null) continue;
+      final list = byDistrict.putIfAbsent(d, () => []);
+      list.add(i);
+      numbers['$i'] = list.length;
+    }
+    final shown = focus == null ? const <int>[] : byDistrict[focus] ?? const [];
+    final others = [
+      for (final d in chart.districts)
+        if (d.id != focus) d,
+    ];
+
+    Widget kindDisc(_Step s, {double size = 30}) {
+      final colour = s.locked
+          ? ink.ash
+          : _colorFor(s.kind, ink, pagePalette, greyed: false);
+      return Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: colour.withValues(alpha: 0.16),
+          border: Border.all(color: colour, width: 1.5),
+        ),
+        child: Icon(_iconFor(s.kind), size: size * 0.55, color: colour),
+      );
+    }
+
+    Widget numberDot(int n) => Container(
+          width: 20,
+          height: 20,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(shape: BoxShape.circle, color: ink.gold),
+          child: Text('$n',
+              style: TextStyle(
+                  fontFamily: InkFonts.system,
+                  fontSize: 11,
+                  height: 1,
+                  color: const Color(0xFF17151B))),
+        );
+
+    final rows = <Widget>[];
+    if (focus != null) {
+      final n = shown.length;
+      rows.add(Padding(
+        padding: const EdgeInsets.only(top: 8, bottom: 4),
+        child: Text(
+          (n == 1
+                  ? tr(ref, 'journey_city_ways_one')
+                  : tr(ref, 'journey_city_ways_many').replaceAll('{n}', '$n'))
+              .toUpperCase(),
+          style: theme.textTheme.labelSmall
+              ?.copyWith(color: ink.ash, letterSpacing: 0.8),
+        ),
+      ));
+      for (final i in shown) {
+        final s = steps[i];
+        final way = chart.ways.where((w) => w.id == '$i').firstOrNull;
+        final building = way == null ? '' : chart.buildingOf(way)?.name ?? '';
+        final target = building == s.label ? '' : building;
+        rows.add(InkWell(
+          key: ValueKey('journey_city_row_$i'),
+          onTap: () => onOpen(i),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 7),
+            decoration:
+                BoxDecoration(border: Border(top: BorderSide(color: ink.seam))),
+            child: Row(children: [
+              numberDot(numbers['$i']!),
+              const SizedBox(width: 8),
+              kindDisc(s),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(s.label,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                        color: s.locked ? ink.ash : null, height: 1.2)),
+              ),
+              if (target.isNotEmpty) ...[
+                const SizedBox(width: 8),
+                Flexible(
+                  flex: 0,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 96),
+                    child: Text(target,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end,
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: ink.ash)),
+                  ),
+                ),
+              ],
+            ]),
+          ),
+        ));
+      }
+      if (others.isNotEmpty) {
+        rows.add(Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(tr(ref, 'journey_city_walk_on').toUpperCase(),
+                  style: theme.textTheme.labelSmall
+                      ?.copyWith(color: ink.ash, letterSpacing: 0.8)),
+              for (final d in others)
+                ActionChip(
+                  key: ValueKey('journey_city_walk_${d.id}'),
+                  visualDensity: VisualDensity.compact,
+                  label: Text(explored == null || explored!.contains(d.id)
+                      ? d.name
+                      : '? ${d.name}'),
+                  side: BorderSide(color: d.colour),
+                  onPressed: () => onWalk(d.id),
+                ),
+            ],
+          ),
+        ));
+      }
+    } else {
+      rows.add(Padding(
+        padding: const EdgeInsets.only(top: 8, bottom: 4),
+        child: Text(tr(ref, 'journey_city_districts').toUpperCase(),
+            style: theme.textTheme.labelSmall
+                ?.copyWith(color: ink.ash, letterSpacing: 0.8)),
+      ));
+      for (final d in chart.districts) {
+        final known = explored == null || explored!.contains(d.id);
+        final n = byDistrict[d.id]?.length ?? 0;
+        rows.add(InkWell(
+          key: ValueKey('journey_city_district_${d.id}'),
+          // A district not yet found is walked into (and so found), not
+          // looked at under its fog.
+          onTap: () => known ? onFocus(d.id) : onWalk(d.id),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            decoration:
+                BoxDecoration(border: Border(top: BorderSide(color: ink.seam))),
+            child: Row(children: [
+              Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: known ? d.colour : Colors.transparent,
+                      border: Border.all(color: d.colour))),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(known ? d.name : '?',
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(color: known ? null : ink.ash)),
+              ),
+              Text(
+                  d.id == hereDistrict
+                      ? text.here
+                      : !known
+                          ? text.unexplored
+                          : (n == 0 ? '' : text.ways(n)),
+                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+            ]),
+          ),
+        ));
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          flex: 11,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                CityChartView(
+                  key: const ValueKey('journey_city_chart'),
+                  chart: chart,
+                  look: look,
+                  text: text,
+                  explored: explored,
+                  hereDistrict: hereDistrict,
+                  focus: focus,
+                  focusToken: focusToken,
+                  controls: false,
+                  cards: false,
+                  numbers: numbers,
+                  onFocus: onFocus,
+                  onPick: (w) {
+                    final i = int.tryParse(w.id);
+                    if (i != null && i < steps.length) onOpen(i);
+                  },
+                  onPickFog: (_) {},
+                ),
+                ...overlays,
+              ],
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: Align(alignment: Alignment.centerLeft, child: tabs),
+        ),
+        Expanded(
+          flex: 9,
+          child: ListView(
+            key: const ValueKey('journey_city_list'),
+            padding: EdgeInsets.zero,
+            children: rows,
+          ),
+        ),
+      ],
     );
   }
 }
