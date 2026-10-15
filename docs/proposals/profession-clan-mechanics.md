@@ -206,7 +206,7 @@ A Crows loyalist pays a sixth of that. **The asymmetry is the relations map's**,
   - an **upgrade** raises its number (Brig-Born: a kill heals 10%).
   - Subclan gifts need the main specialisation first: they bend it, they don't replace it.
 - **At Sworn,** the main specialisation can rise to rank II, and the subclans' rarer second gifts open.
-- If you read it differently, for example as the main clan offering *a different* specialisation from its subclans', that is the main open question below.
+- **Confirmed by you:** *"Yes that's what I meant."*
 
 | Profession | Main clan | Main specialisation (from Friend) | Subclan variants and upgrades (from Trusted) |
 |---|---|---|---|
@@ -580,6 +580,6 @@ A clan the player keeps turning away from does not just fade.
    - the Tide as fallback.
 
    Which mechanics do you like, and which feel wrong?
-2. **Specialisations, main and sub:** the main clan offers the specialisation from Friend, and its subclans offer variants and upgrades from Trusted. Is that how you meant it?
+2. ~~Specialisations, main and sub~~: confirmed. The main clan offers the specialisation from Friend (19+); its friendly subclans offer variants and upgrades from Trusted (26+); rank II and the rarer gifts come at Sworn (61+).
 3. **The ranger's Trail is too strong** under the new rules. Trim it: five of six faces drawn per run, and the Verdict moved to the Crows' gift?
 4. **Still open from v5.1:** the cores' feel (Fury, Flurry, the Watchfire, now with no extra cost), standing × link, and the price of loyalty.
