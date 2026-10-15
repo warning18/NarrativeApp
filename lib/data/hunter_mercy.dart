@@ -80,9 +80,9 @@ int betrayalRoads(Random random) =>
     betrayalMinRoads + random.nextInt(betrayalMaxRoads - betrayalMinRoads + 1);
 
 const String _backstabEn =
-    '{name} steps out of cover behind you. You let them live. {cry}';
+    '{name} steps out of cover behind you. You spared that life, and this is what came of it. {cry}';
 const String _backstabFr =
-    '{name} surgit derrière vous. Vous l’aviez laissé en vie. {cry}';
+    '{name} surgit derrière vous. Vous aviez épargné cette vie ; voici ce qu’elle en a fait. {cry}';
 
 /// The betrayal's ambush: a one-node chain in which [enemyId] (from
 /// [enemies]) strikes first.
