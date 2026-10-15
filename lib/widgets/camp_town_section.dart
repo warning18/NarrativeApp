@@ -213,6 +213,17 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
     );
   }
 
+  /// Why town addition [id] can't go up any more ("Limit reached: 1 of
+  /// 1"), or null while there is room for another (townAdditionLimit).
+  String? _limitReason(String id, PlayerSession session) {
+    final limit = townAdditionLimitOf(id,
+        pieces: session.townPieces, houseCount: session.builtHouseIds.length);
+    if (!limit.atLimit) return null;
+    return tr(ref, 'town_limit_reached')
+        .replaceAll('{built}', '${limit.built}')
+        .replaceAll('{limit}', '${limit.limit}');
+  }
+
   Future<void> _buildAddition(TownAddition addition, CliffTown town) async {
     final before = ref.read(playerSessionProvider).townPieces.length;
     await ref
@@ -401,6 +412,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                 footprint: addition.footprint,
                 cost: addition.cost,
                 isBuilt: false,
+                lockReason: _limitReason(addition.id, session),
                 onBuild: () => _buildAddition(addition, town),
               ),
           ]
@@ -415,7 +427,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
         : const <Widget>[];
     final works = ref.watch(campWorksProvider);
     final readyCount = _showAdditions
-        ? townAdditions.length
+        ? townAdditions.where((a) => _limitReason(a.id, session) == null).length
         : [
             for (final list in works.values)
               for (final w in list)

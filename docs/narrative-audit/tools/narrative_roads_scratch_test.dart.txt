@@ -1,0 +1,89 @@
+// Scratch (not committed): replay each audited run's roads with the real rules.
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:narrative_data_app/data/chapter_spine.dart';
+import 'package:narrative_data_app/data/geography.dart';
+import 'package:narrative_data_app/data/map_themes.dart';
+import 'package:narrative_data_app/data/place_pools.dart';
+import 'package:narrative_data_app/data/road_events.dart';
+import 'package:narrative_data_app/data/story_repository.dart';
+import 'package:narrative_data_app/data/sub_node_engine.dart';
+import 'package:narrative_data_app/models/story_node.dart';
+
+Map<String, dynamic> _t(String n) =>
+    jsonDecode(File('assets/gamedata/$n.json').readAsStringSync()) as Map<String, dynamic>;
+
+String kindOf(StoryNode n) {
+  final cs = n.choices;
+  if (cs.any((c) => (c.unlockQuestId ?? '').isNotEmpty)) return 'quest';
+  if (cs.any((c) => (c.unlockShopId ?? '').isNotEmpty)) return 'shop';
+  if (cs.any((c) => c.triggersCombat || c.triggerEnemyId != null || c.triggerEnemyIds.isNotEmpty)) return 'enemy';
+  if (cs.any((c) => c.healAmount > 0)) return 'rest';
+  if (cs.any((c) => c.goldMod > 0)) return 'treasure';
+  return 'generic';
+}
+
+void main() {
+  test('roads', () {
+    final raw = jsonDecode(File(StoryRepository.assetPath).readAsStringSync()) as Map<String, dynamic>;
+    final story = StoryData({for (final e in raw.entries) e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>)});
+    final geo = Geography.parse(geography: _t('geography'), biomes: _t('biomes'));
+    final pools = PlacePools.fromJson(_t('detours'));
+    final shops = _t('shops'), enemies = _t('enemies'), quests = _t('quests');
+    final runs = jsonDecode(File(Platform.environment['RUNS']!).readAsStringSync()) as List;
+    final out = <Map<String, dynamic>>[];
+    for (final r in runs) {
+      final choices = (r['choices'] as List).cast<String>();
+      final done = [for (final q in r['questRecords'] as List) if (q['to'] != null) q['id'] as String];
+      final unlockedShops = (r['shops'] as List).cast<String>();
+      var chapter = 0;
+      final trans = <Map<String, dynamic>>[];
+      var sinceDetour = 99;
+      for (var i = 0; i < choices.length; i++) {
+        final p = choices[i].split('|');
+        final from = p[0], to = p[1];
+        final fn = story.nodeFor(from), tn = story.nodeFor(to);
+        final spine = chapterForNode(from);
+        chapter = spine ?? chapter;
+        final locF = geo.locationOfNode(fn), locT = geo.locationOfNode(tn);
+        final travels = geo.travelsBetween(story, from, to);
+        final atRest = SubNodeEngine.detourAllowedBetweenScenes(fn, tn, chapter: chapter);
+        final t = <String, dynamic>{'i': i, 'from': from, 'to': to, 'ch': chapter, 'locFrom': locF?.id, 'locTo': locT?.id, 'travels': travels, 'spine': spine != null, 'atRest': atRest, 'mood': fn?.mood, 'ui': fn?.uiTheme};
+        if (from == to || tn == null) { continue; }
+        RoadEventKind? ev;
+        if (travels && chapter >= 2) {
+          final biome = geo.roadBiome(story, from, to);
+          ev = roadEventFor(story: story, fromNodeId: from, toNodeId: to, historyLength: i, chapter: chapter, hazardShare: hazardShareFor(biome), world: geo);
+        }
+        t['roadEvent'] = ev?.name;
+        if (spine != null && spine >= 2 && atRest && ev == null) {
+          final rnd = Random((r['seed'] as int) * 31 + i);
+          final theme = mapThemeForUiTheme(fn?.uiTheme);
+          final chain = placeChainOf(geo, fn?.location);
+          final biomeId = placeBiomeOf(geo, fn?.location);
+          final flavor = pools.flavorAt(chain: chain, biomeId: biomeId, theme: theme, chapter: chapter, mood: fn?.mood);
+          final res = SubNodeEngine.maybeGenerate(random: rnd, chapter: chapter, shops: shops, enemies: enemies, quests: quests,
+              unlockedShopIds: unlockedShops, unlockedEnemyIds: const [], unlockedQuestIds: const [], completedQuestIds: done,
+              theme: theme, flavor: flavor, alignmentLabel: r['alignment'] >= 20 ? 'Good' : (r['alignment'] <= -20 ? 'Evil' : 'Neutral'));
+          if (res != null) {
+            final tense = SubNodeEngine.tenseMoods.contains(fn?.mood);
+            String level(String kind) {
+              for (final id in chain) { if ((pools.places[id]?[kind] ?? []).any((l) => l.fits(chapter: chapter, tense: tense))) return 'place:$id'; }
+              if ((pools.biomes[biomeId]?[kind] ?? []).any((l) => l.fits(chapter: chapter, tense: tense))) return 'biome:$biomeId';
+              if ((pools.themes[theme.name]?[kind] ?? []).any((l) => l.fits(chapter: chapter, tense: tense))) return 'theme:${theme.name}';
+              return 'dart:${theme.name}';
+            }
+            t['detour'] = [for (final n in res) {'kind': kindOf(n), 'level': level(kindOf(n)), 'text': n.description, 'hunt': SubNodeEngine.isHuntTrail(n), 'foes': [for (final c in n.choices) if (c.triggerEnemyId != null) c.triggerEnemyId, for (final c in n.choices) ...c.triggerEnemyIds], 'shop': [for (final c in n.choices) if ((c.unlockShopId ?? '').isNotEmpty) c.unlockShopId], 'quest': [for (final c in n.choices) if ((c.unlockQuestId ?? '').isNotEmpty) c.unlockQuestId], 'btn': [for (final c in n.choices) c.text]}];
+            t['sinceDetour'] = sinceDetour; sinceDetour = 0;
+          }
+        }
+        if (t['detour'] == null && travels) sinceDetour++;
+        trans.add(t);
+      }
+      out.add({'run': r['run'], 'trans': trans});
+    }
+    File(Platform.environment['ROADS_OUT']!).writeAsStringSync(jsonEncode(out));
+  }, timeout: const Timeout(Duration(minutes: 20)));
+}
