@@ -25,29 +25,32 @@ import 'expedition_kinds.dart';
 import 'expedition_steps.dart';
 import 'sub_node_engine.dart';
 
-/// Where a scene happens: a biome of biomes.json, or a place of
-/// geography.json (the scene fits it and every place under it).
+/// Where a scene happens: biomes of biomes.json, or places of
+/// geography.json (the scene fits each and every place under it). Each of
+/// `biome` and `place` is one id or a list of them (v1.361).
 class DetourWhere {
-  const DetourWhere({this.biome = '', this.place = ''});
+  const DetourWhere({this.biomes = const [], this.places = const []});
 
   factory DetourWhere.fromJson(Object? raw) => raw is Map
-      ? DetourWhere(
-          biome: raw['biome']?.toString() ?? '',
-          place: raw['place']?.toString() ?? '',
-        )
+      ? DetourWhere(biomes: _ids(raw['biome']), places: _ids(raw['place']))
       : const DetourWhere();
 
-  final String biome;
-  final String place;
+  final List<String> biomes;
+  final List<String> places;
 
-  bool get isEmpty => biome.isEmpty && place.isEmpty;
+  bool get isEmpty => biomes.isEmpty && places.isEmpty;
 
   /// Whether a road through [biomeId], at the places [chain] (the most
   /// specific first, see placeChainOf), is here.
   bool fits({String? biomeId, List<String> chain = const []}) =>
-      (biome.isNotEmpty && biome == biomeId) ||
-      (place.isNotEmpty && chain.contains(place));
+      biomes.contains(biomeId) || places.any(chain.contains);
 }
+
+/// One id, or a list of them, as a list ('' and nulls left out).
+List<String> _ids(Object? raw) => [
+      for (final id in raw is List ? raw : [raw])
+        if (id != null && id.toString().isNotEmpty) id.toString(),
+    ];
 
 /// One scene of detour_scenes.json.
 class DetourScene {
@@ -60,7 +63,7 @@ class DetourScene {
     this.where = const DetourWhere(),
     this.minChapter = 1,
     this.maxChapter = 99,
-    this.requiresFlag = '',
+    this.requiresFlags = const [],
     this.tags = const {},
     this.beats = const [],
   });
@@ -76,7 +79,9 @@ class DetourScene {
       where: DetourWhere.fromJson(raw['where']),
       minChapter: (raw['minChapter'] as num?)?.toInt() ?? 1,
       maxChapter: (raw['maxChapter'] as num?)?.toInt() ?? 99,
-      requiresFlag: requires is Map ? requires['flag']?.toString() ?? '' : '',
+      requiresFlags: requires is Map
+          ? [..._ids(requires['flag']), ..._ids(requires['flags'])]
+          : const [],
       tags: {
         for (final tag in (raw['tags'] as List? ?? const [])) tag.toString(),
       },
@@ -98,8 +103,9 @@ class DetourScene {
   final int minChapter;
   final int maxChapter;
 
-  /// A flag the party must hold for the scene to open ('' for none).
-  final String requiresFlag;
+  /// The flags the party must all hold for the scene to open (`requires`:
+  /// `flag`, one or a list, and `flags`, a list; v1.361).
+  final List<String> requiresFlags;
   final Set<String> tags;
   final List<WrittenStep> beats;
 
@@ -130,7 +136,7 @@ class DetourScene {
   bool opensFor({required int chapter, required Set<String> flags}) =>
       chapter >= minChapter &&
       chapter <= maxChapter &&
-      (requiresFlag.isEmpty || flags.contains(requiresFlag));
+      requiresFlags.every(flags.contains);
 }
 
 const String detourLandmarkTag = 'landmark';

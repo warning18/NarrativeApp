@@ -38,6 +38,7 @@ This is the engine side of docs/proposals/detours-wave11.md (section 6 [C]), wit
   - its place (the road's destination and every place above it) or the road's biome;
   - a city scene only in the streets, a road scene only on roads;
   - never one met before (the met scenes are saved with the session).
+- **The file's shape (v1.361):** `where.biome` and `where.place` each take one id or a list. `requires` takes `flag` (one or a list) and `flags` (a list), and the scene needs them all.
 - **How it is drawn:** by length, with about 30% one beat, 45% two, and 25% three or four. A length with no scene that fits gives its share to the others.
 - **With no scene that fits:** today's chain, worded from the pools of where the road leads.
 - **A scene plays as an excursion**, beat after beat:
