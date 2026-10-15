@@ -57,6 +57,20 @@
           "en": "The queue moves a wagon-length, then stops, then moves; each move is greeted with a small cheer.",
           "fr": "La file avance d’une longueur de chariot, puis s’arrête, puis avance ; chaque avancée est saluée d’un petit hourra."
         }
+      ],
+      "treasure": [
+        {
+          "en": "A merchant’s strongbox has been left under the gate-bench, lid dented, lock sprung by someone in a hurry.",
+          "fr": "Le coffret d’un marchand a été laissé sous le banc de la porte, couvercle cabossé, serrure forcée par quelqu’un de pressé."
+        },
+        {
+          "en": "A coin purse hangs from a cart’s tailboard, forgotten by a driver who has long since gone through.",
+          "fr": "Une bourse pend à la ridelle d’une charrette, oubliée par un conducteur passé depuis longtemps."
+        },
+        {
+          "en": "The gate-sergeant’s table has a drawer ajar, and in it the morning’s confiscations, uncounted.",
+          "fr": "Le tiroir de la table du sergent de la porte est entrouvert, et il contient les confiscations du matin, non comptées."
+        }
       ]
     },
     "saltmouth_tern_row": {
@@ -115,13 +129,27 @@
           "en": "A tide-woman sings the names of the lost in a low voice, one for each boat that goes out.",
           "fr": "Une femme de la marée chante à voix basse les noms des disparus, un par bateau qui s’en va."
         }
+      ],
+      "treasure": [
+        {
+          "en": "A fisher’s tin box sits in a net-locker, lid wedged shut with a wad of oiled cloth.",
+          "fr": "Une boîte en fer-blanc de pêcheur repose dans un casier à filets, le couvercle coincé par un tampon de toile huilée."
+        },
+        {
+          "en": "Between two houses, a clay pot of savings has been pushed back into the wall, with a child’s mark on the lid.",
+          "fr": "Entre deux maisons, un pot d’argile plein d’économies a été enfoncé dans le mur, une marque d’enfant sur le couvercle."
+        },
+        {
+          "en": "A drying-rack drops a knotted rag at your feet, and in the knots, a few coins.",
+          "fr": "Un séchoir laisse tomber à vos pieds un chiffon noué, et dans les nœuds, quelques pièces."
+        }
       ]
     },
     "saltmouth_wharf": {
       "shop": [
         {
           "en": "A Crow tout sells a quiet route out of the harbor by the half-hour, and a longer one by the hour.",
-          "fr": "Un rabatteur des Corbeaux vend une route discrète hors du port à la demi-heure, et une plus longue à l’heure."
+          "fr": "Un rabatteur des Corneilles vend une route discrète hors du port à la demi-heure, et une plus longue à l’heure."
         },
         {
           "en": "A stall by the net-sheds sells pitch, spare cordage and a surprising selection of keys.",
@@ -172,6 +200,20 @@
         {
           "en": "Lantern light slides on the oily harbor and breaks into small, shifting coins.",
           "fr": "La lumière des lanternes glisse sur le port huileux et se brise en petites pièces mouvantes."
+        }
+      ],
+      "treasure": [
+        {
+          "en": "A split crate on the quay has spilled a handful of coins among the straw.",
+          "fr": "Une caisse éventrée sur le quai a répandu une poignée de pièces dans la paille."
+        },
+        {
+          "en": "A bollard’s rope is tied round a small waxed bag, and the bag is heavier than it looks.",
+          "fr": "La corde d’une bitte est nouée autour d’un petit sac ciré, plus lourd qu’il n’en a l’air."
+        },
+        {
+          "en": "A docker’s coat hangs on a crane post with a full pocket, and no docker in sight.",
+          "fr": "Le manteau d’un docker pend à un poteau de grue, la poche pleine, et aucun docker en vue."
         }
       ]
     },
@@ -231,6 +273,20 @@
           "en": "Hammers beat on iron in three different rhythms, and not one of them agrees.",
           "fr": "Des marteaux frappent le fer sur trois rythmes différents, et aucun ne s’accorde avec les autres."
         }
+      ],
+      "treasure": [
+        {
+          "en": "A shipwright’s toolbox lies open under a slip, a leather purse tucked in the tray with the adzes.",
+          "fr": "La caisse à outils d’un charpentier de marine est ouverte sous une cale, une bourse de cuir glissée dans le plateau avec les herminettes."
+        },
+        {
+          "en": "A gap in the hull-planking holds a rolled bundle of notes and silver, left by someone who meant to come back.",
+          "fr": "Un jour dans le bordé d’une coque contient un rouleau de billets et d’argent, laissé par quelqu’un qui comptait revenir."
+        },
+        {
+          "en": "A caulker’s mallet has a coin pressed into the pitch of its head, as a charm.",
+          "fr": "Le maillet d’un calfat a une pièce enfoncée dans la poix de sa tête, en guise de porte-bonheur."
+        }
       ]
     },
     "saltmouth_lantern_alleys": {
@@ -288,6 +344,20 @@
         {
           "en": "Someone behind a shutter is counting coins, slowly, and everyone in the alley can hear.",
           "fr": "Quelqu’un derrière un volet compte des pièces, lentement, et toute la ruelle l’entend."
+        }
+      ],
+      "treasure": [
+        {
+          "en": "A shuttered lamp hangs low enough to see a small bag tied behind its glass.",
+          "fr": "Une lampe voilée pend assez bas pour qu’on voie un petit sac noué derrière son verre."
+        },
+        {
+          "en": "In a doorway, a pickpocket’s discarded purse, emptied of everything but a single coin.",
+          "fr": "Dans une embrasure, la bourse jetée d’un coupe-bourse, vidée de tout sauf d’une pièce."
+        },
+        {
+          "en": "A lamplighter’s pole leans against a wall, and in its hollow end, a little roll of coin.",
+          "fr": "La perche d’un allumeur s’appuie contre un mur, et dans son bout creux, un petit rouleau de pièces."
         }
       ]
     },
@@ -347,6 +417,20 @@
           "en": "Someone is laughing too hard at a joke that was not very good, and everybody knows why.",
           "fr": "Quelqu’un rit trop fort à une plaisanterie pas très bonne, et tout le monde sait pourquoi."
         }
+      ],
+      "treasure": [
+        {
+          "en": "A table has been left with a stake in the middle, the hands long since folded and the players gone.",
+          "fr": "Une table a été laissée avec une mise au milieu, les mains rabattues depuis longtemps et les joueurs partis."
+        },
+        {
+          "en": "A card-sharp’s sleeve has been left on a chair, with a fistful of coin sewn into the lining.",
+          "fr": "La manche d’un tricheur a été laissée sur une chaise, une poignée de pièces cousue dans la doublure."
+        },
+        {
+          "en": "Under the dealer’s stool, a tin of house winnings that nobody has asked for.",
+          "fr": "Sous le tabouret du donneur, une boîte de gains de la maison que personne n’a réclamée."
+        }
       ]
     },
     "cove_camp": {
@@ -358,6 +442,24 @@
         {
           "en": "The sail-loft’s door is open, and a woman inside trades patches for stories.",
           "fr": "La porte de la voilerie est ouverte, et une femme à l’intérieur échange des pièces contre des histoires."
+        },
+        {
+          "en": "A tinker has laid out a tray of buttons, awls and fish-hooks on an upturned barrel and will take any trade.",
+          "fr": "Un rétameur a étalé un plateau de boutons, de poinçons et d’hameçons sur un tonneau renversé et acceptera n’importe quel troc."
+        },
+        {
+          "en": "The camp’s cook sells hot flatbread over the fire for a coin a piece, no questions about the flour.",
+          "fr": "Le cuisinier du camp vend du pain plat chaud sur le feu, une pièce l’un, sans questions sur la farine."
+        },
+        {
+          "en": "A boat-builder is clearing out his bench and will part with a good plane for half what it is worth.",
+          "fr": "Un charpentier de barques vide son établi et se séparera d’un bon rabot pour la moitié de sa valeur.",
+          "minChapter": 4
+        },
+        {
+          "en": "A trader with a Host badge sets out surplus mail and canteens, in no hurry for custom.",
+          "fr": "Un marchand portant l’insigne de l’Ost étale du surplus de mailles et de gourdes, sans hâte d’être servi.",
+          "minChapter": 6
         }
       ],
       "enemy": [
@@ -380,6 +482,24 @@
         {
           "en": "A child from the sail-loft asks whether you will find a lost needle, and will not say why it matters.",
           "fr": "Un enfant de la voilerie demande si vous voulez retrouver une aiguille perdue, et ne dit pas pourquoi cela compte."
+        },
+        {
+          "en": "A sentry asks you to carry a message to the far end of the beach and not to read it on the way.",
+          "fr": "Une sentinelle vous demande de porter un message à l’autre bout de la plage et de ne pas le lire en chemin."
+        },
+        {
+          "en": "An old rope-maker wants her best coil found: it went out with the last boat, and she wants to know where.",
+          "fr": "Une vieille cordière veut qu’on retrouve sa meilleure corde : elle est partie avec le dernier bateau, et elle veut savoir où."
+        },
+        {
+          "en": "The camp’s healer has a list of herbs and no one fit to fetch them.",
+          "fr": "La guérisseuse du camp a une liste d’herbes et personne en état d’aller les chercher.",
+          "minChapter": 4
+        },
+        {
+          "en": "A lieutenant of the Host has a job that cannot be given to anyone in his own company.",
+          "fr": "Un lieutenant de l’Ost a une tâche qu’on ne peut confier à personne de sa compagnie.",
+          "minChapter": 6
         }
       ],
       "rest": [
@@ -390,6 +510,19 @@
         {
           "en": "The sail-loft’s upper floor is warm, and smells of tar and sleep.",
           "fr": "L’étage de la voilerie est tiède, et sent la poix et le sommeil."
+        },
+        {
+          "en": "A tent at the camp’s edge stands empty, its owner on watch, its blanket still warm.",
+          "fr": "Une tente au bord du camp est vide, son occupant de garde, sa couverture encore tiède."
+        },
+        {
+          "en": "Behind the palisade, a dry hollow among the dunes has been dug out and lined with sacking by someone who knew the winds.",
+          "fr": "Derrière la palissade, un creux sec dans les dunes a été aménagé et garni de toile par quelqu’un qui connaissait les vents."
+        },
+        {
+          "en": "The cookfire has burned down to a bed of coals, and a pot of something is still hot at its edge.",
+          "fr": "Le feu de cuisine s’est réduit à un lit de braises, et une marmite de quelque chose est encore chaude à son bord.",
+          "minChapter": 4
         }
       ],
       "generic": [
@@ -400,6 +533,52 @@
         {
           "en": "Someone is mending a sail by the fire, humming something that is not quite a hymn.",
           "fr": "Quelqu’un ravaude une voile près du feu en fredonnant quelque chose qui n’est pas tout à fait un hymne."
+        },
+        {
+          "en": "A dog trots down the beach with a dried fish and the dignity of a tax collector.",
+          "fr": "Un chien trotte sur la plage avec un poisson séché et la dignité d’un percepteur."
+        },
+        {
+          "en": "The tide is out, and the Eel lies on her side on the shingle like something asleep.",
+          "fr": "La marée est basse, et l’Anguille repose sur le flanc dans les galets comme une chose endormie."
+        },
+        {
+          "en": "Smoke from the camp’s fires goes up straight, and the sea beyond is flat as a plate.",
+          "fr": "La fumée des feux du camp monte droit, et la mer au-delà est plate comme une assiette."
+        },
+        {
+          "en": "Someone has chalked a tally on the palisade, one stroke for every ship that has not come back.",
+          "fr": "Quelqu’un a tracé à la craie un compte sur la palissade, un trait pour chaque navire qui n’est pas revenu.",
+          "minChapter": 5
+        },
+        {
+          "en": "The camp is quieter than usual. Even the children keep their voices low.",
+          "fr": "Le camp est plus silencieux qu’à l’ordinaire. Même les enfants gardent la voix basse.",
+          "minChapter": 7
+        }
+      ],
+      "treasure": [
+        {
+          "en": "A tin cup by the fire holds the coins a traveller left for the next one to find.",
+          "fr": "Une tasse en fer-blanc près du feu contient les pièces qu’un voyageur a laissées pour le suivant."
+        },
+        {
+          "en": "A loose plank in the rope-walk covers a small bundle, tied with a sailor’s knot.",
+          "fr": "Une planche mal fixée de la corderie recouvre un petit paquet, noué d’un nœud de marin."
+        },
+        {
+          "en": "A sailcloth satchel has washed up at the tideline, heavier than wet cloth should be.",
+          "fr": "Une besace de toile à voile s’est échouée sur la laisse de mer, plus lourde que ne le devrait du tissu mouillé."
+        },
+        {
+          "en": "The camp’s lost-and-found box has a purse in it that nobody has claimed, and a note: finders keepers after a week.",
+          "fr": "La boîte des objets perdus du camp contient une bourse que personne n’a réclamée, et un mot : au premier venu après une semaine.",
+          "minChapter": 4
+        },
+        {
+          "en": "A dead man’s kit lies under a tarpaulin at the camp’s edge, his name written inside the lid and a few coins beneath it.",
+          "fr": "Le barda d’un mort gît sous une bâche au bord du camp, son nom écrit sous le couvercle et quelques pièces dessous.",
+          "minChapter": 5
         }
       ]
     },
@@ -455,6 +634,20 @@
           "en": "Frost grows on the inside of the windows as well as the outside.",
           "fr": "Le givre pousse à l’intérieur des vitres comme à l’extérieur."
         }
+      ],
+      "treasure": [
+        {
+          "en": "A frozen purse lies in a drift by the well-head, split open by the frost.",
+          "fr": "Une bourse gelée gît dans une congère près de la margelle, fendue par le gel."
+        },
+        {
+          "en": "The well-keeper’s coat hangs on a nail with a lining that clinks.",
+          "fr": "Le manteau du gardien du puits pend à un clou, sa doublure tintant."
+        },
+        {
+          "en": "Under a stone by the bridge, a small leather bag, stiff as board, with something hard inside.",
+          "fr": "Sous une pierre près du pont, un petit sac de cuir, raide comme une planche, avec quelque chose de dur dedans."
+        }
       ]
     },
     "highhearth": {
@@ -508,6 +701,20 @@
         {
           "en": "The giants walk slowly between the houses, and the street makes room without being asked.",
           "fr": "Les géants marchent lentement entre les maisons, et la rue leur fait place sans qu’on le demande."
+        }
+      ],
+      "treasure": [
+        {
+          "en": "A carved stone in the giants’ hall has a hollow behind it, and in the hollow, silver.",
+          "fr": "Une pierre sculptée dans la salle des géants cache un creux, et dans le creux, de l’argent."
+        },
+        {
+          "en": "A hearth-ash bucket holds, under the grey, a gift left for whoever stirs it.",
+          "fr": "Un seau de cendre de foyer contient, sous le gris, un don laissé à qui le remuera."
+        },
+        {
+          "en": "A traveller’s pack is wedged in a stairwell, its owner long gone and its purse still tied.",
+          "fr": "Le sac d’un voyageur est coincé dans une cage d’escalier, son propriétaire parti depuis longtemps et sa bourse toujours nouée."
         }
       ]
     },
@@ -563,6 +770,20 @@
           "en": "A bell tolls the hour, and every door along the street closes at once.",
           "fr": "Une cloche sonne l’heure, et toutes les portes de la rue se ferment à la fois."
         }
+      ],
+      "treasure": [
+        {
+          "en": "A pilgrim’s alms-bowl has been left on a ledge, still holding the day’s coin.",
+          "fr": "Le bol à aumônes d’un pèlerin a été laissé sur une corniche, contenant encore l’argent du jour."
+        },
+        {
+          "en": "A reliquary lid lies off its case, and in the straw where the bone should be, a few coins.",
+          "fr": "Le couvercle d’un reliquaire gît à côté de son coffre, et dans la paille où l’os devrait être, quelques pièces."
+        },
+        {
+          "en": "A candle-seller’s tray is unattended, the takings under a cloth at the back.",
+          "fr": "Le plateau d’un marchand de cierges est sans surveillance, la recette sous un linge au fond."
+        }
       ]
     },
     "wracks_end": {
@@ -616,6 +837,20 @@
         {
           "en": "A bell buoy rings somewhere in the fog, out of tune.",
           "fr": "Une bouée à cloche sonne quelque part dans la brume, désaccordée."
+        }
+      ],
+      "treasure": [
+        {
+          "en": "A line of kelp-wrapped planks holds, between two, a salvager’s purse.",
+          "fr": "Une file de planches enveloppées de varech retient, entre deux, la bourse d’un récupérateur d’épaves."
+        },
+        {
+          "en": "A drowned chest is half-sunk in the shingle, its lock rusted through.",
+          "fr": "Un coffre noyé est à moitié enfoncé dans le galet, sa serrure rouillée de part en part."
+        },
+        {
+          "en": "A fisher’s float, split, has coins packed in it where the cork should be.",
+          "fr": "Un flotteur de pêcheur, fendu, est bourré de pièces là où devrait être le liège."
         }
       ]
     },
@@ -671,6 +906,20 @@
           "en": "The First Lantern burns above, and every step of the stair is lit by it, white.",
           "fr": "La Première Lanterne brûle au-dessus, et chaque marche de l’escalier est éclairée par elle, en blanc."
         }
+      ],
+      "treasure": [
+        {
+          "en": "The gate-queue has left a trail of dropped coin, and the guards, bored, have not bothered to sweep it.",
+          "fr": "La file de la porte a laissé une traînée de pièces tombées, et les gardes, ennuyés, n’ont pas pris la peine de les balayer."
+        },
+        {
+          "en": "A herald’s satchel hangs from a post with the seal broken, and nothing in it but coin.",
+          "fr": "La sacoche d’un héraut pend à un poteau, le sceau brisé, et rien dedans que des pièces."
+        },
+        {
+          "en": "A petitioner’s offering-box stands empty of petitioners, and not of coin.",
+          "fr": "La boîte d’offrande d’un solliciteur est vide de solliciteurs, mais pas de pièces."
+        }
       ]
     },
     "candlehold_lantern_hall": {
@@ -724,6 +973,20 @@
         {
           "en": "Footsteps cross the hall and the echo comes back a moment before the footfall.",
           "fr": "Des pas traversent la salle et l’écho revient un instant avant le pas."
+        }
+      ],
+      "treasure": [
+        {
+          "en": "A page’s dropped satchel lies on the marble, its flap open on a few coins.",
+          "fr": "La sacoche tombée d’un page gît sur le marbre, son rabat ouvert sur quelques pièces."
+        },
+        {
+          "en": "A lantern-oil cask in a side alcove has a false base, and a purse inside it.",
+          "fr": "Un tonneau d’huile de lanterne dans une alcôve latérale a un faux fond, et une bourse dedans."
+        },
+        {
+          "en": "The petition-desk has a drawer of fees paid and not yet entered in the ledger.",
+          "fr": "Le bureau des requêtes a un tiroir de droits payés et pas encore inscrits au registre."
         }
       ]
     },
@@ -779,6 +1042,20 @@
           "en": "Sails stretched as roofs ripple in the wind, and under each is a home.",
           "fr": "Des voiles tendues en guise de toits ondulent au vent, et sous chacune se trouve un foyer."
         }
+      ],
+      "treasure": [
+        {
+          "en": "An anchor’s shank is wrapped in a rag, and in the rag, the savings of a sailor who did not come ashore.",
+          "fr": "La tige d’une ancre est enveloppée d’un chiffon, et dans le chiffon, les économies d’un marin qui n’est pas revenu à terre."
+        },
+        {
+          "en": "A hull-house’s door-step has a loose slab, and under it a small iron box.",
+          "fr": "Le seuil d’une maison-coque a une dalle mal jointe, et dessous, une petite boîte en fer."
+        },
+        {
+          "en": "A sailmaker’s bench holds a thimble of coin on its shelf, set aside for the next stitch.",
+          "fr": "L’établi d’un voilier porte sur son étagère un dé à coudre plein de pièces, mis de côté pour le prochain point."
+        }
       ]
     },
     "greyhithe": {
@@ -832,6 +1109,20 @@
         {
           "en": "A lantern left on a gatepost burns on, steady, for no one.",
           "fr": "Une lanterne laissée sur un poteau de portail brûle toujours, stable, pour personne."
+        }
+      ],
+      "treasure": [
+        {
+          "en": "A fishwife’s basket sits on a wall, the fish gone and the takings still in the bottom.",
+          "fr": "Le panier d’une poissonnière repose sur un mur, les poissons partis et la recette toujours au fond."
+        },
+        {
+          "en": "Behind the chandlery, a rope coil hides a little cloth bag.",
+          "fr": "Derrière la chandellerie, un rouleau de corde cache un petit sac de toile."
+        },
+        {
+          "en": "A harbour-wall crevice holds a clay token and, behind it, a few coins in a twist of paper.",
+          "fr": "Une fissure du mur du port contient un jeton d’argile et, derrière, quelques pièces dans un papier tordu."
         }
       ]
     }

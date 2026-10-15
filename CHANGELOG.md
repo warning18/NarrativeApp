@@ -40,6 +40,15 @@ The professions' cores (v5.2 step 1, second half; docs/simulation/profession-cor
   - Claimant Morrow has 560 (was 398);
   - White Soldiers hit for 21 (was 19).
 
+## [1.353.0+389]
+
+Detours find something to pick up, wherever they are.
+
+### Changed
+- **Treasure in every place.** Every place pool of `detours.json` now has treasure lines, three each (five at the Cove camp), so a find in a city district no longer reads like a desert or a cliff.
+- **A deeper Cove camp.** The camp's pool gains 16 lines across its shop, quest, rest and generic kinds, some for later chapters, so the same six lines do not come round as often.
+- **Corneilles, not Corbeaux.** The French name of the Salt Crows is corrected where two lines still said Corbeaux; two French district blurbs name the Dernière Veille and the Corneilles correctly.
+
 ## [1.351.0+387]
 
 Shorter fights: the default fight-length rules and the Tide (v5.2 step 1, docs/simulation/fight-length.md).
