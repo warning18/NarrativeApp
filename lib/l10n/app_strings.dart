@@ -2101,6 +2101,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Level up! You are level {n}',
     AppLanguage.fr: 'Niveau supérieur\u00a0! Vous êtes niveau {n}',
   },
+  'reward_level_reached': {
+    AppLanguage.en: 'Level {n}!',
+    AppLanguage.fr: 'Niveau {n}\u00a0!',
+  },
   'reward_new': {AppLanguage.en: 'NEW', AppLanguage.fr: 'NOUVEAU'},
   'reward_joins': {AppLanguage.en: 'JOINS', AppLanguage.fr: 'REJOINT'},
   'reward_continue': {AppLanguage.en: 'Continue', AppLanguage.fr: 'Continuer'},
