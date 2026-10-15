@@ -1,0 +1,152 @@
+{
+  "berserker": {
+    "profession": "warrior",
+    "faction": "crows",
+    "name": "Berserker",
+    "name_fr": "Berserker",
+    "gift": "Your Attack faces become Pain strikes: they hit for double, and the life you pay feeds your Fury.",
+    "gift_fr": "Vos faces d’Attaque deviennent des coups de Douleur : ils frappent au double, et la vie que vous payez nourrit votre Fureur.",
+    "voice": "Everything has a price. Be sure you can afford yours.",
+    "voice_fr": "Tout a un prix. Assurez-vous de pouvoir payer le vôtre."
+  },
+  "briar_guard": {
+    "profession": "warrior",
+    "faction": "compact",
+    "name": "Briar Guard",
+    "name_fr": "Garde-Ronce",
+    "gift": "Blows your block and armour stop feed your Fury, and a part of each goes back at the one who threw it. You can no longer dodge.",
+    "gift_fr": "Les coups que votre parade et votre armure arrêtent nourrissent votre Fureur, et une part de chacun retourne à qui l’a porté. Vous ne pouvez plus esquiver.",
+    "voice": "We do not strike first. We make the other regret it.",
+    "voice_fr": "Nous ne frappons pas les premiers. Nous faisons regretter à l’autre d’avoir commencé."
+  },
+  "lantern_vanguard": {
+    "profession": "warrior",
+    "faction": "dominion",
+    "name": "Lantern Vanguard",
+    "name_fr": "Avant-garde de la Lanterne",
+    "gift": "Your heavy blow strikes harder, is Fire and Pierces. Against an Evil foe it also heals you.",
+    "gift_fr": "Votre coup lourd frappe plus fort, est de Feu et Perce. Contre un ennemi Mauvais, il vous soigne aussi.",
+    "voice": "One flame goes first. The rest of us follow its light.",
+    "voice_fr": "Une flamme passe la première. Nous suivons sa lumière."
+  },
+  "long_vigil": {
+    "profession": "cleric",
+    "faction": "vigil",
+    "name": "Long Vigil",
+    "name_fr": "Longue Veille",
+    "gift": "While you stand above half health, you slowly mend each round.",
+    "gift_fr": "Tant que vous restez au-dessus de la moitié de votre vie, vous vous refaites doucement à chaque tour.",
+    "voice": "The watch does not ask whether you are tired.",
+    "voice_fr": "La veille ne demande pas si la nuit pèse."
+  },
+  "ashen_hand": {
+    "profession": "cleric",
+    "faction": "penitents",
+    "name": "Ashen Hand",
+    "name_fr": "Main de cendre",
+    "gift": "When the fire burns, it also gives you 1 mana, mends you a little, and cleanses one affliction.",
+    "gift_fr": "Quand le feu brûle, il vous donne aussi 1 de mana, vous refait un peu, et purge une affliction.",
+    "voice": "What burned us can burn for others. That is the only mercy we know.",
+    "voice_fr": "Ce qui nous a brûlés peut brûler pour d’autres. C’est la seule pitié que nous connaissions."
+  },
+  "beacon": {
+    "profession": "cleric",
+    "faction": "dominion",
+    "name": "Beacon",
+    "name_fr": "Phare",
+    "gift": "The fire may hold all your health, and it burns every enemy at once, harder, in Light.",
+    "gift_fr": "Le feu peut contenir toute votre vie, et il brûle tous les ennemis à la fois, plus fort, en Lumière.",
+    "voice": "A lantern lights one door. A beacon lights the coast.",
+    "voice_fr": "Une lanterne éclaire une porte. Un phare éclaire la côte."
+  },
+  "censer_mage": {
+    "profession": "mage",
+    "faction": "dominion",
+    "name": "Censer Mage",
+    "name_fr": "Mage à l’encensoir",
+    "gift": "Mana past full does not spill: it burns the enemy, in proportion to your strike.",
+    "gift_fr": "Le mana au-delà du plein ne se perd pas : il brûle l’ennemi, en proportion de votre frappe.",
+    "voice": "The censer swings. The smoke carries the verdict.",
+    "voice_fr": "L’encensoir oscille. La fumée porte le verdict."
+  },
+  "burden_bearer": {
+    "profession": "mage",
+    "faction": "penitents",
+    "name": "Burden-Bearer",
+    "name_fr": "Porte-Fardeau",
+    "gift": "A spell cast from a full Well hits harder.",
+    "gift_fr": "Un sort lancé d’un Puits plein frappe plus fort.",
+    "voice": "We carry it all the way. The blow is only where we put it down.",
+    "voice_fr": "Nous le portons jusqu’au bout. Le coup n’est que l’endroit où nous le posons."
+  },
+  "tempest_toll": {
+    "profession": "mage",
+    "faction": "crows",
+    "name": "Tempest Toll",
+    "name_fr": "Péage d’orage",
+    "gift": "Your spells take a share of their damage back as health, and Teleport Strike joins your offers.",
+    "gift_fr": "Vos sorts reprennent une part de leurs dégâts en vie, et la Frappe téléportée rejoint vos offres.",
+    "voice": "Storms are not free. We only make sure we are the ones who collect.",
+    "voice_fr": "Les orages ne sont pas gratuits. Nous veillons seulement à être ceux qui encaissent."
+  },
+  "fever_blade": {
+    "profession": "rogue",
+    "faction": "mire",
+    "name": "Fever Blade",
+    "name_fr": "Lame-fièvre",
+    "gift": "A critical hit leaves a lasting poison, the Rot, that stacks.",
+    "gift_fr": "Un coup critique laisse un poison durable, la Pourriture, qui s’accumule.",
+    "voice": "The fen is patient. So is the fever.",
+    "voice_fr": "Le marais est patient. La fièvre aussi."
+  },
+  "ledger_knife": {
+    "profession": "rogue",
+    "faction": "crows",
+    "name": "Ledger Knife",
+    "name_fr": "Couteau du registre",
+    "gift": "Each hit that is not critical raises the chance of the next. A critical resets it and hits for double.",
+    "gift_fr": "Chaque coup non critique augmente la chance du suivant. Un critique la remet à zéro et frappe au double.",
+    "voice": "Every miss is a line in the ledger. One day the sum comes due.",
+    "voice_fr": "Chaque raté est une ligne au registre. Un jour, la somme tombe due."
+  },
+  "relicbreaker": {
+    "profession": "rogue",
+    "faction": "penitents",
+    "name": "Relicbreaker",
+    "name_fr": "Brise-relique",
+    "gift": "Each critical hit gives you 1 mana. At 3, your next strike is sure to be critical, and spends it.",
+    "gift_fr": "Chaque coup critique vous donne 1 de mana. À 3, votre prochaine frappe est forcément critique, et le dépense.",
+    "voice": "We do not keep the relic. We keep what falls out when it breaks.",
+    "voice_fr": "Nous ne gardons pas la relique. Nous gardons ce qui tombe quand elle se brise."
+  },
+  "corsairs_eye": {
+    "profession": "ranger",
+    "faction": "crows",
+    "name": "Corsair’s Eye",
+    "name_fr": "L’Œil du corsaire",
+    "gift": "The Verdict, the last face of a run, counts double and Pierces.",
+    "gift_fr": "Le Verdict, dernière face d’une série, compte double et Perce.",
+    "voice": "One shot, one door. Make it the right one.",
+    "voice_fr": "Un tir, une porte. Choisissez la bonne."
+  },
+  "trapwright": {
+    "profession": "ranger",
+    "faction": "compact",
+    "name": "Trapwright",
+    "name_fr": "Forge-piège",
+    "gift": "The Verdict is a trap: it also stuns its target.",
+    "gift_fr": "Le Verdict est un piège : il étourdit aussi sa cible.",
+    "voice": "We do not chase. We build where the thing will walk.",
+    "voice_fr": "Nous ne poursuivons pas. Nous bâtissons là où la bête passera."
+  },
+  "fen_guide": {
+    "profession": "ranger",
+    "faction": "mire",
+    "name": "Fen Guide",
+    "name_fr": "Guide du marais",
+    "gift": "The first face of each run poisons its target.",
+    "gift_fr": "La première face de chaque série empoisonne sa cible.",
+    "voice": "Follow me, and step where I step. The fen will do the rest.",
+    "voice_fr": "Suivez-moi, et posez le pied où je pose le mien. Le marais fera le reste."
+  }
+}

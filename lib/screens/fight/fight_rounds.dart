@@ -204,10 +204,16 @@ extension _FightRounds on _FightScreenState {
       if (face == null || result == null) continue;
 
       final availableSkills = _skillsForFace(actor, face, skills);
-      final element = _elementFor(face, availableSkills);
+      // The Lantern Vanguard's heavy blow is Fire (specialisations.dart).
+      final element =
+          actor.isPlayer && _core.heavy && _core.has(Spec.lanternVanguard)
+              ? vanguardElement
+              : _elementFor(face, availableSkills);
       final isStrike = face.type == 'Attack' || face.type == 'Skill';
       final extras = result.extras;
-      final pierce = face.hasKeyword(FaceKeyword.pierce) || extras.pierces;
+      final pierce = face.hasKeyword(FaceKeyword.pierce) ||
+          extras.pierces ||
+          (actor.isPlayer && _core.piercing);
       final fxDelay = fxIndex++ * _fxStagger;
       var dealt = 0;
       var drainedFx = 0;
@@ -409,6 +415,9 @@ extension _FightRounds on _FightScreenState {
         if (wasAlive && !target.isAlive) {
           _lastKillWasCritical = result.isCritical;
         }
+        if (actor.isPlayer) {
+          _applySpecsOnHit(actor, target, landed, newEntries, lang);
+        }
         if (element != 'None' && landed > 0) {
           target.elementsHitThisRound.add(element);
           _reactOnHit(target, element, landed, newEntries, lang);
@@ -472,6 +481,10 @@ extension _FightRounds on _FightScreenState {
             maxHealth: actor.maxHealth, currentHealth: actor.currentHealth);
         if (cost > 0) {
           actor.currentHealth -= cost;
+          // The Berserker's life paid feeds Fury (specialisations.dart).
+          if (actor.isPlayer && _core.has(Spec.berserker)) {
+            _addFury(newEntries, lang);
+          }
           _fx(VfxStyle.drain, _memberCardKey(actor.id),
               delayMs: fxDelay + 250,
               text: '-$cost',
@@ -543,8 +556,10 @@ extension _FightRounds on _FightScreenState {
     }
 
     if (manaGained > 0) {
+      final overflow = _mana + manaGained - _maxMana;
       _mana = min(_maxMana, _mana + manaGained);
       ref.read(playerSessionProvider.notifier).setMana(_mana);
+      _censerBurn(overflow, newEntries, lang);
     }
 
     _noteGoalProgress(newEntries, lang);
@@ -1256,8 +1271,10 @@ extension _FightRounds on _FightScreenState {
       final mitigation = _mitigationFor(target, move.element, items);
       // A dodge evades the hit outright -- no damage, no status effect --
       // rather than just softening it further on top of block/armor/resist.
+      // The Briar Guard can't dodge (specialisations.dart).
       final wasDodged = _random.nextDouble() * 100 <
-          dodgeChanceFor(target.dexterity) + target.gear.dodgeChance;
+              dodgeChanceFor(target.dexterity) + target.gear.dodgeChance &&
+          !(target.isPlayer && _core.has(Spec.briarGuard));
       // A parry (v1.214) takes its share of the blow first.
       final parry = enemy.parryBlock;
       enemy.parryBlock = 0;
@@ -1268,6 +1285,12 @@ extension _FightRounds on _FightScreenState {
               parry: parry,
               block: target.block,
               mitigation: mitigation);
+      // The Briar Guard: what the guard stopped feeds Fury, and a part of
+      // it goes back (specialisations.dart).
+      final stopped = wasDodged ? 0 : moveDamage - damageTaken;
+      final briar = target.isPlayer && _core.has(Spec.briarGuard) && stopped > 0
+          ? briarReflect(stopped)
+          : 0;
       // The Watchfire takes the blow first.
       if (target.isPlayer && _core.fire > 0 && damageTaken > 0) {
         final soaked = min(_core.fire, damageTaken);
@@ -1339,6 +1362,15 @@ extension _FightRounds on _FightScreenState {
             target.isPlayer &&
             _core.core == ProfessionCore.fury) {
           _addFury(_log, lang);
+        }
+        if (briar > 0) {
+          _addFury(_log, lang);
+          enemy.currentHealth = max(0, enemy.currentHealth - briar);
+          _log.add(_LogEntry(
+              trFor(lang, 'spec_briar_log')
+                  .replaceAll('{name}', enemy.displayName)
+                  .replaceAll('{n}', '$briar'),
+              _LogKind.playerDamage));
         }
         if (damageTaken > 0) _momentum = momentumAfterHit(_momentum);
         if (damageTaken > 0) _plunderFrom(enemy, lang);

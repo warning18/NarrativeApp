@@ -24,7 +24,22 @@ enum JourneyMapLevel { place, land, world }
 /// closest, past which the streets are looked at.
 abstract final class JourneyWorldMapZoom {
   static const double land = 2.8;
+
+  /// The district step between the land and the streets (v1.350): the +
+  /// and − buttons stop on it, so a district chart (Core's data) has its
+  /// place on the ladder; until it lands it is a closer look at the land.
+  static const double district = 5;
   static const double max = 8;
+
+  /// The rungs the zoom buttons climb: the whole world, the land, the
+  /// district, the closest (past which the streets are looked at).
+  static const List<double> stops = [1, land, district, max];
+
+  /// The rung above [zoom] (the closest at the top), or the one below.
+  static double stepIn(double zoom) =>
+      stops.firstWhere((s) => s > zoom * 1.04, orElse: () => max);
+  static double stepOut(double zoom) =>
+      stops.lastWhere((s) => s < zoom / 1.04, orElse: () => 1);
 }
 
 class JourneyWorldMap extends ConsumerStatefulWidget {
@@ -220,14 +235,15 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   ChartGeography _geoOf(bool sphere) =>
       sphere ? chartOf(MapShape.story) : chartOf(ref.read(mapShapeProvider));
 
-  /// The widest the sphere's canvas is taken to be: on a wider box the
-  /// sphere stays this size (a ball of about 250 px at the first zoom)
-  /// instead of growing with the screen.
-  static const double sphereMaxWidth = 400;
+  /// The most chart units to canvas pixels the sphere is drawn at: on a big
+  /// screen the ball stops growing here.
+  static const double sphereMaxScale = 3.6;
 
-  /// Chart units to canvas pixels for the sphere in [box].
-  double _sphereK(Size box) =>
-      math.min(box.width, sphereMaxWidth) / worldMapWidth;
+  /// Chart units to canvas pixels for the sphere in [box]: the ball at the
+  /// first zoom fills the box's short side (v1.350; it was a 250 px ball,
+  /// small on a phone).
+  double _sphereK(Size box) => math.min(
+      box.shortestSide * 0.9 / (2 * GlobeView.baseRadius), sphereMaxScale);
 
   /// How close a place asked for is framed.
   static const double _focusZoom = 2.4;
@@ -379,8 +395,11 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     final g = _globe;
     if (g == null) return;
     if (factor > 1 && _intoPlace(Size.zero, sphere: true)) return;
-    _animateRadius(
-        GlobeView.baseRadius * (g.zoom * factor).clamp(1.0, _maxZoom));
+    _animateRadius(GlobeView.baseRadius *
+        (factor > 1
+                ? JourneyWorldMapZoom.stepIn(g.zoom)
+                : JourneyWorldMapZoom.stepOut(g.zoom))
+            .clamp(1.0, _maxZoom));
   }
 
   void _globeTap(Offset position, Size box) {
@@ -439,7 +458,10 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   void _zoom(double factor, Size box) {
     if (factor > 1 && _intoPlace(box, sphere: false)) return;
     final centre = Offset(box.width / 2, box.height / 2);
-    final target = (_settledScale * factor).clamp(1.0, _maxZoom);
+    final target = (factor > 1
+            ? JourneyWorldMapZoom.stepIn(_settledScale)
+            : JourneyWorldMapZoom.stepOut(_settledScale))
+        .clamp(1.0, _maxZoom);
     final inverse = Matrix4.inverted(_settled);
     final at = MatrixUtils.transformPoint(inverse, centre);
     _animateTo(_matrix(
@@ -532,7 +554,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
             heardOf: widget.heardOf,
             goalId: widget.goalId,
             globe: globe,
-            sphereMaxScale: sphereMaxWidth / worldMapWidth,
+            sphereScale: globe == null ? null : _sphereK(boxSize),
             zoomOf: () => globe?.zoom ?? _scale,
             fogOf: () => _reveal.value,
             view: _repaint,
@@ -566,7 +588,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                   palette: widget.palette,
                   day: day,
                   globe: globeView,
-                  sphereMaxScale: sphereMaxWidth / worldMapWidth,
+                  sphereScale: _sphereK(boxSize),
                   showOf: () =>
                       !weatherWorldOnly ||
                       (globeView?.zoom ?? 1) < JourneyWorldMapZoom.land,

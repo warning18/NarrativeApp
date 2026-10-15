@@ -13,19 +13,20 @@ import 'package:path_provider/path_provider.dart';
 import '../combat/combat_engine.dart'
     show chapterRewardMultiplier, isBossEnemy, scaledReward, zoneBossEnemyIds;
 import '../combat/gear_effects.dart';
+import '../combat/specialisations.dart' show SpecInfo, specInfosFrom;
 import '../combat/spells.dart';
 import '../data/autoplay_engine.dart';
 import '../data/camp_works.dart';
 import '../data/chapter_loop.dart';
 import '../data/alignment_events.dart'
     show hunterCooldownRolls, isHunterAmbushChain, maybeAlignmentEvent;
+import '../data/camp_state.dart' show landingPortIdFor;
 import '../data/chapter_spine.dart';
 import '../data/detour_pacing.dart';
 import '../data/detour_scenes.dart';
 import '../data/journey_rules.dart' show walkWatches;
 import '../data/recurring_encounters.dart'
     show markerFor, recurringBeatsOpen, recurringChance;
-import '../data/camp_state.dart' show landingPortIdFor;
 import '../data/factions.dart';
 import '../data/expedition_steps.dart';
 import '../data/perks.dart';
@@ -215,7 +216,12 @@ class _SimResult {
     this.housesBuilt = const {},
     this.roads = const [],
     this.transcript = const [],
+    this.specs = const [],
   });
+
+  /// The specialisations the character held at the end, in the order
+  /// taken (specialisations.dart).
+  final List<String> specs;
 
   final List<_SimStep> steps;
 
@@ -327,7 +333,17 @@ class _SimContext {
     this.writtenSteps = const {},
     this.detourScenes = const {},
     this.ports = const {},
+    this.startSpecs = const [],
+    this.specs = const {},
   });
+
+  /// specialisations.json parsed: what the clans offer (specialisations.dart).
+  final Map<String, SpecInfo> specs;
+
+  /// Specialisations the character holds from the start (to measure each
+  /// one, see specialisations_test.dart); those of another profession
+  /// play nothing.
+  final List<String> startSpecs;
 
   /// detour_scenes.json: the detours' written scenes (detour_scenes.dart).
   final Map<String, DetourScene> detourScenes;
@@ -400,6 +416,7 @@ class _SimContext {
         patrons: patrons,
         signs: signs,
         clans: clans,
+        specs: specs,
       );
 }
 
@@ -479,7 +496,7 @@ _SimResult _simulate(
       gameConfig: sim.gameConfig,
       dice: sim.dice,
       spells: sim.spells,
-    );
+    )..specIds = [...sim.startSpecs];
   }
 
   var currentId = StoryRepository.startNodeId;
@@ -569,7 +586,15 @@ _SimResult _simulate(
         historyLength: steps.length,
         salt: detourSalt + 7919);
     var hunter = '';
-    if (!taken && road.atRest && chapter >= SubNodeEngine.firstDetourChapter) {
+    final landmarkDue = landmarkDueOn(
+        pacing: pacing,
+        road: road,
+        scenes: sim?.detourScenes ?? const {},
+        flags: flags);
+    if (!taken &&
+        !landmarkDue &&
+        road.atRest &&
+        chapter >= SubNodeEngine.firstDetourChapter) {
       final event = maybeAlignmentEvent(
         alignmentScore: alignment,
         activeQuestIds: const [],
@@ -676,6 +701,7 @@ _SimResult _simulate(
       arrivals: Map.unmodifiable(arrivals),
       housesBuilt: Map.unmodifiable(housesBuilt),
       roads: List.unmodifiable(roads),
+      specs: List.unmodifiable(character?.specIds ?? const <String>[]),
       transcript: transcribe
           ? [
               for (final (i, step) in steps.indexed) ...[
@@ -1392,11 +1418,9 @@ _SimResult _simulate(
           choiceText: french ? 'Aller à : $name' : 'Go to $name',
         ));
         final arrival = arrivalNodeFor(next, visited);
-        // On foot, a road (D2: the camp's trips roll as the story's do);
-        // by sea, a voyage with nothing on the road.
-        if (landingPortIdFor(next.settlement, sim?.ports ?? const {}) == null) {
-          roadTurn(currentId, arrival, travels: true);
-        }
+        // A road (D2: the camp's trips roll as the story's do); by sea, its
+        // landing does (v1.361).
+        roadTurn(currentId, arrival, travels: true);
         currentId = arrival;
         visited.add(currentId);
         continue;
@@ -1438,11 +1462,10 @@ _SimResult _simulate(
           choiceText: french ? 'Retour au camp' : 'Back to the camp',
         ));
         tourPlaceId = null;
-        if (landingPortIdFor(node.settlement, sim?.ports ?? const {}) == null) {
-          roadTurn(currentId, campId!, travels: true);
-        }
         // A tour only ever starts from a camp.
-        currentId = campId!;
+        final camp = campId!;
+        roadTurn(currentId, camp, travels: true);
+        currentId = camp;
         visited.add(currentId);
         continue;
       }
@@ -1636,7 +1659,13 @@ _SimResult _simulate(
     }
     // What waits on the road there (v1.197).
     if (!choice.isEnding) {
-      final event = roadHazard(currentId, choice.nextId, step);
+      // A choice that sails there (its place has a landing of its own) has
+      // no road and no road event, only its landing.
+      final sails = choice.travels &&
+          landingPortIdFor(story.nodeFor(choice.travelPlaceId!)?.settlement,
+                  sim?.ports ?? const {}) !=
+              null;
+      final event = !sails && roadHazard(currentId, choice.nextId, step);
       if (!choice.opensCharacterCreation) {
         roadTurn(currentId, choice.nextId,
             travels: choice.travels, taken: event);
@@ -1725,6 +1754,7 @@ _SimContext _simContextOf(
   SimProgression progression = SimProgression.offers,
   bool clash = true,
   Set<String> clashOff = const {},
+  List<String> startSpecs = const [],
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
   final written = writtenStepsFrom(table('expedition_steps'));
@@ -1761,6 +1791,8 @@ _SimContext _simContextOf(
     houses: table('houses'),
     detourScenes: detourScenesFrom(table('detour_scenes')),
     ports: table('ports'),
+    startSpecs: startSpecs,
+    specs: specInfosFrom(table('specialisations')),
   );
 }
 
@@ -1824,6 +1856,7 @@ typedef SimRunSummary = ({
   Map<String, List<String>> questsStuck,
   List<SimRoad> roads,
   List<String> transcript,
+  List<String> specs,
 });
 
 /// Full playthroughs, one per entry of [plan] (a strategy and, optionally,
@@ -1842,8 +1875,10 @@ List<SimRunSummary> simulatePlaythroughs(
   SimCoverage? coverage,
   Set<String> clashOff = const {},
   bool transcripts = false,
+  List<String> startSpecs = const [],
 }) {
-  final sim = _simContextOf(tables, gameConfig, clashOff: clashOff);
+  final sim = _simContextOf(tables, gameConfig,
+      clashOff: clashOff, startSpecs: startSpecs);
   final enemies = tables['enemies'] ?? const {};
   final out = <SimRunSummary>[];
   for (var i = 0; i < plan.length; i++) {
@@ -1937,6 +1972,7 @@ List<SimRunSummary> simulatePlaythroughs(
       questsStuck: result.questsStuck,
       roads: result.roads,
       transcript: result.transcript,
+      specs: result.specs,
     ));
   }
   return out;

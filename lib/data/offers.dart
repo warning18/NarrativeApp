@@ -3,6 +3,8 @@ import 'dart:math';
 import '../combat/dice_faces.dart' show SkillRarity, skillRarity;
 import '../combat/spells.dart'
     show SpellSpec, canLearnSpell, spellbookSpellIdFor;
+import '../combat/specialisations.dart'
+    show SpecInfo, specsOfferedBy, tempestSkillId;
 import 'factions.dart';
 import 'perks.dart';
 import 'signs.dart';
@@ -71,10 +73,14 @@ const StandingTier ascensionMinTier = StandingTier.friend;
 /// Standing a sub-clan's skill and a secret need with the clan that offers
 /// them (v1.234).
 const StandingTier subclanMinTier = StandingTier.known;
+
+/// Standing a main clan's specialisation needs (v5.2: Friend, 19+).
+const StandingTier specMinTier = StandingTier.friend;
 const StandingTier secretMinTier = StandingTier.known;
 
 /// The weight of each kind of gift a clan may bring, among those it has.
 const Map<GiftKind, int> giftKindWeights = {
+  GiftKind.spec: 60,
   GiftKind.skill: 35,
   GiftKind.sign: 30,
   GiftKind.object: 20,
@@ -206,6 +212,10 @@ enum GiftKind {
 
   /// A perk rank (perks.dart), from the Wayfarer.
   perk,
+
+  /// A specialisation of the character's core (specialisations.dart): its
+  /// main clan's, from Friend, once.
+  spec,
 }
 
 GiftKind? giftKindNamed(String? name) =>
@@ -392,6 +402,7 @@ class OfferTables {
     this.skillTrees = const {},
     this.items = const {},
     this.spells = const {},
+    this.specs = const {},
   });
 
   final ClanData data;
@@ -400,6 +411,9 @@ class OfferTables {
   final Map<String, dynamic> skillTrees;
   final Map<String, dynamic> items;
   final Map<String, SpellSpec> spells;
+
+  /// specialisations.json parsed (specialisations.dart).
+  final Map<String, SpecInfo> specs;
 }
 
 /// Everything a draw reads about the character and the world. The tables
@@ -429,7 +443,13 @@ class OfferContext {
     this.swornBoonIds = const [],
     this.perkRanks = const {},
     this.luck = 0,
+    this.specs = const {},
+    this.heldSpecIds = const [],
   });
+
+  /// specialisations.json parsed, and the specialisations held.
+  final Map<String, SpecInfo> specs;
+  final List<String> heldSpecIds;
 
   final ClanData data;
   final PoliticsState politics;
@@ -517,6 +537,14 @@ List<String> offerableSkillsFor(String factionId, OfferContext c,
       }
       out.add(id);
     }
+  }
+  // The Tempest Toll: the Crows offer Teleport Strike (specialisations.dart).
+  if (c.specs['tempest_toll']?.factionId == factionId &&
+      c.heldSpecIds.contains('tempest_toll') &&
+      c.skills[tempestSkillId] is Map<String, dynamic> &&
+      !c.knownSkillIds.contains(tempestSkillId) &&
+      !out.contains(tempestSkillId)) {
+    out.add(tempestSkillId);
   }
   if (faction != null && faction.isClan && faction.lean != 0) {
     final ids = c.skills.keys.toList()..sort();
@@ -751,6 +779,18 @@ List<String> offerableTitlesFor(String factionId, OfferContext c) => [
         if (!c.heldTitleIds.contains(t.id)) t.id,
     ];
 
+/// The specialisations [factionId] can offer now: its own for the
+/// character's profession (specialisations.json), not held, once standing
+/// has reached [specMinTier].
+List<String> offerableSpecsFor(String factionId, OfferContext c) =>
+    c.tierOf(factionId).isAtLeast(specMinTier)
+        ? [
+            for (final info in specsOfferedBy(c.specs,
+                factionId: factionId, professionId: c.professionId))
+              if (!c.heldSpecIds.contains(info.id)) info.id,
+          ]
+        : const [];
+
 /// Whether [factionId] brings its Sworn boon: it is the faction sworn to,
 /// it has one, and it was never taken.
 bool swornBoonDue(String factionId, OfferContext c) =>
@@ -773,6 +813,7 @@ Map<GiftKind, int> availableGiftKinds(String factionId, OfferContext c,
   final accords = accordsFor(factionId, c);
   return {
     if (swornBoonDue(factionId, c)) GiftKind.sworn: 1,
+    if (offerableSpecsFor(factionId, c).isNotEmpty) GiftKind.spec: 1,
     if (skillOptions.isNotEmpty || accords.isNotEmpty)
       GiftKind.skill: skillOptions.length + accords.length,
     if (hasSign) GiftKind.sign: 1,
@@ -942,6 +983,12 @@ OfferGift? drawGift(String factionId, OfferContext c, Random random,
       }
       if (better) rarity = _better(rarity);
       return OfferGift(kind: GiftKind.sign, id: sign.id, rarity: rarity);
+    case GiftKind.spec:
+      final options = offerableSpecsFor(factionId, c);
+      return OfferGift(
+          kind: GiftKind.spec,
+          id: options[random.nextInt(options.length)],
+          rarity: better ? SignRarity.heroic : SignRarity.epic);
     case GiftKind.perk:
       return null;
   }
@@ -1457,6 +1504,8 @@ Suitor? preferredSuitor(
   int score(Suitor s) {
     final gift = s.gift;
     if (gift.kind == GiftKind.skill && fillsEmptyFace(gift.id)) return 100;
+    // A specialisation changes how the character fights: taken first.
+    if (gift.kind == GiftKind.spec) return 90;
     var score = gift.rarity.index * 10;
     if (gift.kind == GiftKind.sworn) score += 50;
     if (gift.kind == GiftKind.sign) {

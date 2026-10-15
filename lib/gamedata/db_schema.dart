@@ -3657,6 +3657,17 @@ final DbSchema detourScenesSchema = DbSchema(
   fields: [],
 );
 
+/// The main clans' specialisations (specialisations.dart): the words
+/// (Narrative's) and each one's profession and clan. Not one of
+/// [gameDbSchemas]: the rules are in Dart, the file only names them.
+final DbSchema specialisationsSchema = DbSchema(
+  id: 'specialisations',
+  label: 'Specialisations',
+  assetPath: 'assets/gamedata/specialisations.json',
+  primaryKeyField: 'id',
+  fields: [],
+);
+
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
   itemSetsSchema,

@@ -119,7 +119,14 @@ extension _FightActions on _FightScreenState {
     }
     final lang = ref.read(appLanguageProvider);
     final player = _party.firstWhere((m) => m.isPlayer);
-    final amount = _spellAmountNow(spell, items);
+    // The Burden-Bearer: a spell from a full Well hits harder
+    // (specialisations.dart).
+    final fullWell = spell.effect == SpellEffectKind.damage &&
+        _core.has(Spec.burdenBearer) &&
+        _mana >= _maxMana;
+    final amount = fullWell
+        ? (_spellAmountNow(spell, items) * burdenFullWellMultiplier).round()
+        : _spellAmountNow(spell, items);
     final status = spellStatusFor(spell, level: _playerLevel);
 
     final enemyTargets = <_EnemyMember>[];
@@ -189,6 +196,17 @@ extension _FightActions on _FightScreenState {
             power: spellPower(amount: damage, maxHealth: enemy.maxHealth));
         final wasAlive = enemy.isAlive;
         enemy.currentHealth = max(0, enemy.currentHealth - damage);
+        // The Tempest Toll: the spell takes back a share as health.
+        if (_core.has(Spec.tempestToll) && damage > 0) {
+          final toll = (damage * tempestLifeShare).round();
+          if (toll > 0) {
+            player.currentHealth =
+                min(player.maxHealth, player.currentHealth + toll);
+            entries.add(_LogEntry(
+                trFor(lang, 'spec_toll_log').replaceAll('{n}', '$toll'),
+                _LogKind.playerHeal));
+          }
+        }
         // A spell is one of the round's blows a Mirror can send back.
         _bestHitThisRound = max(_bestHitThisRound, damage);
         if (damage > 0) {

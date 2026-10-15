@@ -28,6 +28,7 @@ class CityChartPainter extends CustomPainter {
     this.goalWayId,
     this.selectedWayId,
     this.focusDistrict,
+    this.numbers = const {},
     this.pulse = 0,
   });
 
@@ -51,6 +52,9 @@ class CityChartPainter extends CustomPainter {
 
   /// The district being looked at: the others quieten.
   final String? focusDistrict;
+
+  /// A number on a way's pin, by way id (the host's list rows carry it).
+  final Map<String, int> numbers;
 
   /// 0 to 1, repeating: the party's mark breathing.
   final double pulse;
@@ -465,6 +469,21 @@ class CityChartPainter extends CustomPainter {
       canvas.translate(0, -16);
       paintWayPin(canvas, w.kind, d.colour, p,
           selected: selected, goal: w.id == goalWayId);
+      final n = numbers[w.id];
+      if (n != null) {
+        canvas.drawCircle(const Offset(9, -9), 6.5, Paint()..color = p.mark);
+        final tp = TextPainter(
+          text: TextSpan(
+              text: '$n',
+              style: TextStyle(
+                  fontFamily: InkFonts.system,
+                  fontSize: 9,
+                  height: 1,
+                  color: p.fog)),
+          textDirection: TextDirection.ltr,
+        )..layout();
+        tp.paint(canvas, Offset(9 - tp.width / 2, -9 - tp.height / 2));
+      }
       canvas.restore();
     }
   }
@@ -550,5 +569,6 @@ class CityChartPainter extends CustomPainter {
       old.goalWayId != goalWayId ||
       old.selectedWayId != selectedWayId ||
       old.focusDistrict != focusDistrict ||
+      old.numbers != numbers ||
       old.pulse != pulse;
 }

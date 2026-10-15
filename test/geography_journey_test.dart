@@ -10,6 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/providers/city_provider.dart'
+    show cityPlanRecordsProvider;
 import 'package:narrative_data_app/data/geography.dart';
 import 'package:narrative_data_app/data/road_events.dart';
 import 'package:narrative_data_app/data/world_map.dart';
@@ -96,7 +98,11 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
 
     await tester.pumpWidget(ProviderScope(
-      overrides: [geographyProvider.overrideWithValue(_world())],
+      overrides: [
+        geographyProvider.overrideWithValue(_world()),
+        // The generated plan under the marks, not the stored city chart.
+        cityPlanRecordsProvider.overrideWith((ref) async => const {}),
+      ],
       child: const MyApp(),
     ));
     await _settle(tester);

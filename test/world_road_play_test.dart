@@ -2,6 +2,8 @@
 // party where the quest starts, with no road walked after the voyage, and
 // a payment on the road (a shrine's offering) waits for a purse that holds
 // it, on the button and when taken from elsewhere.
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +16,7 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/aftermath_provider.dart';
 import 'package:narrative_data_app/providers/home_tab_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
+import 'package:narrative_data_app/providers/road_random_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/camp_screen.dart';
 import 'package:narrative_data_app/screens/story_player_screen.dart';
@@ -38,7 +41,10 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+    // The landing rolls as a road would (v1.361): a quiet one here.
+    await tester.pumpWidget(ProviderScope(
+        overrides: [roadRandomProvider.overrideWithValue(_QuietRoad.new)],
+        child: const MyApp()));
     await _settle(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
@@ -58,6 +64,13 @@ void main() {
           'provisions': 5,
           'flags': ['camp_founded'],
           'enemyKillCounts': <String, dynamic>{},
+          // The chapter's landmark met, a detour just behind: the landing
+          // holds nothing.
+          'detourPacing': {
+            'chapter': 5,
+            'cooldown': 1,
+            'met': ['bell_without_rope'],
+          },
         })));
     final play = container.read(storyPlayProvider.notifier);
     play.jumpTo('6002_camp');
@@ -69,7 +82,8 @@ void main() {
 
     // 1. "Sail for the Black Reliquary": the voyage (its days at sea) has
     // brought the party there. The quest's scene opens: no ration, no
-    // watch, nothing met on a road, no detour.
+    // watch, nothing met on a road; the landing, in the detours'
+    // cooldown, holds none.
     expect(find.byType(CampScreen), findsOneWidget);
     final camp = tester.element(find.byType(CampScreen));
     final sail = container
@@ -157,4 +171,14 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.pump(const Duration(seconds: 5));
   });
+}
+
+/// The road's other dice, all quiet: no hunter, no familiar face.
+class _QuietRoad implements Random {
+  @override
+  double nextDouble() => 0.999;
+  @override
+  int nextInt(int max) => max - 1;
+  @override
+  bool nextBool() => false;
 }

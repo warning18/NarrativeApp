@@ -63,6 +63,32 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Go back inside',
     AppLanguage.fr: 'Rentrer',
   },
+  'journey_city_ways_one': {
+    AppLanguage.en: '1 way here · tap a pin or a row',
+    AppLanguage.fr: '1 chemin ici · touchez une épingle ou une ligne',
+  },
+  'journey_city_ways_many': {
+    AppLanguage.en: '{n} ways here · tap a pin or a row',
+    AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
+  },
+  'journey_city_walk_on': {
+    AppLanguage.en: 'Walk on',
+    AppLanguage.fr: 'Aller à'
+  },
+  'journey_city_districts': {
+    AppLanguage.en: 'The districts · tap one to go in',
+    AppLanguage.fr: 'Les quartiers · touchez-en un pour y entrer',
+  },
+  'journey_city_not_now': {
+    AppLanguage.en: 'Not now',
+    AppLanguage.fr: 'Pas maintenant',
+  },
+  'journey_tab_district': {
+    AppLanguage.en: 'District',
+    AppLanguage.fr: 'Quartier',
+  },
+  'journey_tab_town': {AppLanguage.en: 'Town', AppLanguage.fr: 'Ville'},
+  'journey_tab_world': {AppLanguage.en: 'World', AppLanguage.fr: 'Monde'},
   'journey_look_out': {
     AppLanguage.en: 'Look out at the land',
     AppLanguage.fr: 'Regarder le pays',
@@ -3981,6 +4007,38 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'town_materials': {AppLanguage.en: 'materials', AppLanguage.fr: 'matériaux'},
   'town_ready': {AppLanguage.en: 'Ready', AppLanguage.fr: 'Prêt'},
   'town_locked': {AppLanguage.en: 'Locked', AppLanguage.fr: 'Verrouillé'},
+  'town_limit_short': {AppLanguage.en: 'Limit', AppLanguage.fr: 'Limite'},
+  'town_slot_hint': {
+    AppLanguage.en: 'Built / limit',
+    AppLanguage.fr: 'Bâtis / limite',
+  },
+  'town_filter_ready': {AppLanguage.en: 'Ready', AppLanguage.fr: 'Prêts'},
+  'town_filter_affordable': {
+    AppLanguage.en: 'Can afford',
+    AppLanguage.fr: 'Abordables',
+  },
+  'town_filter_built': {AppLanguage.en: 'Built', AppLanguage.fr: 'Bâtis'},
+  'town_filter_empty': {
+    AppLanguage.en: 'Nothing matches these filters.',
+    AppLanguage.fr: 'Rien ne correspond à ces filtres.',
+  },
+  'town_filter_clear': {
+    AppLanguage.en: 'Show everything',
+    AppLanguage.fr: 'Tout afficher',
+  },
+  'works_chip_sea': {AppLanguage.en: 'Sea', AppLanguage.fr: 'Mer'},
+  'works_chip_company': {
+    AppLanguage.en: 'Company',
+    AppLanguage.fr: 'Compagnie',
+  },
+  'works_chip_workshops': {
+    AppLanguage.en: 'Workshops',
+    AppLanguage.fr: 'Ateliers',
+  },
+  'works_chip_greatWorks': {
+    AppLanguage.en: 'Great works',
+    AppLanguage.fr: 'Grands ouvrages',
+  },
   'town_limit_reached': {
     AppLanguage.en: 'Limit reached: {built} of {limit}',
     AppLanguage.fr: 'Limite atteinte : {built} sur {limit}',
@@ -7527,6 +7585,41 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'watchfire_round_log': {
     AppLanguage.en: 'What is left of the Watchfire burns {name} for {n}.',
     AppLanguage.fr: 'Ce qui reste du Feu de veille brûle {name} de {n}.',
+  },
+  'spec_verdict_log': {
+    AppLanguage.en: 'The Verdict: the last face of the run strikes double.',
+    AppLanguage.fr: 'Le Verdict : la dernière face de la série frappe double.',
+  },
+  'spec_vanguard_heal_log': {
+    AppLanguage.en: 'The lantern\'s fire against the dark heals you {n} HP.',
+    AppLanguage.fr:
+        'Le feu de la lanterne contre les ténèbres vous rend {n} PV.',
+  },
+  'spec_rot_log': {
+    AppLanguage.en: 'The Rot spreads in {name}: {n} a turn.',
+    AppLanguage.fr: 'La Pourriture gagne {name} : {n} par tour.',
+  },
+  'spec_ashen_log': {
+    AppLanguage.en:
+        'The fire gives back: 1 mana, a little health, an affliction lifted.',
+    AppLanguage.fr:
+        'Le feu rend : 1 de mana, un peu de vie, une affliction levée.',
+  },
+  'spec_vigil_log': {
+    AppLanguage.en: 'The long vigil mends you {n} HP.',
+    AppLanguage.fr: 'La longue veille vous refait {n} PV.',
+  },
+  'spec_censer_log': {
+    AppLanguage.en: 'Mana spills from the censer and burns {name} for {n}.',
+    AppLanguage.fr: 'Le mana déborde de l’encensoir et brûle {name} de {n}.',
+  },
+  'spec_toll_log': {
+    AppLanguage.en: 'The storm collects its toll: {n} HP back.',
+    AppLanguage.fr: 'L’orage perçoit son péage : {n} PV repris.',
+  },
+  'spec_briar_log': {
+    AppLanguage.en: 'The briar bites back: {name} takes {n}.',
+    AppLanguage.fr: 'La ronce rend le coup : {name} subit {n}.',
   },
   'trail_ahead_log': {
     AppLanguage.en: 'On the trail ahead: {face}.',
@@ -11288,6 +11381,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'offer_gift_perk': {
     AppLanguage.en: 'Perk',
     AppLanguage.fr: 'Atout',
+  },
+  'offer_gift_spec': {
+    AppLanguage.en: 'Specialisation',
+    AppLanguage.fr: 'Spécialisation',
   },
   'offer_sworn_note': {
     AppLanguage.en:

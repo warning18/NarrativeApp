@@ -15,6 +15,43 @@ The march on Candlehold may hold a detour.
 ### Changed
 - **Chapter 7's gates.** The arrival at Candlehold's gates (`7500`) no longer forbids a detour, so the way to the Throne can hold one, and the chapter's landmark, The Banner on the Hill. The scene is tense and stays tense; only the ban is lifted.
 
+## [1.361.0+397]
+
+More detours, spread across the whole story (the user: "a bit more, 7 to 10").
+
+- **Landings roll.** Arriving somewhere by sea can now hold a detour, as a road arriving there would. The sailed chapters (4 to 7) get their share, and the march to Candlehold can hold chapter 7's landmark once Narrative lifts its set piece.
+- **The chapter's landmark comes before a hunter** on the road where it is due (a road event still comes first).
+- **The odds start lower:** 8% a road, plus 6% for each quiet road, up to 45%. Since more roads now roll, a run meets about 9 detours (median 9, 6 to 15): 1.4 to 2.1 in each of chapters 2 to 6, one in chapter 7. In v1.356 it was 6.8, with chapters 4 and 5 at 0.9.
+- No detour comes right after another, and none between two scenes of the same place, as before. Report: docs/simulation/detours.md.
+
+## [1.360.0+396]
+
+The clans specialise your profession (v5.2, step 2a): each profession's core can now be bent three ways, one per main clan.
+
+- **Fifteen specialisations**, three for each profession, offered by the profession's main clans once you are their Friend. Each comes once and stays for the run, and they stack.
+  - **Warrior:** Berserker (Crows), Briar Guard (Compact), Lantern Vanguard (Dominion).
+  - **Cleric:** Long Vigil (Vigil), Ashen Hand (Penitents), Beacon (Dominion).
+  - **Mage:** Censer Mage (Dominion), Burden-Bearer (Penitents), Tempest Toll (Crows).
+  - **Rogue:** Fever Blade (Mire), Ledger Knife (Crows), Relicbreaker (Penitents).
+  - **Ranger:** Corsair's Eye (Crows), Trapwright (Compact), Fen Guide (Mire).
+- **In the clan offers:** a specialisation shows as its own gift, with its text and the clan's voice. The Crows also offer Teleport Strike to a Tempest Toll.
+- **In the fight:** each one plays its rule in the fight log (the Verdict, the Rot, the briar biting back, the fire giving back...).
+- **Balance:** each was measured against its profession's core in 200 simulated runs. Most add 3 to 6 points of fights won. Report: docs/simulation/specialisations.md.
+
+## [1.358.0+394]
+
+The map reads on a phone, zooming out lands on the sphere, and the camp's buildings have tabs and filters.
+
+### Changed
+- **The map is readable.**
+  - Place names are never under 12 px on screen, with a dark halo; a crowded chart drops the names with no clear spot (the party's place, the picked one and the goal always stay) and shows them as it opens.
+  - Region and land names are larger and brighter; names stay on the ball on the sphere.
+  - Roads are thicker, coasts and land borders stronger, the land lighter against the sea (night and shroud looks), the party's place has a glow and a dark-rimmed ring.
+- **The sphere is the default, and fills a phone.** Zooming out from the Journey lands on the sphere; its ball fills the box's short side (it was a 250 px ball). The flat chart stays a choice in Layers.
+- **A zoom ladder.** The + and − buttons stop on the world, the land, the district and the closest, so a district chart has its rung ready.
+- **The Journey's district is board 15's.** In a city Core has stored a plan for (Saltmouth today), the District view is the city chart framed on the party's district, with a numbered pin on the building of each way; under it the ways as numbered rows (a tap opens the way's sheet with Go), and "Walk on" chips to the other districts. The Town view is the whole city with the districts under fog and their rows. Other cities keep the generated plan.
+- **The Journey map climbs district → town → world.** Zooming out from a district shows the whole town (all its districts) before the world; zooming in from the world comes back through the town. Three small tab buttons on the map (District, Town, World; Quartier, Ville, Monde) jump to a level in one tap; the Town tab is dimmed where the place has no city plan, and a + under the town view returns to the district.
+- **Camp buildings: tabs and filters.** Houses and Additions are tabs (with counts); filters keep what is ready, what the gold and the pack can pay for, what stands, and (for houses) a category. An empty result offers a way back. Each card carries a "built / limit" slot (Core's `WorkLimit`).
 ## [1.357.0+393]
 
 The new districts have their own voices.
