@@ -84,12 +84,14 @@ void main() {
         50);
     expect(censerBurn(3, 20), 180);
     expect(ledgerCritical(30), 35);
+    // An Evil foe is told by its kind (foe_kind.dart), not by Light.
+    expect(isEvilFoe({'kind': 'undead'}), isTrue);
     expect(
         isEvilFoe({
+          'kind': 'person',
           'weakTo': ['Light']
         }),
-        isTrue);
-    expect(isEvilFoe({'weakTo': <String>[]}), isFalse);
+        isFalse);
   });
 
   test('the Rot stacks where poison refreshes, and lasts', () {

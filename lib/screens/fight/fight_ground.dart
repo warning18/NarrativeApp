@@ -86,6 +86,27 @@ extension _FightGround on _FightScreenState {
   bool? _contextRoundStart(List<_LogEntry> entries, AppLanguage lang) {
     final rule = _length.rule;
     final round = _roundsStarted;
+    // What the foe is (foe_kind.dart): a beast tires, the dead crumble.
+    for (final enemy in _enemies.where((e) => e.isAlive)) {
+      final boss = isBossEnemy(enemy.enemyId, enemy.data);
+      if (round == foeRuleStartRound &&
+          !boss &&
+          foeKindOf(enemy.data) == FoeKind.beast) {
+        entries.add(_LogEntry(
+            trFor(lang, 'foe_tiring_log')
+                .replaceAll('{name}', enemy.displayName),
+            _LogKind.info));
+      }
+      final dust = crumble(enemy.data, enemy.maxHealth, round, boss: boss);
+      if (dust > 0) {
+        enemy.currentHealth = afterTick(enemy.currentHealth, dust);
+        entries.add(_LogEntry(
+            trFor(lang, 'foe_crumbles_log')
+                .replaceAll('{name}', enemy.displayName)
+                .replaceAll('{n}', '$dust'),
+            _LogKind.playerDamage));
+      }
+    }
     if (round == tideStartRound &&
         _enemies.any((e) => e.isAlive && isBossEnemy(e.enemyId, e.data))) {
       entries.add(_LogEntry(trFor(lang, 'boss_enraged_log'), _LogKind.info));
