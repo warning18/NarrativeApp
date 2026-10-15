@@ -141,3 +141,7 @@ RUNS=runs50.json ROADS_OUT=roads50.json flutter test narrative_roads_scratch_tes
 python3 stats.py ; python3 analyze3.py
 ```
 The scratch tests are in `tools/` as `.dart.txt`; copy them to the repository root (not `test/`) and rename. Same seed, same figures.
+
+## 7. Re-run on v1.349.0 (the districts of #278)
+
+The same 50 runs (same seed, same plan) replayed on main at v1.349.0, after Core put the 89 scenes of the Ashen Quarter, the Drowned Cloister and the White Anchorage on 11 districts. **Every figure above is unchanged to the digit** (188 detours, 377 nodes, 195 place / 123 biome / 59 Dart, 94 road events, the same blocked chapters, the same skipped beat). That is the expected result and the point: **the 11 new districts have no detour pool yet**, so a detour leaving one of them still falls through to the biome. The district scenes (#286) and a district pool each would give them their own voice.
