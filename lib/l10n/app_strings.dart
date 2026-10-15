@@ -3973,6 +3973,38 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'town_materials': {AppLanguage.en: 'materials', AppLanguage.fr: 'matériaux'},
   'town_ready': {AppLanguage.en: 'Ready', AppLanguage.fr: 'Prêt'},
   'town_locked': {AppLanguage.en: 'Locked', AppLanguage.fr: 'Verrouillé'},
+  'town_limit_short': {AppLanguage.en: 'Limit', AppLanguage.fr: 'Limite'},
+  'town_slot_hint': {
+    AppLanguage.en: 'Built / limit',
+    AppLanguage.fr: 'Bâtis / limite',
+  },
+  'town_filter_ready': {AppLanguage.en: 'Ready', AppLanguage.fr: 'Prêts'},
+  'town_filter_affordable': {
+    AppLanguage.en: 'Can afford',
+    AppLanguage.fr: 'Abordables',
+  },
+  'town_filter_built': {AppLanguage.en: 'Built', AppLanguage.fr: 'Bâtis'},
+  'town_filter_empty': {
+    AppLanguage.en: 'Nothing matches these filters.',
+    AppLanguage.fr: 'Rien ne correspond à ces filtres.',
+  },
+  'town_filter_clear': {
+    AppLanguage.en: 'Show everything',
+    AppLanguage.fr: 'Tout afficher',
+  },
+  'works_chip_sea': {AppLanguage.en: 'Sea', AppLanguage.fr: 'Mer'},
+  'works_chip_company': {
+    AppLanguage.en: 'Company',
+    AppLanguage.fr: 'Compagnie',
+  },
+  'works_chip_workshops': {
+    AppLanguage.en: 'Workshops',
+    AppLanguage.fr: 'Ateliers',
+  },
+  'works_chip_greatWorks': {
+    AppLanguage.en: 'Great works',
+    AppLanguage.fr: 'Grands ouvrages',
+  },
   'town_limit_reached': {
     AppLanguage.en: 'Limit reached: {built} of {limit}',
     AppLanguage.fr: 'Limite atteinte : {built} sur {limit}',
