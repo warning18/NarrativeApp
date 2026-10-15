@@ -1,4 +1,4 @@
-# The main clans' specialisations (v5.2, step 2a)
+# The main clans' specialisations (v5.2, steps 2a and 2b)
 
 The design is in `docs/proposals/profession-clan-mechanics.md`; the words are Narrative's (`docs/proposals/specialisation-texts.md`).
 - Each profession's core (`lib/combat/profession_cores.dart`) is bent by its three main clans.
@@ -75,8 +75,30 @@ The design is in `docs/proposals/profession-clan-mechanics.md`; the words are Na
 | Lantern Vanguard | adds "strikes harder" |
 | Beacon | adds "harder" |
 
-## Not in this step (2b)
+## Step 2b: the sub-clans' variants and upgrades, and rank II
 
-- The thirty sub-clan variants and upgrades, from Trusted, on a specialisation held.
-- Rank II at Sworn.
-- The weak links' twists.
+- A specialisation held, each of its two sub-clans offers its gift from **Trusted** (rare). A *variant* changes how the specialisation works; an *upgrade* raises its number. The sub-clan voices it.
+- At **Sworn** the main clan offers **rank II** (heroic): half again the specialisation's number, or the specific bump below.
+- The words are in `assets/gamedata/spec_variants.json` (Narrative's §3 of `specialisation-texts.md`); the numbers in `SpecMods` (`lib/combat/spec_variants.dart`). The live fight and the simulator play the same rules.
+- **Measured:** `VARIANTS_RUNS=60 flutter test test/spec_variants_test.dart`, each gift with its specialisation set against the specialisation alone. `VARIANTS_ONLY=id,id` limits it. At 60 runs a line is ±3–4.
+
+| Read | Gifts (over the specialisation alone) |
+|---|---|
+| In or near +3 to +6 | Berserker II +4.7, Boarding Heart +6.7, Bleeding Hull +6.5, Hand-Signed Wall +5.9, Briar Guard II +6.6, Counted Breath +3.9, Spear at the Wall +3.1, Long Vigil II +3.2, Debt Forgiven +6.2, Warm Hands +3.0, Trapwright II +3.8, Name on the List +2.5, Wading Step +2.6, One Witness, Once +5.2 (was +13.2 refilling the whole Well from round 2) |
+| Small or within the noise | Lantern Vanguard II, Fallen Knight’s Fire, Ashen Hand II, Honest Fire, Beacon II, Bell-Voiced, Keep the Light, Censer Mage II, The Accusing Smoke, Tempest Toll II, Tapped Sap, Fever Blade II, A Song Sung Over It, Ledger Knife II, Twice the Spoil, Corsair's Eye II, Relicbreaker II, Paid in the Deep, Take It Down, Fen Guide II, Burden-Bearer II, The Name Sung, Broken Sword, Open Hand (−2 to +2) |
+| Not seen by fights won | A Letter Opened, Entered in Full (gold), Broadside (the ship's guns), Seen From the Other Side (two faces ahead), Cut Stone, Stone Trap (guard breaks, rare in the simulator), One More Bed, One Door (the Ash Well already brings most spells to 1 mana) |
+
+**Why so many read small:** the mage's and cleric's gifts build on rules the autoplay seldom reaches (a full Well, an overflow, mana spent), as in 2a. Rank II on a specialisation worth +3 to +5 adds half of that, which is inside the noise at 60 runs. None of them makes fights longer; the boss curve (boss_balance_test) holds.
+
+### Changes to Narrative's texts (2b)
+
+| Gift | Change |
+|---|---|
+| One Witness, Once (Tribunal) | "Once per fight, from the fourth round, an empty Well refills by a third." (the doc's "refill the Well in full" won +13) |
+| Fallen Knight’s Fire (Order) | "heals you more of its damage" |
+| One Door (Keyholders) | "Your spells cost 1 less again." (the main Tempest Toll already offers Teleport Strike) |
+| The fifteen rank IIs | a generic line, "Rank II: the specialisation grows by half again." Narrative may write each one |
+
+## Not yet
+
+- The weak links' twists, standing×link and the rivals' cooling (step 3).

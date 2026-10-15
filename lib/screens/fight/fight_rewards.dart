@@ -206,7 +206,7 @@ extension _FightRewards on _FightScreenState {
       // do the signs (a pact's curse takes some gold back while it runs).
       goldGain = _signs.scaleGold(_perks.scaleGold(goldGain));
       // The Crow's Price: the gold stolen on the player's hits.
-      final stolen = _signs.crowsGold(_crowsHits);
+      final stolen = _signs.crowsGold(_crowsHits) + _core.gold;
       goldGain += stolen;
       // The Short Con (see doctrine.dart): whatever a thief still carries,
       // having fled or outlasted the fight, is missing from the spoils.

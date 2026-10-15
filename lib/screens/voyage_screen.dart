@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/spec_variants.dart' show specGunPercent;
 import '../combat/combat_engine.dart';
 import '../combat/sea_beasts.dart';
 import '../combat/ship_battle.dart';
@@ -258,7 +259,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       voidVolleyPartId: _sails[SailPower.voidmark]?.partId,
       voidVolleyBonus: voidVolleyBonus(_strength(SailPower.voidmark)),
       hullPercent: _signs.shipHullPercent,
-      gunPercent: _signs.shipGunPercent,
+      gunPercent: _signs.shipGunPercent + specGunPercent(session.specIds),
     );
     _dayStartHull = _player!.hull;
     _dayStartGold = session.gold;

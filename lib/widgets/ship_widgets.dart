@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/spec_variants.dart' show specGunPercent;
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/harbour.dart';
@@ -87,7 +88,7 @@ class ShipStatusCard extends ConsumerWidget {
       installedPartIds: installed,
       currentHull: session.shipHull,
       hullPercent: signs.shipHullPercent,
-      gunPercent: signs.shipGunPercent,
+      gunPercent: signs.shipGunPercent + specGunPercent(session.specIds),
     );
     final repairCost =
         repairCostFor(hull: playerShip.hull, maxHull: playerShip.maxHull);

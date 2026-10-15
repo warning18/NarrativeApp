@@ -2201,6 +2201,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       perkRanks: s.perkRanks,
       specs: tables.specs,
       heldSpecIds: s.specIds,
+      specVariants: tables.specVariants,
       // A lucky sign (or title) helps draw the next gift.
       luck: s.luck +
           signEffectsFor(s.heldSigns, tables.signs,

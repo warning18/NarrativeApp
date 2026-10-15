@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/spec_variants.dart' show specVariantsFrom;
 import '../combat/specialisations.dart' show specInfosFrom;
 import '../combat/spells.dart' show parseSpells;
 import '../data/offers.dart';
@@ -24,6 +25,7 @@ final offerTablesProvider = Provider<OfferTables>((ref) {
     items: table(itemsSchema),
     spells: parseSpells(table(spellsSchema)),
     specs: specInfosFrom(table(specialisationsSchema)),
+    specVariants: specVariantsFrom(table(specVariantsSchema)),
   );
 });
 
@@ -41,6 +43,7 @@ Future<OfferTables> loadOfferTables(WidgetRef ref) async {
     items: await table(itemsSchema),
     spells: parseSpells(await table(spellsSchema)),
     specs: specInfosFrom(await table(specialisationsSchema)),
+    specVariants: specVariantsFrom(await table(specVariantsSchema)),
   );
 }
 

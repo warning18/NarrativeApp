@@ -134,6 +134,18 @@ class TrailDeck {
     return index;
   }
 
+  /// The run so far dropped: the next [draw] deals a new one (the Drowned
+  /// Debt's kill, spec_variants.dart).
+  void reshuffle() => _run.clear();
+
+  /// The next [count] face indices the Trail deals, as far as this run
+  /// goes (the Returned see two, spec_variants.dart).
+  List<int> peekAhead(int count) {
+    if (faceCount <= 0) return const [];
+    if (_run.isEmpty) _refill();
+    return _run.take(count).toList();
+  }
+
   /// The face index the next [draw] gives (a new run is dealt if this one
   /// is spent).
   int peek() {

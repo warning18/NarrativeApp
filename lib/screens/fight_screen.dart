@@ -35,6 +35,7 @@ import '../combat/enemy_affix.dart';
 import '../combat/fight_goal.dart';
 import '../combat/fight_length.dart';
 import '../combat/profession_cores.dart';
+import '../combat/spec_variants.dart';
 import '../combat/specialisations.dart';
 import '../combat/gear_effects.dart';
 import '../combat/loot_box.dart';
@@ -381,7 +382,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
   late final _HeroCore _core = () {
     final session = ref.read(playerSessionProvider);
     final core = coreOfProfession(session.professionId);
-    return _HeroCore(core, specs: specsFor(session.specIds, core));
+    final specs = specsFor(session.specIds, core);
+    return _HeroCore(core,
+        specs: specs,
+        mods: specs.isEmpty ? SpecMods.none : SpecMods(session.specIds));
   }();
 
   /// The member whose kept Defend face draws the enemies' attacks this

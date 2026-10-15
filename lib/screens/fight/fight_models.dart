@@ -461,13 +461,24 @@ class _FightLength {
 /// The hero's profession core over a fight (profession_cores.dart): Fury
 /// built up, the Watchfire's fire, the Trail's deck.
 class _HeroCore {
-  _HeroCore(this.core, {this.specs = const {}});
+  _HeroCore(this.core, {this.specs = const {}, SpecMods? mods})
+      : mods = mods ?? SpecMods.none;
 
   final ProfessionCore core;
 
-  /// The specialisations on the core (specialisations.dart).
+  /// The specialisations on the core (specialisations.dart), and the
+  /// numbers their variants, upgrades and ranks set (spec_variants.dart).
   final Set<Spec> specs;
+  final SpecMods mods;
   bool has(Spec spec) => specs.contains(spec);
+
+  /// What the variants keep over the fight: the gold stolen, the enemies
+  /// whose fall was felt, the Tribunal's refill, the Wickwardens' lingering
+  /// fire.
+  int gold = 0;
+  final Set<String> fallen = {};
+  bool wellRefilled = false;
+  bool fireLingered = false;
   int fury = 0;
   int fire = 0;
   TrailDeck? _deck;

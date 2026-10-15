@@ -3668,6 +3668,16 @@ final DbSchema specialisationsSchema = DbSchema(
   fields: [],
 );
 
+/// The sub-clans' variants and upgrades of the specialisations, and their
+/// rank II (spec_variants.dart). Not one of [gameDbSchemas].
+final DbSchema specVariantsSchema = DbSchema(
+  id: 'spec_variants',
+  label: 'Specialisation Variants',
+  assetPath: 'assets/gamedata/spec_variants.json',
+  primaryKeyField: 'id',
+  fields: [],
+);
+
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
   itemSetsSchema,
