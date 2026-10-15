@@ -24,8 +24,8 @@
     "faction": "dominion",
     "name": "Lantern Vanguard",
     "name_fr": "Avant-garde de la Lanterne",
-    "gift": "Your heavy blow strikes harder, is Fire and Pierces. Against an Evil foe it also heals you.",
-    "gift_fr": "Votre coup lourd frappe plus fort, est de Feu et Perce. Contre un ennemi Mauvais, il vous soigne aussi.",
+    "gift": "Your heavy blow strikes harder, burns with Fire and Pierces. Against a foe weak to Light (the void, the dead, demons) it also heals you.",
+    "gift_fr": "Votre coup lourd frappe plus fort, brûle de Feu et Perce. Contre un ennemi sensible à la Lumière (le Néant, les morts, les démons), il vous soigne aussi.",
     "voice": "One flame goes first. The rest of us follow its light.",
     "voice_fr": "Une flamme passe la première. Nous suivons sa lumière."
   },
@@ -54,8 +54,8 @@
     "faction": "dominion",
     "name": "Beacon",
     "name_fr": "Phare",
-    "gift": "The fire may hold all your health, and it burns every enemy at once, harder, in Light.",
-    "gift_fr": "Le feu peut contenir toute votre vie, et il brûle tous les ennemis à la fois, plus fort, en Lumière.",
+    "gift": "The fire may hold all your health, and it burns every enemy at once, harder, with Light.",
+    "gift_fr": "Le feu peut contenir toute votre vie, et il brûle tous les ennemis à la fois, plus fort, avec la Lumière.",
     "voice": "A lantern lights one door. A beacon lights the coast.",
     "voice_fr": "Une lanterne éclaire une porte. Un phare éclaire la côte."
   },
@@ -114,8 +114,8 @@
     "faction": "penitents",
     "name": "Relicbreaker",
     "name_fr": "Brise-relique",
-    "gift": "Each critical hit gives you 1 mana. At 3, your next strike is sure to be critical, and spends it.",
-    "gift_fr": "Chaque coup critique vous donne 1 de mana. À 3, votre prochaine frappe est forcément critique, et le dépense.",
+    "gift": "Each critical hit gives you 1 mana. At 3 mana, your next strike is sure to be critical, and the mana is spent.",
+    "gift_fr": "Chaque coup critique vous donne 1 de mana. À 3 de mana, votre prochaine frappe est forcément critique, et ce mana est dépensé.",
     "voice": "We do not keep the relic. We keep what falls out when it breaks.",
     "voice_fr": "Nous ne gardons pas la relique. Nous gardons ce qui tombe quand elle se brise."
   },
