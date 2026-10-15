@@ -63,9 +63,53 @@ So the typical detour is **one node, one decision, ~30 seconds**. It does not ta
 - **No consent.** A detour just happens at the next road. You cannot leave it, plan for it, or be told it is there, and you cannot reach one you would *want*.
 - **No pacing.** Two in a row are possible (a road event or a hunt may sit between); a long road gets the same odds as a short one; a delivery with one day to spare gets the same odds as a free walk; a chapter with six roads may produce none or three.
 
-### 1.5 Counts by chapter and zone
+### 1.5 The numbers (Core, 200 replayed runs)
 
-*(Core to fill from the simulator: how often detours fire per chapter and zone, which pool answers.)* What I can say from the data: the place pools that exist per chapter. The biome named in the last column is my reading of the geography, to be checked against `geography.json` by Core’s numbers.
+The simulator does not model detours, so Core recomputed them from the rules: **200 runs replayed through the real detour, road-event, alignment and familiar-face functions.** (My own 50-run replay, `docs/narrative-audit/playthroughs-50.md`, agrees on the shape: 3.8 detours a run, chapter 4 empty, most of them in one place.)
+
+**Trigger, as built**
+- Base chance **0.35**. It rolls only when leaving one of the **~44 chapter-spine beats**: about **11.9 chances per run** out of ~174 choices. Never in chapter 1. Blocked when either scene is `noDetour`, or when both scenes are tense.
+- Checked first, in order: road event (0.3 × condition × danger, travelling choices only), then alignment (hunter 0.06 + 0.0015 per point, capped at 0.15; temptation 0.10), then familiar face (0.4 while a recurring beat is open, chapters 2 to 6).
+- A blocked transition **still rolls 0.35** and, on a hit, *owes* a detour, which the next free transition takes at 1.0.
+- Chains are 1 to 2 nodes, or 3 to 4 with a quest pickup (0.35), plus 2 for a hunt after a pack fight (0.35). Node mix: shop 25%, enemy 25% (30% of those packs), treasure 15%, rest 15%, generic 20%.
+
+**What fills the 2,380 free transitions:** familiar face 32.6%, detour 28.8%, nothing 20.8%, road event 9.9%, alignment 8.0%. **61% of detours are owed ones**, so when the die actually rolls it fires 58% of the time, not 35%.
+
+**Per run:** 3.43 detours on average (median 3, p90 5, max 8).
+
+| Chapter | Detours per run | Runs with at least one |
+|---|---|---|
+| 2 | 0.67 | 56% |
+| 3 | 0.46 | 40% |
+| 4 | **0** (no free transitions at all) | 0% |
+| 5 | 0.98 | 84% |
+| 6 | 0.57 | 52% |
+| 7 | 0.52 | 38% |
+| 8 | 0.25 | 24% |
+
+**By zone** (detours / free transitions): saltmouth_headland 133/533, the_cove 294/1151, the_fen 169/400, glass_shore 60/200, ashlands 30/96.
+
+**Per journey**
+- 24.5% of road legs have a detour, against **31% of moves within one place**.
+- Longest dry spell: median 4 free transitions (max 11), which is median 76 choices (max 167). Most in a row: median 2, max 4.
+- Chain lengths: 1 node ×221, 2 ×219, 3 ×110, 4 ×119, 5 to 6 ×17.
+
+**Which pool supplies the 1,191 non-fight lines:** district 16%, location 34%, biome 50% (**all the treasure lines**, because no place pool has treasure). Zone and country pools do not exist. The themes pool and the Dart fallback supply 0%. **All 311 fights used the enemy's own encounter line**, so the pools' enemy lines never show.
+
+**Cost:** the detour itself costs no time and no ration; only the walk before it does. Treasure gold (5 to 20) × (1 + 0.5·(chapter − 1)); rest +20 HP, plus 10 per chapter after the first; slip past on Dexterity DC 9 + chapter.
+
+**Already off** (Core’s to fix inside the detour engine, see section 6):
+1. Detours only roll from spine beats.
+2. Chapter 4 never gets one, and its owed rolls spill into chapter 5 (146 times).
+3. 87% of owed detours fire in a later chapter than the one that owed them.
+4. Owed detours come mostly from `noDetour` set pieces (3,625) rather than crises (730).
+5. Each place pool has 2 lines and a memory of 1, so the same two lines alternate.
+6. The pools’ enemy lines and the themes pool never show.
+7. Quest chains are 3 to 4 nodes, not the 4 to 7 the code comment says.
+8. Walks from the camp skip the mood and `noDetour` checks.
+9. Deadlines are unaffected: no detours inside expeditions, and detours cost no days.
+
+**Where the roads run, and which pools exist** (my reading of the geography; the biome is the zone’s):
 
 | Chapter | Where the roads run | Zones with expeditions | Detour pools that answer |
 |---|---|---|---|
@@ -78,7 +122,11 @@ So the typical detour is **one node, one decision, ~30 seconds**. It does not ta
 | 7 | The Lantern Throne: Candlehold | none | Candlehold gates and hall |
 | 8 | Beyond the Tear | Beyond the Tear | tear |
 
-**The gap this shows:** chapters 3 and 4 have **no place pool at all**; chapters 2 and 5 to 7 have a few. The expeditions, by contrast, are written step by step for every zone. The same attention is what the detours lack.
+**What this changes in the proposal**
+- **The scene engine replaces the pools’ role for fights.** All 311 fights used the foe’s own line, so the place has no say in a fight today. A scene’s `fight` beat names its foe and writes its own text (section 2); the foe is chosen for the place.
+- **Rolls need to be honest.** 61% of detours are *owed* ones, often from set pieces, and 87% land in a later chapter than the one that owed them. Section 5’s pity timer and cooldown should replace the owed roll, not sit beside it; a detour owed by a set piece is simply dropped.
+- **The same-place problem is bigger than I counted:** 31% of moves within one place carry a detour against 24.5% of road legs. The rule “a detour is a place off the road” (section 2.1) is the fix: **no detour rolls between two scenes of one place, except a city scene (section 5.5).**
+- **Pools:** more than 2 lines per kind at every place, **treasure lines in every place pool**, and a memory longer than 1. Narrative’s part: a pool top-up (section 6).
 
 ---
 
@@ -316,5 +364,4 @@ A scene in a **city** (the Saltmouth districts, Candlehold) happens inside the c
 4. **One landmark per chapter: yes.** Six for the first batch (chapters 2 to 7).
 5. **City scenes: yes.** Short (one or two beats), no road and no ration. **Start with Saltmouth’s six districts.**
 
-**Next:** the first batch of scenes as data in `assets/gamedata/detour_scenes.json` (six landmarks, one scene per biome plus a few one-beat stops, the six Saltmouth districts), in its own PR with no version bump. It merges with or after Core’s detour engine, and Core reviews the schema first. Core’s detour numbers (section 1.5) are still to come.
-
+**Next:** the first batch of scenes as data in `assets/gamedata/detour_scenes.json` (six landmarks, one scene per biome plus a few one-beat stops, the six Saltmouth districts), in its own PR with no version bump. It merges with or after Core’s detour engine, and Core reviews the schema first. Core’s detour numbers are in (section 1.5). Alongside the scenes, **a pool top-up** (Narrative, small data PR): at least 6 lines per kind in every place pool, `treasure` lines in every place pool, the Cove camp’s pool by chapter.
