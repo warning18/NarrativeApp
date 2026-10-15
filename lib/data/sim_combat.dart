@@ -9,6 +9,7 @@ import '../combat/enemy_response.dart';
 import '../combat/fight_goal.dart';
 import '../combat/fight_length.dart';
 import '../combat/profession_cores.dart';
+import '../combat/specialisations.dart';
 import '../combat/parry.dart';
 import 'character_start.dart' show startingArmor;
 import '../combat/squad.dart';
@@ -212,6 +213,10 @@ class SimCharacter {
   /// The signs drawn on the character (see signs.dart): the walk takes
   /// them, a fight reads what they add up to.
   List<HeldSign> heldSigns = [];
+
+  /// The specialisations the clans gave (specialisations.dart): those of
+  /// the character's own core play.
+  List<String> specIds = [];
 
   /// A sign's (or a perk's) extra mana, while a fight lasts.
   int signMaxMana = 0;
@@ -710,6 +715,23 @@ SimFightOutcome simulateSimFight({
       ? TrailDeck(c.diceFaces.length, random)
       : null;
   if (core == ProfessionCore.ashWell) c.mana = 0;
+  // The specialisations on the core (specialisations.dart), and what they
+  // keep over the fight: the Ledger Knife's chain.
+  final specs =
+      clashOff.contains('specs') ? <Spec>{} : specsFor(c.specIds, core);
+  bool has(Spec spec) => specs.contains(spec);
+  var ledgerChain = 0.0;
+  // The Ashen Hand: a burn of the fire gives a mana and lifts an
+  // affliction.
+  void ashenHand(int burned) {
+    c.mana = min(c.maxMana, c.mana + ashenManaPerBurn);
+    c.currentHealth =
+        min(c.maxHealth, c.currentHealth + (burned * ashenMendShare).round());
+    if (c.statusEffects.isNotEmpty) {
+      c.statusEffects = c.statusEffects.skip(1).toList();
+    }
+  }
+
   // The signs' lend for the fight: its stats, a higher max health (full
   // stays full, a running pact may take a share off the top) and mana.
   final baseMaxHealth = c.maxHealth;
@@ -1009,6 +1031,8 @@ SimFightOutcome simulateSimFight({
       healed: core == ProfessionCore.watchfire ? null : healed,
       tide: on('tide'),
       ashWell: core == ProfessionCore.ashWell,
+      fullWellMultiplier: has(Spec.burdenBearer) ? burdenFullWellMultiplier : 1,
+      spellLifeShare: has(Spec.tempestToll) ? tempestLifeShare : 0,
     );
     // A sign's block for the whole party as the fight opens.
     if (rounds == 1) block += s.partyStartBlock;
@@ -1022,12 +1046,15 @@ SimFightOutcome simulateSimFight({
     if (!stunned && c.diceFaces.isNotEmpty) {
       acted = true;
       DiceFaceResult face;
+      var verdict = false, firstOfRun = false;
       var rolls = 0;
       do {
         rolls++;
         if (trail != null) {
           final index = trail.draw();
           face = faceFromJson(c.diceFaces[index], index);
+          verdict = trail.drewVerdict;
+          firstOfRun = trail.drewFirst;
         } else {
           face = rollDie(c.diceFaces, random);
         }
@@ -1053,6 +1080,10 @@ SimFightOutcome simulateSimFight({
         if (s.strikeElement.isNotEmpty && face.element == 'None') {
           face = face.withElement(s.strikeElement);
         }
+      }
+      // The Berserker's Attack faces are Pain strikes.
+      if (has(Spec.berserker) && face.type == 'Attack') {
+        face = face.withKeywords({...face.keywords, FaceKeyword.pain});
       }
       final attack = face.type == 'Attack';
       if (face.hasKeyword(FaceKeyword.steady) &&
@@ -1087,7 +1118,12 @@ SimFightOutcome simulateSimFight({
           ),
         );
       }
-      PlayerActionResult rollFace() => resolvePlayerFace(
+      // The Relicbreaker's mana makes a sure critical of the strike.
+      final sureCrit = has(Spec.relicbreaker) &&
+          c.mana >= relicSureCritMana &&
+          (attack || face.type == 'Skill');
+      if (sureCrit) c.mana -= relicSureCritMana;
+      PlayerActionResult rollFace({bool sure = false}) => resolvePlayerFace(
             face,
             availableSkills,
             damageBase,
@@ -1096,27 +1132,66 @@ SimFightOutcome simulateSimFight({
             wisdomManaBonus: wisdomManaBonusFor(c.wisdom),
             luck: c.luck,
             random: random,
-            critChanceBonus: gear.critChance,
+            critChanceBonus: gear.critChance + ledgerChain,
+            forceCritical: sure,
           );
-      var result = rollFace();
-      // The cores on the face (profession_cores.dart).
+      var result = rollFace(sure: sureCrit);
+      // The cores on the face (profession_cores.dart), and their
+      // specialisations (specialisations.dart).
+      var crits = 0;
       if (core == ProfessionCore.flurry && result.damageDealt > 0) {
         final second = rollFace();
+        int hit(PlayerActionResult r) {
+          if (!r.isCritical) {
+            if (has(Spec.ledgerKnife)) ledgerChain += ledgerChainStep;
+            return r.damageDealt;
+          }
+          crits++;
+          if (!has(Spec.ledgerKnife)) return r.damageDealt;
+          ledgerChain = 0;
+          return ledgerCritical(r.damageDealt);
+        }
+
         result = coreResult(
           result,
-          damage: flurryDamage(result.damageDealt, second.damageDealt),
+          damage: flurryDamage(hit(result), hit(second)),
         );
       }
+      var heavy = false;
       if (core == ProfessionCore.fury && result.damageDealt > 0) {
         if (fury >= furyMax) {
           result = coreResult(
             result,
-            damage: (result.damageDealt * furyHeavyMultiplier).round(),
+            damage: (result.damageDealt *
+                    (has(Spec.lanternVanguard)
+                        ? vanguardHeavyMultiplier
+                        : furyHeavyMultiplier))
+                .round(),
           );
           fury = 0;
+          heavy = true;
         } else {
           fury++;
         }
+      }
+      // The Lantern Vanguard's heavy blow is Fire and Pierces; the
+      // Corsair's Verdict counts double and Pierces.
+      var piercing = face.hasKeyword(FaceKeyword.pierce);
+      if (heavy && has(Spec.lanternVanguard)) {
+        element = vanguardElement;
+        piercing = true;
+      }
+      if (verdict && has(Spec.corsairsEye) && result.damageDealt > 0) {
+        result = coreResult(
+          result,
+          damage: (result.damageDealt * verdictMultiplier).round(),
+        );
+        piercing = true;
+      }
+      if (crits > 0 && has(Spec.relicbreaker)) {
+        final before = c.mana;
+        c.mana = min(c.maxMana, c.mana + crits);
+        manaGained += c.mana - before;
       }
       if (core == ProfessionCore.ashWell && result.manaGained > 0) {
         result = coreResult(
@@ -1130,10 +1205,18 @@ SimFightOutcome simulateSimFight({
           pain ? result.damageDealt * painDamageMultiplier : result.damageDealt;
       if (on('tide')) dealt = tideDamage(dealt, rounds, byParty: true);
       if (pain) {
-        c.currentHealth -= painCost(
+        final cost = painCost(
           maxHealth: c.maxHealth,
           currentHealth: c.currentHealth,
         );
+        c.currentHealth -= cost;
+        // The Berserker's life paid feeds Fury.
+        if (has(Spec.berserker) &&
+            cost > 0 &&
+            core == ProfessionCore.fury &&
+            fury < furyMax) {
+          fury++;
+        }
       }
       final target = on('squad') ? _focusTarget(ens) : firstLiving();
       // The Compact edge breaks a raised guard outright, while it lasts.
@@ -1141,12 +1224,12 @@ SimFightOutcome simulateSimFight({
           dealt > 0 &&
           edge > 0 &&
           target.guard > 0 &&
-          !face.hasKeyword(FaceKeyword.pierce)) {
+          !piercing) {
         edge--;
         target.guard = 0;
       }
       if (target != null && dealt > 0) {
-        final pierce = face.hasKeyword(FaceKeyword.pierce);
+        final pierce = piercing;
         final landed = clash
             ? target.landHit(
                 dealt,
@@ -1158,6 +1241,28 @@ SimFightOutcome simulateSimFight({
             : target.takeHit(dealt, element, pierce: pierce);
         if (landed > 0) crowsHits++;
         if (!clash) target.health = max(0, target.health - landed);
+        // Against an Evil foe the Vanguard's heavy blow heals.
+        if (heavy && has(Spec.lanternVanguard) && isEvilFoe(target.data)) {
+          c.currentHealth = min(c.maxHealth,
+              c.currentHealth + (landed * vanguardEvilHealShare).round());
+        }
+        // The Fever Blade's Rot, a stack for each critical hit.
+        if (has(Spec.feverBlade) && target.isAlive) {
+          for (var i = 0; i < crits; i++) {
+            target.statusEffects =
+                withRot(target.statusEffects, (landed / 2).round());
+          }
+        }
+        // The Trail's Verdict stuns (Trapwright); its first face poisons
+        // (Fen Guide).
+        if (target.isAlive && verdict && has(Spec.trapwright)) {
+          target.statusEffects =
+              applyStatusEffect(target.statusEffects, trapStun);
+        }
+        if (target.isAlive && firstOfRun && has(Spec.fenGuide)) {
+          target.statusEffects = applyStatusEffect(
+              target.statusEffects, fenPoison((landed / 2).round()));
+        }
         bestHit = max(bestHit, landed);
         if (element != 'None') target.elementsHit.add(element);
         final drained = gear.lifestealFor(landed);
@@ -1210,19 +1315,35 @@ SimFightOutcome simulateSimFight({
           ? result.healingDone
           : healed(result.healingDone);
       if (core == ProfessionCore.watchfire && heal > 0) {
-        // Every heal from the die burns; the part past full feeds the fire.
-        final burnTarget = firstLiving();
-        if (burnTarget != null) {
+        // Every heal from the die burns (under the Beacon, every enemy);
+        // the part past full feeds the fire.
+        for (final burnTarget in [
+          if (has(Spec.beacon))
+            ...ens.where((e) => e.isAlive)
+          else if (firstLiving() case final first?)
+            first,
+        ]) {
+          final burn = (heal *
+                  watchfireHealBurnShare *
+                  (has(Spec.beacon) ? beaconBurnMultiplier : 1))
+              .round();
           burnTarget.health = max(
             0,
-            burnTarget.health - (heal * watchfireHealBurnShare).round(),
+            burnTarget.health -
+                (has(Spec.beacon)
+                    ? burnTarget.takeHit(burn, beaconElement, pierce: true)
+                    : burn),
           );
         }
-        fire = watchfireAfterHeal(
+        if (has(Spec.ashenHand)) {
+          ashenHand((heal * watchfireHealBurnShare).round());
+        }
+        fire = fireAfterHeal(
           fire: fire,
           healing: heal,
           currentHealth: c.currentHealth,
           maxHealth: c.maxHealth,
+          beacon: has(Spec.beacon),
         );
       }
       c.currentHealth = min(c.maxHealth, c.currentHealth + heal);
@@ -1254,8 +1375,16 @@ SimFightOutcome simulateSimFight({
       }
       if (result.manaGained > 0) {
         final before = c.mana;
+        final overflow = c.mana + result.manaGained - c.maxMana;
         c.mana = min(c.maxMana, c.mana + result.manaGained);
         manaGained += c.mana - before;
+        // The Censer Mage: mana past full burns the enemy.
+        final burnTarget = firstLiving();
+        if (has(Spec.censerMage) && overflow > 0 && burnTarget != null) {
+          burnTarget.health =
+              max(0, burnTarget.health - censerBurn(overflow, damageBase));
+          phasesEntered += burnTarget.advancePhases();
+        }
       }
       c.statusEffects = tickStatusEffects(c.statusEffects);
     }
@@ -1482,8 +1611,10 @@ SimFightOutcome simulateSimFight({
         );
       }
       final parry = on('parry') ? e.parryBlock : 0;
+      // The Briar Guard can't dodge (the draw is made all the same).
       final dodged = random.nextDouble() * 100 <
-          dodgeChanceFor(c.dexterity) + gear.dodgeChance;
+              dodgeChanceFor(c.dexterity) + gear.dodgeChance &&
+          !has(Spec.briarGuard);
       var taken = dodged
           ? 0
           : max(
@@ -1508,6 +1639,14 @@ SimFightOutcome simulateSimFight({
         taken -= soaked;
       }
       if (core == ProfessionCore.fury && taken > 0) fury++;
+      // The Briar Guard: what the guard stopped feeds Fury, and a part of
+      // it goes back.
+      final stopped = dodged ? 0 : min(moveDamage, moveDamage - taken);
+      if (has(Spec.briarGuard) && stopped > 0 && taken < moveDamage) {
+        if (fury < furyMax) fury++;
+        e.health = max(0, e.health - briarReflect(stopped));
+        phasesEntered += e.advancePhases();
+      }
       // A guard sign bites back while the Defend face's block holds.
       final retaliation =
           guardArmed && !dodged && block > 0 ? s.guardRetaliate : 0;
@@ -1540,14 +1679,33 @@ SimFightOutcome simulateSimFight({
       }
       if (c.isKnockedOut) return finish(false);
     }
-    // What is left of the Watchfire burns at the round's end.
+    // What is left of the Watchfire burns at the round's end: the first
+    // enemy standing, or under the Beacon every one; the Ashen Hand draws
+    // a mana and a cleansing from it.
     if (fire > 0) {
-      final burnTarget = firstLiving();
-      if (burnTarget != null) {
-        burnTarget.health = max(0, burnTarget.health - watchfireBurn(fire));
+      for (final burnTarget in [
+        if (has(Spec.beacon))
+          ...ens.where((e) => e.isAlive)
+        else if (firstLiving() case final first?)
+          first,
+      ]) {
+        final burn = (watchfireBurn(fire) *
+                (has(Spec.beacon) ? beaconBurnMultiplier : 1))
+            .round();
+        burnTarget.health = max(
+            0,
+            burnTarget.health -
+                (has(Spec.beacon)
+                    ? burnTarget.takeHit(burn, beaconElement, pierce: true)
+                    : burn));
         phasesEntered += burnTarget.advancePhases();
       }
+      if (has(Spec.ashenHand)) ashenHand(watchfireBurn(fire));
       fire = 0;
+    }
+    // The Long Vigil mends above half health.
+    if (has(Spec.longVigil) && !c.isKnockedOut) {
+      c.currentHealth += longVigilMend(c.currentHealth, c.maxHealth);
     }
     feedKills();
     for (final e in ens) {
@@ -1580,6 +1738,8 @@ int _castSpellIfWorth(
   int Function(int)? healed,
   bool tide = false,
   bool ashWell = false,
+  double fullWellMultiplier = 1,
+  double spellLifeShare = 0,
 }) {
   final living = ens.where((e) => e.isAlive).toList();
   if (c.knownSpells.isEmpty || living.isEmpty || c.mana <= 0) return 0;
@@ -1646,10 +1806,11 @@ int _castSpellIfWorth(
       .where((s) => s.effect == SpellEffectKind.damage)
       .toList()
     ..sort((a, b) => amountOf(b).compareTo(amountOf(a)));
+  // The Burden-Bearer: a spell from a full Well hits harder.
+  final fullWell = c.mana >= c.maxMana ? fullWellMultiplier : 1.0;
   for (final spell in damageSpells) {
-    final amount = tide
-        ? tideDamage(amountOf(spell), round, byParty: true)
-        : amountOf(spell);
+    final raw = (amountOf(spell) * fullWell).round();
+    final amount = tide ? tideDamage(raw, round, byParty: true) : raw;
     final killable = living.where((e) => e.health <= amount).toList();
     final List<_SimEnemy> targets;
     if (spell.target == SpellTarget.allEnemies) {
@@ -1669,10 +1830,16 @@ int _castSpellIfWorth(
     }
     final status = spellStatusFor(spell, level: c.level);
     for (final e in targets) {
+      final before = e.health;
       if (clash) {
         e.landHit(amount, spell.element, round, react: react);
       } else {
         e.health = max(0, e.health - e.takeHit(amount, spell.element));
+      }
+      // The Tempest Toll: the spell takes back a share as health.
+      if (spellLifeShare > 0 && before > e.health) {
+        c.currentHealth = min(c.maxHealth,
+            c.currentHealth + ((before - e.health) * spellLifeShare).round());
       }
       if (spell.element != 'None') e.elementsHit.add(spell.element);
       if (status != null && e.isAlive) {

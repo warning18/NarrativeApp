@@ -263,6 +263,7 @@ class PlayerSession {
     this.sellswordFights = 0,
     this.alignmentRollsSinceAmbush = hunterCooldownRolls,
     this.detourPacing = const DetourPacing(),
+    this.specIds = const [],
     this.runSeed = 0,
     this.diceUpgrades = const {},
     this.recruitedAllies = const [],
@@ -477,6 +478,10 @@ class PlayerSession {
   /// What the detours have done so far (see detour_pacing.dart): the pity
   /// timer, the cooldown, a detour owed, the scenes met.
   final DetourPacing detourPacing;
+
+  /// The specialisations the clans gave (specialisations.dart), in the
+  /// order taken: those of the character's core play in every fight.
+  final List<String> specIds;
 
   /// Rolled once per new game: picks each chapter's condition (see
   /// chapter_conditions.dart). 0 on saves made before it existed.
@@ -882,6 +887,7 @@ class PlayerSession {
     int? sellswordFights,
     int? alignmentRollsSinceAmbush,
     DetourPacing? detourPacing,
+    List<String>? specIds,
     int? runSeed,
     Map<String, DieUpgrades>? diceUpgrades,
     List<AllyState>? recruitedAllies,
@@ -995,6 +1001,7 @@ class PlayerSession {
       alignmentRollsSinceAmbush:
           alignmentRollsSinceAmbush ?? this.alignmentRollsSinceAmbush,
       detourPacing: detourPacing ?? this.detourPacing,
+      specIds: specIds ?? this.specIds,
       runSeed: runSeed ?? this.runSeed,
       diceUpgrades: diceUpgrades ?? this.diceUpgrades,
       recruitedAllies: recruitedAllies ?? this.recruitedAllies,
@@ -1112,6 +1119,7 @@ class PlayerSession {
         'sellswordFights': sellswordFights,
         'alignmentRollsSinceAmbush': alignmentRollsSinceAmbush,
         'detourPacing': detourPacing.toJson(),
+        'specIds': specIds,
         'runSeed': runSeed,
         'diceUpgrades': diceUpgradesToJson(diceUpgrades),
         'recruitedAllies': recruitedAllies.map((a) => a.toJson()).toList(),
@@ -1305,6 +1313,9 @@ class PlayerSession {
           (json['alignmentRollsSinceAmbush'] as num?)?.toInt() ??
               hunterCooldownRolls,
       detourPacing: DetourPacing.fromJson(json['detourPacing']),
+      specIds: [
+        for (final id in (json['specIds'] as List? ?? const [])) id.toString(),
+      ],
       runSeed: (json['runSeed'] as num?)?.toInt() ?? 0,
       diceUpgrades: parseDiceUpgrades(json['diceUpgrades']),
       recruitedAllies: (json['recruitedAllies'] as List?)
@@ -2188,6 +2199,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       heldTitleIds: s.heldTitleIds,
       swornBoonIds: s.swornBoonIds,
       perkRanks: s.perkRanks,
+      specs: tables.specs,
+      heldSpecIds: s.specIds,
       // A lucky sign (or title) helps draw the next gift.
       luck: s.luck +
           signEffectsFor(s.heldSigns, tables.signs,
@@ -2431,6 +2444,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           maxHealth: session.maxHealth + health,
           currentHealth: session.currentHealth + health,
         );
+      case GiftKind.spec:
+        if (session.specIds.contains(gift.id)) return session;
+        return session.copyWith(specIds: [...session.specIds, gift.id]);
     }
   }
 

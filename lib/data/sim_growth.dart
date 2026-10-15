@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import '../combat/dice_faces.dart' show isAssignableFace;
+import '../combat/specialisations.dart' show SpecInfo;
 import '../combat/spells.dart';
 import '../models/story_node.dart';
 import 'factions.dart';
@@ -34,8 +35,11 @@ class SimGrowthTables {
     this.patrons = const {},
     this.signs = const {},
     this.clans = ClanData.empty,
+    this.specs = const {},
   });
 
+  /// specialisations.json parsed: the main clans' specialisations.
+  final Map<String, SpecInfo> specs;
   final Map<String, dynamic> skills;
   final Map<String, dynamic> skillTrees;
   final Map<String, dynamic> items;
@@ -51,6 +55,7 @@ class SimGrowthTables {
         skillTrees: skillTrees,
         items: items,
         spells: spells,
+        specs: specs,
       );
 }
 
@@ -456,6 +461,8 @@ class SimGrowth {
         swornBoonIds: boons,
         perkRanks: perkRanks,
         luck: character.luck + effects(alignment).stat('luck'),
+        specs: tables.specs,
+        heldSpecIds: character.specIds,
       );
 
   int _takeOffers(int alignment, Iterable<String> flags, Random random) {
@@ -518,6 +525,10 @@ class SimGrowth {
       case GiftKind.perk:
         final perk = perkFromName(gift.id);
         if (perk != null) _takePerk(perk);
+      case GiftKind.spec:
+        if (!character.specIds.contains(gift.id)) {
+          character.specIds = [...character.specIds, gift.id];
+        }
     }
     return alignment;
   }

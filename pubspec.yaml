@@ -98,6 +98,7 @@ flutter:
     - assets/gamedata/land_events.json
     - assets/gamedata/detours.json
     - assets/gamedata/detour_scenes.json
+    - assets/gamedata/specialisations.json
     - assets/gamedata/expedition_steps.json
     - assets/gamedata/city_plans.json
     - assets/visuals/items/
