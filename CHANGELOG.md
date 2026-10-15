@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.374.0+410]
+
+The clan offer's popup is one block: the ring on top, and under it the clan card with the gift in it.
+
+### Changed
+- **The gift moves into the clan card.** The separate gift box is gone. Under the relations ring, one bordered block in the clan's colour: its name and your standing with it on the first line, what this banner gives (the gift's icon, name, kind, rarity and effect) on the left, the clan's radar on the right. "Take this gift" stays at the bottom.
+- **The clan's words sit behind its name.** A tap on the name (the small "i" beside it, lit the first time you meet a clan) opens its charter: the motto, what it stands for and what it says to you. They no longer take room in the popup.
+- The alignment word ("Alignment · toward Good") stays in the block, under the gift.
+
 ## [1.371.0+407]
 
 Loyalty has a price (v5.2, step 3): the clans remember who you stand with.
