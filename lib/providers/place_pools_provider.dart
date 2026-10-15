@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/detour_scenes.dart';
 import '../data/expedition_steps.dart';
 import '../data/place_pools.dart';
 import '../gamedata/db_schema.dart';
@@ -16,6 +17,18 @@ final placePoolsProvider = Provider<PlacePools>((ref) {
 /// right after a cold start.
 Future<PlacePools> loadPlacePools(WidgetRef ref) async => PlacePools.fromJson(
     await ref.read(gameDbProvider(detoursSchema).notifier).whenLoaded());
+
+/// detour_scenes.json (detour_scenes.dart) once it has loaded (or failed
+/// to): none when the file is missing, and every detour is today's chain.
+Future<Map<String, DetourScene>> loadDetourScenes(WidgetRef ref) async {
+  try {
+    return detourScenesFrom(await ref
+        .read(gameDbProvider(detourScenesSchema).notifier)
+        .whenLoaded());
+  } catch (_) {
+    return const {};
+  }
+}
 
 /// expedition_steps.json (expedition_steps.dart), by zone id: empty while
 /// it loads, and for good when the file is missing.

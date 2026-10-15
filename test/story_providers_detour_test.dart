@@ -4,6 +4,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'dart:math';
+
+import 'package:narrative_data_app/data/detour_scenes.dart';
+import 'package:narrative_data_app/data/expedition_steps.dart';
 import 'package:narrative_data_app/data/sub_node_engine.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
@@ -56,14 +60,27 @@ void main() {
     expect(fought.state.activeExcursionNode?.id, trail.id);
   });
 
-  test('a detour put off by a crisis is owed once, then taken', () async {
+  test('a written scene is played, and backed away from at no cost', () async {
+    const scene = DetourScene(
+      id: 'well',
+      title: 'The Well',
+      beats: [
+        WrittenStep(id: 'look', text: 'A well.', choices: [
+          WrittenChoice(id: 'drink', text: 'Drink', check: 'constitution'),
+        ]),
+        WrittenStep(id: 'find', type: 'discovery', text: 'A cup.'),
+      ],
+    );
+    final play = buildDetourScene(scene, chapter: 3, random: Random(1));
     final notifier = StoryPlayNotifier('1');
     await Future<void>.delayed(Duration.zero);
-    expect(notifier.takeOwedDetour(), isFalse);
-    notifier.oweDetour();
-    notifier.oweDetour();
-    expect(notifier.detourOwed, isTrue);
-    expect(notifier.takeOwedDetour(), isTrue);
-    expect(notifier.takeOwedDetour(), isFalse);
+    notifier.startScene(play, '2', origin: 'The road south');
+    expect(notifier.scenePlay, same(play));
+    expect(notifier.state.activeExcursionNode?.id, play.firstNodeId);
+    expect(play.watches, detourSceneWatches);
+    notifier.leaveExcursion();
+    expect(notifier.scenePlay, isNull);
+    expect(notifier.state.isInExcursion, isFalse);
+    expect(notifier.state.currentNodeId, '2');
   });
 }

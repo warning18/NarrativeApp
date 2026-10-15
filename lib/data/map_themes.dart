@@ -38,6 +38,7 @@ class ExcursionFlavor {
     required this.restFr,
     required this.generic,
     required this.genericFr,
+    this.enemyOfPlace = false,
   });
 
   final List<String> shop;
@@ -52,6 +53,11 @@ class ExcursionFlavor {
   final List<String> restFr;
   final List<String> generic;
   final List<String> genericFr;
+
+  /// The [enemy] lines are the place's own (detours.json, see
+  /// place_pools.dart), not a theme's: a fight there opens with one, then
+  /// the foe's own line.
+  final bool enemyOfPlace;
 }
 
 ExcursionFlavor flavorFor(MapTheme theme) {

@@ -1084,6 +1084,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Une rencontre en chemin. Le récit reprend là où vous alliez une fois ceci réglé.',
   },
+  'detour_leave_it': {
+    AppLanguage.en: 'Leave it and go on',
+    AppLanguage.fr: 'Passer son chemin',
+  },
+  'detour_takes_watch': {
+    AppLanguage.en: 'The detour takes a watch of the day.',
+    AppLanguage.fr: 'Le détour prend une veille de la journée.',
+  },
   'choice_fight_roster': {
     AppLanguage.en: 'Fight: {roster}',
     AppLanguage.fr: 'Combat : {roster}',
@@ -7482,6 +7490,52 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'flees_suffix': {
     AppLanguage.en: 'breaks and flees the fight!',
     AppLanguage.fr: 'panique et fuit le combat !',
+  },
+  // The fight-length rules (fight_length.dart).
+  'execute_log': {
+    AppLanguage.en: '{name} is struck down where it staggers.',
+    AppLanguage.fr: '{name} est abattu là où il chancelle.',
+  },
+  'pack_breaks_log': {
+    AppLanguage.en: 'Their leader is down, and the pack breaks.',
+    AppLanguage.fr: 'Leur chef est à terre, et la meute se disperse.',
+  },
+  'tide_turns_log': {
+    AppLanguage.en:
+        'The tide of the fight turns: your blows land {party}% harder, theirs {enemies}%.',
+    AppLanguage.fr:
+        'Le combat bascule\u00a0: vos coups portent {party}\u00a0% plus fort, les leurs {enemies}\u00a0%.',
+  },
+  // The professions' cores (profession_cores.dart).
+  'fury_full_log': {
+    AppLanguage.en: 'Your fury is full: the next blow lands heavy.',
+    AppLanguage.fr:
+        'Votre fureur est à son comble\u00a0: le prochain coup portera lourd.',
+  },
+  'fury_heavy_log': {
+    AppLanguage.en: 'Fury breaks loose: a heavy blow!',
+    AppLanguage.fr: 'La fureur se déchaîne\u00a0: un coup lourd\u00a0!',
+  },
+  'flurry_log': {
+    AppLanguage.en: 'A flurry: two quick strikes.',
+    AppLanguage.fr: 'Une rafale\u00a0: deux coups rapides.',
+  },
+  'watchfire_burn_log': {
+    AppLanguage.en: 'The Watchfire burns {name} for {n}.',
+    AppLanguage.fr: 'Le Feu de veille brûle {name} de {n}.',
+  },
+  'watchfire_round_log': {
+    AppLanguage.en: 'What is left of the Watchfire burns {name} for {n}.',
+    AppLanguage.fr: 'Ce qui reste du Feu de veille brûle {name} de {n}.',
+  },
+  'trail_ahead_log': {
+    AppLanguage.en: 'On the trail ahead: {face}.',
+    AppLanguage.fr: 'Sur la piste, à venir\u00a0: {face}.',
+  },
+  'tide_rises_log': {
+    AppLanguage.en: 'The tide rises: yours +{party}%, theirs +{enemies}%.',
+    AppLanguage.fr:
+        'La marée monte\u00a0: les vôtres +{party}\u00a0%, les leurs +{enemies}\u00a0%.',
   },
   'holds_back_suffix': {
     AppLanguage.en: "can't reach you in the press and holds back.",

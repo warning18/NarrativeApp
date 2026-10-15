@@ -8,6 +8,56 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.357.0+393]
+
+The new districts have their own voices.
+
+### Changed
+- **District pools.** Each of the eleven districts of the Ashen Quarter, the Drowned Cloister and the White Anchorage has its own detour pool: four lines each of shop, quest, treasure, rest and generic, written from the district's blurb, so a detour leaving the Ash-Market no longer sounds like the next biome over.
+
+## [1.356.0+392]
+
+Detours become places to explore (Wave 11): short written scenes off the road, paced so every chapter gets its share.
+
+- **Written scenes.** Narrative's first detour scenes are in the game: a landmark for each chapter from 2 to 7 (chapter 7's can't come yet: it has no road at rest), a scene or a stop for each biome, and a short scene in each district of Saltmouth, the Ashen Quarter, the Drowned Cloister and the White Anchorage. A scene plays beat by beat; each choice says what it did. You can back away at the first beat for free ("Leave it and go on"). A scene with a check or a fight takes a watch of the day; none eats a ration.
+- **Where detours happen.** Only when the party changes place or district: never between two scenes of the same place. From any scene, not just the main story beats, and on the camp's trips too, so chapter 4 now gets detours. None in the last chapter.
+- **When.** A road at rest starts at 20% and gains 10% for each quiet road, up to 60%. After a detour, a hunter or a familiar face, the next road is quiet. City streets halve the odds; a long road raises them. A crisis road holds nothing but owes a detour, paid later in the same chapter; a set piece owes nothing.
+- **Each chapter's landmark** comes once, on the chapter's first road at rest that nothing else holds.
+- **Fixes.** A detour line doesn't come back until the rest of its pool has. A place's own enemy line now opens fights there. Chapter 2's tunnel, insult and cordon are no longer counted as a beat every run passes.
+- **Simulator.** Every road is recorded, and runs can be written out as transcripts. Report: docs/simulation/detours.md.
+
+## [1.354.0+390]
+
+The professions' cores (v5.2 step 1, second half; docs/simulation/profession-cores.md). The hero plays their profession's core; companions keep their dice as they are.
+
+### Added
+- **Warrior, Fury.** Each hit landed, and each blow that gets through, adds 1 Fury. At 5, the next damaging face is a heavy blow (×2.5). The fight log says when it's full.
+- **Cleric, the Watchfire.** Every heal from the die also burns the enemy for twice its amount. Healing past full feeds a fire (up to half your max health) that takes blows first, and what is left burns at the round's turn. The cleric's heals don't tire.
+- **Mage, the Ash Well.**
+  - The well starts each fight empty.
+  - Mana from the die comes double.
+  - Spells cost 1 less.
+  - Mana left after a win heals 2% of your max health a point.
+- **Rogue, Flurry.** A damaging face strikes twice at 55%, each strike with its own critical.
+- **Ranger, the Trail.** The die is a deck: 5 of its 6 faces each run, none twice. The log names the face coming next.
+- **Measured (200 simulated runs):** fights run 7 to 14 rounds.
+
+  | Profession | Win rate | Rounds per fight |
+  |---|---|---|
+  | Cleric | 53% | 14.0 |
+  | Mage | 72% | 6.9 |
+  | Ranger | 65% | 9.8 |
+  | Rogue | 64% | 9.9 |
+  | Warrior | 63% | 9.4 |
+
+### Changed
+- **To keep the boss curve and the chapter-1 chain:**
+  - the Void Archon has 330 health (was 282);
+  - Claimant Vane has 370 (was 317);
+  - Claimant Tallis has 380 (was 248);
+  - Claimant Morrow has 560 (was 398);
+  - White Soldiers hit for 21 (was 19).
+
 ## [1.353.0+389]
 
 Detours find something to pick up, wherever they are.
@@ -16,6 +66,24 @@ Detours find something to pick up, wherever they are.
 - **Treasure in every place.** Every place pool of `detours.json` now has treasure lines, three each (five at the Cove camp), so a find in a city district no longer reads like a desert or a cliff.
 - **A deeper Cove camp.** The camp's pool gains 16 lines across its shop, quest, rest and generic kinds, some for later chapters, so the same six lines do not come round as often.
 - **Corneilles, not Corbeaux.** The French name of the Salt Crows is corrected where two lines still said Corbeaux; two French district blurbs name the Dernière Veille and the Corneilles correctly.
+
+## [1.351.0+387]
+
+Shorter fights: the default fight-length rules and the Tide (v5.2 step 1, docs/simulation/fight-length.md).
+
+### Changed
+- **Healing fatigue.** Each heal a member gives in a fight (face, skill or spell) heals 5% less than the one before, never under 30%.
+- **Execute.** A foe struck this round and left under 10% of its health falls. Never a boss.
+- **Morale.** A hurt foe (under 25%) flees at 50% each round. A fled foe pays part of its spoils, as a Skittish one does.
+- **The pack breaks.** When a pack's leader (its biggest) falls, each other foe flees at 70%. Neither morale nor the pack break plays in a boss's fight.
+- **The Tide.** From round 8, the party's blows grow 20% a round and the enemies' 10%, adding up; 18% for a boss's side. The fight log says when it turns and how far it has risen.
+- **Measured (200 simulated runs):**
+  - fights average 10.1 rounds instead of 16.5, at the same win rate (53.4% against 54.0%);
+  - the cleric's fights fall from 37 rounds to 13.5;
+  - the boss curve holds.
+
+### Added
+- The simulator's run summary counts the rounds fought (`roundsFought`). `simulatePlaythroughs` takes `clashOff`, so each rule can be left out to measure it (`fatigue`, `execute`, `morale`, `packBreak`, `tide`).
 
 ## [1.349.0+385]
 

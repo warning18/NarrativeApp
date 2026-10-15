@@ -92,7 +92,9 @@ extension _FightActions on _FightScreenState {
 
   /// What [spell] costs the player now: its mana, less a spell sign's
   /// saving (never under 1).
-  int _spellCost(SpellSpec spell) => _signs.spellCost(spell.manaCost);
+  int _spellCost(SpellSpec spell) => _core.core == ProfessionCore.ashWell
+      ? ashWellSpellCost(_signs.spellCost(spell.manaCost))
+      : _signs.spellCost(spell.manaCost);
 
   /// What a potion heals on top of its own: a perk's and a sign's.
   int get _potionBonus => _perks.potionBonus + _signs.potionBonus;
@@ -226,6 +228,11 @@ extension _FightActions on _FightScreenState {
           var healing = amount;
           if (_condition == BattlefieldCondition.shrine) {
             healing = (healing * shrineHealMultiplier).round();
+          }
+          // Healing fatigue counts the caster's spells as its heals (not
+          // the cleric's: the Watchfire doesn't tire).
+          if (_core.core != ProfessionCore.watchfire) {
+            healing = _length.fatigued(player.id, healing);
           }
           _fx(spellStyle, memberKey,
               element: spell.element,

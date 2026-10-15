@@ -312,7 +312,9 @@ void main() {
         }
         final rates = [for (final n in reached) n / walks];
         expect(rates.first, greaterThan(0.9), reason: '$hub: $rates');
-        expect(rates.last, inInclusiveRange(0.2, 0.75), reason: '$hub: $rates');
+        // Up to four in five since the fight-length rules (v1.351): a hurt
+        // foe may flee, and the last link is won a little more often.
+        expect(rates.last, inInclusiveRange(0.2, 0.8), reason: '$hub: $rates');
         for (var i = 1; i < rates.length; i++) {
           expect(rates[i], lessThanOrEqualTo(rates[i - 1]),
               reason: '$hub: $rates');

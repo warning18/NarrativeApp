@@ -16,6 +16,7 @@ import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
 import '../data/character_start.dart' show startingArmor;
 import '../data/contracts.dart';
+import '../data/detour_pacing.dart' show DetourPacing;
 import '../data/camp_state.dart' show harborHouseId;
 import '../data/factions.dart';
 import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
@@ -261,6 +262,7 @@ class PlayerSession {
     this.chapterStartDay = 1,
     this.sellswordFights = 0,
     this.alignmentRollsSinceAmbush = hunterCooldownRolls,
+    this.detourPacing = const DetourPacing(),
     this.runSeed = 0,
     this.diceUpgrades = const {},
     this.recruitedAllies = const [],
@@ -471,6 +473,10 @@ class PlayerSession {
   /// waits [hunterCooldownRolls] of them before the next (see
   /// alignment_events.dart).
   final int alignmentRollsSinceAmbush;
+
+  /// What the detours have done so far (see detour_pacing.dart): the pity
+  /// timer, the cooldown, a detour owed, the scenes met.
+  final DetourPacing detourPacing;
 
   /// Rolled once per new game: picks each chapter's condition (see
   /// chapter_conditions.dart). 0 on saves made before it existed.
@@ -875,6 +881,7 @@ class PlayerSession {
     int? chapterStartDay,
     int? sellswordFights,
     int? alignmentRollsSinceAmbush,
+    DetourPacing? detourPacing,
     int? runSeed,
     Map<String, DieUpgrades>? diceUpgrades,
     List<AllyState>? recruitedAllies,
@@ -987,6 +994,7 @@ class PlayerSession {
       sellswordFights: sellswordFights ?? this.sellswordFights,
       alignmentRollsSinceAmbush:
           alignmentRollsSinceAmbush ?? this.alignmentRollsSinceAmbush,
+      detourPacing: detourPacing ?? this.detourPacing,
       runSeed: runSeed ?? this.runSeed,
       diceUpgrades: diceUpgrades ?? this.diceUpgrades,
       recruitedAllies: recruitedAllies ?? this.recruitedAllies,
@@ -1103,6 +1111,7 @@ class PlayerSession {
         'chapterStartDay': chapterStartDay,
         'sellswordFights': sellswordFights,
         'alignmentRollsSinceAmbush': alignmentRollsSinceAmbush,
+        'detourPacing': detourPacing.toJson(),
         'runSeed': runSeed,
         'diceUpgrades': diceUpgradesToJson(diceUpgrades),
         'recruitedAllies': recruitedAllies.map((a) => a.toJson()).toList(),
@@ -1295,6 +1304,7 @@ class PlayerSession {
       alignmentRollsSinceAmbush:
           (json['alignmentRollsSinceAmbush'] as num?)?.toInt() ??
               hunterCooldownRolls,
+      detourPacing: DetourPacing.fromJson(json['detourPacing']),
       runSeed: (json['runSeed'] as num?)?.toInt() ?? 0,
       diceUpgrades: parseDiceUpgrades(json['diceUpgrades']),
       recruitedAllies: (json['recruitedAllies'] as List?)
@@ -4227,6 +4237,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         : min(hunterCooldownRolls, state.alignmentRollsSinceAmbush + 1);
     if (next == state.alignmentRollsSinceAmbush) return;
     state = state.copyWith(alignmentRollsSinceAmbush: next);
+    await _persist();
+  }
+
+  /// The detours' pacing after a road (see planRoad).
+  Future<void> setDetourPacing(DetourPacing pacing) async {
+    state = state.copyWith(detourPacing: pacing);
     await _persist();
   }
 

@@ -102,7 +102,9 @@ void main() {
         .read(playerSessionProvider.notifier)
         .loadSession(PlayerSession.fromJson({
           'raceId': 'human',
-          'professionId': 'mage',
+          // Not a mage: the Ash Well empties the mana a fight starts with
+          // (profession_cores.dart), and this test is about the Mirror.
+          'professionId': 'cleric',
           'ownedDiceIds': ['mana_test_die'],
           'equippedDiceId': 'mana_test_die',
           'maxHealth': 400,
