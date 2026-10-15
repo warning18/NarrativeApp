@@ -4,6 +4,9 @@
 1. **Six main clans, six mechanics.** The Choir and the Pit become minor patrons, with the four tribes. **The Open Hand, the player's own clan, starts minor and can be raised into a seventh main clan** (below).
 2. **Slots:** explained below, with a recommendation. The user's call is still open.
 3. **A neglected clan loses power, or becomes the player's nemesis** (below).
+4. **The Open Hand is raised through the banner and heritage recovery** already in the story. The Choir and the Pit keep their vows and pacts, aside, as minor patrons outside the slots. **Alignment stays a parallel system, as today**: clans only nudge it, as gifts do now.
+
+**What a gift is.** It is neither a weapon nor an item. It is a **clan mark on one kind of your die's faces**, like a sign today and like a Hades boon on attack, special or cast. For example, a Dominion mark on your Attack faces makes every Attack face you roll add Sentence. Some gifts are **new skill faces** of the clan's mechanic, put on the die through the existing skill offers. Weapons and armour stay items, as today.
 
 v2 replaces v1. The user's direction:
 - *"Make it more natural. The player adapts his play depending on the combination of cards/banners he earns. Make the main mechanics more different, like in Hades or Slice & Dice, specializing mainly by building his deck and die."*
@@ -33,11 +36,12 @@ The six clans proper (dominion, vigil, compact, mire, crows, penitents) dictate 
 **Minor patrons:** the Choir and the Pit, and the four tribes (giants, oni, tidekin, kindly).
 - Their gifts are neutral boons, like Hades' Chaos or Hermes, that fit any build.
 - They take no slot, are never Dominant, and own no territory.
-- The Choir's vows and the Pit's pacts stay as they are today, as their boons.
+- The Choir's vows and the Pit's pacts stay as they are today, as their boons, **aside**: outside the slot system, alongside whatever clans hold your faces.
+- **Alignment stays a parallel system.** Good, neutral and evil move as today; a clan's gift only nudges it by the clan's lean, as gifts do now. The Choir (good) and the Pit (evil) gate on alignment as today.
 
-**The Open Hand is your own clan.** It is the lost clan the story lets you remember (`open_hand_1…`, five stages today).
+**The Open Hand is your own clan.** It is the lost clan of your blood, which the story lets you remember: its stages (`open_hand_1…6`, `openHandStages`), the banner pieces (`bannerPiecesCollected`) and the banner raised (`bannerRaisedIn`).
 - It starts as a minor patron.
-- Raising it is a long quest: its stages, the Fishbasket Line, its last stage.
+- Raising it **is the banner and heritage recovery the story already tells**. Each stage recovered adds to its power, and raising the banner makes it a main clan. No new quest line is needed; Narrative may add a beat where the clan answers.
 - Once raised, it becomes a **seventh main clan**: it gets power, can take places, and opens its own mechanic, **Echo** (its faces copy another clan's mechanic on your die).
 - It's the only clan that can never be your nemesis: it is you.
 - Its rise is a natural hook for the ch5/ch7 upheavals.
@@ -258,4 +262,4 @@ Duo run: Compact + Mire with *Smelter's Rot*. Heated faces Rot, and long fights 
 2. **Slots, explained.** Your die's faces come in kinds: **Attack** faces, **Defend** faces, **Heal** faces, plus **spells** and **passives** (always on). A gift today attaches to one kind, as a sign does (`strike`, `guard`, `mend`, `spell`, `passive`). So a Dominion gift on Attack makes every Attack face add Sentence. The question: can each kind hold one clan only (the Dominion owns Attack, the Mire owns Defend…), or can two clans share a kind (Attack faces adding both Sentence and Rot)?
    - **Recommended: one clan per kind.** That gives four or five clans at most on a die, so the build reads at a glance. Choosing who fills Attack and who fills Defend *is* the strategy. It's also what makes the duos meaningful: a duo is the only way two mechanics meet on the same face.
 3. ~~Power decay~~: answered. Neglect costs power; hostility plus power makes a nemesis.
-4. **New:** should the Choir and the Pit keep their vows and pacts as the minor boons they are today (proposed), or lose them to keep the minor patrons all alike?
+4. ~~Choir and Pit~~: answered. They keep their vows and pacts, aside, and alignment stays parallel.
