@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.357.0+393]
+
+The new districts have their own voices.
+
+### Changed
+- **District pools.** Each of the eleven districts of the Ashen Quarter, the Drowned Cloister and the White Anchorage has its own detour pool: four lines each of shop, quest, treasure, rest and generic, written from the district's blurb, so a detour leaving the Ash-Market no longer sounds like the next biome over.
+- **A detour's cost, in the game's own words.** "The detour takes part of the day" (the day's parts are Dawn, Daytime, Dusk and Night), instead of a "watch" that the French rendered as "veille", the name of a clan.
+
 ## [1.356.0+392]
 
 Detours become places to explore (Wave 11): short written scenes off the road, paced so every chapter gets its share.
