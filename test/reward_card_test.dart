@@ -71,7 +71,8 @@ Widget _host(Widget Function(BuildContext) build) => MaterialApp(
       ),
     );
 
-RewardCardData _quest(BuildContext context, {bool swapped = true}) {
+RewardCardData _quest(BuildContext context,
+    {bool swapped = true, bool banner = false}) {
   const ink = InkColors.dark;
   return questRewardCard(
     context,
@@ -86,6 +87,7 @@ RewardCardData _quest(BuildContext context, {bool swapped = true}) {
     xpNeeded: 600,
     level: 7,
     leveledUp: false,
+    banner: banner,
     found: [
       rewardItemLine(context,
           itemId: 'mystic_wand',
@@ -162,7 +164,8 @@ void main() {
                   xpAfter: 150,
                   xpNeeded: 800,
                   level: 8,
-                  leveledUp: true),
+                  leveledUp: true,
+                  banner: false),
               onDone: () {}),
         )));
     await tester.pump(const Duration(seconds: 1));
@@ -221,5 +224,44 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
     expect(closed, isTrue);
     expect(find.byKey(const Key('reward_card')), findsNothing);
+  });
+
+  testWidgets(
+      'quest complete, banner-led: the chapter\u2019s art and two counters',
+      (tester) async {
+    tester.view.physicalSize = const Size(400, 760);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(_host((context) => Center(
+          child: RewardCard(data: _quest(context, banner: true), onDone: () {}),
+        )));
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byKey(const Key('reward_hero')), findsOneWidget);
+    expect(
+        tester.widget<Image>(find.byKey(const Key('reward_hero'))).image,
+        isA<AssetImage>().having((a) => a.assetName, 'asset',
+            'assets/visuals/chapters/chapter_1.png'));
+    expect(find.text('QUEST COMPLETE \u00b7 CHAPTER 1'), findsOneWidget);
+    // Gold and XP are counters, not rows; no bar.
+    expect(find.byKey(const Key('reward_gold')), findsOneWidget);
+    expect(find.text('+255'), findsOneWidget);
+    expect(find.text('+200'), findsOneWidget);
+    expect(find.text('GOLD'), findsOneWidget);
+    expect(find.text('XP'), findsOneWidget);
+    expect(find.byKey(const Key('reward_bar')), findsNothing);
+    // The rest is as on card A.
+    expect(find.byKey(const Key('reward_item_mystic_wand')), findsOneWidget);
+    expect(find.byKey(const Key('reward_note_chip')), findsOneWidget);
+    await _shot(tester, 'reward_quest_banner');
+    expect(tester.takeException(), isNull);
+  });
+
+  test('every chapter has its art strip', () {
+    for (var chapter = 0; chapter <= 9; chapter++) {
+      expect(File(chapterArtPath(chapter)).existsSync(), isTrue,
+          reason: 'chapter $chapter');
+    }
+    expect(chapterArtPath(0), chapterArtPath(1));
+    expect(chapterArtPath(9), chapterArtPath(8));
   });
 }
