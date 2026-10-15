@@ -133,6 +133,66 @@ Notes on the table:
 - the link decides *how often* it gives to your profession;
 - a weak link never reaches rank II.
 
+## Loyalty has a price: the rivals cool
+
+You asked: *"The more you are linked to a unique clan, the more malus you may receive from others to compensate."*
+
+**The malus follows the relations map** (relations.json, steps 1 to 7). Every clan does not cool at once:
+- your patron's **rivals** (Blood feud, War, Hostile: steps 1–3) grow colder;
+- its **tense** neighbours (step 4) cool a little;
+- its **allies** (Trade, Allies: steps 6–7) warm slightly;
+- the rest (step 5) don't move.
+
+**What exists today.** factions.dart already does part of this:
+- a gain with a clan costs each of its rivals half of it (`rivalRippleShare`), and its allies share a quarter (`allyRippleShare`);
+- swearing costs each rival 20, once (`swornRivalCost`), and keeps them at the top of Known while you're Sworn (`swornRivalCap`).
+
+v5.1 adds what makes loyalty *deepen* the cost over time.
+
+**The drift, each chapter you end with your patron at:**
+
+| Your patron | Its rivals (1–3) | Tense (4) | Allies (6–7) |
+|---|---|---|---|
+| Friendly | nothing | nothing | nothing |
+| Trusted | −2 | nothing | nothing |
+| Sworn | −4 | −2 | +1 |
+
+**The maluses are social and economic, never stat cuts:**
+- **Their standing falls.** That brings the rest along through tiers that already exist:
+  - shops charge more (Wary ×1.15, Hostile ×1.40, none at Hunted);
+  - offers come less often, then not at all (the standing × link rule above).
+- **Their twists you hold weaken.** At Hostile they work at half (standing × link).
+- **Their hunters, at Sworn.** A rival at Hostile or below sends hunters onto the roads, through the hunter ambush system that alignment hunters already use:
+  - 4% a road step per Hostile rival, 8% at Hunted;
+  - capped at the alignment hunters' 15%.
+- **No combat penalty.** Committing to one clan never makes you weaker in a fight; it makes the world around you colder.
+
+**Shown where you'd look for it:** a line on the clan tab and the radar, such as *"Dominion's favour cools the Crows (−4 this chapter)"* **[UX]**, with the words by **[N]**.
+
+**Tie to power and the nemesis.** A rival that keeps cooling toward you is the natural nemesis candidate (see *Neglect and the nemesis*). When a rival reaches Hunted through drift, it is the clan that can become your nemesis, and its champion the one that hunts you.
+
+### What a fully loyal run costs
+
+**The loyal run assumed:** Trusted with the patron in chapter 3, Sworn in chapter 5, eight chapters, every rival starting near 0. Today's ripple and the swearing cost already take each rival to about −50 (Hostile). The drift adds 2 × 2 + 4 × 4 = **−20 more by the end: Hunted (−70)**. Tense neighbours end at about −8 (Wary).
+
+| Patron | Rivals by the end (Hunted) | Tense (Wary) | Warming allies | What it costs |
+|---|---|---|---|---|
+| **Dominion** | Vigil, Mire, Penitents | Compact | Crows | **Three clans closed:** no shops, offers or twists from half the map, and hunters from three directions |
+| **Penitents** | Dominion, Compact, Mire | — | Vigil | Three clans closed |
+| **Vigil** | Dominion, Crows | — | Compact, Penitents | Two |
+| **Mire** | Dominion, Penitents | — | Compact | Two |
+| **Compact** | Penitents | Dominion | Vigil, Mire | One, and a Wary Dominion |
+| **Crows** | Vigil | — | Dominion | One |
+
+**In numbers, for a Dominion loyalist:**
+- **About half the offer pool is gone** by chapter 6: three of the six clans give nothing.
+- **Shopping in their towns is shut.**
+- **On the roads, hunters reach about 15% a step** in the last chapters (the cap).
+
+A Crows loyalist pays a sixth of that. **The asymmetry is the relations map's**, and it makes the choice of patron a choice of enemies too. A player who wants an easy road picks the Crows; one who wants the Dominion's Fire pays for it.
+
+**Not simulated:** the simulator's politics doesn't run the chapter drift or road hunters yet. The numbers above follow from today's ripple constants and the tier table.
+
 ## How a specialisation arrives: the clan's offers
 
 - **Subclan gifts are clan offers.** From **Trusted** with a clan, its subclans that are your friends (v3's table) add their gifts to that clan's offers, filtered by **your profession**. You pick one like any gift, and it stays for the run.
@@ -397,5 +457,9 @@ A clan the player keeps turning away from does not just fade.
 
 1. **The new cores:** warrior Fury, rogue Flurry, and the cleric's Watchfire with its cost. Right feel?
 2. **The cleric's cost and the Tide:** with the Tide, the Watchfire needs no extra cost; without it, healing spells −40%. Agreed?
-3. **Standing × link:** does the table read right? (Hostile gives nothing; your held twists work at half; a nemesis puts them to sleep.)
+3. **Standing × link,** and **the price of loyalty:** do the tables read right?
+   - Hostile gives nothing, and your held twists from it work at half; a nemesis puts them to sleep.
+   - Rivals drift −2 a chapter at Trusted and −4 at Sworn.
+   - Hunters come at Sworn.
+   - A Dominion or Penitents loyalist ends with three clans closed; a Crows loyalist with one.
 4. **Still open:** the Tide, and how strong a specialisation should be (now +0 to +12 over its core).
