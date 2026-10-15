@@ -3029,7 +3029,10 @@
     "rumour": "a door in the fen wall with no house behind it",
     "rumour_fr": "une porte dans un mur du marais sans maison derrière",
     "where": {
-      "biome": "fen"
+      "biome": [
+        "fen",
+        "tear"
+      ]
     },
     "minChapter": 4,
     "maxChapter": 6,
@@ -3179,7 +3182,10 @@
     "rumour": "an archivist’s table under a tarp, with a page left blank for you",
     "rumour_fr": "la table d’une archiviste sous une bâche, une page laissée blanche pour vous",
     "where": {
-      "biome": "fen"
+      "biome": [
+        "fen",
+        "tear"
+      ]
     },
     "minChapter": 4,
     "maxChapter": 6,
@@ -3711,7 +3717,10 @@
     "rumour": "a white sash tied to a post, dry in the wet",
     "rumour_fr": "une écharpe blanche nouée à un poteau, sèche dans l’humidité",
     "where": {
-      "biome": "sea_cliffs"
+      "biome": [
+        "sea_cliffs",
+        "tear"
+      ]
     },
     "minChapter": 6,
     "maxChapter": 7,

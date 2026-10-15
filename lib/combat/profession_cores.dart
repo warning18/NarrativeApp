@@ -110,7 +110,14 @@ class TrailDeck {
   final Random _random;
   final List<int> _run = [];
 
+  /// The last [draw] opened a run (its first face) and closed one (its
+  /// last, the Verdict: specialisations.dart).
+  bool drewFirst = false;
+  bool drewVerdict = false;
+  bool _fresh = false;
+
   void _refill() {
+    _fresh = true;
     final order = List<int>.generate(faceCount, (i) => i)..shuffle(_random);
     final draws = min(trailDrawsPerRun, faceCount);
     _run.addAll(order.take(draws));
@@ -120,7 +127,11 @@ class TrailDeck {
   int draw() {
     if (faceCount <= 0) return 0;
     if (_run.isEmpty) _refill();
-    return _run.removeAt(0);
+    drewFirst = _fresh;
+    _fresh = false;
+    final index = _run.removeAt(0);
+    drewVerdict = _run.isEmpty;
+    return index;
   }
 
   /// The face index the next [draw] gives (a new run is dealt if this one

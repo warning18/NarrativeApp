@@ -217,6 +217,10 @@ double dodgeChanceFor(int dexterity) => min(30, 5 + dexterity * 1.5);
 /// thing everywhere it can happen.
 const double _criticalDamageMultiplier = 1.5;
 
+/// [_criticalDamageMultiplier], for the rules that change what a
+/// critical hit is worth (specialisations.dart).
+const double criticalDamageMultiplier = _criticalDamageMultiplier;
+
 int _withCritical(int damage, int luck, Random? random,
     [double critChanceBonus = 0]) {
   if (damage <= 0 || random == null) return damage;

@@ -128,6 +128,7 @@ Future<ProviderContainer> _open(WidgetTester tester,
       skillTreesSchema,
       itemsSchema,
       spellsSchema,
+      specialisationsSchema,
     ]) {
       await container.read(gameDbProvider(schema).notifier).whenLoaded();
     }
