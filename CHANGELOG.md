@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.366.0+402]
+
+The clans' sub-clans bend your specialisation, and the clan raises it to rank II (v5.2, step 2b).
+
+- **Thirty sub-clan gifts.** Once you hold a specialisation and are Trusted by its clan, each of the clan's two sub-clans offers its own twist (a rare gift, in the sub-clan's voice): a *variant* changes how it works (the Tar-Hands' Pain strikes bleed the foe, the Last Watch's Defend feeds the fire, the Drowned Debt's kill deals a new run of the Trail...), an *upgrade* raises its number.
+- **Rank II.** Sworn to the clan, it offers rank II of its specialisation (heroic): half again its number.
+- **Everywhere they show:** in the clan offers with the specialisation they bend, in the fight log, in the spoils (the Whisper Ledger's stolen gold) and on the ship (the Brig-Born's Broadside, +15% to the guns).
+- **Balance:** each measured against its specialisation alone in 60 simulated runs; the strongest, One Witness, Once (the Tribunal), now refills a third of the Well from the fourth round. The boss curve holds. Report: docs/simulation/specialisations.md.
 ## [1.365.0+401]
 
 The gifts say what they do.

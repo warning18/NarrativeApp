@@ -227,8 +227,9 @@ const int rotTurns = 99;
 
 /// [effects] with the Rot of a critical hit of [hit] added: the poison
 /// there grows by it (the Rot stacks, where poison refreshes).
-List<StatusEffect> withRot(List<StatusEffect> effects, int hit) {
-  final add = hit <= 0 ? 0 : max(1, (hit * rotShare).round());
+List<StatusEffect> withRot(List<StatusEffect> effects, int hit,
+    {double share = rotShare}) {
+  final add = hit <= 0 ? 0 : max(1, (hit * share).round());
   if (add == 0) return effects;
   final poison = poisonDamageFor(effects);
   return applyStatusEffect(
@@ -270,10 +271,11 @@ const double fenPoisonShare = 0.5;
 const int fenPoisonTurns = 3;
 
 /// The Fen Guide's poison for a ranger whose strike is [strike].
-StatusEffect fenPoison(int strike) => StatusEffect(
-    type: StatusEffectType.poison,
-    remainingTurns: fenPoisonTurns,
-    magnitude: max(1, (strike * fenPoisonShare).round()));
+StatusEffect fenPoison(int strike, {double share = fenPoisonShare}) =>
+    StatusEffect(
+        type: StatusEffectType.poison,
+        remainingTurns: fenPoisonTurns,
+        magnitude: max(1, (strike * share).round()));
 
 // --- The words -------------------------------------------------------------
 

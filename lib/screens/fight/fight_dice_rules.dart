@@ -203,8 +203,8 @@ extension _FightDiceRules on _FightScreenState {
         actor.isPlayer &&
         strike &&
         _core.has(Spec.relicbreaker) &&
-        _mana >= relicSureCritMana;
-    if (sureCrit) _mana -= relicSureCritMana;
+        _mana >= _core.mods.relicThreshold;
+    if (sureCrit) _mana -= _core.mods.relicThreshold;
     final result = resolvePlayerFace(
       played,
       _skillsForFace(actor, played, skills),
@@ -732,11 +732,21 @@ extension _FightDiceRules on _FightScreenState {
     final faces =
         hero.isEmpty ? const <Map<String, dynamic>>[] : hero.first.dieFaces;
     if (faces.isEmpty) return;
-    final index = _core.deckFor(faces.length, _random).peek();
-    final assigned = hero.first.diceSkillAssignments['$index'];
-    final name = assigned != null && assigned.isNotEmpty
-        ? skillDisplayName(assigned, language: lang)
-        : faces[index]['faceName']?.toString() ?? '';
+    // The Returned see two faces ahead (spec_variants.dart).
+    final ahead = _core
+        .deckFor(faces.length, _random)
+        .peekAhead(_core.has(Spec.fenGuide) ? _core.mods.trailSight : 1);
+    String nameOf(int index) {
+      final assigned = hero.first.diceSkillAssignments['$index'];
+      return assigned != null && assigned.isNotEmpty
+          ? skillDisplayName(assigned, language: lang)
+          : faces[index]['faceName']?.toString() ?? '';
+    }
+
+    final name = [
+      for (final index in ahead)
+        if (nameOf(index).isNotEmpty) nameOf(index),
+    ].join(', ');
     if (name.isEmpty) return;
     entries.add(_LogEntry(
         trFor(lang, 'trail_ahead_log').replaceAll('{face}', name),
@@ -773,20 +783,33 @@ extension _FightDiceRules on _FightScreenState {
         int hit(PlayerActionResult r) {
           if (!r.isCritical) {
             if (_core.has(Spec.ledgerKnife)) {
-              _core.ledgerChain += ledgerChainStep;
+              _core.ledgerChain += _core.mods.ledgerStep;
             }
             return r.damageDealt;
           }
           _core.crits++;
           if (!_core.has(Spec.ledgerKnife)) return r.damageDealt;
-          _core.ledgerChain = 0;
+          if (_core.mods.critsSteal) _core.gold += ledgerStealGold;
+          if (!_core.mods.chainKept) _core.ledgerChain = 0;
           return ledgerCritical(r.damageDealt);
         }
 
         result = coreResult(result,
             damage: flurryDamage(hit(result), hit(second)),
             mana: result.manaGained +
-                (_core.has(Spec.relicbreaker) ? _core.crits : 0));
+                (_core.has(Spec.relicbreaker)
+                    ? _core.crits * _core.mods.relicMana
+                    : 0));
+        // The Ember Sisters: the mana of a critical hit heals too.
+        if (_core.has(Spec.relicbreaker) &&
+            _core.mods.relicHealShare > 0 &&
+            _core.crits > 0) {
+          hero.currentHealth = min(
+              hero.maxHealth,
+              hero.currentHealth +
+                  (hero.maxHealth * _core.mods.relicHealShare * _core.crits)
+                      .round());
+        }
         entries
             .add(_LogEntry(trFor(lang, 'flurry_log'), _LogKind.playerDamage));
       case ProfessionCore.fury:
@@ -819,7 +842,7 @@ extension _FightDiceRules on _FightScreenState {
           return;
         }
         result = coreResult(result,
-            damage: (result.damageDealt * verdictMultiplier).round());
+            damage: (result.damageDealt * _core.mods.verdict).round());
         _core.piercing = true;
         entries.add(
             _LogEntry(trFor(lang, 'spec_verdict_log'), _LogKind.playerDamage));
@@ -837,22 +860,31 @@ extension _FightDiceRules on _FightScreenState {
   void _applySpecsOnHit(_PartyMember hero, _EnemyMember target, int landed,
       List<_LogEntry> entries, AppLanguage lang) {
     if (landed <= 0) return;
-    if (_core.heavy &&
-        _core.has(Spec.lanternVanguard) &&
-        isEvilFoe(target.data)) {
-      final heal = (landed * vanguardEvilHealShare).round();
-      if (heal > 0) {
-        hero.currentHealth = min(hero.maxHealth, hero.currentHealth + heal);
+    final mods = _core.mods;
+    if (_core.heavy && _core.has(Spec.lanternVanguard)) {
+      if (isEvilFoe(target.data)) {
+        final heal = (landed * mods.vanguardEvilHeal).round();
+        if (heal > 0) {
+          hero.currentHealth = min(hero.maxHealth, hero.currentHealth + heal);
+          entries.add(_LogEntry(
+              trFor(lang, 'spec_vanguard_heal_log').replaceAll('{n}', '$heal'),
+              _LogKind.playerHeal));
+        }
+      }
+      // The Inquisition: the heavy blow weakens.
+      if (mods.vanguardWeakens && target.isAlive) {
+        target.statusEffects =
+            applyStatusEffect(target.statusEffects, specWeaken);
         entries.add(_LogEntry(
-            trFor(lang, 'spec_vanguard_heal_log').replaceAll('{n}', '$heal'),
-            _LogKind.playerHeal));
+            _statusInflictedMessage(specWeaken, target.displayName, lang),
+            _LogKind.info));
       }
     }
     if (!target.isAlive) return;
     if (_core.has(Spec.feverBlade) && _core.crits > 0) {
       for (var i = 0; i < _core.crits; i++) {
         target.statusEffects =
-            withRot(target.statusEffects, (landed / 2).round());
+            mods.withRotOf(target.statusEffects, (landed / 2).round());
       }
       entries.add(_LogEntry(
           trFor(lang, 'spec_rot_log')
@@ -860,18 +892,32 @@ extension _FightDiceRules on _FightScreenState {
               .replaceAll('{n}', '${poisonDamageFor(target.statusEffects)}'),
           _LogKind.info));
     }
+    // The Verdict's trap: the Scaffolders take a second foe, the
+    // Quarrymen break the guard.
     if (_core.verdict && _core.has(Spec.trapwright)) {
-      target.statusEffects = applyStatusEffect(target.statusEffects, trapStun);
-      entries.add(_LogEntry(
-          _statusInflictedMessage(trapStun, target.displayName, lang),
-          _LogKind.info));
+      final caught = [
+        target,
+        ..._enemies.where((e) => !identical(e, target)),
+      ].where((e) => e.isAlive).take(mods.stunTargets);
+      for (final e in caught) {
+        e.statusEffects = applyStatusEffect(e.statusEffects, mods.stun);
+        if (mods.trapBreaksGuard) e.guard = 0;
+        entries.add(_LogEntry(
+            _statusInflictedMessage(mods.stun, e.displayName, lang),
+            _LogKind.info));
+      }
     }
     if (_core.firstOfRun && _core.has(Spec.fenGuide)) {
-      final poison = fenPoison((landed / 2).round());
+      final poison = mods.fenPoisonFor((landed / 2).round());
       target.statusEffects = applyStatusEffect(target.statusEffects, poison);
       entries.add(_LogEntry(
           _statusInflictedMessage(poison, target.displayName, lang),
           _LogKind.info));
+      // The Heron's Wake: and slows.
+      if (mods.fenSlows) {
+        target.statusEffects =
+            applyStatusEffect(target.statusEffects, specWeaken);
+      }
     }
   }
 
@@ -905,11 +951,11 @@ extension _FightDiceRules on _FightScreenState {
     if (targets.isEmpty) return;
     final raw = (healing *
             watchfireHealBurnShare *
-            (_core.has(Spec.beacon) ? beaconBurnMultiplier : 1))
+            (_core.has(Spec.beacon) ? _core.mods.beaconBurn : 1))
         .round();
     for (final target in targets) {
       // The Beacon's burn is Light (specialisations.dart).
-      final burn = _core.has(Spec.beacon)
+      final burn = _burnsLight
           ? _landHitOnEnemy(target, raw, beaconElement, entries, lang,
               pierce: true)
           : raw;
@@ -932,10 +978,11 @@ extension _FightDiceRules on _FightScreenState {
     final hero = _party.where((m) => m.isPlayer);
     if (hero.isNotEmpty) {
       final h = hero.first;
-      h.currentHealth =
-          min(h.maxHealth, h.currentHealth + (burned * ashenMendShare).round());
+      h.currentHealth = min(h.maxHealth,
+          h.currentHealth + (burned * _core.mods.ashenMend).round());
       if (h.statusEffects.isNotEmpty) {
-        h.statusEffects = h.statusEffects.skip(1).toList();
+        h.statusEffects =
+            h.statusEffects.skip(_core.mods.ashenCleanse).toList();
       }
     }
     entries.add(_LogEntry(trFor(lang, 'spec_ashen_log'), _LogKind.mana));
@@ -945,18 +992,27 @@ extension _FightDiceRules on _FightScreenState {
   /// true when that ends the fight.
   bool _burnWatchfire(List<_LogEntry> entries, AppLanguage lang) {
     _longVigil(entries, lang);
+    _tribunalRefill(entries, lang);
     if (_core.fire <= 0) return false;
     final first = _firstLivingEnemy();
     final targets = _core.has(Spec.beacon)
         ? _enemies.where((e) => e.isAlive).toList()
         : [if (first != null) first];
     final raw = (watchfireBurn(_core.fire) *
-            (_core.has(Spec.beacon) ? beaconBurnMultiplier : 1))
+            (_core.has(Spec.beacon) ? _core.mods.beaconBurn : 1))
         .round();
-    _core.fire = 0;
+    // The Wickwardens keep the fire one round more, once it is fed.
+    if (_core.mods.fireLingers &&
+        _core.has(Spec.beacon) &&
+        !_core.fireLingered) {
+      _core.fireLingered = true;
+    } else {
+      _core.fire = 0;
+      _core.fireLingered = false;
+    }
     if (targets.isEmpty) return false;
     for (final target in targets) {
-      final burn = _core.has(Spec.beacon)
+      final burn = _burnsLight
           ? _landHitOnEnemy(target, raw, beaconElement, entries, lang,
               pierce: true)
           : raw;
@@ -978,8 +1034,13 @@ extension _FightDiceRules on _FightScreenState {
     final hero = _party.where((m) => m.isPlayer && !m.isKnockedOut);
     final target = _firstLivingEnemy();
     if (hero.isEmpty || target == null) return;
-    final burn = censerBurn(overflow, hero.first.baseDamage);
+    final burn = _core.mods.censerBurnFor(overflow, hero.first.baseDamage);
     target.currentHealth = max(0, target.currentHealth - burn);
+    // The Inquisition's smoke weakens.
+    if (_core.mods.censerWeakens && target.isAlive) {
+      target.statusEffects =
+          applyStatusEffect(target.statusEffects, specWeaken);
+    }
     entries.add(_LogEntry(
         trFor(lang, 'spec_censer_log')
             .replaceAll('{name}', target.displayName)
@@ -993,11 +1054,70 @@ extension _FightDiceRules on _FightScreenState {
     if (!_core.has(Spec.longVigil)) return;
     final hero = _party.where((m) => m.isPlayer && !m.isKnockedOut);
     if (hero.isEmpty) return;
-    final mend = longVigilMend(hero.first.currentHealth, hero.first.maxHealth);
+    final mend =
+        _core.mods.vigilMend(hero.first.currentHealth, hero.first.maxHealth);
     if (mend <= 0) return;
     hero.first.currentHealth += mend;
     entries.add(_LogEntry(
         trFor(lang, 'spec_vigil_log').replaceAll('{n}', '$mend'),
         _LogKind.playerHeal));
+  }
+
+  /// The fire's burns are Light under the Beacon, and the Road Exorcists'.
+  bool get _burnsLight =>
+      _core.has(Spec.beacon) ||
+      (_core.has(Spec.ashenHand) && _core.mods.ashenLight);
+
+  /// The Tribunal: once a fight, from the fourth round, an empty Well is
+  /// filled by a third (spec_variants.dart).
+  void _tribunalRefill(List<_LogEntry> entries, AppLanguage lang) {
+    if (!_core.has(Spec.censerMage) ||
+        !_core.mods.wellRefill ||
+        _core.wellRefilled ||
+        _roundsStarted < tribunalFromRound ||
+        _mana > 0) {
+      return;
+    }
+    _core.wellRefilled = true;
+    _mana = _core.mods.wellRefillOf(_maxMana);
+    entries.add(_LogEntry(trFor(lang, 'spec_tribunal_log'), _LogKind.mana));
+  }
+
+  /// The variants on a kill (spec_variants.dart): the Brig-Born's heal,
+  /// the Drowned Debt's new run of the Trail, the Barkbleeders' Rot passed
+  /// on to the next foe.
+  void _feedSpecKills(List<_LogEntry> entries, AppLanguage lang) {
+    final mods = _core.mods;
+    final heroes = _party.where((m) => m.isPlayer && !m.isKnockedOut);
+    for (final enemy in _enemies) {
+      if (enemy.isAlive || !_core.fallen.add(enemy.key)) continue;
+      if (heroes.isEmpty) continue;
+      final hero = heroes.first;
+      if (_core.has(Spec.berserker) && mods.killHealShare > 0) {
+        final heal = min(hero.maxHealth - hero.currentHealth,
+            (hero.maxHealth * mods.killHealShare).round());
+        if (heal > 0) {
+          hero.currentHealth += heal;
+          entries.add(_LogEntry(
+              trFor(lang, 'sign_log_kill_heal').replaceAll('{n}', '$heal'),
+              _LogKind.playerHeal));
+        }
+      }
+      if (_core.has(Spec.corsairsEye) && mods.killReshuffles) {
+        _core._deck?.reshuffle();
+      }
+      final rot = poisonDamageFor(enemy.statusEffects);
+      if (_core.has(Spec.feverBlade) && mods.rotPasses && rot > 0) {
+        final next = _firstLivingEnemy();
+        if (next != null) {
+          next.statusEffects = withRot(next.statusEffects, rot, share: 1);
+          entries.add(_LogEntry(
+              trFor(lang, 'spec_rot_log')
+                  .replaceAll('{name}', next.displayName)
+                  .replaceAll('{n}', '${poisonDamageFor(next.statusEffects)}'),
+              _LogKind.info));
+        }
+      }
+    }
   }
 }

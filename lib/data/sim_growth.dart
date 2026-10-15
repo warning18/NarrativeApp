@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import '../combat/dice_faces.dart' show isAssignableFace;
+import '../combat/spec_variants.dart' show SpecVariantInfo;
 import '../combat/specialisations.dart' show SpecInfo;
 import '../combat/spells.dart';
 import '../models/story_node.dart';
@@ -36,10 +37,13 @@ class SimGrowthTables {
     this.signs = const {},
     this.clans = ClanData.empty,
     this.specs = const {},
+    this.specVariants = const {},
   });
 
-  /// specialisations.json parsed: the main clans' specialisations.
+  /// specialisations.json parsed: the main clans' specialisations; and
+  /// spec_variants.json, their sub-clans' variants and ranks II.
   final Map<String, SpecInfo> specs;
+  final Map<String, SpecVariantInfo> specVariants;
   final Map<String, dynamic> skills;
   final Map<String, dynamic> skillTrees;
   final Map<String, dynamic> items;
@@ -56,6 +60,7 @@ class SimGrowthTables {
         items: items,
         spells: spells,
         specs: specs,
+        specVariants: specVariants,
       );
 }
 
@@ -463,6 +468,7 @@ class SimGrowth {
         luck: character.luck + effects(alignment).stat('luck'),
         specs: tables.specs,
         heldSpecIds: character.specIds,
+        specVariants: tables.specVariants,
       );
 
   int _takeOffers(int alignment, Iterable<String> flags, Random random) {
