@@ -423,6 +423,7 @@ extension _FightView on _FightScreenState {
             message: tr(ref, 'tamper_silence_desc'),
             child: _telegraphChip(Icons.volume_off, tr(ref, 'tamper_silence')),
           ),
+        _buildTideMark(),
       ],
     );
   }
@@ -527,14 +528,14 @@ extension _FightView on _FightScreenState {
     return Row(
       children: [
         Expanded(child: _buildBattleChips()),
-        _buildTideMark(),
         _telegraphChip(
             Icons.flag_outlined, '${tr(ref, 'round_label')} $_roundsStarted'),
       ],
     );
   }
 
-  /// The Tide (fight_length.dart), next to the round count: once it rises
+  /// The Tide (fight_length.dart), the last of the battle chips, by the
+  /// round count: once it rises
   /// "Tide ×N" with what it adds to each side's blows; a few rounds before,
   /// when it will.
   Widget _buildTideMark() {
@@ -568,11 +569,7 @@ extension _FightView on _FightScreenState {
     } else {
       return const SizedBox.shrink();
     }
-    return Padding(
-      key: const Key('fight_tide_mark'),
-      padding: const EdgeInsets.only(right: 4),
-      child: chip,
-    );
+    return KeyedSubtree(key: const Key('fight_tide_mark'), child: chip);
   }
 
   // --- Dice tray -----------------------------------------------------------
