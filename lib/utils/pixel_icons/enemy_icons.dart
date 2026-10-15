@@ -27,14 +27,6 @@ class EnemyIcons {
     'claimant_morrow': 'inquisition_high_warden',
     'claimant_tallis': 'angel_sentinel',
     'tear_herald': 'void_archon',
-    // v1.377's rival hunters (Narrative's rival-hunters.md), until UX draws
-    // them from their looks.
-    'vigil_spearman_halvard': 'white_soldier',
-    'vigil_candlebearer_ysel': 'cultist_acolyte',
-    'compact_quarryman_brodin': 'slum_thug',
-    'compact_anvil_deaf_tove': 'masked_penitent',
-    'mire_returned_sedge': 'hollow_reflection',
-    'mire_herons_wake_wen': 'bone_sexton',
   };
 
   static const List<String> allIds = [
