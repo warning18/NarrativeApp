@@ -461,7 +461,11 @@ class _FightLength {
 /// The hero's profession core over a fight (profession_cores.dart): Fury
 /// built up, the Watchfire's fire, the Trail's deck.
 class _HeroCore {
-  _HeroCore(this.core, {this.specs = const {}, SpecMods? mods})
+  _HeroCore(this.core,
+      {this.specs = const {},
+      this.halved = const {},
+      this.roundOf,
+      SpecMods? mods})
       : mods = mods ?? SpecMods.none;
 
   final ProfessionCore core;
@@ -470,7 +474,14 @@ class _HeroCore {
   /// numbers their variants, upgrades and ranks set (spec_variants.dart).
   final Set<Spec> specs;
   final SpecMods mods;
-  bool has(Spec spec) => specs.contains(spec);
+
+  /// The specialisations a cold clan halves (specsByStanding): they play
+  /// the odd rounds only, [roundOf] telling the round being played.
+  final Set<Spec> halved;
+  final int Function()? roundOf;
+  bool has(Spec spec) =>
+      specs.contains(spec) &&
+      (!halved.contains(spec) || halvedPlaysIn(roundOf?.call() ?? 1));
 
   /// What the variants keep over the fight: the gold stolen, the enemies
   /// whose fall was felt, the Tribunal's refill, the Wickwardens' lingering

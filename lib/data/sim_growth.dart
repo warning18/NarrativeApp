@@ -250,7 +250,9 @@ class SimGrowth {
     }
   }
 
-  /// A new chapter reached: an offer from chapter 2 on, once (offers).
+  /// A new chapter reached: an offer from chapter 2 on, once (offers),
+  /// and the price of loyalty (applyLoyaltyDrift: the patron's rivals
+  /// cool).
   void chapterReached(int chapter) {
     if (mode != SimProgression.offers ||
         chapter < 2 ||
@@ -258,6 +260,8 @@ class SimGrowth {
       return;
     }
     chapterOffersThrough = chapter;
+    politics =
+        applyLoyaltyDrift(politics, data: tables.clans, chapter: chapter).state;
     pending.add(OfferTicket(source: OfferSource.chapter, detail: '$chapter'));
   }
 

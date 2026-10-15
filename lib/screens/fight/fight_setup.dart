@@ -487,6 +487,7 @@ extension _FightSetup on _FightScreenState {
           _LogKind.info,
         ),
       );
+      _log.addAll(_specStandingNotes(lang));
       if (condition != null) {
         _log.add(_LogEntry(
           '${trFor(lang, conditionLabelKey(condition))}: '

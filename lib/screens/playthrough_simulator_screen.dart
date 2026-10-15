@@ -913,6 +913,9 @@ _SimResult _simulate(
         perks: perks,
         clash: sim.clash,
         clashOff: sim.clashOff,
+        clanStanding: growth == null
+            ? null
+            : (id) => growth.politics.standingOf(id, growth.tables.clans),
       );
       // Every pact runs one fight on, won or lost.
       c.heldSigns = countDownPacts(c.heldSigns);

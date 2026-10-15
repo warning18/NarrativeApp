@@ -769,6 +769,8 @@ class _EvolutionTab extends ConsumerWidget {
           'event' => eventCauseName(detail, events, lang),
           // The claim given up names its faction (v1.196).
           'renounce' => name(detail),
+          // A chapter's price of loyalty names the patron (v5.2 step 3).
+          'loyalty' => name(detail),
           _ => null,
         };
 

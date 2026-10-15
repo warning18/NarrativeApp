@@ -69,6 +69,8 @@ import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
 import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
+import '../providers/clans_provider.dart';
+import '../providers/offers_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
@@ -382,10 +384,15 @@ class _FightScreenState extends ConsumerState<FightScreen>
   late final _HeroCore _core = () {
     final session = ref.read(playerSessionProvider);
     final core = coreOfProfession(session.professionId);
-    final specs = specsFor(session.specIds, core);
+    final clans = ref.read(clanDataProvider);
+    final held = specsByStanding(
+        session.specIds, (id) => session.politics.standingOf(id, clans));
+    final specs = specsFor(held.ids, core);
     return _HeroCore(core,
         specs: specs,
-        mods: specs.isEmpty ? SpecMods.none : SpecMods(session.specIds));
+        halved: held.halved,
+        roundOf: () => _roundsStarted,
+        mods: specs.isEmpty ? SpecMods.none : SpecMods(held.ids));
   }();
 
   /// The member whose kept Defend face draws the enemies' attacks this

@@ -1068,6 +1068,33 @@ extension _FightDiceRules on _FightScreenState {
       _core.has(Spec.beacon) ||
       (_core.has(Spec.ashenHand) && _core.mods.ashenLight);
 
+  /// What a cold clan leaves of the specialisations it gave (v5.2 step 3,
+  /// specsByStanding), said as the fight begins: halved ones play every
+  /// other round, sleeping ones not at all.
+  List<_LogEntry> _specStandingNotes(AppLanguage lang) {
+    final session = ref.read(playerSessionProvider);
+    final clans = ref.read(clanDataProvider);
+    final infos = ref.read(offerTablesProvider).specs;
+    final french = lang == AppLanguage.fr;
+    return [
+      for (final id in session.specIds)
+        if (specNamed(id) case final spec? when coreOfSpec(spec) == _core.core)
+          if (specStrengthAt(
+                  session.politics.standingOf(clanOfSpec(spec), clans))
+              case final strength when strength != SpecStrength.full)
+            _LogEntry(
+                trFor(
+                        lang,
+                        strength == SpecStrength.half
+                            ? 'spec_halved_log'
+                            : 'spec_asleep_log')
+                    .replaceAll('{spec}', infos[id]?.nameFor(french) ?? id)
+                    .replaceAll('{clan}',
+                        clans.faction(clanOfSpec(spec))?.nameFor(lang) ?? ''),
+                _LogKind.info),
+    ];
+  }
+
   /// The Tribunal: once a fight, from the fourth round, an empty Well is
   /// filled by a third (spec_variants.dart).
   void _tribunalRefill(List<_LogEntry> entries, AppLanguage lang) {

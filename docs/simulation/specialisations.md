@@ -1,4 +1,4 @@
-# The main clans' specialisations (v5.2, steps 2a and 2b)
+# The main clans' specialisations (v5.2, steps 2a, 2b and 3)
 
 The design is in `docs/proposals/profession-clan-mechanics.md`; the words are Narrative's (`docs/proposals/specialisation-texts.md`).
 - Each profession's core (`lib/combat/profession_cores.dart`) is bent by its three main clans.
@@ -99,6 +99,35 @@ The design is in `docs/proposals/profession-clan-mechanics.md`; the words are Na
 | One Door (Keyholders) | "Your spells cost 1 less again." (the main Tempest Toll already offers Teleport Strike) |
 | The fifteen rank IIs | a generic line, "Rank II: the specialisation grows by half again." Narrative may write each one |
 
+## Step 3: the price of loyalty
+
+**A held specialisation follows its clan's standing** (`specsByStanding`, `lib/combat/specialisations.dart`):
+- **Wary or Unfriendly:** it plays as given.
+- **Resented or Hostile:** it plays every other round (the odd ones), and its sub-clan gifts and rank II go quiet.
+- **Hunted:** it sleeps, gifts and all, until the clan is won back.
+- The fight log says so as the fight begins. The simulator plays the same rule.
+
+**Each new chapter, the patron's favour cools its rivals** (`applyLoyaltyDrift`, `lib/data/factions.dart`):
+- The patron is the sworn clan, or else the clan stood highest with at Trusted or above.
+- **Trusted:** its rivals (relation steps 1–3) lose 2.
+- **Sworn:** its rivals lose 4, its tense neighbours (step 4) lose 2, and its allies (steps 6–7) gain 1.
+- It comes with the chapter's offer, once a chapter, with no ripple. It is logged as "Loyalty's price · <patron>".
+- There is no combat penalty: the cost is the shops, the offers, and the specialisations above.
+
+**What a loyal run's rivals end at** (Trusted in chapter 3, Sworn in chapter 5, eight chapters; `LOYALTY_REPORT=1 flutter test test/loyalty_test.dart`). The drift adds −20 to each rival by the end, on top of the ripple and the swearing's cost.
+
+| Patron | Hunted by the end | The others |
+|---|---|---|
+| Dominion | Vigil −80, Mire −80, Penitents −80 | Compact −8 (Wary), Crows +24 (Friend) |
+| Penitents | Dominion −85, Compact −75, Mire −75 | Vigil +22, Crows 0 |
+| Vigil | Dominion −85, Crows −75 | Compact +22, Penitents +22, Mire 0 |
+| Mire | Dominion −85, Penitents −75 | Compact +22, Vigil 0, Crows 0 |
+| Compact | Penitents −75 | Dominion −18 (Unfriendly), Vigil +22, Mire +22, Crows 0 |
+| Crows | Vigil −75 | Dominion +12, Compact 0, Mire 0, Penitents 0 |
+
+The relations map makes the patron a choice of enemies too: a Dominion loyalist closes three clans, a Crows loyalist one.
+
 ## Not yet
 
-- The weak links' twists, standing×link and the rivals' cooling (step 3).
+- The rivals' hunters on the roads, once Narrative has named fighters for the Vigil, the Compact and the Mire (step 3b).
+- The eight weak-link gifts (step 3c).

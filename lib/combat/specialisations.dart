@@ -50,6 +50,7 @@
 // Pure rules; the fight screen and the playthrough simulator play them.
 import 'dart:math';
 
+import '../data/factions.dart';
 import 'combat_engine.dart';
 import 'profession_cores.dart';
 import 'status_effect.dart';
@@ -119,6 +120,86 @@ ProfessionCore coreOfSpec(Spec spec) => switch (spec) {
       Spec.fenGuide =>
         ProfessionCore.trail,
     };
+
+/// The main clan that offers a specialisation (specialisations.json's
+/// `faction`, kept here for the fight: a test holds them equal).
+String clanOfSpec(Spec spec) => switch (spec) {
+      Spec.berserker ||
+      Spec.tempestToll ||
+      Spec.ledgerKnife ||
+      Spec.corsairsEye =>
+        'crows',
+      Spec.briarGuard || Spec.trapwright => 'compact',
+      Spec.lanternVanguard || Spec.beacon || Spec.censerMage => 'dominion',
+      Spec.longVigil => 'vigil',
+      Spec.ashenHand || Spec.burdenBearer || Spec.relicbreaker => 'penitents',
+      Spec.feverBlade || Spec.fenGuide => 'mire',
+    };
+
+/// How a held specialisation plays with its clan's standing (v5.2 step 3,
+/// "the more you are enemy with a clan, the less it gives you").
+enum SpecStrength {
+  /// As given.
+  full,
+
+  /// Resented or Hostile: every other round, and its sub-clan gifts and
+  /// rank II go quiet.
+  half,
+
+  /// Hunted: it sleeps, gifts and all, until the clan is won back.
+  asleep,
+}
+
+/// What standing [standing] with a specialisation's clan leaves of it.
+SpecStrength specStrengthAt(num standing) =>
+    switch (standingTierFor(standing)) {
+      StandingTier.hunted => SpecStrength.asleep,
+      StandingTier.hostile || StandingTier.resented => SpecStrength.half,
+      _ => SpecStrength.full,
+    };
+
+/// The specialisation a held id ([specId], a sub-clan gift
+/// `<subclan>_<spec>`, a rank `<spec>_ii`) belongs to, or null.
+Spec? specOfHeldId(String id) {
+  if (specNamed(id) case final spec?) return spec;
+  for (final spec in Spec.values) {
+    final sid = specId(spec);
+    if (id == '${sid}_ii' || id.endsWith('_$sid')) return spec;
+  }
+  return null;
+}
+
+/// [held] (a character's specialisation ids, gifts and ranks) as their
+/// clans' standings ([standingOf] a clan) leave them: the ids that still
+/// play, and the specialisations that play only every other round.
+({List<String> ids, Set<Spec> halved}) specsByStanding(
+    Iterable<String> held, num Function(String clanId) standingOf) {
+  final halved = <Spec>{};
+  final ids = <String>[];
+  for (final id in held) {
+    final spec = specOfHeldId(id);
+    if (spec == null) {
+      ids.add(id);
+      continue;
+    }
+    switch (specStrengthAt(standingOf(clanOfSpec(spec)))) {
+      case SpecStrength.full:
+        ids.add(id);
+      case SpecStrength.half:
+        if (specNamed(id) == spec) {
+          ids.add(id);
+          halved.add(spec);
+        }
+      case SpecStrength.asleep:
+        break;
+    }
+  }
+  return (ids: ids, halved: halved);
+}
+
+/// Whether a specialisation [halved] by its clan's standing plays in
+/// [round] (1, 2, ...): the odd rounds.
+bool halvedPlaysIn(int round) => round.isOdd;
 
 /// The specialisations of [ids] (a save's, a character's) that bend
 /// [core]: one held for another profession plays nothing.
