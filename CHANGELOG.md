@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.388.0+424]
+
+Mercy and the omens, in their own words.
+
+### Changed
+- **Mercy for a rival's hunter.** The yield, the choice (Show mercy / Finish it), the read of their heart by Perception, the thanks and the betrayal ambush are reworded in English and French, with no gendered pronoun for a hunter who may be a woman or a man; the two standing causes ("Mercy for a hunter", "No mercy for a hunter") likewise.
+- **Hunters' alignments.** Five adjusted to fit their characters: Ysel +25, the Inquisition Soldier +10, the High Warden -10, the Smuggler Captain -25, the Inquisition Penitent +15. The others stand.
+- **The omens of a place.** The mist, heat, rising water, holy ground and town watch omens, and the boss's enrage, reworded. Wording only.
+
 ## [1.387.0+423]
 
 You can spare a rival's hunter, at a risk.

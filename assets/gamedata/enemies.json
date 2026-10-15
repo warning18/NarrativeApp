@@ -514,7 +514,7 @@
     "hunterClan": "dominion",
     "battleCry": "“One flame, one law. You swore to another light.”",
     "battleCry_fr": "« Une flamme, une loi. Vous avez juré à une autre lumière. »",
-    "alignment": 25
+    "alignment": 10
   },
   "void_wisp": {
     "enemyName": "Grey Candle",
@@ -682,7 +682,7 @@
     "hunterClan": "crows",
     "battleCry": "“Every door has a price. Yours has come due.”",
     "battleCry_fr": "« Chaque porte a son prix. Le vôtre est échu. »",
-    "alignment": -15
+    "alignment": -25
   },
   "plague_hound": {
     "enemyName": "Plague Hound",
@@ -1054,7 +1054,7 @@
     "hunterClan": "dominion",
     "battleCry": "“The Lantern remembers every oath. Yours is on the list.”",
     "battleCry_fr": "« La Lanterne se souvient de chaque serment. Le vôtre est sur la liste. »",
-    "alignment": 35
+    "alignment": -10
   },
   "kroll_the_branded": {
     "enemyName": "Inquisitor Clement",
@@ -2357,7 +2357,7 @@
     "hunterClan": "penitents",
     "battleCry": "“I carry what I burned. You will carry what you swore.”",
     "battleCry_fr": "« Je porte ce que j’ai brûlé. Vous porterez ce que vous avez juré. »",
-    "alignment": 25
+    "alignment": 15
   },
   "void_archon": {
     "enemyName": "Void Archon",
@@ -5653,7 +5653,7 @@
     "enemyName_fr": "Ysel, Porte-Chandelle",
     "biomes": [],
     "hunterOnly": true,
-    "alignment": 20
+    "alignment": 25
   },
   "compact_quarryman_brodin": {
     "enemyName": "Brodin Stonehand, Quarryman",
