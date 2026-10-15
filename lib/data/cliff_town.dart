@@ -10,6 +10,8 @@
 /// the same town, so only the order is saved (`PlayerSession.townOrder`).
 library;
 
+import 'camp_works.dart' show WorkLimit;
+
 const int townColumns = 5;
 const double townCellWidth = 62;
 const double townRowHeight = 46;
@@ -58,6 +60,34 @@ const List<TownAddition> townAdditions = [
 ];
 
 bool isTownAddition(String id) => townAdditions.any((a) => a.id == id);
+
+/// How many of town addition [id] the town may hold once [houseCount]
+/// houses are up (the town's level), or null for no limit:
+/// - the watchtower is unique;
+/// - storehouses: one, and one more for every four houses;
+/// - stairs: one, and one more for every two houses;
+/// - floors (plain rooms) are free.
+int? townAdditionLimit(String id, {required int houseCount}) => switch (id) {
+      'add_tower' => 1,
+      'add_store' => 1 + houseCount ~/ 4,
+      'add_stair' => 1 + houseCount ~/ 2,
+      _ => null,
+    };
+
+/// How many of [id] stand among [pieces] (`PlayerSession.townPieces`).
+int townPieceCount(Iterable<String> pieces, String id) =>
+    pieces.where((p) => p == id).length;
+
+/// Town addition [id]'s count and limit, with [houseCount] houses up.
+WorkLimit townAdditionLimitOf(
+  String id, {
+  required Iterable<String> pieces,
+  required int houseCount,
+}) =>
+    WorkLimit(
+      built: townPieceCount(pieces, id),
+      limit: townAdditionLimit(id, houseCount: houseCount),
+    );
 
 TownFootprint footprintOf(String id) {
   for (final addition in townAdditions) {
