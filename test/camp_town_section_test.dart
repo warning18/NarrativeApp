@@ -112,12 +112,16 @@ void main() {
     expect(session.gold, 210);
     expect(find.textContaining('need'), findsNothing);
     await build('add_store');
-    await build('add_store');
+    // One house up: one storehouse at most (cliff_town.dart's limits), so
+    // its card says so and the watchtower goes up instead.
+    expect(find.textContaining('Limit reached: 1 of 1'), findsOneWidget);
+    expect(find.byKey(const Key('town_build_add_store')), findsNothing);
+    await build('add_tower');
     session = container.read(playerSessionProvider);
     expect(session.townPieces,
-        ['keldas_hall', 'add_floor', 'add_store', 'add_store']);
-    expect(session.gold, 30);
-    // 30 gold left: nothing more can go up, and the cards say what is
+        ['keldas_hall', 'add_floor', 'add_store', 'add_tower']);
+    expect(session.gold, 0);
+    // No gold left: nothing more can go up, and the cards say what is
     // missing.
     expect(find.byKey(const Key('town_build_add_floor')), findsNothing);
     expect(find.textContaining('need'), findsWidgets);
