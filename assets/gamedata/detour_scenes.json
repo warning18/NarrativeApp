@@ -2522,5 +2522,1618 @@
         ]
       }
     ]
+  },
+  "salt_pan_crew": {
+    "title": "The Salt-Pan Crew",
+    "title_fr": "L’équipe des salines",
+    "rumour": "a crew raking salt who wave you over",
+    "rumour_fr": "une équipe qui ratisse le sel et vous fait signe d’approcher",
+    "where": {
+      "biome": "arid_coast"
+    },
+    "minChapter": 2,
+    "maxChapter": 3,
+    "beats": [
+      {
+        "id": "crew",
+        "type": "event",
+        "text": "A crew rakes the salt-pans in a long line, shirts tied over their faces. The ganger waves you over without stopping the rake and says the Ledger counts every sack twice, once for the Dominion and once for itself.",
+        "text_fr": "Une équipe ratisse les salines en longue file, chemises nouées sur le visage. Le chef de bande vous fait signe sans cesser de ratisser et dit que le Registre compte chaque sac deux fois, une pour le Dominion et une pour lui-même.",
+        "place": "The salt-pans",
+        "place_fr": "Les salines",
+        "choices": [
+          {
+            "id": "rake",
+            "text": "Take a rake for an hour",
+            "text_fr": "Prendre un râteau pendant une heure",
+            "check": "constitution",
+            "success": {
+              "note": "The sun is a hammer, and you meet it. At the end the ganger sets aside a sack that is not on either count.",
+              "note_fr": "Le soleil est un marteau, et vous lui faites face. À la fin, le chef met de côté un sac qui n’est sur aucun des deux comptes."
+            },
+            "fail": {
+              "note": "You last forty minutes, and the line closes over the gap you leave without a word.",
+              "note_fr": "Vous tenez quarante minutes, et la file se referme sur le vide que vous laissez sans un mot."
+            }
+          },
+          {
+            "id": "count",
+            "text": "Offer to keep the second count",
+            "text_fr": "Proposer de tenir le second compte",
+            "outcome": {
+              "note": "He laughs, short and dry. Nobody is allowed to keep it; that is the point of its being kept.",
+              "note_fr": "Il rit, bref et sec. Personne n’a le droit de le tenir ; c’est tout l’intérêt de le tenir."
+            }
+          }
+        ]
+      },
+      {
+        "id": "sack",
+        "type": "discovery",
+        "text": "At the pan’s end the ganger sets a sack on a plank, not marked for the Dominion or the Ledger: dry grey salt from the bottom of the pan, coarse as gravel and clean as a bone.",
+        "text_fr": "Au bout du bassin, le chef de bande pose un sac sur une planche, marqué ni pour le Dominion ni pour le Registre : du sel gris et sec du fond du bassin, gros comme du gravier et propre comme un os.",
+        "place": "The pan's end",
+        "place_fr": "Le bout du bassin",
+        "material": "material_slag_glass",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Take the sack",
+            "text_fr": "Prendre le sac",
+            "outcome": {
+              "note": "Heavy, honest, worth a good deal to anyone with a cask of fish.",
+              "note_fr": "Lourd, honnête, d’une bonne valeur pour quiconque a un tonneau de poisson."
+            }
+          },
+          {
+            "id": "leave",
+            "text": "Leave it for the crew",
+            "text_fr": "Le laisser à l’équipe",
+            "outcome": {
+              "note": "The ganger nods, and the sack is gone from the plank before you reach the road.",
+              "note_fr": "Le chef de bande hoche la tête, et le sac a disparu de la planche avant que vous n’atteigniez la route."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "crow_warned_you": {
+    "title": "A Debt Remembered",
+    "title_fr": "Une dette remémorée",
+    "rumour": "a Crow on the cliff path who owes you a word",
+    "rumour_fr": "une Corneille sur le sentier de la falaise qui vous doit une parole",
+    "where": {
+      "biome": "sea_cliffs"
+    },
+    "minChapter": 2,
+    "maxChapter": 3,
+    "tags": [
+      "gated"
+    ],
+    "beats": [
+      {
+        "id": "crow",
+        "type": "event",
+        "text": "A Crow in a salt-stained coat sits on a boulder over the cliff path, whittling. He looks up, and the knife stops. He says that he heard you were the one who did not let a certain door be shut, and that the Crows keep that kind of book.",
+        "text_fr": "Une Corneille en manteau taché de sel est assise sur un rocher au-dessus du sentier de la falaise, taillant un morceau de bois. Il lève les yeux, et le couteau s’arrête. Il dit avoir entendu que vous étiez celui qui n’a pas laissé fermer une certaine porte, et que les Corneilles tiennent ce genre de livre.",
+        "place": "The cliff path",
+        "place_fr": "Le sentier de la falaise",
+        "choices": [
+          {
+            "id": "ask",
+            "text": "Ask what is in the book",
+            "text_fr": "Demander ce que contient le livre",
+            "outcome": {
+              "note": "A line for the favour, a line for the debt, and a third line he will not read aloud. He tears off a strip of cloth and ties it to a post: a signal for later.",
+              "note_fr": "Une ligne pour la faveur, une ligne pour la dette, et une troisième qu’il ne lira pas à haute voix. Il arrache une bande de tissu et la noue à un poteau : un signal pour plus tard."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Thank him and go on",
+            "text_fr": "Le remercier et poursuivre",
+            "outcome": {
+              "note": "He goes back to the whittling. A shaving curls off the knife and lands on your boot, as a receipt.",
+              "note_fr": "Il reprend son bois. Un copeau se détache du couteau et tombe sur votre botte, en guise de reçu."
+            }
+          }
+        ]
+      }
+    ],
+    "requires": {
+      "flag": "crows_warned"
+    }
+  },
+  "pilgrims_ash_road": {
+    "title": "The Pilgrims’ Ash Road",
+    "title_fr": "La route des pèlerins dans la cendre",
+    "rumour": "a line of pilgrims walking toward the Spire in silence",
+    "rumour_fr": "une file de pèlerins qui marchent vers la Flèche en silence",
+    "where": {
+      "biome": "ashlands"
+    },
+    "minChapter": 3,
+    "maxChapter": 3,
+    "beats": [
+      {
+        "id": "pilgrims",
+        "type": "event",
+        "text": "A line of pilgrims walks the ash road toward the Spire, two by two, each with a lantern shaded in the crook of the arm. None speaks. The last one drops back and, without turning, offers you the end of their rope.",
+        "text_fr": "Une file de pèlerins marche sur la route de cendre vers la Flèche, deux par deux, chacun avec une lanterne voilée au creux du bras. Aucun ne parle. Le dernier se laisse distancer et, sans se retourner, vous tend le bout de leur corde.",
+        "place": "The ash road",
+        "place_fr": "La route de cendre",
+        "choices": [
+          {
+            "id": "walk",
+            "text": "Take the rope and walk with them",
+            "text_fr": "Prendre la corde et marcher avec eux",
+            "check": "wisdom",
+            "success": {
+              "note": "You walk a mile in step. At the end the pilgrims break rank without a word, and one of them presses a cinder into your hand: the road’s ticket home.",
+              "note_fr": "Vous marchez un mille au pas. À la fin, les pèlerins rompent les rangs sans un mot, et l’un d’eux glisse une braise dans votre main : le billet de retour de la route."
+            },
+            "fail": {
+              "note": "You lose the step, and the line carries on, patient, as if you were never there.",
+              "note_fr": "Vous perdez le pas, et la file poursuit, patiente, comme si vous n’aviez jamais été là."
+            }
+          },
+          {
+            "id": "decline",
+            "text": "Let them go by",
+            "text_fr": "Les laisser passer",
+            "outcome": {
+              "note": "They go by, two by two, and the ash settles in their footprints before you have counted them.",
+              "note_fr": "Ils passent, deux par deux, et la cendre se pose dans leurs traces avant que vous ne les ayez comptés."
+            }
+          }
+        ]
+      },
+      {
+        "id": "cinder",
+        "type": "rest",
+        "text": "At a bend in the road the pilgrims stop to share bread and water, and a gap opens in the ring for you. Nobody asks what you believe. Nobody offers to tell you what they do.",
+        "text_fr": "À un tournant de la route, les pèlerins s’arrêtent pour partager le pain et l’eau, et un vide s’ouvre pour vous dans le cercle. Personne ne demande ce que vous croyez. Personne n’offre de vous dire ce qu’il croit.",
+        "place": "The bend in the road",
+        "place_fr": "Le tournant de la route",
+        "choices": [
+          {
+            "id": "sit",
+            "text": "Sit and eat with them",
+            "text_fr": "Vous asseoir et manger avec eux"
+          },
+          {
+            "id": "go",
+            "text": "Take your leave",
+            "text_fr": "Prendre congé",
+            "outcome": {
+              "note": "A nod all round, not unfriendly. The ash takes your footprints a little way along.",
+              "note_fr": "Un signe de tête général, pas inamical. La cendre prend vos traces un peu plus loin."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "emberwife_debt": {
+    "title": "The Emberwife’s Debt",
+    "title_fr": "La dette de la Charbonnière",
+    "rumour": "a coal cart stuck in the ash, and its driver",
+    "rumour_fr": "une charrette de charbon enlisée dans la cendre, et sa conductrice",
+    "where": {
+      "biome": "volcanic"
+    },
+    "minChapter": 3,
+    "maxChapter": 4,
+    "beats": [
+      {
+        "id": "cart",
+        "type": "check",
+        "text": "A charcoal cart has sunk to its axle in the ash. The Emberwife driving it does not ask for help; she stands at the mules’ heads and looks at the sky, as if the cart might be a question the sky can answer.",
+        "text_fr": "Une charrette de charbon de bois s’est enfoncée jusqu’à l’essieu dans la cendre. La Charbonnière qui la conduit ne demande pas d’aide ; elle se tient à la tête des mules et regarde le ciel, comme si la charrette était une question à laquelle le ciel pouvait répondre.",
+        "place": "The sunk cart",
+        "place_fr": "La charrette enlisée",
+        "choices": [
+          {
+            "id": "push",
+            "text": "Put your shoulder to the wheel",
+            "text_fr": "Mettre l’épaule à la roue",
+            "check": "strength",
+            "success": {
+              "note": "The wheel comes out of the ash with a sound like a swallowed word. She says nothing, but she tips a handful of coal into your pack, glowing at the heart.",
+              "note_fr": "La roue sort de la cendre avec un bruit de mot avalé. Elle ne dit rien, mais verse une poignée de charbon dans votre sac, rougeoyant en son cœur."
+            },
+            "fail": {
+              "note": "The wheel shifts and sinks again. She sighs, and says that is the third time today, and she is not angry.",
+              "note_fr": "La roue bouge et s’enfonce de nouveau. Elle soupire et dit que c’est la troisième fois aujourd’hui, et qu’elle n’est pas fâchée."
+            }
+          },
+          {
+            "id": "plank",
+            "text": "Lay planks under the wheel",
+            "text_fr": "Glisser des planches sous la roue",
+            "check": "dexterity",
+            "success": {
+              "note": "The mules take it from there. She nods, once, as to a colleague.",
+              "note_fr": "Les mules font le reste. Elle hoche la tête, une fois, comme à un collègue."
+            },
+            "fail": {
+              "note": "The planks splinter. You both look at them for a while.",
+              "note_fr": "Les planches éclatent. Vous les regardez un moment tous les deux."
+            }
+          }
+        ]
+      },
+      {
+        "id": "coal",
+        "type": "discovery",
+        "text": "The Emberwife taps the cart’s tail-board with a knuckle, and a slat swings out: under the charcoal, in a layer of straw, a handful of hard black lumps with a blue edge.",
+        "text_fr": "La Charbonnière tapote du doigt le hayon, et une planche pivote : sous le charbon de bois, dans un lit de paille, une poignée de morceaux noirs et durs au bord bleuté.",
+        "place": "The cart's bed",
+        "place_fr": "Le fond de la charrette",
+        "material": "material_ash_steel",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Take the black lumps",
+            "text_fr": "Prendre les morceaux noirs",
+            "outcome": {
+              "note": "Ash-steel ore, carried in secret. The Compact’s smiths will know it for what it is.",
+              "note_fr": "Du minerai d’acier de cendre, transporté en secret. Les forgerons du Pacte sauront ce que c’est."
+            }
+          },
+          {
+            "id": "leave",
+            "text": "Say you saw nothing",
+            "text_fr": "Dire que vous n’avez rien vu",
+            "outcome": {
+              "note": "She closes the slat. A small silence, the most courteous thing between strangers on that road.",
+              "note_fr": "Elle referme la planche. Un petit silence, la chose la plus courtoise entre inconnus sur cette route."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "the_absolved_candle": {
+    "title": "The Absolved One’s Candle",
+    "title_fr": "La bougie de l’absoute",
+    "rumour": "a candle left on a shrine step by someone who was forgiven",
+    "rumour_fr": "une bougie laissée sur la marche d’un reposoir par quelqu’un qui fut pardonné",
+    "where": {
+      "biome": "ashlands"
+    },
+    "minChapter": 3,
+    "maxChapter": 5,
+    "beats": [
+      {
+        "id": "candle",
+        "type": "event",
+        "text": "On the step of a roadside shrine a single candle burns in a tin cup. Beside it is a slip of paper in a careful hand: for the one who forgave me, wherever you walk. It has been out in the weather for some days, and the flame has not once gone out.",
+        "text_fr": "Sur la marche d’un reposoir de bord de route brûle une seule bougie dans un gobelet d’étain. À côté se trouve un bout de papier d’une écriture soignée : pour celui qui m’a pardonné, où que vous marchiez. Il est resté quelques jours aux intempéries, et la flamme ne s’est pas éteinte une seule fois.",
+        "place": "The roadside shrine",
+        "place_fr": "Le reposoir de bord de route",
+        "choices": [
+          {
+            "id": "keep",
+            "text": "Add a candle of your own",
+            "text_fr": "Y ajouter une bougie à vous",
+            "outcome": {
+              "note": "The two flames lean toward each other, then straighten. It is the oldest kind of answer.",
+              "note_fr": "Les deux flammes se penchent l’une vers l’autre, puis se redressent. C’est la plus ancienne des réponses."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Leave it as it is",
+            "text_fr": "La laisser telle quelle",
+            "outcome": {
+              "note": "You go on. Behind you, the flame holds, as it has held for days.",
+              "note_fr": "Vous poursuivez. Derrière vous, la flamme tient, comme elle tient depuis des jours."
+            }
+          }
+        ]
+      }
+    ],
+    "requires": {
+      "flag": "maren_absolved"
+    },
+    "tags": [
+      "gated"
+    ]
+  },
+  "cinder_cat": {
+    "title": "A Cat in the Cinders",
+    "title_fr": "Un chat dans les cendres",
+    "rumour": "a cat on a warm stone, watching the road",
+    "rumour_fr": "un chat sur une pierre tiède, qui surveille la route",
+    "where": {
+      "biome": "ashlands"
+    },
+    "minChapter": 3,
+    "maxChapter": 5,
+    "tags": [
+      "stop"
+    ],
+    "beats": [
+      {
+        "id": "stop",
+        "type": "event",
+        "text": "A grey cat sits on a warm stone at the roadside, so thoroughly the colour of the ash that you see it only when it blinks. It watches you the whole way past, with the look of something that has seen worse and was not impressed.",
+        "text_fr": "Un chat gris est assis sur une pierre tiède au bord de la route, si parfaitement de la couleur de la cendre qu’on ne le voit que lorsqu’il cligne des yeux. Il vous observe tout le long de votre passage, avec le regard de quelqu’un qui a vu pire et n’a pas été impressionné.",
+        "place": "The warm stone",
+        "place_fr": "La pierre tiède",
+        "choices": [
+          {
+            "id": "pet",
+            "text": "Hold out a hand",
+            "text_fr": "Tendre la main",
+            "outcome": {
+              "note": "It sniffs your fingers, decides, and walks off with its tail high. You feel, obscurely, approved.",
+              "note_fr": "Il renifle vos doigts, décide, et s’éloigne la queue haute. Vous sentez, vaguement, son approbation."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Go on",
+            "text_fr": "Poursuivre votre route"
+          }
+        ]
+      }
+    ]
+  },
+  "lantern_floaters": {
+    "title": "The Lantern-Floaters",
+    "title_fr": "Les porteurs de lanternes flottantes",
+    "rumour": "paper lanterns floating down a black channel",
+    "rumour_fr": "des lanternes de papier qui descendent un chenal noir",
+    "where": {
+      "biome": "fen"
+    },
+    "minChapter": 4,
+    "maxChapter": 4,
+    "beats": [
+      {
+        "id": "floaters",
+        "type": "event",
+        "text": "Paper lanterns go down a black channel one after another, each with a name inked on the paper. A woman on the bank sets them out with a pole, and does not look at you, because the next lantern is nearly ready.",
+        "text_fr": "Des lanternes de papier descendent un chenal noir l’une après l’autre, chacune portant un nom à l’encre. Une femme sur la berge les lance avec une perche, et ne vous regarde pas, car la prochaine lanterne est presque prête.",
+        "place": "The black channel",
+        "place_fr": "Le chenal noir",
+        "choices": [
+          {
+            "id": "name",
+            "text": "Ask whose names they are",
+            "text_fr": "Demander à qui sont ces noms",
+            "outcome": {
+              "note": "The Court’s dead, she says: the ones who went down and were never counted. She has four hundred left to float. She has been at it since the spring.",
+              "note_fr": "Les morts de la Cour, dit-elle : ceux qui sont descendus et n’ont jamais été comptés. Il lui en reste quatre cents à faire flotter. Elle y est depuis le printemps."
+            }
+          },
+          {
+            "id": "help",
+            "text": "Take a lantern and set it out",
+            "text_fr": "Prendre une lanterne et la lancer",
+            "outcome": {
+              "note": "Your name is not on it, and still the paper catches the light. It drifts a long way before it is lost among the others.",
+              "note_fr": "Votre nom n’est pas dessus, et pourtant le papier prend la lumière. Elle dérive longtemps avant de se perdre parmi les autres."
+            }
+          }
+        ]
+      },
+      {
+        "id": "last",
+        "type": "discovery",
+        "text": "On the bank lies a stack of blank lanterns folded flat, and a jar of ink. The woman says that if you write a name, any name, she will float it in the morning.",
+        "text_fr": "Sur la berge repose une pile de lanternes vierges pliées à plat, et un pot d’encre. La femme dit que si vous écrivez un nom, n’importe lequel, elle le fera flotter au matin.",
+        "place": "The bank",
+        "place_fr": "La berge",
+        "material": "material_slag_glass",
+        "choices": [
+          {
+            "id": "write",
+            "text": "Write a name",
+            "text_fr": "Écrire un nom",
+            "outcome": {
+              "note": "You write it small. She reads it, and says it back, once, as if she were tasting it. Then it goes under the others.",
+              "note_fr": "Vous l’écrivez petit. Elle le lit, et le redit, une fois, comme pour le goûter. Puis il va sous les autres."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Leave the ink",
+            "text_fr": "Laisser l’encre"
+          }
+        ]
+      }
+    ]
+  },
+  "kindly_offer": {
+    "title": "A Kindly Offer",
+    "title_fr": "Une offre bienveillante",
+    "rumour": "a Kindly One at a causeway, offering a bargain by the minute",
+    "rumour_fr": "un Bienveillant sur une chaussée, qui propose un marché à la minute",
+    "where": {
+      "biome": "fen"
+    },
+    "minChapter": 4,
+    "maxChapter": 6,
+    "beats": [
+      {
+        "id": "offer",
+        "type": "check",
+        "text": "At the end of a causeway a Kindly One sits on a stool with a minute-glass on each knee. He offers you a bargain: a favour now, repaid at an hour of his choosing, and every minute between now and then accounted for.",
+        "text_fr": "Au bout d’une chaussée, un Bienveillant est assis sur un tabouret avec un sablier sur chaque genou. Il vous propose un marché : un service maintenant, remboursé à l’heure de son choix, chaque minute entre-temps comptée.",
+        "place": "The causeway end",
+        "place_fr": "Le bout de la chaussée",
+        "choices": [
+          {
+            "id": "read",
+            "text": "Read the terms before you answer",
+            "text_fr": "Lire les termes avant de répondre",
+            "check": "wisdom",
+            "success": {
+              "note": "The seventh clause has a gap in it the width of a breath. You point to it, courteously, and he inclines his head and rewrites the line.",
+              "note_fr": "La septième clause comporte un jour de la largeur d’un souffle. Vous le lui montrez, avec courtoisie, et il incline la tête et réécrit la ligne."
+            },
+            "fail": {
+              "note": "It is fair, as far as you can tell. You will not know how fair until the hour comes.",
+              "note_fr": "C’est équitable, pour autant que vous puissiez en juger. Vous ne saurez à quel point qu’à l’heure dite."
+            }
+          },
+          {
+            "id": "decline",
+            "text": "Decline with thanks",
+            "text_fr": "Décliner avec des remerciements",
+            "outcome": {
+              "note": "He is not offended; the Kindly Ones are never offended. He turns one of the glasses over, and the first grain falls.",
+              "note_fr": "Il n’est pas offensé ; les Bienveillants ne le sont jamais. Il retourne l’un des sabliers, et le premier grain tombe."
+            }
+          }
+        ]
+      },
+      {
+        "id": "price",
+        "type": "discovery",
+        "text": "If you took the bargain, a grain falls; if you did not, the Kindly One still sets a small token on the stool: a bead of green glass, strung on a hair.",
+        "text_fr": "Si vous avez accepté le marché, un grain tombe ; sinon, le Bienveillant pose quand même un petit gage sur le tabouret : une perle de verre vert, enfilée sur un cheveu.",
+        "place": "The stool",
+        "place_fr": "Le tabouret",
+        "material": "material_slag_glass",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Take the bead",
+            "text_fr": "Prendre la perle",
+            "outcome": {
+              "note": "It is warm. Someone, somewhere in the fen, is counting a minute that is yours now.",
+              "note_fr": "Elle est tiède. Quelqu’un, quelque part dans le marais, compte une minute qui est maintenant la vôtre."
+            }
+          },
+          {
+            "id": "refuse",
+            "text": "Leave it on the stool",
+            "text_fr": "La laisser sur le tabouret",
+            "outcome": {
+              "note": "He inclines his head. A courtesy refused is a courtesy remembered, and the Kindly Ones forget nothing.",
+              "note_fr": "Il incline la tête. Une courtoisie refusée est une courtoisie retenue, et les Bienveillants n’oublient rien."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "keyholders_door": {
+    "title": "The Keyholder’s Door",
+    "title_fr": "La porte du Porte-Clefs",
+    "rumour": "a door in the fen wall with no house behind it",
+    "rumour_fr": "une porte dans un mur du marais sans maison derrière",
+    "where": {
+      "biome": "fen"
+    },
+    "minChapter": 4,
+    "maxChapter": 6,
+    "beats": [
+      {
+        "id": "door",
+        "type": "event",
+        "text": "In the middle of a reed-bed stands a door in a frame, nothing round it but rushes. A tag on the latch reads: one key, one door. The Crows’ Keyholders leave them in odd places, and sometimes the door is the only trap.",
+        "text_fr": "Au milieu d’une roselière se dresse une porte dans un cadre, rien autour que des joncs. Une étiquette sur le loquet dit : une clef, une porte. Les Porte-Clefs des Corneilles en laissent aux endroits les plus inattendus, et parfois la porte est le seul piège.",
+        "place": "The door in the reeds",
+        "place_fr": "La porte dans les roseaux",
+        "choices": [
+          {
+            "id": "open",
+            "text": "Open it",
+            "text_fr": "L’ouvrir",
+            "check": "luck",
+            "success": {
+              "note": "Behind it, more reeds, and a small dry box wedged in the frame: a message left for whoever has the key to the right door.",
+              "note_fr": "Derrière, d’autres roseaux, et une petite boîte sèche coincée dans le cadre : un message laissé pour qui a la clef de la bonne porte."
+            },
+            "fail": {
+              "note": "It swings open on nothing at all, and shuts behind you with a soft, clear click. You stand there a moment, a little pleased with yourself, until you notice the latch is on the other side.",
+              "note_fr": "Elle s’ouvre sur rien du tout, et se referme derrière vous d’un clic doux et net. Vous restez là un moment, avec une petite satisfaction, jusqu’à remarquer que le loquet est de l’autre côté."
+            }
+          },
+          {
+            "id": "mark",
+            "text": "Mark it and leave it be",
+            "text_fr": "La marquer et la laisser",
+            "outcome": {
+              "note": "A cut in the post. Some other traveller will know to leave it, or to find the key.",
+              "note_fr": "Une entaille dans le poteau. Un autre voyageur saura la laisser, ou trouver la clef."
+            }
+          }
+        ]
+      },
+      {
+        "id": "box",
+        "type": "discovery",
+        "text": "The little box in the frame holds a coin of old minting, a scrap of paper with a door sketched on it, and a number.",
+        "text_fr": "La petite boîte dans le cadre contient une pièce d’ancienne frappe, un bout de papier sur lequel une porte est esquissée, et un chiffre.",
+        "place": "The frame",
+        "place_fr": "Le cadre",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Take the coin and the paper",
+            "text_fr": "Prendre la pièce et le papier",
+            "outcome": {
+              "note": "A door, a number, a coin. Some day it will be the right combination, and you will remember where you got it.",
+              "note_fr": "Une porte, un chiffre, une pièce. Un jour ce sera la bonne combinaison, et vous vous rappellerez d’où elle vient."
+            }
+          },
+          {
+            "id": "put",
+            "text": "Put it back and shut the door",
+            "text_fr": "Tout remettre et refermer la porte"
+          }
+        ]
+      }
+    ]
+  },
+  "grey_candle": {
+    "title": "A Grey Candle",
+    "title_fr": "Une bougie grise",
+    "rumour": "a candle burning grey on a reed stump",
+    "rumour_fr": "une bougie qui brûle en gris sur une souche de roseau",
+    "where": {
+      "biome": "fen"
+    },
+    "minChapter": 4,
+    "maxChapter": 6,
+    "tags": [
+      "stop"
+    ],
+    "beats": [
+      {
+        "id": "stop",
+        "type": "event",
+        "text": "A candle burns on a stump in the reeds, and the flame is grey: not dull, but the colour of a candle seen through water. It gives off no heat. It leans toward you, politely, as you pass.",
+        "text_fr": "Une bougie brûle sur une souche dans les roseaux, et la flamme est grise : non pas terne, mais de la couleur d’une bougie vue à travers l’eau. Elle ne dégage aucune chaleur. Elle se penche vers vous, poliment, à votre passage.",
+        "place": "The reed stump",
+        "place_fr": "La souche de roseau",
+        "choices": [
+          {
+            "id": "snuff",
+            "text": "Pinch it out",
+            "text_fr": "La pincer",
+            "outcome": {
+              "note": "It goes out with no smoke. For a moment the reeds seem to hold their breath, and then the wind returns, as before.",
+              "note_fr": "Elle s’éteint sans fumée. Un instant, les roseaux semblent retenir leur souffle, puis le vent revient, comme avant."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Leave it burning",
+            "text_fr": "La laisser brûler"
+          }
+        ]
+      }
+    ]
+  },
+  "reed_whistle": {
+    "title": "A Whistle in the Reeds",
+    "title_fr": "Un sifflet dans les roseaux",
+    "rumour": "someone whistling in the reeds, out of sight",
+    "rumour_fr": "quelqu’un qui siffle dans les roseaux, hors de vue",
+    "where": {
+      "biome": "fen"
+    },
+    "minChapter": 4,
+    "maxChapter": 6,
+    "tags": [
+      "stop"
+    ],
+    "beats": [
+      {
+        "id": "stop",
+        "type": "event",
+        "text": "Somewhere in the reeds someone is whistling a tune you almost know: four notes up, three down. It stops when you stop. It begins again when you walk on, a little closer, with the air of an escort who has not been introduced.",
+        "text_fr": "Quelque part dans les roseaux, quelqu’un siffle un air que vous connaissez presque : quatre notes vers le haut, trois vers le bas. Cela s’arrête quand vous vous arrêtez. Cela reprend quand vous marchez, un peu plus près, avec l’air d’un escorteur qu’on ne vous a pas présenté.",
+        "place": "The reed-bed",
+        "place_fr": "La roselière",
+        "choices": [
+          {
+            "id": "whistle",
+            "text": "Whistle the tune back",
+            "text_fr": "Siffler l’air en retour",
+            "outcome": {
+              "note": "Silence. Then three notes, flat, like a polite correction. You get it right the second time, and the reeds seem to nod.",
+              "note_fr": "Silence. Puis trois notes, plates, comme une correction polie. Vous y arrivez la seconde fois, et les roseaux semblent hocher la tête."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Walk on",
+            "text_fr": "Poursuivre votre marche"
+          }
+        ]
+      }
+    ]
+  },
+  "the_blank_page": {
+    "title": "The Blank Page",
+    "title_fr": "La page blanche",
+    "rumour": "an archivist’s table under a tarp, with a page left blank for you",
+    "rumour_fr": "la table d’une archiviste sous une bâche, une page laissée blanche pour vous",
+    "where": {
+      "biome": "fen"
+    },
+    "minChapter": 4,
+    "maxChapter": 6,
+    "beats": [
+      {
+        "id": "page",
+        "type": "event",
+        "text": "Under a tarp on a dry knoll stands a table with a ledger open. The page is blank except for a heading in a careful hand: for the one who promised to come back. A pen lies across it, uncapped.",
+        "text_fr": "Sous une bâche sur un monticule sec se dresse une table avec un registre ouvert. La page est blanche, sauf un titre d’une écriture soignée : pour celle ou celui qui a promis de revenir. Une plume est posée en travers, débouchée.",
+        "place": "The archivist's table",
+        "place_fr": "La table de l’archiviste",
+        "choices": [
+          {
+            "id": "write",
+            "text": "Write a name on the page",
+            "text_fr": "Écrire un nom sur la page",
+            "outcome": {
+              "note": "You write one. The ink dries almost at once, and the name sits in the ledger among the others, a small fact among the facts, as if it had always been there.",
+              "note_fr": "Vous en écrivez un. L’encre sèche presque aussitôt, et le nom prend sa place dans le registre parmi les autres, un petit fait parmi les faits, comme s’il y avait toujours été."
+            }
+          },
+          {
+            "id": "close",
+            "text": "Close the book",
+            "text_fr": "Refermer le livre",
+            "outcome": {
+              "note": "The cover comes down softly. Whoever made this table will know, in time, what that means.",
+              "note_fr": "La couverture retombe doucement. Qui a dressé cette table saura, avec le temps, ce que cela signifie."
+            }
+          }
+        ]
+      }
+    ],
+    "requires": {
+      "flag": "archivist_promise"
+    },
+    "tags": [
+      "gated"
+    ]
+  },
+  "courtesy_returned": {
+    "title": "A Courtesy Returned",
+    "title_fr": "Une courtoisie rendue",
+    "rumour": "a Mire guide waiting at a ford, as if expecting you",
+    "rumour_fr": "un guide du Marais qui attend à un gué, comme s’il vous attendait",
+    "where": {
+      "biome": "fen"
+    },
+    "minChapter": 4,
+    "maxChapter": 6,
+    "beats": [
+      {
+        "id": "guide",
+        "type": "event",
+        "text": "A Mire guide stands at a ford with a pole and a lantern, though it is not yet dusk. She says the Courts have been told that you were courteous, and that she has been sent to see you over, and that this is not a favour but a courtesy, which is a different thing and worth more.",
+        "text_fr": "Une guide du Marais se tient à un gué avec une perche et une lanterne, bien qu’il ne fasse pas encore sombre. Elle dit que les Cours ont appris que vous aviez été courtois, qu’on l’a envoyée vous faire passer, et que ce n’est pas une faveur mais une courtoisie, ce qui est différent et vaut davantage.",
+        "place": "The ford",
+        "place_fr": "Le gué",
+        "choices": [
+          {
+            "id": "cross",
+            "text": "Cross with her",
+            "text_fr": "Traverser avec elle",
+            "outcome": {
+              "note": "She puts her pole where the bottom is firm, and the water parts for her as for a sister. On the far bank she bows an inch and is gone into the reeds.",
+              "note_fr": "Elle pose sa perche là où le fond est ferme, et l’eau s’ouvre devant elle comme devant une sœur. Sur l’autre rive, elle s’incline d’un pouce et disparaît dans les roseaux."
+            }
+          },
+          {
+            "id": "ask",
+            "text": "Ask how the Courts heard",
+            "text_fr": "Demander comment les Cours l’ont appris",
+            "outcome": {
+              "note": "The fen hears, she says, what is said in the fen. She smiles, and it is the first smile you have seen in a week that was not a business smile.",
+              "note_fr": "Le marais entend, dit-elle, ce qui se dit dans le marais. Elle sourit, et c’est le premier sourire de la semaine qui ne soit pas un sourire d’affaires."
+            }
+          }
+        ]
+      }
+    ],
+    "requires": {
+      "flag": "clan_mire_step_1"
+    },
+    "tags": [
+      "gated"
+    ]
+  },
+  "frost_sick_queue": {
+    "title": "The Frost-Sick Queue",
+    "title_fr": "La file des gelés",
+    "rumour": "a line of the frost-sick at a warm house",
+    "rumour_fr": "une file de gens atteints par le givre devant une maison chaude",
+    "where": {
+      "biome": "frost"
+    },
+    "minChapter": 5,
+    "maxChapter": 6,
+    "beats": [
+      {
+        "id": "queue",
+        "type": "event",
+        "text": "A queue of people with grey-white hands stands patiently outside a low house with smoke at the chimney. The frost has taken their fingers a joint at a time, and they hold them out in front of them like something borrowed.",
+        "text_fr": "Une file de gens aux mains gris-blanc attend patiemment devant une maison basse dont la cheminée fume. Le givre leur a pris les doigts une phalange à la fois, et ils les tendent devant eux comme quelque chose d’emprunté.",
+        "place": "The warm house",
+        "place_fr": "La maison chaude",
+        "choices": [
+          {
+            "id": "help",
+            "text": "Warm someone’s hands in yours",
+            "text_fr": "Réchauffer les mains de quelqu’un dans les vôtres",
+            "check": "constitution",
+            "success": {
+              "note": "The cold goes up your arms like a tide, and you hold on. A little colour comes back into the knuckles. The woman does not thank you; she looks at her fingers, astonished.",
+              "note_fr": "Le froid vous monte dans les bras comme une marée, et vous tenez bon. Un peu de couleur revient aux articulations. La femme ne vous remercie pas ; elle regarde ses doigts, stupéfaite."
+            },
+            "fail": {
+              "note": "The cold bites through your gloves. You pull away too soon, and she nods: it is what most people do.",
+              "note_fr": "Le froid mord à travers vos gants. Vous vous écartez trop tôt, et elle hoche la tête : c’est ce que font la plupart des gens."
+            }
+          },
+          {
+            "id": "wood",
+            "text": "Carry wood in for the house",
+            "text_fr": "Porter du bois à la maison",
+            "outcome": {
+              "note": "A stack of split logs, left unasked by the door. The woman at the stove takes the first armful with a look you will think about later.",
+              "note_fr": "Une pile de bûches fendues, déposées sans qu’on les demande près de la porte. La femme au poêle prend la première brassée avec un regard auquel vous repenserez plus tard."
+            }
+          }
+        ]
+      },
+      {
+        "id": "stove",
+        "type": "rest",
+        "text": "The house has a stove, a kettle and a bench by the wall. The woman at the door, a sister of the Ember Sisters by her grey shawl, waves the next in line to the bench and, with the same gesture, you.",
+        "text_fr": "La maison a un poêle, une bouilloire et un banc contre le mur. La femme à la porte, une Sœur de Braise à son châle gris, fait signe au suivant de la file de gagner le banc et, du même geste, à vous.",
+        "place": "The stove",
+        "place_fr": "Le poêle",
+        "choices": [
+          {
+            "id": "sit",
+            "text": "Sit by the stove",
+            "text_fr": "Vous asseoir près du poêle"
+          },
+          {
+            "id": "go",
+            "text": "Go on",
+            "text_fr": "Poursuivre votre route",
+            "outcome": {
+              "note": "You leave the warmth to the people who need it more. She does not say thank you; she says take care.",
+              "note_fr": "Vous laissez la chaleur à ceux qui en ont le plus besoin. Elle ne dit pas merci ; elle dit prenez soin de vous."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "skull_lanterns": {
+    "title": "The Skull-Lanterns",
+    "title_fr": "Les lanternes-crânes",
+    "rumour": "lanterns burning in skulls along the pilgrims’ road",
+    "rumour_fr": "des lanternes qui brûlent dans des crânes le long de la route des pèlerins",
+    "where": {
+      "biome": "frost"
+    },
+    "minChapter": 5,
+    "maxChapter": 6,
+    "beats": [
+      {
+        "id": "lanterns",
+        "type": "event",
+        "text": "Along the pilgrims’ road to the Reliquary a lantern burns in a skull every fifty paces, each in a niche cut in the frost. The Black Reliquary’s lantern has always burned a skull. The pilgrims call it a courtesy to the dead; the Dominion calls it a reminder.",
+        "text_fr": "Le long de la route des pèlerins vers le Reliquaire brûle tous les cinquante pas une lanterne dans un crâne, chacune dans une niche taillée dans le givre. La lanterne du Reliquaire Noir a toujours brûlé un crâne. Les pèlerins y voient une courtoisie envers les morts ; le Dominion, un rappel.",
+        "place": "The pilgrims' road",
+        "place_fr": "La route des pèlerins",
+        "choices": [
+          {
+            "id": "trim",
+            "text": "Trim the wick of the nearest",
+            "text_fr": "Rogner la mèche de la plus proche",
+            "outcome": {
+              "note": "A small act, done in a small place. The flame steadies, and its light is, for a moment, almost the colour of someone’s face.",
+              "note_fr": "Un petit geste, dans un petit lieu. La flamme se stabilise, et sa lumière a, un instant, presque la couleur d’un visage."
+            }
+          },
+          {
+            "id": "count",
+            "text": "Count them to the next bend",
+            "text_fr": "Les compter jusqu’au prochain virage",
+            "outcome": {
+              "note": "Thirty-one. At the bend, the thirty-second is missing, and the niche is empty, swept clean.",
+              "note_fr": "Trente et une. Au virage, la trente-deuxième manque, et la niche est vide, balayée."
+            }
+          }
+        ]
+      },
+      {
+        "id": "niche",
+        "type": "discovery",
+        "text": "Behind the last lantern, in the niche, a pilgrim has left a tin box tied with a thread. A strip of paper: for the one who trims the wicks.",
+        "text_fr": "Derrière la dernière lanterne, dans la niche, un pèlerin a laissé une boîte en fer-blanc ficelée d’un fil. Un bout de papier : pour celui qui rogne les mèches.",
+        "place": "The niche",
+        "place_fr": "La niche",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Take the tin",
+            "text_fr": "Prendre la boîte",
+            "outcome": {
+              "note": "Salt, a coin and a stub of candle. A good bargain for a small act.",
+              "note_fr": "Du sel, une pièce et un bout de bougie. Un bon marché pour un petit geste."
+            }
+          },
+          {
+            "id": "leave",
+            "text": "Leave it for the next one",
+            "text_fr": "La laisser au suivant"
+          }
+        ]
+      }
+    ]
+  },
+  "hearth_stone_cart": {
+    "title": "The Hearth-Stone Cart",
+    "title_fr": "La charrette de la pierre de foyer",
+    "rumour": "a giant’s cart of grey stone, pulled by hand",
+    "rumour_fr": "une charrette de pierre grise, tirée à la main par un géant",
+    "where": {
+      "biome": "frost"
+    },
+    "minChapter": 5,
+    "maxChapter": 7,
+    "beats": [
+      {
+        "id": "cart",
+        "type": "event",
+        "text": "A giant of Highhearth is pulling a cart of grey stone along the frost road, alone, harness across his chest. He stops when he sees you and says, in a voice like a door in a cellar, that he remembers you, and that the stone is for a hearth in the south, and that the road is long.",
+        "text_fr": "Un géant de Haut-Âtre tire une charrette de pierre grise sur la route gelée, seul, le harnais en travers de la poitrine. Il s’arrête en vous voyant et dit, d’une voix comme une porte de cave, qu’il se souvient de vous, que la pierre est pour un foyer au sud, et que la route est longue.",
+        "place": "The stone cart",
+        "place_fr": "La charrette de pierre",
+        "choices": [
+          {
+            "id": "push",
+            "text": "Walk beside the cart and push where you can",
+            "text_fr": "Marcher à côté de la charrette et pousser où vous pouvez",
+            "outcome": {
+              "note": "It is a hundred paces, and it is the longest hundred of your day. At the end he sets a hand on your shoulder with a weight like a verdict, and thanks you, once, in the way of stone.",
+              "note_fr": "Cent pas, et ce sont les cent pas les plus longs de votre journée. À la fin il pose une main sur votre épaule du poids d’un verdict, et vous remercie, une fois, à la manière de la pierre."
+            }
+          },
+          {
+            "id": "ask",
+            "text": "Ask where the hearth is",
+            "text_fr": "Demander où est le foyer",
+            "outcome": {
+              "note": "Candlehold, he says. They will want one there when it is over. He says it as if he already knew when that would be.",
+              "note_fr": "Candlehold, dit-il. On en voudra un là-bas quand tout sera fini. Il le dit comme s’il savait déjà quand."
+            }
+          }
+        ]
+      }
+    ],
+    "requires": {
+      "flag": "ghrem_met"
+    },
+    "tags": [
+      "gated"
+    ]
+  },
+  "rimed_milestone": {
+    "title": "A Rimed Milestone",
+    "title_fr": "Une borne givrée",
+    "rumour": "a milestone coated in frost, with a name scratched in",
+    "rumour_fr": "une borne couverte de givre, un nom gravé dedans",
+    "where": {
+      "biome": "frost"
+    },
+    "minChapter": 5,
+    "maxChapter": 7,
+    "tags": [
+      "stop"
+    ],
+    "beats": [
+      {
+        "id": "stop",
+        "type": "event",
+        "text": "A milestone by the frost road is thick with rime, and someone has scratched a name into it through the white with a fingernail: the name is fresh, the letters wet. Beneath it, in the same hand: I was here. Walk on.",
+        "text_fr": "Une borne au bord de la route gelée est épaisse de givre, et quelqu’un y a gravé un nom à travers le blanc avec un ongle : le nom est frais, les lettres humides. Dessous, de la même main : j’ai été ici. Marchez.",
+        "place": "The milestone",
+        "place_fr": "La borne",
+        "choices": [
+          {
+            "id": "scratch",
+            "text": "Scratch your own beneath it",
+            "text_fr": "Gratter le vôtre dessous",
+            "outcome": {
+              "note": "The rime is hard as glass, and your nail takes a long time. When you straighten, the other name seems to have moved a little to make room.",
+              "note_fr": "Le givre est dur comme du verre, et votre ongle met longtemps. Quand vous vous redressez, l’autre nom semble s’être un peu déplacé pour vous faire de la place."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Walk on",
+            "text_fr": "Poursuivre votre marche"
+          }
+        ]
+      }
+    ]
+  },
+  "mirror_shoal": {
+    "title": "The Mirror Shoal",
+    "title_fr": "Le haut-fond miroir",
+    "rumour": "a shallow where the water shows a different sky",
+    "rumour_fr": "un haut-fond où l’eau montre un autre ciel",
+    "where": {
+      "biome": "tear"
+    },
+    "minChapter": 6,
+    "maxChapter": 7,
+    "beats": [
+      {
+        "id": "shoal",
+        "type": "event",
+        "text": "A shoal on the Hollow Shore lies so still that it holds the sky, and the sky it holds is not this one: it is darker, with two moons, and a line of ships under it, hulls down, white as bone. Your own reflection stands in the water and does not move when you do.",
+        "text_fr": "Un haut-fond de la Côte Creuse est si immobile qu’il retient le ciel, et le ciel qu’il retient n’est pas celui-ci : il est plus sombre, avec deux lunes, et une ligne de navires dessous, coque en haut, blancs comme des os. Votre reflet se tient dans l’eau et ne bouge pas quand vous bougez.",
+        "place": "The shoal",
+        "place_fr": "Le haut-fond",
+        "choices": [
+          {
+            "id": "look",
+            "text": "Look into it for a long moment",
+            "text_fr": "Le regarder un long moment",
+            "check": "wisdom",
+            "success": {
+              "note": "It blinks first. You step back, and the sky in the water closes like a book. You know a little more than you did, and can’t say what.",
+              "note_fr": "C’est lui qui cligne des yeux le premier. Vous reculez, et le ciel dans l’eau se referme comme un livre. Vous en savez un peu plus qu’avant, sans pouvoir dire quoi."
+            },
+            "fail": {
+              "note": "You look too long. When you turn away, the reflection is a half-second late in following.",
+              "note_fr": "Vous regardez trop longtemps. Quand vous vous détournez, le reflet est en retard d’une demi-seconde."
+            }
+          },
+          {
+            "id": "stone",
+            "text": "Throw a stone in",
+            "text_fr": "Y jeter une pierre",
+            "outcome": {
+              "note": "The rings go out and out, and do not return. When the water is still again, the ships are gone, and so is the stone.",
+              "note_fr": "Les ronds s’étendent et ne reviennent pas. Quand l’eau est de nouveau calme, les navires ont disparu, et la pierre aussi."
+            }
+          }
+        ]
+      },
+      {
+        "id": "wade",
+        "type": "fight",
+        "text": "Something steps up out of the shoal where your reflection stood, shaped like you, wearing your coat, walking the way you walk when you think no one is looking.",
+        "text_fr": "Quelque chose sort du haut-fond là où se tenait votre reflet, à votre forme, portant votre manteau, marchant comme vous marchez quand vous pensez que personne ne regarde.",
+        "place": "The water's edge",
+        "place_fr": "Le bord de l’eau",
+        "choices": [
+          {
+            "id": "fight",
+            "text": "Meet it at the water’s edge",
+            "text_fr": "L’affronter au bord de l’eau",
+            "fight": "hollow_reflection",
+            "success": {
+              "note": "It breaks like a pane, and the water takes the pieces. For a moment the sky in the shoal is only a sky.",
+              "note_fr": "Il se brise comme une vitre, et l’eau prend les morceaux. Un instant, le ciel dans le haut-fond n’est qu’un ciel."
+            },
+            "fail": {
+              "note": "You win, but it takes a little of your look with it into the water.",
+              "note_fr": "Vous gagnez, mais il emporte un peu de votre allure dans l’eau."
+            }
+          },
+          {
+            "id": "back",
+            "text": "Back away from the water",
+            "text_fr": "Reculer loin de l’eau",
+            "outcome": {
+              "note": "It stops at the line where the wet ends, patient, and goes back down as quietly as it came.",
+              "note_fr": "Il s’arrête à la ligne où l’humide finit, patient, et redescend aussi doucement qu’il est venu."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gravehunters_camp": {
+    "title": "The Grave-Hunters’ Camp",
+    "title_fr": "Le camp des chasseurs de tombes",
+    "rumour": "Admiralty men camped on the shingle, looking for a fleet",
+    "rumour_fr": "des hommes de l’Amirauté campés sur le galet, qui cherchent une flotte",
+    "where": {
+      "biome": "sea_cliffs"
+    },
+    "minChapter": 6,
+    "maxChapter": 7,
+    "beats": [
+      {
+        "id": "camp",
+        "type": "event",
+        "text": "Four Admiralty men are camped on the shingle with a chart weighted by stones and a lantern they keep trimmed against the wind. They are looking for the White Fleet’s grave, and have been for eleven days, and do not wish to be told it is under their feet.",
+        "text_fr": "Quatre hommes de l’Amirauté campent sur le galet avec une carte lestée de pierres et une lanterne qu’ils entretiennent contre le vent. Ils cherchent la tombe de la Flotte Blanche, depuis onze jours, et ne souhaitent pas qu’on leur dise qu’elle est sous leurs pieds.",
+        "place": "The shingle camp",
+        "place_fr": "Le camp du galet",
+        "choices": [
+          {
+            "id": "tell",
+            "text": "Tell them what you know",
+            "text_fr": "Leur dire ce que vous savez",
+            "check": "charisma",
+            "success": {
+              "note": "The captain listens with his jaw set, then unrolls a fresh sheet and begins to draw. By the end, you have a line on the chart that was not there.",
+              "note_fr": "Le capitaine écoute la mâchoire serrée, puis déroule une feuille neuve et se met à dessiner. À la fin, une ligne figure sur la carte qui n’y était pas."
+            },
+            "fail": {
+              "note": "They thank you with perfect courtesy and do not write down a word.",
+              "note_fr": "Ils vous remercient avec une parfaite courtoisie et n’écrivent pas un mot."
+            }
+          },
+          {
+            "id": "fight",
+            "text": "Take the chart by force",
+            "text_fr": "Prendre la carte de force",
+            "fight": "inquisition_auxiliary",
+            "success": {
+              "note": "The captain gives up the chart with an air of formal indignation. The map is good, and the shame, afterwards, is better than you expected.",
+              "note_fr": "Le capitaine rend la carte avec une indignation de façade. La carte est bonne, et la honte, après coup, est meilleure que vous ne l’espériez."
+            },
+            "fail": {
+              "note": "They are better drilled than you thought, and you leave with the chart and a split lip.",
+              "note_fr": "Ils sont mieux exercés que vous ne le pensiez, et vous repartez avec la carte et une lèvre fendue."
+            }
+          }
+        ]
+      },
+      {
+        "id": "meal",
+        "type": "rest",
+        "text": "The sergeant pours a cup of hot something from a dented pot and passes it over without comment. Whatever you did, they are not going to speak of it, and the cup says as much.",
+        "text_fr": "Le sergent verse dans une tasse quelque chose de chaud d’une marmite cabossée et la passe sans commentaire. Quoi que vous ayez fait, ils n’en parleront pas, et la tasse le dit.",
+        "place": "The camp fire",
+        "place_fr": "Le feu du camp",
+        "choices": [
+          {
+            "id": "drink",
+            "text": "Take the cup and sit",
+            "text_fr": "Prendre la tasse et vous asseoir"
+          },
+          {
+            "id": "go",
+            "text": "Go on",
+            "text_fr": "Poursuivre votre route"
+          }
+        ]
+      }
+    ]
+  },
+  "tide_warning_bell": {
+    "title": "The Tide-Bell",
+    "title_fr": "La cloche de marée",
+    "rumour": "a bell on a post that rings when the water turns",
+    "rumour_fr": "une cloche sur un poteau qui sonne quand l’eau tourne",
+    "where": {
+      "biome": "tear"
+    },
+    "minChapter": 6,
+    "maxChapter": 7,
+    "beats": [
+      {
+        "id": "bell",
+        "type": "event",
+        "text": "A bell hangs from a post at the edge of the glass shore. No clapper, no rope. It rings when the tide turns, and the ring is a long one, and the reflections out on the sand lift their heads at it like cattle at a gate.",
+        "text_fr": "Une cloche pend à un poteau au bord de la grève de verre. Pas de battant, pas de corde. Elle sonne quand la marée tourne, et le son est long, et les reflets sur le sable relèvent la tête comme du bétail à une barrière.",
+        "place": "The bell post",
+        "place_fr": "Le poteau de la cloche",
+        "choices": [
+          {
+            "id": "wait",
+            "text": "Wait for the turn",
+            "text_fr": "Attendre le renversement",
+            "outcome": {
+              "note": "The bell rings. The reflections face the coast, all together, and then all together turn back. You count the interval: it is shorter than it was.",
+              "note_fr": "La cloche sonne. Les reflets font face à la côte, tous ensemble, puis tous ensemble se détournent. Vous comptez l’intervalle : il est plus court qu’avant."
+            }
+          },
+          {
+            "id": "muffle",
+            "text": "Wrap the bell in cloth",
+            "text_fr": "Envelopper la cloche dans un linge",
+            "outcome": {
+              "note": "It rings anyway, under the cloth, and the sound is inside your chest rather than your ears. You unwrap it at once.",
+              "note_fr": "Elle sonne quand même, sous le linge, et le son est dans votre poitrine plutôt que dans vos oreilles. Vous la dénouez aussitôt."
+            }
+          }
+        ]
+      },
+      {
+        "id": "mark",
+        "type": "discovery",
+        "text": "In the sand below the post, where the reflections stood, is a ring of bare glass, smooth as a plate, with a handful of white beads half-sunk in it.",
+        "text_fr": "Dans le sable sous le poteau, là où se tenaient les reflets, un cercle de verre nu, lisse comme une assiette, avec une poignée de perles blanches à demi enfoncées.",
+        "place": "The ring of glass",
+        "place_fr": "Le cercle de verre",
+        "material": "material_tear_glass",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Pry the beads out",
+            "text_fr": "Déloger les perles",
+            "outcome": {
+              "note": "Tear-glass, warm in the palm. They seem a little reluctant, and then not.",
+              "note_fr": "Du verre de déchirure, tiède dans la paume. Elles semblent un peu réticentes, puis plus du tout."
+            }
+          },
+          {
+            "id": "leave",
+            "text": "Leave them in the glass",
+            "text_fr": "Les laisser dans le verre"
+          }
+        ]
+      }
+    ]
+  },
+  "white_sash_on_a_post": {
+    "title": "A White Sash on a Post",
+    "title_fr": "Une écharpe blanche sur un poteau",
+    "rumour": "a white sash tied to a post, dry in the wet",
+    "rumour_fr": "une écharpe blanche nouée à un poteau, sèche dans l’humidité",
+    "where": {
+      "biome": "sea_cliffs"
+    },
+    "minChapter": 6,
+    "maxChapter": 7,
+    "tags": [
+      "stop"
+    ],
+    "beats": [
+      {
+        "id": "stop",
+        "type": "event",
+        "text": "A white sash is knotted to a post on the shingle. Everything round it is wet with spray; the sash is dry, and stiff, and has a Fleet captain’s rank in thread at the hem. Nobody has come for it. Nobody will.",
+        "text_fr": "Une écharpe blanche est nouée à un poteau sur le galet. Tout autour est mouillé d’embruns ; l’écharpe est sèche, raide, et porte au bord le grade d’un capitaine de la Flotte brodé au fil. Personne n’est venu la chercher. Personne ne viendra.",
+        "place": "The post",
+        "place_fr": "Le poteau",
+        "choices": [
+          {
+            "id": "take",
+            "text": "Untie it and keep it",
+            "text_fr": "La dénouer et la garder",
+            "outcome": {
+              "note": "It is lighter than you expected, and colder. You tuck it in your pack, and it does not warm.",
+              "note_fr": "Elle est plus légère que vous ne l’attendiez, et plus froide. Vous la glissez dans votre sac, et elle ne se réchauffe pas."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Leave it where it hangs",
+            "text_fr": "La laisser où elle pend"
+          }
+        ]
+      }
+    ]
+  },
+  "lamplighters_muster": {
+    "title": "The Lamplighters’ Muster",
+    "title_fr": "Le rassemblement des allumeurs",
+    "rumour": "lamplighters drawn up on the road to Candlehold",
+    "rumour_fr": "des allumeurs rangés sur la route de Candlehold",
+    "where": {
+      "place": "candlehold"
+    },
+    "minChapter": 7,
+    "maxChapter": 7,
+    "beats": [
+      {
+        "id": "muster",
+        "type": "event",
+        "text": "On the road below the gates the city’s lamplighters are drawn up in ranks, poles at the slope, boots shined. They have been told to light every lamp on the cliff before dusk, as a courtesy to whoever takes the Throne, and they have not been told who that is.",
+        "text_fr": "Sur la route au pied des portes, les allumeurs de la ville sont rangés en files, perches à l’épaule, bottes cirées. On leur a dit d’allumer toutes les lampes de la falaise avant la nuit, par égard pour qui prendra le Trône, et on ne leur a pas dit qui c’était.",
+        "place": "The lamplighters",
+        "place_fr": "Les allumeurs",
+        "choices": [
+          {
+            "id": "ask",
+            "text": "Ask which colour they will light first",
+            "text_fr": "Demander quelle couleur ils allumeront d’abord",
+            "outcome": {
+              "note": "The sergeant looks at his list, then at you. The colour has not been decided. He seems relieved to say so, as if saying it were a form of rebellion.",
+              "note_fr": "Le sergent regarde sa liste, puis vous. La couleur n’a pas été décidée. Il paraît soulagé de le dire, comme si le dire était une forme de rébellion."
+            }
+          },
+          {
+            "id": "light",
+            "text": "Light the first lamp yourself",
+            "text_fr": "Allumer vous-même la première lampe",
+            "outcome": {
+              "note": "The wick takes. A cheer goes up from the ranks, low and surprised, and the sergeant says nothing, because he is smiling.",
+              "note_fr": "La mèche prend. Une acclamation s’élève des rangs, basse et surprise, et le sergent ne dit rien, car il sourit."
+            }
+          }
+        ]
+      },
+      {
+        "id": "lamp",
+        "type": "rest",
+        "text": "The sergeant finds you a stool by the gate-lamp and a cup of lamp-oil tea, which is not tea and is not lamp-oil, and is, on that road, the best thing in the world.",
+        "text_fr": "Le sergent vous trouve un tabouret près de la lampe de la porte et une tasse de thé d’huile de lampe, qui n’est ni du thé ni de l’huile de lampe et qui est, sur cette route, la meilleure chose du monde.",
+        "place": "The gate-lamp",
+        "place_fr": "La lampe de la porte",
+        "choices": [
+          {
+            "id": "sit",
+            "text": "Sit and drink",
+            "text_fr": "Vous asseoir et boire"
+          },
+          {
+            "id": "go",
+            "text": "Go on up",
+            "text_fr": "Monter plus haut"
+          }
+        ]
+      }
+    ]
+  },
+  "houses_torn_tongue": {
+    "title": "The Torn Banner",
+    "title_fr": "La bannière déchirée",
+    "rumour": "a House banner torn from a wall, lying in the road",
+    "rumour_fr": "une bannière de Maison arrachée d’un mur, gisant sur la route",
+    "where": {
+      "place": "candlehold"
+    },
+    "minChapter": 7,
+    "maxChapter": 7,
+    "beats": [
+      {
+        "id": "banner",
+        "type": "event",
+        "text": "One of the eight Houses’ tongues lies in the road under a cart-wheel’s rut, torn from its pole, the cloth stamped with mud. A page stands over it with the look of someone who has been told not to touch it and is waiting for permission.",
+        "text_fr": "L’une des langues des huit Maisons gît sur la route sous l’ornière d’une roue de charrette, arrachée de sa hampe, l’étoffe marquée de boue. Un page se tient au-dessus d’elle avec l’air de quelqu’un à qui l’on a dit de n’y pas toucher et qui attend la permission.",
+        "place": "The road below the gates",
+        "place_fr": "La route au pied des portes",
+        "choices": [
+          {
+            "id": "lift",
+            "text": "Lift it out of the mud",
+            "text_fr": "La relever de la boue",
+            "check": "charisma",
+            "success": {
+              "note": "The page flinches, then helps you fold it. Somebody on the wall sees, and says a name, quietly. Whichever House it was, it is known now that the banner was picked up.",
+              "note_fr": "Le page tressaille, puis vous aide à la plier. Quelqu’un sur le mur le voit, et dit un nom, à voix basse. Quelle que soit la Maison, on sait désormais que la bannière a été relevée."
+            },
+            "fail": {
+              "note": "You pick it up. The page cries out, a high thin sound, and you set it down again, awkward. It will lie there until someone decides what it means.",
+              "note_fr": "Vous la ramassez. Le page pousse un cri, un son aigu et mince, et vous la reposez, mal à l’aise. Elle restera là jusqu’à ce que quelqu’un décide ce qu’elle signifie."
+            }
+          },
+          {
+            "id": "leave",
+            "text": "Step round it",
+            "text_fr": "La contourner",
+            "outcome": {
+              "note": "Every cart that comes by does the same. It is, in its way, a verdict.",
+              "note_fr": "Chaque charrette qui passe fait de même. C’est, à sa manière, un verdict."
+            }
+          }
+        ]
+      },
+      {
+        "id": "fold",
+        "type": "discovery",
+        "text": "Folded in the banner is a letter in a House’s hand: a bearing, a gate, a sum. Whoever tore the banner down did it to find it, and left it behind.",
+        "text_fr": "Dans les plis de la bannière se trouve une lettre de la main d’une Maison : un cap, une porte, une somme. Qui a arraché la bannière l’a fait pour la trouver, et l’a laissée.",
+        "place": "The folded cloth",
+        "place_fr": "L’étoffe pliée",
+        "choices": [
+          {
+            "id": "read",
+            "text": "Read it and put it back",
+            "text_fr": "La lire et la remettre",
+            "outcome": {
+              "note": "It is not for you. You fold it as you found it, and set it where the next page will see.",
+              "note_fr": "Elle n’est pas pour vous. Vous la repliez comme vous l’avez trouvée, et la posez là où le prochain page la verra."
+            }
+          },
+          {
+            "id": "take",
+            "text": "Take the letter",
+            "text_fr": "Prendre la lettre",
+            "outcome": {
+              "note": "It is heavier than paper. Whoever wants it will come to ask, and will be offended that you have it.",
+              "note_fr": "Elle pèse plus que du papier. Qui la veut viendra la demander, et s’offensera que vous l’ayez."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "reed_gate_petition_road": {
+    "title": "The Reed Gate Petitioners",
+    "title_fr": "Les solliciteurs de la Porte des Roseaux",
+    "rumour": "petitioners camped on the cove road with a scroll",
+    "rumour_fr": "des solliciteurs campés sur la route de l’anse avec un parchemin",
+    "where": {
+      "place": "the_cove"
+    },
+    "minChapter": 7,
+    "maxChapter": 7,
+    "beats": [
+      {
+        "id": "petition",
+        "type": "event",
+        "text": "A dozen petitioners from the Reed Gate have camped by the cove road with a scroll as long as a man, and they take turns reading it aloud to whoever passes, so that no-one can say afterwards they were not told.",
+        "text_fr": "Une douzaine de solliciteurs de la Porte des Roseaux ont installé leur camp au bord de la route de l’anse avec un parchemin long comme un homme, et lisent à tour de rôle à voix haute à quiconque passe, afin que nul ne puisse dire ensuite qu’on ne l’a pas prévenu.",
+        "place": "The petitioners' camp",
+        "place_fr": "Le camp des solliciteurs",
+        "choices": [
+          {
+            "id": "hear",
+            "text": "Hear the whole scroll",
+            "text_fr": "Écouter le parchemin en entier",
+            "outcome": {
+              "note": "It takes an hour. At the end the youngest reader hands it to you with both hands, the way you hand over something that might not survive being refused.",
+              "note_fr": "Cela prend une heure. À la fin, le plus jeune lecteur vous le tend à deux mains, comme on remet ce qui risque de ne pas survivre à un refus."
+            }
+          },
+          {
+            "id": "sign",
+            "text": "Add your name to the foot",
+            "text_fr": "Ajouter votre nom en bas",
+            "outcome": {
+              "note": "The ink is borrowed, and the scroll has a hundred names. Yours goes on the end, and when they roll it up, it is the one that shows.",
+              "note_fr": "L’encre est empruntée, et le parchemin compte cent noms. Le vôtre vient à la fin, et quand ils le roulent, c’est celui qu’on voit."
+            }
+          }
+        ]
+      },
+      {
+        "id": "sign",
+        "type": "discovery",
+        "text": "The youngest reader presses a copy of the petition on you, on a single sheet. At the foot, a space for a name, and a line in a different hand: if you think we are right.",
+        "text_fr": "Le plus jeune lecteur vous remet une copie de la pétition, sur une seule feuille. En bas, un espace pour un nom, et une ligne d’une autre main : si vous pensez que nous avons raison.",
+        "place": "The foot of the sheet",
+        "place_fr": "Le bas de la feuille",
+        "choices": [
+          {
+            "id": "keep",
+            "text": "Keep the sheet",
+            "text_fr": "Garder la feuille",
+            "outcome": {
+              "note": "It will be read again, in a better place. For now it sits against your ribs, thin, and does not move.",
+              "note_fr": "On la relira, en un meilleur lieu. Pour l’instant elle repose contre vos côtes, mince, et ne bouge pas."
+            }
+          },
+          {
+            "id": "return",
+            "text": "Hand it back",
+            "text_fr": "La rendre",
+            "outcome": {
+              "note": "They take it with a nod that has no accusation in it. Some questions are left open on purpose.",
+              "note_fr": "Ils la reprennent d’un signe de tête sans reproche. Certaines questions sont laissées ouvertes à dessein."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "heralds_horse": {
+    "title": "A Herald’s Horse",
+    "title_fr": "Le cheval d’un héraut",
+    "rumour": "a herald’s horse cropping grass beside the road",
+    "rumour_fr": "le cheval d’un héraut qui broute au bord de la route",
+    "where": {
+      "place": "the_cove"
+    },
+    "minChapter": 7,
+    "maxChapter": 7,
+    "tags": [
+      "stop"
+    ],
+    "beats": [
+      {
+        "id": "stop",
+        "type": "event",
+        "text": "A herald’s horse stands cropping grass at the roadside, saddle empty, a House’s colours on its trappings. It looks up at you with the gentle indifference of an animal that knows the road better than any rider.",
+        "text_fr": "Le cheval d’un héraut broute l’herbe au bord de la route, la selle vide, les couleurs d’une Maison sur ses harnais. Il lève les yeux vers vous avec la douce indifférence d’une bête qui connaît la route mieux que n’importe quel cavalier.",
+        "place": "The roadside",
+        "place_fr": "Le bord de la route",
+        "choices": [
+          {
+            "id": "pat",
+            "text": "Pat its neck",
+            "text_fr": "Lui tapoter l’encolure",
+            "outcome": {
+              "note": "It lets you. Then it turns its head in the direction of the cove, and keeps it there, as though suggesting the way.",
+              "note_fr": "Il vous laisse faire. Puis il tourne la tête vers l’anse, et la garde là, comme s’il suggérait le chemin."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Go on",
+            "text_fr": "Poursuivre votre route"
+          }
+        ]
+      }
+    ]
+  },
+  "camp_night_watch": {
+    "title": "The Night Watch at the Palisade",
+    "title_fr": "La veille de nuit à la palissade",
+    "rumour": "the camp’s night watch, short of a pair of hands",
+    "rumour_fr": "la garde de nuit du camp, à court de bras",
+    "where": {
+      "place": "the_cove"
+    },
+    "minChapter": 3,
+    "maxChapter": 7,
+    "beats": [
+      {
+        "id": "watch",
+        "type": "event",
+        "text": "The camp’s night watch has two sentries on the palisade and a third asleep on his feet. The sergeant has run out of volunteers. She looks at you, then at the dark beyond the stakes, and says that an hour would be a kindness.",
+        "text_fr": "La garde de nuit du camp compte deux sentinelles sur la palissade et une troisième qui dort debout. La sergente n’a plus de volontaires. Elle vous regarde, puis l’obscurité au-delà des pieux, et dit qu’une heure serait une gentillesse.",
+        "place": "The palisade",
+        "place_fr": "La palissade",
+        "choices": [
+          {
+            "id": "stand",
+            "text": "Stand an hour on the palisade",
+            "text_fr": "Monter une heure de garde sur la palissade",
+            "check": "perception",
+            "success": {
+              "note": "Something moves on the shingle at the fourth bell: a fox, thin, going about its own errand. You say so, flat, and the sergeant says that is the whole of the job.",
+              "note_fr": "Quelque chose bouge sur le galet à la quatrième cloche : un renard, maigre, à ses affaires. Vous le dites, platement, et la sergente répond que c’est tout le métier."
+            },
+            "fail": {
+              "note": "Nothing happens, and you cannot say whether that is because nothing was there or because you missed it.",
+              "note_fr": "Il ne se passe rien, et vous ne pouvez dire si c’est parce qu’il n’y avait rien ou parce que vous n’avez rien vu."
+            }
+          },
+          {
+            "id": "decline",
+            "text": "Say you have somewhere to be",
+            "text_fr": "Dire que vous avez un endroit où aller",
+            "outcome": {
+              "note": "She nods. She asked for an hour, not a promise. The sentry on his feet wakes, ashamed, and straightens.",
+              "note_fr": "Elle hoche la tête. Elle demandait une heure, pas une promesse. La sentinelle debout se réveille, honteuse, et se redresse."
+            }
+          }
+        ]
+      },
+      {
+        "id": "fox",
+        "type": "rest",
+        "text": "Toward dawn the sergeant relieves you and shares what is left of the watch-fire: a heel of bread, a cup of tea, and a bench with a blanket on it.",
+        "text_fr": "Vers l’aube la sergente vous relève et partage ce qui reste du feu de garde : un croûton, une tasse de thé, et un banc avec une couverture dessus.",
+        "place": "The watch-fire",
+        "place_fr": "Le feu de garde",
+        "choices": [
+          {
+            "id": "sit",
+            "text": "Sit a while",
+            "text_fr": "Vous asseoir un moment"
+          },
+          {
+            "id": "go",
+            "text": "Go on",
+            "text_fr": "Poursuivre votre route"
+          }
+        ]
+      }
+    ]
+  },
+  "tide_pool_children": {
+    "title": "The Tide-Pool Children",
+    "title_fr": "Les enfants des flaques",
+    "rumour": "children at the tide-pools with a bucket and a rule",
+    "rumour_fr": "des enfants aux flaques de marée avec un seau et une règle",
+    "where": {
+      "place": "the_cove"
+    },
+    "minChapter": 3,
+    "maxChapter": 7,
+    "beats": [
+      {
+        "id": "children",
+        "type": "event",
+        "text": "Three children of the camp are fishing the tide-pools with a bucket and a strict system: whatever is caught has to be shown to every adult before it is eaten. They have a crab, a green fish, and something with too many legs. They hold it up to you in a row.",
+        "text_fr": "Trois enfants du camp pêchent dans les flaques de marée avec un seau et un système strict : tout ce qu’on attrape doit être montré à chaque adulte avant d’être mangé. Ils ont un crabe, un poisson vert, et quelque chose avec trop de pattes. Ils vous les présentent en rang.",
+        "place": "The tide-pools",
+        "place_fr": "Les flaques de marée",
+        "choices": [
+          {
+            "id": "judge",
+            "text": "Judge the catch seriously",
+            "text_fr": "Juger la prise avec sérieux",
+            "outcome": {
+              "note": "The crab is acceptable. The fish is acceptable with reservations. The thing with legs is declared, by acclaim, a mascot. You leave to the sound of a ceremony.",
+              "note_fr": "Le crabe est acceptable. Le poisson l’est avec réserves. La chose à pattes est déclarée, par acclamation, mascotte. Vous repartez au son d’une cérémonie."
+            }
+          },
+          {
+            "id": "join",
+            "text": "Join them for a quarter hour",
+            "text_fr": "Les rejoindre un quart d’heure",
+            "outcome": {
+              "note": "You come away wet to the shins and a good deal lighter for it. Somebody has given you a shell for your trouble.",
+              "note_fr": "Vous repartez les tibias mouillés et l’esprit allégé. Quelqu’un vous a donné un coquillage pour votre peine."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "camp_washing_line": {
+    "title": "The Camp’s Washing Line",
+    "title_fr": "Le fil à linge du camp",
+    "rumour": "a washing line of flags and shirts at the camp’s edge",
+    "rumour_fr": "un fil à linge de drapeaux et de chemises au bord du camp",
+    "where": {
+      "place": "the_cove"
+    },
+    "minChapter": 3,
+    "maxChapter": 7,
+    "tags": [
+      "stop"
+    ],
+    "beats": [
+      {
+        "id": "stop",
+        "type": "event",
+        "text": "A washing line is strung between two stakes at the camp’s edge, and on it hang a dozen shirts, a child’s blanket, and a Host banner somebody has found a use for. They turn together in the wind, like a congregation.",
+        "text_fr": "Un fil à linge est tendu entre deux pieux au bord du camp, et y pendent une douzaine de chemises, une couverture d’enfant, et une bannière de l’Ost à laquelle quelqu’un a trouvé un emploi. Tout tourne ensemble dans le vent, comme une assemblée.",
+        "place": "The washing line",
+        "place_fr": "Le fil à linge",
+        "choices": [
+          {
+            "id": "fold",
+            "text": "Help take a sheet in",
+            "text_fr": "Aider à rentrer un drap",
+            "outcome": {
+              "note": "It is dry and smells of sea. A woman takes the other end without a word, and the two of you walk toward each other until it is a square.",
+              "note_fr": "Il est sec et sent la mer. Une femme prend l’autre bout sans un mot, et vous marchez l’un vers l’autre jusqu’à ce que ce soit un carré."
+            }
+          },
+          {
+            "id": "go",
+            "text": "Walk on",
+            "text_fr": "Poursuivre votre marche"
+          }
+        ]
+      }
+    ]
   }
 }
