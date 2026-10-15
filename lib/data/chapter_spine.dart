@@ -25,11 +25,13 @@ const List<ChapterSpine> chapterSpines = [
     {'1100'},
     {'1200'},
   ]),
+  // The tunnel, the insult and the cordon (2030, 2040, 2070) were a beat
+  // here until the 50-run audit (S1): half the runs go from the yards to
+  // 2900 by the crane, Liora or the skiff instead. They are a branch.
   ChapterSpine(2, [
     {'2001'},
     {'2005'},
     {'2010', '2020', '2050'},
-    {'2030', '2040', '2070'},
     {'2900'},
   ]),
   ChapterSpine(3, [

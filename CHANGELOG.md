@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.355.0+391]
+## [1.358.0+394]
 
 The map reads on a phone, zooming out lands on the sphere, and the camp's buildings have tabs and filters.
 
@@ -22,6 +22,25 @@ The map reads on a phone, zooming out lands on the sphere, and the camp's buildi
 - **The Journey's district is board 15's.** In a city Core has stored a plan for (Saltmouth today), the District view is the city chart framed on the party's district, with a numbered pin on the building of each way; under it the ways as numbered rows (a tap opens the way's sheet with Go), and "Walk on" chips to the other districts. The Town view is the whole city with the districts under fog and their rows. Other cities keep the generated plan.
 - **The Journey map climbs district → town → world.** Zooming out from a district shows the whole town (all its districts) before the world; zooming in from the world comes back through the town. Three small tab buttons on the map (District, Town, World; Quartier, Ville, Monde) jump to a level in one tap; the Town tab is dimmed where the place has no city plan, and a + under the town view returns to the district.
 - **Camp buildings: tabs and filters.** Houses and Additions are tabs (with counts); filters keep what is ready, what the gold and the pack can pay for, what stands, and (for houses) a category. An empty result offers a way back. Each card carries a "built / limit" slot (Core's `WorkLimit`).
+## [1.357.0+393]
+
+The new districts have their own voices.
+
+### Changed
+- **District pools.** Each of the eleven districts of the Ashen Quarter, the Drowned Cloister and the White Anchorage has its own detour pool: four lines each of shop, quest, treasure, rest and generic, written from the district's blurb, so a detour leaving the Ash-Market no longer sounds like the next biome over.
+- **A detour's cost, in the game's own words.** "The detour takes part of the day" (the day's parts are Dawn, Daytime, Dusk and Night), instead of a "watch" that the French rendered as "veille", the name of a clan.
+
+## [1.356.0+392]
+
+Detours become places to explore (Wave 11): short written scenes off the road, paced so every chapter gets its share.
+
+- **Written scenes.** Narrative's first detour scenes are in the game: a landmark for each chapter from 2 to 7 (chapter 7's can't come yet: it has no road at rest), a scene or a stop for each biome, and a short scene in each district of Saltmouth, the Ashen Quarter, the Drowned Cloister and the White Anchorage. A scene plays beat by beat; each choice says what it did. You can back away at the first beat for free ("Leave it and go on"). A scene with a check or a fight takes a watch of the day; none eats a ration.
+- **Where detours happen.** Only when the party changes place or district: never between two scenes of the same place. From any scene, not just the main story beats, and on the camp's trips too, so chapter 4 now gets detours. None in the last chapter.
+- **When.** A road at rest starts at 20% and gains 10% for each quiet road, up to 60%. After a detour, a hunter or a familiar face, the next road is quiet. City streets halve the odds; a long road raises them. A crisis road holds nothing but owes a detour, paid later in the same chapter; a set piece owes nothing.
+- **Each chapter's landmark** comes once, on the chapter's first road at rest that nothing else holds.
+- **Fixes.** A detour line doesn't come back until the rest of its pool has. A place's own enemy line now opens fights there. Chapter 2's tunnel, insult and cordon are no longer counted as a beat every run passes.
+- **Simulator.** Every road is recorded, and runs can be written out as transcripts. Report: docs/simulation/detours.md.
+
 ## [1.354.0+390]
 
 The professions' cores (v5.2 step 1, second half; docs/simulation/profession-cores.md). The hero plays their profession's core; companions keep their dice as they are.

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../data/detour_scenes.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
 import '../models/story_node.dart';
@@ -181,6 +182,7 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   }
 
   void choose(String nextId) {
+    _scenePlay = null;
     state = StoryPlayState(
       currentNodeId: nextId,
       history: [...state.history, state.currentNodeId],
@@ -200,7 +202,7 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
       history: snapshot.history,
       visitedNodeIds: snapshot.visitedNodeIds,
     );
-    _detourOwed = false;
+    _scenePlay = null;
     _persistAutosave();
   }
 
@@ -246,22 +248,24 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     _persistAutosave();
   }
 
-  /// A detour rolled while a crisis ran from one scene into the next, put
-  /// off until the story reaches a transition at rest (see
-  /// SubNodeEngine.detourAllowedBetween). Session-only: a relaunch simply
-  /// forgets it.
-  bool _detourOwed = false;
+  /// The written scene being played as the excursion (detour_scenes.dart),
+  /// if it is one: what each of its choices does besides, and what going in
+  /// costs. Session-only, as the excursion is.
+  DetourScenePlay? _scenePlay;
 
-  bool get detourOwed => _detourOwed;
+  DetourScenePlay? get scenePlay => _scenePlay;
 
-  /// Marks a detour as owed for the next transition at rest.
-  void oweDetour() => _detourOwed = true;
-
-  /// Whether a detour is owed, clearing it: the caller takes it now.
-  bool takeOwedDetour() {
-    final owed = _detourOwed;
-    _detourOwed = false;
-    return owed;
+  /// Plays [play]'s beats as the excursion on the way to [resumeNodeId]
+  /// (see [startExcursion]).
+  void startScene(
+    DetourScenePlay play,
+    String resumeNodeId, {
+    String? origin,
+    String? originFr,
+  }) {
+    startExcursion(play.nodes, resumeNodeId,
+        origin: origin, originFr: originFr);
+    _scenePlay = play.nodes.isEmpty ? null : play;
   }
 
   /// Inserts a procedurally generated chain of nodes before the player
@@ -276,6 +280,7 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     String? originFr,
   }) {
     if (chain.isEmpty) return;
+    _scenePlay = null;
     state = StoryPlayState(
       currentNodeId: state.currentNodeId,
       history: state.history,
@@ -291,6 +296,7 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   /// Leaves the detour at once, back to the scene it set out from -- the
   /// party slipped away from it.
   void leaveExcursion() {
+    _scenePlay = null;
     final resume = state.resumeNodeId;
     if (resume != null) choose(resume);
   }
@@ -308,6 +314,7 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
       queue = queue.skip(2).toList();
     }
     if (queue.isEmpty) {
+      _scenePlay = null;
       final resume = state.resumeNodeId;
       if (resume != null) choose(resume);
       return;
