@@ -7658,6 +7658,67 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'La marée monte\u00a0: les vôtres +{party}\u00a0%, les leurs +{enemies}\u00a0%.',
   },
+  // The place's rule over a fight (v5.2 step 4, context_rules.dart).
+  'boss_enraged_log': {
+    AppLanguage.en: 'The tide turns, and the boss grows enraged.',
+    AppLanguage.fr: 'La marée tourne, et le boss entre en rage.',
+  },
+  'context_mist_omen': {
+    AppLanguage.en: 'A green haze rises from the reeds.',
+    AppLanguage.fr: 'Une brume verte monte des roseaux.',
+  },
+  'context_mist_log': {
+    AppLanguage.en: 'The marsh mist thickens ({n}): it eats at both sides.',
+    AppLanguage.fr:
+        'La brume du marais s’épaissit ({n})\u00a0: elle ronge les deux camps.',
+  },
+  'context_heat_omen': {
+    AppLanguage.en: 'The air begins to shimmer with heat.',
+    AppLanguage.fr: 'L’air commence à trembler de chaleur.',
+  },
+  'context_heat_log': {
+    AppLanguage.en:
+        'The heat climbs ({n}): it wears both sides down, and wounds close slower.',
+    AppLanguage.fr:
+        'La chaleur monte ({n})\u00a0: elle use les deux camps, et les plaies se ferment moins bien.',
+  },
+  'context_water_omen': {
+    AppLanguage.en: 'Water seeps in around your feet; dust sifts from above.',
+    AppLanguage.fr:
+        'L’eau s’infiltre à vos pieds\u00a0; la poussière tombe d’en haut.',
+  },
+  'context_water_log': {
+    AppLanguage.en:
+        'The ground gives way ({n}): every blow lands harder, yours most.',
+    AppLanguage.fr:
+        'Le sol cède ({n})\u00a0: chaque coup porte plus fort, les vôtres surtout.',
+  },
+  'context_holy_omen': {
+    AppLanguage.en: 'The candles of this place begin to gutter.',
+    AppLanguage.fr: 'Les cierges de ce lieu se mettent à vaciller.',
+  },
+  'context_holy_log': {
+    AppLanguage.en:
+        'The holy ground stirs ({n}): healing fades, and Light strikes harder.',
+    AppLanguage.fr:
+        'Le sol sacré s’éveille ({n})\u00a0: les soins faiblissent, et la Lumière frappe plus fort.',
+  },
+  'context_guards_omen': {
+    AppLanguage.en: 'A whistle sounds down the street: the watch is coming.',
+    AppLanguage.fr: 'Un sifflet retentit dans la rue\u00a0: le guet arrive.',
+  },
+  'context_guards_log': {
+    AppLanguage.en:
+        'The watch breaks the fight up. Both sides walk away; nothing is won.',
+    AppLanguage.fr:
+        'Le guet sépare les combattants. Chacun s’en va\u00a0; rien n’est gagné.',
+  },
+  'context_guards_won_log': {
+    AppLanguage.en:
+        'The watch breaks the fight up, and your foes, the worse for it, scatter.',
+    AppLanguage.fr:
+        'Le guet sépare les combattants, et vos ennemis, les plus mal en point, se dispersent.',
+  },
   // The fight screen's marks for those rules (v1.368).
   'tide_mark': {AppLanguage.en: 'Tide ×{n}', AppLanguage.fr: 'Marée ×{n}'},
   'tide_soon_mark': {

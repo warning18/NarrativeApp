@@ -445,6 +445,9 @@ class _EnemyMember {
 class _FightLength {
   final Map<String, int> _heals = {};
 
+  /// The fight's context rule (context_rules.dart), set with the ground.
+  ContextRule rule = ContextRule.tide;
+
   /// The pack's leader (an enemy key), once worked out; '' for none.
   String? leaderKey;
   bool packBroken = false;
@@ -453,8 +456,10 @@ class _FightLength {
   /// fatigue mark; nothing is counted).
   int healsBy(String memberId) => _heals[memberId] ?? 0;
 
-  /// [amount] as [memberId]'s next heal heals it, counted.
-  int fatigued(String memberId, int amount) {
+  /// [amount] as [memberId]'s next heal in [round] heals it, counted:
+  /// the place's rule on it first.
+  int fatigued(String memberId, int amount, {int round = 0}) {
+    amount = rule.heal(amount, round);
     if (amount <= 0) return amount;
     final before = _heals[memberId] ?? 0;
     _heals[memberId] = before + 1;

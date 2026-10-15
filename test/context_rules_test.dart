@@ -19,8 +19,9 @@ Map<String, dynamic> _table(String name) =>
 
 void main() {
   test('one rule a fight: the foe, the city, a holy place, the stage', () {
+    // A boss's fight: the Tide's own boss step is its enrage.
     expect(contextRuleFor(stage: FightStage.reeds, bossFight: true),
-        ContextRule.bossEnrage);
+        ContextRule.tide);
     expect(contextRuleFor(stage: FightStage.reeds, city: true),
         ContextRule.townGuards);
     expect(contextRuleFor(stage: FightStage.dunes, holy: true),
@@ -42,9 +43,12 @@ void main() {
     // The heat cuts healing once risen.
     expect(ContextRule.desertHeat.heal(100, 5), 100);
     expect(ContextRule.desertHeat.heal(100, 6), 80);
-    // The water: both sides harder.
-    expect(ContextRule.risingWater.blow(100, 7, byParty: true), 120);
-    expect(ContextRule.risingWater.blow(100, 7, byParty: false), 120);
+    // The water: from the Tide's round, the party +10% a level (and its
+    // heals), the enemies +5%, up to three levels.
+    expect(ContextRule.risingWater.blow(100, 7, byParty: true), 100);
+    expect(ContextRule.risingWater.blow(100, 8, byParty: false), 116);
+    expect(waterLevel(20), waterMaxLevel);
+    expect(ContextRule.risingWater.heal(100, 9), 120);
     // Sanctified: Light harder, heals fading.
     expect(ContextRule.sanctified.blow(100, 7, byParty: true, element: 'Light'),
         120);
@@ -53,9 +57,10 @@ void main() {
     // The Tide rises under every rule (from round 8).
     expect(ContextRule.marshMist.blow(100, 9, byParty: true), 140);
     expect(ContextRule.tide.blow(100, 9, byParty: false), 120);
-    // Enrage: a boss's blows from round 10, on top of the Tide.
-    expect(ContextRule.bossEnrage.blow(100, 9, byParty: false), 120);
-    expect(ContextRule.bossEnrage.blow(100, 10, byParty: false), 195);
+    expect(
+        partyAheadOnHealth(
+            partyHealth: 60, partyMax: 100, enemyHealth: 50, enemyMax: 100),
+        isTrue);
     // The watch.
     expect(ContextRule.townGuards.guardsCome(5), isFalse);
     expect(ContextRule.townGuards.guardsCome(6), isTrue);
@@ -101,7 +106,6 @@ void main() {
               ContextRule.desertHeat,
               ContextRule.risingWater,
               ContextRule.sanctified,
-              ContextRule.bossEnrage,
             ]
           : rules) {
         final summaries = simulatePlaythroughs(story,

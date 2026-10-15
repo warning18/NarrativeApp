@@ -1,33 +1,35 @@
 // The context rules (v5.2 step 4, docs/proposals/profession-clan-mechanics.md
 // "Fight length: a menu tied to the world"): one rule a fight, chosen by
-// the place or the foe, on top of the default rules every fight plays
-// (fight_length.dart). The Tide is what a fight meets when none applies.
+// its place, on top of the default rules every fight plays and of the Tide
+// (fight_length.dart), which rises under every rule. A boss's fight keeps
+// the Tide's own boss step: that is its enrage.
 //
-// - Boss enrage: from [enrageRound], a boss strikes [enrageMultiplier]
-//   times as hard.
-// - Town guards: in a city, from [risingStartRound], the watch breaks the
-//   fight up; the side ahead on health wins it, else both walk away.
+// - Town guards: in a city, a town or a district, from [risingStartRound],
+//   the watch breaks the fight up; the side ahead on health wins it, else
+//   both walk away (nothing won, nothing lost).
 // - The rising ground, from [risingStartRound], one level more each round:
 //   - marsh mist (the reeds): both sides lose [mistTickStep] of their max
 //     health a level, each round;
 //   - desert heat (the dunes, the salt flats): both sides lose
 //     [heatTickStep] a level, each round, and heal [heatHealFactor] as much;
-//   - rising water (the waves, the cliffs) and the collapse (a hall): both
-//     sides strike [waterBlowStep] harder a level;
+//   - rising water (the waves, the cliffs) and the collapse (a hall): from
+//     the Tide's round, the party strikes and heals [waterBlowStep] more a
+//     level, the enemies strike [waterEnemyStep] more, up to
+//     [waterMaxLevel] levels;
 //   - sanctified ground (a holy place): heals fade [sanctifiedHealStep] a
 //     level, and Light strikes [sanctifiedLightStep] harder a level.
 // The ground wounds but never finishes: a tick leaves at least 1 health.
 //
-// Pure rules; the fight screen and the playthrough simulator play them.
+// Measured in docs/simulation/context-rules.md. Pure rules; the fight
+// screen and the playthrough simulator play them.
 import 'dart:math';
 
 import 'field_anomaly.dart' show FightStage;
 import 'fight_length.dart';
 
-/// The rule a fight plays besides the default ones.
+/// The rule a fight plays besides the default ones and the Tide.
 enum ContextRule {
   tide,
-  bossEnrage,
   townGuards,
   marshMist,
   desertHeat,
@@ -35,16 +37,16 @@ enum ContextRule {
   sanctified,
 }
 
-/// The rule of a fight on [stage]: a boss's enrage first ([bossFight]),
-/// then the watch in a city ([city]), a holy place's ground ([holy]), the
-/// stage's own ground, and the Tide where none of these applies.
+/// The rule of a fight on [stage]: the watch in a city ([city]), a holy
+/// place's ground ([holy]), the stage's own ground, and the Tide alone
+/// where none of these applies or a boss is fought ([bossFight]).
 ContextRule contextRuleFor({
   required FightStage stage,
   bool bossFight = false,
   bool city = false,
   bool holy = false,
 }) {
-  if (bossFight) return ContextRule.bossEnrage;
+  if (bossFight) return ContextRule.tide;
   if (city) return ContextRule.townGuards;
   if (holy) return ContextRule.sanctified;
   return switch (stage) {
@@ -58,7 +60,11 @@ ContextRule contextRuleFor({
   };
 }
 
-/// The round the ground starts rising in, and the watch comes.
+/// The place kinds where the watch keeps the peace.
+const Set<String> guardedPlaceKinds = {'city', 'town', 'district'};
+
+/// The round the ground starts rising in, and the watch comes. Its omen
+/// comes the round before.
 const int risingStartRound = 6;
 
 /// How far the ground has risen in [round]: 0 before [risingStartRound],
@@ -69,30 +75,47 @@ const double mistTickStep = 0.01;
 const double heatTickStep = 0.01;
 const double heatHealFactor = 0.8;
 const double waterBlowStep = 0.10;
+
+/// The enemies' share of the water: half the party's (a cleric's long
+/// fights met it hardest).
+const double waterEnemyStep = 0.05;
+
+/// The water rises from the Tide's own round, and stops at this level.
+const int waterStartRound = tideStartRound;
+const int waterMaxLevel = 3;
 const double sanctifiedHealStep = 0.10;
 const double sanctifiedLightStep = 0.10;
 
-const int enrageRound = 10;
-const double enrageMultiplier = 1.5;
+/// How far the water has risen in [round]: 0 to [waterMaxLevel].
+int waterLevel(int round) =>
+    min(max(0, round - waterStartRound + 1), waterMaxLevel);
 
 extension ContextRuleEffects on ContextRule {
+  /// How far this rule has risen in [round] (0: not yet).
+  int levelAt(int round) => switch (this) {
+        ContextRule.tide => tideLevel(round),
+        ContextRule.risingWater => waterLevel(round),
+        _ => risingLevel(round),
+      };
+
   /// [damage] of [element], struck in [round] by the party ([byParty]) or
-  /// an enemy ([bossFight]: a boss is in the fight).
+  /// an enemy ([bossFight]: a boss is in the fight): the Tide's, then the
+  /// place's.
   int blow(int damage, int round,
-      {required bool byParty, String element = 'None', bool bossFight = false}) {
+      {required bool byParty,
+      String element = 'None',
+      bool bossFight = false}) {
     if (damage <= 0) return damage;
-    // The Tide rises under every rule; the place adds its own.
     final tided =
         tideDamage(damage, round, byParty: byParty, bossFight: bossFight);
-    final level = risingLevel(round);
     return switch (this) {
-      ContextRule.bossEnrage => !byParty && round >= enrageRound
-          ? (tided * enrageMultiplier).round()
-          : tided,
-      ContextRule.risingWater =>
-        (tided * (1 + waterBlowStep * level)).round(),
+      ContextRule.risingWater => (tided *
+              (1 +
+                  (byParty ? waterBlowStep : waterEnemyStep) *
+                      waterLevel(round)))
+          .round(),
       ContextRule.sanctified => element == 'Light'
-          ? (tided * (1 + sanctifiedLightStep * level)).round()
+          ? (tided * (1 + sanctifiedLightStep * risingLevel(round))).round()
           : tided,
       _ => tided,
     };
@@ -101,17 +124,19 @@ extension ContextRuleEffects on ContextRule {
   /// [amount] healed in [round].
   int heal(int amount, int round) {
     if (amount <= 0) return amount;
-    final level = risingLevel(round);
-    if (level == 0) return amount;
     return switch (this) {
-      ContextRule.desertHeat => (amount * heatHealFactor).round(),
+      ContextRule.desertHeat when risingLevel(round) > 0 =>
+        (amount * heatHealFactor).round(),
+      ContextRule.risingWater =>
+        (amount * (1 + waterBlowStep * waterLevel(round))).round(),
       ContextRule.sanctified =>
-        (amount * max(0.0, 1 - sanctifiedHealStep * level)).round(),
+        (amount * max(0.0, 1 - sanctifiedHealStep * risingLevel(round)))
+            .round(),
       _ => amount,
     };
   }
 
-  /// What the ground takes from a side of [maxHealth] at [round]'s end.
+  /// What the ground takes from a side of [maxHealth] in [round].
   int tick(int maxHealth, int round) {
     final level = risingLevel(round);
     if (level == 0) return 0;
@@ -126,8 +151,30 @@ extension ContextRuleEffects on ContextRule {
   /// Whether the watch breaks the fight up in [round].
   bool guardsCome(int round) =>
       this == ContextRule.townGuards && round >= risingStartRound;
+
+  /// The l10n key stem of the rule's log lines (`context_<stem>_omen`,
+  /// `context_<stem>_log`); null for the Tide, which has its own.
+  String? get logStem => switch (this) {
+        ContextRule.tide => null,
+        ContextRule.townGuards => 'guards',
+        ContextRule.marshMist => 'mist',
+        ContextRule.desertHeat => 'heat',
+        ContextRule.risingWater => 'water',
+        ContextRule.sanctified => 'holy',
+      };
 }
 
 /// [health] after the ground took [amount]: never under 1.
 int afterTick(int health, int amount) =>
     health <= 1 ? health : max(1, health - amount);
+
+/// Whether the party is ahead when the watch comes: its share of health
+/// left ([partyHealth] of [partyMax]) above the enemies'.
+bool partyAheadOnHealth({
+  required int partyHealth,
+  required int partyMax,
+  required int enemyHealth,
+  required int enemyMax,
+}) =>
+    partyMax > 0 &&
+    (enemyMax <= 0 || partyHealth / partyMax > enemyHealth / enemyMax);

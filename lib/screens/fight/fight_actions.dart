@@ -8,9 +8,12 @@ extension _FightActions on _FightScreenState {
     final player = _party.firstWhere((m) => m.isPlayer);
     ref.read(playerSessionProvider.notifier).consumePotion();
     final lang = ref.read(appLanguageProvider);
-    final heal = _condition == BattlefieldCondition.shrine
-        ? ((_potionHealAmount + _potionBonus) * shrineHealMultiplier).round()
-        : _potionHealAmount + _potionBonus;
+    final heal = _length.rule.heal(
+        _condition == BattlefieldCondition.shrine
+            ? ((_potionHealAmount + _potionBonus) * shrineHealMultiplier)
+                .round()
+            : _potionHealAmount + _potionBonus,
+        _roundsStarted);
     _potionUsed = true;
     _fx(VfxStyle.heal, _memberCardKey(player.id),
         text: '+$heal', textKind: VfxTextKind.heal);
@@ -285,7 +288,10 @@ extension _FightActions on _FightScreenState {
           // Healing fatigue counts the caster's spells as its heals (not
           // the cleric's: the Watchfire doesn't tire).
           if (_core.core != ProfessionCore.watchfire) {
-            healing = _length.fatigued(player.id, healing);
+            healing =
+                _length.fatigued(player.id, healing, round: _roundsStarted);
+          } else {
+            healing = _length.rule.heal(healing, _roundsStarted);
           }
           _fx(spellStyle, memberKey,
               element: spell.element,

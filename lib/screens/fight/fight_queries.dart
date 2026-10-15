@@ -169,8 +169,9 @@ extension _FightQueries on _FightScreenState {
     final answer = responseDamageMultiplier(
         provoked: enemy.provoked, pressing: enemy.pressing);
     if (answer != 1.0) damage = (damage * answer).round();
-    // A pact's curse, while it runs (see signs.dart); then the Tide.
-    return tideDamage(_signs.enemyDamage(damage), _roundsStarted,
+    // A pact's curse, while it runs (see signs.dart); then the Tide and
+    // the place's rule (context_rules.dart).
+    return _length.rule.blow(_signs.enemyDamage(damage), _roundsStarted,
         byParty: false,
         bossFight: _enemies.any((e) => isBossEnemy(e.enemyId, e.data)));
   }
