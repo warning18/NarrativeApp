@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.365.0+401]
+
+The gifts say what they do.
+
+### Changed
+- **Specialisation gift texts.** The Lantern Vanguard's heavy blow now heals against "a foe weak to Light (the void, the dead, demons)", the way the game treats it, instead of an "Evil" foe no enemy carries; the Relicbreaker's text says plainly that its three mana are spent on the sure critical; the Beacon burns "with Light". English and French. Wording only.
+
 ## [1.363.0+399]
 
 More places to wander off to.
