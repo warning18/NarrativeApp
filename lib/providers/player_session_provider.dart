@@ -20,6 +20,7 @@ import '../data/detour_pacing.dart' show DetourPacing;
 import '../data/camp_state.dart' show harborHouseId;
 import '../data/factions.dart';
 import '../data/hunter_mercy.dart';
+import '../data/patron_stats.dart';
 import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
 import '../data/harbour.dart';
 import '../data/heard_of.dart' show withMapGoal;
@@ -3162,6 +3163,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       recruitedAllies: newAllies,
       bannerPiecesCollected: newBannerPieces,
     );
+    // The patron's gifts at each level reached (patron_stats.dart).
+    if (leveled.leveledUp) {
+      state = _withPatronGains(state, leveled.levelsGained);
+    }
     await _persist();
     return leveled.leveledUp;
   }
@@ -4666,6 +4671,46 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     );
   }
 
+  /// [session] after [levels] levels reached with the patron's gifts
+  /// (patron_stats.dart): its stats, its max health, a line on the clan
+  /// log each level.
+  PlayerSession _withPatronGains(PlayerSession session, int levels) {
+    var s = session;
+    for (var i = 0; i < levels; i++) {
+      final stats = {
+        'strength': s.strength,
+        'dexterity': s.dexterity,
+        'constitution': s.constitution,
+        'intelligence': s.intelligence,
+        'wisdom': s.wisdom,
+        'charisma': s.charisma,
+        'luck': s.luck,
+        'perception': s.perception,
+      };
+      final gains = patronLevelGains(s.politics,
+          level: s.level - levels + i + 1,
+          stats: stats,
+          openHand: bannerRaisedIn(s.flags));
+      if (gains.stats.isEmpty && gains.maxHealth == 0) break;
+      int plus(String stat) => stats[stat]! + (gains.stats[stat] ?? 0);
+      s = s.copyWith(
+        strength: plus('strength'),
+        dexterity: plus('dexterity'),
+        constitution: plus('constitution'),
+        intelligence: plus('intelligence'),
+        wisdom: plus('wisdom'),
+        charisma: plus('charisma'),
+        luck: plus('luck'),
+        perception: plus('perception'),
+        maxHealth: s.maxHealth + gains.maxHealth,
+        currentHealth: s.currentHealth + gains.maxHealth,
+        politics: logPatronGains(s.politics, statPatron(s.politics), gains,
+            chapter: _politicsChapter(null), day: s.day),
+      );
+    }
+    return s;
+  }
+
   /// A level-up full-heals the player and, mirroring that, every recruited
   /// ally too — "grows with you": a companion still gains their own skill
   /// point a level (see AllyState.skillPoints doc), the player an offer.
@@ -4823,6 +4868,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           ? null
           : [...state.knownSpellIds, ...spellsLearned],
     );
+    // The patron's gifts at each level reached (patron_stats.dart).
+    if (leveled.leveledUp) {
+      state = _withPatronGains(state, leveled.levelsGained);
+    }
     await _persist();
     return leveled.leveledUp;
   }

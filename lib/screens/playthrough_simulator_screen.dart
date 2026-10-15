@@ -21,6 +21,7 @@ import '../data/autoplay_engine.dart';
 import '../data/camp_works.dart';
 import '../data/chapter_loop.dart';
 import '../data/hunter_mercy.dart';
+import '../data/patron_stats.dart' show statPatron;
 import '../data/rival_hunters.dart' show maybeRivalHunter;
 import '../data/alignment_events.dart'
     show hunterCooldownRolls, isHunterAmbushChain, maybeAlignmentEvent;
@@ -221,12 +222,17 @@ class _SimResult {
     this.roads = const [],
     this.transcript = const [],
     this.specs = const [],
+    this.patron = '',
     this.mercy = (spared: 0, finished: 0, betrayed: 0),
   });
 
   /// The specialisations the character held at the end, in the order
   /// taken (specialisations.dart).
   final List<String> specs;
+
+  /// The clan whose passive stats the run ended with (patron_stats.dart);
+  /// '' for none.
+  final String patron;
 
   /// The rivals' hunters spared, finished, and come back to betray
   /// (hunter_mercy.dart).
@@ -539,14 +545,14 @@ _SimResult _simulate(
   // the old skill points, perks and sign picks.
   final growth = character == null || sim == null
       ? null
-      : SimGrowth(
+      : (SimGrowth(
           mode: sim.progression,
           tables: sim.growthTables,
           character: character,
           startingSkillPoints: (sim.professions[character.professionId]
                   as Map<String, dynamic>?)?['startingSkillPoints'] as int? ??
               0,
-        );
+        )..passives = !sim.clashOff.contains('passives'));
   // The open chapters' loop: the camp the story stands at, the places
   // already toured from it, and the place being toured now (with how many
   // things are left to do there).
@@ -775,6 +781,7 @@ _SimResult _simulate(
       housesBuilt: Map.unmodifiable(housesBuilt),
       roads: List.unmodifiable(roads),
       specs: List.unmodifiable(character?.specIds ?? const <String>[]),
+      patron: growth == null ? '' : statPatron(growth.politics),
       mercy: (spared: spared, finished: finished, betrayed: betrayed),
       transcript: transcribe
           ? [
@@ -1942,6 +1949,7 @@ typedef SimRunSummary = ({
   List<SimRoad> roads,
   List<String> transcript,
   List<String> specs,
+  String patron,
   ({int spared, int finished, int betrayed}) mercy,
 });
 
@@ -2060,6 +2068,7 @@ List<SimRunSummary> simulatePlaythroughs(
       roads: result.roads,
       transcript: result.transcript,
       specs: result.specs,
+      patron: result.patron,
       mercy: result.mercy,
     ));
   }
