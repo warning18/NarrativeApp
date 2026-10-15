@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.361.0+397]
+
+More detours, spread across the whole story (the user: "a bit more, 7 to 10").
+
+- **Landings roll.** Arriving somewhere by sea can now hold a detour, as a road arriving there would. The sailed chapters (4 to 7) get their share, and the march to Candlehold can hold chapter 7's landmark once Narrative lifts its set piece.
+- **The chapter's landmark comes before a hunter** on the road where it is due (a road event still comes first).
+- **The odds start lower:** 8% a road, plus 6% for each quiet road, up to 45%. Since more roads now roll, a run meets about 9 detours (median 9, 6 to 15): 1.4 to 2.1 in each of chapters 2 to 6, one in chapter 7. In v1.356 it was 6.8, with chapters 4 and 5 at 0.9.
+- No detour comes right after another, and none between two scenes of the same place, as before. Report: docs/simulation/detours.md.
+
 ## [1.358.0+394]
 
 The map reads on a phone, zooming out lands on the sphere, and the camp's buildings have tabs and filters.

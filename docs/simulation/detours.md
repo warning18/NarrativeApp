@@ -21,12 +21,13 @@ This is the engine side of docs/proposals/detours-wave11.md (section 6 [C]), wit
 
 | Rule | Value |
 |---|---|
-| Pity timer | 20% a road, plus 10% for each quiet road since the last detour, up to 60% |
+| Pity timer | 8% a road, plus 6% for each quiet road since the last detour, up to 45% (v1.361; it was 20%, 10% and 60%) |
 | Cooldown | 1 road at rest after a detour, a hunter or a familiar face, with none of them. Hunters roll first and keep their own cooldown. |
 | A city's streets | odds × 0.5 |
 | A long road (two watches or more) | odds × 1.3 |
 | A deadline a day or less away | odds × 0.3 (`daysToSpare`; no story road carries a deadline yet) |
-| Order on a road | road event, hunter, the landmark when due, cooldown, owed detour, familiar face, pity timer |
+| Order on a road | road event, the landmark when due, hunter, cooldown, owed detour, familiar face, pity timer (v1.361: a due landmark comes before a hunter) |
+| A voyage's landing | rolls as a road arriving there would (v1.361): the sailed trips of chapters 4 to 7, the march to Candlehold among them |
 | The landmark | Each chapter's scene tagged `landmark` comes once, on the chapter's first road at rest that nothing else holds, cooldown or not. Chapters 4 and 5 walk only two to four such roads, so it can't wait. |
 | The roll | The road's own dice (`detourRandomFor`: from, to, the step and the run's seed). A road chosen the same way holds the same detour, so the journey panel can show it before the party sets out. Hunters and familiar faces stay surprises. |
 
@@ -57,42 +58,51 @@ This is the engine side of docs/proposals/detours-wave11.md (section 6 [C]), wit
 
 ## Measured
 
-200 seeded runs (seed 11), 50 per strategy, the professions in turn:
+**v1.361 (the user: "a bit more, 7 to 10")**
+- **Setup:** 200 seeded runs (seed 11), 50 per strategy, the professions in turn.
+- **Chapter 7:** `7500` is taken without its `noDetour`, as Narrative is lifting it.
+- **What changed:**
+  - landings roll;
+  - a due landmark comes before a hunter;
+  - the pity timer starts lower.
 
-```
-DETOUR_RUNS=200 flutter test test/detour_engine_test.dart
-```
+| Chapter | Roads at rest a run | Detours a run | Runs with one | Landmark met | Familiar faces a run |
+|---|---|---|---|---|---|
+| 2 | 10.1 | 1.44 | 100% | 100% | 1.26 |
+| 3 | 12.7 | 1.61 | 100% | 100% | 2.35 |
+| 4 | 8.8 | 1.52 | 100% | 100% | 1.34 |
+| 5 | 8.0 | 1.52 | 100% | 100% | 1.13 |
+| 6 | 12.1 | 2.13 | 100% | 100% | 0.70 |
+| 7 | 1.0 | 1.00 | 100% | 100% | 0 |
+| 8 | 0 | 0 | 0% | – | 0 |
 
-The run prints this table, the scenes met and the transcript of run 0.
+- **Per run:** 9.2 detours on average (median 9, 6 to 15), against 6.8 in v1.356 and 3.4 before Wave 11.
+- **Spread:** 1.4 to 2.1 a chapter from 2 to 6, where v1.356 had chapters 2 and 3 at 1.8 to 2.0 and chapters 4 and 5 at 0.9.
+- **Every landmark is met in every run**, chapter 7's included, on the landing at Candlehold.
+- **No two in a row**, and no detour between two scenes of one place (D1): the test checks every road of every run.
 
-| Chapter | Roads (any) | Detours a run | Runs with one | Written / drawn | Landmark met | Familiar faces | Hunters & temptations | Road events |
-|---|---|---|---|---|---|---|---|---|
-| 2 | 12.1 | 1.79 | 100% | 341 / 17 | 100% | 10.3% | 6.5% | 0.8% |
-| 3 | 13.7 | 1.95 | 100% | 389 / 1 | 100% | 16.9% | 7.7% | 4.0% |
-| 4 | 4.0 | 0.90 | 84% | 180 / 0 | 84% | 6.0% | 4.3% | 0.0% |
-| 5 | 4.0 | 0.90 | 90% | 179 / 0 | 90% | 0.0% | 3.4% | 13.8% |
-| 6 | 6.1 | 1.25 | 100% | 248 / 1 | 100% | 11.9% | 7.3% | 10.4% |
-| 7 | 3.0 | 0 | 0% | – | 0% | – | – | – |
-| 8 | 3.0 | 0 | 0% | – | – | – | – | – |
+To print the table again: `DETOUR_RUNS=200 flutter test test/detour_engine_test.dart`. It also prints the scenes met and the transcript of run 0.
 
-- **Per run:** 6.78 detours on average (median 7, max 12), against 3.43 before. 36 scenes (#281 and #286): only 20 detours of 1,356 fell back to today's chain. Most of the rise is chapters 2 and 3, where the hub's errands cross a city's districts. Chapter 4 went from 0 to 0.90.
-- **Familiar faces:** 8.3% of all roads, against 32.6% of free roads before. They now share the cooldown with detours.
-- **No two in a row:** the test checks every road of every run.
-- **Chapter 4:** runs with no detour are the ones that never walked the Drowned Cloister's districts.
+**v1.356**, for comparison:
 
-### Chapter 7 has no road at rest
+| Chapter | Detours a run | Runs with one | Landmark met |
+|---|---|---|---|
+| 2 | 1.79 | 100% | 100% |
+| 3 | 1.95 | 100% | 100% |
+| 4 | 0.90 | 84% | 84% |
+| 5 | 0.90 | 90% | 90% |
+| 6 | 1.25 | 100% | 100% |
+| 7 | 0 | 0% | 0% |
 
-The walk to Candlehold (`7400` to `7500`) goes into a set piece. Every road inside the city runs between two tense scenes, and the camp's errands at `7400` are moves inside one place (D1). So chapter 7 holds no detour, and its landmark (*The Banner on the Hill*, at `candlehold_gates`) can't come.
+### Chapter 7
 
-This needs a story-data decision, as chapter 4 did (D2). Either:
-- `7500` loses its `noDetour`, so the march to the gates can hold the landmark; or
-- chapter 7 gets a place or a calm district scene off the camp.
-
-The engine needs no change for either.
+- **The road:** the march to Candlehold (`7400` to `7500`) is a voyage. Its landing now rolls.
+- **The user's decision:** `7500` loses its `noDetour` (Narrative's DAG change), so the landing can hold the chapter's landmark, *The Banner on the Hill*.
+- **Until that change merges,** the landing is still a set piece, and chapter 7 holds no detour.
 
 ## The simulator
 
-- **Rolls:** the walk rolls every road by the same rules: its story roads, and the camp tour's trips on foot (a place reached by sea is a voyage, with no road).
+- **Rolls:** the walk rolls every road by the same rules: its story roads, and the camp tour's trips. A place reached by sea has no road and no road event, but its landing rolls (v1.361).
 - **Records:** each road is recorded in `SimRunSummary.roads`, with its chapter, ends, whether it is a street, whether it is at rest, what it held, the scene, landmark, and owed.
 - **Not played:** a detour is still passed by, as before, so the balance numbers don't move. Its scene and its foe are in the transcript.
 - **The transcript:** `simulatePlaythroughs(..., transcripts: true)` gives each run's transcript (`SimRunSummary.transcript`). It holds, in order:

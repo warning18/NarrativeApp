@@ -231,24 +231,24 @@ void main() {
         last = t.isDetour;
         p = t.next;
       }
-      // About one road in four (the cooldown's road among them), and no
-      // dry spell like today's (eleven roads and more): at 60% a road,
-      // a dozen quiet ones in a row is once in a long while.
-      expect(detours / 3000, closeTo(0.25, 0.04));
-      expect(longestDry, lessThanOrEqualTo(12));
+      // About one road in five or six (the cooldown's road among them),
+      // and no endless dry spell: at 45% a road once the timer has risen,
+      // twenty quiet ones in a row (over 3,000 roads) never come.
+      expect(detours / 3000, closeTo(0.18, 0.04));
+      expect(longestDry, lessThanOrEqualTo(20));
     });
 
     test('a city\'s streets, a long road and a tight deadline move the odds',
         () {
-      expect(detourChanceFor(1, road), closeTo(0.3, 1e-9));
+      expect(detourChanceFor(1, road), closeTo(0.14, 1e-9));
       expect(
           detourChanceFor(
               1, const DetourRoad(chapter: 3, kind: DetourRoadKind.streets)),
-          closeTo(0.15, 1e-9));
+          closeTo(0.07, 1e-9));
       expect(detourChanceFor(1, const DetourRoad(chapter: 3, watches: 2)),
-          closeTo(0.39, 1e-9));
+          closeTo(0.182, 1e-9));
       expect(detourChanceFor(1, const DetourRoad(chapter: 3, daysToSpare: 1)),
-          closeTo(0.09, 1e-9));
+          closeTo(0.042, 1e-9));
       expect(detourChanceFor(99, road), detourPityCap);
     });
 
@@ -283,15 +283,17 @@ void main() {
       expect(fits, isNotEmpty);
       expect(fits.every((s) => s.where.biome == 'fen'), isTrue);
       const nowhere = DetourRoad(chapter: 4, biome: 'no_such_biome');
-      final t = planRoad(
-          pacing: const DetourPacing(chapter: 4, roads: 5, quiet: 99, met: [
-            'lamp_that_counts',
-          ]),
-          road: nowhere,
-          scenes: scenes,
-          flags: const {},
-          random: Random(1));
-      expect(t.isDetour, isTrue);
+      final turns = [
+        for (var seed = 0; seed < 20; seed++)
+          planRoad(
+              pacing: const DetourPacing(
+                  chapter: 4, roads: 5, quiet: 99, met: ['lamp_that_counts']),
+              road: nowhere,
+              scenes: scenes,
+              flags: const {},
+              random: Random(seed)),
+      ];
+      final t = turns.firstWhere((t) => t.isDetour);
       expect(t.scene, isNull);
     });
 
