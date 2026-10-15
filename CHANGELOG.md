@@ -8,6 +8,27 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.349.0+385]
+
+The camp's town has limits; the towns have their districts.
+
+### Changed
+- **Town additions are limited.**
+  - The watchtower is unique.
+  - Storehouses: one, plus one for every four houses up.
+  - Stairs: one, plus one for every two houses up.
+  - Plain floors stay free.
+  - A capped card reads "Limit reached: 1 of 1", and the camp refuses past it.
+  - Every house is one of one, as before. The building screen can now read each work's count and limit (`WorkLimit`).
+
+### Added
+- **Districts in the story's three towns, as in the cities.** The journey now shows the district level there:
+  - **the Ashen Quarter:** the Quarter Gate, the Ash-Market, the Wall of Names, Cinder Row, the Spire Stair;
+  - **the Drowned Cloister:** the Drowned Stair, the Flooded Nave, the Ossuary Stalls;
+  - **the White Anchorage:** the Anchor Quay, the Hull Town, the Stern Chapel.
+
+  Each of their 89 scenes stands in one.
+
 ## [1.348.0+384]
 
 The politics hint waits for its setting.
