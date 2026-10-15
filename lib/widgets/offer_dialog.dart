@@ -21,6 +21,7 @@ import '../utils/pixel_icons/item_icons.dart';
 import '../utils/pixel_icons/pixel_icon.dart';
 import '../utils/pixel_icons/skill_icons.dart';
 import 'clan_compass.dart';
+import 'clan_peek.dart';
 import 'clan_radar_chart.dart';
 import 'item_stats.dart';
 import 'pixel_banner.dart';
@@ -495,63 +496,68 @@ class _OfferBanner extends ConsumerWidget {
       child: FittedBox(child: inner),
     );
 
-    return Semantics(
-      button: true,
-      selected: selected,
-      label: '$who: $name',
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: AnimatedOpacity(
-          duration: const Duration(milliseconds: 160),
-          opacity: dimmed ? 0.62 : 1,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(
-                        color: selected ? color : Colors.transparent, width: 2),
-                    color: selected ? color.withValues(alpha: 0.12) : null,
+    return ClanPeek(
+      factionId: suitor.isWayfarer ? null : suitor.factionId,
+      child: Semantics(
+        button: true,
+        selected: selected,
+        label: '$who: $name',
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 160),
+            opacity: dimmed ? 0.62 : 1,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                          color: selected ? color : Colors.transparent,
+                          width: 2),
+                      color: selected ? color.withValues(alpha: 0.12) : null,
+                    ),
+                    child: Center(child: flag),
                   ),
-                  child: Center(child: flag),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  suitor.isWayfarer ? who : (faction?.shortFor(lang) ?? who),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelMedium
-                      ?.copyWith(color: color, fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 3),
-                _Tag(
-                    text: trFor(lang, _giftTagKey(gift, skills)), color: color),
-                const SizedBox(height: 3),
-                Text(
-                  name,
-                  key: Key('offer_gift_${gift.id}'),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleSmall,
-                ),
-                if (preview.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    suitor.isWayfarer ? who : (faction?.shortFor(lang) ?? who),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelMedium
+                        ?.copyWith(color: color, fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(height: 3),
+                  _Tag(
+                      text: trFor(lang, _giftTagKey(gift, skills)),
+                      color: color),
                   const SizedBox(height: 3),
                   Text(
-                    preview.first.text,
+                    name,
+                    key: Key('offer_gift_${gift.id}'),
                     textAlign: TextAlign.center,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                        color: preview.first.delta >= 0
-                            ? good
-                            : theme.colorScheme.error,
-                        fontWeight: FontWeight.w600),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleSmall,
                   ),
+                  if (preview.isNotEmpty) ...[
+                    const SizedBox(height: 3),
+                    Text(
+                      preview.first.text,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                          color: preview.first.delta >= 0
+                              ? good
+                              : theme.colorScheme.error,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ),

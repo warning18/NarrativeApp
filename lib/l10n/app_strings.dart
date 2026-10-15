@@ -384,6 +384,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Sur cette route\u00a0: {hazard}. Forcer le passage, ou attendre.',
   },
+  'clan_peek_orientation': {
+    AppLanguage.en: 'Orientation',
+    AppLanguage.fr: 'Orientation',
+  },
+  'clan_peek_backstory': {
+    AppLanguage.en: 'Their story',
+    AppLanguage.fr: 'Leur histoire',
+  },
+  'clan_peek_release': {
+    AppLanguage.en: 'Let go to close',
+    AppLanguage.fr: 'Relâchez pour fermer',
+  },
   'geo_this_land': {
     AppLanguage.en: 'This land',
     AppLanguage.fr: 'Cette contrée',
