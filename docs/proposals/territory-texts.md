@@ -24,6 +24,12 @@ Each list is ordered: the first claim is the one a clan takes first. Place ids a
 - Kindly Hill is held by the Kindly (a minor holder), so the Mire's first claim is a taking from a non-clan. Core decides whether that needs a news line of its own (see 2c).
 - **Seats.** Seats can now fall. Proposed seat for each clan: Dominion `candlehold`; Crows `saltmouth_wharf`; Compact `emberwick`; Vigil `rimewell` (it holds nothing today, so its seat appears when it takes its first claim); Penitents `ashen_quarter_wall_of_names`; Mire: none placed yet, since "nobody from outside has been told where they sit". **Asked of Core:** one hidden district for the Mire (suggested id `mire_court`, name *The Mire's Court* / *La Cour du Marais*, not on the map until the Mire is Friendly with you, blurb to come from me).
 
+
+**The Mire's seat, `mire_court` (blurb for Core's PR 2b).** A district under `the_fen`, by the Drowned Cloister, hidden until the Mire is Friendly with you.
+- **Name:** *The Mire's Court* / *La Cour du Marais*
+- **Blurb EN:** A dry room in the middle of the wet, where the water has been asked to wait outside. Chairs are set for people who have not yet arrived, and every one of them has been told your name.
+- **Blurb FR :** Une salle sèche au cœur de l’humide, où l’on a demandé à l’eau d’attendre dehors. Des sièges sont dressés pour des gens qui ne sont pas encore arrivés, et on leur a dit votre nom à tous.
+
 ---
 
 ## 2. Places changing hands: the news lines
