@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.390.0+426]
+
+Groundwork for the journey map; nothing changes on screen yet.
+
+- **What a story choice does on the map** (`lib/data/choice_shape.dart`). For each choice the game can now tell:
+  - whether it takes you somewhere: stay, walk to another place in the same location, or travel to another location;
+  - what kind of action it is: fight, pay, talk, sneak, attempt, evade, go or decide;
+  - whether it is acted out where you stand. A fight, a payment or a decision happens where you are, even when its aftermath takes you elsewhere.
+- **For the journey map:** of the story's 1,061 choices, 80% are acted out where you stand. Only 213 are ways somewhere, so the map can draw pins for those and list the rest as actions at "You are here".
+
 ## [1.389.0+425]
 
 What a foe is now matters in a fight.
