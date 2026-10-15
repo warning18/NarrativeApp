@@ -66,8 +66,8 @@ List<String> rivalHunterPool({
           key,
     ];
 
-const String _ambushEn = '{name} bars the road. {cry}';
-const String _ambushFr = '{name} vous barre la route. {cry}';
+const String _ambushEn = '{name} is waiting on the road ahead. {cry}';
+const String _ambushFr = '{name} vous attend sur la route. {cry}';
 const String _noCryEn = '“You swore to the other side. We remember.”';
 const String _noCryFr = '« Vous avez juré à l’autre camp. Nous nous en '
     'souvenons. »';

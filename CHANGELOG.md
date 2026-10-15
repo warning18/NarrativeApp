@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.379.0+415]
+
+The hunters speak for their clans.
+
+### Changed
+- **Battle cries for the Dominion, the Crows and the Penitents.** The six fighters Core reused as rival hunters (Inquisition Soldier and High Warden, Smuggler Captain, Brine Jack, Inquisition Penitent, Masked Penitent) now have a cry of their own, as the Vigil's, the Compact's and the Mire's do.
+- **The ambush line.** "{name} is waiting on the road ahead" / "{name} vous attend sur la route", in place of "bars the road". Wording only.
+
 ## [1.377.0+413]
 
 Sworn to a clan, its rivals send hunters after you (v5.2, step 3b).
