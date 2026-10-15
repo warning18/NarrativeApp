@@ -1,6 +1,10 @@
-# Professions and clans, v5.1: the profession plays, the clans specialise it (Core, proposal)
+# Professions and clans, v5.2: the profession plays, the clans specialise it (Core, proposal)
 
-**v5.1** answers your feedback on v5:
+**v5.2** answers your two answers on v5.1:
+- **Fight length:** *"propose multiple and diverse mechanics to fix it. Can depend on the location, enemies etc."* The single Tide gives way to **a menu of fight-length mechanics tied to the world**: a small default for every fight, plus variants by place and by enemy. The Tide stays as the fallback (see *Fight length: a menu tied to the world*).
+- **Specialisations:** *"Specialisation can also be on the main clan too."* **The main clan offers its specialisation, and its friendly subclans offer variants and upgrades of it** (see *Where a specialisation comes from*). Their strengths are tuned toward +3 to +6 over the core, and the ones outside that range are flagged.
+
+**v5.1** answered your feedback on v5:
 
 - **Rogue:** *"I would rather have a mechanism around critical hits or more hits per turn, and specialisation in poison or others."* The core is now **Flurry**: every strike hits twice, and each hit rolls its own critical. The Rot becomes the Mire's specialisation. The crit chain becomes the Crows'.
 - **Cleric:** *"Find a compensation."* The cleric won 74% of fights today and 77–81% with the Watchfire, in 39-round fights. The Watchfire now has a real cost: **no more self-healing, and healing spells heal 40% less**. In return, every heal from the die also burns the enemy. That brings it to 57% and 28 rounds. **With the Tide the cost isn't needed:** the Tide alone is the compensation (see below).
@@ -193,9 +197,61 @@ A Crows loyalist pays a sixth of that. **The asymmetry is the relations map's**,
 
 **Not simulated:** the simulator's politics doesn't run the chapter drift or road hunters yet. The numbers above follow from today's ripple constants and the tier table.
 
+## Where a specialisation comes from: the main clan, then its subclans
+
+*"Specialisation can also be on the main clan too."* Read this way:
+- **The main clan offers the specialisation itself.** The Crows offer the warrior **Berserker**. This is the clan's own gift, offered once you are a **Friend** (19+), the tier before Trusted.
+- **Its friendly subclans offer variants and upgrades of it,** from **Trusted**:
+  - a **variant** changes how the specialisation works (Tar-Hands: the life cost becomes a bleed on the enemy);
+  - an **upgrade** raises its number (Brig-Born: a kill heals 10%).
+  - Subclan gifts need the main specialisation first: they bend it, they don't replace it.
+- **At Sworn,** the main specialisation can rise to rank II, and the subclans' rarer second gifts open.
+- If you read it differently, for example as the main clan offering *a different* specialisation from its subclans', that is the main open question below.
+
+| Profession | Main clan | Main specialisation (from Friend) | Subclan variants and upgrades (from Trusted) |
+|---|---|---|---|
+| Warrior | Crows | **Berserker**: Pain strikes feed Fury | Tar-Hands: the cost bleeds the enemy · Brig-Born: a kill heals 10% |
+| Warrior | Compact | **Thorn-wall**: stopped blows feed Fury, a third goes back | Quarrymen: a blow sent back breaks the guard · Anvil-Deaf: half goes back, no Heal faces |
+| Warrior | Dominion | **Holy warrior**: the heavy blow is Fire and Pierces | Order: it heals a tenth against Evil · Inquisition: it weakens |
+| Cleric | Vigil | **Long Vigil**: 1% self-heal a round above half | Candlebearers: 2% · Last Watch: Defend faces feed the fire |
+| Cleric | Penitents | **Ember Sister**: the fire gives mana and cleanses | Ember Sisters: two afflictions · Road Exorcists: the burn is Light |
+| Cleric | Dominion | **Lantern Cantor**: the fire holds your whole max health and burns every foe | Cantors: +25% burn · Wickwardens: the fire lasts a round longer |
+| Mage | Dominion | **Inquisitor**: mana past full burns the foe | Inquisition: the burn weakens · Tribunal: once a fight, refill the Well |
+| Mage | Penitents | **Ash Chorister**: a spell from a full Well hits +50% | Scorched Choir: +75% · Spire-Fallen: the spell also heals |
+| Mage | Crows | **Storm Arcanist**: spells steal 10% as health | Keyholders: Teleport Strike · Whisper Ledger: spells steal gold |
+| Rogue | Mire | **Fever Blade**: criticals leave a stacking Rot (6%) | Barkbleeders: the Rot passes on · Moss Choir: the Rot heals you a fifth |
+| Rogue | Crows | **Ledger Knife**: the crit chain (+15% a miss, crits ×2) | Whisper Ledger: crits steal gold · Drowned Debt: a crit refunds the chain |
+| Rogue | Penitents | **Relic Thief**: each critical gives 1 mana | Reliquary Thieves: 2 mana · Ember Sisters: the mana heals |
+| Ranger | Crows | **Corsair Marksman**: the Verdict (the sixth face) counts double and Pierces | Brig-Born: ship guns +15% · Drowned Debt: a kill reshuffles the deck |
+| Ranger | Compact | **Trapwright**: the Verdict stuns | Scaffolders: it stuns two · Quarrymen: it breaks the guard |
+| Ranger | Mire | **Fen Guide**: the first face of each run poisons | Heron's Wake: and slows · Returned: and you see two faces ahead |
+
+**The minor directions work the same way:**
+- the Pit offers the **Dark knight** (warrior) and the **Blood mage** (mage);
+- the Choir offers the **Paladin** (warrior, cleric);
+- they have no subclans.
+
+**The Open Hand** offers again any main specialisation you passed on.
+
+**Weak links** (● in the affinity table) offer only the subclan *upgrades* to specialisations you already hold, never a main one. **○** offers none.
+
+### How strong: tuned toward +3 to +6 over the core
+
+Measured under the recommended combination (default plus Tide), against each profession's core:
+
+| Specialisation | Over its core | Status |
+|---|---|---|
+| Warrior · Berserker (Pain strikes feed Fury) | **+4.3** (72.3% / 6.6 rounds) | in range |
+| Warrior · Thorn-wall at a third back | **+2.7** | at the low edge. Suggested: a quarter to a third back (half back was +10.3, too strong) |
+| Cleric · Long Vigil at 1% | **+3.0** | in range (2% was +7.2, too strong) |
+| Rogue · Fever Blade, Rot at 6% | **+4.2** | in range |
+| Ranger · Corsair, Verdict ×2 | +2.2 (×1.75: +0.4) | **below range.** The Trail's core is already too strong (above); once the core is trimmed, the Verdict becomes this gift's whole value. Estimate: +5 |
+| Mage · Inquisitor (surplus mana burns) | +0.9 | **below range.** The autoplay's mage rarely fills the Well (one Mana face). Suggested: burn your full strike per point; estimate +4 for a mage who builds two Mana faces |
+| Holy warrior, Ember Sister, Lantern Cantor, Ash Chorister, Storm Arcanist, Ledger Knife, Relic Thief, Trapwright, Fen Guide | not simulated | numbers set to the same size by design, to be measured once built |
+
 ## How a specialisation arrives: the clan's offers
 
-- **Subclan gifts are clan offers.** From **Trusted** with a clan, its subclans that are your friends (v3's table) add their gifts to that clan's offers, filtered by **your profession**. You pick one like any gift, and it stays for the run.
+- **Main and subclan gifts are clan offers.** The main specialisation comes from **Friend**, its subclans' variants and upgrades from **Trusted** (when the subclan is your friend, v3's table). Both are filtered by **your profession**. You pick one like any gift, and it stays for the run.
 - **Specialisations stack.** A warrior can be Crows-Berserker and Compact-Thorn-wall at once: Fury fed both by the life you pay and by the blows you stop. Mixing is a build, not a mistake.
 - **Stacking stays in check without slots:**
   1. Each gift twists a different part of the mechanic (its trigger, its payoff, or its cost).
@@ -332,12 +388,75 @@ A Crows loyalist pays a sixth of that. **The asymmetry is the relations map's**,
 - **Its offers can bring back** any subclan gift you passed on, for your profession, whatever clan it came from.
 - **Its own gift** is **Your Own Hand**: once a round, reroll the die. It is measured at +5 overall. Under the ranger's Trail, it draws the next face instead.
 
-## Short fights: the Tide
+## Fight length: a menu tied to the world
 
-Unchanged from v4.2, and still an open question for you:
-- From round 8, your blows gain +20% a round and the enemies' +10%, adding up.
-- Measured over all professions: the same win rate (54.5%); 16.6 → 11.2 rounds per fight; fights over 25 rounds from 14.5% to 1.1%; chapter 7 from 30.3 → 16.6 rounds.
-- v5 adds the detail that matters: **it is mostly the cleric's fights it shortens** (38.8 → 17.2 rounds). Everyone else's are 8 to 14 rounds today.
+**The problem, measured today** (200 runs per line):
+- **Clerics' fights last 38.8 rounds**: their healing spells outlast everything.
+- Everyone else fights 8 to 14 rounds.
+- Chapter 7 averages 30 rounds; bosses 18.
+
+You asked for several mechanics, depending on the place and the enemy, so fights feel different from one place to the next while staying near 10 to 12 rounds. They build on what exists:
+- **fight stages and field anomalies** (field_anomaly.dart): 11 stages, 28 anomalies such as the sandstorm, the racing tide, the collapse, the marsh lights. They already break over a fight for a few rounds;
+- **the enemies' data:** bosses and their phases, factions, biomes;
+- **the clash rules:** the rout and subdue goals, squads with a captain;
+- **standing and alignment.**
+
+### The menu
+
+**Measured** = the mechanic alone, in every fight, against today. Each cell is cleric win% / rounds, then the other four professions.
+
+| Mechanic | What it does | Where it applies | On screen **[UX]** | Measured: cleric · others |
+|---|---|---|---|---|
+| **Healing fatigue** | Each heal in a fight heals 5% less than the one before (never under 30%) | Every fight | The heal number dims, with a small "weary" mark after the third heal | 5%: cleric 41% / 27.8 · others ±2, unchanged length. 10%: cleric 37.5% / 21.2 |
+| **Execute** | Any damaging face finishes an enemy under 10–15% of its health | Every fight | The enemy's bar shows a red line at the threshold | 15%: cleric 83.5% / 32.9 · others +5 to +11, −0.5 to −1.5 rounds |
+| **Morale** | A hurt foe (under 25%) that isn't a boss may flee: the fight is won, with no loot from it. Sparing or cutting down the fleeing is an alignment choice **[N]** | Fights against people and beasts; never undead, constructs or bosses | "Wavering" over the foe | cleric 76.7% / 37.0 · others +3 to +4, −0.5 to −1 round |
+| **The pack breaks** | When a pack's leader (the captain, as in the rout goal) falls, each other member flees at 70% | Packs | The captain's crown; "the pack breaks" | small alone: +1 to +4, about −1 round on pack fights |
+| **Boss enrage** | From round 10, a boss hits 50% harder | Bosses | A boss's phase bar turns red at round 8: a warning | cleric 52.4% / 31.0 · others −2 to −6 |
+| **Rising ground** (the field anomalies made to escalate) | From round 6 the place itself turns on both sides, and grows each round: | By stage | The anomaly's omen, then its gauge rising | (see each) |
+|   · **marsh mist** (reeds) | Poison on both sides, 3% of max health a round | Reeds, fens | Green haze | cleric **92.5%** / 20.7 · others +0 to +4, −2 to −3 rounds |
+|   · **desert heat** (dunes, salt flats) | Both sides lose 2% a round; healing −20% | Dunes, salt flats | Heat shimmer | estimate: like the mist, but cuts healing too, so clerics gain less |
+|   · **rising tide / collapse** (waves, cliffs, halls) | Both sides hit +10% a round | Shores, ruins, halls | Water rising / dust falling | measured as the Tide at +20% for both: 46.8% win overall, 10.4 rounds; clerics lose most |
+|   · **sanctified ground** (shrines) | Healing fades 10% a round; Light strikes +10% a round | Shrines, chapels | Candles guttering | estimate: the cleric's hardest ground |
+| **Reinforcements** | From round 8, allies arrive if your standing in the zone's holder is Friend or better (they deal 5% of the foe's health a round); **enemies arrive if you're hunted there** | Zones held by a clan (territory) | A banner at the edge of the field | allies: cleric 98% / 18.1 · others +5 to +21, −2 to −3 rounds. Hostile reinforcements: the reverse, not measured |
+| **Town guards** | In a city, from round 6, the watch breaks the fight up. You win if you were ahead on health, otherwise both sides walk away (no loot) | City districts | The watch's whistle | not simulated (the simulator has no cities) |
+| **Beasts tire / the dead crumble** | Beasts hit 5% softer each round from round 6; undead lose 3% of their health a round | By foe | "Panting" / "crumbling" | not measured as such: undead crumbling works like the mist on one side |
+| **The Tide** (fallback) | From round 8, your blows +20% a round, the enemies' +10% | Fights with none of the above | A wave mark by the round count | cleric 52% / 17.2 · others about +0 to +6, 10.4 to 10.8 rounds |
+
+**Cut, as weak:**
+- **exhaustion against adrenaline:** it overlaps with the Tide and with Fury;
+- **a flat 30-round cap:** a non-rule.
+
+### Recommended combination
+
+1. **Default, in every fight:**
+   - healing fatigue at 5%;
+   - execute at 10%;
+   - morale;
+   - the pack breaks.
+
+   Small rules that each read clearly and cut the long tail.
+2. **One context rule by place or foe:**
+   - rising ground by stage (mist, heat, tide or collapse, sanctified);
+   - boss enrage for bosses;
+   - reinforcements in held zones;
+   - town guards in cities.
+3. **The Tide**, only when no context rule applies (open country, a road with no anomaly).
+
+**Measured with the default plus the Tide in every fight** (the case where no place rule applies):
+
+| | Cleric | Mage | Ranger | Rogue | Warrior |
+|---|---|---|---|---|---|
+| Today | 73.7% / 38.8 | 63.0% / 8.3 | 53.8% / 13.5 | 48.7% / 13.1 | 37.0% / 14.2 |
+| Default + Tide | 48.3% / **14.7** | 69.3% / 6.9 | 66.0% / 10.0 | 65.3% / 9.7 | 53.0% / 10.1 |
+| Default + Tide + the five cores | 51.8% / **14.4** | 68.2% / 7.2 | **80.4%** / 9.3 | 68.8% / 9.2 | 68.0% / 9.0 |
+
+- **Every profession runs 7 to 15 rounds.** The cleric falls from 39 rounds to 14.5: healing fatigue is the natural fix for its endless spells.
+- **The cleric's cost now comes from the combination.** With healing fatigue in every fight, the Watchfire takes **no extra cost**: v5.1's −40% on healing spells is dropped.
+  - The cleric's range depends on the place: 52% where the Tide applies, up to about 77% in the marshes (the mist favours a healer).
+  - The default without the Tide gives 60.8% / 25.3 rounds.
+- **Flagged:** the ranger's Trail is too strong under these rules (80%). Its deck gains most from the execute, because every face comes up in turn.
+  - **Suggested:** the deck draws five of its six faces each run, one face sitting out at random. This is not measured; estimate about −8.
+  - The Verdict is also dropped from the core; it moves to the Crows' specialisation.
 
 ## More skills in play
 
@@ -446,7 +565,7 @@ A clan the player keeps turning away from does not just fade.
 
 ## Order of work (once the user validates)
 
-1. **The Tide**, alone first.
+1. **The fight-length default** (healing fatigue, execute, morale, the pack breaks) and **the Tide** as fallback, then the rising grounds by stage, boss enrage, reinforcements and town guards.
 2. **The five core mechanics**, one per profession, with a committed per-profession simulator report.
 3. **Free the mana face, and the skill verbs** (texts by **[N]**).
 4. **Specialisation gifts** in the clans' offers: the 15 main ones first, then the weaker links, named by **[N]**. **[UX]**: how a gift shows the mechanic it bends.
@@ -455,11 +574,12 @@ A clan the player keeps turning away from does not just fade.
 
 ## Open questions for the user
 
-1. **The new cores:** warrior Fury, rogue Flurry, and the cleric's Watchfire with its cost. Right feel?
-2. **The cleric's cost and the Tide:** with the Tide, the Watchfire needs no extra cost; without it, healing spells −40%. Agreed?
-3. **Standing × link,** and **the price of loyalty:** do the tables read right?
-   - Hostile gives nothing, and your held twists from it work at half; a nemesis puts them to sleep.
-   - Rivals drift −2 a chapter at Trusted and −4 at Sworn.
-   - Hunters come at Sworn.
-   - A Dominion or Penitents loyalist ends with three clans closed; a Crows loyalist with one.
-4. **Still open:** the Tide, and how strong a specialisation should be (now +0 to +12 over its core).
+1. **Fight length:**
+   - the default (healing fatigue 5%, execute 10%, morale, the pack breaks);
+   - one context rule by place or foe;
+   - the Tide as fallback.
+
+   Which mechanics do you like, and which feel wrong?
+2. **Specialisations, main and sub:** the main clan offers the specialisation from Friend, and its subclans offer variants and upgrades from Trusted. Is that how you meant it?
+3. **The ranger's Trail is too strong** under the new rules. Trim it: five of six faces drawn per run, and the Verdict moved to the Crows' gift?
+4. **Still open from v5.1:** the cores' feel (Fury, Flurry, the Watchfire, now with no extra cost), standing × link, and the price of loyalty.
