@@ -190,6 +190,7 @@ class _SimResult {
     this.finalLevel = 0,
     this.fightsWon = 0,
     this.fightsLost = 0,
+    this.roundsFought = 0,
     this.spellsCast = const {},
     this.manaGained = 0,
     this.potionsUsed = 0,
@@ -244,6 +245,9 @@ class _SimResult {
   final int finalLevel;
   final int fightsWon;
   final int fightsLost;
+
+  /// Rounds fought over the run's fights, won or lost.
+  final int roundsFought;
 
   /// spell id -> casts over the whole run.
   final Map<String, int> spellsCast;
@@ -326,7 +330,9 @@ class _SimContext {
   final bool clash;
 
   /// Clash rules to leave out ('goal', 'squad', 'response', 'parry',
-  /// 'reaction', 'writ'), to see what each one does to the numbers.
+  /// 'reaction', 'writ', and the fight-length rules 'fatigue', 'execute',
+  /// 'morale', 'packBreak', 'tide'), to see what each one does to the
+  /// numbers.
   final Set<String> clashOff;
 
   final Map<String, dynamic> dice;
@@ -507,6 +513,7 @@ _SimResult _simulate(
       finalLevel: character?.level ?? 0,
       fightsWon: character?.fightsWon ?? 0,
       fightsLost: character?.fightsLost ?? 0,
+      roundsFought: character?.roundsFought ?? 0,
       spellsCast: Map.unmodifiable(character?.spellsCast ?? const {}),
       manaGained: character?.manaGained ?? 0,
       potionsUsed: character?.potionsUsed ?? 0,
@@ -1575,6 +1582,7 @@ typedef SimRunSummary = ({
   int uniqueNodes,
   int fightsWon,
   int fightsLost,
+  int roundsFought,
   int combatEncounters,
   int totalCasts,
   int potionsUsed,
@@ -1615,8 +1623,9 @@ List<SimRunSummary> simulatePlaythroughs(
   required int seed,
   int maxSteps = 1500,
   SimCoverage? coverage,
+  Set<String> clashOff = const {},
 }) {
-  final sim = _simContextOf(tables, gameConfig);
+  final sim = _simContextOf(tables, gameConfig, clashOff: clashOff);
   final enemies = tables['enemies'] ?? const {};
   final out = <SimRunSummary>[];
   for (var i = 0; i < plan.length; i++) {
@@ -1678,6 +1687,7 @@ List<SimRunSummary> simulatePlaythroughs(
       uniqueNodes: result.uniqueNodesVisited,
       fightsWon: result.fightsWon,
       fightsLost: result.fightsLost,
+      roundsFought: result.roundsFought,
       combatEncounters: result.combatEncounters,
       totalCasts: result.totalCasts,
       potionsUsed: result.potionsUsed,

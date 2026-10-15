@@ -227,6 +227,8 @@ extension _FightActions on _FightScreenState {
           if (_condition == BattlefieldCondition.shrine) {
             healing = (healing * shrineHealMultiplier).round();
           }
+          // Healing fatigue counts the caster's spells as its heals.
+          healing = _length.fatigued(player.id, healing);
           _fx(spellStyle, memberKey,
               element: spell.element,
               delayMs: fxDelay,

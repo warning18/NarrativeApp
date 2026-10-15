@@ -7,6 +7,7 @@ import '../combat/doctrine.dart';
 import '../combat/element_reaction.dart';
 import '../combat/enemy_response.dart';
 import '../combat/fight_goal.dart';
+import '../combat/fight_length.dart';
 import '../combat/parry.dart';
 import 'character_start.dart' show startingArmor;
 import '../combat/squad.dart';
@@ -217,6 +218,10 @@ class SimCharacter {
   // Run-wide tallies.
   int fightsWon = 0;
   int fightsLost = 0;
+
+  /// Rounds fought over every fight, won or lost (what fight length is
+  /// measured by, see fight_length.dart).
+  int roundsFought = 0;
   int potionsUsed = 0;
   int manaGained = 0;
   final Map<String, int> spellsCast = {};
@@ -659,6 +664,15 @@ SimFightOutcome simulateSimFight({
   final lending = !s.isEmpty || perks.maxMana > 0;
   var secondWindAvailable = gear.secondWind;
   var phasesEntered = 0;
+  // The fight-length rules (fight_length.dart): the hero's heals so far,
+  // and whether the pack has broken.
+  var healsGiven = 0;
+  int healed(int amount) {
+    if (!on('fatigue') || amount <= 0) return amount;
+    return fatiguedHeal(amount, healsGiven++);
+  }
+
+  var packBroken = false;
   // The signs' lend for the fight: its stats, a higher max health (full
   // stays full, a running pact may take a share off the top) and mana.
   final baseMaxHealth = c.maxHealth;
@@ -851,6 +865,7 @@ SimFightOutcome simulateSimFight({
       c.currentHealth = min(baseMaxHealth, won ? healed : c.currentHealth);
       c.mana = min(c.mana, c.maxMana);
     }
+    c.roundsFought += rounds;
     if (won) {
       c.fightsWon++;
     } else {
@@ -929,7 +944,9 @@ SimFightOutcome simulateSimFight({
         signs: s,
         clash: clash,
         react: on('reaction'),
-        round: rounds);
+        round: rounds,
+        healed: healed,
+        tide: on('tide'));
     // A sign's block for the whole party as the fight opens.
     if (rounds == 1) block += s.partyStartBlock;
     // The round's best hit, what a Mirror sends back: the spell's so far
@@ -1009,8 +1026,9 @@ SimFightOutcome simulateSimFight({
       );
       // Pain: the strike hits for double and costs its roller.
       final pain = face.hasKeyword(FaceKeyword.pain) && result.damageDealt > 0;
-      final dealt =
+      var dealt =
           pain ? result.damageDealt * painDamageMultiplier : result.damageDealt;
+      if (on('tide')) dealt = tideDamage(dealt, rounds, byParty: true);
       if (pain) {
         c.currentHealth -=
             painCost(maxHealth: c.maxHealth, currentHealth: c.currentHealth);
@@ -1075,7 +1093,8 @@ SimFightOutcome simulateSimFight({
           c.statusEffects = c.statusEffects.skip(s.mendCleanse).toList();
         }
       }
-      c.currentHealth = min(c.maxHealth, c.currentHealth + result.healingDone);
+      c.currentHealth =
+          min(c.maxHealth, c.currentHealth + healed(result.healingDone));
       // A Defend face meets the strongest blow coming at it as a parry,
       // worth half again as much, instead of guarding the first to strike.
       var parried = false;
@@ -1108,6 +1127,48 @@ SimFightOutcome simulateSimFight({
         manaGained += c.mana - before;
       }
       c.statusEffects = tickStatusEffects(c.statusEffects);
+    }
+    // The fight-length rules after the hero's blows (fight_length.dart):
+    // the execute line, the pack's leader, a hurt foe's nerve.
+    if (on('execute')) {
+      for (final e in ens) {
+        if (e.isAlive &&
+            e.damageThisRound > 0 &&
+            executes(
+                health: e.health,
+                maxHealth: e.maxHealth,
+                boss: isBossEnemy(e.id, e.data))) {
+          e.health = 0;
+        }
+      }
+    }
+    bool boss(_SimEnemy e) => isBossEnemy(e.id, e.data);
+    // A boss's escort stands by its boss: no flight in a boss's fight.
+    final bossFight = bossFlags.any((b) => b);
+    if (on('packBreak') &&
+        !bossFight &&
+        !packBroken &&
+        goal.kind != FightGoalKind.rout) {
+      final lead = packLeaderIndex(
+          [for (final e in ens) e.maxHealth], [for (final e in ens) !boss(e)]);
+      if (lead != null && !ens[lead].isAlive) {
+        packBroken = true;
+        for (final e in ens) {
+          if (e.isAlive && !boss(e) && random.nextDouble() < packBreakChance) {
+            e.health = 0;
+          }
+        }
+      }
+    }
+    if (on('morale') && !bossFight) {
+      for (final e in ens) {
+        if (e.isAlive &&
+            !boss(e) &&
+            wavers(health: e.health, maxHealth: e.maxHealth) &&
+            random.nextDouble() < moraleFleeChance) {
+          e.health = 0;
+        }
+      }
     }
     advancePhases();
     feedKills();
@@ -1261,6 +1322,10 @@ SimFightOutcome simulateSimFight({
         e.provoked = false;
         e.pressing = false;
       }
+      if (on('tide')) {
+        moveDamage = tideDamage(moveDamage, rounds,
+            byParty: false, bossFight: bossFlags.any((b) => b));
+      }
       final parry = on('parry') ? e.parryBlock : 0;
       final dodged = random.nextDouble() * 100 <
           dodgeChanceFor(c.dexterity) + gear.dodgeChance;
@@ -1338,6 +1403,8 @@ int _castSpellIfWorth(
   bool clash = false,
   bool react = true,
   int round = 0,
+  int Function(int)? healed,
+  bool tide = false,
 }) {
   final living = ens.where((e) => e.isAlive).toList();
   if (c.knownSpells.isEmpty || living.isEmpty || c.mana <= 0) return 0;
@@ -1372,8 +1439,9 @@ int _castSpellIfWorth(
         .toList()
       ..sort((a, b) => amountOf(b).compareTo(amountOf(a)));
     if (heals.isNotEmpty) {
+      final amount = amountOf(heals.first);
       c.currentHealth =
-          min(c.maxHealth, c.currentHealth + amountOf(heals.first));
+          min(c.maxHealth, c.currentHealth + (healed?.call(amount) ?? amount));
       cast(heals.first);
       return 0;
     }
@@ -1400,7 +1468,9 @@ int _castSpellIfWorth(
       .toList()
     ..sort((a, b) => amountOf(b).compareTo(amountOf(a)));
   for (final spell in damageSpells) {
-    final amount = amountOf(spell);
+    final amount = tide
+        ? tideDamage(amountOf(spell), round, byParty: true)
+        : amountOf(spell);
     final killable = living.where((e) => e.health <= amount).toList();
     final List<_SimEnemy> targets;
     if (spell.target == SpellTarget.allEnemies) {

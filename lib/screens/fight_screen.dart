@@ -33,6 +33,7 @@ import '../combat/quick_resolve.dart';
 import '../combat/turn_order.dart';
 import '../combat/enemy_affix.dart';
 import '../combat/fight_goal.dart';
+import '../combat/fight_length.dart';
 import '../combat/gear_effects.dart';
 import '../combat/loot_box.dart';
 import '../combat/spells.dart';
@@ -370,6 +371,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// Party rounds begun so far -- the spoils chest's "swift fight" bonus
   /// reads this, and an Ambush hides every telegraph while it's still 1.
   int _roundsStarted = 0;
+
+  /// The fight-length rules' tallies (see fight_length.dart).
+  final _FightLength _length = _FightLength();
 
   /// The member whose kept Defend face draws the enemies' attacks this
   /// round (see _confirmRoll): null outside a party fight or when nobody
