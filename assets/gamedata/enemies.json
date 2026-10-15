@@ -376,7 +376,7 @@
         "dropRate": 15
       },
       {
-        "itemID": "cultist_hood",
+        "itemID": "dawnward_shield",
         "dropRate": 10
       },
       {
@@ -897,6 +897,10 @@
       {
         "itemID": "bloodthorn_blade",
         "dropRate": 25
+      },
+      {
+        "itemID": "dawnward_shield",
+        "dropRate": 8
       }
     ],
     "skillMoves": [
@@ -1176,6 +1180,10 @@
       {
         "itemID": "potion_major",
         "dropRate": 20
+      },
+      {
+        "itemID": "halo_lance",
+        "dropRate": 8
       }
     ],
     "skillMoves": [
@@ -3428,7 +3436,12 @@
     ],
     "xpReward": 160,
     "goldReward": 0,
-    "lootTable": [],
+    "lootTable": [
+      {
+        "itemID": "blackened_fang",
+        "dropRate": 8
+      }
+    ],
     "skillMoves": [
       {
         "skillID": "cleric_smite",
@@ -5634,6 +5647,10 @@
       {
         "itemID": "material_iron_ore",
         "dropRate": 15
+      },
+      {
+        "itemID": "cultist_hood",
+        "dropRate": 8
       }
     ],
     "skillMoves": [
@@ -5694,6 +5711,10 @@
       {
         "itemID": "potion_minor",
         "dropRate": 30
+      },
+      {
+        "itemID": "blackened_fang",
+        "dropRate": 8
       }
     ],
     "skillMoves": [
