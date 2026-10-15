@@ -162,6 +162,52 @@ void main() {
     });
   });
 
+  testWidgets(
+      'on a cold start the dialog waits for the saved hint setting, so a '
+      'player who turned the hints off never sees one', (tester) async {
+    SharedPreferences.setMockInitialValues({
+      'app_language': 'en',
+      'politics_hints_enabled': false,
+    });
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    container.read(appLanguageProvider);
+    await tester.runAsync(() async {
+      for (final schema in [
+        factionsSchema,
+        subclansSchema,
+        relationsSchema,
+        titlesSchema,
+        intriguesSchema,
+      ]) {
+        await container.read(gameDbProvider(schema).notifier).whenLoaded();
+      }
+    });
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        home: Scaffold(
+          body: Consumer(
+            builder: (context, ref, _) => TextButton(
+              onPressed: () => showTurnInChoiceDialog(context, ref,
+                  quest: _quest, choices: turnInChoicesOf(_quest)),
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      ),
+    ));
+    // The first turn-in of the run: the setting has not loaded yet.
+    await tester.tap(find.text('open'));
+    await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 100)));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('turn_in_choice_0')), findsOneWidget);
+    expect(find.byKey(const Key('turn_in_politics_hint_0')), findsNothing,
+        reason: 'the saved "off" is honoured from the first turn-in');
+    expect(tester.takeException(), isNull);
+  });
+
   group('detours', () {
     test('a quest with its own giver stays out of the random pool', () {
       final quests = {

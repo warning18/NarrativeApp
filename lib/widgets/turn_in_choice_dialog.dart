@@ -18,7 +18,12 @@ Future<TurnInChoice?> showTurnInChoiceDialog(
   WidgetRef ref, {
   required Map<String, dynamic> quest,
   required List<TurnInChoice> choices,
-}) {
+}) async {
+  // The politics-hint setting has its saved value before it is read: on the
+  // first turn-in after a cold start it would otherwise still be the
+  // default, and the hint would show (or hide) against the player's choice.
+  await ref.read(politicsHintsEnabledProvider.notifier).loaded;
+  if (!context.mounted) return null;
   final questGold = (quest['rewardGold'] as num?)?.toInt() ?? 0;
   final questAlignment = (quest['alignmentChange'] as num?)?.toInt() ?? 0;
   String signed(int n) => n > 0 ? '+$n' : '$n';
