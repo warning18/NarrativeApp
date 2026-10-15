@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.382.0+418]
+
+Rewards come on one card, whatever they are (card A of the user's pick).
+
+### Changed
+- **One reward card.** A header in the source's own colour (a small label over the title), one row per reward (an icon tile, a name, a line under it, the value at the right), a note set apart in a dashed box, and one button. The rows come in one after another (with reduced motion they are simply there).
+- **Quest complete, an item or materials found, and a clan's gift taken** all use it. Quest complete shows gold, experience with its bar (and the level it brought), the item with its rarity, a die, a companion who joined; the notes carry what changed the outcome (a die made for another class paid in gold, with the gold as a chip), how the quest was settled, and the party's reactions.
+
 ## [1.381.0+417]
 
 The clan offer's popup is one block: the ring on top, and under it the clan card with the gift in it.
