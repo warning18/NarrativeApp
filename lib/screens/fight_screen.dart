@@ -35,6 +35,7 @@ import '../combat/turn_order.dart';
 import '../combat/enemy_affix.dart';
 import '../combat/fight_goal.dart';
 import '../combat/context_rules.dart';
+import '../data/clan_power.dart' show holderOf, reinforcementAt;
 import '../combat/fight_length.dart';
 import '../combat/foe_kind.dart';
 import '../combat/profession_cores.dart';

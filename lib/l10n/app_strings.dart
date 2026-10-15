@@ -7718,6 +7718,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{name} is tiring: its blows land softer.',
     AppLanguage.fr: '{name} se fatigue\u00a0: ses coups portent moins.',
   },
+  'reinforce_allies_log': {
+    AppLanguage.en: 'The people {of} join the fight: {n} to each foe.',
+    AppLanguage.fr:
+        'Les gens {of} se joignent au combat\u00a0: {n} à chaque ennemi.',
+  },
+  'reinforce_foes_log': {
+    AppLanguage.en: 'The people {of} fall on you: {n} to each of you.',
+    AppLanguage.fr:
+        'Les gens {of} vous tombent dessus\u00a0: {n} à chacun de vous.',
+  },
   'foe_crumbles_log': {
     AppLanguage.en: '{name} crumbles ({n}).',
     AppLanguage.fr: '{name} s’effrite ({n}).',

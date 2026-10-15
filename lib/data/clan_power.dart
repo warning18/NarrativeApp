@@ -27,6 +27,7 @@
 // simulator play them.
 import 'dart:math';
 
+import '../combat/context_rules.dart' show Reinforcement;
 import '../l10n/app_locale.dart';
 import 'factions.dart';
 import 'geography.dart';
@@ -501,4 +502,23 @@ String fallenNews(
               '$taker ${_agree(winner, 'tient', 'tiennent')} $seat.'
           : '$seat est ${_to(winner)}. $name '
               '${_agree(clan, 'n’a', 'n’ont')} plus un pouce de terrain.');
+}
+
+/// Who joins a fight at [placeId] (context_rules.dart's reinforcements):
+/// the holder's people on the character's side when they stand Friend or
+/// better with it, against them when it hunts them or is their nemesis;
+/// none where no clan holds the place, or stands between.
+Reinforcement reinforcementAt(
+    String? placeId, Geography geography, PoliticsState state, ClanData data) {
+  final holder = holderOf(placeId, geography, state);
+  if (holder.isEmpty || data.faction(holder) == null) {
+    return Reinforcement.none;
+  }
+  final tier = state.tierOf(holder, data);
+  if (holder == state.nemesis || tier == StandingTier.hunted) {
+    return Reinforcement.foes;
+  }
+  return tier.isAtLeast(StandingTier.friend)
+      ? Reinforcement.allies
+      : Reinforcement.none;
 }
