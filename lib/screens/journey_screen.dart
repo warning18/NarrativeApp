@@ -52,6 +52,8 @@ import '../widgets/journey_world_map.dart';
 import '../widgets/geography_widgets.dart';
 import '../widgets/journey_fx.dart';
 import '../widgets/journey_glyph.dart';
+import '../widgets/city_chart/city_chart.dart';
+import '../widgets/city_chart/city_chart_painter.dart';
 import '../widgets/city_plan_painter.dart';
 import '../widgets/journey_place.dart';
 import '../widgets/player_stats_bar.dart';
@@ -181,6 +183,8 @@ class _PlaceView {
     this.glyphs = const {},
     this.water = '',
     this.plan,
+    this.chart,
+    this.explored,
     this.room,
     this.hereDistrict = '',
     this.districtOfStep = const {},
@@ -195,7 +199,14 @@ class _PlaceView {
   /// city, a town or a village of the geography: the party stands in
   /// [hereDistrict] ('' for the square), and the steps into its other
   /// districts ([districtOfStep], by step) sit where those districts are.
-  final CityPlan? plan;
+  final PlacePlan? plan;
+
+  /// The city drawn as board 15's chart (v1.350), when Core has stored the
+  /// city's plan (city_plans.json): the district's streets, lots and named
+  /// buildings, the districts not yet found under fog ([explored]). The
+  /// plan is then that record.
+  final CityChart? chart;
+  final Set<String>? explored;
 
   /// The inside of the building the scene is in (v1.207, see
   /// room_plan.dart), drawn instead of the streets: then [hereDistrict]
@@ -289,6 +300,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// Whether the place the map shows has a city plan to look at whole
   /// (set while building).
   bool _canTown = false;
+
+  /// The chart of the city's stored plan, kept while its words hold.
+  CityChart? _cityChart;
+  String _cityChartKey = '';
 
   /// The scale of a pinch on the place's map (see _lookOut): the streets
   /// shrink under the fingers, and the chart opens where they were left.
@@ -907,6 +922,33 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         districtOfStep[i] = place.level == GeoLevel.district ? place.id : '';
       }
     }
+    // The city's stored plan (Core's city_plans.json, board 15): the plan
+    // the ways are laid on and the chart drawn under them.
+    PlacePlan? cityPlan = plan;
+    CityChart? cityChart;
+    Set<String>? foundDistricts;
+    if (plan != null && hereLocation != null) {
+      final record = ref.watch(cityPlanRecordsProvider).value?[hereLocation.id];
+      if (record != null) {
+        cityPlan = record;
+        final key = '${hereLocation.id}|$french';
+        if (key != _cityChartKey || _cityChart == null) {
+          _cityChartKey = key;
+          _cityChart = CityChart.fromRecord(
+            record,
+            districtNames: {
+              for (final d in world.childrenOf(hereLocation.id))
+                if (d.level == GeoLevel.district) d.id: d.nameFor(french),
+            },
+            ways: const [],
+            french: french,
+            name: hereLocation.nameFor(french),
+          );
+        }
+        cityChart = _cityChart;
+        foundDistricts = ref.watch(foundDistrictsProvider);
+      }
+    }
     // Inside a building (v1.207): the room's plan, the party at its spot
     // and each way at the spot it is taken from, or at the door it leaves
     // by; the streets are one look out.
@@ -1000,7 +1042,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             chartHere: chartHere,
             biome: world.biomeOf(herePlace?.id),
             water: herePlace?.water ?? '',
-            plan: plan,
+            plan: cityPlan,
+            chart: cityChart,
+            explored: foundDistricts,
             room: room,
             hereDistrict: hereDistrictId,
             districtOfStep: districtOfStep,
@@ -1128,7 +1172,6 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           MaterialPageRoute(builder: (_) => const FullMapScreen()),
         ),
         fog: editing ? ChartFog.none : ChartFog.uncharted,
-        bottomInset: 40,
       ),
     );
 
@@ -1259,9 +1302,15 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                       alignment: Alignment.bottomLeft,
                       // A narrow screen (320 px) has no room for the line
                       // beside the zoom buttons: the icon, the line on a tap.
-                      child: WeatherChip(
-                          palette: palette,
-                          compact: MediaQuery.sizeOf(context).width < 340),
+                      child: IgnorePointer(
+                        // The full line is only to read: a mark under it takes
+                        // the tap (the icon alone, on a narrow screen, is a
+                        // button).
+                        ignoring: MediaQuery.sizeOf(context).width >= 340,
+                        child: WeatherChip(
+                            palette: palette,
+                            compact: MediaQuery.sizeOf(context).width < 340),
+                      ),
                     ),
                   ),
                   if (_sceneInside && _outside)
@@ -1375,9 +1424,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                               ),
                             const SizedBox(height: 2),
                             Expanded(
-                              child: Stack(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  Positioned.fill(
+                                  Expanded(
                                     child: _level == JourneyMapLevel.place ||
                                             ended
                                         ? Stack(
@@ -1409,22 +1459,27 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                           )
                                         : worldMap,
                                   ),
-                                  if (!ended && _transit == null)
-                                    Positioned(
-                                      left: 8,
-                                      bottom: 44,
-                                      child: _LevelTabs(
-                                        selected:
-                                            _level != JourneyMapLevel.place
-                                                ? _LevelTab.world
-                                                : townView
-                                                    ? _LevelTab.town
-                                                    : _LevelTab.district,
-                                        townEnabled: _canTown ||
-                                            _level != JourneyMapLevel.place,
-                                        busy: _busy,
-                                        palette: palette,
-                                        onPick: _goLevel,
+                                  // The level tabs under the map (v1.350), not
+                                  // over it: a mark scrolled to the foot would
+                                  // sit under them.
+                                  if (!ended)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 6),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: _LevelTabs(
+                                          selected:
+                                              _level != JourneyMapLevel.place
+                                                  ? _LevelTab.world
+                                                  : townView
+                                                      ? _LevelTab.town
+                                                      : _LevelTab.district,
+                                          townEnabled: _canTown ||
+                                              _level != JourneyMapLevel.place,
+                                          busy: _busy,
+                                          palette: palette,
+                                          onPick: _goLevel,
+                                        ),
                                       ),
                                     ),
                                 ],
@@ -2307,8 +2362,13 @@ class _JourneyChartState extends State<_JourneyChart>
 
   /// The city's plan on the map (v1.203): canvas = origin + plan * scale.
   double? _planScale;
+  double _planFitted = 1;
   Offset? _planOrigin;
-  CityPlan? get _plan => widget.place?.plan;
+  CityPlan? get _plan {
+    final plan = widget.place?.plan;
+    return plan is CityPlan ? plan : null;
+  }
+
   RoomPlan? get _room => widget.place?.room;
 
   /// The plan the ways are laid on: the room when inside, else the city.
@@ -2696,6 +2756,10 @@ class _JourneyChartState extends State<_JourneyChart>
                   top + (present - top - foot) / 2 - frame.center.dy * s);
               _planScale = s;
               _planOrigin = origin;
+              // The scale that fits the whole plan: the chart's detail
+              // (roofs, names) reads the zoom over it.
+              _planFitted = math.min((width - 2 * side) / plan.frame.width,
+                  (present - top - foot) / plan.frame.height);
               Offset tf(Offset p) => origin + p * s;
               here = tf(plan.anchorOf(widget.place!.hereDistrict));
               final positions = List<Offset>.filled(steps.length, here);
@@ -2704,8 +2768,6 @@ class _JourneyChartState extends State<_JourneyChart>
               final obstacles = [
                 Rect.fromLTWH(0, 0, math.min(width * 0.5, 190) + 16, 84),
                 Rect.fromLTWH(width - 64, present - 64, 64, 64),
-                // The level tabs along the foot (v1.350).
-                Rect.fromLTWH(0, present - 84, 222, 44),
               ];
               final area = Rect.fromLTWH(0, 0, width, present).deflate(28);
               final taken = <Offset>[];
@@ -2983,7 +3045,7 @@ class _JourneyChartState extends State<_JourneyChart>
                             child: CustomPaint(
                               key: ValueKey(_room != null
                                   ? 'journey_room'
-                                  : _plan != null
+                                  : widget.place?.plan != null
                                       ? 'journey_streets'
                                       : 'journey_ground'),
                               painter: widget.place == null
@@ -3001,24 +3063,43 @@ class _JourneyChartState extends State<_JourneyChart>
                                           palette: palette,
                                           ember: widget.ink.ember,
                                         )
-                                      : _plan != null && _planScale != null
-                                          ? CityPlanPainter(
-                                              plan: _plan!,
+                                      : widget.place?.chart != null &&
+                                              _planScale != null
+                                          ? CityChartPainter(
+                                              chart: widget.place!.chart!,
+                                              palette: palette,
                                               scale: _planScale!,
-                                              origin: _planOrigin!,
-                                              palette: palette,
-                                              ember: widget.ink.ember,
+                                              offset: _planOrigin!,
+                                              fitted: _planFitted,
+                                              explored: widget.place!.explored,
+                                              hereDistrict: widget.place!
+                                                      .hereDistrict.isEmpty
+                                                  ? null
+                                                  : widget.place!.hereDistrict,
+                                              focusDistrict: _planScale! /
+                                                          _planFitted >=
+                                                      cityChartDetailZoom
+                                                  ? widget.place!.hereDistrict
+                                                  : null,
                                             )
-                                          : PlacePlanPainter(
-                                              kind: widget.place!.kind,
-                                              seed: widget.place!.seed,
-                                              here: here,
-                                              spots: centres,
-                                              palette: palette,
-                                              ember: widget.ink.ember,
-                                              glyphs: widget.place!.glyphs,
-                                              water: widget.place!.water,
-                                            ),
+                                          : _plan != null && _planScale != null
+                                              ? CityPlanPainter(
+                                                  plan: _plan!,
+                                                  scale: _planScale!,
+                                                  origin: _planOrigin!,
+                                                  palette: palette,
+                                                  ember: widget.ink.ember,
+                                                )
+                                              : PlacePlanPainter(
+                                                  kind: widget.place!.kind,
+                                                  seed: widget.place!.seed,
+                                                  here: here,
+                                                  spots: centres,
+                                                  palette: palette,
+                                                  ember: widget.ink.ember,
+                                                  glyphs: widget.place!.glyphs,
+                                                  water: widget.place!.water,
+                                                ),
                             ),
                           ),
                         ),

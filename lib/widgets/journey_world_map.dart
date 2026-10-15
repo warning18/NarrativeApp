@@ -66,12 +66,7 @@ class JourneyWorldMap extends ConsumerStatefulWidget {
     this.replayLegs,
     this.replayToken = 0,
     this.fog = ChartFog.uncharted,
-    this.bottomInset = 0,
   });
-
-  /// Room left along the bottom-left for the Journey's level tabs: the clan
-  /// legend sits above it.
-  final double bottomInset;
 
   /// The "Full map" button among the chart's controls (board 8): shown
   /// only when the Journey gives a way to open the full-screen map.
@@ -745,7 +740,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
           if (calque == ChartCalque.clans)
             Positioned(
               left: 8,
-              bottom: 8 + widget.bottomInset,
+              bottom: 8,
               child: _ClanLegend(
                   colours: clanColours,
                   names: {
