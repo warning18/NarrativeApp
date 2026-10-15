@@ -112,6 +112,9 @@ void main() {
     await _settle(tester);
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
     await _settle(tester);
+    // The streets round the building, then the town, then the land.
+    await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
+    await _settle(tester);
     expect(find.byKey(const ValueKey('journey_streets')), findsNothing);
     expect(find.byKey(const ValueKey('journey_world_map')), findsOneWidget);
 

@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/providers/city_provider.dart'
+    show cityPlanRecordsProvider;
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/app_mode_provider.dart';
@@ -32,13 +34,23 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
-    SharedPreferences.setMockInitialValues({});
+    // The flat chart first: the sphere is the default now (v1.350), and the
+    // test turns it on from the Layers sheet further down.
+    SharedPreferences.setMockInitialValues({chartGlobePrefsKey: false});
     tester.view.physicalSize = const Size(400, 860);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+    await tester.pumpWidget(
+      ProviderScope(
+          // The generated plan under the marks (the stored city chart has its
+          // own test: journey_city_view_test).
+          overrides: [
+            cityPlanRecordsProvider.overrideWith((ref) async => const {})
+          ],
+          child: const MyApp()),
+    );
     await _settle(tester);
     await tester.tap(find.byKey(const Key('menu_edit_mode')));
     await _settle(tester);
@@ -119,7 +131,23 @@ void main() {
     await tester.pageBack();
     await _settle(tester);
 
-    // The − button on the streets looks out at the land under the fog
+    // The − button on a district looks out at the whole town first
+    // (v1.350), with its three level tabs; the world comes next.
+    expect(find.byKey(const Key('journey_level_tabs')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('journey_town_zoom_in')), findsOneWidget);
+    expect(find.byType(JourneyWorldMap), findsNothing);
+    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    // The + under it comes back to the district; the Town tab goes out.
+    await tester.tap(find.byKey(const Key('journey_town_zoom_in')));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('journey_town_zoom_in')), findsNothing);
+    await tester.tap(find.byKey(const Key('journey_tab_town')));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('journey_town_zoom_in')), findsOneWidget);
+
+    // The − button on the whole town looks out at the land under the fog
     // (v1.201: the levels are zoomed between); the steps wait behind.
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
     await tester.pump();
@@ -135,6 +163,9 @@ void main() {
         .transformationController!
         .value
         .getMaxScaleOnAxis();
+    // The saved look loads a frame after the chart opens: the glide starts
+    // from there.
+    await tester.pump(const Duration(milliseconds: 20));
     final early = chartScale();
     expect(early, greaterThan(JourneyWorldMapZoom.land + 1));
     await tester.pump(const Duration(milliseconds: 150));
@@ -158,6 +189,17 @@ void main() {
     expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
     await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byType(JourneyWorldMap), findsOneWidget);
+
+    // The tabs from the land: the District tab goes straight to the
+    // streets, the World tab back out to the whole sphere.
+    await tester.tap(find.byKey(const Key('journey_tab_district')));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byType(JourneyWorldMap), findsNothing);
+    expect(find.byKey(const Key('journey_town_zoom_in')), findsNothing);
+    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('journey_tab_world')));
+    await tester.pump(const Duration(milliseconds: 400));
     expect(find.byType(JourneyWorldMap), findsOneWidget);
 
     // The calques: the clans' influence over the lands, with its legend;
