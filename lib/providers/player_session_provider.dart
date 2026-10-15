@@ -11,6 +11,7 @@ import '../combat/face_keywords.dart' show FaceKeyword;
 import '../combat/face_smithing.dart';
 import '../combat/sea_beasts.dart' show BeastState;
 import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
+import '../data/cliff_town.dart' show townAdditionLimitOf;
 import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
 import '../data/character_start.dart' show startingArmor;
@@ -3530,9 +3531,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// Spends [cost] on a town addition ([type], one of
   /// `cliff_town.dart`'s additions) and raises it on the cliff. Additions
   /// are the town's own: they add rooms and lights, no bonuses. A no-op
-  /// if unaffordable.
+  /// if unaffordable, or when the town already holds as many as it may
+  /// (see townAdditionLimit).
   Future<void> buildTownAddition(String type, int cost) async {
     if (state.gold < cost) return;
+    final limit = townAdditionLimitOf(type,
+        pieces: state.townPieces, houseCount: state.builtHouseIds.length);
+    if (limit.atLimit) return;
     state = state.copyWith(
       gold: state.gold - cost,
       townOrder: [...state.townPieces, type],
