@@ -7217,7 +7217,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "drowned_cloister_ossuary",
+    "location": "drowned_cloister_stair",
     "choices": [
       {
         "text": "Wade back to the Cloister",
@@ -17028,7 +17028,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "drowned_cloister_ossuary",
+    "location": "drowned_cloister_stair",
     "choices": [
       {
         "text": "Return to the drowned cloister",
@@ -17119,7 +17119,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "white_anchorage_hulls",
+    "location": "white_anchorage_quay",
     "choices": [
       {
         "text": "Leave him to his cup",
