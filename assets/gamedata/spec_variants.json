@@ -49,8 +49,8 @@
     "kind": "upgrade",
     "name": "Fallen Knight’s Fire",
     "name_fr": "Feu du chevalier tombé",
-    "text": "Against an Evil foe, the heavy blow heals you more of its damage.",
-    "text_fr": "Contre un ennemi Mauvais, le coup lourd vous rend davantage de ses dégâts.",
+    "text": "Against a foe weak to Light, the heavy blow heals you more of its damage.",
+    "text_fr": "Contre un ennemi sensible à la Lumière, le coup lourd vous rend davantage de ses dégâts.",
     "voice": "Brave, proud, losing. Let us at least lose forward.",
     "voice_fr": "Braves, fiers, perdants. Perdons au moins en avançant."
   },
