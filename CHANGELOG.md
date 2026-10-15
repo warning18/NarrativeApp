@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.382.0+418]
+## [1.388.0+424]
 
 Rewards come on one card, whatever they are (card A of the user's pick).
 
@@ -16,7 +16,7 @@ Rewards come on one card, whatever they are (card A of the user's pick).
 - **One reward card.** A header in the source's own colour (a small label over the title), one row per reward (an icon tile, a name, a line under it, the value at the right), a note set apart in a dashed box, and one button. The rows come in one after another (with reduced motion they are simply there).
 - **Quest complete, an item or materials found, and a clan's gift taken** all use it. Quest complete shows gold, experience with its bar (and the level it brought), the item with its rarity, a die, a companion who joined; the notes carry what changed the outcome (a die made for another class paid in gold, with the gold as a chip), how the quest was settled, and the party's reactions.
 
-## [1.381.0+417]
+## [1.386.0+422]
 
 The clan offer's popup is one block: the ring on top, and under it the clan card with the gift in it.
 
@@ -25,6 +25,25 @@ The clan offer's popup is one block: the ring on top, and under it the clan card
 - **The clan's words sit behind an (i).** The button beside the clan's name opens its card (the same one a long press shows), with what the clan says to you; the first time you meet a clan the button is lit. The words no longer take room in the popup.
 - The alignment word ("Alignment · toward Good") stays in the block, under the gift.
 - **Hold a banner for the clan's details.** A long press on a banner in the offer, on a crest of the ring, or on a standard in the Throne room opens its card: where it leans (alignment, the five axes of its gifts), what it stands for, its sub-clans, its motto and a short recap of its story. Letting go, or a tap outside, closes it.
+
+## [1.385.0+421]
+
+Your clan now shapes your stats as you level up (v5.2, step 5).
+
+- **The patron's favour.** Each level, the clan you stand best with (Friendly or better, or the one you're sworn to) adds a stat point:
+  - **Friendly:** to its first stat.
+  - **Trusted:** to its first and its second in turn.
+  - **Sworn:** the same, and +2 max health.
+- **The clans' stats:**
+  - Dominion: Strength, Charisma
+  - Vigil: Constitution, Perception
+  - Compact: Constitution, Strength
+  - Mire: Dexterity, Luck
+  - Crows: Strength, Dexterity
+  - Penitents: Wisdom, Intelligence
+- **The Open Hand,** once raised, adds +1 to your strongest stat.
+- **In the clan log:** each level-up says what your patron gave.
+- **Balance:** about +2.6 points of fights won overall, and the bosses keep their curve. Report: docs/simulation/patron-stats.md.
 
 ## [1.380.0+416]
 
