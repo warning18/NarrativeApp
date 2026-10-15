@@ -423,6 +423,7 @@ extension _FightView on _FightScreenState {
             message: tr(ref, 'tamper_silence_desc'),
             child: _telegraphChip(Icons.volume_off, tr(ref, 'tamper_silence')),
           ),
+        _buildTideMark(),
       ],
     );
   }
@@ -531,6 +532,44 @@ extension _FightView on _FightScreenState {
             Icons.flag_outlined, '${tr(ref, 'round_label')} $_roundsStarted'),
       ],
     );
+  }
+
+  /// The Tide (fight_length.dart), the last of the battle chips, by the
+  /// round count: once it rises
+  /// "Tide ×N" with what it adds to each side's blows; a few rounds before,
+  /// when it will.
+  Widget _buildTideMark() {
+    final level = tideLevel(_roundsStarted);
+    final bossFight = _enemies.any((e) => isBossEnemy(e.enemyId, e.data));
+    String pct(double step, int n) => '${(step * n * 100).round()}';
+    final enemyStep = bossFight ? tideBossEnemyStep : tideEnemyStep;
+    final Widget chip;
+    if (level > 0) {
+      chip = Tooltip(
+        message: tr(ref, 'tide_mark_tip')
+            .replaceAll('{party}', pct(tidePartyStep, level))
+            .replaceAll('{enemies}', pct(enemyStep, level)),
+        child: _stateChip(
+            Icons.waves,
+            tr(ref, 'tide_mark').replaceAll('{n}', '$level'),
+            Colors.cyan.shade600),
+      );
+    } else if (tideStartRound - _roundsStarted <= 3 && _roundsStarted > 0) {
+      chip = Tooltip(
+        message: tr(ref, 'tide_soon_tip')
+            .replaceAll('{round}', '$tideStartRound')
+            .replaceAll('{party}', pct(tidePartyStep, 1))
+            .replaceAll('{enemies}', pct(enemyStep, 1)),
+        child: _stateChip(
+            Icons.waves,
+            tr(ref, 'tide_soon_mark')
+                .replaceAll('{n}', '${tideStartRound - _roundsStarted}'),
+            Colors.blueGrey),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+    return KeyedSubtree(key: const Key('fight_tide_mark'), child: chip);
   }
 
   // --- Dice tray -----------------------------------------------------------
@@ -804,7 +843,7 @@ extension _FightView on _FightScreenState {
             height: 13,
             child: face == null || spinning || preview == null
                 ? null
-                : _buildPreviewLine(preview),
+                : _buildPreviewLine(preview, actor),
           ),
         ],
       ),
@@ -815,7 +854,7 @@ extension _FightView on _FightScreenState {
   /// the tile: the damage its target would take (marked when it would drop
   /// the target, starred when momentum makes it a guaranteed critical),
   /// or the healing, block or mana it gives.
-  Widget _buildPreviewLine(_FacePreview preview) {
+  Widget _buildPreviewLine(_FacePreview preview, _PartyMember actor) {
     final result = preview.result;
     final IconData icon;
     final String text;
@@ -828,8 +867,36 @@ extension _FightView on _FightScreenState {
       color = preview.lethal ? Colors.red.shade900 : FaceKind.attack.color;
     } else if (preview.healing > 0) {
       icon = FaceKind.heal.icon;
-      text = '+${preview.healing}';
       color = FaceKind.heal.color;
+      // Healing fatigue (fight_length.dart): each heal this member has given
+      // heals less; the number shown is the tired one, dimmed. The cleric's
+      // Watchfire doesn't tire.
+      final before = actor.isPlayer && _core.core == ProfessionCore.watchfire
+          ? 0
+          : _length.healsBy(actor.id);
+      if (before > 0) {
+        final tired = fatiguedHeal(preview.healing, before);
+        return Tooltip(
+          message: tr(ref, 'heal_fatigue_tip').replaceAll(
+              '{pct}', '${(healFatigueFactor(before) * 100).round()}'),
+          child: Row(
+            key: const Key('fatigued_heal'),
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 11, color: color.withValues(alpha: 0.45)),
+              const SizedBox(width: 2),
+              Text('+$tired',
+                  style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic,
+                      color: color.withValues(alpha: 0.5))),
+            ],
+          ),
+        );
+      }
+      text = '+${preview.healing}';
     } else if (preview.block > 0) {
       icon = FaceKind.defend.icon;
       text = '${preview.block}';

@@ -267,7 +267,7 @@ class _StoryView extends ConsumerWidget {
       if (!context.mounted) return;
       final offered = await ref
           .read(playerSessionProvider.notifier)
-          .grantChapterOffer(next);
+          .grantChapterOffer(next, data: ref.read(clanDataProvider));
       // The coast moved while the party was away (v1.195): the events the
       // new chapter brings, told on its card. (Gone from the screen, the
       // next day's tick fires them, see HomeShell.)

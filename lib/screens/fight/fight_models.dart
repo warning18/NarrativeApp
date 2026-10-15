@@ -449,6 +449,10 @@ class _FightLength {
   String? leaderKey;
   bool packBroken = false;
 
+  /// How many heals [memberId] has given this fight (for the fight screen's
+  /// fatigue mark; nothing is counted).
+  int healsBy(String memberId) => _heals[memberId] ?? 0;
+
   /// [amount] as [memberId]'s next heal heals it, counted.
   int fatigued(String memberId, int amount) {
     if (amount <= 0) return amount;
@@ -461,15 +465,42 @@ class _FightLength {
 /// The hero's profession core over a fight (profession_cores.dart): Fury
 /// built up, the Watchfire's fire, the Trail's deck.
 class _HeroCore {
-  _HeroCore(this.core, {this.specs = const {}});
+  _HeroCore(this.core,
+      {this.specs = const {},
+      this.halved = const {},
+      this.roundOf,
+      SpecMods? mods})
+      : mods = mods ?? SpecMods.none;
 
   final ProfessionCore core;
 
-  /// The specialisations on the core (specialisations.dart).
+  /// The specialisations on the core (specialisations.dart), and the
+  /// numbers their variants, upgrades and ranks set (spec_variants.dart).
   final Set<Spec> specs;
-  bool has(Spec spec) => specs.contains(spec);
+  final SpecMods mods;
+
+  /// The specialisations a cold clan halves (specsByStanding): they play
+  /// the odd rounds only, [roundOf] telling the round being played.
+  final Set<Spec> halved;
+  final int Function()? roundOf;
+  bool has(Spec spec) =>
+      specs.contains(spec) &&
+      (!halved.contains(spec) || halvedPlaysIn(roundOf?.call() ?? 1));
+
+  /// What the variants keep over the fight: the gold stolen, the enemies
+  /// whose fall was felt, the Tribunal's refill, the Wickwardens' lingering
+  /// fire.
+  int gold = 0;
+  final Set<String> fallen = {};
+  bool wellRefilled = false;
+  bool fireLingered = false;
   int fury = 0;
   int fire = 0;
+
+  /// The face index the Trail deals next, as the fight last peeked at it
+  /// (for the fight screen: it never peeks itself, which would deal the
+  /// deck early).
+  int? aheadIndex;
   TrailDeck? _deck;
 
   /// The Ledger Knife's chain: critical chance the misses have built.

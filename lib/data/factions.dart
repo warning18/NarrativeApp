@@ -1911,6 +1911,106 @@ StandingResult applyStandingChange(
       day: day);
 }
 
+// --- Loyalty's price (v5.2 step 3) ------------------------------------------
+
+/// The relation step of two factions that are tense: neither rivals nor
+/// allies, but not at peace either (Tense).
+const int tenseStep = 4;
+
+/// What each new chapter costs a patron's neighbours (see
+/// [applyLoyaltyDrift]): its rivals while you are Trusted with it; its
+/// rivals, its tense neighbours and (a gain) its allies while you are
+/// sworn to it.
+const int trustedRivalDrift = -2;
+const int swornRivalDrift = -4;
+const int swornTenseDrift = -2;
+const int swornAllyDrift = 1;
+
+/// [factionId]'s tense neighbours now: every faction it stands with on
+/// [tenseStep].
+List<String> tenseWith(String factionId, PoliticsState state, ClanData data) =>
+    _related(factionId, state, data, (step) => step == tenseStep);
+
+/// The clan the character is loyal to, whose favour cools its rivals: the
+/// sworn one, else the clan stood highest with at Trusted or above (the
+/// first in the data on a tie); '' for none.
+String loyaltyPatron(PoliticsState state, ClanData data) {
+  if (state.swornFactionId.isNotEmpty) return state.swornFactionId;
+  var best = '';
+  var bestValue = double.negativeInfinity;
+  for (final id in data.factions.keys) {
+    if (!canBeSworn(id, data)) continue;
+    final value = state.standingOf(id, data);
+    if (!standingTierFor(value).isAtLeast(StandingTier.trusted)) continue;
+    if (value > bestValue) {
+      best = id;
+      bestValue = value;
+    }
+  }
+  return best;
+}
+
+/// What a new chapter's drift ([applyLoyaltyDrift]) moves, by faction:
+/// - the patron ([loyaltyPatron]) at Trusted: its rivals
+///   [trustedRivalDrift];
+/// - sworn to it: its rivals [swornRivalDrift], its tense neighbours
+///   [swornTenseDrift], its allies [swornAllyDrift];
+/// - none, or Friend and below: nothing.
+Map<String, int> loyaltyDrift(PoliticsState state, ClanData data) {
+  final patron = loyaltyPatron(state, data);
+  if (patron.isEmpty) return const {};
+  final sworn = state.isSworn(patron);
+  bool counts(String id) =>
+      id != patron &&
+      data.factions.containsKey(id) &&
+      !data.factions[id]!.isLost;
+  return {
+    for (final id in rivalsOf(patron, state, data))
+      if (counts(id)) id: sworn ? swornRivalDrift : trustedRivalDrift,
+    if (sworn) ...{
+      for (final id in tenseWith(patron, state, data))
+        if (counts(id)) id: swornTenseDrift,
+      for (final id in alliesOf(patron, state, data))
+        if (counts(id)) id: swornAllyDrift,
+    },
+  };
+}
+
+/// A new chapter's price of loyalty: [loyaltyDrift] applied, with no
+/// ripple, logged as `loyalty:<patron>` on [chapter]'s [day]. The banner's
+/// caps still hold. Nothing moves (and nothing is logged) without a
+/// patron at Trusted or above.
+StandingResult applyLoyaltyDrift(
+  PoliticsState state, {
+  required ClanData data,
+  int chapter = 0,
+  int day = 0,
+}) {
+  final drift = loyaltyDrift(state, data);
+  if (drift.isEmpty) return StandingResult(state: state);
+  final patron = loyaltyPatron(state, data);
+  final before = _allStandings(state, data);
+  final values = {...before};
+  for (final MapEntry(:key, :value) in drift.entries) {
+    if (!values.containsKey(key)) continue;
+    values[key] = _clampStanding(values[key]! + value);
+  }
+  final banner = _applyBanner(values,
+      sworn: state.swornFactionId,
+      preferred: patron,
+      state: state,
+      data: data,
+      chargeRivals: false);
+  return _commit(state, before, values,
+      sworn: banner.sworn,
+      swore: banner.swore,
+      released: banner.released,
+      factionId: patron,
+      cause: 'loyalty:$patron',
+      chapter: chapter,
+      day: day);
+}
+
 /// What [applyStandingChange] would move, faction by faction, without
 /// doing it: an offer card's "+6 Compact · +1.5 Mire · −3 Penitents".
 Map<String, double> standingPreview(

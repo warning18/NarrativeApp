@@ -92,9 +92,12 @@ extension _FightActions on _FightScreenState {
 
   /// What [spell] costs the player now: its mana, less a spell sign's
   /// saving (never under 1).
-  int _spellCost(SpellSpec spell) => _core.core == ProfessionCore.ashWell
-      ? ashWellSpellCost(_signs.spellCost(spell.manaCost))
-      : _signs.spellCost(spell.manaCost);
+  int _spellCost(SpellSpec spell) => max(
+      1,
+      (_core.core == ProfessionCore.ashWell
+              ? ashWellSpellCost(_signs.spellCost(spell.manaCost))
+              : _signs.spellCost(spell.manaCost)) -
+          (_core.has(Spec.tempestToll) ? _core.mods.spellDiscount : 0));
 
   /// What a potion heals on top of its own: a perk's and a sign's.
   int get _potionBonus => _perks.potionBonus + _signs.potionBonus;
@@ -125,7 +128,7 @@ extension _FightActions on _FightScreenState {
         _core.has(Spec.burdenBearer) &&
         _mana >= _maxMana;
     final amount = fullWell
-        ? (_spellAmountNow(spell, items) * burdenFullWellMultiplier).round()
+        ? (_spellAmountNow(spell, items) * _core.mods.burdenMultiplier).round()
         : _spellAmountNow(spell, items);
     final status = spellStatusFor(spell, level: _playerLevel);
 
@@ -197,8 +200,18 @@ extension _FightActions on _FightScreenState {
         final wasAlive = enemy.isAlive;
         enemy.currentHealth = max(0, enemy.currentHealth - damage);
         // The Tempest Toll: the spell takes back a share as health.
-        if (_core.has(Spec.tempestToll) && damage > 0) {
-          final toll = (damage * tempestLifeShare).round();
+        // (and the Spire-Fallen's full-Well spell; the Whisper Ledger
+        // steals a few coins).
+        final share =
+            (_core.has(Spec.tempestToll) ? _core.mods.tempestShare : 0) +
+                (fullWell ? _core.mods.burdenHealShare : 0);
+        if (_core.has(Spec.tempestToll) &&
+            _core.mods.spellsSteal &&
+            damage > 0) {
+          _core.gold += ledgerStealGold;
+        }
+        if (share > 0 && damage > 0) {
+          final toll = (damage * share).round();
           if (toll > 0) {
             player.currentHealth =
                 min(player.maxHealth, player.currentHealth + toll);

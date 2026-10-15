@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/dice_faces.dart' show skillDisplayName;
+import '../combat/specialisations.dart' show specId;
 import '../data/factions.dart';
 import '../data/item_origin_here.dart';
 import '../data/offers.dart';
@@ -131,7 +132,9 @@ String giftName(
       final perk = perkFromName(gift.id);
       return perk == null ? gift.id : trFor(lang, perkNameKey(perk));
     case GiftKind.spec:
-      return tables.specs[gift.id]?.nameFor(lang == AppLanguage.fr) ?? gift.id;
+      return tables.specs[gift.id]?.nameFor(lang == AppLanguage.fr) ??
+          tables.specVariants[gift.id]?.nameFor(lang == AppLanguage.fr) ??
+          gift.id;
   }
 }
 
@@ -162,6 +165,8 @@ String? offerGiftLabel(
   }
   final spec = tables.specs[id];
   if (spec != null) return spec.nameFor(lang == AppLanguage.fr);
+  final variant = tables.specVariants[id];
+  if (variant != null) return variant.nameFor(lang == AppLanguage.fr);
   return null;
 }
 
@@ -1368,16 +1373,22 @@ class _GiftBody extends StatelessWidget {
           ],
         );
       case GiftKind.spec:
-        final spec = tables.specs[gift.id];
-        if (spec == null) return const SizedBox.shrink();
         final fr = lang == AppLanguage.fr;
+        final spec = tables.specs[gift.id];
+        final variant = tables.specVariants[gift.id];
+        final text = spec?.giftFor(fr) ?? variant?.textFor(fr);
+        final voice = spec?.voiceFor(fr) ?? variant?.voiceFor(fr) ?? '';
+        if (text == null) return const SizedBox.shrink();
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            lines([spec.giftFor(fr)]),
-            if (spec.voiceFor(fr).isNotEmpty)
-              Text(spec.voiceFor(fr),
-                  style: muted?.copyWith(fontStyle: FontStyle.italic)),
+            // A variant says which specialisation it bends.
+            if (variant != null)
+              Text(tables.specs[specId(variant.spec)]?.nameFor(fr) ?? '',
+                  style: muted),
+            lines([text]),
+            if (voice.isNotEmpty)
+              Text(voice, style: muted?.copyWith(fontStyle: FontStyle.italic)),
           ],
         );
       case GiftKind.perk:

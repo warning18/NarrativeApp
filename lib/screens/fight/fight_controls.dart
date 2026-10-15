@@ -305,13 +305,30 @@ extension _FightControls on _FightScreenState {
 
   Widget _buildManaMeter() {
     final showPips = _maxMana <= 10;
+    final well = _core.core == ProfessionCore.ashWell;
     return Tooltip(
-      message: '${tr(ref, 'mana_label')} $_mana / $_maxMana',
+      message: well
+          ? '${tr(ref, 'ash_well_label')} $_mana / $_maxMana\n${tr(ref, 'ash_well_tip')}'
+          : '${tr(ref, 'mana_label')} $_mana / $_maxMana',
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           const Icon(manaIcon, size: 16, color: manaColor),
           const SizedBox(width: 2),
+          // The Ash Well: named, and said empty while it still is.
+          if (well) ...[
+            Text(
+              _mana == 0
+                  ? '${tr(ref, 'ash_well_label')} · ${tr(ref, 'ash_well_empty')}'
+                  : tr(ref, 'ash_well_label'),
+              key: const Key('ash_well_label'),
+              style: TextStyle(
+                  fontSize: 10,
+                  fontStyle: FontStyle.italic,
+                  color: manaColor.withValues(alpha: 0.85)),
+            ),
+            const SizedBox(width: 4),
+          ],
           Text(
             '$_mana/$_maxMana',
             style: const TextStyle(

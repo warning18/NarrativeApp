@@ -13,6 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import '../combat/combat_engine.dart'
     show chapterRewardMultiplier, isBossEnemy, scaledReward, zoneBossEnemyIds;
 import '../combat/gear_effects.dart';
+import '../combat/spec_variants.dart' show SpecVariantInfo, specVariantsFrom;
 import '../combat/specialisations.dart' show SpecInfo, specInfosFrom;
 import '../combat/spells.dart';
 import '../data/autoplay_engine.dart';
@@ -335,10 +336,13 @@ class _SimContext {
     this.ports = const {},
     this.startSpecs = const [],
     this.specs = const {},
+    this.specVariants = const {},
   });
 
-  /// specialisations.json parsed: what the clans offer (specialisations.dart).
+  /// specialisations.json parsed: what the clans offer (specialisations.dart);
+  /// and spec_variants.json, their sub-clans' variants and ranks II.
   final Map<String, SpecInfo> specs;
+  final Map<String, SpecVariantInfo> specVariants;
 
   /// Specialisations the character holds from the start (to measure each
   /// one, see specialisations_test.dart); those of another profession
@@ -417,6 +421,7 @@ class _SimContext {
         signs: signs,
         clans: clans,
         specs: specs,
+        specVariants: specVariants,
       );
 }
 
@@ -908,6 +913,9 @@ _SimResult _simulate(
         perks: perks,
         clash: sim.clash,
         clashOff: sim.clashOff,
+        clanStanding: growth == null
+            ? null
+            : (id) => growth.politics.standingOf(id, growth.tables.clans),
       );
       // Every pact runs one fight on, won or lost.
       c.heldSigns = countDownPacts(c.heldSigns);
@@ -1793,6 +1801,7 @@ _SimContext _simContextOf(
     ports: table('ports'),
     startSpecs: startSpecs,
     specs: specInfosFrom(table('specialisations')),
+    specVariants: specVariantsFrom(table('spec_variants')),
   );
 }
 
