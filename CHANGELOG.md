@@ -8,6 +8,38 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.352.0+388]
+
+The professions' cores (v5.2 step 1, second half; docs/simulation/profession-cores.md). The hero plays their profession's core; companions keep their dice as they are.
+
+### Added
+- **Warrior, Fury.** Each hit landed, and each blow that gets through, adds 1 Fury. At 5, the next damaging face is a heavy blow (×2.5). The fight log says when it's full.
+- **Cleric, the Watchfire.** Every heal from the die also burns the enemy for twice its amount. Healing past full feeds a fire (up to half your max health) that takes blows first, and what is left burns at the round's turn. The cleric's heals don't tire.
+- **Mage, the Ash Well.**
+  - The well starts each fight empty.
+  - Mana from the die comes double.
+  - Spells cost 1 less.
+  - Mana left after a win heals 2% of your max health a point.
+- **Rogue, Flurry.** A damaging face strikes twice at 55%, each strike with its own critical.
+- **Ranger, the Trail.** The die is a deck: 5 of its 6 faces each run, none twice. The log names the face coming next.
+- **Measured (200 simulated runs):** fights run 7 to 14 rounds.
+
+  | Profession | Win rate | Rounds per fight |
+  |---|---|---|
+  | Cleric | 53% | 14.0 |
+  | Mage | 72% | 6.9 |
+  | Ranger | 65% | 9.8 |
+  | Rogue | 64% | 9.9 |
+  | Warrior | 63% | 9.4 |
+
+### Changed
+- **To keep the boss curve and the chapter-1 chain:**
+  - the Void Archon has 330 health (was 282);
+  - Claimant Vane has 370 (was 317);
+  - Claimant Tallis has 380 (was 248);
+  - Claimant Morrow has 560 (was 398);
+  - White Soldiers hit for 21 (was 19).
+
 ## [1.351.0+387]
 
 Shorter fights: the default fight-length rules and the Tide (v5.2 step 1, docs/simulation/fight-length.md).

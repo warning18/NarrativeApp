@@ -701,8 +701,9 @@ SimFightOutcome simulateSimFight({
 
   // The hero's core (profession_cores.dart): Fury built up, the
   // Watchfire's fire, the Trail's deck; the Ash Well starts empty.
-  final core =
-      clashOff.contains('cores') ? ProfessionCore.none : coreOfProfession(c.professionId);
+  final core = clashOff.contains('cores')
+      ? ProfessionCore.none
+      : coreOfProfession(c.professionId);
   var fury = 0;
   var fire = 0;
   final trail = core == ProfessionCore.trail && c.diceFaces.isNotEmpty
