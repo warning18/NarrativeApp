@@ -717,9 +717,20 @@ extension _FightDiceRules on _FightScreenState {
   // --- The hero's profession core (profession_cores.dart) -----------------
 
   /// The ranger's Trail: the next face of the die drawn as a deck.
+  /// The Second Broadside (step 3c): once a fight, a face that would not
+  /// strike goes back, and the Trail draws again.
   DiceFaceResult _trailFace(List<Map<String, dynamic>> faces) {
     final deck = _core.deckFor(faces.length, _random);
-    final index = deck.draw();
+    var index = deck.draw();
+    final type = faces[index]['type']?.toString() ?? '';
+    if (_core.has(Spec.secondBroadside) &&
+        !_core.broadsideUsed &&
+        type != 'Empty' &&
+        !faceStrikes(type)) {
+      _core.broadsideUsed = true;
+      _core.broadsideFired = true;
+      index = deck.draw();
+    }
     _core.firstOfRun = deck.drewFirst;
     _core.verdict = deck.drewVerdict;
     return faceFromJson(faces[index], index);
@@ -778,6 +789,8 @@ extension _FightDiceRules on _FightScreenState {
         if (result.damageDealt <= 0) return;
         final second = _resolveFor(hero, face, skills, items, lang,
             surge: false, rollCritical: true);
+        // The Pitch Hand: the second hit slows its target (step 3c).
+        _core.pitched = _core.has(Spec.pitchHand) && second.damageDealt > 0;
         // Each hit's critical: the Ledger Knife's chain, the Relicbreaker's
         // mana (specialisations.dart).
         int hit(PlayerActionResult r) {
@@ -881,6 +894,13 @@ extension _FightDiceRules on _FightScreenState {
       }
     }
     if (!target.isAlive) return;
+    if (_core.pitched) {
+      _core.pitched = false;
+      target.statusEffects = applyStatusEffect(target.statusEffects, pitchSlow);
+      entries.add(_LogEntry(
+          _statusInflictedMessage(pitchSlow, target.displayName, lang),
+          _LogKind.info));
+    }
     if (_core.has(Spec.feverBlade) && _core.crits > 0) {
       for (var i = 0; i < _core.crits; i++) {
         target.statusEffects =
@@ -919,6 +939,21 @@ extension _FightDiceRules on _FightScreenState {
             applyStatusEffect(target.statusEffects, specWeaken);
       }
     }
+  }
+
+  /// The Stitch-Thrust (step 3c): [over], healed past full, strikes the
+  /// first enemy standing.
+  void _stitchThrust(int over, List<_LogEntry> entries, AppLanguage lang) {
+    if (!_core.has(Spec.stitchThrust)) return;
+    final hit = stitchThrust(over);
+    final enemy = _firstLivingEnemy();
+    if (hit <= 0 || enemy == null) return;
+    final dealt = _landHitOnEnemy(enemy, hit, 'None', entries, lang);
+    entries.add(_LogEntry(
+        trFor(lang, 'spec_stitch_log')
+            .replaceAll('{n}', '$dealt')
+            .replaceAll('{name}', enemy.displayName),
+        _LogKind.playerDamage));
   }
 
   /// One more Fury for the warrior, said when it is full.

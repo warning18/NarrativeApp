@@ -29,7 +29,7 @@ void main() {
   final factions = _table('factions');
 
   test('two sub-clan gifts and a rank II for each specialisation', () {
-    for (final spec in Spec.values) {
+    for (final spec in Spec.values.where(isMainSpec)) {
       final mine = variants.values.where((v) => v.spec == spec).toList();
       final subclan = mine.where((v) => v.kind != SpecVariantKind.rank);
       expect(subclan, hasLength(2), reason: specId(spec));
@@ -160,7 +160,7 @@ void main() {
         .where((id) => id.isNotEmpty)
         .toSet();
     final lines = <String>[];
-    for (final spec in Spec.values) {
+    for (final spec in Spec.values.where(isMainSpec)) {
       final info = specs[specId(spec)]!;
       final mine = variants.values.where((v) => v.spec == spec).toList()
         ..sort((a, b) => a.id.compareTo(b.id));

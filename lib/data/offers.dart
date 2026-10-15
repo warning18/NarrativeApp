@@ -5,7 +5,13 @@ import '../combat/spells.dart'
     show SpellSpec, canLearnSpell, spellbookSpellIdFor;
 import '../combat/spec_variants.dart' show SpecVariantInfo, SpecVariantKind;
 import '../combat/specialisations.dart'
-    show SpecInfo, specId, specsOfferedBy, tempestSkillId;
+    show
+        SpecInfo,
+        specId,
+        specNamed,
+        specsOfferedBy,
+        tempestSkillId,
+        weakLinkSpecs;
 import 'factions.dart';
 import 'perks.dart';
 import 'signs.dart';
@@ -823,6 +829,9 @@ List<String> offerableSpecsFor(String factionId, OfferContext c) {
   return ids;
 }
 
+/// Whether gift [id] is a weak link's (step 3c, [weakLinkSpecs]).
+bool _isWeakLinkGift(String id) => weakLinkSpecs.contains(specNamed(id));
+
 /// Whether [factionId] brings its Sworn boon: it is the faction sworn to,
 /// it has one, and it was never taken.
 bool swornBoonDue(String factionId, OfferContext c) =>
@@ -957,8 +966,16 @@ OfferGift? drawGift(String factionId, OfferContext c, Random random,
   if (kinds.containsKey(GiftKind.sworn)) {
     kind = GiftKind.sworn;
   } else {
-    kind = _weighted(
-        {for (final k in kinds.keys) k: giftKindWeights[k] ?? 1}, random);
+    // A weak link's gift comes half as often as a main clan's
+    // specialisation (step 3c).
+    final weakOnly = kinds.containsKey(GiftKind.spec) &&
+        offerableSpecsFor(factionId, c).every(_isWeakLinkGift);
+    kind = _weighted({
+      for (final k in kinds.keys)
+        k: k == GiftKind.spec && weakOnly
+            ? max(1, giftKindWeights[k]! ~/ 2)
+            : giftKindWeights[k] ?? 1,
+    }, random);
   }
   switch (kind) {
     case GiftKind.sworn:
@@ -1018,9 +1035,10 @@ OfferGift? drawGift(String factionId, OfferContext c, Random random,
     case GiftKind.spec:
       final options = offerableSpecsFor(factionId, c);
       final id = options[random.nextInt(options.length)];
-      // A main specialisation is epic, a sub-clan's variant rare, a rank
-      // II heroic.
+      // A main specialisation is epic, a weak link's gift and a
+      // sub-clan's variant rare, a rank II heroic.
       final rarity = switch (c.specVariants[id]?.kind) {
+        null when _isWeakLinkGift(id) => SignRarity.rare,
         null => SignRarity.epic,
         SpecVariantKind.rank => SignRarity.heroic,
         _ => SignRarity.rare,
