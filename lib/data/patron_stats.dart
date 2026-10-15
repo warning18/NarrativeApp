@@ -9,8 +9,9 @@
 // - Trusted: +1 to its first stat and its second in turn (the second on
 //   even levels).
 // - Sworn: as Trusted, and +[swornPatronHealth] max health.
-// One point a level: two, as first designed, won the late bosses 13 to 16
-// points more often than their curve (boss_balance_test).
+// One point a level and +2 health at Sworn: two points and +5, as first
+// designed, won the late bosses 13 to 16 points more often than their
+// curve (boss_balance_test).
 // - The Open Hand, once its banner is raised: +1 to your strongest stat.
 // One patron only: no stacking across clans. Points given stay.
 //
@@ -32,7 +33,7 @@ const Map<String, List<String>> patronStatsOf = {
 };
 
 /// What a sworn patron adds to max health each level.
-const int swornPatronHealth = 5;
+const int swornPatronHealth = 2;
 
 /// The patron of [state]: the sworn clan, else the clan stood highest with
 /// at Friendly or better (the first of [patronStatsOf] on a tie); '' for
