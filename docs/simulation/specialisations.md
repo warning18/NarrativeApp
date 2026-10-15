@@ -1,4 +1,4 @@
-# The clans' specialisations (v5.2, steps 2a, 2b, 3 and 3c)
+# The clans' specialisations (v5.2, steps 2a to 3c)
 
 The design is in `docs/proposals/profession-clan-mechanics.md`; the words are Narrative's (`docs/proposals/specialisation-texts.md`).
 - Each profession's core (`lib/combat/profession_cores.dart`) is bent by its three main clans.
@@ -152,6 +152,18 @@ The words are Narrative's (`docs/proposals/specialisation-texts-2.md` §1). The 
 
 **Changed from Narrative's text:** Second Broadside plays itself, with no button: "Once a fight, a face that would not strike goes back to the bottom of the run, and you draw again."
 
+## Step 3b: the rivals' hunters
+
+Sworn to a clan, its rivals may send hunters onto the roads (`lib/data/rival_hunters.dart`):
+- **4%** a road at rest for each rival you stand Hostile with, **8%** for each that hunts you, up to **15%** (the alignment hunters' cap).
+- They share the alignment hunters' cooldown (5 roads) and their settings toggle, so a road holds one ambush at most.
+- **The fighters:** each clan has a line fighter (tier 1, from chapter 2) and a captain (tier 2, from chapter 3), in `enemies.json` (`hunterClan`, `hunterTier`).
+  - **Vigil, Compact, Mire:** Narrative's six (`docs/proposals/rival-hunters.md`), with their battle cries. They are hunters only (`hunterOnly`), never an ordinary draw.
+  - **Dominion, Crows, Penitents:** fighters already on the roads (the Inquisition Soldier and High Warden; the Smuggler Captain and Brine Jack; the Masked and Inquisition Penitents). They have no cry yet, so they use a generic line.
+- **The ambush:** "{name} bars the road. {cry}", with the reason "{clan}: your oath to {sworn} is not forgiven." Narrative may reword it (the words are in `rival_hunters.dart`).
+- **In the simulator** (`RIVALS_RUNS=100 flutter test test/rival_hunters_test.dart`, four strategies): 0.96 rival hunters a run, in 55 of 100 runs, beside 1.83 alignment hunters a run.
+- **Not in this step:** sparing or talking a hunter down (Narrative's suggestion for the Vigil and Compact hunters). They fight.
+
 ## Not yet
 
-- The rivals' hunters on the roads (step 3b, v1.377.0). Narrative's fighters are on main.
+- Sparing or talking down a rival's hunter (Narrative's suggestion for the Vigil and Compact hunters).

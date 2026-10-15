@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.377.0+413]
+
+Sworn to a clan, its rivals send hunters after you (v5.2, step 3b).
+
+- **Rival hunters on the roads.** While you are sworn to a clan, each of its rivals you stand Hostile with may ambush you on a road at rest (4% a road), and each that hunts you more often (8%), up to 15%. They share the alignment hunters' breather and their settings switch, so a road never holds two ambushes.
+- **Six new fighters**, a line fighter and a captain for the Grey Vigil, the Cinder Compact and the Mire Courts, in Narrative's words, each with a battle cry: Halvard and Ysel, Brodin Stonehand and Tove the Unheard, Sedge and Wen. They are met only as hunters. The Dominion, the Crows and the Penitents send fighters already on the roads.
+- **The ambush says who sent them and why:** "your oath to the Lantern Dominion is not forgiven".
+- **In the simulator:** about one rival hunter a run, in half the runs, beside about two alignment hunters. Report: docs/simulation/specialisations.md.
+
 ## [1.373.0+409]
 
 The clans with a weaker tie to your profession now offer a smaller twist of their own (v5.2, step 3c).
