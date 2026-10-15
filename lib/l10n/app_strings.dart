@@ -1084,6 +1084,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Une rencontre en chemin. Le récit reprend là où vous alliez une fois ceci réglé.',
   },
+  'detour_leave_it': {
+    AppLanguage.en: 'Leave it and go on',
+    AppLanguage.fr: 'Passer son chemin',
+  },
+  'detour_takes_watch': {
+    AppLanguage.en: 'The detour takes a watch of the day.',
+    AppLanguage.fr: 'Le détour prend une veille de la journée.',
+  },
   'choice_fight_roster': {
     AppLanguage.en: 'Fight: {roster}',
     AppLanguage.fr: 'Combat : {roster}',

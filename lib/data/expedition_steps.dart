@@ -231,7 +231,9 @@ List<String> writtenFoes(
 
 /// [step] as the expedition plays it: a node with its choices, and what
 /// each choice costs the road (its notes, and for an escort or a delivery
-/// its load and days). Foes [enemies] doesn't know are dropped.
+/// its load and days). Foes [enemies] doesn't know are dropped. A
+/// discovery's first way also finds [discoveryGold] (a detour's cache, see
+/// detour_scenes.dart).
 ExpeditionStep buildWrittenStep(
   WrittenStep step, {
   required String zoneId,
@@ -239,6 +241,7 @@ ExpeditionStep buildWrittenStep(
   required Random random,
   Map<String, dynamic> enemies = const {},
   Map<String, int> rewardMaterials = const {},
+  int discoveryGold = 0,
 }) {
   final dc = SubNodeEngine.detourCheckDc(chapter);
   final heal = SubNodeEngine.restHealFor(chapter);
@@ -259,7 +262,9 @@ ExpeditionStep buildWrittenStep(
   for (final (i, choice) in choices.indexed) {
     final foes = writtenFoes(choice.fight, enemies: enemies, chapter: chapter);
     final first = i == 0;
-    final gold = (choice.outcome?.gold ?? 0) + (choice.success?.gold ?? 0);
+    final gold = (choice.outcome?.gold ?? 0) +
+        (choice.success?.gold ?? 0) +
+        (step.type == 'discovery' && first ? discoveryGold : 0);
     nodes.add(StoryChoice(
       text: choice.text,
       textFr: choice.textFr.isEmpty ? null : choice.textFr,

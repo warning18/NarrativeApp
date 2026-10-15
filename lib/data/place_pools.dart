@@ -159,6 +159,7 @@ class PlacePools {
 
     final shop = kind('shop', fallback.shop, fallback.shopFr);
     final enemy = kind('enemy', fallback.enemy, fallback.enemyFr);
+    final enemyOfPlace = !identical(enemy.$1, fallback.enemy);
     final quest = kind('quest', fallback.quest, fallback.questFr);
     final treasure = kind('treasure', fallback.treasure, fallback.treasureFr);
     final rest = kind('rest', fallback.rest, fallback.restFr);
@@ -176,6 +177,7 @@ class PlacePools {
       restFr: rest.$2,
       generic: generic.$1,
       genericFr: generic.$2,
+      enemyOfPlace: enemyOfPlace,
     );
   }
 }

@@ -17,7 +17,15 @@ import '../combat/spells.dart';
 import '../data/autoplay_engine.dart';
 import '../data/camp_works.dart';
 import '../data/chapter_loop.dart';
+import '../data/alignment_events.dart'
+    show hunterCooldownRolls, isHunterAmbushChain, maybeAlignmentEvent;
 import '../data/chapter_spine.dart';
+import '../data/detour_pacing.dart';
+import '../data/detour_scenes.dart';
+import '../data/journey_rules.dart' show walkWatches;
+import '../data/recurring_encounters.dart'
+    show markerFor, recurringBeatsOpen, recurringChance;
+import '../data/camp_state.dart' show landingPortIdFor;
 import '../data/factions.dart';
 import '../data/expedition_steps.dart';
 import '../data/perks.dart';
@@ -205,9 +213,18 @@ class _SimResult {
     this.questsStuck = const {},
     this.arrivals = const {},
     this.housesBuilt = const {},
+    this.roads = const [],
+    this.transcript = const [],
   });
 
   final List<_SimStep> steps;
+
+  /// What each road of the run held (see detour_pacing.dart), in order.
+  final List<SimRoad> roads;
+
+  /// The run told step by step, when asked for (see simulatePlaythroughs'
+  /// `transcripts`).
+  final List<String> transcript;
 
   /// The camp's works the run built: house id -> the chapter it went up in
   /// (see buildHouses).
@@ -308,7 +325,16 @@ class _SimContext {
     this.landEvents = const {},
     this.houses = const {},
     this.writtenSteps = const {},
+    this.detourScenes = const {},
+    this.ports = const {},
   });
+
+  /// detour_scenes.json: the detours' written scenes (detour_scenes.dart).
+  final Map<String, DetourScene> detourScenes;
+
+  /// ports.json: which places the camp's trips sail to (no road, no
+  /// detour) rather than walk.
+  final Map<String, dynamic> ports;
 
   /// expedition_steps.json: each zone's written road (see
   /// expedition_steps.dart), walked step by step instead of drawn events.
@@ -408,6 +434,8 @@ _SimResult _simulate(
   String? forceRaceId,
   String? forceProfessionId,
   SimCoverage? coverage,
+  int detourSalt = 0,
+  bool transcribe = false,
 }) {
   final choicesTaken = <String>[];
   final takenHere = <String, int>{};
@@ -495,6 +523,123 @@ _SimResult _simulate(
   String? tourPlaceId;
   var tourBudget = 0;
 
+  // The roads (v1.355, detour_pacing.dart): the pacing, the hunters'
+  // cooldown, the familiar faces met (their markers, kept apart from the
+  // story's flags: the walk doesn't play them), and what each road held.
+  // Their dice are the road's own (detourRandomFor, salted per run), never
+  // the walk's, so the rest of the run draws as it did.
+  var pacing = const DetourPacing();
+  var rollsSinceAmbush = hunterCooldownRolls;
+  final metOnRoads = <String>{};
+  final roads = <SimRoad>[];
+  // The transcript's notes (party, standing, flags), by the step they
+  // come before.
+  final notes = <int, List<String>>{};
+  void note(String line) {
+    if (transcribe) notes.putIfAbsent(steps.length, () => []).add(line);
+  }
+
+  /// What the road from [fromId] to [toId] holds, by the game's rules
+  /// (see startRoadEncounter): recorded, not played (the walk passes a
+  /// detour by, as it always has; its scene and its foe are in the
+  /// transcript). [travels]: a walk between places whatever the scenes
+  /// say (the camp's trips); [taken]: a road event holds it.
+  void roadTurn(String fromId, String toId,
+      {bool travels = false, bool taken = false}) {
+    final geo = sim?.geography;
+    final chapter = lastKnownChapter;
+    if (geo == null || chapter == null) return;
+    final road = detourRoadBetween(story, geo,
+        fromNodeId: fromId,
+        toNodeId: toId,
+        chapter: chapter,
+        travels: travels,
+        watches: travels
+            ? geo.watchesToNode(story.nodeFor(toId), fallback: walkWatches)
+            : 1);
+    if (road == null) return;
+    final dice = detourRandomFor(
+        fromNodeId: fromId,
+        toNodeId: toId,
+        historyLength: steps.length,
+        salt: detourSalt);
+    final side = detourRandomFor(
+        fromNodeId: fromId,
+        toNodeId: toId,
+        historyLength: steps.length,
+        salt: detourSalt + 7919);
+    var hunter = '';
+    if (!taken && road.atRest && chapter >= SubNodeEngine.firstDetourChapter) {
+      final event = maybeAlignmentEvent(
+        alignmentScore: alignment,
+        activeQuestIds: const [],
+        completedQuestIds: const [],
+        enemies: enemies,
+        chapter: chapter,
+        random: side,
+        rollsSinceAmbush: rollsSinceAmbush,
+      );
+      final ambush = event != null && isHunterAmbushChain(event);
+      rollsSinceAmbush =
+          ambush ? 0 : min(hunterCooldownRolls, rollsSinceAmbush + 1);
+      if (event != null) hunter = ambush ? 'hunter' : 'temptation';
+    }
+    var familiar = '';
+    final turn = planRoad(
+      pacing: pacing,
+      road: road,
+      scenes: sim?.detourScenes ?? const {},
+      flags: flags,
+      random: dice,
+      taken: taken || hunter.isNotEmpty,
+      familiar: () {
+        final open = recurringBeatsOpen(
+            flags: {...flags, ...metOnRoads}, chapter: chapter);
+        if (open.isEmpty || side.nextDouble() >= recurringChance) return false;
+        final pick = open[side.nextInt(open.length)];
+        metOnRoads.add(markerFor(pick.who, pick.stage));
+        familiar = '${pick.who} ${pick.stage}';
+        return true;
+      },
+    );
+    pacing = turn.next;
+    final kind = switch (turn.kind) {
+      RoadTurnKind.quiet => 'quiet',
+      RoadTurnKind.owed => 'owed',
+      RoadTurnKind.taken => taken ? 'road_event' : hunter,
+      RoadTurnKind.familiar => 'familiar',
+      RoadTurnKind.detour => turn.scene == null ? 'chain' : 'scene',
+    };
+    roads.add((
+      chapter: chapter,
+      from: fromId,
+      to: toId,
+      streets: road.kind == DetourRoadKind.streets,
+      atRest: road.atRest,
+      kind: kind,
+      sceneId: turn.scene?.id,
+      landmark: turn.landmark,
+      paysOwed: turn.paysOwed,
+    ));
+    if (kind == 'quiet') return;
+    final what = switch (kind) {
+      'scene' =>
+        '${french ? 'Détour' : 'Detour'}: ${turn.scene!.titleFor(french)}'
+            '${turn.landmark ? ' (landmark)' : ''}',
+      'chain' => french ? 'Détour (au hasard)' : 'Detour (drawn)',
+      'familiar' => '${french ? 'Visage connu' : 'Familiar face'}: $familiar',
+      'owed' => french ? 'Détour dû (crise)' : 'Detour owed (a crisis)',
+      _ => kind,
+    };
+    steps.add(_SimStep(
+      nodeId: 'road:$kind${turn.scene == null ? '' : ':${turn.scene!.id}'}',
+      chapter: chapter,
+      mood: null,
+      uiTheme: null,
+      description: '$what${turn.paysOwed ? ' (owed)' : ''}',
+    ));
+  }
+
   _SimResult finish(
       {required String endingText, required bool reachedStepCap}) {
     return _SimResult(
@@ -530,6 +675,19 @@ _SimResult _simulate(
       questsStuck: questLog?.unmet(flags) ?? const {},
       arrivals: Map.unmodifiable(arrivals),
       housesBuilt: Map.unmodifiable(housesBuilt),
+      roads: List.unmodifiable(roads),
+      transcript: transcribe
+          ? [
+              for (final (i, step) in steps.indexed) ...[
+                ...?notes[i],
+                '[ch ${step.chapter ?? 0}] ${step.nodeId}'
+                    '${step.choiceText == null ? '' : ' · ${step.choiceText}'}'
+                    '${step.enemyId == null ? '' : ' · fight ${step.enemyId}: ${step.fightWon == true ? 'won' : step.fightWon == false ? 'lost' : '-'}'}'
+                    '${step.nodeId.startsWith('road:') ? ' · ${step.description}' : ''}',
+              ],
+              ...?notes[steps.length],
+            ]
+          : const [],
     );
   }
 
@@ -841,14 +999,13 @@ _SimResult _simulate(
   /// [at] steps into the walk, met where the game would meet it (see
   /// roadEventFor): pushed through above half health (the character
   /// wounded, never to death), waited out below. The road's other events
-  /// the walk passes by, as it does detours.
-  void roadHazard(String fromNodeId, String toNodeId, int at) {
+  /// the walk passes by (true: the road holds one, and no detour).
+  bool roadHazard(String fromNodeId, String toNodeId, int at) {
     final geography = sim?.geography;
     final chapter = lastKnownChapter;
-    if (geography == null || chapter == null) return;
+    if (geography == null || chapter == null) return false;
     final biome = geography.roadBiome(story, fromNodeId, toNodeId);
     final share = hazardShareFor(biome);
-    if (share == 0) return;
     final kind = roadEventFor(
       story: story,
       fromNodeId: fromNodeId,
@@ -858,7 +1015,7 @@ _SimResult _simulate(
       hazardShare: share,
       world: geography,
     );
-    if (kind != RoadEventKind.hazard) return;
+    if (kind != RoadEventKind.hazard) return kind != null;
     final hazard = roadHazardFor(biome,
         fromNodeId: fromNodeId, toNodeId: toNodeId, historyLength: at)!;
     final c = character;
@@ -880,6 +1037,7 @@ _SimResult _simulate(
           ? (french ? 'Forcer le passage' : 'Push on')
           : (french ? 'Attendre' : 'Wait it out'),
     ));
+    return true;
   }
 
   /// The camp's works, built as a player keen on them would: once the camp
@@ -1115,7 +1273,15 @@ _SimResult _simulate(
 
   // A new character's starting points (offers, or skill points).
   settle();
+  var flagsSeen = <String>{};
   for (var step = 0; step < maxSteps; step++) {
+    if (transcribe) {
+      final gained = flags.difference(flagsSeen);
+      if (gained.isNotEmpty) {
+        note('   flags +${(gained.toList()..sort()).join(', +')}');
+      }
+      flagsSeen = {...flags};
+    }
     final node = story.nodeFor(currentId);
     if (node == null) {
       steps.add(_SimStep(
@@ -1150,6 +1316,20 @@ _SimResult _simulate(
         growth?.chapterReached(reached);
         settle();
         buildHouses();
+        if (transcribe) {
+          final standings = growth?.politics.standings ?? const {};
+          note('== Chapter $reached: level ${character.level}, '
+              '${character.currentHealth}/${character.maxHealth} HP, '
+              '$gold gold, alone (the walk keeps no companions)');
+          if (standings.isNotEmpty) {
+            note('   standing: ${[
+              for (final e
+                  in standings.entries.toList()
+                    ..sort((a, b) => a.key.compareTo(b.key)))
+                '${e.key} ${e.value.toStringAsFixed(0)}',
+            ].join(', ')}');
+          }
+        }
       }
     }
 
@@ -1211,7 +1391,13 @@ _SimResult _simulate(
           description: node.descriptionFor(french),
           choiceText: french ? 'Aller à : $name' : 'Go to $name',
         ));
-        currentId = arrivalNodeFor(next, visited);
+        final arrival = arrivalNodeFor(next, visited);
+        // On foot, a road (D2: the camp's trips roll as the story's do);
+        // by sea, a voyage with nothing on the road.
+        if (landingPortIdFor(next.settlement, sim?.ports ?? const {}) == null) {
+          roadTurn(currentId, arrival, travels: true);
+        }
+        currentId = arrival;
         visited.add(currentId);
         continue;
       }
@@ -1252,6 +1438,9 @@ _SimResult _simulate(
           choiceText: french ? 'Retour au camp' : 'Back to the camp',
         ));
         tourPlaceId = null;
+        if (landingPortIdFor(node.settlement, sim?.ports ?? const {}) == null) {
+          roadTurn(currentId, campId!, travels: true);
+        }
         // A tour only ever starts from a camp.
         currentId = campId!;
         visited.add(currentId);
@@ -1446,7 +1635,13 @@ _SimResult _simulate(
       }
     }
     // What waits on the road there (v1.197).
-    if (!choice.isEnding) roadHazard(currentId, choice.nextId, step);
+    if (!choice.isEnding) {
+      final event = roadHazard(currentId, choice.nextId, step);
+      if (!choice.opensCharacterCreation) {
+        roadTurn(currentId, choice.nextId,
+            travels: choice.travels, taken: event);
+      }
+    }
     if (choice.triggersCombat) combatCount++;
     // An expedition the choice launches (a zone to clear before the story
     // goes on) is played out before it does.
@@ -1564,8 +1759,28 @@ _SimContext _simContextOf(
     landRoutes: table('land_routes'),
     landEvents: landEventsFrom(table('land_events')),
     houses: table('houses'),
+    detourScenes: detourScenesFrom(table('detour_scenes')),
+    ports: table('ports'),
   );
 }
+
+/// What one road of a simulated run held (see detour_pacing.dart): its
+/// chapter, its ends, whether it ran between a city's districts and was at
+/// rest (neither a crisis nor a set piece), and
+/// [kind]: 'quiet', 'owed' (a crisis), 'road_event', 'hunter',
+/// 'temptation', 'familiar', 'scene' (a written detour, [sceneId]) or
+/// 'chain' (today's drawn detour).
+typedef SimRoad = ({
+  int chapter,
+  String from,
+  String to,
+  bool streets,
+  bool atRest,
+  String kind,
+  String? sceneId,
+  bool landmark,
+  bool paysOwed,
+});
 
 /// What one simulated playthrough came to (see [simulatePlaythroughs]).
 typedef SimRunSummary = ({
@@ -1607,6 +1822,8 @@ typedef SimRunSummary = ({
   int checksFailed,
   List<SimQuestRecord> questRecords,
   Map<String, List<String>> questsStuck,
+  List<SimRoad> roads,
+  List<String> transcript,
 });
 
 /// Full playthroughs, one per entry of [plan] (a strategy and, optionally,
@@ -1624,6 +1841,7 @@ List<SimRunSummary> simulatePlaythroughs(
   int maxSteps = 1500,
   SimCoverage? coverage,
   Set<String> clashOff = const {},
+  bool transcripts = false,
 }) {
   final sim = _simContextOf(tables, gameConfig, clashOff: clashOff);
   final enemies = tables['enemies'] ?? const {};
@@ -1637,7 +1855,9 @@ List<SimRunSummary> simulatePlaythroughs(
         sim: sim,
         forceRaceId: plan[i].raceId,
         forceProfessionId: plan[i].professionId,
-        coverage: coverage);
+        coverage: coverage,
+        detourSalt: seed * 100003 + i,
+        transcribe: transcripts);
     final byChapter = <String, ({int attempts, int won, int fights})>{};
     final fought = <String, int>{};
     final lost = <String, int>{};
@@ -1715,6 +1935,8 @@ List<SimRunSummary> simulatePlaythroughs(
       checksFailed: result.checksFailed,
       questRecords: result.questRecords,
       questsStuck: result.questsStuck,
+      roads: result.roads,
+      transcript: result.transcript,
     ));
   }
   return out;

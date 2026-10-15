@@ -3646,6 +3646,17 @@ final DbSchema expeditionStepsSchema = DbSchema(
   fields: [],
 );
 
+/// The detours' scenes (detour_scenes.dart): a scene's beats by scene id.
+/// Narrative's file, and optional: missing, every detour is today's chain.
+/// Not one of [gameDbSchemas]: a scene holds beats, not fields.
+final DbSchema detourScenesSchema = DbSchema(
+  id: 'detour_scenes',
+  label: 'Detour Scenes',
+  assetPath: 'assets/gamedata/detour_scenes.json',
+  primaryKeyField: 'id',
+  fields: [],
+);
+
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
   itemSetsSchema,

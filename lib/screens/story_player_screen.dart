@@ -13,9 +13,10 @@ import '../data/alignment_events.dart';
 import '../data/approval.dart';
 import '../data/ally_acknowledgments.dart';
 import '../data/chapter_conditions.dart';
-import '../data/chapter_spine.dart';
 import '../data/check_outcomes.dart';
 import '../data/companion_remarks.dart';
+import '../data/detour_pacing.dart';
+import '../data/detour_scenes.dart';
 import '../data/echoes.dart';
 import '../data/item_origin_here.dart';
 import '../data/journey_rules.dart';
@@ -1221,6 +1222,17 @@ Future<void> _selectChoice({
   ref.read(pendingPreludeProvider.notifier).state = const [];
   ref.read(pendingRoadNoteProvider.notifier).state = null;
   ref.read(pendingRemarksProvider.notifier).state = const [];
+  // A written detour backed away from at its first beat: the road goes on,
+  // nothing spent (see detour_scenes.dart).
+  if (isExcursion && choice.nextId == detourLeaveNextId) {
+    ref.read(storyPlayProvider.notifier).leaveExcursion();
+    await _readThrough(ref, story);
+    return;
+  }
+  // The beat of a written detour the choice is taken on, and how its roll
+  // went, for the note it leaves (see _noteDetourBeat).
+  final detourNodeId = ref.read(storyPlayProvider).activeExcursionNode?.id;
+  bool? checkPassed;
   var skipRewardEffects = false;
   // What the choice showed of the player, for the party to remark on.
   RemarkKind? shown;
@@ -1270,6 +1282,7 @@ Future<void> _selectChoice({
       if (!context.mounted) return;
       success = result.success;
     }
+    checkPassed = success;
     if (success && choice.avoidFightOnSuccess) fightAvoided = true;
     // A check with no scene of its own to tell it is told in a sentence.
     if (checkOutcomeNeedsTelling(
@@ -1577,6 +1590,8 @@ Future<void> _selectChoice({
   }
 
   if (isExcursion) {
+    await _noteDetourBeat(ref, detourNodeId, choice,
+        passed: checkPassed, french: french);
     playNotifier.advanceExcursion(slippedPast: fightAvoided);
     // Back on the story's road: a plain scene there is read through too.
     if (!ref.read(storyPlayProvider).isInExcursion) {
@@ -1605,16 +1620,17 @@ Future<void> _selectChoice({
   // Geography.travelsBetween).
   final historyBefore = ref.read(storyPlayProvider).history.length;
   final world = await loadGeography(ref);
-  if (!choice.opensCharacterCreation &&
+  final walks = !choice.opensCharacterCreation &&
       (choice.travels ||
-          world.travelsBetween(story, currentNodeId, choice.nextId))) {
-    // A walk between places takes the watches of where it goes (a far place
-    // can take a day, see GeoPlace.watches).
-    await walkRoadStep(ref,
-        watches: choice.travels
-            ? world.watchesToNode(story.nodeFor(choice.travelPlaceId ?? ''),
-                fallback: walkWatches)
-            : 1);
+          world.travelsBetween(story, currentNodeId, choice.nextId));
+  // A walk between places takes the watches of where it goes (a far place
+  // can take a day, see GeoPlace.watches).
+  final watches = choice.travels
+      ? world.watchesToNode(story.nodeFor(choice.travelPlaceId ?? ''),
+          fallback: walkWatches)
+      : 1;
+  if (walks) {
+    await walkRoadStep(ref, watches: watches);
     // What waits on this road (see road_events.dart), known before the
     // party set out, takes the place of a detour.
     final event = await roadEventOn(ref, story,
@@ -1623,50 +1639,32 @@ Future<void> _selectChoice({
         historyLength: historyBefore);
     if (!context.mounted) return;
     if (event != null) {
+      await startRoadEncounter(ref, story,
+          fromNodeId: currentNodeId,
+          toNodeId: choice.nextId,
+          historyLength: historyBefore,
+          travels: choice.travels,
+          watches: watches,
+          taken: true);
       playNotifier.startExcursion(event, choice.nextId,
           origin: choice.text, originFr: choice.textFr);
       return;
     }
   }
 
-  // A choice that loops back onto its own node (a shop visit at the docks
-  // hub, say) is a moment inside the same scene, not a step down the road
-  // -- no excursion or alignment event rolls for it.
-  // Chapter 1 is the flight from the city: its roads hold nothing, now or
-  // later (see SubNodeEngine.firstDetourChapter).
-  final spineChapter = chapterForNode(currentNodeId);
-  final chapter =
-      spineChapter != null && spineChapter >= SubNodeEngine.firstDetourChapter
-          ? spineChapter
-          : null;
-  final atRest = SubNodeEngine.detourAllowedBetweenScenes(
-    story.nodeFor(currentNodeId),
-    story.nodeFor(choice.nextId),
-    chapter: chapter ?? 0,
-  );
-  if (chapter != null &&
-      !choice.opensCharacterCreation &&
-      choice.nextId != currentNodeId &&
-      !atRest) {
-    // A crisis runs on from this scene into the next: whatever the road
-    // held waits until it is over.
-    if (ref.read(roadRandomProvider)().nextDouble() <
-        SubNodeEngine.detourChance) {
-      playNotifier.oweDetour();
-    }
-  }
-  if (chapter != null &&
-      !choice.opensCharacterCreation &&
-      choice.nextId != currentNodeId &&
-      atRest) {
-    final chain = await rollRoadEncounter(ref,
-        chapter: chapter, fromNodeId: currentNodeId);
+  // What else the road holds (see startRoadEncounter): a hunter, a
+  // familiar face or a detour, on a change of place at rest.
+  if (!choice.opensCharacterCreation) {
+    final started = await startRoadEncounter(ref, story,
+        fromNodeId: currentNodeId,
+        toNodeId: choice.nextId,
+        historyLength: historyBefore,
+        travels: choice.travels,
+        watches: walks ? watches : 1,
+        origin: choice.text,
+        originFr: choice.textFr);
     if (!context.mounted) return;
-    if (chain != null) {
-      playNotifier.startExcursion(chain, choice.nextId,
-          origin: choice.text, originFr: choice.textFr);
-      return;
-    }
+    if (started) return;
   }
   await _arriveAt(ref, story, choice.nextId);
 }
@@ -1683,6 +1681,38 @@ void noteShownEchoes(
   WidgetsBinding.instance.addPostFrameCallback((_) {
     ref.read(playerSessionProvider.notifier).noteEchoes(fresh);
   });
+}
+
+/// What [choice], taken on the beat [nodeId] of a written detour (see
+/// detour_scenes.dart), leaves for the next beat to open with: its note
+/// (and its roll's), in place of a roll's plain line. Going in past the
+/// first beat takes the scene's watches (a check or a fight in it: one),
+/// and says so. Nothing for a detour of today's chain.
+Future<void> _noteDetourBeat(WidgetRef ref, String? nodeId, StoryChoice choice,
+    {required bool? passed, required bool french}) async {
+  final play = ref.read(storyPlayProvider.notifier).scenePlay;
+  final outcomes = play?.outcomes[nodeId];
+  if (play == null || outcomes == null) return;
+  final index = play.nodes
+      .firstWhere((n) => n.id == nodeId)
+      .choices
+      .indexWhere((c) => identical(c, choice));
+  final note = index < 0 || index >= outcomes.length
+      ? ''
+      : detourOutcomeNote(outcomes[index], french: french, passed: passed);
+  final lines = [
+    if (note.isNotEmpty) note,
+    if (nodeId == play.firstNodeId && play.watches > 0)
+      tr(ref, 'detour_takes_watch'),
+  ];
+  if (nodeId == play.firstNodeId && play.watches > 0) {
+    await ref
+        .read(playerSessionProvider.notifier)
+        .passTime(play.watches, chapter: ref.read(reachedChapterProvider));
+  }
+  if (lines.isNotEmpty) {
+    ref.read(pendingCheckOutcomeProvider.notifier).state = lines.join(' ');
+  }
 }
 
 /// The road event waiting between [fromNodeId] and [toNodeId] (see
@@ -1844,72 +1874,135 @@ int storyChoiceIndex(StoryData story, String nodeId, StoryChoice choice) {
       c.textFr == choice.textFr);
 }
 
-/// What the road holds on the way on from [fromNodeId] in [chapter]: an
-/// alignment event first (a hunter's ambush for a Good or Evil character,
-/// a temptation for a Neutral one, see alignment_events.dart), else,
-/// sometimes, a detour (see SubNodeEngine); null when the road is quiet.
-/// A detour put off by a crisis is taken on the first road after it.
-/// Shared by the story's own roads and the trips between the camp and its
-/// places (see camp_travel.dart).
-Future<List<StoryNode>?> rollRoadEncounter(
-  WidgetRef ref, {
-  required int chapter,
+/// What the road from [fromNodeId] to [toNodeId] holds (see
+/// detour_pacing.dart), started as the excursion the story plays before
+/// arriving; true when one was. Only a change of place (D1: never between
+/// two scenes of one place) in the chapter the party has reached, at rest
+/// (a crisis owes its detour, a set piece holds nothing), in this order:
+/// an alignment event (a hunter's ambush for a Good or Evil character, a
+/// temptation for a Neutral one, see alignment_events.dart), the chapter's
+/// landmark when it is due, the cooldown, an owed detour, a familiar face
+/// (see recurring_encounters.dart), then a detour by the pity timer: a
+/// written scene that fits the road (detour_scenes.dart), else today's
+/// chain (SubNodeEngine), with the lines of where the road leads.
+/// [taken]: a road event holds the road (the caller starts it); only the
+/// pacing notes it. The road's dice are its own (see detourRandomFor):
+/// chosen the same way, it holds the same. Shared by the story's own
+/// roads and the trips between the camp and its places (see
+/// camp_travel.dart). Edit Mode's roads hold nothing.
+Future<bool> startRoadEncounter(
+  WidgetRef ref,
+  StoryData story, {
   required String fromNodeId,
+  required String toNodeId,
+  required int historyLength,
+  bool travels = false,
+  int watches = 1,
+  bool taken = false,
+  String? origin,
+  String? originFr,
 }) async {
-  final story = await ref.read(storyDataProvider.future);
-  final shops = await loadedGameDb(ref, shopsSchema);
+  if (ref.read(appModeProvider) == AppMode.edit) return false;
+  final chapter = ref.read(reachedChapterProvider);
+  final geo = await loadGeography(ref);
+  final road = detourRoadBetween(story, geo,
+      fromNodeId: fromNodeId,
+      toNodeId: toNodeId,
+      chapter: chapter,
+      travels: travels,
+      watches: watches);
+  if (road == null) return false;
+  final scenes = await loadDetourScenes(ref);
   final enemies = await loadedGameDb(ref, enemiesSchema);
-  final quests = await loadedGameDb(ref, questsSchema);
   final session = ref.read(playerSessionProvider);
+  final sessionNotifier = ref.read(playerSessionProvider.notifier);
   final playNotifier = ref.read(storyPlayProvider.notifier);
   final dice = ref.read(roadRandomProvider);
-  final forcedTheme = ref.read(mapThemeProvider);
-  final fromNode = story.nodeFor(fromNodeId);
-  final resolvedTheme = forcedTheme ?? mapThemeForUiTheme(fromNode?.uiTheme);
-  // The hunters setting's saved value, not its default: a party that turned
-  // them off meets none on the first road after a cold start.
-  await ref.read(alignmentHuntersEnabledProvider.notifier).loaded;
-  final alignmentEvent = maybeAlignmentEvent(
-    alignmentScore: session.alignmentScore,
-    activeQuestIds: session.activeQuestIds,
-    completedQuestIds: session.completedQuestIds,
-    enemies: enemies,
-    chapter: chapter,
-    random: dice(),
-    enabled: ref.read(alignmentHuntersEnabledProvider),
-    rollsSinceAmbush: session.alignmentRollsSinceAmbush,
-  );
-  await ref.read(playerSessionProvider.notifier).noteAlignmentRoll(
-      ambushed: alignmentEvent != null && isHunterAmbushChain(alignmentEvent));
-  if (alignmentEvent != null) return alignmentEvent;
-  // Now and then, someone met on an earlier road (see
-  // recurring_encounters.dart).
-  final familiar = maybeRecurringEncounter(
+  // An alignment event, on a road at rest from chapter 2 on. The hunters
+  // setting's saved value, not its default: a party that turned them off
+  // meets none on the first road after a cold start.
+  List<StoryNode>? alignmentEvent;
+  if (!taken && road.atRest && chapter >= SubNodeEngine.firstDetourChapter) {
+    await ref.read(alignmentHuntersEnabledProvider.notifier).loaded;
+    alignmentEvent = maybeAlignmentEvent(
+      alignmentScore: session.alignmentScore,
+      activeQuestIds: session.activeQuestIds,
+      completedQuestIds: session.completedQuestIds,
+      enemies: enemies,
+      chapter: chapter,
+      random: dice(),
+      enabled: ref.read(alignmentHuntersEnabledProvider),
+      rollsSinceAmbush: session.alignmentRollsSinceAmbush,
+    );
+    await sessionNotifier.noteAlignmentRoll(
+        ambushed:
+            alignmentEvent != null && isHunterAmbushChain(alignmentEvent));
+  }
+  // Someone met on an earlier road, when one may come.
+  List<StoryNode>? familiarFace;
+  final turn = planRoad(
+    pacing: session.detourPacing,
+    road: road,
+    scenes: scenes,
     flags: session.flags.toSet(),
-    chapter: chapter,
-    random: dice(),
-    enemyPool: SubNodeEngine.filterEnemyPool(
-        enemies: enemies, unlockedEnemyIds: const [], chapter: chapter),
+    random: detourRandomFor(
+        fromNodeId: fromNodeId,
+        toNodeId: toNodeId,
+        historyLength: historyLength,
+        salt: session.runSeed),
+    taken: taken || alignmentEvent != null,
+    familiar: () {
+      familiarFace = maybeRecurringEncounter(
+        flags: session.flags.toSet(),
+        chapter: chapter,
+        random: dice(),
+        enemyPool: SubNodeEngine.filterEnemyPool(
+            enemies: enemies, unlockedEnemyIds: const [], chapter: chapter),
+      );
+      return familiarFace != null;
+    },
   );
-  if (familiar != null) return familiar;
-  // The lines of the place the road leaves from (place_pools.dart), unless
-  // a theme is forced (Edit Mode's).
-  final geo = await loadGeography(ref);
+  await sessionNotifier.setDetourPacing(turn.next);
+  if (taken) return false;
+  void start(List<StoryNode> chain) => playNotifier
+      .startExcursion(chain, toNodeId, origin: origin, originFr: originFr);
+  switch (turn.kind) {
+    case RoadTurnKind.quiet:
+    case RoadTurnKind.owed:
+      return false;
+    case RoadTurnKind.taken:
+      if (alignmentEvent == null) return false;
+      start(alignmentEvent);
+      return true;
+    case RoadTurnKind.familiar:
+      if (familiarFace == null) return false;
+      start(familiarFace!);
+      return true;
+    case RoadTurnKind.detour:
+      break;
+  }
+  final scene = turn.scene;
+  if (scene != null) {
+    final play = buildDetourScene(scene,
+        chapter: chapter, random: dice(), enemies: enemies);
+    playNotifier.startScene(play, toNodeId, origin: origin, originFr: originFr);
+    return play.nodes.isNotEmpty;
+  }
+  // Today's chain, with the lines of where the road leads (the place it
+  // is set at is the road's, not the camp's), unless a theme is forced
+  // (Edit Mode's).
+  final shops = await loadedGameDb(ref, shopsSchema);
+  final quests = await loadedGameDb(ref, questsSchema);
   final pools = await loadPlacePools(ref);
-  final location = fromNode?.location;
-  final flavor = forcedTheme != null
-      ? null
-      : pools.flavorAt(
-          chain: placeChainOf(geo, location),
-          biomeId: placeBiomeOf(geo, location),
-          theme: resolvedTheme,
-          chapter: chapter,
-          mood: fromNode?.mood,
-        );
-  return SubNodeEngine.maybeGenerate(
+  final forcedTheme = ref.read(mapThemeProvider);
+  final toNode = story.nodeFor(toNodeId);
+  final resolvedTheme = forcedTheme ??
+      mapThemeForUiTheme(toNode?.uiTheme ?? story.nodeFor(fromNodeId)?.uiTheme);
+  final location =
+      geo.placeOfNode(toNode)?.id ?? story.nodeFor(fromNodeId)?.location;
+  final chain = SubNodeEngine.maybeGenerate(
     random: dice(),
-    triggerChance:
-        playNotifier.takeOwedDetour() ? 1.0 : SubNodeEngine.detourChance,
+    triggerChance: 1.0,
     chapter: chapter,
     shops: shops,
     enemies: enemies,
@@ -1919,10 +2012,21 @@ Future<List<StoryNode>?> rollRoadEncounter(
     unlockedQuestIds: session.unlockedQuestIds,
     completedQuestIds: session.completedQuestIds,
     theme: resolvedTheme,
-    flavor: flavor,
+    flavor: forcedTheme != null
+        ? null
+        : pools.flavorAt(
+            chain: placeChainOf(geo, location),
+            biomeId: road.biome ?? placeBiomeOf(geo, location),
+            theme: resolvedTheme,
+            chapter: chapter,
+            mood: toNode?.mood,
+          ),
     partySize: 1 + session.activeAllyIds.length,
     alignmentLabel: session.alignmentLabel,
   );
+  if (chain == null || chain.isEmpty) return false;
+  start(chain);
+  return true;
 }
 
 /// `@first_ally` among a choice's enemies is the first active companion,
