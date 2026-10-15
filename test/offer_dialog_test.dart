@@ -226,11 +226,39 @@ void main() {
         reason: 'nothing is taken before a banner is picked');
     final zone = tester.getSize(find.byKey(const Key('offer_detail_zone')));
 
+    await tester.ensureVisible(find.byKey(const Key('offer_suitor_compact')));
     await tester.tap(find.byKey(const Key('offer_suitor_compact')));
     await _settle(tester);
     expect(find.text('The Emberwives of the Cinder Compact'), findsOneWidget);
+    expect(find.byKey(const Key('offer_clan_block')), findsOneWidget,
+        reason: 'one block under the ring');
+    expect(find.byKey(const Key('offer_standing_chip')), findsOneWidget);
+    expect(find.byKey(const Key('offer_gift_icon_warrior_iron_stance')),
+        findsOneWidget,
+        reason: 'the gift sits in the clan block, with its icon');
+    // The gift on the left of the block, the radar on the right.
+    expect(
+        tester.getTopLeft(find.byKey(const Key('offer_gift_block_compact'))).dx,
+        lessThan(
+            tester.getTopLeft(find.byKey(const Key('clan_radar_compact'))).dx));
+    // The clan's words are behind a tap on its name, not in the popup.
+    expect(find.textContaining('broke every hammer in the Row'), findsNothing);
+    expect(find.byKey(const Key('offer_stands_compact')), findsNothing);
+    await tester.ensureVisible(find.byKey(const Key('offer_charter_open')));
+    await tester.tap(find.byKey(const Key('offer_charter_open')));
+    await _settle(tester);
     expect(find.textContaining('broke every hammer in the Row'), findsOneWidget,
         reason: 'the Compact\'s intro, the first time');
+    expect(
+        tester
+            .widget<Text>(find.byKey(const Key('offer_stands_compact')))
+            .textSpan!
+            .toPlainText(),
+        contains('Craft, restraint, blades by invitation'),
+        reason: 'what it stands for (Narrative\'s line)');
+    await tester.tapAt(const Offset(10, 10));
+    await _settle(tester);
+    expect(find.byKey(const Key('offer_charter_compact')), findsNothing);
     expect(tester.getSize(find.byKey(const Key('offer_banner_compact'))),
         const Size(88, 128));
     expect(tester.getSize(find.byKey(const Key('offer_banner_penitents'))),
@@ -248,18 +276,12 @@ void main() {
         reason: 'the alignment as a word');
     expect(find.byKey(const Key('clan_radar_compact')), findsOneWidget,
         reason: 'the clan\'s orientation, five axes');
-    expect(
-        tester
-            .widget<Text>(find.byKey(const Key('offer_stands_compact')))
-            .textSpan!
-            .toPlainText(),
-        contains('Craft, restraint, blades by invitation'),
-        reason: 'what it stands for (Narrative\'s line)');
     expect(find.byKey(const Key('offer_select_hint')), findsNothing);
     expect(tester.getSize(find.byKey(const Key('offer_detail_zone'))).width,
         zone.width);
     await _shot(tester, 'gift_compact');
     // Another row: its hall takes the same place.
+    await tester.ensureVisible(find.byKey(const Key('offer_suitor_penitents')));
     await tester.tap(find.byKey(const Key('offer_suitor_penitents')));
     await _settle(tester);
     expect(find.text('The Emberwives of the Cinder Compact'), findsNothing);
@@ -272,6 +294,7 @@ void main() {
     expect(find.text('Alignment · toward Good'), findsOneWidget);
     await _shot(tester, 'gift_penitents');
     // The Wayfarer moves no standing.
+    await tester.ensureVisible(find.byKey(const Key('offer_suitor_wayfarer')));
     await tester.tap(find.byKey(const Key('offer_suitor_wayfarer')));
     await _settle(tester);
     expect(find.text('The Wayfarer'), findsNWidgets(2),
@@ -282,6 +305,7 @@ void main() {
 
     // Nothing is taken before a suitor is chosen, and then confirmed.
     final take = find.byKey(const Key('offer_take_button'));
+    await tester.ensureVisible(find.byKey(const Key('offer_suitor_compact')));
     await tester.tap(find.byKey(const Key('offer_suitor_compact')));
     await tester.pump();
     await tester.ensureVisible(take);
@@ -345,6 +369,7 @@ void main() {
         find.text('Choisissez un clan ci-dessous pour voir sa bannière et son '
             'don.'),
         findsOneWidget);
+    await tester.ensureVisible(find.byKey(const Key('offer_suitor_compact')));
     await tester.tap(find.byKey(const Key('offer_suitor_compact')));
     await _settle(tester);
     expect(find.text('Les Charbonnières du Pacte des Cendres'), findsOneWidget);
@@ -360,11 +385,13 @@ void main() {
         findsOneWidget);
     expect(find.text('Alignement · inchangé'), findsOneWidget);
     await _shot(tester, 'gift_compact_fr');
+    await tester.ensureVisible(find.byKey(const Key('offer_suitor_penitents')));
     await tester.tap(find.byKey(const Key('offer_suitor_penitents')));
     await _settle(tester);
     expect(find.text('Les Sœurs de Braise des Pénitents de Cendre'),
         findsOneWidget);
     expect(find.text('Remplace\u00a0: Poings de braise'), findsOneWidget);
+    await tester.ensureVisible(find.byKey(const Key('offer_suitor_wayfarer')));
     await tester.tap(find.byKey(const Key('offer_suitor_wayfarer')));
     await _settle(tester);
     expect(find.text('Le Voyageur'), findsNWidgets(2));
@@ -375,6 +402,7 @@ void main() {
 
     await tester.ensureVisible(find.byKey(const Key('offer_suitor_wayfarer')));
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const Key('offer_suitor_wayfarer')));
     await tester.tap(find.byKey(const Key('offer_suitor_wayfarer')));
     await tester.pump();
     await tester.ensureVisible(find.byKey(const Key('offer_take_button')));
@@ -414,6 +442,7 @@ void main() {
   testWidgets('a tall phone shows the banners, compass and words together',
       (tester) async {
     await _open(tester, french: false, size: const Size(412, 900));
+    await tester.ensureVisible(find.byKey(const Key('offer_suitor_compact')));
     await tester.tap(find.byKey(const Key('offer_suitor_compact')));
     await _settle(tester);
     expect(find.byKey(const Key('clan_compass')), findsOneWidget);
