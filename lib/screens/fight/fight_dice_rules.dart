@@ -715,6 +715,7 @@ extension _FightDiceRules on _FightScreenState {
         hero.isEmpty ? const <Map<String, dynamic>>[] : hero.first.dieFaces;
     if (faces.isEmpty) return;
     final index = _core.deckFor(faces.length, _random).peek();
+    _core.aheadIndex = index;
     final assigned = hero.first.diceSkillAssignments['$index'];
     final name = assigned != null && assigned.isNotEmpty
         ? skillDisplayName(assigned, language: lang)

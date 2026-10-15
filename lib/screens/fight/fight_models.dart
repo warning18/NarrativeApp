@@ -449,6 +449,10 @@ class _FightLength {
   String? leaderKey;
   bool packBroken = false;
 
+  /// How many heals [memberId] has given this fight (for the fight screen's
+  /// fatigue mark; nothing is counted).
+  int healsBy(String memberId) => _heals[memberId] ?? 0;
+
   /// [amount] as [memberId]'s next heal heals it, counted.
   int fatigued(String memberId, int amount) {
     if (amount <= 0) return amount;
@@ -466,6 +470,11 @@ class _HeroCore {
   final ProfessionCore core;
   int fury = 0;
   int fire = 0;
+
+  /// The face index the Trail deals next, as the fight last peeked at it
+  /// (for the fight screen: it never peeks itself, which would deal the
+  /// deck early).
+  int? aheadIndex;
   TrailDeck? _deck;
 
   /// The Trail's deck for a die of [faceCount] faces (dealt anew if the
