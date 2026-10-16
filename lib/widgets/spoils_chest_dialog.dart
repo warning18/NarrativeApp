@@ -34,6 +34,7 @@ Future<SpoilsChoices> showSpoilsChestDialog(
   required Map<String, dynamic> items,
   required bool autoOpen,
   required AppLanguage language,
+  bool autoPlay = false,
   List<String> equippedItemIds = const [],
   bool Function(String itemId)? canEquip,
   int currentHealth = 0,
@@ -46,6 +47,7 @@ Future<SpoilsChoices> showSpoilsChestDialog(
       result: result,
       items: items,
       autoOpen: autoOpen,
+      autoPlay: autoPlay,
       language: language,
       equippedItemIds: equippedItemIds,
       canEquip: canEquip,
@@ -74,6 +76,7 @@ class SpoilsChestDialog extends StatefulWidget {
     required this.items,
     required this.autoOpen,
     required this.language,
+    this.autoPlay = false,
     this.equippedItemIds = const [],
     this.canEquip,
     this.currentHealth = 0,
@@ -84,6 +87,11 @@ class SpoilsChestDialog extends StatefulWidget {
   final Map<String, dynamic> items;
   final bool autoOpen;
   final AppLanguage language;
+
+  /// Whether the chest opens by itself, its animation played once, and
+  /// shows every drop (a won fight's, v1.410: the fight closes on its own
+  /// once the spoils are taken).
+  final bool autoPlay;
 
   /// What the player wears now, to compare each drop against.
   final List<String> equippedItemIds;
@@ -152,6 +160,10 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
       _opened = true;
       _tierShown = true;
       _revealed.addAll(List.generate(_slotCount, (i) => i));
+    } else if (widget.autoPlay) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _open();
+      });
     }
   }
 
@@ -220,6 +232,9 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
       _opened = true;
       _opening = false;
       _bursting = !reduced;
+      if (widget.autoPlay) {
+        _revealed.addAll(List.generate(_slotCount, (i) => i));
+      }
     });
   }
 
