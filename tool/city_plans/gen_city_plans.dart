@@ -531,16 +531,52 @@ void main() {
     // Each seated way's building takes Narrative's name; names already in
     // the file (Narrative's own edits) stay over them.
     final anchors = record['anchors'] as Map<String, String>;
+    final lots = _joinBuildings(story, geo, anchors);
     record['names'] = {
       for (final ways in _seating.values)
         for (final (scene, en, fr) in ways)
           if (anchors[scene] case final b?) b: {'en': en, 'fr': fr},
       ...?((old[city] as Map?)?['names'] as Map?),
-    };
+      // A building of the geography is named on its lot as it is there.
+      ...lots.named,
+    }..removeWhere((b, _) => lots.freed.contains(b));
     out[city] = record;
   }
   file.writeAsStringSync(_encode(out));
   stdout.writeln('wrote $_out');
+}
+
+/// The scenes inside one building of the geography (a story `location` of
+/// level `building`: the Blind Beggar, the family house) stand on one lot,
+/// the first of them's in the story's order (the scene-or-map rule,
+/// docs/proposals/scene-vs-map-flow.md: a building is one stop). Moves
+/// [anchors] in place, after the plan is laid out, so no other scene's lot
+/// changes; gives the lots taken the building's names, and the lots left
+/// with no scene (`freed`) lose the names they had.
+({Map<String, Object> named, Set<String> freed}) _joinBuildings(
+    Map<String, dynamic> story,
+    Map<String, dynamic> geo,
+    Map<String, String> anchors) {
+  final lotOf = <String, String>{};
+  final named = <String, Object>{};
+  final freed = <String>{};
+  for (final MapEntry(:key, :value) in story.entries) {
+    if (value is! Map) continue;
+    final at = value['location']?.toString() ?? '';
+    final place = geo[at];
+    if (place is! Map || place['level'] != 'building') continue;
+    final lot = anchors[key];
+    if (lot == null) continue;
+    final first = lotOf.putIfAbsent(at, () => lot);
+    final name = place['name']?.toString() ?? at;
+    named[first] = {'en': name, 'fr': place['name_fr']?.toString() ?? name};
+    if (first != lot) {
+      freed.add(lot);
+      anchors[key] = first;
+    }
+  }
+  freed.removeAll(anchors.values);
+  return (named: named, freed: freed);
 }
 
 /// Indented JSON with every point ([x, y]) kept on one line.

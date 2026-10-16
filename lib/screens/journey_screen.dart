@@ -9,6 +9,7 @@ import '../data/chapter_grid_layout.dart';
 import '../data/encounter_text.dart';
 import '../data/clan_power.dart' show holderOf;
 import '../data/geography.dart';
+import '../data/choice_flow.dart';
 import '../data/choice_shape.dart';
 import '../data/city_plan.dart';
 import '../data/place_plan.dart';
@@ -32,6 +33,7 @@ import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
 import '../data/camp_state.dart' show canReturnToCampFrom;
 import '../providers/chapter_loop_provider.dart';
+import '../providers/choice_flow_provider.dart';
 import '../providers/city_provider.dart';
 import '../providers/clans_provider.dart' show factionsProvider;
 import '../providers/game_db_providers.dart';
@@ -339,6 +341,14 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// The road the party is carried along, with what is said of it, shown
   /// over the map until it ends or is tapped.
   _Transit? _transit;
+
+  /// The story carried the party to the scene it stands at now (a choice
+  /// done here whose aftermath is elsewhere, or a one-tap return to a hub,
+  /// see choice_flow.dart): the map plays the trip as for a lost fight. And
+  /// the scene the party was last placed for on the map (a scene read full
+  /// screen first is placed when the map comes back).
+  bool _carried = false;
+  String? _placedFor;
 
   /// Where the party stood inside the place it was last shown in (v1.246):
   /// the plan it stood on (the city's or a room's) and its district or spot.
@@ -659,6 +669,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     bool moved() => _sceneKeyOf(ref.read(storyPlayProvider)) != before;
     Offset? walked;
     var taken = false;
+    ChoiceFlow flow = const FlowStay();
     try {
       final chart = _chartKey.currentState;
       // A choice done here (a card) has a beat at the party's mark instead
@@ -697,8 +708,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         }
         if (!mounted || moved()) return;
       }
+      final fromId = ref.read(storyPlayProvider).currentNodeId;
       await takeStoryChoice(context, ref, step.choice);
       taken = true;
+      flow = _flowAfter(fromId, step.choice);
     } finally {
       if (mounted) {
         // A choice that keeps the story where it was (a shop, a fight
@@ -722,12 +735,37 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             if (_takingFrom == before) _takingFrom = null;
             _pressed = null;
             // The choice moved the story on: the new scene is read full
-            // screen, and Continue brings the map back.
-            if (taken && !stayed) _reading = true;
+            // screen, and Continue brings the map back (and plays a carry).
+            // A one-tap return lands on the hub's map, with its notice.
+            // TODO(UX): S1 for isMainStoryScene, the S2 sheet over the map
+            // for the rest, the next scene's choices in the scene view on
+            // FlowStay, and the "You came back to" notice (lastReturnProvider).
+            if (taken && !stayed) {
+              _carried = flow is FlowTripThenArrive || flow is FlowReturnToHub;
+              _reading = flow is! FlowReturnToHub;
+            }
           });
         }
       }
     }
+  }
+
+  /// What the Journey does after [choice] took the story from [fromId] to
+  /// where it stands now (choice_flow.dart); a one-tap return is noted for
+  /// its notice.
+  ChoiceFlow _flowAfter(String fromId, StoryChoice choice) {
+    final stops = ref.read(storyStopsProvider);
+    final play = ref.read(storyPlayProvider);
+    final from = ref.read(storyDataProvider).value?.nodeFor(fromId);
+    if (stops == null || from == null || play.isInExcursion) {
+      return const FlowStay();
+    }
+    final flow = stops.flowOf(from, choice, nextId: play.currentNodeId);
+    if (flow case FlowReturnToHub(:final hubNodeId, :final hubStop)) {
+      ref.read(lastReturnProvider.notifier).state =
+          (hubNodeId: hubNodeId, hubStop: hubStop, fromNodeId: fromId);
+    }
+    return flow;
   }
 
   /// Reads the scene full screen, or comes back to the map; not while the
@@ -1238,6 +1276,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // story reads straight through are passed on the way, so the party
     // walks to where the last of them is, and the map never jumps.
     final reading = ref.watch(appModeProvider) != AppMode.edit;
+    final stops = ref.watch(storyStopsProvider);
     final mainQuestIds = mainQuestIdsOf(
         ref.watch(localizedDbProvider(questsSchema)).value ?? const {});
     String endOf(StoryChoice c) => play.isInExcursion || c.isEnding || !reading
@@ -1248,7 +1287,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             flags: session.flags,
             hidden: (x, held) => choiceHiddenFor(
                 x, session.copyWith(flags: held.toList()), gateWorld),
-            travels: (from, to) => world.travelsBetween(story, from, to),
+            // The read-through stops where the stop changes (choice_flow).
+            travels: (from, to) =>
+                stops?.changesStop(from, to) ??
+                world.travelsBetween(story, from, to),
             blocked: (x, held) => isStoryChoiceLocked(
                 x, story, session.copyWith(flags: held.toList()),
                 world: gateWorld),
@@ -1459,7 +1501,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       room = RoomPlan.of(
           seed: _stableSeed(hereBuilding.id),
           kind: RoomKind.resolve(hereBuilding.kind, hereBuilding.name));
-      hereSpot = room.has(node.spot ?? '') ? node.spot! : 'floor';
+      final spot = node.spot ?? '';
+      hereSpot = spot.isNotEmpty && room.has(spot) ? spot : 'floor';
       districtOfStep.clear();
       for (var i = 0; i < choices.length; i++) {
         final next = story.nodeFor(ends[choices[i]]!);
@@ -1611,14 +1654,18 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // Where the party stands on the world (v1.245): a scene the story
     // carried it to without a walk (a fight lost, a roll failed, the travel
     // list) is reached by the road from where it stood, and the map says why.
-    if (newScene && !play.isInExcursion) {
+    if (_placedFor != sceneKey && !play.isInExcursion) {
+      _placedFor = sceneKey;
+      final carried = _carried;
+      _carried = false;
       final to = placeView?.chartHere;
       // The editor's jumps are tools, not travel: no road walked for them.
       final editorJump = ref.read(appModeProvider) == AppMode.edit;
       if (to != null) {
         final from = _partyChart;
         final previousId = play.history.isEmpty ? null : play.history.last;
-        final cause = partyMoveCause(story, previousId, play.currentNodeId);
+        final cause = partyMoveCause(story, previousId, play.currentNodeId) ??
+            (carried ? PartyMoveCause.carried : null);
         // The same city's plan (or the same room) is one place, whatever
         // the world chart says of its districts: the party travels its
         // streets, not the roads between places.

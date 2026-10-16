@@ -282,3 +282,35 @@ Today's decisions (on main at #358):
 - `lib/data/chapter_spine.dart` — the beats used in §8.
 
 The counts come from a script over `assets/Cleaned_Narrative_DAG.json`, `assets/gamedata/geography.json`, `assets/gamedata/city_plans.json` and the landmarks of `lib/data/world_map.dart`. It reimplements `choiceShape`, the read-through test and the view choice above, and is close to, not identical with, the app. For example, a scene with no landmark of its own takes the last one in the history, and the script doesn't follow that. It isn't committed.
+
+## 13. What Core built (after the answers)
+
+The user's answers: **Q3** a building is its own stop; **Q1** the walk home from Weaver's Alley is a map move (the house is a building); **Q2** an errand's way back to its town hub is a one-tap return, no map.
+
+- **`lib/data/choice_flow.dart`** — `StoryStops.of(story:, geography:, cityPlans:, ports:)`, built once per story (`storyStopsProvider` in `lib/providers/choice_flow_provider.dart`):
+  - `String stopOf(nodeId)`: the building, else the district, else the location; `''` for nowhere.
+  - `ChoiceFlow flowOf(from, choice, {nextId})`: `FlowStay()`, `FlowMap(stop)`, `FlowTripThenArrive(stop)`, `FlowReturnToHub(hubStop, hubNodeId)` (a sealed class).
+  - `bool changesStop(fromId, toId)`: the read-through's stop test.
+  - `bool isHub`, `hubsOfErrand`, `isCampScene`, `isMainStoryScene(nodeId)`.
+  - `List<PlaceService> servicesAt(placeId)`: `(kind: shop|rest|trainer|port, id, nodeId, choiceIndex)`.
+- **The rules as coded.**
+  - The prologue (a scene whose every way opens character creation, node `0`) is nowhere: no edit to its `location`.
+  - An ending (`EXIT`), or a next scene that doesn't exist, is `FlowStay`.
+  - A **hub** is a `settlement`, a `hub_progress`, or a scene with a way back to itself (25 hubs). An **errand** of a hub is a scene reached from it without passing another hub, from which the story leads back to it (292 scenes). A **return** is a way from an errand to its hub at another stop of the same town (not a camp).
+  - A **village hub**: a scene tagged with a whole location that has districts and a hub (not a camp) takes the hub's district, the one its lot stands in on the city plan. White Wells is at the Pool, Wrack's End at the Hull-Houses, Rimewell at the Bell Square, and so on. The story's `location`s are unchanged. A scene Narrative later tags with its own district keeps that district, so moving to it becomes a walk.
+  - A fail or lose branch that moves the party, and any choice that is `here` (fight, roll, payment, decision), is carried. A plain way (`go`) is a map move.
+- **Data.**
+  - The family house is a building in `geography.json` (`alster_family_house`, a house in the Lower Town). Scenes `300`, `400`, `400_lost`, `450` and `470` say so in the story (5 `location` fields, Narrative's file).
+  - The city-plan tool (`tool/city_plans/gen_city_plans.dart`, `_joinBuildings`) puts every scene of one building on its first scene's lot, after the layout, so no other lot moves. The Blind Beggar's 7 scenes are on `alster_b000` and the house's 5 on `alster_b005`, now named "The family house". The 10 lots left with no scene lose their names. Only Alster's anchors and names change.
+- **The Journey.** In `_take`:
+  - `FlowStay` and `FlowMap` keep today's full page.
+  - `FlowTripThenArrive` plays the carry on the map (the lost-fight trip) when the map comes back.
+  - `FlowReturnToHub` lands on the hub's map with the carry and sets `lastReturnProvider` for UX's notice.
+  - The read-through (Journey and story player) stops where the stop changes. The scene a page was read for is placed when the map comes back, so a carry is no longer lost behind the page.
+  - Left to UX: S1 for main-story scenes, S2 for the rest, the next scene's choices inside the scene view on `FlowStay`, the map showing only the `FlowMap` ways, and the notice.
+- **Counts (1,061 choices).**
+  - Stay: **725**. Before, 729 same-place choices went through the map.
+  - Map move: **104**.
+  - Carried: **87**.
+  - One-tap return: **145**.
+  - District moves read through with no map: **0** (33 before).
