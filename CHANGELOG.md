@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.407.0+443]
+
+### Added
+- A court for each of the six clans: a way of ruling (`ruling` on each clan in `factions.json`, EN and FR) and 8 or 9 ranked people each, 49 in all. 22 existing characters are placed in the hierarchy (Aurel Vane, Hesk Morrow, Maud Tallis, the Keyholders...) and 27 new ones fill the empty ranks, among them the Lantern-Bearer, the Heron Queen and the six nemesis champions. New fields on a person in `npcs.json`: `clan`, `rank` (1 = leader), `title`, `stanceLeader`, `stancePlayer`.
+
 ## [1.404.0+440]
 
 Your nemesis's quest now has a trail, a choice of way in, and its own ending.

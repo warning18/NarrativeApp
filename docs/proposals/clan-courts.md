@@ -1,6 +1,6 @@
 # The courts of the six clans (Narrative)
 
-Each main clan now has a way of ruling and a court of 8 to 9 people, ranked from the leader down. 49 in all: 20 existing characters placed in the hierarchy, 29 new where a rank was empty. The way of ruling is `ruling` / `ruling_fr` on each clan in `factions.json`; each person carries `clan`, `rank` (1 = leader), `title` / `title_fr`, `stanceLeader` (loyal, scheming, wavering) and `stancePlayer` (open, neutral, wary, hostile, or unseen) in `npcs.json`. Descriptions, wants and a line of dialogue are in the file, EN and FR.
+Each main clan now has a way of ruling and a court of 8 to 9 people, ranked from the leader down. 49 in all: 22 existing characters placed in the hierarchy, 27 new where a rank was empty. The way of ruling is `ruling` / `ruling_fr` on each clan in `factions.json`; each person carries `clan`, `rank` (1 = leader), `title` / `title_fr`, `stanceLeader` (loyal, scheming, wavering) and `stancePlayer` (open, neutral, wary, hostile, or unseen) in `npcs.json`. Descriptions, wants and a line of dialogue are in the file, EN and FR.
 
 **Notes for Core / UX**
 - The `faction` field on an existing person (a sub-clan) is unchanged; `clan` is the main clan.
