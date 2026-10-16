@@ -13,7 +13,7 @@ import '../data/climate.dart' show WeatherKind;
 import '../providers/fight_random_provider.dart';
 import '../providers/geography_provider.dart';
 import '../widgets/fight_backdrop.dart';
-import '../widgets/fight_hero_sprite.dart';
+import '../widgets/fight_figure.dart';
 import '../widgets/fight_sprites.dart';
 import '../data/weather_effects.dart';
 import '../providers/climate_provider.dart';

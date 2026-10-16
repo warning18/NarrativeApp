@@ -21,7 +21,9 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../data/climate.dart' show WeatherKind;
 import '../providers/climate_provider.dart' show skyHereProvider;
+import '../widgets/fight_sprites.dart';
 import '../widgets/side_view/desert_kit.dart';
+import '../widgets/side_view/encounter_figure.dart';
 import '../widgets/side_view/ruins_kit.dart';
 import '../widgets/d20_roll.dart';
 import '../widgets/side_view/side_view.dart';
@@ -150,6 +152,25 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     super.initState();
     _departureHealth = ref.read(playerSessionProvider).currentHealth;
     if (_drawn.isEmpty) _phase = _Phase.arrived;
+  }
+
+  /// What stands on the road at the day's event, walking in from the right
+  /// (encounter_figure.dart); one walk per day, kept across rebuilds.
+  EncounterWalk? _walk;
+  int _walkDay = -1;
+
+  EncounterWalk? _encounterWalk(LandEvent? event) {
+    if (event == null || _phase != _Phase.event) return null;
+    if (_walkDay == _day) return _walk;
+    _walkDay = _day;
+    final fight = event.choices.where((c) => c.isFight).firstOrNull;
+    final figure =
+        roadEncounterFigure(event.id, fightEnemyId: fight?.fightEnemyId);
+    return _walk = figure == null
+        ? null
+        : EncounterWalk(
+            sprite: figure.sprite,
+            animate: !MediaQuery.of(context).disableAnimations);
   }
 
   Future<void> _choose(LandChoice choice) async {
@@ -485,7 +506,9 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                       layers: ruins
                           ? ruinsLayers(progress: progress)
                           : desertLayers(progress: progress),
-                      actors: desertActors(moving: _phase == _Phase.result),
+                      actors: desertActors(
+                          moving: _phase == _Phase.result,
+                          encounter: _encounterWalk(event)),
                       particles: particles,
                       intensity: storm ? 1 : 0.6,
                       moving: _phase == _Phase.result,

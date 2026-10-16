@@ -25,6 +25,7 @@ class FightSpriteSet {
     this.walkAsset,
     this.frames = 1,
     this.facesEast = true,
+    this.footInset = 0,
   });
 
   /// A name for the set (a cache key, and what tests say).
@@ -40,9 +41,19 @@ class FightSpriteSet {
   final int frameHeight;
   final int frames;
 
-  /// True for the hero (east, toward the enemies on the right); false for an
-  /// enemy that faces west, toward the hero.
+  /// How the art is drawn: true for the hero (east, toward the enemies on
+  /// the right); false for an enemy drawn facing west, toward the hero. It
+  /// says which way the figure lunges.
   final bool facesEast;
+
+  /// The empty rows under the feet in the image, in image pixels.
+  final int footInset;
+
+  @override
+  bool operator ==(Object other) => other is FightSpriteSet && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 /// The ronin of the side view (assets/visuals/walker): the placeholder hero,
@@ -63,6 +74,54 @@ FightSpriteSet heroFightSprite({String raceId = '', String professionId = ''}) {
   return roninSprite;
 }
 
+const String _fighters = 'assets/visuals/fighters';
+
+FightSpriteSet _enemySet(String name) => FightSpriteSet(
+      id: name,
+      idleAsset: '$_fighters/${name}_idle_west.png',
+      frameWidth: 48,
+      frameHeight: 48,
+      facesEast: false,
+      footInset: 2,
+    );
+
+/// Which sprite an enemy wears: enemy id to sprite name (the files of
+/// assets/visuals/fighters). Adding an enemy's art is a line here and a file
+/// there; an enemy with no line keeps its portrait card alone.
+const Map<String, String> _enemySprites = {
+  'aurel_vane': 'aurel_vane',
+  'inquisition_warden': 'inquisition_warden',
+  'white_soldier': 'white_soldier',
+  'inquisition_soldier': 'inquisition_soldier_02',
+  'inquisition_auxiliary': 'inquisition_soldier_03',
+};
+
+/// The art an enemy stands in the fight with (facing west, toward the
+/// hero), or null: it has none yet, and the fight shows only its card.
+FightSpriteSet? enemyFightSprite(String enemyId) {
+  final name = _enemySprites[enemyId];
+  return name == null ? null : _enemySet(name);
+}
+
+/// Which enemy a road event puts on the road when the event's own data does
+/// not say (land_events.json names an enemy only in a fight choice): event id
+/// to enemy id. UX's table, so the event data stays Core's and Narrative's.
+const Map<String, String> _roadEventEnemies = {
+  'inquisition_patrol': 'inquisition_soldier',
+};
+
+/// What stands on the road in front of the party at a land-crossing event:
+/// the art of the enemy it is (the fight choice's [fightEnemyId], else the
+/// table above), with [sprite] null for a placeholder figure when that enemy
+/// has no art yet. Null when the event has no figure at all (a storm, a dry
+/// well, the water seller: nothing in the data says who they are).
+({FightSpriteSet? sprite})? roadEncounterFigure(String eventId,
+    {String? fightEnemyId}) {
+  final enemy = fightEnemyId ?? _roadEventEnemies[eventId];
+  if (enemy == null) return null;
+  return (sprite: enemyFightSprite(enemy));
+}
+
 /// The images of the sets, loaded once on first use.
 abstract final class FightSpriteImages {
   static final Map<String, ui.Image> _idle = {};
@@ -76,6 +135,10 @@ abstract final class FightSpriteImages {
   /// image proved missing.
   static FightSpriteSet effective(FightSpriteSet set) =>
       _missing.contains(set.id) ? roninSprite : set;
+
+  /// Whether [set]'s image proved missing: an enemy that is so shows no
+  /// figure (only the hero falls back to the ronin).
+  static bool failed(FightSpriteSet set) => _missing.contains(set.id);
 
   /// [set]'s standing image, or null while it loads (a missing image loads
   /// the ronin's instead, see [effective]).

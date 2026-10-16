@@ -7,6 +7,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import 'encounter_figure.dart';
 import 'side_sprite.dart';
 import 'side_view.dart';
 
@@ -89,7 +90,11 @@ List<SideLayer> desertLayers({double progress = 0}) => [
 /// and the companions behind, walking while the party [moving] and standing
 /// when it waits on a choice. Until the sprite is loaded the hero is the
 /// placeholder too.
-SideLayer desertActors({int figures = 3, bool moving = true}) {
+SideLayer desertActors({
+  int figures = 3,
+  bool moving = true,
+  EncounterWalk? encounter,
+}) {
   SideSprites.preload();
   return SideLayer(0, (c, s, scroll, t, u) {
     const colours = [
@@ -112,6 +117,7 @@ SideLayer desertActors({int figures = 3, bool moving = true}) {
     if (!SideSprites.paint(c, u, hx, 66, t, moving: moving)) {
       _figure(c, u, hx - 2, 66, colours[0], moving ? t : 1.3);
     }
+    encounter?.paint(c, s, t, u, partyX: hx);
   });
 }
 
