@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.428.0+464]
+
+### Added
+- A night's rest before the Lantern Hall (chapter 7). Every road up from the gates now passes `7515_rest`: the party sleeps on the harbour steps while the clans' fires light the cliff, then climbs to whichever Hall the claimant holds. It gives a full heal, one strong potion, and sets `rest_before_hall` (Core's engine refills provisions and mana from it). Each of the three Halls reads it back.
+
+### Changed
+- The Hall's roads: the three duplicate choices per way (one per claimant) are now one choice per way, with the claimant routing moved into the rest scene (66 choices down to 22).
+
 ## [1.420.0+456]
 
 Six more towns have their plans.
