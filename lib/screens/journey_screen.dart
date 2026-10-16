@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/chapter_grid_layout.dart';
 import '../data/encounter_text.dart';
+import '../data/clan_power.dart' show holderOf;
 import '../data/geography.dart';
 import '../data/city_plan.dart';
 import '../data/place_plan.dart';
@@ -31,6 +32,7 @@ import '../providers/app_mode_provider.dart';
 import '../data/camp_state.dart' show canReturnToCampFrom;
 import '../providers/chapter_loop_provider.dart';
 import '../providers/city_provider.dart';
+import '../providers/clans_provider.dart' show factionsProvider;
 import '../providers/game_db_providers.dart';
 import '../providers/geography_provider.dart';
 import '../providers/home_tab_provider.dart';
@@ -42,6 +44,7 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/biome_backdrop.dart';
+import '../widgets/clan_power_block.dart' show holderTint;
 import '../providers/climate_provider.dart';
 import '../data/weather_effects.dart';
 import '../widgets/weather_chip.dart';
@@ -189,6 +192,7 @@ class _PlaceView {
     this.room,
     this.hereDistrict = '',
     this.districtOfStep = const {},
+    this.holderColor,
   });
 
   final PlaceKind kind;
@@ -228,6 +232,10 @@ class _PlaceView {
   /// The land the place lies in (v1.197, see geography.dart): its ground
   /// is painted under the place.
   final Biome? biome;
+
+  /// The colour of the clan that holds the place now (v1.406), red when it
+  /// is the party's nemesis: the ground takes a faint wash of it.
+  final Color? holderColor;
 }
 
 /// A seed from [text] that is the same on every run.
@@ -1149,6 +1157,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             geography: geography,
             chartHere: chartHere,
             biome: world.biomeOf(herePlace?.id),
+            holderColor: holderTint(
+                holderOf(herePlace?.id, world,
+                    ref.watch(playerSessionProvider.select((s) => s.politics))),
+                ref.watch(factionsProvider),
+                ref.watch(
+                    playerSessionProvider.select((s) => s.politics.nemesis))),
             water: herePlace?.water ?? '',
             plan: cityPlan,
             chart: cityChart,
@@ -3234,6 +3248,20 @@ class _JourneyChartState extends State<_JourneyChart>
                                   land: palette.land,
                                   seed: widget.place!.seed,
                                   greyed: widget.greyed,
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (widget.place?.holderColor case final tint?)
+                          Positioned.fill(
+                            child: IgnorePointer(
+                              child: DecoratedBox(
+                                key: const ValueKey('journey_holder_tint'),
+                                decoration: BoxDecoration(
+                                  color: tint.withValues(alpha: 0.10),
+                                  border: Border.all(
+                                      color: tint.withValues(alpha: 0.45),
+                                      width: 3),
                                 ),
                               ),
                             ),

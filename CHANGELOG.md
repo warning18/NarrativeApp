@@ -16,6 +16,15 @@ Lysa's fate turns the Dominion's hunt.
 - **The hunt, as her fate turns it:**
   - take her by force, or give her blood to the Shroud, and the Dominion hunts you in earnest: its fighters come more often and join its fights, and Orsolya Keld comes sooner;
   - swear to the Lantern for her, and its hunt is over.
+## [1.411.0+447]
+
+A clan's power and the land it holds, drawn.
+
+### Added
+- **Power on the clan's card.** A bar across the four tiers (Minor, Rising, Dominant, Ascendant, ticks at 25, 50 and 75) with the tier named and its value, then "Holds N places" with the places as chips (six, then "+N more"). A clan that is the party's nemesis wears a red "Your nemesis" ribbon and a red bar. The card is the one the long press, the offer's (i) and the Throne room open.
+- **The Throne room's banner captions** add the clan's power tier, and "Your nemesis" for the nemesis, after the standing.
+- **The land takes its holder's colour.** In the Journey the place's ground gets a faint wash and a frame in the colour of the clan that holds it now (red when it is the nemesis), following places that changed hands.
+
 ## [1.410.0+446]
 
 Faces for the rival hunters and the nemesis champions.
