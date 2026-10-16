@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.417.0+453]
+
+### Added
+- The data for the in-place display (`docs/proposals/inplace-data.md`): `facing` on 94 story nodes (who the scene is with), `prompt` / `prompt_fr` on the 226 scenes with two or more choices (the question the scene ends on), and `about` on 69 hub choices (the NPC, clan or sub-clan a choice is about), EN and FR. All optional; nothing reads them yet.
+
+## [1.414.0+450]
+
+### Changed
+- Lysa's story. If you lose her at the house, how you lost her (knelt, fought and lost, ran) decides what the Dominion made of her. Three beats lead to the Reliquary Quarter (a fence's line on the wharf, the envoy's price, a parcel with her mask), and there she says your name before any blade is drawn. You can break her out (Brother Clement, a boss), offer the Shroud's piece (refused), swear to the Lantern for her, end it gently, fight her, lay her blood on the Shroud, or walk away. If you save her at the house, she can be taken during a raid on the camp, trade a ledger page for medicine, and offer to sew the tear shut at the Hollow Shore, which can cost her life. Vane now says plainly that he came for what the mother kept.
+
 ## [1.413.0+449]
 
 Lysa's fate turns the Dominion's hunt.

@@ -953,8 +953,8 @@
   },
   "400": {
     "id": "400",
-    "description": "I never reached the door. Something passed over the street with a sound like a sheet being torn the length of the sky, and our house folded. A ball from one of the white ships had come down through the roof and out through the front wall, and the wall went out into the street in one long breath of brick and plaster and dust. For a moment there was nothing in the world but that dust. Then the inquisitors came out of it, shouting, grey with it, and behind them came a scream I would have known in any city: Lysa. A man walked out of the ruin of our house holding my sister off the ground by one wrist, in one gloved hand, the way you might carry a lantern. He was tall, and dressed in white, and at his collar hung a small lantern hooded in black. He did not shout. He did not need to. The others had stepped back from him as if he were the fire. Inquisitor-General, one of them called him, and then, more quietly, Vane; and Aurel Vane looked at me through the dust, and I understood that he knew exactly who I was.",
-    "description_fr": "Je n’atteignis jamais la porte. Quelque chose passa au-dessus de la rue avec le bruit d’un drap qu’on déchire sur toute la longueur du ciel, et notre maison se plia. Un boulet tiré de l’un des navires blancs était descendu à travers le toit pour ressortir par le mur de façade, et le mur partit dans la rue en un long souffle de brique, de plâtre et de poussière. Un instant, il n’y eut plus au monde que cette poussière. Puis les inquisiteurs en sortirent en criant, gris de la tête aux pieds, et derrière eux monta un cri que j’aurais reconnu dans n’importe quelle ville : Lysa. Un homme sortit des ruines de notre maison en tenant ma sœur au-dessus du sol par un poignet, d’une seule main gantée, comme on porte une lanterne. Il était grand, vêtu de blanc, et à son col pendait une petite lanterne voilée de noir. Il ne criait pas. Il n’en avait pas besoin. Les autres s’étaient écartés de lui comme on s’écarte du feu. Inquisiteur général, l’appela l’un d’eux, puis, plus bas, Vane ; et Aurel Vane me regarda à travers la poussière, et je compris qu’il savait exactement qui j’étais.",
+    "description": "I never reached the door. Something passed over the street with a sound like a sheet being torn the length of the sky, and our house folded. A ball from one of the white ships had come down through the roof and out through the front wall, and the wall went out into the street in one long breath of brick and plaster and dust. For a moment there was nothing in the world but that dust. Then the inquisitors came out of it, shouting, grey with it, and behind them came a scream I would have known in any city: Lysa. A man walked out of the ruin of our house holding my sister off the ground by one wrist, in one gloved hand, the way you might carry a lantern. He was tall, and dressed in white, and at his collar hung a small lantern hooded in black. He did not shout. He did not need to. The others had stepped back from him as if he were the fire. Inquisitor-General, one of them called him, and then, more quietly, Vane; and Aurel Vane looked at me through the dust, and I understood that he knew exactly who I was. “Where is it?” he asked Lysa, pleasantly, as one asks a child for a lost glove. “Your mother kept something. Either you will tell me, or the person at the end of the street will.”",
+    "description_fr": "Je n’atteignis jamais la porte. Quelque chose passa au-dessus de la rue avec le bruit d’un drap qu’on déchire sur toute la longueur du ciel, et notre maison se plia. Un boulet tiré de l’un des navires blancs était descendu à travers le toit pour ressortir par le mur de façade, et le mur partit dans la rue en un long souffle de brique, de plâtre et de poussière. Un instant, il n’y eut plus au monde que cette poussière. Puis les inquisiteurs en sortirent en criant, gris de la tête aux pieds, et derrière eux monta un cri que j’aurais reconnu dans n’importe quelle ville : Lysa. Un homme sortit des ruines de notre maison en tenant ma sœur au-dessus du sol par un poignet, d’une seule main gantée, comme on porte une lanterne. Il était grand, vêtu de blanc, et à son col pendait une petite lanterne voilée de noir. Il ne criait pas. Il n’en avait pas besoin. Les autres s’étaient écartés de lui comme on s’écarte du feu. Inquisiteur général, l’appela l’un d’eux, puis, plus bas, Vane ; et Aurel Vane me regarda à travers la poussière, et je compris qu’il savait exactement qui j’étais. « Où est-ce ? demanda-t-il à Lysa, avec amabilité, comme on réclame à un enfant un gant perdu. Votre mère gardait quelque chose. Ou vous me le direz, ou ce sera la personne qui se tient au bout de la rue. »",
     "context_taxonomy": {
       "ui_theme": "hovel",
       "mood": "action",
@@ -3254,6 +3254,17 @@
         "showIfFlags": [
           "liora_met"
         ]
+      },
+      {
+        "text": "Ask the Tide Cellar’s fence about the girl",
+        "text_fr": "Interroger le receleur sur la fille de la rue du Suif",
+        "next_id": "2015_lysa_line",
+        "showIfFlags": [
+          "lysa_lost"
+        ],
+        "hideIfFlags": [
+          "hub_2015_lysa_line"
+        ]
       }
     ],
     "flag_callbacks": [
@@ -4752,6 +4763,17 @@
         "hideIfFlags": [
           "hub_3005_tribunal_gold"
         ]
+      },
+      {
+        "text": "Wait for Vane’s envoy once the others have gone",
+        "text_fr": "Attendre l’envoyé de Vane quand les autres seront partis",
+        "next_id": "3005_lysa_price",
+        "showIfFlags": [
+          "lysa_lost"
+        ],
+        "hideIfFlags": [
+          "hub_3005_lysa_price"
+        ]
       }
     ],
     "flag_callbacks": [
@@ -5745,7 +5767,10 @@
       {
         "flag": "lysa_survived",
         "en": "I thought of Lysa reading it, and of what she would have said, which was probably \"stop reading and do something,\" and I read a little longer out of spite.",
-        "fr": "Je pensai à Lysa le lisant, et à ce qu’elle aurait dit, sans doute « arrête de lire et fais quelque chose », et je lus encore un peu, par esprit de contradiction."
+        "fr": "Je pensai à Lysa le lisant, et à ce qu’elle aurait dit, sans doute « arrête de lire et fais quelque chose », et je lus encore un peu, par esprit de contradiction.",
+        "unlessFlags": [
+          "lysa_taken_ch4"
+        ]
       },
       {
         "flag": "court_never_woke",
@@ -6022,6 +6047,7 @@
         "en": "Lysa read the page over my shoulder and said nothing, and in the morning there was a bag of dressings on top of my pack that had not been there the night before.",
         "fr": "Lysa lut la page par-dessus mon épaule sans rien dire, et au matin il y avait sur mon sac un paquet de pansements qui n’y était pas la veille au soir.",
         "unlessFlags": [
+          "lysa_taken_ch4",
           "sailed_alone"
         ]
       },
@@ -7818,12 +7844,20 @@
       {
         "flag": "lysa_survived",
         "en": "Lysa walked in at my shoulder and did not look at the masks. She had been meant for one, once, in the dust of our own street, and she knew it.",
-        "fr": "Lysa entra à mon côté sans regarder les masques. On lui en avait destiné un, autrefois, dans la poussière de notre propre rue, et elle le savait."
+        "fr": "Lysa entra à mon côté sans regarder les masques. On lui en avait destiné un, autrefois, dans la poussière de notre propre rue, et elle le savait.",
+        "unlessFlags": [
+          "lysa_taken_ch4"
+        ]
       },
       {
         "flag": "ledger_read_twice",
         "en": "I had read the ledger’s page on the chapel three times over before sailing, and I knew the door before the penitents turned to look at it.",
         "fr": "J’avais lu trois fois la page du registre sur la chapelle avant de prendre la mer, et je reconnus la porte avant que les pénitents ne se tournent vers elle."
+      },
+      {
+        "flag": "lysa_taken_ch4",
+        "en": "She had been taken from the wall a season ago, and I walked in at the gate with her name in my mouth.",
+        "fr": "Elle avait été prise sur le mur une saison plus tôt, et j’entrai par la porte avec son nom dans la bouche."
       }
     ],
     "choices": [
@@ -7840,7 +7874,8 @@
         "text_fr": "Suivre la craie jusqu’à la chapelle au nom gravé",
         "next_id": "6010_lysa_dead",
         "showIfFlags": [
-          "lysa_lost"
+          "lysa_lost",
+          "lysa_walked_away"
         ],
         "hideIfFlags": [
           "hub_6010_lysa_dead",
@@ -7913,7 +7948,8 @@
         "text_fr": "Suivre la craie jusqu’à la chapelle au nom gravé",
         "next_id": "6010_lysa_dead",
         "showIfFlags": [
-          "lysa_lost"
+          "lysa_lost",
+          "lysa_walked_away"
         ],
         "hideIfFlags": [
           "hub_6010_lysa_dead",
@@ -7934,8 +7970,7 @@
           "hub_6010_lysa_dead"
         ],
         "lockedText": "The masked penitent had gone back inside. Whoever had called her, it was not me.",
-        "lockedText_fr": "La pénitente masquée était rentrée. Qui que ce fût qui l’ait rappelée, ce n’était pas moi.",
-        "about": "masked_penitent"
+        "lockedText_fr": "La pénitente masquée était rentrée. Qui que ce fût qui l’ait rappelée, ce n’était pas moi."
       },
       {
         "text": "Find Lysa among the refugees",
@@ -7944,7 +7979,8 @@
         "alignmentMod": 5,
         "healAmount": 40,
         "hideIfFlags": [
-          "hub_6010_lysa"
+          "hub_6010_lysa",
+          "lysa_taken_ch4"
         ],
         "showIfFlags": [
           "lysa_survived"
@@ -8211,6 +8247,21 @@
         ],
         "hideIfFlags": [
           "hub_6010_returned_roll"
+        ]
+      },
+      {
+        "text": "Ask Lysa where the fever-bark came from",
+        "text_fr": "Demander à Lysa d’où vient l’écorce-fièvre",
+        "next_id": "6010_lysa_ledger",
+        "showIfFlags": [
+          "hub_6010_lysa",
+          "lysa_survived"
+        ],
+        "hideIfFlags": [
+          "hub_6010_lysa_ledger",
+          "lysa_rescued_force",
+          "lysa_sworn_for",
+          "lysa_taken_ch4"
         ]
       }
     ],
@@ -8676,6 +8727,11 @@
         "flag": "lysa_sent_coin",
         "en": "She had spent my coin on bandages and bread, and showed me the accounts without being asked.",
         "fr": "Elle avait dépensé mon or en bandages et en pain, et me montra les comptes sans qu’on le lui demande."
+      },
+      {
+        "flag": "lysa_guarded",
+        "en": "She had held the camp’s wall with me once, and had not forgotten it.",
+        "fr": "Elle avait tenu le mur du camp avec moi, un soir, et ne l’avait pas oublié."
       }
     ],
     "prompt": "What do you ask of Lysa?",
@@ -8953,6 +9009,41 @@
         "flag": "truth_told",
         "en": "Copies of the Reliquary’s roll had gone out with every boat from the Quarter. The camp had heard it read aloud twice before I was home, and argued about it once, at length, over the fire.",
         "fr": "Des copies du rouleau du Reliquaire étaient parties avec chaque bateau du Quartier. Le camp l’avait entendu lire à voix haute deux fois avant mon retour, et en avait débattu une fois, longuement, autour du feu."
+      },
+      {
+        "flag": "lysa_rescued_force",
+        "en": "Lysa kept the porcelain mask on a nail by her cot, face to the wall. She said she would look at it when she was ready. She had not looked yet.",
+        "fr": "Lysa gardait le masque de porcelaine sur un clou près de son lit, face au mur. Elle disait qu’elle le regarderait quand elle serait prête. Elle ne l’avait pas encore regardé."
+      },
+      {
+        "flag": "lysa_sworn_for",
+        "en": "Lysa ran the camp’s infirmary and did not speak of the Lantern. The Dominion’s couriers always asked after her, and she never answered.",
+        "fr": "Lysa tenait l’infirmerie du camp et ne parlait pas de la Lanterne. Les courriers du Dominion demandaient toujours de ses nouvelles, et elle ne répondait jamais."
+      },
+      {
+        "flag": "lysa_sacrificed",
+        "en": "The Shroud in its oilcloth was warm the way a hand is warm. I did not take it out if I could help it.",
+        "fr": "Le Linceul dans sa toile cirée était tiède comme l’est une main. Je ne le sortais pas si je pouvais l’éviter."
+      },
+      {
+        "flag": "lysa_mercy",
+        "en": "I had a porcelain mask in my coat and no sister. I had been in time, and it was no kind of victory.",
+        "fr": "J’avais un masque de porcelaine dans mon manteau et plus de sœur. Le temps m’avait suffi, et ce n’était pas une victoire."
+      },
+      {
+        "flag": "lysa_forgiven",
+        "en": "Lysa had been forgiven for the ledger, and ran the infirmary the better for it.",
+        "fr": "On avait pardonné à Lysa le registre, et elle tenait l’infirmerie d’autant mieux."
+      },
+      {
+        "flag": "lysa_scolded",
+        "en": "Lysa had not forgotten the scolding. She ran the infirmary with her chin up.",
+        "fr": "Lysa n’avait pas oublié le sermon. Elle tenait l’infirmerie le menton levé."
+      },
+      {
+        "flag": "lysa_traded",
+        "en": "Lysa never asked what became of the copies. She knew.",
+        "fr": "Lysa ne demanda jamais ce que les copies étaient devenues. Elle le savait."
       }
     ],
     "settlement": {
@@ -9315,7 +9406,40 @@
       {
         "text": "Sew the tear shut, and lay the Throne down with it",
         "text_fr": "Recoudre la déchirure, et déposer le Trône avec elle",
-        "next_id": "7005_dawn"
+        "next_id": "7005_dawn",
+        "hideIfFlags": [
+          "lysa_survived",
+          "lysa_stitch_declined"
+        ],
+        "flagsToAdd": [
+          "stitched_alone"
+        ]
+      },
+      {
+        "text": "Sew the tear shut, and lay the Throne down with it",
+        "text_fr": "Recoudre la déchirure, et déposer le Trône avec elle",
+        "next_id": "7005_dawn",
+        "showIfFlags": [
+          "lysa_taken_ch4"
+        ],
+        "hideIfFlags": [
+          "lysa_stitch_declined"
+        ],
+        "flagsToAdd": [
+          "stitched_alone"
+        ]
+      },
+      {
+        "text": "Sew the tear shut, and lay the Throne down with it",
+        "text_fr": "Recoudre la déchirure, et déposer le Trône avec elle",
+        "next_id": "7004_stitch",
+        "showIfFlags": [
+          "lysa_survived"
+        ],
+        "hideIfFlags": [
+          "lysa_taken_ch4",
+          "lysa_stitch_declined"
+        ]
       },
       {
         "text": "Take the Sovereign’s crown to wear with the Throne",
@@ -9340,7 +9464,13 @@
       {
         "flag": "lysa_survived",
         "en": "Lysa would be on the shingle when the Eel came in. I had a great deal to tell her, and one thing to ask.",
-        "fr": "Lysa serait sur les galets quand l’Eel accosterait. J’avais beaucoup à lui dire, et une chose à lui demander."
+        "fr": "Lysa serait sur les galets quand l’Eel accosterait. J’avais beaucoup à lui dire, et une chose à lui demander.",
+        "unlessFlags": [
+          "lysa_fallen",
+          "lysa_found_dead",
+          "lysa_mercy",
+          "lysa_sacrificed"
+        ]
       },
       {
         "flag": "reckoning_wall_saved",
@@ -9476,6 +9606,11 @@
         "flag": "piece_betrayed",
         "en": "The Fourth Piece was in the Inquisition’s hands, on a cutter’s deck, and I had been paid for it. I told myself the coin was heavy for some other reason.",
         "fr": "La Quatrième Pièce était aux mains de l’Inquisition, sur le pont d’un cotre, et l’on m’avait payé pour elle. Je me dis que la pièce était lourde pour une tout autre raison."
+      },
+      {
+        "flag": "lysa_sacrificed",
+        "en": "The Shroud was warm in my arms, warmer than any cloth should be, and every time I touched it I knew whose warmth it was.",
+        "fr": "Le Linceul était tiède entre mes bras, plus tiède qu’aucun tissu ne devrait l’être, et chaque fois que je le touchais, je savais de qui venait cette chaleur."
       }
     ],
     "noDetour": true,
@@ -9896,7 +10031,14 @@
       {
         "flag": "lysa_survived",
         "en": "Lysa was on the shingle. She did not ask about the Shroud. She had never needed it.",
-        "fr": "Lysa était sur les galets. Elle ne demanda rien du Linceul. Elle n’en avait jamais eu besoin."
+        "fr": "Lysa était sur les galets. Elle ne demanda rien du Linceul. Elle n’en avait jamais eu besoin.",
+        "unlessFlags": [
+          "lysa_fallen",
+          "lysa_found_dead",
+          "lysa_mercy",
+          "lysa_sacrificed",
+          "lysa_stitched"
+        ]
       },
       {
         "flag": "sovereign_took_companion",
@@ -9989,6 +10131,25 @@
         "fr": "Une Garde-Mèche allumait une à une les lampes de la rue du Suif, comme si elle attendait le retour de quelqu’un.",
         "andFlags": [
           "banner_raised"
+        ]
+      },
+      {
+        "flag": "lysa_stitched",
+        "en": "I had said yes. It is the only sentence about it I can bear. She took the last stitch from my hands, and the gold came up around her, and I sat on the grey sand a long time.",
+        "fr": "J’avais dit oui. C’est la seule phrase à ce sujet que je puisse supporter. Elle prit le dernier point de mes mains, et l’or monta autour d’elle, et je restai longtemps sur le sable gris, sans me relever."
+      },
+      {
+        "flag": "lysa_spared_stitch",
+        "en": "The needle was mine. I had said so before she could. Lysa stood behind me with her hands on my shoulders for all of it, and when the dawn came she was the first to say how gold it was.",
+        "fr": "L’aiguille était la mienne. Je l’avais dit avant qu’elle puisse le faire. Lysa resta derrière moi, les mains sur mes épaules, pendant tout le temps, et quand l’aube vint, ce fut elle qui dit la première combien elle était dorée."
+      },
+      {
+        "flag": "stitched_alone",
+        "en": "There was no one to hand me the needle, and no one to take it from me. I did it alone, and it held.",
+        "fr": "Personne ne me tendit l’aiguille, et personne ne vint me la prendre. Je le fis sans aide, et cela tint.",
+        "unlessFlags": [
+          "lysa_stitched",
+          "lysa_spared_stitch"
         ]
       }
     ]
@@ -10903,17 +11064,28 @@
       {
         "flag": "lysa_lost",
         "en": "My sister was on the requisition’s list too, with a note against her name in the same hand: held at the Quarter; the rite has not taken. I understood then what Lysa had been kept for.",
-        "fr": "Ma sœur figurait aussi sur la liste de la réquisition, avec une note en regard, de la même main : retenue au Quartier ; le rite n’a pas pris. Je compris alors pour quoi on avait gardé Lysa."
+        "fr": "Ma sœur figurait aussi sur la liste de la réquisition, avec une note en regard, de la même main : retenue au Quartier ; le rite n’a pas pris. Je compris alors pour quoi on avait gardé Lysa.",
+        "unlessFlags": [
+          "lysa_taken_ch4"
+        ]
       },
       {
         "flag": "lysa_survived",
         "en": "My sister was on the requisition’s list too. Against her name the clerk had written: at large, with the cloth. Lysa was somewhere in the Quarter’s wards, changing dressings, with no idea what her blood was worth to anyone but me.",
-        "fr": "Ma sœur figurait aussi sur la liste de la réquisition. En regard de son nom, le greffier avait écrit : en fuite, avec l’étoffe. Lysa était quelque part dans les dispensaires du Quartier, à changer des pansements, sans se douter de ce que valait son sang pour quiconque, hormis moi."
+        "fr": "Ma sœur figurait aussi sur la liste de la réquisition. En regard de son nom, le greffier avait écrit : en fuite, avec l’étoffe. Lysa était quelque part dans les dispensaires du Quartier, à changer des pansements, sans se douter de ce que valait son sang pour quiconque, hormis moi.",
+        "unlessFlags": [
+          "lysa_taken_ch4"
+        ]
       },
       {
         "flag": "open_hand_5",
         "en": "I had read the Reliquary’s roll. I knew what the pieces would not do without that blood, and what the coast had paid the last time someone tried.",
         "fr": "J’avais lu le rouleau du Reliquaire. Je savais ce que les pièces refuseraient de faire sans ce sang, et ce que la côte avait payé la dernière fois qu’on avait essayé."
+      },
+      {
+        "flag": "lysa_taken_ch4",
+        "en": "My sister was on the requisition’s list too, with a note against her name in the same hand: taken from the ridge; held at the Quarter.",
+        "fr": "Ma sœur figurait aussi sur la réquisition, avec une note en face de son nom de la même main : prise sur la crête ; retenue au Quartier."
       }
     ],
     "prompt": "How do you free the fourth piece?",
@@ -11139,7 +11311,6 @@
   },
   "6010_lysa_dead": {
     "id": "6010_lysa_dead",
-    "reqAlignmentScore": 5,
     "description": "The chapel had been a place for making penitents: a chair with straps, a porcelain mask on a hook, a bowl of the white paint the Inquisition uses for faces it means to keep. She was in the chair. They had tried to make her one of theirs, paint and porcelain and the Court’s patient voice, and she had not taken; on the wall beside the chair, scratched twelve times with the pin of the mask, was my name. Not hers. Mine. I sat with her a long time. I did not say the things people say. I had lost her in my parents’ hovel, and she had spent whatever she had left down here spelling me out on a wall, and there is no sentence that goes on the far side of that.",
     "description_fr": "La chapelle avait servi à fabriquer des pénitents : une chaise à sangles, un masque de porcelaine à un crochet, un bol de la peinture blanche dont l’Inquisition se sert pour les visages qu’elle compte garder. Elle était sur la chaise. Ils avaient essayé de faire d’elle l’une des leurs, peinture, porcelaine et la voix patiente de la Cour, et cela n’avait pas pris ; sur le mur près de la chaise, gravé douze fois avec l’épingle du masque, il y avait mon nom. Pas le sien. Le mien. Je restai longtemps avec elle. Je ne dis pas ce que les gens disent. Je l’avais perdue dans la masure de mes parents, et elle avait dépensé ce qui lui restait ici-bas à m’épeler sur un mur, et il n’existe pas de phrase qui aille de l’autre côté de cela.",
     "context_taxonomy": {
@@ -11179,46 +11350,149 @@
   },
   "6010_masked": {
     "id": "6010_masked",
-    "reqAlignmentMax": 4,
-    "description": "She had been standing at the edge of the frost every time I crossed the quarter, a penitent in a porcelain mask and the white paint the Inquisition uses for faces it means to keep, and she had not once stopped looking at me. The other penitents gave her room. When I finally walked toward her she drew a blade with the Court’s own patience and came on without a word, and I understood that whatever they had made of her, they had made it to be pointed at me.",
-    "description_fr": "Elle se tenait à la lisière du givre chaque fois que je traversais le quartier, une pénitente au masque de porcelaine et à la peinture blanche dont l’Inquisition se sert pour les visages qu’elle compte garder, et elle n’avait pas une seule fois cessé de me regarder. Les autres pénitents lui laissaient de la place. Quand je marchai enfin vers elle, elle tira une lame avec la patience propre à la Cour et vint sur moi sans un mot, et je compris que quoi qu’ils aient fait d’elle, ils l’avaient fait pour la pointer sur moi.",
+    "description": "She had been standing at the edge of the frost every time I crossed the quarter, a girl in a porcelain mask and the white paint the Inquisition uses for faces it means to keep, and she had not once stopped looking at me. This time she did not draw a blade. She said my name. It came out of the mask in the careful voice of someone saying a word she has been made to practise, and under the porcelain it was Lysa’s voice. Behind her the chapel held a chair with straps, and at the chair’s head a man in a mask of his own, who had been waiting for me since the Black Hold. “Brother Clement,” I said. “You told me she was dead.” “It was kinder,” he said. “It is nearly true now.”",
+    "description_fr": "Elle se tenait au bord du givre chaque fois que je traversais le quartier, une fille au masque de porcelaine et au fard blanc que l’Inquisition réserve aux visages qu’elle compte garder, et elle n’avait pas une seule fois cessé de me regarder. Cette fois, elle ne tira pas de lame. Elle dit mon nom. Il sortit du masque dans la voix soigneuse de quelqu’un qui prononce un mot qu’on lui a fait répéter, et sous la porcelaine, c’était la voix de Lysa. Derrière elle, la chapelle abritait une chaise à sangles, et à la tête de la chaise un homme dans un masque à lui, qui m’attendait depuis la Geôle Noire. « Frère Clément, dis-je. Vous m’aviez dit qu’elle était morte. — C’était plus doux, répondit-il. C’est presque vrai, à présent. »",
     "context_taxonomy": {
       "ui_theme": "epilogue",
-      "mood": "tense",
+      "mood": "grim",
       "speaker": "Narrator"
     },
     "location": "reliquary_quarter",
+    "automations": {},
     "choices": [
       {
+        "text": "Break the chair-chapel, and take her out",
+        "text_fr": "Briser la chapelle à la chaise, et l’emmener",
+        "next_id": "6010_lysa_rescued",
+        "triggerEnemyId": "brother_clement",
+        "hideIfFlags": [
+          "fled_house"
+        ]
+      },
+      {
+        "text": "Offer Clement the Shroud’s piece for her",
+        "text_fr": "Offrir à Clément le pan du Linceul contre elle",
+        "next_id": "6010_clement_refused",
+        "hideIfFlags": [
+          "fled_house",
+          "clement_refused"
+        ]
+      },
+      {
+        "text": "Swear to the Lantern for her",
+        "text_fr": "Jurer à la Lanterne pour elle",
+        "next_id": "6010_lysa_sworn",
+        "hideIfFlags": [
+          "fled_house"
+        ]
+      },
+      {
+        "text": "End it, gently",
+        "text_fr": "Y mettre fin, doucement",
+        "next_id": "6010_lysa_mercy",
+        "hideIfFlags": [
+          "surrendered",
+          "lysa_taken_ch4"
+        ]
+      },
+      {
         "text": "Fight her",
-        "text_fr": "L’affronter",
+        "text_fr": "La combattre",
         "next_id": "6010_masked_after",
         "triggerEnemyId": "masked_penitent",
+        "showIfFlags": [
+          "fled_house"
+        ],
+        "alignmentMod": -3,
         "flagsToAdd": [
           "hub_6010_masked",
           "lysa_fallen"
         ],
-        "alignmentMod": -3,
         "politics": {
           "marks": {
             "inquisition": "foe"
           },
           "hidden": true
         }
+      },
+      {
+        "text": "Lay her blood on the Shroud",
+        "text_fr": "Poser son sang sur le Linceul",
+        "next_id": "6010_lysa_sacrifice"
+      },
+      {
+        "text": "Leave the chapel without answering",
+        "text_fr": "Quitter la chapelle sans répondre",
+        "next_id": "6010",
+        "alignmentMod": -2,
+        "flagsToAdd": [
+          "hub_6010_masked",
+          "lysa_walked_away"
+        ]
       }
     ],
-    "facing": "masked_penitent"
+    "flag_callbacks": [
+      {
+        "flag": "surrendered",
+        "en": "She was whole. I could see it in the way she held her hands: frightened, and herself, and kept that way on purpose, the way a lever is kept straight.",
+        "fr": "Elle était entière. Je le voyais à la façon dont elle tenait ses mains : effrayée, et elle-même, et gardée ainsi à dessein, comme on garde un levier droit."
+      },
+      {
+        "flag": "unfurl_lost",
+        "en": "Half of her was Lysa and half was a thing taught to be pointed. She said my name twice, once as a greeting and once as an order.",
+        "fr": "La moitié d’elle était Lysa et l’autre moitié, une chose dressée pour être pointée. Elle dit mon nom deux fois, une fois comme un salut et une fois comme un ordre."
+      },
+      {
+        "flag": "fled_house",
+        "en": "She said my name the way you say the name of someone who left. There was nothing of the child in it. They had taught her what I had done, and she had learned it perfectly.",
+        "fr": "Elle dit mon nom comme on dit le nom de quelqu’un qui est parti. Il n’y restait rien de l’enfant. On lui avait appris ce que j’avais fait, et elle l’avait appris parfaitement."
+      },
+      {
+        "flag": "lysa_trail_ledger",
+        "en": "The fence on the wharf had sold me the road, and the road had ended here.",
+        "fr": "Le receleur du quai m’avait vendu la route, et la route finissait ici."
+      },
+      {
+        "flag": "lysa_line_ignored",
+        "en": "I had left the wharf’s fence without asking, and I paid for it here.",
+        "fr": "J’avais quitté le receleur du quai sans rien demander, et je le payais ici."
+      },
+      {
+        "flag": "lysa_offer_refused",
+        "en": "I had told Vane’s envoy to carry my answer back. It had got here before me.",
+        "fr": "J’avais dit à l’envoyé de Vane de rapporter ma réponse. Elle était arrivée avant moi."
+      },
+      {
+        "flag": "lysa_proof_asked",
+        "en": "I had asked for proof she was alive. Here it was, and I wished I had not.",
+        "fr": "J’avais demandé une preuve qu’elle était vivante. La voici, et j’aurais préféré ne pas l’avoir."
+      },
+      {
+        "flag": "lysa_offer_heard",
+        "en": "I had said nothing to Vane’s envoy. They had taken the silence for a yes.",
+        "fr": "Je n’avais rien dit à l’envoyé de Vane. On avait pris mon silence pour un oui."
+      },
+      {
+        "flag": "lysa_trail",
+        "en": "Her note was folded in my palm. The handwriting was better than I remembered, and worse.",
+        "fr": "Son billet était plié dans ma paume. L’écriture était meilleure que dans mon souvenir, et pire."
+      }
+    ],
+    "facing": "lysa",
+    "prompt": "What do you do for Lysa?",
+    "prompt_fr": "Que faites-vous pour Lysa ?"
   },
   "6010_masked_after": {
     "id": "6010_masked_after",
-    "description": "The mask came away in my hand when she fell, the strap cut by my own blade, and the paint underneath was cracked where she had been saying something through it for the whole of the fight. I knew the face before I had finished turning it toward the light. Lysa. I had lost her in my parents’ hovel, and the Inquisition had spent the year since teaching her my name so that she would have something to say when she found me. She had said it. I had not listened. The penitents did not come near. I carried her to the nearest chapel myself, and the frost took the shape of the door behind us, and I have not, since, been able to stand the sound of porcelain.",
-    "description_fr": "Le masque me resta dans la main quand elle tomba, la lanière tranchée par ma propre lame, et la peinture dessous était craquelée là où elle avait dit quelque chose à travers pendant tout le combat. Je reconnus le visage avant d’avoir fini de le tourner vers la lumière. Lysa. Je l’avais perdue dans la masure de mes parents, et l’Inquisition avait passé l’année à lui apprendre mon nom pour qu’elle ait quelque chose à dire en me trouvant. Elle l’avait dit. Je n’avais pas écouté. Les pénitents ne s’approchèrent pas. Je la portai moi-même jusqu’à la chapelle la plus proche, et le givre prit la forme de la porte derrière nous, et je n’ai plus, depuis, pu supporter le son de la porcelaine.",
+    "description": "The mask came away in my hand when she fell, the strap cut by my own blade, and the paint underneath was cracked where she had been saying something through it for the whole of the fight. I had known whose face it was before I drew. Lysa had said so. I had listened, and drawn anyway; that is the whole of what I will say about it. The penitents did not come near. I carried her to the nearest chapel myself, and the frost took the shape of the door behind us, and I have not, since, been able to stand the sound of porcelain.",
+    "description_fr": "Le masque me resta dans la main quand elle tomba, la sangle coupée par ma propre lame, et le fard dessous était fissuré là où elle avait dit quelque chose à travers pendant tout le combat. Je savais à qui était ce visage avant de dégainer. Lysa me l’avait dit. J’avais écouté, et dégainé quand même ; c’est tout ce que je dirai de cela. Les pénitents ne s’approchèrent pas. Je la portai moi-même à la chapelle la plus proche, et le givre prit la forme de la porte derrière nous, et je n’ai pas pu, depuis, supporter le bruit de la porcelaine.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
       "mood": "mournful",
       "speaker": "Narrator"
     },
     "location": "reliquary_quarter",
+    "automations": {},
     "choices": [
       {
         "text": "Take her mask with you",
@@ -11235,23 +11509,6 @@
         "flagsToAdd": [
           "lysa_left_masked"
         ]
-      }
-    ],
-    "flag_callbacks": [
-      {
-        "flag": "surrendered",
-        "en": "I had knelt in the dust of our street and let him take her. She would have remembered that too.",
-        "fr": "J’avais plié le genou dans la poussière de notre rue et je l’avais laissé la prendre. Elle s’en serait souvenue, elle aussi."
-      },
-      {
-        "flag": "unfurl_lost",
-        "en": "I had fought for her in our street, and lost. I do not know if she knew that.",
-        "fr": "J’avais lutté pour elle dans notre rue, et perdu. Je ne sais pas si elle le savait."
-      },
-      {
-        "flag": "fled_house",
-        "en": "I had run from our street and sworn I would come back for her. I had kept my word. It had taken a year.",
-        "fr": "J’avais fui notre rue en jurant de revenir la chercher. J’avais tenu parole. Il avait fallu un an."
       }
     ],
     "prompt": "What do you do with her mask?",
@@ -12304,6 +12561,28 @@
         ],
         "hideIfFlags": [
           "hub_5100_anvil_deaf_vote"
+        ]
+      },
+      {
+        "text": "Read the rider’s message from the camp",
+        "text_fr": "Lire le message de la cavalière du camp",
+        "next_id": "5100_lysa_raid",
+        "showIfFlags": [
+          "lysa_survived"
+        ],
+        "hideIfFlags": [
+          "hub_5100_lysa_raid"
+        ]
+      },
+      {
+        "text": "Open the Wrecker’s parcel",
+        "text_fr": "Ouvrir le colis du Naufrageur",
+        "next_id": "5100_lysa_mask",
+        "showIfFlags": [
+          "lysa_lost"
+        ],
+        "hideIfFlags": [
+          "hub_5100_lysa_mask"
         ]
       }
     ],
@@ -16836,6 +17115,10 @@
         "en": "Lysa sat next to me and counted the pieces twice, the way she counts dressings, and said nothing about the sixth.",
         "fr": "Lysa s’assit à côté de moi et compta deux fois les pièces, comme elle compte les pansements, et ne dit rien de la sixième.",
         "unlessFlags": [
+          "lysa_fallen",
+          "lysa_found_dead",
+          "lysa_mercy",
+          "lysa_sacrificed",
           "sailed_alone"
         ]
       },
@@ -21616,7 +21899,15 @@
       {
         "flag": "lysa_survived",
         "en": "The last time Aurel Vane and I had stood this close, he had had my sister by the arm in our own doorway, and I had taken her back from him. He remembered it. I watched him remember it.",
-        "fr": "La dernière fois qu’Aurel Vane et moi avions été aussi proches, il tenait ma sœur par le bras sur le seuil de notre maison, et je la lui avais reprise. Il s’en souvenait. Je le regardai s’en souvenir."
+        "fr": "La dernière fois qu’Aurel Vane et moi avions été aussi proches, il tenait ma sœur par le bras sur le seuil de notre maison, et je la lui avais reprise. Il s’en souvenait. Je le regardai s’en souvenir.",
+        "unlessFlags": [
+          "lysa_fallen",
+          "lysa_found_dead",
+          "lysa_mercy",
+          "lysa_rescued_force",
+          "lysa_sacrificed",
+          "lysa_sworn_for"
+        ]
       },
       {
         "flag": "lysa_lost",
@@ -21624,7 +21915,8 @@
         "fr": "La dernière fois que j’avais vu Aurel Vane, il traînait ma sœur par le bras hors de notre maison. Il ne se souvenait pas de son nom. Je le lui dis.",
         "unlessFlags": [
           "lysa_fallen",
-          "lysa_found_dead"
+          "lysa_found_dead",
+          "lysa_taken_ch4"
         ]
       },
       {
@@ -21656,6 +21948,26 @@
         "flag": "banner_raised",
         "en": "He looked past me at the grey hand, and for the first time something in his face was afraid.",
         "fr": "Il regarda la main grise par-dessus mon épaule, et pour la première fois quelque chose dans son visage eut peur."
+      },
+      {
+        "flag": "lysa_rescued_force",
+        "en": "He remembered the girl. He looked past me for her, and I understood he had hoped she would come.",
+        "fr": "Il se souvenait de la fille. Il regarda derrière moi pour la chercher, et je compris qu’il avait espéré qu’elle viendrait."
+      },
+      {
+        "flag": "lysa_sworn_for",
+        "en": "“You owed the Lantern a debt,” Vane said, “and you paid it with your own name. We do not forget that.” I had not forgotten either.",
+        "fr": "« Vous deviez une dette à la Lanterne, dit Vane, et vous l’avez payée de votre propre nom. Nous ne l’oublions pas. » Je ne l’avais pas oubliée non plus."
+      },
+      {
+        "flag": "lysa_sacrificed",
+        "en": "He could hear the Shroud in my arms the way you hear someone else’s heart. “What did you pay for that?” he asked. For once, I told him.",
+        "fr": "Il entendait le Linceul entre mes bras comme on entend le cœur d’un autre. « Qu’avez-vous payé pour cela ? » demanda-t-il. Pour une fois, je le lui dis."
+      },
+      {
+        "flag": "lysa_mercy",
+        "en": "He asked, kindly, whether she had suffered. I said no, and that he would not be so lucky.",
+        "fr": "Il demanda, aimablement, si elle avait souffert. Je dis que non, et que lui n’aurait pas cette chance."
       }
     ],
     "noDetour": true,
@@ -26351,5 +26663,460 @@
         ]
       }
     ]
+  },
+  "2015_lysa_line": {
+    "id": "2015_lysa_line",
+    "description": "The Tide Cellar’s fence has a price for everything, and he named this one before I had finished asking. A girl from Tallow Street, he said, brought through the landward gate in the spring in a closed cart, white paint already drying on her face. “Inland,” he said. “Past the Ashen Quarter, toward the Reliquary. The carters were paid in lantern oil, which is how I know who paid them.” He turned his palm up. “The road she took is twenty gold. The name of the man who signed for her is free, because you have already guessed it.”",
+    "description_fr": "Le receleur de la Cave aux Marées a un prix pour tout, et il me donna celui-ci avant que j’aie fini de demander. Une fille de la rue du Suif, dit-il, entrée par la porte de terre au printemps dans une charrette close, le fard blanc encore frais sur le visage. « Vers l’intérieur, dit-il. Après le Quartier des Cendres, vers le Reliquaire. Les charretiers ont été payés en huile de lanterne, ce qui me dit qui les payait. » Il tourna la paume vers le haut. « La route qu’elle a prise coûte vingt pièces d’or. Le nom de celui qui a signé pour elle est gratuit : vous l’avez déjà deviné. »",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_wharf",
+    "automations": {},
+    "choices": [
+      {
+        "text": "Pay him for the road (20 gold)",
+        "text_fr": "Le payer pour la route (20 or)",
+        "next_id": "2015",
+        "goldMod": -20,
+        "pays": true,
+        "flagsToAdd": [
+          "hub_2015_lysa_line",
+          "lysa_trail_ledger"
+        ]
+      },
+      {
+        "text": "Take the road from him by the collar",
+        "text_fr": "Lui arracher la route par le col",
+        "next_id": "2015",
+        "alignmentMod": -2,
+        "flagsToAdd": [
+          "hub_2015_lysa_line",
+          "lysa_trail_ledger"
+        ]
+      },
+      {
+        "text": "Say nothing, and leave the cellar",
+        "text_fr": "Ne rien dire, et quitter la cave",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_lysa_line",
+          "lysa_line_ignored"
+        ]
+      }
+    ],
+    "prompt": "What do you do about the fence’s price?",
+    "prompt_fr": "Que faites-vous du prix du receleur ?"
+  },
+  "3005_lysa_price": {
+    "id": "3005_lysa_price",
+    "description": "Vane’s envoy waited until the other two had gone. He was a thin man with a clerk’s ink on his cuffs and no gift in his hands, which I took for the first honest thing about him. “The Inquisitor-General sends a message, not a present. The girl is alive. She is being taught. The Lantern would have the cloth you carry, and the girl is the reason it believes you will bring it.” He let that settle. “It is also the reason she is alive. You may take that as a kindness, or as the other thing.”",
+    "description_fr": "L’envoyé de Vane attendit que les deux autres soient partis. C’était un homme maigre, l’encre d’un scribe aux poignets et rien dans les mains, ce que je pris pour la première chose honnête chez lui. « L’Inquisiteur général envoie un message, non un présent. La fille est vivante. On l’instruit. La Lanterne voudrait le tissu que vous portez, et la fille est la raison pour laquelle elle croit que vous l’apporterez. » Il laissa cela se poser. « C’est aussi la raison pour laquelle elle est vivante. Vous pouvez y voir une bonté, ou autre chose. »",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "ashen_quarter_gate",
+    "automations": {},
+    "choices": [
+      {
+        "text": "Refuse, and tell him to carry that back",
+        "text_fr": "Refuser, et lui dire de rapporter cela",
+        "next_id": "3005",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_3005_lysa_price",
+          "lysa_offer_refused"
+        ]
+      },
+      {
+        "text": "Ask for proof she is alive",
+        "text_fr": "Demander une preuve qu’elle est vivante",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_lysa_price",
+          "lysa_proof_asked"
+        ]
+      },
+      {
+        "text": "Say nothing, and learn his face",
+        "text_fr": "Ne rien dire, et retenir son visage",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_lysa_price",
+          "lysa_offer_heard"
+        ]
+      }
+    ],
+    "prompt": "How do you answer the envoy?",
+    "prompt_fr": "Que répondez-vous à l’envoyé ?"
+  },
+  "5100_lysa_raid": {
+    "id": "5100_lysa_raid",
+    "description": "A rider from the camp found me at Wrack’s End with her horse half dead under her. White sails off the cove, she said, three boats, and torches on the shingle road: the Inquisition knew where the camp was, and it knew whom to ask for. The list in the Reliquary’s hand said at large, with the cloth, and the cloth was on my back. The Drowned Stair lay a day below me and the tide would not hold for it; the camp lay a day behind. Lysa had a wall, a kettle and forty beds, and she would not leave them.",
+    "description_fr": "Une cavalière du camp me trouva à Bout-du-Varech, son cheval à demi mort sous elle. Des voiles blanches devant la crique, dit-elle, trois barques, et des torches sur le chemin de galets : l’Inquisition savait où était le camp, et savait qui demander. La liste dans la main du Reliquaire disait en liberté, avec le tissu, et le tissu était sur mon dos. L’Escalier Noyé s’ouvrait à un jour en contrebas et la marée ne l’attendrait pas ; le camp était à un jour derrière moi. Lysa avait un mur, une bouilloire et quarante lits, et ne les quitterait pas.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "wracks_end",
+    "automations": {},
+    "choices": [
+      {
+        "text": "Ride back, and hold the camp",
+        "text_fr": "Rentrer au galop, et tenir le camp",
+        "next_id": "5100",
+        "alignmentMod": 2,
+        "healAmount": -10,
+        "flagsToAdd": [
+          "hub_5100_lysa_raid",
+          "lysa_guarded"
+        ]
+      },
+      {
+        "text": "Go down the Stair, and trust the wall",
+        "text_fr": "Descendre l’Escalier, et se fier au mur",
+        "next_id": "5100",
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_5100_lysa_raid",
+          "lysa_taken_ch4",
+          "lysa_lost"
+        ]
+      }
+    ],
+    "prompt": "Ride back, or go on?",
+    "prompt_fr": "Rentrer au galop, ou poursuivre ?"
+  },
+  "5100_lysa_mask": {
+    "id": "5100_lysa_mask",
+    "description": "A Wrecker’s boy had been paid to bring it up the cliff, and told not to wait for an answer: a small thing wrapped in black thread, and a note under the thread in a careful, rounded hand. The hand was one I knew. “Come to the chapel with the chair. They say I am to say your name. I am trying to say it right.”",
+    "description_fr": "Un garçon des Naufrageurs avait été payé pour le monter jusqu’en haut de la falaise, avec ordre de ne pas attendre de réponse : un petit objet enveloppé de fil noir, et sous le fil un billet d’une écriture ronde et soignée. Cette écriture, je la connaissais. « Venez à la chapelle à la chaise. On dit que je dois prononcer votre nom. J’essaie de le dire correctement. »",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "mournful",
+      "speaker": "Narrator"
+    },
+    "location": "wracks_end",
+    "automations": {},
+    "choices": [
+      {
+        "text": "Keep it, and mark the road",
+        "text_fr": "Le garder, et noter la route",
+        "next_id": "5100",
+        "flagsToAdd": [
+          "hub_5100_lysa_mask",
+          "lysa_trail"
+        ]
+      },
+      {
+        "text": "Burn the note, and keep the thread",
+        "text_fr": "Brûler le billet, et garder le fil",
+        "next_id": "5100",
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_5100_lysa_mask",
+          "lysa_trail"
+        ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "lysa_lost",
+        "en": "Inside the thread was a child’s porcelain mask, the white paint on it barely dry, and the strap cut to fit a face I knew.",
+        "fr": "Dans le fil se trouvait un masque de porcelaine d’enfant, la peinture blanche à peine sèche, et la sangle taillée pour un visage que je connaissais."
+      },
+      {
+        "flag": "lysa_taken_ch4",
+        "en": "Inside the thread was a grey scarf, the one she had worn on the wall, and a smear of the white paint across one corner.",
+        "fr": "Dans le fil se trouvait une écharpe grise, celle qu’elle portait sur le mur, et sur un coin une trace de fard blanc."
+      }
+    ],
+    "prompt": "What do you do with the parcel?",
+    "prompt_fr": "Que faites-vous du colis ?"
+  },
+  "6010_clement_refused": {
+    "id": "6010_clement_refused",
+    "description": "I laid the cloth on the arm of the chair and did not let go of it. Clement looked at it the way a man looks at a letter he has already read. “Not the cloth,” he said. “The cloth is not yours to trade. It is only yours to carry, until it is taken. I am not buying. I am asking what you would give that you have not already given.” He did not look away from me. The girl in the mask said my name again, a little more clearly.",
+    "description_fr": "Je posai le tissu sur l’accoudoir de la chaise sans le lâcher. Clément le regarda comme on regarde une lettre déjà lue. « Pas le tissu, dit-il. Le tissu n’est pas à vous pour que vous l’échangiez. Il est seulement à vous pour que vous le portiez, jusqu’à ce qu’on vous le prenne. Je n’achète pas. Je demande ce que vous donneriez que vous n’avez pas déjà donné. » Il ne me quittait pas des yeux. La fille au masque dit encore mon nom, un peu plus nettement.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "reliquary_quarter",
+    "automations": {},
+    "choices": [
+      {
+        "text": "Take the cloth back, and think again",
+        "text_fr": "Reprendre le tissu, et réfléchir encore",
+        "next_id": "6010_masked",
+        "flagsToAdd": [
+          "clement_refused"
+        ]
+      }
+    ],
+    "facing": "brother_clement"
+  },
+  "6010_lysa_rescued": {
+    "id": "6010_lysa_rescued",
+    "description": "Clement went down in his own chair, the mask cracking from brow to chin, and there was nothing behind it but a tired man who said, with real surprise, “I did listen.” The white masks in the doorway did not move; they were penitents, and they had been taught to stand while things were done. I cut the straps. Lysa sat very still, as if movement were something she would have to ask permission for.",
+    "description_fr": "Clément s’effondra dans sa propre chaise, le masque se fendant du front au menton, et il n’y avait derrière qu’un homme fatigué qui dit, avec une vraie surprise : « J’ai pourtant écouté. » Les masques blancs sur le seuil ne bougèrent pas ; c’étaient des pénitents, et on leur avait appris à rester debout pendant qu’on faisait les choses. Je coupai les sangles. Lysa resta très immobile, comme si le mouvement était quelque chose qu’il lui faudrait demander la permission de faire.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "mournful",
+      "speaker": "Narrator"
+    },
+    "location": "reliquary_quarter",
+    "automations": {},
+    "choices": [
+      {
+        "text": "Take her out through the frost",
+        "text_fr": "La mener dehors à travers le givre",
+        "next_id": "6010",
+        "alignmentMod": 4,
+        "healAmount": -10,
+        "flagsToAdd": [
+          "hub_6010_masked",
+          "hub_6010_lysa",
+          "lysa_survived",
+          "lysa_rescued_force",
+          "lysa_to_camp"
+        ],
+        "politics": {
+          "marks": {
+            "inquisition": "foe"
+          },
+          "standing": {
+            "dominion": -5
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "surrendered",
+        "en": "She stood up by herself and took off her own mask and looked at the porcelain as if it were a stranger’s face. “You took your time,” she said, and then she cried.",
+        "fr": "Elle se leva toute seule, ôta elle-même son masque et regarda la porcelaine comme le visage d’une inconnue. « Vous avez pris votre temps », dit-elle, puis elle pleura."
+      },
+      {
+        "flag": "unfurl_lost",
+        "en": "She did not take off the mask. She held it to her chin with both hands, as if it might fall, and said my name in her own voice, once. “Not yet,” she said. “But yes.”",
+        "fr": "Elle n’ôta pas le masque. Elle le tint contre son menton à deux mains, comme s’il risquait de tomber, et dit mon nom de sa propre voix, une seule fois. « Pas encore, dit-elle. Mais oui. »"
+      }
+    ],
+    "facing": "lysa"
+  },
+  "6010_lysa_sworn": {
+    "id": "6010_lysa_sworn",
+    "description": "I said it in the chapel doorway, loud enough for the masks to hear: that I would stand under the First Lantern, and that the girl was to be let out of the chair. Clement wrote it down. It took no longer than a signature. Lysa walked out between two penitents and did not look at me until we were past the gate, and then she looked at me for a long time. “Did they ask for the cloth?” “No.” “Then they asked for something you have more of,” she said, and did not speak to me again that day.",
+    "description_fr": "Je le dis sur le seuil de la chapelle, assez fort pour que les masques l’entendent : que je me tiendrais sous la Première Lanterne, et que la fille serait libérée de la chaise. Clément le nota. Cela ne prit pas plus longtemps qu’une signature. Lysa sortit entre deux pénitents et ne me regarda qu’une fois passée la porte, puis elle me regarda longtemps. « Ils ont demandé le tissu ? — Non. — Alors ils ont demandé quelque chose dont vous avez davantage », dit-elle, et elle ne m’adressa plus la parole de la journée.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "reliquary_quarter",
+    "automations": {},
+    "choices": [
+      {
+        "text": "Leave with her",
+        "text_fr": "Partir avec elle",
+        "next_id": "6010",
+        "alignmentMod": -3,
+        "flagsToAdd": [
+          "hub_6010_masked",
+          "hub_6010_lysa",
+          "lysa_survived",
+          "lysa_sworn_for"
+        ],
+        "politics": {
+          "standing": {
+            "dominion": 12,
+            "penitents": -5,
+            "vigil": -5
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "unfurl_lost",
+        "en": "Half of her came with me, and half stayed with the masks. The half that came did not forgive the oath.",
+        "fr": "La moitié d’elle vint avec moi, et l’autre moitié resta avec les masques. Celle qui vint ne pardonna pas le serment."
+      }
+    ],
+    "facing": "brother_clement"
+  },
+  "6010_lysa_mercy": {
+    "id": "6010_lysa_mercy",
+    "description": "I asked Clement to leave us. He did, which told me what he thought he had left to gain. She sat in the chair of her own accord. I held the hand that was still hers, and said the things I had not said in the street, and when she asked, in her own voice for the last time, whether it would be quick, I told her the truth. It was. I took the mask off afterwards, because she had never wanted it.",
+    "description_fr": "Je demandai à Clément de nous laisser. Il le fit, ce qui me dit ce qu’il pensait avoir encore à gagner. Elle s’assit dans la chaise de son plein gré. Je tins la main qui était encore la sienne, et dis les choses que je n’avais pas dites dans la rue, et quand elle demanda, de sa propre voix pour la dernière fois, si ce serait rapide, je lui dis la vérité. Ce le fut. J’ôtai le masque ensuite, car elle n’en avait jamais voulu.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "mournful",
+      "speaker": "Narrator"
+    },
+    "location": "reliquary_quarter",
+    "automations": {},
+    "choices": [
+      {
+        "text": "Take her mask with you",
+        "text_fr": "Emporter son masque",
+        "next_id": "6010",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_6010_masked",
+          "lysa_mercy",
+          "lysa_mask_kept"
+        ]
+      },
+      {
+        "text": "Leave the mask with her",
+        "text_fr": "Laisser le masque avec elle",
+        "next_id": "6010",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_6010_masked",
+          "lysa_mercy",
+          "lysa_left_masked"
+        ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "unfurl_lost",
+        "en": "She knew me for the length of one breath, and that breath was the whole of what I had come for.",
+        "fr": "Elle me reconnut le temps d’un souffle, et ce souffle était tout ce pour quoi j’avais fait le voyage."
+      },
+      {
+        "flag": "fled_house",
+        "en": "She did not know me until the very end, and then she did. I have not decided whether to be grateful for it.",
+        "fr": "Elle ne me reconnut qu’à la toute fin, puis elle me reconnut. Je n’ai pas décidé s’il faut m’en réjouir."
+      }
+    ],
+    "facing": "lysa",
+    "prompt": "What do you do with her mask?",
+    "prompt_fr": "Que faites-vous de son masque ?"
+  },
+  "6010_lysa_sacrifice": {
+    "id": "6010_lysa_sacrifice",
+    "description": "I laid the cloth across the chair and put her hand on it. She let me. That was the worst of it. The grey went warm under her palm the way it had in the trapdoor, and the two open hands drawn on it turned, very slightly, toward her. Nothing in the Shroud had ever asked for this, and nothing in the Shroud refused it. When it was over the cloth was the temperature of a living wrist, and I was holding it, and the chapel was very quiet, and Brother Clement, in the doorway, had taken off his mask to see me better. “Now you understand us,” he said.",
+    "description_fr": "J’étendis le tissu sur la chaise et y posai sa main. Elle me laissa faire. C’était le pire. Le gris se réchauffa sous sa paume comme il l’avait fait dans la trappe, et les deux mains ouvertes dessinées dessus se tournèrent, très légèrement, vers elle. Rien dans le Linceul n’avait jamais demandé cela, et rien dans le Linceul ne le refusa. Quand ce fut fini, le tissu avait la température d’un poignet vivant, et c’était moi qui le tenais, et la chapelle était très silencieuse, et Frère Clément, sur le seuil, avait ôté son masque pour mieux me voir. « Maintenant, vous nous comprenez », dit-il.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "location": "reliquary_quarter",
+    "automations": {},
+    "choices": [
+      {
+        "text": "Wrap the Shroud, and go",
+        "text_fr": "Envelopper le Linceul, et partir",
+        "next_id": "6010",
+        "alignmentMod": -8,
+        "flagsToAdd": [
+          "hub_6010_masked",
+          "lysa_sacrificed",
+          "void_marked"
+        ]
+      }
+    ],
+    "facing": "lysa"
+  },
+  "6010_lysa_ledger": {
+    "id": "6010_lysa_ledger",
+    "description": "I asked her where the fever-bark had come from, and she did not lie. A Dominion courier had come through the ward with a purse and a polite question, and she had given him a copy of one page of the ledger, only a copy, only the road, in exchange for a season’s medicine for forty people. She said it flatly. She had thought about it for two days and was ready to be told she was wrong. “I would do it again,” she said. “I wanted you to hear it from me.”",
+    "description_fr": "Je lui demandai d’où venait l’écorce-fièvre, et elle ne mentit pas. Un courrier du Dominion était passé dans la salle avec une bourse et une question polie, et elle lui avait donné une copie d’une seule page du registre, une copie seulement, le chemin seulement, contre la médecine d’une saison pour quarante personnes. Elle le dit d’une voix plate. Elle y avait pensé deux jours et était prête à s’entendre dire qu’elle avait eu tort. « Je le referais, dit-elle. Je voulais que vous l’appreniez par moi. »",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "reliquary_quarter",
+    "automations": {},
+    "choices": [
+      {
+        "text": "Forgive her",
+        "text_fr": "Lui pardonner",
+        "next_id": "6010",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_6010_lysa_ledger",
+          "lysa_forgiven"
+        ]
+      },
+      {
+        "text": "Tell her what it could cost",
+        "text_fr": "Lui dire ce que cela peut coûter",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_lysa_ledger",
+          "lysa_scolded"
+        ]
+      },
+      {
+        "text": "Burn the other copies, and say nothing",
+        "text_fr": "Brûler les autres copies, sans rien dire",
+        "next_id": "6010",
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_6010_lysa_ledger",
+          "lysa_traded"
+        ]
+      }
+    ],
+    "facing": "lysa",
+    "prompt": "What do you say to Lysa?",
+    "prompt_fr": "Que dites-vous à Lysa ?"
+  },
+  "7004_stitch": {
+    "id": "7004_stitch",
+    "description": "The Shroud was whole but for the sixth piece, and the tear would not close on whole cloth alone: it wanted a hand to carry the needle, and the hand had to be of the blood the cloth had been made for. I had known that in the way you know a debt. I had not known Lysa knew. She was already on the sand with the needle between her fingers, threading it with the grey, as calm as when she dressed wounds. “It has to be one of us,” she said. “I am better with a needle.” The Host waited with its banners down. The tear hung open at my back.",
+    "description_fr": "Le Linceul était entier, hormis la sixième pièce, et la déchirure ne se refermerait pas sur le seul tissu : il lui fallait une main pour tenir l’aiguille, et cette main devait être du sang pour lequel le tissu avait été fait. Je le savais comme on sait une dette. Je ne savais pas que Lysa le savait. Elle était déjà sur le sable, l’aiguille entre les doigts, la passant dans le gris, aussi calme que lorsqu’elle pansait des blessures. « Il faut que ce soit l’un de nous, dit-elle. Je suis meilleure avec une aiguille. » L’Hôte attendait, bannières baissées. La déchirure restait ouverte dans mon dos.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "location": "hollow_shore",
+    "automations": {},
+    "choices": [
+      {
+        "text": "Let her sew",
+        "text_fr": "La laisser coudre",
+        "next_id": "7005_dawn",
+        "alignmentMod": -2,
+        "flagsToAdd": [
+          "lysa_stitched"
+        ]
+      },
+      {
+        "text": "Take the needle yourself",
+        "text_fr": "Prendre l’aiguille vous-même",
+        "next_id": "7005_dawn",
+        "alignmentMod": 3,
+        "healAmount": -30,
+        "flagsToAdd": [
+          "lysa_spared_stitch"
+        ]
+      },
+      {
+        "text": "Tell her no, and choose another ending",
+        "text_fr": "Lui dire non, et choisir une autre fin",
+        "next_id": "7004",
+        "flagsToAdd": [
+          "lysa_stitch_declined"
+        ]
+      }
+    ],
+    "facing": "lysa",
+    "prompt": "Who takes the needle?",
+    "prompt_fr": "Qui prend l’aiguille ?"
   }
 }
