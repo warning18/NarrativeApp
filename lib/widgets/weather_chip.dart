@@ -12,6 +12,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/climate_provider.dart';
 import '../theme/stitched_ink.dart';
+import 'level_signpost.dart';
 
 class WeatherChip extends ConsumerWidget {
   const WeatherChip({super.key, required this.palette, this.compact = false});
@@ -56,8 +57,24 @@ class WeatherChip extends ConsumerWidget {
     ].join(' · ');
   }
 
+  /// The sky's chip, with the chapter's level signpost (level_signpost.dart)
+  /// above it while the party is under the level the next chapter asks.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final sky = _sky(context, ref);
+    if (ref.watch(levelSignpostProvider) == null) return sky;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        LevelSignpostChip(palette: palette, compact: compact),
+        const SizedBox(height: 4),
+        sky,
+      ],
+    );
+  }
+
+  Widget _sky(BuildContext context, WidgetRef ref) {
     final here = ref.watch(skyHereProvider);
     if (here == null) return const SizedBox.shrink();
     final sky = here.today();

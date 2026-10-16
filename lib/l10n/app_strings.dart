@@ -3095,6 +3095,23 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Put it away',
     AppLanguage.fr: 'Ranger',
   },
+  'level_signpost': {
+    AppLanguage.en: 'Chapter {n} asks for level {level}. You are level {you}.',
+    AppLanguage.fr:
+        'Le chapitre {n} demande le niveau {level}. Vous êtes niveau {you}.',
+  },
+  'level_signpost_row': {
+    AppLanguage.en: 'Chapter {n}: level {level} advised (you: {you})',
+    AppLanguage.fr: 'Chapitre {n} : niveau {level} conseillé (vous : {you})',
+  },
+  'level_signpost_short': {
+    AppLanguage.en: 'Ch. {n} · lvl {level}',
+    AppLanguage.fr: 'Ch. {n} · niv. {level}',
+  },
+  'level_signpost_lv': {
+    AppLanguage.en: 'Lvl {level}',
+    AppLanguage.fr: 'Niv. {level}',
+  },
   'next_main_quest_label': {
     AppLanguage.en: 'Next · main quest',
     AppLanguage.fr: 'Ensuite · quête principale',
