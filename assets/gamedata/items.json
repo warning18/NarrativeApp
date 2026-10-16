@@ -1743,8 +1743,8 @@
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "itemName_fr": "Ascension de l’archimage",
-    "description": "The Choir’s school keeps one of these for the Magister and sells the rest, warded to the last ring, to hands trained enough to hold the lightning it draws. Aurel Vane carried its twin into the Lantern Hall.",
-    "description_fr": "L’école du Chœur en garde un pour le magister et vend les autres, protégés jusqu’au dernier anneau, à des mains assez exercées pour tenir la foudre qu’il attire. Aurel Vane porta son jumeau dans la Salle de la Lanterne."
+    "description": "The Choir’s school keeps one of these for the Magister and sells the rest, warded to the last ring, to hands trained enough to hold the lightning it draws. Regent Oriel carried its twin into the Lantern Hall.",
+    "description_fr": "L’école du Chœur en garde un pour le magister et vend les autres, protégés jusqu’au dernier anneau, à des mains assez exercées pour tenir la foudre qu’il attire. Le Régent Oriel porta son jumeau dans la Salle de la Lanterne."
   },
   "potion_major": {
     "id": "potion_major",

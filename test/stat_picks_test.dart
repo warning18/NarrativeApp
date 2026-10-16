@@ -236,49 +236,26 @@ void main() {
       expect(m.state.statPoints, 1);
     });
 
-    test('the old ways of spending leave no stale pick', () async {
-      final n = await notifierWith({'statPoints': 6, 'professionId': 'mage'});
-      await n.ensureStatPick(paths, random: Random(1));
-      await n.spendStatPoint(stat: 'wisdom');
-      expect(n.state.statPickOffer, isEmpty);
-      await n.ensureStatPick(paths, random: Random(1));
-      await n.ensureTraining(paths, random: Random(1));
-      expect(await n.takeTraining(0), isTrue);
-      expect(n.state.statPoints, 0);
-      expect(n.state.statPickOffer, isEmpty);
-      expect(await n.ensureStatPick(paths), isEmpty);
-    });
-
-    test('an old save: points become picks, a full build card is dropped',
+    test('an old save: points become picks, its training offer is ignored',
         () async {
+      // A save from before the picks still carries the training offer it
+      // had on the table (three 5-point paths, as the old code wrote it).
       final old = {
         'statPoints': 7,
         'professionId': 'warrior',
         'trainingTaken': {'bruiser': 2},
         'trainingOffer': [
           for (final id in ['bruiser', 'warden', 'envoy'])
-            TrainingChoice(pathId: id, gains: paths[id]!.gains, points: 5)
-                .toJson(),
+            {'path': id, 'gains': paths[id]!.gains, 'points': 5},
         ],
       };
       final s = PlayerSession.fromJson(old);
-      expect(s.trainingOffer, isEmpty);
       expect(s.statPickOffer, isEmpty);
       expect(s.pendingStatPicks, 7);
       expect(s.trainingTaken, {'bruiser': 2});
+      expect(s.toJson().containsKey('trainingOffer'), isFalse);
       final n = await notifierWith(old);
       expect(await n.ensureStatPick(paths), hasLength(3));
-
-      // A small offer (a Tome's point) is kept as it was.
-      final small = PlayerSession.fromJson({
-        'statPoints': 1,
-        'trainingOffer': [
-          const TrainingChoice(
-                  pathId: 'envoy', gains: {'charisma': 1}, points: 1)
-              .toJson(),
-        ],
-      });
-      expect(small.trainingOffer, hasLength(1));
     });
 
     test('a level brings +1 base damage by itself', () async {

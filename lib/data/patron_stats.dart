@@ -2,7 +2,7 @@
 // profession-clan-mechanics.md "Passive stat points per level"): each
 // level reached, the clan you stand best with (your patron, at Friendly or
 // better; the sworn one first) adds to your stats, on top of the level's
-// own reward and the training offer, so a clan pulls your stats as well as
+// own reward and the stat picks, so a clan pulls your stats as well as
 // your mechanic.
 //
 // - Friendly or Friend: +1 to its first stat ([patronStatsOf]).

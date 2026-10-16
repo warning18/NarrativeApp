@@ -961,8 +961,8 @@
   },
   "400": {
     "id": "400",
-    "description": "I never reached the door. Something passed over the street with a sound like a sheet being torn the length of the sky, and our house folded. A ball from one of the white ships had come down through the roof and out through the front wall, and the wall went out into the street in one long breath of brick and plaster and dust. For a moment there was nothing in the world but that dust. Then the inquisitors came out of it, shouting, grey with it, and behind them came a scream I would have known in any city: Lysa. A man walked out of the ruin of our house holding my sister off the ground by one wrist, in one gloved hand, the way you might carry a lantern. He was tall, and dressed in white, and at his collar hung a small lantern hooded in black. He did not shout. He did not need to. The others had stepped back from him as if he were the fire. Inquisitor-General, one of them called him, and then, more quietly, Vane; and Aurel Vane looked at me through the dust, and I understood that he knew exactly who I was. “Where is it?” he asked Lysa, pleasantly, as one asks a child for a lost glove. “Your mother kept something. Either you will tell me, or the person at the end of the street will.”",
-    "description_fr": "Je n’atteignis jamais la porte. Quelque chose passa au-dessus de la rue avec le bruit d’un drap qu’on déchire sur toute la longueur du ciel, et notre maison se plia. Un boulet tiré de l’un des navires blancs était descendu à travers le toit pour ressortir par le mur de façade, et le mur partit dans la rue en un long souffle de brique, de plâtre et de poussière. Un instant, il n’y eut plus au monde que cette poussière. Puis les inquisiteurs en sortirent en criant, gris de la tête aux pieds, et derrière eux monta un cri que j’aurais reconnu dans n’importe quelle ville : Lysa. Un homme sortit des ruines de notre maison en tenant ma sœur au-dessus du sol par un poignet, d’une seule main gantée, comme on porte une lanterne. Il était grand, vêtu de blanc, et à son col pendait une petite lanterne voilée de noir. Il ne criait pas. Il n’en avait pas besoin. Les autres s’étaient écartés de lui comme on s’écarte du feu. Inquisiteur général, l’appela l’un d’eux, puis, plus bas, Vane ; et Aurel Vane me regarda à travers la poussière, et je compris qu’il savait exactement qui j’étais. « Où est-ce ? demanda-t-il à Lysa, avec amabilité, comme on réclame à un enfant un gant perdu. Votre mère gardait quelque chose. Ou vous me le direz, ou ce sera la personne qui se tient au bout de la rue. »",
+    "description": "I never reached the door. Something passed over the street with a sound like a sheet being torn the length of the sky, and our house folded. A ball from one of the white ships had come down through the roof and out through the front wall, and the wall went out into the street in one long breath of brick and plaster and dust. For a moment there was nothing in the world but that dust. Then the inquisitors came out of it, shouting, grey with it, and behind them came a scream I would have known in any city: Lysa. A man walked out of the ruin of our house holding my sister off the ground by one wrist, in one gloved hand, the way you might carry a lantern. He was tall, in dark robes and a white mask, with red sashes at his waist, and at his collar hung a small lantern hooded in black. He did not shout. He did not need to. The others had stepped back from him as if he were the fire. Inquisitor-General, one of them called him, and then, more quietly, Vane; and Aurel Vane looked at me through the dust, and I understood that he knew exactly who I was. “Where is it?” he asked Lysa, pleasantly, as one asks a child for a lost glove. “Your mother kept something. Either you will tell me, or the person at the end of the street will.”",
+    "description_fr": "Je n’atteignis jamais la porte. Quelque chose passa au-dessus de la rue avec le bruit d’un drap qu’on déchire sur toute la longueur du ciel, et notre maison se plia. Un boulet tiré de l’un des navires blancs était descendu à travers le toit pour ressortir par le mur de façade, et le mur partit dans la rue en un long souffle de brique, de plâtre et de poussière. Un instant, il n’y eut plus au monde que cette poussière. Puis les inquisiteurs en sortirent en criant, gris de la tête aux pieds, et derrière eux monta un cri que j’aurais reconnu dans n’importe quelle ville : Lysa. Un homme sortit des ruines de notre maison en tenant ma sœur au-dessus du sol par un poignet, d’une seule main gantée, comme on porte une lanterne. Il était grand, en robe sombre et masque blanc, des ceintures rouges à la taille, et à son col pendait une petite lanterne voilée de noir. Il ne criait pas. Il n’en avait pas besoin. Les autres s’étaient écartés de lui comme on s’écarte du feu. Inquisiteur général, l’appela l’un d’eux, puis, plus bas, Vane ; et Aurel Vane me regarda à travers la poussière, et je compris qu’il savait exactement qui j’étais. « Où est-ce ? demanda-t-il à Lysa, avec amabilité, comme on réclame à un enfant un gant perdu. Votre mère gardait quelque chose. Ou vous me le direz, ou ce sera la personne qui se tient au bout de la rue. »",
     "context_taxonomy": {
       "ui_theme": "hovel",
       "mood": "action",
@@ -9567,8 +9567,8 @@
       },
       {
         "flag": "inquisition_pact",
-        "en": "The Inquisition’s boat was waiting off the shore for whatever I decided, and I understood that whatever I decided, it had already been decided for by the man in white.",
-        "fr": "La barque de l’Inquisition attendait au large pour ce que je déciderais, et je compris que quoi que je décide, l’homme en blanc en avait déjà décidé pour moi."
+        "en": "The Inquisition’s boat was waiting off the shore for whatever I decided, and I understood that whatever I decided, it had already been decided for by the man in the white mask.",
+        "fr": "La barque de l’Inquisition attendait au large pour ce que je déciderais, et je compris que quoi que je décide, l’homme au masque blanc en avait déjà décidé pour moi."
       },
       {
         "flag": "lysa_fallen",
@@ -18446,8 +18446,8 @@
   },
   "3005_envoys": {
     "id": "3005_envoys",
-    "description": "They had come looking for me, which was new. Three envoys sat in a row on a fallen beam at the Quarter’s gate, each pretending the other two were not there. The first wore the Order’s sword-and-lantern and the face of a man who had buried friends on this coast: Grand Master Morrow sent his regards, and a whetstone. The second was a Wickwarden with a lamp in her lap: the Eldest, Maud Tallis, sent oil for my wounds and asked for nothing at all, which I distrusted most. The third was an Inquisitor, young, gentle-voiced, with the hooded lantern at his collar: Aurel Vane, the Inquisitor-General, sent a purse, and his interest. The last time I had seen the Inquisitor-General he had been walking out of the dust of my own street, and I kept my hands very still while his envoy talked. The Lantern-Bearer was dying, the three of them agreed, if on nothing else, and when the Throne was empty their masters would remember who had stood where. The Inquisitor’s eyes went to the grey on my back twice while he talked, and the second time he forgot to smile.",
-    "description_fr": "Ils étaient venus me chercher, ce qui était nouveau. Trois émissaires étaient assis en rang sur une poutre tombée à la porte du Quartier, chacun faisant semblant que les deux autres n’étaient pas là. Le premier portait l’épée-lanterne de l’Ordre et le visage d’un homme qui avait enterré des amis sur cette côte : le Grand Maître Morrow m’envoyait ses salutations, et une pierre à aiguiser. La deuxième était une Garde-Mèche, une lampe sur les genoux : l’Aînée, Maud Tallis, m’envoyait de l’huile pour mes plaies et ne demandait rien du tout, ce dont je me méfiai le plus. Le troisième était un inquisiteur, jeune, à la voix douce, la lanterne encapuchonnée au col : Aurel Vane, l’Inquisiteur général, m’envoyait une bourse, et son intérêt. La dernière fois que j’avais vu l’Inquisiteur général, il sortait de la poussière de ma propre rue, et je gardai les mains très immobiles pendant que son émissaire parlait. Le Porte-Lanterne se mourait, en convenaient-ils tous trois, à défaut d’autre chose, et quand le Trône serait vide, leurs maîtres se souviendraient de qui s’était tenu où. Les yeux de l’inquisiteur se posèrent deux fois sur le gris de mon dos pendant qu’il parlait, et la seconde fois, il oublia de sourire.",
+    "description": "They had come looking for me, which was new. Three envoys sat in a row on a fallen beam at the Quarter’s gate, each pretending the other two were not there. The first wore the Order’s sword-and-lantern and the face of a man who had buried friends on this coast: Grand Master Morrow sent his regards, and a whetstone. The second was a Wickwarden with a lamp in her lap: the Eldest, Maud Tallis, sent oil for my wounds and asked for nothing at all, which I distrusted most. The third was an Inquisitor, young, gentle-voiced, with the hooded lantern at his collar: Aurel Vane, the Inquisitor-General, sent a purse in the name of the Regent, Cassian Oriel, who spoke in Candlehold for the failing Voice, and brought his own interest. The last time I had seen the Inquisitor-General he had been walking out of the dust of my own street, and I kept my hands very still while his envoy talked. The Lantern-Bearer was dying, the three of them agreed, if on nothing else, and when the Throne was empty their masters would remember who had stood where. The Inquisitor’s eyes went to the grey on my back twice while he talked, and the second time he forgot to smile.",
+    "description_fr": "Ils étaient venus me chercher, ce qui était nouveau. Trois émissaires étaient assis en rang sur une poutre tombée à la porte du Quartier, chacun faisant semblant que les deux autres n’étaient pas là. Le premier portait l’épée-lanterne de l’Ordre et le visage d’un homme qui avait enterré des amis sur cette côte : le Grand Maître Morrow m’envoyait ses salutations, et une pierre à aiguiser. La deuxième était une Garde-Mèche, une lampe sur les genoux : l’Aînée, Maud Tallis, m’envoyait de l’huile pour mes plaies et ne demandait rien du tout, ce dont je me méfiai le plus. Le troisième était un inquisiteur, jeune, à la voix douce, la lanterne encapuchonnée au col : Aurel Vane, l’Inquisiteur général, m’envoyait une bourse au nom du Régent, Cassian Oriel, qui parlait à Candlehold pour la Voix déclinante, et son propre intérêt. La dernière fois que j’avais vu l’Inquisiteur général, il sortait de la poussière de ma propre rue, et je gardai les mains très immobiles pendant que son émissaire parlait. Le Porte-Lanterne se mourait, en convenaient-ils tous trois, à défaut d’autre chose, et quand le Trône serait vide, leurs maîtres se souviendraient de qui s’était tenu où. Les yeux de l’inquisiteur se posèrent deux fois sur le gris de mon dos pendant qu’il parlait, et la seconde fois, il oublia de sourire.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
       "mood": "ominous",
@@ -18456,8 +18456,8 @@
     "location": "ashen_quarter_gate",
     "choices": [
       {
-        "text": "Take Vane’s purse (+40 gold)",
-        "text_fr": "Prendre la bourse de Vane (+40 or)",
+        "text": "Take the Regent’s purse (+40 gold)",
+        "text_fr": "Prendre la bourse du Régent (+40 or)",
         "next_id": "3005",
         "goldMod": 40,
         "alignmentMod": -1,
@@ -18900,8 +18900,8 @@
     "flag_callbacks": [
       {
         "flag": "vote_read",
-        "en": "I had read the Tribunal’s vote by steam at Wrack’s End. It had been cast for Vane.",
-        "fr": "J’avais lu à la vapeur le vote du Tribunal, à Bout-du-Varech. Il était pour Vane."
+        "en": "I had read the Tribunal’s vote by steam at Wrack’s End. It had been cast for the Regent.",
+        "fr": "J’avais lu à la vapeur le vote du Tribunal, à Bout-du-Varech. Il était pour le Régent."
       }
     ],
     "facing": "frozen_pilgrim",
@@ -19144,8 +19144,8 @@
   },
   "7002_throne": {
     "id": "7002_throne",
-    "description": "I laid the three of them out on the sand in my head, the way you lay out cards you already know. The Inquisitor-General, who wanted the tear for a door and my blood for its key. The Grand Master, who wanted it shut with a sword and had lost a third of his Order trying. The Eldest Wickwarden, who wanted the dying stopped and had nothing to stop it with but lamps. The Lantern-Bearer was dead and the Houses were counting their votes like coins; the Admiralty’s was in my hand, and the chaplain had told me it would tip the count. Whoever I chose would be waiting on the far side of all this, with the whole Dominion behind them, to meet me.",
-    "description_fr": "J’étalai les trois sur le sable, dans ma tête, comme on étale des cartes qu’on connaît déjà. L’Inquisiteur général, qui voulait la déchirure pour en faire une porte, et mon sang pour en faire la clef. Le Grand Maître, qui voulait la refermer à l’épée et avait perdu un tiers de son Ordre à essayer. L’Aînée des Garde-Mèches, qui voulait qu’on cesse de mourir et n’avait pour l’empêcher que des lampes. Le Porte-Lanterne était mort et les Maisons comptaient leurs voix comme des pièces ; celle de l’Amirauté était dans ma main, et l’aumônier m’avait dit qu’elle ferait pencher le compte. Qui que je choisisse m’attendrait de l’autre côté de tout cela, tout le Dominion derrière soi, pour m’accueillir.",
+    "description": "I laid the three of them out on the sand in my head, the way you lay out cards you already know. The Regent, whose Inquisitor-General had wanted the tear for a door and my blood for its key, and who wanted both more. The Grand Master, who wanted it shut with a sword and had lost a third of his Order trying. The Eldest Wickwarden, who wanted the dying stopped and had nothing to stop it with but lamps. The Lantern-Bearer was dead and the Houses were counting their votes like coins; the Admiralty’s was in my hand, and the chaplain had told me it would tip the count. Whoever I chose would be waiting on the far side of all this, with the whole Dominion behind them, to meet me.",
+    "description_fr": "J’étalai les trois sur le sable, dans ma tête, comme on étale des cartes qu’on connaît déjà. Le Régent, dont l’Inquisiteur général voulait la déchirure pour en faire une porte, et mon sang pour en faire la clef, et qui voulait les deux davantage. Le Grand Maître, qui voulait la refermer à l’épée et avait perdu un tiers de son Ordre à essayer. L’Aînée des Garde-Mèches, qui voulait qu’on cesse de mourir et n’avait pour l’empêcher que des lampes. Le Porte-Lanterne était mort et les Maisons comptaient leurs voix comme des pièces ; celle de l’Amirauté était dans ma main, et l’aumônier m’avait dit qu’elle ferait pencher le compte. Qui que je choisisse m’attendrait de l’autre côté de tout cela, tout le Dominion derrière soi, pour m’accueillir.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
       "mood": "tense",
@@ -19173,8 +19173,8 @@
         }
       },
       {
-        "text": "For Inquisitor-General Vane: an inquisition",
-        "text_fr": "Pour l’Inquisiteur général Vane : une inquisition",
+        "text": "For Regent Oriel: an inquisition",
+        "text_fr": "Pour le Régent Oriel : une inquisition",
         "next_id": "7200",
         "alignmentMod": -2,
         "flagsToAdd": [
@@ -19230,8 +19230,8 @@
     "flag_callbacks": [
       {
         "flag": "envoy_gift_vane",
-        "en": "Vane’s purse was long spent. Vane, I suspected, had kept the receipt.",
-        "fr": "La bourse de Vane était dépensée depuis longtemps. Vane, je le soupçonnais, avait gardé le reçu."
+        "en": "The Regent’s purse was long spent. The Regent, I suspected, had kept the receipt.",
+        "fr": "La bourse du Régent était dépensée depuis longtemps. Le Régent, je le soupçonnais, avait gardé le reçu."
       },
       {
         "flag": "envoy_gift_morrow",
@@ -19250,8 +19250,8 @@
       },
       {
         "flag": "vote_read",
-        "en": "The Tribunal’s vote, which I had read by steam at Wrack’s End, had been cast for Vane.",
-        "fr": "Le vote du Tribunal, que j’avais lu à la vapeur à Bout-du-Varech, était pour Vane."
+        "en": "The Tribunal’s vote, which I had read by steam at Wrack’s End, had been cast for the Regent.",
+        "fr": "Le vote du Tribunal, que j’avais lu à la vapeur à Bout-du-Varech, était pour le Régent."
       },
       {
         "flag": "vote_refused",
@@ -19604,8 +19604,8 @@
       },
       {
         "flag": "throne_backed_vane",
-        "en": "I had cast the Admiralty’s vote for Aurel Vane. Whatever I meant to do at Candlehold, I had already decided who would be waiting for me at the top of it.",
-        "fr": "J’avais donné la voix de l’Amirauté à Aurel Vane. Quoi que je compte faire à Candlehold, j’avais déjà décidé de qui m’attendrait tout en haut."
+        "en": "I had cast the Admiralty’s vote for Regent Oriel. Whatever I meant to do at Candlehold, I had already decided who would be waiting for me at the top of it.",
+        "fr": "J’avais donné la voix de l’Amirauté au Régent Oriel. Quoi que je compte faire à Candlehold, j’avais déjà décidé de qui m’attendrait tout en haut."
       },
       {
         "flag": "throne_backed_morrow",
@@ -19744,8 +19744,8 @@
     "flag_callbacks": [
       {
         "flag": "dominion_leader_vane",
-        "en": "Aurel Vane held the Lantern Hall. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
-        "fr": "Aurel Vane tenait la Salle de la Lanterne. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
+        "en": "Regent Oriel held the Lantern Hall, his Inquisitor-General at his side. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
+        "fr": "Le Régent Oriel tenait la Salle de la Lanterne, son Inquisiteur général à ses côtés. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
       },
       {
         "flag": "dominion_leader_morrow",
@@ -19891,8 +19891,8 @@
     "flag_callbacks": [
       {
         "flag": "dominion_leader_vane",
-        "en": "Aurel Vane held the Lantern Hall. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
-        "fr": "Aurel Vane tenait la Salle de la Lanterne. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
+        "en": "Regent Oriel held the Lantern Hall, his Inquisitor-General at his side. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
+        "fr": "Le Régent Oriel tenait la Salle de la Lanterne, son Inquisiteur général à ses côtés. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
       },
       {
         "flag": "dominion_leader_morrow",
@@ -20038,8 +20038,8 @@
     "flag_callbacks": [
       {
         "flag": "dominion_leader_vane",
-        "en": "Aurel Vane held the Lantern Hall. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
-        "fr": "Aurel Vane tenait la Salle de la Lanterne. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
+        "en": "Regent Oriel held the Lantern Hall, his Inquisitor-General at his side. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
+        "fr": "Le Régent Oriel tenait la Salle de la Lanterne, son Inquisiteur général à ses côtés. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
       },
       {
         "flag": "dominion_leader_morrow",
@@ -20186,8 +20186,8 @@
     "flag_callbacks": [
       {
         "flag": "dominion_leader_vane",
-        "en": "Aurel Vane held the Lantern Hall. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
-        "fr": "Aurel Vane tenait la Salle de la Lanterne. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
+        "en": "Regent Oriel held the Lantern Hall, his Inquisitor-General at his side. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
+        "fr": "Le Régent Oriel tenait la Salle de la Lanterne, son Inquisiteur général à ses côtés. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
       },
       {
         "flag": "dominion_leader_morrow",
@@ -20335,8 +20335,8 @@
     "flag_callbacks": [
       {
         "flag": "dominion_leader_vane",
-        "en": "Aurel Vane held the Lantern Hall. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
-        "fr": "Aurel Vane tenait la Salle de la Lanterne. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
+        "en": "Regent Oriel held the Lantern Hall, his Inquisitor-General at his side. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
+        "fr": "Le Régent Oriel tenait la Salle de la Lanterne, son Inquisiteur général à ses côtés. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
       },
       {
         "flag": "dominion_leader_morrow",
@@ -20483,8 +20483,8 @@
     "flag_callbacks": [
       {
         "flag": "dominion_leader_vane",
-        "en": "Aurel Vane held the Lantern Hall. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
-        "fr": "Aurel Vane tenait la Salle de la Lanterne. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
+        "en": "Regent Oriel held the Lantern Hall, his Inquisitor-General at his side. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
+        "fr": "Le Régent Oriel tenait la Salle de la Lanterne, son Inquisiteur général à ses côtés. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
       },
       {
         "flag": "dominion_leader_morrow",
@@ -20626,8 +20626,8 @@
     "flag_callbacks": [
       {
         "flag": "dominion_leader_vane",
-        "en": "Aurel Vane held the Lantern Hall. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
-        "fr": "Aurel Vane tenait la Salle de la Lanterne. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
+        "en": "Regent Oriel held the Lantern Hall, his Inquisitor-General at his side. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
+        "fr": "Le Régent Oriel tenait la Salle de la Lanterne, son Inquisiteur général à ses côtés. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
       },
       {
         "flag": "dominion_leader_morrow",
@@ -20777,8 +20777,8 @@
       },
       {
         "flag": "dominion_leader_vane",
-        "en": "Aurel Vane held the Lantern Hall. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
-        "fr": "Aurel Vane tenait la Salle de la Lanterne. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
+        "en": "Regent Oriel held the Lantern Hall, his Inquisitor-General at his side. The Inquisition’s hooded lanterns hung over every gate between it and me, an eye where each flame should have been, and every one of them was turned toward the harbour.",
+        "fr": "Le Régent Oriel tenait la Salle de la Lanterne, son Inquisiteur général à ses côtés. Les lanternes encapuchonnées de l’Inquisition pendaient au-dessus de chaque porte entre elle et moi, un œil à la place de chaque flamme, et toutes étaient tournées vers le port."
       },
       {
         "flag": "dominion_leader_morrow",
@@ -20798,8 +20798,8 @@
   },
   "7520_vane": {
     "id": "7520_vane",
-    "description": "Aurel Vane waited for me in the Lantern Hall under the First Lantern, the Hooded Lantern on its chain in his hand and the Throne empty at his back, as if he were keeping it warm for someone more deserving. He was smaller than his writs. Inquisitors-General usually are. He knew what I was, and he had wanted my blood for his rite since long before he knew my name. “You have brought it all this way,” he said, meaning the Shroud, meaning me. “The Lantern thanks you. It will take it from here.” Behind him the Inquisition’s last faithful were lighting the Hall’s hangings one by one, so that whoever won would have to win in fire.",
-    "description_fr": "Aurel Vane m’attendait dans la Salle de la Lanterne, sous la Première Lanterne, la Lanterne encapuchonnée au bout de sa chaîne dans la main et le Trône vide dans son dos, comme s’il le gardait au chaud pour quelqu’un de plus méritant. Il était plus petit que ses mandats. Les Inquisiteurs généraux le sont d’ordinaire. Il savait ce que j’étais, et il voulait mon sang pour son rite bien avant de connaître mon nom. « Vous l’avez apporté jusqu’ici, dit-il, et il voulait dire le Linceul, et il voulait dire moi. La Lanterne vous remercie. Elle s’en charge, à présent. » Derrière lui, les derniers fidèles de l’Inquisition allumaient une à une les tentures de la Salle, pour que qui gagnerait doive gagner dans le feu.",
+    "description": "Cassian Oriel waited for me in the Lantern Hall under the First Lantern, the Hooded Lantern on its chain in his hand and the Throne empty at his back, as if he were keeping it warm for someone more deserving. He was a slight, courteous, bare-faced man in the Dominion’s tide-blue and gold, and he had spoken in the dead Voice’s place for so long that he had stopped hearing the difference. Aurel Vane stood a step behind him with the small hooded lantern at his collar, an Inquisitor-General at a regent’s shoulder. The Regent knew what I was, and he had wanted my blood for his rite since long before he knew my name. “You have brought it all this way,” he said, meaning the Shroud, meaning me. “The Lantern thanks you. It will take it from here.” Behind him the Inquisition’s last faithful were lighting the Hall’s hangings one by one, so that whoever won would have to win in fire.",
+    "description_fr": "Cassian Oriel m’attendait dans la Salle de la Lanterne, sous la Première Lanterne, la Lanterne encapuchonnée au bout de sa chaîne dans la main et le Trône vide dans son dos, comme s’il le gardait au chaud pour quelqu’un de plus méritant. C’était un homme menu et courtois, le visage nu, vêtu du bleu marée et de l’or du Dominion, qui parlait à la place de la Voix défunte depuis si longtemps qu’il n’entendait plus la différence. Aurel Vane se tenait un pas derrière lui, la petite lanterne voilée au col : un Inquisiteur général à l’épaule d’un régent. Le Régent savait ce que j’étais, et il voulait mon sang pour son rite bien avant de connaître mon nom. « Vous l’avez apporté jusqu’ici, dit-il, et il voulait dire le Linceul, et il voulait dire moi. La Lanterne vous remercie. Elle s’en charge, à présent. » Derrière lui, les derniers fidèles de l’Inquisition allumaient une à une les tentures de la Salle, pour que qui gagnerait doive gagner dans le feu.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
       "mood": "action",
@@ -20808,8 +20808,8 @@
     "location": "candlehold_lantern_hall",
     "choices": [
       {
-        "text": "Take Vane alive, for the Houses to judge",
-        "text_fr": "Prendre Vane vivant, pour que les Maisons le jugent",
+        "text": "Take the Regent alive, for the Houses to judge",
+        "text_fr": "Prendre le Régent vivant, que les Maisons le jugent",
         "next_id": "7590_dominion",
         "triggerEnemyId": "claimant_vane",
         "alignmentMod": 1,
@@ -20821,8 +20821,8 @@
         ]
       },
       {
-        "text": "Burn Vane with his own Hooded Lantern",
-        "text_fr": "Brûler Vane avec sa propre Lanterne encapuchonnée",
+        "text": "Burn the Regent with his own Hooded Lantern",
+        "text_fr": "Brûler le Régent avec sa propre Lanterne encapuchonnée",
         "next_id": "7590_dominion",
         "triggerEnemyId": "claimant_vane",
         "alignmentMod": -1,
@@ -20834,8 +20834,8 @@
         ]
       },
       {
-        "text": "Take Vane alive, for the Houses to judge",
-        "text_fr": "Prendre Vane vivant, pour que les Maisons le jugent",
+        "text": "Take the Regent alive, for the Houses to judge",
+        "text_fr": "Prendre le Régent vivant, que les Maisons le jugent",
         "next_id": "7590_vigil",
         "triggerEnemyId": "claimant_vane",
         "alignmentMod": 1,
@@ -20847,8 +20847,8 @@
         ]
       },
       {
-        "text": "Burn Vane with his own Hooded Lantern",
-        "text_fr": "Brûler Vane avec sa propre Lanterne encapuchonnée",
+        "text": "Burn the Regent with his own Hooded Lantern",
+        "text_fr": "Brûler le Régent avec sa propre Lanterne encapuchonnée",
         "next_id": "7590_vigil",
         "triggerEnemyId": "claimant_vane",
         "alignmentMod": -1,
@@ -20860,8 +20860,8 @@
         ]
       },
       {
-        "text": "Take Vane alive, for the Houses to judge",
-        "text_fr": "Prendre Vane vivant, pour que les Maisons le jugent",
+        "text": "Take the Regent alive, for the Houses to judge",
+        "text_fr": "Prendre le Régent vivant, que les Maisons le jugent",
         "next_id": "7590_compact",
         "triggerEnemyId": "claimant_vane",
         "alignmentMod": 1,
@@ -20873,8 +20873,8 @@
         ]
       },
       {
-        "text": "Burn Vane with his own Hooded Lantern",
-        "text_fr": "Brûler Vane avec sa propre Lanterne encapuchonnée",
+        "text": "Burn the Regent with his own Hooded Lantern",
+        "text_fr": "Brûler le Régent avec sa propre Lanterne encapuchonnée",
         "next_id": "7590_compact",
         "triggerEnemyId": "claimant_vane",
         "alignmentMod": -1,
@@ -20886,8 +20886,8 @@
         ]
       },
       {
-        "text": "Take Vane alive, for the Houses to judge",
-        "text_fr": "Prendre Vane vivant, pour que les Maisons le jugent",
+        "text": "Take the Regent alive, for the Houses to judge",
+        "text_fr": "Prendre le Régent vivant, que les Maisons le jugent",
         "next_id": "7590_mire",
         "triggerEnemyId": "claimant_vane",
         "alignmentMod": 1,
@@ -20899,8 +20899,8 @@
         ]
       },
       {
-        "text": "Burn Vane with his own Hooded Lantern",
-        "text_fr": "Brûler Vane avec sa propre Lanterne encapuchonnée",
+        "text": "Burn the Regent with his own Hooded Lantern",
+        "text_fr": "Brûler le Régent avec sa propre Lanterne encapuchonnée",
         "next_id": "7590_mire",
         "triggerEnemyId": "claimant_vane",
         "alignmentMod": -1,
@@ -20912,8 +20912,8 @@
         ]
       },
       {
-        "text": "Take Vane alive, for the Houses to judge",
-        "text_fr": "Prendre Vane vivant, pour que les Maisons le jugent",
+        "text": "Take the Regent alive, for the Houses to judge",
+        "text_fr": "Prendre le Régent vivant, que les Maisons le jugent",
         "next_id": "7590_crows",
         "triggerEnemyId": "claimant_vane",
         "alignmentMod": 1,
@@ -20925,8 +20925,8 @@
         ]
       },
       {
-        "text": "Burn Vane with his own Hooded Lantern",
-        "text_fr": "Brûler Vane avec sa propre Lanterne encapuchonnée",
+        "text": "Burn the Regent with his own Hooded Lantern",
+        "text_fr": "Brûler le Régent avec sa propre Lanterne encapuchonnée",
         "next_id": "7590_crows",
         "triggerEnemyId": "claimant_vane",
         "alignmentMod": -1,
@@ -20938,8 +20938,8 @@
         ]
       },
       {
-        "text": "Take Vane alive, for the Houses to judge",
-        "text_fr": "Prendre Vane vivant, pour que les Maisons le jugent",
+        "text": "Take the Regent alive, for the Houses to judge",
+        "text_fr": "Prendre le Régent vivant, que les Maisons le jugent",
         "next_id": "7590_penitents",
         "triggerEnemyId": "claimant_vane",
         "alignmentMod": 1,
@@ -20951,8 +20951,8 @@
         ]
       },
       {
-        "text": "Burn Vane with his own Hooded Lantern",
-        "text_fr": "Brûler Vane avec sa propre Lanterne encapuchonnée",
+        "text": "Burn the Regent with his own Hooded Lantern",
+        "text_fr": "Brûler le Régent avec sa propre Lanterne encapuchonnée",
         "next_id": "7590_penitents",
         "triggerEnemyId": "claimant_vane",
         "alignmentMod": -1,
@@ -20964,8 +20964,8 @@
         ]
       },
       {
-        "text": "Take Vane alive, for the Houses to judge",
-        "text_fr": "Prendre Vane vivant, pour que les Maisons le jugent",
+        "text": "Take the Regent alive, for the Houses to judge",
+        "text_fr": "Prendre le Régent vivant, que les Maisons le jugent",
         "next_id": "7590_open_hand",
         "triggerEnemyId": "claimant_vane",
         "alignmentMod": 1,
@@ -20977,8 +20977,8 @@
         ]
       },
       {
-        "text": "Burn Vane with his own Hooded Lantern",
-        "text_fr": "Brûler Vane avec sa propre Lanterne encapuchonnée",
+        "text": "Burn the Regent with his own Hooded Lantern",
+        "text_fr": "Brûler le Régent avec sa propre Lanterne encapuchonnée",
         "next_id": "7590_open_hand",
         "triggerEnemyId": "claimant_vane",
         "alignmentMod": -1,
@@ -20990,7 +20990,7 @@
         ]
       }
     ],
-    "facing": "aurel_vane",
+    "facing": "cassian_oriel",
     "flag_callbacks": [
       {
         "flag": "way_quiet",
@@ -21014,8 +21014,8 @@
       },
       {
         "flag": "lysa_survived",
-        "en": "The last time Aurel Vane and I had stood this close, he had had my sister by the arm in our own doorway, and I had taken her back from him. He remembered it. I watched him remember it.",
-        "fr": "La dernière fois qu’Aurel Vane et moi avions été aussi proches, il tenait ma sœur par le bras sur le seuil de notre maison, et je la lui avais reprise. Il s’en souvenait. Je le regardai s’en souvenir.",
+        "en": "The last time Aurel Vane and I had stood this close, he had had my sister by the arm in our own doorway, and I had taken her back from him. He remembered it. I watched him remember it, a step behind his master.",
+        "fr": "La dernière fois qu’Aurel Vane et moi avions été aussi proches, il tenait ma sœur par le bras sur le seuil de notre maison, et je la lui avais reprise. Il s’en souvenait. Je le regardai s’en souvenir, un pas derrière son maître.",
         "unlessFlags": [
           "lysa_fallen",
           "lysa_found_dead",
@@ -21037,8 +21037,8 @@
       },
       {
         "flag": "lysa_fallen",
-        "en": "He asked, kindly, whether the mask he had put on my sister had fitted her. I had taken it off her myself, in the frost, after.",
-        "fr": "Il demanda, aimablement, si le masque qu’il avait mis à ma sœur lui allait bien. Je le lui avais ôté moi-même, dans le givre, après."
+        "en": "He asked, kindly, whether the mask his Inquisition had put on my sister had fitted her. I had taken it off her myself, in the frost, after.",
+        "fr": "Il demanda, aimablement, si le masque que son Inquisition avait mis à ma sœur lui allait bien. Je le lui avais ôté moi-même, dans le givre, après."
       },
       {
         "flag": "lysa_found_dead",
@@ -21072,8 +21072,8 @@
       },
       {
         "flag": "lysa_sworn_for",
-        "en": "“You owed the Lantern a debt,” Vane said, “and you paid it with your own name. We do not forget that.” I had not forgotten either.",
-        "fr": "« Vous deviez une dette à la Lanterne, dit Vane, et vous l’avez payée de votre propre nom. Nous ne l’oublions pas. » Je ne l’avais pas oubliée non plus."
+        "en": "“You owed the Lantern a debt,” the Regent said, “and you paid it with your own name. We do not forget that.” I had not forgotten either.",
+        "fr": "« Vous deviez une dette à la Lanterne, dit le Régent, et vous l’avez payée de votre propre nom. Nous ne l’oublions pas. » Je ne l’avais pas oubliée non plus."
       },
       {
         "flag": "lysa_sacrificed",
@@ -21092,8 +21092,8 @@
       }
     ],
     "noDetour": true,
-    "prompt": "What becomes of Vane?",
-    "prompt_fr": "Que devient Vane ?"
+    "prompt": "What becomes of the Regent?",
+    "prompt_fr": "Que devient le Régent ?"
   },
   "7520_morrow": {
     "id": "7520_morrow",
@@ -21711,16 +21711,16 @@
     "flag_callbacks": [
       {
         "flag": "rival_spared",
-        "en": "Aurel Vane knelt in chains at the foot of the Throne’s step, alive, his Hooded Lantern broken beside him. The Houses would judge him. I had promised them that, and I meant to watch them do it.",
-        "fr": "Aurel Vane était à genoux, enchaîné, au pied de la marche du Trône, vivant, sa Lanterne encapuchonnée brisée à côté de lui. Les Maisons le jugeraient. Je le leur avais promis, et je comptais les regarder le faire.",
+        "en": "Regent Oriel knelt in chains at the foot of the Throne’s step, alive, his Hooded Lantern broken beside him, and Aurel Vane knelt a step behind him, the small lantern at his collar put out. The Houses would judge them both. I had promised them that, and I meant to watch them do it.",
+        "fr": "Le Régent Oriel était à genoux, enchaîné, au pied de la marche du Trône, vivant, sa Lanterne encapuchonnée brisée à côté de lui, et Aurel Vane, un pas derrière, la petite lanterne de son col éteinte. Les Maisons les jugeraient tous deux. Je le leur avais promis, et je comptais les regarder le faire.",
         "andFlags": [
           "dominion_leader_vane"
         ]
       },
       {
         "flag": "rival_slain",
-        "en": "What was left of Aurel Vane had burned with his hangings. Nobody in the Hall asked for the ashes.",
-        "fr": "Ce qui restait d’Aurel Vane avait brûlé avec ses tentures. Personne dans la Salle ne réclama les cendres.",
+        "en": "What was left of Regent Oriel had burned with his hangings. Aurel Vane was not among the ashes: he had gone out by the Hall’s back stair before the fire took, and nobody went after him. Nobody in the Hall asked for the ashes.",
+        "fr": "Ce qui restait du Régent Oriel avait brûlé avec ses tentures. Aurel Vane n’était pas parmi les cendres : il était sorti par l’escalier de service de la Salle avant que le feu ne prenne, et personne ne l’avait suivi. Personne dans la Salle ne réclama les cendres.",
         "andFlags": [
           "dominion_leader_vane"
         ]
@@ -21890,16 +21890,16 @@
     "flag_callbacks": [
       {
         "flag": "rival_spared",
-        "en": "Aurel Vane knelt in chains at the foot of the Throne’s step, alive, his Hooded Lantern broken beside him. The Houses would judge him. I had promised them that, and I meant to watch them do it.",
-        "fr": "Aurel Vane était à genoux, enchaîné, au pied de la marche du Trône, vivant, sa Lanterne encapuchonnée brisée à côté de lui. Les Maisons le jugeraient. Je le leur avais promis, et je comptais les regarder le faire.",
+        "en": "Regent Oriel knelt in chains at the foot of the Throne’s step, alive, his Hooded Lantern broken beside him, and Aurel Vane knelt a step behind him, the small lantern at his collar put out. The Houses would judge them both. I had promised them that, and I meant to watch them do it.",
+        "fr": "Le Régent Oriel était à genoux, enchaîné, au pied de la marche du Trône, vivant, sa Lanterne encapuchonnée brisée à côté de lui, et Aurel Vane, un pas derrière, la petite lanterne de son col éteinte. Les Maisons les jugeraient tous deux. Je le leur avais promis, et je comptais les regarder le faire.",
         "andFlags": [
           "dominion_leader_vane"
         ]
       },
       {
         "flag": "rival_slain",
-        "en": "What was left of Aurel Vane had burned with his hangings. Nobody in the Hall asked for the ashes.",
-        "fr": "Ce qui restait d’Aurel Vane avait brûlé avec ses tentures. Personne dans la Salle ne réclama les cendres.",
+        "en": "What was left of Regent Oriel had burned with his hangings. Aurel Vane was not among the ashes: he had gone out by the Hall’s back stair before the fire took, and nobody went after him. Nobody in the Hall asked for the ashes.",
+        "fr": "Ce qui restait du Régent Oriel avait brûlé avec ses tentures. Aurel Vane n’était pas parmi les cendres : il était sorti par l’escalier de service de la Salle avant que le feu ne prenne, et personne ne l’avait suivi. Personne dans la Salle ne réclama les cendres.",
         "andFlags": [
           "dominion_leader_vane"
         ]
@@ -22069,16 +22069,16 @@
     "flag_callbacks": [
       {
         "flag": "rival_spared",
-        "en": "Aurel Vane knelt in chains at the foot of the Throne’s step, alive, his Hooded Lantern broken beside him. The Houses would judge him. I had promised them that, and I meant to watch them do it.",
-        "fr": "Aurel Vane était à genoux, enchaîné, au pied de la marche du Trône, vivant, sa Lanterne encapuchonnée brisée à côté de lui. Les Maisons le jugeraient. Je le leur avais promis, et je comptais les regarder le faire.",
+        "en": "Regent Oriel knelt in chains at the foot of the Throne’s step, alive, his Hooded Lantern broken beside him, and Aurel Vane knelt a step behind him, the small lantern at his collar put out. The Houses would judge them both. I had promised them that, and I meant to watch them do it.",
+        "fr": "Le Régent Oriel était à genoux, enchaîné, au pied de la marche du Trône, vivant, sa Lanterne encapuchonnée brisée à côté de lui, et Aurel Vane, un pas derrière, la petite lanterne de son col éteinte. Les Maisons les jugeraient tous deux. Je le leur avais promis, et je comptais les regarder le faire.",
         "andFlags": [
           "dominion_leader_vane"
         ]
       },
       {
         "flag": "rival_slain",
-        "en": "What was left of Aurel Vane had burned with his hangings. Nobody in the Hall asked for the ashes.",
-        "fr": "Ce qui restait d’Aurel Vane avait brûlé avec ses tentures. Personne dans la Salle ne réclama les cendres.",
+        "en": "What was left of Regent Oriel had burned with his hangings. Aurel Vane was not among the ashes: he had gone out by the Hall’s back stair before the fire took, and nobody went after him. Nobody in the Hall asked for the ashes.",
+        "fr": "Ce qui restait du Régent Oriel avait brûlé avec ses tentures. Aurel Vane n’était pas parmi les cendres : il était sorti par l’escalier de service de la Salle avant que le feu ne prenne, et personne ne l’avait suivi. Personne dans la Salle ne réclama les cendres.",
         "andFlags": [
           "dominion_leader_vane"
         ]
@@ -22244,16 +22244,16 @@
     "flag_callbacks": [
       {
         "flag": "rival_spared",
-        "en": "Aurel Vane knelt in chains at the foot of the Throne’s step, alive, his Hooded Lantern broken beside him. The Houses would judge him. I had promised them that, and I meant to watch them do it.",
-        "fr": "Aurel Vane était à genoux, enchaîné, au pied de la marche du Trône, vivant, sa Lanterne encapuchonnée brisée à côté de lui. Les Maisons le jugeraient. Je le leur avais promis, et je comptais les regarder le faire.",
+        "en": "Regent Oriel knelt in chains at the foot of the Throne’s step, alive, his Hooded Lantern broken beside him, and Aurel Vane knelt a step behind him, the small lantern at his collar put out. The Houses would judge them both. I had promised them that, and I meant to watch them do it.",
+        "fr": "Le Régent Oriel était à genoux, enchaîné, au pied de la marche du Trône, vivant, sa Lanterne encapuchonnée brisée à côté de lui, et Aurel Vane, un pas derrière, la petite lanterne de son col éteinte. Les Maisons les jugeraient tous deux. Je le leur avais promis, et je comptais les regarder le faire.",
         "andFlags": [
           "dominion_leader_vane"
         ]
       },
       {
         "flag": "rival_slain",
-        "en": "What was left of Aurel Vane had burned with his hangings. Nobody in the Hall asked for the ashes.",
-        "fr": "Ce qui restait d’Aurel Vane avait brûlé avec ses tentures. Personne dans la Salle ne réclama les cendres.",
+        "en": "What was left of Regent Oriel had burned with his hangings. Aurel Vane was not among the ashes: he had gone out by the Hall’s back stair before the fire took, and nobody went after him. Nobody in the Hall asked for the ashes.",
+        "fr": "Ce qui restait du Régent Oriel avait brûlé avec ses tentures. Aurel Vane n’était pas parmi les cendres : il était sorti par l’escalier de service de la Salle avant que le feu ne prenne, et personne ne l’avait suivi. Personne dans la Salle ne réclama les cendres.",
         "andFlags": [
           "dominion_leader_vane"
         ]
@@ -22418,16 +22418,16 @@
     "flag_callbacks": [
       {
         "flag": "rival_spared",
-        "en": "Aurel Vane knelt in chains at the foot of the Throne’s step, alive, his Hooded Lantern broken beside him. The Houses would judge him. I had promised them that, and I meant to watch them do it.",
-        "fr": "Aurel Vane était à genoux, enchaîné, au pied de la marche du Trône, vivant, sa Lanterne encapuchonnée brisée à côté de lui. Les Maisons le jugeraient. Je le leur avais promis, et je comptais les regarder le faire.",
+        "en": "Regent Oriel knelt in chains at the foot of the Throne’s step, alive, his Hooded Lantern broken beside him, and Aurel Vane knelt a step behind him, the small lantern at his collar put out. The Houses would judge them both. I had promised them that, and I meant to watch them do it.",
+        "fr": "Le Régent Oriel était à genoux, enchaîné, au pied de la marche du Trône, vivant, sa Lanterne encapuchonnée brisée à côté de lui, et Aurel Vane, un pas derrière, la petite lanterne de son col éteinte. Les Maisons les jugeraient tous deux. Je le leur avais promis, et je comptais les regarder le faire.",
         "andFlags": [
           "dominion_leader_vane"
         ]
       },
       {
         "flag": "rival_slain",
-        "en": "What was left of Aurel Vane had burned with his hangings. Nobody in the Hall asked for the ashes.",
-        "fr": "Ce qui restait d’Aurel Vane avait brûlé avec ses tentures. Personne dans la Salle ne réclama les cendres.",
+        "en": "What was left of Regent Oriel had burned with his hangings. Aurel Vane was not among the ashes: he had gone out by the Hall’s back stair before the fire took, and nobody went after him. Nobody in the Hall asked for the ashes.",
+        "fr": "Ce qui restait du Régent Oriel avait brûlé avec ses tentures. Aurel Vane n’était pas parmi les cendres : il était sorti par l’escalier de service de la Salle avant que le feu ne prenne, et personne ne l’avait suivi. Personne dans la Salle ne réclama les cendres.",
         "andFlags": [
           "dominion_leader_vane"
         ]
@@ -22592,16 +22592,16 @@
     "flag_callbacks": [
       {
         "flag": "rival_spared",
-        "en": "Aurel Vane knelt in chains at the foot of the Throne’s step, alive, his Hooded Lantern broken beside him. The Houses would judge him. I had promised them that, and I meant to watch them do it.",
-        "fr": "Aurel Vane était à genoux, enchaîné, au pied de la marche du Trône, vivant, sa Lanterne encapuchonnée brisée à côté de lui. Les Maisons le jugeraient. Je le leur avais promis, et je comptais les regarder le faire.",
+        "en": "Regent Oriel knelt in chains at the foot of the Throne’s step, alive, his Hooded Lantern broken beside him, and Aurel Vane knelt a step behind him, the small lantern at his collar put out. The Houses would judge them both. I had promised them that, and I meant to watch them do it.",
+        "fr": "Le Régent Oriel était à genoux, enchaîné, au pied de la marche du Trône, vivant, sa Lanterne encapuchonnée brisée à côté de lui, et Aurel Vane, un pas derrière, la petite lanterne de son col éteinte. Les Maisons les jugeraient tous deux. Je le leur avais promis, et je comptais les regarder le faire.",
         "andFlags": [
           "dominion_leader_vane"
         ]
       },
       {
         "flag": "rival_slain",
-        "en": "What was left of Aurel Vane had burned with his hangings. Nobody in the Hall asked for the ashes.",
-        "fr": "Ce qui restait d’Aurel Vane avait brûlé avec ses tentures. Personne dans la Salle ne réclama les cendres.",
+        "en": "What was left of Regent Oriel had burned with his hangings. Aurel Vane was not among the ashes: he had gone out by the Hall’s back stair before the fire took, and nobody went after him. Nobody in the Hall asked for the ashes.",
+        "fr": "Ce qui restait du Régent Oriel avait brûlé avec ses tentures. Aurel Vane n’était pas parmi les cendres : il était sorti par l’escalier de service de la Salle avant que le feu ne prenne, et personne ne l’avait suivi. Personne dans la Salle ne réclama les cendres.",
         "andFlags": [
           "dominion_leader_vane"
         ]
@@ -22765,16 +22765,16 @@
     "flag_callbacks": [
       {
         "flag": "rival_spared",
-        "en": "Aurel Vane knelt in chains at the foot of the Throne’s step, alive, his Hooded Lantern broken beside him. The Houses would judge him. I had promised them that, and I meant to watch them do it.",
-        "fr": "Aurel Vane était à genoux, enchaîné, au pied de la marche du Trône, vivant, sa Lanterne encapuchonnée brisée à côté de lui. Les Maisons le jugeraient. Je le leur avais promis, et je comptais les regarder le faire.",
+        "en": "Regent Oriel knelt in chains at the foot of the Throne’s step, alive, his Hooded Lantern broken beside him, and Aurel Vane knelt a step behind him, the small lantern at his collar put out. The Houses would judge them both. I had promised them that, and I meant to watch them do it.",
+        "fr": "Le Régent Oriel était à genoux, enchaîné, au pied de la marche du Trône, vivant, sa Lanterne encapuchonnée brisée à côté de lui, et Aurel Vane, un pas derrière, la petite lanterne de son col éteinte. Les Maisons les jugeraient tous deux. Je le leur avais promis, et je comptais les regarder le faire.",
         "andFlags": [
           "dominion_leader_vane"
         ]
       },
       {
         "flag": "rival_slain",
-        "en": "What was left of Aurel Vane had burned with his hangings. Nobody in the Hall asked for the ashes.",
-        "fr": "Ce qui restait d’Aurel Vane avait brûlé avec ses tentures. Personne dans la Salle ne réclama les cendres.",
+        "en": "What was left of Regent Oriel had burned with his hangings. Aurel Vane was not among the ashes: he had gone out by the Hall’s back stair before the fire took, and nobody went after him. Nobody in the Hall asked for the ashes.",
+        "fr": "Ce qui restait du Régent Oriel avait brûlé avec ses tentures. Aurel Vane n’était pas parmi les cendres : il était sorti par l’escalier de service de la Salle avant que le feu ne prenne, et personne ne l’avait suivi. Personne dans la Salle ne réclama les cendres.",
         "andFlags": [
           "dominion_leader_vane"
         ]

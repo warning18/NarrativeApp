@@ -7,7 +7,7 @@ import '../providers/player_session_provider.dart';
 /// plus the pre-existing charisma). Kept as plain strings on
 /// [StoryChoice.checkAbility] rather than this enum — like every other
 /// gameplay-code string key in this codebase (quest objective `type`,
-/// `PlayerSessionNotifier.spendStatPoint`'s `stat`) — so story data never
+/// a stat pick's gains in training_paths.json) — so story data never
 /// needs to import gameplay code.
 const List<String> abilityScoreKeys = [
   'strength',
