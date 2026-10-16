@@ -80,8 +80,8 @@ void main() {
       nodes[nodeId]!.choices.singleWhere((c) => c.nextId == target,
           orElse: () => fail('$nodeId does not lead to $target'));
 
-  test('chapter 1 has no padding: 47 scenes, all reachable', () {
-    expect(chapterOne.length, 47);
+  test('chapter 1 has no padding: 48 scenes, all reachable', () {
+    expect(chapterOne.length, 48);
     final targets = <String>{};
     for (final node in nodes.values) {
       for (final choice in node.choices) {
@@ -179,7 +179,9 @@ void main() {
     for (final node in chapterOne.values) {
       for (final choice in node.choices) {
         for (final flag in choice.flagsToAdd) {
+          // A `feat_` flag is read by the feature unlocks, not the story.
           final read = flagsRead.contains(flag) ||
+              flag.startsWith('feat_') ||
               hubPrefixes.any((p) => p.isNotEmpty && flag.startsWith(p));
           expect(read, isTrue,
               reason: '${node.id} sets $flag, nobody reads it');
@@ -334,7 +336,9 @@ void main() {
     expect(trapdoor.description, contains('trapdoor'));
     expect(trapdoor.description, contains('Who could want'));
     for (final c in trapdoor.choices) {
-      expect(c.nextId, '891');
+      // Every road passes the drill-sergeant's line on the quay approach
+      // (the feature ladder's trainer scene) before the High Quay.
+      expect(c.nextId, '890_trainer');
       expect(c.flagsToAdd, containsAll(['took_bundle', 'open_hand_1']));
       expect(c.politics?.remembrance, 1, reason: c.text);
     }
