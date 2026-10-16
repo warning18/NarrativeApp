@@ -13,6 +13,7 @@ isn't reconstructable from git history alone.
 For the in-place choices, and a difficulty review.
 
 - **Each choice now carries what its card shows:** its cost in gold (a toll's included), its alignment shift, and where its aftermath takes you. The choices are also grouped for the map's rings: fight; talk and decide; checks and pay; and the ways on.
+- **The story can say who a scene faces, the question it ends on, and what a hub's choice is about** (`facing`, `prompt`, `about`, `aboutLabels`, all optional), for the scene view and the rings.
 - **A difficulty review** (docs/simulation/difficulty-review.md): win rates by profession and chapter, deaths, the bosses' bands and five proposals. Nothing is tuned yet.
 
 ## [1.413.0+449]
