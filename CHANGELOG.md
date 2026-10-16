@@ -16,6 +16,15 @@ The main story's scenes and the hubs have the data the scene view and the arriva
 - **Who you face** (`facing`) on ten more main-story scenes: the bouncer at the Blind Beggar, the warhound in the alley, Vane at the docks, the High Warden at the end of chapter 3, and Aurel Vane in the Lantern Hall.
 - **A question** (`prompt`, English and French) on the fourteen hubs a sheet opens on: the Wharf, the Ashen Quarter, the Drowned Cloister, the Reliquary Quarter, the Hollow Shore, the eight villages, the White Anchorage and Candlehold.
 
+## [1.440.0+476]
+
+The Journey's pins hang as banners, with a legend.
+
+### Added
+- **Banner pins:** a way on the map hangs as a banner in the colour and icon of what it is: main quest (gold flag), side quest (violet speech bubble), detour (ember compass), shop (teal storefront), travel (blue sailboat), rest (green flame) or plain way (grey signpost). The district view's pins hang on their buildings, and the rows and cards of the ways wear the same banner, small. Fights and rolls keep their round numbered pins.
+- **The legend:** a key button at the map's top right opens a sheet that says what each banner means (English and French).
+- **No "Walk on" tabs:** the row of chips to the other districts under the district's ways is gone (the chart, the Town tab and its rows still go to them).
+
 ## [1.439.0+475]
 
 A written detour plays as a scene.
