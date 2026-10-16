@@ -9,8 +9,8 @@
     "placeId": "alster_lower_town",
     "chapter": 1,
     "kind": "inquisitor",
-    "description": "The Inquisitor-General of the Lantern Dominion, the Regent’s hunting hand: tall, dressed in white, a small lantern hooded in black at his collar. He walked out of the ruin of your house in Alster holding your sister off the ground by one wrist, and he knew exactly who you were.",
-    "description_fr": "L’Inquisiteur général du Dominion de la Lanterne, la main de chasse du Régent : grand, vêtu de blanc, une petite lanterne voilée de noir au col. Il sortit des ruines de votre maison, à Alster, en tenant votre sœur au-dessus du sol par un poignet, et il savait exactement qui vous étiez.",
+    "description": "The Inquisitor-General of the Lantern Dominion, the Regent’s hunting hand: tall, in dark robes and a white mask, dark-haired, with red sashes at the waist and a small lantern hooded in black at his collar. He walked out of the ruin of your house in Alster holding your sister off the ground by one wrist, and he knew exactly who you were.",
+    "description_fr": "L’Inquisiteur général du Dominion de la Lanterne, la main de chasse du Régent : grand, en robe sombre et masque blanc, les cheveux noirs, des ceintures rouges à la taille et une petite lanterne voilée de noir au col. Il sortit des ruines de votre maison, à Alster, en tenant votre sœur au-dessus du sol par un poignet, et il savait exactement qui vous étiez.",
     "want": "Wants the tear for a door and your blood for its key.",
     "want_fr": "Veut la déchirure pour en faire une porte, et votre sang pour en faire la clef.",
     "metNodes": [
@@ -112,8 +112,8 @@
     "placeId": "candlehold_lantern_hall",
     "chapter": 3,
     "kind": "noble",
-    "description": "The Regent who has spoken in the Lantern-Bearer’s place since the Voice failed: slight, courteous, in the Dominion’s white, the Hooded Lantern on a chain in his hand. His Inquisitor-General does his hunting; he keeps the Lantern Hall.",
-    "description_fr": "Le Régent qui parle à la place du Porte-Lanterne depuis que la Voix a failli : menu, courtois, vêtu du blanc du Dominion, la Lanterne encapuchonnée au bout d’une chaîne à la main. Son Inquisiteur général fait sa chasse ; lui garde la Salle de la Lanterne.",
+    "description": "The Regent who has spoken in the Lantern-Bearer’s place since the Voice failed: slight, courteous, bare-faced, in the Dominion’s tide-blue and gold, the Hooded Lantern on a chain in his hand. His Inquisitor-General does his hunting; he keeps the Lantern Hall.",
+    "description_fr": "Le Régent qui parle à la place du Porte-Lanterne depuis que la Voix a failli : menu, courtois, le visage nu, vêtu du bleu marée et de l’or du Dominion, la Lanterne encapuchonnée au bout d’une chaîne à la main. Son Inquisiteur général fait sa chasse ; lui garde la Salle de la Lanterne.",
     "want": "Wants the tear for a door and your blood for its key, and the Throne for whoever holds the door.",
     "want_fr": "Veut la déchirure pour en faire une porte, et votre sang pour en faire la clef, et le Trône pour qui tient la porte.",
     "metNodes": [

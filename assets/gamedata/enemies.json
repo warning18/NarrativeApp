@@ -5601,8 +5601,8 @@
         "replaceMoves": false
       }
     ],
-    "description": "The Inquisitor-General of the Lantern Dominion: white-robed, soft-spoken, a lantern hooded in black at his collar. He fights one-handed, because the other hand is holding your sister.",
-    "description_fr": "L’Inquisiteur général du Dominion de la Lanterne : vêtu de blanc, la voix douce, une lanterne voilée de noir au col. Il se bat d’une seule main, parce que l’autre tient votre sœur.",
+    "description": "The Inquisitor-General of the Lantern Dominion: dark-robed and white-masked, soft-spoken, a lantern hooded in black at his collar. He fights one-handed, because the other hand is holding your sister.",
+    "description_fr": "L’Inquisiteur général du Dominion de la Lanterne : en robe sombre et masque blanc, la voix douce, une lanterne voilée de noir au col. Il se bat d’une seule main, parce que l’autre tient votre sœur.",
     "enemyName_fr": "Aurel Vane, Inquisiteur général",
     "biomes": [],
     "kind": "person"

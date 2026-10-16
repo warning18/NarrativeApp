@@ -18,7 +18,7 @@ The user's feedback on the Design Codex: two "Aurel Vane, Inquisitor-General" en
 
 ## Look (for the icon)
 
-A slight, courteous man in the Dominion's white, a tide-blue and gold sash, hair silver at the temples, holding the great Hooded Lantern on a chain (the hood a black cowl; when he unhoods it, an eye where the flame should be). Taller lanterns hang on the wall behind him. Not armoured. Aurel's own small hooded lantern at his collar is a copy of this one.
+A slight, courteous, bare-faced man in tide-blue and gold (the Dominion's colours), hair silver at the temples, holding the great Hooded Lantern on a chain (black cowl; unhooded, an eye where the flame should be). He must not read as the Inquisition's soldiers (dark robes, white masks) or the White Soldier (white robes, red mask): no mask, no white robe, no red. Aurel's own small hooded lantern at his collar is a copy of this one. Aurel (the user's sprite): dark robes, white mask, dark hair, red sashes.
 
 ## Touched
 
