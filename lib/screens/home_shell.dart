@@ -22,6 +22,7 @@ import '../providers/story_providers.dart';
 import '../providers/tab_badges_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../widgets/camp_travel.dart';
+import '../widgets/feature_unlock.dart';
 import '../widgets/moments.dart';
 import '../widgets/throne_widgets.dart' show showHostSheet;
 import 'ai_generator_screen.dart';
@@ -369,18 +370,33 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           // Clans & Politics (v1.193): standing, relations, their history
           // and the intrigues. In the story (v1.196) the same place opens
           // its read-only view, a dot while the coast's news waits unread.
-          IconButton(
-            key: const Key('home_clans_politics'),
-            icon: Badge(
-              isLabelVisible: !isEditMode &&
-                  ref.watch(
-                      politicsProvider.select((p) => p.unreadNews.isNotEmpty)),
-              child: const Icon(Icons.balance),
-            ),
-            tooltip: tr(ref, isEditMode ? 'clans_title' : 'clans_title_play'),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                  builder: (_) => ClansPoliticsScreen(play: !isEditMode)),
+          FeatureGate(
+            feature: GameFeature.politics,
+            child: IconButton(
+              key: const Key('home_clans_politics'),
+              icon: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Badge(
+                    isLabelVisible: !isEditMode &&
+                        ref.watch(politicsProvider
+                            .select((p) => p.unreadNews.isNotEmpty)),
+                    child: const Icon(Icons.balance),
+                  ),
+                  const Positioned(
+                      right: -9,
+                      top: -9,
+                      child: UnlockDot(feature: GameFeature.politics)),
+                ],
+              ),
+              tooltip: tr(ref, isEditMode ? 'clans_title' : 'clans_title_play'),
+              onPressed: () {
+                acknowledgeOnOpen(ref, GameFeature.politics);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (_) => ClansPoliticsScreen(play: !isEditMode)),
+                );
+              },
             ),
           ),
           IconButton(
@@ -405,13 +421,15 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           ),
         ],
       ),
-      body: wide
-          ? Row(children: [
-              rail,
-              const VerticalDivider(width: 1),
-              Expanded(child: pages)
-            ])
-          : pages,
+      body: FeatureUnlockHost(
+        child: wide
+            ? Row(children: [
+                rail,
+                const VerticalDivider(width: 1),
+                Expanded(child: pages)
+              ])
+            : pages,
+      ),
       bottomNavigationBar: wide
           ? null
           : TutorialTarget(

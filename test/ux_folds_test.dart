@@ -84,10 +84,17 @@ void main() {
     ));
     final container =
         ProviderScope.containerOf(tester.element(find.byType(CharacterScreen)));
+    // The notifier reads its saved game first; the session loads after.
+    await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 300)));
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
+        .loadSession(PlayerSession.fromJson({
+          'raceId': 'human',
+          'professionId': 'warrior',
+          // The clans are open (feature ladder): Gifts shows.
+          'flags': ['feat_clans'],
+        })));
     for (var i = 0; i < 10; i++) {
       await tester.runAsync(
           () => Future<void>.delayed(const Duration(milliseconds: 200)));

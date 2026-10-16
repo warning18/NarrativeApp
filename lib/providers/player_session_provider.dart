@@ -23,6 +23,7 @@ import '../data/contracts.dart';
 import '../data/detour_pacing.dart' show DetourPacing;
 import '../data/camp_state.dart' show harborHouseId;
 import '../data/factions.dart';
+import '../data/feature_unlocks.dart';
 import '../data/hunter_mercy.dart';
 import '../data/patron_stats.dart';
 import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
@@ -295,6 +296,7 @@ class PlayerSession {
     this.patronFavour = const {},
     this.signPatronsThisLife = const [],
     this.patronsMet = const [],
+    this.acknowledgedFeatures = const [],
     this.politics = PoliticsState.empty,
     this.builtHouseIds = const [],
     this.townOrder = const [],
@@ -595,6 +597,16 @@ class PlayerSession {
 
   /// Every patron that has offered a sign, ever: the codex lists them.
   final List<String> patronsMet;
+
+  /// The ladder's features already told of (feature_unlocks.dart), by id.
+  final List<String> acknowledgedFeatures;
+
+  /// What the feature ladder reads of this session (feature_unlocks.dart).
+  LadderState get ladder =>
+      (flags: flags, level: level, chapter: chapterOffersThrough);
+
+  /// Whether [feature] is open (feature_unlocks.dart).
+  bool featureOpen(GameFeature feature) => featureUnlocked(feature, ladder);
 
   /// Where the character stands with the coast (v1.193, see factions.dart):
   /// standing with each faction, the sub-clans' marks, the faction sworn
@@ -920,6 +932,7 @@ class PlayerSession {
     Map<String, int>? patronFavour,
     List<String>? signPatronsThisLife,
     List<String>? patronsMet,
+    List<String>? acknowledgedFeatures,
     PoliticsState? politics,
     List<String>? builtHouseIds,
     List<String>? townOrder,
@@ -1033,6 +1046,7 @@ class PlayerSession {
       patronFavour: patronFavour ?? this.patronFavour,
       signPatronsThisLife: signPatronsThisLife ?? this.signPatronsThisLife,
       patronsMet: patronsMet ?? this.patronsMet,
+      acknowledgedFeatures: acknowledgedFeatures ?? this.acknowledgedFeatures,
       politics: politics ?? this.politics,
       builtHouseIds: builtHouseIds ?? this.builtHouseIds,
       townOrder: townOrder ?? this.townOrder,
@@ -1151,6 +1165,8 @@ class PlayerSession {
         'patronFavour': patronFavour,
         'signPatronsThisLife': signPatronsThisLife,
         'patronsMet': patronsMet,
+        if (acknowledgedFeatures.isNotEmpty)
+          'acknowledgedFeatures': acknowledgedFeatures,
         'politics': politics.toJson(),
         'builtHouseIds': builtHouseIds,
         'townOrder': townOrder,
@@ -1401,6 +1417,10 @@ class PlayerSession {
       patronsMet:
           (json['patronsMet'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
+      acknowledgedFeatures: (json['acknowledgedFeatures'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
       // Saves from before the clans stand where every faction starts.
       politics: PoliticsState.fromJson(json['politics']),
       builtHouseIds: [
@@ -1642,7 +1662,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       potionCount: (defaults['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: 0,
       maxSkillSlots: (defaults['maxSkillSlots'] as num?)?.toInt() ?? 3,
-      flags: const [],
+      // A new game climbs the feature ladder (feature_unlocks.dart).
+      flags: const [featureLadderFlag],
       activeQuestIds: const [],
       completedQuestIds: const [],
       inventoryItemIds: const [],
@@ -1739,7 +1760,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         bonus(race, 'startingGoldBonus') +
         bonus(profession, 'startingGoldBonus');
     // A profession's starting skill points are offers since v1.194.
-    final startingOffers = startingOffersFor(profession);
 
     // Race/profession signature skills (and a caster's mana skill) default
     // to isUnlocked: false in the skills db (most skills are locked until
@@ -1785,9 +1805,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       perception: perception,
       potionCount: (defaults['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: 0,
-      pendingOffers: startingOffers,
+      // The starting skill comes from the trainer (feature_unlocks.dart),
+      // the clans' offers from Saltmouth.
+      pendingOffers: const [],
       maxSkillSlots: (defaults['maxSkillSlots'] as num?)?.toInt() ?? 3,
-      flags: const [],
+      flags: const [featureLadderFlag],
       activeQuestIds: const [],
       completedQuestIds: const [],
       inventoryItemIds: const [],
@@ -2317,6 +2339,42 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     return true;
   }
 
+  /// The ladder's [featureId] told of (its card seen or its screen opened).
+  Future<void> acknowledgeFeature(String featureId) async {
+    if (state.acknowledgedFeatures.contains(featureId)) return;
+    state = state.copyWith(
+        acknowledgedFeatures: [...state.acknowledgedFeatures, featureId]);
+    await _persist();
+  }
+
+  /// A fight won ([tutorial]: the lesson): the ladder's chest, then its
+  /// place rules (feature_unlocks.dart).
+  Future<void> noteFightWonOnLadder({required bool tutorial}) async {
+    final add = ladderFlagsForWin(state.flags, tutorial: tutorial);
+    if (add.isEmpty) return;
+    state = state.copyWith(flags: [...state.flags, ...add]);
+    await _persist();
+  }
+
+  /// The trainer's lesson (890_trainer): the skill of [trainerSkillFor]
+  /// for a strike ([strike]) or a guard, learned; null when none is left.
+  Future<String?> learnTrainerSkill({
+    required bool strike,
+    required Map<String, dynamic> trees,
+    required Map<String, dynamic> skills,
+  }) async {
+    final id = trainerSkillFor(
+        professionId: state.professionId,
+        strike: strike,
+        trees: trees,
+        skills: skills,
+        known: state.unlockedSkillIds);
+    if (id == null) return null;
+    state = state.copyWith(unlockedSkillIds: [...state.unlockedSkillIds, id]);
+    await _persist();
+    return id;
+  }
+
   /// The training offer on the table for the unspent stat points (Wave 7,
   /// see drawTraining): drawn once from [paths] and kept until a choice is
   /// taken; a full offer while five points are there, a small one below.
@@ -2400,6 +2458,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<ClanOffer?> ensureOffer(OfferTables tables,
       {Random? random, String placeHolder = ''}) async {
     if (state.pendingOffers.isEmpty) return null;
+    // On the feature ladder the clans come at Saltmouth: the offers wait.
+    if (!state.featureOpen(GameFeature.clans)) return null;
     final waiting = state.clanOffer;
     if (waiting != null) return waiting;
     final offer = drawOffer(state.pendingOffers.first,
@@ -5012,7 +5072,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       skillEssence: 0,
       // The offers waiting go with the life, back to the profession's
       // starting ones; the titles and the Sworn boons with the world.
-      pendingOffers: startingOffersFor(profession),
+      pendingOffers: state.flags.contains(featureLadderFlag)
+          ? const []
+          : startingOffersFor(profession),
       clearClanOffer: true,
       heldTitleIds: const [],
       activeTitleId: '',
