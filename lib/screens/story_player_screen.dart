@@ -1996,13 +1996,16 @@ Future<bool> startRoadEncounter(
         }..updateAll(
             (id, _) => session.inventoryItemIds.where((i) => i == id).length),
         random: dice());
-    // Your nemesis's champion, its quest under way (nemesis.dart).
+    // Your nemesis's trail, then its champion, its quest under way
+    // (nemesis.dart).
     alignmentEvent ??= maybeChampionRoad(
         politics: session.politics,
         activeQuestIds: session.activeQuestIds,
         enemies: enemies,
         chapter: chapter,
-        random: dice());
+        random: dice(),
+        flags: session.flags,
+        quests: await loadedGameDb(ref, questsSchema));
     alignmentEvent ??= maybeAlignmentEvent(
       alignmentScore: session.alignmentScore,
       activeQuestIds: session.activeQuestIds,

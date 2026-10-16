@@ -49,7 +49,14 @@ import '../data/zone_gating.dart' show meetsRequiredFlags, zoneIsMain;
 import '../data/clan_power.dart' show TerritoryChange;
 import '../data/geography.dart';
 import '../data/nemesis.dart'
-    show breakNemesis, championIdOf, championMinChapter, championRoadChance;
+    show
+        breakNemesis,
+        championIdOf,
+        championMinChapter,
+        championRecordFor,
+        championRoadChance,
+        championWays,
+        trailFlagOf;
 import '../data/land_crossing.dart';
 import '../data/road_events.dart';
 import '../gamedata/db_schema.dart';
@@ -605,7 +612,10 @@ _SimResult _simulate(
   final championsBeaten = <String>{};
   // The fight the roads call before it is declared (fightEnemies).
   late ({bool? won, int attempts, Map<String, int> casts}) Function(
-      List<String> enemyIds, int chapter) fightOnRoad;
+      List<String> enemyIds, int chapter,
+      {Map<String, Map<String, dynamic>> records}) fightOnRoad;
+  // The nemeses whose trail was followed (nemesis.dart's first beat).
+  final trailsFollowed = <String>{};
   var spared = 0, finished = 0, betrayed = 0;
   final metOnRoads = <String>{};
   final roads = <SimRoad>[];
@@ -735,15 +745,35 @@ _SimResult _simulate(
           side.nextDouble() < championRoadChance) {
         hunter = 'champion';
         final champion = championIdOf(nemesis);
-        final result = fightOnRoad([champion], chapter);
-        if (result.won != null) {
+        // The trail first, then the champion by a way in drawn at random,
+        // with its edge.
+        final way = championWays[side.nextInt(championWays.length)];
+        final record = enemies[champion];
+        final result = !trailsFollowed.contains(nemesis)
+            ? (won: null, attempts: 0, casts: const <String, int>{})
+            : fightOnRoad([champion], chapter,
+                records: {
+                  if (record is Map<String, dynamic>)
+                    champion: championRecordFor(record, way),
+                });
+        if (!trailsFollowed.contains(nemesis)) {
+          trailsFollowed.add(nemesis);
+          steps.add(_SimStep(
+            nodeId: 'road:${trailFlagOf(nemesis)}',
+            chapter: chapter,
+            mood: null,
+            uiTheme: null,
+            description: 'The nemesis\'s trail',
+            choiceText: 'Follow the trail',
+          ));
+        } else if (result.won != null) {
           steps.add(_SimStep(
             nodeId: 'road:$champion',
             chapter: chapter,
             mood: null,
             uiTheme: null,
             description: 'The nemesis\'s champion',
-            choiceText: 'Face it',
+            choiceText: 'The way of $way',
             enemyId: champion,
             fightWon: result.won,
             fightAttempts: result.attempts,
@@ -1028,7 +1058,9 @@ _SimResult _simulate(
     PerkEffects perks,
     int stolen,
   }) fightEnemies(List<String> enemyIds, int chapter,
-      {bool once = false, bool host = false}) {
+      {bool once = false,
+      bool host = false,
+      Map<String, Map<String, dynamic>> records = const {}}) {
     const none = (
       won: null,
       attempts: 0,
@@ -1041,7 +1073,9 @@ _SimResult _simulate(
     if (c == null || sim == null) return none;
     final entries = <MapEntry<String, Map<String, dynamic>>>[
       for (final id in enemyIds)
-        if (enemies[id] is Map<String, dynamic>)
+        if (records[id] != null)
+          MapEntry(id, records[id]!)
+        else if (enemies[id] is Map<String, dynamic>)
           MapEntry(id, enemies[id] as Map<String, dynamic>),
     ];
     if (entries.isEmpty) return none;
@@ -1125,8 +1159,8 @@ _SimResult _simulate(
     );
   }
 
-  fightOnRoad = (ids, chapter) {
-    final r = fightEnemies(ids, chapter);
+  fightOnRoad = (ids, chapter, {records = const {}}) {
+    final r = fightEnemies(ids, chapter, records: records);
     return (won: r.won, attempts: r.attempts, casts: r.casts);
   };
 

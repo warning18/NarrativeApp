@@ -114,7 +114,9 @@
       ],
       "line": "The Order of the Vigilant Flame locks shields around you, and the Lantern’s Writ turns the first blow aside.",
       "line_fr": "L’Ordre de la Flamme vigilante serre les boucliers autour de vous, et le Mandat de la Lanterne détourne le premier coup."
-    }
+    },
+    "brokenNews": "The Dominion’s List of Oaths is torn.",
+    "brokenNews_fr": "Le registre des serments du Dominion est déchiré."
   },
   "vigil": {
     "id": "vigil",
@@ -217,7 +219,9 @@
       ],
       "line": "The Last Watch holds the line beside you with open eyes, and calls each blow before it falls.",
       "line_fr": "La Dernière Veille tient la ligne à vos côtés, les yeux ouverts, et annonce chaque coup avant qu’il ne tombe."
-    }
+    },
+    "brokenNews": "The Vigil’s ridge post has gone dark for an hour.",
+    "brokenNews_fr": "Le poste de la Veille sur la crête est resté sombre une heure."
   },
   "compact": {
     "id": "compact",
@@ -327,7 +331,9 @@
       ],
       "line": "Plating the Compact chose to forge for you, and an edge from the Anvil-Deaf that breaks a guard.",
       "line_fr": "Des plaques que le Pacte a choisi de forger pour vous, et un fil des Sourds de l’Enclume qui brise une garde."
-    }
+    },
+    "brokenNews": "The Compact’s last hammer is silent.",
+    "brokenNews_fr": "Le dernier marteau du Pacte ne sonne plus."
   },
   "mire": {
     "id": "mire",
@@ -439,7 +445,9 @@
       ],
       "line": "Fever-bark in every flask, and the Moss Choir singing over each wound you guard.",
       "line_fr": "De l’écorce à fièvre dans chaque fiole, et le Chœur de Mousse qui chante sur chaque blessure que vous gardez."
-    }
+    },
+    "brokenNews": "The Mire’s Court has lost its Hand.",
+    "brokenNews_fr": "La Cour du Marais a perdu sa Main."
   },
   "crows": {
     "id": "crows",
@@ -552,7 +560,9 @@
       ],
       "line": "Crow cutthroats slip through the enemy’s line, strike where it is thin, and are gone before it turns.",
       "line_fr": "Des coupe-jarrets des Corneilles se glissent dans la ligne ennemie, frappent là où elle est mince et disparaissent avant qu’elle ne se retourne."
-    }
+    },
+    "brokenNews": "The Salt Crows’ collector is gone from the wharf.",
+    "brokenNews_fr": "La percepteuse des Corneilles a quitté le quai."
   },
   "penitents": {
     "id": "penitents",
@@ -670,7 +680,9 @@
       ],
       "line": "The Spire-Fallen walk in front with broken swords, and the Road Exorcists lift what the tear lays on you.",
       "line_fr": "Les Déchus de la Flèche marchent devant avec leurs épées brisées, et les Exorcistes de la Route lèvent ce que la déchirure pose sur vous."
-    }
+    },
+    "brokenNews": "The Ash Confessor’s lantern is out.",
+    "brokenNews_fr": "La lanterne de la Confesseuse de Cendre est éteinte."
   },
   "choir": {
     "id": "choir",

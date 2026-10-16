@@ -344,6 +344,8 @@ class Faction {
     this.claims = const [],
     this.genderFr = 'm',
     this.nameToFr = '',
+    this.brokenNews = '',
+    this.brokenNewsFr = '',
   });
 
   final Patron patron;
@@ -365,6 +367,11 @@ class Faction {
   /// "au Dominion de la Lanterne": the French name after "à"; '' when the
   /// data has none.
   final String nameToFr;
+
+  /// The news when the character breaks it as their nemesis (nemesis.dart,
+  /// Narrative's per clan); '' tells the shared line.
+  final String brokenNews;
+  final String brokenNewsFr;
 
   /// Whether the French name is plural (`genderFr` 'mp' or 'fp').
   bool get pluralFr => genderFr.endsWith('p');
@@ -473,6 +480,8 @@ class Faction {
           _ => 'm',
         },
         nameToFr: _text(json['nameTo_fr']).trim(),
+        brokenNews: _text(json['brokenNews']).trim(),
+        brokenNewsFr: _text(json['brokenNews_fr']).trim(),
       );
 }
 

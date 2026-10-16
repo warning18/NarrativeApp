@@ -2564,6 +2564,18 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
+        "description": "Find the stair beneath the Lantern Hall.",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "nemq_dominion_trail",
+        "description_fr": "Trouvez l’escalier sous la Salle de la Lanterne.",
+        "targetNPCName_fr": ""
+      },
+      {
         "description": "Face the Lantern-Bearer",
         "type": "Kill",
         "targetEnemyID": "champion_dominion",
@@ -2624,6 +2636,18 @@
     "difficulty": "8",
     "requiredAlignment": "Neutral",
     "objectives": [
+      {
+        "description": "Climb to the ridge post above Rimewell.",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "nemq_vigil_trail",
+        "description_fr": "Montez au poste de la crête, au-dessus de Rimewell.",
+        "targetNPCName_fr": ""
+      },
       {
         "description": "Face the Watch-Captain",
         "type": "Kill",
@@ -2686,6 +2710,18 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
+        "description": "Find the cold forge of Cinder Row.",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "nemq_compact_trail",
+        "description_fr": "Trouvez la forge froide de la Rue des Braises.",
+        "targetNPCName_fr": ""
+      },
+      {
         "description": "Face the Last Hammer",
         "type": "Kill",
         "targetEnemyID": "champion_compact",
@@ -2746,6 +2782,18 @@
     "difficulty": "8",
     "requiredAlignment": "Neutral",
     "objectives": [
+      {
+        "description": "Follow the heron into the fen, and don’t ask where it is going.",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "nemq_mire_trail",
+        "description_fr": "Suivez le héron dans le marais, et ne demandez pas où il va.",
+        "targetNPCName_fr": ""
+      },
       {
         "description": "Face the Hand",
         "type": "Kill",
@@ -2808,6 +2856,18 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
+        "description": "Find the boat the collector keeps at Smugglers’ Wharf.",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "nemq_crows_trail",
+        "description_fr": "Trouvez le bateau que la percepteuse garde au Quai des Contrebandiers.",
+        "targetNPCName_fr": ""
+      },
+      {
         "description": "Face the Collector",
         "type": "Kill",
         "targetEnemyID": "champion_crows",
@@ -2868,6 +2928,18 @@
     "difficulty": "8",
     "requiredAlignment": "Neutral",
     "objectives": [
+      {
+        "description": "Walk the Exorcists’ Road to the Wall of Names.",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "nemq_penitents_trail",
+        "description_fr": "Parcourez la route des Exorcistes jusqu’au Mur des Noms.",
+        "targetNPCName_fr": ""
+      },
       {
         "description": "Face the Confessor",
         "type": "Kill",
