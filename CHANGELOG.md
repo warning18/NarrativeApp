@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.453.0+489]
+
+A cleared zone pays out as a reward card.
+
+### Changed
+- **Zone cleared card:** the end of an expedition (a cleared zone, an escort, a delivery) is the reward card instead of centred lines: the header in the zone's chapter colour, one row per reward (gold, the item with its rarity, materials with their counts, a die, an ally), and what changed the outcome (the cargo that arrived, a late delivery, a place found, the chapter's condition, a lead, an achievement) as notes. One button takes the party back to town.
+
 ## [1.452.0+488]
 
 The Lantern Dominion has a boss of its own, and the second Aurel Vane is gone.
