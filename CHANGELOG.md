@@ -13,7 +13,16 @@ isn't reconstructable from git history alone.
 The camp and the map tell a party it is under the level the next chapter asks.
 
 ### Added
-- **The level signpost:** while the party is under the level the next chapter recommends (chapter 4 asks for level 9), the camp's chapter card gets a hint row, "Chapter 4 asks for level 9. You are level 6.", with Narrative's line under it, and the Journey map gets a small chip above the sky's ("Ch. 4 · lvl 9", just "Lvl 9" on a narrow screen; the whole sentence on a tap). Nothing once the party has the level, or when the chapter recommends none. EN and FR. Uses Core's `nextChapterLevelAdviceProvider` (#355).
+- **The level signpost:** while the party is under the level the next chapter recommends (chapter 4 asks for level 9), the camp's chapter card gets a one-line hint, "Chapter 4: level 9 advised (you: 6)", and the Journey map gets a small chip above the sky's ("Ch. 4 · lvl 9", just "Lvl 9" on a narrow screen). A tap on either reads the whole sentence and Narrative's line. Nothing once the party has the level, or when the chapter recommends none. EN and FR. Uses Core's `nextChapterLevelAdviceProvider` (#355).
+
+## [1.433.0+469]
+
+Every town now has its districts, and the villages have plans.
+
+### Added
+- **32 new districts** (Narrative's names and blurbs) for Rimewell, Greyhithe, Wrack's End, the Cove Camp, Kindly Hill, Highhearth, Emberwick, Akagiri and White Wells, which had none. The Black Reliquary gains three more (the Last Lantern, the Chapels, the Frost Line) and Candlehold one (the Lantern Cliff).
+- **Village plans:** those nine places now have a plan in the District and Town views: smaller, mostly open, with three roads out. The coastal ones sit on the sea; the Cove Camp's palisade and Highhearth are walled. Every scene stands on a building in its district. The new districts are not clan holdings: clan power counts only the places it was tuned on.
+- The Black Reliquary and Candlehold are redrawn on their new districts. Candlehold's Gates are unchanged, and the night's rest still happens where the clans are seen arriving.
 
 ## [1.431.0+467]
 

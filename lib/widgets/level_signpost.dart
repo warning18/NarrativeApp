@@ -25,8 +25,9 @@ String _sentence(WidgetRef ref, ChapterLevelAdvice advice) =>
         .replaceAll('{level}', '${advice.recommendedLevel}')
         .replaceAll('{you}', '${advice.playerLevel}');
 
-/// The hint row on the camp's chapter card: the sentence, and Narrative's
-/// line under it when there is one.
+/// The hint row on the camp's chapter card: one line, so the card stays
+/// short and the ways under it stay in reach ("Chapter 4: level 9 advised
+/// (you: 6)"); a tap reads the whole sentence and Narrative's line.
 class LevelSignpostRow extends ConsumerWidget {
   const LevelSignpostRow({super.key});
 
@@ -36,27 +37,37 @@ class LevelSignpostRow extends ConsumerWidget {
     if (advice == null) return const SizedBox.shrink();
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
+    final full = [
+      _sentence(ref, advice),
+      if (advice.note.isNotEmpty) advice.note,
+    ].join(' ');
     return Padding(
       key: const Key('level_signpost'),
       padding: const EdgeInsets.only(top: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.signpost_outlined, size: 18, color: ink.ember),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(_sentence(ref, advice), style: theme.textTheme.bodySmall),
-                if (advice.note.isNotEmpty)
-                  Text(advice.note,
-                      style:
-                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
-              ],
-            ),
+      child: Semantics(
+        container: true,
+        label: full,
+        child: Tooltip(
+          message: full,
+          triggerMode: TooltipTriggerMode.tap,
+          showDuration: const Duration(seconds: 8),
+          child: Row(
+            children: [
+              Icon(Icons.signpost_outlined, size: 18, color: ink.ember),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                    tr(ref, 'level_signpost_row')
+                        .replaceAll('{n}', '${advice.chapter}')
+                        .replaceAll('{level}', '${advice.recommendedLevel}')
+                        .replaceAll('{you}', '${advice.playerLevel}'),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

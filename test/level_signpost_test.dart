@@ -112,19 +112,19 @@ void main() {
       (tester) async {
     await _pump(tester, _advice(note: 'The Lantern Hall bites back.'));
     expect(find.byKey(const Key('level_signpost')), findsOneWidget);
-    expect(find.text('Chapter 4 asks for level 9. You are level 6.'),
-        findsOneWidget);
-    expect(find.text('The Lantern Hall bites back.'), findsOneWidget);
+    expect(find.text('Chapter 4: level 9 advised (you: 6)'), findsOneWidget);
     expect(find.text('Ch. 4 · lvl 9'), findsOneWidget);
     expect(find.text('Lvl 9'), findsOneWidget);
     await _save(tester, 'signpost-en');
 
-    // A tap on the chip reads the whole sentence.
-    await tester.tap(find.text('Ch. 4 · lvl 9'));
+    // A tap on the row, or on the chip, reads the whole sentence and
+    // Narrative's line.
+    await tester.tap(find.text('Chapter 4: level 9 advised (you: 6)'));
     await tester.pump(const Duration(milliseconds: 300));
     expect(
-        find.textContaining('The Lantern Hall bites back.', findRichText: true),
-        findsWidgets);
+        find.textContaining('Chapter 4 asks for level 9. You are level 6. '
+            'The Lantern Hall bites back.'),
+        findsOneWidget);
   });
 
   testWidgets('at the level, or with no advice: nothing', (tester) async {
@@ -142,7 +142,7 @@ void main() {
   testWidgets('French, at 320 px', (tester) async {
     await _pump(tester, _advice(note: 'La salle des Lanternes mord.'),
         size: const Size(320, 250), language: AppLanguage.fr);
-    expect(find.text('Le chapitre 4 demande le niveau 9. Vous êtes niveau 6.'),
+    expect(find.text('Chapitre 4 : niveau 9 conseillé (vous : 6)'),
         findsOneWidget);
     expect(find.text('Ch. 4 · niv. 9'), findsOneWidget);
     expect(find.text('Niv. 9'), findsOneWidget);
