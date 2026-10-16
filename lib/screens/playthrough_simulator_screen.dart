@@ -32,6 +32,7 @@ import '../data/detour_scenes.dart';
 import '../data/journey_rules.dart' show walkWatches;
 import '../data/recurring_encounters.dart'
     show markerFor, recurringBeatsOpen, recurringChance;
+import '../data/feature_unlocks.dart' show trainerGuardFlag, trainerStrikeFlag;
 import '../data/factions.dart';
 import '../data/expedition_steps.dart';
 import '../data/perks.dart';
@@ -375,6 +376,7 @@ class _SimContext {
     this.context,
     this.reinforcement = Reinforcement.none,
     this.championFights = false,
+    this.featureLadder = false,
     this.specs = const {},
     this.specVariants = const {},
   });
@@ -400,6 +402,10 @@ class _SimContext {
   /// The nemeses' champions fought on the roads (nemesis.dart), to measure
   /// them; off, as the walk takes no quest a road opens.
   final bool championFights;
+
+  /// The game's feature ladder (feature_unlocks.dart): off by default, so
+  /// the measured curves stay comparable; on, to measure it.
+  final bool featureLadder;
 
   /// detour_scenes.json: the detours' written scenes (detour_scenes.dart).
   final Map<String, DetourScene> detourScenes;
@@ -585,6 +591,7 @@ _SimResult _simulate(
           startingSkillPoints: (sim.professions[character.professionId]
                   as Map<String, dynamic>?)?['startingSkillPoints'] as int? ??
               0,
+          ladder: sim.featureLadder,
         )..passives = !sim.clashOff.contains('passives'));
   // The open chapters' loop: the camp the story stands at, the places
   // already toured from it, and the place being toured now (with how many
@@ -1815,6 +1822,14 @@ _SimResult _simulate(
     gold = (gold + effectiveGoldMod).clamp(0, 1 << 30).toInt();
     alignment += choice.alignmentMod;
     flags.addAll(choice.flagsToAdd);
+    // The trainer's lesson, on the feature ladder (feature_unlocks.dart).
+    if (sim?.featureLadder == true) {
+      if (choice.flagsToAdd.contains(trainerStrikeFlag)) {
+        growth?.learnTrainerSkill(strike: true);
+      } else if (choice.flagsToAdd.contains(trainerGuardFlag)) {
+        growth?.learnTrainerSkill(strike: false);
+      }
+    }
     // What the choice does to the coast, once (v1.196: the claim and the
     // Host among it).
     applyPolitics(choice.politics,
@@ -1969,6 +1984,7 @@ _SimContext _simContextOf(
   ContextRule? context,
   Reinforcement reinforcement = Reinforcement.none,
   bool championFights = false,
+  bool featureLadder = false,
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
   final written = writtenStepsFrom(table('expedition_steps'));
@@ -2009,6 +2025,7 @@ _SimContext _simContextOf(
     context: context,
     reinforcement: reinforcement,
     championFights: championFights,
+    featureLadder: featureLadder,
     specs: specInfosFrom(table('specialisations')),
     specVariants: specVariantsFrom(table('spec_variants')),
   );
@@ -2106,13 +2123,15 @@ List<SimRunSummary> simulatePlaythroughs(
   ContextRule? context,
   Reinforcement reinforcement = Reinforcement.none,
   bool championFights = false,
+  bool featureLadder = false,
 }) {
   final sim = _simContextOf(tables, gameConfig,
       clashOff: clashOff,
       startSpecs: startSpecs,
       context: context,
       reinforcement: reinforcement,
-      championFights: championFights);
+      championFights: championFights,
+      featureLadder: featureLadder);
   final enemies = tables['enemies'] ?? const {};
   final out = <SimRunSummary>[];
   for (var i = 0; i < plan.length; i++) {

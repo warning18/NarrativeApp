@@ -59,6 +59,9 @@ extension _FightRewards on _FightScreenState {
       // are summed across all of them, not just the one FightScreen was
       // originally constructed with.
       final defeated = _enemies.where((e) => !e.isAlive).toList();
+      // The ladder's chest, then its place rules (feature_unlocks.dart).
+      await notifier.noteFightWonOnLadder(tutorial: widget.modifiers.tutorial);
+      if (!mounted) return;
       // A rival's hunter beaten yields: spared or finished
       // (hunter_mercy.dart). Spared, it keeps its gold and its loot.
       final spared = await _settleHunter(defeated);
@@ -203,7 +206,12 @@ extension _FightRewards on _FightScreenState {
         recentLootIds: session.recentLootIds,
         signatureItemIds: signatureIds,
       );
-      final chest = spared
+      // On the feature ladder the lesson (105) brings no chest: the next
+      // fight won does (feature_unlocks.dart).
+      final noChest = spared ||
+          (widget.modifiers.tutorial &&
+              !session.featureOpen(GameFeature.chest));
+      final chest = noChest
           ? const LootBoxResult(
               tier: ChestTier.wooden,
               roll: 0,
@@ -245,7 +253,7 @@ extension _FightRewards on _FightScreenState {
       // The saved auto-open choice, even on the first chest after a start.
       await ref.read(chestAutoOpenProvider.notifier).loaded;
       if (!mounted) return;
-      final spoils = spared
+      final spoils = noChest
           ? SpoilsChoices.none
           : await showSpoilsChestDialog(
               context,

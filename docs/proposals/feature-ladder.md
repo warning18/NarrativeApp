@@ -115,6 +115,40 @@ Core gives them `newlyUnlocked` and an `acknowledge(feature)`.
 3. **Place rules and battlefield conditions held back** until the first street fight (260 or 400) and 1140, or left as they are?
 4. **Hidden or greyed** for locked entries?
 
+## 7. What is built (Core, v1.421)
+
+The user approved §6 as recommended:
+- the clans' offers wait until Saltmouth;
+- the mage's and cleric's starting skill moves to the trainer;
+- place rules come from the second fight won after the lesson (120 on the full path), and conditions from the ambush at 1140;
+- locked entries are hidden, and appear with UX's card.
+
+**`lib/data/feature_unlocks.dart`:**
+- `GameFeature`: chest, placeRules, conditions, levelUp, quests, inventory, skills, politics, clans.
+- Each feature has its `feat_*` flag (or a deed: level 2 for levelUp), its chapter, `featureUnlocked`, `unlockedFeatures` and `newlyUnlockedFeatures`.
+- A feature is open in any case once the story is past its chapter.
+- **Off the ladder,** everything is open and nothing is new. A game is on the ladder only if it carries `feature_ladder`, which a new game sets. That is the old-save migration: a save from before the ladder has every feature open, and no card pops up.
+
+**The session:**
+- `acknowledgedFeatures` (saved);
+- `ladder` and `featureOpen(f)`;
+- `acknowledgeFeature(id)`;
+- `noteFightWonOnLadder`: the chest's flag on the first fight won after the lesson, the place rules' flag on the next;
+- `learnTrainerSkill` (`trainer_strike` / `trainer_guard`): the first skill of the character's own trees that hits, or that holds.
+
+**The gates:**
+- `ensureOffer` draws no offer before the clans open; the offers bank, and the Character tab's dot ignores them meanwhile.
+- A new game has no starting offer.
+- The lesson's fight (105) gives no chest.
+- A fight plays the Tide (unmarked) until place rules open, and rolls no condition until conditions open; a story's forced condition stands.
+
+**For UX:**
+- `unlockedFeaturesProvider` and `newlyUnlockedProvider` (ids, in the ladder's order);
+- `isFeatureUnlocked(ref, id)`;
+- the session's `acknowledgeFeature(id)`.
+
+**The simulator:** `featureLadder: true` plays it (no starting offer, the offers waiting, the trainer's skill). It is off by default, so the measured curves stay comparable. The win rates with it on are in the PR.
+
 ## Appendix: the inventory (main, v1.415)
 
 Chapters come from the node id: under 2000 is chapter 1, under 3000 chapter 2 (`lib/data/chapter_grid_layout.dart`). Every tutorial topic plays the first time its screen opens (`TutorialTrigger`) and can be replayed from Other → Tutorials.
