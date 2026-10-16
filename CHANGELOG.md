@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.451.0+487]
+## [1.452.0+488]
 
 A cleared zone pays out as a reward card.
 
