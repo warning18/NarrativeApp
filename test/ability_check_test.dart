@@ -4,13 +4,38 @@
 
 import 'dart:math';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/ability_check.dart';
+import 'package:narrative_data_app/screens/story_player_screen.dart'
+    show storyCheckRandomProvider;
 
 import 'player_session_provider_test.dart' show baseSession;
 
 void main() {
+  test('a story check rolls with storyCheckRandomProvider, seeded in a test',
+      () {
+    final plain = ProviderContainer();
+    addTearDown(plain.dispose);
+    expect(plain.read(storyCheckRandomProvider), isNull);
+    int rollWith(int seed) {
+      final container = ProviderContainer(overrides: [
+        storyCheckRandomProvider.overrideWithValue(Random(seed)),
+      ]);
+      addTearDown(container.dispose);
+      return rollAbilityCheck(
+        ability: 'strength',
+        dc: 12,
+        session: baseSession(strength: 3),
+        random: container.read(storyCheckRandomProvider),
+      ).roll;
+    }
+
+    expect(rollWith(7), rollWith(7));
+    expect(rollWith(7), Random(7).nextInt(20) + 1);
+  });
+
   group('abilityModifierFor', () {
     test('reads the matching stat off the session', () {
       final session =

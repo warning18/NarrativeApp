@@ -8,6 +8,27 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.461.0+497]
+
+The small effects back in proportion, dice faces with their spread again, and descriptions that read their own numbers.
+
+### Changed
+- **Effects that stayed at 1 after the ÷5 are now shares:**
+  - **Strike:** an element strike gives +8% Attack damage per point.
+  - **Thorns:** they return 10–30% of a blow that lands.
+  - **+1 armour on a sign or title:** now +8% block chance. A blocked blow loses half. Block from every source is capped at 50%.
+  - **Iron Hide:** +10% block chance a rank.
+  - **Bull's Neck and Gallows Breaker:** +1 Strength (was +2).
+  - **Hone:** a face takes at most as many hones as its own number.
+  - **Small bonuses:** small percentage bonuses keep their fractions through a fight.
+- **Dice faces keep their spread:** faces 4–7 that had all become 1 now run 1–5 from their old values. Bought dice are a real upgrade over the starter again.
+
+### Added
+- **Descriptions can read their own numbers:** spells, set bonuses, skills and spec variants accept placeholders such as `{armor}`, `{dodge}`% or `{heal}`, filled from the entry's data in EN and FR. The names are in `docs/proposals/text-placeholders.md`, for Narrative's text pass.
+- **Seeded checks for tests:** story and expedition checks can be seeded in tests.
+
+Simulated over 400 runs, fights won within three tries stay at 72.0%, and every boss and the champions stay in band.
+
 ## [1.459.0+495]
 
 The game now remembers where each point of a stat came from.

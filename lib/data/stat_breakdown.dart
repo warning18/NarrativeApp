@@ -226,7 +226,8 @@ List<StatSource> _lentRows(
     }
     for (final e in s.perkRanks.entries) {
       final perk = perkEffectsFor({e.key: e.value});
-      lend('perk', e.key, damage ? perk.attackDamage : perk.armor);
+      // Iron Hide's armor is a block chance since v1.461, not armor.
+      lend('perk', e.key, damage ? perk.attackDamage : 0);
     }
   }
 

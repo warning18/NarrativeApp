@@ -140,7 +140,9 @@ void main() {
               'Ice',
               'Light'
             ], contains(effect.element), reason: id);
-            expect(effect.value, greaterThan(0), reason: id);
+            // Since "Effects at 1" (docs/proposals/stat-scale.md) an
+            // element's extra damage is a strike share of its own.
+            expect(effect.value, greaterThanOrEqualTo(0), reason: id);
           case SignEffectKind.strikeStatus:
           case SignEffectKind.guardStatus:
           case SignEffectKind.spellStatus:

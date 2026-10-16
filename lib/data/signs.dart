@@ -219,8 +219,16 @@ enum SignEffectKind {
   armor,
   critChance,
   dodgeChance,
+
+  /// A chance to block a blow, which then loses half (as a warrior's
+  /// Perception does, stat_rules.dart): what was a flat +1 armor before the
+  /// small scale (docs/proposals/stat-scale.md, "Effects at 1").
+  blockChance,
   lifestealPercent,
-  thorns,
+
+  /// A share (%) of each blow that connects sent back (gear_effects.dart's
+  /// ThornsBank): what was a flat thorns before the small scale.
+  thornsPercent,
   manaOnHit,
   maxMana,
   secondWind,
@@ -293,6 +301,7 @@ const Set<SignEffectKind> _unscaledKinds = {
 const Set<SignEffectKind> _chanceValueKinds = {
   SignEffectKind.critChance,
   SignEffectKind.dodgeChance,
+  SignEffectKind.blockChance,
   SignEffectKind.voyageCalm,
 };
 
@@ -1205,8 +1214,9 @@ class SignEffects {
     this.armor = 0,
     this.critChance = 0,
     this.dodgeChance = 0,
+    this.blockChance = 0,
     this.lifestealPercent = 0,
-    this.thorns = 0,
+    this.thornsPercent = 0,
     this.manaOnHit = 0,
     this.maxMana = 0,
     this.secondWind = false,
@@ -1274,8 +1284,9 @@ class SignEffects {
   final int armor;
   final int critChance;
   final int dodgeChance;
+  final int blockChance;
   final int lifestealPercent;
-  final int thorns;
+  final int thornsPercent;
   final int manaOnHit;
   final int maxMana;
   final bool secondWind;
@@ -1353,8 +1364,9 @@ class SignEffects {
       armor == 0 &&
       critChance == 0 &&
       dodgeChance == 0 &&
+      blockChance == 0 &&
       lifestealPercent == 0 &&
-      thorns == 0 &&
+      thornsPercent == 0 &&
       manaOnHit == 0 &&
       maxMana == 0 &&
       !secondWind &&
@@ -1388,6 +1400,14 @@ class SignEffects {
   static int _percent(int value, int percent) =>
       percent == 0 ? value : (value * (100 + percent) / 100).round();
 
+  /// [value] raised by [percent]: through [bank] when there is one and the
+  /// share is a gain (the fractions kept for the next, see FractionBank;
+  /// [keep] false for a preview), else rounded.
+  static int _banked(int value, int percent, FractionBank? bank, bool keep) =>
+      bank == null || percent <= 0 || value <= 0
+          ? _percent(value, percent)
+          : value + bank.share(value, percent, keep: keep);
+
   /// The damage bonus (%) on the player's strikes this moment: the
   /// Attack-face bonus when [attackFace], a low-health sign under
   /// [signLowHealthShare] of [maxHealth], a first-round sign in round 1.
@@ -1408,23 +1428,38 @@ class SignEffects {
   /// [percent] harder all told (see [strikePercentFor]); a Skill face's
   /// base is raised by [percent]. Returns the new base for
   /// resolvePlayerFace, which adds the face's own value to an Attack.
+  ///
+  /// The shares go through [bank] when one is given (the fight's strike
+  /// bank, see FractionBank; [keep] false for a preview).
   int strikeBase(int baseDamage, int faceValue,
-      {required bool attackFace, int percent = 0}) {
-    if (!attackFace) return _percent(baseDamage, percent);
-    final total = _percent(baseDamage + faceValue + strikeFlat, percent);
+      {required bool attackFace,
+      int percent = 0,
+      FractionBank? bank,
+      bool keep = true}) {
+    if (!attackFace) return _banked(baseDamage, percent, bank, keep);
+    final total =
+        _banked(baseDamage + faceValue + strikeFlat, percent, bank, keep);
     return total - faceValue;
   }
 
-  /// A Defend face's block with the guard signs in.
-  int guardValue(int faceValue) => faceValue <= 0
-      ? faceValue
-      : _percent(faceValue + guardFlat, guardBlockPercent);
+  /// A Defend face's block with the guard signs in (the share through
+  /// [bank], as [strikeBase]); a bad title's malus never takes a face below
+  /// 1.
+  int guardValue(int faceValue, {FractionBank? bank, bool keep = true}) =>
+      faceValue <= 0
+          ? faceValue
+          : max(
+              1, _banked(faceValue + guardFlat, guardBlockPercent, bank, keep));
 
   /// A Heal face's number with the mend signs in, for a healer whose
-  /// Wisdom adds [wisdomBonus] (which the engine adds again on top).
-  int mendValue(int faceValue, int wisdomBonus) => mendPercent == 0
-      ? faceValue
-      : _percent(faceValue + wisdomBonus, mendPercent) - wisdomBonus;
+  /// Wisdom adds [wisdomBonus] (which the engine adds again on top); the
+  /// share through [bank], as [strikeBase].
+  int mendValue(int faceValue, int wisdomBonus,
+          {FractionBank? bank, bool keep = true}) =>
+      mendPercent == 0
+          ? faceValue
+          : _banked(faceValue + wisdomBonus, mendPercent, bank, keep) -
+              wisdomBonus;
 
   /// A Mana face's number with the spell signs in.
   int manaValue(int faceValue) => faceValue + manaFlat;
@@ -1467,8 +1502,9 @@ class SignEffects {
         armor: gear.armor + armor,
         critChance: gear.critChance + critChance,
         dodgeChance: gear.dodgeChance + dodgeChance,
+        blockChance: gear.blockChance + blockChance,
         lifestealPercent: gear.lifestealPercent + lifestealPercent,
-        thorns: gear.thorns + thorns,
+        thornsPercent: gear.thornsPercent + thornsPercent,
         manaOnHit: gear.manaOnHit + manaOnHit,
         secondWind: gear.secondWind || secondWind,
       );
@@ -1544,6 +1580,7 @@ SignEffects signEffectsFor(
   var armor = 0;
   var critChance = 0;
   var dodgeChance = 0;
+  var blockChance = 0;
   var lifesteal = 0;
   var thorns = 0;
   var manaOnHit = 0;
@@ -1637,9 +1674,11 @@ SignEffects signEffectsFor(
         critChance += v;
       case SignEffectKind.dodgeChance:
         dodgeChance += v;
+      case SignEffectKind.blockChance:
+        blockChance += v;
       case SignEffectKind.lifestealPercent:
         lifesteal += v;
-      case SignEffectKind.thorns:
+      case SignEffectKind.thornsPercent:
         thorns += v;
       case SignEffectKind.manaOnHit:
         manaOnHit += v;
@@ -1741,8 +1780,9 @@ SignEffects signEffectsFor(
     armor: armor,
     critChance: critChance,
     dodgeChance: dodgeChance,
+    blockChance: blockChance,
     lifestealPercent: lifesteal,
-    thorns: thorns,
+    thornsPercent: thorns,
     manaOnHit: manaOnHit,
     maxMana: maxMana,
     secondWind: secondWind,
@@ -1811,8 +1851,12 @@ String fillSignedValue(String text, num value) => text
 String signEffectText(SignEffect effect, AppLanguage language) {
   final status = effect.inflicted;
   final keyword = effect.keyword;
-  return fillSignedValue(
-          trFor(language, signEffectKey(effect.kind)), effect.value)
+  // An element lent with no extra damage (its damage is a strike bonus of
+  // its own since the small scale) names only the element.
+  final key = effect.kind == SignEffectKind.strikeElement && effect.value == 0
+      ? 'sign_fx_strikeElement_plain'
+      : signEffectKey(effect.kind);
+  return fillSignedValue(trFor(language, key), effect.value)
       .replaceAll('{c}', '${effect.chance}')
       .replaceAll('{e}', _elementName(effect.element, language))
       .replaceAll('{s}', status == null ? '' : _statusText(status, language))

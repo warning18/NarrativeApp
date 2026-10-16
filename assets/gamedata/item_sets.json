@@ -28,7 +28,7 @@
       {
         "pieces": 2,
         "armor": 1,
-        "thorns": 1,
+        "thorns": 20,
         "description": "Two pieces: +5 armor, and anything that strikes you takes 4 damage back.",
         "descriptionFr": "Deux pièces : +5 armure, et tout ce qui vous frappe encaisse 4 dégâts en retour."
       },

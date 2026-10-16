@@ -461,7 +461,7 @@ final DbSchema itemsSchema = DbSchema(
     FieldSchema(
       key: 'uniqueValue',
       label:
-          'Unique Effect Value (% for lifesteal/crit/dodge, points for thorns/mana)',
+          'Unique Effect Value (% for lifesteal/crit/dodge/thorns, points for mana)',
       type: FieldType.integer,
       defaultValue: 0,
     ),
