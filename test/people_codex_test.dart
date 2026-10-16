@@ -277,6 +277,23 @@ void main() {
       });
       expect(unseenNpcCount(known, s.seenNpcIds), 2);
     });
+    test('a clan court\'s person is not met by the chapter alone', () {
+      final s = baseSession();
+      const court = {'name': 'The Lantern-Bearer', 'rank': 1, 'chapter': 2};
+      expect(npcDiscovered('lantern_bearer', court, s, 8), isFalse);
+      expect(
+          npcDiscovered('lantern_bearer', court,
+              s.copyWith(talkedToNpcIds: const ['lantern_bearer']), 8),
+          isTrue);
+      const flagged = {...court, 'requiredFlag': 'met_lantern_bearer'};
+      expect(npcDiscovered('lantern_bearer', flagged, s, 8), isFalse);
+      expect(
+          npcDiscovered('lantern_bearer', flagged,
+              s.copyWith(flags: const ['met_lantern_bearer']), 8),
+          isTrue);
+      // A legacy person without a rank is still known by the chapter.
+      expect(npcDiscovered('old', const {'chapter': 2}, s, 2), isTrue);
+    });
   });
 
   group('what passed between you', () {
