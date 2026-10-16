@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import '../models/story_politics.dart';
 import '../providers/player_session_provider.dart';
+import 'politics_events.dart' show questTurnInPoliticsKey;
 import 'quest_objectives.dart';
 import 'sub_node_engine.dart';
 import 'turn_in_choices.dart';
@@ -31,6 +33,8 @@ class SimQuestPayout {
     required this.flag,
     required this.nextQuestId,
     required this.turnIn,
+    this.politics,
+    this.politicsKey = '',
   });
 
   final String questId;
@@ -44,6 +48,13 @@ class SimQuestPayout {
 
   /// The turn-in choice taken (its text), '' for a quest that simply pays.
   final String turnIn;
+
+  /// What the turn-in choice taken moves among the clans (see
+  /// TurnInChoice.politics), null when it moves nothing (v1.463): the
+  /// caller applies it as the app does, once under [politicsKey]
+  /// (questTurnInPoliticsKey) and logged `quest:<questId>`.
+  final StoryPolitics? politics;
+  final String politicsKey;
 }
 
 /// Which way the simulated player settles a quest that offers a choice.
@@ -198,6 +209,10 @@ class SimQuestLog {
 
   /// Hands [questId] in: it leaves the active list, and the payout (the
   /// quest's own, or the turn-in choice the [bias] picks) is returned.
+  /// The choice is the one paying the most good (good), the most evil
+  /// (evil) or the most gold (gold, the first on a tie), else one at
+  /// random; its politics come with the payout for the caller to apply
+  /// (v1.463, as quest_turn_in.dart does in the app).
   SimQuestPayout complete(String questId,
       {required int step,
       required SimTurnInBias bias,
@@ -231,6 +246,10 @@ class SimQuestLog {
       flag: picked?.flag ?? '',
       nextQuestId: q['nextQuestID']?.toString() ?? '',
       turnIn: picked?.text ?? '',
+      politics: picked != null && picked.hasPolitics ? picked.politics : null,
+      politicsKey: picked == null
+          ? ''
+          : questTurnInPoliticsKey(questId, choices.indexOf(picked)),
     );
     records[questId]
       ?..completedAtStep = step

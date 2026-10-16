@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.464.0+500]
+
+The simulator counts the politics of a quest's turn-in, and the ranger's first chapters get a little easier.
+
+### Changed
+- **Ranger** starts with 2 more max health (`bonusMaxHealth` -2 -> 0). Chapters 1-2 within three tries: 71% -> 75%; overall 74.8% (the 75% cap stops a bigger touch).
+- **Claimant Tallis** deals 4 damage instead of 5, back in her boss band (47%) with the ranger's extra health.
+
+### Fixed
+- **Playthrough simulator:** a turn-in choice's politics (standing, clan power) now apply through the app's own `applyStoryPolitics`, once per quest and choice, as in play (QA #378). Gaps the simulator still has are listed in `docs/simulation/sim-gaps.md`.
+- **sea_beast_outrun_test** no longer fails about one run in nine: the voyage's rolls are seeded.
+
 ## [1.463.0+499]
 
 Descriptions stop quoting numbers that have moved.
