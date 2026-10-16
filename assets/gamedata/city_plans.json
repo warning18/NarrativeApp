@@ -6780,7 +6780,140 @@
       "960": "alster_b187",
       "890_trainer": "alster_b175"
     },
-    "names": {}
+    "names": {
+      "alster_b000": {
+        "en": "The Blind Beggar",
+        "fr": "Le Mendiant Aveugle"
+      },
+      "alster_b001": {
+        "en": "The hovel",
+        "fr": "Le taudis"
+      },
+      "alster_b002": {
+        "en": "The card-master’s cellar",
+        "fr": "La cave du maître de cartes"
+      },
+      "alster_b004": {
+        "en": "The sawdust floor",
+        "fr": "Le sol de sciure"
+      },
+      "alster_b005": {
+        "en": "The kicked-in door",
+        "fr": "La porte enfoncée"
+      },
+      "alster_b007": {
+        "en": "The trapdoor",
+        "fr": "La trappe"
+      },
+      "alster_b008": {
+        "en": "The beast in the alley",
+        "fr": "La bête de la ruelle"
+      },
+      "alster_b009": {
+        "en": "The back room",
+        "fr": "L’arrière-salle"
+      },
+      "alster_b010": {
+        "en": "The wine-soaked floor",
+        "fr": "Le sol imbibé de vin"
+      },
+      "alster_b011": {
+        "en": "The wall by the door",
+        "fr": "Le mur près de la porte"
+      },
+      "alster_b014": {
+        "en": "The counting-room cage",
+        "fr": "La cage de la salle des comptes"
+      },
+      "alster_b015": {
+        "en": "Old Hesk’s wall",
+        "fr": "Le mur du vieux Hesk"
+      },
+      "alster_b016": {
+        "en": "The chalked list",
+        "fr": "La liste à la craie"
+      },
+      "alster_b021": {
+        "en": "Where the street turned over",
+        "fr": "Là où la rue a basculé"
+      },
+      "alster_b027": {
+        "en": "The ruin of our house",
+        "fr": "Les ruines de notre maison"
+      },
+      "alster_b032": {
+        "en": "The toll booth",
+        "fr": "Le péage"
+      },
+      "alster_b033": {
+        "en": "The booth-keeper’s counter",
+        "fr": "Le comptoir du péager"
+      },
+      "alster_b076": {
+        "en": "The torturer’s sack",
+        "fr": "Le sac du tortionnaire"
+      },
+      "alster_b077": {
+        "en": "The cell",
+        "fr": "La cellule"
+      },
+      "alster_b085": {
+        "en": "The Wardens’ door",
+        "fr": "La porte des Gardiens"
+      },
+      "alster_b088": {
+        "en": "The Corpse Chute",
+        "fr": "Le Toboggan aux Cadavres"
+      },
+      "alster_b102": {
+        "en": "The meat-grinder hall",
+        "fr": "Le couloir broyeur"
+      },
+      "alster_b112": {
+        "en": "The laughing guard",
+        "fr": "Le garde qui rit"
+      },
+      "alster_b118": {
+        "en": "The rot pit",
+        "fr": "La fosse de pourriture"
+      },
+      "alster_b119": {
+        "en": "The main drain",
+        "fr": "Le collecteur principal"
+      },
+      "alster_b133": {
+        "en": "The Matriarch’s nest",
+        "fr": "Le nid de la Matriarche"
+      },
+      "alster_b152": {
+        "en": "The deep rot",
+        "fr": "La pourriture profonde"
+      },
+      "alster_b174": {
+        "en": "The Lark’s gangway",
+        "fr": "La passerelle de l’Alouette"
+      },
+      "alster_b175": {
+        "en": "The looted armory",
+        "fr": "L’armurerie pillée"
+      },
+      "alster_b176": {
+        "en": "The mate’s manifest",
+        "fr": "Le manifeste du second"
+      },
+      "alster_b177": {
+        "en": "The rising line",
+        "fr": "La corde qui monte"
+      },
+      "alster_b187": {
+        "en": "The Lark’s deck",
+        "fr": "Le pont de l’Alouette"
+      },
+      "alster_b189": {
+        "en": "The empty name",
+        "fr": "Le nom absent"
+      }
+    }
   },
   "ashen_quarter": {
     "seed": 3011,
@@ -9473,7 +9606,116 @@
       "3005_clan_compact_1_lit": "ashen_quarter_b088",
       "3005_glass_fire_fight": "ashen_quarter_b048"
     },
-    "names": {}
+    "names": {
+      "ashen_quarter_b000": {
+        "en": "The three envoys’ beam",
+        "fr": "La poutre des trois émissaires"
+      },
+      "ashen_quarter_b001": {
+        "en": "The Quarter’s gate",
+        "fr": "La porte du Quartier"
+      },
+      "ashen_quarter_b011": {
+        "en": "The envoy’s corner",
+        "fr": "Le coin de l’envoyé"
+      },
+      "ashen_quarter_b037": {
+        "en": "The chanting acolyte",
+        "fr": "L’acolyte qui psalmodie"
+      },
+      "ashen_quarter_b038": {
+        "en": "The Ashen Oath",
+        "fr": "Le Serment de Cendre"
+      },
+      "ashen_quarter_b039": {
+        "en": "The broken shrine",
+        "fr": "Le sanctuaire brisé"
+      },
+      "ashen_quarter_b041": {
+        "en": "Imeh’s stall",
+        "fr": "L’étal d’Imeh"
+      },
+      "ashen_quarter_b043": {
+        "en": "The runners’ post",
+        "fr": "Le relais des coureurs"
+      },
+      "ashen_quarter_b044": {
+        "en": "The confessional",
+        "fr": "Le confessionnal"
+      },
+      "ashen_quarter_b047": {
+        "en": "The Void relic",
+        "fr": "La relique du Vide"
+      },
+      "ashen_quarter_b048": {
+        "en": "The Choir’s fire",
+        "fr": "Le feu du Chœur"
+      },
+      "ashen_quarter_b049": {
+        "en": "The grey candle",
+        "fr": "La bougie grise"
+      },
+      "ashen_quarter_b050": {
+        "en": "Dorran’s bench",
+        "fr": "Le banc de Dorran"
+      },
+      "ashen_quarter_b051": {
+        "en": "The black thread",
+        "fr": "Le fil noir"
+      },
+      "ashen_quarter_b055": {
+        "en": "The mercenary’s fire",
+        "fr": "Le feu du mercenaire"
+      },
+      "ashen_quarter_b059": {
+        "en": "The sifted ash",
+        "fr": "La cendre tamisée"
+      },
+      "ashen_quarter_b060": {
+        "en": "The new-moon watch",
+        "fr": "La veille de nouvelle lune"
+      },
+      "ashen_quarter_b072": {
+        "en": "The Wall of Names",
+        "fr": "Le Mur des Noms"
+      },
+      "ashen_quarter_b076": {
+        "en": "The ruins",
+        "fr": "Les ruines"
+      },
+      "ashen_quarter_b088": {
+        "en": "The first coal",
+        "fr": "Le premier charbon"
+      },
+      "ashen_quarter_b130": {
+        "en": "The vault’s golem",
+        "fr": "Le golem du coffre"
+      },
+      "ashen_quarter_b131": {
+        "en": "The Tribunal’s bench",
+        "fr": "Le banc du Tribunal"
+      },
+      "ashen_quarter_b134": {
+        "en": "The children’s stair",
+        "fr": "L’escalier des enfants"
+      },
+      "ashen_quarter_b141": {
+        "en": "The Tribunal’s purse",
+        "fr": "La bourse du Tribunal"
+      },
+      "ashen_quarter_b151": {
+        "en": "The archive clerk",
+        "fr": "Le commis des archives"
+      },
+      "ashen_quarter_b157": {
+        "en": "The scorched ledger",
+        "fr": "Le registre roussi"
+      },
+      "ashen_quarter_b159": {
+        "en": "The sealed archive door",
+        "fr": "La porte des archives scellées"
+      }
+    }
   },
   "drowned_cloister": {
     "seed": 5023,
@@ -11668,7 +11910,96 @@
       "5010_archivist_words": "drowned_cloister_b046",
       "5010_tobin_hymn": "drowned_cloister_b059"
     },
-    "names": {}
+    "names": {
+      "drowned_cloister_b000": {
+        "en": "The Drowned Stair",
+        "fr": "L’Escalier Noyé"
+      },
+      "drowned_cloister_b001": {
+        "en": "The night count",
+        "fr": "Le compte de nuit"
+      },
+      "drowned_cloister_b006": {
+        "en": "The black water",
+        "fr": "L’eau noire"
+      },
+      "drowned_cloister_b007": {
+        "en": "The collapsed span",
+        "fr": "Le pont effondré"
+      },
+      "drowned_cloister_b016": {
+        "en": "The broken crossing",
+        "fr": "La traversée rompue"
+      },
+      "drowned_cloister_b017": {
+        "en": "The sealed stair",
+        "fr": "L’escalier scellé"
+      },
+      "drowned_cloister_b019": {
+        "en": "The flooded aisle",
+        "fr": "La nef inondée"
+      },
+      "drowned_cloister_b022": {
+        "en": "The sapper’s ledge",
+        "fr": "La corniche du sapeur"
+      },
+      "drowned_cloister_b028": {
+        "en": "The driest ledge",
+        "fr": "La corniche la plus sèche"
+      },
+      "drowned_cloister_b045": {
+        "en": "The grey candles",
+        "fr": "Les bougies grises"
+      },
+      "drowned_cloister_b046": {
+        "en": "The archivist’s alcove",
+        "fr": "L’alcôve de l’archiviste"
+      },
+      "drowned_cloister_b052": {
+        "en": "The courier’s oilskin",
+        "fr": "La toile cirée du courrier"
+      },
+      "drowned_cloister_b054": {
+        "en": "The bark-bleeder’s cot",
+        "fr": "Le lit du Saigne-Écorce"
+      },
+      "drowned_cloister_b059": {
+        "en": "The choir deserter’s candles",
+        "fr": "Les chandelles du déserteur du chœur"
+      },
+      "drowned_cloister_b066": {
+        "en": "The boatman’s mooring",
+        "fr": "L’amarre du batelier"
+      },
+      "drowned_cloister_b075": {
+        "en": "The guide’s landing",
+        "fr": "L’embarcadère du guide"
+      },
+      "drowned_cloister_b076": {
+        "en": "The route-seller’s shelf",
+        "fr": "Le rayon du vendeur de routes"
+      },
+      "drowned_cloister_b077": {
+        "en": "The deserter’s shelf",
+        "fr": "Le rayon du déserteur"
+      },
+      "drowned_cloister_b081": {
+        "en": "The ossuary stall",
+        "fr": "L’étal de l’ossuaire"
+      },
+      "drowned_cloister_b085": {
+        "en": "The Keyholders’ cache",
+        "fr": "La cache des Porte-Clefs"
+      },
+      "drowned_cloister_b086": {
+        "en": "The skull shelves",
+        "fr": "Les étagères aux crânes"
+      },
+      "drowned_cloister_b096": {
+        "en": "The woman in grey",
+        "fr": "La femme en gris"
+      }
+    }
   },
   "black_reliquary": {
     "seed": 6037,
@@ -18803,7 +19134,92 @@
       "7100_sick_failed": "white_anchorage_b191",
       "7100_impound_fight": "white_anchorage_b188"
     },
-    "names": {}
+    "names": {
+      "white_anchorage_b000": {
+        "en": "The company’s captain",
+        "fr": "Le capitaine de la compagnie"
+      },
+      "white_anchorage_b001": {
+        "en": "The knight in glass",
+        "fr": "La chevalière de verre"
+      },
+      "white_anchorage_b011": {
+        "en": "The fleet’s chaplain",
+        "fr": "L’aumônier de la flotte"
+      },
+      "white_anchorage_b031": {
+        "en": "The altar log",
+        "fr": "Le journal de l’autel"
+      },
+      "white_anchorage_b075": {
+        "en": "The Anchor Quay",
+        "fr": "Le Quai des Ancres"
+      },
+      "white_anchorage_b076": {
+        "en": "The last company",
+        "fr": "La dernière compagnie"
+      },
+      "white_anchorage_b083": {
+        "en": "The helmsman’s bench",
+        "fr": "Le banc du barreur"
+      },
+      "white_anchorage_b089": {
+        "en": "The flagship’s hold",
+        "fr": "La cale du vaisseau amiral"
+      },
+      "white_anchorage_b091": {
+        "en": "The Fleet’s cutter",
+        "fr": "Le cotre de la Flotte"
+      },
+      "white_anchorage_b095": {
+        "en": "Orsabet’s candle",
+        "fr": "La chandelle d’Orsabet"
+      },
+      "white_anchorage_b112": {
+        "en": "Ghrem’s message",
+        "fr": "Le message de Ghrem"
+      },
+      "white_anchorage_b131": {
+        "en": "The Charter",
+        "fr": "La Charte"
+      },
+      "white_anchorage_b140": {
+        "en": "Nkem’s boat",
+        "fr": "Le bateau de Nkem"
+      },
+      "white_anchorage_b181": {
+        "en": "The wreck-wright’s yard",
+        "fr": "La cour du charpentier d’épaves"
+      },
+      "white_anchorage_b183": {
+        "en": "The helmsman’s goodbye",
+        "fr": "Les adieux du barreur"
+      },
+      "white_anchorage_b186": {
+        "en": "The Houses’ Conclave",
+        "fr": "Le Conclave des Maisons"
+      },
+      "white_anchorage_b187": {
+        "en": "The Vault stair",
+        "fr": "L’escalier du Coffre"
+      },
+      "white_anchorage_b188": {
+        "en": "The Admiralty’s impound",
+        "fr": "La fourrière de l’Amirauté"
+      },
+      "white_anchorage_b191": {
+        "en": "The pilgrims’ beds",
+        "fr": "Les lits des pèlerins"
+      },
+      "white_anchorage_b193": {
+        "en": "The helmsman’s cabin",
+        "fr": "La cabine du barreur"
+      },
+      "white_anchorage_b195": {
+        "en": "The burning Vault",
+        "fr": "Le Coffre en flammes"
+      }
+    }
   },
   "candlehold": {
     "seed": 7507,
@@ -23043,6 +23459,7 @@
       "7510_penitents": "candlehold_b022",
       "7510_open_hand": "candlehold_b020",
       "7510_seen": "candlehold_b003",
+      "7515_rest": "candlehold_b003",
       "7520_vane": "candlehold_b158",
       "7520_morrow": "candlehold_b157",
       "7520_tallis": "candlehold_b162",

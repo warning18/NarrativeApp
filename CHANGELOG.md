@@ -8,6 +8,52 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.429.0+465]
+
+The game pushes back after the camp: from chapter 3 on, every profession wins about 70% of its fights within three tries, down from 82–97%. Chapters 1 and 2 stay gentler.
+
+### Changed
+- **Enemies are stronger**, most from the camp (the landfall that opens chapter 3) to chapter 5. Chapters 1 and 2 get only a lighter raise, so the opening still teaches: about 90% of fights won within three tries and 70% on the first. Chapters 6 to 8 are a little lighter again, since the chapter curve already climbs there.
+- **The professions are closer together.**
+  - The Mage hits less hard: base damage 6 → 1, Intelligence 4 → 1, health −15 → −20.
+  - The Cleric is sturdier: base damage 0 → 5, health 10 → 35.
+  - The Warrior: base damage 3 → 4, health 20 → 30.
+  - The Ranger: base damage 3 → 1, health 0 → −10, Perception 4 → 1, Luck 2 → 0, Dexterity 3 → 2.
+  - The Rogue: base damage 4 → 2.
+- **Five late bosses re-tuned** so each is still won about as often as before: the Void Archon, the White Admiral, the Void Sovereign and Claimant Tallis are a little stronger, the Tear-Herald a little weaker. The six clan champions get about an eighth more health and +1 damage, so they are still won about half the time.
+- **A lost fight still gives 30% of its XP**, so a struggling character doesn't fall further behind.
+
+### Added
+- **A rest before the Lantern Hall:** the rest scene refills provisions and mana.
+- **The simulator counts first-try wins** for each chapter.
+
+Simulated over 400 runs, by profession:
+- **Chapters 1–2:** 81–95% of fights won within three tries, 55–83% on the first try.
+- **Chapters 3–8:** 63–73% within three tries, 37–44% on the first try.
+
+Before, it was 82–97% within three tries and 70–84% on the first try, over the whole game. The tables are in `docs/simulation/difficulty-review.md` §6.
+## [1.428.0+464]
+
+### Added
+- A night's rest before the Lantern Hall (chapter 7). Every road up from the gates now passes `7515_rest`: the party sleeps on the harbour steps while the clans' fires light the cliff, then climbs to whichever Hall the claimant holds. It gives a full heal, one strong potion, and sets `rest_before_hall` (Core's engine refills provisions and mana from it). Each of the three Halls reads it back.
+
+### Changed
+- The Hall's roads: the three duplicate choices per way (one per claimant) are now one choice per way, with the claimant routing moved into the rest scene (66 choices down to 22).
+
+## [1.427.0+463]
+
+### Added
+- Names (EN and FR) for the buildings that hold scenes in four of the six new town plans: Alster (33), the Ashen Quarter (27), the Drowned Cloister (22) and the White Anchorage (21), in `city_plans.json`. The Black Reliquary and Candlehold follow with their regenerated plans.
+
+## [1.425.0+461]
+
+The city chart on every stored plan, and the way back in.
+
+### Changed
+- **Every city plan Core stored draws on the town chart** (Alster, the Ashen Quarter, the Drowned Cloister, the Black Reliquary, the White Anchorage, Candlehold, besides Saltmouth): whole and by district, with or without a river, a wall, canals, bridges, a shore. A new test draws all seven, and each of their districts.
+- **District names on the whole city no longer overlap**: a name slides down or up by its own height until it finds room (the Ashen Quarter's three names sat on one another).
+- **A look out of a building shows the city's chart, with a button back in.** A scene inside a building keeps its room view; looking out of it now shows the chart (it showed the generated streets) and a button on it goes back in.
+
 ## [1.424.0+460]
 
 A hub's choices on rings and chips, and a beat when one is taken.
