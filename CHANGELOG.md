@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.465.0+501]
+
+A scene's choices are in the scene, and the map offers only the ways that move you.
+
+### Changed
+- **The scene view holds the scene's own choices:** when the party arrives (the full page for the main story, the sheet for a place's errand) the words are followed by the choices acted out here: a card for each (a fight, a payment, a check, a decision), or in a hub a chip for each kind that opens its list. The page's button reads "Back to the map" when it has choices. The wreck's "Lash yourself to the mast" is no longer under the map.
+- **The map keeps only the ways that carry the party:** pins for those, and nothing else under it. A button with a count next to Read ("Choices · 3") opens the scene view when you want its choices again. The rings on the party's mark are gone with the cards. A written detour has no map, so its cards stay under its scene.
+- Closes the open `TODO(UX)` of the arrival work. Building maps on arrival is not part of this; it keeps its own version.
+
 ## [1.464.0+500]
 
 The simulator counts the politics of a quest's turn-in, and the ranger's first chapters get a little easier.

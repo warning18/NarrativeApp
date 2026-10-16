@@ -56,10 +56,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'choice_ways_chip': {AppLanguage.en: 'Ways', AppLanguage.fr: 'Voies'},
   'choice_hub_hint': {
-    AppLanguage.en:
-        'Tap a chip, on the ring or under the map, to open its list.',
-    AppLanguage.fr:
-        'Touchez une pastille, sur l’anneau ou sous la carte, pour ouvrir sa liste.',
+    AppLanguage.en: 'Tap a chip to open its list.',
+    AppLanguage.fr: 'Touchez une pastille pour ouvrir sa liste.',
+  },
+  'journey_choices_here': {
+    AppLanguage.en: 'Choices · {n}',
+    AppLanguage.fr: 'Choix · {n}',
   },
   'journey_by_road': {
     AppLanguage.en: 'Road: {stops}',

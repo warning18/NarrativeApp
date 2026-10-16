@@ -75,11 +75,17 @@ void main() {
     expect(find.byType(JourneyScreen), findsOneWidget);
     expect(tester.takeException(), isNull);
 
-    // Both ways on from the gate are steps on the map.
+    // The way on that carries the party is a step on the map; the other, a
+    // roll acted out at the gate, is a choice in the scene view (a button
+    // under the map opens it).
     final node = container.read(storyDataProvider).value!.nodeFor('2005')!;
-    for (final choice in node.choices) {
-      expect(find.text(choice.text), findsOneWidget, reason: choice.text);
-    }
+    expect(find.text(node.choices.first.text), findsOneWidget);
+    expect(find.text(node.choices.last.text), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.text(node.choices.last.text), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('journey_continue')));
+    await tester.pump(const Duration(milliseconds: 400));
     expect(find.text('You are here'.toUpperCase()), findsOneWidget);
 
     // The road already taken is the Map tab's to show (v1.224): the
