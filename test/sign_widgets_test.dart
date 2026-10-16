@@ -72,9 +72,10 @@ void main() {
 
     expect(find.text('Sang de Titan\u00a0: 1'), findsOneWidget);
     expect(find.text('Poings de braise'), findsOneWidget);
-    // Rare: Fire 1 x 1.5 = 2 (rounded).
+    // Rare: Fire, and its strike share 8% x 1.5 = 12%.
     expect(
-        find.text('Les faces Attaque prennent l’élément Feu, +2\u00a0dégâts.'),
+        find.text('Les faces Attaque prennent l’élément Feu.'), findsOneWidget);
+    expect(find.text('Les faces Attaque infligent +12\u00a0% de dégâts.'),
         findsOneWidget);
     // The vow is silent at -12; the pact counts its fights down.
     expect(find.text('Silencieux\u00a0: votre alignement est sous 0.'),

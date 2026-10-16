@@ -85,5 +85,16 @@ double blockChanceFor(String? professionId, int perception) =>
         ? min(blockCap, max(0, perception) * blockPerPerception)
         : 0;
 
+/// However it is lent (signs, titles, Iron Hide, on top of a warrior's
+/// Perception), a block chance never passes this.
+const double blockChanceMax = 50;
+
+/// The block chance of a combatant of [professionId] and [perception] with
+/// [extra] from gear, signs and perks (GearEffects.blockChance), at most
+/// [blockChanceMax].
+double blockChanceWith(String? professionId, int perception, double extra) =>
+    min(blockChanceMax,
+        max(0, blockChanceFor(professionId, perception) + extra));
+
 /// What is left of a blow of [damage] a warrior blocks: half, rounded down.
 int blockedBlow(int damage) => damage ~/ 2;

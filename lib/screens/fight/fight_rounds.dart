@@ -1352,9 +1352,9 @@ extension _FightRounds on _FightScreenState {
               block: target.block,
               mitigation: mitigation);
       // A warrior's Perception blocks a blow now and then: half of it
-      // (stat_rules.dart).
-      final blockChance =
-          blockChanceFor(target.professionId, target.perception);
+      // (stat_rules.dart); signs, titles and Iron Hide lend anyone a block.
+      final blockChance = blockChanceWith(
+          target.professionId, target.perception, target.gear.blockChance);
       if (!wasDodged &&
           damageTaken > 0 &&
           blockChance > 0 &&
@@ -1391,9 +1391,11 @@ extension _FightRounds on _FightScreenState {
         damageTaken = target.currentHealth - 1;
         secondWind = true;
       }
-      // Thorns (a Thornmail Hauberk, the Hollow Court set) cut whatever
-      // actually connected.
-      final thorns = damageTaken > 0 ? target.gear.thorns : 0;
+      // Thorns (a Thornmail Hauberk, the Hollow Court set, a sign) send
+      // back their share of whatever actually connected (gear_effects.dart's
+      // ThornsBank keeps the fractions for the next blow).
+      final thorns =
+          target.thornsBank.answer(damageTaken, target.gear.thornsPercent);
       // A guard sign bites the enemy that hits the player's raised guard
       // (the block of a Defend face played this round, before this blow
       // takes it down).
