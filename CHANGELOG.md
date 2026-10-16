@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.448.0+484]
+
+Arriving at a place: its scene in a sheet over the map, and a notice when you come back.
+
+### Added
+- **Arrival sheet:** after a choice, the scene of a place opens in a sheet over the dimmed map (the place's name, the words, Continue) instead of a full page. The main story and the scenes met on a detour keep the full page.
+- **"You came back to …":** an errand's one-tap return to its town hub shows a small notice (the unlock card's look) that fades by itself.
+
 ## [1.447.0+483]
 
 The family house reads as the scenes tell it.
