@@ -253,7 +253,7 @@ void main() {
     // 46 with the first clues of five plots at the wharf (v1.270.0); 17
     // once the ways moved to their districts (the gate, Tern Row, the yard,
     // the Lantern Alleys and Card Row take the other 29); 18 with the Tide
-    // Cellar's line about a girl from Tallow Street (v1.409).
+    // Cellar's line about a girl from Tallow Street (v1.414).
     expect(find.text('Scenes read: 3 / 18'), findsOneWidget);
     // The rat was beaten; the rest are still unknown.
     expect(find.text('Harbor Rat'), findsOneWidget);

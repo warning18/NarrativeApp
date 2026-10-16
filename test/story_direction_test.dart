@@ -439,7 +439,7 @@ void main() {
       expect(fight.alignmentMod, lessThan(0));
       expect(nodes['6010_masked_after']!.description, contains('Lysa'),
           reason: 'the mask comes off after the fight, not before');
-      // Since v1.409 she says her name before any blade is drawn.
+      // Since v1.414 she says her name before any blade is drawn.
       expect(nodes['6010_masked']!.description, contains('Lysa'));
       expect(nodes['6010_lysa_dead']!.choices.single.flagsToAdd,
           contains('lysa_found_dead'));
