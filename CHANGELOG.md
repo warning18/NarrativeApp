@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.432.0+468]
+
+The camp and the map tell a party it is under the level the next chapter asks.
+
+### Added
+- **The level signpost:** while the party is under the level the next chapter recommends (chapter 4 asks for level 9), the camp's chapter card gets a hint row, "Chapter 4 asks for level 9. You are level 6.", with Narrative's line under it, and the Journey map gets a small chip above the sky's ("Ch. 4 · lvl 9", just "Lvl 9" on a narrow screen; the whole sentence on a tap). Nothing once the party has the level, or when the chapter recommends none. EN and FR. Uses Core's `nextChapterLevelAdviceProvider` (#355).
+
 ## [1.431.0+467]
 
 ### Changed
