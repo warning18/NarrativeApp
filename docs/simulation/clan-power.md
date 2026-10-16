@@ -75,3 +75,15 @@ The rules are in `lib/data/clan_crisis.dart`, with Narrative's words from `terri
   - **Stay of the fallen clan:** no new oath, no patron's stats, and the clan's gifts kept. The winner is your nemesis, whatever its power. Raising your own banner (the Open Hand's `banner_raised`) ends it, and the fallen clan pledges to your Host; so does the clan rising again.
 - **The Mire's seat** is the Mire's Court, a district of the Drowned Cloister with Narrative's name and blurb. The Mire now holds it from the start.
 - **The simulator** plays no crisis: with no one to ask, seats fall as before.
+
+## PR 4: offers, the throne, the materials price, the survivors (v1.400)
+
+- **Power caps the signs a clan gives.** A Minor clan (under 25) gives signs up to epic; a Rising or stronger one, heroic too. Skills and objects keep their own rarity.
+  - First planned: rare for Minor, epic for Rising. That put Claimant Tallis at 55.1% (target 40 ±12), against 50.7% before this PR.
+  - With the softer cap, every boss is in its band. Tallis is at 49.6%.
+- **The holder of the place comes more often:** in an offer made in a place a clan holds, its suitor weighs ×1.5 (`heldPlaceSuitorWeight`). The offer dialog reads the holder where the story stands (`holderHereProvider`).
+- **A fallen clan sends no one,** except to the character who stayed of it: its survivors still come, and their gifts follow the standing as ever.
+- **The Host:** a fallen clan comes only if it pledged. The Character tab's climb now breaks a tie on standing by power. An Ascendant clan's weight at the chapter-7 decision is the story's to write with the events' new `powerAtLeast` condition.
+- **The crisis paid in materials:** "Send timber and stone" (3 timber and 2 cut stone, Narrative's line) is offered when the pack holds them. It settles the crisis like the gold: the attacker takes a lesser place instead. A choice's negative `grantMaterials` now takes the materials from the pack.
+
+Per-profession win rates (100 runs, seed 11, no reinforcements), before → after: cleric 57.6 → 57.2, mage 81.9 → 81.5, ranger 75.1 → 74.9, rogue 74.3 → 73.7, warrior 70.2 → 69.9. All within 1 point, all slightly down (weaker signs from weak clans).

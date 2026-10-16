@@ -10,7 +10,8 @@
 //   [defendAttackerPower] power, your clan gains [defendClanPower] and
 //   [defendStanding] standing; lost, you may still pay or refuse), pay
 //   ([crisisGoldPerChapter] gold a chapter: the attacker takes a lesser
-//   place of your clan instead, when it has one), or refuse
+//   place of your clan instead, when it has one; or [crisisMaterialsPrice]
+//   in timber and stone, the same), or refuse
 //   ([refuseStanding] standing: the seat falls).
 // - The fall: your main clan left with no place (crisis or not), a scene
 //   asks you to choose. Bend the knee: your standing with the fallen clan
@@ -39,6 +40,18 @@ const int defendStanding = 5;
 const int refuseStanding = -10;
 const int crisisGoldPerChapter = 40;
 const double titheShare = 0.2;
+
+/// The crisis paid in materials instead of gold (the clan's buildings
+/// mended): its item ids and counts.
+const Map<String, int> crisisMaterialsPrice = {
+  'material_timber': 3,
+  'material_cut_stone': 2,
+};
+
+/// Whether [materials] (counts by item id) hold [crisisMaterialsPrice].
+bool holdsCrisisMaterials(Map<String, int> materials) =>
+    crisisMaterialsPrice.entries
+        .every((e) => (materials[e.key] ?? 0) >= e.value);
 
 /// The standing the fallen clan drops to when you bend the knee: Resented.
 const double kneelFallenStanding = -20;
@@ -133,6 +146,7 @@ StoryNode? buildCrisisNode(
   required int chapter,
   required int gold,
   required Random random,
+  Map<String, int> materials = const {},
 }) {
   final clan = state.crisis['clan'] ?? '';
   final attacker = state.crisis['attacker'] ?? '';
@@ -177,6 +191,19 @@ StoryNode? buildCrisisNode(
           textFr: fill('Payer {gold} pièces d’or', true),
           nextId: '',
           goldMod: -price,
+          politics: StoryPolitics(
+            control: {if (lesser.isNotEmpty) lesser.last: attacker},
+            settleCrisis: 'paid',
+          ),
+        ),
+      if (holdsCrisisMaterials(materials))
+        StoryChoice(
+          text: 'Send timber and stone',
+          textFr: 'Envoyer bois et pierre',
+          nextId: '',
+          grantMaterials: {
+            for (final e in crisisMaterialsPrice.entries) e.key: -e.value,
+          },
           politics: StoryPolitics(
             control: {if (lesser.isNotEmpty) lesser.last: attacker},
             settleCrisis: 'paid',
@@ -250,6 +277,7 @@ List<StoryNode>? clanCrisisRoadEvent(
   required int chapter,
   required int gold,
   required Random random,
+  Map<String, int> materials = const {},
 }) {
   final crisis = buildCrisisNode(state,
       data: data,
@@ -257,7 +285,8 @@ List<StoryNode>? clanCrisisRoadEvent(
       enemies: enemies,
       chapter: chapter,
       gold: gold,
-      random: random);
+      random: random,
+      materials: materials);
   if (crisis != null) return [crisis];
   final fall = buildFallNode(state,
       data: data, geography: geography, gold: gold, random: random);

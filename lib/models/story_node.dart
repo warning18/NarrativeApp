@@ -506,6 +506,7 @@ class StoryChoice {
       (grantsBannerPieceId != null && grantsBannerPieceId!.isNotEmpty) ||
       grantsItem ||
       grantsMaterials ||
+      spendsMaterials ||
       (loseAllyId != null && loseAllyId!.isNotEmpty) ||
       approvalMods.isNotEmpty;
 
@@ -516,6 +517,10 @@ class StoryChoice {
   /// Whether taking this choice puts materials in the pack (see
   /// [grantMaterials]).
   bool get grantsMaterials => grantMaterials.values.any((n) => n > 0);
+
+  /// Whether it costs materials (a [grantMaterials] count below zero: a
+  /// clan's crisis paid in timber and stone, clan_crisis.dart).
+  bool get spendsMaterials => grantMaterials.values.any((n) => n < 0);
 
   /// Whether a purse of [gold] covers what this choice costs (a [goldMod]
   /// below zero). A payment on the road (an offering, a toll, a fee) is

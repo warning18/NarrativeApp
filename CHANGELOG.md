@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.400.0+436]
+
+Clans' power shows in their offers, and a crisis can be paid in timber and stone.
+
+- **A weak clan gives weaker signs.** A clan under 25 power offers signs up to epic; heroic signs come from stronger clans.
+- **The clan that holds the place comes more often** with its offer when you are in its lands.
+- **A fallen clan sends no one,** except to those who stayed of it: its survivors still come with gifts.
+- **The Host:** a fallen clan joins it only if it pledged.
+- **The Character tab's climb:** between equals, the stronger clan's climb now shows.
+- **The crisis:** "Send timber and stone" (3 timber, 2 cut stone) now holds your clan's seat as the gold does.
+- **Balance:** every profession within 1 point (slightly down); the boss curve holds. Report: docs/simulation/clan-power.md.
+
 ## [1.399.0+435]
 
 Rewards come on one card, whatever they are (card A of the user's pick).
