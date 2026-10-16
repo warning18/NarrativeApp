@@ -668,6 +668,13 @@ extension _FightCards on _FightScreenState {
                     _stateChip(Icons.directions_run, tr(ref, 'wavering_label'),
                         Colors.amber.shade800,
                         tooltip: tr(ref, 'wavering_tip')),
+                  // A boss, once the Tide has turned (the log line's mark).
+                  if (enemy.isAlive &&
+                      isBossEnemy(enemy.enemyId, enemy.data) &&
+                      tideLevel(_roundsStarted) > 0)
+                    _stateChip(Icons.local_fire_department,
+                        tr(ref, 'boss_enraged_mark'), Colors.red.shade800,
+                        tooltip: tr(ref, 'boss_enraged_tip')),
                   if (enemy.isAlive && enemy.rallyStacks > 0)
                     _stateChip(
                         Icons.campaign,
