@@ -355,7 +355,19 @@ extension _FightRewards on _FightScreenState {
         for (final id in loot)
           (items[id] as Map<String, dynamic>?)?['itemName']?.toString() ?? id,
       ];
+      // A foe's last words (enemies.json `defeat`, a nemesis's champion's).
+      final enemyRecords =
+          ref.read(localizedDbProvider(enemiesSchema)).value ?? const {};
+      final defeatLines = [
+        for (final e in defeated)
+          if ((enemyRecords[e.enemyId] as Map?)?['defeat']
+              case final String line when line.isNotEmpty)
+            line,
+      ];
       _update(() {
+        for (final line in defeatLines) {
+          _log.add(_LogEntry(line, _LogKind.banter));
+        }
         _log.add(
           _LogEntry(
             '${trFor(lang, 'victory_prefix')} +$goldGain ${trFor(lang, 'gold_label')}, '

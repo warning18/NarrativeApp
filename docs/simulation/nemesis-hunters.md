@@ -67,3 +67,36 @@ The rules are in `lib/data/nemesis.dart`, `lib/data/rival_hunters.dart` and `lib
 
 The Dominion's champion is met far most often, as the Dominion is the nemesis in most runs.
 - **The boss curve is unchanged:** champions are off in ordinary runs, and `boss_balance_test` passes as before.
+
+## The follow-up: the trail, the way in, the defeat and the news (v1.402)
+
+Narrative's beats (`docs/proposals/nemesis-quests.md`) are now played.
+
+- **The trail:**
+  - the quest's first objective is a flag, `nemq_<clan>_trail`;
+  - the first road at rest that would bring the champion brings the trail instead: one choice, "Follow the trail".
+- **The way in:** the champion's road then offers three choices, in Narrative's words. Each sets its flag `nemq_<clan>_<way>` and gives a small edge (`EncounterModifiers.nemesisWayEdges`):
+
+  | Way | Edge |
+  |---|---|
+  | Force | 85% health |
+  | Guile | 90% health and difficulty (health and half the damage) |
+  | Mercy | 90% health, and +5 standing with the clan if won |
+
+- **The defeat:** a foe's `defeat` line goes to the fight log when it falls.
+- **The news:** a broken nemesis tells the clan's own line (factions.json `brokenNews`).
+
+**Measured:** 200 runs (seed 7), as above. The simulator walks the trail first, then draws a way at random and folds its edge into the champion's record.
+
+- At 175 and 24 the edges and the later meeting (one road spent on the trail) gave 64.5% won, out of the band.
+- At **200 health and 27 damage: 48.2% of 473 fights.**
+
+| Champion | Won / fought |
+|---|---|
+| Dominion | 164/369 |
+| Crows | 31/56 |
+| Compact | 28/36 |
+| Vigil | 4/11 |
+| Penitents | 1/1 |
+
+The Dominion is still the nemesis in most runs; that question is with the user and is unchanged here.

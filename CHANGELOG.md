@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.402.0+438]
+
+Your nemesis's quest now has a trail, a choice of way in, and its own ending.
+
+- **The trail:** before the champion comes, a road leads you on its trail.
+- **Three ways in** to the champion, each with a small edge:
+  - **Force** (it starts at 85% health);
+  - **Guile** (it is a little weaker all round);
+  - **Mercy** (it starts at 90% health, and beating it this way earns +5 standing with its clan).
+- **Its last words:** a champion beaten leaves a line in the fight log.
+- **The news:** each clan's broken hunt has its own news line.
+- **Champions** are tougher (200 health, 27 damage), so about half of the fights against them are still won.
+
 ## [1.401.0+437]
 
 Your nemesis sends its champion, and beating it ends the hunt.

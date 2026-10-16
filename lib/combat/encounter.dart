@@ -233,6 +233,15 @@ class EncounterModifiers {
   /// [StoryChoice.huntName] and friends); [none] for an ordinary choice.
   /// A choice marked [StoryChoice.hostFight] makes its fight one of the
   /// last battles.
+  /// The edge each way in to a nemesis's champion gives (its choice's
+  /// road event): the champion's health, and its health and damage.
+  static const Map<String, ({double health, double difficulty})>
+      nemesisWayEdges = {
+    'nemesis_force': (health: 0.85, difficulty: 1.0),
+    'nemesis_guile': (health: 1.0, difficulty: 0.9),
+    'nemesis_mercy': (health: 0.9, difficulty: 1.0),
+  };
+
   factory EncounterModifiers.fromChoice(StoryChoice choice) {
     final modifiers = EncounterModifiers._ofChoice(choice);
     return choice.hostFight ? modifiers.copyWith(hostFight: true) : modifiers;
@@ -260,6 +269,23 @@ class EncounterModifiers {
         chestTierFloor: ChestTier.silver,
         rewardMultiplier: 1.25,
         healthMultiplier: championHealthMultiplier,
+      );
+    }
+    // The way in to a nemesis's champion (nemesis.dart): Force breaks
+    // through its guard (less health), Guile catches it off its feet
+    // (weaker all round), Mercy finds it half spent (less health).
+    final way = nemesisWayEdges[choice.roadEvent];
+    if (way != null) {
+      return EncounterModifiers(
+        lossContinues: own.lossContinues,
+        forcedCondition: own.forcedCondition,
+        forcedAnomaly: own.forcedAnomaly,
+        forcedStage: own.forcedStage,
+        keepWounds: own.keepWounds,
+        tutorial: own.tutorial,
+        luckyDieReveal: own.luckyDieReveal,
+        healthMultiplier: way.health,
+        difficultyMultiplier: way.difficulty,
       );
     }
     if (choice.isHunterAmbush) {

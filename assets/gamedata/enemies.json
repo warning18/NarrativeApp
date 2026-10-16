@@ -5981,8 +5981,8 @@
   },
   "champion_dominion": {
     "enemyName": "High Lantern-Bearer Orsolya Keld",
-    "maxHealth": 175,
-    "damage": 24,
+    "maxHealth": 200,
+    "damage": 27,
     "guile": 9,
     "faction": "",
     "reaction": "",
@@ -6102,12 +6102,18 @@
     "arrival_fr": "{name} se tient au milieu de la route, le registre ouvert sur le bras, sans lever les yeux de la page. « Vous êtes l’entrée suivante. Attendez là, je vous prie. J’ai presque fini. »",
     "championClan": "dominion",
     "defeat": "The page stays blank where your name was.",
-    "defeat_fr": "La page reste vierge là où se trouvait votre nom."
+    "defeat_fr": "La page reste vierge là où se trouvait votre nom.",
+    "wayForce": "Take the stair by the front.",
+    "wayForce_fr": "Prendre l’escalier de front.",
+    "wayGuile": "Walk in with a forged page of the list.",
+    "wayGuile_fr": "Entrer avec une fausse page du registre.",
+    "wayMercy": "Offer her clerks the night off.",
+    "wayMercy_fr": "Offrir à ses scribes une nuit de congé."
   },
   "champion_vigil": {
     "enemyName": "Watch-Captain Edda Grey",
-    "maxHealth": 175,
-    "damage": 24,
+    "maxHealth": 200,
+    "damage": 27,
     "guile": 9,
     "faction": "",
     "reaction": "",
@@ -6227,12 +6233,18 @@
     "arrival_fr": "{name} est descendue de la crête, et se tient au bord de la route, sa lanterne voilée. « Trente-huit ans. Vous auriez pu me demander l’heure. »",
     "championClan": "vigil",
     "defeat": "For the first time since the Vigil was founded, the post above Rimewell is dark for an hour.",
-    "defeat_fr": "Pour la première fois depuis la fondation de la Veille, le poste au-dessus de Rimewell reste sombre une heure entière."
+    "defeat_fr": "Pour la première fois depuis la fondation de la Veille, le poste au-dessus de Rimewell reste sombre une heure entière.",
+    "wayForce": "Take the ridge by the front stair.",
+    "wayForce_fr": "Prendre la crête par l’escalier de face.",
+    "wayGuile": "Go up in the dark hour, unlit.",
+    "wayGuile_fr": "Monter à l’heure noire, sans lumière.",
+    "wayMercy": "Take the watch a lamp, and sit it with her.",
+    "wayMercy_fr": "Apporter une lampe au guet et veiller avec elle."
   },
   "champion_compact": {
     "enemyName": "Master Hollis Reck",
-    "maxHealth": 175,
-    "damage": 24,
+    "maxHealth": 200,
+    "damage": 27,
     "guile": 9,
     "faction": "",
     "reaction": "",
@@ -6352,12 +6364,18 @@
     "arrival_fr": "{name} se tient devant une enclume froide qu’il a fait porter sur la route, sans se détourner d’elle. « Chaque marteau de la Rue s’est brisé là-dessus. Vous pouvez essayer le vôtre. »",
     "championClan": "compact",
     "defeat": "The last hammer rings once on the stone, and does not ring again.",
-    "defeat_fr": "Le dernier marteau sonne une fois sur la pierre, et ne sonne plus."
+    "defeat_fr": "Le dernier marteau sonne une fois sur la pierre, et ne sonne plus.",
+    "wayForce": "Break the forge door.",
+    "wayForce_fr": "Défoncer la porte de la forge.",
+    "wayGuile": "Bring one of his own old blades, and ask him to mend it.",
+    "wayGuile_fr": "Apporter une de ses anciennes lames et lui demander de la réparer.",
+    "wayMercy": "Sit down at the table and ask for a hearing.",
+    "wayMercy_fr": "S’asseoir à la table et demander à être entendu."
   },
   "champion_mire": {
     "enemyName": "The Heron Queen's Hand",
-    "maxHealth": 175,
-    "damage": 24,
+    "maxHealth": 200,
+    "damage": 27,
     "guile": 9,
     "faction": "",
     "reaction": "",
@@ -6477,12 +6495,18 @@
     "arrival_fr": "Un héron se tient dans les bas-fonds, au bord de la route, immobile. Puis {name} se tient là où il se tenait. « Asseyez-vous, je vous prie. Nous attendions ce moment avec tant d’impatience. »",
     "championClan": "mire",
     "defeat": "The Hand folds like a heron into the water.",
-    "defeat_fr": "La Main se replie comme un héron dans l’eau."
+    "defeat_fr": "La Main se replie comme un héron dans l’eau.",
+    "wayForce": "Wade straight to the Court.",
+    "wayForce_fr": "Marcher droit vers la Cour.",
+    "wayGuile": "Arrive with every courtesy, and a lie in each.",
+    "wayGuile_fr": "Arriver avec toutes les politesses, et un mensonge dans chacune.",
+    "wayMercy": "Sit, and let the Court speak first.",
+    "wayMercy_fr": "S’asseoir et laisser la Cour parler d’abord."
   },
   "champion_crows": {
     "enemyName": "Captain Mireille Sable",
-    "maxHealth": 175,
-    "damage": 24,
+    "maxHealth": 200,
+    "damage": 27,
     "guile": 9,
     "faction": "",
     "reaction": "",
@@ -6602,12 +6626,18 @@
     "arrival_fr": "{name} compte des pièces dans une bourse, sur une caisse renversée, comme si la route était un comptoir. « Vous êtes en avance. Posez cela sur la table. Je vous dirai si cela suffit. »",
     "championClan": "crows",
     "defeat": "The ledger goes into the ditch with her sailcloth wrapping.",
-    "defeat_fr": "Le registre part dans le fossé avec sa toile à voile."
+    "defeat_fr": "Le registre part dans le fossé avec sa toile à voile.",
+    "wayForce": "Board her boat by night.",
+    "wayForce_fr": "Monter à bord de son bateau de nuit.",
+    "wayGuile": "Sell her the debt to someone else.",
+    "wayGuile_fr": "Lui revendre la dette par un autre.",
+    "wayMercy": "Pay what you owe, and ask her to stop.",
+    "wayMercy_fr": "Payer ce que vous devez, et lui demander de s’arrêter."
   },
   "champion_penitents": {
     "enemyName": "The Ash Confessor",
-    "maxHealth": 175,
-    "damage": 24,
+    "maxHealth": 200,
+    "damage": 27,
     "guile": 9,
     "faction": "",
     "reaction": "",
@@ -6727,6 +6757,12 @@
     "arrival_fr": "{name} attend à la bifurcation, et la lanterne qu’elle tient ne brûle d’aucune flamme. « Agenouillez-vous et dites-moi tout. Ou restez debout, et c’est moi qui vous le dirai. »",
     "championClan": "penitents",
     "defeat": "The lantern goes out in her hand, and for the first time, nobody lifts it.",
-    "defeat_fr": "La lanterne s’éteint dans sa main, et pour la première fois, personne ne la relève."
+    "defeat_fr": "La lanterne s’éteint dans sa main, et pour la première fois, personne ne la relève.",
+    "wayForce": "Walk in with your blade out.",
+    "wayForce_fr": "Entrer lame au clair.",
+    "wayGuile": "Confess something false, and see who answers.",
+    "wayGuile_fr": "Confesser une chose fausse et voir qui répond.",
+    "wayMercy": "Carry a stone from the road, and set it down before her.",
+    "wayMercy_fr": "Porter une pierre de la route et la déposer devant elle."
   }
 }
