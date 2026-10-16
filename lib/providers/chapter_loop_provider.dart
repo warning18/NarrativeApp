@@ -50,6 +50,24 @@ final reachedChapterProvider = Provider<int>((ref) {
   );
 });
 
+/// The level advice for [chapter] at the party's level (see
+/// [chapterLevelAdvice]), null when that chapter recommends none.
+final chapterLevelAdviceProvider =
+    Provider.family<ChapterLevelAdvice?, int>((ref, chapter) {
+  return chapterLevelAdvice(
+    chapter: chapter,
+    playerLevel: ref.watch(playerSessionProvider.select((s) => s.level)),
+    loops: ref.watch(chapterLoopsProvider),
+  );
+});
+
+/// The level advice for the chapter the party is heading to: the one
+/// after [reachedChapterProvider]'s (see [nextChapterLevelAdvice]).
+final nextChapterLevelAdviceProvider = Provider<ChapterLevelAdvice?>((ref) {
+  return ref
+      .watch(chapterLevelAdviceProvider(ref.watch(reachedChapterProvider) + 1));
+});
+
 /// The condition of the chapter the party has reached (see
 /// chapter_conditions.dart), if it has one.
 final chapterConditionProvider = Provider<ChapterCondition?>((ref) {
