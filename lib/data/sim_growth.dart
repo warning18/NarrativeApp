@@ -312,6 +312,11 @@ class SimGrowth {
     politics =
         applyLoyaltyDrift(politics, data: tables.clans, chapter: chapter).state;
     if (geography != null) {
+      // No seat crisis here (clan_crisis.dart): with no one to ask, a
+      // change that would take the patron's seat or last place goes
+      // through at once, so the patron falls more often than in the app,
+      // where the defend, pay or refuse scene comes first (see
+      // docs/simulation/sim-gaps.md).
       final turn = territoryTurn(politics,
           data: tables.clans, geography: geography, chapter: chapter);
       politics = updateNemesis(turn.state, tables.clans, chapter: chapter);
