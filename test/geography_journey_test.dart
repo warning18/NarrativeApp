@@ -71,6 +71,7 @@ Geography _world() => Geography.parse(geography: {
         'level': 'location',
         'parent': 'headland',
         'kind': 'city',
+        'controller': 'crows',
         'name': 'Saltmouth',
       },
       'smugglers_wharf': {
@@ -149,6 +150,8 @@ void main() {
     expect(tester.getRect(wharf).right, lessThanOrEqualTo(360));
     // Its land is painted under the place.
     expect(find.byKey(const ValueKey('journey_biome')), findsOneWidget);
+    // Saltmouth, and its wharf, are the Salt Crows': the ground wears a wash of their colour.
+    expect(find.byKey(const ValueKey('journey_holder_tint')), findsOneWidget);
     // A crumb opens This land.
     await tester.tap(wharf);
     await _sheet(tester);
