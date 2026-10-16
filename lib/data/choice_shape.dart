@@ -80,7 +80,7 @@ ChoiceShape choiceShape(
   final here = geography.placeOfNode(from);
   final there = travelId.isNotEmpty
       ? geography.placeOfNode(story.nodeFor(travelId)) ??
-            geography.placeOfNode(next)
+          geography.placeOfNode(next)
       : geography.placeOfNode(next);
   final ChoiceMove move;
   if (travelId.isNotEmpty) {
@@ -104,8 +104,7 @@ ChoiceShape choiceShape(
 }
 
 ChoiceAction _actionOf(StoryChoice c, ChoiceMove move, StoryNode? next) {
-  final fight =
-      (c.triggerEnemyId ?? '').isNotEmpty ||
+  final fight = (c.triggerEnemyId ?? '').isNotEmpty ||
       c.triggerEnemyIds.isNotEmpty ||
       (c.huntName ?? '').isNotEmpty ||
       (c.shipBattleId ?? '').isNotEmpty ||
@@ -159,13 +158,14 @@ enum ChoiceGroup {
 
 /// The ring of [action].
 ChoiceGroup choiceGroupOf(ChoiceAction action) => switch (action) {
-  ChoiceAction.fight || ChoiceAction.evade => ChoiceGroup.fight,
-  ChoiceAction.talk || ChoiceAction.decide => ChoiceGroup.talkDecide,
-  ChoiceAction.pay ||
-  ChoiceAction.sneak ||
-  ChoiceAction.attempt => ChoiceGroup.checksPay,
-  ChoiceAction.go => ChoiceGroup.go,
-};
+      ChoiceAction.fight || ChoiceAction.evade => ChoiceGroup.fight,
+      ChoiceAction.talk || ChoiceAction.decide => ChoiceGroup.talkDecide,
+      ChoiceAction.pay ||
+      ChoiceAction.sneak ||
+      ChoiceAction.attempt =>
+        ChoiceGroup.checksPay,
+      ChoiceAction.go => ChoiceGroup.go,
+    };
 
 /// What a choice's card says beside its text: its [cost] in gold (its own
 /// price, or the next scene's gold requirement, a toll's; 0 for none), its
@@ -195,9 +195,8 @@ ChoiceTags choiceTags(
   return (
     cost: own > toll ? own : toll,
     alignment: choice.alignmentMod,
-    destination: s.move == ChoiceMove.walk || s.move == ChoiceMove.travel
-        ? s.to
-        : null,
+    destination:
+        s.move == ChoiceMove.walk || s.move == ChoiceMove.travel ? s.to : null,
     group: choiceGroupOf(s.action),
   );
 }
