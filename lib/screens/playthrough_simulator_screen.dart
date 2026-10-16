@@ -992,11 +992,12 @@ _SimResult _simulate(
   /// A story choice's or a scene's politics (v1.196: the claim, the
   /// pledges, the Throne and the muster with the rest), once under [key],
   /// in the chapter the walk is in.
-  void applyPolitics(StoryPolitics? politics, String key) {
+  void applyPolitics(StoryPolitics? politics, String key,
+      {String cause = 'sim'}) {
     final g = growth;
     if (g == null || politics == null || politics.isEmpty) return;
     final after = g.applyStoryPolitics(politics,
-        flags: flags, chapter: lastKnownChapter ?? 1, key: key);
+        flags: flags, chapter: lastKnownChapter ?? 1, key: key, cause: cause);
     flags
       ..clear()
       ..addAll(after);
@@ -1035,6 +1036,11 @@ _SimResult _simulate(
       gold = (gold + pay.gold).clamp(0, 1 << 30).toInt();
       alignment += pay.alignment;
       if (pay.flag.isNotEmpty) flags.add(pay.flag);
+      // How it was settled moves the clans, as in the app (v1.463, see
+      // quest_turn_in.dart): once, logged under the quest, so a main clan
+      // it raises by questPowerStanding gains questPower and is spared
+      // this chapter's neglect.
+      applyPolitics(pay.politics, pay.politicsKey, cause: 'quest:$id');
       final c = character;
       if (c != null) {
         final before = c.level;
