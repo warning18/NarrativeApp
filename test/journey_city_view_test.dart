@@ -1,6 +1,6 @@
 // The Journey in a city with a stored plan (v1.355, board 15): the district
 // is the city chart framed on it, a numbered pin on the building of each way
-// and the ways as rows under the map with "Walk on" chips; the town is the
+// and the ways as rows under the map; the town is the
 // whole city with its districts as rows; the three tabs and the − / + move
 // between district, town and world.
 import 'package:flutter/material.dart';
@@ -76,11 +76,13 @@ void main() {
     expect(container.read(currentCityProvider), 'saltmouth');
 
     // The district: the chart, the ways as rows (the one here, numbered),
-    // and "Walk on" chips to the other districts, under the three tabs.
+    // under the three tabs.
     expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     expect(_rows, findsOneWidget);
     expect(find.textContaining('WAY HERE'), findsOneWidget);
-    expect(find.textContaining('WALK ON'), findsOneWidget);
+    // No "Walk on" chips: the other districts are the chart's and the
+    // Town tab's to open.
+    expect(find.textContaining('WALK ON'), findsNothing);
     expect(find.byKey(const Key('journey_level_tabs')), findsOneWidget);
     expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
 

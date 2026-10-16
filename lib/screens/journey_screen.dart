@@ -5159,8 +5159,7 @@ CityWayKind _cityWayKindOf(JourneyStepKind kind) => switch (kind) {
 
 /// The district of a city, as board 15 draws it (v1.355): the chart framed
 /// on the district with a pin on the building of each way (numbered), and
-/// under it the ways as numbered rows and "Walk on" chips to the other
-/// districts; zoomed out, the whole town with its districts as rows. A pin
+/// under it the ways as rows; zoomed out, the whole town with its districts as rows. A pin
 /// or a row opens the way's sheet.
 class _CityDistrictView extends ConsumerWidget {
   const _CityDistrictView({
@@ -5240,10 +5239,6 @@ class _CityDistrictView extends ConsumerWidget {
       }
     }
     final shown = focus == null ? const <int>[] : byDistrict[focus] ?? const [];
-    final others = [
-      for (final d in chart.districts)
-        if (d.id != focus) d,
-    ];
 
     Widget kindDisc(_Step s, {double size = 30}) {
       final colour = s.locked
@@ -5342,31 +5337,6 @@ class _CityDistrictView extends ConsumerWidget {
                 ),
               ],
             ]),
-          ),
-        ));
-      }
-      if (others.isNotEmpty) {
-        rows.add(Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Text(tr(ref, 'journey_city_walk_on').toUpperCase(),
-                  style: theme.textTheme.labelSmall
-                      ?.copyWith(color: ink.ash, letterSpacing: 0.8)),
-              for (final d in others)
-                ActionChip(
-                  key: ValueKey('journey_city_walk_${d.id}'),
-                  visualDensity: VisualDensity.compact,
-                  label: Text(explored == null || explored!.contains(d.id)
-                      ? d.name
-                      : '? ${d.name}'),
-                  side: BorderSide(color: d.colour),
-                  onPressed: () => onWalk(d.id),
-                ),
-            ],
           ),
         ));
       }

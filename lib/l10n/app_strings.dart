@@ -87,10 +87,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} ways here · tap a pin or a row',
     AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
   },
-  'journey_city_walk_on': {
-    AppLanguage.en: 'Walk on',
-    AppLanguage.fr: 'Aller à'
-  },
   'journey_city_districts': {
     AppLanguage.en: 'The districts · tap one to go in',
     AppLanguage.fr: 'Les quartiers · touchez-en un pour y entrer',
