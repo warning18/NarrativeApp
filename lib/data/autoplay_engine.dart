@@ -39,6 +39,7 @@ import 'politics_events.dart'
 import 'story_repository.dart';
 import 'zone_gating.dart';
 import 'road_hazards.dart' show meetRoadHazard;
+import 'training.dart' show statPickFor;
 
 /// How an [autoplayToNode] or [autoplayToChapter] run ended.
 enum AutoplayStatus {
@@ -720,7 +721,9 @@ Future<void> applyArrivalTopUp(
 }
 
 /// Applies [planAutoplayBuild]'s build to the live session: the stat
-/// points (as training), then the gear (a score can open it), then the die's faces.
+/// points (as stat picks), then the gear (a score can open it), then the
+/// die's faces -- planned again once the picks are taken, since a pick may
+/// raise another gain than the build's stat.
 Future<void> applyAutoplayBuild(
   WidgetRef ref, {
   required Map<String, dynamic> items,
@@ -731,21 +734,23 @@ Future<void> applyAutoplayBuild(
   final notifier = ref.read(playerSessionProvider.notifier);
   final before = ref.read(playerSessionProvider);
   if (before.professionId.isEmpty) return;
-  final build = planAutoplayBuild(before,
+  var build = planAutoplayBuild(before,
       items: items, skills: skills, dice: dice, professions: professions);
-  // The points go to training offers (training.dart): the choice that
-  // raises the build's stat, else the calling (the first).
+  // The points are stat picks (training.dart): the offer statPickFor takes
+  // for the build's stat.
   if (build.statPoints > 0) {
     final paths = await ref.read(trainingPathsProvider.future);
-    while (ref.read(playerSessionProvider).statPoints > 0) {
+    while (ref.read(playerSessionProvider).pendingStatPicks > 0) {
       final s = ref.read(playerSessionProvider);
-      final offer = await notifier.ensureTraining(paths,
+      final offer = await notifier.ensureStatPick(paths,
           random: Random(s.level * 31 + s.statPoints));
       if (offer.isEmpty) break;
-      final pick =
-          offer.indexWhere((c) => c.gains.containsKey(build.statToRaise));
-      if (!await notifier.takeTraining(pick < 0 ? 0 : pick)) break;
+      if (!await notifier.takeStatPick(statPickFor(offer, build.statToRaise))) {
+        break;
+      }
     }
+    build = planAutoplayBuild(ref.read(playerSessionProvider),
+        items: items, skills: skills, dice: dice, professions: professions);
   }
   for (final entry in build.equip.entries) {
     await notifier.equipItem(entry.value, slot: entry.key, items: items);

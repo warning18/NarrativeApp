@@ -23,6 +23,7 @@ import '../models/ally_state.dart';
 import 'perks.dart';
 import 'shop_stock.dart';
 import 'signs.dart';
+import 'training.dart';
 
 /// A fight model for the in-app playthrough simulator: one simulated
 /// character (a random race and profession, created the way `startNewGame`
@@ -221,6 +222,15 @@ class SimCharacter {
   /// the character's own core play.
   List<String> specIds = [];
 
+  /// The training paths (training_paths.json): with them each level's five
+  /// stat points are stat picks (drawStatPick), each taking the offer that
+  /// raises [preferredStat] (statPickFor), drawn with [pickRandom]; the
+  /// paths picked are counted in [trainingTaken]. Without them, the old
+  /// fixed spend (see [gainXp]).
+  Map<String, TrainingPath> trainingPaths = const {};
+  Random pickRandom = Random(1);
+  final Map<String, int> trainingTaken = {};
+
   /// A sign's (or a perk's) extra mana, while a fight lasts.
   int signMaxMana = 0;
 
@@ -309,10 +319,11 @@ class SimCharacter {
   }
 
   /// Runs [gain] XP through the app's own `level * 100` thresholds. Each
-  /// level: +20 max health and +5 stat points, spent here as +10 health,
-  /// +2 damage, +1 armor and +1 to [preferredStat] (the simulator's fixed
-  /// assumption for what a player would do), then a full heal like the
-  /// app's own level-up.
+  /// level: +20 max health and +5 stat points -- with [trainingPaths], five
+  /// stat picks (see [takeStatPicks]) and the game's [levelDamageGain]
+  /// damage; else spent as +10 health, +2
+  /// damage, +1 armor and +1 to [preferredStat] (the simulator's old fixed
+  /// assumption) -- then a full heal like the app's own level-up.
   bool gainXp(int gain) {
     xp += gain;
     var leveled = false;
@@ -320,6 +331,12 @@ class SimCharacter {
       xp -= level * 100;
       level++;
       leveled = true;
+      if (trainingPaths.isNotEmpty) {
+        maxHealth += 20;
+        baseDamage += levelDamageGain;
+        takeStatPicks(5);
+        continue;
+      }
       maxHealth += 30;
       baseDamage += 2;
       baseArmor += 1;
@@ -339,6 +356,62 @@ class SimCharacter {
     if (leveled) currentHealth = maxHealth;
     mana = min(mana, maxMana);
     return leveled;
+  }
+
+  /// [count] stat picks (training.dart), each the offer statPickFor takes
+  /// for [preferredStat]; its gains applied, its path counted.
+  void takeStatPicks(int count) {
+    for (var i = 0; i < count; i++) {
+      final offer = drawStatPick(
+        paths: trainingPaths,
+        random: pickRandom,
+        professionId: professionId,
+        raceId: raceId,
+        taken: trainingTaken,
+        stats: {
+          'baseDamage': baseDamage,
+          'baseArmor': baseArmor,
+          'maxHealth': maxHealth,
+          'strength': strength,
+          'dexterity': dexterity,
+          'constitution': constitution,
+          'intelligence': intelligence,
+          'wisdom': wisdom,
+          'perception': perception,
+          'luck': luck,
+          'charisma': charisma,
+        },
+      );
+      if (offer.isEmpty) return;
+      final pick = offer[statPickFor(offer, preferredStat)];
+      trainingTaken[pick.pathId] = (trainingTaken[pick.pathId] ?? 0) + 1;
+      for (final MapEntry(:key, :value) in pick.gains.entries) {
+        switch (key) {
+          case 'baseDamage':
+            baseDamage += value;
+          case 'baseArmor':
+            baseArmor += value;
+          case 'maxHealth':
+            maxHealth += value;
+          case 'strength':
+            strength += value;
+          case 'dexterity':
+            dexterity += value;
+          case 'constitution':
+            constitution += value;
+          case 'intelligence':
+            intelligence += value;
+          case 'wisdom':
+            wisdom += value;
+          case 'perception':
+            perception += value;
+          case 'luck':
+            luck += value;
+          case 'charisma':
+            charisma += value;
+        }
+      }
+    }
   }
 
   /// One visit to a shop the story just unlocked, with the walk's [gold]:

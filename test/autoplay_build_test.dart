@@ -142,8 +142,13 @@ void main() {
           professions: _professions);
       final after = ref.read(playerSessionProvider);
       expect(after.statPoints, 0);
-      expect(after.strength, 12);
-      expect(after.equippedItemIds, containsAll(['giant_maul', 'chain']));
+      // The two points are stat picks: Strength when offered, else damage,
+      // health or armor; the gear follows what they raised.
+      expect(after.strength, inInclusiveRange(10, 12));
+      expect(
+          after.equippedItemIds,
+          containsAll(
+              [after.strength >= 12 ? 'giant_maul' : 'fine_sword', 'chain']));
       expect(after.equippedItemIds, isNot(contains('rusty_sword')));
       expect(after.diceSkillAssignments['test_die'],
           {'1': 'channel', '2': 'doom', '3': 'cleave', '4': 'cleave'});
