@@ -42,6 +42,9 @@ class EnemyIcons {
     'champion_mire': 'hollow_reflection',
     'champion_crows': 'smuggler_captain',
     'champion_penitents': 'inquisition_penitent',
+    // v1.413's Brother Clement (Lysa's arc), the porcelain mask, until UX
+    // draws him.
+    'brother_clement': 'masked_penitent',
   };
 
   static const List<String> allIds = [
@@ -51,6 +54,7 @@ class EnemyIcons {
     'bone_sexton',
     'bone_warden',
     'brine_jack',
+    'brother_clement',
     'catacomb_ghoul',
     'champion_compact',
     'champion_crows',

@@ -134,3 +134,16 @@ The user's call: your family kept a piece of the Shroud, and the Dominion wants 
 - **The extra half hunter a run** is the Dominion's, at the Hostile odds.
 - **Champions are met more often, and lost a little more:** the Dominion's quest now opens at chapter 4 in every run, and only 42.9% were beaten. Orsolya Keld is eased to 190 health and 26 damage (the others stay at 200 and 27): **50.0% of 500 champion fights won** (the Dominion's 181 of 393).
 - **A first try,** with the ordinary war rule kept for the story nemesis, made 177 runs of 200 see a fall. That rule is why it now wars as any clan.
+
+## Lysa's arc: Brother Clement and the hunt (v1.413)
+
+Core's part of `docs/proposals/lysa-arc.md`. Narrative's nodes set the flags (PR 1.414).
+
+- **Brother Clement** (`brother_clement`): the Black Hold's torturer, a boss fought in the Quarter's chapel when you take Lysa by force.
+  - Built on the Hollow Court Inquisitor: 260 health, 28 damage.
+  - Chapter 5, `hunterOnly` (never a random draw), alignment −40.
+  - **Measured:** in `void_archon`'s chapter-5 place (400 runs, seed 7) he is won 53.4% of 380 fights, against 57.6% for the Archon. The chapter-5 target is 50% ±12.
+- **The hunt, as her fate turns it:**
+  - `lysa_rescued_force` or `lysa_sacrificed`: the story's nemesis turns into an earned one at the next chapter's turn (Hunted odds, its people in your fights, its wars). Keld's road comes at 60% instead of 35%.
+  - `lysa_sworn_for`: joins the pact and the throne in `dominionSidedFlags`, so the Dominion's hunt is over for good. Its +12 standing alone would leave the Dominion at +2, short of Friendly.
+- **Still to come (1.415):** the sacrifice's boon on the Shroud and the Void's mark.
