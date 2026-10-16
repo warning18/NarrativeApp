@@ -218,6 +218,16 @@ void main() {
         expect(again.maxHealth, 38);
         expect(again.baseDamage, 4);
         expect(again.currentHealth, 30);
+        expect(again.baseArmor, s.baseArmor);
+        expect(again.pendingStatPicks, s.pendingStatPicks);
+        for (final stat in const [
+          'strength', 'dexterity', 'constitution', 'intelligence', //
+          'wisdom', 'perception', 'luck', 'charisma',
+        ]) {
+          expect(again.toJson()[stat], s.toJson()[stat], reason: stat);
+        }
+        expect([for (final a in again.recruitedAllies) a.currentHealth],
+            [for (final a in s.recruitedAllies) a.currentHealth]);
       });
     }
 
