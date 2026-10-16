@@ -18,10 +18,16 @@ import '../providers/territory_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../theme/stitched_ink.dart';
+import '../utils/pixel_icons/item_icons.dart';
+import '../utils/pixel_icons/pixel_icon.dart';
+import '../utils/pixel_icons/skill_icons.dart';
 import 'clan_compass.dart';
+import 'clan_peek.dart';
 import 'clan_radar_chart.dart';
 import 'item_stats.dart';
 import 'pixel_banner.dart';
+import 'reward_card.dart';
+import 'reward_cards.dart';
 import 'sign_widgets.dart';
 import 'wind_banner.dart';
 
@@ -281,6 +287,29 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     final notifier = ref.read(playerSessionProvider.notifier);
     await notifier.acceptSuitor(suitor.factionId,
         tables: tables, origin: itemOriginHere(ref));
+    // The gift, as the reward card tells it, before the next offer.
+    if (mounted) {
+      final skills =
+          ref.read(localizedDbProvider(skillsSchema)).value ?? const {};
+      final clanColour = _suitorColor(suitor, tables.data);
+      await showRewardCard(
+        context,
+        clanGiftCard(
+          lang: lang,
+          clanName: suitorName(suitor, tables.data, lang),
+          clanColour: clanColour,
+          gift: RewardLine(
+            key: Key('reward_gift_${suitor.gift.id}'),
+            icon: _giftGlyph(suitor.gift, clanColour),
+            accent: clanColour,
+            title: name,
+            sub: trFor(lang, _giftTagKey(suitor.gift, skills)),
+            value: trFor(lang, 'reward_new'),
+          ),
+          standing: [for (final p in preview) p.text],
+        ),
+      );
+    }
     final next = await notifier.ensureOffer(tables,
         placeHolder: ref.read(holderHereProvider));
     if (!mounted) return;
@@ -495,63 +524,68 @@ class _OfferBanner extends ConsumerWidget {
       child: FittedBox(child: inner),
     );
 
-    return Semantics(
-      button: true,
-      selected: selected,
-      label: '$who: $name',
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: AnimatedOpacity(
-          duration: const Duration(milliseconds: 160),
-          opacity: dimmed ? 0.62 : 1,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(
-                        color: selected ? color : Colors.transparent, width: 2),
-                    color: selected ? color.withValues(alpha: 0.12) : null,
+    return ClanPeek(
+      factionId: suitor.isWayfarer ? null : suitor.factionId,
+      child: Semantics(
+        button: true,
+        selected: selected,
+        label: '$who: $name',
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 160),
+            opacity: dimmed ? 0.62 : 1,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                          color: selected ? color : Colors.transparent,
+                          width: 2),
+                      color: selected ? color.withValues(alpha: 0.12) : null,
+                    ),
+                    child: Center(child: flag),
                   ),
-                  child: Center(child: flag),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  suitor.isWayfarer ? who : (faction?.shortFor(lang) ?? who),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelMedium
-                      ?.copyWith(color: color, fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 3),
-                _Tag(
-                    text: trFor(lang, _giftTagKey(gift, skills)), color: color),
-                const SizedBox(height: 3),
-                Text(
-                  name,
-                  key: Key('offer_gift_${gift.id}'),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleSmall,
-                ),
-                if (preview.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    suitor.isWayfarer ? who : (faction?.shortFor(lang) ?? who),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelMedium
+                        ?.copyWith(color: color, fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(height: 3),
+                  _Tag(
+                      text: trFor(lang, _giftTagKey(gift, skills)),
+                      color: color),
                   const SizedBox(height: 3),
                   Text(
-                    preview.first.text,
+                    name,
+                    key: Key('offer_gift_${gift.id}'),
                     textAlign: TextAlign.center,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                        color: preview.first.delta >= 0
-                            ? good
-                            : theme.colorScheme.error,
-                        fontWeight: FontWeight.w600),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleSmall,
                   ),
+                  if (preview.isNotEmpty) ...[
+                    const SizedBox(height: 3),
+                    Text(
+                      preview.first.text,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                          color: preview.first.delta >= 0
+                              ? good
+                              : theme.colorScheme.error,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ),
@@ -650,10 +684,6 @@ class _OfferHall extends ConsumerWidget {
     final tier = faction == null || faction.isLost
         ? null
         : politics.tierOf(picked.factionId, data);
-    final motto = faction?.mottoFor(lang) ?? '';
-    final standsFor = picked.isWayfarer
-        ? trFor(lang, 'offer_wayfarer_stands')
-        : (faction?.standsForIn(lang) ?? '');
     final alignKey = nudge > 0
         ? 'offer_align_good'
         : nudge < 0
@@ -677,132 +707,217 @@ class _OfferHall extends ConsumerWidget {
               style: theme.textTheme.labelMedium
                   ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         ],
-        const SizedBox(height: 12),
-        // The charter, on a band of the clan's colour.
+        const SizedBox(height: 10),
+        // One block under the ring (Wave 8): the clan's name and standing
+        // on top (a tap on the name opens its charter), what this banner
+        // gives on the left, the clan's radar on the right.
         Container(
-          padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+          key: const Key('offer_clan_block'),
+          padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: BorderRadius.circular(8),
             border: Border.all(color: color.withValues(alpha: 0.6)),
-            gradient: LinearGradient(colors: [
-              color.withValues(alpha: 0.28),
-              color.withValues(alpha: 0.05),
-            ]),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                color.withValues(alpha: 0.26),
+                color.withValues(alpha: 0.04),
+              ],
+            ),
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
                       suitorName(picked, data, lang),
                       style: theme.textTheme.titleMedium?.copyWith(
                           fontFamily: InkFonts.display, color: color),
                     ),
-                    if (tier != null)
-                      Text(
+                  ),
+                  // The same card a long press on the banner shows.
+                  if (onRing)
+                    IconButton(
+                      key: const Key('offer_charter_open'),
+                      tooltip: trFor(lang, 'clan_peek_orientation'),
+                      visualDensity: VisualDensity.compact,
+                      padding: EdgeInsets.zero,
+                      constraints:
+                          const BoxConstraints(minWidth: 32, minHeight: 32),
+                      icon: Icon(Icons.info_outline,
+                          size: 20,
+                          color: picked.firstMeeting
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.onSurfaceVariant),
+                      onPressed: () => showClanDetails(
+                        context,
+                        factionId: picked.factionId,
+                        greeting: greeting,
+                      ),
+                    ),
+                  if (tier != null) ...[
+                    const SizedBox(width: 6),
+                    Container(
+                      key: const Key('offer_standing_chip'),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Color(tierColor(tier)).withValues(alpha: 0.15),
+                        border: Border.all(
+                            color:
+                                Color(tierColor(tier)).withValues(alpha: 0.7)),
+                      ),
+                      child: Text(
                         trFor(lang, standingTierKey(tier)),
                         style: theme.textTheme.labelSmall?.copyWith(
                             color: Color(tierColor(tier)),
-                            fontWeight: FontWeight.w600),
-                      ),
-                    if (motto.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Text('“$motto”',
-                            style: theme.textTheme.bodySmall
-                                ?.copyWith(fontStyle: FontStyle.italic)),
-                      ),
-                    if (standsFor.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 6),
-                        child: Text.rich(
-                          TextSpan(children: [
-                            TextSpan(
-                                text: '${trFor(lang, 'offer_stands_for')} · ',
-                                style: TextStyle(
-                                    color: theme.colorScheme.onSurfaceVariant)),
-                            TextSpan(
-                                text: standsFor,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600)),
-                          ]),
-                          key: Key('offer_stands_${picked.factionId}'),
-                          style: theme.textTheme.bodySmall,
-                        ),
-                      ),
-                    const SizedBox(height: 6),
-                    Container(
-                      key: const Key('offer_alignment_word'),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                            color: alignColor.withValues(alpha: 0.7)),
-                        color: alignColor.withValues(alpha: 0.10),
-                      ),
-                      child: Text(
-                        '${trFor(lang, 'alignment_label')} · ${trFor(lang, alignKey)}',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                            color: alignColor, fontWeight: FontWeight.w700),
+                            fontWeight: FontWeight.w700),
                       ),
                     ),
                   ],
-                ),
+                ],
               ),
-              // What its gifts lean on (clanRadarProvider), on five axes.
-              if (onRing) ...[
-                const SizedBox(width: 6),
-                ClanRadarChart(
-                    factionId: picked.factionId, color: color, size: 116),
-              ],
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      key: Key('offer_gift_block_${picked.factionId}'),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _GiftIcon(gift: gift, color: color),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    giftName(gift,
+                                        tables: tables,
+                                        localizedItems: items,
+                                        lang: lang),
+                                    style: theme.textTheme.titleSmall,
+                                  ),
+                                  const SizedBox(height: 3),
+                                  Wrap(
+                                    spacing: 6,
+                                    runSpacing: 4,
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: [
+                                      _Tag(
+                                          text: trFor(
+                                              lang, _giftTagKey(gift, skills)),
+                                          color: color),
+                                      if (gift.kind != GiftKind.perk)
+                                        SignRarityChip(
+                                            rarity: gift.rarity,
+                                            language: lang),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        _GiftBody(
+                          gift: gift,
+                          tables: tables,
+                          items: items,
+                          skills: skills,
+                          session: session,
+                          lang: lang,
+                        ),
+                        const SizedBox(height: 6),
+                        Container(
+                          key: const Key('offer_alignment_word'),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                                color: alignColor.withValues(alpha: 0.7)),
+                            color: alignColor.withValues(alpha: 0.10),
+                          ),
+                          child: Text(
+                            '${trFor(lang, 'alignment_label')} · ${trFor(lang, alignKey)}',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                                color: alignColor, fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // What its gifts lean on (clanRadarProvider), on five axes.
+                  if (onRing) ...[
+                    const SizedBox(width: 6),
+                    ClanRadarChart(
+                        factionId: picked.factionId, color: color, size: 108),
+                  ],
+                ],
+              ),
             ],
           ),
         ),
-        const SizedBox(height: 12),
-        Wrap(
-          spacing: 6,
-          runSpacing: 4,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            _Tag(text: trFor(lang, _giftTagKey(gift, skills)), color: color),
-            Text(
-              giftName(gift, tables: tables, localizedItems: items, lang: lang),
-              style: theme.textTheme.titleSmall,
-            ),
-            if (gift.kind != GiftKind.perk)
-              SignRarityChip(rarity: gift.rarity, language: lang),
-          ],
-        ),
-        const SizedBox(height: 4),
-        _GiftBody(
-          gift: gift,
-          tables: tables,
-          items: items,
-          skills: skills,
-          session: session,
-          lang: lang,
-        ),
-        if (greeting.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Container(
-              padding: const EdgeInsets.only(left: 10),
-              decoration: BoxDecoration(
-                border: Border(left: BorderSide(color: color, width: 3)),
-              ),
-              child: Text(greeting,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                      fontStyle: FontStyle.italic,
-                      color: theme.colorScheme.onSurfaceVariant)),
-            ),
-          ),
       ],
     );
   }
+}
+
+/// The icon of a gift: an object's or a skill's own picture, else a mark
+/// for its kind, on a square of the clan's colour.
+class _GiftIcon extends StatelessWidget {
+  const _GiftIcon({required this.gift, required this.color});
+
+  final OfferGift gift;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: Key('offer_gift_icon_${gift.id}'),
+      width: 42,
+      height: 42,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: color.withValues(alpha: 0.14),
+        border: Border.all(color: color.withValues(alpha: 0.6)),
+      ),
+      child: _giftGlyph(gift, color),
+    );
+  }
+}
+
+/// The picture inside a gift's tile: an object's or a skill's own, else a
+/// mark for its kind.
+Widget _giftGlyph(OfferGift gift, Color color) {
+  final IconData fallback = switch (gift.kind) {
+    GiftKind.skill => Icons.auto_fix_high,
+    GiftKind.object => Icons.inventory_2_outlined,
+    GiftKind.sign => Icons.auto_awesome,
+    GiftKind.title => Icons.military_tech_outlined,
+    GiftKind.sworn => Icons.gavel,
+    GiftKind.spec => Icons.alt_route,
+    GiftKind.perk => Icons.star_outline,
+  };
+  final mark = Icon(fallback, size: 24, color: color);
+  return switch (gift.kind) {
+    GiftKind.object =>
+      PixelIcon(ItemIcons.pathFor(gift.id), size: 32, fallback: mark),
+    GiftKind.skill =>
+      PixelIcon(SkillIcons.pathFor(gift.id), size: 32, fallback: mark),
+    _ => mark,
+  };
 }
 
 /// A flag with no banner of its own (the Wayfarer's, or a clan without one):

@@ -76,6 +76,8 @@ import '../providers/voice_settings_provider.dart';
 import '../providers/walk_companion_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../widgets/reward_card.dart';
+import '../widgets/reward_cards.dart';
 import '../widgets/road_panel.dart';
 import '../widgets/story_ship_battle.dart';
 import '../widgets/timed_choice_bar.dart';
@@ -1468,32 +1470,52 @@ Future<void> _selectChoice({
     // What the scene put in the pack (see StoryChoice.grantItemId).
     if (choice.grantsItem && context.mounted) {
       final items = ref.read(localizedDbProvider(itemsSchema)).value;
-      final name =
-          (items?[choice.grantItemId] as Map<String, dynamic>?)?['itemName']
-              ?.toString();
-      await showImmersiveNotice(
+      final item = items?[choice.grantItemId] as Map<String, dynamic>?;
+      final lang = ref.read(appLanguageProvider);
+      final line = rewardItemLine(context,
+          itemId: choice.grantItemId!, item: item, lang: lang);
+      await showRewardCard(
         context,
-        icon: Icons.backpack_outlined,
-        message: tr(ref, 'item_picked_up')
-            .replaceAll('{item}', name ?? choice.grantItemId!),
+        itemFoundCard(
+            lang: lang, title: line.title, accent: line.accent, lines: [line]),
       );
     }
     // And the materials it hands over (see StoryChoice.grantMaterials),
     // told on the way: the story goes on under the card.
     if (choice.grantsMaterials && context.mounted) {
       final items = ref.read(localizedDbProvider(itemsSchema)).value;
-      unawaited(showImmersiveNotice(
-        context,
-        icon: Icons.backpack_outlined,
-        message: tr(ref, 'item_picked_up').replaceAll(
-            '{item}',
-            [
-              for (final MapEntry(key: id, value: count)
-                  in choice.grantMaterials.entries)
-                if (count > 0)
-                  '$count ${(items?[id] as Map?)?['itemName'] ?? id}',
-            ].join(', ')),
-      ));
+      final lang = ref.read(appLanguageProvider);
+      final lines = [
+        for (final MapEntry(key: id, value: count)
+            in choice.grantMaterials.entries)
+          if (count > 0)
+            () {
+              final line = rewardItemLine(context,
+                  itemId: id,
+                  item: items?[id] as Map<String, dynamic>?,
+                  lang: lang);
+              return RewardLine(
+                key: line.key,
+                icon: line.icon,
+                accent: line.accent,
+                title: line.title,
+                tag: line.tag,
+                tagColor: line.tagColor,
+                sub: line.sub,
+                value: '×$count',
+              );
+            }(),
+      ];
+      if (lines.isNotEmpty) {
+        await showRewardCard(
+          context,
+          itemFoundCard(
+              lang: lang,
+              title: tr(ref, 'reward_materials_title'),
+              accent: lines.first.accent,
+              lines: lines),
+        );
+      }
     }
     // How the party took it, before the story moves on.
     if (reactions.isNotEmpty && context.mounted) {
