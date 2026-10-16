@@ -16143,7 +16143,168 @@
       "6010_frost_failed": "black_reliquary_b241",
       "6010_candle_walk_fight": "black_reliquary_b238"
     },
-    "names": {}
+    "names": {
+      "black_reliquary_b000": {
+        "en": "The ledger’s road",
+        "fr": "La route du registre"
+      },
+      "black_reliquary_b001": {
+        "en": "The gate without a wall",
+        "fr": "La porte sans mur"
+      },
+      "black_reliquary_b005": {
+        "en": "The finger-bone in the net",
+        "fr": "L’os de doigt dans le filet"
+      },
+      "black_reliquary_b018": {
+        "en": "The chair, Clement sent away",
+        "fr": "Le fauteuil, Clément congédié"
+      },
+      "black_reliquary_b020": {
+        "en": "The chapel doorway vow",
+        "fr": "Le serment sur le seuil de la chapelle"
+      },
+      "black_reliquary_b023": {
+        "en": "Lysa’s ward",
+        "fr": "Le dispensaire de Lysa"
+      },
+      "black_reliquary_b024": {
+        "en": "The cloth on the chair’s arm",
+        "fr": "Le drap sur l’accoudoir"
+      },
+      "black_reliquary_b028": {
+        "en": "The cloth under her palm",
+        "fr": "Le drap sous sa paume"
+      },
+      "black_reliquary_b030": {
+        "en": "The inner-gate checkpoint",
+        "fr": "Le poste de la porte intérieure"
+      },
+      "black_reliquary_b031": {
+        "en": "The courier’s purse",
+        "fr": "La bourse du messager"
+      },
+      "black_reliquary_b038": {
+        "en": "The muniment room",
+        "fr": "La salle des archives"
+      },
+      "black_reliquary_b043": {
+        "en": "The cracked mask",
+        "fr": "Le masque fendu"
+      },
+      "black_reliquary_b044": {
+        "en": "The edge of the frost, with Lysa",
+        "fr": "La lisière du givre, avec Lysa"
+      },
+      "black_reliquary_b061": {
+        "en": "The packet in fen-leaves",
+        "fr": "Le paquet de feuilles de marais"
+      },
+      "black_reliquary_b106": {
+        "en": "The ledger’s closing address",
+        "fr": "L’adresse finale du registre"
+      },
+      "black_reliquary_b107": {
+        "en": "The far side of the tear",
+        "fr": "L’autre côté de la déchirure"
+      },
+      "black_reliquary_b110": {
+        "en": "The smoke that pulled free",
+        "fr": "La fumée qui s’est détachée"
+      },
+      "black_reliquary_b138": {
+        "en": "Malrik’s two planks",
+        "fr": "Les deux planches de Malrik"
+      },
+      "black_reliquary_b139": {
+        "en": "The Last Lantern",
+        "fr": "La Dernière Lanterne"
+      },
+      "black_reliquary_b147": {
+        "en": "The keeper who saw the tear open",
+        "fr": "La gardienne qui a vu la déchirure s’ouvrir"
+      },
+      "black_reliquary_b148": {
+        "en": "The Wickwarden’s lowered lamp",
+        "fr": "La lampe baissée de la Garde-Mèche"
+      },
+      "black_reliquary_b153": {
+        "en": "Orsabet’s four hundred candles",
+        "fr": "Les quatre cents bougies d’Orsabet"
+      },
+      "black_reliquary_b163": {
+        "en": "The shipping book under the counter",
+        "fr": "Le livre d’expédition sous le comptoir"
+      },
+      "black_reliquary_b167": {
+        "en": "The two tallies side by side",
+        "fr": "Les deux décomptes côte à côte"
+      },
+      "black_reliquary_b196": {
+        "en": "The Tribunal in the chapel",
+        "fr": "Le Tribunal dans la chapelle"
+      },
+      "black_reliquary_b197": {
+        "en": "The master hammer",
+        "fr": "Le marteau maître"
+      },
+      "black_reliquary_b198": {
+        "en": "The copied chart",
+        "fr": "La carte recopiée"
+      },
+      "black_reliquary_b199": {
+        "en": "The heist plan on the back of a map",
+        "fr": "Le plan du coup au dos d’une carte"
+      },
+      "black_reliquary_b200": {
+        "en": "The fourth piece in the bones",
+        "fr": "La quatrième pièce parmi les os"
+      },
+      "black_reliquary_b201": {
+        "en": "The blade laid hilt-first",
+        "fr": "La lame posée la garde en avant"
+      },
+      "black_reliquary_b206": {
+        "en": "The chair with straps",
+        "fr": "La chaise à sangles"
+      },
+      "black_reliquary_b207": {
+        "en": "The roll in the fen tongue",
+        "fr": "Le rôle en langue des marais"
+      },
+      "black_reliquary_b208": {
+        "en": "The penitent’s ending",
+        "fr": "La fin du pénitent"
+      },
+      "black_reliquary_b209": {
+        "en": "The chart-keeper’s chapel",
+        "fr": "La chapelle de la gardienne des cartes"
+      },
+      "black_reliquary_b213": {
+        "en": "The girl in the porcelain mask",
+        "fr": "La fille au masque de porcelaine"
+      },
+      "black_reliquary_b216": {
+        "en": "The man left on the frost",
+        "fr": "L’homme laissé sur le givre"
+      },
+      "black_reliquary_b217": {
+        "en": "The hounds at the frost line",
+        "fr": "Les chiens de la ligne de givre"
+      },
+      "black_reliquary_b218": {
+        "en": "The nest of stained glass",
+        "fr": "Le nid de vitraux"
+      },
+      "black_reliquary_b238": {
+        "en": "The candle walk",
+        "fr": "La marche aux chandelles"
+      },
+      "black_reliquary_b241": {
+        "en": "The pattern in the frost",
+        "fr": "Le motif dans le givre"
+      }
+    }
   },
   "white_anchorage": {
     "seed": 7109,
@@ -23471,7 +23632,84 @@
       "7590_open_hand": "candlehold_b292",
       "7515_rest": "candlehold_b003"
     },
-    "names": {}
+    "names": {
+      "candlehold_b000": {
+        "en": "The harbour steps",
+        "fr": "Les marches du port"
+      },
+      "candlehold_b001": {
+        "en": "The Dominion’s gonfalon",
+        "fr": "Le gonfalon du Dominion"
+      },
+      "candlehold_b002": {
+        "en": "The Mire’s ditches",
+        "fr": "Les fossés du Marais"
+      },
+      "candlehold_b003": {
+        "en": "The terrace of every fire",
+        "fr": "La terrasse de tous les feux"
+      },
+      "candlehold_b014": {
+        "en": "The black pennants",
+        "fr": "Les fanions noirs"
+      },
+      "candlehold_b020": {
+        "en": "The grey hand’s landing",
+        "fr": "L’accostage de la main grise"
+      },
+      "candlehold_b022": {
+        "en": "The barefoot Penitents",
+        "fr": "Les Pénitents pieds nus"
+      },
+      "candlehold_b033": {
+        "en": "The cart-forges",
+        "fr": "Les forges sur charrettes"
+      },
+      "candlehold_b066": {
+        "en": "The Vigil’s long column",
+        "fr": "La longue colonne de la Veille"
+      },
+      "candlehold_b157": {
+        "en": "Morrow at the top of the stair",
+        "fr": "Morrow en haut de l’escalier"
+      },
+      "candlehold_b158": {
+        "en": "Vane under the First Lantern",
+        "fr": "Vane sous la Première Lanterne"
+      },
+      "candlehold_b162": {
+        "en": "Tallis and the lowered Lantern",
+        "fr": "Tallis et la Lanterne descendue"
+      },
+      "candlehold_b282": {
+        "en": "The Vigil’s grey cloth",
+        "fr": "Le drap gris de la Veille"
+      },
+      "candlehold_b283": {
+        "en": "The Lantern rehung",
+        "fr": "La Lanterne raccrochée"
+      },
+      "candlehold_b284": {
+        "en": "The Keyholders’ contracts",
+        "fr": "Les contrats des Gardiens de clefs"
+      },
+      "candlehold_b285": {
+        "en": "The four reed households",
+        "fr": "Les quatre foyers des roseaux"
+      },
+      "candlehold_b287": {
+        "en": "The iron crown",
+        "fr": "La couronne de fer"
+      },
+      "candlehold_b290": {
+        "en": "The reading of the names",
+        "fr": "La lecture des noms"
+      },
+      "candlehold_b292": {
+        "en": "The crown no one remembered",
+        "fr": "La couronne que nul ne se rappelait"
+      }
+    }
   },
   "rimewell": {
     "seed": 6101,
@@ -24282,7 +24520,76 @@
       "6100_clan_vigil_2_after": "rimewell_b023",
       "6100_clan_mire_2_found": "rimewell_b012"
     },
-    "names": {}
+    "names": {
+      "rimewell_b000": {
+        "en": "The stolen jawbone",
+        "fr": "La mâchoire volée"
+      },
+      "rimewell_b001": {
+        "en": "The frosted well",
+        "fr": "Le puits givré"
+      },
+      "rimewell_b004": {
+        "en": "The hammer and the words",
+        "fr": "Le marteau et les mots"
+      },
+      "rimewell_b005": {
+        "en": "The bell that rang wrong",
+        "fr": "La cloche qui sonna faux"
+      },
+      "rimewell_b010": {
+        "en": "The belfry stair",
+        "fr": "L’escalier du beffroi"
+      },
+      "rimewell_b011": {
+        "en": "The hunters’ last morning",
+        "fr": "Le dernier matin des chasseurs"
+      },
+      "rimewell_b012": {
+        "en": "The child’s house",
+        "fr": "La maison de l’enfant"
+      },
+      "rimewell_b013": {
+        "en": "The branded line",
+        "fr": "La file des marqués"
+      },
+      "rimewell_b015": {
+        "en": "The frost-hound’s road",
+        "fr": "La route du chien de givre"
+      },
+      "rimewell_b017": {
+        "en": "The soup of stale bread",
+        "fr": "La soupe de pain rassis"
+      },
+      "rimewell_b019": {
+        "en": "The milestone",
+        "fr": "La borne"
+      },
+      "rimewell_b021": {
+        "en": "The quarry block",
+        "fr": "Le bloc de carrière"
+      },
+      "rimewell_b022": {
+        "en": "The road-keeper’s hearth",
+        "fr": "Le foyer de la gardienne de la route"
+      },
+      "rimewell_b023": {
+        "en": "The Vigil’s lamp",
+        "fr": "La lampe de la Veille"
+      },
+      "rimewell_b026": {
+        "en": "The held-out lantern",
+        "fr": "La lanterne tendue"
+      },
+      "rimewell_b030": {
+        "en": "The stitcher’s step",
+        "fr": "Le seuil de la couturière"
+      },
+      "rimewell_b032": {
+        "en": "The Choir Well",
+        "fr": "Le Puits du Chœur"
+      }
+    }
   },
   "greyhithe": {
     "seed": 7201,
@@ -25546,7 +25853,88 @@
       "7200_returned": "greyhithe_b048",
       "7200_tide_failed": "greyhithe_b063"
     },
-    "names": {}
+    "names": {
+      "greyhithe_b000": {
+        "en": "The man with the broken sword",
+        "fr": "L’homme à l’épée brisée"
+      },
+      "greyhithe_b001": {
+        "en": "The child’s face",
+        "fr": "Le visage d’enfant"
+      },
+      "greyhithe_b002": {
+        "en": "The eldest’s loft",
+        "fr": "Le grenier de l’aînée"
+      },
+      "greyhithe_b014": {
+        "en": "The stitcher’s kin",
+        "fr": "Les proches de la couturière"
+      },
+      "greyhithe_b018": {
+        "en": "The page for a lost coast",
+        "fr": "La page d’une côte perdue"
+      },
+      "greyhithe_b033": {
+        "en": "The changed lock of hair",
+        "fr": "La mèche changée"
+      },
+      "greyhithe_b034": {
+        "en": "The ring of the oath",
+        "fr": "Le cercle du serment"
+      },
+      "greyhithe_b039": {
+        "en": "The spears on the shore",
+        "fr": "Les lances sur la grève"
+      },
+      "greyhithe_b043": {
+        "en": "The deerhide blindfold",
+        "fr": "Le bandeau de peau de cerf"
+      },
+      "greyhithe_b044": {
+        "en": "The grey lantern",
+        "fr": "La lanterne grise"
+      },
+      "greyhithe_b046": {
+        "en": "The thing in the surf",
+        "fr": "La chose dans les vagues"
+      },
+      "greyhithe_b047": {
+        "en": "The Fourth Piece on the sail",
+        "fr": "La Quatrième Pièce sur la voile"
+      },
+      "greyhithe_b048": {
+        "en": "The hold of children",
+        "fr": "La cale aux enfants"
+      },
+      "greyhithe_b049": {
+        "en": "The runner on the shingle",
+        "fr": "Le coureur sur les galets"
+      },
+      "greyhithe_b051": {
+        "en": "The oarless boat",
+        "fr": "La barque sans rames"
+      },
+      "greyhithe_b059": {
+        "en": "The brigs off the point",
+        "fr": "Les brigs au large de la pointe"
+      },
+      "greyhithe_b061": {
+        "en": "The nets of pale fish",
+        "fr": "Les filets de poissons pâles"
+      },
+      "greyhithe_b063": {
+        "en": "The ebb-tide’s leavings",
+        "fr": "Ce que laisse le reflux"
+      },
+      "greyhithe_b064": {
+        "en": "The beach that came from elsewhere",
+        "fr": "La plage venue d’ailleurs"
+      },
+      "greyhithe_b066": {
+        "en": "The chaplain’s block and tackle",
+        "fr": "Le palan de l’aumônier"
+      }
+    }
   },
   "wracks_end": {
     "seed": 5101,
@@ -26634,9 +27022,11 @@
       "5100_nets": "wracks_end_b012",
       "5100_keyholder_cut": "wracks_end_b029",
       "5100_tar_hand_book": "wracks_end_b033",
+      "5100_lysa_raid": "wracks_end_b021",
       "5100_clan_dominion_1": "wracks_end_b036",
       "5100_clan_dominion_1_out": "wracks_end_b037",
       "5100_drowned": "wracks_end_b040",
+      "5100_lysa_mask": "wracks_end_b038",
       "5100_clan_crows_1": "wracks_end_b051",
       "5100_salvage": "wracks_end_b050",
       "5100_vote": "wracks_end_b057",
@@ -26646,7 +27036,80 @@
       "5100_clan_crows_1_lost": "wracks_end_b051",
       "5100_salvage_failed": "wracks_end_b050"
     },
-    "names": {}
+    "names": {
+      "wracks_end_b000": {
+        "en": "The cliff-edge hull",
+        "fr": "La coque du bord de falaise"
+      },
+      "wracks_end_b001": {
+        "en": "The Tar-Hands’ slip",
+        "fr": "La cale des Mains-de-Goudron"
+      },
+      "wracks_end_b005": {
+        "en": "The headman’s second word",
+        "fr": "Le second mot du maire"
+      },
+      "wracks_end_b007": {
+        "en": "The door with the painted hand",
+        "fr": "La porte à la main peinte"
+      },
+      "wracks_end_b012": {
+        "en": "The net-mending bench",
+        "fr": "Le banc des filets"
+      },
+      "wracks_end_b014": {
+        "en": "The line drawn on the step",
+        "fr": "Le trait tracé sur le seuil"
+      },
+      "wracks_end_b021": {
+        "en": "The rider’s dying horse",
+        "fr": "Le cheval mourant de la cavalière"
+      },
+      "wracks_end_b022": {
+        "en": "The headman’s pipe",
+        "fr": "La pipe du maire"
+      },
+      "wracks_end_b029": {
+        "en": "The leak at the cliff foot",
+        "fr": "La fuite au pied de la falaise"
+      },
+      "wracks_end_b033": {
+        "en": "The old caulker’s book",
+        "fr": "Le livre du vieux calfat"
+      },
+      "wracks_end_b036": {
+        "en": "The chapel lamp-room",
+        "fr": "La salle de lampe de la chapelle"
+      },
+      "wracks_end_b037": {
+        "en": "The flame that went out",
+        "fr": "La flamme éteinte"
+      },
+      "wracks_end_b038": {
+        "en": "The parcel in black thread",
+        "fr": "Le colis au fil noir"
+      },
+      "wracks_end_b040": {
+        "en": "The lamps that call the drowned",
+        "fr": "Les lampes qui appellent les noyés"
+      },
+      "wracks_end_b050": {
+        "en": "The wreck under the point",
+        "fr": "L’épave sous la pointe"
+      },
+      "wracks_end_b051": {
+        "en": "The crate on the quay",
+        "fr": "La caisse du quai"
+      },
+      "wracks_end_b053": {
+        "en": "The Anvil-Deaf at the quay’s end",
+        "fr": "Les Sourds de l’Enclume au bout du quai"
+      },
+      "wracks_end_b057": {
+        "en": "The Tribunal’s last seal",
+        "fr": "Le dernier sceau du Tribunal"
+      }
+    }
   },
   "cove_camp": {
     "seed": 1101,
@@ -27723,7 +28186,84 @@
       "7800_lines": "cove_camp_b039",
       "6002_siege_breach": "cove_camp_b025"
     },
-    "names": {}
+    "names": {
+      "cove_camp_b000": {
+        "en": "The factor’s leather tube",
+        "fr": "Le tube de cuir du facteur"
+      },
+      "cove_camp_b001": {
+        "en": "The grey fires",
+        "fr": "Les feux gris"
+      },
+      "cove_camp_b003": {
+        "en": "The boy’s measured arm",
+        "fr": "Le bras mesuré du garçon"
+      },
+      "cove_camp_b006": {
+        "en": "The signatures by firelight",
+        "fr": "Les signatures à la lueur du feu"
+      },
+      "cove_camp_b013": {
+        "en": "The Grand Master’s three lines",
+        "fr": "Les trois lignes du Grand Maître"
+      },
+      "cove_camp_b014": {
+        "en": "The white flag on the skiff",
+        "fr": "Le drapeau blanc du canot"
+      },
+      "cove_camp_b015": {
+        "en": "The pilot’s boat after dark",
+        "fr": "La barque du pilote dans le noir"
+      },
+      "cove_camp_b025": {
+        "en": "The storm bell",
+        "fr": "La cloche de tempête"
+      },
+      "cove_camp_b026": {
+        "en": "The turn of the tide",
+        "fr": "Le tournant de la marée"
+      },
+      "cove_camp_b028": {
+        "en": "The count of the living",
+        "fr": "Le compte des vivants"
+      },
+      "cove_camp_b031": {
+        "en": "The camp I came back to",
+        "fr": "Le camp du retour"
+      },
+      "cove_camp_b032": {
+        "en": "The council of war",
+        "fr": "Le conseil de guerre"
+      },
+      "cove_camp_b033": {
+        "en": "The sail-loft under the grey sky",
+        "fr": "La voilerie sous le ciel gris"
+      },
+      "cove_camp_b039": {
+        "en": "The Host’s lines",
+        "fr": "Les lignes de l’Host"
+      },
+      "cove_camp_b041": {
+        "en": "The Spire’s second sunrise",
+        "fr": "Le second lever du soleil de la Flèche"
+      },
+      "cove_camp_b042": {
+        "en": "The burn at the cove",
+        "fr": "Le ruisseau de la crique"
+      },
+      "cove_camp_b043": {
+        "en": "The shingle of landfall",
+        "fr": "Les galets de l’arrivée"
+      },
+      "cove_camp_b047": {
+        "en": "Where the Void let go",
+        "fr": "Là où le Vide a lâché prise"
+      },
+      "cove_camp_b048": {
+        "en": "The boat built from three",
+        "fr": "Le bateau fait de trois"
+      }
+    }
   },
   "kindly_hill": {
     "seed": 5301,
@@ -28890,7 +29430,56 @@
       "5200_barrows": "kindly_hill_b057",
       "5200_riddles_failed": "kindly_hill_b001"
     },
-    "names": {}
+    "names": {
+      "kindly_hill_b000": {
+        "en": "The door in the hill",
+        "fr": "La porte dans la colline"
+      },
+      "kindly_hill_b001": {
+        "en": "The riddle table",
+        "fr": "La table aux devinettes"
+      },
+      "kindly_hill_b002": {
+        "en": "The clock by the door",
+        "fr": "L’horloge près de la porte"
+      },
+      "kindly_hill_b005": {
+        "en": "Nell’s knitting",
+        "fr": "Le tricot de Nell"
+      },
+      "kindly_hill_b018": {
+        "en": "The rider’s ledger",
+        "fr": "Le registre du cavalier"
+      },
+      "kindly_hill_b037": {
+        "en": "The cut that bled too deep",
+        "fr": "L’entaille trop profonde"
+      },
+      "kindly_hill_b038": {
+        "en": "The three fever trees",
+        "fr": "Les trois arbres à fièvre"
+      },
+      "kindly_hill_b052": {
+        "en": "The feast-day masks",
+        "fr": "Les masques des jours de fête"
+      },
+      "kindly_hill_b056": {
+        "en": "The guide’s terms",
+        "fr": "Les conditions du guide"
+      },
+      "kindly_hill_b057": {
+        "en": "The sextons’ barrow",
+        "fr": "Le tumulus des fossoyeurs"
+      },
+      "kindly_hill_b058": {
+        "en": "The edge of the reeds",
+        "fr": "La lisière des roseaux"
+      },
+      "kindly_hill_b061": {
+        "en": "The voice in the reeds",
+        "fr": "La voix dans les roseaux"
+      }
+    }
   },
   "highhearth": {
     "seed": 6201,
@@ -29783,7 +30372,48 @@
       "6200_quarry_face_fight": "highhearth_b020",
       "6200_birth_failed": "highhearth_b030"
     },
-    "names": {}
+    "names": {
+      "highhearth_b000": {
+        "en": "The giants’ table",
+        "fr": "La table des géants"
+      },
+      "highhearth_b001": {
+        "en": "The well built for giants",
+        "fr": "Le puits fait pour les géants"
+      },
+      "highhearth_b002": {
+        "en": "Hathra’s chair",
+        "fr": "Le siège de Hathra"
+      },
+      "highhearth_b010": {
+        "en": "The tally-stone",
+        "fr": "La pierre des comptes"
+      },
+      "highhearth_b017": {
+        "en": "The six-hundred-year fire",
+        "fr": "Le feu de six cents ans"
+      },
+      "highhearth_b018": {
+        "en": "Ghrem’s hearth-stone",
+        "fr": "La pierre d’âtre de Ghrem"
+      },
+      "highhearth_b019": {
+        "en": "The Quarrymen’s wedges",
+        "fr": "Les coins des Carriers"
+      },
+      "highhearth_b020": {
+        "en": "The cut face",
+        "fr": "La paroi taillée"
+      },
+      "highhearth_b029": {
+        "en": "The quarry gate at dusk",
+        "fr": "La porte de la carrière au crépuscule"
+      },
+      "highhearth_b030": {
+        "en": "The midwife’s hands",
+        "fr": "Les mains de la sage-femme"
+      }
+    }
   },
   "emberwick": {
     "seed": 4401,
@@ -30754,7 +31384,48 @@
       "3100_kiln_failed": "emberwick_b037",
       "3100_house_anvil_deaf_failed": "emberwick_b045"
     },
-    "names": {}
+    "names": {
+      "emberwick_b000": {
+        "en": "The cantor’s bell-lantern",
+        "fr": "La lanterne-cloche du chantre"
+      },
+      "emberwick_b001": {
+        "en": "The tithe ledger",
+        "fr": "Le registre de la dîme"
+      },
+      "emberwick_b022": {
+        "en": "The slag-heap kilns",
+        "fr": "Les fours du terril"
+      },
+      "emberwick_b023": {
+        "en": "The Emberwives’ clamps",
+        "fr": "Les meules des Femmes de Braise"
+      },
+      "emberwick_b024": {
+        "en": "The new-moon bank-down",
+        "fr": "L’étouffage de nouvelle lune"
+      },
+      "emberwick_b025": {
+        "en": "The black bread",
+        "fr": "Le pain noir"
+      },
+      "emberwick_b037": {
+        "en": "The kiln that caught wrong",
+        "fr": "Le four qui a mal pris"
+      },
+      "emberwick_b044": {
+        "en": "The smith’s hammer on the lintel",
+        "fr": "Le marteau du forgeron sur le linteau"
+      },
+      "emberwick_b045": {
+        "en": "The unlit forge",
+        "fr": "La forge éteinte"
+      },
+      "emberwick_b046": {
+        "en": "The widow’s doorway",
+        "fr": "L’entrée de la veuve"
+      }
+    }
   },
   "akagiri": {
     "seed": 4701,
@@ -31765,7 +32436,44 @@
       "3200_brew": "akagiri_b000",
       "3200_brew_failed": "akagiri_b000"
     },
-    "names": {}
+    "names": {
+      "akagiri_b000": {
+        "en": "The red-rice brewhouse",
+        "fr": "La brasserie de riz rouge"
+      },
+      "akagiri_b025": {
+        "en": "The Road Exorcist’s post",
+        "fr": "Le poste de l’exorciste de route"
+      },
+      "akagiri_b026": {
+        "en": "The steaming terraces",
+        "fr": "Les terrasses fumantes"
+      },
+      "akagiri_b034": {
+        "en": "The hot pools",
+        "fr": "Les bassins chauds"
+      },
+      "akagiri_b036": {
+        "en": "The salt circle and its bells",
+        "fr": "Le cercle de sel et ses cloches"
+      },
+      "akagiri_b047": {
+        "en": "Tetsu’s anvil",
+        "fr": "L’enclume de Tetsu"
+      },
+      "akagiri_b048": {
+        "en": "The brown-thread banner",
+        "fr": "La bannière au fil brun"
+      },
+      "akagiri_b052": {
+        "en": "The blade made for no one",
+        "fr": "La lame faite pour personne"
+      },
+      "akagiri_b058": {
+        "en": "The Horn-Taker’s chest",
+        "fr": "Le coffre du Preneur de Cornes"
+      }
+    }
   },
   "white_wells": {
     "seed": 1201,
@@ -32480,6 +33188,27 @@
       "1002": "white_wells_b009",
       "1210": "white_wells_b028"
     },
-    "names": {}
+    "names": {
+      "white_wells_b000": {
+        "en": "The pool at night",
+        "fr": "Le bassin dans la nuit"
+      },
+      "white_wells_b001": {
+        "en": "The green oasis",
+        "fr": "L’oasis verte"
+      },
+      "white_wells_b007": {
+        "en": "The empty place beside me",
+        "fr": "La place vide à mes côtés"
+      },
+      "white_wells_b009": {
+        "en": "The stubborn parts",
+        "fr": "Les parties têtues"
+      },
+      "white_wells_b028": {
+        "en": "The far well",
+        "fr": "Le puits du fond"
+      }
+    }
   }
 }
