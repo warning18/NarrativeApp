@@ -5,7 +5,10 @@ import '../combat/spec_variants.dart' show SpecVariantInfo;
 import '../combat/specialisations.dart' show SpecInfo;
 import '../combat/spells.dart';
 import '../models/story_node.dart';
+import 'clan_power.dart';
 import 'factions.dart';
+import 'geography.dart';
+import 'nemesis.dart' show updateNemesis;
 import 'offers.dart';
 import 'perks.dart';
 import 'patron_stats.dart';
@@ -131,6 +134,12 @@ class SimGrowth {
 
   // The offers.
   final List<OfferTicket> pending = [];
+
+  /// The places that changed hands at the chapters' turns.
+  final List<TerritoryChange> territoryChanges = [];
+
+  /// Every clan that was the character's nemesis at a chapter's turn.
+  final Set<String> nemeses = {};
   PoliticsState politics = PoliticsState.empty;
   List<String> titles = const [];
   String activeTitle = '';
@@ -285,9 +294,11 @@ class SimGrowth {
   }
 
   /// A new chapter reached: an offer from chapter 2 on, once (offers),
-  /// and the price of loyalty (applyLoyaltyDrift: the patron's rivals
-  /// cool).
-  void chapterReached(int chapter) {
+  /// the price of loyalty (applyLoyaltyDrift: the patron's rivals cool)
+  /// and, with the world's [geography], the clans' power and places
+  /// (territoryTurn, clan_power.dart; what changed hands is kept in
+  /// [territoryChanges]).
+  void chapterReached(int chapter, {Geography? geography}) {
     if (mode != SimProgression.offers ||
         chapter < 2 ||
         chapter <= chapterOffersThrough) {
@@ -296,6 +307,13 @@ class SimGrowth {
     chapterOffersThrough = chapter;
     politics =
         applyLoyaltyDrift(politics, data: tables.clans, chapter: chapter).state;
+    if (geography != null) {
+      final turn = territoryTurn(politics,
+          data: tables.clans, geography: geography, chapter: chapter);
+      politics = updateNemesis(turn.state, tables.clans, chapter: chapter);
+      territoryChanges.addAll(turn.changes);
+      if (politics.nemesis.isNotEmpty) nemeses.add(politics.nemesis);
+    }
     pending.add(OfferTicket(source: OfferSource.chapter, detail: '$chapter'));
   }
 

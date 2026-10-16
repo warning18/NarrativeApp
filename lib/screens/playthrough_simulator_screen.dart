@@ -12,7 +12,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../combat/combat_engine.dart'
     show chapterRewardMultiplier, isBossEnemy, scaledReward, zoneBossEnemyIds;
-import '../combat/context_rules.dart' show ContextRule;
+import '../combat/context_rules.dart' show ContextRule, Reinforcement;
 import '../combat/gear_effects.dart';
 import '../combat/spec_variants.dart' show SpecVariantInfo, specVariantsFrom;
 import '../combat/specialisations.dart' show SpecInfo, specInfosFrom;
@@ -46,6 +46,7 @@ import '../data/story_graph_integrity.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
 import '../data/zone_gating.dart' show meetsRequiredFlags, zoneIsMain;
+import '../data/clan_power.dart' show TerritoryChange;
 import '../data/geography.dart';
 import '../data/land_crossing.dart';
 import '../data/road_events.dart';
@@ -224,6 +225,9 @@ class _SimResult {
     this.specs = const [],
     this.patron = '',
     this.mercy = (spared: 0, finished: 0, betrayed: 0),
+    this.territory = const [],
+    this.politics = PoliticsState.empty,
+    this.nemeses = const {},
   });
 
   /// The specialisations the character held at the end, in the order
@@ -237,6 +241,16 @@ class _SimResult {
   /// The rivals' hunters spared, finished, and come back to betray
   /// (hunter_mercy.dart).
   final ({int spared, int finished, int betrayed}) mercy;
+
+  /// The places that changed hands at the chapters' turns
+  /// (clan_power.dart).
+  final List<TerritoryChange> territory;
+
+  /// The clans as the run left them: standing, power, places.
+  final PoliticsState politics;
+
+  /// Every clan that was the character's nemesis at a chapter's turn.
+  final Set<String> nemeses;
 
   final List<_SimStep> steps;
 
@@ -350,6 +364,7 @@ class _SimContext {
     this.ports = const {},
     this.startSpecs = const [],
     this.context,
+    this.reinforcement = Reinforcement.none,
     this.specs = const {},
     this.specVariants = const {},
   });
@@ -367,6 +382,10 @@ class _SimContext {
   /// A context rule every fight plays (context_rules.dart), to measure
   /// each one; null: the Tide (no fight's place is known here).
   final ContextRule? context;
+
+  /// Reinforcements in every fight (context_rules.dart), to measure them;
+  /// none: no fight's place is known here.
+  final Reinforcement reinforcement;
 
   /// detour_scenes.json: the detours' written scenes (detour_scenes.dart).
   final Map<String, DetourScene> detourScenes;
@@ -670,7 +689,12 @@ _SimResult _simulate(
         hunter = 'betrayal';
         betrayed++;
       } else if (rival != null) {
-        hunter = 'rival_hunter';
+        final hunterId = rival.first.choices.first.triggerEnemyId ?? '';
+        final clan =
+            (enemies[hunterId] as Map<String, dynamic>?)?['hunterClan'];
+        hunter = clan != null && clan == growth?.politics.nemesis
+            ? 'nemesis_hunter'
+            : 'rival_hunter';
         // Beaten (the walk doesn't fight a road's hunter), it is spared
         // when its betrayal is unlikely.
         final id = rival.first.choices.first.triggerEnemyId ?? '';
@@ -783,6 +807,9 @@ _SimResult _simulate(
       specs: List.unmodifiable(character?.specIds ?? const <String>[]),
       patron: growth == null ? '' : statPatron(growth.politics),
       mercy: (spared: spared, finished: finished, betrayed: betrayed),
+      territory: List.unmodifiable(growth?.territoryChanges ?? const []),
+      politics: growth?.politics ?? PoliticsState.empty,
+      nemeses: Set.unmodifiable(growth?.nemeses ?? const <String>{}),
       transcript: transcribe
           ? [
               for (final (i, step) in steps.indexed) ...[
@@ -990,6 +1017,7 @@ _SimResult _simulate(
         clash: sim.clash,
         clashOff: sim.clashOff,
         context: sim.context,
+        reinforcement: sim.reinforcement,
         clanStanding: growth == null
             ? null
             : (id) => growth.politics.standingOf(id, growth.tables.clans),
@@ -1424,7 +1452,7 @@ _SimResult _simulate(
       if (reached != null) {
         arrivals.putIfAbsent(
             reached, () => (level: character!.level, gold: gold));
-        growth?.chapterReached(reached);
+        growth?.chapterReached(reached, geography: sim?.geography);
         settle();
         buildHouses();
         if (transcribe) {
@@ -1841,6 +1869,7 @@ _SimContext _simContextOf(
   Set<String> clashOff = const {},
   List<String> startSpecs = const [],
   ContextRule? context,
+  Reinforcement reinforcement = Reinforcement.none,
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
   final written = writtenStepsFrom(table('expedition_steps'));
@@ -1879,6 +1908,7 @@ _SimContext _simContextOf(
     ports: table('ports'),
     startSpecs: startSpecs,
     context: context,
+    reinforcement: reinforcement,
     specs: specInfosFrom(table('specialisations')),
     specVariants: specVariantsFrom(table('spec_variants')),
   );
@@ -1951,6 +1981,9 @@ typedef SimRunSummary = ({
   List<String> specs,
   String patron,
   ({int spared, int finished, int betrayed}) mercy,
+  List<TerritoryChange> territory,
+  PoliticsState politics,
+  Set<String> nemeses,
 });
 
 /// Full playthroughs, one per entry of [plan] (a strategy and, optionally,
@@ -1971,9 +2004,13 @@ List<SimRunSummary> simulatePlaythroughs(
   bool transcripts = false,
   List<String> startSpecs = const [],
   ContextRule? context,
+  Reinforcement reinforcement = Reinforcement.none,
 }) {
   final sim = _simContextOf(tables, gameConfig,
-      clashOff: clashOff, startSpecs: startSpecs, context: context);
+      clashOff: clashOff,
+      startSpecs: startSpecs,
+      context: context,
+      reinforcement: reinforcement);
   final enemies = tables['enemies'] ?? const {};
   final out = <SimRunSummary>[];
   for (var i = 0; i < plan.length; i++) {
@@ -2070,6 +2107,9 @@ List<SimRunSummary> simulatePlaythroughs(
       specs: result.specs,
       patron: result.patron,
       mercy: result.mercy,
+      territory: result.territory,
+      politics: result.politics,
+      nemeses: result.nemeses,
     ));
   }
   return out;

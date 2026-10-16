@@ -384,6 +384,26 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Sur cette route\u00a0: {hazard}. Forcer le passage, ou attendre.',
   },
+  'clan_peek_orientation': {
+    AppLanguage.en: 'Orientation',
+    AppLanguage.fr: 'Orientation',
+  },
+  'clan_peek_backstory': {
+    AppLanguage.en: 'Their story',
+    AppLanguage.fr: 'Leur histoire',
+  },
+  'clan_peek_says': {
+    AppLanguage.en: 'What they say to you',
+    AppLanguage.fr: 'Ce qu\u2019ils vous disent',
+  },
+  'clan_peek_tap_close': {
+    AppLanguage.en: 'Tap to close',
+    AppLanguage.fr: 'Touchez pour fermer',
+  },
+  'clan_peek_release': {
+    AppLanguage.en: 'Let go to close',
+    AppLanguage.fr: 'Relâchez pour fermer',
+  },
   'geo_this_land': {
     AppLanguage.en: 'This land',
     AppLanguage.fr: 'Cette contrée',
@@ -2050,6 +2070,48 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'die_made_for_prefix': {
     AppLanguage.en: 'Made for',
     AppLanguage.fr: 'Conçu pour',
+  },
+  'reward_kind_quest': {
+    AppLanguage.en: 'Quest complete',
+    AppLanguage.fr: 'Quête accomplie',
+  },
+  'reward_kind_item': {
+    AppLanguage.en: 'Item found',
+    AppLanguage.fr: 'Objet trouvé',
+  },
+  'reward_kind_clan_gift': {
+    AppLanguage.en: 'A clan\u2019s gift',
+    AppLanguage.fr: 'Le don d\u2019un clan',
+  },
+  'reward_chapter': {
+    AppLanguage.en: 'Chapter {n}',
+    AppLanguage.fr: 'Chapitre {n}'
+  },
+  'reward_gold': {AppLanguage.en: 'Gold', AppLanguage.fr: 'Or'},
+  'reward_gold_sub': {
+    AppLanguage.en: 'Paid for the job',
+    AppLanguage.fr: 'Le prix du travail',
+  },
+  'reward_xp': {AppLanguage.en: 'Experience', AppLanguage.fr: 'Expérience'},
+  'reward_xp_sub': {
+    AppLanguage.en: '{before} \u2192 {after} / {need} XP · level {n}',
+    AppLanguage.fr: '{before} \u2192 {after} / {need} XP · niveau {n}',
+  },
+  'reward_xp_levelup': {
+    AppLanguage.en: 'Level up! You are level {n}',
+    AppLanguage.fr: 'Niveau supérieur\u00a0! Vous êtes niveau {n}',
+  },
+  'reward_new': {AppLanguage.en: 'NEW', AppLanguage.fr: 'NOUVEAU'},
+  'reward_joins': {AppLanguage.en: 'JOINS', AppLanguage.fr: 'REJOINT'},
+  'reward_continue': {AppLanguage.en: 'Continue', AppLanguage.fr: 'Continuer'},
+  'reward_standing': {AppLanguage.en: 'Standing', AppLanguage.fr: 'Réputation'},
+  'reward_die_made_for': {
+    AppLanguage.en: 'A die for your hand',
+    AppLanguage.fr: 'Un dé pour votre main',
+  },
+  'reward_materials_title': {
+    AppLanguage.en: 'Materials found',
+    AppLanguage.fr: 'Matériaux trouvés',
   },
   'reward_die_traded': {
     AppLanguage.en: 'The {die} is made for another class: you took its '
@@ -7721,6 +7783,25 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'La marée monte\u00a0: les vôtres +{party}\u00a0%, les leurs +{enemies}\u00a0%.',
   },
   // The place's rule over a fight (v5.2 step 4, context_rules.dart).
+  // What the foe is (foe_kind.dart). Placeholder words, for Narrative.
+  'foe_tiring_log': {
+    AppLanguage.en: '{name} is tiring: its blows land softer.',
+    AppLanguage.fr: '{name} se fatigue\u00a0: ses coups portent moins.',
+  },
+  'reinforce_allies_log': {
+    AppLanguage.en: 'The people {of} join the fight: {n} to each foe.',
+    AppLanguage.fr:
+        'Les gens {of} se joignent au combat\u00a0: {n} à chaque ennemi.',
+  },
+  'reinforce_foes_log': {
+    AppLanguage.en: 'The people {of} fall on you: {n} to each of you.',
+    AppLanguage.fr:
+        'Les gens {of} vous tombent dessus\u00a0: {n} à chacun de vous.',
+  },
+  'foe_crumbles_log': {
+    AppLanguage.en: '{name} crumbles ({n}).',
+    AppLanguage.fr: '{name} s’effrite ({n}).',
+  },
   'boss_enraged_log': {
     AppLanguage.en: 'Something snaps: the boss fights like a cornered thing.',
     AppLanguage.fr:
@@ -11313,6 +11394,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'standing_cause_loyalty': {
     AppLanguage.en: 'Loyalty’s price',
     AppLanguage.fr: 'Le prix de la loyauté',
+  },
+  'standing_cause_territory': {
+    AppLanguage.en: 'Territory',
+    AppLanguage.fr: 'Territoire',
   },
   'standing_cause_mercy': {
     AppLanguage.en: 'Mercy for a hunter',

@@ -3059,6 +3059,43 @@ final DbSchema factionsSchema = DbSchema(
       help: 'Where the character stands with them when the story opens.',
     ),
     FieldSchema(
+      key: 'power',
+      label: 'Starting power (0 to 100)',
+      type: FieldType.integer,
+      defaultValue: 0,
+      help: 'How strong the clan is when the story opens (clan_power.dart): '
+          'Minor under 25, Rising, Dominant from 50, Ascendant from 75.',
+    ),
+    FieldSchema(
+      key: 'seat',
+      label: 'Seat',
+      type: FieldType.reference,
+      referenceSchemaId: 'geography',
+      help: 'The place the clan gives up last; its first claim back when it '
+          'has fallen.',
+    ),
+    FieldSchema(
+      key: 'gender_fr',
+      label: 'French gender and number',
+      type: FieldType.enumeration,
+      enumOptions: ['m', 'f', 'mp', 'fp'],
+      help: 'For the French words that agree with the name ("est tombée", '
+          '"tiennent").',
+    ),
+    FieldSchema(
+      key: 'nameTo_fr',
+      label: 'French name after "à"',
+      type: FieldType.text,
+      help: '"au Dominion de la Lanterne", "aux Corneilles de Sel".',
+    ),
+    FieldSchema(
+      key: 'claims',
+      label: 'Claims, in order',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'geography',
+      help: 'The places the clan reaches for as its power grows.',
+    ),
+    FieldSchema(
       key: 'subclans',
       label: 'Sub-clans',
       type: FieldType.referenceList,

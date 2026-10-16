@@ -1,7 +1,10 @@
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
+import 'clan_crisis.dart';
+import 'clan_power.dart';
 import 'factions.dart';
+import 'geography.dart';
 import 'throne.dart';
 
 /// Politics in motion (v1.195): the story's choices carry politics (see
@@ -44,6 +47,7 @@ import 'throne.dart';
 ///   default. Conditions: `flags`, `notFlags`, `anyFlags`,
 ///   `chapterAtLeast`, `chapterAtMost`, `standingAtLeast`/`standingAtMost`
 ///   ({faction: n}), `relationAtLeast`/`relationAtMost` ({"a|b": step}),
+///   `powerAtLeast`/`powerAtMost` ({clan: power}, clan_power.dart),
 ///   `marks` ({sub-clan: friend|foe|none}); and (v1.196, see throne.dart)
 ///   `claim` (a faction id, `any` or `none`, or a list: any of them),
 ///   `rungAtLeast` ({faction: 1 House, 2 claim, 3 Throne}) and
@@ -52,6 +56,8 @@ import 'throne.dart';
 /// - **effects:** the shape of a choice's `politics`, plus `flags` to set.
 ///   `claim` and `throneWinner` are effects too: write a variant's
 ///   `conditions` and `effects` apart when it uses them.
+///   `power` ({clan: n}) moves a clan's power and `control` ({place: clan})
+///   gives it a place (clan_power.dart).
 /// - **once:** true unless written false; an event that is not once may
 ///   fire again in a later chapter.
 
@@ -161,6 +167,8 @@ class EventConditions {
     this.standingAtMost = const {},
     this.relationAtLeast = const {},
     this.relationAtMost = const {},
+    this.powerAtLeast = const {},
+    this.powerAtMost = const {},
     this.marks = const {},
     this.claim = const [],
     this.rungAtLeast = const {},
@@ -180,6 +188,10 @@ class EventConditions {
   /// By "a|b", the pair written either way round.
   final Map<String, num> relationAtLeast;
   final Map<String, num> relationAtMost;
+
+  /// Each clan's power, at least or at most (clan_power.dart).
+  final Map<String, num> powerAtLeast;
+  final Map<String, num> powerAtMost;
   final Map<String, String> marks;
 
   /// The claims any of which will do: faction ids, `any` (some claim) or
@@ -204,6 +216,8 @@ class EventConditions {
     'standingAtMost',
     'relationAtLeast',
     'relationAtMost',
+    'powerAtLeast',
+    'powerAtMost',
     'marks',
     'claim',
     'rungAtLeast',
@@ -226,6 +240,8 @@ class EventConditions {
         standingAtMost: _numbers(json['standingAtMost']),
         relationAtLeast: _numbers(json['relationAtLeast']),
         relationAtMost: _numbers(json['relationAtMost']),
+        powerAtLeast: _numbers(json['powerAtLeast']),
+        powerAtMost: _numbers(json['powerAtMost']),
         marks: {
           if (json['marks'] is Map)
             for (final e in (json['marks'] as Map).entries)
@@ -272,6 +288,12 @@ class EventConditions {
     }
     for (final e in relationAtMost.entries) {
       if (step(e.key) > e.value) return false;
+    }
+    for (final e in powerAtLeast.entries) {
+      if (powerOf(politics, e.key, world.data) < e.value) return false;
+    }
+    for (final e in powerAtMost.entries) {
+      if (powerOf(politics, e.key, world.data) > e.value) return false;
     }
     for (final e in marks.entries) {
       final want = subclanMarkNamed(e.value) ?? SubclanMark.none;
@@ -444,6 +466,7 @@ class CoastWorld {
     this.day = 1,
     this.chapterDay = 1,
     this.signPatrons = const [],
+    this.geography,
   });
 
   final ClanData data;
@@ -452,6 +475,10 @@ class CoastWorld {
   final int day;
   final int chapterDay;
   final List<String> signPatrons;
+
+  /// The world's places, for the places an event gives (clan_power.dart):
+  /// without them, the place changes hands with no news.
+  final Geography? geography;
 }
 
 /// An offer the politics brought: [factionId] guaranteed a place, logged
@@ -563,6 +590,44 @@ class _Coast {
   void apply(StoryPolitics p, String cause, int depth) {
     for (final e in p.standing.entries) {
       standing(e.key, e.value, cause);
+    }
+    // Power and places (clan_power.dart): a story choice's raise counts as
+    // the character's doing (no neglect this chapter), and a quest done
+    // for a clan (one raising its standing [questPowerStanding] or more)
+    // brings it [questPower].
+    final mine = cause.startsWith('story:') || cause.startsWith('quest:');
+    for (final e in p.power.entries) {
+      politics =
+          addPower(politics, e.key, e.value, data, helped: e.value > 0 && mine);
+    }
+    if (cause.contains('quest:')) {
+      for (final e in p.standing.entries) {
+        if (e.value >= questPowerStanding && isMainClan(e.key, data)) {
+          politics = addPower(politics, e.key, questPower, data, helped: true);
+        }
+      }
+    }
+    // The crisis and the fall (clan_crisis.dart).
+    if (p.settleCrisis.isNotEmpty) {
+      politics = settleCrisis(politics, p.settleCrisis);
+    }
+    if (p.bendKnee.isNotEmpty) {
+      politics = bendTheKnee(politics, p.bendKnee, data,
+          chapter: world.chapter, day: world.day);
+    }
+    if (p.stayFallen.isNotEmpty) {
+      politics = stayOfFallen(politics, p.stayFallen);
+    }
+    for (final e in p.control.entries) {
+      final geography = world.geography;
+      politics = geography?.place(e.key) == null
+          ? politics.copyWith(control: {...politics.control, e.key: e.value})
+          : givePlace(politics, e.key, e.value,
+              cause: 'event',
+              data: data,
+              geography: geography!,
+              chapter: world.chapter,
+              day: world.day);
     }
     for (final e in p.marks.entries) {
       final m = subclanMarkNamed(e.value);
