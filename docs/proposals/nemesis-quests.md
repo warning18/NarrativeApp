@@ -103,7 +103,7 @@ French: *vous*, never gendered for the player; the champions are fixed character
 - **Description:** The Vigil’s eyes on the ridge. She has not looked away from the tear in thirty-eight years, and does not mean to start with you.
 - **Description (FR) :** Les yeux de la Veille sur la crête. Elle n’a pas détourné le regard de la déchirure depuis trente-huit ans, et ne compte pas commencer avec vous.
 - **Battle cry:** “We do not look away. I have not looked away from you since you left.”
-- **Cri (FR) :** « Nous ne détournons pas le regard. Je ne vous ai pas quitté des yeux depuis votre départ. »
+- **Cri (FR) :** « Nous ne détournons pas le regard. Mes yeux ne vous ont pas lâché depuis votre départ. »
 
 **1. The word.**
 - EN: A sentry on a lonely road, lantern shuttered. “She has seen you. She sees everything, from there. If you are going up, go in the dark hour, when even she must blink.”
