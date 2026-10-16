@@ -380,8 +380,8 @@
             "throne_filled"
           ]
         },
-        "news": "The Houses would not wait for a Lantern-Bearer the Conclave had not finished naming. Grand Master Morrow has taken the Lantern Hall with the Order’s knights and refuses your claim; Aurel Vane and the Inquisition have come over to it, and call themselves your Hand.",
-        "news_fr": "Les Maisons n’ont pas voulu attendre un Porte-Lanterne que le Conclave n’avait pas fini de nommer. Le Grand Maître Morrow a pris la Salle de la Lanterne avec les chevaliers de l’Ordre et refuse votre prétention ; Aurel Vane et l’Inquisition s’y sont ralliés, et se disent votre Main."
+        "news": "The Houses would not wait for a Lantern-Bearer the Conclave had not finished naming. Grand Master Morrow has taken the Lantern Hall with the Order’s knights and refuses your claim; Regent Oriel and the Inquisition have come over to it, and call themselves your Hand.",
+        "news_fr": "Les Maisons n’ont pas voulu attendre un Porte-Lanterne que le Conclave n’avait pas fini de nommer. Le Grand Maître Morrow a pris la Salle de la Lanterne avec les chevaliers de l’Ordre et refuse votre prétention ; Le Régent Oriel et l’Inquisition s’y sont ralliés, et se disent votre Main."
       },
       {
         "conditions": {
@@ -398,8 +398,8 @@
             "throne_filled"
           ]
         },
-        "news": "Aurel Vane has shut himself in the Lantern Hall with the Inquisition and refuses your claim. Grand Master Morrow brought the Order over to you the night the Admiralty’s vote was read, and stands at your side as your Hand.",
-        "news_fr": "Aurel Vane s’est enfermé dans la Salle de la Lanterne avec l’Inquisition et refuse votre prétention. Le Grand Maître Morrow vous a rallié l’Ordre le soir où l’on a lu la voix de l’Amirauté, et se tient à vos côtés en Main."
+        "news": "Regent Oriel has shut himself in the Lantern Hall with the Inquisition and refuses your claim. Grand Master Morrow brought the Order over to you the night the Admiralty’s vote was read, and stands at your side as your Hand.",
+        "news_fr": "Le Régent Oriel s’est enfermé dans la Salle de la Lanterne avec l’Inquisition et refuse votre prétention. Le Grand Maître Morrow vous a rallié l’Ordre le soir où l’on a lu la voix de l’Amirauté, et se tient à vos côtés en Main."
       },
       {
         "conditions": {
@@ -416,8 +416,8 @@
             "throne_filled"
           ]
         },
-        "news": "Aurel Vane has shut himself in the Lantern Hall with the Inquisition and refuses your claim. Maud Tallis came down to the quay with one lamp and set it at your feet: your Hand, she says, while the lamps stay lit.",
-        "news_fr": "Aurel Vane s’est enfermé dans la Salle de la Lanterne avec l’Inquisition et refuse votre prétention. Maud Tallis est descendue sur le quai avec une seule lampe et l’a posée à vos pieds : votre Main, dit-elle, tant que les lampes resteront allumées."
+        "news": "Regent Oriel has shut himself in the Lantern Hall with the Inquisition and refuses your claim. Maud Tallis came down to the quay with one lamp and set it at your feet: your Hand, she says, while the lamps stay lit.",
+        "news_fr": "Le Régent Oriel s’est enfermé dans la Salle de la Lanterne avec l’Inquisition et refuse votre prétention. Maud Tallis est descendue sur le quai avec une seule lampe et l’a posée à vos pieds : votre Main, dit-elle, tant que les lampes resteront allumées."
       },
       {
         "conditions": {
@@ -467,8 +467,8 @@
             "throne_filled"
           ]
         },
-        "news": "Aurel Vane has taken the Lantern Hall with the Inquisition behind him and refuses the claim the Houses were naming you to. The Conclave sits on the cliff outside his door, waiting to see who opens it.",
-        "news_fr": "Aurel Vane a pris la Salle de la Lanterne, l’Inquisition derrière lui, et refuse la prétention que les Maisons vous reconnaissaient. Le Conclave siège sur la falaise devant sa porte, à attendre de voir qui l’ouvrira."
+        "news": "Regent Oriel has taken the Lantern Hall with the Inquisition behind him and refuses the claim the Houses were naming you to. The Conclave sits on the cliff outside his door, waiting to see who opens it.",
+        "news_fr": "Le Régent Oriel a pris la Salle de la Lanterne, l’Inquisition derrière lui, et refuse la prétention que les Maisons vous reconnaissaient. Le Conclave siège sur la falaise devant sa porte, à attendre de voir qui l’ouvrira."
       },
       {
         "conditions": {
@@ -500,8 +500,8 @@
             "throne_filled"
           ]
         },
-        "news": "Aurel Vane sits the Lantern Throne on the Admiralty’s vote you cast, and the Dominion is an inquisition now. His first decree names anyone who draws a heretic; his second shuts Candlehold’s gates against your banner.",
-        "news_fr": "Aurel Vane siège sur le Trône de la Lanterne grâce à la voix de l’Amirauté que vous avez donnée, et le Dominion est désormais une inquisition. Son premier décret déclare hérétique quiconque trace ; le second ferme les portes de Candlehold à votre bannière."
+        "news": "Regent Oriel sits the Lantern Throne on the Admiralty’s vote you cast, and the Dominion is an inquisition now. His first decree names anyone who draws a heretic; his second shuts Candlehold’s gates against your banner.",
+        "news_fr": "Le Régent Oriel siège sur le Trône de la Lanterne grâce à la voix de l’Amirauté que vous avez donnée, et le Dominion est désormais une inquisition. Son premier décret déclare hérétique quiconque trace ; le second ferme les portes de Candlehold à votre bannière."
       },
       {
         "conditions": {
@@ -584,8 +584,8 @@
             "throne_filled"
           ]
         },
-        "news": "With the Inquisition’s writ carried up and down the coast, the Houses gave the Lantern Throne to Aurel Vane. The Dominion is an inquisition now, and its gates are shut against your banner.",
-        "news_fr": "Avec le mandat de l’Inquisition porté d’un bout à l’autre de la côte, les Maisons ont donné le Trône de la Lanterne à Aurel Vane. Le Dominion est désormais une inquisition, et ses portes sont fermées à votre bannière."
+        "news": "With the Inquisition’s writ carried up and down the coast, the Houses gave the Lantern Throne to Regent Oriel. The Dominion is an inquisition now, and its gates are shut against your banner.",
+        "news_fr": "Avec le mandat de l’Inquisition porté d’un bout à l’autre de la côte, les Maisons ont donné le Trône de la Lanterne au Régent Oriel. Le Dominion est désormais une inquisition, et ses portes sont fermées à votre bannière."
       },
       {
         "conditions": {
@@ -617,8 +617,8 @@
             "throne_filled"
           ]
         },
-        "news": "The Houses gave the Lantern Throne to Aurel Vane, who had spent the most and remembered every coin. The Dominion is an inquisition now, and its gates are shut against your banner.",
-        "news_fr": "Les Maisons ont donné le Trône de la Lanterne à Aurel Vane, qui avait le plus dépensé et se souvenait de chaque pièce. Le Dominion est désormais une inquisition, et ses portes sont fermées à votre bannière."
+        "news": "The Houses gave the Lantern Throne to Regent Oriel, who had spent the most and remembered every coin. The Dominion is an inquisition now, and its gates are shut against your banner.",
+        "news_fr": "Les Maisons ont donné le Trône de la Lanterne au Régent Oriel, qui avait le plus dépensé et se souvenait de chaque pièce. Le Dominion est désormais une inquisition, et ses portes sont fermées à votre bannière."
       },
       {
         "conditions": {
@@ -852,8 +852,8 @@
             "inquisition": "foe"
           }
         },
-        "news": "The Lantern Throne has declared the Open Hand hunted, with a price on everyone who draws for it and a higher one on the grey cloth. Aurel Vane signed the writ himself.",
-        "news_fr": "Le Trône de la Lanterne a déclaré la Main Ouverte traquée, avec une prime sur quiconque trace pour elle, et une plus forte encore sur l’étoffe grise. Aurel Vane a signé le mandat de sa main."
+        "news": "The Lantern Throne has declared the Open Hand hunted, with a price on everyone who draws for it and a higher one on the grey cloth. Aurel Vane signed the writ in the Regent’s name.",
+        "news_fr": "Le Trône de la Lanterne a déclaré la Main Ouverte traquée, avec une prime sur quiconque trace pour elle, et une plus forte encore sur l’étoffe grise. Aurel Vane a signé le mandat au nom du Régent."
       },
       {
         "effects": {
