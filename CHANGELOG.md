@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.450.0+486]
+
+The old ways of spending stat points are gone: the picks are the only one.
+
+### Removed
+- The free stat-point pool and the 5-point build cards (and their screen). The level's picks (v1.449) replace both.
+
+### Changed
+- An old save that still had a build card on the table loads as before: the card is dropped and its unspent points are pending picks.
+
 ## [1.449.0+485]
 
 The level's points are picks, three offers each, laid out like a clan's gift.

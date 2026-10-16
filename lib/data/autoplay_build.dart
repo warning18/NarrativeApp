@@ -33,8 +33,8 @@ class AutoplayBuild {
   final Map<String, String>? faceAssignments;
 }
 
-/// The ability scores a stat point can raise, as
-/// `PlayerSessionNotifier.spendStatPoint` names them.
+/// The ability scores a stat pick can raise, as the session names them
+/// (training.dart's trainingStats).
 const Set<String> _abilityStats = {
   'strength',
   'dexterity',
