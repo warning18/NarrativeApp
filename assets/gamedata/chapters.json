@@ -25,6 +25,7 @@
     "title": "The Hollow Court",
     "title_fr": "La Cour Creuse",
     "campNodeId": "4999_camp",
+    "recommendedLevel": 9,
     "activityGoal": 8,
     "questGoal": 1,
     "mainQuestNeedsPlaceIds": [

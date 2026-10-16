@@ -2760,6 +2760,19 @@ final DbSchema chaptersSchema = DbSchema(
         key: 'mainQuestHint_fr',
         label: 'Main quest hint (FR)',
         type: FieldType.multilineText),
+    FieldSchema(
+        key: 'recommendedLevel',
+        label:
+            'Recommended level (shown before setting out for this chapter; empty for none)',
+        type: FieldType.integer),
+    FieldSchema(
+        key: 'recommendedLevelNote',
+        label: 'Recommended level note (said when the party is under it)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'recommendedLevelNote_fr',
+        label: 'Recommended level note (FR)',
+        type: FieldType.multilineText),
   ],
 );
 
