@@ -61,7 +61,9 @@ import '../widgets/journey_world_map.dart';
 import '../widgets/geography_widgets.dart';
 import '../widgets/journey_fx.dart';
 import '../widgets/journey_glyph.dart';
+import '../widgets/arrival_sheet.dart';
 import '../widgets/journey_banner_pin.dart';
+import '../widgets/return_notice.dart';
 import '../widgets/city_chart/city_chart.dart';
 import '../widgets/city_chart/city_chart_painter.dart';
 import '../widgets/city_chart/city_chart_view.dart';
@@ -610,6 +612,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// The scene read full screen (double-tap on it, again to come back).
   bool _reading = false;
 
+  /// The scene of a place the party just arrived at, in a sheet over the map
+  /// (S2, see arrival_sheet.dart); Continue closes it.
+  bool _arrival = false;
+
   /// How far the land has moved under the party: each walk carries it on
   /// by the road walked, so the hills stay where they were as the next
   /// scene's map takes over.
@@ -735,15 +741,25 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           setState(() {
             if (_takingFrom == before) _takingFrom = null;
             _pressed = null;
-            // The choice moved the story on: the new scene is read full
-            // screen, and Continue brings the map back (and plays a carry).
-            // A one-tap return lands on the hub's map, with its notice.
-            // TODO(UX): S1 for isMainStoryScene, the S2 sheet over the map
-            // for the rest, the next scene's choices in the scene view on
-            // FlowStay, and the "You came back to" notice (lastReturnProvider).
+            // The choice moved the story on. A main-story scene is read full
+            // screen (S1); any other scene opens in a sheet over the map (S2);
+            // Continue brings the map back (and plays a carry). A one-tap
+            // return lands on the hub's map, with its notice (return_notice).
+            // TODO(UX): the next scene's choices in the scene view on
+            // FlowStay, and the map offering only the FlowMap ways.
             if (taken && !stayed) {
               _carried = flow is FlowTripThenArrive || flow is FlowReturnToHub;
-              _reading = flow is! FlowReturnToHub;
+              final play = ref.read(storyPlayProvider);
+              final view = arrivalViewOf(
+                flow,
+                mainStory: ref
+                        .read(storyStopsProvider)
+                        ?.isMainStoryScene(play.currentNodeId) ??
+                    true,
+                inExcursion: play.isInExcursion,
+              );
+              _reading = view == ArrivalView.page;
+              _arrival = view == ArrivalView.sheet;
             }
           });
         }
@@ -773,7 +789,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// party walks, whose map would go from under it.
   void _read(bool reading) {
     if (_busy) return;
-    setState(() => _reading = reading);
+    setState(() {
+      _reading = reading;
+      _arrival = false;
+    });
   }
 
   void _tap(int index, _Step step) {
@@ -2118,7 +2137,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
 
     // The guide shows the tab around the first time it opens (see
     // TutorialTopic.journey), once there is a character to follow.
-    return TutorialTrigger(
+    final screen = TutorialTrigger(
       topic: TutorialTopic.journey,
       ready: session.raceId.isNotEmpty,
       child: SafeArea(
@@ -2337,6 +2356,36 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           ),
         ),
       ),
+    );
+    // A place just arrived at: its scene in a sheet over the map (S2); a
+    // one-tap return says "You came back to ..." over it.
+    return ReturnNoticeHost(
+      child: !_arrival
+          ? screen
+          : Stack(
+              children: [
+                screen,
+                Positioned.fill(
+                  child: ArrivalSheet(
+                    title: hereName,
+                    continueLabel: tr(ref, 'journey_continue'),
+                    closeTip: tr(ref, 'journey_continue'),
+                    onContinue: () => _read(false),
+                    child: _ScenePanel(
+                      key: ValueKey('journey_arrival_$sceneKey'),
+                      story: story,
+                      node: node,
+                      french: french,
+                      folded: false,
+                      reading: false,
+                      onFold: (_) {},
+                      onReading: _read,
+                      detour: detour,
+                    ),
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }

@@ -119,6 +119,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Un combat ou un jet n’est pas une bannière : il se joue là où vous êtes.',
   },
+  'journey_returned': {
+    AppLanguage.en: 'You came back to {place}',
+    AppLanguage.fr: 'Vous voici de retour à {place}',
+  },
+  'journey_returned_bare': {
+    AppLanguage.en: 'You came back',
+    AppLanguage.fr: 'Vous voici de retour',
+  },
   'journey_pin_main': {
     AppLanguage.en: 'Main quest',
     AppLanguage.fr: 'Quête principale',
