@@ -745,8 +745,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             // screen (S1); any other scene opens in a sheet over the map (S2);
             // Continue brings the map back (and plays a carry). A one-tap
             // return lands on the hub's map, with its notice (return_notice).
-            // TODO(UX): the next scene's choices in the scene view on
-            // FlowStay, and the map offering only the FlowMap ways.
+            // Either view also holds the scene's own choices (the ones acted
+            // out here); the map keeps only the ways that carry the party.
             if (taken && !stayed) {
               _carried = flow is FlowTripThenArrive || flow is FlowReturnToHub;
               final play = ref.read(storyPlayProvider);
@@ -813,9 +813,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   double _panelHeight(double area, List<_Step> steps) {
     final plain = math.min(124.0, math.max(104.0, area * 0.26));
     final cards = steps.where((s) => s.onCard).length;
-    if ((_level != JourneyMapLevel.place && !_writtenDetour) || cards == 0) {
-      return plain;
-    }
+    if (!_writtenDetour || cards == 0) return plain;
     // On a short phone the map keeps its room and the cards scroll; a taller
     // one gives them more, up to three cards.
     final room = ((area - 430) * 0.4).clamp(0.0, 90.0);
@@ -903,16 +901,22 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             ),
       ];
 
+  /// [selected] when it is a card (the scene view has no pins to show).
+  _Step? _pickedCard(_Step? selected) =>
+      selected != null && selected.onCard ? selected : null;
+
   bool _isHub(List<_Step> steps) =>
       steps.where((s) => s.onCard).length > _hubCards;
 
   /// The panel under the map in a place (design 1 of
   /// docs/proposals/inplace-choices.md): every choice acted out here is a
   /// card, the pin picked (if one is) leading with its own detail. A hub
-  /// (design 3) shows a chip for each ring instead, and a "Ways" chip for
-  /// the pins: a tap opens that list.
+  /// (design 3) shows a chip for each kind of choice instead: a tap opens
+  /// that list. In the scene view (and under the map of a written detour,
+  /// which has no pins).
   Widget _choicePanel(
-      List<_Step> steps, _Step? selected, bool french, StoryData story) {
+      List<_Step> steps, _Step? selected, bool french, StoryData story,
+      {bool shrinkWrap = false}) {
     final ink = InkColors.of(context);
     final palette = ChartPalette.of(ref.watch(mapLookProvider));
     final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value;
@@ -920,6 +924,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     return ListView(
       key: const ValueKey('journey_choice_cards'),
       padding: EdgeInsets.zero,
+      shrinkWrap: shrinkWrap,
       children: [
         if (selected != null && !selected.onCard) ...[
           _StepDetail(
@@ -943,14 +948,6 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   count: ring.count,
                   color: ring.color,
                   onTap: () => _openList(ring.id, steps, french, story),
-                ),
-              if (_ringSteps(steps, 'ways').isNotEmpty)
-                ChoiceGroupChip(
-                  key: const ValueKey('choice_chip_ways'),
-                  label: tr(ref, 'choice_ways_chip'),
-                  count: _ringSteps(steps, 'ways').length,
-                  color: Theme.of(context).colorScheme.onSurface,
-                  onTap: () => _openList('ways', steps, french, story),
                 ),
             ],
           ),
@@ -1217,42 +1214,6 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             },
             if (node.contextNoteFor(french) case final note?) note,
           ].join(' ');
-
-    // Read full screen, the scene has the tab to itself.
-    if (_reading) {
-      return SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-          child: Column(
-            children: [
-              Expanded(
-                child: _ScenePanel(
-                  key: ValueKey('journey_reading_$sceneKey'),
-                  story: story,
-                  node: node,
-                  french: french,
-                  folded: false,
-                  reading: true,
-                  onFold: (_) {},
-                  onReading: _read,
-                  detour: detour,
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  key: const ValueKey('journey_continue'),
-                  onPressed: () => _read(false),
-                  icon: const Icon(Icons.arrow_forward, size: 18),
-                  label: Text(tr(ref, 'journey_continue')),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
 
     // Where the party stands.
     final hereLandmark =
@@ -1656,6 +1617,58 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final selected = _selected != null && _selected! < steps.length
         ? steps[_selected!]
         : null;
+    // Read full screen, the scene has the tab to itself: its words, then the
+    // choices acted out here (cards, or a chip for each kind in a hub), then
+    // the way back to the map. The map keeps only the ways that carry the
+    // party somewhere.
+    if (_reading) {
+      final here = steps.any((s) => s.onCard);
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+          child: Column(
+            children: [
+              Expanded(
+                child: _ScenePanel(
+                  key: ValueKey('journey_reading_$sceneKey'),
+                  story: story,
+                  node: node,
+                  french: french,
+                  folded: false,
+                  reading: true,
+                  onFold: (_) {},
+                  onReading: _read,
+                  detour: detour,
+                ),
+              ),
+              if (here) ...[
+                const SizedBox(height: 8),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxHeight: MediaQuery.sizeOf(context).height * 0.42),
+                  child: _choicePanel(
+                      steps, _pickedCard(selected), french, story,
+                      shrinkWrap: true),
+                ),
+              ],
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  key: const ValueKey('journey_continue'),
+                  onPressed: () => _read(false),
+                  icon: Icon(here ? Icons.map_outlined : Icons.arrow_forward,
+                      size: 18),
+                  label: Text(tr(
+                      ref, here ? 'journey_reading_exit' : 'journey_continue')),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     final placeView = placeLandmark == null || chartHere == null
         ? null
         : _PlaceView(
@@ -2051,13 +2064,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   unroll: _unroll,
                                   weather: journeyWeatherOf(sky?.kind, chapter),
                                   stepIds: _pinIdx,
-                                  rings: placeView != null && _isHub(steps)
-                                      ? _rings(
-                                          steps,
-                                          look == MapLook.parchment
-                                              ? InkColors.light
-                                              : InkColors.dark)
-                                      : const [],
+                                  // The choices acted out here are in the
+                                  // scene view, not on the map.
+                                  rings: const [],
                                   ringLit: _ringOpen,
                                   onRing: (id) =>
                                       _openList(id, steps, french, story),
@@ -2189,6 +2198,27 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   // v1.213: the map keeps the room.
                                   if (!_reading)
                                     const QuestTrackerBar(compact: true),
+                                  // The choices acted out here are in the
+                                  // scene view: a button opens it.
+                                  if (!_writtenDetour &&
+                                      steps.any((s) => s.onCard))
+                                    IconButton.filledTonal(
+                                      key: const ValueKey(
+                                          'journey_open_choices'),
+                                      visualDensity: VisualDensity.compact,
+                                      tooltip: tr(ref, 'journey_choices_here')
+                                          .replaceAll('{n}',
+                                              '${steps.where((s) => s.onCard).length}'),
+                                      onPressed:
+                                          _busy ? null : () => _read(true),
+                                      icon: Badge(
+                                        label: Text(
+                                            '${steps.where((s) => s.onCard).length}'),
+                                        child: const Icon(
+                                            Icons.touch_app_outlined,
+                                            size: 20),
+                                      ),
+                                    ),
                                   TutorialTarget(
                                     id: 'journey.scene',
                                     child: TextButton.icon(
@@ -2324,6 +2354,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                       maxHeight:
                                           _panelHeight(area.maxHeight, steps)),
                                   child: _level == JourneyMapLevel.place &&
+                                          _writtenDetour &&
                                           steps.any((s) => s.onCard)
                                       ? _choicePanel(
                                           steps, selected, french, story)
@@ -2371,16 +2402,34 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     continueLabel: tr(ref, 'journey_continue'),
                     closeTip: tr(ref, 'journey_continue'),
                     onContinue: () => _read(false),
-                    child: _ScenePanel(
-                      key: ValueKey('journey_arrival_$sceneKey'),
-                      story: story,
-                      node: node,
-                      french: french,
-                      folded: false,
-                      reading: false,
-                      onFold: (_) {},
-                      onReading: _read,
-                      detour: detour,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          flex: 3,
+                          child: _ScenePanel(
+                            key: ValueKey('journey_arrival_$sceneKey'),
+                            story: story,
+                            node: node,
+                            french: french,
+                            folded: false,
+                            reading: false,
+                            onFold: (_) {},
+                            onReading: _read,
+                            detour: detour,
+                          ),
+                        ),
+                        // The choices acted out here, under the words.
+                        if (steps.any((s) => s.onCard)) ...[
+                          const SizedBox(height: 8),
+                          Flexible(
+                            flex: 2,
+                            child: _choicePanel(
+                                steps, _pickedCard(selected), french, story,
+                                shrinkWrap: true),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                 ),

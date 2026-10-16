@@ -145,13 +145,15 @@ void main() {
     expect(find.byKey(_transit), findsNothing);
     expect(tester.takeException(), isNull);
 
-    // A fight is acted out where the party stands (a card under the map, no
-    // road to walk), and one turned back from leaves it on its mark.
+    // A fight is acted out where the party stands (a card in the scene view,
+    // no road to walk), and one turned back from leaves it on its mark.
     play.jumpTo('2011');
     await _settle(tester);
     await tester.pump(const Duration(seconds: 4));
     await clearCards();
     expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
+    await tester.pump(const Duration(milliseconds: 400));
     final card = find.byKey(const ValueKey('journey_choice_card_0'));
     await tester.tap(card);
     await tester.pump();
@@ -170,6 +172,9 @@ void main() {
     expect(container.read(storyPlayProvider).currentNodeId, '2011');
     expect(find.byKey(_transit), findsNothing);
     expect(tester.takeException(), isNull);
+    // Back from the scene view to the map.
+    await tester.tap(find.byKey(const ValueKey('journey_continue')));
+    await tester.pump(const Duration(milliseconds: 400));
 
     // Set down in another district of the same city along no choice (from
     // the lower town into the Undercroft), the mark comes by the streets from

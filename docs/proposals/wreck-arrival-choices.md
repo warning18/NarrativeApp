@@ -20,3 +20,12 @@ same for a sheet (S2): words in the sheet, choices on the map after Continue.
 scene's choices (hub choices as cards or rings), and the map would then offer only
 the ways that move the party. Its own version, with the other unfinished arrival
 work (building maps on arrival). Nothing was changed.
+
+## Built (v1.465.0)
+
+The scene view holds the scene's own choices, and the map keeps only the ways that carry the party.
+
+- **S1 page and S2 sheet:** the words, then the choices acted out here under them (cards; a hub's more than four become a chip for each kind that opens its list). The page's button reads "Back to the map" when it has choices.
+- **The map:** pins for the ways that move the party, nothing else. Under the header, a button with a count (key `journey_open_choices`, next to Read) opens the scene view for the choices. The rings on the marker are gone with the cards.
+- **A written detour** has no map, so its cards stay under its scene as before.
+- **Not built:** building maps on arrival. It does not fit this change (it is a new picture, not a place for choices), so it keeps its own version.
