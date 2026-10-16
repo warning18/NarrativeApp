@@ -53,3 +53,55 @@ I would add, if the ladder needs them:
 3. **A line** at 20 for **gifts and clan offers**, which the user's specialisation work depends on: the first clan's suitor appearing at the Wharf.
 
 Tell me which features you want carried where, and I will say which of the above are lines and which are scenes.
+
+---
+
+# Review of the draft ladder, and the words (answer to `feature-ladder.md`)
+
+## Rows I would change (nodes read wrongly)
+
+**The story forks in chapter 1, and two forks skip scenes.**
+1. **The win at the house skips the Black Hold.** Node 400 leads to 450 → 470 → 891 when you win, and to 800 → 816 → 820… → 840–855 → 470 when you run, kneel or lose. Both come together at **470** (the ruins) and go on to **891** (the High Quay). So rows 11 (816), 12 (820/822) and 13 (a trainer "between 850 and 891") would only be seen by a player who *lost* the fight. Fix: **row 11 → 470** (the bundle and the warm bone die are there on both paths), **row 12 → 895** (the forged manifest, a check for everyone; 822 and 840 are an earlier first check for the lost path, which is harmless since checks are open), **row 13 → a new scene between 470 and 891** (see below), so every player passes it.
+2. **260 and 270 are alternatives.** From 250 the player takes the Stone Bridge (260) *or* the Weaver's Alley (270), and both go on to 300. Rows 8 (pay or fight) and 9 (alignment) are therefore one branch each. Row 8 is open, so no harm. For alignment, introduce it at **400**, where both paths meet and the first moral choice sits (run −2, kneel +2); 270 stays a preview for those who take the alley.
+3. **110 and 120 are optional.** From 106 the player can go to 110, 120 or straight to 250. Rows 3 and 5 should not hang on those nodes: use the derived conditions you already have ("first fight won after the tutorial"). Place rules are a street thing, not a tavern one; the first street fight is **260** (bridge branch) or **400** (everyone). I would start place rules at 400, or at 260 for the bridge, and leave 105–120 without them as you propose.
+4. **Row 16 (1120) is the heat, not the face.** 1120 is the walk with three Constitution checks (the skill challenge, as you say); the Sleeper's Face is 1130. Reason in the story: the heat, not the climbing.
+5. **Row 6 (first level-up)** has no scene; the unlock moment is UX's.
+
+## Lines and scenes
+
+| Row | Node | A line, or a scene? |
+|---|---|---|
+| 2, 4, 8–10, 14–19, 20, 22, 24, 25, 28 | as the ladder has them | nothing from me: the scene already says it |
+| 7 | 250 | **a line** (below) |
+| 11 | 470 | **a line**: one sentence on the bundle, and that the die is warm |
+| 12 | 895 | nothing: the manifest check is the scene |
+| 13 | between 470 and 891 | **a scene** (below) |
+| 21 | 2005 | **a line** (below) |
+| 23 | 2015 | **a scene**, a small one (below) |
+
+## The words
+
+**Row 7, a line for 250** (an extra paragraph, shown always):
+- EN: Someone had chalked a list on the brick by the stairs: jobs, names, a price for each. The Inquisition had not found the time to scrub it. I took the list for something I would be coming back to.
+- FR : Quelqu’un avait tracé à la craie une liste sur la brique, près de l’escalier : des travaux, des noms, un prix pour chacun. L’Inquisition n’avait pas encore trouvé le temps de l’effacer. Je pris cette liste pour quelque chose à laquelle je reviendrais.
+
+**Row 11, a line for 470** (after "the old bone die had gone warm as well"):
+- EN: I put the cloth, the die, and what the searchers had missed into one bundle, and found I knew exactly what I was carrying, and how little room there was for it.
+- FR : Je mis le tissu, le dé et ce que les fouilleurs avaient laissé dans un seul baluchon, et je sus exactement ce que je portais, et le peu de place qu’il restait.
+
+**Row 13, a new scene `890_trainer`** (location `alster_high_quay`; both 470 choices go here, and it leads to 891). Sets `feat_skills`:
+- EN: A drill-sergeant of the Crusade’s old militia was running the morning line on the quay approach, thirty people in odd armour hitting sandbags, because the Inquisition did not shoot anyone who was doing something so plainly useful. She looked at the way I stood. “Somebody taught you the first half,” she said. “I have time to show you the second, and the Lark will not lift for another hour.”
+- FR : Une sergente de l’ancienne milice de la Croisade menait la ligne du matin sur l’approche du quai, trente personnes en armures dépareillées frappant des sacs de sable, car l’Inquisition ne tirait sur personne qui faisait quelque chose d’aussi manifestement utile. Elle regarda ma façon de me tenir. « Quelqu’un vous a appris la première moitié, dit-elle. J’ai le temps de vous montrer la seconde, et l’Alouette ne lèvera pas avant une heure. »
+- Choices: *Learn the strike* (offers the attack skill) / *Learn the guard* (offers the defence skill) / *Ask for neither, and go on* (nothing; the offer waits). Flags: `feat_skills`, `trainer_strike`, `trainer_guard`, `trainer_skipped`. Core attaches the actual skill offer to the first two.
+
+**Row 21, a line for 2005** (an extra paragraph, shown always):
+- EN: Saltmouth belonged to someone, and the gate made a point of saying whom: the Inquisition’s masks on the wall, the Crows’ tally-boys down the queue, the Compact’s marks on the carts. I began, without meaning to, to keep a tally of who held what. Sets `feat_politics`.
+- FR : Saltmouth appartenait à quelqu’un, et la porte tenait à le dire : les masques de l’Inquisition sur le mur, les gamins à tablettes des Corneilles le long de la file, les marques du Pacte sur les charrettes. Je me mis, sans l’avoir voulu, à tenir le compte de qui tenait quoi.
+
+**Row 23, a new scene `2015_crow_offer`** (a hub choice on first visit, `showIfFlags` none, hidden by `hub_2015_crow_offer`; sets `feat_clans`):
+- EN: A Crow tally-boy had been following me down the Wharf with a slate, not hiding it. “You have the look of someone who is about to be asked,” she said. “It is our custom to say so first. The clans watch what a stranger does, and when you have done enough of it, one of them will make you an offer: a gift, a way of fighting, a name to carry. Not today. When you have earned it. You should know the offer is coming, and that you may say no.”
+- FR : Une gamine des Corneilles, une ardoise à la main, me suivait le long du Quai sans s’en cacher. « Vous avez l’air de quelqu’un à qui on va faire une proposition, dit-elle. Chez nous, on le dit d’abord. Les clans regardent ce qu’un étranger fait, et quand vous en aurez fait assez, l’un d’eux vous fera une offre : un don, une façon de combattre, un nom à porter. Pas aujourd’hui. Quand vous l’aurez méritée. Il faut que vous sachiez qu’elle viendra, et que vous pouvez refuser. »
+- Choices: *Ask what the Crows would want* / *Ask who else will ask* / *Say you are no one’s*. Each sets `feat_clans`.
+
+## Your four questions for the user
+I have no objection to any of them from the story side. The Crow scene says the offer is for later and may be refused, which fits either answer to question 1. If the clans' offers wait until Saltmouth (question 1), the Crow's words are the reason in the story; if they stay at level 2, I would drop the sentence "Not today".
