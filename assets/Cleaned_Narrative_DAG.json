@@ -2429,7 +2429,8 @@
         ],
         "goldMod": 40,
         "flagsToAdd": [
-          "looters_fought"
+          "looters_fought",
+          "feat_conditions"
         ]
       },
       {
@@ -2446,7 +2447,8 @@
         ],
         "failNextId": "1140_spotted",
         "flagsToAdd": [
-          "looters_slipped"
+          "looters_slipped",
+          "feat_conditions"
         ],
         "failNote": "You are spotted, and the camp comes up around you.",
         "failNote_fr": "On vous repère, et le camp se lève autour de vous."
@@ -2458,7 +2460,8 @@
         "landRouteId": "sleeper_to_wells",
         "healAmount": -10,
         "flagsToAdd": [
-          "looters_avoided"
+          "looters_avoided",
+          "feat_conditions"
         ]
       }
     ],
