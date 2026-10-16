@@ -396,6 +396,46 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'What they say to you',
     AppLanguage.fr: 'Ce qu\u2019ils vous disent',
   },
+  'power_label': {
+    AppLanguage.en: 'Power',
+    AppLanguage.fr: 'Puissance',
+  },
+  'power_tier_minor': {
+    AppLanguage.en: 'Minor',
+    AppLanguage.fr: 'Mineure',
+  },
+  'power_tier_rising': {
+    AppLanguage.en: 'Rising',
+    AppLanguage.fr: 'Montante',
+  },
+  'power_tier_dominant': {
+    AppLanguage.en: 'Dominant',
+    AppLanguage.fr: 'Dominante',
+  },
+  'power_tier_ascendant': {
+    AppLanguage.en: 'Ascendant',
+    AppLanguage.fr: 'Ascendante',
+  },
+  'holds_places_none': {
+    AppLanguage.en: 'Holds no place',
+    AppLanguage.fr: 'Ne tient aucun lieu',
+  },
+  'holds_places_one': {
+    AppLanguage.en: 'Holds 1 place',
+    AppLanguage.fr: 'Tient 1 lieu',
+  },
+  'holds_places_n': {
+    AppLanguage.en: 'Holds {n} places',
+    AppLanguage.fr: 'Tient {n} lieux',
+  },
+  'holds_more': {
+    AppLanguage.en: '+{n} more',
+    AppLanguage.fr: '+{n} de plus',
+  },
+  'clan_nemesis_tag': {
+    AppLanguage.en: 'Your nemesis',
+    AppLanguage.fr: 'Votre némésis',
+  },
   'clan_peek_tap_close': {
     AppLanguage.en: 'Tap to close',
     AppLanguage.fr: 'Touchez pour fermer',

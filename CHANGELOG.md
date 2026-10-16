@@ -8,6 +8,59 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.417.0+453]
+
+The Journey's choices acted out here become cards under the map.
+
+### Changed
+- **A choice done where you stand is a card, not a pin.** In a place up close, a fight, a payment, a check or a decision (Core's `choiceShape`: `here`) is a card under the map: the action's icon, the words, who you face, a "→ place" line when what follows moves you on, and one tag (a price, an alignment shift, a check, or Fight). A tap picks it and shows Go on it; a second tap does it. The map keeps pins only for the plain ways on, spread over the room the cards leave, so the labels no longer pile on the party's mark. A room's ways keep their marks.
+- **No road walked for a card.** The scene that follows moves the party.
+
+## [1.412.0+448]
+
+A won fight closes itself.
+
+- **The chest opens on its own** and shows everything it holds; take it, and the fight returns to where it began after a moment, or at once on a tap. With reduced motion it returns as soon as the spoils are taken.
+- **Nothing is skipped:** a level-up, a clan's offer or a hunter's mercy waits for your answer first.
+- **The rewards stay with you:** they open the next scene ("Victory! +47 gold, +87 XP, …"), and the fight log keeps them.
+- A defeat is unchanged.
+## [1.411.0+447]
+
+A clan's power and the land it holds, drawn.
+
+### Added
+- **Power on the clan's card.** A bar across the four tiers (Minor, Rising, Dominant, Ascendant, ticks at 25, 50 and 75) with the tier named and its value, then "Holds N places" with the places as chips (six, then "+N more"). A clan that is the party's nemesis wears a red "Your nemesis" ribbon and a red bar. The card is the one the long press, the offer's (i) and the Throne room open.
+- **The Throne room's banner captions** add the clan's power tier, and "Your nemesis" for the nemesis, after the standing.
+- **The land takes its holder's colour.** In the Journey the place's ground gets a faint wash and a frame in the colour of the clan that holds it now (red when it is the nemesis), following places that changed hands.
+
+## [1.410.0+446]
+
+Faces for the rival hunters and the nemesis champions.
+
+### Changed
+- **Twelve foes have icons of their own.** The six rival hunters (Halvard the spearman, Ysel the candle-bearer, Brodin the quarryman, Tove the deaf anvil, Sedge the returned and Wen of the Heron's Wake) and the six nemesis champions (the Dominion's Orsolya Keld, the Crows' Mireille Sable, the Compact's Hollis Reck, the Vigil's Edda Grey, the Penitents' Ash Confessor and the Mire's Heron Queen's Hand) are no longer drawn with another foe's picture. Each is a 16 × 16 sprite from Narrative's description, in the enemy icons' style, made by `tool/gen_hunter_icons.py`.
+
+## [1.409.0+445]
+
+The Dominion hunts you from the start.
+
+- **Your nemesis from the first page:** your family kept a piece of the Shroud, and the Dominion wants it.
+  - Its hunters come now and then from the first chapter, as a Hostile clan's would.
+  - Its champion waits for chapter 4, when a lamp-boy brings its quest.
+- **How it ends:**
+  - your standing with the Dominion reaches Friendly;
+  - you break it through its quest;
+  - you take the legate's pact or back Vane for the throne.
+  A clan you've crossed harder can take its place. Turn Hostile with the Dominion and it hunts you harder.
+- **Saved games** take it on load, unless you're already Friendly with the Dominion.
+- **Orsolya Keld,** the Dominion's champion, is a little easier (190 health, 26 damage), since you now meet her in every game.
+- **The People codex** no longer lists a clan court's leaders before you meet them.
+
+## [1.407.0+443]
+
+### Added
+- A court for each of the six clans: a way of ruling (`ruling` on each clan in `factions.json`, EN and FR) and 8 or 9 ranked people each, 49 in all. 22 existing characters are placed in the hierarchy (Aurel Vane, Hesk Morrow, Maud Tallis, the Keyholders...) and 27 new ones fill the empty ranks, among them the Lantern-Bearer, the Heron Queen and the six nemesis champions. New fields on a person in `npcs.json`: `clan`, `rank` (1 = leader), `title`, `stanceLeader`, `stancePlayer`.
+
 ## [1.404.0+440]
 
 Your nemesis's quest now has a trail, a choice of way in, and its own ending.
