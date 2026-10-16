@@ -1,0 +1,207 @@
+{
+  "_note": "Text fields only, for Core PR5. enemies.json -> champion_<clan>.{enemyName,description,battleCry,arrival,defeat}(+_fr); quests.json -> q_nemesis_<clan>.{questName,npcDialogueText,objectives[0].description,questChoices[0].buttonText,turnInChoices[0].{choiceText,resultText}}(+_fr). suggestedAlignment is a request for enemies.json alignment; kind person. Shared lines under _shared.",
+  "_shared": {
+    "road_button": {
+      "en": "Face {name}",
+      "fr": "Affronter {name}"
+    },
+    "news_broken": {
+      "en": "{clan} have lost their champion, and their hunt with it.",
+      "fr": "Les gens {of} ont perdu leur champion, et leur traque avec lui."
+    }
+  },
+  "clans": {
+    "dominion": {
+      "enemy": {
+        "enemyName": "High Lantern-Bearer Orsolya Keld",
+        "enemyName_fr": "Haute Porte-Lanterne Orsolya Keld",
+        "description": "The First Lantern's warden, who keeps in her own hand the list of every oath sworn under its light. She has never forgotten a name, and she has yours.",
+        "description_fr": "La gardienne de la Première Lanterne, qui tient de sa main le registre de tous les serments prêtés sous sa lumière. Elle n’a jamais oublié un nom, et elle a le vôtre.",
+        "battleCry": "One flame, one law. I wrote your name in it myself.",
+        "battleCry_fr": "Une flamme, une loi. J’y ai écrit votre nom de ma propre main.",
+        "arrival": "{name} is standing in the road with the list open on her arm, and she does not look up from the page. “You are the next entry. Wait there, please. I am nearly done.”",
+        "arrival_fr": "{name} se tient au milieu de la route, le registre ouvert sur le bras, sans lever les yeux de la page. « Vous êtes l’entrée suivante. Attendez là, je vous prie. J’ai presque fini. »",
+        "defeat": "The page stays blank where your name was.",
+        "defeat_fr": "La page reste vierge là où se trouvait votre nom.",
+        "suggestedAlignment": -5,
+        "kind": "person"
+      },
+      "quest": {
+        "questName": "The List of Oaths",
+        "questName_fr": "Le Registre des serments",
+        "npcDialogueText": "A clerk who owes you nothing finds you on the road. “The Lantern has stopped asking, and started counting. There is a list, and a woman who keeps it. As long as she does, nothing the Dominion holds will open to you. I would not go near her. I am telling you only that she is coming.”",
+        "npcDialogueText_fr": "Un scribe qui ne vous doit rien vous rejoint sur la route. « La Lanterne a cessé de demander ; elle compte. Il existe un registre, et une femme qui le tient. Tant qu’elle le tiendra, rien de ce que possède le Dominion ne s’ouvrira devant vous. Je n’irais pas la voir. Je vous dis seulement qu’elle vient. »",
+        "objective": "Face the Lantern-Bearer",
+        "objective_fr": "Affronter la Porte-Lanterne",
+        "acceptButton": "Hear it out",
+        "acceptButton_fr": "L’écouter",
+        "turnIn": {
+          "choiceText": "Carry the page away",
+          "choiceText_fr": "Emporter la page",
+          "resultText": "You take the page where your name was, and nobody at the Hall stops you. For the first time in forty years the list is short. The Dominion does not forgive you. It does, however, stop counting.",
+          "resultText_fr": "Vous emportez la page où figurait votre nom, et personne à la Salle ne vous arrête. Pour la première fois en quarante ans, le registre est incomplet. Le Dominion ne vous pardonne pas. Mais il cesse de compter."
+        }
+      }
+    },
+    "crows": {
+      "enemy": {
+        "enemyName": "Captain Mireille Sorrel",
+        "enemyName_fr": "Capitaine Mireille Sorrel",
+        "description": "The Crows' collector, who has never lost a debt and never raised her voice to collect one. Her ledger is bound in sailcloth, and the last page is yours.",
+        "description_fr": "La percepteuse des Corneilles, qui n’a jamais perdu une créance ni élevé la voix pour en réclamer une. Son registre est relié de toile à voile, et la dernière page est la vôtre.",
+        "battleCry": "Every door has a price. I have come for yours.",
+        "battleCry_fr": "Toute porte a son prix. Je suis venue chercher le vôtre.",
+        "arrival": "{name} is counting coins into a purse on an upturned crate, as though the road were a counter. “You are early. Put it on the table. I will tell you whether it is enough.”",
+        "arrival_fr": "{name} compte des pièces dans une bourse, sur une caisse renversée, comme si la route était un comptoir. « Vous êtes en avance. Posez cela sur la table. Je vous dirai si cela suffit. »",
+        "defeat": "The ledger goes into the ditch with her sailcloth wrapping.",
+        "defeat_fr": "Le registre part dans le fossé avec sa toile à voile.",
+        "suggestedAlignment": -25,
+        "kind": "person"
+      },
+      "quest": {
+        "questName": "A Debt Called In",
+        "questName_fr": "Une dette exigible",
+        "npcDialogueText": "A dockhand hands you a tarred slip and does not wait for a tip. “She is owed, and she is patient, and she is coming. If you pay in blood, she takes it. If you pay in coin, she takes that too. She just wants to be paid.”",
+        "npcDialogueText_fr": "Un docker vous tend un billet goudronné sans attendre de pourboire. « Elle est créancière, elle est patiente, et elle arrive. Si vous payez en sang, elle le prend. Si vous payez en pièces, elle les prend aussi. Elle veut seulement être payée. »",
+        "objective": "Face the Collector",
+        "objective_fr": "Affronter la Percepteuse",
+        "acceptButton": "Hear the terms",
+        "acceptButton_fr": "Écouter ses conditions",
+        "turnIn": {
+          "choiceText": "Close the ledger",
+          "choiceText_fr": "Fermer le registre",
+          "resultText": "The ledger is closed. Nobody on the wharf says your debt is paid, and nobody says it is owed, either.",
+          "resultText_fr": "Le registre est refermé. Personne sur le quai ne dit que votre dette est payée, et personne ne dit non plus qu’elle est due."
+        }
+      }
+    },
+    "compact": {
+      "enemy": {
+        "enemyName": "Master Hollis Reck",
+        "enemyName_fr": "Maître Hollis Reck",
+        "description": "The Charter's last hammer, who broke every other on its own anvil so that the table's rule would stay unbroken. He is the only one left who remembers why it was made.",
+        "description_fr": "Le dernier marteau de la Charte, qui a brisé tous les autres sur sa propre enclume pour que la règle de la table reste intacte. Il est le seul à se souvenir encore pourquoi elle fut faite.",
+        "battleCry": "What we make, we choose. And we choose not to make you.",
+        "battleCry_fr": "Ce que nous forgeons, nous le choisissons. Et nous choisissons de ne pas vous forger.",
+        "arrival": "{name} stands at a cold anvil he has carried out onto the road, and does not turn from it. “Every hammer in the Row broke on this. You may try yours.”",
+        "arrival_fr": "{name} se tient devant une enclume froide qu’il a fait porter sur la route, sans se détourner d’elle. « Chaque marteau de la Rue s’est brisé là-dessus. Vous pouvez essayer le vôtre. »",
+        "defeat": "The last hammer rings once on the stone, and does not ring again.",
+        "defeat_fr": "Le dernier marteau sonne une fois sur la pierre, et ne sonne plus.",
+        "suggestedAlignment": 0,
+        "kind": "person"
+      },
+      "quest": {
+        "questName": "The Last Hammer",
+        "questName_fr": "Le dernier marteau",
+        "npcDialogueText": "An old smith wipes her hands on her apron. “The Compact has a rule, and Hollis Reck is the rule with a face. He will not move for gold. He will not move for fear. He is coming for you with the table’s blessing, and if you are going to meet him, meet him with something he made.”",
+        "npcDialogueText_fr": "Une vieille forgeronne s’essuie les mains sur son tablier. « Le Pacte a une règle, et Hollis Reck est cette règle avec un visage. Il ne bougera ni pour l’or ni pour la peur. Il vient vous chercher avec la bénédiction de la table, et si vous devez le rencontrer, faites-le avec quelque chose qu’il a forgé. »",
+        "objective": "Face the Last Hammer",
+        "objective_fr": "Affronter le Dernier Marteau",
+        "acceptButton": "Take up the quest",
+        "acceptButton_fr": "Relever le défi",
+        "turnIn": {
+          "choiceText": "Leave the anvil where it stands",
+          "choiceText_fr": "Laisser l’enclume là où elle est",
+          "resultText": "You walk out through Cinder Row, and nobody calls you maker. Nobody closes a door on you, either.",
+          "resultText_fr": "Vous quittez la Rue des Braises, et personne ne vous appelle artisan. Personne ne ferme non plus sa porte devant vous."
+        }
+      }
+    },
+    "vigil": {
+      "enemy": {
+        "enemyName": "Watch-Captain Edda Grey",
+        "enemyName_fr": "Capitaine du Guet Edda Grey",
+        "description": "The Vigil's eyes on the ridge. She has not looked away from the tear in thirty-eight years, and does not mean to start with you.",
+        "description_fr": "Les yeux de la Veille sur la crête. Elle n’a pas détourné le regard de la déchirure depuis trente-huit ans, et ne compte pas commencer avec vous.",
+        "battleCry": "We do not look away. My eyes have not let go of you since you left.",
+        "battleCry_fr": "Nous ne détournons pas le regard. Mes yeux ne vous ont pas lâché depuis votre départ.",
+        "arrival": "{name} has come down off the ridge, and stands at the roadside with her lantern shuttered. “Thirty-eight years. You could have asked me for the hour.”",
+        "arrival_fr": "{name} est descendue de la crête, et se tient au bord de la route, sa lanterne voilée. « Trente-huit ans. Vous auriez pu me demander l’heure. »",
+        "defeat": "For the first time since the Vigil was founded, the post above Rimewell is dark for an hour.",
+        "defeat_fr": "Pour la première fois depuis la fondation de la Veille, le poste au-dessus de Rimewell reste sombre une heure entière.",
+        "suggestedAlignment": 30,
+        "kind": "person"
+      },
+      "quest": {
+        "questName": "The Hour Unwatched",
+        "questName_fr": "L’heure sans veille",
+        "npcDialogueText": "A sentry on a lonely road, her lantern shuttered. “She has seen you. She sees everything, from there, and she is coming down. If you are going to meet her, do it in the dark hour, when even she must blink.”",
+        "npcDialogueText_fr": "Une sentinelle sur une route déserte, sa lanterne voilée. « Elle vous a vu. Elle voit tout, de là-haut, et elle descend. Si vous devez la rencontrer, que ce soit à l’heure noire, quand même elle doit cligner des yeux. »",
+        "objective": "Face the Watch-Captain",
+        "objective_fr": "Affronter la Capitaine du Guet",
+        "acceptButton": "Meet her",
+        "acceptButton_fr": "La rencontrer",
+        "turnIn": {
+          "choiceText": "Light the second lamp",
+          "choiceText_fr": "Allumer la seconde lampe",
+          "resultText": "Nothing comes through the tear in that hour. Down in the valley, someone lights a second lamp.",
+          "resultText_fr": "Rien ne passe par la déchirure pendant cette heure. Dans la vallée, quelqu’un allume une seconde lampe."
+        }
+      }
+    },
+    "penitents": {
+      "enemy": {
+        "enemyName": "The Ash Confessor",
+        "enemyName_fr": "La Confesseuse de Cendre",
+        "description": "The Penitents' voice, who burned her own face to hear confession better. She has never put the lantern down, and has never asked anyone else to carry it.",
+        "description_fr": "La voix des Pénitents, qui s’est brûlé le visage pour mieux entendre les confessions. Elle n’a jamais posé sa lanterne, et n’a jamais demandé à personne de la porter.",
+        "battleCry": "What you burned, you will carry. Let me show you its weight.",
+        "battleCry_fr": "Ce que vous avez brûlé, vous le porterez. Laissez-moi vous en montrer le poids.",
+        "arrival": "{name} waits where the road forks, and the lantern in her hand burns no flame. “Kneel, and tell me everything. Or stand, and I will tell you.”",
+        "arrival_fr": "{name} attend à la bifurcation, et la lanterne qu’elle tient ne brûle d’aucune flamme. « Agenouillez-vous et dites-moi tout. Ou restez debout, et c’est moi qui vous le dirai. »",
+        "defeat": "The lantern goes out in her hand, and for the first time, nobody lifts it.",
+        "defeat_fr": "La lanterne s’éteint dans sa main, et pour la première fois, personne ne la relève.",
+        "suggestedAlignment": 10,
+        "kind": "person"
+      },
+      "quest": {
+        "questName": "The Weight Set Down",
+        "questName_fr": "Le poids déposé",
+        "npcDialogueText": "A penitent on the Exorcists’ Road, ash to the elbows, stops walking when she sees you. “She hears everything, and forgives only what is carried to her on foot. She is coming to you, which means she has already decided what you will carry.”",
+        "npcDialogueText_fr": "Une pénitente sur la route des Exorcistes, la cendre jusqu’aux coudes, s’arrête de marcher en vous voyant. « Elle entend tout, et ne pardonne que ce qu’on lui apporte à pied. Elle vient à vous, ce qui veut dire qu’elle a déjà décidé de ce que vous porterez. »",
+        "objective": "Face the Confessor",
+        "objective_fr": "Affronter la Confesseuse",
+        "acceptButton": "Hear her out",
+        "acceptButton_fr": "L’entendre",
+        "turnIn": {
+          "choiceText": "Set the lantern down",
+          "choiceText_fr": "Poser la lanterne",
+          "resultText": "The penitents on the road stop walking, one by one, and look at the sky.",
+          "resultText_fr": "Sur la route, les pénitents s’arrêtent un à un et lèvent les yeux au ciel."
+        }
+      }
+    },
+    "mire": {
+      "enemy": {
+        "enemyName": "The Heron Queen's Hand",
+        "enemyName_fr": "La Main de la Reine-Héron",
+        "description": "The Court's courtesy, armed. It has never once been rude, and has never once been refused. Nobody outside the Mire has seen its face and kept the memory.",
+        "description_fr": "La courtoisie de la Cour, en armes. Elle n’a jamais été impolie, et n’a jamais essuyé de refus. Nul, hors du Marais, n’a vu son visage sans en perdre le souvenir.",
+        "battleCry": "You have been most patient. The Court thanks you, and regrets the rest.",
+        "battleCry_fr": "Vous avez été patient. La Cour vous en remercie, et regrette le reste.",
+        "arrival": "A heron stands in the shallows beside the road, and does not move. Then {name} is standing where it stood. “Sit. Please. We have been so looking forward to this.”",
+        "arrival_fr": "Un héron se tient dans les bas-fonds, au bord de la route, immobile. Puis {name} se tient là où il se tenait. « Asseyez-vous, je vous prie. Nous attendions ce moment avec tant d’impatience. »",
+        "defeat": "The Hand folds like a heron into the water.",
+        "defeat_fr": "La Main se replie comme un héron dans l’eau.",
+        "suggestedAlignment": -15,
+        "kind": "person"
+      },
+      "quest": {
+        "questName": "The Court's Courtesy",
+        "questName_fr": "La courtoisie de la Cour",
+        "npcDialogueText": "A heron stands in the shallows and does not move. A voice from the reeds: “The Court has sent for you. It is polite. It is always polite. That is the worst of it.”",
+        "npcDialogueText_fr": "Un héron se tient dans les bas-fonds, immobile. Une voix, dans les roseaux : « La Cour vous a fait appeler. Elle est polie. Elle est toujours polie. C’est le pire. »",
+        "objective": "Face the Hand",
+        "objective_fr": "Affronter la Main",
+        "acceptButton": "Accept the invitation",
+        "acceptButton_fr": "Accepter l’invitation",
+        "turnIn": {
+          "choiceText": "Leave the chairs set",
+          "choiceText_fr": "Laisser les sièges dressés",
+          "resultText": "In the Court, someone says very quietly that it was, after all, a most courteous defeat.",
+          "resultText_fr": "Dans la Cour, quelqu’un dit très bas que ce fut, tout compte fait, une défaite fort courtoise."
+        }
+      }
+    }
+  }
+}

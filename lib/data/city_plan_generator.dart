@@ -3,7 +3,8 @@
 // harbour, a river split round an island, canals off the harbour, a wall
 // with its gates, a star of avenues from the market square to the gates,
 // an arena, the story's districts as organic shapes tiling the town, and
-// the lots of every district as buildings. Pure Dart (no Flutter), so
+// the lots of every district as buildings (a village's fewer, smaller
+// and looser: see CityPlanSpec.village). Pure Dart (no Flutter), so
 // tool/city_plans/gen_city_plans.dart can run it from the command line;
 // what it makes is stored in assets/gamedata/city_plans.json and read
 // through city_plan_record.dart.
@@ -45,6 +46,14 @@ class CityPlanSpec {
     this.riverX = 400,
     this.centre = const P(560, 420),
     this.wallRadius = 320,
+    this.walled = true,
+    this.arena = true,
+    this.canalXs = const [640, 700],
+    this.canalLength = 140,
+    this.bayDepth = 90,
+    this.lotSpacing = 30,
+    this.lotKeep = 1,
+    this.village = false,
   });
 
   final String cityId;
@@ -60,11 +69,40 @@ class CityPlanSpec {
   final Map<String, String> followUps;
 
   /// Where the shore lies (the sea below it), and where the river comes in
-  /// from the north.
-  final double shoreY;
-  final double riverX;
+  /// from the north. A null [shoreY] is a town inland (no sea, no harbour,
+  /// no canals; the wall closes all round); a null [riverX] is a town with
+  /// no river (no island, no river bridges). Inland on a river, the quay
+  /// lies along the river's east bank.
+  final double? shoreY;
+  final double? riverX;
   final P centre;
   final double wallRadius;
+
+  /// Whether the town has a wall (its runs, gates and towers); an open
+  /// town keeps the same outline for its districts and avenues.
+  final bool walled;
+
+  /// Whether the town has an arena north-east of the market.
+  final bool arena;
+
+  /// Where the canals leave the harbour (x), and how far north they run;
+  /// none inland.
+  final List<double> canalXs;
+  final double canalLength;
+
+  /// How far the harbour's bay pulls the shore in.
+  final double bayDepth;
+
+  /// The spacing of the lots inside the wall, and the share of them still
+  /// standing (below 1, a seeded share burned or fallen to empty ground).
+  final double lotSpacing;
+  final double lotKeep;
+
+  /// A village, a halt or a camp rather than a town: a small market and no
+  /// plaza, three roads out instead of five, its lots scattered loosely and
+  /// its buildings smaller on them. Its footprint ([wallRadius]), its lots'
+  /// spacing and its wall (a camp's palisade) are set as for a town.
+  final bool village;
 }
 
 /// Lays [spec]'s city out: the record city_plans.json stores.
@@ -85,13 +123,21 @@ class _CityGen {
         math.sin(b * 0.023 - a * 0.007 + s * 0.3) * 0.2;
   }
 
-  double shoreAt(double x) => spec.shoreY + 26 * noise(x, 11) - _bay(x);
+  bool get hasShore => spec.shoreY != null;
+  bool get hasRiver => spec.riverX != null;
+
+  /// The shore's y at [x]; far below the plan inland.
+  double shoreAt(double x) {
+    final y = spec.shoreY;
+    if (y == null) return 1e6;
+    return y + 26 * noise(x, 11) - _bay(x);
+  }
 
   /// The harbour's bay: the shore pulled in north between the yard and the
   /// wharf.
   double _bay(double x) {
     final d = (x - 560) / 120;
-    return 90 * math.exp(-d * d);
+    return spec.bayDepth * math.exp(-d * d);
   }
 
   late final List<P> river = _river();
@@ -100,9 +146,11 @@ class _CityGen {
   late final List<P> island;
 
   List<P> _river() {
+    final rx = spec.riverX;
+    if (rx == null) return const [];
     final pts = <P>[];
     for (var y = 0.0; y <= 1000; y += 25) {
-      final x = spec.riverX + 40 * noise(y, 3) + (y / 1000) * 90;
+      final x = rx + 40 * noise(y, 3) + (y / 1000) * 90;
       final shore = shoreAt(x);
       pts.add(P(x, math.min(y, shore + 30)));
       if (y > shore + 30) break;
@@ -125,27 +173,33 @@ class _CityGen {
     final c = spec.centre;
     // The island: a lens in the river where it widens, south of the centre.
     final iy = c.y + 130;
-    final ic = riverAt(iy);
-    island = [
-      for (var i = 0; i < 12; i++)
-        () {
-          final a = i / 12 * 2 * math.pi;
-          final r = 1 + 0.12 * noise(a * 100, 7);
-          return ic + P(math.cos(a) * 34 * r, math.sin(a) * 72 * r);
-        }(),
-    ];
-    islandArmWest = [
-      riverAt(iy - 110),
-      ic + const P(-52, -40),
-      ic + const P(-56, 40),
-      riverAt(iy + 110),
-    ];
-    islandArmEast = [
-      riverAt(iy - 110),
-      ic + const P(52, -40),
-      ic + const P(56, 40),
-      riverAt(iy + 110),
-    ];
+    final ic = hasRiver ? riverAt(iy) : c;
+    if (!hasRiver) {
+      island = const [];
+      islandArmWest = const [];
+      islandArmEast = const [];
+    } else {
+      island = [
+        for (var i = 0; i < 12; i++)
+          () {
+            final a = i / 12 * 2 * math.pi;
+            final r = 1 + 0.12 * noise(a * 100, 7);
+            return ic + P(math.cos(a) * 34 * r, math.sin(a) * 72 * r);
+          }(),
+      ];
+      islandArmWest = [
+        riverAt(iy - 110),
+        ic + const P(-52, -40),
+        ic + const P(-56, 40),
+        riverAt(iy + 110),
+      ];
+      islandArmEast = [
+        riverAt(iy - 110),
+        ic + const P(52, -40),
+        ic + const P(56, 40),
+        riverAt(iy + 110),
+      ];
+    }
 
     // The wall: a wobbling ring round the centre, kept above the shore
     // (the town is open to the harbour).
@@ -156,43 +210,58 @@ class _CityGen {
       var p = c + P(math.cos(a) * r, math.sin(a) * r * 0.92);
       // The south side runs down to the water: the town meets its harbour.
       final limit = shoreAt(p.x) - 4;
-      if (p.y > limit || math.sin(a) > 0.55) p = P(p.x, limit);
+      if (hasShore && (p.y > limit || math.sin(a) > 0.55)) p = P(p.x, limit);
       ring.add(p);
     }
     // The town: the wall's ring; the districts outside it lie on the shore.
     final town = ring;
 
-    // Gates: where the avenues leave, landward.
+    // Gates: where the avenues leave, landward (a village's three roads:
+    // north, east and west).
+    const gateNames = ['northwest', 'north', 'northeast', 'east', 'west'];
     final gateAngles = [-2.4, -1.57, -0.7, 0.25, 2.9];
     final gates = <Map<String, Object?>>[];
     final gatePoints = <P>[];
     for (final (i, a) in gateAngles.indexed) {
+      if (spec.village && i.isEven && i < 4) continue;
       final p = _ringPointToward(ring, c, a);
       gatePoints.add(p);
-      gates.add({
-        'id': 'gate_${['northwest', 'north', 'northeast', 'east', 'west'][i]}',
-        'at': p.toJson(),
-      });
+      gates.add({'id': 'gate_${gateNames[i]}', 'at': p.toJson()});
     }
     // The wall runs between the gates, open where it meets the shore and
     // where the river passes.
-    final runs = _wallRuns(ring, gatePoints);
+    final runs = spec.walled ? _wallRuns(ring, gatePoints) : const <List<P>>[];
     final towers = <P>[
       for (var i = 0; i < ring.length; i += 3)
-        if (ring[i].y < shoreAt(ring[i].x) - 30 &&
-            (ring[i].x - riverAt(ring[i].y).x).abs() > 50 &&
+        if (spec.walled &&
+            ring[i].y < shoreAt(ring[i].x) - 30 &&
+            (!hasRiver || (ring[i].x - riverAt(ring[i].y).x).abs() > 50) &&
             gatePoints.every((g) => g.dist(ring[i]) > 40))
           ring[i],
     ];
 
     // Squares: the market at the centre, the arena north-east, a plaza by
-    // the temple quarter, the quay on the harbour.
+    // the temple quarter, the quay on the harbour (inland, along the
+    // river's east bank).
     final market = c + const P(40, 10);
+    final quayY = c.y - 40;
+    final P? quay = hasShore
+        ? P(560, shoreAt(560) - 26)
+        : hasRiver
+            ? P(riverAt(quayY).x + 40, quayY)
+            : null;
     final squares = <Map<String, Object?>>[
-      _square('sq_market', 'market', market, 46, 34),
-      _square('sq_arena', 'arena', c + const P(170, -150), 52, 40, sides: 18),
-      _square('sq_plaza', 'plaza', c + const P(-150, -40), 30, 26),
-      _square('sq_quay', 'quay', P(560, shoreAt(560) - 26), 70, 18),
+      spec.village
+          ? _square('sq_market', 'market', market, 30, 24)
+          : _square('sq_market', 'market', market, 46, 34),
+      if (spec.arena)
+        _square('sq_arena', 'arena', c + const P(170, -150), 52, 40, sides: 18),
+      if (!spec.village)
+        _square('sq_plaza', 'plaza', c + const P(-150, -40), 30, 26),
+      if (quay != null)
+        hasShore
+            ? _square('sq_quay', 'quay', quay, 70, 18)
+            : _square('sq_quay', 'quay', quay, 16, 70),
     ];
     final squareShapes = [
       for (final s in squares)
@@ -206,30 +275,40 @@ class _CityGen {
     // the quay.
     final avenues = <List<P>>[
       for (final g in gatePoints) _wobblyLine(market, g),
-      _wobblyLine(market, c + const P(170, -150)),
-      _wobblyLine(market, P(560, shoreAt(560) - 30)),
+      if (spec.arena) _wobblyLine(market, c + const P(170, -150)),
+      if (hasShore)
+        _wobblyLine(market, P(560, shoreAt(560) - 30))
+      else if (quay != null)
+        _wobblyLine(market, quay + const P(-10, 0)),
     ];
 
     // Canals off the harbour, north into the wharf.
+    final half = spec.canalLength / 2;
     final canals = <List<P>>[
-      for (final x in [640.0, 700.0])
-        [
-          P(x, shoreAt(x) + 6),
-          P(x + 6 * noise(x, 1), shoreAt(x) - 70),
-          P(x - 4, shoreAt(x) - 140),
-        ],
+      if (hasShore)
+        for (final x in spec.canalXs)
+          [
+            P(x, shoreAt(x) + 6),
+            P(x + 6 * noise(x, 1), shoreAt(x) - half),
+            P(x - 4, shoreAt(x) - spec.canalLength),
+          ],
     ];
 
     // The sea: below the shore.
     final sea = <P>[
-      for (var x = 0.0; x <= 1000; x += 25) P(x, shoreAt(x)),
-      const P(1000, 1000),
-      const P(0, 1000),
+      if (hasShore) ...[
+        for (var x = 0.0; x <= 1000; x += 25) P(x, shoreAt(x)),
+        const P(1000, 1000),
+        const P(0, 1000),
+      ],
     ];
 
     // Bridges: where an avenue crosses the river or a canal, and two
     // footbridges onto the island.
-    final waters = [river, islandArmWest, islandArmEast, ...canals];
+    final waters = [
+      if (hasRiver) ...[river, islandArmWest, islandArmEast],
+      ...canals,
+    ];
     final bridges = <Map<String, Object?>>[];
     for (final av in avenues) {
       for (final w in waters) {
@@ -243,7 +322,9 @@ class _CityGen {
         }
       }
     }
-    for (final side in [-1.0, 1.0]) {
+    for (final side in [
+      if (hasRiver) ...[-1.0, 1.0]
+    ]) {
       final at = ic + P(side * 46, 0);
       bridges.add({'at': at.toJson(), 'angle': 0, 'length': 34});
     }
@@ -280,7 +361,8 @@ class _CityGen {
     var n = 0;
     for (final MapEntry(key: id, value: shape) in shapes.entries) {
       final outside = spec.districts.firstWhere((d) => d.id == id).outside;
-      final pts = _scatter(shape, outside ? 46 : 30);
+      final pts = _scatter(shape, outside ? 46 : spec.lotSpacing,
+          jitter: spec.village ? 0.95 : 0.7);
       final lots = <(P, List<P>)>[];
       for (final p in pts) {
         var cell = shape;
@@ -290,19 +372,22 @@ class _CityGen {
           cell = _clipHalf(cell, p, o);
         }
         if (cell.length < 3) continue;
-        final b = _shrink(cell, 0.72);
+        final b = _shrink(cell, spec.village ? 0.58 : 0.72);
         if (_area(b) < 120) continue;
         if (b.any((q) =>
-            _nearPath(q, river, 22) ||
-            _nearPath(q, islandArmWest, 18) ||
-            _nearPath(q, islandArmEast, 18) ||
+            (hasRiver &&
+                (_nearPath(q, river, 22) ||
+                    _nearPath(q, islandArmWest, 18) ||
+                    _nearPath(q, islandArmEast, 18))) ||
             canals.any((cn) => _nearPath(q, cn, 10)) ||
             avenues.any((av) => _nearPath(q, av, 10)) ||
             squareShapes.any((s) => _inside(q, s)) ||
-            _inside(q, island) ||
+            (hasRiver && _inside(q, island)) ||
             q.y > shoreAt(q.x) - 8)) {
           continue;
         }
+        // A burned town: a seeded share of its lots left empty.
+        if (spec.lotKeep < 1 && rnd.nextDouble() > spec.lotKeep) continue;
         lots.add((p, b));
       }
       // The biggest lots near the label are its halls and its temple.
@@ -361,17 +446,19 @@ class _CityGen {
       'seed': spec.seed,
       'sea': [for (final p in sea) p.toJson()],
       'rivers': [
-        {'width': 30, 'path': _json(river)},
-        {'width': 16, 'path': _json(islandArmWest)},
-        {'width': 16, 'path': _json(islandArmEast)},
+        if (hasRiver) ...[
+          {'width': 30, 'path': _json(river)},
+          {'width': 16, 'path': _json(islandArmWest)},
+          {'width': 16, 'path': _json(islandArmEast)},
+        ],
       ],
-      'islands': [_json(island)],
+      'islands': [if (hasRiver) _json(island)],
       'canals': [
         for (final cn in canals) {'width': 10, 'path': _json(cn)}
       ],
       'wall': {
         'runs': [for (final r in runs) _json(r)],
-        'gates': gates,
+        'gates': spec.walled ? gates : const <Object?>[],
         'towers': _json(towers),
       },
       'avenues': [
@@ -411,7 +498,7 @@ class _CityGen {
     for (var i = 0; i <= ring.length; i++) {
       final p = ring[i % ring.length];
       final open = p.y > shoreAt(p.x) - 24 ||
-          (p.x - riverAt(p.y).x).abs() < 26 ||
+          (hasRiver && (p.x - riverAt(p.y).x).abs() < 26) ||
           gates.any((g) => g.dist(p) < 1);
       if (open) {
         if (run.length > 1) runs.add(run);
@@ -520,7 +607,7 @@ class _CityGen {
     return out;
   }
 
-  List<P> _scatter(List<P> shape, double spacing) {
+  List<P> _scatter(List<P> shape, double spacing, {double jitter = 0.7}) {
     var minX = double.infinity, minY = double.infinity;
     var maxX = -double.infinity, maxY = -double.infinity;
     for (final p in shape) {
@@ -532,8 +619,8 @@ class _CityGen {
     final out = <P>[];
     for (var y = minY; y <= maxY; y += spacing) {
       for (var x = minX; x <= maxX; x += spacing) {
-        final p = P(x + (rnd.nextDouble() - 0.5) * spacing * 0.7,
-            y + (rnd.nextDouble() - 0.5) * spacing * 0.7);
+        final p = P(x + (rnd.nextDouble() - 0.5) * spacing * jitter,
+            y + (rnd.nextDouble() - 0.5) * spacing * jitter);
         if (_inside(p, shape)) out.add(p);
       }
     }

@@ -721,7 +721,7 @@
       }
     ],
     "rewardGold": 60,
-    "rewardXP": 80,
+    "rewardXP": 100,
     "rewardItemID": "",
     "alignmentChange": 5,
     "nextQuestID": "",
@@ -1015,7 +1015,7 @@
       }
     ],
     "rewardGold": 55,
-    "rewardXP": 65,
+    "rewardXP": 80,
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
@@ -1060,7 +1060,7 @@
       }
     ],
     "rewardGold": 50,
-    "rewardXP": 60,
+    "rewardXP": 75,
     "rewardItemID": "",
     "alignmentChange": 5,
     "nextQuestID": "",
@@ -1856,7 +1856,7 @@
       }
     ],
     "rewardGold": 50,
-    "rewardXP": 70,
+    "rewardXP": 85,
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
@@ -2551,6 +2551,444 @@
           "standing": {
             "dominion": 3
           }
+        }
+      }
+    ]
+  },
+  "q_nemesis_dominion": {
+    "questID": "q_nemesis_dominion",
+    "questName": "The List of Oaths",
+    "chapter": 4,
+    "category": "Nemesis",
+    "difficulty": "8",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Find the stair beneath the Lantern Hall.",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "nemq_dominion_trail",
+        "description_fr": "Trouvez l’escalier sous la Salle de la Lanterne.",
+        "targetNPCName_fr": ""
+      },
+      {
+        "description": "Face the Lantern-Bearer",
+        "type": "Kill",
+        "targetEnemyID": "champion_dominion",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "",
+        "description_fr": "Affronter la Porte-Lanterne",
+        "targetNPCName_fr": ""
+      }
+    ],
+    "rewardGold": 150,
+    "rewardXP": 0,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "A Wickwarden’s lamp-boy catches up with you at the roadside, out of breath. “Your name is on the List, and the High Lantern-Bearer has read it aloud in the Hall. The Lantern has wanted the piece of the Shroud you carry since the night your house fell. She has finished sending others.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Hear it out",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_nemesis_dominion_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "L’écouter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Le Registre des serments",
+    "npcDialogueText_fr": "Le garçon de lampe d’un Garde-Mèche vous rattrape au bord de la route, hors d’haleine. « Votre nom est au Registre, et la Haute Porte-Lanterne l’a lu tout haut dans la Salle. La Lanterne veut le pan de Linceul que vous portez depuis la nuit où votre maison s’est effondrée. Elle a fini d’envoyer d’autres. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Carry the page away",
+        "choiceText_fr": "Emporter la page",
+        "rewardGold": 0,
+        "alignmentChange": 0,
+        "flag": "nemesis_broken_dominion",
+        "resultText": "You take the page where your name was, and nobody at the Hall stops you. For the first time in forty years the list is short. The Dominion does not forgive you. It does, however, stop counting.",
+        "resultText_fr": "Vous emportez la page où figurait votre nom, et personne à la Salle ne vous arrête. Pour la première fois en quarante ans, le registre est incomplet. Le Dominion ne vous pardonne pas. Mais il cesse de compter.",
+        "politics": {
+          "breakNemesis": "dominion"
+        }
+      }
+    ]
+  },
+  "q_nemesis_vigil": {
+    "questID": "q_nemesis_vigil",
+    "questName": "The Hour Unwatched",
+    "chapter": 4,
+    "category": "Nemesis",
+    "difficulty": "8",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Climb to the ridge post above Rimewell.",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "nemq_vigil_trail",
+        "description_fr": "Montez au poste de la crête, au-dessus de Rimewell.",
+        "targetNPCName_fr": ""
+      },
+      {
+        "description": "Face the Watch-Captain",
+        "type": "Kill",
+        "targetEnemyID": "champion_vigil",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "",
+        "description_fr": "Affronter la Capitaine du Guet",
+        "targetNPCName_fr": ""
+      }
+    ],
+    "rewardGold": 150,
+    "rewardXP": 0,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "A sentry on a lonely road, her lantern shuttered. “She has seen you. She sees everything, from there, and she is coming down. If you are going to meet her, do it in the dark hour, when even she must blink.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Meet her",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_nemesis_vigil_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "La rencontrer"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "L’heure sans veille",
+    "npcDialogueText_fr": "Une sentinelle sur une route déserte, sa lanterne voilée. « Elle vous a vu. Elle voit tout, de là-haut, et elle descend. Si vous devez la rencontrer, que ce soit à l’heure noire, quand même elle doit cligner des yeux. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Light the second lamp",
+        "choiceText_fr": "Allumer la seconde lampe",
+        "rewardGold": 0,
+        "alignmentChange": 0,
+        "flag": "nemesis_broken_vigil",
+        "resultText": "Nothing comes through the tear in that hour. Down in the valley, someone lights a second lamp.",
+        "resultText_fr": "Rien ne passe par la déchirure pendant cette heure. Dans la vallée, quelqu’un allume une seconde lampe.",
+        "politics": {
+          "breakNemesis": "vigil"
+        }
+      }
+    ]
+  },
+  "q_nemesis_compact": {
+    "questID": "q_nemesis_compact",
+    "questName": "The Last Hammer",
+    "chapter": 4,
+    "category": "Nemesis",
+    "difficulty": "8",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Find the cold forge of Cinder Row.",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "nemq_compact_trail",
+        "description_fr": "Trouvez la forge froide de la Rue des Braises.",
+        "targetNPCName_fr": ""
+      },
+      {
+        "description": "Face the Last Hammer",
+        "type": "Kill",
+        "targetEnemyID": "champion_compact",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "",
+        "description_fr": "Affronter le Dernier Marteau",
+        "targetNPCName_fr": ""
+      }
+    ],
+    "rewardGold": 150,
+    "rewardXP": 0,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "An old smith wipes her hands on her apron. “The Compact has a rule, and Hollis Reck is the rule with a face. He will not move for gold. He will not move for fear. He is coming for you with the table’s blessing, and if you are going to meet him, meet him with something he made.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Take up the quest",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_nemesis_compact_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Relever le défi"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Le dernier marteau",
+    "npcDialogueText_fr": "Une vieille forgeronne s’essuie les mains sur son tablier. « Le Pacte a une règle, et Hollis Reck est cette règle avec un visage. Il ne bougera ni pour l’or ni pour la peur. Il vient vous chercher avec la bénédiction de la table, et si vous devez le rencontrer, faites-le avec quelque chose qu’il a forgé. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Leave the anvil where it stands",
+        "choiceText_fr": "Laisser l’enclume là où elle est",
+        "rewardGold": 0,
+        "alignmentChange": 0,
+        "flag": "nemesis_broken_compact",
+        "resultText": "You walk out through Cinder Row, and nobody calls you maker. Nobody closes a door on you, either.",
+        "resultText_fr": "Vous quittez la Rue des Braises, et personne ne vous appelle artisan. Personne ne ferme non plus sa porte devant vous.",
+        "politics": {
+          "breakNemesis": "compact"
+        }
+      }
+    ]
+  },
+  "q_nemesis_mire": {
+    "questID": "q_nemesis_mire",
+    "questName": "The Court's Courtesy",
+    "chapter": 4,
+    "category": "Nemesis",
+    "difficulty": "8",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Follow the heron into the fen, and don’t ask where it is going.",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "nemq_mire_trail",
+        "description_fr": "Suivez le héron dans le marais, et ne demandez pas où il va.",
+        "targetNPCName_fr": ""
+      },
+      {
+        "description": "Face the Hand",
+        "type": "Kill",
+        "targetEnemyID": "champion_mire",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "",
+        "description_fr": "Affronter la Main",
+        "targetNPCName_fr": ""
+      }
+    ],
+    "rewardGold": 150,
+    "rewardXP": 0,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "A heron stands in the shallows and does not move. A voice from the reeds: “The Court has sent for you. It is polite. It is always polite. That is the worst of it.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept the invitation",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_nemesis_mire_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter l’invitation"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "La courtoisie de la Cour",
+    "npcDialogueText_fr": "Un héron se tient dans les bas-fonds, immobile. Une voix, dans les roseaux : « La Cour vous a fait appeler. Elle est polie. Elle est toujours polie. C’est le pire. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Leave the chairs set",
+        "choiceText_fr": "Laisser les sièges dressés",
+        "rewardGold": 0,
+        "alignmentChange": 0,
+        "flag": "nemesis_broken_mire",
+        "resultText": "In the Court, someone says very quietly that it was, after all, a most courteous defeat.",
+        "resultText_fr": "Dans la Cour, quelqu’un dit très bas que ce fut, tout compte fait, une défaite fort courtoise.",
+        "politics": {
+          "breakNemesis": "mire"
+        }
+      }
+    ]
+  },
+  "q_nemesis_crows": {
+    "questID": "q_nemesis_crows",
+    "questName": "A Debt Called In",
+    "chapter": 4,
+    "category": "Nemesis",
+    "difficulty": "8",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Find the boat the collector keeps at Smugglers’ Wharf.",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "nemq_crows_trail",
+        "description_fr": "Trouvez le bateau que la percepteuse garde au Quai des Contrebandiers.",
+        "targetNPCName_fr": ""
+      },
+      {
+        "description": "Face the Collector",
+        "type": "Kill",
+        "targetEnemyID": "champion_crows",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "",
+        "description_fr": "Affronter la Percepteuse",
+        "targetNPCName_fr": ""
+      }
+    ],
+    "rewardGold": 150,
+    "rewardXP": 0,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "A dockhand hands you a tarred slip and does not wait for a tip. “She is owed, and she is patient, and she is coming. If you pay in blood, she takes it. If you pay in coin, she takes that too. She just wants to be paid.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Hear the terms",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_nemesis_crows_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Écouter ses conditions"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Une dette exigible",
+    "npcDialogueText_fr": "Un docker vous tend un billet goudronné sans attendre de pourboire. « Elle est créancière, elle est patiente, et elle arrive. Si vous payez en sang, elle le prend. Si vous payez en pièces, elle les prend aussi. Elle veut seulement être payée. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Close the ledger",
+        "choiceText_fr": "Fermer le registre",
+        "rewardGold": 0,
+        "alignmentChange": 0,
+        "flag": "nemesis_broken_crows",
+        "resultText": "The ledger is closed. Nobody on the wharf says your debt is paid, and nobody says it is owed, either.",
+        "resultText_fr": "Le registre est refermé. Personne sur le quai ne dit que votre dette est payée, et personne ne dit non plus qu’elle est due.",
+        "politics": {
+          "breakNemesis": "crows"
+        }
+      }
+    ]
+  },
+  "q_nemesis_penitents": {
+    "questID": "q_nemesis_penitents",
+    "questName": "The Weight Set Down",
+    "chapter": 4,
+    "category": "Nemesis",
+    "difficulty": "8",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Walk the Exorcists’ Road to the Wall of Names.",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "nemq_penitents_trail",
+        "description_fr": "Parcourez la route des Exorcistes jusqu’au Mur des Noms.",
+        "targetNPCName_fr": ""
+      },
+      {
+        "description": "Face the Confessor",
+        "type": "Kill",
+        "targetEnemyID": "champion_penitents",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "",
+        "description_fr": "Affronter la Confesseuse",
+        "targetNPCName_fr": ""
+      }
+    ],
+    "rewardGold": 150,
+    "rewardXP": 0,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "A penitent on the Exorcists’ Road, ash to the elbows, stops walking when she sees you. “She hears everything, and forgives only what is carried to her on foot. She is coming to you, which means she has already decided what you will carry.”",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Hear her out",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_nemesis_penitents_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "L’entendre"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Le poids déposé",
+    "npcDialogueText_fr": "Une pénitente sur la route des Exorcistes, la cendre jusqu’aux coudes, s’arrête de marcher en vous voyant. « Elle entend tout, et ne pardonne que ce qu’on lui apporte à pied. Elle vient à vous, ce qui veut dire qu’elle a déjà décidé de ce que vous porterez. »",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Set the lantern down",
+        "choiceText_fr": "Poser la lanterne",
+        "rewardGold": 0,
+        "alignmentChange": 0,
+        "flag": "nemesis_broken_penitents",
+        "resultText": "The penitents on the road stop walking, one by one, and look at the sky.",
+        "resultText_fr": "Sur la route, les pénitents s’arrêtent un à un et lèvent les yeux au ciel.",
+        "politics": {
+          "breakNemesis": "penitents"
         }
       }
     ]

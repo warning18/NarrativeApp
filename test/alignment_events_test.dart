@@ -141,10 +141,11 @@ void main() {
     });
 
     test(
-        'an Evil character only ever meets angels, a Neutral one only temptations',
-        () {
+        'an Evil character only ever meets angels, a Neutral one mostly '
+        'temptations, now and then a hunter (v5.2 step 6)', () {
       var ambushes = 0;
       var temptations = 0;
+      var neutralHunts = 0;
       for (var seed = 0; seed < 500; seed++) {
         final evil = maybeAlignmentEvent(
           alignmentScore: -30,
@@ -167,13 +168,17 @@ void main() {
           chapter: 3,
           random: Random(seed),
         );
-        if (neutral != null) {
+        if (neutral != null && isHunterAmbushChain(neutral)) {
+          neutralHunts++;
+        } else if (neutral != null) {
           temptations++;
           expect(neutral.single.choices.length, 2);
         }
       }
       expect(ambushes, inInclusiveRange(20, 60));
       expect(temptations, inInclusiveRange(25, 85));
+      // Hunted lightly: about 2% at 0.
+      expect(neutralHunts, inInclusiveRange(3, 25));
     });
 
     test('the hunters wait out a cooldown after an ambush', () {

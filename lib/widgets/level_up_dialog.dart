@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../screens/training_picker.dart';
+import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../data/factions.dart';
+import '../providers/clans_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'moments.dart';
 import 'level_up_stats.dart';
 import 'offer_dialog.dart';
 import 'pixel_vfx.dart';
+import 'stat_pick_picker.dart';
 
 /// Shown right after a fight that leveled the character up. The level's
 /// points are a training offer (training_picker.dart) taken right here: the
@@ -81,6 +84,55 @@ class _LevelUpDialog extends ConsumerWidget {
             ]),
       );
 
+  /// The patron's gift of this level, from the clan log's entry of today:
+  /// "Clan of X's favour: +1 Strength, +5 max health". Nothing when the
+  /// level brought none.
+  List<Widget> _patronLine(
+      BuildContext context, WidgetRef ref, ThemeData theme, InkColors ink) {
+    final session = ref.watch(playerSessionProvider);
+    final lang = ref.watch(appLanguageProvider);
+    StandingLogEntry? gift;
+    for (final e in session.politics.standingLog.reversed) {
+      if (e.cause == 'patron' || e.cause.startsWith('patron:')) {
+        if (e.day == session.day) gift = e;
+        break;
+      }
+    }
+    if (gift == null) return const [];
+    final text = lang == AppLanguage.fr && gift.noteFr.isNotEmpty
+        ? gift.noteFr
+        : gift.note;
+    if (text.isEmpty) return const [];
+    final faction = ref.watch(clanDataProvider).faction(gift.factionId);
+    final clan = faction?.shortFor(lang) ?? '';
+    final colour =
+        faction == null ? ink.gold : Color(faction.color | 0xFF000000);
+    return [
+      Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Row(
+          key: const Key('level_up_patron_line'),
+          children: [
+            Icon(Icons.shield_moon_outlined, size: 18, color: colour),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                clan.isEmpty
+                    ? text
+                    : tr(ref, 'level_up_patron_line')
+                        .replaceAll('{clan}', clan)
+                        .replaceAll('{gains}', text),
+                style: theme.textTheme.bodySmall?.copyWith(
+                    color: Color.lerp(colour, Colors.white, 0.4),
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(playerSessionProvider);
@@ -131,7 +183,7 @@ class _LevelUpDialog extends ConsumerWidget {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            '${tr(ref, 'stat_points_available')}: ${session.statPoints}',
+                            '${tr(ref, 'stat_picks_left')}: ${session.pendingStatPicks}',
                             style: theme.textTheme.titleMedium
                                 ?.copyWith(color: hasPoints ? ink.gold : null),
                           ),
@@ -139,6 +191,15 @@ class _LevelUpDialog extends ConsumerWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 6),
+                  Text(
+                    tr(ref, 'level_up_gives'),
+                    key: const Key('level_up_gives'),
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
+                  ),
+                  // What the patron gave with this level (patron_stats.dart).
+                  ..._patronLine(context, ref, theme, ink),
                   // The clans come once this closes (see offers.dart).
                   if (session.pendingOffers.isNotEmpty)
                     FlipIn(
@@ -177,7 +238,7 @@ class _LevelUpDialog extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    TrainingPicker(),
+                    StatPickPicker(),
                     SizedBox(height: 12),
                     LevelUpStats(),
                   ],

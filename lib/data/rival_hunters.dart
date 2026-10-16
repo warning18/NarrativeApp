@@ -26,22 +26,30 @@ import 'hunter_mercy.dart';
 const double rivalHunterChanceHostile = 0.04;
 const double rivalHunterChanceHunted = 0.08;
 
-/// The sworn clan's rivals hunting the character now, each with its odds
-/// a road: a Hostile one [rivalHunterChanceHostile], a Hunted one
-/// [rivalHunterChanceHunted]. Empty while sworn to none.
+/// The clans hunting the character now, each with its odds a road: the
+/// sworn clan's rivals, a Hostile one [rivalHunterChanceHostile], a
+/// Hunted one [rivalHunterChanceHunted]; and the nemesis, sworn or not,
+/// at [rivalHunterChanceHunted] ([rivalHunterChanceHostile] for the
+/// story's own, [PoliticsState.isStoryNemesis]).
 Map<String, double> rivalHunts(PoliticsState state, ClanData data) {
   final sworn = state.swornFactionId;
-  if (sworn.isEmpty) return const {};
   return {
-    for (final rival in rivalsOf(sworn, state, data))
-      if (data.faction(rival)?.isClan ?? false)
-        if (switch (state.tierOf(rival, data)) {
-          StandingTier.hunted => rivalHunterChanceHunted,
-          StandingTier.hostile => rivalHunterChanceHostile,
-          _ => 0.0,
-        }
-            case final chance when chance > 0)
-          rival: chance,
+    if (sworn.isNotEmpty)
+      for (final rival in rivalsOf(sworn, state, data))
+        if (data.faction(rival)?.isClan ?? false)
+          if (switch (state.tierOf(rival, data)) {
+            StandingTier.hunted => rivalHunterChanceHunted,
+            StandingTier.hostile => rivalHunterChanceHostile,
+            _ => 0.0,
+          }
+              case final chance when chance > 0)
+            rival: chance,
+    // The nemesis (nemesis.dart) hunts at the Hunted odds, sworn or not;
+    // the story's own (the Dominion as a game opens) at the Hostile odds.
+    if (state.nemesis.isNotEmpty)
+      state.nemesis: state.isStoryNemesis
+          ? rivalHunterChanceHostile
+          : rivalHunterChanceHunted,
   };
 }
 

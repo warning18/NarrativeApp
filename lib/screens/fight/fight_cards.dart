@@ -129,7 +129,7 @@ extension _FightCards on _FightScreenState {
               ],
             ),
             const SizedBox(height: 5),
-            _buildHpBar(member.currentHealth, member.maxHealth),
+            _buildPartyHp(member, items),
             ..._coreMarks(member),
             const SizedBox(height: 4),
             Wrap(
@@ -351,6 +351,57 @@ extension _FightCards on _FightScreenState {
             style: TextStyle(
                 fontSize: 11, fontWeight: FontWeight.bold, color: color)),
       ],
+    );
+  }
+
+  /// What the blows aimed at [member] this round would take off, after
+  /// armor, resist and block, from the enemies the party reads in full (see
+  /// [telegraphTierFor]); each blow is figured on its own, as on its
+  /// enemy's intent box. Zero when none is read or none is aimed here.
+  int _incomingOn(_PartyMember member, Map<String, dynamic> items) {
+    if (member.isKnockedOut) return 0;
+    final skills =
+        ref.read(localizedDbProvider(skillsSchema)).value ?? const {};
+    var sum = 0;
+    for (final enemy in _enemies) {
+      final pending = enemy.pendingMove;
+      if (!enemy.isAlive ||
+          enemy.staggered ||
+          pending == null ||
+          pending.targetId != member.id ||
+          _effectiveTierFor(enemy) != TelegraphTier.full) {
+        continue;
+      }
+      sum += _expectedHit(enemy, skills, items)?.net ?? 0;
+    }
+    return sum;
+  }
+
+  /// A member's health bar; the blow the party can read is drawn on it as
+  /// the part it would take off, with "−N" at its end and the sentence on a
+  /// long press.
+  Widget _buildPartyHp(_PartyMember member, Map<String, dynamic> items) {
+    final incoming = _incomingOn(member, items);
+    final bar =
+        _buildHpBar(member.currentHealth, member.maxHealth, pending: incoming);
+    if (incoming <= 0) return bar;
+    final colorScheme = Theme.of(context).colorScheme;
+    return Tooltip(
+      message: tr(ref, 'incoming_tip')
+          .replaceAll('{name}', member.displayName)
+          .replaceAll('{n}', '$incoming'),
+      child: Row(
+        key: Key('incoming_${member.id}'),
+        children: [
+          Expanded(child: bar),
+          const SizedBox(width: 4),
+          Text('−$incoming',
+              style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: colorScheme.error)),
+        ],
+      ),
     );
   }
 
@@ -668,6 +719,13 @@ extension _FightCards on _FightScreenState {
                     _stateChip(Icons.directions_run, tr(ref, 'wavering_label'),
                         Colors.amber.shade800,
                         tooltip: tr(ref, 'wavering_tip')),
+                  // A boss, once the Tide has turned (the log line's mark).
+                  if (enemy.isAlive &&
+                      isBossEnemy(enemy.enemyId, enemy.data) &&
+                      tideLevel(_roundsStarted) > 0)
+                    _stateChip(Icons.local_fire_department,
+                        tr(ref, 'boss_enraged_mark'), Colors.red.shade800,
+                        tooltip: tr(ref, 'boss_enraged_tip')),
                   if (enemy.isAlive && enemy.rallyStacks > 0)
                     _stateChip(
                         Icons.campaign,
@@ -944,9 +1002,9 @@ extension _FightCards on _FightScreenState {
     );
   }
 
-  Widget _telegraphChip(IconData icon, String label) {
+  Widget _telegraphChip(IconData icon, String label, {String? tip}) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Container(
+    final chip = Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color: colorScheme.tertiaryContainer.withValues(alpha: 0.5),
@@ -965,6 +1023,9 @@ extension _FightCards on _FightScreenState {
         ],
       ),
     );
+    return tip == null
+        ? chip
+        : Tooltip(message: tip, preferBelow: true, child: chip);
   }
 
   /// The sheet behind an enemy card: its numbers, every affix's rules text,

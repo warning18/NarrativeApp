@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/map_charts.dart';
 import '../../data/world_map.dart' show MapLook;
+import '../journey_banner_pin.dart' show PinBanner;
 import 'city_chart.dart';
 import 'city_chart_painter.dart';
 
@@ -72,10 +73,16 @@ class CityChartView extends StatefulWidget {
     this.controls = true,
     this.cards = true,
     this.numbers = const {},
+    this.banners = const {},
+    this.bannersDark = true,
   });
 
   /// A number on each pin by way id (the host's list rows carry the same).
   final Map<String, int> numbers;
+
+  /// Ways that hang as a banner (by way id) rather than a round pin.
+  final Map<String, PinBanner> banners;
+  final bool bannersDark;
 
   /// A district to open on (and to frame again whenever [focus] or
   /// [focusToken] changes); null shows the whole city. The Journey hosts the
@@ -298,6 +305,8 @@ class _CityChartViewState extends State<CityChartView>
         selectedWayId: _pickedWay?.id,
         focusDistrict: _focus,
         numbers: widget.numbers,
+        banners: widget.banners,
+        bannersDark: widget.bannersDark,
         pulse: pulse,
       );
 
@@ -312,7 +321,7 @@ class _CityChartViewState extends State<CityChartView>
         if (_focus != null && d.id != _focus) continue;
         if (!_known(d.id)) continue;
         final pin = _offset + painter.pinAt(w) * _scale + const Offset(0, -16);
-        if ((pin - at).distance <= CityChartPainter.pinRadius + 8) {
+        if ((pin - at).distance <= CityChartPainter.pinRadius + 10) {
           setState(() {
             _pickedWay = w;
             _pickedFog = null;

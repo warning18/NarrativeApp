@@ -45,6 +45,22 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'To {place}',
     AppLanguage.fr: 'Vers {place}',
   },
+  'choice_group_fight': {AppLanguage.en: 'Fight', AppLanguage.fr: 'Combat'},
+  'choice_group_talkDecide': {
+    AppLanguage.en: 'Talk & decide',
+    AppLanguage.fr: 'Parler & décider',
+  },
+  'choice_group_checksPay': {
+    AppLanguage.en: 'Checks & pay',
+    AppLanguage.fr: 'Épreuves & paiements',
+  },
+  'choice_ways_chip': {AppLanguage.en: 'Ways', AppLanguage.fr: 'Voies'},
+  'choice_hub_hint': {
+    AppLanguage.en:
+        'Tap a chip, on the ring or under the map, to open its list.',
+    AppLanguage.fr:
+        'Touchez une pastille, sur l’anneau ou sous la carte, pour ouvrir sa liste.',
+  },
   'journey_by_road': {
     AppLanguage.en: 'Road: {stops}',
     AppLanguage.fr: 'Route\u00a0: {stops}',
@@ -71,10 +87,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} ways here · tap a pin or a row',
     AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
   },
-  'journey_city_walk_on': {
-    AppLanguage.en: 'Walk on',
-    AppLanguage.fr: 'Aller à'
-  },
   'journey_city_districts': {
     AppLanguage.en: 'The districts · tap one to go in',
     AppLanguage.fr: 'Les quartiers · touchez-en un pour y entrer',
@@ -92,6 +104,84 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'journey_look_out': {
     AppLanguage.en: 'Look out at the land',
     AppLanguage.fr: 'Regarder le pays',
+  },
+  'journey_legend_title': {
+    AppLanguage.en: 'What the banners mean',
+    AppLanguage.fr: 'Ce que disent les bannières',
+  },
+  'journey_legend_tip': {
+    AppLanguage.en: 'What the banners mean',
+    AppLanguage.fr: 'Ce que disent les bannières',
+  },
+  'journey_legend_note': {
+    AppLanguage.en:
+        'A fight or a roll is not a banner: it is played where you stand.',
+    AppLanguage.fr:
+        'Un combat ou un jet n’est pas une bannière : il se joue là où vous êtes.',
+  },
+  'journey_returned': {
+    AppLanguage.en: 'You came back to {place}',
+    AppLanguage.fr: 'Vous voici de retour à {place}',
+  },
+  'journey_returned_bare': {
+    AppLanguage.en: 'You came back',
+    AppLanguage.fr: 'Vous voici de retour',
+  },
+  'journey_pin_main': {
+    AppLanguage.en: 'Main quest',
+    AppLanguage.fr: 'Quête principale',
+  },
+  'journey_pin_main_line': {
+    AppLanguage.en: 'The chapter’s way on.',
+    AppLanguage.fr: 'La suite de l’histoire du chapitre.',
+  },
+  'journey_pin_side': {
+    AppLanguage.en: 'Side quest',
+    AppLanguage.fr: 'Quête secondaire',
+  },
+  'journey_pin_side_line': {
+    AppLanguage.en: 'A job offered or under way.',
+    AppLanguage.fr: 'Un travail offert ou en cours.',
+  },
+  'journey_pin_detour': {
+    AppLanguage.en: 'Detour',
+    AppLanguage.fr: 'Détour',
+  },
+  'journey_pin_detour_line': {
+    AppLanguage.en: 'An expedition: a place to search.',
+    AppLanguage.fr: 'Une expédition : un lieu à fouiller.',
+  },
+  'journey_pin_shop': {
+    AppLanguage.en: 'Shop and service',
+    AppLanguage.fr: 'Boutique et service',
+  },
+  'journey_pin_shop_line': {
+    AppLanguage.en: 'Buy, heal, equip.',
+    AppLanguage.fr: 'Acheter, se soigner, s’équiper.',
+  },
+  'journey_pin_travel': {
+    AppLanguage.en: 'Travel',
+    AppLanguage.fr: 'Voyage',
+  },
+  'journey_pin_travel_line': {
+    AppLanguage.en: 'A trip to another place.',
+    AppLanguage.fr: 'Un voyage vers un autre lieu.',
+  },
+  'journey_pin_rest': {
+    AppLanguage.en: 'Rest',
+    AppLanguage.fr: 'Repos',
+  },
+  'journey_pin_rest_line': {
+    AppLanguage.en: 'A fire or a bed: you recover.',
+    AppLanguage.fr: 'Un feu ou un lit : on récupère.',
+  },
+  'journey_pin_way': {
+    AppLanguage.en: 'Plain way',
+    AppLanguage.fr: 'Chemin',
+  },
+  'journey_pin_way_line': {
+    AppLanguage.en: 'A road, nothing more said.',
+    AppLanguage.fr: 'Un chemin, sans rien de plus.',
   },
   'journey_recentre': {
     AppLanguage.en: 'Back to the party',
@@ -383,6 +473,66 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'On this road: {hazard}. Push on, or wait it out.',
     AppLanguage.fr:
         'Sur cette route\u00a0: {hazard}. Forcer le passage, ou attendre.',
+  },
+  'clan_peek_orientation': {
+    AppLanguage.en: 'Orientation',
+    AppLanguage.fr: 'Orientation',
+  },
+  'clan_peek_backstory': {
+    AppLanguage.en: 'Their story',
+    AppLanguage.fr: 'Leur histoire',
+  },
+  'clan_peek_says': {
+    AppLanguage.en: 'What they say to you',
+    AppLanguage.fr: 'Ce qu\u2019ils vous disent',
+  },
+  'power_label': {
+    AppLanguage.en: 'Power',
+    AppLanguage.fr: 'Puissance',
+  },
+  'power_tier_minor': {
+    AppLanguage.en: 'Minor',
+    AppLanguage.fr: 'Mineure',
+  },
+  'power_tier_rising': {
+    AppLanguage.en: 'Rising',
+    AppLanguage.fr: 'Montante',
+  },
+  'power_tier_dominant': {
+    AppLanguage.en: 'Dominant',
+    AppLanguage.fr: 'Dominante',
+  },
+  'power_tier_ascendant': {
+    AppLanguage.en: 'Ascendant',
+    AppLanguage.fr: 'Ascendante',
+  },
+  'holds_places_none': {
+    AppLanguage.en: 'Holds no place',
+    AppLanguage.fr: 'Ne tient aucun lieu',
+  },
+  'holds_places_one': {
+    AppLanguage.en: 'Holds 1 place',
+    AppLanguage.fr: 'Tient 1 lieu',
+  },
+  'holds_places_n': {
+    AppLanguage.en: 'Holds {n} places',
+    AppLanguage.fr: 'Tient {n} lieux',
+  },
+  'holds_more': {
+    AppLanguage.en: '+{n} more',
+    AppLanguage.fr: '+{n} de plus',
+  },
+  'clan_nemesis_tag': {
+    AppLanguage.en: 'Your nemesis',
+    AppLanguage.fr: 'Votre némésis',
+  },
+  'clan_peek_tap_close': {
+    AppLanguage.en: 'Tap to close',
+    AppLanguage.fr: 'Touchez pour fermer',
+  },
+  'clan_peek_release': {
+    AppLanguage.en: 'Let go to close',
+    AppLanguage.fr: 'Relâchez pour fermer',
   },
   'geo_this_land': {
     AppLanguage.en: 'This land',
@@ -2051,6 +2201,52 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Made for',
     AppLanguage.fr: 'Conçu pour',
   },
+  'reward_kind_quest': {
+    AppLanguage.en: 'Quest complete',
+    AppLanguage.fr: 'Quête accomplie',
+  },
+  'reward_kind_item': {
+    AppLanguage.en: 'Item found',
+    AppLanguage.fr: 'Objet trouvé',
+  },
+  'reward_kind_clan_gift': {
+    AppLanguage.en: 'A clan\u2019s gift',
+    AppLanguage.fr: 'Le don d\u2019un clan',
+  },
+  'reward_chapter': {
+    AppLanguage.en: 'Chapter {n}',
+    AppLanguage.fr: 'Chapitre {n}'
+  },
+  'reward_gold': {AppLanguage.en: 'Gold', AppLanguage.fr: 'Or'},
+  'reward_gold_sub': {
+    AppLanguage.en: 'Paid for the job',
+    AppLanguage.fr: 'Le prix du travail',
+  },
+  'reward_xp': {AppLanguage.en: 'Experience', AppLanguage.fr: 'Expérience'},
+  'reward_xp_sub': {
+    AppLanguage.en: '{before} \u2192 {after} / {need} XP · level {n}',
+    AppLanguage.fr: '{before} \u2192 {after} / {need} XP · niveau {n}',
+  },
+  'reward_xp_levelup': {
+    AppLanguage.en: 'Level up! You are level {n}',
+    AppLanguage.fr: 'Niveau supérieur\u00a0! Vous êtes niveau {n}',
+  },
+  'reward_level_reached': {
+    AppLanguage.en: 'Level {n}!',
+    AppLanguage.fr: 'Niveau {n}\u00a0!',
+  },
+  'reward_new': {AppLanguage.en: 'NEW', AppLanguage.fr: 'NOUVEAU'},
+  'reward_joins': {AppLanguage.en: 'JOINS', AppLanguage.fr: 'REJOINT'},
+  'reward_continue': {AppLanguage.en: 'Continue', AppLanguage.fr: 'Continuer'},
+  'reward_standing': {AppLanguage.en: 'Standing', AppLanguage.fr: 'Réputation'},
+  'reward_die_made_for': {
+    AppLanguage.en: 'A die for your hand',
+    AppLanguage.fr: 'Un dé pour votre main',
+  },
+  'reward_materials_title': {
+    AppLanguage.en: 'Materials found',
+    AppLanguage.fr: 'Matériaux trouvés',
+  },
   'reward_die_traded': {
     AppLanguage.en: 'The {die} is made for another class: you took its '
         'price in gold instead.',
@@ -2973,6 +3169,23 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Put it away',
     AppLanguage.fr: 'Ranger',
   },
+  'level_signpost': {
+    AppLanguage.en: 'Chapter {n} asks for level {level}. You are level {you}.',
+    AppLanguage.fr:
+        'Le chapitre {n} demande le niveau {level}. Vous êtes niveau {you}.',
+  },
+  'level_signpost_row': {
+    AppLanguage.en: 'Chapter {n}: level {level} advised (you: {you})',
+    AppLanguage.fr: 'Chapitre {n} : niveau {level} conseillé (vous : {you})',
+  },
+  'level_signpost_short': {
+    AppLanguage.en: 'Ch. {n} · lvl {level}',
+    AppLanguage.fr: 'Ch. {n} · niv. {level}',
+  },
+  'level_signpost_lv': {
+    AppLanguage.en: 'Lvl {level}',
+    AppLanguage.fr: 'Niv. {level}',
+  },
   'next_main_quest_label': {
     AppLanguage.en: 'Next · main quest',
     AppLanguage.fr: 'Ensuite · quête principale',
@@ -3740,6 +3953,32 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'training_take_button': {
     AppLanguage.en: 'Take this training',
     AppLanguage.fr: 'Suivre cet entraînement',
+  },
+  'stat_pick_title': {
+    AppLanguage.en: 'Pick a gain',
+    AppLanguage.fr: 'Choisissez un gain',
+  },
+  'stat_pick_hint': {
+    AppLanguage.en: 'Tap one of the three to see what it brings.',
+    AppLanguage.fr: 'Touchez l’un des trois pour voir ce qu’il apporte.',
+  },
+  'stat_pick_take': {
+    AppLanguage.en: 'Take this pick',
+    AppLanguage.fr: 'Prendre ce choix',
+  },
+  'stat_pick_rare': {AppLanguage.en: 'Rare', AppLanguage.fr: 'Rare'},
+  'stat_pick_worth': {
+    AppLanguage.en: 'Worth {n} points',
+    AppLanguage.fr: 'Vaut {n} points',
+  },
+  'stat_picks_left': {
+    AppLanguage.en: 'Stat picks left',
+    AppLanguage.fr: 'Choix de stats restants',
+  },
+  'level_up_gives': {
+    AppLanguage.en: 'Each level also gives +20 max health and +1 base damage.',
+    AppLanguage.fr:
+        'Chaque niveau donne aussi +20 de santé max. et +1 de dégâts de base.',
   },
   'training_taken_label': {
     AppLanguage.en: 'Training',
@@ -4763,6 +5002,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Appris :',
   },
   'round_label': {AppLanguage.en: 'Round', AppLanguage.fr: 'Manche'},
+  'round_tip': {
+    AppLanguage.en:
+        'The round of the fight. From round {n} the Tide rises and every blow hits harder, the longer it lasts.',
+    AppLanguage.fr:
+        'La manche du combat. À partir de la manche {n}, la Marée monte et chaque coup frappe plus fort, plus le combat dure.',
+  },
   'roll_hint': {
     AppLanguage.en: 'Roll the party\'s dice, then keep or reroll.',
     AppLanguage.fr: 'Lancez les dés du groupe, puis gardez ou relancez.',
@@ -7685,6 +7930,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Finish it',
     AppLanguage.fr: 'Achever',
   },
+  'mercy_spare_sub': {
+    AppLanguage.en: '{clan} {n} · no gold, no loot',
+    AppLanguage.fr: '{clan} {n} · ni or, ni butin',
+  },
+  'mercy_finish_sub': {
+    AppLanguage.en: '{clan} {n} · the spoils are yours',
+    AppLanguage.fr: '{clan} {n} · le butin est à vous',
+  },
   'mercy_spared_log': {
     AppLanguage.en: '{name} looks at you a long moment, then goes.',
     AppLanguage.fr: '{name} vous regarde un long moment, puis s’en va.',
@@ -7713,10 +7966,96 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'La marée monte\u00a0: les vôtres +{party}\u00a0%, les leurs +{enemies}\u00a0%.',
   },
   // The place's rule over a fight (v5.2 step 4, context_rules.dart).
+  // What the foe is (foe_kind.dart). Placeholder words, for Narrative.
+  'foe_tiring_log': {
+    AppLanguage.en: '{name} is tiring: its blows land softer.',
+    AppLanguage.fr: '{name} se fatigue\u00a0: ses coups portent moins.',
+  },
+  'reinforce_allies_log': {
+    AppLanguage.en: 'The people {of} join the fight: {n} to each foe.',
+    AppLanguage.fr:
+        'Les gens {of} se joignent au combat\u00a0: {n} à chaque ennemi.',
+  },
+  'reinforce_foes_log': {
+    AppLanguage.en: 'The people {of} fall on you: {n} to each of you.',
+    AppLanguage.fr:
+        'Les gens {of} vous tombent dessus\u00a0: {n} à chacun de vous.',
+  },
+  'foe_crumbles_log': {
+    AppLanguage.en: '{name} crumbles ({n}).',
+    AppLanguage.fr: '{name} s’effrite ({n}).',
+  },
   'boss_enraged_log': {
     AppLanguage.en: 'Something snaps: the boss fights like a cornered thing.',
     AppLanguage.fr:
         'Quelque chose cède\u00a0: le boss se bat comme une bête acculée.',
+  },
+  'context_mist_mark': {AppLanguage.en: 'Mist', AppLanguage.fr: 'Brume'},
+  'context_mist_omen_mark': {
+    AppLanguage.en: 'Mist next round',
+    AppLanguage.fr: 'Brume au prochain tour',
+  },
+  'context_mist_tip': {
+    AppLanguage.en:
+        'Marsh mist: each round, both sides lose {a}% of their health a level. It never finishes anyone.',
+    AppLanguage.fr:
+        'Brume du marais\u00a0: à chaque tour, les deux camps perdent {a}\u00a0% de leur santé par niveau. Elle n’achève personne.',
+  },
+  'context_heat_mark': {AppLanguage.en: 'Heat', AppLanguage.fr: 'Chaleur'},
+  'context_heat_omen_mark': {
+    AppLanguage.en: 'Heat next round',
+    AppLanguage.fr: 'Chaleur au prochain tour',
+  },
+  'context_heat_tip': {
+    AppLanguage.en:
+        'Desert heat: each round, both sides lose {a}% of their health a level, and heal {b}% less. It never finishes anyone.',
+    AppLanguage.fr:
+        'Chaleur du désert\u00a0: à chaque tour, les deux camps perdent {a}\u00a0% de leur santé par niveau et soignent {b}\u00a0% de moins. Elle n’achève personne.',
+  },
+  'context_water_mark': {AppLanguage.en: 'Water', AppLanguage.fr: 'Eau'},
+  'context_water_omen_mark': {
+    AppLanguage.en: 'Water next round',
+    AppLanguage.fr: 'Eau au prochain tour',
+  },
+  'context_water_tip': {
+    AppLanguage.en:
+        'Rising water: a level more each round (three at most). Your blows and your healing grow {a}% a level, the enemies\u2019 blows {b}%.',
+    AppLanguage.fr:
+        'Eau qui monte\u00a0: un niveau de plus à chaque tour (trois au plus). Vos coups et vos soins gagnent {a}\u00a0% par niveau, les coups ennemis {b}\u00a0%.',
+  },
+  'context_holy_mark': {
+    AppLanguage.en: 'Holy ground',
+    AppLanguage.fr: 'Sol sacré',
+  },
+  'context_holy_omen_mark': {
+    AppLanguage.en: 'Holy ground stirs next round',
+    AppLanguage.fr: 'Le sol sacré s’éveille au prochain tour',
+  },
+  'context_holy_tip': {
+    AppLanguage.en:
+        'Sanctified ground: each level, healing fades {a}% and Light strikes {b}% harder.',
+    AppLanguage.fr:
+        'Sol sanctifié\u00a0: à chaque niveau, les soins faiblissent de {a}\u00a0% et la Lumière frappe {b}\u00a0% plus fort.',
+  },
+  'context_guards_mark': {
+    AppLanguage.en: 'The watch',
+    AppLanguage.fr: 'Le guet'
+  },
+  'context_guards_omen_mark': {
+    AppLanguage.en: 'Whistle: the watch next round',
+    AppLanguage.fr: 'Sifflet\u00a0: le guet au prochain tour',
+  },
+  'context_guards_tip': {
+    AppLanguage.en:
+        'The watch breaks fights up in the streets: from round {a}, whoever is ahead on health wins; if neither is, both walk away.',
+    AppLanguage.fr:
+        'Le guet sépare les combats dans les rues\u00a0: à partir du tour {a}, celui qui mène en santé gagne\u00a0; sinon, chacun s’en va.',
+  },
+  'boss_enraged_mark': {AppLanguage.en: 'Enraged', AppLanguage.fr: 'Enragé'},
+  'boss_enraged_tip': {
+    AppLanguage.en: 'The tide has turned: the boss strikes harder every round.',
+    AppLanguage.fr:
+        'La marée a tourné\u00a0: le boss frappe plus fort à chaque tour.',
   },
   'context_mist_omen': {
     AppLanguage.en:
@@ -8229,6 +8568,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Place forte',
   },
   'momentum_label': {AppLanguage.en: 'Momentum', AppLanguage.fr: 'Élan'},
+  'momentum_tip': {
+    AppLanguage.en:
+        'Each blow you land builds momentum; a blow you take sets it back. When it is full, your next strike is a sure critical.',
+    AppLanguage.fr:
+        'Chaque coup que vous portez fait monter l’élan ; un coup reçu le fait retomber. Quand il est plein, votre prochain coup est un critique assuré.',
+  },
+  'incoming_tip': {
+    AppLanguage.en:
+        'The blows aimed at {name} this round would take off about {n}, after armor and block.',
+    AppLanguage.fr:
+        'Les coups visant {name} ce tour retireraient environ {n}, armure et blocage déduits.',
+  },
   'momentum_ready_label': {
     AppLanguage.en: 'Momentum: next strike crits!',
     AppLanguage.fr: 'Élan : le prochain coup est critique !',
@@ -11219,6 +11570,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Patron’s favour',
     AppLanguage.fr: 'Faveur du patron',
   },
+  'level_up_patron_line': {
+    AppLanguage.en: '{clan}’s favour: {gains}',
+    AppLanguage.fr: 'Faveur de {clan} : {gains}',
+  },
   'patron_max_health': {
     AppLanguage.en: '+{n} max health',
     AppLanguage.fr: '+{n} vie max',
@@ -11234,6 +11589,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'standing_cause_loyalty': {
     AppLanguage.en: 'Loyalty’s price',
     AppLanguage.fr: 'Le prix de la loyauté',
+  },
+  'standing_cause_territory': {
+    AppLanguage.en: 'Territory',
+    AppLanguage.fr: 'Territoire',
   },
   'standing_cause_mercy': {
     AppLanguage.en: 'Mercy for a hunter',
@@ -11720,6 +12079,98 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tab_overview': {AppLanguage.en: 'Overview', AppLanguage.fr: 'Aperçu'},
   'tab_gifts': {AppLanguage.en: 'Gifts', AppLanguage.fr: 'Dons'},
   'tab_pages': {AppLanguage.en: 'Pages', AppLanguage.fr: 'Pages'},
+  'feature_chest_name': {
+    AppLanguage.en: 'Spoils chest',
+    AppLanguage.fr: 'Coffre de butin',
+  },
+  'feature_chest_line': {
+    AppLanguage.en:
+        'After a fight won, open the chest and pick from what it holds.',
+    AppLanguage.fr:
+        'Après un combat gagné, ouvrez le coffre et choisissez dans son contenu.',
+  },
+  'feature_placeRules_name': {
+    AppLanguage.en: 'Place rules',
+    AppLanguage.fr: 'Règles du lieu',
+  },
+  'feature_placeRules_line': {
+    AppLanguage.en: 'A place can bend a fight: the town guards, the mist.',
+    AppLanguage.fr:
+        'Un lieu peut infléchir un combat : la garde de la ville, la brume.',
+  },
+  'feature_conditions_name': {
+    AppLanguage.en: 'Battlefield conditions',
+    AppLanguage.fr: 'Conditions du terrain',
+  },
+  'feature_conditions_line': {
+    AppLanguage.en: 'Rain, dark or crowd: the ground now changes the fight.',
+    AppLanguage.fr:
+        'Pluie, nuit ou foule : le terrain change désormais le combat.',
+  },
+  'feature_levelUp_name': {
+    AppLanguage.en: 'Level up',
+    AppLanguage.fr: 'Montée de niveau',
+  },
+  'feature_levelUp_line': {
+    AppLanguage.en: 'Spend your points and pick your training.',
+    AppLanguage.fr: 'Dépensez vos points et choisissez votre entraînement.',
+  },
+  'feature_quests_name': {
+    AppLanguage.en: 'Quests',
+    AppLanguage.fr: 'Quêtes',
+  },
+  'feature_quests_line': {
+    AppLanguage.en: 'The list of what you have taken on, in the Other tab.',
+    AppLanguage.fr:
+        'La liste de ce que vous avez entrepris, dans l’onglet Autre.',
+  },
+  'feature_inventory_name': {
+    AppLanguage.en: 'Inventory',
+    AppLanguage.fr: 'Inventaire',
+  },
+  'feature_inventory_line': {
+    AppLanguage.en:
+        'Carry, wear and compare what you find; the dice loadout too.',
+    AppLanguage.fr:
+        'Portez, équipez et comparez vos trouvailles ; l’ordre des dés aussi.',
+  },
+  'feature_skills_name': {
+    AppLanguage.en: 'Skills',
+    AppLanguage.fr: 'Compétences',
+  },
+  'feature_skills_line': {
+    AppLanguage.en: 'Learn skills from the tree and use them in fights.',
+    AppLanguage.fr:
+        'Apprenez des compétences dans l’arbre et utilisez-les en combat.',
+  },
+  'feature_politics_name': {
+    AppLanguage.en: 'Clans & Politics',
+    AppLanguage.fr: 'Clans et politique',
+  },
+  'feature_politics_line': {
+    AppLanguage.en: 'Who stands where on the coast, and what it costs you.',
+    AppLanguage.fr: 'Qui se tient où sur la côte, et ce que cela vous coûte.',
+  },
+  'feature_clans_name': {
+    AppLanguage.en: 'Clan offers',
+    AppLanguage.fr: 'Offres des clans',
+  },
+  'feature_clans_line': {
+    AppLanguage.en: 'Clans may offer signs and titles; Gifts holds them.',
+    AppLanguage.fr:
+        'Les clans peuvent offrir signes et titres ; les Dons les gardent.',
+  },
+  'feature_new': {
+    AppLanguage.en: 'New: {name}',
+    AppLanguage.fr: 'Nouveau : {name}',
+  },
+  'feature_show_me': {AppLanguage.en: 'Show me', AppLanguage.fr: 'Montre-moi'},
+  'feature_later': {AppLanguage.en: 'Later', AppLanguage.fr: 'Plus tard'},
+  'feature_ok': {AppLanguage.en: 'OK', AppLanguage.fr: 'OK'},
+  'feature_opens_in': {
+    AppLanguage.en: 'Opens in chapter {n}: {name}',
+    AppLanguage.fr: 'S’ouvre au chapitre {n} : {name}',
+  },
   'tile_inventory': {
     AppLanguage.en: 'Inventory',
     AppLanguage.fr: 'Inventaire',

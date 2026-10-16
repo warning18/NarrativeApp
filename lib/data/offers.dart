@@ -12,6 +12,7 @@ import '../combat/specialisations.dart'
         specsOfferedBy,
         tempestSkillId,
         weakLinkSpecs;
+import 'clan_power.dart';
 import 'factions.dart';
 import 'perks.dart';
 import 'signs.dart';
@@ -460,7 +461,13 @@ class OfferContext {
     this.specs = const {},
     this.heldSpecIds = const [],
     this.specVariants = const {},
+    this.placeHolder = '',
   });
+
+  /// The clan that holds the place the offer is made in (clan_power.dart's
+  /// holderOf): its suitor comes [heldPlaceSuitorWeight] times as often;
+  /// '' for none.
+  final String placeHolder;
 
   /// spec_variants.json parsed: the sub-clans' variants and the ranks II.
   final Map<String, SpecVariantInfo> specVariants;
@@ -864,17 +871,35 @@ Map<GiftKind, int> availableGiftKinds(String factionId, OfferContext c,
   };
 }
 
+/// How much more often the clan holding the place an offer is made in
+/// sends its suitor (clan_power.dart).
+const double heldPlaceSuitorWeight = 1.5;
+
+/// The strongest sign a clan of power [tier] gives (clan_power.dart): a
+/// Minor one up to epic, a Rising or stronger one heroic. (Rare for a
+/// Minor one and epic for a Rising one, as first planned, threw Claimant
+/// Tallis off its curve in boss_balance_test.)
+SignRarity maxSignRarityFor(PowerTier tier) => switch (tier) {
+      PowerTier.minor => SignRarity.epic,
+      _ => SignRarity.heroic,
+    };
+
 /// Whether [faction] may come as a suitor at all: the story lets them
 /// (a tribe's flag, the Choir's or the Pit's alignment), this life hasn't
-/// shut them out (the Choir and the Pit shut each other out), and they
-/// are neither Hostile nor Hunted.
+/// shut them out (the Choir and the Pit shut each other out), they are
+/// neither Hostile nor Hunted, and (clan_power.dart) they have not fallen,
+/// unless the character stayed of them.
 bool suitorOpen(Faction faction, OfferContext c) =>
     patronOpen(faction.patron,
         flags: c.flags,
         alignment: c.alignment,
         patronsThisLife: c.patronsThisLife,
         patrons: c.patrons) &&
-    c.tierOf(faction.id).isAtLeast(StandingTier.resented);
+    c.tierOf(faction.id).isAtLeast(StandingTier.resented) &&
+    // A fallen clan sends no one -- but to the character who stayed of it
+    // (clan_crisis.dart): its survivors still come.
+    (!c.politics.fallen.contains(faction.id) ||
+        c.politics.fallenOf == faction.id);
 
 /// Every faction that could come now and has something to give, in the
 /// file's order.
@@ -1120,6 +1145,15 @@ Suitor? drawSuitor(String factionId, OfferContext c, Random random,
   if (faction == null) return null;
   gift ??= drawGift(factionId, c, random, better: better);
   if (gift == null) return null;
+  // Its power caps the strength of the signs it gives (clan_power.dart).
+  if (gift.kind == GiftKind.sign && hasPower(factionId, c.data)) {
+    final cap =
+        maxSignRarityFor(powerTierFor(powerOf(c.politics, factionId, c.data)));
+    if (gift.rarity.index > cap.index) {
+      gift = OfferGift(
+          kind: gift.kind, id: gift.id, rarity: cap, partnerId: gift.partnerId);
+    }
+  }
   final voices = faction.isClan ? c.data.subclansOf(factionId) : const [];
   final greetings = max(1, faction.patron.greetings.length);
   // A sub-clan's skill, or its variant of a specialisation, is voiced by
@@ -1237,7 +1271,9 @@ ClanOffer? drawOffer(OfferTicket ticket, OfferContext c, Random random) {
   final factionPlaces = offerSuitorCount - (wayfarerComes ? 1 : 0);
 
   double tribeWeight(String id) =>
-      c.data.faction(id)?.kind == PatronKind.tribe ? tribeOfferWeight : 1.0;
+      (c.data.faction(id)?.kind == PatronKind.tribe ? tribeOfferWeight : 1.0) *
+      // The clan that holds the place comes more often (clan_power.dart).
+      (id == c.placeHolder ? heldPlaceSuitorWeight : 1.0);
 
   // One place leans to standing.
   var leaned = false;
@@ -1413,6 +1449,10 @@ Map<String, double> suitorPreview(
             data: data, chapter: chapter, day: day)
         .state;
   }
+  // Its power grows with the gifts taken (clan_power.dart).
+  next = addPower(
+      next, suitor.factionId, giftPowerFor(suitor.gift.rarity.name), data,
+      helped: true);
   return (politics: next, standing: standing, alignment: leanOf(suitor, data));
 }
 

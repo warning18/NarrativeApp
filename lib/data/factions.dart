@@ -339,9 +339,45 @@ class Faction {
     this.objects = const [],
     this.sworn,
     this.host,
+    this.startPower = 0,
+    this.seat = '',
+    this.claims = const [],
+    this.genderFr = 'm',
+    this.nameToFr = '',
+    this.brokenNews = '',
+    this.brokenNewsFr = '',
   });
 
   final Patron patron;
+
+  /// Where its power starts (factions.json `power`, clan_power.dart); 0
+  /// for a faction with none.
+  final int startPower;
+
+  /// Its seat (a place id), the last place it gives up; '' for none.
+  final String seat;
+
+  /// The places it reaches for as its power grows, in order.
+  final List<String> claims;
+
+  /// The French name's gender and number ('m', 'f', 'mp', 'fp'), for the
+  /// words that agree with it ("est tombée", "tiennent").
+  final String genderFr;
+
+  /// "au Dominion de la Lanterne": the French name after "à"; '' when the
+  /// data has none.
+  final String nameToFr;
+
+  /// The news when the character breaks it as their nemesis (nemesis.dart,
+  /// Narrative's per clan); '' tells the shared line.
+  final String brokenNews;
+  final String brokenNewsFr;
+
+  /// Whether the French name is plural (`genderFr` 'mp' or 'fp').
+  bool get pluralFr => genderFr.endsWith('p');
+
+  /// Whether the French name is feminine.
+  bool get feminineFr => genderFr.startsWith('f');
 
   /// The name after a sub-clan's: "of the Grey Vigil", « de la Veille
   /// Grise » (see [nameOfFor]).
@@ -436,6 +472,16 @@ class Faction {
         ],
         sworn: SwornBoon.tryParse(json['sworn']),
         host: HostContingent.tryParse(json['host']),
+        startPower: _int(json['power']).clamp(0, 100),
+        seat: _text(json['seat']).trim(),
+        claims: _strings(json['claims']),
+        genderFr: switch (_text(json['gender_fr']).trim()) {
+          final g when const {'m', 'f', 'mp', 'fp'}.contains(g) => g,
+          _ => 'm',
+        },
+        nameToFr: _text(json['nameTo_fr']).trim(),
+        brokenNews: _text(json['brokenNews']).trim(),
+        brokenNewsFr: _text(json['brokenNews_fr']).trim(),
       );
 }
 
@@ -1122,6 +1168,13 @@ Map<String, double> _doubles(Object? raw) => {
           if (e.value is num) e.key.toString(): (e.value as num).toDouble(),
     };
 
+Map<String, String> _texts(Object? raw) => {
+      if (raw is Map)
+        for (final e in raw.entries)
+          if (_text(e.value).trim().isNotEmpty)
+            e.key.toString(): _text(e.value).trim(),
+    };
+
 Map<String, int> _ints(Object? raw) => {
       if (raw is Map)
         for (final e in raw.entries)
@@ -1416,6 +1469,14 @@ class Host {
   }
 }
 
+/// The story's own nemesis: the Dominion, from a new game's first page
+/// (it wants the piece of the Shroud the character's family kept;
+/// nemesis.dart).
+const String storyNemesisClan = 'dominion';
+
+/// [PoliticsState.nemesisReason] of [storyNemesisClan] as the story opens.
+const String nemesisReasonStory = 'story';
+
 /// Where the character stands with the coast, as the session keeps it:
 /// - [standings]: standing with each faction it has moved with (any
 ///   other is still at its `startStanding`, see [standingOf]);
@@ -1452,9 +1513,73 @@ class PoliticsState {
     this.throneWinner = '',
     this.pledged = const [],
     this.host = Host.none,
+    this.power = const {},
+    this.control = const {},
+    this.helped = const [],
+    this.fallen = const [],
+    this.nemesis = '',
+    this.nemesisReason = '',
+    this.nemesisCooldown = const {},
+    this.crisis = const {},
+    this.fellTo = const {},
+    this.fallenOf = '',
+    this.fallenWinner = '',
   });
 
   static const PoliticsState empty = PoliticsState();
+
+  /// The coast as a new game opens: the Dominion your nemesis, a story
+  /// fact (it wants the piece of the Shroud your family kept), not a
+  /// standing earned (nemesis.dart).
+  static const PoliticsState storyStart = PoliticsState(
+      nemesis: storyNemesisClan, nemesisReason: nemesisReasonStory);
+
+  /// Each main clan's power (0..100, clan_power.dart) once it has moved;
+  /// a clan not here stands at its `startPower`.
+  final Map<String, int> power;
+
+  /// The places that changed hands (place id -> clan), over the holders
+  /// geography.json writes (see holderOf in clan_power.dart).
+  final Map<String, String> control;
+
+  /// The main clans the character did something for this chapter (a gift
+  /// taken, a quest, a fight in their lands): spared the chapter's neglect.
+  final List<String> helped;
+
+  /// The clans that lost their last place (clan_power.dart), until one
+  /// takes a place again.
+  final List<String> fallen;
+
+  /// The clan that has made the character its nemesis (nemesis.dart), ''
+  /// for none.
+  final String nemesis;
+
+  /// Why [nemesis] hunts the character: [nemesisReasonStory] for the
+  /// story's own enemy (the Dominion as a game opens), '' for one earned
+  /// by standing.
+  final String nemesisReason;
+
+  /// Whether [nemesis] is the story's own enemy ([nemesisReasonStory]).
+  bool get isStoryNemesis =>
+      nemesis.isNotEmpty && nemesisReason == nemesisReasonStory;
+
+  /// Clans whose nemesis was broken: the chapter from which each may
+  /// become one again.
+  final Map<String, int> nemesisCooldown;
+
+  /// Your clan's seat threatened (clan_crisis.dart): `clan`, `attacker`,
+  /// `place`; empty for none.
+  final Map<String, String> crisis;
+
+  /// Each fallen clan's last place taker (clan -> clan).
+  final Map<String, String> fellTo;
+
+  /// The fallen clan the character stayed of (clan_crisis.dart): no oath,
+  /// no patron, until a banner of their own; '' for none.
+  final String fallenOf;
+
+  /// Who took it: the character's nemesis while [fallenOf] lasts.
+  final String fallenWinner;
 
   final Map<String, double> standings;
   final Map<String, SubclanMark> marks;
@@ -1555,6 +1680,17 @@ class PoliticsState {
     String? throneWinner,
     List<String>? pledged,
     Host? host,
+    Map<String, int>? power,
+    Map<String, String>? control,
+    List<String>? helped,
+    List<String>? fallen,
+    String? nemesis,
+    String? nemesisReason,
+    Map<String, int>? nemesisCooldown,
+    Map<String, String>? crisis,
+    Map<String, String>? fellTo,
+    String? fallenOf,
+    String? fallenWinner,
   }) =>
       PoliticsState(
         standings: standings ?? this.standings,
@@ -1571,6 +1707,21 @@ class PoliticsState {
         throneWinner: throneWinner ?? this.throneWinner,
         pledged: pledged ?? this.pledged,
         host: host ?? this.host,
+        power: power ?? this.power,
+        control: control ?? this.control,
+        helped: helped ?? this.helped,
+        fallen: fallen ?? this.fallen,
+        nemesis: nemesis ?? this.nemesis,
+        // A new nemesis is an earned one unless told otherwise.
+        nemesisReason: nemesisReason ??
+            (nemesis == null || nemesis == this.nemesis
+                ? this.nemesisReason
+                : ''),
+        nemesisCooldown: nemesisCooldown ?? this.nemesisCooldown,
+        crisis: crisis ?? this.crisis,
+        fellTo: fellTo ?? this.fellTo,
+        fallenOf: fallenOf ?? this.fallenOf,
+        fallenWinner: fallenWinner ?? this.fallenWinner,
       );
 
   Map<String, dynamic> toJson() => {
@@ -1593,12 +1744,25 @@ class PoliticsState {
         if (throneWinner.isNotEmpty) 'throne': throneWinner,
         if (pledged.isNotEmpty) 'pledged': pledged,
         if (host.mustered) 'host': host.toJson(),
+        if (power.isNotEmpty) 'power': power,
+        if (control.isNotEmpty) 'control': control,
+        if (helped.isNotEmpty) 'helped': helped,
+        if (fallen.isNotEmpty) 'fallen': fallen,
+        if (nemesis.isNotEmpty) 'nemesis': nemesis,
+        // Always written: a save without it predates the story's nemesis
+        // (see [PoliticsState.fromJson]).
+        'nemesisReason': nemesisReason,
+        if (nemesisCooldown.isNotEmpty) 'nemesisCooldown': nemesisCooldown,
+        if (crisis.isNotEmpty) 'crisis': crisis,
+        if (fellTo.isNotEmpty) 'fellTo': fellTo,
+        if (fallenOf.isNotEmpty) 'fallenOf': fallenOf,
+        if (fallenWinner.isNotEmpty) 'fallenWinner': fallenWinner,
       };
 
   /// [raw] read; [empty] for a save from before clans (or anything
   /// unreadable).
   factory PoliticsState.fromJson(Object? raw) {
-    if (raw is! Map) return empty;
+    if (raw is! Map) return storyStart;
     final json = raw.cast<String, dynamic>();
     final marks = <String, SubclanMark>{};
     final rawMarks = json['marks'];
@@ -1618,7 +1782,7 @@ class PoliticsState {
         if (chapter != null) snapshots[chapter] = _ints(e.value);
       }
     }
-    return PoliticsState(
+    final state = PoliticsState(
       standings: _doubles(json['standings']),
       marks: marks,
       swornFactionId: _text(json['sworn']),
@@ -1648,7 +1812,36 @@ class PoliticsState {
       throneWinner: _text(json['throne']).trim(),
       pledged: _strings(json['pledged']).toSet().toList(),
       host: Host.fromJson(json['host']),
+      power: _ints(json['power']),
+      control: {
+        if (json['control'] is Map)
+          for (final e in (json['control'] as Map).entries)
+            if (_text(e.value).trim().isNotEmpty)
+              e.key.toString(): _text(e.value).trim(),
+      },
+      helped: _strings(json['helped']).toSet().toList(),
+      fallen: _strings(json['fallen']).toSet().toList(),
+      nemesis: _text(json['nemesis']).trim(),
+      nemesisReason: _text(json['nemesisReason']).trim(),
+      nemesisCooldown: _ints(json['nemesisCooldown']),
+      crisis: _texts(json['crisis']),
+      fellTo: _texts(json['fellTo']),
+      fallenOf: _text(json['fallenOf']).trim(),
+      fallenWinner: _text(json['fallenWinner']).trim(),
     );
+    // A save from before the story's nemesis (no `nemesisReason`): the
+    // Dominion takes the place it holds in a new game, unless the
+    // character is already Friendly with it, or it is out of the way.
+    if (json.containsKey('nemesisReason') ||
+        state.nemesis.isNotEmpty ||
+        state.fallen.contains(storyNemesisClan) ||
+        state.nemesisCooldown.containsKey(storyNemesisClan) ||
+        (state.standings[storyNemesisClan] ?? 0) >=
+            standingTiers[StandingTier.friendly]!.min) {
+      return state;
+    }
+    return state.copyWith(
+        nemesis: storyNemesisClan, nemesisReason: nemesisReasonStory);
   }
 }
 
@@ -1756,7 +1949,9 @@ bool canBeSworn(String factionId, ClanData data) =>
     released = current;
     current = '';
   }
-  if (current.isEmpty) {
+  // Of a fallen clan (clan_crisis.dart), no new oath until a banner of
+  // one's own.
+  if (current.isEmpty && state.fallenOf.isEmpty) {
     final candidates = [
       for (final e in values.entries)
         if (canBeSworn(e.key, data) && _swornLevel(e.value)) e.key,

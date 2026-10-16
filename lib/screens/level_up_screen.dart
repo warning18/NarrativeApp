@@ -11,7 +11,7 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/level_up_stats.dart';
-import 'training_picker.dart';
+import '../widgets/stat_pick_picker.dart';
 
 class LevelUpScreen extends ConsumerWidget {
   const LevelUpScreen({super.key});
@@ -83,7 +83,7 @@ class LevelUpScreen extends ConsumerWidget {
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            '${tr(ref, 'stat_points_available')}: ${session.statPoints}',
+                            '${tr(ref, 'stat_picks_left')}: ${session.pendingStatPicks}',
                             style: theme.textTheme.titleMedium
                                 ?.copyWith(color: canSpend ? ink.gold : null),
                           ),
@@ -100,7 +100,7 @@ class LevelUpScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 18),
-            const TrainingPicker(),
+            const StatPickPicker(),
             const SizedBox(height: 12),
             const LevelUpStats(tutorialTargets: true),
           ],

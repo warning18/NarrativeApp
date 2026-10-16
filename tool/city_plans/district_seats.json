@@ -1,0 +1,261 @@
+{
+  "rimewell": {
+    "rimewell_bell_square": [
+      "6100",
+      "6100_bell",
+      "6100_bell_failed",
+      "6100_clan_penitents_2",
+      "6100_clan_penitents_2_heard",
+      "6100_clan_penitents_2_broken"
+    ],
+    "rimewell_pilgrims_road": [
+      "6100_road",
+      "6100_knife",
+      "6100_debt_rising",
+      "6100_bread",
+      "6100_charter_signing",
+      "6100_clan_mire_2",
+      "6100_clan_mire_2_found",
+      "6100_clan_mire_2_fourth"
+    ],
+    "rimewell_ridge_post": [
+      "6100_clan_vigil_2",
+      "6100_clan_vigil_2_after",
+      "6100_stitcher_door",
+      "6100_keeper",
+      "6100_keeper_later"
+    ],
+    "rimewell_choir_well": [
+      "6100_house_scorched_choir",
+      "6100_house_scorched_choir_failed"
+    ]
+  },
+  "greyhithe": {
+    "greyhithe_shingle": [
+      "7200",
+      "7200_nets",
+      "7200_tide",
+      "7200_tide_failed",
+      "7200_relic",
+      "7200_ledger"
+    ],
+    "greyhithe_moorings": [
+      "7200_thieves_aboard",
+      "7200_fourth_piece",
+      "7200_returned",
+      "7200_followed",
+      "7200_courts_children",
+      "7200_stitcher",
+      "7200_clan_mire_3"
+    ],
+    "greyhithe_net_lofts": [
+      "7200_elder",
+      "7200_elder_later",
+      "7200_reflection",
+      "7200_stitcher_kin",
+      "7200_house_spire_fallen"
+    ],
+    "greyhithe_watch_stones": [
+      "7200_clan_vigil_3",
+      "7200_clan_vigil_3_changed",
+      "7200_clan_vigil_3_sworn"
+    ]
+  },
+  "wracks_end": {
+    "wracks_end_hull_houses": [
+      "5100",
+      "5100_headman",
+      "5100_headman_later",
+      "5100_nets",
+      "5100_house_fishbasket_line",
+      "5100_house_fishbasket_line_drawn",
+      "5100_house_tar_hands",
+      "5100_tar_hand_book",
+      "5100_keyholder_cut",
+      "5100_lysa_raid"
+    ],
+    "wracks_end_lamp_path": [
+      "5100_clan_dominion_1",
+      "5100_clan_dominion_1_lit",
+      "5100_clan_dominion_1_out",
+      "5100_drowned",
+      "5100_lysa_mask"
+    ],
+    "wracks_end_quay": [
+      "5100_clan_crows_1",
+      "5100_clan_crows_1_seen",
+      "5100_clan_crows_1_lost",
+      "5100_vote",
+      "5100_anvil_deaf_vote",
+      "5100_salvage",
+      "5100_salvage_failed"
+    ]
+  },
+  "cove_camp": {
+    "cove_camp_landing": [
+      "3001",
+      "3001_camp",
+      "4999_camp",
+      "7001",
+      "7800_nkem_later"
+    ],
+    "cove_camp_fireside": [
+      "7400",
+      "7400_reed",
+      "7400_reed_later",
+      "7400_herald",
+      "7400_herald_later",
+      "7400_chain",
+      "7400_chain_later"
+    ],
+    "cove_camp_palisade": [
+      "6002_siege",
+      "6002_siege_2",
+      "6002_siege_breach",
+      "6002_siege_end",
+      "6002_camp"
+    ],
+    "cove_camp_sail_loft": [
+      "7800",
+      "7800_council",
+      "7800_lines"
+    ]
+  },
+  "kindly_hill": {
+    "kindly_hill_fen_edge": [
+      "5200_house_barkbleeders",
+      "5200_house_barkbleeders_bled",
+      "5200_house_returned",
+      "5200_clan_mire_1",
+      "5200_clan_mire_1_edge",
+      "5200_clan_mire_1_answered",
+      "5200_barrows"
+    ],
+    "kindly_hill_hall": [
+      "5200",
+      "5200_riddles",
+      "5200_riddles_failed",
+      "5200_nell",
+      "5200_nell_later",
+      "5200_sleep"
+    ]
+  },
+  "highhearth": {
+    "highhearth_moot_hall": [
+      "6200",
+      "6200_hearth",
+      "6200_ghrem",
+      "6200_eldest",
+      "6200_eldest_later",
+      "6200_clan_compact_2",
+      "6200_clan_compact_2_refused"
+    ],
+    "highhearth_quarry": [
+      "6200_quarry_face",
+      "6200_quarry_face_fight",
+      "6200_house_quarrymen"
+    ],
+    "highhearth_long_houses": [
+      "6200_gate",
+      "6200_birth",
+      "6200_birth_failed"
+    ]
+  },
+  "emberwick": {
+    "emberwick_kilns": [
+      "3100",
+      "3100_kiln",
+      "3100_kiln_failed",
+      "3100_house_emberwives",
+      "3100_bread",
+      "3100_new_moon"
+    ],
+    "emberwick_smithy_lane": [
+      "3100_house_anvil_deaf",
+      "3100_house_anvil_deaf_failed",
+      "3100_widow",
+      "3100_widow_later"
+    ],
+    "emberwick_well_square": [
+      "3100_tithe",
+      "3100_house_cantors"
+    ]
+  },
+  "akagiri": {
+    "akagiri_springs": [
+      "3200",
+      "3200_springs",
+      "3200_circle",
+      "3200_house_road_exorcists"
+    ],
+    "akagiri_brewhouse": [
+      "3200_brew",
+      "3200_brew_failed"
+    ],
+    "akagiri_forge_terrace": [
+      "3200_smith",
+      "3200_smith_later",
+      "3200_blade",
+      "3200_clan_penitents_1"
+    ]
+  },
+  "white_wells": {
+    "white_wells_pool": [
+      "1200",
+      "1000",
+      "1001",
+      "1002"
+    ],
+    "white_wells_caravan_ring": [
+      "1210"
+    ]
+  },
+  "reliquary_quarter": {
+    "reliquary_last_lantern": [
+      "6010_lantern",
+      "6010_lantern_keeper",
+      "6010_malrik",
+      "6010_lantern_manifest",
+      "6010_wickwarden",
+      "6010_orsabet",
+      "6010_count_short"
+    ],
+    "reliquary_chapels": [
+      "6010_chartkeeper",
+      "6010_chartkeeper_words",
+      "6010_chart_bought",
+      "6010_thread",
+      "6010_returned_roll",
+      "6010_heist_night",
+      "6010_clan_compact_3",
+      "6010_clan_compact_3_seen",
+      "6010_clan_compact_3_hammer",
+      "6010_clan_dominion_2",
+      "6010_lysa_dead",
+      "6010_masked",
+      "6010_masked_after",
+      "6010_confession",
+      "6010_confession_later",
+      "6010_penitent"
+    ],
+    "reliquary_frost_line": [
+      "6010_frost",
+      "6010_frost_failed",
+      "6010_hounds",
+      "6010_spawn",
+      "6010_candle_walk",
+      "6010_candle_walk_fight"
+    ]
+  },
+  "candlehold_lantern_hall": {
+    "candlehold_lantern_cliff": [
+      "7590_dominion",
+      "7590_vigil",
+      "7590_compact",
+      "7590_mire",
+      "7590_crows",
+      "7590_penitents",
+      "7590_open_hand"
+    ]
+  }
+}

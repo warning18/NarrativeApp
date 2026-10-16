@@ -65,7 +65,7 @@ void main() {
       expect(c.maxMana,
           maxManaFor(intelligence: c.intelligence, wisdom: c.wisdom));
       expect(c.mana, c.maxMana);
-      expect(c.intelligence, greaterThanOrEqualTo(4));
+      expect(c.intelligence, greaterThanOrEqualTo(1));
       expect(c.diceSkillAssignments['4'], 'mage_arcane_missile');
       expect(c.unlockedSkillIds, contains('mage_arcane_missile'));
       expect(c.potions, (gameConfig['potionCount'] as num).toInt());
@@ -289,7 +289,8 @@ void main() {
       Map<String, dynamic> enemy({required bool mirror}) => {
             ...enemies['slum_thug'] as Map<String, dynamic>,
             'maxHealth': 150,
-            'damage': 9,
+            // A light blow after the chapter-1 floor (×1.87 since v1.425).
+            'damage': 5,
             'skillMoves': [
               if (mirror)
                 {

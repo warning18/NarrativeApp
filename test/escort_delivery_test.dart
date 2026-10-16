@@ -33,11 +33,13 @@ Map<String, dynamic> _zone(String id) =>
         as Map<String, dynamic>)[id] as Map<String, dynamic>;
 
 /// A seed whose expedition opens on one of [keys]: the screen first rolls
-/// the alignment event (nothing, for a Neutral party, over
-/// [temptationChance]), then draws the stage.
+/// the alignment event (for a Neutral party, a light hunter's roll under
+/// [hunterChanceFor], then a temptation's under [temptationChance]: no
+/// event over both), then draws the stage.
 int _seedOpeningOn(ExpeditionKind kind, Set<String> keys) {
   for (var seed = 0;; seed++) {
     final random = Random(seed);
+    if (random.nextDouble() < hunterChanceFor(0)) continue;
     if (random.nextDouble() < temptationChance) continue;
     final step = buildKindStep(kind,
         chapter: 3,

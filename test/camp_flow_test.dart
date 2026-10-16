@@ -36,12 +36,26 @@ Future<void> _settle(WidgetTester tester) async {
         () => Future<void>.delayed(const Duration(milliseconds: 100)));
     await tester.pump(const Duration(milliseconds: 100));
   }
+  // A reward card waits for its button (it does not go by itself).
+  while (find.byKey(const Key('reward_button')).evaluate().isNotEmpty) {
+    await tester.tap(find.byKey(const Key('reward_button')));
+    for (var i = 0; i < 3; i++) {
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 100)));
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+  }
 }
 
 /// Lets a notice (a few seconds on screen, over everything) go.
 Future<void> _waitOutNotices(WidgetTester tester) async {
   await tester.pump(const Duration(seconds: 3));
   await _settle(tester);
+  // A reward card waits for its button (it does not go by itself).
+  while (find.byKey(const Key('reward_button')).evaluate().isNotEmpty) {
+    await tester.tap(find.byKey(const Key('reward_button')));
+    await _settle(tester);
+  }
 }
 
 Finder _tab(String label) =>

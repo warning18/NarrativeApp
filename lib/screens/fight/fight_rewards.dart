@@ -59,6 +59,9 @@ extension _FightRewards on _FightScreenState {
       // are summed across all of them, not just the one FightScreen was
       // originally constructed with.
       final defeated = _enemies.where((e) => !e.isAlive).toList();
+      // The ladder's chest, then its place rules (feature_unlocks.dart).
+      await notifier.noteFightWonOnLadder(tutorial: widget.modifiers.tutorial);
+      if (!mounted) return;
       // A rival's hunter beaten yields: spared or finished
       // (hunter_mercy.dart). Spared, it keeps its gold and its loot.
       final spared = await _settleHunter(defeated);
@@ -203,7 +206,12 @@ extension _FightRewards on _FightScreenState {
         recentLootIds: session.recentLootIds,
         signatureItemIds: signatureIds,
       );
-      final chest = spared
+      // On the feature ladder the lesson (105) brings no chest: the next
+      // fight won does (feature_unlocks.dart).
+      final noChest = spared ||
+          (widget.modifiers.tutorial &&
+              !session.featureOpen(GameFeature.chest));
+      final chest = noChest
           ? const LootBoxResult(
               tier: ChestTier.wooden,
               roll: 0,
@@ -245,13 +253,14 @@ extension _FightRewards on _FightScreenState {
       // The saved auto-open choice, even on the first chest after a start.
       await ref.read(chestAutoOpenProvider.notifier).loaded;
       if (!mounted) return;
-      final spoils = spared
+      final spoils = noChest
           ? SpoilsChoices.none
           : await showSpoilsChestDialog(
               context,
               result: chest,
               items: items,
               autoOpen: ref.read(chestAutoOpenProvider),
+              autoPlay: true,
               language: lang,
               equippedItemIds: session.equippedItemIds,
               canEquip: (itemId) {
@@ -355,15 +364,30 @@ extension _FightRewards on _FightScreenState {
         for (final id in loot)
           (items[id] as Map<String, dynamic>?)?['itemName']?.toString() ?? id,
       ];
+      // A foe's last words (enemies.json `defeat`, a nemesis's champion's).
+      final enemyRecords =
+          ref.read(localizedDbProvider(enemiesSchema)).value ?? const {};
+      final defeatLines = [
+        for (final e in defeated)
+          if ((enemyRecords[e.enemyId] as Map?)?['defeat']
+              case final String line when line.isNotEmpty)
+            line,
+      ];
+      final victoryLine =
+          '${trFor(lang, 'victory_prefix')} +$goldGain ${trFor(lang, 'gold_label')}, '
+          '+$xpGain XP'
+          '${lootNames.isNotEmpty ? ", ${trFor(lang, 'loot_label')}: ${lootNames.join(", ")}" : ""}.';
+      // Kept for the next scene: the fight closes itself.
+      final outcome = ref.read(lastFightOutcomeProvider);
+      if (outcome != null) {
+        ref.read(lastFightOutcomeProvider.notifier).state =
+            outcome.withSpoils(victoryLine);
+      }
       _update(() {
-        _log.add(
-          _LogEntry(
-            '${trFor(lang, 'victory_prefix')} +$goldGain ${trFor(lang, 'gold_label')}, '
-            '+$xpGain XP'
-            '${lootNames.isNotEmpty ? ", ${trFor(lang, 'loot_label')}: ${lootNames.join(", ")}" : ""}.',
-            _LogKind.victory,
-          ),
-        );
+        for (final line in defeatLines) {
+          _log.add(_LogEntry(line, _LogKind.banter));
+        }
+        _log.add(_LogEntry(victoryLine, _LogKind.victory));
         _log.add(_LogEntry(
           '${trFor(lang, chestTierLabelKey(chest.tier))} '
           '(${trFor(lang, 'fortune_roll_label')} ${chest.roll})',
@@ -409,6 +433,7 @@ extension _FightRewards on _FightScreenState {
         showOfferIfWaiting(context, ref);
       }
       _update(() => _settled = true);
+      unawaited(_leaveAfterVictory());
     } else {
       // Ally HP changes from a lost fight are never persisted (mirrors the
       // player's own full-heal-on-loss below — neither side is punished
@@ -424,7 +449,22 @@ extension _FightRewards on _FightScreenState {
       // A pact runs its fight down, won or lost. A link in a chain with no
       // healing keeps its wounds: the player is left standing, barely.
       final keepWounds = widget.modifiers.keepWounds;
+      // A lost fight still teaches something: [lostFightXpShare] of its XP.
+      final lostXp = widget.modifiers.isTest
+          ? 0
+          : (_enemies.fold<int>(
+                      0,
+                      (sum, e) =>
+                          sum +
+                          scaledReward(
+                              (e.data['xpReward'] as num?)?.toInt() ?? 0,
+                              _playerLevel)) *
+                  widget.modifiers.rewardMultiplier *
+                  chapterRewardMultiplier(_chapter) *
+                  lostFightXpShare)
+              .round();
       await notifier.applyCombatResult(
+          xpGain: lostXp,
           keepWounds: keepWounds,
           hpAfter: keepWounds ? max(1, player.currentHealth) : player.maxHealth,
           manaAfter: keepWounds ? _mana : _maxMana,
@@ -434,6 +474,7 @@ extension _FightRewards on _FightScreenState {
         _log.add(_LogEntry(
             trFor(ref.read(appLanguageProvider), 'defeat_message'),
             _LogKind.defeat));
+        if (lostXp > 0) _log.add(_LogEntry('+$lostXp XP', _LogKind.info));
         _settled = true;
       });
     }
@@ -549,32 +590,16 @@ extension _FightRewards on _FightScreenState {
       final read = _bestPartyPerception() >= readAlignmentPerception
           ? readHunter(alignment, session.alignmentScore)
           : null;
-      spared = await showDialog<bool>(
-            context: context,
-            barrierDismissible: false,
-            builder: (dialogContext) => AlertDialog(
-              title: Text(trFor(lang, 'mercy_title')
-                  .replaceAll('{name}', hunter.displayName)),
-              content: Text([
-                trFor(lang, 'mercy_body'),
-                if (read != null)
-                  trFor(lang, 'mercy_read_${read.side}') +
-                      trFor(lang,
-                          read.close ? 'mercy_read_close' : 'mercy_read_far'),
-              ].join('\n\n')),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext, false),
-                  child: Text(trFor(lang, 'mercy_finish_button')),
-                ),
-                FilledButton(
-                  onPressed: () => Navigator.pop(dialogContext, true),
-                  child: Text(trFor(lang, 'mercy_spare_button')),
-                ),
-              ],
-            ),
-          ) ??
-          false;
+      spared = await showMercyDialog(
+        context,
+        enemyId: hunter.enemyId,
+        name: hunter.displayName,
+        clan: ref
+            .read(clanDataProvider)
+            .faction(hunter.data['hunterClan'].toString()),
+        lang: lang,
+        read: read,
+      );
       if (!mounted) return false;
     }
     await ref.read(playerSessionProvider.notifier).settleHunter(
@@ -592,6 +617,39 @@ extension _FightRewards on _FightScreenState {
         _LogKind.info)));
     return spared;
   }
+
+  /// A won fight closes itself (the user's call, v1.412): once nothing
+  /// above it waits on the player (the level-up, an offer, any dialog),
+  /// after [victoryAutoLeaveDelay] for the rewards to be read -- at once
+  /// with reduced motion. A dialog opened meanwhile starts the wait over;
+  /// a tap ([_victoryTapArea]) leaves at once. The rewards stay in the
+  /// log, and in the next scene's opening line ([FightOutcome.spoils]).
+  Future<void> _leaveAfterVictory() async {
+    const step = Duration(milliseconds: 100);
+    var shown = Duration.zero;
+    while (true) {
+      if (!mounted || _leaving) return;
+      final route = ModalRoute.of(context);
+      if (route == null || route.isCurrent) {
+        if (MediaQuery.of(context).disableAnimations ||
+            shown >= victoryAutoLeaveDelay) {
+          await _leaveFight();
+          return;
+        }
+        shown += step;
+      } else {
+        shown = Duration.zero;
+      }
+      await Future<void>.delayed(step);
+    }
+  }
+
+  /// The battle, which a tap leaves once the fight is won and settled.
+  Widget _victoryTapArea(Widget child) => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: _over && _won && _settled ? _leaveFight : null,
+        child: child,
+      );
 
   /// The end-of-fight button: back to the story on a win, retreat (or the
   /// permadeath flow) on a loss.

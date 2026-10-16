@@ -67,6 +67,16 @@
     "blurb_fr": "Une taverne devant et autre chose derrière : une salle sans enseigne, quatre tables, une cage pour les dés, un comptoir des comptes et une galerie au-dessus. L’histoire commence à ses tables.",
     "landmark": ""
   },
+  "alster_family_house": {
+    "level": "building",
+    "parent": "alster_lower_town",
+    "kind": "house",
+    "name": "The family house",
+    "name_fr": "La maison de famille",
+    "blurb": "The house you grew up in, on a quiet street of the Lower Town: a kitchen door, shutters, a back room over packed earth, and under the boards a trapdoor nobody knew was there.",
+    "blurb_fr": "La maison de votre enfance, dans une rue tranquille de la Ville basse : une porte de cuisine, des volets, une arrière-salle sur la terre battue, et sous le plancher une trappe que personne ne savait là.",
+    "landmark": ""
+  },
   "alster_stone_bridge": {
     "level": "district",
     "parent": "alster",
@@ -172,6 +182,26 @@
     "blurb": "An oasis of white clay huts round a green pool, where the salt caravans kneel their camels and nobody asks where you came from.",
     "blurb_fr": "Une oasis de cases d’argile blanche autour d’une mare verte, où les caravanes de sel font s’agenouiller leurs chameaux et où personne ne demande d’où l’on vient.",
     "landmark": "wells"
+  },
+  "white_wells_pool": {
+    "level": "district",
+    "parent": "white_wells",
+    "name": "The Pool",
+    "name_fr": "Le Bassin",
+    "blurb": "A green pool among white clay huts, where the salt caravans kneel their camels, nobody asks where you came from, and a traveller can sleep beside the water.",
+    "blurb_fr": "Un bassin vert parmi des huttes d’argile blanche, où les caravanes de sel font agenouiller leurs chameaux, où personne ne demande d’où vous venez, et où l’on peut dormir au bord de l’eau.",
+    "landmark": "",
+    "glyph": "field"
+  },
+  "white_wells_caravan_ring": {
+    "level": "district",
+    "parent": "white_wells",
+    "name": "The Caravan Ring",
+    "name_fr": "Le Cercle des Caravanes",
+    "blurb": "The ring of kneeling camels and bedrolls round the fires, where strangers are fed and watched in equal measure.",
+    "blurb_fr": "Le cercle des chameaux agenouillés et des couchages autour des feux, où l’on nourrit les étrangers et où on les observe à parts égales.",
+    "landmark": "",
+    "glyph": "market"
   },
   "salt_coast": {
     "level": "country",
@@ -356,6 +386,48 @@
     "landmark": "camp",
     "water": "shore"
   },
+  "cove_camp_landing": {
+    "level": "district",
+    "tags": ["sea"],
+    "parent": "cove_camp",
+    "name": "The Landing",
+    "name_fr": "Le Débarcadère",
+    "blurb": "The shingle where the Eel comes in, and where every new chapter begins: a keel on the stones, a fire already lit.",
+    "blurb_fr": "La grève où l’Anguille accoste, et où chaque nouveau chapitre commence : une quille sur les galets, un feu déjà allumé.",
+    "landmark": "",
+    "glyph": "wharf"
+  },
+  "cove_camp_fireside": {
+    "level": "district",
+    "parent": "cove_camp",
+    "name": "The Fireside",
+    "name_fr": "Le Coin du Feu",
+    "blurb": "The big fire, where the factors, heralds and pilots come to say what they have been sent to say, and the Host reads the letters it was asked not to read.",
+    "blurb_fr": "Le grand feu, où les facteurs, les hérauts et les pilotes viennent dire ce qu’on les a envoyés dire, et où l’Hôte lit les lettres qu’on lui a demandé de ne pas lire.",
+    "landmark": "",
+    "glyph": "hall"
+  },
+  "cove_camp_palisade": {
+    "level": "district",
+    "tags": ["stronghold"],
+    "parent": "cove_camp",
+    "name": "The Palisade",
+    "name_fr": "La Palissade",
+    "blurb": "The wall the camp built from salvage and nerve, with the corner nobody ever finished, and the bell hung on it for storms and for worse.",
+    "blurb_fr": "Le mur que le camp a bâti de récupération et de nerf, avec l’angle que nul n’a jamais fini, et la cloche qu’on y a pendue pour les tempêtes et pour pire.",
+    "landmark": "",
+    "glyph": "gate"
+  },
+  "cove_camp_sail_loft": {
+    "level": "district",
+    "parent": "cove_camp",
+    "name": "The Sail-Loft",
+    "name_fr": "La Voilerie",
+    "blurb": "The only roof in the cove big enough to hold the Host’s council, where plans are made on sailcloth and the muster is counted twice.",
+    "blurb_fr": "Le seul toit de la crique assez grand pour abriter le conseil de l’Hôte, où l’on fait des plans sur de la toile à voile et où l’on compte deux fois les troupes.",
+    "landmark": "",
+    "glyph": "yard"
+  },
   "ashlands": {
     "level": "zone",
     "parent": "ashen_coast",
@@ -446,6 +518,36 @@
     "blurb_fr": "Les familles des forgerons au creux des vieux terrils : une douzaine de fours, un puits, et du charbon de bois pour qui paie.",
     "landmark": "emberwick"
   },
+  "emberwick_kilns": {
+    "level": "district",
+    "parent": "emberwick",
+    "name": "The Kilns",
+    "name_fr": "Les Fours",
+    "blurb": "A dozen kilns in a hollow of the slag heaps, black bread, banked fires on the new moon, and the Emberwives who turn charcoal into something a forge can trust.",
+    "blurb_fr": "Une douzaine de fours dans un creux des crassiers, du pain noir, des feux couverts à la nouvelle lune, et les Charbonnières qui font du charbon de bois quelque chose en quoi une forge peut avoir confiance.",
+    "landmark": "",
+    "glyph": "yard"
+  },
+  "emberwick_smithy_lane": {
+    "level": "district",
+    "parent": "emberwick",
+    "name": "Smithy Lane",
+    "name_fr": "La Ruelle des Forges",
+    "blurb": "The lane of cold anvils, where the oldest smith has not heard a hammer in thirty years and still cannot keep away, and the widow keeps her husband’s hammer on the lintel.",
+    "blurb_fr": "La ruelle des enclumes froides, où le plus vieux forgeron n’a pas entendu un marteau depuis trente ans et ne peut pourtant s’en passer, et où la veuve garde le marteau de son mari sur le linteau.",
+    "landmark": "",
+    "glyph": "market"
+  },
+  "emberwick_well_square": {
+    "level": "district",
+    "parent": "emberwick",
+    "name": "The Well Square",
+    "name_fr": "La Place du Puits",
+    "blurb": "The village well and the one open space, where the Spire sends for its tenth of the charcoal and a cantor walks down with a bell-lantern and the seven hours of the day.",
+    "blurb_fr": "Le puits du village et le seul espace dégagé, où la Flèche vient chercher sa dîme de charbon et où un chantre descend avec une lanterne-cloche et les sept heures du jour.",
+    "landmark": "",
+    "glyph": "field"
+  },
   "spire_of_judgment": {
     "level": "location",
     "danger": 3,
@@ -483,6 +585,37 @@
     "blurb_fr": "Le village des oni sur les terrasses au-dessus des sources chaudes, où pendent les cloches laissées par les exorcistes de la Flèche.",
     "landmark": "akagiri"
   },
+  "akagiri_springs": {
+    "level": "district",
+    "tags": ["wild"],
+    "parent": "akagiri",
+    "name": "The Springs",
+    "name_fr": "Les Sources",
+    "blurb": "Pools that come out of the rock hot enough to hurt, a circle of salt across the path with a bell at each point, and the village’s dislike of exorcists, hung from every eave.",
+    "blurb_fr": "Des bassins qui jaillissent de la roche assez chauds pour faire mal, un cercle de sel en travers du sentier avec une cloche à chaque point, et l’aversion du village pour les exorcistes, pendue à chaque avant-toit.",
+    "landmark": "",
+    "glyph": "field"
+  },
+  "akagiri_brewhouse": {
+    "level": "district",
+    "parent": "akagiri",
+    "name": "The Brewhouse",
+    "name_fr": "La Brasserie",
+    "blurb": "Where the oni brew their spirit from red rice and something they will not name, and serve it in cups the size of helmets.",
+    "blurb_fr": "Là où les oni brassent leur alcool de riz rouge et d’autre chose qu’ils refusent de nommer, et le servent dans des coupes de la taille de casques.",
+    "landmark": "",
+    "glyph": "market"
+  },
+  "akagiri_forge_terrace": {
+    "level": "district",
+    "parent": "akagiri",
+    "name": "The Forge Terrace",
+    "name_fr": "La Terrasse de la Forge",
+    "blurb": "The top terrace, where a one-horned smith makes blades for no one in particular, and a banner is stitched in brown thread with the name of everyone the Spire hanged.",
+    "blurb_fr": "La terrasse du haut, où un forgeron à une corne fait des lames pour personne en particulier, et où l’on brode sur une bannière, en fil brun, le nom de tous ceux que la Flèche a pendus.",
+    "landmark": "",
+    "glyph": "yard"
+  },
   "grey_fen": {
     "level": "country",
     "parent": "ashen_continent",
@@ -515,6 +648,39 @@
     "landmark": "wrack",
     "water": "shore"
   },
+  "wracks_end_hull_houses": {
+    "level": "district",
+    "tags": ["sea"],
+    "parent": "wracks_end",
+    "name": "The Hull-Houses",
+    "name_fr": "Les Maisons-Coques",
+    "blurb": "Houses built from hulls, with a fish-oil lamp over every door and, over one, a painted hand; where the Tar-Hands refit boats overnight and forget it by morning.",
+    "blurb_fr": "Des maisons bâties dans des coques, une lampe à huile de poisson au-dessus de chaque porte et, au-dessus d’une seule, une main peinte ; où les Mains-de-Goudron refont des bateaux dans la nuit et l’oublient au matin.",
+    "landmark": "",
+    "glyph": "slum"
+  },
+  "wracks_end_lamp_path": {
+    "level": "district",
+    "tags": ["holy"],
+    "parent": "wracks_end",
+    "name": "The Lamp Path",
+    "name_fr": "Le Sentier de la Lampe",
+    "blurb": "The cliff path above the village, ending at a chapel no bigger than a boathouse with a lamp-room where the Wickwardens kept a flame, and the lamps that call the drowned.",
+    "blurb_fr": "Le sentier de la falaise au-dessus du village, qui s’achève devant une chapelle pas plus grande qu’un hangar à bateaux, avec une salle de lampe où les Garde-Mèches entretenaient une flamme, et les lampes qui appellent les noyés.",
+    "landmark": "",
+    "glyph": "temple"
+  },
+  "wracks_end_quay": {
+    "level": "district",
+    "tags": ["sea", "market"],
+    "parent": "wracks_end",
+    "name": "The Quay",
+    "name_fr": "Le Quai",
+    "blurb": "A short quay of black timber where crates move at night, the Anvil-Deaf vote in signs, and the Tribunal’s last clerk waits for a boat that will not come.",
+    "blurb_fr": "Un court quai de bois noir où l’on déplace des caisses la nuit, où les Sourds de l’Enclume votent par signes, et où le dernier greffier du Tribunal attend un bateau qui ne viendra pas.",
+    "landmark": "",
+    "glyph": "quay"
+  },
   "the_fen": {
     "level": "zone",
     "parent": "grey_fen",
@@ -536,6 +702,27 @@
     "blurb": "A green hill in the grey fen where it is always a summer evening, and where the oldest treaty on the coast is kept to the minute.",
     "blurb_fr": "Une colline verte dans le marais gris, où c’est toujours un soir d’été et où le plus vieux traité de la côte est tenu à la minute près.",
     "landmark": "kindly"
+  },
+  "kindly_hill_fen_edge": {
+    "level": "district",
+    "tags": ["wild", "haunted"],
+    "parent": "kindly_hill",
+    "name": "The Fen Edge",
+    "name_fr": "La Lisière du Marais",
+    "blurb": "Where the grey fen comes right up to the green and stops as if at a fence: the Barkbleeders’ cut trees, the Returned in their masks, and the reeds that call you by a name you have not heard since you were small.",
+    "blurb_fr": "Là où le marais gris arrive jusqu’au vert et s’arrête comme devant une clôture : les arbres entaillés des Saigne-Écorce, les Revenus en masque, et les roseaux qui vous appellent d’un nom que vous n’avez plus entendu depuis l’enfance.",
+    "landmark": "",
+    "glyph": "field"
+  },
+  "kindly_hill_hall": {
+    "level": "district",
+    "parent": "kindly_hill",
+    "name": "The Hall Under the Hill",
+    "name_fr": "La Salle sous la Colline",
+    "blurb": "Through the door in the hill: a hall where it is always a summer evening, a clock by the door, a riddle-game played for stakes, and a mortal girl called Nell by the hearth.",
+    "blurb_fr": "Par la porte dans la colline : une salle où c’est toujours un soir d’été, une horloge près de l’entrée, un jeu d’énigmes joué pour des enjeux, et près de l’âtre une mortelle nommée Nell.",
+    "landmark": "",
+    "glyph": "hall"
   },
   "drowned_cloister": {
     "level": "location",
@@ -585,6 +772,17 @@
     "blurb_fr": "Des rayons de crânes avec les marchandises entre les mâchoires, les déserteurs de la Cour, les cellules sèches des Corneilles derrière des portes noyées, et des guides qui connaissent le marais.",
     "landmark": "",
     "glyph": "market"
+  },
+  "mire_court": {
+    "level": "district",
+    "parent": "drowned_cloister",
+    "name": "The Mire's Court",
+    "name_fr": "La Cour du Marais",
+    "blurb": "A dry room in the middle of the wet, where the water has been asked to wait outside. Chairs are set for people who have not yet arrived, and every one of them has been told your name.",
+    "blurb_fr": "Une salle sèche au cœur de l’humide, où l’on a demandé à l’eau d’attendre dehors. Des sièges sont dressés pour des gens qui ne sont pas encore arrivés, et on leur a dit votre nom à tous.",
+    "landmark": "",
+    "glyph": "hall",
+    "controller": "mire"
   },
   "hollow_court": {
     "level": "location",
@@ -641,7 +839,7 @@
     "name": "The Reliquary Quarter",
     "name_fr": "Le Quartier des Reliquaires",
     "blurb": "Chapels and reliquaries given up street by street to the tear’s slow weather: frost on the cobbles in summer, and shadows that lie the wrong way.",
-    "blurb_fr": "Des chapelles et des reliquaires abandonnés rue après rue au lent climat de la déchirure : du givre sur les pavés en été, et des ombres couchées du mauvais côté.",
+    "blurb_fr": "Des chapelles et des reliquaires abandonnés rue après rue à la lente météo de la déchirure : du givre sur les pavés en plein été, et des ombres qui tombent du mauvais côté.",
     "landmark": "reliquary",
     "glyph": "temple"
   },
@@ -658,6 +856,39 @@
     "landmark": "heart",
     "glyph": "void"
   },
+  "reliquary_last_lantern": {
+    "level": "district",
+    "tags": ["holy"],
+    "parent": "black_reliquary",
+    "name": "Last Lantern Street",
+    "name_fr": "La Rue de la Dernière Lanterne",
+    "blurb": "The one street still lit, where a Wickwarden sells lamp-oil and charms one street from the tear, and a widow lights a candle for each person it has taken.",
+    "blurb_fr": "La seule rue encore éclairée, où une Garde-Mèche vend de l’huile de lampe et des talismans à une rue de la déchirure, et où une veuve allume une chandelle pour chacun de ceux qu’elle a pris.",
+    "landmark": "",
+    "glyph": "market"
+  },
+  "reliquary_chapels": {
+    "level": "district",
+    "tags": ["holy"],
+    "parent": "black_reliquary",
+    "name": "The Chapels of the Chair",
+    "name_fr": "Les Chapelles à la Chaise",
+    "blurb": "The inner chapels, their saints chipped off the walls by people who no longer wished to be watched: the chart-keeper, the Reliquary Thieves’ meeting, a confession, and the chapel with the chair.",
+    "blurb_fr": "Les chapelles intérieures, leurs saints écaillés des murs par des gens qui ne voulaient plus être regardés : la gardienne des cartes, la réunion des Voleurs de Reliquaire, une confession, et la chapelle à la chaise.",
+    "landmark": "",
+    "glyph": "temple"
+  },
+  "reliquary_frost_line": {
+    "level": "district",
+    "tags": ["haunted"],
+    "parent": "black_reliquary",
+    "name": "The Frost Line",
+    "name_fr": "La Limite du Givre",
+    "blurb": "Past the line where the Quarter stops being a quarter: cobbles rimed white in summer, a pattern in the frost, and what the tear sends down the streets, with the shape of dogs and the stained glass for a hide.",
+    "blurb_fr": "Au-delà de la ligne où le Quartier cesse d’être un quartier : des pavés givrés en plein été, un dessin dans le givre, et ce que la déchirure envoie dans les rues, qui a la forme de chiens et se vêt de vitraux.",
+    "landmark": "",
+    "glyph": "void"
+  },
   "rimewell": {
     "level": "location",
     "danger": 0,
@@ -668,6 +899,50 @@
     "blurb": "A pilgrims’ halt on the road into the Black Reliquary, where the frost came first and a bell rings on its own at the hour the tear opened.",
     "blurb_fr": "Une halte de pèlerins sur la route du Reliquaire Noir, où le givre est arrivé en premier et où une cloche sonne seule à l’heure où la déchirure s’est ouverte.",
     "landmark": "rimewell"
+  },
+  "rimewell_bell_square": {
+    "level": "district",
+    "tags": ["haunted"],
+    "parent": "rimewell",
+    "name": "The Bell Square",
+    "name_fr": "La Place de la Cloche",
+    "blurb": "A square of frozen cobbles round a bell that rings by itself at the hour the tear opened, and the penitents who come to hear what it is counting.",
+    "blurb_fr": "Une place de pavés gelés autour d’une cloche qui sonne toute seule à l’heure où la déchirure s’est ouverte, et les pénitents qui viennent entendre ce qu’elle compte.",
+    "landmark": "",
+    "glyph": "market"
+  },
+  "rimewell_pilgrims_road": {
+    "level": "district",
+    "tags": ["wild"],
+    "parent": "rimewell",
+    "name": "The Pilgrims’ Road",
+    "name_fr": "La Route des Pèlerins",
+    "blurb": "The last stretch of the road into the Black Reliquary, where the frost walks beside you, and things come down that were not there last year.",
+    "blurb_fr": "Le dernier tronçon de la route vers le Reliquaire Noir, où le givre marche à vos côtés, et d’où descendent des choses qui n’y étaient pas l’an dernier.",
+    "landmark": "",
+    "glyph": "gate"
+  },
+  "rimewell_ridge_post": {
+    "level": "district",
+    "tags": ["stronghold"],
+    "parent": "rimewell",
+    "name": "The Ridge Post",
+    "name_fr": "Le Poste de la Crête",
+    "blurb": "A stone post on the rise above the halt, where the Vigil’s lamp has not gone out in thirty-eight years, and a needle is always working somewhere in the frost.",
+    "blurb_fr": "Un poste de pierre sur la crête au-dessus de l’étape, où la lampe de la Veille n’est pas éteinte depuis trente-huit ans, et où une aiguille travaille toujours quelque part dans le givre.",
+    "landmark": "",
+    "glyph": "keep"
+  },
+  "rimewell_choir_well": {
+    "level": "district",
+    "tags": ["holy", "haunted"],
+    "parent": "rimewell",
+    "name": "The Choir Well",
+    "name_fr": "Le Puits du Chœur",
+    "blurb": "A well at the edge of the halt where the Scorched Choir sings the one name it still remembers, down the shaft, once a night.",
+    "blurb_fr": "Un puits au bord de l’étape où le Chœur Calciné chante, dans le conduit, une fois par nuit, le seul nom dont il se souvienne encore.",
+    "landmark": "",
+    "glyph": "temple"
   },
   "highhearth": {
     "level": "location",
@@ -681,6 +956,38 @@
     "blurb": "Doors like the ends of barns below the Frost Quarry, built for people three times your height: forty giants left of four thousand, and a fire six hundred years old.",
     "blurb_fr": "Des portes larges comme des granges sous la Carrière de Givre, bâties pour des gens trois fois plus grands que vous : quarante géants sur quatre mille, et un feu vieux de six cents ans.",
     "landmark": "highhearth"
+  },
+  "highhearth_moot_hall": {
+    "level": "district",
+    "parent": "highhearth",
+    "name": "The Moot-Hall",
+    "name_fr": "La Salle du Conseil",
+    "blurb": "The giants’ great hall, built for people three times your height, with the fire that has not gone out in six hundred years, and the eldest who remembers everything.",
+    "blurb_fr": "La grande salle des géants, bâtie pour des gens trois fois plus hauts que vous, avec le feu qui ne s’est pas éteint depuis six cents ans, et l’aînée qui se souvient de tout.",
+    "landmark": "",
+    "glyph": "hall"
+  },
+  "highhearth_quarry": {
+    "level": "district",
+    "tags": ["wild"],
+    "parent": "highhearth",
+    "name": "The Frost Quarry",
+    "name_fr": "La Carrière de Givre",
+    "blurb": "The cut face at the back of the quarry, six centuries of tool-marks on it, where the Compact’s Quarrymen have come to cut stone again at the giants’ invitation.",
+    "blurb_fr": "La paroi taillée au fond de la carrière, six siècles de marques d’outils, où les Carriers du Pacte sont revenus tailler la pierre à l’invitation des géants.",
+    "landmark": "",
+    "glyph": "yard"
+  },
+  "highhearth_long_houses": {
+    "level": "district",
+    "tags": ["stronghold"],
+    "parent": "highhearth",
+    "name": "The Long Houses",
+    "name_fr": "Les Longues Maisons",
+    "blurb": "The doors like barn ends, and the gate they close at dusk against the things that come down out of the frost; and the house where a child has not been born in eleven years.",
+    "blurb_fr": "Les portes comme des pignons de grange, et la porte qu’on ferme au crépuscule contre ce qui descend du givre ; et la maison où un enfant n’est pas né depuis onze ans.",
+    "landmark": "",
+    "glyph": "gate"
   },
   "hollow_cape": {
     "level": "country",
@@ -758,6 +1065,50 @@
     "blurb_fr": "Un village de pêcheurs que la déchirure a dévoré sur une autre côte et recraché ici, filets en main et visages gris.",
     "landmark": "greyhithe",
     "water": "shore"
+  },
+  "greyhithe_shingle": {
+    "level": "district",
+    "tags": ["sea", "haunted"],
+    "parent": "greyhithe",
+    "name": "The Shingle",
+    "name_fr": "La Grève",
+    "blurb": "The grey beach where the ebb leaves things it has no business leaving: a chapel bell, a child’s shoe, a purse, and the Crows’ brigs lying off the point.",
+    "blurb_fr": "La grève grise où le reflux laisse ce qu’il n’a pas à laisser : une cloche de chapelle, un soulier d’enfant, une bourse, et les brigs des Corneilles au large de la pointe.",
+    "landmark": "",
+    "glyph": "wharf"
+  },
+  "greyhithe_moorings": {
+    "level": "district",
+    "tags": ["sea"],
+    "parent": "greyhithe",
+    "name": "The Moorings",
+    "name_fr": "Les Amarres",
+    "blurb": "Where the Eel lies at her rope, and where boats come out to her in the small hours with sacking on the oars and a grey lantern in the bow.",
+    "blurb_fr": "Là où l’Anguille tire sur son amarre, et où des barques viennent la rejoindre à la nuit avancée, du sac sur les avirons et une lanterne grise à la proue.",
+    "landmark": "",
+    "glyph": "quay"
+  },
+  "greyhithe_net_lofts": {
+    "level": "district",
+    "tags": ["haunted"],
+    "parent": "greyhithe",
+    "name": "The Net-Lofts",
+    "name_fr": "Les Séchoirs",
+    "blurb": "The village’s lofts and low houses, faces and all: a place the tear ate on some other coast and coughed up here, and the people who remember it.",
+    "blurb_fr": "Les séchoirs et les maisons basses du village, avec leurs visages : un lieu que la déchirure a mangé sur une autre côte et recraché ici, et les gens qui s’en souviennent.",
+    "landmark": "",
+    "glyph": "slum"
+  },
+  "greyhithe_watch_stones": {
+    "level": "district",
+    "tags": ["holy"],
+    "parent": "greyhithe",
+    "name": "The Watch Stones",
+    "name_fr": "Les Pierres de Garde",
+    "blurb": "A ring of standing stones above the shingle where the Vigil’s spears stand with their eyes open and the oldest oath on the coast is sworn again.",
+    "blurb_fr": "Un cercle de pierres dressées au-dessus de la grève où les lances de la Veille se tiennent les yeux ouverts, et où l’on jure de nouveau le plus vieux serment de la côte.",
+    "landmark": "",
+    "glyph": "field"
   },
   "white_fleet_grave": {
     "level": "location",
@@ -858,8 +1209,8 @@
     "parent": "candlehold",
     "name": "The Gates",
     "name_fr": "Les Portes",
-    "blurb": "The harbour chain, the steps and the city’s gates (the Sun, the Anvil, the Reed and the Exorcists’), shut to anyone who comes without a banner.",
-    "blurb_fr": "La chaîne du port, les marches et les portes de la ville (du Soleil, de l’Enclume, des Roseaux et des Exorcistes), closes à qui vient sans bannière.",
+    "blurb": "The harbour chain, the steps and the city’s gates (the Sun, the Anvil, the Reed and the Exorcists’), shut to anyone who comes without a banner; where each clan arrives in its own way.",
+    "blurb_fr": "La chaîne du port, les marches et les portes de la ville (celles du Soleil, de l’Enclume, du Roseau et des Exorcistes), fermées à qui vient sans bannière ; où chaque clan arrive à sa façon.",
     "landmark": "",
     "glyph": "gate"
   },
@@ -873,8 +1224,19 @@
     "name": "The Lantern Hall",
     "name_fr": "La Salle de la Lanterne",
     "blurb": "The hall at the top of the stair, under the First Lantern, where the Throne waits and whoever holds the doors must be faced.",
-    "blurb_fr": "La salle en haut de l’escalier, sous la Première Lanterne, où attend le Trône et où il faut affronter qui en tient les portes.",
+    "blurb_fr": "La salle au sommet de l’escalier, sous la Première Lanterne, où le Trône attend et où il faut affronter celui qui tient les portes.",
     "landmark": "",
     "glyph": "hall"
+  },
+  "candlehold_lantern_cliff": {
+    "level": "district",
+    "tags": ["holy", "stronghold"],
+    "parent": "candlehold",
+    "name": "The Lantern Cliff",
+    "name_fr": "La Falaise de la Lanterne",
+    "blurb": "The cliff under the First Lantern, where the Houses gather to see who is crowned, and each clan crowns its own way.",
+    "blurb_fr": "La falaise sous la Première Lanterne, où les Maisons se rassemblent pour voir qui est couronné, et où chaque clan couronne à sa façon.",
+    "landmark": "",
+    "glyph": "field"
   }
 }

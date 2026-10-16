@@ -5,10 +5,12 @@
 // chart colours.
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show mapEquals;
 import 'package:flutter/material.dart';
 
 import '../../data/map_charts.dart';
 import '../../theme/stitched_ink.dart' show InkFonts;
+import '../journey_banner_pin.dart' show PinBanner, paintBannerPin;
 import 'city_chart.dart';
 
 /// How far in (the view's scale over the fitted one) the lots grow roofs,
@@ -29,6 +31,8 @@ class CityChartPainter extends CustomPainter {
     this.selectedWayId,
     this.focusDistrict,
     this.numbers = const {},
+    this.banners = const {},
+    this.bannersDark = true,
     this.pulse = 0,
   });
 
@@ -55,6 +59,11 @@ class CityChartPainter extends CustomPainter {
 
   /// A number on a way's pin, by way id (the host's list rows carry it).
   final Map<String, int> numbers;
+
+  /// The ways that hang as a banner (by way id) instead of a round pin: the
+  /// Journey's categories (see journey_banner_pin.dart).
+  final Map<String, PinBanner> banners;
+  final bool bannersDark;
 
   /// 0 to 1, repeating: the party's mark breathing.
   final double pulse;
@@ -365,11 +374,38 @@ class CityChartPainter extends CustomPainter {
   void _labels(Canvas canvas) {
     final p = palette;
     final inv = 1 / scale;
+    // The names of the districts on the whole city, kept clear of each other
+    // (a small city's districts sit close): each slides down or up by its own
+    // height until it finds room (v1.425).
+    final placed = <Rect>[];
     for (final d in chart.districts) {
       final known = _known(d.id);
       if (detailed && focusDistrict != d.id) continue;
+      var shift = 0.0;
+      if (known && focusDistrict == null) {
+        final tp = _text(d.name, 12.5, p.place, family: InkFonts.display);
+        final w = (tp.width + 14) * inv, h = (tp.height + 8) * inv;
+        Rect at(double dy) => Rect.fromCenter(
+            center: d.centre + Offset(0, dy * inv), width: w, height: h);
+        final step = tp.height + 10;
+        for (final dy in [
+          0.0,
+          step,
+          -step,
+          2 * step,
+          -2 * step,
+          3 * step,
+          -3 * step,
+        ]) {
+          if (!placed.any((r) => r.overlaps(at(dy)))) {
+            shift = dy;
+            break;
+          }
+        }
+        placed.add(at(shift));
+      }
       canvas.save();
-      canvas.translate(d.centre.dx, d.centre.dy);
+      canvas.translate(d.centre.dx, d.centre.dy + shift * inv);
       canvas.scale(inv);
       if (!known) {
         final q = _text('?', 26, d.colour,
@@ -407,7 +443,7 @@ class CityChartPainter extends CustomPainter {
       canvas.save();
       canvas.translate(b.at.dx, b.at.dy);
       canvas.scale(inv);
-      final tp = _text(b.name, 9.5, p.place, w: FontWeight.w500);
+      final tp = _text(b.name, 11, p.place, w: FontWeight.w500);
       final below = Offset(-tp.width / 2, 12);
       canvas.drawRRect(
           RRect.fromRectAndRadius(
@@ -425,7 +461,7 @@ class CityChartPainter extends CustomPainter {
       chart.buildingOf(w)?.at ?? chart.districts[w.district].centre;
 
   /// The pins' radius on the screen.
-  static const double pinRadius = 11;
+  static const double pinRadius = 12;
 
   void _pins(Canvas canvas) {
     final p = palette;
@@ -467,6 +503,18 @@ class CityChartPainter extends CustomPainter {
       canvas.scale(inv);
       // The pin sits just above its building.
       canvas.translate(0, -16);
+      final banner = banners[w.id];
+      if (banner != null) {
+        // A banner hangs with its hem on the building, its middle where the
+        // round pin's centre would be (so the tap lands as it did).
+        canvas.save();
+        canvas.translate(-13, -19);
+        paintBannerPin(canvas, banner, dark: bannersDark, lit: selected);
+        canvas.restore();
+        if (w.id == goalWayId) _paintGoalFlag(canvas, p, const Offset(3, -6));
+        canvas.restore();
+        continue;
+      }
       paintWayPin(canvas, w.kind, d.colour, p,
           selected: selected, goal: w.id == goalWayId);
       final n = numbers[w.id];
@@ -540,21 +588,28 @@ class CityChartPainter extends CustomPainter {
               ..lineTo(-3, 4.5),
             ink);
     }
-    if (goal) {
-      canvas.drawLine(
-          const Offset(5, -8),
-          const Offset(5, -19),
-          Paint()
-            ..color = p.mark
-            ..strokeWidth = 1.6);
-      canvas.drawPath(
-          Path()
-            ..moveTo(5, -19)
-            ..lineTo(13, -16)
-            ..lineTo(5, -13)
-            ..close(),
-          Paint()..color = p.mark);
-    }
+    if (goal) _paintGoalFlag(canvas, p, Offset.zero);
+  }
+
+  /// The small flag of the goal the player set, drawn over a round pin's
+  /// centre moved by [shift].
+  static void _paintGoalFlag(Canvas canvas, ChartPalette p, Offset shift) {
+    canvas.save();
+    canvas.translate(shift.dx, shift.dy);
+    canvas.drawLine(
+        const Offset(5, -8),
+        const Offset(5, -19),
+        Paint()
+          ..color = p.mark
+          ..strokeWidth = 1.6);
+    canvas.drawPath(
+        Path()
+          ..moveTo(5, -19)
+          ..lineTo(13, -16)
+          ..lineTo(5, -13)
+          ..close(),
+        Paint()..color = p.mark);
+    canvas.restore();
   }
 
   @override
@@ -570,5 +625,7 @@ class CityChartPainter extends CustomPainter {
       old.selectedWayId != selectedWayId ||
       old.focusDistrict != focusDistrict ||
       old.numbers != numbers ||
+      !mapEquals(old.banners, banners) ||
+      old.bannersDark != bannersDark ||
       old.pulse != pulse;
 }

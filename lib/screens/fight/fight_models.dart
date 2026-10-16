@@ -18,6 +18,10 @@ String _banterFieldFor(_BanterKind kind, AppLanguage lang) {
 
 /// Broad categories a combat-log line falls into, used to color and icon
 /// each line so the log reads at a glance instead of as a wall of text.
+/// How long a won fight's rewards stay on screen before the fight closes
+/// itself (see `_leaveAfterVictory`; at once with reduced motion).
+const Duration victoryAutoLeaveDelay = Duration(milliseconds: 1500);
+
 enum _LogKind {
   info,
   playerDamage,

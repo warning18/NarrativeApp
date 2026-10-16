@@ -5,7 +5,11 @@ import '../combat/spec_variants.dart' show SpecVariantInfo;
 import '../combat/specialisations.dart' show SpecInfo;
 import '../combat/spells.dart';
 import '../models/story_node.dart';
+import 'clan_power.dart';
 import 'factions.dart';
+import 'feature_unlocks.dart';
+import 'geography.dart';
+import 'nemesis.dart' show updateNemesis;
 import 'offers.dart';
 import 'perks.dart';
 import 'patron_stats.dart';
@@ -110,10 +114,12 @@ class SimGrowth {
     required this.tables,
     required this.character,
     int startingSkillPoints = 0,
+    this.ladder = false,
   }) {
     if (mode == SimProgression.legacy) {
       skillPoints = startingSkillPoints;
-    } else {
+    } else if (!ladder) {
+      // On the feature ladder the starting skill comes from the trainer.
       for (var i = 0; i < startingSkillPoints; i++) {
         pending.add(const OfferTicket(source: OfferSource.start));
       }
@@ -124,6 +130,21 @@ class SimGrowth {
   final SimGrowthTables tables;
   final SimCharacter character;
 
+  /// The game's feature ladder (feature_unlocks.dart): no starting offer,
+  /// the offers waiting for the clans, the trainer's skill.
+  final bool ladder;
+
+  /// The trainer's lesson (890_trainer): its strike or guard learned.
+  void learnTrainerSkill({required bool strike}) {
+    final id = trainerSkillFor(
+        professionId: character.professionId,
+        strike: strike,
+        trees: tables.skillTrees,
+        skills: tables.skills,
+        known: character.unlockedSkillIds);
+    if (id != null) _learn(id);
+  }
+
   // The old rules.
   int skillPoints = 0;
   int perkPicks = 0;
@@ -131,7 +152,13 @@ class SimGrowth {
 
   // The offers.
   final List<OfferTicket> pending = [];
-  PoliticsState politics = PoliticsState.empty;
+
+  /// The places that changed hands at the chapters' turns.
+  final List<TerritoryChange> territoryChanges = [];
+
+  /// Every clan that was the character's nemesis at a chapter's turn.
+  final Set<String> nemeses = {};
+  PoliticsState politics = PoliticsState.storyStart;
   List<String> titles = const [];
   String activeTitle = '';
   final List<String> boons = [];
@@ -285,9 +312,11 @@ class SimGrowth {
   }
 
   /// A new chapter reached: an offer from chapter 2 on, once (offers),
-  /// and the price of loyalty (applyLoyaltyDrift: the patron's rivals
-  /// cool).
-  void chapterReached(int chapter) {
+  /// the price of loyalty (applyLoyaltyDrift: the patron's rivals cool)
+  /// and, with the world's [geography], the clans' power and places
+  /// (territoryTurn, clan_power.dart; what changed hands is kept in
+  /// [territoryChanges]).
+  void chapterReached(int chapter, {Geography? geography}) {
     if (mode != SimProgression.offers ||
         chapter < 2 ||
         chapter <= chapterOffersThrough) {
@@ -296,6 +325,13 @@ class SimGrowth {
     chapterOffersThrough = chapter;
     politics =
         applyLoyaltyDrift(politics, data: tables.clans, chapter: chapter).state;
+    if (geography != null) {
+      final turn = territoryTurn(politics,
+          data: tables.clans, geography: geography, chapter: chapter);
+      politics = updateNemesis(turn.state, tables.clans, chapter: chapter);
+      territoryChanges.addAll(turn.changes);
+      if (politics.nemesis.isNotEmpty) nemeses.add(politics.nemesis);
+    }
     pending.add(OfferTicket(source: OfferSource.chapter, detail: '$chapter'));
   }
 
@@ -511,6 +547,15 @@ class SimGrowth {
 
   int _takeOffers(int alignment, Iterable<String> flags, Random random) {
     var next = alignment;
+    // On the ladder the offers wait for the clans (or the third chapter).
+    if (ladder &&
+        !featureUnlocked(GameFeature.clans, (
+          flags: {...flags, featureLadderFlag},
+          level: character.level,
+          chapter: chapterOffersThrough,
+        ))) {
+      return next;
+    }
     while (pending.isNotEmpty) {
       final ticket = pending.first;
       final offer = drawOffer(ticket, _context(next, flags), random);

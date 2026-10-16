@@ -35,7 +35,9 @@ import '../combat/turn_order.dart';
 import '../combat/enemy_affix.dart';
 import '../combat/fight_goal.dart';
 import '../combat/context_rules.dart';
+import '../data/clan_power.dart' show holderOf, reinforcementAt;
 import '../combat/fight_length.dart';
+import '../combat/foe_kind.dart';
 import '../combat/profession_cores.dart';
 import '../combat/spec_variants.dart';
 import '../combat/specialisations.dart';
@@ -45,6 +47,7 @@ import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../data/encounter_text.dart';
 import '../data/item_origin_here.dart';
+import '../data/feature_unlocks.dart';
 import '../data/factions.dart'
     show ClanData, Host, parseFactions, parseSubclans, parseTitles;
 import '../data/offers.dart' show clanEffectsFor;
@@ -56,6 +59,7 @@ import '../tutorial/tutorial_topics.dart';
 import '../widgets/combat_vfx.dart';
 import '../widgets/die_3d.dart';
 import '../widgets/fight_markers.dart';
+import '../widgets/mercy_dialog.dart';
 import '../widgets/die_skins.dart';
 import '../widgets/item_stats.dart';
 import '../data/approval.dart';
@@ -748,9 +752,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
               ),
           ],
         ),
-        body: !_started
+        body: _victoryTapArea(!_started
             ? _buildSetup(dice, skills, items, session)
-            : _buildBattle(dice, skills, items, session),
+            : _buildBattle(dice, skills, items, session)),
       ),
     );
   }

@@ -108,7 +108,13 @@
       "« Votre maison était un bien petit prix pour une porte de cette taille. J’espère que vous en viendrez à le voir ainsi. »",
       "« J’ai lu chaque page de la cachette de votre mère. Elle était minutieuse. Vous ne l’êtes pas, et c’est ainsi que nous vous reconnaîtrons. »",
       "« Ne courez pas. C’est une courtoisie que je n’accorde qu’une fois : je ne vous suivrai pas ce soir. »"
-    ]
+    ],
+    "clan": "dominion",
+    "rank": 2,
+    "title": "Inquisitor-General",
+    "title_fr": "Inquisiteur général",
+    "stanceLeader": "scheming",
+    "stancePlayer": "hostile"
   },
   "vane_quartermaster": {
     "npcID": "vane_quartermaster",
@@ -362,7 +368,13 @@
       "« Ce n’est pas un péage, c’est une redevance de courtoisie. L’Inquisition préfère le mot courtoisie. »",
       "« J’ai une liste. Vous n’y êtes pas. Je serais très heureux que cela dure. »",
       "« Déportation est un vilain mot. Je l’emploie si rarement que les gens finissent par me croire. »"
-    ]
+    ],
+    "clan": "dominion",
+    "rank": 8,
+    "title": "Overseer, Inquisition customs",
+    "title_fr": "Douanier de l’Inquisition",
+    "stanceLeader": "wavering",
+    "stancePlayer": "wary"
   },
   "nadira": {
     "npcID": "nadira",
@@ -551,7 +563,13 @@
       "« Une lampe n’arrête pas une peste. Elle permet à la garde-malade de voir le visage dont elle ferme les yeux. »",
       "« Le Dominion brûle bien des choses. Les Garde-Mèches demandent seulement qu’il épargne la lumière. »",
       "« Je suis assez vieille pour avoir allumé la Première Lanterne avec ma mère. J’aimerais l’allumer une dernière fois avant d’oublier comment on fait. »"
-    ]
+    ],
+    "clan": "dominion",
+    "rank": 4,
+    "title": "Eldest Wickwarden",
+    "title_fr": "Aînée des Garde-Mèches",
+    "stanceLeader": "loyal",
+    "stancePlayer": "open"
   },
   "hesk_morrow": {
     "npcID": "hesk_morrow",
@@ -636,7 +654,13 @@
       "« Trente-neuf ans. J’ai enterré plus de chevaliers que je n’en ai formé. Je ne compte pas en enterrer un de plus pour rien. »",
       "« Une épée fait une seule chose, et la fait honnêtement. Je l’envie. »",
       "« Vous portez le gris comme un fardeau. Bien. Ce sont ceux qui le portent à la légère qui m’inquiètent. »"
-    ]
+    ],
+    "clan": "dominion",
+    "rank": 3,
+    "title": "Grand Master of the Order",
+    "title_fr": "Grand Maître de l’Ordre",
+    "stanceLeader": "scheming",
+    "stancePlayer": "wary"
   },
   "old_hesk": {
     "npcID": "old_hesk",
@@ -844,7 +868,13 @@
       "« Une clef, une porte. Ce qu’il y a derrière regarde la porte. »",
       "« Ne la tournez pas. Tout le monde en a envie. Je paie pour ceux qui s’en abstiennent. »",
       "« Les Corneilles ne rompent jamais un contrat payé. Il nous arrive seulement d’oublier qui a payé. »"
-    ]
+    ],
+    "clan": "crows",
+    "rank": 3,
+    "title": "First Keyholder",
+    "title_fr": "Première Porte-Clef",
+    "stanceLeader": "loyal",
+    "stancePlayer": "neutral"
   },
   "chart_keeper": {
     "npcID": "chart_keeper",
@@ -1028,7 +1058,13 @@
       "« J’allume une bougie pour tous ceux qui passent par ici, qu’ils le demandent ou non. Moins cher qu’une dispute. »",
       "« Le Linceul nous a pris le ciel avant de nous prendre le reste. Je regarde encore en l’air parfois, par habitude. »",
       "« Quelle que soit la raison de votre venue au Quartier, j’espère qu’elle vaut ce qu’elle vous a coûté jusqu’ici. »"
-    ]
+    ],
+    "clan": "penitents",
+    "rank": 5,
+    "title": "Acolyte of the Quarter’s shrine",
+    "title_fr": "Acolyte du sanctuaire du Quartier",
+    "stanceLeader": "wavering",
+    "stancePlayer": "open"
   },
   "high_warden": {
     "npcID": "high_warden",
@@ -1089,7 +1125,13 @@
       "« Ce n’est pas moi qui ai allumé le feu. J’ai signé le papier qui permet de l’allumer. Il y a une différence, et j’ai prié dessus. »",
       "« L’étendard pèse plus lourd chaque année. Vous verrez que ce qu’on porte assez longtemps finit par vous porter. »",
       "« Brûlez proprement. Une côte à demi brûlée est une côte qui se souvient. »"
-    ]
+    ],
+    "clan": "dominion",
+    "rank": 6,
+    "title": "Commander of the Crusade",
+    "title_fr": "Commandant de la Croisade",
+    "stanceLeader": "loyal",
+    "stancePlayer": "hostile"
   },
   "rat_matriarch": {
     "npcID": "rat_matriarch",
@@ -1813,7 +1855,13 @@
       "« Mon équipe a gréé ce chantier en un mois. Elle n’a pas vu une pièce. Je ne le prends pas à la légère. »",
       "« Je ferais bien le coup moi-même, mais un contremaître qui va voir le Registre perd ses hommes au profit du Registre. »",
       "« Les échafaudages tiennent si l’équipe leur fait confiance. Les gages sont seulement la façon de le dire tout haut. »"
-    ]
+    ],
+    "clan": "compact",
+    "rank": 5,
+    "title": "Master of the Scaffolders",
+    "title_fr": "Maître des Échafaudeurs",
+    "stanceLeader": "scheming",
+    "stancePlayer": "open"
   },
   "imeh": {
     "npcID": "imeh",
@@ -1977,7 +2025,13 @@
       "« L’écorce du marais ne guérit pas la fièvre. Elle permet au corps de gagner la discussion. Je n’ai pas d’autre remède. »",
       "« Toute ma dîme de la saison, enfermée dans la cave d’un Porte-Clef pour être revendue aux mourants. J’en rirais, si j’en avais la force. »",
       "« Les bougies et les prières sont de belles choses. Ce n’est pas ce qu’on donne à un enfant qui a de la fièvre. »"
-    ]
+    ],
+    "clan": "mire",
+    "rank": 6,
+    "title": "Healer of the Barkbleeders",
+    "title_fr": "Guérisseur Saigne-Écorce",
+    "stanceLeader": "wavering",
+    "stancePlayer": "open"
   },
   "orsabet_vell": {
     "npcID": "orsabet_vell",
@@ -2059,7 +2113,13 @@
       "« Une chandelle pour chacun d’eux. Je connais le nombre. Je ne suis pas sûre que quelqu’un d’autre le connaisse. »",
       "« La pierre est au-delà du givre. J’ai taillé chaque nom moi-même. Mes mains sont trop vieilles pour y retourner les lire. »",
       "« Le Dominion tient son propre compte. Le nôtre est seulement le vrai. »"
-    ]
+    ],
+    "clan": "vigil",
+    "rank": 6,
+    "title": "Candlebearer widow",
+    "title_fr": "Veuve porte-chandelle",
+    "stanceLeader": "wavering",
+    "stancePlayer": "open"
   },
   "ghrem_stonebrow": {
     "npcID": "ghrem_stonebrow",
@@ -2223,7 +2283,13 @@
       "« Ce que l’épave rend appartient à qui est descendu la chercher. Je suis descendu. Comptez les fois. »",
       "« Les sceaux, c’est du papier. La mer n’a jamais respecté le papier. »",
       "« Je travaillerai pour vous, contre vous ou à côté de vous. Je dois juste savoir d’abord à qui est la barque. »"
-    ]
+    ],
+    "clan": "crows",
+    "rank": 7,
+    "title": "Brig-Born salvager",
+    "title_fr": "Récupérateur des Enfants du Brick",
+    "stanceLeader": "wavering",
+    "stancePlayer": "open"
   },
   "keeper_blind_beggar_stall": {
     "npcID": "keeper_blind_beggar_stall",
@@ -2314,7 +2380,13 @@
       }
     ],
     "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines_fr": [],
+    "clan": "crows",
+    "rank": 8,
+    "title": "Fence of the Tide Cellar",
+    "title_fr": "Receleur de la Cave des Marées",
+    "stanceLeader": "loyal",
+    "stancePlayer": "neutral"
   },
   "keeper_weaponsmith_forge": {
     "npcID": "keeper_weaponsmith_forge",
@@ -2361,7 +2433,13 @@
       }
     ],
     "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines_fr": [],
+    "clan": "compact",
+    "rank": 3,
+    "title": "Master smith",
+    "title_fr": "Maître forgeron",
+    "stanceLeader": "loyal",
+    "stancePlayer": "open"
   },
   "keeper_shieldwrights_hall": {
     "npcID": "keeper_shieldwrights_hall",
@@ -2408,7 +2486,13 @@
       }
     ],
     "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines_fr": [],
+    "clan": "compact",
+    "rank": 4,
+    "title": "Master of the Quarrymen",
+    "title_fr": "Maîtresse des Carriers",
+    "stanceLeader": "wavering",
+    "stancePlayer": "open"
   },
   "keeper_arcane_bazaar": {
     "npcID": "keeper_arcane_bazaar",
@@ -2492,7 +2576,13 @@
       }
     ],
     "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines_fr": [],
+    "clan": "mire",
+    "rank": 5,
+    "title": "Apothecary of the Courts",
+    "title_fr": "Apothicaire des Cours",
+    "stanceLeader": "loyal",
+    "stancePlayer": "open"
   },
   "keeper_smugglers_vault": {
     "npcID": "keeper_smugglers_vault",
@@ -2539,7 +2629,13 @@
       }
     ],
     "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines_fr": [],
+    "clan": "crows",
+    "rank": 4,
+    "title": "Second Keyholder, keeper of the Vault",
+    "title_fr": "Second Porte-Clés, garde du Coffre",
+    "stanceLeader": "wavering",
+    "stancePlayer": "neutral"
   },
   "keeper_hammersmith_forge": {
     "npcID": "keeper_hammersmith_forge",
@@ -2586,7 +2682,13 @@
       }
     ],
     "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines_fr": [],
+    "clan": "compact",
+    "rank": 6,
+    "title": "Master of the Anvil-Deaf",
+    "title_fr": "Maîtresse des Sourds de l’Enclume",
+    "stanceLeader": "loyal",
+    "stancePlayer": "neutral"
   },
   "keeper_arcane_academy": {
     "npcID": "keeper_arcane_academy",
@@ -2633,7 +2735,13 @@
       }
     ],
     "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines_fr": [],
+    "clan": "dominion",
+    "rank": 7,
+    "title": "Magister of the Cantors, keeper of the tithe",
+    "title_fr": "Magister des Chantres, gardien de la dîme",
+    "stanceLeader": "loyal",
+    "stancePlayer": "wary"
   },
   "keeper_sharpweave_den": {
     "npcID": "keeper_sharpweave_den",
@@ -2680,7 +2788,13 @@
       }
     ],
     "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines_fr": [],
+    "clan": "crows",
+    "rank": 6,
+    "title": "Keeper of the Whisper Ledger",
+    "title_fr": "Garde du Registre des Murmures",
+    "stanceLeader": "scheming",
+    "stancePlayer": "wary"
   },
   "keeper_ossuary_relics": {
     "npcID": "keeper_ossuary_relics",
@@ -2710,7 +2824,13 @@
       }
     ],
     "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines_fr": [],
+    "clan": "penitents",
+    "rank": 6,
+    "title": "Trader of relics",
+    "title_fr": "Marchand de reliques",
+    "stanceLeader": "scheming",
+    "stancePlayer": "neutral"
   },
   "keeper_last_lantern": {
     "npcID": "keeper_last_lantern",
@@ -2752,7 +2872,13 @@
       }
     ],
     "dialogueLines": [],
-    "dialogueLines_fr": []
+    "dialogueLines_fr": [],
+    "clan": "vigil",
+    "rank": 3,
+    "title": "Keeper of the Last Lantern",
+    "title_fr": "Gardienne de la Dernière Lanterne",
+    "stanceLeader": "loyal",
+    "stancePlayer": "open"
   },
   "keeper_anchorage_chandlery": {
     "npcID": "keeper_anchorage_chandlery",
@@ -3019,7 +3145,13 @@
       "« Le Porte-Lanterne décline. Priez. Le crêpe signifie qu’il n’est pas encore parti. »",
       "« Je porte du crêpe noir sur ma lanterne et de mauvaises nouvelles dans la bouche. Les secondes pèsent plus lourd. »",
       "« Dites une prière ou écartez-vous. La file est longue, et les fidèles sont fatigués. »"
-    ]
+    ],
+    "clan": "dominion",
+    "rank": 9,
+    "title": "Courier of the crape",
+    "title_fr": "Courrier du crêpe",
+    "stanceLeader": "loyal",
+    "stancePlayer": "neutral"
   },
   "frozen_pilgrim": {
     "npcID": "frozen_pilgrim",
@@ -3144,5 +3276,869 @@
       "« La voile était grise. On m’avait dit qu’elle était blanche. Je n’ai pas une fois levé les yeux pour vérifier. »",
       "« Mon journal est ferme jusqu’à la dernière ligne. Lisez la dernière ligne. Puis décidez ce que j’étais. »"
     ]
+  },
+  "lantern_bearer": {
+    "npcID": "lantern_bearer",
+    "npcName": "The Lantern-Bearer",
+    "npcName_fr": "Le Porte-Lanterne",
+    "role": "Voice of the First Lantern",
+    "role_fr": "Voix de la Première Lanterne",
+    "faction": "dominion",
+    "placeId": "candlehold_lantern_hall",
+    "chapter": 2,
+    "kind": "elder",
+    "description": "The one voice of the Lantern Dominion, who has not been seen in Candlehold for a year. The lamps are lit in their name, the crape is worn for them, and the Houses are already counting the days.",
+    "description_fr": "L’unique voix du Dominion de la Lanterne, qu’on n’a pas vue à Candlehold depuis un an. On allume les lampes en son nom, on porte le crêpe pour elle, et les Maisons comptent déjà les jours.",
+    "want": "Wants the flame passed on to a name that will keep it, before the voice fails.",
+    "want_fr": "Veut que la flamme passe à un nom qui la gardera, avant que la voix ne s’éteigne.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"One flame, one law. When the voice fails, the flame must have somewhere to go.\""
+    ],
+    "dialogueLines_fr": [
+      "« Une flamme, une loi. Quand la voix s’éteint, la flamme doit pouvoir aller quelque part. »"
+    ],
+    "clan": "dominion",
+    "rank": 1,
+    "title": "Voice of the First Lantern",
+    "title_fr": "Voix de la Première Lanterne",
+    "stanceLeader": "",
+    "stancePlayer": "unseen"
+  },
+  "orsolya_keld": {
+    "npcID": "orsolya_keld",
+    "npcName": "High Lantern-Bearer Orsolya Keld",
+    "npcName_fr": "Haute Porte-Lanterne Orsolya Keld",
+    "role": "High Lantern-Bearer, Keeper of the List",
+    "role_fr": "Haute Porte-Lanterne, Gardienne du Registre",
+    "faction": "dominion",
+    "placeId": "candlehold_lantern_hall",
+    "chapter": 3,
+    "kind": "inquisitor",
+    "description": "The First Lantern’s warden, who keeps in her own hand the list of every oath sworn under its light. She has never forgotten a name, and she has yours.",
+    "description_fr": "La gardienne de la Première Lanterne, qui tient de sa main le registre de tous les serments prêtés sous sa lumière. Elle n’a jamais oublié un nom, et elle a le vôtre.",
+    "want": "Wants every oath kept, and the List short of nobody.",
+    "want_fr": "Veut que chaque serment soit tenu, et que le Registre ne manque de personne.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"A name written in the List is not lost. It is only waiting to be called.\""
+    ],
+    "dialogueLines_fr": [
+      "« Un nom écrit dans le Registre n’est pas perdu. Il attend seulement qu’on l’appelle. »"
+    ],
+    "clan": "dominion",
+    "rank": 5,
+    "title": "High Lantern-Bearer, Keeper of the List",
+    "title_fr": "Haute Porte-Lanterne, Gardienne du Registre",
+    "stanceLeader": "loyal",
+    "stancePlayer": "hostile"
+  },
+  "joss_harrow": {
+    "npcID": "joss_harrow",
+    "npcName": "Joss Harrow",
+    "npcName_fr": "Joss Harrow",
+    "role": "Warden-in-Chief of the Grey Vigil",
+    "role_fr": "Garde-en-chef de la Veille Grise",
+    "faction": "vigil",
+    "placeId": "rimewell",
+    "chapter": 5,
+    "kind": "soldier",
+    "description": "The watch nobody has yet relieved: a lean, grey old man who has not slept a full night since the Crusade, and who reads the ridge as other men read a face. He has never raised his voice, because the watch hears him anyway.",
+    "description_fr": "La veille que personne n’a encore relevée : un vieil homme maigre et gris, qui n’a pas dormi une nuit entière depuis la Croisade, et lit la crête comme d’autres lisent un visage. Il n’a jamais élevé la voix, car la veille l’entend de toute façon.",
+    "want": "Wants the ridge held until someone better is ready to relieve him, and has not yet found them.",
+    "want_fr": "Veut que la crête tienne jusqu’à ce que quelqu’un de meilleur soit prêt à le relever, et ne l’a pas encore trouvé.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"Every watch ends. I would simply like mine to end with the post still standing.\""
+    ],
+    "dialogueLines_fr": [
+      "« Toute veille prend fin. Je voudrais seulement que la mienne s’achève avec le poste encore debout. »"
+    ],
+    "clan": "vigil",
+    "rank": 1,
+    "title": "Warden-in-Chief",
+    "title_fr": "Garde-en-chef",
+    "stanceLeader": "",
+    "stancePlayer": "wary"
+  },
+  "edda_grey": {
+    "npcID": "edda_grey",
+    "npcName": "Watch-Captain Edda Grey",
+    "npcName_fr": "Capitaine du Guet Edda Grey",
+    "role": "Watch-Captain of the Ridge",
+    "role_fr": "Capitaine du Guet de la Crête",
+    "faction": "vigil",
+    "placeId": "rimewell",
+    "chapter": 5,
+    "kind": "soldier",
+    "description": "The Vigil’s eyes on the ridge. She has not looked away from the tear in thirty-eight years, and does not mean to start with you.",
+    "description_fr": "Les yeux de la Veille sur la crête. Elle n’a pas détourné le regard de la déchirure depuis trente-huit ans, et ne compte pas commencer avec vous.",
+    "want": "Wants the hour held, every hour, and the post never dark.",
+    "want_fr": "Veut que l’heure soit tenue, chaque heure, et que le poste ne soit jamais sombre.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"We do not look away. It is the whole of the rule, and the whole of the cost.\""
+    ],
+    "dialogueLines_fr": [
+      "« Nous ne détournons pas le regard. C’est toute la règle, et tout le prix. »"
+    ],
+    "clan": "vigil",
+    "rank": 2,
+    "title": "Watch-Captain of the Ridge",
+    "title_fr": "Capitaine du Guet de la Crête",
+    "stanceLeader": "loyal",
+    "stancePlayer": "hostile"
+  },
+  "halvard": {
+    "npcID": "halvard",
+    "npcName": "Halvard",
+    "npcName_fr": "Halvard",
+    "role": "Spearman of the Last Watch",
+    "role_fr": "Lancier de la Dernière Veille",
+    "faction": "last_watch",
+    "placeId": "rimewell",
+    "chapter": 5,
+    "kind": "soldier",
+    "description": "A Last Watch spearman who stood the wall at every new moon, and who came down from it the day someone swore to the Vigil and walked away. Halvard keeps the oath of the wall more strictly than the wall does.",
+    "description_fr": "Un lancier de la Dernière Veille qui a tenu le mur à chaque nouvelle lune, et en est descendu le jour où quelqu’un a juré à la Veille avant de s’en aller. Halvard tient le serment du mur plus strictement que le mur lui-même.",
+    "want": "Wants the oath kept, or the oath-breaker made to say aloud why.",
+    "want_fr": "Veut que le serment soit tenu, ou que celui qui l’a rompu dise tout haut pourquoi.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"A watch is a promise made to people you will never meet. I do not break those.\""
+    ],
+    "dialogueLines_fr": [
+      "« Une veille est une promesse faite à des gens qu’on ne rencontrera jamais. Je ne les romps pas. »"
+    ],
+    "clan": "vigil",
+    "rank": 4,
+    "title": "Spearman of the Last Watch",
+    "title_fr": "Lancier de la Dernière Veille",
+    "stanceLeader": "wavering",
+    "stancePlayer": "hostile"
+  },
+  "ysel": {
+    "npcID": "ysel",
+    "npcName": "Ysel",
+    "npcName_fr": "Ysel",
+    "role": "Candlebearer, keeper of the count",
+    "role_fr": "Porte-Chandelle, gardienne du compte",
+    "faction": "candlebearers",
+    "placeId": "reliquary_quarter",
+    "chapter": 5,
+    "kind": "penitent",
+    "description": "A Candlebearer who walks the galleries counting the dead so that none leaves unnoticed. She keeps the Vigil’s tally in her head, and does not forgive an error in it.",
+    "description_fr": "Une Porte-Chandelle qui parcourt les galeries pour compter les morts, afin qu’aucun n’en sorte sans qu’on le remarque. Elle garde le compte de la Veille en tête, et ne pardonne pas une erreur dedans.",
+    "want": "Wants the count right, and every name in it carried to someone who will keep it.",
+    "want_fr": "Veut que le compte soit juste, et que chaque nom y soit porté à quelqu’un qui le gardera.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"I do not count to be cruel. I count because no one else will.\""
+    ],
+    "dialogueLines_fr": [
+      "« Je ne compte pas par cruauté. Je compte parce que personne d’autre ne le fera. »"
+    ],
+    "clan": "vigil",
+    "rank": 5,
+    "title": "Candlebearer, keeper of the count",
+    "title_fr": "Porte-Chandelle, gardienne du compte",
+    "stanceLeader": "loyal",
+    "stancePlayer": "wary"
+  },
+  "cade_rowan": {
+    "npcID": "cade_rowan",
+    "npcName": "Cade Rowan",
+    "npcName_fr": "Cade Rowan",
+    "role": "Watch-Lieutenant",
+    "role_fr": "Lieutenant du Guet",
+    "faction": "vigil",
+    "placeId": "rimewell",
+    "chapter": 5,
+    "kind": "soldier",
+    "description": "The youngest officer on the ridge, promoted over older heads because he has never once missed an hour. He is quietly sure the Warden-in-Chief is tired, and has begun to count how long that has been true.",
+    "description_fr": "Le plus jeune officier de la crête, promu au-dessus de plus anciens parce qu’il n’a jamais manqué une heure. Il est discrètement sûr que le Garde-en-chef est las, et commence à compter depuis combien de temps cela dure.",
+    "want": "Wants the watch relieved by someone who is not afraid to be the one doing it.",
+    "want_fr": "Veut que la veille soit relevée par quelqu’un qui n’a pas peur de s’en charger.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"The chain is fair. It just does not wait forever.\""
+    ],
+    "dialogueLines_fr": [
+      "« La chaîne est juste. Elle n’attend simplement pas éternellement. »"
+    ],
+    "clan": "vigil",
+    "rank": 7,
+    "title": "Watch-Lieutenant",
+    "title_fr": "Lieutenant du Guet",
+    "stanceLeader": "scheming",
+    "stancePlayer": "neutral"
+  },
+  "tam_lamp": {
+    "npcID": "tam_lamp",
+    "npcName": "Tam",
+    "npcName_fr": "Tam",
+    "role": "Lamp-boy of the ridge post",
+    "role_fr": "Garçon de lampe du poste de la crête",
+    "faction": "vigil",
+    "placeId": "rimewell",
+    "chapter": 5,
+    "kind": "keeper",
+    "description": "A boy of about twelve who trims the ridge post’s lamps and carries the watch’s messages down to Rimewell. He sees every officer come and go, and nobody thinks to lower their voice around a boy with a wick.",
+    "description_fr": "Un garçon d’une douzaine d’années qui mouche les lampes du poste de la crête et porte les messages de la veille jusqu’à Puits-de-Givre. Il voit chaque officier aller et venir, et nul ne pense à baisser la voix devant un garçon qui tient une mèche.",
+    "want": "Wants to be given a post of his own, one day, with a lamp that is his.",
+    "want_fr": "Veut qu’on lui donne un jour un poste à lui, avec une lampe qui lui appartienne.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"I do not tell on anyone. I just remember what they said.\""
+    ],
+    "dialogueLines_fr": [
+      "« Je ne dénonce personne. Je me souviens seulement de ce qu’on a dit. »"
+    ],
+    "clan": "vigil",
+    "rank": 8,
+    "title": "Lamp-boy of the ridge post",
+    "title_fr": "Garçon de lampe du poste de la crête",
+    "stanceLeader": "loyal",
+    "stancePlayer": "open"
+  },
+  "odalys_fenn": {
+    "npcID": "odalys_fenn",
+    "npcName": "Speaker Odalys Fenn",
+    "npcName_fr": "Oratrice Odalys Fenn",
+    "role": "Speaker of the Table",
+    "role_fr": "Oratrice de la Table",
+    "faction": "compact",
+    "placeId": "emberwick",
+    "chapter": 3,
+    "kind": "elder",
+    "description": "The Speaker of the Compact’s Charter table, a broad woman with soot in the creases of her hands, who chairs the seven masters without a casting vote and has never needed one. She holds the table’s patience the way a smith holds a hot blade: carefully, and not for long.",
+    "description_fr": "L’Oratrice de la table de la Charte du Pacte, une femme large aux plis des mains noircis de suie, qui préside les sept maîtres sans voix prépondérante et n’en a jamais eu besoin. Elle tient la patience de la table comme un forgeron tient une lame chauffée : avec soin, et pas longtemps.",
+    "want": "Wants the table to keep deciding, even when it would rather not.",
+    "want_fr": "Veut que la table continue de décider, même quand elle préférerait s’en dispenser.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"The Charter does not need me to be wise. It needs me to count the stones.\""
+    ],
+    "dialogueLines_fr": [
+      "« La Charte n’a pas besoin que je sois sage. Elle a besoin que je compte les pierres. »"
+    ],
+    "clan": "compact",
+    "rank": 1,
+    "title": "Speaker of the Table",
+    "title_fr": "Oratrice de la Table",
+    "stanceLeader": "",
+    "stancePlayer": "wary"
+  },
+  "hollis_reck": {
+    "npcID": "hollis_reck",
+    "npcName": "Master Hollis Reck",
+    "npcName_fr": "Maître Hollis Reck",
+    "role": "Master of the Charter",
+    "role_fr": "Maître de la Charte",
+    "faction": "compact",
+    "placeId": "ashen_quarter_cinder_row",
+    "chapter": 3,
+    "kind": "soldier",
+    "description": "The Charter’s last hammer, who broke every other on its own anvil so that the table’s rule would stay unbroken. He is the only one left who remembers why it was made.",
+    "description_fr": "Le dernier marteau de la Charte, qui a brisé tous les autres sur sa propre enclume pour que la règle de la table reste intacte. Il est le seul à se souvenir encore pourquoi elle fut faite.",
+    "want": "Wants the rule of the table kept, whatever it costs the one who keeps it.",
+    "want_fr": "Veut que la règle de la table soit tenue, quoi qu’il en coûte à celui qui la tient.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"A rule that bends for one hand is not a rule. It is a favour with a long memory.\""
+    ],
+    "dialogueLines_fr": [
+      "« Une règle qui plie pour une main n’est pas une règle. C’est une faveur à la longue mémoire. »"
+    ],
+    "clan": "compact",
+    "rank": 2,
+    "title": "Master of the Charter",
+    "title_fr": "Maître de la Charte",
+    "stanceLeader": "loyal",
+    "stancePlayer": "hostile"
+  },
+  "corin_ashdown": {
+    "npcID": "corin_ashdown",
+    "npcName": "Tally-Master Corin Ashdown",
+    "npcName_fr": "Maître des Comptes Corin Ashdown",
+    "role": "Tally-Master of the Table",
+    "role_fr": "Maître des Comptes de la Table",
+    "faction": "compact",
+    "placeId": "emberwick",
+    "chapter": 3,
+    "kind": "merchant",
+    "description": "The Compact’s tally-master, who keeps the table’s coffers and every stone’s tally of the debts between the crafts. He votes with the Speaker every time, and has begun to keep a second ledger that nobody at the table has seen.",
+    "description_fr": "Le maître des comptes du Pacte, qui tient les coffres de la table et, pour chaque pierre, le décompte des dettes entre les métiers. Il vote toujours avec l’Oratrice, et a commencé à tenir un second registre que nul à la table n’a vu.",
+    "want": "Wants the table’s books to balance in his favour, quietly, before anyone asks.",
+    "want_fr": "Veut que les livres de la table s’équilibrent en sa faveur, discrètement, avant que quiconque ne demande.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"Everything has a price in the Row. I simply know which prices have not been posted.\""
+    ],
+    "dialogueLines_fr": [
+      "« Tout a un prix dans la Rue. Je sais simplement lesquels n’ont pas été affichés. »"
+    ],
+    "clan": "compact",
+    "rank": 7,
+    "title": "Tally-Master of the Table",
+    "title_fr": "Maître des Comptes de la Table",
+    "stanceLeader": "scheming",
+    "stancePlayer": "wary"
+  },
+  "kit_emberly": {
+    "npcID": "kit_emberly",
+    "npcName": "Kit Emberly",
+    "npcName_fr": "Kit Emberly",
+    "role": "Coal-runner of Cinder Row",
+    "role_fr": "Porteuse de charbon de la Rue des Braises",
+    "faction": "emberwives",
+    "placeId": "ashen_quarter_cinder_row",
+    "chapter": 3,
+    "kind": "keeper",
+    "description": "A coal-runner who carries the Emberwives’ sacks down Cinder Row and has been through every forge door in it. She hears what the masters say across their anvils and has never been asked to keep any of it.",
+    "description_fr": "Une porteuse de charbon qui descend les sacs des Charbonnières par la Rue des Braises et a franchi toutes les portes de forge qui s’y trouvent. Elle entend ce que les maîtres se disent par-dessus leurs enclumes, et nul ne lui a jamais demandé de se taire.",
+    "want": "Wants a forge lit again in Cinder Row, and a master to sign for her apprenticeship.",
+    "want_fr": "Veut qu’une forge se rallume dans la Rue des Braises, et qu’un maître signe pour son apprentissage.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"Nobody looks at the one carrying the coal. That is how I hear everything.\""
+    ],
+    "dialogueLines_fr": [
+      "« Personne ne regarde celle qui porte le charbon. C’est ainsi que j’entends tout. »"
+    ],
+    "clan": "compact",
+    "rank": 8,
+    "title": "Coal-runner of Cinder Row",
+    "title_fr": "Porteur de charbon de la Rue des Braises",
+    "stanceLeader": "loyal",
+    "stancePlayer": "open"
+  },
+  "heron_queen": {
+    "npcID": "heron_queen",
+    "npcName": "The Heron Queen",
+    "npcName_fr": "La Reine-Héron",
+    "role": "The Heron Queen of the Mire Courts",
+    "role_fr": "La Reine-Héron des Cours du Marais",
+    "faction": "mire",
+    "placeId": "the_fen",
+    "chapter": 4,
+    "kind": "noble",
+    "description": "The sovereign of the Mire Courts, whom nobody from outside has seen and kept the memory of. She is said to stand in the shallows with one foot raised, waiting, and whatever she waits for has always arrived.",
+    "description_fr": "La souveraine des Cours du Marais, que nul du dehors n’a vue sans en perdre le souvenir. On dit qu’elle se tient dans les bas-fonds, une patte levée, en attente, et que ce qu’elle attend est toujours arrivé.",
+    "want": "Wants the Court’s courtesies kept, and the day of her stepping into the water to be a gracious one.",
+    "want_fr": "Veut que les politesses de la Cour soient observées, et que le jour où elle entrera dans l’eau soit un jour de grâce.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"Please. Do come in. We have been so looking forward to this.\""
+    ],
+    "dialogueLines_fr": [
+      "« Je vous en prie. Entrez donc. Nous attendions ce moment avec tant d’impatience. »"
+    ],
+    "clan": "mire",
+    "rank": 1,
+    "title": "The Heron Queen",
+    "title_fr": "La Reine-Héron",
+    "stanceLeader": "",
+    "stancePlayer": "unseen"
+  },
+  "herons_hand": {
+    "npcID": "herons_hand",
+    "npcName": "The Heron Queen’s Hand",
+    "npcName_fr": "La Main de la Reine-Héron",
+    "role": "The Queen’s Hand",
+    "role_fr": "La Main de la Reine",
+    "faction": "mire",
+    "placeId": "the_fen",
+    "chapter": 4,
+    "kind": "noble",
+    "description": "The Court’s courtesy, armed. The Hand has never once been rude, and has never once been refused. Nobody outside the Mire has seen its face and kept the memory.",
+    "description_fr": "La courtoisie de la Cour, en armes. La Main n’a jamais été impolie, et n’a jamais essuyé de refus. Nul, hors du Marais, n’a vu son visage sans en perdre le souvenir.",
+    "want": "Wants the Queen’s invitations accepted, in the end.",
+    "want_fr": "Veut que les invitations de la Reine soient acceptées, à la fin.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"You have been most patient. The Court thanks you, and regrets the rest.\""
+    ],
+    "dialogueLines_fr": [
+      "« Vous avez été patient. La Cour vous en remercie, et regrette le reste. »"
+    ],
+    "clan": "mire",
+    "rank": 2,
+    "title": "The Queen’s Hand",
+    "title_fr": "La Main de la Reine",
+    "stanceLeader": "loyal",
+    "stancePlayer": "hostile"
+  },
+  "hesper_mere": {
+    "npcID": "hesper_mere",
+    "npcName": "Dame Hesper Mere",
+    "npcName_fr": "Dame Hesper Mere",
+    "role": "Seneschal of Favours",
+    "role_fr": "Sénéchale des Faveurs",
+    "faction": "mire",
+    "placeId": "the_fen",
+    "chapter": 4,
+    "kind": "noble",
+    "description": "The Court’s seneschal, who keeps every favour owed in the fen in her head, down to the minute, and who has never been wrong about who owes whom. She is old, very polite, and entirely without mercy for a debt.",
+    "description_fr": "La sénéchale de la Cour, qui tient dans sa tête toutes les faveurs dues dans le marais, à la minute près, et qui ne s’est jamais trompée sur qui doit à qui. Elle est vieille, très polie, et sans la moindre pitié pour une dette.",
+    "want": "Wants every favour repaid in kind, and the Court’s accounts left as they are.",
+    "want_fr": "Veut que chaque faveur soit rendue en nature, et que les comptes de la Cour restent tels qu’ils sont.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"A favour is never forgotten. It is only waiting for the right occasion to be remembered.\""
+    ],
+    "dialogueLines_fr": [
+      "« Une faveur ne s’oublie jamais. Elle attend seulement l’occasion qu’on s’en souvienne. »"
+    ],
+    "clan": "mire",
+    "rank": 3,
+    "title": "Seneschal of Favours",
+    "title_fr": "Sénéchale des Faveurs",
+    "stanceLeader": "loyal",
+    "stancePlayer": "wary"
+  },
+  "perrin_mere": {
+    "npcID": "perrin_mere",
+    "npcName": "Lady Perrin Mere",
+    "npcName_fr": "Lady Perrin Mere",
+    "role": "Heir of the House of Mere",
+    "role_fr": "Héritière de la Maison de Mere",
+    "faction": "mire",
+    "placeId": "the_fen",
+    "chapter": 4,
+    "kind": "noble",
+    "description": "The Seneschal’s grand-niece and the heir of the House of Mere, who is expected to inherit the Court’s favours and has begun to ask politely why she must wait. She is patient, as the fen is, and keeps a list of those who have noticed her patience.",
+    "description_fr": "La petite-nièce de la Sénéchale et héritière de la Maison de Mere, que l’on attend pour hériter des faveurs de la Cour, et qui a commencé à demander poliment pourquoi elle devrait attendre. Elle est patiente comme le marais, et tient la liste de ceux qui l’ont remarqué.",
+    "want": "Wants the Queen’s ear, and the Seneschal’s chair, in that order.",
+    "want_fr": "Veut l’oreille de la Reine, et la chaise de la Sénéchale, dans cet ordre.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"I have nothing against waiting. I have something against being made to.\""
+    ],
+    "dialogueLines_fr": [
+      "« Je n’ai rien contre l’attente. J’ai quelque chose contre le fait de m’y voir contrainte. »"
+    ],
+    "clan": "mire",
+    "rank": 4,
+    "title": "Heir of the House of Mere",
+    "title_fr": "Héritière de la Maison de Mere",
+    "stanceLeader": "scheming",
+    "stancePlayer": "neutral"
+  },
+  "wen_wake": {
+    "npcID": "wen_wake",
+    "npcName": "Wen",
+    "npcName_fr": "Wen",
+    "role": "Guide of the Heron’s Wake",
+    "role_fr": "Guide du Sillage du Héron",
+    "faction": "herons_wake",
+    "placeId": "kindly_hill",
+    "chapter": 4,
+    "kind": "keeper",
+    "description": "A fen guide who takes the unwary in and brings back someone else. Wen has been courteously asked by the Court to watch the road to Kindly Hill, and does so without ever appearing to.",
+    "description_fr": "Un guide du marais qui emmène les imprudents et en ramène un autre. La Cour a courtoisement demandé à Wen de surveiller la route de la Colline Aimable, ce que Wen fait sans jamais en avoir l’air.",
+    "want": "Wants the road to Kindly Hill walked only by the invited.",
+    "want_fr": "Veut que la route de la Colline Aimable ne soit parcourue que par les invités.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"Step where I step. It is a small thing to ask, and I ask it of everyone.\""
+    ],
+    "dialogueLines_fr": [
+      "« Marchez où je marche. C’est peu demander, et je le demande à tout le monde. »"
+    ],
+    "clan": "mire",
+    "rank": 7,
+    "title": "Guide of the Heron’s Wake",
+    "title_fr": "Guide du Sillage du Héron",
+    "stanceLeader": "loyal",
+    "stancePlayer": "wary"
+  },
+  "sedge_returned": {
+    "npcID": "sedge_returned",
+    "npcName": "Sedge",
+    "npcName_fr": "Sedge",
+    "role": "One of the Returned",
+    "role_fr": "Un des Revenus",
+    "faction": "returned",
+    "placeId": "the_fen",
+    "chapter": 4,
+    "kind": "keeper",
+    "description": "One of the children the fen gave back, in a reed mask worn all year, who is always perfectly polite and has never once been in a hurry. Sedge sits at the edge of the Court’s every gathering and is the one nobody thinks to ask who is listening.",
+    "description_fr": "Un des enfants que le marais a rendus, dans un masque de roseaux porté toute l’année, toujours parfaitement poli et jamais pressé. Sedge se tient en bordure de chaque réunion de la Cour, et nul ne pense à demander qui écoute.",
+    "want": "Wants the Court’s secrets kept, as the fen keeps what it is given.",
+    "want_fr": "Veut que les secrets de la Cour soient gardés, comme le marais garde ce qu’on lui donne.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"Forgive me. This will not take long.\""
+    ],
+    "dialogueLines_fr": [
+      "« Pardonnez-moi. Cela ne prendra pas longtemps. »"
+    ],
+    "clan": "mire",
+    "rank": 8,
+    "title": "One of the Returned",
+    "title_fr": "Un des Revenus",
+    "stanceLeader": "loyal",
+    "stancePlayer": "wary"
+  },
+  "tamsin_brask": {
+    "npcID": "tamsin_brask",
+    "npcName": "First Captain Tamsin Brask",
+    "npcName_fr": "Première Capitaine Tamsin Brask",
+    "role": "First Captain of the Salt Crows",
+    "role_fr": "Première Capitaine des Corneilles de Sel",
+    "faction": "crows",
+    "placeId": "saltmouth_wharf",
+    "chapter": 2,
+    "kind": "smuggler",
+    "description": "The First Captain, because she is owed the most. A small woman in a plain coat who has never been seen to hurry, and whose contracts run from the Wharf to every harbour on the coast.",
+    "description_fr": "La Première Capitaine, parce qu’on lui doit le plus. Une petite femme en manteau simple qu’on n’a jamais vue se presser, et dont les contrats vont du Quai à tous les ports de la côte.",
+    "want": "Wants every contract honoured, and nobody to find out how many she holds.",
+    "want_fr": "Veut que chaque contrat soit honoré, et que nul ne découvre combien elle en détient.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"I do not give orders. I simply hold the papers.\""
+    ],
+    "dialogueLines_fr": [
+      "« Je ne donne pas d’ordres. Je détiens simplement les papiers. »"
+    ],
+    "clan": "crows",
+    "rank": 1,
+    "title": "First Captain",
+    "title_fr": "Première Capitaine",
+    "stanceLeader": "",
+    "stancePlayer": "wary"
+  },
+  "mireille_sable": {
+    "npcID": "mireille_sable",
+    "npcName": "Captain Mireille Sorrel",
+    "npcName_fr": "Capitaine Mireille Sorrel",
+    "role": "Collector of the Syndicate",
+    "role_fr": "Percepteuse du Syndicat",
+    "faction": "crows",
+    "placeId": "saltmouth_wharf",
+    "chapter": 2,
+    "kind": "smuggler",
+    "description": "The Crows’ collector, who has never lost a debt and never raised her voice to collect one. Her ledger is bound in sailcloth, and the last page is yours.",
+    "description_fr": "La percepteuse des Corneilles, qui n’a jamais perdu une créance ni élevé la voix pour en réclamer une. Son registre est relié de toile à voile, et la dernière page est la vôtre.",
+    "want": "Wants to be paid, in whatever currency the debtor has left.",
+    "want_fr": "Veut être payée, dans la monnaie qu’il reste au débiteur.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"Every door has a price. I only come to collect.\""
+    ],
+    "dialogueLines_fr": [
+      "« Toute porte a son prix. Je ne fais que venir le percevoir. »"
+    ],
+    "clan": "crows",
+    "rank": 2,
+    "title": "Collector of the Syndicate",
+    "title_fr": "Percepteuse du Syndicat",
+    "stanceLeader": "loyal",
+    "stancePlayer": "hostile"
+  },
+  "brine_jack": {
+    "npcID": "brine_jack",
+    "npcName": "Brine Jack",
+    "npcName_fr": "Brine Jack",
+    "role": "Captain of the Wreckers",
+    "role_fr": "Capitaine des Naufrageurs",
+    "faction": "crows",
+    "placeId": "wracks_end",
+    "chapter": 4,
+    "kind": "smuggler",
+    "description": "The captain of the Wreckers, who light false lamps on the rocks on stormy nights and work the coast road on the others. Brine Jack sits on the First Captain’s seat in every dream, and has begun buying the debts that would make it true.",
+    "description_fr": "Le capitaine des Naufrageurs, qui allument de faux fanaux sur les rochers les nuits de tempête et battent la route côtière les autres. Brine Jack s’assied sur le siège de la Première Capitaine dans tous ses rêves, et a commencé à racheter les dettes qui le rendraient vrai.",
+    "want": "Wants the First Captain’s debts bought out from under her, one at a time.",
+    "want_fr": "Veut que les dettes de la Première Capitaine soient rachetées sous ses pieds, une à une.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"The tide pays everyone in the end. I am only early.\""
+    ],
+    "dialogueLines_fr": [
+      "« La marée paie tout le monde à la fin. Je suis seulement en avance. »"
+    ],
+    "clan": "crows",
+    "rank": 5,
+    "title": "Captain of the Wreckers",
+    "title_fr": "Capitaine des Naufrageurs",
+    "stanceLeader": "scheming",
+    "stancePlayer": "hostile"
+  },
+  "aldith_crowe": {
+    "npcID": "aldith_crowe",
+    "npcName": "Eldest Aldith Crowe",
+    "npcName_fr": "Aînée Aldith Crowe",
+    "role": "Eldest of the Ashen Penitents",
+    "role_fr": "Aînée des Pénitents de Cendre",
+    "faction": "penitents",
+    "placeId": "ashen_quarter_wall_of_names",
+    "chapter": 3,
+    "kind": "penitent",
+    "description": "The Eldest, because the rest agree her burden is the heaviest: a whole Crusade’s list, carried on foot from one end of the road to the other. She has not set down the lantern in forty years and does not plan to.",
+    "description_fr": "L’Aînée, parce que les autres s’accordent à dire que son fardeau est le plus lourd : toute la liste d’une Croisade, portée à pied d’un bout à l’autre de la route. Elle n’a pas posé sa lanterne depuis quarante ans et n’en a pas l’intention.",
+    "want": "Wants the road finished, and the lantern carried by someone who will not drop it.",
+    "want_fr": "Veut que la route soit achevée, et que la lanterne soit portée par quelqu’un qui ne la lâchera pas.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"We do not ask to be forgiven. We ask to have carried it.\""
+    ],
+    "dialogueLines_fr": [
+      "« Nous ne demandons pas à être pardonnés. Nous demandons à l’avoir porté. »"
+    ],
+    "clan": "penitents",
+    "rank": 1,
+    "title": "Eldest of the Ashen Penitents",
+    "title_fr": "Aînée des Pénitents de Cendre",
+    "stanceLeader": "",
+    "stancePlayer": "wary"
+  },
+  "ash_confessor": {
+    "npcID": "ash_confessor",
+    "npcName": "The Ash Confessor",
+    "npcName_fr": "La Confesseuse de Cendre",
+    "role": "The Ash Confessor",
+    "role_fr": "La Confesseuse de Cendre",
+    "faction": "penitents",
+    "placeId": "ashen_quarter_wall_of_names",
+    "chapter": 3,
+    "kind": "penitent",
+    "description": "The Penitents’ voice, who burned her own face to hear confession better. She has never put the lantern down, and has never asked anyone else to carry it.",
+    "description_fr": "La voix des Pénitents, qui s’est brûlé le visage pour mieux entendre les confessions. Elle n’a jamais posé sa lanterne, et n’a jamais demandé à personne de la porter.",
+    "want": "Wants every burden spoken aloud, and its weight set where all can see it.",
+    "want_fr": "Veut que chaque fardeau soit dit à voix haute, et que son poids soit posé là où chacun peut le voir.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"What you burned, you will carry. Let me show you its weight.\""
+    ],
+    "dialogueLines_fr": [
+      "« Ce que vous avez brûlé, vous le porterez. Laissez-moi vous en montrer le poids. »"
+    ],
+    "clan": "penitents",
+    "rank": 2,
+    "title": "The Ash Confessor",
+    "title_fr": "La Confesseuse de Cendre",
+    "stanceLeader": "loyal",
+    "stancePlayer": "hostile"
+  },
+  "masked_penitent": {
+    "npcID": "masked_penitent",
+    "npcName": "The Masked Penitent",
+    "npcName_fr": "Le Pénitent masqué",
+    "role": "The Masked Penitent",
+    "role_fr": "Le Pénitent masqué",
+    "faction": "penitents",
+    "placeId": "ashen_quarter_wall_of_names",
+    "chapter": 3,
+    "kind": "penitent",
+    "description": "A penitent in a porcelain mask who will not stop staring. Nobody in the order has seen the face, and the Confessor says it is a burden too heavy to be shown.",
+    "description_fr": "Un pénitent au masque de porcelaine qui ne cesse de vous fixer. Personne dans l’ordre n’a vu son visage, et la Confesseuse dit que c’est un fardeau trop lourd pour être montré.",
+    "want": "Wants the oath-breaker found, and the mask put on someone else.",
+    "want_fr": "Veut qu’on retrouve le parjure, et qu’on mette le masque à quelqu’un d’autre.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"You swore.\""
+    ],
+    "dialogueLines_fr": [
+      "« Vous avez juré. »"
+    ],
+    "clan": "penitents",
+    "rank": 3,
+    "title": "The Masked Penitent",
+    "title_fr": "Le Pénitent masqué",
+    "stanceLeader": "wavering",
+    "stancePlayer": "hostile"
+  },
+  "anselm_voe": {
+    "npcID": "anselm_voe",
+    "npcName": "Brother Anselm Voe",
+    "npcName_fr": "Frère Anselm Voe",
+    "role": "Knight of the Spire-Fallen",
+    "role_fr": "Chevalier des Déchus de la Flèche",
+    "faction": "spire_fallen",
+    "placeId": "ashen_quarter",
+    "chapter": 3,
+    "kind": "soldier",
+    "description": "A knight of the Order who deserted on the Spire and walks in front of the Penitents with a broken sword on his shoulder. He thinks the Eldest’s burden has made her cautious, and says so only to those who have also been in a battle.",
+    "description_fr": "Un chevalier de l’Ordre qui a déserté sur la Flèche et marche en tête des Pénitents, une épée brisée sur l’épaule. Il pense que le fardeau de l’Aînée l’a rendue prudente, et ne le dit qu’à ceux qui ont aussi connu la bataille.",
+    "want": "Wants the Penitents to fight what they confess to, rather than carry it.",
+    "want_fr": "Veut que les Pénitents combattent ce qu’ils confessent, au lieu de le porter.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"A burden carried forever is a sword that was never drawn.\""
+    ],
+    "dialogueLines_fr": [
+      "« Un fardeau porté à jamais est une épée qu’on n’a jamais tirée. »"
+    ],
+    "clan": "penitents",
+    "rank": 4,
+    "title": "Knight of the Spire-Fallen",
+    "title_fr": "Chevalier des Déchus de la Flèche",
+    "stanceLeader": "scheming",
+    "stancePlayer": "neutral"
+  },
+  "odile_ember": {
+    "npcID": "odile_ember",
+    "npcName": "Sister Odile",
+    "npcName_fr": "Sœur Odile",
+    "role": "Ember Sister, nurse of the Quarter",
+    "role_fr": "Sœur de Braise, infirmière du Quartier",
+    "faction": "ember_sisters",
+    "placeId": "ashen_quarter",
+    "chapter": 3,
+    "kind": "healer",
+    "description": "An Ember Sister who nurses the Ashen Quarter’s wounded in a cellar the Inquisition has not yet found, and takes in anyone it has marked. She confesses to nobody and has been confessed to by half the Quarter.",
+    "description_fr": "Une Sœur de Braise qui soigne les blessés du Quartier des Cendres dans une cave que l’Inquisition n’a pas encore trouvée, et recueille quiconque elle a marqué. Elle ne se confesse à personne, et la moitié du Quartier s’est confessée à elle.",
+    "want": "Wants the cellar kept hidden, and her patients left to heal.",
+    "want_fr": "Veut que la cave reste cachée, et qu’on laisse guérir ses malades.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"I do not ask who you are. I ask where it hurts.\""
+    ],
+    "dialogueLines_fr": [
+      "« Je ne demande pas qui vous êtes. Je demande où vous avez mal. »"
+    ],
+    "clan": "penitents",
+    "rank": 7,
+    "title": "Ember Sister, nurse of the Quarter",
+    "title_fr": "Sœur de Braise, infirmière du Quartier",
+    "stanceLeader": "loyal",
+    "stancePlayer": "open"
+  },
+  "wick_sweeper": {
+    "npcID": "wick_sweeper",
+    "npcName": "Old Wick",
+    "npcName_fr": "Le vieux Wick",
+    "role": "Ash-sweeper of the Wall of Names",
+    "role_fr": "Balayeur de cendre du Mur des Noms",
+    "faction": "penitents",
+    "placeId": "ashen_quarter_wall_of_names",
+    "chapter": 3,
+    "kind": "penitent",
+    "description": "An old man who sweeps the ash from the foot of the Wall of Names every morning and has read every name on it twice. He sees everyone who comes to confess and everyone who comes to see who is confessing.",
+    "description_fr": "Un vieil homme qui balaie chaque matin la cendre au pied du Mur des Noms et en a lu deux fois tous les noms. Il voit tous ceux qui viennent se confesser et tous ceux qui viennent voir qui se confesse.",
+    "want": "Wants the Wall swept clean by someone, one day, when he cannot.",
+    "want_fr": "Veut que le Mur soit balayé par quelqu’un, un jour, quand il ne le pourra plus.",
+    "metNodes": [],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [],
+    "dialogueLines": [
+      "\"I do not talk. I sweep. The ash tells me the rest.\""
+    ],
+    "dialogueLines_fr": [
+      "« Je ne parle pas. Je balaie. La cendre me raconte le reste. »"
+    ],
+    "clan": "penitents",
+    "rank": 8,
+    "title": "Ash-sweeper of the Wall of Names",
+    "title_fr": "Balayeur de cendre du Mur des Noms",
+    "stanceLeader": "loyal",
+    "stancePlayer": "open"
   }
 }

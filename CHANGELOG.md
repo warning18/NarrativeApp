@@ -8,6 +8,492 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.449.0+485]
+
+The level's points are picks, three offers each, laid out like a clan's gift.
+
+### Changed
+- **Stat picks screen:** on the Level Up screen and in the pop-up after a fight, each point is a pick: three offers in a row (the path's icon, the gain), the picked one ringed in gold with its detail under it (the path, each stat from where it stands to where it goes) and "Take this pick" at the bottom. The rare offer, worth two points, is always the third and is drawn apart (a gold frame and a ribbon). "Stat Points Available" becomes "Stat picks left"; the pop-up says what a level gives by itself (+20 max health, +1 base damage).
+
+## [1.448.0+484]
+
+Arriving at a place: its scene in a sheet over the map, and a notice when you come back.
+
+### Added
+- **Arrival sheet:** after a choice, the scene of a place opens in a sheet over the dimmed map (the place's name, the words, Continue) instead of a full page. The main story and the scenes met on a detour keep the full page.
+- **"You came back to …":** an errand's one-tap return to its town hub shows a small notice (the unlock card's look) that fades by itself.
+
+## [1.447.0+483]
+
+The family house reads as the scenes tell it.
+
+### Changed
+- **The family house's blurb** (English and French) now says only what the scenes say: a kitchen door, shutters, a back room, and a trapdoor under the boards.
+
+## [1.445.0+481]
+
+Stat points become picks: each point earned is a choice between three offers.
+
+### Changed
+- **Each stat point is a pick.** You choose between three one-point offers (+1 to a stat, or +10 max health) that follow your profession, your build so far, and one change of course. About one pick in eight has a rare offer worth two points: +2 to one stat, or +1 to two.
+- **A level also brings +1 base damage** by itself, beside the +20 max health: picks rarely offer damage, and free points used to give about two a level.
+- **Saves:** points left unspent become pending picks, one for one. A 5-point build card left on the table is redrawn as a pick.
+- The free pool and the 5-point build cards are on their way out: the new picks screen (UX's) replaces them. Until it lands, the old screen still works.
+
+Simulated over 400 runs, the share of fights won stays within 3 points of today for every profession (Cleric +5, Mage +2, Ranger, Rogue and Warrior −3 to 0). Every boss and the champions stay in their bands.
+
+## [1.444.0+480]
+
+The map is for moving: a choice that stays where you are keeps you in the scene, and one that leads elsewhere hands you the map.
+
+### Changed
+- **A scene's place is its "stop":** the building it happens in, else its district, else its place. A building is a place of its own: leaving the Blind Beggar, or walking home to the family house, is a move on the map.
+- **The story reads on until the stop changes:** a page no longer runs you from one district to another without the map.
+- **An errand's way back to its town's hub is one tap:** you come back to the hub (Smugglers' Wharf and the like) without walking the map. The game marks the return so a "You came back to…" notice can show it.
+- **An action whose result is elsewhere carries you there** (a fight, a roll, a payment), as after a lost fight.
+- **A village's scenes stand in its hub's district** (White Wells at the Pool, Wrack's End at the Hull-Houses, Rimewell at the Bell Square).
+- **The Blind Beggar's scenes are all in one building**, and the family house is a building of its own in Alster.
+
+### Added
+- Queries for the Journey: a scene's stop, what a choice leads to (stay, map, carried, back to the hub), the main-story scenes (not a hub, not an errand, not a camp) and the services at a place (shops, rests, trainers, ports). How each looks is UX's next step.
+## [1.442.0+478]
+
+The main story's scenes and the hubs have the data the scene view and the arrival sheet read.
+
+### Added
+- **Who you face** (`facing`) on ten more main-story scenes: the bouncer at the Blind Beggar, the warhound in the alley, Vane at the docks, the High Warden at the end of chapter 3, and Aurel Vane in the Lantern Hall.
+- **A question** (`prompt`, English and French) on the fourteen hubs a sheet opens on: the Wharf, the Ashen Quarter, the Drowned Cloister, the Reliquary Quarter, the Hollow Shore, the eight villages, the White Anchorage and Candlehold.
+
+## [1.440.0+476]
+
+The Journey's pins hang as banners, with a legend.
+
+### Added
+- **Banner pins:** a way on the map hangs as a banner in the colour and icon of what it is: main quest (gold flag), side quest (violet speech bubble), detour (ember compass), shop (teal storefront), travel (blue sailboat), rest (green flame) or plain way (grey signpost). The district view's pins hang on their buildings, and the rows and cards of the ways wear the same banner, small. Fights and rolls keep their round numbered pins.
+- **The legend:** a key button at the map's top right opens a sheet that says what each banner means (English and French).
+- **No "Walk on" tabs:** the row of chips to the other districts under the district's ways is gone (the chart, the Town tab and its rows still go to them).
+
+## [1.439.0+475]
+
+A written detour plays as a scene.
+
+### Added
+- **Detours as scenes:** while the party plays one of the written detours, the Journey's map gives way to a scene of its own: the scene's title (a star for the chapter's landmark), the beat it is at ("2 / 3"), the place the beat is set in, and the beat's words under it. The beat's ways are cards under the scene, "Leave it" the last. The ruins' side-view scene dresses the ashlands, tear and volcanic detours and the desert's the dry ones; every other biome gets a band tinted for it. Today's generated detours keep the map.
+
+## [1.438.0+474]
+
+Every building of the new town plans has a name.
+
+### Added
+- **Names for 177 buildings** (English and French) on the plans of the nine villages, the Black Reliquary and Candlehold.
+
+### Changed
+- **Lysa's two scenes at Wrack's End** (the rider, the black-thread parcel) are seated in the Hull-Houses and on the Lamp Path, so they have a building on the plan.
+- **Three district blurbs reworded** (the Reliquary Quarter, the Gates, the Lantern Hall), English and French.
+- The scenes keep their village as `location` for now: the plans seat them by district from `tool/city_plans/district_seats.json`. Retagging them made most of a village's choices read as walks between districts, which the choice-shape and champion tests do not allow.
+
+## [1.436.0+472]
+
+The camp and the map tell a party it is under the level the next chapter asks.
+
+### Added
+- **The level signpost:** while the party is under the level the next chapter recommends (chapter 4 asks for level 9), the camp's chapter card gets a one-line hint, "Chapter 4: level 9 advised (you: 6)", and the Journey map gets a small chip above the sky's ("Ch. 4 · lvl 9", just "Lvl 9" on a narrow screen). A tap on either reads the whole sentence and Narrative's line. Nothing once the party has the level, or when the chapter recommends none. EN and FR. Uses Core's `nextChapterLevelAdviceProvider` (#355).
+
+## [1.434.0+470]
+
+The fight explains its chips, and shows the blow coming.
+
+### Added
+- **Long-press the chips above the fight:** the round (and when the Tide rises), momentum (how it builds and what it gives), the battlefield condition, the weather, the goal and the doctrine each say what they do. The place rule, Tide, nudge, hex and silence chips already did. EN and FR.
+- **The blow the party can read, on the health bar:** when a foe's telegraphed move is read in full (Perception), the bar of the one it is aimed at shows the part it would take off, with "−N" beside it; a long press says "after armor and block". Blows are figured one by one, as on the foe's own card.
+
+## [1.433.0+469]
+
+Every town now has its districts, and the villages have plans.
+
+### Added
+- **32 new districts** (Narrative's names and blurbs) for Rimewell, Greyhithe, Wrack's End, the Cove Camp, Kindly Hill, Highhearth, Emberwick, Akagiri and White Wells, which had none. The Black Reliquary gains three more (the Last Lantern, the Chapels, the Frost Line) and Candlehold one (the Lantern Cliff).
+- **Village plans:** those nine places now have a plan in the District and Town views: smaller, mostly open, with three roads out. The coastal ones sit on the sea; the Cove Camp's palisade and Highhearth are walled. Every scene stands on a building in its district. The new districts are not clan holdings: clan power counts only the places it was tuned on.
+- The Black Reliquary and Candlehold are redrawn on their new districts. Candlehold's Gates are unchanged, and the night's rest still happens where the clans are seen arriving.
+
+## [1.431.0+467]
+
+### Changed
+- The Crows' collector, the nemesis champion, is now **Mireille Sorrel** (was Sable, which she shared with the rogue companion). Names only, EN and FR, in `npcs.json` and `enemies.json`; the ids are unchanged.
+
+### Added
+- A word of warning at the turn from chapter 3 to chapter 4: the camp's old fire-keeper tells the player the Court does not bargain with the weak, and that the Drowned Stair is best gone down stronger. EN and FR. (Core's recommended-level field for the chapter carries the number.)
+
+## [1.430.0+466]
+
+Chapter 4 says how strong you should be before you go down.
+
+### Added
+- **A recommended level for chapter 4:** chapter 4 now recommends level 9 (`recommendedLevel` in `chapters.json`). The game can tell whether the party is below it, and by how much, for the chapter after the one the story is in (`nextChapterLevelAdviceProvider`), or for any chapter (`chapterLevelAdviceProvider`). Narrative's warning line (`recommendedLevelNote`, EN and FR) rides along. Showing it is UX's part.
+
+### Changed
+- **Chapter 3's side quests pay more XP**, about a fifth more: `q_ch3_marens_penance` 80 → 100, `q_ch3_groshs_price` 65 → 80, `q_ch3_reckoning_wall` 60 → 75, `q_ch3_glass_from_the_terraces` 70 → 85.
+## [1.429.0+465]
+
+The game pushes back after the camp: from chapter 3 on, every profession wins about 70% of its fights within three tries, down from 82–97%. Chapters 1 and 2 stay gentler.
+
+### Changed
+- **Enemies are stronger**, most from the camp (the landfall that opens chapter 3) to chapter 5. Chapters 1 and 2 get only a lighter raise, so the opening still teaches: about 90% of fights won within three tries and 70% on the first. Chapters 6 to 8 are a little lighter again, since the chapter curve already climbs there.
+- **The professions are closer together.**
+  - The Mage hits less hard: base damage 6 → 1, Intelligence 4 → 1, health −15 → −20.
+  - The Cleric is sturdier: base damage 0 → 5, health 10 → 35.
+  - The Warrior: base damage 3 → 4, health 20 → 30.
+  - The Ranger: base damage 3 → 1, health 0 → −10, Perception 4 → 1, Luck 2 → 0, Dexterity 3 → 2.
+  - The Rogue: base damage 4 → 2.
+- **Five late bosses re-tuned** so each is still won about as often as before: the Void Archon, the White Admiral, the Void Sovereign and Claimant Tallis are a little stronger, the Tear-Herald a little weaker. The six clan champions get about an eighth more health and +1 damage, so they are still won about half the time.
+- **A lost fight still gives 30% of its XP**, so a struggling character doesn't fall further behind.
+
+### Added
+- **A rest before the Lantern Hall:** the rest scene refills provisions and mana.
+- **The simulator counts first-try wins** for each chapter.
+
+Simulated over 400 runs, by profession:
+- **Chapters 1–2:** 81–95% of fights won within three tries, 55–83% on the first try.
+- **Chapters 3–8:** 63–73% within three tries, 37–44% on the first try.
+
+Before, it was 82–97% within three tries and 70–84% on the first try, over the whole game. The tables are in `docs/simulation/difficulty-review.md` §6.
+## [1.428.0+464]
+
+### Added
+- A night's rest before the Lantern Hall (chapter 7). Every road up from the gates now passes `7515_rest`: the party sleeps on the harbour steps while the clans' fires light the cliff, then climbs to whichever Hall the claimant holds. It gives a full heal, one strong potion, and sets `rest_before_hall` (Core's engine refills provisions and mana from it). Each of the three Halls reads it back.
+
+### Changed
+- The Hall's roads: the three duplicate choices per way (one per claimant) are now one choice per way, with the claimant routing moved into the rest scene (66 choices down to 22).
+
+## [1.427.0+463]
+
+### Added
+- Names (EN and FR) for the buildings that hold scenes in four of the six new town plans: Alster (33), the Ashen Quarter (27), the Drowned Cloister (22) and the White Anchorage (21), in `city_plans.json`. The Black Reliquary and Candlehold follow with their regenerated plans.
+
+## [1.425.0+461]
+
+The city chart on every stored plan, and the way back in.
+
+### Changed
+- **Every city plan Core stored draws on the town chart** (Alster, the Ashen Quarter, the Drowned Cloister, the Black Reliquary, the White Anchorage, Candlehold, besides Saltmouth): whole and by district, with or without a river, a wall, canals, bridges, a shore. A new test draws all seven, and each of their districts.
+- **District names on the whole city no longer overlap**: a name slides down or up by its own height until it finds room (the Ashen Quarter's three names sat on one another).
+- **A look out of a building shows the city's chart, with a button back in.** A scene inside a building keeps its room view; looking out of it now shows the chart (it showed the generated streets) and a button on it goes back in.
+
+## [1.424.0+460]
+
+A hub's choices on rings and chips, and a beat when one is taken.
+
+### Changed
+- **A hub's choices are grouped by kind.** A scene with more than four choices done where you stand shows, round the party's mark, one dashed ring for each kind (Fight, Talk & decide, Checks & pay) with a chip on it ("Fight · 4") and up to five of its icons, the rest a "+N"; the same chips sit under the map, with a "Ways · N" chip for the plain ways on the map. A tap on a chip or an icon opens that list in a sheet (the ring stays lit; a way lights its road on the map above), and a second tap on a card does it.
+- **A beat when a choice done here is taken.** A ring in the kind's colour spreads from the party's mark and the choice's icon rises; the other cards dim meanwhile. Reduced motion skips it.
+- Plain decisions and words have their own icons (balance, chat) on the cards and rings, not the road's signpost; the cards' tags (price, alignment, check, fight) now come from Core's choice tags.
+
+## [1.423.0+459]
+
+A feature opening is now shown, and a shut one is not in the way.
+
+### Added
+- **The unlock card:** when a feature of the ladder opens, a small "New: Quests" card slides in over the game (not during a fight), with a line on what it does, **Show me** (its tour) and **Later**. One card at a time; left alone it goes after 6 seconds. A gold dot stays on the new thing until it is first opened. Under reduced motion the card fades in place and the dot is still. EN and FR.
+- **Shut things are hidden or greyed:** the ⚖ Clans & Politics button and the Character's Gifts tab are gone until they open; the Quests row (Other), the Inventory and Dice tiles and the Overview's skills part are greyed with a lock, and a tap says "Opens in chapter N". The Skills screen says the same when it is reached shut. A game off the ladder (an older save) sees everything.
+
+## [1.422.0+458]
+
+### Added
+- The chapters 1–2 beats of the feature ladder (`docs/proposals/ch1-2-beats.md`). New scenes: a drill-sergeant's line on the quay approach where the first skill is chosen (`890_trainer`, between the ruins and the High Quay, on every road), and a Crow tally-girl at Smugglers' Wharf who says the clans will make an offer, and that it may be refused (`2015_crow_offer`). New lines at the chalked list (250), the bundle (470) and the gate's tally of who holds Saltmouth (2005). The choices that carry a feature set its `feat_` flag: `feat_quests` (250), `feat_inventory` (470), `feat_skills` (the trainer), `feat_conditions` (1140_spotted), `feat_politics` (2005), `feat_clans` (the Crow, or her words on arrival for a player who came by the wagon or the storm drain). EN and FR.
+
+## [1.421.0+457]
+
+The first two chapters bring the game's features one at a time.
+
+- **A new game climbs the feature ladder:** each feature opens where the story gives it a reason, and stays hidden until then.
+  - The chest after your first real fight, the street's rules in the next one, battlefield conditions after the cliff ambush.
+  - The quest list at the banner's errand, the inventory at the bundle and the warm die, and skills at the trainer.
+  - Standing at the Inquisition's gate, and the clans' offers at Saltmouth.
+- **The trainer teaches your first skill,** a strike or a guard of your own trees (the mage's and the cleric's starting offer moves there).
+- **The clans' offers** earned in chapter 1 wait for Saltmouth, then come one at a time.
+- **Saved games** keep everything open, so nothing pops up mid-game.
+
+## [1.420.0+456]
+
+Six more towns have their plans.
+
+- **Alster, the Ashen Quarter, the Drowned Cloister, the Black Reliquary, White Anchorage and Candlehold** now have a city plan, like Saltmouth. Their districts and the buildings where each scene happens show in the District and Town views:
+  - Alster: a river city with its quay.
+  - The Ashen Quarter: walled, half burned, at the Spire's foot.
+  - The Drowned Cloister: on the fen, cut by channels.
+  - The Black Reliquary: on its frozen river.
+  - White Anchorage: above a shore of beached hulls.
+  - Candlehold: on the cliffs above its harbour.
+- **Walking from one town to the next** no longer leaves the Journey on the old town's district.
+
+## [1.419.0+455]
+
+For the in-place choices, and a difficulty review.
+
+- **Each choice now carries what its card shows:** its cost in gold (a toll's included), its alignment shift, and where its aftermath takes you. The choices are also grouped for the map's rings: fight; talk and decide; checks and pay; and the ways on.
+- **The story can say who a scene faces, the question it ends on, and what a hub's choice is about** (`facing`, `prompt`, `about`, `aboutLabels`, all optional), for the scene view and the rings.
+- **A difficulty review** (docs/simulation/difficulty-review.md): win rates by profession and chapter, deaths, the bosses' bands and five proposals. Nothing is tuned yet.
+## [1.418.0+454]
+
+The Journey's choices acted out here become cards under the map.
+
+### Changed
+- **A choice done where you stand is a card, not a pin.** In a place up close, a fight, a payment, a check or a decision (Core's `choiceShape`: `here`) is a card under the map: the action's icon, the words, who you face, a "→ place" line when what follows moves you on, and one tag (a price, an alignment shift, a check, or Fight). A tap picks it and shows Go on it; a second tap does it. The map keeps pins only for the plain ways on, spread over the room the cards leave, so the labels no longer pile on the party's mark. A room's ways keep their marks.
+- **No road walked for a card.** The scene that follows moves the party.
+
+## [1.417.0+453]
+
+### Added
+- The data for the in-place display (`docs/proposals/inplace-data.md`): `facing` on 94 story nodes (who the scene is with), `prompt` / `prompt_fr` on the 226 scenes with two or more choices (the question the scene ends on), and `about` on 69 hub choices (the NPC, clan or sub-clan a choice is about), EN and FR. All optional; nothing reads them yet.
+
+## [1.416.0+452]
+
+Lysa's blood on the Shroud.
+
+- **Blood on the Shroud:** if you give Lysa's blood to the Shroud, the piece wakes and gives you a boon of its own.
+  - Its gift, at heroic strength: more damage when you are low on health, lifesteal and critical chance.
+  - Its cost, the Void's hold on you: −12 max health.
+  It is never offered by a patron.
+
+## [1.415.0+451]
+
+The map's places and names hold a readable size when you zoom.
+
+### Fixed
+- **Places and their names no longer shrink as the sphere comes close.** The world map is drawn at its screen size on the sphere, but its marks and names were sized as if a viewer scaled them by the zoom, so at the closest zoom they were a few pixels tall. They now keep their size.
+
+### Changed
+- **Each reached place has a plate under its mark** (at least 24 px across once you zoom in), the party's ring and the picked place's ring grow with it, and the clans' seats, villages and other features are held to about 26 px.
+- **Names are at least 11–12 px with a small plate behind them**, so they read over dark and light ground; a name that collides with another is left off, the party's place, the picked one and the goal first.
+- **A tap on a place hits within 22 px of it** (44 across), at any zoom, on the flat chart and the sphere. The town chart's building names are 11 px and its pins 24 px, with a slightly larger tap.
+
+## [1.414.0+450]
+
+### Changed
+- Lysa's story. If you lose her at the house, how you lost her (knelt, fought and lost, ran) decides what the Dominion made of her. Three beats lead to the Reliquary Quarter (a fence's line on the wharf, the envoy's price, a parcel with her mask), and there she says your name before any blade is drawn. You can break her out (Brother Clement, a boss), offer the Shroud's piece (refused), swear to the Lantern for her, end it gently, fight her, lay her blood on the Shroud, or walk away. If you save her at the house, she can be taken during a raid on the camp, trade a ledger page for medicine, and offer to sew the tear shut at the Hollow Shore, which can cost her life. Vane now says plainly that he came for what the mother kept.
+
+## [1.413.0+449]
+
+Lysa's fate turns the Dominion's hunt.
+
+- **Brother Clement,** the Black Hold's torturer, a boss in the Quarter's chapel when you take Lysa by force.
+- **The hunt, as her fate turns it:**
+  - take her by force, or give her blood to the Shroud, and the Dominion hunts you in earnest: its fighters come more often and join its fights, and Orsolya Keld comes sooner;
+  - swear to the Lantern for her, and its hunt is over.
+- **Claimant Tallis and the White Admiral** are a little tougher (405 and 350 health), to keep the late bosses in their bands with Lysa's new scenes.
+## [1.412.0+448]
+
+A won fight closes itself.
+
+- **The chest opens on its own** and shows everything it holds; take it, and the fight returns to where it began after a moment, or at once on a tap. With reduced motion it returns as soon as the spoils are taken.
+- **Nothing is skipped:** a level-up, a clan's offer or a hunter's mercy waits for your answer first.
+- **The rewards stay with you:** they open the next scene ("Victory! +47 gold, +87 XP, …"), and the fight log keeps them.
+- A defeat is unchanged.
+## [1.411.0+447]
+
+A clan's power and the land it holds, drawn.
+
+### Added
+- **Power on the clan's card.** A bar across the four tiers (Minor, Rising, Dominant, Ascendant, ticks at 25, 50 and 75) with the tier named and its value, then "Holds N places" with the places as chips (six, then "+N more"). A clan that is the party's nemesis wears a red "Your nemesis" ribbon and a red bar. The card is the one the long press, the offer's (i) and the Throne room open.
+- **The Throne room's banner captions** add the clan's power tier, and "Your nemesis" for the nemesis, after the standing.
+- **The land takes its holder's colour.** In the Journey the place's ground gets a faint wash and a frame in the colour of the clan that holds it now (red when it is the nemesis), following places that changed hands.
+
+## [1.410.0+446]
+
+Faces for the rival hunters and the nemesis champions.
+
+### Changed
+- **Twelve foes have icons of their own.** The six rival hunters (Halvard the spearman, Ysel the candle-bearer, Brodin the quarryman, Tove the deaf anvil, Sedge the returned and Wen of the Heron's Wake) and the six nemesis champions (the Dominion's Orsolya Keld, the Crows' Mireille Sable, the Compact's Hollis Reck, the Vigil's Edda Grey, the Penitents' Ash Confessor and the Mire's Heron Queen's Hand) are no longer drawn with another foe's picture. Each is a 16 × 16 sprite from Narrative's description, in the enemy icons' style, made by `tool/gen_hunter_icons.py`.
+
+## [1.409.0+445]
+
+The Dominion hunts you from the start.
+
+- **Your nemesis from the first page:** your family kept a piece of the Shroud, and the Dominion wants it.
+  - Its hunters come now and then from the first chapter, as a Hostile clan's would.
+  - Its champion waits for chapter 4, when a lamp-boy brings its quest.
+- **How it ends:**
+  - your standing with the Dominion reaches Friendly;
+  - you break it through its quest;
+  - you take the legate's pact or back Vane for the throne.
+  A clan you've crossed harder can take its place. Turn Hostile with the Dominion and it hunts you harder.
+- **Saved games** take it on load, unless you're already Friendly with the Dominion.
+- **Orsolya Keld,** the Dominion's champion, is a little easier (190 health, 26 damage), since you now meet her in every game.
+- **The People codex** no longer lists a clan court's leaders before you meet them.
+
+## [1.407.0+443]
+
+### Added
+- A court for each of the six clans: a way of ruling (`ruling` on each clan in `factions.json`, EN and FR) and 8 or 9 ranked people each, 49 in all. 22 existing characters are placed in the hierarchy (Aurel Vane, Hesk Morrow, Maud Tallis, the Keyholders...) and 27 new ones fill the empty ranks, among them the Lantern-Bearer, the Heron Queen and the six nemesis champions. New fields on a person in `npcs.json`: `clan`, `rank` (1 = leader), `title`, `stanceLeader`, `stancePlayer`.
+
+## [1.404.0+440]
+
+Your nemesis's quest now has a trail, a choice of way in, and its own ending.
+
+- **The trail:** before the champion comes, a road leads you on its trail.
+- **Three ways in** to the champion, each with a small edge:
+  - **Force** (it starts at 85% health);
+  - **Guile** (it is a little weaker all round);
+  - **Mercy** (it starts at 90% health, and beating it this way earns +5 standing with its clan).
+- **Its last words:** a champion beaten leaves a line in the fight log.
+- **The news:** each clan's broken hunt has its own news line.
+- **Champions** are tougher (200 health, 27 damage), so about half of the fights against them are still won.
+
+## [1.403.0+439]
+
+Quest complete gets the chapter's own picture.
+
+### Added
+- **One art strip per chapter** (eight, in the app's pixel look, drawn by `tool/gen_chapter_art.py`): chapter 1's harbour and the white ships, and so on through chapter 8. Their files are in `assets/visuals/chapters/`.
+
+### Changed
+- **Quest complete is card B.** The card leads with the chapter's strip under the quest's name, and gold and experience become two counters under it (the experience bar and the level stay). The rows for the item, the die and the companion, and the notes, are as on card A. An item found and a clan's gift keep card A.
+
+## [1.402.0+438]
+
+The place's rule, the patron's favour and the hunter's mercy, drawn.
+
+### Added
+- **Place-rule marks in the fight.** A chip for the place's rule: its omen the round before (mist, heat, rising water, holy ground, the watch's whistle), then how far it has risen (Mist ×2, Rising water ×3 with the top marked), each with a long-press tip of what it does this round. The boss gets an Enraged chip once the Tide has risen. The Tide alone has no mark.
+- **Patron's favour on level-up.** The level-up pop-up names what the patron gave with the level ("Dominion's favour: +1 Strength, +5 max health") in the clan's colour, English and French.
+
+### Changed
+- **The mercy choice is a card.** The rival hunter's portrait over a band in its clan's colour, the read of their side as a chip, and two buttons that each say what they cost and give (Dominion +3, no gold, no loot / Dominion −2, the spoils are yours). Same choice and rules as before.
+
+## [1.401.0+437]
+
+Your nemesis sends its champion, and beating it ends the hunt.
+
+- **A quest when a clan makes you its nemesis:** a stranger warns you that its champion is coming.
+- **The champions:**
+  - the Dominion's High Lantern-Bearer Orsolya Keld;
+  - the Crows' Captain Mireille Sable;
+  - the Compact's Master Hollis Reck;
+  - the Vigil's Watch-Captain Edda Grey;
+  - the Penitents' Ash Confessor;
+  - the Mire's Heron Queen's Hand.
+
+  From chapter 4, while the quest is under way, the champion finds you on the road. Each is a boss, with Narrative's words.
+- **Beat the champion and hand in the quest,** and the nemesis is broken: the clan loses a tier of power, its hunt ends, and it can't become your nemesis again for two chapters.
+- **The void hound has a cry of its own.**
+- **Balance:** champions are won about half the time where they come (50.3%), and the boss curve is unchanged. Report: docs/simulation/nemesis-hunters.md.
+
+## [1.400.0+436]
+
+Clans' power shows in their offers, and a crisis can be paid in timber and stone.
+
+- **A weak clan gives weaker signs.** A clan under 25 power offers signs up to epic; heroic signs come from stronger clans.
+- **The clan that holds the place comes more often** with its offer when you are in its lands.
+- **A fallen clan sends no one,** except to those who stayed of it: its survivors still come with gifts.
+- **The Host:** a fallen clan joins it only if it pledged.
+- **The Character tab's climb:** between equals, the stronger clan's climb now shows.
+- **The crisis:** "Send timber and stone" (3 timber, 2 cut stone) now holds your clan's seat as the gold does.
+- **Balance:** every profession within 1 point (slightly down); the boss curve holds. Report: docs/simulation/clan-power.md.
+
+## [1.399.0+435]
+
+Rewards come on one card, whatever they are (card A of the user's pick).
+
+### Changed
+- **One reward card.** A header in the source's own colour (a small label over the title), one row per reward (an icon tile, a name, a line under it, the value at the right), a note set apart in a dashed box, and one button. The rows come in one after another (with reduced motion they are simply there).
+- **Quest complete, an item or materials found, and a clan's gift taken** all use it. Quest complete shows gold, experience with its bar (and the level it brought), the item with its rarity, a die, a companion who joined; the notes carry what changed the outcome (a die made for another class paid in gold, with the gold as a chip), how the quest was settled, and the party's reactions.
+
+## [1.398.0+434]
+
+The clan offer's popup is one block: the ring on top, and under it the clan card with the gift in it.
+
+### Changed
+- **The gift moves into the clan card.** The separate gift box is gone. Under the relations ring, one bordered block in the clan's colour: its name and your standing with it on the first line, what this banner gives (the gift's icon, name, kind, rarity and effect) on the left, the clan's radar on the right. "Take this gift" stays at the bottom.
+- **The clan's words sit behind an (i).** The button beside the clan's name opens its card (the same one a long press shows), with what the clan says to you; the first time you meet a clan the button is lit. The words no longer take room in the popup.
+- The alignment word ("Alignment · toward Good") stays in the block, under the gift.
+- **Hold a banner for the clan's details.** A long press on a banner in the offer, on a crest of the ring, or on a standard in the Throne room opens its card: where it leans (alignment, the five axes of its gifts), what it stands for, its sub-clans, its motto and a short recap of its story. Letting go, or a tap outside, closes it.
+
+## [1.397.0+433]
+
+In a place a clan holds, its people join long fights.
+
+- **Reinforcements.** From round 8, in a place a clan holds:
+  - if you stand Friend or better with it, its people fight beside you, and each foe loses 5% of its health a round;
+  - if it hunts you or is your nemesis, its people fall on you, and each of you loses 5% a round.
+- They never join a boss's fight and never strike the finishing blow. The fight log says when they come.
+- **Balance:** a gentle edge, as asked. In every fight, allies are worth up to +2.9 points and foes cost up to −2.6. Report: docs/simulation/reinforcements.md.
+
+## [1.394.0+430]
+
+When your clan's seat is attacked, it asks for your help, and if it falls, you choose what becomes of you.
+
+- **The crisis.** When another clan is about to take the seat (or last place) of your clan (sworn, or your patron), a rider finds you on the road first.
+  - **Defend it:** a fight with the attacker's hunter. Won, the seat holds and your clan grows stronger. Lost, you can still pay or refuse.
+  - **Pay:** 40 gold a chapter. The attacker takes a lesser place instead.
+  - **Refuse:** the seat falls, and your clan thinks less of you.
+- **The fall.** When your clan has no place left, you choose:
+  - **Bend the knee to the winner:** your standing moves to it (sworn if you were sworn), and it takes a fifth of your gold.
+  - **Stay of the fallen clan:** no new oath and no patron's stats, its gifts kept, and the winner hunts you as your nemesis, until you raise a banner of your own. Then the fallen clan joins your Host.
+- **The Mire has a seat:** the Mire's Court, a dry room in the middle of the Drowned Cloister.
+- Narrative's words throughout, in English and French.
+
+## [1.393.0+429]
+
+A clan can make you its nemesis, and good and evil hunt everyone.
+
+- **The nemesis.** The strongest clan (power 25 or more) you stand Hostile or Hunted with becomes your nemesis at a new chapter, and the news says so. It lets go only when you are back to Wary.
+  - **It hunts you, sworn or not:** its fighters come on the roads at the Hunted odds, under the same cap, cooldown, mercy and betrayal as the other hunters.
+  - **At war it moves first,** and goes after your patron clan's places from Hostile.
+  - Its quest, coming later, will break it: a tier of power lost, and two chapters before it can return.
+- **A neutral character is hunted too, lightly, by both sides:** 2% a road, rising to 6% at the edge of neutral. Before, a neutral character met no hunter at all.
+- **New hunters (Narrative's six):**
+  - the good orders hunt an Evil character: Ysel the candle-bearer, Halvard the spearman and the masked penitent;
+  - the evil forces hunt a Good character: the cultist acolyte, the Hollow Court zealot and the void hound.
+
+  Each comes with its battle cry and its own ambush lines, and the angels and demons keep theirs. The six are still met as ordinary foes too. A hunter now waits for its chapter.
+- **The territory news in French** now uses Narrative's own wording, agreeing with each clan ("La Veille Grise est tombée", "Les Corneilles de Sel tiennent…").
+- **Simulator:** 3 to 4 hunters a run at every alignment, out of about 60 roads; neutral characters meet about one alignment hunter a run. The Dominion is the nemesis in most runs (the story turns it against you). Report: docs/simulation/nemesis-hunters.md.
+
+## [1.392.0+428]
+
+### Changed
+- `factions.json`: every faction carries `gender_fr` (m, f, mp, fp) and `nameTo_fr` ("au Dominion de la Lanterne"), so the French territory news lines agree with the clan.
+- `docs/proposals/territory-texts.md`: the blurb for the Mire's hidden seat, `mire_court`, for Core's next PR.
+
+## [1.391.0+427]
+
+Clans now have power, and the map changes hands.
+
+- **Power.** Each clan has a strength from 0 to 100: the Dominion starts at 60, the Crows 45, the Compact 40, the Vigil 30, the Penitents and the Mire 25.
+  - Rises: taking a clan's gift (+2, +4 for a heroic one), doing a quest for it (+5), and each place it holds (+1 a chapter).
+  - Falls: a chapter in which you did nothing for a clan (−5), never more than 20 under its start.
+- **Places change hands at each new chapter**, at most one per clan:
+  - a clan that has grown a tier stronger takes the next place it claims (Narrative's lists);
+  - two clans at war fight over places, and the much stronger takes one, the seat last.
+
+  A news line tells it, and the clan log notes it.
+- **A clan can fall.** One that loses its last place falls, its power to 0, until it grows back and takes a place again.
+- **Shops follow the new holder.** A town that changes hands prices by your standing with the clan that holds it now.
+- **Story beats can move power and places** (`power` and `control` in a choice's or an event's politics, and a `powerAtLeast`/`powerAtMost` condition).
+- **Simulator:** about 3 to 4 places change hands per run, and the clan you back ends 25 to 50 points stronger. Report: docs/simulation/clan-power.md.
+
+## [1.390.0+426]
+
+Groundwork for the journey map; nothing changes on screen yet.
+
+- **What a story choice does on the map** (`lib/data/choice_shape.dart`). For each choice the game can now tell:
+  - whether it takes you somewhere: stay, walk to another place in the same location, or travel to another location;
+  - what kind of action it is: fight, pay, talk, sneak, attempt, evade, go or decide;
+  - whether it is acted out where you stand. A fight, a payment or a decision happens where you are, even when its aftermath takes you elsewhere.
+- **For the journey map:** of the story's 1,061 choices, 80% are acted out where you stand. Only 213 are ways somewhere, so the map can draw pins for those and list the rest as actions at "You are here".
+
+## [1.389.0+425]
+
+What a foe is now matters in a fight.
+
+- **Every foe has a kind:** a person, a beast, the undead, the void, a construct, a demon, an angel or a giant (Narrative's list).
+- **Beasts tire.** From round 6, a beast's blows land 5% softer each round, down to half. The log says when it starts tiring.
+- **The dead crumble.** From round 6, an undead foe loses a little of itself each round (3% of its health). It never finishes them; the execute does.
+- **Only people and beasts break.** Morale no longer makes the dead, the void, constructs, demons, angels or giants flee.
+- **Bosses are untouched** by the tiring and the crumbling.
+- **An evil foe is told by its kind.** The Lantern Vanguard's heal now counts the void, the undead and demons, no longer anyone weak to Light: the Turned, the cultists and the zealots are living people.
+- **Balance:** −0.7 to +1.3 points per profession, and fights don't get longer. Report: docs/simulation/foe-kinds.md.
+
 ## [1.388.0+424]
 
 Mercy and the omens, in their own words.

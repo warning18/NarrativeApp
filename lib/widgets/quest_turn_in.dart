@@ -10,6 +10,7 @@ import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
+import '../theme/stitched_ink.dart';
 import '../data/companion_remarks.dart';
 import '../data/item_origin_here.dart';
 import '../data/politics_events.dart' show questTurnInPoliticsKey;
@@ -19,6 +20,8 @@ import 'companion_remark_bubble.dart';
 import 'immersive_notice.dart';
 import 'level_up_dialog.dart';
 import 'moments.dart';
+import 'reward_card.dart';
+import 'reward_cards.dart';
 import 'turn_in_choice_dialog.dart';
 
 /// Takes on [questId] (it becomes the followed quest when none is) and
@@ -76,12 +79,14 @@ Future<void> turnInQuest(
   // A reward die made for another class is paid out in gold instead (its
   // shop price).
   String? tradedDieName;
+  var tradedDieCost = 0;
   if (rewardDiceId != null && rewardDiceId.isNotEmpty) {
     final die = db(diceSchema)[rewardDiceId] as Map<String, dynamic>?;
     final player = ref.read(playerSessionProvider);
     if (!dieUsableBy(die,
         professionId: player.professionId, raceId: player.raceId)) {
-      rewardGold += (die?['cost'] as num?)?.toInt() ?? 0;
+      tradedDieCost = (die?['cost'] as num?)?.toInt() ?? 0;
+      rewardGold += tradedDieCost;
       tradedDieName = dieDisplayName(rewardDiceId, language: lang);
       rewardDiceId = null;
     }
@@ -93,6 +98,7 @@ Future<void> turnInQuest(
       ? null
       : items[rewardItemId] as Map<String, dynamic>?;
 
+  final xpBefore = ref.read(playerSessionProvider).currentXP;
   final leveledUp = await notifier.completeQuest(
     questId,
     rewardGold: rewardGold,
@@ -160,28 +166,61 @@ Future<void> turnInQuest(
               ?.toString() ??
           id,
   ];
-  final gains = [
-    '+$rewardGold ${trFor(lang, 'gold_label')}',
-    '+$rewardXp XP',
+  // The card: gold, experience, what else was won, and the notes.
+  final after = ref.read(playerSessionProvider);
+  final ink = InkColors.of(context);
+  final found = <RewardLine>[
     if (rewardItemId != null && rewardItemId.isNotEmpty)
-      '+${rewardItem?['itemName']?.toString() ?? rewardItemId}',
+      rewardItemLine(context,
+          itemId: rewardItemId, item: rewardItem, lang: lang),
     if (rewardDiceId != null && rewardDiceId.isNotEmpty)
-      '+${dieDisplayName(rewardDiceId, language: lang)}',
+      RewardLine(
+        key: Key('reward_die_$rewardDiceId'),
+        icon: Icon(Icons.casino, size: 28, color: ink.tide),
+        accent: ink.tide,
+        title: dieDisplayName(rewardDiceId, language: lang),
+        sub: trFor(lang, 'reward_die_made_for'),
+        value: trFor(lang, 'reward_new'),
+      ),
     if (recruitedName != null)
-      '${trFor(lang, 'recruited_prefix')} $recruitedName',
+      RewardLine(
+        key: const Key('reward_ally'),
+        icon: Icon(Icons.person_add_alt_1, size: 28, color: ink.heal),
+        accent: ink.heal,
+        title: recruitedName,
+        sub: trFor(lang, 'recruited_prefix'),
+        value: trFor(lang, 'reward_joins'),
+      ),
   ];
-  final lines = [
-    '${trFor(lang, 'quest_complete_prefix')}: $questName (${gains.join(', ')})',
-    if (picked != null && picked.resultText.isNotEmpty) picked.resultText,
+  final notes = <RewardNote>[
+    if (picked != null && picked.resultText.isNotEmpty)
+      RewardNote(picked.resultText),
     if (tradedDieName != null)
-      trFor(lang, 'reward_die_traded').replaceAll('{die}', tradedDieName),
+      RewardNote(
+          trFor(lang, 'reward_die_traded').replaceAll('{die}', tradedDieName),
+          chip: '+$tradedDieCost G'),
     if (grantsBannerPieceId != null && grantsBannerPieceId.isNotEmpty)
-      trFor(lang, 'banner_piece_found_prefix'),
-    if (achievementNames.isNotEmpty)
-      '${trFor(lang, 'achievement_unlocked_prefix')}: '
-          '${achievementNames.join(', ')}',
-    ...approvalReactionLines(reactions, companions, (key) => trFor(lang, key)),
+      RewardNote(trFor(lang, 'banner_piece_found_prefix')),
+    for (final line in approvalReactionLines(
+        reactions, companions, (key) => trFor(lang, key)))
+      RewardNote(line),
   ];
+  final card = questRewardCard(
+    context,
+    lang: lang,
+    ink: ink,
+    questName: questName,
+    chapter: (quest['chapter'] as num?)?.toInt() ?? 1,
+    gold: rewardGold,
+    xp: rewardXp,
+    xpBefore: xpBefore,
+    xpAfter: after.currentXP,
+    xpNeeded: after.xpToNextLevel,
+    level: after.level,
+    leveledUp: leveledUp,
+    found: found,
+    notes: notes,
+  );
   // What the party says about how it was settled (see
   // companion_remarks.dart) comes after the notice, in speech bubbles.
   final remarks = speakUpAbout(ref, reactions: reactions, deed: deed);
@@ -191,11 +230,7 @@ Future<void> turnInQuest(
     unawaited(announceAchievements(context, achievementNames,
         trFor(lang, 'achievement_unlocked_prefix').toUpperCase()));
   }
-  await showImmersiveNotice(
-    context,
-    icon: Icons.emoji_events_outlined,
-    message: lines.join('\n'),
-  );
+  await showRewardCard(context, card);
   if (!context.mounted) return;
   await showSpokenLines(context, ref, [
     ...approvalReactionWords(reactions, companions),

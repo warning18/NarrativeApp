@@ -1241,6 +1241,48 @@ final DbSchema enemiesSchema = DbSchema(
     FieldSchema(
         key: 'battleCry_fr', label: 'Battle Cry (FR)', type: FieldType.text),
     FieldSchema(
+        key: 'championClan',
+        label: 'Champion of (a clan\'s nemesis champion, nemesis.dart)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'arrival',
+        label: 'Arrival (a champion\'s road scene; {name} for its name)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'arrival_fr',
+        label: 'Arrival (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'wayForce',
+        label: 'Way in by force (a champion\'s road choice)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'wayForce_fr',
+        label: 'Way in by force (FR)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'wayGuile',
+        label: 'Way in by guile (a champion\'s road choice)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'wayGuile_fr',
+        label: 'Way in by guile (FR)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'wayMercy',
+        label: 'Way in by mercy (a champion\'s road choice)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'wayMercy_fr',
+        label: 'Way in by mercy (FR)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'defeat',
+        label: 'Defeat (logged when it falls)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'defeat_fr', label: 'Defeat (FR)', type: FieldType.multilineText),
+    FieldSchema(
         key: 'xpReward',
         label: 'XP Reward',
         type: FieldType.integer,
@@ -2718,6 +2760,19 @@ final DbSchema chaptersSchema = DbSchema(
         key: 'mainQuestHint_fr',
         label: 'Main quest hint (FR)',
         type: FieldType.multilineText),
+    FieldSchema(
+        key: 'recommendedLevel',
+        label:
+            'Recommended level (shown before setting out for this chapter; empty for none)',
+        type: FieldType.integer),
+    FieldSchema(
+        key: 'recommendedLevelNote',
+        label: 'Recommended level note (said when the party is under it)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'recommendedLevelNote_fr',
+        label: 'Recommended level note (FR)',
+        type: FieldType.multilineText),
   ],
 );
 
@@ -3059,6 +3114,53 @@ final DbSchema factionsSchema = DbSchema(
       help: 'Where the character stands with them when the story opens.',
     ),
     FieldSchema(
+      key: 'power',
+      label: 'Starting power (0 to 100)',
+      type: FieldType.integer,
+      defaultValue: 0,
+      help: 'How strong the clan is when the story opens (clan_power.dart): '
+          'Minor under 25, Rising, Dominant from 50, Ascendant from 75.',
+    ),
+    FieldSchema(
+      key: 'seat',
+      label: 'Seat',
+      type: FieldType.reference,
+      referenceSchemaId: 'geography',
+      help: 'The place the clan gives up last; its first claim back when it '
+          'has fallen.',
+    ),
+    FieldSchema(
+      key: 'brokenNews',
+      label: 'Broken news (its nemesis hunt broken)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'brokenNews_fr',
+      label: 'Broken news (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'gender_fr',
+      label: 'French gender and number',
+      type: FieldType.enumeration,
+      enumOptions: ['m', 'f', 'mp', 'fp'],
+      help: 'For the French words that agree with the name ("est tombée", '
+          '"tiennent").',
+    ),
+    FieldSchema(
+      key: 'nameTo_fr',
+      label: 'French name after "à"',
+      type: FieldType.text,
+      help: '"au Dominion de la Lanterne", "aux Corneilles de Sel".',
+    ),
+    FieldSchema(
+      key: 'claims',
+      label: 'Claims, in order',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'geography',
+      help: 'The places the clan reaches for as its power grows.',
+    ),
+    FieldSchema(
       key: 'subclans',
       label: 'Sub-clans',
       type: FieldType.referenceList,
@@ -3362,6 +3464,13 @@ final DbSchema signsSchema = DbSchema(
       type: FieldType.referenceList,
       referenceSchemaId: 'factions',
       help: 'A duo sign is offered only once a sign of each is held.',
+    ),
+    FieldSchema(
+      key: 'storyOnly',
+      label: 'Story only',
+      type: FieldType.boolean,
+      defaultValue: false,
+      help: 'Given by the story (a flag), never drawn in an offer.',
     ),
     FieldSchema(
       key: 'pact',

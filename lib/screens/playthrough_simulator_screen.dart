@@ -11,8 +11,13 @@ import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../combat/combat_engine.dart'
-    show chapterRewardMultiplier, isBossEnemy, scaledReward, zoneBossEnemyIds;
-import '../combat/context_rules.dart' show ContextRule;
+    show
+        chapterRewardMultiplier,
+        isBossEnemy,
+        lostFightXpShare,
+        scaledReward,
+        zoneBossEnemyIds;
+import '../combat/context_rules.dart' show ContextRule, Reinforcement;
 import '../combat/gear_effects.dart';
 import '../combat/spec_variants.dart' show SpecVariantInfo, specVariantsFrom;
 import '../combat/specialisations.dart' show SpecInfo, specInfosFrom;
@@ -32,6 +37,7 @@ import '../data/detour_scenes.dart';
 import '../data/journey_rules.dart' show walkWatches;
 import '../data/recurring_encounters.dart'
     show markerFor, recurringBeatsOpen, recurringChance;
+import '../data/feature_unlocks.dart' show trainerGuardFlag, trainerStrikeFlag;
 import '../data/factions.dart';
 import '../data/expedition_steps.dart';
 import '../data/perks.dart';
@@ -45,8 +51,19 @@ import '../data/sim_quests.dart';
 import '../data/story_graph_integrity.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
+import '../data/training.dart' show TrainingPath, trainingPathsFrom;
 import '../data/zone_gating.dart' show meetsRequiredFlags, zoneIsMain;
+import '../data/clan_power.dart' show TerritoryChange;
 import '../data/geography.dart';
+import '../data/nemesis.dart'
+    show
+        breakNemesis,
+        championIdOf,
+        championMinChapter,
+        championRecordFor,
+        championRoadChance,
+        championWays,
+        trailFlagOf;
 import '../data/land_crossing.dart';
 import '../data/road_events.dart';
 import '../gamedata/db_schema.dart';
@@ -60,6 +77,7 @@ import '../providers/app_mode_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/place_pools_provider.dart';
 import '../providers/settings_providers.dart';
+import '../providers/training_provider.dart';
 import '../providers/story_providers.dart';
 import '../utils/game_icons.dart';
 
@@ -224,6 +242,9 @@ class _SimResult {
     this.specs = const [],
     this.patron = '',
     this.mercy = (spared: 0, finished: 0, betrayed: 0),
+    this.territory = const [],
+    this.politics = PoliticsState.empty,
+    this.nemeses = const {},
   });
 
   /// The specialisations the character held at the end, in the order
@@ -237,6 +258,16 @@ class _SimResult {
   /// The rivals' hunters spared, finished, and come back to betray
   /// (hunter_mercy.dart).
   final ({int spared, int finished, int betrayed}) mercy;
+
+  /// The places that changed hands at the chapters' turns
+  /// (clan_power.dart).
+  final List<TerritoryChange> territory;
+
+  /// The clans as the run left them: standing, power, places.
+  final PoliticsState politics;
+
+  /// Every clan that was the character's nemesis at a chapter's turn.
+  final Set<String> nemeses;
 
   final List<_SimStep> steps;
 
@@ -350,9 +381,17 @@ class _SimContext {
     this.ports = const {},
     this.startSpecs = const [],
     this.context,
+    this.reinforcement = Reinforcement.none,
+    this.championFights = false,
+    this.featureLadder = false,
     this.specs = const {},
     this.specVariants = const {},
+    this.trainingPaths = const {},
   });
+
+  /// training_paths.json parsed: with them the levels' stat points are
+  /// stat picks (SimCharacter.takeStatPicks).
+  final Map<String, TrainingPath> trainingPaths;
 
   /// specialisations.json parsed: what the clans offer (specialisations.dart);
   /// and spec_variants.json, their sub-clans' variants and ranks II.
@@ -367,6 +406,18 @@ class _SimContext {
   /// A context rule every fight plays (context_rules.dart), to measure
   /// each one; null: the Tide (no fight's place is known here).
   final ContextRule? context;
+
+  /// Reinforcements in every fight (context_rules.dart), to measure them;
+  /// none: no fight's place is known here.
+  final Reinforcement reinforcement;
+
+  /// The nemeses' champions fought on the roads (nemesis.dart), to measure
+  /// them; off, as the walk takes no quest a road opens.
+  final bool championFights;
+
+  /// The game's feature ladder (feature_unlocks.dart): off by default, so
+  /// the measured curves stay comparable; on, to measure it.
+  final bool featureLadder;
 
   /// detour_scenes.json: the detours' written scenes (detour_scenes.dart).
   final Map<String, DetourScene> detourScenes;
@@ -520,7 +571,10 @@ _SimResult _simulate(
       gameConfig: sim.gameConfig,
       dice: sim.dice,
       spells: sim.spells,
-    )..specIds = [...sim.startSpecs];
+    )
+      ..specIds = [...sim.startSpecs]
+      ..trainingPaths = sim.trainingPaths
+      ..pickRandom = Random(detourSalt * 31 + 17);
   }
 
   var currentId = StoryRepository.startNodeId;
@@ -552,6 +606,7 @@ _SimResult _simulate(
           startingSkillPoints: (sim.professions[character.professionId]
                   as Map<String, dynamic>?)?['startingSkillPoints'] as int? ??
               0,
+          ladder: sim.featureLadder,
         )..passives = !sim.clashOff.contains('passives'));
   // The open chapters' loop: the camp the story stands at, the places
   // already toured from it, and the place being toured now (with how many
@@ -575,6 +630,14 @@ _SimResult _simulate(
   // and what came of it. The walk spares a hunter whose betrayal is under
   // [_simSpareUnder].
   final mercyFlags = <String>[];
+  // The nemeses' champions beaten (nemesis.dart; [_SimContext.championFights]).
+  final championsBeaten = <String>{};
+  // The fight the roads call before it is declared (fightEnemies).
+  late ({bool? won, int attempts, Map<String, int> casts}) Function(
+      List<String> enemyIds, int chapter,
+      {Map<String, Map<String, dynamic>> records}) fightOnRoad;
+  // The nemeses whose trail was followed (nemesis.dart's first beat).
+  final trailsFollowed = <String>{};
   var spared = 0, finished = 0, betrayed = 0;
   final metOnRoads = <String>{};
   final roads = <SimRoad>[];
@@ -670,7 +733,12 @@ _SimResult _simulate(
         hunter = 'betrayal';
         betrayed++;
       } else if (rival != null) {
-        hunter = 'rival_hunter';
+        final hunterId = rival.first.choices.first.triggerEnemyId ?? '';
+        final clan =
+            (enemies[hunterId] as Map<String, dynamic>?)?['hunterClan'];
+        hunter = clan != null && clan == growth?.politics.nemesis
+            ? 'nemesis_hunter'
+            : 'rival_hunter';
         // Beaten (the walk doesn't fight a road's hunter), it is spared
         // when its betrayal is unlikely.
         final id = rival.first.choices.first.triggerEnemyId ?? '';
@@ -686,6 +754,60 @@ _SimResult _simulate(
         }
       } else if (event != null) {
         hunter = ambush ? 'hunter' : 'temptation';
+      }
+      // The nemesis's champion (nemesis.dart), to measure it: its quest
+      // taken as it opens, met on a road at rest; beaten, the nemesis is
+      // broken.
+      final nemesis = growth?.politics.nemesis ?? '';
+      if (sim?.championFights == true &&
+          hunter.isEmpty &&
+          nemesis.isNotEmpty &&
+          chapter >= championMinChapter &&
+          !championsBeaten.contains(nemesis) &&
+          side.nextDouble() < championRoadChance) {
+        hunter = 'champion';
+        final champion = championIdOf(nemesis);
+        // The trail first, then the champion by a way in drawn at random,
+        // with its edge.
+        final way = championWays[side.nextInt(championWays.length)];
+        final record = enemies[champion];
+        final result = !trailsFollowed.contains(nemesis)
+            ? (won: null, attempts: 0, casts: const <String, int>{})
+            : fightOnRoad([champion], chapter,
+                records: {
+                  if (record is Map<String, dynamic>)
+                    champion: championRecordFor(record, way),
+                });
+        if (!trailsFollowed.contains(nemesis)) {
+          trailsFollowed.add(nemesis);
+          steps.add(_SimStep(
+            nodeId: 'road:${trailFlagOf(nemesis)}',
+            chapter: chapter,
+            mood: null,
+            uiTheme: null,
+            description: 'The nemesis\'s trail',
+            choiceText: 'Follow the trail',
+          ));
+        } else if (result.won != null) {
+          steps.add(_SimStep(
+            nodeId: 'road:$champion',
+            chapter: chapter,
+            mood: null,
+            uiTheme: null,
+            description: 'The nemesis\'s champion',
+            choiceText: 'The way of $way',
+            enemyId: champion,
+            fightWon: result.won,
+            fightAttempts: result.attempts,
+            spellsCast: result.casts,
+          ));
+          if (result.won == true) {
+            championsBeaten.add(nemesis);
+            growth!.politics = breakNemesis(
+                growth.politics, nemesis, growth.tables.clans,
+                chapter: chapter);
+          }
+        }
       }
     }
     var familiar = '';
@@ -783,6 +905,9 @@ _SimResult _simulate(
       specs: List.unmodifiable(character?.specIds ?? const <String>[]),
       patron: growth == null ? '' : statPatron(growth.politics),
       mercy: (spared: spared, finished: finished, betrayed: betrayed),
+      territory: List.unmodifiable(growth?.territoryChanges ?? const []),
+      politics: growth?.politics ?? PoliticsState.empty,
+      nemeses: Set.unmodifiable(growth?.nemeses ?? const <String>{}),
       transcript: transcribe
           ? [
               for (final (i, step) in steps.indexed) ...[
@@ -955,7 +1080,9 @@ _SimResult _simulate(
     PerkEffects perks,
     int stolen,
   }) fightEnemies(List<String> enemyIds, int chapter,
-      {bool once = false, bool host = false}) {
+      {bool once = false,
+      bool host = false,
+      Map<String, Map<String, dynamic>> records = const {}}) {
     const none = (
       won: null,
       attempts: 0,
@@ -968,9 +1095,24 @@ _SimResult _simulate(
     if (c == null || sim == null) return none;
     final entries = <MapEntry<String, Map<String, dynamic>>>[
       for (final id in enemyIds)
-        if (enemies[id] is Map<String, dynamic>)
+        if (records[id] != null)
+          MapEntry(id, records[id]!)
+        else if (enemies[id] is Map<String, dynamic>)
           MapEntry(id, enemies[id] as Map<String, dynamic>),
     ];
+    // An enemy the data doesn't hold is a lost fight, never a free win (a
+    // story naming one before it exists once made whole runs stronger).
+    // `@first_ally`, the pact's turned companion, resolves only in play.
+    if (entries.length < enemyIds.where((id) => !id.startsWith('@')).length) {
+      return (
+        won: false,
+        attempts: 1,
+        casts: const <String, int>{},
+        signs: SignEffects.none,
+        perks: PerkEffects.none,
+        stolen: 0,
+      );
+    }
     if (entries.isEmpty) return none;
     final casts = <String, int>{};
     final maxAttempts = once ? 1 : _maxFightAttempts;
@@ -990,6 +1132,7 @@ _SimResult _simulate(
         clash: sim.clash,
         clashOff: sim.clashOff,
         context: sim.context,
+        reinforcement: sim.reinforcement,
         clanStanding: growth == null
             ? null
             : (id) => growth.politics.standingOf(id, growth.tables.clans),
@@ -998,6 +1141,18 @@ _SimResult _simulate(
       c.heldSigns = countDownPacts(c.heldSigns);
       for (final entry in outcome.spellsCast.entries) {
         casts[entry.key] = (casts[entry.key] ?? 0) + entry.value;
+      }
+      if (!outcome.won) {
+        // A lost try still teaches something ([lostFightXpShare]).
+        var xp = 0;
+        for (final entry in entries) {
+          xp += scaledReward(
+              (entry.value['xpReward'] as num?)?.toInt() ?? 0, c.level);
+        }
+        final levelBefore = c.level;
+        c.gainXp(
+            (xp * chapterRewardMultiplier(chapter) * lostFightXpShare).round());
+        growth?.levelsReached(levelBefore, c.level);
       }
       if (outcome.won) {
         questLog?.recordKills(entries.map((e) => e.key));
@@ -1050,6 +1205,11 @@ _SimResult _simulate(
       stolen: 0,
     );
   }
+
+  fightOnRoad = (ids, chapter, {records = const {}}) {
+    final r = fightEnemies(ids, chapter, records: records);
+    return (won: r.won, attempts: r.attempts, casts: r.casts);
+  };
 
   /// [choice]'s own fight (see [fightEnemies]); one of the last battles
   /// when it is marked so (v1.196).
@@ -1424,7 +1584,7 @@ _SimResult _simulate(
       if (reached != null) {
         arrivals.putIfAbsent(
             reached, () => (level: character!.level, gold: gold));
-        growth?.chapterReached(reached);
+        growth?.chapterReached(reached, geography: sim?.geography);
         settle();
         buildHouses();
         if (transcribe) {
@@ -1689,6 +1849,14 @@ _SimResult _simulate(
     gold = (gold + effectiveGoldMod).clamp(0, 1 << 30).toInt();
     alignment += choice.alignmentMod;
     flags.addAll(choice.flagsToAdd);
+    // The trainer's lesson, on the feature ladder (feature_unlocks.dart).
+    if (sim?.featureLadder == true) {
+      if (choice.flagsToAdd.contains(trainerStrikeFlag)) {
+        growth?.learnTrainerSkill(strike: true);
+      } else if (choice.flagsToAdd.contains(trainerGuardFlag)) {
+        growth?.learnTrainerSkill(strike: false);
+      }
+    }
     // What the choice does to the coast, once (v1.196: the claim and the
     // Host among it).
     applyPolitics(choice.politics,
@@ -1841,6 +2009,9 @@ _SimContext _simContextOf(
   Set<String> clashOff = const {},
   List<String> startSpecs = const [],
   ContextRule? context,
+  Reinforcement reinforcement = Reinforcement.none,
+  bool championFights = false,
+  bool featureLadder = false,
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
   final written = writtenStepsFrom(table('expedition_steps'));
@@ -1879,8 +2050,12 @@ _SimContext _simContextOf(
     ports: table('ports'),
     startSpecs: startSpecs,
     context: context,
+    reinforcement: reinforcement,
+    championFights: championFights,
+    featureLadder: featureLadder,
     specs: specInfosFrom(table('specialisations')),
     specVariants: specVariantsFrom(table('spec_variants')),
+    trainingPaths: trainingPathsFrom(table('training_paths')),
   );
 }
 
@@ -1931,7 +2106,7 @@ typedef SimRunSummary = ({
   int signs,
   int offers,
   int skillsLearned,
-  Map<String, ({int attempts, int won, int fights})> byChapter,
+  Map<String, ({int attempts, int won, int fights, int firstTry})> byChapter,
   Map<String, int> enemiesFought,
   Map<String, int> enemiesLost,
   Map<String, Map<String, ({int fought, int lost})>> enemiesByChapter,
@@ -1951,6 +2126,9 @@ typedef SimRunSummary = ({
   List<String> specs,
   String patron,
   ({int spared, int finished, int betrayed}) mercy,
+  List<TerritoryChange> territory,
+  PoliticsState politics,
+  Set<String> nemeses,
 });
 
 /// Full playthroughs, one per entry of [plan] (a strategy and, optionally,
@@ -1971,9 +2149,17 @@ List<SimRunSummary> simulatePlaythroughs(
   bool transcripts = false,
   List<String> startSpecs = const [],
   ContextRule? context,
+  Reinforcement reinforcement = Reinforcement.none,
+  bool championFights = false,
+  bool featureLadder = false,
 }) {
   final sim = _simContextOf(tables, gameConfig,
-      clashOff: clashOff, startSpecs: startSpecs, context: context);
+      clashOff: clashOff,
+      startSpecs: startSpecs,
+      context: context,
+      reinforcement: reinforcement,
+      championFights: championFights,
+      featureLadder: featureLadder);
   final enemies = tables['enemies'] ?? const {};
   final out = <SimRunSummary>[];
   for (var i = 0; i < plan.length; i++) {
@@ -1988,18 +2174,22 @@ List<SimRunSummary> simulatePlaythroughs(
         coverage: coverage,
         detourSalt: seed * 100003 + i,
         transcribe: transcripts);
-    final byChapter = <String, ({int attempts, int won, int fights})>{};
+    final byChapter =
+        <String, ({int attempts, int won, int fights, int firstTry})>{};
     final fought = <String, int>{};
     final lost = <String, int>{};
     final byChapterEnemy = <String, Map<String, ({int fought, int lost})>>{};
     for (final step in result.steps) {
       if (step.fightWon == null) continue;
       final key = _chapterLabel(step.chapter);
-      final before = byChapter[key] ?? (attempts: 0, won: 0, fights: 0);
+      final before =
+          byChapter[key] ?? (attempts: 0, won: 0, fights: 0, firstTry: 0);
       byChapter[key] = (
         attempts: before.attempts + step.fightAttempts,
         won: before.won + (step.fightWon == true ? 1 : 0),
         fights: before.fights + 1,
+        firstTry: before.firstTry +
+            (step.fightWon == true && step.fightAttempts == 1 ? 1 : 0),
       );
       final enemy = step.enemyId ?? '?';
       fought[enemy] = (fought[enemy] ?? 0) + 1;
@@ -2070,6 +2260,9 @@ List<SimRunSummary> simulatePlaythroughs(
       specs: result.specs,
       patron: result.patron,
       mercy: result.mercy,
+      territory: result.territory,
+      politics: result.politics,
+      nemeses: result.nemeses,
     ));
   }
   return out;
@@ -2497,6 +2690,7 @@ class _PlaythroughSimulatorScreenState
       landEvents: landEventsFrom(await load(landEventsSchema)),
       houses: await load(housesSchema),
       writtenSteps: await loadWrittenSteps(ref),
+      trainingPaths: await ref.read(trainingPathsProvider.future),
     );
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
     final random = Random();

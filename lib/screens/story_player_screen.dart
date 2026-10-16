@@ -9,6 +9,9 @@ import '../combat/combat_aftermath.dart';
 import '../combat/combat_engine.dart' show newGamePlusStep;
 import '../combat/encounter.dart';
 import '../data/ability_check.dart';
+import '../data/feature_unlocks.dart' show trainerGuardFlag, trainerStrikeFlag;
+import '../data/clan_crisis.dart' show clanCrisisRoadEvent, isClanCrisisNode;
+import '../data/nemesis.dart' show maybeChampionRoad;
 import '../data/alignment_events.dart';
 import '../data/hunter_mercy.dart';
 import '../data/rival_hunters.dart';
@@ -50,6 +53,7 @@ import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/camp_presence_provider.dart';
 import '../providers/chapter_loop_provider.dart';
+import '../providers/choice_flow_provider.dart';
 import '../providers/climate_provider.dart';
 import '../data/weather_effects.dart';
 import '../providers/clans_provider.dart';
@@ -75,6 +79,8 @@ import '../providers/voice_settings_provider.dart';
 import '../providers/walk_companion_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../widgets/reward_card.dart';
+import '../widgets/reward_cards.dart';
 import '../widgets/road_panel.dart';
 import '../widgets/story_ship_battle.dart';
 import '../widgets/timed_choice_bar.dart';
@@ -269,7 +275,9 @@ class _StoryView extends ConsumerWidget {
       if (!context.mounted) return;
       final offered = await ref
           .read(playerSessionProvider.notifier)
-          .grantChapterOffer(next, data: ref.read(clanDataProvider));
+          .grantChapterOffer(next,
+              data: ref.read(clanDataProvider),
+              geography: ref.read(geographyProvider));
       // The coast moved while the party was away (v1.195): the events the
       // new chapter brings, told on its card. (Gone from the screen, the
       // next day's tick fires them, see HomeShell.)
@@ -1462,35 +1470,63 @@ Future<void> _selectChoice({
               goldIsProfit: !isExcursion,
               origin: itemOriginHere(ref),
             );
+    // The trainer's lesson (feature_unlocks.dart): a strike or a guard.
+    final strike = choice.flagsToAdd.contains(trainerStrikeFlag);
+    if (strike || choice.flagsToAdd.contains(trainerGuardFlag)) {
+      await ref.read(playerSessionProvider.notifier).learnTrainerSkill(
+          strike: strike,
+          trees: await loadedGameDb(ref, skillTreesSchema),
+          skills: await loadedGameDb(ref, skillsSchema));
+    }
     // What the scene put in the pack (see StoryChoice.grantItemId).
     if (choice.grantsItem && context.mounted) {
       final items = ref.read(localizedDbProvider(itemsSchema)).value;
-      final name =
-          (items?[choice.grantItemId] as Map<String, dynamic>?)?['itemName']
-              ?.toString();
-      await showImmersiveNotice(
+      final item = items?[choice.grantItemId] as Map<String, dynamic>?;
+      final lang = ref.read(appLanguageProvider);
+      final line = rewardItemLine(context,
+          itemId: choice.grantItemId!, item: item, lang: lang);
+      await showRewardCard(
         context,
-        icon: Icons.backpack_outlined,
-        message: tr(ref, 'item_picked_up')
-            .replaceAll('{item}', name ?? choice.grantItemId!),
+        itemFoundCard(
+            lang: lang, title: line.title, accent: line.accent, lines: [line]),
       );
     }
     // And the materials it hands over (see StoryChoice.grantMaterials),
     // told on the way: the story goes on under the card.
     if (choice.grantsMaterials && context.mounted) {
       final items = ref.read(localizedDbProvider(itemsSchema)).value;
-      unawaited(showImmersiveNotice(
-        context,
-        icon: Icons.backpack_outlined,
-        message: tr(ref, 'item_picked_up').replaceAll(
-            '{item}',
-            [
-              for (final MapEntry(key: id, value: count)
-                  in choice.grantMaterials.entries)
-                if (count > 0)
-                  '$count ${(items?[id] as Map?)?['itemName'] ?? id}',
-            ].join(', ')),
-      ));
+      final lang = ref.read(appLanguageProvider);
+      final lines = [
+        for (final MapEntry(key: id, value: count)
+            in choice.grantMaterials.entries)
+          if (count > 0)
+            () {
+              final line = rewardItemLine(context,
+                  itemId: id,
+                  item: items?[id] as Map<String, dynamic>?,
+                  lang: lang);
+              return RewardLine(
+                key: line.key,
+                icon: line.icon,
+                accent: line.accent,
+                title: line.title,
+                tag: line.tag,
+                tagColor: line.tagColor,
+                sub: line.sub,
+                value: '×$count',
+              );
+            }(),
+      ];
+      if (lines.isNotEmpty) {
+        await showRewardCard(
+          context,
+          itemFoundCard(
+              lang: lang,
+              title: tr(ref, 'reward_materials_title'),
+              accent: lines.first.accent,
+              lines: lines),
+        );
+      }
     }
     // How the party took it, before the story moves on.
     if (reactions.isNotEmpty && context.mounted) {
@@ -1512,6 +1548,12 @@ Future<void> _selectChoice({
       await applyStoryPoliticsNow(ref, choice.politics!,
           nodeId: currentNodeId, key: choicePoliticsKey(currentNodeId, index));
     }
+  } else if (choice.hasPolitics &&
+      isExcursion &&
+      isClanCrisisNode(detourNodeId)) {
+    // Your clan's crisis or fall, met on the road (clan_crisis.dart).
+    await applyStoryPoliticsNow(ref, choice.politics!,
+        nodeId: detourNodeId!, key: '');
   }
   if (choice.hasUnlocks) {
     final enemyIds = resolvedEnemyIds.toSet();
@@ -1810,8 +1852,9 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
   await applyEnterPolitics(ref, ref.read(storyPlayProvider).currentNodeId);
   if (ref.read(appModeProvider) == AppMode.edit) return;
   final french = ref.read(appLanguageProvider) == AppLanguage.fr;
-  // A way on that leaves the location is a stop, one to another district
-  // of the same city reads through (v1.209, see Geography.travelsBetween).
+  // A way on to another stop (another building, district or location, see
+  // choice_flow.dart) is a stop; without the stops, one that leaves the
+  // location (v1.209, see Geography.travelsBetween).
   final world = await loadGeography(ref);
   final preludes = <ScenePrelude>[];
   for (var i = 0; i < maxPassThrough; i++) {
@@ -1821,9 +1864,14 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
     final node = story.nodeFor(ref.read(storyPlayProvider).currentNodeId);
     if (node == null) break;
     final gateWorld = ref.read(coastGateWorldProvider);
+    // It stops where the stop changes (a building, a district: see
+    // choice_flow.dart).
+    final stops = ref.read(storyStopsProvider);
     final way = passThroughChoiceOf(node, session.flags,
         hidden: (c) => choiceHiddenFor(c, session, gateWorld),
-        travels: (from, to) => world.travelsBetween(story, from, to));
+        travels: (from, to) =>
+            stops?.changesStop(from, to) ??
+            world.travelsBetween(story, from, to));
     // A way on the party cannot take yet stays a stop, with its reason.
     if (way == null ||
         isStoryChoiceLocked(way, story, session, world: gateWorld)) {
@@ -1950,6 +1998,30 @@ Future<bool> startRoadEncounter(
     if (betrayer != null) {
       alignmentEvent = [betrayalAmbushNode(betrayer, enemies, dice())];
     }
+    // Your clan's seat threatened, or fallen (clan_crisis.dart): before
+    // any hunter.
+    alignmentEvent ??= clanCrisisRoadEvent(session.politics,
+        data: ref.read(clanDataProvider),
+        geography: geo,
+        enemies: enemies,
+        chapter: chapter,
+        gold: session.gold,
+        materials: {
+          for (final id in session.inventoryItemIds)
+            if (id.startsWith('material_')) id: 0,
+        }..updateAll(
+            (id, _) => session.inventoryItemIds.where((i) => i == id).length),
+        random: dice());
+    // Your nemesis's trail, then its champion, its quest under way
+    // (nemesis.dart).
+    alignmentEvent ??= maybeChampionRoad(
+        politics: session.politics,
+        activeQuestIds: session.activeQuestIds,
+        enemies: enemies,
+        chapter: chapter,
+        random: dice(),
+        flags: session.flags,
+        quests: await loadedGameDb(ref, questsSchema));
     alignmentEvent ??= maybeAlignmentEvent(
       alignmentScore: session.alignmentScore,
       activeQuestIds: session.activeQuestIds,

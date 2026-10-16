@@ -6,6 +6,7 @@ import '../combat/dice_tamper.dart';
 import '../combat/doctrine.dart';
 import '../combat/context_rules.dart';
 import '../combat/element_reaction.dart';
+import '../combat/foe_kind.dart';
 import '../combat/enemy_response.dart';
 import '../combat/fight_goal.dart';
 import '../combat/fight_length.dart';
@@ -22,6 +23,7 @@ import '../models/ally_state.dart';
 import 'perks.dart';
 import 'shop_stock.dart';
 import 'signs.dart';
+import 'training.dart';
 
 /// A fight model for the in-app playthrough simulator: one simulated
 /// character (a random race and profession, created the way `startNewGame`
@@ -220,6 +222,15 @@ class SimCharacter {
   /// the character's own core play.
   List<String> specIds = [];
 
+  /// The training paths (training_paths.json): with them each level's five
+  /// stat points are stat picks (drawStatPick), each taking the offer that
+  /// raises [preferredStat] (statPickFor), drawn with [pickRandom]; the
+  /// paths picked are counted in [trainingTaken]. Without them, the old
+  /// fixed spend (see [gainXp]).
+  Map<String, TrainingPath> trainingPaths = const {};
+  Random pickRandom = Random(1);
+  final Map<String, int> trainingTaken = {};
+
   /// A sign's (or a perk's) extra mana, while a fight lasts.
   int signMaxMana = 0;
 
@@ -308,10 +319,11 @@ class SimCharacter {
   }
 
   /// Runs [gain] XP through the app's own `level * 100` thresholds. Each
-  /// level: +20 max health and +5 stat points, spent here as +10 health,
-  /// +2 damage, +1 armor and +1 to [preferredStat] (the simulator's fixed
-  /// assumption for what a player would do), then a full heal like the
-  /// app's own level-up.
+  /// level: +20 max health and +5 stat points -- with [trainingPaths], five
+  /// stat picks (see [takeStatPicks]) and the game's [levelDamageGain]
+  /// damage; else spent as +10 health, +2
+  /// damage, +1 armor and +1 to [preferredStat] (the simulator's old fixed
+  /// assumption) -- then a full heal like the app's own level-up.
   bool gainXp(int gain) {
     xp += gain;
     var leveled = false;
@@ -319,6 +331,12 @@ class SimCharacter {
       xp -= level * 100;
       level++;
       leveled = true;
+      if (trainingPaths.isNotEmpty) {
+        maxHealth += 20;
+        baseDamage += levelDamageGain;
+        takeStatPicks(5);
+        continue;
+      }
       maxHealth += 30;
       baseDamage += 2;
       baseArmor += 1;
@@ -338,6 +356,62 @@ class SimCharacter {
     if (leveled) currentHealth = maxHealth;
     mana = min(mana, maxMana);
     return leveled;
+  }
+
+  /// [count] stat picks (training.dart), each the offer statPickFor takes
+  /// for [preferredStat]; its gains applied, its path counted.
+  void takeStatPicks(int count) {
+    for (var i = 0; i < count; i++) {
+      final offer = drawStatPick(
+        paths: trainingPaths,
+        random: pickRandom,
+        professionId: professionId,
+        raceId: raceId,
+        taken: trainingTaken,
+        stats: {
+          'baseDamage': baseDamage,
+          'baseArmor': baseArmor,
+          'maxHealth': maxHealth,
+          'strength': strength,
+          'dexterity': dexterity,
+          'constitution': constitution,
+          'intelligence': intelligence,
+          'wisdom': wisdom,
+          'perception': perception,
+          'luck': luck,
+          'charisma': charisma,
+        },
+      );
+      if (offer.isEmpty) return;
+      final pick = offer[statPickFor(offer, preferredStat)];
+      trainingTaken[pick.pathId] = (trainingTaken[pick.pathId] ?? 0) + 1;
+      for (final MapEntry(:key, :value) in pick.gains.entries) {
+        switch (key) {
+          case 'baseDamage':
+            baseDamage += value;
+          case 'baseArmor':
+            baseArmor += value;
+          case 'maxHealth':
+            maxHealth += value;
+          case 'strength':
+            strength += value;
+          case 'dexterity':
+            dexterity += value;
+          case 'constitution':
+            constitution += value;
+          case 'intelligence':
+            intelligence += value;
+          case 'wisdom':
+            wisdom += value;
+          case 'perception':
+            perception += value;
+          case 'luck':
+            luck += value;
+          case 'charisma':
+            charisma += value;
+        }
+      }
+    }
   }
 
   /// One visit to a shop the story just unlocked, with the walk's [gold]:
@@ -685,6 +759,7 @@ SimFightOutcome simulateSimFight({
   Set<String> clashOff = const {},
   num Function(String clanId)? clanStanding,
   ContextRule? context,
+  Reinforcement reinforcement = Reinforcement.none,
 }) {
   final c = character;
   // Which of the clash rules are in play.
@@ -1575,6 +1650,8 @@ SimFightOutcome simulateSimFight({
       for (final e in ens) {
         if (e.isAlive &&
             !boss(e) &&
+            // Only people and beasts break (foe_kind.dart).
+            (!on('kinds') || canWaver(e.data)) &&
             wavers(health: e.health, maxHealth: e.maxHealth) &&
             random.nextDouble() < moraleFleeChance) {
           e.health = 0;
@@ -1764,6 +1841,10 @@ SimFightOutcome simulateSimFight({
           bossFight: bossFlags.any((b) => b),
         );
       }
+      // A beast tires (foe_kind.dart).
+      if (on('kinds')) {
+        moveDamage = foeBlow(moveDamage, e.data, rounds, boss: boss(e));
+      }
       final parry = on('parry') ? e.parryBlock : 0;
       // The Briar Guard can't dodge (the draw is made all the same).
       final dodged = random.nextDouble() * 100 <
@@ -1872,6 +1953,28 @@ SimFightOutcome simulateSimFight({
       for (final e in ens) {
         if (e.isAlive) {
           e.health = afterTick(e.health, ctx.tick(e.maxHealth, rounds));
+        }
+      }
+    }
+    // The holder's people join in (context_rules.dart's reinforcements).
+    final anyBoss = bossFlags.any((b) => b);
+    if (reinforcement == Reinforcement.allies) {
+      for (final e in ens) {
+        if (e.isAlive) {
+          e.health = afterTick(
+              e.health, allyStrike(e.maxHealth, rounds, bossFight: anyBoss));
+        }
+      }
+    } else if (reinforcement == Reinforcement.foes) {
+      c.currentHealth = afterTick(
+          c.currentHealth, foeStrike(c.maxHealth, rounds, bossFight: anyBoss));
+    }
+    // The dead crumble (foe_kind.dart).
+    if (on('kinds')) {
+      for (final e in ens) {
+        if (e.isAlive) {
+          e.health = afterTick(
+              e.health, crumble(e.data, e.maxHealth, rounds, boss: boss(e)));
         }
       }
     }

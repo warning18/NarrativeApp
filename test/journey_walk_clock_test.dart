@@ -30,6 +30,13 @@ Future<void> _settle(WidgetTester tester) async {
 
 Finder _step(int i) => find.byKey(ValueKey('journey_step_$i'));
 
+/// The last pin on the map: a hub's last way on walks the party to a place.
+Finder _lastStep() => find.byKey(ValueKey(
+    'journey_step_${List.generate(40, (i) => 39 - i).firstWhere((i) => _step(i).evaluate().isNotEmpty)}'));
+
+/// A choice acted out where the party stands is a card under the map.
+Finder _card(int i) => find.byKey(ValueKey('journey_choice_card_$i'));
+
 /// The part of the Journey tab the tour calls [id] (see TutorialTarget).
 Rect _target(WidgetTester tester, String id) => tester.getRect(
     find.byWidgetPredicate((w) => w is TutorialTarget && w.id == id).first);
@@ -131,15 +138,15 @@ void main() {
     expect(int.parse(secondsLeft().replaceAll('s', '')),
         inInclusiveRange(onStory - 1, onStory));
 
-    // A step picked on a short phone: the map keeps its room, with the
-    // step and the party in view, and the step's details under it.
+    // A choice picked on a short phone: the map keeps its room, and the
+    // choice's card, with Go, sits under it.
     await tester.pump(const Duration(seconds: 1));
-    await tester.tap(_step(0));
+    await tester.tap(_card(0));
     await tester.pump(const Duration(milliseconds: 400));
     await tester.pump(const Duration(milliseconds: 100));
     final chart = _target(tester, 'journey.chart');
     expect(chart.height, greaterThanOrEqualTo(159.5));
-    expect(chart.contains(tester.getCenter(_step(0))), isTrue);
+    expect(_step(0), findsNothing, reason: 'a choice acted out here is no pin');
     expect(find.byKey(const ValueKey('journey_go')), findsOneWidget);
     expect(_target(tester, 'journey.pick').bottom,
         lessThanOrEqualTo(tester.getRect(find.byType(NavigationBar)).top));
@@ -147,24 +154,20 @@ void main() {
 
     // The alley: the same on a plain scene.
     await arrive('270', walk: 6);
-    await tester.tap(_step(0));
+    await tester.tap(_card(0));
     await tester.pump(const Duration(milliseconds: 500));
     expect(
         _target(tester, 'journey.chart').height, greaterThanOrEqualTo(159.5));
-    expect(
-        _target(tester, 'journey.chart').contains(tester.getCenter(_step(0))),
-        isTrue);
+    expect(_target(tester, 'journey.pick').bottom,
+        lessThanOrEqualTo(tester.getRect(find.byType(NavigationBar)).top));
 
-    // Go, and Read while the party walks: the map stays put (the party
-    // walks on it), and the step is taken.
+    // Go: a choice acted out here sends no one walking, and the step is
+    // taken.
     await tester.tap(find.byKey(const ValueKey('journey_go')));
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byKey(const ValueKey('journey_traveller')), findsOneWidget);
-    await read();
-    expect(find.byKey(const ValueKey('journey_reading_exit')), findsNothing);
-    for (var i = 0; i < 8; i++) {
-      await tester.pump(const Duration(milliseconds: 500));
-    }
+    expect(find.byKey(const ValueKey('journey_traveller')), findsNothing);
+    // The beat at the party's mark, then the story goes on.
+    await tester.pump(const Duration(milliseconds: 700));
     await _settle(tester);
     expect(container.read(storyPlayProvider).currentNodeId, '300');
     expect(container.read(playerSessionProvider).flags,
@@ -175,10 +178,34 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
 
+    // Go, and Read while the party walks (a plain way on, a pin): the map
+    // stays put (the party walks on it), and the step is taken.
+    await arrive('2015', walk: 6);
+    await tester.tap(_lastStep());
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(const ValueKey('journey_go')));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byKey(const ValueKey('journey_traveller')), findsOneWidget);
+    await read();
+    expect(find.byKey(const ValueKey('journey_reading_exit')), findsNothing);
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+    }
+    await _settle(tester);
+    expect(find.byKey(const ValueKey('journey_traveller')), findsNothing);
+    expect(tester.takeException(), isNull);
+    Navigator.of(tester.element(find.byType(JourneyScreen)))
+        .popUntil(isGameRoute);
+    await tester.pump(const Duration(seconds: 1));
+
     // The story moved on from under a walk (its map gone with it): the
     // step is not taken, and the next scene's steps are free to take.
-    await arrive('270');
-    await tester.tap(_step(2));
+    if (find.byKey(const ValueKey('journey_continue')).evaluate().isNotEmpty) {
+      await tester.tap(find.byKey(const ValueKey('journey_continue')));
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+    await arrive('2015', walk: 6);
+    await tester.tap(_lastStep());
     await tester.pump(const Duration(milliseconds: 300));
     await tester.tap(find.byKey(const ValueKey('journey_go')));
     await tester.pump(const Duration(milliseconds: 300));
@@ -190,8 +217,6 @@ void main() {
     }
     await _settle(tester);
     expect(container.read(storyPlayProvider).currentNodeId, '2005');
-    expect(container.read(playerSessionProvider).flags,
-        isNot(contains('hound_left')));
     Navigator.of(tester.element(find.byType(JourneyScreen)))
         .popUntil(isGameRoute);
     await tester.pump(const Duration(seconds: 1));

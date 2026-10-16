@@ -73,7 +73,9 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
-  # The suite, split by file across four runners. One runner took about 17
+  # The suite, split by file across four runners, balanced by how long each
+  # file takes (tool/shard_tests.py, weights in test/shard_weights.json; the
+  # script fails if a file is dropped or doubled). One runner took about 17
   # minutes for the whole suite. Whole files, not flutter test's own
   # --total-shards (which splits a file's tests across runners and breaks
   # the few tests that lean on a sibling run earlier in the same file).
@@ -98,7 +100,8 @@ jobs:
 
       - name: Run tests (shard ${{ matrix.shard }} of 4)
         run: |
-          files=$(find test -name '*_test.dart' | sort | awk -v n=4 -v i=${{ matrix.shard }} '(NR - 1) % n == i')
+          python3 tool/shard_tests.py --check 4
+          files=$(python3 tool/shard_tests.py ${{ matrix.shard }} 4)
           echo "$(echo "$files" | wc -l) test files in this shard"
           flutter test $files
 

@@ -10,19 +10,27 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/clan_power.dart' show hasPower, powerOf, powerTierFor;
 import '../data/factions.dart';
 import '../data/throne.dart' show throneFactionName;
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
 import '../providers/player_session_provider.dart';
+import 'clan_peek.dart';
+import 'clan_power_block.dart' show powerTierKey;
 import 'pixel_banner.dart';
 import 'pixel_sprite.dart';
 import 'wind_banner.dart';
 
 /// One banner hanging in the hall.
 class HungBanner {
-  const HungBanner({required this.id, required this.name, this.caption = ''});
+  const HungBanner({
+    required this.id,
+    required this.name,
+    this.caption = '',
+    this.factionId,
+  });
 
   /// The banner sprite's id (see pixel_banner.dart).
   final String id;
@@ -32,6 +40,10 @@ class HungBanner {
 
   /// A line under its name when picked (a clan's standing).
   final String caption;
+
+  /// The clan whose banner it is, for its details on a long press (none for
+  /// a piece of the Shroud).
+  final String? factionId;
 }
 
 /// The clan banners the player has earned: those of the clans that are at
@@ -84,10 +96,20 @@ class _ThroneRoomTabState extends ConsumerState<ThroneRoomTab> {
           data: data, politics: politics, flags: flags))
         HungBanner(
           id: clanBannerId(id)!,
+          factionId: data.faction(id) == null ? null : id,
           name: data.faction(id)?.nameFor(lang) ?? id,
           caption: id == 'open_hand'
               ? trFor(lang, 'open_hand_banner_raised')
-              : trFor(lang, standingTierKey(politics.tierOf(id, data))),
+              : [
+                  trFor(lang, standingTierKey(politics.tierOf(id, data))),
+                  // Its strength (Wave 12), and the red of a nemesis.
+                  if (hasPower(id, data))
+                    trFor(
+                        lang,
+                        powerTierKey(
+                            powerTierFor(powerOf(politics, id, data)))),
+                  if (politics.nemesis == id) trFor(lang, 'clan_nemesis_tag'),
+                ].join(' · '),
         ),
       for (final id in shroudPieceIds)
         if (session.bannerPiecesCollected.contains(id))
@@ -294,31 +316,34 @@ class _ThroneRoomState extends State<ThroneRoom>
             top: _standardTop,
             width: _standardWidth,
             height: 128,
-            child: GestureDetector(
-              key: Key('throne_banner_${banner.id}'),
-              behavior: HitTestBehavior.opaque,
-              onTap: () => widget.onPick?.call(banner),
-              child: Semantics(
-                label: '${banner.name}, ${banner.caption}',
-                button: true,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    boxShadow: widget.pickedId == banner.id
-                        ? [
-                            BoxShadow(
-                                color: const Color(0xFFF2C14E)
-                                    .withValues(alpha: 0.5),
-                                blurRadius: 16),
-                          ]
-                        : null,
-                  ),
-                  child: CustomPaint(
-                    size: const Size(_standardWidth, 128),
-                    painter: WindPainter(
-                      id: banner.id,
-                      clock: _clock,
-                      phase: index * 1.7,
-                      still: _still,
+            child: ClanPeek(
+              factionId: banner.factionId,
+              child: GestureDetector(
+                key: Key('throne_banner_${banner.id}'),
+                behavior: HitTestBehavior.opaque,
+                onTap: () => widget.onPick?.call(banner),
+                child: Semantics(
+                  label: '${banner.name}, ${banner.caption}',
+                  button: true,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      boxShadow: widget.pickedId == banner.id
+                          ? [
+                              BoxShadow(
+                                  color: const Color(0xFFF2C14E)
+                                      .withValues(alpha: 0.5),
+                                  blurRadius: 16),
+                            ]
+                          : null,
+                    ),
+                    child: CustomPaint(
+                      size: const Size(_standardWidth, 128),
+                      painter: WindPainter(
+                        id: banner.id,
+                        clock: _clock,
+                        phase: index * 1.7,
+                        still: _still,
+                      ),
                     ),
                   ),
                 ),

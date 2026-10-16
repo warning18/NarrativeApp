@@ -15,13 +15,19 @@ import '../data/cliff_town.dart' show townAdditionLimitOf;
 import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
 import '../data/character_start.dart' show startingArmor;
+import '../data/clan_crisis.dart' show mainClanOf, settleFallenLoyalty;
+import '../data/clan_power.dart' show territoryTurn;
+import '../data/nemesis.dart'
+    show championMinChapter, nemesisQuestIdOf, updateNemesis;
 import '../data/contracts.dart';
 import '../data/detour_pacing.dart' show DetourPacing;
 import '../data/camp_state.dart' show harborHouseId;
 import '../data/factions.dart';
+import '../data/feature_unlocks.dart';
 import '../data/hunter_mercy.dart';
 import '../data/patron_stats.dart';
 import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
+import '../data/geography.dart' show Geography;
 import '../data/harbour.dart';
 import '../data/heard_of.dart' show withMapGoal;
 import '../data/journey_rules.dart';
@@ -61,6 +67,10 @@ const String unreadableSessionBackupPrefsKey = 'player_session_unreadable';
 const int playerSessionSaveVersion = harbourSaveVersion;
 const String _newGameDefaultsAssetPath = 'assets/gamedata/game_config.json';
 const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
+
+/// The flag of the rest before the Lantern Hall (7515_rest): the
+/// provisions and the mana refilled (applyChoiceEffects).
+const String restBeforeHallFlag = 'rest_before_hall';
 
 /// The starter die's face indexes reserved for the player's profession and
 /// race standard skills (see assets/gamedata/dice.json's starter_die).
@@ -278,6 +288,7 @@ class PlayerSession {
     this.clanOffer,
     this.trainingOffer = const [],
     this.trainingTaken = const {},
+    this.statPickOffer = const [],
     this.heldTitleIds = const [],
     this.activeTitleId = '',
     this.swornBoonIds = const [],
@@ -286,6 +297,7 @@ class PlayerSession {
     this.patronFavour = const {},
     this.signPatronsThisLife = const [],
     this.patronsMet = const [],
+    this.acknowledgedFeatures = const [],
     this.politics = PoliticsState.empty,
     this.builtHouseIds = const [],
     this.townOrder = const [],
@@ -559,6 +571,14 @@ class PlayerSession {
   final List<TrainingChoice> trainingOffer;
   final Map<String, int> trainingTaken;
 
+  /// The stat pick on the table (docs/proposals/stat-picks.md): the three
+  /// offers of the next of the [pendingStatPicks], drawn once and kept until
+  /// one is taken; empty when none is drawn.
+  final List<StatPickOffer> statPickOffer;
+
+  /// The picks waiting: one per unspent stat point.
+  int get pendingStatPicks => statPoints;
+
   /// Titles held (titles.json): from offers, from the tiers reached with a
   /// faction, and "the Marked" while the Inquisition is a foe; the one
   /// worn ('' for none) lends its effects (see clanEffectsFor).
@@ -586,6 +606,16 @@ class PlayerSession {
 
   /// Every patron that has offered a sign, ever: the codex lists them.
   final List<String> patronsMet;
+
+  /// The ladder's features already told of (feature_unlocks.dart), by id.
+  final List<String> acknowledgedFeatures;
+
+  /// What the feature ladder reads of this session (feature_unlocks.dart).
+  LadderState get ladder =>
+      (flags: flags, level: level, chapter: chapterOffersThrough);
+
+  /// Whether [feature] is open (feature_unlocks.dart).
+  bool featureOpen(GameFeature feature) => featureUnlocked(feature, ladder);
 
   /// Where the character stands with the coast (v1.193, see factions.dart):
   /// standing with each faction, the sub-clans' marks, the faction sworn
@@ -903,6 +933,7 @@ class PlayerSession {
     bool clearClanOffer = false,
     List<TrainingChoice>? trainingOffer,
     Map<String, int>? trainingTaken,
+    List<StatPickOffer>? statPickOffer,
     List<String>? heldTitleIds,
     String? activeTitleId,
     List<String>? swornBoonIds,
@@ -911,6 +942,7 @@ class PlayerSession {
     Map<String, int>? patronFavour,
     List<String>? signPatronsThisLife,
     List<String>? patronsMet,
+    List<String>? acknowledgedFeatures,
     PoliticsState? politics,
     List<String>? builtHouseIds,
     List<String>? townOrder,
@@ -1016,6 +1048,7 @@ class PlayerSession {
       clanOffer: clearClanOffer ? null : clanOffer ?? this.clanOffer,
       trainingOffer: trainingOffer ?? this.trainingOffer,
       trainingTaken: trainingTaken ?? this.trainingTaken,
+      statPickOffer: statPickOffer ?? this.statPickOffer,
       heldTitleIds: heldTitleIds ?? this.heldTitleIds,
       activeTitleId: activeTitleId ?? this.activeTitleId,
       swornBoonIds: swornBoonIds ?? this.swornBoonIds,
@@ -1024,6 +1057,7 @@ class PlayerSession {
       patronFavour: patronFavour ?? this.patronFavour,
       signPatronsThisLife: signPatronsThisLife ?? this.signPatronsThisLife,
       patronsMet: patronsMet ?? this.patronsMet,
+      acknowledgedFeatures: acknowledgedFeatures ?? this.acknowledgedFeatures,
       politics: politics ?? this.politics,
       builtHouseIds: builtHouseIds ?? this.builtHouseIds,
       townOrder: townOrder ?? this.townOrder,
@@ -1134,6 +1168,8 @@ class PlayerSession {
         'clanOffer': clanOffer?.toJson(),
         'trainingOffer': [for (final c in trainingOffer) c.toJson()],
         'trainingTaken': trainingTaken,
+        if (statPickOffer.isNotEmpty)
+          'statPickOffer': [for (final o in statPickOffer) o.toJson()],
         'heldTitleIds': heldTitleIds,
         'activeTitleId': activeTitleId,
         'swornBoonIds': swornBoonIds,
@@ -1142,6 +1178,8 @@ class PlayerSession {
         'patronFavour': patronFavour,
         'signPatronsThisLife': signPatronsThisLife,
         'patronsMet': patronsMet,
+        if (acknowledgedFeatures.isNotEmpty)
+          'acknowledgedFeatures': acknowledgedFeatures,
         'politics': politics.toJson(),
         'builtHouseIds': builtHouseIds,
         'townOrder': townOrder,
@@ -1358,9 +1396,15 @@ class PlayerSession {
               signPicks: (json['pendingSignPicks'] as num?)?.toInt() ?? 0,
             ),
       clanOffer: ClanOffer.tryParse(json['clanOffer']),
+      // A full (5-point) training offer left on the table is dropped: the
+      // points it was for are stat picks now (stat-picks.md).
       trainingOffer: [
         for (final c in (json['trainingOffer'] as List? ?? const []))
           if (c is Map) TrainingChoice.fromJson(c),
+      ].where((c) => c.small).toList(),
+      statPickOffer: [
+        for (final o in (json['statPickOffer'] as List? ?? const []))
+          if (o is Map) StatPickOffer.fromJson(o),
       ],
       trainingTaken: {
         for (final MapEntry(:key, :value)
@@ -1392,6 +1436,10 @@ class PlayerSession {
       patronsMet:
           (json['patronsMet'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
+      acknowledgedFeatures: (json['acknowledgedFeatures'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
       // Saves from before the clans stand where every faction starts.
       politics: PoliticsState.fromJson(json['politics']),
       builtHouseIds: [
@@ -1613,6 +1661,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final maxHealth = (defaults['maxHealth'] as num?)?.toInt() ?? 100;
     state = PlayerSession(
       level: (defaults['playerLevel'] as num?)?.toInt() ?? 1,
+      // The story's nemesis from the first page (nemesis.dart).
+      politics: PoliticsState.storyStart,
       currentXP: 0,
       gold: (defaults['gold'] as num?)?.toInt() ?? 0,
       alignmentScore: 0,
@@ -1631,7 +1681,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       potionCount: (defaults['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: 0,
       maxSkillSlots: (defaults['maxSkillSlots'] as num?)?.toInt() ?? 3,
-      flags: const [],
+      // A new game climbs the feature ladder (feature_unlocks.dart).
+      flags: const [featureLadderFlag],
       activeQuestIds: const [],
       completedQuestIds: const [],
       inventoryItemIds: const [],
@@ -1728,7 +1779,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         bonus(race, 'startingGoldBonus') +
         bonus(profession, 'startingGoldBonus');
     // A profession's starting skill points are offers since v1.194.
-    final startingOffers = startingOffersFor(profession);
 
     // Race/profession signature skills (and a caster's mana skill) default
     // to isUnlocked: false in the skills db (most skills are locked until
@@ -1757,6 +1807,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = PlayerSession(
       level: (defaults['playerLevel'] as num?)?.toInt() ?? 1,
       currentXP: 0,
+      politics: PoliticsState.storyStart,
       gold: gold + legacy.legacyGold,
       alignmentScore: 0,
       maxHealth: maxHealth,
@@ -1773,9 +1824,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       perception: perception,
       potionCount: (defaults['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: 0,
-      pendingOffers: startingOffers,
+      // The starting skill comes from the trainer (feature_unlocks.dart),
+      // the clans' offers from Saltmouth.
+      pendingOffers: const [],
       maxSkillSlots: (defaults['maxSkillSlots'] as num?)?.toInt() ?? 3,
-      flags: const [],
+      flags: const [featureLadderFlag],
       activeQuestIds: const [],
       completedQuestIds: const [],
       inventoryItemIds: const [],
@@ -1968,6 +2021,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       exclude: lostId,
     );
     final newFlags = <String>{...state.flags, ...flagsToAdd}.toList();
+    // The rest before the Lantern Hall (7515_rest, docs/simulation/
+    // difficulty-review.md proposal 4): the provisions and the mana
+    // refilled; the scene's own heal and potion come with its choice.
+    final rested = flagsToAdd.contains(restBeforeHallFlag) &&
+        !state.flags.contains(restBeforeHallFlag);
     var newActiveQuests = state.activeQuestIds;
     var newKillBaselines = state.questKillBaselines;
     if (questIDToProgress != null &&
@@ -2003,16 +2061,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           ? state.maxHealth
           : (newHealthRaw < 1 ? 1 : newHealthRaw),
       flags: newFlags,
+      provisions: rested ? provisionsMax : null,
+      mana: rested ? state.maxMana : null,
+      // The story's own boons (signs.dart): the Shroud, Lysa's blood on it.
+      heldSigns: withStoryBoons(state.heldSigns, newFlags),
       activeQuestIds: newActiveQuests,
       questKillBaselines: newKillBaselines,
       trackedQuestId: newTracked,
       bannerPiecesCollected: newBannerPieces,
-      inventoryItemIds: [
+      inventoryItemIds: _withoutMaterials([
         ...state.inventoryItemIds,
         if (itemId != null && itemId.isNotEmpty) itemId,
         for (final MapEntry(key: id, value: count) in materials.entries)
           for (var i = 0; i < count; i++) id,
-      ],
+      ], materials),
       itemOrigins: itemId == null || itemId.isEmpty
           ? state.itemOrigins
           : withItemOrigins(state.itemOrigins, [itemId], origin),
@@ -2173,9 +2235,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   // --- Offers (v1.194, see offers.dart) -----------------------------------
 
   /// What a draw reads of the character now, with [tables].
-  OfferContext offerContextFor(OfferTables tables) {
+  /// [placeHolder]: the clan that holds the place it is made in.
+  OfferContext offerContextFor(OfferTables tables, {String placeHolder = ''}) {
     final s = state;
     return OfferContext(
+      placeHolder: placeHolder,
       data: tables.data,
       politics: s.politics,
       signs: tables.signs,
@@ -2243,8 +2307,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// [PlayerSession.chapterOffersThrough]). The Choir or the Pit come with
   /// it when the alignment leans. With the clans' [data], the chapter's
   /// price of loyalty comes with it too (applyLoyaltyDrift: the patron's
-  /// rivals cool). Returns whether one was granted.
-  Future<bool> grantChapterOffer(int chapter, {ClanData? data}) async {
+  /// rivals cool). With the world's [geography] too, the clans' power and
+  /// places turn (territoryTurn, clan_power.dart). Returns whether one was
+  /// granted.
+  Future<bool> grantChapterOffer(int chapter,
+      {ClanData? data, Geography? geography}) async {
     if (chapter < 2 || chapter <= state.chapterOffersThrough) return false;
     final drift = data == null
         ? null
@@ -2252,6 +2319,33 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
             data: data, chapter: chapter, day: state.day);
     if (drift != null && drift.changed) {
       state = _withTitles(state.copyWith(politics: drift.state), data!);
+    }
+    if (data != null && geography != null) {
+      // Your clan's seat waits for you (clan_crisis.dart); the fallen
+      // clan you stayed of lets go once a banner of your own is raised.
+      final turned = territoryTurn(
+              settleFallenLoyalty(state.politics,
+                  bannerRaised: bannerRaisedIn(state.flags)),
+              data: data,
+              geography: geography,
+              chapter: chapter,
+              day: state.day,
+              protect: mainClanOf(state.politics))
+          .state;
+      state = state.copyWith(
+          politics: updateNemesis(turned, data,
+              chapter: chapter, day: state.day, flags: state.flags));
+      // A new nemesis opens its quest (nemesis.dart): beat its champion;
+      // the story's own once its champion can come.
+      final rose = state.politics.nemesis;
+      final quest = nemesisQuestIdOf(rose);
+      if (rose.isNotEmpty &&
+          (!state.politics.isStoryNemesis || chapter >= championMinChapter) &&
+          !state.unlockedQuestIds.contains(quest) &&
+          !state.completedQuestIds.contains(quest)) {
+        state = state
+            .copyWith(unlockedQuestIds: [...state.unlockedQuestIds, quest]);
+      }
     }
     state = state.copyWith(
       chapterOffersThrough: chapter,
@@ -2262,6 +2356,42 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     );
     await _persist();
     return true;
+  }
+
+  /// The ladder's [featureId] told of (its card seen or its screen opened).
+  Future<void> acknowledgeFeature(String featureId) async {
+    if (state.acknowledgedFeatures.contains(featureId)) return;
+    state = state.copyWith(
+        acknowledgedFeatures: [...state.acknowledgedFeatures, featureId]);
+    await _persist();
+  }
+
+  /// A fight won ([tutorial]: the lesson): the ladder's chest, then its
+  /// place rules (feature_unlocks.dart).
+  Future<void> noteFightWonOnLadder({required bool tutorial}) async {
+    final add = ladderFlagsForWin(state.flags, tutorial: tutorial);
+    if (add.isEmpty) return;
+    state = state.copyWith(flags: [...state.flags, ...add]);
+    await _persist();
+  }
+
+  /// The trainer's lesson (890_trainer): the skill of [trainerSkillFor]
+  /// for a strike ([strike]) or a guard, learned; null when none is left.
+  Future<String?> learnTrainerSkill({
+    required bool strike,
+    required Map<String, dynamic> trees,
+    required Map<String, dynamic> skills,
+  }) async {
+    final id = trainerSkillFor(
+        professionId: state.professionId,
+        strike: strike,
+        trees: trees,
+        skills: skills,
+        known: state.unlockedSkillIds);
+    if (id == null) return null;
+    state = state.copyWith(unlockedSkillIds: [...state.unlockedSkillIds, id]);
+    await _persist();
+    return id;
   }
 
   /// The training offer on the table for the unspent stat points (Wave 7,
@@ -2329,6 +2459,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       luck: s.luck + gain('luck'),
       charisma: s.charisma + gain('charisma'),
       trainingOffer: const [],
+      // The points spent here leave no stale pick on the table.
+      statPickOffer: const [],
       trainingTaken: choice.small
           ? s.trainingTaken
           : {
@@ -2340,16 +2472,88 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     return true;
   }
 
+  /// The stat pick on the table (docs/proposals/stat-picks.md, see
+  /// drawStatPick): the three offers of the next pending pick, drawn once
+  /// from [paths] and kept until one is taken. The default [random] is
+  /// seeded from the pick itself (the level, the points left, the paths
+  /// taken), so a pick drawn anew never rerolls. Empty when no pick waits.
+  Future<List<StatPickOffer>> ensureStatPick(Map<String, TrainingPath> paths,
+      {Random? random}) async {
+    final s = state;
+    if (s.pendingStatPicks <= 0) {
+      if (s.statPickOffer.isNotEmpty) {
+        state = s.copyWith(statPickOffer: const []);
+        await _persist();
+      }
+      return const [];
+    }
+    if (s.statPickOffer.isNotEmpty) return s.statPickOffer;
+    final takenTotal = s.trainingTaken.values.fold<int>(0, (a, b) => a + b);
+    final offer = drawStatPick(
+      paths: paths,
+      random:
+          random ?? Random(s.level * 7919 + s.statPoints * 131 + takenTotal),
+      professionId: s.professionId,
+      raceId: s.raceId,
+      taken: s.trainingTaken,
+      stats: _trainingStatsOf(s),
+    );
+    if (offer.isEmpty) return offer;
+    state = s.copyWith(statPickOffer: offer);
+    await _persist();
+    return offer;
+  }
+
+  /// Takes the offer at [index] of the stat pick on the table: its gains
+  /// (max health heals as much), one pick spent (a rare offer too), its path
+  /// counted. The next pick is drawn by [ensureStatPick]; false when there
+  /// is none, no such offer, or no pick waits.
+  Future<bool> takeStatPick(int index) async {
+    final s = state;
+    final offer = s.statPickOffer;
+    if (index < 0 || index >= offer.length) return false;
+    if (s.pendingStatPicks <= 0) return false;
+    final pick = offer[index];
+    int gain(String stat) => pick.gains[stat] ?? 0;
+    state = s.copyWith(
+      statPoints: s.statPoints - 1,
+      baseDamage: s.baseDamage + gain('baseDamage'),
+      baseArmor: s.baseArmor + gain('baseArmor'),
+      maxHealth: s.maxHealth + gain('maxHealth'),
+      currentHealth: s.currentHealth + gain('maxHealth'),
+      strength: s.strength + gain('strength'),
+      dexterity: s.dexterity + gain('dexterity'),
+      constitution: s.constitution + gain('constitution'),
+      intelligence: s.intelligence + gain('intelligence'),
+      wisdom: s.wisdom + gain('wisdom'),
+      perception: s.perception + gain('perception'),
+      luck: s.luck + gain('luck'),
+      charisma: s.charisma + gain('charisma'),
+      statPickOffer: const [],
+      // A small training table drawn for the old points is drawn anew.
+      trainingOffer: const [],
+      trainingTaken: {
+        ...s.trainingTaken,
+        pick.pathId: (s.trainingTaken[pick.pathId] ?? 0) + 1,
+      },
+    );
+    await _persist();
+    return true;
+  }
+
   /// The offer on the table for the first offer due (see drawOffer),
   /// drawn once from [tables] and kept until a suitor is taken. Null when
   /// none is due, or nobody can come (the offer waits). The suitors'
   /// factions count as met, for their intro and the codex.
-  Future<ClanOffer?> ensureOffer(OfferTables tables, {Random? random}) async {
+  Future<ClanOffer?> ensureOffer(OfferTables tables,
+      {Random? random, String placeHolder = ''}) async {
     if (state.pendingOffers.isEmpty) return null;
+    // On the feature ladder the clans come at Saltmouth: the offers wait.
+    if (!state.featureOpen(GameFeature.clans)) return null;
     final waiting = state.clanOffer;
     if (waiting != null) return waiting;
-    final offer = drawOffer(
-        state.pendingOffers.first, offerContextFor(tables), random ?? Random());
+    final offer = drawOffer(state.pendingOffers.first,
+        offerContextFor(tables, placeHolder: placeHolder), random ?? Random());
     if (offer == null) return null;
     state = state.copyWith(
       clanOffer: offer,
@@ -2632,10 +2836,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   /// Edit Mode: the coast as the story opens -- every standing back to its
-  /// start, no marks, no faction sworn, the relations and logs cleared;
+  /// start, the Dominion the nemesis again, no marks, no faction sworn, the relations and logs cleared;
   /// the titles a mark held go with it ([data]: the clan data, for them).
   Future<void> resetPolitics({ClanData? data}) async {
-    final reset = state.copyWith(politics: PoliticsState.empty);
+    final reset = state.copyWith(politics: PoliticsState.storyStart);
     state = data == null ? reset : _withTitles(reset, data);
     await _persist();
   }
@@ -2649,7 +2853,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// The world the politics rules read now: [data], [events], the chapter
   /// (see [_politicsChapter]) and the story's day.
   CoastWorld _coastWorld(
-          ClanData data, Map<String, PoliticsEvent> events, int? chapter) =>
+          ClanData data, Map<String, PoliticsEvent> events, int? chapter,
+          [Geography? geography]) =>
       CoastWorld(
         data: data,
         events: events,
@@ -2657,6 +2862,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         day: state.day,
         chapterDay: max(1, state.day - state.chapterStartDay + 1),
         signPatrons: state.signPatronsThisLife,
+        geography: geography,
       );
 
   /// Takes [change] into the session: the politics and flags after it,
@@ -2730,6 +2936,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     StoryPolitics politics, {
     required String nodeId,
     required ClanData data,
+    Geography? geography,
     String key = '',
     Map<String, PoliticsEvent> events = const {},
     Map<String, dynamic> companions = const {},
@@ -2741,7 +2948,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         key: key,
         politics: state.politics,
         flags: state.flags,
-        world: _coastWorld(data, events, chapter));
+        world: _coastWorld(data, events, chapter, geography));
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
     await _persist();
@@ -2756,6 +2963,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// "News from the coast".
   Future<CoastChange> runPoliticsEvents({
     required ClanData data,
+    Geography? geography,
     required Map<String, PoliticsEvent> events,
     Map<String, dynamic> companions = const {},
     int? chapter,
@@ -2763,7 +2971,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final change = runDueEvents(
         politics: state.politics,
         flags: state.flags,
-        world: _coastWorld(data, events, chapter));
+        world: _coastWorld(data, events, chapter, geography));
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
     await _persist();
@@ -2775,6 +2983,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<CoastChange> firePoliticsEvent(
     String eventId, {
     required ClanData data,
+    Geography? geography,
     required Map<String, PoliticsEvent> events,
     Map<String, dynamic> companions = const {},
     int? chapter,
@@ -2782,7 +2991,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final change = fireEvent(eventId,
         politics: state.politics,
         flags: state.flags,
-        world: _coastWorld(data, events, chapter),
+        world: _coastWorld(data, events, chapter, geography),
         force: true);
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
@@ -3132,6 +3341,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       level: leveled.level,
       currentXP: leveled.xp,
       maxHealth: leveled.maxHealth,
+      baseDamage: leveled.baseDamage,
       currentHealth:
           leveled.leveledUp ? leveled.maxHealth : state.currentHealth,
       statPoints: leveled.statPoints,
@@ -4495,6 +4705,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     }
     state = state.copyWith(
       statPoints: state.statPoints - 1,
+      // The point spent here leaves no stale pick on the table.
+      statPickOffer: const [],
       baseDamage: newBaseDamage,
       baseArmor: newBaseArmor,
       maxHealth: newMaxHealth,
@@ -4581,6 +4793,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       perception: perception,
       potionCount: potionCount,
       statPoints: statPoints,
+      statPickOffer: statPoints == null ? null : const [],
       antidoteCount: antidoteCount,
       mana: mana,
     );
@@ -4633,7 +4846,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   /// Runs [xpGain] through the level-up threshold (`level * 100` XP each),
-  /// applying every level gained: +5 statPoints and +20 maxHealth (and an
+  /// applying every level gained: +5 statPoints, +20 maxHealth and
+  /// [levelDamageGain] baseDamage (and an
   /// offer, which the callers add: see [_levelOffers]). Shared by
   /// [applyCombatResult] and [completeQuest] so a quest's XP reward levels
   /// the player up exactly like combat XP does.
@@ -4641,6 +4855,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int level,
     int xp,
     int maxHealth,
+    int baseDamage,
     int statPoints,
     bool leveledUp,
     int levelsGained,
@@ -4648,6 +4863,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     var newLevel = state.level;
     var newXp = state.currentXP + xpGain;
     var newMaxHealth = state.maxHealth;
+    var newBaseDamage = state.baseDamage;
     var newStatPoints = state.statPoints;
     var leveledUp = false;
     var levelsGained = 0;
@@ -4657,6 +4873,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       newLevel += 1;
       newStatPoints += 5;
       newMaxHealth += 20;
+      newBaseDamage += levelDamageGain;
       leveledUp = true;
       levelsGained += 1;
     }
@@ -4665,6 +4882,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       level: newLevel,
       xp: newXp,
       maxHealth: newMaxHealth,
+      baseDamage: newBaseDamage,
       statPoints: newStatPoints,
       leveledUp: leveledUp,
       levelsGained: levelsGained,
@@ -4831,6 +5049,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       level: leveled.level,
       currentXP: leveled.xp,
       maxHealth: leveled.maxHealth,
+      baseDamage: leveled.baseDamage,
       currentHealth: newHealth,
       statPoints: leveled.statPoints + statPointsGained,
       // Each level reached and a boss beaten bring an offer (see
@@ -4953,7 +5172,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       skillEssence: 0,
       // The offers waiting go with the life, back to the profession's
       // starting ones; the titles and the Sworn boons with the world.
-      pendingOffers: startingOffersFor(profession),
+      pendingOffers: state.flags.contains(featureLadderFlag)
+          ? const []
+          : startingOffersFor(profession),
       clearClanOffer: true,
       heldTitleIds: const [],
       activeTitleId: '',
@@ -4965,7 +5186,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       heldSigns: const [],
       titanBlood: 0,
       signPatronsThisLife: const [],
-      politics: PoliticsState.empty,
+      politics: PoliticsState.storyStart,
     );
     await _persist();
     return result;
@@ -4996,3 +5217,16 @@ final playerSessionProvider =
     StateNotifierProvider<PlayerSessionNotifier, PlayerSession>((ref) {
   return PlayerSessionNotifier();
 });
+
+/// [items] with the materials [materials] counts below zero spends taken
+/// out (a clan's crisis paid in timber and stone, clan_crisis.dart): as
+/// many of each as the pack holds, no more.
+List<String> _withoutMaterials(List<String> items, Map<String, int> materials) {
+  final out = [...items];
+  for (final MapEntry(key: id, value: count) in materials.entries) {
+    for (var i = 0; i < -count; i++) {
+      if (!out.remove(id)) break;
+    }
+  }
+  return out;
+}
