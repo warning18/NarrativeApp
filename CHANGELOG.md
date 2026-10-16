@@ -21,6 +21,16 @@ Your nemesis's quest now has a trail, a choice of way in, and its own ending.
 - **The news:** each clan's broken hunt has its own news line.
 - **Champions** are tougher (200 health, 27 damage), so about half of the fights against them are still won.
 
+## [1.403.0+439]
+
+Quest complete gets the chapter's own picture.
+
+### Added
+- **One art strip per chapter** (eight, in the app's pixel look, drawn by `tool/gen_chapter_art.py`): chapter 1's harbour and the white ships, and so on through chapter 8. Their files are in `assets/visuals/chapters/`.
+
+### Changed
+- **Quest complete is card B.** The card leads with the chapter's strip under the quest's name, and gold and experience become two counters under it (the experience bar and the level stay). The rows for the item, the die and the companion, and the notes, are as on card A. An item found and a clan's gift keep card A.
+
 ## [1.402.0+438]
 
 The place's rule, the patron's favour and the hunter's mercy, drawn.
