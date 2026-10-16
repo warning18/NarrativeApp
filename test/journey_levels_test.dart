@@ -113,7 +113,12 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('journey_continue')));
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
-    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    // The map is back with its steps, or, when the road held a written
+    // detour (v1.439), its scene, whose ways are cards.
+    expect(
+        find.byKey(const ValueKey('journey_step_0')).evaluate().length +
+            find.byKey(const Key('journey_detour_scene')).evaluate().length,
+        1);
     play.jumpTo('2005');
     await _settle(tester);
 

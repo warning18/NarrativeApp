@@ -79,8 +79,10 @@ Cat dominant(List<Cat> ways) =>
     (List.of(ways)..sort((a, b) => a.index.compareTo(b.index))).first;
 
 class Place {
-  const Place(this.id, this.nameEn, this.nameFr, this.at, this.ways);
+  const Place(this.id, this.nameEn, this.nameFr, this.at, this.ways,
+      {this.heardOf = false});
   final String id;
+  final bool heardOf;
   final String nameEn;
   final String nameFr;
   final Offset at; // fractions of the map
@@ -100,9 +102,15 @@ const _places = [
   Place('quay', 'High Quay', 'Haut Quai', Offset(0.30, 0.82), [Cat.travel]),
   Place('inn', 'The Lantern Inn', 'Auberge de la Lanterne', Offset(0.13, 0.62),
       [Cat.rest]),
+  Place('ferry', 'The Salt Ferry', 'Le Bac du Sel', Offset(0.86, 0.80),
+      [Cat.travel],
+      heardOf: true),
 ];
 
 const _here = Offset(0.42, 0.42);
+
+/// The list's rows wear the banner too (the banner pins' board).
+bool _bannerRows = false;
 
 // --- Fonts ------------------------------------------------------------------
 
@@ -218,7 +226,7 @@ class _DistrictPainter extends CustomPainter {
 
 // --- Pin styles -------------------------------------------------------------
 
-enum PinStyle { discs, flags, ring }
+enum PinStyle { discs, flags, ring, banner }
 
 Widget _disc(Cat c, bool dark, {double size = 30, bool lit = false}) {
   final surface = dark ? const Color(0xFF141218) : const Color(0xFFFAF3E2);
@@ -275,6 +283,159 @@ Widget _pinLabel(String text, bool dark) => Container(
               height: 1.1,
               color: dark ? const Color(0xFFE9E3D5) : const Color(0xFF241B0E))),
     );
+
+/// The banner pin (the user's pick: A's logic, in the shape of the clans'
+/// hung banners): a ring and a rod, a cloth in the category's colour with a
+/// cream cord inside its edge, the category's icon, and a swallow-tail hem.
+/// [unknown] is a place only heard of: the cloth hollow, a "?" on it.
+class BannerPin extends StatelessWidget {
+  const BannerPin(this.cat, this.dark,
+      {super.key, this.scale = 1, this.lit = false, this.unknown = false});
+
+  final Cat cat;
+  final bool dark;
+  final double scale;
+  final bool lit;
+  final bool unknown;
+
+  static const Size base = Size(26, 38);
+
+  @override
+  Widget build(BuildContext context) {
+    final iconColor = dark ? const Color(0xFF141218) : Colors.white;
+    return SizedBox(
+      width: base.width * scale,
+      height: base.height * scale,
+      child: Stack(
+        children: [
+          CustomPaint(
+            size: Size(base.width * scale, base.height * scale),
+            painter: _BannerPainter(cat.color(dark), dark, scale, lit, unknown),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 12 * scale,
+            child: Center(
+              child: unknown
+                  ? Text('?',
+                      style: TextStyle(
+                          fontFamily: InkFonts.system,
+                          fontSize: 15 * scale,
+                          height: 1,
+                          fontWeight: FontWeight.w700,
+                          color: cat.color(dark)))
+                  : Icon(cat.icon, size: 14 * scale, color: iconColor),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BannerPainter extends CustomPainter {
+  _BannerPainter(this.color, this.dark, this.scale, this.lit, this.unknown);
+  final Color color;
+  final bool dark;
+  final double scale;
+  final bool lit;
+  final bool unknown;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.scale(scale);
+    const w = 26.0;
+    const h = 38.0;
+    final surface = dark ? const Color(0xFF141218) : const Color(0xFFFAF3E2);
+    final rod = Color.lerp(color, Colors.black, 0.45)!;
+    final cord = const Color(0xFFEFE3C8);
+    // The cloth: straight sides, a swallow-tail hem.
+    final cloth = Path()
+      ..moveTo(3, 9)
+      ..lineTo(w - 3, 9)
+      ..lineTo(w - 3, h)
+      ..lineTo(w / 2, h - 8)
+      ..lineTo(3, h)
+      ..close();
+    if (lit) {
+      canvas.drawPath(
+          cloth,
+          Paint()
+            ..color = color.withValues(alpha: 0.75)
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5));
+    }
+    // The rod and its ring.
+    canvas.drawCircle(
+        const Offset(w / 2, 3.2),
+        2.4,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.4
+          ..color = rod);
+    if (unknown) {
+      canvas.drawPath(cloth, Paint()..color = surface.withValues(alpha: 0.9));
+      _dashed(
+          canvas,
+          cloth,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.6
+            ..color = color);
+    } else {
+      canvas.drawPath(cloth, Paint()..color = color);
+      // The cord, inside the edge.
+      final inner = Path()
+        ..moveTo(5.5, 11.5)
+        ..lineTo(w - 5.5, 11.5)
+        ..lineTo(w - 5.5, h - 5)
+        ..lineTo(w / 2, h - 11)
+        ..lineTo(5.5, h - 5)
+        ..close();
+      canvas.drawPath(
+          inner,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 0.9
+            ..color = cord.withValues(alpha: 0.85));
+      canvas.drawPath(
+          cloth,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.2
+            ..strokeJoin = StrokeJoin.round
+            ..color = lit ? Colors.white : surface);
+    }
+    // The rod across the top, over the cloth.
+    final bar = RRect.fromRectAndRadius(
+        const Rect.fromLTWH(1, 6.2, w - 2, 4), const Radius.circular(1.6));
+    canvas.drawRRect(bar, Paint()..color = rod);
+    canvas.drawRRect(
+        bar,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.9
+          ..color = surface);
+    // The tassels at the hem's two points.
+    for (final x in [3.0, w - 3.0]) {
+      canvas.drawLine(Offset(x, h), Offset(x, h + 0.0), Paint());
+    }
+  }
+
+  void _dashed(Canvas canvas, Path path, Paint paint) {
+    for (final m in path.computeMetrics()) {
+      var d = 0.0;
+      while (d < m.length) {
+        canvas.drawPath(m.extractPath(d, math.min(d + 3.2, m.length)), paint);
+        d += 5.4;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_BannerPainter old) =>
+      old.color != color || old.lit != lit || old.unknown != unknown;
+}
 
 /// A pin at [p], in [style], as the map draws it. [selected] lights it.
 Widget _pin(Place p, PinStyle style, bool dark, bool fr, Size map,
@@ -348,6 +509,47 @@ Widget _pin(Place p, PinStyle style, bool dark, bool fr, Size map,
               ),
             ),
             const SizedBox(height: 1),
+            _pinLabel(p.name(fr), dark),
+          ],
+        ),
+      );
+    case PinStyle.banner:
+      return Positioned(
+        left: cx - 60,
+        top: cy - 50,
+        width: 120,
+        child: Column(
+          children: [
+            SizedBox(
+              width: 40,
+              height: 50,
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.topCenter,
+                children: [
+                  // The pole, planted at the place's spot.
+                  Positioned(
+                    bottom: 0,
+                    child: Container(
+                        width: 2,
+                        height: 40,
+                        color: dark
+                            ? const Color(0xFFE9E3D5)
+                            : const Color(0xFF241B0E)),
+                  ),
+                  Positioned(
+                    top: 0,
+                    child:
+                        BannerPin(top, dark, lit: selected, unknown: p.heardOf),
+                  ),
+                  if (p.ways.length > 1)
+                    Positioned(
+                        right: 0,
+                        top: 4,
+                        child: _badge(p.ways.length, top.color(dark), dark)),
+                ],
+              ),
+            ),
             _pinLabel(p.name(fr), dark),
           ],
         ),
@@ -717,7 +919,13 @@ Widget _wayRow(BuildContext context, Cat c, String text, String place,
     ),
     child: Row(
       children: [
-        _disc(c, dark, size: 24),
+        if (_bannerRows)
+          SizedBox(
+              width: 24,
+              height: 30,
+              child: Center(child: BannerPin(c, dark, scale: 0.78)))
+        else
+          _disc(c, dark, size: 24),
         const SizedBox(width: 9),
         Expanded(
           child: Text(text,
@@ -1401,6 +1609,84 @@ Future<void> _save(WidgetTester tester, String name, List<Widget> phones,
   });
 }
 
+/// The banner pin close up: each category, the count badge, the lit one
+/// and a place only heard of.
+Widget _closeUp(bool dark) {
+  final theme = buildAppTheme(
+      stitchedInkScheme(dark ? Brightness.dark : Brightness.light));
+  final ink = dark ? InkColors.dark : InkColors.light;
+  final bg = dark ? const Color(0xFF262A36) : const Color(0xFFE4D6B3);
+  Widget cell(Widget pin, String label) => SizedBox(
+        width: 120,
+        child: Column(
+          children: [
+            pin,
+            const SizedBox(height: 6),
+            Text(label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontFamily: InkFonts.system,
+                    fontSize: 11.5,
+                    color: dark
+                        ? const Color(0xFFE9E3D5)
+                        : const Color(0xFF241B0E))),
+          ],
+        ),
+      );
+  return SizedBox(
+    width: _phoneSize.width,
+    height: _phoneSize.height,
+    child: Theme(
+      data: theme,
+      child: Container(
+        color: bg,
+        padding: const EdgeInsets.fromLTRB(12, 40, 12, 12),
+        child: Column(
+          children: [
+            Text('The banner pin',
+                style: TextStyle(
+                    fontFamily: InkFonts.display,
+                    fontSize: 26,
+                    color: dark
+                        ? const Color(0xFFE9E3D5)
+                        : const Color(0xFF241B0E))),
+            const SizedBox(height: 22),
+            Wrap(
+              spacing: 6,
+              runSpacing: 22,
+              alignment: WrapAlignment.center,
+              children: [
+                for (final c in Cat.values)
+                  cell(BannerPin(c, dark, scale: 2.6), c.name(false)),
+                cell(
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        BannerPin(Cat.shop, dark, scale: 2.6),
+                        Positioned(
+                            right: -6,
+                            top: 10,
+                            child: _badge(3, Cat.shop.color(dark), dark)),
+                      ],
+                    ),
+                    'Several ways: a count'),
+                cell(BannerPin(Cat.main, dark, scale: 2.6, lit: true),
+                    'Picked: lit'),
+                cell(BannerPin(Cat.travel, dark, scale: 2.6, unknown: true),
+                    'Heard of: hollow, ?'),
+              ],
+            ),
+            const Spacer(),
+            Text('In the list, the same banner, small (21 × 30).',
+                style: TextStyle(
+                    fontFamily: InkFonts.system, fontSize: 12, color: ink.ash)),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 void main() {
   final dir = Platform.environment['UX_SHOTS'];
   if (dir == null) {
@@ -1435,6 +1721,26 @@ void main() {
       journey(true, PinStyle.ring, selected: 'market'),
       journey(false, PinStyle.ring, selected: 'market'),
     ]);
+  });
+
+  testWidgets('banner pins on the Lower Town map', (tester) async {
+    _bannerRows = true;
+    addTearDown(() => _bannerRows = false);
+    await _save(tester, 'journey-banner-pins', [
+      journey(true, PinStyle.banner, selected: 'market'),
+      journey(false, PinStyle.banner, selected: 'market'),
+    ]);
+  });
+
+  testWidgets('banner pins, close up', (tester) async {
+    await _save(
+        tester,
+        'journey-banner-pins-closeup',
+        [
+          _closeUp(true),
+          _closeUp(false),
+        ],
+        ratio: 1.5);
   });
 
   testWidgets('legend', (tester) async {
