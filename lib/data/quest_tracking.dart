@@ -123,7 +123,8 @@ bool enemyDiscovered(String enemyId, PlayerSession session) =>
 /// visited and the current one); or one of their `metFlags` held. A
 /// record from before the codex, with none of the three, is known the old
 /// way: its `requiredFlag` held (or empty) and the story at its chapter
-/// ([currentChapter]).
+/// ([currentChapter]); one with a `rank` (a clan court's) only by its
+/// `requiredFlag`, never by the chapter alone.
 bool npcDiscovered(String npcId, Map<String, dynamic> npc,
     PlayerSession session, int currentChapter,
     {Iterable<String> visitedNodeIds = const [],
@@ -139,6 +140,9 @@ bool npcDiscovered(String npcId, Map<String, dynamic> npc,
   if (metNodes.isEmpty && metFlags.isEmpty && shopId.isEmpty) {
     final flag = npc['requiredFlag']?.toString() ?? '';
     if (flag.isNotEmpty && !session.flags.contains(flag)) return false;
+    // A clan court's person (a `rank`, v1.407) is not met by the chapter
+    // alone: only spoken to, or by the flag that says so.
+    if (npc['rank'] != null) return flag.isNotEmpty;
     final chapter = (npc['chapter'] as num?)?.toInt() ?? 1;
     return currentChapter >= chapter;
   }

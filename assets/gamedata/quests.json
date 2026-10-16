@@ -2593,7 +2593,7 @@
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
-    "npcDialogueText": "A clerk who owes you nothing finds you on the road. “The Lantern has stopped asking, and started counting. There is a list, and a woman who keeps it. As long as she does, nothing the Dominion holds will open to you. I would not go near her. I am telling you only that she is coming.”",
+    "npcDialogueText": "A Wickwarden’s lamp-boy catches up with you at the roadside, out of breath. “Your name is on the List, and the High Lantern-Bearer has read it aloud in the Hall. The Lantern has wanted the piece of the Shroud you carry since the night your house fell. She has finished sending others.”",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -2611,7 +2611,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Le Registre des serments",
-    "npcDialogueText_fr": "Un scribe qui ne vous doit rien vous rejoint sur la route. « La Lanterne a cessé de demander ; elle compte. Il existe un registre, et une femme qui le tient. Tant qu’elle le tiendra, rien de ce que possède le Dominion ne s’ouvrira devant vous. Je n’irais pas la voir. Je vous dis seulement qu’elle vient. »",
+    "npcDialogueText_fr": "Le garçon de lampe d’un Garde-Mèche vous rattrape au bord de la route, hors d’haleine. « Votre nom est au Registre, et la Haute Porte-Lanterne l’a lu tout haut dans la Salle. La Lanterne veut le pan de Linceul que vous portez depuis la nuit où votre maison s’est effondrée. Elle a fini d’envoyer d’autres. »",
     "detourEligible": false,
     "turnInChoices": [
       {

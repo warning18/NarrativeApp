@@ -5981,8 +5981,8 @@
   },
   "champion_dominion": {
     "enemyName": "High Lantern-Bearer Orsolya Keld",
-    "maxHealth": 200,
-    "damage": 27,
+    "maxHealth": 190,
+    "damage": 26,
     "guile": 9,
     "faction": "",
     "reaction": "",

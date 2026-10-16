@@ -10,6 +10,14 @@
 //   and cooldown, mercy and betrayal); at war it takes your patron's
 //   places first (clan_power.dart); it offers nothing (Hostile already
 //   does that).
+// - The story's own (v1.409, the user's call: your family kept a piece
+//   of the Shroud, and the Dominion wants it): every new game opens with the Dominion the nemesis
+//   ([PoliticsState.storyStart], `nemesisReason` 'story'). It hunts at the
+//   Hostile odds, not the Hunted (rival_hunters.dart), and its people do
+//   not join fights against you (clan_power.dart's reinforcements). It
+//   lets go at Friendly rather than Wary; a clan crossed harder takes its
+//   place; turned Hostile, it becomes an earned nemesis like any other.
+//   Two story flags side you with it for good ([dominionSidedFlags]).
 // - Breaking it ([breakNemesis], its quest's end, PR 5): a tier of power
 //   lost, the hunt ended, and no nemesis from it for
 //   [nemesisBreakChapters] chapters.
@@ -38,11 +46,13 @@ bool _turnedAgainst(PoliticsState state, String clanId, ClanData data) =>
 /// hysteresis: the strongest main clan of power [nemesisMinPower] or more
 /// stood Hostile or Hunted with, not fallen, not cooling down; '' for
 /// none.
-String nemesisCandidate(PoliticsState state, ClanData data, {int chapter = 0}) {
+String nemesisCandidate(PoliticsState state, ClanData data,
+    {int chapter = 0, Set<String> exclude = const {}}) {
   var best = '';
   var bestPower = -1;
   for (final id in data.factions.keys) {
     if (!isMainClan(id, data) || state.fallen.contains(id)) continue;
+    if (exclude.contains(id)) continue;
     if ((state.nemesisCooldown[id] ?? 0) > chapter) continue;
     if (!_turnedAgainst(state, id, data)) continue;
     final power = powerOf(state, id, data);
@@ -59,15 +69,32 @@ bool nemesisEnds(PoliticsState state, String clanId, ClanData data) =>
     state.fallen.contains(clanId) ||
     state.tierOf(clanId, data).isAtLeast(StandingTier.wary);
 
+/// The story's flags that side the character with the Dominion for good
+/// (Narrative, docs/proposals/dominion-nemesis.md): the legate's pact, and
+/// Vane backed for the throne. With one, the Dominion is no nemesis.
+const List<String> dominionSidedFlags = [
+  'inquisition_pact',
+  'throne_backed_vane'
+];
+
+/// The clans [flags] put out of the nemesis's reach ([dominionSidedFlags]).
+Set<String> _sidedWith(Iterable<String> flags) =>
+    flags.any(dominionSidedFlags.contains)
+        ? const {storyNemesisClan}
+        : const {};
+
 /// [state] with its nemesis brought up to date at [chapter]: the one held
 /// kept until it ends ([nemesisEnds]), then the [nemesisCandidate]; the
-/// news says when one rises or lets go.
+/// news says when one rises or lets go. [flags]: the story's, for
+/// [dominionSidedFlags].
 PoliticsState updateNemesis(
   PoliticsState state,
   ClanData data, {
   int chapter = 0,
   int day = 0,
+  Iterable<String> flags = const [],
 }) {
+  final sided = _sidedWith(flags);
   // Of a fallen clan (clan_crisis.dart): its winner hunts you, whatever
   // its power.
   final forced = state.fallenWinner;
@@ -79,15 +106,68 @@ PoliticsState updateNemesis(
   }
   var next = state;
   final held = state.nemesis;
+  if (state.isStoryNemesis) {
+    final story = sided.contains(held)
+        ? null
+        : _storyNemesisTurn(state, data, chapter: chapter, day: day);
+    if (story != null) return story;
+    next = _told(next.copyWith(nemesis: ''), 'nemesis_end:$held',
+        nemesisEndNews(data.faction(held)), chapter, day);
+    final rising =
+        nemesisCandidate(next, data, chapter: chapter, exclude: sided);
+    if (rising.isEmpty || rising == held) return next;
+    return _told(next.copyWith(nemesis: rising), 'nemesis:$rising',
+        nemesisRiseNews(data.faction(rising)), chapter, day);
+  }
   if (held.isNotEmpty) {
-    if (!nemesisEnds(state, held, data)) return state;
+    if (!sided.contains(held) && !nemesisEnds(state, held, data)) return state;
     next = _told(next.copyWith(nemesis: ''), 'nemesis_end:$held',
         nemesisEndNews(data.faction(held)), chapter, day);
   }
-  final rising = nemesisCandidate(next, data, chapter: chapter);
+  final rising = nemesisCandidate(next, data, chapter: chapter, exclude: sided);
   if (rising.isEmpty || rising == held) return next;
   return _told(next.copyWith(nemesis: rising), 'nemesis:$rising',
       nemesisRiseNews(data.faction(rising)), chapter, day);
+}
+
+/// Why the nemesis hunts the character, for its panel: the story's own
+/// line (Narrative's) for [PoliticsState.isStoryNemesis]; null for an
+/// earned nemesis (its standing says why) or none.
+({String en, String fr})? nemesisReasonLine(PoliticsState state) =>
+    state.isStoryNemesis
+        ? (
+            en: 'Your family kept a piece of the Shroud, and the Lantern '
+                'wants it. The Dominion has hunted you since the night your '
+                'house fell.',
+            fr: 'Votre famille gardait un pan du Linceul, et la Lanterne le '
+                'veut. Le Dominion vous traque depuis la nuit où votre '
+                'maison s’est effondrée.',
+          )
+        : null;
+
+/// The story's nemesis ([PoliticsState.isStoryNemesis]) at a chapter's
+/// turn: null when it lets go (the character Friendly with it, or it
+/// fallen); else [state] with it kept, made an earned one (the character
+/// turned Hostile against it: from there the ordinary rules), or replaced
+/// by a [nemesisCandidate] the character has crossed harder.
+PoliticsState? _storyNemesisTurn(PoliticsState state, ClanData data,
+    {required int chapter, required int day}) {
+  final held = state.nemesis;
+  if (state.fallen.contains(held) ||
+      state.tierOf(held, data).isAtLeast(StandingTier.friendly)) {
+    return null;
+  }
+  if (_turnedAgainst(state, held, data)) {
+    return state.copyWith(nemesisReason: '');
+  }
+  final rival = nemesisCandidate(state, data, chapter: chapter);
+  if (rival.isEmpty ||
+      rival == held ||
+      state.standingOf(rival, data) >= state.standingOf(held, data)) {
+    return state;
+  }
+  return _told(state.copyWith(nemesis: rival), 'nemesis:$rival',
+      nemesisRiseNews(data.faction(rival)), chapter, day);
 }
 
 /// [state] with the nemesis [clanId] broken (its quest won): a tier of
