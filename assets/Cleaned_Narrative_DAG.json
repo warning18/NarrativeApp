@@ -622,8 +622,8 @@
   },
   "250": {
     "id": "250",
-    "description": "Alster had been made to kneel in a single evening, and it was doing so with the bad grace of a city that had never been asked to before. Every door on Tallow Street had been chalked: a white sign a hand high above the latch, drawn quickly, the same on every door, and behind every chalked door the house had been emptied of its people. A proclamation was nailed to the well-head with the ink still wet, against unlicensed drawers of every clan and of none, and against whoever sheltered them. Over the roofs the harbor’s old stone giant stood up out of the smoke the way it always had, older than the city and claimed by nobody, with fire in its lap. And above the giant, lower than clouds have any business being, hung the ships. They were white, and they were in the air, and their sails were painted with signs that burned like lamps. Two roads went home, neither pretending to be the good one: the Stone Bridge, quick and watched; or the Weaver’s Alley, slow, dark, and twisty enough to hide either a way through or a knife.",
-    "description_fr": "Alster avait été mise à genoux en une seule soirée, et s’y résignait avec la mauvaise grâce d’une ville à qui on ne l’avait jamais demandé. Chaque porte de la rue du Suif avait été marquée à la craie : un signe blanc haut d’une main au-dessus du loquet, tracé vite, le même sur chaque porte, et derrière chaque porte marquée, la maison avait été vidée de ses gens. Une proclamation était clouée à la margelle du puits, l’encre encore fraîche, contre les traceurs sans licence de tous les clans et d’aucun, et contre quiconque les abritait. Par-dessus les toits, le vieux géant de pierre du port se dressait hors de la fumée comme il l’avait toujours fait, plus vieux que la ville et réclamé par personne, du feu sur les genoux. Et au-dessus du géant, plus bas que des nuages n’ont le droit de l’être, flottaient les navires. Ils étaient blancs, ils étaient dans les airs, et leurs voiles étaient peintes de signes qui brûlaient comme des lampes. Deux routes menaient à la maison, sans qu’aucune ne feignît d’être la bonne : le Pont de Pierre, rapide et surveillé ; ou la Ruelle du Tisserand, lente, sombre, et assez sinueuse pour cacher aussi bien un passage qu’un couteau.",
+    "description": "Alster had been made to kneel in a single evening, and it was doing so with the bad grace of a city that had never been asked to before. Every door on Tallow Street had been chalked: a white sign a hand high above the latch, drawn quickly, the same on every door, and behind every chalked door the house had been emptied of its people. A proclamation was nailed to the well-head with the ink still wet, against unlicensed drawers of every clan and of none, and against whoever sheltered them. Over the roofs the harbor’s old stone giant stood up out of the smoke the way it always had, older than the city and claimed by nobody, with fire in its lap. And above the giant, lower than clouds have any business being, hung the ships. They were white, and they were in the air, and their sails were painted with signs that burned like lamps. Two roads went home, neither pretending to be the good one: the Stone Bridge, quick and watched; or the Weaver’s Alley, slow, dark, and twisty enough to hide either a way through or a knife. Someone had chalked a list on the brick by the stairs: jobs, names, a price for each. The Inquisition had not found the time to scrub it. I took the list for something I would be coming back to.",
+    "description_fr": "Alster avait été mise à genoux en une seule soirée, et s’y résignait avec la mauvaise grâce d’une ville à qui on ne l’avait jamais demandé. Chaque porte de la rue du Suif avait été marquée à la craie : un signe blanc haut d’une main au-dessus du loquet, tracé vite, le même sur chaque porte, et derrière chaque porte marquée, la maison avait été vidée de ses gens. Une proclamation était clouée à la margelle du puits, l’encre encore fraîche, contre les traceurs sans licence de tous les clans et d’aucun, et contre quiconque les abritait. Par-dessus les toits, le vieux géant de pierre du port se dressait hors de la fumée comme il l’avait toujours fait, plus vieux que la ville et réclamé par personne, du feu sur les genoux. Et au-dessus du géant, plus bas que des nuages n’ont le droit de l’être, flottaient les navires. Ils étaient blancs, ils étaient dans les airs, et leurs voiles étaient peintes de signes qui brûlaient comme des lampes. Deux routes menaient à la maison, sans qu’aucune ne feignît d’être la bonne : le Pont de Pierre, rapide et surveillé ; ou la Ruelle du Tisserand, lente, sombre, et assez sinueuse pour cacher aussi bien un passage qu’un couteau. Quelqu’un avait tracé à la craie une liste sur la brique, près de l’escalier : des travaux, des noms, un prix pour chacun. L’Inquisition n’avait pas encore trouvé le temps de l’effacer. Je pris cette liste pour quelque chose à laquelle je reviendrais.",
     "context_taxonomy": {
       "ui_theme": "bridge",
       "mood": "tense",
@@ -638,13 +638,19 @@
         "text": "Take the Stone Bridge",
         "text_fr": "Prendre le Pont de Pierre",
         "next_id": "260",
-        "unlockQuestId": "q_retrieve_banner"
+        "unlockQuestId": "q_retrieve_banner",
+        "flagsToAdd": [
+          "feat_quests"
+        ]
       },
       {
         "text": "Take the Weaver’s Alley",
         "text_fr": "Prendre la Ruelle du Tisserand",
         "next_id": "270",
-        "unlockQuestId": "q_retrieve_banner"
+        "unlockQuestId": "q_retrieve_banner",
+        "flagsToAdd": [
+          "feat_quests"
+        ]
       }
     ],
     "flag_callbacks": [
@@ -1160,8 +1166,8 @@
   },
   "470": {
     "id": "470",
-    "description": "Whichever way I had come, I came back to what was left of our house in the grey before dawn, when the street held nothing but smoke. The searchers had gone. They had pried up every board in the place and found nothing under any of them, because what they wanted had never been under a board. The cannonball had found it for them, and they had not stayed to see: it had gone on down through the floor of the back room and a hand’s depth of packed earth beneath, and laid bare a square of old cedar with an iron ring set in it. A trapdoor. I had lived over it my whole life. Under it, in a hole lined with oilcloth, lay a single folded piece of cloth, grey with age, and when I lifted it out it unfolded, and kept unfolding, until it hung from my hands to the floor: a cloth as big as a cape. That was all there was. A family’s hidden treasure, the thing a city had been torn apart for, and it was a piece of old cloth. Who could want such an old piece of cloth? Then the light came up, and I saw what was on it. A figure, very large, larger than the cloth had any business holding, standing with both arms raised over its head and both hands open, palms out, the way a child draws someone waving from a long way off. Nobody had stitched it. Nobody had painted it. It was simply there, the way a bruise is there, and it was warm under my thumb. In my pocket, the old bone die had gone warm as well.",
-    "description_fr": "Quel que fût le chemin pris, je revins à ce qui restait de notre maison dans le gris d’avant l’aube, quand la rue ne contenait plus que de la fumée. Les fouilleurs étaient partis. Ils avaient arraché chaque latte de la maison sans rien trouver dessous, parce que ce qu’ils voulaient n’avait jamais été sous une latte. Le boulet l’avait trouvé pour eux, et ils n’étaient pas restés pour le voir : il avait poursuivi sa route à travers le plancher de la pièce du fond et une main de terre battue en dessous, et mis à nu un carré de vieux cèdre où était scellé un anneau de fer. Une trappe. J’avais vécu au-dessus toute ma vie. Dessous, dans un trou garni de toile cirée, reposait une seule pièce d’étoffe pliée, grise de vieillesse, et quand je la soulevai, elle se déplia, et se déplia encore, jusqu’à pendre de mes mains au sol : une étoffe grande comme une cape. C’était tout. Le trésor caché d’une famille, la chose pour laquelle on avait mis une ville en pièces, et c’était un vieux morceau de tissu. Qui pouvait bien en vouloir à un morceau de tissu aussi vieux ? Puis le jour se leva, et je vis ce qu’il portait. Une silhouette, immense, plus grande que l’étoffe n’avait le droit d’en contenir, debout, les deux bras levés au-dessus de la tête et les deux mains ouvertes, paumes en avant, comme un enfant dessine quelqu’un qui fait signe de très loin. Personne ne l’avait brodée. Personne ne l’avait peinte. Elle était là, simplement, comme est là une ecchymose, et elle était tiède sous mon pouce. Dans ma poche, le vieux dé d’os s’était réchauffé lui aussi.",
+    "description": "Whichever way I had come, I came back to what was left of our house in the grey before dawn, when the street held nothing but smoke. The searchers had gone. They had pried up every board in the place and found nothing under any of them, because what they wanted had never been under a board. The cannonball had found it for them, and they had not stayed to see: it had gone on down through the floor of the back room and a hand’s depth of packed earth beneath, and laid bare a square of old cedar with an iron ring set in it. A trapdoor. I had lived over it my whole life. Under it, in a hole lined with oilcloth, lay a single folded piece of cloth, grey with age, and when I lifted it out it unfolded, and kept unfolding, until it hung from my hands to the floor: a cloth as big as a cape. That was all there was. A family’s hidden treasure, the thing a city had been torn apart for, and it was a piece of old cloth. Who could want such an old piece of cloth? Then the light came up, and I saw what was on it. A figure, very large, larger than the cloth had any business holding, standing with both arms raised over its head and both hands open, palms out, the way a child draws someone waving from a long way off. Nobody had stitched it. Nobody had painted it. It was simply there, the way a bruise is there, and it was warm under my thumb. In my pocket, the old bone die had gone warm as well. I put the cloth, the die, and what the searchers had missed into one bundle, and found I knew exactly what I was carrying, and how little room there was for it.",
+    "description_fr": "Quel que fût le chemin pris, je revins à ce qui restait de notre maison dans le gris d’avant l’aube, quand la rue ne contenait plus que de la fumée. Les fouilleurs étaient partis. Ils avaient arraché chaque latte de la maison sans rien trouver dessous, parce que ce qu’ils voulaient n’avait jamais été sous une latte. Le boulet l’avait trouvé pour eux, et ils n’étaient pas restés pour le voir : il avait poursuivi sa route à travers le plancher de la pièce du fond et une main de terre battue en dessous, et mis à nu un carré de vieux cèdre où était scellé un anneau de fer. Une trappe. J’avais vécu au-dessus toute ma vie. Dessous, dans un trou garni de toile cirée, reposait une seule pièce d’étoffe pliée, grise de vieillesse, et quand je la soulevai, elle se déplia, et se déplia encore, jusqu’à pendre de mes mains au sol : une étoffe grande comme une cape. C’était tout. Le trésor caché d’une famille, la chose pour laquelle on avait mis une ville en pièces, et c’était un vieux morceau de tissu. Qui pouvait bien en vouloir à un morceau de tissu aussi vieux ? Puis le jour se leva, et je vis ce qu’il portait. Une silhouette, immense, plus grande que l’étoffe n’avait le droit d’en contenir, debout, les deux bras levés au-dessus de la tête et les deux mains ouvertes, paumes en avant, comme un enfant dessine quelqu’un qui fait signe de très loin. Personne ne l’avait brodée. Personne ne l’avait peinte. Elle était là, simplement, comme est là une ecchymose, et elle était tiède sous mon pouce. Dans ma poche, le vieux dé d’os s’était réchauffé lui aussi. Je mis le tissu, le dé et ce que les fouilleurs avaient laissé dans un seul baluchon, et je sus exactement ce que je portais, et le peu de place qu’il restait.",
     "context_taxonomy": {
       "ui_theme": "hovel",
       "mood": "wistful",
@@ -1175,10 +1181,11 @@
       {
         "text": "Fold it into a bundle and go",
         "text_fr": "Le plier en balluchon et partir",
-        "next_id": "891",
+        "next_id": "890_trainer",
         "flagsToAdd": [
           "took_bundle",
-          "open_hand_1"
+          "open_hand_1",
+          "feat_inventory"
         ],
         "politics": {
           "remembrance": 1
@@ -1187,13 +1194,14 @@
       {
         "text": "Search the ruins for anything else",
         "text_fr": "Fouiller les ruines pour trouver autre chose",
-        "next_id": "891",
+        "next_id": "890_trainer",
         "goldMod": 20,
         "healAmount": -10,
         "flagsToAdd": [
           "took_bundle",
           "open_hand_1",
-          "ruins_searched"
+          "ruins_searched",
+          "feat_inventory"
         ],
         "politics": {
           "remembrance": 1
@@ -1782,6 +1790,21 @@
         "flag": "hub_891_hound",
         "en": "The hound had gone ahead into the crowd on the steps and came back nosing at my hand, trotted off again to trip a porter, and fell back into step while I relieved a dropped purse of its previous owner’s claim.",
         "fr": "Le chien était parti devant dans la foule des marches et revint frotter son museau contre ma main, repartit trotter pour faire trébucher un porteur, et se recolla à mes talons pendant que je soulageais une bourse tombée de la prétention de son ancien propriétaire."
+      },
+      {
+        "flag": "trainer_strike",
+        "en": "My arm still knew what the sergeant had put into it.",
+        "fr": "Mon bras gardait encore ce que la sergente y avait mis."
+      },
+      {
+        "flag": "trainer_guard",
+        "en": "I kept my elbows in, the way the sergeant had shown me, and found it was harder than it looked.",
+        "fr": "Je gardais les coudes serrés, comme la sergente me l’avait montré, et c’était plus difficile que je ne l’avais cru."
+      },
+      {
+        "flag": "trainer_skipped",
+        "en": "I had walked past the sergeant’s line without learning a thing from it. It went on hitting its sandbags behind me.",
+        "fr": "Je laissai derrière moi la ligne de la sergente sans rien en apprendre. Elle continuait de frapper ses sacs de sable derrière moi."
       }
     ],
     "persona_variants": {
@@ -2406,7 +2429,8 @@
         ],
         "goldMod": 40,
         "flagsToAdd": [
-          "looters_fought"
+          "looters_fought",
+          "feat_conditions"
         ]
       },
       {
@@ -2423,7 +2447,8 @@
         ],
         "failNextId": "1140_spotted",
         "flagsToAdd": [
-          "looters_slipped"
+          "looters_slipped",
+          "feat_conditions"
         ],
         "failNote": "You are spotted, and the camp comes up around you.",
         "failNote_fr": "On vous repère, et le camp se lève autour de vous."
@@ -2435,7 +2460,8 @@
         "landRouteId": "sleeper_to_wells",
         "healAmount": -10,
         "flagsToAdd": [
-          "looters_avoided"
+          "looters_avoided",
+          "feat_conditions"
         ]
       }
     ],
@@ -2486,7 +2512,8 @@
         "forcedCondition": "ambush",
         "goldMod": 20,
         "flagsToAdd": [
-          "looters_fought"
+          "looters_fought",
+          "feat_conditions"
         ]
       },
       {
@@ -2496,7 +2523,8 @@
         "landRouteId": "sleeper_to_wells",
         "healAmount": -20,
         "flagsToAdd": [
-          "looters_avoided"
+          "looters_avoided",
+          "feat_conditions"
         ]
       }
     ],
@@ -2823,8 +2851,8 @@
   },
   "2005": {
     "id": "2005",
-    "description": "The queue at the landward gate moved at the speed of the Inquisition’s patience, which was to say not at all, and then all at once. Two places ahead of us a Dominion courier was waiting too, his lantern hooded in black crape, and a crier with him was telling the queue what the crape meant: the Lantern-Bearer was failing, and the faithful were asked to pray. Nobody in the queue looked up. They had prayers of their own to be getting on with. The gate offered two ways into Saltmouth, neither one advertising itself as the wiser.",
-    "description_fr": "La file à la porte de la terre avançait à la vitesse de la patience de l’Inquisition, c’est-à-dire pas du tout, puis d’un coup. Deux places devant nous attendait aussi un courrier du Dominion, sa lanterne voilée de crêpe noir, et un crieur qui l’accompagnait expliquait à la file ce que signifiait ce crêpe : le Porte-Lanterne déclinait, et l’on priait les fidèles de prier. Personne dans la file ne leva les yeux. Chacun avait ses propres prières en cours. La porte offrait deux façons d’entrer dans Bouche-de-Sel, aucune des deux ne se présentant comme la plus sage.",
+    "description": "The queue at the landward gate moved at the speed of the Inquisition’s patience, which was to say not at all, and then all at once. Two places ahead of us a Dominion courier was waiting too, his lantern hooded in black crape, and a crier with him was telling the queue what the crape meant: the Lantern-Bearer was failing, and the faithful were asked to pray. Nobody in the queue looked up. They had prayers of their own to be getting on with. The gate offered two ways into Saltmouth, neither one advertising itself as the wiser. Saltmouth belonged to someone, and the gate made a point of saying whom: the Inquisition’s masks on the wall, the Crows’ tally-boys down the queue, the Compact’s marks on the carts. I began, without meaning to, to keep a tally of who held what.",
+    "description_fr": "La file à la porte de la terre avançait à la vitesse de la patience de l’Inquisition, c’est-à-dire pas du tout, puis d’un coup. Deux places devant nous attendait aussi un courrier du Dominion, sa lanterne voilée de crêpe noir, et un crieur qui l’accompagnait expliquait à la file ce que signifiait ce crêpe : le Porte-Lanterne déclinait, et l’on priait les fidèles de prier. Personne dans la file ne leva les yeux. Chacun avait ses propres prières en cours. La porte offrait deux façons d’entrer dans Bouche-de-Sel, aucune des deux ne se présentant comme la plus sage. Saltmouth appartenait à quelqu’un, et la porte tenait à le dire : les masques de l’Inquisition sur le mur, les gamins à tablettes des Corneilles le long de la file, les marques du Pacte sur les charrettes. Je me mis, sans l’avoir voulu, à tenir le compte de qui tenait quoi.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -2844,7 +2872,10 @@
             "id": "dying_lantern_bearer",
             "stage": 1
           }
-        }
+        },
+        "flagsToAdd": [
+          "feat_politics"
+        ]
       },
       {
         "text": "Hide in a salt wagon",
@@ -2855,7 +2886,10 @@
             "id": "dying_lantern_bearer",
             "stage": 1
           }
-        }
+        },
+        "flagsToAdd": [
+          "feat_politics"
+        ]
       }
     ],
     "flag_callbacks": [
@@ -2886,7 +2920,7 @@
       {
         "text": "Walk the stalls before dealing with Vane",
         "text_fr": "Faire les étals avant de traiter avec Vane",
-        "next_id": "2015",
+        "next_id": "2015_crow_offer",
         "flagsToAdd": [
           "wharf_scouted"
         ],
@@ -2895,7 +2929,7 @@
       {
         "text": "Lift what you can from an unwatched crate",
         "text_fr": "Prendre ce qui traîne dans une caisse sans gardien",
-        "next_id": "2015",
+        "next_id": "2015_crow_offer",
         "goldMod": 15,
         "alignmentMod": -1,
         "flagsToAdd": [
@@ -3315,6 +3349,26 @@
         "flag": "sable_marker_lifted",
         "en": "Across the wharf the card sharp was still patting his coat, looking for a piece of paper he could not name.",
         "fr": "De l’autre côté du quai, le tricheur tâtait encore son manteau, à la recherche d’un bout de papier qu’il n’aurait su nommer."
+      },
+      {
+        "flag": "crow_told",
+        "en": "A Crow tally-girl fell into step beside me with a slate, and told me, as if reading it off, that the clans watch what a stranger does, and that when I had done enough, one of them would make me an offer. Not today. I would be free to refuse it.",
+        "fr": "Une gamine des Corneilles, une ardoise à la main, se glissa à mon pas et me dit, comme si elle lisait, que les clans regardent ce qu’un étranger fait, et que lorsque j’en aurais fait assez, l’un d’eux me ferait une offre. Pas aujourd’hui. Je serais libre de la refuser."
+      },
+      {
+        "flag": "crow_asked_want",
+        "en": "The Crows’ tally-girl had told me what her people would ask of me. It was a short list, and every item on it had a price.",
+        "fr": "La gamine des Corneilles m’avait dit ce que son peuple me demanderait. La liste était courte, et chaque ligne avait un prix."
+      },
+      {
+        "flag": "crow_asked_who",
+        "en": "I knew now that the Compact, the Mire and the others would all, in time, send someone. The Crows had only been the first to say so.",
+        "fr": "Je savais maintenant que le Pacte, le Marais et les autres enverraient tous quelqu’un, en leur temps. Les Corneilles avaient seulement été les premières à le dire."
+      },
+      {
+        "flag": "crow_no_ones",
+        "en": "I had told the Crows I was no one’s. They had written it down, in pencil.",
+        "fr": "J’avais dit aux Corneilles que je n’étais à personne. Elles l’avaient noté, au crayon."
       }
     ],
     "hub_progress": {
@@ -3901,7 +3955,9 @@
         "next_id": "2015",
         "goldMod": 20,
         "flagsToAdd": [
-          "inspector_dead"
+          "inspector_dead",
+          "feat_clans",
+          "crow_told"
         ],
         "unlockQuestId": "q_ch2_leave_saltmouth"
       }
@@ -4020,7 +4076,9 @@
         "next_id": "2015",
         "healAmount": -10,
         "flagsToAdd": [
-          "bilge_swum"
+          "bilge_swum",
+          "feat_clans",
+          "crow_told"
         ],
         "unlockQuestId": "q_ch2_leave_saltmouth"
       }
@@ -26153,6 +26211,92 @@
     "facing": "lysa",
     "prompt": "Who takes the needle?",
     "prompt_fr": "Qui prend l’aiguille ?"
+  },
+  "890_trainer": {
+    "id": "890_trainer",
+    "description": "A drill-sergeant of the Crusade’s old militia was running the morning line on the quay approach, thirty people in odd armour hitting sandbags, because the Inquisition did not shoot anyone who was doing something so plainly useful. She looked at the way I stood. “Somebody taught you the first half,” she said. “I have time to show you the second, and the Lark will not lift for another hour.”",
+    "description_fr": "Une sergente de l’ancienne milice de la Croisade menait la ligne du matin sur l’approche du quai, trente personnes en armures dépareillées frappant des sacs de sable, car l’Inquisition ne tirait sur personne qui faisait quelque chose d’aussi manifestement utile. Elle regarda ma façon de me tenir. « Quelqu’un vous a appris la première moitié, dit-elle. J’ai le temps de vous montrer la seconde, et l’Alouette ne lèvera pas avant une heure. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "hopeful",
+      "speaker": "Narrator"
+    },
+    "location": "alster_high_quay",
+    "automations": {},
+    "choices": [
+      {
+        "text": "Learn the strike",
+        "text_fr": "Apprendre la frappe",
+        "next_id": "891",
+        "flagsToAdd": [
+          "feat_skills",
+          "trainer_strike"
+        ]
+      },
+      {
+        "text": "Learn the guard",
+        "text_fr": "Apprendre la parade",
+        "next_id": "891",
+        "flagsToAdd": [
+          "feat_skills",
+          "trainer_guard"
+        ]
+      },
+      {
+        "text": "Ask for neither, and go on",
+        "text_fr": "N’en demander aucune, et poursuivre",
+        "next_id": "891",
+        "flagsToAdd": [
+          "feat_skills",
+          "trainer_skipped"
+        ]
+      }
+    ],
+    "prompt": "What do you learn from her?",
+    "prompt_fr": "Qu’apprenez-vous d’elle ?"
+  },
+  "2015_crow_offer": {
+    "id": "2015_crow_offer",
+    "description": "A Crow tally-boy had been following me down the Wharf with a slate, not hiding it. “You have the look of someone who is about to be asked,” she said. “It is our custom to say so first. The clans watch what a stranger does, and when you have done enough of it, one of them will make you an offer: a gift, a way of fighting, a name to carry. Not today. When you have earned it. You should know the offer is coming, and that you may say no.”",
+    "description_fr": "Une gamine des Corneilles, une ardoise à la main, me suivait le long du Quai sans s’en cacher. « Vous avez l’air de quelqu’un à qui on va faire une proposition, dit-elle. Chez nous, on le dit d’abord. Les clans regardent ce qu’un étranger fait, et quand vous en aurez fait assez, l’un d’eux vous fera une offre : un don, une façon de combattre, un nom à porter. Pas aujourd’hui. Quand vous l’aurez méritée. Il faut que vous sachiez qu’elle viendra, et que vous pouvez refuser. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_wharf",
+    "automations": {},
+    "choices": [
+      {
+        "text": "Ask what the Crows would want",
+        "text_fr": "Demander ce que voudraient les Corneilles",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "feat_clans",
+          "crow_asked_want"
+        ]
+      },
+      {
+        "text": "Ask who else will ask",
+        "text_fr": "Demander qui d’autre fera une offre",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "feat_clans",
+          "crow_asked_who"
+        ]
+      },
+      {
+        "text": "Say you are no one’s",
+        "text_fr": "Dire que vous n’êtes à personne",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "feat_clans",
+          "crow_no_ones"
+        ]
+      }
+    ],
+    "prompt": "What do you ask the Crow?",
+    "prompt_fr": "Que demandez-vous à la Corneille ?"
   },
   "7515_rest": {
     "id": "7515_rest",

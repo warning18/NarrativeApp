@@ -1,3 +1,4 @@
+import '../widgets/feature_unlock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -56,7 +57,8 @@ class CharacterScreen extends ConsumerWidget {
       subtitle = '$raceName $professionName';
     }
 
-    final tab = ref.watch(_characterTabProvider);
+    final clansOpen = isFeatureUnlocked(ref, GameFeature.clans.id);
+    final tab = clansOpen ? ref.watch(_characterTabProvider) : 0;
     final body = ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -284,7 +286,10 @@ class _CharacterTabs extends ConsumerWidget {
           selected: on,
           child: InkWell(
             key: Key('character_tab_$key'),
-            onTap: () => ref.read(_characterTabProvider.notifier).state = index,
+            onTap: () {
+              if (index == 1) acknowledgeOnOpen(ref, GameFeature.clans);
+              ref.read(_characterTabProvider.notifier).state = index;
+            },
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 9),
               alignment: Alignment.center,
@@ -320,27 +325,33 @@ class _CharacterTabs extends ConsumerWidget {
         child: Row(
           children: [
             segment(0, 'overview', tr(ref, 'tab_overview')),
-            segment(
-              1,
-              'gifts',
-              tr(ref, 'tab_gifts'),
-              after: waiting > 0
-                  ? Semantics(
-                      label: tr(ref, 'gifts_waiting_label'),
-                      child: Container(
-                        key: const Key('character_gifts_dot'),
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                            color: ink.blood, shape: BoxShape.circle),
-                      ),
-                    )
-                  : (gifts > 0
-                      ? Text('$gifts',
+            if (isFeatureUnlocked(ref, GameFeature.clans.id))
+              segment(
+                1,
+                'gifts',
+                tr(ref, 'tab_gifts'),
+                after: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const UnlockDot(feature: GameFeature.clans),
+                    if (waiting > 0)
+                      Semantics(
+                        label: tr(ref, 'gifts_waiting_label'),
+                        child: Container(
+                          key: const Key('character_gifts_dot'),
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                              color: ink.blood, shape: BoxShape.circle),
+                        ),
+                      )
+                    else if (gifts > 0)
+                      Text('$gifts',
                           style: theme.textTheme.labelSmall
-                              ?.copyWith(color: ink.gold))
-                      : null),
-            ),
+                              ?.copyWith(color: ink.gold)),
+                  ],
+                ),
+              ),
             segment(2, 'pages', tr(ref, 'tab_pages')),
           ],
         ),
@@ -495,27 +506,33 @@ class _PagesTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(playerSessionProvider);
-    Widget tile(IconData icon, String label, Widget page, {String? note}) =>
-        _PageTile(icon: icon, label: label, note: note, page: page);
+    Widget tile(IconData icon, String label, Widget page,
+            {String? note, GameFeature? feature}) =>
+        _PageTile(
+            icon: icon, label: label, note: note, page: page, feature: feature);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (session.newGamePlusCycle > 0) const _NewGamePlusCard(),
         const _ManaSpellsCard(),
-        if (session.bannerPiecesCollected.isNotEmpty) const _ShroudCard(),
+        if (session.bannerPiecesCollected.isNotEmpty &&
+            isFeatureUnlocked(ref, GameFeature.inventory.id))
+          const _ShroudCard(),
         IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
                 child: tile(Icons.backpack, tr(ref, 'tile_inventory'),
-                    const InventoryScreen()),
+                    const InventoryScreen(),
+                    feature: GameFeature.inventory),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: tile(Icons.casino, tr(ref, 'tile_dice'),
-                    const DiceLoadoutScreen()),
+                    const DiceLoadoutScreen(),
+                    feature: GameFeature.inventory),
               ),
             ],
           ),
@@ -724,12 +741,13 @@ class _ManaSpellsCard extends ConsumerWidget {
 
 /// A page's tile on the Character tab: its icon and name, and what it holds
 /// in a line when that helps.
-class _PageTile extends StatelessWidget {
+class _PageTile extends ConsumerWidget {
   const _PageTile({
     required this.icon,
     required this.label,
     required this.page,
     this.note,
+    this.feature,
   });
 
   final IconData icon;
@@ -737,10 +755,16 @@ class _PageTile extends StatelessWidget {
   final String? note;
   final Widget page;
 
+  /// The ladder feature that opens this page, when it is on the ladder.
+  final GameFeature? feature;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
+    if (feature != null && !isFeatureUnlocked(ref, feature!.id)) {
+      return FeatureLockedTile(feature: feature!, title: label);
+    }
     return Material(
       color: theme.colorScheme.surfaceContainer,
       shape: RoundedRectangleBorder(
@@ -749,8 +773,10 @@ class _PageTile extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(4),
-        onTap: () =>
-            Navigator.of(context).push(MaterialPageRoute(builder: (_) => page)),
+        onTap: () {
+          if (feature != null) acknowledgeOnOpen(ref, feature!);
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+        },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
           child: Row(
@@ -774,6 +800,7 @@ class _PageTile extends StatelessWidget {
                   ],
                 ),
               ),
+              if (feature != null) UnlockDot(feature: feature!),
             ],
           ),
         ),

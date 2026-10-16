@@ -3277,7 +3277,8 @@
       "2015_sable_lifted": "saltmouth_b059",
       "2015_sable_caught": "saltmouth_b059",
       "2015_sable_talk_failed": "saltmouth_b059",
-      "2015_lysa_line": "saltmouth_b141"
+      "2015_lysa_line": "saltmouth_b141",
+      "2015_crow_offer": "saltmouth_b141"
     },
     "names": {
       "saltmouth_b001": {
@@ -6772,6 +6773,7 @@
       "855": "alster_b152",
       "850_fed_failed": "alster_b133",
       "891": "alster_b175",
+      "890_trainer": "alster_b175",
       "895": "alster_b174",
       "896_failed": "alster_b176",
       "897_failed": "alster_b189",

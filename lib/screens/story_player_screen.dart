@@ -9,6 +9,7 @@ import '../combat/combat_aftermath.dart';
 import '../combat/combat_engine.dart' show newGamePlusStep;
 import '../combat/encounter.dart';
 import '../data/ability_check.dart';
+import '../data/feature_unlocks.dart' show trainerGuardFlag, trainerStrikeFlag;
 import '../data/clan_crisis.dart' show clanCrisisRoadEvent, isClanCrisisNode;
 import '../data/nemesis.dart' show maybeChampionRoad;
 import '../data/alignment_events.dart';
@@ -1468,6 +1469,14 @@ Future<void> _selectChoice({
               goldIsProfit: !isExcursion,
               origin: itemOriginHere(ref),
             );
+    // The trainer's lesson (feature_unlocks.dart): a strike or a guard.
+    final strike = choice.flagsToAdd.contains(trainerStrikeFlag);
+    if (strike || choice.flagsToAdd.contains(trainerGuardFlag)) {
+      await ref.read(playerSessionProvider.notifier).learnTrainerSkill(
+          strike: strike,
+          trees: await loadedGameDb(ref, skillTreesSchema),
+          skills: await loadedGameDb(ref, skillsSchema));
+    }
     // What the scene put in the pack (see StoryChoice.grantItemId).
     if (choice.grantsItem && context.mounted) {
       final items = ref.read(localizedDbProvider(itemsSchema)).value;

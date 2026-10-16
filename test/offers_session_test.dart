@@ -13,6 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/combat/spells.dart';
 import 'package:narrative_data_app/data/factions.dart';
+import 'package:narrative_data_app/data/feature_unlocks.dart'
+    show featureLadderFlag;
 import 'package:narrative_data_app/data/offers.dart';
 import 'package:narrative_data_app/data/signs.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
@@ -123,7 +125,9 @@ void main() {
       expect(offer!.suitorOf('vigil'), isNotNull);
     });
 
-    test('a new character\'s starting skill points are offers', () async {
+    test(
+        'a new character climbs the feature ladder: its starting skill '
+        'comes from the trainer, not an offer', () async {
       final notifier = await _notifierWith(_warrior());
       await notifier.startNewGame(
         raceId: 'elf',
@@ -131,7 +135,9 @@ void main() {
         professionId: 'mage',
         profession: const {'startingSkillPoints': 1},
       );
-      expect(_sources(notifier), [OfferSource.start]);
+      // feature_unlocks.dart: the trainer (890_trainer) teaches it.
+      expect(_sources(notifier), isEmpty);
+      expect(notifier.state.flags, contains(featureLadderFlag));
     });
   });
 

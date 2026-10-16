@@ -194,7 +194,8 @@ final List<Landmark> worldMapLandmarks = [
     blurbFr:
         'Des vaisseaux qui ne devraient pas flotter, leurs voiles peintes brillant à mesure que les équipages les mouillent. Négociez votre place à bord de l’Alouette, faites-vous passer pour un membre d’équipage, ou grimpez à son amarre au décollage\u00a0; puis le signe de sa voile vous emporte à travers les canons.',
     scenes: [
-      '891', '895', '896_failed', '897_failed', '898_failed', '960', //
+      '890_trainer', '891', '895', '896_failed', '897_failed', '898_failed',
+      '960', //
     ],
   ),
   const Landmark(
@@ -290,7 +291,8 @@ final List<Landmark> worldMapLandmarks = [
         'Le carrefour du chapitre 2, le quartier du port de Bouche-de-Sel. Un intendant nommé Vane, sans lien avec l’Inquisiteur général, garde la porte des chantiers navals\u00a0; autour de lui, le marché regorge de travail\u00a0: le Bazar, la rue des Apothicaires, des primes, des parties de cartes, un faux informateur, Kelda à la porte, la reconnaissance de dette de Sable, Liora sur le toit, et Vess, qui suit le Balluchon.',
     scenes: [
       '2010', '2010_crane', '2010_liora', '2011', //
-      '2015', '2015_lysa_line', '2015_bandits', '2015_dockside', '2015_rats',
+      '2015', '2015_lysa_line', '2015_crow_offer', '2015_bandits',
+      '2015_dockside', '2015_rats',
       '2015_smuggler',
       '2011_roof_fall', '2030', '2040', '2040_paid', '2050', '2070',
       '2070_cut_failed',

@@ -12,6 +12,7 @@ import '../screens/skills/skills_screen.dart';
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'ability_radar.dart';
+import 'feature_unlock.dart';
 
 /// How many skills the page lists before "All skills".
 const int skillsCardRows = 6;
@@ -39,8 +40,11 @@ class SkillsRadarCard extends ConsumerWidget {
       'charisma': session.charisma,
     };
 
-    void openSkills() => Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => const SkillsScreen()));
+    void openSkills() {
+      acknowledgeOnOpen(ref, GameFeature.skills);
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (_) => const SkillsScreen()));
+    }
 
     Widget skill(String id, double width) => SizedBox(
           width: width,
@@ -105,40 +109,47 @@ class SkillsRadarCard extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: Text(tr(ref, 'skills').toUpperCase(),
-                  style: theme.textTheme.labelMedium
-                      ?.copyWith(color: ink.gold, letterSpacing: 1.2)),
-            ),
-            InkWell(
-              key: const Key('character_skills_all'),
-              onTap: openSkills,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                child: Text('${tr(ref, 'skills_see_all')} ›',
-                    style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+        if (!isFeatureUnlocked(ref, GameFeature.skills.id))
+          const FeatureLockedTile(feature: GameFeature.skills)
+        else ...[
+          Row(
+            children: [
+              Expanded(
+                child: Text(tr(ref, 'skills').toUpperCase(),
+                    style: theme.textTheme.labelMedium
+                        ?.copyWith(color: ink.gold, letterSpacing: 1.2)),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        if (shown.isEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(tr(ref, 'skills_none_short'),
-                style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
-          )
-        else
-          LayoutBuilder(builder: (context, box) {
-            final width = (box.maxWidth - 6) / 2;
-            return Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: [for (final id in shown) skill(id, width)],
-            );
-          }),
+              const UnlockDot(feature: GameFeature.skills),
+              InkWell(
+                key: const Key('character_skills_all'),
+                onTap: openSkills,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                  child: Text('${tr(ref, 'skills_see_all')} ›',
+                      style:
+                          theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          if (shown.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(tr(ref, 'skills_none_short'),
+                  style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+            )
+          else
+            LayoutBuilder(builder: (context, box) {
+              final width = (box.maxWidth - 6) / 2;
+              return Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [for (final id in shown) skill(id, width)],
+              );
+            }),
+        ],
       ],
     );
   }
