@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.413.0+449]
+
+Lysa's fate turns the Dominion's hunt.
+
+- **Brother Clement,** the Black Hold's torturer, a boss in the Quarter's chapel when you take Lysa by force.
+- **The hunt, as her fate turns it:**
+  - take her by force, or give her blood to the Shroud, and the Dominion hunts you in earnest: its fighters come more often and join its fights, and Orsolya Keld comes sooner;
+  - swear to the Lantern for her, and its hunt is over.
+- **Claimant Tallis and the White Admiral** are a little tougher (405 and 350 health), to keep the late bosses in their bands with Lysa's new scenes.
 ## [1.412.0+448]
 
 A won fight closes itself.
