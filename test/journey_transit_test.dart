@@ -173,8 +173,9 @@ void main() {
 
     // Set down in another district of the same city along no choice (from
     // the lower town into the Undercroft), the mark comes by the streets from
-    // where it stood and is home after.
-    play.jumpTo('470');
+    // where it stood and is home after. (From the street, 250: the family
+    // house, 470, is a building of its own since the scene-or-map rule.)
+    play.jumpTo('250');
     await _settle(tester);
     await tester.pump(const Duration(seconds: 4));
     await clearCards();

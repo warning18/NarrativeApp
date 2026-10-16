@@ -1,8 +1,9 @@
-// The wharf's way "pay for the insult" leads to a scene on the wharf that the
-// story reads straight through to the Yard (2040 -> 2040_paid -> 2900). Since
-// v1.407 a payment is acted out where the party stands: a card under the map
-// with its price, no mark on the plan, and taking it carries the party to the
-// Yard (the scene change moves the mark, with no road walked first).
+// The wharf's way "pay for the insult" leads to a scene on the wharf whose one
+// way on walks to the Yard (2040 -> 2040_paid -> 2900). Since v1.407 a payment
+// is acted out where the party stands: a card under the map with its price,
+// no mark on the plan. Since the scene-or-map rule (choice_flow.dart) the
+// read-through stops where the stop changes: the walk to the Yard is a move
+// on the map, so the story stops at 2040_paid, still on the wharf.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -84,7 +85,8 @@ void main() {
     expect(find.descendant(of: pay, matching: find.textContaining('4')),
         findsWidgets);
 
-    // Taking it (a second tap) pays and carries the party to the Yard.
+    // Taking it (a second tap) pays; the walk on to the Yard is not read
+    // through.
     await tester.tap(pay);
     await tester.pump();
     await tester.tap(pay);
@@ -94,7 +96,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
     }
     await _settle(tester);
-    expect(container.read(storyPlayProvider).currentNodeId, '2900');
+    expect(container.read(storyPlayProvider).currentNodeId, '2040_paid');
     final error = tester.takeException();
     expect(error, isNull,
         reason: error is FlutterError ? error.toStringDeep() : '$error');

@@ -6747,19 +6747,19 @@
     "anchors": {
       "0": "alster_b001",
       "100": "alster_b000",
-      "105": "alster_b009",
-      "106": "alster_b004",
-      "110": "alster_b014",
-      "115": "alster_b010",
-      "120": "alster_b002",
-      "125": "alster_b011",
+      "105": "alster_b000",
+      "106": "alster_b000",
+      "110": "alster_b000",
+      "115": "alster_b000",
+      "120": "alster_b000",
+      "125": "alster_b000",
       "250": "alster_b016",
       "270": "alster_b008",
       "300": "alster_b005",
-      "400": "alster_b027",
-      "400_lost": "alster_b021",
-      "450": "alster_b015",
-      "470": "alster_b007",
+      "400": "alster_b005",
+      "400_lost": "alster_b005",
+      "450": "alster_b005",
+      "470": "alster_b005",
       "260": "alster_b032",
       "261": "alster_b033",
       "800": "alster_b077",
@@ -6789,57 +6789,17 @@
         "en": "The hovel",
         "fr": "Le taudis"
       },
-      "alster_b002": {
-        "en": "The card-master’s cellar",
-        "fr": "La cave du maître de cartes"
-      },
-      "alster_b004": {
-        "en": "The sawdust floor",
-        "fr": "Le sol de sciure"
-      },
       "alster_b005": {
-        "en": "The kicked-in door",
-        "fr": "La porte enfoncée"
-      },
-      "alster_b007": {
-        "en": "The trapdoor",
-        "fr": "La trappe"
+        "en": "The family house",
+        "fr": "La maison de famille"
       },
       "alster_b008": {
         "en": "The beast in the alley",
         "fr": "La bête de la ruelle"
       },
-      "alster_b009": {
-        "en": "The back room",
-        "fr": "L’arrière-salle"
-      },
-      "alster_b010": {
-        "en": "The wine-soaked floor",
-        "fr": "Le sol imbibé de vin"
-      },
-      "alster_b011": {
-        "en": "The wall by the door",
-        "fr": "Le mur près de la porte"
-      },
-      "alster_b014": {
-        "en": "The counting-room cage",
-        "fr": "La cage de la salle des comptes"
-      },
-      "alster_b015": {
-        "en": "Old Hesk’s wall",
-        "fr": "Le mur du vieux Hesk"
-      },
       "alster_b016": {
         "en": "The chalked list",
         "fr": "La liste à la craie"
-      },
-      "alster_b021": {
-        "en": "Where the street turned over",
-        "fr": "Là où la rue a basculé"
-      },
-      "alster_b027": {
-        "en": "The ruin of our house",
-        "fr": "Les ruines de notre maison"
       },
       "alster_b032": {
         "en": "The toll booth",

@@ -146,9 +146,9 @@ void main() {
     expect(find.descendant(of: toll, matching: find.textContaining('30')),
         findsWidgets);
     final fight = find.byKey(const ValueKey('journey_choice_card_1'));
-    expect(find.descendant(of: fight, matching: find.text('The Lower Town')),
+    expect(find.descendant(of: fight, matching: find.text('The family house')),
         findsOneWidget,
-        reason: 'the fight walks on to the lower town afterwards');
+        reason: 'the fight walks on to the family house afterwards');
     expect(find.descendant(of: fight, matching: find.text('Fight')),
         findsOneWidget);
     expect(find.byKey(const ValueKey('journey_go')), findsNothing);

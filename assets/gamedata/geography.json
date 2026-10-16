@@ -67,6 +67,16 @@
     "blurb_fr": "Une taverne devant et autre chose derrière : une salle sans enseigne, quatre tables, une cage pour les dés, un comptoir des comptes et une galerie au-dessus. L’histoire commence à ses tables.",
     "landmark": ""
   },
+  "alster_family_house": {
+    "level": "building",
+    "parent": "alster_lower_town",
+    "kind": "house",
+    "name": "The family house",
+    "name_fr": "La maison de famille",
+    "blurb": "The house you grew up in, on a quiet street of the Lower Town: two rooms over a workshop, a back door onto the yard, and a trapdoor under the boards that nobody was meant to find.",
+    "blurb_fr": "La maison de votre enfance, dans une rue tranquille de la Ville basse : deux pièces au-dessus d’un atelier, une porte de derrière sur la cour, et une trappe sous le plancher que personne ne devait trouver.",
+    "landmark": ""
+  },
   "alster_stone_bridge": {
     "level": "district",
     "parent": "alster",
