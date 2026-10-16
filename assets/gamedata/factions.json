@@ -333,8 +333,8 @@
           "value": 1
         }
       ],
-      "line": "Plating the Compact chose to forge for you, and an edge from the Anvil-Deaf that breaks a guard.",
-      "line_fr": "Des plaques que le Pacte a choisi de forger pour vous, et un fil des Sourds de l’Enclume qui brise une garde."
+      "line": "The Compact’s smiths temper the whole party, a little more health for each of you, and an edge from the Anvil-Deaf that breaks a guard.",
+      "line_fr": "Les forgerons du Pacte trempent tout le groupe, un peu plus de santé pour chacun, et un fil des Sourds de l’Enclume qui brise une garde."
     },
     "brokenNews": "The Compact’s last hammer is silent.",
     "brokenNews_fr": "Le dernier marteau du Pacte ne sonne plus.",
@@ -916,8 +916,8 @@
           "value": 2
         }
       ],
-      "line": "The oni come with their bells and their red: your blows land heavier, and the enemy pays for each one it trades.",
-      "line_fr": "Les oni viennent avec leurs cloches et leur rouge. Vos coups tombent plus lourds, et l’ennemi paie chaque échange."
+      "line": "The oni come with their bells and their red: your blows land heavier, and each one drinks a little of the enemy’s life.",
+      "line_fr": "Les oni viennent avec leurs cloches et leur rouge. Vos coups tombent plus lourd, et chacun boit un peu de la vie de l’ennemi."
     }
   },
   "tidekin": {
