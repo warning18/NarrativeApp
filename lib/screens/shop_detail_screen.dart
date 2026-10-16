@@ -5,6 +5,7 @@ import '../widgets/help_hint.dart';
 import '../combat/gear_effects.dart';
 import '../combat/dice_faces.dart';
 import '../combat/spells.dart';
+import '../data/clan_power.dart' show holderOf;
 import '../data/chapter_conditions.dart';
 import '../data/factions.dart';
 import '../data/item_origin_here.dart';
@@ -81,8 +82,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
         .watch(storyDataProvider)
         .value
         ?.nodeFor(ref.watch(storyPlayProvider).currentNodeId));
-    final faction = clans.faction(shopFactionHere(
-        shopFactionId(widget.shop), geography.heldBy(here?.id)));
+    final faction = clans.faction(shopFactionHere(shopFactionId(widget.shop),
+        holderOf(here?.id, geography, ref.watch(politicsProvider))));
     final tier = faction == null
         ? null
         : ref.watch(politicsProvider).tierOf(faction.id, clans);

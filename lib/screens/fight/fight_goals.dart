@@ -85,6 +85,8 @@ extension _FightGoals on _FightScreenState {
     }
     for (final enemy in _enemies) {
       if (!enemy.isAlive || enemy.yielded || boss(enemy)) continue;
+      // Only people and beasts break (foe_kind.dart).
+      if (!canWaver(enemy.data)) continue;
       if (!wavers(health: enemy.currentHealth, maxHealth: enemy.maxHealth)) {
         continue;
       }

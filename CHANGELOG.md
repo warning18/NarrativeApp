@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.388.0+424]
+## [1.399.0+435]
 
 Rewards come on one card, whatever they are (card A of the user's pick).
 
@@ -16,7 +16,7 @@ Rewards come on one card, whatever they are (card A of the user's pick).
 - **One reward card.** A header in the source's own colour (a small label over the title), one row per reward (an icon tile, a name, a line under it, the value at the right), a note set apart in a dashed box, and one button. The rows come in one after another (with reduced motion they are simply there).
 - **Quest complete, an item or materials found, and a clan's gift taken** all use it. Quest complete shows gold, experience with its bar (and the level it brought), the item with its rarity, a die, a companion who joined; the notes carry what changed the outcome (a die made for another class paid in gold, with the gold as a chip), how the quest was settled, and the party's reactions.
 
-## [1.386.0+422]
+## [1.398.0+434]
 
 The clan offer's popup is one block: the ring on top, and under it the clan card with the gift in it.
 
@@ -25,6 +25,112 @@ The clan offer's popup is one block: the ring on top, and under it the clan card
 - **The clan's words sit behind an (i).** The button beside the clan's name opens its card (the same one a long press shows), with what the clan says to you; the first time you meet a clan the button is lit. The words no longer take room in the popup.
 - The alignment word ("Alignment · toward Good") stays in the block, under the gift.
 - **Hold a banner for the clan's details.** A long press on a banner in the offer, on a crest of the ring, or on a standard in the Throne room opens its card: where it leans (alignment, the five axes of its gifts), what it stands for, its sub-clans, its motto and a short recap of its story. Letting go, or a tap outside, closes it.
+
+## [1.397.0+433]
+
+In a place a clan holds, its people join long fights.
+
+- **Reinforcements.** From round 8, in a place a clan holds:
+  - if you stand Friend or better with it, its people fight beside you, and each foe loses 5% of its health a round;
+  - if it hunts you or is your nemesis, its people fall on you, and each of you loses 5% a round.
+- They never join a boss's fight and never strike the finishing blow. The fight log says when they come.
+- **Balance:** a gentle edge, as asked. In every fight, allies are worth up to +2.9 points and foes cost up to −2.6. Report: docs/simulation/reinforcements.md.
+
+## [1.394.0+430]
+
+When your clan's seat is attacked, it asks for your help, and if it falls, you choose what becomes of you.
+
+- **The crisis.** When another clan is about to take the seat (or last place) of your clan (sworn, or your patron), a rider finds you on the road first.
+  - **Defend it:** a fight with the attacker's hunter. Won, the seat holds and your clan grows stronger. Lost, you can still pay or refuse.
+  - **Pay:** 40 gold a chapter. The attacker takes a lesser place instead.
+  - **Refuse:** the seat falls, and your clan thinks less of you.
+- **The fall.** When your clan has no place left, you choose:
+  - **Bend the knee to the winner:** your standing moves to it (sworn if you were sworn), and it takes a fifth of your gold.
+  - **Stay of the fallen clan:** no new oath and no patron's stats, its gifts kept, and the winner hunts you as your nemesis, until you raise a banner of your own. Then the fallen clan joins your Host.
+- **The Mire has a seat:** the Mire's Court, a dry room in the middle of the Drowned Cloister.
+- Narrative's words throughout, in English and French.
+
+## [1.393.0+429]
+
+A clan can make you its nemesis, and good and evil hunt everyone.
+
+- **The nemesis.** The strongest clan (power 25 or more) you stand Hostile or Hunted with becomes your nemesis at a new chapter, and the news says so. It lets go only when you are back to Wary.
+  - **It hunts you, sworn or not:** its fighters come on the roads at the Hunted odds, under the same cap, cooldown, mercy and betrayal as the other hunters.
+  - **At war it moves first,** and goes after your patron clan's places from Hostile.
+  - Its quest, coming later, will break it: a tier of power lost, and two chapters before it can return.
+- **A neutral character is hunted too, lightly, by both sides:** 2% a road, rising to 6% at the edge of neutral. Before, a neutral character met no hunter at all.
+- **New hunters (Narrative's six):**
+  - the good orders hunt an Evil character: Ysel the candle-bearer, Halvard the spearman and the masked penitent;
+  - the evil forces hunt a Good character: the cultist acolyte, the Hollow Court zealot and the void hound.
+
+  Each comes with its battle cry and its own ambush lines, and the angels and demons keep theirs. The six are still met as ordinary foes too. A hunter now waits for its chapter.
+- **The territory news in French** now uses Narrative's own wording, agreeing with each clan ("La Veille Grise est tombée", "Les Corneilles de Sel tiennent…").
+- **Simulator:** 3 to 4 hunters a run at every alignment, out of about 60 roads; neutral characters meet about one alignment hunter a run. The Dominion is the nemesis in most runs (the story turns it against you). Report: docs/simulation/nemesis-hunters.md.
+
+## [1.392.0+428]
+
+### Changed
+- `factions.json`: every faction carries `gender_fr` (m, f, mp, fp) and `nameTo_fr` ("au Dominion de la Lanterne"), so the French territory news lines agree with the clan.
+- `docs/proposals/territory-texts.md`: the blurb for the Mire's hidden seat, `mire_court`, for Core's next PR.
+
+## [1.391.0+427]
+
+Clans now have power, and the map changes hands.
+
+- **Power.** Each clan has a strength from 0 to 100: the Dominion starts at 60, the Crows 45, the Compact 40, the Vigil 30, the Penitents and the Mire 25.
+  - Rises: taking a clan's gift (+2, +4 for a heroic one), doing a quest for it (+5), and each place it holds (+1 a chapter).
+  - Falls: a chapter in which you did nothing for a clan (−5), never more than 20 under its start.
+- **Places change hands at each new chapter**, at most one per clan:
+  - a clan that has grown a tier stronger takes the next place it claims (Narrative's lists);
+  - two clans at war fight over places, and the much stronger takes one, the seat last.
+
+  A news line tells it, and the clan log notes it.
+- **A clan can fall.** One that loses its last place falls, its power to 0, until it grows back and takes a place again.
+- **Shops follow the new holder.** A town that changes hands prices by your standing with the clan that holds it now.
+- **Story beats can move power and places** (`power` and `control` in a choice's or an event's politics, and a `powerAtLeast`/`powerAtMost` condition).
+- **Simulator:** about 3 to 4 places change hands per run, and the clan you back ends 25 to 50 points stronger. Report: docs/simulation/clan-power.md.
+
+## [1.390.0+426]
+
+Groundwork for the journey map; nothing changes on screen yet.
+
+- **What a story choice does on the map** (`lib/data/choice_shape.dart`). For each choice the game can now tell:
+  - whether it takes you somewhere: stay, walk to another place in the same location, or travel to another location;
+  - what kind of action it is: fight, pay, talk, sneak, attempt, evade, go or decide;
+  - whether it is acted out where you stand. A fight, a payment or a decision happens where you are, even when its aftermath takes you elsewhere.
+- **For the journey map:** of the story's 1,061 choices, 80% are acted out where you stand. Only 213 are ways somewhere, so the map can draw pins for those and list the rest as actions at "You are here".
+
+## [1.389.0+425]
+
+What a foe is now matters in a fight.
+
+- **Every foe has a kind:** a person, a beast, the undead, the void, a construct, a demon, an angel or a giant (Narrative's list).
+- **Beasts tire.** From round 6, a beast's blows land 5% softer each round, down to half. The log says when it starts tiring.
+- **The dead crumble.** From round 6, an undead foe loses a little of itself each round (3% of its health). It never finishes them; the execute does.
+- **Only people and beasts break.** Morale no longer makes the dead, the void, constructs, demons, angels or giants flee.
+- **Bosses are untouched** by the tiring and the crumbling.
+- **An evil foe is told by its kind.** The Lantern Vanguard's heal now counts the void, the undead and demons, no longer anyone weak to Light: the Turned, the cultists and the zealots are living people.
+- **Balance:** −0.7 to +1.3 points per profession, and fights don't get longer. Report: docs/simulation/foe-kinds.md.
+
+## [1.388.0+424]
+
+Mercy and the omens, in their own words.
+
+### Changed
+- **Mercy for a rival's hunter.** The yield, the choice (Show mercy / Finish it), the read of their heart by Perception, the thanks and the betrayal ambush are reworded in English and French, with no gendered pronoun for a hunter who may be a woman or a man; the two standing causes ("Mercy for a hunter", "No mercy for a hunter") likewise.
+- **Hunters' alignments.** Five adjusted to fit their characters: Ysel +25, the Inquisition Soldier +10, the High Warden -10, the Smuggler Captain -25, the Inquisition Penitent +15. The others stand.
+- **The omens of a place.** The mist, heat, rising water, holy ground and town watch omens, and the boss's enrage, reworded. Wording only.
+
+## [1.387.0+423]
+
+You can spare a rival's hunter, at a risk.
+
+- **Mercy.** A rival clan's hunter you beat yields: spare them, or finish it.
+  - **Spared:** you keep the fight's experience, but no gold or loot, and the hunter's clan thinks a little better of you (+3).
+  - **Finished:** the spoils are yours, and the clan holds it against you (−2).
+- **The back-stab.** A hunter you spare may come back a few roads later and strike first. The further their alignment from yours, the likelier: 10% when alike, up to 60% when far apart. A hunter who betrays you is never spared twice.
+- **Reading them.** With Perception 5 or more, the choice tells you which way the hunter leans, and whether that is close to you.
+- **In the simulator:** a run that spares when the odds are under 25% spares about half its hunters, and about one in seven of those comes back.
 
 ## [1.385.0+421]
 

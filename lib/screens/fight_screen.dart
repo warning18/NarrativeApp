@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/battlefield_condition.dart';
 import '../combat/field_anomaly.dart';
+import '../data/hunter_mercy.dart';
 import '../data/place_traits.dart';
 import '../data/climate.dart' show WeatherKind;
 import '../providers/fight_random_provider.dart';
@@ -34,7 +35,9 @@ import '../combat/turn_order.dart';
 import '../combat/enemy_affix.dart';
 import '../combat/fight_goal.dart';
 import '../combat/context_rules.dart';
+import '../data/clan_power.dart' show holderOf, reinforcementAt;
 import '../combat/fight_length.dart';
+import '../combat/foe_kind.dart';
 import '../combat/profession_cores.dart';
 import '../combat/spec_variants.dart';
 import '../combat/specialisations.dart';

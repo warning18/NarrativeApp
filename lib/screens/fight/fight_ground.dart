@@ -86,10 +86,33 @@ extension _FightGround on _FightScreenState {
   bool? _contextRoundStart(List<_LogEntry> entries, AppLanguage lang) {
     final rule = _length.rule;
     final round = _roundsStarted;
+    // What the foe is (foe_kind.dart): a beast tires, the dead crumble.
+    for (final enemy in _enemies.where((e) => e.isAlive)) {
+      final boss = isBossEnemy(enemy.enemyId, enemy.data);
+      if (round == foeRuleStartRound &&
+          !boss &&
+          foeKindOf(enemy.data) == FoeKind.beast) {
+        entries.add(_LogEntry(
+            trFor(lang, 'foe_tiring_log')
+                .replaceAll('{name}', enemy.displayName),
+            _LogKind.info));
+      }
+      final dust = crumble(enemy.data, enemy.maxHealth, round, boss: boss);
+      if (dust > 0) {
+        enemy.currentHealth = afterTick(enemy.currentHealth, dust);
+        entries.add(_LogEntry(
+            trFor(lang, 'foe_crumbles_log')
+                .replaceAll('{name}', enemy.displayName)
+                .replaceAll('{n}', '$dust'),
+            _LogKind.playerDamage));
+      }
+    }
     if (round == tideStartRound &&
         _enemies.any((e) => e.isAlive && isBossEnemy(e.enemyId, e.data))) {
       entries.add(_LogEntry(trFor(lang, 'boss_enraged_log'), _LogKind.info));
     }
+    // The holder's people join in (context_rules.dart's reinforcements).
+    if (!widget.modifiers.isTest) _reinforcements(entries, lang, round);
     final stem = rule.logStem;
     if (stem == null) return null;
     final start =
@@ -137,6 +160,52 @@ extension _FightGround on _FightScreenState {
           afterTick(enemy.currentHealth, rule.tick(enemy.maxHealth, round));
     }
     return null;
+  }
+
+  /// The people of the clan that holds the place, joining the fight in
+  /// [round] (context_rules.dart's reinforcements): on the party's side when
+  /// it stands Friend or better with them, against it when they hunt it;
+  /// never in a boss's fight, and never the finishing blow.
+  void _reinforcements(List<_LogEntry> entries, AppLanguage lang, int round) {
+    final bossFight = widget.modifiers.isZoneBoss ||
+        _enemies.any((e) =>
+            isBossEnemy(e.enemyId, e.data) ||
+            zoneBossEnemyIds.contains(e.enemyId));
+    if (!reinforcementsCome(round, bossFight: bossFight)) return;
+    final geography = ref.read(geographyProvider);
+    final politics = ref.read(politicsProvider);
+    final data = ref.read(clanDataProvider);
+    final placeId = _placeIdHere();
+    final who = reinforcementAt(placeId, geography, politics, data);
+    if (who == Reinforcement.none) return;
+    final clan =
+        data.faction(holderOf(placeId, geography, politics))?.nameOfFor(lang) ??
+            '';
+    if (who == Reinforcement.allies) {
+      var struck = 0;
+      for (final enemy in _enemies.where((e) => e.isAlive)) {
+        final blow = allyStrike(enemy.maxHealth, round);
+        enemy.currentHealth = afterTick(enemy.currentHealth, blow);
+        struck = max(struck, blow);
+      }
+      entries.add(_LogEntry(
+          trFor(lang, 'reinforce_allies_log')
+              .replaceAll('{of}', clan)
+              .replaceAll('{n}', '$struck'),
+          _LogKind.playerDamage));
+    } else {
+      var struck = 0;
+      for (final member in _party.where((m) => !m.isKnockedOut)) {
+        final blow = foeStrike(member.maxHealth, round);
+        member.currentHealth = afterTick(member.currentHealth, blow);
+        struck = max(struck, blow);
+      }
+      entries.add(_LogEntry(
+          trFor(lang, 'reinforce_foes_log')
+              .replaceAll('{of}', clan)
+              .replaceAll('{n}', '$struck'),
+          _LogKind.enemyDamage));
+    }
   }
 
   /// The anomaly's phase in the round now under way.
