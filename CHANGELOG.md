@@ -20,7 +20,7 @@ The game pushes back after the camp: from chapter 3 on, every profession wins ab
   - The Warrior: base damage 3 → 4, health 20 → 30.
   - The Ranger: base damage 3 → 1, health 0 → −10, Perception 4 → 1, Luck 2 → 0, Dexterity 3 → 2.
   - The Rogue: base damage 4 → 2.
-- **Five late bosses re-tuned** so each is still won about as often as before: the Void Archon, the White Admiral, the Void Sovereign and Claimant Tallis are a little stronger, the Tear-Herald a little weaker.
+- **Five late bosses re-tuned** so each is still won about as often as before: the Void Archon, the White Admiral, the Void Sovereign and Claimant Tallis are a little stronger, the Tear-Herald a little weaker. The six clan champions get about an eighth more health and +1 damage, so they are still won about half the time.
 - **A lost fight still gives 30% of its XP**, so a struggling character doesn't fall further behind.
 
 ### Added

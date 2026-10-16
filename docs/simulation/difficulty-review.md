@@ -103,6 +103,7 @@ The user chose proposals 3, 4 and 5, and replaced 1 and 2 with one target: **eve
   - Void Sovereign: health 359 → 385, damage 30 → 31.
   - Tear-Herald: health 306 → 290, damage 27 → 26.
   - Claimant Tallis: damage 22 → 23.
+- **The six clan champions** (`nemesis_quests_test`, about half won where they come): health 190 → 215 for the Dominion's and 200 → 225 for the others, damage +1. The runs reach them stronger now, and they had drifted to 62%; they now sit at 48%.
 
 ### Before and after (400 runs, seed 7, every strategy)
 
