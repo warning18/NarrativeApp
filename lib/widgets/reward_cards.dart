@@ -27,6 +27,11 @@ Color rewardChapterColour(int chapter) {
   return palette[(chapter.clamp(1, palette.length)) - 1];
 }
 
+/// The art strip of [chapter] (chapter 0, the prologue, wears the first's;
+/// beyond the eighth, the last's).
+String chapterArtPath(int chapter) =>
+    'assets/visuals/chapters/chapter_${chapter.clamp(1, 8)}.png';
+
 /// An item's own picture on a reward tile, a mark for its absence.
 Widget rewardItemIcon(String itemId, Color accent) => PixelIcon(
       ItemIcons.pathFor(itemId),
@@ -83,6 +88,7 @@ RewardCardData questRewardCard(
   required bool leveledUp,
   List<RewardLine> found = const [],
   List<RewardNote> notes = const [],
+  bool banner = true,
 }) {
   final accent = rewardChapterColour(chapter);
   final xpSub = leveledUp
@@ -92,6 +98,39 @@ RewardCardData questRewardCard(
           .replaceAll('{after}', '$xpAfter')
           .replaceAll('{need}', '$xpNeeded')
           .replaceAll('{n}', '$level');
+  if (banner) {
+    // Card B: the chapter's art on top, gold and XP as two counters.
+    return RewardCardData(
+      kind: '${trFor(lang, 'reward_kind_quest')} · '
+          '${trFor(lang, 'reward_chapter').replaceAll('{n}', '$chapter')}',
+      title: questName,
+      accent: accent,
+      hero: chapterArtPath(chapter),
+      button: trFor(lang, 'reward_continue'),
+      counters: [
+        if (gold > 0)
+          RewardCounter(
+            key: const Key('reward_gold'),
+            value: '+$gold',
+            label: trFor(lang, 'reward_gold'),
+            accent: ink.gold,
+          ),
+        if (xp > 0)
+          RewardCounter(
+            key: const Key('reward_xp'),
+            value: '+$xp',
+            label: 'XP',
+            accent: ink.tide,
+            sub: leveledUp
+                ? trFor(lang, 'reward_level_reached')
+                    .replaceAll('{n}', '$level')
+                : '',
+          ),
+      ],
+      lines: found,
+      notes: notes,
+    );
+  }
   return RewardCardData(
     kind: '${trFor(lang, 'reward_kind_quest')} · '
         '${trFor(lang, 'reward_chapter').replaceAll('{n}', '$chapter')}',

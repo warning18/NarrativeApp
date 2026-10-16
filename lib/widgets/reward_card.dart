@@ -50,7 +50,28 @@ class RewardNote {
   final String chip;
 }
 
-/// Everything the card shows.
+/// A big figure with its label (card B: gold and XP as two counters), and a
+/// small [sub] under the label when there is something to say (a level
+/// reached).
+class RewardCounter {
+  const RewardCounter({
+    required this.value,
+    required this.label,
+    required this.accent,
+    this.sub = '',
+    this.key,
+  });
+
+  final String value;
+  final String label;
+  final Color accent;
+  final String sub;
+  final Key? key;
+}
+
+/// Everything the card shows. With a [hero] (the path of an art strip) the
+/// card is the banner-led one (B): the strip carries the kind and the
+/// title, and the [counters] stand under it.
 class RewardCardData {
   const RewardCardData({
     required this.kind,
@@ -59,7 +80,12 @@ class RewardCardData {
     required this.button,
     this.lines = const [],
     this.notes = const [],
+    this.hero,
+    this.counters = const [],
   });
+
+  final String? hero;
+  final List<RewardCounter> counters;
 
   /// The small label over the title ("QUEST COMPLETE · CHAPTER 1").
   final String kind;
@@ -160,52 +186,18 @@ class _RewardCardState extends State<RewardCard>
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            key: const Key('reward_header'),
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  data.accent.withValues(alpha: 0.30),
-                  data.accent.withValues(alpha: 0.06),
-                ],
-              ),
-              border: Border(
-                  bottom:
-                      BorderSide(color: data.accent.withValues(alpha: 0.8))),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  data.kind.toUpperCase(),
-                  key: const Key('reward_kind'),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                      color: data.accent,
-                      fontFamily: InkFonts.system,
-                      letterSpacing: 1.2),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  data.title,
-                  key: const Key('reward_title'),
-                  style: theme.textTheme.titleLarge?.copyWith(
-                      fontFamily: InkFonts.display,
-                      color: theme.colorScheme.onSurface),
-                ),
-              ],
-            ),
-          ),
+          data.hero == null
+              ? _plainHeader(theme, data)
+              : _heroHeader(theme, data),
           Flexible(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(14, 6, 14, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  if (data.counters.isNotEmpty) _counters(context, data),
                   for (var i = 0; i < data.lines.length; i++) ...[
-                    if (i > 0)
+                    if (i > 0 || data.counters.isNotEmpty)
                       Divider(
                           height: 1,
                           color: theme.colorScheme.outlineVariant
@@ -230,6 +222,136 @@ class _RewardCardState extends State<RewardCard>
               child: Text(data.button),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _plainHeader(ThemeData theme, RewardCardData data) => Container(
+        key: const Key('reward_header'),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              data.accent.withValues(alpha: 0.30),
+              data.accent.withValues(alpha: 0.06),
+            ],
+          ),
+          border: Border(
+              bottom: BorderSide(color: data.accent.withValues(alpha: 0.8))),
+        ),
+        child: _headerText(theme, data),
+      );
+
+  /// Card B's strip: the art, darkened from the left where the words sit.
+  Widget _heroHeader(ThemeData theme, RewardCardData data) => SizedBox(
+        key: const Key('reward_header'),
+        height: 116,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.asset(
+              data.hero!,
+              key: const Key('reward_hero'),
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.none,
+              errorBuilder: (_, __, ___) =>
+                  ColoredBox(color: data.accent.withValues(alpha: 0.3)),
+            ),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Colors.black.withValues(alpha: 0.78),
+                    Colors.black.withValues(alpha: 0.35),
+                  ],
+                ),
+                border: Border(bottom: BorderSide(color: data.accent)),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: _headerText(theme, data),
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget _headerText(ThemeData theme, RewardCardData data) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            data.kind.toUpperCase(),
+            key: const Key('reward_kind'),
+            style: theme.textTheme.labelSmall?.copyWith(
+                color: data.accent,
+                fontFamily: InkFonts.system,
+                letterSpacing: 1.2),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            data.title,
+            key: const Key('reward_title'),
+            style: theme.textTheme.titleLarge?.copyWith(
+                fontFamily: InkFonts.display,
+                color: data.hero == null
+                    ? theme.colorScheme.onSurface
+                    : Colors.white),
+          ),
+        ],
+      );
+
+  /// Card B's counters: gold and XP as two big figures side by side.
+  Widget _counters(BuildContext context, RewardCardData data) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(top: 12, bottom: 6),
+      child: Row(
+        children: [
+          for (var i = 0; i < data.counters.length; i++) ...[
+            if (i > 0) const SizedBox(width: 10),
+            Expanded(
+              child: FadeTransition(
+                opacity: _slice(i),
+                child: Container(
+                  key: data.counters[i].key,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                        color: theme.colorScheme.outlineVariant, width: 1.5),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(data.counters[i].value,
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                              fontFamily: InkFonts.system,
+                              color: data.counters[i].accent,
+                              fontWeight: FontWeight.w700)),
+                      const SizedBox(height: 2),
+                      Text(data.counters[i].label.toUpperCase(),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                              fontFamily: InkFonts.system)),
+                      if (data.counters[i].sub.isNotEmpty)
+                        Text(data.counters[i].sub,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                                color: data.counters[i].accent,
+                                fontWeight: FontWeight.w700)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
