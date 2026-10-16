@@ -4757,7 +4757,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           level: s.level - levels + i + 1,
           stats: stats,
           openHand: bannerRaisedIn(s.flags));
-      if (gains.stats.isEmpty && gains.maxHealth == 0) break;
+      if (gains.stats.isEmpty && gains.maxHealth == 0) continue;
       s = s.withAbilityGains(gains.stats);
       s = s.copyWith(
         maxHealth: s.maxHealth + gains.maxHealth,

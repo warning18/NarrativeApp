@@ -68,8 +68,8 @@ const Map<String, Map<String, double>> simBuildShares = {
   'warrior': {'strength': .6, 'constitution': .3, 'perception': .1},
   'rogue': {'dexterity': .6, 'perception': .1, 'luck': .1, 'constitution': .2},
   'ranger': {'dexterity': .6, 'perception': .15, 'constitution': .25},
-  'mage': {'intelligence': .5, 'wisdom': .3, 'constitution': .2},
-  'cleric': {'intelligence': .4, 'wisdom': .4, 'constitution': .2},
+  'mage': {'intelligence': .6, 'wisdom': .2, 'constitution': .2},
+  'cleric': {'intelligence': .5, 'wisdom': .3, 'constitution': .2},
 };
 
 class SimCharacter {

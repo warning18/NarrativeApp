@@ -876,12 +876,14 @@ const double chapterDifficultyStep = 0.15;
 /// Chapters 3-5 are the heaviest, 6-8 lighter again because the chapter
 /// curve already climbs there and a heavier floor stopped most runs short
 /// of the late zones' bosses. Measured with the playthrough
-/// simulator (400 runs, docs/simulation/difficulty-review.md).
+/// simulator (400 runs, docs/simulation/difficulty-review.md). With the
+/// stat scale (docs/proposals/stat-scale.md) chapters 1-2 are 7% lighter
+/// and chapters 3-8 4% heavier in health.
 const List<double> enemyHealthFloorByChapter = [
-  1.46, 2.12, 2.77, 2.77, 2.90, 2.16, 2.09, 2.03, //
+  1.36, 1.98, 2.88, 2.88, 3.02, 2.25, 2.17, 2.11, //
 ];
 const List<double> enemyDamageFloorByChapter = [
-  1.34, 1.79, 2.28, 2.28, 2.40, 1.80, 1.74, 1.68, //
+  1.25, 1.67, 2.28, 2.28, 2.40, 1.80, 1.74, 1.68, //
 ];
 
 /// A regular enemy's health floor in [chapter] (the last entry holds for
@@ -898,9 +900,10 @@ double enemyDamageBaseMultiplier(int chapter) => enemyDamageFloorByChapter[
 /// or a solo-only unique): most of its difficulty comes from its phases,
 /// and a steeper global curve once turned the chapter 5-6 bosses into
 /// walls. The same simulation had nine parties in ten beat the Void
-/// Sovereign at the first try on this floor.
-const double bossHealthBaseMultiplier = 1.10;
-const double bossDamageBaseMultiplier = 1.05;
+/// Sovereign at the first try on this floor; the stat scale raised it a
+/// little (1.10/1.05 to 1.15/1.08) for the abilities that now count.
+const double bossHealthBaseMultiplier = 1.15;
+const double bossDamageBaseMultiplier = 1.08;
 
 /// How much harder each New Game+ cycle makes every enemy (health AND
 /// damage, on top of the whole curve): cycle 1 is +10%, cycle 2 +20%. A
