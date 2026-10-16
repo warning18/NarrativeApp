@@ -43,7 +43,7 @@ French: *vous*, never gendered for the player; the champions are fixed character
 
 ## 2. The Salt Crows: *A Debt Called In* / *Une dette exigible*
 
-**Champion: Captain Mireille Sable** / *Capitaine Mireille Sable*
+**Champion: Captain Mireille Sorrel** / *Capitaine Mireille Sorrel*
 - **Description:** The Crows’ collector, who has never lost a debt and never raised her voice to collect one. Her ledger is bound in sailcloth, and the last page is yours.
 - **Description (FR) :** La percepteuse des Corneilles, qui n’a jamais perdu une créance ni élevé la voix pour en réclamer une. Son registre est relié de toile à voile, et la dernière page est la vôtre.
 - **Battle cry:** “Every door has a price. I have come for yours.”
