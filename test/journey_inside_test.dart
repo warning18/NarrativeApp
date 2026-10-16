@@ -94,11 +94,12 @@ void main() {
       expect(walls.contains(c), isTrue, reason: 'step $i at $c in $walls');
     }
 
-    // A look out: the streets round the building, the ways kept inside,
-    // and the + brings the room back.
+    // A look out: the streets round the building (Alster's stored chart,
+    // board 15), and the + brings the room back.
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
     await _settle(tester);
-    expect(find.byKey(const ValueKey('journey_streets')), findsOneWidget);
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     expect(find.byKey(const ValueKey('journey_room')), findsNothing);
     expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
     expect(find.byKey(const Key('journey_go_inside')), findsOneWidget);
@@ -115,7 +116,7 @@ void main() {
     // The streets round the building, then the town, then the land.
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
     await _settle(tester);
-    expect(find.byKey(const ValueKey('journey_streets')), findsNothing);
+    expect(find.byKey(const ValueKey('journey_city_chart')), findsNothing);
     expect(find.byKey(const ValueKey('journey_world_map')), findsOneWidget);
 
     // Back in from the land: the streets round the building first.
@@ -124,7 +125,8 @@ void main() {
     await tester.tapAt(tester.getRect(find.byType(JourneyWorldMap)).center);
     await tester.pump(const Duration(milliseconds: 300));
     await _settle(tester);
-    expect(find.byKey(const ValueKey('journey_streets')), findsOneWidget);
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     expect(find.byKey(const Key('journey_go_inside')), findsOneWidget);
 
     // After the fight, the way out the back sits at the back door, inside.

@@ -365,11 +365,38 @@ class CityChartPainter extends CustomPainter {
   void _labels(Canvas canvas) {
     final p = palette;
     final inv = 1 / scale;
+    // The names of the districts on the whole city, kept clear of each other
+    // (a small city's districts sit close): each slides down or up by its own
+    // height until it finds room (v1.425).
+    final placed = <Rect>[];
     for (final d in chart.districts) {
       final known = _known(d.id);
       if (detailed && focusDistrict != d.id) continue;
+      var shift = 0.0;
+      if (known && focusDistrict == null) {
+        final tp = _text(d.name, 12.5, p.place, family: InkFonts.display);
+        final w = (tp.width + 14) * inv, h = (tp.height + 8) * inv;
+        Rect at(double dy) => Rect.fromCenter(
+            center: d.centre + Offset(0, dy * inv), width: w, height: h);
+        final step = tp.height + 10;
+        for (final dy in [
+          0.0,
+          step,
+          -step,
+          2 * step,
+          -2 * step,
+          3 * step,
+          -3 * step,
+        ]) {
+          if (!placed.any((r) => r.overlaps(at(dy)))) {
+            shift = dy;
+            break;
+          }
+        }
+        placed.add(at(shift));
+      }
       canvas.save();
-      canvas.translate(d.centre.dx, d.centre.dy);
+      canvas.translate(d.centre.dx, d.centre.dy + shift * inv);
       canvas.scale(inv);
       if (!known) {
         final q = _text('?', 26, d.colour,
