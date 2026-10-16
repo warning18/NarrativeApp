@@ -2222,6 +2222,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Paid for the job',
     AppLanguage.fr: 'Le prix du travail',
   },
+  'reward_gold_zone_sub': {
+    AppLanguage.en: 'The zone\u2019s reward',
+    AppLanguage.fr: 'La r\u00e9compense de la zone',
+  },
   'reward_xp': {AppLanguage.en: 'Experience', AppLanguage.fr: 'Expérience'},
   'reward_xp_sub': {
     AppLanguage.en: '{before} \u2192 {after} / {need} XP · level {n}',
