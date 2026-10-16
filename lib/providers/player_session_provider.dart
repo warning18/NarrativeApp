@@ -17,7 +17,8 @@ import '../data/approval.dart';
 import '../data/character_start.dart' show startingArmor;
 import '../data/clan_crisis.dart' show mainClanOf, settleFallenLoyalty;
 import '../data/clan_power.dart' show territoryTurn;
-import '../data/nemesis.dart' show nemesisQuestIdOf, updateNemesis;
+import '../data/nemesis.dart'
+    show championMinChapter, nemesisQuestIdOf, updateNemesis;
 import '../data/contracts.dart';
 import '../data/detour_pacing.dart' show DetourPacing;
 import '../data/camp_state.dart' show harborHouseId;
@@ -1617,6 +1618,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final maxHealth = (defaults['maxHealth'] as num?)?.toInt() ?? 100;
     state = PlayerSession(
       level: (defaults['playerLevel'] as num?)?.toInt() ?? 1,
+      // The story's nemesis from the first page (nemesis.dart).
+      politics: PoliticsState.storyStart,
       currentXP: 0,
       gold: (defaults['gold'] as num?)?.toInt() ?? 0,
       alignmentScore: 0,
@@ -1761,6 +1764,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = PlayerSession(
       level: (defaults['playerLevel'] as num?)?.toInt() ?? 1,
       currentXP: 0,
+      politics: PoliticsState.storyStart,
       gold: gold + legacy.legacyGold,
       alignmentScore: 0,
       maxHealth: maxHealth,
@@ -2274,15 +2278,15 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
               day: state.day,
               protect: mainClanOf(state.politics))
           .state;
-      final before = state.politics.nemesis;
       state = state.copyWith(
-          politics:
-              updateNemesis(turned, data, chapter: chapter, day: state.day));
-      // A new nemesis opens its quest (nemesis.dart): beat its champion.
+          politics: updateNemesis(turned, data,
+              chapter: chapter, day: state.day, flags: state.flags));
+      // A new nemesis opens its quest (nemesis.dart): beat its champion;
+      // the story's own once its champion can come.
       final rose = state.politics.nemesis;
       final quest = nemesisQuestIdOf(rose);
       if (rose.isNotEmpty &&
-          rose != before &&
+          (!state.politics.isStoryNemesis || chapter >= championMinChapter) &&
           !state.unlockedQuestIds.contains(quest) &&
           !state.completedQuestIds.contains(quest)) {
         state = state
@@ -2669,10 +2673,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   /// Edit Mode: the coast as the story opens -- every standing back to its
-  /// start, no marks, no faction sworn, the relations and logs cleared;
+  /// start, the Dominion the nemesis again, no marks, no faction sworn, the relations and logs cleared;
   /// the titles a mark held go with it ([data]: the clan data, for them).
   Future<void> resetPolitics({ClanData? data}) async {
-    final reset = state.copyWith(politics: PoliticsState.empty);
+    final reset = state.copyWith(politics: PoliticsState.storyStart);
     state = data == null ? reset : _withTitles(reset, data);
     await _persist();
   }
@@ -5007,7 +5011,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       heldSigns: const [],
       titanBlood: 0,
       signPatronsThisLife: const [],
-      politics: PoliticsState.empty,
+      politics: PoliticsState.storyStart,
     );
     await _persist();
     return result;
