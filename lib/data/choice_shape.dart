@@ -80,7 +80,7 @@ ChoiceShape choiceShape(
   final here = geography.placeOfNode(from);
   final there = travelId.isNotEmpty
       ? geography.placeOfNode(story.nodeFor(travelId)) ??
-          geography.placeOfNode(next)
+            geography.placeOfNode(next)
       : geography.placeOfNode(next);
   final ChoiceMove move;
   if (travelId.isNotEmpty) {
@@ -104,7 +104,8 @@ ChoiceShape choiceShape(
 }
 
 ChoiceAction _actionOf(StoryChoice c, ChoiceMove move, StoryNode? next) {
-  final fight = (c.triggerEnemyId ?? '').isNotEmpty ||
+  final fight =
+      (c.triggerEnemyId ?? '').isNotEmpty ||
       c.triggerEnemyIds.isNotEmpty ||
       (c.huntName ?? '').isNotEmpty ||
       (c.shipBattleId ?? '').isNotEmpty ||
@@ -133,4 +134,70 @@ ChoiceAction _actionOf(StoryChoice c, ChoiceMove move, StoryNode? next) {
   return (move == ChoiceMove.walk || move == ChoiceMove.travel) && !weighs
       ? ChoiceAction.go
       : ChoiceAction.decide;
+}
+
+// --- A choice's tags and its ring (the in-place choices, v1.4xx) ---------
+//
+// UX's in-place choices (docs/proposals/inplace-choices.md) draw each
+// choice as a card with its tags, and group the ones acted out here into
+// rings by kind: fight; talk and decide; checks and pay; and the ways.
+
+/// The ring a choice sits in.
+enum ChoiceGroup {
+  /// A fight (an evasion that carries one too).
+  fight,
+
+  /// A Charisma check, or a decision.
+  talkDecide,
+
+  /// Another check, or a payment.
+  checksPay,
+
+  /// A way somewhere (a pin on the map, not a ring).
+  go,
+}
+
+/// The ring of [action].
+ChoiceGroup choiceGroupOf(ChoiceAction action) => switch (action) {
+  ChoiceAction.fight || ChoiceAction.evade => ChoiceGroup.fight,
+  ChoiceAction.talk || ChoiceAction.decide => ChoiceGroup.talkDecide,
+  ChoiceAction.pay ||
+  ChoiceAction.sneak ||
+  ChoiceAction.attempt => ChoiceGroup.checksPay,
+  ChoiceAction.go => ChoiceGroup.go,
+};
+
+/// What a choice's card says beside its text: its [cost] in gold (its own
+/// price, or the next scene's gold requirement, a toll's; 0 for none), its
+/// [alignment] shift, and where its aftermath takes the party
+/// ([destination], null when it stays or the world doesn't know).
+typedef ChoiceTags = ({
+  int cost,
+  int alignment,
+  GeoPlace? destination,
+  ChoiceGroup group,
+});
+
+/// [choice]'s tags, taken in scene [from] of [story] ([shape]: its
+/// [choiceShape], when the caller has it).
+ChoiceTags choiceTags(
+  StoryNode from,
+  StoryChoice choice, {
+  required StoryData story,
+  required Geography geography,
+  ChoiceShape? shape,
+}) {
+  final s =
+      shape ?? choiceShape(from, choice, story: story, geography: geography);
+  final next = story.nodeFor(choice.nextId);
+  final own = choice.goldMod < 0 ? -choice.goldMod : 0;
+  final toll = next?.reqGold ?? 0;
+  return (
+    cost: own > toll ? own : toll,
+    alignment: choice.alignmentMod,
+    destination: s.move == ChoiceMove.walk || s.move == ChoiceMove.travel
+        ? s.to
+        : null,
+    group: choiceGroupOf(s.action),
+  );
 }

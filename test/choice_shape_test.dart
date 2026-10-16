@@ -82,4 +82,37 @@ void main() {
       for (final a in ChoiceAction.values) '${a.name} ${actions[a] ?? 0}'
     ].join(', ')}; acted out here $here');
   });
+
+  ChoiceTags tags(String nodeId, String startsWith) {
+    final node = story.nodeFor(nodeId)!;
+    final choice =
+        node.choices.firstWhere((c) => c.text.startsWith(startsWith));
+    return choiceTags(node, choice, story: story, geography: geography);
+  }
+
+  test('a card\'s tags: the toll\'s price, and where a fight\'s aftermath goes',
+      () {
+    final toll = tags('260', 'Pay the toll');
+    expect(toll.cost, 30);
+    expect(toll.group, ChoiceGroup.checksPay);
+    expect(toll.destination, isNull);
+    final fight = tags('260', 'Refuse and fight');
+    expect(fight.cost, 0);
+    expect(fight.group, ChoiceGroup.fight);
+    expect(fight.destination, shape('260', 'Refuse and fight').to);
+  });
+
+  test('Smugglers\' Wharf\'s rings: fight, talk and decide, checks and pay',
+      () {
+    final hub = story.nodeFor('2015')!;
+    final groups = <ChoiceGroup, int>{};
+    for (final c in hub.choices) {
+      final g = choiceTags(hub, c, story: story, geography: geography).group;
+      groups[g] = (groups[g] ?? 0) + 1;
+    }
+    expect(groups[ChoiceGroup.fight], 4);
+    expect(groups[ChoiceGroup.talkDecide], 7);
+    expect(groups[ChoiceGroup.checksPay], 3);
+    expect(groups[ChoiceGroup.go], 17);
+  });
 }
