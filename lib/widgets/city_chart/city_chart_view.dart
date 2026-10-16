@@ -312,7 +312,7 @@ class _CityChartViewState extends State<CityChartView>
         if (_focus != null && d.id != _focus) continue;
         if (!_known(d.id)) continue;
         final pin = _offset + painter.pinAt(w) * _scale + const Offset(0, -16);
-        if ((pin - at).distance <= CityChartPainter.pinRadius + 8) {
+        if ((pin - at).distance <= CityChartPainter.pinRadius + 10) {
           setState(() {
             _pickedWay = w;
             _pickedFog = null;

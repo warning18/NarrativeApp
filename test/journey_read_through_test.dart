@@ -1,8 +1,8 @@
-// The Journey walks the party to where the story really lands (v1.226): the
-// wharf's way "pay for the insult" leads to a scene on the wharf that the
-// story reads straight through to the Yard (2040 -> 2040_paid -> 2900), so
-// the way sits at the Yard on the city's plan and the party walks there,
-// not to a spot by itself on the wharf.
+// The wharf's way "pay for the insult" leads to a scene on the wharf that the
+// story reads straight through to the Yard (2040 -> 2040_paid -> 2900). Since
+// v1.407 a payment is acted out where the party stands: a card under the map
+// with its price, no mark on the plan, and taking it carries the party to the
+// Yard (the scene change moves the mark, with no road walked first).
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +16,6 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
-import 'package:narrative_data_app/widgets/city_plan_painter.dart';
 
 Future<void> _settle(WidgetTester tester) async {
   for (var i = 0; i < 3; i++) {
@@ -27,7 +26,8 @@ Future<void> _settle(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('a way read through to another district sits there and walks',
+  testWidgets(
+      'a payment read through to another district is a card, and carries the party',
       (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
@@ -72,33 +72,24 @@ void main() {
     // by the road first (a tap would skip it).
     await tester.pump(const Duration(seconds: 6));
 
-    // The city's plan, with the fight and the way to pay on it.
+    // The city's plan, with the fight and the payment as cards under it: a
+    // way acted out where the party stands has no mark of its own.
     expect(find.byKey(const ValueKey('journey_streets')), findsOneWidget);
-    expect(find.byKey(const ValueKey('journey_step_1')), findsOneWidget);
-    final painter = tester
-        .widget<CustomPaint>(find.byKey(const ValueKey('journey_streets')))
-        .painter as CityPlanPainter;
-    final streets =
-        tester.getRect(find.byKey(const ValueKey('journey_streets')));
-    Offset onMap(String district) =>
-        streets.topLeft +
-        painter.origin +
-        painter.plan.anchorOf(district) * painter.scale;
+    expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
+    expect(find.byKey(const ValueKey('journey_step_1')), findsNothing);
+    expect(find.byKey(const ValueKey('journey_choice_card_0')), findsOneWidget);
+    final pay = find.byKey(const ValueKey('journey_choice_card_1'));
+    expect(pay, findsOneWidget);
+    // The payment carries its price as its tag.
+    expect(find.descendant(of: pay, matching: find.textContaining('4')),
+        findsWidgets);
 
-    // The way to pay is at the Yard, where the story reads through to, and
-    // nearer it than the wharf where the party stands.
-    final pay = tester.getCenter(find.byKey(const ValueKey('journey_step_1')));
-    expect((pay - onMap('saltmouth_yard')).distance,
-        lessThan((pay - onMap('saltmouth_wharf')).distance),
-        reason: 'pay at $pay');
-
-    // Taking it walks the party there.
-    await tester.tap(find.byKey(const ValueKey('journey_step_1')));
+    // Taking it (a second tap) pays and carries the party to the Yard.
+    await tester.tap(pay);
     await tester.pump();
-    await tester.tap(find.byKey(const ValueKey('journey_go')));
+    await tester.tap(pay);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
-    expect(find.byKey(const ValueKey('journey_traveller')), findsOneWidget);
     for (var i = 0; i < 12; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }
