@@ -66,6 +66,7 @@ class VoyageScreen extends ConsumerStatefulWidget {
     required this.toPort,
     this.huntBeastId,
     @visibleForTesting this.debugEvents,
+    @visibleForTesting this.debugRandom,
   });
 
   final String fromPortId;
@@ -79,12 +80,16 @@ class VoyageScreen extends ConsumerStatefulWidget {
   /// The days at sea to sail instead of drawing them, for tests.
   final List<SeaEvent>? debugEvents;
 
+  /// The voyage's dice, for tests: a check can fail on a natural 1 and pass
+  /// on a 20 since v1.458, so a test that needs one outcome seeds them.
+  final Random? debugRandom;
+
   @override
   ConsumerState<VoyageScreen> createState() => _VoyageScreenState();
 }
 
 class _VoyageScreenState extends ConsumerState<VoyageScreen> {
-  final _random = Random();
+  late final Random _random = widget.debugRandom ?? Random();
   List<SeaEvent>? _events;
 
   /// The painted sail aboard, if any, and how strongly its sigil holds
