@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.411.0+447]
+
+A won fight closes itself.
+
+- **The chest opens on its own** and shows everything it holds; take it, and the fight returns to where it began after a moment, or at once on a tap. With reduced motion it returns as soon as the spoils are taken.
+- **Nothing is skipped:** a level-up, a clan's offer or a hunter's mercy waits for your answer first.
+- **The rewards stay with you:** they open the next scene ("Victory! +47 gold, +87 XP, …"), and the fight log keeps them.
+- A defeat is unchanged.
+
 ## [1.409.0+445]
 
 The Dominion hunts you from the start.

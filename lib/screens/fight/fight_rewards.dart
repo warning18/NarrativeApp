@@ -594,7 +594,7 @@ extension _FightRewards on _FightScreenState {
     return spared;
   }
 
-  /// A won fight closes itself (the user's call, v1.410): once nothing
+  /// A won fight closes itself (the user's call, v1.411): once nothing
   /// above it waits on the player (the level-up, an offer, any dialog),
   /// after [victoryAutoLeaveDelay] for the rewards to be read -- at once
   /// with reduced motion. A dialog opened meanwhile starts the wait over;
