@@ -72,16 +72,8 @@ void main() {
       // clash rules came out 11 to 23 points kinder a try there (by seed and
       // data), likely because their goals (rout, subdue, hold) end a fight
       // before the foe's health is gone, so the heavier floor bites less.
-      // Chapter 7 gets 0.15 since v1.463: the clash rules there come out
-      // 10 to 12 points kinder a try (9.6 on v1.461's main at 300 runs,
-      // 11.9 with the ranger's +3 health), on the edge of 0.10 by seed.
-      expect(
-          (other! - plain[chapter]!).abs(),
-          lessThan(switch (chapter) {
-            'Chapter 1' => 0.25,
-            'Chapter 7' => 0.15,
-            _ => 0.10,
-          }),
+      expect((other! - plain[chapter]!).abs(),
+          lessThan(chapter == 'Chapter 1' ? 0.25 : 0.10),
           reason: '$chapter: plain ${plain[chapter]!.toStringAsFixed(2)}, '
               'clash ${other.toStringAsFixed(2)}');
     }
