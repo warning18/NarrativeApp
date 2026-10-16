@@ -13,6 +13,31 @@ isn't reconstructable from git history alone.
 ### Added
 - The chapters 1–2 beats of the feature ladder (`docs/proposals/ch1-2-beats.md`). New scenes: a drill-sergeant's line on the quay approach where the first skill is chosen (`890_trainer`, between the ruins and the High Quay, on every road), and a Crow tally-girl at Smugglers' Wharf who says the clans will make an offer, and that it may be refused (`2015_crow_offer`). New lines at the chalked list (250), the bundle (470) and the gate's tally of who holds Saltmouth (2005). The choices that carry a feature set its `feat_` flag: `feat_quests` (250), `feat_inventory` (470), `feat_skills` (the trainer), `feat_conditions` (1140_spotted), `feat_politics` (2005), `feat_clans` (the Crow, or her words on arrival for a player who came by the wagon or the storm drain). EN and FR.
 
+## [1.421.0+457]
+
+The first two chapters bring the game's features one at a time.
+
+- **A new game climbs the feature ladder:** each feature opens where the story gives it a reason, and stays hidden until then.
+  - The chest after your first real fight, the street's rules in the next one, battlefield conditions after the cliff ambush.
+  - The quest list at the banner's errand, the inventory at the bundle and the warm die, and skills at the trainer.
+  - Standing at the Inquisition's gate, and the clans' offers at Saltmouth.
+- **The trainer teaches your first skill,** a strike or a guard of your own trees (the mage's and the cleric's starting offer moves there).
+- **The clans' offers** earned in chapter 1 wait for Saltmouth, then come one at a time.
+- **Saved games** keep everything open, so nothing pops up mid-game.
+
+## [1.420.0+456]
+
+Six more towns have their plans.
+
+- **Alster, the Ashen Quarter, the Drowned Cloister, the Black Reliquary, White Anchorage and Candlehold** now have a city plan, like Saltmouth. Their districts and the buildings where each scene happens show in the District and Town views:
+  - Alster: a river city with its quay.
+  - The Ashen Quarter: walled, half burned, at the Spire's foot.
+  - The Drowned Cloister: on the fen, cut by channels.
+  - The Black Reliquary: on its frozen river.
+  - White Anchorage: above a shore of beached hulls.
+  - Candlehold: on the cliffs above its harbour.
+- **Walking from one town to the next** no longer leaves the Journey on the old town's district.
+
 ## [1.419.0+455]
 
 For the in-place choices, and a difficulty review.

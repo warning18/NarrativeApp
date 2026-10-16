@@ -1,5 +1,6 @@
 // The city plan (board 15, city_plan_record.dart, city_districts.dart):
-// Saltmouth's stored plan covers its districts, every scene's way stands on
+// Saltmouth's stored plan covers its districts (and every other city's
+// plan on file its own), every scene's way stands on
 // a building of its own district (and finds one when a scene is re-tagged),
 // the hub's ways split by district, the fog lifts where the party has been,
 // and walking between districts is free.
@@ -100,6 +101,98 @@ void main() {
     expect(salt.buildingOfWay('2016', 'saltmouth_card_row')!.id, moved.id);
   });
 
+  // Every city on file: the same checks as Saltmouth's above.
+  for (final MapEntry(key: city, value: plan) in plans.entries) {
+    group('$city\'s plan', () {
+      final own = districtsOfCity(geo, city);
+
+      test('covers its districts: shape, label and entry inside', () {
+        expect(own, isNotEmpty);
+        expect(plan.districts.keys.toSet(), {for (final d in own) d.id});
+        for (final d in plan.districts.values) {
+          expect(d.shape.length, greaterThanOrEqualTo(3), reason: d.id);
+          expect(plan.districtAt(d.label), d.id, reason: '${d.id} label');
+          expect(pointInPolygonOffsets(d.entry, d.shape), isTrue,
+              reason: '${d.id} entry');
+        }
+        expect(plan.squares.map((s) => s.kind), contains('market'));
+      });
+
+      test('buildings stand in their district, with unique ids', () {
+        final ids = <String>{};
+        final byDistrict = <String, int>{};
+        for (final b in plan.buildings) {
+          expect(ids.add(b.id), isTrue, reason: b.id);
+          expect(b.shape.length, greaterThanOrEqualTo(3), reason: b.id);
+          expect(plan.districtAt(b.centre), b.district, reason: b.id);
+          byDistrict[b.district] = (byDistrict[b.district] ?? 0) + 1;
+        }
+        for (final d in own) {
+          expect(byDistrict[d.id], greaterThanOrEqualTo(6), reason: d.id);
+        }
+      });
+
+      test('every scene has its way on a building of its district', () {
+        var scenes = 0;
+        for (final node in story.nodes.values) {
+          final district = districtOfNode(geo, node);
+          if (district == null || geo.locationOf(district.id)?.id != city) {
+            continue;
+          }
+          scenes++;
+          expect(plan.anchors[node.id], isNotNull, reason: node.id);
+          expect(plan.building(plan.anchors[node.id]!)!.district, district.id,
+              reason: node.id);
+          expect(
+              plan.buildingOfWay(node.id, district.id)!.district, district.id,
+              reason: node.id);
+        }
+        expect(scenes, greaterThan(0));
+      });
+
+      test('a building with no name written reads as empty, not missing', () {
+        for (final b in plan.buildings) {
+          if (plan.names.containsKey(b.id)) continue;
+          expect(plan.nameOf(b.id, french: false), '');
+          expect(plan.nameOf(b.id, french: true), '');
+        }
+      });
+    });
+  }
+
+  test('the towns are shaped to their place', () {
+    // Alster: a river city with a quay, inland.
+    final alster = plans['alster']!;
+    expect(alster.rivers, isNotEmpty);
+    expect(alster.sea, isEmpty);
+    expect(alster.squares.map((s) => s.kind), contains('quay'));
+    // The Ashen Quarter: walled, burned, no water.
+    final ashen = plans['ashen_quarter']!;
+    expect(ashen.wallRuns, isNotEmpty);
+    expect(ashen.rivers, isEmpty);
+    expect(ashen.sea, isEmpty);
+    // The Drowned Cloister: the fen's water, a river and channels, no wall.
+    final cloister = plans['drowned_cloister']!;
+    expect(cloister.sea, isNotEmpty);
+    expect(cloister.rivers, isNotEmpty);
+    expect(cloister.canals.length, greaterThanOrEqualTo(3));
+    expect(cloister.wallRuns, isEmpty);
+    // White Anchorage: an open shore town, its hulls beached outside it.
+    final anchorage = plans['white_anchorage']!;
+    expect(anchorage.sea, isNotEmpty);
+    expect(anchorage.wallRuns, isEmpty);
+    expect(
+        anchorage.buildings
+            .where((b) => b.district == 'white_anchorage_hulls')
+            .every((b) => b.kind == 'shed'),
+        isTrue);
+    // Candlehold: walled above the sea, no river.
+    final candlehold = plans['candlehold']!;
+    expect(candlehold.sea, isNotEmpty);
+    expect(candlehold.wallRuns, isNotEmpty);
+    expect(candlehold.rivers, isEmpty);
+  });
+
   test('Narrative\'s seating: each way on a named building of its district',
       () {
     final seated = {
@@ -152,6 +245,38 @@ void main() {
         'test', jsonDecode(one) as Map<String, dynamic>);
     expect(record.districts.keys, containsAll(['a', 'b', 'c']));
     expect(record.building(record.anchors['s3']!)!.district, 'b');
+  });
+
+  test('the generator lays a town out with no sea, river or wall', () {
+    final record = CityPlanRecord.fromJson(
+        'test',
+        jsonDecode(jsonEncode(generateCityPlan(const CityPlanSpec(
+          cityId: 'test',
+          seed: 9,
+          districts: [
+            DistrictSeed('a', P(400, 400)),
+            DistrictSeed('b', P(650, 500)),
+          ],
+          scenesByDistrict: {
+            'a': ['s1'],
+            'b': ['s2', 's2_fight'],
+          },
+          followUps: {'s2_fight': 's2'},
+          shoreY: null,
+          riverX: null,
+          walled: false,
+          arena: false,
+        )))) as Map<String, dynamic>);
+    expect(record.sea, isEmpty);
+    expect(record.rivers, isEmpty);
+    expect(record.islands, isEmpty);
+    expect(record.canals, isEmpty);
+    expect(record.wallRuns, isEmpty);
+    expect(record.gates, isEmpty);
+    expect(record.towers, isEmpty);
+    expect(record.squares.map((s) => s.kind), isNot(contains('arena')));
+    expect(record.building(record.anchors['s1']!)!.district, 'a');
+    expect(record.anchors['s2_fight'], record.anchors['s2']);
   });
 
   test('the hub\'s ways split by the district they lead into', () {

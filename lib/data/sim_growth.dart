@@ -7,6 +7,7 @@ import '../combat/spells.dart';
 import '../models/story_node.dart';
 import 'clan_power.dart';
 import 'factions.dart';
+import 'feature_unlocks.dart';
 import 'geography.dart';
 import 'nemesis.dart' show updateNemesis;
 import 'offers.dart';
@@ -113,10 +114,12 @@ class SimGrowth {
     required this.tables,
     required this.character,
     int startingSkillPoints = 0,
+    this.ladder = false,
   }) {
     if (mode == SimProgression.legacy) {
       skillPoints = startingSkillPoints;
-    } else {
+    } else if (!ladder) {
+      // On the feature ladder the starting skill comes from the trainer.
       for (var i = 0; i < startingSkillPoints; i++) {
         pending.add(const OfferTicket(source: OfferSource.start));
       }
@@ -126,6 +129,21 @@ class SimGrowth {
   final SimProgression mode;
   final SimGrowthTables tables;
   final SimCharacter character;
+
+  /// The game's feature ladder (feature_unlocks.dart): no starting offer,
+  /// the offers waiting for the clans, the trainer's skill.
+  final bool ladder;
+
+  /// The trainer's lesson (890_trainer): its strike or guard learned.
+  void learnTrainerSkill({required bool strike}) {
+    final id = trainerSkillFor(
+        professionId: character.professionId,
+        strike: strike,
+        trees: tables.skillTrees,
+        skills: tables.skills,
+        known: character.unlockedSkillIds);
+    if (id != null) _learn(id);
+  }
 
   // The old rules.
   int skillPoints = 0;
@@ -529,6 +547,15 @@ class SimGrowth {
 
   int _takeOffers(int alignment, Iterable<String> flags, Random random) {
     var next = alignment;
+    // On the ladder the offers wait for the clans (or the third chapter).
+    if (ladder &&
+        !featureUnlocked(GameFeature.clans, (
+          flags: {...flags, featureLadderFlag},
+          level: character.level,
+          chapter: chapterOffersThrough,
+        ))) {
+      return next;
+    }
     while (pending.isNotEmpty) {
       final ticket = pending.first;
       final offer = drawOffer(ticket, _context(next, flags), random);
