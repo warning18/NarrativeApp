@@ -5,6 +5,7 @@
 // (skills_view_model.dart). A companion's screen is their purse and their
 // class's list.
 
+import '../../widgets/feature_unlock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../widgets/help_hint.dart';
@@ -36,6 +37,15 @@ class SkillsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (!isFeatureUnlocked(ref, GameFeature.skills.id)) {
+      return Scaffold(
+        appBar: AppBar(title: Text(tr(ref, 'skills'))),
+        body: const Padding(
+          padding: EdgeInsets.all(16),
+          child: FeatureLockedTile(feature: GameFeature.skills),
+        ),
+      );
+    }
     final skillsAsync = ref.watch(localizedDbProvider(skillsSchema));
     final model = watchSkillsModel(ref, allyId);
     final companions =

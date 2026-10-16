@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.423.0+459]
+
+A feature opening is now shown, and a shut one is not in the way.
+
+### Added
+- **The unlock card:** when a feature of the ladder opens, a small "New: Quests" card slides in over the game (not during a fight), with a line on what it does, **Show me** (its tour) and **Later**. One card at a time; left alone it goes after 6 seconds. A gold dot stays on the new thing until it is first opened. Under reduced motion the card fades in place and the dot is still. EN and FR.
+- **Shut things are hidden or greyed:** the ⚖ Clans & Politics button and the Character's Gifts tab are gone until they open; the Quests row (Other), the Inventory and Dice tiles and the Overview's skills part are greyed with a lock, and a tap says "Opens in chapter N". The Skills screen says the same when it is reached shut. A game off the ladder (an older save) sees everything.
+
 ## [1.422.0+458]
 
 ### Added

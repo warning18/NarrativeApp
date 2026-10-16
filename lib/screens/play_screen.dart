@@ -1,3 +1,4 @@
+import '../widgets/feature_unlock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -306,22 +307,30 @@ class PlayScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _CollapsibleSection(
-                title: tr(ref, 'quests'),
-                badgeCount: unseenQuests,
-                readyCount: isEditMode
-                    ? 0
-                    : ref.watch(tabBadgesProvider).readyQuestCount,
-                readyLabel: tr(ref, 'quests_ready_label'),
-                onExpanded: () => ref
-                    .read(playerSessionProvider.notifier)
-                    .markAllSeenInCategory(quests: true),
-                child: questsAsync.when(
-                  data: (records) => _QuestList(records: records),
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  error: (error, stack) =>
-                      Text('${tr(ref, 'failed_to_load_quests')}: $error'),
+              FeatureGate(
+                feature: GameFeature.quests,
+                locked: const FeatureLockedTile(feature: GameFeature.quests),
+                child: _CollapsibleSection(
+                  title: tr(ref, 'quests'),
+                  badgeCount: unseenQuests,
+                  readyCount: isEditMode
+                      ? 0
+                      : ref.watch(tabBadgesProvider).readyQuestCount,
+                  readyLabel: tr(ref, 'quests_ready_label'),
+                  mark: const UnlockDot(feature: GameFeature.quests),
+                  onExpanded: () {
+                    acknowledgeOnOpen(ref, GameFeature.quests);
+                    ref
+                        .read(playerSessionProvider.notifier)
+                        .markAllSeenInCategory(quests: true);
+                  },
+                  child: questsAsync.when(
+                    data: (records) => _QuestList(records: records),
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    error: (error, stack) =>
+                        Text('${tr(ref, 'failed_to_load_quests')}: $error'),
+                  ),
                 ),
               ),
               const Divider(height: 24),
@@ -468,11 +477,15 @@ class _CollapsibleSection extends StatelessWidget {
     this.readyCount = 0,
     this.readyLabel = '',
     this.onExpanded,
+    this.mark,
   });
 
   final String title;
   final Widget child;
   final int badgeCount;
+
+  /// A small mark after the title (the dot of a feature just opened).
+  final Widget? mark;
 
   /// Entries ready to act on (quests to turn in), shown whether or not
   /// the section has been opened before.
@@ -488,6 +501,7 @@ class _CollapsibleSection extends StatelessWidget {
         title: Row(
           children: [
             Text(title, style: Theme.of(context).textTheme.titleMedium),
+            if (mark != null) ...[const SizedBox(width: 6), mark!],
             const Spacer(),
             if (readyCount > 0)
               Container(
