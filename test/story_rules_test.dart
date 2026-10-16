@@ -131,7 +131,10 @@ void main() {
     for (final node in nodes.values) {
       for (final choice in node.choices) {
         for (final flag in choice.flagsToAdd) {
+          // A `feat_` flag is read by the feature unlocks (Core's engine),
+          // not by the story.
           final read = flagsRead.contains(flag) ||
+              flag.startsWith('feat_') ||
               hubPrefixes.any((p) => flag.startsWith(p));
           expect(read, isTrue,
               reason: '${node.id} sets $flag, nobody reads it');
