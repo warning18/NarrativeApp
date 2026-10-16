@@ -15,6 +15,7 @@ class FightOutcome {
     this.flawless = false,
     this.rounds = 1,
     this.chapter = 1,
+    this.spoils = '',
   });
 
   final bool won;
@@ -34,6 +35,25 @@ class FightOutcome {
   final bool flawless;
   final int rounds;
   final int chapter;
+
+  /// A won fight's rewards as its log told them ("Victory! +47 gold, ..."),
+  /// kept for the next scene once the fight has closed itself; '' for none.
+  final String spoils;
+
+  /// This outcome with its [spoils].
+  FightOutcome withSpoils(String spoils) => FightOutcome(
+        won: won,
+        enemyNames: enemyNames,
+        isElite: isElite,
+        isHunt: isHunt,
+        isBoss: isBoss,
+        phasesCrossed: phasesCrossed,
+        knockedOutAllyName: knockedOutAllyName,
+        flawless: flawless,
+        rounds: rounds,
+        chapter: chapter,
+        spoils: spoils,
+      );
 
   String get enemyName => enemyNames.isEmpty ? '' : enemyNames.first;
 }
@@ -219,7 +239,7 @@ const _death = _Pool([
 /// [seed] (a fight-scoped random number, so two fights in a row rarely
 /// read the same) -- a loss first, then a boss that changed stance, an
 /// Elite, a hunt's quarry, a companion knocked out, a flawless fight, and
-/// a plain win.
+/// a plain win; a win's [FightOutcome.spoils] after it.
 String aftermathLineFor(FightOutcome outcome,
     {required bool french, required int seed}) {
   final _Pool pool;
@@ -242,10 +262,12 @@ String aftermathLineFor(FightOutcome outcome,
   final enemy = outcome.enemyName.isEmpty
       ? (french ? "l'ennemi" : 'the enemy')
       : outcome.enemyName;
-  return pool
+  final line = pool
       .pick(french, seed)
       .replaceAll('{enemy}', enemy)
       .replaceAll('{ally}', outcome.knockedOutAllyName ?? '');
+  // The rewards follow, the fight having closed itself (v1.412).
+  return outcome.spoils.isEmpty ? line : '$line\n\n${outcome.spoils}';
 }
 
 /// A written death for the permadeath screen.
