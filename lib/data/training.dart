@@ -1,22 +1,17 @@
-// Training at level-up (Wave 7, docs/proposals/level-up-offers.md): the stat
-// points a level brings are no longer spread one by one. Each level's five
-// points are a **training offer**: three paths, each a bundle of stat gains
-// toward a playstyle (training_paths.json), and the character takes one. A
-// point short of a full offer (a Tome of Insight's) is a **small offer**: three
-// single gains, each from a likely path. There is no "decide later": the offer
-// stays on the table until something is taken.
+// Stat picks at level-up (docs/proposals/stat-picks.md): each stat point a
+// level brings (five a level, one from a Tome of Insight) is a **pick**: three
+// one-point offers, each a gain of a training path (training_paths.json, a
+// bundle of stat gains toward a playstyle) -- the calling, the habit and a
+// turn -- and the character takes one. Now and then the turn is a **rare**
+// offer worth two points. There is no "decide later": a pick stays on the
+// table until taken.
 //
-// Stat picks (below) replace both: each point is one pick of three offers.
-//
-// Pure, and takes a Random like offers.dart; the session keeps the offer on
+// Pure, and takes a Random like offers.dart; the session keeps the pick on
 // the table and the paths taken, and applies the gains.
 import 'dart:math';
 
-/// The points a full training offer is worth: what a level brings.
-const int trainingFullPoints = 5;
-
-/// How many choices an offer brings.
-const int trainingChoiceCount = 3;
+/// How many offers a pick brings.
+const int statPickOfferCount = 3;
 
 /// The stats a path's gains may name (the session's own names).
 const List<String> trainingStats = [
@@ -95,18 +90,6 @@ class TrainingPath {
 
   bool leansTo({String? professionId, String? raceId}) =>
       professions.contains(professionId) || races.contains(raceId);
-
-  /// Its biggest gain as a single point: what it brings to a small offer.
-  MapEntry<String, int> get leadGain {
-    var best = gains.entries.first;
-    for (final e in gains.entries) {
-      if (e.value ~/ trainingUnitOf(e.key) >
-          best.value ~/ trainingUnitOf(best.key)) {
-        best = e;
-      }
-    }
-    return MapEntry(best.key, trainingUnitOf(best.key));
-  }
 }
 
 /// Every path of training_paths.json's [raw], by id, in the file's order.
@@ -115,86 +98,7 @@ Map<String, TrainingPath> trainingPathsFrom(Map<String, dynamic> raw) => {
         if (value is Map) key: TrainingPath.fromJson(key, value),
     };
 
-/// One choice of an offer: the gains of [pathId] (all of them in a full
-/// offer, its lead gain in a small one), worth [points].
-class TrainingChoice {
-  const TrainingChoice(
-      {required this.pathId, required this.gains, required this.points});
-
-  factory TrainingChoice.fromJson(Map raw) => TrainingChoice(
-        pathId: raw['path']?.toString() ?? '',
-        gains: {
-          for (final MapEntry(:key, :value)
-              in ((raw['gains'] as Map?) ?? const {}).entries)
-            if (value is num) key.toString(): value.toInt(),
-        },
-        points: (raw['points'] as num?)?.toInt() ?? 0,
-      );
-
-  final String pathId;
-  final Map<String, int> gains;
-  final int points;
-
-  /// A small offer's choice (one point).
-  bool get small => points < trainingFullPoints;
-
-  Map<String, dynamic> toJson() =>
-      {'path': pathId, 'gains': gains, 'points': points};
-
-  @override
-  bool operator ==(Object other) =>
-      other is TrainingChoice &&
-      other.pathId == pathId &&
-      other.points == points &&
-      other.gains.length == gains.length &&
-      other.gains.entries.every((e) => gains[e.key] == e.value);
-
-  @override
-  int get hashCode => Object.hash(pathId, points, gains.length);
-}
-
-/// The offer [points] (the character's unspent points) calls for: a full one
-/// while five are there, a small one for fewer, none for none.
-bool trainingDue(int points) => points > 0;
-
-/// Draws an offer for a character with [points] unspent: three different
-/// paths -- **the calling** (one leaning to [professionId] or [raceId],
-/// weighted toward those [taken] before), **the habit** (the path taken
-/// most, else the one closest to the character's [stats]), and **a turn**
-/// (any other) -- as their full gains when [points] reaches a full offer,
-/// else as their lead gains (a small offer). Empty when nothing is due or
-/// fewer than three paths exist.
-List<TrainingChoice> drawTraining({
-  required Map<String, TrainingPath> paths,
-  required int points,
-  required Random random,
-  String? professionId,
-  String? raceId,
-  Map<String, int> taken = const {},
-  Map<String, int> stats = const {},
-}) {
-  if (!trainingDue(points) || paths.length < trainingChoiceCount) {
-    return const [];
-  }
-  final chosen = _drawThree(
-      paths: paths.values.toList(),
-      random: random,
-      professionId: professionId,
-      raceId: raceId,
-      taken: taken,
-      stats: stats);
-  final full = points >= trainingFullPoints;
-  return [
-    for (final p in chosen)
-      full
-          ? TrainingChoice(
-              pathId: p.id, gains: p.gains, points: trainingPointsOf(p.gains))
-          : TrainingChoice(
-              pathId: p.id, gains: Map.fromEntries([p.leadGain]), points: 1),
-  ];
-}
-
-/// The three paths of an offer, in order: **the calling** (one leaning to
+/// The three paths of a pick, in order: **the calling** (one leaning to
 /// [professionId] or [raceId], weighted toward those [taken] before), **the
 /// habit** (the path taken most, else the one closest to [stats]) and **a
 /// turn** (any other).
@@ -247,10 +151,8 @@ List<TrainingPath> _drawThree({
 
 // --- Stat picks (docs/proposals/stat-picks.md) ------------------------------
 //
-// Each stat point is a **pick**: three one-point offers, each a path's lead
-// gain -- the calling, the habit and a turn, drawn as above -- and the
-// character takes one. Now and then the turn is a **rare** offer worth two
-// points. Like a training offer, a pick stays on the table until taken.
+// The paths of a pick are drawn as above (_drawThree); each offers one of
+// its gains.
 
 /// The base damage each level brings by itself, beside its +20 max health
 /// (PlayerSessionNotifier._applyXp). Stat picks rarely offer damage, where
@@ -299,7 +201,7 @@ class StatPickOffer {
 }
 
 /// Draws a pick: **the calling**, **the habit** and **a turn**, their paths
-/// drawn as drawTraining draws them, each offering one of its path's gains
+/// drawn by _drawThree, each offering one of its path's gains
 /// at one point (+1, or +10 max health), drawn by its size in points. No
 /// two offers show the same gain: the gain is drawn again within the path
 /// first, then the path. With [statPickRareChance] the turn is a rare
@@ -318,7 +220,7 @@ List<StatPickOffer> drawStatPick({
     for (final p in paths.values)
       if (p.gains.isNotEmpty) p
   ];
-  if (usable.length < trainingChoiceCount) return const [];
+  if (usable.length < statPickOfferCount) return const [];
   final chosen = _drawThree(
       paths: usable,
       random: random,

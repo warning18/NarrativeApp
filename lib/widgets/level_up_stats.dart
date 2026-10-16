@@ -31,7 +31,7 @@ class LevelUpStats extends ConsumerWidget {
           description: tr(ref, descKey),
           closeLabel: tr(ref, 'close_button'),
           plusLabel: tr(ref, 'plus_one_point'),
-          // Points go to a training offer now (training_picker.dart).
+          // Points go to stat picks now (stat_pick_picker.dart).
           onSpend: null,
         );
 

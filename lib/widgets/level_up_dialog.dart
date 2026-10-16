@@ -14,7 +14,7 @@ import 'pixel_vfx.dart';
 import 'stat_pick_picker.dart';
 
 /// Shown right after a fight that leveled the character up. The level's
-/// points are a training offer (training_picker.dart) taken right here: the
+/// points are stat picks (stat_pick_picker.dart) taken right here: the
 /// pop-up only closes once none are left (Wave 7, no "decide later"). Each
 /// level brings an offer from the clans (see offers.dart): it follows once
 /// this closes.
