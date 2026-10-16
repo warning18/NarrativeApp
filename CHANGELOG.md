@@ -8,6 +8,33 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.438.0+474]
+
+Every building of the new town plans has a name.
+
+### Added
+- **Names for 177 buildings** (English and French) on the plans of the nine villages, the Black Reliquary and Candlehold.
+
+### Changed
+- **Lysa's two scenes at Wrack's End** (the rider, the black-thread parcel) are seated in the Hull-Houses and on the Lamp Path, so they have a building on the plan.
+- **Three district blurbs reworded** (the Reliquary Quarter, the Gates, the Lantern Hall), English and French.
+- The scenes keep their village as `location` for now: the plans seat them by district from `tool/city_plans/district_seats.json`. Retagging them made most of a village's choices read as walks between districts, which the choice-shape and champion tests do not allow.
+
+## [1.436.0+472]
+
+The camp and the map tell a party it is under the level the next chapter asks.
+
+### Added
+- **The level signpost:** while the party is under the level the next chapter recommends (chapter 4 asks for level 9), the camp's chapter card gets a one-line hint, "Chapter 4: level 9 advised (you: 6)", and the Journey map gets a small chip above the sky's ("Ch. 4 · lvl 9", just "Lvl 9" on a narrow screen). A tap on either reads the whole sentence and Narrative's line. Nothing once the party has the level, or when the chapter recommends none. EN and FR. Uses Core's `nextChapterLevelAdviceProvider` (#355).
+
+## [1.434.0+470]
+
+The fight explains its chips, and shows the blow coming.
+
+### Added
+- **Long-press the chips above the fight:** the round (and when the Tide rises), momentum (how it builds and what it gives), the battlefield condition, the weather, the goal and the doctrine each say what they do. The place rule, Tide, nudge, hex and silence chips already did. EN and FR.
+- **The blow the party can read, on the health bar:** when a foe's telegraphed move is read in full (Perception), the bar of the one it is aimed at shows the part it would take off, with "−N" beside it; a long press says "after armor and block". Blows are figured one by one, as on the foe's own card.
+
 ## [1.433.0+469]
 
 Every town now has its districts, and the villages have plans.

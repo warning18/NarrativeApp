@@ -32,6 +32,7 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import '../widgets/level_signpost.dart';
 import '../widgets/road_panel.dart';
 import '../widgets/moments.dart';
 import '../widgets/companion_remark_bubble.dart';
@@ -597,6 +598,8 @@ class _ChapterCard extends ConsumerWidget {
             ],
             const SizedBox(height: 6),
             ...steps,
+            // The level the next chapter asks, while the party is under it.
+            const LevelSignpostRow(),
             // Word of a companion to meet, so a party in a hurry does not
             // walk past them.
             for (final placeId in companionLeads.keys)
