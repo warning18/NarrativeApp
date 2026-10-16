@@ -36,3 +36,34 @@ The rules are in `lib/data/nemesis.dart`, `lib/data/rival_hunters.dart` and `lib
 - **The nemesis is nearly always the Dominion:** it is a nemesis in 183 of 200 runs (Dominion 178, Compact 4, Vigil 3, Crows 3, Penitents 2, Mire 1). The story itself drives standing with the Dominion to Hostile or Hunted for nearly everyone not sworn to it.
   - Requiring Hunted instead of Hostile barely changes that: 147 runs with the Dominion as nemesis.
   - This is left for the user to decide (see the PR).
+
+## PR 5: the nemesis quests and their champions (v1.401)
+
+- **The quest:** when a clan becomes the character's nemesis, its quest `q_nemesis_<clan>` opens (it is unlocked, never drawn on a detour).
+  - Its one objective is to beat the clan's champion, `champion_<clan>`.
+  - Its turn-in breaks the nemesis (`breakNemesis`): the clan loses a tier of power, the hunt ends, and it can't become the nemesis again for 2 chapters. The news reads "… have lost their champion, and their hunt with it."
+- **The champion:** a boss, with the Hollow Court Inquisitor's skills and phases, 175 health and 24 damage. It is never an ordinary hunter: it carries `championClan`, not `hunterClan`.
+  - From chapter 4, while the quest is under way, it comes on a road at rest 35% of the time, after a crisis or a fall and before any hunter.
+  - Its scene is its `arrival` line and battle cry, with "Face {name}".
+- **Texts are Narrative's** (`docs/proposals/nemesis-texts.json`, #324): the six champions, from Orsolya Keld (the Dominion) to the Heron Queen's Hand (the Mire), their quests, their alignments and the void hound's new cry.
+- **Not yet built from Narrative's five beats** (`nemesis-quests.md`):
+  - the trail step;
+  - the three ways in (Force, Guile, Mercy) and the edge each could give in the fight;
+  - the `defeat` line in the fight log;
+  - each clan's own "broken" news line. The shared one is used for now.
+
+**Measured:** 200 runs (seed 7), with `championFights` on in the simulator (the walk takes no quest a road opens). `test/nemesis_quests_test.dart` holds the curve at 50% ±12.
+
+- First tried at the Inquisitor's own 203 health and 27 damage: 32.2% won. At 160 and 22: 58.6%.
+- At 175 and 24: **50.3% of 501 fights**. Lost fights come again later on the road.
+
+| Champion | Won / fought |
+|---|---|
+| Dominion | 169/380 |
+| Crows | 44/75 |
+| Compact | 31/35 |
+| Vigil | 4/7 |
+| Penitents | 4/4 |
+
+The Dominion's champion is met far most often, as the Dominion is the nemesis in most runs.
+- **The boss curve is unchanged:** champions are off in ordinary runs, and `boss_balance_test` passes as before.

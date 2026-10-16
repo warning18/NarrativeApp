@@ -48,6 +48,8 @@ import '../data/sub_node_engine.dart';
 import '../data/zone_gating.dart' show meetsRequiredFlags, zoneIsMain;
 import '../data/clan_power.dart' show TerritoryChange;
 import '../data/geography.dart';
+import '../data/nemesis.dart'
+    show breakNemesis, championIdOf, championMinChapter, championRoadChance;
 import '../data/land_crossing.dart';
 import '../data/road_events.dart';
 import '../gamedata/db_schema.dart';
@@ -365,6 +367,7 @@ class _SimContext {
     this.startSpecs = const [],
     this.context,
     this.reinforcement = Reinforcement.none,
+    this.championFights = false,
     this.specs = const {},
     this.specVariants = const {},
   });
@@ -386,6 +389,10 @@ class _SimContext {
   /// Reinforcements in every fight (context_rules.dart), to measure them;
   /// none: no fight's place is known here.
   final Reinforcement reinforcement;
+
+  /// The nemeses' champions fought on the roads (nemesis.dart), to measure
+  /// them; off, as the walk takes no quest a road opens.
+  final bool championFights;
 
   /// detour_scenes.json: the detours' written scenes (detour_scenes.dart).
   final Map<String, DetourScene> detourScenes;
@@ -594,6 +601,11 @@ _SimResult _simulate(
   // and what came of it. The walk spares a hunter whose betrayal is under
   // [_simSpareUnder].
   final mercyFlags = <String>[];
+  // The nemeses' champions beaten (nemesis.dart; [_SimContext.championFights]).
+  final championsBeaten = <String>{};
+  // The fight the roads call before it is declared (fightEnemies).
+  late ({bool? won, int attempts, Map<String, int> casts}) Function(
+      List<String> enemyIds, int chapter) fightOnRoad;
   var spared = 0, finished = 0, betrayed = 0;
   final metOnRoads = <String>{};
   final roads = <SimRoad>[];
@@ -710,6 +722,40 @@ _SimResult _simulate(
         }
       } else if (event != null) {
         hunter = ambush ? 'hunter' : 'temptation';
+      }
+      // The nemesis's champion (nemesis.dart), to measure it: its quest
+      // taken as it opens, met on a road at rest; beaten, the nemesis is
+      // broken.
+      final nemesis = growth?.politics.nemesis ?? '';
+      if (sim?.championFights == true &&
+          hunter.isEmpty &&
+          nemesis.isNotEmpty &&
+          chapter >= championMinChapter &&
+          !championsBeaten.contains(nemesis) &&
+          side.nextDouble() < championRoadChance) {
+        hunter = 'champion';
+        final champion = championIdOf(nemesis);
+        final result = fightOnRoad([champion], chapter);
+        if (result.won != null) {
+          steps.add(_SimStep(
+            nodeId: 'road:$champion',
+            chapter: chapter,
+            mood: null,
+            uiTheme: null,
+            description: 'The nemesis\'s champion',
+            choiceText: 'Face it',
+            enemyId: champion,
+            fightWon: result.won,
+            fightAttempts: result.attempts,
+            spellsCast: result.casts,
+          ));
+          if (result.won == true) {
+            championsBeaten.add(nemesis);
+            growth!.politics = breakNemesis(
+                growth.politics, nemesis, growth.tables.clans,
+                chapter: chapter);
+          }
+        }
       }
     }
     var familiar = '';
@@ -1078,6 +1124,11 @@ _SimResult _simulate(
       stolen: 0,
     );
   }
+
+  fightOnRoad = (ids, chapter) {
+    final r = fightEnemies(ids, chapter);
+    return (won: r.won, attempts: r.attempts, casts: r.casts);
+  };
 
   /// [choice]'s own fight (see [fightEnemies]); one of the last battles
   /// when it is marked so (v1.196).
@@ -1870,6 +1921,7 @@ _SimContext _simContextOf(
   List<String> startSpecs = const [],
   ContextRule? context,
   Reinforcement reinforcement = Reinforcement.none,
+  bool championFights = false,
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
   final written = writtenStepsFrom(table('expedition_steps'));
@@ -1909,6 +1961,7 @@ _SimContext _simContextOf(
     startSpecs: startSpecs,
     context: context,
     reinforcement: reinforcement,
+    championFights: championFights,
     specs: specInfosFrom(table('specialisations')),
     specVariants: specVariantsFrom(table('spec_variants')),
   );
@@ -2005,12 +2058,14 @@ List<SimRunSummary> simulatePlaythroughs(
   List<String> startSpecs = const [],
   ContextRule? context,
   Reinforcement reinforcement = Reinforcement.none,
+  bool championFights = false,
 }) {
   final sim = _simContextOf(tables, gameConfig,
       clashOff: clashOff,
       startSpecs: startSpecs,
       context: context,
-      reinforcement: reinforcement);
+      reinforcement: reinforcement,
+      championFights: championFights);
   final enemies = tables['enemies'] ?? const {};
   final out = <SimRunSummary>[];
   for (var i = 0; i < plan.length; i++) {

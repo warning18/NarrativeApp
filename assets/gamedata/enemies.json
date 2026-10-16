@@ -2207,8 +2207,8 @@
     "kind": "void",
     "hunterOnly": false,
     "alignment": -35,
-    "battleCry": "(no words; a sound like a door opening in a wall)",
-    "battleCry_fr": "(aucun mot ; un bruit de porte qui s’ouvre dans un mur)"
+    "battleCry": "(no words; a low sound like water running uphill)",
+    "battleCry_fr": "(aucun mot ; un grondement sourd, comme l’eau qui remonte la pente)"
   },
   "tear_spawn": {
     "enemyName": "The Unstitched",
@@ -5978,5 +5978,755 @@
     "hunterOnly": true,
     "alignment": -25,
     "kind": "person"
+  },
+  "champion_dominion": {
+    "enemyName": "High Lantern-Bearer Orsolya Keld",
+    "maxHealth": 175,
+    "damage": 24,
+    "guile": 9,
+    "faction": "",
+    "reaction": "",
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Light"
+    ],
+    "xpReward": 150,
+    "goldReward": 110,
+    "lootTable": [
+      {
+        "itemID": "sword_t8",
+        "dropRate": 25
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "Light",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "zealous_conviction",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      },
+      {
+        "skillID": "void_blast",
+        "condition": "OnLowHealth",
+        "requiredElement": "Void",
+        "chance": 50,
+        "healthThreshold": 40,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "edict_of_silence",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 4,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 60,
+        "name": "Last Rites",
+        "nameFr": "Derniers sacrements",
+        "message": "The Inquisitor kneels on the frost and the wounds close with a sound like a hymn.",
+        "messageFr": "L’Inquisiteur s’agenouille sur le givre et ses plaies se referment dans un bruit d’hymne.",
+        "damageMultiplier": 1.1,
+        "healPercent": 20,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "Judgment",
+        "nameFr": "Jugement",
+        "message": "No more prayers. The Inquisitor opens the tear behind him and lets it speak.",
+        "messageFr": "Plus de prières. L’Inquisiteur ouvre la déchirure derrière lui et la laisse parler.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "void_blast",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 50,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The First Lantern's warden, who keeps in her own hand the list of every oath sworn under its light. She has never forgotten a name, and she has yours.",
+    "description_fr": "La gardienne de la Première Lanterne, qui tient de sa main le registre de tous les serments prêtés sous sa lumière. Elle n’a jamais oublié un nom, et elle a le vôtre.",
+    "enemyName_fr": "Haute Porte-Lanterne Orsolya Keld",
+    "biomes": [],
+    "kind": "person",
+    "hunterOnly": true,
+    "champion": true,
+    "alignment": -5,
+    "battleCry": "“One flame, one law. I wrote your name in it myself.”",
+    "battleCry_fr": "« Une flamme, une loi. J’y ai écrit votre nom de ma propre main. »",
+    "arrival": "{name} is standing in the road with the list open on her arm, and she does not look up from the page. “You are the next entry. Wait there, please. I am nearly done.”",
+    "arrival_fr": "{name} se tient au milieu de la route, le registre ouvert sur le bras, sans lever les yeux de la page. « Vous êtes l’entrée suivante. Attendez là, je vous prie. J’ai presque fini. »",
+    "championClan": "dominion",
+    "defeat": "The page stays blank where your name was.",
+    "defeat_fr": "La page reste vierge là où se trouvait votre nom."
+  },
+  "champion_vigil": {
+    "enemyName": "Watch-Captain Edda Grey",
+    "maxHealth": 175,
+    "damage": 24,
+    "guile": 9,
+    "faction": "",
+    "reaction": "",
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Light"
+    ],
+    "xpReward": 150,
+    "goldReward": 110,
+    "lootTable": [
+      {
+        "itemID": "sword_t8",
+        "dropRate": 25
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "Light",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "zealous_conviction",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      },
+      {
+        "skillID": "void_blast",
+        "condition": "OnLowHealth",
+        "requiredElement": "Void",
+        "chance": 50,
+        "healthThreshold": 40,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "edict_of_silence",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 4,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 60,
+        "name": "Last Rites",
+        "nameFr": "Derniers sacrements",
+        "message": "The Inquisitor kneels on the frost and the wounds close with a sound like a hymn.",
+        "messageFr": "L’Inquisiteur s’agenouille sur le givre et ses plaies se referment dans un bruit d’hymne.",
+        "damageMultiplier": 1.1,
+        "healPercent": 20,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "Judgment",
+        "nameFr": "Jugement",
+        "message": "No more prayers. The Inquisitor opens the tear behind him and lets it speak.",
+        "messageFr": "Plus de prières. L’Inquisiteur ouvre la déchirure derrière lui et la laisse parler.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "void_blast",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 50,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Vigil's eyes on the ridge. She has not looked away from the tear in thirty-eight years, and does not mean to start with you.",
+    "description_fr": "Les yeux de la Veille sur la crête. Elle n’a pas détourné le regard de la déchirure depuis trente-huit ans, et ne compte pas commencer avec vous.",
+    "enemyName_fr": "Capitaine du Guet Edda Grey",
+    "biomes": [],
+    "kind": "person",
+    "hunterOnly": true,
+    "champion": true,
+    "alignment": 30,
+    "battleCry": "“We do not look away. My eyes have not let go of you since you left.”",
+    "battleCry_fr": "« Nous ne détournons pas le regard. Mes yeux ne vous ont pas lâché depuis votre départ. »",
+    "arrival": "{name} has come down off the ridge, and stands at the roadside with her lantern shuttered. “Thirty-eight years. You could have asked me for the hour.”",
+    "arrival_fr": "{name} est descendue de la crête, et se tient au bord de la route, sa lanterne voilée. « Trente-huit ans. Vous auriez pu me demander l’heure. »",
+    "championClan": "vigil",
+    "defeat": "For the first time since the Vigil was founded, the post above Rimewell is dark for an hour.",
+    "defeat_fr": "Pour la première fois depuis la fondation de la Veille, le poste au-dessus de Rimewell reste sombre une heure entière."
+  },
+  "champion_compact": {
+    "enemyName": "Master Hollis Reck",
+    "maxHealth": 175,
+    "damage": 24,
+    "guile": 9,
+    "faction": "",
+    "reaction": "",
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Light"
+    ],
+    "xpReward": 150,
+    "goldReward": 110,
+    "lootTable": [
+      {
+        "itemID": "sword_t8",
+        "dropRate": 25
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "Light",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "zealous_conviction",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      },
+      {
+        "skillID": "void_blast",
+        "condition": "OnLowHealth",
+        "requiredElement": "Void",
+        "chance": 50,
+        "healthThreshold": 40,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "edict_of_silence",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 4,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 60,
+        "name": "Last Rites",
+        "nameFr": "Derniers sacrements",
+        "message": "The Inquisitor kneels on the frost and the wounds close with a sound like a hymn.",
+        "messageFr": "L’Inquisiteur s’agenouille sur le givre et ses plaies se referment dans un bruit d’hymne.",
+        "damageMultiplier": 1.1,
+        "healPercent": 20,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "Judgment",
+        "nameFr": "Jugement",
+        "message": "No more prayers. The Inquisitor opens the tear behind him and lets it speak.",
+        "messageFr": "Plus de prières. L’Inquisiteur ouvre la déchirure derrière lui et la laisse parler.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "void_blast",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 50,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Charter's last hammer, who broke every other on its own anvil so that the table's rule would stay unbroken. He is the only one left who remembers why it was made.",
+    "description_fr": "Le dernier marteau de la Charte, qui a brisé tous les autres sur sa propre enclume pour que la règle de la table reste intacte. Il est le seul à se souvenir encore pourquoi elle fut faite.",
+    "enemyName_fr": "Maître Hollis Reck",
+    "biomes": [],
+    "kind": "person",
+    "hunterOnly": true,
+    "champion": true,
+    "alignment": 0,
+    "battleCry": "“What we make, we choose. And we choose not to make you.”",
+    "battleCry_fr": "« Ce que nous forgeons, nous le choisissons. Et nous choisissons de ne pas vous forger. »",
+    "arrival": "{name} stands at a cold anvil he has carried out onto the road, and does not turn from it. “Every hammer in the Row broke on this. You may try yours.”",
+    "arrival_fr": "{name} se tient devant une enclume froide qu’il a fait porter sur la route, sans se détourner d’elle. « Chaque marteau de la Rue s’est brisé là-dessus. Vous pouvez essayer le vôtre. »",
+    "championClan": "compact",
+    "defeat": "The last hammer rings once on the stone, and does not ring again.",
+    "defeat_fr": "Le dernier marteau sonne une fois sur la pierre, et ne sonne plus."
+  },
+  "champion_mire": {
+    "enemyName": "The Heron Queen's Hand",
+    "maxHealth": 175,
+    "damage": 24,
+    "guile": 9,
+    "faction": "",
+    "reaction": "",
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Light"
+    ],
+    "xpReward": 150,
+    "goldReward": 110,
+    "lootTable": [
+      {
+        "itemID": "sword_t8",
+        "dropRate": 25
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "Light",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "zealous_conviction",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      },
+      {
+        "skillID": "void_blast",
+        "condition": "OnLowHealth",
+        "requiredElement": "Void",
+        "chance": 50,
+        "healthThreshold": 40,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "edict_of_silence",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 4,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 60,
+        "name": "Last Rites",
+        "nameFr": "Derniers sacrements",
+        "message": "The Inquisitor kneels on the frost and the wounds close with a sound like a hymn.",
+        "messageFr": "L’Inquisiteur s’agenouille sur le givre et ses plaies se referment dans un bruit d’hymne.",
+        "damageMultiplier": 1.1,
+        "healPercent": 20,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "Judgment",
+        "nameFr": "Jugement",
+        "message": "No more prayers. The Inquisitor opens the tear behind him and lets it speak.",
+        "messageFr": "Plus de prières. L’Inquisiteur ouvre la déchirure derrière lui et la laisse parler.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "void_blast",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 50,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Court's courtesy, armed. It has never once been rude, and has never once been refused. Nobody outside the Mire has seen its face and kept the memory.",
+    "description_fr": "La courtoisie de la Cour, en armes. Elle n’a jamais été impolie, et n’a jamais essuyé de refus. Nul, hors du Marais, n’a vu son visage sans en perdre le souvenir.",
+    "enemyName_fr": "La Main de la Reine-Héron",
+    "biomes": [],
+    "kind": "person",
+    "hunterOnly": true,
+    "champion": true,
+    "alignment": -15,
+    "battleCry": "“You have been most patient. The Court thanks you, and regrets the rest.”",
+    "battleCry_fr": "« Vous avez été patient. La Cour vous en remercie, et regrette le reste. »",
+    "arrival": "A heron stands in the shallows beside the road, and does not move. Then {name} is standing where it stood. “Sit. Please. We have been so looking forward to this.”",
+    "arrival_fr": "Un héron se tient dans les bas-fonds, au bord de la route, immobile. Puis {name} se tient là où il se tenait. « Asseyez-vous, je vous prie. Nous attendions ce moment avec tant d’impatience. »",
+    "championClan": "mire",
+    "defeat": "The Hand folds like a heron into the water.",
+    "defeat_fr": "La Main se replie comme un héron dans l’eau."
+  },
+  "champion_crows": {
+    "enemyName": "Captain Mireille Sable",
+    "maxHealth": 175,
+    "damage": 24,
+    "guile": 9,
+    "faction": "",
+    "reaction": "",
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Light"
+    ],
+    "xpReward": 150,
+    "goldReward": 110,
+    "lootTable": [
+      {
+        "itemID": "sword_t8",
+        "dropRate": 25
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "Light",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "zealous_conviction",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      },
+      {
+        "skillID": "void_blast",
+        "condition": "OnLowHealth",
+        "requiredElement": "Void",
+        "chance": 50,
+        "healthThreshold": 40,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "edict_of_silence",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 4,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 60,
+        "name": "Last Rites",
+        "nameFr": "Derniers sacrements",
+        "message": "The Inquisitor kneels on the frost and the wounds close with a sound like a hymn.",
+        "messageFr": "L’Inquisiteur s’agenouille sur le givre et ses plaies se referment dans un bruit d’hymne.",
+        "damageMultiplier": 1.1,
+        "healPercent": 20,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "Judgment",
+        "nameFr": "Jugement",
+        "message": "No more prayers. The Inquisitor opens the tear behind him and lets it speak.",
+        "messageFr": "Plus de prières. L’Inquisiteur ouvre la déchirure derrière lui et la laisse parler.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "void_blast",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 50,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Crows' collector, who has never lost a debt and never raised her voice to collect one. Her ledger is bound in sailcloth, and the last page is yours.",
+    "description_fr": "La percepteuse des Corneilles, qui n’a jamais perdu une créance ni élevé la voix pour en réclamer une. Son registre est relié de toile à voile, et la dernière page est la vôtre.",
+    "enemyName_fr": "Capitaine Mireille Sable",
+    "biomes": [],
+    "kind": "person",
+    "hunterOnly": true,
+    "champion": true,
+    "alignment": -25,
+    "battleCry": "“Every door has a price. I have come for yours.”",
+    "battleCry_fr": "« Toute porte a son prix. Je suis venue chercher le vôtre. »",
+    "arrival": "{name} is counting coins into a purse on an upturned crate, as though the road were a counter. “You are early. Put it on the table. I will tell you whether it is enough.”",
+    "arrival_fr": "{name} compte des pièces dans une bourse, sur une caisse renversée, comme si la route était un comptoir. « Vous êtes en avance. Posez cela sur la table. Je vous dirai si cela suffit. »",
+    "championClan": "crows",
+    "defeat": "The ledger goes into the ditch with her sailcloth wrapping.",
+    "defeat_fr": "Le registre part dans le fossé avec sa toile à voile."
+  },
+  "champion_penitents": {
+    "enemyName": "The Ash Confessor",
+    "maxHealth": 175,
+    "damage": 24,
+    "guile": 9,
+    "faction": "",
+    "reaction": "",
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Light"
+    ],
+    "xpReward": 150,
+    "goldReward": 110,
+    "lootTable": [
+      {
+        "itemID": "sword_t8",
+        "dropRate": 25
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "Light",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "zealous_conviction",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      },
+      {
+        "skillID": "void_blast",
+        "condition": "OnLowHealth",
+        "requiredElement": "Void",
+        "chance": 50,
+        "healthThreshold": 40,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "edict_of_silence",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 4,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 60,
+        "name": "Last Rites",
+        "nameFr": "Derniers sacrements",
+        "message": "The Inquisitor kneels on the frost and the wounds close with a sound like a hymn.",
+        "messageFr": "L’Inquisiteur s’agenouille sur le givre et ses plaies se referment dans un bruit d’hymne.",
+        "damageMultiplier": 1.1,
+        "healPercent": 20,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "Judgment",
+        "nameFr": "Jugement",
+        "message": "No more prayers. The Inquisitor opens the tear behind him and lets it speak.",
+        "messageFr": "Plus de prières. L’Inquisiteur ouvre la déchirure derrière lui et la laisse parler.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "void_blast",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 50,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Penitents' voice, who burned her own face to hear confession better. She has never put the lantern down, and has never asked anyone else to carry it.",
+    "description_fr": "La voix des Pénitents, qui s’est brûlé le visage pour mieux entendre les confessions. Elle n’a jamais posé sa lanterne, et n’a jamais demandé à personne de la porter.",
+    "enemyName_fr": "La Confesseuse de Cendre",
+    "biomes": [],
+    "kind": "person",
+    "hunterOnly": true,
+    "champion": true,
+    "alignment": 10,
+    "battleCry": "“What you burned, you will carry. Let me show you its weight.”",
+    "battleCry_fr": "« Ce que vous avez brûlé, vous le porterez. Laissez-moi vous en montrer le poids. »",
+    "arrival": "{name} waits where the road forks, and the lantern in her hand burns no flame. “Kneel, and tell me everything. Or stand, and I will tell you.”",
+    "arrival_fr": "{name} attend à la bifurcation, et la lanterne qu’elle tient ne brûle d’aucune flamme. « Agenouillez-vous et dites-moi tout. Ou restez debout, et c’est moi qui vous le dirai. »",
+    "championClan": "penitents",
+    "defeat": "The lantern goes out in her hand, and for the first time, nobody lifts it.",
+    "defeat_fr": "La lanterne s’éteint dans sa main, et pour la première fois, personne ne la relève."
   }
 }

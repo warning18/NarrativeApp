@@ -8,6 +8,24 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.401.0+437]
+
+Your nemesis sends its champion, and beating it ends the hunt.
+
+- **A quest when a clan makes you its nemesis:** a stranger warns you that its champion is coming.
+- **The champions:**
+  - the Dominion's High Lantern-Bearer Orsolya Keld;
+  - the Crows' Captain Mireille Sable;
+  - the Compact's Master Hollis Reck;
+  - the Vigil's Watch-Captain Edda Grey;
+  - the Penitents' Ash Confessor;
+  - the Mire's Heron Queen's Hand.
+
+  From chapter 4, while the quest is under way, the champion finds you on the road. Each is a boss, with Narrative's words.
+- **Beat the champion and hand in the quest,** and the nemesis is broken: the clan loses a tier of power, its hunt ends, and it can't become your nemesis again for two chapters.
+- **The void hound has a cry of its own.**
+- **Balance:** champions are won about half the time where they come (50.3%), and the boss curve is unchanged. Report: docs/simulation/nemesis-hunters.md.
+
 ## [1.398.0+434]
 
 The clan offer's popup is one block: the ring on top, and under it the clan card with the gift in it.
