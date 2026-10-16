@@ -190,7 +190,17 @@ void main() {
             : place;
         expect(here!.parent, parent, reason: id);
         expect(here.name, d['name'], reason: id);
-        expect(here.controller, d['controller'], reason: id);
+        // The suggested controllers are not holdings yet (v1.433): clan
+        // power and territory count only the places they were tuned on, so a
+        // new district holds none (an existing one keeps its own).
+        const existing = {
+          'reliquary_quarter',
+          'candlehold_gates',
+          'candlehold_lantern_hall',
+        };
+        if (!existing.contains(id)) {
+          expect(here.controller, isEmpty, reason: id);
+        }
         final plan = plans[parent]!;
         expect(plan.districts, contains(id), reason: id);
         // Every scene listed in it stands on one of its buildings.

@@ -410,7 +410,6 @@
   },
   "cove_camp_sail_loft": {
     "level": "district",
-    "controller": "open_hand",
     "parent": "cove_camp",
     "name": "The Sail-Loft",
     "name_fr": "La Voilerie",
@@ -511,7 +510,6 @@
   },
   "emberwick_kilns": {
     "level": "district",
-    "controller": "compact",
     "parent": "emberwick",
     "name": "The Kilns",
     "name_fr": "Les Fours",
@@ -522,7 +520,6 @@
   },
   "emberwick_smithy_lane": {
     "level": "district",
-    "controller": "compact",
     "parent": "emberwick",
     "name": "Smithy Lane",
     "name_fr": "La Ruelle des Forges",
@@ -533,7 +530,6 @@
   },
   "emberwick_well_square": {
     "level": "district",
-    "controller": "dominion",
     "parent": "emberwick",
     "name": "The Well Square",
     "name_fr": "La Place du Puits",
@@ -581,7 +577,6 @@
   },
   "akagiri_springs": {
     "level": "district",
-    "controller": "oni",
     "tags": ["wild"],
     "parent": "akagiri",
     "name": "The Springs",
@@ -593,7 +588,6 @@
   },
   "akagiri_brewhouse": {
     "level": "district",
-    "controller": "oni",
     "parent": "akagiri",
     "name": "The Brewhouse",
     "name_fr": "La Brasserie",
@@ -604,7 +598,6 @@
   },
   "akagiri_forge_terrace": {
     "level": "district",
-    "controller": "oni",
     "parent": "akagiri",
     "name": "The Forge Terrace",
     "name_fr": "La Terrasse de la Forge",
@@ -647,7 +640,6 @@
   },
   "wracks_end_hull_houses": {
     "level": "district",
-    "controller": "crows",
     "tags": ["sea"],
     "parent": "wracks_end",
     "name": "The Hull-Houses",
@@ -659,7 +651,6 @@
   },
   "wracks_end_lamp_path": {
     "level": "district",
-    "controller": "dominion",
     "tags": ["holy"],
     "parent": "wracks_end",
     "name": "The Lamp Path",
@@ -704,7 +695,6 @@
   },
   "kindly_hill_fen_edge": {
     "level": "district",
-    "controller": "mire",
     "tags": ["wild", "haunted"],
     "parent": "kindly_hill",
     "name": "The Fen Edge",
@@ -716,7 +706,6 @@
   },
   "kindly_hill_hall": {
     "level": "district",
-    "controller": "kindly",
     "parent": "kindly_hill",
     "name": "The Hall Under the Hill",
     "name_fr": "La Salle sous la Colline",
@@ -859,7 +848,6 @@
   },
   "reliquary_last_lantern": {
     "level": "district",
-    "controller": "vigil",
     "tags": ["holy"],
     "parent": "black_reliquary",
     "name": "Last Lantern Street",
@@ -871,7 +859,6 @@
   },
   "reliquary_chapels": {
     "level": "district",
-    "controller": "dominion",
     "tags": ["holy"],
     "parent": "black_reliquary",
     "name": "The Chapels of the Chair",
@@ -927,7 +914,6 @@
   },
   "rimewell_ridge_post": {
     "level": "district",
-    "controller": "vigil",
     "tags": ["stronghold"],
     "parent": "rimewell",
     "name": "The Ridge Post",
@@ -939,7 +925,6 @@
   },
   "rimewell_choir_well": {
     "level": "district",
-    "controller": "penitents",
     "tags": ["holy", "haunted"],
     "parent": "rimewell",
     "name": "The Choir Well",
@@ -964,7 +949,6 @@
   },
   "highhearth_moot_hall": {
     "level": "district",
-    "controller": "giants",
     "parent": "highhearth",
     "name": "The Moot-Hall",
     "name_fr": "La Salle du Conseil",
@@ -975,7 +959,6 @@
   },
   "highhearth_quarry": {
     "level": "district",
-    "controller": "compact",
     "tags": ["wild"],
     "parent": "highhearth",
     "name": "The Frost Quarry",
@@ -987,7 +970,6 @@
   },
   "highhearth_long_houses": {
     "level": "district",
-    "controller": "giants",
     "tags": ["stronghold"],
     "parent": "highhearth",
     "name": "The Long Houses",
@@ -1109,7 +1091,6 @@
   },
   "greyhithe_watch_stones": {
     "level": "district",
-    "controller": "vigil",
     "tags": ["holy"],
     "parent": "greyhithe",
     "name": "The Watch Stones",
@@ -1239,7 +1220,6 @@
   },
   "candlehold_lantern_cliff": {
     "level": "district",
-    "controller": "dominion",
     "tags": ["holy", "stronghold"],
     "parent": "candlehold",
     "name": "The Lantern Cliff",

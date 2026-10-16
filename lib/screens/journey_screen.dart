@@ -1350,7 +1350,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final citySize = switch (hereLocation?.kind) {
       'city' => CitySize.city,
       'town' => CitySize.town,
-      'village' || 'camp' => CitySize.village,
+      'village' => CitySize.village,
       _ => null,
     };
     if (hereLocation != null && citySize != null && chartHere != null) {
