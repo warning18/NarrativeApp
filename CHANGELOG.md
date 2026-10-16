@@ -10,15 +10,15 @@ isn't reconstructable from git history alone.
 
 ## [1.435.0+471]
 
-The towns' scenes now stand in their districts, and every building has a name.
-
-### Changed
-- **158 scenes retagged** to the districts of Rimewell, Greyhithe, Wrack's End, the Cove Camp, Kindly Hill, Highhearth, Emberwick, Akagiri, White Wells, the Black Reliquary and Candlehold, so a scene's own `location` now says which district it happens in. The villages' entry scenes keep the village itself. No district has a clan controller.
-- **Lysa's two scenes at Wrack's End** (the rider, the black-thread parcel) now stand in the Hull-Houses and on the Lamp Path, and have a building on the plan.
-- **Three district blurbs reworded** (the Reliquary Quarter, the Gates, the Lantern Hall), English and French.
+Every building of the new town plans has a name.
 
 ### Added
 - **Names for 177 buildings** (English and French) on the plans of the nine villages, the Black Reliquary and Candlehold.
+
+### Changed
+- **Lysa's two scenes at Wrack's End** (the rider, the black-thread parcel) are seated in the Hull-Houses and on the Lamp Path, so they have a building on the plan.
+- **Three district blurbs reworded** (the Reliquary Quarter, the Gates, the Lantern Hall), English and French.
+- The scenes keep their village as `location` for now: the plans seat them by district from `tool/city_plans/district_seats.json`. Retagging them made most of a village's choices read as walks between districts, which the choice-shape and champion tests do not allow.
 
 ## [1.433.0+469]
 
