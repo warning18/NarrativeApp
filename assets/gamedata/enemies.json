@@ -3886,7 +3886,7 @@
   "white_admiral": {
     "enemyName": "The White Admiral",
     "enemyName_fr": "L’Amiral Blanc",
-    "maxHealth": 336,
+    "maxHealth": 350,
     "damage": 31,
     "guile": 11,
     "faction": "",
@@ -5087,7 +5087,7 @@
   "claimant_tallis": {
     "enemyName": "Maud Tallis, Eldest Wickwarden",
     "enemyName_fr": "Maud Tallis, Aînée des Garde-Mèches",
-    "maxHealth": 380,
+    "maxHealth": 405,
     "damage": 22,
     "guile": 11,
     "faction": "",
@@ -6764,5 +6764,132 @@
     "wayGuile_fr": "Confesser une chose fausse et voir qui répond.",
     "wayMercy": "Carry a stone from the road, and set it down before her.",
     "wayMercy_fr": "Porter une pierre de la route et la déposer devant elle."
+  },
+  "brother_clement": {
+    "enemyName": "Brother Clement",
+    "maxHealth": 260,
+    "damage": 28,
+    "guile": 9,
+    "faction": "dominion",
+    "reaction": "",
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Light"
+    ],
+    "xpReward": 190,
+    "goldReward": 140,
+    "lootTable": [
+      {
+        "itemID": "sword_t8",
+        "dropRate": 25
+      },
+      {
+        "itemID": "hollow_court_seal",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "Light",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "zealous_conviction",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      },
+      {
+        "skillID": "void_blast",
+        "condition": "OnLowHealth",
+        "requiredElement": "Void",
+        "chance": 50,
+        "healthThreshold": 40,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "edict_of_silence",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 5,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 60,
+        "name": "Last Rites",
+        "nameFr": "Derniers sacrements",
+        "message": "The Inquisitor kneels on the frost and the wounds close with a sound like a hymn.",
+        "messageFr": "L’Inquisiteur s’agenouille sur le givre et ses plaies se referment dans un bruit d’hymne.",
+        "damageMultiplier": 1.1,
+        "healPercent": 20,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "Judgment",
+        "nameFr": "Jugement",
+        "message": "No more prayers. The Inquisitor opens the tear behind him and lets it speak.",
+        "messageFr": "Plus de prières. L’Inquisiteur ouvre la déchirure derrière lui et la laisse parler.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "void_blast",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 50,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Inquisition’s torturer in the Black Hold, who listens behind a porcelain mask.",
+    "description_fr": "Le bourreau de l’Inquisition à la Geôle Noire, qui écoute derrière un masque de porcelaine.",
+    "enemyName_fr": "Frère Clément",
+    "biomes": [
+      "fen"
+    ],
+    "kind": "person",
+    "hunterOnly": true,
+    "alignment": -40,
+    "battleCry": "“Hold still. I have not finished listening to you.”",
+    "battleCry_fr": "« Ne bougez pas. Je n’ai pas fini de vous écouter. »",
+    "defeat": "The mask cracks down the middle, and nothing is behind it but a tired man.",
+    "defeat_fr": "Le masque se fend par le milieu, et il n’y a derrière qu’un homme fatigué."
   }
 }
