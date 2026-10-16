@@ -2071,6 +2071,48 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Made for',
     AppLanguage.fr: 'Conçu pour',
   },
+  'reward_kind_quest': {
+    AppLanguage.en: 'Quest complete',
+    AppLanguage.fr: 'Quête accomplie',
+  },
+  'reward_kind_item': {
+    AppLanguage.en: 'Item found',
+    AppLanguage.fr: 'Objet trouvé',
+  },
+  'reward_kind_clan_gift': {
+    AppLanguage.en: 'A clan\u2019s gift',
+    AppLanguage.fr: 'Le don d\u2019un clan',
+  },
+  'reward_chapter': {
+    AppLanguage.en: 'Chapter {n}',
+    AppLanguage.fr: 'Chapitre {n}'
+  },
+  'reward_gold': {AppLanguage.en: 'Gold', AppLanguage.fr: 'Or'},
+  'reward_gold_sub': {
+    AppLanguage.en: 'Paid for the job',
+    AppLanguage.fr: 'Le prix du travail',
+  },
+  'reward_xp': {AppLanguage.en: 'Experience', AppLanguage.fr: 'Expérience'},
+  'reward_xp_sub': {
+    AppLanguage.en: '{before} \u2192 {after} / {need} XP · level {n}',
+    AppLanguage.fr: '{before} \u2192 {after} / {need} XP · niveau {n}',
+  },
+  'reward_xp_levelup': {
+    AppLanguage.en: 'Level up! You are level {n}',
+    AppLanguage.fr: 'Niveau supérieur\u00a0! Vous êtes niveau {n}',
+  },
+  'reward_new': {AppLanguage.en: 'NEW', AppLanguage.fr: 'NOUVEAU'},
+  'reward_joins': {AppLanguage.en: 'JOINS', AppLanguage.fr: 'REJOINT'},
+  'reward_continue': {AppLanguage.en: 'Continue', AppLanguage.fr: 'Continuer'},
+  'reward_standing': {AppLanguage.en: 'Standing', AppLanguage.fr: 'Réputation'},
+  'reward_die_made_for': {
+    AppLanguage.en: 'A die for your hand',
+    AppLanguage.fr: 'Un dé pour votre main',
+  },
+  'reward_materials_title': {
+    AppLanguage.en: 'Materials found',
+    AppLanguage.fr: 'Matériaux trouvés',
+  },
   'reward_die_traded': {
     AppLanguage.en: 'The {die} is made for another class: you took its '
         'price in gold instead.',

@@ -384,6 +384,19 @@ void main() {
     for (var i = 0; i < 3; i++) {
       await tester.runAsync(
           () => Future<void>.delayed(const Duration(milliseconds: 50)));
+      await tester.pump(const Duration(milliseconds: 400));
+    }
+    // The gift is told on a reward card first, with the standing it moved.
+    expect(find.byKey(const Key('reward_card')), findsOneWidget);
+    expect(find.text('A clan\u2019s gift'.toUpperCase()), findsOneWidget);
+    expect(find.byKey(const Key('reward_gift_warrior_iron_stance')),
+        findsOneWidget);
+    expect(find.textContaining('Standing:'), findsOneWidget);
+    await _shot(tester, 'gift_reward_card');
+    await tester.tap(find.byKey(const Key('reward_button')));
+    for (var i = 0; i < 3; i++) {
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 50)));
       await tester.pumpAndSettle();
     }
 
@@ -476,6 +489,14 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Prendre Œil perçant ?'), findsOneWidget);
     await tester.tap(find.byKey(const Key('offer_confirm_accept')));
+    for (var i = 0; i < 3; i++) {
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 50)));
+      await tester.pump(const Duration(milliseconds: 400));
+    }
+    // The gift on its card, in French; the card's button goes on.
+    expect(find.text('Continuer'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('reward_button')));
     for (var i = 0; i < 3; i++) {
       await tester.runAsync(
           () => Future<void>.delayed(const Duration(milliseconds: 50)));

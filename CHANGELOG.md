@@ -26,6 +26,26 @@ Your nemesis sends its champion, and beating it ends the hunt.
 - **The void hound has a cry of its own.**
 - **Balance:** champions are won about half the time where they come (50.3%), and the boss curve is unchanged. Report: docs/simulation/nemesis-hunters.md.
 
+## [1.400.0+436]
+
+Clans' power shows in their offers, and a crisis can be paid in timber and stone.
+
+- **A weak clan gives weaker signs.** A clan under 25 power offers signs up to epic; heroic signs come from stronger clans.
+- **The clan that holds the place comes more often** with its offer when you are in its lands.
+- **A fallen clan sends no one,** except to those who stayed of it: its survivors still come with gifts.
+- **The Host:** a fallen clan joins it only if it pledged.
+- **The Character tab's climb:** between equals, the stronger clan's climb now shows.
+- **The crisis:** "Send timber and stone" (3 timber, 2 cut stone) now holds your clan's seat as the gold does.
+- **Balance:** every profession within 1 point (slightly down); the boss curve holds. Report: docs/simulation/clan-power.md.
+
+## [1.399.0+435]
+
+Rewards come on one card, whatever they are (card A of the user's pick).
+
+### Changed
+- **One reward card.** A header in the source's own colour (a small label over the title), one row per reward (an icon tile, a name, a line under it, the value at the right), a note set apart in a dashed box, and one button. The rows come in one after another (with reduced motion they are simply there).
+- **Quest complete, an item or materials found, and a clan's gift taken** all use it. Quest complete shows gold, experience with its bar (and the level it brought), the item with its rarity, a die, a companion who joined; the notes carry what changed the outcome (a die made for another class paid in gold, with the gold as a chip), how the quest was settled, and the party's reactions.
+
 ## [1.398.0+434]
 
 The clan offer's popup is one block: the ring on top, and under it the clan card with the gift in it.
