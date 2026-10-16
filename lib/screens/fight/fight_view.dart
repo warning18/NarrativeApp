@@ -476,22 +476,32 @@ extension _FightView on _FightScreenState {
           ),
           const SizedBox(height: 6),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            // The hero stands on the ground under the party's cards, facing
+            // the enemies (fight_hero_sprite.dart): it takes no room.
+            child: LayoutBuilder(
+              builder: (context, area) => Stack(
                 children: [
-                  Expanded(
-                    flex: 5,
-                    child: TutorialTarget(
-                        id: 'fight.party', child: _buildPartyColumn(items)),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    flex: 6,
-                    child: TutorialTarget(
-                        id: 'fight.enemies',
-                        child: _buildEnemyColumn(previews)),
+                  ..._heroOnGround(area),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: TutorialTarget(
+                              id: 'fight.party',
+                              child: _buildPartyColumn(items)),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          flex: 6,
+                          child: TutorialTarget(
+                              id: 'fight.enemies',
+                              child: _buildEnemyColumn(previews)),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
