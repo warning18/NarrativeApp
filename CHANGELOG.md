@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.431.0+467]
+
+### Changed
+- The Crows' collector, the nemesis champion, is now **Mireille Sorrel** (was Sable, which she shared with the rogue companion). Names only, EN and FR, in `npcs.json` and `enemies.json`; the ids are unchanged.
+
+### Added
+- A word of warning at the turn from chapter 3 to chapter 4: the camp's old fire-keeper tells the player the Court does not bargain with the weak, and that the Drowned Stair is best gone down stronger. EN and FR. (Core's recommended-level field for the chapter carries the number.)
+
 ## [1.430.0+466]
 
 Chapter 4 says how strong you should be before you go down.

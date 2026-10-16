@@ -226,7 +226,7 @@ SPRITES['champion_dominion'] = (
     ],
 )
 
-# Captain Mireille Sable of the Crows: a black tricorn with a white feather,
+# Captain Mireille Sorrel of the Crows: a black tricorn with a white feather,
 # a long dark coat with silver buttons, the ledger bound in sailcloth in
 # the right hand.
 SPRITES['champion_crows'] = (
