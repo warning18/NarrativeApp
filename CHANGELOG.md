@@ -18,6 +18,17 @@ Quest complete gets the chapter's own picture.
 ### Changed
 - **Quest complete is card B.** The card leads with the chapter's strip under the quest's name, and gold and experience become two counters under it (the experience bar and the level stay). The rows for the item, the die and the companion, and the notes, are as on card A. An item found and a clan's gift keep card A.
 
+## [1.402.0+438]
+
+The place's rule, the patron's favour and the hunter's mercy, drawn.
+
+### Added
+- **Place-rule marks in the fight.** A chip for the place's rule: its omen the round before (mist, heat, rising water, holy ground, the watch's whistle), then how far it has risen (Mist ×2, Rising water ×3 with the top marked), each with a long-press tip of what it does this round. The boss gets an Enraged chip once the Tide has risen. The Tide alone has no mark.
+- **Patron's favour on level-up.** The level-up pop-up names what the patron gave with the level ("Dominion's favour: +1 Strength, +5 max health") in the clan's colour, English and French.
+
+### Changed
+- **The mercy choice is a card.** The rival hunter's portrait over a band in its clan's colour, the read of their side as a chip, and two buttons that each say what they cost and give (Dominion +3, no gold, no loot / Dominion −2, the spoils are yours). Same choice and rules as before.
+
 ## [1.401.0+437]
 
 Your nemesis sends its champion, and beating it ends the hunt.
