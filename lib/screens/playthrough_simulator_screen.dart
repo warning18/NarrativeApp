@@ -2078,7 +2078,7 @@ typedef SimRunSummary = ({
   int signs,
   int offers,
   int skillsLearned,
-  Map<String, ({int attempts, int won, int fights})> byChapter,
+  Map<String, ({int attempts, int won, int fights, int firstTry})> byChapter,
   Map<String, int> enemiesFought,
   Map<String, int> enemiesLost,
   Map<String, Map<String, ({int fought, int lost})>> enemiesByChapter,
@@ -2144,18 +2144,22 @@ List<SimRunSummary> simulatePlaythroughs(
         coverage: coverage,
         detourSalt: seed * 100003 + i,
         transcribe: transcripts);
-    final byChapter = <String, ({int attempts, int won, int fights})>{};
+    final byChapter =
+        <String, ({int attempts, int won, int fights, int firstTry})>{};
     final fought = <String, int>{};
     final lost = <String, int>{};
     final byChapterEnemy = <String, Map<String, ({int fought, int lost})>>{};
     for (final step in result.steps) {
       if (step.fightWon == null) continue;
       final key = _chapterLabel(step.chapter);
-      final before = byChapter[key] ?? (attempts: 0, won: 0, fights: 0);
+      final before =
+          byChapter[key] ?? (attempts: 0, won: 0, fights: 0, firstTry: 0);
       byChapter[key] = (
         attempts: before.attempts + step.fightAttempts,
         won: before.won + (step.fightWon == true ? 1 : 0),
         fights: before.fights + 1,
+        firstTry: before.firstTry +
+            (step.fightWon == true && step.fightAttempts == 1 ? 1 : 0),
       );
       final enemy = step.enemyId ?? '?';
       fought[enemy] = (fought[enemy] ?? 0) + 1;
