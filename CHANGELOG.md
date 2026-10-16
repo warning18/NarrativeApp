@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.432.0+468]
+## [1.436.0+472]
 
 The camp and the map tell a party it is under the level the next chapter asks.
 
