@@ -154,6 +154,7 @@
         "luckyDieReveal": true
       }
     ],
+    "facing": "den_bouncer",
     "flag_callbacks": [
       {
         "flag": "casino_tables",
@@ -878,6 +879,7 @@
         ]
       }
     ],
+    "facing": "plague_hound",
     "flag_callbacks": [
       {
         "flag": "origin_sparrow_good",
@@ -3301,6 +3303,8 @@
         ]
       }
     ],
+    "prompt": "What do you do on the Wharf?",
+    "prompt_fr": "Que faites-vous sur le quai ?",
     "flag_callbacks": [
       {
         "flag": "void_marked",
@@ -4007,6 +4011,7 @@
         ]
       }
     ],
+    "facing": "vane_quartermaster",
     "persona_variants": {
       "profession:rogue": {
         "en": "\"One of mine,\" Vane said, \"or near enough to know the tunnel’s worth more than the key.\"",
@@ -4125,6 +4130,7 @@
         "failNote_fr": "La main de Vane se referme sur votre poignet : on vous retient sur le quai."
       }
     ],
+    "facing": "vane_quartermaster",
     "noDetour": true,
     "prompt": "How do you break the cordon?",
     "prompt_fr": "Comment percez-vous le cordon ?"
@@ -4834,6 +4840,8 @@
         ]
       }
     ],
+    "prompt": "What do you do in the Ashen Quarter?",
+    "prompt_fr": "Que faites-vous dans le Quartier des Cendres ?",
     "flag_callbacks": [
       {
         "flag": "camp_founded",
@@ -5562,6 +5570,7 @@
         ]
       }
     ],
+    "facing": "high_warden",
     "flag_callbacks": [
       {
         "flag": "reckoning_wall_saved",
@@ -7321,6 +7330,8 @@
         ]
       }
     ],
+    "prompt": "What do you do at the Drowned Cloister?",
+    "prompt_fr": "Que faites-vous au Cloître noyé ?",
     "flag_callbacks": [
       {
         "flag": "ashen_ledger_decoded",
@@ -8323,6 +8334,8 @@
         ]
       }
     ],
+    "prompt": "What do you do in the Reliquary Quarter?",
+    "prompt_fr": "Que faites-vous dans le Quartier des Reliquaires ?",
     "flag_callbacks": [
       {
         "flag": "void_marked",
@@ -9178,6 +9191,8 @@
         ]
       }
     ],
+    "prompt": "What do you do on the Hollow Shore?",
+    "prompt_fr": "Que faites-vous sur la Rive Creuse ?",
     "flag_callbacks": [
       {
         "flag": "void_marked",
@@ -10833,6 +10848,7 @@
         }
       }
     ],
+    "facing": "high_warden",
     "noDetour": true,
     "prompt": "How do you take the standard?",
     "prompt_fr": "Comment prenez-vous l’étendard ?"
@@ -11672,6 +11688,8 @@
         ]
       }
     ],
+    "prompt": "What do you do in Emberwick?",
+    "prompt_fr": "Que faites-vous à Braiseval ?",
     "settlement": {
       "kind": "village",
       "name": "Emberwick",
@@ -12187,6 +12205,8 @@
         "about": "penitents"
       }
     ],
+    "prompt": "What do you do in Akagiri?",
+    "prompt_fr": "Que faites-vous à Akagiri ?",
     "settlement": {
       "kind": "village",
       "name": "Akagiri",
@@ -12644,6 +12664,8 @@
         ]
       }
     ],
+    "prompt": "What do you do at Wrack’s End?",
+    "prompt_fr": "Que faites-vous à Bout-du-Varech ?",
     "settlement": {
       "kind": "village",
       "name": "Wrack’s End",
@@ -13298,6 +13320,8 @@
         "about": "mire"
       }
     ],
+    "prompt": "What do you do at the Kindly Hill?",
+    "prompt_fr": "Que faites-vous à la Colline des Bienveillants ?",
     "settlement": {
       "kind": "village",
       "name": "The Kindly Hill",
@@ -13894,6 +13918,8 @@
         ]
       }
     ],
+    "prompt": "What do you do in Rimewell?",
+    "prompt_fr": "Que faites-vous à Puits-de-Givre ?",
     "settlement": {
       "kind": "village",
       "name": "Rimewell",
@@ -14604,6 +14630,8 @@
         ]
       }
     ],
+    "prompt": "What do you do in Highhearth?",
+    "prompt_fr": "Que faites-vous à Haut-Âtre ?",
     "settlement": {
       "kind": "village",
       "name": "Highhearth",
@@ -15182,6 +15210,8 @@
         ]
       }
     ],
+    "prompt": "What do you do at the White Anchorage?",
+    "prompt_fr": "Que faites-vous au Mouillage Blanc ?",
     "settlement": {
       "kind": "town",
       "name": "The White Anchorage",
@@ -16001,6 +16031,8 @@
         ]
       }
     ],
+    "prompt": "What do you do in Greyhithe?",
+    "prompt_fr": "Que faites-vous à Grisegrève ?",
     "settlement": {
       "kind": "village",
       "name": "Greyhithe",
@@ -17748,6 +17780,7 @@
         ]
       }
     ],
+    "facing": "vane_quartermaster",
     "reqGold": 40
   },
   "2070_cut_failed": {
@@ -17771,6 +17804,7 @@
         ]
       }
     ],
+    "facing": "vane_quartermaster",
     "noDetour": true
   },
   "3010_rope_fail": {
@@ -18001,6 +18035,7 @@
         }
       }
     ],
+    "facing": "high_warden",
     "noDetour": true,
     "prompt": "Let it burn, or smother it?",
     "prompt_fr": "La laisser brûler, ou l’étouffer ?"
@@ -19519,6 +19554,8 @@
         }
       }
     ],
+    "prompt": "What do you do in Candlehold?",
+    "prompt_fr": "Que faites-vous à Candlehold ?",
     "flag_callbacks": [
       {
         "flag": "claim_dominion",
@@ -20953,6 +20990,7 @@
         ]
       }
     ],
+    "facing": "aurel_vane",
     "flag_callbacks": [
       {
         "flag": "way_quiet",
