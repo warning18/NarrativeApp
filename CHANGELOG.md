@@ -17,6 +17,15 @@ The city chart on every stored plan, and the way back in.
 - **District names on the whole city no longer overlap**: a name slides down or up by its own height until it finds room (the Ashen Quarter's three names sat on one another).
 - **A look out of a building shows the city's chart, with a button back in.** A scene inside a building keeps its room view; looking out of it now shows the chart (it showed the generated streets) and a button on it goes back in.
 
+## [1.424.0+460]
+
+A hub's choices on rings and chips, and a beat when one is taken.
+
+### Changed
+- **A hub's choices are grouped by kind.** A scene with more than four choices done where you stand shows, round the party's mark, one dashed ring for each kind (Fight, Talk & decide, Checks & pay) with a chip on it ("Fight · 4") and up to five of its icons, the rest a "+N"; the same chips sit under the map, with a "Ways · N" chip for the plain ways on the map. A tap on a chip or an icon opens that list in a sheet (the ring stays lit; a way lights its road on the map above), and a second tap on a card does it.
+- **A beat when a choice done here is taken.** A ring in the kind's colour spreads from the party's mark and the choice's icon rises; the other cards dim meanwhile. Reduced motion skips it.
+- Plain decisions and words have their own icons (balance, chat) on the cards and rings, not the road's signpost; the cards' tags (price, alignment, check, fight) now come from Core's choice tags.
+
 ## [1.423.0+459]
 
 A feature opening is now shown, and a shut one is not in the way.
