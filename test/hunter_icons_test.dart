@@ -1,6 +1,7 @@
-// The six rival hunters (Narrative's rival-hunters.md) have icons of their
-// own, drawn by tool/gen_hunter_icons.py: no more a borrowed picture, 128x128
-// like every enemy icon, and none the same as another.
+// The six rival hunters (Narrative's rival-hunters.md) and the six nemesis
+// champions (nemesis-quests.md) have icons of their own, drawn by
+// tool/gen_hunter_icons.py: no more a borrowed picture, 128x128 like every
+// enemy icon, and none the same as another.
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -14,10 +15,16 @@ const hunters = [
   'compact_anvil_deaf_tove',
   'mire_returned_sedge',
   'mire_herons_wake_wen',
+  'champion_dominion',
+  'champion_crows',
+  'champion_compact',
+  'champion_vigil',
+  'champion_penitents',
+  'champion_mire',
 ];
 
 void main() {
-  test('each hunter has an icon of its own, 128x128', () {
+  test('each hunter and champion has an icon of its own, 128x128', () {
     for (final id in hunters) {
       expect(EnemyIcons.allIds, contains(id), reason: id);
       expect(EnemyIcons.pathFor(id), 'assets/icons/enemies/$id.png',
@@ -29,7 +36,7 @@ void main() {
     }
   });
 
-  test('no two hunters, and no hunter and another foe, share a picture', () {
+  test('no two of them, and none and another foe, share a picture', () {
     final seen = <String, String>{};
     for (final id in EnemyIcons.allIds) {
       final bytes = File('assets/icons/enemies/$id.png');

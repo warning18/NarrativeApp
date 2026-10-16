@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.404.0+440]
+
+Faces for the rival hunters and the nemesis champions.
+
+### Changed
+- **Twelve foes have icons of their own.** The six rival hunters (Halvard the spearman, Ysel the candle-bearer, Brodin the quarryman, Tove the deaf anvil, Sedge the returned and Wen of the Heron's Wake) and the six nemesis champions (the Dominion's Orsolya Keld, the Crows' Mireille Sable, the Compact's Hollis Reck, the Vigil's Edda Grey, the Penitents' Ash Confessor and the Mire's Heron Queen's Hand) are no longer drawn with another foe's picture. Each is a 16 × 16 sprite from Narrative's description, in the enemy icons' style, made by `tool/gen_hunter_icons.py`.
+
 ## [1.402.0+438]
 
 The place's rule, the patron's favour and the hunter's mercy, drawn.

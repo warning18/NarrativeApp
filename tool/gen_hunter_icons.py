@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Draws the six rival hunters' icons (v1.384, from Narrative's looks in
-docs/proposals/rival-hunters.md): 16x16 sprites in the enemy icons' style
+docs/proposals/rival-hunters.md) and the six nemesis champions' (from
+Narrative's docs/proposals/nemesis-quests.md and the champions' records in
+enemies.json): 16x16 sprites in the enemy icons' style
 (flat tones, a near-black outline), written at 128x128 (x8, no smoothing) to
 assets/icons/enemies/<id>.png.
 
@@ -194,6 +196,177 @@ SPRITES['mire_herons_wake_wen'] = (
 )
 
 
+# ---- the six nemesis champions (one for each clan) ----------------------
+
+# Orsolya Keld, High Lantern-Bearer of the Dominion: a white robe trimmed
+# in gold and Dominion blue, a high gold-edged hood, a lantern on a staff
+# in the right hand and the book of oaths in the left.
+SPRITES['champion_dominion'] = (
+    {
+        'W': '#e8e8f0', 'w': '#b4b8cc', 'G': '#d8b04a', 'Y': '#ffd666',
+        'T': '#8c643c', 'N': '#2c4a8c', 'B': '#3c3048', 'S': SKIN, 'K': EYE,
+    },
+    [
+        "................",
+        "......GG....GGG.",
+        ".....GWWG...GYG.",
+        ".....WWWW...GYG.",
+        ".....WSSW...GGG.",
+        ".....SKKS....T..",
+        "...WWWWWWWW..T..",
+        "..WWwWGGWwWW.T..",
+        "..WWwWWWWwWWST..",
+        "..NNwWGGWwWW.T..",
+        "..NNwWWWWwWW.T..",
+        "...WwWWWWwW..T..",
+        "...WWWWWWWW..T..",
+        "...WWW..WWW..T..",
+        "...BBB..BBB..T..",
+        "................",
+    ],
+)
+
+# Captain Mireille Sable of the Crows: a black tricorn with a white feather,
+# a long dark coat with silver buttons, the ledger bound in sailcloth in
+# the right hand.
+SPRITES['champion_crows'] = (
+    {
+        'H': '#26222e', 'h': '#3e3848', 'F': '#e8e0d0', 'S': SKIN, 'K': EYE,
+        'V': '#b8bcc8', 'P': '#d8d0b8', 'p': '#8a7a58', 'X': '#14101a',
+    },
+    [
+        "................",
+        ".....HHHH...F...",
+        "...HHHHHHHH.F...",
+        ".....SSSS.......",
+        ".....SKSKS......",
+        ".....SSSS.......",
+        "...HHHHHHHH.....",
+        "..HHhHVVHhHHpPP.",
+        "..HHhHHHHhHSpPP.",
+        "..HHhHVVHhHHpPP.",
+        "..HHhHHHHhHH....",
+        "...HhHHHHhH.....",
+        "...HHHHHHHH.....",
+        "...HHH..HHH.....",
+        "...XXX..XXX.....",
+        "................",
+    ],
+)
+
+# Master Hollis Reck of the Compact: a broad old smith in a leather cap and
+# apron over an ember-orange shirt, a grey beard, the Row's hammer raised.
+SPRITES['champion_compact'] = (
+    {
+        'L': '#4a3624', 'S': SKIN, 'K': EYE, 'D': '#8a8a90', 'd': '#b0b0b8',
+        'C': '#c8632a', 'A': '#6a4a2e', 'a': '#8a6440', 'M': '#9098a8',
+        'm': '#7a5230', 'B': '#2a2018',
+    },
+    [
+        "................",
+        "......LLLL......",
+        ".....LLLLLL.MMMM",
+        ".....SSSSSS.MMMM",
+        ".....SKSSKS...m.",
+        ".....DDDDDD...m.",
+        "....DdDDDDdD..m.",
+        "...CCDDDDDDCC.m.",
+        "..SCCAAAAAACCSm.",
+        "...CAAaAAaAAC.m.",
+        "...CAAAAAAAAC.m.",
+        "....AAaAAaAA..m.",
+        "....AAAAAAAA..m.",
+        "....AAA..AAA..m.",
+        "....BBB..BBB..m.",
+        "................",
+    ],
+)
+
+# Watch-Captain Edda Grey of the Vigil: short grey hair, a grey cloak with
+# a Vigil-blue band, a brass spyglass held up in the right hand.
+SPRITES['champion_vigil'] = (
+    {
+        'C': '#7a808e', 'c': '#a0a6b4', 'D': '#4e5460', 'S': SKIN, 'K': EYE,
+        'h': '#c8ccd4', 'B': '#2a2c34', 'G': '#b89850', 'g': '#e0c878',
+        'V': '#3c6a98',
+    },
+    [
+        "................",
+        "......hhhh....g.",
+        ".....hhhhhh...G.",
+        ".....hSSSSh...g.",
+        ".....SKSSKS...G.",
+        ".....SSSSSS...g.",
+        "...DCCCCCCCD..G.",
+        "..DCCcCCCCcCDSG.",
+        "..DCCcCVVCcCD...",
+        "..DCCcCCCCcCD...",
+        "..DCCcCCCCcCD...",
+        "...DCCCCCCCD....",
+        "...DCCCCCCCD....",
+        "....CCC..CCC....",
+        "....BBB..BBB....",
+        "................",
+    ],
+)
+
+# The Ash Confessor of the Penitents: an ash-grey hooded robe, a face burned
+# smooth, a lantern that burns no flame in the right hand.
+SPRITES['champion_penitents'] = (
+    {
+        'R': '#7a7470', 'r': '#a49e9a', 'D': '#4c4844', 'F': '#8a3a2a',
+        'f': '#5a2218', 'K': '#161210', 'L': '#4a4a54', 'l': '#6a6a76',
+    },
+    [
+        "................",
+        ".....RRRRR......",
+        "....RRRRRRR.....",
+        "....RFFFFFR.....",
+        "....RFKFKFR.....",
+        "....RFfffFR.....",
+        "...RRRRRRRRR....",
+        "..RRrRRRRRrRR...",
+        "..RRrRRRRRrRRLl.",
+        "..RRrRRDDRrRFLL.",
+        "..RRrRRRRRrRRLL.",
+        "...RrRRRRRrR.Ll.",
+        "...RRRRRRRRR....",
+        "....RRR..RRR....",
+        "....DDD..DDD....",
+        "................",
+    ],
+)
+
+# The Heron Queen's Hand of the Mire: a hooded green-grey robe, a smooth pale
+# mask with only eye slits (no face to keep), a white heron plume on the hood
+# and another held in a white-gloved hand.
+SPRITES['champion_mire'] = (
+    {
+        'G': '#587860', 'g': '#7a9c80', 'D': '#364a3c', 'M': '#e8e8e0',
+        'm': '#b8b8b0', 'K': '#2a2a2a', 'P': '#f4f4f0', 'S': '#e8e8e0',
+        'B': '#1c241a',
+    },
+    [
+        "....P..P.P......",
+        ".....PPPP.......",
+        "....GGGGGG......",
+        "....GMMMMG......",
+        "....GMKMKG...P..",
+        "....GMmmMG...P..",
+        "...GGGMMGGG..P..",
+        "..GGgGGGGGgGGP..",
+        "..GGgGGGGGgGSP..",
+        "..GGgGGDDGgGG...",
+        "..GGgGGGGGgGG...",
+        "...GgGGGGGgG....",
+        "...GGGGGGGGG....",
+        "....GGG..GGG....",
+        "....BBB..BBB....",
+        "................",
+    ],
+)
+
+
 def render(palette, rows):
     assert len(rows) == 16, len(rows)
     for row in rows:
@@ -221,7 +394,7 @@ def render(palette, rows):
 
 def main():
     folder = os.path.join('assets', 'icons', 'enemies')
-    sheet = Image.new('RGBA', (3 * 136 + 8, 2 * 136 + 8), (40, 36, 48, 255))
+    sheet = Image.new('RGBA', (3 * 136 + 8, 4 * 136 + 8), (40, 36, 48, 255))
     for i, (enemy_id, (palette, rows)) in enumerate(SPRITES.items()):
         small = render(palette, rows)
         big = small.resize((128, 128), Image.NEAREST)
