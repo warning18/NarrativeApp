@@ -280,8 +280,6 @@ Widget _pinLabel(String text, bool dark) => Container(
 Widget _pin(Place p, PinStyle style, bool dark, bool fr, Size map,
     {bool selected = false}) {
   final top = dominant(p.ways);
-  final cats = p.ways.toSet().toList()
-    ..sort((a, b) => a.index.compareTo(b.index));
   final cx = p.at.dx * map.width;
   final cy = p.at.dy * map.height;
   switch (style) {
@@ -475,7 +473,7 @@ class _FlagPainter extends CustomPainter {
 const _phoneSize = Size(411, 890);
 
 Widget _phoneApp(bool dark, Widget Function(BuildContext) body,
-    {bool fr = false, String tab = 'Journey'}) {
+    {bool fr = false}) {
   final theme = buildAppTheme(
       stitchedInkScheme(dark ? Brightness.dark : Brightness.light));
   return SizedBox(
