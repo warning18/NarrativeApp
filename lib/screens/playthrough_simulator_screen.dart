@@ -51,6 +51,7 @@ import '../data/sim_quests.dart';
 import '../data/story_graph_integrity.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
+import '../data/training.dart' show TrainingPath, trainingPathsFrom;
 import '../data/zone_gating.dart' show meetsRequiredFlags, zoneIsMain;
 import '../data/clan_power.dart' show TerritoryChange;
 import '../data/geography.dart';
@@ -76,6 +77,7 @@ import '../providers/app_mode_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/place_pools_provider.dart';
 import '../providers/settings_providers.dart';
+import '../providers/training_provider.dart';
 import '../providers/story_providers.dart';
 import '../utils/game_icons.dart';
 
@@ -384,7 +386,12 @@ class _SimContext {
     this.featureLadder = false,
     this.specs = const {},
     this.specVariants = const {},
+    this.trainingPaths = const {},
   });
+
+  /// training_paths.json parsed: with them the levels' stat points are
+  /// stat picks (SimCharacter.takeStatPicks).
+  final Map<String, TrainingPath> trainingPaths;
 
   /// specialisations.json parsed: what the clans offer (specialisations.dart);
   /// and spec_variants.json, their sub-clans' variants and ranks II.
@@ -564,7 +571,10 @@ _SimResult _simulate(
       gameConfig: sim.gameConfig,
       dice: sim.dice,
       spells: sim.spells,
-    )..specIds = [...sim.startSpecs];
+    )
+      ..specIds = [...sim.startSpecs]
+      ..trainingPaths = sim.trainingPaths
+      ..pickRandom = Random(detourSalt * 31 + 17);
   }
 
   var currentId = StoryRepository.startNodeId;
@@ -2045,6 +2055,7 @@ _SimContext _simContextOf(
     featureLadder: featureLadder,
     specs: specInfosFrom(table('specialisations')),
     specVariants: specVariantsFrom(table('spec_variants')),
+    trainingPaths: trainingPathsFrom(table('training_paths')),
   );
 }
 
@@ -2679,6 +2690,7 @@ class _PlaythroughSimulatorScreenState
       landEvents: landEventsFrom(await load(landEventsSchema)),
       houses: await load(housesSchema),
       writtenSteps: await loadWrittenSteps(ref),
+      trainingPaths: await ref.read(trainingPathsProvider.future),
     );
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
     final random = Random();

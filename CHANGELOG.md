@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.445.0+481]
+
+Stat points become picks: each point earned is a choice between three offers.
+
+### Changed
+- **Each stat point is a pick.** You choose between three one-point offers (+1 to a stat, or +10 max health) that follow your profession, your build so far, and one change of course. About one pick in eight has a rare offer worth two points: +2 to one stat, or +1 to two.
+- **A level also brings +1 base damage** by itself, beside the +20 max health: picks rarely offer damage, and free points used to give about two a level.
+- **Saves:** points left unspent become pending picks, one for one. A 5-point build card left on the table is redrawn as a pick.
+- The free pool and the 5-point build cards are on their way out: the new picks screen (UX's) replaces them. Until it lands, the old screen still works.
+
+Simulated over 400 runs, the share of fights won stays within 3 points of today for every profession (Cleric +5, Mage +2, Ranger, Rogue and Warrior −3 to 0). Every boss and the champions stay in their bands.
+
 ## [1.444.0+480]
 
 The map is for moving: a choice that stays where you are keeps you in the scene, and one that leads elsewhere hands you the map.
