@@ -17,6 +17,14 @@ The city chart on every stored plan, and the way back in.
 - **District names on the whole city no longer overlap**: a name slides down or up by its own height until it finds room (the Ashen Quarter's three names sat on one another).
 - **A look out of a building shows the city's chart, with a button back in.** A scene inside a building keeps its room view; looking out of it now shows the chart (it showed the generated streets) and a button on it goes back in.
 
+## [1.423.0+459]
+
+A feature opening is now shown, and a shut one is not in the way.
+
+### Added
+- **The unlock card:** when a feature of the ladder opens, a small "New: Quests" card slides in over the game (not during a fight), with a line on what it does, **Show me** (its tour) and **Later**. One card at a time; left alone it goes after 6 seconds. A gold dot stays on the new thing until it is first opened. Under reduced motion the card fades in place and the dot is still. EN and FR.
+- **Shut things are hidden or greyed:** the ⚖ Clans & Politics button and the Character's Gifts tab are gone until they open; the Quests row (Other), the Inventory and Dice tiles and the Overview's skills part are greyed with a lock, and a tap says "Opens in chapter N". The Skills screen says the same when it is reached shut. A game off the ladder (an older save) sees everything.
+
 ## [1.422.0+458]
 
 ### Added
