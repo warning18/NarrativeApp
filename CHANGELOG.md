@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.456.0+492]
+
+The Regent of the Lantern has a face.
+
+### Added
+- **The Regent's icon:** Cassian Oriel (`claimant_vane`, the chapter 7 boss of the Lantern clan) is no longer drawn with the Hollow Court Inquisitor's picture. He is a slight, bare-faced man in tide-blue and gold, silver at the temples, holding the great Hooded Lantern on a chain (black cowl, a gold eye where the flame should be), from the look in `docs/proposals/dominion-regent.md`: no mask, no white robe, no red, so he never reads as the Inquisition's soldiers or the White Soldier. Drawn by `tool/gen_hunter_icons.py` like the hunters.
+
 ## [1.455.0+491]
 
 Enemies with art stand in the fight, facing the hero.
