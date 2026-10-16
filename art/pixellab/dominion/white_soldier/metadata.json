@@ -1,0 +1,49 @@
+{
+  "group_id": "79eeba43-88ab-4752-817d-5e19ad276ac3",
+  "states": [
+    {
+      "character": {
+        "id": "7fb60d4f-0a06-4139-ae69-162405c88f47",
+        "name": "White Soldier",
+        "prompt": "Add a white mask, dark toge \nIt should be a vilain from a dark church ",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-10-16T11:11:20.302788+00:00"
+      },
+      "folder": "White_Soldier",
+      "frames": {
+        "rotations": {
+          "south": "White_Soldier/rotations/south.png",
+          "south-east": "White_Soldier/rotations/south-east.png",
+          "east": "White_Soldier/rotations/east.png",
+          "north-east": "White_Soldier/rotations/north-east.png",
+          "north": "White_Soldier/rotations/north.png",
+          "north-west": "White_Soldier/rotations/north-west.png",
+          "west": "White_Soldier/rotations/west.png",
+          "south-west": "White_Soldier/rotations/south-west.png"
+        },
+        "animations": {
+          "Walking": {
+            "east": [
+              "White_Soldier/animations/Walking/east/frame_000.png",
+              "White_Soldier/animations/Walking/east/frame_001.png",
+              "White_Soldier/animations/Walking/east/frame_002.png",
+              "White_Soldier/animations/Walking/east/frame_003.png",
+              "White_Soldier/animations/Walking/east/frame_004.png",
+              "White_Soldier/animations/Walking/east/frame_005.png",
+              "White_Soldier/animations/Walking/east/frame_006.png",
+              "White_Soldier/animations/Walking/east/frame_007.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-10-16T14:40:59.019691"
+}

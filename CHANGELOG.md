@@ -15,6 +15,13 @@ The Regent of the Lantern has a face.
 ### Added
 - **The Regent's icon:** Cassian Oriel (`claimant_vane`, the chapter 7 boss of the Lantern clan) is no longer drawn with the Hollow Court Inquisitor's picture. He is a slight, bare-faced man in tide-blue and gold, silver at the temples, holding the great Hooded Lantern on a chain (black cowl, a gold eye where the flame should be), from the look in `docs/proposals/dominion-regent.md`: no mask, no white robe, no red, so he never reads as the Inquisition's soldiers or the White Soldier. Drawn by `tool/gen_hunter_icons.py` like the hunters.
 
+## [1.455.0+491]
+
+Enemies with art stand in the fight, facing the hero.
+
+### Added
+- **Enemy sprites in the fight:** the user's first PixelLab characters stand on the ground below the enemy cards, facing west toward the hero (who faces east): Inquisitor-General Aurel Vane, the Inquisition Warden, the White Soldier, and the two Inquisition soldier variants (worn by the Inquisition Soldier and the Inquisition Auxiliary). They breathe, step in with their blows (the lunge the enemy cards already play), flinch when hit and fade when beaten, and stay still with animations off. An enemy with no art keeps its portrait card alone. Which enemy wears which sprite is one data table (`enemyFightSprite`), so more of the user's art is a file and a line. The originals are kept in `art/pixellab/` (not bundled); the game uses `assets/visuals/fighters/`.
+
 ## [1.454.0+490]
 
 The hero stands in the fight, facing the enemy.

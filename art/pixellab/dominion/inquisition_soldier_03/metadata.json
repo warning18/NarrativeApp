@@ -1,0 +1,59 @@
+{
+  "group_id": "79eeba43-88ab-4752-817d-5e19ad276ac3",
+  "states": [
+    {
+      "character": {
+        "id": "31b8aeed-9a76-42ae-8c5a-b623569546eb",
+        "name": "Inquisition Soldier_03",
+        "prompt": "Add a white mask, dark toge \nIt should be a vilain from a dark church ",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-10-16T07:27:38.845401+00:00"
+      },
+      "folder": "Inquisition_Soldier_03",
+      "frames": {
+        "rotations": {
+          "south": "Inquisition_Soldier_03/rotations/south.png",
+          "south-east": "Inquisition_Soldier_03/rotations/south-east.png",
+          "east": "Inquisition_Soldier_03/rotations/east.png",
+          "north-east": "Inquisition_Soldier_03/rotations/north-east.png",
+          "north": "Inquisition_Soldier_03/rotations/north.png",
+          "north-west": "Inquisition_Soldier_03/rotations/north-west.png",
+          "west": "Inquisition_Soldier_03/rotations/west.png",
+          "south-west": "Inquisition_Soldier_03/rotations/south-west.png"
+        },
+        "animations": {
+          "Walking": {
+            "west": [
+              "Inquisition_Soldier_03/animations/Walking/west/frame_000.png",
+              "Inquisition_Soldier_03/animations/Walking/west/frame_001.png",
+              "Inquisition_Soldier_03/animations/Walking/west/frame_002.png",
+              "Inquisition_Soldier_03/animations/Walking/west/frame_003.png",
+              "Inquisition_Soldier_03/animations/Walking/west/frame_004.png",
+              "Inquisition_Soldier_03/animations/Walking/west/frame_005.png",
+              "Inquisition_Soldier_03/animations/Walking/west/frame_006.png",
+              "Inquisition_Soldier_03/animations/Walking/west/frame_007.png"
+            ],
+            "east": [
+              "Inquisition_Soldier_03/animations/Walking/east/frame_000.png",
+              "Inquisition_Soldier_03/animations/Walking/east/frame_001.png",
+              "Inquisition_Soldier_03/animations/Walking/east/frame_002.png",
+              "Inquisition_Soldier_03/animations/Walking/east/frame_003.png",
+              "Inquisition_Soldier_03/animations/Walking/east/frame_004.png",
+              "Inquisition_Soldier_03/animations/Walking/east/frame_005.png",
+              "Inquisition_Soldier_03/animations/Walking/east/frame_006.png",
+              "Inquisition_Soldier_03/animations/Walking/east/frame_007.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-10-16T15:04:21.528143"
+}

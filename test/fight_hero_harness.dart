@@ -26,7 +26,9 @@ import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'skill_fight_harness.dart' show settle, gamedata, pumpUntil, shows;
 
 Future<void> enterFight(WidgetTester tester,
-    {required Size size, int perception = 8}) async {
+    {required Size size,
+    int perception = 8,
+    String enemyId = 'slum_thug'}) async {
   if (Platform.environment['UX_SHOTS'] != null) await _loadFonts();
   SharedPreferences.setMockInitialValues({
     'gamedb_dice': jsonEncode({
@@ -67,7 +69,7 @@ Future<void> enterFight(WidgetTester tester,
         'perception': perception,
       })));
   final thug = {
-    ...gamedata('enemies.json')['slum_thug'] as Map<String, dynamic>,
+    ...gamedata('enemies.json')[enemyId] as Map<String, dynamic>,
     'maxHealth': 900,
     'guile': 0,
     'skillMoves': <dynamic>[],
@@ -76,7 +78,7 @@ Future<void> enterFight(WidgetTester tester,
       .state<NavigatorState>(find.byType(Navigator).first)
       .push(MaterialPageRoute<bool>(
           builder: (_) => FightScreen(
-                enemyId: 'slum_thug',
+                enemyId: enemyId,
                 enemy: thug,
                 modifiers: const EncounterModifiers(
                     forcedCondition: BattlefieldCondition.highGround,

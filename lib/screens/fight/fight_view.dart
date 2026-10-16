@@ -477,11 +477,12 @@ extension _FightView on _FightScreenState {
           const SizedBox(height: 6),
           Expanded(
             // The hero stands on the ground under the party's cards, facing
-            // the enemies (fight_hero_sprite.dart): it takes no room.
+            // the enemies (fight_figure.dart): it takes no room.
             child: LayoutBuilder(
               builder: (context, area) => Stack(
                 children: [
                   ..._heroOnGround(area),
+                  ..._enemiesOnGround(area),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Row(

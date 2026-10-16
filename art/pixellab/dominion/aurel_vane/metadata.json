@@ -1,0 +1,59 @@
+{
+  "group_id": "79eeba43-88ab-4752-817d-5e19ad276ac3",
+  "states": [
+    {
+      "character": {
+        "id": "6dcf5e39-e220-4fe3-88f9-a1184a963662",
+        "name": "Inquisitor-General Aurel Vane",
+        "prompt": "Add a white mask, dark toge \nIt should be a vilain from a dark church ",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-10-16T08:08:02.751204+00:00"
+      },
+      "folder": "Inquisitor-General_Aurel_Vane",
+      "frames": {
+        "rotations": {
+          "south": "Inquisitor-General_Aurel_Vane/rotations/south.png",
+          "south-east": "Inquisitor-General_Aurel_Vane/rotations/south-east.png",
+          "east": "Inquisitor-General_Aurel_Vane/rotations/east.png",
+          "north-east": "Inquisitor-General_Aurel_Vane/rotations/north-east.png",
+          "north": "Inquisitor-General_Aurel_Vane/rotations/north.png",
+          "north-west": "Inquisitor-General_Aurel_Vane/rotations/north-west.png",
+          "west": "Inquisitor-General_Aurel_Vane/rotations/west.png",
+          "south-west": "Inquisitor-General_Aurel_Vane/rotations/south-west.png"
+        },
+        "animations": {
+          "Walking": {
+            "east": [
+              "Inquisitor-General_Aurel_Vane/animations/Walking/east/frame_000.png",
+              "Inquisitor-General_Aurel_Vane/animations/Walking/east/frame_001.png",
+              "Inquisitor-General_Aurel_Vane/animations/Walking/east/frame_002.png",
+              "Inquisitor-General_Aurel_Vane/animations/Walking/east/frame_003.png",
+              "Inquisitor-General_Aurel_Vane/animations/Walking/east/frame_004.png",
+              "Inquisitor-General_Aurel_Vane/animations/Walking/east/frame_005.png",
+              "Inquisitor-General_Aurel_Vane/animations/Walking/east/frame_006.png",
+              "Inquisitor-General_Aurel_Vane/animations/Walking/east/frame_007.png"
+            ],
+            "west": [
+              "Inquisitor-General_Aurel_Vane/animations/Walking/west/frame_000.png",
+              "Inquisitor-General_Aurel_Vane/animations/Walking/west/frame_001.png",
+              "Inquisitor-General_Aurel_Vane/animations/Walking/west/frame_002.png",
+              "Inquisitor-General_Aurel_Vane/animations/Walking/west/frame_003.png",
+              "Inquisitor-General_Aurel_Vane/animations/Walking/west/frame_004.png",
+              "Inquisitor-General_Aurel_Vane/animations/Walking/west/frame_005.png",
+              "Inquisitor-General_Aurel_Vane/animations/Walking/west/frame_006.png",
+              "Inquisitor-General_Aurel_Vane/animations/Walking/west/frame_007.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-10-16T14:40:35.593083"
+}
