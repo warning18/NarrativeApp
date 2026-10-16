@@ -2541,7 +2541,7 @@
       "mood": "wondrous",
       "speaker": "Narrator"
     },
-    "location": "white_wells",
+    "location": "white_wells_pool",
     "automations": {
       "script_trigger": "on_load_node_1200"
     },
@@ -2655,7 +2655,7 @@
       "mood": "uncanny",
       "speaker": "Narrator"
     },
-    "location": "white_wells",
+    "location": "white_wells_caravan_ring",
     "automations": {
       "script_trigger": "on_load_node_1210"
     },
@@ -2691,7 +2691,7 @@
       "mood": "tender",
       "speaker": "Narrator"
     },
-    "location": "white_wells",
+    "location": "white_wells_pool",
     "automations": {
       "script_trigger": "on_load_node_1000"
     },
@@ -2719,7 +2719,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "white_wells",
+    "location": "white_wells_pool",
     "automations": {
       "script_trigger": "on_load_node_1001"
     },
@@ -2744,7 +2744,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "white_wells",
+    "location": "white_wells_pool",
     "automations": {
       "script_trigger": "on_load_node_1002"
     },
@@ -4442,7 +4442,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "cove_camp",
+    "location": "cove_camp_landing",
     "automations": {
       "script_trigger": "on_load_node_3001"
     },
@@ -5930,7 +5930,7 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "cove_camp",
+    "location": "cove_camp_palisade",
     "choices": [
       {
         "text": "Hold the palisade with the others",
@@ -5980,7 +5980,7 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "cove_camp",
+    "location": "cove_camp_palisade",
     "choices": [
       {
         "text": "Sally out and take their zealot",
@@ -6020,7 +6020,7 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "cove_camp",
+    "location": "cove_camp_palisade",
     "choices": [
       {
         "text": "Stand in the breach",
@@ -6046,7 +6046,7 @@
       "mood": "defiant",
       "speaker": "Narrator"
     },
-    "location": "cove_camp",
+    "location": "cove_camp_palisade",
     "choices": [
       {
         "text": "Walk the camp and count what is left",
@@ -8555,7 +8555,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "choices": [
       {
         "text": "Tell the truth: he was fighting it",
@@ -8609,7 +8609,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "choices": [
       {
         "text": "Take it off the velvet",
@@ -8641,7 +8641,7 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "choices": [
       {
         "text": "Get to him before the bell",
@@ -8663,7 +8663,7 @@
       "mood": "hopeful",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "choices": [
       {
         "text": "Carry the hammer: speak for the Row",
@@ -8709,7 +8709,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "automations": {},
     "choices": [
       {
@@ -8804,7 +8804,7 @@
       "mood": "uncanny",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_frost_line",
     "automations": {},
     "choices": [
       {
@@ -8826,7 +8826,7 @@
       "mood": "bitter",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "automations": {},
     "choices": [
       {
@@ -8848,7 +8848,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "automations": {},
     "choices": [
       {
@@ -8870,7 +8870,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_last_lantern",
     "automations": {},
     "choices": [
       {
@@ -8892,7 +8892,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_frost_line",
     "automations": {},
     "choices": [
       {
@@ -8914,7 +8914,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_frost_line",
     "automations": {},
     "choices": [
       {
@@ -8936,7 +8936,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_frost_line",
     "automations": {},
     "choices": [
       {
@@ -10424,7 +10424,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_last_lantern",
     "reqAlignmentMax": -20,
     "choices": [
       {
@@ -10551,7 +10551,7 @@
       "mood": "grim",
       "speaker": "Chart-keeper"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "choices": [
       {
         "text": "Back over the frost",
@@ -10572,7 +10572,7 @@
       "mood": "bitter",
       "speaker": "Penitent"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "choices": [
       {
         "text": "His name stays on the list, and he carries it from here",
@@ -10634,7 +10634,7 @@
       "mood": "grim",
       "speaker": "Lantern-keeper"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_last_lantern",
     "choices": [
       {
         "text": "Back to the last of the order",
@@ -11061,7 +11061,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "choices": [
       {
         "text": "Open the reliquary yourself",
@@ -11376,7 +11376,7 @@
       "mood": "mournful",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "choices": [
       {
         "text": "Close her eyes and walk back among the chapels",
@@ -11415,7 +11415,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "automations": {},
     "choices": [
       {
@@ -11549,7 +11549,7 @@
       "mood": "mournful",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "automations": {},
     "choices": [
       {
@@ -11708,7 +11708,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "emberwick",
+    "location": "emberwick_well_square",
     "choices": [
       {
         "text": "Walk beside him and keep the candles off",
@@ -11751,7 +11751,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "emberwick",
+    "location": "emberwick_kilns",
     "choices": [
       {
         "text": "Ride the box and keep the coal",
@@ -11814,7 +11814,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "emberwick",
+    "location": "emberwick_smithy_lane",
     "choices": [
       {
         "text": "Learn the ten signs by heart",
@@ -11860,7 +11860,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "emberwick",
+    "location": "emberwick_smithy_lane",
     "choices": [
       {
         "text": "Leave him to his cold forge",
@@ -11881,7 +11881,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "emberwick",
+    "location": "emberwick_well_square",
     "choices": [
       {
         "text": "Back to the kilns",
@@ -11910,7 +11910,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "emberwick",
+    "location": "emberwick_kilns",
     "choices": [
       {
         "text": "Back into the hollow",
@@ -11931,7 +11931,7 @@
       "mood": "wry",
       "speaker": "Narrator"
     },
-    "location": "emberwick",
+    "location": "emberwick_kilns",
     "choices": [
       {
         "text": "Back into the hollow",
@@ -11953,7 +11953,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "emberwick",
+    "location": "emberwick_smithy_lane",
     "choices": [
       {
         "text": "Back to the well",
@@ -11985,7 +11985,7 @@
       "mood": "neutral",
       "speaker": "Widow"
     },
-    "location": "emberwick",
+    "location": "emberwick_smithy_lane",
     "choices": [
       {
         "text": "Tell her it was his voice, and it has stopped",
@@ -12020,7 +12020,7 @@
       "mood": "tender",
       "speaker": "Narrator"
     },
-    "location": "emberwick",
+    "location": "emberwick_kilns",
     "choices": [
       {
         "text": "Up and back to the kilns",
@@ -12041,7 +12041,7 @@
       "mood": "creepy",
       "speaker": "Narrator"
     },
-    "location": "emberwick",
+    "location": "emberwick_kilns",
     "choices": [
       {
         "text": "Follow it down the road",
@@ -12223,7 +12223,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "akagiri",
+    "location": "akagiri_springs",
     "choices": [
       {
         "text": "Hold him, and take what comes out",
@@ -12264,7 +12264,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "akagiri",
+    "location": "akagiri_forge_terrace",
     "choices": [
       {
         "text": "Ask his family for his name, and their leave",
@@ -12314,7 +12314,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "akagiri",
+    "location": "akagiri_springs",
     "choices": [
       {
         "text": "Back up the terraces",
@@ -12343,7 +12343,7 @@
       "mood": "wry",
       "speaker": "Narrator"
     },
-    "location": "akagiri",
+    "location": "akagiri_brewhouse",
     "choices": [
       {
         "text": "Down to the terraces, carefully",
@@ -12364,7 +12364,7 @@
       "mood": "wry",
       "speaker": "Narrator"
     },
-    "location": "akagiri",
+    "location": "akagiri_brewhouse",
     "choices": [
       {
         "text": "Up, slowly, and back to the terraces",
@@ -12386,7 +12386,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "akagiri",
+    "location": "akagiri_forge_terrace",
     "choices": [
       {
         "text": "Back to the bells",
@@ -12418,7 +12418,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "akagiri",
+    "location": "akagiri_forge_terrace",
     "choices": [
       {
         "text": "Leave them the chest and everything in it",
@@ -12453,7 +12453,7 @@
       "mood": "wondrous",
       "speaker": "Narrator"
     },
-    "location": "akagiri",
+    "location": "akagiri_springs",
     "choices": [
       {
         "text": "Back to the terraces, skin and all",
@@ -12686,7 +12686,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_hull_houses",
     "choices": [
       {
         "text": "Let them work, and ask nothing",
@@ -12727,7 +12727,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_hull_houses",
     "choices": [
       {
         "text": "Draw beside her, and show her it isn’t",
@@ -12765,7 +12765,7 @@
       "mood": "tender",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_hull_houses",
     "choices": [
       {
         "text": "Leave the Line to its doorstep",
@@ -12786,7 +12786,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_lamp_path",
     "choices": [
       {
         "text": "Shield the flame and climb",
@@ -12849,7 +12849,7 @@
       "mood": "hopeful",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_lamp_path",
     "choices": [
       {
         "text": "Climb down to the village",
@@ -12877,7 +12877,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_lamp_path",
     "choices": [
       {
         "text": "Feel your way back down",
@@ -12898,7 +12898,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_quay",
     "choices": [
       {
         "text": "Outsail her in the fog",
@@ -12973,7 +12973,7 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_quay",
     "choices": [
       {
         "text": "Fight her for the crate",
@@ -13002,7 +13002,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_quay",
     "choices": [
       {
         "text": "Limp back into Wrack’s End",
@@ -13028,7 +13028,7 @@
       "mood": "uncanny",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_lamp_path",
     "choices": [
       {
         "text": "Back up to the houses",
@@ -13050,7 +13050,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_quay",
     "choices": [
       {
         "text": "Climb back up the cliff",
@@ -13071,7 +13071,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_quay",
     "choices": [
       {
         "text": "Climb back up the cliff",
@@ -13093,7 +13093,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_hull_houses",
     "choices": [
       {
         "text": "Back along the cliff",
@@ -13151,7 +13151,7 @@
       "mood": "wistful",
       "speaker": "Headman"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_hull_houses",
     "choices": [
       {
         "text": "Pay him to put the false lamps out for good",
@@ -13187,7 +13187,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_hull_houses",
     "choices": [
       {
         "text": "Back to the houses",
@@ -13335,7 +13335,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_fen_edge",
     "choices": [
       {
         "text": "Make the cut yourself, along the grain",
@@ -13395,7 +13395,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_fen_edge",
     "choices": [
       {
         "text": "Leave her to her tree",
@@ -13416,7 +13416,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_fen_edge",
     "choices": [
       {
         "text": "Pay the hill its small drawing",
@@ -13458,7 +13458,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_fen_edge",
     "choices": [
       {
         "text": "Take his terms, and keep them",
@@ -13519,7 +13519,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_fen_edge",
     "choices": [
       {
         "text": "Climb back into the evening",
@@ -13540,7 +13540,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_fen_edge",
     "choices": [
       {
         "text": "Go up into the summer evening",
@@ -13566,7 +13566,7 @@
       "mood": "mournful",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_fen_edge",
     "choices": [
       {
         "text": "Back to the door in the hill",
@@ -13589,7 +13589,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_hall",
     "choices": [
       {
         "text": "Leave the table while it still likes me",
@@ -13610,7 +13610,7 @@
       "mood": "wry",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_hall",
     "choices": [
       {
         "text": "Out under the stars, a year lighter",
@@ -13632,7 +13632,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_hall",
     "choices": [
       {
         "text": "Leave her to her knitting",
@@ -13665,7 +13665,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_hall",
     "choices": [
       {
         "text": "Ask Nell to come down to the camp",
@@ -13699,7 +13699,7 @@
       "mood": "wondrous",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_hall",
     "choices": [
       {
         "text": "Check the clock, then go",
@@ -13924,7 +13924,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_choir_well",
     "choices": [
       {
         "text": "Give her a name from the Reckoning Wall",
@@ -14005,7 +14005,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_choir_well",
     "choices": [
       {
         "text": "Leave her to the bell",
@@ -14026,7 +14026,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_ridge_post",
     "choices": [
       {
         "text": "Hunt it without them, before they do",
@@ -14082,7 +14082,7 @@
       "mood": "mournful",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_ridge_post",
     "choices": [
       {
         "text": "Walk back up the road to the well",
@@ -14110,7 +14110,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_pilgrims_road",
     "choices": [
       {
         "text": "Hide her, house to house, for three days",
@@ -14169,7 +14169,7 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_pilgrims_road",
     "choices": [
       {
         "text": "Hold the doorway",
@@ -14218,7 +14218,7 @@
       "mood": "hopeful",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_pilgrims_road",
     "choices": [
       {
         "text": "See them to the edge of the road",
@@ -14239,7 +14239,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_bell_square",
     "choices": [
       {
         "text": "Carry it, and fight whoever follows",
@@ -14302,7 +14302,7 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_bell_square",
     "choices": [
       {
         "text": "Meet them at the well",
@@ -14333,7 +14333,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_bell_square",
     "choices": [
       {
         "text": "Walk back to the well",
@@ -14354,7 +14354,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_bell_square",
     "choices": [
       {
         "text": "Back down to the well",
@@ -14375,7 +14375,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_bell_square",
     "choices": [
       {
         "text": "Back down to the well",
@@ -14396,7 +14396,7 @@
       "mood": "ominous",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_pilgrims_road",
     "choices": [
       {
         "text": "Back to the halt",
@@ -14418,7 +14418,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_ridge_post",
     "choices": [
       {
         "text": "Back along the road",
@@ -14439,7 +14439,7 @@
       "mood": "neutral",
       "speaker": "Road-keeper"
     },
-    "location": "rimewell",
+    "location": "rimewell_ridge_post",
     "choices": [
       {
         "text": "Take it to the Quarter, for her daughter",
@@ -14473,7 +14473,7 @@
       "mood": "tender",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_pilgrims_road",
     "choices": [
       {
         "text": "Back to the well",
@@ -14641,7 +14641,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_quarry",
     "choices": [
       {
         "text": "Clear the gallery",
@@ -14685,7 +14685,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_moot_hall",
     "choices": [
       {
         "text": "Because the tear has to be closed",
@@ -14749,7 +14749,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_moot_hall",
     "choices": [
       {
         "text": "Climb down and find a better answer",
@@ -14775,7 +14775,7 @@
       "mood": "defiant",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_long_houses",
     "choices": [
       {
         "text": "Back through the great door",
@@ -14798,7 +14798,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_long_houses",
     "choices": [
       {
         "text": "Out into the snow",
@@ -14820,7 +14820,7 @@
       "mood": "mournful",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_long_houses",
     "choices": [
       {
         "text": "Out into the snow, hands shaking",
@@ -14842,7 +14842,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_moot_hall",
     "choices": [
       {
         "text": "Back to the moot-hall fire",
@@ -14875,7 +14875,7 @@
       "mood": "wistful",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_moot_hall",
     "choices": [
       {
         "text": "Tell her the truth about the frost",
@@ -14914,7 +14914,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_moot_hall",
     "choices": [
       {
         "text": "Up, and back to the great door",
@@ -16038,7 +16038,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_net_lofts",
     "choices": [
       {
         "text": "Carry the sword down to her door",
@@ -16080,7 +16080,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_watch_stones",
     "choices": [
       {
         "text": "Hold its eye until it goes",
@@ -16109,7 +16109,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_watch_stones",
     "choices": [
       {
         "text": "Row back to the shore",
@@ -16128,7 +16128,7 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_watch_stones",
     "choices": [
       {
         "text": "Keep the cloth: be the Warden of the Wall",
@@ -16171,7 +16171,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_moorings",
     "choices": [
       {
         "text": "Drink, and sit as the fifth court",
@@ -16221,7 +16221,7 @@
       "mood": "wondrous",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_shingle",
     "choices": [
       {
         "text": "Back up the beach",
@@ -16242,7 +16242,7 @@
       "mood": "uncanny",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_net_lofts",
     "choices": [
       {
         "text": "Back to the houses",
@@ -16264,7 +16264,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_net_lofts",
     "choices": [
       {
         "text": "Back to the houses",
@@ -16296,7 +16296,7 @@
       "mood": "neutral",
       "speaker": "Eldest"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_net_lofts",
     "choices": [
       {
         "text": "Read her the page, her daughter’s name with it",
@@ -16332,7 +16332,7 @@
       "mood": "wondrous",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_shingle",
     "choices": [
       {
         "text": "Back up the beach",
@@ -16353,7 +16353,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_shingle",
     "choices": [
       {
         "text": "Back up the beach",
@@ -16375,7 +16375,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_shingle",
     "choices": [
       {
         "text": "Flash the Crows’ own sign, and mean it",
@@ -16445,7 +16445,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_shingle",
     "choices": [
       {
         "text": "Bring it up",
@@ -16508,7 +16508,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_moorings",
     "choices": [
       {
         "text": "Take them aboard, and douse the Eel’s lamps",
@@ -16586,7 +16586,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_moorings",
     "choices": [
       {
         "text": "Take the hammer, and break the Fourth Piece",
@@ -16651,7 +16651,7 @@
       "mood": "reflective",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_net_lofts",
     "choices": [
       {
         "text": "Promise to say nothing until you have seen the door",
@@ -16722,7 +16722,7 @@
       "mood": "uncanny",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_moorings",
     "choices": [
       {
         "text": "Speak to it",
@@ -16783,7 +16783,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_moorings",
     "choices": [
       {
         "text": "Keep her secret",
@@ -16842,7 +16842,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_moorings",
     "choices": [
       {
         "text": "Take the children aboard the Eel",
@@ -16919,7 +16919,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "greyhithe",
+    "location": "greyhithe_moorings",
     "choices": [
       {
         "text": "Hide them below, and sail",
@@ -17826,7 +17826,7 @@
       "mood": "bitter",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "choices": [
       {
         "text": "Back to the Quarter",
@@ -17849,7 +17849,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "akagiri",
+    "location": "akagiri_forge_terrace",
     "choices": [
       {
         "text": "Back to the bells",
@@ -18014,7 +18014,7 @@
       "mood": "grim",
       "speaker": "Lantern-keeper"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_last_lantern",
     "choices": [
       {
         "text": "Take the lamp, and the Wickwardens with it",
@@ -18519,7 +18519,7 @@
       "mood": "ominous",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_quay",
     "choices": [
       {
         "text": "Row the vote out to the envoy, seal unbroken",
@@ -18594,7 +18594,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_hull_houses",
     "choices": [
       {
         "text": "Take the third, and keep her secret",
@@ -18673,7 +18673,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_hull_houses",
     "choices": [
       {
         "text": "Buy the caulker’s refit book (40 gold)",
@@ -18742,7 +18742,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_quay",
     "choices": [
       {
         "text": "Count the hands aloud and sign the tally",
@@ -18825,7 +18825,7 @@
       "mood": "mournful",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_pilgrims_road",
     "choices": [
       {
         "text": "Carry the knife to Tallis on the road",
@@ -18882,7 +18882,7 @@
       "mood": "ominous",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_pilgrims_road",
     "choices": [
       {
         "text": "Walk with them, and carry their list",
@@ -18971,7 +18971,7 @@
       "mood": "uncanny",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_ridge_post",
     "choices": [
       {
         "text": "Hold the lamp",
@@ -19042,7 +19042,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_pilgrims_road",
     "choices": [
       {
         "text": "Carry the Tribunal’s terms to the smiths",
@@ -21568,7 +21568,7 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_lantern_cliff",
     "choices": [
       {
         "text": "Bear the Lantern, and let the clans keep their banners",
@@ -21743,7 +21743,7 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_lantern_cliff",
     "choices": [
       {
         "text": "Sit with open eyes, and strike out the Edict",
@@ -21922,7 +21922,7 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_lantern_cliff",
     "choices": [
       {
         "text": "Tell them why, and take the crown from their hands",
@@ -22101,7 +22101,7 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_lantern_cliff",
     "choices": [
       {
         "text": "Accept the fen’s terms unread, and keep them",
@@ -22276,7 +22276,7 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_lantern_cliff",
     "choices": [
       {
         "text": "Choose the peace that pays, and pay for it",
@@ -22450,7 +22450,7 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_lantern_cliff",
     "choices": [
       {
         "text": "Take the burnt crown, and undo what was done",
@@ -22624,7 +22624,7 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_lantern_cliff",
     "choices": [
       {
         "text": "Lay the Seal on the Throne for every drawer",
@@ -23184,7 +23184,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "cove_camp",
+    "location": "cove_camp_sail_loft",
     "choices": [
       {
         "text": "Lead the van yourself",
@@ -23380,7 +23380,7 @@
       "mood": "wistful",
       "speaker": "Narrator"
     },
-    "location": "cove_camp",
+    "location": "cove_camp_sail_loft",
     "choices": [
       {
         "text": "Tell them what the Host is fighting for",
@@ -24079,7 +24079,7 @@
       "mood": "mournful",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_last_lantern",
     "choices": [
       {
         "text": "Leave her to her candles",
@@ -24102,7 +24102,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_frost_line",
     "choices": [
       {
         "text": "Carry the count back through the frost",
@@ -24123,7 +24123,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_frost_line",
     "choices": [
       {
         "text": "Unmake it and take the count",
@@ -24146,7 +24146,7 @@
       "mood": "wondrous",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_moot_hall",
     "choices": [
       {
         "text": "Leave him to the fire",
@@ -24169,7 +24169,7 @@
       "mood": "wondrous",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_quarry",
     "choices": [
       {
         "text": "Take the word up to the moot-hall",
@@ -24190,7 +24190,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_quarry",
     "choices": [
       {
         "text": "Put the frost back in the stone",
@@ -24955,7 +24955,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_last_lantern",
     "choices": [
       {
         "text": "Ask her to let you copy the entry",
@@ -25030,7 +25030,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "choices": [
       {
         "text": "Swear to be on the Eel’s deck when the bells ring",
@@ -25105,7 +25105,7 @@
       "mood": "reflective",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_last_lantern",
     "choices": [
       {
         "text": "Carry the question to the Last Watch",
@@ -25176,7 +25176,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chapels",
     "choices": [
       {
         "text": "Tear out the page for the Mire Courts",
@@ -25582,7 +25582,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "cove_camp",
+    "location": "cove_camp_landing",
     "choices": [
       {
         "text": "Accept what they offer",
@@ -25637,7 +25637,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "cove_camp",
+    "location": "cove_camp_fireside",
     "choices": [
       {
         "text": "Take the petition roll from the factor",
@@ -25659,7 +25659,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "cove_camp",
+    "location": "cove_camp_fireside",
     "choices": [
       {
         "text": "Roll it up and keep it in the Eel’s chest",
@@ -25680,7 +25680,7 @@
       "mood": "ominous",
       "speaker": "Narrator"
     },
-    "location": "cove_camp",
+    "location": "cove_camp_fireside",
     "choices": [
       {
         "text": "Take his sealed letter and let him wait",
@@ -25702,7 +25702,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "cove_camp",
+    "location": "cove_camp_fireside",
     "choices": [
       {
         "text": "Fold the letter into the Eel’s chart-case",
@@ -25723,7 +25723,7 @@
       "mood": "ominous",
       "speaker": "Narrator"
     },
-    "location": "cove_camp",
+    "location": "cove_camp_fireside",
     "choices": [
       {
         "text": "Ask the boy what the chain-master wants",
@@ -25745,7 +25745,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "cove_camp",
+    "location": "cove_camp_fireside",
     "choices": [
       {
         "text": "Pay the boy and watch him row into the dark",
@@ -25856,7 +25856,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_hull_houses",
     "automations": {},
     "choices": [
       {
@@ -25894,7 +25894,7 @@
       "mood": "mournful",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_lamp_path",
     "automations": {},
     "choices": [
       {
