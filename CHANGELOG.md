@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.417.0+453]
+
+### Added
+- The data for the in-place display (`docs/proposals/inplace-data.md`): `facing` on 94 story nodes (who the scene is with), `prompt` / `prompt_fr` on the 226 scenes with two or more choices (the question the scene ends on), and `about` on 69 hub choices (the NPC, clan or sub-clan a choice is about), EN and FR. All optional; nothing reads them yet.
+
 ## [1.416.0+452]
 
 Lysa's blood on the Shroud.
