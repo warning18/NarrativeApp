@@ -1570,5 +1570,35 @@
     ],
     "requiresPatrons": [],
     "pact": null
+  },
+  "open_hand_passive_shroud_blood": {
+    "id": "open_hand_passive_shroud_blood",
+    "patron": "open_hand",
+    "slot": "passive",
+    "name": "Blood on the Shroud",
+    "name_fr": "Du sang sur le Linceul",
+    "flavour": "The piece took her blood and warmed. Something on the other side of it has your name now.",
+    "flavour_fr": "Le pan a pris son sang et s’est réchauffé. Quelque chose, de l’autre côté, connaît votre nom maintenant.",
+    "effects": [
+      {
+        "kind": "lowHealthDamagePercent",
+        "value": 6
+      },
+      {
+        "kind": "lifestealPercent",
+        "value": 2
+      },
+      {
+        "kind": "critChance",
+        "value": 2
+      },
+      {
+        "kind": "maxHealth",
+        "value": -12
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null,
+    "storyOnly": true
   }
 }

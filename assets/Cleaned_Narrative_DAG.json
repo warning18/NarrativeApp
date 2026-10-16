@@ -83,7 +83,9 @@
         "en": "I had emptied the old man’s cup once, at ten, while he held my sleeve: four coppers, a button and a little bone die. The coppers were long spent. The die I had kept, the way you keep a thing you are not sure you have paid for.",
         "fr": "J’avais vidé la sébile du vieil homme, autrefois, à dix ans, pendant qu’il tenait ma manche : quatre sous, un bouton et un petit dé d’os. Les sous étaient dépensés depuis longtemps. Le dé, je l’avais gardé, comme on garde une chose qu’on n’est pas certain d’avoir payée."
       }
-    ]
+    ],
+    "prompt": "What do you save from the Blind Beggar?",
+    "prompt_fr": "Que sauvez-vous du Mendiant Aveugle ?"
   },
   "105": {
     "id": "105",
@@ -168,7 +170,9 @@
         "en": "A man I had taken eleven silver off an hour before had decided that the door was his, and that the blast had been a sign. He wanted his eleven silver back, and the rest.",
         "fr": "Un homme à qui j’avais pris onze pièces d’argent une heure plus tôt avait décidé que la porte lui appartenait, et que l’explosion était un signe. Il voulait ses onze pièces, et le reste."
       }
-    ]
+    ],
+    "prompt": "Who stands in your way?",
+    "prompt_fr": "Qui vous barre la route ?"
   },
   "106": {
     "id": "106",
@@ -223,7 +227,9 @@
         "en": "My stake was in my coat and the door was clear: out through the kitchens, and into the street.",
         "fr": "Ma mise était dans mon manteau et la porte était dégagée : par les cuisines, et dans la rue."
       }
-    ]
+    ],
+    "prompt": "Another fight, or the street?",
+    "prompt_fr": "Un autre combat, ou la rue ?"
   },
   "110": {
     "id": "110",
@@ -325,7 +331,9 @@
         "en": "The owner’s strongbox was mine. It had cost me more than I could feel yet.",
         "fr": "Le coffre du patron était à moi. Il m’avait coûté plus que je ne pouvais encore le sentir."
       }
-    ]
+    ],
+    "prompt": "Which table do you take?",
+    "prompt_fr": "Quelle table prenez-vous ?"
   },
   "115": {
     "id": "115",
@@ -425,7 +433,9 @@
         "en": "The man from the door had taken my stake along with my pride, and had been, I had to admit, entitled to some of both.",
         "fr": "L’homme de la porte avait pris ma mise en même temps que mon amour-propre, et il avait droit, je devais l’admettre, à une partie des deux."
       }
-    ]
+    ],
+    "prompt": "How do you leave the room?",
+    "prompt_fr": "Comment sortez-vous de la salle ?"
   },
   "120": {
     "id": "120",
@@ -524,7 +534,9 @@
         "en": "The old card-master had kissed both my hands and sworn I would never again lose a hand at his tables, which was generous of him, since he no longer had any.",
         "fr": "Le vieux maître des cartes m’avait baisé les deux mains en jurant que je ne perdrais plus jamais une donne à ses tables, ce qui était généreux de sa part, vu qu’il n’en avait plus."
       }
-    ]
+    ],
+    "prompt": "Who do you dig out first?",
+    "prompt_fr": "Qui dégagez-vous d’abord ?"
   },
   "125": {
     "id": "125",
@@ -604,7 +616,9 @@
           "saved_master"
         ]
       }
-    ]
+    ],
+    "prompt": "Will you go home?",
+    "prompt_fr": "Rentrez-vous ?"
   },
   "250": {
     "id": "250",
@@ -756,7 +770,9 @@
         "en": "The thread in me, the {sigil} nobody had chosen, pulled toward home before I did.",
         "fr": "Le fil en moi, la {sigil} que personne n’avait choisie, tira vers la maison avant moi."
       }
-    }
+    },
+    "prompt": "Which way across the river?",
+    "prompt_fr": "Quelle route pour traverser ?"
   },
   "260": {
     "id": "260",
@@ -789,7 +805,10 @@
           "toll_refused"
         ]
       }
-    ]
+    ],
+    "facing": "slum_thug",
+    "prompt": "Pay the toll, or fight?",
+    "prompt_fr": "Payer le péage, ou vous battre ?"
   },
   "261": {
     "id": "261",
@@ -869,7 +888,9 @@
         "en": "At six I had sold a sparrow with a broken wing for a copper. Nobody here was offering one.",
         "fr": "À six ans, j’avais vendu un moineau à l’aile brisée pour un sou. Ici, personne n’en offrait."
       }
-    ]
+    ],
+    "prompt": "What becomes of the beast and its handler?",
+    "prompt_fr": "Que deviennent la bête et son dresseur ?"
   },
   "300": {
     "id": "300",
@@ -926,7 +947,9 @@
         "en": "Somewhere behind me, in the alley, the wire had sung once as the dog tested it again. I had not looked back.",
         "fr": "Quelque part derrière moi, dans la ruelle, le fil avait chanté une fois, le chien l’éprouvant encore. Je n’avais pas regardé en arrière."
       }
-    ]
+    ],
+    "prompt": "How do you approach the house?",
+    "prompt_fr": "Comment approchez-vous de la maison ?"
   },
   "400": {
     "id": "400",
@@ -1067,7 +1090,10 @@
         "en": "Four pelts were worth more than one; I had learned that at twelve. He looked at my sister and me the way I had once looked at the reeds.",
         "fr": "Quatre peaux valaient mieux qu’une ; je l’avais appris à douze ans. Il nous regardait, ma sœur et moi, comme j’avais autrefois regardé les roseaux."
       }
-    ]
+    ],
+    "facing": "aurel_vane",
+    "prompt": "What do you do about Vane?",
+    "prompt_fr": "Que faites-vous face à Vane ?"
   },
   "400_lost": {
     "id": "400_lost",
@@ -1092,7 +1118,8 @@
           "keeper_dead"
         ]
       }
-    ]
+    ],
+    "facing": "aurel_vane"
   },
   "450": {
     "id": "450",
@@ -1126,7 +1153,10 @@
           "keeper_left"
         ]
       }
-    ]
+    ],
+    "facing": "old_hesk",
+    "prompt": "Old Hesk first, or the house?",
+    "prompt_fr": "Le vieux Hesk d’abord, ou la maison ?"
   },
   "470": {
     "id": "470",
@@ -1277,7 +1307,9 @@
         "en": "The thread in me went taut, and for one breath the cloth and I were the same weave.",
         "fr": "Le fil en moi se tendit, et le temps d’un souffle, l’étoffe et moi fûmes du même tissage."
       }
-    }
+    },
+    "prompt": "What do you take from the ruins?",
+    "prompt_fr": "Que prenez-vous des ruines ?"
   },
   "800": {
     "id": "800",
@@ -1338,7 +1370,10 @@
         "en": "I had knelt. In the dust of my own street, in front of him, and a pommel had found my temple while I was still asking.",
         "fr": "J’avais plié les genoux. Dans la poussière de ma propre rue, devant lui, et un pommeau avait trouvé ma tempe pendant que je suppliais encore."
       }
-    ]
+    ],
+    "facing": "brother_clement",
+    "prompt": "What becomes of the assistant?",
+    "prompt_fr": "Que devient l’assistant ?"
   },
   "816": {
     "id": "816",
@@ -1389,7 +1424,9 @@
         "en": "I had dragged my torturer’s assistant out of the fire he had earned, and I could not have told you why. He did not thank me. I had not expected him to.",
         "fr": "J’avais tiré l’assistant de mon tortionnaire hors du feu qu’il avait mérité, et je n’aurais su dire pourquoi. Il ne me remercia pas. Je ne m’y attendais pas."
       }
-    ]
+    ],
+    "prompt": "What do you take from the sack?",
+    "prompt_fr": "Que prenez-vous dans le sac ?"
   },
   "820": {
     "id": "820",
@@ -1437,7 +1474,10 @@
           "hound_wardens"
         ]
       }
-    ]
+    ],
+    "facing": "inquisition_warden",
+    "prompt": "How do you deal with the Wardens?",
+    "prompt_fr": "Comment traitez-vous les Gardiens ?"
   },
   "822": {
     "id": "822",
@@ -1473,7 +1513,10 @@
           "wardens_fooled"
         ]
       }
-    ]
+    ],
+    "facing": "inquisition_warden",
+    "prompt": "How do you answer the guards at the gate?",
+    "prompt_fr": "Que répondez-vous aux gardes de la porte ?"
   },
   "823": {
     "id": "823",
@@ -1525,7 +1568,9 @@
         "en": "Behind me the two Wardens were still running the wrong way down the hall, toward a fight that was, to be fair, real enough.",
         "fr": "Derrière moi, les deux Gardiens couraient encore dans le mauvais sens du couloir, vers un combat qui, pour être juste, était bien réel."
       }
-    ]
+    ],
+    "prompt": "The battlements, or the sewers?",
+    "prompt_fr": "Les remparts, ou les égouts ?"
   },
   "840": {
     "id": "840",
@@ -1560,7 +1605,9 @@
         "failNote": "The rot gives way under you: you fall into the Undercroft.",
         "failNote_fr": "La pourriture cède sous vous : vous tombez dans les Souterrains."
       }
-    ]
+    ],
+    "prompt": "How do you cross the sewers?",
+    "prompt_fr": "Comment traversez-vous les égouts ?"
   },
   "850": {
     "id": "850",
@@ -1598,7 +1645,10 @@
         "failNote": "The brood is not fooled: it drives you down into the Undercroft.",
         "failNote_fr": "La couvée n’est pas dupe : elle vous chasse vers les Souterrains."
       }
-    ]
+    ],
+    "facing": "rat_matriarch",
+    "prompt": "What do you do about the Matriarch?",
+    "prompt_fr": "Que faites-vous de la Matriarche ?"
   },
   "855": {
     "id": "855",
@@ -1623,7 +1673,8 @@
           "matriarch_slain"
         ]
       }
-    ]
+    ],
+    "facing": "rat_matriarch"
   },
   "891": {
     "id": "891",
@@ -1742,7 +1793,9 @@
         "en": "The mate looked at an orc’s shoulders and revised, silently, how much of the loading he expected to do himself.",
         "fr": "Le second regarda les épaules d’un orc et révisa, en silence, la part du chargement qu’il comptait porter lui-même."
       }
-    }
+    },
+    "prompt": "What do you do before the Lark lifts?",
+    "prompt_fr": "Que faites-vous avant que l’Alouette ne s’élève ?"
   },
   "895": {
     "id": "895",
@@ -1798,7 +1851,9 @@
         "en": "\"And her?\" I said. He looked at Lysa for the first time. \"If you get aboard,\" he said, \"so does she. That is all I can promise either of you.\"",
         "fr": "« Et elle ? » demandai-je. Il regarda Lysa pour la première fois. « Si vous montez à bord, dit-il, elle aussi. C’est tout ce que je peux vous promettre, à vous deux. »"
       }
-    ]
+    ],
+    "prompt": "How do you get aboard?",
+    "prompt_fr": "Comment montez-vous à bord ?"
   },
   "896_failed": {
     "id": "896_failed",
@@ -1952,7 +2007,9 @@
         "en": "I looked back for her the way you look for a face in a crowd you know it is not in. Somewhere under those white sails, I told myself, she was looking back.",
         "fr": "Je la cherchai du regard comme on cherche un visage dans une foule où l’on sait qu’il n’est pas. Quelque part sous ces voiles blanches, me dis-je, elle regardait elle aussi."
       }
-    ]
+    ],
+    "prompt": "What do you do about the failing sign?",
+    "prompt_fr": "Que faites-vous du signe qui vacille ?"
   },
   "965": {
     "id": "965",
@@ -2014,7 +2071,9 @@
         "en": "There was a splinter in my shoulder the length of a finger, and not one in Lysa.",
         "fr": "J’avais dans l’épaule une écharde longue comme un doigt, et Lysa n’en avait aucune."
       }
-    ]
+    ],
+    "prompt": "What do you hold on to?",
+    "prompt_fr": "À quoi vous accrochez-vous ?"
   },
   "1100": {
     "id": "1100",
@@ -2085,7 +2144,9 @@
         "en": "There was nobody to look for. I looked anyway.",
         "fr": "Il n’y avait personne à chercher. Je cherchai quand même."
       }
-    ]
+    ],
+    "prompt": "What do you do first?",
+    "prompt_fr": "Que faites-vous d’abord ?"
   },
   "1101": {
     "id": "1101",
@@ -2130,7 +2191,9 @@
           "tear_refused"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you take from the sand?",
+    "prompt_fr": "Que prenez-vous du sable ?"
   },
   "1101_scarred": {
     "id": "1101_scarred",
@@ -2220,7 +2283,9 @@
         "en": "Lysa walked on the shady side of me, which was no side at all, and did not complain once, which frightened me more than complaining would have.",
         "fr": "Lysa marchait du côté de mon ombre, qui n’était aucun côté, et ne se plaignit pas une seule fois, ce qui m’effraya davantage que des plaintes."
       }
-    ]
+    ],
+    "prompt": "How do you cross the heat?",
+    "prompt_fr": "Comment traversez-vous la chaleur ?"
   },
   "1125": {
     "id": "1125",
@@ -2312,7 +2377,9 @@
         "en": "Lysa looked at the sign on its brow for a long time, and then at me, and did not ask, and I was grateful to her for it.",
         "fr": "Lysa regarda longtemps le signe sur son front, puis me regarda, et ne demanda rien, et je lui en sus gré."
       }
-    ]
+    ],
+    "prompt": "What do you do at the stone face?",
+    "prompt_fr": "Que faites-vous devant le visage de pierre ?"
   },
   "1140": {
     "id": "1140",
@@ -2388,7 +2455,10 @@
         "en": "I had left a coin among the beads. It was the first thing I had given away since the Beggar.",
         "fr": "J’avais laissé une pièce parmi les perles. C’était la première chose que je donnais depuis le Mendiant."
       }
-    ]
+    ],
+    "facing": "wreck_scavenger",
+    "prompt": "What do you do about the thieves’ camp?",
+    "prompt_fr": "Que faites-vous du camp des voleurs ?"
   },
   "1140_spotted": {
     "id": "1140_spotted",
@@ -2429,7 +2499,10 @@
           "looters_avoided"
         ]
       }
-    ]
+    ],
+    "facing": "wreck_scavenger",
+    "prompt": "Fight them, or run?",
+    "prompt_fr": "Les combattre, ou fuir ?"
   },
   "1200": {
     "id": "1200",
@@ -2541,7 +2614,9 @@
         "en": "Somewhere past the last of the huts, I knew, the cloaked woman was watching the dark the way other people watch a door.",
         "fr": "Quelque part au-delà des dernières cases, je le savais, la femme encapuchonnée surveillait le noir comme d’autres surveillent une porte."
       }
-    ]
+    ],
+    "prompt": "What do you do at the Wells?",
+    "prompt_fr": "Que faites-vous aux Puits ?"
   },
   "1210": {
     "id": "1210",
@@ -2686,7 +2761,10 @@
           "hold_sealed"
         ]
       }
-    ]
+    ],
+    "facing": "harbor_rat",
+    "prompt": "Fight the rats, or leave them the grain?",
+    "prompt_fr": "Combattre les rats, ou leur laisser le grain ?"
   },
   "2001": {
     "id": "2001",
@@ -2739,7 +2817,9 @@
         "en": "When I told the salt-cutters about the face in the dunes and the coin I had left it, they made the same sign the old woman had made over the cloth, and gave me the best place by the fire.",
         "fr": "Quand je parlai aux tailleurs de sel du visage dans les dunes et de la pièce que je lui avais laissée, ils firent le même signe que la vieille femme au-dessus de l’étoffe, et me donnèrent la meilleure place près du feu."
       }
-    ]
+    ],
+    "prompt": "How do you reach the gate?",
+    "prompt_fr": "Comment atteignez-vous la porte ?"
   },
   "2005": {
     "id": "2005",
@@ -2784,7 +2864,10 @@
         "en": "The caravan master found his grain wagon full of rats and his grain eaten, and knew exactly whom to thank. He did not say so. He did not need to.",
         "fr": "Le chef de caravane trouva son chariot plein de rats et son grain dévoré, et sut exactement qui remercier. Il ne le dit pas. Il n’en avait pas besoin."
       }
-    ]
+    ],
+    "facing": "crape_courier",
+    "prompt": "How do you get into Saltmouth?",
+    "prompt_fr": "Comment entrez-vous dans Saltmouth ?"
   },
   "2010": {
     "id": "2010",
@@ -2820,7 +2903,10 @@
         ],
         "unlockQuestId": "q_ch2_leave_saltmouth"
       }
-    ]
+    ],
+    "facing": "vane_quartermaster",
+    "prompt": "What do you do in the market?",
+    "prompt_fr": "Que faites-vous au marché ?"
   },
   "2011": {
     "id": "2011",
@@ -2855,7 +2941,9 @@
         "failNote": "A gutter gives way: you fall among them on the wharf.",
         "failNote_fr": "Une gouttière cède : vous tombez parmi eux, sur le quai."
       }
-    ]
+    ],
+    "prompt": "How do you cross the Docks?",
+    "prompt_fr": "Comment traversez-vous les Docks ?"
   },
   "2015": {
     "id": "2015",
@@ -2974,7 +3062,8 @@
         "failNextId": "2015_informant_caught",
         "hideIfFlags": [
           "hub_2015_informant"
-        ]
+        ],
+        "about": "wharf_informant"
       },
       {
         "text": "Follow a trail of paper lanterns down a side alley",
@@ -2982,7 +3071,8 @@
         "next_id": "2015_ternrow",
         "hideIfFlags": [
           "hub_2015_ternrow"
-        ]
+        ],
+        "about": "renn"
       },
       {
         "text": "Sit in on a card game with dock regulars",
@@ -3040,7 +3130,8 @@
         "next_id": "2015_drawer",
         "hideIfFlags": [
           "hub_2015_drawer"
-        ]
+        ],
+        "about": "sign_painter"
       },
       {
         "text": "Pay off a branded debtor’s chain",
@@ -3048,7 +3139,8 @@
         "next_id": "2015_house_drowned_debt",
         "hideIfFlags": [
           "hub_2015_house_drowned_debt"
-        ]
+        ],
+        "about": "drowned_debt"
       },
       {
         "text": "Carry a Keyholder’s key to a door, unopened",
@@ -3056,7 +3148,8 @@
         "next_id": "2015_house_keyholders",
         "hideIfFlags": [
           "hub_2015_house_keyholders"
-        ]
+        ],
+        "about": "keyholder_wharf"
       },
       {
         "text": "Hear out the Salt Ledger’s tithe-clerk",
@@ -3064,7 +3157,8 @@
         "next_id": "2015_house_salt_ledger",
         "hideIfFlags": [
           "hub_2015_house_salt_ledger"
-        ]
+        ],
+        "about": "salt_ledger"
       },
       {
         "text": "Hear out the dwarf foreman at the breaker’s yard",
@@ -3072,7 +3166,8 @@
         "next_id": "2015_dorran",
         "hideIfFlags": [
           "hub_2015_dorran"
-        ]
+        ],
+        "about": "dorran_quill"
       },
       {
         "text": "Face the Ledger’s clerk over the crew’s wages",
@@ -3141,7 +3236,8 @@
       {
         "text": "Push past him toward the exit",
         "text_fr": "Le bousculer pour atteindre la sortie",
-        "next_id": "2011"
+        "next_id": "2011",
+        "about": "vane_quartermaster"
       },
       {
         "text": "Force the loading crane’s jammed winch open",
@@ -3329,7 +3425,9 @@
           "hub_2015_house_drowned_debt"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you do about the chain?",
+    "prompt_fr": "Que faites-vous de la chaîne ?"
   },
   "2015_house_keyholders": {
     "id": "2015_house_keyholders",
@@ -3388,7 +3486,10 @@
           }
         }
       }
-    ]
+    ],
+    "facing": "keyholder_wharf",
+    "prompt": "What do you do with the key?",
+    "prompt_fr": "Que faites-vous de la clef ?"
   },
   "2015_house_keyholders_turned": {
     "id": "2015_house_keyholders_turned",
@@ -3472,7 +3573,9 @@
           "hub_2015_house_salt_ledger"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you do about the tenth?",
+    "prompt_fr": "Que faites-vous de la dîme ?"
   },
   "2015_bazaar": {
     "id": "2015_bazaar",
@@ -3536,7 +3639,8 @@
           "hub_2015_dockside"
         ]
       }
-    ]
+    ],
+    "facing": "harbor_rat"
   },
   "2015_smuggler": {
     "id": "2015_smuggler",
@@ -3621,7 +3725,8 @@
           "hub_2015_informant"
         ]
       }
-    ]
+    ],
+    "facing": "street_bandit"
   },
   "2015_kelda": {
     "id": "2015_kelda",
@@ -3652,7 +3757,8 @@
         }
       }
     ],
-    "reqAlignmentScore": 2
+    "reqAlignmentScore": 2,
+    "facing": "inquisition_soldier"
   },
   "2015_sable": {
     "id": "2015_sable",
@@ -3741,7 +3847,9 @@
         "en": "I had already sat at that barrel once, and lost. The sharp would remember my face, and my purse.",
         "fr": "J’avais déjà joué à ce tonneau, et j’y avais perdu. Le tricheur se souviendrait de mon visage, et de ma bourse."
       }
-    ]
+    ],
+    "prompt": "How do you settle the marker?",
+    "prompt_fr": "Comment réglez-vous l’affaire du jeton ?"
   },
   "2020": {
     "id": "2020",
@@ -3768,7 +3876,10 @@
         "next_id": "2021",
         "triggerEnemyId": "inquisition_soldier"
       }
-    ]
+    ],
+    "facing": "inquisition_soldier",
+    "prompt": "What do you do about the inspector?",
+    "prompt_fr": "Que faites-vous de l’inspecteur ?"
   },
   "2021": {
     "id": "2021",
@@ -3849,7 +3960,9 @@
         "en": "Vane’s eyes went, once, to the thread the tear had left in me. He did not ask. Men like Vane price what they do not understand higher, not lower.",
         "fr": "Les yeux de Vane se posèrent, une fois, sur le fil que la déchirure avait laissé en moi. Il ne demanda rien. Les hommes comme Vane estiment ce qu’ils ne comprennent pas plus cher, jamais moins."
       }
-    }
+    },
+    "prompt": "What do you do with the tunnel?",
+    "prompt_fr": "Que faites-vous du tunnel ?"
   },
   "2040": {
     "id": "2040",
@@ -3882,7 +3995,10 @@
         "lockedText": "Forty gold. I did not have it, and Vane could tell.",
         "lockedText_fr": "Quarante pièces d’or. Je ne les avais pas, et Vane le voyait."
       }
-    ]
+    ],
+    "facing": "street_bandit",
+    "prompt": "How do you answer the insult?",
+    "prompt_fr": "Comment répondez-vous à l’insulte ?"
   },
   "2050": {
     "id": "2050",
@@ -3951,7 +4067,9 @@
         "failNote_fr": "La main de Vane se referme sur votre poignet : on vous retient sur le quai."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "How do you break the cordon?",
+    "prompt_fr": "Comment percez-vous le cordon ?"
   },
   "2900": {
     "id": "2900",
@@ -4143,7 +4261,9 @@
         "fr": "Les caisses des Corneilles avaient quitté le quai dans la nuit, toutes jusqu’à la dernière, et une Corneille que je n’avais jamais vue me salua d’un signe de tête, sur le quai, comme si une dette nous liait. Je suppose que c’était le cas."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "How do you get the Eel afloat?",
+    "prompt_fr": "Comment remettez-vous l’Anguille à flot ?"
   },
   "2900_boat_fixed": {
     "id": "2900_boat_fixed",
@@ -4203,7 +4323,9 @@
         "fr": "Lysa venait ; cela n’avait jamais été une question. Elle était déjà à bord, comptant les enfants du quai contre l’espace entre les bancs, et elle ne me regarda pas pendant qu’elle comptait."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "Who sails with you?",
+    "prompt_fr": "Qui embarque avec vous ?"
   },
   "2999": {
     "id": "2999",
@@ -4249,7 +4371,9 @@
           "storm_ridden"
         ]
       }
-    ]
+    ],
+    "prompt": "What order do you give?",
+    "prompt_fr": "Quel ordre donnez-vous ?"
   },
   "3001": {
     "id": "3001",
@@ -4348,7 +4472,10 @@
         "en": "Vess would have wanted his name. I did not get it, and I have been sorry since.",
         "fr": "Vess aurait voulu son nom. Je ne le sus pas, et je l’ai regretté depuis."
       }
-    ]
+    ],
+    "facing": "condemned_voidkin",
+    "prompt": "How do you enter the Spire?",
+    "prompt_fr": "Comment entrez-vous dans la Flèche ?"
   },
   "3005": {
     "id": "3005",
@@ -4487,7 +4614,8 @@
         "next_id": "3005_envoys",
         "hideIfFlags": [
           "hub_3005_envoys"
-        ]
+        ],
+        "about": "maud_tallis"
       },
       {
         "text": "Send word to Lysa through the refugee runners",
@@ -4507,7 +4635,8 @@
         "next_id": "3005_house_tribunal",
         "hideIfFlags": [
           "hub_3005_house_tribunal"
-        ]
+        ],
+        "about": "tribunal"
       },
       {
         "text": "Stand a new-moon watch with the Last Watch",
@@ -4522,7 +4651,8 @@
           "rungAtLeast": {
             "vigil": 1
           }
-        }
+        },
+        "about": "vigil"
       },
       {
         "text": "Walk the Compact’s first coal into Cinder Row",
@@ -4537,7 +4667,8 @@
           "rungAtLeast": {
             "compact": 1
           }
-        }
+        },
+        "about": "compact"
       },
       {
         "text": "Hear the oni glass-trader at the ash-market",
@@ -4545,7 +4676,8 @@
         "next_id": "3005_imeh",
         "hideIfFlags": [
           "hub_3005_imeh"
-        ]
+        ],
+        "about": "imeh"
       },
       {
         "text": "Test Imeh’s glass before the Choir’s fire",
@@ -4574,7 +4706,8 @@
             "scaffold_skimmed",
             "scaffold_split"
           ]
-        }
+        },
+        "about": "dorran_quill"
       },
       {
         "text": "Find a black thread knotted to your door",
@@ -4793,7 +4926,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "What do you say to the judges?",
+    "prompt_fr": "Que dites-vous aux juges ?"
   },
   "3005_clan_vigil_1": {
     "id": "3005_clan_vigil_1",
@@ -4851,7 +4986,9 @@
         "en": "The sergeant knew Grosh’s name, and spat when she said it, which in the Last Watch is a kind of fondness.",
         "fr": "La sergente connaissait le nom de Grosh, et cracha en le prononçant, ce qui, à la Dernière Veille, est une forme de tendresse."
       }
-    ]
+    ],
+    "prompt": "How do you hold the night?",
+    "prompt_fr": "Comment tenez-vous la nuit ?"
   },
   "3005_clan_vigil_1_breach": {
     "id": "3005_clan_vigil_1_breach",
@@ -4962,7 +5099,9 @@
         "en": "I had walked Cinder Row once already, with a golem at the end of it. This time there were people in the doorways, and every one of them was watching the cart.",
         "fr": "J’avais déjà parcouru la Rue des Braises une fois, avec un golem au bout. Cette fois, il y avait des gens sur les seuils, et tous regardaient la charrette."
       }
-    ]
+    ],
+    "prompt": "What do you do about the buyers?",
+    "prompt_fr": "Que faites-vous des acheteurs ?"
   },
   "3005_clan_compact_1_lit": {
     "id": "3005_clan_compact_1_lit",
@@ -5005,7 +5144,8 @@
           "hub_3005_oath"
         ]
       }
-    ]
+    ],
+    "facing": "cultist_acolyte"
   },
   "3005_acolyte": {
     "id": "3005_acolyte",
@@ -5048,7 +5188,8 @@
           "hub_3005_relic"
         ]
       }
-    ]
+    ],
+    "facing": "void_wisp"
   },
   "3005_wisp": {
     "id": "3005_wisp",
@@ -5186,7 +5327,9 @@
           "hub_3005_maren"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you tell Maren?",
+    "prompt_fr": "Que dites-vous à Maren ?"
   },
   "3010": {
     "id": "3010",
@@ -5222,7 +5365,10 @@
           "bell_rope"
         ]
       }
-    ]
+    ],
+    "facing": "high_warden",
+    "prompt": "How do you reach the High Warden?",
+    "prompt_fr": "Comment atteignez-vous le Haut Gardien ?"
   },
   "3020": {
     "id": "3020",
@@ -5249,7 +5395,9 @@
         "text_fr": "Maîtriser l’archiviste et voler le registre",
         "next_id": "3050"
       }
-    ]
+    ],
+    "prompt": "How do you get the ledger?",
+    "prompt_fr": "Comment obtenez-vous le registre ?"
   },
   "3030": {
     "id": "3030",
@@ -5283,7 +5431,8 @@
         "en": "My palms still burned from the rope, and I held my blade as if it were hot.",
         "fr": "Mes paumes brûlaient encore de la corde, et je tenais ma lame comme si elle était chaude."
       }
-    ]
+    ],
+    "facing": "inquisition_high_warden"
   },
   "3040": {
     "id": "3040",
@@ -5306,7 +5455,8 @@
         "triggerEnemyId": "inquisition_high_warden"
       }
     ],
-    "reqGold": 40
+    "reqGold": 40,
+    "facing": "inquisition_high_warden"
   },
   "3050": {
     "id": "3050",
@@ -5328,7 +5478,8 @@
         "next_id": "4999_drawn",
         "triggerEnemyId": "inquisition_high_warden"
       }
-    ]
+    ],
+    "facing": "inquisition_high_warden"
   },
   "4999": {
     "id": "4999",
@@ -5408,7 +5559,10 @@
         "triggerEnemyId": "hollow_court_zealot"
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "facing": "hollow_court_zealot",
+    "prompt": "What do you do with the loyalists?",
+    "prompt_fr": "Que faites-vous des loyalistes ?"
   },
   "5004": {
     "id": "5004",
@@ -5490,7 +5644,9 @@
           "looted_loyalists"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you do before the roof comes down?",
+    "prompt_fr": "Que faites-vous avant que le toit ne s’effondre ?"
   },
   "5006_chase": {
     "id": "5006_chase",
@@ -5539,7 +5695,10 @@
       }
     ],
     "time_limit": 20,
-    "timeout_choice": 1
+    "timeout_choice": 1,
+    "facing": "cultist_acolyte",
+    "prompt": "How do you escape the stair?",
+    "prompt_fr": "Comment échappez-vous à l’escalier ?"
   },
   "5006_cornered": {
     "id": "5006_cornered",
@@ -5564,7 +5723,8 @@
           "chase_cornered"
         ]
       }
-    ]
+    ],
+    "facing": "cultist_acolyte"
   },
   "6001": {
     "id": "6001",
@@ -5652,7 +5812,9 @@
         "en": "I came out bleeding from a fight I had tried to outrun, which is the worst kind there is.",
         "fr": "Je sortis en saignant d’un combat que j’avais tenté de fuir, ce qui est la pire espèce qui soit."
       }
-    ]
+    ],
+    "prompt": "When do you read the ledger?",
+    "prompt_fr": "Quand lisez-vous le registre ?"
   },
   "6002": {
     "id": "6002",
@@ -5697,7 +5859,9 @@
         "en": "I had slept an hour first, with the Shroud under my head, and dreamed of nothing at all. I did not trust the nothing.",
         "fr": "J’avais d’abord dormi une heure, le Linceul sous la tête, et rêvé de rien du tout. Je ne faisais pas confiance à ce rien."
       }
-    ]
+    ],
+    "prompt": "Do you sail at once?",
+    "prompt_fr": "Prenez-vous la mer sans attendre ?"
   },
   "6002_siege": {
     "id": "6002_siege",
@@ -5744,7 +5908,10 @@
       }
     ],
     "time_limit": 20,
-    "timeout_choice": 0
+    "timeout_choice": 0,
+    "facing": "void_hound",
+    "prompt": "How do you hold the camp?",
+    "prompt_fr": "Comment tenez-vous le camp ?"
   },
   "6002_siege_2": {
     "id": "6002_siege_2",
@@ -5781,7 +5948,10 @@
       }
     ],
     "time_limit": 20,
-    "timeout_choice": 1
+    "timeout_choice": 1,
+    "facing": "hollow_court_zealot",
+    "prompt": "Attack, or hold the gate?",
+    "prompt_fr": "Attaquer, ou tenir la porte ?"
   },
   "6002_siege_breach": {
     "id": "6002_siege_breach",
@@ -5806,7 +5976,8 @@
           "siege_breached"
         ]
       }
-    ]
+    ],
+    "facing": "void_hound"
   },
   "6002_siege_end": {
     "id": "6002_siege_end",
@@ -5847,7 +6018,9 @@
           "siege_burned_them"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you do with the dead?",
+    "prompt_fr": "Que faites-vous des morts ?"
   },
   "6002_camp": {
     "id": "6002_camp",
@@ -6018,7 +6191,9 @@
         "en": "I had read the Reliquary’s roll. The thing in front of me was not weather and never had been: it was a wound, and I knew whose hand had made it, and on which night.",
         "fr": "J’avais lu le rouleau du Reliquaire. Ce que j’avais devant moi n’était pas une intempérie et ne l’avait jamais été : c’était une blessure, et je savais quelle main l’avait faite, et quelle nuit."
       }
-    ]
+    ],
+    "prompt": "Do you go through at once?",
+    "prompt_fr": "Passez-vous tout de suite ?"
   },
   "6004": {
     "id": "6004",
@@ -6070,7 +6245,9 @@
         "fr": "L’équipage était reparti vers le camp sur ma parole. Quoi que le Néant me montrât, il ne le montra qu’à moi."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "Do you take what the Void shows?",
+    "prompt_fr": "Acceptez-vous ce que le Vide montre ?"
   },
   "5004b": {
     "id": "5004b",
@@ -6110,7 +6287,9 @@
         "en": "An old sign-painter on the wharf at Saltmouth had said those three words to me once, white to the lips, before he asked me to forget them.",
         "fr": "Un vieux peintre d’enseignes, sur le quai de Bouche-de-Sel, m’avait dit ces trois mots une fois, blanc jusqu’aux lèvres, avant de me demander de les oublier."
       }
-    ]
+    ],
+    "prompt": "What do you do first?",
+    "prompt_fr": "Que faites-vous d’abord ?"
   },
   "6003b": {
     "id": "6003b",
@@ -6132,7 +6311,8 @@
         "next_id": "6004",
         "triggerEnemyId": "void_manifestation"
       }
-    ]
+    ],
+    "facing": "void_manifestation"
   },
   "3005_archive": {
     "id": "3005_archive",
@@ -6181,7 +6361,9 @@
           "crane_salvage_left"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you do with the salvage?",
+    "prompt_fr": "Que faites-vous de la récupération ?"
   },
   "2015_informant": {
     "id": "2015_informant",
@@ -6207,7 +6389,10 @@
         "checkDC": 12,
         "failNextId": "2015_informant_trap"
       }
-    ]
+    ],
+    "facing": "wharf_informant",
+    "prompt": "What do you do about the warden?",
+    "prompt_fr": "Que faites-vous du gardien ?"
   },
   "2015_informant_trap": {
     "id": "2015_informant_trap",
@@ -6239,7 +6424,8 @@
           }
         }
       }
-    ]
+    ],
+    "facing": "wharf_informant"
   },
   "2015_informant_exposed": {
     "id": "2015_informant_exposed",
@@ -6301,7 +6487,10 @@
           }
         }
       }
-    ]
+    ],
+    "facing": "wharf_informant",
+    "prompt": "What do you do with his name?",
+    "prompt_fr": "Que faites-vous de son nom ?"
   },
   "2015_ternrow": {
     "id": "2015_ternrow",
@@ -6328,7 +6517,10 @@
         "next_id": "2015_ternrow_fight",
         "unlockQuestId": "q_ch2_terns_toll"
       }
-    ]
+    ],
+    "facing": "renn",
+    "prompt": "How do you deal with the overseer?",
+    "prompt_fr": "Comment traitez-vous le contremaître ?"
   },
   "2015_ternrow_fight": {
     "id": "2015_ternrow_fight",
@@ -6357,7 +6549,8 @@
           }
         }
       }
-    ]
+    ],
+    "facing": "dock_overseer"
   },
   "2015_ternrow_talked": {
     "id": "2015_ternrow_talked",
@@ -6429,7 +6622,8 @@
         "unlockQuestId": "q_ch2_lioras_watch",
         "triggerEnemyId": "smuggler_captain"
       }
-    ]
+    ],
+    "facing": "smuggler_captain"
   },
   "3005_grosh": {
     "id": "3005_grosh",
@@ -6461,7 +6655,8 @@
         },
         "triggerEnemyId": "hollow_court_zealot"
       }
-    ]
+    ],
+    "facing": "grosh"
   },
   "3005_wall": {
     "id": "3005_wall",
@@ -6488,7 +6683,9 @@
         "next_id": "3005_wall_fight",
         "unlockQuestId": "q_ch3_reckoning_wall"
       }
-    ]
+    ],
+    "prompt": "What do you do about the wall?",
+    "prompt_fr": "Que faites-vous du mur ?"
   },
   "3005_wall_fight": {
     "id": "3005_wall_fight",
@@ -6517,7 +6714,8 @@
           }
         }
       }
-    ]
+    ],
+    "facing": "inquisition_auxiliary"
   },
   "3005_wall_argued": {
     "id": "3005_wall_argued",
@@ -6678,7 +6876,9 @@
           "lysa_sent_coin"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you send with the message?",
+    "prompt_fr": "Qu’envoyez-vous avec le message ?"
   },
   "3005_archive_failed": {
     "id": "3005_archive_failed",
@@ -6748,7 +6948,8 @@
         "next_id": "3002",
         "mainQuest": true,
         "travelPlaceId": "3005",
-        "landRouteId": "camp_to_quarter"
+        "landRouteId": "camp_to_quarter",
+        "about": "condemned_voidkin"
       }
     ],
     "flag_callbacks": [
@@ -6823,7 +7024,8 @@
         "unlockQuestId": "q_ch4_the_second_ledger",
         "hideIfFlags": [
           "hub_5010_archivist"
-        ]
+        ],
+        "about": "cloister_archivist"
       },
       {
         "text": "Bring the archivist what you have pieced together",
@@ -6914,7 +7116,8 @@
         "failNextId": "5010_deserter_failed",
         "hideIfFlags": [
           "hub_5010_deserter"
-        ]
+        ],
+        "about": "court_deserter"
       },
       {
         "text": "Hear what the deserter has been turning over",
@@ -6933,7 +7136,8 @@
         "next_id": "5010_letter",
         "hideIfFlags": [
           "hub_5010_letter"
-        ]
+        ],
+        "about": "drowned_courier"
       },
       {
         "text": "Speak with the choir deserter at the candles",
@@ -6963,7 +7167,8 @@
         "next_id": "5010_house_candlebearers",
         "hideIfFlags": [
           "hub_5010_house_candlebearers"
-        ]
+        ],
+        "about": "candlebearers"
       },
       {
         "text": "Follow a Heron’s Wake guide, on her terms",
@@ -6971,7 +7176,8 @@
         "next_id": "5010_house_herons_wake",
         "hideIfFlags": [
           "hub_5010_house_herons_wake"
-        ]
+        ],
+        "about": "herons_wake"
       },
       {
         "text": "Find the Crow who sells routes to the Inquisition",
@@ -6992,7 +7198,8 @@
           "standingAtLeast": {
             "crows": 6
           }
-        }
+        },
+        "about": "crows"
       },
       {
         "text": "Hear the elf healer out about his bark",
@@ -7000,7 +7207,8 @@
         "next_id": "5010_brannoc",
         "hideIfFlags": [
           "hub_5010_brannoc"
-        ]
+        ],
+        "about": "brannoc_reedtithe"
       },
       {
         "text": "Lift the Keyholders’ cache of fever-bark",
@@ -7029,7 +7237,8 @@
             "glass_burned",
             "glass_carried"
           ]
-        }
+        },
+        "about": "imeh"
       },
       {
         "text": "Meet the woman in grey who is asking for a ship",
@@ -7187,7 +7396,9 @@
           "hub_5010_house_candlebearers"
         ]
       }
-    ]
+    ],
+    "prompt": "Will you keep the count with him?",
+    "prompt_fr": "Veillerez-vous au compte avec lui ?"
   },
   "5010_house_herons_wake": {
     "id": "5010_house_herons_wake",
@@ -7232,7 +7443,9 @@
           "hub_5010_house_herons_wake"
         ]
       }
-    ]
+    ],
+    "prompt": "Will you cross with them?",
+    "prompt_fr": "Les accompagnerez-vous ?"
   },
   "5010_house_herons_wake_broken": {
     "id": "5010_house_herons_wake_broken",
@@ -7288,7 +7501,9 @@
         "en": "I had set one trap already and caught nothing in it but more suspicion. The Crows were counting.",
         "fr": "J’avais déjà tendu un piège, et n’y avais attrapé que davantage de soupçons. Les Corneilles comptaient."
       }
-    ]
+    ],
+    "prompt": "How do you find the seller?",
+    "prompt_fr": "Comment trouvez-vous le vendeur ?"
   },
   "5010_clan_crows_2_found": {
     "id": "5010_clan_crows_2_found",
@@ -7333,7 +7548,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "What do you do with him?",
+    "prompt_fr": "Que faites-vous de lui ?"
   },
   "5010_clan_crows_2_failed": {
     "id": "5010_clan_crows_2_failed",
@@ -7400,7 +7617,10 @@
           "archivist_notes"
         ]
       }
-    ]
+    ],
+    "facing": "cloister_archivist",
+    "prompt": "What do you tell the archivist?",
+    "prompt_fr": "Que dites-vous à l’archiviste ?"
   },
   "5010_ghouls": {
     "id": "5010_ghouls",
@@ -7556,7 +7776,10 @@
           "deserter_sold"
         ]
       }
-    ]
+    ],
+    "facing": "court_deserter",
+    "prompt": "What do you do with the deserter’s news?",
+    "prompt_fr": "Que faites-vous des nouvelles du déserteur ?"
   },
   "5010_deserter_failed": {
     "id": "5010_deserter_failed",
@@ -7675,7 +7898,9 @@
         "lockedText": "The masked penitent had gone back inside. Whoever had called her, it was not me.",
         "lockedText_fr": "La pénitente masquée était rentrée. Qui que ce fût qui l’ait rappelée, ce n’était pas moi."
       }
-    ]
+    ],
+    "prompt": "How do you enter the Quarter?",
+    "prompt_fr": "Comment entrez-vous dans le Quartier ?"
   },
   "6010": {
     "id": "6010",
@@ -7696,7 +7921,8 @@
         "unlockQuestId": "q_ch5_the_dead_heart",
         "hideIfFlags": [
           "hub_6010_chartkeeper"
-        ]
+        ],
+        "about": "chart_keeper"
       },
       {
         "text": "Ask the chart-keeper what the last page cost her",
@@ -7883,7 +8109,8 @@
         "next_id": "6010_house_reliquary",
         "hideIfFlags": [
           "hub_6010_house_reliquary"
-        ]
+        ],
+        "about": "reliquary"
       },
       {
         "text": "Carry a Penitent’s bundle past the white masks",
@@ -7891,7 +8118,8 @@
         "next_id": "6010_house_reliquary_thieves",
         "hideIfFlags": [
           "hub_6010_house_reliquary_thieves"
-        ]
+        ],
+        "about": "reliquary"
       },
       {
         "text": "Witness at the Tribunal’s trial of a voidkin",
@@ -7912,7 +8140,8 @@
           "standingAtLeast": {
             "dominion": 6
           }
-        }
+        },
+        "about": "dominion"
       },
       {
         "text": "Take back the Row’s master hammer",
@@ -7933,7 +8162,8 @@
           "standingAtLeast": {
             "compact": 26
           }
-        }
+        },
+        "about": "compact"
       },
       {
         "text": "Sit with the widow who counts the taken",
@@ -7941,7 +8171,8 @@
         "next_id": "6010_orsabet",
         "hideIfFlags": [
           "hub_6010_orsabet"
-        ]
+        ],
+        "about": "orsabet_vell"
       },
       {
         "text": "Walk the frost to the tally stone",
@@ -7970,7 +8201,8 @@
             "bark_sold",
             "bark_kept"
           ]
-        }
+        },
+        "about": "brannoc_reedtithe"
       },
       {
         "text": "Ask Tallis what the Reliquary shipped to sea",
@@ -8166,7 +8398,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "What do you do with the relic?",
+    "prompt_fr": "Que faites-vous de la relique ?"
   },
   "6010_house_reliquary_thieves": {
     "id": "6010_house_reliquary_thieves",
@@ -8229,7 +8463,9 @@
           "hub_6010_house_reliquary_thieves"
         ]
       }
-    ]
+    ],
+    "prompt": "How do you pass the checkpoint?",
+    "prompt_fr": "Comment passez-vous le poste de contrôle ?"
   },
   "6010_house_reliquary_thieves_searched": {
     "id": "6010_house_reliquary_thieves_searched",
@@ -8302,7 +8538,9 @@
           "offerFrom": "dominion"
         }
       }
-    ]
+    ],
+    "prompt": "What do you tell the Tribunal?",
+    "prompt_fr": "Que dites-vous au Tribunal ?"
   },
   "6010_clan_compact_3": {
     "id": "6010_clan_compact_3",
@@ -8332,7 +8570,9 @@
         "checkDC": 15,
         "failNextId": "6010_clan_compact_3_seen"
       }
-    ]
+    ],
+    "prompt": "How do you take the hammer?",
+    "prompt_fr": "Comment prenez-vous le marteau ?"
   },
   "6010_clan_compact_3_seen": {
     "id": "6010_clan_compact_3_seen",
@@ -8398,7 +8638,9 @@
           "pledge": "compact"
         }
       }
-    ]
+    ],
+    "prompt": "Whom does the hammer speak for?",
+    "prompt_fr": "Pour qui parle le marteau ?"
   },
   "6010_chartkeeper": {
     "id": "6010_chartkeeper",
@@ -8435,7 +8677,10 @@
         "en": "She noticed the torn stub at the second page and said nothing about it. I was grateful.",
         "fr": "Elle remarqua le talon arraché à la deuxième page et n’en dit rien. Je lui en sus gré."
       }
-    ]
+    ],
+    "facing": "chart_keeper",
+    "prompt": "Will you buy her chart?",
+    "prompt_fr": "Achèterez-vous sa carte ?"
   },
   "6010_lysa": {
     "id": "6010_lysa",
@@ -8488,7 +8733,9 @@
         "en": "She had held the camp’s wall with me once, and had not forgotten it.",
         "fr": "Elle avait tenu le mur du camp avec moi, un soir, et ne l’avait pas oublié."
       }
-    ]
+    ],
+    "prompt": "What do you ask of Lysa?",
+    "prompt_fr": "Que demandez-vous à Lysa ?"
   },
   "6010_hounds": {
     "id": "6010_hounds",
@@ -8663,7 +8910,8 @@
         "launchZoneId": "z_white_fleet_grave",
         "mainQuest": true,
         "travelPlaceId": "7100",
-        "unlockQuestId": "q_ch6_the_white_fleet"
+        "unlockQuestId": "q_ch6_the_white_fleet",
+        "about": "the_white_admiral"
       }
     ],
     "flag_callbacks": [
@@ -9129,7 +9377,9 @@
         "fr": "Il y avait un second chemin de retour à travers la déchirure, un chambranle de fil luisant au bord du gris, cousu par une femme que je n’avais pas dénoncée. Je n’en avais pas besoin. Je savais où il était."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "What do you do with the throne?",
+    "prompt_fr": "Que faites-vous du trône ?"
   },
   "7004": {
     "id": "7004",
@@ -9363,7 +9613,9 @@
         "fr": "Le Linceul était tiède entre mes bras, plus tiède qu’aucun tissu ne devrait l’être, et chaque fois que je le touchais, je savais de qui venait cette chaleur."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "What do you do with the Throne?",
+    "prompt_fr": "Que faites-vous du Trône ?"
   },
   "7005": {
     "id": "7005",
@@ -10102,7 +10354,8 @@
         "en": "He looked at my hands. \"You’ve prayed over the dying. So have I. It doesn’t get easier. It gets quieter.\"",
         "fr": "Il regarda mes mains. « Vous avez prié sur des mourants. Moi aussi. Ça ne devient pas plus facile. Ça devient plus silencieux. »"
       }
-    }
+    },
+    "facing": "catacomb_ghoul"
   },
   "6010_malrik": {
     "id": "6010_malrik",
@@ -10144,7 +10397,8 @@
         "en": "He clocked the way I stood and moved the good psalter out of my reach without appearing to.",
         "fr": "Il repéra ma façon de me tenir et déplaça le bon psautier hors de ma portée sans en avoir l’air."
       }
-    }
+    },
+    "facing": "malrik"
   },
   "5010_deserter_later": {
     "id": "5010_deserter_later",
@@ -10288,7 +10542,9 @@
           "hub_6010_confession_later"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you say to him?",
+    "prompt_fr": "Que lui dites-vous ?"
   },
   "6010_lysa_later": {
     "id": "6010_lysa_later",
@@ -10450,7 +10706,9 @@
         "fr": "« La Main Ouverte, dit-elle, comme si elle y goûtait. Sur le Trône de la Lanterne. Je ne pensais pas vivre assez pour voir cela, et je ne meurs pas. »"
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "What do you say to it?",
+    "prompt_fr": "Que lui dites-vous ?"
   },
   "4999_standard": {
     "id": "4999_standard",
@@ -10517,7 +10775,9 @@
         }
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "How do you take the standard?",
+    "prompt_fr": "Comment prenez-vous l’étendard ?"
   },
   "4999_camp": {
     "id": "4999_camp",
@@ -10729,7 +10989,10 @@
         "fr": "Elle m’avait donné un œuf, un jour, pour mon honnêteté. Je lui devais encore."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "facing": "mother_hesk",
+    "prompt": "How do you free the Shroud?",
+    "prompt_fr": "Comment libérez-vous le Linceul ?"
   },
   "6010_thread": {
     "id": "6010_thread",
@@ -10824,7 +11087,9 @@
         "en": "My sister was on the requisition’s list too, with a note against her name in the same hand: taken from the ridge; held at the Quarter.",
         "fr": "Ma sœur figurait aussi sur la réquisition, avec une note en face de son nom de la même main : prise sur la crête ; retenue au Quartier."
       }
-    ]
+    ],
+    "prompt": "How do you free the fourth piece?",
+    "prompt_fr": "Comment libérez-vous le quatrième pan ?"
   },
   "7002_price": {
     "id": "7002_price",
@@ -10893,7 +11158,9 @@
         "hostFight": true
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "What will you pay for the crossing?",
+    "prompt_fr": "Que paierez-vous pour la traversée ?"
   },
   "7002_pact": {
     "id": "7002_pact",
@@ -10977,7 +11244,9 @@
         "en": "I already carried another banner toward Candlehold. The legate knew it, and smiled: the Inquisition, he said, had never minded a convert.",
         "fr": "Je portais déjà une autre bannière vers Candlehold. Le légat le savait, et sourit : l’Inquisition, dit-il, n’avait jamais rien eu contre les convertis."
       }
-    ]
+    ],
+    "prompt": "Do you take the pact?",
+    "prompt_fr": "Acceptez-vous le pacte ?"
   },
   "7002_betrayal": {
     "id": "7002_betrayal",
@@ -11036,7 +11305,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "What do you do with the body?",
+    "prompt_fr": "Que faites-vous du corps ?"
   },
   "6010_lysa_dead": {
     "id": "6010_lysa_dead",
@@ -11206,7 +11477,10 @@
         "en": "Her note was folded in my palm. The handwriting was better than I remembered, and worse.",
         "fr": "Son billet était plié dans ma paume. L’écriture était meilleure que dans mon souvenir, et pire."
       }
-    ]
+    ],
+    "facing": "lysa",
+    "prompt": "What do you do for Lysa?",
+    "prompt_fr": "Que faites-vous pour Lysa ?"
   },
   "6010_masked_after": {
     "id": "6010_masked_after",
@@ -11236,7 +11510,9 @@
           "lysa_left_masked"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you do with her mask?",
+    "prompt_fr": "Que faites-vous de son masque ?"
   },
   "3100": {
     "id": "3100",
@@ -11308,7 +11584,8 @@
         "next_id": "3100_house_cantors",
         "hideIfFlags": [
           "hub_3100_house_cantors"
-        ]
+        ],
+        "about": "cantors"
       },
       {
         "text": "Ride an Emberwife’s coal past the buyers",
@@ -11316,7 +11593,8 @@
         "next_id": "3100_house_emberwives",
         "hideIfFlags": [
           "hub_3100_house_emberwives"
-        ]
+        ],
+        "about": "emberwives"
       },
       {
         "text": "Learn the hand-signs of the Anvil-Deaf",
@@ -11324,7 +11602,8 @@
         "next_id": "3100_house_anvil_deaf",
         "hideIfFlags": [
           "hub_3100_house_anvil_deaf"
-        ]
+        ],
+        "about": "anvil_deaf"
       },
       {
         "text": "Watch the Salt Road from the slag heaps at the new moon",
@@ -11401,7 +11680,9 @@
           "hub_3100_house_cantors"
         ]
       }
-    ]
+    ],
+    "prompt": "How do you walk with the cantor?",
+    "prompt_fr": "Comment accompagnez-vous le chantre ?"
   },
   "3100_house_emberwives": {
     "id": "3100_house_emberwives",
@@ -11462,7 +11743,9 @@
           "hub_3100_house_emberwives"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you do with her route?",
+    "prompt_fr": "Que faites-vous de sa route ?"
   },
   "3100_house_anvil_deaf": {
     "id": "3100_house_anvil_deaf",
@@ -11506,7 +11789,9 @@
           "hub_3100_house_anvil_deaf"
         ]
       }
-    ]
+    ],
+    "prompt": "Will you learn the signs?",
+    "prompt_fr": "Apprendrez-vous les signes ?"
   },
   "3100_house_anvil_deaf_failed": {
     "id": "3100_house_anvil_deaf_failed",
@@ -11629,7 +11914,9 @@
           "widow_beam"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you promise the widow?",
+    "prompt_fr": "Que promettez-vous à la veuve ?"
   },
   "3100_widow_later": {
     "id": "3100_widow_later",
@@ -11662,7 +11949,9 @@
           "hub_3100_widow_later"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you tell her?",
+    "prompt_fr": "Que lui dites-vous ?"
   },
   "3100_bread": {
     "id": "3100_bread",
@@ -11745,7 +12034,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "What do you do about the lantern?",
+    "prompt_fr": "Que faites-vous de la lanterne ?"
   },
   "3200": {
     "id": "3200",
@@ -11788,7 +12079,8 @@
         "next_id": "3200_smith",
         "hideIfFlags": [
           "hub_3200_smith"
-        ]
+        ],
+        "about": "tetsu"
       },
       {
         "text": "Give Tetsu back what the Horn-Taker kept",
@@ -11817,7 +12109,8 @@
         "next_id": "3200_house_road_exorcists",
         "hideIfFlags": [
           "hub_3200_house_road_exorcists"
-        ]
+        ],
+        "about": "road_exorcists"
       },
       {
         "text": "Find a missing name for the Penitents’ cloth",
@@ -11832,7 +12125,8 @@
           "rungAtLeast": {
             "penitents": 1
           }
-        }
+        },
+        "about": "penitents"
       }
     ],
     "settlement": {
@@ -11899,7 +12193,9 @@
           "hub_3200_house_road_exorcists"
         ]
       }
-    ]
+    ],
+    "prompt": "Will you hold him for the exorcists?",
+    "prompt_fr": "Le tiendrez-vous pour les exorcistes ?"
   },
   "3200_clan_penitents_1": {
     "id": "3200_clan_penitents_1",
@@ -11947,7 +12243,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "Where do you get his name?",
+    "prompt_fr": "Où trouvez-vous son nom ?"
   },
   "3200_circle": {
     "id": "3200_circle",
@@ -12048,7 +12346,10 @@
         "lockedText": "Seventy gold. Tetsu did not haggle, and I could not pay.",
         "lockedText_fr": "Soixante-dix pièces d’or. Tetsu ne marchandait pas, et je ne pouvais pas payer."
       }
-    ]
+    ],
+    "facing": "tetsu",
+    "prompt": "Will you buy a blade?",
+    "prompt_fr": "Achèterez-vous une lame ?"
   },
   "3200_smith_later": {
     "id": "3200_smith_later",
@@ -12081,7 +12382,9 @@
           "hub_3200_smith_later"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you do with the chest?",
+    "prompt_fr": "Que faites-vous du coffre ?"
   },
   "3200_springs": {
     "id": "3200_springs",
@@ -12145,7 +12448,8 @@
         "next_id": "5100_headman",
         "hideIfFlags": [
           "hub_5100_headman"
-        ]
+        ],
+        "about": "wracks_end_headman"
       },
       {
         "text": "Settle the price of the false lamps",
@@ -12164,7 +12468,8 @@
         "next_id": "5100_vote",
         "hideIfFlags": [
           "hub_5100_vote"
-        ]
+        ],
+        "about": "tribunal_clerk"
       },
       {
         "text": "Mend nets with the weed-cutters",
@@ -12181,7 +12486,8 @@
         "next_id": "5100_house_tar_hands",
         "hideIfFlags": [
           "hub_5100_house_tar_hands"
-        ]
+        ],
+        "about": "tar_hands"
       },
       {
         "text": "Ask about the hand painted over a door",
@@ -12189,7 +12495,8 @@
         "next_id": "5100_house_fishbasket_line",
         "hideIfFlags": [
           "hub_5100_house_fishbasket_line"
-        ]
+        ],
+        "about": "fishbasket_line"
       },
       {
         "text": "Carry a Wickwarden’s flame up through the fog",
@@ -12204,7 +12511,8 @@
           "rungAtLeast": {
             "dominion": 1
           }
-        }
+        },
+        "about": "dominion"
       },
       {
         "text": "Run a Crow crate past the Inquisition cutter",
@@ -12219,7 +12527,8 @@
           "rungAtLeast": {
             "crows": 1
           }
-        }
+        },
+        "about": "crows"
       },
       {
         "text": "Follow a Keyholder’s low lantern down the cliff path",
@@ -12347,7 +12656,9 @@
           "hub_5100_house_tar_hands"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you ask of the Tar-Hands?",
+    "prompt_fr": "Que demandez-vous aux Mains-de-Goudron ?"
   },
   "5100_house_fishbasket_line": {
     "id": "5100_house_fishbasket_line",
@@ -12383,7 +12694,9 @@
           "hub_5100_house_fishbasket_line"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you do about the hand?",
+    "prompt_fr": "Que faites-vous de la main ?"
   },
   "5100_house_fishbasket_line_drawn": {
     "id": "5100_house_fishbasket_line_drawn",
@@ -12465,7 +12778,9 @@
         "en": "The Wickwarden had walked back from the Landing with a new flame. She did not mention the last one.",
         "fr": "La Garde-Mèche était revenue du Débarcadère avec une nouvelle flamme. Elle ne parla pas de la précédente."
       }
-    ]
+    ],
+    "prompt": "How do you climb to the lamp?",
+    "prompt_fr": "Comment montez-vous à la lampe ?"
   },
   "5100_clan_dominion_1_lit": {
     "id": "5100_clan_dominion_1_lit",
@@ -12587,7 +12902,9 @@
         "en": "The Crows had written the last crate down in a ledger under my name. This one, they said, would square it, or double it.",
         "fr": "Les Corneilles avaient inscrit la caisse précédente dans un registre, à mon nom. Celle-ci, dirent-elles, solderait la dette, ou la doublerait."
       }
-    ]
+    ],
+    "prompt": "How do you get the crate past the cutter?",
+    "prompt_fr": "Comment faites-vous passer la caisse devant le cotre ?"
   },
   "5100_clan_crows_1_seen": {
     "id": "5100_clan_crows_1_seen",
@@ -12762,7 +13079,10 @@
           }
         }
       }
-    ]
+    ],
+    "facing": "wracks_end_headman",
+    "prompt": "What do you do about the false lamps?",
+    "prompt_fr": "Que faites-vous des faux fanaux ?"
   },
   "5100_headman_later": {
     "id": "5100_headman_later",
@@ -12796,7 +13116,9 @@
           "hub_5100_headman_later"
         ]
       }
-    ]
+    ],
+    "prompt": "Will you pay him to put out the lamps?",
+    "prompt_fr": "Le paierez-vous pour éteindre les lampes ?"
   },
   "5100_nets": {
     "id": "5100_nets",
@@ -12889,7 +13211,8 @@
         "next_id": "5200_house_barkbleeders",
         "hideIfFlags": [
           "hub_5200_house_barkbleeders"
-        ]
+        ],
+        "about": "barkbleeders"
       },
       {
         "text": "Win back a Returned girl’s feast mask",
@@ -12897,7 +13220,8 @@
         "next_id": "5200_house_returned",
         "hideIfFlags": [
           "hub_5200_house_returned"
-        ]
+        ],
+        "about": "returned"
       },
       {
         "text": "Hire a Heron’s Wake guide to the Courts’ edge",
@@ -12912,7 +13236,8 @@
           "rungAtLeast": {
             "mire": 1
           }
-        }
+        },
+        "about": "mire"
       }
     ],
     "settlement": {
@@ -12999,7 +13324,9 @@
           "hub_5200_house_barkbleeders"
         ]
       }
-    ]
+    ],
+    "prompt": "How do you take the sap?",
+    "prompt_fr": "Comment prenez-vous la sève ?"
   },
   "5200_house_barkbleeders_bled": {
     "id": "5200_house_barkbleeders_bled",
@@ -13060,7 +13387,9 @@
           "hub_5200_house_returned"
         ]
       }
-    ]
+    ],
+    "prompt": "How do you pay for the mask?",
+    "prompt_fr": "Comment payez-vous le masque ?"
   },
   "5200_clan_mire_1": {
     "id": "5200_clan_mire_1",
@@ -13119,7 +13448,9 @@
         "en": "He knew the guide who had taken the Cloister’s refugees across. She had spoken of me, he said, and did not say how.",
         "fr": "Il connaissait la guide qui avait fait traverser les réfugiés du Cloître. Elle lui avait parlé de moi, dit-il, sans dire en quels termes."
       }
-    ]
+    ],
+    "prompt": "On whose terms do you go in?",
+    "prompt_fr": "À quelles conditions entrez-vous ?"
   },
   "5200_clan_mire_1_edge": {
     "id": "5200_clan_mire_1_edge",
@@ -13263,7 +13594,9 @@
           "nell_promise"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you promise Nell?",
+    "prompt_fr": "Que promettez-vous à Nell ?"
   },
   "5200_nell_later": {
     "id": "5200_nell_later",
@@ -13295,7 +13628,9 @@
           "hub_5200_nell_later"
         ]
       }
-    ]
+    ],
+    "prompt": "What becomes of Nell and the lantern?",
+    "prompt_fr": "Que deviennent Nell et la lanterne ?"
   },
   "5200_sleep": {
     "id": "5200_sleep",
@@ -13378,7 +13713,8 @@
         "next_id": "6100_knife",
         "hideIfFlags": [
           "hub_6100_knife"
-        ]
+        ],
+        "about": "frozen_pilgrim"
       },
       {
         "text": "Eat the stale bread with the pilgrims",
@@ -13396,7 +13732,8 @@
         "next_id": "6100_house_scorched_choir",
         "hideIfFlags": [
           "hub_6100_house_scorched_choir"
-        ]
+        ],
+        "about": "scorched_choir"
       },
       {
         "text": "Hunt what came through on the pilgrims’ road",
@@ -13417,7 +13754,8 @@
           "standingAtLeast": {
             "vigil": 6
           }
-        }
+        },
+        "about": "vigil"
       },
       {
         "text": "Hide a Returned child for three days",
@@ -13439,7 +13777,8 @@
           "standingAtLeast": {
             "mire": 6
           }
-        }
+        },
+        "about": "mire"
       },
       {
         "text": "Carry a stolen relic down the road to break it",
@@ -13460,7 +13799,8 @@
           "standingAtLeast": {
             "penitents": 6
           }
-        }
+        },
+        "about": "penitents"
       },
       {
         "text": "Follow the branded debtors off the pilgrims’ road",
@@ -13594,7 +13934,9 @@
           "hub_6100_house_scorched_choir"
         ]
       }
-    ]
+    ],
+    "prompt": "Which name do you give the singer?",
+    "prompt_fr": "Quel nom donnez-vous à la chanteuse ?"
   },
   "6100_house_scorched_choir_failed": {
     "id": "6100_house_scorched_choir_failed",
@@ -13669,7 +14011,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "Who hunts it with you?",
+    "prompt_fr": "Avec qui la chassez-vous ?"
   },
   "6100_clan_vigil_2_after": {
     "id": "6100_clan_vigil_2_after",
@@ -13754,7 +14098,9 @@
           "offerFrom": "mire"
         }
       }
-    ]
+    ],
+    "prompt": "How do you shelter the child?",
+    "prompt_fr": "Comment protégez-vous l’enfant ?"
   },
   "6100_clan_mire_2_found": {
     "id": "6100_clan_mire_2_found",
@@ -13801,7 +14147,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "Hold the doorway, or step aside?",
+    "prompt_fr": "Tenir la porte, ou vous écarter ?"
   },
   "6100_clan_mire_2_fourth": {
     "id": "6100_clan_mire_2_fourth",
@@ -13883,7 +14231,9 @@
         "en": "One of them was the Penitent whose bundle I had walked past the white masks. She nodded to me as if we had done this before, which we had.",
         "fr": "L’une d’eux était la Pénitente dont j’avais passé le paquet devant les masques blancs. Elle me salua d’un signe de tête, comme si nous avions déjà fait ça ensemble, ce qui était le cas."
       }
-    ]
+    ],
+    "prompt": "What do you do with the relic?",
+    "prompt_fr": "Que faites-vous de la relique ?"
   },
   "6100_clan_penitents_2_heard": {
     "id": "6100_clan_penitents_2_heard",
@@ -14052,7 +14402,9 @@
           "hub_6100_keeper_later"
         ]
       }
-    ]
+    ],
+    "prompt": "Where does the lantern go?",
+    "prompt_fr": "Où va la lanterne ?"
   },
   "6100_bread": {
     "id": "6100_bread",
@@ -14115,7 +14467,8 @@
         "next_id": "6200_eldest",
         "hideIfFlags": [
           "hub_6200_eldest"
-        ]
+        ],
+        "about": "hathra"
       },
       {
         "text": "Bring Hathra the names from the quarry",
@@ -14144,7 +14497,8 @@
         "next_id": "6200_house_quarrymen",
         "hideIfFlags": [
           "hub_6200_house_quarrymen"
-        ]
+        ],
+        "about": "quarrymen"
       },
       {
         "text": "Tell the Anvil-Deaf why they should forge for you",
@@ -14165,7 +14519,8 @@
           "standingAtLeast": {
             "compact": 6
           }
-        }
+        },
+        "about": "compact"
       },
       {
         "text": "Hear a giant on the hearth-stone’s quarry",
@@ -14173,7 +14528,8 @@
         "next_id": "6200_ghrem",
         "hideIfFlags": [
           "ghrem_met"
-        ]
+        ],
+        "about": "ghrem_stonebrow"
       },
       {
         "text": "Hold the cut face against the Quarrymen",
@@ -14258,7 +14614,9 @@
           "hub_6200_house_quarrymen"
         ]
       }
-    ]
+    ],
+    "prompt": "How do you help the dwarf?",
+    "prompt_fr": "Comment aidez-vous le nain ?"
   },
   "6200_clan_compact_2": {
     "id": "6200_clan_compact_2",
@@ -14320,7 +14678,9 @@
         "en": "I signed my answer as well as said it, with the ten signs I had from Emberwick and a great deal of pointing. The corner of the elder’s mouth moved.",
         "fr": "Je signai ma réponse en même temps que je la dis, avec les dix signes appris à Braiseval et beaucoup de gestes. Le coin de la bouche de l’ancienne remua."
       }
-    ]
+    ],
+    "prompt": "Why should the giants trust the Compact?",
+    "prompt_fr": "Pourquoi les géants feraient-ils confiance au Pacte ?"
   },
   "6200_clan_compact_2_refused": {
     "id": "6200_clan_compact_2_refused",
@@ -14443,7 +14803,10 @@
           "gorm_promise"
         ]
       }
-    ]
+    ],
+    "facing": "hathra",
+    "prompt": "What do you promise the eldest?",
+    "prompt_fr": "Que promettez-vous à l’aînée ?"
   },
   "6200_eldest_later": {
     "id": "6200_eldest_later",
@@ -14480,7 +14843,9 @@
           "giants_names_read"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you tell her?",
+    "prompt_fr": "Que lui dites-vous ?"
   },
   "6200_hearth": {
     "id": "6200_hearth",
@@ -14520,7 +14885,8 @@
         "next_id": "7100_chaplain",
         "hideIfFlags": [
           "hub_7100_chaplain"
-        ]
+        ],
+        "about": "fleet_chaplain"
       },
       {
         "text": "Read the log kept in the stern-chapel",
@@ -14570,7 +14936,8 @@
         "next_id": "7100_helmsman",
         "hideIfFlags": [
           "hub_7100_helmsman"
-        ]
+        ],
+        "about": "fleet_helmsman"
       },
       {
         "text": "Take the helmsman to see his ship",
@@ -14599,7 +14966,8 @@
         "next_id": "7100_house_order",
         "hideIfFlags": [
           "hub_7100_house_order"
-        ]
+        ],
+        "about": "order"
       },
       {
         "text": "Answer the Houses’ Conclave on the cliff",
@@ -14620,7 +14988,8 @@
           "standingAtLeast": {
             "dominion": 26
           }
-        }
+        },
+        "about": "dominion"
       },
       {
         "text": "Go down to the Vault for a key of your own",
@@ -14641,7 +15010,8 @@
           "standingAtLeast": {
             "crows": 26
           }
-        }
+        },
+        "about": "crows"
       },
       {
         "text": "Walk in front of the Penitents’ procession",
@@ -14662,7 +15032,8 @@
           "standingAtLeast": {
             "penitents": 26
           }
-        }
+        },
+        "about": "penitents"
       },
       {
         "text": "Hear the Brig-Born salvager out",
@@ -14670,7 +15041,8 @@
         "next_id": "7100_nkem",
         "hideIfFlags": [
           "hub_7100_nkem"
-        ]
+        ],
+        "about": "nkem_tallow"
       },
       {
         "text": "Free Nkem’s salvage from the impound",
@@ -14699,7 +15071,8 @@
             "count_sealed",
             "count_read"
           ]
-        }
+        },
+        "about": "orsabet_vell"
       },
       {
         "text": "Greet Ghrem Stonebrow on the pier",
@@ -14714,7 +15087,8 @@
             "hearth_stone_cut",
             "hearth_stone_split"
           ]
-        }
+        },
+        "about": "ghrem_stonebrow"
       },
       {
         "text": "Run down to the Vault under the chandlery",
@@ -14840,7 +15214,9 @@
           "hub_7100_house_order"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you do for the knight in glass?",
+    "prompt_fr": "Que faites-vous pour la chevalière de verre ?"
   },
   "7100_clan_dominion_3": {
     "id": "7100_clan_dominion_3",
@@ -14931,7 +15307,9 @@
         "en": "And every House knew I had told the coast about the first night. Half of them hated me for it. The other half had come because of it.",
         "fr": "Et chaque Maison savait que j’avais révélé à la côte la vérité sur la première nuit. La moitié me haïssait pour cela. L’autre moitié était venue pour cela."
       }
-    ]
+    ],
+    "prompt": "Open the lamp, or leave it closed?",
+    "prompt_fr": "Ouvrir la lampe, ou la laisser fermée ?"
   },
   "7100_clan_crows_3": {
     "id": "7100_clan_crows_3",
@@ -14985,7 +15363,9 @@
         "en": "One of the Tar-Hands from Wrack’s End was on the door. He asked after the Eel’s rudder, and then remembered that he had forgotten her.",
         "fr": "L’un des Mains-de-Goudron de Bout-du-Varech gardait la porte. Il demanda des nouvelles du gouvernail de l’Eel, puis se souvint qu’il l’avait oubliée."
       }
-    ]
+    ],
+    "prompt": "Who takes the master’s chair?",
+    "prompt_fr": "Qui prend la chaise du maître ?"
   },
   "7100_clan_penitents_3": {
     "id": "7100_clan_penitents_3",
@@ -15022,7 +15402,9 @@
         "en": "The Spire-Fallen whose sword I had carried to Greyhithe walked behind me, with no sword on his back at all.",
         "fr": "Le Déchu de la Flèche dont j’avais porté l’épée à Grisegrève marchait derrière moi, sans plus aucune épée dans le dos."
       }
-    ]
+    ],
+    "prompt": "How do you meet the crossbows?",
+    "prompt_fr": "Comment affrontez-vous les arbalètes ?"
   },
   "7100_clan_penitents_3_bolt": {
     "id": "7100_clan_penitents_3_bolt",
@@ -15082,7 +15464,9 @@
           "pledge": "penitents"
         }
       }
-    ]
+    ],
+    "prompt": "Do you take the staff?",
+    "prompt_fr": "Prenez-vous le bâton ?"
   },
   "7100_chaplain": {
     "id": "7100_chaplain",
@@ -15111,7 +15495,8 @@
           }
         }
       }
-    ]
+    ],
+    "facing": "fleet_chaplain"
   },
   "7100_chandlery": {
     "id": "7100_chandlery",
@@ -15230,7 +15615,10 @@
         ],
         "failNextId": "7100_helmsman_refused"
       }
-    ]
+    ],
+    "facing": "fleet_helmsman",
+    "prompt": "What do you tell the helmsman?",
+    "prompt_fr": "Que dites-vous au barreur ?"
   },
   "7100_helmsman_later": {
     "id": "7100_helmsman_later",
@@ -15271,7 +15659,9 @@
           "hub_7100_helmsman_later"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you do for him?",
+    "prompt_fr": "Que faites-vous pour lui ?"
   },
   "7100_cutter": {
     "id": "7100_cutter",
@@ -15381,7 +15771,8 @@
         "next_id": "7200_house_spire_fallen",
         "hideIfFlags": [
           "hub_7200_house_spire_fallen"
-        ]
+        ],
+        "about": "spire_fallen"
       },
       {
         "text": "Look into the tear, and swear it to the Vigil",
@@ -15402,7 +15793,8 @@
           "standingAtLeast": {
             "vigil": 26
           }
-        }
+        },
+        "about": "vigil"
       },
       {
         "text": "Go blindfolded to a court in the reeds",
@@ -15423,7 +15815,8 @@
           "standingAtLeast": {
             "mire": 26
           }
-        }
+        },
+        "about": "mire"
       },
       {
         "text": "Answer the Crows’ brigs off the point",
@@ -15616,7 +16009,9 @@
           "hub_7200_house_spire_fallen"
         ]
       }
-    ]
+    ],
+    "prompt": "Who carries the sword down?",
+    "prompt_fr": "Qui porte l’épée jusqu’en bas ?"
   },
   "7200_clan_vigil_3": {
     "id": "7200_clan_vigil_3",
@@ -15643,7 +16038,9 @@
         "checkDC": 15,
         "failNextId": "7200_clan_vigil_3_changed"
       }
-    ]
+    ],
+    "prompt": "What do you tell the thing in the water?",
+    "prompt_fr": "Que dites-vous à ce qui monte de l’eau ?"
   },
   "7200_clan_vigil_3_changed": {
     "id": "7200_clan_vigil_3_changed",
@@ -15703,7 +16100,9 @@
           "pledge": "vigil"
         }
       }
-    ]
+    ],
+    "prompt": "Keep the cloth, or give it back?",
+    "prompt_fr": "Garder le tissu, ou le rendre ?"
   },
   "7200_clan_mire_3": {
     "id": "7200_clan_mire_3",
@@ -15751,7 +16150,9 @@
         "en": "The Returned girl from the Kindly Hill sat behind the eldest, in her feast mask. She did not take it off, and she did not need to.",
         "fr": "La fillette Rendue de la Colline des Bienveillants était assise derrière la plus âgée, son masque de fête sur le visage. Elle ne l’ôta pas, et n’en avait pas besoin."
       }
-    ]
+    ],
+    "prompt": "What do you ask of the Court?",
+    "prompt_fr": "Que demandez-vous à la Cour ?"
   },
   "7200_nets": {
     "id": "7200_nets",
@@ -15824,7 +16225,9 @@
           "elder_promise"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you promise the eldest?",
+    "prompt_fr": "Que promettez-vous à l’aînée ?"
   },
   "7200_elder_later": {
     "id": "7200_elder_later",
@@ -15858,7 +16261,9 @@
           "hub_7200_elder_later"
         ]
       }
-    ]
+    ],
+    "prompt": "How do you read her the page?",
+    "prompt_fr": "Comment lui lisez-vous la page ?"
   },
   "7200_tide": {
     "id": "7200_tide",
@@ -15969,7 +16374,9 @@
         "en": "The Keyholder sat in the master’s chair now, and the debt-books were ash, and nobody on the brigs seemed to remember them.",
         "fr": "La Porte-Clef occupait désormais le fauteuil du maître, les livres de dettes étaient en cendres, et nul, sur les bricks, ne semblait s’en souvenir."
       }
-    ]
+    ],
+    "prompt": "Which sign do you flash?",
+    "prompt_fr": "Quel signe faites-vous ?"
   },
   "7200_relic": {
     "id": "7200_relic",
@@ -16030,7 +16437,9 @@
         "en": "I had marked the place on the chart, nine fathoms from the point.",
         "fr": "J’avais marqué l’endroit sur la carte, à neuf brasses de la pointe."
       }
-    ]
+    ],
+    "prompt": "What do you do with the relic?",
+    "prompt_fr": "Que faites-vous de la relique ?"
   },
   "7200_thieves_aboard": {
     "id": "7200_thieves_aboard",
@@ -16106,7 +16515,9 @@
         "en": "I had sworn in the chapel to be on the Eel’s deck when the bells rang. I was, though the bells had rung without me.",
         "fr": "J’avais juré dans la chapelle d’être sur le pont de l’Eel quand les cloches sonneraient. J’y étais, bien que les cloches eussent sonné sans moi."
       }
-    ]
+    ],
+    "prompt": "How do you meet the Thieves?",
+    "prompt_fr": "Comment accueillez-vous les Voleurs ?"
   },
   "7200_fourth_piece": {
     "id": "7200_fourth_piece",
@@ -16169,7 +16580,9 @@
         "en": "I had kept them in their boats at Greyhithe and bargained, and they had not forgotten the bargaining.",
         "fr": "Je les avais gardés dans leurs barques à Grisegrève et j’avais marchandé, et ils n’avaient pas oublié ce marchandage."
       }
-    ]
+    ],
+    "prompt": "What do you do with the Fourth Piece?",
+    "prompt_fr": "Que faites-vous du Quatrième Pan ?"
   },
   "7200_stitcher_kin": {
     "id": "7200_stitcher_kin",
@@ -16238,7 +16651,9 @@
         "en": "I had held her lamp at the milestone. She mentioned it only by not mentioning it.",
         "fr": "J’avais tenu sa lampe à la borne. Elle n’y fit allusion qu’en n’y faisant pas allusion."
       }
-    ]
+    ],
+    "prompt": "What do you say to the seamstress?",
+    "prompt_fr": "Que dites-vous à la couturière ?"
   },
   "7200_followed": {
     "id": "7200_followed",
@@ -16297,7 +16712,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "How do you meet what followed you?",
+    "prompt_fr": "Comment accueillez-vous ce qui vous a suivi ?"
   },
   "7200_stitcher": {
     "id": "7200_stitcher",
@@ -16354,7 +16771,9 @@
         "en": "I had promised her my silence until I had seen the door, and I had seen it now.",
         "fr": "Je lui avais promis mon silence jusqu’à ce que j’aie vu la porte, et je l’avais vue à présent."
       }
-    ]
+    ],
+    "prompt": "Do you keep her secret?",
+    "prompt_fr": "Gardez-vous son secret ?"
   },
   "7200_courts_children": {
     "id": "7200_courts_children",
@@ -16429,7 +16848,9 @@
         "en": "I had hidden one Returned child for three days at Rimewell. Thirty was a larger number than one, but the arithmetic was the same.",
         "fr": "J’avais caché un enfant rendu pendant trois jours à Puits-de-Givre. Trente était un plus grand nombre qu’un, mais l’arithmétique était la même."
       }
-    ]
+    ],
+    "prompt": "What do you tell the envoy?",
+    "prompt_fr": "Que dites-vous à l’envoyé ?"
   },
   "7200_returned": {
     "id": "7200_returned",
@@ -16487,7 +16908,9 @@
         "en": "They had come aboard at Greyhithe without a sound, thirty small bundles in the dark, and I had not once been asked to explain.",
         "fr": "Ils étaient montés à bord à Grisegrève sans un bruit, trente petits paquets dans le noir, et l’on ne m’avait pas une fois demandé de m’expliquer."
       }
-    ]
+    ],
+    "prompt": "What becomes of the children?",
+    "prompt_fr": "Que deviennent les enfants ?"
   },
   "7300": {
     "id": "7300",
@@ -16580,7 +17003,10 @@
         "en": "I knew what the colours had been for now. The Admiral had not been sailing home.",
         "fr": "Je savais désormais à quoi avaient servi ces couleurs. L’Amiral ne rentrait pas chez lui."
       }
-    ]
+    ],
+    "facing": "the_white_admiral",
+    "prompt": "How do you take the sail down?",
+    "prompt_fr": "Comment faites-vous descendre la voile ?"
   },
   "7400": {
     "id": "7400",
@@ -16904,7 +17330,10 @@
         "fr": "La barque du légat se trouvait aussi au bord de l’eau, avec une trentaine de petites silhouettes à la poupe, et aucune ne me regarda."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "facing": "tear_herald",
+    "prompt": "How do you pass the fleet?",
+    "prompt_fr": "Comment passez-vous la flotte ?"
   },
   "7002_alarm": {
     "id": "7002_alarm",
@@ -16932,7 +17361,8 @@
           "banner_five"
         ]
       }
-    ]
+    ],
+    "facing": "hollow_reflection"
   },
   "2015_sable_lifted": {
     "id": "2015_sable_lifted",
@@ -17075,7 +17505,9 @@
         "en": "She was still on her roof. \"Back again,\" she said, not quite a question.",
         "fr": "Elle était toujours sur son toit. « Encore vous », dit-elle, sans que ce soit tout à fait une question."
       }
-    ]
+    ],
+    "prompt": "How do you meet the woman on the roof?",
+    "prompt_fr": "Comment abordez-vous la femme sur le toit ?"
   },
   "2015_liora_won": {
     "id": "2015_liora_won",
@@ -17188,7 +17620,9 @@
         "en": "\"You were at the Tear, too,\" she added. \"It remembers that as well.\"",
         "fr": "« Vous étiez aussi à la Déchirure, ajouta-t-elle. Elle s’en souvient également. »"
       }
-    ]
+    ],
+    "prompt": "Do you hear her out?",
+    "prompt_fr": "L’écoutez-vous ?"
   },
   "822_lie_failed": {
     "id": "822_lie_failed",
@@ -17210,7 +17644,8 @@
           "wardens_slain"
         ]
       }
-    ]
+    ],
+    "facing": "inquisition_warden"
   },
   "850_fed_failed": {
     "id": "850_fed_failed",
@@ -17232,7 +17667,8 @@
           "matriarch_slain"
         ]
       }
-    ]
+    ],
+    "facing": "rat_matriarch"
   },
   "2040_paid": {
     "id": "2040_paid",
@@ -17390,7 +17826,8 @@
           "roof_fallen"
         ]
       }
-    ]
+    ],
+    "facing": "harbor_rat"
   },
   "7100_helmsman_refused": {
     "id": "7100_helmsman_refused",
@@ -17455,7 +17892,10 @@
           "hidden": true
         }
       }
-    ]
+    ],
+    "facing": "sign_painter",
+    "prompt": "What do you do about the man who drew it?",
+    "prompt_fr": "Que faites-vous de l’homme qui l’a dessinée ?"
   },
   "4999_drawn": {
     "id": "4999_drawn",
@@ -17503,7 +17943,9 @@
         }
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "Let it burn, or smother it?",
+    "prompt_fr": "La laisser brûler, ou l’étouffer ?"
   },
   "6010_wickwarden": {
     "id": "6010_wickwarden",
@@ -17541,7 +17983,9 @@
           "hub_6010_wickwarden"
         ]
       }
-    ]
+    ],
+    "prompt": "Will you take the Wickwardens’ lamp?",
+    "prompt_fr": "Prendrez-vous la lampe des Garde-Mèches ?"
   },
   "6010_record": {
     "id": "6010_record",
@@ -17585,7 +18029,9 @@
           "remembrance": 5
         }
       }
-    ]
+    ],
+    "prompt": "What do you do with the truth?",
+    "prompt_fr": "Que faites-vous de la vérité ?"
   },
   "7002_banner": {
     "id": "7002_banner",
@@ -17745,7 +18191,9 @@
         "en": "I already carried another banner toward the Lantern Throne. The hand could stand beside it, or in front of it, and the coast would read the difference.",
         "fr": "Je portais déjà une autre bannière vers le Trône de la Lanterne. La main pouvait se tenir à côté d’elle, ou devant elle, et la côte lirait la différence."
       }
-    ]
+    ],
+    "prompt": "What do you do with the banner?",
+    "prompt_fr": "Que faites-vous de la bannière ?"
   },
   "5010_letter": {
     "id": "5010_letter",
@@ -17791,7 +18239,10 @@
           }
         }
       }
-    ]
+    ],
+    "facing": "drowned_courier",
+    "prompt": "What do you do with the letter?",
+    "prompt_fr": "Que faites-vous de la lettre ?"
   },
   "7100_log": {
     "id": "7100_log",
@@ -17836,7 +18287,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "How do you take the log?",
+    "prompt_fr": "Comment prenez-vous le journal de bord ?"
   },
   "7002_orders": {
     "id": "7002_orders",
@@ -17894,7 +18347,9 @@
         "en": "The coast had already heard the Reliquary’s roll read aloud, at my say-so. This page would only make it louder.",
         "fr": "La côte avait déjà entendu lire le rouleau du Reliquaire, parce que je l’avais voulu. Cette page ne ferait que hausser la voix."
       }
-    ]
+    ],
+    "prompt": "Who gets the orders?",
+    "prompt_fr": "À qui va l’ordre ?"
   },
   "3005_envoys": {
     "id": "3005_envoys",
@@ -17992,7 +18447,10 @@
         "en": "He had my sister. His envoy did not say so. He did not need to.",
         "fr": "Il avait ma sœur. Son émissaire ne le dit pas. Il n’en avait pas besoin."
       }
-    ]
+    ],
+    "facing": "maud_tallis",
+    "prompt": "Whose gift do you take?",
+    "prompt_fr": "Le cadeau de qui prenez-vous ?"
   },
   "5100_vote": {
     "id": "5100_vote",
@@ -18064,7 +18522,10 @@
           }
         }
       }
-    ]
+    ],
+    "facing": "tribunal_clerk",
+    "prompt": "What do you do with the vote?",
+    "prompt_fr": "Que faites-vous du vote ?"
   },
   "5100_keyholder_cut": {
     "id": "5100_keyholder_cut",
@@ -18141,7 +18602,9 @@
         "en": "I had paid the Ledger thirty gold to stop suspecting me, and here sat the one it should have suspected, warm and comfortable, as if she had been paid by the same hand.",
         "fr": "J’avais payé trente pièces d’or au Registre pour qu’il cesse de me soupçonner, et voilà celle qu’il aurait dû soupçonner, au chaud et à son aise, comme payée de la même main."
       }
-    ]
+    ],
+    "prompt": "Do you take the cut?",
+    "prompt_fr": "Prenez-vous la part ?"
   },
   "5100_tar_hand_book": {
     "id": "5100_tar_hand_book",
@@ -18208,7 +18671,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "What do you do about the refit book?",
+    "prompt_fr": "Que faites-vous du livre de carénage ?"
   },
   "5100_anvil_deaf_vote": {
     "id": "5100_anvil_deaf_vote",
@@ -18289,7 +18754,9 @@
         "en": "Dorran Quill had carried my warning back to his yard. I heard on the quay that he had spent a week not touching the strongbox.",
         "fr": "Dorran Quill avait rapporté mon avertissement à son chantier. J’appris sur le quai qu’il avait passé une semaine sans toucher au coffre."
       }
-    ]
+    ],
+    "prompt": "Who counts the hands?",
+    "prompt_fr": "Qui compte les mains ?"
   },
   "6100_knife": {
     "id": "6100_knife",
@@ -18343,7 +18810,10 @@
         "en": "I had read the Tribunal’s vote by steam at Wrack’s End. It had been cast for Vane.",
         "fr": "J’avais lu à la vapeur le vote du Tribunal, à Bout-du-Varech. Il était pour Vane."
       }
-    ]
+    ],
+    "facing": "frozen_pilgrim",
+    "prompt": "What do you do with the knife?",
+    "prompt_fr": "Que faites-vous du couteau ?"
   },
   "6100_debt_rising": {
     "id": "6100_debt_rising",
@@ -18430,7 +18900,9 @@
         "en": "I had refused her third at the foot of the cliff path, and told her I knew. She had looked relieved, which I had not expected.",
         "fr": "J’avais refusé son tiers au pied du sentier de la falaise, et lui avais dit que je savais. Elle avait paru soulagée, ce à quoi je ne m’attendais pas."
       }
-    ]
+    ],
+    "prompt": "What do you do about the uprising?",
+    "prompt_fr": "Que faites-vous du soulèvement ?"
   },
   "6100_stitcher_door": {
     "id": "6100_stitcher_door",
@@ -18499,7 +18971,9 @@
         "en": "I had heard the name read out from a stone in the frost. I had not expected to hear it spoken to me.",
         "fr": "J’avais entendu ce nom lu à voix haute devant une pierre dans le givre. Je ne m’attendais pas à l’entendre prononcé pour moi."
       }
-    ]
+    ],
+    "prompt": "Will you hold the lamp?",
+    "prompt_fr": "Tiendrez-vous la lampe ?"
   },
   "6100_charter_signing": {
     "id": "6100_charter_signing",
@@ -18571,7 +19045,9 @@
         "en": "Dorran Quill’s crew had been paid out of my purse. A Scaffolder at the quarry’s edge nodded at me once, the way a man nods at a debt he does not mind.",
         "fr": "L’équipe de Dorran Quill avait été payée de ma bourse. Un Échafaudeur, au bord de la carrière, me fit un signe de tête, comme on salue une dette qui ne pèse pas."
       }
-    ]
+    ],
+    "prompt": "Whose terms do you carry?",
+    "prompt_fr": "Les conditions de qui portez-vous ?"
   },
   "7002_throne": {
     "id": "7002_throne",
@@ -18747,7 +19223,9 @@
         "en": "Or the vote could go to none of them. I carried a banner of my own toward the Throne, and the Admiralty’s seal would open Candlehold’s harbour chain for it as readily as for any of theirs.",
         "fr": "Ou la voix pouvait n’aller à aucun des trois. Je portais ma propre bannière vers le Trône, et le sceau de l’Amirauté ouvrirait la chaîne du port de Candlehold pour elle aussi bien que pour les leurs."
       }
-    ]
+    ],
+    "prompt": "Whom do you back for the Throne?",
+    "prompt_fr": "Qui soutenez-vous pour le Trône ?"
   },
   "7500": {
     "id": "7500",
@@ -19390,7 +19868,9 @@
     "noDetour": true,
     "politicsOnEnter": {
       "event": "the_throne_filled"
-    }
+    },
+    "prompt": "How do you go up to the Lantern Hall?",
+    "prompt_fr": "Comment montez-vous à la Salle de la Lanterne ?"
   },
   "7510_vigil": {
     "id": "7510_vigil",
@@ -19669,7 +20149,9 @@
     "noDetour": true,
     "politicsOnEnter": {
       "event": "the_throne_filled"
-    }
+    },
+    "prompt": "How do you go up to the Lantern Hall?",
+    "prompt_fr": "Comment montez-vous à la Salle de la Lanterne ?"
   },
   "7510_compact": {
     "id": "7510_compact",
@@ -19948,7 +20430,9 @@
     "noDetour": true,
     "politicsOnEnter": {
       "event": "the_throne_filled"
-    }
+    },
+    "prompt": "How do you go up to the Lantern Hall?",
+    "prompt_fr": "Comment montez-vous à la Salle de la Lanterne ?"
   },
   "7510_mire": {
     "id": "7510_mire",
@@ -20230,7 +20714,9 @@
     "noDetour": true,
     "politicsOnEnter": {
       "event": "the_throne_filled"
-    }
+    },
+    "prompt": "How do you go up to the Lantern Hall?",
+    "prompt_fr": "Comment montez-vous à la Salle de la Lanterne ?"
   },
   "7510_crows": {
     "id": "7510_crows",
@@ -20515,7 +21001,9 @@
     "noDetour": true,
     "politicsOnEnter": {
       "event": "the_throne_filled"
-    }
+    },
+    "prompt": "How do you go up to the Lantern Hall?",
+    "prompt_fr": "Comment montez-vous à la Salle de la Lanterne ?"
   },
   "7510_penitents": {
     "id": "7510_penitents",
@@ -20797,7 +21285,9 @@
     "noDetour": true,
     "politicsOnEnter": {
       "event": "the_throne_filled"
-    }
+    },
+    "prompt": "How do you go up to the Lantern Hall?",
+    "prompt_fr": "Comment montez-vous à la Salle de la Lanterne ?"
   },
   "7510_open_hand": {
     "id": "7510_open_hand",
@@ -21064,7 +21554,9 @@
     "noDetour": true,
     "politicsOnEnter": {
       "event": "the_throne_filled"
-    }
+    },
+    "prompt": "How do you go up to the Lantern Hall?",
+    "prompt_fr": "Comment montez-vous à la Salle de la Lanterne ?"
   },
   "7510_seen": {
     "id": "7510_seen",
@@ -21184,7 +21676,10 @@
         "fr": "Maud Tallis tenait la Salle de la Lanterne. Il n’y avait pas de soldats dans les escaliers de la falaise, seulement des Garde-Mèches, à chaque lampe, jusqu’à la Première Lanterne ; et il faudrait, je le compris, passer par-dessus chacune d’elles."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "facing": "inquisition_soldier",
+    "prompt": "Will you fight your way up?",
+    "prompt_fr": "Vous frayerez-vous un chemin par la force ?"
   },
   "7520_vane": {
     "id": "7520_vane",
@@ -21475,7 +21970,9 @@
         "fr": "Il demanda, aimablement, si elle avait souffert. Je dis que non, et que lui n’aurait pas cette chance."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "What becomes of Vane?",
+    "prompt_fr": "Que devient Vane ?"
   },
   "7520_morrow": {
     "id": "7520_morrow",
@@ -21718,7 +22215,10 @@
         "fr": "« Votre sœur, dit-il. L’Inquisition l’a prise sur votre seuil, et vous l’avez reprise. Certains de mes chevaliers ont applaudi en l’apprenant. Je les ai fait fouetter. J’aurais applaudi aussi. »"
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "facing": "hesk_morrow",
+    "prompt": "What becomes of Morrow?",
+    "prompt_fr": "Que devient Morrow ?"
   },
   "7520_tallis": {
     "id": "7520_tallis",
@@ -21961,7 +22461,10 @@
         "fr": "« Les enfants, dit-elle en regardant mes mains. Nous les avons mis dans des paniers à poisson. J’en ai porté deux moi-même. J’étais plus jeune que vous. »"
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "facing": "maud_tallis",
+    "prompt": "What becomes of Tallis?",
+    "prompt_fr": "Que devient Tallis ?"
   },
   "7590_dominion": {
     "id": "7590_dominion",
@@ -22134,7 +22637,9 @@
         "fr": "J’avais porté cette bannière longtemps pour le Trône, et ceux qui me l’avaient confiée étaient dans les tribunes, à regarder si je l’avais fait sérieusement."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "How do you bear the Lantern?",
+    "prompt_fr": "Comment portez-vous la Lanterne ?"
   },
   "7590_vigil": {
     "id": "7590_vigil",
@@ -22311,7 +22816,9 @@
         "fr": "J’avais porté cette bannière longtemps pour le Trône, et ceux qui me l’avaient confiée étaient dans les tribunes, à regarder si je l’avais fait sérieusement."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "How do you sit the Throne?",
+    "prompt_fr": "Comment occupez-vous le Trône ?"
   },
   "7590_compact": {
     "id": "7590_compact",
@@ -22488,7 +22995,9 @@
         "fr": "J’avais porté cette bannière longtemps pour le Trône, et ceux qui me l’avaient confiée étaient dans les tribunes, à regarder si je l’avais fait sérieusement."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "What do you do with the crown?",
+    "prompt_fr": "Que faites-vous de la couronne ?"
   },
   "7590_mire": {
     "id": "7590_mire",
@@ -22661,7 +23170,9 @@
         "fr": "J’avais porté cette bannière longtemps pour le Trône, et ceux qui me l’avaient confiée étaient dans les tribunes, à regarder si je l’avais fait sérieusement."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "What do you do with the fen’s terms?",
+    "prompt_fr": "Que faites-vous des conditions du marais ?"
   },
   "7590_crows": {
     "id": "7590_crows",
@@ -22833,7 +23344,9 @@
         "fr": "J’avais porté cette bannière longtemps pour le Trône, et ceux qui me l’avaient confiée étaient dans les tribunes, à regarder si je l’avais fait sérieusement."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "The peace that pays, or the war that lasts?",
+    "prompt_fr": "La paix qui paie, ou la guerre qui dure ?"
   },
   "7590_penitents": {
     "id": "7590_penitents",
@@ -23005,7 +23518,9 @@
         "fr": "J’avais porté cette bannière longtemps pour le Trône, et ceux qui me l’avaient confiée étaient dans les tribunes, à regarder si je l’avais fait sérieusement."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "What do you do with the burnt crown?",
+    "prompt_fr": "Que faites-vous de la couronne brûlée ?"
   },
   "7590_open_hand": {
     "id": "7590_open_hand",
@@ -23176,7 +23691,9 @@
         "fr": "J’avais porté cette bannière longtemps pour le Trône, et ceux qui me l’avaient confiée étaient dans les tribunes, à regarder si je l’avais fait sérieusement."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "prompt": "What do you do with the Seal?",
+    "prompt_fr": "Que faites-vous du Sceau ?"
   },
   "7800": {
     "id": "7800",
@@ -23214,7 +23731,8 @@
         "showIfFlags": [
           "banner_five"
         ],
-        "unlockQuestId": "q_ch6_beyond_the_tear"
+        "unlockQuestId": "q_ch6_beyond_the_tear",
+        "about": "tear_herald"
       },
       {
         "text": "Greet Nkem Tallow’s boat as it comes in",
@@ -23229,7 +23747,8 @@
             "salvage_to_admiralty",
             "salvage_sold"
           ]
-        }
+        },
+        "about": "nkem_tallow"
       }
     ],
     "flag_callbacks": [
@@ -23755,7 +24274,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "Who leads the van?",
+    "prompt_fr": "Qui mène l’avant-garde ?"
   },
   "7800_lines": {
     "id": "7800_lines",
@@ -23793,7 +24314,9 @@
           "*": 1
         }
       }
-    ]
+    ],
+    "prompt": "What do you say to the company?",
+    "prompt_fr": "Que dites-vous à la compagnie ?"
   },
   "7810": {
     "id": "7810",
@@ -23921,7 +24444,10 @@
         "fr": "Les lames montèrent du Mouillage sans marque, ni mandat ni enclume, et les forgerons de la Rue qui les portaient dirent qu’elles étaient forgées pour quiconque tenait la ligne."
       }
     ],
-    "noDetour": true
+    "noDetour": true,
+    "facing": "tear_herald",
+    "prompt": "How do you face the Herald?",
+    "prompt_fr": "Comment affrontez-vous le Héraut ?"
   },
   "2015_dorran": {
     "id": "2015_dorran",
@@ -23943,7 +24469,8 @@
           "hub_2015_dorran"
         ]
       }
-    ]
+    ],
+    "facing": "dorran_quill"
   },
   "2015_scaffold_clerk": {
     "id": "2015_scaffold_clerk",
@@ -23986,7 +24513,8 @@
           "scaffold_clerk_faced"
         ]
       }
-    ]
+    ],
+    "facing": "inquisition_soldier"
   },
   "2015_route_sold": {
     "id": "2015_route_sold",
@@ -24048,7 +24576,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "What do you do about the sold route?",
+    "prompt_fr": "Que faites-vous de la route vendue ?"
   },
   "2015_survivor": {
     "id": "2015_survivor",
@@ -24113,7 +24643,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "What do you do for the survivor?",
+    "prompt_fr": "Que faites-vous pour le survivant ?"
   },
   "2015_bundle": {
     "id": "2015_bundle",
@@ -24178,7 +24710,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "What do you do with the bundle?",
+    "prompt_fr": "Que faites-vous du paquet ?"
   },
   "2015_child_tongue": {
     "id": "2015_child_tongue",
@@ -24238,7 +24772,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "What do you do for the child?",
+    "prompt_fr": "Que faites-vous pour l’enfant ?"
   },
   "2015_dominion_blades": {
     "id": "2015_dominion_blades",
@@ -24300,7 +24836,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "What do you do about the blades?",
+    "prompt_fr": "Que faites-vous des lames ?"
   },
   "3005_imeh": {
     "id": "3005_imeh",
@@ -24322,7 +24860,8 @@
           "hub_3005_imeh"
         ]
       }
-    ]
+    ],
+    "facing": "imeh"
   },
   "3005_glass_fire": {
     "id": "3005_glass_fire",
@@ -24365,7 +24904,8 @@
           "glass_tested"
         ]
       }
-    ]
+    ],
+    "facing": "cultist_acolyte"
   },
   "5010_brannoc": {
     "id": "5010_brannoc",
@@ -24387,7 +24927,8 @@
           "hub_5010_brannoc"
         ]
       }
-    ]
+    ],
+    "facing": "brannoc_reedtithe"
   },
   "5010_bark_cache": {
     "id": "5010_bark_cache",
@@ -24433,7 +24974,8 @@
           "bark_recovered"
         ]
       }
-    ]
+    ],
+    "facing": "street_bandit"
   },
   "6010_orsabet": {
     "id": "6010_orsabet",
@@ -24455,7 +24997,8 @@
           "hub_6010_orsabet"
         ]
       }
-    ]
+    ],
+    "facing": "orsabet_vell"
   },
   "6010_candle_walk": {
     "id": "6010_candle_walk",
@@ -24498,7 +25041,8 @@
           "count_carried"
         ]
       }
-    ]
+    ],
+    "facing": "tear_spawn"
   },
   "6200_ghrem": {
     "id": "6200_ghrem",
@@ -24520,7 +25064,8 @@
           "ghrem_met"
         ]
       }
-    ]
+    ],
+    "facing": "ghrem_stonebrow"
   },
   "6200_quarry_face": {
     "id": "6200_quarry_face",
@@ -24563,7 +25108,8 @@
           "quarry_face_held"
         ]
       }
-    ]
+    ],
+    "facing": "rime_bailiff"
   },
   "7100_nkem": {
     "id": "7100_nkem",
@@ -24585,7 +25131,8 @@
           "hub_7100_nkem"
         ]
       }
-    ]
+    ],
+    "facing": "nkem_tallow"
   },
   "7100_impound": {
     "id": "7100_impound",
@@ -24631,7 +25178,8 @@
           "salvage_freed"
         ]
       }
-    ]
+    ],
+    "facing": "inquisition_soldier"
   },
   "3005_dorran_later": {
     "id": "3005_dorran_later",
@@ -24683,7 +25231,10 @@
         "en": "“Half the wages came, and the crew ate on them,” she said, “and Dorran says that is more than the Ledger ever gave them. He also says that half a debt is still a debt.” She did not smile as she said it, and she offered me nothing; Dorran, I gathered, kept his accounts as carefully as his knots.",
         "fr": "« La moitié des gages est arrivée, et l’équipe a mangé avec, dit-elle, et Dorran dit que c’est plus que le Registre ne leur a jamais donné. Il dit aussi qu’une demi-dette reste une dette. » Elle ne sourit pas en le disant, et ne m’offrit rien ; Dorran, je le compris, tenait ses comptes aussi soigneusement que ses nœuds."
       }
-    ]
+    ],
+    "facing": "dorran_quill",
+    "prompt": "Take their offer, or part?",
+    "prompt_fr": "Accepter leur offre, ou prendre congé ?"
   },
   "3005_black_thread": {
     "id": "3005_black_thread",
@@ -24756,7 +25307,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "What do you give the Ledger?",
+    "prompt_fr": "Que donnez-vous au Registre ?"
   },
   "3005_logbook_gap": {
     "id": "3005_logbook_gap",
@@ -24823,7 +25376,9 @@
         "en": "I had the sailor’s name in my pocket, and now a gap on a shelf to set beside it.",
         "fr": "J’avais le nom du marin en poche, et maintenant un vide sur un rayon pour le lui poser à côté."
       }
-    ]
+    ],
+    "prompt": "How do you chase the missing log?",
+    "prompt_fr": "Comment cherchez-vous le journal manquant ?"
   },
   "3005_shrine_break": {
     "id": "3005_shrine_break",
@@ -24897,7 +25452,9 @@
         "en": "I thought of the sliver of white stone in the sacking at the Saltmouth wharf, warm as a hand, and of how little it would take to turn that into this heap.",
         "fr": "Je pensai à l’éclat de pierre blanche dans la toile, sur le quai de Bouche-de-Sel, tiède comme une main, et à ce qu’il faudrait peu pour en faire ce tas."
       }
-    ]
+    ],
+    "prompt": "What do you do about the broken shrine?",
+    "prompt_fr": "Que faites-vous du sanctuaire brisé ?"
   },
   "3005_spire_takings": {
     "id": "3005_spire_takings",
@@ -24970,7 +25527,9 @@
         "en": "I thought of the girl on the crate at Fisherman’s Row, and of the heel of bread she had held in both hands like a small, serious animal.",
         "fr": "Je pensai à la fillette sur la caisse, dans l’Allée des Pêcheurs, et au quignon de pain qu’elle avait tenu à deux mains comme un petit animal sérieux."
       }
-    ]
+    ],
+    "prompt": "What do you do with the file?",
+    "prompt_fr": "Que faites-vous du dossier ?"
   },
   "3005_tribunal_gold": {
     "id": "3005_tribunal_gold",
@@ -25043,7 +25602,9 @@
         "en": "The Compact blade from the wharf was in my pack, its anvil mark rubbed bright. I did not take it out, but Dorran looked at the pack.",
         "fr": "La lame du Pacte achetée au quai était dans mon sac, sa marque d’enclume frottée jusqu’à briller. Je ne la sortis pas, mais Dorran regarda le sac."
       }
-    ]
+    ],
+    "prompt": "What do you do about Dorran and the Tribunal?",
+    "prompt_fr": "Que faites-vous de Dorran et du Tribunal ?"
   },
   "5010_imeh_later": {
     "id": "5010_imeh_later",
@@ -25096,7 +25657,10 @@
         "en": "“Her glass sells at the camp, and she sells with it,” he said, “and she says a stall under a roof does better than a stall in a fire.” He lifted the straw from the crate and showed me a share of the first crate and a green cup. “She says it is not payment. It is only the glass, saying thank you.”",
         "fr": "« Son verre se vend au camp, et elle avec, dit-il, et elle dit qu’un étal sous un toit vaut mieux qu’un étal dans le feu. » Il souleva la paille de la caisse et me montra une part de la première caisse et une coupe verte. « Elle dit que ce n’est pas un paiement. C’est seulement le verre qui dit merci. »"
       }
-    ]
+    ],
+    "facing": "imeh",
+    "prompt": "Take their offer, or part?",
+    "prompt_fr": "Accepter leur offre, ou prendre congé ?"
   },
   "5010_thieves_ship": {
     "id": "5010_thieves_ship",
@@ -25161,7 +25725,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "What do you tell the Thieves?",
+    "prompt_fr": "Que répondez-vous aux Voleurs ?"
   },
   "5010_vigil_envoy": {
     "id": "5010_vigil_envoy",
@@ -25228,7 +25794,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "What do you say to the Watch?",
+    "prompt_fr": "Que dites-vous à la Veille ?"
   },
   "6010_brannoc_later": {
     "id": "6010_brannoc_later",
@@ -25280,7 +25848,10 @@
         "en": "“Brannoc says half a season was half a cure,” they said, “and that he has learned to work with half. He says the camp infirmary is welcome to its share, and that he hopes it uses it better than the fever did.” They said it carefully, as if it had been practised on the road, and held the packet closed.",
         "fr": "« Brannoc dit qu’une demi-saison faisait une demi-guérison, dit-il, et qu’il a appris à travailler avec la moitié. Il dit que l’infirmerie du camp est la bienvenue pour sa part, et qu’il espère qu’elle l’emploiera mieux que la fièvre. » Il le dit avec soin, comme une phrase répétée sur la route, et garda le paquet fermé."
       }
-    ]
+    ],
+    "facing": "brannoc_reedtithe",
+    "prompt": "Take their offer, or part?",
+    "prompt_fr": "Accepter leur offre, ou prendre congé ?"
   },
   "6010_lantern_manifest": {
     "id": "6010_lantern_manifest",
@@ -25353,7 +25924,9 @@
         "en": "The caulker’s refit book lay open in my coat, and the cradle it described had a hatch cut for exactly this coffin.",
         "fr": "Le livre de radoub de la calfate reposait ouvert dans mon manteau, et le berceau qu’il décrivait avait une écoutille taillée pour ce cercueil-là."
       }
-    ]
+    ],
+    "prompt": "How do you take the manifest?",
+    "prompt_fr": "Comment obtenez-vous le manifeste ?"
   },
   "6010_heist_night": {
     "id": "6010_heist_night",
@@ -25426,7 +25999,9 @@
         "en": "The woman in grey had said she would not ask twice. I had not understood that she meant she would not need to.",
         "fr": "La femme en gris avait dit qu’elle ne demanderait pas deux fois. Je n’avais pas compris qu’elle voulait dire qu’elle n’en aurait pas besoin."
       }
-    ]
+    ],
+    "prompt": "What do you promise the Thieves?",
+    "prompt_fr": "Que promettez-vous aux Voleurs ?"
   },
   "6010_count_short": {
     "id": "6010_count_short",
@@ -25495,7 +26070,9 @@
         "en": "I knew the walk that had gone down the Salt Road. I had followed it as far as the pass, and I had not said whose it was.",
         "fr": "Je connaissais la démarche qui avait descendu la route du sel. Je l’avais suivie jusqu’au col, et je n’avais pas dit à qui elle était."
       }
-    ]
+    ],
+    "prompt": "What do you do about the missing name?",
+    "prompt_fr": "Que faites-vous du nom manquant ?"
   },
   "6010_returned_roll": {
     "id": "6010_returned_roll",
@@ -25575,7 +26152,9 @@
         "en": "I had told the Watch’s envoy that the Mire would not give them up. She had nodded as if I had confirmed a figure.",
         "fr": "J’avais dit à l’émissaire de la Veille que le Marais ne les livrerait pas. Elle avait hoché la tête comme si je lui confirmais un chiffre."
       }
-    ]
+    ],
+    "prompt": "What do you do with the roll?",
+    "prompt_fr": "Que faites-vous de la liste ?"
   },
   "7100_orsabet_later": {
     "id": "7100_orsabet_later",
@@ -25628,7 +26207,10 @@
         "en": "“You read every name, and she stood through all of them,” she said. “She lit no candle that night, and has lit one every night since, for a different reason.” She set the jar on a bollard, and the flame stood perfectly still. “This is from the night of the reading. This purse is for the road.”",
         "fr": "« Vous avez lu chaque nom, et elle est restée debout pour tous, dit-elle. Elle n’a allumé aucune chandelle ce soir-là, et en a allumé une chaque soir depuis, pour une autre raison. » Elle posa le pot sur une bitte d’amarrage, et la flamme se tint parfaitement droite. « Celle-ci vient de la nuit de la lecture. Cette bourse est pour la route. »"
       }
-    ]
+    ],
+    "facing": "orsabet_vell",
+    "prompt": "Take their offer, or part?",
+    "prompt_fr": "Accepter leur offre, ou prendre congé ?"
   },
   "7100_ghrem_later": {
     "id": "7100_ghrem_later",
@@ -25680,7 +26262,10 @@
         "en": "“Half a face,” he said to the water. “Highhearth made its first bargain in a century, and it was not a good one, and it was ours.” He turned one eye on me, which was the size of a ladle. “I have decided to be glad of it. Do not make me say so twice.”",
         "fr": "« Une moitié de front, dit-il à l’eau. Haut-Âtre a conclu son premier marché en un siècle, et il n’était pas bon, mais c’était le nôtre. » Il tourna vers moi un œil de la taille d’une louche. « J’ai décidé de m’en réjouir. Ne me le faites pas dire deux fois. »"
       }
-    ]
+    ],
+    "facing": "ghrem_stonebrow",
+    "prompt": "Take their offer, or part?",
+    "prompt_fr": "Accepter leur offre, ou prendre congé ?"
   },
   "7100_vault_burns": {
     "id": "7100_vault_burns",
@@ -25766,7 +26351,9 @@
         "en": "Some of the debtors passing buckets had been in the line I bought out at Rimewell. They did not look at me, but they passed faster.",
         "fr": "Certains des débiteurs qui se passaient les seaux avaient fait partie de la file dont j’avais payé les dettes à Puits-de-Givre. Ils ne me regardaient pas, mais ils passaient les seaux plus vite."
       }
-    ]
+    ],
+    "prompt": "What becomes of the Vault?",
+    "prompt_fr": "Que devient le Coffre ?"
   },
   "7100_flagship_hold": {
     "id": "7100_flagship_hold",
@@ -25827,7 +26414,9 @@
           }
         }
       }
-    ]
+    ],
+    "prompt": "What do you do with the cradle?",
+    "prompt_fr": "Que faites-vous du berceau ?"
   },
   "7100_charter_choice": {
     "id": "7100_charter_choice",
@@ -25887,7 +26476,9 @@
         "en": "I had taken the case into my own keeping at the quarry’s edge, and nobody had argued, which told me what they thought of the choice.",
         "fr": "J’avais pris l’étui sous ma garde au bord de la carrière, et personne n’avait protesté, ce qui m’en disait long sur ce qu’ils pensaient du choix."
       }
-    ]
+    ],
+    "prompt": "What do you do with the Charter?",
+    "prompt_fr": "Que faites-vous de la Charte ?"
   },
   "7800_nkem_later": {
     "id": "7800_nkem_later",
@@ -25939,7 +26530,10 @@
         "en": "“I am here for the sea,” he said, “not for you.” He coiled a line without looking at it. “The wreck-wrights paid you for my haul. I hope it bought something that floats. Mine does, and it is built from three others, and it did not need your help to do it.”",
         "fr": "« Je suis là pour la mer, dit-il, pas pour vous. » Il lova une aussière sans la regarder. « Les charpentiers d’épaves vous ont payé ma prise. J’espère que ça a acheté quelque chose qui flotte. La mienne flotte, elle est bâtie de trois autres, et elle n’a pas eu besoin de votre aide pour ça. »"
       }
-    ]
+    ],
+    "facing": "nkem_tallow",
+    "prompt": "Take their offer, or part?",
+    "prompt_fr": "Accepter leur offre, ou prendre congé ?"
   },
   "7400_reed": {
     "id": "7400_reed",
@@ -26112,7 +26706,9 @@
           "lysa_line_ignored"
         ]
       }
-    ]
+    ],
+    "prompt": "What do you do about the fence’s price?",
+    "prompt_fr": "Que faites-vous du prix du receleur ?"
   },
   "3005_lysa_price": {
     "id": "3005_lysa_price",
@@ -26154,7 +26750,9 @@
           "lysa_offer_heard"
         ]
       }
-    ]
+    ],
+    "prompt": "How do you answer the envoy?",
+    "prompt_fr": "Que répondez-vous à l’envoyé ?"
   },
   "5100_lysa_raid": {
     "id": "5100_lysa_raid",
@@ -26190,7 +26788,9 @@
           "lysa_lost"
         ]
       }
-    ]
+    ],
+    "prompt": "Ride back, or go on?",
+    "prompt_fr": "Rentrer au galop, ou poursuivre ?"
   },
   "5100_lysa_mask": {
     "id": "5100_lysa_mask",
@@ -26235,7 +26835,9 @@
         "en": "Inside the thread was a grey scarf, the one she had worn on the wall, and a smear of the white paint across one corner.",
         "fr": "Dans le fil se trouvait une écharpe grise, celle qu’elle portait sur le mur, et sur un coin une trace de fard blanc."
       }
-    ]
+    ],
+    "prompt": "What do you do with the parcel?",
+    "prompt_fr": "Que faites-vous du colis ?"
   },
   "6010_clement_refused": {
     "id": "6010_clement_refused",
@@ -26257,7 +26859,8 @@
           "clement_refused"
         ]
       }
-    ]
+    ],
+    "facing": "brother_clement"
   },
   "6010_lysa_rescued": {
     "id": "6010_lysa_rescued",
@@ -26305,7 +26908,8 @@
         "en": "She did not take off the mask. She held it to her chin with both hands, as if it might fall, and said my name in her own voice, once. “Not yet,” she said. “But yes.”",
         "fr": "Elle n’ôta pas le masque. Elle le tint contre son menton à deux mains, comme s’il risquait de tomber, et dit mon nom de sa propre voix, une seule fois. « Pas encore, dit-elle. Mais oui. »"
       }
-    ]
+    ],
+    "facing": "lysa"
   },
   "6010_lysa_sworn": {
     "id": "6010_lysa_sworn",
@@ -26345,7 +26949,8 @@
         "en": "Half of her came with me, and half stayed with the masks. The half that came did not forgive the oath.",
         "fr": "La moitié d’elle vint avec moi, et l’autre moitié resta avec les masques. Celle qui vint ne pardonna pas le serment."
       }
-    ]
+    ],
+    "facing": "brother_clement"
   },
   "6010_lysa_mercy": {
     "id": "6010_lysa_mercy",
@@ -26393,7 +26998,10 @@
         "en": "She did not know me until the very end, and then she did. I have not decided whether to be grateful for it.",
         "fr": "Elle ne me reconnut qu’à la toute fin, puis elle me reconnut. Je n’ai pas décidé s’il faut m’en réjouir."
       }
-    ]
+    ],
+    "facing": "lysa",
+    "prompt": "What do you do with her mask?",
+    "prompt_fr": "Que faites-vous de son masque ?"
   },
   "6010_lysa_sacrifice": {
     "id": "6010_lysa_sacrifice",
@@ -26418,7 +27026,8 @@
           "void_marked"
         ]
       }
-    ]
+    ],
+    "facing": "lysa"
   },
   "6010_lysa_ledger": {
     "id": "6010_lysa_ledger",
@@ -26461,7 +27070,10 @@
           "lysa_traded"
         ]
       }
-    ]
+    ],
+    "facing": "lysa",
+    "prompt": "What do you say to Lysa?",
+    "prompt_fr": "Que dites-vous à Lysa ?"
   },
   "7004_stitch": {
     "id": "7004_stitch",
@@ -26502,6 +27114,9 @@
           "lysa_stitch_declined"
         ]
       }
-    ]
+    ],
+    "facing": "lysa",
+    "prompt": "Who takes the needle?",
+    "prompt_fr": "Qui prend l’aiguille ?"
   }
 }
