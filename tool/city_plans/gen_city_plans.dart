@@ -9,20 +9,203 @@ import 'package:narrative_data_app/data/city_plan_generator.dart';
 
 const _out = 'assets/gamedata/city_plans.json';
 
-/// Where each of a city's districts lies on its plan.
-const _cities = {
-  'saltmouth': (
-    seed: 1203,
-    districts: [
-      DistrictSeed('saltmouth_landward_gate', P(380, 230)),
-      DistrictSeed('saltmouth_lantern_alleys', P(570, 240)),
-      DistrictSeed('saltmouth_card_row', P(760, 300)),
-      DistrictSeed('saltmouth_tern_row', P(330, 520)),
-      DistrictSeed('saltmouth_wharf', P(650, 580)),
-      DistrictSeed('saltmouth_yard', P(150, 700), outside: true),
-    ],
-  ),
+/// Where each of a city's districts lies on its plan, and what shapes the
+/// town (see CityPlanSpec): its shore, river, wall and lots.
+final _cities = <String, CityPlanSpec Function(Map<String, List<String>>)>{
+  'saltmouth': (scenes) => CityPlanSpec(
+        cityId: 'saltmouth',
+        seed: 1203,
+        districts: const [
+          DistrictSeed('saltmouth_landward_gate', P(380, 230)),
+          DistrictSeed('saltmouth_lantern_alleys', P(570, 240)),
+          DistrictSeed('saltmouth_card_row', P(760, 300)),
+          DistrictSeed('saltmouth_tern_row', P(330, 520)),
+          DistrictSeed('saltmouth_wharf', P(650, 580)),
+          DistrictSeed('saltmouth_yard', P(150, 700), outside: true),
+        ],
+        scenesByDistrict: scenes,
+        followUps: _followUps,
+      ),
+  // A river city inland: the river through the walls, its island under the
+  // stone bridge, the high quay on the east bank.
+  'alster': (scenes) => CityPlanSpec(
+        cityId: 'alster',
+        seed: 2207,
+        districts: const [
+          DistrictSeed('alster_lower_town', P(250, 520)),
+          DistrictSeed('alster_stone_bridge', P(450, 680)),
+          DistrictSeed('alster_black_hold', P(720, 260)),
+          DistrictSeed('alster_undercroft', P(730, 640)),
+          DistrictSeed('alster_high_quay', P(520, 380)),
+        ],
+        scenesByDistrict: scenes,
+        followUps: _autoFollowUps(scenes),
+        shoreY: null,
+        riverX: 360,
+        centre: const P(520, 480),
+        wallRadius: 340,
+      ),
+  // Burned and walled at the Spire's foot: no river, no sea, a third of
+  // its lots ash; the stair climbs out of its north side.
+  'ashen_quarter': (scenes) => CityPlanSpec(
+        cityId: 'ashen_quarter',
+        seed: 3011,
+        districts: const [
+          DistrictSeed('ashen_quarter_gate', P(230, 560)),
+          DistrictSeed('ashen_quarter_ash_market', P(500, 520)),
+          DistrictSeed('ashen_quarter_wall_of_names', P(770, 520)),
+          DistrictSeed('ashen_quarter_cinder_row', P(480, 790)),
+          DistrictSeed('ashen_quarter_spire_stair', P(520, 250)),
+        ],
+        scenesByDistrict: scenes,
+        followUps: _autoFollowUps(scenes),
+        shoreY: null,
+        riverX: null,
+        centre: const P(500, 520),
+        wallRadius: 340,
+        arena: false,
+        lotKeep: 0.62,
+      ),
+  // Flooded, on the fen: black water to the south, a river and long
+  // channels cutting into the cloister, no wall; the Mire Court on the
+  // fen's edge.
+  'drowned_cloister': (scenes) => CityPlanSpec(
+        cityId: 'drowned_cloister',
+        seed: 5023,
+        districts: const [
+          DistrictSeed('drowned_cloister_stair', P(520, 170)),
+          DistrictSeed('drowned_cloister_nave', P(560, 380)),
+          DistrictSeed('drowned_cloister_ossuary', P(790, 360)),
+          DistrictSeed('mire_court', P(200, 560), outside: true),
+        ],
+        scenesByDistrict: scenes,
+        followUps: _autoFollowUps(scenes),
+        shoreY: 600,
+        riverX: 300,
+        centre: const P(560, 360),
+        wallRadius: 300,
+        walled: false,
+        arena: false,
+        canalXs: const [470, 620, 700, 840],
+        canalLength: 200,
+        bayDepth: 60,
+      ),
+  // On the frost road: a walled city on its river, the dead heart where the
+  // tear opened at its north end.
+  'black_reliquary': (scenes) => CityPlanSpec(
+        cityId: 'black_reliquary',
+        seed: 6037,
+        districts: const [
+          DistrictSeed('reliquary_quarter', P(560, 600)),
+          DistrictSeed('dead_heart', P(600, 200)),
+        ],
+        scenesByDistrict: scenes,
+        followUps: _autoFollowUps(scenes),
+        shoreY: null,
+        riverX: 280,
+        centre: const P(540, 470),
+        wallRadius: 360,
+        arena: false,
+      ),
+  // A shore of beached hulls: an open town above the harbour, the hulls
+  // drawn up on the beach outside it.
+  'white_anchorage': (scenes) => CityPlanSpec(
+        cityId: 'white_anchorage',
+        seed: 7109,
+        districts: const [
+          DistrictSeed('white_anchorage_chapel', P(450, 290)),
+          DistrictSeed('white_anchorage_quay', P(640, 470)),
+          DistrictSeed('white_anchorage_hulls', P(170, 640), outside: true),
+        ],
+        scenesByDistrict: scenes,
+        followUps: _autoFollowUps(scenes),
+        shoreY: 680,
+        riverX: null,
+        centre: const P(580, 400),
+        wallRadius: 300,
+        walled: false,
+        arena: false,
+        canalXs: const [],
+      ),
+  // On the cliffs: white walls climbing from a deep harbour, no river, no
+  // canals in the rock, the Lantern Hall at the top.
+  'candlehold': (scenes) => CityPlanSpec(
+        cityId: 'candlehold',
+        seed: 7507,
+        districts: const [
+          DistrictSeed('candlehold_gates', P(560, 620)),
+          DistrictSeed('candlehold_lantern_hall', P(560, 240)),
+        ],
+        scenesByDistrict: scenes,
+        followUps: _autoFollowUps(scenes),
+        shoreY: 820,
+        riverX: null,
+        centre: const P(560, 440),
+        wallRadius: 340,
+        arena: false,
+        canalXs: const [],
+        bayDepth: 130,
+      ),
 };
+
+/// The words a scene's id ends in when it is how another scene turns out
+/// (a fight, a failure, what was found): it stands at that scene's building.
+const _outcomes = {
+  'fight',
+  'failed',
+  'lost',
+  'won',
+  'refused',
+  'caught',
+  'seen',
+  'hammer',
+  'breach',
+  'dawn',
+  'argued',
+  'lit',
+  'bolt',
+  'through',
+  'words',
+  'hymn',
+  'found',
+  'searched',
+  'talked',
+  'bought',
+  'lifted',
+  'exposed',
+  'trap',
+  'turned',
+  'after',
+};
+
+/// The follow-ups of a city laid out from the story alone: a scene whose
+/// id is another scene's of the same district plus an outcome word (see
+/// [_outcomes]) stands at that scene's building (followed back to the
+/// first scene of the chain).
+Map<String, String> _autoFollowUps(Map<String, List<String>> scenes) {
+  final out = <String, String>{};
+  for (final list in scenes.values) {
+    final own = list.toSet();
+    String? leadOf(String id) {
+      final parts = id.split('_');
+      if (!_outcomes.contains(parts.last)) return null;
+      for (var i = parts.length - 1; i > 1; i--) {
+        final lead = parts.sublist(0, i).join('_');
+        if (own.contains(lead)) return lead;
+      }
+      return null;
+    }
+
+    for (final id in list) {
+      var lead = leadOf(id);
+      while (lead != null && leadOf(lead) != null) {
+        lead = leadOf(lead);
+      }
+      if (lead != null) out[id] = lead;
+    }
+  }
+  return out;
+}
 
 /// Where Narrative seats the hub's ways (docs/proposals/city-districts.md
 /// on claude/narrative), until the story's scenes carry these districts as
@@ -111,19 +294,24 @@ const _followUps = <String, String>{
   '2015_sable_lifted': '2015_sable',
   '2015_sable_caught': '2015_sable',
   '2015_sable_talk_failed': '2015_sable',
+  // Lysa's line is spoken at the smuggler's moorings (v1.414).
+  '2015_lysa_line': '2015_smuggler',
 };
 
 void main() {
   final story =
       jsonDecode(File('assets/Cleaned_Narrative_DAG.json').readAsStringSync())
           as Map<String, dynamic>;
+  final geo =
+      jsonDecode(File('assets/gamedata/geography.json').readAsStringSync())
+          as Map<String, dynamic>;
   final file = File(_out);
   final old = file.existsSync()
       ? jsonDecode(file.readAsStringSync()) as Map<String, dynamic>
       : <String, dynamic>{};
   final out = <String, Object?>{};
-  for (final MapEntry(key: city, value: c) in _cities.entries) {
-    final ids = {for (final d in c.districts) d.id};
+  for (final MapEntry(key: city, value: specOf) in _cities.entries) {
+    final ids = {for (final d in specOf(const {}).districts) d.id};
     // Each scene where Narrative seats it, else where the story puts it.
     final seatOf = <String, String>{
       for (final MapEntry(key: d, value: ways) in _seating.entries)
@@ -135,7 +323,13 @@ void main() {
     final scenes = <String, List<String>>{};
     for (final MapEntry(:key, :value) in story.entries) {
       if (value is! Map) continue;
-      final at = seatOf[key] ?? value['location']?.toString() ?? '';
+      var at = seatOf[key] ?? value['location']?.toString() ?? '';
+      // A place inside a district (a tavern, a cellar) is in that district.
+      for (var hops = 0; hops < 8 && !ids.contains(at); hops++) {
+        final parent = (geo[at] as Map?)?['parent']?.toString();
+        if (parent == null) break;
+        at = parent;
+      }
       if (ids.contains(at)) (scenes[at] ??= []).add(key);
     }
     // The seated ways first, in Narrative's order: they take the halls.
@@ -145,13 +339,7 @@ void main() {
       final first = [for (final w in ways) w.$1];
       scenes[d] = [...first, ...list.where((s) => !first.contains(s))];
     }
-    final record = generateCityPlan(CityPlanSpec(
-      cityId: city,
-      seed: c.seed,
-      districts: c.districts,
-      scenesByDistrict: scenes,
-      followUps: _followUps,
-    ));
+    final record = generateCityPlan(specOf(scenes));
     // Each seated way's building takes Narrative's name; names already in
     // the file (Narrative's own edits) stay over them.
     final anchors = record['anchors'] as Map<String, String>;
