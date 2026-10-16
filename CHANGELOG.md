@@ -17,6 +17,14 @@ Lysa's fate turns the Dominion's hunt.
   - take her by force, or give her blood to the Shroud, and the Dominion hunts you in earnest: its fighters come more often and join its fights, and Orsolya Keld comes sooner;
   - swear to the Lantern for her, and its hunt is over.
 - **Claimant Tallis and the White Admiral** are a little tougher (405 and 350 health), to keep the late bosses in their bands with Lysa's new scenes.
+## [1.412.0+448]
+
+A won fight closes itself.
+
+- **The chest opens on its own** and shows everything it holds; take it, and the fight returns to where it began after a moment, or at once on a tap. With reduced motion it returns as soon as the spoils are taken.
+- **Nothing is skipped:** a level-up, a clan's offer or a hunter's mercy waits for your answer first.
+- **The rewards stay with you:** they open the next scene ("Victory! +47 gold, +87 XP, …"), and the fight log keeps them.
+- A defeat is unchanged.
 ## [1.411.0+447]
 
 A clan's power and the land it holds, drawn.
