@@ -3,14 +3,18 @@
 // like the clans' gift choice (banner-choice-unified.md): the offers in a row
 // on top, the picked one ringed in gold and the others dimmed, its detail
 // under them (the path it comes from, each gain from where it stands to where
-// it goes) and "Take this pick" at the bottom. The rare offer (worth two
-// points) is always the third and is drawn apart: a gold frame and a ribbon.
+// it goes) and "Take this pick" at the bottom. The three offers share the
+// pick's rarity (Common, Rare, Epic, Heroic: the signs' colours): a frame in
+// its colour that gets thicker and brighter with it, a rarity chip on the
+// rarer ones, and under each gain what it does for this hero.
 //
 // Shown on the Level Up screen and in the pop-up after a fight while picks
 // wait; the next pick is drawn as soon as one is taken.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/signs.dart' show SignRarity;
+import '../data/stat_pick_text.dart';
 import '../data/training.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -24,6 +28,7 @@ import '../screens/training_picker.dart'
         trainingStatNow;
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
+import 'sign_widgets.dart' show SignRarityChip, signRarityColor;
 
 class StatPickPicker extends ConsumerStatefulWidget {
   const StatPickPicker({super.key});
@@ -105,6 +110,7 @@ class _StatPickPickerState extends ConsumerState<StatPickPicker> {
                     offer: o,
                     path: paths[o.pathId],
                     fr: fr,
+                    professionId: session.professionId,
                     selected: picked == i,
                     dimmed: picked != null && picked != i,
                     onTap: () => setState(() => _selected = i),
@@ -161,6 +167,27 @@ Color _offerColor(StatPickOffer offer, InkColors ink) {
   return trainingStatColor(best, ink);
 }
 
+/// The frame of a pick of [tier]: the signs' rarity colour; Common stays the
+/// quiet seam colour.
+Color statPickFrameColor(SignRarity tier, InkColors ink) =>
+    tier == SignRarity.common ? ink.seam : signRarityColor(tier);
+
+/// How thick the frame of [tier] is, and how much of its colour tints the
+/// card.
+double _frameWidth(SignRarity tier) => switch (tier) {
+      SignRarity.common => 1,
+      SignRarity.rare => 1.5,
+      SignRarity.epic => 2,
+      SignRarity.heroic => 2.5,
+    };
+
+double _frameTint(SignRarity tier) => switch (tier) {
+      SignRarity.common => 0,
+      SignRarity.rare => 0.07,
+      SignRarity.epic => 0.11,
+      SignRarity.heroic => 0.15,
+    };
+
 /// "+1" or "+10", as the offer's headline gain.
 String _gainText(int value) => '+$value';
 
@@ -171,6 +198,7 @@ class _OfferBanner extends ConsumerWidget {
     required this.offer,
     required this.path,
     required this.fr,
+    required this.professionId,
     required this.selected,
     required this.dimmed,
     required this.onTap,
@@ -179,6 +207,7 @@ class _OfferBanner extends ConsumerWidget {
   final StatPickOffer offer;
   final TrainingPath? path;
   final bool fr;
+  final String professionId;
   final bool selected;
   final bool dimmed;
   final VoidCallback onTap;
@@ -187,99 +216,109 @@ class _OfferBanner extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final accent = offer.rare ? ink.gold : _offerColor(offer, ink);
-    final frame = selected ? ink.gold : (offer.rare ? ink.gold : ink.seam);
+    final tier = offer.tier;
+    final tierColor = statPickFrameColor(tier, ink);
+    final accent = offer.rare ? tierColor : _offerColor(offer, ink);
+    final frame = selected ? ink.gold : tierColor;
+    final width = selected ? 2.5 : _frameWidth(tier);
+    final language = fr ? AppLanguage.fr : AppLanguage.en;
     return Opacity(
       opacity: dimmed ? 0.6 : 1,
-      child: Material(
-        color: selected
-            ? ink.gold.withValues(alpha: 0.12)
-            : offer.rare
-                ? Color.alphaBlend(ink.gold.withValues(alpha: 0.07),
-                    theme.colorScheme.surfaceContainerLow)
-                : theme.colorScheme.surfaceContainerLow,
-        shape: RoundedRectangleBorder(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6),
-          side: BorderSide(
-              color: frame, width: selected ? 2.5 : (offer.rare ? 1.5 : 1)),
+          boxShadow: [
+            if (tier == SignRarity.heroic)
+              BoxShadow(
+                  color: tierColor.withValues(alpha: 0.35), blurRadius: 10),
+          ],
         ),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(6),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(6, 8, 6, 8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (offer.rare)
+        child: Material(
+          color: selected
+              ? ink.gold.withValues(alpha: 0.12)
+              : Color.alphaBlend(tierColor.withValues(alpha: _frameTint(tier)),
+                  theme.colorScheme.surfaceContainerLow),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+            side: BorderSide(color: frame, width: width),
+          ),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(6),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(6, 8, 6, 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (offer.rare)
+                    Padding(
+                      key: const Key('stat_pick_tier'),
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: SignRarityChip(rarity: tier, language: language),
+                    ),
                   Container(
-                    key: const Key('stat_pick_rare'),
-                    margin: const EdgeInsets.only(bottom: 4),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                    width: 40,
+                    height: 40,
                     decoration: BoxDecoration(
-                      color: ink.gold,
-                      borderRadius: BorderRadius.circular(3),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(color: accent, width: 1.5),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          accent.withValues(alpha: 0.32),
+                          accent.withValues(alpha: 0.08),
+                        ],
+                      ),
                     ),
-                    child: Text(
-                      tr(ref, 'stat_pick_rare').toUpperCase(),
-                      style: const TextStyle(
-                          fontFamily: InkFonts.system,
-                          fontSize: 9.5,
-                          letterSpacing: 1,
-                          height: 1.3,
-                          color: Color(0xFF17151B)),
+                    alignment: Alignment.center,
+                    child: ItemPixelIcon(
+                        trainingPathItem(path?.icon ?? ''), null,
+                        size: 28),
+                  ),
+                  const SizedBox(height: 6),
+                  for (final MapEntry(:key, :value) in offer.gains.entries)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(_gainText(value),
+                              style: TextStyle(
+                                  fontFamily: InkFonts.system,
+                                  fontSize: 18,
+                                  height: 1.1,
+                                  color: trainingStatColor(key, ink))),
+                          Text(
+                            tr(ref, trainingStatLabelKey(key)),
+                            maxLines: 2,
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.labelSmall
+                                ?.copyWith(height: 1.1),
+                          ),
+                          // What it does for this hero.
+                          for (final (n, effect)
+                              in statPickEffects(key, professionId, value)
+                                  .indexed)
+                            Text(
+                              statEffectText(effect, language),
+                              key: Key('stat_pick_effect_${key}_$n'),
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                  fontSize: 10, height: 1.15, color: ink.ash),
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: accent, width: 1.5),
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        accent.withValues(alpha: 0.32),
-                        accent.withValues(alpha: 0.08),
-                      ],
+                  if (selected)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child:
+                          Icon(Icons.check_circle, size: 18, color: ink.gold),
                     ),
-                  ),
-                  alignment: Alignment.center,
-                  child: ItemPixelIcon(trainingPathItem(path?.icon ?? ''), null,
-                      size: 28),
-                ),
-                const SizedBox(height: 6),
-                for (final MapEntry(:key, :value) in offer.gains.entries)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 2),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(_gainText(value),
-                            style: TextStyle(
-                                fontFamily: InkFonts.system,
-                                fontSize: 18,
-                                height: 1.1,
-                                color: trainingStatColor(key, ink))),
-                        Text(
-                          tr(ref, trainingStatLabelKey(key)),
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                          style:
-                              theme.textTheme.labelSmall?.copyWith(height: 1.1),
-                        ),
-                      ],
-                    ),
-                  ),
-                if (selected)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: Icon(Icons.check_circle, size: 18, color: ink.gold),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -356,6 +395,14 @@ class _OfferDetail extends ConsumerWidget {
                 ),
             ],
           ),
+          const SizedBox(height: 8),
+          for (final MapEntry(:key, :value) in offer.gains.entries)
+            Text(
+              statPickEffect(key, session.professionId, value,
+                  fr ? AppLanguage.fr : AppLanguage.en),
+              key: Key('stat_pick_line_$key'),
+              style: theme.textTheme.bodySmall,
+            ),
         ],
       ),
     );

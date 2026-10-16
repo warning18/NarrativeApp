@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.462.0+498]
+
+The level-up pick is framed by its rarity.
+
+### Changed
+- **Rarity frames on the pick cards:** the three cards of a level's pick share its rarity, and now show it the way the signs do: a frame in the rarity's colour (Rare blue, Epic purple, Heroic orange; Common stays quiet) that gets thicker and brighter with it, a tint on the card, a glow on Heroic, and the rarity's chip on top of each rarer card. Under each gain, what it does for this hero ("+1 damage", "+2% dodge", from `statPickEffects`), and the picked card's detail spells the whole line out ("+4 PER: +4% crit, +4% dodge, reads foes better"). The gold ring still marks the card you picked.
+
 ## [1.461.0+497]
 
 The small effects back in proportion, dice faces with their spread again, and descriptions that read their own numbers.
