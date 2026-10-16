@@ -1,3 +1,5 @@
+import 'dart:math';
+
 // The Eel's hulls (v1.228): ten sea hulls and four flying boats in
 // ships.json, each with its outline and rig, rebuilt at the Harbor (parts
 // that lose their slot wait in the store), several painted sails at once,
@@ -555,6 +557,8 @@ void main() {
             fromPortId: 'port_ashen_landing',
             toPortId: 'port_smugglers_wharf',
             toPort: ports['port_smugglers_wharf'] as Map<String, dynamic>,
+            // A natural 1 or 20 settles a check: seeded, so no run differs.
+            debugRandom: Random(1),
             debugEvents: const [storm, wreck, storm],
           ),
         ),
