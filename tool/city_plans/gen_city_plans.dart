@@ -9,6 +9,13 @@ import 'package:narrative_data_app/data/city_plan_generator.dart';
 
 const _out = 'assets/gamedata/city_plans.json';
 
+/// Where Narrative seats the scenes of the towns it gave districts to
+/// (docs/proposals/town-districts.json, v1.426), by the place the story
+/// puts them in now and then by district: a scene still tagged with that
+/// place stands in its district here, until the story's own `location`
+/// names the district (then the story's wins).
+const _seats = 'tool/city_plans/district_seats.json';
+
 /// Where each of a city's districts lies on its plan, and what shapes the
 /// town (see CityPlanSpec): its shore, river, wall and lots.
 final _cities = <String, CityPlanSpec Function(Map<String, List<String>>)>{
@@ -39,7 +46,8 @@ final _cities = <String, CityPlanSpec Function(Map<String, List<String>>)>{
           DistrictSeed('alster_high_quay', P(520, 380)),
         ],
         scenesByDistrict: scenes,
-        followUps: _autoFollowUps(scenes),
+        // The trainer stands where 891 does (v1.422).
+        followUps: {..._autoFollowUps(scenes), '890_trainer': '891'},
         shoreY: null,
         riverX: 360,
         centre: const P(520, 480),
@@ -91,13 +99,17 @@ final _cities = <String, CityPlanSpec Function(Map<String, List<String>>)>{
         bayDepth: 60,
       ),
   // On the frost road: a walled city on its river, the dead heart where the
-  // tear opened at its north end.
+  // tear opened at its north end, the frost line and the last lit street
+  // between it and the quarter, the chapels in the middle.
   'black_reliquary': (scenes) => CityPlanSpec(
         cityId: 'black_reliquary',
         seed: 6037,
         districts: const [
-          DistrictSeed('reliquary_quarter', P(560, 600)),
-          DistrictSeed('dead_heart', P(600, 200)),
+          DistrictSeed('reliquary_quarter', P(560, 680)),
+          DistrictSeed('dead_heart', P(600, 180)),
+          DistrictSeed('reliquary_last_lantern', P(770, 340)),
+          DistrictSeed('reliquary_chapels', P(560, 450)),
+          DistrictSeed('reliquary_frost_line', P(420, 290)),
         ],
         scenesByDistrict: scenes,
         followUps: _autoFollowUps(scenes),
@@ -128,16 +140,20 @@ final _cities = <String, CityPlanSpec Function(Map<String, List<String>>)>{
         canalXs: const [],
       ),
   // On the cliffs: white walls climbing from a deep harbour, no river, no
-  // canals in the rock, the Lantern Hall at the top.
+  // canals in the rock, the Lantern Hall at the top and the Lantern Cliff
+  // behind it. The cliff's seed lies above the hall's, so the Gates keep
+  // their shape and their buildings (the rest before the Hall, 7515_rest,
+  // stands on 7510_seen's building, candlehold_b003).
   'candlehold': (scenes) => CityPlanSpec(
         cityId: 'candlehold',
         seed: 7507,
         districts: const [
           DistrictSeed('candlehold_gates', P(560, 620)),
           DistrictSeed('candlehold_lantern_hall', P(560, 240)),
+          DistrictSeed('candlehold_lantern_cliff', P(620, 120)),
         ],
         scenesByDistrict: scenes,
-        followUps: _autoFollowUps(scenes),
+        followUps: {..._autoFollowUps(scenes), '7515_rest': '7510_seen'},
         shoreY: 820,
         riverX: null,
         centre: const P(560, 440),
@@ -146,7 +162,168 @@ final _cities = <String, CityPlanSpec Function(Map<String, List<String>>)>{
         canalXs: const [],
         bayDepth: 130,
       ),
+  // The villages, halts and camps (v1.426): small, open, loosely built.
+  // A pilgrims' halt on the frost road: no water, half its lots empty, the
+  // ridge post above it to the north and the road in from the south.
+  'rimewell': (scenes) => _village(
+        'rimewell',
+        seed: 6101,
+        scenes: scenes,
+        districts: const [
+          DistrictSeed('rimewell_bell_square', P(520, 470)),
+          DistrictSeed('rimewell_pilgrims_road', P(440, 650)),
+          DistrictSeed('rimewell_ridge_post', P(580, 300)),
+          DistrictSeed('rimewell_choir_well', P(340, 420)),
+        ],
+        lotKeep: 0.8,
+      ),
+  // A fishing village on the grey shore: the shingle outside it on the
+  // beach, the moorings by the water, the watch stones above.
+  'greyhithe': (scenes) => _village(
+        'greyhithe',
+        seed: 7201,
+        scenes: scenes,
+        districts: const [
+          DistrictSeed('greyhithe_net_lofts', P(470, 420)),
+          DistrictSeed('greyhithe_watch_stones', P(560, 260)),
+          DistrictSeed('greyhithe_moorings', P(640, 560)),
+          DistrictSeed('greyhithe_shingle', P(220, 640), outside: true),
+        ],
+        shoreY: 700,
+        bayDepth: 50,
+      ),
+  // Hull-houses under the cliffs: the quay on the water, the lamp path up
+  // the cliff to the north.
+  'wracks_end': (scenes) => _village(
+        'wracks_end',
+        seed: 5101,
+        scenes: scenes,
+        districts: const [
+          DistrictSeed('wracks_end_hull_houses', P(460, 500)),
+          DistrictSeed('wracks_end_lamp_path', P(600, 290)),
+          DistrictSeed('wracks_end_quay', P(650, 620)),
+        ],
+        shoreY: 720,
+        bayDepth: 70,
+      ),
+  // The camp on the cove's shingle, behind its palisade: the landing on
+  // the beach outside it.
+  'cove_camp': (scenes) => _village(
+        'cove_camp',
+        seed: 1101,
+        scenes: scenes,
+        districts: const [
+          DistrictSeed('cove_camp_fireside', P(500, 450)),
+          DistrictSeed('cove_camp_palisade', P(540, 280)),
+          DistrictSeed('cove_camp_sail_loft', P(670, 540)),
+          DistrictSeed('cove_camp_landing', P(230, 630), outside: true),
+        ],
+        shoreY: 700,
+        walled: true,
+        radius: 210,
+        lotSpacing: 46,
+      ),
+  // A green hill in the fen: the fen's water to the south (drawn as the
+  // Drowned Cloister's is, a shore), the hall on the hill above it.
+  'kindly_hill': (scenes) => _village(
+        'kindly_hill',
+        seed: 5301,
+        scenes: scenes,
+        districts: const [
+          DistrictSeed('kindly_hill_hall', P(520, 350)),
+          DistrictSeed('kindly_hill_fen_edge', P(500, 600)),
+        ],
+        shoreY: 760,
+        bayDepth: 40,
+      ),
+  // The giants' hold under the Frost Quarry: walled against the frost,
+  // its buildings three times the size, the quarry to the north.
+  'highhearth': (scenes) => _village(
+        'highhearth',
+        seed: 6201,
+        scenes: scenes,
+        districts: const [
+          DistrictSeed('highhearth_moot_hall', P(520, 450)),
+          DistrictSeed('highhearth_quarry', P(560, 250)),
+          DistrictSeed('highhearth_long_houses', P(480, 640)),
+        ],
+        walled: true,
+        radius: 250,
+        lotSpacing: 58,
+      ),
+  // Kilns in a hollow of the slag heaps: no water, a share of its lots
+  // slag, the well square in the middle.
+  'emberwick': (scenes) => _village(
+        'emberwick',
+        seed: 4401,
+        scenes: scenes,
+        districts: const [
+          DistrictSeed('emberwick_well_square', P(560, 480)),
+          DistrictSeed('emberwick_kilns', P(380, 430)),
+          DistrictSeed('emberwick_smithy_lane', P(640, 320)),
+        ],
+        lotKeep: 0.8,
+      ),
+  // The oni's terraces above the hot springs: the springs below, the forge
+  // terrace at the top.
+  'akagiri': (scenes) => _village(
+        'akagiri',
+        seed: 4701,
+        scenes: scenes,
+        districts: const [
+          DistrictSeed('akagiri_brewhouse', P(480, 450)),
+          DistrictSeed('akagiri_springs', P(500, 640)),
+          DistrictSeed('akagiri_forge_terrace', P(540, 280)),
+        ],
+      ),
+  // An oasis in the dunes: clay huts round the pool, the caravans' ring
+  // round them.
+  'white_wells': (scenes) => _village(
+        'white_wells',
+        seed: 1201,
+        scenes: scenes,
+        districts: const [
+          DistrictSeed('white_wells_pool', P(500, 440)),
+          DistrictSeed('white_wells_caravan_ring', P(560, 620)),
+        ],
+        radius: 200,
+        lotKeep: 0.85,
+      ),
 };
+
+/// A village's plan (CityPlanSpec.village): open (unless [walled], a
+/// palisade), inland unless it has a [shoreY], no river, no arena, no
+/// canals, on a small footprint ([radius]) with loose lots.
+CityPlanSpec _village(
+  String id, {
+  required int seed,
+  required Map<String, List<String>> scenes,
+  required List<DistrictSeed> districts,
+  double? shoreY,
+  double bayDepth = 90,
+  bool walled = false,
+  double radius = 220,
+  double lotSpacing = 42,
+  double lotKeep = 1,
+}) =>
+    CityPlanSpec(
+      cityId: id,
+      seed: seed,
+      districts: districts,
+      scenesByDistrict: scenes,
+      followUps: _autoFollowUps(scenes),
+      shoreY: shoreY,
+      riverX: null,
+      centre: const P(520, 460),
+      wallRadius: radius,
+      walled: walled,
+      arena: false,
+      canalXs: const [],
+      bayDepth: bayDepth,
+      lotSpacing: lotSpacing,
+      lotKeep: lotKeep,
+      village: true,
+    );
 
 /// The words a scene's id ends in when it is how another scene turns out
 /// (a fight, a failure, what was found): it stands at that scene's building.
@@ -296,6 +473,8 @@ const _followUps = <String, String>{
   '2015_sable_talk_failed': '2015_sable',
   // Lysa's line is spoken at the smuggler's moorings (v1.414).
   '2015_lysa_line': '2015_smuggler',
+  // So is the Crows' offer (v1.422).
+  '2015_crow_offer': '2015_smuggler',
 };
 
 void main() {
@@ -309,6 +488,14 @@ void main() {
   final old = file.existsSync()
       ? jsonDecode(file.readAsStringSync()) as Map<String, dynamic>
       : <String, dynamic>{};
+  final seats = <String, Map<String, String>>{
+    for (final MapEntry(key: place, value: districts)
+        in (jsonDecode(File(_seats).readAsStringSync()) as Map).entries)
+      place as String: {
+        for (final MapEntry(key: d, value: list) in (districts as Map).entries)
+          for (final s in list as List) s as String: d as String,
+      },
+  };
   final out = <String, Object?>{};
   for (final MapEntry(key: city, value: specOf) in _cities.entries) {
     final ids = {for (final d in specOf(const {}).districts) d.id};
@@ -323,7 +510,8 @@ void main() {
     final scenes = <String, List<String>>{};
     for (final MapEntry(:key, :value) in story.entries) {
       if (value is! Map) continue;
-      var at = seatOf[key] ?? value['location']?.toString() ?? '';
+      final location = value['location']?.toString() ?? '';
+      var at = seatOf[key] ?? seats[location]?[key] ?? location;
       // A place inside a district (a tavern, a cellar) is in that district.
       for (var hops = 0; hops < 8 && !ids.contains(at); hops++) {
         final parent = (geo[at] as Map?)?['parent']?.toString();
