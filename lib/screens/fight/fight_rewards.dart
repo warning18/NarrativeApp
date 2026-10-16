@@ -603,7 +603,8 @@ extension _FightRewards on _FightScreenState {
   Future<void> _leaveAfterVictory() async {
     const step = Duration(milliseconds: 100);
     var shown = Duration.zero;
-    while (mounted && !_leaving) {
+    while (true) {
+      if (!mounted || _leaving) return;
       final route = ModalRoute.of(context);
       if (route == null || route.isCurrent) {
         if (MediaQuery.of(context).disableAnimations ||
