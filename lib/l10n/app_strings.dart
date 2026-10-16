@@ -4902,6 +4902,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Appris :',
   },
   'round_label': {AppLanguage.en: 'Round', AppLanguage.fr: 'Manche'},
+  'round_tip': {
+    AppLanguage.en:
+        'The round of the fight. From round {n} the Tide rises and every blow hits harder, the longer it lasts.',
+    AppLanguage.fr:
+        'La manche du combat. À partir de la manche {n}, la Marée monte et chaque coup frappe plus fort, plus le combat dure.',
+  },
   'roll_hint': {
     AppLanguage.en: 'Roll the party\'s dice, then keep or reroll.',
     AppLanguage.fr: 'Lancez les dés du groupe, puis gardez ou relancez.',
@@ -8462,6 +8468,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Place forte',
   },
   'momentum_label': {AppLanguage.en: 'Momentum', AppLanguage.fr: 'Élan'},
+  'momentum_tip': {
+    AppLanguage.en:
+        'Each blow you land builds momentum; a blow you take sets it back. When it is full, your next strike is a sure critical.',
+    AppLanguage.fr:
+        'Chaque coup que vous portez fait monter l’élan ; un coup reçu le fait retomber. Quand il est plein, votre prochain coup est un critique assuré.',
+  },
+  'incoming_tip': {
+    AppLanguage.en:
+        'The blows aimed at {name} this round would take off about {n}, after armor and block.',
+    AppLanguage.fr:
+        'Les coups visant {name} ce tour retireraient environ {n}, armure et blocage déduits.',
+  },
   'momentum_ready_label': {
     AppLanguage.en: 'Momentum: next strike crits!',
     AppLanguage.fr: 'Élan : le prochain coup est critique !',
