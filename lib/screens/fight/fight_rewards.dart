@@ -441,7 +441,22 @@ extension _FightRewards on _FightScreenState {
       // A pact runs its fight down, won or lost. A link in a chain with no
       // healing keeps its wounds: the player is left standing, barely.
       final keepWounds = widget.modifiers.keepWounds;
+      // A lost fight still teaches something: [lostFightXpShare] of its XP.
+      final lostXp = widget.modifiers.isTest
+          ? 0
+          : (_enemies.fold<int>(
+                      0,
+                      (sum, e) =>
+                          sum +
+                          scaledReward(
+                              (e.data['xpReward'] as num?)?.toInt() ?? 0,
+                              _playerLevel)) *
+                  widget.modifiers.rewardMultiplier *
+                  chapterRewardMultiplier(_chapter) *
+                  lostFightXpShare)
+              .round();
       await notifier.applyCombatResult(
+          xpGain: lostXp,
           keepWounds: keepWounds,
           hpAfter: keepWounds ? max(1, player.currentHealth) : player.maxHealth,
           manaAfter: keepWounds ? _mana : _maxMana,
@@ -451,6 +466,7 @@ extension _FightRewards on _FightScreenState {
         _log.add(_LogEntry(
             trFor(ref.read(appLanguageProvider), 'defeat_message'),
             _LogKind.defeat));
+        if (lostXp > 0) _log.add(_LogEntry('+$lostXp XP', _LogKind.info));
         _settled = true;
       });
     }

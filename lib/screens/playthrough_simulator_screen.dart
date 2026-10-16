@@ -11,7 +11,12 @@ import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../combat/combat_engine.dart'
-    show chapterRewardMultiplier, isBossEnemy, scaledReward, zoneBossEnemyIds;
+    show
+        chapterRewardMultiplier,
+        isBossEnemy,
+        lostFightXpShare,
+        scaledReward,
+        zoneBossEnemyIds;
 import '../combat/context_rules.dart' show ContextRule, Reinforcement;
 import '../combat/gear_effects.dart';
 import '../combat/spec_variants.dart' show SpecVariantInfo, specVariantsFrom;
@@ -1119,6 +1124,18 @@ _SimResult _simulate(
       c.heldSigns = countDownPacts(c.heldSigns);
       for (final entry in outcome.spellsCast.entries) {
         casts[entry.key] = (casts[entry.key] ?? 0) + entry.value;
+      }
+      if (!outcome.won) {
+        // A lost try still teaches something ([lostFightXpShare]).
+        var xp = 0;
+        for (final entry in entries) {
+          xp += scaledReward(
+              (entry.value['xpReward'] as num?)?.toInt() ?? 0, c.level);
+        }
+        final levelBefore = c.level;
+        c.gainXp(
+            (xp * chapterRewardMultiplier(chapter) * lostFightXpShare).round());
+        growth?.levelsReached(levelBefore, c.level);
       }
       if (outcome.won) {
         questLog?.recordKills(entries.map((e) => e.key));

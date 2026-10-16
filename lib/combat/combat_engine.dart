@@ -938,7 +938,17 @@ bool isBossEnemy(String enemyId, Map<String, dynamic> enemy) {
 /// flips -- and a steeper step alone turning the chapter 5-6 zone bosses
 /// into walls while chapters 1-4 stayed at 100%.
 double chapterDifficultyMultiplier(int chapter) =>
-    1 + chapterDifficultyStep * (max(1, chapter) - 1);
+    (1 + chapterDifficultyStep * (max(1, chapter) - 1)) *
+    (chapter == 2 ? chapterTwoTeeth : 1.0);
+
+/// Chapter 2's own bite (the user's call, docs/simulation/difficulty-review.md
+/// proposal 3): its enemies a tenth stronger than the curve, so Saltmouth
+/// is not a free walk after Alster.
+const double chapterTwoTeeth = 1.10;
+
+/// The share of a fight's XP a lost fight still gives (proposal 5): a
+/// struggling character doesn't fall further behind.
+const double lostFightXpShare = 0.30;
 
 /// The damage multiplier that goes with a health multiplier from the
 /// chapter curve or a zone's tier: half the excess (×1.3 health → ×1.15
