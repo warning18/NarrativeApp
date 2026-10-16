@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.441.0+477]
+
+The map is for moving: a choice that stays where you are keeps you in the scene, and one that leads elsewhere hands you the map.
+
+### Changed
+- **A scene's place is its "stop":** the building it happens in, else its district, else its place. A building is a place of its own: leaving the Blind Beggar, or walking home to the family house, is a move on the map.
+- **The story reads on until the stop changes:** a page no longer runs you from one district to another without the map.
+- **An errand's way back to its town's hub is one tap:** you come back to the hub (Smugglers' Wharf and the like) without walking the map. The game marks the return so a "You came back to…" notice can show it.
+- **An action whose result is elsewhere carries you there** (a fight, a roll, a payment), as after a lost fight.
+- **A village's scenes stand in its hub's district** (White Wells at the Pool, Wrack's End at the Hull-Houses, Rimewell at the Bell Square).
+- **The Blind Beggar's scenes are all in one building**, and the family house is a building of its own in Alster.
+
+### Added
+- Queries for the Journey: a scene's stop, what a choice leads to (stay, map, carried, back to the hub), the main-story scenes (not a hub, not an errand, not a camp) and the services at a place (shops, rests, trainers, ports). How each looks is UX's next step.
+
 ## [1.440.0+476]
 
 The Journey's pins hang as banners, with a legend.
