@@ -2,6 +2,7 @@
 // once the crossing has loaded, and lights the hull and the day's choices.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -68,6 +69,8 @@ void main() {
           fromPortId: 'port_ashen_landing',
           toPortId: 'port_smugglers_wharf',
           toPort: ports['port_smugglers_wharf'] as Map<String, dynamic>,
+          // A natural 1 or 20 settles a check: seeded, so no run differs.
+          debugRandom: Random(1),
           debugEvents: const [
             SeaEvent(
               kind: SeaEventKind.calm,
