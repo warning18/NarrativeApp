@@ -1,0 +1,41 @@
+# Clan power over 50 playthroughs
+
+Asked by the user: *"simulate 50 playthroughs and check and show results of clan's power evolution (it seems really linear)."* Measured on `main` at v1.453.0 (`6cc82b7`) with the playthrough simulator, the engine behind `test/sim_playthroughs_test.dart`. Analysis only: no `lib/` change. The raw data is [clan-power-50.json](clan-power-50.json); the harness is `test/qa_clan_power_50_test.dart` (it runs only when `CLAN_POWER_OUT` is set, so CI skips it) and `tool/clan_power_report.py` merges its files and prints the tables below.
+
+## The short answer
+
+- **The average curves are straight lines; the runs are not.** Mean power over the 50 runs climbs or falls in a nearly straight line (R² 0.94 to 0.99 for the Dominion, the Compact, the Crows and the Penitents). In a single run, 83% of a clan's chapters move it by 5 points or less (median 0), and only 10 to 26 runs a clan (of 50) fit a line at R² 0.9. The movement comes in steps: a gift (+2 mostly, up to +18 in one chapter), and a fall (−40 to −58 in one turn).
+- **The slope is the patron's gifts.** The "+1 a place held" and "−5 neglect" are the biggest sources by points moved (28% and 35%), but they cancel: the Dominion holds five places and nets +5 −5 a chapter, so it drifts only from 60 to 73. What is left, for the clan you back, is gifts: it takes about 10 a run (+2 each, a few heroic ones +4 or more), and over a run gifts add 17 to 20 points to the Vigil, the Compact and the Crows. Gifts are not rare: 28 a run across the clans, 26% of all the points moved.
+- **A clan nobody helps slides by 5 a chapter** (less the places it holds) until it is 20 under its start (the neglect floor: Vigil 10, Penitents and Mire 5), then sits there. The Mire loses its last place in most runs and **falls to 0**: in 41 runs of 50, the Penitents in 14, the Vigil in 2.
+- **Quest power and story power do not exist in the runs: 0% of the points.** The simulator never plays a quest's turn-in politics (the quest power, +5 a clan), and no story node, choice or politics event has a `power` in the game's data at all. See "What the simulator does not play".
+- **A backed clan ends 8 to 55 points above where it started** (the Crows 45 to 100, the Compact 40 to 77, on average); the same clan unbacked ends 10 to 17 above (the Dominion, the Compact and the Crows, which hold places) or 4 to 22 below (the Vigil, the Mire, the Penitents).
+
+## Method
+
+- **50 runs, seeds 7000 to 7049** (a run's seed is its number plus 7000), strategies cycling over all six (random, good, evil, gold, explore, completionist), professions cycling over the five, races rotating over the five (`race = (i + i/5) mod 5`, as in the narrative audit). Every run reached chapter 8 and a real ending. Patrons: Compact 13, Vigil 10, Penitents 10, Crows 7, Dominion 6, Mire 4 (the run is sworn to its patron in every case).
+- **Power snapshots.** The simulator keeps only the final politics of a run, so each run is replayed from its seed with `maxSteps` cut at each chapter's turn, and at every step where a clan's power or a place moved (found by bisection; a shorter replay is a prefix of the longer one). About 100 replays a run.
+- **Chapter N.** *Start* is after the chapter's turn and the offers taken on arrival; *end* is just before the next turn (the end of the run for chapter 8). Chapter 1 starts from the character's creation.
+- **Sources.** The turn's holdings (+1 a place), its neglect (−5, a main clan not helped), and its remainder (falls, claims) are computed by running the game's own `territoryTurn` on the state before the turn; the rest of the chapter is told by what the step was (a gift taken, a quest handed in, a clan fallen), from the size of the change (a gift is +2 or +4, a quest +5). **Check:** in all 6,600 power rows (6 clans, 8 chapters, 50 runs, start to end and end to turn), the sources sum exactly to the observed change: no hidden mover and no change lost between replays.
+
+## Results
+
+
+
+## Example runs
+
+- **Run 0 (random cleric, patron Compact): what the average hides.** The Compact goes 40, 46, 50, 48, 46, 53, 60, 71, 79: up by gifts and a hand-in, down by neglect where it is not helped (−5 a chapter), never straight. The Vigil, which nobody backs, goes 32 to 76, mostly by gifts and two places it claims. The Mire falls to 0 in chapter 8 when the Dominion takes the Mire's Court by war. The Crows, unhelped, go 45, 50, 49, 48 and down to 44: a slope of about −1.
+- **Run 35 (completionist cleric, patron Penitents): the cliff.** The Penitents rise 25, 29, 35; at the turn of chapter 4 the Dominion takes the Mire's Court from them, their last place, and **their power goes 35 to 0** and stays there to the end of the run (the Mire fell the chapter before in the same way). The same cliff, for a clan the player does not back, in runs 33 and 43; and in run 10, for the patron: the Vigil rises 32 to 57 and goes to 0 in chapter 8, when the Dominion takes Rimewell.
+- **Run 43 (good rogue, patron Crows): the other end.** Crows 45, 43, 41, 46, 51, 71, 83, 98, then 100: two chapters of neglect-and-holding drift, then gifts and a place claimed. Meanwhile the unbacked Compact (40, 37, 34, 31, 28, 25, 22, 20) is the straight line the user saw: exactly −3 a chapter (neglect −5, +2 for the two places it holds) down to its neglect floor, 20. The Vigil (30, 25, 20, 15, then 17, 19, 16) falls the same way until gifts break the line.
+
+## What the simulator does not play (findings for Core)
+
+1. **A quest turn-in's politics.** In the app, `quest_turn_in.dart` applies the turn-in choice's `politics` (a standing move, and +5 power to a main clan whose standing it raises by 5 or more, which also spares that clan this chapter's neglect). The simulator's quest log (`lib/data/sim_quests.dart`, `complete`) pays gold, XP, item and flag only. The data has 19 standing raises of 5 or more in turn-in choices over 8 quests, 16 of them for main clans (chapter 2 *the unpaid scaffold*; 3 *glass from the terraces*; 4 *the bark tithe*; 5 *hearth stone*, *candle count*, *the Penitents' confession*; 6 *salvage rights*; 7 *the herald's errand*): the Dominion 6, the Penitents 3, the Compact, the Crows and the Vigil 2 each, the Mire 1 (the other three are the giants' and the oni's). So the app's curves have up to eight +5 steps (and eight spared neglects) a run that the simulator lacks. They are small beside the gifts, but they favour the Dominion and the Penitents. A fix is a few lines in the simulator, Core's.
+2. **No story node, choice or politics event carries `power`** (0 in `Cleaned_Narrative_DAG.json` and `politics_events.json`). The "story power" source in `clan_power.dart`'s header never fires. If it was meant to (for the chapter-7 decisions, say), that is Narrative's data to add.
+3. **No crisis.** The simulator plays no seat crisis (documented in `docs/simulation/clan-power.md`), so the player's own clan falls without the defend, pay or refuse scene: **9 of 50 runs saw the patron fall** (the Penitents in 6 of their 10 runs, the Mire in 2 of 4, the Vigil in 1). In the app the player would get the scene first. The falls of clans the player does not back are the same in both.
+4. **Gifts come from every clan's offers** (about 18 a run to clans other than the patron), by the simulator's picking rule, so the unbacked clans rise more here than they might with a player who keeps to a patron's gifts.
+
+## Observations
+
+- **The Mire and the Penitents are the weak ones by construction**: they start at 25 with one place (the Mire) or none (the Penitents), neglect takes 5 a chapter, and the Dominion, at war with the Penitents from the start, takes the Mire's Court from whoever holds it in most runs. Unbacked, the Mire falls in 41 runs of 50 (chapters 3 to 8) and the Penitents in 14; backed, the Penitents fall in 6 of their 10 runs and the Mire in 2 of 4, in the simulator (which plays no crisis).
+- **The Dominion is the nemesis at some chapter's turn in all 50 runs,** including the six in which it is the patron's clan.
+- **A backed clan's power at the start of chapter 8** (mean): Crows 100, Dominion 92, Compact 77, Vigil 58, Mire 39, Penitents 33. Only the Crows, the Dominion and the Compact reach Ascendant (75) on average; the Penitents gain 8 points over a run, the Mire 15.
