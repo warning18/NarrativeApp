@@ -198,3 +198,24 @@ RewardCardData clanGiftCard({
               '${trFor(lang, 'reward_standing')}: ${standing.join(' · ')}'),
       ],
     );
+
+/// A zone cleared (or an escort, a delivery done): what it paid, a row each,
+/// and what changed the outcome as notes. Its header wears the zone's
+/// chapter colour, and its button takes the party back to town.
+RewardCardData zoneClearedCard({
+  required AppLanguage lang,
+  required String kind,
+  required String title,
+  required int chapter,
+  required List<RewardLine> lines,
+  List<RewardNote> notes = const [],
+}) =>
+    RewardCardData(
+      kind:
+          '$kind · ${trFor(lang, 'reward_chapter').replaceAll('{n}', '$chapter')}',
+      title: title,
+      accent: rewardChapterColour(chapter),
+      button: trFor(lang, 'return_to_town_button'),
+      lines: lines,
+      notes: notes,
+    );

@@ -22,6 +22,13 @@ The hero stands in the fight, facing the enemy.
 ### Added
 - **The hero in the fight:** the ronin of the side view (the walker) stands on the ground below the party's cards, facing east toward the enemies. It breathes while the fight waits, steps in with its blow when the hero strikes, flinches red when a blow lands on the hero, and dims if the hero is knocked out. It stays still with animations off. The art is swappable: one resolver (`heroFightSprite`, in `lib/widgets/fight_sprites.dart`) says which sprite a hero gets, and the figure is sized from its frame, so later art (by profession or race) plugs in with no change to the fight; a missing file falls back to the ronin. It takes no room: it is drawn only where the cards leave the ground free, so the dice and the controls stay where they were on a small phone.
 
+## [1.453.0+489]
+
+A cleared zone pays out as a reward card.
+
+### Changed
+- **Zone cleared card:** the end of an expedition (a cleared zone, an escort, a delivery) is the reward card instead of centred lines: the header in the zone's chapter colour, one row per reward (gold, the item with its rarity, materials with their counts, a die, an ally), and what changed the outcome (the cargo that arrived, a late delivery, a place found, the chapter's condition, a lead, an achievement) as notes. One button takes the party back to town.
+
 ## [1.452.0+488]
 
 The Lantern Dominion has a boss of its own, and the second Aurel Vane is gone.

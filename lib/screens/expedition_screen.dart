@@ -42,7 +42,10 @@ import '../widgets/approval_notice.dart';
 import '../widgets/companion_remark_bubble.dart';
 import '../widgets/ability_roll_dialog.dart';
 import '../widgets/immersive_notice.dart';
+import '../theme/stitched_ink.dart' show InkColors;
 import '../widgets/moments.dart';
+import '../widgets/reward_card.dart';
+import '../widgets/reward_cards.dart';
 import 'fight_screen.dart';
 import 'shop_detail_screen.dart';
 
@@ -107,6 +110,9 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   _ExpeditionPhase _phase = _ExpeditionPhase.event;
   bool _busy = false;
   List<String> _summaryLines = const [];
+
+  /// What the cleared zone paid, as the reward card (see reward_cards.dart).
+  RewardCardData? _rewardCard;
 
   /// Bonus events queued ahead of the zone's own next draw -- a hunt's
   /// trail and quarry after a pack win (see [SubNodeEngine.buildHuntNodes]).
@@ -779,35 +785,65 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       origin: itemOriginHere(ref),
     );
 
-    final lines = <String>[
-      ...kindLines,
-      ...await _discoverPlaces(atEnd: true),
+    // What the zone paid, as the reward card's rows; what changed the
+    // outcome (an escort's cargo, a late delivery, a place found) as notes.
+    final notes = <RewardNote>[
+      for (final line in [
+        ...kindLines,
+        ...await _discoverPlaces(atEnd: true),
+      ])
+        RewardNote(line),
     ];
+    if (!mounted) return;
+    final ink = InkColors.of(context);
+    final itemsDb =
+        ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
+    final rows = <RewardLine>[];
     if (rewardGold > 0) {
-      lines.add('+$rewardGold ${trFor(lang, 'gold_label')}');
+      rows.add(RewardLine(
+        key: const Key('reward_gold'),
+        icon: Icon(Icons.paid, size: 30, color: ink.gold),
+        accent: ink.gold,
+        title: trFor(lang, 'reward_gold'),
+        sub: trFor(lang, 'reward_gold_zone_sub'),
+        value: '+$rewardGold',
+      ));
     }
     if (rewardItemId.isNotEmpty) {
-      final items =
-          ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
-      final itemName =
-          (items[rewardItemId] as Map<String, dynamic>?)?['itemName']
-              ?.toString();
-      lines.add(itemName ?? rewardItemId);
+      rows.add(rewardItemLine(context,
+          itemId: rewardItemId,
+          item: itemsDb[rewardItemId] as Map<String, dynamic>?,
+          lang: lang));
     }
-    if (rewardMaterials.isNotEmpty) {
-      final items =
-          ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
-      for (final e in rewardMaterials.entries) {
-        lines.add('+${e.value} '
-            '${(items[e.key] as Map<String, dynamic>?)?['itemName'] ?? e.key}');
-      }
+    for (final e in rewardMaterials.entries) {
+      final line = rewardItemLine(context,
+          itemId: e.key,
+          item: itemsDb[e.key] as Map<String, dynamic>?,
+          lang: lang);
+      rows.add(RewardLine(
+        key: line.key,
+        icon: line.icon,
+        accent: line.accent,
+        title: line.title,
+        tag: line.tag,
+        tagColor: line.tagColor,
+        sub: line.sub,
+        value: '×${e.value}',
+      ));
     }
     if (rewardDiceId.isNotEmpty) {
       final dice = ref.read(localizedDbProvider(diceSchema)).value ?? const {};
       final diceName =
           (dice[rewardDiceId] as Map<String, dynamic>?)?['diceName']
               ?.toString();
-      lines.add(diceName ?? rewardDiceId);
+      rows.add(RewardLine(
+        key: Key('reward_die_$rewardDiceId'),
+        icon: Icon(Icons.casino, size: 28, color: ink.tide),
+        accent: ink.tide,
+        title: diceName ?? rewardDiceId,
+        sub: trFor(lang, 'reward_die_made_for'),
+        value: trFor(lang, 'reward_new'),
+      ));
     }
     if (rewardAllyId.isNotEmpty) {
       final races =
@@ -831,12 +867,19 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         houses: houses,
         requiredHouseId: companion?['requiredHouseId']?.toString(),
       );
-      lines.add(companion?['companionName']?.toString() ?? rewardAllyId);
+      rows.add(RewardLine(
+        key: const Key('reward_ally'),
+        icon: Icon(Icons.person_add_alt_1, size: 28, color: ink.heal),
+        accent: ink.heal,
+        title: companion?['companionName']?.toString() ?? rewardAllyId,
+        sub: trFor(lang, 'recruited_prefix'),
+        value: trFor(lang, 'reward_joins'),
+      ));
     }
     if (rewardFlag.isNotEmpty) {
       final flagKey = 'zone_flag_$rewardFlag';
       final flagLine = trFor(lang, flagKey);
-      if (flagLine != flagKey) lines.add(flagLine);
+      if (flagLine != flagKey) notes.add(RewardNote(flagLine));
     }
 
     final newAchievements = await notifier.checkAchievements(
@@ -848,8 +891,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         final name =
             (achievements[id] as Map<String, dynamic>?)?['achievementName']
                 ?.toString();
-        lines.add(
-            '${trFor(lang, 'achievement_unlocked_prefix')}: ${name ?? id}');
+        notes.add(RewardNote(
+            '${trFor(lang, 'achievement_unlocked_prefix')}: ${name ?? id}'));
       }
     }
 
@@ -869,7 +912,20 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     }
     setState(() {
       _phase = _ExpeditionPhase.completed;
-      _summaryLines = lines;
+      _rewardCard = zoneClearedCard(
+        lang: lang,
+        kind: trFor(
+            lang,
+            switch (_kind) {
+              ExpeditionKind.escort => 'escort_done_title',
+              ExpeditionKind.delivery => 'delivery_done_title',
+              ExpeditionKind.clear => 'zone_cleared_prefix',
+            }),
+        title: widget.zone['zoneName']?.toString() ?? '',
+        chapter: _zoneChapter,
+        lines: rows,
+        notes: notes,
+      );
       _busy = false;
     });
   }
@@ -951,20 +1007,16 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                       child: _buildEvent(context,
                           shops: shops, enemies: enemies, lang: lang),
                     ),
-                  _ExpeditionPhase.completed => _buildSummary(
-                      context,
-                      icon: switch (_kind) {
-                        ExpeditionKind.escort => Icons.local_shipping,
-                        ExpeditionKind.delivery => Icons.markunread_mailbox,
-                        ExpeditionKind.clear => Icons.flag_circle,
-                      },
-                      title: trFor(
-                          lang,
-                          switch (_kind) {
-                            ExpeditionKind.escort => 'escort_done_title',
-                            ExpeditionKind.delivery => 'delivery_done_title',
-                            ExpeditionKind.clear => 'zone_cleared_prefix',
-                          }),
+                  // The zone's pay as a reward card (see reward_cards.dart).
+                  _ExpeditionPhase.completed => Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 460),
+                        child: RewardCard(
+                          key: const Key('zone_reward_card'),
+                          data: _rewardCard!,
+                          onDone: () => Navigator.of(context).pop(true),
+                        ),
+                      ),
                     ),
                   _ExpeditionPhase.retreated => _buildSummary(
                       context,
