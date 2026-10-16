@@ -5677,8 +5677,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Cuir de fer',
   },
   'perk_ironHide_desc': {
-    AppLanguage.en: '+2 armor.',
-    AppLanguage.fr: '+2 d’armure.',
+    AppLanguage.en: '+10% chance to block a blow (it loses half).',
+    AppLanguage.fr: '+10 % de chances de bloquer un coup (il perd la moitié).',
   },
   'perk_vigor': {
     AppLanguage.en: 'Vigor',
@@ -10084,6 +10084,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'whatever hits you takes {v} damage back',
     AppLanguage.fr: 'ce qui vous frappe encaisse {v} dégâts en retour',
   },
+  'unique_thorns_percent_desc': {
+    AppLanguage.en: 'whatever hits you takes {v}% of the blow back',
+    AppLanguage.fr: 'ce qui vous frappe encaisse {v} % du coup en retour',
+  },
   'unique_second_wind_desc': {
     AppLanguage.en: 'once per fight, a lethal blow leaves you at 1 HP',
     AppLanguage.fr: 'une fois par combat, un coup mortel vous laisse à 1 PV',
@@ -11200,6 +11204,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Les faces Attaque prennent l’élément {e}, +{v}\u00a0dégâts.',
   },
+  'sign_fx_strikeElement_plain': {
+    AppLanguage.en: 'Attack faces strike with {e}.',
+    AppLanguage.fr: 'Les faces Attaque prennent l’élément {e}.',
+  },
   'sign_fx_strikeStatus': {
     AppLanguage.en: 'Attack faces: {c}% chance to inflict {s}.',
     AppLanguage.fr:
@@ -11284,6 +11292,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '+{v}% chance to dodge.',
     AppLanguage.fr: '+{v}\u00a0% de chances d’esquive.',
   },
+  'sign_fx_blockChance': {
+    AppLanguage.en: '+{v}% chance to block a blow (it loses half).',
+    AppLanguage.fr:
+        '+{v}\u00a0% de chances de bloquer un coup (il perd la moitié).',
+  },
   'sign_fx_lifestealPercent': {
     AppLanguage.en: 'Your hits heal you {v}% of their damage.',
     AppLanguage.fr: 'Vos coups vous soignent de {v}\u00a0% de leurs dégâts.',
@@ -11292,6 +11305,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'An enemy whose hit lands takes {v} damage back.',
     AppLanguage.fr:
         'Un ennemi dont le coup porte subit {v}\u00a0dégâts en retour.',
+  },
+  'sign_fx_thornsPercent': {
+    AppLanguage.en: 'An enemy whose hit lands takes {v}% of it back.',
+    AppLanguage.fr:
+        'Un ennemi dont le coup porte en subit {v}\u00a0% en retour.',
   },
   'sign_fx_manaOnHit': {
     AppLanguage.en: 'Each hit you land gives {v} mana.',

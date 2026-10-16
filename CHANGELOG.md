@@ -8,12 +8,42 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.460.0+496]
+## [1.462.0+498]
 
 The level-up pick is framed by its rarity.
 
 ### Changed
 - **Rarity frames on the pick cards:** the three cards of a level's pick share its rarity, and now show it the way the signs do: a frame in the rarity's colour (Rare blue, Epic purple, Heroic orange; Common stays quiet) that gets thicker and brighter with it, a tint on the card, a glow on Heroic, and the rarity's chip on top of each rarer card. Under each gain, what it does for this hero ("+1 damage", "+2% dodge", from `statPickEffects`), and the picked card's detail spells the whole line out ("+4 PER: +4% crit, +4% dodge, reads foes better"). The gold ring still marks the card you picked.
+
+## [1.461.0+497]
+
+The small effects back in proportion, dice faces with their spread again, and descriptions that read their own numbers.
+
+### Changed
+- **Effects that stayed at 1 after the ÷5 are now shares:**
+  - **Strike:** an element strike gives +8% Attack damage per point.
+  - **Thorns:** they return 10–30% of a blow that lands.
+  - **+1 armour on a sign or title:** now +8% block chance. A blocked blow loses half. Block from every source is capped at 50%.
+  - **Iron Hide:** +10% block chance a rank.
+  - **Bull's Neck and Gallows Breaker:** +1 Strength (was +2).
+  - **Hone:** a face takes at most as many hones as its own number.
+  - **Small bonuses:** small percentage bonuses keep their fractions through a fight.
+- **Dice faces keep their spread:** faces 4–7 that had all become 1 now run 1–5 from their old values. Bought dice are a real upgrade over the starter again.
+
+### Added
+- **Descriptions can read their own numbers:** spells, set bonuses, skills and spec variants accept placeholders such as `{armor}`, `{dodge}`% or `{heal}`, filled from the entry's data in EN and FR. The names are in `docs/proposals/text-placeholders.md`, for Narrative's text pass.
+- **Seeded checks for tests:** story and expedition checks can be seeded in tests.
+
+Simulated over 400 runs, fights won within three tries stay at 72.0%, and every boss and the champions stay in band.
+
+## [1.459.0+495]
+
+The game now remembers where each point of a stat came from.
+
+### Added
+- **A stat ledger.** Every pick, tome, patron gift and origin memory records what it added, per stat. That includes the damage and health those points bring.
+- **`statBreakdown`.** It lists a stat by source: base, race, profession, level, perk, pick, tome, patron and origin. Then come the fight-only bonuses: gear, sets, signs, titles and the Sworn boon. The rows add up to the number shown. This is ready for the Character radar's stat popin, which is UX's.
+- **Old saves.** Whatever the record can't explain shows as one "earlier" row.
 
 ## [1.458.0+494]
 

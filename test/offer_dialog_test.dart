@@ -353,7 +353,8 @@ void main() {
     expect(find.text('The Emberwives of the Cinder Compact'), findsNothing);
     expect(
         find.text('The Ember Sisters of the Ashen Penitents'), findsOneWidget);
-    expect(find.textContaining('+3 damage'), findsOneWidget);
+    // The Spark Letter, rare: its strike share 16% x 1.5.
+    expect(find.textContaining('+24% damage'), findsOneWidget);
     expect(find.text('Replaces: Ember Knuckles'), findsOneWidget);
     expect(badge('penitents', '+6'), findsOneWidget);
     expect(badge('dominion', '−3'), findsOneWidget);

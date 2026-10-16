@@ -506,3 +506,99 @@ the typical level of each chapter, against the DCs the story uses there
 Targets: main 75–85% (the casters start a little below, at 66–73%, because
 their Intelligence starts at 0–2), off 40–55% (a little above in the early
 chapters, where the DCs are lowest). No check passes more than 95%.
+
+## Effects at 1 (v1.462)
+
+v1.458 divided every fight number by 5, but an effect that was already 1
+(or 2) could not go below 1: it came out two to five times stronger next
+to everything else. Each one was looked at; a few kept, the rest turned
+into a share, a chance or a cap. Measured the same way as above (400 runs,
+seed 7, training paths; bosses with `boss_balance_test.dart`'s plan).
+
+### What changed
+
+| Effect | Before the small scale | v1.458 | Now | Why |
+|---|---|---|---|---|
+| **Strike element** (11 signs, the Charter Burner title: "Attack faces strike with Fire, +2 damage") | +1 to +3 on a hit of ~20 (5–15%) | the same +1 to +3 on a hit of ~5 to 11 (20–60%) | the element, and **+8% Attack damage a point** (8/16/24%), a separate `strikeDamagePercent` effect | was never rescaled; the biggest one (removing it costs 2.5 points) |
+| **Strike flat** (Rank and File: +1 damage) | +1 on ~20 | +1 on ~5 | **+8% Attack damage** | same |
+| **Thorns** (2 signs, 1 title: 1; Thornmail: 2; Hollow Court set: 1) | 1–6 back on a blow of ~20 | 1–2 back on a blow of ~4 | **a share of each blow that lands goes back**: signs and title 10%, the Hollow Court 20%, the Thornmail 30% (kind `thornsPercent`; the items keep `thorns`, now a %) | a share keeps thorns' identity and scales with the enemy |
+| **Armor +1** (Iron Mark sign; 4 titles) | 1 off a blow of ~20 (5%) | 1 off ~4 (25%) | **+8% block chance** (kind `blockChance`): a blocked blow loses half, as a warrior's Perception block; for anyone | a flat point can't be smaller than 1; a chance can |
+| **Armor −1** (Barred from the Row, a bad title) | −1 | −1 (a blow 25% heavier) | **−3% dodge** | same, the other way |
+| **Iron Hide** (perk) | +2 armor a rank | +1 armor a rank | **+10% block chance a rank** (30% at rank 3) | same. The simulator never counted the perk's armor (a bug); it does count the block |
+| **Block chance**, all sources | – | warrior's Perception only, cap 30% | Perception + signs + titles + Iron Hide, **cap 50%** (Perception's own 30% kept) | |
+| **Str sign and title** (Bull's Neck, Gallows Breaker: +2 Strength) | +2 Str: checks only | +2 Str = +2 damage for a warrior (two levels of picks) | **+1 Strength** | the damage stat now counts in fights |
+| **Hone** | +2, three times (a 5 became an 11) | +1, three times (a 1 became a 4) | +1, **as many times as the face's number** (1 to 3): a Hone at most doubles a face | a save's extra Hones are kept but add nothing |
+| **Shares on small numbers** (every strike, guard and mend %: 6 to 24%) | 8% of 20 = 2 | 8% of 5 = 0.4, **rounded to nothing** | the fractions are **kept through the fight** (`FractionBank`) and paid when they make a whole point | the flip side of effects at 1: small shares vanished |
+| **A guard malus** (Short Measure, guardFlat −1) | −1 off a Guard 5 | turned a Guard 1 into 0 | **never below 1** | |
+
+### Kept, measured harmless
+
+| Effect | Why it stays | Removing it entirely |
+|---|---|---|
+| guardFlat +1, guardHeal +1, guardRetaliate +1 (Guard faces) | a Defend face is one face in six on the starting dice; a +1 on a Guard of 1 to 3 is what a guard sign is for | within 3: 0.0, bosses −2.1 |
+| killHeal +1, partyStartBlock +1, mendShield 1 | 1 to 3% of the hero's health, once per kill, once per fight, or only on overheal | −0.1, bosses +1.2 (noise) |
+| Steady +1 | it also forbids the reroll; on a strike +1 is +10–20% (it was +8%) | lent by two signs only |
+| Growth +1 a use | a face lands about once a fight in six, so it rarely grows twice | not in the simulator |
+| Heavy Hand +1 damage a rank | a rank every other level for +1 damage is what a level's pick gives (+1 of the damage stat): the same ratio as before | – |
+| Mana effects (manaFlat, maxMana, spellCostLess, manaOnHit, startMomentum) | mana was not divided by 5 | – |
+| Item set armor 1 (Harborwatch, was 2) | one set's two-piece tier | – |
+
+### Measured
+
+| Run | Within 3 / first | Ch 1–2 | Ch 3–8 | Professions | Bosses (mean, out of band) | Champions |
+|---|---|---|---|---|---|---|
+| v1.458 | 72.0 / 49.7 | 86.3 | 68.9 | 70.2 – 74.2 | 49.3, 0 | 46.3% |
+| strike share 5% a point | 70.8 / 48.4 | 85.2 | 67.6 | 66.4 – 73.7 | 45.2, 2 | |
+| strike share 10% a point | 72.5 / 50.1 | 85.4 | 69.7 | 68.8 – 75.5 | 50.5, 0 | |
+| **now (8% a point)** | **72.0 / 49.2** | **85.3** | **69.0** | **68.0 – 75.0** | **47.2, 0** | **44.6%** |
+
+The exact old ratio (5% a point) put two bosses out of band: the flat
+point had carried the element signs' holders since v1.458. 8% is the
+strike signs' own smallest step. Chapters 1 and 2 lose a point (86.3 to
+85.3), all of it the ranger's (73.6 to 71.3).
+
+### For Narrative
+
+The strings below still name the old numbers; their mechanics are as in
+the tables above. Core changed only `perk_ironHide_desc` (its mechanic is
+new) and added new keys.
+
+- `keyword_steady_desc`: "worth 2 more" → 1.
+- `smith_hone_desc`: "+2 ... (three times at most)" → +1, as many times as
+  the face's number (at most three).
+- `perk_heavyHand_desc`: "+2 damage" → +1.
+- New: `sign_fx_thornsPercent`, `sign_fx_blockChance`,
+  `sign_fx_strikeElement_plain`, `unique_thorns_percent_desc`.
+- The Hollow Court set's two-piece text names thorns as a number (now 20%
+  of the blow): `{thorns}%` works there (docs/proposals/text-placeholders.md).
+
+## Dice faces 4 to 7 (v1.462)
+
+**The question:** v1.458 rounded every face to a fifth, and the faces worth
+4, 5, 6 and 7 all became 1. Is that variety the user would feel?
+
+**Yes, between dice.** The starting dice were all 5s, so a starting hero
+sees no change, and the simulator (which plays the starting dice) none
+either. But the other dice are bought, found or carried by companions,
+and they were told apart by their numbers: a Stone Die (Attack 7, Guard 7,
+Heal 9) was a clear step up from the Shadow Die (6, 5, 7) or the Twinfang
+(4, 4, 4); after v1.458 the three read 1, 1, 1 and 1, 1, 2. 56 faces of 4
+to 7 read 1. On a Guard or Heal face the number is the whole effect, so a
+Guard 7 blocking what a Guard 4 blocked is a real loss.
+
+**What was done:** the faces are rounded from their old numbers at a
+quarter instead of a fifth. The order is kept and the starting dice don't
+move:
+
+| Before the small scale | 4–5 | 6–9 | 10–13 | 14 | 18 |
+|---|---|---|---|---|---|
+| v1.458 | 1 | 1 (6–7), 2 (8–9) | 2 (10–12), 3 (13) | 3 | 4 |
+| **now** | 1 | **2** | **3** | 4 | 5 |
+
+The Stone Die now reads 2, 2, 2 against the Twinfang's 1, 1, 1; the Vigil
+Die 3, 3, 5. The price: a face of 6 or 7 (20–40% above a 5 before) is now
+twice the starting die's 1, so a bought die is a bigger step up than it
+was. Measured: no change on the simulator's runs (starting dice). Handed a
+Stone or Tide die instead of the starting one (the same build otherwise),
+a hero wins 0.4 to 1.7 points more within three tries, and 3 to 4 more on
+the bosses, than with the same die rounded at a fifth.

@@ -144,8 +144,8 @@
     "negative": false,
     "effects": [
       {
-        "kind": "armor",
-        "value": 1
+        "kind": "blockChance",
+        "value": 8
       }
     ]
   },
@@ -198,7 +198,7 @@
     "effects": [
       {
         "kind": "stat",
-        "value": 2,
+        "value": 1,
         "stat": "strength"
       }
     ]
@@ -214,8 +214,8 @@
     "negative": false,
     "effects": [
       {
-        "kind": "thorns",
-        "value": 1
+        "kind": "thornsPercent",
+        "value": 10
       }
     ]
   },
@@ -246,8 +246,8 @@
     "negative": false,
     "effects": [
       {
-        "kind": "armor",
-        "value": 1
+        "kind": "blockChance",
+        "value": 8
       },
       {
         "kind": "guardFlat",
@@ -608,8 +608,12 @@
     "effects": [
       {
         "kind": "strikeElement",
-        "value": 2,
+        "value": 0,
         "element": "Fire"
+      },
+      {
+        "kind": "strikeDamagePercent",
+        "value": 16
       }
     ]
   },
@@ -716,8 +720,8 @@
     "negative": false,
     "effects": [
       {
-        "kind": "armor",
-        "value": 1
+        "kind": "blockChance",
+        "value": 8
       },
       {
         "kind": "guardBlockPercent",
@@ -833,8 +837,8 @@
     "negative": false,
     "effects": [
       {
-        "kind": "armor",
-        "value": 1
+        "kind": "blockChance",
+        "value": 8
       }
     ]
   },
@@ -1010,8 +1014,8 @@
         "stat": "strength"
       },
       {
-        "kind": "armor",
-        "value": -1
+        "kind": "dodgeChance",
+        "value": -3
       }
     ]
   },

@@ -193,6 +193,15 @@ class _PartyMember {
   /// A [UniqueEffect.secondWind] charge, spent the first time a blow would
   /// have dropped this member this fight.
   late bool secondWindAvailable = gear.secondWind;
+
+  /// What this member's thorns still owe in fractions this fight.
+  final ThornsBank thornsBank = ThornsBank();
+
+  /// What the player's strike, guard and mend signs' shares still owe in
+  /// fractions this fight (SignEffects.strikeBase and friends).
+  final FractionBank strikeBank = FractionBank();
+  final FractionBank guardBank = FractionBank();
+  final FractionBank mendBank = FractionBank();
   final int maxHealth;
   final int baseDamage;
   final int armor;

@@ -427,6 +427,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         ability: choice.checkAbility!,
         dc: choice.checkDC ?? 10,
         session: ref.read(playerSessionProvider),
+        random: _random,
       );
       await showAbilityRoll(
         context,

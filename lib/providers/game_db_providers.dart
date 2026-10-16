@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
+import '../data/description_text.dart';
 import '../gamedata/db_schema.dart';
 import '../gamedata/game_db_repository.dart';
 import '../l10n/app_locale.dart';
@@ -83,7 +84,8 @@ final gameDbProvider = StateNotifierProvider.family<GameDbNotifier,
 /// [GameDbNotifier.whenLoaded] for [schema]'s table.
 Future<Map<String, dynamic>> loadedGameDb(
     WidgetRef ref, DbSchema schema) async {
-  final records = await ref.read(gameDbProvider(schema).notifier).whenLoaded();
+  final records = withResolvedPlaceholders(
+      schema.id, await ref.read(gameDbProvider(schema).notifier).whenLoaded());
   return ref.read(appLanguageProvider) == AppLanguage.fr
       ? frenchOverlay(records)
       : records;
@@ -121,12 +123,16 @@ dynamic _overlaid(dynamic value) {
 
 /// The game data as the reader sees it: [gameDbProvider]'s records, with
 /// their French text laid over the English when the app is in French
-/// (see [frenchOverlay]). For showing data; the data editor keeps reading
-/// and saving [gameDbProvider] itself, so a French reader never writes
-/// French into an English field.
+/// (see [frenchOverlay]), and the numbers their descriptions name filled
+/// in (see [withResolvedPlaceholders]). For showing data; the data editor
+/// keeps reading and saving [gameDbProvider] itself, so a French reader
+/// never writes French into an English field, nor a number into a
+/// placeholder.
 final localizedDbProvider =
     Provider.family<AsyncValue<Map<String, dynamic>>, DbSchema>((ref, schema) {
-  final raw = ref.watch(gameDbProvider(schema));
+  final raw = ref
+      .watch(gameDbProvider(schema))
+      .whenData((records) => withResolvedPlaceholders(schema.id, records));
   if (ref.watch(appLanguageProvider) != AppLanguage.fr) return raw;
   return raw.whenData(frenchOverlay);
 });

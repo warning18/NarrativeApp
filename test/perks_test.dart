@@ -60,7 +60,7 @@ void main() {
       });
       expect(effects.critChance, 10);
       expect(effects.attackDamage, 3);
-      expect(effects.armor, 3);
+      expect(effects.blockChance, 30);
       expect(effects.extraRolls, 1);
       expect(effects.momentumDrop, 1);
       expect(effects.secondWind, isTrue);
@@ -70,12 +70,13 @@ void main() {
     });
 
     test('gear-like perks lay over the gear', () {
-      const gear = GearEffects(attackDamage: 3, critChance: 5, thorns: 2);
+      const gear =
+          GearEffects(attackDamage: 3, critChance: 5, thornsPercent: 20);
       final over =
           perkEffectsFor(const {'heavyHand': 1, 'keenEye': 1}).over(gear);
       expect(over.attackDamage, 4);
       expect(over.critChance, 10);
-      expect(over.thorns, 2);
+      expect(over.thornsPercent, 20);
       expect(over.secondWind, isFalse);
     });
 
