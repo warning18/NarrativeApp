@@ -2011,6 +2011,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           ? state.maxHealth
           : (newHealthRaw < 1 ? 1 : newHealthRaw),
       flags: newFlags,
+      // The story's own boons (signs.dart): the Shroud, Lysa's blood on it.
+      heldSigns: withStoryBoons(state.heldSigns, newFlags),
       activeQuestIds: newActiveQuests,
       questKillBaselines: newKillBaselines,
       trackedQuestId: newTracked,

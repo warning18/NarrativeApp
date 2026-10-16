@@ -8,6 +8,45 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.418.0+454]
+
+The Journey's choices acted out here become cards under the map.
+
+### Changed
+- **A choice done where you stand is a card, not a pin.** In a place up close, a fight, a payment, a check or a decision (Core's `choiceShape`: `here`) is a card under the map: the action's icon, the words, who you face, a "→ place" line when what follows moves you on, and one tag (a price, an alignment shift, a check, or Fight). A tap picks it and shows Go on it; a second tap does it. The map keeps pins only for the plain ways on, spread over the room the cards leave, so the labels no longer pile on the party's mark. A room's ways keep their marks.
+- **No road walked for a card.** The scene that follows moves the party.
+
+## [1.417.0+453]
+
+### Added
+- The data for the in-place display (`docs/proposals/inplace-data.md`): `facing` on 94 story nodes (who the scene is with), `prompt` / `prompt_fr` on the 226 scenes with two or more choices (the question the scene ends on), and `about` on 69 hub choices (the NPC, clan or sub-clan a choice is about), EN and FR. All optional; nothing reads them yet.
+
+## [1.416.0+452]
+
+Lysa's blood on the Shroud.
+
+- **Blood on the Shroud:** if you give Lysa's blood to the Shroud, the piece wakes and gives you a boon of its own.
+  - Its gift, at heroic strength: more damage when you are low on health, lifesteal and critical chance.
+  - Its cost, the Void's hold on you: −12 max health.
+  It is never offered by a patron.
+
+## [1.415.0+451]
+
+The map's places and names hold a readable size when you zoom.
+
+### Fixed
+- **Places and their names no longer shrink as the sphere comes close.** The world map is drawn at its screen size on the sphere, but its marks and names were sized as if a viewer scaled them by the zoom, so at the closest zoom they were a few pixels tall. They now keep their size.
+
+### Changed
+- **Each reached place has a plate under its mark** (at least 24 px across once you zoom in), the party's ring and the picked place's ring grow with it, and the clans' seats, villages and other features are held to about 26 px.
+- **Names are at least 11–12 px with a small plate behind them**, so they read over dark and light ground; a name that collides with another is left off, the party's place, the picked one and the goal first.
+- **A tap on a place hits within 22 px of it** (44 across), at any zoom, on the flat chart and the sphere. The town chart's building names are 11 px and its pins 24 px, with a slightly larger tap.
+
+## [1.414.0+450]
+
+### Changed
+- Lysa's story. If you lose her at the house, how you lost her (knelt, fought and lost, ran) decides what the Dominion made of her. Three beats lead to the Reliquary Quarter (a fence's line on the wharf, the envoy's price, a parcel with her mask), and there she says your name before any blade is drawn. You can break her out (Brother Clement, a boss), offer the Shroud's piece (refused), swear to the Lantern for her, end it gently, fight her, lay her blood on the Shroud, or walk away. If you save her at the house, she can be taken during a raid on the camp, trade a ledger page for medicine, and offer to sew the tear shut at the Hollow Shore, which can cost her life. Vane now says plainly that he came for what the mother kept.
+
 ## [1.413.0+449]
 
 Lysa's fate turns the Dominion's hunt.

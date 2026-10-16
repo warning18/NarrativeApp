@@ -143,3 +143,8 @@ Build 1's card and the map's pins filter first (it fixes the overlap alone, in a
 - **User:** which design to build, and whether the list may sit under the map on a phone where the map takes the top half.
 
 The files for the mockups: `docs/proposals/images/inplace-{1-list,2-panel,3-ring,4-stage,5-scene}-{bridge,house}.png`, `inplace-3-ring-town.png`, `inplace-3-ring-town-open.png` and `inplace-overview.png`.
+
+## Built so far
+
+**Step 1 (design 1's card and the pin filter).** In a place up close (not a room, not a detour), a choice Core's `choiceShape` calls `here` is a card under the map (`lib/widgets/choice_card.dart`): the action's glyph, the words, who is faced, a "→ destination" line when the aftermath moves the party, and one tag (a price, an alignment shift, a check, or Fight). A tap picks it and shows Go on it; a second tap does it, as a pin does. The map draws pins only for plain `go` choices, spread over the room the cards leave, and a card never walks the party along a road (the scene change carries the mark). A room keeps all its ways as marks: each is a spot in it. Tests: `test/journey_choice_cards_test.dart`; screenshots in `docs/ux-shots/choice-cards-*.png`.
+

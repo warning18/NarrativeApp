@@ -145,19 +145,18 @@ void main() {
     expect(find.byKey(_transit), findsNothing);
     expect(tester.takeException(), isNull);
 
-    // A step that walks the party on, and a fight turned back from, brings
-    // it back along the road it took instead of snapping to its mark.
+    // A fight is acted out where the party stands (a card under the map, no
+    // road to walk), and one turned back from leaves it on its mark.
     play.jumpTo('2011');
     await _settle(tester);
     await tester.pump(const Duration(seconds: 4));
     await clearCards();
-    await tester.tap(find.byKey(const ValueKey('journey_step_0')));
+    expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
+    final card = find.byKey(const ValueKey('journey_choice_card_0'));
+    await tester.tap(card);
     await tester.pump();
     await tester.tap(find.byKey(const ValueKey('journey_go')));
     await tester.pump();
-    // The party walks, then the fight opens.
-    // (In steps shorter than the page transition, so the fight is popped as
-    // it arrives, while the map still ticks under it.)
     for (var i = 0;
         i < 240 && find.byType(FightScreen).evaluate().isEmpty;
         i++) {
@@ -166,14 +165,7 @@ void main() {
     expect(find.byType(FightScreen), findsOneWidget);
     Navigator.of(tester.element(find.byType(FightScreen))).pop(false);
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
-    // Walking back: the party is still on the road a moment later...
-    expect(find.byKey(const ValueKey('journey_traveller')), findsOneWidget);
-    expect(container.read(storyPlayProvider).currentNodeId, '2011');
-    // ...and home again once it has gone back.
-    for (var i = 0; i < 12; i++) {
-      await tester.pump(const Duration(milliseconds: 250));
-    }
+    await tester.pump(const Duration(milliseconds: 400));
     expect(find.byKey(const ValueKey('journey_traveller')), findsNothing);
     expect(container.read(storyPlayProvider).currentNodeId, '2011');
     expect(find.byKey(_transit), findsNothing);
@@ -212,7 +204,9 @@ void main() {
     Future<List<String>> roadLines(String label) async {
       final lines = <String>[];
       for (var i = 0; i < 3; i++) {
-        if (find.byKey(ValueKey('journey_step_$i')).evaluate().isEmpty) break;
+        if (find.byKey(ValueKey('journey_step_$i')).evaluate().isEmpty) {
+          continue;
+        }
         await tester.tap(find.byKey(ValueKey('journey_step_$i')));
         await tester.pump(const Duration(milliseconds: 500));
         lines.addAll([

@@ -144,7 +144,8 @@ void main() {
     final go =
         tester.widget<FilledButton>(find.byKey(const ValueKey('journey_go')));
     expect(go.onPressed, isNotNull);
-    expect(find.text('Fight your way out'), findsNWidgets(2));
+    // A fight is a card under the map (picked, with Go), not a mark.
+    expect(find.text('Fight your way out'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.pump(const Duration(seconds: 5));
   });
