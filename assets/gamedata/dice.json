@@ -118,7 +118,7 @@
       {
         "faceName": "Shield Wall",
         "type": "Defend",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None",
@@ -137,7 +137,7 @@
       {
         "faceName": "Pommel Strike",
         "type": "Attack",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None"
@@ -145,7 +145,7 @@
       {
         "faceName": "Battlefield Bandage",
         "type": "Heal",
-        "value": 2,
+        "value": 3,
         "linkedSkillID": "",
         "weight": 0.6,
         "element": "None"
@@ -208,7 +208,7 @@
       {
         "faceName": "Warm Embers",
         "type": "Heal",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 0.6,
         "element": "None"
@@ -236,7 +236,7 @@
       {
         "faceName": "Cleansing Wave",
         "type": "Heal",
-        "value": 2,
+        "value": 3,
         "linkedSkillID": "",
         "weight": 0.8,
         "element": "Water"
@@ -252,7 +252,7 @@
       {
         "faceName": "Tide Wall",
         "type": "Defend",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "Water"
@@ -304,7 +304,7 @@
       {
         "faceName": "Wind Step",
         "type": "Defend",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "Wind"
@@ -359,7 +359,7 @@
       {
         "faceName": "Boulder Smash",
         "type": "Attack",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "Earth"
@@ -367,7 +367,7 @@
       {
         "faceName": "Granite Guard",
         "type": "Defend",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "Earth",
@@ -422,7 +422,7 @@
       {
         "faceName": "Shadow Stab",
         "type": "Attack",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "Void",
@@ -457,7 +457,7 @@
       {
         "faceName": "Quick Recovery",
         "type": "Heal",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 0.6,
         "element": "None"
@@ -485,7 +485,7 @@
       {
         "faceName": "Holy Blessing",
         "type": "Heal",
-        "value": 3,
+        "value": 4,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "Water",
@@ -504,7 +504,7 @@
       {
         "faceName": "Sanctuary Ward",
         "type": "Defend",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None"
@@ -548,7 +548,7 @@
       {
         "faceName": "Savage Cleave",
         "type": "Attack",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None",
@@ -674,7 +674,7 @@
       {
         "faceName": "Quickdraw Shot",
         "type": "Attack",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "Wind"
@@ -734,7 +734,7 @@
       {
         "faceName": "Aimed Shot",
         "type": "Attack",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None",
@@ -797,7 +797,7 @@
       {
         "faceName": "Void Lance",
         "type": "Attack",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "Void",
@@ -840,7 +840,7 @@
       {
         "faceName": "Siphon",
         "type": "Heal",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 0.5,
         "element": "Void"
@@ -860,7 +860,7 @@
       {
         "faceName": "Cleave",
         "type": "Attack",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None",
@@ -903,7 +903,7 @@
       {
         "faceName": "Field Patch",
         "type": "Heal",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 0.5,
         "element": "None"
@@ -1002,7 +1002,7 @@
       {
         "faceName": "Staff Crack",
         "type": "Attack",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None"
@@ -1010,7 +1010,7 @@
       {
         "faceName": "Sigil Ward",
         "type": "Defend",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None"
@@ -1026,7 +1026,7 @@
       {
         "faceName": "Mend",
         "type": "Heal",
-        "value": 2,
+        "value": 3,
         "linkedSkillID": "",
         "weight": 0.6,
         "element": "None"
@@ -1045,7 +1045,7 @@
       {
         "faceName": "Hammer",
         "type": "Attack",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None"
@@ -1053,7 +1053,7 @@
       {
         "faceName": "Shield of Faith",
         "type": "Defend",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None",
@@ -1108,7 +1108,7 @@
       {
         "faceName": "Gutting Knife",
         "type": "Attack",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None"
@@ -1169,7 +1169,7 @@
       {
         "faceName": "Long Shot",
         "type": "Attack",
-        "value": 2,
+        "value": 3,
         "linkedSkillID": "",
         "weight": 0.6,
         "element": "None"
@@ -1230,7 +1230,7 @@
       {
         "faceName": "Rime Cut",
         "type": "Attack",
-        "value": 2,
+        "value": 3,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "Ice"
@@ -1262,7 +1262,7 @@
       {
         "faceName": "Meltwater",
         "type": "Heal",
-        "value": 2,
+        "value": 3,
         "linkedSkillID": "",
         "weight": 0.6,
         "element": "Water"
@@ -1356,7 +1356,7 @@
       {
         "faceName": "Tower Shield",
         "type": "Defend",
-        "value": 2,
+        "value": 3,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None",
@@ -1399,7 +1399,7 @@
       {
         "faceName": "Rest Behind Steel",
         "type": "Heal",
-        "value": 2,
+        "value": 3,
         "linkedSkillID": "",
         "weight": 0.6,
         "element": "None"
@@ -1417,7 +1417,7 @@
       {
         "faceName": "Road Blessing",
         "type": "Heal",
-        "value": 3,
+        "value": 4,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "Light"
@@ -1548,7 +1548,7 @@
       {
         "faceName": "Grave Guard",
         "type": "Defend",
-        "value": 2,
+        "value": 3,
         "linkedSkillID": "",
         "weight": 0.9,
         "element": "Earth"
@@ -1556,7 +1556,7 @@
       {
         "faceName": "Marrow Mend",
         "type": "Heal",
-        "value": 2,
+        "value": 3,
         "linkedSkillID": "",
         "weight": 0.7,
         "element": "None"
@@ -1598,7 +1598,7 @@
       {
         "faceName": "Lantern Strike",
         "type": "Attack",
-        "value": 2,
+        "value": 3,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "Light"
@@ -1617,7 +1617,7 @@
       {
         "faceName": "Vigil Mend",
         "type": "Heal",
-        "value": 4,
+        "value": 5,
         "linkedSkillID": "",
         "weight": 0.9,
         "element": "Light"
@@ -1694,7 +1694,7 @@
       {
         "faceName": "Seal the Crack",
         "type": "Heal",
-        "value": 2,
+        "value": 3,
         "linkedSkillID": "",
         "weight": 0.5,
         "element": "None"
@@ -1743,7 +1743,7 @@
       {
         "faceName": "Bloody Chop",
         "type": "Attack",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None",
@@ -1765,7 +1765,7 @@
       {
         "faceName": "Braced Haft",
         "type": "Defend",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None",
@@ -1827,7 +1827,7 @@
       {
         "faceName": "Sap Salve",
         "type": "Heal",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None",
@@ -1875,7 +1875,7 @@
       {
         "faceName": "Answering Blow",
         "type": "Attack",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None",
@@ -1886,7 +1886,7 @@
       {
         "faceName": "Answering Guard",
         "type": "Defend",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None",
@@ -1908,7 +1908,7 @@
       {
         "faceName": "Lead Note",
         "type": "Attack",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None"
@@ -1916,7 +1916,7 @@
       {
         "faceName": "Held Note",
         "type": "Defend",
-        "value": 1,
+        "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None",
