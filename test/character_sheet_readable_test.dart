@@ -110,14 +110,14 @@ void main() {
     await tester.scrollUntilVisible(
         find.byKey(const Key('sheet_elements')), 300,
         scrollable: find.byType(Scrollable).first);
-    expect(find.text('Fire 12/0'), findsOneWidget); // +12 damage
-    expect(find.text('Ice 0/14'), findsOneWidget); // 14 resistance
+    expect(find.text('Fire 3/0'), findsOneWidget); // +3 damage
+    expect(find.text('Ice 0/3'), findsOneWidget); // 3 resistance
     expect(find.byKey(const Key('elements_view_0')), findsNothing);
     await tester.tap(find.byKey(const Key('sheet_elements_open')));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('elements_view_0')), findsOneWidget);
-    expect(find.text('12/0'), findsOneWidget);
-    expect(find.text('0/14'), findsOneWidget);
+    expect(find.text('3/0'), findsOneWidget);
+    expect(find.text('0/3'), findsOneWidget);
     await tester.tap(find.text('Rose'));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('elements_view_2')), findsOneWidget);

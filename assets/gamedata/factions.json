@@ -321,8 +321,8 @@
     "host": {
       "effects": [
         {
-          "kind": "armor",
-          "value": 1
+          "kind": "partyMaxHealthPercent",
+          "value": 3
         },
         {
           "kind": "strikeDamagePercent",
@@ -427,7 +427,7 @@
       "effects": [
         {
           "kind": "potionBonus",
-          "value": 15
+          "value": 3
         },
         {
           "kind": "poisonExtraTurns",
@@ -442,11 +442,11 @@
       "effects": [
         {
           "kind": "potionBonus",
-          "value": 12
+          "value": 1
         },
         {
           "kind": "guardHeal",
-          "value": 2
+          "value": 1
         }
       ],
       "line": "Fever-bark in every flask, and the Moss Choir singing over each wound you guard.",
@@ -740,11 +740,11 @@
       "effects": [
         {
           "kind": "guardHeal",
-          "value": 2
+          "value": 1
         },
         {
           "kind": "partyMaxHealthPercent",
-          "value": 4
+          "value": 2
         }
       ],
       "line": "A hymn over the field holds the party up, and every guard you raise is a vow kept.",
@@ -912,8 +912,8 @@
           "value": 8
         },
         {
-          "kind": "thorns",
-          "value": 1
+          "kind": "lifestealPercent",
+          "value": 2
         }
       ],
       "line": "The oni come with their bells and their red: your blows land heavier, and the enemy pays for each one it trades.",
@@ -970,7 +970,7 @@
         },
         {
           "kind": "potionBonus",
-          "value": 8
+          "value": 2
         }
       ],
       "line": "The Tide-Kin rise from the shallows and draw the sea between you and every blow.",
@@ -1022,8 +1022,8 @@
     "host": {
       "effects": [
         {
-          "kind": "armor",
-          "value": 1
+          "kind": "dodgeChance",
+          "value": 2
         },
         {
           "kind": "partyMaxHealthPercent",
@@ -1072,12 +1072,8 @@
     "host": {
       "effects": [
         {
-          "kind": "armor",
-          "value": 1
-        },
-        {
           "kind": "partyMaxHealthPercent",
-          "value": 3
+          "value": 5
         },
         {
           "kind": "allyDamagePercent",

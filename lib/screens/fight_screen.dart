@@ -182,11 +182,11 @@ const int _luckyCoinLuckBonus = 10;
 const Color _previewColor = Color(0xFF42A5F5);
 
 /// Armor added to the player for one fight by a `charm_iron_skin`.
-const int _ironSkinArmorBonus = 5;
+const int _ironSkinArmorBonus = 1;
 
 /// The Poison a Venomous enemy's plain attack carries (see [EnemyAffix]).
 const StatusEffect _venomousPoison = StatusEffect(
-    type: StatusEffectType.poison, remainingTurns: 2, magnitude: 3);
+    type: StatusEffectType.poison, remainingTurns: 2, magnitude: 1);
 
 const int _maxRolls = 3;
 

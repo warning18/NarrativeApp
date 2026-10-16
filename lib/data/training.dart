@@ -1,23 +1,25 @@
-// Stat picks at level-up (docs/proposals/stat-picks.md): each stat point a
-// level brings (five a level, one from a Tome of Insight) is a **pick**: three
-// one-point offers, each a gain of a training path (training_paths.json, a
-// bundle of stat gains toward a playstyle) -- the calling, the habit and a
-// turn -- and the character takes one. Now and then the turn is a **rare**
-// offer worth two points. There is no "decide later": a pick stays on the
-// table until taken.
+// Stat picks at level-up (docs/proposals/stat-picks.md, and the scale of
+// docs/proposals/stat-scale.md): each level brings one **pick** (a Tome of
+// Insight one more): three offers, each an ability a training path
+// (training_paths.json, a bundle of abilities toward a playstyle) leans to
+// -- the calling, the habit and a turn -- and the character takes one. The
+// pick's **rarity** is drawn once for all three (Common +1, Rare +2, Epic
+// +3, Heroic +4, Luck raising the odds). There is no "decide later": a pick
+// stays on the table until taken.
 //
 // Pure, and takes a Random like offers.dart; the session keeps the pick on
 // the table and the paths taken, and applies the gains.
 import 'dart:math';
 
+import 'signs.dart' show SignRarity;
+
 /// How many offers a pick brings.
 const int statPickOfferCount = 3;
 
-/// The stats a path's gains may name (the session's own names).
+/// The abilities a path's gains may name (the session's own names). Base
+/// damage and health are not offered: the damage stat and Constitution
+/// raise them (stat_rules.dart).
 const List<String> trainingStats = [
-  'baseDamage',
-  'baseArmor',
-  'maxHealth',
   'strength',
   'dexterity',
   'constitution',
@@ -28,13 +30,9 @@ const List<String> trainingStats = [
   'charisma',
 ];
 
-/// What one point buys of [stat]: 10 max health, 1 of anything else (the
-/// exchange the free stat points had).
-int trainingUnitOf(String stat) => stat == 'maxHealth' ? 10 : 1;
-
-/// The points [gains] are worth at that exchange.
+/// The points [gains] are worth: one a point of an ability.
 int trainingPointsOf(Map<String, int> gains) =>
-    gains.entries.fold(0, (sum, e) => sum + e.value ~/ trainingUnitOf(e.key));
+    gains.values.fold(0, (sum, v) => sum + v);
 
 /// A path (training_paths.json).
 class TrainingPath {
@@ -128,12 +126,8 @@ List<TrainingPath> _drawThree({
 
   // The habit: the path taken most; with none taken, the one whose gains
   // follow the stats the character has most of.
-  double affinity(TrainingPath p) => p.gains.entries.fold(
-      0.0,
-      (sum, e) =>
-          sum +
-          (e.value / trainingUnitOf(e.key)) *
-              ((stats[e.key] ?? 0) / trainingUnitOf(e.key)));
+  double affinity(TrainingPath p) => p.gains.entries
+      .fold(0.0, (sum, e) => sum + e.value * (stats[e.key] ?? 0));
   final rest = left();
   rest.sort((a, b) {
     final t = (taken[b.id] ?? 0).compareTo(taken[a.id] ?? 0);
@@ -152,22 +146,65 @@ List<TrainingPath> _drawThree({
 // --- Stat picks (docs/proposals/stat-picks.md) ------------------------------
 //
 // The paths of a pick are drawn as above (_drawThree); each offers one of
-// its gains.
+// its abilities, at the pick's rarity.
 
-/// The base damage each level brings by itself, beside its +20 max health
-/// (PlayerSessionNotifier._applyXp). Stat picks rarely offer damage, where
-/// the free stat points used to put about +2 a level into it.
-const int levelDamageGain = 1;
+/// The points a pick of [tier] gives: Common 1, Rare 2, Epic 3, Heroic 4.
+int statPickPointsOf(SignRarity tier) => tier.index + 1;
 
-/// The chance that a pick's turn is a rare offer, worth two points.
-const double statPickRareChance = 0.12;
+/// The odds (out of 100) of each rarity of a pick, before Luck.
+const Map<SignRarity, double> statPickBaseOdds = {
+  SignRarity.common: 90,
+  SignRarity.rare: 8,
+  SignRarity.epic: 1.6,
+  SignRarity.heroic: 0.4,
+};
 
-/// One offer of a pick: [gains] from [pathId] (one entry, or two for a rare
-/// offer of two stats), worth [points]; [rare] for the two-point offer.
+/// Each point of Luck, up to this many, moves 1% of a pick's odds from
+/// Common up: [statPickLuckShares] of it to each rarer tier.
+const int statPickLuckCap = 15;
+const Map<SignRarity, double> statPickLuckShares = {
+  SignRarity.rare: 0.6,
+  SignRarity.epic: 0.3,
+  SignRarity.heroic: 0.1,
+};
+
+/// The odds (out of 100) of each rarity of a pick for a character with
+/// [luck] (statPickBaseOdds moved by statPickLuckShares).
+Map<SignRarity, double> statPickOdds(int luck) {
+  final l = luck.clamp(0, statPickLuckCap).toDouble();
+  return {
+    SignRarity.common: statPickBaseOdds[SignRarity.common]! - l,
+    for (final tier in [SignRarity.rare, SignRarity.epic, SignRarity.heroic])
+      tier: statPickBaseOdds[tier]! + l * statPickLuckShares[tier]!,
+  };
+}
+
+/// The points a pick is worth on average for a character with [luck].
+double statPickExpectedPoints(int luck) => statPickOdds(luck)
+    .entries
+    .fold(0.0, (sum, e) => sum + e.value / 100 * statPickPointsOf(e.key));
+
+/// A pick's rarity, drawn for a character with [luck].
+SignRarity drawStatPickTier(int luck, Random random) {
+  final odds = statPickOdds(luck);
+  var roll = random.nextDouble() * 100;
+  for (final tier in [SignRarity.heroic, SignRarity.epic, SignRarity.rare]) {
+    roll -= odds[tier]!;
+    if (roll < 0) return tier;
+  }
+  return SignRarity.common;
+}
+
+/// One offer of a pick: [gains] from [pathId] (its ability, and at Rare or
+/// better maybe a second), worth [points] -- what its [tier] gives.
 class StatPickOffer {
   const StatPickOffer(
-      {required this.pathId, required this.gains, this.rare = false});
+      {required this.pathId,
+      required this.gains,
+      this.tier = SignRarity.common});
 
+  /// A saved offer; one saved as `rare: true` (before the four rarities)
+  /// reads as Rare.
   factory StatPickOffer.fromJson(Map raw) => StatPickOffer(
         pathId: raw['path']?.toString() ?? '',
         gains: {
@@ -175,44 +212,74 @@ class StatPickOffer {
               in ((raw['gains'] as Map?) ?? const {}).entries)
             if (value is num) key.toString(): value.toInt(),
         },
-        rare: raw['rare'] == true,
+        tier: SignRarity.values
+                .where((t) => t.name == raw['tier']?.toString())
+                .firstOrNull ??
+            (raw['rare'] == true ? SignRarity.rare : SignRarity.common),
       );
 
   final String pathId;
   final Map<String, int> gains;
-  final bool rare;
+  final SignRarity tier;
 
-  /// What it is worth at the exchange (trainingUnitOf): 1, or 2 when rare.
+  /// Rarer than Common.
+  bool get rare => tier != SignRarity.common;
+
+  /// What it is worth: one a point of each ability it raises.
   int get points => trainingPointsOf(gains);
 
-  Map<String, dynamic> toJson() =>
-      {'path': pathId, 'gains': gains, if (rare) 'rare': true};
+  /// The ability it is offered for (the first of its gains).
+  String get stat => gains.keys.isEmpty ? '' : gains.keys.first;
+
+  Map<String, dynamic> toJson() => {
+        'path': pathId,
+        'gains': gains,
+        if (tier != SignRarity.common) 'tier': tier.name,
+      };
 
   @override
   bool operator ==(Object other) =>
       other is StatPickOffer &&
       other.pathId == pathId &&
-      other.rare == rare &&
+      other.tier == tier &&
       other.gains.length == gains.length &&
       other.gains.entries.every((e) => gains[e.key] == e.value);
 
   @override
-  int get hashCode => Object.hash(pathId, rare, gains.length);
+  int get hashCode => Object.hash(pathId, tier, gains.length);
 }
 
-/// Draws a pick: **the calling**, **the habit** and **a turn**, their paths
-/// drawn by _drawThree, each offering one of its path's gains
-/// at one point (+1, or +10 max health), drawn by its size in points. No
-/// two offers show the same gain: the gain is drawn again within the path
-/// first, then the path. With [statPickRareChance] the turn is a rare
-/// two-point offer instead: its gain doubled, or it and another of the
-/// path's gains at one point each (half and half; doubled for a path of
-/// one gain). Empty when fewer than three paths with gains exist.
+/// The gains of an offer of [stat] at [tier], [second] being another
+/// ability of its path ('' for none): Common +1; Rare +2, or +1 and +1 to
+/// [second] ([split]); Epic +2 and +1 to [second]; Heroic +2 and +2 to
+/// [second]. Without a second, every point goes to [stat].
+Map<String, int> statPickGains(String stat, SignRarity tier,
+    {String second = '', bool split = false}) {
+  final points = statPickPointsOf(tier);
+  if (second.isEmpty || second == stat || tier == SignRarity.common) {
+    return {stat: points};
+  }
+  final own = switch (tier) {
+    SignRarity.rare => split ? 1 : 2,
+    _ => 2,
+  };
+  return {stat: own, if (points > own) second: points - own};
+}
+
+/// Draws a pick for a character with [luck]: **the calling**, **the
+/// habit** and **a turn**, their paths drawn by _drawThree, each offering
+/// one of its path's abilities, drawn by its weight in the path. No two
+/// offers show the same ability: the ability is drawn again within the
+/// path first, then the path. The pick's rarity (drawStatPickTier) is drawn
+/// once and every offer shows it, a second ability of its path coming with
+/// the rarer ones (statPickGains). Empty when fewer than three paths with
+/// gains exist.
 List<StatPickOffer> drawStatPick({
   required Map<String, TrainingPath> paths,
   required Random random,
   String? professionId,
   String? raceId,
+  int luck = 0,
   Map<String, int> taken = const {},
   Map<String, int> stats = const {},
 }) {
@@ -228,8 +295,7 @@ List<StatPickOffer> drawStatPick({
       raceId: raceId,
       taken: taken,
       stats: stats);
-  double size(MapEntry<String, int> e) =>
-      max(1, e.value ~/ trainingUnitOf(e.key)).toDouble();
+  double size(MapEntry<String, int> e) => max(1, e.value).toDouble();
   final used = <String>{};
   final picked = <TrainingPath>[];
   final gainOf = <String>[];
@@ -254,50 +320,67 @@ List<StatPickOffer> drawStatPick({
     picked.add(path);
     gainOf.add(gain.key);
   }
-  final offers = [
+  final tier = drawStatPickTier(luck, random);
+  return [
     for (var i = 0; i < picked.length; i++)
-      StatPickOffer(
-          pathId: picked[i].id, gains: {gainOf[i]: trainingUnitOf(gainOf[i])}),
+      () {
+        final rest = [
+          for (final e in picked[i].gains.entries)
+            if (e.key != gainOf[i]) e
+        ];
+        final second = tier == SignRarity.common || rest.isEmpty
+            ? ''
+            : _weighted(rest, size, random).key;
+        final split = tier == SignRarity.rare && random.nextBool();
+        return StatPickOffer(
+            pathId: picked[i].id,
+            gains: statPickGains(gainOf[i], tier, second: second, split: split),
+            tier: tier);
+      }(),
   ];
-  if (random.nextDouble() < statPickRareChance) {
-    final turn = picked.last;
-    final stat = gainOf.last;
-    final rest = [
-      for (final e in turn.gains.entries)
-        if (e.key != stat) e
-    ];
-    final doubled = rest.isEmpty || random.nextBool();
-    final Map<String, int> gains;
-    if (doubled) {
-      gains = {stat: 2 * trainingUnitOf(stat)};
-    } else {
-      final second = _weighted(rest, size, random).key;
-      gains = {stat: trainingUnitOf(stat), second: trainingUnitOf(second)};
-    }
-    offers.last = StatPickOffer(pathId: turn.id, gains: gains, rare: true);
-  }
-  return offers;
 }
 
-/// The gains a build takes when its own stat is not offered, in order
+/// The abilities a build takes when its own stat is not offered, in order
 /// (statPickFor).
-const List<String> statPickPriority = ['baseDamage', 'maxHealth', 'baseArmor'];
+const List<String> statPickPriority = ['constitution', 'dexterity', 'luck'];
 
-/// The offer of [offer] a build after [stat] takes (the simulator's and
-/// autoplay's policy): the first offer raising [stat], else
-/// [priority]'s first gain offered, a rare offer before a plain one with
-/// the same gain; else the calling (the first).
+/// The offer of [offer] a build after [stat] takes (autoplay's policy): the
+/// first offer raising [stat], else [priority]'s first ability offered,
+/// the one giving it most first; else the calling (the first).
 int statPickFor(List<StatPickOffer> offer, String stat,
     {List<String> priority = statPickPriority}) {
   for (final want in [stat, ...priority]) {
     var best = -1;
     for (var i = 0; i < offer.length; i++) {
       if (!offer[i].gains.containsKey(want)) continue;
-      if (best < 0 || (offer[i].rare && !offer[best].rare)) best = i;
+      if (best < 0 || offer[i].gains[want]! > offer[best].gains[want]!) {
+        best = i;
+      }
     }
     if (best >= 0) return best;
   }
   return 0;
+}
+
+/// The offer of [offer] a build that keeps its abilities in [shares]
+/// (ability -> share of the points, e.g. Str 0.6, Con 0.3) takes, having
+/// put [taken] points into each so far (the simulator's policy): the one
+/// whose ability is furthest below its share; else the calling (the first).
+int statPickForShares(List<StatPickOffer> offer, Map<String, double> shares,
+    Map<String, int> taken) {
+  final total = taken.values.fold<int>(0, (a, b) => a + b) + 1;
+  var best = 0;
+  var bestGap = double.negativeInfinity;
+  for (var i = 0; i < offer.length; i++) {
+    final share = shares[offer[i].stat];
+    if (share == null) continue;
+    final gap = share - (taken[offer[i].stat] ?? 0) / total;
+    if (gap > bestGap) {
+      bestGap = gap;
+      best = i;
+    }
+  }
+  return best;
 }
 
 T _weighted<T>(List<T> items, double Function(T) weight, Random random) {

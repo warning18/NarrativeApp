@@ -75,7 +75,8 @@ void main() {
   final shops = _loadGamedata('shops.json');
 
   group('sessionCasterDamage', () {
-    test('base damage plus a weapon, its stat scaling and element bonus', () {
+    test('base damage plus a weapon and its element bonus (no stat scaling)',
+        () {
       const staff = {
         'staff': {
           'itemType': 'Weapon',
@@ -86,11 +87,12 @@ void main() {
       };
       final session =
           _session(baseDamage: 16, intelligence: 4, equippedItemIds: ['staff']);
-      // 16 base + 6 flat + 4 ~/ 2 scaling = 24 with no element...
-      expect(sessionCasterDamage(session, staff, 'None'), 24);
-      // ...and 27 for an Electricity spell, thanks to the elecDmgBonus.
-      expect(sessionCasterDamage(session, staff, 'Electricity'), 27);
-      expect(sessionCasterDamage(session, staff, 'Fire'), 24);
+      // 16 base + 6 flat = 22 with no element: the staff's scalingStat
+      // adds nothing since the damage stat raises base damage itself...
+      expect(sessionCasterDamage(session, staff, 'None'), 22);
+      // ...and 25 for an Electricity spell, thanks to the elecDmgBonus.
+      expect(sessionCasterDamage(session, staff, 'Electricity'), 25);
+      expect(sessionCasterDamage(session, staff, 'Fire'), 22);
     });
   });
 

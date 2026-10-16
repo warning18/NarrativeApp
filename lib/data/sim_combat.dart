@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'ability_check.dart' show checkBonusFor;
+
 import '../combat/combat_engine.dart';
 import '../combat/dice_faces.dart';
 import '../combat/dice_tamper.dart';
@@ -61,6 +63,17 @@ import 'training.dart';
 ///
 /// A lost fight refills health and mana like the app's own loss handling;
 /// a new chapter counts as a rest.
+/// How each profession's simulated build shares its picks (ability ->
+/// share of the points): mostly the damage stat, some Constitution, and
+/// what else the profession leans on (stat_rules.dart).
+const Map<String, Map<String, double>> simBuildShares = {
+  'warrior': {'strength': .6, 'constitution': .3, 'perception': .1},
+  'rogue': {'dexterity': .6, 'perception': .1, 'luck': .1, 'constitution': .2},
+  'ranger': {'dexterity': .6, 'perception': .15, 'constitution': .25},
+  'mage': {'intelligence': .6, 'wisdom': .2, 'constitution': .2},
+  'cleric': {'intelligence': .5, 'wisdom': .3, 'constitution': .2},
+};
+
 class SimCharacter {
   SimCharacter._({
     required this.raceId,
@@ -84,7 +97,7 @@ class SimCharacter {
     required this.potions,
     required this.startingGold,
   })  : currentHealth = maxHealth,
-        mana = maxManaFor(intelligence: intelligence, wisdom: wisdom);
+        mana = maxManaFor(wisdom: wisdom);
 
   /// Mirrors `PlayerSessionNotifier.startNewGame`: New Game Defaults plus
   /// the race's and profession's bonuses, the profession's starting die
@@ -117,7 +130,7 @@ class SimCharacter {
       for (final id in (profession['startingSpellIds'] as List?) ?? const [])
         if (spells[id.toString()] != null) spells[id.toString()]!,
     ];
-    final preferred = profession['preferredScalingStat']?.toString() ?? '';
+    final preferred = damageStatOf(professionId);
     return SimCharacter._(
       raceId: raceId,
       professionId: professionId,
@@ -158,7 +171,7 @@ class SimCharacter {
   final String professionId;
 
   /// The ability score each level-up's assumed stat spend goes to -- the
-  /// profession's `preferredScalingStat`, or Wisdom for a Cleric.
+  /// profession's damage stat (stat_rules.dart), or Wisdom for none.
   final String preferredStat;
 
   int level = 1;
@@ -176,9 +189,13 @@ class SimCharacter {
   int charisma;
   int perception;
 
-  /// The flat bonus on a d20 for an ability check (see ability_check.dart):
-  /// the score itself. Equipment and level-up points are not counted.
-  int abilityBonus(String ability) => switch (ability) {
+  /// The bonus on a d20 for an ability check (see ability_check.dart's
+  /// checkBonusFor) from the score. Equipment and level-up points are not
+  /// counted.
+  int abilityBonus(String ability) => checkBonusFor(abilityScore(ability));
+
+  /// The character's score in [ability].
+  int abilityScore(String ability) => switch (ability) {
         'strength' => strength,
         'dexterity' => dexterity,
         'constitution' => constitution,
@@ -246,8 +263,7 @@ class SimCharacter {
   final Map<String, int> spellsCast = {};
   final List<String> spellbooksBought = [];
 
-  int get maxMana =>
-      maxManaFor(intelligence: intelligence, wisdom: wisdom) + signMaxMana;
+  int get maxMana => maxManaFor(wisdom: wisdom) + signMaxMana;
 
   List<String> get equippedItemIds => equippedBySlot.values.toList();
 
@@ -268,21 +284,12 @@ class SimCharacter {
     String element, {
     Map<String, ItemSet> itemSets = const {},
   }) {
-    final scaling = equipmentScalingBonusFor(
-      equippedItemIds,
-      items,
-      strength: strength,
-      dexterity: dexterity,
-      constitution: constitution,
-      intelligence: intelligence,
-    );
     final prefix = elementFieldPrefixes[element];
     final elemental = prefix == null
         ? 0
         : equipmentBonusFor(equippedItemIds, items, '${prefix}DmgBonus');
     return baseDamage +
         equipmentBonusFor(equippedItemIds, items, 'attackDamage') +
-        scaling.damageBonus +
         gearEffects(items, itemSets).attackDamage +
         elemental;
   }
@@ -291,17 +298,8 @@ class SimCharacter {
     Map<String, dynamic> items, {
     Map<String, ItemSet> itemSets = const {},
   }) {
-    final scaling = equipmentScalingBonusFor(
-      equippedItemIds,
-      items,
-      strength: strength,
-      dexterity: dexterity,
-      constitution: constitution,
-      intelligence: intelligence,
-    );
     return baseArmor +
         equipmentBonusFor(equippedItemIds, items, 'armor') +
-        scaling.armorBonus +
         gearEffects(items, itemSets).armor;
   }
 
@@ -319,11 +317,10 @@ class SimCharacter {
   }
 
   /// Runs [gain] XP through the app's own `level * 100` thresholds. Each
-  /// level: +20 max health and +5 stat points -- with [trainingPaths], five
-  /// stat picks (see [takeStatPicks]) and the game's [levelDamageGain]
-  /// damage; else spent as +10 health, +2
-  /// damage, +1 armor and +1 to [preferredStat] (the simulator's old fixed
-  /// assumption) -- then a full heal like the app's own level-up.
+  /// level: [levelHealthGain] max health and [levelStatPicks] stat pick --
+  /// with [trainingPaths] drawn and taken (see [takeStatPicks]), else a
+  /// point to [preferredStat] (the simulator's fixed assumption) -- then a
+  /// full heal like the app's own level-up.
   bool gainXp(int gain) {
     xp += gain;
     var leveled = false;
@@ -331,26 +328,11 @@ class SimCharacter {
       xp -= level * 100;
       level++;
       leveled = true;
+      maxHealth += levelHealthGain;
       if (trainingPaths.isNotEmpty) {
-        maxHealth += 20;
-        baseDamage += levelDamageGain;
-        takeStatPicks(5);
-        continue;
-      }
-      maxHealth += 30;
-      baseDamage += 2;
-      baseArmor += 1;
-      switch (preferredStat) {
-        case 'strength':
-          strength++;
-        case 'dexterity':
-          dexterity++;
-        case 'constitution':
-          constitution++;
-        case 'intelligence':
-          intelligence++;
-        default:
-          wisdom++;
+        takeStatPicks(levelStatPicks);
+      } else {
+        addAbilities({preferredStat: levelStatPicks});
       }
     }
     if (leveled) currentHealth = maxHealth;
@@ -358,8 +340,42 @@ class SimCharacter {
     return leveled;
   }
 
-  /// [count] stat picks (training.dart), each the offer statPickFor takes
-  /// for [preferredStat]; its gains applied, its path counted.
+  /// [gains] (ability -> points) added, with what they bring: the damage
+  /// stat's base damage, Constitution's health (stat_rules.dart), as
+  /// `PlayerSession.withAbilityGains`.
+  void addAbilities(Map<String, int> gains) {
+    for (final MapEntry(:key, :value) in gains.entries) {
+      switch (key) {
+        case 'strength':
+          strength += value;
+        case 'dexterity':
+          dexterity += value;
+        case 'constitution':
+          constitution += value;
+        case 'intelligence':
+          intelligence += value;
+        case 'wisdom':
+          wisdom += value;
+        case 'perception':
+          perception += value;
+        case 'luck':
+          luck += value;
+        case 'charisma':
+          charisma += value;
+      }
+    }
+    final effects = abilityGainEffects(gains, professionId);
+    baseDamage += effects.baseDamage;
+    maxHealth = max(1, maxHealth + effects.maxHealth);
+    currentHealth = max(1, currentHealth + effects.maxHealth);
+  }
+
+  /// The points this build has put into each ability through its picks.
+  final Map<String, int> pickedPoints = {};
+
+  /// [count] stat picks (training.dart), each the offer statPickForShares
+  /// takes for the profession's build (simBuildShares); its gains added,
+  /// its path counted.
   void takeStatPicks(int count) {
     for (var i = 0; i < count; i++) {
       final offer = drawStatPick(
@@ -367,11 +383,9 @@ class SimCharacter {
         random: pickRandom,
         professionId: professionId,
         raceId: raceId,
+        luck: luck,
         taken: trainingTaken,
         stats: {
-          'baseDamage': baseDamage,
-          'baseArmor': baseArmor,
-          'maxHealth': maxHealth,
           'strength': strength,
           'dexterity': dexterity,
           'constitution': constitution,
@@ -383,34 +397,13 @@ class SimCharacter {
         },
       );
       if (offer.isEmpty) return;
-      final pick = offer[statPickFor(offer, preferredStat)];
+      final shares = simBuildShares[professionId] ?? {preferredStat: 1.0};
+      final pick = offer[statPickForShares(offer, shares, pickedPoints)];
       trainingTaken[pick.pathId] = (trainingTaken[pick.pathId] ?? 0) + 1;
       for (final MapEntry(:key, :value) in pick.gains.entries) {
-        switch (key) {
-          case 'baseDamage':
-            baseDamage += value;
-          case 'baseArmor':
-            baseArmor += value;
-          case 'maxHealth':
-            maxHealth += value;
-          case 'strength':
-            strength += value;
-          case 'dexterity':
-            dexterity += value;
-          case 'constitution':
-            constitution += value;
-          case 'intelligence':
-            intelligence += value;
-          case 'wisdom':
-            wisdom += value;
-          case 'perception':
-            perception += value;
-          case 'luck':
-            luck += value;
-          case 'charisma':
-            charisma += value;
-        }
+        pickedPoints[key] = (pickedPoints[key] ?? 0) + value;
       }
+      addAbilities(pick.gains);
     }
   }
 
@@ -569,7 +562,7 @@ class SimFightOutcome {
 /// Pack-size stat multipliers, the fight screen's own.
 const Map<int, double> _packStatMultipliers = {2: 0.8, 3: 0.7};
 
-const int _potionHeal = 30;
+const int _potionHeal = 6;
 const int _maxRolls = 3;
 
 class _SimEnemy {
@@ -839,6 +832,7 @@ SimFightOutcome simulateSimFight({
   // stays full, a running pact may take a share off the top) and mana.
   final baseMaxHealth = c.maxHealth;
   void lendStats(int sign) {
+    c.baseDamage += sign * s.stat(damageStatOf(c.professionId));
     c.strength += sign * s.stat('strength');
     c.dexterity += sign * s.stat('dexterity');
     c.constitution += sign * s.stat('constitution');
@@ -908,7 +902,7 @@ SimFightOutcome simulateSimFight({
         final entry = enemies[i];
         var health = max(
           1,
-          (scaledMaxHealth(
+          (enemyScaledMaxHealth(
                     (entry.value['maxHealth'] as num?)?.toInt() ?? 1,
                     c.level,
                   ) *
@@ -1255,7 +1249,8 @@ SimFightOutcome simulateSimFight({
       // The guard, mend and spell signs on the face's number.
       face = switch (face.type) {
         'Defend' => face.withValue(s.guardValue(face.value)),
-        'Heal' => face.withValue(s.mendValue(face.value, c.wisdom ~/ 2)),
+        'Heal' =>
+          face.withValue(s.mendValue(face.value, wisdomHealBonusFor(c.wisdom))),
         'Mana' => face.withValue(s.manaValue(face.value)),
         _ => face,
       };
@@ -1290,11 +1285,13 @@ SimFightOutcome simulateSimFight({
             availableSkills,
             damageBase,
             activeEffects: c.statusEffects,
-            wisdomHealBonus: c.wisdom ~/ 2,
+            wisdomHealBonus: wisdomHealBonusFor(c.wisdom),
             wisdomManaBonus: wisdomManaBonusFor(c.wisdom),
             luck: c.luck,
             random: random,
-            critChanceBonus: gear.critChance + ledgerChain,
+            critChanceBonus: gear.critChance +
+                perceptionCritBonus(c.professionId, c.perception) +
+                ledgerChain,
             forceCritical: sure,
           );
       var result = rollFace(sure: sureCrit);
@@ -1848,7 +1845,9 @@ SimFightOutcome simulateSimFight({
       final parry = on('parry') ? e.parryBlock : 0;
       // The Briar Guard can't dodge (the draw is made all the same).
       final dodged = random.nextDouble() * 100 <
-              dodgeChanceFor(c.dexterity) + gear.dodgeChance &&
+              dodgeChanceFor(c.dexterity,
+                      perception: c.perception, professionId: c.professionId) +
+                  gear.dodgeChance &&
           !has(Spec.briarGuard);
       var taken = dodged
           ? 0
@@ -1861,6 +1860,13 @@ SimFightOutcome simulateSimFight({
                   s.armor -
                   c.elementalResist(items, move.element),
             );
+      // A warrior's Perception blocks half a blow now and then.
+      final blockChance = blockChanceFor(c.professionId, c.perception);
+      if (taken > 0 &&
+          blockChance > 0 &&
+          random.nextDouble() * 100 < blockChance) {
+        taken = blockedBlow(taken);
+      }
       if (taken >= c.currentHealth &&
           c.currentHealth > 0 &&
           secondWindAvailable) {

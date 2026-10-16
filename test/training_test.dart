@@ -19,9 +19,6 @@ void main() {
     for (final p in paths.values) {
       expect(trainingPointsOf(p.gains), 5, reason: p.id);
       expect(p.gains.keys.every(trainingStats.contains), isTrue, reason: p.id);
-      for (final e in p.gains.entries) {
-        expect(e.value % trainingUnitOf(e.key), 0, reason: '${p.id} ${e.key}');
-      }
       expect(p.name, isNotEmpty);
       expect(p.nameFr, isNotEmpty, reason: p.id);
       expect(p.blurb, isNotEmpty, reason: p.id);

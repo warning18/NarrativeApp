@@ -613,7 +613,9 @@ void main() {
           .fold(0, (total, e) => total + e.value);
       expect(sum(SignEffectKind.firstRoundDamagePercent), 12);
       expect(sum(SignEffectKind.guardBlockPercent), 10);
-      expect(sum(SignEffectKind.partyStartBlock), 1);
+      // Three Houses: their health, not yet their block (from four on the
+      // fight's small scale, see houseBlockPer).
+      expect(sum(SignEffectKind.partyStartBlock), 0);
       expect(sum(SignEffectKind.partyMaxHealthPercent), 3);
       // The Houses' bonus stops at its caps.
       int houses(int n, SignEffectKind kind) => houseEffects(n)
@@ -627,7 +629,8 @@ void main() {
           alignment: 0, extra: hostEffects(host, _data));
       expect(signs.firstRoundDamagePercent, 12);
       expect(signs.guardBlockPercent, 10);
-      expect(signs.partyStartBlock, 1);
+      expect(signs.partyStartBlock, 0);
+      expect(houses(houseBlockPer, SignEffectKind.partyStartBlock), 1);
       expect(Host.none.contingents, isEmpty);
       expect(hostEffects(Host.none, _data), isEmpty);
     });

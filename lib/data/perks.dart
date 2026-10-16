@@ -55,12 +55,12 @@ String perkNameKey(Perk perk) => 'perk_${perk.name}';
 String perkDescKey(Perk perk) => 'perk_${perk.name}_desc';
 
 /// Per rank of each perk.
-const int potionBonusPerRank = 10;
+const int potionBonusPerRank = 2;
 const double critPerRank = 5;
 const double dodgePerRank = 4;
-const int damagePerRank = 2;
-const int armorPerRank = 2;
-const int vigorHealthPerRank = 15;
+const int damagePerRank = 1;
+const int armorPerRank = 1;
+const int vigorHealthPerRank = 3;
 const int goldPercentPerRank = 10;
 const int xpPercentPerRank = 10;
 const int leaderPercentPerRank = 5;

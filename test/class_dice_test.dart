@@ -169,12 +169,12 @@ void main() {
   });
 
   group('Wisdom and mana', () {
-    test('one more mana per 3 Wisdom', () {
+    test('one more mana per 2 Wisdom', () {
       expect(wisdomManaBonusFor(-2), 0);
       expect(wisdomManaBonusFor(1), 0);
       expect(wisdomManaBonusFor(3), 1);
-      expect(wisdomManaBonusFor(6), 2);
-      expect(wisdomManaBonusFor(10), 3);
+      expect(wisdomManaBonusFor(6), 3);
+      expect(wisdomManaBonusFor(10), 5);
     });
 
     test('a Mana face and a mana skill both add the Wisdom bonus', () {

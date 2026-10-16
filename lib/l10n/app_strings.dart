@@ -3968,9 +3968,57 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Choix de stats restants',
   },
   'level_up_gives': {
-    AppLanguage.en: 'Each level also gives +20 max health and +1 base damage.',
-    AppLanguage.fr:
-        'Chaque niveau donne aussi +20 de santé max. et +1 de dégâts de base.',
+    AppLanguage.en: 'Each level also gives +4 max health.',
+    AppLanguage.fr: 'Chaque niveau donne aussi +4 de santé max.',
+  },
+  // A pick's rarity (training.dart) and what each ability does for the
+  // hero (stat_pick_text.dart), for the pick cards.
+  'stat_pick_tier_common': {AppLanguage.en: 'Common', AppLanguage.fr: 'Commun'},
+  'stat_pick_tier_rare': {AppLanguage.en: 'Rare', AppLanguage.fr: 'Rare'},
+  'stat_pick_tier_epic': {AppLanguage.en: 'Epic', AppLanguage.fr: 'Épique'},
+  'stat_pick_tier_heroic': {
+    AppLanguage.en: 'Heroic',
+    AppLanguage.fr: 'Héroïque',
+  },
+  'stat_effect_damage': {
+    AppLanguage.en: '+{n} damage',
+    AppLanguage.fr: '+{n} dégâts',
+  },
+  'stat_effect_health': {
+    AppLanguage.en: '+{n} health',
+    AppLanguage.fr: '+{n} santé',
+  },
+  'stat_effect_dodge': {
+    AppLanguage.en: '+{n}% dodge',
+    AppLanguage.fr: '+{n} % d’esquive',
+  },
+  'stat_effect_crit': {
+    AppLanguage.en: '+{n}% crit',
+    AppLanguage.fr: '+{n} % de critique',
+  },
+  'stat_effect_block': {
+    AppLanguage.en: '+{n}% block',
+    AppLanguage.fr: '+{n} % de blocage',
+  },
+  'stat_effect_mana': {
+    AppLanguage.en: '+{n} mana',
+    AppLanguage.fr: '+{n} mana',
+  },
+  'stat_effect_read_foes': {
+    AppLanguage.en: 'reads foes better',
+    AppLanguage.fr: 'lit mieux l’ennemi',
+  },
+  'stat_effect_luckier_picks': {
+    AppLanguage.en: 'rarer picks',
+    AppLanguage.fr: 'choix plus rares',
+  },
+  'stat_effect_shop_prices': {
+    AppLanguage.en: '−{n}% shop prices',
+    AppLanguage.fr: '−{n} % en boutique',
+  },
+  'stat_effect_story_checks': {
+    AppLanguage.en: 'story checks',
+    AppLanguage.fr: 'épreuves du récit',
   },
   'training_taken_label': {
     AppLanguage.en: 'Training',

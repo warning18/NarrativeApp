@@ -168,6 +168,7 @@ class _PartyMember {
     this.wisdom = 0,
     this.luck = 0,
     this.perception = 0,
+    this.professionId = '',
     this.gear = GearEffects.none,
     this.dieFaces = const [],
     this.approval = 0,
@@ -221,6 +222,11 @@ class _PartyMember {
   /// -- the whole party reads an enemy's telegraphed next move off
   /// whoever's Perception is currently highest, not the player's alone.
   final int perception;
+
+  /// The member's profession: what its Perception does in a fight (a
+  /// warrior's block, a ranger's or rogue's crit and dodge, see
+  /// stat_rules.dart).
+  final String professionId;
 
   /// skillId -> tier — only the player has these (see
   /// [PlayerSession.skillTiers]); allies leave this empty, so their skills

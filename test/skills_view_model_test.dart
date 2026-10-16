@@ -141,15 +141,15 @@ void main() {
       final bash = skills['warrior_shield_bash'] as Map<String, dynamic>;
       final table = tierTable(bash);
       expect(table.first.key, 'damage_mod_label');
-      expect(table.first.values, ['+5', '+6', '+8', '+9']);
+      expect(table.first.values, ['+1', '+1', '+2', '+2']);
       String t(String key) => switch (key) {
             'summary_damage' => '+{n} damage',
             'summary_heal' => 'heals {n}',
             _ => key,
           };
-      expect(skillSummary(bash, 1, t), '+6 damage · ×1.1');
+      expect(skillSummary(bash, 1, t), '+1 damage · ×1.1');
       final stance = skills['bulwark_stance'] as Map<String, dynamic>;
-      expect(skillSummary(stance, 0, t), 'heals 15 · Earth');
+      expect(skillSummary(stance, 0, t), 'heals 3 · Earth');
     });
   });
 
@@ -193,7 +193,7 @@ void main() {
       await tester.tap(find.byKey(const Key('skill_row_warrior_shield_bash')));
       await _settle(tester);
       // By tier, and the dice it is (not yet) on.
-      expect(find.text('+5'), findsOneWidget);
+      expect(find.text('+2'), findsWidgets);
       expect(find.byKey(const Key('skill_dice_link')), findsOneWidget);
       await tester.tap(find.byKey(const Key('skill_raise')));
       await _settle(tester);

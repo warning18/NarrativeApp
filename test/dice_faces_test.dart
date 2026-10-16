@@ -124,16 +124,17 @@ void main() {
   group('channeled power', () {
     test('a channeled damage skill hits at 70%, never below the Attack face',
         () {
-      // heavy_attack: (10 + 6) * 1.4 = 22 at full power.
+      // heavy_attack: (10 + 1) * 1.4 = 15 at full power.
       final full = resolvePlayerFace(
           _face('Skill', 0, 'heavy_attack'), skills, 10,
           luck: -1000);
-      expect(full.damageDealt, 22);
+      expect(full.damageDealt, 15);
+      // On a bare Attack face (0) the 70% is above the face's own 10.
       final channeled = resolvePlayerFace(
-          _face('Attack', 5).channeling('heavy_attack'), skills, 10,
+          _face('Attack', 0).channeling('heavy_attack'), skills, 10,
           luck: -1000);
-      expect(channeled.damageDealt, (22 * channeledSkillPower).round());
-      // power_strike: (10 + 5) * 1.0 = 15 -> 70% is 11, but the Attack 8
+      expect(channeled.damageDealt, (15 * channeledSkillPower).round());
+      // power_strike: (10 + 1) * 1.0 = 11 -> 70% is 8, but the Attack 8
       // face alone would hit for 18, so the floor holds.
       final floored = resolvePlayerFace(
           _face('Attack', 8).channeling('power_strike'), skills, 10,
@@ -145,7 +146,7 @@ void main() {
         () {
       final guard = resolvePlayerFace(
           _face('Defend', 5).channeling('quick_heal'), skills, 10);
-      expect(guard.healingDone, (14 * channeledSkillPower).round());
+      expect(guard.healingDone, (3 * channeledSkillPower).round());
       expect(guard.blockAmount, 0);
       final heal = resolvePlayerFace(
           _face('Heal', 12).channeling('quick_heal'), skills, 10);

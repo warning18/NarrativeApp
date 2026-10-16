@@ -1,17 +1,20 @@
 // The patron's passive stats (v5.2 step 5, docs/proposals/
-// profession-clan-mechanics.md "Passive stat points per level"): each
-// level reached, the clan you stand best with (your patron, at Friendly or
-// better; the sworn one first) adds to your stats, on top of the level's
-// own reward and the stat picks, so a clan pulls your stats as well as
-// your mechanic.
+// profession-clan-mechanics.md "Passive stat points per level"): every
+// [patronGiftEvery]th level reached, the clan you stand best with (your
+// patron, at Friendly or better; the sworn one first) adds to your stats,
+// on top of the level's own reward and the stat picks, so a clan pulls
+// your stats as well as your mechanic.
 //
 // - Friendly or Friend: +1 to its first stat ([patronStatsOf]).
 // - Trusted: +1 to its first stat and its second in turn (the second on
-//   even levels).
+//   every other gift).
 // - Sworn: as Trusted, and +[swornPatronHealth] max health.
 // One point a level and +2 health at Sworn: two points and +5, as first
 // designed, won the late bosses 13 to 16 points more often than their
-// curve (boss_balance_test).
+// curve (boss_balance_test). With one stat pick a level and the abilities
+// counting in a fight (docs/proposals/stat-scale.md), a point every level
+// was nearly a second pick: the gift comes every fourth level, about the
+// share of a level's points it had.
 // - The Open Hand, once its banner is raised: +1 to your strongest stat.
 // One patron only: no stacking across clans. Points given stay.
 //
@@ -32,7 +35,10 @@ const Map<String, List<String>> patronStatsOf = {
   'penitents': ['wisdom', 'intelligence'],
 };
 
-/// What a sworn patron adds to max health each level.
+/// The levels a patron's gift comes at: every this many.
+const int patronGiftEvery = 2;
+
+/// What a sworn patron adds to max health with each gift.
 const int swornPatronHealth = 2;
 
 /// The patron of [state]: the sworn clan, else the clan stood highest with
@@ -71,11 +77,13 @@ String statPatron(PoliticsState state) {
 }) {
   final gains = <String, int>{};
   var health = 0;
+  if (level % patronGiftEvery != 0) return (stats: gains, maxHealth: health);
   final patron = statPatron(state);
   if (patron.isNotEmpty) {
     final mine = patronStatsOf[patron]!;
     final tier = standingTierFor(state.standings[patron] ?? 0);
-    final second = tier.isAtLeast(StandingTier.trusted) && level.isEven;
+    final second = tier.isAtLeast(StandingTier.trusted) &&
+        (level ~/ patronGiftEvery).isEven;
     gains[mine[second ? 1 : 0]] = 1;
     if (tier == StandingTier.sworn) health = swornPatronHealth;
   }

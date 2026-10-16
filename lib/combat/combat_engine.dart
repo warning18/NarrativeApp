@@ -6,8 +6,10 @@ import 'skill_extras.dart';
 import 'status_effect.dart';
 import 'enemy_intent.dart';
 import 'face_keywords.dart';
+import 'stat_rules.dart';
 
 export 'enemy_intent.dart';
+export 'stat_rules.dart';
 export 'face_keywords.dart';
 export 'skill_extras.dart';
 
@@ -202,15 +204,23 @@ class PlayerActionResult {
 }
 
 /// Critical-hit chance (0-100) for an attacker with the given Luck score --
-/// a flat 5% baseline (everyone gets the occasional lucky hit) plus 1.5
-/// points per Luck, capped at 35% so even a heavily luck-built character
-/// still lands a normal hit more often than not.
-double criticalChanceFor(int luck) => min(35, 5 + luck * 1.5);
+/// a flat 5% baseline (everyone gets the occasional lucky hit) plus
+/// [critPerLuck] points per Luck, capped at [critCap] so even a heavily
+/// luck-built character still lands a normal hit more often than not.
+double criticalChanceFor(int luck) => min(critCap, 5 + luck * critPerLuck);
 
-/// Dodge chance (0-100) for a defender with the given Dexterity score --
-/// same shape as [criticalChanceFor], capped a little lower (30%) since a
-/// dodge blocks 100% of the incoming hit rather than just adding a bonus.
-double dodgeChanceFor(int dexterity) => min(30, 5 + dexterity * 1.5);
+/// Dodge chance (0-100) for a defender with the given Dexterity score:
+/// [dodgePerDexterity] a point (stat_rules.dart), and for a ranger or a
+/// rogue ([professionId]) a smaller share of their [perception], capped at
+/// [dodgeCap] since a dodge blocks 100% of the incoming hit rather than
+/// just adding a bonus.
+double dodgeChanceFor(int dexterity,
+        {int perception = 0, String? professionId}) =>
+    min(
+        dodgeCap,
+        5 +
+            dexterity * dodgePerDexterity +
+            perceptionDodgeBonus(professionId, perception));
 
 /// A critical hit multiplies the face's already-computed damage by this
 /// much -- shared by every damaging face type so a crit means the same
@@ -833,6 +843,17 @@ int scaledMaxHealth(int base, int playerLevel) {
   return (base * (1 + 0.12 * (playerLevel - 1))).round();
 }
 
+/// The share of its health an enemy gains for each level of the hero it
+/// meets (docs/proposals/stat-scale.md: the hero's abilities now count,
+/// so the enemies grow faster than [scaledMaxHealth]'s 12%).
+const double enemyHealthPerLevel = 0.16;
+
+/// An enemy's max health against a hero of [playerLevel]: [base] and
+/// [enemyHealthPerLevel] of it a level past the first. [scaledMaxHealth]
+/// keeps growing the rest (allies, heals and blocks, road foes).
+int enemyScaledMaxHealth(int base, int playerLevel) =>
+    (base * (1 + enemyHealthPerLevel * (playerLevel - 1))).round();
+
 int scaledDamage(int base, int playerLevel) {
   return (base * (1 + 0.08 * (playerLevel - 1))).round();
 }
@@ -855,12 +876,14 @@ const double chapterDifficultyStep = 0.15;
 /// Chapters 3-5 are the heaviest, 6-8 lighter again because the chapter
 /// curve already climbs there and a heavier floor stopped most runs short
 /// of the late zones' bosses. Measured with the playthrough
-/// simulator (400 runs, docs/simulation/difficulty-review.md).
+/// simulator (400 runs, docs/simulation/difficulty-review.md). With the
+/// stat scale (docs/proposals/stat-scale.md) chapters 1-2 are 7% lighter
+/// and chapters 3-8 9% heavier in health.
 const List<double> enemyHealthFloorByChapter = [
-  1.46, 2.12, 2.77, 2.77, 2.90, 2.16, 2.09, 2.03, //
+  1.36, 1.98, 3.02, 3.02, 3.17, 2.36, 2.28, 2.22, //
 ];
 const List<double> enemyDamageFloorByChapter = [
-  1.34, 1.79, 2.28, 2.28, 2.40, 1.80, 1.74, 1.68, //
+  1.25, 1.67, 2.28, 2.28, 2.40, 1.80, 1.74, 1.68, //
 ];
 
 /// A regular enemy's health floor in [chapter] (the last entry holds for
@@ -877,9 +900,10 @@ double enemyDamageBaseMultiplier(int chapter) => enemyDamageFloorByChapter[
 /// or a solo-only unique): most of its difficulty comes from its phases,
 /// and a steeper global curve once turned the chapter 5-6 bosses into
 /// walls. The same simulation had nine parties in ten beat the Void
-/// Sovereign at the first try on this floor.
-const double bossHealthBaseMultiplier = 1.10;
-const double bossDamageBaseMultiplier = 1.05;
+/// Sovereign at the first try on this floor; the stat scale raised it a
+/// little (1.10/1.05 to 1.15/1.08) for the abilities that now count.
+const double bossHealthBaseMultiplier = 1.15;
+const double bossDamageBaseMultiplier = 1.08;
 
 /// How much harder each New Game+ cycle makes every enemy (health AND
 /// damage, on top of the whole curve): cycle 1 is +10%, cycle 2 +20%. A

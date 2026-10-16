@@ -461,3 +461,48 @@ Also in scope:
 - The rogue brought down into the others' band.
 - Old saves rescaled on load.
 - The `statSources` ledger from §7, started now so the popin can later show picks and patron gains.
+
+
+## Story checks on the small scale
+
+The story's DCs are unchanged (Narrative's, 10 to 16). What changed is what a
+score adds to the d20 (`checkBonusFor` in `lib/data/ability_check.dart`):
+
+- **Bonus = 2 + 2 × √score**, rounded: score 0 gives +2, 1 gives +4, 4 gives
+  +6, 9 gives +8, 16 gives +10. A score below 0 takes from the 2.
+- **A natural 1 always fails, a natural 20 always passes**, so every check
+  sits between 5% and 95% (`checkPasses`, `checkChance`). Before, a score of
+  29 passed everything.
+- The same rule everywhere a check is rolled: story choices, skill
+  challenges, expeditions, the land crossing, the voyage, the camp, and the
+  simulator.
+
+Measured on the simulator's builds (400 runs, seed 7): each profession's
+average score in its damage stat (main) and in an untrained stat (off), at
+the typical level of each chapter, against the DCs the story uses there
+(ch 1: 10–13, ch 3: 12–13, ch 5: 12–15, ch 7–8: 13–16). Pass rate main / off
+(average score in brackets).
+
+**Before (old scale, d20 + the score, no natural 1)**
+
+| | Ch 1 (L2) | Ch 3 (L5) | Ch 5 (L11) | Ch 8 (L16) |
+|---|---|---|---|---|
+| Warrior (STR / CHA) | 82% / 46% (7 / 0) | 100% / 42% (14 / 0) | 100% / 38% (31 / 0) | 100% / 31% (46 / 0) |
+| Ranger (DEX / CHA) | 72% / 46% (5 / 0) | 100% / 42% (13 / 0) | 100% / 38% (31 / 0) | 100% / 31% (46 / 0) |
+| Rogue (DEX / CHA) | 86% / 52% (8 / 1) | 100% / 47% (16 / 1) | 100% / 43% (35 / 1) | 100% / 36% (49 / 1) |
+| Mage (INT / CHA) | 62% / 52% (3 / 1) | 82% / 47% (8 / 1) | 100% / 43% (20 / 1) | 100% / 41% (30 / 2) |
+| Cleric (INT / STR) | 52% / 52% (1 / 1) | 47% / 47% (1 / 1) | 48% / 48% (2 / 2) | 46% / 46% (3 / 3) |
+
+**After (small scale, d20 + 2 + 2√score, natural 1 fails, natural 20 passes)**
+
+| | Ch 1 (L2) | Ch 3 (L5) | Ch 5 (L11) | Ch 8 (L16) |
+|---|---|---|---|---|
+| Warrior (STR / CHA) | 82% / 57% (6 / 0) | 82% / 52% (8 / 0) | 83% / 48% (13 / 0) | 81% / 41% (17 / 0) |
+| Ranger (DEX / CHA) | 76% / 57% (4 / 0) | 72% / 52% (5 / 0) | 78% / 48% (10 / 0) | 76% / 41% (13 / 0) |
+| Rogue (DEX / CHA) | 82% / 66% (6 / 1) | 77% / 62% (7 / 1) | 83% / 58% (12 / 1) | 81% / 51% (16 / 1) |
+| Mage (INT / CHA) | 72% / 57% (2 / 0) | 72% / 62% (4 / 1) | 73% / 58% (7 / 1) | 76% / 41% (11 / 0) |
+| Cleric (INT / STR) | 66% / 66% (1 / 1) | 67% / 62% (3 / 1) | 73% / 58% (6 / 1) | 71% / 51% (9 / 1) |
+
+Targets: main 75–85% (the casters start a little below, at 66–73%, because
+their Intelligence starts at 0–2), off 40–55% (a little above in the early
+chapters, where the DCs are lowest). No check passes more than 95%.

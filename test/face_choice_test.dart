@@ -16,7 +16,7 @@ void main() {
   final skills = _table('skills');
   final faces = (((_table('dice')['starter_die'] as Map)['faces']) as List)
       .cast<Map<String, dynamic>>();
-  const baseDamage = 13;
+  const baseDamage = 3;
 
   FaceSkillChoice choose(int face, String skill,
           {Map<String, String> assignments = const {}}) =>
@@ -30,30 +30,30 @@ void main() {
       );
 
   test('the numbers are the fight\'s own: a Slash, a Heavy Blow', () {
-    final slash = faceOutputWith(faces, 0, null, skills, baseDamage: 13);
+    final slash = faceOutputWith(faces, 0, null, skills, baseDamage: 3);
     expect(slash.skillId, isNull);
-    expect(slash.damage, 18); // 13 + the face's 5
-    final heavy = faceOutputWith(faces, 2, null, skills, baseDamage: 13);
+    expect(slash.damage, 4); // 3 + the face's 1
+    final heavy = faceOutputWith(faces, 2, null, skills, baseDamage: 3);
     expect(heavy.skillId, 'heavy_attack');
-    expect(heavy.damage, 27); // (13 + 6) x 1.4
+    expect(heavy.damage, 6); // (3 + 1) x 1.4
   });
 
   test('a stun for less damage on a skill face is weighed as a loss', () {
     final choice = choose(2, 'warrior_shield_bash');
     expect(choice.allowed, isTrue);
-    expect(choice.before.damage, 27);
-    expect(choice.after.damage, 18);
+    expect(choice.before.damage, 6);
+    expect(choice.after.damage, 4);
     expect(choice.after.status, isNotNull);
     expect(choice.effect, FaceChoiceEffect.loss);
   });
 
   test('a skill on a basic face works at channeled power, never below it', () {
     final onSlash = choose(0, 'heavy_attack');
-    // 27 x 0.7 = 19, above the Slash's 18.
-    expect(onSlash.after.damage, 19);
-    expect(onSlash.effect, FaceChoiceEffect.gain);
+    // 6 x 0.7 = 4, never below the Slash's own 4.
+    expect(onSlash.after.damage, 4);
+    expect(onSlash.effect, FaceChoiceEffect.same);
     final onGuard = choose(3, 'human_resolve');
-    expect(onGuard.before.block, 5);
+    expect(onGuard.before.block, 1);
     expect(onGuard.after.heal, greaterThan(0));
     expect(onGuard.after.block, 0);
   });

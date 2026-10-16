@@ -50,16 +50,16 @@ void main() {
     test('two pieces reach the first tier, three reach both', () {
       final two = gearEffectsFor(
           ['harborwatch_cutlass', 'harborwatch_coat'], items, sets);
-      expect(two.armor, 2);
+      expect(two.armor, 1);
       expect(two.dodgeChance, 5);
       expect(two.attackDamage, 0);
       final three = gearEffectsFor(
           ['harborwatch_cutlass', 'harborwatch_coat', 'harborwatch_lantern'],
           items,
           sets);
-      expect(three.armor, 2);
+      expect(three.armor, 1);
       expect(three.dodgeChance, 5);
-      expect(three.attackDamage, 4);
+      expect(three.attackDamage, 1);
       expect(three.critChance, 8);
     });
 
@@ -68,10 +68,10 @@ void main() {
           ['hollow_court_blade', 'hollow_court_mantle', 'hollow_court_seal'],
           items,
           sets);
-      expect(full.thorns, 4);
+      expect(full.thorns, 1);
       expect(full.lifestealPercent, 10);
-      expect(full.attackDamage, 8);
-      expect(full.armor, 5);
+      expect(full.attackDamage, 2);
+      expect(full.armor, 1);
     });
 
     test('unique effects read off the worn items', () {
@@ -80,7 +80,7 @@ void main() {
           items,
           sets);
       expect(effects.lifestealPercent, 20);
-      expect(effects.thorns, 6);
+      expect(effects.thorns, 2);
       expect(effects.secondWind, isTrue);
       expect(effects.lifestealFor(50), 10);
       expect(effects.lifestealFor(0), 0);
@@ -92,8 +92,8 @@ void main() {
           ['thornmail_hauberk', 'hollow_court_blade', 'hollow_court_seal'],
           items,
           sets);
-      expect(effects.thorns, 10);
-      expect(effects.armor, 5);
+      expect(effects.thorns, 3);
+      expect(effects.armor, 1);
     });
   });
 

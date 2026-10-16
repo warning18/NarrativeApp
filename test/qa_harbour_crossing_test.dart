@@ -358,9 +358,10 @@ void main() {
           'enemyKillCounts': <String, int>{},
         };
 
-    test('the version of a new save is 5', () {
+    test('the version of a new save is 6', () {
       expect(
-          PlayerSession.fromJson(save(version: 5)).toJson()['saveVersion'], 5);
+          PlayerSession.fromJson(save(version: 5)).toJson()['saveVersion'], 6);
+      expect(playerSessionSaveVersion, 6);
       expect(harbourSaveVersion, 5);
       expect(materialsSaveVersion, 4);
     });
@@ -428,7 +429,7 @@ void main() {
             jsonDecode(jsonEncode(s.toJson())) as Map<String, dynamic>);
         expect(again.inventoryItemIds.length, s.inventoryItemIds.length);
         expect(again.builtHouseIds, s.builtHouseIds);
-        expect(again.toJson()['saveVersion'], 5);
+        expect(again.toJson()['saveVersion'], 6);
         final founded =
             (raw['flags'] as List? ?? const []).contains(campFoundedFlag);
         if (!founded) {
