@@ -122,7 +122,12 @@ void main() {
     final after = container.read(storyPlayProvider);
     if (after.isInExcursion) {
       expect(after.resumeNodeId, taken.nextId);
-      expect(find.text('Detour'), findsOneWidget);
+      // A written scene plays over its own band (v1.437); today's chain
+      // keeps the map, with "Detour" on it.
+      expect(
+          find.text('Detour').evaluate().length +
+              find.byKey(const Key('journey_detour_scene')).evaluate().length,
+          1);
       for (final choice in after.activeExcursionNode!.choices) {
         if (choice.isHiddenFor(container.read(playerSessionProvider).flags)) {
           continue;

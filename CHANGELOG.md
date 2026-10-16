@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.439.0+475]
+
+A written detour plays as a scene.
+
+### Added
+- **Detours as scenes:** while the party plays one of the written detours, the Journey's map gives way to a scene of its own: the scene's title (a star for the chapter's landmark), the beat it is at ("2 / 3"), the place the beat is set in, and the beat's words under it. The beat's ways are cards under the scene, "Leave it" the last. The ruins' side-view scene dresses the ashlands, tear and volcanic detours and the desert's the dry ones; every other biome gets a band tinted for it. Today's generated detours keep the map.
+
 ## [1.438.0+474]
 
 Every building of the new town plans has a name.
