@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.404.0+440]
+## [1.405.0+441]
 
 Faces for the rival hunters and the nemesis champions.
 
