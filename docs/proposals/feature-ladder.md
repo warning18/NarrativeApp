@@ -30,20 +30,20 @@ One new thing every one to three scenes, each with a reason in the story, and no
 |---|---|---|---|---|
 | 1 | 0 | The character: profession, stats, starting die. **Journey tab only**, with the Character Overview | Making the character | Open |
 | 2 | 105 | **The fight and the die**: rolling, three rolls a round, the lucky die | The bar fight (tutorial fight) | Open (already the tutorial fight) |
-| 3 | 110 | **The spoils chest and loot**, potions | The second bar fight pays | First fight won after the tutorial |
+| 3 | the first fight won after 105 (110, 120 or 260) | **The spoils chest and loot**, potions | A fight pays | Derived: first fight won after the tutorial (110 and 120 are optional) |
 | 4 | 115 / 125 | **Rest and heal** | Waking in the sawdust (works with or without Lysa) | Open (story heals) |
-| 5 | 120 | **Place rules** (the town guards' whistle) and nudges (Luck) | The third fight, in a watched street | Place rules off in fights before `feat_place_rules` |
+| 5 | 260 (the bridge) or 400 | **Place rules** (the street's rules: the town guards' whistle) and nudges (Luck) | Fighting in the street, not the bar | Place rules off before the first street fight (derived) |
 | 6 | first level-up | **Level-up: the training pick** (the stat picks of #47) | About 100 XP: after two or three fights | Level 2 reached. **No clan offer yet**: it waits (§3) |
 | 7 | 250 | **The Journey map's quest pins and the Quests list** | The banner's errand, and a line pointing at the list (Narrative) | `feat_quests` at 250. The Quests entry is hidden before |
-| 8 | 260 | **Pay or fight** (gold as a choice) | The bridge toll | Open |
-| 9 | 270 | **Alignment** (and the hound's company) | The alley beast | Open; the alignment meter shows from here |
-| 10 | 400 | **A boss** (phases, the boss bar) | Vane at the family house | Open |
-| 11 | 816 | **The Inventory page**, and the dice loadout | The Black Hold's sack: what you still carry | `feat_inventory`; the Pages tab of Character hidden before |
-| 12 | 820 / 822 | **Ability checks** (a stat roll) | The lie at the warden's door | Open |
-| 13 | new scene, between 850 and 891 | **Skills and the first skill choice** (a story offer of skills only, no clan) | A trainer in the undercroft's exit (Narrative's new scene) | `feat_skills`; the Skills screen and its radar entry hidden before. The mage and cleric's starting skill offer moves here |
+| 8 | 260 (one branch of 250) | **Pay or fight** (gold as a choice) | The bridge toll; the alley (270) is the other branch | Open, so a branch that skips it loses nothing |
+| 9 | 400 | **A boss** (phases, the boss bar), and **alignment**: the first moral choice, where the branches meet | Vane at the family house | Open; the alignment meter shows from here |
+| 10 | 470 | **The Inventory page**, and the dice loadout | The bundle and the warm die, on both paths (Vane won: 400 → 450 → 470; lost or fled: 800 → … → 470) | `feat_inventory` (Narrative's line at 470); the Pages tab of Character hidden before |
+| 11 | 890_trainer (new, between 470 and 891) | **Skills and the first skill choice** (a story offer of skills only, no clan): strike, guard, or neither | A trainer on the way to the High Quay (Narrative's scene) | `feat_skills`; the Skills screen and its radar entry hidden before. The mage and cleric's starting skill offer moves here |
+| 12 | 895 | **Ability checks** (a stat roll) | The forged manifest at the High Quay, for everyone. The Black Hold's checks (820 / 822) come earlier on the lost path | Open |
+| 13 | — | (the Black Hold, 800–855, is the lost path's own: its fights and checks stay as they are) | | |
 | 14 | 891 | **Gear and equipping** | The High Quay's free sword or shield | Open (the gear is granted here) |
 | 15 | 1100 | **Land crossings** | The crash in the desert | Open (already `landRouteId`) |
-| 16 | 1120 | **The skill challenge** (several checks in a row) | Climbing the Sleeper's Face | Open |
+| 16 | 1120 | **The skill challenge** (several checks in a row) | The heat walk to the Sleeper's Face (three Constitution checks) | Open |
 | 17 | 1140_spotted | **Battlefield conditions** (the ambush) | Spotted on the cliff path | Conditions rolled only from here (`feat_conditions`) |
 | 18 | 1200 / 1210 | **Resting at a safe place**, and the Open Hand's mention | The White Wells | Open |
 | 19 | 1000 | **The Shroud card** (the banner's first piece) | The chapter's end | Open (already shown once a piece is held) |
@@ -87,9 +87,12 @@ One new thing every one to three scenes, each with a reason in the story, and no
 ## 4. What Narrative writes (beats)
 
 From `ch1-2-beats.md`:
-- a line at **250** pointing at the quest list;
-- a **trainer scene** between 850 and 891, for the first skill choice;
-- a **Crow's line at 2015** for the first clan suitor;
+Narrative's review and words (EN and FR) are in `ch1-2-beats.md` (claude/narrative-38, c7455fb), "Review of the draft ladder, and the words":
+- a line at **250** pointing at the quest list (row 7);
+- a line at **470** for the bundle and the die (row 10);
+- the scene **890_trainer**, between 470 and 891 (both 470 choices go there), setting `feat_skills` (row 11);
+- a line at **2005** setting `feat_politics` (row 21);
+- the scene **2015_crow_offer**, a hub choice on the first visit, setting `feat_clans` (row 23). Its "Not today" goes if the clan offers stay at level 2;
 - the `feat_*` flags on the carrying choices (or on the node's entry);
 - a sentence where a feature needs its reason said: the ⚖ at 2005 ("who holds this city"), the sack at 816.
 
@@ -109,7 +112,7 @@ Core gives them `newlyUnlocked` and an `acknowledge(feature)`.
 
 1. **Clan offers wait until Saltmouth (#23)?** This is the biggest change: today the first level-up brings one. The alternative keeps them at level 2, with the clans named by the Crow there.
 2. **The mage and cleric's starting skill offer moves to the trainer scene (#13)?** They would play the first fights with their starting spells only.
-3. **Place rules and battlefield conditions held back** until 120 and 1140, or left as they are?
+3. **Place rules and battlefield conditions held back** until the first street fight (260 or 400) and 1140, or left as they are?
 4. **Hidden or greyed** for locked entries?
 
 ## Appendix: the inventory (main, v1.415)
@@ -162,4 +165,4 @@ Chapters come from the node id: under 2000 is chapter 1, under 3000 chapter 2 (`
 - Dots: Character (points, an offer), Camp (a house you can afford), Other (a quest to turn in).
 - The app bar's world map, ⚖, language and settings buttons are open from the start.
 
-**The chapter 1–2 walk:** 0 → 100 → 105 → 106 (110 / 120 / 250) → 115 / 125 → 250 → 260 → 270 → 300 → 400 (Vane) → 800 / 816 → 820 / 822 → 840–855 (undercroft) → 470 → 891 (High Quay) → 895 → 960 → 965 → 1100 → 1120 → 1130 → 1140 → 1200 / 1210 → 1000 → 2001 → 2005 → 2010 / 2020 → 2015 (the Wharf hub, 30 choices) → … → 2900 (yard) → 2999 (the crossing) → 3001.
+**The chapter 1–2 walk** (chapter 1 forks: 106 may skip the optional bar fights; 250 leads to 260 *or* 270, which meet at 300; 400 won goes 450 → 470, lost or fled goes through the Black Hold 800–855 → 470; both meet at 470 → 891): 0 → 100 → 105 → 106 (110 / 120 / 250) → 115 / 125 → 250 → 260 → 270 → 300 → 400 (Vane) → 800 / 816 → 820 / 822 → 840–855 (undercroft) → 470 → 891 (High Quay) → 895 → 960 → 965 → 1100 → 1120 → 1130 → 1140 → 1200 / 1210 → 1000 → 2001 → 2005 → 2010 / 2020 → 2015 (the Wharf hub, 30 choices) → … → 2900 (yard) → 2999 (the crossing) → 3001.
