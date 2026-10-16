@@ -32,6 +32,36 @@ Simulated over 400 runs, by profession:
 - **Chapters 3–8:** 63–73% within three tries, 37–44% on the first try.
 
 Before, it was 82–97% within three tries and 70–84% on the first try, over the whole game. The tables are in `docs/simulation/difficulty-review.md` §6.
+## [1.428.0+464]
+
+### Added
+- A night's rest before the Lantern Hall (chapter 7). Every road up from the gates now passes `7515_rest`: the party sleeps on the harbour steps while the clans' fires light the cliff, then climbs to whichever Hall the claimant holds. It gives a full heal, one strong potion, and sets `rest_before_hall` (Core's engine refills provisions and mana from it). Each of the three Halls reads it back.
+
+### Changed
+- The Hall's roads: the three duplicate choices per way (one per claimant) are now one choice per way, with the claimant routing moved into the rest scene (66 choices down to 22).
+
+## [1.427.0+463]
+
+### Added
+- Names (EN and FR) for the buildings that hold scenes in four of the six new town plans: Alster (33), the Ashen Quarter (27), the Drowned Cloister (22) and the White Anchorage (21), in `city_plans.json`. The Black Reliquary and Candlehold follow with their regenerated plans.
+
+## [1.425.0+461]
+
+The city chart on every stored plan, and the way back in.
+
+### Changed
+- **Every city plan Core stored draws on the town chart** (Alster, the Ashen Quarter, the Drowned Cloister, the Black Reliquary, the White Anchorage, Candlehold, besides Saltmouth): whole and by district, with or without a river, a wall, canals, bridges, a shore. A new test draws all seven, and each of their districts.
+- **District names on the whole city no longer overlap**: a name slides down or up by its own height until it finds room (the Ashen Quarter's three names sat on one another).
+- **A look out of a building shows the city's chart, with a button back in.** A scene inside a building keeps its room view; looking out of it now shows the chart (it showed the generated streets) and a button on it goes back in.
+
+## [1.424.0+460]
+
+A hub's choices on rings and chips, and a beat when one is taken.
+
+### Changed
+- **A hub's choices are grouped by kind.** A scene with more than four choices done where you stand shows, round the party's mark, one dashed ring for each kind (Fight, Talk & decide, Checks & pay) with a chip on it ("Fight · 4") and up to five of its icons, the rest a "+N"; the same chips sit under the map, with a "Ways · N" chip for the plain ways on the map. A tap on a chip or an icon opens that list in a sheet (the ring stays lit; a way lights its road on the map above), and a second tap on a card does it.
+- **A beat when a choice done here is taken.** A ring in the kind's colour spreads from the party's mark and the choice's icon rises; the other cards dim meanwhile. Reduced motion skips it.
+- Plain decisions and words have their own icons (balance, chat) on the cards and rings, not the road's signpost; the cards' tags (price, alignment, check, fight) now come from Core's choice tags.
 
 ## [1.423.0+459]
 
