@@ -204,9 +204,10 @@ void main() {
     final damage = breakdown(s, 'baseDamage');
     expect(amountOf(damage, 'gear', 'harborwatch_cutlass'), 2);
     // The sign's and the title's Strength lend a warrior its damage too.
-    expect(amountOf(damage, 'sign', 'inked_passive_bulls_neck'), 2);
-    expect(amountOf(damage, 'title', 'gallows_breaker'), 2);
-    expect(damage.fightTotal, s.baseDamage + 2 + 2 + 2);
+    // (+1 Strength each since v1.461's effects-at-1 pass.)
+    expect(amountOf(damage, 'sign', 'inked_passive_bulls_neck'), 1);
+    expect(amountOf(damage, 'title', 'gallows_breaker'), 1);
+    expect(damage.fightTotal, s.baseDamage + 2 + 1 + 1);
 
     final armor = breakdown(s, 'baseArmor');
     // The coat's own armor and the set's two-piece bonus.
@@ -215,9 +216,9 @@ void main() {
     expect(armor.where((r) => r.kind == 'gear').every((r) => r.lent), isTrue);
 
     final strength = breakdown(s, 'strength');
-    expect(amountOf(strength, 'sign'), 2);
-    expect(amountOf(strength, 'title'), 2);
-    expect(strength.fightTotal, s.strength + 4);
+    expect(amountOf(strength, 'sign'), 1);
+    expect(amountOf(strength, 'title'), 1);
+    expect(strength.fightTotal, s.strength + 2);
     // A bad title is lent even when not worn.
     expect(amountOf(breakdown(s, 'maxHealth'), 'title', 'the_challenged'), -1);
     // The lent rows come after the kept ones.
