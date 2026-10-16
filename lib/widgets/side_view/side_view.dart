@@ -7,6 +7,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../fight_sprites.dart';
 import 'side_sprite.dart';
 
 /// The scene's height in "pixels": every kit paints on this grid, scaled up
@@ -108,7 +109,8 @@ class _SideViewSceneState extends State<SideViewScene>
       child: ClipRect(
         child: RepaintBoundary(
           child: AnimatedBuilder(
-            animation: Listenable.merge([_clock, SideSprites.ready]),
+            animation: Listenable.merge(
+                [_clock, SideSprites.ready, FightSpriteImages.loaded]),
             builder: (context, _) {
               final t = still ? 1.3 : _clock.value * 3600;
               final dt = math.max(0.0, t - _lastT);
