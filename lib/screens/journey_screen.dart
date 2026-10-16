@@ -1178,9 +1178,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final hereDistrictOf = ref.watch(partyDistrictProvider);
     CityChart? cityChart;
     Set<String>? foundDistricts;
-    // A scene inside a building (the Blind Beggar) keeps its room and the
-    // streets round it, with the way back in: the chart has no door yet.
-    if (plan != null && hereLocation != null && herePlace?.isBuilding != true) {
+    // A scene inside a building (the Blind Beggar) keeps its room; looking
+    // out of it shows the city's chart, with a button back in (v1.425).
+    if (plan != null && hereLocation != null) {
       final record = ref.watch(cityPlanRecordsProvider).value?[hereLocation.id];
       if (record != null) {
         cityPlan = record;
@@ -1565,6 +1565,20 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     tip: tr(ref, 'journey_tab_district'),
                     palette: palette,
                     onTap: _busy ? null : () => _goLevel(_LevelTab.district),
+                  ),
+                ),
+              // A scene inside a building keeps its room: looking out at the
+              // city chart, the way back in is a button (v1.425).
+              if (_sceneInside && _outside)
+                Positioned(
+                  right: 8,
+                  bottom: townView ? 88 : 48,
+                  child: _MapButton(
+                    key: const Key('journey_go_inside'),
+                    icon: Icons.login,
+                    tip: tr(ref, 'journey_go_inside'),
+                    palette: palette,
+                    onTap: _busy ? null : _goInside,
                   ),
                 ),
               Positioned(
