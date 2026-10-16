@@ -14,7 +14,7 @@ The data UX asked for in `docs/proposals/inplace-choices.md` ("What I need"). Al
 
 **What UX does with a missing value.** `facing` empty: the narrator scene. `prompt` empty: the last sentence of the text. `about` empty: group by action.
 
-## Update (v1.439-ish, main-story pass)
+## Update (v1.442, main-story pass)
 
 Core's rule for a main-story scene (not a hub, not a hub's errand, not a camp scene) gives about 120 scenes. Every one with two or more choices already had a `prompt`. This pass added:
 
