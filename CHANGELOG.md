@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.425.0+461]
+
+The city chart on every stored plan, and the way back in.
+
+### Changed
+- **Every city plan Core stored draws on the town chart** (Alster, the Ashen Quarter, the Drowned Cloister, the Black Reliquary, the White Anchorage, Candlehold, besides Saltmouth): whole and by district, with or without a river, a wall, canals, bridges, a shore. A new test draws all seven, and each of their districts.
+- **District names on the whole city no longer overlap**: a name slides down or up by its own height until it finds room (the Ashen Quarter's three names sat on one another).
+- **A look out of a building shows the city's chart, with a button back in.** A scene inside a building keeps its room view; looking out of it now shows the chart (it showed the generated streets) and a button on it goes back in.
+
 ## [1.424.0+460]
 
 A hub's choices on rings and chips, and a beat when one is taken.
