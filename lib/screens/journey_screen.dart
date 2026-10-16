@@ -1178,7 +1178,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final hereDistrictOf = ref.watch(partyDistrictProvider);
     CityChart? cityChart;
     Set<String>? foundDistricts;
-    if (plan != null && hereLocation != null) {
+    // A scene inside a building (the Blind Beggar) keeps its room and the
+    // streets round it, with the way back in: the chart has no door yet.
+    if (plan != null && hereLocation != null && herePlace?.isBuilding != true) {
       final record = ref.watch(cityPlanRecordsProvider).value?[hereLocation.id];
       if (record != null) {
         cityPlan = record;
@@ -1511,7 +1513,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             hereDistrict: ref.watch(partyDistrictProvider),
             focus: townView
                 ? null
-                : _cityFocus ?? ref.watch(partyDistrictProvider),
+                // A district looked at in another city (the story moved
+                // on) gives way to the party's own.
+                : (cityChart.districts.any((d) => d.id == _cityFocus)
+                        ? _cityFocus
+                        : null) ??
+                    ref.watch(partyDistrictProvider),
             focusToken: _cityFocusToken,
             steps: steps,
             districtOf: cityDistrictOf,
