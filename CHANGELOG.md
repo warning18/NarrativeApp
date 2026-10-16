@@ -17,6 +17,23 @@ Every town now has its districts, and the villages have plans.
 - **Village plans:** those nine places now have a plan in the District and Town views: smaller, mostly open, with three roads out. The coastal ones sit on the sea; the Cove Camp's palisade and Highhearth are walled. Every scene stands on a building in its district. The new districts are not clan holdings: clan power counts only the places it was tuned on.
 - The Black Reliquary and Candlehold are redrawn on their new districts. Candlehold's Gates are unchanged, and the night's rest still happens where the clans are seen arriving.
 
+## [1.431.0+467]
+
+### Changed
+- The Crows' collector, the nemesis champion, is now **Mireille Sorrel** (was Sable, which she shared with the rogue companion). Names only, EN and FR, in `npcs.json` and `enemies.json`; the ids are unchanged.
+
+### Added
+- A word of warning at the turn from chapter 3 to chapter 4: the camp's old fire-keeper tells the player the Court does not bargain with the weak, and that the Drowned Stair is best gone down stronger. EN and FR. (Core's recommended-level field for the chapter carries the number.)
+
+## [1.430.0+466]
+
+Chapter 4 says how strong you should be before you go down.
+
+### Added
+- **A recommended level for chapter 4:** chapter 4 now recommends level 9 (`recommendedLevel` in `chapters.json`). The game can tell whether the party is below it, and by how much, for the chapter after the one the story is in (`nextChapterLevelAdviceProvider`), or for any chapter (`chapterLevelAdviceProvider`). Narrative's warning line (`recommendedLevelNote`, EN and FR) rides along. Showing it is UX's part.
+
+### Changed
+- **Chapter 3's side quests pay more XP**, about a fifth more: `q_ch3_marens_penance` 80 → 100, `q_ch3_groshs_price` 65 → 80, `q_ch3_reckoning_wall` 60 → 75, `q_ch3_glass_from_the_terraces` 70 → 85.
 ## [1.429.0+465]
 
 The game pushes back after the camp: from chapter 3 on, every profession wins about 70% of its fights within three tries, down from 82–97%. Chapters 1 and 2 stay gentler.

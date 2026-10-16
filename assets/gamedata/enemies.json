@@ -6504,7 +6504,7 @@
     "wayMercy_fr": "S’asseoir et laisser la Cour parler d’abord."
   },
   "champion_crows": {
-    "enemyName": "Captain Mireille Sable",
+    "enemyName": "Captain Mireille Sorrel",
     "maxHealth": 225,
     "damage": 28,
     "guile": 9,
@@ -6614,7 +6614,7 @@
     ],
     "description": "The Crows' collector, who has never lost a debt and never raised her voice to collect one. Her ledger is bound in sailcloth, and the last page is yours.",
     "description_fr": "La percepteuse des Corneilles, qui n’a jamais perdu une créance ni élevé la voix pour en réclamer une. Son registre est relié de toile à voile, et la dernière page est la vôtre.",
-    "enemyName_fr": "Capitaine Mireille Sable",
+    "enemyName_fr": "Capitaine Mireille Sorrel",
     "biomes": [],
     "kind": "person",
     "hunterOnly": true,

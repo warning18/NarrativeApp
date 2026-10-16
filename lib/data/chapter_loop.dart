@@ -27,6 +27,8 @@ class ChapterLoop {
     this.mainQuestNeedsPlaceIds = const [],
     this.mainQuestTitle = '',
     this.mainQuestHint = '',
+    this.recommendedLevel,
+    this.recommendedLevelNote = '',
   });
 
   final String id;
@@ -53,6 +55,15 @@ class ChapterLoop {
   final String mainQuestTitle;
   final String mainQuestHint;
 
+  /// The level a party should have before it sets out for this chapter
+  /// (chapters.json `recommendedLevel`), if the chapter names one: see
+  /// [chapterLevelAdvice]. Null, or not above 1, is no recommendation.
+  final int? recommendedLevel;
+
+  /// What the game says of [recommendedLevel] (`recommendedLevelNote`,
+  /// Narrative's line), empty when there is none.
+  final String recommendedLevelNote;
+
   static ChapterLoop? fromJson(String id, Object? raw) {
     if (raw is! Map) return null;
     final camp = raw['campNodeId']?.toString() ?? '';
@@ -72,9 +83,82 @@ class ChapterLoop {
           const [],
       mainQuestTitle: raw['mainQuestTitle']?.toString() ?? '',
       mainQuestHint: raw['mainQuestHint']?.toString() ?? '',
+      recommendedLevel: _recommendedLevel(raw['recommendedLevel']),
+      recommendedLevelNote: raw['recommendedLevelNote']?.toString() ?? '',
     );
   }
 }
+
+int? _recommendedLevel(Object? raw) {
+  final level = raw is num ? raw.toInt() : int.tryParse('${raw ?? ''}');
+  return level == null || level <= 1 ? null : level;
+}
+
+/// The level [chapter]'s row in [loops] recommends (see
+/// [ChapterLoop.recommendedLevel]), if it names one.
+int? recommendedLevelFor(int chapter, List<ChapterLoop> loops) {
+  for (final loop in loops) {
+    if (loop.chapter == chapter) return loop.recommendedLevel;
+  }
+  return null;
+}
+
+/// A chapter's recommended level set against the party's: what the camp
+/// and the Journey say before the party sets out for it.
+class ChapterLevelAdvice {
+  const ChapterLevelAdvice({
+    required this.chapter,
+    required this.recommendedLevel,
+    required this.playerLevel,
+    this.note = '',
+  });
+
+  /// The chapter the advice is for.
+  final int chapter;
+  final int recommendedLevel;
+  final int playerLevel;
+
+  /// Narrative's line for it (chapters.json `recommendedLevelNote`), empty
+  /// when there is none.
+  final String note;
+
+  /// Whether the party is under the recommended level.
+  bool get below => playerLevel < recommendedLevel;
+
+  /// Levels still short of it (0 when not below).
+  int get levelsShort => max(0, recommendedLevel - playerLevel);
+}
+
+/// The advice for [chapter] at [playerLevel], or null when the chapter
+/// recommends no level.
+ChapterLevelAdvice? chapterLevelAdvice({
+  required int chapter,
+  required int playerLevel,
+  required List<ChapterLoop> loops,
+}) {
+  for (final loop in loops) {
+    if (loop.chapter != chapter) continue;
+    final level = loop.recommendedLevel;
+    if (level == null) return null;
+    return ChapterLevelAdvice(
+      chapter: chapter,
+      recommendedLevel: level,
+      playerLevel: playerLevel,
+      note: loop.recommendedLevelNote,
+    );
+  }
+  return null;
+}
+
+/// The advice for the chapter after [currentChapter]: the one the party is
+/// heading to (chapter 4's while it is still in chapter 3).
+ChapterLevelAdvice? nextChapterLevelAdvice({
+  required int currentChapter,
+  required int playerLevel,
+  required List<ChapterLoop> loops,
+}) =>
+    chapterLevelAdvice(
+        chapter: currentChapter + 1, playerLevel: playerLevel, loops: loops);
 
 /// Every loop in [chapters] (chapters.json), in chapter order.
 List<ChapterLoop> chapterLoopsFrom(Map<String, dynamic> chapters) {

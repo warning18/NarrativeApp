@@ -25,6 +25,7 @@
     "title": "The Hollow Court",
     "title_fr": "La Cour Creuse",
     "campNodeId": "4999_camp",
+    "recommendedLevel": 9,
     "activityGoal": 8,
     "questGoal": 1,
     "mainQuestNeedsPlaceIds": [
@@ -33,7 +34,9 @@
     "mainQuestTitle": "Down the Drowned Stair",
     "mainQuestTitle_fr": "Descendre l’Escalier Noyé",
     "mainQuestHint": "The Court keeps the third piece at the bottom of the Drowned Stair, three days along the coast. Find the way down first, and the people who live beside it.",
-    "mainQuestHint_fr": "La Cour garde la troisième pièce au fond de l’Escalier Noyé, à trois jours le long de la côte. Trouvez d’abord le chemin, et les gens qui vivent à côté."
+    "mainQuestHint_fr": "La Cour garde la troisième pièce au fond de l’Escalier Noyé, à trois jours le long de la côte. Trouvez d’abord le chemin, et les gens qui vivent à côté.",
+    "recommendedLevelNote": "The Court is hard. Clear the coast’s side work first and go down at level 9.",
+    "recommendedLevelNote_fr": "La Cour est rude. Finissez d’abord les tâches de la côte, et descendez au niveau 9."
   },
   "ch5": {
     "chapterID": "ch5",
