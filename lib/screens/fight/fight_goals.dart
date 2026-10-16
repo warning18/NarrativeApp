@@ -234,9 +234,11 @@ extension _FightGoals on _FightScreenState {
                     .replaceAll('{r}', '${min(_roundsStarted, _goal.rounds)}')
                     .replaceAll('{n}', '${_goal.rounds}')
                 : _goalName(),
+            tip: _goalText(),
           ),
         if (_doctrine != null)
-          _telegraphChip(Icons.gavel, tr(ref, _doctrine!.nameKey)),
+          _telegraphChip(Icons.gavel, tr(ref, _doctrine!.nameKey),
+              tip: tr(ref, _doctrine!.descriptionKey)),
       ];
 
   /// The marks on an enemy's card: the Rout's captain, a thief's purse.

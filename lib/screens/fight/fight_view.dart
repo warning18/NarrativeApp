@@ -386,6 +386,18 @@ extension _FightView on _FightScreenState {
 
   /// The small status chips shown above the log during battle: the
   /// battlefield condition (if any) and the momentum meter.
+  /// What the sky does to the fight (the same sentence the Journey gives
+  /// its weather), when it does anything.
+  String? _skyTip() => switch (_sky.kind.name) {
+        'rain' ||
+        'snow' ||
+        'fog' ||
+        'dust' ||
+        'ash' =>
+          tr(ref, 'weather_effect_${_sky.kind.name}'),
+        _ => null,
+      };
+
   Widget _buildBattleChips() {
     final condition = _condition;
     final ready = _momentum >= _momentumNeeded;
@@ -395,16 +407,19 @@ extension _FightView on _FightScreenState {
       children: [
         ..._goalChips(),
         if (condition != null)
-          _telegraphChip(Icons.terrain, tr(ref, conditionLabelKey(condition))),
+          _telegraphChip(Icons.terrain, tr(ref, conditionLabelKey(condition)),
+              tip: tr(ref, conditionDescriptionKey(condition))),
         if (_sky.effectKey != null)
           _telegraphChip(
-              Icons.cloud_outlined, tr(ref, 'weather_${_sky.kind.name}')),
+              Icons.cloud_outlined, tr(ref, 'weather_${_sky.kind.name}'),
+              tip: _skyTip()),
         if (_anomalyChip() case final chip?) chip,
         _telegraphChip(
           ready ? Icons.local_fire_department : Icons.trending_up,
           ready
               ? tr(ref, 'momentum_ready_label')
               : '${tr(ref, 'momentum_label')} $_momentum/$_momentumNeeded',
+          tip: tr(ref, 'momentum_tip'),
         ),
         // Luck nudges left (long-press a die to spend one).
         if (_nudgesLeft > 0)
@@ -530,7 +545,8 @@ extension _FightView on _FightScreenState {
       children: [
         Expanded(child: _buildBattleChips()),
         _telegraphChip(
-            Icons.flag_outlined, '${tr(ref, 'round_label')} $_roundsStarted'),
+            Icons.flag_outlined, '${tr(ref, 'round_label')} $_roundsStarted',
+            tip: tr(ref, 'round_tip').replaceAll('{n}', '$tideStartRound')),
       ],
     );
   }
