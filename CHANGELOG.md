@@ -8,6 +8,38 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.458.0+494]
+
+Smaller numbers, so every point counts: every fight number is a fifth of what it was, each level brings one pick, and each ability has its job.
+
+### Changed
+- **A smaller scale.** Health, damage, armour, dice faces, heals and blocks, gear, skills, spells and enemies are all about a fifth of what they were. A starting hero has about 18 to 29 health and hits for 2 to 5.
+- **One pick a level, with a rarity:**
+  - Every pick rolls Common (+1), Rare (+2), Epic (+3) or Heroic (+4), at 90 / 8 / 1.6 / 0.4%.
+  - Each point of Luck raises the odds, up to Luck 15.
+  - Rare and better add a second ability from the same path.
+  - A level also gives +4 max health.
+- **Each ability has its job:**
+  - **The damage stat:** Strength for the warrior, Dexterity for the ranger and rogue, Intelligence for the mage and cleric. +1 of it is +1 damage. Base damage no longer grows by itself.
+  - **Constitution:** +5 max health.
+  - **Dexterity:** +2% dodge.
+  - **Perception:** +3% block for the warrior (a blocked blow loses half). For the ranger and rogue, +1% crit and +1% dodge. It still reads the enemy's intent.
+  - **Wisdom:** +1 mana (mana comes from Wisdom only); it still helps heals and shortens statuses.
+  - **Luck:** crit chance and better picks.
+- **Patron gifts** come every other level.
+- **Story checks:** a score adds 2 + 2 × √score to the d20. A natural 1 always fails and a natural 20 always passes. Narrative's DCs are unchanged.
+- **Old saves are rescaled once on load.**
+  - Health, damage and armour are divided by 5, and current health keeps its share.
+  - Abilities keep their first 5 points; every 5 above counts as one.
+  - Unspent points become picks.
+- Ship combat is unchanged.
+
+Simulated over 400 runs, the share of fights won within three tries is 72.0% (it was 73.6%):
+- **Chapters 1–2:** 86.3%.
+- **Chapters 3–8:** 68.9%.
+- **By profession:** 70 to 74%.
+- **Bosses and clan champions:** all still in their bands.
+
 ## [1.457.0+493]
 
 The road's strangers walk in to meet the party.
