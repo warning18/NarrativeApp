@@ -41,6 +41,7 @@ import '../data/quest_objectives.dart' show killTargetsOf;
 import '../data/signs.dart';
 import '../data/skill_craft.dart' show skillCraftOpen;
 import '../data/skill_tree.dart' show branchMasteryEssenceCost;
+import '../data/stat_ledger.dart';
 import '../data/stat_scale_save.dart';
 import '../data/training.dart';
 import '../data/throne.dart'
@@ -290,6 +291,8 @@ class PlayerSession {
     this.clanOffer,
     this.trainingTaken = const {},
     this.statPickOffer = const [],
+    this.statSources = const {},
+    this.tomePicks = const [],
     this.heldTitleIds = const [],
     this.activeTitleId = '',
     this.swornBoonIds = const [],
@@ -576,6 +579,19 @@ class PlayerSession {
 
   /// The picks waiting: one per unspent stat point.
   int get pendingStatPicks => statPoints;
+
+  /// The stat ledger (stat_ledger.dart, v1.459): what raised a stat that
+  /// the data can't tell afterwards -- `kind:id` (a pick's path, a tome, the
+  /// patron, the formative memories) -> stat -> amount, the base damage and
+  /// max health those points brought included. Written by
+  /// [withSourcedGains]; read by statBreakdown. Empty in a save from before
+  /// it (statBreakdown then shows what it can't explain as "earlier").
+  final Map<String, Map<String, int>> statSources;
+
+  /// The tomes whose pick still waits among the [pendingStatPicks], oldest
+  /// first: the next pick taken counts as the first one's (the ledger's
+  /// `tome:<id>`), the others as a level's.
+  final List<String> tomePicks;
 
   /// Titles held (titles.json): from offers, from the tiers reached with a
   /// faction, and "the Marked" while the Inquisition is a foe; the one
@@ -929,6 +945,8 @@ class PlayerSession {
     bool clearClanOffer = false,
     Map<String, int>? trainingTaken,
     List<StatPickOffer>? statPickOffer,
+    Map<String, Map<String, int>>? statSources,
+    List<String>? tomePicks,
     List<String>? heldTitleIds,
     String? activeTitleId,
     List<String>? swornBoonIds,
@@ -1043,6 +1061,8 @@ class PlayerSession {
       clanOffer: clearClanOffer ? null : clanOffer ?? this.clanOffer,
       trainingTaken: trainingTaken ?? this.trainingTaken,
       statPickOffer: statPickOffer ?? this.statPickOffer,
+      statSources: statSources ?? this.statSources,
+      tomePicks: tomePicks ?? this.tomePicks,
       heldTitleIds: heldTitleIds ?? this.heldTitleIds,
       activeTitleId: activeTitleId ?? this.activeTitleId,
       swornBoonIds: swornBoonIds ?? this.swornBoonIds,
@@ -1118,6 +1138,33 @@ class PlayerSession {
     );
   }
 
+  /// [withAbilityGains] of [gains] and [maxHealth] more max health (healed
+  /// as much), written in the stat ledger ([statSources]) under [kind]
+  /// (stat_ledger.dart's ledgerKinds) and [id] -- with the base damage and
+  /// max health the points bring, so statBreakdown can tell them apart.
+  PlayerSession withSourcedGains(
+    String kind,
+    String id,
+    Map<String, int> gains, {
+    int maxHealth = 0,
+  }) {
+    final effects = abilityGainEffects(gains, professionId);
+    var s = withAbilityGains(gains);
+    if (maxHealth != 0) {
+      s = s.copyWith(
+        maxHealth: s.maxHealth + maxHealth,
+        currentHealth: s.currentHealth + maxHealth,
+      );
+    }
+    return s.copyWith(
+      statSources: ledgerWith(statSources, kind, id, {
+        ...gains,
+        'baseDamage': effects.baseDamage,
+        'maxHealth': effects.maxHealth + maxHealth,
+      }),
+    );
+  }
+
   Map<String, dynamic> toJson() => {
         'saveVersion': playerSessionSaveVersion,
         'level': level,
@@ -1187,6 +1234,8 @@ class PlayerSession {
         'trainingTaken': trainingTaken,
         if (statPickOffer.isNotEmpty)
           'statPickOffer': [for (final o in statPickOffer) o.toJson()],
+        if (statSources.isNotEmpty) 'statSources': statSources,
+        if (tomePicks.isNotEmpty) 'tomePicks': tomePicks,
         'heldTitleIds': heldTitleIds,
         'activeTitleId': activeTitleId,
         'swornBoonIds': swornBoonIds,
@@ -1427,6 +1476,10 @@ class PlayerSession {
             in ((json['trainingTaken'] as Map?) ?? const {}).entries)
           if (value is num) key.toString(): value.toInt(),
       },
+      statSources: ledgerFromJson(json['statSources']),
+      tomePicks:
+          (json['tomePicks'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
       heldTitleIds:
           (json['heldTitleIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -2462,9 +2515,15 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (index < 0 || index >= offer.length) return false;
     if (s.pendingStatPicks <= 0) return false;
     final pick = offer[index];
-    state = s.withAbilityGains(pick.gains).copyWith(
+    // A tome's pick waiting is the one taken (see [PlayerSession.tomePicks]).
+    final tomeId = s.tomePicks.firstOrNull;
+    final sourced = tomeId != null
+        ? s.withSourcedGains(ledgerTome, tomeId, pick.gains)
+        : s.withSourcedGains(ledgerPick, pick.pathId, pick.gains);
+    state = sourced.copyWith(
       statPoints: s.statPoints - 1,
       statPickOffer: const [],
+      tomePicks: tomeId == null ? null : s.tomePicks.sublist(1),
       trainingTaken: {
         ...s.trainingTaken,
         pick.pathId: (s.trainingTaken[pick.pathId] ?? 0) + 1,
@@ -2624,6 +2683,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (tome != null) {
       return session.copyWith(
         statPoints: session.statPoints + tome.statPoints,
+        tomePicks: _withTomePicks(session.tomePicks, itemId, tome.statPoints),
         pendingOffers: [...session.pendingOffers, ...tome.offers],
       );
     }
@@ -3371,6 +3431,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       state = state.copyWith(
         gold: state.gold - cost,
         statPoints: state.statPoints + tome.statPoints,
+        tomePicks: _withTomePicks(state.tomePicks, itemId, tome.statPoints),
         pendingOffers: [...state.pendingOffers, ...tome.offers],
         shopPurchaseCounts: {...state.shopPurchaseCounts, key: purchased + 1},
       );
@@ -3587,6 +3648,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       inventoryItemIds: remaining,
       statPoints: state.statPoints + tome.statPoints,
+      tomePicks: _withTomePicks(state.tomePicks, itemId, tome.statPoints),
       pendingOffers: [...state.pendingOffers, ...tome.offers],
     );
     await _persist();
@@ -4592,7 +4654,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     required Map<String, int> abilities,
     required List<String> flags,
   }) async {
-    state = state.withAbilityGains(abilities).copyWith(
+    state = state.withSourcedGains(ledgerOrigin, '', abilities).copyWith(
           alignmentScore: state.alignmentScore + alignmentMod,
           flags: <String>{...state.flags, ...flags}.toList(),
         );
@@ -4646,6 +4708,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       potionCount: potionCount,
       statPoints: statPoints,
       statPickOffer: statPoints == null ? null : const [],
+      tomePicks: statPoints == null
+          ? null
+          : state.tomePicks.take(max(0, statPoints)).toList(),
       antidoteCount: antidoteCount,
       mana: mana,
     );
@@ -4757,15 +4822,21 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         'luck': s.luck,
         'perception': s.perception,
       };
+      final level = s.level - levels + i + 1;
       final gains = patronLevelGains(s.politics,
-          level: s.level - levels + i + 1,
-          stats: stats,
-          openHand: bannerRaisedIn(s.flags));
+          level: level, stats: stats, openHand: bannerRaisedIn(s.flags));
       if (gains.stats.isEmpty && gains.maxHealth == 0) continue;
-      s = s.withAbilityGains(gains.stats);
+      // The ledger tells the patron's own gift from the open hand's point.
+      final patron = statPatron(s.politics);
+      final own = patronLevelGains(s.politics, level: level, stats: stats);
+      final openHand = {
+        for (final e in gains.stats.entries)
+          e.key: e.value - (own.stats[e.key] ?? 0),
+      }..removeWhere((_, v) => v == 0);
+      s = s.withSourcedGains(ledgerPatron, patron, own.stats,
+          maxHealth: gains.maxHealth);
+      s = s.withSourcedGains(ledgerPatron, openHandSourceId, openHand);
       s = s.copyWith(
-        maxHealth: s.maxHealth + gains.maxHealth,
-        currentHealth: s.currentHealth + gains.maxHealth,
         politics: logPatronGains(s.politics, statPatron(s.politics), gains,
             chapter: _politicsChapter(null), day: s.day),
       );
@@ -4831,6 +4902,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     var potionsGained = 0;
     var antidotesGained = 0;
     var statPointsGained = 0;
+    var tomePicks = state.tomePicks;
     final tomeOffers = <OfferTicket>[];
     final carried = <String>[];
     final spellsLearned = <String>[];
@@ -4839,6 +4911,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       final tome = tomeGrantFor(itemId, item);
       if (tome != null) {
         statPointsGained += tome.statPoints;
+        tomePicks = _withTomePicks(tomePicks, itemId, tome.statPoints);
         tomeOffers.addAll(tome.offers);
         continue;
       }
@@ -4896,6 +4969,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       baseDamage: leveled.baseDamage,
       currentHealth: newHealth,
       statPoints: leveled.statPoints + statPointsGained,
+      tomePicks: tomePicks,
       // Each level reached and a boss beaten bring an offer (see
       // offers.dart), a Tome of Mastery one too; a hunt (or, sometimes, an
       // Elite) a drop of Titan's Blood; a dice fight won or lost runs every
@@ -4938,6 +5012,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
     return leveled.leveledUp;
   }
+
+  /// [tomePicks] with [itemId] once per pick a tome of it grants
+  /// ([picks]), for the ledger (see [PlayerSession.tomePicks]).
+  static List<String> _withTomePicks(
+          List<String> tomePicks, String itemId, int picks) =>
+      picks <= 0
+          ? tomePicks
+          : [...tomePicks, for (var i = 0; i < picks; i++) itemId];
 
   /// What reading a looted tome grants on the spot -- a Tome-type item
   /// never enters the inventory, exactly like a potion becomes a charge.
