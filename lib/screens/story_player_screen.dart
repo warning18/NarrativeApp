@@ -1967,6 +1967,11 @@ Future<bool> startRoadEncounter(
         enemies: enemies,
         chapter: chapter,
         gold: session.gold,
+        materials: {
+          for (final id in session.inventoryItemIds)
+            if (id.startsWith('material_')) id: 0,
+        }..updateAll(
+            (id, _) => session.inventoryItemIds.where((i) => i == id).length),
         random: dice());
     alignmentEvent ??= maybeAlignmentEvent(
       alignmentScore: session.alignmentScore,

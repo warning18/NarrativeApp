@@ -14,6 +14,7 @@ import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/offers_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/territory_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../theme/stitched_ink.dart';
@@ -38,8 +39,9 @@ Future<void> showOfferIfWaiting(BuildContext context, WidgetRef ref,
     {bool sayWhenNone = false}) async {
   if (ref.read(playerSessionProvider).pendingOffers.isEmpty) return;
   final tables = await loadOfferTables(ref);
-  final offer =
-      await ref.read(playerSessionProvider.notifier).ensureOffer(tables);
+  final offer = await ref
+      .read(playerSessionProvider.notifier)
+      .ensureOffer(tables, placeHolder: ref.read(holderHereProvider));
   if (!context.mounted) return;
   if (offer == null) {
     if (sayWhenNone) {
@@ -279,7 +281,8 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     final notifier = ref.read(playerSessionProvider.notifier);
     await notifier.acceptSuitor(suitor.factionId,
         tables: tables, origin: itemOriginHere(ref));
-    final next = await notifier.ensureOffer(tables);
+    final next = await notifier.ensureOffer(tables,
+        placeHolder: ref.read(holderHereProvider));
     if (!mounted) return;
     if (next == null) {
       Navigator.of(context).pop();
