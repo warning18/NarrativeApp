@@ -12,6 +12,7 @@
 // builds the harbour on load once.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -223,10 +224,13 @@ void main() {
             return Scaffold(
               body: Builder(
                 builder: (context) => TextButton(
-                  onPressed: () async => pops.add(await Navigator.of(context)
-                      .push<bool>(MaterialPageRoute(
+                  onPressed: () async => pops.add(
+                      await Navigator.of(context).push<bool>(MaterialPageRoute(
                           builder: (_) => LandCrossingScreen(
-                              route: route, events: events)))),
+                              route: route,
+                              events: events,
+                              // A natural 1 or 20 settles a check.
+                              random: Random(2))))),
                   child: const Text('go'),
                 ),
               ),

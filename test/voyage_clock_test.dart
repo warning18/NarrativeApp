@@ -2,6 +2,7 @@
 // crew eats a ration for it, or goes hungry with the pack empty.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,6 +70,8 @@ void main() {
           fromPortId: 'port_ashen_landing',
           toPortId: 'port_drowned_stair',
           toPort: ports['port_drowned_stair'] as Map<String, dynamic>,
+          // A natural 1 or 20 settles a check: seeded, so no run differs.
+          debugRandom: Random(1),
           debugEvents: const [_wreck, _wreck],
         ),
       ),
