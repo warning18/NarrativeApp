@@ -8,6 +8,27 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.429.0+465]
+
+The game pushes back: every profession now wins about 70% of its fights within three tries, down from 82–97%.
+
+### Changed
+- **Enemies are stronger** in every chapter, most in chapters 2 to 5. Chapter 1 is lighter, so the opening still teaches. Chapters 6 to 8 are a little lighter again, since the chapter curve already climbs there. Chapter 2's enemies are a tenth stronger on top, so Saltmouth is no longer a free walk.
+- **The professions are closer together.**
+  - The Mage hits less hard: base damage 6 → 1, Intelligence 4 → 1, health −15 → −20.
+  - The Cleric is sturdier: base damage 0 → 5, health 10 → 35.
+  - The Warrior: base damage 3 → 4, health 20 → 30.
+  - The Ranger: base damage 3 → 1, health 0 → −10, Perception 4 → 1, Luck 2 → 0, Dexterity 3 → 2.
+  - The Rogue: base damage 4 → 2.
+- **Five late bosses re-tuned** so each is still won about as often as before: the Void Archon, the White Admiral, the Void Sovereign and Claimant Tallis are a little stronger, the Tear-Herald a little weaker.
+- **A lost fight still gives 30% of its XP**, so a struggling character doesn't fall further behind.
+
+### Added
+- **A rest before the Lantern Hall:** the rest scene refills provisions and mana.
+- **The simulator counts first-try wins** for each chapter.
+
+Simulated over 400 runs: fights won within three tries are now 69–74% for every profession, and 43–49% on the first try (it was 70–84%). The tables are in `docs/simulation/difficulty-review.md` §6.
+
 ## [1.423.0+459]
 
 A feature opening is now shown, and a shut one is not in the way.
