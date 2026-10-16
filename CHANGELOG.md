@@ -16,6 +16,12 @@ A won fight closes itself.
 - **Nothing is skipped:** a level-up, a clan's offer or a hunter's mercy waits for your answer first.
 - **The rewards stay with you:** they open the next scene ("Victory! +47 gold, +87 XP, …"), and the fight log keeps them.
 - A defeat is unchanged.
+## [1.410.0+446]
+
+Faces for the rival hunters and the nemesis champions.
+
+### Changed
+- **Twelve foes have icons of their own.** The six rival hunters (Halvard the spearman, Ysel the candle-bearer, Brodin the quarryman, Tove the deaf anvil, Sedge the returned and Wen of the Heron's Wake) and the six nemesis champions (the Dominion's Orsolya Keld, the Crows' Mireille Sable, the Compact's Hollis Reck, the Vigil's Edda Grey, the Penitents' Ash Confessor and the Mire's Heron Queen's Hand) are no longer drawn with another foe's picture. Each is a 16 × 16 sprite from Narrative's description, in the enemy icons' style, made by `tool/gen_hunter_icons.py`.
 
 ## [1.409.0+445]
 
