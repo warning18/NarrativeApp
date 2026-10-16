@@ -5,6 +5,7 @@ import 'clan_crisis.dart';
 import 'clan_power.dart';
 import 'factions.dart';
 import 'geography.dart';
+import 'nemesis.dart' show breakNemesis;
 import 'throne.dart';
 
 /// Politics in motion (v1.195): the story's choices carry politics (see
@@ -617,6 +618,10 @@ class _Coast {
     }
     if (p.stayFallen.isNotEmpty) {
       politics = stayOfFallen(politics, p.stayFallen);
+    }
+    if (p.breakNemesis.isNotEmpty) {
+      politics = breakNemesis(politics, p.breakNemesis, data,
+          chapter: world.chapter, day: world.day);
     }
     for (final e in p.control.entries) {
       final geography = world.geography;

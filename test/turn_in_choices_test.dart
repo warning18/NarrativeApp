@@ -58,11 +58,14 @@ void main() {
         if (turnInChoicesOf(entry.value as Map<String, dynamic>).isNotEmpty)
           entry.key,
     ];
-    expect(asking, hasLength(15));
+    // 15, and the six nemesis quests (v5.2 step 6), which close on one
+    // beat: the champion beaten, the hunt broken.
+    expect(asking, hasLength(21));
     final flags = <String>{};
     for (final id in asking) {
       final raw = (quests[id] as Map)['turnInChoices'] as List;
-      expect(raw.length, inInclusiveRange(2, 3), reason: id);
+      final nemesis = (quests[id] as Map)['category'] == 'Nemesis';
+      expect(raw.length, inInclusiveRange(nemesis ? 1 : 2, 3), reason: id);
       for (final choice in raw.cast<Map<String, dynamic>>()) {
         for (final field in ['choiceText', 'resultText']) {
           expect(choice[field]?.toString() ?? '', isNotEmpty, reason: id);
@@ -78,7 +81,9 @@ void main() {
               reason: '$id names $who');
         }
       }
-      // A choice is a real choice: they don't all pay the same.
+      // A choice is a real choice: they don't all pay the same (a nemesis
+      // quest's one closing beat is no choice).
+      if (raw.length < 2) continue;
       final golds = {for (final c in raw) (c as Map)['rewardGold']};
       final alignments = {for (final c in raw) (c as Map)['alignmentChange']};
       expect(golds.length > 1 || alignments.length > 1, isTrue, reason: id);

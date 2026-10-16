@@ -17,7 +17,7 @@ import '../data/approval.dart';
 import '../data/character_start.dart' show startingArmor;
 import '../data/clan_crisis.dart' show mainClanOf, settleFallenLoyalty;
 import '../data/clan_power.dart' show territoryTurn;
-import '../data/nemesis.dart' show updateNemesis;
+import '../data/nemesis.dart' show nemesisQuestIdOf, updateNemesis;
 import '../data/contracts.dart';
 import '../data/detour_pacing.dart' show DetourPacing;
 import '../data/camp_state.dart' show harborHouseId;
@@ -2274,9 +2274,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
               day: state.day,
               protect: mainClanOf(state.politics))
           .state;
+      final before = state.politics.nemesis;
       state = state.copyWith(
           politics:
               updateNemesis(turned, data, chapter: chapter, day: state.day));
+      // A new nemesis opens its quest (nemesis.dart): beat its champion.
+      final rose = state.politics.nemesis;
+      final quest = nemesisQuestIdOf(rose);
+      if (rose.isNotEmpty &&
+          rose != before &&
+          !state.unlockedQuestIds.contains(quest) &&
+          !state.completedQuestIds.contains(quest)) {
+        state = state
+            .copyWith(unlockedQuestIds: [...state.unlockedQuestIds, quest]);
+      }
     }
     state = state.copyWith(
       chapterOffersThrough: chapter,

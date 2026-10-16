@@ -35,6 +35,13 @@ class EnemyIcons {
     'compact_anvil_deaf_tove': 'masked_penitent',
     'mire_returned_sedge': 'hollow_reflection',
     'mire_herons_wake_wen': 'bone_sexton',
+    // v5.2 step 6's nemesis champions, until UX draws them.
+    'champion_dominion': 'inquisition_high_warden',
+    'champion_vigil': 'white_soldier',
+    'champion_compact': 'masked_penitent',
+    'champion_mire': 'hollow_reflection',
+    'champion_crows': 'smuggler_captain',
+    'champion_penitents': 'inquisition_penitent',
   };
 
   static const List<String> allIds = [
@@ -45,6 +52,12 @@ class EnemyIcons {
     'bone_warden',
     'brine_jack',
     'catacomb_ghoul',
+    'champion_compact',
+    'champion_crows',
+    'champion_dominion',
+    'champion_mire',
+    'champion_penitents',
+    'champion_vigil',
     'claimant_morrow',
     'claimant_tallis',
     'claimant_vane',

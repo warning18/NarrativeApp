@@ -16,7 +16,10 @@
 //
 // Pure rules; the session (a chapter reached) and the playthrough
 // simulator play them.
+import 'dart:math';
+
 import '../l10n/app_locale.dart';
+import '../models/story_node.dart';
 import 'clan_power.dart';
 import 'factions.dart';
 
@@ -101,8 +104,8 @@ PoliticsState breakNemesis(
       clanId: chapter + nemesisBreakChapters,
     },
   );
-  next = _told(next, 'nemesis_end:$clanId',
-      nemesisEndNews(data.faction(clanId)), chapter, day);
+  next = _told(next, 'nemesis_broken:$clanId',
+      nemesisBrokenNews(data.faction(clanId)), chapter, day);
   return next;
 }
 
@@ -141,3 +144,83 @@ PoliticsState _told(PoliticsState state, String id,
       fr: 'Les gens ${clan?.nameOfFor(AppLanguage.fr) ?? ''} ne vous '
           'traquent plus.',
     );
+
+/// The news of the nemesis [clan] broken, its champion beaten.
+({String en, String fr}) nemesisBrokenNews(Faction? clan) => (
+      en: '${clan?.nameFor(AppLanguage.en) ?? ''} have lost their champion, '
+          'and their hunt with it.',
+      fr: 'Les gens ${clan?.nameOfFor(AppLanguage.fr) ?? ''} ont perdu leur '
+          'champion, et leur traque avec lui.',
+    );
+
+// --- The nemesis quest and its champion (PR 5) ----------------------------
+//
+// When a clan makes the character its nemesis, its quest opens
+// ([nemesisQuestIdOf], quests.json): beat its champion ([championIdOf],
+// enemies.json, a boss), met on a road at rest from [championMinChapter]
+// at [championRoadChance] while the quest is under way. The quest's
+// turn-in breaks the nemesis (its politics' `breakNemesis`).
+
+/// The champion of [clanId] (enemies.json).
+String championIdOf(String clanId) => 'champion_$clanId';
+
+/// The nemesis quest of [clanId] (quests.json).
+String nemesisQuestIdOf(String clanId) => 'q_nemesis_$clanId';
+
+const int championMinChapter = 4;
+const double championRoadChance = 0.35;
+
+/// The champion's road scene: its `arrival` line and battle cry, one
+/// choice that fights it; null when [enemies] lacks it.
+StoryNode? buildChampionNode(
+    String clanId, Map<String, dynamic> enemies, Random random) {
+  final id = championIdOf(clanId);
+  final enemy = enemies[id];
+  if (enemy is! Map<String, dynamic>) return null;
+  String text(String key, [String fallback = '']) {
+    final value = enemy[key]?.toString() ?? '';
+    return value.isEmpty ? fallback : value;
+  }
+
+  final name = text('enemyName', id);
+  final nameFr = text('enemyName_fr', name);
+  // Its arrival speaks for it (Narrative's lines carry its words); with
+  // none, it bars the road and cries out.
+  String scene(String arrival, String fallback, String who, String cry) =>
+      arrival.isNotEmpty
+          ? arrival.replaceAll('{name}', who)
+          : '${fallback.replaceAll('{name}', who)} $cry'.trim();
+  return StoryNode(
+    id: '${id}_${random.nextInt(1 << 30)}',
+    description: scene(
+        text('arrival'), '{name} bars the road.', name, text('battleCry')),
+    descriptionFr: scene(text('arrival_fr'), '{name} vous barre la route.',
+        nameFr, text('battleCry_fr', text('battleCry'))),
+    choices: [
+      StoryChoice(
+        text: 'Face $name',
+        textFr: 'Affronter $nameFr',
+        nextId: '',
+        triggerEnemyId: id,
+      ),
+    ],
+  );
+}
+
+/// The nemesis's champion on this road at rest, or null: its quest under
+/// way ([activeQuestIds]), from [championMinChapter], at
+/// [championRoadChance].
+List<StoryNode>? maybeChampionRoad({
+  required PoliticsState politics,
+  required Iterable<String> activeQuestIds,
+  required Map<String, dynamic> enemies,
+  required int chapter,
+  required Random random,
+}) {
+  final clan = politics.nemesis;
+  if (clan.isEmpty || chapter < championMinChapter) return null;
+  if (!activeQuestIds.contains(nemesisQuestIdOf(clan))) return null;
+  if (random.nextDouble() >= championRoadChance) return null;
+  final node = buildChampionNode(clan, enemies, random);
+  return node == null ? null : [node];
+}
