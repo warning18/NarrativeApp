@@ -17,6 +17,37 @@ Chapter 4 says how strong you should be before you go down.
 
 ### Changed
 - **Chapter 3's side quests pay more XP**, about a fifth more: `q_ch3_marens_penance` 80 → 100, `q_ch3_groshs_price` 65 → 80, `q_ch3_reckoning_wall` 60 → 75, `q_ch3_glass_from_the_terraces` 70 → 85.
+## [1.429.0+465]
+
+The game pushes back after the camp: from chapter 3 on, every profession wins about 70% of its fights within three tries, down from 82–97%. Chapters 1 and 2 stay gentler.
+
+### Changed
+- **Enemies are stronger**, most from the camp (the landfall that opens chapter 3) to chapter 5. Chapters 1 and 2 get only a lighter raise, so the opening still teaches: about 90% of fights won within three tries and 70% on the first. Chapters 6 to 8 are a little lighter again, since the chapter curve already climbs there.
+- **The professions are closer together.**
+  - The Mage hits less hard: base damage 6 → 1, Intelligence 4 → 1, health −15 → −20.
+  - The Cleric is sturdier: base damage 0 → 5, health 10 → 35.
+  - The Warrior: base damage 3 → 4, health 20 → 30.
+  - The Ranger: base damage 3 → 1, health 0 → −10, Perception 4 → 1, Luck 2 → 0, Dexterity 3 → 2.
+  - The Rogue: base damage 4 → 2.
+- **Five late bosses re-tuned** so each is still won about as often as before: the Void Archon, the White Admiral, the Void Sovereign and Claimant Tallis are a little stronger, the Tear-Herald a little weaker. The six clan champions get about an eighth more health and +1 damage, so they are still won about half the time.
+- **A lost fight still gives 30% of its XP**, so a struggling character doesn't fall further behind.
+
+### Added
+- **A rest before the Lantern Hall:** the rest scene refills provisions and mana.
+- **The simulator counts first-try wins** for each chapter.
+
+Simulated over 400 runs, by profession:
+- **Chapters 1–2:** 81–95% of fights won within three tries, 55–83% on the first try.
+- **Chapters 3–8:** 63–73% within three tries, 37–44% on the first try.
+
+Before, it was 82–97% within three tries and 70–84% on the first try, over the whole game. The tables are in `docs/simulation/difficulty-review.md` §6.
+## [1.428.0+464]
+
+### Added
+- A night's rest before the Lantern Hall (chapter 7). Every road up from the gates now passes `7515_rest`: the party sleeps on the harbour steps while the clans' fires light the cliff, then climbs to whichever Hall the claimant holds. It gives a full heal, one strong potion, and sets `rest_before_hall` (Core's engine refills provisions and mana from it). Each of the three Halls reads it back.
+
+### Changed
+- The Hall's roads: the three duplicate choices per way (one per claimant) are now one choice per way, with the claimant routing moved into the rest scene (66 choices down to 22).
 
 ## [1.427.0+463]
 

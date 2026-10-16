@@ -7,7 +7,8 @@ void main() {
   group('chapterDifficultyMultiplier', () {
     test('chapter 1 is the baseline and each chapter adds the step', () {
       expect(chapterDifficultyMultiplier(1), 1.0);
-      expect(chapterDifficultyMultiplier(2), closeTo(1.15, 1e-9));
+      expect(chapterDifficultyMultiplier(2),
+          closeTo(1.15 * chapterTwoTeeth, 1e-9));
       expect(chapterDifficultyMultiplier(3), closeTo(1.30, 1e-9));
       expect(chapterDifficultyMultiplier(6), closeTo(1.75, 1e-9));
     });
@@ -37,21 +38,26 @@ void main() {
   });
 
   group('difficultyCurveFor', () {
-    test('a regular enemy\'s floor ramps over the first three chapters', () {
-      expect(enemyHealthBaseMultiplier(1), 1.15);
-      expect(enemyHealthBaseMultiplier(2), 1.25);
-      expect(enemyHealthBaseMultiplier(3), 1.35);
-      expect(enemyHealthBaseMultiplier(6), 1.35);
-      expect(enemyHealthBaseMultiplier(0), 1.15);
-      expect(enemyDamageBaseMultiplier(1), 1.10);
-      expect(enemyDamageBaseMultiplier(2), 1.15);
-      expect(enemyDamageBaseMultiplier(5), 1.20);
+    test('a regular enemy\'s floor is read per chapter', () {
+      expect(enemyHealthBaseMultiplier(1), enemyHealthFloorByChapter[0]);
+      expect(enemyHealthBaseMultiplier(3), enemyHealthFloorByChapter[2]);
+      expect(enemyHealthBaseMultiplier(0), enemyHealthFloorByChapter[0]);
+      expect(enemyHealthBaseMultiplier(99), enemyHealthFloorByChapter.last);
+      expect(enemyDamageBaseMultiplier(2), enemyDamageFloorByChapter[1]);
+      expect(enemyDamageBaseMultiplier(99), enemyDamageFloorByChapter.last);
+      // Chapter 1 still teaches: it is lighter than the middle chapters.
+      expect(
+          enemyHealthBaseMultiplier(1), lessThan(enemyHealthBaseMultiplier(2)));
       final curve = difficultyCurveFor(chapter: 1);
-      expect(curve.health, closeTo(1.15, 1e-9));
-      expect(curve.damage, closeTo(1.10, 1e-9));
+      expect(curve.health, closeTo(enemyHealthFloorByChapter[0], 1e-9));
+      expect(curve.damage, closeTo(enemyDamageFloorByChapter[0], 1e-9));
       final later = difficultyCurveFor(chapter: 3, zoneMultiplier: 1.2);
-      expect(later.health, closeTo(1.35 * 1.30 * 1.2, 1e-9));
-      expect(later.damage, closeTo(1.20 * damageShareOf(1.30 * 1.2), 1e-9));
+      expect(later.health,
+          closeTo(enemyHealthFloorByChapter[2] * 1.30 * 1.2, 1e-9));
+      expect(
+          later.damage,
+          closeTo(
+              enemyDamageFloorByChapter[2] * damageShareOf(1.30 * 1.2), 1e-9));
     });
 
     test('a boss takes its own lighter floor: its phases do the rest', () {
