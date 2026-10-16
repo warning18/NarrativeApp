@@ -103,6 +103,25 @@ FightSpriteSet? enemyFightSprite(String enemyId) {
   return name == null ? null : _enemySet(name);
 }
 
+/// Which enemy a road event puts on the road when the event's own data does
+/// not say (land_events.json names an enemy only in a fight choice): event id
+/// to enemy id. UX's table, so the event data stays Core's and Narrative's.
+const Map<String, String> _roadEventEnemies = {
+  'inquisition_patrol': 'inquisition_soldier',
+};
+
+/// What stands on the road in front of the party at a land-crossing event:
+/// the art of the enemy it is (the fight choice's [fightEnemyId], else the
+/// table above), with [sprite] null for a placeholder figure when that enemy
+/// has no art yet. Null when the event has no figure at all (a storm, a dry
+/// well, the water seller: nothing in the data says who they are).
+({FightSpriteSet? sprite})? roadEncounterFigure(String eventId,
+    {String? fightEnemyId}) {
+  final enemy = fightEnemyId ?? _roadEventEnemies[eventId];
+  if (enemy == null) return null;
+  return (sprite: enemyFightSprite(enemy));
+}
+
 /// The images of the sets, loaded once on first use.
 abstract final class FightSpriteImages {
   static final Map<String, ui.Image> _idle = {};

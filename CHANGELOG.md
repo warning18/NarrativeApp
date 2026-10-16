@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.457.0+493]
+
+The road's strangers walk in to meet the party.
+
+### Added
+- **Encounter figures on the land walk:** at a land-crossing event with someone on the road, their figure walks in from the right (the way the party walks; the art faces west), stops in front of the party facing it, and breathes while you choose. The Inquisition patrol is Inquisition soldiers (their art); the scavengers, whose enemy has no art yet, are a plain grey placeholder figure; storms, wells, springs, the dogs and the water seller put nobody on the road (the event data names no one). With animations off the figure is already in place. One resolver, `roadEncounterFigure` (`lib/widgets/fight_sprites.dart`), so more art is one line there.
+
 ## [1.456.0+492]
 
 The Regent of the Lantern has a face.
