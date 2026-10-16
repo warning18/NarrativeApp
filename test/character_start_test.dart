@@ -17,13 +17,13 @@ void main() {
   final races = _json('races');
   final professions = _json('professions');
 
-  test('a dwarf warrior starts at 140 HP, 13 damage, 6 armour', () {
+  test('a dwarf warrior starts at 150 HP, 14 damage, 6 armour', () {
     final t = startingTotals(
         defaults: defaults,
         race: races['dwarf'] as Map<String, dynamic>,
         profession: professions['warrior'] as Map<String, dynamic>);
-    expect(t.maxHealth, 140);
-    expect(t.baseDamage, 13);
+    expect(t.maxHealth, 150);
+    expect(t.baseDamage, 14);
     expect(t.baseArmor, 6);
     expect(t.gold, 100);
     expect(t.abilities, {'str_abbrev': 6, 'con_abbrev': 6, 'per_abbrev': 1});
@@ -66,7 +66,7 @@ void main() {
         withOffers: true);
     expect(mage.last.key, 'offer_bonus_label');
     expect(mage.first.key, 'hp_label');
-    expect(mage.first.value, -15);
+    expect(mage.first.value, -20);
   });
 
   test('the granted skill drops its preset\'s name', () {
