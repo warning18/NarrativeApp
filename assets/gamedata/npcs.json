@@ -3887,8 +3887,8 @@
   },
   "mireille_sable": {
     "npcID": "mireille_sable",
-    "npcName": "Captain Mireille Sable",
-    "npcName_fr": "Capitaine Mireille Sable",
+    "npcName": "Captain Mireille Sorrel",
+    "npcName_fr": "Capitaine Mireille Sorrel",
     "role": "Collector of the Syndicate",
     "role_fr": "Percepteuse du Syndicat",
     "faction": "crows",

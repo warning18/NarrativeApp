@@ -846,16 +846,22 @@ int scaledReward(int base, int playerLevel) {
 const double chapterDifficultyStep = 0.15;
 
 /// The multipliers on a regular enemy's max health and damage, before the
-/// chapter curve -- the "medium-hard" floor for everything that isn't a
-/// boss. It ramps over the first chapters (health ×1.15, ×1.25, then ×1.35
-/// from chapter 3; damage ×1.10, ×1.15, then ×1.20), so the opening fights
-/// stay a lesson while the later ones meet a party with a skill tree, tier
-/// upgrades and a full camp. A 200-run simulation of v1.146 at the old flat
-/// floor (×1.15/×1.10, step 0.12) lost 0.12 fights a run; the ramp, with
-/// step 0.15 and the boss floor below, loses about 1.5 a run with every
-/// run finishing and chapter 1 still won 98% of the time.
-const List<double> enemyHealthFloorByChapter = [1.15, 1.25, 1.35];
-const List<double> enemyDamageFloorByChapter = [1.10, 1.15, 1.20];
+/// chapter curve -- the floor for everything that isn't a boss, one entry
+/// per chapter (the last holds for any later one). The difficulty review
+/// (v1.429, the user's call) roughly doubled it from the camp on (node
+/// 3001, the start of chapter 3), where every profession wins at most 75%
+/// of its encounters within three tries, and kept chapters 1-2 lighter:
+/// about 90% won within three tries there, about 70% at the first.
+/// Chapters 3-5 are the heaviest, 6-8 lighter again because the chapter
+/// curve already climbs there and a heavier floor stopped most runs short
+/// of the late zones' bosses. Measured with the playthrough
+/// simulator (400 runs, docs/simulation/difficulty-review.md).
+const List<double> enemyHealthFloorByChapter = [
+  1.46, 2.12, 2.77, 2.77, 2.90, 2.16, 2.09, 2.03, //
+];
+const List<double> enemyDamageFloorByChapter = [
+  1.34, 1.79, 2.28, 2.28, 2.40, 1.80, 1.74, 1.68, //
+];
 
 /// A regular enemy's health floor in [chapter] (the last entry holds for
 /// every later chapter; a chapter below 1 reads as chapter 1).
@@ -938,7 +944,17 @@ bool isBossEnemy(String enemyId, Map<String, dynamic> enemy) {
 /// flips -- and a steeper step alone turning the chapter 5-6 zone bosses
 /// into walls while chapters 1-4 stayed at 100%.
 double chapterDifficultyMultiplier(int chapter) =>
-    1 + chapterDifficultyStep * (max(1, chapter) - 1);
+    (1 + chapterDifficultyStep * (max(1, chapter) - 1)) *
+    (chapter == 2 ? chapterTwoTeeth : 1.0);
+
+/// Chapter 2's own bite (the user's call, docs/simulation/difficulty-review.md
+/// proposal 3): its enemies a tenth stronger than the curve, so Saltmouth
+/// is not a free walk after Alster.
+const double chapterTwoTeeth = 1.10;
+
+/// The share of a fight's XP a lost fight still gives (proposal 5): a
+/// struggling character doesn't fall further behind.
+const double lostFightXpShare = 0.30;
 
 /// The damage multiplier that goes with a health multiplier from the
 /// chapter curve or a zone's tier: half the excess (×1.3 health → ×1.15

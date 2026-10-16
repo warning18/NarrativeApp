@@ -75,7 +75,7 @@ The Salt Crows are a syndicate of captains, run on debt. Seven captains hold sea
 | Rank | Name | Title | Stance to the leader | Stance to you | |
 |---|---|---|---|---|---|
 | 1 | First Captain Tamsin Brask | First Captain | (leader) | wary | new |
-| 2 | Captain Mireille Sable | Collector of the Syndicate | loyal | hostile | new |
+| 2 | Captain Mireille Sorrel | Collector of the Syndicate | loyal | hostile | new |
 | 3 | The Keyholder | First Keyholder | loyal | neutral | existing |
 | 4 | The Keyholder | Second Keyholder, keeper of the Vault | wavering | neutral | existing |
 | 5 | Brine Jack | Captain of the Wreckers | scheming | hostile | new |

@@ -10839,8 +10839,8 @@
   },
   "4999_camp": {
     "id": "4999_camp",
-    "description": "[CHAPTER 4: THE HOLLOW COURT] The walk back took the night and most of the morning, and the Spire burned behind me the whole way, a second sunrise nobody on the flats had asked for. The cove was where I had left it: the fire-ring, the rope line, the Eel hauled up above the tide with her storm-scars showing, and the wall that still stood. I had said three days. It had been three days. I found that I cared about that more than I had expected to. By the second night the camp had heard what the Quarter’s survivors whispered and would not say aloud: the Hollow Court. Inquisitors who knelt to no living authority and had, as a courtesy to themselves, never officially existed, and who kept another piece of the Shroud at the bottom of a stair the sea had taken, three days along the coast. Whatever waited down there had known my family’s name rather longer than I had known its.",
-    "description_fr": "[CHAPITRE 4 : LA COUR CREUSE] Le retour prit la nuit et presque toute la matinée, et la Flèche brûla derrière moi tout du long, un second lever de soleil que personne sur les plaines n’avait demandé. La crique était telle que je l’avais laissée : le cercle de pierres du foyer, la corde tendue, l’Eel hissé au-dessus de la marée, ses cicatrices de tempête visibles, et le mur encore debout. J’avais dit trois jours. Cela faisait trois jours. Je m’aperçus que cela comptait pour moi plus que je ne l’aurais cru. Dès la deuxième nuit, le camp avait appris ce que les survivants du Quartier murmuraient sans oser le dire : la Cour Creuse. Des inquisiteurs qui ne s’agenouillaient devant aucune autorité vivante et n’avaient, par courtoisie envers eux-mêmes, jamais officiellement existé, et qui gardaient une autre pièce du Linceul au fond d’un escalier que la mer avait pris, à trois jours le long de la côte. Ce qui attendait là-dessous connaissait le nom de ma famille depuis bien plus longtemps que moi le sien.",
+    "description": "[CHAPTER 4: THE HOLLOW COURT] The walk back took the night and most of the morning, and the Spire burned behind me the whole way, a second sunrise nobody on the flats had asked for. The cove was where I had left it: the fire-ring, the rope line, the Eel hauled up above the tide with her storm-scars showing, and the wall that still stood. I had said three days. It had been three days. I found that I cared about that more than I had expected to. By the second night the camp had heard what the Quarter’s survivors whispered and would not say aloud: the Hollow Court. Inquisitors who knelt to no living authority and had, as a courtesy to themselves, never officially existed, and who kept another piece of the Shroud at the bottom of a stair the sea had taken, three days along the coast. Whatever waited down there had known my family’s name rather longer than I had known its. The camp’s old fire-keeper, who had counted the ones who went down toward that stair against the ones who came back and never once got the sums to agree, said only that the Court did not bargain with the weak, and that I would do well to go down stronger than I had come up. I had a night on the shingle. I decided the Stair could wait until I was a great deal harder to kill.",
+    "description_fr": "[CHAPITRE 4 : LA COUR CREUSE] Le retour prit la nuit et presque toute la matinée, et la Flèche brûla derrière moi tout du long, un second lever de soleil que personne sur les plaines n’avait demandé. La crique était telle que je l’avais laissée : le cercle de pierres du foyer, la corde tendue, l’Eel hissé au-dessus de la marée, ses cicatrices de tempête visibles, et le mur encore debout. J’avais dit trois jours. Cela faisait trois jours. Je m’aperçus que cela comptait pour moi plus que je ne l’aurais cru. Dès la deuxième nuit, le camp avait appris ce que les survivants du Quartier murmuraient sans oser le dire : la Cour Creuse. Des inquisiteurs qui ne s’agenouillaient devant aucune autorité vivante et n’avaient, par courtoisie envers eux-mêmes, jamais officiellement existé, et qui gardaient une autre pièce du Linceul au fond d’un escalier que la mer avait pris, à trois jours le long de la côte. Ce qui attendait là-dessous connaissait le nom de ma famille depuis bien plus longtemps que moi le sien. La vieille gardienne du feu du camp, qui avait compté ceux qui descendaient vers cet escalier et ceux qui en revenaient sans jamais obtenir deux fois le même total, dit seulement que la Cour ne marchandait pas avec les faibles, et que je ferais bien d’y descendre plus fort qu’à mon arrivée. J’avais une nuit sur la grève. Je décidai que l’Escalier pouvait attendre que je sois bien plus difficile à tuer.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "tender",
@@ -19663,7 +19663,7 @@
       {
         "text": "Speak before the Houses on the First Lantern’s cliff",
         "text_fr": "Parler devant les Maisons sur la falaise de la Première Lanterne",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "checkAbility": "charisma",
         "checkDC": 15,
         "politics": {
@@ -19675,166 +19675,32 @@
         "flagsToAdd": [
           "way_quiet"
         ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        },
         "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
         "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
-        "text": "Speak before the Houses on the First Lantern’s cliff",
-        "text_fr": "Parler devant les Maisons sur la falaise de la Première Lanterne",
-        "next_id": "7520_morrow",
-        "checkAbility": "charisma",
-        "checkDC": 15,
-        "politics": {
-          "standing": {
-            "dominion": 3
+        "text": "Take the Hall stair with the Houses behind you",
+        "text_fr": "Prendre l’escalier de la Salle, les Maisons derrière vous",
+        "next_id": "7515_rest",
+        "triggerEnemyIds": [
+          "white_soldier",
+          "white_soldier"
+        ],
+        "flagsToAdd": [
+          "way_force"
+        ]
+      },
+      {
+        "text": "Let the Wickwardens light you up the cliff",
+        "text_fr": "Laisser les Garde-Mèches éclairer votre montée",
+        "next_id": "7515_rest",
+        "flagsToAdd": [
+          "way_friends"
+        ],
+        "politicsIf": {
+          "marks": {
+            "wickwardens": "friend"
           }
-        },
-        "failNextId": "7510_seen",
-        "flagsToAdd": [
-          "way_quiet"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        },
-        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
-        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
-      },
-      {
-        "text": "Speak before the Houses on the First Lantern’s cliff",
-        "text_fr": "Parler devant les Maisons sur la falaise de la Première Lanterne",
-        "next_id": "7520_tallis",
-        "checkAbility": "charisma",
-        "checkDC": 15,
-        "politics": {
-          "standing": {
-            "dominion": 3
-          }
-        },
-        "failNextId": "7510_seen",
-        "flagsToAdd": [
-          "way_quiet"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
-        },
-        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
-        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
-      },
-      {
-        "text": "Take the Hall stair with the Houses behind you",
-        "text_fr": "Prendre l’escalier de la Salle, les Maisons derrière vous",
-        "next_id": "7520_vane",
-        "triggerEnemyIds": [
-          "white_soldier",
-          "white_soldier"
-        ],
-        "flagsToAdd": [
-          "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        }
-      },
-      {
-        "text": "Take the Hall stair with the Houses behind you",
-        "text_fr": "Prendre l’escalier de la Salle, les Maisons derrière vous",
-        "next_id": "7520_morrow",
-        "triggerEnemyIds": [
-          "white_soldier",
-          "white_soldier"
-        ],
-        "flagsToAdd": [
-          "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        }
-      },
-      {
-        "text": "Take the Hall stair with the Houses behind you",
-        "text_fr": "Prendre l’escalier de la Salle, les Maisons derrière vous",
-        "next_id": "7520_tallis",
-        "triggerEnemyIds": [
-          "white_soldier",
-          "white_soldier"
-        ],
-        "flagsToAdd": [
-          "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
-        }
-      },
-      {
-        "text": "Let the Wickwardens light you up the cliff",
-        "text_fr": "Laisser les Garde-Mèches éclairer votre montée",
-        "next_id": "7520_vane",
-        "flagsToAdd": [
-          "way_friends"
-        ],
-        "politicsIf": {
-          "marks": {
-            "wickwardens": "friend"
-          },
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        }
-      },
-      {
-        "text": "Let the Wickwardens light you up the cliff",
-        "text_fr": "Laisser les Garde-Mèches éclairer votre montée",
-        "next_id": "7520_morrow",
-        "flagsToAdd": [
-          "way_friends"
-        ],
-        "politicsIf": {
-          "marks": {
-            "wickwardens": "friend"
-          },
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        }
-      },
-      {
-        "text": "Let the Wickwardens light you up the cliff",
-        "text_fr": "Laisser les Garde-Mèches éclairer votre montée",
-        "next_id": "7520_tallis",
-        "flagsToAdd": [
-          "way_friends"
-        ],
-        "politicsIf": {
-          "marks": {
-            "wickwardens": "friend"
-          },
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
         }
       }
     ],
@@ -19944,118 +19810,32 @@
       {
         "text": "Go over the sea-wall at the new moon, unseen",
         "text_fr": "Franchir le mur de mer à la nouvelle lune, sans qu’on vous voie",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "checkAbility": "dexterity",
         "checkDC": 15,
         "failNextId": "7510_seen",
         "flagsToAdd": [
           "way_quiet"
         ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        },
-        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
-        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
-      },
-      {
-        "text": "Go over the sea-wall at the new moon, unseen",
-        "text_fr": "Franchir le mur de mer à la nouvelle lune, sans qu’on vous voie",
-        "next_id": "7520_morrow",
-        "checkAbility": "dexterity",
-        "checkDC": 15,
-        "failNextId": "7510_seen",
-        "flagsToAdd": [
-          "way_quiet"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        },
-        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
-        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
-      },
-      {
-        "text": "Go over the sea-wall at the new moon, unseen",
-        "text_fr": "Franchir le mur de mer à la nouvelle lune, sans qu’on vous voie",
-        "next_id": "7520_tallis",
-        "checkAbility": "dexterity",
-        "checkDC": 15,
-        "failNextId": "7510_seen",
-        "flagsToAdd": [
-          "way_quiet"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
-        },
         "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
         "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Break the Sun Gate with the Last Watch’s spears",
         "text_fr": "Briser la porte du Soleil avec les lances de la Dernière Veille",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "triggerEnemyIds": [
           "inquisition_soldier",
           "inquisition_soldier"
         ],
         "flagsToAdd": [
           "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        }
-      },
-      {
-        "text": "Break the Sun Gate with the Last Watch’s spears",
-        "text_fr": "Briser la porte du Soleil avec les lances de la Dernière Veille",
-        "next_id": "7520_morrow",
-        "triggerEnemyIds": [
-          "inquisition_soldier",
-          "inquisition_soldier"
-        ],
-        "flagsToAdd": [
-          "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        }
-      },
-      {
-        "text": "Break the Sun Gate with the Last Watch’s spears",
-        "text_fr": "Briser la porte du Soleil avec les lances de la Dernière Veille",
-        "next_id": "7520_tallis",
-        "triggerEnemyIds": [
-          "inquisition_soldier",
-          "inquisition_soldier"
-        ],
-        "flagsToAdd": [
-          "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
-        }
+        ]
       },
       {
         "text": "Walk in behind the Penitents’ procession",
         "text_fr": "Entrer derrière la procession des Pénitents",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "politics": {
           "standing": {
             "penitents": 3
@@ -20067,55 +19847,7 @@
         "politicsIf": {
           "standingAtLeast": {
             "penitents": 26
-          },
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        }
-      },
-      {
-        "text": "Walk in behind the Penitents’ procession",
-        "text_fr": "Entrer derrière la procession des Pénitents",
-        "next_id": "7520_morrow",
-        "politics": {
-          "standing": {
-            "penitents": 3
           }
-        },
-        "flagsToAdd": [
-          "way_friends"
-        ],
-        "politicsIf": {
-          "standingAtLeast": {
-            "penitents": 26
-          },
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        }
-      },
-      {
-        "text": "Walk in behind the Penitents’ procession",
-        "text_fr": "Entrer derrière la procession des Pénitents",
-        "next_id": "7520_tallis",
-        "politics": {
-          "standing": {
-            "penitents": 3
-          }
-        },
-        "flagsToAdd": [
-          "way_friends"
-        ],
-        "politicsIf": {
-          "standingAtLeast": {
-            "penitents": 26
-          },
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
         }
       }
     ],
@@ -20225,118 +19957,32 @@
       {
         "text": "Open the Anvil Gate by its own forge-marks",
         "text_fr": "Ouvrir la porte de l’Enclume par ses propres marques de forge",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "checkAbility": "intelligence",
         "checkDC": 15,
         "failNextId": "7510_seen",
         "flagsToAdd": [
           "way_quiet"
         ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        },
-        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
-        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
-      },
-      {
-        "text": "Open the Anvil Gate by its own forge-marks",
-        "text_fr": "Ouvrir la porte de l’Enclume par ses propres marques de forge",
-        "next_id": "7520_morrow",
-        "checkAbility": "intelligence",
-        "checkDC": 15,
-        "failNextId": "7510_seen",
-        "flagsToAdd": [
-          "way_quiet"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        },
-        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
-        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
-      },
-      {
-        "text": "Open the Anvil Gate by its own forge-marks",
-        "text_fr": "Ouvrir la porte de l’Enclume par ses propres marques de forge",
-        "next_id": "7520_tallis",
-        "checkAbility": "intelligence",
-        "checkDC": 15,
-        "failNextId": "7510_seen",
-        "flagsToAdd": [
-          "way_quiet"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
-        },
         "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
         "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Break the Anvil Gate with the Row’s master hammer",
         "text_fr": "Briser la porte de l’Enclume au marteau maître de la Rue",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "triggerEnemyIds": [
           "inquisition_soldier",
           "inquisition_auxiliary"
         ],
         "flagsToAdd": [
           "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        }
-      },
-      {
-        "text": "Break the Anvil Gate with the Row’s master hammer",
-        "text_fr": "Briser la porte de l’Enclume au marteau maître de la Rue",
-        "next_id": "7520_morrow",
-        "triggerEnemyIds": [
-          "inquisition_soldier",
-          "inquisition_auxiliary"
-        ],
-        "flagsToAdd": [
-          "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        }
-      },
-      {
-        "text": "Break the Anvil Gate with the Row’s master hammer",
-        "text_fr": "Briser la porte de l’Enclume au marteau maître de la Rue",
-        "next_id": "7520_tallis",
-        "triggerEnemyIds": [
-          "inquisition_soldier",
-          "inquisition_auxiliary"
-        ],
-        "flagsToAdd": [
-          "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
-        }
+        ]
       },
       {
         "text": "Let the Mire’s guides take you up the drains",
         "text_fr": "Suivre les guides du Marais par les égouts",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "politics": {
           "standing": {
             "mire": 3
@@ -20348,55 +19994,7 @@
         "politicsIf": {
           "standingAtLeast": {
             "mire": 26
-          },
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        }
-      },
-      {
-        "text": "Let the Mire’s guides take you up the drains",
-        "text_fr": "Suivre les guides du Marais par les égouts",
-        "next_id": "7520_morrow",
-        "politics": {
-          "standing": {
-            "mire": 3
           }
-        },
-        "flagsToAdd": [
-          "way_friends"
-        ],
-        "politicsIf": {
-          "standingAtLeast": {
-            "mire": 26
-          },
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        }
-      },
-      {
-        "text": "Let the Mire’s guides take you up the drains",
-        "text_fr": "Suivre les guides du Marais par les égouts",
-        "next_id": "7520_tallis",
-        "politics": {
-          "standing": {
-            "mire": 3
-          }
-        },
-        "flagsToAdd": [
-          "way_friends"
-        ],
-        "politicsIf": {
-          "standingAtLeast": {
-            "mire": 26
-          },
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
         }
       }
     ],
@@ -20506,64 +20104,20 @@
       {
         "text": "Follow a Heron’s Wake guide through the salt marsh",
         "text_fr": "Suivre une guide du Sillage du Héron à travers le marais salant",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "checkAbility": "wisdom",
         "checkDC": 15,
         "failNextId": "7510_seen",
         "flagsToAdd": [
           "way_quiet"
         ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        },
-        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
-        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
-      },
-      {
-        "text": "Follow a Heron’s Wake guide through the salt marsh",
-        "text_fr": "Suivre une guide du Sillage du Héron à travers le marais salant",
-        "next_id": "7520_morrow",
-        "checkAbility": "wisdom",
-        "checkDC": 15,
-        "failNextId": "7510_seen",
-        "flagsToAdd": [
-          "way_quiet"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        },
-        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
-        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
-      },
-      {
-        "text": "Follow a Heron’s Wake guide through the salt marsh",
-        "text_fr": "Suivre une guide du Sillage du Héron à travers le marais salant",
-        "next_id": "7520_tallis",
-        "checkAbility": "wisdom",
-        "checkDC": 15,
-        "failNextId": "7510_seen",
-        "flagsToAdd": [
-          "way_quiet"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
-        },
         "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
         "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Take the Reed Gate with fever-bark and blades",
         "text_fr": "Prendre la porte des Roseaux à l’écorce à fièvre et à la lame",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "triggerEnemyIds": [
           "inquisition_auxiliary",
           "inquisition_auxiliary"
@@ -20571,56 +20125,12 @@
         "alignmentMod": -1,
         "flagsToAdd": [
           "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        }
-      },
-      {
-        "text": "Take the Reed Gate with fever-bark and blades",
-        "text_fr": "Prendre la porte des Roseaux à l’écorce à fièvre et à la lame",
-        "next_id": "7520_morrow",
-        "triggerEnemyIds": [
-          "inquisition_auxiliary",
-          "inquisition_auxiliary"
-        ],
-        "alignmentMod": -1,
-        "flagsToAdd": [
-          "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        }
-      },
-      {
-        "text": "Take the Reed Gate with fever-bark and blades",
-        "text_fr": "Prendre la porte des Roseaux à l’écorce à fièvre et à la lame",
-        "next_id": "7520_tallis",
-        "triggerEnemyIds": [
-          "inquisition_auxiliary",
-          "inquisition_auxiliary"
-        ],
-        "alignmentMod": -1,
-        "flagsToAdd": [
-          "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
-        }
+        ]
       },
       {
         "text": "Let the Compact’s smiths open the Anvil Gate",
         "text_fr": "Laisser les forgerons du Pacte ouvrir la porte de l’Enclume",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "politics": {
           "standing": {
             "compact": 3
@@ -20632,55 +20142,7 @@
         "politicsIf": {
           "standingAtLeast": {
             "compact": 26
-          },
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        }
-      },
-      {
-        "text": "Let the Compact’s smiths open the Anvil Gate",
-        "text_fr": "Laisser les forgerons du Pacte ouvrir la porte de l’Enclume",
-        "next_id": "7520_morrow",
-        "politics": {
-          "standing": {
-            "compact": 3
           }
-        },
-        "flagsToAdd": [
-          "way_friends"
-        ],
-        "politicsIf": {
-          "standingAtLeast": {
-            "compact": 26
-          },
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        }
-      },
-      {
-        "text": "Let the Compact’s smiths open the Anvil Gate",
-        "text_fr": "Laisser les forgerons du Pacte ouvrir la porte de l’Enclume",
-        "next_id": "7520_tallis",
-        "politics": {
-          "standing": {
-            "compact": 3
-          }
-        },
-        "flagsToAdd": [
-          "way_friends"
-        ],
-        "politicsIf": {
-          "standingAtLeast": {
-            "compact": 26
-          },
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
         }
       }
     ],
@@ -20790,7 +20252,7 @@
       {
         "text": "Bribe the chain-master to drop the chain",
         "text_fr": "Soudoyer le maître de la chaîne pour qu’il l’abaisse",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "checkAbility": "charisma",
         "checkDC": 15,
         "goldMod": -120,
@@ -20799,115 +20261,25 @@
         "flagsToAdd": [
           "way_quiet"
         ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        },
-        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
-        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
-      },
-      {
-        "text": "Bribe the chain-master to drop the chain",
-        "text_fr": "Soudoyer le maître de la chaîne pour qu’il l’abaisse",
-        "next_id": "7520_morrow",
-        "checkAbility": "charisma",
-        "checkDC": 15,
-        "goldMod": -120,
-        "pays": true,
-        "failNextId": "7510_seen",
-        "flagsToAdd": [
-          "way_quiet"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        },
-        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
-        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
-      },
-      {
-        "text": "Bribe the chain-master to drop the chain",
-        "text_fr": "Soudoyer le maître de la chaîne pour qu’il l’abaisse",
-        "next_id": "7520_tallis",
-        "checkAbility": "charisma",
-        "checkDC": 15,
-        "goldMod": -120,
-        "pays": true,
-        "failNextId": "7510_seen",
-        "flagsToAdd": [
-          "way_quiet"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
-        },
         "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
         "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Ram the harbour chain with the Eel",
         "text_fr": "Éperonner la chaîne du port avec l’Eel",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "triggerEnemyIds": [
           "inquisition_soldier",
           "inquisition_auxiliary"
         ],
         "flagsToAdd": [
           "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        }
-      },
-      {
-        "text": "Ram the harbour chain with the Eel",
-        "text_fr": "Éperonner la chaîne du port avec l’Eel",
-        "next_id": "7520_morrow",
-        "triggerEnemyIds": [
-          "inquisition_soldier",
-          "inquisition_auxiliary"
-        ],
-        "flagsToAdd": [
-          "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        }
-      },
-      {
-        "text": "Ram the harbour chain with the Eel",
-        "text_fr": "Éperonner la chaîne du port avec l’Eel",
-        "next_id": "7520_tallis",
-        "triggerEnemyIds": [
-          "inquisition_soldier",
-          "inquisition_auxiliary"
-        ],
-        "flagsToAdd": [
-          "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
-        }
+        ]
       },
       {
         "text": "Let the Salt Ledger open its counting-house door",
         "text_fr": "Laisser le Registre du Sel ouvrir la porte de son comptoir",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "politics": {
           "standing": {
             "dominion": 3
@@ -20919,55 +20291,7 @@
         "politicsIf": {
           "marks": {
             "salt_ledger": "friend"
-          },
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        }
-      },
-      {
-        "text": "Let the Salt Ledger open its counting-house door",
-        "text_fr": "Laisser le Registre du Sel ouvrir la porte de son comptoir",
-        "next_id": "7520_morrow",
-        "politics": {
-          "standing": {
-            "dominion": 3
           }
-        },
-        "flagsToAdd": [
-          "way_friends"
-        ],
-        "politicsIf": {
-          "marks": {
-            "salt_ledger": "friend"
-          },
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        }
-      },
-      {
-        "text": "Let the Salt Ledger open its counting-house door",
-        "text_fr": "Laisser le Registre du Sel ouvrir la porte de son comptoir",
-        "next_id": "7520_tallis",
-        "politics": {
-          "standing": {
-            "dominion": 3
-          }
-        },
-        "flagsToAdd": [
-          "way_friends"
-        ],
-        "politicsIf": {
-          "marks": {
-            "salt_ledger": "friend"
-          },
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
         }
       }
     ],
@@ -21077,7 +20401,7 @@
       {
         "text": "Walk before the procession, no weapon drawn",
         "text_fr": "Marcher devant la procession sans tirer d’arme",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "checkAbility": "charisma",
         "checkDC": 16,
         "alignmentMod": 1,
@@ -21085,113 +20409,25 @@
         "flagsToAdd": [
           "way_quiet"
         ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        },
-        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
-        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
-      },
-      {
-        "text": "Walk before the procession, no weapon drawn",
-        "text_fr": "Marcher devant la procession sans tirer d’arme",
-        "next_id": "7520_morrow",
-        "checkAbility": "charisma",
-        "checkDC": 16,
-        "alignmentMod": 1,
-        "failNextId": "7510_seen",
-        "flagsToAdd": [
-          "way_quiet"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        },
-        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
-        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
-      },
-      {
-        "text": "Walk before the procession, no weapon drawn",
-        "text_fr": "Marcher devant la procession sans tirer d’arme",
-        "next_id": "7520_tallis",
-        "checkAbility": "charisma",
-        "checkDC": 16,
-        "alignmentMod": 1,
-        "failNextId": "7510_seen",
-        "flagsToAdd": [
-          "way_quiet"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
-        },
         "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
         "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Break the shield-wall at the Exorcists’ Gate",
         "text_fr": "Briser le mur de boucliers à la porte des Exorcistes",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "triggerEnemyIds": [
           "inquisition_soldier",
           "inquisition_soldier"
         ],
         "flagsToAdd": [
           "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        }
-      },
-      {
-        "text": "Break the shield-wall at the Exorcists’ Gate",
-        "text_fr": "Briser le mur de boucliers à la porte des Exorcistes",
-        "next_id": "7520_morrow",
-        "triggerEnemyIds": [
-          "inquisition_soldier",
-          "inquisition_soldier"
-        ],
-        "flagsToAdd": [
-          "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        }
-      },
-      {
-        "text": "Break the shield-wall at the Exorcists’ Gate",
-        "text_fr": "Briser le mur de boucliers à la porte des Exorcistes",
-        "next_id": "7520_tallis",
-        "triggerEnemyIds": [
-          "inquisition_soldier",
-          "inquisition_soldier"
-        ],
-        "flagsToAdd": [
-          "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
-        }
+        ]
       },
       {
         "text": "Let the Vigil’s spears hold the road for you",
         "text_fr": "Laisser les lances de la Veille vous tenir la route",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "politics": {
           "standing": {
             "vigil": 3
@@ -21203,55 +20439,7 @@
         "politicsIf": {
           "standingAtLeast": {
             "vigil": 26
-          },
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        }
-      },
-      {
-        "text": "Let the Vigil’s spears hold the road for you",
-        "text_fr": "Laisser les lances de la Veille vous tenir la route",
-        "next_id": "7520_morrow",
-        "politics": {
-          "standing": {
-            "vigil": 3
           }
-        },
-        "flagsToAdd": [
-          "way_friends"
-        ],
-        "politicsIf": {
-          "standingAtLeast": {
-            "vigil": 26
-          },
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        }
-      },
-      {
-        "text": "Let the Vigil’s spears hold the road for you",
-        "text_fr": "Laisser les lances de la Veille vous tenir la route",
-        "next_id": "7520_tallis",
-        "politics": {
-          "standing": {
-            "vigil": 3
-          }
-        },
-        "flagsToAdd": [
-          "way_friends"
-        ],
-        "politicsIf": {
-          "standingAtLeast": {
-            "vigil": 26
-          },
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
         }
       }
     ],
@@ -21361,7 +20549,7 @@
       {
         "text": "Draw a door in the cliff and walk through it",
         "text_fr": "Tracer une porte dans la falaise et la franchir",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "checkAbility": "wisdom",
         "checkDC": 16,
         "healAmount": -10,
@@ -21369,158 +20557,32 @@
         "flagsToAdd": [
           "way_quiet"
         ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        },
-        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
-        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
-      },
-      {
-        "text": "Draw a door in the cliff and walk through it",
-        "text_fr": "Tracer une porte dans la falaise et la franchir",
-        "next_id": "7520_morrow",
-        "checkAbility": "wisdom",
-        "checkDC": 16,
-        "healAmount": -10,
-        "failNextId": "7510_seen",
-        "flagsToAdd": [
-          "way_quiet"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        },
-        "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
-        "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
-      },
-      {
-        "text": "Draw a door in the cliff and walk through it",
-        "text_fr": "Tracer une porte dans la falaise et la franchir",
-        "next_id": "7520_tallis",
-        "checkAbility": "wisdom",
-        "checkDC": 16,
-        "healAmount": -10,
-        "failNextId": "7510_seen",
-        "flagsToAdd": [
-          "way_quiet"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
-        },
         "failNote": "The bells ring and the stair fills below you: you are driven back to the gates.",
         "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
         "text": "Hold the grey hand up at the gate until it breaks",
         "text_fr": "Tenir la main grise levée devant la porte jusqu’à ce qu’elle cède",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "triggerEnemyIds": [
           "inquisition_auxiliary",
           "inquisition_soldier"
         ],
         "flagsToAdd": [
           "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        }
-      },
-      {
-        "text": "Hold the grey hand up at the gate until it breaks",
-        "text_fr": "Tenir la main grise levée devant la porte jusqu’à ce qu’elle cède",
-        "next_id": "7520_morrow",
-        "triggerEnemyIds": [
-          "inquisition_auxiliary",
-          "inquisition_soldier"
-        ],
-        "flagsToAdd": [
-          "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        }
-      },
-      {
-        "text": "Hold the grey hand up at the gate until it breaks",
-        "text_fr": "Tenir la main grise levée devant la porte jusqu’à ce qu’elle cède",
-        "next_id": "7520_tallis",
-        "triggerEnemyIds": [
-          "inquisition_auxiliary",
-          "inquisition_soldier"
-        ],
-        "flagsToAdd": [
-          "way_force"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
-        }
+        ]
       },
       {
         "text": "Take the fish-basket way the Line remembers",
         "text_fr": "Prendre le chemin des paniers dont la Lignée se souvient",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "flagsToAdd": [
           "way_friends"
         ],
         "politicsIf": {
           "marks": {
             "fishbasket_line": "friend"
-          },
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        }
-      },
-      {
-        "text": "Take the fish-basket way the Line remembers",
-        "text_fr": "Prendre le chemin des paniers dont la Lignée se souvient",
-        "next_id": "7520_morrow",
-        "flagsToAdd": [
-          "way_friends"
-        ],
-        "politicsIf": {
-          "marks": {
-            "fishbasket_line": "friend"
-          },
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        }
-      },
-      {
-        "text": "Take the fish-basket way the Line remembers",
-        "text_fr": "Prendre le chemin des paniers dont la Lignée se souvient",
-        "next_id": "7520_tallis",
-        "flagsToAdd": [
-          "way_friends"
-        ],
-        "politicsIf": {
-          "marks": {
-            "fishbasket_line": "friend"
-          },
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
+          }
         }
       }
     ],
@@ -21630,56 +20692,14 @@
       {
         "text": "Fight your way up the stair to the Hall",
         "text_fr": "Gravir l’escalier jusqu’à la Salle, les armes à la main",
-        "next_id": "7520_vane",
+        "next_id": "7515_rest",
         "flagsToAdd": [
           "way_hard"
         ],
         "triggerEnemyIds": [
           "inquisition_soldier",
           "inquisition_auxiliary"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_vane",
-            "throne_vane"
-          ]
-        }
-      },
-      {
-        "text": "Fight your way up the stair to the Hall",
-        "text_fr": "Gravir l’escalier jusqu’à la Salle, les armes à la main",
-        "next_id": "7520_morrow",
-        "flagsToAdd": [
-          "way_hard"
-        ],
-        "triggerEnemyIds": [
-          "inquisition_soldier",
-          "inquisition_auxiliary"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_morrow",
-            "throne_morrow"
-          ]
-        }
-      },
-      {
-        "text": "Fight your way up the stair to the Hall",
-        "text_fr": "Gravir l’escalier jusqu’à la Salle, les armes à la main",
-        "next_id": "7520_tallis",
-        "flagsToAdd": [
-          "way_hard"
-        ],
-        "triggerEnemyIds": [
-          "inquisition_soldier",
-          "inquisition_auxiliary"
-        ],
-        "politicsIf": {
-          "anyFlags": [
-            "dominion_leader_tallis",
-            "throne_tallis"
-          ]
-        }
+        ]
       }
     ],
     "flag_callbacks": [
@@ -22026,6 +21046,11 @@
         "flag": "lysa_mercy",
         "en": "He asked, kindly, whether she had suffered. I said no, and that he would not be so lucky.",
         "fr": "Il demanda, aimablement, si elle avait souffert. Je dis que non, et que lui n’aurait pas cette chance."
+      },
+      {
+        "flag": "rest_before_hall",
+        "en": "I had slept on the harbour steps, and eaten, and I came up the stair rested. It showed, and it was not what they had planned for.",
+        "fr": "J’avais dormi sur les marches du port, et mangé, et je montai l’escalier reposé. Cela se voyait, et ce n’était pas ce qu’ils avaient prévu."
       }
     ],
     "noDetour": true,
@@ -22271,6 +21296,11 @@
         "flag": "lysa_survived",
         "en": "“Your sister,” he said. “The Inquisition took her from your door, and you took her back. Some of my knights cheered when they heard. I had them whipped. I would have cheered too.”",
         "fr": "« Votre sœur, dit-il. L’Inquisition l’a prise sur votre seuil, et vous l’avez reprise. Certains de mes chevaliers ont applaudi en l’apprenant. Je les ai fait fouetter. J’aurais applaudi aussi. »"
+      },
+      {
+        "flag": "rest_before_hall",
+        "en": "I had slept on the harbour steps, and eaten, and I came up the stair rested. It showed, and it was not what they had planned for.",
+        "fr": "J’avais dormi sur les marches du port, et mangé, et je montai l’escalier reposé. Cela se voyait, et ce n’était pas ce qu’ils avaient prévu."
       }
     ],
     "noDetour": true,
@@ -22517,6 +21547,11 @@
         "flag": "open_hand_4",
         "en": "“The children,” she said, looking at my hands. “We put them in fish baskets. I carried two myself. I was younger than you.”",
         "fr": "« Les enfants, dit-elle en regardant mes mains. Nous les avons mis dans des paniers à poisson. J’en ai porté deux moi-même. J’étais plus jeune que vous. »"
+      },
+      {
+        "flag": "rest_before_hall",
+        "en": "I had slept on the harbour steps, and eaten, and I came up the stair rested. It showed, and it was not what they had planned for.",
+        "fr": "J’avais dormi sur les marches du port, et mangé, et je montai l’escalier reposé. Cela se voyait, et ce n’était pas ce qu’ils avaient prévu."
       }
     ],
     "noDetour": true,
@@ -27262,5 +26297,87 @@
     ],
     "prompt": "What do you ask the Crow?",
     "prompt_fr": "Que demandez-vous à la Corneille ?"
+  },
+  "7515_rest": {
+    "id": "7515_rest",
+    "description": "The Hall could wait a night. I decided it on the harbour steps, with the whole cliff lit above me and every clan’s fire burning on a different terrace: the Vigil’s low and steady, the Compact’s red at the forge-carts, the Mire’s no more than a smell of wet reed, the Crows’ lamps counted twice, the Penitents’ none at all. Nobody was going to strike a party that had just fought through the gates, and nobody who wanted the Throne would climb to it tired. We found a landing out of the wind. Someone had fed the fire. Someone had put bread, a flask and clean linen on a barrel without saying whose it was. The ones who had walked with me this far took the watch in turns. I ate, and bound what needed binding, and let the cliff’s bells ring themselves out. In the morning the Hall would still be there, and so would whoever held its doors. I meant to meet them rested.",
+    "description_fr": "La Salle pouvait attendre une nuit. Je le décidai sur les marches du port, toute la falaise éclairée au-dessus de moi et le feu de chaque clan brûlant sur une terrasse différente : celui de la Veille, bas et régulier, celui du Pacte, rouge près des charrettes de forge, celui du Marais, à peine une odeur de roseau mouillé, les lampes des Corneilles comptées deux fois, celles des Pénitents, aucune. Nul n’allait frapper une troupe qui venait de forcer les portes, et nul qui voulait le Trône ne monterait le chercher fatigué. Nous trouvâmes un palier à l’abri du vent. Quelqu’un avait nourri le feu. Quelqu’un avait posé du pain, une gourde et du linge propre sur un tonneau sans dire à qui cela revenait. Ceux qui avaient marché avec moi jusque-là prirent la garde à tour de rôle. Je mangeai, je pansai ce qui devait l’être, et je laissai les cloches de la falaise s’éteindre d’elles-mêmes. Au matin, la Salle serait encore là, et avec elle celui qui tenait ses portes. Je comptais le rencontrer reposé.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "calm",
+      "speaker": "Narrator"
+    },
+    "location": "candlehold_gates",
+    "automations": {},
+    "choices": [
+      {
+        "text": "Climb to the Lantern Hall at dawn",
+        "text_fr": "Monter à la Salle de la Lanterne à l’aube",
+        "next_id": "7520_vane",
+        "healAmount": 999,
+        "grantItemId": "potion_major",
+        "flagsToAdd": [
+          "rest_before_hall"
+        ],
+        "politicsIf": {
+          "anyFlags": [
+            "dominion_leader_vane",
+            "throne_vane"
+          ]
+        }
+      },
+      {
+        "text": "Climb to the Lantern Hall at dawn",
+        "text_fr": "Monter à la Salle de la Lanterne à l’aube",
+        "next_id": "7520_morrow",
+        "healAmount": 999,
+        "grantItemId": "potion_major",
+        "flagsToAdd": [
+          "rest_before_hall"
+        ],
+        "politicsIf": {
+          "anyFlags": [
+            "dominion_leader_morrow",
+            "throne_morrow"
+          ]
+        }
+      },
+      {
+        "text": "Climb to the Lantern Hall at dawn",
+        "text_fr": "Monter à la Salle de la Lanterne à l’aube",
+        "next_id": "7520_tallis",
+        "healAmount": 999,
+        "grantItemId": "potion_major",
+        "flagsToAdd": [
+          "rest_before_hall"
+        ],
+        "politicsIf": {
+          "anyFlags": [
+            "dominion_leader_tallis",
+            "throne_tallis"
+          ]
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "lysa_survived",
+        "en": "Lysa had found the clean linen before I did, and had my sleeve rolled up before I could say I was fine.",
+        "fr": "Lysa avait trouvé le linge propre avant moi, et avait déjà relevé ma manche avant que je puisse dire que j’allais bien.",
+        "unlessFlags": [
+          "lysa_mercy",
+          "lysa_sacrificed",
+          "lysa_fallen",
+          "lysa_found_dead"
+        ]
+      },
+      {
+        "flag": "lysa_mask_kept",
+        "en": "I turned the porcelain mask over in my coat, once, and did not take it out.",
+        "fr": "Je retournai une fois le masque de porcelaine dans mon manteau, sans le sortir."
+      }
+    ],
+    "prompt": "Ready for the Hall?",
+    "prompt_fr": "La Salle, maintenant ?"
   }
 }

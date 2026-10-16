@@ -221,7 +221,7 @@ One per main clan: a short quest, the nemesis's champion as the boss, and the br
 | Clan | Champion | Pitch |
 |---|---|---|
 | Dominion | **High Lantern-Bearer Orsolya Keld** | the First Lantern's own warden; she keeps the list of every oath |
-| Crows | **Captain Mireille Sable** | the Crows' collector, who has never lost a debt |
+| Crows | **Captain Mireille Sorrel** | the Crows' collector, who has never lost a debt |
 | Compact | **Master Hollis Reck** | the Charter's last hammer; the table's rule made flesh |
 | Vigil | **Watch-Captain Edda Grey** | the Vigil's eyes on the ridge; she has not looked away in thirty-eight years |
 | Penitents | **The Ash Confessor** | the Penitents' voice, who burned her face to hear better |
