@@ -162,9 +162,17 @@ class ChartMapPainter extends CustomPainter {
       : _zoom < 4.5
           ? 1
           : 2;
-  double get _t => math.pow(_zoom, -0.8).toDouble();
-  double get _m => math.pow(_zoom, -0.65).toDouble();
-  double get _w => math.pow(_zoom, -0.45).toDouble();
+
+  /// How much the screen scales what is drawn, on top of [_k]: the flat
+  /// chart sits in a viewer that scales the canvas by the zoom, so names and
+  /// marks shrink in chart units to hold their size; the sphere is drawn
+  /// at its screen size (its ball grows with the zoom), so they keep theirs
+  /// as they are. Taking the sphere's zoom for a viewer's made every name and
+  /// mark shrink as the ball came close (v1.412).
+  double get _viewZoom => globe == null ? _zoom : 1.0;
+  double get _t => math.pow(_viewZoom, -0.8).toDouble();
+  double get _m => math.pow(_viewZoom, -0.65).toDouble();
+  double get _w => math.pow(_viewZoom, -0.45).toDouble();
 
   /// Chart units to canvas pixels as drawn (set at each paint): the names
   /// never go below [minPlacePx] / [minRegionPx] on screen, whatever the
@@ -173,10 +181,24 @@ class ChartMapPainter extends CustomPainter {
   static const double minPlacePx = 12.5;
   static const double minRegionPx = 10;
 
+  /// [n] pixels on the screen, in chart units: what stays one size however
+  /// close the chart is looked at (the viewer scales the canvas by the zoom
+  /// on top of [_k]).
+  double _px(double n) => n / (_k * _viewZoom);
+
+  /// How far the markers have grown to their readable size: none on the
+  /// whole world, all of it from the third level on.
+  double get _grow => ((_zoom - 1) / 2).clamp(0.0, 1.0);
+
+  /// A marker's size in chart units: its [natural] one, but never under
+  /// [px] on screen once the chart is looked at closer.
+  double _atLeast(double natural, double px) =>
+      math.max(natural, _px(px * _grow));
+
   /// A font size in chart units: [base] shrinking with the zoom as the
   /// names always have, but never under [minPx] on screen.
   double _font(double base, double minPx) =>
-      math.max(base * _t, minPx / (_k * _zoom));
+      math.max(base * _t, minPx / (_k * _viewZoom));
 
   /// [v] kept within [lo]..[hi]; [lo] when the range is empty (a name
   /// wider than the canvas), where num.clamp would throw.
@@ -187,7 +209,7 @@ class ChartMapPainter extends CustomPainter {
   /// land, sea, roads and the fog's edge alike.
   void _haloText(Canvas canvas, String text, TextStyle style, Offset at,
       {Color? halo, double? width}) {
-    final line = width ?? 2.4 / (_k * _zoom);
+    final line = width ?? 2.4 / (_k * _viewZoom);
     final back = TextPainter(
       text: TextSpan(
         text: text,
@@ -341,9 +363,16 @@ class ChartMapPainter extends CustomPainter {
   void _feature(Canvas canvas, ChartFeature f, Offset p) {
     final ink = palette.place;
     final dark = const Color(0xFF17151B).withValues(alpha: 0.8);
+    // About 26 px across at least once the chart is looked at closer, on a
+    // small plate so it reads over dark and light ground alike.
+    final sc = math.max((_m * 1.3).clamp(0.3, 1.3), _px(26 * _grow) / 8.4);
+    if (_grow > 0) {
+      canvas.drawCircle(p, 6.4 * sc,
+          Paint()..color = palette.land.withValues(alpha: 0.72 * _grow));
+    }
     canvas.save();
     canvas.translate(p.dx, p.dy);
-    canvas.scale((_m * 1.3).clamp(0.3, 1.3));
+    canvas.scale(sc);
     switch (f.kind) {
       case ChartFeatureKind.village:
         // Four houses about a lane, and a field or two beside them.
@@ -1596,7 +1625,8 @@ class ChartMapPainter extends CustomPainter {
       for (final l in reached)
         if (_vis(geography.of(l)))
           Rect.fromCircle(
-              center: _at(geography.of(l)), radius: (l.big ? 4.5 : 3.5) * m),
+              center: _at(geography.of(l)),
+              radius: _atLeast((l.big ? 4.5 : 3.5) * m, l.big ? 14 : 13)),
       // The traveller and the pin over them, where the story stands.
       if (standing != null && !walking && _vis(geography.of(standing)))
         () {
@@ -1649,7 +1679,7 @@ class ChartMapPainter extends CustomPainter {
       final text = l.name(language);
       final painter = _layout(text, style);
       final w = painter.width, h = painter.height;
-      final off = 5.5 * m, up = 4.5 * m;
+      final off = _atLeast(5.5 * m, 16), up = _atLeast(4.5 * m, 15);
       final right = Offset(p.dx + off, p.dy - h / 2);
       final left = Offset(p.dx - off - w, p.dy - h / 2);
       final above = Offset(p.dx - w / 2, p.dy - up - h);
@@ -1691,6 +1721,13 @@ class ChartMapPainter extends CustomPainter {
       }
       spot ??= right;
       taken.add((spot & Size(w, h)).inflate(0.8 * m));
+      // A small plate under the name, so it reads over dark and light ground.
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(
+              (spot & Size(w, h)).inflate(_px(2.5)), Radius.circular(_px(4))),
+          Paint()
+            ..color =
+                palette.land.withValues(alpha: (0.35 + 0.4 * _grow) * opacity));
       _haloText(canvas, text, style, spot);
     }
 
@@ -1739,7 +1776,7 @@ class ChartMapPainter extends CustomPainter {
         final rect = at & size;
         if (fits(rect)) {
           taken.add(rect);
-          _haloText(canvas, text, style, at, width: 1.8 / (_k * _zoom));
+          _haloText(canvas, text, style, at, width: 1.8 / (_k * _viewZoom));
           break;
         }
       }
@@ -1775,7 +1812,7 @@ class ChartMapPainter extends CustomPainter {
         if (fits(rect)) {
           taken.add(rect);
           _haloText(canvas, text, style, base + nudge,
-              width: 1.8 / (_k * _zoom));
+              width: 1.8 / (_k * _viewZoom));
           break;
         }
       }
@@ -1824,7 +1861,7 @@ class ChartMapPainter extends CustomPainter {
             f.name(language),
             TextStyle(
               fontFamily: seat ? InkFonts.display : InkFonts.prose,
-              fontSize: (seat ? 5.2 : 4.2) * t,
+              fontSize: _font(seat ? 5.2 : 4.2, seat ? 12 : 11),
               color: colour.withValues(alpha: 0.9),
               shadows: [Shadow(color: palette.land, blurRadius: 1.5 * t)],
             )
@@ -1834,12 +1871,12 @@ class ChartMapPainter extends CustomPainter {
             f.note(language),
             TextStyle(
               fontFamily: InkFonts.system,
-              fontSize: 3.2 * t,
+              fontSize: _font(3.2, 10),
               color: palette.label.withValues(alpha: 0.9),
             )
           ),
       ];
-      var y = featureAt.dy + (f.landmark.isEmpty ? 3.6 : 8) * m;
+      var y = featureAt.dy + _atLeast((f.landmark.isEmpty ? 3.6 : 8) * m, 15);
       for (final (text, style) in lines) {
         final painter = _layout(text, style);
         final at = Offset(
@@ -1849,6 +1886,11 @@ class ChartMapPainter extends CustomPainter {
         final rect = at & Size(painter.width, painter.height);
         if (!fits(rect)) break;
         taken.add(rect);
+        canvas.drawRRect(
+            RRect.fromRectAndRadius(
+                rect.inflate(_px(2)), Radius.circular(_px(3.5))),
+            Paint()
+              ..color = palette.land.withValues(alpha: (0.3 + 0.4 * _grow)));
         painter.paint(canvas, at);
         y += painter.height - 0.4;
       }
@@ -2171,52 +2213,73 @@ class ChartMapPainter extends CustomPainter {
               ? palette.voidColor
               : chapterColor(l.chapter))
           .withValues(alpha: opacity);
+      final base = l.atSea ? 2.4 * m : (l.big ? 3.6 : 2.6) * m;
+      // Held to a readable size on a chart looked at close: a plate under
+      // the mark (so it reads on dark and light ground) at least 24 px across
+      // and a dot inside it.
+      final plate = _atLeast(base * 1.25, l.big ? 13 : 12);
+      if (_grow > 0) {
+        canvas.drawCircle(
+            p,
+            plate,
+            Paint()
+              ..color = palette.land.withValues(alpha: 0.85 * _grow * opacity));
+        canvas.drawCircle(
+            p,
+            plate,
+            Paint()
+              ..color = color.withValues(alpha: 0.9 * _grow)
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = _px(1.6 * _grow) + 0.2 * m * (1 - _grow));
+      }
       if (l.atSea) {
         canvas.drawCircle(
             p,
-            2.4 * m,
+            _atLeast(base, 6.5),
             Paint()
               ..color = color
               ..style = PaintingStyle.stroke
-              ..strokeWidth = 1 * m);
+              ..strokeWidth = math.max(1 * m, _px(2 * _grow)));
       } else {
-        canvas.drawCircle(p, (l.big ? 3.6 : 2.6) * m, Paint()..color = color);
+        final dot = _atLeast(base, l.big ? 7 : 5.5);
+        canvas.drawCircle(p, dot, Paint()..color = color);
         canvas.drawCircle(
             p,
-            (l.big ? 3.6 : 2.6) * m,
+            dot,
             Paint()
               ..color = const Color(0xFF17151B).withValues(alpha: 0.6)
               ..style = PaintingStyle.stroke
-              ..strokeWidth = 0.4 * m);
+              ..strokeWidth = math.max(0.4 * m, _px(0.8 * _grow)));
       }
       if (isHere) {
         // The party's place: a glow, a gold ring and a dark rim under it
         // so it reads on any ground.
-        canvas.drawCircle(
-            p, 9 * m, Paint()..color = palette.mark.withValues(alpha: 0.2));
+        final ring = _atLeast(5.4 * m, 15);
+        canvas.drawCircle(p, _atLeast(9 * m, 24),
+            Paint()..color = palette.mark.withValues(alpha: 0.2));
         canvas.drawCircle(
             p,
-            5.4 * m,
+            ring,
             Paint()
               ..color = const Color(0xFF17151B).withValues(alpha: 0.85)
               ..style = PaintingStyle.stroke
-              ..strokeWidth = 3 * m);
+              ..strokeWidth = math.max(3 * m, _px(4 * _grow)));
         canvas.drawCircle(
             p,
-            5.4 * m,
+            ring,
             Paint()
               ..color = palette.mark
               ..style = PaintingStyle.stroke
-              ..strokeWidth = 1.7 * m);
+              ..strokeWidth = math.max(1.7 * m, _px(2.4 * _grow)));
       }
       if (l.id == selectedId && (reduceMotion || f % 4 < 3)) {
         canvas.drawCircle(
             p,
-            6.8 * m,
+            _atLeast(6.8 * m, 18),
             Paint()
               ..color = palette.place.withValues(alpha: 0.8)
               ..style = PaintingStyle.stroke
-              ..strokeWidth = 0.6 * m);
+              ..strokeWidth = math.max(0.6 * m, _px(1.5 * _grow)));
       }
     }
 
@@ -2228,37 +2291,39 @@ class ChartMapPainter extends CustomPainter {
       final isGoal = l.id == goalId;
       final colour =
           isGoal ? palette.mark : palette.place.withValues(alpha: 0.9);
-      canvas.drawCircle(
-          p, 2.8 * m, Paint()..color = palette.land.withValues(alpha: 0.75));
+      canvas.drawCircle(p, _atLeast(2.8 * m, 12),
+          Paint()..color = palette.land.withValues(alpha: 0.75));
       canvas.drawCircle(
           p,
-          2.8 * m,
+          _atLeast(2.8 * m, 12),
           Paint()
             ..color = colour
             ..style = PaintingStyle.stroke
-            ..strokeWidth = 0.7 * m);
+            ..strokeWidth = math.max(0.7 * m, _px(1.5 * _grow)));
       final q = _layout(
           '?',
           TextStyle(
-              color: colour, fontSize: 4.4 * m, fontWeight: FontWeight.w700));
+              color: colour,
+              fontSize: _atLeast(4.4 * m, 14),
+              fontWeight: FontWeight.w700));
       q.paint(canvas, p - Offset(q.width / 2, q.height / 2));
       if (isGoal) {
         canvas.drawCircle(
             p,
-            4.8 * m,
+            _atLeast(4.8 * m, 16),
             Paint()
               ..color = palette.mark
               ..style = PaintingStyle.stroke
-              ..strokeWidth = 0.9 * m);
+              ..strokeWidth = math.max(0.9 * m, _px(2 * _grow)));
       }
       if (l.id == selectedId && (reduceMotion || f % 4 < 3)) {
         canvas.drawCircle(
             p,
-            6.8 * m,
+            _atLeast(6.8 * m, 18),
             Paint()
               ..color = palette.place.withValues(alpha: 0.8)
               ..style = PaintingStyle.stroke
-              ..strokeWidth = 0.6 * m);
+              ..strokeWidth = math.max(0.6 * m, _px(1.5 * _grow)));
       }
     }
 

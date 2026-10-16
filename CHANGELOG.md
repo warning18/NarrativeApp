@@ -13,6 +13,27 @@ isn't reconstructable from git history alone.
 ### Added
 - The data for the in-place display (`docs/proposals/inplace-data.md`): `facing` on 94 story nodes (who the scene is with), `prompt` / `prompt_fr` on the 226 scenes with two or more choices (the question the scene ends on), and `about` on 69 hub choices (the NPC, clan or sub-clan a choice is about), EN and FR. All optional; nothing reads them yet.
 
+## [1.416.0+452]
+
+Lysa's blood on the Shroud.
+
+- **Blood on the Shroud:** if you give Lysa's blood to the Shroud, the piece wakes and gives you a boon of its own.
+  - Its gift, at heroic strength: more damage when you are low on health, lifesteal and critical chance.
+  - Its cost, the Void's hold on you: −12 max health.
+  It is never offered by a patron.
+
+## [1.415.0+451]
+
+The map's places and names hold a readable size when you zoom.
+
+### Fixed
+- **Places and their names no longer shrink as the sphere comes close.** The world map is drawn at its screen size on the sphere, but its marks and names were sized as if a viewer scaled them by the zoom, so at the closest zoom they were a few pixels tall. They now keep their size.
+
+### Changed
+- **Each reached place has a plate under its mark** (at least 24 px across once you zoom in), the party's ring and the picked place's ring grow with it, and the clans' seats, villages and other features are held to about 26 px.
+- **Names are at least 11–12 px with a small plate behind them**, so they read over dark and light ground; a name that collides with another is left off, the party's place, the picked one and the goal first.
+- **A tap on a place hits within 22 px of it** (44 across), at any zoom, on the flat chart and the sphere. The town chart's building names are 11 px and its pins 24 px, with a slightly larger tap.
+
 ## [1.414.0+450]
 
 ### Changed

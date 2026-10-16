@@ -53,13 +53,17 @@ void main() {
   final story = File('assets/Cleaned_Narrative_DAG.json').readAsStringSync();
   final nodes = (jsonDecode(story) as Map<String, dynamic>).keys.toSet();
 
-  test('thirteen patrons and 79 signs, nine of them duos', () {
+  test('thirteen patrons and 80 signs, nine of them duos', () {
     expect(patrons, hasLength(13));
-    expect(signs, hasLength(79));
+    expect(signs, hasLength(80));
+    // One the story gives (the Shroud's, Lysa's arc), never drawn.
+    expect(signs.values.where((s) => s.storyOnly).map((s) => s.id),
+        [shroudBloodSignId]);
     expect(signs.values.where((s) => s.isDuo), hasLength(9));
     // The Open Hand (v1.195), the dead clan: six signs drawn by your own
     // hand, and no clan among the six.
-    expect(signs.values.where((s) => s.patronId == 'open_hand'), hasLength(6));
+    expect(signs.values.where((s) => s.patronId == 'open_hand' && !s.storyOnly),
+        hasLength(6));
     expect(
         patrons.values
             .where((p) => p.kind == PatronKind.clan && p.id != 'open_hand'),
@@ -149,7 +153,10 @@ void main() {
           case SignEffectKind.secondWind:
             break;
           default:
-            expect(effect.value, greaterThan(0), reason: id);
+            // A story-only sign may carry its cost (the Shroud's, the
+            // Void's hold on you).
+            expect(effect.value, sign.storyOnly ? isNonZero : greaterThan(0),
+                reason: id);
         }
       }
       if (sign.isDuo) {

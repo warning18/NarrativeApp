@@ -90,7 +90,7 @@ ClanRadar clanRadarOf(
 }) {
   final counts = {for (final axis in RadarAxis.values) axis: 0.0};
   for (final sign in signs.values) {
-    if (sign.patronId != factionId) continue;
+    if (sign.patronId != factionId || sign.storyOnly) continue;
     for (final effect in sign.effects) {
       counts[radarAxisOf(effect.kind)] = counts[radarAxisOf(effect.kind)]! + 1;
     }
