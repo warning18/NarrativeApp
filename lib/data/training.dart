@@ -252,6 +252,11 @@ List<TrainingPath> _drawThree({
 // character takes one. Now and then the turn is a **rare** offer worth two
 // points. Like a training offer, a pick stays on the table until taken.
 
+/// The base damage each level brings by itself, beside its +20 max health
+/// (PlayerSessionNotifier._applyXp). Stat picks rarely offer damage, where
+/// the free stat points used to put about +2 a level into it.
+const int levelDamageGain = 1;
+
 /// The chance that a pick's turn is a rare offer, worth two points.
 const double statPickRareChance = 0.12;
 

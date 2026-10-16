@@ -281,6 +281,26 @@ void main() {
       expect(small.trainingOffer, hasLength(1));
     });
 
+    test('a level brings +1 base damage by itself', () async {
+      expect(levelDamageGain, 1);
+      final n = await notifierWith({
+        'level': 1,
+        'currentXP': 90,
+        'baseDamage': 10,
+        'activeQuestIds': ['q_test'],
+      });
+      await n.applyCombatResult(hpAfter: 50, xpGain: 10);
+      expect(n.state.level, 2);
+      expect(n.state.baseDamage, 10 + levelDamageGain);
+      // Two levels at once from a quest's XP: twice as much.
+      await n.completeQuest('q_test', rewardXP: 200 + 300);
+      expect(n.state.level, 4);
+      expect(n.state.baseDamage, 10 + 3 * levelDamageGain);
+      // Gold or XP below the threshold leave it.
+      await n.applyCombatResult(hpAfter: 50, xpGain: 10);
+      expect(n.state.baseDamage, 10 + 3 * levelDamageGain);
+    });
+
     test('the pick on the table survives the save', () async {
       final n = await notifierWith({'statPoints': 2, 'professionId': 'cleric'});
       expect(n.state.toJson().containsKey('statPickOffer'), isFalse);
@@ -322,8 +342,9 @@ void main() {
     expect(c.gainXp(100), isTrue);
     expect(c.level, 2);
     expect(c.trainingTaken.values.fold<int>(0, (a, b) => a + b), 5);
-    // +20 health (2 points) and five picks, a rare one worth one more.
-    expect(points() - before, inInclusiveRange(7, 12));
+    // +20 health (2 points), the level's damage and five picks, a rare
+    // one worth one more.
+    expect(points() - before, inInclusiveRange(8, 13));
     expect(c.maxHealth, greaterThanOrEqualTo(health + 20));
     expect(c.currentHealth, c.maxHealth);
   });

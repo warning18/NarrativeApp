@@ -319,8 +319,9 @@ class SimCharacter {
   }
 
   /// Runs [gain] XP through the app's own `level * 100` thresholds. Each
-  /// level: +20 max health and +5 stat points -- five stat picks with
-  /// [trainingPaths] (see [takeStatPicks]), else spent as +10 health, +2
+  /// level: +20 max health and +5 stat points -- with [trainingPaths], five
+  /// stat picks (see [takeStatPicks]) and the game's [levelDamageGain]
+  /// damage; else spent as +10 health, +2
   /// damage, +1 armor and +1 to [preferredStat] (the simulator's old fixed
   /// assumption) -- then a full heal like the app's own level-up.
   bool gainXp(int gain) {
@@ -332,6 +333,7 @@ class SimCharacter {
       leveled = true;
       if (trainingPaths.isNotEmpty) {
         maxHealth += 20;
+        baseDamage += levelDamageGain;
         takeStatPicks(5);
         continue;
       }

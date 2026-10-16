@@ -3341,6 +3341,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       level: leveled.level,
       currentXP: leveled.xp,
       maxHealth: leveled.maxHealth,
+      baseDamage: leveled.baseDamage,
       currentHealth:
           leveled.leveledUp ? leveled.maxHealth : state.currentHealth,
       statPoints: leveled.statPoints,
@@ -4845,7 +4846,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   /// Runs [xpGain] through the level-up threshold (`level * 100` XP each),
-  /// applying every level gained: +5 statPoints and +20 maxHealth (and an
+  /// applying every level gained: +5 statPoints, +20 maxHealth and
+  /// [levelDamageGain] baseDamage (and an
   /// offer, which the callers add: see [_levelOffers]). Shared by
   /// [applyCombatResult] and [completeQuest] so a quest's XP reward levels
   /// the player up exactly like combat XP does.
@@ -4853,6 +4855,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int level,
     int xp,
     int maxHealth,
+    int baseDamage,
     int statPoints,
     bool leveledUp,
     int levelsGained,
@@ -4860,6 +4863,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     var newLevel = state.level;
     var newXp = state.currentXP + xpGain;
     var newMaxHealth = state.maxHealth;
+    var newBaseDamage = state.baseDamage;
     var newStatPoints = state.statPoints;
     var leveledUp = false;
     var levelsGained = 0;
@@ -4869,6 +4873,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       newLevel += 1;
       newStatPoints += 5;
       newMaxHealth += 20;
+      newBaseDamage += levelDamageGain;
       leveledUp = true;
       levelsGained += 1;
     }
@@ -4877,6 +4882,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       level: newLevel,
       xp: newXp,
       maxHealth: newMaxHealth,
+      baseDamage: newBaseDamage,
       statPoints: newStatPoints,
       leveledUp: leveledUp,
       levelsGained: levelsGained,
@@ -5043,6 +5049,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       level: leveled.level,
       currentXP: leveled.xp,
       maxHealth: leveled.maxHealth,
+      baseDamage: leveled.baseDamage,
       currentHealth: newHealth,
       statPoints: leveled.statPoints + statPointsGained,
       // Each level reached and a boss beaten bring an offer (see
