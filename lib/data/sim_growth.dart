@@ -278,26 +278,7 @@ class SimGrowth {
   void _patronGains(int level) {
     final c = character;
     final gains = patronLevelGains(politics, level: level);
-    for (final MapEntry(:key, :value) in gains.stats.entries) {
-      switch (key) {
-        case 'strength':
-          c.strength += value;
-        case 'dexterity':
-          c.dexterity += value;
-        case 'constitution':
-          c.constitution += value;
-        case 'intelligence':
-          c.intelligence += value;
-        case 'wisdom':
-          c.wisdom += value;
-        case 'charisma':
-          c.charisma += value;
-        case 'luck':
-          c.luck += value;
-        case 'perception':
-          c.perception += value;
-      }
-    }
+    c.addAbilities(gains.stats);
     c.maxHealth += gains.maxHealth;
     c.currentHealth += gains.maxHealth;
   }

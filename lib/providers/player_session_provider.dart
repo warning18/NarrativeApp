@@ -11,6 +11,7 @@ import '../combat/face_keywords.dart' show FaceKeyword;
 import '../combat/face_smithing.dart';
 import '../combat/sea_beasts.dart' show BeastState;
 import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
+import '../combat/stat_rules.dart';
 import '../data/cliff_town.dart' show townAdditionLimitOf;
 import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
@@ -807,9 +808,7 @@ class PlayerSession {
       legacyGold > 0 || legacyDiceIds.isNotEmpty || legacySpellIds.isNotEmpty;
 
   /// The mana pool's size -- see `maxManaFor` in spells.dart.
-  int get maxMana =>
-      maxManaFor(intelligence: intelligence, wisdom: wisdom) +
-      perkEffects.maxMana;
+  int get maxMana => maxManaFor(wisdom: wisdom) + perkEffects.maxMana;
 
   int get xpToNextLevel => level * 100;
 
@@ -1091,6 +1090,30 @@ class PlayerSession {
       legacyDiceIds: legacyDiceIds ?? this.legacyDiceIds,
       legacySpellIds: legacySpellIds ?? this.legacySpellIds,
       itemOrigins: itemOrigins ?? this.itemOrigins,
+    );
+  }
+
+  /// This session with [gains] (ability -> points) added: the abilities,
+  /// and what they bring (stat_rules.dart) -- +1 base damage a point of the
+  /// profession's damage stat, +5 max health (healed as much) a point of
+  /// Constitution. Every way an ability is gained goes through here: a
+  /// pick, the patron's gifts, the formative memories.
+  PlayerSession withAbilityGains(Map<String, int> gains) {
+    if (gains.isEmpty) return this;
+    int gain(String stat) => gains[stat] ?? 0;
+    final effects = abilityGainEffects(gains, professionId);
+    return copyWith(
+      strength: strength + gain('strength'),
+      dexterity: dexterity + gain('dexterity'),
+      constitution: constitution + gain('constitution'),
+      intelligence: intelligence + gain('intelligence'),
+      wisdom: wisdom + gain('wisdom'),
+      perception: perception + gain('perception'),
+      luck: luck + gain('luck'),
+      charisma: charisma + gain('charisma'),
+      baseDamage: baseDamage + effects.baseDamage,
+      maxHealth: max(1, maxHealth + effects.maxHealth),
+      currentHealth: max(1, currentHealth + effects.maxHealth),
     );
   }
 
@@ -1533,7 +1556,6 @@ class PlayerSession {
       // same as a fresh character.
       mana: (json['mana'] as num?)?.toInt() ??
           maxManaFor(
-            intelligence: (json['intelligence'] as num?)?.toInt() ?? 0,
             wisdom: (json['wisdom'] as num?)?.toInt() ?? 0,
           ),
       knownSpellIds:
@@ -1687,7 +1709,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       equippedDiceId: null,
       antidoteCount: (defaults['antidoteCount'] as num?)?.toInt() ?? 0,
       mana: maxManaFor(
-        intelligence: (defaults['intelligence'] as num?)?.toInt() ?? 0,
         wisdom: (defaults['wisdom'] as num?)?.toInt() ?? 0,
       ),
       newGamePlusCycle: keepLegacy ? previous.newGamePlusCycle : 0,
@@ -1833,7 +1854,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       ownedDiceIds: [startingDiceId, ...legacyDice],
       equippedDiceId: startingDiceId,
       antidoteCount: (defaults['antidoteCount'] as num?)?.toInt() ?? 0,
-      mana: maxManaFor(intelligence: intelligence, wisdom: wisdom),
+      mana: maxManaFor(wisdom: wisdom),
       knownSpellIds: [...startingSpellIds, ...legacySpells],
       newGamePlusCycle: legacy.newGamePlusCycle,
       // A new character starts with no signs, but the patrons remember.
@@ -2384,9 +2405,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   static Map<String, int> _trainingStatsOf(PlayerSession s) => {
-        'baseDamage': s.baseDamage,
-        'baseArmor': s.baseArmor,
-        'maxHealth': s.maxHealth,
         'strength': s.strength,
         'dexterity': s.dexterity,
         'constitution': s.constitution,
@@ -2420,6 +2438,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           random ?? Random(s.level * 7919 + s.statPoints * 131 + takenTotal),
       professionId: s.professionId,
       raceId: s.raceId,
+      luck: s.luck,
       taken: s.trainingTaken,
       stats: _trainingStatsOf(s),
     );
@@ -2439,21 +2458,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (index < 0 || index >= offer.length) return false;
     if (s.pendingStatPicks <= 0) return false;
     final pick = offer[index];
-    int gain(String stat) => pick.gains[stat] ?? 0;
-    state = s.copyWith(
+    state = s.withAbilityGains(pick.gains).copyWith(
       statPoints: s.statPoints - 1,
-      baseDamage: s.baseDamage + gain('baseDamage'),
-      baseArmor: s.baseArmor + gain('baseArmor'),
-      maxHealth: s.maxHealth + gain('maxHealth'),
-      currentHealth: s.currentHealth + gain('maxHealth'),
-      strength: s.strength + gain('strength'),
-      dexterity: s.dexterity + gain('dexterity'),
-      constitution: s.constitution + gain('constitution'),
-      intelligence: s.intelligence + gain('intelligence'),
-      wisdom: s.wisdom + gain('wisdom'),
-      perception: s.perception + gain('perception'),
-      luck: s.luck + gain('luck'),
-      charisma: s.charisma + gain('charisma'),
       statPickOffer: const [],
       trainingTaken: {
         ...s.trainingTaken,
@@ -4582,19 +4588,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     required Map<String, int> abilities,
     required List<String> flags,
   }) async {
-    int plus(String key, int value) => value + (abilities[key] ?? 0);
-    state = state.copyWith(
-      alignmentScore: state.alignmentScore + alignmentMod,
-      strength: plus('strength', state.strength),
-      dexterity: plus('dexterity', state.dexterity),
-      constitution: plus('constitution', state.constitution),
-      intelligence: plus('intelligence', state.intelligence),
-      wisdom: plus('wisdom', state.wisdom),
-      charisma: plus('charisma', state.charisma),
-      luck: plus('luck', state.luck),
-      perception: plus('perception', state.perception),
-      flags: <String>{...state.flags, ...flags}.toList(),
-    );
+    state = state.withAbilityGains(abilities).copyWith(
+          alignmentScore: state.alignmentScore + alignmentMod,
+          flags: <String>{...state.flags, ...flags}.toList(),
+        );
     await _persist();
   }
 
@@ -4697,9 +4694,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   /// Runs [xpGain] through the level-up threshold (`level * 100` XP each),
-  /// applying every level gained: +5 statPoints, +20 maxHealth and
-  /// [levelDamageGain] baseDamage (and an
-  /// offer, which the callers add: see [_levelOffers]). Shared by
+  /// applying every level gained: [levelStatPicks] stat pick and
+  /// [levelHealthGain] max health (stat_rules.dart; base damage grows only
+  /// with the damage stat), and an offer, which the callers add: see
+  /// [_levelOffers]. Shared by
   /// [applyCombatResult] and [completeQuest] so a quest's XP reward levels
   /// the player up exactly like combat XP does.
   ({
@@ -4722,9 +4720,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     while (newXp >= newLevel * 100) {
       newXp -= newLevel * 100;
       newLevel += 1;
-      newStatPoints += 5;
-      newMaxHealth += 20;
-      newBaseDamage += levelDamageGain;
+      newStatPoints += levelStatPicks;
+      newMaxHealth += levelHealthGain;
       leveledUp = true;
       levelsGained += 1;
     }
@@ -4761,16 +4758,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           stats: stats,
           openHand: bannerRaisedIn(s.flags));
       if (gains.stats.isEmpty && gains.maxHealth == 0) break;
-      int plus(String stat) => stats[stat]! + (gains.stats[stat] ?? 0);
+      s = s.withAbilityGains(gains.stats);
       s = s.copyWith(
-        strength: plus('strength'),
-        dexterity: plus('dexterity'),
-        constitution: plus('constitution'),
-        intelligence: plus('intelligence'),
-        wisdom: plus('wisdom'),
-        charisma: plus('charisma'),
-        luck: plus('luck'),
-        perception: plus('perception'),
         maxHealth: s.maxHealth + gains.maxHealth,
         currentHealth: s.currentHealth + gains.maxHealth,
         politics: logPatronGains(s.politics, statPatron(s.politics), gains,

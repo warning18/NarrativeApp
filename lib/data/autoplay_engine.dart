@@ -362,7 +362,7 @@ Future<bool> _simulateFight({
           const <String, String>{},
       skills);
 
-  final enemyMaxHealth = scaledMaxHealth(
+  final enemyMaxHealth = enemyScaledMaxHealth(
       (enemy['maxHealth'] as num?)?.toInt() ?? 1, session.level);
   final enemyDamage =
       scaledDamage((enemy['damage'] as num?)?.toInt() ?? 0, session.level);

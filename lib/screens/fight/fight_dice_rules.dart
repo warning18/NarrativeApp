@@ -221,7 +221,9 @@ extension _FightDiceRules on _FightScreenState {
       forceCritical: surge || sureCrit,
       alignmentLabel: _alignmentLabel,
       critChanceBonus: rollCritical
-          ? actor.gear.critChance + (actor.isPlayer ? _core.ledgerChain : 0)
+          ? actor.gear.critChance +
+              perceptionCritBonus(actor.professionId, actor.perception) +
+              (actor.isPlayer ? _core.ledgerChain : 0)
           : 0,
       armor: actor.armor,
     );

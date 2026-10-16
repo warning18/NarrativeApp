@@ -186,8 +186,8 @@ extension _FightSetup on _FightScreenState {
     } else {
       displayName = titledName;
     }
-    var maxHealth =
-        scaledMaxHealth((raw['maxHealth'] as num?)?.toInt() ?? 1, _playerLevel);
+    var maxHealth = enemyScaledMaxHealth(
+        (raw['maxHealth'] as num?)?.toInt() ?? 1, _playerLevel);
     var damage =
         scaledDamage((raw['damage'] as num?)?.toInt() ?? 0, _playerLevel);
     // The difficulty curve (the flat floor, the chapter, a zone's tier and
@@ -355,7 +355,10 @@ extension _FightSetup on _FightScreenState {
       displayName: playerLabel,
       isPlayer: true,
       maxHealth: playerMaxHealth,
-      baseDamage: _partyBonus.scaleDamage(session.baseDamage),
+      // A sign that lends the damage stat lends its damage too
+      // (stat_rules.dart).
+      baseDamage: _partyBonus.scaleDamage(
+          session.baseDamage + _signs.stat(damageStatOf(session.professionId))),
       armor: session.baseArmor,
       currentHealth: playerHealth,
       equippedItemIds: session.equippedItemIds,
@@ -376,6 +379,7 @@ extension _FightSetup on _FightScreenState {
       wisdom: session.wisdom + _signs.stat('wisdom'),
       luck: session.luck + _signs.stat('luck'),
       perception: session.perception + _signs.stat('perception'),
+      professionId: session.professionId,
       gear: _signs.over(_perks
           .over(gearEffectsFor(session.equippedItemIds, items, itemSets))),
       dieFaces: smithed(_selectedDiceId),
@@ -446,6 +450,7 @@ extension _FightSetup on _FightScreenState {
         wisdom: base.wisdom,
         luck: base.luck,
         perception: base.perception,
+        professionId: companion['professionId']?.toString() ?? '',
         gear: gearEffectsFor(allyState.equippedItemIds, items, itemSets),
         dieFaces: smithed(companion['signatureDiceId']?.toString(),
             companionId: companionId),

@@ -62,8 +62,7 @@ void main() {
           (dice['apprentice_die'] as Map<String, dynamic>)['faces']);
       expect(c.knownSpells.map((s) => s.id),
           ['spell_arcane_bolt', 'spell_mana_ward']);
-      expect(c.maxMana,
-          maxManaFor(intelligence: c.intelligence, wisdom: c.wisdom));
+      expect(c.maxMana, maxManaFor(wisdom: c.wisdom));
       expect(c.mana, c.maxMana);
       expect(c.intelligence, greaterThanOrEqualTo(1));
       expect(c.diceSkillAssignments['4'], 'mage_arcane_missile');

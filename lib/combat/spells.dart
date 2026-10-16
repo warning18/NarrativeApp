@@ -33,13 +33,12 @@ SpellEffectKind _effectFromString(String? value) => switch (value) {
 /// [maxManaFor].
 const int baseMana = 4;
 
-/// A character's mana pool: [baseMana] plus half of whichever is higher,
-/// Intelligence or Wisdom -- a starting Mage or Cleric (4 in their stat)
-/// has 6, a Warrior 4. Mana carries over between fights like health does,
-/// refills on a rest, and comes back mid-fight through a die's `Mana`
-/// faces (see `resolvePlayerFace`).
-int maxManaFor({required int intelligence, required int wisdom}) =>
-    baseMana + max(intelligence, wisdom) ~/ 2;
+/// A character's mana pool: [baseMana] plus one a point of Wisdom
+/// (docs/proposals/stat-scale.md: mana comes from Wisdom only) -- a
+/// starting human Cleric (Wisdom 6) has 10, a Warrior 4. Mana carries over
+/// between fights like health does, refills on a rest, and comes back
+/// mid-fight through a die's `Mana` faces (see `resolvePlayerFace`).
+int maxManaFor({required int wisdom}) => baseMana + max(0, wisdom);
 
 /// Extra mana a Mana face or a mana skill (Channel, Prayer) gives in the
 /// hands of a wise character: one more point per 3 Wisdom -- a starting

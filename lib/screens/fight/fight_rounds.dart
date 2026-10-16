@@ -1336,7 +1336,10 @@ extension _FightRounds on _FightScreenState {
       // rather than just softening it further on top of block/armor/resist.
       // The Briar Guard can't dodge (specialisations.dart).
       final wasDodged = _random.nextDouble() * 100 <
-              dodgeChanceFor(target.dexterity) + target.gear.dodgeChance &&
+              dodgeChanceFor(target.dexterity,
+                      perception: target.perception,
+                      professionId: target.professionId) +
+                  target.gear.dodgeChance &&
           !(target.isPlayer && _core.has(Spec.briarGuard));
       // A parry (v1.214) takes its share of the blow first.
       final parry = enemy.parryBlock;
@@ -1348,6 +1351,16 @@ extension _FightRounds on _FightScreenState {
               parry: parry,
               block: target.block,
               mitigation: mitigation);
+      // A warrior's Perception blocks a blow now and then: half of it
+      // (stat_rules.dart).
+      final blockChance =
+          blockChanceFor(target.professionId, target.perception);
+      if (!wasDodged &&
+          damageTaken > 0 &&
+          blockChance > 0 &&
+          _random.nextDouble() * 100 < blockChance) {
+        damageTaken = blockedBlow(damageTaken);
+      }
       // The Briar Guard: what the guard stopped feeds Fury, and a part of
       // it goes back (specialisations.dart).
       final stopped = wasDodged ? 0 : moveDamage - damageTaken;

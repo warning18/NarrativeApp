@@ -132,9 +132,7 @@ void main() {
       expect(notifier.state.maxHealth, 100 + vigorHealthPerRank);
       expect(notifier.state.currentHealth, 60 + vigorHealthPerRank);
 
-      final base = maxManaFor(
-          intelligence: notifier.state.intelligence,
-          wisdom: notifier.state.wisdom);
+      final base = maxManaFor(wisdom: notifier.state.wisdom);
       await notifier.loadSession(_wayfarerOffers(notifier.state, 'deepWell'));
       expect(await notifier.acceptSuitor(wayfarerId, tables: _tables), isTrue);
       expect(notifier.state.maxMana, base + manaPerRank);

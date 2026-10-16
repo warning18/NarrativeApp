@@ -6,10 +6,8 @@
     "blurb_fr": "Vous encaissez le coup pour en rendre un pire.",
     "icon": "fist",
     "gains": {
-      "baseDamage": 1,
-      "maxHealth": 20,
-      "strength": 1,
-      "constitution": 1
+      "strength": 2,
+      "constitution": 2
     },
     "professions": [
       "warrior"
@@ -23,8 +21,7 @@
     "blurb_fr": "Un pas d’avance, et la pointe déjà arrivée.",
     "icon": "blade",
     "gains": {
-      "baseDamage": 1,
-      "dexterity": 2,
+      "dexterity": 3,
       "perception": 1,
       "luck": 1
     },
@@ -43,9 +40,7 @@
     "blurb_fr": "Vous tenez la place d’où l’on ne peut atteindre les autres.",
     "icon": "shield",
     "gains": {
-      "baseArmor": 2,
-      "maxHealth": 10,
-      "constitution": 1,
+      "constitution": 3,
       "wisdom": 1
     },
     "professions": [
@@ -63,9 +58,8 @@
     "blurb_fr": "Rien ne vous use ; c’est vous qui usez le reste.",
     "icon": "tower",
     "gains": {
-      "baseArmor": 1,
-      "maxHealth": 30,
-      "constitution": 1
+      "constitution": 3,
+      "strength": 1
     },
     "professions": [
       "warrior"
@@ -100,9 +94,9 @@
     "blurb_fr": "La foi est une lanterne, et vous la portez dans le noir.",
     "icon": "sun",
     "gains": {
-      "baseArmor": 1,
-      "maxHealth": 10,
+      "intelligence": 2,
       "wisdom": 2,
+      "constitution": 1,
       "charisma": 1
     },
     "professions": [
@@ -122,7 +116,7 @@
       "dexterity": 2,
       "perception": 1,
       "luck": 1,
-      "maxHealth": 10
+      "constitution": 1
     },
     "professions": [
       "rogue",
@@ -137,9 +131,8 @@
     "blurb_fr": "La longue veille, et le seul tir net.",
     "icon": "bow",
     "gains": {
-      "baseDamage": 1,
+      "dexterity": 2,
       "perception": 2,
-      "dexterity": 1,
       "wisdom": 1
     },
     "professions": [
@@ -173,10 +166,8 @@
     "blurb_fr": "La force d’abord ; le reste suivra.",
     "icon": "knuckles",
     "gains": {
-      "strength": 2,
-      "baseDamage": 1,
-      "constitution": 1,
-      "maxHealth": 10
+      "strength": 3,
+      "constitution": 2
     },
     "professions": [
       "warrior"

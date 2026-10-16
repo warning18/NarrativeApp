@@ -6,8 +6,10 @@ import 'skill_extras.dart';
 import 'status_effect.dart';
 import 'enemy_intent.dart';
 import 'face_keywords.dart';
+import 'stat_rules.dart';
 
 export 'enemy_intent.dart';
+export 'stat_rules.dart';
 export 'face_keywords.dart';
 export 'skill_extras.dart';
 
@@ -202,15 +204,23 @@ class PlayerActionResult {
 }
 
 /// Critical-hit chance (0-100) for an attacker with the given Luck score --
-/// a flat 5% baseline (everyone gets the occasional lucky hit) plus 1.5
-/// points per Luck, capped at 35% so even a heavily luck-built character
-/// still lands a normal hit more often than not.
-double criticalChanceFor(int luck) => min(35, 5 + luck * 1.5);
+/// a flat 5% baseline (everyone gets the occasional lucky hit) plus
+/// [critPerLuck] points per Luck, capped at [critCap] so even a heavily
+/// luck-built character still lands a normal hit more often than not.
+double criticalChanceFor(int luck) => min(critCap, 5 + luck * critPerLuck);
 
-/// Dodge chance (0-100) for a defender with the given Dexterity score --
-/// same shape as [criticalChanceFor], capped a little lower (30%) since a
-/// dodge blocks 100% of the incoming hit rather than just adding a bonus.
-double dodgeChanceFor(int dexterity) => min(30, 5 + dexterity * 1.5);
+/// Dodge chance (0-100) for a defender with the given Dexterity score:
+/// [dodgePerDexterity] a point (stat_rules.dart), and for a ranger or a
+/// rogue ([professionId]) a smaller share of their [perception], capped at
+/// [dodgeCap] since a dodge blocks 100% of the incoming hit rather than
+/// just adding a bonus.
+double dodgeChanceFor(int dexterity,
+        {int perception = 0, String? professionId}) =>
+    min(
+        dodgeCap,
+        5 +
+            dexterity * dodgePerDexterity +
+            perceptionDodgeBonus(professionId, perception));
 
 /// A critical hit multiplies the face's already-computed damage by this
 /// much -- shared by every damaging face type so a crit means the same
@@ -832,6 +842,17 @@ Map<String, dynamic> applySkillTier(Map<String, dynamic> skill, int tier) {
 int scaledMaxHealth(int base, int playerLevel) {
   return (base * (1 + 0.12 * (playerLevel - 1))).round();
 }
+
+/// The share of its health an enemy gains for each level of the hero it
+/// meets (docs/proposals/stat-scale.md: the hero's abilities now count,
+/// so the enemies grow faster than [scaledMaxHealth]'s 12%).
+const double enemyHealthPerLevel = 0.16;
+
+/// An enemy's max health against a hero of [playerLevel]: [base] and
+/// [enemyHealthPerLevel] of it a level past the first. [scaledMaxHealth]
+/// keeps growing the rest (allies, heals and blocks, road foes).
+int enemyScaledMaxHealth(int base, int playerLevel) =>
+    (base * (1 + enemyHealthPerLevel * (playerLevel - 1))).round();
 
 int scaledDamage(int base, int playerLevel) {
   return (base * (1 + 0.08 * (playerLevel - 1))).round();

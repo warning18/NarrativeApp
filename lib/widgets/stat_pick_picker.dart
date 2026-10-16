@@ -152,7 +152,7 @@ Color _offerColor(StatPickOffer offer, InkColors ink) {
   var best = offer.gains.keys.isEmpty ? 'strength' : offer.gains.keys.first;
   var bestPoints = -1;
   for (final MapEntry(:key, :value) in offer.gains.entries) {
-    final points = value ~/ trainingUnitOf(key);
+    final points = value;
     if (points > bestPoints) {
       best = key;
       bestPoints = points;
