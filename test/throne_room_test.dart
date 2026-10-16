@@ -16,6 +16,7 @@ import 'package:narrative_data_app/providers/game_db_providers.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/clans_politics_screen.dart';
 import 'package:narrative_data_app/widgets/pixel_banner.dart';
+import 'package:narrative_data_app/widgets/clan_peek.dart';
 import 'package:narrative_data_app/widgets/throne_room.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
@@ -143,6 +144,24 @@ void main() {
     await tester.tap(find.byKey(const Key('throne_banner_clan_vigil')));
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.textContaining(' · '), findsWidgets);
+
+    // A long press on a clan's standard shows the clan's details for as long
+    // as it is held; the Shroud's pieces have none.
+    final hold = await tester.startGesture(
+        tester.getCenter(find.byKey(const Key('throne_banner_clan_vigil'))));
+    await tester.pump(const Duration(milliseconds: 700));
+    expect(find.byKey(const Key('clan_details_vigil')), findsOneWidget);
+    expect(find.byKey(const Key('clan_peek_intro_vigil')), findsOneWidget,
+        reason: 'a recap of its story');
+    await hold.up();
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.byKey(const Key('clan_details_vigil')), findsNothing,
+        reason: 'letting go closes it');
+    final shroud = await tester.startGesture(tester
+        .getCenter(find.byKey(const Key('throne_banner_heirloom_shroud'))));
+    await tester.pump(const Duration(milliseconds: 700));
+    expect(find.byType(ClanDetailsCard), findsNothing);
+    await shroud.up();
 
     // The cloth moves: a few seconds of frames paint without a hitch.
     for (var i = 0; i < 20; i++) {

@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import '../data/factions.dart';
 import '../l10n/app_locale.dart';
 import '../theme/stitched_ink.dart';
+import 'clan_peek.dart';
 import 'pixel_banner.dart';
 
 /// A number on a crest: "+6", "−3", a standing.
@@ -326,53 +327,58 @@ class _Crest extends StatelessWidget {
               ),
       ),
     );
-    return Semantics(
-      button: onTap != null,
-      label: faction.shortFor(language),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: Opacity(
-          opacity: dimmed ? 0.8 : 1,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 44,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  alignment: Alignment.center,
-                  children: [
-                    disc,
-                    if (badge != null)
-                      Positioned(
-                        right: 4,
-                        top: 0,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 4, vertical: 1),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF141217),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: badge!.color, width: 1),
+    return ClanPeek(
+      factionId: faction.patron.id,
+      child: Semantics(
+        button: onTap != null,
+        label: faction.shortFor(language),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
+          child: Opacity(
+            opacity: dimmed ? 0.8 : 1,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 44,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.center,
+                    children: [
+                      disc,
+                      if (badge != null)
+                        Positioned(
+                          right: 4,
+                          top: 0,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 1),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF141217),
+                              borderRadius: BorderRadius.circular(6),
+                              border: Border.all(color: badge!.color, width: 1),
+                            ),
+                            child: Text(badge!.text,
+                                style: TextStyle(
+                                    fontFamily: InkFonts.system,
+                                    fontSize: 10,
+                                    height: 1.1,
+                                    color: badge!.color)),
                           ),
-                          child: Text(badge!.text,
-                              style: TextStyle(
-                                  fontFamily: InkFonts.system,
-                                  fontSize: 10,
-                                  height: 1.1,
-                                  color: badge!.color)),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Text(faction.shortFor(language),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                      color: color, fontSize: 10, fontWeight: FontWeight.w600)),
-            ],
+                Text(faction.shortFor(language),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                        color: color,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600)),
+              ],
+            ),
           ),
         ),
       ),
