@@ -355,7 +355,7 @@
         "text": "Crawl out into the street",
         "text_fr": "Ramper jusqu’à la rue",
         "next_id": "250",
-        "healAmount": 20,
+        "healAmount": 4,
         "flagsToAdd": [
           "den_robbed"
         ],
@@ -371,7 +371,7 @@
         "text_fr": "Ramper jusqu’à la rue",
         "next_id": "250",
         "goldMod": -30,
-        "healAmount": 20,
+        "healAmount": 4,
         "flagsToAdd": [
           "den_robbed"
         ],
@@ -387,7 +387,7 @@
         "text_fr": "Ramper jusqu’à la rue",
         "next_id": "250",
         "goldMod": -75,
-        "healAmount": 20,
+        "healAmount": 4,
         "flagsToAdd": [
           "den_robbed"
         ],
@@ -403,7 +403,7 @@
         "text_fr": "Ramper jusqu’à la rue",
         "next_id": "250",
         "goldMod": -145,
-        "healAmount": 20,
+        "healAmount": 4,
         "flagsToAdd": [
           "den_robbed"
         ],
@@ -419,7 +419,7 @@
         "text_fr": "Ramper jusqu’à la rue",
         "next_id": "250",
         "goldMod": -25,
-        "healAmount": 20,
+        "healAmount": 4,
         "flagsToAdd": [
           "den_robbed"
         ],
@@ -558,7 +558,7 @@
         "text": "Get up and go home",
         "text_fr": "Se relever et rentrer",
         "next_id": "250",
-        "healAmount": 20,
+        "healAmount": 4,
         "flagsToAdd": [
           "rescue_lost"
         ],
@@ -574,7 +574,7 @@
         "text_fr": "Se relever et rentrer",
         "next_id": "250",
         "goldMod": -15,
-        "healAmount": 20,
+        "healAmount": 4,
         "flagsToAdd": [
           "rescue_lost"
         ],
@@ -590,7 +590,7 @@
         "text_fr": "Se relever et rentrer",
         "next_id": "250",
         "goldMod": -35,
-        "healAmount": 20,
+        "healAmount": 4,
         "flagsToAdd": [
           "rescue_lost"
         ],
@@ -606,7 +606,7 @@
         "text_fr": "Se relever et rentrer",
         "next_id": "250",
         "goldMod": -70,
-        "healAmount": 20,
+        "healAmount": 4,
         "flagsToAdd": [
           "rescue_lost"
         ],
@@ -1148,7 +1148,7 @@
         "text_fr": "Couvrir le vieux Hesk, puis rentrer",
         "next_id": "470",
         "alignmentMod": 1,
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "keeper_covered"
         ]
@@ -1198,7 +1198,7 @@
         "text_fr": "Fouiller les ruines pour trouver autre chose",
         "next_id": "890_trainer",
         "goldMod": 20,
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "took_bundle",
           "open_hand_1",
@@ -1358,7 +1358,7 @@
         "text_fr": "Tirer l’assistant hors des flammes",
         "next_id": "816",
         "alignmentMod": 1,
-        "healAmount": -5,
+        "healAmount": -1,
         "flagsToAdd": [
           "assistant_spared"
         ]
@@ -1468,7 +1468,7 @@
         "checkAbility": "strength",
         "checkDC": 12,
         "failNextId": "822",
-        "healAmount": -15,
+        "healAmount": -3,
         "flagsToAdd": [
           "pushed_past"
         ]
@@ -1546,7 +1546,7 @@
         "text": "Up, to the battlements",
         "text_fr": "En haut, vers les remparts",
         "next_id": "470",
-        "healAmount": -20,
+        "healAmount": -4,
         "flagsToAdd": [
           "river_jump"
         ]
@@ -1608,7 +1608,7 @@
         "checkAbility": "constitution",
         "checkDC": 11,
         "failNextId": "855",
-        "healAmount": -15,
+        "healAmount": -3,
         "flagsToAdd": [
           "sewer_waded"
         ],
@@ -1709,7 +1709,7 @@
         "text": "Bind your wounds with sailcloth",
         "text_fr": "Panser ses plaies avec de la toile à voile",
         "next_id": "891",
-        "healAmount": 35,
+        "healAmount": 7,
         "hideIfFlags": [
           "hub_891_patched"
         ],
@@ -1939,7 +1939,7 @@
         "text": "Haul yourself to your feet",
         "text_fr": "Se remettre debout",
         "next_id": "960",
-        "healAmount": -15,
+        "healAmount": -3,
         "flagsToAdd": [
           "boarded_fell"
         ]
@@ -1964,7 +1964,7 @@
         "text": "Fight the fire with the crew",
         "text_fr": "Combattre le feu avec l’équipage",
         "next_id": "965",
-        "healAmount": -10,
+        "healAmount": -2,
         "alignmentMod": 1,
         "flagsToAdd": [
           "fire_fought"
@@ -1985,7 +1985,7 @@
         "showIfFlags": [
           "lysa_survived"
         ],
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "lysa_shielded"
         ]
@@ -2054,7 +2054,7 @@
         "text": "Lash yourself to the mast",
         "text_fr": "S’attacher au mât",
         "next_id": "1100",
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "storm_lashed"
         ]
@@ -2074,7 +2074,7 @@
         "showIfFlags": [
           "lysa_survived"
         ],
-        "healAmount": -20,
+        "healAmount": -4,
         "flagsToAdd": [
           "lysa_held"
         ]
@@ -2128,7 +2128,7 @@
         "next_id": "1120",
         "landRouteId": "crash_to_sleeper",
         "alignmentMod": 1,
-        "healAmount": -5,
+        "healAmount": -1,
         "flagsToAdd": [
           "crew_buried"
         ]
@@ -2202,7 +2202,7 @@
         "text_fr": "Ne prendre dans le sable que la sacoche d’un guérisseur",
         "next_id": "1120",
         "landRouteId": "crash_to_sleeper",
-        "healAmount": 15,
+        "healAmount": 3,
         "flagsToAdd": [
           "tear_touched"
         ]
@@ -2236,7 +2236,7 @@
         "text_fr": "Reprendre la marche",
         "next_id": "1120",
         "landRouteId": "crash_to_sleeper",
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "void_marked"
         ]
@@ -2271,7 +2271,7 @@
         "text": "Lie up in the shade and walk by night",
         "text_fr": "Se terrer à l’ombre et marcher de nuit",
         "next_id": "1130",
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "walked_by_night"
         ]
@@ -2327,7 +2327,7 @@
         "text": "Crawl into the shade",
         "text_fr": "Ramper jusqu’à l’ombre",
         "next_id": "1130",
-        "healAmount": -25,
+        "healAmount": -5,
         "flagsToAdd": [
           "heatstruck"
         ]
@@ -2359,7 +2359,7 @@
         "text": "Drink from the crack",
         "text_fr": "Boire à la fente",
         "next_id": "1140",
-        "healAmount": 25,
+        "healAmount": 5,
         "flagsToAdd": [
           "drank_stone"
         ]
@@ -2460,7 +2460,7 @@
         "text_fr": "Faire le grand détour",
         "next_id": "1200",
         "landRouteId": "sleeper_to_wells",
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "looters_avoided",
           "feat_conditions"
@@ -2523,7 +2523,7 @@
         "text_fr": "Fuir, et leur laisser le noir",
         "next_id": "1200",
         "landRouteId": "sleeper_to_wells",
-        "healAmount": -20,
+        "healAmount": -4,
         "flagsToAdd": [
           "looters_avoided",
           "feat_conditions"
@@ -2552,7 +2552,7 @@
         "text": "Sleep by the water",
         "text_fr": "Dormir au bord de l’eau",
         "next_id": "1200",
-        "healAmount": 80,
+        "healAmount": 16,
         "hideIfFlags": [
           "hub_1200_rest"
         ],
@@ -4079,7 +4079,7 @@
         "text": "Climb up into the harbor market",
         "text_fr": "Grimper jusqu’au marché du port",
         "next_id": "2015",
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "bilge_swum",
           "feat_clans",
@@ -4107,7 +4107,7 @@
         "text": "Break through the cordon to the yards",
         "text_fr": "Forcer le cordon jusqu’aux chantiers",
         "next_id": "2900",
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "vane_crossed"
         ]
@@ -4121,7 +4121,7 @@
         "failNextId": "2070_cut_failed",
         "goldMod": 45,
         "alignmentMod": -1,
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "vane_crossed",
           "vane_robbed"
@@ -4167,7 +4167,7 @@
         "text": "Work off her price in the yard",
         "text_fr": "Payer son prix en travaillant au chantier",
         "next_id": "2900",
-        "healAmount": -20,
+        "healAmount": -4,
         "flagsToAdd": [
           "eel_owned",
           "eel_worked"
@@ -4430,7 +4430,7 @@
         "text": "Lash yourself to the tiller and ride it out",
         "text_fr": "Vous attacher à la barre et tenir",
         "next_id": "3001",
-        "healAmount": -30,
+        "healAmount": -6,
         "flagsToAdd": [
           "storm_ridden"
         ]
@@ -5415,7 +5415,7 @@
         "text": "Drop through the stained-glass dome",
         "text_fr": "Plonger à travers la coupole de vitrail",
         "next_id": "3030",
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "dome_dropped"
         ]
@@ -5696,7 +5696,7 @@
         "text": "Climb out before the roof comes down",
         "text_fr": "Sortir avant que le toit ne s’effondre",
         "next_id": "5006_chase",
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "climbed_out_fast"
         ]
@@ -5819,7 +5819,7 @@
         "text": "Rest an hour first; the Shroud can wait",
         "text_fr": "Se reposer une heure d’abord ; le Linceul attendra",
         "next_id": "6002",
-        "healAmount": 20,
+        "healAmount": 4,
         "flagsToAdd": [
           "rested_first"
         ]
@@ -5909,7 +5909,7 @@
         "text": "Read the page twice more before sailing",
         "text_fr": "Relire deux fois la page avant de prendre la mer",
         "next_id": "6002_siege",
-        "healAmount": -5,
+        "healAmount": -1,
         "flagsToAdd": [
           "ledger_read_twice"
         ]
@@ -6288,7 +6288,7 @@
         "text": "Tear yourself loose before it finishes",
         "text_fr": "S’arracher avant qu’il n’ait fini",
         "next_id": "7001",
-        "healAmount": -25,
+        "healAmount": -5,
         "alignmentMod": 1,
         "flagsToAdd": [
           "void_refused"
@@ -7226,7 +7226,7 @@
         "hideIfFlags": [
           "hub_5010_tobin_hymn"
         ],
-        "healAmount": 15
+        "healAmount": 3
       },
       {
         "text": "Count the Ossuary’s dead with a Candlebearer",
@@ -8046,7 +8046,7 @@
         "text_fr": "Retrouver Lysa parmi les réfugiés",
         "next_id": "6010_lysa",
         "alignmentMod": 5,
-        "healAmount": 40,
+        "healAmount": 8,
         "hideIfFlags": [
           "hub_6010_lysa",
           "lysa_taken_ch4"
@@ -8065,7 +8065,7 @@
         "hideIfFlags": [
           "hub_6010_lysa_later"
         ],
-        "healAmount": 15
+        "healAmount": 3
       },
       {
         "text": "Drive off the void hounds circling the reliquary",
@@ -9366,7 +9366,7 @@
         "text": "Cut the taken’s names from the throne first",
         "text_fr": "Arracher d’abord les noms des enlevés au trône",
         "next_id": "7004",
-        "healAmount": -10,
+        "healAmount": -2,
         "alignmentMod": 1,
         "flagsToAdd": [
           "names_recovered",
@@ -10817,7 +10817,7 @@
         "text": "Wait for him to die while the Cathedral burns",
         "text_fr": "Attendre qu’il meure pendant que la Cathédrale brûle",
         "next_id": "4999_camp",
-        "healAmount": -25,
+        "healAmount": -5,
         "goldMod": -40,
         "flagsToAdd": [
           "standard_waited"
@@ -11005,7 +11005,7 @@
         "text_fr": "Les réveiller d’abord, pour qu’ils meurent en étant eux-mêmes",
         "next_id": "5005",
         "alignmentMod": 2,
-        "healAmount": -20,
+        "healAmount": -4,
         "flagsToAdd": [
           "court_woken",
           "open_hand_4"
@@ -11120,7 +11120,7 @@
         "text_fr": "Donner au pénitent le sceau à briser",
         "next_id": "6003",
         "launchZoneId": "z_shroud_vigil",
-        "healAmount": -10,
+        "healAmount": -2,
         "alignmentMod": -1,
         "flagsToAdd": [
           "penitent_seal"
@@ -11210,7 +11210,7 @@
         "text_fr": "Lui donner votre sang. Ce que la traversée laissera de vous",
         "next_id": "7003",
         "launchZoneId": "z_beyond_the_tear",
-        "healAmount": -45,
+        "healAmount": -9,
         "flagsToAdd": [
           "sovereign_blood"
         ],
@@ -11647,7 +11647,7 @@
         "text": "Share the kilns’ bread and a night’s sleep",
         "text_fr": "Partager le pain des fours et une nuit de sommeil",
         "next_id": "3100_bread",
-        "healAmount": 50,
+        "healAmount": 10,
         "hideIfFlags": [
           "hub_3100_bread"
         ]
@@ -11955,7 +11955,7 @@
         "text": "Back into the hollow",
         "text_fr": "Retour au vallon",
         "next_id": "3100",
-        "healAmount": -15,
+        "healAmount": -3,
         "flagsToAdd": [
           "hub_3100_kiln"
         ]
@@ -12174,7 +12174,7 @@
         "text": "Soak in the springs until the ash comes off",
         "text_fr": "Tremper dans les sources jusqu’à ce que la cendre parte",
         "next_id": "3200_springs",
-        "healAmount": 50,
+        "healAmount": 10,
         "hideIfFlags": [
           "hub_3200_springs"
         ]
@@ -12390,7 +12390,7 @@
         "text": "Up, slowly, and back to the terraces",
         "text_fr": "Se lever, lentement, et retourner aux terrasses",
         "next_id": "3200",
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "hub_3200_brew"
         ]
@@ -12553,7 +12553,7 @@
         "text": "Mend nets with the weed-cutters",
         "text_fr": "Raccommoder les filets avec les coupeurs de varech",
         "next_id": "5100_nets",
-        "healAmount": 40,
+        "healAmount": 8,
         "hideIfFlags": [
           "hub_5100_nets"
         ]
@@ -12714,7 +12714,7 @@
         "text": "Let them work, and ask nothing",
         "text_fr": "Les laisser travailler, et ne rien demander",
         "next_id": "5100",
-        "healAmount": 25,
+        "healAmount": 5,
         "flagsToAdd": [
           "hub_5100_house_tar_hands",
           "tar_hands_refit"
@@ -13099,7 +13099,7 @@
         "text": "Climb back up the cliff",
         "text_fr": "Remonter la falaise",
         "next_id": "5100",
-        "healAmount": -15,
+        "healAmount": -3,
         "flagsToAdd": [
           "hub_5100_salvage"
         ]
@@ -13280,7 +13280,7 @@
         "text": "Sleep one night under the hill, by the clock",
         "text_fr": "Dormir une nuit sous la colline, montre en main",
         "next_id": "5200_sleep",
-        "healAmount": 50,
+        "healAmount": 10,
         "hideIfFlags": [
           "hub_5200_sleep"
         ]
@@ -13446,7 +13446,7 @@
         "text": "Pay the hill its small drawing",
         "text_fr": "Payer à la colline son petit dessin",
         "next_id": "5200",
-        "healAmount": -15,
+        "healAmount": -3,
         "flagsToAdd": [
           "hub_5200_house_returned",
           "returned_mask_paid"
@@ -13640,7 +13640,7 @@
         "text": "Out under the stars, a year lighter",
         "text_fr": "Ressortir sous les étoiles, une année en moins",
         "next_id": "5200",
-        "healAmount": -15,
+        "healAmount": -3,
         "flagsToAdd": [
           "hub_5200_riddles"
         ]
@@ -13802,7 +13802,7 @@
         "text": "Eat the stale bread with the pilgrims",
         "text_fr": "Manger le pain rassis avec les pèlerins",
         "next_id": "6100_bread",
-        "healAmount": 40,
+        "healAmount": 8,
         "alignmentMod": 1,
         "hideIfFlags": [
           "hub_6100_bread"
@@ -14481,7 +14481,7 @@
         "text": "Leave it burning at the well for the road",
         "text_fr": "La laisser brûler au puits pour la route",
         "next_id": "6100",
-        "healAmount": 30,
+        "healAmount": 6,
         "flagsToAdd": [
           "hub_6100_keeper_later"
         ]
@@ -14570,7 +14570,7 @@
         "text": "Sleep in the moot-hall by the old fire",
         "text_fr": "Dormir dans la salle du conseil, près du vieux feu",
         "next_id": "6200_hearth",
-        "healAmount": 50,
+        "healAmount": 10,
         "hideIfFlags": [
           "hub_6200_hearth"
         ]
@@ -14854,7 +14854,7 @@
         "text": "Out into the snow, hands shaking",
         "text_fr": "Sortir dans la neige, les mains tremblantes",
         "next_id": "6200",
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "hub_6200_birth"
         ]
@@ -15509,7 +15509,7 @@
         "text": "Keep walking",
         "text_fr": "Continuer à marcher",
         "next_id": "7100_clan_penitents_3_through",
-        "healAmount": -40
+        "healAmount": -8
       }
     ]
   },
@@ -15665,7 +15665,7 @@
         "text": "Back into the Anchorage",
         "text_fr": "Retour au Mouillage",
         "next_id": "7100",
-        "healAmount": -20,
+        "healAmount": -4,
         "flagsToAdd": [
           "hub_7100_sick"
         ]
@@ -15808,7 +15808,7 @@
         "text": "Haul the nets with the grey fishers",
         "text_fr": "Haler les filets avec les pêcheurs gris",
         "next_id": "7200_nets",
-        "healAmount": 40,
+        "healAmount": 8,
         "hideIfFlags": [
           "hub_7200_nets"
         ]
@@ -16147,7 +16147,7 @@
         "text": "Row back to the shore",
         "text_fr": "Ramer jusqu’au rivage",
         "next_id": "7200_clan_vigil_3_sworn",
-        "healAmount": -30
+        "healAmount": -6
       }
     ]
   },
@@ -16335,7 +16335,7 @@
         "text_fr": "Lui lire la page, et le nom de sa fille avec",
         "next_id": "7200",
         "alignmentMod": 3,
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "hub_7200_elder_later",
           "greyhithe_names_read"
@@ -16391,7 +16391,7 @@
         "text": "Back up the beach",
         "text_fr": "Remonter la plage",
         "next_id": "7200",
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "hub_7200_tide"
         ]
@@ -17017,7 +17017,7 @@
         "text": "Climb the mast and cut it down",
         "text_fr": "Grimper au mât et la couper",
         "next_id": "7400",
-        "healAmount": -30,
+        "healAmount": -6,
         "grantsBannerPieceId": "white_fleet_sail",
         "flagsToAdd": [
           "banner_five",
@@ -17798,7 +17798,7 @@
         "text": "Break through the cordon to the yards",
         "text_fr": "Forcer le cordon jusqu’aux chantiers",
         "next_id": "2900",
-        "healAmount": -20,
+        "healAmount": -4,
         "flagsToAdd": [
           "vane_crossed"
         ]
@@ -17822,7 +17822,7 @@
         "text": "Get up before anyone looks",
         "text_fr": "Se relever avant que quiconque regarde",
         "next_id": "3030",
-        "healAmount": -20,
+        "healAmount": -4,
         "flagsToAdd": [
           "bell_rope_burned"
         ]
@@ -17844,7 +17844,7 @@
         "text": "Return to the drowned cloister",
         "text_fr": "Revenir au cloître noyé",
         "next_id": "5010",
-        "healAmount": -20,
+        "healAmount": -4,
         "flagsToAdd": [
           "hub_5010_deserter"
         ]
@@ -18024,7 +18024,7 @@
         "text": "Smother it before anyone can swear to it",
         "text_fr": "L’étouffer avant que quiconque puisse en jurer",
         "next_id": "4999",
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "open_hand_3",
           "open_hand_hidden"
@@ -18497,7 +18497,7 @@
         "text": "Take Tallis’s oil for your wounds",
         "text_fr": "Prendre l’huile de Tallis pour vos plaies",
         "next_id": "3005",
-        "healAmount": 30,
+        "healAmount": 6,
         "flagsToAdd": [
           "hub_3005_envoys",
           "envoy_gift_tallis"
@@ -20589,7 +20589,7 @@
         "next_id": "7515_rest",
         "checkAbility": "wisdom",
         "checkDC": 16,
-        "healAmount": -10,
+        "healAmount": -2,
         "failNextId": "7510_seen",
         "flagsToAdd": [
           "way_quiet"
@@ -23488,7 +23488,7 @@
         "text_fr": "Répondre à sa copie couronnée par la vraie main",
         "next_id": "7002_approach",
         "triggerEnemyId": "tear_herald",
-        "healAmount": -20,
+        "healAmount": -4,
         "flagsToAdd": [
           "herald_drawn"
         ],
@@ -25902,7 +25902,7 @@
         "text_fr": "Rentrer au galop, et tenir le camp",
         "next_id": "5100",
         "alignmentMod": 2,
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "hub_5100_lysa_raid",
           "lysa_guarded"
@@ -26010,7 +26010,7 @@
         "text_fr": "La mener dehors à travers le givre",
         "next_id": "6010",
         "alignmentMod": 4,
-        "healAmount": -10,
+        "healAmount": -2,
         "flagsToAdd": [
           "hub_6010_masked",
           "hub_6010_lysa",
@@ -26232,7 +26232,7 @@
         "text_fr": "Prendre l’aiguille vous-même",
         "next_id": "7005_dawn",
         "alignmentMod": 3,
-        "healAmount": -30,
+        "healAmount": -6,
         "flagsToAdd": [
           "lysa_spared_stitch"
         ]

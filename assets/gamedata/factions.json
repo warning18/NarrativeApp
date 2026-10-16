@@ -427,7 +427,7 @@
       "effects": [
         {
           "kind": "potionBonus",
-          "value": 15
+          "value": 3
         },
         {
           "kind": "poisonExtraTurns",
@@ -442,11 +442,11 @@
       "effects": [
         {
           "kind": "potionBonus",
-          "value": 12
+          "value": 2
         },
         {
           "kind": "guardHeal",
-          "value": 2
+          "value": 1
         }
       ],
       "line": "Fever-bark in every flask, and the Moss Choir singing over each wound you guard.",
@@ -740,7 +740,7 @@
       "effects": [
         {
           "kind": "guardHeal",
-          "value": 2
+          "value": 1
         },
         {
           "kind": "partyMaxHealthPercent",
@@ -970,7 +970,7 @@
         },
         {
           "kind": "potionBonus",
-          "value": 8
+          "value": 2
         }
       ],
       "line": "The Tide-Kin rise from the shallows and draw the sea between you and every blow.",

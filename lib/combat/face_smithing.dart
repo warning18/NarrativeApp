@@ -16,7 +16,7 @@ import 'face_keywords.dart';
 enum SmithingWork { hone, temper, inscribe, recast }
 
 /// What a Hone adds, and how many a face takes.
-const int honeStep = 2;
+const int honeStep = 1;
 const int maxHones = 3;
 
 /// The face types a Hone and a Recast work on.

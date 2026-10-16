@@ -33,7 +33,7 @@ const Map<String, List<String>> patronStatsOf = {
 };
 
 /// What a sworn patron adds to max health each level.
-const int swornPatronHealth = 2;
+const int swornPatronHealth = 1;
 
 /// The patron of [state]: the sworn clan, else the clan stood highest with
 /// at Friendly or better (the first of [patronStatsOf] on a tie); '' for

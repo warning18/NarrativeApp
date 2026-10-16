@@ -40,6 +40,11 @@ const int baseMana = 4;
 /// mid-fight through a die's `Mana` faces (see `resolvePlayerFace`).
 int maxManaFor({required int wisdom}) => baseMana + max(0, wisdom);
 
+/// The extra healing a Heal face or a healing skill does in the hands of
+/// a wise character: one point per 4 Wisdom (the fight's small scale,
+/// docs/proposals/stat-scale.md) -- a starting human Cleric (6) heals +1.
+int wisdomHealBonusFor(int wisdom) => wisdom <= 0 ? 0 : wisdom ~/ 4;
+
 /// Extra mana a Mana face or a mana skill (Channel, Prayer) gives in the
 /// hands of a wise character: one more point per 3 Wisdom -- a starting
 /// human Cleric (6) gets +2, a Mage (1) nothing yet.
@@ -214,7 +219,7 @@ int spellAmountFor(
     'strength' => strength,
     _ => 0,
   };
-  final base = spell.amount + score ~/ 2;
+  final base = spell.amount + max(0, score) ~/ 4;
   return switch (spell.effect) {
     SpellEffectKind.damage =>
       max(0, ((casterDamage + base) * spell.damageMultiplier).round()),

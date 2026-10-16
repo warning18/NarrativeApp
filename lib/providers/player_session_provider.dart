@@ -1254,9 +1254,9 @@ class PlayerSession {
       currentXP: (json['currentXP'] as num?)?.toInt() ?? 0,
       gold: (json['gold'] as num?)?.toInt() ?? 0,
       alignmentScore: (json['alignmentScore'] as num?)?.toInt() ?? 0,
-      maxHealth: (json['maxHealth'] as num?)?.toInt() ?? 100,
-      currentHealth: (json['currentHealth'] as num?)?.toInt() ?? 100,
-      baseDamage: (json['baseDamage'] as num?)?.toInt() ?? 10,
+      maxHealth: (json['maxHealth'] as num?)?.toInt() ?? 20,
+      currentHealth: (json['currentHealth'] as num?)?.toInt() ?? 20,
+      baseDamage: (json['baseDamage'] as num?)?.toInt() ?? 2,
       baseArmor: (json['baseArmor'] as num?)?.toInt() ?? 0,
       luck: (json['luck'] as num?)?.toInt() ?? 0,
       charisma: (json['charisma'] as num?)?.toInt() ?? 0,
@@ -1588,9 +1588,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           currentXP: 0,
           gold: 0,
           alignmentScore: 0,
-          maxHealth: 100,
-          currentHealth: 100,
-          baseDamage: 10,
+          maxHealth: 20,
+          currentHealth: 20,
+          baseDamage: 2,
           baseArmor: 0,
           luck: 0,
           charisma: 0,
@@ -1669,7 +1669,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       final raw = await rootBundle.loadString(_newGameDefaultsAssetPath);
       defaults = json.decode(raw) as Map<String, dynamic>;
     }
-    final maxHealth = (defaults['maxHealth'] as num?)?.toInt() ?? 100;
+    final maxHealth = (defaults['maxHealth'] as num?)?.toInt() ?? 20;
     state = PlayerSession(
       level: (defaults['playerLevel'] as num?)?.toInt() ?? 1,
       // The story's nemesis from the first page (nemesis.dart).
@@ -1679,7 +1679,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       alignmentScore: 0,
       maxHealth: maxHealth,
       currentHealth: maxHealth,
-      baseDamage: (defaults['baseDamage'] as num?)?.toInt() ?? 10,
+      baseDamage: (defaults['baseDamage'] as num?)?.toInt() ?? 2,
       baseArmor: (defaults['baseArmor'] as num?)?.toInt() ?? 0,
       luck: (defaults['luck'] as num?)?.toInt() ?? 0,
       charisma: (defaults['charisma'] as num?)?.toInt() ?? 0,
@@ -1751,10 +1751,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int bonus(Map<String, dynamic> preset, String key) =>
         (preset[key] as num?)?.toInt() ?? 0;
 
-    final maxHealth = ((defaults['maxHealth'] as num?)?.toInt() ?? 100) +
+    final maxHealth = ((defaults['maxHealth'] as num?)?.toInt() ?? 20) +
         bonus(race, 'bonusMaxHealth') +
         bonus(profession, 'bonusMaxHealth');
-    final baseDamage = ((defaults['baseDamage'] as num?)?.toInt() ?? 10) +
+    final baseDamage = ((defaults['baseDamage'] as num?)?.toInt() ?? 2) +
         bonus(race, 'bonusBaseDamage') +
         bonus(profession, 'bonusBaseDamage');
     final baseArmor = startingArmor(

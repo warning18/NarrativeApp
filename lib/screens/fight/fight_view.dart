@@ -1129,7 +1129,7 @@ extension _FightView on _FightScreenState {
               _totalDamageFor(actor, face, skills, items),
               language: lang,
               activeEffects: actor.statusEffects,
-              wisdomHealBonus: actor.wisdom ~/ 2,
+              wisdomHealBonus: wisdomHealBonusFor(actor.wisdom),
               wisdomManaBonus: wisdomManaBonusFor(actor.wisdom),
               alignmentLabel: _alignmentLabel,
             ),

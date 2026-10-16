@@ -34,7 +34,7 @@ const double affixChancePackMember = 0.15;
 
 /// Flat damage an [EnemyAffix.armored] enemy ignores from each Attack face
 /// (never below 1 damage dealt).
-const int armoredFlatReduction = 4;
+const int armoredFlatReduction = 1;
 
 /// The damage a strike lands on an enemy once its affixes are in: an
 /// Armored enemy shrugs off [armoredFlatReduction] of a plain Attack face

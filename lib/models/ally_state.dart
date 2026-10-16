@@ -190,10 +190,10 @@ AllyBaseStats deriveAllyBaseStats({
   int bonus(Map<String, dynamic> preset, String key) =>
       (preset[key] as num?)?.toInt() ?? 0;
   return AllyBaseStats(
-    maxHealth: ((gameConfig['maxHealth'] as num?)?.toInt() ?? 100) +
+    maxHealth: ((gameConfig['maxHealth'] as num?)?.toInt() ?? 20) +
         bonus(race, 'bonusMaxHealth') +
         bonus(profession, 'bonusMaxHealth'),
-    baseDamage: ((gameConfig['baseDamage'] as num?)?.toInt() ?? 10) +
+    baseDamage: ((gameConfig['baseDamage'] as num?)?.toInt() ?? 2) +
         bonus(race, 'bonusBaseDamage') +
         bonus(profession, 'bonusBaseDamage'),
     baseArmor: startingArmor(((gameConfig['baseArmor'] as num?)?.toInt() ?? 0) +

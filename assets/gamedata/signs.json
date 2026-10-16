@@ -82,7 +82,7 @@
     "effects": [
       {
         "kind": "partyStartBlock",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -289,7 +289,7 @@
       },
       {
         "kind": "guardRetaliate",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -306,7 +306,7 @@
     "effects": [
       {
         "kind": "mendShield",
-        "value": 4
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -357,7 +357,7 @@
     "effects": [
       {
         "kind": "thorns",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -400,7 +400,7 @@
         "status": "poison",
         "chance": 15,
         "duration": 2,
-        "magnitude": 2
+        "magnitude": 1
       }
     ],
     "requiresPatrons": [],
@@ -417,7 +417,7 @@
     "effects": [
       {
         "kind": "guardHeal",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -454,7 +454,7 @@
         "status": "poison",
         "chance": 12,
         "duration": 3,
-        "magnitude": 3
+        "magnitude": 1
       }
     ],
     "requiresPatrons": [],
@@ -506,7 +506,7 @@
     "effects": [
       {
         "kind": "maxHealth",
-        "value": 9
+        "value": 2
       }
     ],
     "requiresPatrons": [],
@@ -541,7 +541,7 @@
     "effects": [
       {
         "kind": "guardFlat",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -698,7 +698,7 @@
       },
       {
         "kind": "mendShield",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -819,7 +819,7 @@
     "effects": [
       {
         "kind": "guardFlat",
-        "value": 2
+        "value": 1
       },
       {
         "kind": "guardStatus",
@@ -843,7 +843,7 @@
     "effects": [
       {
         "kind": "maxHealth",
-        "value": 12
+        "value": 2
       }
     ],
     "requiresPatrons": [],
@@ -877,7 +877,7 @@
     "effects": [
       {
         "kind": "killHeal",
-        "value": 3
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -1058,7 +1058,7 @@
     "effects": [
       {
         "kind": "mendShield",
-        "value": 4
+        "value": 1
       },
       {
         "kind": "mendPercent",
@@ -1177,7 +1177,7 @@
     "effects": [
       {
         "kind": "guardRetaliate",
-        "value": 4
+        "value": 1
       },
       {
         "kind": "guardBlockPercent",
@@ -1202,7 +1202,7 @@
     "effects": [
       {
         "kind": "killHeal",
-        "value": 5
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -1226,7 +1226,7 @@
         "status": "poison",
         "chance": 15,
         "duration": 3,
-        "magnitude": 4
+        "magnitude": 1
       },
       {
         "kind": "spellDamagePercent",
@@ -1275,7 +1275,7 @@
     "effects": [
       {
         "kind": "partyStartBlock",
-        "value": 2
+        "value": 1
       },
       {
         "kind": "thorns",
@@ -1303,7 +1303,7 @@
       },
       {
         "kind": "killHeal",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [
@@ -1432,7 +1432,7 @@
       },
       {
         "kind": "killHeal",
-        "value": 3
+        "value": 1
       }
     ],
     "requiresPatrons": [
@@ -1502,7 +1502,7 @@
       },
       {
         "kind": "mendShield",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -1544,7 +1544,7 @@
       },
       {
         "kind": "maxHealth",
-        "value": 9
+        "value": 2
       }
     ],
     "requiresPatrons": [],
@@ -1594,7 +1594,7 @@
       },
       {
         "kind": "maxHealth",
-        "value": -12
+        "value": -2
       }
     ],
     "requiresPatrons": [],

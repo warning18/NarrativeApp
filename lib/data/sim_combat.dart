@@ -556,7 +556,7 @@ class SimFightOutcome {
 /// Pack-size stat multipliers, the fight screen's own.
 const Map<int, double> _packStatMultipliers = {2: 0.8, 3: 0.7};
 
-const int _potionHeal = 30;
+const int _potionHeal = 6;
 const int _maxRolls = 3;
 
 class _SimEnemy {
@@ -1243,7 +1243,8 @@ SimFightOutcome simulateSimFight({
       // The guard, mend and spell signs on the face's number.
       face = switch (face.type) {
         'Defend' => face.withValue(s.guardValue(face.value)),
-        'Heal' => face.withValue(s.mendValue(face.value, c.wisdom ~/ 2)),
+        'Heal' =>
+          face.withValue(s.mendValue(face.value, wisdomHealBonusFor(c.wisdom))),
         'Mana' => face.withValue(s.manaValue(face.value)),
         _ => face,
       };
@@ -1278,7 +1279,7 @@ SimFightOutcome simulateSimFight({
             availableSkills,
             damageBase,
             activeEffects: c.statusEffects,
-            wisdomHealBonus: c.wisdom ~/ 2,
+            wisdomHealBonus: wisdomHealBonusFor(c.wisdom),
             wisdomManaBonus: wisdomManaBonusFor(c.wisdom),
             luck: c.luck,
             random: random,

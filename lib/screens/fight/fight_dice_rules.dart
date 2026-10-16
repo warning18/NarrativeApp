@@ -63,7 +63,8 @@ extension _FightDiceRules on _FightScreenState {
     if (!actor.isPlayer || _signs.isEmpty) return face;
     return switch (face.type) {
       'Defend' => face.withValue(_signs.guardValue(face.value)),
-      'Heal' => face.withValue(_signs.mendValue(face.value, actor.wisdom ~/ 2)),
+      'Heal' => face.withValue(
+          _signs.mendValue(face.value, wisdomHealBonusFor(actor.wisdom))),
       'Mana' => face.withValue(_signs.manaValue(face.value)),
       _ => face,
     };
@@ -211,7 +212,7 @@ extension _FightDiceRules on _FightScreenState {
       damage,
       language: lang,
       activeEffects: actor.statusEffects,
-      wisdomHealBonus: actor.wisdom ~/ 2,
+      wisdomHealBonus: wisdomHealBonusFor(actor.wisdom),
       wisdomManaBonus: wisdomManaBonusFor(actor.wisdom),
       luck: rollCritical
           ? actor.luck +
