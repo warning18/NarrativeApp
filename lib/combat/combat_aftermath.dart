@@ -266,7 +266,7 @@ String aftermathLineFor(FightOutcome outcome,
       .pick(french, seed)
       .replaceAll('{enemy}', enemy)
       .replaceAll('{ally}', outcome.knockedOutAllyName ?? '');
-  // The rewards follow, the fight having closed itself (v1.411).
+  // The rewards follow, the fight having closed itself (v1.412).
   return outcome.spoils.isEmpty ? line : '$line\n\n${outcome.spoils}';
 }
 

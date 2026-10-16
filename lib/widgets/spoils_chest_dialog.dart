@@ -89,7 +89,7 @@ class SpoilsChestDialog extends StatefulWidget {
   final AppLanguage language;
 
   /// Whether the chest opens by itself, its animation played once, and
-  /// shows every drop (a won fight's, v1.411: the fight closes on its own
+  /// shows every drop (a won fight's, v1.412: the fight closes on its own
   /// once the spoils are taken).
   final bool autoPlay;
 
