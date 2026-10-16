@@ -3453,6 +3453,13 @@ final DbSchema signsSchema = DbSchema(
       help: 'A duo sign is offered only once a sign of each is held.',
     ),
     FieldSchema(
+      key: 'storyOnly',
+      label: 'Story only',
+      type: FieldType.boolean,
+      defaultValue: false,
+      help: 'Given by the story (a flag), never drawn in an offer.',
+    ),
+    FieldSchema(
       key: 'pact',
       label: 'Pact (the Pit)',
       type: FieldType.json,

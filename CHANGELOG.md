@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.416.0+452]
+
+Lysa's blood on the Shroud.
+
+- **Blood on the Shroud:** if you give Lysa's blood to the Shroud, the piece wakes and gives you a boon of its own.
+  - Its gift, at heroic strength: more damage when you are low on health, lifesteal and critical chance.
+  - Its cost, the Void's hold on you: −12 max health.
+  It is never offered by a patron.
+
 ## [1.412.0+448]
 
 A won fight closes itself.
