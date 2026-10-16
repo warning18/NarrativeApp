@@ -41,7 +41,14 @@ extension _FightGround on _FightScreenState {
     if (lesson) return;
     // The fight's context rule (context_rules.dart): a test fight keeps
     // the Tide alone.
-    if (!modifiers.isTest) _length.rule = _contextRuleHere();
+    // On the feature ladder a place's rule waits for its fight; the Tide,
+    // unmarked, plays meanwhile (feature_unlocks.dart).
+    if (!modifiers.isTest) {
+      _length.rule =
+          ref.read(playerSessionProvider).featureOpen(GameFeature.placeRules)
+              ? _contextRuleHere()
+              : ContextRule.tide;
+    }
     final forced = modifiers.forcedAnomaly;
     if (forced != null) {
       _anomaly = forced;

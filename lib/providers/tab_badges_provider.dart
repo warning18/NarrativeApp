@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/camp_state.dart';
+import '../data/feature_unlocks.dart';
 import '../data/quest_objectives.dart';
 import '../data/signs.dart';
 import '../data/zone_gating.dart';
@@ -13,7 +14,10 @@ import 'player_session_provider.dart';
 /// from the clans waiting to be chosen (see offers.dart: the Wayfarer can
 /// always come, so an offer due is one to choose).
 bool hasPointsToSpend(PlayerSession session) =>
-    session.statPoints > 0 || session.pendingOffers.isNotEmpty;
+    session.statPoints > 0 ||
+    // On the feature ladder, offers wait for the clans (feature_unlocks.dart).
+    (session.pendingOffers.isNotEmpty &&
+        session.featureOpen(GameFeature.clans));
 
 /// Titan's Blood waiting on the character sheet, with a held sign it can
 /// still raise (see signs.dart).
