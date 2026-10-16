@@ -446,3 +446,18 @@ as the rescale, since that PR rewrites every one of these places anyway.
   not committed. The harness is the scratch `zz_tune_test.dart` with
   `training_paths` added, and a second run per option with
   `boss_balance_test.dart`'s plan.
+
+## Decisions (the user's answers, relayed by the manager)
+
+1. **Option C:** every fight number is divided by 5, for heroes and enemies alike.
+2. **One pick a level**, with the rarity tiers as proposed: Common/Rare/Epic/Heroic at 90/8/1.6/0.4%. Each Luck point shifts 1% upward, up to Luck 15.
+3. **Perception:** +3% block for the warrior. For the ranger and rogue it gives crit *and* dodge, as a smaller second source after Dex, which stays their dodge stat (+2% a point). The telegraph read stays as it is.
+4. **Cleric: same as the mage.** Int is the damage stat, Wis is mana.
+5. **Mana comes from Wis only.** Wis keeps its heals, mana faces and shorter statuses.
+6. **Card frames by rarity: yes.** That's UX's work, after Core's.
+
+Also in scope:
+- Chapters 1–2 about 5% easier.
+- The rogue brought down into the others' band.
+- Old saves rescaled on load.
+- The `statSources` ledger from §7, started now so the popin can later show picks and patron gains.
