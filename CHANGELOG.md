@@ -13,6 +13,31 @@ isn't reconstructable from git history alone.
 ### Added
 - Names (EN and FR) for the buildings that hold scenes in four of the six new town plans: Alster (33), the Ashen Quarter (27), the Drowned Cloister (22) and the White Anchorage (21), in `city_plans.json`. The Black Reliquary and Candlehold follow with their regenerated plans.
 
+## [1.423.0+459]
+
+A feature opening is now shown, and a shut one is not in the way.
+
+### Added
+- **The unlock card:** when a feature of the ladder opens, a small "New: Quests" card slides in over the game (not during a fight), with a line on what it does, **Show me** (its tour) and **Later**. One card at a time; left alone it goes after 6 seconds. A gold dot stays on the new thing until it is first opened. Under reduced motion the card fades in place and the dot is still. EN and FR.
+- **Shut things are hidden or greyed:** the ⚖ Clans & Politics button and the Character's Gifts tab are gone until they open; the Quests row (Other), the Inventory and Dice tiles and the Overview's skills part are greyed with a lock, and a tap says "Opens in chapter N". The Skills screen says the same when it is reached shut. A game off the ladder (an older save) sees everything.
+
+## [1.422.0+458]
+
+### Added
+- The chapters 1–2 beats of the feature ladder (`docs/proposals/ch1-2-beats.md`). New scenes: a drill-sergeant's line on the quay approach where the first skill is chosen (`890_trainer`, between the ruins and the High Quay, on every road), and a Crow tally-girl at Smugglers' Wharf who says the clans will make an offer, and that it may be refused (`2015_crow_offer`). New lines at the chalked list (250), the bundle (470) and the gate's tally of who holds Saltmouth (2005). The choices that carry a feature set its `feat_` flag: `feat_quests` (250), `feat_inventory` (470), `feat_skills` (the trainer), `feat_conditions` (1140_spotted), `feat_politics` (2005), `feat_clans` (the Crow, or her words on arrival for a player who came by the wagon or the storm drain). EN and FR.
+
+## [1.421.0+457]
+
+The first two chapters bring the game's features one at a time.
+
+- **A new game climbs the feature ladder:** each feature opens where the story gives it a reason, and stays hidden until then.
+  - The chest after your first real fight, the street's rules in the next one, battlefield conditions after the cliff ambush.
+  - The quest list at the banner's errand, the inventory at the bundle and the warm die, and skills at the trainer.
+  - Standing at the Inquisition's gate, and the clans' offers at Saltmouth.
+- **The trainer teaches your first skill,** a strike or a guard of your own trees (the mage's and the cleric's starting offer moves there).
+- **The clans' offers** earned in chapter 1 wait for Saltmouth, then come one at a time.
+- **Saved games** keep everything open, so nothing pops up mid-game.
+
 ## [1.420.0+456]
 
 Six more towns have their plans.
