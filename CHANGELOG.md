@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.422.0+458]
+
+### Added
+- The chapters 1–2 beats of the feature ladder (`docs/proposals/ch1-2-beats.md`). New scenes: a drill-sergeant's line on the quay approach where the first skill is chosen (`890_trainer`, between the ruins and the High Quay, on every road), and a Crow tally-girl at Smugglers' Wharf who says the clans will make an offer, and that it may be refused (`2015_crow_offer`). New lines at the chalked list (250), the bundle (470) and the gate's tally of who holds Saltmouth (2005). The choices that carry a feature set its `feat_` flag: `feat_quests` (250), `feat_inventory` (470), `feat_skills` (the trainer), `feat_conditions` (1140_spotted), `feat_politics` (2005), `feat_clans` (the Crow, or her words on arrival for a player who came by the wagon or the storm drain). EN and FR.
+
 ## [1.419.0+455]
 
 For the in-place choices, and a difficulty review.

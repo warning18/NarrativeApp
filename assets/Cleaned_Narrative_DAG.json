@@ -2917,7 +2917,7 @@
       {
         "text": "Walk the stalls before dealing with Vane",
         "text_fr": "Faire les étals avant de traiter avec Vane",
-        "next_id": "2015",
+        "next_id": "2015_crow_offer",
         "flagsToAdd": [
           "wharf_scouted"
         ],
@@ -2926,7 +2926,7 @@
       {
         "text": "Lift what you can from an unwatched crate",
         "text_fr": "Prendre ce qui traîne dans une caisse sans gardien",
-        "next_id": "2015",
+        "next_id": "2015_crow_offer",
         "goldMod": 15,
         "alignmentMod": -1,
         "flagsToAdd": [
@@ -2990,14 +2990,6 @@
       "script_trigger": "on_load_node_2015"
     },
     "choices": [
-      {
-        "text": "Turn to the Crow tally-girl behind you",
-        "text_fr": "Se retourner vers la gamine des Corneilles",
-        "next_id": "2015_crow_offer",
-        "hideIfFlags": [
-          "hub_2015_crow_offer"
-        ]
-      },
       {
         "text": "Visit the Arcane Bazaar",
         "text_fr": "Visiter le Bazar Arcanique",
@@ -3354,6 +3346,11 @@
         "flag": "sable_marker_lifted",
         "en": "Across the wharf the card sharp was still patting his coat, looking for a piece of paper he could not name.",
         "fr": "De l’autre côté du quai, le tricheur tâtait encore son manteau, à la recherche d’un bout de papier qu’il n’aurait su nommer."
+      },
+      {
+        "flag": "crow_told",
+        "en": "A Crow tally-girl fell into step beside me with a slate, and told me, as if reading it off, that the clans watch what a stranger does, and that when I had done enough, one of them would make me an offer. Not today. I would be free to refuse it.",
+        "fr": "Une gamine des Corneilles, une ardoise à la main, se glissa à mon pas et me dit, comme si elle lisait, que les clans regardent ce qu’un étranger fait, et que lorsque j’en aurais fait assez, l’un d’eux me ferait une offre. Pas aujourd’hui. Je serais libre de la refuser."
       },
       {
         "flag": "crow_asked_want",
@@ -3955,7 +3952,9 @@
         "next_id": "2015",
         "goldMod": 20,
         "flagsToAdd": [
-          "inspector_dead"
+          "inspector_dead",
+          "feat_clans",
+          "crow_told"
         ],
         "unlockQuestId": "q_ch2_leave_saltmouth"
       }
@@ -4074,7 +4073,9 @@
         "next_id": "2015",
         "healAmount": -10,
         "flagsToAdd": [
-          "bilge_swum"
+          "bilge_swum",
+          "feat_clans",
+          "crow_told"
         ],
         "unlockQuestId": "q_ch2_leave_saltmouth"
       }
@@ -27233,7 +27234,6 @@
         "text_fr": "Demander ce que voudraient les Corneilles",
         "next_id": "2015",
         "flagsToAdd": [
-          "hub_2015_crow_offer",
           "feat_clans",
           "crow_asked_want"
         ]
@@ -27243,7 +27243,6 @@
         "text_fr": "Demander qui d’autre fera une offre",
         "next_id": "2015",
         "flagsToAdd": [
-          "hub_2015_crow_offer",
           "feat_clans",
           "crow_asked_who"
         ]
@@ -27253,7 +27252,6 @@
         "text_fr": "Dire que vous n’êtes à personne",
         "next_id": "2015",
         "flagsToAdd": [
-          "hub_2015_crow_offer",
           "feat_clans",
           "crow_no_ones"
         ]
