@@ -4,6 +4,7 @@
 // a fight seen through teaches the crew its ways.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -103,6 +104,8 @@ void main() {
           toPort: ports['port_smugglers_wharf'] as Map<String, dynamic>,
           debugEvents:
               withBeastDay(const [_quiet, _quiet], 1, 'brinejaw', brinejaw),
+          // A seeded roll: the outrun's check can roll a natural 1.
+          debugRandom: Random(1),
         ),
       ),
     ));
