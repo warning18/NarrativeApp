@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.433.0+469]
+
+Every town now has its districts, and the villages have plans.
+
+### Added
+- **32 new districts** (Narrative's names and blurbs) for Rimewell, Greyhithe, Wrack's End, the Cove Camp, Kindly Hill, Highhearth, Emberwick, Akagiri and White Wells, which had none. The Black Reliquary gains three more (the Last Lantern, the Chapels, the Frost Line) and Candlehold one (the Lantern Cliff).
+- **Village plans:** those nine places now have a plan in the District and Town views: smaller, mostly open, with three roads out. The coastal ones sit on the sea; the Cove Camp's palisade and Highhearth are walled. Every scene stands on a building in its district. The new districts are not clan holdings: clan power counts only the places it was tuned on.
+- The Black Reliquary and Candlehold are redrawn on their new districts. Candlehold's Gates are unchanged, and the night's rest still happens where the clans are seen arriving.
+
 ## [1.431.0+467]
 
 ### Changed

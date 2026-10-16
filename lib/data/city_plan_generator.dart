@@ -3,7 +3,8 @@
 // harbour, a river split round an island, canals off the harbour, a wall
 // with its gates, a star of avenues from the market square to the gates,
 // an arena, the story's districts as organic shapes tiling the town, and
-// the lots of every district as buildings. Pure Dart (no Flutter), so
+// the lots of every district as buildings (a village's fewer, smaller
+// and looser: see CityPlanSpec.village). Pure Dart (no Flutter), so
 // tool/city_plans/gen_city_plans.dart can run it from the command line;
 // what it makes is stored in assets/gamedata/city_plans.json and read
 // through city_plan_record.dart.
@@ -52,6 +53,7 @@ class CityPlanSpec {
     this.bayDepth = 90,
     this.lotSpacing = 30,
     this.lotKeep = 1,
+    this.village = false,
   });
 
   final String cityId;
@@ -95,6 +97,12 @@ class CityPlanSpec {
   /// standing (below 1, a seeded share burned or fallen to empty ground).
   final double lotSpacing;
   final double lotKeep;
+
+  /// A village, a halt or a camp rather than a town: a small market and no
+  /// plaza, three roads out instead of five, its lots scattered loosely and
+  /// its buildings smaller on them. Its footprint ([wallRadius]), its lots'
+  /// spacing and its wall (a camp's palisade) are set as for a town.
+  final bool village;
 }
 
 /// Lays [spec]'s city out: the record city_plans.json stores.
@@ -208,17 +216,17 @@ class _CityGen {
     // The town: the wall's ring; the districts outside it lie on the shore.
     final town = ring;
 
-    // Gates: where the avenues leave, landward.
+    // Gates: where the avenues leave, landward (a village's three roads:
+    // north, east and west).
+    const gateNames = ['northwest', 'north', 'northeast', 'east', 'west'];
     final gateAngles = [-2.4, -1.57, -0.7, 0.25, 2.9];
     final gates = <Map<String, Object?>>[];
     final gatePoints = <P>[];
     for (final (i, a) in gateAngles.indexed) {
+      if (spec.village && i.isEven && i < 4) continue;
       final p = _ringPointToward(ring, c, a);
       gatePoints.add(p);
-      gates.add({
-        'id': 'gate_${['northwest', 'north', 'northeast', 'east', 'west'][i]}',
-        'at': p.toJson(),
-      });
+      gates.add({'id': 'gate_${gateNames[i]}', 'at': p.toJson()});
     }
     // The wall runs between the gates, open where it meets the shore and
     // where the river passes.
@@ -243,10 +251,13 @@ class _CityGen {
             ? P(riverAt(quayY).x + 40, quayY)
             : null;
     final squares = <Map<String, Object?>>[
-      _square('sq_market', 'market', market, 46, 34),
+      spec.village
+          ? _square('sq_market', 'market', market, 30, 24)
+          : _square('sq_market', 'market', market, 46, 34),
       if (spec.arena)
         _square('sq_arena', 'arena', c + const P(170, -150), 52, 40, sides: 18),
-      _square('sq_plaza', 'plaza', c + const P(-150, -40), 30, 26),
+      if (!spec.village)
+        _square('sq_plaza', 'plaza', c + const P(-150, -40), 30, 26),
       if (quay != null)
         hasShore
             ? _square('sq_quay', 'quay', quay, 70, 18)
@@ -350,7 +361,8 @@ class _CityGen {
     var n = 0;
     for (final MapEntry(key: id, value: shape) in shapes.entries) {
       final outside = spec.districts.firstWhere((d) => d.id == id).outside;
-      final pts = _scatter(shape, outside ? 46 : spec.lotSpacing);
+      final pts = _scatter(shape, outside ? 46 : spec.lotSpacing,
+          jitter: spec.village ? 0.95 : 0.7);
       final lots = <(P, List<P>)>[];
       for (final p in pts) {
         var cell = shape;
@@ -360,7 +372,7 @@ class _CityGen {
           cell = _clipHalf(cell, p, o);
         }
         if (cell.length < 3) continue;
-        final b = _shrink(cell, 0.72);
+        final b = _shrink(cell, spec.village ? 0.58 : 0.72);
         if (_area(b) < 120) continue;
         if (b.any((q) =>
             (hasRiver &&
@@ -595,7 +607,7 @@ class _CityGen {
     return out;
   }
 
-  List<P> _scatter(List<P> shape, double spacing) {
+  List<P> _scatter(List<P> shape, double spacing, {double jitter = 0.7}) {
     var minX = double.infinity, minY = double.infinity;
     var maxX = -double.infinity, maxY = -double.infinity;
     for (final p in shape) {
@@ -607,8 +619,8 @@ class _CityGen {
     final out = <P>[];
     for (var y = minY; y <= maxY; y += spacing) {
       for (var x = minX; x <= maxX; x += spacing) {
-        final p = P(x + (rnd.nextDouble() - 0.5) * spacing * 0.7,
-            y + (rnd.nextDouble() - 0.5) * spacing * 0.7);
+        final p = P(x + (rnd.nextDouble() - 0.5) * spacing * jitter,
+            y + (rnd.nextDouble() - 0.5) * spacing * jitter);
         if (_inside(p, shape)) out.add(p);
       }
     }

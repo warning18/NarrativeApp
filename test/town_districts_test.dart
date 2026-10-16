@@ -71,6 +71,37 @@ void main() {
     }
   });
 
+  test('every district reads as the cities\' do, under a place on file', () {
+    final villages = <String>{};
+    for (final MapEntry(key: id, value: entry) in raw.entries) {
+      final d = entry as Map<String, dynamic>;
+      if (d['level'] != 'district') continue;
+      for (final key in ['name', 'name_fr', 'blurb', 'blurb_fr']) {
+        expect((d[key] as String).isNotEmpty, isTrue, reason: '$id.$key');
+      }
+      expect(geoGlyphs, contains(d['glyph']), reason: id);
+      final parent = raw[d['parent']] as Map<String, dynamic>?;
+      expect(parent?['level'], 'location', reason: id);
+      if (parent?['kind'] != 'city' && parent?['kind'] != 'town') {
+        villages.add(d['parent'] as String);
+      }
+    }
+    // The villages, halts and camps have theirs too (v1.426).
+    expect(
+        villages,
+        containsAll([
+          'rimewell',
+          'greyhithe',
+          'wracks_end',
+          'cove_camp',
+          'kindly_hill',
+          'highhearth',
+          'emberwick',
+          'akagiri',
+          'white_wells',
+        ]));
+  });
+
   test('the Ashen Quarter\'s opening scene stands at its gate', () {
     final geo = Geography.parse(geography: raw);
     expect(
