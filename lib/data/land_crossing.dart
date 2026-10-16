@@ -9,6 +9,8 @@ library;
 
 import 'dart:math';
 
+import 'ability_check.dart' show checkPasses;
+
 /// What one outcome of a crossing's choice does: health as a percent of
 /// the party's maximum (signed), gold (signed), and extra days lost. [note]
 /// is the line that tells it.
@@ -377,8 +379,8 @@ CrossingResult resolveCrossing(
         ? choice.fail
         : !choice.hasCheck
             ? choice.outcome
-            : random.nextInt(20) + 1 + modifierFor(choice.check!) >=
-                    landCheckDc(choice.dc, inChapter)
+            : checkPasses(random.nextInt(20) + 1, modifierFor(choice.check!),
+                    landCheckDc(choice.dc, inChapter))
                 ? choice.success
                 : choice.fail;
     coin += outcome.gold;

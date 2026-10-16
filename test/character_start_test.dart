@@ -17,12 +17,12 @@ void main() {
   final races = _json('races');
   final professions = _json('professions');
 
-  test('a dwarf warrior starts at 30 HP, 2 damage, 1 armour', () {
+  test('a dwarf warrior starts at 29 HP, 2 damage, 1 armour', () {
     final t = startingTotals(
         defaults: defaults,
         race: races['dwarf'] as Map<String, dynamic>,
         profession: professions['warrior'] as Map<String, dynamic>);
-    expect(t.maxHealth, 30);
+    expect(t.maxHealth, 29);
     expect(t.baseDamage, 2);
     expect(t.baseArmor, 1);
     expect(t.gold, 100);

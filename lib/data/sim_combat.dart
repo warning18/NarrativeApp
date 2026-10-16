@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'ability_check.dart' show checkBonusFor;
+
 import '../combat/combat_engine.dart';
 import '../combat/dice_faces.dart';
 import '../combat/dice_tamper.dart';
@@ -187,9 +189,13 @@ class SimCharacter {
   int charisma;
   int perception;
 
-  /// The flat bonus on a d20 for an ability check (see ability_check.dart):
-  /// the score itself. Equipment and level-up points are not counted.
-  int abilityBonus(String ability) => switch (ability) {
+  /// The bonus on a d20 for an ability check (see ability_check.dart's
+  /// checkBonusFor) from the score. Equipment and level-up points are not
+  /// counted.
+  int abilityBonus(String ability) => checkBonusFor(abilityScore(ability));
+
+  /// The character's score in [ability].
+  int abilityScore(String ability) => switch (ability) {
         'strength' => strength,
         'dexterity' => dexterity,
         'constitution' => constitution,

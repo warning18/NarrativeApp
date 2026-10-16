@@ -486,8 +486,8 @@ void main() {
             reason: '$profession ch$chapter: gold',
           );
           expect(after.currentXP, 0, reason: '$profession ch$chapter: xp');
-          // Each level brought its 5 points.
-          expect(after.statPoints, 5 * (target.level - 1));
+          // Each level brought its one pick.
+          expect(after.statPoints, target.level - 1);
         }
         // A stronger character is untouched.
         await notifier.loadSession(weak(profession, level: 20, gold: 50000));

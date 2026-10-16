@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/combat/combat_engine.dart';
 import 'package:narrative_data_app/combat/spells.dart' show baseMana;
+import 'package:narrative_data_app/data/ability_check.dart';
 import 'package:narrative_data_app/data/stat_pick_text.dart';
 import 'package:narrative_data_app/data/stat_scale_save.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
@@ -131,6 +132,31 @@ void main() {
               reason: '$profession $stat');
         }
       }
+    });
+  });
+
+  group('story checks on the small scale', () {
+    test('2 and twice the root of the score', () {
+      expect(checkBonusFor(0), 2);
+      expect(checkBonusFor(1), 4);
+      expect(checkBonusFor(4), 6);
+      expect(checkBonusFor(9), 8);
+      expect(checkBonusFor(16), 10);
+      expect(checkBonusFor(-2), 0);
+      expect(
+          abilityModifierFor(
+              'dexterity', PlayerSession.fromJson({'dexterity': 9})),
+          8);
+    });
+
+    test('a natural 1 fails and a natural 20 passes, whatever the score', () {
+      expect(checkPasses(1, 50, 10), isFalse);
+      expect(checkPasses(20, -5, 30), isTrue);
+      expect(checkPasses(10, 3, 13), isTrue);
+      expect(checkPasses(9, 3, 13), isFalse);
+      expect(checkChance(modifier: 50, dc: 10), 0.95);
+      expect(checkChance(modifier: 0, dc: 40), 0.05);
+      expect(checkChance(modifier: 4, dc: 13), 0.6);
     });
   });
 

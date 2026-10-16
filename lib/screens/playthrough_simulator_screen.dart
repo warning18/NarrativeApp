@@ -10,6 +10,8 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../data/ability_check.dart' show checkPasses;
+
 import '../combat/combat_engine.dart'
     show
         chapterRewardMultiplier,
@@ -1475,8 +1477,8 @@ _SimResult _simulate(
         var failed = false;
         final ability = choice.checkAbility;
         if (ability != null) {
-          failed = 1 + random.nextInt(20) + c.abilityBonus(ability) <
-              (choice.checkDC ?? 10);
+          failed = !checkPasses(1 + random.nextInt(20), c.abilityBonus(ability),
+              choice.checkDC ?? 10);
         }
         final foes = choice.avoidFightOnSuccess && !failed
             ? const <String>[]

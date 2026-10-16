@@ -15,15 +15,17 @@ void main() {
     test('reads the matching stat off the session', () {
       final session =
           baseSession(strength: 3, dexterity: 5, charisma: 7, luck: 2);
-      expect(abilityModifierFor('strength', session), 3);
-      expect(abilityModifierFor('dexterity', session), 5);
+      // 2 and twice the root of the score (checkBonusFor).
+      expect(abilityModifierFor('strength', session), 5);
+      expect(abilityModifierFor('dexterity', session), 6);
       expect(abilityModifierFor('charisma', session), 7);
-      expect(abilityModifierFor('luck', session), 2);
+      expect(abilityModifierFor('luck', session), 5);
     });
 
-    test('an unknown ability key is a zero bonus', () {
+    test('an unknown ability key is a score of zero', () {
       final session = baseSession(strength: 10);
-      expect(abilityModifierFor('nonsense', session), 0);
+      expect(abilityScoreFor('nonsense', session), 0);
+      expect(abilityModifierFor('nonsense', session), checkBonusFor(0));
     });
   });
 
@@ -39,8 +41,8 @@ void main() {
         random: _FixedRandom(19), // rolls 20 (nextInt(20) + 1)
       );
       expect(result.roll, 20);
-      expect(result.modifier, 5);
-      expect(result.total, 25);
+      expect(result.modifier, 6);
+      expect(result.total, 26);
       expect(result.success, isTrue);
       expect(result.isCriticalSuccess, isTrue);
       expect(result.isCriticalFail, isFalse);
@@ -55,7 +57,7 @@ void main() {
         random: _FixedRandom(0), // rolls 1
       );
       expect(result.roll, 1);
-      expect(result.total, 1);
+      expect(result.total, 3);
       expect(result.success, isFalse);
       expect(result.isCriticalFail, isTrue);
     });
@@ -64,11 +66,11 @@ void main() {
       final session = baseSession(dexterity: 4);
       final result = rollAbilityCheck(
         ability: 'dexterity',
-        dc: 14,
+        dc: 16,
         session: session,
         random: _FixedRandom(9), // rolls 10
       );
-      expect(result.total, 14);
+      expect(result.total, 16);
       expect(result.success, isTrue);
     });
   });

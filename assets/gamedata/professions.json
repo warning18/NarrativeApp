@@ -3,7 +3,7 @@
     "professionID": "warrior",
     "professionName": "Warrior",
     "description": "Front-line fighters who trade finesse for raw durability.",
-    "bonusMaxHealth": 6,
+    "bonusMaxHealth": 5,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 0,
     "bonusLuck": 0,

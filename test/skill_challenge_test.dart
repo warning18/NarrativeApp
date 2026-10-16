@@ -82,7 +82,7 @@ void main() {
       final session = baseSession(luck: 4);
       final result = resolveSkillChallenge(
         ability: 'luck',
-        dc: 12,
+        dc: 14,
         successesNeeded: 1,
         maxFailures: 1,
         session: session,
@@ -90,9 +90,9 @@ void main() {
       );
       final round = result.rounds.single;
       expect(round.check.roll, 8);
-      expect(round.check.modifier, 4);
-      expect(round.check.total, 12);
-      expect(round.success, isTrue); // 12 meets DC 12
+      expect(round.check.modifier, 6); // Luck 4: 2 + 2 x 2
+      expect(round.check.total, 14);
+      expect(round.success, isTrue); // 14 meets DC 14
     });
   });
 }
