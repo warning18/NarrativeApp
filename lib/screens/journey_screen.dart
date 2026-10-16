@@ -1016,7 +1016,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final hereDistrictOf = ref.watch(partyDistrictProvider);
     CityChart? cityChart;
     Set<String>? foundDistricts;
-    if (plan != null && hereLocation != null) {
+    // A scene inside a building (the Blind Beggar) keeps its room and the
+    // streets round it, with the way back in: the chart has no door yet.
+    if (plan != null && hereLocation != null && herePlace?.isBuilding != true) {
       final record = ref.watch(cityPlanRecordsProvider).value?[hereLocation.id];
       if (record != null) {
         cityPlan = record;

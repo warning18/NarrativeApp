@@ -294,6 +294,8 @@ const _followUps = <String, String>{
   '2015_sable_lifted': '2015_sable',
   '2015_sable_caught': '2015_sable',
   '2015_sable_talk_failed': '2015_sable',
+  // Lysa's line is spoken at the smuggler's moorings (v1.414).
+  '2015_lysa_line': '2015_smuggler',
 };
 
 void main() {

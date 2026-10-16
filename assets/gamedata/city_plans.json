@@ -3230,7 +3230,6 @@
       "2020": "saltmouth_b015",
       "2021": "saltmouth_b010",
       "2015_smuggler": "saltmouth_b141",
-      "2015_lysa_line": "saltmouth_b141",
       "2015_dockside": "saltmouth_b140",
       "2015_bandits": "saltmouth_b150",
       "2015_route_sold": "saltmouth_b156",
@@ -3277,7 +3276,8 @@
       "2015_sable_bought": "saltmouth_b059",
       "2015_sable_lifted": "saltmouth_b059",
       "2015_sable_caught": "saltmouth_b059",
-      "2015_sable_talk_failed": "saltmouth_b059"
+      "2015_sable_talk_failed": "saltmouth_b059",
+      "2015_lysa_line": "saltmouth_b141"
     },
     "names": {
       "saltmouth_b001": {
@@ -9437,6 +9437,7 @@
     "anchors": {
       "3005": "ashen_quarter_b001",
       "3005_envoys": "ashen_quarter_b000",
+      "3005_lysa_price": "ashen_quarter_b011",
       "3005_house_tribunal": "ashen_quarter_b131",
       "3005_golem": "ashen_quarter_b130",
       "3005_archive": "ashen_quarter_b159",
@@ -15565,6 +15566,12 @@
       "6010_heist_night": "black_reliquary_b048",
       "6010_count_short": "black_reliquary_b003",
       "6010_returned_roll": "black_reliquary_b029",
+      "6010_clement_refused": "black_reliquary_b026",
+      "6010_lysa_rescued": "black_reliquary_b013",
+      "6010_lysa_sworn": "black_reliquary_b044",
+      "6010_lysa_mercy": "black_reliquary_b012",
+      "6010_lysa_sacrifice": "black_reliquary_b037",
+      "6010_lysa_ledger": "black_reliquary_b047",
       "6010_house_reliquary_thieves_searched": "black_reliquary_b031",
       "6010_clan_compact_3_seen": "black_reliquary_b023",
       "6010_clan_compact_3_hammer": "black_reliquary_b023",
