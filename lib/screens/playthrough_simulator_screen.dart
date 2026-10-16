@@ -1078,6 +1078,19 @@ _SimResult _simulate(
         else if (enemies[id] is Map<String, dynamic>)
           MapEntry(id, enemies[id] as Map<String, dynamic>),
     ];
+    // An enemy the data doesn't hold is a lost fight, never a free win (a
+    // story naming one before it exists once made whole runs stronger).
+    // `@first_ally`, the pact's turned companion, resolves only in play.
+    if (entries.length < enemyIds.where((id) => !id.startsWith('@')).length) {
+      return (
+        won: false,
+        attempts: 1,
+        casts: const <String, int>{},
+        signs: SignEffects.none,
+        perks: PerkEffects.none,
+        stolen: 0,
+      );
+    }
     if (entries.isEmpty) return none;
     final casts = <String, int>{};
     final maxAttempts = once ? 1 : _maxFightAttempts;

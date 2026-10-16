@@ -10,6 +10,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/clan_power.dart' show hasPower, powerOf, powerTierFor;
 import '../data/factions.dart';
 import '../data/throne.dart' show throneFactionName;
 import '../l10n/app_locale.dart';
@@ -17,6 +18,7 @@ import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
 import '../providers/player_session_provider.dart';
 import 'clan_peek.dart';
+import 'clan_power_block.dart' show powerTierKey;
 import 'pixel_banner.dart';
 import 'pixel_sprite.dart';
 import 'wind_banner.dart';
@@ -98,7 +100,16 @@ class _ThroneRoomTabState extends ConsumerState<ThroneRoomTab> {
           name: data.faction(id)?.nameFor(lang) ?? id,
           caption: id == 'open_hand'
               ? trFor(lang, 'open_hand_banner_raised')
-              : trFor(lang, standingTierKey(politics.tierOf(id, data))),
+              : [
+                  trFor(lang, standingTierKey(politics.tierOf(id, data))),
+                  // Its strength (Wave 12), and the red of a nemesis.
+                  if (hasPower(id, data))
+                    trFor(
+                        lang,
+                        powerTierKey(
+                            powerTierFor(powerOf(politics, id, data)))),
+                  if (politics.nemesis == id) trFor(lang, 'clan_nemesis_tag'),
+                ].join(' · '),
         ),
       for (final id in shroudPieceIds)
         if (session.bannerPiecesCollected.contains(id))

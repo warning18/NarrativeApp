@@ -751,9 +751,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
               ),
           ],
         ),
-        body: !_started
+        body: _victoryTapArea(!_started
             ? _buildSetup(dice, skills, items, session)
-            : _buildBattle(dice, skills, items, session),
+            : _buildBattle(dice, skills, items, session)),
       ),
     );
   }
