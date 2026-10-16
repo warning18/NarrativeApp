@@ -4691,9 +4691,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'keyword_steady_desc': {
     AppLanguage.en:
-        'the face can\'t be rerolled once it lands, and is worth 2 more.',
+        'the face can\'t be rerolled once it lands, and is worth 1 more.',
     AppLanguage.fr:
-        'la face ne peut pas être relancée une fois tombée, et vaut 2 de plus.',
+        'la face ne peut pas être relancée une fois tombée, et vaut 1 de plus.',
   },
   'combo_flank': {
     AppLanguage.en: 'Flank',
@@ -4856,9 +4856,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'smith_hone_desc': {
     AppLanguage.en:
-        '+2 to an Attack, Guard or Heal face (three times at most).',
+        '+1 to an Attack, Guard or Heal face (three times at most).',
     AppLanguage.fr:
-        '+2 à une face d\'attaque, de garde ou de soin (trois fois au plus).',
+        '+1 à une face d\'attaque, de garde ou de soin (trois fois au plus).',
   },
   'smith_temper': {
     AppLanguage.en: 'Temper',
@@ -5645,8 +5645,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Apothicaire',
   },
   'perk_apothecary_desc': {
-    AppLanguage.en: 'Potions heal 10 more.',
-    AppLanguage.fr: 'Les potions soignent 10 de plus.',
+    AppLanguage.en: 'Potions heal 2 more.',
+    AppLanguage.fr: 'Les potions soignent 2 de plus.',
   },
   'perk_keenEye': {
     AppLanguage.en: 'Keen Eye',
@@ -5669,8 +5669,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Main lourde',
   },
   'perk_heavyHand_desc': {
-    AppLanguage.en: '+2 damage on every attack.',
-    AppLanguage.fr: '+2 dégâts à chaque attaque.',
+    AppLanguage.en: '+1 damage on every attack.',
+    AppLanguage.fr: '+1 dégât à chaque attaque.',
   },
   'perk_ironHide': {
     AppLanguage.en: 'Iron Hide',
@@ -5685,8 +5685,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Vigueur',
   },
   'perk_vigor_desc': {
-    AppLanguage.en: '+15 max health.',
-    AppLanguage.fr: '+15 de santé maximale.',
+    AppLanguage.en: '+3 max health.',
+    AppLanguage.fr: '+3 de santé maximale.',
   },
   'perk_battleRhythm': {
     AppLanguage.en: 'Battle Rhythm',
@@ -8669,8 +8669,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Votre chance de coup critique augmente de 15 % ce combat.',
   },
   'charm_iron_skin_desc': {
-    AppLanguage.en: '+5 armor this fight.',
-    AppLanguage.fr: '+5 armure ce combat.',
+    AppLanguage.en: '+1 armor this fight.',
+    AppLanguage.fr: '+1 armure ce combat.',
   },
   'charm_warding_desc': {
     AppLanguage.en: 'The first hit you take this fight is negated.',
