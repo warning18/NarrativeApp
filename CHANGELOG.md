@@ -8,6 +8,22 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.424.0+460]
+
+A hub's choices on rings and chips, and a beat when one is taken.
+
+### Changed
+- **A hub's choices are grouped by kind.** A scene with more than four choices done where you stand shows, round the party's mark, one dashed ring for each kind (Fight, Talk & decide, Checks & pay) with a chip on it ("Fight · 4") and up to five of its icons, the rest a "+N"; the same chips sit under the map, with a "Ways · N" chip for the plain ways on the map. A tap on a chip or an icon opens that list in a sheet (the ring stays lit; a way lights its road on the map above), and a second tap on a card does it.
+- **A beat when a choice done here is taken.** A ring in the kind's colour spreads from the party's mark and the choice's icon rises; the other cards dim meanwhile. Reduced motion skips it.
+- Plain decisions and words have their own icons (balance, chat) on the cards and rings, not the road's signpost; the cards' tags (price, alignment, check, fight) now come from Core's choice tags.
+
+## [1.419.0+455]
+
+For the in-place choices, and a difficulty review.
+
+- **Each choice now carries what its card shows:** its cost in gold (a toll's included), its alignment shift, and where its aftermath takes you. The choices are also grouped for the map's rings: fight; talk and decide; checks and pay; and the ways on.
+- **The story can say who a scene faces, the question it ends on, and what a hub's choice is about** (`facing`, `prompt`, `about`, `aboutLabels`, all optional), for the scene view and the rings.
+- **A difficulty review** (docs/simulation/difficulty-review.md): win rates by profession and chapter, deaths, the bosses' bands and five proposals. Nothing is tuned yet.
 ## [1.418.0+454]
 
 The Journey's choices acted out here become cards under the map.
