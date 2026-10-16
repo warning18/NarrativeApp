@@ -8,13 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.426.0+462]
+## [1.434.0+470]
 
 The fight explains its chips, and shows the blow coming.
 
 ### Added
 - **Long-press the chips above the fight:** the round (and when the Tide rises), momentum (how it builds and what it gives), the battlefield condition, the weather, the goal and the doctrine each say what they do. The place rule, Tide, nudge, hex and silence chips already did. EN and FR.
 - **The blow the party can read, on the health bar:** when a foe's telegraphed move is read in full (Perception), the bar of the one it is aimed at shows the part it would take off, with "−N" beside it; a long press says "after armor and block". Blows are figured one by one, as on the foe's own card.
+
+## [1.427.0+463]
+
+### Added
+- Names (EN and FR) for the buildings that hold scenes in four of the six new town plans: Alster (33), the Ashen Quarter (27), the Drowned Cloister (22) and the White Anchorage (21), in `city_plans.json`. The Black Reliquary and Candlehold follow with their regenerated plans.
 
 ## [1.425.0+461]
 
