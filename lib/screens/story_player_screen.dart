@@ -107,10 +107,11 @@ import 'shop_detail_screen.dart';
 import 'skill_challenge_screen.dart';
 import 'story_node_editor_screen.dart';
 
-/// The random stream a story choice's ability check rolls with: a fresh
-/// one each time in play; a test overrides it with a seeded one so a check
-/// tapped through the app goes the same way every run (as
-/// landCrossingRandomProvider does for a crossing).
+/// The random stream a story choice's ability check (and a skill
+/// challenge's rounds) rolls with: a fresh one each time in play; a test
+/// overrides it with a seeded one so a check tapped through the app goes
+/// the same way every run (as landCrossingRandomProvider does for a
+/// crossing).
 final storyCheckRandomProvider = Provider<Random?>((ref) => null);
 
 /// Tracks the id of the last scene auto-read aloud, so the auto-read
@@ -1274,6 +1275,7 @@ Future<void> _selectChoice({
           dc: choice.checkDC ?? 10,
           successesNeeded: choice.challengeSuccessesNeeded!,
           maxFailures: choice.challengeMaxFailures!,
+          random: ref.read(storyCheckRandomProvider),
         ),
       ));
       if (!context.mounted) return;

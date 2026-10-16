@@ -3,11 +3,15 @@
 // widget tree, and confirms it pops a bool back to its caller, the same
 // contract FightScreen already has for a combat result.
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/data/skill_challenge.dart';
+import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/skill_challenge_screen.dart';
 
 void main() {
@@ -79,5 +83,60 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(popped, isNotNull);
+  });
+
+  testWidgets(
+      'a seeded random settles the challenge the way the pure rule does',
+      (WidgetTester tester) async {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    bool? popped;
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          home: Builder(
+            builder: (context) => ElevatedButton(
+              onPressed: () async {
+                popped = await Navigator.of(context).push<bool>(
+                  MaterialPageRoute(
+                    builder: (_) => SkillChallengeScreen(
+                      promptText: 'Play to win',
+                      ability: 'luck',
+                      dc: 12,
+                      successesNeeded: 3,
+                      maxFailures: 2,
+                      random: Random(5),
+                    ),
+                  ),
+                );
+              },
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 100));
+    final expected = resolveSkillChallenge(
+      ability: 'luck',
+      dc: 12,
+      successesNeeded: 3,
+      maxFailures: 2,
+      session: container.read(playerSessionProvider),
+      random: Random(5),
+    ).success;
+
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Begin'));
+    for (var i = 0; i < 24; i++) {
+      await tester.pump(const Duration(milliseconds: 400));
+    }
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
+
+    expect(popped, expected);
   });
 }
