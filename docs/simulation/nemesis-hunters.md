@@ -146,4 +146,19 @@ Core's part of `docs/proposals/lysa-arc.md`. Narrative's nodes set the flags (PR
 - **The hunt, as her fate turns it:**
   - `lysa_rescued_force` or `lysa_sacrificed`: the story's nemesis turns into an earned one at the next chapter's turn (Hunted odds, its people in your fights, its wars). Keld's road comes at 60% instead of 35%.
   - `lysa_sworn_for`: joins the pact and the throne in `dominionSidedFlags`, so the Dominion's hunt is over for good. Its +12 standing alone would leave the Dominion at +2, short of Friendly.
+- **The boss curve with Lysa's nodes:** before Clement existed, the simulator took his fight as a free win, and that pushed the White Admiral and Tallis out of their bands (#335). It now counts a fight against an unknown enemy as lost, and `test/story_enemy_refs_test.dart` fails on any story choice that names a missing enemy.
+  - With the real Clement, only Tallis stayed out: 53.2% against 40 ±12.
+  - Tallis is raised from 380 to 405 health and the White Admiral from 336 to 350.
+  - Boss curve (400 runs, seed 7), main's story → with Lysa's nodes:
+
+  | Boss | Target | main | with Lysa |
+  |---|---|---|---|
+  | White Admiral | 45 | 49.4% | 54.1% |
+  | Claimant Vane | 40 | 48.6% | 49.6% |
+  | Claimant Tallis | 40 | 46.6% | 46.2% |
+  | Claimant Morrow | 40 | 48.3% | 45.3% |
+  | Tear-Herald | 35 | 39.0% | 40.5% |
+  | Void Sovereign | 35 | 34.2% | 39.1% |
+
+  The bosses before chapter 6 don't move: Aurel Vane 78.7%, Void Archon 57.6%.
 - **Still to come (1.415):** the sacrifice's boon on the Shroud and the Void's mark.

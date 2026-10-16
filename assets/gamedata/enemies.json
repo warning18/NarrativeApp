@@ -3886,7 +3886,7 @@
   "white_admiral": {
     "enemyName": "The White Admiral",
     "enemyName_fr": "L’Amiral Blanc",
-    "maxHealth": 336,
+    "maxHealth": 350,
     "damage": 31,
     "guile": 11,
     "faction": "",
@@ -5087,7 +5087,7 @@
   "claimant_tallis": {
     "enemyName": "Maud Tallis, Eldest Wickwarden",
     "enemyName_fr": "Maud Tallis, Aînée des Garde-Mèches",
-    "maxHealth": 380,
+    "maxHealth": 405,
     "damage": 22,
     "guile": 11,
     "faction": "",
