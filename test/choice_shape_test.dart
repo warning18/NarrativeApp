@@ -110,9 +110,11 @@ void main() {
       final g = choiceTags(hub, c, story: story, geography: geography).group;
       groups[g] = (groups[g] ?? 0) + 1;
     }
-    expect(groups[ChoiceGroup.fight], 4);
-    expect(groups[ChoiceGroup.talkDecide], 7);
-    expect(groups[ChoiceGroup.checksPay], 3);
-    expect(groups[ChoiceGroup.go], 17);
+    // Every choice in one ring or the ways, each ring in use (UX's
+    // mockup counted 4 / 7 / 3 and 17 ways; the story grows).
+    expect(groups.values.fold(0, (a, b) => a + b), hub.choices.length);
+    for (final g in ChoiceGroup.values) {
+      expect(groups[g], greaterThanOrEqualTo(3), reason: g.name);
+    }
   });
 }
