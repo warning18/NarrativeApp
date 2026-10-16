@@ -22,6 +22,13 @@ The map is for moving: a choice that stays where you are keeps you in the scene,
 
 ### Added
 - Queries for the Journey: a scene's stop, what a choice leads to (stay, map, carried, back to the hub), the main-story scenes (not a hub, not an errand, not a camp) and the services at a place (shops, rests, trainers, ports). How each looks is UX's next step.
+## [1.442.0+478]
+
+The main story's scenes and the hubs have the data the scene view and the arrival sheet read.
+
+### Added
+- **Who you face** (`facing`) on ten more main-story scenes: the bouncer at the Blind Beggar, the warhound in the alley, Vane at the docks, the High Warden at the end of chapter 3, and Aurel Vane in the Lantern Hall.
+- **A question** (`prompt`, English and French) on the fourteen hubs a sheet opens on: the Wharf, the Ashen Quarter, the Drowned Cloister, the Reliquary Quarter, the Hollow Shore, the eight villages, the White Anchorage and Candlehold.
 
 ## [1.440.0+476]
 

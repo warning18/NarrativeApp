@@ -13,3 +13,12 @@ The data UX asked for in `docs/proposals/inplace-choices.md` ("What I need"). Al
 **Hubs.** Twenty nodes are hubs (a settlement or a progress counter). The Reliquary Quarter (6010) has 28 choices and 69 `about` values cover the hubs together; choices that lead to a scene about no one in particular carry none, and UX can group them under "Other" or by Core's action.
 
 **What UX does with a missing value.** `facing` empty: the narrator scene. `prompt` empty: the last sentence of the text. `about` empty: group by action.
+
+## Update (v1.442, main-story pass)
+
+Core's rule for a main-story scene (not a hub, not a hub's errand, not a camp scene) gives about 120 scenes. Every one with two or more choices already had a `prompt`. This pass added:
+
+- `facing` on 10 more nodes: `105` (the bouncer), `270` (the warhound), `2030`, `2040_paid`, `2070`, `2070_cut_failed` (Vane the quartermaster), `4999`, `4999_standard`, `4999_drawn` (the High Warden), `7520_vane` (Aurel Vane). Where the person has no record (the mate, the yard-master, the tally-boy, the archivist) the scene stays narrator-only, and where who is there depends on the origin (Lysa aboard the Lark) it does too.
+- `prompt` / `prompt_fr` on the 14 hubs a sheet opens on (`2015`, `3005`, `5010`, `6010`, `7002`, the eight villages' hubs, `7100`, `7500`): "What do you do in Rimewell?". The camp nodes keep the Camp screen and have none.
+
+Totals now: `facing` on 104 nodes, `prompt` on 243.
