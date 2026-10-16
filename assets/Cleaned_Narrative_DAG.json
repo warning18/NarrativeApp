@@ -909,7 +909,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "alster_lower_town",
+    "location": "alster_family_house",
     "automations": {
       "script_trigger": "on_load_node_300"
     },
@@ -968,7 +968,7 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "alster_lower_town",
+    "location": "alster_family_house",
     "automations": {
       "script_trigger": "on_load_node_400"
     },
@@ -1112,7 +1112,7 @@
       "mood": "bitter",
       "speaker": "Narrator"
     },
-    "location": "alster_lower_town",
+    "location": "alster_family_house",
     "choices": [
       {
         "text": "Wake in the Black Hold",
@@ -1138,7 +1138,7 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "alster_lower_town",
+    "location": "alster_family_house",
     "automations": {
       "script_trigger": "on_load_node_450"
     },
@@ -1175,7 +1175,7 @@
       "mood": "wistful",
       "speaker": "Narrator"
     },
-    "location": "alster_lower_town",
+    "location": "alster_family_house",
     "automations": {
       "script_trigger": "on_load_node_470"
     },

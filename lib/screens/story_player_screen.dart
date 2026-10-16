@@ -53,6 +53,7 @@ import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/camp_presence_provider.dart';
 import '../providers/chapter_loop_provider.dart';
+import '../providers/choice_flow_provider.dart';
 import '../providers/climate_provider.dart';
 import '../data/weather_effects.dart';
 import '../providers/clans_provider.dart';
@@ -1851,8 +1852,9 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
   await applyEnterPolitics(ref, ref.read(storyPlayProvider).currentNodeId);
   if (ref.read(appModeProvider) == AppMode.edit) return;
   final french = ref.read(appLanguageProvider) == AppLanguage.fr;
-  // A way on that leaves the location is a stop, one to another district
-  // of the same city reads through (v1.209, see Geography.travelsBetween).
+  // A way on to another stop (another building, district or location, see
+  // choice_flow.dart) is a stop; without the stops, one that leaves the
+  // location (v1.209, see Geography.travelsBetween).
   final world = await loadGeography(ref);
   final preludes = <ScenePrelude>[];
   for (var i = 0; i < maxPassThrough; i++) {
@@ -1862,9 +1864,14 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
     final node = story.nodeFor(ref.read(storyPlayProvider).currentNodeId);
     if (node == null) break;
     final gateWorld = ref.read(coastGateWorldProvider);
+    // It stops where the stop changes (a building, a district: see
+    // choice_flow.dart).
+    final stops = ref.read(storyStopsProvider);
     final way = passThroughChoiceOf(node, session.flags,
         hidden: (c) => choiceHiddenFor(c, session, gateWorld),
-        travels: (from, to) => world.travelsBetween(story, from, to));
+        travels: (from, to) =>
+            stops?.changesStop(from, to) ??
+            world.travelsBetween(story, from, to));
     // A way on the party cannot take yet stays a stop, with its reason.
     if (way == null ||
         isStoryChoiceLocked(way, story, session, world: gateWorld)) {
