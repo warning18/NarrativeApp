@@ -16,6 +16,12 @@ Lysa's fate turns the Dominion's hunt.
 - **The hunt, as her fate turns it:**
   - take her by force, or give her blood to the Shroud, and the Dominion hunts you in earnest: its fighters come more often and join its fights, and Orsolya Keld comes sooner;
   - swear to the Lantern for her, and its hunt is over.
+## [1.410.0+446]
+
+Faces for the rival hunters and the nemesis champions.
+
+### Changed
+- **Twelve foes have icons of their own.** The six rival hunters (Halvard the spearman, Ysel the candle-bearer, Brodin the quarryman, Tove the deaf anvil, Sedge the returned and Wen of the Heron's Wake) and the six nemesis champions (the Dominion's Orsolya Keld, the Crows' Mireille Sable, the Compact's Hollis Reck, the Vigil's Edda Grey, the Penitents' Ash Confessor and the Mire's Heron Queen's Hand) are no longer drawn with another foe's picture. Each is a 16 × 16 sprite from Narrative's description, in the enemy icons' style, made by `tool/gen_hunter_icons.py`.
 
 ## [1.409.0+445]
 
