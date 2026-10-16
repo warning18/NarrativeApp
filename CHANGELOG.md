@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.420.0+456]
+
+Six more towns have their plans.
+
+- **Alster, the Ashen Quarter, the Drowned Cloister, the Black Reliquary, White Anchorage and Candlehold** now have a city plan, like Saltmouth. Their districts and the buildings where each scene happens show in the District and Town views:
+  - Alster: a river city with its quay.
+  - The Ashen Quarter: walled, half burned, at the Spire's foot.
+  - The Drowned Cloister: on the fen, cut by channels.
+  - The Black Reliquary: on its frozen river.
+  - White Anchorage: above a shore of beached hulls.
+  - Candlehold: on the cliffs above its harbour.
+- **Walking from one town to the next** no longer leaves the Journey on the old town's district.
+
 ## [1.418.0+454]
 
 The Journey's choices acted out here become cards under the map.
