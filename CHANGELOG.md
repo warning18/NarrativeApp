@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.454.0+490]
+
+Enemies with art stand in the fight, facing the hero.
+
+### Added
+- **Enemy sprites in the fight:** the user's first PixelLab characters stand on the ground below the enemy cards, facing west toward the hero (who faces east): Inquisitor-General Aurel Vane, the Inquisition Warden, the White Soldier, and the two Inquisition soldier variants (worn by the Inquisition Soldier and the Inquisition Auxiliary). They breathe, step in with their blows (the lunge the enemy cards already play), flinch when hit and fade when beaten, and stay still with animations off. An enemy with no art keeps its portrait card alone. Which enemy wears which sprite is one data table (`enemyFightSprite`), so more of the user's art is a file and a line. The originals are kept in `art/pixellab/` (not bundled); the game uses `assets/visuals/fighters/`.
+
 ## [1.451.0+487]
 
 The hero stands in the fight, facing the enemy.

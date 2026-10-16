@@ -1,4 +1,4 @@
-// The hero in the fight (the user's ask: "add the character sprite in the
+// A figure standing in the fight: the hero, or an enemy that has art. (The hero: the user's ask: "add the character sprite in the
 // combat too, oriented east to the enemy"): the ronin of the side view
 // (assets/visuals/walker, see side_sprite.dart) stands on the left of the
 // battlefield, facing east, toward the enemies. It breathes while the fight
@@ -17,8 +17,8 @@ import 'combat_vfx.dart';
 import 'fight_sprites.dart';
 import 'pixel_portrait.dart' show PortraitCue, portraitCueMs;
 
-class FightHeroSprite extends StatefulWidget {
-  const FightHeroSprite({
+class FightFigure extends StatefulWidget {
+  const FightFigure({
     super.key,
     required this.controller,
     required this.anchor,
@@ -26,7 +26,26 @@ class FightHeroSprite extends StatefulWidget {
     required this.animate,
     required this.sprite,
     this.pixel = 3,
+    this.downOpacity = 0.4,
+    this.phase = 0,
+    this.figureKey = const Key('fight_hero_sprite'),
+    this.fallback = true,
   });
+
+  /// True for the hero: a missing image shows the ronin instead. An enemy
+  /// (false) with a missing image shows nothing, only its card.
+  final bool fallback;
+
+  /// How visible the figure stays once it is down (the hero dims, an enemy
+  /// that is beaten goes).
+  final double downOpacity;
+
+  /// Where in its breathing the figure starts (0 to 1), so a pack of
+  /// enemies does not breathe together.
+  final double phase;
+
+  /// The key of the painted figure (a test finds it by this).
+  final Key figureKey;
 
   /// The hero's art (see heroFightSprite): its frame size is what the
   /// figure is sized and placed from.
@@ -46,7 +65,7 @@ class FightHeroSprite extends StatefulWidget {
   /// Screen pixels one sprite pixel covers.
   final double pixel;
 
-  /// The room the sprite needs: its height and its width with the lunge's
+  /// The room the figure needs: its height and its width with the lunge's
   /// reach.
   static Size sizeFor(FightSpriteSet sprite, double pixel) => Size(
         sprite.frameWidth * pixel + lungeReach,
@@ -57,10 +76,10 @@ class FightHeroSprite extends StatefulWidget {
   static const double lungeReach = 30;
 
   @override
-  State<FightHeroSprite> createState() => _FightHeroSpriteState();
+  State<FightFigure> createState() => _FightFigureState();
 }
 
-class _FightHeroSpriteState extends State<FightHeroSprite>
+class _FightFigureState extends State<FightFigure>
     with TickerProviderStateMixin {
   late final AnimationController _idle = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 1000));
@@ -76,7 +95,7 @@ class _FightHeroSpriteState extends State<FightHeroSprite>
   }
 
   @override
-  void didUpdateWidget(FightHeroSprite old) {
+  void didUpdateWidget(FightFigure old) {
     super.didUpdateWidget(old);
     if (old.controller != widget.controller) {
       old.controller.removeCueListener(_onCue);
@@ -96,6 +115,7 @@ class _FightHeroSpriteState extends State<FightHeroSprite>
   void _syncIdle() {
     if (widget.animate && widget.alive) {
       if (!_idle.isAnimating) _idle.repeat();
+      if (_idle.value == 0 && widget.phase > 0) _idle.value = widget.phase;
     } else {
       _idle.stop();
     }
@@ -120,18 +140,22 @@ class _FightHeroSpriteState extends State<FightHeroSprite>
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.fallback && FightSpriteImages.failed(widget.sprite)) {
+      return const SizedBox.shrink();
+    }
     final sprite = FightSpriteImages.effective(widget.sprite);
-    final size = FightHeroSprite.sizeFor(sprite, widget.pixel);
+    final size = FightFigure.sizeFor(sprite, widget.pixel);
     return ValueListenableBuilder<int>(
       valueListenable: FightSpriteImages.loaded,
       builder: (context, _, __) => AnimatedBuilder(
         animation: Listenable.merge([_idle, _cue]),
-        builder: (context, _) => Opacity(
-          opacity: widget.alive ? 1 : 0.4,
+        builder: (context, _) => AnimatedOpacity(
+          duration: Duration(milliseconds: widget.animate ? 700 : 0),
+          opacity: widget.alive ? 1 : widget.downOpacity,
           child: CustomPaint(
-            key: const Key('fight_hero_sprite'),
+            key: widget.figureKey,
             size: size,
-            painter: _HeroPainter(
+            painter: _FigurePainter(
               sprite: sprite,
               pixel: widget.pixel,
               idle: _idle.value,
@@ -145,8 +169,8 @@ class _FightHeroSpriteState extends State<FightHeroSprite>
   }
 }
 
-class _HeroPainter extends CustomPainter {
-  _HeroPainter({
+class _FigurePainter extends CustomPainter {
+  _FigurePainter({
     required this.sprite,
     required this.pixel,
     required this.idle,
@@ -164,14 +188,17 @@ class _HeroPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final w = sprite.frameWidth * pixel;
     final h = sprite.frameHeight * pixel;
-    const lunge = FightHeroSprite.lungeReach;
+    const lunge = FightFigure.lungeReach;
+    // The hero lunges east, an enemy west; the room for it is on that side.
+    final way = sprite.facesEast ? 1.0 : -1.0;
+    final left = sprite.facesEast ? 0.0 : lunge;
     var dx = 0.0;
     var tint = 0.0;
     switch (cue) {
       case PortraitCue.lunge:
         // In with the blow, and back: out fast, home slowly.
         final k = cueT < 0.35 ? cueT / 0.35 : 1 - (cueT - 0.35) / 0.65;
-        dx = lunge * Curves.easeOut.transform(k.clamp(0.0, 1.0));
+        dx = way * lunge * Curves.easeOut.transform(k.clamp(0.0, 1.0));
       case PortraitCue.hit:
         // A red flash and a shake that dies away.
         final decay = 1 - cueT;
@@ -187,8 +214,8 @@ class _HeroPainter extends CustomPainter {
     // The ground shadow under the feet.
     canvas.drawOval(
       Rect.fromCenter(
-          center: Offset(w / 2 + dx * 0.4, baseY + 1),
-          width: w * 0.7,
+          center: Offset(left + w / 2 + dx * 0.4, baseY + 1),
+          width: w * 0.55,
           height: 7),
       Paint()..color = const Color(0x33000000),
     );
@@ -197,7 +224,7 @@ class _HeroPainter extends CustomPainter {
       // The image is not in yet: a quiet mark where the figure will stand.
       canvas.drawOval(
         Rect.fromCenter(
-            center: Offset(w / 2, baseY - h / 2),
+            center: Offset(left + w / 2, baseY - h / 2),
             width: w * 0.4,
             height: h * 0.6),
         Paint()..color = const Color(0x22000000),
@@ -213,27 +240,22 @@ class _HeroPainter extends CustomPainter {
               BlendMode.srcATop),
       );
     }
-    canvas.save();
-    if (!sprite.facesEast) {
-      // Art that faces west is mirrored to face the other way.
-      canvas.translate(w + 2 * dx, 0);
-      canvas.scale(-1, 1);
-    }
+    // The empty rows under the feet hang below the ground line.
     canvas.drawImageRect(
       image,
       Rect.fromLTWH(
           0, 0, sprite.frameWidth.toDouble(), sprite.frameHeight.toDouble()),
-      Rect.fromLTWH(dx, baseY - h + bob, w, h),
+      Rect.fromLTWH(
+          left + dx, baseY - h + bob + sprite.footInset * pixel, w, h),
       Paint()
         ..filterQuality = FilterQuality.none
         ..isAntiAlias = false,
     );
-    canvas.restore();
     if (tint > 0.05) canvas.restore();
   }
 
   @override
-  bool shouldRepaint(_HeroPainter old) =>
+  bool shouldRepaint(_FigurePainter old) =>
       old.sprite != sprite ||
       old.pixel != pixel ||
       old.idle != idle ||
