@@ -829,7 +829,7 @@
     "name": "The Reliquary Quarter",
     "name_fr": "Le Quartier des Reliquaires",
     "blurb": "Chapels and reliquaries given up street by street to the tear’s slow weather: frost on the cobbles in summer, and shadows that lie the wrong way.",
-    "blurb_fr": "Des chapelles et des reliquaires abandonnés rue après rue au lent climat de la déchirure : du givre sur les pavés en été, et des ombres couchées du mauvais côté.",
+    "blurb_fr": "Des chapelles et des reliquaires abandonnés rue après rue à la lente météo de la déchirure : du givre sur les pavés en plein été, et des ombres qui tombent du mauvais côté.",
     "landmark": "reliquary",
     "glyph": "temple"
   },
@@ -1199,8 +1199,8 @@
     "parent": "candlehold",
     "name": "The Gates",
     "name_fr": "Les Portes",
-    "blurb": "The harbour chain, the steps and the city’s gates (the Sun, the Anvil, the Reed and the Exorcists’), shut to anyone who comes without a banner.",
-    "blurb_fr": "La chaîne du port, les marches et les portes de la ville (du Soleil, de l’Enclume, des Roseaux et des Exorcistes), closes à qui vient sans bannière.",
+    "blurb": "The harbour chain, the steps and the city’s gates (the Sun, the Anvil, the Reed and the Exorcists’), shut to anyone who comes without a banner; where each clan arrives in its own way.",
+    "blurb_fr": "La chaîne du port, les marches et les portes de la ville (celles du Soleil, de l’Enclume, du Roseau et des Exorcistes), fermées à qui vient sans bannière ; où chaque clan arrive à sa façon.",
     "landmark": "",
     "glyph": "gate"
   },
@@ -1214,7 +1214,7 @@
     "name": "The Lantern Hall",
     "name_fr": "La Salle de la Lanterne",
     "blurb": "The hall at the top of the stair, under the First Lantern, where the Throne waits and whoever holds the doors must be faced.",
-    "blurb_fr": "La salle en haut de l’escalier, sous la Première Lanterne, où attend le Trône et où il faut affronter qui en tient les portes.",
+    "blurb_fr": "La salle au sommet de l’escalier, sous la Première Lanterne, où le Trône attend et où il faut affronter celui qui tient les portes.",
     "landmark": "",
     "glyph": "hall"
   },

@@ -71,13 +71,15 @@
       "5100_house_fishbasket_line_drawn",
       "5100_house_tar_hands",
       "5100_tar_hand_book",
-      "5100_keyholder_cut"
+      "5100_keyholder_cut",
+      "5100_lysa_raid"
     ],
     "wracks_end_lamp_path": [
       "5100_clan_dominion_1",
       "5100_clan_dominion_1_lit",
       "5100_clan_dominion_1_out",
-      "5100_drowned"
+      "5100_drowned",
+      "5100_lysa_mask"
     ],
     "wracks_end_quay": [
       "5100_clan_crows_1",

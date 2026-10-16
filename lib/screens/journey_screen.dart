@@ -44,6 +44,7 @@ import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../widgets/detour_scene_band.dart';
 import '../widgets/biome_backdrop.dart';
 import '../widgets/choice_card.dart';
 import '../widgets/choice_rings.dart';
@@ -58,6 +59,7 @@ import '../widgets/journey_world_map.dart';
 import '../widgets/geography_widgets.dart';
 import '../widgets/journey_fx.dart';
 import '../widgets/journey_glyph.dart';
+import '../widgets/journey_banner_pin.dart';
 import '../widgets/city_chart/city_chart.dart';
 import '../widgets/city_chart/city_chart_painter.dart';
 import '../widgets/city_chart/city_chart_view.dart';
@@ -747,10 +749,16 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
 
   /// The height of the panel under the map: a way picked fills it as it
   /// did; with choices acted out here, the cards get more of the screen.
+  /// Whether the scene being played is a written detour (see
+  /// detour_scene_band.dart): its ways are all cards.
+  bool _writtenDetour = false;
+
   double _panelHeight(double area, List<_Step> steps) {
     final plain = math.min(124.0, math.max(104.0, area * 0.26));
     final cards = steps.where((s) => s.onCard).length;
-    if (_level != JourneyMapLevel.place || cards == 0) return plain;
+    if ((_level != JourneyMapLevel.place && !_writtenDetour) || cards == 0) {
+      return plain;
+    }
     // On a short phone the map keeps its room and the cards scroll; a taller
     // one gives them more, up to three cards.
     final room = ((area - 430) * 0.4).clamp(0.0, 90.0);
@@ -910,6 +918,28 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     );
   }
 
+  /// Whether the map shows a banner for any of [steps] (not a card, not a
+  /// round mark of a fight or a roll).
+  bool _hasBannerPins(List<_Step> steps) => [
+        for (final i in _pinIdx)
+          if (i < steps.length &&
+              journeyPinCatOf(steps[i].kind, steps[i].questTie) != null)
+            i
+      ].isNotEmpty;
+
+  /// The key button at the map's top right: what the banners mean.
+  Widget _legendButton(ChartPalette palette) => Positioned(
+        right: 8,
+        top: 8,
+        child: _MapButton(
+          key: const Key('journey_legend_key'),
+          icon: Icons.vpn_key_outlined,
+          tip: tr(ref, 'journey_legend_tip'),
+          palette: palette,
+          onTap: () => showJourneyLegend(context),
+        ),
+      );
+
   /// A ring's list (or the pins', "ways") in a sheet over the lower half of
   /// the screen: a tap picks a card (a pin lights its road on the map above)
   /// and a second tap does it. The ring stays lit on the map meanwhile.
@@ -1012,12 +1042,23 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             ? null
             : enemyRoster(ids, enemies);
     final to = step.tags.destination;
+    final cat = journeyPinCatOf(step.kind, step.questTie);
     return Opacity(
       // The choice taken stays lit; the others dim while it plays out.
       opacity: _busy && _pressed != null && _pressed != i ? 0.45 : 1,
       child: ChoiceCard(
         key: ValueKey('journey_choice_card_$i'),
         icon: step.onCard ? _iconOf(step) : step.glyph.icon,
+        leading: step.onCard || cat == null
+            ? null
+            : BannerPin(
+                cat: cat,
+                color: cat.colorOn(ink,
+                    dark: Theme.of(context).brightness == Brightness.dark),
+                dark: Theme.of(context).brightness == Brightness.dark,
+                scale: 0.8,
+                lit: picked,
+              ),
         // The card sits on the app's page, not on the map: the map's own pale
         // road colour would vanish on a light page.
         color: switch (step.kind) {
@@ -1509,11 +1550,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // a pin on it (v1.407): in a place up close, only the plain ways on keep
     // their marks, spread over the room the marks leave. A room's ways keep
     // theirs: each is a spot in it.
-    final cardsOn = !play.isInExcursion &&
-        placeLandmark != null &&
-        chartHere != null &&
-        room == null;
-    final onCard = [for (final s in shapes) cardsOn && s.here];
+    // A written detour has no map: all its ways are cards under its scene.
+    _writtenDetour = play.isInExcursion &&
+        ref.read(storyPlayProvider.notifier).scenePlay != null;
+    final cardsOn = _writtenDetour ||
+        (!play.isInExcursion &&
+            placeLandmark != null &&
+            chartHere != null &&
+            room == null);
+    final onCard = [
+      for (final s in shapes) cardsOn && (_writtenDetour || s.here),
+    ];
     final pinSlots = journeySlots(onCard.where((c) => !c).length);
     var pinCount = 0;
     for (var i = 0; i < steps.length; i++) {
@@ -1794,6 +1841,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     onTap: _busy ? null : _goInside,
                   ),
                 ),
+              if (_hasBannerPins(steps)) _legendButton(palette),
               Positioned(
                 right: 8,
                 bottom: 8,
@@ -1810,199 +1858,216 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           )
         : null;
 
+    // A written detour plays over a scene of its own, not over the map
+    // (see detour_scene_band.dart).
+    final detourPlay = play.isInExcursion
+        ? ref.read(storyPlayProvider.notifier).scenePlay
+        : null;
     final map = ended
         ? _EndedPanel(
             title: tr(ref, 'the_end'),
             message: tr(ref, 'journey_ended'),
           )
-        : TutorialTarget(
-            id: 'journey.chart',
-            // Going into a fight the map jolts and its edges run red (see
-            // _take).
-            child: AnimatedBuilder(
-              animation: _jolt,
-              builder: (context, child) {
-                final t = _jolt.value;
-                if (t == 0 || t == 1) return child!;
-                final shake = math.sin(t * math.pi * 7) * 6 * (1 - t);
-                return Stack(
-                  fit: StackFit.passthrough,
-                  children: [
-                    Transform.translate(
-                      offset: Offset(shake, shake * 0.4),
-                      child: child,
-                    ),
-                    Positioned.fill(
-                      child: IgnorePointer(
-                        child: CustomPaint(
-                          painter: JourneyJoltPainter(
-                            t: t,
-                            colour: InkColors.dark.blood,
-                          ),
+        : detourPlay != null
+            ? DetourSceneBand(
+                scene: detourPlay.scene,
+                beat: detourPlay.nodes
+                    .indexWhere((n) => n.id == play.activeExcursionNode?.id),
+                french: french,
+                detourLabel: tr(ref, 'detour'),
+                text: node.descriptionFor(french),
+                note: node.contextNoteFor(french) ?? '',
+              )
+            : TutorialTarget(
+                id: 'journey.chart',
+                // Going into a fight the map jolts and its edges run red (see
+                // _take).
+                child: AnimatedBuilder(
+                  animation: _jolt,
+                  builder: (context, child) {
+                    final t = _jolt.value;
+                    if (t == 0 || t == 1) return child!;
+                    final shake = math.sin(t * math.pi * 7) * 6 * (1 - t);
+                    return Stack(
+                      fit: StackFit.passthrough,
+                      children: [
+                        Transform.translate(
+                          offset: Offset(shake, shake * 0.4),
+                          child: child,
                         ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-              child: cityView ??
-                  Stack(
-                    fit: StackFit.passthrough,
-                    children: [
-                      // A pinch in on the streets looks out at the land
-                      // (v1.201: the levels are zoomed between).
-                      GestureDetector(
-                        onScaleStart: (_) => _pinch = 1,
-                        onScaleUpdate: (d) {
-                          if (d.pointerCount > 1 && !_busy) {
-                            setState(() {
-                              _pinching = true;
-                              _pinch = d.scale.clamp(
-                                  0.35, _sceneInside && _outside ? 1.6 : 1.0);
-                            });
-                          }
-                        },
-                        onScaleEnd: (_) {
-                          if (_pinching && _pinch < 0.8) {
-                            _lookOut(from: _pinch);
-                          } else if (_pinching &&
-                              _pinch > 1.2 &&
-                              _sceneInside &&
-                              _outside) {
-                            _goInside();
-                          } else if (_pinching) {
-                            setState(() {
-                              _pinch = 1;
-                              _pinching = false;
-                            });
-                          }
-                        },
-                        child: AnimatedBuilder(
-                          animation: _arrive,
-                          builder: (context, child) {
-                            final scale = _pinching
-                                ? _pinch
-                                : Tween<double>(begin: 0.55, end: 1.0)
-                                    .transform(Curves.easeOutCubic
-                                        .transform(_arrive.value));
-                            return Transform.scale(
-                              scale: scale,
-                              alignment: Alignment.center,
-                              child: child,
-                            );
-                          },
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 280),
-                            child: _JourneyChart(
-                              key: _chartKey,
-                              // Looking out at the streets from inside, the
-                              // ways stay in the room.
-                              steps: _sceneInside && _outside
-                                  ? const []
-                                  : [for (final i in _pinIdx) steps[i]],
-                              selected: _sceneInside && _outside
-                                  ? null
-                                  : !_pinIdx.contains(_selected)
-                                      ? null
-                                      : _pinIdx.indexOf(_selected!),
-                              hereName: hereName,
-                              youAreHere: tr(ref, 'journey_you_are_here'),
-                              leadsTo: tr(ref, 'journey_leads_to'),
-                              palette: palette,
-                              ink: look == MapLook.parchment
-                                  ? InkColors.light
-                                  : InkColors.dark,
-                              greyed: look == MapLook.shroud,
-                              terrainShift: _terrainShift,
-                              terrainSeed:
-                                  7 + chapterOfNode(play.currentNodeId) * 13,
-                              onTap: (j, step) => _tap(_pinIdx[j], step),
-                              stamp: _stamp,
-                              burn: _burn,
-                              unroll: _unroll,
-                              weather: journeyWeatherOf(sky?.kind, chapter),
-                              stepIds: _pinIdx,
-                              rings: placeView != null && _isHub(steps)
-                                  ? _rings(
-                                      steps,
-                                      look == MapLook.parchment
-                                          ? InkColors.light
-                                          : InkColors.dark)
-                                  : const [],
-                              ringLit: _ringOpen,
-                              onRing: (id) =>
-                                  _openList(id, steps, french, story),
-                              place: placeView?.pinned(_pinIdx),
-                              arriveFrom: _arriveFrom,
-                              townView: townView,
+                        Positioned.fill(
+                          child: IgnorePointer(
+                            child: CustomPaint(
+                              painter: JourneyJoltPainter(
+                                t: t,
+                                colour: InkColors.dark.blood,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      // The sky over the party (v1.204).
-                      // Clear of the zoom buttons: a long line wraps, it is not
-                      // cut off under them.
-                      Positioned(
-                        left: 8,
-                        right: 56,
-                        bottom: 8,
-                        child: Align(
-                          alignment: Alignment.bottomLeft,
-                          // A narrow screen (320 px) has no room for the line
-                          // beside the zoom buttons: the icon, the line on a tap.
-                          child: IgnorePointer(
-                            // The full line is only to read: a mark under it takes
-                            // the tap (the icon alone, on a narrow screen, is a
-                            // button).
-                            ignoring: MediaQuery.sizeOf(context).width >= 340,
-                            child: WeatherChip(
+                      ],
+                    );
+                  },
+                  child: cityView ??
+                      Stack(
+                        fit: StackFit.passthrough,
+                        children: [
+                          // A pinch in on the streets looks out at the land
+                          // (v1.201: the levels are zoomed between).
+                          GestureDetector(
+                            onScaleStart: (_) => _pinch = 1,
+                            onScaleUpdate: (d) {
+                              if (d.pointerCount > 1 && !_busy) {
+                                setState(() {
+                                  _pinching = true;
+                                  _pinch = d.scale.clamp(0.35,
+                                      _sceneInside && _outside ? 1.6 : 1.0);
+                                });
+                              }
+                            },
+                            onScaleEnd: (_) {
+                              if (_pinching && _pinch < 0.8) {
+                                _lookOut(from: _pinch);
+                              } else if (_pinching &&
+                                  _pinch > 1.2 &&
+                                  _sceneInside &&
+                                  _outside) {
+                                _goInside();
+                              } else if (_pinching) {
+                                setState(() {
+                                  _pinch = 1;
+                                  _pinching = false;
+                                });
+                              }
+                            },
+                            child: AnimatedBuilder(
+                              animation: _arrive,
+                              builder: (context, child) {
+                                final scale = _pinching
+                                    ? _pinch
+                                    : Tween<double>(begin: 0.55, end: 1.0)
+                                        .transform(Curves.easeOutCubic
+                                            .transform(_arrive.value));
+                                return Transform.scale(
+                                  scale: scale,
+                                  alignment: Alignment.center,
+                                  child: child,
+                                );
+                              },
+                              child: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 280),
+                                child: _JourneyChart(
+                                  key: _chartKey,
+                                  // Looking out at the streets from inside, the
+                                  // ways stay in the room.
+                                  steps: _sceneInside && _outside
+                                      ? const []
+                                      : [for (final i in _pinIdx) steps[i]],
+                                  selected: _sceneInside && _outside
+                                      ? null
+                                      : !_pinIdx.contains(_selected)
+                                          ? null
+                                          : _pinIdx.indexOf(_selected!),
+                                  hereName: hereName,
+                                  youAreHere: tr(ref, 'journey_you_are_here'),
+                                  leadsTo: tr(ref, 'journey_leads_to'),
+                                  palette: palette,
+                                  ink: look == MapLook.parchment
+                                      ? InkColors.light
+                                      : InkColors.dark,
+                                  greyed: look == MapLook.shroud,
+                                  terrainShift: _terrainShift,
+                                  terrainSeed: 7 +
+                                      chapterOfNode(play.currentNodeId) * 13,
+                                  onTap: (j, step) => _tap(_pinIdx[j], step),
+                                  stamp: _stamp,
+                                  burn: _burn,
+                                  unroll: _unroll,
+                                  weather: journeyWeatherOf(sky?.kind, chapter),
+                                  stepIds: _pinIdx,
+                                  rings: placeView != null && _isHub(steps)
+                                      ? _rings(
+                                          steps,
+                                          look == MapLook.parchment
+                                              ? InkColors.light
+                                              : InkColors.dark)
+                                      : const [],
+                                  ringLit: _ringOpen,
+                                  onRing: (id) =>
+                                      _openList(id, steps, french, story),
+                                  place: placeView?.pinned(_pinIdx),
+                                  arriveFrom: _arriveFrom,
+                                  townView: townView,
+                                ),
+                              ),
+                            ),
+                          ),
+                          // The sky over the party (v1.204).
+                          // Clear of the zoom buttons: a long line wraps, it is not
+                          // cut off under them.
+                          Positioned(
+                            left: 8,
+                            right: 56,
+                            bottom: 8,
+                            child: Align(
+                              alignment: Alignment.bottomLeft,
+                              // A narrow screen (320 px) has no room for the line
+                              // beside the zoom buttons: the icon, the line on a tap.
+                              child: IgnorePointer(
+                                // The full line is only to read: a mark under it takes
+                                // the tap (the icon alone, on a narrow screen, is a
+                                // button).
+                                ignoring:
+                                    MediaQuery.sizeOf(context).width >= 340,
+                                child: WeatherChip(
+                                    palette: palette,
+                                    compact:
+                                        MediaQuery.sizeOf(context).width < 340),
+                              ),
+                            ),
+                          ),
+                          if (_sceneInside && _outside)
+                            Positioned(
+                              right: 8,
+                              bottom: 56,
+                              child: _MapButton(
+                                key: const Key('journey_go_inside'),
+                                icon: Icons.add,
+                                tip: tr(ref, 'journey_go_inside'),
                                 palette: palette,
-                                compact:
-                                    MediaQuery.sizeOf(context).width < 340),
+                                onTap: _busy ? null : _goInside,
+                              ),
+                            ),
+                          if (townView)
+                            Positioned(
+                              right: 8,
+                              bottom: 48,
+                              child: _MapButton(
+                                key: const Key('journey_town_zoom_in'),
+                                icon: Icons.add,
+                                tip: tr(ref, 'journey_tab_district'),
+                                palette: palette,
+                                onTap: _busy
+                                    ? null
+                                    : () => _goLevel(_LevelTab.district),
+                              ),
+                            ),
+                          if (_hasBannerPins(steps)) _legendButton(palette),
+                          Positioned(
+                            right: 8,
+                            bottom: 8,
+                            child: _MapButton(
+                              key: const Key('journey_place_zoom_out'),
+                              icon: Icons.remove,
+                              tip: tr(ref, 'journey_look_out'),
+                              palette: palette,
+                              onTap: _busy ? null : () => _lookOut(),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                      if (_sceneInside && _outside)
-                        Positioned(
-                          right: 8,
-                          bottom: 56,
-                          child: _MapButton(
-                            key: const Key('journey_go_inside'),
-                            icon: Icons.add,
-                            tip: tr(ref, 'journey_go_inside'),
-                            palette: palette,
-                            onTap: _busy ? null : _goInside,
-                          ),
-                        ),
-                      if (townView)
-                        Positioned(
-                          right: 8,
-                          bottom: 48,
-                          child: _MapButton(
-                            key: const Key('journey_town_zoom_in'),
-                            icon: Icons.add,
-                            tip: tr(ref, 'journey_tab_district'),
-                            palette: palette,
-                            onTap: _busy
-                                ? null
-                                : () => _goLevel(_LevelTab.district),
-                          ),
-                        ),
-                      Positioned(
-                        right: 8,
-                        bottom: 8,
-                        child: _MapButton(
-                          key: const Key('journey_place_zoom_out'),
-                          icon: Icons.remove,
-                          tip: tr(ref, 'journey_look_out'),
-                          palette: palette,
-                          onTap: _busy ? null : () => _lookOut(),
-                        ),
-                      ),
-                    ],
-                  ),
-            ),
-          );
+                ),
+              );
 
     // The guide shows the tab around the first time it opens (see
     // TutorialTopic.journey), once there is a character to follow.
@@ -2113,6 +2178,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   // over it: a mark scrolled to the foot would
                                   // sit under them.
                                   if (!ended &&
+                                      !_writtenDetour &&
                                       !(cityView != null &&
                                           _level == JourneyMapLevel.place))
                                     Padding(
@@ -4363,6 +4429,17 @@ class _JourneyChartState extends State<_JourneyChart>
         ? palette.label
         : _colorFor(step.kind, widget.ink, palette, greyed: widget.greyed);
     final isSelected = widget.selected == i || _walking == i;
+    // Most ways hang as a banner in their category's colour (see
+    // journey_banner_pin.dart); fights and rolls keep their round marks.
+    final cat = journeyPinCatOf(step.kind, step.questTie);
+    final dark = journeyInkIsDark(widget.ink);
+    final bannerColour = cat == null
+        ? colour
+        : step.locked
+            ? palette.label
+            : widget.greyed && cat != JourneyPinCat.main
+                ? palette.place
+                : cat.colorOn(widget.ink, dark: dark);
     // A new scene: the mark pops in once its road reaches it, and the
     // words fade up after.
     final pop = _markReveal(i);
@@ -4405,37 +4482,51 @@ class _JourneyChartState extends State<_JourneyChart>
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  Container(
-                    width: _stepRadius * 2,
-                    height: _stepRadius * 2,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isSelected ? colour : palette.land,
-                      border: Border.all(
-                        color: colour,
-                        width: isSelected ? 3 : 2,
+                  if (cat != null)
+                    Center(
+                      child: Transform.rotate(
+                        angle: shake,
+                        child: BannerPin(
+                          cat: cat,
+                          color: bannerColour,
+                          dark: dark,
+                          icon: step.locked ? Icons.lock_outline : null,
+                          lit: isSelected,
+                        ),
+                      ),
+                    )
+                  else
+                    Container(
+                      width: _stepRadius * 2,
+                      height: _stepRadius * 2,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isSelected ? colour : palette.land,
+                        border: Border.all(
+                          color: colour,
+                          width: isSelected ? 3 : 2,
+                        ),
+                      ),
+                      child: Transform.rotate(
+                        angle: shake,
+                        child: step.locked
+                            ? Icon(Icons.lock_outline,
+                                size: 20,
+                                color: isSelected ? palette.land : colour)
+                            : AnimatedBuilder(
+                                animation: _idleGlyphs,
+                                builder: (context, _) => journeyIdleGlyph(
+                                  glyph: step.glyph,
+                                  colour: isSelected ? palette.land : colour,
+                                  t: _idleGlyphs.value * 12,
+                                  phase: i * 0.9,
+                                ),
+                              ),
                       ),
                     ),
-                    child: Transform.rotate(
-                      angle: shake,
-                      child: step.locked
-                          ? Icon(Icons.lock_outline,
-                              size: 20,
-                              color: isSelected ? palette.land : colour)
-                          : AnimatedBuilder(
-                              animation: _idleGlyphs,
-                              builder: (context, _) => journeyIdleGlyph(
-                                glyph: step.glyph,
-                                colour: isSelected ? palette.land : colour,
-                                t: _idleGlyphs.value * 12,
-                                phase: i * 0.9,
-                              ),
-                            ),
-                    ),
-                  ),
                   // Tied to a quest: a small bookmark on the mark, gold for
                   // the main quest, the place's ink for a side job.
-                  if (step.questTie != null && !step.locked)
+                  if (step.questTie != null && !step.locked && cat == null)
                     Positioned(
                       key: ValueKey(
                           'journey_quest_badge_${widget.stepIds?[i] ?? i}'),
@@ -5068,8 +5159,7 @@ CityWayKind _cityWayKindOf(JourneyStepKind kind) => switch (kind) {
 
 /// The district of a city, as board 15 draws it (v1.355): the chart framed
 /// on the district with a pin on the building of each way (numbered), and
-/// under it the ways as numbered rows and "Walk on" chips to the other
-/// districts; zoomed out, the whole town with its districts as rows. A pin
+/// under it the ways as rows; zoomed out, the whole town with its districts as rows. A pin
 /// or a row opens the way's sheet.
 class _CityDistrictView extends ConsumerWidget {
   const _CityDistrictView({
@@ -5120,6 +5210,14 @@ class _CityDistrictView extends ConsumerWidget {
         ? MapLook.night
         : MapLook.parchment);
     // Each way's number: its place among its district's ways.
+    // A way hangs as a banner in its category's colour (see
+    // journey_banner_pin.dart); only the fights and rolls keep a numbered
+    // round pin, and their row its number.
+    final chartInk =
+        look == MapLook.parchment ? InkColors.light : InkColors.dark;
+    final chartDark = journeyInkIsDark(chartInk);
+    final chartPalette = ChartPalette.of(look);
+    final banners = <String, PinBanner>{};
     final numbers = <String, int>{};
     final byDistrict = <String, List<int>>{};
     for (var i = 0; i < steps.length; i++) {
@@ -5127,13 +5225,20 @@ class _CityDistrictView extends ConsumerWidget {
       if (d == null) continue;
       final list = byDistrict.putIfAbsent(d, () => []);
       list.add(i);
-      numbers['$i'] = list.length;
+      final cat = journeyPinCatOf(steps[i].kind, steps[i].questTie);
+      if (cat == null) {
+        numbers['$i'] = list.length;
+      } else {
+        banners['$i'] = PinBanner(
+            cat,
+            steps[i].locked
+                ? chartPalette.label
+                : look == MapLook.shroud && cat != JourneyPinCat.main
+                    ? chartPalette.place
+                    : cat.colorOn(chartInk, dark: chartDark));
+      }
     }
     final shown = focus == null ? const <int>[] : byDistrict[focus] ?? const [];
-    final others = [
-      for (final d in chart.districts)
-        if (d.id != focus) d,
-    ];
 
     Widget kindDisc(_Step s, {double size = 30}) {
       final colour = s.locked
@@ -5191,9 +5296,23 @@ class _CityDistrictView extends ConsumerWidget {
             decoration:
                 BoxDecoration(border: Border(top: BorderSide(color: ink.seam))),
             child: Row(children: [
-              numberDot(numbers['$i']!),
-              const SizedBox(width: 8),
-              kindDisc(s),
+              if (banners['$i'] case final banner?)
+                BannerPin(
+                  key: ValueKey('journey_row_banner_$i'),
+                  cat: banner.cat,
+                  color: s.locked
+                      ? banner.color
+                      : banner.cat.colorOn(ink,
+                          dark: theme.brightness == Brightness.dark),
+                  dark: theme.brightness == Brightness.dark,
+                  icon: s.locked ? Icons.lock_outline : null,
+                  scale: 0.8,
+                )
+              else ...[
+                numberDot(numbers['$i']!),
+                const SizedBox(width: 8),
+                kindDisc(s),
+              ],
               const SizedBox(width: 10),
               Expanded(
                 child: Text(s.label,
@@ -5218,31 +5337,6 @@ class _CityDistrictView extends ConsumerWidget {
                 ),
               ],
             ]),
-          ),
-        ));
-      }
-      if (others.isNotEmpty) {
-        rows.add(Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Text(tr(ref, 'journey_city_walk_on').toUpperCase(),
-                  style: theme.textTheme.labelSmall
-                      ?.copyWith(color: ink.ash, letterSpacing: 0.8)),
-              for (final d in others)
-                ActionChip(
-                  key: ValueKey('journey_city_walk_${d.id}'),
-                  visualDensity: VisualDensity.compact,
-                  label: Text(explored == null || explored!.contains(d.id)
-                      ? d.name
-                      : '? ${d.name}'),
-                  side: BorderSide(color: d.colour),
-                  onPressed: () => onWalk(d.id),
-                ),
-            ],
           ),
         ));
       }
@@ -5314,6 +5408,8 @@ class _CityDistrictView extends ConsumerWidget {
                   controls: false,
                   cards: false,
                   numbers: numbers,
+                  banners: banners,
+                  bannersDark: chartDark,
                   onFocus: onFocus,
                   onPick: (w) {
                     final i = int.tryParse(w.id);

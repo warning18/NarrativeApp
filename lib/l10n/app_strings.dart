@@ -87,10 +87,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} ways here · tap a pin or a row',
     AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
   },
-  'journey_city_walk_on': {
-    AppLanguage.en: 'Walk on',
-    AppLanguage.fr: 'Aller à'
-  },
   'journey_city_districts': {
     AppLanguage.en: 'The districts · tap one to go in',
     AppLanguage.fr: 'Les quartiers · touchez-en un pour y entrer',
@@ -108,6 +104,76 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'journey_look_out': {
     AppLanguage.en: 'Look out at the land',
     AppLanguage.fr: 'Regarder le pays',
+  },
+  'journey_legend_title': {
+    AppLanguage.en: 'What the banners mean',
+    AppLanguage.fr: 'Ce que disent les bannières',
+  },
+  'journey_legend_tip': {
+    AppLanguage.en: 'What the banners mean',
+    AppLanguage.fr: 'Ce que disent les bannières',
+  },
+  'journey_legend_note': {
+    AppLanguage.en:
+        'A fight or a roll is not a banner: it is played where you stand.',
+    AppLanguage.fr:
+        'Un combat ou un jet n’est pas une bannière : il se joue là où vous êtes.',
+  },
+  'journey_pin_main': {
+    AppLanguage.en: 'Main quest',
+    AppLanguage.fr: 'Quête principale',
+  },
+  'journey_pin_main_line': {
+    AppLanguage.en: 'The chapter’s way on.',
+    AppLanguage.fr: 'La suite de l’histoire du chapitre.',
+  },
+  'journey_pin_side': {
+    AppLanguage.en: 'Side quest',
+    AppLanguage.fr: 'Quête secondaire',
+  },
+  'journey_pin_side_line': {
+    AppLanguage.en: 'A job offered or under way.',
+    AppLanguage.fr: 'Un travail offert ou en cours.',
+  },
+  'journey_pin_detour': {
+    AppLanguage.en: 'Detour',
+    AppLanguage.fr: 'Détour',
+  },
+  'journey_pin_detour_line': {
+    AppLanguage.en: 'An expedition: a place to search.',
+    AppLanguage.fr: 'Une expédition : un lieu à fouiller.',
+  },
+  'journey_pin_shop': {
+    AppLanguage.en: 'Shop and service',
+    AppLanguage.fr: 'Boutique et service',
+  },
+  'journey_pin_shop_line': {
+    AppLanguage.en: 'Buy, heal, equip.',
+    AppLanguage.fr: 'Acheter, se soigner, s’équiper.',
+  },
+  'journey_pin_travel': {
+    AppLanguage.en: 'Travel',
+    AppLanguage.fr: 'Voyage',
+  },
+  'journey_pin_travel_line': {
+    AppLanguage.en: 'A trip to another place.',
+    AppLanguage.fr: 'Un voyage vers un autre lieu.',
+  },
+  'journey_pin_rest': {
+    AppLanguage.en: 'Rest',
+    AppLanguage.fr: 'Repos',
+  },
+  'journey_pin_rest_line': {
+    AppLanguage.en: 'A fire or a bed: you recover.',
+    AppLanguage.fr: 'Un feu ou un lit : on récupère.',
+  },
+  'journey_pin_way': {
+    AppLanguage.en: 'Plain way',
+    AppLanguage.fr: 'Chemin',
+  },
+  'journey_pin_way_line': {
+    AppLanguage.en: 'A road, nothing more said.',
+    AppLanguage.fr: 'Un chemin, sans rien de plus.',
   },
   'journey_recentre': {
     AppLanguage.en: 'Back to the party',
@@ -3095,6 +3161,23 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Put it away',
     AppLanguage.fr: 'Ranger',
   },
+  'level_signpost': {
+    AppLanguage.en: 'Chapter {n} asks for level {level}. You are level {you}.',
+    AppLanguage.fr:
+        'Le chapitre {n} demande le niveau {level}. Vous êtes niveau {you}.',
+  },
+  'level_signpost_row': {
+    AppLanguage.en: 'Chapter {n}: level {level} advised (you: {you})',
+    AppLanguage.fr: 'Chapitre {n} : niveau {level} conseillé (vous : {you})',
+  },
+  'level_signpost_short': {
+    AppLanguage.en: 'Ch. {n} · lvl {level}',
+    AppLanguage.fr: 'Ch. {n} · niv. {level}',
+  },
+  'level_signpost_lv': {
+    AppLanguage.en: 'Lvl {level}',
+    AppLanguage.fr: 'Niv. {level}',
+  },
   'next_main_quest_label': {
     AppLanguage.en: 'Next · main quest',
     AppLanguage.fr: 'Ensuite · quête principale',
@@ -4885,6 +4968,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Appris :',
   },
   'round_label': {AppLanguage.en: 'Round', AppLanguage.fr: 'Manche'},
+  'round_tip': {
+    AppLanguage.en:
+        'The round of the fight. From round {n} the Tide rises and every blow hits harder, the longer it lasts.',
+    AppLanguage.fr:
+        'La manche du combat. À partir de la manche {n}, la Marée monte et chaque coup frappe plus fort, plus le combat dure.',
+  },
   'roll_hint': {
     AppLanguage.en: 'Roll the party\'s dice, then keep or reroll.',
     AppLanguage.fr: 'Lancez les dés du groupe, puis gardez ou relancez.',
@@ -8445,6 +8534,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Place forte',
   },
   'momentum_label': {AppLanguage.en: 'Momentum', AppLanguage.fr: 'Élan'},
+  'momentum_tip': {
+    AppLanguage.en:
+        'Each blow you land builds momentum; a blow you take sets it back. When it is full, your next strike is a sure critical.',
+    AppLanguage.fr:
+        'Chaque coup que vous portez fait monter l’élan ; un coup reçu le fait retomber. Quand il est plein, votre prochain coup est un critique assuré.',
+  },
+  'incoming_tip': {
+    AppLanguage.en:
+        'The blows aimed at {name} this round would take off about {n}, after armor and block.',
+    AppLanguage.fr:
+        'Les coups visant {name} ce tour retireraient environ {n}, armure et blocage déduits.',
+  },
   'momentum_ready_label': {
     AppLanguage.en: 'Momentum: next strike crits!',
     AppLanguage.fr: 'Élan : le prochain coup est critique !',
