@@ -1326,7 +1326,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             hereDistrict: ref.watch(partyDistrictProvider),
             focus: townView
                 ? null
-                : _cityFocus ?? ref.watch(partyDistrictProvider),
+                // A district looked at in another city (the story moved
+                // on) gives way to the party's own.
+                : (cityChart.districts.any((d) => d.id == _cityFocus)
+                        ? _cityFocus
+                        : null) ??
+                    ref.watch(partyDistrictProvider),
             focusToken: _cityFocusToken,
             steps: steps,
             districtOf: cityDistrictOf,
