@@ -45,6 +45,22 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'To {place}',
     AppLanguage.fr: 'Vers {place}',
   },
+  'choice_group_fight': {AppLanguage.en: 'Fight', AppLanguage.fr: 'Combat'},
+  'choice_group_talkDecide': {
+    AppLanguage.en: 'Talk & decide',
+    AppLanguage.fr: 'Parler & décider',
+  },
+  'choice_group_checksPay': {
+    AppLanguage.en: 'Checks & pay',
+    AppLanguage.fr: 'Épreuves & paiements',
+  },
+  'choice_ways_chip': {AppLanguage.en: 'Ways', AppLanguage.fr: 'Voies'},
+  'choice_hub_hint': {
+    AppLanguage.en:
+        'Tap a chip, on the ring or under the map, to open its list.',
+    AppLanguage.fr:
+        'Touchez une pastille, sur l’anneau ou sous la carte, pour ouvrir sa liste.',
+  },
   'journey_by_road': {
     AppLanguage.en: 'Road: {stops}',
     AppLanguage.fr: 'Route\u00a0: {stops}',

@@ -166,6 +166,8 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('journey_go')));
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byKey(const ValueKey('journey_traveller')), findsNothing);
+    // The beat at the party's mark, then the story goes on.
+    await tester.pump(const Duration(milliseconds: 700));
     await _settle(tester);
     expect(container.read(storyPlayProvider).currentNodeId, '300');
     expect(container.read(playerSessionProvider).flags,
