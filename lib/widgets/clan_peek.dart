@@ -12,6 +12,7 @@ import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
+import 'clan_power_block.dart';
 import 'clan_radar_chart.dart';
 import 'pixel_banner.dart';
 
@@ -205,6 +206,7 @@ class ClanDetailsCard extends ConsumerWidget {
                 ),
               ],
             ),
+            ClanPowerBlock(factionId: factionId, color: color),
             heading('clan_peek_orientation'),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
