@@ -68,7 +68,9 @@ void main() {
     for (final chapter in plain.keys) {
       final other = clash[chapter];
       expect(other, isNotNull, reason: '$chapter has no clash fights');
-      expect((other! - plain[chapter]!).abs(), lessThan(0.10),
+      // 0.12 since v1.425: rates near the middle (the difficulty review
+      // brought fights from ~95% down to ~70%) spread more than near the top.
+      expect((other! - plain[chapter]!).abs(), lessThan(0.12),
           reason: '$chapter: plain ${plain[chapter]!.toStringAsFixed(2)}, '
               'clash ${other.toStringAsFixed(2)}');
     }

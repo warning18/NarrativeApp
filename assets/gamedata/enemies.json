@@ -2397,8 +2397,8 @@
   },
   "void_archon": {
     "enemyName": "Void Archon",
-    "maxHealth": 330,
-    "damage": 26,
+    "maxHealth": 365,
+    "damage": 27,
     "guile": 10,
     "faction": "",
     "reaction": "",
@@ -2585,8 +2585,8 @@
   },
   "void_sovereign": {
     "enemyName": "The Sovereign",
-    "maxHealth": 359,
-    "damage": 30,
+    "maxHealth": 385,
+    "damage": 31,
     "guile": 12,
     "faction": "",
     "reaction": "",
@@ -3886,8 +3886,8 @@
   "white_admiral": {
     "enemyName": "The White Admiral",
     "enemyName_fr": "L’Amiral Blanc",
-    "maxHealth": 350,
-    "damage": 31,
+    "maxHealth": 395,
+    "damage": 32,
     "guile": 11,
     "faction": "",
     "reaction": "",
@@ -5213,8 +5213,8 @@
   "tear_herald": {
     "enemyName": "The Tear-Herald",
     "enemyName_fr": "Le Héraut de la Déchirure",
-    "maxHealth": 306,
-    "damage": 27,
+    "maxHealth": 290,
+    "damage": 26,
     "guile": 12,
     "faction": "",
     "reaction": "",

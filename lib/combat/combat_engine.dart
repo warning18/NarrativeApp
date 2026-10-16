@@ -846,16 +846,21 @@ int scaledReward(int base, int playerLevel) {
 const double chapterDifficultyStep = 0.15;
 
 /// The multipliers on a regular enemy's max health and damage, before the
-/// chapter curve -- the "medium-hard" floor for everything that isn't a
-/// boss. It ramps over the first chapters (health ×1.15, ×1.25, then ×1.35
-/// from chapter 3; damage ×1.10, ×1.15, then ×1.20), so the opening fights
-/// stay a lesson while the later ones meet a party with a skill tree, tier
-/// upgrades and a full camp. A 200-run simulation of v1.146 at the old flat
-/// floor (×1.15/×1.10, step 0.12) lost 0.12 fights a run; the ramp, with
-/// step 0.15 and the boss floor below, loses about 1.5 a run with every
-/// run finishing and chapter 1 still won 98% of the time.
-const List<double> enemyHealthFloorByChapter = [2.36, 2.56, 2.77];
-const List<double> enemyDamageFloorByChapter = [2.09, 2.18, 2.28];
+/// chapter curve -- the floor for everything that isn't a boss, one entry
+/// per chapter (the last holds for any later one). The difficulty review
+/// (v1.425, the user's call: every profession wins at most 75% of its
+/// encounters within three tries, aiming at 65-75) roughly doubled it and
+/// shaped it by chapter: chapter 1 a little lighter so the opening still
+/// teaches, chapters 2-5 the heaviest, 6-8 lighter again because the
+/// chapter curve already climbs there and a heavier floor stopped most
+/// runs short of the late zones' bosses. Measured with the playthrough
+/// simulator (400 runs, docs/simulation/difficulty-review.md).
+const List<double> enemyHealthFloorByChapter = [
+  1.70, 2.75, 2.77, 2.77, 2.90, 2.16, 2.09, 2.03, //
+];
+const List<double> enemyDamageFloorByChapter = [
+  1.55, 2.30, 2.28, 2.28, 2.40, 1.80, 1.74, 1.68, //
+];
 
 /// A regular enemy's health floor in [chapter] (the last entry holds for
 /// every later chapter; a chapter below 1 reads as chapter 1).
