@@ -43,6 +43,7 @@ class StoryChoice {
     this.loseAllyId,
     this.mainQuest = false,
     this.pays = false,
+    this.about = '',
     this.travelPlaceId,
     this.avoidFightOnSuccess = false,
     this.forcedCondition,
@@ -113,6 +114,7 @@ class StoryChoice {
       loseAllyId: json['loseAllyId'] as String?,
       mainQuest: json['mainQuest'] as bool? ?? false,
       pays: json['pays'] as bool? ?? false,
+      about: json['about']?.toString() ?? '',
       travelPlaceId: json['travelPlaceId'] as String?,
       avoidFightOnSuccess: json['avoidFightOnSuccess'] as bool? ?? false,
       forcedCondition: json['forcedCondition'] as String?,
@@ -373,6 +375,12 @@ class StoryChoice {
   /// other prices lock through the next scene's gold requirement.
   final bool pays;
 
+  /// A hub's grouping key for this choice (Narrative's in-place data,
+  /// docs/proposals/inplace-choices.md): who or what it is about, an NPC
+  /// id, a place id or a slug of its node's [StoryNode.aboutLabels]; ''
+  /// for none.
+  final String about;
+
   /// A place (its story node id) the party travels to before this choice
   /// resolves: a walk, or a voyage to the place's landing (see
   /// camp_travel.dart). The main quest sets out this way from the camp.
@@ -454,6 +462,7 @@ class StoryChoice {
           'loseAllyId': loseAllyId,
         if (mainQuest) 'mainQuest': mainQuest,
         if (pays) 'pays': pays,
+        if (about.isNotEmpty) 'about': about,
         if (travels) 'travelPlaceId': travelPlaceId,
         if (avoidFightOnSuccess) 'avoidFightOnSuccess': avoidFightOnSuccess,
         if (forcedCondition != null && forcedCondition!.isNotEmpty)
@@ -557,6 +566,10 @@ class StoryNode {
     this.politicsOnEnter,
     this.location,
     this.spot,
+    this.facing = '',
+    this.prompt = '',
+    this.promptFr = '',
+    this.aboutLabels = const {},
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -595,6 +608,19 @@ class StoryNode {
       politicsOnEnter: StoryPolitics.tryParse(json['politicsOnEnter']),
       location: json['location']?.toString(),
       spot: json['spot']?.toString(),
+      facing: json['facing']?.toString() ?? '',
+      prompt: json['prompt']?.toString() ?? '',
+      promptFr: json['prompt_fr']?.toString() ?? '',
+      aboutLabels: {
+        if (json['aboutLabels'] is Map)
+          for (final MapEntry(:key, :value)
+              in (json['aboutLabels'] as Map).entries)
+            if (value is Map)
+              key.toString(): (
+                en: value['en']?.toString() ?? '',
+                fr: value['fr']?.toString() ?? '',
+              ),
+      },
     );
   }
 
@@ -688,6 +714,23 @@ class StoryNode {
   final String id;
   final String description;
   final List<StoryChoice> choices;
+
+  /// Who the scene faces (Narrative's in-place data): an enemy or NPC id;
+  /// '' for the narrator alone.
+  final String facing;
+
+  /// The question the scene ends on, one short line ([promptFor]); '' for
+  /// none.
+  final String prompt;
+  final String promptFr;
+
+  /// The labels of [StoryChoice.about] slugs that name no NPC or place.
+  final Map<String, ({String en, String fr})> aboutLabels;
+
+  /// [prompt] in French when [french] and written, else in English.
+  String promptFor(bool french) =>
+      french && promptFr.isNotEmpty ? promptFr : prompt;
+
   final int reqGold;
   final int? reqAlignmentScore;
 
@@ -845,6 +888,14 @@ class StoryNode {
         // Where the story file keeps it: after the taxonomy (v1.197).
         if (location != null) 'location': location,
         if (spot != null) 'spot': spot,
+        if (facing.isNotEmpty) 'facing': facing,
+        if (prompt.isNotEmpty) 'prompt': prompt,
+        if (promptFr.isNotEmpty) 'prompt_fr': promptFr,
+        if (aboutLabels.isNotEmpty)
+          'aboutLabels': {
+            for (final MapEntry(:key, :value) in aboutLabels.entries)
+              key: {'en': value.en, 'fr': value.fr},
+          },
         if (scriptTrigger != null && scriptTrigger!.isNotEmpty)
           'automations': {'script_trigger': scriptTrigger},
         if (authoringComment != null && authoringComment!.isNotEmpty)

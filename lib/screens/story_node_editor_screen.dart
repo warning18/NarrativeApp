@@ -121,6 +121,11 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
           _politicsOnEnterController.text, widget.node.politicsOnEnter),
       location: locationFromEditorText(
           _locationController.text, widget.node.location),
+      spot: widget.node.spot,
+      facing: widget.node.facing,
+      prompt: widget.node.prompt,
+      promptFr: widget.node.promptFr,
+      aboutLabels: widget.node.aboutLabels,
     );
     await saveStoryNode(ref, updated);
     if (!mounted) return;
@@ -624,6 +629,7 @@ class _ChoiceEditState {
         hostFight: hostFight,
         mainQuest: _original.mainQuest,
         pays: _original.pays,
+        about: _original.about,
         travelPlaceId: _original.travelPlaceId,
         avoidFightOnSuccess: _original.avoidFightOnSuccess,
         forcedCondition: _original.forcedCondition,
