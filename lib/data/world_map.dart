@@ -290,7 +290,8 @@ final List<Landmark> worldMapLandmarks = [
         'Le carrefour du chapitre 2, le quartier du port de Bouche-de-Sel. Un intendant nommé Vane, sans lien avec l’Inquisiteur général, garde la porte des chantiers navals\u00a0; autour de lui, le marché regorge de travail\u00a0: le Bazar, la rue des Apothicaires, des primes, des parties de cartes, un faux informateur, Kelda à la porte, la reconnaissance de dette de Sable, Liora sur le toit, et Vess, qui suit le Balluchon.',
     scenes: [
       '2010', '2010_crane', '2010_liora', '2011', //
-      '2015', '2015_bandits', '2015_dockside', '2015_rats', '2015_smuggler',
+      '2015', '2015_lysa_line', '2015_bandits', '2015_dockside', '2015_rats',
+      '2015_smuggler',
       '2011_roof_fall', '2030', '2040', '2040_paid', '2050', '2070',
       '2070_cut_failed',
       '2015_route_sold',
@@ -402,7 +403,7 @@ final List<Landmark> worldMapLandmarks = [
       '3005_wisp', '3005_stalker', '3005_golem', '3005_auxiliaries',
       '3005_maren', '3005_archive', '3005_archive_failed', '3005_ledger',
       '3005_ledger_failed', '3005_grosh', '3005_wall', '3005_wall_argued',
-      '3005_wall_fight', '3005_lysa', '3005_envoys',
+      '3005_wall_fight', '3005_lysa', '3005_lysa_price', '3005_envoys',
       '3005_house_tribunal',
       '3005_clan_vigil_1',
       '3005_clan_vigil_1_breach',
@@ -491,6 +492,7 @@ final List<Landmark> worldMapLandmarks = [
         'Des pilleurs d’épaves et des coupeurs de varech sur la falaise au-dessus de l’Escalier Noyé, dans des maisons bâties avec des coques, de fausses lampes sur la pointe et les noyés qui grimpent vers elles.',
     scenes: [
       '5100', '5100_anvil_deaf_vote', '5100_drowned', '5100_salvage',
+      '5100_lysa_raid', '5100_lysa_mask',
       '5100_salvage_failed', //
       '5100_headman', '5100_headman_later', '5100_nets', '5100_vote',
       '5100_house_tar_hands',
@@ -585,6 +587,8 @@ final List<Landmark> worldMapLandmarks = [
       '6010_gate', '6010', '6010_chartkeeper', '6010_chart_bought', //
       '6010_chartkeeper_words', '6010_lysa', '6010_lysa_later',
       '6010_lysa_dead', '6010_masked', '6010_masked_after', '6010_hounds',
+      '6010_clement_refused', '6010_lysa_rescued', '6010_lysa_sworn',
+      '6010_lysa_mercy', '6010_lysa_sacrifice', '6010_lysa_ledger',
       '6010_confession', '6010_confession_later', '6010_penitent',
       '6010_lantern', '6010_lantern_keeper', '6010_spawn', '6010_frost',
       '6010_frost_failed', '6010_malrik', '6010_thread', '6010_record',
@@ -760,7 +764,7 @@ final List<Landmark> worldMapLandmarks = [
       '7002_betrayal', '7002_crew', //
       '7002_orders', '7002_throne', '7002_banner', //
       '7002_confront', '7002_price', '7003',
-      '7004', '7005', '7005_seeker', '7005_dawn', '7005_crown',
+      '7004', '7004_stitch', '7005', '7005_seeker', '7005_dawn', '7005_crown',
     ],
     fights: ['hollow_reflection', '@first_ally'],
   ),

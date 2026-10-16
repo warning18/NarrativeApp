@@ -70,12 +70,28 @@ bool nemesisEnds(PoliticsState state, String clanId, ClanData data) =>
     state.tierOf(clanId, data).isAtLeast(StandingTier.wary);
 
 /// The story's flags that side the character with the Dominion for good
-/// (Narrative, docs/proposals/dominion-nemesis.md): the legate's pact, and
-/// Vane backed for the throne. With one, the Dominion is no nemesis.
+/// (Narrative, docs/proposals/dominion-nemesis.md and lysa-arc.md): the
+/// legate's pact, Vane backed for the throne, and sworn to the Lantern for
+/// Lysa. With one, the Dominion is no nemesis.
 const List<String> dominionSidedFlags = [
   'inquisition_pact',
-  'throne_backed_vane'
+  'throne_backed_vane',
+  'lysa_sworn_for',
 ];
+
+/// The story's flags that make the Dominion's hunt fiercer (lysa-arc.md):
+/// Lysa taken from its chapel by force, or her blood given to the Shroud.
+/// The story's nemesis turns an earned one (the Hunted odds, its people in
+/// your fights, its wars), and its champion comes sooner
+/// ([fiercerChampionRoadChance]).
+const List<String> dominionFiercerFlags = [
+  'lysa_rescued_force',
+  'lysa_sacrificed',
+];
+
+/// The Dominion's champion's odds on a road at rest once its hunt is
+/// fiercer ([dominionFiercerFlags]).
+const double fiercerChampionRoadChance = 0.6;
 
 /// The clans [flags] put out of the nemesis's reach ([dominionSidedFlags]).
 Set<String> _sidedWith(Iterable<String> flags) =>
@@ -106,6 +122,13 @@ PoliticsState updateNemesis(
   }
   var next = state;
   final held = state.nemesis;
+  if (state.isStoryNemesis &&
+      held == storyNemesisClan &&
+      !sided.contains(held) &&
+      flags.any(dominionFiercerFlags.contains)) {
+    // Lysa taken by force, or given to the Shroud: no longer gentle.
+    return state.copyWith(nemesisReason: '');
+  }
   if (state.isStoryNemesis) {
     final story = sided.contains(held)
         ? null
@@ -385,7 +408,8 @@ Map<String, dynamic> championRecordFor(
 
 /// The nemesis quest's beat on this road at rest, or null: its quest under
 /// way ([activeQuestIds]), from [championMinChapter], at
-/// [championRoadChance]; the trail first ([flags] without [trailFlagOf]),
+/// [championRoadChance] ([fiercerChampionRoadChance] for the Dominion's
+/// once its hunt is fiercer); the trail first ([flags] without [trailFlagOf]),
 /// then the champion.
 List<StoryNode>? maybeChampionRoad({
   required PoliticsState politics,
@@ -399,7 +423,11 @@ List<StoryNode>? maybeChampionRoad({
   final clan = politics.nemesis;
   if (clan.isEmpty || chapter < championMinChapter) return null;
   if (!activeQuestIds.contains(nemesisQuestIdOf(clan))) return null;
-  if (random.nextDouble() >= championRoadChance) return null;
+  final chance =
+      clan == storyNemesisClan && flags.any(dominionFiercerFlags.contains)
+          ? fiercerChampionRoadChance
+          : championRoadChance;
+  if (random.nextDouble() >= chance) return null;
   final node = flags.contains(trailFlagOf(clan))
       ? buildChampionNode(clan, enemies, random)
       : buildTrailNode(clan, quests, random) ??
