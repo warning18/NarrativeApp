@@ -31,6 +31,7 @@ class ChoiceCard extends StatelessWidget {
     this.onTap,
     this.onGo,
     this.goKey,
+    this.leading,
   });
 
   final IconData icon;
@@ -52,6 +53,9 @@ class ChoiceCard extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onGo;
   final Key? goKey;
+
+  /// Worn instead of the round icon (the Journey's ways wear their banner).
+  final Widget? leading;
 
   @override
   Widget build(BuildContext context) {
@@ -76,18 +80,21 @@ class ChoiceCard extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(10, 8, 8, 8),
           child: Row(
             children: [
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: selected ? tone : theme.colorScheme.surface,
-                  border: Border.all(color: tone, width: 2),
+              if (leading != null && !locked)
+                SizedBox(width: 34, height: 38, child: Center(child: leading))
+              else
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: selected ? tone : theme.colorScheme.surface,
+                    border: Border.all(color: tone, width: 2),
+                  ),
+                  child: Icon(locked ? Icons.lock_outline : icon,
+                      size: 18,
+                      color: selected ? theme.colorScheme.surface : tone),
                 ),
-                child: Icon(locked ? Icons.lock_outline : icon,
-                    size: 18,
-                    color: selected ? theme.colorScheme.surface : tone),
-              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Opacity(

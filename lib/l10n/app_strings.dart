@@ -87,10 +87,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} ways here · tap a pin or a row',
     AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
   },
-  'journey_city_walk_on': {
-    AppLanguage.en: 'Walk on',
-    AppLanguage.fr: 'Aller à'
-  },
   'journey_city_districts': {
     AppLanguage.en: 'The districts · tap one to go in',
     AppLanguage.fr: 'Les quartiers · touchez-en un pour y entrer',
@@ -108,6 +104,76 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'journey_look_out': {
     AppLanguage.en: 'Look out at the land',
     AppLanguage.fr: 'Regarder le pays',
+  },
+  'journey_legend_title': {
+    AppLanguage.en: 'What the banners mean',
+    AppLanguage.fr: 'Ce que disent les bannières',
+  },
+  'journey_legend_tip': {
+    AppLanguage.en: 'What the banners mean',
+    AppLanguage.fr: 'Ce que disent les bannières',
+  },
+  'journey_legend_note': {
+    AppLanguage.en:
+        'A fight or a roll is not a banner: it is played where you stand.',
+    AppLanguage.fr:
+        'Un combat ou un jet n’est pas une bannière : il se joue là où vous êtes.',
+  },
+  'journey_pin_main': {
+    AppLanguage.en: 'Main quest',
+    AppLanguage.fr: 'Quête principale',
+  },
+  'journey_pin_main_line': {
+    AppLanguage.en: 'The chapter’s way on.',
+    AppLanguage.fr: 'La suite de l’histoire du chapitre.',
+  },
+  'journey_pin_side': {
+    AppLanguage.en: 'Side quest',
+    AppLanguage.fr: 'Quête secondaire',
+  },
+  'journey_pin_side_line': {
+    AppLanguage.en: 'A job offered or under way.',
+    AppLanguage.fr: 'Un travail offert ou en cours.',
+  },
+  'journey_pin_detour': {
+    AppLanguage.en: 'Detour',
+    AppLanguage.fr: 'Détour',
+  },
+  'journey_pin_detour_line': {
+    AppLanguage.en: 'An expedition: a place to search.',
+    AppLanguage.fr: 'Une expédition : un lieu à fouiller.',
+  },
+  'journey_pin_shop': {
+    AppLanguage.en: 'Shop and service',
+    AppLanguage.fr: 'Boutique et service',
+  },
+  'journey_pin_shop_line': {
+    AppLanguage.en: 'Buy, heal, equip.',
+    AppLanguage.fr: 'Acheter, se soigner, s’équiper.',
+  },
+  'journey_pin_travel': {
+    AppLanguage.en: 'Travel',
+    AppLanguage.fr: 'Voyage',
+  },
+  'journey_pin_travel_line': {
+    AppLanguage.en: 'A trip to another place.',
+    AppLanguage.fr: 'Un voyage vers un autre lieu.',
+  },
+  'journey_pin_rest': {
+    AppLanguage.en: 'Rest',
+    AppLanguage.fr: 'Repos',
+  },
+  'journey_pin_rest_line': {
+    AppLanguage.en: 'A fire or a bed: you recover.',
+    AppLanguage.fr: 'Un feu ou un lit : on récupère.',
+  },
+  'journey_pin_way': {
+    AppLanguage.en: 'Plain way',
+    AppLanguage.fr: 'Chemin',
+  },
+  'journey_pin_way_line': {
+    AppLanguage.en: 'A road, nothing more said.',
+    AppLanguage.fr: 'Un chemin, sans rien de plus.',
   },
   'journey_recentre': {
     AppLanguage.en: 'Back to the party',

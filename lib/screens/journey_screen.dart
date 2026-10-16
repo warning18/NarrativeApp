@@ -59,6 +59,7 @@ import '../widgets/journey_world_map.dart';
 import '../widgets/geography_widgets.dart';
 import '../widgets/journey_fx.dart';
 import '../widgets/journey_glyph.dart';
+import '../widgets/journey_banner_pin.dart';
 import '../widgets/city_chart/city_chart.dart';
 import '../widgets/city_chart/city_chart_painter.dart';
 import '../widgets/city_chart/city_chart_view.dart';
@@ -917,6 +918,28 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     );
   }
 
+  /// Whether the map shows a banner for any of [steps] (not a card, not a
+  /// round mark of a fight or a roll).
+  bool _hasBannerPins(List<_Step> steps) => [
+        for (final i in _pinIdx)
+          if (i < steps.length &&
+              journeyPinCatOf(steps[i].kind, steps[i].questTie) != null)
+            i
+      ].isNotEmpty;
+
+  /// The key button at the map's top right: what the banners mean.
+  Widget _legendButton(ChartPalette palette) => Positioned(
+        right: 8,
+        top: 8,
+        child: _MapButton(
+          key: const Key('journey_legend_key'),
+          icon: Icons.vpn_key_outlined,
+          tip: tr(ref, 'journey_legend_tip'),
+          palette: palette,
+          onTap: () => showJourneyLegend(context),
+        ),
+      );
+
   /// A ring's list (or the pins', "ways") in a sheet over the lower half of
   /// the screen: a tap picks a card (a pin lights its road on the map above)
   /// and a second tap does it. The ring stays lit on the map meanwhile.
@@ -1019,12 +1042,23 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             ? null
             : enemyRoster(ids, enemies);
     final to = step.tags.destination;
+    final cat = journeyPinCatOf(step.kind, step.questTie);
     return Opacity(
       // The choice taken stays lit; the others dim while it plays out.
       opacity: _busy && _pressed != null && _pressed != i ? 0.45 : 1,
       child: ChoiceCard(
         key: ValueKey('journey_choice_card_$i'),
         icon: step.onCard ? _iconOf(step) : step.glyph.icon,
+        leading: step.onCard || cat == null
+            ? null
+            : BannerPin(
+                cat: cat,
+                color: cat.colorOn(ink,
+                    dark: Theme.of(context).brightness == Brightness.dark),
+                dark: Theme.of(context).brightness == Brightness.dark,
+                scale: 0.8,
+                lit: picked,
+              ),
         // The card sits on the app's page, not on the map: the map's own pale
         // road colour would vanish on a light page.
         color: switch (step.kind) {
@@ -1807,6 +1841,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     onTap: _busy ? null : _goInside,
                   ),
                 ),
+              if (_hasBannerPins(steps)) _legendButton(palette),
               Positioned(
                 right: 8,
                 bottom: 8,
@@ -2017,6 +2052,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                     : () => _goLevel(_LevelTab.district),
                               ),
                             ),
+                          if (_hasBannerPins(steps)) _legendButton(palette),
                           Positioned(
                             right: 8,
                             bottom: 8,
@@ -4393,6 +4429,17 @@ class _JourneyChartState extends State<_JourneyChart>
         ? palette.label
         : _colorFor(step.kind, widget.ink, palette, greyed: widget.greyed);
     final isSelected = widget.selected == i || _walking == i;
+    // Most ways hang as a banner in their category's colour (see
+    // journey_banner_pin.dart); fights and rolls keep their round marks.
+    final cat = journeyPinCatOf(step.kind, step.questTie);
+    final dark = journeyInkIsDark(widget.ink);
+    final bannerColour = cat == null
+        ? colour
+        : step.locked
+            ? palette.label
+            : widget.greyed && cat != JourneyPinCat.main
+                ? palette.place
+                : cat.colorOn(widget.ink, dark: dark);
     // A new scene: the mark pops in once its road reaches it, and the
     // words fade up after.
     final pop = _markReveal(i);
@@ -4435,37 +4482,51 @@ class _JourneyChartState extends State<_JourneyChart>
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  Container(
-                    width: _stepRadius * 2,
-                    height: _stepRadius * 2,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isSelected ? colour : palette.land,
-                      border: Border.all(
-                        color: colour,
-                        width: isSelected ? 3 : 2,
+                  if (cat != null)
+                    Center(
+                      child: Transform.rotate(
+                        angle: shake,
+                        child: BannerPin(
+                          cat: cat,
+                          color: bannerColour,
+                          dark: dark,
+                          icon: step.locked ? Icons.lock_outline : null,
+                          lit: isSelected,
+                        ),
+                      ),
+                    )
+                  else
+                    Container(
+                      width: _stepRadius * 2,
+                      height: _stepRadius * 2,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isSelected ? colour : palette.land,
+                        border: Border.all(
+                          color: colour,
+                          width: isSelected ? 3 : 2,
+                        ),
+                      ),
+                      child: Transform.rotate(
+                        angle: shake,
+                        child: step.locked
+                            ? Icon(Icons.lock_outline,
+                                size: 20,
+                                color: isSelected ? palette.land : colour)
+                            : AnimatedBuilder(
+                                animation: _idleGlyphs,
+                                builder: (context, _) => journeyIdleGlyph(
+                                  glyph: step.glyph,
+                                  colour: isSelected ? palette.land : colour,
+                                  t: _idleGlyphs.value * 12,
+                                  phase: i * 0.9,
+                                ),
+                              ),
                       ),
                     ),
-                    child: Transform.rotate(
-                      angle: shake,
-                      child: step.locked
-                          ? Icon(Icons.lock_outline,
-                              size: 20,
-                              color: isSelected ? palette.land : colour)
-                          : AnimatedBuilder(
-                              animation: _idleGlyphs,
-                              builder: (context, _) => journeyIdleGlyph(
-                                glyph: step.glyph,
-                                colour: isSelected ? palette.land : colour,
-                                t: _idleGlyphs.value * 12,
-                                phase: i * 0.9,
-                              ),
-                            ),
-                    ),
-                  ),
                   // Tied to a quest: a small bookmark on the mark, gold for
                   // the main quest, the place's ink for a side job.
-                  if (step.questTie != null && !step.locked)
+                  if (step.questTie != null && !step.locked && cat == null)
                     Positioned(
                       key: ValueKey(
                           'journey_quest_badge_${widget.stepIds?[i] ?? i}'),
@@ -5098,8 +5159,7 @@ CityWayKind _cityWayKindOf(JourneyStepKind kind) => switch (kind) {
 
 /// The district of a city, as board 15 draws it (v1.355): the chart framed
 /// on the district with a pin on the building of each way (numbered), and
-/// under it the ways as numbered rows and "Walk on" chips to the other
-/// districts; zoomed out, the whole town with its districts as rows. A pin
+/// under it the ways as rows; zoomed out, the whole town with its districts as rows. A pin
 /// or a row opens the way's sheet.
 class _CityDistrictView extends ConsumerWidget {
   const _CityDistrictView({
@@ -5150,6 +5210,14 @@ class _CityDistrictView extends ConsumerWidget {
         ? MapLook.night
         : MapLook.parchment);
     // Each way's number: its place among its district's ways.
+    // A way hangs as a banner in its category's colour (see
+    // journey_banner_pin.dart); only the fights and rolls keep a numbered
+    // round pin, and their row its number.
+    final chartInk =
+        look == MapLook.parchment ? InkColors.light : InkColors.dark;
+    final chartDark = journeyInkIsDark(chartInk);
+    final chartPalette = ChartPalette.of(look);
+    final banners = <String, PinBanner>{};
     final numbers = <String, int>{};
     final byDistrict = <String, List<int>>{};
     for (var i = 0; i < steps.length; i++) {
@@ -5157,13 +5225,20 @@ class _CityDistrictView extends ConsumerWidget {
       if (d == null) continue;
       final list = byDistrict.putIfAbsent(d, () => []);
       list.add(i);
-      numbers['$i'] = list.length;
+      final cat = journeyPinCatOf(steps[i].kind, steps[i].questTie);
+      if (cat == null) {
+        numbers['$i'] = list.length;
+      } else {
+        banners['$i'] = PinBanner(
+            cat,
+            steps[i].locked
+                ? chartPalette.label
+                : look == MapLook.shroud && cat != JourneyPinCat.main
+                    ? chartPalette.place
+                    : cat.colorOn(chartInk, dark: chartDark));
+      }
     }
     final shown = focus == null ? const <int>[] : byDistrict[focus] ?? const [];
-    final others = [
-      for (final d in chart.districts)
-        if (d.id != focus) d,
-    ];
 
     Widget kindDisc(_Step s, {double size = 30}) {
       final colour = s.locked
@@ -5221,9 +5296,23 @@ class _CityDistrictView extends ConsumerWidget {
             decoration:
                 BoxDecoration(border: Border(top: BorderSide(color: ink.seam))),
             child: Row(children: [
-              numberDot(numbers['$i']!),
-              const SizedBox(width: 8),
-              kindDisc(s),
+              if (banners['$i'] case final banner?)
+                BannerPin(
+                  key: ValueKey('journey_row_banner_$i'),
+                  cat: banner.cat,
+                  color: s.locked
+                      ? banner.color
+                      : banner.cat.colorOn(ink,
+                          dark: theme.brightness == Brightness.dark),
+                  dark: theme.brightness == Brightness.dark,
+                  icon: s.locked ? Icons.lock_outline : null,
+                  scale: 0.8,
+                )
+              else ...[
+                numberDot(numbers['$i']!),
+                const SizedBox(width: 8),
+                kindDisc(s),
+              ],
               const SizedBox(width: 10),
               Expanded(
                 child: Text(s.label,
@@ -5248,31 +5337,6 @@ class _CityDistrictView extends ConsumerWidget {
                 ),
               ],
             ]),
-          ),
-        ));
-      }
-      if (others.isNotEmpty) {
-        rows.add(Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Text(tr(ref, 'journey_city_walk_on').toUpperCase(),
-                  style: theme.textTheme.labelSmall
-                      ?.copyWith(color: ink.ash, letterSpacing: 0.8)),
-              for (final d in others)
-                ActionChip(
-                  key: ValueKey('journey_city_walk_${d.id}'),
-                  visualDensity: VisualDensity.compact,
-                  label: Text(explored == null || explored!.contains(d.id)
-                      ? d.name
-                      : '? ${d.name}'),
-                  side: BorderSide(color: d.colour),
-                  onPressed: () => onWalk(d.id),
-                ),
-            ],
           ),
         ));
       }
@@ -5344,6 +5408,8 @@ class _CityDistrictView extends ConsumerWidget {
                   controls: false,
                   cards: false,
                   numbers: numbers,
+                  banners: banners,
+                  bannersDark: chartDark,
                   onFocus: onFocus,
                   onPick: (w) {
                     final i = int.tryParse(w.id);
