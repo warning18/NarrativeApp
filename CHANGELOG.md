@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.421.0+457]
+
+The first two chapters bring the game's features one at a time.
+
+- **A new game climbs the feature ladder:** each feature opens where the story gives it a reason, and stays hidden until then.
+  - The chest after your first real fight, the street's rules in the next one, battlefield conditions after the cliff ambush.
+  - The quest list at the banner's errand, the inventory at the bundle and the warm die, and skills at the trainer.
+  - Standing at the Inquisition's gate, and the clans' offers at Saltmouth.
+- **The trainer teaches your first skill,** a strike or a guard of your own trees (the mage's and the cleric's starting offer moves there).
+- **The clans' offers** earned in chapter 1 wait for Saltmouth, then come one at a time.
+- **Saved games** keep everything open, so nothing pops up mid-game.
+
 ## [1.420.0+456]
 
 Six more towns have their plans.
