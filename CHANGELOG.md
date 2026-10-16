@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.403.0+439]
+
+Quest complete gets the chapter's own picture.
+
+### Added
+- **One art strip per chapter** (eight, in the app's pixel look, drawn by `tool/gen_chapter_art.py`): chapter 1's harbour and the white ships, and so on through chapter 8. Their files are in `assets/visuals/chapters/`.
+
+### Changed
+- **Quest complete is card B.** The card leads with the chapter's strip under the quest's name, and gold and experience become two counters under it (the experience bar and the level stay). The rows for the item, the die and the companion, and the notes, are as on card A. An item found and a clan's gift keep card A.
+
 ## [1.402.0+438]
 
 The place's rule, the patron's favour and the hunter's mercy, drawn.
