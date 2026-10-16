@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import '../l10n/app_locale.dart';
+import 'clan_power.dart' show powerOf;
 import 'factions.dart';
 import 'signs.dart';
 
@@ -144,26 +145,32 @@ Climb climbFor(String factionId, PoliticsState politics, Iterable<String> flags,
 
 /// The faction whose climb the Character tab follows: the one on the
 /// Throne, else the claim, else the one furthest up (rung, then steps,
-/// then standing) among the clans and the lost clan; '' while no climb
-/// has begun.
+/// then standing, then power) among the clans and the lost clan; '' while
+/// no climb has begun.
 String climbFocusFor(
     PoliticsState politics, Iterable<String> flags, ClanData data) {
   if (politics.throneWinner.isNotEmpty) return politics.throneWinner;
   if (politics.claim.isNotEmpty) return politics.claim;
   Climb? best;
   var bestStanding = 0.0;
+  var bestPower = 0;
   for (final faction in [...data.clans, ...data.lost]) {
     final climb = climbFor(faction.id, politics, flags, data);
     if (!climb.begun) continue;
     final standing = politics.standingOf(faction.id, data);
+    // Then its power (clan_power.dart): the stronger clan's climb.
+    final power = powerOf(politics, faction.id, data);
     final better = best == null ||
         climb.rung > best.rung ||
         (climb.rung == best.rung &&
             (climb.steps > best.steps ||
-                (climb.steps == best.steps && standing > bestStanding)));
+                (climb.steps == best.steps &&
+                    (standing > bestStanding ||
+                        (standing == bestStanding && power > bestPower)))));
     if (better) {
       best = climb;
       bestStanding = standing;
+      bestPower = power;
     }
   }
   return best?.factionId ?? '';
@@ -195,6 +202,9 @@ Host hostFor({
       if (faction.id != banner &&
           !faction.isLost &&
           !_hostile(faction.id, politics, data) &&
+          // A fallen clan (clan_power.dart) comes only pledged.
+          (!politics.fallen.contains(faction.id) ||
+              politics.hasPledged(faction.id)) &&
           (politics.hasPledged(faction.id) ||
               (faction.kind == PatronKind.otherworld
                   ? otherworld.contains(faction.id)

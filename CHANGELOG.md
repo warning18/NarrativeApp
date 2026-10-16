@@ -19,6 +19,19 @@ The place's rule, the patron's favour and the hunter's mercy, drawn.
 ### Changed
 - **The mercy choice is a card.** The rival hunter's portrait over a band in its clan's colour, the read of their side as a chip, and two buttons that each say what they cost and give (Dominion +3, no gold, no loot / Dominion −2, the spoils are yours). Same choice and rules as before.
 =======
+=======
+
+## [1.400.0+436]
+
+Clans' power shows in their offers, and a crisis can be paid in timber and stone.
+
+- **A weak clan gives weaker signs.** A clan under 25 power offers signs up to epic; heroic signs come from stronger clans.
+- **The clan that holds the place comes more often** with its offer when you are in its lands.
+- **A fallen clan sends no one,** except to those who stayed of it: its survivors still come with gifts.
+- **The Host:** a fallen clan joins it only if it pledged.
+- **The Character tab's climb:** between equals, the stronger clan's climb now shows.
+- **The crisis:** "Send timber and stone" (3 timber, 2 cut stone) now holds your clan's seat as the gold does.
+- **Balance:** every profession within 1 point (slightly down); the boss curve holds. Report: docs/simulation/clan-power.md.
 
 ## [1.399.0+435]
 

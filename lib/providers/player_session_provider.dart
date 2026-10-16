@@ -2011,12 +2011,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       questKillBaselines: newKillBaselines,
       trackedQuestId: newTracked,
       bannerPiecesCollected: newBannerPieces,
-      inventoryItemIds: [
+      inventoryItemIds: _withoutMaterials([
         ...state.inventoryItemIds,
         if (itemId != null && itemId.isNotEmpty) itemId,
         for (final MapEntry(key: id, value: count) in materials.entries)
           for (var i = 0; i < count; i++) id,
-      ],
+      ], materials),
       itemOrigins: itemId == null || itemId.isEmpty
           ? state.itemOrigins
           : withItemOrigins(state.itemOrigins, [itemId], origin),
@@ -2177,9 +2177,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   // --- Offers (v1.194, see offers.dart) -----------------------------------
 
   /// What a draw reads of the character now, with [tables].
-  OfferContext offerContextFor(OfferTables tables) {
+  /// [placeHolder]: the clan that holds the place it is made in.
+  OfferContext offerContextFor(OfferTables tables, {String placeHolder = ''}) {
     final s = state;
     return OfferContext(
+      placeHolder: placeHolder,
       data: tables.data,
       politics: s.politics,
       signs: tables.signs,
@@ -2367,12 +2369,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// drawn once from [tables] and kept until a suitor is taken. Null when
   /// none is due, or nobody can come (the offer waits). The suitors'
   /// factions count as met, for their intro and the codex.
-  Future<ClanOffer?> ensureOffer(OfferTables tables, {Random? random}) async {
+  Future<ClanOffer?> ensureOffer(OfferTables tables,
+      {Random? random, String placeHolder = ''}) async {
     if (state.pendingOffers.isEmpty) return null;
     final waiting = state.clanOffer;
     if (waiting != null) return waiting;
-    final offer = drawOffer(
-        state.pendingOffers.first, offerContextFor(tables), random ?? Random());
+    final offer = drawOffer(state.pendingOffers.first,
+        offerContextFor(tables, placeHolder: placeHolder), random ?? Random());
     if (offer == null) return null;
     state = state.copyWith(
       clanOffer: offer,
@@ -5024,3 +5027,16 @@ final playerSessionProvider =
     StateNotifierProvider<PlayerSessionNotifier, PlayerSession>((ref) {
   return PlayerSessionNotifier();
 });
+
+/// [items] with the materials [materials] counts below zero spends taken
+/// out (a clan's crisis paid in timber and stone, clan_crisis.dart): as
+/// many of each as the pack holds, no more.
+List<String> _withoutMaterials(List<String> items, Map<String, int> materials) {
+  final out = [...items];
+  for (final MapEntry(key: id, value: count) in materials.entries) {
+    for (var i = 0; i < -count; i++) {
+      if (!out.remove(id)) break;
+    }
+  }
+  return out;
+}
