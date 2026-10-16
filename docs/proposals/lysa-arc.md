@@ -85,7 +85,7 @@ Rule for the alignment: the cruel choices cost 3 to 6 points, the kind ones give
 
 ## 6. Consistency checks
 
-- **Companions.** Lysa is not a companion (the companions are Kelda, Sable, Maren, Liora, Vess, Grosh, Tobin, Malrik). She stays an NPC. I would keep Liora’s healing distinct from hers: Liora is a hand-healer of the camp; Lysa is the one who heals *because* she lost something.
+- **Companions.** Lysa is not a companion (the eight are Kelda, Sable, Maren, Liora, Vess, Grosh, Tobin and Malrik). She stays a civilian NPC. The companions who heal are the clerics Maren and Tobin; Lysa heals as a nurse, because she lost something, and takes no class. One name to watch: the rogue companion **Sable** and the Crows’ collector **Mireille Sable** share a surname; I can rename the collector if the manager prefers.
 - **Brother Clement** is the Black Hold torturer (node 800, “a man in a porcelain mask… Brother Clement”); using him as her handler needs one new line in 6010 and a **[Core]** enemy for the boss fight.
 - **The hunters.** The masked penitent in the enemies is the same figure; if Lysa is the masked penitent in the lost branch, the hunter version on the road is a different person, and I would write it as such.
 - **Node 800** already says “They told me Lysa was dead”: this proposal keeps it and makes it the Dominion’s lie.
