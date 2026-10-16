@@ -86,11 +86,11 @@ void main() {
     expect(_inSheet('Electricity'), findsNothing);
     expect(_inSheet('Elec'), findsNothing);
 
-    // Its Heal 1 recast: an Attack 1 at most (the die's best strike), a
+    // Its Heal 2 recast: an Attack 2 at most (the die's best strike), a
     // Guard 1 (its best guard).
     await tester.tap(_inSheet('Soin'));
     await _settle(tester);
-    expect(_inSheet('Attaque 1'), findsOneWidget);
+    expect(_inSheet('Attaque 2'), findsOneWidget);
     expect(_inSheet('Garde 1'), findsOneWidget);
 
     // Sable's copy is honed; the player's isn't.

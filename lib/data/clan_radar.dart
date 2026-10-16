@@ -32,7 +32,8 @@ RadarAxis radarAxisOf(SignEffectKind kind) => switch (kind) {
       SignEffectKind.armor ||
       SignEffectKind.maxHealth ||
       SignEffectKind.dodgeChance ||
-      SignEffectKind.thorns ||
+      SignEffectKind.thornsPercent ||
+      SignEffectKind.blockChance ||
       SignEffectKind.partyStartBlock ||
       SignEffectKind.partyMaxHealthPercent ||
       SignEffectKind.writFace ||

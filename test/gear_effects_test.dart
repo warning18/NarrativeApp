@@ -68,7 +68,7 @@ void main() {
           ['hollow_court_blade', 'hollow_court_mantle', 'hollow_court_seal'],
           items,
           sets);
-      expect(full.thorns, 1);
+      expect(full.thornsPercent, 20);
       expect(full.lifestealPercent, 10);
       expect(full.attackDamage, 2);
       expect(full.armor, 1);
@@ -80,7 +80,7 @@ void main() {
           items,
           sets);
       expect(effects.lifestealPercent, 20);
-      expect(effects.thorns, 2);
+      expect(effects.thornsPercent, 30);
       expect(effects.secondWind, isTrue);
       expect(effects.lifestealFor(50), 10);
       expect(effects.lifestealFor(0), 0);
@@ -92,7 +92,7 @@ void main() {
           ['thornmail_hauberk', 'hollow_court_blade', 'hollow_court_seal'],
           items,
           sets);
-      expect(effects.thorns, 3);
+      expect(effects.thornsPercent, 50);
       expect(effects.armor, 1);
     });
   });

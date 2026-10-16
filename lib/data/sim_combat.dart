@@ -770,6 +770,11 @@ SimFightOutcome simulateSimFight({
   var crowsHits = 0;
   final lending = !s.isEmpty || perks.maxMana > 0;
   var secondWindAvailable = gear.secondWind;
+  final thornsBank = ThornsBank();
+  // What the strike, guard and mend signs' shares owe in fractions.
+  final strikeBank = FractionBank();
+  final guardBank = FractionBank();
+  final mendBank = FractionBank();
   var phasesEntered = 0;
   // The fight-length rules (fight_length.dart): the hero's heals so far,
   // and whether the pack has broken.
@@ -1248,9 +1253,10 @@ SimFightOutcome simulateSimFight({
       }
       // The guard, mend and spell signs on the face's number.
       face = switch (face.type) {
-        'Defend' => face.withValue(s.guardValue(face.value)),
-        'Heal' =>
-          face.withValue(s.mendValue(face.value, wisdomHealBonusFor(c.wisdom))),
+        'Defend' => face.withValue(s.guardValue(face.value, bank: guardBank)),
+        'Heal' => face.withValue(s.mendValue(
+            face.value, wisdomHealBonusFor(c.wisdom),
+            bank: mendBank)),
         'Mana' => face.withValue(s.manaValue(face.value)),
         _ => face,
       };
@@ -1267,6 +1273,7 @@ SimFightOutcome simulateSimFight({
           damageBase,
           face.value,
           attackFace: attack,
+          bank: strikeBank,
           percent: s.strikePercentFor(
             attackFace: attack,
             currentHealth: c.currentHealth,
@@ -1861,7 +1868,8 @@ SimFightOutcome simulateSimFight({
                   c.elementalResist(items, move.element),
             );
       // A warrior's Perception blocks half a blow now and then.
-      final blockChance = blockChanceFor(c.professionId, c.perception);
+      final blockChance =
+          blockChanceWith(c.professionId, c.perception, gear.blockChance);
       if (taken > 0 &&
           blockChance > 0 &&
           random.nextDouble() * 100 < blockChance) {
@@ -1900,8 +1908,9 @@ SimFightOutcome simulateSimFight({
         e.parryBlock = 0;
         if (e.isAlive) phasesEntered += e.advancePhases();
       }
-      if (taken > 0 && gear.thorns > 0) {
-        e.health = max(0, e.health - gear.thorns);
+      final thorns = thornsBank.answer(taken, gear.thornsPercent);
+      if (thorns > 0) {
+        e.health = max(0, e.health - thorns);
         phasesEntered += e.advancePhases();
       }
       block = 0;

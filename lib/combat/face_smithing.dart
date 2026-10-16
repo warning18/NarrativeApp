@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'face_keywords.dart';
 
 /// Face smithing at the Hammersmith (v1.182): the party's dice become a
@@ -6,7 +8,8 @@ import 'face_keywords.dart';
 /// good:
 ///
 /// - [SmithingWork.hone]: +[honeStep] to an Attack, Defend or Heal face,
-///   up to [maxHones] times.
+///   as many times as the face's own number, at most [maxHones] (see
+///   [maxHonesFor]).
 /// - [SmithingWork.temper]: an element on an Attack face.
 /// - [SmithingWork.inscribe]: a keyword (see face_keywords.dart), one per
 ///   face; inscribing another replaces it.
@@ -15,9 +18,20 @@ import 'face_keywords.dart';
 ///   the new type (see [recastValue]; a Temper goes with the Attack).
 enum SmithingWork { hone, temper, inscribe, recast }
 
-/// What a Hone adds, and how many a face takes.
+/// What a Hone adds, and how many a face takes at most.
 const int honeStep = 1;
 const int maxHones = 3;
+
+/// The Hones a face of [faceValue] (its dice.json number) takes: as many
+/// as its number, from 1 to [maxHones], so a Hone can at most double a
+/// face. On the small scale a face is worth 1 to 3 and a Hone 1; three
+/// Hones on a 1 would make it four times what it was, where before the
+/// small scale they made a 5 an 11 (docs/proposals/stat-scale.md, "Effects
+/// at 1"). Hones a save holds past it are kept but add nothing.
+int maxHonesFor(int faceValue) => faceValue.clamp(1, maxHones);
+
+int _faceNumber(Map<String, dynamic> face) =>
+    (face['value'] as num?)?.toInt() ?? 0;
 
 /// The face types a Hone and a Recast work on.
 const List<String> smithableBasicTypes = ['Attack', 'Defend', 'Heal'];
@@ -177,8 +191,8 @@ Map<String, dynamic> _smithedFace(Map<String, dynamic> face,
   }
   final newType = out['type']?.toString() ?? '';
   if (upgrade.hones > 0 && smithableBasicTypes.contains(newType)) {
-    out['value'] =
-        ((out['value'] as num?)?.toInt() ?? 0) + upgrade.hones * honeStep;
+    final hones = min(upgrade.hones, maxHonesFor(_faceNumber(face)));
+    out['value'] = ((out['value'] as num?)?.toInt() ?? 0) + hones * honeStep;
   }
   if (upgrade.element != null && newType == 'Attack') {
     out['element'] = upgrade.element;
@@ -224,7 +238,7 @@ SmithingCost smithingCostFor(SmithingWork work, FaceUpgrade current) =>
     };
 
 /// Whether [work] can be done on [face] (its dice.json record) already
-/// worked as [current]: a Hone on a basic face below [maxHones], a Temper
+/// worked as [current]: a Hone on a basic face below [maxHonesFor], a Temper
 /// on an Attack face (as it stands after a Recast), an inscription on any
 /// face a keyword fits (see [keywordFitsFaceType]), a Recast on a basic
 /// face. A fixed signature face of a companion's die (a Skill face) takes
@@ -238,7 +252,8 @@ bool canSmith(SmithingWork work, Map<String, dynamic> face,
           : baseType;
   switch (work) {
     case SmithingWork.hone:
-      return smithableBasicTypes.contains(type) && current.hones < maxHones;
+      return smithableBasicTypes.contains(type) &&
+          current.hones < maxHonesFor(_faceNumber(face));
     case SmithingWork.temper:
       return type == 'Attack' && temperableElements(face, current).isNotEmpty;
     case SmithingWork.inscribe:
