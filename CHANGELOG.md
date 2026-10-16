@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.430.0+466]
+
+Chapter 4 says how strong you should be before you go down.
+
+### Added
+- **A recommended level for chapter 4:** chapter 4 now recommends level 9 (`recommendedLevel` in `chapters.json`). The game can tell whether the party is below it, and by how much, for the chapter after the one the story is in (`nextChapterLevelAdviceProvider`), or for any chapter (`chapterLevelAdviceProvider`). Narrative's warning line (`recommendedLevelNote`, EN and FR) rides along. Showing it is UX's part.
+
+### Changed
+- **Chapter 3's side quests pay more XP**, about a fifth more: `q_ch3_marens_penance` 80 → 100, `q_ch3_groshs_price` 65 → 80, `q_ch3_reckoning_wall` 60 → 75, `q_ch3_glass_from_the_terraces` 70 → 85.
+
 ## [1.427.0+463]
 
 ### Added
