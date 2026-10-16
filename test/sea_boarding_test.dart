@@ -2,6 +2,7 @@
 // passes; a failed one costs the Eel hull, not the crew health.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -71,6 +72,8 @@ void main() {
           toPortId: 'port_smugglers_wharf',
           toPort: ports['port_smugglers_wharf'] as Map<String, dynamic>,
           debugEvents: const [_wreck, _wreck],
+          // Seeded: a natural 1 fails and a 20 passes any check (v1.458).
+          debugRandom: Random(1),
         ),
       ),
     ));

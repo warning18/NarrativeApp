@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.459.0+495]
+
+The game now remembers where each point of a stat came from.
+
+### Added
+- **A stat ledger.** Every pick, tome, patron gift and origin memory records what it added, per stat. That includes the damage and health those points bring.
+- **`statBreakdown`.** It lists a stat by source: base, race, profession, level, perk, pick, tome, patron and origin. Then come the fight-only bonuses: gear, sets, signs, titles and the Sworn boon. The rows add up to the number shown. This is ready for the Character radar's stat popin, which is UX's.
+- **Old saves.** Whatever the record can't explain shows as one "earlier" row.
+
 ## [1.458.0+494]
 
 Smaller numbers, so every point counts: every fight number is a fifth of what it was, each level brings one pick, and each ability has its job.
