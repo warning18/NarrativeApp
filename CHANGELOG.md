@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.452.0+488]
+
+The Lantern Dominion has a boss of its own, and the second Aurel Vane is gone.
+
+### Changed
+- **Regent Cassian Oriel** (`cassian_oriel`, Dominion rank 2) is the chapter 7 boss of the Lantern Hall. The `claimant_vane` enemy keeps its id and numbers and takes his name and lore; the chapter 1 Aurel Vane is unchanged and is now the Regent's Inquisitor-General.
+- **The story follows:** the Ashen Quarter's envoy, the Hollow Shore vote, the clans' arrivals, the Lantern Hall, the endings, the politics news, the Dominion intrigue and the staff's description now name the Regent. In the Hall Aurel Vane stands behind him, and kneels beside him or slips away by the back stair.
+- The Dominion's court ranks move down one under the Regent.
+
 ## [1.450.0+486]
 
 The old ways of spending stat points are gone: the picks are the only one.
