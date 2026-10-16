@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.409.0+445]
+
+The Dominion hunts you from the start.
+
+- **Your nemesis from the first page:** your family kept a piece of the Shroud, and the Dominion wants it.
+  - Its hunters come now and then from the first chapter, as a Hostile clan's would.
+  - Its champion waits for chapter 4, when a lamp-boy brings its quest.
+- **How it ends:**
+  - your standing with the Dominion reaches Friendly;
+  - you break it through its quest;
+  - you take the legate's pact or back Vane for the throne.
+  A clan you've crossed harder can take its place. Turn Hostile with the Dominion and it hunts you harder.
+- **Saved games** take it on load, unless you're already Friendly with the Dominion.
+- **The People codex** no longer lists a clan court's leaders before you meet them.
+
 ## [1.407.0+443]
 
 ### Added

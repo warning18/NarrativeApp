@@ -100,3 +100,37 @@ Narrative's beats (`docs/proposals/nemesis-quests.md`) are now played.
 | Penitents | 1/1 |
 
 The Dominion is still the nemesis in most runs; that question is with the user and is unchanged here.
+
+## The Dominion as the story's nemesis (v1.409)
+
+The user's call: your family kept a piece of the Shroud, and the Dominion wants it. Every new game opens with the Dominion as your nemesis (`PoliticsState.storyStart`, `nemesisReason: 'story'`). Narrative's check of the story is in `docs/proposals/dominion-nemesis.md`.
+
+- **Gentle early:**
+  - its hunters come at the Hostile odds (4% a road), not the Hunted ones;
+  - its people don't join fights against you in its places;
+  - it doesn't war on your patron's places first.
+  The champion still waits for chapter 4, when its quest opens with Narrative's lamp-boy.
+- **It lets go:**
+  - when your standing with it reaches Friendly (+12; it starts at −10);
+  - when its quest breaks it;
+  - for good, with the legate's pact (`inquisition_pact`) or Vane backed for the throne (`throne_backed_vane`).
+- **Another clan takes its place** only when you have crossed that clan harder: Hostile or worse, and lower standing than with the Dominion.
+- **Turned Hostile,** it becomes an earned nemesis like any other: Hunted odds, and it lets go at Wary.
+- **Old saves** take it on load unless they are Friendly with the Dominion, it has fallen, or its nemesis was broken.
+
+**Measured:** 200 runs (seed 7), branch against main (v1.407).
+
+| | main | v1.409 |
+|---|---|---|
+| Fights won | 64.5% | 64.5% |
+| Fights won, champions on | 62.9% | 62.5% |
+| Rival hunters met per run | 1.67 | 2.17 |
+| Runs where some clan falls | 155 | 155 |
+| Places changed per run | 4.64 | 4.64 |
+| Runs where the Dominion is ever the nemesis | 178 | 200 |
+| Champions beaten | 48.2% of 473 | 42.9% of 541 |
+
+- **Win rates don't move:** the walk doesn't fight the road's hunters, and the story nemesis adds no reinforcements and no war.
+- **The extra half hunter a run** is the Dominion's, at the Hostile odds.
+- **Champions are met more often, and lost a little more:** the Dominion's quest now opens at chapter 4 in every run. They stay inside the 50% ±12 band.
+- **A first try,** with the ordinary war rule kept for the story nemesis, made 177 runs of 200 see a fall. That rule is why it now wars as any clan.
