@@ -781,6 +781,7 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '7500', '7510_dominion', '7510_vigil', '7510_compact', '7510_mire', //
       '7510_crows', '7510_penitents', '7510_open_hand', '7510_seen',
+      '7515_rest',
       '7520_vane', '7520_morrow', '7520_tallis', '7590_dominion', //
       '7590_vigil', '7590_compact', '7590_mire', '7590_crows',
       '7590_penitents', '7590_open_hand',
