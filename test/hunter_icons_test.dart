@@ -21,6 +21,8 @@ const hunters = [
   'champion_vigil',
   'champion_penitents',
   'champion_mire',
+  // The Regent of the Lantern (claimant_vane), drawn since v1.456.
+  'claimant_vane',
 ];
 
 void main() {

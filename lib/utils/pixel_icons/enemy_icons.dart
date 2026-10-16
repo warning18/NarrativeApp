@@ -21,9 +21,9 @@ class EnemyIcons {
     'knell_keeper': 'hollow_court_zealot',
     'purifier_vell': 'inquisition_warden',
     'rime_bailiff': 'bone_sexton',
-    // v1.196's chapter 7-8 bosses: the three claimants to the Lantern
-    // Throne and the Tear-Herald.
-    'claimant_vane': 'hollow_court_inquisitor',
+    // v1.196's chapter 7-8 bosses: the other two claimants to the Lantern
+    // Throne and the Tear-Herald (the Regent, claimant_vane, has his own
+    // icon since v1.456).
     'claimant_morrow': 'inquisition_high_warden',
     'claimant_tallis': 'angel_sentinel',
     'tear_herald': 'void_archon',

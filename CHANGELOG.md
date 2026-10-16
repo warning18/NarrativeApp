@@ -15,6 +15,13 @@ The road's strangers walk in to meet the party.
 ### Added
 - **Encounter figures on the land walk:** at a land-crossing event with someone on the road, their figure walks in from the right (the way the party walks; the art faces west), stops in front of the party facing it, and breathes while you choose. The Inquisition patrol is Inquisition soldiers (their art); the scavengers, whose enemy has no art yet, are a plain grey placeholder figure; storms, wells, springs, the dogs and the water seller put nobody on the road (the event data names no one). With animations off the figure is already in place. One resolver, `roadEncounterFigure` (`lib/widgets/fight_sprites.dart`), so more art is one line there.
 
+## [1.456.0+492]
+
+The Regent of the Lantern has a face.
+
+### Added
+- **The Regent's icon:** Cassian Oriel (`claimant_vane`, the chapter 7 boss of the Lantern clan) is no longer drawn with the Hollow Court Inquisitor's picture. He is a slight, bare-faced man in tide-blue and gold, silver at the temples, holding the great Hooded Lantern on a chain (black cowl, a gold eye where the flame should be), from the look in `docs/proposals/dominion-regent.md`: no mask, no white robe, no red, so he never reads as the Inquisition's soldiers or the White Soldier. Drawn by `tool/gen_hunter_icons.py` like the hunters.
+
 ## [1.455.0+491]
 
 Enemies with art stand in the fight, facing the hero.

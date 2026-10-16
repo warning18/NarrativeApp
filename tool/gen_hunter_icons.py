@@ -366,6 +366,38 @@ SPRITES['champion_mire'] = (
     ],
 )
 
+# Cassian Oriel, Regent of the Lantern (claimant_vane, v1.456, from Narrative's
+# look in docs/proposals/dominion-regent.md): a slight, bare-faced man in
+# tide-blue and gold, hair silver at the temples, the great Hooded Lantern
+# (black cowl, a gold eye where the flame should be) hanging on a chain from
+# his right hand. No mask, no white robe, no red: he must not read as the
+# Inquisition's soldiers or the White Soldier.
+SPRITES['claimant_vane'] = (
+    {
+        'E': '#4a4658', 'V': '#cdd2de', 'S': SKIN, 'K': EYE,
+        'U': '#2f62a0', 'u': '#5088c6', 'D': '#1d3c68', 'Y': '#e6bc48',
+        'C': '#1c1a22', 'O': '#ffd666', 'N': '#a4a6b0', 'B': '#22202a',
+    },
+    [
+        "................",
+        ".....EEEE.......",
+        "....EEEEEE......",
+        "....VSSSSV......",
+        "....VKSSKV......",
+        ".....SSSS.......",
+        "...UUUYYUUU.....",
+        "...UuUYYUuUUUS..",
+        "...UuUUYUuU..N..",
+        "...UuUUYUuU..N..",
+        "...UuUYYUuU.CCC.",
+        "...UuUUYUuU.COC.",
+        "...UuUUUUuU.CCC.",
+        "...DDDDDDDD.....",
+        "...BB....BB.....",
+        "................",
+    ],
+)
+
 
 def render(palette, rows):
     assert len(rows) == 16, len(rows)
