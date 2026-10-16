@@ -204,8 +204,9 @@ void main() {
     Future<List<String>> roadLines(String label) async {
       final lines = <String>[];
       for (var i = 0; i < 3; i++) {
-        if (find.byKey(ValueKey('journey_step_$i')).evaluate().isEmpty)
+        if (find.byKey(ValueKey('journey_step_$i')).evaluate().isEmpty) {
           continue;
+        }
         await tester.tap(find.byKey(ValueKey('journey_step_$i')));
         await tester.pump(const Duration(milliseconds: 500));
         lines.addAll([
