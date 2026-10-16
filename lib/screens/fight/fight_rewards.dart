@@ -252,6 +252,7 @@ extension _FightRewards on _FightScreenState {
               result: chest,
               items: items,
               autoOpen: ref.read(chestAutoOpenProvider),
+              autoPlay: true,
               language: lang,
               equippedItemIds: session.equippedItemIds,
               canEquip: (itemId) {
@@ -364,18 +365,21 @@ extension _FightRewards on _FightScreenState {
               case final String line when line.isNotEmpty)
             line,
       ];
+      final victoryLine =
+          '${trFor(lang, 'victory_prefix')} +$goldGain ${trFor(lang, 'gold_label')}, '
+          '+$xpGain XP'
+          '${lootNames.isNotEmpty ? ", ${trFor(lang, 'loot_label')}: ${lootNames.join(", ")}" : ""}.';
+      // Kept for the next scene: the fight closes itself.
+      final outcome = ref.read(lastFightOutcomeProvider);
+      if (outcome != null) {
+        ref.read(lastFightOutcomeProvider.notifier).state =
+            outcome.withSpoils(victoryLine);
+      }
       _update(() {
         for (final line in defeatLines) {
           _log.add(_LogEntry(line, _LogKind.banter));
         }
-        _log.add(
-          _LogEntry(
-            '${trFor(lang, 'victory_prefix')} +$goldGain ${trFor(lang, 'gold_label')}, '
-            '+$xpGain XP'
-            '${lootNames.isNotEmpty ? ", ${trFor(lang, 'loot_label')}: ${lootNames.join(", ")}" : ""}.',
-            _LogKind.victory,
-          ),
-        );
+        _log.add(_LogEntry(victoryLine, _LogKind.victory));
         _log.add(_LogEntry(
           '${trFor(lang, chestTierLabelKey(chest.tier))} '
           '(${trFor(lang, 'fortune_roll_label')} ${chest.roll})',
@@ -421,6 +425,7 @@ extension _FightRewards on _FightScreenState {
         showOfferIfWaiting(context, ref);
       }
       _update(() => _settled = true);
+      unawaited(_leaveAfterVictory());
     } else {
       // Ally HP changes from a lost fight are never persisted (mirrors the
       // player's own full-heal-on-loss below — neither side is punished
@@ -588,6 +593,39 @@ extension _FightRewards on _FightScreenState {
         _LogKind.info)));
     return spared;
   }
+
+  /// A won fight closes itself (the user's call, v1.412): once nothing
+  /// above it waits on the player (the level-up, an offer, any dialog),
+  /// after [victoryAutoLeaveDelay] for the rewards to be read -- at once
+  /// with reduced motion. A dialog opened meanwhile starts the wait over;
+  /// a tap ([_victoryTapArea]) leaves at once. The rewards stay in the
+  /// log, and in the next scene's opening line ([FightOutcome.spoils]).
+  Future<void> _leaveAfterVictory() async {
+    const step = Duration(milliseconds: 100);
+    var shown = Duration.zero;
+    while (true) {
+      if (!mounted || _leaving) return;
+      final route = ModalRoute.of(context);
+      if (route == null || route.isCurrent) {
+        if (MediaQuery.of(context).disableAnimations ||
+            shown >= victoryAutoLeaveDelay) {
+          await _leaveFight();
+          return;
+        }
+        shown += step;
+      } else {
+        shown = Duration.zero;
+      }
+      await Future<void>.delayed(step);
+    }
+  }
+
+  /// The battle, which a tap leaves once the fight is won and settled.
+  Widget _victoryTapArea(Widget child) => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: _over && _won && _settled ? _leaveFight : null,
+        child: child,
+      );
 
   /// The end-of-fight button: back to the story on a win, retreat (or the
   /// permadeath flow) on a loss.

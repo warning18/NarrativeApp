@@ -20,6 +20,28 @@ The map's places and names hold a readable size when you zoom.
 - **Names are at least 11–12 px with a small plate behind them**, so they read over dark and light ground; a name that collides with another is left off, the party's place, the picked one and the goal first.
 - **A tap on a place hits within 22 px of it** (44 across), at any zoom, on the flat chart and the sphere. The town chart's building names are 11 px and its pins 24 px, with a slightly larger tap.
 
+## [1.414.0+450]
+
+### Changed
+- Lysa's story. If you lose her at the house, how you lost her (knelt, fought and lost, ran) decides what the Dominion made of her. Three beats lead to the Reliquary Quarter (a fence's line on the wharf, the envoy's price, a parcel with her mask), and there she says your name before any blade is drawn. You can break her out (Brother Clement, a boss), offer the Shroud's piece (refused), swear to the Lantern for her, end it gently, fight her, lay her blood on the Shroud, or walk away. If you save her at the house, she can be taken during a raid on the camp, trade a ledger page for medicine, and offer to sew the tear shut at the Hollow Shore, which can cost her life. Vane now says plainly that he came for what the mother kept.
+
+## [1.413.0+449]
+
+Lysa's fate turns the Dominion's hunt.
+
+- **Brother Clement,** the Black Hold's torturer, a boss in the Quarter's chapel when you take Lysa by force.
+- **The hunt, as her fate turns it:**
+  - take her by force, or give her blood to the Shroud, and the Dominion hunts you in earnest: its fighters come more often and join its fights, and Orsolya Keld comes sooner;
+  - swear to the Lantern for her, and its hunt is over.
+- **Claimant Tallis and the White Admiral** are a little tougher (405 and 350 health), to keep the late bosses in their bands with Lysa's new scenes.
+## [1.412.0+448]
+
+A won fight closes itself.
+
+- **The chest opens on its own** and shows everything it holds; take it, and the fight returns to where it began after a moment, or at once on a tap. With reduced motion it returns as soon as the spoils are taken.
+- **Nothing is skipped:** a level-up, a clan's offer or a hunter's mercy waits for your answer first.
+- **The rewards stay with you:** they open the next scene ("Victory! +47 gold, +87 XP, …"), and the fight log keeps them.
+- A defeat is unchanged.
 ## [1.411.0+447]
 
 A clan's power and the land it holds, drawn.
