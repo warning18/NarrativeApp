@@ -6,6 +6,8 @@
 // single gains, each from a likely path. There is no "decide later": the offer
 // stays on the table until something is taken.
 //
+// Stat picks (below) replace both: each point is one pick of three offers.
+//
 // Pure, and takes a Random like offers.dart; the session keeps the offer on
 // the table and the paths taken, and applies the gains.
 import 'dart:math';
@@ -174,12 +176,54 @@ List<TrainingChoice> drawTraining({
   if (!trainingDue(points) || paths.length < trainingChoiceCount) {
     return const [];
   }
+  final chosen = _drawThree(
+      paths: paths.values.toList(),
+      random: random,
+      professionId: professionId,
+      raceId: raceId,
+      taken: taken,
+      stats: stats);
+  final full = points >= trainingFullPoints;
+  return [
+    for (final p in chosen)
+      full
+          ? TrainingChoice(
+              pathId: p.id, gains: p.gains, points: trainingPointsOf(p.gains))
+          : TrainingChoice(
+              pathId: p.id, gains: Map.fromEntries([p.leadGain]), points: 1),
+  ];
+}
+
+/// The three paths of an offer, in order: **the calling** (one leaning to
+/// [professionId] or [raceId], weighted toward those [taken] before), **the
+/// habit** (the path taken most, else the one closest to [stats]) and **a
+/// turn** (any other). With [keyOf], the habit and the turn also skip a path
+/// whose key one already chosen has (a pick's lead gain), when another is
+/// left.
+List<TrainingPath> _drawThree({
+  required List<TrainingPath> paths,
+  required Random random,
+  String? professionId,
+  String? raceId,
+  Map<String, int> taken = const {},
+  Map<String, int> stats = const {},
+  Object? Function(TrainingPath)? keyOf,
+}) {
   final chosen = <TrainingPath>[];
-  final all = paths.values.toList();
-  List<TrainingPath> left() => [
-        for (final p in all)
-          if (!chosen.contains(p)) p
-      ];
+  final all = paths;
+  List<TrainingPath> left() {
+    final rest = [
+      for (final p in all)
+        if (!chosen.contains(p)) p
+    ];
+    if (keyOf == null) return rest;
+    final keys = {for (final c in chosen) keyOf(c)};
+    final fresh = [
+      for (final p in rest)
+        if (!keys.contains(keyOf(p))) p
+    ];
+    return fresh.isEmpty ? rest : fresh;
+  }
 
   // The calling: a path of the profession or the people, the ones taken
   // before likelier.
@@ -210,16 +254,119 @@ List<TrainingChoice> drawTraining({
   // A turn: any other, so a build can change course.
   final others = left();
   chosen.add(others[random.nextInt(others.length)]);
+  return chosen;
+}
 
-  final full = points >= trainingFullPoints;
-  return [
-    for (final p in chosen)
-      full
-          ? TrainingChoice(
-              pathId: p.id, gains: p.gains, points: trainingPointsOf(p.gains))
-          : TrainingChoice(
-              pathId: p.id, gains: Map.fromEntries([p.leadGain]), points: 1),
+// --- Stat picks (docs/proposals/stat-picks.md) ------------------------------
+//
+// Each stat point is a **pick**: three one-point offers, each a path's lead
+// gain -- the calling, the habit and a turn, drawn as above -- and the
+// character takes one. Now and then the turn is a **rare** offer worth two
+// points. Like a training offer, a pick stays on the table until taken.
+
+/// The chance that a pick's turn is a rare offer, worth two points.
+const double statPickRareChance = 0.12;
+
+/// One offer of a pick: [gains] from [pathId] (one entry, or two for a rare
+/// offer of two stats), worth [points]; [rare] for the two-point offer.
+class StatPickOffer {
+  const StatPickOffer(
+      {required this.pathId, required this.gains, this.rare = false});
+
+  factory StatPickOffer.fromJson(Map raw) => StatPickOffer(
+        pathId: raw['path']?.toString() ?? '',
+        gains: {
+          for (final MapEntry(:key, :value)
+              in ((raw['gains'] as Map?) ?? const {}).entries)
+            if (value is num) key.toString(): value.toInt(),
+        },
+        rare: raw['rare'] == true,
+      );
+
+  final String pathId;
+  final Map<String, int> gains;
+  final bool rare;
+
+  /// What it is worth at the exchange (trainingUnitOf): 1, or 2 when rare.
+  int get points => trainingPointsOf(gains);
+
+  Map<String, dynamic> toJson() =>
+      {'path': pathId, 'gains': gains, if (rare) 'rare': true};
+
+  @override
+  bool operator ==(Object other) =>
+      other is StatPickOffer &&
+      other.pathId == pathId &&
+      other.rare == rare &&
+      other.gains.length == gains.length &&
+      other.gains.entries.every((e) => gains[e.key] == e.value);
+
+  @override
+  int get hashCode => Object.hash(pathId, rare, gains.length);
+}
+
+/// Draws a pick: the lead gains (one point each) of **the calling**, **the
+/// habit** and **a turn**, as drawTraining draws its paths, with no two
+/// offers showing the same gain. With [statPickRareChance] the turn is a
+/// rare two-point offer instead: its lead gain doubled, or its two biggest
+/// gains at one point each (half and half; doubled for a path of one
+/// gain). Empty when fewer than three paths with gains exist.
+List<StatPickOffer> drawStatPick({
+  required Map<String, TrainingPath> paths,
+  required Random random,
+  String? professionId,
+  String? raceId,
+  Map<String, int> taken = const {},
+  Map<String, int> stats = const {},
+}) {
+  final usable = [
+    for (final p in paths.values)
+      if (p.gains.isNotEmpty) p
   ];
+  if (usable.length < trainingChoiceCount) return const [];
+  final chosen = _drawThree(
+      paths: usable,
+      random: random,
+      professionId: professionId,
+      raceId: raceId,
+      taken: taken,
+      stats: stats,
+      keyOf: (p) => p.leadGain.key);
+  final offers = [
+    for (final p in chosen)
+      StatPickOffer(pathId: p.id, gains: Map.fromEntries([p.leadGain])),
+  ];
+  if (random.nextDouble() < statPickRareChance) {
+    final turn = chosen.last;
+    final lead = turn.leadGain;
+    final doubled = turn.gains.length < 2 || random.nextBool();
+    final Map<String, int> gains;
+    if (doubled) {
+      gains = {lead.key: 2 * lead.value};
+    } else {
+      final second =
+          (turn.gains.entries.where((e) => e.key != lead.key).toList()
+                ..sort((a, b) => (b.value ~/ trainingUnitOf(b.key))
+                    .compareTo(a.value ~/ trainingUnitOf(a.key))))
+              .first
+              .key;
+      gains = {lead.key: lead.value, second: trainingUnitOf(second)};
+    }
+    offers.last = StatPickOffer(pathId: turn.id, gains: gains, rare: true);
+  }
+  return offers;
+}
+
+/// The offer of [offer] a build after [stat] takes (the simulator's and
+/// autoplay's policy): one raising [stat], the rare one first, else the
+/// calling (the first).
+int statPickFor(List<StatPickOffer> offer, String stat) {
+  var best = -1;
+  for (var i = 0; i < offer.length; i++) {
+    if (!offer[i].gains.containsKey(stat)) continue;
+    if (best < 0 || (offer[i].rare && !offer[best].rare)) best = i;
+  }
+  return best < 0 ? 0 : best;
 }
 
 T _weighted<T>(List<T> items, double Function(T) weight, Random random) {

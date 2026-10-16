@@ -39,6 +39,7 @@ import 'politics_events.dart'
 import 'story_repository.dart';
 import 'zone_gating.dart';
 import 'road_hazards.dart' show meetRoadHazard;
+import 'training.dart' show statPickFor;
 
 /// How an [autoplayToNode] or [autoplayToChapter] run ended.
 enum AutoplayStatus {
@@ -733,18 +734,18 @@ Future<void> applyAutoplayBuild(
   if (before.professionId.isEmpty) return;
   final build = planAutoplayBuild(before,
       items: items, skills: skills, dice: dice, professions: professions);
-  // The points go to training offers (training.dart): the choice that
-  // raises the build's stat, else the calling (the first).
+  // The points are stat picks (training.dart): the offer that raises the
+  // build's stat (the rare one first), else the calling (the first).
   if (build.statPoints > 0) {
     final paths = await ref.read(trainingPathsProvider.future);
-    while (ref.read(playerSessionProvider).statPoints > 0) {
+    while (ref.read(playerSessionProvider).pendingStatPicks > 0) {
       final s = ref.read(playerSessionProvider);
-      final offer = await notifier.ensureTraining(paths,
+      final offer = await notifier.ensureStatPick(paths,
           random: Random(s.level * 31 + s.statPoints));
       if (offer.isEmpty) break;
-      final pick =
-          offer.indexWhere((c) => c.gains.containsKey(build.statToRaise));
-      if (!await notifier.takeTraining(pick < 0 ? 0 : pick)) break;
+      if (!await notifier.takeStatPick(statPickFor(offer, build.statToRaise))) {
+        break;
+      }
     }
   }
   for (final entry in build.equip.entries) {

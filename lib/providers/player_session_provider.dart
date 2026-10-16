@@ -288,6 +288,7 @@ class PlayerSession {
     this.clanOffer,
     this.trainingOffer = const [],
     this.trainingTaken = const {},
+    this.statPickOffer = const [],
     this.heldTitleIds = const [],
     this.activeTitleId = '',
     this.swornBoonIds = const [],
@@ -569,6 +570,14 @@ class PlayerSession {
   /// drawn. And the paths taken, with how many times.
   final List<TrainingChoice> trainingOffer;
   final Map<String, int> trainingTaken;
+
+  /// The stat pick on the table (docs/proposals/stat-picks.md): the three
+  /// offers of the next of the [pendingStatPicks], drawn once and kept until
+  /// one is taken; empty when none is drawn.
+  final List<StatPickOffer> statPickOffer;
+
+  /// The picks waiting: one per unspent stat point.
+  int get pendingStatPicks => statPoints;
 
   /// Titles held (titles.json): from offers, from the tiers reached with a
   /// faction, and "the Marked" while the Inquisition is a foe; the one
@@ -924,6 +933,7 @@ class PlayerSession {
     bool clearClanOffer = false,
     List<TrainingChoice>? trainingOffer,
     Map<String, int>? trainingTaken,
+    List<StatPickOffer>? statPickOffer,
     List<String>? heldTitleIds,
     String? activeTitleId,
     List<String>? swornBoonIds,
@@ -1038,6 +1048,7 @@ class PlayerSession {
       clanOffer: clearClanOffer ? null : clanOffer ?? this.clanOffer,
       trainingOffer: trainingOffer ?? this.trainingOffer,
       trainingTaken: trainingTaken ?? this.trainingTaken,
+      statPickOffer: statPickOffer ?? this.statPickOffer,
       heldTitleIds: heldTitleIds ?? this.heldTitleIds,
       activeTitleId: activeTitleId ?? this.activeTitleId,
       swornBoonIds: swornBoonIds ?? this.swornBoonIds,
@@ -1157,6 +1168,8 @@ class PlayerSession {
         'clanOffer': clanOffer?.toJson(),
         'trainingOffer': [for (final c in trainingOffer) c.toJson()],
         'trainingTaken': trainingTaken,
+        if (statPickOffer.isNotEmpty)
+          'statPickOffer': [for (final o in statPickOffer) o.toJson()],
         'heldTitleIds': heldTitleIds,
         'activeTitleId': activeTitleId,
         'swornBoonIds': swornBoonIds,
@@ -1383,9 +1396,15 @@ class PlayerSession {
               signPicks: (json['pendingSignPicks'] as num?)?.toInt() ?? 0,
             ),
       clanOffer: ClanOffer.tryParse(json['clanOffer']),
+      // A full (5-point) training offer left on the table is dropped: the
+      // points it was for are stat picks now (stat-picks.md).
       trainingOffer: [
         for (final c in (json['trainingOffer'] as List? ?? const []))
           if (c is Map) TrainingChoice.fromJson(c),
+      ].where((c) => c.small).toList(),
+      statPickOffer: [
+        for (final o in (json['statPickOffer'] as List? ?? const []))
+          if (o is Map) StatPickOffer.fromJson(o),
       ],
       trainingTaken: {
         for (final MapEntry(:key, :value)
@@ -2440,12 +2459,83 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       luck: s.luck + gain('luck'),
       charisma: s.charisma + gain('charisma'),
       trainingOffer: const [],
+      // The points spent here leave no stale pick on the table.
+      statPickOffer: const [],
       trainingTaken: choice.small
           ? s.trainingTaken
           : {
               ...s.trainingTaken,
               choice.pathId: (s.trainingTaken[choice.pathId] ?? 0) + 1,
             },
+    );
+    await _persist();
+    return true;
+  }
+
+  /// The stat pick on the table (docs/proposals/stat-picks.md, see
+  /// drawStatPick): the three offers of the next pending pick, drawn once
+  /// from [paths] and kept until one is taken. The default [random] is
+  /// seeded from the pick itself (the level, the points left, the paths
+  /// taken), so a pick drawn anew never rerolls. Empty when no pick waits.
+  Future<List<StatPickOffer>> ensureStatPick(Map<String, TrainingPath> paths,
+      {Random? random}) async {
+    final s = state;
+    if (s.pendingStatPicks <= 0) {
+      if (s.statPickOffer.isNotEmpty) {
+        state = s.copyWith(statPickOffer: const []);
+        await _persist();
+      }
+      return const [];
+    }
+    if (s.statPickOffer.isNotEmpty) return s.statPickOffer;
+    final takenTotal = s.trainingTaken.values.fold<int>(0, (a, b) => a + b);
+    final offer = drawStatPick(
+      paths: paths,
+      random:
+          random ?? Random(s.level * 7919 + s.statPoints * 131 + takenTotal),
+      professionId: s.professionId,
+      raceId: s.raceId,
+      taken: s.trainingTaken,
+      stats: _trainingStatsOf(s),
+    );
+    if (offer.isEmpty) return offer;
+    state = s.copyWith(statPickOffer: offer);
+    await _persist();
+    return offer;
+  }
+
+  /// Takes the offer at [index] of the stat pick on the table: its gains
+  /// (max health heals as much), one pick spent (a rare offer too), its path
+  /// counted. The next pick is drawn by [ensureStatPick]; false when there
+  /// is none, no such offer, or no pick waits.
+  Future<bool> takeStatPick(int index) async {
+    final s = state;
+    final offer = s.statPickOffer;
+    if (index < 0 || index >= offer.length) return false;
+    if (s.pendingStatPicks <= 0) return false;
+    final pick = offer[index];
+    int gain(String stat) => pick.gains[stat] ?? 0;
+    state = s.copyWith(
+      statPoints: s.statPoints - 1,
+      baseDamage: s.baseDamage + gain('baseDamage'),
+      baseArmor: s.baseArmor + gain('baseArmor'),
+      maxHealth: s.maxHealth + gain('maxHealth'),
+      currentHealth: s.currentHealth + gain('maxHealth'),
+      strength: s.strength + gain('strength'),
+      dexterity: s.dexterity + gain('dexterity'),
+      constitution: s.constitution + gain('constitution'),
+      intelligence: s.intelligence + gain('intelligence'),
+      wisdom: s.wisdom + gain('wisdom'),
+      perception: s.perception + gain('perception'),
+      luck: s.luck + gain('luck'),
+      charisma: s.charisma + gain('charisma'),
+      statPickOffer: const [],
+      // A small training table drawn for the old points is drawn anew.
+      trainingOffer: const [],
+      trainingTaken: {
+        ...s.trainingTaken,
+        pick.pathId: (s.trainingTaken[pick.pathId] ?? 0) + 1,
+      },
     );
     await _persist();
     return true;
@@ -4614,6 +4704,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     }
     state = state.copyWith(
       statPoints: state.statPoints - 1,
+      // The point spent here leaves no stale pick on the table.
+      statPickOffer: const [],
       baseDamage: newBaseDamage,
       baseArmor: newBaseArmor,
       maxHealth: newMaxHealth,
@@ -4700,6 +4792,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       perception: perception,
       potionCount: potionCount,
       statPoints: statPoints,
+      statPickOffer: statPoints == null ? null : const [],
       antidoteCount: antidoteCount,
       mana: mana,
     );
