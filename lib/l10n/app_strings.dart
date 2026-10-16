@@ -3946,6 +3946,32 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Take this training',
     AppLanguage.fr: 'Suivre cet entraînement',
   },
+  'stat_pick_title': {
+    AppLanguage.en: 'Pick a gain',
+    AppLanguage.fr: 'Choisissez un gain',
+  },
+  'stat_pick_hint': {
+    AppLanguage.en: 'Tap one of the three to see what it brings.',
+    AppLanguage.fr: 'Touchez l’un des trois pour voir ce qu’il apporte.',
+  },
+  'stat_pick_take': {
+    AppLanguage.en: 'Take this pick',
+    AppLanguage.fr: 'Prendre ce choix',
+  },
+  'stat_pick_rare': {AppLanguage.en: 'Rare', AppLanguage.fr: 'Rare'},
+  'stat_pick_worth': {
+    AppLanguage.en: 'Worth {n} points',
+    AppLanguage.fr: 'Vaut {n} points',
+  },
+  'stat_picks_left': {
+    AppLanguage.en: 'Stat picks left',
+    AppLanguage.fr: 'Choix de stats restants',
+  },
+  'level_up_gives': {
+    AppLanguage.en: 'Each level also gives +20 max health and +1 base damage.',
+    AppLanguage.fr:
+        'Chaque niveau donne aussi +20 de santé max. et +1 de dégâts de base.',
+  },
   'training_taken_label': {
     AppLanguage.en: 'Training',
     AppLanguage.fr: 'Entraînement',
