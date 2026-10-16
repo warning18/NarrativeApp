@@ -121,7 +121,7 @@
     "professionID": "ranger",
     "professionName": "Ranger",
     "description": "Well-traveled scouts, equally at home with blade or bow.",
-    "bonusMaxHealth": -2,
+    "bonusMaxHealth": 0,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 0,
     "bonusLuck": 0,

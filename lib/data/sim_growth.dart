@@ -211,15 +211,19 @@ class SimGrowth {
   /// way (once under [key], see choicePoliticsKey) with [flags] held in
   /// [chapter]: the standing, marks and relations they move, the claim,
   /// the pledges, the Throne and the muster; the titles they bring (the
-  /// Throne's worn). Returns the flags after.
+  /// Throne's worn). Returns the flags after. [cause] is what the standing
+  /// log says moved them: `quest:<id>` for a quest's turn-in (v1.463),
+  /// which, as in the app, brings a main clan raised [questPowerStanding]
+  /// or more its [questPower] and spares it this chapter's neglect.
   List<String> applyStoryPolitics(
     StoryPolitics story, {
     required Iterable<String> flags,
     required int chapter,
     String key = '',
+    String cause = 'sim',
   }) {
     final change = coast.applyStoryPolitics(story,
-        cause: 'sim',
+        cause: cause,
         key: key,
         politics: politics,
         flags: flags.toList(),
@@ -308,6 +312,11 @@ class SimGrowth {
     politics =
         applyLoyaltyDrift(politics, data: tables.clans, chapter: chapter).state;
     if (geography != null) {
+      // No seat crisis here (clan_crisis.dart): with no one to ask, a
+      // change that would take the patron's seat or last place goes
+      // through at once, so the patron falls more often than in the app,
+      // where the defend, pay or refuse scene comes first (see
+      // docs/simulation/sim-gaps.md).
       final turn = territoryTurn(politics,
           data: tables.clans, geography: geography, chapter: chapter);
       politics = updateNemesis(turn.state, tables.clans, chapter: chapter);
