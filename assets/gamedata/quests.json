@@ -721,7 +721,7 @@
       }
     ],
     "rewardGold": 60,
-    "rewardXP": 80,
+    "rewardXP": 100,
     "rewardItemID": "",
     "alignmentChange": 5,
     "nextQuestID": "",
@@ -1015,7 +1015,7 @@
       }
     ],
     "rewardGold": 55,
-    "rewardXP": 65,
+    "rewardXP": 80,
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
@@ -1060,7 +1060,7 @@
       }
     ],
     "rewardGold": 50,
-    "rewardXP": 60,
+    "rewardXP": 75,
     "rewardItemID": "",
     "alignmentChange": 5,
     "nextQuestID": "",
@@ -1856,7 +1856,7 @@
       }
     ],
     "rewardGold": 50,
-    "rewardXP": 70,
+    "rewardXP": 85,
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",

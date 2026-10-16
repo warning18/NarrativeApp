@@ -68,6 +68,10 @@ const int playerSessionSaveVersion = harbourSaveVersion;
 const String _newGameDefaultsAssetPath = 'assets/gamedata/game_config.json';
 const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
 
+/// The flag of the rest before the Lantern Hall (7515_rest): the
+/// provisions and the mana refilled (applyChoiceEffects).
+const String restBeforeHallFlag = 'rest_before_hall';
+
 /// The starter die's face indexes reserved for the player's profession and
 /// race standard skills (see assets/gamedata/dice.json's starter_die).
 const String _starterDiceId = 'starter_die';
@@ -1998,6 +2002,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       exclude: lostId,
     );
     final newFlags = <String>{...state.flags, ...flagsToAdd}.toList();
+    // The rest before the Lantern Hall (7515_rest, docs/simulation/
+    // difficulty-review.md proposal 4): the provisions and the mana
+    // refilled; the scene's own heal and potion come with its choice.
+    final rested = flagsToAdd.contains(restBeforeHallFlag) &&
+        !state.flags.contains(restBeforeHallFlag);
     var newActiveQuests = state.activeQuestIds;
     var newKillBaselines = state.questKillBaselines;
     if (questIDToProgress != null &&
@@ -2033,6 +2042,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           ? state.maxHealth
           : (newHealthRaw < 1 ? 1 : newHealthRaw),
       flags: newFlags,
+      provisions: rested ? provisionsMax : null,
+      mana: rested ? state.maxMana : null,
       // The story's own boons (signs.dart): the Shroud, Lysa's blood on it.
       heldSigns: withStoryBoons(state.heldSigns, newFlags),
       activeQuestIds: newActiveQuests,

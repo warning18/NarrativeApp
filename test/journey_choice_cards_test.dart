@@ -124,6 +124,12 @@ void main() {
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
     await _settle(tester);
     final play = container.read(storyPlayProvider.notifier);
+    // A sheet opening or closing, over a map that never stops moving.
+    Future<void> sheet() async {
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+    }
+
     await tester.tap(find.text('Journey'));
     await _settle(tester);
 
@@ -170,7 +176,8 @@ void main() {
     tester.view.physicalSize = const Size(400, 860);
     await _settle(tester);
 
-    // The wharf, a hub: marks for the ways on, cards for the rest.
+    // The wharf, a hub: marks for the ways on, a ring and a chip for each
+    // kind of choice done here, and a "Ways" chip for the marks.
     play.jumpTo('2015');
     await _settle(tester);
     await tester.pump(const Duration(seconds: 6));
@@ -181,10 +188,38 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
     }
     final pins = _count('journey_step_');
-    final cards = _count('journey_choice_card_');
     expect(pins, greaterThan(3));
-    expect(cards, greaterThan(0));
-    await _shot(tester, 'choice-cards-hub');
+    expect(_count('journey_choice_card_'), 0, reason: 'a hub shows chips');
+    for (final id in ['fight', 'talkDecide', 'checksPay']) {
+      expect(find.byKey(ValueKey('choice_chip_$id')), findsOneWidget,
+          reason: id);
+      expect(find.byKey(ValueKey('choice_ring_chip_$id')), findsOneWidget,
+          reason: id);
+    }
+    expect(find.byKey(const ValueKey('choice_chip_ways')), findsOneWidget);
+    await _shot(tester, 'choice-rings-hub');
+
+    // A chip opens its list in a sheet; the ring stays lit on the map.
+    await tester.tap(find.byKey(const ValueKey('choice_chip_talkDecide')));
+    await sheet();
+    expect(find.byKey(const ValueKey('choice_sheet_close')), findsOneWidget);
+    expect(_count('journey_choice_card_'), greaterThan(3));
+    await _shot(tester, 'choice-rings-hub-open');
+    await tester.tap(find.byKey(const ValueKey('choice_sheet_close')));
+    await sheet();
+    expect(find.byKey(const ValueKey('choice_sheet_close')), findsNothing);
+
+    // The ring's own chip opens it too, and the "Ways" chip lists the marks.
+    await tester.tap(find.byKey(const ValueKey('choice_ring_chip_fight')));
+    await sheet();
+    expect(_count('journey_choice_card_'), greaterThan(0));
+    await tester.tap(find.byKey(const ValueKey('choice_sheet_close')));
+    await sheet();
+    await tester.tap(find.byKey(const ValueKey('choice_chip_ways')));
+    await sheet();
+    expect(_count('journey_choice_card_'), greaterThan(2));
+    await tester.tap(find.byKey(const ValueKey('choice_sheet_close')));
+    await sheet();
     expect(tester.takeException(), isNull);
   });
 }
