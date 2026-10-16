@@ -1,3 +1,4 @@
+import '../data/text_placeholders.dart';
 import '../l10n/app_locale.dart';
 
 /// Item sets and unique effects -- the build-defining half of itemization
@@ -89,10 +90,28 @@ class SetBonusTier {
   final String description;
   final String? descriptionFr;
 
-  String descriptionFor(AppLanguage language) =>
+  /// The description in [language], its placeholders filled (see
+  /// [placeholders]).
+  String descriptionFor(AppLanguage language) => resolvePlaceholders(
       language == AppLanguage.fr && (descriptionFr?.isNotEmpty ?? false)
           ? descriptionFr!
-          : description;
+          : description,
+      placeholders,
+      language);
+
+  /// The numbers a description may name (text_placeholders.dart): every
+  /// bonus of the tier, 0 when it has none.
+  Map<String, num> get placeholders => {
+        'pieces': pieces,
+        'attack': attackDamage,
+        'damage': attackDamage,
+        'armor': armor,
+        'crit': critChance,
+        'dodge': dodgeChance,
+        'thorns': thorns,
+        'lifesteal': lifestealPercent,
+        'mana': manaOnHit,
+      };
 
   factory SetBonusTier.fromJson(Map<String, dynamic> json) => SetBonusTier(
         pieces: (json['pieces'] as num?)?.toInt() ?? 2,

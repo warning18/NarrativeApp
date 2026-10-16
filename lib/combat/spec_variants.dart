@@ -7,6 +7,8 @@
 // are here, in [SpecMods], which reads what a character holds.
 import 'dart:math';
 
+import '../data/text_placeholders.dart';
+import '../l10n/app_locale.dart';
 import 'specialisations.dart';
 import 'status_effect.dart';
 
@@ -64,9 +66,70 @@ class SpecVariantInfo {
   final String voiceFr;
 
   String nameFor(bool french) => french && nameFr.isNotEmpty ? nameFr : name;
-  String textFor(bool french) => french && textFr.isNotEmpty ? textFr : text;
+
+  /// The gift's line in French or English, its placeholders filled from
+  /// the numbers in [SpecMods] (see [specVariantPlaceholders]).
+  String textFor(bool french) =>
+      _resolved(french && textFr.isNotEmpty ? textFr : text, french);
   String voiceFor(bool french) =>
-      french && voiceFr.isNotEmpty ? voiceFr : voice;
+      _resolved(french && voiceFr.isNotEmpty ? voiceFr : voice, french);
+
+  String _resolved(String line, bool french) => resolvePlaceholders(line,
+      specVariantPlaceholders(id), french ? AppLanguage.fr : AppLanguage.en);
+}
+
+/// The numbers a spec_variants.json line may name (text_placeholders.dart),
+/// read from [SpecMods] with [id] held so they follow the rules: the
+/// record's own numbers live in code, not in the file. Every line may name
+/// `{rank}` (rank II's "half again", 50); the rest by gift (see
+/// docs/proposals/text-placeholders.md).
+Map<String, num> specVariantPlaceholders(String id) {
+  final mods = SpecMods([id]);
+  final base = SpecMods.none;
+  num percent(double share) => percentOfShare(share);
+  return {
+    'rank': 50,
+    ...switch (id) {
+      'brig_born_berserker' => {'heal': percent(mods.killHealShare)},
+      'anvil_deaf_briar_guard' => {'share': percent(mods.briarShare)},
+      'order_lantern_vanguard' => {
+          'heal': percent(mods.vanguardEvilHeal),
+          'baseHeal': percent(base.vanguardEvilHeal),
+        },
+      'candlebearers_long_vigil' => {
+          'heal': percent(mods.vigilShare),
+          'baseHeal': percent(base.vigilShare),
+        },
+      'ember_sisters_ashen_hand' => {
+          'cleanse': mods.ashenCleanse,
+          'baseCleanse': base.ashenCleanse,
+        },
+      'cantors_beacon' => {
+          'multiplier': mods.beaconBurn,
+          'baseMultiplier': base.beaconBurn,
+        },
+      'tribunal_censer_mage' => {'round': tribunalFromRound},
+      'scorched_choir_burden_bearer' => {
+          'multiplier': mods.burdenMultiplier,
+          'baseMultiplier': base.burdenMultiplier,
+        },
+      'spire_fallen_burden_bearer' => {'heal': percent(mods.burdenHealShare)},
+      'keyholders_tempest_toll' => {'mana': mods.spellDiscount},
+      'whisper_ledger_tempest_toll' || 'whisper_ledger_ledger_knife' => {
+          'gold': ledgerStealGold
+        },
+      'moss_choir_fever_blade' => {'heal': percent(mods.rotHealShare)},
+      'reliquary_thieves_relicbreaker' => {
+          'mana': mods.relicMana,
+          'baseMana': base.relicMana,
+        },
+      'ember_sisters_relicbreaker' => {'heal': percent(mods.relicHealShare)},
+      'brig_born_corsairs_eye' => {'gun': mods.gunPercent},
+      'scaffolders_trapwright' => {'targets': mods.stunTargets},
+      'returned_fen_guide' => {'faces': mods.trailSight},
+      _ => const <String, num>{},
+    },
+  };
 }
 
 /// spec_variants.json parsed, by id.
