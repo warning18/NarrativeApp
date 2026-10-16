@@ -10,6 +10,7 @@ import '../combat/combat_engine.dart' show newGamePlusStep;
 import '../combat/encounter.dart';
 import '../data/ability_check.dart';
 import '../data/clan_crisis.dart' show clanCrisisRoadEvent, isClanCrisisNode;
+import '../data/nemesis.dart' show maybeChampionRoad;
 import '../data/alignment_events.dart';
 import '../data/hunter_mercy.dart';
 import '../data/rival_hunters.dart';
@@ -1994,6 +1995,13 @@ Future<bool> startRoadEncounter(
             if (id.startsWith('material_')) id: 0,
         }..updateAll(
             (id, _) => session.inventoryItemIds.where((i) => i == id).length),
+        random: dice());
+    // Your nemesis's champion, its quest under way (nemesis.dart).
+    alignmentEvent ??= maybeChampionRoad(
+        politics: session.politics,
+        activeQuestIds: session.activeQuestIds,
+        enemies: enemies,
+        chapter: chapter,
         random: dice());
     alignmentEvent ??= maybeAlignmentEvent(
       alignmentScore: session.alignmentScore,

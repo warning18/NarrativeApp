@@ -53,6 +53,7 @@ class StoryPolitics {
     this.settleCrisis = '',
     this.bendKnee = '',
     this.stayFallen = '',
+    this.breakNemesis = '',
     this.extra = const {},
   });
 
@@ -116,6 +117,9 @@ class StoryPolitics {
   /// Your fallen clan kept: of it, clanless, until a banner of your own.
   final String stayFallen;
 
+  /// This clan's nemesis broken (nemesis.dart): its champion beaten.
+  final String breakNemesis;
+
   /// Keys this version does not read, kept as written.
   final Map<String, dynamic> extra;
 
@@ -140,6 +144,7 @@ class StoryPolitics {
     'settleCrisis',
     'bendKnee',
     'stayFallen',
+    'breakNemesis',
   };
 
   /// The first intrigue step, if any (most politics carry one).
@@ -166,7 +171,8 @@ class StoryPolitics {
       control.isEmpty &&
       settleCrisis.isEmpty &&
       bendKnee.isEmpty &&
-      stayFallen.isEmpty;
+      stayFallen.isEmpty &&
+      breakNemesis.isEmpty;
 
   /// Whether a choice's hint has anything to say (standing, marks, a
   /// claim, a pledge or the Throne).
@@ -259,6 +265,7 @@ class StoryPolitics {
       settleCrisis: _text(json['settleCrisis']),
       bendKnee: _text(json['bendKnee']),
       stayFallen: _text(json['stayFallen']),
+      breakNemesis: _text(json['breakNemesis']),
       extra: {
         for (final e in json.entries)
           if (!_known.contains(e.key)) e.key: e.value,
@@ -293,6 +300,7 @@ class StoryPolitics {
         if (settleCrisis.isNotEmpty) 'settleCrisis': settleCrisis,
         if (bendKnee.isNotEmpty) 'bendKnee': bendKnee,
         if (stayFallen.isNotEmpty) 'stayFallen': stayFallen,
+        if (breakNemesis.isNotEmpty) 'breakNemesis': breakNemesis,
         ...extra,
       };
 }

@@ -1241,6 +1241,18 @@ final DbSchema enemiesSchema = DbSchema(
     FieldSchema(
         key: 'battleCry_fr', label: 'Battle Cry (FR)', type: FieldType.text),
     FieldSchema(
+        key: 'championClan',
+        label: 'Champion of (a clan\'s nemesis champion, nemesis.dart)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'arrival',
+        label: 'Arrival (a champion\'s road scene; {name} for its name)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'arrival_fr',
+        label: 'Arrival (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
         key: 'xpReward',
         label: 'XP Reward',
         type: FieldType.integer,
