@@ -36,8 +36,10 @@ extension _FightSetup on _FightScreenState {
         ? 0
         : session.threatIn(ref.read(reachedChapterProvider));
     _light = _lightHere();
+    // On the feature ladder no condition is rolled before the ambush at
+    // 1140 (feature_unlocks.dart); a forced one stands.
     _condition = modifiers.forcedCondition ??
-        (lesson
+        (lesson || !session.featureOpen(GameFeature.conditions)
             ? null
             : rollBattlefieldCondition(
                 enemyCount: entries.length, random: _random, light: _light));

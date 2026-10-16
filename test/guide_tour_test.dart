@@ -356,13 +356,28 @@ void main() {
             {'raceId': 'human', 'professionId': 'warrior'})));
     await _wait(tester);
 
-    final steps = TutorialTopic.journey.steps.length;
+    // An optional step whose part isn't on screen is left out: in a city
+    // drawn as its plan (Alster, where the story opens) the ways are rows
+    // under the map, with no pick panel.
+    final said = [
+      for (final s in TutorialTopic.journey.steps)
+        if (!s.optional ||
+            s.target == null ||
+            find
+                .byWidgetPredicate(
+                    (w) => w is TutorialTarget && w.id == s.target)
+                .evaluate()
+                .isNotEmpty)
+          s,
+    ];
+    final steps = said.length;
+    expect(steps, greaterThanOrEqualTo(3));
     expect(find.text('1 / $steps'), findsOneWidget);
     for (var step = 1; step <= steps; step++) {
       // Past the walk and the whole line.
       await _wait(tester, 5000);
       expect(find.text('$step / $steps'), findsOneWidget);
-      final target = TutorialTopic.journey.steps[step - 1].target;
+      final target = said[step - 1].target;
       // Read and the pick are lit on this page; the map fills most of it
       // (v1.199), so the guide only talks about it; the tab bar lives in
       // the home shell, not here.
