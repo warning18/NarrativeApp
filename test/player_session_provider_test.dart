@@ -480,30 +480,6 @@ void main() {
     });
   });
 
-  group('spendStatPoint', () {
-    test('luck increases luck by 1 and consumes a stat point', () async {
-      final notifier = await notifierWith(baseSession(statPoints: 1, luck: 2));
-      await notifier.spendStatPoint(stat: 'luck');
-      expect(notifier.state.luck, 3);
-      expect(notifier.state.statPoints, 0);
-    });
-
-    test('charisma increases charisma by 1 and consumes a stat point',
-        () async {
-      final notifier =
-          await notifierWith(baseSession(statPoints: 1, charisma: 4));
-      await notifier.spendStatPoint(stat: 'charisma');
-      expect(notifier.state.charisma, 5);
-      expect(notifier.state.statPoints, 0);
-    });
-
-    test('spending with no stat points available is a no-op', () async {
-      final notifier = await notifierWith(baseSession(statPoints: 0, luck: 2));
-      await notifier.spendStatPoint(stat: 'luck');
-      expect(notifier.state.luck, 2);
-    });
-  });
-
   group('checkAchievements', () {
     test('first_companion unlocks once an ally is recruited', () async {
       final notifier = await notifierWith(

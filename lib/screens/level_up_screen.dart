@@ -1,6 +1,6 @@
 // Level up, in Stitched Ink (v1.201): the level and its road to the next
-// in a panel, the points to spend in gold, the training offer they buy
-// (Wave 7), and the stats in their four groups.
+// in a panel, the points to spend in gold, the stat picks they buy
+// (stat-picks.md), and the stats in their four groups.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/help_hint.dart';
