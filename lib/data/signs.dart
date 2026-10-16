@@ -588,6 +588,7 @@ class SignDef {
     this.requiresPatrons = const [],
     this.pact,
     this.unknownEffectKinds = const [],
+    this.storyOnly = false,
   });
 
   final String id;
@@ -604,6 +605,10 @@ class SignDef {
 
   /// A Pit sign's price.
   final SignPact? pact;
+
+  /// Given by the story only (the Shroud's, [shroudBloodSignId]), never
+  /// drawn in an offer.
+  final bool storyOnly;
 
   /// Effect kinds in the record the game doesn't know (skipped; the
   /// content test keeps this empty).
@@ -647,6 +652,7 @@ class SignDef {
       requiresPatrons: _strings(json['requiresPatrons']),
       pact: SignPact.tryParse(json['pact']),
       unknownEffectKinds: unknown,
+      storyOnly: json['storyOnly'] == true,
     );
   }
 }
@@ -918,7 +924,9 @@ bool closedThisLife(
   final ids = signs.keys.toList()..sort();
   for (final id in ids) {
     final sign = signs[id]!;
-    if (heldIds.contains(id) || !sign.offeredBy(patronId)) continue;
+    if (heldIds.contains(id) || sign.storyOnly || !sign.offeredBy(patronId)) {
+      continue;
+    }
     if (sign.isDuo) {
       if (sign.requiresPatrons.every(heldPatrons.contains)) duos.add(sign);
     } else if (sign.patronId == patronId) {
@@ -927,6 +935,26 @@ bool closedThisLife(
   }
   return (regular: regular, duos: duos);
 }
+
+/// The Shroud's boon (Lysa's arc, docs/proposals/lysa-arc.md): her blood
+/// on the piece wakes it. Given, not drawn ([SignDef.storyOnly]), at
+/// [shroudBloodRarity], once [shroudBloodFlag] is set; its own cost is the
+/// Void's hold on the character (the sign's negative max health).
+const String shroudBloodSignId = 'open_hand_passive_shroud_blood';
+const String shroudBloodFlag = 'lysa_sacrificed';
+const SignRarity shroudBloodRarity = SignRarity.heroic;
+
+/// [held] with the Shroud's boon given when [flags] call for it and it is
+/// not held yet.
+List<HeldSign> withStoryBoons(List<HeldSign> held, Iterable<String> flags) =>
+    flags.contains(shroudBloodFlag) &&
+            !held.any((h) => h.signId == shroudBloodSignId)
+        ? [
+            ...held,
+            const HeldSign(
+                signId: shroudBloodSignId, rarity: shroudBloodRarity),
+          ]
+        : held;
 
 /// Draws the next offer, or null when no patron can offer. The patron:
 /// with [returningPatronChance] one that already gave a sign this life (and

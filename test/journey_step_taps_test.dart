@@ -131,21 +131,25 @@ void main() {
 
     for (final size in const [Size(360, 640), Size(360, 800)]) {
       tester.view.physicalSize = size;
-      for (final id in ['270', '2015']) {
+      for (final id in ['1101', '2015']) {
         play.jumpTo(id);
         await _settle(tester);
         // Past the map inking in (and a new chapter's burning open), and
         // the new place's card, and the road walked to it.
         await tester.pump(const Duration(seconds: 6));
         await clearCards();
-        final count =
-            List.generate(30, _step).takeWhile((f) => f.evaluate().isNotEmpty);
-        final n = count.length;
+        // The marks the map draws: a way acted out here is a card, so the
+        // marks' own numbers have gaps.
+        final marks = [
+          for (var i = 0; i < 40; i++)
+            if (_step(i).evaluate().isNotEmpty) i,
+        ].take(8).toList();
+        final n = marks.length;
         expect(n, greaterThanOrEqualTo(3), reason: id);
         // Each mark picks its own step: from nothing picked, and from every
         // other step picked (and named, its name near the others). One tap
         // chain walks every ordered pair (a, then b) exactly once.
-        final chain = _everyPair(n);
+        final chain = [for (final k in _everyPair(n)) marks[k]];
         await tapMark(chain.first);
         expect(_picked(tester, chain.first), isTrue,
             reason: '$id at $size: ${chain.first}');
@@ -171,9 +175,14 @@ void main() {
     await tester.pump(const Duration(seconds: 6));
     await clearCards();
     final gold = container.read(playerSessionProvider).gold;
-    await tapMark(0);
-    await tapMark(0);
-    // The walk out of the alley, then the road home.
+    // A choice acted out here is a card under the map, not a mark on it.
+    expect(_step(0), findsNothing);
+    final card = find.byKey(const ValueKey('journey_choice_card_0'));
+    await tester.tap(card);
+    await tester.pump();
+    await tester.tap(card);
+    await tester.pump();
+    // The story goes on, with no road to walk.
     for (var i = 0; i < 8; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }

@@ -8,6 +8,28 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.418.0+454]
+
+The Journey's choices acted out here become cards under the map.
+
+### Changed
+- **A choice done where you stand is a card, not a pin.** In a place up close, a fight, a payment, a check or a decision (Core's `choiceShape`: `here`) is a card under the map: the action's icon, the words, who you face, a "→ place" line when what follows moves you on, and one tag (a price, an alignment shift, a check, or Fight). A tap picks it and shows Go on it; a second tap does it. The map keeps pins only for the plain ways on, spread over the room the cards leave, so the labels no longer pile on the party's mark. A room's ways keep their marks.
+- **No road walked for a card.** The scene that follows moves the party.
+
+## [1.417.0+453]
+
+### Added
+- The data for the in-place display (`docs/proposals/inplace-data.md`): `facing` on 94 story nodes (who the scene is with), `prompt` / `prompt_fr` on the 226 scenes with two or more choices (the question the scene ends on), and `about` on 69 hub choices (the NPC, clan or sub-clan a choice is about), EN and FR. All optional; nothing reads them yet.
+
+## [1.416.0+452]
+
+Lysa's blood on the Shroud.
+
+- **Blood on the Shroud:** if you give Lysa's blood to the Shroud, the piece wakes and gives you a boon of its own.
+  - Its gift, at heroic strength: more damage when you are low on health, lifesteal and critical chance.
+  - Its cost, the Void's hold on you: −12 max health.
+  It is never offered by a patron.
+
 ## [1.415.0+451]
 
 The map's places and names hold a readable size when you zoom.
