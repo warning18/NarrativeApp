@@ -157,14 +157,15 @@ void main() {
         tester.getCenter(find.byKey(ValueKey('journey_step_${shown.last}')));
     expect((exit - back).distance, lessThan(40),
         reason: 'exit $exit back $back');
-    // And on the street after it, the streets again, with no way back in.
+    // And on the street after it, Alster's own plan (city_plans.json), with
+    // no way back in.
     play.jumpTo('250');
     await _settle(tester);
     if (find.byKey(const ValueKey('journey_continue')).evaluate().isNotEmpty) {
       await tester.tap(find.byKey(const ValueKey('journey_continue')));
       await _settle(tester);
     }
-    expect(find.byKey(const ValueKey('journey_streets')), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     expect(find.byKey(const Key('journey_go_inside')), findsNothing);
     final error = tester.takeException();
     expect(error, isNull,
