@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.463.0+499]
+
+Descriptions stop quoting numbers that have moved.
+
+### Changed
+- **Placeholders** instead of literal numbers in 6 spells' texts (the multiplier, the turns, the weaken), the two sets' bonus lines, the two mana skills and 8 spec variants (the mana, the heal, the share, the cleanse, the faces, the round), English and French. They fill from the entry's own numbers, so the next rebalance cannot leave a stale text.
+- **Stale lines fixed** (v1.458 divided the numbers): Steady is worth 1 more, Hone gives +1, Heavy Hand +1 damage, Apothecary heals 2 more, Vigor gives +3 health, the Iron Skin charm gives +1 armor, and the Hollow Court set's thorns read as a share of the blow.
+- **Two Clan Host lines reworded** for what they now do: the Compact's smiths give the party a little more health, and the oni's blows drink a little of the enemy's life.
+
 ## [1.462.0+498]
 
 The level-up pick is framed by its rarity.
