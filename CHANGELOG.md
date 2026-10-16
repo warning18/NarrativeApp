@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.447.0+483]
+
+The family house reads as the scenes tell it.
+
+### Changed
+- **The family house's blurb** (English and French) now says only what the scenes say: a kitchen door, shutters, a back room, and a trapdoor under the boards.
+
 ## [1.444.0+480]
 
 The map is for moving: a choice that stays where you are keeps you in the scene, and one that leads elsewhere hands you the map.
