@@ -22,11 +22,18 @@ extension _FightEffects on _FightScreenState {
     final animate = ref.watch(combatEffectsEnabledProvider) &&
         !_quick &&
         !MediaQuery.of(context).disableAnimations;
-    for (final pixel in const [3.0, 2.0]) {
-      final size = FightHeroSprite.sizeFor(pixel);
+    // The hero's art, and so its frame size, comes from the resolver
+    // (fight_sprites.dart): a taller or wider sprite just takes a smaller
+    // pixel, down to one, or none where the room is short.
+    final session = ref.read(playerSessionProvider);
+    final sprite = FightSpriteImages.effective(heroFightSprite(
+        raceId: session.raceId, professionId: session.professionId));
+    for (final pixel in const [3.0, 2.0, 1.0]) {
+      final size = FightHeroSprite.sizeFor(sprite, pixel);
       if (area.maxHeight - cards < size.height + 8) continue;
       // Centred under the party's column (five parts of eleven).
       final column = (area.maxWidth - 24 - 8) * 5 / 11;
+      if (size.width > column + 24) continue;
       return [
         Positioned(
           left: 12 + max(0.0, (column - size.width) / 2),
@@ -37,6 +44,7 @@ extension _FightEffects on _FightScreenState {
               anchor: _memberCardKey(hero.id),
               alive: !hero.isKnockedOut,
               animate: animate,
+              sprite: sprite,
               pixel: pixel,
             ),
           ),

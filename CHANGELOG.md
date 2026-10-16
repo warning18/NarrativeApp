@@ -13,7 +13,7 @@ isn't reconstructable from git history alone.
 The hero stands in the fight, facing the enemy.
 
 ### Added
-- **The hero in the fight:** the ronin of the side view (the walker) stands on the ground below the party's cards, facing east toward the enemies. It breathes while the fight waits, steps in with its blow when the hero strikes, flinches red when a blow lands on the hero, and dims if the hero is knocked out. It stays still with animations off. It takes no room: it is drawn only where the cards leave the ground free, so the dice and the controls stay where they were on a small phone.
+- **The hero in the fight:** the ronin of the side view (the walker) stands on the ground below the party's cards, facing east toward the enemies. It breathes while the fight waits, steps in with its blow when the hero strikes, flinches red when a blow lands on the hero, and dims if the hero is knocked out. It stays still with animations off. The art is swappable: one resolver (`heroFightSprite`, in `lib/widgets/fight_sprites.dart`) says which sprite a hero gets, and the figure is sized from its frame, so later art (by profession or race) plugs in with no change to the fight; a missing file falls back to the ronin. It takes no room: it is drawn only where the cards leave the ground free, so the dice and the controls stay where they were on a small phone.
 
 ## [1.450.0+486]
 

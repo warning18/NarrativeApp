@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/widgets/combat_vfx.dart';
 import 'package:narrative_data_app/widgets/fight_hero_sprite.dart';
+import 'package:narrative_data_app/widgets/fight_sprites.dart';
 import 'package:narrative_data_app/widgets/pixel_portrait.dart'
     show PortraitCue;
 
@@ -20,7 +21,8 @@ void main() {
               controller: controller,
               anchor: anchor,
               alive: true,
-              animate: true),
+              animate: true,
+              sprite: roninSprite),
         ),
       ),
     ));
@@ -45,7 +47,8 @@ void main() {
               controller: controller,
               anchor: anchor,
               alive: true,
-              animate: false),
+              animate: false,
+              sprite: roninSprite),
         ),
       ),
     ));
