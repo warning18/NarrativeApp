@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.449.0+485]
+
+The level's points are picks, three offers each, laid out like a clan's gift.
+
+### Changed
+- **Stat picks screen:** on the Level Up screen and in the pop-up after a fight, each point is a pick: three offers in a row (the path's icon, the gain), the picked one ringed in gold with its detail under it (the path, each stat from where it stands to where it goes) and "Take this pick" at the bottom. The rare offer, worth two points, is always the third and is drawn apart (a gold frame and a ribbon). "Stat Points Available" becomes "Stat picks left"; the pop-up says what a level gives by itself (+20 max health, +1 base damage).
+
 ## [1.448.0+484]
 
 Arriving at a place: its scene in a sheet over the map, and a notice when you come back.

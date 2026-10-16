@@ -1,6 +1,7 @@
-// Level Up (Wave 7): the points are a training offer, three paths as cards;
-// a tap takes one, its gains go straight into the stats, and the pop-up
-// after a fight only closes once no points are left.
+// Level Up (stat picks, docs/proposals/stat-picks.md): each point is a pick of
+// three offers laid out like a clan's gift choice; one is picked, then taken,
+// its gain goes straight into the stats, and the pop-up after a fight only
+// closes once no pick is left.
 import 'dart:convert';
 import 'dart:io';
 
@@ -33,7 +34,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 20));
       final session = container.read(playerSessionProvider);
       if (container.read(trainingPathsProvider).hasValue &&
-          (session.statPoints == 0 || session.trainingOffer.isNotEmpty) &&
+          (session.statPoints == 0 || session.statPickOffer.isNotEmpty) &&
           i >= 3) {
         // The offer drawn after the last frame: one more to show it.
         await tester.pump(const Duration(milliseconds: 20));
@@ -42,8 +43,7 @@ void main() {
     }
   }
 
-  testWidgets(
-      'a level\'s points are a training offer: a card is picked, then taken',
+  testWidgets('a level\'s points are picks: one offer picked, then taken',
       (tester) async {
     SharedPreferences.setMockInitialValues({});
     tester.view.physicalSize = const Size(420, 1600);
@@ -67,25 +67,38 @@ void main() {
 
     // The guide's ⓘ is in the header (v1.278 help pattern).
     expect(find.byKey(const Key('help_tour_button')), findsOneWidget);
-    // No stat is raised by hand any more.
+    // No stat is raised by hand any more, and no pool of points is shown.
     expect(find.text('+1 Point'), findsNothing);
-    expect(find.text('Choose your training'), findsOneWidget);
+    expect(find.text('Stat Points Available: 5'), findsNothing);
+    expect(find.text('Stat picks left: 5'), findsOneWidget);
+    expect(find.text('Pick a gain'), findsOneWidget);
     for (var i = 0; i < 3; i++) {
-      expect(find.byKey(Key('training_choice_$i')), findsOneWidget);
+      expect(find.byKey(Key('stat_pick_offer_$i')), findsOneWidget);
     }
+    // Nothing is picked: a hint, and Take is shut.
+    expect(find.byKey(const Key('stat_pick_hint')), findsOneWidget);
+    expect(
+        tester
+            .widget<FilledButton>(find.byKey(const Key('stat_pick_take')))
+            .onPressed,
+        isNull);
 
-    final choice = container.read(playerSessionProvider).trainingOffer.first;
-    // A card is picked first; nothing is spent until it is taken.
-    await tester.tap(find.byKey(const Key('training_choice_0')));
+    final offer = container.read(playerSessionProvider).statPickOffer.first;
+    // An offer is picked first: its detail shows, and nothing is spent until
+    // it is taken.
+    await tester.tap(find.byKey(const Key('stat_pick_offer_0')));
     await settle(tester);
+    expect(find.byKey(Key('stat_pick_detail_${offer.pathId}')), findsOneWidget);
     expect(container.read(playerSessionProvider).statPoints, 5);
-    await tester.tap(find.byKey(const Key('training_take')));
+    await tester.tap(find.byKey(const Key('stat_pick_take')));
     await settle(tester);
 
+    // One pick spent; the next waits, drawn anew.
     final after = container.read(playerSessionProvider);
-    expect(after.statPoints, 0);
-    expect(after.trainingTaken, {choice.pathId: 1});
-    expect(find.byKey(const Key('training_picker')), findsNothing);
+    expect(after.statPoints, 4);
+    expect(after.trainingTaken, {offer.pathId: 1});
+    expect(find.text('Stat picks left: 4'), findsOneWidget);
+    expect(find.byKey(const Key('stat_pick_picker')), findsOneWidget);
     expect(find.byType(SnackBar), findsNothing);
   });
 
@@ -141,19 +154,20 @@ void main() {
     // overflow here says nothing; the layout is checked on the device.
     tester.takeException();
 
-    // Two points short of a level: small offers, one point each. No
-    // "decide later": the pop-up stays until both are taken.
-    expect(find.text('A moment of insight'), findsOneWidget);
+    // Two picks wait. No "decide later": the pop-up stays until both are
+    // taken. It says what a level gives by itself.
+    expect(find.text('Pick a gain'), findsOneWidget);
+    expect(find.byKey(const Key('level_up_gives')), findsOneWidget);
     expect(find.text('Decide later'), findsNothing);
     await tester.tap(find.byKey(const Key('level_up_close')));
     await tester.pump(const Duration(milliseconds: 100));
     expect(find.byKey(const Key('level_up_points')), findsOneWidget);
     for (var left = 1; left >= 0; left--) {
-      await tester.ensureVisible(find.byKey(const Key('training_choice_0')));
-      await tester.tap(find.byKey(const Key('training_choice_0')));
+      await tester.ensureVisible(find.byKey(const Key('stat_pick_offer_0')));
+      await tester.tap(find.byKey(const Key('stat_pick_offer_0')));
       await settle(tester);
-      await tester.ensureVisible(find.byKey(const Key('training_take')));
-      await tester.tap(find.byKey(const Key('training_take')));
+      await tester.ensureVisible(find.byKey(const Key('stat_pick_take')));
+      await tester.tap(find.byKey(const Key('stat_pick_take')));
       await settle(tester);
       expect(container.read(playerSessionProvider).statPoints, left);
     }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../screens/training_picker.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../data/factions.dart';
@@ -12,6 +11,7 @@ import 'moments.dart';
 import 'level_up_stats.dart';
 import 'offer_dialog.dart';
 import 'pixel_vfx.dart';
+import 'stat_pick_picker.dart';
 
 /// Shown right after a fight that leveled the character up. The level's
 /// points are a training offer (training_picker.dart) taken right here: the
@@ -183,13 +183,20 @@ class _LevelUpDialog extends ConsumerWidget {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            '${tr(ref, 'stat_points_available')}: ${session.statPoints}',
+                            '${tr(ref, 'stat_picks_left')}: ${session.pendingStatPicks}',
                             style: theme.textTheme.titleMedium
                                 ?.copyWith(color: hasPoints ? ink.gold : null),
                           ),
                         ),
                       ],
                     ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    tr(ref, 'level_up_gives'),
+                    key: const Key('level_up_gives'),
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
                   ),
                   // What the patron gave with this level (patron_stats.dart).
                   ..._patronLine(context, ref, theme, ink),
@@ -231,7 +238,7 @@ class _LevelUpDialog extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    TrainingPicker(),
+                    StatPickPicker(),
                     SizedBox(height: 12),
                     LevelUpStats(),
                   ],
