@@ -130,8 +130,8 @@
       {
         "stage": "Hook",
         "chapter": 3,
-        "text": "Inquisitor-General Aurel Vane, Grand Master Hesk Morrow and Eldest Wickwarden Maud Tallis each send an envoy to camp, with gifts.",
-        "text_fr": "L’Inquisiteur général Aurel Vane, le Grand Maître Hesk Morrow et l’Aînée des Garde-Mèches Maud Tallis envoient chacun un émissaire au campement, avec des présents.",
+        "text": "Regent Cassian Oriel, Grand Master Hesk Morrow and Eldest Wickwarden Maud Tallis each send an envoy to camp, with gifts.",
+        "text_fr": "Le Régent Cassian Oriel, le Grand Maître Hesk Morrow et l’Aînée des Garde-Mèches Maud Tallis envoient chacun un émissaire au campement, avec des présents.",
         "npcId": "hesk_morrow"
       },
       {
@@ -182,12 +182,12 @@
         "npcId": "hesk_morrow"
       },
       {
-        "name": "Vane: an inquisition",
-        "name_fr": "Vane : une inquisition",
+        "name": "Oriel: an inquisition",
+        "name_fr": "Oriel : une inquisition",
         "effects": [
           {
-            "note": "Aurel Vane takes the Throne: the Dominion at the end is an inquisition.",
-            "note_fr": "Aurel Vane prend le Trône : à la fin, le Dominion est une inquisition."
+            "note": "Regent Oriel takes the Throne: the Dominion at the end is an inquisition.",
+            "note_fr": "Le Régent Oriel prend le Trône : à la fin, le Dominion est une inquisition."
           },
           {
             "subclan": "inquisition",
@@ -197,7 +197,7 @@
             "title": "kingmaker"
           }
         ],
-        "npcId": "aurel_vane"
+        "npcId": "cassian_oriel"
       },
       {
         "name": "Tallis: a church",

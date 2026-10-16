@@ -8,19 +8,28 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.454.0+490]
+## [1.455.0+491]
 
 Enemies with art stand in the fight, facing the hero.
 
 ### Added
 - **Enemy sprites in the fight:** the user's first PixelLab characters stand on the ground below the enemy cards, facing west toward the hero (who faces east): Inquisitor-General Aurel Vane, the Inquisition Warden, the White Soldier, and the two Inquisition soldier variants (worn by the Inquisition Soldier and the Inquisition Auxiliary). They breathe, step in with their blows (the lunge the enemy cards already play), flinch when hit and fade when beaten, and stay still with animations off. An enemy with no art keeps its portrait card alone. Which enemy wears which sprite is one data table (`enemyFightSprite`), so more of the user's art is a file and a line. The originals are kept in `art/pixellab/` (not bundled); the game uses `assets/visuals/fighters/`.
 
-## [1.451.0+487]
+## [1.454.0+490]
 
 The hero stands in the fight, facing the enemy.
 
 ### Added
 - **The hero in the fight:** the ronin of the side view (the walker) stands on the ground below the party's cards, facing east toward the enemies. It breathes while the fight waits, steps in with its blow when the hero strikes, flinches red when a blow lands on the hero, and dims if the hero is knocked out. It stays still with animations off. The art is swappable: one resolver (`heroFightSprite`, in `lib/widgets/fight_sprites.dart`) says which sprite a hero gets, and the figure is sized from its frame, so later art (by profession or race) plugs in with no change to the fight; a missing file falls back to the ronin. It takes no room: it is drawn only where the cards leave the ground free, so the dice and the controls stay where they were on a small phone.
+
+## [1.452.0+488]
+
+The Lantern Dominion has a boss of its own, and the second Aurel Vane is gone.
+
+### Changed
+- **Regent Cassian Oriel** (`cassian_oriel`, Dominion rank 2) is the chapter 7 boss of the Lantern Hall. The `claimant_vane` enemy keeps its id and numbers and takes his name and lore; the chapter 1 Aurel Vane is unchanged and is now the Regent's Inquisitor-General.
+- **The story follows:** the Ashen Quarter's envoy, the Hollow Shore vote, the clans' arrivals, the Lantern Hall, the endings, the politics news, the Dominion intrigue and the staff's description now name the Regent. In the Hall Aurel Vane stands behind him, and kneels beside him or slips away by the back stair.
+- The Dominion's court ranks move down one under the Regent.
 
 ## [1.450.0+486]
 
