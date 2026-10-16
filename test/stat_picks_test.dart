@@ -40,17 +40,35 @@ void main() {
             isTrue,
             reason: 'seed $seed');
         for (final o in offer) {
-          final lead = paths[o.pathId]!.leadGain;
-          expect(o.gains.keys.first, lead.key, reason: 'seed $seed');
+          final stat = o.gains.keys.first;
+          expect(paths[o.pathId]!.gains, contains(stat), reason: 'seed $seed');
           if (o.rare) {
             expect(o.points, 2);
             continue;
           }
           expect(o.points, 1);
-          expect(o.gains, {lead.key: lead.value});
+          expect(o.gains, {stat: trainingUnitOf(stat)});
         }
         // Only the turn is ever rare.
         expect(offer[0].rare || offer[1].rare, isFalse);
+      }
+    });
+
+    test('a warrior is offered damage, armor and health across picks', () {
+      final seen = <String, int>{};
+      for (var seed = 0; seed < 300; seed++) {
+        for (final o in drawStatPick(
+            paths: paths,
+            random: Random(seed),
+            professionId: 'warrior',
+            raceId: 'dwarf')) {
+          for (final stat in o.gains.keys) {
+            seen[stat] = (seen[stat] ?? 0) + 1;
+          }
+        }
+      }
+      for (final stat in ['baseDamage', 'baseArmor', 'maxHealth']) {
+        expect(seen[stat] ?? 0, greaterThan(30), reason: stat);
       }
     });
 
@@ -76,8 +94,9 @@ void main() {
         final path = paths[turn.pathId]!;
         if (turn.gains.length == 1) {
           doubled++;
-          final lead = path.leadGain;
-          expect(turn.gains, {lead.key: 2 * lead.value});
+          final stat = turn.gains.keys.single;
+          expect(path.gains, contains(stat));
+          expect(turn.gains, {stat: 2 * trainingUnitOf(stat)});
         } else {
           two++;
           expect(turn.gains, hasLength(2));
@@ -106,7 +125,7 @@ void main() {
           plain);
     });
 
-    test('statPickFor takes the build\'s stat, the rare one first', () {
+    test('statPickFor: the build\'s stat, then damage, health, armor', () {
       const offer = [
         StatPickOffer(pathId: 'brawler', gains: {'strength': 1}),
         StatPickOffer(pathId: 'duelist', gains: {'dexterity': 1}),
@@ -115,7 +134,31 @@ void main() {
       ];
       expect(statPickFor(offer, 'strength'), 0);
       expect(statPickFor(offer, 'dexterity'), 2);
+      // Nothing of the list: the calling.
       expect(statPickFor(offer, 'wisdom'), 0);
+      const body = [
+        StatPickOffer(pathId: 'zealot', gains: {'charisma': 1}),
+        StatPickOffer(pathId: 'warden', gains: {'baseArmor': 1}),
+        StatPickOffer(pathId: 'juggernaut', gains: {'maxHealth': 10}),
+      ];
+      expect(statPickFor(body, 'strength'), 2);
+      const hit = [
+        StatPickOffer(pathId: 'warden', gains: {'baseArmor': 1}),
+        StatPickOffer(pathId: 'bruiser', gains: {'baseDamage': 1}),
+        StatPickOffer(
+            pathId: 'juggernaut', gains: {'maxHealth': 20}, rare: true),
+      ];
+      expect(statPickFor(hit, 'intelligence'), 1);
+      const twoDamage = [
+        StatPickOffer(pathId: 'bruiser', gains: {'baseDamage': 1}),
+        StatPickOffer(pathId: 'warden', gains: {'wisdom': 1}),
+        StatPickOffer(
+            pathId: 'hunter',
+            gains: {'baseDamage': 1, 'perception': 1},
+            rare: true),
+      ];
+      expect(statPickFor(twoDamage, 'strength'), 2);
+      expect(statPickFor(twoDamage, 'strength', priority: const []), 0);
     });
   });
 
@@ -250,7 +293,7 @@ void main() {
     });
   });
 
-  test('the simulator spends a level as five picks of the build\'s stat', () {
+  test('the simulator spends a level as five picks', () {
     final races = _gamedata('races');
     final professions = _gamedata('professions');
     final c = SimCharacter.create(
@@ -262,14 +305,25 @@ void main() {
       dice: _gamedata('dice'),
       spells: parseSpells(_gamedata('spells')),
     )..trainingPaths = paths;
-    final intelligence = c.intelligence;
+    int points() =>
+        c.baseDamage +
+        c.baseArmor +
+        c.maxHealth ~/ 10 +
+        c.strength +
+        c.dexterity +
+        c.constitution +
+        c.intelligence +
+        c.wisdom +
+        c.perception +
+        c.luck +
+        c.charisma;
+    final before = points();
     final health = c.maxHealth;
     expect(c.gainXp(100), isTrue);
     expect(c.level, 2);
     expect(c.trainingTaken.values.fold<int>(0, (a, b) => a + b), 5);
-    // A voidkin mage's one calling is the arcanist, whose lead gain is
-    // Intelligence: every pick has it.
-    expect(c.intelligence, greaterThanOrEqualTo(intelligence + 5));
+    // +20 health (2 points) and five picks, a rare one worth one more.
+    expect(points() - before, inInclusiveRange(7, 12));
     expect(c.maxHealth, greaterThanOrEqualTo(health + 20));
     expect(c.currentHealth, c.maxHealth);
   });

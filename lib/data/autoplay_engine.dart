@@ -721,7 +721,9 @@ Future<void> applyArrivalTopUp(
 }
 
 /// Applies [planAutoplayBuild]'s build to the live session: the stat
-/// points (as training), then the gear (a score can open it), then the die's faces.
+/// points (as stat picks), then the gear (a score can open it), then the
+/// die's faces -- planned again once the picks are taken, since a pick may
+/// raise another gain than the build's stat.
 Future<void> applyAutoplayBuild(
   WidgetRef ref, {
   required Map<String, dynamic> items,
@@ -732,10 +734,10 @@ Future<void> applyAutoplayBuild(
   final notifier = ref.read(playerSessionProvider.notifier);
   final before = ref.read(playerSessionProvider);
   if (before.professionId.isEmpty) return;
-  final build = planAutoplayBuild(before,
+  var build = planAutoplayBuild(before,
       items: items, skills: skills, dice: dice, professions: professions);
-  // The points are stat picks (training.dart): the offer that raises the
-  // build's stat (the rare one first), else the calling (the first).
+  // The points are stat picks (training.dart): the offer statPickFor takes
+  // for the build's stat.
   if (build.statPoints > 0) {
     final paths = await ref.read(trainingPathsProvider.future);
     while (ref.read(playerSessionProvider).pendingStatPicks > 0) {
@@ -747,6 +749,8 @@ Future<void> applyAutoplayBuild(
         break;
       }
     }
+    build = planAutoplayBuild(ref.read(playerSessionProvider),
+        items: items, skills: skills, dice: dice, professions: professions);
   }
   for (final entry in build.equip.entries) {
     await notifier.equipItem(entry.value, slot: entry.key, items: items);
