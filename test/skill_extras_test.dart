@@ -96,27 +96,27 @@ void main() {
   group('what a record asks for', () {
     test('a ward raises block and lays a status on whoever strikes it', () {
       final glacial = _cast('mage_glacial_ward');
-      expect(glacial.blockAmount, 12);
+      expect(glacial.blockAmount, 2);
       expect(glacial.damageDealt, 0);
       expect(glacial.extras.reflect?.type, StatusEffectType.weaken);
       final thorn = _cast('warrior_thornwall');
-      expect(thorn.blockAmount, 10);
+      expect(thorn.blockAmount, 2);
       expect(thorn.extras.reflect?.type, StatusEffectType.poison);
-      expect(thorn.extras.reflect?.magnitude, 3);
+      expect(thorn.extras.reflect?.magnitude, 1);
     });
 
     test('Lantern Ward shields and heals a little', () {
       final r = _cast('cleric_lantern_ward');
-      expect(r.blockAmount, 8);
-      expect(r.healingDone, 6);
+      expect(r.blockAmount, 2);
+      expect(r.healingDone, 1);
     });
 
     test('a skill of several blows carries their total', () {
       final one = _cast('rogue_dust_devil');
       final gale = _cast('rogue_gale_cut');
       expect(gale.extras.strikes, 2);
-      // (10 + 5) x 1.2 a blow, twice.
-      expect(gale.damageDealt, ((10 + 5) * 1.2 * 2).round());
+      // (10 + 1) x 1.2 a blow, twice.
+      expect(gale.damageDealt, ((10 + 1) * 1.2 * 2).round());
       expect(one.extras.strikes, 1);
       final storm = _cast('mage_stormcaller');
       expect(storm.extras.strikes, 3);
@@ -147,7 +147,7 @@ void main() {
 
     test('Second Dawn mends the party and lifts every affliction', () {
       final dawn = _cast('cleric_second_dawn');
-      expect(dawn.healingDone, 20);
+      expect(dawn.healingDone, 4);
       expect(dawn.extras.healAll, isTrue);
       final afflicted = [
         const StatusEffect(
@@ -186,7 +186,7 @@ void main() {
     test('a ward set on a basic face works at channeled power', () {
       final r = resolvePlayerFace(
           _face('warrior_thornwall', channeledFrom: 'Defend'), skills, 10);
-      expect(r.blockAmount, (10 * channeledPower).round());
+      expect(r.blockAmount, (2 * channeledPower).round());
     });
 
     test('an old skill reads as having no extras', () {

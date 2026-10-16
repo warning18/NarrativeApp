@@ -120,8 +120,8 @@ void main() {
     // A thug that mirrors every turn, too sturdy to fall.
     final thug = {
       ..._gamedata('enemies.json')['slum_thug'] as Map<String, dynamic>,
-      'maxHealth': 900,
-      'damage': 25,
+      'maxHealth': 180,
+      'damage': 10,
       'skillMoves': [
         {'skillID': 'glass_reflection', 'condition': 'Always', 'priority': 1},
       ],

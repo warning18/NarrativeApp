@@ -109,8 +109,9 @@ void main() {
     await _settle(tester);
     expect(_inLog('Your Host fights beside you: Compact, Vigil, 4 Houses.'),
         findsOneWidget);
-    // Two Houses' worth of block for each member as the fight opens.
-    expect(_inLog('the party starts behind 2 block'), findsOneWidget);
+    // The Houses' block for each member as the fight opens (+1 from
+    // three Houses on the fight's small scale).
+    expect(_inLog('the party starts behind 1 block'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.tapAt(const Offset(20, 20));
     await _settle(tester);

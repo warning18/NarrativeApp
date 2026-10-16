@@ -59,20 +59,22 @@ const Set<SignEffectKind> _fightKinds = {
 /// each profession deals before falling to the final boss, 1,500 fights
 /// each): the balance the Host's contingents were written to. The kinds
 /// the simulator cannot see (the party's, the telegraph's, a curse
-/// lifted, a guard broken) count for nothing here.
+/// lifted, a guard broken) count for nothing here. On the fight's small
+/// scale (docs/proposals/stat-scale.md) a flat point -- armor, thorns,
+/// a heal, a potion's, health, block -- is five of those points.
 const Map<SignEffectKind, double> _worthPerPoint = {
   SignEffectKind.writFace: 3.8,
-  SignEffectKind.armor: 2.9,
-  SignEffectKind.thorns: 1.8,
+  SignEffectKind.armor: 2.9 * 5,
+  SignEffectKind.thorns: 1.8 * 5,
   SignEffectKind.dodgeChance: 1.55,
-  SignEffectKind.guardHeal: 0.95,
+  SignEffectKind.guardHeal: 0.95 * 5,
   SignEffectKind.lifestealPercent: 0.86,
   SignEffectKind.partyMaxHealthPercent: 0.8,
   SignEffectKind.spellDamagePercent: 0.38,
   SignEffectKind.strikeDamagePercent: 0.36,
-  SignEffectKind.potionBonus: 0.24,
-  SignEffectKind.maxHealth: 0.16,
-  SignEffectKind.partyStartBlock: 0.15,
+  SignEffectKind.potionBonus: 0.24 * 5,
+  SignEffectKind.maxHealth: 0.16 * 5,
+  SignEffectKind.partyStartBlock: 0.15 * 5,
 };
 
 double _worth(List<SignEffect> effects) => effects.fold(
@@ -284,7 +286,8 @@ void main() {
           chapter: 7);
       final plain = g.effects(0);
       final last = g.effects(0, host: true);
-      expect(last.armor, greaterThan(plain.armor));
+      // The Compact's contingent: its edge, its plating (health), its blows.
+      expect(last.strikeDamagePercent, greaterThan(plain.strikeDamagePercent));
       expect(
           last.partyMaxHealthPercent, greaterThan(plain.partyMaxHealthPercent));
       expect(last.compactEdge, greaterThan(plain.compactEdge));

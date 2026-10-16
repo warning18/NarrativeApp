@@ -34,11 +34,11 @@ void main() {
       for (final e in boon.effects) e.scaled(shroudBloodRarity, 1),
     ];
     final health = scaled.singleWhere((e) => e.kind.name == 'maxHealth');
-    expect(health.value, -12, reason: 'the cost is not scaled up');
+    expect(health.value, -2, reason: 'the cost is not scaled up');
     final fury =
         scaled.singleWhere((e) => e.kind.name == 'lowHealthDamagePercent');
     expect(fury.value, greaterThan(6));
-    expect(signEffectText(health, AppLanguage.en), contains('-12'));
+    expect(signEffectText(health, AppLanguage.en), contains('-2'));
     expect(signEffectText(health, AppLanguage.en), isNot(contains('+-')));
   });
 

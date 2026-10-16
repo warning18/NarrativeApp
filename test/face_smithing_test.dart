@@ -42,11 +42,11 @@ void main() {
         '1': const FaceUpgrade(recastType: 'Heal', hones: 1),
         '2': const FaceUpgrade(keyword: FaceKeyword.pain),
       });
-      expect(faces[0]['value'], 10);
+      expect(faces[0]['value'], 6 + 2 * honeStep);
       expect(faces[0]['element'], 'Fire');
       expect(faceKeywordsOf(faces[0]), {FaceKeyword.cleave});
       expect(faces[1]['type'], 'Heal');
-      expect(faces[1]['value'], 7);
+      expect(faces[1]['value'], 5 + honeStep);
       expect(faceKeywordsOf(faces[2]), {FaceKeyword.pain});
       // The die itself is left as it was.
       expect(_die[0]['value'], 6);
@@ -114,7 +114,8 @@ void main() {
       });
       expect(faces[1]['type'], 'Attack');
       expect(faces[1]['value'], 10, reason: 'no Attack 13');
-      expect(faces[2]['value'], 12, reason: 'an Attack 10, honed once');
+      expect(faces[2]['value'], 10 + honeStep,
+          reason: 'an Attack 10, honed once');
       expect(faces[0]['value'], 10, reason: 'below the best heal, kept');
       // A die with no face of the new type keeps the number.
       expect(

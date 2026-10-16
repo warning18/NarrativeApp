@@ -48,21 +48,21 @@ void main() {
 
     test('a kit adds up each element\'s damage and resistance', () {
       final kit = elementPointsFor([
-        'staff_t6', // fire +12
-        'plate_emberproof', // fire resist 12
-        'cloak_frostward', // ice resist 14
-        'circlet_radiance', // light +12
-        'void_banner', // 5 / 3 in six elements
+        'staff_t6', // fire +3
+        'plate_emberproof', // fire resist 3
+        'cloak_frostward', // ice resist 3
+        'circlet_radiance', // light +3
+        'void_banner', // 1 / 1 in six elements
       ], items);
       expect(kit.isEmpty, isFalse);
-      expect(kit.damage['Fire'], 17);
-      expect(kit.resist['Fire'], 15);
-      expect(kit.damage['Light'], 12);
+      expect(kit.damage['Fire'], 4);
+      expect(kit.resist['Fire'], 4);
+      expect(kit.damage['Light'], 3);
       expect(kit.resist['Light'], 0);
       expect(kit.damage['Ice'], 0);
-      expect(kit.resist['Ice'], 14);
-      expect(kit.damage['Electricity'], 5);
-      expect(kit.highest, 17);
+      expect(kit.resist['Ice'], 3);
+      expect(kit.damage['Electricity'], 1);
+      expect(kit.highest, 4);
       expect(kit.damageInOrder().length, 8);
       expect(elementChartOrder.first, 'Fire');
       // Opposites sit across.
@@ -165,7 +165,7 @@ void main() {
       addTearDown(tester.view.reset);
       await tester.pumpWidget(host(ElementsCard(points: kit, t: t)));
       expect(find.byKey(const Key('elements_view_0')), findsOneWidget);
-      expect(find.text('17/15'), findsOneWidget);
+      expect(find.text('4/4'), findsOneWidget);
       expect(find.text('FIRE'), findsOneWidget);
       expect(find.text('ELEC'), findsOneWidget);
       for (final (label, key) in [
@@ -181,8 +181,8 @@ void main() {
       }
       await tester.tap(find.text('Rows'));
       await tester.pumpAndSettle();
-      expect(find.text('17 / 15'), findsOneWidget);
-      expect(find.text('0 / 14'), findsOneWidget);
+      expect(find.text('4 / 4'), findsOneWidget);
+      expect(find.text('0 / 3'), findsOneWidget);
     });
 
     testWidgets('nothing equipped says so instead of drawing nothing',

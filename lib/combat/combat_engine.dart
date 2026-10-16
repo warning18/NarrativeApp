@@ -878,9 +878,9 @@ const double chapterDifficultyStep = 0.15;
 /// of the late zones' bosses. Measured with the playthrough
 /// simulator (400 runs, docs/simulation/difficulty-review.md). With the
 /// stat scale (docs/proposals/stat-scale.md) chapters 1-2 are 7% lighter
-/// and chapters 3-8 4% heavier in health.
+/// and chapters 3-8 9% heavier in health.
 const List<double> enemyHealthFloorByChapter = [
-  1.36, 1.98, 2.88, 2.88, 3.02, 2.25, 2.17, 2.11, //
+  1.36, 1.98, 3.02, 3.02, 3.17, 2.36, 2.28, 2.22, //
 ];
 const List<double> enemyDamageFloorByChapter = [
   1.25, 1.67, 2.28, 2.28, 2.40, 1.80, 1.74, 1.68, //

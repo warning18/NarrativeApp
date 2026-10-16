@@ -6,7 +6,7 @@
     "blurb_fr": "Vous encaissez le coup pour en rendre un pire.",
     "icon": "fist",
     "gains": {
-      "strength": 2,
+      "strength": 3,
       "constitution": 2
     },
     "professions": [
@@ -41,7 +41,8 @@
     "icon": "shield",
     "gains": {
       "constitution": 3,
-      "wisdom": 1
+      "wisdom": 1,
+      "strength": 1
     },
     "professions": [
       "warrior",
@@ -58,7 +59,7 @@
     "blurb_fr": "Rien ne vous use ; c’est vous qui usez le reste.",
     "icon": "tower",
     "gains": {
-      "constitution": 3,
+      "constitution": 4,
       "strength": 1
     },
     "professions": [
@@ -96,8 +97,7 @@
     "gains": {
       "intelligence": 2,
       "wisdom": 2,
-      "constitution": 1,
-      "charisma": 1
+      "constitution": 1
     },
     "professions": [
       "cleric"

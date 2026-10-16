@@ -50,9 +50,12 @@ double _winRate(
   int trials = 500,
 }) {
   var wins = 0;
-  final maxHealth = 120 + 20 * (level - 1);
-  final baseDamage = 13 + 3 * (level - 1);
-  final baseArmor = 3 + 2 * (level - 1);
+  // The fighter's numbers on the fight's small scale (stat-scale.md: a
+  // fifth of the 120 health + 20, 13 damage + 3, 3 armor + 2 a level; its
+  // armor rounded up, as the game's own armor reaches a whole point).
+  final maxHealth = 24 + 4 * (level - 1);
+  final baseDamage = ((13 + 3 * (level - 1)) / 5).round();
+  final baseArmor = ((3 + 2 * (level - 1)) / 5).ceil();
   final enemyMaxHealth =
       scaledMaxHealth((enemy['maxHealth'] as num).toInt(), level);
   final enemyDamage = scaledDamage((enemy['damage'] as num).toInt(), level);

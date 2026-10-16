@@ -99,9 +99,10 @@ double simSkillScore(Map<String, dynamic>? skill) {
   final mult = (skill['damageMultiplier'] as num?)?.toDouble() ?? 1;
   final heal = (skill['healAmount'] as num?)?.toDouble() ?? 0;
   final status = (skill['inflictsStatus']?.toString() ?? 'None') != 'None';
-  const base = 15.0;
+  // A hit of the fight's small scale (stat_scale.md: about 3).
+  const base = 3.0;
   final damage = mult <= 0 ? 0.0 : (base + mod) * max(1.0, mult) - base;
-  return damage + heal * 0.7 + (status ? 4 : 0);
+  return damage + heal * 0.7 + (status ? 1 : 0);
 }
 
 /// The growth of one simulated character, in either [mode]: what waits

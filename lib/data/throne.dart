@@ -241,7 +241,7 @@ Host fieldedHost({
 /// The Houses' bonus: +1 block for the whole party as a fight opens per
 /// [houseBlockPer] Houses (at most [houseBlockMax]), and +1 % max health
 /// for the whole party per House (at most [houseHealthMax]).
-const int houseBlockPer = 6;
+const int houseBlockPer = 4;
 const int houseBlockMax = 1;
 const int houseHealthMax = 6;
 

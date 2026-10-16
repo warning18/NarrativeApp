@@ -131,16 +131,16 @@ void main() {
   testWidgets('a lance shows its attack against the one worn', (tester) async {
     final worn = {...(items['spear_t10'] as Map<String, dynamic>)}
       ..['itemName'] = 'Iron Spear'
-      ..['attackDamage'] = 6;
+      ..['attackDamage'] = 1;
     await _open(tester,
         id: 'spear_t10', items: items, equipped: worn, equippedId: 'spear_t10');
     expect(find.text('Skybreaker Lance'), findsOneWidget);
     expect(find.byKey(const Key('item_art')), findsOneWidget);
     expect(find.byKey(const Key('item_rarity_tag')), findsOneWidget);
-    // 35 against 6: +29 beside the big number, no armor card.
+    // 7 against 1: +6 beside the big number, no armor card.
     expect(find.byKey(const Key('item_hero_attackDamage')), findsOneWidget);
     expect(find.byKey(const Key('item_hero_armor')), findsNothing);
-    expect(find.text('+29'), findsOneWidget);
+    expect(find.text('+6'), findsOneWidget);
     expect(find.textContaining('Iron Spear'), findsOneWidget);
     expect(find.byKey(const Key('item_lore')), findsOneWidget);
     expect(find.text('Equip'), findsOneWidget);

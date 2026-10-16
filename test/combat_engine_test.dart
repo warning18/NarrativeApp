@@ -361,8 +361,12 @@ void main() {
 
       test('dodgeChanceFor scales with dexterity and caps at 30', () {
         expect(dodgeChanceFor(0), 5.0);
-        expect(dodgeChanceFor(10), 20.0);
+        expect(dodgeChanceFor(10), 25.0);
         expect(dodgeChanceFor(100), 30.0);
+        // A ranger's or rogue's Perception adds a little, inside the cap.
+        expect(dodgeChanceFor(5, perception: 4, professionId: 'rogue'), 19.0);
+        expect(dodgeChanceFor(5, perception: 4, professionId: 'warrior'), 15.0);
+        expect(dodgeChanceFor(10, perception: 9, professionId: 'ranger'), 30.0);
       });
 
       test('an Attack face crits when the roll lands under the chance', () {
