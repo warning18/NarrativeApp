@@ -41,6 +41,7 @@ import '../data/quest_objectives.dart' show killTargetsOf;
 import '../data/signs.dart';
 import '../data/skill_craft.dart' show skillCraftOpen;
 import '../data/skill_tree.dart' show branchMasteryEssenceCost;
+import '../data/stat_scale_save.dart';
 import '../data/training.dart';
 import '../data/throne.dart'
     show
@@ -65,7 +66,7 @@ const String unreadableSessionBackupPrefsKey = 'player_session_unreadable';
 /// The save format's version, written into every save. Bump it with a
 /// migration in [PlayerSession.fromJson] whenever a change to the format
 /// needs one; a save without it is version 1.
-const int playerSessionSaveVersion = harbourSaveVersion;
+const int playerSessionSaveVersion = statScaleSaveVersion;
 const String _newGameDefaultsAssetPath = 'assets/gamedata/game_config.json';
 const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
 
@@ -1239,6 +1240,9 @@ class PlayerSession {
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
+    // A save from before the stat scale, once on the small scale
+    // (stat_scale_save.dart).
+    json = rescaledSave(json, allyFullHealth: AllyState.fullHealthSentinel);
     // A save with no 'enemyKillCounts' key at all predates objective
     // tracking entirely -- every quest already active in it was accepted
     // (and may well have already been earned) under the old, ungated
