@@ -410,7 +410,8 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     if (chart == null) return;
     final geo = _geoOf(ref.read(chartGlobeProvider));
     Landmark? nearest;
-    var best = 12.0 * 12.0 / (g.zoom * g.zoom);
+    final reach = 22 / (k * g.zoom);
+    var best = reach * reach;
     for (final landmark in worldMapLandmarks) {
       if (!widget.discovered.contains(landmark.id) &&
           !widget.heardOf.contains(landmark.id)) {
@@ -474,7 +475,10 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     final at = Offset(position.dx / k, position.dy / k);
     // The tap is on the chart itself (the GestureDetector wraps it).
     Landmark? nearest;
-    var best = 12.0 * 12.0;
+    // A marker is hit within 22 px of it on the screen (44 across), however
+    // close the chart is looked at.
+    final reach = 22 / (k * _scale);
+    var best = reach * reach;
     for (final landmark in worldMapLandmarks) {
       if (!widget.discovered.contains(landmark.id) &&
           !widget.heardOf.contains(landmark.id)) {

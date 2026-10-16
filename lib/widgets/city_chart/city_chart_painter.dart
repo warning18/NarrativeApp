@@ -407,7 +407,7 @@ class CityChartPainter extends CustomPainter {
       canvas.save();
       canvas.translate(b.at.dx, b.at.dy);
       canvas.scale(inv);
-      final tp = _text(b.name, 9.5, p.place, w: FontWeight.w500);
+      final tp = _text(b.name, 11, p.place, w: FontWeight.w500);
       final below = Offset(-tp.width / 2, 12);
       canvas.drawRRect(
           RRect.fromRectAndRadius(
@@ -425,7 +425,7 @@ class CityChartPainter extends CustomPainter {
       chart.buildingOf(w)?.at ?? chart.districts[w.district].centre;
 
   /// The pins' radius on the screen.
-  static const double pinRadius = 11;
+  static const double pinRadius = 12;
 
   void _pins(Canvas canvas) {
     final p = palette;

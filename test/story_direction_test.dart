@@ -425,19 +425,22 @@ void main() {
       expect(choiceIn('6010', '6010_lysa').showIfFlags, ['lysa_survived']);
       final dead = choiceIn('6010', '6010_lysa_dead');
       final masked = choiceIn('6010', '6010_masked');
-      expect(dead.showIfFlags, ['lysa_lost']);
+      // The chapel with the name is where she is found after being walked
+      // away from; the masked penitent is the scene to meet her in.
+      expect(dead.showIfFlags, ['lysa_lost', 'lysa_walked_away']);
       expect(masked.showIfFlags, ['lysa_lost']);
-      expect(nodes['6010_lysa_dead']!.reqAlignmentScore, 5);
-      expect(nodes['6010_masked']!.reqAlignmentMax, 4);
       // One retires the other: Lysa is found once.
       expect(dead.hideIfFlags.toSet(), masked.hideIfFlags.toSet());
-      final fight = nodes['6010_masked']!.choices.single;
-      expect(fight.triggerEnemyId, 'masked_penitent');
+      final fight = nodes['6010_masked']!
+          .choices
+          .singleWhere((c) => c.triggerEnemyId == 'masked_penitent');
+      expect(fight.showIfFlags, ['fled_house']);
       expect(fight.flagsToAdd, contains('lysa_fallen'));
       expect(fight.alignmentMod, lessThan(0));
       expect(nodes['6010_masked_after']!.description, contains('Lysa'),
           reason: 'the mask comes off after the fight, not before');
-      expect(nodes['6010_masked']!.description, isNot(contains('Lysa')));
+      // Since v1.414 she says her name before any blade is drawn.
+      expect(nodes['6010_masked']!.description, contains('Lysa'));
       expect(nodes['6010_lysa_dead']!.choices.single.flagsToAdd,
           contains('lysa_found_dead'));
       for (final flag in ['lysa_fallen', 'lysa_found_dead']) {
@@ -452,8 +455,7 @@ void main() {
     test('the Quarter\'s gate settles her fate before the hub opens', () {
       // The first trip to the Reliquary Quarter goes through its gate, and a
       // character who lost Lysa cannot pass it without taking one of the two
-      // fate scenes (each open to one side of the alignment line, so exactly
-      // one is ever available).
+      // fate scenes.
       expect(nodes['6010']!.settlement!.arrivalNodeId, '6010_gate');
       // The siege at the camp comes first (v1.176), and ends there.
       for (final choice in nodes['6002']!.choices) {
@@ -468,7 +470,7 @@ void main() {
       expect(through.showIfFlags, isEmpty);
       for (final target in ['6010_lysa_dead', '6010_masked']) {
         final choice = gate.choices.singleWhere((c) => c.nextId == target);
-        expect(choice.showIfFlags, ['lysa_lost'], reason: target);
+        expect(choice.showIfFlags.first, 'lysa_lost', reason: target);
         expect(choice.lockedText, isNotEmpty, reason: target);
         expect(choice.hideIfFlags.toSet(),
             {'hub_6010_lysa_dead', 'hub_6010_masked'},
