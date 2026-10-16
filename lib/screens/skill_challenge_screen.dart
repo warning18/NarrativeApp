@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/d20_roll.dart';
@@ -31,6 +33,7 @@ class SkillChallengeScreen extends ConsumerStatefulWidget {
     required this.dc,
     required this.successesNeeded,
     required this.maxFailures,
+    this.random,
   });
 
   final String promptText;
@@ -38,6 +41,10 @@ class SkillChallengeScreen extends ConsumerStatefulWidget {
   final int dc;
   final int successesNeeded;
   final int maxFailures;
+
+  /// The dice the rounds roll with: a fresh stream when null (play); the
+  /// story player passes its storyCheckRandomProvider, so a test can seed it.
+  final Random? random;
 
   @override
   ConsumerState<SkillChallengeScreen> createState() =>
@@ -63,6 +70,7 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
       successesNeeded: widget.successesNeeded,
       maxFailures: widget.maxFailures,
       session: session,
+      random: widget.random,
     );
   }
 

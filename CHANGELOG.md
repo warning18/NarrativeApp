@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.466.0+502]
+
+A skill challenge's dice can be seeded in tests. Play is unchanged.
+
+### Changed
+- **`SkillChallengeScreen`** takes an optional `random`. The story player passes it its `storyCheckRandomProvider` (in `story_player_screen.dart`), so a test that overrides that provider settles a multi-round challenge the same way on every run. With no override, the rounds roll on a fresh `Random`, as before.
+
 ## [1.465.0+501]
 
 A scene's choices are in the scene, and the map offers only the ways that move you.
