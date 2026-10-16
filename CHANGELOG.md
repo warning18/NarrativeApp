@@ -21,6 +21,7 @@ The Dominion hunts you from the start.
   - you take the legate's pact or back Vane for the throne.
   A clan you've crossed harder can take its place. Turn Hostile with the Dominion and it hunts you harder.
 - **Saved games** take it on load, unless you're already Friendly with the Dominion.
+- **Orsolya Keld,** the Dominion's champion, is a little easier (190 health, 26 damage), since you now meet her in every game.
 - **The People codex** no longer lists a clan court's leaders before you meet them.
 
 ## [1.407.0+443]

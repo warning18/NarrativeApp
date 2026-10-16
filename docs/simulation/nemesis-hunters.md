@@ -132,5 +132,5 @@ The user's call: your family kept a piece of the Shroud, and the Dominion wants 
 
 - **Win rates don't move:** the walk doesn't fight the road's hunters, and the story nemesis adds no reinforcements and no war.
 - **The extra half hunter a run** is the Dominion's, at the Hostile odds.
-- **Champions are met more often, and lost a little more:** the Dominion's quest now opens at chapter 4 in every run. They stay inside the 50% ±12 band.
+- **Champions are met more often, and lost a little more:** the Dominion's quest now opens at chapter 4 in every run, and only 42.9% were beaten. Orsolya Keld is eased to 190 health and 26 damage (the others stay at 200 and 27): **50.0% of 500 champion fights won** (the Dominion's 181 of 393).
 - **A first try,** with the ordinary war rule kept for the story nemesis, made 177 runs of 200 see a fall. That rule is why it now wars as any clan.
