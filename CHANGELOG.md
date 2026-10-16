@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.406.0+442]
+## [1.411.0+447]
 
 A clan's power and the land it holds, drawn.
 
@@ -16,6 +16,40 @@ A clan's power and the land it holds, drawn.
 - **Power on the clan's card.** A bar across the four tiers (Minor, Rising, Dominant, Ascendant, ticks at 25, 50 and 75) with the tier named and its value, then "Holds N places" with the places as chips (six, then "+N more"). A clan that is the party's nemesis wears a red "Your nemesis" ribbon and a red bar. The card is the one the long press, the offer's (i) and the Throne room open.
 - **The Throne room's banner captions** add the clan's power tier, and "Your nemesis" for the nemesis, after the standing.
 - **The land takes its holder's colour.** In the Journey the place's ground gets a faint wash and a frame in the colour of the clan that holds it now (red when it is the nemesis), following places that changed hands.
+
+## [1.409.0+445]
+
+The Dominion hunts you from the start.
+
+- **Your nemesis from the first page:** your family kept a piece of the Shroud, and the Dominion wants it.
+  - Its hunters come now and then from the first chapter, as a Hostile clan's would.
+  - Its champion waits for chapter 4, when a lamp-boy brings its quest.
+- **How it ends:**
+  - your standing with the Dominion reaches Friendly;
+  - you break it through its quest;
+  - you take the legate's pact or back Vane for the throne.
+  A clan you've crossed harder can take its place. Turn Hostile with the Dominion and it hunts you harder.
+- **Saved games** take it on load, unless you're already Friendly with the Dominion.
+- **Orsolya Keld,** the Dominion's champion, is a little easier (190 health, 26 damage), since you now meet her in every game.
+- **The People codex** no longer lists a clan court's leaders before you meet them.
+
+## [1.407.0+443]
+
+### Added
+- A court for each of the six clans: a way of ruling (`ruling` on each clan in `factions.json`, EN and FR) and 8 or 9 ranked people each, 49 in all. 22 existing characters are placed in the hierarchy (Aurel Vane, Hesk Morrow, Maud Tallis, the Keyholders...) and 27 new ones fill the empty ranks, among them the Lantern-Bearer, the Heron Queen and the six nemesis champions. New fields on a person in `npcs.json`: `clan`, `rank` (1 = leader), `title`, `stanceLeader`, `stancePlayer`.
+
+## [1.404.0+440]
+
+Your nemesis's quest now has a trail, a choice of way in, and its own ending.
+
+- **The trail:** before the champion comes, a road leads you on its trail.
+- **Three ways in** to the champion, each with a small edge:
+  - **Force** (it starts at 85% health);
+  - **Guile** (it is a little weaker all round);
+  - **Mercy** (it starts at 90% health, and beating it this way earns +5 standing with its clan).
+- **Its last words:** a champion beaten leaves a line in the fight log.
+- **The news:** each clan's broken hunt has its own news line.
+- **Champions** are tougher (200 health, 27 damage), so about half of the fights against them are still won.
 
 ## [1.403.0+439]
 

@@ -370,8 +370,9 @@ PoliticsState givePlace(
 
   // Wars: the stronger takes a place, its claims first, the seat last.
   // The nemesis (nemesis.dart) goes first, and wars on your patron from
-  // Hostile ([nemesisWarStep]).
-  final nemesis = next.nemesis;
+  // Hostile ([nemesisWarStep]); not the story's own (the Dominion as a
+  // game opens), which wars as any clan.
+  final nemesis = next.isStoryNemesis ? '' : next.nemesis;
   final patron = statPatron(next);
   final warring = [
     if (clans.contains(nemesis)) nemesis,
@@ -515,7 +516,10 @@ Reinforcement reinforcementAt(
     return Reinforcement.none;
   }
   final tier = state.tierOf(holder, data);
-  if (holder == state.nemesis || tier == StandingTier.hunted) {
+  // The story's own nemesis (the Dominion as a game opens) is gentler:
+  // its people hold back unless it hunts you.
+  if ((holder == state.nemesis && !state.isStoryNemesis) ||
+      tier == StandingTier.hunted) {
     return Reinforcement.foes;
   }
   return tier.isAtLeast(StandingTier.friend)

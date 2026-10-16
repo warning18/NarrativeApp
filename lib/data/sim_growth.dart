@@ -140,7 +140,7 @@ class SimGrowth {
 
   /// Every clan that was the character's nemesis at a chapter's turn.
   final Set<String> nemeses = {};
-  PoliticsState politics = PoliticsState.empty;
+  PoliticsState politics = PoliticsState.storyStart;
   List<String> titles = const [];
   String activeTitle = '';
   final List<String> boons = [];

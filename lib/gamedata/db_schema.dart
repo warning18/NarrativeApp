@@ -1253,6 +1253,36 @@ final DbSchema enemiesSchema = DbSchema(
         label: 'Arrival (FR)',
         type: FieldType.multilineText),
     FieldSchema(
+        key: 'wayForce',
+        label: 'Way in by force (a champion\'s road choice)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'wayForce_fr',
+        label: 'Way in by force (FR)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'wayGuile',
+        label: 'Way in by guile (a champion\'s road choice)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'wayGuile_fr',
+        label: 'Way in by guile (FR)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'wayMercy',
+        label: 'Way in by mercy (a champion\'s road choice)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'wayMercy_fr',
+        label: 'Way in by mercy (FR)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'defeat',
+        label: 'Defeat (logged when it falls)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'defeat_fr', label: 'Defeat (FR)', type: FieldType.multilineText),
+    FieldSchema(
         key: 'xpReward',
         label: 'XP Reward',
         type: FieldType.integer,
@@ -3085,6 +3115,16 @@ final DbSchema factionsSchema = DbSchema(
       referenceSchemaId: 'geography',
       help: 'The place the clan gives up last; its first claim back when it '
           'has fallen.',
+    ),
+    FieldSchema(
+      key: 'brokenNews',
+      label: 'Broken news (its nemesis hunt broken)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'brokenNews_fr',
+      label: 'Broken news (FR)',
+      type: FieldType.text,
     ),
     FieldSchema(
       key: 'gender_fr',

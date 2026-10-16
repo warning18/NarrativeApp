@@ -344,6 +344,8 @@ class Faction {
     this.claims = const [],
     this.genderFr = 'm',
     this.nameToFr = '',
+    this.brokenNews = '',
+    this.brokenNewsFr = '',
   });
 
   final Patron patron;
@@ -365,6 +367,11 @@ class Faction {
   /// "au Dominion de la Lanterne": the French name after "à"; '' when the
   /// data has none.
   final String nameToFr;
+
+  /// The news when the character breaks it as their nemesis (nemesis.dart,
+  /// Narrative's per clan); '' tells the shared line.
+  final String brokenNews;
+  final String brokenNewsFr;
 
   /// Whether the French name is plural (`genderFr` 'mp' or 'fp').
   bool get pluralFr => genderFr.endsWith('p');
@@ -473,6 +480,8 @@ class Faction {
           _ => 'm',
         },
         nameToFr: _text(json['nameTo_fr']).trim(),
+        brokenNews: _text(json['brokenNews']).trim(),
+        brokenNewsFr: _text(json['brokenNews_fr']).trim(),
       );
 }
 
@@ -1460,6 +1469,14 @@ class Host {
   }
 }
 
+/// The story's own nemesis: the Dominion, from a new game's first page
+/// (it wants the piece of the Shroud the character's family kept;
+/// nemesis.dart).
+const String storyNemesisClan = 'dominion';
+
+/// [PoliticsState.nemesisReason] of [storyNemesisClan] as the story opens.
+const String nemesisReasonStory = 'story';
+
 /// Where the character stands with the coast, as the session keeps it:
 /// - [standings]: standing with each faction it has moved with (any
 ///   other is still at its `startStanding`, see [standingOf]);
@@ -1501,6 +1518,7 @@ class PoliticsState {
     this.helped = const [],
     this.fallen = const [],
     this.nemesis = '',
+    this.nemesisReason = '',
     this.nemesisCooldown = const {},
     this.crisis = const {},
     this.fellTo = const {},
@@ -1509,6 +1527,12 @@ class PoliticsState {
   });
 
   static const PoliticsState empty = PoliticsState();
+
+  /// The coast as a new game opens: the Dominion your nemesis, a story
+  /// fact (it wants the piece of the Shroud your family kept), not a
+  /// standing earned (nemesis.dart).
+  static const PoliticsState storyStart = PoliticsState(
+      nemesis: storyNemesisClan, nemesisReason: nemesisReasonStory);
 
   /// Each main clan's power (0..100, clan_power.dart) once it has moved;
   /// a clan not here stands at its `startPower`.
@@ -1529,6 +1553,15 @@ class PoliticsState {
   /// The clan that has made the character its nemesis (nemesis.dart), ''
   /// for none.
   final String nemesis;
+
+  /// Why [nemesis] hunts the character: [nemesisReasonStory] for the
+  /// story's own enemy (the Dominion as a game opens), '' for one earned
+  /// by standing.
+  final String nemesisReason;
+
+  /// Whether [nemesis] is the story's own enemy ([nemesisReasonStory]).
+  bool get isStoryNemesis =>
+      nemesis.isNotEmpty && nemesisReason == nemesisReasonStory;
 
   /// Clans whose nemesis was broken: the chapter from which each may
   /// become one again.
@@ -1652,6 +1685,7 @@ class PoliticsState {
     List<String>? helped,
     List<String>? fallen,
     String? nemesis,
+    String? nemesisReason,
     Map<String, int>? nemesisCooldown,
     Map<String, String>? crisis,
     Map<String, String>? fellTo,
@@ -1678,6 +1712,11 @@ class PoliticsState {
         helped: helped ?? this.helped,
         fallen: fallen ?? this.fallen,
         nemesis: nemesis ?? this.nemesis,
+        // A new nemesis is an earned one unless told otherwise.
+        nemesisReason: nemesisReason ??
+            (nemesis == null || nemesis == this.nemesis
+                ? this.nemesisReason
+                : ''),
         nemesisCooldown: nemesisCooldown ?? this.nemesisCooldown,
         crisis: crisis ?? this.crisis,
         fellTo: fellTo ?? this.fellTo,
@@ -1710,6 +1749,9 @@ class PoliticsState {
         if (helped.isNotEmpty) 'helped': helped,
         if (fallen.isNotEmpty) 'fallen': fallen,
         if (nemesis.isNotEmpty) 'nemesis': nemesis,
+        // Always written: a save without it predates the story's nemesis
+        // (see [PoliticsState.fromJson]).
+        'nemesisReason': nemesisReason,
         if (nemesisCooldown.isNotEmpty) 'nemesisCooldown': nemesisCooldown,
         if (crisis.isNotEmpty) 'crisis': crisis,
         if (fellTo.isNotEmpty) 'fellTo': fellTo,
@@ -1720,7 +1762,7 @@ class PoliticsState {
   /// [raw] read; [empty] for a save from before clans (or anything
   /// unreadable).
   factory PoliticsState.fromJson(Object? raw) {
-    if (raw is! Map) return empty;
+    if (raw is! Map) return storyStart;
     final json = raw.cast<String, dynamic>();
     final marks = <String, SubclanMark>{};
     final rawMarks = json['marks'];
@@ -1740,7 +1782,7 @@ class PoliticsState {
         if (chapter != null) snapshots[chapter] = _ints(e.value);
       }
     }
-    return PoliticsState(
+    final state = PoliticsState(
       standings: _doubles(json['standings']),
       marks: marks,
       swornFactionId: _text(json['sworn']),
@@ -1780,12 +1822,26 @@ class PoliticsState {
       helped: _strings(json['helped']).toSet().toList(),
       fallen: _strings(json['fallen']).toSet().toList(),
       nemesis: _text(json['nemesis']).trim(),
+      nemesisReason: _text(json['nemesisReason']).trim(),
       nemesisCooldown: _ints(json['nemesisCooldown']),
       crisis: _texts(json['crisis']),
       fellTo: _texts(json['fellTo']),
       fallenOf: _text(json['fallenOf']).trim(),
       fallenWinner: _text(json['fallenWinner']).trim(),
     );
+    // A save from before the story's nemesis (no `nemesisReason`): the
+    // Dominion takes the place it holds in a new game, unless the
+    // character is already Friendly with it, or it is out of the way.
+    if (json.containsKey('nemesisReason') ||
+        state.nemesis.isNotEmpty ||
+        state.fallen.contains(storyNemesisClan) ||
+        state.nemesisCooldown.containsKey(storyNemesisClan) ||
+        (state.standings[storyNemesisClan] ?? 0) >=
+            standingTiers[StandingTier.friendly]!.min) {
+      return state;
+    }
+    return state.copyWith(
+        nemesis: storyNemesisClan, nemesisReason: nemesisReasonStory);
   }
 }
 
