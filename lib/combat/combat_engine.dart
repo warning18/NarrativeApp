@@ -854,8 +854,8 @@ const double chapterDifficultyStep = 0.15;
 /// floor (×1.15/×1.10, step 0.12) lost 0.12 fights a run; the ramp, with
 /// step 0.15 and the boss floor below, loses about 1.5 a run with every
 /// run finishing and chapter 1 still won 98% of the time.
-const List<double> enemyHealthFloorByChapter = [1.15, 1.25, 1.35];
-const List<double> enemyDamageFloorByChapter = [1.10, 1.15, 1.20];
+const List<double> enemyHealthFloorByChapter = [2.36, 2.56, 2.77];
+const List<double> enemyDamageFloorByChapter = [2.09, 2.18, 2.28];
 
 /// A regular enemy's health floor in [chapter] (the last entry holds for
 /// every later chapter; a chapter below 1 reads as chapter 1).
