@@ -31,3 +31,17 @@ UX would add one widget, `FeatureGate(feature: 'camp', child: ..., locked: ...)`
 ## If the user approves
 
 Mockups next: the card over the Journey tab and over a fight's end, the bar at chapter 1 and at chapter 2, one greyed row, in English and French at 320 px. Say which screens the ladder touches first and UX starts there.
+
+## Built (v1.423.0)
+
+`lib/widgets/feature_unlock.dart`: `FeatureGate`, `FeatureLockedTile` (+ the "Opens in chapter N" sheet), `UnlockDot`, and `FeatureUnlockHost` (the "New: X" card over the home shell, one at a time, held back while a fight or a page covers the shell; "Later" and "Show me" both acknowledge, 6 s without a tap lets the card go and keeps the dot). Words per feature are `feature_<id>_name` / `feature_<id>_line` in both languages.
+
+Where each of Core's ids is gated:
+- `quests`: Other → Quests row (greyed with a lock, dot when new).
+- `inventory`: Character → Pages: Inventory and Dice tiles (greyed), the Shroud card (hidden).
+- `skills`: the Skills screen (a locked page) and the Overview card's skills part (greyed).
+- `politics`: the app bar's ⚖ (hidden, dot when new).
+- `clans`: Character → Gifts tab (hidden, dot when new).
+- `chest`, `placeRules`, `conditions`, `levelUp`: card only (their things live in fights and the level-up).
+
+Pictures: `docs/ux-shots/unlock-card.png`, `unlock-card-fr-320.png`, `unlock-locked.png`.

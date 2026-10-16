@@ -11944,6 +11944,98 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tab_overview': {AppLanguage.en: 'Overview', AppLanguage.fr: 'Aperçu'},
   'tab_gifts': {AppLanguage.en: 'Gifts', AppLanguage.fr: 'Dons'},
   'tab_pages': {AppLanguage.en: 'Pages', AppLanguage.fr: 'Pages'},
+  'feature_chest_name': {
+    AppLanguage.en: 'Spoils chest',
+    AppLanguage.fr: 'Coffre de butin',
+  },
+  'feature_chest_line': {
+    AppLanguage.en:
+        'After a fight won, open the chest and pick from what it holds.',
+    AppLanguage.fr:
+        'Après un combat gagné, ouvrez le coffre et choisissez dans son contenu.',
+  },
+  'feature_placeRules_name': {
+    AppLanguage.en: 'Place rules',
+    AppLanguage.fr: 'Règles du lieu',
+  },
+  'feature_placeRules_line': {
+    AppLanguage.en: 'A place can bend a fight: the town guards, the mist.',
+    AppLanguage.fr:
+        'Un lieu peut infléchir un combat : la garde de la ville, la brume.',
+  },
+  'feature_conditions_name': {
+    AppLanguage.en: 'Battlefield conditions',
+    AppLanguage.fr: 'Conditions du terrain',
+  },
+  'feature_conditions_line': {
+    AppLanguage.en: 'Rain, dark or crowd: the ground now changes the fight.',
+    AppLanguage.fr:
+        'Pluie, nuit ou foule : le terrain change désormais le combat.',
+  },
+  'feature_levelUp_name': {
+    AppLanguage.en: 'Level up',
+    AppLanguage.fr: 'Montée de niveau',
+  },
+  'feature_levelUp_line': {
+    AppLanguage.en: 'Spend your points and pick your training.',
+    AppLanguage.fr: 'Dépensez vos points et choisissez votre entraînement.',
+  },
+  'feature_quests_name': {
+    AppLanguage.en: 'Quests',
+    AppLanguage.fr: 'Quêtes',
+  },
+  'feature_quests_line': {
+    AppLanguage.en: 'The list of what you have taken on, in the Other tab.',
+    AppLanguage.fr:
+        'La liste de ce que vous avez entrepris, dans l’onglet Autre.',
+  },
+  'feature_inventory_name': {
+    AppLanguage.en: 'Inventory',
+    AppLanguage.fr: 'Inventaire',
+  },
+  'feature_inventory_line': {
+    AppLanguage.en:
+        'Carry, wear and compare what you find; the dice loadout too.',
+    AppLanguage.fr:
+        'Portez, équipez et comparez vos trouvailles ; l’ordre des dés aussi.',
+  },
+  'feature_skills_name': {
+    AppLanguage.en: 'Skills',
+    AppLanguage.fr: 'Compétences',
+  },
+  'feature_skills_line': {
+    AppLanguage.en: 'Learn skills from the tree and use them in fights.',
+    AppLanguage.fr:
+        'Apprenez des compétences dans l’arbre et utilisez-les en combat.',
+  },
+  'feature_politics_name': {
+    AppLanguage.en: 'Clans & Politics',
+    AppLanguage.fr: 'Clans et politique',
+  },
+  'feature_politics_line': {
+    AppLanguage.en: 'Who stands where on the coast, and what it costs you.',
+    AppLanguage.fr: 'Qui se tient où sur la côte, et ce que cela vous coûte.',
+  },
+  'feature_clans_name': {
+    AppLanguage.en: 'Clan offers',
+    AppLanguage.fr: 'Offres des clans',
+  },
+  'feature_clans_line': {
+    AppLanguage.en: 'Clans may offer signs and titles; Gifts holds them.',
+    AppLanguage.fr:
+        'Les clans peuvent offrir signes et titres ; les Dons les gardent.',
+  },
+  'feature_new': {
+    AppLanguage.en: 'New: {name}',
+    AppLanguage.fr: 'Nouveau : {name}',
+  },
+  'feature_show_me': {AppLanguage.en: 'Show me', AppLanguage.fr: 'Montre-moi'},
+  'feature_later': {AppLanguage.en: 'Later', AppLanguage.fr: 'Plus tard'},
+  'feature_ok': {AppLanguage.en: 'OK', AppLanguage.fr: 'OK'},
+  'feature_opens_in': {
+    AppLanguage.en: 'Opens in chapter {n}: {name}',
+    AppLanguage.fr: 'S’ouvre au chapitre {n} : {name}',
+  },
   'tile_inventory': {
     AppLanguage.en: 'Inventory',
     AppLanguage.fr: 'Inventaire',
