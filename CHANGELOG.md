@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.440.0+476]
+
+The Journey's pins hang as banners, with a legend.
+
+### Added
+- **Banner pins:** a way on the map hangs as a banner in the colour and icon of what it is: main quest (gold flag), side quest (violet speech bubble), detour (ember compass), shop (teal storefront), travel (blue sailboat), rest (green flame) or plain way (grey signpost). The district view's pins hang on their buildings, and the rows and cards of the ways wear the same banner, small. Fights and rolls keep their round numbered pins.
+- **The legend:** a key button at the map's top right opens a sheet that says what each banner means (English and French).
+- **No "Walk on" tabs:** the row of chips to the other districts under the district's ways is gone (the chart, the Town tab and its rows still go to them).
+
 ## [1.439.0+475]
 
 A written detour plays as a scene.
