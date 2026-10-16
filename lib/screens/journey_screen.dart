@@ -46,6 +46,7 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/biome_backdrop.dart';
 import '../widgets/choice_card.dart';
+import '../widgets/choice_rings.dart';
 import '../widgets/clan_power_block.dart' show holderTint;
 import '../providers/climate_provider.dart';
 import '../data/weather_effects.dart';
@@ -174,6 +175,9 @@ class _Step {
   /// What kind of action the choice is and whether it is acted out where the
   /// party stands (Core's choice_shape.dart).
   late ChoiceShape shape;
+
+  /// What its card says beside the text, and its ring (Core's choiceTags).
+  late ChoiceTags tags;
 
   /// Whether the way is a card under the map and not a pin on it (v1.407):
   /// in a place, a choice acted out here (a fight, a payment, a check, a
@@ -306,6 +310,15 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// The steps the map draws as pins (the others are cards under it), by
   /// their place in the list of steps.
   List<int> _pinIdx = const [];
+
+  /// The ring whose list is open in a sheet (a hub's choices are grouped by
+  /// kind, v1.419), and the card being taken while the others dim.
+  String? _ringOpen;
+  int? _pressed;
+
+  /// A scene with more cards than this is a hub: its choices go on rings and
+  /// chips, a list for each, not a list of cards.
+  static const int _hubCards = 4;
 
   /// The scene a step is being taken from, while the party walks there
   /// and its choice plays out: the map waits on it meanwhile. Kept by
@@ -632,7 +645,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // The scene the step was drawn for.
     final before = _sceneKey;
     if (_busy || step.locked || before == null) return;
-    setState(() => _takingFrom = before);
+    setState(() {
+      _takingFrom = before;
+      _pressed = index;
+    });
     // Where the party stands before it sets out.
     final home = _partyChart;
     final homePlan = _partyPlan, homeDistrict = _partyDistrict;
@@ -644,6 +660,15 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     var taken = false;
     try {
       final chart = _chartKey.currentState;
+      // A choice done here (a card) has a beat at the party's mark instead
+      // of a walk: a ring in its kind's colour and its icon rising.
+      if (chart != null &&
+          step.onCard &&
+          !MediaQuery.of(context).disableAnimations) {
+        await chart.playBeat(
+            _groupColor(step.tags.group, InkColors.of(context)), _iconOf(step));
+        if (!mounted || moved()) return;
+      }
       // Only a way that carries the party somewhere walks it there; a word
       // with the innkeeper or a scuffle in the square leaves it on its mark.
       if (chart != null &&
@@ -694,6 +719,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         if (mounted) {
           setState(() {
             if (_takingFrom == before) _takingFrom = null;
+            _pressed = null;
             // The choice moved the story on: the new scene is read full
             // screen, and Continue brings the map back.
             if (taken && !stayed) _reading = true;
@@ -732,18 +758,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   }
 
   /// The tag a card carries: a price, an alignment shift, a check or the
-  /// kind of fight, whichever the choice has first.
-  ChoiceTag? _cardTag(_Step step, StoryData story, InkColors ink) {
+  /// kind of fight, whichever the choice has first (Core's choiceTags).
+  ChoiceTag? _cardTag(_Step step, InkColors ink) {
     final c = step.choice;
+    final tags = step.tags;
     String signed(int v) => v > 0 ? '+$v' : '−${v.abs()}';
-    final cost = math.max(
-        c.goldMod < 0 ? -c.goldMod : 0, story.nodeFor(c.nextId)?.reqGold ?? 0);
-    if (step.shape.action == ChoiceAction.pay && cost > 0) {
-      return ChoiceTag('$cost ${tr(ref, 'gold_label')}', ink.gold);
+    if (tags.cost > 0) {
+      return ChoiceTag('${tags.cost} ${tr(ref, 'gold_label')}', ink.gold);
     }
-    if (c.alignmentMod != 0) {
+    if (tags.alignment != 0) {
       return ChoiceTag(
-          '${tr(ref, 'alignment_label')} ${signed(c.alignmentMod)}',
+          '${tr(ref, 'alignment_label')} ${signed(tags.alignment)}',
           ink.voidColor);
     }
     if (c.hasAbilityCheck) {
@@ -757,14 +782,76 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     return null;
   }
 
+  /// The icon of a choice done here: its glyph (a fight, a roll, a shop), or
+  /// for a plain decision or word, the action's own (the road's signpost
+  /// would say it leads somewhere).
+  IconData _iconOf(_Step step) {
+    if (step.kind != JourneyStepKind.road) return step.glyph.icon;
+    return switch (step.shape.action) {
+      ChoiceAction.talk => Icons.chat_bubble_outline,
+      ChoiceAction.decide => Icons.balance,
+      ChoiceAction.pay => Icons.paid_outlined,
+      ChoiceAction.sneak => Icons.visibility_off_outlined,
+      ChoiceAction.attempt => Icons.casino_outlined,
+      ChoiceAction.evade => Icons.directions_run,
+      _ => step.glyph.icon,
+    };
+  }
+
+  /// A hub's rings, in the order of the chips: a fight, a talk or a
+  /// decision, a check or a payment.
+  static const _ringOrder = [
+    ChoiceGroup.fight,
+    ChoiceGroup.talkDecide,
+    ChoiceGroup.checksPay,
+  ];
+
+  Color _groupColor(ChoiceGroup g, InkColors ink) => switch (g) {
+        ChoiceGroup.fight => ink.blood,
+        ChoiceGroup.talkDecide => ink.tide,
+        ChoiceGroup.checksPay => ink.voidColor,
+        ChoiceGroup.go => ink.ash,
+      };
+
+  /// The steps of ring [id] (a [ChoiceGroup]'s name, or 'ways' for the pins),
+  /// by their place in the list of steps.
+  List<int> _ringSteps(List<_Step> steps, String id) => [
+        for (var i = 0; i < steps.length; i++)
+          if (id == 'ways'
+              ? !steps[i].onCard
+              : steps[i].onCard && steps[i].tags.group.name == id)
+            i,
+      ];
+
+  /// The rings of a hub: one for each kind with choices, with their icons.
+  List<ChoiceRing> _rings(List<_Step> steps, InkColors ink) => [
+        for (final g in _ringOrder)
+          if (_ringSteps(steps, g.name).isNotEmpty)
+            ChoiceRing(
+              id: g.name,
+              label: tr(ref, 'choice_group_${g.name}'),
+              count: _ringSteps(steps, g.name).length,
+              color: _groupColor(g, ink),
+              icons: [
+                for (final i in _ringSteps(steps, g.name)) _iconOf(steps[i]),
+              ],
+            ),
+      ];
+
+  bool _isHub(List<_Step> steps) =>
+      steps.where((s) => s.onCard).length > _hubCards;
+
   /// The panel under the map in a place (design 1 of
   /// docs/proposals/inplace-choices.md): every choice acted out here is a
-  /// card, the pin picked (if one is) leading with its own detail.
+  /// card, the pin picked (if one is) leading with its own detail. A hub
+  /// (design 3) shows a chip for each ring instead, and a "Ways" chip for
+  /// the pins: a tap opens that list.
   Widget _choicePanel(
       List<_Step> steps, _Step? selected, bool french, StoryData story) {
     final ink = InkColors.of(context);
     final palette = ChartPalette.of(ref.watch(mapLookProvider));
     final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value;
+    final hub = _isHub(steps);
     return ListView(
       key: const ValueKey('journey_choice_cards'),
       padding: EdgeInsets.zero,
@@ -779,57 +866,181 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           ),
           const SizedBox(height: 6),
         ],
-        for (var i = 0; i < steps.length; i++)
-          if (steps[i].onCard)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: _cardFor(i, steps[i], french, story, ink, palette, enemies,
-                  identical(selected, steps[i])),
-            ),
+        if (hub) ...[
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final ring in _rings(steps, ink))
+                ChoiceGroupChip(
+                  key: ValueKey('choice_chip_${ring.id}'),
+                  label: ring.label,
+                  count: ring.count,
+                  color: ring.color,
+                  onTap: () => _openList(ring.id, steps, french, story),
+                ),
+              if (_ringSteps(steps, 'ways').isNotEmpty)
+                ChoiceGroupChip(
+                  key: const ValueKey('choice_chip_ways'),
+                  label: tr(ref, 'choice_ways_chip'),
+                  count: _ringSteps(steps, 'ways').length,
+                  color: Theme.of(context).colorScheme.onSurface,
+                  onTap: () => _openList('ways', steps, french, story),
+                ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(tr(ref, 'choice_hub_hint'),
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
+          ),
+        ] else
+          for (var i = 0; i < steps.length; i++)
+            if (steps[i].onCard)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: _cardFor(i, steps[i], french, ink, palette, enemies,
+                    identical(selected, steps[i])),
+              ),
       ],
     );
   }
 
-  Widget _cardFor(
-      int i,
-      _Step step,
-      bool french,
-      StoryData story,
-      InkColors ink,
-      ChartPalette palette,
-      Map<String, dynamic>? enemies,
-      bool picked) {
+  /// A ring's list (or the pins', "ways") in a sheet over the lower half of
+  /// the screen: a tap picks a card (a pin lights its road on the map above)
+  /// and a second tap does it. The ring stays lit on the map meanwhile.
+  Future<void> _openList(
+      String id, List<_Step> steps, bool french, StoryData story) async {
+    if (_busy) return;
+    setState(() => _ringOpen = id);
+    final ink = InkColors.of(context);
+    final palette = ChartPalette.of(ref.read(mapLookProvider));
+    final enemies = ref.read(localizedDbProvider(enemiesSchema)).value;
+    final title = id == 'ways'
+        ? tr(ref, 'choice_ways_chip')
+        : tr(ref, 'choice_group_$id');
+    final members = _ringSteps(steps, id);
+    final color = id == 'ways'
+        ? Theme.of(context).colorScheme.onSurface
+        : _groupColor(ChoiceGroup.values.firstWhere((g) => g.name == id), ink);
+    final taken = await showModalBottomSheet<int>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      constraints:
+          BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.5),
+      barrierColor: Colors.black26,
+      builder: (sheet) => StatefulBuilder(
+        builder: (sheet, setSheet) => SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 8, 6),
+                child: Row(
+                  children: [
+                    Icon(Icons.circle_outlined, size: 16, color: color),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text('$title · ${members.length}',
+                          style: Theme.of(sheet)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(
+                                  fontFamily: InkFonts.display, color: color)),
+                    ),
+                    IconButton(
+                      key: const ValueKey('choice_sheet_close'),
+                      onPressed: () => Navigator.of(sheet).pop(),
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
+              ),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                  children: [
+                    for (final i in members)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: _cardFor(
+                          i,
+                          steps[i],
+                          french,
+                          ink,
+                          palette,
+                          enemies,
+                          _selected == i,
+                          onTap: () {
+                            if (_selected == i && !steps[i].locked) {
+                              Navigator.of(sheet).pop(i);
+                              return;
+                            }
+                            setState(() => _selected = i);
+                            setSheet(() {});
+                          },
+                          onGo: () => Navigator.of(sheet).pop(i),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (mounted) setState(() => _ringOpen = null);
+    if (taken != null && mounted && taken < steps.length) {
+      _take(taken, steps[taken]);
+    }
+  }
+
+  Widget _cardFor(int i, _Step step, bool french, InkColors ink,
+      ChartPalette palette, Map<String, dynamic>? enemies, bool picked,
+      {VoidCallback? onTap, VoidCallback? onGo}) {
     final choice = step.choice;
     final ids = choice.allTriggerEnemyIds;
     final roster =
         enemies == null || ids.isEmpty || ids.any((id) => id.startsWith('@'))
             ? null
             : enemyRoster(ids, enemies);
-    final to = step.shape.move == ChoiceMove.stay ? null : step.shape.to;
-    return ChoiceCard(
-      key: ValueKey('journey_choice_card_$i'),
-      icon: step.glyph.icon,
-      // The card sits on the app's page, not on the map: the map's own pale
-      // road colour would vanish on a light page.
-      color: switch (step.kind) {
-        JourneyStepKind.road => Theme.of(context).colorScheme.onSurfaceVariant,
-        JourneyStepKind.mainQuest => ink.gold,
-        _ => _colorFor(step.kind, ink, palette, greyed: false),
-      },
-      text: step.label,
-      notes: [
-        if (roster != null && !step.locked)
-          tr(ref, 'choice_fight_roster').replaceAll('{roster}', roster),
-      ],
-      leadsTo: to != null && !step.locked ? to.nameFor(french) : null,
-      tag: step.locked ? null : _cardTag(step, story, ink),
-      selected: picked,
-      locked: step.locked,
-      busy: _busy,
-      goLabel: tr(ref, 'journey_go'),
-      goKey: const ValueKey('journey_go'),
-      onTap: _busy ? null : () => _tap(i, step),
-      onGo: () => _take(i, step),
+    final to = step.tags.destination;
+    return Opacity(
+      // The choice taken stays lit; the others dim while it plays out.
+      opacity: _busy && _pressed != null && _pressed != i ? 0.45 : 1,
+      child: ChoiceCard(
+        key: ValueKey('journey_choice_card_$i'),
+        icon: step.onCard ? _iconOf(step) : step.glyph.icon,
+        // The card sits on the app's page, not on the map: the map's own pale
+        // road colour would vanish on a light page.
+        color: switch (step.kind) {
+          JourneyStepKind.road =>
+            Theme.of(context).colorScheme.onSurfaceVariant,
+          JourneyStepKind.mainQuest => ink.gold,
+          _ => _colorFor(step.kind, ink, palette, greyed: false),
+        },
+        text: step.label,
+        notes: [
+          if (roster != null && !step.locked)
+            tr(ref, 'choice_fight_roster').replaceAll('{roster}', roster),
+        ],
+        leadsTo: to != null && !step.locked ? to.nameFor(french) : null,
+        tag: step.locked ? null : _cardTag(step, ink),
+        selected: picked,
+        locked: step.locked,
+        busy: _busy,
+        goLabel: tr(ref, 'journey_go'),
+        goKey: const ValueKey('journey_go'),
+        onTap: _busy ? null : (onTap ?? () => _tap(i, step)),
+        onGo: onGo ?? () => _take(i, step),
+      ),
     );
   }
 
@@ -1307,6 +1518,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     var pinCount = 0;
     for (var i = 0; i < steps.length; i++) {
       steps[i].shape = shapes[i];
+      steps[i].tags = choiceTags(node, steps[i].choice,
+          story: story, geography: world, shape: shapes[i]);
       steps[i].onCard = onCard[i];
       if (!onCard[i] && onCard.contains(true)) {
         steps[i].slot = pinSlots[pinCount++];
@@ -1695,6 +1908,16 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                               unroll: _unroll,
                               weather: journeyWeatherOf(sky?.kind, chapter),
                               stepIds: _pinIdx,
+                              rings: placeView != null && _isHub(steps)
+                                  ? _rings(
+                                      steps,
+                                      look == MapLook.parchment
+                                          ? InkColors.light
+                                          : InkColors.dark)
+                                  : const [],
+                              ringLit: _ringOpen,
+                              onRing: (id) =>
+                                  _openList(id, steps, french, story),
                               place: placeView?.pinned(_pinIdx),
                               arriveFrom: _arriveFrom,
                               townView: townView,
@@ -2650,7 +2873,16 @@ class _JourneyChart extends StatefulWidget {
     this.arriveFrom,
     this.townView = false,
     this.stepIds,
+    this.rings = const [],
+    this.ringLit,
+    this.onRing,
   });
+
+  /// A hub's rings round the party's mark (v1.419, see choice_rings.dart),
+  /// the one whose list is open ([ringLit]), and a tap on one.
+  final List<ChoiceRing> rings;
+  final String? ringLit;
+  final ValueChanged<String>? onRing;
 
   /// Where each of [steps] stands in the scene's list of ways, when the map
   /// draws only some of them (the others are cards): the marks keep the
@@ -2745,6 +2977,25 @@ class _JourneyChartState extends State<_JourneyChart>
     vsync: this,
     duration: const Duration(milliseconds: 950),
   );
+
+  /// The beat at the party's mark when a choice done here is taken (see
+  /// [playBeat]).
+  late final AnimationController _beat = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 520),
+  );
+  Color _beatColor = const Color(0xFFFFFFFF);
+  IconData _beatIcon = Icons.circle;
+
+  /// A ring spreads from the party's mark in [colour] and [icon] rises from
+  /// it, for half a second; completes at once when the map is not drawn or
+  /// motion is reduced.
+  Future<void> playBeat(Color colour, IconData icon) async {
+    if (!mounted) return;
+    _beatColor = colour;
+    _beatIcon = icon;
+    await _beat.forward(from: 0).orCancel.catchError((_) {});
+  }
 
   /// The party's mark travelling the plan from [_JourneyChart.arriveFrom]
   /// to where it stands (v1.246); done (1) when there is nothing to show.
@@ -3107,6 +3358,7 @@ class _JourneyChartState extends State<_JourneyChart>
     _clock.dispose();
     _phase.dispose();
     _walk.dispose();
+    _beat.dispose();
     _arrival.dispose();
     _town.dispose();
     _flight.dispose();
@@ -3639,6 +3891,40 @@ class _JourneyChartState extends State<_JourneyChart>
                         // Where the party stood, while it walks away.
                         _hereMark(here,
                             faded: traveller != null || arriving != null),
+                        // A hub's rings round it, and the beat when one of
+                        // its choices is taken.
+                        if (widget.rings.isNotEmpty &&
+                            traveller == null &&
+                            arriving == null)
+                          ChoiceRingsLayer(
+                            here: here,
+                            innerRadius: _hereRadius,
+                            rings: widget.rings,
+                            lit: widget.ringLit,
+                            plate: palette.land,
+                            onTap: (id) => widget.onRing?.call(id),
+                          ),
+                        // The rings' chips, over their icons but under the marks, which the
+                        // taps must reach first.
+                        if (widget.rings.isNotEmpty &&
+                            traveller == null &&
+                            arriving == null)
+                          ChoiceRingsLayer(
+                            chips: true,
+                            here: here,
+                            innerRadius: _hereRadius,
+                            rings: widget.rings,
+                            lit: widget.ringLit,
+                            plate: palette.land,
+                            onTap: (id) => widget.onRing?.call(id),
+                          ),
+                        ChoiceBeat(
+                          animation: _beat,
+                          here: here,
+                          innerRadius: _hereRadius,
+                          color: _beatColor,
+                          icon: _beatIcon,
+                        ),
                         Positioned(
                           left: _placeMode ? 8 : here.dx + _hereRadius + 10,
                           width: _placeMode
