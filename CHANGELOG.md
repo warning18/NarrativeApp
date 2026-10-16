@@ -10,10 +10,10 @@ isn't reconstructable from git history alone.
 
 ## [1.429.0+465]
 
-The game pushes back: every profession now wins about 70% of its fights within three tries, down from 82–97%.
+The game pushes back after the camp: from chapter 3 on, every profession wins about 70% of its fights within three tries, down from 82–97%. Chapters 1 and 2 stay gentler.
 
 ### Changed
-- **Enemies are stronger** in every chapter, most in chapters 2 to 5. Chapter 1 is lighter, so the opening still teaches. Chapters 6 to 8 are a little lighter again, since the chapter curve already climbs there. Chapter 2's enemies are a tenth stronger on top, so Saltmouth is no longer a free walk.
+- **Enemies are stronger**, most from the camp (the landfall that opens chapter 3) to chapter 5. Chapters 1 and 2 get only a lighter raise, so the opening still teaches: about 90% of fights won within three tries and 70% on the first. Chapters 6 to 8 are a little lighter again, since the chapter curve already climbs there.
 - **The professions are closer together.**
   - The Mage hits less hard: base damage 6 → 1, Intelligence 4 → 1, health −15 → −20.
   - The Cleric is sturdier: base damage 0 → 5, health 10 → 35.
@@ -27,7 +27,11 @@ The game pushes back: every profession now wins about 70% of its fights within t
 - **A rest before the Lantern Hall:** the rest scene refills provisions and mana.
 - **The simulator counts first-try wins** for each chapter.
 
-Simulated over 400 runs: fights won within three tries are now 69–74% for every profession, and 43–49% on the first try (it was 70–84%). The tables are in `docs/simulation/difficulty-review.md` §6.
+Simulated over 400 runs, by profession:
+- **Chapters 1–2:** 81–95% of fights won within three tries, 55–83% on the first try.
+- **Chapters 3–8:** 63–73% within three tries, 37–44% on the first try.
+
+Before, it was 82–97% within three tries and 70–84% on the first try, over the whole game. The tables are in `docs/simulation/difficulty-review.md` §6.
 
 ## [1.423.0+459]
 

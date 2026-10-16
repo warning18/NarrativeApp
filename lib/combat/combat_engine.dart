@@ -848,18 +848,19 @@ const double chapterDifficultyStep = 0.15;
 /// The multipliers on a regular enemy's max health and damage, before the
 /// chapter curve -- the floor for everything that isn't a boss, one entry
 /// per chapter (the last holds for any later one). The difficulty review
-/// (v1.425, the user's call: every profession wins at most 75% of its
-/// encounters within three tries, aiming at 65-75) roughly doubled it and
-/// shaped it by chapter: chapter 1 a little lighter so the opening still
-/// teaches, chapters 2-5 the heaviest, 6-8 lighter again because the
-/// chapter curve already climbs there and a heavier floor stopped most
-/// runs short of the late zones' bosses. Measured with the playthrough
+/// (v1.429, the user's call) roughly doubled it from the camp on (node
+/// 3001, the start of chapter 3), where every profession wins at most 75%
+/// of its encounters within three tries, and kept chapters 1-2 lighter:
+/// about 90% won within three tries there, about 70% at the first.
+/// Chapters 3-5 are the heaviest, 6-8 lighter again because the chapter
+/// curve already climbs there and a heavier floor stopped most runs short
+/// of the late zones' bosses. Measured with the playthrough
 /// simulator (400 runs, docs/simulation/difficulty-review.md).
 const List<double> enemyHealthFloorByChapter = [
-  1.70, 2.75, 2.77, 2.77, 2.90, 2.16, 2.09, 2.03, //
+  1.46, 2.12, 2.77, 2.77, 2.90, 2.16, 2.09, 2.03, //
 ];
 const List<double> enemyDamageFloorByChapter = [
-  1.55, 2.30, 2.28, 2.28, 2.40, 1.80, 1.74, 1.68, //
+  1.34, 1.79, 2.28, 2.28, 2.40, 1.80, 1.74, 1.68, //
 ];
 
 /// A regular enemy's health floor in [chapter] (the last entry holds for
