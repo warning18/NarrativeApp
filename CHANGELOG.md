@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.417.0+453]
+## [1.418.0+454]
 
 The Journey's choices acted out here become cards under the map.
 
