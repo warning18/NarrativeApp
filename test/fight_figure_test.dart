@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/widgets/combat_vfx.dart';
-import 'package:narrative_data_app/widgets/fight_hero_sprite.dart';
+import 'package:narrative_data_app/widgets/fight_figure.dart';
 import 'package:narrative_data_app/widgets/fight_sprites.dart';
 import 'package:narrative_data_app/widgets/pixel_portrait.dart'
     show PortraitCue;
@@ -17,7 +17,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         body: Center(
-          child: FightHeroSprite(
+          child: FightFigure(
               controller: controller,
               anchor: anchor,
               alive: true,
@@ -43,7 +43,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         body: Center(
-          child: FightHeroSprite(
+          child: FightFigure(
               controller: controller,
               anchor: anchor,
               alive: true,

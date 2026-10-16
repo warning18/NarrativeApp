@@ -11,7 +11,7 @@ extension _FightEffects on _FightScreenState {
   }
 
   /// The hero's sprite on the ground below the party's cards, facing the
-  /// enemies on the right (see fight_hero_sprite.dart): as big as the room
+  /// enemies on the right (see fight_figure.dart): as big as the room
   /// the cards leave allows, and not at all where they leave none, so it
   /// never pushes the dice or the controls (a phone's fight is tight).
   List<Widget> _heroOnGround(BoxConstraints area) {
@@ -29,7 +29,7 @@ extension _FightEffects on _FightScreenState {
     final sprite = FightSpriteImages.effective(heroFightSprite(
         raceId: session.raceId, professionId: session.professionId));
     for (final pixel in const [3.0, 2.0, 1.0]) {
-      final size = FightHeroSprite.sizeFor(sprite, pixel);
+      final size = FightFigure.sizeFor(sprite, pixel);
       if (area.maxHeight - cards < size.height + 8) continue;
       // Centred under the party's column (five parts of eleven).
       final column = (area.maxWidth - 24 - 8) * 5 / 11;
@@ -39,13 +39,76 @@ extension _FightEffects on _FightScreenState {
           left: 12 + max(0.0, (column - size.width) / 2),
           bottom: 4,
           child: IgnorePointer(
-            child: FightHeroSprite(
+            child: FightFigure(
               controller: _vfx,
               anchor: _memberCardKey(hero.id),
               alive: !hero.isKnockedOut,
               animate: animate,
               sprite: sprite,
               pixel: pixel,
+            ),
+          ),
+        ),
+      ];
+    }
+    return const [];
+  }
+
+  /// The enemies that have art stand on the ground below the enemy cards,
+  /// facing west toward the hero (see fight_sprites.dart, enemyFightSprite):
+  /// each beside the others as far as the room goes, as large as it allows,
+  /// and none where the cards leave no room. An enemy with no art, or whose
+  /// image is missing, keeps its card alone.
+  List<Widget> _enemiesOnGround(BoxConstraints area) {
+    final worn = <(_EnemyMember, FightSpriteSet)>[
+      for (final enemy in _enemies)
+        if (enemyFightSprite(enemy.enemyId) case final set?
+            when !FightSpriteImages.failed(set))
+          (enemy, set),
+    ];
+    if (worn.isEmpty) return const [];
+    // Each card, with a margin (an estimate: a card grows with its chips and
+    // the move it announces).
+    final cards = _enemies.length * 124.0;
+    final animate = ref.watch(combatEffectsEnabledProvider) &&
+        !_quick &&
+        !MediaQuery.of(context).disableAnimations;
+    // The enemies' column: six parts of eleven.
+    final column = (area.maxWidth - 24 - 8) * 6 / 11;
+    for (final pixel in const [3.0, 2.0, 1.0]) {
+      final sizes = [
+        for (final (_, set) in worn) FightFigure.sizeFor(set, pixel),
+      ];
+      final tallest = sizes.map((s) => s.height).reduce(max);
+      final width = sizes.fold<double>(
+              0, (sum, s) => sum + s.width - FightFigure.lungeReach) +
+          FightFigure.lungeReach;
+      if (area.maxHeight - cards < tallest + 8 || width > column + 24) {
+        continue;
+      }
+      return [
+        Positioned(
+          right: 12,
+          bottom: 4,
+          child: IgnorePointer(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                for (final (i, (enemy, set)) in worn.indexed)
+                  FightFigure(
+                    figureKey: Key('fight_enemy_sprite_${enemy.key}'),
+                    controller: _vfx,
+                    anchor: _enemyCardKey(enemy.key),
+                    alive: enemy.currentHealth > 0,
+                    animate: animate,
+                    sprite: set,
+                    pixel: pixel,
+                    downOpacity: 0,
+                    fallback: false,
+                    phase: (i * 0.37) % 1.0,
+                  ),
+              ],
             ),
           ),
         ),
@@ -131,7 +194,7 @@ extension _FightEffects on _FightScreenState {
         );
     if (target != null) {
       final targetKey = _enemyCardKey(target.key);
-      // The hero steps in with its blow (see fight_hero_sprite.dart).
+      // The hero steps in with its blow (see fight_figure.dart).
       if (actor.isPlayer) {
         _vfx.cue(actorKey, PortraitCue.lunge, delayMs: delayMs);
       }

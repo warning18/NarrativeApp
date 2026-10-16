@@ -1,0 +1,59 @@
+{
+  "group_id": "79eeba43-88ab-4752-817d-5e19ad276ac3",
+  "states": [
+    {
+      "character": {
+        "id": "e37a7d39-0d61-418b-af4d-588797ca4d06",
+        "name": "Inquisition Warden",
+        "prompt": "Add a white mask, dark toge \nIt should be a vilain from a dark church ",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-10-16T07:58:18.728536+00:00"
+      },
+      "folder": "Inquisition_Warden",
+      "frames": {
+        "rotations": {
+          "south": "Inquisition_Warden/rotations/south.png",
+          "south-east": "Inquisition_Warden/rotations/south-east.png",
+          "east": "Inquisition_Warden/rotations/east.png",
+          "north-east": "Inquisition_Warden/rotations/north-east.png",
+          "north": "Inquisition_Warden/rotations/north.png",
+          "north-west": "Inquisition_Warden/rotations/north-west.png",
+          "west": "Inquisition_Warden/rotations/west.png",
+          "south-west": "Inquisition_Warden/rotations/south-west.png"
+        },
+        "animations": {
+          "Walking": {
+            "east": [
+              "Inquisition_Warden/animations/Walking/east/frame_000.png",
+              "Inquisition_Warden/animations/Walking/east/frame_001.png",
+              "Inquisition_Warden/animations/Walking/east/frame_002.png",
+              "Inquisition_Warden/animations/Walking/east/frame_003.png",
+              "Inquisition_Warden/animations/Walking/east/frame_004.png",
+              "Inquisition_Warden/animations/Walking/east/frame_005.png",
+              "Inquisition_Warden/animations/Walking/east/frame_006.png",
+              "Inquisition_Warden/animations/Walking/east/frame_007.png"
+            ],
+            "west": [
+              "Inquisition_Warden/animations/Walking/west/frame_000.png",
+              "Inquisition_Warden/animations/Walking/west/frame_001.png",
+              "Inquisition_Warden/animations/Walking/west/frame_002.png",
+              "Inquisition_Warden/animations/Walking/west/frame_003.png",
+              "Inquisition_Warden/animations/Walking/west/frame_004.png",
+              "Inquisition_Warden/animations/Walking/west/frame_005.png",
+              "Inquisition_Warden/animations/Walking/west/frame_006.png",
+              "Inquisition_Warden/animations/Walking/west/frame_007.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-10-16T14:40:45.939341"
+}
