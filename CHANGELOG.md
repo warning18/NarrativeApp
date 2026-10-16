@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.427.0+463]
+
+### Added
+- Names (EN and FR) for the buildings that hold scenes in four of the six new town plans: Alster (33), the Ashen Quarter (27), the Drowned Cloister (22) and the White Anchorage (21), in `city_plans.json`. The Black Reliquary and Candlehold follow with their regenerated plans.
+
 ## [1.420.0+456]
 
 Six more towns have their plans.
