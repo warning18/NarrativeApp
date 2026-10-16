@@ -24,3 +24,12 @@ Notes from the 1.254.0 baseline:
   `tr()` keys), `test/qa_data_refs_test.dart` (gamedata cross-references),
   and `test/qa_story_fr_test.dart` (French typography of the story graph's
   bare `fr` keys, which `french_data_lint_test` does not read).
+
+## CI shards
+
+CI splits the suite across four runners by file time, not by name:
+`tool/shard_tests.py` assigns the files (heaviest first, to the lightest
+shard) from `test/shard_weights.json`, and fails if a file is dropped or
+doubled. A new file needs no entry (it counts as the median file). Refresh the
+weights now and then, with `flutter test --reporter json > report.json` and
+`tool/shard_weights_from_report.py report.json`.
