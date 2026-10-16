@@ -10,6 +10,42 @@ extension _FightEffects on _FightScreenState {
     _shakeController.forward(from: 0);
   }
 
+  /// The hero's sprite on the ground below the party's cards, facing the
+  /// enemies on the right (see fight_hero_sprite.dart): as big as the room
+  /// the cards leave allows, and not at all where they leave none, so it
+  /// never pushes the dice or the controls (a phone's fight is tight).
+  List<Widget> _heroOnGround(BoxConstraints area) {
+    final hero = _party.where((m) => m.isPlayer).firstOrNull;
+    if (hero == null) return const [];
+    // Each card, with a margin (an estimate: a card grows with its chips).
+    final cards = _party.length * 112.0;
+    final animate = ref.watch(combatEffectsEnabledProvider) &&
+        !_quick &&
+        !MediaQuery.of(context).disableAnimations;
+    for (final pixel in const [3.0, 2.0]) {
+      final size = FightHeroSprite.sizeFor(pixel);
+      if (area.maxHeight - cards < size.height + 8) continue;
+      // Centred under the party's column (five parts of eleven).
+      final column = (area.maxWidth - 24 - 8) * 5 / 11;
+      return [
+        Positioned(
+          left: 12 + max(0.0, (column - size.width) / 2),
+          bottom: 4,
+          child: IgnorePointer(
+            child: FightHeroSprite(
+              controller: _vfx,
+              anchor: _memberCardKey(hero.id),
+              alive: !hero.isKnockedOut,
+              animate: animate,
+              pixel: pixel,
+            ),
+          ),
+        ),
+      ];
+    }
+    return const [];
+  }
+
   /// A mighty blow landing, as the effect layer plays it: the screen
   /// shakes and the phone gives a heavy tap, both under the tremble
   /// setting.
@@ -87,6 +123,10 @@ extension _FightEffects on _FightScreenState {
         );
     if (target != null) {
       final targetKey = _enemyCardKey(target.key);
+      // The hero steps in with its blow (see fight_hero_sprite.dart).
+      if (actor.isPlayer) {
+        _vfx.cue(actorKey, PortraitCue.lunge, delayMs: delayMs);
+      }
       if (dealt > 0) {
         final power =
             powerFor(dealt, target.maxHealth, critical: result.isCritical);

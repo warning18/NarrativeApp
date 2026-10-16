@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.451.0+487]
+
+The hero stands in the fight, facing the enemy.
+
+### Added
+- **The hero in the fight:** the ronin of the side view (the walker) stands on the ground below the party's cards, facing east toward the enemies. It breathes while the fight waits, steps in with its blow when the hero strikes, flinches red when a blow lands on the hero, and dims if the hero is knocked out. It stays still with animations off. It takes no room: it is drawn only where the cards leave the ground free, so the dice and the controls stay where they were on a small phone.
+
 ## [1.450.0+486]
 
 The old ways of spending stat points are gone: the picks are the only one.
