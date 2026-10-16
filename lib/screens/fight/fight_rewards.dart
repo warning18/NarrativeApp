@@ -561,32 +561,16 @@ extension _FightRewards on _FightScreenState {
       final read = _bestPartyPerception() >= readAlignmentPerception
           ? readHunter(alignment, session.alignmentScore)
           : null;
-      spared = await showDialog<bool>(
-            context: context,
-            barrierDismissible: false,
-            builder: (dialogContext) => AlertDialog(
-              title: Text(trFor(lang, 'mercy_title')
-                  .replaceAll('{name}', hunter.displayName)),
-              content: Text([
-                trFor(lang, 'mercy_body'),
-                if (read != null)
-                  trFor(lang, 'mercy_read_${read.side}') +
-                      trFor(lang,
-                          read.close ? 'mercy_read_close' : 'mercy_read_far'),
-              ].join('\n\n')),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext, false),
-                  child: Text(trFor(lang, 'mercy_finish_button')),
-                ),
-                FilledButton(
-                  onPressed: () => Navigator.pop(dialogContext, true),
-                  child: Text(trFor(lang, 'mercy_spare_button')),
-                ),
-              ],
-            ),
-          ) ??
-          false;
+      spared = await showMercyDialog(
+        context,
+        enemyId: hunter.enemyId,
+        name: hunter.displayName,
+        clan: ref
+            .read(clanDataProvider)
+            .faction(hunter.data['hunterClan'].toString()),
+        lang: lang,
+        read: read,
+      );
       if (!mounted) return false;
     }
     await ref.read(playerSessionProvider.notifier).settleHunter(

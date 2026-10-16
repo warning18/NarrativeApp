@@ -68,7 +68,7 @@ The rules are in `lib/data/nemesis.dart`, `lib/data/rival_hunters.dart` and `lib
 The Dominion's champion is met far most often, as the Dominion is the nemesis in most runs.
 - **The boss curve is unchanged:** champions are off in ordinary runs, and `boss_balance_test` passes as before.
 
-## The follow-up: the trail, the way in, the defeat and the news (v1.402)
+## The follow-up: the trail, the way in, the defeat and the news (v1.404)
 
 Narrative's beats (`docs/proposals/nemesis-quests.md`) are now played.
 

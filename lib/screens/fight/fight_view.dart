@@ -424,6 +424,7 @@ extension _FightView on _FightScreenState {
             child: _telegraphChip(Icons.volume_off, tr(ref, 'tamper_silence')),
           ),
         _buildTideMark(),
+        _buildRuleMark(),
       ],
     );
   }
@@ -531,6 +532,42 @@ extension _FightView on _FightScreenState {
         _telegraphChip(
             Icons.flag_outlined, '${tr(ref, 'round_label')} $_roundsStarted'),
       ],
+    );
+  }
+
+  /// The place's rule (context_rules.dart) as a chip: its omen the round
+  /// before it starts, then how far it has risen each round; in a town, the
+  /// watch's whistle. Nothing for the Tide alone.
+  Widget _buildRuleMark() {
+    final status = placeRuleStatus(_length.rule, _roundsStarted);
+    if (status == null) return const SizedBox.shrink();
+    final (icon, colour) = placeRuleLook(status.stem);
+    final stem = status.stem;
+    String pct(double step) => '${(step * 100).round()}';
+    final tip = tr(ref, 'context_${stem}_tip')
+        .replaceAll(
+            '{a}',
+            switch (stem) {
+              'mist' => pct(mistTickStep),
+              'heat' => pct(heatTickStep),
+              'water' => pct(waterBlowStep),
+              'holy' => pct(sanctifiedHealStep),
+              _ => '$risingStartRound',
+            })
+        .replaceAll(
+            '{b}',
+            switch (stem) {
+              'heat' => pct(1 - heatHealFactor),
+              'water' => pct(waterEnemyStep),
+              'holy' => pct(sanctifiedLightStep),
+              _ => '',
+            });
+    final label = status.omen
+        ? tr(ref, 'context_${stem}_omen_mark')
+        : '${tr(ref, 'context_${stem}_mark')} ×${status.level}';
+    return KeyedSubtree(
+      key: Key('place_rule_mark_$stem'),
+      child: _stateChip(icon, label, colour, tooltip: tip),
     );
   }
 

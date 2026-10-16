@@ -7747,6 +7747,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Finish it',
     AppLanguage.fr: 'Achever',
   },
+  'mercy_spare_sub': {
+    AppLanguage.en: '{clan} {n} · no gold, no loot',
+    AppLanguage.fr: '{clan} {n} · ni or, ni butin',
+  },
+  'mercy_finish_sub': {
+    AppLanguage.en: '{clan} {n} · the spoils are yours',
+    AppLanguage.fr: '{clan} {n} · le butin est à vous',
+  },
   'mercy_spared_log': {
     AppLanguage.en: '{name} looks at you a long moment, then goes.',
     AppLanguage.fr: '{name} vous regarde un long moment, puis s’en va.',
@@ -7798,6 +7806,73 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Something snaps: the boss fights like a cornered thing.',
     AppLanguage.fr:
         'Quelque chose cède\u00a0: le boss se bat comme une bête acculée.',
+  },
+  'context_mist_mark': {AppLanguage.en: 'Mist', AppLanguage.fr: 'Brume'},
+  'context_mist_omen_mark': {
+    AppLanguage.en: 'Mist next round',
+    AppLanguage.fr: 'Brume au prochain tour',
+  },
+  'context_mist_tip': {
+    AppLanguage.en:
+        'Marsh mist: each round, both sides lose {a}% of their health a level. It never finishes anyone.',
+    AppLanguage.fr:
+        'Brume du marais\u00a0: à chaque tour, les deux camps perdent {a}\u00a0% de leur santé par niveau. Elle n’achève personne.',
+  },
+  'context_heat_mark': {AppLanguage.en: 'Heat', AppLanguage.fr: 'Chaleur'},
+  'context_heat_omen_mark': {
+    AppLanguage.en: 'Heat next round',
+    AppLanguage.fr: 'Chaleur au prochain tour',
+  },
+  'context_heat_tip': {
+    AppLanguage.en:
+        'Desert heat: each round, both sides lose {a}% of their health a level, and heal {b}% less. It never finishes anyone.',
+    AppLanguage.fr:
+        'Chaleur du désert\u00a0: à chaque tour, les deux camps perdent {a}\u00a0% de leur santé par niveau et soignent {b}\u00a0% de moins. Elle n’achève personne.',
+  },
+  'context_water_mark': {AppLanguage.en: 'Water', AppLanguage.fr: 'Eau'},
+  'context_water_omen_mark': {
+    AppLanguage.en: 'Water next round',
+    AppLanguage.fr: 'Eau au prochain tour',
+  },
+  'context_water_tip': {
+    AppLanguage.en:
+        'Rising water: a level more each round (three at most). Your blows and your healing grow {a}% a level, the enemies\u2019 blows {b}%.',
+    AppLanguage.fr:
+        'Eau qui monte\u00a0: un niveau de plus à chaque tour (trois au plus). Vos coups et vos soins gagnent {a}\u00a0% par niveau, les coups ennemis {b}\u00a0%.',
+  },
+  'context_holy_mark': {
+    AppLanguage.en: 'Holy ground',
+    AppLanguage.fr: 'Sol sacré',
+  },
+  'context_holy_omen_mark': {
+    AppLanguage.en: 'Holy ground stirs next round',
+    AppLanguage.fr: 'Le sol sacré s’éveille au prochain tour',
+  },
+  'context_holy_tip': {
+    AppLanguage.en:
+        'Sanctified ground: each level, healing fades {a}% and Light strikes {b}% harder.',
+    AppLanguage.fr:
+        'Sol sanctifié\u00a0: à chaque niveau, les soins faiblissent de {a}\u00a0% et la Lumière frappe {b}\u00a0% plus fort.',
+  },
+  'context_guards_mark': {
+    AppLanguage.en: 'The watch',
+    AppLanguage.fr: 'Le guet'
+  },
+  'context_guards_omen_mark': {
+    AppLanguage.en: 'Whistle: the watch next round',
+    AppLanguage.fr: 'Sifflet\u00a0: le guet au prochain tour',
+  },
+  'context_guards_tip': {
+    AppLanguage.en:
+        'The watch breaks fights up in the streets: from round {a}, whoever is ahead on health wins; if neither is, both walk away.',
+    AppLanguage.fr:
+        'Le guet sépare les combats dans les rues\u00a0: à partir du tour {a}, celui qui mène en santé gagne\u00a0; sinon, chacun s’en va.',
+  },
+  'boss_enraged_mark': {AppLanguage.en: 'Enraged', AppLanguage.fr: 'Enragé'},
+  'boss_enraged_tip': {
+    AppLanguage.en: 'The tide has turned: the boss strikes harder every round.',
+    AppLanguage.fr:
+        'La marée a tourné\u00a0: le boss frappe plus fort à chaque tour.',
   },
   'context_mist_omen': {
     AppLanguage.en:
@@ -11299,6 +11374,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'standing_cause_patron': {
     AppLanguage.en: 'Patron’s favour',
     AppLanguage.fr: 'Faveur du patron',
+  },
+  'level_up_patron_line': {
+    AppLanguage.en: '{clan}’s favour: {gains}',
+    AppLanguage.fr: 'Faveur de {clan} : {gains}',
   },
   'patron_max_health': {
     AppLanguage.en: '+{n} max health',
