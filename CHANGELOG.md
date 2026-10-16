@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.412.0+448]
+
+The map's places and names hold a readable size when you zoom.
+
+### Fixed
+- **Places and their names no longer shrink as the sphere comes close.** The world map is drawn at its screen size on the sphere, but its marks and names were sized as if a viewer scaled them by the zoom, so at the closest zoom they were a few pixels tall. They now keep their size.
+
+### Changed
+- **Each reached place has a plate under its mark** (at least 24 px across once you zoom in), the party's ring and the picked place's ring grow with it, and the clans' seats, villages and other features are held to about 26 px.
+- **Names are at least 11–12 px with a small plate behind them**, so they read over dark and light ground; a name that collides with another is left off, the party's place, the picked one and the goal first.
+- **A tap on a place hits within 22 px of it** (44 across), at any zoom, on the flat chart and the sphere. The town chart's building names are 11 px and its pins 24 px, with a slightly larger tap.
+
 ## [1.411.0+447]
 
 A clan's power and the land it holds, drawn.
