@@ -45,6 +45,10 @@ enum RemarkKind {
 
   /// A drink shared at the camp (v1.168).
   drink,
+
+  /// A word on the road, once per land walk, from a companion who walks
+  /// in the party (see walkRemark).
+  walk,
 }
 
 /// The trigger of a Companion Remarks record written for one story choice
@@ -267,6 +271,35 @@ class RemarkMemory {
   if (lines.isEmpty) return (remark: null, memory: memory);
   final spoken =
       _spoken(memory, companionId, RemarkKind.drink, lineCount: lines.length);
+  return (remark: spoken.remark, memory: spoken.memory);
+}
+
+/// A word on the road as a land walk starts: from one of [walkers] (the
+/// companions walking in the party, see walking_party_provider.dart) who
+/// has walk lines, the one who spoke least recently first. Nothing when
+/// someone spoke less than [remarkCooldownChoices] choices ago, so the
+/// walk doesn't pile onto a remark the scene just made. Called once per
+/// walk, so a walk has at most one.
+({CompanionRemark? remark, RemarkMemory memory}) walkRemark(
+    RemarkBook book, RemarkMemory memory, List<String> walkers) {
+  final last = memory.lastRemarkAt;
+  if (last != null && memory.choices - last < remarkCooldownChoices) {
+    return (remark: null, memory: memory);
+  }
+  int lastSpoke(String id) => memory.lastSpokeAt[id] ?? -1;
+  final speakers = [
+    for (final id in walkers)
+      if (book.linesFor(id, RemarkKind.walk).isNotEmpty) id,
+  ];
+  if (speakers.isEmpty) return (remark: null, memory: memory);
+  // Least recently spoken first; on a tie, the one further forward.
+  final order = [for (var i = 0; i < speakers.length; i++) i]..sort((a, b) {
+      final byTurn = lastSpoke(speakers[a]).compareTo(lastSpoke(speakers[b]));
+      return byTurn != 0 ? byTurn : a.compareTo(b);
+    });
+  final id = speakers[order.first];
+  final spoken = _spoken(memory, id, RemarkKind.walk,
+      lineCount: book.linesFor(id, RemarkKind.walk).length);
   return (remark: spoken.remark, memory: spoken.memory);
 }
 
