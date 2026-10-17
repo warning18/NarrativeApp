@@ -33,9 +33,10 @@ That is all. No `*italic*`, no `_`, no `#`, no HTML: they would show as typed.
 | Clans | factions (clans) and sub-clans | violet |
 
 Rules, so you can write for them:
-- A name matches as **whole words**, the **longest first**, in the display name of the language of the text (French text uses the French name).
-- The **full name** is what matches ("Aurel Vane", "Smugglers' Wharf"). A first name or a short form alone is **not** matched unless it is a record of its own (a companion's name, for example). If a short form should be coloured, give it as an alias in the record's data (a field Core can add; ask the manager).
-- A word that is also a plain word (a ship, a title) is listed in the game's **do not colour** list (kept by UX in `lib/data/story_names.dart`); tell UX if a common word turns blue by accident.
+- A name matches as **whole words**, the **longest first**, as written (capitals matter: "Alster" is coloured, "alster" is not), in the display name of the language of the text (French text uses the French name).
+- **A leading article is not part of the name**: "The Lantern Dominion" is matched as "Lantern Dominion", and "La Main ouverte" as "Main ouverte". The **short names of the clans** in `factions.json` (`short`: Dominion, Vigil, Compact, Crows, Penitents, Open Hand...) match too.
+- **People:** only proper names are coloured. A record that is only a description ("The archivist", "A Crow with no name") is left alone. A person's first name alone is coloured when it is a record of its own (a companion's name, "Vane", "Lysa"); otherwise ask for an alias in the record.
+- A word that is also a plain word (the Pit, the Mire, the Choir, the Giants, the oni) is on the game's **do-not-colour** list (`storyNamesIgnore`, in `lib/data/story_names.dart`); tell UX if a common word turns coloured by accident.
 - Names inside `**bold**` stay coloured and bold.
 
 ## What the reader sees
@@ -46,4 +47,4 @@ Rules, so you can write for them:
 
 ## Where it applies
 
-`description` and `description_fr` of a scene, the lines read on the way in (preludes) and the echo lines (`flag_callbacks`). Not choice texts, names of things, or the UI strings.
+`description` and `description_fr` of a scene, the lines read on the way in (preludes), the echo lines (`flag_callbacks`) and the alignment epilogue. Only the scene's own text writes itself out; those others appear with it. Not choice texts, names of things, or the UI strings. Marking a scene up does not make a place you have read look unread again (the key ignores the `**` signs; adding blank lines does change the text).
