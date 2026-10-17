@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
 import 'package:narrative_data_app/data/narration_clips.dart';
+import 'package:narrative_data_app/data/story_markup.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/elevenlabs_tts_provider.dart';
@@ -155,8 +156,8 @@ void main() {
                 text.replaceAll(RegExp(r'\s+'), ' ').trim();
             expect(
                 words(spoken.join(' ')),
-                words(storyBodyFor(
-                    composeNarration(node, session, french: french))),
+                words(stripStoryMarkup(storyBodyFor(
+                    composeNarration(node, session, french: french)))),
                 reason: 'node ${node.id}');
             for (final paragraph in spoken) {
               expect(script, contains(paragraph),
