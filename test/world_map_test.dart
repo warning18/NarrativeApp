@@ -19,10 +19,16 @@ import 'package:narrative_data_app/screens/story_graph_screen.dart';
 import 'package:narrative_data_app/screens/full_map_screen.dart';
 import 'package:narrative_data_app/screens/world_map_screen.dart';
 
+/// The first settle of a test waits for the game data to load; the later
+/// ones only let the screen catch up.
+final _warmed = Expando<bool>();
+
 Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 6; i++) {
+  final first = _warmed[tester] == null;
+  _warmed[tester] = true;
+  for (var i = 0; i < (first ? 6 : 3); i++) {
     await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 150)));
+        () => Future<void>.delayed(Duration(milliseconds: first ? 150 : 100)));
     await tester.pump(const Duration(milliseconds: 150));
   }
 }
