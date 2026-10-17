@@ -89,6 +89,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} ways here · tap a pin or a row',
     AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
   },
+  'service_notice_board': {
+    AppLanguage.en: 'Notice board',
+    AppLanguage.fr: 'Panneau d’affichage',
+  },
+  'service_market': {AppLanguage.en: 'Market', AppLanguage.fr: 'Marché'},
+  'service_tavern': {AppLanguage.en: 'Tavern', AppLanguage.fr: 'Taverne'},
+  'service_temple': {AppLanguage.en: 'Temple', AppLanguage.fr: 'Temple'},
+  'service_forge': {AppLanguage.en: 'Forge', AppLanguage.fr: 'Forge'},
+  'service_harbour': {AppLanguage.en: 'Harbour', AppLanguage.fr: 'Port'},
+  'service_nothing_yet': {
+    AppLanguage.en: 'Nothing to do here yet.',
+    AppLanguage.fr: 'Rien à faire ici pour l’instant.',
+  },
+  'service_shop_locked': {
+    AppLanguage.en: 'Not found yet',
+    AppLanguage.fr: 'Pas encore trouvée',
+  },
+  'service_bounty_board': {
+    AppLanguage.en: 'Bounties of the town',
+    AppLanguage.fr: 'Primes de la ville',
+  },
   'journey_city_districts': {
     AppLanguage.en: 'The districts · tap one to go in',
     AppLanguage.fr: 'Les quartiers · touchez-en un pour y entrer',
