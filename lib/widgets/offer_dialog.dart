@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/dice_faces.dart' show skillDisplayName;
 import '../combat/specialisations.dart' show specId;
+import '../data/camp_rolls.dart' show suitorBanishable;
 import '../data/factions.dart';
 import '../data/item_origin_here.dart';
 import '../data/offers.dart';
@@ -30,6 +31,7 @@ import 'item_stats.dart';
 import 'pixel_banner.dart';
 import 'reward_card.dart';
 import 'reward_cards.dart';
+import 'roll_power_row.dart';
 import 'sign_widgets.dart';
 import 'wind_banner.dart';
 
@@ -371,6 +373,23 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     });
   }
 
+  /// A roll power (camp_rolls.dart) used on the offer on the table; the
+  /// selection kept only for a raise.
+  Future<void> _roll(Future<void> Function() use, {bool keep = false}) async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      await use();
+    } finally {
+      if (mounted) {
+        setState(() {
+          _busy = false;
+          if (!keep) _selected = null;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(playerSessionProvider);
@@ -492,12 +511,43 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
               const Divider(height: 1),
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-                child: FilledButton(
-                  key: const Key('offer_take_button'),
-                  style: FilledButton.styleFrom(backgroundColor: accent),
-                  onPressed:
-                      selected == null || _busy ? null : () => _take(offer),
-                  child: Text(trFor(lang, 'offer_take_button')),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // The camp's roll houses (camp_rolls.dart).
+                    RollPowerRow(
+                      keyPrefix: 'offer',
+                      rolls: ref.watch(campRollsProvider),
+                      canBanish:
+                          selected != null && suitorBanishable(selected, offer),
+                      canRaise: selected != null &&
+                          ref.read(playerSessionProvider.notifier).raisePreview(
+                                  selected.factionId, widget.tables) !=
+                              null,
+                      warnRaised: offer.suitors.any((s) => s.raised),
+                      onReroll: () => _roll(() => ref
+                          .read(playerSessionProvider.notifier)
+                          .rerollOffer(widget.tables,
+                              placeHolder: ref.read(holderHereProvider))),
+                      onBanish: (draws) => _roll(() => ref
+                          .read(playerSessionProvider.notifier)
+                          .banishSuitor(
+                              selected!.factionId, draws, widget.tables,
+                              placeHolder: ref.read(holderHereProvider))),
+                      onRaise: () => _roll(
+                          () => ref
+                              .read(playerSessionProvider.notifier)
+                              .raiseSuitor(selected!.factionId, widget.tables),
+                          keep: true),
+                    ),
+                    FilledButton(
+                      key: const Key('offer_take_button'),
+                      style: FilledButton.styleFrom(backgroundColor: accent),
+                      onPressed:
+                          selected == null || _busy ? null : () => _take(offer),
+                      child: Text(trFor(lang, 'offer_take_button')),
+                    ),
+                  ],
                 ),
               ),
             ],

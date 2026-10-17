@@ -12332,6 +12332,48 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'A price to pay.',
     AppLanguage.fr: 'Un prix à payer.',
   },
+  // The camp's roll houses (camp_rolls.dart): the Reroll, Banish and Raise
+  // buttons on the stat pick and the offer. Narrative's texts.
+  'roll_reroll': {
+    AppLanguage.en: 'Reroll ({left})',
+    AppLanguage.fr: 'Relancer ({left})',
+  },
+  'roll_reroll_done': {
+    AppLanguage.en: 'The bones are cast again.',
+    AppLanguage.fr: 'Les os sont jetés de nouveau.',
+  },
+  'roll_reroll_warning': {
+    AppLanguage.en: 'The raised card goes too.',
+    AppLanguage.fr: 'La carte haussée part aussi.',
+  },
+  'roll_banish': {
+    AppLanguage.en: 'Banish ({left})',
+    AppLanguage.fr: 'Écarter ({left})',
+  },
+  'roll_banish_length': {
+    AppLanguage.en: '{draws} draws · {cost} charges',
+    AppLanguage.fr: '{draws} tirages · {cost} charges',
+  },
+  'roll_banish_done': {
+    AppLanguage.en: '{name} is warded off for {draws} draws.',
+    AppLanguage.fr: '{name} est écarté pour {draws} tirages.',
+  },
+  'roll_warded': {
+    AppLanguage.en: 'Warded, {n} draws',
+    AppLanguage.fr: 'Écarté, {n} tirages',
+  },
+  'roll_raise': {
+    AppLanguage.en: 'Raise ({left})',
+    AppLanguage.fr: 'Hausser ({left})',
+  },
+  'roll_raise_done': {
+    AppLanguage.en: '{name} rises to {rarity}.',
+    AppLanguage.fr: '{name} monte au rang {rarity}.',
+  },
+  'roll_no_charge': {
+    AppLanguage.en: 'No charge left.',
+    AppLanguage.fr: 'Plus aucune charge.',
+  },
   'ledger_curse': {
     AppLanguage.en: 'Curse',
     AppLanguage.fr: 'Malédiction',

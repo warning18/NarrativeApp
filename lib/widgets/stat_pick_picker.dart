@@ -28,6 +28,7 @@ import '../screens/training_picker.dart'
         trainingStatNow;
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
+import 'roll_power_row.dart';
 import 'sign_widgets.dart' show SignRarityChip, signRarityColor;
 
 class StatPickPicker extends ConsumerStatefulWidget {
@@ -66,6 +67,19 @@ class _StatPickPickerState extends ConsumerState<StatPickPicker> {
     try {
       await ref.read(playerSessionProvider.notifier).takeStatPick(index);
       if (mounted) setState(() => _selected = null);
+    } finally {
+      _busy = false;
+    }
+  }
+
+  /// A roll power (camp_rolls.dart) used on the pick on the table; the
+  /// selection kept only for a raise.
+  Future<void> _roll(Future<void> Function() use, {bool keep = false}) async {
+    if (_busy) return;
+    _busy = true;
+    try {
+      await use();
+      if (mounted && !keep) setState(() => _selected = null);
     } finally {
       _busy = false;
     }
@@ -139,6 +153,27 @@ class _StatPickPickerState extends ConsumerState<StatPickPicker> {
               style: theme.textTheme.bodySmall
                   ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic),
             ),
+          ),
+        if (offer.isNotEmpty)
+          RollPowerRow(
+            keyPrefix: 'stat_pick',
+            rolls: ref.watch(campRollsProvider),
+            canBanish: picked != null,
+            canRaise: picked != null &&
+                ref
+                    .read(playerSessionProvider.notifier)
+                    .canRaiseStatPickOffer(picked),
+            warnRaised: offer.any((o) => o.raised),
+            onReroll: () => _roll(() =>
+                ref.read(playerSessionProvider.notifier).rerollStatPick(paths)),
+            onBanish: (draws) => _roll(() => ref
+                .read(playerSessionProvider.notifier)
+                .banishStatPickOffer(picked!, draws, paths)),
+            onRaise: () => _roll(
+                () => ref
+                    .read(playerSessionProvider.notifier)
+                    .raiseStatPickOffer(picked!, paths),
+                keep: true),
           ),
         if (offer.isNotEmpty) ...[
           const SizedBox(height: 8),

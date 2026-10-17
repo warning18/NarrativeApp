@@ -15,6 +15,7 @@ import 'perks.dart';
 import 'patron_stats.dart';
 import 'politics_events.dart';
 import 'politics_events.dart' as coast show applyStoryPolitics;
+import 'camp_rolls.dart' show RollBanOn;
 import 'risky_gifts.dart';
 import 'signs.dart';
 import 'sim_combat.dart';
@@ -578,19 +579,37 @@ class SimGrowth {
     }
     while (pending.isNotEmpty) {
       final ticket = pending.first;
-      final offer = drawOffer(ticket, _context(next, flags), random,
+      final context = _context(next, flags);
+      var offer = drawOffer(ticket, context, random,
           riskyRandom: riskyGifts ? _riskyRandom ??= _riskySeeded() : null);
       if (offer == null) return next;
-      final suitor = preferredSuitor(
-        offer,
-        fillsEmptyFace: fillsEmptyFace,
-        heldSigns: character.heldSigns,
-        signs: tables.signs,
-        favourBest: random.nextDouble() < simFavourBestChance,
-        politics: politics,
-        data: tables.clans,
-        healthy: character.currentHealth * 2 > character.maxHealth,
-      );
+      final favourBest = random.nextDouble() < simFavourBestChance;
+      Suitor? choose(ClanOffer o) => preferredSuitor(
+            o,
+            fillsEmptyFace: fillsEmptyFace,
+            heldSigns: character.heldSigns,
+            signs: tables.signs,
+            favourBest: favourBest,
+            politics: politics,
+            data: tables.clans,
+            healthy: character.currentHealth * 2 > character.maxHealth,
+          );
+      var chosen = choose(offer);
+      // The camp's roll houses (sim_rolls.dart), on their own draw.
+      final rolls = character.rolls;
+      if (rolls != null) {
+        rolls.freshDraw(RollBanOn.offer);
+        if (rolls.built.isNotEmpty) {
+          final worked = rolls.workOffer(offer,
+              context: context,
+              choose: choose,
+              fills: fillsEmptyFace,
+              redraw: () => drawOffer(ticket, context, rolls.random));
+          offer = worked.offer;
+          chosen = worked.suitor;
+        }
+      }
+      final suitor = chosen;
       if (suitor == null) return next;
       pending.removeAt(0);
       for (final s in offer.suitors) {
