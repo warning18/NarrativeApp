@@ -185,7 +185,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     super.dispose();
   }
 
-  /// What stands on the road at the day's event, walking in from the right
+  /// What stands on the road at the day's event, walking in from the left
   /// (encounter_figure.dart); one walk per day, kept across rebuilds.
   EncounterWalk? _walk;
   int _walkDay = -1;

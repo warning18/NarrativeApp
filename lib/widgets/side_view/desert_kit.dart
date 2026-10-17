@@ -89,7 +89,7 @@ List<SideLayer> desertLayers({double progress = 0}) => [
     ];
 
 /// Where the hero's feet stand, in scene pixels: the party's head.
-const double walkHeroX = 56;
+const double walkHeroX = 96;
 
 /// Where each of [count] figures of a walking party stands, front to back:
 /// the hero at the head, the others behind it, 13 scene pixels apart.
@@ -155,7 +155,7 @@ SideLayer desertActors({
     if (!SideSprites.paint(c, u, xs[0], 66, t, moving: moving)) {
       _figure(c, u, xs[0] - 2, 66, const Color(0xFFC0392B), moving ? t : 1.3);
     }
-    encounter?.paint(c, s, t, u, partyX: xs[0]);
+    encounter?.paint(c, s, t, u, partyX: xs.last);
   });
 }
 
