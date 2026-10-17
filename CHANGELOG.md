@@ -25,6 +25,13 @@ Risky gifts: a clan that doesn't trust you may still offer a better gift, at a p
 ### Changed
 - **The White Admiral** has 72 max health instead of 80. It sat at its band's floor (33%) and now wins about 40% at seed 7.
 
+## [1.476.0+512]
+
+Companions say a word on the road.
+
+### Added
+- **Walk remarks:** four short lines for each of the eight companions (English and French) for the new `walk` trigger, spoken once as a land walk starts by a companion in the walking party. Data only; the trigger is Core's (v1.474).
+
 ## [1.475.0+511]
 
 The Journey's world data for wave 14: rooms when you walk into a building, service pins in towns, and the real road for a move on the world view. Data and providers only; UX draws them (contract: `docs/proposals/journey-world-data.md`).
