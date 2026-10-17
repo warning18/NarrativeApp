@@ -1297,5 +1297,285 @@
         "news_fr": "L’Amirauté a vendu aux enchères la prise de Nkem Tallow mise en fourrière, comme bien de la Croisade ; les Enfants du Brick ont déplacé leurs prises sur une plage que les clercs de la flotte ne trouvent pas, et le Mouillage a perdu son seul récupérateur honnête."
       }
     ]
+  },
+  "wrack_vote_result": {
+    "id": "wrack_vote_result",
+    "name": "The vote reaches Candlehold",
+    "name_fr": "Le vote arrive à Candlehold",
+    "trigger": {
+      "chapter": 5
+    },
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "vote_carried",
+            "vote_read"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": 8,
+            "compact": -4,
+            "crows": 4
+          },
+          "control": {
+            "ashen_quarter_cinder_row": "dominion"
+          }
+        },
+        "news": "The Tribunal’s vote reached Candlehold, and by the next tide the Salt Ledger had sold what it said. The Dominion took Cinder Row’s forges under its writ; the Row’s smiths were told to hand over their charter, and the Crows were paid for knowing first.",
+        "news_fr": "Le vote du Tribunal est arrivé à Candlehold, et à la marée suivante le Registre du Sel avait vendu ce qu’il disait. Le Dominion a mis les forges de la Rue des Braises sous son mandat ; on a ordonné aux forgerons de la Rue de rendre leur charte, et les Corneilles ont été payées pour l’avoir su les premières."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "vote_carried"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": 8,
+            "compact": -4
+          },
+          "control": {
+            "ashen_quarter_cinder_row": "dominion"
+          }
+        },
+        "news": "The Tribunal’s vote reached Candlehold sealed, as it was written. The Dominion took Cinder Row’s forges under its writ, and the Row’s smiths were told to hand over their charter.",
+        "news_fr": "Le vote du Tribunal est arrivé à Candlehold sous scellés, tel qu’il avait été écrit. Le Dominion a mis les forges de la Rue des Braises sous son mandat, et l’on a ordonné aux forgerons de la Rue de rendre leur charte."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "vote_refused"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": -8,
+            "compact": 4,
+            "penitents": 4
+          },
+          "control": {
+            "ashen_quarter_spire_stair": "compact"
+          }
+        },
+        "news": "The Tribunal’s vote never reached Candlehold. Four hundred names were read at the Row’s door instead, and the Compact took the Spire Stair while the Dominion argued over who had lost the vote.",
+        "news_fr": "Le vote du Tribunal n’est jamais arrivé à Candlehold. On a lu quatre cents noms à la porte de la Rue, et le Pacte a pris l’Escalier de la Flèche pendant que le Dominion cherchait qui avait perdu le vote."
+      }
+    ]
+  },
+  "conclave_counts": {
+    "id": "conclave_counts",
+    "name": "The Conclave counts",
+    "name_fr": "Le Conclave compte",
+    "trigger": [
+      {
+        "flags": [
+          "way_quiet"
+        ]
+      },
+      {
+        "flags": [
+          "way_force"
+        ]
+      },
+      {
+        "flags": [
+          "way_friends"
+        ]
+      },
+      {
+        "flags": [
+          "way_hard"
+        ]
+      }
+    ],
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "claim": [
+            "dominion"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": 5
+          }
+        },
+        "news": "The Houses came up the stair behind the new Lantern-Bearer’s lamp, and the Dominion stood stronger for it.",
+        "news_fr": "Les Maisons ont gravi l’escalier derrière la lampe du nouveau Porte-Lanterne, et le Dominion en est sorti plus fort."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "vigil"
+          ]
+        },
+        "effects": {
+          "power": {
+            "vigil": 8,
+            "dominion": -8
+          },
+          "control": {
+            "candlehold_lantern_hall": "vigil"
+          }
+        },
+        "news": "The Houses counted their votes and found the Vigil already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé la Veille déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "compact"
+          ]
+        },
+        "effects": {
+          "power": {
+            "compact": 8,
+            "dominion": -8
+          },
+          "control": {
+            "candlehold_lantern_hall": "compact"
+          }
+        },
+        "news": "The Houses counted their votes and found the Compact already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé le Pacte déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "mire"
+          ]
+        },
+        "effects": {
+          "power": {
+            "mire": 8,
+            "dominion": -8
+          },
+          "control": {
+            "candlehold_lantern_hall": "mire"
+          }
+        },
+        "news": "The Houses counted their votes and found the Mire already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé le Marais déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "crows"
+          ]
+        },
+        "effects": {
+          "power": {
+            "crows": 8,
+            "dominion": -8
+          },
+          "control": {
+            "candlehold_lantern_hall": "crows"
+          }
+        },
+        "news": "The Houses counted their votes and found the Crows already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé les Corneilles déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "penitents"
+          ]
+        },
+        "effects": {
+          "power": {
+            "penitents": 8,
+            "dominion": -8
+          },
+          "control": {
+            "candlehold_lantern_hall": "penitents"
+          }
+        },
+        "news": "The Houses counted their votes and found the Penitents already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé les Pénitents déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "open_hand"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": -8
+          },
+          "control": {
+            "candlehold_lantern_hall": "open_hand"
+          }
+        },
+        "news": "The Houses counted their votes and found the grey hand already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé la main grise déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_hard"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": -4
+          }
+        },
+        "news": "Candlehold’s stair ran with blood before the Conclave sat. The Dominion kept the Hall, and lost some of its name for it.",
+        "news_fr": "L’escalier de Candlehold a coulé de sang avant que le Conclave siège. Le Dominion a gardé la Salle, et y a perdu un peu de son nom."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_quiet"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": 5
+          }
+        },
+        "news": "The claimant spoke before the Houses and was heard. The Conclave named no one, and the Dominion, which likes to be asked, grew stronger.",
+        "news_fr": "Le prétendant a parlé devant les Maisons et a été entendu. Le Conclave n’a nommé personne, et le Dominion, qui aime qu’on le consulte, s’en est trouvé renforcé."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_friends"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": 3,
+            "vigil": 3
+          }
+        },
+        "news": "The Wickwardens lit the cliff and the Vigil walked under the lamps. The Houses saw both, and the Dominion and the Vigil each came out a little stronger.",
+        "news_fr": "Les Garde-Mèches ont éclairé la falaise et la Veille a marché sous les lampes. Les Maisons ont vu l’un et l’autre, et le Dominion comme la Veille en sont sortis un peu plus forts."
+      }
+    ]
   }
 }
