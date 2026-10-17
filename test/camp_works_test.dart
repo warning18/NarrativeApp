@@ -59,7 +59,7 @@ void main() {
     }
     expect(all[WorkCategory.sea]!.map((w) => w.houseId), ['harbor']);
     expect(all[WorkCategory.greatWorks]!.map((w) => w.houseId),
-        ['hearth_hall', 'banner_loft', 'shroud_shrine']);
+        ['hearth_hall', 'star_well', 'banner_loft', 'shroud_shrine']);
   });
 
   test('a house comes with its tier\'s chapter', () {

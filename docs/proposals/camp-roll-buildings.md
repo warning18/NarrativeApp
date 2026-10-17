@@ -113,6 +113,13 @@ Future<ClanOffer?> raiseSuitor(String factionId, OfferTables tables);
 
 Each returns the new set (or the old one, unchanged, when no charge is left), spends the charge and persists.
 
+**As built (v1.479 code):** the names above, plus:
+- `campRollsProvider` (a `Provider<CampRolls>`) and `campRollsOf(session)` for the charges without a houses table; `CampRolls.reroll/banish/raise` are null while the house isn't up, `bans` the running `RollBan`s (`on`, `id`, `left`).
+- `suitorBanishable(suitor, offer)` and `suitorRaisable(suitor)` (camp_rolls.dart) for the buttons' state; `raisePreview` is seeded from `rollNonce`, so it matches `raiseSuitor` until a power is used.
+- Core's minimal row is `lib/widgets/roll_power_row.dart` (`RollPowerRow`), placed in `stat_pick_picker.dart` and `offer_dialog.dart` above the take button; keys `stat_pick_roll_reroll|banish|raise`, `offer_roll_…`, the Banish chooser's `…_roll_banish_5|10|15`. UX restyles it freely.
+- Strings: Narrative's keys (`roll_reroll`, `roll_banish`, `roll_raise` with `{left}`; `roll_banish_length` with `{draws}`, `{cost}`; `roll_banish_done`, `roll_raise_done`, `roll_reroll_done`, `roll_reroll_warning`, `roll_warded`, `roll_no_charge`). The row uses the first four and the warning.
+- `workCategoryOf` falls back to workshops for Reroll and Banish only; a `raise` house without `category` reads as a great work, like the Star Well's own field.
+
 **Strings** (EN + FR drafted in the code PR, next to the offer and stat pick strings): `roll_reroll`, `roll_banish`, `roll_raise`, `roll_banish_length`, `roll_reroll_warning`, `roll_warded`. Narrative: the three houses' names and descriptions.
 
 ## 5. Save fields
