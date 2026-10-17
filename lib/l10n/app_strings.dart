@@ -18,9 +18,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Tap a step on the map to see where it leads; tap it again or press Go to take it.',
     AppLanguage.fr:
-        'Touchez une étape de la carte pour voir où elle mène ; touchez-la encore ou appuyez sur Partir pour la prendre.',
+        'Touchez une étape de la carte pour voir où elle mène ; touchez-la encore ou appuyez sur Go pour la prendre.',
   },
-  'journey_go': {AppLanguage.en: 'Go', AppLanguage.fr: 'Partir'},
+  'journey_go': {AppLanguage.en: 'Go', AppLanguage.fr: 'Go'},
   'journey_move_lost': {
     AppLanguage.en: 'The fight is lost: you are taken to {place}.',
     AppLanguage.fr: 'Le combat est perdu\u00a0: on vous mène à {place}.',
@@ -6894,7 +6894,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Tap a step to see what it costs or brings. Go, or a second tap on the step, walks the party there.',
     AppLanguage.fr:
-        'Touchez une étape pour voir ce qu’elle coûte ou rapporte. « Partir », ou un second toucher sur l’étape, y mène le groupe.',
+        'Touchez une étape pour voir ce qu’elle coûte ou rapporte. « Go », ou un second toucher sur l’étape, y mène le groupe.',
   },
   'tut_journey_5': {
     AppLanguage.en:
