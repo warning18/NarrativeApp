@@ -8585,7 +8585,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_tribunal_chapel",
     "choices": [
       {
         "text": "Tell the truth: he was fighting it",
@@ -8639,7 +8639,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_hammer_chapel",
     "choices": [
       {
         "text": "Take it off the velvet",
@@ -8671,7 +8671,7 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_hammer_chapel",
     "choices": [
       {
         "text": "Get to him before the bell",
@@ -8693,7 +8693,7 @@
       "mood": "hopeful",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_hammer_chapel",
     "choices": [
       {
         "text": "Carry the hammer: speak for the Row",
@@ -8739,7 +8739,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chartkeeper_chapel",
     "automations": {},
     "choices": [
       {
@@ -8922,7 +8922,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_parish_chapel",
     "automations": {},
     "choices": [
       {
@@ -10583,7 +10583,7 @@
       "mood": "grim",
       "speaker": "Chart-keeper"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chartkeeper_chapel",
     "choices": [
       {
         "text": "Back over the frost",
@@ -11411,7 +11411,7 @@
       "mood": "mournful",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chair_chapel",
     "choices": [
       {
         "text": "Close her eyes and walk back among the chapels",
@@ -17892,7 +17892,7 @@
       "mood": "bitter",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chartkeeper_chapel",
     "choices": [
       {
         "text": "Back to the Quarter",
@@ -18123,7 +18123,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_muniment_room",
     "choices": [
       {
         "text": "Tell the coast: a copy on every boat that sails",
@@ -21643,7 +21643,8 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_throne_room",
+    "spot": "dais",
     "choices": [
       {
         "text": "Bear the Lantern, and let the clans keep their banners",
@@ -21818,7 +21819,8 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_throne_room",
+    "spot": "dais",
     "choices": [
       {
         "text": "Sit with open eyes, and strike out the Edict",
@@ -21997,7 +21999,8 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_throne_room",
+    "spot": "dais",
     "choices": [
       {
         "text": "Tell them why, and take the crown from their hands",
@@ -22176,7 +22179,8 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_throne_room",
+    "spot": "dais",
     "choices": [
       {
         "text": "Accept the fen’s terms unread, and keep them",
@@ -22351,7 +22355,8 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_throne_room",
+    "spot": "dais",
     "choices": [
       {
         "text": "Choose the peace that pays, and pay for it",
@@ -22525,7 +22530,8 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_throne_room",
+    "spot": "dais",
     "choices": [
       {
         "text": "Take the burnt crown, and undo what was done",
@@ -22699,7 +22705,8 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_throne_room",
+    "spot": "dais",
     "choices": [
       {
         "text": "Lay the Seal on the Throne for every drawer",
@@ -25255,7 +25262,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_muniment_room",
     "choices": [
       {
         "text": "Tear out the page for the Mire Courts",

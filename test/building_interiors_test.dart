@@ -3,11 +3,10 @@
 // `location` is a geography.json building. Wave 14 audited the story for
 // scenes the text puts indoors (a cell, a chapel, a forge, a hall, an
 // archive, a cellar, a shop): 99 scenes here, of which 7 stood in a building
-// before (the Blind Beggar) and the rest showed streets. 76 stand in one now;
-// the 23 in [_waiting] have their building but wait: 10 are seated by
-// Narrative in another district than their room's, 11 go to the Black
-// Reliquary's new districts, whose world-map landmark is not on the charts
-// yet, and 2 would make a roll's other branch a move with no note
+// before (the Blind Beggar) and the rest showed streets. 94 stand in one now;
+// the 5 in [_waiting] have their building but wait: 3 are seated by
+// Narrative in another district than their room's, and 2 would make a
+// roll's other branch a move with no note
 // (docs/proposals/journey-world-data.md).
 import 'dart:convert';
 import 'dart:io';
@@ -97,33 +96,33 @@ const _interiorScenes = [
   '7520_vane',
   '7520_tallis',
   '7800_council',
+  '6010_lysa_dead',
+  '6010_record',
+  '7590_dominion',
+  '7590_vigil',
+  '7590_compact',
+  '7590_mire',
+  '7590_crows',
+  '7590_penitents',
+  '7590_open_hand',
+  '6010_clan_dominion_2',
+  '6010_clan_compact_3',
+  '6010_clan_compact_3_seen',
+  '6010_clan_compact_3_hammer',
+  '6010_chartkeeper',
+  '6010_chartkeeper_words',
+  '6010_chart_bought',
+  '6010_spawn',
+  '6010_returned_roll',
 ];
 
 /// Indoor scenes left at their district for now, with the building each
-/// goes into: Narrative seats the first ten elsewhere (district_seats.json);
-/// the rest wait for the Reliquary's chapels to get a landmark.
+/// goes into: Narrative seats three elsewhere (district_seats.json); the
+/// rest would make a roll's other branch a move with no note.
 const _waiting = {
-  '6010_lysa_dead': 'reliquary_chair_chapel',
-  '6010_record': 'reliquary_muniment_room',
   '5200_house_returned': 'kindly_hill_long_room',
-  '7590_dominion': 'candlehold_throne_room',
-  '7590_vigil': 'candlehold_throne_room',
-  '7590_compact': 'candlehold_throne_room',
-  '7590_mire': 'candlehold_throne_room',
-  '7590_crows': 'candlehold_throne_room',
-  '7590_penitents': 'candlehold_throne_room',
-  '7590_open_hand': 'candlehold_throne_room',
-  '6010_clan_dominion_2': 'reliquary_tribunal_chapel',
-  '6010_clan_compact_3': 'reliquary_hammer_chapel',
-  '6010_clan_compact_3_seen': 'reliquary_hammer_chapel',
-  '6010_clan_compact_3_hammer': 'reliquary_hammer_chapel',
-  '6010_chartkeeper': 'reliquary_chartkeeper_chapel',
-  '6010_chartkeeper_words': 'reliquary_chartkeeper_chapel',
-  '6010_chart_bought': 'reliquary_chartkeeper_chapel',
   '6010_thread': 'reliquary_chartkeeper_chapel',
   '6010_heist_night': 'reliquary_chartkeeper_chapel',
-  '6010_spawn': 'reliquary_parish_chapel',
-  '6010_returned_roll': 'reliquary_muniment_room',
   '3100_house_anvil_deaf_failed': 'emberwick_cold_forge',
   '5200': 'kindly_hill_long_room',
 };
