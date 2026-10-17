@@ -270,6 +270,7 @@ class PlayerSession {
     this.seenNpcIds = const [],
     this.readSceneKeys = const [],
     this.seenEchoKeys = const [],
+    this.seenFightTipIds = const [],
     this.provisions = provisionsStart,
     this.day = 1,
     this.watch = 1,
@@ -466,6 +467,11 @@ class PlayerSession {
   /// the earlier choice that earned it, as `<nodeId>|<flag>`. The journal's
   /// "What changed" page lists them.
   final List<String> seenEchoKeys;
+
+  /// The one-time fight tips this save has shown (see fight_tips.dart): a
+  /// goal, a doctrine or a situation is explained the first time a fight
+  /// shows it. An old save without the field has seen none.
+  final List<String> seenFightTipIds;
 
   /// Rations carried (see journey_rules.dart): one is eaten on each step
   /// of the road from chapter 2 on; with none left the party goes hungry.
@@ -923,6 +929,7 @@ class PlayerSession {
     List<String>? seenNpcIds,
     List<String>? readSceneKeys,
     List<String>? seenEchoKeys,
+    List<String>? seenFightTipIds,
     int? provisions,
     int? day,
     int? watch,
@@ -1039,6 +1046,7 @@ class PlayerSession {
       seenNpcIds: seenNpcIds ?? this.seenNpcIds,
       readSceneKeys: readSceneKeys ?? this.readSceneKeys,
       seenEchoKeys: seenEchoKeys ?? this.seenEchoKeys,
+      seenFightTipIds: seenFightTipIds ?? this.seenFightTipIds,
       provisions: provisions ?? this.provisions,
       day: day ?? this.day,
       watch: watch ?? this.watch,
@@ -1212,6 +1220,7 @@ class PlayerSession {
         'seenNpcIds': seenNpcIds,
         'readSceneKeys': readSceneKeys,
         'seenEchoKeys': seenEchoKeys,
+        'seenFightTipIds': seenFightTipIds,
         'provisions': provisions,
         'day': day,
         'watch': watch,
@@ -1412,6 +1421,10 @@ class PlayerSession {
       seenEchoKeys:
           (json['seenEchoKeys'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
+      seenFightTipIds: (json['seenFightTipIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
       provisions: (json['provisions'] as num?)?.toInt() ?? provisionsStart,
       day: max(1, (json['day'] as num?)?.toInt() ?? 1),
       watch: ((json['watch'] as num?)?.toInt() ?? 1).clamp(0, 3),
@@ -4403,6 +4416,19 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     ];
     if (fresh.isEmpty) return;
     state = state.copyWith(seenEchoKeys: [...state.seenEchoKeys, ...fresh]);
+    await _persist();
+  }
+
+  /// Remembers the one-time fight tips [ids] (see fight_tips.dart) as shown
+  /// on this save.
+  Future<void> markFightTipsSeen(Iterable<String> ids) async {
+    final fresh = [
+      for (final id in {...ids})
+        if (!state.seenFightTipIds.contains(id)) id,
+    ];
+    if (fresh.isEmpty) return;
+    state =
+        state.copyWith(seenFightTipIds: [...state.seenFightTipIds, ...fresh]);
     await _persist();
   }
 

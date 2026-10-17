@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.468.0+504]
+
+A fight explains its goal, its enemy's doctrine and its situation the first time a save meets each.
+
+### Added
+- **One-time fight tips:** the first fight that shows a goal (Hold the line, Rout, Subdue), an enemy doctrine (the Dominion's Writ, the Crows' Short Con, and the other clans' habits) or a situation (Ambush, Darkness, Cramped, High ground, Shrine) explains what it means for the player, in a sentence or two on the setup screen. Several appear in one card, one after another (1/3, Next). Each one shows once per save, and none show when tutorials are off in Settings. Old saves see them all as new. The texts are drafts in English and French.
+
 ## [1.467.0+503]
 
 The Journey's step button reads "Go" in French too.
