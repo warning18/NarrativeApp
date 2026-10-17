@@ -17,6 +17,7 @@ import '../../theme/stitched_ink.dart';
 import '../../utils/face_style.dart';
 import '../../utils/pixel_icons/game_pixel_icons.dart';
 import '../../widgets/detail_dialog.dart';
+import '../../widgets/pixel_banner.dart';
 import 'skill_sheet.dart';
 import 'skills_view_model.dart';
 
@@ -258,6 +259,20 @@ class SkillNode extends ConsumerWidget {
                     child: SkillPixelIcon(id, size: 26),
                   ),
                 ),
+                // The clan that offers it hangs from the ring's upper left.
+                if (!entry.known && entry.sponsors.isNotEmpty)
+                  Positioned(
+                    left: -7,
+                    top: -9,
+                    child: Opacity(
+                      opacity: locked ? 0.45 : 1,
+                      child: ClanFlag(
+                        key: Key('tree_flag_$id'),
+                        factionId: entry.sponsors.first,
+                        height: 24,
+                      ),
+                    ),
+                  ),
                 Positioned(
                   right: -3,
                   bottom: -3,
