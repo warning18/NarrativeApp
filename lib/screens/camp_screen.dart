@@ -55,6 +55,7 @@ import 'shop_detail_screen.dart';
 import 'skills/skills_screen.dart';
 import 'story_player_screen.dart'
     show composeNarration, isStoryChoiceLocked, takeStoryChoice;
+import '../data/story_markup.dart' show stripStoryMarkup;
 
 /// The party's camp from chapter 3, its base: the story stands here
 /// between trips. What happened on coming back, the open chapter (how much
@@ -754,7 +755,7 @@ class _CampSceneCardState extends ConsumerState<_CampSceneCard> {
               ),
               const SizedBox(height: 8),
               Text(
-                widget.text,
+                stripStoryMarkup(widget.text),
                 maxLines: _open ? null : 4,
                 overflow: _open ? TextOverflow.visible : TextOverflow.ellipsis,
                 style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
@@ -812,7 +813,7 @@ class _SceneChip extends StatelessWidget {
                 Text(title,
                     style: Theme.of(sheetContext).textTheme.titleMedium),
                 const SizedBox(height: 10),
-                Text(text,
+                Text(stripStoryMarkup(text),
                     style: Theme.of(sheetContext)
                         .textTheme
                         .bodyLarge
