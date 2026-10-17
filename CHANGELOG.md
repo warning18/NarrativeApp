@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.472.0+508]
+
+Chapters 3 and 4 read in short paragraphs, with the key facts in bold. Needs v1.471 (chapters 1 and 2) first.
+
 ## [1.471.0+507]
 
 Chapters 1 and 2 read in short paragraphs, with the key facts in bold. Needs v1.470 (the story text display) first.
@@ -16,6 +20,13 @@ Chapters 1 and 2 read in short paragraphs, with the key facts in bold. Needs v1.
 - **Shorter paragraphs:** 66 long scenes of chapters 1 and 2 are split into paragraphs of a few sentences, at a change of place, speaker or beat.
 - **Key facts in bold** (`**...**`, English and French): a number, an object that matters, a deadline, a promise, a few a scene. Names are coloured by the game, not marked.
 - **Fight tips polished** (the 16 one-time tips) and **`affix_armored_desc`** fixed: Armored shrugs off 1 damage, as the code does.
+
+## [1.469.0+505]
+
+A stat's popin on the Character radar.
+
+### Added
+- **Tap an ability on the radar:** its name (STR, DEX...) opens a sheet with the exact number, what a point of it does for this hero's calling ("Each point: +1 damage, +2% dodge", from `statPickEffects`), and where it comes from, from Core's stat breakdown: the starting score, the race, the calling, the picks (the paths named), the patron clan, the tomes, the formative memories, and "Earlier" for an old save's unexplained rest; with a total that adds up to the number. What a fight lends on top (gear, signs, titles, the Sworn boon) is a section of its own, with "In a fight: N" under the number. A line under the radar says it can be tapped. EN and FR at 320 px.
 
 ## [1.468.0+504]
 
