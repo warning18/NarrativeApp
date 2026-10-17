@@ -6,6 +6,7 @@ import 'ally_acknowledgments.dart';
 import 'chapter_grid_layout.dart';
 import 'chapter_spine.dart';
 import 'narration_tokens.dart';
+import 'story_markup.dart' show stripStoryMarkup;
 
 /// Recorded narration is kept one clip per paragraph, so a scene the story
 /// assembles differently for each player (a companion's aside, a callback
@@ -30,7 +31,7 @@ String storyBodyFor(String text) {
 /// [text] split into the paragraphs read aloud one clip each: on blank
 /// lines, trimmed, empty ones dropped.
 List<String> narrationParagraphs(String text) => [
-      for (final paragraph in text.split(RegExp(r'\n\s*\n')))
+      for (final paragraph in stripStoryMarkup(text).split(RegExp(r'\n\s*\n')))
         if (paragraph.trim().isNotEmpty) paragraph.trim(),
     ];
 

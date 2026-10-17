@@ -1,6 +1,6 @@
-# L3 checklist for v1.471.0 (wave 12)
+# L3 checklist for v1.473.0 (wave 12)
 
-Prepared on `main` at v1.466.0 (`98ba9fc`), for the L3 the manager asked for once v1.471 is merged. The last L3 was at 1.285.0 (`5a416c6`, 2026-10-13), so this one covers about 180 releases, far more than the earlier ones (1.264 to 1.274 to 1.285: 10 each).
+Prepared on `main` at v1.466.0 (`98ba9fc`), for the L3 the manager asked for once v1.473 is merged (v1.474 if Core's walking party lands right after it): the story text ships over four PRs, v1.470 (UX's display) then Narrative's chapters 1 and 2 (v1.471), 3 and 4 (v1.472) and 5 and later (v1.473). The last L3 was at 1.285.0 (`5a416c6`, 2026-10-13), so this one covers about 180 releases, far more than the earlier ones (1.264 to 1.274 to 1.285: 10 each).
 
 ## 1. What changed since the last L3 (1.285.0 to 1.466.0)
 
@@ -23,10 +23,11 @@ Prepared on `main` at v1.466.0 (`98ba9fc`), for the L3 the manager asked for onc
 | Release | What | Read |
 |---|---|---|
 | v1.467 Narrative | "Go" in place of "Partir" | every place the word showed: the map's place sheet, the Journey's step marks, the camp's travel buttons, in French at 360 and 320 px (a shorter word should not leave a gap); no "Partir" left in `app_strings.dart` or the story |
-| v1.468 Core | the fight tutorial on the first goal, doctrine or situation | the tutorial card over a fight on a 360 and 320 px phone, EN and FR; that it shows once per save and stays out of the way of the fight's buttons; a fight loaded from an old save (no flag) |
+| v1.468 Core (merged, #396) | one-time fight tips for goals, doctrines and situations | the tip over a fight on a 360 and 320 px phone, EN and FR; that each shows once per save and stays out of the way of the fight's buttons; a fight loaded from an old save (no flag) |
 | v1.469 UX | the stat popin on the Character radar | the radar's tap, the popin's text with the new scale (÷5), the stat ledger's sources, EN and FR, both sizes, with real fonts |
-| v1.470 UX | the story text display (coloured names, bold, paragraphs, typewriter) | the story player on long scenes at 360 and 320 px: no overflow with bold and coloured runs, the typewriter's skip (a tap), reduced motion (`disableAnimations`), the read-aloud, and the French apostrophes and non-breaking spaces |
-| v1.471 Narrative | chapters 1 and 2 marked | the marks' text (EN and FR, with `qa_story_fr_test`), where the marks show, and that no node is changed in its ids or links (`story_graph_integrity_test`) |
+| v1.470 UX | the story text display (coloured names, bold, paragraphs, typewriter) | the story player and the Journey's scene view (page and sheet) on long scenes at 360 and 320 px: no overflow with bold and coloured runs, the typewriter's tap-to-finish, reduced motion (`disableAnimations`: the text at once), the choices appearing when the text is complete, read-aloud without the `**`, the French apostrophes and non-breaking spaces; the names coloured by kind (people, places, clans) and the do-not-colour list (`lib/data/story_names.dart`) |
+| v1.471, v1.472, v1.473 Narrative | the story text marked, chapters 1 and 2, then 3 and 4, then 5 and later (bold key facts, paragraphs of two to four sentences; `docs/proposals/story-markup.md`) | `qa_markup_test` (every `**` closes and none in a choice text, in `quests.json` and the story), `qa_story_fr_test`, `story_graph_integrity_test`; a read of the longest scenes of each chapter on a phone for paragraph length and bold used a few times a scene, not a paragraph; no node id or link changed |
+| v1.474 Core (if it lands) | the walking party | the party's display in the story, the camp and the fight, 360 and 320 px; old saves without a party |
 
 ## 3. Automated steps, in this order
 
@@ -60,4 +61,4 @@ For each: no overflow, no clipped button, no missing French, the back path (Back
 
 ## 6. Output
 
-`docs/qa/l3-1.471.0.md` (report in the shape of `l3-1.285.0.md`: result table, simulator comparison, coverage, audit, screens read, guards added, findings, open items) and, at the top of `docs/qa/README.md`, "Last L3: 1.471.0" with its row in the table. Docs and tests only: no version bump.
+`docs/qa/l3-1.473.0.md` (report in the shape of `l3-1.285.0.md`: result table, simulator comparison, coverage, audit, screens read, guards added, findings, open items) and, at the top of `docs/qa/README.md`, "Last L3: 1.473.0" with its row in the table. Docs and tests only: no version bump.

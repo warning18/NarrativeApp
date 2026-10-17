@@ -21,6 +21,16 @@ Chapters 1 and 2 read in short paragraphs, with the key facts in bold. Needs v1.
 - **Key facts in bold** (`**...**`, English and French): a number, an object that matters, a deadline, a promise, a few a scene. Names are coloured by the game, not marked.
 - **Fight tips polished** (the 16 one-time tips) and **`affix_armored_desc`** fixed: Armored shrugs off 1 damage, as the code does.
 
+## [1.470.0+506]
+
+The story text reads like a page: paragraphs, names in colour, key facts in bold, written out as you read.
+
+### Changed
+- **Names in colour:** the names of people (`npcs.json`, the companions), places (the geography) and clans (factions, sub-clans, and the clans' short names) are coloured wherever they appear in a scene's text, one colour for each kind (warm orange, teal, violet) in both themes. Found by the game from its own tables, in the language of the text, whole words and the longest first; Narrative marks nothing by hand. A description of someone ("The archivist") is not a name.
+- **Bold and paragraphs:** `**key facts**` are bold, and a blank line starts a paragraph (docs/proposals/story-markup.md). A text with no markup keeps the look it had (its first sentence in bold), and the voice, the journal and the folded lines read the words without the signs.
+- **A scene writes itself out, quickly** (about 260 characters a second, never over 4 s): one tap shows it all, the next goes on as before; the choices (and the Journey's Continue, which shows the rest first if pressed too early) come once the text is complete. A scene read before, Edit Mode, reduced motion and animations off show the text at once. In the story player and the Journey's scene view (page and sheet).
+- A place's read mark ignores the `**` signs, so marking a scene up does not make a place you have read look new.
+
 ## [1.469.0+505]
 
 A stat's popin on the Character radar.

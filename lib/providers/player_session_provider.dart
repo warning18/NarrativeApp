@@ -57,6 +57,7 @@ import '../models/ally_state.dart';
 import '../models/item_origin.dart';
 import '../models/story_node.dart' show placeFoundFlag;
 import '../models/story_politics.dart';
+import '../data/story_markup.dart' show stripStoryMarkup;
 
 const String _playerSessionPrefsKey = 'player_session';
 
@@ -212,7 +213,9 @@ String houseFlag(String houseId) => 'house_$houseId';
 /// changed scene reads as new.
 String sceneReadKey(String nodeId, String text) {
   var hash = 0x811c9dc5;
-  for (final unit in text.codeUnits) {
+  // The markup of the story text (`**`) is not part of the words: marking a
+  // scene up does not make a place read before look unread.
+  for (final unit in stripStoryMarkup(text).codeUnits) {
     hash = ((hash ^ unit) * 0x01000193) & 0xffffffff;
   }
   return '$nodeId#${hash.toRadixString(16)}';
