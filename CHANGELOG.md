@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.473.0+509]
+
+Chapters 5 to 8 read in short paragraphs, with the key facts in bold. Needs v1.472 (chapters 3 and 4) first.
+
+### Changed
+- **Shorter paragraphs:** the long scenes of chapters 5 onward (node ids 6000 and up) are split into paragraphs of a few sentences, at a change of place, speaker or beat.
+- **Key facts in bold** (`**...**`, English and French) in 189 scenes: a number, an object that matters, a deadline, a promise, a few a scene. Names are coloured by the game, not marked.
+
 ## [1.472.0+508]
 
 Chapters 3 and 4 read in short paragraphs, with the key facts in bold. Needs v1.471 (chapters 1 and 2) first.
